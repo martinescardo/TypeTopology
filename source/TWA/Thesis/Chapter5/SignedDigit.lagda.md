@@ -1,3 +1,5 @@
+[⇐ Index](../html/TWA.Thesis.index.html)
+
 # Ternary signed-digit encodings
 
 ```agda
@@ -245,3 +247,5 @@ digitMul a = map (a *𝟛_)
 mul : 𝟛ᴺ → 𝟛ᴺ → 𝟛ᴺ
 mul x y = bigMid (zipWith digitMul x (repeat y))
 ```
+
+[⇐ Index](../html/TWA.Thesis.index.html)

@@ -1,3 +1,5 @@
+[⇐ Index](../html/TWA.Thesis.index.html)
+
 # Examples of uniformly continuous searchable closeness spaces
 
 ```agda
@@ -381,3 +383,5 @@ tychonoff : (T : ℕ → ClosenessSpace 𝓤)
           → csearchable 𝓦 (Π-ClosenessSpace T)
 tychonoff T S ((p , d) , δ , ϕ) = tychonoff' T S δ ((p , d) , ϕ)
 ```
+
+[⇐ Index](../html/TWA.Thesis.index.html)

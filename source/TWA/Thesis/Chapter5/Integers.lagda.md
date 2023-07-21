@@ -1,3 +1,5 @@
+[⇐ Index](../html/TWA.Thesis.index.html)
+
 # Additional integer properties
 
 ```
@@ -466,3 +468,5 @@ div-by-two (negsucc x)
      ＝⟨ ap (λ z → ℤ- pos z) (div-by-two' (succ x)) ⟩
    negsucc x ∎
 ```
+
+[⇐ Index](../html/TWA.Thesis.index.html)

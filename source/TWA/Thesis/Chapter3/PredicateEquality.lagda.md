@@ -1,3 +1,5 @@
+[⇐ Index](../html/TWA.Thesis.index.html)
+
 # Equality of uniformly continuous predicates
 
 ```agda
@@ -96,3 +98,5 @@ decidable-uc-predicate-with-mod-＝
      (to-subtype-＝ (λ p → complemented-is-prop p)
        (predicate-＝ p₁ p₂ f))
 ```
+
+[⇐ Index](../html/TWA.Thesis.index.html)

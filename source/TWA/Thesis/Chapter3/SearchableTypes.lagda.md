@@ -1,3 +1,5 @@
+[⇐ Index](../html/TWA.Thesis.index.html)
+
 # Uniformly continuously searchable closeness spaces
 
 ```agda
@@ -291,3 +293,5 @@ totally-bounded-csearchable {𝓤} {𝓤'} {𝓦} X x t ((p , d) , δ , ϕ)
   γ : (Σ x ꞉ ⟨ X ⟩ , p x holds) → p x₀ holds
   γ (x , px) = γ' (h x , (ϕ x (g (h x)) (η x) px))
 ```
+
+[⇐ Index](../html/TWA.Thesis.index.html)

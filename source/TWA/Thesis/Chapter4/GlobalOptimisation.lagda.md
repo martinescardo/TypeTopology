@@ -1,3 +1,5 @@
+[⇐ Index](../html/TWA.Thesis.index.html)
+
 # Global optimisation
 
 ```agda
@@ -29,7 +31,7 @@ has-global-minimal f = Σ ∘ (is-global-minimal f)
 
 Fin-global-minimal : (n : ℕ) → Fin n → {Y : 𝓤 ̇ }
                  → (_≤_ : Y → Y → 𝓦 ̇ )
-                 → is-linear-order _≤_
+                 → is-linear-preorder _≤_
                  → (f : Fin n → Y)
                  → has-global-minimal _≤_ f
 Fin-global-minimal 1 𝟎 _≤_ (p , _) f = 𝟎 , γ
@@ -57,7 +59,7 @@ Fin-global-minimal (succ (succ n)) x _≤_ l@(p , _) f
 finite-global-minimal : {X : 𝓤 ̇ } {Y : 𝓥  ̇ }
                       → X → finite-linear-order X
                       → (_≤_ : Y → Y → 𝓦 ̇ )
-                      → is-linear-order _≤_
+                      → is-linear-preorder _≤_
                       → (f : X → Y)
                       → has-global-minimal _≤_ f
 finite-global-minimal x (0 , (g , _)) _≤_ l f
@@ -189,3 +191,5 @@ global-opt {𝓤} {𝓥} {𝓦'} {𝓤'} X Y x₁ _≤ⁿ_ a ϵ f ϕ t
   m  : is ϵ global-minimal _≤ⁿ_ (f ∘ g) x'₀
   m  = pr₂ first
 ```
+
+[⇐ Index](../html/TWA.Thesis.index.html)

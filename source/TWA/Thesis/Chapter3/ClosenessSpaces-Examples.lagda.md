@@ -1,3 +1,5 @@
+[⇐ Index](../html/TWA.Thesis.index.html)
+
 # Examples of closeness spaces
 
 ```agda
@@ -30,13 +32,6 @@ open import TWA.Thesis.Chapter2.Vectors
 open import TWA.Thesis.Chapter2.Finite
 open import TWA.Thesis.Chapter3.ClosenessSpaces fe
 open import TWA.Closeness fe hiding (is-ultra; is-closeness)
-
--- MOVE
-pointed-has-a-0-net : (X : ClosenessSpace 𝓤)
-                    → pointed ⟨ X ⟩
-                    → Σ X' ꞉ 𝓦 ̇ , (X' is 0 net-of X)
-pointed-has-a-0-net X x
- = 𝟙 , ((λ _ → x) , (λ _ → ⋆) , λ _ _ ()) , 𝟙-is-finite
 ```
 
 ## Trivial closeness spaces
@@ -404,10 +399,6 @@ minℕ∞-abcdef a b c d e f mab≼e mcd≼f n minabcd＝₁
 ## Vector closeness spaces
 
 ```
-{- ℕ∞-vec-min : (n : ℕ) → Vec ℕ∞ n → ℕ∞
-ℕ∞-vec-min 0 ⟨⟩ = ∞
-ℕ∞-vec-min (succ n) (x :: v) = min x (ℕ∞-vec-min n v) -}
-
 vec-ClosenessSpace : (n : ℕ) (X : Fin n → ClosenessSpace 𝓤)
                    → ClosenessSpace 𝓤
 
@@ -429,6 +420,22 @@ vec-clospace 0 X = (λ _ _ → ∞) , e , i , s , u
 vec-clospace (succ n) X
  = ×-clospace (X 𝟎) (vec-ClosenessSpace n (X ∘ suc))
 
+vec-totally-bounded : (n : ℕ) (X : Fin n → ClosenessSpace 𝓤)
+                    → ((i : Fin n) → totally-bounded (X i) 𝓥)
+                    → totally-bounded (vec-ClosenessSpace n X) 𝓥
+vec-totally-bounded 0 X t ϵ = 𝟙 , ((g , h , η) , 𝟙-is-finite)
+ where
+  g : 𝟙 → vec 0 (⟨_⟩ ∘ X)
+  g _ = ⟨⟩
+  h : vec 0 (⟨_⟩ ∘ X) → 𝟙
+  h _ = ⋆
+  η : (x : vec 0 (⟨_⟩ ∘ X)) → C (vec-ClosenessSpace 0 X) ϵ x ⟨⟩
+  η ⟨⟩ = C-refl (vec-ClosenessSpace 0 X) ϵ ⟨⟩
+vec-totally-bounded (succ n) X t
+ = ×-totally-bounded
+     (X 𝟎) (vec-ClosenessSpace n (X ∘ suc))
+     (t 𝟎) (vec-totally-bounded n (X ∘ suc) (t ∘ suc))
+
 Vec-clospace : (X : ClosenessSpace 𝓤) (n : ℕ)
              → is-closeness-space (Vec ⟨ X ⟩ n)
 Vec-clospace X n = vec-clospace n (λ _ → X)
@@ -436,6 +443,11 @@ Vec-clospace X n = vec-clospace n (λ _ → X)
 Vec-ClosenessSpace : (X : ClosenessSpace 𝓤) (n : ℕ) 
                    → ClosenessSpace 𝓤
 Vec-ClosenessSpace X n = Vec ⟨ X ⟩ n , Vec-clospace X n
+
+Vec-totally-bounded : (X : ClosenessSpace 𝓤) (n : ℕ)
+                    → totally-bounded X 𝓥
+                    → totally-bounded (Vec-ClosenessSpace X n) 𝓥
+Vec-totally-bounded X n t = vec-totally-bounded n (λ _ → X) (λ _ → t)
 ```
 
 ## Least closeness pseudocloseness space
@@ -500,7 +512,7 @@ close-to-close X Y Z f {succ n} v@(y :: ys) ϕʸ g ε = δ , γ
          (C-mono X δ δ₂ (max-≤-upper-bound' δ₂ δ₁) x₁ x₂ Cx₁x₂) n z)
 ```
 
-Subtype closeness spaces
+## Subtype closeness spaces
 
 ```
 ↪-clospace : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X ↪ Y)
@@ -569,7 +581,7 @@ Subtype closeness spaces
  = pr₁ (t ε) , ≃-preserves-nets Y e ε (pr₁ (t ε)) (pr₂ (t ε))
 ```
 
-Discrete sequence closeness spaces
+## Discrete sequence closeness spaces
 
 ```
 decidable-𝟚 : {X : 𝓤 ̇ } → is-decidable X → 𝟚
@@ -782,7 +794,7 @@ C-to-∼ⁿ d = C-to-∼ⁿ' (λ _ → d)
  = ΠF-totally-bounded (λ _ → d) (λ _ → f) (λ _ → x₀)
 ```
 
-Infinitary product of closeness spaces
+## Infinitary product of closeness spaces
 
 ```
 Π-clofun' : (T : ℕ → ClosenessSpace 𝓤)
@@ -1064,3 +1076,5 @@ open import TWA.Thesis.Chapter5.SignedDigit
 𝟛ᴺ×𝟛ᴺ-ClosenessSpace
  = ×-ClosenessSpace 𝟛ᴺ-ClosenessSpace 𝟛ᴺ-ClosenessSpace
 ```
+
+[⇐ Index](../html/TWA.Thesis.index.html)

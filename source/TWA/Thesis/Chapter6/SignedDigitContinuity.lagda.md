@@ -1,3 +1,5 @@
+[⇐ Index](../html/TWA.Thesis.index.html)
+
 # Uniform continuity of signed-digit operations
 
 ```agda
@@ -206,3 +208,5 @@ mul-b-ucontinuous
      (λ x → mul x x)
      (seq-f-ucontinuous²-both mul mul-ucontinuous')
 ```
+
+[⇐ Index](../html/TWA.Thesis.index.html)

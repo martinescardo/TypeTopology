@@ -1,3 +1,5 @@
+[⇐ Index](../html/TWA.Thesis.index.html)
+
 # Structural properties of ternary Boehm encodings
 
 ```agda
@@ -575,3 +577,5 @@ above-downRight : (a : ℤ) → a above (downRight a)
 above-downRight a
  = below-implies-above (downRight a) a (downRight-below a)
 ```
+
+[⇐ Index](../html/TWA.Thesis.index.html)

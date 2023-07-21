@@ -1,3 +1,5 @@
+[⇐ Index](../html/TWA.Thesis.index.html)
+
 # Ternary signed-digit encodings' suitability for search, optimisation and regression
 
 ```agda
@@ -200,3 +202,5 @@ _⤊ (α , β) = α ↑ , β ↑
  , p-ucontinuous-comp 𝟚ᴺ×𝟚ᴺ-ClosenessSpace 𝟛ᴺ×𝟛ᴺ-ClosenessSpace
      _⤊ ⤊-ucontinuous p ϕ
 ```
+
+[⇐ Index](../html/TWA.Thesis.index.html)

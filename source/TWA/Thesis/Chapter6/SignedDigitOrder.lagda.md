@@ -1,3 +1,5 @@
+[⇐ Index](../html/TWA.Thesis.index.html)
+
 # Real-order preserving order on ternary signed-digit encodings
 
 ```agda
@@ -98,9 +100,9 @@ module _ (pt : propositional-truncations-exist) where
 _≤ⁿ𝟛ᴺ_ : 𝟛ᴺ → 𝟛ᴺ → ℕ → 𝓤₀ ̇
 (x ≤ⁿ𝟛ᴺ y) n = integer-approx x n ≤ integer-approx y n
 
-≤ⁿ𝟛ᴺ-is-linear-order
- : (n : ℕ) → is-linear-order (λ x y → (x ≤ⁿ𝟛ᴺ y) n)
-≤ⁿ𝟛ᴺ-is-linear-order n
+≤ⁿ𝟛ᴺ-is-linear-preorder
+ : (n : ℕ) → is-linear-preorder (λ x y → (x ≤ⁿ𝟛ᴺ y) n)
+≤ⁿ𝟛ᴺ-is-linear-preorder n
  = ((λ x → ℤ≤-refl _)
  , (λ x y z → ℤ≤-trans _ _ _)
  , λ x y → ℤ≤-is-prop _ _)
@@ -132,7 +134,7 @@ integer-approx'-ucontinuous (succ ϵ) x y x∼y k
 
 ≤ⁿ𝟛ᴺ-is-approx-order : is-approx-order 𝟛ᴺ-ClosenessSpace _≤ⁿ𝟛ᴺ_
 ≤ⁿ𝟛ᴺ-is-approx-order
- = ≤ⁿ𝟛ᴺ-is-linear-order , ≤ⁿ𝟛ᴺ-is-decidable , ≤ⁿ𝟛ᴺ-closeness
+ = ≤ⁿ𝟛ᴺ-is-linear-preorder , ≤ⁿ𝟛ᴺ-is-decidable , ≤ⁿ𝟛ᴺ-closeness
 
 module _ (pt : propositional-truncations-exist) where
 
@@ -142,3 +144,5 @@ module _ (pt : propositional-truncations-exist) where
   : is-approx-order-for' pt 𝟛ᴺ-ClosenessSpace (_≤𝟛ᴺ_ pt) _≤ⁿ𝟛ᴺ_
  ≤ⁿ𝟛ᴺ-for' x y = ∥∥-rec ∃-is-prop ∣_∣
 ```
+
+[⇐ Index](../html/TWA.Thesis.index.html)

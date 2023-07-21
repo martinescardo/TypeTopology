@@ -1,3 +1,5 @@
+[⇐ Index](../html/TWA.Thesis.index.html)
+
 # Verification of signed-digit operations
 
 ```agda
@@ -647,3 +649,5 @@ mul-realiser α β = M-realiser (zipWith digitMul α (λ _ → β)) ⁻¹
                      (*-is-⊕-homomorphism-r ⟪ β ⟫)
                      (map ⟨_⟩ α) ⁻¹
 ```
+
+[⇐ Index](../html/TWA.Thesis.index.html)

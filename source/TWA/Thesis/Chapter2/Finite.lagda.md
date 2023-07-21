@@ -1,3 +1,5 @@
+[⇐ Index](../html/TWA.Thesis.index.html)
+
 # Finite types
 
 ```agda
@@ -85,3 +87,5 @@ vec-is-finite (succ ϵ) f
 pointed : 𝓤 ̇ → 𝓤 ̇
 pointed X = X
 ```
+
+[⇐ Index](../html/TWA.Thesis.index.html)

@@ -1,3 +1,5 @@
+[⇐ Index](../html/TWA.Thesis.index.html)
+
 # Uniform continuity of sequence functions
 
 ```agda
@@ -38,7 +40,7 @@ seq-f-ucontinuous² {𝓤} {𝓥} {𝓦} {X} {Y} f
  → (x₁ ∼ⁿ x₂) δˣ → (y₁ ∼ⁿ y₂) δʸ → (f x₁ y₁ ∼ⁿ f x₂ y₂) ϵ)
 
 map-ucontinuous' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } 
-               → (f : X → Y) → seq-f-ucontinuous¹ (map f)
+                 → (f : X → Y) → seq-f-ucontinuous¹ (map f)
 map-ucontinuous' f ε = ε , λ α β α∼ⁿβ k k<ε → ap f (α∼ⁿβ k k<ε)
 
 zipWith-ucontinuous' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
@@ -165,7 +167,6 @@ seq-f-ucontinuous¹-to-closeness dˣ dʸ f ϕ ε
  , λ α β Cαβ → ∼ⁿ-to-C dʸ (f α) (f β) ε
                 (pr₂ (ϕ ε) α β (C-to-∼ⁿ dˣ α β (pr₁ (ϕ ε)) Cαβ))
 
-
 seq-f-ucontinuous²-to-closeness
  : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
  → (dˣ : is-discrete X) (dʸ : is-discrete Y) (dᶻ : is-discrete Z)
@@ -195,3 +196,5 @@ seq-f-ucontinuous²-to-closeness dˣ dʸ dᶻ f ϕ ε
   δβ = pr₂ (pr₁ (ϕ ε))
   δ  = max δα δβ
 ```
+
+[⇐ Index](../html/TWA.Thesis.index.html)

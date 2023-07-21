@@ -1,3 +1,5 @@
+[⇐ Index](../html/TWA.Thesis.index.html)
+
 ```agda
 {-# OPTIONS --without-K --exact-split --safe #-}
 
@@ -384,4 +386,4 @@ module Regression-Example2-SearchDistortionFree where
  regressed-function = M ∘ regressed-parameter
 ```
 
-
+[⇐ Index](../html/TWA.Thesis.index.html)

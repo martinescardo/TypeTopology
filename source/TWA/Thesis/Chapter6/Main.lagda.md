@@ -1,3 +1,5 @@
+[⇐ Index](../html/TWA.Thesis.index.html)
+
 # Main
 
 ```agda
@@ -83,3 +85,5 @@ prec = 5
 main : IO Unit
 main = putStrLn (print (test 5) 30)
 ```
+
+[⇐ Index](../html/TWA.Thesis.index.html)

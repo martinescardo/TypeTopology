@@ -1,3 +1,5 @@
+[⇐ Index](../html/TWA.Thesis.index.html)
+
 # Formalisation of the Escardo-Simpson interval object
 
 ```agda
@@ -517,3 +519,5 @@ module basic-interval-object-development {𝓤 : Universe}
  +1/2 = +1 /2
  −1/2 = −1 /2
 ```
+
+[⇐ Index](../html/TWA.Thesis.index.html)

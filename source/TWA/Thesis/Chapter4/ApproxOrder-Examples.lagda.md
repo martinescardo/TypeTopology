@@ -1,3 +1,5 @@
+[⇐ Index](../html/TWA.Thesis.index.html)
+
 # Examples of approximate orders
 
 ```agda
@@ -57,12 +59,12 @@ inclusion-order-is-preorder {𝓤} {𝓥} {𝓦} {X} {Y}
   p : is-prop-valued (inclusion-order f _≤_)
   p x y   = p' (f x) (f y)
 
-inclusion-order-is-linear-order
+inclusion-order-is-linear-preorder
  : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
  → (_≤_ : Y → Y → 𝓦 ̇)
- → is-linear-order _≤_
- → is-linear-order (inclusion-order f _≤_)
-inclusion-order-is-linear-order {𝓤} {𝓥} {𝓦} {X} {Y}
+ → is-linear-preorder _≤_
+ → is-linear-preorder (inclusion-order f _≤_)
+inclusion-order-is-linear-preorder {𝓤} {𝓥} {𝓦} {X} {Y}
  f _≤_ (pre , l') = inclusion-order-is-preorder f _≤_ pre , l
  where
   l : (x y : X) → inclusion-order f _≤_ x y + inclusion-order f _≤_ y x
@@ -186,8 +188,8 @@ _≤Fin_ {succ n} 𝟎 y = 𝟙
 _≤Fin_ {succ n} (suc x) 𝟎 = 𝟘
 _≤Fin_ {succ n} (suc x) (suc y) = x ≤Fin y
 
-≤Fin-is-linear-order : {n : ℕ} → is-linear-order (_≤Fin_ {n})
-≤Fin-is-linear-order {n} = (r , t , p) , l
+≤Fin-is-linear-preorder : {n : ℕ} → is-linear-preorder (_≤Fin_ {n})
+≤Fin-is-linear-preorder {n} = (r , t , p) , l
  where
   r : {n : ℕ} → reflexive (_≤Fin_ {n})
   r {succ n} 𝟎 = ⋆
@@ -207,12 +209,12 @@ _≤Fin_ {succ n} (suc x) (suc y) = x ≤Fin y
 finite-order : {F : 𝓤 ̇ } → finite-linear-order F → F → F → 𝓤₀  ̇
 finite-order (n , (g , _)) = inclusion-order g _≤Fin_ 
 
-finite-order-is-linear-order
+finite-order-is-linear-preorder
  : {F : 𝓤 ̇ }
  → (f : finite-linear-order F)
- → is-linear-order (finite-order f)
-finite-order-is-linear-order (n , (g , _))
- = inclusion-order-is-linear-order g _≤Fin_ ≤Fin-is-linear-order
+ → is-linear-preorder (finite-order f)
+finite-order-is-linear-preorder (n , (g , _))
+ = inclusion-order-is-linear-preorder g _≤Fin_ ≤Fin-is-linear-preorder
 
 _<Fin_ : {n : ℕ} → Fin n → Fin n → 𝓤₀ ̇
 _<Fin_ {succ n} 𝟎 𝟎 = 𝟘
@@ -338,7 +340,7 @@ lexicorder-linearity-implies-LPO
  : {X : 𝓤 ̇ }
  → (f@(n , _) : finite-linear-order X)
  → n > 1
- → is-linear-order (discrete-lexicorder
+ → is-linear-preorder (discrete-lexicorder
                      (finite-is-discrete f) (finite-strict-order f))
  → LPO
 lexicorder-linearity-implies-LPO
@@ -603,3 +605,5 @@ module _ (pt : propositional-truncations-exist) where
      ℕ→𝟚-approx-lexicorder
      ℕ→𝟚-approx-lexicorder-is-approx-order
 ```
+
+[⇐ Index](../html/TWA.Thesis.index.html)

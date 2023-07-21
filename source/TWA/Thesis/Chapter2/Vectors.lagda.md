@@ -1,3 +1,5 @@
+[⇐ Index](../html/TWA.Thesis.index.html)
+
 # Vectors
 
 ```agda
@@ -41,3 +43,5 @@ Seq-to-Vec-∼ (succ n) α β 0 i<n = refl
 Seq-to-Vec-∼ (succ n) α β (succ i) i<n
  = Seq-to-Vec-∼ n α (β ∘ succ) i i<n
 ```
+
+[⇐ Index](../html/TWA.Thesis.index.html)

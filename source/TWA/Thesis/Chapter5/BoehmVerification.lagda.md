@@ -1,3 +1,5 @@
+[⇐ Index](../html/TWA.Thesis.index.html)
+
 # Ternary Boehm encodings of real numbers
 
 ```agda
@@ -630,9 +632,9 @@ CI2-prop (k , i) χ
  = ×-is-prop (below-is-prop (χ 0) k)
      (Π-is-prop (fe _ _) (λ n → below-is-prop (χ (succ n)) (χ n)))
 
-CompactInterval3-ternary
+CompactInterval2-ternary
  : ((k , i) : ℤ × ℤ) → CompactInterval2 (k , i) ≃ 𝟛ᴺ
-CompactInterval3-ternary (k , i)
+CompactInterval2-ternary (k , i)
  = qinveq (CI2-to-𝟛ᴺ (k , i)) (𝟛ᴺ-to-CI2 (k , i) , η , μ)
  where
   η : (𝟛ᴺ-to-CI2 (k , i)) ∘ (CI2-to-𝟛ᴺ (k , i)) ∼ id
@@ -792,9 +794,9 @@ CI3-to-𝟚ᴺ (k , i) (χ , b₀ , bₛ) (succ n)
   bₛ : (n : ℕ) → χ (succ n) split-below χ n
   bₛ n = 𝟚-to-down-is-below (α (succ n)) (χ n)
 
-CompactInterval2-cantor
+CompactInterval3-cantor
  : ((k , i) : ℤ × ℤ) → CompactInterval3 (k , i) ≃ 𝟚ᴺ
-CompactInterval2-cantor (k , i)
+CompactInterval3-cantor (k , i)
  = qinveq (CI3-to-𝟚ᴺ (k , i)) (𝟚ᴺ-to-CI3 (k , i) , η , μ)
  where
   η : (𝟚ᴺ-to-CI3 (k , i)) ∘ (CI3-to-𝟚ᴺ (k , i)) ∼ id
@@ -842,3 +844,5 @@ CompactInterval2-cantor (k , i)
      = 𝟘-elim (downLeft≠downRight (pr₁ α' n) (pr₁ α' n) refl
          (ap (λ a → 𝟚-to-down a (pr₁ α' n)) (₀' ⁻¹) ∙ dR))
 ```
+
+[⇐ Index](../html/TWA.Thesis.index.html)

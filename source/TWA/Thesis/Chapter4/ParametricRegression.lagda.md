@@ -1,3 +1,5 @@
+[⇐ Index](../html/TWA.Thesis.index.html)
+
 # Parametric Regression
 
 ```agda
@@ -61,7 +63,7 @@ invert-approx-order-is-approx-order
    is-approx-order X _≥ⁿ_
 invert-approx-order-is-approx-order X _≤ⁿ_ a'@(_ , d' , c') = l , d , c
  where
-  l : (ϵ : ℕ) → is-linear-order (λ x y → invert-rel' _≤ⁿ_ x y ϵ)
+  l : (ϵ : ℕ) → is-linear-preorder (λ x y → invert-rel' _≤ⁿ_ x y ϵ)
   l ϵ = (≤ⁿ-refl X a' ϵ
       , (λ x y z x≤y y≤z → ≤ⁿ-trans X a' ϵ z y x y≤z x≤y)
       , (λ x y → ≤ⁿ-prop X a' ϵ y x))
@@ -262,3 +264,5 @@ perfect-convergence X Y S ε M ϕᴹ k
  = s-imperfect-convergence X Y S ε M ϕᴹ id k (C'-refl Y ε 𝓞)
  where 𝓞 = M k
 ```
+
+[⇐ Index](../html/TWA.Thesis.index.html)

@@ -1,3 +1,5 @@
+[⇐ Index](../html/TWA.Thesis.index.html)
+
 # Orders
 
 ```agda
@@ -27,8 +29,8 @@ is-preorder _≤_ = reflexive _≤_
 linear :  {X : 𝓤  ̇ } → (X → X → 𝓦  ̇ ) → 𝓤 ⊔ 𝓦  ̇
 linear {_} {_} {X} _≤_ = (x y : X) → (x ≤ y) + (y ≤ x)
 
-is-linear-order : {X : 𝓤  ̇ } → (X → X → 𝓦  ̇ ) → 𝓤 ⊔ 𝓦  ̇
-is-linear-order {_} {_} {X} _≤_ = is-preorder _≤_ × linear _≤_
+is-linear-preorder : {X : 𝓤  ̇ } → (X → X → 𝓦  ̇ ) → 𝓤 ⊔ 𝓦  ̇
+is-linear-preorder {_} {_} {X} _≤_ = is-preorder _≤_ × linear _≤_
 
 is-strict-order : {X : 𝓤  ̇ } → (X → X → 𝓦  ̇ ) → 𝓤 ⊔ 𝓦  ̇ 
 is-strict-order {_} {_} {X} _<_
@@ -62,7 +64,7 @@ is-approx-order : (X : ClosenessSpace 𝓤)
                 → (_≤ⁿ_ : ⟨ X ⟩ → ⟨ X ⟩ → ℕ → 𝓦'  ̇ )
                 → 𝓤 ⊔ 𝓦'  ̇
 is-approx-order X _≤ⁿ_
- = ((ϵ : ℕ) → is-linear-order (λ x y → (x ≤ⁿ y) ϵ))
+ = ((ϵ : ℕ) → is-linear-preorder (λ x y → (x ≤ⁿ y) ϵ))
  × ((ϵ : ℕ) (x y : ⟨ X ⟩) → is-decidable ((x ≤ⁿ y) ϵ))
  × ((ϵ : ℕ) (x y : ⟨ X ⟩) →   C X ϵ x y → (x ≤ⁿ y) ϵ)
  
@@ -86,13 +88,13 @@ is-approx-order X _≤ⁿ_
 
 ≤-pre⟨_⟩
  : {X : 𝓤 ̇ } {_≤_ : X → X → 𝓦 ̇ }
- → is-linear-order _≤_
+ → is-linear-preorder _≤_
  → is-preorder _≤_
 ≤-pre⟨ pre , l ⟩ = pre
 
 ≤-linear⟨_⟩
  : {X : 𝓤 ̇ } {_≤_ : X → X → 𝓦 ̇ }
- → is-linear-order _≤_
+ → is-linear-preorder _≤_
  → (x y : X) → (x ≤ y) + (y ≤ x)
 ≤-linear⟨ pre , l ⟩ = l
 
@@ -135,7 +137,7 @@ is-approx-order X _≤ⁿ_
  : (X : ClosenessSpace 𝓤)
  → {_≤ⁿ_ : ⟨ X ⟩ → ⟨ X ⟩ → ℕ → 𝓦'  ̇ }
  → is-approx-order X _≤ⁿ_
- → (ϵ : ℕ) → is-linear-order (λ x y → (x ≤ⁿ y) ϵ)
+ → (ϵ : ℕ) → is-linear-preorder (λ x y → (x ≤ⁿ y) ϵ)
 ≤ⁿ-all-linear X (l , d , c) = l
 
 ≤ⁿ-refl
@@ -309,3 +311,5 @@ approx-order-f-uc-predicate-r X Y f ϕ _≤ⁿ_ a ϵ y
      (λ x → (y ≤ⁿ x) ϵ , ≤ⁿ-prop Y a ϵ y x)
      (approx-order-ucontinuous-r Y a ϵ y)
 ```
+
+[⇐ Index](../html/TWA.Thesis.index.html)

@@ -1,3 +1,5 @@
+[⇐ Index](../html/TWA.Thesis.index.html)
+
 # Closeness spaces
 
 ```agda
@@ -399,6 +401,14 @@ X' is ϵ net-of X
  , ((x : ⟨ X ⟩) → C X ϵ x (g (h x))))
  × finite-linear-order X'
 
+pointed-has-a-0-net : (X : ClosenessSpace 𝓤)
+                    → pointed ⟨ X ⟩
+                    → Σ X' ꞉ 𝓦 ̇ , (X' is 0 net-of X)
+pointed-has-a-0-net X x
+ = 𝟙 , ((λ _ → x) , (λ _ → ⋆) , λ _ _ ()) , 𝟙-is-finite
+
 totally-bounded : ClosenessSpace 𝓤 → (𝓤' : Universe) → 𝓤 ⊔ (𝓤' ⁺)  ̇ 
 totally-bounded X 𝓤' = (ϵ : ℕ) → Σ X' ꞉ 𝓤' ̇ , X' is ϵ net-of X
 ```
+
+[⇐ Index](../html/TWA.Thesis.index.html)
