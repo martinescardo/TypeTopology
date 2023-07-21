@@ -242,7 +242,7 @@ _≤_ : 𝕆 → 𝕆 → 𝓤⁺ ̇
 
 \end{code}
 
-We briefly to define root and forest "destructors" for the type 𝕆:
+We pause to define root and forest "destructors" for the type 𝕆:
 
 \begin{code}
 
