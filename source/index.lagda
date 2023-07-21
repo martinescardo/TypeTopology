@@ -121,50 +121,51 @@ module index where
 
 import BinarySystems.index
 import CantorSchroederBernstein.index
-import Categories.index               -- by Jon Sterling
-import Circle.index                   -- by Tom de Jong
+import Categories.index
+import Circle.index
 import CoNaturals.index
-import ContinuityAxiom.index          -- by Martin Escardo and Chuangjie Xu
-import Coslice.index                  -- by Jon Sterling
-import CrossedModules.index           -- by Ettore Aldrovandi and Keri D'Angelo
-import DedekindReals.index            -- by Andrew Sneap
-import DomainTheory.index             -- by Tom de Jong
+import ContinuityAxiom.index
+import Coslice.index
+import CrossedModules.index
+import DedekindReals.index
+import DomainTheory.index
 import Dominance.index
-import Duploids.index                 -- by Jon Sterling
-import Dyadics.index                  -- by Andrew Sneap
-import DyadicsInductive.index         -- by Tom de Jong
+import Duploids.index
+import Dyadics.index
+import DyadicsInductive.index
 import EffectfulForcing.index
 import Factorial.index
-import Field.index                    -- by Andrew Sneap
+import Field.index
 import Fin.index
-import Games.index                    -- by Martin Escardo and Paulo Oliva
-import Groups.index                   -- originally by Martin Escardo with many additions
-                                      -- by Ettore Aldrovandi and Keri D'Angelo
+import Games.index
+import Groups.index
 import InjectiveTypes.index
-import Integers.index                 -- by Andrew Sneap
-import Iterative.index                -- by Martin Escardo and Tom de Jong
+import Integers.index
+import Iterative.index
 import Lifting.index
-import Locales.index                  -- by Ayberk Tosun
-import MGS.index                      -- Modular version of https://github.com/martinescardo/HoTT-UF-Agda-Lecture-Notes
+import Locales.index
+import MGS.index
 import MLTT.index
-import MetricSpaces.index             -- by Andrew Sneap
-import Modal.index                    -- by Jon Sterling
+import MetricSpaces.index
+import Modal.index
 import Naturals.index
 import Notation.index
-import NotionsOfDecidability.index    -- by Tom de Jong and Martin Escardo
+import NotionsOfDecidability.index
 import Ordinals.index
-import PCF.index                      -- by Tom de Jong and Brendan Hart
-import Posets.index                   -- by Tom de Jong and Martin Escardo
+import PCF.index
+import Posets.index
 import Relations.index
-import Rationals.index                -- by Andrew Sneap
+import Rationals.index
 import Slice.index
-import TWA.index                      -- by Todd Waugh Ambridge
+import TWA.index
 import Taboos.index
 import TypeTopology.index
 import UF.index
 import Various.index
 
 \end{code}
+
+TODO. Explain what each of the above does here.
 
 The above includes only the --safe modules. A list of all modules is here:
 
