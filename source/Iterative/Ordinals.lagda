@@ -1081,8 +1081,7 @@ Ord-to-𝕆-behaviour α = to-subtype-＝
 
 We now establish the following commutative square, which shows that
 the map "- ↓ x" on HoTT-book ordinals corresponds to the map
-"𝕆-forest - x" on iterative ordinals along the correspondence
-𝕆-to-Ord.
+"𝕆-forest - x" on iterative ordinals along 𝕆-to-Ord.
 
 We perform a nested induction, first on 𝕆 and then on the ordinal
 𝕆-to-Ord α.
@@ -1221,8 +1220,8 @@ Ordinals-≃ = Ord-to-𝕆 , Ord-to-𝕆-is-equiv
 
 \end{code}
 
-But more than this is true: the types 𝓞 (HoTT-book-ordinal of
-iterative ordinals) and OO 𝓤 (HoTT-book-ordinal of HoTT-book-ordinals)
+But more than this is true: the types 𝓞 (HoTT-book ordinal of
+iterative ordinals) and OO 𝓤 (HoTT-book ordinal of HoTT-book ordinals)
 are isomorphic as HoTT-book ordinals.
 
 It is easy to see that 𝕆-to-Ord reflects order:
