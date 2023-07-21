@@ -9,6 +9,7 @@ open import UF.Logic
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.EquivalenceExamples
+open import UF.Base
 
 module Locales.ClassificationOfScottOpens
         (𝓤  : Universe)
@@ -30,6 +31,7 @@ open import DomainTheory.Basics.Miscelanea pt fe 𝓤
 open import Lifting.Lifting 𝓤
 open import UF.PropTrunc
 open import Slice.Family
+open import UF.Equiv
 open PropositionalTruncation pt
 
 \end{code}
@@ -154,16 +156,36 @@ module _ {𝓓 : DCPO⊥ {𝓤 ⁺} {𝓤}} where
              (underlying-order (𝕊 ⁻))
              (to-𝕊-map₀ P (⋁ ((I , α) , δ)))
              (to-𝕊-map₀ P ∘ α)
-       †₁ Q φ q =
+       †₁ 𝒬@(Q , (h , p)) φ q =
         ∥∥-rec (sethood (𝕊 ⁻)) †₂ (ι ((I , α) , δ) q)
          where
           †₂ : Σ i ꞉ I , P (α i) holds
-             → to-𝕊-map₀ P (⋁ ((I , α) , δ)) ＝ Q
+             → to-𝕊-map₀ P (⋁ ((I , α) , δ)) ＝ 𝒬
           †₂ (i , r) =
            to-subtype-＝
             (λ _ → ×-is-prop (Π-is-prop fe (λ _ → 𝟙-is-prop)) (being-prop-is-prop fe))
-            (P (⋁ ((I , α) , δ)) holds ＝⟨ {!!} ⟩
-             P (α i) holds             ＝⟨ {!φ i ?!} ⟩
-             Q .pr₁                    ∎)
+            (P (⋁ ((I , α) , δ)) holds ＝⟨ pe (holds-is-prop _) p (λ _ → Q-holds) (λ _ → pr₁ ♣) ⟩
+            Q                         ∎)
+              where
+               upper : (α i ⊑⟨ 𝓓 ⁻ ⟩ₚ (⋁ ((I , α) , δ))) holds
+               upper = sup-is-upperbound (underlying-order (𝓓 ⁻)) u i
+
+               ρ : is-prop (P (α i) holds)
+               ρ = holds-is-prop (P (α i))
+
+               ♣ : is-singleton (P (⋁ ((I , α) , δ)) holds)
+               ♣ = pr₂ the-singletons-are-the-inhabited-propositions (holds-is-prop _ , ∣ υ (α i) (⋁ ((I , α) , δ)) r upper ∣)
+
+               ♠ : P (⋁ ((I , α) , δ)) holds ≃ 𝟙 {𝓤}
+               ♠ = pr₁ singletons-are-equiv-to-𝟙 ♣
+
+               bar : P (α i) holds , ((λ _ → ⋆) , holds-is-prop (P (α i))) ＝ 𝒬
+               bar = φ i r
+
+               foo : 𝒬 .pr₁ ＝ P (α i) .pr₁
+               foo = pr₁ (from-Σ-＝ bar) ⁻¹
+
+               Q-holds : Q
+               Q-holds = transport id (foo ⁻¹) r
 
 \end{code}
