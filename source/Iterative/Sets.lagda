@@ -416,13 +416,6 @@ Here are two characterizations of the membership relation:
           (ϕ x)
           A
 
-\end{code}
-
-The above says that 𝕍-ssup X ϕ e is the union of the family ϕ of
-iterative sets.
-
-\begin{code}
-
 ∈-behaviour' : (A B : 𝕍) → A ∈ B ≃ (Σ x ꞉ 𝕍-root B , 𝕍-forest B x ＝ A)
 ∈-behaviour' A B =
  transport
