@@ -150,7 +150,7 @@ right-is-not-smaller α (inr ⋆) l = 𝟘-elim l
 Added 3rd May 2022. Sums of ordinals indexed by ordinals don't always
 exist. See the module OrdinalsShulmanTaboo. They do exist for
 trichotomous and cotransitive ordinals. See the module
-OrdinalsWellOrderArithmetic. Notice that trichotomy implies
+Ordinals.WellOrderArithmetic. Notice that trichotomy implies
 cotransitivity. See the module OrdinalNotions. Both trichotomy and
 cotransitivity are implied by excluded middle.
 

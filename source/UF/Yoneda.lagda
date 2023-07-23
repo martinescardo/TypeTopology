@@ -390,7 +390,8 @@ Here is another proof, from the MGS'2019 lecture notes
 \begin{code}
 
 Yoneda-Theorem-forth' : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (x : X) (η : Nat (Id x) A)
-                      → ∃! A → is-fiberwise-equiv η
+                      → ∃! A
+                      → is-fiberwise-equiv η
 Yoneda-Theorem-forth' {𝓤} {𝓥} {X} A x η u = γ
  where
   g : singleton-type x → Σ A

@@ -258,6 +258,6 @@ selections b@(p , A) (succ k) with wins (opponent p) A | Move-decidable b
 
 
 p : Path (Xt tic-tac-toe)
-p = J-sequence (selections board₀ 9) (q tic-tac-toe)
+p = sequenceᴶ (selections board₀ 9) (q tic-tac-toe)
 
 \end{code}

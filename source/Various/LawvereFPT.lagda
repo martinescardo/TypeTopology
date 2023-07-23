@@ -573,13 +573,13 @@ module GeneralizedCoquand where
         → 𝟘
  Lemma₀ {𝓤} A T S ρ σ η = γ
   where
-   open import MLTT.W
+   open import W.Type
 
    𝕎 : 𝓤 ̇
    𝕎 = W A T
 
    α : 𝕎 → (𝕎 → 𝓤 ̇ )
-   α (sup _ φ) = fiber φ
+   α (ssup _ φ) = fiber φ
 
    module _ (X : 𝓤 ̇ ) where
 
@@ -587,7 +587,7 @@ module GeneralizedCoquand where
      H w = α w w → X
 
      R : 𝕎
-     R = sup (S (Σ H)) (pr₁ ∘ ρ)
+     R = ssup (S (Σ H)) (pr₁ ∘ ρ)
 
      B : 𝓤 ̇
      B = α R R
@@ -729,7 +729,7 @@ Further generalization, where we intend to use P = is-set.
 
 \begin{code}
 
-open import MLTT.W
+open import W.Type
 
 module Coquand-further-generalized (𝓤 𝓥 : Universe)
          (P : 𝓤 ̇ → 𝓥 ̇ )
@@ -761,7 +761,7 @@ module Coquand-further-generalized (𝓤 𝓥 : Universe)
     𝕎 = W A T
 
     α : 𝕎 → (𝕎 → 𝓤 ̇ )
-    α (sup _ φ) = fiber φ
+    α (ssup _ φ) = fiber φ
 
     module _ (X : 𝓤 ̇ ) (X-is-P : P X) where
 
@@ -774,7 +774,7 @@ module Coquand-further-generalized (𝓤 𝓥 : Universe)
             (λ w → P-exponential-ideal X (α w w) X-is-P)
 
       R : 𝕎
-      R = sup (S (Σ H) p) (pr₁ ∘ ρ p)
+      R = ssup (S (Σ H) p) (pr₁ ∘ ρ p)
 
       B : 𝓤 ̇
       B = α R R
@@ -857,7 +857,7 @@ extensionality:
 
 \begin{code}
 
-open import MLTT.W-Properties
+open import W.Properties
 
 silly-theorem : funext 𝓤 𝓤 → ¬ (Σ A ꞉ 𝓤 ̇ , is-set A × (hSet 𝓤 ≃ A))
 silly-theorem {𝓤} fe (A , A-is-set , e) =
@@ -868,7 +868,7 @@ silly-theorem {𝓤} fe (A , A-is-set , e) =
   𝟘-is-set
   (λ X Y X-is-set → Π-is-set fe (λ _ → X-is-set))
   (λ X Y → Σ-is-set)
-  (λ X X-is-set → W-is-set fe)
+  (λ X X-is-set → W-is-set X X-is-set fe)
   ((A , A-is-set) , e)
 
 \end{code}
@@ -888,7 +888,7 @@ sillier-theorem {𝓤} fe (A , A-is-prop , e) =
   𝟘-is-prop
   (λ X Y X-is-prop → Π-is-prop fe (λ _ → X-is-prop))
   (λ X Y → Σ-is-prop)
-  (λ X X-is-set → W-is-prop fe)
+  (λ X X-is-set → W-is-prop X X-is-set fe)
   ((A , A-is-prop) , e)
 
 \end{code}

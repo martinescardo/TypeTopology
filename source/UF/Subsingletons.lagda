@@ -658,12 +658,17 @@ The type of truth values.
 _holds : Ω 𝓤 → 𝓤 ̇
 (P , i) holds = P
 
-
 holds-is-prop : (p : Ω 𝓤) → is-prop (p holds)
 holds-is-prop (P , i) = i
 
 ⊥Ω ⊤Ω : Ω 𝓤
 ⊥Ω = 𝟘 , 𝟘-is-prop   -- false
 ⊤Ω = 𝟙 , 𝟙-is-prop   -- true
+
+⊥Ω-doesnt-hold : ¬ (⊥Ω {𝓤} holds)
+⊥Ω-doesnt-hold = 𝟘-elim
+
+⊤Ω-holds : ⊤Ω {𝓤} holds
+⊤Ω-holds = ⋆
 
 \end{code}

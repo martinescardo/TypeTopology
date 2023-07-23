@@ -13,6 +13,7 @@ open import UF.PropTrunc
 open import UF.FunExt
 open import UF.Size
 open import UF.PropTrunc
+open import Slice.Family
 open import MLTT.List hiding ([_])
 
 module Locales.BooleanAlgebra

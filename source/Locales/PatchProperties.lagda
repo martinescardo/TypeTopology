@@ -13,6 +13,7 @@ open import UF.FunExt
 open import UF.Univalence
 open import UF.UA-FunExt
 open import UF.EquivalenceExamples
+open import Slice.Family
 open import MLTT.List hiding ([_])
 
 \end{code}

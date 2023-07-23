@@ -16,6 +16,7 @@ module Locales.AdjointFunctorTheoremForFrames
 
 open import Locales.Frame pt fe
 open import Locales.GaloisConnection pt fe
+open import Slice.Family
 open import UF.Subsingletons
 open import UF.Logic
 

@@ -24,6 +24,7 @@ module Locales.Frame
 open import UF.Subsingletons
 open import UF.Logic
 open import UF.Subsingletons-FunExt
+open import Slice.Family
 
 open AllCombinators pt fe
 
@@ -31,47 +32,11 @@ open AllCombinators pt fe
 
 \section{Preliminaries}
 
-By Fam_𝓤(A), we denote the type of families on type A with index types
-living in universe 𝓤.
-
 \begin{code}
 
 private
   variable
     𝓤′ 𝓥′ 𝓦′ 𝓤′′ 𝓥′′ : Universe
-
-Fam : (𝓤 : Universe) → 𝓥 ̇ → 𝓤 ⁺ ⊔ 𝓥 ̇
-Fam 𝓤 A = Σ I ꞉ (𝓤 ̇ ), (I → A)
-
-fmap-syntax : {A : 𝓤 ̇ } {B : 𝓥 ̇ }
-            → (A → B) → Fam 𝓦 A → Fam 𝓦 B
-fmap-syntax h (I , f) = I , h ∘ f
-
-infix 2 fmap-syntax
-
-syntax fmap-syntax (λ x → e) U = ⁅ e ∣ x ε U ⁆
-
-compr-syntax : {A : 𝓤 ̇ } (I : 𝓦 ̇ )→ (I → A) → Fam 𝓦 A
-compr-syntax I f = I , f
-
-infix 2 compr-syntax
-
-syntax compr-syntax I (λ x → e) = ⁅ e ∣ x ∶ I ⁆
-
-\end{code}
-
-We define two projections for families: (1) for the index type,
-and (2) for the enumeration function.
-
-\begin{code}
-
-index : {A : 𝓤 ̇ } → Fam 𝓥 A → 𝓥 ̇
-index (I , _) = I
-
-_[_] : {A : 𝓤 ̇ } → (U : Fam 𝓥 A) → index U → A
-(_ , f) [ i ] = f i
-
-infix 9 _[_]
 
 \end{code}
 

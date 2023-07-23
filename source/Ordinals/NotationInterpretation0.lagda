@@ -194,7 +194,7 @@ is if excluded middle holds.
    I n = comparison₀₂ em (b n)
 
    II : (n : ℕ) → extension (λ i → ⟦ b i ⟧₂) (ℕ-to-ℕ∞ n) ＝ ⟦ b n ⟧₂
-   II n = eqtoidₒ (ua 𝓤₀) fe' _ _ (↗-property (λ i → ⟦ b i ⟧₂) (embedding-ℕ-to-ℕ∞ fe') n)
+   II n = ↗-property (ua 𝓤₀) (λ i → ⟦ b i ⟧₂) (embedding-ℕ-to-ℕ∞ fe') n
 
    III : (n : ℕ) → ⟦ b n ⟧₀ ⊴ extension (λ i → ⟦ b i ⟧₂) (ℕ-to-ℕ∞ n)
    III n = transport (⟦_⟧₀ (b n) ⊴_) ((II n)⁻¹) (I n)
