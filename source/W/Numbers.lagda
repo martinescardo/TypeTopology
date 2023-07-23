@@ -198,7 +198,6 @@ The type of natural numbers is embedded into our type of numbers.
   ℕ-to-𝓝-is-embedding : is-embedding ℕ-to-𝓝
   ℕ-to-𝓝-is-embedding = lc-maps-into-sets-are-embeddings ℕ-to-𝓝 ℕ-to-𝓝-lc 𝓝-is-set
 
-
   Succ⁺-Pred⁺ : (n⁺ : 𝓝⁺) → Succ⁺ (Pred⁺ n⁺) ＝ n⁺
   Succ⁺-Pred⁺ (n , pos) = to-subtype-＝ being-positive-is-prop I
    where
@@ -235,6 +234,9 @@ Our numbers "count" the number of elements of certain types.
  𝓕𝓲𝓷 (ssup p ns) = p holds + (Σ h ꞉ p holds , 𝓕𝓲𝓷 (ns h))
 
 \end{code}
+
+TODO. I think there is a better such function that does the same job,
+in the sense of being weaker.
 
 The map Fin : ℕ → 𝓤₀ factors as ℕ-to-𝓝 : ℕ → 𝓝 followed
 by 𝓕𝓲𝓷 : 𝓝 → 𝓥.
