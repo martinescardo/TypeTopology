@@ -382,3 +382,5 @@ So if excluded middle holds then ℕ-to-𝓝 is a surjection and the types ℕ
 and 𝓝 are equivalent.
 
 TODO. It's worth saying this in Agda as well. Next time.
+
+TODO. Show that 𝓝 is an ordinal. Requires more work.
