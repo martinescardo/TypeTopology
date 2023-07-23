@@ -665,4 +665,10 @@ holds-is-prop (P , i) = i
 ⊥Ω = 𝟘 , 𝟘-is-prop   -- false
 ⊤Ω = 𝟙 , 𝟙-is-prop   -- true
 
+⊥Ω-doesnt-hold : ¬ ⊥Ω holds
+⊥Ω-doesnt-hold = 𝟘-elim
+
+⊤Ω-holds : ⊤Ω holds
+⊤Ω-holds = ⋆
+
 \end{code}
