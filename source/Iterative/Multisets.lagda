@@ -98,11 +98,11 @@ definitionally;
 
 𝕄-ssup-root : (X : 𝓤 ̇ ) (φ : X → 𝕄)
             → 𝕄-root (ssup X φ) ＝ X
-𝕄-ssup-root X φ = refl
+𝕄-ssup-root = W-ssup-root
 
 𝕄-ssup-forest : (X : 𝓤 ̇ ) (φ : X → 𝕄)
               → 𝕄-forest (ssup X φ) ＝ φ
-𝕄-ssup-forest X φ = refl
+𝕄-ssup-forest = W-ssup-forest
 
 \end{code}
 
@@ -112,7 +112,7 @@ But the η-law holds only up to an identification:
 
 𝕄-η : (M : 𝕄)
     → ssup (𝕄-root M) (𝕄-forest M) ＝ M
-𝕄-η (ssup _ _) = refl
+𝕄-η = W-η
 
 \end{code}
 
