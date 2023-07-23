@@ -41,8 +41,6 @@ private
  fe' 𝓤 𝓥 = fe {𝓤} {𝓥}
 
 open import Iterative.Multisets 𝓤
-open import Iterative.W-Properties (𝓤 ̇ ) id
-open import MLTT.W
 open import Ordinals.Notions
 open import UF.Base
 open import UF.Embeddings
@@ -52,6 +50,8 @@ open import UF.PairFun
 open import UF.Size
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
+open import W.Type
+open import W.Properties (𝓤 ̇ ) id
 
 \end{code}
 

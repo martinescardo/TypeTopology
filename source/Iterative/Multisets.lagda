@@ -15,8 +15,6 @@ module Iterative.Multisets
         (𝓤 : Universe)
        where
 
-open import Iterative.W-Properties (𝓤 ̇) id
-open import MLTT.W
 open import UF.Base
 open import UF.Equiv
 open import UF.EquivalenceExamples
@@ -25,6 +23,9 @@ open import UF.Size
 open import UF.Subsingletons
 open import UF.UA-FunExt
 open import UF.Univalence
+
+open import W.Type
+open import W.Properties (𝓤 ̇) id
 
 private
  𝓤⁺ : Universe

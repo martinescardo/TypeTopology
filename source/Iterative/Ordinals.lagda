@@ -55,7 +55,6 @@ private
 
 open import Iterative.Multisets 𝓤
 open import Iterative.Sets 𝓤 ua
-open import MLTT.W
 open import Ordinals.Equivalence
 open import Ordinals.Notions
 open import Ordinals.OrdinalOfOrdinals ua
@@ -71,6 +70,7 @@ open import UF.PairFun
 open import UF.Size
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
+open import W.Type
 
 \end{code}
 

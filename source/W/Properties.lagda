@@ -12,9 +12,8 @@ properties in univalent style.
 
 open import MLTT.Spartan
 
-module Iterative.W-Properties (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) where
+module W.Properties (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) where
 
-open import MLTT.W
 open import UF.Base
 open import UF.Equiv
 open import UF.EquivalenceExamples
@@ -22,6 +21,7 @@ open import UF.FunExt
 open import UF.Retracts
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
+open import W.Type
 
 private
  𝕎 = W X A

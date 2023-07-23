@@ -17,7 +17,8 @@ open import UF.EquivalenceExamples
 open import UF.UA-FunExt
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import MLTT.W
+open import W.Type
+
 import UF.PairFun as PairFun
 
 module
@@ -185,8 +186,8 @@ module
 
 \end{code}
 
-TODO: state and prove the naturality of all the monad components, define both 
-algebras for the endofunctor and for the monad, recall the results of Joyal and 
+TODO: state and prove the naturality of all the monad components, define both
+algebras for the endofunctor and for the monad, recall the results of Joyal and
 Moerdijk on monads and algebras with successor, etc.
 
 We can define carrier of the initial lift algebra using a W-type.
@@ -198,4 +199,3 @@ We can define carrier of the initial lift algebra using a W-type.
   ω = W (dominant-prop D) pr₁
 
 \end{code}
- 
