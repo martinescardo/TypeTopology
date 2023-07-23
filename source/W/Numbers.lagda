@@ -26,6 +26,12 @@ open import UF.Subsingletons-FunExt
 open import W.Properties
 open import W.Type
 
+\end{code}
+
+We work with a fixed universe 𝓥.
+
+\begin{code}
+
 module _ {𝓥 : Universe} where
 
  𝓝 : 𝓥 ⁺ ̇
@@ -187,6 +193,12 @@ The type of natural numbers is embedded into our type of numbers.
  ℕ-to-𝓝-lc {succ m} {zero}   e = 𝟘-elim (Succ-is-not-Zero (ℕ-to-𝓝 m) e)
  ℕ-to-𝓝-lc {succ m} {succ n} e = ap succ (ℕ-to-𝓝-lc (Succ-lc e))
 
+\end{code}
+
+We now assume functional and propositional extensionality.
+
+\begin{code}
+
  module _ (fe : Fun-Ext) (pe : Prop-Ext) where
 
   𝓝-is-set : is-set 𝓝
@@ -287,7 +299,13 @@ empty complement.
    I = f (Ω-to-𝓝 p)
 
  Ω-to-𝓝-lc : left-cancellable Ω-to-𝓝
- Ω-to-𝓝-lc {p} {q} e = pr₁ (from-𝓝-＝ e)
+ Ω-to-𝓝-lc e = pr₁ (from-𝓝-＝ e)
+
+\end{code}
+
+We now assume functional and propositional extensionality.
+
+\begin{code}
 
  module _ (fe : Fun-Ext) (pe : Prop-Ext) where
 
@@ -308,6 +326,12 @@ empty complement.
                                        (p holds)
                                        (holds-is-prop p)
                                        h)⁻¹)))
+
+\end{code}
+
+We now further assume that propositional truncations exist.
+
+\begin{code}
 
   module _ (pt : propositional-truncations-exist) where
 
@@ -383,6 +407,7 @@ which is different from ℕ-to-𝓝 n for every n : ℕ.
 So if excluded middle holds then ℕ-to-𝓝 is a surjection and the types ℕ
 and 𝓝 are equivalent.
 
-TODO. It's worth saying this in Agda as well. Next time.
+TODO. It's worth saying this in Agda as well. Easy. We will do it next
+time.
 
-TODO. Show that 𝓝 is an ordinal. Requires more work.
+TODO. Show that 𝓝 is an ordinal. This requires more work.
