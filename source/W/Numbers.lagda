@@ -263,7 +263,8 @@ by 𝓕𝓲𝓷 : 𝓝 → 𝓥.
 
 \end{code}
 
-Although we can't say that ℕ-to-𝓝 n is a surjection, it has empty complement.
+Although we can't say that ℕ-to-𝓝 n is a surjection, its image has
+empty complement.
 
 \begin{code}
 
