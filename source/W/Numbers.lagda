@@ -287,7 +287,10 @@ empty complement.
  module _ (fe : Fun-Ext) (pe : Prop-Ext) where
 
   Ω-to-𝓝-is-embedding : is-embedding Ω-to-𝓝
-  Ω-to-𝓝-is-embedding = lc-maps-into-sets-are-embeddings Ω-to-𝓝 Ω-to-𝓝-lc (𝓝-is-set fe pe)
+  Ω-to-𝓝-is-embedding = lc-maps-into-sets-are-embeddings
+                          Ω-to-𝓝
+                          Ω-to-𝓝-lc
+                          (𝓝-is-set fe pe)
 
   lc-map-from-Ω-to-ℕ-gives-EM : (Σ f ꞉ (Ω 𝓥 → ℕ) , left-cancellable f)
                               → (p : Ω 𝓥) → is-decidable (p holds)
