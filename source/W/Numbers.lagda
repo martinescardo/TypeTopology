@@ -82,6 +82,17 @@ elements of 𝓝, or, equivalently, as a partial element of 𝓝.
 
 \end{code}
 
+A criterion for equality on 𝓝.
+
+\begin{code}
+
+ to-𝓝-＝ : {p q : Ω 𝓥} {ms : 𝓝 ^ p} {ns : 𝓝 ^ q}
+         → (Σ e ꞉ p ＝ q , (ms ＝ ns ∘ transport _holds e))
+         → Suc p ms ＝ Suc q ns
+ to-𝓝-＝ = to-W-＝ (Ω 𝓥) _holds
+
+\end{code}
+
 The ⊥-ary successor function amounts to the number zero, and the ⊤-ary
 successor function amounts to the ordinary successor function.
 
@@ -176,33 +187,21 @@ The type of natural numbers is embedded into our type of numbers.
   ℕ-to-𝓝-is-embedding : is-embedding ℕ-to-𝓝
   ℕ-to-𝓝-is-embedding = lc-maps-into-sets-are-embeddings ℕ-to-𝓝 ℕ-to-𝓝-lc 𝓝-is-set
 
-\end{code}
 
-A criterion for equality on 𝓝.
-
-\begin{code}
-
- to-𝓝-＝ : {p q : Ω 𝓥} {ms : 𝓝 ^ p} {ns : 𝓝 ^ q}
-         → (Σ e ꞉ p ＝ q , (ms ＝ ns ∘ transport _holds e))
-         → Suc p ms ＝ Suc q ns
- to-𝓝-＝ = to-W-＝ (Ω 𝓥) _holds
-
- Succ⁺-Pred⁺ : Fun-Ext
-             → Prop-Ext
-             → (n⁺ : 𝓝⁺) → Succ⁺ (Pred⁺ n⁺) ＝ n⁺
- Succ⁺-Pred⁺ fe pe (n , pos) = to-subtype-＝ being-positive-is-prop I
-  where
-   I = Succ (Pred n pos)         ＝⟨ refl ⟩
-       Suc ⊤ (λ _ → Pred n pos)  ＝⟨ II ⟩
-       Suc (positive n) (Pred n) ＝⟨ Suc-Pred n ⟩
-       n                         ∎
-    where
-     II = to-𝓝-＝
-           (((true-is-equal-⊤ pe fe
-               (is-positive n)
-               (being-positive-is-prop n)
-               pos)⁻¹) ,
-           dfunext fe (λ h → ap (Pred n) (being-positive-is-prop n _ _)))
+  Succ⁺-Pred⁺ : (n⁺ : 𝓝⁺) → Succ⁺ (Pred⁺ n⁺) ＝ n⁺
+  Succ⁺-Pred⁺ (n , pos) = to-subtype-＝ being-positive-is-prop I
+   where
+    I = Succ (Pred n pos)         ＝⟨ refl ⟩
+        Suc ⊤ (λ _ → Pred n pos)  ＝⟨ II ⟩
+        Suc (positive n) (Pred n) ＝⟨ Suc-Pred n ⟩
+        n                         ∎
+     where
+      II = to-𝓝-＝
+            (((true-is-equal-⊤ pe fe
+                (is-positive n)
+                (being-positive-is-prop n)
+                pos)⁻¹) ,
+            dfunext fe (λ h → ap (Pred n) (being-positive-is-prop n _ _)))
 
 \end{code}
 
@@ -210,10 +209,12 @@ Hence 𝓝⁺ and 𝓝 are equivalent.
 
 \begin{code}
 
- 𝓝⁺-≃-𝓝 : Fun-Ext → Prop-Ext → 𝓝⁺ ≃ 𝓝
- 𝓝⁺-≃-𝓝 fe pe = qinveq Pred⁺ (Succ⁺ , Succ⁺-Pred⁺ fe pe , Pred⁺-Succ⁺)
+  𝓝⁺-≃-𝓝 : 𝓝⁺ ≃ 𝓝
+  𝓝⁺-≃-𝓝 = qinveq Pred⁺ (Succ⁺ , Succ⁺-Pred⁺ , Pred⁺-Succ⁺)
 
 \end{code}
+
+End of the anonymous submodule assuming Fun-Ext and Prop-Ext.
 
 Our numbers "count" the number of elements of certain types.
 
