@@ -371,7 +371,7 @@ which is different from ℕ-to-𝓝 n for every n : ℕ.
                            dfunext fe (λ _ → ap ns (holds-is-prop p _ _)))
 \end{code}
 
-So if excluded middle holds then ℕ-to-𝓝 is a surjection and the type ℕ
+So if excluded middle holds then ℕ-to-𝓝 is a surjection and the types ℕ
 and 𝓝 are equivalent.
 
 TODO. It's worth saying this in Agda as well. Next time.
