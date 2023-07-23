@@ -165,6 +165,9 @@ The type of positive numbers.
  Succ-lc : left-cancellable Succ
  Succ-lc {m} {n} e = ap Pred⁺ I
   where
+   have-e : Succ m ＝ Succ n
+   have-e = e
+
    I : Succ⁺ m ＝ Succ⁺ n
    I = embeddings-are-lc forget-is-positivity forget-is-positivity-is-embedding e
 
