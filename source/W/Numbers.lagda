@@ -147,11 +147,11 @@ The type of positive numbers.
  𝓝⁺ : 𝓥 ⁺ ̇
  𝓝⁺ = Σ n ꞉ 𝓝 , is-positive n
 
- forget-is-positive : 𝓝⁺ → 𝓝
- forget-is-positive = pr₁
+ forget-is-positivity : 𝓝⁺ → 𝓝
+ forget-is-positivity = pr₁
 
- forget-is-positive-is-embedding : is-embedding forget-is-positive
- forget-is-positive-is-embedding = pr₁-is-embedding being-positive-is-prop
+ forget-is-positivity-is-embedding : is-embedding forget-is-positivity
+ forget-is-positivity-is-embedding = pr₁-is-embedding being-positive-is-prop
 
  Pred⁺ : 𝓝⁺ → 𝓝
  Pred⁺ = uncurry Pred
@@ -166,7 +166,7 @@ The type of positive numbers.
  Succ-lc {m} {n} e = ap Pred⁺ I
   where
    I : Succ⁺ m ＝ Succ⁺ n
-   I = embeddings-are-lc forget-is-positive forget-is-positive-is-embedding e
+   I = embeddings-are-lc forget-is-positivity forget-is-positivity-is-embedding e
 
 \end{code}
 
