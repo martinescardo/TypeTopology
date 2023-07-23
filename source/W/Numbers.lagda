@@ -45,10 +45,10 @@ module _ (𝓥 : Universe) where
  being-positive-is-prop (ssup p φ) = holds-is-prop p
 
  Succ-is-positive : (n : 𝓝) → is-positive (Succ n)
- Succ-is-positive n = ⋆
+ Succ-is-positive n = ⊤Ω-holds
 
  Zero-is-not-positive : ¬ is-positive Zero
- Zero-is-not-positive = 𝟘-elim
+ Zero-is-not-positive = ⊥Ω-doesnt-hold
 
  Succ-is-not-Zero : (n : 𝓝) → Succ n ≠ Zero
  Succ-is-not-Zero n e = Zero-is-not-positive
@@ -69,7 +69,7 @@ module _ (𝓥 : Universe) where
  Succ-lc : left-cancellable Succ
  Succ-lc {m} {n} e = ap Pred I
   where
-   I : (Succ m , ⋆) ＝[ 𝓝⁺ ] (Succ n , ⋆)
+   I : (Succ m , Succ-is-positive m) ＝[ 𝓝⁺ ] (Succ n , Succ-is-positive n)
    I = to-subtype-＝ being-positive-is-prop e
 
  ℕ-to-𝓝 : ℕ → 𝓝
