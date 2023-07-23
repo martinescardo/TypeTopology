@@ -2,6 +2,9 @@ Martin Escardo & Tom de Jong, June 2023.
 
 Iterative multisets, iterative sets, and iterative ordinals.
 
+For an exposition of what is done here, see this post:
+https://mathstodon.xyz/@MartinEscardo/110753930251021051
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K --exact-split #-}

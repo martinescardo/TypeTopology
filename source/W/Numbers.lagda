@@ -2,6 +2,9 @@ Martin Escardo, July 2023
 
 A type of numbers used to measure lengths of paths in trees in W-types.
 
+For an exposition of what is done here, see the post 7/6 of this thread:
+https://mathstodon.xyz/@MartinEscardo/110753930251021051
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K --exact-split #-}
