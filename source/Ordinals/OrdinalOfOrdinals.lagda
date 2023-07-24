@@ -25,6 +25,7 @@ open import Ordinals.Notions
 open import Ordinals.Type
 open import Ordinals.Underlying
 open import UF.Base
+open import UF.Embeddings
 open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.FunExt
@@ -46,6 +47,12 @@ The simulations make the ordinals into a poset:
 
 _⊴_ : Ordinal 𝓤 → Ordinal 𝓥 → 𝓤 ⊔ 𝓥 ̇
 α ⊴ β = Σ f ꞉ (⟨ α ⟩ → ⟨ β ⟩) , is-simulation α β f
+
+⊴-gives-↪ : (α : Ordinal 𝓤)
+            (β : Ordinal 𝓥)
+          → α ⊴ β
+          → ⟨ α ⟩ ↪ ⟨ β ⟩
+⊴-gives-↪ α β (f , s) = f , simulations-are-embeddings fe α β f s
 
 ⊴-is-prop-valued : (α : Ordinal 𝓤) (β : Ordinal 𝓥) → is-prop (α ⊴ β)
 ⊴-is-prop-valued {𝓤} {𝓥} α β (f , s) (g , t) =
@@ -221,6 +228,11 @@ segment-⊴ α a = segment-inclusion α a , segment-inclusion-is-simulation α a
   (↓-⊴-lc α a b (transport      (λ - → (α ↓ a) ⊴ -) p (⊴-refl (α ↓ a))))
   (↓-⊴-lc α b a (transport⁻¹ (λ - → (α ↓ b) ⊴ -) p (⊴-refl (α ↓ b))))
 
+↓-is-embedding : (α : Ordinal 𝓤) → is-embedding (α ↓_)
+↓-is-embedding α = lc-maps-into-sets-are-embeddings
+                    (α ↓_)
+                    (↓-lc α _ _)
+                    (the-type-of-ordinals-is-a-set (ua _) fe')
 \end{code}
 
 We are now ready to make the type of ordinals into an ordinal.
@@ -475,6 +487,16 @@ ordinals-in-OO-are-embedded-in-OO {𝓤} α = (λ x → α ↓ x) , i , ↓-pres
  where
   i : is-initial-segment α (OO 𝓤) (λ x → α ↓ x)
   i x β ((u , l) , p) = u , l , ((p ∙ iterated-↓ α x u l)⁻¹)
+
+OO-⊴-next-OO : OO 𝓤 ⊴ OO (𝓤 ⁺)
+OO-⊴-next-OO {𝓤} = ordinals-in-OO-are-embedded-in-OO (OO 𝓤)
+
+ordinals-are-embedded-in-Ordinal : (α : Ordinal 𝓤) → ⟨ α ⟩ ↪ Ordinal 𝓤
+ordinals-are-embedded-in-Ordinal {𝓤} α = ⊴-gives-↪ α (OO 𝓤)
+                                          (ordinals-in-OO-are-embedded-in-OO α)
+
+Ordinal-embedded-in-next-Ordinal : Ordinal 𝓤 ↪ Ordinal (𝓤 ⁺)
+Ordinal-embedded-in-next-Ordinal {𝓤} = ordinals-are-embedded-in-Ordinal (OO 𝓤)
 
 \end{code}
 

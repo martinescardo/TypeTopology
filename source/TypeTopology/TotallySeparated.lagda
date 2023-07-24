@@ -292,8 +292,8 @@ open import UF.ExcludedMiddle
                              → is-totally-separated (Ω 𝓤)
                              → EM 𝓤
 Ω-totally-separated-gives-EM {𝓤} pe fe Ω-is-totally-separated =
-  Ω-separated-gives-EM pe fe
-    (totally-separated-types-are-separated (Ω 𝓤) Ω-is-totally-separated)
+ Ω-separated-gives-EM pe fe
+  (totally-separated-types-are-separated (Ω 𝓤) Ω-is-totally-separated)
 
 \end{code}
 
@@ -514,42 +514,42 @@ totally-separated-gives-totally-separated₂ : funext 𝓤 𝓤₀
                                            → is-totally-separated X
                                            → is-totally-separated₂ X
 totally-separated-gives-totally-separated₂ fe {X} τ φ (x , p) (y , q) = γ
-  where
-   s : eval X x ＝ eval X y
-   s = eval X x ＝⟨ p ⟩
+ where
+  s : eval X x ＝ eval X y
+  s = eval X x  ＝⟨ p ⟩
        φ        ＝⟨ q ⁻¹ ⟩
        eval X y ∎
 
-   t : x ＝ y
-   t = τ (happly s)
+  t : x ＝ y
+  t = τ (happly s)
 
-   r : transport (λ - → eval X - ＝ φ) t p ＝ q
-   r = totally-separated-types-are-sets fe
+  r : transport (λ - → eval X - ＝ φ) t p ＝ q
+  r = totally-separated-types-are-sets fe
        ((X → 𝟚) → 𝟚)
        (Π-is-totally-separated fe (λ p → 𝟚-is-totally-separated))
        (transport (λ - → eval X - ＝ φ) t p)
        q
 
-   γ : (x , p) ＝ (y , q)
-   γ = to-Σ-＝ (t , r)
+  γ : (x , p) ＝ (y , q)
+  γ = to-Σ-＝ (t , r)
 
 totally-separated₂-gives-totally-separated : funext 𝓤 𝓤₀
                                            → {X : 𝓤 ̇ }
                                            → is-totally-separated₂ X
                                            → is-totally-separated X
 totally-separated₂-gives-totally-separated fe {X} i {x} {y} e = ap pr₁ q
-  where
-   φ : (X → 𝟚) → 𝟚
-   φ = eval X x
+ where
+  φ : (X → 𝟚) → 𝟚
+  φ = eval X x
 
-   h : is-prop (fiber (eval X) φ)
-   h = i φ
+  h : is-prop (fiber (eval X) φ)
+  h = i φ
 
-   g : eval X y ＝ φ
-   g = dfunext fe (λ p → (e p)⁻¹)
+  g : eval X y ＝ φ
+  g = dfunext fe (λ p → (e p)⁻¹)
 
-   q : x , refl ＝ y , g
-   q = h (x , refl) (y , g)
+  q : x , refl ＝ y , g
+  q = h (x , refl) (y , g)
 
 \end{code}
 
