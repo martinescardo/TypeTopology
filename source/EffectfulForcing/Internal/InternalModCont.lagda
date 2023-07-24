@@ -72,35 +72,23 @@ maxᵀ-correct : (m n : ℕ) → ⟦ maxᵀ ⟧₀ m n ＝ max₀ m n
 maxᵀ-correct zero     n        = refl
 maxᵀ-correct (succ m) zero     = refl
 maxᵀ-correct (succ m) (succ n) =
- ⟦ maxᵀ ⟧₀ (succ m) (succ n)                                                               ＝⟨ refl ⟩
- rec (λ m₀ f → λ n → ⟦ ifzᵀ ⟧₀ n (succ m₀) (succ (f n))) id (succ m) (succ n)  ＝⟨ refl ⟩
- ⟦ ifzᵀ ⟧₀ (succ n) m (rec {X = ℕ → ℕ} ((λ m₀ f → λ n → ⟦ ifzᵀ ⟧₀ n (succ m₀) (succ (f n)))) id (succ m) (succ n)) ＝⟨ ifzᵀ-correct (succ n) m (rec {X = ℕ → ℕ} ((λ m₀ f → λ n → ⟦ ifzᵀ ⟧₀ n (succ m₀) (succ (f n)))) id (succ m) (succ n)) ⟩
- ifz (succ n) m (succ (⟦ maxᵀ ⟧₀ m (succ n))) ＝⟨ ap (λ - → ifz (succ n) m (succ -)) (maxᵀ-correct m (succ n)) ⟩
- ifz (succ n) m (succ (max₀ m (succ n))) ＝⟨ ap (λ - → ifz (succ n) m (succ -)) (max₀-eq-max₁ m (succ n)) ⟩
- ifz (succ n) m (succ (max₁ m (succ n))) ＝⟨ refl ⟩
- ifz (succ n) m (rec ((λ m₀ f → λ n → ifz n (succ m₀) (succ (f n)))) id (succ m) (succ n))  ＝⟨ refl ⟩
- rec (λ m₀ f → λ n → ifz n (succ m₀) (succ (f n))) id (succ m) (succ n)        ＝⟨ refl ⟩
- max₁ (succ m) (succ n)                                                                    ＝⟨ max₀-eq-max₁ (succ m) (succ n) ⁻¹ ⟩
- max₀ (succ m) (succ n)                                                                    ∎
-
--- maxᵀ-correct (succ m) n =
---  ⟦ maxᵀ ⟧₀ (succ m) n                                                                     ＝⟨ refl ⟩
---  ⟦ ƛ (Rec ((ƛ (ƛ (ƛ (ifzᵀ · ν₀ · Succ (ν₁ · ν₂) · Succ ν₂))))) idᵀ ν₀) ⟧₀ (succ m) n      ＝⟨ refl ⟩
---  rec {X = ℕ → ℕ} ⟦ (ƛ (ƛ (ƛ (ifzᵀ · ν₀ · Succ (ν₁ · ν₂) · Succ ν₂)))) ⟧₀ id (succ m) n   ＝⟨ refl ⟩
---  ⟦ (ƛ (ƛ (ƛ (ifzᵀ · ν₀ · Succ (ν₁ · ν₂) · Succ ν₂)))) ⟧ {!!} {!id!} {!!} n               ＝⟨ {!!} ⟩
---  natrec id (λ m₀ f → λ n → ifz n (succ m₀) (succ (f n))) (succ m) n        ＝⟨ refl ⟩
---  max₁ (succ m) n                                                      ＝⟨ {!!} ⟩
---  max₀ (succ m) n                                                      ∎
+ ⟦ maxᵀ ⟧₀ (succ m) (succ n)                                         ＝⟨ Ⅰ    ⟩
+ ifz (succ n) m (succ (⟦ maxᵀ ⟧₀ m (succ n)))                        ＝⟨ Ⅱ    ⟩
+ ifz (succ n) m (succ (max₀ m (succ n)))                             ＝⟨ Ⅲ    ⟩
+ ifz (succ n) m (succ (max₁ m (succ n)))                             ＝⟨ refl ⟩
+ rec (λ m₀ f n → ifz n (succ m₀) (succ (f n))) id (succ m) (succ n)  ＝⟨ refl ⟩
+ max₁ (succ m) (succ n)                                              ＝⟨ Ⅳ    ⟩
+ max₀ (succ m) (succ n)                                              ∎
+  where
+   Ⅰ = ifzᵀ-correct
+        (succ n)
+        m
+        (rec (λ m₀ f n → ⟦ ifzᵀ ⟧₀ n (succ m₀) (succ (f n))) id (succ m) (succ n))
+   Ⅱ = ap (λ - → ifz (succ n) m (succ -)) (maxᵀ-correct m (succ n))
+   Ⅲ = ap (λ - → ifz (succ n) m (succ -)) (max₀-eq-max₁ m (succ n))
+   Ⅳ = max₀-eq-max₁ (succ m) (succ n) ⁻¹
 
 {--
-
-maxᵀ-correct zero     n = refl
-maxᵀ-correct (succ m) n =
- ⟦ maxᵀ ⟧₀ (succ m) n                    ＝⟨ refl ⟩
- rec (⟦ {!!} ⟧₀ (succ (⟦ maxᵀ ⟧₀ m n))) n (succ m)                     ＝⟨ {!!} ⟩
- ⟦ ifzᵀ ⟧₀ (succ m) (succ (max₀ m n)) n ＝⟨ ifzᵀ-correct n (succ m) (succ (max₀ m n)) ⟩
- ifz n (succ m) (succ (max₀ m n))       ＝⟨ refl ⟩
- max₀ (succ m) n                        ∎
 
 max-question-in-path : {Γ : Cxt}
                      → B-context【 Γ 】(κ ⇒ ι) ⊢ (⌜B⌝ ι (κ ⇒ ι)) ⇒ κ ⇒ ι
