@@ -316,6 +316,9 @@ false-is-equal-⊥ pe fe P i f =
   (pe i 𝟘-is-prop (λ p → 𝟘-elim (f p)) 𝟘-elim ,
    being-prop-is-prop fe _ _)
 
+fails-gives-equal-⊥ : propext 𝓤 → funext 𝓤 𝓤 → (p : Ω 𝓤) → ¬ (p holds) → p ＝ ⊥
+fails-gives-equal-⊥ pe fe (P , i) = false-is-equal-⊥ pe fe P i
+
 not-equal-⊤-gives-equal-⊥ : (fe : Fun-Ext)
                             (pe : propext 𝓤)
                             (p : Ω 𝓤)

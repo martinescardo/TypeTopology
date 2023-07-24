@@ -172,13 +172,16 @@ The type of positive numbers.
  Pred⁺-Succ⁺ n = refl
 
  Succ-lc : left-cancellable Succ
- Succ-lc {m} {n} e = ap Pred⁺ I
+ Succ-lc {m} {n} e = II
   where
    have-e : Succ m ＝ Succ n
    have-e = e
 
    I : Succ⁺ m ＝ Succ⁺ n
    I = embeddings-are-lc forget-positivity forget-positivity-is-embedding e
+
+   II : m ＝ n
+   II = ap Pred⁺ I
 
 \end{code}
 
@@ -249,9 +252,6 @@ Our numbers "count" the number of elements of certain types.
  𝓕𝓲𝓷 (ssup p ns) = p holds + (Σ h ꞉ p holds , 𝓕𝓲𝓷 (ns h))
 
 \end{code}
-
-TODO. I think there is a better such function that does the same job,
-in the sense of being weaker.
 
 The map Fin : ℕ → 𝓤₀ factors as ℕ-to-𝓝 : ℕ → 𝓝 followed
 by 𝓕𝓲𝓷 : 𝓝 → 𝓥.
@@ -325,10 +325,7 @@ We now assume functional and propositional extensionality.
     I : is-decidable (f ⊤ ＝ f p) → is-decidable (p holds)
     I (inl e) = inl (Idtofun (ap _holds (f-lc e)) ⋆)
     I (inr ν) = inr (λ (h : p holds)
-                          → ν (ap f ((true-is-equal-⊤ pe fe
-                                       (p holds)
-                                       (holds-is-prop p)
-                                       h)⁻¹)))
+                          → ν (ap f (holds-gives-equal-⊤ pe fe p h)⁻¹))
 
 \end{code}
 
@@ -379,10 +376,11 @@ which is different from ℕ-to-𝓝 n for every n : ℕ.
        I = f 0
 
        II : ¬ (p holds) → Zero ＝ ssup p ns
-       II h = to-𝓝-＝ ((II₁ ⁻¹) , dfunext fe (λ x → 𝟘-elim x))
+       II ν = to-𝓝-＝ ((II₁ ⁻¹) , dfunext fe (λ x → 𝟘-elim x))
         where
          II₁ : p ＝ ⊥
-         II₁ = false-is-equal-⊥ pe fe (p holds) (holds-is-prop p) h
+         II₁ = fails-gives-equal-⊥ pe fe p ν
+
 
        III : ¬¬ (p holds)
        III h = I (II h)
@@ -391,7 +389,7 @@ which is different from ℕ-to-𝓝 n for every n : ℕ.
        IV h = ψ (ns h) f'
         where
          IV₁ : p ＝ ⊤
-         IV₁ = true-is-equal-⊤ pe fe (p holds) (holds-is-prop p) h
+         IV₁ = holds-gives-equal-⊤ pe fe p h
 
          f' : (n : ℕ) → ℕ-to-𝓝 n ≠ ns h
          f' n e = f (succ n) IV₂
@@ -413,4 +411,5 @@ and 𝓝 are equivalent.
 TODO. It's worth saying this in Agda as well. Easy. We will do it next
 time.
 
-TODO. Show that 𝓝 is an ordinal. This requires more work.
+TODO. Show that 𝓝 the the structure of an ordinal. This requires more
+work.

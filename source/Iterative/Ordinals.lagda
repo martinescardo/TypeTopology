@@ -173,6 +173,12 @@ a subtype of 𝕍.
 underlying-iset-is-embedding : is-embedding underlying-iset
 underlying-iset-is-embedding = pr₁-is-embedding being-iordinal-is-prop
 
+𝕆-is-set : is-set 𝕆
+𝕆-is-set = subtypes-of-sets-are-sets
+            underlying-iset
+            underlying-iset-is-embedding
+            𝕍-is-set
+
 \end{code}
 
 We define the less-than relation on ordinals to be the membership
@@ -1303,3 +1309,5 @@ Ordinals-agreement-is-unique = pointed-props-are-singletons
 \end{code}
 
 And this is the main theorem of this development.
+
+\end{code}
