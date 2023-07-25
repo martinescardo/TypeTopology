@@ -1309,5 +1309,3 @@ Ordinals-agreement-is-unique = pointed-props-are-singletons
 \end{code}
 
 And this is the main theorem of this development.
-
-\end{code}

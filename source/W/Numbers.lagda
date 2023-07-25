@@ -294,15 +294,18 @@ empty complement.
  Ω-to-𝓝-behaviour : (p : Ω 𝓥) → is-positive (Ω-to-𝓝 p) ＝ (p holds)
  Ω-to-𝓝-behaviour p = refl
 
+ Ω-to-𝓝-is-section : is-section Ω-to-𝓝
+ Ω-to-𝓝-is-section = positive , λ x → refl
+
+ Ω-to-𝓝-lc : left-cancellable Ω-to-𝓝
+ Ω-to-𝓝-lc = sections-are-lc Ω-to-𝓝 Ω-to-𝓝-is-section
+
  decidability-of-positivity-gives-EM : ((n : 𝓝) → is-decidable (is-positive n))
                                      → (p : Ω 𝓥) → is-decidable (p holds)
  decidability-of-positivity-gives-EM f p = I
   where
    I : is-decidable (is-positive (Ω-to-𝓝 p))
    I = f (Ω-to-𝓝 p)
-
- Ω-to-𝓝-lc : left-cancellable Ω-to-𝓝
- Ω-to-𝓝-lc e = pr₁ (from-𝓝-＝ e)
 
 \end{code}
 
