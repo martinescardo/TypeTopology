@@ -468,8 +468,8 @@ LEM (𝓥 ⁺).
       to-𝓝-＝ ((I ⁻¹) ,
                dfunext fe (λ _ →
                 ℕ-to-𝓝 (f (ns h) (lem (positive (ns h)))) ＝⟨ II ⟩
-                ns h                                       ＝⟨ III ⟩
-                (ns ∘ transport _holds (I ⁻¹)) _ ∎))
+                ns h                                      ＝⟨ III ⟩
+                (ns ∘ transport _holds (I ⁻¹)) _          ∎))
       where
        I : p ＝ ⊤
        I = holds-gives-equal-⊤ pe fe p h
