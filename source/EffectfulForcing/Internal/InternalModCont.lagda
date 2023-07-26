@@ -5,13 +5,15 @@
 module EffectfulForcing.Internal.InternalModCont where
 
 open import MLTT.Spartan hiding (rec; _^_)
+open import MLTT.List
 open import EffectfulForcing.Internal.Internal
 open import EffectfulForcing.Internal.SystemT
 open import EffectfulForcing.MFPSAndVariations.Combinators
-open import EffectfulForcing.MFPSAndVariations.Continuity
+open import EffectfulForcing.MFPSAndVariations.Dialogue using (eloquent; D; dialogue; eloquent-functions-are-continuous)
+open import EffectfulForcing.MFPSAndVariations.Continuity using (is-continuous; continuity-implies-continuity₀; _＝⦅_⦆_; _＝⟪_⟫_)
 open import EffectfulForcing.Internal.Correctness using (⌜dialogue⌝; ⌜dialogue-tree⌝-correct')
 open import EffectfulForcing.Internal.External using (eloquence-theorem)
-open import EffectfulForcing.MFPSAndVariations.SystemT using (type; ι; _⇒_)
+open import EffectfulForcing.MFPSAndVariations.SystemT using (type; ι; _⇒_;〖_〗)
 
 \end{code}
 
@@ -94,7 +96,7 @@ max-question-in-path : {Γ : Cxt}
 max-question-in-path = {!!}
 
 internal-mod-cont : {Γ : Cxt} → Γ ⊢ (κ ⇒ ι) → B-context【 Γ 】 (κ ⇒ ι) ⊢ (κ ⇒ ι)
-internal-mod-cont = {!!}
+internal-mod-cont = λ _ → ƛ Zero
 
 
 -- Use the 3 results:
@@ -109,19 +111,50 @@ internal-mod-cont-correct : (t : 〈〉 ⊢ (κ ⇒ ι)) (α β : 〈〉 ⊢ κ)
 internal-mod-cont-correct t α β p =
  ⟦ t · α ⟧₀                                 ＝⟨ refl ⟩
  ⟦ t ⟧₀ ⟦ α ⟧₀                              ＝⟨ Ⅰ    ⟩
- ⟦ ⌜dialogue⌝ (⌜dialogue-tree⌝ t) ⟧₀ ⟦ α ⟧₀ ＝⟨ {!!} ⟩
+ ⟦ ⌜dialogue⌝ (⌜dialogue-tree⌝ t) ⟧₀ ⟦ α ⟧₀ ＝⟨ †    ⟩
  ⟦ ⌜dialogue⌝ (⌜dialogue-tree⌝ t) ⟧₀ ⟦ β ⟧₀ ＝⟨ Ⅹ    ⟩
  ⟦ t ⟧₀ ⟦ β ⟧₀                              ＝⟨ refl ⟩
  ⟦ t ·  β ⟧₀                                ∎
   where
+   ⌜m⌝ : B-context【 〈〉 】 (κ ⇒ ι) ⊢ ι
+   ⌜m⌝ = internal-mod-cont t · α
+
+   m : ℕ
+   m = ⟦ ⌜m⌝ ⟧₀
+
    Ⅰ : ⟦ t ⟧₀ ⟦ α ⟧₀ ＝ ⟦ ⌜dialogue⌝ (⌜dialogue-tree⌝ t) ⟧₀ ⟦ α ⟧₀
    Ⅰ = ⌜dialogue-tree⌝-correct' t ⟦ α ⟧₀
 
    Ⅹ : ⟦ ⌜dialogue⌝ (⌜dialogue-tree⌝ t) ⟧₀ ⟦ β ⟧₀ ＝ ⟦ t ⟧₀ ⟦ β ⟧₀
    Ⅹ = ⌜dialogue-tree⌝-correct' t ⟦ β ⟧₀ ⁻¹
 
-   † : ⟦ t ⟧₀ ⟦ α ⟧₀ ＝ ⟦ t ⟧₀ ⟦ β ⟧₀
-   † = {!⌜dialogue-tree⌝-correct' t ⟦ α ⟧₀!}
+   ε : eloquent ⟦ t ⟧₀
+   ε = eloquence-theorem ⟦ t ⟧₀ (t , refl)
+
+   dₜ : D ℕ ℕ ℕ
+   dₜ = pr₁ ε
+
+   φ : dialogue dₜ ∼ ⟦ t ⟧₀
+   φ = pr₂ ε
+
+   γ : ⟦ t ⟧₀ ⟦ α ⟧₀ ＝ dialogue dₜ ⟦ α ⟧₀
+   γ = φ ⟦ α ⟧₀ ⁻¹
+
+   c : is-continuous ⟦ t ⟧₀
+   c = eloquent-functions-are-continuous ⟦ t ⟧₀ ε
+
+   m₀ : List ℕ
+   m₀ = pr₁ (c ⟦ α ⟧₀)
+
+   baz : ⟦ α ⟧₀ ＝⟪ m₀ ⟫ ⟦ β ⟧₀
+   baz = {!!}
+
+   bar : ⟦ t ⟧₀ ⟦ α ⟧₀ ＝ ⟦ t ⟧₀ ⟦ β ⟧₀
+   bar = pr₂ (c ⟦ α ⟧₀) ⟦ β ⟧₀ baz
+
+   † :  ⟦ ⌜dialogue⌝ (⌜dialogue-tree⌝ t) ⟧₀ ⟦ α ⟧₀
+     ＝ ⟦ ⌜dialogue⌝ (⌜dialogue-tree⌝ t) ⟧₀ ⟦ β ⟧₀
+   † = {!!}
 
 {--
 
