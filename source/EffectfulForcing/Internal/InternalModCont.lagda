@@ -9,7 +9,7 @@ open import EffectfulForcing.Internal.Internal
 open import EffectfulForcing.Internal.SystemT
 open import EffectfulForcing.MFPSAndVariations.Combinators
 open import EffectfulForcing.MFPSAndVariations.Continuity
-open import EffectfulForcing.Internal.Correctness using (⌜dialogue-tree⌝-correct')
+open import EffectfulForcing.Internal.Correctness using (⌜dialogue⌝; ⌜dialogue-tree⌝-correct')
 open import EffectfulForcing.Internal.External using (eloquence-theorem)
 open import EffectfulForcing.MFPSAndVariations.SystemT using (type; ι; _⇒_)
 
@@ -88,7 +88,6 @@ maxᵀ-correct (succ m) (succ n) =
    Ⅲ = ap (λ - → ifz (succ n) m (succ -)) (max₀-eq-max₁ m (succ n))
    Ⅳ = max₀-eq-max₁ (succ m) (succ n) ⁻¹
 
-{--
 
 max-question-in-path : {Γ : Cxt}
                      → B-context【 Γ 】(κ ⇒ ι) ⊢ (⌜B⌝ ι (κ ⇒ ι)) ⇒ κ ⇒ ι
@@ -97,16 +96,34 @@ max-question-in-path = {!!}
 internal-mod-cont : {Γ : Cxt} → Γ ⊢ (κ ⇒ ι) → B-context【 Γ 】 (κ ⇒ ι) ⊢ (κ ⇒ ι)
 internal-mod-cont = {!!}
 
+
 -- Use the 3 results:
 
 _ = ⌜dialogue-tree⌝-correct'
 _ = eloquence-theorem
 _ = continuity-implies-continuity₀
 
-internal-mod-cont-correct : (t : 〈〉 ⊢ (κ ⇒ ι)) (α : 〈〉 ⊢ κ) (β : 〈〉 ⊢ κ)
+internal-mod-cont-correct : (t : 〈〉 ⊢ (κ ⇒ ι)) (α β : 〈〉 ⊢ κ)
                           → ⟦ α ⟧₀ ＝⦅ ⟦ internal-mod-cont t · α ⟧₀ ⦆ ⟦ β ⟧₀
                           → ⟦ t · α ⟧₀ ＝ ⟦ t ·  β ⟧₀
-internal-mod-cont-correct = {!!}
+internal-mod-cont-correct t α β p =
+ ⟦ t · α ⟧₀                                 ＝⟨ refl ⟩
+ ⟦ t ⟧₀ ⟦ α ⟧₀                              ＝⟨ Ⅰ    ⟩
+ ⟦ ⌜dialogue⌝ (⌜dialogue-tree⌝ t) ⟧₀ ⟦ α ⟧₀ ＝⟨ {!!} ⟩
+ ⟦ ⌜dialogue⌝ (⌜dialogue-tree⌝ t) ⟧₀ ⟦ β ⟧₀ ＝⟨ Ⅹ    ⟩
+ ⟦ t ⟧₀ ⟦ β ⟧₀                              ＝⟨ refl ⟩
+ ⟦ t ·  β ⟧₀                                ∎
+  where
+   Ⅰ : ⟦ t ⟧₀ ⟦ α ⟧₀ ＝ ⟦ ⌜dialogue⌝ (⌜dialogue-tree⌝ t) ⟧₀ ⟦ α ⟧₀
+   Ⅰ = ⌜dialogue-tree⌝-correct' t ⟦ α ⟧₀
+
+   Ⅹ : ⟦ ⌜dialogue⌝ (⌜dialogue-tree⌝ t) ⟧₀ ⟦ β ⟧₀ ＝ ⟦ t ⟧₀ ⟦ β ⟧₀
+   Ⅹ = ⌜dialogue-tree⌝-correct' t ⟦ β ⟧₀ ⁻¹
+
+   † : ⟦ t ⟧₀ ⟦ α ⟧₀ ＝ ⟦ t ⟧₀ ⟦ β ⟧₀
+   † = {!⌜dialogue-tree⌝-correct' t ⟦ α ⟧₀!}
+
+{--
 
 --}
 
