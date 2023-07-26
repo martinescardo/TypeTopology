@@ -128,6 +128,9 @@ internal-mod-cont-correct t α β p = †
   -- γ : ⟦ t ⟧₀ ⟦ α ⟧₀ ＝ dialogue dₜ ⟦ α ⟧₀
   -- γ = φ ⟦ α ⟧₀ ⁻¹
 
+  p′ : ⟦ α ⟧₀ ＝⦅ m ⦆ ⟦ β ⟧₀
+  p′ = {!!}
+
   c : is-continuous ⟦ t ⟧₀
   c = eloquent-functions-are-continuous ⟦ t ⟧₀ ε
 
@@ -135,7 +138,7 @@ internal-mod-cont-correct t α β p = †
   c₀ = continuity-implies-continuity₀ ⟦ t ⟧₀ c
 
   m₀ : ℕ
-  m₀ = {!!}
+  m₀ = pr₁ (c₀ ⟦ α ⟧₀)
 
   ‡ : ⟦ α ⟧₀ ＝⦅ m₀ ⦆ ⟦ β ⟧₀
   ‡ = {!!}
