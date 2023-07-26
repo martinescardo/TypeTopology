@@ -10,7 +10,7 @@ open import EffectfulForcing.Internal.Internal
 open import EffectfulForcing.Internal.SystemT
 open import EffectfulForcing.MFPSAndVariations.Combinators
 open import EffectfulForcing.MFPSAndVariations.Dialogue using (eloquent; D; dialogue; eloquent-functions-are-continuous)
-open import EffectfulForcing.MFPSAndVariations.Continuity using (is-continuous; continuity-implies-continuity₀; _＝⦅_⦆_; _＝⟪_⟫_)
+open import EffectfulForcing.MFPSAndVariations.Continuity using (is-continuous; is-continuous₀; continuity-implies-continuity₀; _＝⦅_⦆_; _＝⟪_⟫_)
 open import EffectfulForcing.Internal.Correctness using (⌜dialogue⌝; ⌜dialogue-tree⌝-correct')
 open import EffectfulForcing.Internal.External using (eloquence-theorem)
 open import EffectfulForcing.MFPSAndVariations.SystemT using (type; ι; _⇒_;〖_〗)
@@ -108,56 +108,39 @@ _ = continuity-implies-continuity₀
 internal-mod-cont-correct : (t : 〈〉 ⊢ (κ ⇒ ι)) (α β : 〈〉 ⊢ κ)
                           → ⟦ α ⟧₀ ＝⦅ ⟦ internal-mod-cont t · α ⟧₀ ⦆ ⟦ β ⟧₀
                           → ⟦ t · α ⟧₀ ＝ ⟦ t ·  β ⟧₀
-internal-mod-cont-correct t α β p =
- ⟦ t · α ⟧₀                                 ＝⟨ refl ⟩
- ⟦ t ⟧₀ ⟦ α ⟧₀                              ＝⟨ Ⅰ    ⟩
- ⟦ ⌜dialogue⌝ (⌜dialogue-tree⌝ t) ⟧₀ ⟦ α ⟧₀ ＝⟨ †    ⟩
- ⟦ ⌜dialogue⌝ (⌜dialogue-tree⌝ t) ⟧₀ ⟦ β ⟧₀ ＝⟨ Ⅹ    ⟩
- ⟦ t ⟧₀ ⟦ β ⟧₀                              ＝⟨ refl ⟩
- ⟦ t ·  β ⟧₀                                ∎
-  where
-   ⌜m⌝ : B-context【 〈〉 】 (κ ⇒ ι) ⊢ ι
-   ⌜m⌝ = internal-mod-cont t · α
+internal-mod-cont-correct t α β p = †
+ where
+  ⌜m⌝ : B-context【 〈〉 】 (κ ⇒ ι) ⊢ ι
+  ⌜m⌝ = internal-mod-cont t · α
 
-   m : ℕ
-   m = ⟦ ⌜m⌝ ⟧₀
+  m : ℕ
+  m = ⟦ ⌜m⌝ ⟧₀
 
-   Ⅰ : ⟦ t ⟧₀ ⟦ α ⟧₀ ＝ ⟦ ⌜dialogue⌝ (⌜dialogue-tree⌝ t) ⟧₀ ⟦ α ⟧₀
-   Ⅰ = ⌜dialogue-tree⌝-correct' t ⟦ α ⟧₀
+  ε : eloquent ⟦ t ⟧₀
+  ε = eloquence-theorem ⟦ t ⟧₀ (t , refl)
 
-   Ⅹ : ⟦ ⌜dialogue⌝ (⌜dialogue-tree⌝ t) ⟧₀ ⟦ β ⟧₀ ＝ ⟦ t ⟧₀ ⟦ β ⟧₀
-   Ⅹ = ⌜dialogue-tree⌝-correct' t ⟦ β ⟧₀ ⁻¹
+  -- dₜ : D ℕ ℕ ℕ
+  -- dₜ = pr₁ ε
 
-   ε : eloquent ⟦ t ⟧₀
-   ε = eloquence-theorem ⟦ t ⟧₀ (t , refl)
+  -- φ : dialogue dₜ ∼ ⟦ t ⟧₀
+  -- φ = pr₂ ε
 
-   dₜ : D ℕ ℕ ℕ
-   dₜ = pr₁ ε
+  -- γ : ⟦ t ⟧₀ ⟦ α ⟧₀ ＝ dialogue dₜ ⟦ α ⟧₀
+  -- γ = φ ⟦ α ⟧₀ ⁻¹
 
-   φ : dialogue dₜ ∼ ⟦ t ⟧₀
-   φ = pr₂ ε
+  c : is-continuous ⟦ t ⟧₀
+  c = eloquent-functions-are-continuous ⟦ t ⟧₀ ε
 
-   γ : ⟦ t ⟧₀ ⟦ α ⟧₀ ＝ dialogue dₜ ⟦ α ⟧₀
-   γ = φ ⟦ α ⟧₀ ⁻¹
+  c₀ : is-continuous₀ ⟦ t ⟧₀
+  c₀ = continuity-implies-continuity₀ ⟦ t ⟧₀ c
 
-   c : is-continuous ⟦ t ⟧₀
-   c = eloquent-functions-are-continuous ⟦ t ⟧₀ ε
+  m₀ : ℕ
+  m₀ = {!!}
 
-   m₀ : List ℕ
-   m₀ = pr₁ (c ⟦ α ⟧₀)
+  ‡ : ⟦ α ⟧₀ ＝⦅ m₀ ⦆ ⟦ β ⟧₀
+  ‡ = {!!}
 
-   baz : ⟦ α ⟧₀ ＝⟪ m₀ ⟫ ⟦ β ⟧₀
-   baz = {!!}
-
-   bar : ⟦ t ⟧₀ ⟦ α ⟧₀ ＝ ⟦ t ⟧₀ ⟦ β ⟧₀
-   bar = pr₂ (c ⟦ α ⟧₀) ⟦ β ⟧₀ baz
-
-   † :  ⟦ ⌜dialogue⌝ (⌜dialogue-tree⌝ t) ⟧₀ ⟦ α ⟧₀
-     ＝ ⟦ ⌜dialogue⌝ (⌜dialogue-tree⌝ t) ⟧₀ ⟦ β ⟧₀
-   † = {!!}
-
-{--
-
---}
+  † : ⟦ t ⟧₀ ⟦ α ⟧₀ ＝ ⟦ t ⟧₀ ⟦ β ⟧₀
+  † = pr₂ (c₀ ⟦ α ⟧₀) ⟦ β ⟧₀ ‡
 
 \end{code}
