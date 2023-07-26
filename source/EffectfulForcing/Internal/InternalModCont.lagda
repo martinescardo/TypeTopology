@@ -129,7 +129,7 @@ internal-mod-cont-correct t α β p = †
   -- γ = φ ⟦ α ⟧₀ ⁻¹
 
   p′ : ⟦ α ⟧₀ ＝⦅ m ⦆ ⟦ β ⟧₀
-  p′ = {!!}
+  p′ = p
 
   c : is-continuous ⟦ t ⟧₀
   c = eloquent-functions-are-continuous ⟦ t ⟧₀ ε
