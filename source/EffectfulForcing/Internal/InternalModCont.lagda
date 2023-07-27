@@ -7,12 +7,13 @@ module EffectfulForcing.Internal.InternalModCont where
 open import MLTT.Spartan hiding (rec; _^_)
 open import MLTT.List
 open import EffectfulForcing.Internal.Internal
+open import EffectfulForcing.MFPSAndVariations.Church
 open import EffectfulForcing.Internal.SystemT
 open import EffectfulForcing.MFPSAndVariations.Combinators
 open import EffectfulForcing.MFPSAndVariations.Dialogue using (eloquent; D; dialogue; eloquent-functions-are-continuous)
 open import EffectfulForcing.MFPSAndVariations.Continuity using (is-continuous; is-continuous₀; continuity-implies-continuity₀; _＝⦅_⦆_; _＝⟪_⟫_)
 open import EffectfulForcing.Internal.Correctness using (⌜dialogue⌝; ⌜dialogue-tree⌝-correct')
-open import EffectfulForcing.Internal.External using (eloquence-theorem)
+open import EffectfulForcing.Internal.External using (eloquence-theorem; dialogue-tree)
 open import EffectfulForcing.MFPSAndVariations.SystemT using (type; ι; _⇒_;〖_〗)
 
 \end{code}
@@ -91,6 +92,10 @@ maxᵀ-correct (succ m) (succ n) =
    Ⅳ = max₀-eq-max₁ (succ m) (succ n) ⁻¹
 
 
+max-question-ext : (ℕ → ℕ) → D ℕ ℕ ℕ → ℕ
+max-question-ext α (D.η n)   = 0
+max-question-ext α (D.β φ n) = max₀ n (max-question-ext α (φ (α n)))
+
 max-question-in-path : {Γ : Cxt}
                      → B-context【 Γ 】(κ ⇒ ι) ⊢ (⌜B⌝ ι (κ ⇒ ι)) ⇒ κ ⇒ ι
 max-question-in-path = {!!}
@@ -104,6 +109,11 @@ internal-mod-cont = λ _ → ƛ Zero
 _ = ⌜dialogue-tree⌝-correct'
 _ = eloquence-theorem
 _ = continuity-implies-continuity₀
+
+main-lemma : (t : 〈〉 ⊢ (κ ⇒ ι)) (α : 〈〉 ⊢ κ)
+          → ⟦ max-question-in-path · (⌜dialogue-tree⌝ t) ⟧₀ ⟦ α ⟧₀
+          ＝ max-question-ext ⟦ α ⟧₀ (dialogue-tree t)
+main-lemma = {!!}
 
 internal-mod-cont-correct : (t : 〈〉 ⊢ (κ ⇒ ι)) (α β : 〈〉 ⊢ κ)
                           → ⟦ α ⟧₀ ＝⦅ ⟦ internal-mod-cont t · α ⟧₀ ⦆ ⟦ β ⟧₀
@@ -119,17 +129,17 @@ internal-mod-cont-correct t α β p = †
   ε : eloquent ⟦ t ⟧₀
   ε = eloquence-theorem ⟦ t ⟧₀ (t , refl)
 
-  -- dₜ : D ℕ ℕ ℕ
-  -- dₜ = pr₁ ε
+  dₜ : D ℕ ℕ ℕ
+  dₜ = pr₁ ε
 
-  -- φ : dialogue dₜ ∼ ⟦ t ⟧₀
-  -- φ = pr₂ ε
+  φ : dialogue dₜ ∼ ⟦ t ⟧₀
+  φ = pr₂ ε
 
-  -- γ : ⟦ t ⟧₀ ⟦ α ⟧₀ ＝ dialogue dₜ ⟦ α ⟧₀
-  -- γ = φ ⟦ α ⟧₀ ⁻¹
+  γ : ⟦ t ⟧₀ ⟦ α ⟧₀ ＝ dialogue dₜ ⟦ α ⟧₀
+  γ = φ ⟦ α ⟧₀ ⁻¹
 
   p′ : ⟦ α ⟧₀ ＝⦅ m ⦆ ⟦ β ⟧₀
-  p′ = {!!}
+  p′ = p
 
   c : is-continuous ⟦ t ⟧₀
   c = eloquent-functions-are-continuous ⟦ t ⟧₀ ε
