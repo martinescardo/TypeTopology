@@ -193,9 +193,10 @@ contributed to constructions, theorems and proofs via the hands of Ayberk Tosun.
 1. Martín H. Escardó and Paulo Oliva. *Higher-order Games with
    Dependent Types*.
 
-   To appear in TCS, Special issue "Continuity, Computability,
-   Constructivity: From Logic to Algorithms", dedicated to Ulrich
-   Berger's 65th birthday.
+   To appear in [Theoretical Computer
+   Science](https://www.sciencedirect.com/journal/theoretical-computer-science),
+   Special issue "Continuity, Computability, Constructivity: From
+   Logic to Algorithms", dedicated to Ulrich Berger's 65th birthday.
 
    https://doi.org/10.48550/arXiv.2212.07735
 
