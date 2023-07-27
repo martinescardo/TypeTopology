@@ -40,13 +40,13 @@ record Monad : Type₁ where
 
 open Monad public
 
-tensor : (𝓣 : Monad) → {X : Type} {Y : X → Type}
-       → functor 𝓣 X
-       → ((x : X) → functor 𝓣 (Y x))
-       → functor 𝓣 (Σ x ꞉ X , Y x)
-tensor 𝓣 = _⊗_ 𝓣
+tensor : (𝕋 : Monad) → {X : Type} {Y : X → Type}
+       → functor 𝕋 X
+       → ((x : X) → functor 𝕋 (Y x))
+       → functor 𝕋 (Σ x ꞉ X , Y x)
+tensor 𝕋 = _⊗_ 𝕋
 
-syntax tensor 𝓣 t f = t ⊗[ 𝓣 ] f
+syntax tensor 𝕋 t f = t ⊗[ 𝕋 ] f
 
 𝕀𝕕 : Monad
 𝕀𝕕 = record {
@@ -66,43 +66,42 @@ syntax tensor 𝓣 t f = t ⊗[ 𝓣 ] f
 
 \end{code}
 
-We we want to call a monad (literally) T, then we can use the
-following module:
+If we want to call a monad T, then we can use the following module:
 
 \begin{code}
 
-module T-definitions (𝓣 : Monad) where
+module T-definitions (𝕋 : Monad) where
 
  T : Type → Type
- T = functor 𝓣
+ T = functor 𝕋
 
  ηᵀ : {X : Type} → X → T X
- ηᵀ = η 𝓣
+ ηᵀ = η 𝕋
 
  extᵀ : {X Y : Type} → (X → T Y) → T X → T Y
- extᵀ = ext 𝓣
+ extᵀ = ext 𝕋
 
  extᵀ-η : {X : Type} → extᵀ (ηᵀ {X}) ∼ 𝑖𝑑 (T X)
- extᵀ-η = ext-η 𝓣
+ extᵀ-η = ext-η 𝕋
 
  unitᵀ : {X Y : Type} (f : X → T Y) → extᵀ f ∘ ηᵀ ∼ f
- unitᵀ = unit 𝓣
+ unitᵀ = unit 𝕋
 
  assocᵀ : {X Y Z : Type} (g : Y → T Z) (f : X → T Y)
         → extᵀ (extᵀ g ∘ f) ∼ extᵀ g ∘ extᵀ f
- assocᵀ = assoc 𝓣
+ assocᵀ = assoc 𝕋
 
  mapᵀ : {X Y : Type} → (X → Y) → T X → T Y
- mapᵀ = map 𝓣
+ mapᵀ = map 𝕋
 
  μᵀ : {X : Type} → T (T X) → T X
- μᵀ = μ 𝓣
+ μᵀ = μ 𝕋
 
  _⊗ᵀ_ : {X : Type} {Y : X → Type}
       → T X
       → ((x : X) → T (Y x))
       → T (Σ x ꞉ X , Y x)
- _⊗ᵀ_ = _⊗_ 𝓣
+ _⊗ᵀ_ = _⊗_ 𝕋
 
 \end{code}
 
@@ -131,14 +130,16 @@ https://doi.org/10.1016/0168-0072(94)90020-5
 
 \begin{code}
 
-module _ (T : Monad) where
+module _ (𝕋 : Monad) where
+
+ open T-definitions 𝕋
 
  is-affine : Type
- is-affine = is-equiv (η T {𝟙})
+ is-affine = is-equiv (ηᵀ {𝟙})
 
  ext-const' : Type → Type₁
- ext-const' X = {Y : Type} (u : functor T Y)
-              → ext T (λ (x : X) → u) ∼ λ (t : functor T X) → u
+ ext-const' X = {Y : Type} (u : T Y)
+              → extᵀ (λ (x : X) → u) ∼ λ (t : T X) → u
 
  ext-const : Type₁
  ext-const = {X : Type} → ext-const' X
@@ -148,62 +149,62 @@ module _ (T : Monad) where
   where
    f = λ (x : 𝟙) → u
 
-   I : f ∘ inverse (η T {𝟙}) a ∼ ext T f
-   I s = (f ∘ inverse (η T) a) s           ＝⟨ I₀ ⟩
-         ext T f (η T (inverse (η T) a s)) ＝⟨ I₁ ⟩
-         ext T f s                         ∎
+   I : f ∘ inverse (ηᵀ {𝟙}) a ∼ extᵀ f
+   I s = (f ∘ inverse ηᵀ a) s         ＝⟨ I₀ ⟩
+         extᵀ f (ηᵀ (inverse ηᵀ a s)) ＝⟨ I₁ ⟩
+         extᵀ f s                     ∎
     where
-     I₀ = (unit T f (inverse (η T) a s))⁻¹
-     I₁ = ap (ext T f) (inverses-are-sections (η T) a s)
+     I₀ = (unitᵀ f (inverse ηᵀ a s))⁻¹
+     I₁ = ap (extᵀ f) (inverses-are-sections ηᵀ a s)
 
-   γ : ext T f t ＝ u
-   γ = ext T f t                   ＝⟨ (ap (λ - → - t) (dfunext fe I))⁻¹ ⟩
-       (f ∘ inverse (η T {𝟙}) a) t ＝⟨ refl ⟩
-       u                           ∎
+   γ : extᵀ f t ＝ u
+   γ = extᵀ f t                   ＝⟨ (ap (λ - → - t) (dfunext fe I))⁻¹ ⟩
+       (f ∘ inverse (ηᵀ {𝟙}) a) t ＝⟨ refl ⟩
+       u                          ∎
 
  affine-gives-ext-const : Fun-Ext → is-affine → ext-const
  affine-gives-ext-const fe a {X} {Y} u t = γ
   where
-   g : X → functor T Y
+   g : X → T Y
    g _ = u
 
-   f : functor T 𝟙 → functor T Y
+   f : T 𝟙 → T Y
    f _ = u
 
-   h : 𝟙 → functor T Y
+   h : 𝟙 → T Y
    h _ = u
 
-   k : X → functor T 𝟙
-   k = η T {𝟙} ∘ unique-to-𝟙
+   k : X → T 𝟙
+   k = ηᵀ {𝟙} ∘ unique-to-𝟙
 
-   I : ext T h ＝ f
+   I : extᵀ h ＝ f
    I = dfunext fe (affine-gives-ext-const' fe a u)
 
-   γ = ext T g t             ＝⟨ refl ⟩
-       ext T (f ∘ k) t       ＝⟨ ap (λ - → ext T (- ∘ k) t) (I ⁻¹) ⟩
-       ext T (ext T h ∘ k) t ＝⟨ assoc T h k t ⟩
-       ext T h (ext T k t)   ＝⟨ ap (λ - → - (ext T k t)) I ⟩
-       f (ext T k t)         ＝⟨ refl ⟩
-       u                     ∎
+   γ = extᵀ g t             ＝⟨ refl ⟩
+       extᵀ (f ∘ k) t       ＝⟨ ap (λ - → extᵀ (- ∘ k) t) (I ⁻¹) ⟩
+       extᵀ (extᵀ h ∘ k) t  ＝⟨ assocᵀ h k t ⟩
+       extᵀ h (extᵀ k t)    ＝⟨ ap (λ - → - (extᵀ k t)) I ⟩
+       f (extᵀ k t)         ＝⟨ refl ⟩
+       u                    ∎
 
  ext-const-gives-affine : ext-const → is-affine
  ext-const-gives-affine ϕ = γ
   where
-   η⁻¹ : functor T 𝟙 → 𝟙
+   η⁻¹ : T 𝟙 → 𝟙
    η⁻¹ t = ⋆
 
-   I : η⁻¹ ∘ η T ∼ id
+   I : η⁻¹ ∘ ηᵀ ∼ id
    I ⋆ = refl
 
-   II : η T ∘ η⁻¹ ∼ id
-   II t = (η T ∘ η⁻¹) t         ＝⟨ refl ⟩
-          η T ⋆                 ＝⟨ (ϕ {𝟙} (η T ⋆) t)⁻¹ ⟩
-          ext T (λ x → η T ⋆) t ＝⟨ refl ⟩
-          ext T (η T) t         ＝⟨ ext-η T t ⟩
-          t                     ∎
+   II : ηᵀ ∘ η⁻¹ ∼ id
+   II t = (ηᵀ ∘ η⁻¹) t        ＝⟨ refl ⟩
+          ηᵀ ⋆                ＝⟨ (ϕ {𝟙} (ηᵀ ⋆) t)⁻¹ ⟩
+          extᵀ (λ x → ηᵀ ⋆) t ＝⟨ refl ⟩
+          extᵀ ηᵀ t           ＝⟨ extᵀ-η t ⟩
+          t                   ∎
 
-   γ : is-equiv (η T {𝟙})
-   γ = qinvs-are-equivs (η T) (η⁻¹ , I , II)
+   γ : is-equiv (ηᵀ {𝟙})
+   γ = qinvs-are-equivs ηᵀ (η⁻¹ , I , II)
 
 \end{code}
 
@@ -211,11 +212,11 @@ Monad algebras.
 
 \begin{code}
 
-record Algebra (T : Monad) (A : Type) : Type₁ where
+record Algebra (𝕋 : Monad) (A : Type) : Type₁ where
  field
-  structure-map : functor T A → A
-  unit          : structure-map ∘ η T ∼ id
-  assoc         : structure-map ∘ ext T (η T ∘ structure-map) ∼ structure-map ∘ ext T id
+  structure-map : functor 𝕋 A → A
+  unit          : structure-map ∘ η 𝕋 ∼ id
+  assoc         : structure-map ∘ ext 𝕋 (η 𝕋 ∘ structure-map) ∼ structure-map ∘ ext 𝕋 id
 
 open Algebra public
 
@@ -226,12 +227,12 @@ If we want to call an algebra (literally) α, we can used this module:
 \begin{code}
 
 module α-definitions
-        (𝓣 : Monad)
+        (𝕋 : Monad)
         (R : Type)
-        (𝓐 : Algebra 𝓣 R)
+        (𝓐 : Algebra 𝕋 R)
        where
 
- open T-definitions 𝓣
+ open T-definitions 𝕋
 
  α : T R → R
  α = structure-map 𝓐

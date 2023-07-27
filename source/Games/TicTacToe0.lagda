@@ -170,7 +170,7 @@ The game tree, with a bound on which we perform induction:
 
 \begin{code}
 
-tree : Board → ℕ → 𝕋
+tree : Board → ℕ → 𝑻
 tree b         0        = []
 tree b@(p , A) (succ k) with wins (opponent p) A | Move-decidable b
 ...                        | true  | _     = []

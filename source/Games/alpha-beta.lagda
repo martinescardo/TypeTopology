@@ -56,7 +56,7 @@ module minimax
         (R : Type)
         (_<_ : R → R → Type)
         (δ : (r s : R) → is-decidable (r < s))
-        (Xt : 𝕋)
+        (Xt : 𝑻)
         (Xt-is-listed⁺ : structure listed⁺ Xt)
         (q : Path Xt → R)
        where
@@ -103,7 +103,7 @@ in an alternating fashion.
 
 \begin{code}
 
- minmax maxmin : (Xt : 𝕋)
+ minmax maxmin : (Xt : 𝑻)
                → structure listed⁺ Xt
                → 𝓚 R Xt
  minmax []       ⟨⟩        = ⟨⟩
@@ -156,7 +156,7 @@ quantifiers in an alternating fashion.
 
 \begin{code}
 
- argminmax argmaxmin : (Xt : 𝕋)
+ argminmax argmaxmin : (Xt : 𝑻)
                      → structure listed⁺ Xt
                      → 𝓙 R Xt
  argminmax []       ⟨⟩        = ⟨⟩
@@ -256,7 +256,7 @@ reader monad, to speed-up the computation of the optimal play.
                R
                𝓡
 
-  argminmax† argmaxmin† : (Xt : 𝕋)
+  argminmax† argmaxmin† : (Xt : 𝑻)
                         → structure listed⁺ Xt
                         → 𝓙𝓣 Xt
   argminmax† []       ⟨⟩                    = ⟨⟩
@@ -284,7 +284,7 @@ https://en.wikipedia.org/wiki/Alpha%E2%80%93beta_pruning
 
 \begin{code}
 
-wikipedia-tree : 𝕋
+wikipedia-tree : 𝑻
 wikipedia-tree =
  Fin 3 ∷
   λ _ → Fin 2 ∷
@@ -357,7 +357,7 @@ module minimax'
         (R : Type)
         (_<_ : R → R → Type)
         (δ : (r s : R) → is-decidable (r < s))
-        (Xt : 𝕋)
+        (Xt : 𝑻)
         (Xt-is-listed⁺ : structure listed⁺ Xt)
         (q : Path Xt → R)
        where
@@ -387,7 +387,7 @@ module minimax'
  Min' (x₀ , xs , _) p = foldr (λ x → min' (p x)) (p x₀) xs
  Max' (x₀ , xs , _) p = foldr (λ x → max' (p x)) (p x₀) xs
 
- minmax' maxmin' : (Xt : 𝕋)
+ minmax' maxmin' : (Xt : 𝑻)
                  → structure listed⁺ Xt
                  → 𝓚 R' Xt
  minmax' []       ⟨⟩        = ⟨⟩
@@ -447,7 +447,7 @@ module minimax⋆
         (-∞ ∞ : R)
         (_<_ : R → R → Type)
         (δ : (r s : R) → is-decidable (r < s))
-        (Xt : 𝕋)
+        (Xt : 𝑻)
         (Xt-is-listed⁺ : structure listed⁺ Xt)
         (q : Path Xt → R)
        where
@@ -516,7 +516,7 @@ module minimax⋆
         (λ (_ : s ≥ β)
               → (s , ys))
 
- minmax⋆ maxmin⋆ : (Xt : 𝕋)
+ minmax⋆ maxmin⋆ : (Xt : 𝑻)
                  → structure listed⁺ Xt
                  → 𝓚 R⋆ Xt
  minmax⋆ []       ⟨⟩                    = ⟨⟩
@@ -568,7 +568,7 @@ module _ {X : Type }
 
  open list-util
 
- perm-tree : {n : ℕ} → Vector' X n → 𝕋
+ perm-tree : {n : ℕ} → Vector' X n → 𝑻
  perm-tree {0}        ([] , _) = []
  perm-tree {succ n} v@(xs , _) = type-from-list xs
                                ∷ λ (_ , m) → perm-tree {n} (delete v m)
@@ -590,7 +590,7 @@ module tic-tac-toe where
  all-moves : Vector' Move 9
  all-moves = (0 ∷ 1 ∷ 2 ∷ 3 ∷ 4 ∷ 5 ∷ 6 ∷ 7 ∷ 8 ∷ []) , refl
 
- TTT-tree : 𝕋
+ TTT-tree : 𝑻
  TTT-tree = perm-tree all-moves
 
  TTT-tree-is-listed⁺ : structure listed⁺ TTT-tree
@@ -730,7 +730,7 @@ module tic-tac-toe-variation where
             ∷ (2 , 0) ∷ (2 , 1) ∷ (2 , 2) ∷ []) ,
            refl
 
- TTT-tree : 𝕋
+ TTT-tree : 𝑻
  TTT-tree = perm-tree all-moves
 
  TTT-tree-is-listed⁺ : structure listed⁺ TTT-tree
