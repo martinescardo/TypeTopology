@@ -1,4 +1,4 @@
-Martin Escardo & Tom de Jong, June 2023.
+Martin Escardo & Tom de Jong, July 2023.
 
 More about iterative ordinals and their relation to iterative (multi)sets.
 
@@ -100,3 +100,42 @@ Ord-is-retract-of-𝕍 pe = embedding-retract Ord 𝕍 Ord-to-𝕍
 \end{code}
 
 TODO. Can we get the same conclusion without propositional resizing?
+
+Added 28 July 2023: Yes, we can: the desired map 𝕍 → Ord is constructed (for
+another presentation of 𝕍) in Ordinals.CumulativeHierarchy.
+
+TODO. Implement this in Agda.
+
+\begin{code}
+
+{-
+open import UF.PropTrunc
+open import UF.Quotient -- hiding (is-prop-valued)
+
+open import Ordinals.Arithmetic fe'
+open import Ordinals.ArithmeticProperties ua
+open import Ordinals.OrdinalOfOrdinalsSuprema ua
+
+module 𝕍-to-Ord-construction
+        (pt : propositional-truncations-exist)
+        (sq : set-quotients-exist)
+       where
+
+ open suprema pt (set-replacement-from-set-quotients sq pt)
+
+ 𝕍-to-Ord : 𝕍 → Ord
+ 𝕍-to-Ord = 𝕍-induction (λ _ → Ord) f
+  where
+   f : (X : 𝓤 ̇  ) (ϕ : X → 𝕍) (e : is-embedding ϕ)
+     → ((x : X) → Ord) → Ord
+   f X ϕ e r = sup (λ x → r x +ₒ 𝟙ₒ)
+
+ 𝕍-to-Ord-behaviour : (A : 𝕍)
+                    → 𝕍-to-Ord A ＝ sup (λ x → 𝕍-to-Ord (𝕍-forest A x) +ₒ 𝟙ₒ)
+ 𝕍-to-Ord-behaviour A =
+  𝕍-to-Ord A ＝⟨ ap 𝕍-to-Ord ((𝕍-η A) ⁻¹) ⟩
+  𝕍-to-Ord {!!} ＝⟨ {!!} ⟩
+  {!!} ∎
+-}
+
+\end{code}

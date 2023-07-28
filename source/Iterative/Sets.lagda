@@ -46,7 +46,9 @@ open import UF.Base
 open import UF.Embeddings
 open import UF.Equiv
 open import UF.EquivalenceExamples
+open import UF.Miscelanea
 open import UF.PairFun
+open import UF.Retracts
 open import UF.Size
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
@@ -518,5 +520,146 @@ accessible:
 
 ∈-is-accessible : (A : 𝕍) → is-accessible _∈_ A
 ∈-is-accessible = ∈-induction (is-accessible _∈_) (λ _ → acc)
+
+\end{code}
+
+Although we don't have any use for it (at the moment), we show how to construct
+singleton sets.
+
+\begin{code}
+
+❴_❵ : (A : 𝕍) → 𝕍
+❴ A ❵ = 𝕍-ssup 𝟙 (λ _ → A) (global-point-is-embedding (λ _ → A) 𝕍-is-set)
+
+❴❵-behaviour : (A : 𝕍) (B : 𝕍) → B ∈ ❴ A ❵ ≃ (B ＝ A)
+❴❵-behaviour A B = B ∈ ❴ A ❵    ≃⟨ ∈-behaviour' B ❴ A ❵ ⟩
+                   𝟙 × (A ＝ B) ≃⟨ 𝟙-lneutral ⟩
+                   (A ＝ B)     ≃⟨ ＝-flip ⟩
+                   (B ＝ A)     ■
+
+\end{code}
+
+Given a family of iterative sets indexed by a small type, we construct its
+union.
+
+We make use of propositional truncations (to define the image of a map) and of
+set replacement (which follows from having set quotients).
+
+\begin{code}
+
+open import UF.PropTrunc
+
+module _ (pt : propositional-truncations-exist) where
+
+ open PropositionalTruncation pt
+ open import UF.ImageAndSurjection pt
+
+ module unions-of-iterative-sets (sr : Set-Replacement pt) where
+
+  private
+   module union-construction
+          {I : 𝓤 ̇  }
+          (𝓐 : I → 𝕍)
+         where
+
+    im : 𝓤⁺ ̇
+    im = image 𝓐
+    im-is-small : image 𝓐 is 𝓤 small
+    im-is-small = sr 𝓐 (I , ≃-refl I) 𝕍-is-locally-small 𝕍-is-set
+    im⁻ : 𝓤 ̇
+    im⁻ = resized im im-is-small
+    im⁻-≃-im : im⁻ ≃ im
+    im⁻-≃-im = resizing-condition im-is-small
+    π : im → 𝕍
+    π = restriction 𝓐
+    π⁻ : im⁻ → 𝕍
+    π⁻ = π ∘ ⌜ im⁻-≃-im ⌝
+    π-is-embedding : is-embedding π
+    π-is-embedding = restrictions-are-embeddings 𝓐
+    π⁻-is-embedding : is-embedding π⁻
+    π⁻-is-embedding = ∘-is-embedding
+                       (equivs-are-embeddings
+                         ⌜ im⁻-≃-im ⌝
+                         (⌜⌝-is-equiv im⁻-≃-im))
+                       π-is-embedding
+
+  ⋃ : {I : 𝓤 ̇  } (𝓐 : I → 𝕍) → 𝕍
+  ⋃ {I} 𝓐 = 𝕍-ssup im⁻ π⁻ π⁻-is-embedding
+   where
+    open union-construction 𝓐
+
+  ⋃-behaviour : {I : 𝓤 ̇  } (𝓐 : I → 𝕍) (B : 𝕍)
+              → B ∈ ⋃ 𝓐 ≃ (∃ i ꞉ I , B ＝ 𝓐 i)
+  ⋃-behaviour {I} 𝓐 B =
+   B ∈ ⋃ 𝓐                                    ≃⟨ ∈-behaviour' B (⋃ 𝓐) ⟩
+   (Σ j ꞉ im⁻ , π⁻ j ＝ B)                    ≃⟨ e₁ ⟩
+   (Σ j ꞉ im , π j ＝ B)                      ≃⟨ Σ-assoc ⟩
+   (Σ C ꞉ 𝕍 , C ∈image 𝓐 × (C ＝ B))          ≃⟨ Σ-cong (λ C → ×-comm) ⟩
+   (Σ C ꞉ 𝕍 , (C ＝ B) × (C ∈image 𝓐))        ≃⟨ ≃-sym Σ-assoc ⟩
+   (Σ s ꞉ singleton-type' B , pr₁ s ∈image 𝓐) ≃⟨ ≃-sym e₂ ⟩
+   𝟙 {𝓤} × B ∈image 𝓐                         ≃⟨ 𝟙-lneutral ⟩
+   (∃ i ꞉ I , 𝓐 i ＝ B)                       ≃⟨ ∃-cong pt (λ i → ＝-flip) ⟩
+   (∃ i ꞉ I , B ＝ 𝓐 i)                       ■
+    where
+     open union-construction 𝓐
+     e₁ = Σ-change-of-variable-≃ _ im⁻-≃-im
+     e₂ = Σ-change-of-variable-≃ _
+           (singleton-≃-𝟙' (singleton-types'-are-singletons B))
+
+\end{code}
+
+Any iterative set is the union of its 𝕍-forest:
+
+\begin{code}
+
+  ⋃-η : (A : 𝕍) → ⋃ (𝕍-forest A) ＝ A
+  ⋃-η A = ∈-is-extensional (⋃ (𝕍-forest A)) A i j
+   where
+    i : ⋃ (𝕍-forest A) ⊆ A
+    i B m = ∥∥-rec (∈-is-prop-valued B A) f (⌜ ⋃-behaviour (𝕍-forest A) B ⌝ m)
+     where
+      f : (Σ a ꞉ 𝕍-root A , B ＝ 𝕍-forest A a) → B ∈ A
+      f (a , refl) = 𝕍-forest-∈ A a
+    j : A ⊆ ⋃ (𝕍-forest A)
+    j B m = ⌜ ⋃-behaviour (𝕍-forest A) B ⌝⁻¹ ∣ a , e ∣
+     where
+      abstract
+       m' : Σ a ꞉ 𝕍-root A , 𝕍-forest A a ＝ B
+       m' = ⌜ ∈-behaviour' B A ⌝ m
+       a : 𝕍-root A
+       a = pr₁ m'
+       e : B ＝ 𝕍-forest A a
+       e = (pr₂ m') ⁻¹
+
+\end{code}
+
+Unions allow us to construct a retraction of the inclusion 𝕍 ↪ 𝕄.
+
+\begin{code}
+
+  𝕄-to-𝕍 : 𝕄 → 𝕍
+  𝕄-to-𝕍 (ssup X φ) = ⋃ (𝕄-to-𝕍 ∘ φ)
+
+  𝕄-to-𝕍-is-retraction-of-inclusion : 𝕄-to-𝕍 ∘ underlying-mset ＝ id
+  𝕄-to-𝕍-is-retraction-of-inclusion = dfunext fe (∈-induction _ f)
+   where
+    f : (A : 𝕍) → ((B : 𝕍) → B ∈ A → (𝕄-to-𝕍 ∘ underlying-mset) B ＝ B)
+      → (𝕄-to-𝕍 ∘ underlying-mset) A ＝ A
+    f A IH = 𝕄-to-𝕍 Aₘ                                 ＝⟨ I ⟩
+             𝕄-to-𝕍 (ssup (𝕍-root A) (𝕄-forest Aₘ))    ＝⟨ refl ⟩
+             ⋃ (𝕄-to-𝕍 ∘ 𝕄-forest Aₘ)                  ＝⟨ refl ⟩
+             ⋃ (𝕄-to-𝕍 ∘ underlying-mset ∘ 𝕍-forest A) ＝⟨ II ⟩
+             ⋃ (𝕍-forest A)                            ＝⟨ ⋃-η A ⟩
+             A                                         ∎
+              where
+               Aₘ : 𝕄
+               Aₘ = underlying-mset A
+               I  = ap (𝕄-to-𝕍 ∘ underlying-mset) (𝕍-η A ⁻¹)
+               II = ap ⋃ (dfunext fe (λ a → IH (𝕍-forest A a) (𝕍-forest-∈ A a)))
+
+  𝕍-is-retract-of-𝕄 : retract 𝕍 of 𝕄
+  𝕍-is-retract-of-𝕄 = 𝕄-to-𝕍 ,
+                      underlying-mset ,
+                      happly 𝕄-to-𝕍-is-retraction-of-inclusion
 
 \end{code}
