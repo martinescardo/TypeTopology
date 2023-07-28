@@ -92,17 +92,22 @@ maxᵀ-correct (succ m) (succ n) =
    Ⅳ = max₀-eq-max₁ (succ m) (succ n) ⁻¹
 
 
-max-question-ext : (ℕ → ℕ) → D ℕ ℕ ℕ → ℕ
-max-question-ext α (D.η n)   = 0
-max-question-ext α (D.β φ n) = max₀ n (max-question-ext α (φ (α n)))
+max-question-ext : D ℕ ℕ ℕ → (ℕ → ℕ) → ℕ
+max-question-ext (D.η n)   α = 0
+max-question-ext (D.β φ n) α = max₀ n (max-question-ext (φ (α n)) α)
 
-max-question-in-path : {Γ : Cxt}
-                     → B-context【 Γ 】(κ ⇒ ι) ⊢ (⌜B⌝ ι (κ ⇒ ι)) ⇒ κ ⇒ ι
-max-question-in-path = {!!}
+max-question-ext-church : D⋆ ℕ ℕ ℕ ℕ → (ℕ → ℕ) → ℕ
+max-question-ext-church d α = d (λ _ → 0) (λ g x → max₀ x (g (α x)))
 
-internal-mod-cont : {Γ : Cxt} → Γ ⊢ (κ ⇒ ι) → B-context【 Γ 】 (κ ⇒ ι) ⊢ (κ ⇒ ι)
-internal-mod-cont = λ _ → ƛ Zero
+max-question-int : {Γ : Cxt}
+                     → B-context【 Γ 】 ι ⊢ (⌜B⌝ ι ι) ⇒ κ ⇒ ι
+max-question-int =
+ ƛ (ƛ (ν₁ · (ƛ Zero) · ƛ (ƛ (maxᵀ · ν₀ · (ν₁ · (ν₂ · ν₀))))))
 
+internal-mod-cont : {Γ : Cxt}
+                  → Γ ⊢ (κ ⇒ ι)
+                  → B-context【 Γ 】 ι ⊢ ((ι ⇒ ι) ⇒ ι)
+internal-mod-cont t = max-question-int · (⌜dialogue-tree⌝ t)
 
 -- Use the 3 results:
 
@@ -110,10 +115,25 @@ _ = ⌜dialogue-tree⌝-correct'
 _ = eloquence-theorem
 _ = continuity-implies-continuity₀
 
+max-question-agreement : (d : D ℕ ℕ ℕ) (α : ℕ → ℕ)
+       → max-question-ext d α ＝ max-question-ext-church (church-encode d) α
+max-question-agreement (D.η n)   α = refl
+max-question-agreement (D.β φ n) α = †
+ where
+  IH : max-question-ext (φ (α n)) α
+     ＝ max-question-ext-church (church-encode (φ (α n))) α
+  IH = max-question-agreement (φ (α n)) α
+
+  † : max₀ n (max-question-ext (φ (α n)) α)
+    ＝ church-encode (D.β φ n) (λ _ → 0) (λ g x → max₀ x (g (α x)))
+  † = ap (max₀ n) IH
+
 main-lemma : (t : 〈〉 ⊢ (κ ⇒ ι)) (α : 〈〉 ⊢ κ)
-          → ⟦ max-question-in-path · (⌜dialogue-tree⌝ t) ⟧₀ ⟦ α ⟧₀
-          ＝ max-question-ext ⟦ α ⟧₀ (dialogue-tree t)
-main-lemma = {!!}
+           → ⟦ max-question-int · (⌜dialogue-tree⌝ t) ⟧₀ ⟦ α ⟧₀
+           ＝ max-question-ext (dialogue-tree t) ⟦ α ⟧₀
+main-lemma (Rec t t₁ t₂) α = {!!}
+main-lemma (ƛ t)         α = {!!}
+main-lemma (t₁ · t₂)     α = {!!}
 
 internal-mod-cont-correct : (t : 〈〉 ⊢ (κ ⇒ ι)) (α β : 〈〉 ⊢ κ)
                           → ⟦ α ⟧₀ ＝⦅ ⟦ internal-mod-cont t · α ⟧₀ ⦆ ⟦ β ⟧₀
