@@ -170,8 +170,13 @@ internal-mod-cont-correct t α β p = †
   m₀ : ℕ
   m₀ = pr₁ (c₀ ⟦ α ⟧₀)
 
+  q : ⟦ internal-mod-cont t · α ⟧₀ ＝ m₀
+  q = ⟦ internal-mod-cont t · α ⟧₀ ＝⟨ main-lemma t α ⟩
+      max-question-ext (dialogue-tree t) ⟦ α ⟧₀                         ＝⟨ {!!} ⟩
+      m₀                           ∎
+
   ‡ : ⟦ α ⟧₀ ＝⦅ m₀ ⦆ ⟦ β ⟧₀
-  ‡ = {!!}
+  ‡ = transport (λ - → ⟦ α ⟧₀ ＝⦅ - ⦆ ⟦ β ⟧₀) q p
 
   † : ⟦ t ⟧₀ ⟦ α ⟧₀ ＝ ⟦ t ⟧₀ ⟦ β ⟧₀
   † = pr₂ (c₀ ⟦ α ⟧₀) ⟦ β ⟧₀ ‡
