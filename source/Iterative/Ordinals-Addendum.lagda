@@ -2,6 +2,9 @@ Martin Escardo & Tom de Jong, July 2023.
 
 More about iterative ordinals and their relation to iterative (multi)sets.
 
+ * Assuming propositional resizing, Ord is retract of 𝕄 and a also a
+   retract of 𝕍.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}

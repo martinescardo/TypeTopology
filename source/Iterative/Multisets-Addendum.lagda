@@ -1,6 +1,10 @@
 Martin Escardo July 2023.
 
-Some constructions with multisets.
+Some constructions with iterative multisets.
+
+ * The universe is a retract of the type 𝕄 of iterative multisets.
+ * 𝕄 is algebraicly injective.
+
 
 \begin{code}
 

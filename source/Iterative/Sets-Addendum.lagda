@@ -2,6 +2,8 @@ Martin Escardo July 2023.
 
 Some constructions with iterative sets.
 
+ * The type of iterative sets is algebraicly injective.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K --exact-split #-}
