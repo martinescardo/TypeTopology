@@ -1,4 +1,4 @@
-Martin Escardo July 2023.
+Martin Escardo and Tom de Jong, July 2023.
 
 Some constructions with iterative multisets.
 
