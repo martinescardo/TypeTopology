@@ -1,6 +1,6 @@
 Martin Escardo July 2023.
 
-Some constructions with multisets.
+Some constructions with iterative sets.
 
 \begin{code}
 
