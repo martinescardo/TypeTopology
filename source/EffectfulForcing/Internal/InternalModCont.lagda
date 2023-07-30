@@ -2,7 +2,9 @@
 
 {-# OPTIONS --safe --without-K --exact-split #-}
 
-module EffectfulForcing.Internal.InternalModCont where
+open import UF.FunExt
+
+module EffectfulForcing.Internal.InternalModCont (fe : Fun-Ext) where
 
 open import MLTT.Spartan hiding (rec; _^_)
 open import MLTT.List
@@ -147,7 +149,16 @@ max-question-agreement (D.β φ n) α = †
 
 main-lemma : (d : 〈〉 ⊢ ⌜D⋆⌝ ι ι ι ι) (α : ℕ → ℕ)
            → ⟦ max-question-int · d ⟧₀ α ＝ max-question-ext-church ⟦ d ⟧₀ α
-main-lemma d α = {!!}
+main-lemma d α =
+ ⟦ max-question-int · d ⟧₀ α         ＝⟨ refl ⟩
+ ⟦ d ⟧₀ (λ _ → 0) (⟦ ƛ (ƛ (maxᵀ · ν₀ · (ν₁ · (ν₂ · ν₀)))) ⟧ ((⟨⟩ ‚ ⟦ d ⟧₀) ‚ α))   ＝⟨  refl ⟩
+ ⟦ d ⟧₀ (λ _ → 0) (λ g x → ⟦ maxᵀ ⟧₀ x (g (α x)))                                  ＝⟨ †    ⟩
+ ⟦ d ⟧₀ (λ _ → 0) (λ g x → max x (g (α x)))                                        ＝⟨ refl ⟩
+ max-question-ext-church ⟦ d ⟧₀ α    ∎
+  where
+   † = ap
+        (⟦ d ⟧₀ (λ _ → 0))
+        (dfunext fe λ g → dfunext fe λ x → maxᵀ-correct x (g (α x)))
 
 internal-mod-cont-correct : (t : 〈〉 ⊢ (baire ⇒ ι)) (α β : 〈〉 ⊢ baire)
                           → ⟦ α ⟧₀ ＝⦅ ⟦ internal-mod-cont t · α ⟧₀ ⦆ ⟦ β ⟧₀
@@ -165,6 +176,9 @@ internal-mod-cont-correct t α β p = †
 
   dₜ : D ℕ ℕ ℕ
   dₜ = pr₁ ε
+
+  foo : dialogue-tree t ＝ dₜ
+  foo = refl
 
   φ : dialogue dₜ ∼ ⟦ t ⟧₀
   φ = pr₂ ε
@@ -184,14 +198,24 @@ internal-mod-cont-correct t α β p = †
   m₀ : ℕ
   m₀ = pr₁ (c₀ ⟦ α ⟧₀)
 
+  lemma : ⟦ ⌜dialogue-tree⌝ t ⟧₀ ＝ church-encode (dialogue-tree t)
+  lemma = dfunext fe goal
+   where
+    goal : (α : ℕ → ℕ) → ⟦ ⌜dialogue-tree⌝ t ⟧₀ α ＝ church-encode (dialogue-tree t) α
+    goal α = ⟦ ⌜dialogue-tree⌝ t ⟧₀ α ＝⟨ {!⌜dialogue-tree⌝-correct' t α ⁻¹!} ⟩ {!!} ＝⟨ {!!} ⟩ {!!} ∎
+
   q : ⟦ internal-mod-cont t · α ⟧₀ ＝ m₀
   q = ⟦ internal-mod-cont t · α ⟧₀                                  ＝⟨ refl ⟩
       succ (⟦ max-question-int · (⌜dialogue-tree⌝ t) ⟧₀ ⟦ α ⟧₀)     ＝⟨ ap succ (main-lemma (⌜dialogue-tree⌝ t) ⟦ α ⟧₀) ⟩
-      succ (max-question-ext-church ⟦ ⌜dialogue-tree⌝ t  ⟧₀ ⟦ α ⟧₀) ＝⟨ {!!} ⟩
+      succ (max-question-ext-church ⟦ ⌜dialogue-tree⌝ t  ⟧₀ ⟦ α ⟧₀) ＝⟨ ♣ ⟩
       succ (max-question-ext-church (church-encode dₜ) ⟦ α ⟧₀)      ＝⟨ ap succ (max-question-agreement dₜ ⟦ α ⟧₀ ⁻¹) ⟩
       succ (max-question-ext dₜ ⟦ α ⟧₀)                             ＝⟨ ap succ (max-ext-equal-to-max-ext′ dₜ ⟦ α ⟧₀) ⟩
-      succ (max-question₀ dₜ ⟦ α ⟧₀)                                ＝⟨ {!!} ⟩
+      succ (max-question₀ dₜ ⟦ α ⟧₀)                                ＝⟨ refl ⟩
       modulus-at₀ ⟦ t ⟧₀ c₀ ⟦ α ⟧₀                                  ∎
+       where
+        ♣ : succ (max-question-ext-church ⟦ ⌜dialogue-tree⌝ t ⟧₀ ⟦ α ⟧₀)
+          ＝ succ (max-question-ext-church (church-encode dₜ) ⟦ α ⟧₀)
+        ♣ = ap succ (ap (λ - → (max-question-ext-church - ⟦ α ⟧₀)) lemma)
 
   ‡ : ⟦ α ⟧₀ ＝⦅ m₀ ⦆ ⟦ β ⟧₀
   ‡ = transport (λ - → ⟦ α ⟧₀ ＝⦅ - ⦆ ⟦ β ⟧₀) q p
