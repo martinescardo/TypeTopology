@@ -139,14 +139,6 @@ max-question-agreement (D.β φ n) α = †
     ＝ church-encode (D.β φ n) (λ _ → 0) (λ g x → max x (g (α x)))
   † = ap (max n) IH
 
--- main-lemma : (t : 〈〉 ⊢ (baire ⇒ ι)) (α : 〈〉 ⊢ baire)
---            → ⟦ max-question-int · ⌜dialogue-tree⌝ t ⟧₀ ⟦ α ⟧₀
---            ＝ max-question-ext (dialogue-tree t) ⟦ α ⟧₀
--- main-lemma t α =
---  ⟦ max-question-int · ⌜dialogue-tree⌝ t ⟧₀ ⟦ α ⟧₀                   ＝⟨ {!!} ⟩
---  max-question-ext-church (church-encode (dialogue-tree t)) ⟦ α ⟧₀   ＝⟨ max-question-agreement (dialogue-tree t) ⟦ α ⟧₀ ⁻¹ ⟩
---  max-question-ext (dialogue-tree t) ⟦ α ⟧₀                          ∎
-
 main-lemma : (d : 〈〉 ⊢ ⌜D⋆⌝ ι ι ι ι) (α : ℕ → ℕ)
            → ⟦ max-question-int · d ⟧₀ α ＝ max-question-ext-church ⟦ d ⟧₀ α
 main-lemma d α =
@@ -199,10 +191,7 @@ internal-mod-cont-correct t α β p = †
   m₀ = pr₁ (c₀ ⟦ α ⟧₀)
 
   lemma : ⟦ ⌜dialogue-tree⌝ t ⟧₀ ＝ church-encode (dialogue-tree t)
-  lemma = dfunext fe goal
-   where
-    goal : (α : ℕ → ℕ) → ⟦ ⌜dialogue-tree⌝ t ⟧₀ α ＝ church-encode (dialogue-tree t) α
-    goal α = ⟦ ⌜dialogue-tree⌝ t ⟧₀ α ＝⟨ {!⌜dialogue-tree⌝-correct' t α ⁻¹!} ⟩ {!!} ＝⟨ {!!} ⟩ {!!} ∎
+  lemma = dfunext fe {!!}
 
   q : ⟦ internal-mod-cont t · α ⟧₀ ＝ m₀
   q = ⟦ internal-mod-cont t · α ⟧₀                                  ＝⟨ refl ⟩
