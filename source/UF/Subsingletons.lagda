@@ -388,6 +388,12 @@ pr₁-lc : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
        → left-cancellable (pr₁ {𝓤} {𝓥} {X} {Y})
 pr₁-lc f p = to-Σ-＝ (p , (f _ _))
 
+subsets-of-props-are-props : (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ )
+                         → is-prop X
+                         → ({x : X} → is-prop (Y x))
+                         → is-prop (Σ x ꞉ X , Y x)
+subsets-of-props-are-props X Y h p = subtypes-of-props-are-props' pr₁ (pr₁-lc p) h
+
 subsets-of-sets-are-sets : (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ )
                          → is-set X
                          → ({x : X} → is-prop (Y x))

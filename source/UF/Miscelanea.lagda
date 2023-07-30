@@ -280,3 +280,21 @@ maps-of-props-into-isolated-points-are-embeddings f i j =
   (λ p → isolated-is-h-isolated (f p) (j p))
 
 \end{code}
+
+Added 30 Jul 2023.
+
+\begin{code}
+
+constant-maps-are-h-isolated : funext 𝓤 𝓥
+                             → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (y₀ : Y)
+                             → is-h-isolated y₀
+                             → is-h-isolated (λ (x : X) → y₀)
+constant-maps-are-h-isolated fe y₀ y₀-iso {f} = II
+ where
+  I = ((λ x → y₀) ＝ f) ≃⟨ ≃-funext fe (λ x → y₀) f ⟩
+    (λ x → y₀) ∼ f      ■
+
+  II : is-prop ((λ x → y₀) ＝ f)
+  II = equiv-to-prop I (Π-is-prop fe (λ _ → y₀-iso))
+
+\end{code}
