@@ -48,6 +48,7 @@ open import UF.Embeddings
 open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.PairFun
+open import UF.Retracts
 open import UF.Size
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
@@ -81,8 +82,6 @@ rather than ⌊ e ⌋, but the universe levels get on the way. Unless we
 assume propositional resizing.
 
 \begin{code}
-
-open import UF.Retracts
 
 Ord-is-retract-of-𝕄 : propositional-resizing 𝓤⁺ 𝓤
                     → retract Ord of 𝕄

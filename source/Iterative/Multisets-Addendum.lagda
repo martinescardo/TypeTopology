@@ -23,6 +23,7 @@ open import UF.EquivalenceExamples
 open import UF.FunExt
 open import UF.Miscelanea
 open import UF.PropIndexedPiSigma
+open import UF.Retracts
 open import UF.Size
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
@@ -58,16 +59,19 @@ The universe 𝓤 is embedded as a retract of 𝕄.
 𝟘ᴹ-is-h-isolated : is-h-isolated 𝟘ᴹ
 𝟘ᴹ-is-h-isolated {ssup X φ} = isets-are-h-isolated 𝟘ᴹ 𝟘ᴹ-is-iset
 
-𝕄-toor : 𝓤 ̇ → 𝕄
-𝕄-toor X = ssup X (λ x → 𝟘ᴹ)
+𝓤-to-𝕄 : 𝓤 ̇ → 𝕄
+𝓤-to-𝕄 X = ssup X (λ x → 𝟘ᴹ)
 
-𝕄-root-toor : 𝕄-root ∘ 𝕄-toor ∼ id
-𝕄-root-toor X = refl
+𝓤-to-𝕄-is-section : 𝕄-root ∘ 𝓤-to-𝕄 ∼ id
+𝓤-to-𝕄-is-section X = refl
 
-𝕄-toor-is-embedding : is-embedding 𝕄-toor
-𝕄-toor-is-embedding M@(ssup Y φ) = II
+𝓤-is-retract-of-𝕄 : retract (𝓤 ̇ ) of 𝕄
+𝓤-is-retract-of-𝕄 = 𝕄-root , 𝓤-to-𝕄 , 𝓤-to-𝕄-is-section
+
+𝓤-to-𝕄-is-embedding : is-embedding 𝓤-to-𝕄
+𝓤-to-𝕄-is-embedding M@(ssup Y φ) = II
  where
-  I = fiber 𝕄-toor M ≃⟨ ≃-refl _ ⟩
+  I = fiber 𝓤-to-𝕄 M ≃⟨ ≃-refl _ ⟩
       (Σ X ꞉ 𝓤 ̇ , ssup X (λ x → 𝟘ᴹ) ＝ (ssup Y φ))                     ≃⟨ I₀ ⟩
       (Σ X ꞉ 𝓤 ̇ , Σ p ꞉ X ＝ Y , (λ x → 𝟘ᴹ) ＝ φ ∘ Idtofun p)          ≃⟨ I₁ ⟩
       (Σ (X , p) ꞉ (Σ X ꞉ 𝓤 ̇ , X ＝ Y) , (λ x → 𝟘ᴹ) ＝ φ ∘ Idtofun p)  ■
@@ -75,7 +79,7 @@ The universe 𝓤 is embedded as a retract of 𝕄.
     I₀ = Σ-cong (λ X → 𝕄-＝)
     I₁ = ≃-sym Σ-assoc
 
-  II : is-prop (fiber 𝕄-toor M)
+  II : is-prop (fiber 𝓤-to-𝕄 M)
   II = equiv-to-prop I
         (subsets-of-props-are-props _ _
           (singleton-types'-are-props Y)
