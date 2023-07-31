@@ -503,8 +503,10 @@ data rather than property), called algebraic injectivity.
 \begin{code}
 
 ainjective-type : 𝓦 ̇ → (𝓤 𝓥 : Universe) → 𝓤 ⁺ ⊔ 𝓥  ⁺ ⊔ 𝓦 ̇
-ainjective-type D 𝓤 𝓥 = {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (j : X → Y) → is-embedding j
-                      → (f : X → D) → Σ f' ꞉ (Y → D) , f' ∘ j ∼ f
+ainjective-type D 𝓤 𝓥 = {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (j : X → Y)
+                      → is-embedding j
+                      → (f : X → D)
+                      → Σ f' ꞉ (Y → D) , f' ∘ j ∼ f
 
 embedding-retract : (D : 𝓦 ̇ ) (Y : 𝓥 ̇ ) (j : D → Y)
                   → is-embedding j
@@ -1399,8 +1401,10 @@ module injective (pt : propositional-truncations-exist) where
  open PropositionalTruncation pt
 
  injective-type : 𝓦 ̇ → (𝓤 𝓥 : Universe) → 𝓤 ⁺ ⊔ 𝓥  ⁺ ⊔ 𝓦 ̇
- injective-type D 𝓤 𝓥 = {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (j : X → Y) → is-embedding j
-                       → (f : X → D) → ∃ g ꞉ (Y → D), g ∘ j ∼ f
+ injective-type D 𝓤 𝓥 = {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (j : X → Y)
+                       → is-embedding j
+                       → (f : X → D)
+                       → ∃ g ꞉ (Y → D), g ∘ j ∼ f
 
 
  injectivity-is-prop : (D : 𝓦 ̇ ) (𝓤 𝓥 : Universe)
