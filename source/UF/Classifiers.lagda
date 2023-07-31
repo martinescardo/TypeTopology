@@ -443,7 +443,7 @@ more general universes in the following:
 
 Σ-fibers : is-univalent 𝓤
          → funext 𝓤 (𝓤 ⁺)
-         → {X : 𝓤 ̇ } {Y : 𝓤 ̇ }
+         → {X Y : 𝓤 ̇ }
          → fiber (∑ Y) X ≃ (X → Y)
 Σ-fibers {𝓤} ua fe⁺ {X} {Y} =
   (Σ A ꞉ (Y → 𝓤 ̇ ) , Σ A ＝ X) ≃⟨ Σ-cong (λ A → univalence-≃ ua (Σ A) X) ⟩

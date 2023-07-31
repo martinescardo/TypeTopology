@@ -139,8 +139,8 @@ WEM-gives-decomposition-of-ordinals-type⁺ {𝓤} wem =
 
 \end{code}
 
-We can strengthen this to WEM 𝓤 → decomposition (Ordinal 𝓤) using
-the fact that the type Ordinal 𝓤 ̇ is locally small.
+We can strengthen the hypothesis of the above implication to WEM 𝓤
+using the fact that the type Ordinal 𝓤 ̇ is locally small.
 
 \begin{code}
 
@@ -198,7 +198,7 @@ true to y. We collect all such functions in a type Ω-Path 𝓥 x y.
 
 \end{code}
 
-The the of ordinals in any universe has Ω-paths between any two points.
+The type of ordinals in any universe has Ω-paths between any two points.
 
 \begin{code}
 
@@ -364,16 +364,18 @@ module _ (pt : propositional-truncations-exist) where
   ∥∥-rec (WEM-is-prop fe) decomposition-of-ordinals-type-gives-WEM ,
   (λ wem → ∣ WEM-gives-decomposition-of-ordinals-type wem ∣)
 
- decomposability-gives-decomposition : decomposable (Ordinal 𝓤) → decomposition (Ordinal 𝓤)
- decomposability-gives-decomposition {𝓤} δ = WEM-gives-decomposition-of-ordinals-type
-                                               (lr-implication Ordinal-decomposable-iff-WEM δ)
+ decomposability-gives-decomposition : decomposable (Ordinal 𝓤)
+                                     → decomposition (Ordinal 𝓤)
+ decomposability-gives-decomposition {𝓤} δ =
+  WEM-gives-decomposition-of-ordinals-type
+   (lr-implication Ordinal-decomposable-iff-WEM δ)
 
 \end{code}
 
-Notice that the formulation of this doesn't refer to WEM, but its
-proof uses WEM, which follows from the hypothesis. Even though
-decomposable (Ordinal 𝓤) and WEM are property, we get data out of
-them - if we are given a proof of decomposability.
+Notice that the formulation of this fact doesn't refer to WEM, but its
+proof uses WEM, which follows from the hypothesis. Even though the
+types decomposable (Ordinal 𝓤) and WEM are property, we get data out
+of them if we are given a proof of decomposability.
 
 
 Added 9th September 2022 by Tom de Jong.
