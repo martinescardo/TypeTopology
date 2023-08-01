@@ -441,4 +441,4 @@ References
         Accepted pending minor revision to a special issue of Logical Methods in
         Computer Science on selected papers from FSCD 2021.
 
-TODO. Implement the above.
+TODO. Implement the above thoughts.

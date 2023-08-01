@@ -277,6 +277,9 @@ true-is-equal-⊤ pe fe P i p = to-Σ-＝ (holds-gives-equal-𝟙 pe P i p ,
 holds-gives-equal-⊤ : propext 𝓤 → funext 𝓤 𝓤 → (p : Ω 𝓤) → p holds → p ＝ ⊤
 holds-gives-equal-⊤ pe fe (P , i) = true-is-equal-⊤ pe fe P i
 
+equal-⊤-holds : (p : Ω 𝓤) → p ＝ ⊤ → p holds
+equal-⊤-holds .⊤ refl = ⋆
+
 equal-𝟙-gives-holds : (P : 𝓤 ̇ ) → P ＝ 𝟙 → P
 equal-𝟙-gives-holds P r = Idtofun (r ⁻¹) ⋆
 
@@ -318,6 +321,9 @@ false-is-equal-⊥ pe fe P i f =
 
 fails-gives-equal-⊥ : propext 𝓤 → funext 𝓤 𝓤 → (p : Ω 𝓤) → ¬ (p holds) → p ＝ ⊥
 fails-gives-equal-⊥ pe fe (P , i) = false-is-equal-⊥ pe fe P i
+
+equal-⊥-fails : (p : Ω 𝓤) → p ＝ ⊥ → ¬ (p holds)
+equal-⊥-fails .⊥ refl = 𝟘-elim
 
 not-equal-⊤-gives-equal-⊥ : (fe : Fun-Ext)
                             (pe : propext 𝓤)
