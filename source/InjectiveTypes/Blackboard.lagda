@@ -1205,7 +1205,8 @@ some universe, it is aflabby with respect to all universes:
 
 aflabbiness-resizing : (D : 𝓦 ̇ ) (𝓤 𝓥 : Universe)
                      → propositional-resizing 𝓤 𝓥
-                     → aflabby D 𝓥 → aflabby D 𝓤
+                     → aflabby D 𝓥
+                     → aflabby D 𝓤
 aflabbiness-resizing D 𝓤 𝓥 R φ P i f = d , h
  where
   Q : 𝓥 ̇
@@ -1275,7 +1276,7 @@ universe-retract ua R 𝓤 𝓥 = ρ , (Lift-is-embedding ua)
 
 \end{code}
 
-And unfolding of the above construction is in the module UF.Size.
+An unfolding of the above construction is in the module UF.Size.
 
 Added 25th January 2019. From this we get the following
 characterization of injective types (as a logical equivalence, not a
