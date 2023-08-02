@@ -2,16 +2,21 @@ Martin Escardo & Tom de Jong, June 2023.
 
 Iterative multisets, iterative sets, and iterative ordinals.
 
+For an exposition of what is done here, see this post:
+https://mathstodon.xyz/@MartinEscardo/110753930251021051
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K --exact-split #-}
 
 module Iterative.index where
 
-import Iterative.W-Properties
 import Iterative.Multisets
 import Iterative.Sets
 import Iterative.Ordinals
+import Iterative.Multisets-Addendum
+import Iterative.Sets-Addendum
+import Iterative.Ordinals-Addendum
 
 \end{code}
 
@@ -30,7 +35,7 @@ References.
     Volume 96, 1978, Pages 55-66.
     https://doi.org/10.1016/S0049-237X(08)71989-X
 
-  * Gerald, Leversha. "Formal Systems for Constructive Mathematics".
+  * Gerald Leversha. "Formal Systems for Constructive Mathematics".
     PhD Thesis, 1976, The University of Manchester (United
     Kingdom). Department of Pure and Applied Mathematics.
     https://www.librarysearch.manchester.ac.uk/permalink/44MAN_INST/1r887gn/alma992983521804701631

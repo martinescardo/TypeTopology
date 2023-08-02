@@ -6,7 +6,7 @@ W-types.
 
 {-# OPTIONS --safe --without-K --exact-split #-}
 
-module MLTT.W where
+module W.Type where
 
 open import MLTT.Spartan
 
@@ -15,33 +15,51 @@ data W {𝓤 𝓥 : Universe} (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) : 𝓤 ⊔ �
 
 module _ {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } where
 
- W-root : W X A → X
+ private
+  𝕎 = W X A
+
+ W-root : 𝕎 → X
  W-root (ssup x φ) = x
 
- W-forest : (w : W X A) → A (W-root w) → W X A
+ W-forest : (w : 𝕎) → A (W-root w) → 𝕎
  W-forest (ssup x φ) = φ
 
- W-η : (w : W X A) → ssup (W-root w) (W-forest w) ＝ w
+ W-ssup-root : (x : X) (φ : A x → 𝕎)
+             → W-root (ssup x φ) ＝ x
+ W-ssup-root x φ = refl
+
+ W-ssup-forest : (x : X) (φ : A x → 𝕎)
+             → W-forest (ssup x φ) ＝ φ
+ W-ssup-forest x φ = refl
+
+ W-η : (w : 𝕎) → ssup (W-root w) (W-forest w) ＝ w
  W-η (ssup x φ) = refl
 
- W-induction : (P : W X A → 𝓦 ̇ )
-             → ((x : X) (φ : A x → W X A)
-                       → ((a : A x) → P (φ a)) → P (ssup x φ))
-             → (w : W X A) → P w
- W-induction P g = h
+ W-induction : (P : 𝕎 → 𝓦 ̇ )
+             → ((x : X) (φ : A x → 𝕎)
+                   → ((a : A x) → P (φ a)) → P (ssup x φ))
+             → (w : 𝕎) → P w
+ W-induction P IH = h
   where
-   h : (w : W X A) → P w
-   h (ssup x φ) = g x φ (λ x → h (φ x))
+   h : (w : 𝕎) → P w
+   h (ssup x φ) = IH x φ (λ x → h (φ x))
+
+ W-induction' : (P : 𝕎 → 𝓦 ̇ )
+             → ((w : 𝕎)
+                   → ((a : A (W-root w)) → P (W-forest w a))
+                   → P w)
+             → (w : 𝕎) → P w
+ W-induction' P IH = W-induction P (λ x φ IH' → IH (ssup x φ) IH')
 
  W-recursion : (P : 𝓦 ̇ )
-             → ((x : X) → (A x → W X A)
+             → ((x : X) → (A x → 𝕎)
                         → (A x → P) → P)
-             → W X A → P
+             → 𝕎 → P
  W-recursion P = W-induction (λ _ → P)
 
  W-iteration : (P : 𝓦 ̇ )
              → ((x : X) → (A x → P) → P)
-             → W X A → P
+             → 𝕎 → P
  W-iteration P g = W-recursion P (λ X _ → g X)
 
 \end{code}

@@ -74,4 +74,7 @@ I find it convenient to define the type of directed families.
  is-scott-open : (⟨ 𝓓 ⟩ → Ω 𝓦) → Ω (𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ⊔ 𝓦)
  is-scott-open P = is-upwards-closed P ∧ is-inaccessible-by-directed-joins P
 
+ 𝒪ₛ : 𝓤 ⊔ 𝓦 ⁺ ⊔ 𝓥 ⁺ ⊔ 𝓣  ̇
+ 𝒪ₛ = Σ P ꞉ (⟨ 𝓓 ⟩ → Ω 𝓦) , is-scott-open P holds
+
 \end{code}

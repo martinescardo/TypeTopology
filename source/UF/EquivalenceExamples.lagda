@@ -888,6 +888,24 @@ pr₁-fiber-equiv {𝓤} {𝓥} {X} {Y} x =
   (Σ x' ꞉ X , Y x' × (x' ＝ x))  ≃⟨ right-Id-equiv x ⟩
   Y x                           ■
 
+equal-⊤-≃ : propext 𝓤
+          → funext 𝓤 𝓤
+          → (p : Ω 𝓤) → (p ＝ ⊤Ω) ≃ (p holds)
+equal-⊤-≃ {𝓤} pe fe p = logically-equivalent-props-are-equivalent
+                         (Ω-is-set fe pe)
+                         (holds-is-prop p)
+                         (equal-⊤-holds p)
+                         (holds-gives-equal-⊤ pe fe p)
+
+equal-⊥-≃ : propext 𝓤
+          → funext 𝓤 𝓤
+          → (p : Ω 𝓤) → (p ＝ ⊥Ω) ≃ ¬ (p holds)
+equal-⊥-≃ {𝓤} pe fe p = logically-equivalent-props-are-equivalent
+                         (Ω-is-set fe pe)
+                         (negations-are-props (lower-funext 𝓤 𝓤 fe))
+                         (equal-⊥-fails p)
+                         (fails-gives-equal-⊥ pe fe p)
+
 \end{code}
 
 Tom de Jong, September 2019 (two lemmas used in UF.Classifiers-Old)

@@ -2,15 +2,18 @@ Martin Escardo. 19th December 2020, June 2023.
 
 General properties of W-types.
 
+Notice that we don't assume any axioms from univalent foundations
+other than function extensionality, but that we formulate and prove
+properties in univalent style.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
 
 open import MLTT.Spartan
 
-module Iterative.W-Properties (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) where
+module W.Properties (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) where
 
-open import MLTT.W
 open import UF.Base
 open import UF.Equiv
 open import UF.EquivalenceExamples
@@ -18,13 +21,17 @@ open import UF.FunExt
 open import UF.Retracts
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-
-\end{code}
-
-\begin{code}
+open import W.Type
 
 private
  𝕎 = W X A
+
+\end{code}
+
+We first show that the identity type of 𝕎 is equivalent to _＝ʷ_
+defined as follows.
+
+\begin{code}
 
 _＝ʷ_ : 𝕎 → 𝕎 → 𝓤 ⊔ 𝓥 ̇
 ssup x f ＝ʷ ssup x' f' = Σ p ꞉ x ＝ x' , ((a : A x) → f a ＝ʷ f' (transport A p a))
@@ -65,28 +72,45 @@ W-centrality fe w@(ssup x f) σ@(ssup x g , refl , u) = IV
        ssup x g , refl , u                      ＝⟨ refl ⟩
        σ                                        ∎
 
-singleton-typesʷ-are-singletons : Fun-Ext → (w : 𝕎) → is-singleton (singleton-typeʷ w)
+singleton-typesʷ-are-singletons : Fun-Ext
+                                → (w : 𝕎) → is-singleton (singleton-typeʷ w)
 singleton-typesʷ-are-singletons fe w = W-center w , W-centrality fe w
 
-idtoeqʷ : (w t : 𝕎) → w ＝ t → w ＝ʷ t
-idtoeqʷ w w refl = ＝ʷ-refl w
+\end{code}
 
-idtoeqʷ-is-equiv : Fun-Ext → (w t : 𝕎) → is-equiv (idtoeqʷ w t)
-idtoeqʷ-is-equiv fe w = I
+From this it follows that the canonical map from the native notion of
+𝕎-identity to the alternative notion of 𝕎-identity defined above is an
+equivalence:
+
+\begin{code}
+
+idtoidʷ : (w t : 𝕎) → w ＝ t → w ＝ʷ t
+idtoidʷ w w refl = ＝ʷ-refl w
+
+idtoidʷ-is-equiv : Fun-Ext → (w t : 𝕎) → is-equiv (idtoidʷ w t)
+idtoidʷ-is-equiv fe w = I
  where
   f : singleton-type w → singleton-typeʷ w
-  f = NatΣ (idtoeqʷ w)
+  f = NatΣ (idtoidʷ w)
 
   f-is-equiv : is-equiv f
   f-is-equiv = maps-of-singletons-are-equivs f
                 (singleton-types-are-singletons w)
                 (singleton-typesʷ-are-singletons fe w)
 
-  I : (t : 𝕎) → is-equiv (idtoeqʷ w t)
-  I = NatΣ-equiv-gives-fiberwise-equiv (idtoeqʷ w) f-is-equiv
+  I : (t : 𝕎) → is-equiv (idtoidʷ w t)
+  I = NatΣ-equiv-gives-fiberwise-equiv (idtoidʷ w) f-is-equiv
 
-W-≃-＝ : Fun-Ext → (w t : 𝕎) → (w ＝ t) ≃ (w ＝ʷ t)
-W-≃-＝ fe w t = idtoeqʷ w t , idtoeqʷ-is-equiv fe w t
+idtoidʷ-≃ : Fun-Ext → (w t : 𝕎) → (w ＝ t) ≃ (w ＝ʷ t)
+idtoidʷ-≃ fe w t = idtoidʷ w t , idtoidʷ-is-equiv fe w t
+
+\end{code}
+
+We now describe ways to "construct" and "destruct" native 𝕎
+identifications, which are mutually inverse and hence induce an
+equivalence.
+
+\begin{code}
 
 to-W-＝ : {x  : X} {φ  : A x  → 𝕎}
           {x' : X} {φ' : A x' → 𝕎}
@@ -118,7 +142,16 @@ W-＝ : {x  : X} {φ  : A x  → 𝕎}
      ≃ (Σ p ꞉ x ＝ x' , (φ ＝ φ' ∘ transport A p))
 W-＝ = qinveq (from-W-＝) (to-W-＝ , to-from-W-＝ , from-to-W-＝)
 
-W-is-prop : funext 𝓥 (𝓤 ⊔ 𝓥) → is-prop X → is-prop 𝕎
+\end{code}
+
+From this we conclude that if X is a proposition or a set, then 𝕎 is a
+proposition or a set respectively:
+
+\begin{code}
+
+W-is-prop : funext 𝓥 (𝓤 ⊔ 𝓥)
+          → is-prop X
+          → is-prop 𝕎
 W-is-prop fe X-is-prop (ssup x φ) (ssup x' φ') = γ
  where
   p : x ＝ x'
@@ -161,3 +194,7 @@ W-is-set fe X-is-set {ssup x φ} {ssup x' φ'} = γ
   γ = retract-of-prop β α
 
 \end{code}
+
+Notice that, in both cases, we didn't need to assume anything about
+the family A to deduce the truncation level of the type 𝕎 = W X A.
+Only the truncation level of X matters.

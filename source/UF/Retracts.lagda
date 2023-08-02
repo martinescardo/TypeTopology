@@ -28,6 +28,10 @@ retraction (r , s , rs) = r
 section : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → retract X of Y → (X → Y)
 section (r , s , rs) = s
 
+section-is-section : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                   → (ρ : retract X of Y) → is-section (section ρ)
+section-is-section (r , s , rs) = r , rs
+
 retract-condition : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (ρ : retract X of Y)
                   → retraction ρ ∘ section ρ ∼ id
 retract-condition (r , s , rs) = rs

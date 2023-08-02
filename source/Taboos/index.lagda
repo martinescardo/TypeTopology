@@ -6,6 +6,7 @@ Martin Escardo
 
 module Taboos.index where
 
+import Taboos.Decomposability
 import Taboos.BasicDiscontinuity
 import Taboos.LPO
 import Taboos.WLPO

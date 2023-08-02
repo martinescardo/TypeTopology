@@ -556,6 +556,9 @@ Idtofun-is-embedding ua fe {X} {Y} =
   (dfunext fe (idtofun-agreement X Y))
   (idtofun-is-embedding ua)
 
+unique-from-𝟘-is-embedding : {X : 𝓤 ̇ } → is-embedding (unique-from-𝟘 {𝓤} {𝓥} {X})
+unique-from-𝟘-is-embedding x (y , p) = 𝟘-elim y
+
 \end{code}
 
 Fixities:
