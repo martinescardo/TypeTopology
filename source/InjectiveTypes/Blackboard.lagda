@@ -1790,6 +1790,28 @@ module _ (D : 𝓤 ̇ )
    I  = pr₂ (e (j x)) (⌜ ρ (j x) ⌝⁻¹ w)
    II = ap (f ∘ pr₁) (≃-sym-is-rinv (ρ (j x)) w)
 
+ aflabbiness-gives-injectivity-over-small-maps : Σ f' ꞉ (Y → D) , f' ∘ j ∼ f
+ aflabbiness-gives-injectivity-over-small-maps = sflabby-extension ,
+                                                 sflabby-extension-property
+
+\end{code}
+
+An extension property for injective types, with more general universes
+and less general embeddings.
+
+\begin{code}
+
+ainjectivity-over-small-maps : (D : 𝓤 ̇ )
+                             → ainjective-type D 𝓤 𝓥
+                             → {X : 𝓥 ̇ } {Y : 𝓦 ̇ }
+                               (j : X → Y)
+                             → is-embedding j
+                             → j is 𝓤 small-map
+                             → (f : X → D) → Σ f' ꞉ (Y → D) , f' ∘ j ∼ f
+ainjectivity-over-small-maps D D-ainj =
+ aflabbiness-gives-injectivity-over-small-maps D
+  (ainjective-types-are-aflabby D D-ainj)
+
 \end{code}
 
 Fixities:
