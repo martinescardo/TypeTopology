@@ -31,7 +31,7 @@ data GameJ : Type₁ where
  leaf   : R → GameJ
  branch : (X : Type) (Xf : X → GameJ) (ε : J X) → GameJ
 
-dtt : GameJ → 𝕋
+dtt : GameJ → 𝑻
 dtt (leaf x)        = []
 dtt (branch X Xf ε) = X ∷ λ x → dtt (Xf x)
 

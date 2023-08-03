@@ -14,6 +14,8 @@ module Iterative.index where
 import Iterative.Multisets
 import Iterative.Sets
 import Iterative.Ordinals
+import Iterative.Multisets-Addendum
+import Iterative.Sets-Addendum
 import Iterative.Ordinals-Addendum
 
 \end{code}

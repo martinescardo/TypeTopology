@@ -1,6 +1,9 @@
-Martin Escardo & Tom de Jong, June 2023.
+Martin Escardo & Tom de Jong, July 2023.
 
 More about iterative ordinals and their relation to iterative (multi)sets.
+
+ * Assuming propositional resizing, Ord is retract of 𝕄 and a also a
+   retract of 𝕍.
 
 \begin{code}
 
@@ -48,6 +51,7 @@ open import UF.Embeddings
 open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.PairFun
+open import UF.Retracts
 open import UF.Size
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
@@ -82,14 +86,18 @@ assume propositional resizing.
 
 \begin{code}
 
-open import UF.Retracts
-
 Ord-is-retract-of-𝕄 : propositional-resizing 𝓤⁺ 𝓤
                     → retract Ord of 𝕄
 Ord-is-retract-of-𝕄 pe = embedding-retract Ord 𝕄 Ord-to-𝕄
                            Ord-to-𝕄-is-embedding
                            (ainjective-resizing {𝓤} {𝓤} pe (Ordinal 𝓤)
                              (Ordinal-is-ainjective (ua 𝓤)))
+
+\end{code}
+
+TODO. Can we get the same conclusion without propositional resizing?
+
+\begin{code}
 
 Ord-is-retract-of-𝕍 : propositional-resizing 𝓤⁺ 𝓤
                     → retract Ord of 𝕍
@@ -98,5 +106,3 @@ Ord-is-retract-of-𝕍 pe = embedding-retract Ord 𝕍 Ord-to-𝕍
                           (ainjective-resizing {𝓤} {𝓤} pe (Ordinal 𝓤)
                             (Ordinal-is-ainjective (ua 𝓤)))
 \end{code}
-
-TODO. Can we get the same conclusion without propositional resizing?

@@ -107,23 +107,26 @@ module JT-definitions
  open α-definitions 𝓣 R 𝓐
  open K-definitions R
 
+ 𝕁𝕋 : Monad
+ 𝕁𝕋 = 𝕁-transf fe 𝓣 R
+
  JT : Type → Type
- JT = functor (𝕁-transf fe 𝓣 R)
+ JT = functor 𝕁𝕋
 
  ηᴶᵀ : {X : Type} → X → JT X
- ηᴶᵀ = η (𝕁-transf fe 𝓣 R)
+ ηᴶᵀ = η 𝕁𝕋
 
  extᴶᵀ : {X Y : Type} → (X → JT Y) → JT X → JT Y
- extᴶᵀ = ext (𝕁-transf fe 𝓣 R)
+ extᴶᵀ = ext 𝕁𝕋
 
  mapᴶᵀ : {X Y : Type} → (X → Y) → JT X → JT Y
- mapᴶᵀ = map (𝕁-transf fe 𝓣 R)
+ mapᴶᵀ = map 𝕁𝕋
 
  _⊗ᴶᵀ_ : {X : Type} {Y : X → Type}
        → JT X
        → ((x : X) → JT (Y x))
        → JT (Σ x ꞉ X , Y x)
- _⊗ᴶᵀ_ = _⊗_ (𝕁-transf fe 𝓣 R)
+ _⊗ᴶᵀ_ = _⊗_ 𝕁𝕋
 
  α-overlineᵀ : {X : Type} → JT X → (X → T R) → R
  α-overlineᵀ ε = λ p → α (extᵀ p (ε p))

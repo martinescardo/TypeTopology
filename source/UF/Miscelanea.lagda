@@ -10,16 +10,18 @@ Find a better home for all of this.
 
 module UF.Miscelanea where
 
-open import MLTT.Spartan
-
 open import MLTT.Plus-Properties
+open import MLTT.Spartan
 open import Naturals.Properties
 open import TypeTopology.DiscreteAndSeparated
 open import UF.Base
 open import UF.Embeddings
 open import UF.Equiv
+open import UF.EquivalenceExamples
 open import UF.FunExt
 open import UF.Lower-FunExt
+open import UF.Size
+open import UF.SmallnessProperties
 open import UF.Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)
 open import UF.Subsingletons-FunExt
 
@@ -186,8 +188,24 @@ equiv-to-discrete (f , e) = equivs-preserve-discreteness f e
 𝟚-to-Ω-is-embedding fe pe _ (₁ , p) (₀ , q) = 𝟘-elim (⊥-is-not-⊤ (q ∙ p ⁻¹))
 𝟚-to-Ω-is-embedding fe pe _ (₁ , p) (₁ , q) = to-Σ-＝ (refl , Ω-is-set fe pe p q)
 
+𝟚-to-Ω-is-small-map : propext 𝓤 → funext 𝓤 𝓤 → (𝟚-to-Ω {𝓤}) is 𝓤 small-map
+𝟚-to-Ω-is-small-map {𝓤} pe fe p = IX
+ where
+  I = fiber (𝟚-to-Ω {𝓤}) p           ≃⟨ ≃-refl _ ⟩
+      (Σ n ꞉ 𝟚 , 𝟚-to-Ω {𝓤} n ＝ p ) ≃⟨ I₀ ⟩
+      (⊥ ＝ p) + (⊤ ＝ p)            ≃⟨ I₁ ⟩
+      (¬ (p holds) + p holds)        ■
+   where
+    I₀ = alternative-+
+    I₁ = +-cong
+          (＝-flip ● equal-⊥-≃ pe fe p)
+          (＝-flip ● equal-⊤-≃ pe fe p)
+
+  IX : fiber 𝟚-to-Ω p is 𝓤 small
+  IX = (¬ (p holds) + p holds) , ≃-sym I
+
 nonempty : 𝓤 ̇ → 𝓤 ̇
-nonempty X = is-empty(is-empty X)
+nonempty X = is-empty (is-empty X)
 
 stable : 𝓤 ̇ → 𝓤 ̇
 stable X = nonempty X → X
@@ -278,5 +296,33 @@ maps-of-props-into-isolated-points-are-embeddings : {P : 𝓤 ̇ } {X : 𝓥 ̇ 
 maps-of-props-into-isolated-points-are-embeddings f i j =
  maps-of-props-into-h-isolated-points-are-embeddings f i
   (λ p → isolated-is-h-isolated (f p) (j p))
+
+global-point-is-embedding : {X : 𝓤 ̇  } (f : 𝟙 {𝓥} → X)
+                          → is-h-isolated (f ⋆)
+                          → is-embedding f
+global-point-is-embedding f h =
+ maps-of-props-into-h-isolated-points-are-embeddings
+  f 𝟙-is-prop h'
+   where
+    h' : (p : 𝟙) → is-h-isolated (f p)
+    h' ⋆ = h
+
+\end{code}
+
+Added 30 Jul 2023.
+
+\begin{code}
+
+constant-maps-are-h-isolated : funext 𝓤 𝓥
+                             → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (y₀ : Y)
+                             → is-h-isolated y₀
+                             → is-h-isolated (λ (x : X) → y₀)
+constant-maps-are-h-isolated fe y₀ y₀-iso {f} = II
+ where
+  I = ((λ x → y₀) ＝ f) ≃⟨ ≃-funext fe (λ x → y₀) f ⟩
+       (λ x → y₀) ∼ f   ■
+
+  II : is-prop ((λ x → y₀) ＝ f)
+  II = equiv-to-prop I (Π-is-prop fe (λ _ → y₀-iso))
 
 \end{code}

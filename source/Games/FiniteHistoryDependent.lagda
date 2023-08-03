@@ -2,6 +2,7 @@ Martin Escardo, Paulo Oliva, 2-27 July 2021
 
 A paper based on this file is available at
 https://doi.org/10.48550/arXiv.2212.07735
+To appear in TCS.
 
 We study finite, history dependent games of perfect information using
 selection functions and dependent-type trees.
@@ -73,10 +74,10 @@ quantifiers over X.
 
 \begin{code}
 
-𝓚 : 𝕋 → Type
+𝓚 : 𝑻 → Type
 𝓚 = structure K
 
-remark-𝓚 : {X : Type} {Xf : X → 𝕋}
+remark-𝓚 : {X : Type} {Xf : X → 𝑻}
          → (𝓚 []       ＝ 𝟙)
          × (𝓚 (X ∷ Xf) ＝ K X × ((x : X) → 𝓚 (Xf x)))
 remark-𝓚 = refl , refl
@@ -93,7 +94,7 @@ but using our tree representation of games instead:
 
 \begin{code}
 
-sequenceᴷ : {Xt : 𝕋} → 𝓚 Xt → K (Path Xt)
+sequenceᴷ : {Xt : 𝑻} → 𝓚 Xt → K (Path Xt)
 sequenceᴷ = path-sequence (𝕂 R)
 
 \end{code}
@@ -108,7 +109,7 @@ quantifier tree ϕt and an outcome function q:
 record Game : Type₁ where
  constructor game
  field
-  Xt : 𝕋
+  Xt : 𝑻
   q  : Path Xt → R
   ϕt : 𝓚 Xt
 
@@ -134,10 +135,10 @@ Definition 4 of [1]:
 
 \begin{code}
 
-Strategy : 𝕋 -> Type
+Strategy : 𝑻 -> Type
 Strategy = structure id
 
-remark-Strategy : {X : Type} {Xf : X → 𝕋}
+remark-Strategy : {X : Type} {Xf : X → 𝑻}
                 → (Strategy []       ＝ 𝟙)
                 × (Strategy (X ∷ Xf) ＝ X × ((x : X) → Strategy (Xf x)))
 remark-Strategy = refl , refl
@@ -154,10 +155,10 @@ We get a path in the tree by following any given strategy:
 
 \begin{code}
 
-strategic-path : {Xt : 𝕋} → Strategy Xt → Path Xt
+strategic-path : {Xt : 𝑻} → Strategy Xt → Path Xt
 strategic-path = path-sequence 𝕀𝕕
 
-remark-strategic-path : {X : Type} {Xf : X → 𝕋} {x : X}
+remark-strategic-path : {X : Type} {Xf : X → 𝑻} {x : X}
                         {σf : (x : X) → Strategy (Xf x)}
                       → (strategic-path {[]}     ⟨⟩        ＝ ⟨⟩)
                       × (strategic-path {X ∷ Xf} (x :: σf) ＝ x :: strategic-path (σf x))
@@ -192,7 +193,7 @@ is convenient to define this notion by induction on the game tree Xt:
 
 \begin{code}
 
-is-sgpe : {Xt : 𝕋} → 𝓚 Xt → (Path Xt → R) → Strategy Xt → Type
+is-sgpe : {Xt : 𝑻} → 𝓚 Xt → (Path Xt → R) → Strategy Xt → Type
 is-sgpe {[]}     ⟨⟩        q ⟨⟩         = 𝟙
 is-sgpe {X ∷ Xf} (ϕ :: ϕf) q (x₀ :: σf) =
    (curry q x₀ (strategic-path (σf x₀)) ＝ ϕ (λ x → curry q x (strategic-path (σf x))))
@@ -241,7 +242,7 @@ The following is Theorem 3.1 of reference [1].
 \begin{code}
 
 sgpe-lemma : Fun-Ext
-           → (Xt : 𝕋) (ϕt : 𝓚 Xt) (q : Path Xt → R) (σ : Strategy Xt)
+           → (Xt : 𝑻) (ϕt : 𝓚 Xt) (q : Path Xt → R) (σ : Strategy Xt)
            → is-sgpe ϕt q σ
            → q (strategic-path σ) ＝ sequenceᴷ ϕt q
 sgpe-lemma fe []       ⟨⟩        q ⟨⟩        ⟨⟩       = refl
@@ -280,10 +281,10 @@ in another module.
 
 \begin{code}
 
-𝓙 : 𝕋 → Type
+𝓙 : 𝑻 → Type
 𝓙 = structure J
 
-remark-𝓙 : {X : Type} {Xf : X → 𝕋}
+remark-𝓙 : {X : Type} {Xf : X → 𝑻}
          → (𝓙 [] ＝ 𝟙)
          × (𝓙 (X ∷ Xf) ＝ J X × ((x : X) → 𝓙 (Xf x)))
 remark-𝓙 = refl , refl
@@ -299,7 +300,7 @@ reference [1], but using our tree representation of games instead:
 
 \begin{code}
 
-sequenceᴶ : {Xt : 𝕋} → 𝓙 Xt → J (Path Xt)
+sequenceᴶ : {Xt : 𝑻} → 𝓙 Xt → J (Path Xt)
 sequenceᴶ = path-sequence (𝕁 R)
 
 \end{code}
@@ -310,12 +311,15 @@ here, for the moment, we consider only single-valued quantifiers.
 
 \begin{code}
 
-selection-strategy : {Xt : 𝕋} → 𝓙 Xt → (Path Xt → R) → Strategy Xt
+selection-strategy : {Xt : 𝑻} → 𝓙 Xt → (Path Xt → R) → Strategy Xt
 selection-strategy {[]}     ⟨⟩           q = ⟨⟩
 selection-strategy {X ∷ Xf} εt@(ε :: εf) q = x₀ :: σf
  where
+  xs : Path (X ∷ Xf)
+  xs = sequenceᴶ εt q
+
   x₀ : X
-  x₀ = path-head (sequenceᴶ εt q)
+  x₀ = path-head xs
 
   σf : (x : X) → Strategy (Xf x)
   σf x = selection-strategy {Xf x} (εf x) (curry q x)
@@ -336,7 +340,7 @@ obvious way, by induction:
 
 open JK R
 
-_Attains_ : {Xt : 𝕋} → 𝓙 Xt → 𝓚 Xt → Type
+_Attains_ : {Xt : 𝑻} → 𝓙 Xt → 𝓚 Xt → Type
 _Attains_ {[]}     ⟨⟩        ⟨⟩        = 𝟙
 _Attains_ {X ∷ Xf} (ε :: εf) (ϕ :: ϕf) = (ε attains ϕ)
                                        × ((x : X) → (εf x) Attains (ϕf x))
@@ -348,7 +352,7 @@ function of a tree:
 
 \begin{code}
 
-Overline : {Xt : 𝕋} → 𝓙 Xt → 𝓚 Xt
+Overline : {Xt : 𝑻} → 𝓙 Xt → 𝓚 Xt
 Overline {[]}     ⟨⟩        = ⟨⟩
 Overline {X ∷ Xf} (ε :: εs) = overline ε :: (λ x → Overline {Xf x} (εs x))
 
@@ -359,7 +363,7 @@ The following is proved by straightforward induction on trees:
 \begin{code}
 
 observation : Fun-Ext
-            → {Xt : 𝕋} (εt : 𝓙 Xt) (ϕt : 𝓚 Xt)
+            → {Xt : 𝑻} (εt : 𝓙 Xt) (ϕt : 𝓚 Xt)
             → εt Attains ϕt
             → Overline εt ＝ ϕt
 observation fe {[]}     ⟨⟩        ⟨⟩        ⟨⟩        = refl
@@ -377,7 +381,7 @@ observation fe {X ∷ Xf} (ε :: εf) (ϕ :: ϕf) (a :: af) = γ
   γ : overline ε :: (λ x → Overline (εf x)) ＝ ϕ :: ϕf
   γ = ap₂ _::_ I II
 
-observation-converse : {Xt : 𝕋} (εt : 𝓙 Xt) (ϕt : 𝓚 Xt)
+observation-converse : {Xt : 𝑻} (εt : 𝓙 Xt) (ϕt : 𝓚 Xt)
                      → Overline εt ＝ ϕt
                      → εt Attains ϕt
 observation-converse {[]}     εt ϕt p = ⟨⟩
@@ -392,7 +396,7 @@ then εt are selections of ϕt, but we don't need this fact here.
 
 \begin{code}
 
-main-lemma : {Xt : 𝕋} (εt : 𝓙 Xt) (q : Path Xt → R)
+main-lemma : {Xt : 𝑻} (εt : 𝓙 Xt) (q : Path Xt → R)
            → strategic-path (selection-strategy εt q)
            ＝ sequenceᴶ εt q
 main-lemma {[]}     ⟨⟩           q = refl
@@ -417,7 +421,7 @@ main-lemma {X ∷ Xf} εt@(ε :: εf) q =
   IH = main-lemma (εf x₀) (curry q x₀)
 
 selection-strategy-lemma : Fun-Ext
-                         → {Xt : 𝕋} (εt : 𝓙 Xt) (q : Path Xt → R)
+                         → {Xt : 𝑻} (εt : 𝓙 Xt) (q : Path Xt → R)
                          → is-sgpe (Overline εt) q (selection-strategy εt q)
 selection-strategy-lemma fe {[]}     ⟨⟩           q = ⟨⟩
 selection-strategy-lemma fe {X ∷ Xf} εt@(ε :: εf) q = γ
@@ -459,7 +463,7 @@ optimal strategies, corresponds to Theorem 6.2 of [1].
 \begin{code}
 
 selection-strategy-theorem : Fun-Ext
-                           → {Xt : 𝕋} (εt : 𝓙 Xt)
+                           → {Xt : 𝑻} (εt : 𝓙 Xt)
                              (ϕt : 𝓚 Xt) (q : Path Xt → R)
                            → εt Attains ϕt
                            → is-sgpe ϕt q (selection-strategy εt q)
