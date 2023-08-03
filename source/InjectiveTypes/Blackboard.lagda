@@ -1238,6 +1238,19 @@ ainjective-resizing₃ = ainjective-resizing₁
 
 \end{code}
 
+We also have (added 3rd August 2023):
+
+\begin{code}
+
+aflabbiness-resizing₁ : (D : 𝓦 ̇ )
+                      → aflabby D (𝓤 ⊔ 𝓥)
+                      → aflabby D 𝓤
+aflabbiness-resizing₁ {𝓦} {𝓤} {𝓥} D f =
+ ainjective-types-are-aflabby {𝓦} {𝓤} {𝓥} D
+  (aflabby-types-are-ainjective D f)
+
+\end{code}
+
 Added 24th January 2019.
 
 With propositional resizing, as soon as D is aflabby with respect to
@@ -1802,15 +1815,15 @@ and less general embeddings.
 \begin{code}
 
 ainjectivity-over-small-maps : (D : 𝓤 ̇ )
-                             → ainjective-type D 𝓤 𝓥
+                             → ainjective-type D (𝓤 ⊔ 𝓥) 𝓣
                              → {X : 𝓥 ̇ } {Y : 𝓦 ̇ }
                                (j : X → Y)
                              → is-embedding j
                              → j is 𝓤 small-map
                              → (f : X → D) → Σ f' ꞉ (Y → D) , f' ∘ j ∼ f
-ainjectivity-over-small-maps D D-ainj =
+ainjectivity-over-small-maps {𝓤} {𝓥} D D-ainj =
  aflabbiness-gives-injectivity-over-small-maps D
-  (ainjective-types-are-aflabby D D-ainj)
+  (aflabbiness-resizing₁ {𝓤} {𝓤} {𝓥} D (ainjective-types-are-aflabby D D-ainj))
 
 \end{code}
 
