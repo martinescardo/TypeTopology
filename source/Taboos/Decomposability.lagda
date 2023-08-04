@@ -490,12 +490,12 @@ ainjective-types-have-Ω-Paths-naive {𝓤} {𝓦} D D-ainj x₀ x₁ = II I
 But this is too weak for applications, as the universe 𝓦⁺ is higher
 than we can obtain in practice.
 
-This can be improved as follows, exploting the fact that the map
+This can be improved as follows, exploiting the fact that the map
 𝟚-to-Ω : 𝟚 → Ω 𝓤 has 𝓤-small fibers and that algebraic flabbiness
 gives injectivity over embeddings with small fibers for lower
 universes. The key point is that this allows to replace 𝓦⁺ by 𝓦 in the
 above, so that we can apply this to the injectivity of the universe
-and to that of the type of ordinals.
+and to that of the type of ordinals, and more examples like these.
 
 \begin{code}
 
