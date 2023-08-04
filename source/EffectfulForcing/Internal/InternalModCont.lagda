@@ -229,8 +229,32 @@ _ = ⌜dialogue-tree⌝-correct'
 _ = eloquence-theorem
 _ = continuity-implies-continuity₀
 
+dialogues-agreement₀ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {A : 𝓣  ̇}
+                     → (d : D X Y Z)
+                     → (η′ : Z → A)
+                     → (β′ : (Y → A) → X → A)
+                     → church-encode d η′ β′ ＝ D-rec η′ β′ d
+dialogues-agreement₀ (D.η _)   η′ β′ = refl
+dialogues-agreement₀ {Y = Y} (D.β φ x) η′ β′ = ap (λ - → β′ - x) (dfunext fe †)
+ where
+  † : (y : Y) → church-encode (φ y) η′ β′ ＝ D-rec η′ β′ (φ y)
+  † y = dialogues-agreement₀ (φ y) η′ β′
+
+final-lemma : (t : 〈〉 ⊢ (baire ⇒ ι)) (α : ℕ → ℕ)
+            → max-question⋆ ⟦ ⌜dialogue-tree⌝ t ⟧₀ α
+              ＝ max-question⋆ (church-encode (dialogue-tree t)) α
+final-lemma t α =
+ max-question⋆ ⟦ ⌜dialogue-tree⌝ t ⟧₀ α                               ＝⟨ refl ⟩
+ ⟦ ⌜dialogue-tree⌝ t ⟧₀ (λ _ → 0) (λ g x → max x (g (α x)))           ＝⟨ {!!} ⟩
+ D-rec (λ _ → 0) (λ g x → max x (g (α x))) (dialogue-tree t)          ＝⟨ Ⅱ    ⟩
+ church-encode (dialogue-tree t) (λ _ → 0) (λ g x → max x (g (α x)))  ＝⟨ refl ⟩
+ max-question⋆ (church-encode (dialogue-tree t)) α                    ∎
+  where
+   Ⅱ = dialogues-agreement₀ (dialogue-tree t) (λ _ → 0) (λ g x → max x (g (α x))) ⁻¹
+
 main-lemma : (t : 〈〉 ⊢ (baire ⇒ ι)) (α : ℕ → ℕ)
-           → ⟦ max-questionᵀ · (⌜dialogue-tree⌝ t) ⟧₀ α ＝ max-question₀ (dialogue-tree t) α
+           → ⟦ max-questionᵀ · (⌜dialogue-tree⌝ t) ⟧₀ α
+             ＝ max-question₀ (dialogue-tree t) α
 main-lemma t α =
  ⟦ max-questionᵀ · ⌜dialogue-tree⌝ t ⟧₀ α           ＝⟨ Ⅰ ⟩
  max-question⋆ ⟦ ⌜dialogue-tree⌝ t ⟧₀ α             ＝⟨ Ⅱ ⟩
@@ -239,7 +263,7 @@ main-lemma t α =
  max-question₀ (dialogue-tree t) α                  ∎
   where
    Ⅰ = max-questionᵀ-agreement-with-max-question⋆ (⌜dialogue-tree⌝ t) α
-   Ⅱ = {!!}
+   Ⅱ = final-lemma t α
    Ⅲ = max-question⋆-agreement (dialogue-tree t) α ⁻¹
    Ⅳ = max-question₀-agreement (dialogue-tree t) α
 
@@ -280,9 +304,6 @@ internal-mod-cont-correct t α β p = †
 
   m₀ : ℕ
   m₀ = pr₁ (c₀ ⟦ α ⟧₀)
-
-  -- lemma : ⟦ ⌜dialogue-tree⌝ t ⟧₀ ＝ church-encode (dialogue-tree t)
-  -- lemma = dfunext fe {!!}
 
   q : ⟦ modulusᵀ t · α ⟧₀ ＝ m₀
   q = ap succ (main-lemma t ⟦ α ⟧₀)
