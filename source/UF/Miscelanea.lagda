@@ -182,41 +182,37 @@ equiv-to-discrete (f , e) = equivs-preserve-discreteness f e
 𝟚-to-Ω ₀ = ⊥
 𝟚-to-Ω ₁ = ⊤
 
-𝟚-to-Ω-is-embedding : funext 𝓤 𝓤 → propext 𝓤 → is-embedding (𝟚-to-Ω {𝓤})
-𝟚-to-Ω-is-embedding fe pe _ (₀ , p) (₀ , q) = to-Σ-＝ (refl , Ω-is-set fe pe p q)
-𝟚-to-Ω-is-embedding fe pe _ (₀ , p) (₁ , q) = 𝟘-elim (⊥-is-not-⊤ (p ∙ q ⁻¹))
-𝟚-to-Ω-is-embedding fe pe _ (₁ , p) (₀ , q) = 𝟘-elim (⊥-is-not-⊤ (q ∙ p ⁻¹))
-𝟚-to-Ω-is-embedding fe pe _ (₁ , p) (₁ , q) = to-Σ-＝ (refl , Ω-is-set fe pe p q)
+module _ (fe : funext 𝓤 𝓤) (pe : propext 𝓤) where
 
-𝟚-to-Ω-is-small-map : propext 𝓤 → funext 𝓤 𝓤 → (𝟚-to-Ω {𝓤}) is 𝓤 small-map
-𝟚-to-Ω-is-small-map {𝓤} pe fe p = IX
- where
-  I = fiber (𝟚-to-Ω {𝓤}) p           ≃⟨ ≃-refl _ ⟩
-      (Σ n ꞉ 𝟚 , 𝟚-to-Ω {𝓤} n ＝ p ) ≃⟨ I₀ ⟩
-      (⊥ ＝ p) + (⊤ ＝ p)            ≃⟨ I₁ ⟩
-      (¬ (p holds) + p holds)        ■
-   where
-    I₀ = alternative-+
-    I₁ = +-cong
-          (＝-flip ● equal-⊥-≃ pe fe p)
-          (＝-flip ● equal-⊤-≃ pe fe p)
+ 𝟚-to-Ω-is-embedding : is-embedding (𝟚-to-Ω {𝓤})
+ 𝟚-to-Ω-is-embedding _ (₀ , p) (₀ , q) = to-Σ-＝ (refl , Ω-is-set fe pe p q)
+ 𝟚-to-Ω-is-embedding _ (₀ , p) (₁ , q) = 𝟘-elim (⊥-is-not-⊤ (p ∙ q ⁻¹))
+ 𝟚-to-Ω-is-embedding _ (₁ , p) (₀ , q) = 𝟘-elim (⊥-is-not-⊤ (q ∙ p ⁻¹))
+ 𝟚-to-Ω-is-embedding _ (₁ , p) (₁ , q) = to-Σ-＝ (refl , Ω-is-set fe pe p q)
 
-  IX : fiber 𝟚-to-Ω p is 𝓤 small
-  IX = (¬ (p holds) + p holds) , ≃-sym I
+ 𝟚-to-Ω-fiber : (p : Ω 𝓤) → fiber 𝟚-to-Ω p ≃ (¬ (p holds) + p holds)
+ 𝟚-to-Ω-fiber p =
+  fiber (𝟚-to-Ω {𝓤}) p           ≃⟨ ≃-refl _ ⟩
+  (Σ n ꞉ 𝟚 , 𝟚-to-Ω {𝓤} n ＝ p ) ≃⟨ I₀ ⟩
+  (⊥ ＝ p) + (⊤ ＝ p)            ≃⟨ I₁ ⟩
+  (¬ (p holds) + p holds)        ■
+    where
+     I₀ = alternative-+
+     I₁ = +-cong
+           (＝-flip ● equal-⊥-≃ pe fe p)
+           (＝-flip ● equal-⊤-≃ pe fe p)
 
-nonempty : 𝓤 ̇ → 𝓤 ̇
-nonempty X = is-empty (is-empty X)
+ 𝟚-to-Ω-is-small-map : (𝟚-to-Ω {𝓤}) is 𝓤 small-map
+ 𝟚-to-Ω-is-small-map p = (¬ (p holds) + p holds) ,
+                                   ≃-sym (𝟚-to-Ω-fiber p)
 
-stable : 𝓤 ̇ → 𝓤 ̇
-stable X = nonempty X → X
+is-decidable-is-¬¬-stable : {X : 𝓤 ̇ } → is-decidable X → ¬¬-stable X
+is-decidable-is-¬¬-stable (inl x) φ = x
+is-decidable-is-¬¬-stable (inr u) φ = unique-from-𝟘(φ u)
 
-is-decidable-is-stable : {X : 𝓤 ̇ } → is-decidable X → stable X
-is-decidable-is-stable (inl x) φ = x
-is-decidable-is-stable (inr u) φ = unique-from-𝟘(φ u)
-
-stable-is-collapsible : funext 𝓤 𝓤₀
-                      → {X : 𝓤 ̇ } → stable X → collapsible X
-stable-is-collapsible {𝓤} fe {X} s = (f , g)
+¬¬-stable-is-collapsible : funext 𝓤 𝓤₀
+                         → {X : 𝓤 ̇ } → ¬¬-stable X → collapsible X
+¬¬-stable-is-collapsible {𝓤} fe {X} s = (f , g)
  where
   f : X → X
   f x = s(λ u → u x)
@@ -233,7 +229,7 @@ stable-is-collapsible {𝓤} fe {X} s = (f , g)
 ¬¬-separated-is-Id-collapsible : funext 𝓤 𝓤₀ → {X : 𝓤 ̇ }
                                → is-¬¬-separated X
                                → Id-collapsible X
-¬¬-separated-is-Id-collapsible fe s = stable-is-collapsible fe (s _ _)
+¬¬-separated-is-Id-collapsible fe s = ¬¬-stable-is-collapsible fe (s _ _)
 
 ¬¬-separated-types-are-sets : funext 𝓤 𝓤₀ → {X : 𝓤 ̇ }
                             → is-¬¬-separated X

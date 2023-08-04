@@ -1116,25 +1116,26 @@ whereas the injectivity of the universe requires full univalence.
  where
   Q : 𝓤 ⊔ 𝓥 ̇
   Q = (p : P) → f p holds
+
   j : is-prop Q
   j = Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥)) (λ p → holds-is-prop (f p))
+
   c : (p : P) → Q , j ＝ f p
-  c p = to-Σ-＝ (t , being-prop-is-prop (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)) _ _)
+  c p = to-subtype-＝ (λ _ → being-prop-is-prop (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥))) t
    where
-      g : Q → f p holds
-      g q = q p
+    g : Q → f p holds
+    g q = q p
 
-      h : f p holds → Q
-      h r p' = transport (λ - → f - holds) (i p p') r
+    h : f p holds → Q
+    h r p' = transport (λ - → f - holds) (i p p') r
 
-      t : Q ＝ f p holds
-      t = pe j (holds-is-prop (f p)) g h
+    t : Q ＝ f p holds
+    t = pe j (holds-is-prop (f p)) g h
 
 Ω-ainjective : propext (𝓤 ⊔ 𝓥) → ainjective-type (Ω (𝓤 ⊔ 𝓥)) 𝓤 𝓥
 Ω-ainjective {𝓤} {𝓥} pe = aflabby-types-are-ainjective
                             (Ω (𝓤 ⊔ 𝓥))
                             (Ω-aflabby {𝓤 ⊔ 𝓥} {𝓤} pe)
-
 \end{code}
 
 Added 6th Feb 2019.
@@ -1765,17 +1766,17 @@ algebraic flabbiness.
 \begin{code}
 
 module _ (D : 𝓤 ̇ )
-         (D-is-flabby : aflabby D 𝓤)
+         (D-is-flabby : aflabby D 𝓣)
          {X : 𝓥 ̇ }
          {Y : 𝓦 ̇ }
          (j : X → Y)
          (j-is-embedding : is-embedding j)
-         (j-small : j is 𝓤 small-map)
+         (j-small : j is 𝓣 small-map)
          (f : X → D)
        where
 
  private
-  R : Y → 𝓤 ̇
+  R : Y → 𝓣 ̇
   R y = resized (fiber j y) (j-small y)
 
   ρ : (y : Y) → R y ≃ fiber j y
@@ -1806,7 +1807,6 @@ module _ (D : 𝓤 ̇ )
  aflabbiness-gives-injectivity-over-small-maps : Σ f' ꞉ (Y → D) , f' ∘ j ∼ f
  aflabbiness-gives-injectivity-over-small-maps = sflabby-extension ,
                                                  sflabby-extension-property
-
 \end{code}
 
 An extension property for injective types, with more general universes
@@ -1814,16 +1814,17 @@ and less general embeddings.
 
 \begin{code}
 
-ainjectivity-over-small-maps : (D : 𝓤 ̇ )
-                             → ainjective-type D (𝓤 ⊔ 𝓥) 𝓣
+ainjectivity-over-small-maps : {𝓤 𝓥 𝓦 𝓣₀ 𝓣₁ 𝓣₂ : Universe}
+                             → (D : 𝓤 ̇ )
+                             → ainjective-type D (𝓣₀ ⊔ 𝓣₁) 𝓣₂
                              → {X : 𝓥 ̇ } {Y : 𝓦 ̇ }
                                (j : X → Y)
                              → is-embedding j
-                             → j is 𝓤 small-map
+                             → j is 𝓣₀ small-map
                              → (f : X → D) → Σ f' ꞉ (Y → D) , f' ∘ j ∼ f
-ainjectivity-over-small-maps {𝓤} {𝓥} D D-ainj =
+ainjectivity-over-small-maps {𝓤} {𝓥} {𝓦} {𝓣₀} {𝓣₁} {𝓣₂} D D-ainj =
  aflabbiness-gives-injectivity-over-small-maps D
-  (aflabbiness-resizing₁ {𝓤} {𝓤} {𝓥} D (ainjective-types-are-aflabby D D-ainj))
+  (aflabbiness-resizing₁ {𝓤} {𝓣₀} {𝓣₁} D (ainjective-types-are-aflabby D D-ainj))
 
 \end{code}
 
