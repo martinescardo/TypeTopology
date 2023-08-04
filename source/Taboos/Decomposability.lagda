@@ -529,6 +529,12 @@ decomposition-of-ainjective-type-gives-WEM {𝓤} {𝓥} {𝓦} D D-ainj D-decom
   D-decomp
   (ainjective-types-have-Ω-Paths {𝓤} {𝓥} {𝓦} D D-ainj)
 
+\end{code}
+
+Examples:
+
+\begin{code}
+
 decomposition-of-universe-gives-WEM : decomposition (𝓤 ̇ ) → WEM 𝓤
 decomposition-of-universe-gives-WEM {𝓤} =
  decomposition-of-ainjective-type-gives-WEM {𝓤 ⁺} {𝓤} {𝓤}
