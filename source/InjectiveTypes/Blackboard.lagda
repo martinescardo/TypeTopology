@@ -1762,7 +1762,7 @@ Here are some corollaries:
 
 Added 3rd August 2023. Extensions over small embeddings induced by
 algebraic flabbiness. The point is to reduce size without resizing
-axioms. An application is is Taboos.Decomposability.
+axioms. An application is in Taboos.Decomposability.
 
 \begin{code}
 
