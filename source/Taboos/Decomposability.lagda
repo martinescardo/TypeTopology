@@ -448,9 +448,9 @@ References
 
 TODO. Implement the above thoughts.
 
-Added 3rd August 2023 by Martin Escardo. Flabby types are decomposable
-iff WEM holds. This subsumes the above developement, because the type
-of ordinals is injective and hence flabby.
+Added 3rd August 2023 by Martin Escardo. Injective types are
+decomposable iff WEM holds. This subsumes the above developement,
+because the type of ordinals is injective.
 
 \begin{code}
 
