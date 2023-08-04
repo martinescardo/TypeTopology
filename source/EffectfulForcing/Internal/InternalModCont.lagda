@@ -144,6 +144,10 @@ There will be three different versions of this operator:
   3. `max-questionᵀ`, that is a System T function working on the Church encoding
      of dialogue trees in System T.
 
+There is also `max-question₀` which is an alternative definition of
+`max-question` that uses `dialogue-continuity`. This is used to facilitate a
+proof.
+
 \begin{code}
 
 max-question : D ℕ ℕ ℕ → (ℕ → ℕ) → ℕ
@@ -153,55 +157,35 @@ max-question (D.β φ n) α = max n (max-question (φ (α n)) α)
 max-question₀ : D ℕ ℕ ℕ → (ℕ → ℕ) → ℕ
 max-question₀ d α = maximum (pr₁ (dialogue-continuity d α))
 
-\end{code}
-
-\begin{code}
-
-external-mod-cont : D ℕ ℕ ℕ → (ℕ → ℕ) → ℕ
-external-mod-cont d α = succ (max-question d α)
-
-external-mod-cont′ : (d : D ℕ ℕ ℕ) → (ℕ → ℕ) → ℕ
-external-mod-cont′ d α = succ (max-question₀ d α)
-
-max-ext-equal-to-max-ext′ : (d : D ℕ ℕ ℕ) (α : ℕ → ℕ)
-                          → max-question d α ＝ max-question₀ d α
-max-ext-equal-to-max-ext′ (D.η n)   α = refl
-max-ext-equal-to-max-ext′ (D.β φ n) α = ap (max n) (max-ext-equal-to-max-ext′ (φ (α n)) α)
+max-question₀-agreement : (d : D ℕ ℕ ℕ) (α : ℕ → ℕ)
+                                    → max-question d α ＝ max-question₀ d α
+max-question₀-agreement (D.η n)   α = refl
+max-question₀-agreement (D.β φ n) α =
+ ap (max n) (max-question₀-agreement (φ (α n)) α)
 
 max-question⋆ : D⋆ ℕ ℕ ℕ ℕ → (ℕ → ℕ) → ℕ
 max-question⋆ d α = d (λ _ → 0) (λ g x → max x (g (α x)))
 
-max-question-int : {Γ : Cxt} → Γ ⊢ (⌜B⌝ ι ι) ⇒ baire ⇒ ι
-max-question-int = ƛ (ƛ (ν₁ · (ƛ Zero) · ƛ (ƛ (maxᵀ · ν₀ · (ν₁ · (ν₂ · ν₀))))))
+max-questionᵀ : {Γ : Cxt} → Γ ⊢ (⌜B⌝ ι ι) ⇒ baire ⇒ ι
+max-questionᵀ = ƛ (ƛ (ν₁ · ƛ Zero · ƛ (ƛ (maxᵀ · ν₀ · (ν₁ · (ν₂ · ν₀))))))
 
-internal-mod-cont : {Γ : Cxt}
-                   → Γ ⊢ baire ⇒ ι
-                   → B-context【 Γ 】 ι ⊢ (ι ⇒ ι) ⇒ ι
-internal-mod-cont t = comp · Succ' · (max-question-int · ⌜dialogue-tree⌝ t)
-
--- Use the 3 results:
-
-_ = ⌜dialogue-tree⌝-correct'
-_ = eloquence-theorem
-_ = continuity-implies-continuity₀
-
-max-question-agreement : (d : D ℕ ℕ ℕ) (α : ℕ → ℕ)
+max-question⋆-agreement : (d : D ℕ ℕ ℕ) (α : ℕ → ℕ)
                        → max-question d α ＝ max-question⋆ (church-encode d) α
-max-question-agreement (D.η n)   α = refl
-max-question-agreement (D.β φ n) α = †
+max-question⋆-agreement (D.η n)   α = refl
+max-question⋆-agreement (D.β φ n) α = †
  where
   IH : max-question (φ (α n)) α
      ＝ max-question⋆ (church-encode (φ (α n))) α
-  IH = max-question-agreement (φ (α n)) α
+  IH = max-question⋆-agreement (φ (α n)) α
 
   † : max n (max-question (φ (α n)) α)
     ＝ church-encode (D.β φ n) (λ _ → 0) (λ g x → max x (g (α x)))
   † = ap (max n) IH
 
-main-lemma : (d : 〈〉 ⊢ ⌜D⋆⌝ ι ι ι ι) (α : ℕ → ℕ)
-           → ⟦ max-question-int · d ⟧₀ α ＝ max-question⋆ ⟦ d ⟧₀ α
-main-lemma d α =
- ⟦ max-question-int · d ⟧₀ α         ＝⟨ refl ⟩
+max-questionᵀ-agreement-with-max-question⋆ : (d : 〈〉 ⊢ ⌜D⋆⌝ ι ι ι ι) (α : ℕ → ℕ)
+           → ⟦ max-questionᵀ · d ⟧₀ α ＝ max-question⋆ ⟦ d ⟧₀ α
+max-questionᵀ-agreement-with-max-question⋆ d α =
+ ⟦ max-questionᵀ · d ⟧₀ α         ＝⟨ refl ⟩
  ⟦ d ⟧₀ (λ _ → 0) (⟦ ƛ (ƛ (maxᵀ · ν₀ · (ν₁ · (ν₂ · ν₀)))) ⟧ ((⟨⟩ ‚ ⟦ d ⟧₀) ‚ α))   ＝⟨  refl ⟩
  ⟦ d ⟧₀ (λ _ → 0) (λ g x → ⟦ maxᵀ ⟧₀ x (g (α x)))                                  ＝⟨ †    ⟩
  ⟦ d ⟧₀ (λ _ → 0) (λ g x → max x (g (α x)))                                        ＝⟨ refl ⟩
@@ -211,13 +195,61 @@ main-lemma d α =
         (⟦ d ⟧₀ (λ _ → 0))
         (dfunext fe λ g → dfunext fe λ x → maxᵀ-correct x (g (α x)))
 
+
+\end{code}
+
+The modulus of continuity given by a dialogue tree is the successor of the
+maximum question in it. Again, we define three different versions of the modulus
+of continuity operation following the same conventions.
+
+  1. `modulus` following `max-question`,
+  2. `modulus₀` following `max-question₀`, and
+  3. `modulusᵀ` following `max-questionᵀ`.
+
+\begin{code}
+
+modulus : D ℕ ℕ ℕ → (ℕ → ℕ) → ℕ
+modulus d α = succ (max-question d α)
+
+modulus₀ : (d : D ℕ ℕ ℕ) → (ℕ → ℕ) → ℕ
+modulus₀ d α = succ (max-question₀ d α)
+
+modulusᵀ : {Γ : Cxt}
+                   → Γ ⊢ baire ⇒ ι
+                   → B-context【 Γ 】 ι ⊢ (ι ⇒ ι) ⇒ ι
+modulusᵀ t = comp · Succ' · (max-questionᵀ · ⌜dialogue-tree⌝ t)
+
+\end{code}
+
+\begin{code}
+
+-- Use the 3 results:
+
+_ = ⌜dialogue-tree⌝-correct'
+_ = eloquence-theorem
+_ = continuity-implies-continuity₀
+
+main-lemma : (t : 〈〉 ⊢ (baire ⇒ ι)) (α : ℕ → ℕ)
+           → ⟦ max-questionᵀ · (⌜dialogue-tree⌝ t) ⟧₀ α ＝ max-question₀ (dialogue-tree t) α
+main-lemma t α =
+ ⟦ max-questionᵀ · ⌜dialogue-tree⌝ t ⟧₀ α           ＝⟨ Ⅰ ⟩
+ max-question⋆ ⟦ ⌜dialogue-tree⌝ t ⟧₀ α             ＝⟨ Ⅱ ⟩
+ max-question⋆ (church-encode (dialogue-tree t)) α  ＝⟨ Ⅲ ⟩
+ max-question  (dialogue-tree t) α                  ＝⟨ Ⅳ ⟩
+ max-question₀ (dialogue-tree t) α                  ∎
+  where
+   Ⅰ = max-questionᵀ-agreement-with-max-question⋆ (⌜dialogue-tree⌝ t) α
+   Ⅱ = {!!}
+   Ⅲ = max-question⋆-agreement (dialogue-tree t) α ⁻¹
+   Ⅳ = max-question₀-agreement (dialogue-tree t) α
+
 internal-mod-cont-correct : (t : 〈〉 ⊢ (baire ⇒ ι)) (α β : 〈〉 ⊢ baire)
-                          → ⟦ α ⟧₀ ＝⦅ ⟦ internal-mod-cont t · α ⟧₀ ⦆ ⟦ β ⟧₀
+                          → ⟦ α ⟧₀ ＝⦅ ⟦ modulusᵀ t · α ⟧₀ ⦆ ⟦ β ⟧₀
                           → ⟦ t · α ⟧₀ ＝ ⟦ t ·  β ⟧₀
 internal-mod-cont-correct t α β p = †
  where
   ⌜m⌝ : B-context【 〈〉 】 (baire ⇒ ι) ⊢ ι
-  ⌜m⌝ = internal-mod-cont t · α
+  ⌜m⌝ = modulusᵀ t · α
 
   m : ℕ
   m = ⟦ ⌜m⌝ ⟧₀
@@ -249,21 +281,11 @@ internal-mod-cont-correct t α β p = †
   m₀ : ℕ
   m₀ = pr₁ (c₀ ⟦ α ⟧₀)
 
-  lemma : ⟦ ⌜dialogue-tree⌝ t ⟧₀ ＝ church-encode (dialogue-tree t)
-  lemma = dfunext fe {!!}
+  -- lemma : ⟦ ⌜dialogue-tree⌝ t ⟧₀ ＝ church-encode (dialogue-tree t)
+  -- lemma = dfunext fe {!!}
 
-  q : ⟦ internal-mod-cont t · α ⟧₀ ＝ m₀
-  q = ⟦ internal-mod-cont t · α ⟧₀                                  ＝⟨ refl ⟩
-      succ (⟦ max-question-int · (⌜dialogue-tree⌝ t) ⟧₀ ⟦ α ⟧₀)     ＝⟨ ap succ (main-lemma (⌜dialogue-tree⌝ t) ⟦ α ⟧₀) ⟩
-      succ (max-question⋆ ⟦ ⌜dialogue-tree⌝ t  ⟧₀ ⟦ α ⟧₀) ＝⟨ ♣ ⟩
-      succ (max-question⋆ (church-encode dₜ) ⟦ α ⟧₀)      ＝⟨ ap succ (max-question-agreement dₜ ⟦ α ⟧₀ ⁻¹) ⟩
-      succ (max-question dₜ ⟦ α ⟧₀)                             ＝⟨ ap succ (max-ext-equal-to-max-ext′ dₜ ⟦ α ⟧₀) ⟩
-      succ (max-question₀ dₜ ⟦ α ⟧₀)                                ＝⟨ refl ⟩
-      modulus-at₀ ⟦ t ⟧₀ c₀ ⟦ α ⟧₀                                  ∎
-       where
-        ♣ : succ (max-question⋆ ⟦ ⌜dialogue-tree⌝ t ⟧₀ ⟦ α ⟧₀)
-          ＝ succ (max-question⋆ (church-encode dₜ) ⟦ α ⟧₀)
-        ♣ = ap succ (ap (λ - → (max-question⋆ - ⟦ α ⟧₀)) lemma)
+  q : ⟦ modulusᵀ t · α ⟧₀ ＝ m₀
+  q = ap succ (main-lemma t ⟦ α ⟧₀)
 
   ‡ : ⟦ α ⟧₀ ＝⦅ m₀ ⦆ ⟦ β ⟧₀
   ‡ = transport (λ - → ⟦ α ⟧₀ ＝⦅ - ⦆ ⟦ β ⟧₀) q p
