@@ -487,7 +487,7 @@ ainjective-types-have-Ω-Paths-naive {𝓤} {𝓦} D D-ainj x₀ x₁ = II I
 
 \end{code}
 
-But this is too weak for applications, as the universe 𝓥⁺ is higher
+But this is too weak for applications, as the universe 𝓦⁺ is higher
 than we can obtain in practice.
 
 This can be improved as follows, exploting the fact that the map
