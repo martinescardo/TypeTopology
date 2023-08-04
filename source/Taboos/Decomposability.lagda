@@ -521,24 +521,24 @@ ainjective-types-have-Ω-Paths {𝓤} {𝓥} {𝓦} D D-ainj x₀ x₁ = II I
   II : type-of I → Ω-Path 𝓥 x₀ x₁
   II (g , h) = g , h ₀ , h ₁
 
-decoposition-of-ainjective-type-gives-WEM : (D : 𝓤 ̇ )
-                                          → ainjective-type D 𝓥 𝓦
-                                          → decomposition D
-                                          → WEM 𝓥
-decoposition-of-ainjective-type-gives-WEM {𝓤} {𝓥} {𝓦} D D-ainj D-decomp =
+decomposition-of-ainjective-type-gives-WEM : (D : 𝓤 ̇ )
+                                           → ainjective-type D 𝓥 𝓦
+                                           → decomposition D
+                                           → WEM 𝓥
+decomposition-of-ainjective-type-gives-WEM {𝓤} {𝓥} {𝓦} D D-ainj D-decomp =
  decomposition-of-type-with-Ω-paths-gives-WEM
   D-decomp
   (ainjective-types-have-Ω-Paths {𝓤} {𝓥} {𝓦} D D-ainj)
 
 decomposition-of-universe-gives-WEM : decomposition (𝓤 ̇ ) → WEM 𝓤
 decomposition-of-universe-gives-WEM {𝓤} =
- decoposition-of-ainjective-type-gives-WEM {𝓤 ⁺} {𝓤} {𝓤}
+ decomposition-of-ainjective-type-gives-WEM {𝓤 ⁺} {𝓤} {𝓤}
   (𝓤 ̇ )
   (universes-are-ainjective-Π (ua 𝓤))
 
 decomposition-of-ordinals-type-gives-WEM-bis : decomposition (Ordinal 𝓤) → WEM 𝓤
 decomposition-of-ordinals-type-gives-WEM-bis {𝓤} =
- decoposition-of-ainjective-type-gives-WEM {𝓤 ⁺} {𝓤} {𝓤}
+ decomposition-of-ainjective-type-gives-WEM {𝓤 ⁺} {𝓤} {𝓤}
   (Ordinal 𝓤)
   (Ordinal-is-ainjective (ua 𝓤))
 
