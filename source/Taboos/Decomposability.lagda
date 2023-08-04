@@ -25,7 +25,11 @@ module Taboos.Decomposability (ua : Univalence) where
 
 open import MLTT.Spartan
 open import MLTT.Two-Properties
-
+open import Ordinals.Equivalence
+open import Ordinals.Maps
+open import Ordinals.OrdinalOfOrdinals ua
+open import Ordinals.Type
+open import Ordinals.Underlying
 open import UF.Base
 open import UF.Classifiers
 open import UF.Equiv
@@ -50,11 +54,6 @@ private
 ⇁_ = not fe'
 
 open import Ordinals.Arithmetic fe
-open import Ordinals.Equivalence
-open import Ordinals.Maps
-open import Ordinals.OrdinalOfOrdinals ua
-open import Ordinals.Type
-open import Ordinals.Underlying
 
 \end{code}
 
