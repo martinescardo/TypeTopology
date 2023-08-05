@@ -20,6 +20,7 @@ module Iterative.Multisets-Addendum
 
 open import Iterative.Multisets 𝓤
 open import Iterative.Sets 𝓤 ua
+open import Taboos.Decomposability ua
 open import UF.Base
 open import UF.Embeddings
 open import UF.Equiv
@@ -29,15 +30,10 @@ open import UF.FunExt
 open import UF.Miscelanea
 open import UF.PropIndexedPiSigma
 open import UF.Retracts
-open import UF.Size
 open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
 open import UF.UA-FunExt
-open import UF.Univalence
 open import W.Properties (𝓤 ̇) id
 open import W.Type
-open import Taboos.Decomposability ua
-
 
 private
  𝓤⁺ : Universe

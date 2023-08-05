@@ -455,6 +455,7 @@ because the type of ordinals is injective.
 \begin{code}
 
 open import InjectiveTypes.Blackboard fe
+open import InjectiveTypes.More fe
 open import Ordinals.Injectivity
 open import UF.Miscelanea
 

@@ -101,9 +101,8 @@ open import UF.FunExt
 
 module InjectiveTypes.Blackboard (fe : FunExt) where
 
-open import MLTT.Spartan
 open import MLTT.Plus-Properties
-
+open import MLTT.Spartan
 open import UF.Base
 open import UF.Embeddings
 open import UF.Equiv

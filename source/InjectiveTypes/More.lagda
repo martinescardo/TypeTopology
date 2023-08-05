@@ -11,26 +11,12 @@ open import UF.FunExt
 module InjectiveTypes.More (fe : FunExt) where
 
 open import InjectiveTypes.Blackboard fe
-open import MLTT.Plus-Properties
 open import MLTT.Spartan
-open import UF.Base
 open import UF.Embeddings
 open import UF.Equiv
-open import UF.Equiv-FunExt
 open import UF.EquivalenceExamples
-open import UF.ExcludedMiddle
-open import UF.IdEmbedding
-open import UF.Lower-FunExt
-open import UF.PairFun
-open import UF.PropIndexedPiSigma
-open import UF.PropTrunc
-open import UF.Retracts
 open import UF.Size
 open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
-open import UF.UA-FunExt
-open import UF.Univalence
-open import UF.UniverseEmbedding
 
 private
  fe' : Fun-Ext
