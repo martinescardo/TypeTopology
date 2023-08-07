@@ -21,14 +21,15 @@ open import EffectfulForcing.MFPSAndVariations.Church
 open import EffectfulForcing.Internal.SystemT
 open import EffectfulForcing.MFPSAndVariations.Combinators
 open import EffectfulForcing.MFPSAndVariations.Dialogue
- using (eloquent; D; dialogue; eloquent-functions-are-continuous; dialogue-continuity)
+ using (eloquent; D; dialogue; eloquent-functions-are-continuous; dialogue-continuity; generic)
 open import EffectfulForcing.MFPSAndVariations.Continuity
  using (is-continuous; is-continuous₀; continuity-implies-continuity₀;
         _＝⦅_⦆_; _＝⟪_⟫_; modulus-at₀; maximum)
 open import EffectfulForcing.Internal.Correctness
- using (⌜dialogue⌝; ⌜dialogue-tree⌝-correct')
+ using (⌜dialogue⌝; ⌜dialogue-tree⌝-correct'; Rnorm-generic; is-dialogue-for; _≣⋆_; extβ; Rnorm-lemma₀; Rnorm)
 open import EffectfulForcing.Internal.External
- using (eloquence-theorem; dialogue-tree)
+ using (eloquence-theorem; dialogue-tree; ⟪⟫; B⟦_⟧; B⟦_⟧₀)
+open import EffectfulForcing.Internal.Subst
 open import EffectfulForcing.MFPSAndVariations.SystemT
  using (type; ι; _⇒_;〖_〗)
 
@@ -229,28 +230,36 @@ _ = ⌜dialogue-tree⌝-correct'
 _ = eloquence-theorem
 _ = continuity-implies-continuity₀
 
-dialogues-agreement₀ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {A : 𝓣  ̇}
+church-encode-to-D-rec : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {A : 𝓣  ̇}
                      → (d : D X Y Z)
                      → (η′ : Z → A)
                      → (β′ : (Y → A) → X → A)
                      → church-encode d η′ β′ ＝ D-rec η′ β′ d
-dialogues-agreement₀ (D.η _)   η′ β′ = refl
-dialogues-agreement₀ {Y = Y} (D.β φ x) η′ β′ = ap (λ - → β′ - x) (dfunext fe †)
+church-encode-to-D-rec (D.η _)   η′ β′ = refl
+church-encode-to-D-rec {Y = Y} (D.β φ x) η′ β′ = ap (λ - → β′ - x) (dfunext fe †)
  where
   † : (y : Y) → church-encode (φ y) η′ β′ ＝ D-rec η′ β′ (φ y)
-  † y = dialogues-agreement₀ (φ y) η′ β′
+  † y = church-encode-to-D-rec (φ y) η′ β′
 
 final-lemma : (t : 〈〉 ⊢ (baire ⇒ ι)) (α : ℕ → ℕ)
             → max-question⋆ ⟦ ⌜dialogue-tree⌝ t ⟧₀ α
               ＝ max-question⋆ (church-encode (dialogue-tree t)) α
 final-lemma t α =
  max-question⋆ ⟦ ⌜dialogue-tree⌝ t ⟧₀ α                               ＝⟨ refl ⟩
- ⟦ ⌜dialogue-tree⌝ t ⟧₀ (λ _ → 0) (λ g x → max x (g (α x)))           ＝⟨ {!!} ⟩
- D-rec (λ _ → 0) (λ g x → max x (g (α x))) (dialogue-tree t)          ＝⟨ Ⅱ    ⟩
+ ⟦ ⌜dialogue-tree⌝ t ⟧₀ (λ _ → 0) (λ g x → max x (g (α x)))           ＝⟨ †    ⟩
  church-encode (dialogue-tree t) (λ _ → 0) (λ g x → max x (g (α x)))  ＝⟨ refl ⟩
  max-question⋆ (church-encode (dialogue-tree t)) α                    ∎
   where
-   Ⅱ = dialogues-agreement₀ (dialogue-tree t) (λ _ → 0) (λ g x → max x (g (α x))) ⁻¹
+   ♠ : extβ (λ g x → max x (g (α x)))
+   ♠ f g m n p φ  = max m (f (α m)) ＝⟨ ap (λ - → max - (f (α -))) p ⟩
+                    max n (f (α n)) ＝⟨ ap (max n) (φ (α n))         ⟩
+                    max n (g (α n)) ∎
+
+   equiv : ⟦ ⌜dialogue-tree⌝ t ⟧₀ ≣⋆ church-encode (dialogue-tree t)
+   equiv = (Rnorm-lemma₀ t) generic ⌜generic⌝ Rnorm-generic
+
+   † = equiv ι (λ _ → 0) (λ g x → max x (g (α x))) (λ _ → refl) ♠
+
 
 main-lemma : (t : 〈〉 ⊢ (baire ⇒ ι)) (α : ℕ → ℕ)
            → ⟦ max-questionᵀ · (⌜dialogue-tree⌝ t) ⟧₀ α
