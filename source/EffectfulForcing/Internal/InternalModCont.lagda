@@ -273,9 +273,6 @@ internal-mod-cont-correct t α β p = †
   ε : eloquent ⟦ t ⟧₀
   ε = eloquence-theorem ⟦ t ⟧₀ (t , refl)
 
-  dₜ : D ℕ ℕ ℕ
-  dₜ = pr₁ ε
-
   c : is-continuous ⟦ t ⟧₀
   c = eloquent-functions-are-continuous ⟦ t ⟧₀ ε
 
@@ -283,7 +280,7 @@ internal-mod-cont-correct t α β p = †
   c₀ = continuity-implies-continuity₀ ⟦ t ⟧₀ c
 
   m₀ : ℕ
-  m₀ = pr₁ (c₀ ⟦ α ⟧₀)
+  m₀ = succ (max-question₀ (dialogue-tree t) ⟦ α ⟧₀)
 
   q : ⟦ modulusᵀ t · α ⟧₀ ＝ m₀
   q = ap succ (main-lemma t ⟦ α ⟧₀)
