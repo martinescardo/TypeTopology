@@ -241,26 +241,6 @@ church-encode-to-D-rec {Y = Y} (D.β φ x) η′ β′ = ap (λ - → β′ - x)
   † : (y : Y) → church-encode (φ y) η′ β′ ＝ D-rec η′ β′ (φ y)
   † y = church-encode-to-D-rec (φ y) η′ β′
 
-final-lemma : (t : 〈〉 ⊢ (baire ⇒ ι)) (α : ℕ → ℕ)
-            → max-question⋆ ⟦ ⌜dialogue-tree⌝ t ⟧₀ α
-              ＝ max-question⋆ (church-encode (dialogue-tree t)) α
-final-lemma t α =
- max-question⋆ ⟦ ⌜dialogue-tree⌝ t ⟧₀ α                               ＝⟨ refl ⟩
- ⟦ ⌜dialogue-tree⌝ t ⟧₀ (λ _ → 0) (λ g x → max x (g (α x)))           ＝⟨ †    ⟩
- church-encode (dialogue-tree t) (λ _ → 0) (λ g x → max x (g (α x)))  ＝⟨ refl ⟩
- max-question⋆ (church-encode (dialogue-tree t)) α                    ∎
-  where
-   ♠ : extβ (λ g x → max x (g (α x)))
-   ♠ f g m n p φ  = max m (f (α m)) ＝⟨ ap (λ - → max - (f (α -))) p ⟩
-                    max n (f (α n)) ＝⟨ ap (max n) (φ (α n))         ⟩
-                    max n (g (α n)) ∎
-
-   equiv : ⟦ ⌜dialogue-tree⌝ t ⟧₀ ≣⋆ church-encode (dialogue-tree t)
-   equiv = (Rnorm-lemma₀ t) generic ⌜generic⌝ Rnorm-generic
-
-   † = equiv ι (λ _ → 0) (λ g x → max x (g (α x))) (λ _ → refl) ♠
-
-
 main-lemma : (t : 〈〉 ⊢ (baire ⇒ ι)) (α : ℕ → ℕ)
            → ⟦ max-questionᵀ · (⌜dialogue-tree⌝ t) ⟧₀ α
              ＝ max-question₀ (dialogue-tree t) α
@@ -271,8 +251,17 @@ main-lemma t α =
  max-question  (dialogue-tree t) α                  ＝⟨ Ⅳ ⟩
  max-question₀ (dialogue-tree t) α                  ∎
   where
+   † : Rnorm (B⟦ t ⟧₀ generic) (⌜ t ⌝ · ⌜generic⌝)
+   † = Rnorm-lemma₀ t generic ⌜generic⌝ Rnorm-generic
+
+   ext : extβ (λ g x → max x (g (α x)))
+   ext f g m n p φ =
+    max m (f (α m)) ＝⟨ ap (λ - → max - (f (α -))) p ⟩
+    max n (f (α n)) ＝⟨ ap (max n) (φ (α n))         ⟩
+    max n (g (α n)) ∎
+
    Ⅰ = max-questionᵀ-agreement-with-max-question⋆ (⌜dialogue-tree⌝ t) α
-   Ⅱ = final-lemma t α
+   Ⅱ = † ι (λ _ → 0) (λ g x → max x (g (α x))) (λ _ → refl) ext
    Ⅲ = max-question⋆-agreement (dialogue-tree t) α ⁻¹
    Ⅳ = max-question₀-agreement (dialogue-tree t) α
 
