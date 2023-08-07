@@ -224,12 +224,6 @@ modulusᵀ t = comp · Succ' · (max-questionᵀ · ⌜dialogue-tree⌝ t)
 
 \begin{code}
 
--- Use the 3 results:
-
-_ = ⌜dialogue-tree⌝-correct'
-_ = eloquence-theorem
-_ = continuity-implies-continuity₀
-
 church-encode-to-D-rec : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {A : 𝓣  ̇}
                      → (d : D X Y Z)
                      → (η′ : Z → A)
