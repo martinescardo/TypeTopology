@@ -181,4 +181,14 @@ Succ' {Γ} = ƛ (Succ ν₀)
 
 Rec' : {σ : type} {Γ : Cxt} → T Γ ((ι ⇒ σ ⇒ σ) ⇒ σ ⇒ ι ⇒ σ)
 Rec' {σ} {Γ} = ƛ (ƛ (ƛ (Rec ν₂ ν₁ ν₀)))
+
+\end{code}
+
+Composition operation in System T:
+
+\begin{code}
+
+comp : {Γ : Cxt} {ρ σ τ : type} → T Γ ((σ ⇒ τ) ⇒ (ρ ⇒ σ) ⇒ ρ ⇒ τ)
+comp {Γ = Γ} = ƛ (ƛ (ƛ (ν₂ · (ν₁ · ν₀))))
+
 \end{code}

@@ -273,3 +273,13 @@ continuity₀-implies-continuity f c α = range m , γ
   γ α′ p = pr₂ (c α) α′ (＝⟪⟫-range-implies-＝⦅⦆ α α′ m p)
 
 \end{code}
+
+We also define the following operation `modulus-at₀` that projects out the
+modulus of continuity computed by a proof of `is-continuous₀`:
+
+\begin{code}
+
+modulus-at₀ : (f : Baire → ℕ) → is-continuous₀ f → Baire → ℕ
+modulus-at₀ f c α = pr₁ (c α)
+
+\end{code}

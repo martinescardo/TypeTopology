@@ -16,6 +16,7 @@ import EffectfulForcing.Internal.Subst
 import EffectfulForcing.Internal.External
 import EffectfulForcing.Internal.Correctness
 import EffectfulForcing.Internal.FurtherThoughts
+import EffectfulForcing.Internal.InternalModCont
 
 \end{code}
 
