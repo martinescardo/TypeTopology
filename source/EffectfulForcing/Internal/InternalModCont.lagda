@@ -281,29 +281,11 @@ internal-mod-cont-correct : (t : 〈〉 ⊢ (baire ⇒ ι)) (α β : 〈〉 ⊢ 
                           → ⟦ t · α ⟧₀ ＝ ⟦ t ·  β ⟧₀
 internal-mod-cont-correct t α β p = †
  where
-  ⌜m⌝ : B-context【 〈〉 】 (baire ⇒ ι) ⊢ ι
-  ⌜m⌝ = modulusᵀ t · α
-
-  m : ℕ
-  m = ⟦ ⌜m⌝ ⟧₀
-
   ε : eloquent ⟦ t ⟧₀
   ε = eloquence-theorem ⟦ t ⟧₀ (t , refl)
 
   dₜ : D ℕ ℕ ℕ
   dₜ = pr₁ ε
-
-  foo : dialogue-tree t ＝ dₜ
-  foo = refl
-
-  φ : dialogue dₜ ∼ ⟦ t ⟧₀
-  φ = pr₂ ε
-
-  γ : ⟦ t ⟧₀ ⟦ α ⟧₀ ＝ dialogue dₜ ⟦ α ⟧₀
-  γ = φ ⟦ α ⟧₀ ⁻¹
-
-  p′ : ⟦ α ⟧₀ ＝⦅ m ⦆ ⟦ β ⟧₀
-  p′ = p
 
   c : is-continuous ⟦ t ⟧₀
   c = eloquent-functions-are-continuous ⟦ t ⟧₀ ε
