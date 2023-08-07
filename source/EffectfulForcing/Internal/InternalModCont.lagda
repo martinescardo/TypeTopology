@@ -21,12 +21,13 @@ open import EffectfulForcing.MFPSAndVariations.Church
 open import EffectfulForcing.Internal.SystemT
 open import EffectfulForcing.MFPSAndVariations.Combinators
 open import EffectfulForcing.MFPSAndVariations.Dialogue
- using (eloquent; D; dialogue; eloquent-functions-are-continuous; dialogue-continuity; generic)
+ using (eloquent; D; dialogue; eloquent-functions-are-continuous;
+        dialogue-continuity; generic)
 open import EffectfulForcing.MFPSAndVariations.Continuity
  using (is-continuous; is-continuous₀; continuity-implies-continuity₀;
         _＝⦅_⦆_; _＝⟪_⟫_; modulus-at₀; maximum)
 open import EffectfulForcing.Internal.Correctness
- using (⌜dialogue⌝; ⌜dialogue-tree⌝-correct'; Rnorm-generic; is-dialogue-for; _≣⋆_; extβ; Rnorm-lemma₀; Rnorm)
+ using (Rnorm-generic; is-dialogue-for; extβ; Rnorm-lemma₀; Rnorm)
 open import EffectfulForcing.Internal.External
  using (eloquence-theorem; dialogue-tree; ⟪⟫; B⟦_⟧; B⟦_⟧₀)
 open import EffectfulForcing.Internal.Subst
@@ -186,15 +187,9 @@ max-question⋆-agreement (D.β φ n) α = †
 max-questionᵀ-agreement-with-max-question⋆ : (d : 〈〉 ⊢ ⌜D⋆⌝ ι ι ι ι) (α : ℕ → ℕ)
            → ⟦ max-questionᵀ · d ⟧₀ α ＝ max-question⋆ ⟦ d ⟧₀ α
 max-questionᵀ-agreement-with-max-question⋆ d α =
- ⟦ max-questionᵀ · d ⟧₀ α         ＝⟨ refl ⟩
- ⟦ d ⟧₀ (λ _ → 0) (⟦ ƛ (ƛ (maxᵀ · ν₀ · (ν₁ · (ν₂ · ν₀)))) ⟧ ((⟨⟩ ‚ ⟦ d ⟧₀) ‚ α))   ＝⟨  refl ⟩
- ⟦ d ⟧₀ (λ _ → 0) (λ g x → ⟦ maxᵀ ⟧₀ x (g (α x)))                                  ＝⟨ †    ⟩
- ⟦ d ⟧₀ (λ _ → 0) (λ g x → max x (g (α x)))                                        ＝⟨ refl ⟩
- max-question⋆ ⟦ d ⟧₀ α    ∎
-  where
-   † = ap
-        (⟦ d ⟧₀ (λ _ → 0))
-        (dfunext fe λ g → dfunext fe λ x → maxᵀ-correct x (g (α x)))
+ ap
+  (⟦ d ⟧₀ (λ _ → 0))
+  (dfunext fe λ g → dfunext fe λ x → maxᵀ-correct x (g (α x)))
 
 
 \end{code}
@@ -222,18 +217,12 @@ modulusᵀ t = comp · Succ' · (max-questionᵀ · ⌜dialogue-tree⌝ t)
 
 \end{code}
 
+The correctness of `modulusᵀ` is given in `internal-mod-cont-correct` below. To
+prove this, we use the lemma `main-lemma`, which contains the main content of
+the proof.
+
 \begin{code}
 
-church-encode-to-D-rec : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {A : 𝓣  ̇}
-                     → (d : D X Y Z)
-                     → (η′ : Z → A)
-                     → (β′ : (Y → A) → X → A)
-                     → church-encode d η′ β′ ＝ D-rec η′ β′ d
-church-encode-to-D-rec (D.η _)   η′ β′ = refl
-church-encode-to-D-rec {Y = Y} (D.β φ x) η′ β′ = ap (λ - → β′ - x) (dfunext fe †)
- where
-  † : (y : Y) → church-encode (φ y) η′ β′ ＝ D-rec η′ β′ (φ y)
-  † y = church-encode-to-D-rec (φ y) η′ β′
 
 main-lemma : (t : 〈〉 ⊢ (baire ⇒ ι)) (α : ℕ → ℕ)
            → ⟦ max-questionᵀ · (⌜dialogue-tree⌝ t) ⟧₀ α
@@ -284,5 +273,24 @@ internal-mod-cont-correct t α β p = †
 
   † : ⟦ t ⟧₀ ⟦ α ⟧₀ ＝ ⟦ t ⟧₀ ⟦ β ⟧₀
   † = pr₂ (c₀ ⟦ α ⟧₀) ⟦ β ⟧₀ ‡
+
+\end{code}
+
+While I was working on the proof, I wrote down the following fact, which turned
+out not to be necessary for the proof. However, I am not taking it out of this
+file as it might be useful in the future.
+
+\begin{code}
+
+church-encode-to-D-rec : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {A : 𝓣  ̇}
+                     → (d : D X Y Z)
+                     → (η′ : Z → A)
+                     → (β′ : (Y → A) → X → A)
+                     → church-encode d η′ β′ ＝ D-rec η′ β′ d
+church-encode-to-D-rec (D.η _)   η′ β′ = refl
+church-encode-to-D-rec {Y = Y} (D.β φ x) η′ β′ = ap (λ - → β′ - x) (dfunext fe †)
+ where
+  † : (y : Y) → church-encode (φ y) η′ β′ ＝ D-rec η′ β′ (φ y)
+  † y = church-encode-to-D-rec (φ y) η′ β′
 
 \end{code}
