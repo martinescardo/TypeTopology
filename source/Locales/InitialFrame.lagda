@@ -321,9 +321,6 @@ module Spectrality-of-𝟎 (𝓤 : Universe) (pe : propext 𝓤) where
 
    γ : ((u , _) : upper-bound ⁅ ℬ𝟎 [ b ] ∣ b ε 𝒮 ⁆)
      → ((P , p) ≤[ poset-of (𝟎-𝔽𝕣𝕞 pe) ] u) holds
-   γ (U , q) = P , p                                         ≤⟨ q    ⟩
-               (𝟙 → U holds) , Π-is-prop fe (λ { ⋆ → {!!} }) ≤⟨ {!!} ⟩
-               U                                             ■
-
+   γ (U , q) p = q p ⋆
 
 \end{code}
