@@ -294,3 +294,33 @@ church-encode-to-D-rec {Y = Y} (D.β φ x) η′ β′ = ap (λ - → β′ - x)
   † y = church-encode-to-D-rec (φ y) η′ β′
 
 \end{code}
+
+\section{Uniform continuity}
+
+When we restrict to the Cantor space, the internal modulus of continuity
+operator gives us a _uniform_ modulus of continuity. In this section, we prove
+this fact.
+
+\begin{code}
+
+is-boolean : 〈〉 ⊢ baire → 𝓤₀  ̇
+is-boolean α =
+ (n : 〈〉 ⊢ ι) → (⟦ α ⟧₀ ⟦ n ⟧₀ ＝ zero) + (⟦ α ⟧₀ ⟦ n ⟧₀ ＝ succ zero)
+
+uni-max-question : D ℕ 𝟚 ℕ → (ℕ → 𝟚) → ℕ
+uni-max-question (D.η n)   α = 0
+uni-max-question (D.β φ n) α = max n (max n₁ n₂)
+ where
+  n₁ : ℕ
+  n₁ = uni-max-question (φ ₀) α
+
+  n₂ : ℕ
+  n₂ = uni-max-question (φ ₁) α
+
+-- internal-uniform-continuity : (t : 〈〉 ⊢ (baire ⇒ ι)) (α β : 〈〉 ⊢ baire)
+--                             → is-boolean α
+--                             → is-boolean β
+--                             → {!!}
+-- internal-uniform-continuity = {!!}
+
+\end{code}
