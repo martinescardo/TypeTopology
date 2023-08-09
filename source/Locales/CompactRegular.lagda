@@ -2052,6 +2052,59 @@ module LemmasAboutHeytingComplementation (X : Locale 𝓤 𝓥 𝓥)
     Ⅴ = ∨[ 𝒪 X ]-right-monotone φ
     Ⅵ = ∨[ 𝒪 X ]-left-monotone (∧[ 𝒪 X ]-lower₂ U V)
 
+\end{code}
 
+\section{Spectrality of the initial frame}
+
+\begin{code}
+
+module SpectralityOfTheInitialFrame (𝓤 : Universe) (pe : propext 𝓤) where
+
+ open Spectrality-of-𝟎 𝓤 pe
+
+ bottom-of-𝟎Frm-is-⊥ : ⊥Ω ＝ 𝟎[ 𝟎-𝔽𝕣𝕞 pe ]
+ bottom-of-𝟎Frm-is-⊥ = only-𝟎-is-below-𝟎 (𝟎-𝔽𝕣𝕞 pe) ⊥Ω (λ ())
+
+ 𝟎Frm-is-compact : is-compact (𝟎-𝔽𝕣𝕞 pe) holds
+ 𝟎Frm-is-compact S (∣i∣ , u) p = ∥∥-rec ∃-is-prop † (p ⋆)
+  where
+   † : (Σ j ꞉ index S , ((S [ j ]) holds))
+     → ∃ j ꞉ index S , (𝟏[ 𝟎-𝔽𝕣𝕞 pe ] ≤[ poset-of (𝟎-𝔽𝕣𝕞 pe) ] S [ j ]) holds
+   † (j , q) = ∣ j , (λ _ → q) ∣
+
+ ℬ𝟎-consists-of-compact-opens : consists-of-compact-opens (𝟎-𝔽𝕣𝕞 pe) ℬ𝟎 holds
+ ℬ𝟎-consists-of-compact-opens (inl ⋆) =
+  transport
+   (λ - → is-compact-open (𝟎-𝔽𝕣𝕞 pe) - holds)
+   (bottom-of-𝟎Frm-is-⊥ ⁻¹)
+   (𝟎-is-compact (𝟎-𝔽𝕣𝕞 pe))
+ ℬ𝟎-consists-of-compact-opens (inr ⋆) = 𝟎Frm-is-compact
+
+ 𝟎-𝔽𝕣𝕞-is-spectral : is-spectral (𝟎-𝔽𝕣𝕞 pe) holds
+ 𝟎-𝔽𝕣𝕞-is-spectral = ∣ ℬ𝟎↑ , ℬ𝟎-is-directed-basis-for-𝟎 , κ , γ ∣
+  where
+   κ : consists-of-compact-opens (𝟎-𝔽𝕣𝕞 pe) ℬ𝟎↑ holds
+   κ []       = 𝟎-is-compact (𝟎-𝔽𝕣𝕞 pe)
+   κ (i ∷ is) = compacts-are-closed-under-joins
+                 (𝟎-𝔽𝕣𝕞 pe)
+                 (ℬ𝟎 [ i ])
+                 (ℬ𝟎↑ [ is ])
+                 (ℬ𝟎-consists-of-compact-opens i)
+                 (κ is)
+
+   t : is-top (𝟎-𝔽𝕣𝕞 pe) (𝟏[ 𝟎-𝔽𝕣𝕞 pe ] ∨[ 𝟎-𝔽𝕣𝕞 pe ] 𝟎[ 𝟎-𝔽𝕣𝕞 pe ]) holds
+   t = transport
+        (λ - → is-top (𝟎-𝔽𝕣𝕞 pe) - holds)
+        (𝟎-left-unit-of-∨ (𝟎-𝔽𝕣𝕞 pe) 𝟏[ 𝟎-𝔽𝕣𝕞 pe ] ⁻¹)
+        (𝟏-is-top (𝟎-𝔽𝕣𝕞 pe))
+
+   c : closed-under-binary-meets (𝟎-𝔽𝕣𝕞 pe) ℬ𝟎↑ holds
+   c []       []        = ∣ [] , {!!} ∣
+   c []       (j ∷ js)  = ∣ (j ∷ js) , {!!} ∣
+   c (i ∷ is) []        = ∣ {!!} , {!!} ∣
+   c (x ∷ is) (j ∷ js)  = {!!}
+
+   γ : closed-under-finite-meets (𝟎-𝔽𝕣𝕞 pe) ℬ𝟎↑ holds
+   γ = ∣ (inr ⋆ ∷ []) , t ∣ , c
 
 \end{code}
