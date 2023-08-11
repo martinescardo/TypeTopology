@@ -1105,6 +1105,44 @@ closed-under-binary-meets F 𝒮 =
 closed-under-finite-meets : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦)
 closed-under-finite-meets F S = contains-top F S ∧ closed-under-binary-meets F S
 
+directify-preserves-closure-under-∧ : (F : Frame 𝓤 𝓥 𝓦)
+                                    → (ℬ : Fam 𝓦 ⟨ F ⟩)
+                                    → (β : is-basis-for F ℬ)
+                                    → closed-under-binary-meets F ℬ holds
+                                    → let
+                                        ℬ↑ = directify F ℬ
+                                        β↑ = directified-basis-is-basis F ℬ β
+                                       in
+                                        closed-under-binary-meets F ℬ↑ holds
+directify-preserves-closure-under-∧ F ℬ β ϑ []       []       = ∣ [] , † ∣
+ where
+  open Meets (λ x y → x ≤[ poset-of F ] y)
+
+  † : (𝟎[ F ] is-glb-of (𝟎[ F ] , 𝟎[ F ])) holds
+  † = (𝟎-is-bottom F 𝟎[ F ] , 𝟎-is-bottom F 𝟎[ F ]) , λ (_ , (p , _)) → p
+directify-preserves-closure-under-∧ F ℬ β ϑ [] js@(_ ∷ _) = ∣ [] , † ∣
+ where
+  open Meets (λ x y → x ≤[ poset-of F ] y)
+
+  † : (𝟎[ F ] is-glb-of (𝟎[ F ] , directify F ℬ [ js ])) holds
+  † = (𝟎-is-bottom F 𝟎[ F ] , 𝟎-is-bottom F (directify F ℬ [ js ]))
+    , λ (_ , (q , _)) → q
+directify-preserves-closure-under-∧ F ℬ β ϑ is@(_ ∷ _) []    = ∣ [] , † ∣
+ where
+  open Meets (λ x y → x ≤[ poset-of F ] y)
+
+  † : (𝟎[ F ] is-glb-of (directify F ℬ [ is ] , 𝟎[ F ])) holds
+  † = ((𝟎-is-bottom F (directify F ℬ [ is ])) , (𝟎-is-bottom F 𝟎[ F ]))
+    , λ (_ , (_ , r)) → r
+directify-preserves-closure-under-∧ F ℬ β ϑ (i ∷ is) (j ∷ js) = ∣ {!!} , {!!} ∣
+ where
+  open Meets (λ x y → x ≤[ poset-of F ] y)
+
+  IH : ∃ ks ꞉ index (directify F ℬ) ,
+        (((directify F ℬ [ ks ]) is-glb-of (directify F ℬ [ is ] , directify F ℬ [ js ]))
+          holds)
+  IH = directify-preserves-closure-under-∧ F ℬ β ϑ is js
+
 consists-of-compact-opens : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
 consists-of-compact-opens F U = Ɐ i ꞉ index U , is-compact-open F (U [ i ])
 
