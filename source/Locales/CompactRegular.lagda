@@ -1124,6 +1124,85 @@ conjunct-with-all F ℬ β p i (j ∷ js) = ∥∥-rec ∥∥-is-prop γ (p i j)
   γ (k , q) =
    ∥∥-rec ∥∥-is-prop (λ ks → ∣ k ∷ ks ∣) (conjunct-with-all F ℬ β p i js)
 
+join-list : (F : Frame 𝓤 𝓥 𝓦) → List ⟨ F ⟩ → ⟨ F ⟩
+join-list F = foldr (λ x y → x ∨[ F ] y) 𝟎[ F ]
+
+meet-list : (F : Frame 𝓤 𝓥 𝓦) → List ⟨ F ⟩ → ⟨ F ⟩
+meet-list F = foldr (λ x y → x ∧[ F ] y) 𝟏[ F ]
+
+conjunct-with-all′ : (F : Frame 𝓤 𝓥 𝓦)
+                   → ⟨ F ⟩ → List ⟨ F ⟩ → List ⟨ F ⟩
+conjunct-with-all′ F x = map (λ - → x ∧[ F ] -)
+
+cnf-transform : (F : Frame 𝓤 𝓥 𝓦)
+              → List ⟨ F ⟩ → List ⟨ F ⟩ → ⟨ F ⟩
+cnf-transform F []       ys = 𝟎[ F ]
+cnf-transform F (x ∷ xs) ys =
+ (join-list F (conjunct-with-all′ F x ys)) ∨[ F ] cnf-transform F xs ys
+
+cnf-transform-correct-single : {!!}
+cnf-transform-correct-single = {!!}
+
+cnf-transform-correct : (F : Frame 𝓤 𝓥 𝓦) (xs ys : List ⟨ F ⟩)
+                      → join-list F xs ∧[ F ] join-list F ys ＝ cnf-transform F xs ys
+cnf-transform-correct F []       ys = 𝟎-left-annihilator-for-∧ F (join-list F ys)
+cnf-transform-correct F (x ∷ xs) ys =
+ (x ∨[ F ] join-list F xs) ∧[ F ] join-list F ys                         ＝⟨ Ⅰ ⟩
+ (x ∧[ F ] join-list F ys) ∨[ F ] (join-list F xs ∧[ F ] join-list F ys) ＝⟨ Ⅱ ⟩
+ (x ∧[ F ] join-list F ys) ∨[ F ] cnf-transform F xs ys                  ＝⟨ {!!} ⟩
+ (join-list F (conjunct-with-all′ F x ys)) ∨[ F ] cnf-transform F xs ys  ＝⟨ refl ⟩
+ cnf-transform F (x ∷ xs) ys                                             ∎
+  where
+   IH : join-list F xs ∧[ F ] join-list F ys ＝ cnf-transform F xs ys
+   IH = cnf-transform-correct F xs ys
+
+   Ⅰ = binary-distributivity-right F
+   Ⅱ = ap
+        (λ - → (x ∧[ F ] join-list F ys) ∨[ F ] -)
+        (cnf-transform-correct F xs ys)
+
+image-of : (F : Frame 𝓤 𝓥 𝓦) (ℬ : Fam 𝓦 ⟨ F ⟩)
+         → index (directify F ℬ) → List ⟨ F ⟩
+image-of F ℬ []       = []
+image-of F ℬ (i ∷ is) = ℬ [ i ] ∷ image-of F ℬ is
+
+cnf-transform-is-basic : (F : Frame 𝓤 𝓥 𝓦) (ℬ : Fam 𝓦 ⟨ F ⟩)
+                       → (β : is-basis-for F ℬ)
+                       → closed-under-binary-meets F ℬ holds
+                       → let
+                          ℬ↑ = directify F ℬ
+                          β↑ = directified-basis-is-basis F ℬ β
+                         in
+                          (is js : index ℬ↑) → ∃ ks ꞉ index ℬ↑ , ℬ↑ [ ks ] ＝ (ℬ↑ [ is ]) ∧[ F ] (ℬ↑ [ js ])
+cnf-transform-is-basic F ℬ β p []       js = ∣ [] , (𝟎-left-annihilator-for-∧ F (directify F ℬ [ js ]) ⁻¹) ∣
+cnf-transform-is-basic F ℬ β p (i ∷ is) js = ∥∥-rec ∥∥-is-prop γ (cnf-transform-is-basic F ℬ β p is js)
+ where
+  ℬ↑ = directify F ℬ
+
+  lemma : (is js : index ℬ↑)
+        → ℬ↑ [ is ] ∧[ F ] ℬ↑ [ js ] ＝ join-list F (image-of F ℬ is) ∧[ F ] join-list F (image-of F ℬ js)
+  lemma []       js = 𝟎[ F ] ∧[ F ] ℬ↑ [ js ]                           ＝⟨ 𝟎-left-annihilator-for-∧ F (ℬ↑ [ js ]) ⟩
+                      𝟎[ F ]                                            ＝⟨ 𝟎-left-annihilator-for-∧ F (join-list F (image-of F ℬ js)) ⁻¹ ⟩
+                      𝟎[ F ] ∧[ F ] (join-list F (image-of F ℬ js))     ∎
+  lemma (i ∷ is) js =
+   (ℬ [ i ] ∨[ F ] ℬ↑ [ is ]) ∧[ F ] ℬ↑ [ js ]
+    ＝⟨ Ⅰ ⟩
+   (ℬ [ i ] ∧[ F ] ℬ↑ [ js ]) ∨[ F ] (ℬ↑ [ is ] ∧[ F ] ℬ↑ [ js ])
+    ＝⟨ Ⅱ ⟩
+   (ℬ [ i ] ∧[ F ] ℬ↑ [ js ]) ∨[ F ] (join-list F (image-of F ℬ is) ∧[ F ] join-list F (image-of F ℬ js))
+    ＝⟨ {!refl!} ⟩
+   join-list F (ℬ [ i ] ∷ image-of F ℬ is) ∧[ F ] join-list F (image-of F ℬ js) ∎
+    where
+     Ⅰ = binary-distributivity-right F
+     Ⅱ = ap (λ - → (ℬ [ i ] ∧[ F ] ℬ↑ [ js ]) ∨[ F ] -) (lemma is js)
+
+  γ : (Σ ks ꞉ index ℬ↑ , ℬ↑ [ ks ] ＝ ℬ↑ [ is ] ∧[ F ] ℬ↑ [ js ])
+    → ∃ ks ꞉ index ℬ↑ , ℬ↑ [ ks ] ＝ (ℬ [ i ] ∨[ F ] ℬ↑ [ is ]) ∧[ F ] (directify F ℬ [ js ])
+  γ (ks , q) = {!!}
+   where
+    foo : ℬ↑ [ is ] ∧[ F ] ℬ↑ [ js ] ＝ join-list F (image-of F ℬ is) ∧[ F ] join-list F (image-of F ℬ js)
+    foo = {!refl!}
+
 cnf-transform-indices : (F : Frame 𝓤 𝓥 𝓦)
                       → (ℬ : Fam 𝓦 ⟨ F ⟩)
                       → (β : is-basis-for F ℬ)
@@ -1145,11 +1224,17 @@ directify-preserves-closure-under-∧ : (F : Frame 𝓤 𝓥 𝓦)
                                     → (β : is-basis-for F ℬ)
                                     → closed-under-binary-meets F ℬ holds
                                     → let
-                                        ℬ↑ = directify F ℬ
-                                        β↑ = directified-basis-is-basis F ℬ β
-                                       in
-                                        closed-under-binary-meets F ℬ↑ holds
+                                       ℬ↑ = directify F ℬ
+                                       β↑ = directified-basis-is-basis F ℬ β
+                                      in
+                                       closed-under-binary-meets F ℬ↑ holds
 directify-preserves-closure-under-∧ F ℬ β ϑ is js = {!!}
+ where
+  xs : List ⟨ F ⟩
+  xs = image-of F ℬ is
+
+  ys : List ⟨ F ⟩
+  ys = image-of F ℬ js
 
 consists-of-compact-opens : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
 consists-of-compact-opens F U = Ɐ i ꞉ index U , is-compact-open F (U [ i ])
