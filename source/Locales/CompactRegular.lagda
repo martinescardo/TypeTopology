@@ -1140,8 +1140,14 @@ cnf-transform F []       ys = 𝟎[ F ]
 cnf-transform F (x ∷ xs) ys =
  (join-list F (conjunct-with-all′ F x ys)) ∨[ F ] cnf-transform F xs ys
 
-cnf-transform-correct-single : {!!}
-cnf-transform-correct-single = {!!}
+cnf-transform-correct-single : (F : Frame 𝓤 𝓥 𝓦) (x : ⟨ F ⟩) (ys : List ⟨ F ⟩)
+                             → x ∧[ F ] join-list F ys ＝ join-list F (conjunct-with-all′ F x ys)
+cnf-transform-correct-single F x []       = x ∧[ F ] 𝟎[ F ] ＝⟨ 𝟎-right-annihilator-for-∧ F x ⟩
+                                            𝟎[ F ]          ∎
+cnf-transform-correct-single F x (y ∷ ys) =
+ x ∧[ F ] (y ∨[ F ] join-list F ys)             ＝⟨ {!!} ⟩
+ {!!}                                           ＝⟨ {!!} ⟩
+ join-list F (conjunct-with-all′ F x (y ∷ ys))  ∎
 
 cnf-transform-correct : (F : Frame 𝓤 𝓥 𝓦) (xs ys : List ⟨ F ⟩)
                       → join-list F xs ∧[ F ] join-list F ys ＝ cnf-transform F xs ys
@@ -1178,30 +1184,44 @@ cnf-transform-is-basic F ℬ β p []       js = ∣ [] , (𝟎-left-annihilator-
 cnf-transform-is-basic F ℬ β p (i ∷ is) js = ∥∥-rec ∥∥-is-prop γ (cnf-transform-is-basic F ℬ β p is js)
  where
   ℬ↑ = directify F ℬ
+  lemma₀ : (is : index ℬ↑) → ℬ↑ [ is ] ＝ join-list F (image-of F ℬ is)
+  lemma₀ []       = refl
+  lemma₀ (i ∷ is) = ℬ [ i ] ∨[ F ] ℬ↑ [ is ]                       ＝⟨ Ⅰ    ⟩
+                    ℬ [ i ] ∨[ F ] (join-list F (image-of F ℬ is)) ＝⟨ refl ⟩
+                    join-list F (ℬ [ i ] ∷ image-of F ℬ is) ∎
+                     where
+                      Ⅰ = ap (λ - → ℬ [ i ] ∨[ F ] -) (lemma₀ is)
 
   lemma : (is js : index ℬ↑)
         → ℬ↑ [ is ] ∧[ F ] ℬ↑ [ js ] ＝ join-list F (image-of F ℬ is) ∧[ F ] join-list F (image-of F ℬ js)
-  lemma []       js = 𝟎[ F ] ∧[ F ] ℬ↑ [ js ]                           ＝⟨ 𝟎-left-annihilator-for-∧ F (ℬ↑ [ js ]) ⟩
-                      𝟎[ F ]                                            ＝⟨ 𝟎-left-annihilator-for-∧ F (join-list F (image-of F ℬ js)) ⁻¹ ⟩
-                      𝟎[ F ] ∧[ F ] (join-list F (image-of F ℬ js))     ∎
-  lemma (i ∷ is) js =
-   (ℬ [ i ] ∨[ F ] ℬ↑ [ is ]) ∧[ F ] ℬ↑ [ js ]
-    ＝⟨ Ⅰ ⟩
-   (ℬ [ i ] ∧[ F ] ℬ↑ [ js ]) ∨[ F ] (ℬ↑ [ is ] ∧[ F ] ℬ↑ [ js ])
-    ＝⟨ Ⅱ ⟩
-   (ℬ [ i ] ∧[ F ] ℬ↑ [ js ]) ∨[ F ] (join-list F (image-of F ℬ is) ∧[ F ] join-list F (image-of F ℬ js))
-    ＝⟨ {!refl!} ⟩
-   join-list F (ℬ [ i ] ∷ image-of F ℬ is) ∧[ F ] join-list F (image-of F ℬ js) ∎
+  lemma is js =
+   ℬ↑ [ is ] ∧[ F ] ℬ↑ [ js ]                                             ＝⟨ Ⅰ ⟩
+   (join-list F (image-of F ℬ is)) ∧[ F ] ℬ↑ [ js ]                       ＝⟨ Ⅱ ⟩
+   (join-list F (image-of F ℬ is)) ∧[ F ] (join-list F (image-of F ℬ js)) ∎
     where
-     Ⅰ = binary-distributivity-right F
-     Ⅱ = ap (λ - → (ℬ [ i ] ∧[ F ] ℬ↑ [ js ]) ∨[ F ] -) (lemma is js)
+     Ⅰ = ap (λ - → - ∧[ F ] ℬ↑ [ js ]) (lemma₀ is)
+     Ⅱ = ap (λ - → (join-list F (image-of F ℬ is)) ∧[ F ] -) (lemma₀ js)
+
+  lemma₁ : {!!}
+  lemma₁ = {!!}
 
   γ : (Σ ks ꞉ index ℬ↑ , ℬ↑ [ ks ] ＝ ℬ↑ [ is ] ∧[ F ] ℬ↑ [ js ])
     → ∃ ks ꞉ index ℬ↑ , ℬ↑ [ ks ] ＝ (ℬ [ i ] ∨[ F ] ℬ↑ [ is ]) ∧[ F ] (directify F ℬ [ js ])
   γ (ks , q) = {!!}
    where
-    foo : ℬ↑ [ is ] ∧[ F ] ℬ↑ [ js ] ＝ join-list F (image-of F ℬ is) ∧[ F ] join-list F (image-of F ℬ js)
-    foo = {!refl!}
+    foo : ℬ↑ [ ks ] ＝ cnf-transform F (image-of F ℬ is) (image-of F ℬ js)
+    foo = ℬ↑ [ ks ]                                           ＝⟨ q           ⟩
+          ℬ↑ [ is ] ∧[ F ] ℬ↑ [ js ]                          ＝⟨ lemma is js ⟩
+          join-list F (image-of F ℬ is) ∧[ F ] join-list F (image-of F ℬ js) ＝⟨ cnf-transform-correct F (image-of F ℬ is) (image-of F ℬ js) ⟩
+          cnf-transform F (image-of F ℬ is) (image-of F ℬ js) ∎
+
+    bar : cnf-transform F (image-of F ℬ (i ∷ is)) (image-of F ℬ js)
+        ＝ join-list F (conjunct-with-all′ F (ℬ [ i ]) (image-of F ℬ js)) ∨[ F ] cnf-transform F (image-of F ℬ is) (image-of F ℬ js)
+    bar = refl
+
+    baz : cnf-transform F (image-of F ℬ (i ∷ is)) (image-of F ℬ js)
+        ＝ join-list F (conjunct-with-all′ F (ℬ [ i ]) (image-of F ℬ js)) ∨[ F ] ℬ↑ [ ks ]
+    baz = {!!}
 
 cnf-transform-indices : (F : Frame 𝓤 𝓥 𝓦)
                       → (ℬ : Fam 𝓦 ⟨ F ⟩)
