@@ -1145,9 +1145,13 @@ cnf-transform-correct-single : (F : Frame 𝓤 𝓥 𝓦) (x : ⟨ F ⟩) (ys : 
 cnf-transform-correct-single F x []       = x ∧[ F ] 𝟎[ F ] ＝⟨ 𝟎-right-annihilator-for-∧ F x ⟩
                                             𝟎[ F ]          ∎
 cnf-transform-correct-single F x (y ∷ ys) =
- x ∧[ F ] (y ∨[ F ] join-list F ys)             ＝⟨ {!!} ⟩
- {!!}                                           ＝⟨ {!!} ⟩
- join-list F (conjunct-with-all′ F x (y ∷ ys))  ∎
+ x ∧[ F ] (y ∨[ F ] join-list F ys)                          ＝⟨ Ⅰ ⟩
+ (x ∧[ F ] y) ∨[ F ] (x ∧[ F ] join-list F ys)               ＝⟨ Ⅱ ⟩
+ (x ∧[ F ] y) ∨[ F ] join-list F (conjunct-with-all′ F x ys) ＝⟨ refl ⟩
+ join-list F (conjunct-with-all′ F x (y ∷ ys))    ∎
+  where
+   Ⅰ = binary-distributivity F x y (join-list F ys)
+   Ⅱ = ap (λ - → (x ∧[ F ] y) ∨[ F ] -) (cnf-transform-correct-single F x ys)
 
 cnf-transform-correct : (F : Frame 𝓤 𝓥 𝓦) (xs ys : List ⟨ F ⟩)
                       → join-list F xs ∧[ F ] join-list F ys ＝ cnf-transform F xs ys
@@ -1155,17 +1159,17 @@ cnf-transform-correct F []       ys = 𝟎-left-annihilator-for-∧ F (join-list
 cnf-transform-correct F (x ∷ xs) ys =
  (x ∨[ F ] join-list F xs) ∧[ F ] join-list F ys                         ＝⟨ Ⅰ ⟩
  (x ∧[ F ] join-list F ys) ∨[ F ] (join-list F xs ∧[ F ] join-list F ys) ＝⟨ Ⅱ ⟩
- (x ∧[ F ] join-list F ys) ∨[ F ] cnf-transform F xs ys                  ＝⟨ {!!} ⟩
+ (x ∧[ F ] join-list F ys) ∨[ F ] cnf-transform F xs ys                  ＝⟨ Ⅲ ⟩
  (join-list F (conjunct-with-all′ F x ys)) ∨[ F ] cnf-transform F xs ys  ＝⟨ refl ⟩
  cnf-transform F (x ∷ xs) ys                                             ∎
   where
-   IH : join-list F xs ∧[ F ] join-list F ys ＝ cnf-transform F xs ys
-   IH = cnf-transform-correct F xs ys
-
    Ⅰ = binary-distributivity-right F
    Ⅱ = ap
         (λ - → (x ∧[ F ] join-list F ys) ∨[ F ] -)
         (cnf-transform-correct F xs ys)
+   Ⅲ = ap
+        (λ - → - ∨[ F ] cnf-transform F xs ys)
+        (cnf-transform-correct-single F x ys)
 
 image-of : (F : Frame 𝓤 𝓥 𝓦) (ℬ : Fam 𝓦 ⟨ F ⟩)
          → index (directify F ℬ) → List ⟨ F ⟩
@@ -1201,9 +1205,6 @@ cnf-transform-is-basic F ℬ β p (i ∷ is) js = ∥∥-rec ∥∥-is-prop γ (
     where
      Ⅰ = ap (λ - → - ∧[ F ] ℬ↑ [ js ]) (lemma₀ is)
      Ⅱ = ap (λ - → (join-list F (image-of F ℬ is)) ∧[ F ] -) (lemma₀ js)
-
-  lemma₁ : {!!}
-  lemma₁ = {!!}
 
   γ : (Σ ks ꞉ index ℬ↑ , ℬ↑ [ ks ] ＝ ℬ↑ [ is ] ∧[ F ] ℬ↑ [ js ])
     → ∃ ks ꞉ index ℬ↑ , ℬ↑ [ ks ] ＝ (ℬ [ i ] ∨[ F ] ℬ↑ [ is ]) ∧[ F ] (directify F ℬ [ js ])
