@@ -1172,6 +1172,56 @@ image-of : (F : Frame 𝓤 𝓥 𝓦) (ℬ : Fam 𝓦 ⟨ F ⟩)
 image-of F ℬ []       = []
 image-of F ℬ (i ∷ is) = ℬ [ i ] ∷ image-of F ℬ is
 
+conjunct-with-all-is-basic : (F : Frame 𝓤 𝓥 𝓦) (ℬ : Fam 𝓦 ⟨ F ⟩)
+                           → (β : is-basis-for F ℬ)
+                           → closed-under-binary-meets F ℬ holds
+                           → let
+                              ℬ↑ = directify F ℬ
+                              β↑ = directified-basis-is-basis F ℬ β
+                             in
+                              (i : index ℬ) (is : index ℬ↑) →
+                               ∃ ks ꞉ index ℬ↑ , ℬ↑ [ ks ] ＝ join-list F (conjunct-with-all′ F (ℬ [ i ]) (image-of F ℬ is))
+conjunct-with-all-is-basic F ℬ β p i []       = ∣ [] , refl ∣
+conjunct-with-all-is-basic F ℬ β p i (j ∷ js) = ∥∥-rec ∃-is-prop γ †
+ where
+  open Meets (λ x y → x ≤[ poset-of F ] y)
+
+  ℬ↑ = directify F ℬ
+
+  † : ∃ k ꞉ index ℬ , ((ℬ [ k ]) is-glb-of ((ℬ [ i ]) , (ℬ [ j ]))) holds
+  † = p i j
+
+  -- IH : ∃ ks ꞉ index ℬ↑ , directify F ℬ [ ks ] ＝ join-list F (conjunct-with-all′ F (ℬ [ i ]) (image-of F ℬ js))
+  -- IH = conjunct-with-all-is-basic F ℬ β p i js
+
+  ♥ : join-list F (conjunct-with-all′ F (ℬ [ i ]) (image-of F ℬ (j ∷ js)))
+    ＝ join-list F ((ℬ [ i ] ∧[ F ] ℬ [ j ]) ∷ conjunct-with-all′ F (ℬ [ i ]) (image-of F ℬ js))
+  ♥ = refl
+
+  γ : (Σ k ꞉ index ℬ , ((ℬ [ k ]) is-glb-of (ℬ [ i ] , ℬ [ j ])) holds)
+    → ∃ ks ꞉ index ℬ↑ , ℬ↑ [ ks ] ＝ join-list F (conjunct-with-all′ F (ℬ [ i ]) (image-of F ℬ (j ∷ js)))
+  γ (k , q) = ∥∥-rec ∃-is-prop δ IH
+   where
+    IH : ∃ ks ꞉ index ℬ↑ ,
+          directify F ℬ [ ks ]
+          ＝
+          join-list F (conjunct-with-all′ F (ℬ [ i ]) (image-of F ℬ js))
+    IH = conjunct-with-all-is-basic F ℬ β p i js
+
+    δ : Σ ks ꞉ index ℬ↑ ,
+         ℬ↑ [ ks ]
+         ＝
+         join-list F (conjunct-with-all′ F (ℬ [ i ]) (image-of F ℬ js))
+      → ∃ ks ꞉ index ℬ↑ , ℬ↑ [ ks ] ＝ join-list F (conjunct-with-all′ F (ℬ [ i ]) (image-of F ℬ (j ∷ js)))
+    δ (ks , r) = ∣ (k ∷ ks) , ♣ ∣
+     where
+      ♣ : ℬ↑ [ k ∷ ks ] ＝ join-list F (conjunct-with-all′ F (ℬ [ i ]) (image-of F ℬ (j ∷ js)))
+      ♣ =
+       ℬ [ k ] ∨[ F ] ℬ↑ [ ks ] ＝⟨ ap (λ - → ℬ [ k ] ∨[ F ] -) r ⟩
+       ℬ [ k ] ∨[ F ] join-list F (conjunct-with-all′ F (ℬ [ i ]) (image-of F ℬ js)) ＝⟨ ap (λ - → - ∨[ F ] join-list F (conjunct-with-all′ F (ℬ [ i ]) (image-of F ℬ js))) (∧[ F ]-unique q) ⟩
+       (ℬ [ i ] ∧[ F ] ℬ [ j ]) ∨[ F ] join-list F (conjunct-with-all′ F (ℬ [ i ]) (image-of F ℬ js)) ＝⟨ refl ⟩
+       join-list F (conjunct-with-all′ F (ℬ [ i ]) (image-of F ℬ (j ∷ js))) ∎
+
 cnf-transform-is-basic : (F : Frame 𝓤 𝓥 𝓦) (ℬ : Fam 𝓦 ⟨ F ⟩)
                        → (β : is-basis-for F ℬ)
                        → closed-under-binary-meets F ℬ holds
