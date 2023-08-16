@@ -6,7 +6,7 @@ Based on `ayberkt/formal-topology-in-UF`.
 
 {-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
 
-open import MLTT.Spartan
+open import MLTT.Spartan hiding (𝟚)
 open import UF.Base
 open import UF.PropTrunc
 open import UF.FunExt
@@ -2299,6 +2299,32 @@ module SpectralityOfTheInitialFrame (𝓤 : Universe) (pe : propext 𝓤) where
    (bottom-of-𝟎Frm-is-⊥ ⁻¹)
    (𝟎-is-compact (𝟎-𝔽𝕣𝕞 pe))
  ℬ𝟎-consists-of-compact-opens (inr ⋆) = 𝟎Frm-is-compact
+
+ and₂-lemma₁ : (x y : 𝟚 𝓤) → (ℬ𝟎 [ and₂ x y ] ≤[ poset-of (𝟎-𝔽𝕣𝕞 pe) ] ℬ𝟎 [ x ]) holds
+ and₂-lemma₁ (inl ⋆) y       = λ ()
+ and₂-lemma₁ (inr ⋆) (inl ⋆) = λ ()
+ and₂-lemma₁ (inr ⋆) (inr ⋆) = λ { ⋆ → ⋆ }
+
+ and₂-lemma₂ : (x y : 𝟚 𝓤) → (ℬ𝟎 [ and₂ x y ] ≤[ poset-of (𝟎-𝔽𝕣𝕞 pe) ] ℬ𝟎 [ y ]) holds
+ and₂-lemma₂ (inl ⋆) y       = λ ()
+ and₂-lemma₂ (inr ⋆) (inl ⋆) = λ ()
+ and₂-lemma₂ (inr ⋆) (inr ⋆) = λ { ⋆ → ⋆ }
+
+ open Meets (λ x y → x ≤[ poset-of (𝟎-𝔽𝕣𝕞 pe) ] y) hiding (is-top)
+
+ and₂-lemma₃ : (x y : 𝟚 𝓤) ((z , _) : lower-bound (ℬ𝟎 [ x ] , ℬ𝟎 [ y ]))
+             → (z ≤[ poset-of (𝟎-𝔽𝕣𝕞 pe) ] ℬ𝟎 [ and₂ x y ]) holds
+ and₂-lemma₃ (inl ⋆) y (z , p₁ , p₂) = p₁
+ and₂-lemma₃ (inr ⋆) y (z , p₁ , p₂) = p₂
+
+ ℬ𝟎-is-closed-under-binary-meets : closed-under-binary-meets (𝟎-𝔽𝕣𝕞 pe) ℬ𝟎 holds
+ ℬ𝟎-is-closed-under-binary-meets i j = ∣ and₂ i j , (†₁ , †₂) , and₂-lemma₃ i j ∣
+   where
+    †₁ : (ℬ𝟎 [ and₂ i j ] ≤[ poset-of (𝟎-𝔽𝕣𝕞 pe) ] ℬ𝟎 [ i ]) holds
+    †₁ = and₂-lemma₁ i j
+
+    †₂ : (ℬ𝟎 [ and₂ i j ] ≤[ poset-of (𝟎-𝔽𝕣𝕞 pe) ] ℬ𝟎 [ j ]) holds
+    †₂ = and₂-lemma₂ i j
 
  𝟎-𝔽𝕣𝕞-is-spectral : is-spectral (𝟎-𝔽𝕣𝕞 pe) holds
  𝟎-𝔽𝕣𝕞-is-spectral = ∣ ℬ𝟎↑ , ℬ𝟎-is-directed-basis-for-𝟎 , κ , γ ∣
