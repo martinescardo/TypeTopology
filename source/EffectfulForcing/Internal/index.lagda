@@ -32,3 +32,6 @@ import EffectfulForcing.Internal.InternalModCont
     logical relation defined for that purpose.
 
  4. The file FurtherThoughts contains some work in progress.
+
+ 5. The file `InternalModCont` contains the proof of correctness of the internal
+    modulus of continuity operator.
