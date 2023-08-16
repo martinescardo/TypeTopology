@@ -8,7 +8,7 @@ More about injectivity.
 
 open import UF.FunExt
 
-module InjectiveTypes.More (fe : FunExt) where
+module InjectiveTypes.OverSmallMaps (fe : FunExt) where
 
 open import InjectiveTypes.Blackboard fe
 open import MLTT.Spartan
