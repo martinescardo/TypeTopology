@@ -1,6 +1,6 @@
 Martin Escardo, started 2014.
 
-An unformalized version of this development was published in
+An unformalized version of part of this development was published in
 Mathematical Structures in Computer Science, Cambridge University
 Press, 5th January 2021.  https://doi.org/10.1017/S0960129520000225
 
@@ -16,7 +16,15 @@ module InjectiveTypes.index where
 
 import InjectiveTypes.Article
 import InjectiveTypes.Blackboard
-import InjectiveTypes.More
+
+\end{code}
+
+The following have been done after the above article was published.
+
+\begin{code}
+
+import InjectiveTypes.OverSmallMaps
+import InjectiveTypes.MathematicalStructures
 
 \end{code}
 
