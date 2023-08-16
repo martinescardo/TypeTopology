@@ -16,15 +16,15 @@ open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
 module Posets.2ElementPoset
-  (pt : propositional-truncations-exist)
-  (fe : Fun-Ext)
-  where
+ (pt : propositional-truncations-exist)
+ (fe : Fun-Ext)
+ where
 
 open import Locales.Frame pt fe
 
 2-Poset : Poset 𝓤₀ 𝓤₀
 2-Poset = (MLTT.Spartan.𝟚 , (2-ord , 2-ord-is-partial-order))
-  where
+ where
   2-ord : MLTT.Spartan.𝟚 → MLTT.Spartan.𝟚 →  Ω 𝓤₀
   2-ord ₀ x = (𝟙 , 𝟙-is-prop)
   2-ord ₁ ₀ = (𝟘 , 𝟘-is-prop)
@@ -32,12 +32,10 @@ open import Locales.Frame pt fe
 
   2-ord-is-partial-order : is-partial-order MLTT.Spartan.𝟚 2-ord
   2-ord-is-partial-order = (2-ord-is-preorder , 2-ord-is-antisymmetric)
-    where
-
+   where
     2-ord-is-preorder : is-preorder 2-ord holds
     2-ord-is-preorder = (2-ord-is-reflexive , 2-ord-is-transitive)
-      where
-
+     where
       2-ord-is-reflexive : is-reflexive 2-ord holds
       2-ord-is-reflexive ₀ = ⋆
       2-ord-is-reflexive ₁ = ⋆
