@@ -37,29 +37,16 @@ add all we wanted to add, and clean-up when we finish.
 
 \begin{code}
 
+open import InjectiveTypes.Blackboard fe'
 open import Iterative.Multisets 𝓤
+open import Iterative.Ordinals 𝓤 ua
 open import Iterative.Sets 𝓤 ua
-open import Ordinals.Equivalence
-open import Ordinals.Notions
+open import Ordinals.Injectivity
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.Type hiding (Ord)
-open import Ordinals.Underlying
-open import Ordinals.WellOrderTransport
-open import UF.Equiv-FunExt
-open import UF.Base
 open import UF.Embeddings
-open import UF.Equiv
-open import UF.EquivalenceExamples
-open import UF.PairFun
 open import UF.Retracts
 open import UF.Size
-open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
-open import W.Type
-
-open import InjectiveTypes.Blackboard fe'
-open import Ordinals.Injectivity
-open import Iterative.Ordinals 𝓤 ua
 
 open ordinals-injectivity fe'
 

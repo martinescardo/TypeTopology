@@ -101,9 +101,8 @@ open import UF.FunExt
 
 module InjectiveTypes.Blackboard (fe : FunExt) where
 
-open import MLTT.Spartan
 open import MLTT.Plus-Properties
-
+open import MLTT.Spartan
 open import UF.Base
 open import UF.Embeddings
 open import UF.Equiv
@@ -1116,25 +1115,26 @@ whereas the injectivity of the universe requires full univalence.
  where
   Q : 𝓤 ⊔ 𝓥 ̇
   Q = (p : P) → f p holds
+
   j : is-prop Q
   j = Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥)) (λ p → holds-is-prop (f p))
+
   c : (p : P) → Q , j ＝ f p
-  c p = to-Σ-＝ (t , being-prop-is-prop (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)) _ _)
+  c p = to-subtype-＝ (λ _ → being-prop-is-prop (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥))) t
    where
-      g : Q → f p holds
-      g q = q p
+    g : Q → f p holds
+    g q = q p
 
-      h : f p holds → Q
-      h r p' = transport (λ - → f - holds) (i p p') r
+    h : f p holds → Q
+    h r p' = transport (λ - → f - holds) (i p p') r
 
-      t : Q ＝ f p holds
-      t = pe j (holds-is-prop (f p)) g h
+    t : Q ＝ f p holds
+    t = pe j (holds-is-prop (f p)) g h
 
 Ω-ainjective : propext (𝓤 ⊔ 𝓥) → ainjective-type (Ω (𝓤 ⊔ 𝓥)) 𝓤 𝓥
 Ω-ainjective {𝓤} {𝓥} pe = aflabby-types-are-ainjective
                             (Ω (𝓤 ⊔ 𝓥))
                             (Ω-aflabby {𝓤 ⊔ 𝓥} {𝓤} pe)
-
 \end{code}
 
 Added 6th Feb 2019.
@@ -1235,6 +1235,19 @@ ainjective-resizing₃ : (D : 𝓦 ̇ )
                      → ainjective-type D 𝓤 𝓥
                      → ainjective-type D 𝓤₀ 𝓤
 ainjective-resizing₃ = ainjective-resizing₁
+
+\end{code}
+
+We also have (added 3rd August 2023):
+
+\begin{code}
+
+aflabbiness-resizing₁ : (D : 𝓦 ̇ )
+                      → aflabby D (𝓤 ⊔ 𝓥)
+                      → aflabby D 𝓤
+aflabbiness-resizing₁ {𝓦} {𝓤} {𝓥} D f =
+ ainjective-types-are-aflabby {𝓦} {𝓤} {𝓥} D
+  (aflabby-types-are-ainjective D f)
 
 \end{code}
 

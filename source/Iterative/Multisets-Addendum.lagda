@@ -20,21 +20,20 @@ module Iterative.Multisets-Addendum
 
 open import Iterative.Multisets 𝓤
 open import Iterative.Sets 𝓤 ua
+open import Taboos.Decomposability ua
 open import UF.Base
 open import UF.Embeddings
 open import UF.Equiv
 open import UF.EquivalenceExamples
+open import UF.ExcludedMiddle
 open import UF.FunExt
 open import UF.Miscelanea
 open import UF.PropIndexedPiSigma
 open import UF.Retracts
-open import UF.Size
 open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
 open import UF.UA-FunExt
-open import UF.Univalence
-open import W.Type
 open import W.Properties (𝓤 ̇) id
+open import W.Type
 
 private
  𝓤⁺ : Universe
@@ -142,5 +141,15 @@ prop-indexed-sumᴹ {X} {A} i x₀ = V
 
   f\j-ext : f\j ∘ j ∼ f
   f\j-ext x = prop-indexed-sumᴹ {fiber j (j x)} {A (j x)} (j-emb (j x)) (x , refl)
+
+\end{code}
+
+It follows that 𝕄 has no non-trivial decidable properties unless weak
+excluded middle holds.
+
+\begin{code}
+
+decomposition-of-𝕄-gives-WEM : decomposition 𝕄 → WEM 𝓤
+decomposition-of-𝕄-gives-WEM = decomposition-of-ainjective-type-gives-WEM 𝕄 𝕄-is-ainjective
 
 \end{code}

@@ -1272,7 +1272,7 @@ And a second application of the above commutative square shows that
 
 \end{code}
 
-Putting this together with get our desired isomorphism of ordinals:
+Putting this together we get our desired isomorphism of ordinals:
 
 \begin{code}
 
@@ -1308,4 +1308,4 @@ Ordinals-agreement-is-unique = pointed-props-are-singletons
                                 (the-type-of-ordinals-is-a-set (ua (𝓤 ⁺)) fe)
 \end{code}
 
-And this is the main theorem of this development.
+And this is the main theorem of this file.

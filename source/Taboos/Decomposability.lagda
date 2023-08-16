@@ -13,6 +13,8 @@ middle holds.
 In other words, the type Ordinal 𝓤 has no non-trivial decidable
 property unless weak excluded middle holds.
 
+Further additions 3rd August 2023.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K --exact-split #-}
@@ -23,7 +25,11 @@ module Taboos.Decomposability (ua : Univalence) where
 
 open import MLTT.Spartan
 open import MLTT.Two-Properties
-
+open import Ordinals.Equivalence
+open import Ordinals.Maps
+open import Ordinals.OrdinalOfOrdinals ua
+open import Ordinals.Type
+open import Ordinals.Underlying
 open import UF.Base
 open import UF.Classifiers
 open import UF.Equiv
@@ -48,11 +54,6 @@ private
 ⇁_ = not fe'
 
 open import Ordinals.Arithmetic fe
-open import Ordinals.Equivalence
-open import Ordinals.Maps
-open import Ordinals.OrdinalOfOrdinals ua
-open import Ordinals.Type
-open import Ordinals.Underlying
 
 \end{code}
 
@@ -345,6 +346,10 @@ Ordinal-decomposition-iff-WEM = decomposition-of-ordinals-type-gives-WEM ,
 
 \end{code}
 
+TODO. Actually, WEM 𝓤 is logically equivalent to WEM 𝓥 for any two
+universes 𝓤 and 𝓥. The reason is that negated propositions are 𝓤₀
+small.
+
 We now assume that propositional truncations exist to define
 decomposability as the truncation of the type of decompositions. It is
 a corollary of the above development that the decomposability of the
@@ -442,3 +447,107 @@ References
         Computer Science on selected papers from FSCD 2021.
 
 TODO. Implement the above thoughts.
+
+Added 3rd August 2023 by Martin Escardo. Injective types are
+decomposable iff WEM holds. This subsumes the above developement,
+because the type of ordinals is injective.
+
+\begin{code}
+
+open import InjectiveTypes.Blackboard fe
+open import InjectiveTypes.More fe
+open import Ordinals.Injectivity
+open import UF.Miscelanea
+
+open ordinals-injectivity fe
+
+private
+ pe : Prop-Ext
+ pe = Univalence-gives-Prop-Ext ua
+
+\end{code}
+
+A naive application of injectivity gives the following:
+
+\begin{code}
+
+ainjective-types-have-Ω-Paths-naive : (D : 𝓤 ̇ )
+                                    → ainjective-type D 𝓤₀ (𝓦 ⁺)
+                                    → has-Ω-paths 𝓦 D
+ainjective-types-have-Ω-Paths-naive {𝓤} {𝓦} D D-ainj x₀ x₁ = II I
+ where
+  f : 𝟚 → D
+  f ₀ = x₀
+  f ₁ = x₁
+
+  I : Σ g ꞉ (Ω 𝓦 → D) , g ∘ 𝟚-to-Ω ∼ f
+  I = D-ainj 𝟚-to-Ω (𝟚-to-Ω-is-embedding fe' pe) f
+
+  II : type-of I → Ω-Path 𝓦 x₀ x₁
+  II (g , h) = g , h ₀ , h ₁
+
+\end{code}
+
+But this is too weak for applications, as the universe 𝓦⁺ is higher
+than we can obtain in practice.
+
+This can be improved as follows, exploiting the fact that the map
+𝟚-to-Ω : 𝟚 → Ω 𝓤 has 𝓤-small fibers and that algebraic flabbiness
+gives injectivity over embeddings with small fibers for lower
+universes. The key point is that this allows to replace 𝓦⁺ by 𝓦 in the
+above, so that we can apply this to the injectivity of the universe
+and to that of the type of ordinals, and more examples like these.
+
+\begin{code}
+
+ainjective-types-have-Ω-Paths : {𝓤 𝓥 𝓦 : Universe} (D : 𝓤 ̇ )
+                              → ainjective-type D 𝓥 𝓦
+                              → has-Ω-paths 𝓥 D
+ainjective-types-have-Ω-Paths {𝓤} {𝓥} {𝓦} D D-ainj x₀ x₁ = II I
+ where
+  f : 𝟚 → D
+  f ₀ = x₀
+  f ₁ = x₁
+
+  I : Σ g ꞉ (Ω 𝓥 → D) , g ∘ 𝟚-to-Ω ∼ f
+  I = ainjectivity-over-small-maps {𝓤} {𝓤₀} {𝓥 ⁺} {𝓥} {𝓥} {𝓦}
+       D
+       D-ainj
+       𝟚-to-Ω
+       (𝟚-to-Ω-is-embedding fe' pe)
+       (𝟚-to-Ω-is-small-map fe' pe)
+       f
+
+  II : type-of I → Ω-Path 𝓥 x₀ x₁
+  II (g , h) = g , h ₀ , h ₁
+
+decomposition-of-ainjective-type-gives-WEM : (D : 𝓤 ̇ )
+                                           → ainjective-type D 𝓥 𝓦
+                                           → decomposition D
+                                           → WEM 𝓥
+decomposition-of-ainjective-type-gives-WEM {𝓤} {𝓥} {𝓦} D D-ainj D-decomp =
+ decomposition-of-type-with-Ω-paths-gives-WEM
+  D-decomp
+  (ainjective-types-have-Ω-Paths {𝓤} {𝓥} {𝓦} D D-ainj)
+
+\end{code}
+
+Examples:
+
+\begin{code}
+
+decomposition-of-universe-gives-WEM : decomposition (𝓤 ̇ ) → WEM 𝓤
+decomposition-of-universe-gives-WEM {𝓤} =
+ decomposition-of-ainjective-type-gives-WEM {𝓤 ⁺} {𝓤} {𝓤}
+  (𝓤 ̇ )
+  (universes-are-ainjective-Π (ua 𝓤))
+
+decomposition-of-ordinals-type-gives-WEM-bis : decomposition (Ordinal 𝓤) → WEM 𝓤
+decomposition-of-ordinals-type-gives-WEM-bis {𝓤} =
+ decomposition-of-ainjective-type-gives-WEM {𝓤 ⁺} {𝓤} {𝓤}
+  (Ordinal 𝓤)
+  (Ordinal-is-ainjective (ua 𝓤))
+
+\end{code}
+
+More examples are included in Iterative.Multisets-Addendum and Iterative.Sets-Addendum.
