@@ -153,9 +153,9 @@ algebraicly flabby with with respect to the universe 𝓤.
 
 \begin{code}
 
- flabiness-of-type-of-structures : structure-closed-under-prop-indexed-products
-                                 → aflabby (Σ S) 𝓤
- flabiness-of-type-of-structures τ-is-equiv = I
+ aflabbiness-of-type-of-structures : structure-closed-under-prop-indexed-products
+                                   → aflabby (Σ S) 𝓤
+ aflabbiness-of-type-of-structures τ-is-equiv = I
    where
     I : aflabby (Σ S) 𝓤
     I P P-is-prop f = (Π A , s) , II
@@ -197,10 +197,10 @@ under prop-indexed products, which is our main theorem.
 
 \begin{code}
 
- injectivity-of-type-of-structures : structure-closed-under-prop-indexed-products
+ ainjectivity-of-type-of-structures : structure-closed-under-prop-indexed-products
                                    → ainjective-type (Σ S) 𝓤 𝓤
- injectivity-of-type-of-structures = aflabby-types-are-ainjective (Σ S)
-                                      ∘ flabiness-of-type-of-structures
+ ainjectivity-of-type-of-structures = aflabby-types-are-ainjective (Σ S)
+                                      ∘ aflabbiness-of-type-of-structures
 
 \end{code}
 
@@ -255,10 +255,10 @@ with T instead:
      → S (Π A) → (h : p holds) → S (A h)
    t p A s h = T (π p A h) s
 
-  flabiness-of-type-of-structures' : ((p : Ω 𝓤) (A : p holds → 𝓤 ̇) → is-equiv (t p A))
-                                   → aflabby (Σ S) 𝓤
-  flabiness-of-type-of-structures' t-is-equiv =
-   flabiness-of-type-of-structures
+  aflabbiness-of-type-of-structures' : ((p : Ω 𝓤) (A : p holds → 𝓤 ̇) → is-equiv (t p A))
+                                     → aflabby (Σ S) 𝓤
+  aflabbiness-of-type-of-structures' t-is-equiv =
+   aflabbiness-of-type-of-structures
     (λ p A → equiv-closed-under-∼ (t p A) (τ p A) (t-is-equiv p A) (I p A))
    where
     I : (p : Ω 𝓤) (A : p holds → 𝓤 ̇) →  τ p A ∼ t p A
@@ -274,7 +274,7 @@ with T instead:
   injectivity-of-type-of-structures' : ((p : Ω 𝓤) (A : p holds → 𝓤 ̇) → is-equiv (t p A))
                                      → ainjective-type (Σ S) 𝓤 𝓤
   injectivity-of-type-of-structures' = aflabby-types-are-ainjective (Σ S)
-                                        ∘ flabiness-of-type-of-structures'
+                                        ∘ aflabbiness-of-type-of-structures'
 
 \end{code}
 
@@ -282,8 +282,8 @@ Example: The type of pointed types is algebraicly injective.
 
 \begin{code}
 
-flabiness-of-type-of-pointed-types : ainjective-type (Σ X ꞉ 𝓤 ̇ , X) 𝓤 𝓤
-flabiness-of-type-of-pointed-types {𝓤} =
+ainjectivity-of-type-of-pointed-types : ainjective-type (Σ X ꞉ 𝓤 ̇ , X) 𝓤 𝓤
+ainjectivity-of-type-of-pointed-types {𝓤} =
  injectivity-of-type-of-structures'
    (λ X → X)
    ⌜_⌝
