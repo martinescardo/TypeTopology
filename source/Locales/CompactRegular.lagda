@@ -2127,23 +2127,23 @@ cnf-transform-correct F (x ∷ xs) ys =
 We now start proving, making use of `cnf-transform-correct`, that the CNF
 transformation of two basic opens is itself basic.
 
-We first prove the analogous fact that the `conjunct-with-all` function:
+We first prove the analogous fact that the `conjunct-with-list` function:
 
 \begin{code}
 
-conjunct-with-all-is-basic : (F : Frame 𝓤 𝓥 𝓦) (ℬ : Fam 𝓦 ⟨ F ⟩)
-                           → (β : is-basis-for F ℬ)
-                           → closed-under-binary-meets F ℬ holds
-                           → let
-                              ℬ↑ = directify F ℬ
-                              β↑ = directified-basis-is-basis F ℬ β
-                             in
-                              (i : index ℬ) (is : index ℬ↑) →
-                               ∃ ks ꞉ index ℬ↑ ,
-                                 ℬ↑ [ ks ]
-                                 ＝ ⋁ₗ[ F ] (conjunct-with-list F (ℬ [ i ]) ((ℬ [_]) <$> is))
-conjunct-with-all-is-basic F ℬ β p i []       = ∣ [] , refl ∣
-conjunct-with-all-is-basic F ℬ β p i (j ∷ js) = ∥∥-rec ∃-is-prop γ μ
+conjunct-with-list-is-basic : (F : Frame 𝓤 𝓥 𝓦) (ℬ : Fam 𝓦 ⟨ F ⟩)
+                            → (β : is-basis-for F ℬ)
+                            → closed-under-binary-meets F ℬ holds
+                            → let
+                               ℬ↑ = directify F ℬ
+                               β↑ = directified-basis-is-basis F ℬ β
+                              in
+                               (i : index ℬ) (is : index ℬ↑) →
+                                ∃ ks ꞉ index ℬ↑ ,
+                                  ℬ↑ [ ks ]
+                                  ＝ ⋁ₗ[ F ] (conjunct-with-list F (ℬ [ i ]) ((ℬ [_]) <$> is))
+conjunct-with-list-is-basic F ℬ β p i []       = ∣ [] , refl ∣
+conjunct-with-list-is-basic F ℬ β p i (j ∷ js) = ∥∥-rec ∃-is-prop γ μ
  where
   open Meets (λ x y → x ≤[ poset-of F ] y)
 
@@ -2180,7 +2180,7 @@ of conjuncting `ℬ[ i ]` with each `ℬ[ j ]` given by `js.`
 
     IH : ∃ ks ꞉ index ℬ↑ ,
           ℬ↑ [ ks ] ＝ ⋁ₗ[ F ] (conjunct-with-list F (ℬ [ i ]) ((ℬ [_]) <$> js))
-    IH = conjunct-with-all-is-basic F ℬ β p i js
+    IH = conjunct-with-list-is-basic F ℬ β p i js
 
 \end{code}
 
@@ -2250,8 +2250,12 @@ We first record the following trivial `lemma`:
            ＝ join-in-frame′ F ℬ is ∧[ F ] join-in-frame′ F ℬ js
    lemma is js =
     let
-      Ⅰ = ap (λ - → - ∧[ F ] ℬ↑ [ js ]) (join-in-frame-equality F ℬ is)
-      Ⅱ = ap (λ - → (⋁ₗ[ F ] ((ℬ [_]) <$> is)) ∧[ F ] -) (join-in-frame-equality F ℬ js)
+      Ⅰ = ap
+           (λ - → - ∧[ F ] ℬ↑ [ js ])
+           (join-in-frame-equality F ℬ is)
+      Ⅱ = ap
+           (λ - → (⋁ₗ[ F ] ((ℬ [_]) <$> is)) ∧[ F ] -)
+           (join-in-frame-equality F ℬ js)
     in
      ℬ↑ [ is ] ∧[ F ] ℬ↑ [ js ]                                   ＝⟨ Ⅰ ⟩
      (⋁ₗ[ F ] ((ℬ [_]) <$> is)) ∧[ F ] ℬ↑ [ js ]                  ＝⟨ Ⅱ ⟩
@@ -2278,7 +2282,7 @@ this as `ls`.
 
      † : ∃ ls ꞉ index ℬ↑ ,
           ℬ↑ [ ls ] ＝ ⋁ₗ[ F ] (conjunct-with-list F (ℬ [ i ]) ((ℬ [_]) <$> js))
-     † = conjunct-with-all-is-basic F ℬ β p i js
+     † = conjunct-with-list-is-basic F ℬ β p i js
 
     in
 
@@ -2453,12 +2457,12 @@ module SpectralityOfTheInitialFrame (𝓤 : Universe) (pe : propext 𝓤) where
 
  ℬ𝟎-is-closed-under-binary-meets : closed-under-binary-meets (𝟎-𝔽𝕣𝕞 pe) ℬ𝟎 holds
  ℬ𝟎-is-closed-under-binary-meets i j = ∣ and₂ i j , (†₁ , †₂) , and₂-lemma₃ i j ∣
-   where
-    †₁ : (ℬ𝟎 [ and₂ i j ] ≤[ poset-of (𝟎-𝔽𝕣𝕞 pe) ] ℬ𝟎 [ i ]) holds
-    †₁ = and₂-lemma₁ i j
+  where
+   †₁ : (ℬ𝟎 [ and₂ i j ] ≤[ poset-of (𝟎-𝔽𝕣𝕞 pe) ] ℬ𝟎 [ i ]) holds
+   †₁ = and₂-lemma₁ i j
 
-    †₂ : (ℬ𝟎 [ and₂ i j ] ≤[ poset-of (𝟎-𝔽𝕣𝕞 pe) ] ℬ𝟎 [ j ]) holds
-    †₂ = and₂-lemma₂ i j
+   †₂ : (ℬ𝟎 [ and₂ i j ] ≤[ poset-of (𝟎-𝔽𝕣𝕞 pe) ] ℬ𝟎 [ j ]) holds
+   †₂ = and₂-lemma₂ i j
 
  𝟎-𝔽𝕣𝕞-is-spectral : is-spectral (𝟎-𝔽𝕣𝕞 pe) holds
  𝟎-𝔽𝕣𝕞-is-spectral = ∣ ℬ𝟎↑ , ℬ𝟎-is-directed-basis-for-𝟎 , κ , γ ∣
