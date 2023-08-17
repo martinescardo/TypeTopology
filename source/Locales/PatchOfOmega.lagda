@@ -2,6 +2,8 @@ Ayberk Tosun, 17 August 2023.
 
 \begin{code}[hide]
 
+{-# OPTIONS --safe --without-K --exact-split #-}
+
 open import MLTT.Spartan
 open import UF.PropTrunc
 open import UF.FunExt
