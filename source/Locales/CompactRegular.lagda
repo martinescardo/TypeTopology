@@ -1105,28 +1105,20 @@ closed-under-binary-meets F 𝒮 =
 closed-under-finite-meets : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦)
 closed-under-finite-meets F S = contains-top F S ∧ closed-under-binary-meets F S
 
-conjunct-with-list : (F : Frame 𝓤 𝓥 𝓦)
-                   → ⟨ F ⟩ → List ⟨ F ⟩ → List ⟨ F ⟩
-conjunct-with-list F x = map (λ - → x ∧[ F ] -)
+{--
 
-cnf-transform : (F : Frame 𝓤 𝓥 𝓦)
-              → List ⟨ F ⟩ → List ⟨ F ⟩ → ⟨ F ⟩
-cnf-transform F []       ys = 𝟎[ F ]
-cnf-transform F (x ∷ xs) ys =
- (join-list F (conjunct-with-list F x ys)) ∨[ F ] cnf-transform F xs ys
-
-cnf-transform-correct-single : (F : Frame 𝓤 𝓥 𝓦) (x : ⟨ F ⟩) (ys : List ⟨ F ⟩)
+distributivity-list : (F : Frame 𝓤 𝓥 𝓦) (x : ⟨ F ⟩) (ys : List ⟨ F ⟩)
                              → x ∧[ F ] join-list F ys ＝ join-list F (conjunct-with-list F x ys)
-cnf-transform-correct-single F x []       = x ∧[ F ] 𝟎[ F ] ＝⟨ 𝟎-right-annihilator-for-∧ F x ⟩
+distributivity-list F x []       = x ∧[ F ] 𝟎[ F ] ＝⟨ 𝟎-right-annihilator-for-∧ F x ⟩
                                             𝟎[ F ]          ∎
-cnf-transform-correct-single F x (y ∷ ys) =
+distributivity-list F x (y ∷ ys) =
  x ∧[ F ] (y ∨[ F ] join-list F ys)                          ＝⟨ Ⅰ ⟩
  (x ∧[ F ] y) ∨[ F ] (x ∧[ F ] join-list F ys)               ＝⟨ Ⅱ ⟩
  (x ∧[ F ] y) ∨[ F ] join-list F (conjunct-with-list F x ys) ＝⟨ refl ⟩
  join-list F (conjunct-with-list F x (y ∷ ys))    ∎
   where
    Ⅰ = binary-distributivity F x y (join-list F ys)
-   Ⅱ = ap (λ - → (x ∧[ F ] y) ∨[ F ] -) (cnf-transform-correct-single F x ys)
+   Ⅱ = ap (λ - → (x ∧[ F ] y) ∨[ F ] -) (distributivity-list F x ys)
 
 cnf-transform-correct : (F : Frame 𝓤 𝓥 𝓦) (xs ys : List ⟨ F ⟩)
                       → join-list F xs ∧[ F ] join-list F ys ＝ cnf-transform F xs ys
@@ -1144,7 +1136,7 @@ cnf-transform-correct F (x ∷ xs) ys =
         (cnf-transform-correct F xs ys)
    Ⅲ = ap
         (λ - → - ∨[ F ] cnf-transform F xs ys)
-        (cnf-transform-correct-single F x ys)
+        (distributivity-list F x ys)
 
 image-of : (F : Frame 𝓤 𝓥 𝓦) (ℬ : Fam 𝓦 ⟨ F ⟩)
          → index (directify F ℬ) → List ⟨ F ⟩
@@ -1301,6 +1293,8 @@ directify-preserves-closure-under-∧ F ℬ β ϑ is js =
        , λ (z , p) → uncurry (∧[ F ]-greatest x y z) p
     in
      ∣ ks , transport (λ - → (- is-glb-of (x , y)) holds) (p ⁻¹) † ∣
+
+--}
 
 consists-of-compact-opens : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
 consists-of-compact-opens F U = Ɐ i ꞉ index U , is-compact-open F (U [ i ])
@@ -2251,6 +2245,47 @@ module LemmasAboutHeytingComplementation (X : Locale 𝓤 𝓥 𝓥)
 
 \end{code}
 
+\section{CNF Transformation for Spectrality}
+
+Given a basis closed under binary meets, the directification of that basis using
+the `directify` function is also closed under binary meets. The reason is that
+the meets of joins can be turned into joins of meets. In this section, we prove
+this fact.
+
+\begin{code}
+
+conjunct-with-list : (F : Frame 𝓤 𝓥 𝓦)
+                   → ⟨ F ⟩ → List ⟨ F ⟩ → List ⟨ F ⟩
+conjunct-with-list F x = map (λ - → x ∧[ F ] -)
+
+cnf-transform : (F : Frame 𝓤 𝓥 𝓦)
+              → List ⟨ F ⟩ → List ⟨ F ⟩ → ⟨ F ⟩
+cnf-transform F []       ys = 𝟎[ F ]
+cnf-transform F (x ∷ xs) ys =
+ (⋁ₗ[ F ] conjunct-with-list F x ys) ∨[ F ] cnf-transform F xs ys
+
+\end{code}
+
+Given some `x : ⟨ F ⟩` and a list `(y₁ , … , yₙ) : List ⟨ F ⟩`,
+`x ∧ (y₁ ∨ … ∨ yₙ) ＝ (x ∧ y₁) ∨ … ∨ (x ∧ yₙ)`, which is of course just an
+instance of the distributivity law. We prove this fact next.
+
+\begin{code}
+
+distributivity-list : (F : Frame 𝓤 𝓥 𝓦) (x : ⟨ F ⟩) (ys : List ⟨ F ⟩)
+                             → x ∧[ F ] join-list F ys ＝ join-list F (conjunct-with-list F x ys)
+distributivity-list F x []       = 𝟎-right-annihilator-for-∧ F x
+distributivity-list F x (y ∷ ys) =
+ x ∧[ F ] (y ∨[ F ] (⋁ₗ[ F ] ys))                         ＝⟨ Ⅰ    ⟩
+ (x ∧[ F ] y) ∨[ F ] (x ∧[ F ] (⋁ₗ[ F ] ys))              ＝⟨ Ⅱ    ⟩
+ (x ∧[ F ] y) ∨[ F ] (⋁ₗ[ F ] conjunct-with-list F x ys)  ＝⟨ refl ⟩
+ ⋁ₗ[ F ] (conjunct-with-list F x (y ∷ ys))                ∎
+  where
+   Ⅰ = binary-distributivity F x y (join-list F ys)
+   Ⅱ = ap (λ - → (x ∧[ F ] y) ∨[ F ] -) (distributivity-list F x ys)
+
+\end{code}
+
 Section added on 2023-08-17.
 
 \section{Spectrality of the initial frame}
@@ -2324,11 +2359,12 @@ module SpectralityOfTheInitialFrame (𝓤 : Universe) (pe : propext 𝓤) where
         (𝟏-is-top (𝟎-𝔽𝕣𝕞 pe))
 
    c : closed-under-binary-meets (𝟎-𝔽𝕣𝕞 pe) ℬ𝟎↑ holds
-   c = directify-preserves-closure-under-∧
-        (𝟎-𝔽𝕣𝕞 pe)
-        ℬ𝟎
-        ℬ𝟎-is-basis-for-𝟎
-        ℬ𝟎-is-closed-under-binary-meets
+   c = {!!}
+   -- c = directify-preserves-closure-under-∧
+   --      (𝟎-𝔽𝕣𝕞 pe)
+   --      ℬ𝟎
+   --      ℬ𝟎-is-basis-for-𝟎
+   --      ℬ𝟎-is-closed-under-binary-meets
 
    γ : closed-under-finite-meets (𝟎-𝔽𝕣𝕞 pe) ℬ𝟎↑ holds
    γ = ∣ (inr ⋆ ∷ []) , t ∣ , c
