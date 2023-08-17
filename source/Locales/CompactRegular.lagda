@@ -2275,7 +2275,7 @@ instance of the distributivity law. We prove this fact next.
 \begin{code}
 
 distributivity-list : (F : Frame 𝓤 𝓥 𝓦) (x : ⟨ F ⟩) (ys : List ⟨ F ⟩)
-                             → x ∧[ F ] join-list F ys ＝ join-list F (conjunct-with-list F x ys)
+                    → x ∧[ F ] join-list F ys ＝ join-list F (conjunct-with-list F x ys)
 distributivity-list F x []       = 𝟎-right-annihilator-for-∧ F x
 distributivity-list F x (y ∷ ys) =
  x ∧[ F ] (y ∨[ F ] (⋁ₗ[ F ] ys))                         ＝⟨ Ⅰ    ⟩
