@@ -1417,9 +1417,51 @@ extended to a directed one whilst keeping it small.
 
 \begin{code}
 
+join-in-frame : (F : Frame 𝓤 𝓥 𝓦) (S : Fam 𝓦 ⟨ F ⟩) → List (index S) → ⟨ F ⟩
+join-in-frame F S = foldr (λ i - → (S [ i ]) ∨[ F ] -) 𝟎[ F ]
+
 directify : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Fam 𝓦 ⟨ F ⟩
 directify F (I , α) = List I , (foldr (λ i - → α i ∨[ F ] -) 𝟎[ F ])
  where open PosetNotation (poset-of F)
+
+\end{code}
+
+We could have defined `directify` in an alternative way, using the auxiliary
+`join-list` function:
+
+\begin{code}
+
+join-list : (F : Frame 𝓤 𝓥 𝓦) → List ⟨ F ⟩ → ⟨ F ⟩
+join-list F = foldr (binary-join F) 𝟎[ F ]
+
+infix 2 join-list
+
+syntax join-list F xs = ⋁ₗ[ F ] xs
+
+join-in-frame′ : (F : Frame 𝓤 𝓥 𝓦) (S : Fam 𝓦 ⟨ F ⟩) → List (index S) → ⟨ F ⟩
+join-in-frame′ F (I , α) = join-list F ∘ map α
+
+directify′ : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Fam 𝓦 ⟨ F ⟩
+directify′ F (I , α) = List I , join-in-frame′ F (I , α)
+
+\end{code}
+
+However, the direct definition given in `directify` turns out to be more
+convenient for some purposes, so we avoid using `directify′` as the default
+definition. It is a trivial fact that `directify` is the same as `directify′`.
+
+\begin{code}
+
+join-in-frame-equality : (F : Frame 𝓤 𝓥 𝓦) (S : Fam 𝓦 ⟨ F ⟩)
+                       → join-in-frame F S ∼ join-in-frame′ F S
+join-in-frame-equality F S []       = refl
+join-in-frame-equality F S (i ∷ is) =
+ join-in-frame F S (i ∷ is)              ＝⟨ refl ⟩
+ (S [ i ]) ∨[ F ] join-in-frame  F S is  ＝⟨ †    ⟩
+ (S [ i ]) ∨[ F ] join-in-frame′ F S is  ＝⟨ refl ⟩
+ join-in-frame′ F S (i ∷ is)             ∎
+  where
+   † = ap (λ - → (S [ i ]) ∨[ F ] -) (join-in-frame-equality F S is)
 
 \end{code}
 

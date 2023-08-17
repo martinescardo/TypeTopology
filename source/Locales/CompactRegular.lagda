@@ -1124,9 +1124,6 @@ conjunct-with-all F ℬ β p i (j ∷ js) = ∥∥-rec ∥∥-is-prop γ (p i j)
   γ (k , q) =
    ∥∥-rec ∥∥-is-prop (λ ks → ∣ k ∷ ks ∣) (conjunct-with-all F ℬ β p i js)
 
-join-list : (F : Frame 𝓤 𝓥 𝓦) → List ⟨ F ⟩ → ⟨ F ⟩
-join-list F = foldr (λ x y → x ∨[ F ] y) 𝟎[ F ]
-
 meet-list : (F : Frame 𝓤 𝓥 𝓦) → List ⟨ F ⟩ → ⟨ F ⟩
 meet-list F = foldr (λ x y → x ∧[ F ] y) 𝟏[ F ]
 
