@@ -55,6 +55,9 @@ excluded middle holds.
 \begin{code}
 
  decomposition-of-𝕍-gives-WEM : decomposition 𝕍 → WEM 𝓤
- decomposition-of-𝕍-gives-WEM = decomposition-of-ainjective-type-gives-WEM 𝕍 𝕍-is-ainjective
+ decomposition-of-𝕍-gives-WEM =
+  decomposition-of-ainjective-type-gives-WEM
+   𝕍
+   𝕍-is-ainjective
 
 \end{code}

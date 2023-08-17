@@ -150,6 +150,9 @@ excluded middle holds.
 \begin{code}
 
 decomposition-of-𝕄-gives-WEM : decomposition 𝕄 → WEM 𝓤
-decomposition-of-𝕄-gives-WEM = decomposition-of-ainjective-type-gives-WEM 𝕄 𝕄-is-ainjective
+decomposition-of-𝕄-gives-WEM =
+ decomposition-of-ainjective-type-gives-WEM
+  𝕄
+  𝕄-is-ainjective
 
 \end{code}

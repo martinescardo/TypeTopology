@@ -24,11 +24,13 @@ private
 
 open import InjectiveTypes.Blackboard fe
 open import MLTT.Spartan
+open import Taboos.Decomposability ua
 open import UF.Base
 open import UF.Embeddings
 open import UF.Equiv
 open import UF.Equiv-FunExt
 open import UF.EquivalenceExamples
+open import UF.ExcludedMiddle
 open import UF.PropIndexedPiSigma
 open import UF.Size
 open import UF.Subsingletons
@@ -341,6 +343,7 @@ ainjectivity-of-∞-Magma {𝓤} =
       (t⁻¹ ∘ t) _·_ α β                                                ＝⟨ refl ⟩
       (λ h → ⌜ π h ⌝  (⌜ π h ⌝⁻¹ (⌜ π h ⌝ α) · ⌜ π h ⌝⁻¹ (⌜ π h ⌝ β))) ＝⟨ II ⟩
       (λ h → ⌜ π h ⌝ (α · β))                                          ＝⟨ refl ⟩
+      (λ h → (α · β) h)                                                ＝⟨ refl ⟩
       α · β                                                            ∎
       where
        II = dfunext fe' (λ h →
@@ -365,8 +368,20 @@ ainjectivity-of-∞-Magma {𝓤} =
 
 \end{code}
 
+The type ∞-Magma 𝓤 doesn't have any decidable property unless weak
+excluded middle holds.
 
-TODO. Write more examples, such as monoids and groups. Perhaps it
-would be good to write combinators, like in UF.SIP, to show that
-mathematical structures constructed from standard building blocks,
-such as the above, form injective types.
+\begin{code}
+
+decomposition-of-∞-Magma-gives-WEM : decomposition (∞-Magma 𝓤) → WEM 𝓤
+decomposition-of-∞-Magma-gives-WEM {𝓤} =
+ decomposition-of-ainjective-type-gives-WEM
+  (∞-Magma 𝓤)
+  ainjectivity-of-∞-Magma
+
+\end{code}
+
+TODO. Write more examples, such as monoids, groups and
+1-categories. Perhaps it would be good to write combinators, like in
+UF.SIP, to show that mathematical structures constructed from standard
+building blocks, such as the above, form injective types.
