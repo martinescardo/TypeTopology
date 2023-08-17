@@ -1105,28 +1105,6 @@ closed-under-binary-meets F 𝒮 =
 closed-under-finite-meets : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦)
 closed-under-finite-meets F S = contains-top F S ∧ closed-under-binary-meets F S
 
-conjunct-with-all : (F : Frame 𝓤 𝓥 𝓦)
-                  → (ℬ : Fam 𝓦 ⟨ F ⟩)
-                  → (β : is-basis-for F ℬ)
-                  → closed-under-binary-meets F ℬ holds
-                  → let
-                     ℬ↑ = directify F ℬ
-                     β↑ = directified-basis-is-basis F ℬ β
-                    in
-                     index ℬ → index ℬ↑ → ∥ index ℬ↑ ∥
-conjunct-with-all F ℬ β p i []       = ∣ [] ∣
-conjunct-with-all F ℬ β p i (j ∷ js) = ∥∥-rec ∥∥-is-prop γ (p i j)
- where
-  open Meets (λ x y → x ≤[ poset-of F ] y)
-
-  γ : Σ k ꞉ index ℬ , ((ℬ [ k ]) is-glb-of (ℬ [ i ] , ℬ [ j ])) holds
-    → ∥ index (directify F ℬ) ∥
-  γ (k , q) =
-   ∥∥-rec ∥∥-is-prop (λ ks → ∣ k ∷ ks ∣) (conjunct-with-all F ℬ β p i js)
-
-meet-list : (F : Frame 𝓤 𝓥 𝓦) → List ⟨ F ⟩ → ⟨ F ⟩
-meet-list F = foldr (λ x y → x ∧[ F ] y) 𝟏[ F ]
-
 conjunct-with-all′ : (F : Frame 𝓤 𝓥 𝓦)
                    → ⟨ F ⟩ → List ⟨ F ⟩ → List ⟨ F ⟩
 conjunct-with-all′ F x = map (λ - → x ∧[ F ] -)
