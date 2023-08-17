@@ -292,4 +292,81 @@ ainjectivity-of-type-of-pointed-types {𝓤} =
 
 \end{code}
 
-To be continued. More applications of the main theorem.
+Example: The type of ∞-magmas is algebraicly injective. The proof is a
+bit long, but it is an entirely routine application of the above general
+theorem.
+
+\begin{code}
+
+∞-Magma : (𝓤 : Universe) → 𝓤 ⁺ ̇
+∞-Magma 𝓤 = Σ X ꞉ 𝓤 ̇ , (X → X → X)
+
+ainjectivity-of-∞-Magma : ainjective-type (∞-Magma 𝓤) 𝓤 𝓤
+ainjectivity-of-∞-Magma {𝓤} =
+ injectivity-of-type-of-structures' S T T-refl t-is-equiv
+ where
+  S : 𝓤 ̇ → 𝓤 ̇
+  S X = X → X → X
+
+  T : {X Y : 𝓤 ̇ } → (X ≃ Y) → S X → S Y
+  T 𝕗 _·_ = λ y y' → ⌜ 𝕗 ⌝ (⌜ 𝕗 ⌝⁻¹ y · ⌜ 𝕗 ⌝⁻¹ y')
+
+  T-refl : {X : 𝓤 ̇ } → T (≃-refl X) ∼ id
+  T-refl _·_ = dfunext fe' (λ x → dfunext fe' (λ x' → refl))
+
+  module _ (p : Ω 𝓤)
+           (A : p holds → 𝓤 ̇)
+         where
+
+   hp : is-prop (p holds)
+   hp = holds-is-prop p
+
+   π : (h : p holds) → Π A ≃ A h
+   π = prop-indexed-product fe' hp
+
+   t : S (Π A) → (h : p holds) → S (A h)
+   t s h = T (π h) s
+
+   t⁻¹ : ((h : p holds) → S (A h)) → S (Π A)
+   t⁻¹ g α β h = g h (⌜ π h ⌝ α) (⌜ π h ⌝ β)
+
+   remark : (h : p holds) (α : Π A) → ⌜ π h ⌝ α ＝ α h
+   remark h α = refl
+
+   η : t⁻¹ ∘ t ∼ id
+   η _·_ = dfunext fe' (λ α → dfunext fe' (I α))
+    where
+     I : ∀ α β → t⁻¹ (t _·_) α β ＝ α · β
+     I α β =
+      (t⁻¹ ∘ t) _·_ α β                                                ＝⟨ refl ⟩
+      (λ h → ⌜ π h ⌝  (⌜ π h ⌝⁻¹ (⌜ π h ⌝ α) · ⌜ π h ⌝⁻¹ (⌜ π h ⌝ β))) ＝⟨ II ⟩
+      (λ h → ⌜ π h ⌝ (α · β))                                          ＝⟨ refl ⟩
+      α · β                                                            ∎
+      where
+       II = dfunext fe' (λ h →
+             ap₂ (λ -₁ -₂ → (-₁ · -₂) h)
+                 (inverses-are-retractions (⌜ π h ⌝) ⌜ π h ⌝-is-equiv α)
+                 (inverses-are-retractions (⌜ π h ⌝) ⌜ π h ⌝-is-equiv β))
+
+   ε : t ∘ t⁻¹ ∼ id
+   ε g =
+    t (t⁻¹ g)                                                       ＝⟨ refl ⟩
+    (λ h a b → g h (⌜ π h ⌝ (⌜ π h ⌝⁻¹ a)) (⌜ π h ⌝ (⌜ π h ⌝⁻¹ b))) ＝⟨ I ⟩
+    (λ h a b → g h a b)                                             ＝⟨ refl ⟩
+    g                                                               ∎
+     where
+      I = dfunext fe' (λ h → dfunext fe' (λ a → dfunext fe' (λ b →
+           ap₂ (g h)
+               (inverses-are-sections (⌜ π h ⌝) ⌜ π h ⌝-is-equiv a)
+               (inverses-are-sections (⌜ π h ⌝) ⌜ π h ⌝-is-equiv b))))
+
+   t-is-equiv : is-equiv t
+   t-is-equiv = qinvs-are-equivs t  (t⁻¹ , η , ε)
+
+\end{code}
+
+
+TODO. Write more examples, such as monoids and groups. Perhaps it
+would be good to write combinators, like in UF.SIP, to show that
+mathematical structures constructed from standard building blocks,
+such as the above, form injective types.
