@@ -21,21 +21,36 @@ import InjectiveTypes.Blackboard
 
 The following have been done after the above article was published.
 
+Injectivity plays a major role in the construction of "searchable" or
+"compact" types:
+
 \begin{code}
 
-import InjectiveTypes.OverSmallMaps
-import InjectiveTypes.MathematicalStructures
+import TypeTopology.index
+import Ordinals.index
 
 \end{code}
 
-Since the above publication, a number of new results involving
-injectivity have been found.
+The following has applications to (in)decomposability.  Injective
+types have non-trivial decidable properties if and only if weak
+excluded middle (the decidability of all negative propositions) holds.
 
-Here are some examples:
+\begin{code}
 
- * The type of ordinals is injective.
- * The type of iterative multisets is injective.
- * The type of iterative sets is injective.
+import InjectiveTypes.OverSmallMaps
+import Taboos.Decomposability
+
+\end{code}
+
+Since the above publication, a number of new examples of injective
+types have been found, including the following:
+
+ * The type of ordinals.
+ * The type of iterative multisets.
+ * The type of iterative sets.
+ * The type of pointed types.
+ * The type of ∞-magmas.
+ * The type of pointed ∞-magmas.
 
 (And the type of iterative ordinals is injective, simply because it is
 equivalent to that of ordinals.)
@@ -46,25 +61,6 @@ import Ordinals.Injectivity
 import Iterative.Multisets-Addendum
 import Iterative.Sets-Addendum
 import Iterative.Ordinals
-
-\end{code}
-
-Injective types have non-trivial decidable properties if and only if
-weak excluded middle (the decidability of all negative propositions)
-holds.
-
-\begin{code}
-
-import Taboos.Decomposability
-
-\end{code}
-
-Injectivity plays a major role in the construction of "searchable" or
-"compact" types.
-
-\begin{code}
-
-import TypeTopology.index
-import Ordinals.index
+import InjectiveTypes.MathematicalStructures
 
 \end{code}

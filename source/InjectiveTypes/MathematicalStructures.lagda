@@ -6,7 +6,7 @@ injective. We use algebraic flabbiness as our main tool.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split  #-}
+{-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
 
 open import UF.Univalence
 
@@ -125,7 +125,7 @@ use this notation.
 
 \begin{code}
 
- module notation₁
+ module notation
          (p : Ω 𝓤)
          (A : p holds → 𝓤 ̇)
          where
@@ -136,15 +136,18 @@ use this notation.
   π : (h : p holds) → Π A ≃ A h
   π = prop-indexed-product fe' hp
 
-  private
-   remark : (h : p holds) (α : Π A) → ⌜ π h ⌝ α ＝ α h
-   remark h α = refl
+  remark₀ : (h : p holds) (α : Π A) → ⌜ π h ⌝ α ＝ α h
+  remark₀ h α = refl
 
   ϕ : (h : p holds) → Π A ＝ A h
   ϕ h = eqtoid (ua 𝓤) (Π A) (A h) (π h)
 
   σ : S (Π A) → ((h : p holds) → S (A h))
   σ s h = treq (π h) s
+
+  remark₁ : (s : S (Π A)) (h : p holds)
+          → σ s h ＝ transport S (eqtoid (ua 𝓤) (Π A) (A h) (π h)) s
+  remark₁ s h = refl
 
 \end{code}
 
@@ -156,12 +159,12 @@ is an equivalence for every p and A.
 
 \begin{code}
 
- structure-closed-under-prop-indexed-products : 𝓤 ⁺ ⊔ 𝓥 ̇
- structure-closed-under-prop-indexed-products = (p : Ω 𝓤)
-                                                (A : p holds → 𝓤 ̇)
-                                               → is-equiv (σ p A)
+ closed-under-prop-Π : 𝓤 ⁺ ⊔ 𝓥 ̇
+ closed-under-prop-Π = (p : Ω 𝓤)
+                       (A : p holds → 𝓤 ̇)
+                      → is-equiv (σ p A)
   where
-   open notation₁
+   open notation
 
 \end{code}
 
@@ -170,7 +173,7 @@ flabby with with respect to the universe 𝓤.
 
 \begin{code}
 
- aflabbiness-of-type-of-structures : structure-closed-under-prop-indexed-products
+ aflabbiness-of-type-of-structures : closed-under-prop-Π
                                    → aflabby (Σ S) 𝓤
  aflabbiness-of-type-of-structures σ-is-equiv = I
   where
@@ -186,7 +189,7 @@ flabby with with respect to the universe 𝓤.
      A : p holds → 𝓤 ̇
      A = pr₁ ∘ f
 
-     open notation₁ p A
+     open notation p A
 
      e : S (Π A) ≃ ((h : p holds) → S (A h))
      e = σ , σ-is-equiv p A
@@ -216,7 +219,7 @@ under prop-indexed products, which is our main theorem.
 
 \begin{code}
 
- ainjectivity-of-type-of-structures : structure-closed-under-prop-indexed-products
+ ainjectivity-of-type-of-structures : closed-under-prop-Π
                                     → ainjective-type (Σ S) 𝓤 𝓤
  ainjectivity-of-type-of-structures = aflabby-types-are-ainjective (Σ S)
                                       ∘ aflabbiness-of-type-of-structures
@@ -232,7 +235,7 @@ of interest, without using transport.
 
 \begin{code}
 
- module _ (T : {X Y : 𝓤 ̇ } → (X ≃ Y) → S X → S Y)
+ module _ (T      : {X Y : 𝓤 ̇ } → (X ≃ Y) → S X → S Y)
           (T-refl : {X : 𝓤 ̇ } → T (≃-refl X) ∼ id)
         where
 
@@ -263,46 +266,57 @@ easier to check closure under products using T rather than transport
 
 \end{code}
 
-Hence our condition on S formulated with transports can be formulated
-with T instead:
+Hence our condition on S formulated with transports can be
+equivalently formulated with T:
 
 \begin{code}
 
-  module notation₂
+  module notation'
           (p : Ω 𝓤)
           (A : p holds → 𝓤 ̇)
           where
 
-   open notation₁ p A public
+   open notation p A public
 
    τ : S (Π A) → (h : p holds) → S (A h)
    τ s h = T (π h) s
 
-  structure-closed-under-prop-indexed-products' : 𝓤 ⁺ ⊔ 𝓥 ̇
-  structure-closed-under-prop-indexed-products' = (p : Ω 𝓤)
-                                                  (A : p holds → 𝓤 ̇)
-                                                → is-equiv (τ p A)
-   where
-    open notation₂
+   σ-and-τ-agree : σ ∼ τ
+   σ-and-τ-agree s =
+    σ s                                                       ＝⟨ refl ⟩
+    ((λ h → transport S (eqtoid (ua 𝓤) (Π A) (A h) (π h)) s)) ＝⟨ I ⟩
+    (λ h → T (π h) s)                                         ＝⟨ refl ⟩
+    τ s                                                       ∎
+    where
+     I = dfunext fe' (λ h → (transport-eqtoid (π h) s)⁻¹)
 
-  aflabbiness-of-type-of-structures' : structure-closed-under-prop-indexed-products'
+  closed-under-prop-Π' : 𝓤 ⁺ ⊔ 𝓥 ̇
+  closed-under-prop-Π' = (p : Ω 𝓤)
+                         (A : p holds → 𝓤 ̇)
+                       → is-equiv (τ p A)
+   where
+    open notation'
+
+  Π-closure-criterion : closed-under-prop-Π'
+                      → closed-under-prop-Π
+  Π-closure-criterion τ-is-equiv p A =
+   equiv-closed-under-∼ (τ p A) (σ p A) (τ-is-equiv p A) (σ-and-τ-agree p A)
+   where
+    open notation'
+
+  Π-closure-criterion-converse : closed-under-prop-Π
+                               → closed-under-prop-Π'
+  Π-closure-criterion-converse σ-is-equiv p A =
+   equiv-closed-under-∼ (σ p A) (τ p A) (σ-is-equiv p A) (∼-sym (σ-and-τ-agree p A))
+   where
+    open notation'
+
+  aflabbiness-of-type-of-structures' : closed-under-prop-Π'
                                      → aflabby (Σ S) 𝓤
-  aflabbiness-of-type-of-structures' τ-is-equiv =
-   aflabbiness-of-type-of-structures
-    (λ p A → equiv-closed-under-∼ (τ p A) (σ p A) (τ-is-equiv p A) (I p A))
-   where
-    open notation₂
+  aflabbiness-of-type-of-structures' = aflabbiness-of-type-of-structures
+                                        ∘ Π-closure-criterion
 
-    I : (p : Ω 𝓤) (A : p holds → 𝓤 ̇) →  σ p A ∼ τ p A
-    I p A s =
-     σ p A s                                                       ＝⟨ refl ⟩
-     ((λ h → transport S (eqtoid (ua 𝓤) (Π A) (A h) (π p A h)) s)) ＝⟨ II ⟩
-     (λ h → T (π p A h) s)                                         ＝⟨ refl ⟩
-     τ p A s                                                       ∎
-     where
-      II = dfunext fe' (λ h → (transport-eqtoid (π p A h) s)⁻¹)
-
-  injectivity-of-type-of-structures' : structure-closed-under-prop-indexed-products'
+  injectivity-of-type-of-structures' : closed-under-prop-Π'
                                      → ainjective-type (Σ S) 𝓤 𝓤
   injectivity-of-type-of-structures' = aflabby-types-are-ainjective (Σ S)
                                         ∘ aflabbiness-of-type-of-structures'
@@ -313,13 +327,28 @@ Example: The type of pointed types is algebraically injective.
 
 \begin{code}
 
-ainjectivity-of-type-of-pointed-types : ainjective-type (Σ X ꞉ 𝓤 ̇ , X) 𝓤 𝓤
+Pointed-Type : (𝓤 : Universe) → 𝓤 ⁺ ̇
+Pointed-Type 𝓤 = Σ X ꞉ 𝓤 ̇ , X
+
+Pointed : 𝓤 ̇ → 𝓤 ̇
+Pointed X = X
+
+Pointed-is-closed-under-prop-Π : closed-under-prop-Π (Pointed {𝓤})
+Pointed-is-closed-under-prop-Π {𝓤} =
+  Π-closure-criterion Pointed T T-refl c
+ where
+  T : {X Y : 𝓤 ̇ } → (X ≃ Y) → X → Y
+  T = ⌜_⌝
+
+  T-refl : {X : 𝓤 ̇ } → T (≃-refl X) ∼ id
+  T-refl x = refl
+
+  c : closed-under-prop-Π' Pointed T T-refl
+  c p A = id-is-equiv (Π A)
+
+ainjectivity-of-type-of-pointed-types : ainjective-type (Pointed-Type 𝓤) 𝓤 𝓤
 ainjectivity-of-type-of-pointed-types {𝓤} =
- injectivity-of-type-of-structures'
-   (λ X → X)
-   ⌜_⌝
-   (λ x → refl)
-   (λ p A → id-is-equiv (Π A))
+ ainjectivity-of-type-of-structures Pointed Pointed-is-closed-under-prop-Π
 
 \end{code}
 
@@ -332,12 +361,14 @@ general theorem.
 ∞-Magma : (𝓤 : Universe) → 𝓤 ⁺ ̇
 ∞-Magma 𝓤 = Σ X ꞉ 𝓤 ̇ , (X → X → X)
 
-ainjectivity-of-∞-Magma : ainjective-type (∞-Magma 𝓤) 𝓤 𝓤
-ainjectivity-of-∞-Magma {𝓤} =
- injectivity-of-type-of-structures' S T T-refl τ-is-equiv
+∞-Magma-structure : 𝓤 ̇ → 𝓤 ̇
+∞-Magma-structure X = X → X → X
+
+∞-Magma-structure-is-closed-under-prop-Π : closed-under-prop-Π (∞-Magma-structure {𝓤})
+∞-Magma-structure-is-closed-under-prop-Π {𝓤} =
+ Π-closure-criterion S T T-refl τ-is-equiv
  where
-  S : 𝓤 ̇ → 𝓤 ̇
-  S X = X → X → X
+  S = ∞-Magma-structure
 
   T : {X Y : 𝓤 ̇ } → (X ≃ Y) → S X → S Y
   T 𝕗 _·_ = λ y y' → ⌜ 𝕗 ⌝ (⌜ 𝕗 ⌝⁻¹ y · ⌜ 𝕗 ⌝⁻¹ y')
@@ -349,7 +380,7 @@ ainjectivity-of-∞-Magma {𝓤} =
            (A : p holds → 𝓤 ̇)
          where
 
-   open notation₂ S T T-refl p A
+   open notation' S T T-refl p A
 
    τ⁻¹ : ((h : p holds) → S (A h)) → S (Π A)
    τ⁻¹ g α β h = g h (⌜ π h ⌝ α) (⌜ π h ⌝ β)
@@ -385,6 +416,12 @@ ainjectivity-of-∞-Magma {𝓤} =
    τ-is-equiv : is-equiv τ
    τ-is-equiv = qinvs-are-equivs τ  (τ⁻¹ , η , ε)
 
+ainjectivity-of-∞-Magma : ainjective-type (∞-Magma 𝓤) 𝓤 𝓤
+ainjectivity-of-∞-Magma {𝓤} =
+ ainjectivity-of-type-of-structures
+  ∞-Magma-structure
+  ∞-Magma-structure-is-closed-under-prop-Π
+
 \end{code}
 
 A corollary is that the type ∞-Magma 𝓤 doesn't have any decidable
@@ -402,7 +439,100 @@ decomposition-of-∞-Magma-gives-WEM {𝓤} =
 
 The same is true for the type of pointed types, of course.
 
-TODO. Write more examples, such as monoids, groups and
-1-categories. Perhaps it would be good to write combinators, like in
-UF.SIP, to show that mathematical structures constructed from standard
-building blocks, such as the above, form injective types.
+We now want to consider more examples, such as monoids, groups and
+1-categories. For that purpose, write combinators, like in UF.SIP, to
+show that mathematical structures constructed from standard building
+blocks, such as the above, form injective types.
+
+\begin{code}
+
+variable
+ 𝓥₁ 𝓥₂ : Universe
+
+closed-under-prop-Π-× :
+      {S₁ : 𝓤 ̇ → 𝓥₁ ̇ } {S₂ : 𝓤 ̇ → 𝓥₂ ̇ }
+    → closed-under-prop-Π S₁
+    → closed-under-prop-Π S₂
+    → closed-under-prop-Π (λ X → S₁ X × S₂ X)
+
+closed-under-prop-Π-× {𝓤} {𝓥₁} {𝓥₂} {S₁} {S₂}
+                                               σ₁-is-equiv σ₂-is-equiv = γ
+ where
+  S : 𝓤 ̇ → 𝓥₁ ⊔ 𝓥₂ ̇
+  S X = S₁ X × S₂ X
+
+  module _ (p : Ω 𝓤)
+           (A : p holds → 𝓤 ̇)
+         where
+
+   open notation S  p A
+   open notation S₁ p A renaming (π to π₁ ; ϕ to ϕ₁ ; σ to σ₁)
+   open notation S₂ p A renaming (π to π₂ ; ϕ to ϕ₂ ; σ to σ₂)
+
+   σ₁⁻¹ : ((h : p holds) → S₁ (A h)) → S₁ (Π A)
+   σ₁⁻¹ = inverse σ₁ (σ₁-is-equiv p A)
+
+   σ₂⁻¹ : ((h : p holds) → S₂ (A h)) → S₂ (Π A)
+   σ₂⁻¹ = inverse σ₂ (σ₂-is-equiv p A)
+
+   σ⁻¹ : ((h : p holds) → S (A h)) → S (Π A)
+   σ⁻¹ α = σ₁⁻¹ (λ h → pr₁ (α h)) , σ₂⁻¹ (λ h → pr₂ (α h))
+
+   η : σ⁻¹ ∘ σ ∼ id
+   η (s₁ , s₂) =
+    σ⁻¹ (σ (s₁ , s₂))                                                       ＝⟨ refl ⟩
+    σ⁻¹ (λ h → transport S (ϕ h) (s₁ , s₂))                                 ＝⟨ I ⟩
+    σ⁻¹ (λ h → transport S₁ (ϕ h) s₁ , transport S₂ (ϕ h) s₂)               ＝⟨ refl ⟩
+    σ₁⁻¹ (λ h → transport S₁ (ϕ h) s₁) , σ₂⁻¹ (λ h → transport S₂ (ϕ h) s₂) ＝⟨ refl ⟩
+    σ₁⁻¹ (σ₁ s₁) , σ₂⁻¹ (σ₂ s₂)                                             ＝⟨ II ⟩
+    (s₁ , s₂)                                                               ∎
+     where
+      I  = ap σ⁻¹ (dfunext fe' (λ h → transport-× S₁ S₂ (ϕ h)))
+      II = ap₂ _,_
+              (inverses-are-retractions σ₁ (σ₁-is-equiv p A) s₁)
+              (inverses-are-retractions σ₂ (σ₂-is-equiv p A) s₂)
+
+   remark-σ : (s₁ : S₁ (Π A)) (s₂ : S₂ (Π A)) (h : p holds)
+            → σ (s₁ , s₂) h ＝ transport S (eqtoid (ua 𝓤) (Π A) (A h) (π h)) (s₁ , s₂)
+   remark-σ _ _ _ = refl
+
+   ε : σ ∘ σ⁻¹ ∼ id
+   ε α = dfunext fe' I
+    where
+     I : σ (σ⁻¹ α) ∼ α
+     I h =
+      σ (σ⁻¹ α) h                                                                               ＝⟨ refl ⟩
+      transport S (ϕ h) (σ₁⁻¹ (λ h → pr₁ (α h)) , σ₂⁻¹ (λ h → pr₂ (α h)))                       ＝⟨ II ⟩
+      transport S₁ (ϕ h) (σ₁⁻¹ (λ h → pr₁ (α h))) , transport S₂ (ϕ h) (σ₂⁻¹ (λ h → pr₂ (α h))) ＝⟨ refl ⟩
+      σ₁ (σ₁⁻¹ (λ h → pr₁ (α h))) h , σ₂ (σ₂⁻¹ (λ h → pr₂ (α h))) h                             ＝⟨ III ⟩
+      (λ h → pr₁ (α h)) h , (λ h → pr₂ (α h)) h                                                 ＝⟨ refl ⟩
+      α h ∎
+       where
+        II  = transport-× S₁ S₂ (ϕ h)
+        III = ap₂ _,_
+               (ap (λ - → - h) (inverses-are-sections σ₁ (σ₁-is-equiv p A) (λ h → pr₁ (α h))))
+               (ap (λ - → - h) (inverses-are-sections σ₂ (σ₂-is-equiv p A) (λ h → pr₂ (α h))))
+
+   γ : is-equiv σ
+   γ = qinvs-are-equivs σ (σ⁻¹ , η , ε)
+
+\end{code}
+
+Example. The type of pointed ∞-magmas is injective.
+
+\begin{code}
+
+∞-Magma∙ : (𝓤 : Universe) → 𝓤 ⁺ ̇
+∞-Magma∙ 𝓤 = Σ X ꞉ 𝓤 ̇ , X × (X → X → X)
+
+ainjectivity-of-∞-Magma∙ : ainjective-type (∞-Magma∙ 𝓤) 𝓤 𝓤
+ainjectivity-of-∞-Magma∙ {𝓤} =
+ ainjectivity-of-type-of-structures
+  (λ X → X × (X → X → X))
+  (closed-under-prop-Π-×
+    Pointed-is-closed-under-prop-Π
+    ∞-Magma-structure-is-closed-under-prop-Π)
+
+\end{code}
+
+To to be continued with more "combinators" and examples.
