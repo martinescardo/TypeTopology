@@ -445,8 +445,7 @@ closed-under-prop-Π-× :
     → closed-under-prop-Π S₂
     → closed-under-prop-Π (λ X → S₁ X × S₂ X)
 
-closed-under-prop-Π-× {𝓤} {𝓥₁} {𝓥₂} {S₁} {S₂}
-                                               σ₁-is-equiv σ₂-is-equiv = γ
+closed-under-prop-Π-× {𝓤} {𝓥₁} {𝓥₂} {S₁} {S₂} σ₁-is-equiv σ₂-is-equiv = γ
  where
   S : 𝓤 ̇ → 𝓥₁ ⊔ 𝓥₂ ̇
   S X = S₁ X × S₂ X
@@ -481,10 +480,6 @@ closed-under-prop-Π-× {𝓤} {𝓥₁} {𝓥₂} {S₁} {S₂}
       II = ap₂ _,_
               (inverses-are-retractions σ₁ (σ₁-is-equiv p A) s₁)
               (inverses-are-retractions σ₂ (σ₂-is-equiv p A) s₂)
-
-   remark-σ : (s₁ : S₁ (Π A)) (s₂ : S₂ (Π A)) (h : p holds)
-            → σ (s₁ , s₂) h ＝ transport S (eqtoid (ua 𝓤) (Π A) (A h) (π h)) (s₁ , s₂)
-   remark-σ _ _ _ = refl
 
    ε : σ ∘ σ⁻¹ ∼ id
    ε α = dfunext fe' I
