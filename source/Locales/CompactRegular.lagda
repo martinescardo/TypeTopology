@@ -1107,19 +1107,6 @@ closed-under-finite-meets F S = contains-top F S ∧ closed-under-binary-meets F
 
 {--
 
-distributivity-list : (F : Frame 𝓤 𝓥 𝓦) (x : ⟨ F ⟩) (ys : List ⟨ F ⟩)
-                             → x ∧[ F ] join-list F ys ＝ join-list F (conjunct-with-list F x ys)
-distributivity-list F x []       = x ∧[ F ] 𝟎[ F ] ＝⟨ 𝟎-right-annihilator-for-∧ F x ⟩
-                                            𝟎[ F ]          ∎
-distributivity-list F x (y ∷ ys) =
- x ∧[ F ] (y ∨[ F ] join-list F ys)                          ＝⟨ Ⅰ ⟩
- (x ∧[ F ] y) ∨[ F ] (x ∧[ F ] join-list F ys)               ＝⟨ Ⅱ ⟩
- (x ∧[ F ] y) ∨[ F ] join-list F (conjunct-with-list F x ys) ＝⟨ refl ⟩
- join-list F (conjunct-with-list F x (y ∷ ys))    ∎
-  where
-   Ⅰ = binary-distributivity F x y (join-list F ys)
-   Ⅱ = ap (λ - → (x ∧[ F ] y) ∨[ F ] -) (distributivity-list F x ys)
-
 cnf-transform-correct : (F : Frame 𝓤 𝓥 𝓦) (xs ys : List ⟨ F ⟩)
                       → join-list F xs ∧[ F ] join-list F ys ＝ cnf-transform F xs ys
 cnf-transform-correct F []       ys = 𝟎-left-annihilator-for-∧ F (join-list F ys)
