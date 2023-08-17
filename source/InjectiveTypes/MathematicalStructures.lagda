@@ -56,8 +56,8 @@ universes-are-injective-Π {𝓤} = aflabby-types-are-ainjective (𝓤 ̇ )
 
 \end{code}
 
-We know want to show that several types of
-mathematical structures are injective.
+We now want to show that several types of mathematical structures are
+(algebraically) injective, or, equivalently, (algebraically) flabby.
 
 We work with an arbitrary S : 𝓤 ̇ → 𝓥 ̇ and want to show that Σ S is
 flabby.
@@ -106,7 +106,8 @@ module _ (S : 𝓤 ̇ → 𝓥 ̇ ) where
 
 \end{code}
 
-We don't need this fact, but it is worth keeping it in mind:
+We don't need this fact explicitly, but it is worth keeping it in
+mind:
 
 \begin{code}
 
@@ -118,21 +119,32 @@ We don't need this fact, but it is worth keeping it in mind:
 We now define auxiliary functions π, ϕ and τ parametrized by a
 proposition p and family A indexed by p.
 
+Because we deliberately use short, general purpose symbols, we place
+these definitions in a module that needs to be opened when we want to
+use this notation.
+
 \begin{code}
 
- private
-  module _ (p : Ω 𝓤)
-           (A : p holds → 𝓤 ̇)
+ module notation₁
+         (p : Ω 𝓤)
+         (A : p holds → 𝓤 ̇)
          where
 
-   π : (h : p holds) → Π A ≃ A h
-   π = prop-indexed-product fe' (holds-is-prop p)
+  hp : is-prop (p holds)
+  hp = holds-is-prop p
 
-   ϕ : (h : p holds) → Π A ＝ A h
-   ϕ h = eqtoid (ua 𝓤) (Π A) (A h) (π h)
+  π : (h : p holds) → Π A ≃ A h
+  π = prop-indexed-product fe' hp
 
-   τ : S (Π A) → ((h : p holds) → S (A h))
-   τ s h = treq (π h) s
+  private
+   remark : (h : p holds) (α : Π A) → ⌜ π h ⌝ α ＝ α h
+   remark h α = refl
+
+  ϕ : (h : p holds) → Π A ＝ A h
+  ϕ h = eqtoid (ua 𝓤) (Π A) (A h) (π h)
+
+  τ : S (Π A) → ((h : p holds) → S (A h))
+  τ s h = treq (π h) s
 
 \end{code}
 
@@ -145,8 +157,11 @@ is an equivalence for every p and A.
 \begin{code}
 
  structure-closed-under-prop-indexed-products : 𝓤 ⁺ ⊔ 𝓥 ̇
- structure-closed-under-prop-indexed-products =
-  (p : Ω 𝓤) (A : p holds → 𝓤 ̇) → is-equiv (τ p A)
+ structure-closed-under-prop-indexed-products = (p : Ω 𝓤)
+                                                 (A : p holds → 𝓤 ̇)
+                                               → is-equiv (τ p A)
+  where
+   open notation₁
 
 \end{code}
 
@@ -158,39 +173,41 @@ flabby with with respect to the universe 𝓤.
  aflabbiness-of-type-of-structures : structure-closed-under-prop-indexed-products
                                    → aflabby (Σ S) 𝓤
  aflabbiness-of-type-of-structures τ-is-equiv = I
-   where
-    I : aflabby (Σ S) 𝓤
-    I P P-is-prop f = (Π A , s) , II
-     where
-      p : Ω 𝓤
-      p = (P , P-is-prop)
+  where
+   I : aflabby (Σ S) 𝓤
+   I P P-is-prop f = (Π A , s) , II
+    where
+     p : Ω 𝓤
+     p = (P , P-is-prop)
 
-      have-f : p holds → Σ S
-      have-f = f
+     have-f : p holds → Σ S
+     have-f = f
 
-      A : p holds → 𝓤 ̇
-      A = pr₁ ∘ f
+     A : p holds → 𝓤 ̇
+     A = pr₁ ∘ f
 
-      e : S (Π A) ≃ ((h : p holds) → S (A h))
-      e = τ p A , τ-is-equiv p A
+     open notation₁ p A
 
-      g : (h : P) → S (A h)
-      g = pr₂ ∘ f
+     t : S (Π A) ≃ ((h : p holds) → S (A h))
+     t = τ , τ-is-equiv p A
 
-      s : S (Π A)
-      s = ⌜ e ⌝⁻¹ g
+     g : (h : P) → S (A h)
+     g = pr₂ ∘ f
 
-      II : (h : p holds) → Π A , s ＝ f h
-      II h = Π A , s   ＝⟨ to-Σ-＝ (ϕ p A h , III) ⟩
-             A h , g h ＝⟨ refl ⟩
-             f h       ∎
-       where
-        III = transport S (ϕ p A h) s ＝⟨ refl ⟩
-              ⌜ e ⌝ s h               ＝⟨ refl ⟩
-              ⌜ e ⌝ (⌜ e ⌝⁻¹ g) h     ＝⟨ IV ⟩
-              g h ∎
-         where
-          IV = ap (λ - → - h) (inverses-are-sections ⌜ e ⌝ ⌜ e ⌝-is-equiv g)
+     s : S (Π A)
+     s = ⌜ t ⌝⁻¹ g
+
+     II : (h : p holds) → Π A , s ＝ f h
+     II h = Π A , s   ＝⟨ to-Σ-＝ (ϕ h , III) ⟩
+            A h , g h ＝⟨ refl ⟩
+            f h       ∎
+      where
+       III = transport S (ϕ h) s ＝⟨ refl ⟩
+             ⌜ t ⌝ s h           ＝⟨ refl ⟩
+             ⌜ t ⌝ (⌜ t ⌝⁻¹ g) h ＝⟨ IV ⟩
+             g h ∎
+        where
+         IV = ap (λ - → - h) (inverses-are-sections ⌜ t ⌝ ⌜ t ⌝-is-equiv g)
 
 \end{code}
 
@@ -251,29 +268,41 @@ with T instead:
 
 \begin{code}
 
-  private
-   t : (p : Ω 𝓤)
-       (A : p holds → 𝓤 ̇)
-     → S (Π A) → (h : p holds) → S (A h)
-   t p A s h = T (π p A h) s
+  module notation₂
+          (p : Ω 𝓤)
+          (A : p holds → 𝓤 ̇)
+          where
 
-  aflabbiness-of-type-of-structures' : ((p : Ω 𝓤) (A : p holds → 𝓤 ̇) → is-equiv (t p A))
-                                     → aflabby (Σ S) 𝓤
-  aflabbiness-of-type-of-structures' t-is-equiv =
-   aflabbiness-of-type-of-structures
-    (λ p A → equiv-closed-under-∼ (t p A) (τ p A) (t-is-equiv p A) (I p A))
+   open notation₁ p A public
+
+   τ' : S (Π A) → (h : p holds) → S (A h)
+   τ' s h = T (π h) s
+
+  structure-closed-under-prop-indexed-products' : 𝓤 ⁺ ⊔ 𝓥 ̇
+  structure-closed-under-prop-indexed-products' = (p : Ω 𝓤)
+                                                  (A : p holds → 𝓤 ̇)
+                                                → is-equiv (τ' p A)
    where
-    I : (p : Ω 𝓤) (A : p holds → 𝓤 ̇) →  τ p A ∼ t p A
+    open notation₂
+
+  aflabbiness-of-type-of-structures' : structure-closed-under-prop-indexed-products'
+                                     → aflabby (Σ S) 𝓤
+  aflabbiness-of-type-of-structures' τ'-is-equiv =
+   aflabbiness-of-type-of-structures
+    (λ p A → equiv-closed-under-∼ (τ' p A) (τ p A) (τ'-is-equiv p A) (I p A))
+   where
+    open notation₂
+
+    I : (p : Ω 𝓤) (A : p holds → 𝓤 ̇) →  τ p A ∼ τ' p A
     I p A s =
      τ p A s                                                       ＝⟨ refl ⟩
-     (λ h → transport S (ϕ p A h) s)                               ＝⟨ refl ⟩
      ((λ h → transport S (eqtoid (ua 𝓤) (Π A) (A h) (π p A h)) s)) ＝⟨ II ⟩
      (λ h → T (π p A h) s)                                         ＝⟨ refl ⟩
-     t p A s                                                       ∎
+     τ' p A s                                                      ∎
      where
       II = dfunext fe' (λ h → (transport-eqtoid (π p A h) s)⁻¹)
 
-  injectivity-of-type-of-structures' : ((p : Ω 𝓤) (A : p holds → 𝓤 ̇) → is-equiv (t p A))
+  injectivity-of-type-of-structures' : structure-closed-under-prop-indexed-products'
                                      → ainjective-type (Σ S) 𝓤 𝓤
   injectivity-of-type-of-structures' = aflabby-types-are-ainjective (Σ S)
                                         ∘ aflabbiness-of-type-of-structures'
@@ -305,7 +334,7 @@ general theorem.
 
 ainjectivity-of-∞-Magma : ainjective-type (∞-Magma 𝓤) 𝓤 𝓤
 ainjectivity-of-∞-Magma {𝓤} =
- injectivity-of-type-of-structures' S T T-refl t-is-equiv
+ injectivity-of-type-of-structures' S T T-refl τ'-is-equiv
  where
   S : 𝓤 ̇ → 𝓤 ̇
   S X = X → X → X
@@ -320,27 +349,17 @@ ainjectivity-of-∞-Magma {𝓤} =
            (A : p holds → 𝓤 ̇)
          where
 
-   hp : is-prop (p holds)
-   hp = holds-is-prop p
+   open notation₂ S T T-refl p A
 
-   π : (h : p holds) → Π A ≃ A h
-   π = prop-indexed-product fe' hp
+   τ'⁻¹ : ((h : p holds) → S (A h)) → S (Π A)
+   τ'⁻¹ g α β h = g h (⌜ π h ⌝ α) (⌜ π h ⌝ β)
 
-   t : S (Π A) → (h : p holds) → S (A h)
-   t s h = T (π h) s
-
-   t⁻¹ : ((h : p holds) → S (A h)) → S (Π A)
-   t⁻¹ g α β h = g h (⌜ π h ⌝ α) (⌜ π h ⌝ β)
-
-   remark : (h : p holds) (α : Π A) → ⌜ π h ⌝ α ＝ α h
-   remark h α = refl
-
-   η : t⁻¹ ∘ t ∼ id
+   η : τ'⁻¹ ∘ τ' ∼ id
    η _·_ = dfunext fe' (λ α → dfunext fe' (I α))
     where
-     I : ∀ α β → t⁻¹ (t _·_) α β ＝ α · β
+     I : ∀ α β → τ'⁻¹ (τ' _·_) α β ＝ α · β
      I α β =
-      (t⁻¹ ∘ t) _·_ α β                                                ＝⟨ refl ⟩
+      (τ'⁻¹ ∘ τ') _·_ α β                                              ＝⟨ refl ⟩
       (λ h → ⌜ π h ⌝  (⌜ π h ⌝⁻¹ (⌜ π h ⌝ α) · ⌜ π h ⌝⁻¹ (⌜ π h ⌝ β))) ＝⟨ II ⟩
       (λ h → ⌜ π h ⌝ (α · β))                                          ＝⟨ refl ⟩
       (λ h → (α · β) h)                                                ＝⟨ refl ⟩
@@ -351,9 +370,9 @@ ainjectivity-of-∞-Magma {𝓤} =
                  (inverses-are-retractions (⌜ π h ⌝) ⌜ π h ⌝-is-equiv α)
                  (inverses-are-retractions (⌜ π h ⌝) ⌜ π h ⌝-is-equiv β))
 
-   ε : t ∘ t⁻¹ ∼ id
+   ε : τ' ∘ τ'⁻¹ ∼ id
    ε g =
-    t (t⁻¹ g)                                                       ＝⟨ refl ⟩
+    τ' (τ'⁻¹ g)                                                     ＝⟨ refl ⟩
     (λ h a b → g h (⌜ π h ⌝ (⌜ π h ⌝⁻¹ a)) (⌜ π h ⌝ (⌜ π h ⌝⁻¹ b))) ＝⟨ I ⟩
     (λ h a b → g h a b)                                             ＝⟨ refl ⟩
     g                                                               ∎
@@ -363,13 +382,13 @@ ainjectivity-of-∞-Magma {𝓤} =
                (inverses-are-sections (⌜ π h ⌝) ⌜ π h ⌝-is-equiv a)
                (inverses-are-sections (⌜ π h ⌝) ⌜ π h ⌝-is-equiv b))))
 
-   t-is-equiv : is-equiv t
-   t-is-equiv = qinvs-are-equivs t  (t⁻¹ , η , ε)
+   τ'-is-equiv : is-equiv τ'
+   τ'-is-equiv = qinvs-are-equivs τ'  (τ'⁻¹ , η , ε)
 
 \end{code}
 
-The type ∞-Magma 𝓤 doesn't have any decidable property unless weak
-excluded middle holds.
+A corollary is that the type ∞-Magma 𝓤 doesn't have any decidable
+property unless weak excluded middle holds.
 
 \begin{code}
 
