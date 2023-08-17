@@ -1434,7 +1434,7 @@ We could have defined `directify` in an alternative way, using the auxiliary
 join-list : (F : Frame 𝓤 𝓥 𝓦) → List ⟨ F ⟩ → ⟨ F ⟩
 join-list F = foldr (binary-join F) 𝟎[ F ]
 
-infix 2 join-list
+infix 3 join-list
 
 syntax join-list F xs = ⋁ₗ[ F ] xs
 
