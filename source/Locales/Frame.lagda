@@ -419,6 +419,10 @@ syntax join-of F U = ⋁[ F ] U
 𝟚 : (𝓤 : Universe) → 𝓤 ̇
 𝟚 𝓤 = 𝟙 {𝓤} + 𝟙 {𝓤}
 
+and₂ : {𝓤 : Universe} → 𝟚 𝓤 → 𝟚 𝓤 → 𝟚 𝓤
+and₂ (inl ⋆) _ = inl ⋆
+and₂ (inr ⋆) y = y
+
 binary-family : {A : 𝓤 ̇ } → (𝓦 : Universe) → A → A → Fam 𝓦 A
 binary-family {A = A} 𝓦 x y = 𝟚 𝓦  , α
  where

@@ -6,7 +6,7 @@ Based on `ayberkt/formal-topology-in-UF`.
 
 {-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
 
-open import MLTT.Spartan
+open import MLTT.Spartan hiding (𝟚)
 open import UF.Base
 open import UF.PropTrunc
 open import UF.FunExt
@@ -1176,6 +1176,56 @@ image-of : (F : Frame 𝓤 𝓥 𝓦) (ℬ : Fam 𝓦 ⟨ F ⟩)
 image-of F ℬ []       = []
 image-of F ℬ (i ∷ is) = ℬ [ i ] ∷ image-of F ℬ is
 
+conjunct-with-all-is-basic : (F : Frame 𝓤 𝓥 𝓦) (ℬ : Fam 𝓦 ⟨ F ⟩)
+                           → (β : is-basis-for F ℬ)
+                           → closed-under-binary-meets F ℬ holds
+                           → let
+                              ℬ↑ = directify F ℬ
+                              β↑ = directified-basis-is-basis F ℬ β
+                             in
+                              (i : index ℬ) (is : index ℬ↑) →
+                               ∃ ks ꞉ index ℬ↑ , ℬ↑ [ ks ] ＝ join-list F (conjunct-with-all′ F (ℬ [ i ]) (image-of F ℬ is))
+conjunct-with-all-is-basic F ℬ β p i []       = ∣ [] , refl ∣
+conjunct-with-all-is-basic F ℬ β p i (j ∷ js) = ∥∥-rec ∃-is-prop γ †
+ where
+  open Meets (λ x y → x ≤[ poset-of F ] y)
+
+  ℬ↑ = directify F ℬ
+
+  † : ∃ k ꞉ index ℬ , ((ℬ [ k ]) is-glb-of ((ℬ [ i ]) , (ℬ [ j ]))) holds
+  † = p i j
+
+  -- IH : ∃ ks ꞉ index ℬ↑ , directify F ℬ [ ks ] ＝ join-list F (conjunct-with-all′ F (ℬ [ i ]) (image-of F ℬ js))
+  -- IH = conjunct-with-all-is-basic F ℬ β p i js
+
+  ♥ : join-list F (conjunct-with-all′ F (ℬ [ i ]) (image-of F ℬ (j ∷ js)))
+    ＝ join-list F ((ℬ [ i ] ∧[ F ] ℬ [ j ]) ∷ conjunct-with-all′ F (ℬ [ i ]) (image-of F ℬ js))
+  ♥ = refl
+
+  γ : (Σ k ꞉ index ℬ , ((ℬ [ k ]) is-glb-of (ℬ [ i ] , ℬ [ j ])) holds)
+    → ∃ ks ꞉ index ℬ↑ , ℬ↑ [ ks ] ＝ join-list F (conjunct-with-all′ F (ℬ [ i ]) (image-of F ℬ (j ∷ js)))
+  γ (k , q) = ∥∥-rec ∃-is-prop δ IH
+   where
+    IH : ∃ ks ꞉ index ℬ↑ ,
+          directify F ℬ [ ks ]
+          ＝
+          join-list F (conjunct-with-all′ F (ℬ [ i ]) (image-of F ℬ js))
+    IH = conjunct-with-all-is-basic F ℬ β p i js
+
+    δ : Σ ks ꞉ index ℬ↑ ,
+         ℬ↑ [ ks ]
+         ＝
+         join-list F (conjunct-with-all′ F (ℬ [ i ]) (image-of F ℬ js))
+      → ∃ ks ꞉ index ℬ↑ , ℬ↑ [ ks ] ＝ join-list F (conjunct-with-all′ F (ℬ [ i ]) (image-of F ℬ (j ∷ js)))
+    δ (ks , r) = ∣ (k ∷ ks) , ♣ ∣
+     where
+      ♣ : ℬ↑ [ k ∷ ks ] ＝ join-list F (conjunct-with-all′ F (ℬ [ i ]) (image-of F ℬ (j ∷ js)))
+      ♣ =
+       ℬ [ k ] ∨[ F ] ℬ↑ [ ks ] ＝⟨ ap (λ - → ℬ [ k ] ∨[ F ] -) r ⟩
+       ℬ [ k ] ∨[ F ] join-list F (conjunct-with-all′ F (ℬ [ i ]) (image-of F ℬ js)) ＝⟨ ap (λ - → - ∨[ F ] join-list F (conjunct-with-all′ F (ℬ [ i ]) (image-of F ℬ js))) (∧[ F ]-unique q) ⟩
+       (ℬ [ i ] ∧[ F ] ℬ [ j ]) ∨[ F ] join-list F (conjunct-with-all′ F (ℬ [ i ]) (image-of F ℬ js)) ＝⟨ refl ⟩
+       join-list F (conjunct-with-all′ F (ℬ [ i ]) (image-of F ℬ (j ∷ js))) ∎
+
 cnf-transform-is-basic : (F : Frame 𝓤 𝓥 𝓦) (ℬ : Fam 𝓦 ⟨ F ⟩)
                        → (β : is-basis-for F ℬ)
                        → closed-under-binary-meets F ℬ holds
@@ -1208,7 +1258,7 @@ cnf-transform-is-basic F ℬ β p (i ∷ is) js = ∥∥-rec ∥∥-is-prop γ (
 
   γ : (Σ ks ꞉ index ℬ↑ , ℬ↑ [ ks ] ＝ ℬ↑ [ is ] ∧[ F ] ℬ↑ [ js ])
     → ∃ ks ꞉ index ℬ↑ , ℬ↑ [ ks ] ＝ (ℬ [ i ] ∨[ F ] ℬ↑ [ is ]) ∧[ F ] (directify F ℬ [ js ])
-  γ (ks , q) = {!!}
+  γ (ks , q) = ∥∥-rec ∃-is-prop † δ
    where
     foo : ℬ↑ [ ks ] ＝ cnf-transform F (image-of F ℬ is) (image-of F ℬ js)
     foo = ℬ↑ [ ks ]                                           ＝⟨ q           ⟩
@@ -1222,9 +1272,32 @@ cnf-transform-is-basic F ℬ β p (i ∷ is) js = ∥∥-rec ∥∥-is-prop γ (
 
     baz : cnf-transform F (image-of F ℬ (i ∷ is)) (image-of F ℬ js)
         ＝ join-list F (conjunct-with-all′ F (ℬ [ i ]) (image-of F ℬ js)) ∨[ F ] ℬ↑ [ ks ]
-    baz = cnf-transform F (image-of F ℬ (i ∷ is)) (image-of F ℬ js)        ＝⟨ refl ⟩
-          join-list F (conjunct-with-all′ F (ℬ [ i ]) (image-of F ℬ js)) ∨[ F ] cnf-transform F (image-of F ℬ is) (image-of F ℬ js) ＝⟨ ap (λ - → _ ∨[ F ] -) foo ⁻¹ ⟩
-          join-list F (conjunct-with-all′ F (ℬ [ i ]) (image-of F ℬ js)) ∨[ F ] ℬ↑ [ ks ] ∎
+    baz = ap
+            (λ - → (join-list F (conjunct-with-all′ F (ℬ [ i ]) (image-of F ℬ js))) ∨[ F ] -)
+            (foo ⁻¹)
+
+    δ : ∃ ls ꞉ index ℬ↑ , ℬ↑ [ ls ] ＝ join-list F (conjunct-with-all′ F (ℬ [ i ]) (image-of F ℬ js))
+    δ = conjunct-with-all-is-basic F ℬ β p i js
+
+    w = join-list F (conjunct-with-all′ F (ℬ [ i ]) (image-of F ℬ js))
+
+    † : (Σ ls ꞉ index ℬ↑ , ℬ↑ [ ls ] ＝ join-list F (conjunct-with-all′ F (ℬ [ i ]) (image-of F ℬ js)))
+      → ∃ ks ꞉ index ℬ↑ , ℬ↑ [ ks ] ＝ (ℬ [ i ] ∨[ F ] ℬ↑ [ is ]) ∧[ F ] (directify F ℬ [ js ])
+    † (ls , r) = ∣ (ls ++ ks) , ‡ ∣
+     where
+      ‡ : ℬ↑ [ ls ++ ks ] ＝ (ℬ [ i ] ∨[ F ] ℬ↑ [ is ]) ∧[ F ] ℬ↑ [ js ]
+      ‡ = ℬ↑ [ ls ++ ks ]                                 ＝⟨ directify-functorial F ℬ ls ks ⟩
+          ℬ↑ [ ls ] ∨[ F ] ℬ↑ [ ks ]                      ＝⟨ ap (λ - → - ∨[ F ] ℬ↑ [ ks ]) r ⟩
+          w ∨[ F ] ℬ↑ [ ks ]                                             ＝⟨ ap (λ - → w ∨[ F ] -) foo ⟩
+          w ∨[ F ] (cnf-transform F (image-of F ℬ is) (image-of F ℬ js)) ＝⟨ refl ⟩
+          cnf-transform F (image-of F ℬ (i ∷ is)) (image-of F ℬ js) ＝⟨ cnf-transform-correct F (image-of F ℬ (i ∷ is)) (image-of F ℬ js) ⁻¹ ⟩
+          join-list F (image-of F ℬ (i ∷ is)) ∧[ F ] join-list F (image-of F ℬ js)   ＝⟨ ♢₁ ⟩
+          (ℬ↑ [ i ∷ is ]) ∧[ F ] join-list F (image-of F ℬ js)   ＝⟨ ♢₂ ⟩
+          (ℬ↑ [ i ∷ is ]) ∧[ F ] (ℬ↑ [ js ])   ＝⟨ refl ⟩
+          (ℬ [ i ] ∨[ F ] ℬ↑ [ is ]) ∧[ F ] (ℬ↑ [ js ])   ∎
+           where
+            ♢₁ = ap (λ - → - ∧[ F ] join-list F (image-of F ℬ js)) (lemma₀ (i ∷ is) ⁻¹)
+            ♢₂ = ap (λ - → (ℬ↑ [ i ∷ is ]) ∧[ F ] -) (lemma₀ js ⁻¹)
 
 cnf-transform-indices : (F : Frame 𝓤 𝓥 𝓦)
                       → (ℬ : Fam 𝓦 ⟨ F ⟩)
@@ -2233,6 +2306,32 @@ module SpectralityOfTheInitialFrame (𝓤 : Universe) (pe : propext 𝓤) where
    (bottom-of-𝟎Frm-is-⊥ ⁻¹)
    (𝟎-is-compact (𝟎-𝔽𝕣𝕞 pe))
  ℬ𝟎-consists-of-compact-opens (inr ⋆) = 𝟎Frm-is-compact
+
+ and₂-lemma₁ : (x y : 𝟚 𝓤) → (ℬ𝟎 [ and₂ x y ] ≤[ poset-of (𝟎-𝔽𝕣𝕞 pe) ] ℬ𝟎 [ x ]) holds
+ and₂-lemma₁ (inl ⋆) y       = λ ()
+ and₂-lemma₁ (inr ⋆) (inl ⋆) = λ ()
+ and₂-lemma₁ (inr ⋆) (inr ⋆) = λ { ⋆ → ⋆ }
+
+ and₂-lemma₂ : (x y : 𝟚 𝓤) → (ℬ𝟎 [ and₂ x y ] ≤[ poset-of (𝟎-𝔽𝕣𝕞 pe) ] ℬ𝟎 [ y ]) holds
+ and₂-lemma₂ (inl ⋆) y       = λ ()
+ and₂-lemma₂ (inr ⋆) (inl ⋆) = λ ()
+ and₂-lemma₂ (inr ⋆) (inr ⋆) = λ { ⋆ → ⋆ }
+
+ open Meets (λ x y → x ≤[ poset-of (𝟎-𝔽𝕣𝕞 pe) ] y) hiding (is-top)
+
+ and₂-lemma₃ : (x y : 𝟚 𝓤) ((z , _) : lower-bound (ℬ𝟎 [ x ] , ℬ𝟎 [ y ]))
+             → (z ≤[ poset-of (𝟎-𝔽𝕣𝕞 pe) ] ℬ𝟎 [ and₂ x y ]) holds
+ and₂-lemma₃ (inl ⋆) y (z , p₁ , p₂) = p₁
+ and₂-lemma₃ (inr ⋆) y (z , p₁ , p₂) = p₂
+
+ ℬ𝟎-is-closed-under-binary-meets : closed-under-binary-meets (𝟎-𝔽𝕣𝕞 pe) ℬ𝟎 holds
+ ℬ𝟎-is-closed-under-binary-meets i j = ∣ and₂ i j , (†₁ , †₂) , and₂-lemma₃ i j ∣
+   where
+    †₁ : (ℬ𝟎 [ and₂ i j ] ≤[ poset-of (𝟎-𝔽𝕣𝕞 pe) ] ℬ𝟎 [ i ]) holds
+    †₁ = and₂-lemma₁ i j
+
+    †₂ : (ℬ𝟎 [ and₂ i j ] ≤[ poset-of (𝟎-𝔽𝕣𝕞 pe) ] ℬ𝟎 [ j ]) holds
+    †₂ = and₂-lemma₂ i j
 
  𝟎-𝔽𝕣𝕞-is-spectral : is-spectral (𝟎-𝔽𝕣𝕞 pe) holds
  𝟎-𝔽𝕣𝕞-is-spectral = ∣ ℬ𝟎↑ , ℬ𝟎-is-directed-basis-for-𝟎 , κ , γ ∣
