@@ -1105,38 +1105,6 @@ closed-under-binary-meets F 𝒮 =
 closed-under-finite-meets : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦)
 closed-under-finite-meets F S = contains-top F S ∧ closed-under-binary-meets F S
 
-{--
-
-directify-preserves-closure-under-∧ : (F : Frame 𝓤 𝓥 𝓦)
-                                    → (ℬ : Fam 𝓦 ⟨ F ⟩)
-                                    → (β : is-basis-for F ℬ)
-                                    → closed-under-binary-meets F ℬ holds
-                                    → let
-                                       ℬ↑ = directify F ℬ
-                                       β↑ = directified-basis-is-basis F ℬ β
-                                      in
-                                       closed-under-binary-meets F ℬ↑ holds
-directify-preserves-closure-under-∧ F ℬ β ϑ is js =
- ∥∥-rec ∃-is-prop γ (cnf-transform-is-basic F ℬ β ϑ is js)
-  where
-   open Meets (λ x y → x ≤[ poset-of F ] y)
-
-   ℬ↑ = directify F ℬ
-   x  = ℬ↑ [ is ]
-   y  = ℬ↑ [ js ]
-
-   γ : Σ ks ꞉ (index ℬ↑) , ℬ↑ [ ks ] ＝ ℬ↑ [ is ] ∧[ F ] ℬ↑ [ js ]
-     → ∃ ks ꞉ index ℬ↑ , (((ℬ↑ [ ks ]) is-glb-of (x , y)) holds)
-   γ (ks , p) =
-    let
-     † : ((x ∧[ F ] y) is-glb-of (x , y)) holds
-     † = (∧[ F ]-lower₁ x y  , ∧[ F ]-lower₂ x y)
-       , λ (z , p) → uncurry (∧[ F ]-greatest x y z) p
-    in
-     ∣ ks , transport (λ - → (- is-glb-of (x , y)) holds) (p ⁻¹) † ∣
-
---}
-
 consists-of-compact-opens : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
 consists-of-compact-opens F U = Ɐ i ꞉ index U , is-compact-open F (U [ i ])
 
@@ -2401,6 +2369,42 @@ The desired list of indices is just `ls ++ ks`:
 
 \end{code}
 
+This is the result that we wanted: directification of a basis preserves its
+closure under binary meets. In the following definition, we make this a bit more
+explicit:
+
+\begin{code}
+
+directify-preserves-closure-under-∧ : (F : Frame 𝓤 𝓥 𝓦)
+                                    → (ℬ : Fam 𝓦 ⟨ F ⟩)
+                                    → (β : is-basis-for F ℬ)
+                                    → closed-under-binary-meets F ℬ holds
+                                    → let
+                                       ℬ↑ = directify F ℬ
+                                       β↑ = directified-basis-is-basis F ℬ β
+                                      in
+                                       closed-under-binary-meets F ℬ↑ holds
+directify-preserves-closure-under-∧ F ℬ β ϑ is js =
+ ∥∥-rec ∃-is-prop γ (cnf-transform-is-basic F ℬ β ϑ is js)
+  where
+   open Meets (λ x y → x ≤[ poset-of F ] y)
+
+   ℬ↑ = directify F ℬ
+   x  = ℬ↑ [ is ]
+   y  = ℬ↑ [ js ]
+
+   γ : Σ ks ꞉ (index ℬ↑) , ℬ↑ [ ks ] ＝ ℬ↑ [ is ] ∧[ F ] ℬ↑ [ js ]
+     → ∃ ks ꞉ index ℬ↑ , (((ℬ↑ [ ks ]) is-glb-of (x , y)) holds)
+   γ (ks , p) =
+    let
+     † : ((x ∧[ F ] y) is-glb-of (x , y)) holds
+     † = (∧[ F ]-lower₁ x y  , ∧[ F ]-lower₂ x y)
+       , λ (z , p) → uncurry (∧[ F ]-greatest x y z) p
+    in
+     ∣ ks , transport (λ - → (- is-glb-of (x , y)) holds) (p ⁻¹) † ∣
+
+\end{code}
+
 Section added on 2023-08-17.
 
 \section{Spectrality of the initial frame}
@@ -2474,12 +2478,11 @@ module SpectralityOfTheInitialFrame (𝓤 : Universe) (pe : propext 𝓤) where
         (𝟏-is-top (𝟎-𝔽𝕣𝕞 pe))
 
    c : closed-under-binary-meets (𝟎-𝔽𝕣𝕞 pe) ℬ𝟎↑ holds
-   c = {!!}
-   -- c = directify-preserves-closure-under-∧
-   --      (𝟎-𝔽𝕣𝕞 pe)
-   --      ℬ𝟎
-   --      ℬ𝟎-is-basis-for-𝟎
-   --      ℬ𝟎-is-closed-under-binary-meets
+   c = directify-preserves-closure-under-∧
+        (𝟎-𝔽𝕣𝕞 pe)
+        ℬ𝟎
+        ℬ𝟎-is-basis-for-𝟎
+        ℬ𝟎-is-closed-under-binary-meets
 
    γ : closed-under-finite-meets (𝟎-𝔽𝕣𝕞 pe) ℬ𝟎↑ holds
    γ = ∣ (inr ⋆ ∷ []) , t ∣ , c
