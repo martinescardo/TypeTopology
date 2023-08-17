@@ -1,7 +1,7 @@
 Martin Escardo, 16th August 2023
 
 We give conditions for types of mathematical structures, such as
-pointed types, ∞-magmas, monoids and groups to be algebraicly
+pointed types, ∞-magmas, monoids and groups to be algebraically
 injective. We use algebraic flabbiness as our main tool.
 
 \begin{code}
@@ -150,8 +150,8 @@ is an equivalence for every p and A.
 
 \end{code}
 
-And the main lemma, under this assumption, is that Σ S is
-algebraicly flabby with with respect to the universe 𝓤.
+And the main lemma, under this assumption, is that Σ S is algebraically
+flabby with with respect to the universe 𝓤.
 
 \begin{code}
 
@@ -194,13 +194,13 @@ algebraicly flabby with with respect to the universe 𝓤.
 
 \end{code}
 
-It follows that the type Σ S is algebraicly injective if S is closed
+It follows that the type Σ S is algebraically injective if S is closed
 under prop-indexed products, which is our main theorem.
 
 \begin{code}
 
  ainjectivity-of-type-of-structures : structure-closed-under-prop-indexed-products
-                                   → ainjective-type (Σ S) 𝓤 𝓤
+                                    → ainjective-type (Σ S) 𝓤 𝓤
  ainjectivity-of-type-of-structures = aflabby-types-are-ainjective (Σ S)
                                       ∘ aflabbiness-of-type-of-structures
 
@@ -280,7 +280,7 @@ with T instead:
 
 \end{code}
 
-Example: The type of pointed types is algebraicly injective.
+Example: The type of pointed types is algebraically injective.
 
 \begin{code}
 
@@ -294,9 +294,9 @@ ainjectivity-of-type-of-pointed-types {𝓤} =
 
 \end{code}
 
-Example: The type of ∞-magmas is algebraicly injective. The proof is a
-bit long, but it is an entirely routine application of the above general
-theorem.
+Example: The type of ∞-magmas is algebraically injective. The proof is
+a bit long, but it is an entirely routine application of the above
+general theorem.
 
 \begin{code}
 
