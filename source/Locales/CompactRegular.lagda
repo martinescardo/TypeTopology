@@ -1326,22 +1326,22 @@ directify-preserves-closure-under-∧ : (F : Frame 𝓤 𝓥 𝓦)
                                        closed-under-binary-meets F ℬ↑ holds
 directify-preserves-closure-under-∧ F ℬ β ϑ is js =
  ∥∥-rec ∃-is-prop γ (cnf-transform-is-basic F ℬ β ϑ is js)
- where
-  open Meets (λ x y → x ≤[ poset-of F ] y)
+  where
+   open Meets (λ x y → x ≤[ poset-of F ] y)
 
-  ℬ↑ = directify F ℬ
-  x  = ℬ↑ [ is ]
-  y  = ℬ↑ [ js ]
+   ℬ↑ = directify F ℬ
+   x  = ℬ↑ [ is ]
+   y  = ℬ↑ [ js ]
 
-  γ : Σ ks ꞉ (index ℬ↑) , ℬ↑ [ ks ] ＝ ℬ↑ [ is ] ∧[ F ] ℬ↑ [ js ]
-    → ∃ ks ꞉ index ℬ↑ , (((ℬ↑ [ ks ]) is-glb-of (x , y)) holds)
-  γ (ks , p) =
-   let
-    † : ((x ∧[ F ] y) is-glb-of (x , y)) holds
-    † = (∧[ F ]-lower₁ x y  , ∧[ F ]-lower₂ x y)
-      , λ (z , p) → uncurry (∧[ F ]-greatest x y z) p
-   in
-    ∣ ks , transport (λ - → (- is-glb-of (x , y)) holds) (p ⁻¹) † ∣
+   γ : Σ ks ꞉ (index ℬ↑) , ℬ↑ [ ks ] ＝ ℬ↑ [ is ] ∧[ F ] ℬ↑ [ js ]
+     → ∃ ks ꞉ index ℬ↑ , (((ℬ↑ [ ks ]) is-glb-of (x , y)) holds)
+   γ (ks , p) =
+    let
+     † : ((x ∧[ F ] y) is-glb-of (x , y)) holds
+     † = (∧[ F ]-lower₁ x y  , ∧[ F ]-lower₂ x y)
+       , λ (z , p) → uncurry (∧[ F ]-greatest x y z) p
+    in
+     ∣ ks , transport (λ - → (- is-glb-of (x , y)) holds) (p ⁻¹) † ∣
 
 consists-of-compact-opens : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
 consists-of-compact-opens F U = Ɐ i ꞉ index U , is-compact-open F (U [ i ])
