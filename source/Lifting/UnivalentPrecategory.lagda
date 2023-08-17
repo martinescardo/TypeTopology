@@ -443,7 +443,7 @@ is-𝓛-equiv : (l m : 𝓛 X) → l ⊑ m → 𝓣 ⁺ ⊔ 𝓤 ̇
 is-𝓛-equiv l m α = (n : 𝓛 X) → is-equiv (𝓛-pre-comp-with l m α n)
 
 being-𝓛-equiv-is-prop : funext (𝓣 ⁺ ⊔ 𝓤) (𝓣 ⊔ 𝓤)
-                        → (l m : 𝓛 X) (α : l ⊑ m) → is-prop (is-𝓛-equiv l m α)
+                      → (l m : 𝓛 X) (α : l ⊑ m) → is-prop (is-𝓛-equiv l m α)
 being-𝓛-equiv-is-prop fe l m α =
  Π-is-prop fe
   (λ n → being-equiv-is-prop''
@@ -592,8 +592,8 @@ module univalence-of-𝓛 (ua : is-univalent 𝓣)
 
  𝓛-is-univalent : (l m : 𝓛 X) → is-equiv (Id-to-𝓛-eq l m)
  𝓛-is-univalent l = universality-equiv l (𝓛-refl l)
-                      (central-point-is-universal (l ≃⟨𝓛⟩_) (l , 𝓛-refl l)
-                        (singletons-are-props (𝓛-is-univalent' l) (l , 𝓛-refl l)))
+                     (central-point-is-universal (l ≃⟨𝓛⟩_) (l , 𝓛-refl l)
+                       (singletons-are-props (𝓛-is-univalent' l) (l , 𝓛-refl l)))
   where
    open import UF.Yoneda
 
@@ -616,7 +616,7 @@ We have yet another equivalence, using the above techniques:
           → (l : 𝓛 X) → is-singleton (⊥ ⊑ l)
 ⊥-initial fe fe' l = ⊥-least l ,
                      (λ α → to-Σ-＝ (dfunext fe (λ z → unique-from-𝟘 z) ,
-                                    dfunext fe'(λ z → unique-from-𝟘 z)))
+                                     dfunext fe'(λ z → unique-from-𝟘 z)))
 
 η-＝-gives-⊑ : {x y : X} → x ＝ y → η x ⊑ η y
 η-＝-gives-⊑ {x} {y} p = id , (λ d → p)

@@ -146,4 +146,5 @@ two embeddings:
   is-embedding
   (η-composite fe fe'')
   (∘-is-embedding (κ-is-embedding pe fe fe') (𝓚→𝓛-is-embedding fe X))
+
 \end{code}

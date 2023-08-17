@@ -167,7 +167,8 @@ more parsimonious.
 
 \begin{code}
 
-𝓛-resizing : Ω-resizing 𝓣 → (X : 𝓣 ̇ ) → 𝓛 X is 𝓣 small
+𝓛-resizing : Ω-resizing 𝓣
+           → (X : 𝓣 ̇ ) → 𝓛 X is 𝓣 small
 𝓛-resizing (O , ε) X = (Σ p ꞉ O , (up p holds → X)) , ≃-comp d e
  where
   up : O → Ω 𝓣
@@ -184,4 +185,5 @@ more parsimonious.
              ((λ (P , f ,  i) → (P , i) , f) ,
              (λ _ → refl) ,
              (λ _ → refl))
+
 \end{code}
