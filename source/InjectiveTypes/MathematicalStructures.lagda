@@ -90,12 +90,12 @@ products, in the sense that from an element of the type
 
 More precisely, we always have a map
 
- τ : S (Π A) → ((h : P) → S (A h))
+ σ : S (Π A) → ((h : P) → S (A h))
 
 in the opposite direction. We stipulate that it is an equivalence for
 any proposition P and any type family A : P → 𝓤 ̇.
 
-With this assumption, we can let s be the inverse of τ applied to g.
+With this assumption, we can let s be the inverse of σ applied to g.
 
 \begin{code}
 
@@ -116,7 +116,7 @@ mind:
 
 \end{code}
 
-We now define auxiliary functions π, ϕ and τ parametrized by a
+We now define auxiliary functions π, ϕ and σ parametrized by a
 proposition p and family A indexed by p.
 
 Because we deliberately use short, general purpose symbols, we place
@@ -143,14 +143,14 @@ use this notation.
   ϕ : (h : p holds) → Π A ＝ A h
   ϕ h = eqtoid (ua 𝓤) (Π A) (A h) (π h)
 
-  τ : S (Π A) → ((h : p holds) → S (A h))
-  τ s h = treq (π h) s
+  σ : S (Π A) → ((h : p holds) → S (A h))
+  σ s h = treq (π h) s
 
 \end{code}
 
 Our assumption on S is that the map
 
-  τ p A : S (Π A) → ((h : p holds) → S (A h))
+  σ p A : S (Π A) → ((h : p holds) → S (A h))
 
 is an equivalence for every p and A.
 
@@ -158,8 +158,8 @@ is an equivalence for every p and A.
 
  structure-closed-under-prop-indexed-products : 𝓤 ⁺ ⊔ 𝓥 ̇
  structure-closed-under-prop-indexed-products = (p : Ω 𝓤)
-                                                 (A : p holds → 𝓤 ̇)
-                                               → is-equiv (τ p A)
+                                                (A : p holds → 𝓤 ̇)
+                                               → is-equiv (σ p A)
   where
    open notation₁
 
@@ -172,7 +172,7 @@ flabby with with respect to the universe 𝓤.
 
  aflabbiness-of-type-of-structures : structure-closed-under-prop-indexed-products
                                    → aflabby (Σ S) 𝓤
- aflabbiness-of-type-of-structures τ-is-equiv = I
+ aflabbiness-of-type-of-structures σ-is-equiv = I
   where
    I : aflabby (Σ S) 𝓤
    I P P-is-prop f = (Π A , s) , II
@@ -188,14 +188,14 @@ flabby with with respect to the universe 𝓤.
 
      open notation₁ p A
 
-     t : S (Π A) ≃ ((h : p holds) → S (A h))
-     t = τ , τ-is-equiv p A
+     e : S (Π A) ≃ ((h : p holds) → S (A h))
+     e = σ , σ-is-equiv p A
 
      g : (h : P) → S (A h)
      g = pr₂ ∘ f
 
      s : S (Π A)
-     s = ⌜ t ⌝⁻¹ g
+     s = ⌜ e ⌝⁻¹ g
 
      II : (h : p holds) → Π A , s ＝ f h
      II h = Π A , s   ＝⟨ to-Σ-＝ (ϕ h , III) ⟩
@@ -203,11 +203,11 @@ flabby with with respect to the universe 𝓤.
             f h       ∎
       where
        III = transport S (ϕ h) s ＝⟨ refl ⟩
-             ⌜ t ⌝ s h           ＝⟨ refl ⟩
-             ⌜ t ⌝ (⌜ t ⌝⁻¹ g) h ＝⟨ IV ⟩
+             ⌜ e ⌝ s h           ＝⟨ refl ⟩
+             ⌜ e ⌝ (⌜ e ⌝⁻¹ g) h ＝⟨ IV ⟩
              g h ∎
         where
-         IV = ap (λ - → - h) (inverses-are-sections ⌜ t ⌝ ⌜ t ⌝-is-equiv g)
+         IV = ap (λ - → - h) (inverses-are-sections ⌜ e ⌝ ⌜ e ⌝-is-equiv g)
 
 \end{code}
 
@@ -275,30 +275,30 @@ with T instead:
 
    open notation₁ p A public
 
-   τ' : S (Π A) → (h : p holds) → S (A h)
-   τ' s h = T (π h) s
+   τ : S (Π A) → (h : p holds) → S (A h)
+   τ s h = T (π h) s
 
   structure-closed-under-prop-indexed-products' : 𝓤 ⁺ ⊔ 𝓥 ̇
   structure-closed-under-prop-indexed-products' = (p : Ω 𝓤)
                                                   (A : p holds → 𝓤 ̇)
-                                                → is-equiv (τ' p A)
+                                                → is-equiv (τ p A)
    where
     open notation₂
 
   aflabbiness-of-type-of-structures' : structure-closed-under-prop-indexed-products'
                                      → aflabby (Σ S) 𝓤
-  aflabbiness-of-type-of-structures' τ'-is-equiv =
+  aflabbiness-of-type-of-structures' τ-is-equiv =
    aflabbiness-of-type-of-structures
-    (λ p A → equiv-closed-under-∼ (τ' p A) (τ p A) (τ'-is-equiv p A) (I p A))
+    (λ p A → equiv-closed-under-∼ (τ p A) (σ p A) (τ-is-equiv p A) (I p A))
    where
     open notation₂
 
-    I : (p : Ω 𝓤) (A : p holds → 𝓤 ̇) →  τ p A ∼ τ' p A
+    I : (p : Ω 𝓤) (A : p holds → 𝓤 ̇) →  σ p A ∼ τ p A
     I p A s =
-     τ p A s                                                       ＝⟨ refl ⟩
+     σ p A s                                                       ＝⟨ refl ⟩
      ((λ h → transport S (eqtoid (ua 𝓤) (Π A) (A h) (π p A h)) s)) ＝⟨ II ⟩
      (λ h → T (π p A h) s)                                         ＝⟨ refl ⟩
-     τ' p A s                                                      ∎
+     τ p A s                                                       ∎
      where
       II = dfunext fe' (λ h → (transport-eqtoid (π p A h) s)⁻¹)
 
@@ -334,7 +334,7 @@ general theorem.
 
 ainjectivity-of-∞-Magma : ainjective-type (∞-Magma 𝓤) 𝓤 𝓤
 ainjectivity-of-∞-Magma {𝓤} =
- injectivity-of-type-of-structures' S T T-refl τ'-is-equiv
+ injectivity-of-type-of-structures' S T T-refl τ-is-equiv
  where
   S : 𝓤 ̇ → 𝓤 ̇
   S X = X → X → X
@@ -351,15 +351,15 @@ ainjectivity-of-∞-Magma {𝓤} =
 
    open notation₂ S T T-refl p A
 
-   τ'⁻¹ : ((h : p holds) → S (A h)) → S (Π A)
-   τ'⁻¹ g α β h = g h (⌜ π h ⌝ α) (⌜ π h ⌝ β)
+   τ⁻¹ : ((h : p holds) → S (A h)) → S (Π A)
+   τ⁻¹ g α β h = g h (⌜ π h ⌝ α) (⌜ π h ⌝ β)
 
-   η : τ'⁻¹ ∘ τ' ∼ id
+   η : τ⁻¹ ∘ τ ∼ id
    η _·_ = dfunext fe' (λ α → dfunext fe' (I α))
     where
-     I : ∀ α β → τ'⁻¹ (τ' _·_) α β ＝ α · β
+     I : ∀ α β → τ⁻¹ (τ _·_) α β ＝ α · β
      I α β =
-      (τ'⁻¹ ∘ τ') _·_ α β                                              ＝⟨ refl ⟩
+      (τ⁻¹ ∘ τ) _·_ α β                                                ＝⟨ refl ⟩
       (λ h → ⌜ π h ⌝  (⌜ π h ⌝⁻¹ (⌜ π h ⌝ α) · ⌜ π h ⌝⁻¹ (⌜ π h ⌝ β))) ＝⟨ II ⟩
       (λ h → ⌜ π h ⌝ (α · β))                                          ＝⟨ refl ⟩
       (λ h → (α · β) h)                                                ＝⟨ refl ⟩
@@ -370,9 +370,9 @@ ainjectivity-of-∞-Magma {𝓤} =
                  (inverses-are-retractions (⌜ π h ⌝) ⌜ π h ⌝-is-equiv α)
                  (inverses-are-retractions (⌜ π h ⌝) ⌜ π h ⌝-is-equiv β))
 
-   ε : τ' ∘ τ'⁻¹ ∼ id
+   ε : τ ∘ τ⁻¹ ∼ id
    ε g =
-    τ' (τ'⁻¹ g)                                                     ＝⟨ refl ⟩
+    τ (τ⁻¹ g)                                                     ＝⟨ refl ⟩
     (λ h a b → g h (⌜ π h ⌝ (⌜ π h ⌝⁻¹ a)) (⌜ π h ⌝ (⌜ π h ⌝⁻¹ b))) ＝⟨ I ⟩
     (λ h a b → g h a b)                                             ＝⟨ refl ⟩
     g                                                               ∎
@@ -382,8 +382,8 @@ ainjectivity-of-∞-Magma {𝓤} =
                (inverses-are-sections (⌜ π h ⌝) ⌜ π h ⌝-is-equiv a)
                (inverses-are-sections (⌜ π h ⌝) ⌜ π h ⌝-is-equiv b))))
 
-   τ'-is-equiv : is-equiv τ'
-   τ'-is-equiv = qinvs-are-equivs τ'  (τ'⁻¹ , η , ε)
+   τ-is-equiv : is-equiv τ
+   τ-is-equiv = qinvs-are-equivs τ  (τ⁻¹ , η , ε)
 
 \end{code}
 
