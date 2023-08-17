@@ -1274,22 +1274,6 @@ cnf-transform-is-basic F ℬ β p (i ∷ is) js = ∥∥-rec ∥∥-is-prop γ (
             ♢₁ = ap (λ - → - ∧[ F ] join-list F (image-of F ℬ js)) (lemma₀ (i ∷ is) ⁻¹)
             ♢₂ = ap (λ - → (ℬ↑ [ i ∷ is ]) ∧[ F ] -) (lemma₀ js ⁻¹)
 
-cnf-transform-indices : (F : Frame 𝓤 𝓥 𝓦)
-                      → (ℬ : Fam 𝓦 ⟨ F ⟩)
-                      → (β : is-basis-for F ℬ)
-                      → closed-under-binary-meets F ℬ holds
-                      → let
-                         ℬ↑ = directify F ℬ
-                         β↑ = directified-basis-is-basis F ℬ β
-                        in
-                         index ℬ↑ → index ℬ↑ → ∥ index ℬ↑ ∥
-cnf-transform-indices F ℬ β p []       js = ∣ [] ∣
-cnf-transform-indices F ℬ β p (i ∷ is) js =
- ∥∥-rec₂ ∥∥-is-prop γ (conjunct-with-all F ℬ β p i js) (cnf-transform-indices F ℬ β p is js)
- where
-  γ : index (directify F ℬ) → index (directify F ℬ) → ∥ index (directify F ℬ) ∥
-  γ ks ls = ∣ ks ++ ls ∣
-
 directify-preserves-closure-under-∧ : (F : Frame 𝓤 𝓥 𝓦)
                                     → (ℬ : Fam 𝓦 ⟨ F ⟩)
                                     → (β : is-basis-for F ℬ)
