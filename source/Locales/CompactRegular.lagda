@@ -1107,24 +1107,6 @@ closed-under-finite-meets F S = contains-top F S ∧ closed-under-binary-meets F
 
 {--
 
-cnf-transform-correct : (F : Frame 𝓤 𝓥 𝓦) (xs ys : List ⟨ F ⟩)
-                      → join-list F xs ∧[ F ] join-list F ys ＝ cnf-transform F xs ys
-cnf-transform-correct F []       ys = 𝟎-left-annihilator-for-∧ F (join-list F ys)
-cnf-transform-correct F (x ∷ xs) ys =
- (x ∨[ F ] join-list F xs) ∧[ F ] join-list F ys                         ＝⟨ Ⅰ ⟩
- (x ∧[ F ] join-list F ys) ∨[ F ] (join-list F xs ∧[ F ] join-list F ys) ＝⟨ Ⅱ ⟩
- (x ∧[ F ] join-list F ys) ∨[ F ] cnf-transform F xs ys                  ＝⟨ Ⅲ ⟩
- (join-list F (conjunct-with-list F x ys)) ∨[ F ] cnf-transform F xs ys  ＝⟨ refl ⟩
- cnf-transform F (x ∷ xs) ys                                             ∎
-  where
-   Ⅰ = binary-distributivity-right F
-   Ⅱ = ap
-        (λ - → (x ∧[ F ] join-list F ys) ∨[ F ] -)
-        (cnf-transform-correct F xs ys)
-   Ⅲ = ap
-        (λ - → - ∨[ F ] cnf-transform F xs ys)
-        (distributivity-list F x ys)
-
 image-of : (F : Frame 𝓤 𝓥 𝓦) (ℬ : Fam 𝓦 ⟨ F ⟩)
          → index (directify F ℬ) → List ⟨ F ⟩
 image-of F ℬ []       = []
@@ -2272,6 +2254,29 @@ distributivity-list F x (y ∷ ys) =
   where
    Ⅰ = binary-distributivity F x y (join-list F ys)
    Ⅱ = ap (λ - → (x ∧[ F ] y) ∨[ F ] -) (distributivity-list F x ys)
+
+\end{code}
+
+With `distributivity-list` in hand, we are ready to prove the correctness of CNF
+transformation.
+
+\begin{code}
+
+cnf-transform-correct : (F : Frame 𝓤 𝓥 𝓦) (xs ys : List ⟨ F ⟩)
+                      → (⋁ₗ[ F ] xs) ∧[ F ] (⋁ₗ[ F ] ys) ＝ cnf-transform F xs ys
+cnf-transform-correct F []       ys = 𝟎-left-annihilator-for-∧ F ((⋁ₗ[ F ] ys))
+cnf-transform-correct F (x ∷ xs) ys =
+ (x ∨[ F ] (⋁ₗ[ F ] xs)) ∧[ F ] (⋁ₗ[ F ] ys)                       ＝⟨ Ⅰ    ⟩
+ (x ∧[ F ] (⋁ₗ[ F ] ys)) ∨[ F ] ((⋁ₗ[ F ] xs) ∧[ F ] (⋁ₗ[ F ] ys)) ＝⟨ Ⅱ    ⟩
+ (x ∧[ F ] (⋁ₗ[ F ] ys)) ∨[ F ] cnf-transform F xs ys              ＝⟨ Ⅲ    ⟩
+ (⋁ₗ[ F ] conjunct-with-list F x ys) ∨[ F ] cnf-transform F xs ys  ＝⟨ refl ⟩
+ cnf-transform F (x ∷ xs) ys                                       ∎
+  where
+   Ⅰ = binary-distributivity-right F
+   Ⅱ = ap
+        (λ - → (x ∧[ F ] (⋁ₗ[ F ] ys)) ∨[ F ] -)
+        (cnf-transform-correct F xs ys)
+   Ⅲ = ap (λ - → - ∨[ F ] cnf-transform F xs ys) (distributivity-list F x ys)
 
 \end{code}
 
