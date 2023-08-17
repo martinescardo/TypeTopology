@@ -381,6 +381,8 @@ decomposition-of-∞-Magma-gives-WEM {𝓤} =
 
 \end{code}
 
+The same is true for the type of pointed types, of course.
+
 TODO. Write more examples, such as monoids, groups and
 1-categories. Perhaps it would be good to write combinators, like in
 UF.SIP, to show that mathematical structures constructed from standard
