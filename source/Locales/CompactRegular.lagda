@@ -2363,10 +2363,11 @@ module SpectralityOfTheInitialFrame (𝓤 : Universe) (pe : propext 𝓤) where
         (𝟏-is-top (𝟎-𝔽𝕣𝕞 pe))
 
    c : closed-under-binary-meets (𝟎-𝔽𝕣𝕞 pe) ℬ𝟎↑ holds
-   c []       []        = ∣ [] , {!!} ∣
-   c []       (j ∷ js)  = ∣ (j ∷ js) , {!!} ∣
-   c (i ∷ is) []        = ∣ {!!} , {!!} ∣
-   c (x ∷ is) (j ∷ js)  = {!!}
+   c = directify-preserves-closure-under-∧
+        (𝟎-𝔽𝕣𝕞 pe)
+        ℬ𝟎
+        ℬ𝟎-is-basis-for-𝟎
+        ℬ𝟎-is-closed-under-binary-meets
 
    γ : closed-under-finite-meets (𝟎-𝔽𝕣𝕞 pe) ℬ𝟎↑ holds
    γ = ∣ (inr ⋆ ∷ []) , t ∣ , c
