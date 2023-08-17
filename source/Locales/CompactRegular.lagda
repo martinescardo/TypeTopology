@@ -2292,6 +2292,8 @@ module LemmasAboutHeytingComplementation (X : Locale 𝓤 𝓥 𝓥)
 
 \end{code}
 
+Section added on 2023-08-17.
+
 \section{Spectrality of the initial frame}
 
 \begin{code}
