@@ -311,16 +311,6 @@ equivalently formulated with T:
    where
     open notation'
 
-  aflabbiness-of-type-of-structures' : closed-under-prop-Π'
-                                     → aflabby (Σ S) 𝓤
-  aflabbiness-of-type-of-structures' = aflabbiness-of-type-of-structures
-                                        ∘ Π-closure-criterion
-
-  injectivity-of-type-of-structures' : closed-under-prop-Π'
-                                     → ainjective-type (Σ S) 𝓤 𝓤
-  injectivity-of-type-of-structures' = aflabby-types-are-ainjective (Σ S)
-                                        ∘ aflabbiness-of-type-of-structures'
-
 \end{code}
 
 Example: The type of pointed types is algebraically injective.
