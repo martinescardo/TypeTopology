@@ -1107,134 +1107,6 @@ closed-under-finite-meets F S = contains-top F S ∧ closed-under-binary-meets F
 
 {--
 
-image-of : (F : Frame 𝓤 𝓥 𝓦) (ℬ : Fam 𝓦 ⟨ F ⟩)
-         → index (directify F ℬ) → List ⟨ F ⟩
-image-of F ℬ []       = []
-image-of F ℬ (i ∷ is) = ℬ [ i ] ∷ image-of F ℬ is
-
-conjunct-with-all-is-basic : (F : Frame 𝓤 𝓥 𝓦) (ℬ : Fam 𝓦 ⟨ F ⟩)
-                           → (β : is-basis-for F ℬ)
-                           → closed-under-binary-meets F ℬ holds
-                           → let
-                              ℬ↑ = directify F ℬ
-                              β↑ = directified-basis-is-basis F ℬ β
-                             in
-                              (i : index ℬ) (is : index ℬ↑) →
-                               ∃ ks ꞉ index ℬ↑ , ℬ↑ [ ks ] ＝ join-list F (conjunct-with-list F (ℬ [ i ]) (image-of F ℬ is))
-conjunct-with-all-is-basic F ℬ β p i []       = ∣ [] , refl ∣
-conjunct-with-all-is-basic F ℬ β p i (j ∷ js) = ∥∥-rec ∃-is-prop γ †
- where
-  open Meets (λ x y → x ≤[ poset-of F ] y)
-
-  ℬ↑ = directify F ℬ
-
-  † : ∃ k ꞉ index ℬ , ((ℬ [ k ]) is-glb-of ((ℬ [ i ]) , (ℬ [ j ]))) holds
-  † = p i j
-
-  -- IH : ∃ ks ꞉ index ℬ↑ , directify F ℬ [ ks ] ＝ join-list F (conjunct-with-list F (ℬ [ i ]) (image-of F ℬ js))
-  -- IH = conjunct-with-all-is-basic F ℬ β p i js
-
-  ♥ : join-list F (conjunct-with-list F (ℬ [ i ]) (image-of F ℬ (j ∷ js)))
-    ＝ join-list F ((ℬ [ i ] ∧[ F ] ℬ [ j ]) ∷ conjunct-with-list F (ℬ [ i ]) (image-of F ℬ js))
-  ♥ = refl
-
-  γ : (Σ k ꞉ index ℬ , ((ℬ [ k ]) is-glb-of (ℬ [ i ] , ℬ [ j ])) holds)
-    → ∃ ks ꞉ index ℬ↑ , ℬ↑ [ ks ] ＝ join-list F (conjunct-with-list F (ℬ [ i ]) (image-of F ℬ (j ∷ js)))
-  γ (k , q) = ∥∥-rec ∃-is-prop δ IH
-   where
-    IH : ∃ ks ꞉ index ℬ↑ ,
-          directify F ℬ [ ks ]
-          ＝
-          join-list F (conjunct-with-list F (ℬ [ i ]) (image-of F ℬ js))
-    IH = conjunct-with-all-is-basic F ℬ β p i js
-
-    δ : Σ ks ꞉ index ℬ↑ ,
-         ℬ↑ [ ks ]
-         ＝
-         join-list F (conjunct-with-list F (ℬ [ i ]) (image-of F ℬ js))
-      → ∃ ks ꞉ index ℬ↑ , ℬ↑ [ ks ] ＝ join-list F (conjunct-with-list F (ℬ [ i ]) (image-of F ℬ (j ∷ js)))
-    δ (ks , r) = ∣ (k ∷ ks) , ♣ ∣
-     where
-      ♣ : ℬ↑ [ k ∷ ks ] ＝ join-list F (conjunct-with-list F (ℬ [ i ]) (image-of F ℬ (j ∷ js)))
-      ♣ =
-       ℬ [ k ] ∨[ F ] ℬ↑ [ ks ] ＝⟨ ap (λ - → ℬ [ k ] ∨[ F ] -) r ⟩
-       ℬ [ k ] ∨[ F ] join-list F (conjunct-with-list F (ℬ [ i ]) (image-of F ℬ js)) ＝⟨ ap (λ - → - ∨[ F ] join-list F (conjunct-with-list F (ℬ [ i ]) (image-of F ℬ js))) (∧[ F ]-unique q) ⟩
-       (ℬ [ i ] ∧[ F ] ℬ [ j ]) ∨[ F ] join-list F (conjunct-with-list F (ℬ [ i ]) (image-of F ℬ js)) ＝⟨ refl ⟩
-       join-list F (conjunct-with-list F (ℬ [ i ]) (image-of F ℬ (j ∷ js))) ∎
-
-cnf-transform-is-basic : (F : Frame 𝓤 𝓥 𝓦) (ℬ : Fam 𝓦 ⟨ F ⟩)
-                       → (β : is-basis-for F ℬ)
-                       → closed-under-binary-meets F ℬ holds
-                       → let
-                          ℬ↑ = directify F ℬ
-                          β↑ = directified-basis-is-basis F ℬ β
-                         in
-                          (is js : index ℬ↑) → ∃ ks ꞉ index ℬ↑ , ℬ↑ [ ks ] ＝ (ℬ↑ [ is ]) ∧[ F ] (ℬ↑ [ js ])
-cnf-transform-is-basic F ℬ β p []       js = ∣ [] , (𝟎-left-annihilator-for-∧ F (directify F ℬ [ js ]) ⁻¹) ∣
-cnf-transform-is-basic F ℬ β p (i ∷ is) js = ∥∥-rec ∥∥-is-prop γ (cnf-transform-is-basic F ℬ β p is js)
- where
-  ℬ↑ = directify F ℬ
-  lemma₀ : (is : index ℬ↑) → ℬ↑ [ is ] ＝ join-list F (image-of F ℬ is)
-  lemma₀ []       = refl
-  lemma₀ (i ∷ is) = ℬ [ i ] ∨[ F ] ℬ↑ [ is ]                       ＝⟨ Ⅰ    ⟩
-                    ℬ [ i ] ∨[ F ] (join-list F (image-of F ℬ is)) ＝⟨ refl ⟩
-                    join-list F (ℬ [ i ] ∷ image-of F ℬ is) ∎
-                     where
-                      Ⅰ = ap (λ - → ℬ [ i ] ∨[ F ] -) (lemma₀ is)
-
-  lemma : (is js : index ℬ↑)
-        → ℬ↑ [ is ] ∧[ F ] ℬ↑ [ js ] ＝ join-list F (image-of F ℬ is) ∧[ F ] join-list F (image-of F ℬ js)
-  lemma is js =
-   ℬ↑ [ is ] ∧[ F ] ℬ↑ [ js ]                                             ＝⟨ Ⅰ ⟩
-   (join-list F (image-of F ℬ is)) ∧[ F ] ℬ↑ [ js ]                       ＝⟨ Ⅱ ⟩
-   (join-list F (image-of F ℬ is)) ∧[ F ] (join-list F (image-of F ℬ js)) ∎
-    where
-     Ⅰ = ap (λ - → - ∧[ F ] ℬ↑ [ js ]) (lemma₀ is)
-     Ⅱ = ap (λ - → (join-list F (image-of F ℬ is)) ∧[ F ] -) (lemma₀ js)
-
-  γ : (Σ ks ꞉ index ℬ↑ , ℬ↑ [ ks ] ＝ ℬ↑ [ is ] ∧[ F ] ℬ↑ [ js ])
-    → ∃ ks ꞉ index ℬ↑ , ℬ↑ [ ks ] ＝ (ℬ [ i ] ∨[ F ] ℬ↑ [ is ]) ∧[ F ] (directify F ℬ [ js ])
-  γ (ks , q) = ∥∥-rec ∃-is-prop † δ
-   where
-    foo : ℬ↑ [ ks ] ＝ cnf-transform F (image-of F ℬ is) (image-of F ℬ js)
-    foo = ℬ↑ [ ks ]                                           ＝⟨ q           ⟩
-          ℬ↑ [ is ] ∧[ F ] ℬ↑ [ js ]                          ＝⟨ lemma is js ⟩
-          join-list F (image-of F ℬ is) ∧[ F ] join-list F (image-of F ℬ js) ＝⟨ cnf-transform-correct F (image-of F ℬ is) (image-of F ℬ js) ⟩
-          cnf-transform F (image-of F ℬ is) (image-of F ℬ js) ∎
-
-    bar : cnf-transform F (image-of F ℬ (i ∷ is)) (image-of F ℬ js)
-        ＝ join-list F (conjunct-with-list F (ℬ [ i ]) (image-of F ℬ js)) ∨[ F ] cnf-transform F (image-of F ℬ is) (image-of F ℬ js)
-    bar = refl
-
-    baz : cnf-transform F (image-of F ℬ (i ∷ is)) (image-of F ℬ js)
-        ＝ join-list F (conjunct-with-list F (ℬ [ i ]) (image-of F ℬ js)) ∨[ F ] ℬ↑ [ ks ]
-    baz = ap
-            (λ - → (join-list F (conjunct-with-list F (ℬ [ i ]) (image-of F ℬ js))) ∨[ F ] -)
-            (foo ⁻¹)
-
-    δ : ∃ ls ꞉ index ℬ↑ , ℬ↑ [ ls ] ＝ join-list F (conjunct-with-list F (ℬ [ i ]) (image-of F ℬ js))
-    δ = conjunct-with-all-is-basic F ℬ β p i js
-
-    w = join-list F (conjunct-with-list F (ℬ [ i ]) (image-of F ℬ js))
-
-    † : (Σ ls ꞉ index ℬ↑ , ℬ↑ [ ls ] ＝ join-list F (conjunct-with-list F (ℬ [ i ]) (image-of F ℬ js)))
-      → ∃ ks ꞉ index ℬ↑ , ℬ↑ [ ks ] ＝ (ℬ [ i ] ∨[ F ] ℬ↑ [ is ]) ∧[ F ] (directify F ℬ [ js ])
-    † (ls , r) = ∣ (ls ++ ks) , ‡ ∣
-     where
-      ‡ : ℬ↑ [ ls ++ ks ] ＝ (ℬ [ i ] ∨[ F ] ℬ↑ [ is ]) ∧[ F ] ℬ↑ [ js ]
-      ‡ = ℬ↑ [ ls ++ ks ]                                 ＝⟨ directify-functorial F ℬ ls ks ⟩
-          ℬ↑ [ ls ] ∨[ F ] ℬ↑ [ ks ]                      ＝⟨ ap (λ - → - ∨[ F ] ℬ↑ [ ks ]) r ⟩
-          w ∨[ F ] ℬ↑ [ ks ]                                             ＝⟨ ap (λ - → w ∨[ F ] -) foo ⟩
-          w ∨[ F ] (cnf-transform F (image-of F ℬ is) (image-of F ℬ js)) ＝⟨ refl ⟩
-          cnf-transform F (image-of F ℬ (i ∷ is)) (image-of F ℬ js) ＝⟨ cnf-transform-correct F (image-of F ℬ (i ∷ is)) (image-of F ℬ js) ⁻¹ ⟩
-          join-list F (image-of F ℬ (i ∷ is)) ∧[ F ] join-list F (image-of F ℬ js)   ＝⟨ ♢₁ ⟩
-          (ℬ↑ [ i ∷ is ]) ∧[ F ] join-list F (image-of F ℬ js)   ＝⟨ ♢₂ ⟩
-          (ℬ↑ [ i ∷ is ]) ∧[ F ] (ℬ↑ [ js ])   ＝⟨ refl ⟩
-          (ℬ [ i ] ∨[ F ] ℬ↑ [ is ]) ∧[ F ] (ℬ↑ [ js ])   ∎
-           where
-            ♢₁ = ap (λ - → - ∧[ F ] join-list F (image-of F ℬ js)) (lemma₀ (i ∷ is) ⁻¹)
-            ♢₂ = ap (λ - → (ℬ↑ [ i ∷ is ]) ∧[ F ] -) (lemma₀ js ⁻¹)
-
 directify-preserves-closure-under-∧ : (F : Frame 𝓤 𝓥 𝓦)
                                     → (ℬ : Fam 𝓦 ⟨ F ⟩)
                                     → (β : is-basis-for F ℬ)
@@ -2277,6 +2149,255 @@ cnf-transform-correct F (x ∷ xs) ys =
         (λ - → (x ∧[ F ] (⋁ₗ[ F ] ys)) ∨[ F ] -)
         (cnf-transform-correct F xs ys)
    Ⅲ = ap (λ - → - ∨[ F ] cnf-transform F xs ys) (distributivity-list F x ys)
+
+\end{code}
+
+We now start proving, making use of `cnf-transform-correct`, that the CNF
+transformation of two basic opens is itself basic.
+
+We first prove the analogous fact that the `conjunct-with-all` function:
+
+\begin{code}
+
+conjunct-with-all-is-basic : (F : Frame 𝓤 𝓥 𝓦) (ℬ : Fam 𝓦 ⟨ F ⟩)
+                           → (β : is-basis-for F ℬ)
+                           → closed-under-binary-meets F ℬ holds
+                           → let
+                              ℬ↑ = directify F ℬ
+                              β↑ = directified-basis-is-basis F ℬ β
+                             in
+                              (i : index ℬ) (is : index ℬ↑) →
+                               ∃ ks ꞉ index ℬ↑ ,
+                                 ℬ↑ [ ks ]
+                                 ＝ ⋁ₗ[ F ] (conjunct-with-list F (ℬ [ i ]) ((ℬ [_]) <$> is))
+conjunct-with-all-is-basic F ℬ β p i []       = ∣ [] , refl ∣
+conjunct-with-all-is-basic F ℬ β p i (j ∷ js) = ∥∥-rec ∃-is-prop γ μ
+ where
+  open Meets (λ x y → x ≤[ poset-of F ] y)
+
+  ℬ↑ = directify F ℬ
+
+\end{code}
+
+We know by the closure of `ℬ` under binary meets that the meet of `ℬ[ i ]` and
+`ℬ[ j ]` is in the basis, given by some index `k`.
+
+\begin{code}
+
+  μ : ∃ k ꞉ index ℬ , ((ℬ [ k ]) is-glb-of ((ℬ [ i ]) , (ℬ [ j ]))) holds
+  μ = p i j
+
+\end{code}
+
+We unpack this truncated sigma inside `γ`:
+
+\begin{code}
+
+  γ : Σ k ꞉ index ℬ , ((ℬ [ k ]) is-glb-of (ℬ [ i ] , ℬ [ j ])) holds
+    → ∃ ks ꞉ index ℬ↑ , ℬ↑ [ ks ] ＝ join-list F (conjunct-with-list F (ℬ [ i ]) ((ℬ [_]) <$> (j ∷ js)))
+  γ (k , q) = ∥∥-rec ∃-is-prop δ IH
+   where
+
+\end{code}
+
+Now, by the I.H. on `ℬ[ i ]`, we also get some `ks` corresponding to the index
+of conjuncting `ℬ[ i ]` with each `ℬ[ j ]` given by `js.`
+
+\begin{code}
+
+    IH : ∃ ks ꞉ index ℬ↑ ,
+          ℬ↑ [ ks ] ＝ ⋁ₗ[ F ] (conjunct-with-list F (ℬ [ i ]) ((ℬ [_]) <$> js))
+    IH = conjunct-with-all-is-basic F ℬ β p i js
+
+\end{code}
+
+Once again, we unpack this truncated sigma inside `δ`:
+
+\begin{code}
+
+    δ : Σ ks ꞉ index ℬ↑ ,
+         ℬ↑ [ ks ] ＝ ⋁ₗ[ F ] (conjunct-with-list F (ℬ [ i ]) ((ℬ [_]) <$> js))
+      → ∃ ls ꞉ index ℬ↑ ,
+         ℬ↑ [ ls ] ＝ ⋁ₗ[ F ] (conjunct-with-list F (ℬ [ i ]) ((ℬ [_]) <$> (j ∷ js)))
+    δ (ks , r) = ∣ (k ∷ ks) , † ∣
+     where
+
+\end{code}
+
+The list of indices that we need for the desired result is then simply `k ∷ ks`.
+The proof that this satisfies the desired property is given in `†` below.
+
+\begin{code}
+
+      † : ℬ↑ [ k ∷ ks ]
+          ＝ ⋁ₗ[ F ] (conjunct-with-list F (ℬ [ i ]) ((ℬ [_]) <$> (j ∷ js)))
+      † =
+       ℬ [ k ] ∨[ F ] ℬ↑ [ ks ]
+        ＝⟨ Ⅰ ⟩
+       ℬ [ k ] ∨[ F ] (⋁ₗ[ F ] (conjunct-with-list F (ℬ [ i ]) ((ℬ [_]) <$> js)))
+        ＝⟨ Ⅱ ⟩
+       (ℬ [ i ] ∧[ F ] ℬ [ j ]) ∨[ F ] (⋁ₗ[ F ] (conjunct-with-list F (ℬ [ i ]) ((ℬ [_]) <$> js)))
+        ＝⟨ refl ⟩
+       ⋁ₗ[ F ] (conjunct-with-list F (ℬ [ i ]) ((ℬ [_]) <$> (j ∷ js))) ∎
+        where
+         Ⅰ = ap
+              (λ - → ℬ [ k ] ∨[ F ] -)
+              r
+         Ⅱ = ap
+              (λ - → - ∨[ F ] (⋁ₗ[ F ] (conjunct-with-list F (ℬ [ i ]) ((ℬ [_]) <$> js))))
+              (∧[ F ]-unique q)
+
+\end{code}
+
+We are now ready to prove the desired result: that the meet of two basic opens
+is basic.
+
+\begin{code}
+
+cnf-transform-is-basic : (F : Frame 𝓤 𝓥 𝓦) (ℬ : Fam 𝓦 ⟨ F ⟩)
+                       → (β : is-basis-for F ℬ)
+                       → closed-under-binary-meets F ℬ holds
+                       → let
+                          ℬ↑ = directify F ℬ
+                          β↑ = directified-basis-is-basis F ℬ β
+                         in
+                          (is js : index ℬ↑) →
+                           ∃ ks ꞉ index ℬ↑ ,
+                            ℬ↑ [ ks ] ＝ (ℬ↑ [ is ]) ∧[ F ] (ℬ↑ [ js ])
+cnf-transform-is-basic F ℬ β p [] js =
+ ∣ [] , (𝟎-left-annihilator-for-∧ F (directify F ℬ [ js ]) ⁻¹) ∣
+cnf-transform-is-basic F ℬ β p (i ∷ is) js =
+ ∥∥-rec ∥∥-is-prop γ (cnf-transform-is-basic F ℬ β p is js)
+  where
+   ℬ↑ = directify F ℬ
+
+\end{code}
+
+We first record the following trivial `lemma`:
+
+\begin{code}
+
+   lemma : (is js : index ℬ↑)
+         → ℬ↑ [ is ] ∧[ F ] ℬ↑ [ js ]
+           ＝ join-in-frame′ F ℬ is ∧[ F ] join-in-frame′ F ℬ js
+   lemma is js =
+    let
+      Ⅰ = ap (λ - → - ∧[ F ] ℬ↑ [ js ]) (join-in-frame-equality F ℬ is)
+      Ⅱ = ap (λ - → (⋁ₗ[ F ] ((ℬ [_]) <$> is)) ∧[ F ] -) (join-in-frame-equality F ℬ js)
+    in
+     ℬ↑ [ is ] ∧[ F ] ℬ↑ [ js ]                                   ＝⟨ Ⅰ ⟩
+     (⋁ₗ[ F ] ((ℬ [_]) <$> is)) ∧[ F ] ℬ↑ [ js ]                  ＝⟨ Ⅱ ⟩
+     (⋁ₗ[ F ] ((ℬ [_]) <$> is)) ∧[ F ] (⋁ₗ[ F ] ((ℬ [_]) <$> js)) ∎
+
+\end{code}
+
+In `γ`, we unpack the truncated sigma given by the I.H.:
+
+\begin{code}
+
+   γ : Σ ks ꞉ index ℬ↑ , ℬ↑ [ ks ] ＝ ℬ↑ [ is ] ∧[ F ] ℬ↑ [ js ]
+     → ∃ ks ꞉ index ℬ↑ , ℬ↑ [ ks ] ＝ (ℬ [ i ] ∨[ F ] ℬ↑ [ is ]) ∧[ F ] ℬ↑ [ js ]
+   γ (ks , q) =
+    let
+
+\end{code}
+
+We know by `conjunct-with-list-is-basic` that there is a basis index
+corresponding to `conjunct-with-list (ℬ [ i ]) ((ℬ [_]) <$> js)`. We refer to
+this as `ls`.
+
+\begin{code}
+
+     † : ∃ ls ꞉ index ℬ↑ , ℬ↑ [ ls ] ＝ join-list F (conjunct-with-list F (ℬ [ i ]) ((ℬ [_]) <$> js))
+     † = conjunct-with-all-is-basic F ℬ β p i js
+
+    in
+
+\end{code}
+
+We proceed by truncation recursion on this truncated sigma, with the contents
+unpacked in the function `δ`.
+
+\begin{code}
+
+     ∥∥-rec ∃-is-prop δ †
+      where
+
+\end{code}
+
+As we will have to refer to `(ℬ [_]) <$> is` and `(ℬ [_]) <$> js` frequently,
+we introduce abbrevations for them:
+
+\begin{code}
+
+       ℬ-is = (ℬ [_]) <$> is
+       ℬ-js = (ℬ [_]) <$> js
+
+\end{code}
+
+Combining `lemma` and the correctness of `cnf-transform`, we have that `ℬ↑[ ks
+]` is the CNF transformation of the meet of the joins of `is` and `js`.
+
+\begin{code}
+
+       ♣ : ℬ↑ [ ks ] ＝ cnf-transform F ((ℬ [_]) <$> is) ((ℬ [_]) <$> js)
+       ♣ =
+        ℬ↑ [ ks ]                                           ＝⟨ Ⅰ ⟩
+        ℬ↑ [ is ] ∧[ F ] ℬ↑ [ js ]                          ＝⟨ Ⅱ ⟩
+        (⋁ₗ[ F ] ℬ-is) ∧[ F ] (⋁ₗ[ F ] ((ℬ [_]) <$> js))    ＝⟨ Ⅲ ⟩
+        cnf-transform F ℬ-is ((ℬ [_]) <$> js)               ∎
+         where
+          Ⅰ = q
+          Ⅱ = lemma is js
+          Ⅲ = cnf-transform-correct F ℬ-is ℬ-js
+
+\end{code}
+
+As `⋁ₗ[ F ] (conjunct-with-list F (ℬ [ i ]) ((ℬ [_]) <$> js))` is mentioned
+quite frequently, we introduce the abbreviation `w` for it:
+
+\begin{code}
+
+       w = ⋁ₗ[ F ] (conjunct-with-list F (ℬ [ i ]) ((ℬ [_]) <$> js))
+
+\end{code}
+
+The desired list of indices is just `ls ++ ks`:
+
+\begin{code}
+
+       δ : (Σ ls ꞉ index ℬ↑ , ℬ↑ [ ls ] ＝ w)
+         → ∃ ms ꞉ index ℬ↑ ,
+            ℬ↑ [ ms ] ＝ (ℬ [ i ] ∨[ F ] ℬ↑ [ is ]) ∧[ F ] ℬ↑ [ js ]
+       δ (ls , r) = ∣ (ls ++ ks) , ‡ ∣
+        where
+
+\end{code}
+
+\begin{code}
+
+        ‡ : ℬ↑ [ ls ++ ks ] ＝ (ℬ [ i ] ∨[ F ] ℬ↑ [ is ]) ∧[ F ] ℬ↑ [ js ]
+        ‡ =
+         ℬ↑ [ ls ++ ks ]                                        ＝⟨ Ⅰ    ⟩
+         ℬ↑ [ ls ] ∨[ F ] ℬ↑ [ ks ]                             ＝⟨ Ⅱ    ⟩
+         w ∨[ F ] ℬ↑ [ ks ]                                     ＝⟨ Ⅲ    ⟩
+         w ∨[ F ] (cnf-transform F ℬ-is ℬ-js)                   ＝⟨ refl ⟩
+         cnf-transform F ((ℬ [_]) <$> (i ∷ is)) ℬ-js            ＝⟨ Ⅳ    ⟩
+         (⋁ₗ[ F ] ((ℬ [_]) <$> (i ∷ is))) ∧[ F ] (⋁ₗ[ F ] ℬ-js) ＝⟨ Ⅴ    ⟩
+         (ℬ↑ [ i ∷ is ]) ∧[ F ] join-list F ℬ-js                ＝⟨ Ⅵ    ⟩
+         (ℬ↑ [ i ∷ is ]) ∧[ F ] (ℬ↑ [ js ])                     ＝⟨ refl ⟩
+         (ℬ [ i ] ∨[ F ] ℬ↑ [ is ]) ∧[ F ] (ℬ↑ [ js ])          ∎
+          where
+           Ⅰ = directify-functorial F ℬ ls ks
+           Ⅱ = ap (λ - → - ∨[ F ] ℬ↑ [ ks ]) r
+           Ⅲ = ap (λ - → w ∨[ F ] -) ♣
+           Ⅳ = cnf-transform-correct F ((ℬ [_]) <$> (i ∷ is)) ℬ-js ⁻¹
+           Ⅴ = ap
+                (λ - → - ∧[ F ] (⋁ₗ[ F ] ℬ-js))
+                (join-in-frame-equality F ℬ (i ∷ is) ⁻¹)
+           Ⅵ = ap
+                (λ - → (ℬ↑ [ i ∷ is ]) ∧[ F ] -)
+                (join-in-frame-equality F ℬ js ⁻¹)
 
 \end{code}
 
