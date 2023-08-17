@@ -2247,6 +2247,8 @@ module LemmasAboutHeytingComplementation (X : Locale 𝓤 𝓥 𝓥)
 
 \section{CNF Transformation for Spectrality}
 
+Section added on 2023-08-17.
+
 Given a basis closed under binary meets, the directification of that basis using
 the `directify` function is also closed under binary meets. The reason is that
 the meets of joins can be turned into joins of meets. In this section, we prove
