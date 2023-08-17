@@ -2276,7 +2276,8 @@ this as `ls`.
 
 \begin{code}
 
-     † : ∃ ls ꞉ index ℬ↑ , ℬ↑ [ ls ] ＝ join-list F (conjunct-with-list F (ℬ [ i ]) ((ℬ [_]) <$> js))
+     † : ∃ ls ꞉ index ℬ↑ ,
+          ℬ↑ [ ls ] ＝ ⋁ₗ[ F ] (conjunct-with-list F (ℬ [ i ]) ((ℬ [_]) <$> js))
      † = conjunct-with-all-is-basic F ℬ β p i js
 
     in
