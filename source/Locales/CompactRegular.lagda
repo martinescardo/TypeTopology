@@ -2063,6 +2063,10 @@ the `directify` function is also closed under binary meets. The reason is that
 the meets of joins can be turned into joins of meets. In this section, we prove
 this fact.
 
+To define CNF transformation, we need the following function
+`conjunct-with-list` which takes some `x` and some list `y₁ , … , yₙ` and
+computes `(x ∧ y₁) , … , (x ∧ yₙ)`.
+
 \begin{code}
 
 conjunct-with-list : (F : Frame 𝓤 𝓥 𝓦)
@@ -2084,7 +2088,7 @@ instance of the distributivity law. We prove this fact next.
 \begin{code}
 
 distributivity-list : (F : Frame 𝓤 𝓥 𝓦) (x : ⟨ F ⟩) (ys : List ⟨ F ⟩)
-                    → x ∧[ F ] join-list F ys ＝ join-list F (conjunct-with-list F x ys)
+                    → x ∧[ F ] (⋁ₗ[ F ] ys) ＝ ⋁ₗ[ F ] (conjunct-with-list F x ys)
 distributivity-list F x []       = 𝟎-right-annihilator-for-∧ F x
 distributivity-list F x (y ∷ ys) =
  x ∧[ F ] (y ∨[ F ] (⋁ₗ[ F ] ys))                         ＝⟨ Ⅰ    ⟩
@@ -2097,8 +2101,8 @@ distributivity-list F x (y ∷ ys) =
 
 \end{code}
 
-With `distributivity-list` in hand, we are ready to prove the correctness of CNF
-transformation.
+With `distributivity-list` in hand, we are ready to prove the correctness of the
+CNF transformation procedure.
 
 \begin{code}
 
@@ -2152,7 +2156,7 @@ We know by the closure of `ℬ` under binary meets that the meet of `ℬ[ i ]` a
 
 \begin{code}
 
-  μ : ∃ k ꞉ index ℬ , ((ℬ [ k ]) is-glb-of ((ℬ [ i ]) , (ℬ [ j ]))) holds
+  μ : ∃ k ꞉ index ℬ , ((ℬ [ k ]) is-glb-of (ℬ [ i ] , ℬ [ j ])) holds
   μ = p i j
 
 \end{code}
@@ -2162,7 +2166,8 @@ We unpack this truncated sigma inside `γ`:
 \begin{code}
 
   γ : Σ k ꞉ index ℬ , ((ℬ [ k ]) is-glb-of (ℬ [ i ] , ℬ [ j ])) holds
-    → ∃ ks ꞉ index ℬ↑ , ℬ↑ [ ks ] ＝ join-list F (conjunct-with-list F (ℬ [ i ]) ((ℬ [_]) <$> (j ∷ js)))
+    → ∃ ks ꞉ index ℬ↑ ,
+       ℬ↑ [ ks ] ＝ ⋁ₗ[ F ] (conjunct-with-list F (ℬ [ i ]) ((ℬ [_]) <$> (j ∷ js)))
   γ (k , q) = ∥∥-rec ∃-is-prop δ IH
    where
 
@@ -2197,23 +2202,18 @@ The proof that this satisfies the desired property is given in `†` below.
 
 \begin{code}
 
+      w = ⋁ₗ[ F ] (conjunct-with-list F (ℬ [ i ]) ((ℬ [_]) <$> js))
+
       † : ℬ↑ [ k ∷ ks ]
           ＝ ⋁ₗ[ F ] (conjunct-with-list F (ℬ [ i ]) ((ℬ [_]) <$> (j ∷ js)))
       † =
-       ℬ [ k ] ∨[ F ] ℬ↑ [ ks ]
-        ＝⟨ Ⅰ ⟩
-       ℬ [ k ] ∨[ F ] (⋁ₗ[ F ] (conjunct-with-list F (ℬ [ i ]) ((ℬ [_]) <$> js)))
-        ＝⟨ Ⅱ ⟩
-       (ℬ [ i ] ∧[ F ] ℬ [ j ]) ∨[ F ] (⋁ₗ[ F ] (conjunct-with-list F (ℬ [ i ]) ((ℬ [_]) <$> js)))
-        ＝⟨ refl ⟩
+       ℬ [ k ] ∨[ F ] ℬ↑ [ ks ]                                        ＝⟨ Ⅰ    ⟩
+       ℬ [ k ] ∨[ F ] w                                                ＝⟨ Ⅱ    ⟩
+       (ℬ [ i ] ∧[ F ] ℬ [ j ]) ∨[ F ] w                               ＝⟨ refl ⟩
        ⋁ₗ[ F ] (conjunct-with-list F (ℬ [ i ]) ((ℬ [_]) <$> (j ∷ js))) ∎
         where
-         Ⅰ = ap
-              (λ - → ℬ [ k ] ∨[ F ] -)
-              r
-         Ⅱ = ap
-              (λ - → - ∨[ F ] (⋁ₗ[ F ] (conjunct-with-list F (ℬ [ i ]) ((ℬ [_]) <$> js))))
-              (∧[ F ]-unique q)
+         Ⅰ = ap (λ - → ℬ [ k ] ∨[ F ] -) r
+         Ⅱ = ap (λ - → - ∨[ F ] w) (∧[ F ]-unique q)
 
 \end{code}
 
