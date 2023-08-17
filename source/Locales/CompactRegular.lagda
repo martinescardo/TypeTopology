@@ -1222,7 +1222,9 @@ cnf-transform-is-basic F ℬ β p (i ∷ is) js = ∥∥-rec ∥∥-is-prop γ (
 
     baz : cnf-transform F (image-of F ℬ (i ∷ is)) (image-of F ℬ js)
         ＝ join-list F (conjunct-with-all′ F (ℬ [ i ]) (image-of F ℬ js)) ∨[ F ] ℬ↑ [ ks ]
-    baz = {!!}
+    baz = cnf-transform F (image-of F ℬ (i ∷ is)) (image-of F ℬ js)        ＝⟨ refl ⟩
+          join-list F (conjunct-with-all′ F (ℬ [ i ]) (image-of F ℬ js)) ∨[ F ] cnf-transform F (image-of F ℬ is) (image-of F ℬ js) ＝⟨ ap (λ - → _ ∨[ F ] -) foo ⁻¹ ⟩
+          join-list F (conjunct-with-all′ F (ℬ [ i ]) (image-of F ℬ js)) ∨[ F ] ℬ↑ [ ks ] ∎
 
 cnf-transform-indices : (F : Frame 𝓤 𝓥 𝓦)
                       → (ℬ : Fam 𝓦 ⟨ F ⟩)
