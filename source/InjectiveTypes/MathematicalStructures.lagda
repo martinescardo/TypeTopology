@@ -445,7 +445,7 @@ closed-under-prop-Π-× :
     → closed-under-prop-Π S₂
     → closed-under-prop-Π (λ X → S₁ X × S₂ X)
 
-closed-under-prop-Π-× {𝓤} {𝓥₁} {𝓥₂} {S₁} {S₂} σ₁-is-equiv σ₂-is-equiv = γ
+closed-under-prop-Π-× {𝓤} {𝓥₁} {𝓥₂} {S₁} {S₂} σ₁-is-equiv σ₂-is-equiv = σ-is-equiv
  where
   S : 𝓤 ̇ → 𝓥₁ ⊔ 𝓥₂ ̇
   S X = S₁ X × S₂ X
@@ -454,9 +454,9 @@ closed-under-prop-Π-× {𝓤} {𝓥₁} {𝓥₂} {S₁} {S₂} σ₁-is-equiv 
            (A : p holds → 𝓤 ̇)
          where
 
-   open notation S  p A
-   open notation S₁ p A renaming (π to π₁ ; ϕ to ϕ₁ ; σ to σ₁)
-   open notation S₂ p A renaming (π to π₂ ; ϕ to ϕ₂ ; σ to σ₂)
+   open notation S  p A using (σ ; ϕ)
+   open notation S₁ p A renaming (σ to σ₁) using ()
+   open notation S₂ p A renaming (σ to σ₂) using ()
 
    σ₁⁻¹ : ((h : p holds) → S₁ (A h)) → S₁ (Π A)
    σ₁⁻¹ = inverse σ₁ (σ₁-is-equiv p A)
@@ -469,12 +469,11 @@ closed-under-prop-Π-× {𝓤} {𝓥₁} {𝓥₂} {S₁} {S₂} σ₁-is-equiv 
 
    η : σ⁻¹ ∘ σ ∼ id
    η (s₁ , s₂) =
-    σ⁻¹ (σ (s₁ , s₂))                                                       ＝⟨ refl ⟩
-    σ⁻¹ (λ h → transport S (ϕ h) (s₁ , s₂))                                 ＝⟨ I ⟩
-    σ⁻¹ (λ h → transport S₁ (ϕ h) s₁ , transport S₂ (ϕ h) s₂)               ＝⟨ refl ⟩
-    σ₁⁻¹ (λ h → transport S₁ (ϕ h) s₁) , σ₂⁻¹ (λ h → transport S₂ (ϕ h) s₂) ＝⟨ refl ⟩
-    σ₁⁻¹ (σ₁ s₁) , σ₂⁻¹ (σ₂ s₂)                                             ＝⟨ II ⟩
-    (s₁ , s₂)                                                               ∎
+    σ⁻¹ (σ (s₁ , s₂))                                         ＝⟨ refl ⟩
+    σ⁻¹ (λ h → transport S (ϕ h) (s₁ , s₂))                   ＝⟨ I ⟩
+    σ⁻¹ (λ h → transport S₁ (ϕ h) s₁ , transport S₂ (ϕ h) s₂) ＝⟨ refl ⟩
+    σ₁⁻¹ (σ₁ s₁) , σ₂⁻¹ (σ₂ s₂)                               ＝⟨ II ⟩
+    (s₁ , s₂)                                                 ∎
      where
       I  = ap σ⁻¹ (dfunext fe' (λ h → transport-× S₁ S₂ (ϕ h)))
       II = ap₂ _,_
@@ -484,22 +483,27 @@ closed-under-prop-Π-× {𝓤} {𝓥₁} {𝓥₂} {S₁} {S₂} σ₁-is-equiv 
    ε : σ ∘ σ⁻¹ ∼ id
    ε α = dfunext fe' I
     where
+     α₁ = λ h → pr₁ (α h)
+     α₂ = λ h → pr₂ (α h)
+
      I : σ (σ⁻¹ α) ∼ α
      I h =
-      σ (σ⁻¹ α) h                                                                               ＝⟨ refl ⟩
-      transport S (ϕ h) (σ₁⁻¹ (λ h → pr₁ (α h)) , σ₂⁻¹ (λ h → pr₂ (α h)))                       ＝⟨ II ⟩
-      transport S₁ (ϕ h) (σ₁⁻¹ (λ h → pr₁ (α h))) , transport S₂ (ϕ h) (σ₂⁻¹ (λ h → pr₂ (α h))) ＝⟨ refl ⟩
-      σ₁ (σ₁⁻¹ (λ h → pr₁ (α h))) h , σ₂ (σ₂⁻¹ (λ h → pr₂ (α h))) h                             ＝⟨ III ⟩
-      (λ h → pr₁ (α h)) h , (λ h → pr₂ (α h)) h                                                 ＝⟨ refl ⟩
-      α h ∎
+      σ (σ⁻¹ α) h                                                 ＝⟨ refl ⟩
+      transport S (ϕ h) (σ₁⁻¹ α₁ , σ₂⁻¹ α₂)                       ＝⟨ II ⟩
+      transport S₁ (ϕ h) (σ₁⁻¹ α₁) , transport S₂ (ϕ h) (σ₂⁻¹ α₂) ＝⟨ refl ⟩
+      σ₁ (σ₁⁻¹ α₁) h , σ₂ (σ₂⁻¹ α₂) h                             ＝⟨ III ⟩
+      α₁ h , α₂ h                                                 ＝⟨ refl ⟩
+      α h                                                         ∎
        where
         II  = transport-× S₁ S₂ (ϕ h)
         III = ap₂ _,_
-               (ap (λ - → - h) (inverses-are-sections σ₁ (σ₁-is-equiv p A) (λ h → pr₁ (α h))))
-               (ap (λ - → - h) (inverses-are-sections σ₂ (σ₂-is-equiv p A) (λ h → pr₂ (α h))))
+                 (ap (λ - → - h)
+                     (inverses-are-sections σ₁ (σ₁-is-equiv p A) α₁))
+                 (ap (λ - → - h)
+                     (inverses-are-sections σ₂ (σ₂-is-equiv p A) α₂))
 
-   γ : is-equiv σ
-   γ = qinvs-are-equivs σ (σ⁻¹ , η , ε)
+   σ-is-equiv : is-equiv σ
+   σ-is-equiv = qinvs-are-equivs σ (σ⁻¹ , η , ε)
 
 \end{code}
 
