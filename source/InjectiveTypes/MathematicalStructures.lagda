@@ -629,6 +629,12 @@ closed-under-prop-Π-with-axioms {𝓤} {𝓥} {𝓦}
 
 \end{code}
 
+The above requires that the structures are closed under prop-indexed
+products. But in many cases, of course, such as monoids and groups, we
+have closure under arbitray products. By the above, the type of any
+mathematical structure that is closed under arbitrary products is
+injective.
+
 Example. The type of monoids is injective.
 
 \begin{code}
@@ -643,22 +649,19 @@ monoid-structure-is-closed-under-prop-Π {𝓤} =
   (monoid-axioms-is-prop fe')
   axioms-closed-under-prop-Π
  where
-  S      = monoid-structure
-  axioms = monoid-axioms
+  open notation monoid-structure
 
-  open notation S
-
-  σ⁻¹ : (p : Ω 𝓤) (A : p holds → 𝓤 ̇) → ((h : p holds) → S (A h)) → S (Π A)
+  σ⁻¹ : (p : Ω 𝓤) (A : p holds → 𝓤 ̇) → ((h : p holds) → monoid-structure (A h)) → monoid-structure (Π A)
   σ⁻¹ p A = inverse (σ p A) (∞-Magma∙-structure-closed-under-Π p A)
 
   axioms-closed-under-prop-Π : (p : Ω 𝓤)
       (A : p holds → 𝓤 ̇)
-      (α : (h : p holds) → S (A h))
-    → ((h : p holds) → axioms (A h) (α h))
-    → axioms (Π A) (σ⁻¹ p A α)
+      (α : (h : p holds) → monoid-structure (A h))
+    → ((h : p holds) → monoid-axioms (A h) (α h))
+    → monoid-axioms (Π A) (σ⁻¹ p A α)
   axioms-closed-under-prop-Π p A α F = I , II , III , IV
    where
-    σ⁻¹-remark : (p : Ω 𝓤) (A : p holds → 𝓤 ̇) (α : (h : p holds) → S (A h))
+    σ⁻¹-remark : (p : Ω 𝓤) (A : p holds → 𝓤 ̇) (α : (h : p holds) → monoid-structure (A h))
                → σ⁻¹ p A α
                ＝ (λ (f : Π A) (g : Π A) (h : p holds) → pr₁ (α h) (f h) (g h)) ,
                                                          (λ h → pr₂ (α h))
@@ -693,7 +696,7 @@ monoid-structure-is-closed-under-prop-Π {𝓤} =
 ainjectivity-of-Monoid : ainjective-type (Monoid {𝓤}) 𝓤 𝓤
 ainjectivity-of-Monoid {𝓤} =
  ainjectivity-of-type-of-structures
-  (λ X → Sigma (monoid-structure X) (monoid-axioms X))
+  (λ X → Σ s ꞉ monoid-structure X , monoid-axioms X s)
   monoid-structure-is-closed-under-prop-Π
 
 \end{code}
