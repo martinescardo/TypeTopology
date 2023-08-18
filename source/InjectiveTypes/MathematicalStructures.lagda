@@ -34,6 +34,7 @@ open import UF.ExcludedMiddle
 open import UF.PropIndexedPiSigma
 open import UF.Size
 open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
 
 \end{code}
 
@@ -162,7 +163,7 @@ is an equivalence for every p and A.
  closed-under-prop-Π : 𝓤 ⁺ ⊔ 𝓥 ̇
  closed-under-prop-Π = (p : Ω 𝓤)
                        (A : p holds → 𝓤 ̇)
-                      → is-equiv (σ p A)
+                     → is-equiv (σ p A)
   where
    open notation
 
@@ -300,14 +301,22 @@ equivalently formulated with T:
   Π-closure-criterion : closed-under-prop-Π'
                       → closed-under-prop-Π
   Π-closure-criterion τ-is-equiv p A =
-   equiv-closed-under-∼ (τ p A) (σ p A) (τ-is-equiv p A) (σ-and-τ-agree p A)
+   equiv-closed-under-∼
+    (τ p A)
+    (σ p A)
+    (τ-is-equiv p A)
+    (σ-and-τ-agree p A)
    where
     open notation'
 
   Π-closure-criterion-converse : closed-under-prop-Π
                                → closed-under-prop-Π'
   Π-closure-criterion-converse σ-is-equiv p A =
-   equiv-closed-under-∼ (σ p A) (τ p A) (σ-is-equiv p A) (∼-sym (σ-and-τ-agree p A))
+   equiv-closed-under-∼
+    (σ p A)
+    (τ p A)
+    (σ-is-equiv p A)
+    (∼-sym (σ-and-τ-agree p A))
    where
     open notation'
 
@@ -348,11 +357,14 @@ general theorem.
 
 \begin{code}
 
+open import UF.SIP-Examples
+open monoid
+
 ∞-Magma : (𝓤 : Universe) → 𝓤 ⁺ ̇
 ∞-Magma 𝓤 = Σ X ꞉ 𝓤 ̇ , (X → X → X)
 
 ∞-Magma-structure : 𝓤 ̇ → 𝓤 ̇
-∞-Magma-structure X = X → X → X
+∞-Magma-structure = λ X → X → X → X
 
 ∞-Magma-structure-is-closed-under-prop-Π : closed-under-prop-Π (∞-Magma-structure {𝓤})
 ∞-Magma-structure-is-closed-under-prop-Π {𝓤} =
@@ -511,17 +523,187 @@ Example. The type of pointed ∞-magmas is injective.
 
 \begin{code}
 
+open import UF.SIP-Examples
+open monoid
+
 ∞-Magma∙ : (𝓤 : Universe) → 𝓤 ⁺ ̇
-∞-Magma∙ 𝓤 = Σ X ꞉ 𝓤 ̇ , X × (X → X → X)
+∞-Magma∙ 𝓤 = Σ X ꞉ 𝓤 ̇ , (X → X → X) × X
+
+∞-Magma∙-structure : 𝓤 ̇ → 𝓤 ̇
+∞-Magma∙-structure = monoid-structure
+
+∞-Magma∙-structure-closed-under-Π : closed-under-prop-Π (∞-Magma∙-structure {𝓤})
+∞-Magma∙-structure-closed-under-Π =
+ closed-under-prop-Π-×
+  ∞-Magma-structure-is-closed-under-prop-Π
+  Pointed-is-closed-under-prop-Π
 
 ainjectivity-of-∞-Magma∙ : ainjective-type (∞-Magma∙ 𝓤) 𝓤 𝓤
 ainjectivity-of-∞-Magma∙ {𝓤} =
  ainjectivity-of-type-of-structures
-  (λ X → X × (X → X → X))
-  (closed-under-prop-Π-×
-    Pointed-is-closed-under-prop-Π
-    ∞-Magma-structure-is-closed-under-prop-Π)
+  ∞-Magma∙-structure
+  ∞-Magma∙-structure-closed-under-Π
 
 \end{code}
 
-To to be continued with more "combinators" and examples.
+We know want to add axioms to e.g. pointed ∞-magmas to get monoids and
+conclude that the type of monoids is injective.
+
+\begin{code}
+
+closed-under-prop-Π-with-axioms
+   : (S : 𝓤 ̇ → 𝓥 ̇ )
+     (σ-is-equiv : closed-under-prop-Π S)
+     (axioms : (X : 𝓤 ̇ ) → S X → 𝓦 ̇ )
+     (axioms-are-prop-valued : (X : 𝓤 ̇) (s : S X) → is-prop (axioms X s))
+     (axioms-closed-under-prop-Π :
+            (p : Ω 𝓤 )
+            (A : p holds → 𝓤 ̇ )
+          → (α : (h : p holds) → S (A h))
+          → ((h : p holds) → axioms (A h) (α h))
+          → axioms (Π A) (inverse (notation.σ S p A) (σ-is-equiv p A) α))
+   → closed-under-prop-Π (λ X → Σ s ꞉ S X , axioms X s)
+closed-under-prop-Π-with-axioms {𝓤} {𝓥} {𝓦}
+                                S
+                                σ-is-equiv
+                                axioms
+                                axioms-are-prop-valued
+                                axioms-closed-under-prop-Π = σₐ-is-equiv
+   where
+    Sₐ : 𝓤 ̇ → 𝓥 ⊔ 𝓦 ̇
+    Sₐ X = Σ s ꞉ S X , axioms X s
+
+    module _ (p : Ω 𝓤)
+             (A : p holds → 𝓤 ̇)
+           where
+
+     open notation S  p A using (σ ; ϕ)
+     open notation Sₐ p A renaming (σ to σₐ) using ()
+
+     σ⁻¹ : ((h : p holds) → S (A h)) → S (Π A)
+     σ⁻¹ = inverse σ (σ-is-equiv p A)
+
+     σₐ⁻¹ : ((h : p holds) → Sₐ (A h)) → Sₐ (Π A)
+     σₐ⁻¹ α = σ⁻¹ (λ h → pr₁ (α h)) ,
+              axioms-closed-under-prop-Π p A
+               (λ h → pr₁ (α h))
+               (λ h → pr₂ (α h))
+
+     η : σₐ⁻¹ ∘ σₐ ∼ id
+     η (s , a) =
+      σₐ⁻¹ (σₐ (s , a))                       ＝⟨ refl ⟩
+      σₐ⁻¹ (λ h → transport Sₐ (ϕ h) (s , a)) ＝⟨ I ⟩
+      σₐ⁻¹ (λ h → transport S (ϕ h) s , _)    ＝⟨ refl ⟩
+      (σ⁻¹ (λ h → transport S (ϕ h) s) , _)   ＝⟨ refl ⟩
+      (σ⁻¹ (σ s) , _)                         ＝⟨ II ⟩
+      (s , a)                                 ∎
+       where
+        I = ap σₐ⁻¹ (dfunext fe' (λ h → transport-Σ S axioms (A h) (ϕ h) s))
+        II = to-subtype-＝
+              (axioms-are-prop-valued (Π A))
+              (inverses-are-retractions σ (σ-is-equiv p A) s)
+
+     ε : σₐ ∘ σₐ⁻¹ ∼ id
+     ε α = dfunext fe' I
+      where
+       α₁ = λ h → pr₁ (α h)
+       α₂ = λ h → pr₂ (α h)
+
+       I : σₐ (σₐ⁻¹ α) ∼ α
+       I h =
+        σₐ (σₐ⁻¹ α) h                    ＝⟨ refl ⟩
+        σₐ (σ⁻¹ α₁ , _) h                ＝⟨ refl ⟩
+        transport Sₐ (ϕ h) (σ⁻¹ α₁ , _)  ＝⟨ II ⟩
+        (transport S (ϕ h) (σ⁻¹ α₁) , _) ＝⟨ refl ⟩
+        (σ (σ⁻¹ α₁) h , _)               ＝⟨ III ⟩
+        (α₁ h , α₂ h)                    ＝⟨ refl ⟩
+        α h                              ∎
+         where
+          II  = transport-Σ S axioms (A h) (ϕ h) (σ⁻¹ α₁)
+          III = to-subtype-＝
+                 (axioms-are-prop-valued (A h))
+                 (ap (λ - → - h) (inverses-are-sections σ (σ-is-equiv p A) α₁))
+
+     σₐ-is-equiv : is-equiv σₐ
+     σₐ-is-equiv = qinvs-are-equivs σₐ (σₐ⁻¹ , η , ε)
+
+\end{code}
+
+Example. The type of monoids is injective.
+
+\begin{code}
+
+monoid-structure-is-closed-under-prop-Π : closed-under-prop-Π {𝓤}
+                                           (λ X → Σ s ꞉ monoid-structure X , monoid-axioms X s)
+monoid-structure-is-closed-under-prop-Π {𝓤} =
+ closed-under-prop-Π-with-axioms
+  monoid-structure
+  ∞-Magma∙-structure-closed-under-Π
+  monoid-axioms
+  (monoid-axioms-is-prop fe')
+  axioms-closed-under-prop-Π
+ where
+  S      = monoid-structure
+  axioms = monoid-axioms
+
+  open notation S
+
+  σ⁻¹ : (p : Ω 𝓤) (A : p holds → 𝓤 ̇) → ((h : p holds) → S (A h)) → S (Π A)
+  σ⁻¹ p A = inverse (σ p A) (∞-Magma∙-structure-closed-under-Π p A)
+
+  axioms-closed-under-prop-Π : (p : Ω 𝓤)
+      (A : p holds → 𝓤 ̇)
+      (α : (h : p holds) → S (A h))
+    → ((h : p holds) → axioms (A h) (α h))
+    → axioms (Π A) (σ⁻¹ p A α)
+  axioms-closed-under-prop-Π p A α F = I , II , III , IV
+   where
+    σ⁻¹-remark : (p : Ω 𝓤) (A : p holds → 𝓤 ̇) (α : (h : p holds) → S (A h))
+               → σ⁻¹ p A α
+               ＝ (λ (f : Π A) (g : Π A) (h : p holds) → pr₁ (α h) (f h) (g h)) ,
+                                                         (λ h → pr₂ (α h))
+    σ⁻¹-remark p A α = refl
+
+    _·_ : Π A → Π A → Π A
+    f · g = λ h → pr₁ (α h) (f h) (g h)
+
+    e : Π A
+    e h = pr₂ (α h)
+
+    I : is-set (Π A)
+    I = Π-is-set fe' (λ h →
+         case F h of
+          λ (Ah-is-set , ln , rn , assoc) → Ah-is-set)
+
+    II : left-neutral e _·_
+    II f = dfunext fe' (λ h →
+            case F h of
+             λ (Ah-is-set , ln , rn , assoc) → ln (f h))
+
+    III : right-neutral e _·_
+    III g = dfunext fe' (λ h →
+             case F h of
+              λ (Ah-is-set , ln , rn , assoc) → rn (g h))
+
+    IV : associative _·_
+    IV f g k = dfunext fe' (λ h →
+                case F h of
+                 λ (Ah-is-set , ln , rn , assoc) → assoc (f h) (g h) (k h))
+
+ainjectivity-of-Monoid : ainjective-type (Monoid {𝓤}) 𝓤 𝓤
+ainjectivity-of-Monoid {𝓤} =
+ ainjectivity-of-type-of-structures
+  (λ X → Sigma (monoid-structure X) (monoid-axioms X))
+  monoid-structure-is-closed-under-prop-Π
+
+\end{code}
+
+TODO. It is easy to add further axioms to monoids to get groups, and
+then show that the type of groups is injective using the above
+technique. And of course there are many other examples which we may
+wish to include (see UF.SIP-Examples). I am not sure I have the energy
+to write this code, which I expect to be entirely routine as the
+example of monoids.
+
+TODO. More techniques are needed to show that the type of 1-categories
+would be injective. This is more interesting.
