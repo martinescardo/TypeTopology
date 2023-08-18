@@ -160,7 +160,7 @@ max-question₀ : D ℕ ℕ ℕ → (ℕ → ℕ) → ℕ
 max-question₀ d α = maximum (pr₁ (dialogue-continuity d α))
 
 max-question₀-agreement : (d : D ℕ ℕ ℕ) (α : ℕ → ℕ)
-                                    → max-question d α ＝ max-question₀ d α
+                        → max-question d α ＝ max-question₀ d α
 max-question₀-agreement (D.η n)   α = refl
 max-question₀-agreement (D.β φ n) α =
  ap (max n) (max-question₀-agreement (φ (α n)) α)
@@ -172,7 +172,7 @@ max-questionᵀ : {Γ : Cxt} → Γ ⊢ (⌜B⌝ ι ι) ⇒ baire ⇒ ι
 max-questionᵀ = ƛ (ƛ (ν₁ · ƛ Zero · ƛ (ƛ (maxᵀ · ν₀ · (ν₁ · (ν₂ · ν₀))))))
 
 max-question⋆-agreement : (d : D ℕ ℕ ℕ) (α : ℕ → ℕ)
-                       → max-question d α ＝ max-question⋆ (church-encode d) α
+                        → max-question d α ＝ max-question⋆ (church-encode d) α
 max-question⋆-agreement (D.η n)   α = refl
 max-question⋆-agreement (D.β φ n) α = †
  where
@@ -185,7 +185,8 @@ max-question⋆-agreement (D.β φ n) α = †
   † = ap (max n) IH
 
 max-questionᵀ-agreement-with-max-question⋆ : (d : 〈〉 ⊢ ⌜D⋆⌝ ι ι ι ι) (α : ℕ → ℕ)
-           → ⟦ max-questionᵀ · d ⟧₀ α ＝ max-question⋆ ⟦ d ⟧₀ α
+                                           → ⟦ max-questionᵀ · d ⟧₀ α
+                                             ＝ max-question⋆ ⟦ d ⟧₀ α
 max-questionᵀ-agreement-with-max-question⋆ d α =
  ap
   (⟦ d ⟧₀ (λ _ → 0))
