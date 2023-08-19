@@ -630,17 +630,19 @@ closed-under-prop-Π-with-axioms {𝓤} {𝓥} {𝓦}
 \end{code}
 
 The above requires that the structures are closed under prop-indexed
-products. But in many cases, of course, such as monoids and groups, we
-have closure under arbitray products. By the above, the type of any
-mathematical structure that is closed under arbitrary products is
-injective.
+products with the pointwise operations (where the operations are
+specified very abstractly by a structure operator S). But in many
+cases, of course, such as monoids and groups, we have closure under
+arbitray products under the pointwise operations. By the above, the
+type of any mathematical structure that is closed under arbitrary
+products is injective.
 
 Example. The type of monoids is injective.
 
 \begin{code}
 
-monoid-structure-is-closed-under-prop-Π : closed-under-prop-Π {𝓤}
-                                           (λ X → Σ s ꞉ monoid-structure X , monoid-axioms X s)
+monoid-structure-is-closed-under-prop-Π
+ : closed-under-prop-Π {𝓤} (λ X → Σ s ꞉ monoid-structure X , monoid-axioms X s)
 monoid-structure-is-closed-under-prop-Π {𝓤} =
  closed-under-prop-Π-with-axioms
   monoid-structure
@@ -651,7 +653,8 @@ monoid-structure-is-closed-under-prop-Π {𝓤} =
  where
   open notation monoid-structure
 
-  σ⁻¹ : (p : Ω 𝓤) (A : p holds → 𝓤 ̇) → ((h : p holds) → monoid-structure (A h)) → monoid-structure (Π A)
+  σ⁻¹ : (p : Ω 𝓤) (A : p holds → 𝓤 ̇)
+      → ((h : p holds) → monoid-structure (A h)) → monoid-structure (Π A)
   σ⁻¹ p A = inverse (σ p A) (∞-Magma∙-structure-closed-under-Π p A)
 
   axioms-closed-under-prop-Π : (p : Ω 𝓤)
@@ -661,7 +664,9 @@ monoid-structure-is-closed-under-prop-Π {𝓤} =
     → monoid-axioms (Π A) (σ⁻¹ p A α)
   axioms-closed-under-prop-Π p A α F = I , II , III , IV
    where
-    σ⁻¹-remark : (p : Ω 𝓤) (A : p holds → 𝓤 ̇) (α : (h : p holds) → monoid-structure (A h))
+    σ⁻¹-remark : (p : Ω 𝓤)
+                 (A : p holds → 𝓤 ̇)
+                 (α : (h : p holds) → monoid-structure (A h))
                → σ⁻¹ p A α
                ＝ (λ (f : Π A) (g : Π A) (h : p holds) → pr₁ (α h) (f h) (g h)) ,
                                                          (λ h → pr₂ (α h))
