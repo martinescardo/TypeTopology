@@ -715,8 +715,8 @@ example of monoids.
 TODO. Actually perhaps are one more example, which accounts for many
 examples, namely S X = X → X → R. When R is a type of real numbers,
 and we consider additional prop-valued axioms, we get metric
-space. When R is the type of propositions, we get relations, and if we
-add further axioms we get e.g. posets.
+space. When R is the type of propositions, we get relations, or
+graphs, and if we add further axioms we get e.g. posets.
 
 TODO. More techniques are needed to show that the type of 1-categories
 would be injective. This is more interesting.
