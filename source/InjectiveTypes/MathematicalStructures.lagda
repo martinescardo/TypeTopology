@@ -1,12 +1,12 @@
 Martin Escardo, 16th August 2023
 
 We give conditions for types of mathematical structures, such as
-pointed types, ∞-magmas, monoids and groups to be algebraically
-injective. We use algebraic flabbiness as our main tool.
+pointed types, ∞-magmas, monoids, groups, posets etc. to be
+algebraically injective. We use algebraic flabbiness as our main tool.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import UF.Univalence
 
@@ -120,13 +120,9 @@ mind:
 We now define auxiliary functions π, ϕ and σ parametrized by a
 proposition p and family A indexed by p.
 
-Because we deliberately use short, general purpose symbols, we place
-these definitions in a module that needs to be opened when we want to
-use this notation.
-
 \begin{code}
 
- module notation
+ module canonical-map
          (p : Ω 𝓤)
          (A : p holds → 𝓤 ̇)
          where
@@ -165,7 +161,7 @@ is an equivalence for every p and A.
                        (A : p holds → 𝓤 ̇)
                      → is-equiv (σ p A)
   where
-   open notation
+   open canonical-map
 
 \end{code}
 
@@ -190,7 +186,7 @@ flabby with with respect to the universe 𝓤.
      A : p holds → 𝓤 ̇
      A = pr₁ ∘ f
 
-     open notation p A
+     open canonical-map p A
 
      e : S (Π A) ≃ ((h : p holds) → S (A h))
      e = σ , σ-is-equiv p A
@@ -272,12 +268,12 @@ equivalently formulated with T:
 
 \begin{code}
 
-  module notation'
+  module canonical-map'
           (p : Ω 𝓤)
           (A : p holds → 𝓤 ̇)
           where
 
-   open notation p A public
+   open canonical-map p A public
 
    τ : S (Π A) → (h : p holds) → S (A h)
    τ s h = T (π h) s
@@ -296,7 +292,7 @@ equivalently formulated with T:
                          (A : p holds → 𝓤 ̇)
                        → is-equiv (τ p A)
    where
-    open notation'
+    open canonical-map'
 
   Π-closure-criterion : closed-under-prop-Π'
                       → closed-under-prop-Π
@@ -307,7 +303,7 @@ equivalently formulated with T:
     (τ-is-equiv p A)
     (σ-and-τ-agree p A)
    where
-    open notation'
+    open canonical-map'
 
   Π-closure-criterion-converse : closed-under-prop-Π
                                → closed-under-prop-Π'
@@ -318,7 +314,7 @@ equivalently formulated with T:
     (σ-is-equiv p A)
     (∼-sym (σ-and-τ-agree p A))
    where
-    open notation'
+    open canonical-map'
 
 \end{code}
 
@@ -382,7 +378,7 @@ open monoid
            (A : p holds → 𝓤 ̇)
          where
 
-   open notation' S T T-refl p A
+   open canonical-map' S T T-refl p A
 
    τ⁻¹ : ((h : p holds) → S (A h)) → S (Π A)
    τ⁻¹ g α β h = g h (⌜ π h ⌝ α) (⌜ π h ⌝ β)
@@ -466,9 +462,9 @@ closed-under-prop-Π-× {𝓤} {𝓥₁} {𝓥₂} {S₁} {S₂} σ₁-is-equiv 
            (A : p holds → 𝓤 ̇)
          where
 
-   open notation S  p A using (σ ; ϕ)
-   open notation S₁ p A renaming (σ to σ₁) using ()
-   open notation S₂ p A renaming (σ to σ₂) using ()
+   open canonical-map S  p A using (σ ; ϕ)
+   open canonical-map S₁ p A renaming (σ to σ₁) using ()
+   open canonical-map S₂ p A renaming (σ to σ₂) using ()
 
    σ₁⁻¹ : ((h : p holds) → S₁ (A h)) → S₁ (Π A)
    σ₁⁻¹ = inverse σ₁ (σ₁-is-equiv p A)
@@ -561,7 +557,7 @@ closed-under-prop-Π-with-axioms
             (A : p holds → 𝓤 ̇ )
           → (α : (h : p holds) → S (A h))
           → ((h : p holds) → axioms (A h) (α h))
-          → axioms (Π A) (inverse (notation.σ S p A) (σ-is-equiv p A) α))
+          → axioms (Π A) (inverse (canonical-map.σ S p A) (σ-is-equiv p A) α))
    → closed-under-prop-Π (λ X → Σ s ꞉ S X , axioms X s)
 closed-under-prop-Π-with-axioms {𝓤} {𝓥} {𝓦}
                                 S
@@ -577,8 +573,8 @@ closed-under-prop-Π-with-axioms {𝓤} {𝓥} {𝓦}
              (A : p holds → 𝓤 ̇)
            where
 
-     open notation S  p A using (σ ; ϕ)
-     open notation Sₐ p A renaming (σ to σₐ) using ()
+     open canonical-map S  p A using (σ ; ϕ)
+     open canonical-map Sₐ p A renaming (σ to σₐ) using ()
 
      σ⁻¹ : ((h : p holds) → S (A h)) → S (Π A)
      σ⁻¹ = inverse σ (σ-is-equiv p A)
@@ -651,7 +647,7 @@ monoid-structure-is-closed-under-prop-Π {𝓤} =
   (monoid-axioms-is-prop fe')
   axioms-closed-under-prop-Π
  where
-  open notation monoid-structure
+  open canonical-map monoid-structure
 
   σ⁻¹ : (p : Ω 𝓤) (A : p holds → 𝓤 ̇)
       → ((h : p holds) → monoid-structure (A h)) → monoid-structure (Π A)
