@@ -61,7 +61,7 @@ We now want to show that several types of mathematical structures are
 (algebraically) injective, or, equivalently, (algebraically) flabby.
 
 We work with an arbitrary S : 𝓤 ̇ → 𝓥 ̇ and want to show that Σ S is
-flabby.
+flabby. E.g. for ∞-magmas, we will have S X = X → X → X.
 
 Let f : P → Σ S be a "partial element" where P is a proposition. Then
 f is of the form
@@ -94,7 +94,7 @@ More precisely, we always have a map
  σ : S (Π A) → ((h : P) → S (A h))
 
 in the opposite direction. We stipulate that it is an equivalence for
-any proposition P and any type family A : P → 𝓤 ̇.
+any proposition P and any type family A of types indexed by P.
 
 With this assumption, we can let s be the inverse of σ applied to g.
 
@@ -117,7 +117,7 @@ mind:
 
 \end{code}
 
-We now define auxiliary functions π, ϕ and σ parametrized by a
+We now define "canonical maps" π, ϕ and σ parametrized by a
 proposition p and family A indexed by p.
 
 \begin{code}
@@ -348,8 +348,7 @@ ainjectivity-of-type-of-pointed-types {𝓤} =
 \end{code}
 
 Example: The type of ∞-magmas is algebraically injective. The proof is
-a bit long, but it is an entirely routine application of the above
-general theorem.
+an entirely routine application of the above general theorem.
 
 \begin{code}
 
@@ -435,12 +434,13 @@ decomposition-of-∞-Magma-gives-WEM {𝓤} =
 
 \end{code}
 
-The same is true for the type of pointed types, of course.
+The same is true for the type of pointed types, of course, and for any
+injective type.
 
 We now want to consider more examples, such as monoids, groups and
-1-categories. For that purpose, write combinators, like in UF.SIP, to
-show that mathematical structures constructed from standard building
-blocks, such as the above, form injective types.
+1-categories. For that purpose, we write combinators, like in UF.SIP,
+to show that mathematical structures constructed from standard
+building blocks, such as the above, form injective types.
 
 \begin{code}
 
@@ -542,7 +542,7 @@ ainjectivity-of-∞-Magma∙ {𝓤} =
 
 \end{code}
 
-We know want to add axioms to e.g. pointed ∞-magmas to get monoids and
+We now want to add axioms to e.g. pointed ∞-magmas to get monoids and
 conclude that the type of monoids is injective.
 
 \begin{code}
@@ -629,7 +629,7 @@ The above requires that the structures are closed under prop-indexed
 products with the pointwise operations (where the operations are
 specified very abstractly by a structure operator S). But in many
 cases, of course, such as monoids and groups, we have closure under
-arbitray products under the pointwise operations. By the above, the
+arbitrary products under the pointwise operations. By the above, the
 type of any mathematical structure that is closed under arbitrary
 products is injective.
 
@@ -637,15 +637,9 @@ Example. The type of monoids is injective.
 
 \begin{code}
 
-monoid-structure-is-closed-under-prop-Π
+Monoid-is-closed-under-prop-Π
  : closed-under-prop-Π {𝓤} (λ X → Σ s ꞉ monoid-structure X , monoid-axioms X s)
-monoid-structure-is-closed-under-prop-Π {𝓤} =
- closed-under-prop-Π-with-axioms
-  monoid-structure
-  ∞-Magma∙-structure-closed-under-Π
-  monoid-axioms
-  (monoid-axioms-is-prop fe')
-  axioms-closed-under-prop-Π
+Monoid-is-closed-under-prop-Π {𝓤} = V
  where
   open canonical-map monoid-structure
 
@@ -653,7 +647,8 @@ monoid-structure-is-closed-under-prop-Π {𝓤} =
       → ((h : p holds) → monoid-structure (A h)) → monoid-structure (Π A)
   σ⁻¹ p A = inverse (σ p A) (∞-Magma∙-structure-closed-under-Π p A)
 
-  axioms-closed-under-prop-Π : (p : Ω 𝓤)
+  axioms-closed-under-prop-Π
+    : (p : Ω 𝓤)
       (A : p holds → 𝓤 ̇)
       (α : (h : p holds) → monoid-structure (A h))
     → ((h : p holds) → monoid-axioms (A h) (α h))
@@ -694,11 +689,19 @@ monoid-structure-is-closed-under-prop-Π {𝓤} =
                 case F h of
                  λ (Ah-is-set , ln , rn , assoc) → assoc (f h) (g h) (k h))
 
+  V : closed-under-prop-Π {𝓤} (λ X → Σ s ꞉ monoid-structure X , monoid-axioms X s)
+  V =  closed-under-prop-Π-with-axioms
+        monoid-structure
+        ∞-Magma∙-structure-closed-under-Π
+        monoid-axioms
+        (monoid-axioms-is-prop fe')
+        axioms-closed-under-prop-Π
+
 ainjectivity-of-Monoid : ainjective-type (Monoid {𝓤}) 𝓤 𝓤
 ainjectivity-of-Monoid {𝓤} =
  ainjectivity-of-type-of-structures
   (λ X → Σ s ꞉ monoid-structure X , monoid-axioms X s)
-  monoid-structure-is-closed-under-prop-Π
+  Monoid-is-closed-under-prop-Π
 
 \end{code}
 
