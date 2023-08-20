@@ -7,6 +7,8 @@ will be broken down into smaller modules.
 
 \begin{code}[hide]
 
+{-# OPTIONS --safe --without-K --exact-split #-}
+
 open import UF.Base
 open import UF.Subsingletons
 open import UF.PropTrunc
