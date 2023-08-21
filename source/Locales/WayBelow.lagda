@@ -9,7 +9,6 @@ will be broken down into smaller modules.
 
 {-# OPTIONS --safe --without-K --exact-split #-}
 
-open import UF.Base
 open import UF.Subsingletons
 open import UF.PropTrunc
 open import UF.FunExt
