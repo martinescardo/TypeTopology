@@ -67,7 +67,7 @@ compact opens i.e. all the opens it gives being compact opens.
 \begin{code}
 
 consists-of-compact-opens : (X : Locale 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ 𝒪 X ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
-consists-of-compact-opens X U = Ɐ i ꞉ index U , is-compact-open X (U [ i ])
+consists-of-compact-opens X S = Ɐ i ꞉ index S , is-compact-open X (S [ i ])
 
 \end{code}
 
