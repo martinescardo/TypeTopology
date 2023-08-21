@@ -23,6 +23,7 @@ module Locales.Compactness (pt : propositional-truncations-exist)
 
 open import Locales.Frame    pt fe
 open import Locales.WayBelow pt fe
+open import Slice.Family
 
 open Locale
 
@@ -43,5 +44,35 @@ A locale `X` is called compact if its top element `𝟏` is compact.
 
 is-compact : Locale 𝓤 𝓥 𝓦 → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
 is-compact X = is-compact-open X 𝟏[ 𝒪 X ]
+
+\end{code}
+
+We also define the type `𝒦 X` expressing the type of compact opens of a locale
+`X`.
+
+\begin{code}
+
+𝒦 : Locale 𝓤 𝓥 𝓦 → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺  ̇
+𝒦 X = Σ U ꞉ ⟨ 𝒪 X ⟩ , is-compact-open X U holds
+
+\end{code}
+
+Using this, we could define a family giving the compact opens of a locale `X`:
+
+\begin{code}
+
+ℬ-compact : (X : Locale 𝓤 𝓥 𝓦) → Fam (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺) ⟨ 𝒪 X ⟩
+ℬ-compact X = 𝒦 X , pr₁
+
+\end{code}
+
+but the index of this family lives in `𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺`. This is to say that, if one
+starts with a large and locally small locale, the resulting family would live in
+`𝓤 ⁺` which means it would be *too big*.
+
+\begin{code}
+
+ℬ-compact₀ : (X : Locale (𝓤 ⁺) 𝓤 𝓤) → Fam (𝓤 ⁺) ⟨ 𝒪 X ⟩
+ℬ-compact₀ = ℬ-compact
 
 \end{code}
