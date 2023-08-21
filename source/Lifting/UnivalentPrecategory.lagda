@@ -97,6 +97,9 @@ If X is a set, then _⊑_ is a partial order:
 TODO. This order is directed complete (easy). We should also do least
 fixed points of continuous maps.
 
+This TODO was implemented by Tom de Jong in the file
+DomainTheory.Lifting.LiftingSet.lagda.
+
 Next we show that for any l : 𝓛 X,
 
  fiber η l ≃ is-defined l,

@@ -1,12 +1,12 @@
 Martin Escardo, 16th August 2023
 
 We give conditions for types of mathematical structures, such as
-pointed types, ∞-magmas, monoids and groups to be algebraically
-injective. We use algebraic flabbiness as our main tool.
+pointed types, ∞-magmas, monoids, groups, posets etc. to be
+algebraically injective. We use algebraic flabbiness as our main tool.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import UF.Univalence
 
@@ -61,7 +61,7 @@ We now want to show that several types of mathematical structures are
 (algebraically) injective, or, equivalently, (algebraically) flabby.
 
 We work with an arbitrary S : 𝓤 ̇ → 𝓥 ̇ and want to show that Σ S is
-flabby.
+flabby. E.g. for ∞-magmas, we will have S X = X → X → X.
 
 Let f : P → Σ S be a "partial element" where P is a proposition. Then
 f is of the form
@@ -94,7 +94,7 @@ More precisely, we always have a map
  σ : S (Π A) → ((h : P) → S (A h))
 
 in the opposite direction. We stipulate that it is an equivalence for
-any proposition P and any type family A : P → 𝓤 ̇.
+any proposition P and any type family A of types indexed by P.
 
 With this assumption, we can let s be the inverse of σ applied to g.
 
@@ -117,16 +117,12 @@ mind:
 
 \end{code}
 
-We now define auxiliary functions π, ϕ and σ parametrized by a
+We now define "canonical maps" π, ϕ and σ parametrized by a
 proposition p and family A indexed by p.
-
-Because we deliberately use short, general purpose symbols, we place
-these definitions in a module that needs to be opened when we want to
-use this notation.
 
 \begin{code}
 
- module notation
+ module canonical-map
          (p : Ω 𝓤)
          (A : p holds → 𝓤 ̇)
          where
@@ -165,7 +161,7 @@ is an equivalence for every p and A.
                        (A : p holds → 𝓤 ̇)
                      → is-equiv (σ p A)
   where
-   open notation
+   open canonical-map
 
 \end{code}
 
@@ -190,7 +186,7 @@ flabby with with respect to the universe 𝓤.
      A : p holds → 𝓤 ̇
      A = pr₁ ∘ f
 
-     open notation p A
+     open canonical-map p A
 
      e : S (Π A) ≃ ((h : p holds) → S (A h))
      e = σ , σ-is-equiv p A
@@ -272,12 +268,12 @@ equivalently formulated with T:
 
 \begin{code}
 
-  module notation'
+  module canonical-map'
           (p : Ω 𝓤)
           (A : p holds → 𝓤 ̇)
           where
 
-   open notation p A public
+   open canonical-map p A public
 
    τ : S (Π A) → (h : p holds) → S (A h)
    τ s h = T (π h) s
@@ -296,7 +292,7 @@ equivalently formulated with T:
                          (A : p holds → 𝓤 ̇)
                        → is-equiv (τ p A)
    where
-    open notation'
+    open canonical-map'
 
   Π-closure-criterion : closed-under-prop-Π'
                       → closed-under-prop-Π
@@ -307,7 +303,7 @@ equivalently formulated with T:
     (τ-is-equiv p A)
     (σ-and-τ-agree p A)
    where
-    open notation'
+    open canonical-map'
 
   Π-closure-criterion-converse : closed-under-prop-Π
                                → closed-under-prop-Π'
@@ -318,7 +314,7 @@ equivalently formulated with T:
     (σ-is-equiv p A)
     (∼-sym (σ-and-τ-agree p A))
    where
-    open notation'
+    open canonical-map'
 
 \end{code}
 
@@ -352,8 +348,7 @@ ainjectivity-of-type-of-pointed-types {𝓤} =
 \end{code}
 
 Example: The type of ∞-magmas is algebraically injective. The proof is
-a bit long, but it is an entirely routine application of the above
-general theorem.
+an entirely routine application of the above general theorem.
 
 \begin{code}
 
@@ -382,7 +377,7 @@ open monoid
            (A : p holds → 𝓤 ̇)
          where
 
-   open notation' S T T-refl p A
+   open canonical-map' S T T-refl p A
 
    τ⁻¹ : ((h : p holds) → S (A h)) → S (Π A)
    τ⁻¹ g α β h = g h (⌜ π h ⌝ α) (⌜ π h ⌝ β)
@@ -439,12 +434,13 @@ decomposition-of-∞-Magma-gives-WEM {𝓤} =
 
 \end{code}
 
-The same is true for the type of pointed types, of course.
+The same is true for the type of pointed types, of course, and for any
+injective type.
 
 We now want to consider more examples, such as monoids, groups and
-1-categories. For that purpose, write combinators, like in UF.SIP, to
-show that mathematical structures constructed from standard building
-blocks, such as the above, form injective types.
+1-categories. For that purpose, we write combinators, like in UF.SIP,
+to show that mathematical structures constructed from standard
+building blocks, such as the above, form injective types.
 
 \begin{code}
 
@@ -466,9 +462,9 @@ closed-under-prop-Π-× {𝓤} {𝓥₁} {𝓥₂} {S₁} {S₂} σ₁-is-equiv 
            (A : p holds → 𝓤 ̇)
          where
 
-   open notation S  p A using (σ ; ϕ)
-   open notation S₁ p A renaming (σ to σ₁) using ()
-   open notation S₂ p A renaming (σ to σ₂) using ()
+   open canonical-map S  p A using (σ ; ϕ)
+   open canonical-map S₁ p A renaming (σ to σ₁) using ()
+   open canonical-map S₂ p A renaming (σ to σ₂) using ()
 
    σ₁⁻¹ : ((h : p holds) → S₁ (A h)) → S₁ (Π A)
    σ₁⁻¹ = inverse σ₁ (σ₁-is-equiv p A)
@@ -546,7 +542,7 @@ ainjectivity-of-∞-Magma∙ {𝓤} =
 
 \end{code}
 
-We know want to add axioms to e.g. pointed ∞-magmas to get monoids and
+We now want to add axioms to e.g. pointed ∞-magmas to get monoids and
 conclude that the type of monoids is injective.
 
 \begin{code}
@@ -561,7 +557,7 @@ closed-under-prop-Π-with-axioms
             (A : p holds → 𝓤 ̇ )
           → (α : (h : p holds) → S (A h))
           → ((h : p holds) → axioms (A h) (α h))
-          → axioms (Π A) (inverse (notation.σ S p A) (σ-is-equiv p A) α))
+          → axioms (Π A) (inverse (canonical-map.σ S p A) (σ-is-equiv p A) α))
    → closed-under-prop-Π (λ X → Σ s ꞉ S X , axioms X s)
 closed-under-prop-Π-with-axioms {𝓤} {𝓥} {𝓦}
                                 S
@@ -577,8 +573,8 @@ closed-under-prop-Π-with-axioms {𝓤} {𝓥} {𝓦}
              (A : p holds → 𝓤 ̇)
            where
 
-     open notation S  p A using (σ ; ϕ)
-     open notation Sₐ p A renaming (σ to σₐ) using ()
+     open canonical-map S  p A using (σ ; ϕ)
+     open canonical-map Sₐ p A renaming (σ to σₐ) using ()
 
      σ⁻¹ : ((h : p holds) → S (A h)) → S (Π A)
      σ⁻¹ = inverse σ (σ-is-equiv p A)
@@ -630,38 +626,38 @@ closed-under-prop-Π-with-axioms {𝓤} {𝓥} {𝓦}
 \end{code}
 
 The above requires that the structures are closed under prop-indexed
-products. But in many cases, of course, such as monoids and groups, we
-have closure under arbitray products. By the above, the type of any
-mathematical structure that is closed under arbitrary products is
-injective.
+products with the pointwise operations (where the operations are
+specified very abstractly by a structure operator S). But in many
+cases, of course, such as monoids and groups, we have closure under
+arbitrary products under the pointwise operations. By the above, the
+type of any mathematical structure that is closed under arbitrary
+products is injective.
 
 Example. The type of monoids is injective.
 
 \begin{code}
 
-monoid-structure-is-closed-under-prop-Π : closed-under-prop-Π {𝓤}
-                                           (λ X → Σ s ꞉ monoid-structure X , monoid-axioms X s)
-monoid-structure-is-closed-under-prop-Π {𝓤} =
- closed-under-prop-Π-with-axioms
-  monoid-structure
-  ∞-Magma∙-structure-closed-under-Π
-  monoid-axioms
-  (monoid-axioms-is-prop fe')
-  axioms-closed-under-prop-Π
+Monoid-is-closed-under-prop-Π
+ : closed-under-prop-Π {𝓤} (λ X → Σ s ꞉ monoid-structure X , monoid-axioms X s)
+Monoid-is-closed-under-prop-Π {𝓤} = V
  where
-  open notation monoid-structure
+  open canonical-map monoid-structure
 
-  σ⁻¹ : (p : Ω 𝓤) (A : p holds → 𝓤 ̇) → ((h : p holds) → monoid-structure (A h)) → monoid-structure (Π A)
+  σ⁻¹ : (p : Ω 𝓤) (A : p holds → 𝓤 ̇)
+      → ((h : p holds) → monoid-structure (A h)) → monoid-structure (Π A)
   σ⁻¹ p A = inverse (σ p A) (∞-Magma∙-structure-closed-under-Π p A)
 
-  axioms-closed-under-prop-Π : (p : Ω 𝓤)
+  axioms-closed-under-prop-Π
+    : (p : Ω 𝓤)
       (A : p holds → 𝓤 ̇)
       (α : (h : p holds) → monoid-structure (A h))
     → ((h : p holds) → monoid-axioms (A h) (α h))
     → monoid-axioms (Π A) (σ⁻¹ p A α)
   axioms-closed-under-prop-Π p A α F = I , II , III , IV
    where
-    σ⁻¹-remark : (p : Ω 𝓤) (A : p holds → 𝓤 ̇) (α : (h : p holds) → monoid-structure (A h))
+    σ⁻¹-remark : (p : Ω 𝓤)
+                 (A : p holds → 𝓤 ̇)
+                 (α : (h : p holds) → monoid-structure (A h))
                → σ⁻¹ p A α
                ＝ (λ (f : Π A) (g : Π A) (h : p holds) → pr₁ (α h) (f h) (g h)) ,
                                                          (λ h → pr₂ (α h))
@@ -693,11 +689,19 @@ monoid-structure-is-closed-under-prop-Π {𝓤} =
                 case F h of
                  λ (Ah-is-set , ln , rn , assoc) → assoc (f h) (g h) (k h))
 
+  V : closed-under-prop-Π {𝓤} (λ X → Σ s ꞉ monoid-structure X , monoid-axioms X s)
+  V =  closed-under-prop-Π-with-axioms
+        monoid-structure
+        ∞-Magma∙-structure-closed-under-Π
+        monoid-axioms
+        (monoid-axioms-is-prop fe')
+        axioms-closed-under-prop-Π
+
 ainjectivity-of-Monoid : ainjective-type (Monoid {𝓤}) 𝓤 𝓤
 ainjectivity-of-Monoid {𝓤} =
  ainjectivity-of-type-of-structures
   (λ X → Σ s ꞉ monoid-structure X , monoid-axioms X s)
-  monoid-structure-is-closed-under-prop-Π
+  Monoid-is-closed-under-prop-Π
 
 \end{code}
 
@@ -707,6 +711,12 @@ technique. And of course there are many other examples which we may
 wish to include (see UF.SIP-Examples). I am not sure I have the energy
 to write this code, which I expect to be entirely routine as the
 example of monoids.
+
+TODO. Actually perhaps are one more example, which accounts for many
+examples, namely S X = X → X → R. When R is a type of real numbers,
+and we consider additional prop-valued axioms, we get metric
+space. When R is the type of propositions, we get relations, or
+graphs, and if we add further axioms we get e.g. posets.
 
 TODO. More techniques are needed to show that the type of 1-categories
 would be injective. This is more interesting.
