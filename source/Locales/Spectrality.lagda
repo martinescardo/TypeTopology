@@ -23,8 +23,8 @@ open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.Logic
 
-module Locales.Spectral (pt : propositional-truncations-exist)
-                        (fe : Fun-Ext)                         where
+module Locales.Spectrality (pt : propositional-truncations-exist)
+                           (fe : Fun-Ext)                          where
 
 open import Locales.Frame pt fe
 open import Locales.Compactness pt fe
