@@ -6,7 +6,8 @@ Based in part on `ayberkt/formal-topology-in-UF`.
 
 {-# OPTIONS --safe --without-K --exact-split #-}
 
-open import MLTT.Spartan
+open import MLTT.Spartan hiding (𝟚)
+open import MLTT.List hiding ([_])
 open import UF.Base
 open import UF.PropTrunc
 open import UF.FunExt
@@ -286,5 +287,60 @@ main-lemma pe P p =
 𝟎-𝔽𝕣𝕞-initial : {𝓦 : Universe} (pe : propext 𝓦) (F : Frame 𝓤 𝓥 𝓦)
               → is-singleton (𝟎-𝔽𝕣𝕞 pe ─f→ F)
 𝟎-𝔽𝕣𝕞-initial pe F = (𝒻 pe F) , 𝒻-is-unique pe F
+
+\end{code}
+
+\section{Spectrality}
+
+\begin{code}
+
+module Spectrality-of-𝟎 (𝓤 : Universe) (pe : propext 𝓤) where
+
+ ℬ𝟎 : Fam 𝓤 ⟨ 𝟎-𝔽𝕣𝕞 pe ⟩
+ ℬ𝟎 = 𝟚 𝓤 , h
+  where
+   h : 𝟚 𝓤 → ⟨ 𝟎-𝔽𝕣𝕞 pe ⟩
+   h (inl ⋆) = ⊥Ω
+   h (inr ⋆) = ⊤Ω
+
+\end{code}
+
+\begin{code}
+
+ 𝒮 : ⟨ 𝟎-𝔽𝕣𝕞 pe ⟩ → Fam 𝓤 (𝟚 𝓤)
+ 𝒮 (P , p) = ⁅ inr ⋆ ∣ _ ∶ P ⁆
+
+ ℬ𝟎-is-basis-for-𝟎 : is-basis-for (𝟎-𝔽𝕣𝕞 pe) ℬ𝟎
+ ℬ𝟎-is-basis-for-𝟎 (P , p) = 𝒮 (P , p) , β , γ
+  where
+   open Joins (λ x y → x ≤[ poset-of (𝟎-𝔽𝕣𝕞 pe) ] y)
+
+   β : ((P , p) is-an-upper-bound-of ⁅ ℬ𝟎 [ b ] ∣ b ε 𝒮 (P , p) ⁆) holds
+   β p ⋆ = p
+
+   open PosetReasoning (poset-of (𝟎-𝔽𝕣𝕞 pe))
+
+   γ : ((u , _) : upper-bound ⁅ ℬ𝟎 [ b ] ∣ b ε 𝒮 (P , p) ⁆)
+     → ((P , p) ≤[ poset-of (𝟎-𝔽𝕣𝕞 pe) ] u) holds
+   γ (U , q) p = q p ⋆
+
+ ℬ𝟎↑ : Fam 𝓤 ⟨ 𝟎-𝔽𝕣𝕞 pe ⟩
+ ℬ𝟎↑ = directify (𝟎-𝔽𝕣𝕞 pe) ℬ𝟎
+
+ ℬ𝟎↑-is-basis : is-basis-for (𝟎-𝔽𝕣𝕞 pe) ℬ𝟎↑
+ ℬ𝟎↑-is-basis = directified-basis-is-basis (𝟎-𝔽𝕣𝕞 pe) ℬ𝟎 ℬ𝟎-is-basis-for-𝟎
+
+ 𝒮↑ : ⟨ 𝟎-𝔽𝕣𝕞 pe ⟩ → Fam 𝓤 ⟨ 𝟎-𝔽𝕣𝕞 pe ⟩
+ 𝒮↑ U = ⁅ ℬ𝟎↑ [ b ] ∣ b ε pr₁ (ℬ𝟎↑-is-basis U) ⁆
+
+\end{code}
+
+\begin{code}
+
+ ℬ𝟎-is-directed-basis-for-𝟎 : is-directed-basis (𝟎-𝔽𝕣𝕞 pe) ℬ𝟎↑
+ ℬ𝟎-is-directed-basis-for-𝟎 = ℬ𝟎↑-is-basis , d
+  where
+   d : (U : ⟨ 𝟎-𝔽𝕣𝕞 pe ⟩) → is-directed (𝟎-𝔽𝕣𝕞 pe) (𝒮↑ U) holds
+   d = covers-of-directified-basis-are-directed (𝟎-𝔽𝕣𝕞 pe) ℬ𝟎 ℬ𝟎-is-basis-for-𝟎
 
 \end{code}
