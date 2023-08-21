@@ -81,6 +81,8 @@ is-spectral {_} {_} {𝓦} X = ⦅𝟏⦆ ∧ ⦅𝟐⦆
   ⦅𝟏⦆ = compacts-of-[ X ]-are-closed-under-finite-meets
   ⦅𝟐⦆ = Ɐ U ꞉ ⟨ 𝒪 X ⟩ ,
          Ǝ S ꞉ (Fam 𝓦 ⟨ 𝒪 X ⟩) ,
-          consists-of-compact-opens X S holds × (U ＝ ⋁[ 𝒪 X ] S)
+            consists-of-compact-opens X S holds
+          × is-directed (𝒪 X) S holds
+          × (U ＝ ⋁[ 𝒪 X ] S)
 
 \end{code}
