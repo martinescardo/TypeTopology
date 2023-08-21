@@ -21,8 +21,8 @@ open import MLTT.Spartan
 module Locales.Compactness (pt : propositional-truncations-exist)
                            (fe : Fun-Ext)                          where
 
-open import Locales.Frame    pt fe
-open import Locales.WayBelow pt fe
+open import Locales.Frame       pt fe
+open import Locales.WayBelow    pt fe
 open import Slice.Family
 
 open Locale
