@@ -40,7 +40,7 @@ be closed under binary meets.
 
 \begin{code}
 
-compacts-of-[_]-are-closed-under-binary-meets : (X : Locale 𝓤 𝓥 𝓦) → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
+compacts-of-[_]-are-closed-under-binary-meets : Locale 𝓤 𝓥 𝓦 → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
 compacts-of-[ X ]-are-closed-under-binary-meets =
  let
   _∧ₓ_ = meet-of (𝒪 X)
@@ -52,8 +52,8 @@ compacts-of-[ X ]-are-closed-under-binary-meets =
 
 \begin{code}
 
-compacts-closed-under-finite-meets : (X : Locale 𝓤 𝓥 𝓦) → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
-compacts-closed-under-finite-meets X =
+compacts-of-[_]-are-closed-under-finite-meets : Locale 𝓤 𝓥 𝓦 → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
+compacts-of-[ X ]-are-closed-under-finite-meets =
  is-compact X ∧ compacts-of-[ X ]-are-closed-under-binary-meets
 
 \end{code}
@@ -75,7 +75,7 @@ We are now ready to define the notion of a spectral locale:
 is-spectral : Locale 𝓤 𝓥 𝓦 → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
 is-spectral {_} {_} {𝓦} X = ⦅𝟏⦆ ∧ ⦅𝟐⦆
  where
-  ⦅𝟏⦆ = compacts-closed-under-finite-meets X
+  ⦅𝟏⦆ = compacts-of-[ X ]-are-closed-under-finite-meets
   ⦅𝟐⦆ = Ɐ U ꞉ ⟨ 𝒪 X ⟩ ,
          Ǝ S ꞉ (Fam 𝓦 ⟨ 𝒪 X ⟩) ,
           consists-of-compact-opens X S holds × (U ＝ ⋁[ 𝒪 X ] S)
