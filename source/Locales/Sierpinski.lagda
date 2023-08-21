@@ -46,29 +46,3 @@ open import Lifting.Lifting (𝓤 ⁺)
 ⊤𝕊 = ⊤ₛ
 
 \end{code}
-
-\begin{code}
-
-open import Locales.CompactRegular pt fe
-
-ℬ𝕊 : Fam 𝓤 ⟨ 𝒪 𝕊 ⟩
-ℬ𝕊 = 𝟚 {𝓤} , h
- where
-  h : 𝟚 → ⟨ 𝒪 𝕊 ⟩
-  h ₀ = 𝟎[ 𝒪 𝕊 ]
-  h ₁ = ⊤ₛ
-
-ℬ𝕊-is-basis : is-basis-for (𝒪 𝕊) ℬ𝕊
-ℬ𝕊-is-basis (P , (υ , ι)) =
- (((P (𝟙 {𝓤} , (λ { ⋆ → ⋆ }) , 𝟙-is-prop)) holds) , λ _ → ₁) , {!!}
-
-ℬ𝕊-is-directed-basis : is-directed-basis (𝒪 𝕊) ℬ𝕊
-ℬ𝕊-is-directed-basis = {!!} , {!!}
-
-𝕊-spectralᴰ : spectralᴰ (𝒪 𝕊)
-𝕊-spectralᴰ = ℬ𝕊 , ℬ𝕊-is-directed-basis , {!!} , {!!}
-
-𝕊-is-spectral : is-spectral (𝒪 𝕊) holds
-𝕊-is-spectral = {!!}
-
-\end{code}
