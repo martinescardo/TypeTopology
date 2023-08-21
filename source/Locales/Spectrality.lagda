@@ -50,6 +50,9 @@ compacts-of-[ X ]-are-closed-under-binary-meets =
 
 \end{code}
 
+Now we express closure under finite meets, which amounts to closure under binary
+meets combined with the empty meet (i.e. the top element) being compact.
+
 \begin{code}
 
 compacts-of-[_]-are-closed-under-finite-meets : Locale 𝓤 𝓥 𝓦 → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
