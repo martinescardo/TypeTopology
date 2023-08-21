@@ -37,7 +37,7 @@ is-compact-open X U = U ≪[ 𝒪 X ] U
 
 \end{code}
 
-A locale `X` is called compact if its top element is compact.
+A locale `X` is called compact if its top element `𝟏` is compact.
 
 \begin{code}
 
