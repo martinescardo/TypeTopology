@@ -42,8 +42,8 @@ We already know the following, but here is a short direct proof.
 
 \begin{code}
 
-universes-are-flabby-Π : aflabby (𝓤 ̇ ) 𝓤
-universes-are-flabby-Π {𝓤} P P-is-prop A = Π A , I
+universes-are-aflabby-Π : aflabby (𝓤 ̇ ) 𝓤
+universes-are-aflabby-Π {𝓤} P P-is-prop A = Π A , I
  where
   X : 𝓤  ̇
   X = Π A
@@ -53,7 +53,26 @@ universes-are-flabby-Π {𝓤} P P-is-prop A = Π A , I
 
 universes-are-injective-Π : ainjective-type (𝓤 ̇ ) 𝓤 𝓤
 universes-are-injective-Π {𝓤} = aflabby-types-are-ainjective (𝓤 ̇ )
-                                  universes-are-flabby-Π
+                                  universes-are-aflabby-Π
+
+universes-are-aflabby-Σ : aflabby (𝓤 ̇ ) 𝓤
+universes-are-aflabby-Σ {𝓤} P P-is-prop A = Σ A , I
+ where
+  X : 𝓤  ̇
+  X = Σ A
+
+  I : (p : P) → Σ A ＝ A p
+  I = λ p → eqtoid (ua 𝓤) (Σ A) (A p) (prop-indexed-sum P-is-prop p)
+
+aflabbly-constant-Π : (p : Ω 𝓤) (X : 𝓤 ̇ )
+                    → aflabby-extension universes-are-aflabby-Π p (λ _ → X)
+                    ＝ (p holds → X)
+aflabbly-constant-Π p X = refl
+
+aflabbly-constant-Σ : (p : Ω 𝓤) (X : 𝓤 ̇ )
+                    → aflabby-extension universes-are-aflabby-Σ p (λ _ → X)
+                    ＝ (p holds × X)
+aflabbly-constant-Σ p X = refl
 
 \end{code}
 
@@ -133,8 +152,13 @@ proposition p and family A indexed by p.
   π : (h : p holds) → Π A ≃ A h
   π = prop-indexed-product fe' hp
 
-  remark₀ : (h : p holds) (α : Π A) → ⌜ π h ⌝ α ＝ α h
-  remark₀ h α = refl
+  remark-π : (h : p holds) (α : Π A)
+           → ⌜ π h ⌝ α ＝ α h
+  remark-π h α = refl
+
+  remark-π⁻¹ : (h : p holds) (a : A h)
+             → ⌜ π h ⌝⁻¹ a ＝ λ h' → transport A (hp h h') a
+  remark-π⁻¹ h a = refl
 
   ϕ : (h : p holds) → Π A ＝ A h
   ϕ h = eqtoid (ua 𝓤) (Π A) (A h) (π h)
@@ -142,9 +166,9 @@ proposition p and family A indexed by p.
   σ : S (Π A) → ((h : p holds) → S (A h))
   σ s h = treq (π h) s
 
-  remark₁ : (s : S (Π A)) (h : p holds)
-          → σ s h ＝ transport S (eqtoid (ua 𝓤) (Π A) (A h) (π h)) s
-  remark₁ s h = refl
+  remark-σ : (s : S (Π A)) (h : p holds)
+           → σ s h ＝ transport S (eqtoid (ua 𝓤) (Π A) (A h) (π h)) s
+  remark-σ s h = refl
 
 \end{code}
 
@@ -707,16 +731,8 @@ ainjectivity-of-Monoid {𝓤} =
 
 TODO. It is easy to add further axioms to monoids to get groups, and
 then show that the type of groups is injective using the above
-technique. And of course there are many other examples which we may
-wish to include (see UF.SIP-Examples). I am not sure I have the energy
-to write this code, which I expect to be entirely routine as the
-example of monoids.
-
-TODO. Actually perhaps are one more example, which accounts for many
-examples, namely S X = X → X → R. When R is a type of real numbers,
-and we consider additional prop-valued axioms, we get metric
-space. When R is the type of propositions, we get relations, or
-graphs, and if we add further axioms we get e.g. posets.
+technique. I expect this to be entirely routine as the example of
+monoids.
 
 TODO. More techniques are needed to show that the type of 1-categories
 would be injective. This is more interesting.
