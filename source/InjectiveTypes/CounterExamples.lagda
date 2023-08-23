@@ -1,6 +1,6 @@
 Martin Escardo, 23rd August 2023.
 
-Some counterexamples.
+Some counterexamples to injectivity.
 
 We already know that if excluded middle holds then all pointed types
 are algebraicly injective, and that the converse also holds.
@@ -144,11 +144,11 @@ open import DedekindReals.Type fe' pe pt renaming (0ℝ to 0ᴿ ; 1ℝ to 1ᴿ)
 open import DedekindReals.Order fe' pe pt
 open import Notation.Order
 
-ℝ-injective-gives-Heaviside-function : ainjective-type ℝ 𝓤₁ 𝓤₁
-                                     → Σ f ꞉ (ℝ → ℝ) ,
-                                           ((x : ℝ) → (x < 0ᴿ → f x ＝ 0ᴿ)
-                                                    × (x ≥ 0ᴿ → f x ＝ 1ᴿ))
-ℝ-injective-gives-Heaviside-function ℝ-ainj = f , γ
+ℝ-ainjective-gives-Heaviside-function : ainjective-type ℝ 𝓤₁ 𝓤₁
+                                      → Σ f ꞉ (ℝ → ℝ) ,
+                                            ((x : ℝ) → (x < 0ᴿ → f x ＝ 0ᴿ)
+                                                     × (x ≥ 0ᴿ → f x ＝ 1ᴿ))
+ℝ-ainjective-gives-Heaviside-function ℝ-ainj = f , γ
  where
   j : (Σ x ꞉ ℝ , x < 0ᴿ) + (Σ x ꞉ ℝ , x ≥ 0ᴿ) → ℝ
   j = cases pr₁ pr₁
