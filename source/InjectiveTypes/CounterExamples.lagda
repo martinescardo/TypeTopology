@@ -185,7 +185,8 @@ open import Notation.Order
 \end{code}
 
 The injectivity of ℕ∞, the conatural numbers, or generic convergent
-function, gives WLPO.
+sequence, gives WLPO. Like in the previous example, we first use
+injectivity to define a non-continuous function.
 
 \begin{code}
 
