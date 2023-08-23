@@ -107,7 +107,6 @@ compact-opens-are-basic-in-compact-locales {_} {_} {𝓦} X (ℬ , β) K κ =
      ψ : (ℬ [ 𝒥 [ j ] ] ≤[ poset-of (𝒪 X) ] K) holds
      ψ = ℬ [ 𝒥 [ j ] ] ≤⟨ Ⅰ ⟩ ⋁[ 𝒪 X ] ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆ ≤⟨ Ⅱ ⟩ K ■
 
-
 \end{code}
 
 One of the things that we show in this module is that this truncation was
