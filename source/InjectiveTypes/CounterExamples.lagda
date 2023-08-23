@@ -134,7 +134,7 @@ TODO. We can also close under _×_ and _+_ to get the same result. We
 can also close under Π, but maybe not under Σ.
 
 If the type ℝ of Dedekind reals are injective then there is a
-discontinuous function ℝ → ℝ, the Heaviside functions, which is
+discontinuous function ℝ → ℝ, e.g. the Heaviside function, which is
 also a constructive taboo. Notice that the type ℝ lives in the
 universe 𝓤₁.
 
