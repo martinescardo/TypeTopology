@@ -6,9 +6,9 @@ We already know that if excluded middle holds then all pointed types
 are algebraicly injective, and that the converse also holds.
 
 So we can't really give an example of any type which is not
-algebraicly injective. The best we can hope is to derive a
-constructive taboo, rather than a contradiction, from the assumption
-that a type of interest would be injective.
+algebraicly injective, other than the empty type. The best we can hope
+is to derive a constructive taboo, rather than a contradiction, from
+the assumption that a type of interest would be injective.
 
 Most types one encounters in practice are "not" injective in the above
 sense.
