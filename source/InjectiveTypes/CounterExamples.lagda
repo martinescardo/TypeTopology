@@ -145,10 +145,10 @@ open import DedekindReals.Order fe' pe pt
 open import Notation.Order
 
 ℝ-ainjective-gives-Heaviside-function : ainjective-type ℝ 𝓤₁ 𝓤₁
-                                      → Σ f ꞉ (ℝ → ℝ) ,
-                                            ((x : ℝ) → (x < 0ᴿ → f x ＝ 0ᴿ)
-                                                     × (x ≥ 0ᴿ → f x ＝ 1ᴿ))
-ℝ-ainjective-gives-Heaviside-function ℝ-ainj = f , γ
+                                      → Σ H ꞉ (ℝ → ℝ) ,
+                                            ((x : ℝ) → (x < 0ᴿ → H x ＝ 0ᴿ)
+                                                     × (x ≥ 0ᴿ → H x ＝ 1ᴿ))
+ℝ-ainjective-gives-Heaviside-function ℝ-ainj = H , γ
  where
   j : (Σ x ꞉ ℝ , x < 0ᴿ) + (Σ x ꞉ ℝ , x ≥ 0ᴿ) → ℝ
   j = cases pr₁ pr₁
@@ -165,21 +165,21 @@ open import Notation.Order
   g : (Σ x ꞉ ℝ , x < 0ᴿ) + (Σ x ꞉ ℝ , x ≥ 0ᴿ) → ℝ
   g = cases (λ _ → 0ᴿ) (λ _ → 1ᴿ)
 
-  f : ℝ → ℝ
-  f = pr₁ (ℝ-ainj j j-is-embedding g)
+  H : ℝ → ℝ
+  H = pr₁ (ℝ-ainj j j-is-embedding g)
 
-  f-extends-g-along-j : ∀ u → f (j u) ＝ g u
-  f-extends-g-along-j = pr₂ (ℝ-ainj j j-is-embedding g)
+  H-extends-g-along-j : ∀ u → H (j u) ＝ g u
+  H-extends-g-along-j = pr₂ (ℝ-ainj j j-is-embedding g)
 
-  γ : (x : ℝ) → (x < 0ᴿ → f x ＝ 0ᴿ)
-              × (x ≥ 0ᴿ → f x ＝ 1ᴿ)
+  γ : (x : ℝ) → (x < 0ᴿ → H x ＝ 0ᴿ)
+              × (x ≥ 0ᴿ → H x ＝ 1ᴿ)
   γ x = I , II
    where
-    I : x < 0ᴿ → f x ＝ 0ᴿ
-    I l = f-extends-g-along-j (inl (x , l))
+    I : x < 0ᴿ → H x ＝ 0ᴿ
+    I l = H-extends-g-along-j (inl (x , l))
 
-    II : x ≥ 0ᴿ → f x ＝ 1ᴿ
-    II b = f-extends-g-along-j (inr (x , b))
+    II : x ≥ 0ᴿ → H x ＝ 1ᴿ
+    II b = H-extends-g-along-j (inr (x , b))
 
 \end{code}
 
