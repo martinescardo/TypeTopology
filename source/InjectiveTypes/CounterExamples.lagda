@@ -104,7 +104,7 @@ WEM-gives-𝟚-aflabby wem = ainjective-types-are-aflabby 𝟚 (WEM-gives-𝟚-a
 
 The simple types are not injective in general. These are the types
 formed by starting with ℕ and closing under function types. We can
-also add type 𝟚 to the base case of the definition of get the same
+also add type 𝟚 to the base case of the definition to get the same
 conclusion.
 
 \begin{code}
