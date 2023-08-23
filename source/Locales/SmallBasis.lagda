@@ -20,6 +20,8 @@ open import Locales.Compactness pt fe
 open import Locales.Spectrality pt fe
 open import Slice.Family
 
+open PropositionalTruncation pt
+
 open AllCombinators pt fe
 
 open Locale
@@ -60,6 +62,51 @@ The previous definition of spectrality was the truncation of `spectralₛᴰ`:
 
 is-spectralₛ : Locale 𝓤 𝓥 𝓦 → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
 is-spectralₛ X = ∥ spectralₛᴰ X ∥Ω
+
+\end{code}
+
+Compact opens are basic:
+
+\begin{code}
+
+is-basic : (X : Locale 𝓤 𝓥 𝓦) → ⟨ 𝒪 X ⟩ → has-directed-basis₀ (𝒪 X) → Ω (𝓤 ⊔ 𝓦)
+is-basic X U (ℬ , β) = Ǝ i ꞉ index ℬ , U ＝ ℬ [ i ]
+
+compact-opens-are-basic-in-compact-locales : (X : Locale 𝓤 𝓥 𝓦)
+                                           → (b : has-directed-basis₀ (𝒪 X))
+                                           → (K : ⟨ 𝒪 X ⟩)
+                                           → is-compact-open X K holds
+                                           → is-basic X K b holds
+compact-opens-are-basic-in-compact-locales {_} {_} {𝓦} X (ℬ , β) K κ =
+ ∥∥-rec ∃-is-prop † (κ ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆ d q)
+  where
+   β₀ : is-basis-for (𝒪 X) ℬ
+   β₀ = pr₁ β
+
+   𝒥 : Fam 𝓦 (index ℬ)
+   𝒥 = covering-index-family (𝒪 X) ℬ β₀ K
+
+   p : K ＝ ⋁[ 𝒪 X ] ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆
+   p = covers (𝒪 X) ℬ β₀ K
+
+   d : is-directed (𝒪 X) ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆ holds
+   d = covers-are-directed (𝒪 X) (ℬ , β) K
+
+   q : (K ≤[ poset-of (𝒪 X) ] (⋁[ 𝒪 X ] ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆)) holds
+   q = reflexivity+ (poset-of (𝒪 X)) p
+
+   † : Σ j ꞉ index 𝒥 , (K ≤[ poset-of (𝒪 X) ] ℬ [ 𝒥 [ j ] ]) holds
+     → is-basic X K (ℬ , β) holds
+   † (j , φ) = ∣ 𝒥 [ j ] , ≤-is-antisymmetric (poset-of (𝒪 X)) φ ψ ∣
+    where
+     open PosetReasoning (poset-of (𝒪 X))
+
+     Ⅰ = ⋁[ 𝒪 X ]-upper ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆ j
+     Ⅱ = reflexivity+ (poset-of (𝒪 X)) (p ⁻¹)
+
+     ψ : (ℬ [ 𝒥 [ j ] ] ≤[ poset-of (𝒪 X) ] K) holds
+     ψ = ℬ [ 𝒥 [ j ] ] ≤⟨ Ⅰ ⟩ ⋁[ 𝒪 X ] ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆ ≤⟨ Ⅱ ⟩ K ■
+
 
 \end{code}
 

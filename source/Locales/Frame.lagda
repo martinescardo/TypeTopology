@@ -1410,6 +1410,15 @@ has-directed-basis₀ {𝓦 = 𝓦} F =
 has-directed-basis : (F : Frame 𝓤 𝓥 𝓦) → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
 has-directed-basis {𝓦 = 𝓦} F = ∥ has-directed-basis₀ F ∥Ω
 
+directed-cover : (F : Frame 𝓤 𝓥 𝓦) → has-directed-basis₀ F → ⟨ F ⟩ → Fam 𝓦 ⟨ F ⟩
+directed-cover F (ℬ , β) U = ⁅ ℬ [ i ] ∣ i ε pr₁ (pr₁ β U) ⁆
+
+covers-are-directed : (F : Frame 𝓤 𝓥 𝓦)
+                    → (b : has-directed-basis₀ F)
+                    → (U : ⟨ F ⟩)
+                    → is-directed F (directed-cover F b U) holds
+covers-are-directed F (ℬ , β) U = pr₂ β U
+
 \end{code}
 
 The main development in this section is that every small basis can be
