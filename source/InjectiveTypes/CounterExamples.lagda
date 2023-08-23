@@ -162,24 +162,24 @@ open import Notation.Order
     d : disjoint-images pr₁ pr₁
     d (x , l) (x , b) refl = <ℝ-irreflexive x (ℝ<-≤-trans x 0ᴿ x l b)
 
-  g : (Σ x ꞉ ℝ , x < 0ᴿ) + (Σ x ꞉ ℝ , x ≥ 0ᴿ) → ℝ
-  g = cases (λ _ → 0ᴿ) (λ _ → 1ᴿ)
+  h : (Σ x ꞉ ℝ , x < 0ᴿ) + (Σ x ꞉ ℝ , x ≥ 0ᴿ) → ℝ
+  h = cases (λ _ → 0ᴿ) (λ _ → 1ᴿ)
 
   H : ℝ → ℝ
-  H = pr₁ (ℝ-ainj j j-is-embedding g)
+  H = pr₁ (ℝ-ainj j j-is-embedding h)
 
-  H-extends-g-along-j : ∀ u → H (j u) ＝ g u
-  H-extends-g-along-j = pr₂ (ℝ-ainj j j-is-embedding g)
+  H-extends-h-along-j : ∀ u → H (j u) ＝ h u
+  H-extends-h-along-j = pr₂ (ℝ-ainj j j-is-embedding h)
 
   γ : (x : ℝ) → (x < 0ᴿ → H x ＝ 0ᴿ)
               × (x ≥ 0ᴿ → H x ＝ 1ᴿ)
   γ x = I , II
    where
     I : x < 0ᴿ → H x ＝ 0ᴿ
-    I l = H-extends-g-along-j (inl (x , l))
+    I l = H-extends-h-along-j (inl (x , l))
 
     II : x ≥ 0ᴿ → H x ＝ 1ᴿ
-    II b = H-extends-g-along-j (inr (x , b))
+    II b = H-extends-h-along-j (inr (x , b))
 
 \end{code}
 
