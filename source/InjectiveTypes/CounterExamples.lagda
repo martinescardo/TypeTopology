@@ -134,10 +134,9 @@ TODO. We can also close under _×_ and _+_ to get the same result. We
 can also close under Π, but maybe not under Σ.
 
 If the type ℝ of Dedekind reals are injective then there is a
-discontinuous function ℝ → ℝ, namely a Heaviside-like function, which
-is also a constructive taboo. Injectivity doesn't tell us what its
-value at 0 is, but of course no matter what it is, we get a
-discontinuous function. Notice that the type ℝ lives in the universe 𝓤₁.
+discontinuous function ℝ → ℝ, the Heaviside functions, which is
+also a constructive taboo. Notice that the type ℝ lives in the
+universe 𝓤₁.
 
 \begin{code}
 
@@ -148,22 +147,22 @@ open import Notation.Order
 ℝ-injective-gives-Heaviside-function : ainjective-type ℝ 𝓤₁ 𝓤₁
                                      → Σ f ꞉ (ℝ → ℝ) ,
                                            ((x : ℝ) → (x < 0ᴿ → f x ＝ 0ᴿ)
-                                                    × (x > 0ᴿ → f x ＝ 1ᴿ))
+                                                    × (x ≥ 0ᴿ → f x ＝ 1ᴿ))
 ℝ-injective-gives-Heaviside-function ℝ-ainj = f , γ
  where
-  j : (Σ x ꞉ ℝ , x < 0ᴿ) + (Σ x ꞉ ℝ , x > 0ᴿ) → ℝ
+  j : (Σ x ꞉ ℝ , x < 0ᴿ) + (Σ x ꞉ ℝ , x ≥ 0ᴿ) → ℝ
   j = cases pr₁ pr₁
 
   j-is-embedding : is-embedding j
   j-is-embedding = disjoint-cases-embedding pr₁ pr₁
                     (pr₁-is-embedding (λ x → <-is-prop x 0ᴿ))
-                    (pr₁-is-embedding (λ x → <-is-prop 0ᴿ x))
+                    (pr₁-is-embedding (λ x → ≤-is-prop 0ᴿ x))
                     d
    where
     d : disjoint-images pr₁ pr₁
-    d (x , l) (x , b) refl = <ℝ-irreflexive 0ᴿ (ℝ<-trans 0ᴿ x 0ᴿ b l)
+    d (x , l) (x , b) refl = <ℝ-irreflexive x (ℝ<-≤-trans x 0ᴿ x l b)
 
-  g : (Σ x ꞉ ℝ , x < 0ᴿ) + (Σ x ꞉ ℝ , x > 0ᴿ) → ℝ
+  g : (Σ x ꞉ ℝ , x < 0ᴿ) + (Σ x ꞉ ℝ , x ≥ 0ᴿ) → ℝ
   g = cases (λ _ → 0ᴿ) (λ _ → 1ᴿ)
 
   f : ℝ → ℝ
@@ -173,13 +172,13 @@ open import Notation.Order
   f-extends-g-along-j = pr₂ (ℝ-ainj j j-is-embedding g)
 
   γ : (x : ℝ) → (x < 0ᴿ → f x ＝ 0ᴿ)
-              × (x > 0ᴿ → f x ＝ 1ᴿ)
+              × (x ≥ 0ᴿ → f x ＝ 1ᴿ)
   γ x = I , II
    where
     I : x < 0ᴿ → f x ＝ 0ᴿ
     I l = f-extends-g-along-j (inl (x , l))
 
-    II : 0ᴿ < x → f x ＝ 1ᴿ
+    II : x ≥ 0ᴿ → f x ＝ 1ᴿ
     II b = f-extends-g-along-j (inr (x , b))
 
 \end{code}
