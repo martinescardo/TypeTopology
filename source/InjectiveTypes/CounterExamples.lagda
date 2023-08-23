@@ -13,9 +13,9 @@ that a type of interest would be injective.
 Most types one encounters in practice are "not" injective in the above
 sense.
 
-NB. We work with assumptions of algebraic injectivity, rather than its
-truncated version (injectivity), but this doesn't matter because most
-of our conclusions are propositions, and when they are not we can
+NB. We work with the assumption of algebraic injectivity, rather than
+its truncated version (injectivity), but this doesn't matter because
+most of our conclusions are propositions, and when they are not we can
 consider their truncations, which are also constructive taboos.
 
 \begin{code}
