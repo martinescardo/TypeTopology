@@ -133,8 +133,8 @@ simple-type₂-injective-gives-WEM-examples =
 TODO. We can also close under _×_ and _+_ to get the same result. We
 can also close under Π, but maybe not under Σ.
 
-If the type ℝ of Dedekind reals are injective then there is a
-discontinuous function ℝ → ℝ, e.g. the Heaviside function, which is
+If the type ℝ of Dedekind reals are injective then there are
+discontinuous functions ℝ → ℝ, e.g. the Heaviside function, which is
 also a constructive taboo. Notice that the type ℝ lives in the
 universe 𝓤₁.
 
