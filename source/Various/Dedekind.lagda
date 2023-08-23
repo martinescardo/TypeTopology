@@ -2035,3 +2035,5 @@ Some (overlapping) problems:
 \end{code}
 
 Should some of the above ∃ be Σ and/or vice-versa?
+
+\end{code}

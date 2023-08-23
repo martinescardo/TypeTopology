@@ -87,11 +87,11 @@ on the notion of total separatedness:
 
 \begin{code}
 
-simple-types-rℕ : {X : 𝓤₀ ̇ } → simple-type X → retract ℕ of X
-simple-types-rℕ = simple-types-r identity-retraction
+ℕ-is-retract-of-any-simple-type : {X : 𝓤₀ ̇ } → simple-type X → retract ℕ of X
+ℕ-is-retract-of-any-simple-type = simple-types-r identity-retraction
 
 stcwlpo' : {X : 𝓤₀ ̇ } → simple-type X → is-compact X → WLPO'
-stcwlpo' s = retract-is-Π-compact (simple-types-rℕ s)
+stcwlpo' s = retract-is-Π-compact (ℕ-is-retract-of-any-simple-type s)
 
 \end{code}
 

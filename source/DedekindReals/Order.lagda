@@ -164,8 +164,8 @@ apartness-gives-inequality x y apart e = ∥∥-rec 𝟘-is-prop I apart
       IV (inl kLx) = 𝟘-elim (ℚ<-not-itself k (disjoint-from-real y k k (x≤y k kLx , kRy)))
       IV (inr qRx) = qRx
 
-ℝ-less-than-not-itself : (x : ℝ) → x ≮ x
-ℝ-less-than-not-itself x l = ∥∥-rec 𝟘-is-prop I l
+<ℝ-irreflexive : (x : ℝ) → x ≮ x
+<ℝ-irreflexive x l = ∥∥-rec 𝟘-is-prop I l
  where
   I : ¬ (Σ k ꞉ ℚ , x < k < x)
   I (k , x<k , k<x) = ℚ<-not-itself-from-ℝ k x (k<x , x<k)

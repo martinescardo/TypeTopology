@@ -16,6 +16,7 @@ module InjectiveTypes.index where
 
 import InjectiveTypes.Article
 import InjectiveTypes.Blackboard
+import InjectiveTypes.CounterExamples
 
 \end{code}
 

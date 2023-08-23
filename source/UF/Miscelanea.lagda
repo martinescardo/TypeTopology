@@ -20,6 +20,7 @@ open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.FunExt
 open import UF.Lower-FunExt
+open import UF.Retracts
 open import UF.Size
 open import UF.SmallnessProperties
 open import UF.Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)
@@ -265,6 +266,21 @@ C-B-embedding-is-lc fe {α} {β} p = dfunext fe h
  where
   h : (n : ℕ) → α n ＝ β n
   h n = 𝟚-ℕ-embedding-is-lc (ap (λ - → - n) p)
+
+𝟚-retract-of-ℕ : retract 𝟚 of ℕ
+𝟚-retract-of-ℕ = r , s , rs
+ where
+  r : ℕ → 𝟚
+  r 0        = ₀
+  r (succ n) = ₁
+
+  s : 𝟚 → ℕ
+  s ₀ = 0
+  s ₁ = 1
+
+  rs : r ∘ s ∼ id
+  rs ₀ = refl
+  rs ₁ = refl
 
 \end{code}
 

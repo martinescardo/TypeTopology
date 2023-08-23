@@ -551,3 +551,5 @@ decomposition-of-ordinals-type-gives-WEM-bis {𝓤} =
 \end{code}
 
 More examples are included in Iterative.Multisets-Addendum and Iterative.Sets-Addendum.
+
+\end{code}
