@@ -1,8 +1,8 @@
 Martin Escardo, 16th August 2023
 
 We give conditions for types of mathematical structures, such as
-pointed types, ∞-magmas, monoids, groups, posets etc. to be
-algebraically injective. We use algebraic flabbiness as our main tool.
+pointed types, ∞-magmas, monoids, groups, etc. to be algebraically
+injective. We use algebraic flabbiness as our main tool.
 
 \begin{code}
 
@@ -729,10 +729,16 @@ ainjectivity-of-Monoid {𝓤} =
 
 \end{code}
 
+NB. The type Ordinal 𝓤 of well-ordered sets in 𝓤 is also injective,
+but for a different reason.
+
 TODO. It is easy to add further axioms to monoids to get groups, and
 then show that the type of groups is injective using the above
 technique. I expect this to be entirely routine as the example of
 monoids.
+
+TODO. The type of posets should be injective, but with a different
+proof. May the proof for the type of ordinals can be adapted (check).
 
 TODO. More techniques are needed to show that the type of 1-categories
 would be injective. This is more interesting.

@@ -296,6 +296,8 @@ open import Rationals.Order
 
 \end{code}
 
+TODO. Probably the converse holds.
+
 The injectivity of ℕ∞, the conatural numbers, or generic convergent
 sequence, gives WLPO. Like in the previous example, we first use
 injectivity to define a non-continuous function.
