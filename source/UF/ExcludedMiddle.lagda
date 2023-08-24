@@ -76,8 +76,7 @@ WEM-is-prop {𝓤} fe = Π₂-is-prop (λ {𝓤} {𝓥} → fe 𝓤 𝓥)
 
 \end{code}
 
-TODO. Prove the well-known fact that weak excluded middle WEM is
-equivalent to De Morgan's Law.
+Double negation elimination is equivalent to excluded middle.
 
 \begin{code}
 
@@ -97,18 +96,39 @@ DNE-gives-EM : funext 𝓤 𝓤₀ → DNE 𝓤 → EM 𝓤
 DNE-gives-EM fe dne P isp = dne (P + ¬ P)
                              (decidability-of-prop-is-prop fe isp)
                              fake-¬¬-EM
-de-Morgan : EM 𝓤
-          → EM 𝓥
-          → {A : 𝓤 ̇ } {B : 𝓥 ̇ }
-          → is-prop A
-          → is-prop B
-          → ¬ (A × B)
-          → ¬ A + ¬ B
-de-Morgan em em' {A} {B} i j n = Cases (em A i)
-                                  (λ a → Cases (em' B j)
-                                          (λ b → 𝟘-elim (n (a , b)))
-                                          inr)
-                                  inl
+
+De-Morgan : ∀ 𝓤 → 𝓤 ⁺ ̇
+De-Morgan 𝓤 = (P Q : 𝓤 ̇ )
+           → is-prop P
+           → is-prop Q
+           → ¬ (P × Q) → ¬ P + ¬ Q
+
+EM-gives-De-Morgan : EM 𝓤
+                   → De-Morgan 𝓤
+EM-gives-De-Morgan em A B i j n = Cases (em A i)
+                                   (λ a → Cases (em B j)
+                                           (λ b → 𝟘-elim (n (a , b)))
+                                           inr)
+                                   inl
+
+\end{code}
+
+But already weak excluded middle gives De Morgan:
+
+\begin{code}
+
+WEM-gives-De-Morgan : WEM 𝓤 → De-Morgan 𝓤
+WEM-gives-De-Morgan wem A B i j =
+ λ (n : ¬ (A × B)) →
+ Cases (wem A i)
+  inl
+  (λ (ϕ : ¬¬ A)
+        → Cases (wem B j)
+           inr
+           (λ (γ : ¬¬ B) → 𝟘-elim (ϕ (λ (a : A) → γ (λ (b : B) → n (a , b))))))
+
+De-Morgan-gives-WEM : funext 𝓤 𝓤₀ → De-Morgan 𝓤 → WEM 𝓤
+De-Morgan-gives-WEM fe d P i = d P (¬ P) i (negations-are-props fe) (λ (p , ν) → ν p)
 
 fe-and-em-give-propositional-truncations : FunExt
                                          → Excluded-Middle
@@ -125,13 +145,57 @@ module _ (pt : propositional-truncations-exist) where
 
  open PropositionalTruncation pt
 
+ truncated-De-Morgan : ∀ 𝓤 → 𝓤 ⁺ ̇
+ truncated-De-Morgan 𝓤 = (P Q : 𝓤 ̇ )
+                      → is-prop P
+                      → is-prop Q
+                      → ¬ (P × Q) → ¬ P ∨ ¬ Q
+
+ De-Morgan-gives-truncated-De-Morgan : De-Morgan 𝓤 → truncated-De-Morgan 𝓤
+ De-Morgan-gives-truncated-De-Morgan d P Q i j ν = ∣ d P Q i j ν ∣
+
+\end{code}
+
+See https://ncatlab.org/nlab/show/De%20Morgan%20laws for the
+following, which is attributed to this author.
+
+\begin{code}
+
+ truncated-De-Morgan-gives-WEM : FunExt → truncated-De-Morgan 𝓤 → WEM 𝓤
+ truncated-De-Morgan-gives-WEM {𝓤} fe t P i = III
+  where
+   I : ¬ (P × ¬ P) → ¬ P ∨ ¬ (¬ P)
+   I = t P (¬ P) i (negations-are-props (fe 𝓤 𝓤₀))
+
+   II : ¬ P ∨ ¬¬ P
+   II = I (λ (p , ν) → ν p)
+
+   III : ¬ P + ¬¬ P
+   III = exit-∥∥
+          (decidability-of-prop-is-prop (fe 𝓤 𝓤₀)
+          (negations-are-props (fe 𝓤 𝓤₀)))
+          II
+
+ truncated-De-Morgan-gives-De-Morgan : FunExt → truncated-De-Morgan 𝓤 → De-Morgan 𝓤
+ truncated-De-Morgan-gives-De-Morgan fe t P Q i j ν =
+  WEM-gives-De-Morgan (truncated-De-Morgan-gives-WEM fe t) P Q i j ν
+
+\end{code}
+
+The above shows that weak excluded middle, De Morgan amd truncated De
+Morgan are logically equivalent.
+
+\begin{code}
+
+
  double-negation-is-truncation-gives-DNE : ((X : 𝓤 ̇ ) → ¬¬ X → ∥ X ∥) → DNE 𝓤
  double-negation-is-truncation-gives-DNE f P i u = ∥∥-rec i id (f P u)
 
  non-empty-is-inhabited : EM 𝓤 → {X : 𝓤 ̇ } → ¬¬ X → ∥ X ∥
- non-empty-is-inhabited em {X} φ = cases
-                                    (λ s → s)
-                                    (λ u → 𝟘-elim (φ (contrapositive ∣_∣ u))) (em ∥ X ∥ ∥∥-is-prop)
+ non-empty-is-inhabited em {X} φ =
+  cases
+   (λ s → s)
+   (λ u → 𝟘-elim (φ (contrapositive ∣_∣ u))) (em ∥ X ∥ ∥∥-is-prop)
 
  ∃-not+Π : EM (𝓤 ⊔ 𝓥)
          → {X : 𝓤 ̇ }
