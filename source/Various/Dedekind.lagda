@@ -1552,9 +1552,8 @@ Apartness of real numbers and its basic properties:
                              (cases (λ (ℓ : y < z) → inr (inl ℓ))
                                     (λ (ℓ : z < x) → inl (inr ℓ)))
                              (<-cotrans y x ℓ z)
-
- ♯-tight : (x y : ℝ) → ¬ (x ♯ y) → x ＝ y
- ♯-tight x y ν = ≤-ℝ-ℝ-antisym x y III IV
+ ♯-is-tight : (x y : ℝ) → ¬ (x ♯ y) → x ＝ y
+ ♯-is-tight x y ν = ≤-ℝ-ℝ-antisym x y III IV
   where
    I : x ≮ y
    I ℓ = ν (inl ℓ)
@@ -1569,7 +1568,7 @@ Apartness of real numbers and its basic properties:
    IV = ≤₂-gives-≤ y x I
 
  ℝ-is-¬¬-separated : (x y : ℝ) → ¬¬ (x ＝ y) → x ＝ y
- ℝ-is-¬¬-separated x y ϕ = ♯-tight x y (c ϕ)
+ ℝ-is-¬¬-separated x y ϕ = ♯-is-tight x y (c ϕ)
   where
    c : ¬¬ (x ＝ y) → ¬ (x ♯ y)
    c = contrapositive (♯-gives-≠ x y)

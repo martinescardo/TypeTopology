@@ -71,10 +71,8 @@ WEM 𝓤 = (P : 𝓤 ̇ ) → is-prop P → ¬ P + ¬¬ P
 
 WEM-is-prop : FunExt → is-prop (WEM 𝓤)
 WEM-is-prop {𝓤} fe = Π₂-is-prop (λ {𝓤} {𝓥} → fe 𝓤 𝓥)
-                      (λ _ _ → sum-of-contradictory-props
-                                (negations-are-props (fe 𝓤 𝓤₀))
-                                (negations-are-props (fe 𝓤 𝓤₀))
-                                (λ u ϕ → ϕ u))
+                      (λ _ _ → decidability-of-prop-is-prop (fe 𝓤 𝓤₀)
+                                (negations-are-props (fe 𝓤 𝓤₀)))
 
 \end{code}
 

@@ -88,7 +88,7 @@ weak-linearity x y z l = ∥∥-rec ∨-is-prop I l
     II ((r , r<q , rRx) , s , q<s , sLy) = ∥∥-rec ∨-is-prop IV III
      where
       III : (r < z) ∨ (z < s)
-      III = located-from-real z r s (ℚ<-trans r q s r<q q<s)
+      III = ℝ-locatedness z r s (ℚ<-trans r q s r<q q<s)
       IV : (r < z) ∔ (z < s) → (x < z) ∨ (z < y)
       IV (inl rLz) = ∣ inl ∣ r , rRx , rLz ∣ ∣
       IV (inr sRz) = ∣ inr ∣ s , sRz , sLy ∣ ∣
@@ -98,7 +98,7 @@ weak-linearity' x y z l = do
  (q , x<q , q<y) ← l
  (r , r<q , x<r) ← rounded-right-b (upper-cut-of x) (rounded-from-real-R x) q x<q
  (s , q<s , s<y) ← rounded-left-b (lower-cut-of y) (rounded-from-real-L y) q q<y
- t               ← located-from-real z r s (ℚ<-trans r q s r<q q<s)
+ t               ← ℝ-locatedness z r s (ℚ<-trans r q s r<q q<s)
  Cases t (λ r<z → ∣ inl ∣ r , x<r , r<z ∣ ∣)
          (λ z<s → ∣ inr ∣ s , z<s , s<y ∣ ∣)
 
@@ -141,7 +141,7 @@ apartness-gives-inequality x y apart e = ∥∥-rec 𝟘-is-prop I apart
 ℝ-not-less-is-greater-or-equal x y nl p pLy = ∥∥-rec (∈-is-prop (lower-cut-of x) p) I (rounded-left-b (lower-cut-of y) (rounded-from-real-L y) p pLy)
  where
   I : Σ q ꞉ ℚ , p < q < y → p < x
-  I (q , l , q<y) = ∥∥-rec (∈-is-prop (lower-cut-of x) p) II (located-from-real x p q l)
+  I (q , l , q<y) = ∥∥-rec (∈-is-prop (lower-cut-of x) p) II (ℝ-locatedness x p q l)
    where
     II : p < x ∔ q > x → p < x
     II (inl p<x) = p<x
@@ -158,10 +158,10 @@ apartness-gives-inequality x y apart e = ∥∥-rec 𝟘-is-prop I apart
     II = rounded-right-b (upper-cut-of y) (rounded-from-real-R y) q qRy
 
     III : Σ k ꞉ ℚ , k < q × k > y → q > x
-    III (k , k<q , kRy) = ∥∥-rec (∈-is-prop (upper-cut-of x) q) IV (located-from-real x k q k<q)
+    III (k , k<q , kRy) = ∥∥-rec (∈-is-prop (upper-cut-of x) q) IV (ℝ-locatedness x k q k<q)
      where
       IV : k < x ∔ q > x → q > x
-      IV (inl kLx) = 𝟘-elim (ℚ<-not-itself k (disjoint-from-real y k k (x≤y k kLx , kRy)))
+      IV (inl kLx) = 𝟘-elim (ℚ<-irrefl k (disjoint-from-real y k k (x≤y k kLx , kRy)))
       IV (inr qRx) = qRx
 
 <ℝ-irreflexive : (x : ℝ) → x ≮ x
@@ -184,5 +184,35 @@ embedding-preserves-order p q l = I (use-rationals-density)
 
   I : (Σ k ꞉ ℚ , p < k < q) → ∃ k ꞉ ℚ , p < k < q
   I (k , p<k , k<q) = ∣ k , p<k , k<q ∣
+
+\end{code}
+
+Added by Martin Escardo 24th August 2023, adapted from Various.Dedekind.
+
+\begin{code}
+
+≤-ℝ-ℝ-antisym : (x y : ℝ) → x ≤ y → y ≤ x → x ＝ y
+≤-ℝ-ℝ-antisym = ℝ-equality-from-left-cut'
+
+♯-is-tight : (x y : ℝ) → ¬ (x ♯ y) → x ＝ y
+♯-is-tight x y ν = ≤-ℝ-ℝ-antisym x y III IV
+ where
+  I : x ≮ y
+  I ℓ = ν ∣ inl ℓ ∣
+
+  II : y ≮ x
+  II ℓ = ν ∣ inr ℓ ∣
+
+  III : x ≤ y
+  III = ℝ-not-less-is-greater-or-equal y x II
+
+  IV : y ≤ x
+  IV = ℝ-not-less-is-greater-or-equal x y I
+
+ℝ-is-¬¬-separated : (x y : ℝ) → ¬¬ (x ＝ y) → x ＝ y
+ℝ-is-¬¬-separated x y ϕ = ♯-is-tight x y (c ϕ)
+ where
+  c : ¬¬ (x ＝ y) → ¬ (x ♯ y)
+  c = contrapositive (apartness-gives-inequality x y)
 
 \end{code}

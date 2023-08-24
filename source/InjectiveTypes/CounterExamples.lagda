@@ -30,6 +30,8 @@ module InjectiveTypes.CounterExamples
         (pt : propositional-truncations-exist)
        where
 
+open PropositionalTruncation pt
+
 open import MLTT.Spartan
 open import UF.Embeddings
 open import UF.ExcludedMiddle
@@ -37,6 +39,7 @@ open import UF.FunExt
 open import UF.Miscelanea
 open import UF.Retracts
 open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
 open import UF.UA-FunExt
 open import Taboos.Decomposability ua
 
@@ -109,7 +112,8 @@ conclusion.
 
 \begin{code}
 
-simple-type₂-injective-gives-WEM : (X : 𝓤₀ ̇) → simple-type₂ X → ainjective-type X 𝓤 𝓤 → WEM 𝓤
+simple-type₂-injective-gives-WEM : (X : 𝓤₀ ̇)
+                                 → simple-type₂ X → ainjective-type X 𝓤 𝓤 → WEM 𝓤
 simple-type₂-injective-gives-WEM X s X-ainj =
  𝟚-injective-gives-WEM (retract-of-ainjective 𝟚 X X-ainj (simple-types₂-disconnected s))
 
@@ -140,30 +144,30 @@ universe 𝓤₁.
 
 \begin{code}
 
-open import DedekindReals.Type fe' pe pt renaming (0ℝ to 0ᴿ ; 1ℝ to 1ᴿ)
+open import DedekindReals.Type fe' pe pt
 open import DedekindReals.Order fe' pe pt
 open import Notation.Order
 
 ℝ-ainjective-gives-Heaviside-function : ainjective-type ℝ 𝓤₁ 𝓤₁
                                       → Σ H ꞉ (ℝ → ℝ) ,
-                                            ((x : ℝ) → (x < 0ᴿ → H x ＝ 0ᴿ)
-                                                     × (x ≥ 0ᴿ → H x ＝ 1ᴿ))
+                                            ((x : ℝ) → (x < 0ℝ → H x ＝ 0ℝ)
+                                                     × (x ≥ 0ℝ → H x ＝ 1ℝ))
 ℝ-ainjective-gives-Heaviside-function ℝ-ainj = H , γ
  where
-  j : (Σ x ꞉ ℝ , x < 0ᴿ) + (Σ x ꞉ ℝ , x ≥ 0ᴿ) → ℝ
+  j : (Σ x ꞉ ℝ , x < 0ℝ) + (Σ x ꞉ ℝ , x ≥ 0ℝ) → ℝ
   j = cases pr₁ pr₁
 
   j-is-embedding : is-embedding j
   j-is-embedding = disjoint-cases-embedding pr₁ pr₁
-                    (pr₁-is-embedding (λ x → <-is-prop x 0ᴿ))
-                    (pr₁-is-embedding (λ x → ≤-is-prop 0ᴿ x))
+                    (pr₁-is-embedding (λ x → <-is-prop x 0ℝ))
+                    (pr₁-is-embedding (λ x → ≤-is-prop 0ℝ x))
                     d
    where
     d : disjoint-images pr₁ pr₁
-    d (x , l) (x , b) refl = <ℝ-irreflexive x (ℝ<-≤-trans x 0ᴿ x l b)
+    d (x , l) (x , b) refl = <ℝ-irreflexive x (ℝ<-≤-trans x 0ℝ x l b)
 
-  h : (Σ x ꞉ ℝ , x < 0ᴿ) + (Σ x ꞉ ℝ , x ≥ 0ᴿ) → ℝ
-  h = cases (λ _ → 0ᴿ) (λ _ → 1ᴿ)
+  h : (Σ x ꞉ ℝ , x < 0ℝ) + (Σ x ꞉ ℝ , x ≥ 0ℝ) → ℝ
+  h = cases (λ _ → 0ℝ) (λ _ → 1ℝ)
 
   H : ℝ → ℝ
   H = pr₁ (ℝ-ainj j j-is-embedding h)
@@ -171,15 +175,124 @@ open import Notation.Order
   H-extends-h-along-j : ∀ u → H (j u) ＝ h u
   H-extends-h-along-j = pr₂ (ℝ-ainj j j-is-embedding h)
 
-  γ : (x : ℝ) → (x < 0ᴿ → H x ＝ 0ᴿ)
-              × (x ≥ 0ᴿ → H x ＝ 1ᴿ)
+  γ : (x : ℝ) → (x < 0ℝ → H x ＝ 0ℝ)
+              × (x ≥ 0ℝ → H x ＝ 1ℝ)
   γ x = I , II
    where
-    I : x < 0ᴿ → H x ＝ 0ᴿ
+    I : x < 0ℝ → H x ＝ 0ℝ
     I l = H-extends-h-along-j (inl (x , l))
 
-    II : x ≥ 0ᴿ → H x ＝ 1ᴿ
+    II : x ≥ 0ℝ → H x ＝ 1ℝ
     II b = H-extends-h-along-j (inr (x , b))
+
+\end{code}
+
+But we can do better than that and derive weak excluded middle from
+the injectivity of ℝ.
+
+\begin{code}
+
+open import Rationals.Type
+open import Rationals.Order
+
+ℝ-ainjective-gives-WEM : ainjective-type ℝ (𝓤₁ ⊔ 𝓥) 𝓤₁ → WEM 𝓥
+ℝ-ainjective-gives-WEM ℝ-ainj P P-is-prop = XI
+ where
+  j : (ℝ × P) + (ℝ × ¬ P) → ℝ
+  j = cases pr₁ pr₁
+
+  j-is-embedding : is-embedding j
+  j-is-embedding = disjoint-cases-embedding pr₁ pr₁
+                    (pr₁-is-embedding
+                      (λ _ → P-is-prop))
+                    (pr₁-is-embedding
+                      (λ _ → holds-is-prop (¬ P , negations-are-props fe')))
+                    d
+   where
+    d : disjoint-images pr₁ pr₁
+    d (x , p) (x , ν) refl = ν p
+
+  h : (ℝ × P) + (ℝ × ¬ P) → ℝ
+  h = cases (λ _ → 0ℝ) (λ _ → 1ℝ)
+
+  H : ℝ → ℝ
+  H = pr₁ (ℝ-ainj j j-is-embedding h)
+
+  H-extends-h-along-j : ∀ u → H (j u) ＝ h u
+  H-extends-h-along-j = pr₂ (ℝ-ainj j j-is-embedding h)
+
+  x₀ : ℝ
+  x₀ = 0ℝ -- Arbitrary choice. Any number will do.
+
+  I : P → H x₀ ＝ 0ℝ
+  I p = H-extends-h-along-j (inl (x₀ , p))
+
+  II : ¬ P → H x₀ ＝ 1ℝ
+  II ν = H-extends-h-along-j (inr (x₀ , ν))
+
+  I-II : H x₀ ≠ 0ℝ → H x₀ ≠ 1ℝ → 𝟘
+  I-II u v = contrapositive II v (contrapositive I u)
+
+  I-II₀ : H x₀ ≠ 1ℝ → H x₀ ＝ 0ℝ
+  I-II₀ v = ℝ-is-¬¬-separated (H x₀) 0ℝ (λ u → I-II u v)
+
+  I-II₁ : H x₀ ≠ 0ℝ → H x₀ ＝ 1ℝ
+  I-II₁ u = ℝ-is-¬¬-separated (H x₀) 1ℝ (I-II u)
+
+  III : (1/4 < H x₀) ∨ (H x₀ < 1/2)
+  III = ℝ-locatedness (H x₀) 1/4 1/2 1/4<1/2
+
+  IV : 1/4 < H x₀ → H x₀ ＝ 1ℝ
+  IV l = I-II₁ IV₀
+   where
+     IV₀ : H x₀ ≠ 0ℝ
+     IV₀ e = ℚ<-irrefl 1/4 IV₃
+      where
+       IV₁ : 1/4 < 0ℝ
+       IV₁ = transport (1/4 <_) e l
+       IV₂ : 1/4 < 0ℚ
+       IV₂ = IV₁
+       IV₃ : 1/4 < 1/4
+       IV₃ = ℚ<-trans 1/4 0ℚ 1/4 IV₂ 0<1/4
+
+  V : H x₀ < 1/2 → H x₀ ＝ 0ℝ
+  V l = I-II₀ V₀
+   where
+     V₀ : H x₀ ≠ 1ℝ
+     V₀ e = ℚ<-irrefl 1/2 V₃
+      where
+       V₁ : 1ℝ < 1/2
+       V₁ = transport (_< 1/2) e l
+       V₂ : 1ℚ < 1/2
+       V₂ = V₁
+       V₃ : 1/2 < 1/2
+       V₃ = ℚ<-trans 1/2 1ℚ 1/2 1/2<1 V₂
+
+  VI : H x₀ ＝ 0ℝ → ¬¬ P
+  VI e ν = apartness-gives-inequality 0ℝ 1ℝ
+           ℝ-zero-apart-from-one
+            (0ℝ   ＝⟨ e ⁻¹ ⟩
+             H x₀ ＝⟨ II ν ⟩
+             1ℝ   ∎)
+
+  VII : H x₀ ＝ 1ℝ → ¬ P
+  VII e p = apartness-gives-inequality 0ℝ 1ℝ
+             ℝ-zero-apart-from-one
+             (0ℝ   ＝⟨ (I p)⁻¹ ⟩
+             H x₀  ＝⟨ e ⟩
+             1ℝ    ∎)
+
+  VIII : H x₀ < 1/2 → ¬¬ P
+  VIII l = VI (V l)
+
+  IX :  1/4 ℚ<ℝ H x₀ → ¬ P
+  IX l = VII (IV l)
+
+  X : ¬ P ∨ ¬¬ P
+  X = ∨-functor IX VIII III
+
+  XI : ¬ P + ¬¬ P
+  XI = exit-∥∥ (decidability-of-prop-is-prop fe' (negations-are-props fe')) X
 
 \end{code}
 

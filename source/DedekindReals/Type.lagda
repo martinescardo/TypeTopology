@@ -141,8 +141,8 @@ in-lower-cut q ((L , R) , _) = q ∈ L
 in-upper-cut : ℚ → ℝ → 𝓤₀ ̇
 in-upper-cut q ((L , R) , _) = q ∈ R
 
-located-from-real : (((L , R) , _) : ℝ) → (p q : ℚ) → p < q → p ∈ L ∨ q ∈ R
-located-from-real ((L , R) , _ , _ , _ , _ , _ , located-y) = located-y
+ℝ-locatedness : (((L , R) , _) : ℝ) → (p q : ℚ) → p < q → p ∈ L ∨ q ∈ R
+ℝ-locatedness ((L , R) , _ , _ , _ , _ , _ , located-y) = located-y
 
 inhabited-from-real-L : (((L , R) , i) : ℝ) → inhabited-left L
 inhabited-from-real-L ((L , R) , inhabited-L , _) = inhabited-L
@@ -203,7 +203,7 @@ instance
  _<_<_ {{Strict-Order-Chain-ℝ-ℚ-ℝ}} p q r = (p < q) × (q < r)
 
 ℚ<-not-itself-from-ℝ : (p : ℚ) → (x : ℝ) → ¬ (p < x < p)
-ℚ<-not-itself-from-ℝ p x (l₁ , l₂) = ℚ<-not-itself p (disjoint-from-real x p p (l₁ , l₂))
+ℚ<-not-itself-from-ℝ p x (l₁ , l₂) = ℚ<-irrefl p (disjoint-from-real x p p (l₁ , l₂))
 
 embedding-ℚ-to-ℝ : ℚ → ℝ
 embedding-ℚ-to-ℝ x = (L , R) , inhabited-left'
@@ -320,7 +320,7 @@ instance
         use-located : q' ∈ Ly ∨ q ∈ Ry
         use-located = located-y q' q q'<q
         III : q' ∈ Ly ∔ q ∈ Ry → q ∈ Ry
-        III (inl q'-Ly) = 𝟘-elim (ℚ<-not-itself q' from-above)
+        III (inl q'-Ly) = 𝟘-elim (ℚ<-irrefl q' from-above)
          where
           get-contradiction : q' ∈ Lx
           get-contradiction = Ly⊆Lx q' q'-Ly
@@ -340,7 +340,7 @@ instance
         use-located : q' ∈ Lx ∨ q ∈ Rx
         use-located = located-x q' q q'<q
         III : q' ∈ Lx ∔ q ∈ Rx → q ∈ Rx
-        III (inl q'-Lx) = 𝟘-elim (ℚ<-not-itself q' from-above)
+        III (inl q'-Lx) = 𝟘-elim (ℚ<-irrefl q' from-above)
          where
           get-contradiction : q' ∈ Ly
           get-contradiction = Lx⊆Ly q' q'-Lx
