@@ -175,7 +175,7 @@ De-Morgan-is-not-prop {𝓤} fe δ = IV
       (a : ¬ P + ¬¬ P)
       (b : ¬ Q + ¬¬ Q)
       (c : ¬ P + ¬ Q)
-      → ¬ P + ¬ Q
+    → ¬ P + ¬ Q
   g P Q i j ν (inl _) (inl v) (inl _) = inr v
   g P Q i j ν (inl u) (inl _) (inr _) = inl u
   g P Q i j ν (inl _) (inr _) _       = δ P Q i j ν
@@ -224,8 +224,7 @@ De-Morgan-is-not-prop {𝓤} fe δ = IV
   III : δ' ≠ δ
   III e = II 𝟘-is-prop 𝟘-is-prop III₀
    where
-    III₀ : δ' 𝟘 𝟘 𝟘-is-prop 𝟘-is-prop ν
-        ＝ δ 𝟘 𝟘 𝟘-is-prop 𝟘-is-prop ν
+    III₀ : δ' 𝟘 𝟘 𝟘-is-prop 𝟘-is-prop ν ＝ δ 𝟘 𝟘 𝟘-is-prop 𝟘-is-prop ν
     III₀ = ap (λ - → - 𝟘 𝟘 𝟘-is-prop 𝟘-is-prop ν) e
 
   IV : ¬ is-prop (De-Morgan 𝓤)
@@ -240,6 +239,10 @@ module _ (pt : propositional-truncations-exist) where
                        → is-prop P
                        → is-prop Q
                        → ¬ (P × Q) → ¬ P ∨ ¬ Q
+
+ truncated-De-Morgan-is-prop : FunExt → is-prop (truncated-De-Morgan 𝓤)
+ truncated-De-Morgan-is-prop fe = Π₅-is-prop (λ {𝓤} {𝓥} → fe 𝓤 𝓥)
+                                   (λ P Q i j ν → ∨-is-prop)
 
  De-Morgan-gives-truncated-De-Morgan : De-Morgan 𝓤 → truncated-De-Morgan 𝓤
  De-Morgan-gives-truncated-De-Morgan d P Q i j ν = ∣ d P Q i j ν ∣
