@@ -97,39 +97,6 @@ DNE-gives-EM fe dne P isp = dne (P + ¬ P)
                              (decidability-of-prop-is-prop fe isp)
                              fake-¬¬-EM
 
-De-Morgan : ∀ 𝓤 → 𝓤 ⁺ ̇
-De-Morgan 𝓤 = (P Q : 𝓤 ̇ )
-           → is-prop P
-           → is-prop Q
-           → ¬ (P × Q) → ¬ P + ¬ Q
-
-EM-gives-De-Morgan : EM 𝓤
-                   → De-Morgan 𝓤
-EM-gives-De-Morgan em A B i j n = Cases (em A i)
-                                   (λ a → Cases (em B j)
-                                           (λ b → 𝟘-elim (n (a , b)))
-                                           inr)
-                                   inl
-
-\end{code}
-
-But already weak excluded middle gives De Morgan:
-
-\begin{code}
-
-WEM-gives-De-Morgan : WEM 𝓤 → De-Morgan 𝓤
-WEM-gives-De-Morgan wem A B i j =
- λ (n : ¬ (A × B)) →
- Cases (wem A i)
-  inl
-  (λ (ϕ : ¬¬ A)
-        → Cases (wem B j)
-           inr
-           (λ (γ : ¬¬ B) → 𝟘-elim (ϕ (λ (a : A) → γ (λ (b : B) → n (a , b))))))
-
-De-Morgan-gives-WEM : funext 𝓤 𝓤₀ → De-Morgan 𝓤 → WEM 𝓤
-De-Morgan-gives-WEM fe d P i = d P (¬ P) i (negations-are-props fe) (λ (p , ν) → ν p)
-
 fe-and-em-give-propositional-truncations : FunExt
                                          → Excluded-Middle
                                          → propositional-truncations-exist
@@ -137,9 +104,47 @@ fe-and-em-give-propositional-truncations fe em =
  record {
   ∥_∥          = λ X → ¬¬ X ;
   ∥∥-is-prop   = Π-is-prop (fe _ _) (λ _ → 𝟘-is-prop) ;
-  ∣_∣         = λ x u → u x ;
+  ∣_∣          = λ x u → u x ;
   ∥∥-rec       = λ i u φ → EM-gives-DNE em _ i (¬¬-functor u φ)
   }
+
+De-Morgan : ∀ 𝓤 → 𝓤 ⁺ ̇
+De-Morgan 𝓤 = (P Q : 𝓤 ̇ )
+             → is-prop P
+             → is-prop Q
+             → ¬ (P × Q) → ¬ P + ¬ Q
+
+EM-gives-De-Morgan : EM 𝓤
+                   → De-Morgan 𝓤
+EM-gives-De-Morgan em A B i j =
+ λ (ν : ¬ (A × B)) →
+      Cases (em A i)
+       (λ (a : A) → Cases (em B j)
+                     (λ (b : B) → 𝟘-elim (ν (a , b)))
+                     inr)
+       inl
+
+\end{code}
+
+But already weak excluded middle gives De Morgan:
+
+\begin{code}
+
+non-contradiction : {X : 𝓤 ̇ } → ¬ (X × ¬ X)
+non-contradiction (x , ν) = ν x
+
+WEM-gives-De-Morgan : WEM 𝓤 → De-Morgan 𝓤
+WEM-gives-De-Morgan wem A B i j =
+ λ (ν : ¬ (A × B)) →
+      Cases (wem A i)
+       inl
+       (λ (ϕ : ¬¬ A)
+             → Cases (wem B j)
+                inr
+                (λ (γ : ¬¬ B) → 𝟘-elim (ϕ (λ (a : A) → γ (λ (b : B) → ν (a , b))))))
+
+De-Morgan-gives-WEM : funext 𝓤 𝓤₀ → De-Morgan 𝓤 → WEM 𝓤
+De-Morgan-gives-WEM fe d P i = d P (¬ P) i (negations-are-props fe) non-contradiction
 
 module _ (pt : propositional-truncations-exist) where
 
@@ -147,28 +152,21 @@ module _ (pt : propositional-truncations-exist) where
 
  truncated-De-Morgan : ∀ 𝓤 → 𝓤 ⁺ ̇
  truncated-De-Morgan 𝓤 = (P Q : 𝓤 ̇ )
-                      → is-prop P
-                      → is-prop Q
-                      → ¬ (P × Q) → ¬ P ∨ ¬ Q
+                       → is-prop P
+                       → is-prop Q
+                       → ¬ (P × Q) → ¬ P ∨ ¬ Q
 
  De-Morgan-gives-truncated-De-Morgan : De-Morgan 𝓤 → truncated-De-Morgan 𝓤
  De-Morgan-gives-truncated-De-Morgan d P Q i j ν = ∣ d P Q i j ν ∣
 
-\end{code}
-
-See https://ncatlab.org/nlab/show/De%20Morgan%20laws for the
-following, which is attributed to this author.
-
-\begin{code}
-
  truncated-De-Morgan-gives-WEM : FunExt → truncated-De-Morgan 𝓤 → WEM 𝓤
  truncated-De-Morgan-gives-WEM {𝓤} fe t P i = III
   where
-   I : ¬ (P × ¬ P) → ¬ P ∨ ¬ (¬ P)
+   I : ¬ (P × ¬ P) → ¬ P ∨ ¬¬ P
    I = t P (¬ P) i (negations-are-props (fe 𝓤 𝓤₀))
 
    II : ¬ P ∨ ¬¬ P
-   II = I (λ (p , ν) → ν p)
+   II = I non-contradiction
 
    III : ¬ P + ¬¬ P
    III = exit-∥∥
@@ -183,19 +181,20 @@ following, which is attributed to this author.
 \end{code}
 
 The above shows that weak excluded middle, De Morgan amd truncated De
-Morgan are logically equivalent.
+Morgan are logically equivalent (https://ncatlab.org/nlab/show/De%20Morgan%20laws).
 
 \begin{code}
 
-
  double-negation-is-truncation-gives-DNE : ((X : 𝓤 ̇ ) → ¬¬ X → ∥ X ∥) → DNE 𝓤
- double-negation-is-truncation-gives-DNE f P i u = ∥∥-rec i id (f P u)
+ double-negation-is-truncation-gives-DNE f P i u = exit-∥∥ i (f P u)
 
  non-empty-is-inhabited : EM 𝓤 → {X : 𝓤 ̇ } → ¬¬ X → ∥ X ∥
  non-empty-is-inhabited em {X} φ =
   cases
-   (λ s → s)
-   (λ u → 𝟘-elim (φ (contrapositive ∣_∣ u))) (em ∥ X ∥ ∥∥-is-prop)
+   (λ (s : ∥ X ∥)
+         → s)
+   (λ (u : ¬ ∥ X ∥)
+         → 𝟘-elim (φ (contrapositive ∣_∣ u))) (em ∥ X ∥ ∥∥-is-prop)
 
  ∃-not+Π : EM (𝓤 ⊔ 𝓥)
          → {X : 𝓤 ̇ }
