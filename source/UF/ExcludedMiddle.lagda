@@ -146,6 +146,91 @@ WEM-gives-De-Morgan wem A B i j =
 De-Morgan-gives-WEM : funext 𝓤 𝓤₀ → De-Morgan 𝓤 → WEM 𝓤
 De-Morgan-gives-WEM fe d P i = d P (¬ P) i (negations-are-props fe) non-contradiction
 
+\end{code}
+
+Is the above De Morgan Law a proposition? If it doesn't hold, it is
+vacuously a proposition. But if it does hold, it is not a
+proposition. We prove this by modifying any given δ : De-Mordan 𝓤 to a
+different δ' : De-Morgan 𝓤. Then we also consider a truncated version
+of De-Morgan that is a proposition and is logically equivalent to
+De-Morgan. So De-Morgan 𝓤 is not necessarily a proposition, but it
+always has split support (it has a proposition as a retract).
+
+\begin{code}
+
+De-Morgan-is-prop : ¬ De-Morgan 𝓤 → is-prop (De-Morgan 𝓤)
+De-Morgan-is-prop ν δ = 𝟘-elim (ν δ)
+
+De-Morgan-is-not-prop : funext 𝓤 𝓤₀ → De-Morgan 𝓤 → ¬ is-prop (De-Morgan 𝓤)
+De-Morgan-is-not-prop {𝓤} fe δ = IV
+ where
+  open import MLTT.Plus-Properties
+
+  wem : WEM 𝓤
+  wem = De-Morgan-gives-WEM fe δ
+
+  g : (P Q : 𝓤 ̇ )
+      (i : is-prop P) (j : is-prop Q)
+      (ν : ¬ (P × Q))
+      (a : ¬ P + ¬¬ P)
+      (b : ¬ Q + ¬¬ Q)
+      (c : ¬ P + ¬ Q)
+      → ¬ P + ¬ Q
+  g P Q i j ν (inl _) (inl v) (inl _) = inr v
+  g P Q i j ν (inl u) (inl _) (inr _) = inl u
+  g P Q i j ν (inl _) (inr _) _       = δ P Q i j ν
+  g P Q i j ν (inr _) _       _       = δ P Q i j ν
+
+  δ' : De-Morgan 𝓤
+  δ' P Q i j ν = g P Q i j ν (wem P i) (wem Q j) (δ P Q i j ν)
+
+  I : (i : is-prop 𝟘) (h : ¬ 𝟘) → wem 𝟘 i ＝ inl h
+  I i h = I₀ (wem 𝟘 i) refl
+   where
+    I₀ : (a : ¬ 𝟘 + ¬¬ 𝟘) → wem 𝟘 i ＝ a → wem 𝟘 i ＝ inl h
+    I₀ (inl u) p = transport (λ - → wem 𝟘 i ＝ inl -) (negations-are-props fe u h) p
+    I₀ (inr ϕ) p = 𝟘-elim (ϕ h)
+
+  ν : ¬ (𝟘 × 𝟘)
+  ν (p , q) = 𝟘-elim p
+
+  II : (i j : is-prop 𝟘) → δ' 𝟘 𝟘 i j ν ≠ δ 𝟘 𝟘 i j ν
+  II i j = II₃
+   where
+    m n : ¬ 𝟘 + ¬ 𝟘
+    m = δ 𝟘 𝟘 i j ν
+    n = g 𝟘 𝟘 i j ν (inl 𝟘-elim) (inl 𝟘-elim) m
+
+    II₁ : δ' 𝟘 𝟘 i j ν ＝ n
+    II₁ = ap₂ (λ -₁ -₂ → g 𝟘 𝟘 i j ν -₁ -₂ m)
+              (I i 𝟘-elim)
+              (I j 𝟘-elim)
+
+    II₂ : (m' : ¬ 𝟘 + ¬ 𝟘)
+        → m ＝ m'
+        → g 𝟘 𝟘 i j ν (inl 𝟘-elim) (inl 𝟘-elim) m' ≠ m
+    II₂ (inl x) p q = +disjoint
+                       (inl x      ＝⟨ p ⁻¹ ⟩
+                        m          ＝⟨ q ⁻¹ ⟩
+                        inr 𝟘-elim ∎)
+    II₂ (inr x) p q = +disjoint
+                       (inl 𝟘-elim ＝⟨ q ⟩
+                        m          ＝⟨ p ⟩
+                        inr x      ∎)
+
+    II₃ : δ' 𝟘 𝟘 i j ν ≠ m
+    II₃ = transport (_≠ m) (II₁ ⁻¹) (II₂ m refl)
+
+  III : δ' ≠ δ
+  III e = II 𝟘-is-prop 𝟘-is-prop III₀
+   where
+    III₀ : δ' 𝟘 𝟘 𝟘-is-prop 𝟘-is-prop ν
+        ＝ δ 𝟘 𝟘 𝟘-is-prop 𝟘-is-prop ν
+    III₀ = ap (λ - → - 𝟘 𝟘 𝟘-is-prop 𝟘-is-prop ν) e
+
+  IV : ¬ is-prop (De-Morgan 𝓤)
+  IV i = III (i δ' δ)
+
 module _ (pt : propositional-truncations-exist) where
 
  open PropositionalTruncation pt
