@@ -140,6 +140,7 @@ open import TypeTopology.TotallySeparated
                               (ℕ∞-retract-of-Cantor fe)
                               (Cantor-is-totally-separated fe)
 
+
 Zero : ℕ∞
 Zero = (λ i → ₀) , (λ i → ≤₂-refl {₀})
 
@@ -175,6 +176,17 @@ is-positive u = 0 ⊏ u
 
 positivity : ℕ∞ → 𝟚
 positivity u = ι u 0
+
+𝟚-retract-of-ℕ∞ : retract 𝟚 of ℕ∞
+𝟚-retract-of-ℕ∞  = positivity , s , η
+ where
+  s : 𝟚 → ℕ∞
+  s ₀ = Zero
+  s ₁ = Succ Zero
+
+  η : positivity ∘ s ∼ id
+  η ₀ = refl
+  η ₁ = refl
 
 is-Zero-Zero : is-Zero Zero
 is-Zero-Zero = refl

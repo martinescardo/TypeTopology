@@ -63,8 +63,8 @@ injective if and only if weak excluded middle holds.
 
 \begin{code}
 
-𝟚-injective-gives-WEM : ainjective-type 𝟚 𝓤 𝓤 → WEM 𝓤
-𝟚-injective-gives-WEM {𝓤} 𝟚-ainj = I
+𝟚-ainjective-gives-WEM : ainjective-type 𝟚 𝓤 𝓥 → WEM 𝓤
+𝟚-ainjective-gives-WEM {𝓤} 𝟚-ainj = I
  where
   d : decomposition 𝟚
   d = id , (₀ , refl) , (₁ , refl)
@@ -115,7 +115,7 @@ conclusion.
 simple-type₂-injective-gives-WEM : (X : 𝓤₀ ̇)
                                  → simple-type₂ X → ainjective-type X 𝓤 𝓤 → WEM 𝓤
 simple-type₂-injective-gives-WEM X s X-ainj =
- 𝟚-injective-gives-WEM (retract-of-ainjective 𝟚 X X-ainj (simple-types₂-disconnected s))
+ 𝟚-ainjective-gives-WEM (retract-of-ainjective 𝟚 X X-ainj (simple-types₂-disconnected s))
 
 simple-type₂-injective-gives-WEM-examples
  : (ainjective-type ℕ                   𝓤 𝓤 → WEM 𝓤)
@@ -232,41 +232,37 @@ open import Rationals.Order
   IV l = I-II₁ IV₀
    where
      IV₀ : r ≠ 0ℝ
-     IV₀ e = ℚ<-irrefl 1/4 IV₃
+     IV₀ e = ℚ<-irrefl 1/4 IV₂
       where
        IV₁ : 1/4 < 0ℝ
        IV₁ = transport (1/4 <_) e l
-       IV₂ : 1/4 < 0ℚ
-       IV₂ = IV₁
-       IV₃ : 1/4 < 1/4
-       IV₃ = ℚ<-trans 1/4 0ℚ 1/4 IV₂ 0<1/4
+       IV₂ : 1/4 < 1/4
+       IV₂ = ℚ<-trans 1/4 0ℚ 1/4 IV₁ 0<1/4
 
   V : r < 1/2 → r ＝ 0ℝ
   V l = I-II₀ V₀
    where
      V₀ : r ≠ 1ℝ
-     V₀ e = ℚ<-irrefl 1/2 V₃
+     V₀ e = ℚ<-irrefl 1/2 V₂
       where
        V₁ : 1ℝ < 1/2
        V₁ = transport (_< 1/2) e l
-       V₂ : 1ℚ < 1/2
-       V₂ = V₁
-       V₃ : 1/2 < 1/2
-       V₃ = ℚ<-trans 1/2 1ℚ 1/2 1/2<1 V₂
+       V₂ : 1/2 < 1/2
+       V₂ = ℚ<-trans 1/2 1ℚ 1/2 1/2<1 V₁
 
   VI : r ＝ 0ℝ → ¬¬ P
   VI e ν = apartness-gives-inequality 0ℝ 1ℝ
-           ℝ-zero-apart-from-one
-            (0ℝ   ＝⟨ e ⁻¹ ⟩
-             r ＝⟨ II ν ⟩
-             1ℝ   ∎)
+            ℝ-zero-apart-from-one
+             (0ℝ ＝⟨ e ⁻¹ ⟩
+              r  ＝⟨ II ν ⟩
+              1ℝ ∎)
 
   VII : r ＝ 1ℝ → ¬ P
   VII e p = apartness-gives-inequality 0ℝ 1ℝ
              ℝ-zero-apart-from-one
-             (0ℝ   ＝⟨ (I p)⁻¹ ⟩
-             r  ＝⟨ e ⟩
-             1ℝ    ∎)
+             (0ℝ ＝⟨ (I p)⁻¹ ⟩
+             r   ＝⟨ e ⟩
+             1ℝ  ∎)
 
   VIII : r < 1/2 → ¬¬ P
   VIII l = VI (V l)
@@ -313,5 +309,17 @@ open import Notation.CanonicalMap
 
   f₁ : f ∞ ＝ ι 1
   f₁ = f-extends-g-along-ι𝟙 (inr ⋆)
+
+\end{code}
+
+The above again illustrates that we can use injectivity to define
+discontinuous functions. But we can actually get a stronger
+conclusion with a simpler proof.
+
+\begin{code}
+
+ℕ∞-injective-gives-WEM : ainjective-type ℕ∞ 𝓤 𝓥 → WEM 𝓤
+ℕ∞-injective-gives-WEM {𝓤} ℕ∞-ainj =
+ 𝟚-ainjective-gives-WEM (retract-of-ainjective 𝟚 ℕ∞ ℕ∞-ainj 𝟚-retract-of-ℕ∞)
 
 \end{code}
