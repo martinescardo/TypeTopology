@@ -195,57 +195,43 @@ the injectivity of ℝ.
 open import Rationals.Type
 open import Rationals.Order
 
-ℝ-ainjective-gives-WEM : ainjective-type ℝ (𝓤₁ ⊔ 𝓥) 𝓤₁ → WEM 𝓥
-ℝ-ainjective-gives-WEM ℝ-ainj P P-is-prop = XI
+ℝ-ainjective-gives-WEM : ainjective-type ℝ 𝓤 𝓥 → WEM 𝓤
+ℝ-ainjective-gives-WEM {𝓤} ℝ-ainj P P-is-prop = XI
  where
-  j : (ℝ × P) + (ℝ × ¬ P) → ℝ
-  j = cases pr₁ pr₁
+  q : Ω 𝓤
+  q = (P + ¬ P) , decidability-of-prop-is-prop fe' P-is-prop
 
-  j-is-embedding : is-embedding j
-  j-is-embedding = disjoint-cases-embedding pr₁ pr₁
-                    (pr₁-is-embedding
-                      (λ _ → P-is-prop))
-                    (pr₁-is-embedding
-                      (λ _ → holds-is-prop (¬ P , negations-are-props fe')))
-                    d
-   where
-    d : disjoint-images pr₁ pr₁
-    d (x , p) (x , ν) refl = ν p
+  ℝ-aflabby : aflabby ℝ 𝓤
+  ℝ-aflabby = ainjective-types-are-aflabby ℝ ℝ-ainj
 
-  h : (ℝ × P) + (ℝ × ¬ P) → ℝ
-  h = cases (λ _ → 0ℝ) (λ _ → 1ℝ)
+  f : P + ¬ P → ℝ
+  f = cases (λ _ → 0ℝ) (λ _ → 1ℝ)
 
-  H : ℝ → ℝ
-  H = pr₁ (ℝ-ainj j j-is-embedding h)
+  r : ℝ
+  r = aflabby-extension ℝ-aflabby q f
 
-  H-extends-h-along-j : ∀ u → H (j u) ＝ h u
-  H-extends-h-along-j = pr₂ (ℝ-ainj j j-is-embedding h)
+  I : P → r ＝ 0ℝ
+  I p = aflabby-extension-property ℝ-aflabby q f (inl p)
 
-  x₀ : ℝ
-  x₀ = 0ℝ -- Arbitrary choice. Any number will do.
+  II : ¬ P → r ＝ 1ℝ
+  II ν = aflabby-extension-property ℝ-aflabby q f (inr ν)
 
-  I : P → H x₀ ＝ 0ℝ
-  I p = H-extends-h-along-j (inl (x₀ , p))
-
-  II : ¬ P → H x₀ ＝ 1ℝ
-  II ν = H-extends-h-along-j (inr (x₀ , ν))
-
-  I-II : H x₀ ≠ 0ℝ → H x₀ ≠ 1ℝ → 𝟘
+  I-II : r ≠ 0ℝ → r ≠ 1ℝ → 𝟘
   I-II u v = contrapositive II v (contrapositive I u)
 
-  I-II₀ : H x₀ ≠ 1ℝ → H x₀ ＝ 0ℝ
-  I-II₀ v = ℝ-is-¬¬-separated (H x₀) 0ℝ (λ u → I-II u v)
+  I-II₀ : r ≠ 1ℝ → r ＝ 0ℝ
+  I-II₀ v = ℝ-is-¬¬-separated (r) 0ℝ (λ u → I-II u v)
 
-  I-II₁ : H x₀ ≠ 0ℝ → H x₀ ＝ 1ℝ
-  I-II₁ u = ℝ-is-¬¬-separated (H x₀) 1ℝ (I-II u)
+  I-II₁ : r ≠ 0ℝ → r ＝ 1ℝ
+  I-II₁ u = ℝ-is-¬¬-separated (r) 1ℝ (I-II u)
 
-  III : (1/4 < H x₀) ∨ (H x₀ < 1/2)
-  III = ℝ-locatedness (H x₀) 1/4 1/2 1/4<1/2
+  III : (1/4 < r) ∨ (r < 1/2)
+  III = ℝ-locatedness (r) 1/4 1/2 1/4<1/2
 
-  IV : 1/4 < H x₀ → H x₀ ＝ 1ℝ
+  IV : 1/4 < r → r ＝ 1ℝ
   IV l = I-II₁ IV₀
    where
-     IV₀ : H x₀ ≠ 0ℝ
+     IV₀ : r ≠ 0ℝ
      IV₀ e = ℚ<-irrefl 1/4 IV₃
       where
        IV₁ : 1/4 < 0ℝ
@@ -255,10 +241,10 @@ open import Rationals.Order
        IV₃ : 1/4 < 1/4
        IV₃ = ℚ<-trans 1/4 0ℚ 1/4 IV₂ 0<1/4
 
-  V : H x₀ < 1/2 → H x₀ ＝ 0ℝ
+  V : r < 1/2 → r ＝ 0ℝ
   V l = I-II₀ V₀
    where
-     V₀ : H x₀ ≠ 1ℝ
+     V₀ : r ≠ 1ℝ
      V₀ e = ℚ<-irrefl 1/2 V₃
       where
        V₁ : 1ℝ < 1/2
@@ -268,24 +254,24 @@ open import Rationals.Order
        V₃ : 1/2 < 1/2
        V₃ = ℚ<-trans 1/2 1ℚ 1/2 1/2<1 V₂
 
-  VI : H x₀ ＝ 0ℝ → ¬¬ P
+  VI : r ＝ 0ℝ → ¬¬ P
   VI e ν = apartness-gives-inequality 0ℝ 1ℝ
            ℝ-zero-apart-from-one
             (0ℝ   ＝⟨ e ⁻¹ ⟩
-             H x₀ ＝⟨ II ν ⟩
+             r ＝⟨ II ν ⟩
              1ℝ   ∎)
 
-  VII : H x₀ ＝ 1ℝ → ¬ P
+  VII : r ＝ 1ℝ → ¬ P
   VII e p = apartness-gives-inequality 0ℝ 1ℝ
              ℝ-zero-apart-from-one
              (0ℝ   ＝⟨ (I p)⁻¹ ⟩
-             H x₀  ＝⟨ e ⟩
+             r  ＝⟨ e ⟩
              1ℝ    ∎)
 
-  VIII : H x₀ < 1/2 → ¬¬ P
+  VIII : r < 1/2 → ¬¬ P
   VIII l = VI (V l)
 
-  IX :  1/4 ℚ<ℝ H x₀ → ¬ P
+  IX :  1/4 ℚ<ℝ r → ¬ P
   IX l = VII (IV l)
 
   X : ¬ P ∨ ¬¬ P
