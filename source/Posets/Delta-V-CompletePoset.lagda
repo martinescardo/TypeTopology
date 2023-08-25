@@ -175,10 +175,9 @@ We could show that if the converse holds then so does LEM in 𝓥.
 
 \begin{code}
 
-  transitivity-lemma : (x y z : ∣ A ∣ₚ) → (i : is-δ-complete) →
-   (((x ≤[ A ] y) holds × y is-strictly-below z) → x is-strictly-below z) ×
-   ((x is-strictly-below y × (y ≤[ A ] z) holds) → x is-strictly-below z)
-  pr₁ (transitivity-lemma x y z i) r = (≤-is-transitive A x y z (pr₁ r) (order (pr₂ r)) , h)
+  transitivity-lemma-1 : (x y z : ∣ A ∣ₚ) → (i : is-δ-complete) →
+   (((x ≤[ A ] y) holds × y is-strictly-below z) → x is-strictly-below z) 
+  transitivity-lemma-1 x y z i r = (≤-is-transitive A x y z (pr₁ r) (order (pr₂ r)) , h)
    where
     h : (w : ∣ A ∣ₚ) → (z ≤[ A ] w) holds → (P : Ω 𝓥) →
      (w is-lub-of ((𝟙 + (P holds)) , δ x w P)) holds → P holds
@@ -195,14 +194,16 @@ We could show that if the converse holds then so does LEM in 𝓥.
         c (inl ⋆) = ≤-is-transitive A x y (pr₁ u) (pr₁ r) (pr₂ u (inl ⋆))
         c (inr p) = pr₂ u (inr p)
 
-  pr₂ (transitivity-lemma x y z i) r =
+  transitivity-lemma-2 : (x y z : ∣ A ∣ₚ) → (i : is-δ-complete) →
+   ((x is-strictly-below y × (y ≤[ A ] z) holds) → x is-strictly-below z)
+  transitivity-lemma-2 x y z i r =
    (≤-is-transitive A x y z (order (pr₁ r)) (pr₂ r) , a)
     where
      a : (w : ∣ A ∣ₚ) → rel-syntax A z w holds → (P : Ω 𝓥) →
       (w is-lub-of ((𝟙 + (P holds)) , δ x w P)) holds → P holds
      a w q P l = sup-condition (pr₁ r) w (≤-is-transitive A y z w (pr₂ r) q) P l
 
-  is-positive : {i : is-δ-complete} → 𝓤 ⊔ 𝓦 ⊔ (𝓥 ⁺) ̇ 
+  is-positive : 𝓤 ⊔ 𝓦 ⊔ (𝓥 ⁺) ̇ 
   is-positive = Σ x ꞉ ∣ A ∣ₚ , (Σ y ꞉ ∣ A ∣ₚ , x is-strictly-below y)
 
 \end{code}
