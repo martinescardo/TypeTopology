@@ -314,12 +314,12 @@ open import Notation.CanonicalMap
 
 The above again illustrates that we can use injectivity to define
 discontinuous functions. But we can actually get a stronger
-conclusion with a simpler proof.
+conclusion with a weaker assumption and a simpler proof.
 
 \begin{code}
 
 ℕ∞-injective-gives-WEM : ainjective-type ℕ∞ 𝓤 𝓥 → WEM 𝓤
-ℕ∞-injective-gives-WEM {𝓤} ℕ∞-ainj =
+ℕ∞-injective-gives-WEM ℕ∞-ainj =
  𝟚-ainjective-gives-WEM (retract-of-ainjective 𝟚 ℕ∞ ℕ∞-ainj 𝟚-retract-of-ℕ∞)
 
 \end{code}
