@@ -58,6 +58,9 @@ equivalent to a type in the universe 𝓥:
 _is_small : 𝓤 ̇ → (𝓥 : Universe) → 𝓥 ⁺  ⊔ 𝓤 ̇
 X is 𝓥 small = Σ Y ꞉ 𝓥 ̇ , Y ≃ X
 
+native-size : (X : 𝓤 ̇ ) → X is 𝓤 small
+native-size X = X , ≃-refl X
+
 resized : (X : 𝓤 ̇ ) → X is 𝓥 small → 𝓥 ̇
 resized X = pr₁
 
@@ -700,6 +703,10 @@ f is 𝓦 small-map = ∀ y → fiber f y is 𝓦 small
 _is-small-map : {X Y : 𝓤 ⁺ ̇ } → (X → Y) → 𝓤 ⁺ ̇
 _is-small-map {𝓤} f = f is 𝓤 small-map
 
+native-size-of-map : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                   → f is 𝓤 ⊔ 𝓥 small-map
+native-size-of-map f y = native-size (fiber f y)
+
 \end{code}
 
 Obsolete notation used in some publications:
@@ -793,30 +800,38 @@ size-of-section-embedding {𝓤} {𝓥} {X} {Y} s (r , η) e y = γ
   γ : (fiber s y) is 𝓥 small
   γ = B , δ
 
-section-embedding-size-contravariance : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                                      → is-embedding f
-                                      → is-section f
+section-embedding-size-contravariance : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (s : X → Y)
+                                      → is-embedding s
+                                      → is-section s
                                       → Y is 𝓦 small
                                       → X is 𝓦 small
-section-embedding-size-contravariance {𝓤} {𝓥} {𝓦} {X} {Y} f e (g , η) (Y' , h , i) = γ
+section-embedding-size-contravariance {𝓤} {𝓥} {𝓦} {X} {Y} s e (g , η) (Y' , h , i) = γ
  where
   h⁻¹ : Y → Y'
   h⁻¹ = inverse h i
 
-  f' : X → Y'
-  f' = h⁻¹ ∘ f
+  s' : X → Y'
+  s' = h⁻¹ ∘ s
 
-  η' = λ x → g (h (h⁻¹ (f x))) ＝⟨ ap g (inverses-are-sections h i (f x)) ⟩
-             g (f x)           ＝⟨ η x ⟩
+  η' = λ x → g (h (h⁻¹ (s x))) ＝⟨ ap g (inverses-are-sections h i (s x)) ⟩
+             g (s x)           ＝⟨ η x ⟩
              x                 ∎
 
-  δ : f' is 𝓦 small-map
-  δ = size-of-section-embedding f' (g ∘ h , η')
+  δ : s' is 𝓦 small-map
+  δ = size-of-section-embedding s' (g ∘ h , η')
        (∘-is-embedding e (equivs-are-embeddings h⁻¹
                          (inverses-are-equivs h i)))
 
   γ : X is 𝓦 small
-  γ = size-contravariance f' δ (Y' , ≃-refl Y')
+  γ = size-contravariance s' δ (Y' , ≃-refl Y')
+
+embedded-retract-is-small : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                            (ρ : retract X of Y)
+                          → is-embedding (section ρ)
+                          → Y is 𝓦 small
+                          → X is 𝓦 small
+embedded-retract-is-small (r , s , rs) s-is-embedding Y-is-small =
+ section-embedding-size-contravariance s s-is-embedding (r , rs) Y-is-small
 
 ≃-size-contravariance : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                       → X ≃ Y

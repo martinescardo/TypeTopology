@@ -23,8 +23,8 @@ open import MLTT.Spartan
 open import UF.Univalence
 
 module Iterative.Sets
-        (𝓤 : Universe)
         (ua : Univalence)
+        {𝓤 : Universe}
        where
 
 open import UF.FunExt

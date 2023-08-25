@@ -14,12 +14,12 @@ open import MLTT.Spartan
 open import UF.Univalence
 
 module Iterative.Multisets-Addendum
-        (𝓤 : Universe)
         (ua : Univalence)
+        {𝓤 : Universe}
        where
 
 open import Iterative.Multisets 𝓤
-open import Iterative.Sets 𝓤 ua
+open import Iterative.Sets ua {𝓤}
 open import Taboos.Decomposability ua
 open import UF.Base
 open import UF.Embeddings

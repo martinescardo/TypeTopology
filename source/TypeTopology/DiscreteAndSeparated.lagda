@@ -530,7 +530,8 @@ Another logical place for these three lemmas would be Negation.lagda, but
 
 being-¬¬-stable-is-prop : {X : 𝓤 ̇ }
                         → funext 𝓤 𝓤
-                        → is-prop X → is-prop (¬¬-stable X)
+                        → is-prop X
+                        → is-prop (¬¬-stable X)
 being-¬¬-stable-is-prop fe i = Π-is-prop fe (λ _ → i)
 
 Ω¬¬ : (𝓤 : Universe)  → 𝓤 ⁺ ̇

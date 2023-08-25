@@ -23,13 +23,6 @@ open import UF.PropTrunc
 open import UF.Size
 open import UF.Subsingletons
 
-native-size : (X : 𝓤 ̇ ) → X is 𝓤 small
-native-size X = X , ≃-refl X
-
-native-size-of-map : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                   → f is 𝓤 ⊔ 𝓥 small-map
-native-size-of-map f y = native-size (fiber f y)
-
 smallness-closed-under-≃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                          → X is 𝓦 small
                          → X ≃ Y

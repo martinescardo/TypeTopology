@@ -338,3 +338,62 @@ constant-maps-are-h-isolated fe y₀ y₀-iso {f} = II
   II = equiv-to-prop I (Π-is-prop fe (λ _ → y₀-iso))
 
 \end{code}
+
+Added 25 August 2023.
+
+\begin{code}
+
+open import TypeTopology.DiscreteAndSeparated
+
+Ω¬¬-is-set : FunExt
+           → PropExt
+           → is-set (Ω¬¬ 𝓤)
+Ω¬¬-is-set {𝓤} fe pe = ¬¬-separated-types-are-sets
+                        (fe (𝓤 ⁺) 𝓤₀)
+                        (Ω¬¬-is-¬¬-separated (fe 𝓤 𝓤) (pe 𝓤))
+
+𝟘-is-¬¬-stable : ¬¬ 𝟘 {𝓤} → 𝟘 {𝓥}
+𝟘-is-¬¬-stable ϕ = 𝟘-elim (ϕ 𝟘-elim)
+
+𝟙-is-¬¬-stable : ¬¬ 𝟙 {𝓤} → 𝟙 {𝓥}
+𝟙-is-¬¬-stable _ = ⋆
+
+⊥Ω¬¬ ⊤Ω¬¬ : Ω¬¬ 𝓤
+⊥Ω¬¬ = ⊥ , 𝟘-is-¬¬-stable
+⊤Ω¬¬ = ⊤ , 𝟙-is-¬¬-stable
+
+𝟚-to-Ω¬¬ : 𝟚 → Ω¬¬ 𝓤
+𝟚-to-Ω¬¬ ₀ = ⊥Ω¬¬
+𝟚-to-Ω¬¬ ₁ = ⊤Ω¬¬
+
+module _ (fe : FunExt) (pe : PropExt) where
+
+ 𝟚-to-Ω¬¬-is-embedding : is-embedding (𝟚-to-Ω¬¬ {𝓤})
+ 𝟚-to-Ω¬¬-is-embedding _ (₀ , p) (₀ , q) = to-Σ-＝ (refl , Ω¬¬-is-set fe pe p q)
+ 𝟚-to-Ω¬¬-is-embedding _ (₀ , p) (₁ , q) = 𝟘-elim (⊥-is-not-⊤ (ap pr₁ p ∙ (ap pr₁ q)⁻¹))
+ 𝟚-to-Ω¬¬-is-embedding _ (₁ , p) (₀ , q) = 𝟘-elim (⊥-is-not-⊤ (ap pr₁ q ∙ (ap pr₁ p ⁻¹)))
+ 𝟚-to-Ω¬¬-is-embedding _ (₁ , p) (₁ , q) = to-Σ-＝ (refl , Ω¬¬-is-set fe pe p q)
+
+ 𝟚-to-Ω¬¬-fiber : ((p , s) : Ω¬¬ 𝓤) → fiber 𝟚-to-Ω¬¬ (p , s) ≃ (¬ (p holds) + p holds)
+ 𝟚-to-Ω¬¬-fiber {𝓤} 𝕡@(p , s) =
+  fiber (𝟚-to-Ω¬¬ {𝓤}) 𝕡                        ≃⟨ ≃-refl _ ⟩
+  (Σ n ꞉ 𝟚 , 𝟚-to-Ω¬¬ {𝓤} n ＝ 𝕡 )              ≃⟨ alternative-+ ⟩
+  (𝟚-to-Ω¬¬ ₀ ＝ p , s) + (𝟚-to-Ω¬¬ ₁ ＝ p , s) ≃⟨ I ⟩
+  (⊥ ＝ p) + (⊤ ＝ p)                           ≃⟨ II ⟩
+  (¬ (p holds) + (p holds))                     ■
+  where
+   I = +-cong
+        (embedding-criterion-converse' pr₁
+          (pr₁-is-embedding (λ p → being-¬¬-stable-is-prop (fe _ _) (holds-is-prop p))) _ _)
+        (embedding-criterion-converse' pr₁
+          (pr₁-is-embedding (λ p → being-¬¬-stable-is-prop (fe _ _) (holds-is-prop p))) _ _)
+
+   II = +-cong
+           (＝-flip ● equal-⊥-≃ (pe _) (fe _ _) p)
+           (＝-flip ● equal-⊤-≃ (pe _) (fe _ _) p)
+
+ 𝟚-to-Ω¬¬-is-small-map : (𝟚-to-Ω¬¬ {𝓤}) is 𝓤 small-map
+ 𝟚-to-Ω¬¬-is-small-map (p , s) = (¬ (p holds) + p holds) ,
+                                   ≃-sym (𝟚-to-Ω¬¬-fiber (p , s))
+
+\end{code}

@@ -33,6 +33,7 @@ module InjectiveTypes.CounterExamples
 open PropositionalTruncation pt
 
 open import MLTT.Spartan
+open import Taboos.Decomposability ua
 open import UF.Embeddings
 open import UF.ExcludedMiddle
 open import UF.FunExt
@@ -41,7 +42,6 @@ open import UF.Retracts
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.UA-FunExt
-open import Taboos.Decomposability ua
 
 private
  fe : FunExt
@@ -50,8 +50,11 @@ private
  fe' : Fun-Ext
  fe' {𝓤} {𝓥} = fe 𝓤 𝓥
 
- pe : Prop-Ext
- pe = Univalence-gives-Prop-Ext ua
+ pe : PropExt
+ pe = Univalence-gives-PropExt ua
+
+ pe' : Prop-Ext
+ pe' {𝓤} = pe 𝓤
 
 open import InjectiveTypes.Blackboard fe
 open import TypeTopology.SimpleTypes fe pt
@@ -98,7 +101,7 @@ WEM-gives-𝟚-retract-of-Ω {𝓤} wem = II
 
 WEM-gives-𝟚-ainjective : WEM 𝓤 → ainjective-type 𝟚 𝓤 𝓤
 WEM-gives-𝟚-ainjective {𝓤} wem =
- retract-of-ainjective 𝟚 (Ω 𝓤) (Ω-ainjective pe) (WEM-gives-𝟚-retract-of-Ω wem)
+ retract-of-ainjective 𝟚 (Ω 𝓤) (Ω-ainjective pe') (WEM-gives-𝟚-retract-of-Ω wem)
 
 WEM-gives-𝟚-aflabby : WEM 𝓤 → aflabby 𝟚 𝓤
 WEM-gives-𝟚-aflabby wem = ainjective-types-are-aflabby 𝟚 (WEM-gives-𝟚-ainjective wem)
@@ -144,8 +147,8 @@ universe 𝓤₁.
 
 \begin{code}
 
-open import DedekindReals.Type fe' pe pt
-open import DedekindReals.Order fe' pe pt
+open import DedekindReals.Type fe' pe' pt
+open import DedekindReals.Order fe' pe' pt
 open import Notation.Order
 
 ℝ-ainjective-gives-Heaviside-function : ainjective-type ℝ 𝓤₁ 𝓤₁
@@ -220,13 +223,13 @@ open import Rationals.Order
   I-II u v = contrapositive II v (contrapositive I u)
 
   I-II₀ : r ≠ 1ℝ → r ＝ 0ℝ
-  I-II₀ v = ℝ-is-¬¬-separated (r) 0ℝ (λ u → I-II u v)
+  I-II₀ v = ℝ-is-¬¬-separated r 0ℝ (λ u → I-II u v)
 
   I-II₁ : r ≠ 0ℝ → r ＝ 1ℝ
-  I-II₁ u = ℝ-is-¬¬-separated (r) 1ℝ (I-II u)
+  I-II₁ u = ℝ-is-¬¬-separated r 1ℝ (I-II u)
 
   III : (1/4 < r) ∨ (r < 1/2)
-  III = ℝ-locatedness (r) 1/4 1/2 1/4<1/2
+  III = ℝ-locatedness r 1/4 1/2 1/4<1/2
 
   IV : 1/4 < r → r ＝ 1ℝ
   IV l = I-II₁ IV₀

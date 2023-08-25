@@ -193,13 +193,18 @@ embedding-gives-embedding' {𝓤} {𝓥} {X} {Y} f ise = g
          (center (c x))
          (centrality (c x)))
 
+embedding-criterion-converse' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                             → is-embedding f
+                             → (x' x : X)
+                             → (x' ＝ x) ≃ (f x' ＝ f x)
+embedding-criterion-converse' f e x' x = ap f {x'} {x} ,
+                                         embedding-gives-embedding' f e x' x
+
 embedding-criterion-converse : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                              → is-embedding f
                              → (x' x : X)
                              → (f x' ＝ f x) ≃ (x' ＝ x)
-embedding-criterion-converse f e x' x = ≃-sym
-                                         (ap f {x'} {x} ,
-                                          embedding-gives-embedding' f e x' x)
+embedding-criterion-converse f e x' x = ≃-sym (embedding-criterion-converse' f e x' x)
 
 embedding'-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                        (f : X → Y)
