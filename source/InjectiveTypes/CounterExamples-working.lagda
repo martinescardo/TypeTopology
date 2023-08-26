@@ -341,19 +341,18 @@ open import UF.Size
 
 no-small-injective-sets-with-two-distinct-points
  : (D : 𝓤 ̇ )
- → is-set D
- → ainjective-type D (𝓤 ⊔ 𝓥) 𝓦
+ → ainjective-type D 𝓤 𝓥
  → has-two-distinct-points D
  → Ω¬¬ 𝓤 is 𝓤 small
 no-small-injective-sets-with-two-distinct-points
- {𝓤} {𝓥} {𝓦} D D-is-set D-ainj ((x₀ , x₁) , d) = II I
+ {𝓤} {𝓥} D D-ainj ((x₀ , x₁) , distinct) = II I
  where
   f : 𝟚 → D
   f ₀ = x₀
   f ₁ = x₁
 
   I : Σ s ꞉ (Ω¬¬ 𝓤 → D) , s ∘ 𝟚-to-Ω¬¬ ∼ f
-  I = ainjectivity-over-small-maps {𝓤} {𝓤₀} {𝓤 ⁺} {𝓤} {𝓥} {𝓦}
+  I = ainjectivity-over-small-maps {𝓤} {𝓤₀} {𝓤 ⁺} {𝓤} {𝓤} {𝓥}
        D
        D-ainj
        𝟚-to-Ω¬¬
@@ -362,45 +361,87 @@ no-small-injective-sets-with-two-distinct-points
        f
 
   II : type-of I → Ω¬¬ 𝓤 is 𝓤 small
-  II (s , h) = blah
+  II (s , extension-property) = Ω¬¬-is-small
    where
     III : s ⊥Ω¬¬ ＝ x₀
-    III = h ₀
+    III = extension-property ₀
 
     IV : s ⊤Ω¬¬ ＝ x₁
-    IV = h ₁
+    IV = extension-property ₁
 
-    V : (p : Ω¬¬ 𝓤) → s p ≠ x₀ → pr₁ p holds
-    V p e = {!!}
+    V : (𝕡 : Ω¬¬ 𝓤) → s 𝕡 ≠ x₀ → pr₁ 𝕡 holds
+    V 𝕡@(p , ¬¬-sep) e = V₃
      where
-      VI : p ＝ ⊥Ω¬¬ → s p ＝ x₀
-      VI e = transport⁻¹ (λ - → s - ＝ x₀) e III
-      VII : p ≠ ⊥Ω¬¬
-      VII = contrapositive VI e
-      VIII : ¬¬ (pr₁ p holds)
-      VIII ϕ = {!!}
+      V₀ : 𝕡 ＝ ⊥Ω¬¬ → s 𝕡 ＝ x₀
+      V₀ e = transport⁻¹ (λ - → s - ＝ x₀) e III
+      V₁ : 𝕡 ≠ ⊥Ω¬¬
+      V₁ = contrapositive V₀ e
+      V₂ : ¬¬ (p holds)
+      V₂ u = V₁ (to-subtype-＝
+                  (λ p → being-¬¬-stable-is-prop fe' (holds-is-prop p))
+                  (fails-gives-equal-⊥ pe' fe' p u))
+      V₃ : p holds
+      V₃ = ¬¬-sep V₂
 
-    VI  : (p : Ω¬¬ 𝓤) → pr₁ p holds → s p ≠ x₀
-    VI = {!!}
+    VI  : (𝕡 : Ω¬¬ 𝓤) → pr₁ 𝕡 holds → s 𝕡 ≠ x₀
+    VI 𝕡@(p , ¬¬sep) h = VI₃
+     where
+      VI₀ : p ＝ ⊤Ω
+      VI₀ = holds-gives-equal-⊤ pe' fe' p h
+      VI₁ : 𝕡 ＝ ⊤Ω¬¬
+      VI₁ = to-subtype-＝ (λ p → being-¬¬-stable-is-prop fe' (holds-is-prop p)) VI₀
+      VI₂ : s 𝕡 ＝ x₁
+      VI₂ = transport⁻¹ (λ - → s - ＝ x₁) VI₁ IV
+      VI₃ : s 𝕡 ≠ x₀
+      VI₃ e = distinct
+               (x₀  ＝⟨ e ⁻¹ ⟩
+                s 𝕡 ＝⟨ VI₂ ⟩
+                x₁  ∎)
 
+    VII : (𝕡 : Ω¬¬ 𝓤) → (s 𝕡 ≠ x₀) ＝ (pr₁ 𝕡 holds)
+    VII 𝕡@(p , ¬¬sep) = pe' (negations-are-props fe')
+                            (holds-is-prop p)
+                            (V 𝕡)
+                            (VI 𝕡)
     r : D → Ω¬¬ 𝓤
     r d = ((d ≠ x₀) , negations-are-props fe') , ¬-is-¬¬-stable
 
     rs : r ∘ s ∼ id
-    rs p = r (s p) ＝⟨ refl ⟩
-           ((s p ≠ x₀) , _) , _ ＝⟨ {!!} ⟩
-           {!!} ＝⟨ {!!} ⟩
-           {!!} ＝⟨ {!!} ⟩
-           {!!} ＝⟨ {!!} ⟩
-           p ∎
+    rs p = r (s p)              ＝⟨ refl ⟩
+           ((s p ≠ x₀) , _) , _ ＝⟨ rs₀ ⟩
+           p                     ∎
+         where
+          rs₀ = to-subtype-＝
+                 (λ p → being-¬¬-stable-is-prop fe' (holds-is-prop p))
+                 (to-subtype-＝ (λ _ → being-prop-is-prop fe') (VII p))
 
     s-is-embedding : is-embedding s
-    s-is-embedding = {!!}
+    s-is-embedding d = {!!}
 
     ρ : retract (Ω¬¬ 𝓤) of D
     ρ = r , s , rs
 
-    blah : Ω¬¬ 𝓤 is 𝓤 small
-    blah = embedded-retract-is-small ρ s-is-embedding (native-size D)
+    Ω¬¬-is-small : Ω¬¬ 𝓤 is 𝓤 small
+    Ω¬¬-is-small = embedded-retract-is-small ρ s-is-embedding (native-size D)
 
 \end{code}
+
+Using a result of Shulman, we don't need to assume that s is an
+embedding to get the desired conclusion, but this is not implemented
+in TypeTopology yet.
+
+The above shows that e.g. the result that
+
+  ainjective-type 𝓤 𝓤 𝓤
+
+is sharp.
+
+If we increase the first occurrence of 𝓤 to 𝓤 ⁺ then we get Ω¬¬-resizing.
+
+The second occurrence is not important, because we always have
+
+ ainjective-type D (𝓤 ⊔ 𝓣) 𝓥 → ainjective-type D 𝓤 𝓣,
+
+and in particular e.g.
+
+  ainjective-type 𝓤 (𝓤 ⁺) 𝓥 → ainjective-type 𝓤 (𝓤 ⁺) (𝓤 ⁺).
