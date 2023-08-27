@@ -339,12 +339,12 @@ open import InjectiveTypes.OverSmallMaps fe
 open import TypeTopology.DiscreteAndSeparated
 open import UF.Size
 
-no-small-injective-sets-with-two-distinct-points
+small-injective-sets-with-two-distinct-points-gives-Ω¬¬-resizing
  : (D : 𝓤 ̇ )
  → ainjective-type D 𝓤 𝓥
  → has-two-distinct-points D
  → Ω¬¬ 𝓤 is 𝓤 small
-no-small-injective-sets-with-two-distinct-points
+small-injective-sets-with-two-distinct-points-gives-Ω¬¬-resizing
  {𝓤} {𝓥} D D-ainj ((x₀ , x₁) , distinct) = II I
  where
   f : 𝟚 → D
@@ -432,7 +432,7 @@ in TypeTopology yet.
 
 The above shows that e.g. the result that
 
-  ainjective-type 𝓤 𝓤 𝓤
+  ainjective-type (𝓤 ̇ ) 𝓤 𝓤
 
 is sharp.
 
@@ -444,4 +444,41 @@ The second occurrence is not important, because we always have
 
 and in particular e.g.
 
-  ainjective-type 𝓤 (𝓤 ⁺) 𝓥 → ainjective-type 𝓤 (𝓤 ⁺) (𝓤 ⁺).
+  ainjective-type (𝓤 ̇ ) (𝓤 ⁺) 𝓥 → ainjective-type (𝓤 ̇ ) (𝓤 ⁺) (𝓤 ⁺).
+
+\begin{code}
+
+example : ainjective-type (𝓤 ̇ ) (𝓤 ⁺) (𝓤 ⁺ ⁺)
+        → Ω¬¬ (𝓤 ⁺) is (𝓤 ⁺) small
+example {𝓤} ainj =
+ small-injective-sets-with-two-distinct-points-gives-Ω¬¬-resizing
+  (𝓤 ̇ )
+  ainj
+  ((𝟘 , 𝟙) , 𝟘-is-not-𝟙)
+
+open import UF.UniverseEmbedding
+
+remark : ainjective-type (𝓤 ̇ ) (𝓤 ⁺) (𝓤 ⁺ ⁺)
+       → retract 𝓤 ̇ of (𝓤 ⁺ ̇)
+remark {𝓤} ainj = ρ σ
+ where
+  σ : Σ r ꞉ (𝓤 ⁺ ̇ → 𝓤 ̇ ) , r ∘ Lift (𝓤 ⁺) ∼ id
+  σ = ainj (Lift (𝓤 ⁺)) (Lift-is-embedding ua) id
+
+  ρ : type-of σ → retract 𝓤 ̇ of (𝓤 ⁺ ̇)
+  ρ (r , rs) = r , Lift (𝓤 ⁺) , rs
+
+kramer : retract 𝓤 ̇ of (𝓤 ⁺ ̇)
+       → ainjective-type (𝓤 ̇ ) (𝓤 ⁺) (𝓤 ⁺)
+kramer {𝓤} ρ =
+ retract-of-ainjective (𝓤 ̇) (𝓤 ⁺ ̇) (universes-are-ainjective-Π (ua (𝓤 ⁺))) ρ
+
+\end{code}
+
+Notice that in InjectiveTypes.Article we prove that if propositional
+resizing holds then 𝓤 is a retract of 𝓤⁺.
+
+TODO. Show that if 𝓤 is a retract of 𝓤⁺ then propositional resizing
+holds.
+
+TODO. Think more about universe levels.
