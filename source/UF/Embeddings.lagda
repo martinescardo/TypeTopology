@@ -314,13 +314,6 @@ lc-maps-are-embeddings-with-K : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
 lc-maps-are-embeddings-with-K {𝓤} {𝓥} {X} {Y} f f-lc k =
  lc-maps-into-sets-are-embeddings f f-lc (k Y)
 
-
-\end{code}
-
-TODO. Redo the above proof using the technique of the following proof.
-
-\begin{code}
-
 factor-is-lc : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
                (f : X → Y)
                (g : Y → Z)
