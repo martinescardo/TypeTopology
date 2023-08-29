@@ -88,13 +88,13 @@ retracts-of-small-types-are-small {𝓤} {𝓥} {𝓦} =
 open import InjectiveTypes.OverSmallMaps fe
 open import TypeTopology.DiscreteAndSeparated
 
-small-injective-sets-with-two-distinct-points-gives-Ω¬¬-resizing
+small-ainjective-types-with-two-distinct-points-gives-Ω¬¬-resizing
  : retracts-of-small-types-are-small
  → (D : 𝓤 ̇ )
  → ainjective-type D 𝓤 𝓥
  → has-two-distinct-points D
  → Ω¬¬ 𝓤 is 𝓤 small
-small-injective-sets-with-two-distinct-points-gives-Ω¬¬-resizing
+small-ainjective-types-with-two-distinct-points-gives-Ω¬¬-resizing
  {𝓤} {𝓥} small-retracts D D-ainj ((x₀ , x₁) , distinct) = II I
  where
   f : 𝟚 → D
@@ -195,7 +195,7 @@ example : retracts-of-small-types-are-small
         → ainjective-type (𝓤 ̇ ) (𝓤 ⁺) (𝓤 ⁺ ⁺)
         → Ω¬¬ (𝓤 ⁺) is (𝓤 ⁺) small
 example {𝓤} small-retracts ainj =
- small-injective-sets-with-two-distinct-points-gives-Ω¬¬-resizing
+ small-ainjective-types-with-two-distinct-points-gives-Ω¬¬-resizing
   small-retracts
   (𝓤 ̇ )
   ainj
