@@ -4,7 +4,8 @@ The idea is that there should be no small injective types. However,
 with Ω-resizing (a form of impredicativity for HoTT/UF), there are
 small injective types, for example Ω 𝓤₀.  So we instead show that,
 under some conditions, small injective types give resizing. But at the
-moment we are able to derive Ω¬¬-resizing only.
+moment we are able to derive Ω¬¬-resizing only (which is a weaker, but
+still not provable, form of impredicativity).
 
 It was previously known that if propositional resizing
 holds then
