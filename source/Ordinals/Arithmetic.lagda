@@ -41,6 +41,9 @@ Here the subscript is the letter "o":
 𝟘ₒ = Ω-to-ordinal ⊥Ω
 𝟙ₒ = Ω-to-ordinal ⊤Ω
 
+𝟘ₒ-is-not-𝟙ₒ : 𝟘ₒ {𝓤} ≠ 𝟙ₒ {𝓤}
+𝟘ₒ-is-not-𝟙ₒ e = 𝟘-is-not-𝟙 (ap ⟨_⟩ e)
+
 𝟘ₒ-is-trichotomous : is-trichotomous (𝟘ₒ {𝓤})
 𝟘ₒ-is-trichotomous = prop-ordinal-is-trichotomous ⊥Ω
 

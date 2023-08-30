@@ -39,8 +39,8 @@ add all we wanted to add, and clean-up when we finish.
 
 open import InjectiveTypes.Blackboard fe'
 open import Iterative.Multisets 𝓤
-open import Iterative.Ordinals ua {𝓤}
-open import Iterative.Sets ua {𝓤}
+open import Iterative.Ordinals ua 𝓤
+open import Iterative.Sets ua 𝓤
 open import Ordinals.Injectivity
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.Type hiding (Ord)

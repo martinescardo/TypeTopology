@@ -37,7 +37,7 @@ open import UF.Univalence
 
 module Iterative.Ordinals
         (ua : Univalence)
-        {𝓤 : Universe}
+        (𝓤 : Universe)
        where
 
 open import UF.FunExt
@@ -54,7 +54,7 @@ private
  fe' 𝓤 𝓥 = fe {𝓤} {𝓥}
 
 open import Iterative.Multisets 𝓤
-open import Iterative.Sets ua {𝓤}
+open import Iterative.Sets ua 𝓤
 open import Ordinals.Equivalence
 open import Ordinals.Notions
 open import Ordinals.OrdinalOfOrdinals ua

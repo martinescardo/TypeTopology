@@ -552,3 +552,6 @@ being-¬¬-stable-is-prop fe i = Π-is-prop fe (λ _ → i)
   γ = to-subtype-＝ (λ p → Π-is-prop fe (λ _ → holds-is-prop p)) δ
 
 \end{code}
+
+TODO. The above can also be shown by first showing that Ω¬¬ 𝓤 is a
+retract of Ω 𝓤.

@@ -15,11 +15,11 @@ open import UF.Univalence
 
 module Iterative.Multisets-Addendum
         (ua : Univalence)
-        {𝓤 : Universe}
+        (𝓤 : Universe)
        where
 
 open import Iterative.Multisets 𝓤
-open import Iterative.Sets ua {𝓤}
+open import Iterative.Sets ua 𝓤
 open import Taboos.Decomposability ua
 open import UF.Base
 open import UF.Embeddings
@@ -61,6 +61,19 @@ The universe 𝓤 is embedded as a retract of 𝕄.
 
 𝟘ᴹ-is-h-isolated : is-h-isolated 𝟘ᴹ
 𝟘ᴹ-is-h-isolated {ssup X φ} = isets-are-h-isolated 𝟘ᴹ 𝟘ᴹ-is-iset
+
+𝟙ᴹ : 𝕄
+𝟙ᴹ = ssup 𝟙 λ ⋆ → 𝟘ᴹ
+
+𝟙ᴹ-is-iset : is-iterative-set 𝟙ᴹ
+𝟙ᴹ-is-iset = global-point-is-embedding (λ ⋆ → 𝟘ᴹ) 𝟘ᴹ-is-h-isolated ,
+             λ ⋆ → 𝟘ᴹ-is-iset
+
+𝟙ᴹ-is-h-isolated : is-h-isolated 𝟙ᴹ
+𝟙ᴹ-is-h-isolated {ssup X φ} = isets-are-h-isolated 𝟙ᴹ 𝟙ᴹ-is-iset
+
+𝟘ᴹ-is-not-𝟙ᴹ : 𝟘ᴹ ≠ 𝟙ᴹ
+𝟘ᴹ-is-not-𝟙ᴹ p = 𝟘-is-not-𝟙 (ap 𝕄-root p)
 
 𝓤-to-𝕄 : 𝓤 ̇ → 𝕄
 𝓤-to-𝕄 X = ssup X (λ x → 𝟘ᴹ)

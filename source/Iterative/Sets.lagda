@@ -24,7 +24,7 @@ open import UF.Univalence
 
 module Iterative.Sets
         (ua : Univalence)
-        {𝓤 : Universe}
+        (𝓤 : Universe)
        where
 
 open import UF.FunExt

@@ -345,12 +345,88 @@ Added 25 August 2023.
 
 open import TypeTopology.DiscreteAndSeparated
 
+to-Ω-＝ : funext 𝓤 𝓤
+        → {P Q : 𝓤 ̇ }
+          {i : is-prop P} {j : is-prop Q}
+        → P ＝ Q
+        → (P , i) ＝[ Ω 𝓤 ] (Q , j)
+to-Ω-＝ fe = to-subtype-＝ (λ _ → being-prop-is-prop fe)
+
+from-Ω-＝ : {P Q : 𝓤 ̇ }
+            {i : is-prop P} {j : is-prop Q}
+          → (P , i) ＝[ Ω 𝓤 ] (Q , j)
+          → P ＝ Q
+from-Ω-＝ = ap _holds
+
+to-Ω¬¬-＝ : funext 𝓤 𝓤
+          → {p q : Ω 𝓤}
+            {i : ¬¬-stable (p holds)} {j : ¬¬-stable (q holds)}
+          → p ＝ q
+          → (p , i) ＝[ Ω¬¬ 𝓤 ] (q , j)
+to-Ω¬¬-＝ fe = to-subtype-＝ λ p → being-¬¬-stable-is-prop fe (holds-is-prop p)
+
+Ω¬¬-to-Ω : Ω¬¬ 𝓤 → Ω 𝓤
+Ω¬¬-to-Ω = pr₁
+
+_holds' : Ω¬¬ 𝓤 → 𝓤 ̇
+_holds' 𝕡 = (Ω¬¬-to-Ω 𝕡) holds
+
+holds'-is-prop : (𝕡 : Ω¬¬ 𝓤) → is-prop (𝕡 holds')
+holds'-is-prop 𝕡 = holds-is-prop (Ω¬¬-to-Ω 𝕡)
+
+holds'-is-¬¬-stable : (𝕡 : Ω¬¬ 𝓤) → ¬¬-stable (𝕡 holds')
+holds'-is-¬¬-stable = pr₂
+
+from-Ω¬¬-＝ : {p q : Ω 𝓤}
+              {i : ¬¬-stable (p holds)} {j : ¬¬-stable (q holds)}
+           → (p , i) ＝[ Ω¬¬ 𝓤 ] (q , j)
+           → p ＝ q
+from-Ω¬¬-＝ = ap Ω¬¬-to-Ω
+
+to-Ω¬¬-＝' : funext 𝓤 𝓤
+           → {P Q : 𝓤 ̇}
+             {i : is-prop P} {j : is-prop Q}
+             {s : ¬¬-stable P} {t : ¬¬-stable Q}
+           → P ＝ Q
+           → ((P , i) , s) ＝[ Ω¬¬ 𝓤 ] ((Q , j) , t)
+to-Ω¬¬-＝' fe e = to-Ω¬¬-＝ fe (to-Ω-＝ fe e)
+
+from-Ω¬¬-＝' : {P Q : 𝓤 ̇}
+               {i : is-prop P} {j : is-prop Q}
+               {s : ¬¬-stable P} {t : ¬¬-stable Q}
+             → ((P , i) , s) ＝[ Ω¬¬ 𝓤 ] ((Q , j) , t)
+             → P ＝ Q
+from-Ω¬¬-＝' e = from-Ω-＝ (from-Ω¬¬-＝ e)
+
 Ω¬¬-is-set : FunExt
            → PropExt
            → is-set (Ω¬¬ 𝓤)
 Ω¬¬-is-set {𝓤} fe pe = ¬¬-separated-types-are-sets
                         (fe (𝓤 ⁺) 𝓤₀)
                         (Ω¬¬-is-¬¬-separated (fe 𝓤 𝓤) (pe 𝓤))
+
+Ω¬¬-to-Ω-is-embedding : funext 𝓤 𝓤 → is-embedding (Ω¬¬-to-Ω {𝓤})
+Ω¬¬-to-Ω-is-embedding fe = pr₁-is-embedding λ p → being-¬¬-stable-is-prop fe (holds-is-prop p)
+
+Ω-to-Ω¬¬ : funext 𝓤 𝓤₀ → Ω 𝓤 → Ω¬¬ 𝓤
+Ω-to-Ω¬¬ fe p = ((¬¬ (p holds)) , negations-are-props fe) , ¬-is-¬¬-stable
+
+Ω¬¬-retract-equation : (fe : funext 𝓤 𝓤)
+                       (fe₀ : funext 𝓤 𝓤₀)
+                       (pe : propext 𝓤)
+                     → Ω-to-Ω¬¬ fe₀ ∘ Ω¬¬-to-Ω ∼ id
+Ω¬¬-retract-equation fe fe₀ pe 𝕡 = to-Ω¬¬-＝' fe
+                                    (pe (negations-are-props fe₀)
+                                        (holds'-is-prop 𝕡)
+                                        (holds'-is-¬¬-stable 𝕡)
+                                        ¬¬-intro)
+
+Ω¬¬-is-retract-of-Ω : funext 𝓤 𝓤
+                    → propext 𝓤
+                    → retract (Ω¬¬ 𝓤) of Ω 𝓤
+Ω¬¬-is-retract-of-Ω {𝓤} fe pe = Ω-to-Ω¬¬ (lower-funext 𝓤 𝓤 fe) ,
+                                Ω¬¬-to-Ω ,
+                                Ω¬¬-retract-equation fe (lower-funext 𝓤 𝓤 fe) pe
 
 𝟘-is-¬¬-stable : ¬¬ 𝟘 {𝓤} → 𝟘 {𝓥}
 𝟘-is-¬¬-stable ϕ = 𝟘-elim (ϕ 𝟘-elim)
@@ -361,6 +437,9 @@ open import TypeTopology.DiscreteAndSeparated
 ⊥Ω¬¬ ⊤Ω¬¬ : Ω¬¬ 𝓤
 ⊥Ω¬¬ = ⊥ , 𝟘-is-¬¬-stable
 ⊤Ω¬¬ = ⊤ , 𝟙-is-¬¬-stable
+
+⊥Ω¬¬-is-not-⊤Ω¬¬ : ⊥Ω¬¬ {𝓤} ≠ ⊤Ω¬¬ {𝓤}
+⊥Ω¬¬-is-not-⊤Ω¬¬ e = ⊥-is-not-⊤ (ap Ω¬¬-to-Ω e)
 
 𝟚-to-Ω¬¬ : 𝟚 → Ω¬¬ 𝓤
 𝟚-to-Ω¬¬ ₀ = ⊥Ω¬¬

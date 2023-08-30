@@ -65,3 +65,14 @@ import Iterative.Ordinals
 import InjectiveTypes.MathematicalStructures
 
 \end{code}
+
+With Tom de Jong we prove more things about resizing, and in
+particular we show that previous results about injectivity are tight
+with respect to the universe levels, and that no small type with two
+distinct points can be injective without Ω¬¬-resizing.
+
+\begin{code}
+
+open import InjectiveTypes.Resizing
+
+\end{code}
