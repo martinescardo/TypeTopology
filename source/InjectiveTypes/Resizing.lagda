@@ -116,8 +116,9 @@ of
 But we haven't proved it in TypeTopology yet, and so we assume it as a
 hypothesis.
 
-TODO. Formalize the proof of the hypothesis provided in the above two
-papers.
+TODO. Formalize the proof of the following
+`retracts-of-small-types-are-small` hypothesis, which provided in the
+above two papers.
 
 \begin{code}
 
