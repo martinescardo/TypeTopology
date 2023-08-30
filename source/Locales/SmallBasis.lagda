@@ -124,23 +124,20 @@ has-small-𝒦 {_} {_} {𝓦} X = 𝒦 X is 𝓦 small
 
 \begin{code}
 
-spectral-and-has-small-𝒦-gives-spectralₛ : (X : Locale 𝓤 𝓥 𝓦)
-                                         → is-spectral X holds
-                                         → has-small-𝒦 X
-                                         → spectralₛᴰ X
-spectral-and-has-small-𝒦-gives-spectralₛ {_} {_} {𝓦} X σ (𝒦₀ , (s , r)) =
- ℬ , β , κ , {!!}
+spectral-and-has-small-𝒦-gives-basis : (X : Locale 𝓤 𝓥 𝓦)
+                                     → is-spectral X holds
+                                     → has-small-𝒦 X
+                                     → spectralₛᴰ X
+spectral-and-has-small-𝒦-gives-basis {_} {_} {𝓦} X σ 𝕤 =
+ ℬ , d , {!!} , {!!}
   where
    ℬ : Fam 𝓦 ⟨ 𝒪 X ⟩
-   ℬ = 𝒦₀ , pr₁ ∘ s
+   ℬ = resize-family (ℬ-compact X) 𝕤
 
-   δ : is-basis-for (𝒪 X) ℬ
-   δ U = {!!}
+   β : is-basis-for (𝒪 X) ℬ
+   β U = ∥∥-rec {!!} {!!} {!!}
 
-   β : is-directed-basis (𝒪 X) ℬ
-   β = δ , {!!}
-
-   κ : {!!}
-   κ = {!!}
+   d : is-directed-basis (𝒪 X) ℬ
+   d = β , {!!}
 
 \end{code}
