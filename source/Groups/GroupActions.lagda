@@ -22,18 +22,20 @@ Torsors are in their own file Torsos.lagda
 
 open import MLTT.Spartan
 open import UF.Base hiding (_≈_)
-open import UF.Subsingletons
-open import UF.Powerset
-open import UF.Equiv
-open import UF.EquivalenceExamples
-open import UF.Embeddings
-open import UF.Univalence
-open import UF.Equiv-FunExt
-open import UF.FunExt
-open import UF.UA-FunExt
-open import UF.Subsingletons-FunExt
-open import UF.Retracts
 open import UF.Classifiers
+open import UF.Embeddings
+open import UF.Equiv
+open import UF.Equiv-FunExt
+open import UF.EquivalenceExamples
+open import UF.FunExt
+open import UF.Hedberg
+open import UF.Powerset
+open import UF.Retracts
+open import UF.Sets
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
+open import UF.UA-FunExt
+open import UF.Univalence
 
 open import Groups.Type renaming (_≅_ to _≣_)
 
@@ -44,7 +46,7 @@ module _ (G : Group 𝓤) where
   action-structure : 𝓤 ̇ → 𝓤 ̇
   action-structure X = ⟨ G ⟩ → X → X
 
-  action-axioms : (X : 𝓤 ̇ )→ action-structure X → 𝓤 ̇
+  action-axioms : (X : 𝓤 ̇ ) → action-structure X → 𝓤 ̇
   action-axioms X _·_ = is-set X ×
                         ((g h : ⟨ G ⟩)(x : X) → (g ·⟨ G ⟩ h) · x ＝ g · (h · x)) ×
                         ((x : X) → (unit G) · x ＝ x)

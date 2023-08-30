@@ -44,6 +44,7 @@ module DomainTheory.Bilimits.Dinfinity
 open PropositionalTruncation pt
 
 open import UF.Base
+open import UF.Hedberg
 
 open import DomainTheory.Basics.Dcpo pt fe 𝓤₀
 open import DomainTheory.Basics.Exponential pt fe 𝓤₀

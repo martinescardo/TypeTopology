@@ -6,7 +6,7 @@ Martin Escardo and Paulo Oliva, October 2021.
 
 module Fin.ArgMinMax where
 
-open import UF.Subsingletons renaming (⊤Ω to ⊤)
+open import UF.Subsingletons
 
 open import Fin.Embeddings
 open import Fin.Order

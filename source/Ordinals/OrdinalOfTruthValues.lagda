@@ -7,7 +7,7 @@ The ordinal of truth values in a universe 𝓤.
 
 open import MLTT.Spartan
 open import UF.FunExt
-open import UF.Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)
+open import UF.Subsingletons
 
 module Ordinals.OrdinalOfTruthValues
        (fe : FunExt)
@@ -23,6 +23,8 @@ open import Ordinals.Maps
 open import Ordinals.Notions
 open import Ordinals.Type
 open import Ordinals.Underlying
+open import UF.SubTypeClassifier
+open import UF.SubTypeClassifier-Properties
 
 Ωₒ : Ordinal (𝓤 ⁺)
 Ωₒ = Ω 𝓤 , _≺_ , pv , w , e , t

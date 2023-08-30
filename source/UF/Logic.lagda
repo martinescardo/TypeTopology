@@ -10,9 +10,10 @@ Based in part by the `Cubical.Functions.Logic` module UF.of
 module UF.Logic where
 
 open import MLTT.Spartan
-open import UF.Subsingletons
-open import UF.PropTrunc
 open import UF.FunExt
+open import UF.PropTrunc
+open import UF.SubTypeClassifier
+open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
 \end{code}

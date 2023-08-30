@@ -19,6 +19,8 @@ that the group axioms, as defined in Groups, form a proposition.
 open import MLTT.Spartan
 open import UF.Base hiding (_≈_)
 open import UF.Subsingletons
+open import UF.Sets
+open import UF.Hedberg
 open import UF.Powerset
 open import UF.Equiv
 open import UF.EquivalenceExamples
@@ -30,7 +32,6 @@ open import UF.Subsingletons-FunExt
 open import UF.Classifiers
 
 open import Groups.Type renaming (_≅_ to _≣_)
-
 
 module Groups.Subgroups
        (𝓤 : Universe)

@@ -31,6 +31,7 @@ open import TypeTopology.SigmaDiscreteAndTotallySeparated
 open import UF.Base
 open import UF.Embeddings
 open import UF.Equiv
+open import UF.Hedberg
 open import UF.Miscelanea
 open import UF.PairFun
 open import UF.Subsingletons

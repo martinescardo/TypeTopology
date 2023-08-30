@@ -4,9 +4,10 @@
 
 module UF.Retracts where
 
-open import MLTT.Spartan
 open import MLTT.AlternativePlus
+open import MLTT.Spartan
 open import UF.Base
+open import UF.Sets
 open import UF.Subsingletons
 
 has-section : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇

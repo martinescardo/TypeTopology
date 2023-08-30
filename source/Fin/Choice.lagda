@@ -6,7 +6,7 @@ Martin Escardo, November-December 2019
 
 module Fin.Choice where
 
-open import UF.Subsingletons renaming (⊤Ω to ⊤)
+open import UF.Subsingletons
 
 open import MLTT.Spartan
 open import MLTT.Plus-Properties

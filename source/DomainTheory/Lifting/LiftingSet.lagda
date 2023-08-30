@@ -28,8 +28,10 @@ module DomainTheory.Lifting.LiftingSet
        where
 
 open import UF.Equiv
+open import UF.Hedberg
 open import UF.ImageAndSurjection pt
 open import UF.Miscelanea
+open import UF.Sets
 open import UF.Subsingletons-FunExt
 
 open PropositionalTruncation pt

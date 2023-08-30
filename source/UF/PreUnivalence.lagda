@@ -19,6 +19,7 @@ open import MLTT.Spartan
 open import UF.Base
 open import UF.Embeddings
 open import UF.Equiv
+open import UF.Sets
 open import UF.Subsingletons
 open import UF.Univalence
 

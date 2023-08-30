@@ -8,6 +8,7 @@ open import MLTT.Spartan
 open import UF.PropTrunc
 open import UF.FunExt
 open import UF.Subsingletons
+open import UF.SubTypeClassifier
 
 module Locales.PatchOfOmega (pt : propositional-truncations-exist)
                             (fe : Fun-Ext)

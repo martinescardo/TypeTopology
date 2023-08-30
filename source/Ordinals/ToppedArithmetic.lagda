@@ -143,14 +143,16 @@ Added 4th May 2022.
 \begin{code}
 
 module Omega {𝓤} (pe : propext 𝓤) where
+
  open import Ordinals.OrdinalOfTruthValues fe 𝓤 pe
  open import Ordinals.Notions
  open import UF.Subsingletons-FunExt
+ open import UF.SubTypeClassifier
 
  Ωᵒ : Ordinalᵀ (𝓤 ⁺)
- Ωᵒ = Ωₒ , ⊤Ω , h
+ Ωᵒ = Ωₒ , ⊤ , h
   where
-   h : is-top (underlying-order Ωₒ) ⊤Ω
+   h : is-top (underlying-order Ωₒ) ⊤
    h y (p , _) = ⊥-is-not-⊤ (p ⁻¹)
 
 \end{code}

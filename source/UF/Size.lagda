@@ -37,12 +37,18 @@ open import UF.Equiv-FunExt
 open import UF.EquivalenceExamples
 open import UF.ExcludedMiddle
 open import UF.FunExt
+open import UF.Hedberg
 open import UF.KrausLemma
 open import UF.PropIndexedPiSigma
 open import UF.PropTrunc
 open import UF.Retracts
 open import UF.Section-Embedding
-open import UF.Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)
+open import UF.Sets
+open import UF.Sets
+open import UF.Sets
+open import UF.SubTypeClassifier
+open import UF.SubTypeClassifier-Properties
+open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.UA-FunExt
 open import UF.Univalence
@@ -722,6 +728,12 @@ private
 The above should not be used anymore, but should be kept here.
 
 \begin{code}
+
+𝟚-to-Ω-is-small-map : funext 𝓤 𝓤
+                    → propext 𝓤
+                    → (𝟚-to-Ω {𝓤}) is 𝓤 small-map
+𝟚-to-Ω-is-small-map fe pe p = (¬ (p holds) + p holds) ,
+                              ≃-sym (𝟚-to-Ω-fiber fe pe p)
 
 size-contravariance : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                     → f is 𝓦 small-map

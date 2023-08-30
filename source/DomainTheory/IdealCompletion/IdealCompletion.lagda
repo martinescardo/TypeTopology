@@ -24,11 +24,15 @@ module DomainTheory.IdealCompletion.IdealCompletion
                        -- completeness live
        where
 
-open import UF.Powerset
-open import UF.Subsingletons-FunExt
-
 open import DomainTheory.Basics.Dcpo pt fe 𝓥
 open import Posets.Poset fe
+open import UF.Powerset
+open import UF.Sets
+open import UF.SubTypeClassifier
+open import UF.SubTypeClassifier-Properties
+open import UF.Subsingletons-FunExt
+open import UF.Hedberg
+
 open PosetAxioms
 
 open PropositionalTruncation pt

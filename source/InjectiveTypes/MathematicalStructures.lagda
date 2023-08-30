@@ -32,7 +32,9 @@ open import UF.Equiv-FunExt
 open import UF.EquivalenceExamples
 open import UF.ExcludedMiddle
 open import UF.PropIndexedPiSigma
+open import UF.Sets
 open import UF.Size
+open import UF.SubTypeClassifier
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 

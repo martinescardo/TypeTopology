@@ -23,6 +23,7 @@ module DomainTheory.Lifting.LiftingSetAlgebraic
 open import UF.Equiv
 open import UF.Miscelanea
 open import UF.ImageAndSurjection pt
+open import UF.Sets
 open import UF.Subsingletons-FunExt
 
 open PropositionalTruncation pt

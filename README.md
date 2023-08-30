@@ -41,7 +41,7 @@ with only your name as author.
 * Keri D'Angelo
 * Marc Bezem (i)
 * Martin Escardo
-* Nicolai Kraus (ii)
+* Nicolai Kraus
 * Ohad Kammar
 * Paul Levy (i)
 * Paulo Oliva

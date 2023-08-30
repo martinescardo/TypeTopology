@@ -26,7 +26,9 @@ open import DomainTheory.Lifting.LiftingSet pt fe 𝓤₀ pe
 open import PCF.Lambda.AbstractSyntax pt
 open import PCF.Lambda.ScottModelOfTypes pt fe pe
 open import Posets.Poset fe
+open import UF.Hedberg
 open import UF.Miscelanea
+open import UF.Sets
 
 open DcpoProductsGeneral 𝓤₀
 open PosetAxioms

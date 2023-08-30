@@ -6,16 +6,17 @@ Based on `ayberkt/formal-topology-in-UF`.
 
 {-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
 
-open import MLTT.Spartan
-open import UF.Base
-open import UF.PropTrunc
-open import UF.FunExt
-open import UF.Univalence
-open import UF.UA-FunExt
-open import UF.EquivalenceExamples
-open import Slice.Family
 open import MLTT.List hiding ([_])
 open import MLTT.Pi
+open import MLTT.Spartan
+open import Slice.Family
+open import UF.Base
+open import UF.EquivalenceExamples
+open import UF.FunExt
+open import UF.PropTrunc
+open import UF.SubTypeClassifier
+open import UF.UA-FunExt
+open import UF.Univalence
 
 \end{code}
 

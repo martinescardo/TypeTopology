@@ -267,7 +267,10 @@ first universe 𝓤₀.
 
 \begin{code}
 
-open import UF.Subsingletons hiding (center) renaming (⊥Ω to ⊥ ; ⊤Ω to ⊤)
+open import UF.Hedberg
+open import UF.Sets
+open import UF.SubTypeClassifier
+open import UF.Subsingletons hiding (center)
 
 χ : 𝔹 → 𝔹 → Ω₀
 χ L    L      = ⊤

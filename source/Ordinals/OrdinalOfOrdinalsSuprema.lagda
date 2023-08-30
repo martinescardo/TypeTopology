@@ -48,6 +48,7 @@ open import UF.Equiv
 open import UF.FunExt
 open import UF.PropTrunc
 open import UF.Size
+open import UF.SubTypeClassifier
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.UA-FunExt

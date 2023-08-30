@@ -12,11 +12,12 @@ canonical inclusion of natural numbers in the integers.
 {-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
-open import TypeTopology.DiscreteAndSeparated
-open import Naturals.Properties
 open import MLTT.Unit-Properties
-open import UF.Subsingletons
+open import Naturals.Properties
+open import TypeTopology.DiscreteAndSeparated
 open import UF.Miscelanea
+open import UF.Sets
+open import UF.Subsingletons
 
 module Integers.Type where
 

@@ -25,9 +25,10 @@ the topos theory community.
 
 open import MLTT.Spartan
 open import UF.Base
-open import UF.Subsingletons renaming (Ω to Ω' ; ⊤Ω to ⊤ ; ⊥Ω to ⊥)
+open import UF.Subsingletons
 open import UF.FunExt
 open import UF.Subsingletons-FunExt
+open import UF.SubTypeClassifier renaming (Ω to Ω')
 
 \end{code}
 

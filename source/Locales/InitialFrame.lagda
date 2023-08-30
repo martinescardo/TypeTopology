@@ -17,11 +17,13 @@ module Locales.InitialFrame
         (fe : Fun-Ext)
        where
 
+open import UF.Sets
 open import UF.Subsingletons
 open import UF.Logic
 open import UF.Subsingletons-FunExt
 open import Slice.Family
 open import Locales.Frame pt fe
+open import UF.SubTypeClassifier
 open AllCombinators pt fe
 
 \end{code}
@@ -44,10 +46,10 @@ P ⊑ Q = P ⇒ Q
 ⊑-is-antisymmetric : {𝓤 : Universe} → propext 𝓤 → is-antisymmetric {A = Ω 𝓤} _⊑_
 ⊑-is-antisymmetric pe {P} {Q} φ ψ = Ω-ext pe fe † ‡
  where
-  † : P ＝ ⊤Ω → Q ＝ ⊤Ω
+  † : P ＝ ⊤ → Q ＝ ⊤
   † = holds-gives-equal-⊤ pe fe Q ∘ φ ∘ equal-⊤-is-true (P holds) (holds-is-prop P)
 
-  ‡ : Q ＝ ⊤Ω → P ＝ ⊤Ω
+  ‡ : Q ＝ ⊤ → P ＝ ⊤
   ‡ = holds-gives-equal-⊤ pe fe P ∘ ψ ∘ equal-⊤-is-true (Q holds) (holds-is-prop Q)
 
 ⊑-is-partial-order : {𝓤 : Universe} → propext 𝓤 → is-partial-order (Ω 𝓤) _⊑_
@@ -77,7 +79,7 @@ This gives us a poset structure at universe 𝓤:
 open propositional-truncations-exist pt
 
 𝟎-𝔽𝕣𝕞 : {𝓤 : Universe} → propext 𝓤 → Frame (𝓤 ⁺) 𝓤 𝓤
-𝟎-𝔽𝕣𝕞 {𝓤 = 𝓤} pe = Ω 𝓤 , (_⊑_ , ⊤Ω {𝓤} , _∧_ , ⋁_)
+𝟎-𝔽𝕣𝕞 {𝓤 = 𝓤} pe = Ω 𝓤 , (_⊑_ , ⊤ {𝓤} , _∧_ , ⋁_)
       , ⊑-is-partial-order pe , top , meet , join , dist
  where
   ⋁_ : Fam 𝓤 (Ω 𝓤) → Ω 𝓤
@@ -85,7 +87,7 @@ open propositional-truncations-exist pt
 
   open Meets _⊑_ renaming (is-top to is-the-top)
 
-  top : is-the-top (⊤Ω {𝓤}) holds
+  top : is-the-top (⊤ {𝓤}) holds
   top _ _ = ⋆
 
   meet : (Ɐ (P , Q) , (P ∧ Q) is-glb-of (P , Q)) holds
@@ -131,11 +133,11 @@ open propositional-truncations-exist pt
 \end{code}
 
 \begin{code}
-𝟎-of-IF-is-⊥ : {𝓦 : Universe} → (pe : propext 𝓦) → 𝟎[ 𝟎-𝔽𝕣𝕞 pe ] ＝ ⊥Ω
+𝟎-of-IF-is-⊥ : {𝓦 : Universe} → (pe : propext 𝓦) → 𝟎[ 𝟎-𝔽𝕣𝕞 pe ] ＝ ⊥
 𝟎-of-IF-is-⊥ pe =
  ≤-is-antisymmetric (poset-of (𝟎-𝔽𝕣𝕞 pe)) γ λ ()
  where
-  γ : (𝟎[ 𝟎-𝔽𝕣𝕞 pe ] ≤[ poset-of (𝟎-𝔽𝕣𝕞 pe) ]  ⊥Ω) holds
+  γ : (𝟎[ 𝟎-𝔽𝕣𝕞 pe ] ≤[ poset-of (𝟎-𝔽𝕣𝕞 pe) ]  ⊥) holds
   γ x = ∥∥-rec 𝟘-is-prop (λ ()) x
 \end{code}
 
@@ -160,7 +162,7 @@ f-respects-⊤ pe A = ≤-is-antisymmetric (poset-of A) α β
   α = 𝟏-is-top A (f pe A 𝟏[ 𝟎-𝔽𝕣𝕞 pe ])
 
   β : (𝟏[ A ] ≤A f pe A 𝟏[ 𝟎-𝔽𝕣𝕞 pe ]) holds
-  β = ⋁[ A ]-upper (⁅ 𝟏[ A ] ∣ x ∶ ⊤Ω holds ⁆) ⋆
+  β = ⋁[ A ]-upper (⁅ 𝟏[ A ] ∣ x ∶ ⊤ holds ⁆) ⋆
 
 \end{code}
 
@@ -251,30 +253,30 @@ main-lemma pe P p =
    where
     δ : (g P is-an-upper-bound-of (P holds , λ _ → 𝟏[ F ])) holds
     δ p = 𝟏[ F ] ≤⟨ reflexivity+ (poset-of F) (ϕ ⁻¹)  ⟩
-          g ⊤Ω   ≤⟨ g-is-monotonic (⊤Ω , P) (λ _ → p) ⟩
+          g ⊤   ≤⟨ g-is-monotonic (⊤ , P) (λ _ → p) ⟩
           g P    QED
 
 
     ε : (Ɐ (u , _) ꞉ upper-bound (P holds , λ _ → 𝟏[ F ]) ,
           g P ≤[ poset-of F ] u) holds
     ε (u , q) =
-     g P                                    ≤⟨ i                      ⟩
-     g (⋁[ 𝟎-𝔽𝕣𝕞 pe ] ⁅ ⊤Ω ∣ _ ∶ P holds ⁆) ≤⟨ ii                     ⟩
-     ⋁[ F ] ⁅ g ⊤Ω ∣ _ ∶ P holds ⁆          ≤⟨ iii                    ⟩
-     ⋁[ F ] ⁅ 𝟏[ F ] ∣ _ ∶ P holds ⁆        ≤⟨ ⋁[ F ]-least _ (u , q) ⟩
-     u                                      QED
+     g P                                   ≤⟨ i                      ⟩
+     g (⋁[ 𝟎-𝔽𝕣𝕞 pe ] ⁅ ⊤ ∣ _ ∶ P holds ⁆) ≤⟨ ii                     ⟩
+     ⋁[ F ] ⁅ g ⊤ ∣ _ ∶ P holds ⁆          ≤⟨ iii                    ⟩
+     ⋁[ F ] ⁅ 𝟏[ F ] ∣ _ ∶ P holds ⁆       ≤⟨ ⋁[ F ]-least _ (u , q) ⟩
+     u                                     QED
      where
       i  = g-is-monotonic
-            (P , (⋁[ 𝟎-𝔽𝕣𝕞 pe ] ⁅ ⊤Ω ∣ _ ∶ (P holds) ⁆))
+            (P , (⋁[ 𝟎-𝔽𝕣𝕞 pe ] ⁅ ⊤ ∣ _ ∶ (P holds) ⁆))
             (main-lemma pe P)
       ii  = reflexivity+
              (poset-of F)
-             ((⋁[ F ]-unique _ _ (ψ (⁅ ⊤Ω ∣ _ ∶ (P holds) ⁆))))
+             ((⋁[ F ]-unique _ _ (ψ (⁅ ⊤ ∣ _ ∶ (P holds) ⁆))))
       iii = reflexivity+
              (poset-of F)
              (ap (λ - → ⋁[ F ] (P holds , -)) (dfunext fe υ))
        where
-        υ : (λ _ → g ⊤Ω) ∼ (λ _ → 𝟏[ F ])
+        υ : (λ _ → g ⊤) ∼ (λ _ → 𝟏[ F ])
         υ _ = ϕ
 
   β : f pe F ＝ g
@@ -300,8 +302,8 @@ module Spectrality-of-𝟎 (𝓤 : Universe) (pe : propext 𝓤) where
  ℬ𝟎 = 𝟚 𝓤 , h
   where
    h : 𝟚 𝓤 → ⟨ 𝟎-𝔽𝕣𝕞 pe ⟩
-   h (inl ⋆) = ⊥Ω
-   h (inr ⋆) = ⊤Ω
+   h (inl ⋆) = ⊥
+   h (inr ⋆) = ⊤
 
 \end{code}
 

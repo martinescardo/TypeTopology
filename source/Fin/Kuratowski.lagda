@@ -24,17 +24,21 @@ open import UF.Equiv-FunExt
 open import UF.EquivalenceExamples
 open import UF.ExcludedMiddle
 open import UF.FunExt
+open import UF.Hedberg
+open import UF.ImageAndSurjection pt
 open import UF.Miscelanea
-open import UF.Subsingletons renaming (⊤Ω to ⊤)
+open import UF.Sets
+open import UF.SubTypeClassifier
+open import UF.SubTypeClassifier-Properties
+open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.UA-FunExt
 open import UF.Univalence
 open import UF.UniverseEmbedding
 
+open CompactTypesPT pt
 open PropositionalTruncation pt
 open finiteness pt
-open import UF.ImageAndSurjection pt
-open CompactTypesPT pt
 
 is-Kuratowski-finite : 𝓤 ̇ → 𝓤 ̇
 is-Kuratowski-finite X = ∃ n ꞉ ℕ , Fin n ↠ X

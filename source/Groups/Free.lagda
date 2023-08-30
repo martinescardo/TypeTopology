@@ -45,6 +45,7 @@ open import MLTT.List
 open import UF.PropTrunc
 open import UF.Univalence
 open import UF.Base
+open import UF.Sets
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.Embeddings

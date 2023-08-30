@@ -19,6 +19,7 @@ for the structure.
 
 open import MLTT.Spartan
 open import UF.FunExt
+open import UF.Sets
 
 module TWA.SIP-IntervalObject {𝓤 : Universe} (fe' : FunExt) where
 

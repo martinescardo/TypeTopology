@@ -53,6 +53,7 @@ open PropositionalTruncation pt
 open import UF.Base hiding (_≈_)
 open import UF.Equiv
 open import UF.EquivalenceExamples
+open import UF.Hedberg
 open import UF.ImageAndSurjection pt
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt

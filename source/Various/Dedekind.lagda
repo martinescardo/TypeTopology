@@ -36,20 +36,23 @@ See also the discussion at https://twitter.com/EscardoMartin/status/147339326101
 
 {-# OPTIONS --safe --without-K --exact-split #-}
 
+open import MLTT.Plus-Properties
 open import MLTT.Spartan
+open import Naturals.Order hiding (<-≤-trans)
 open import Notation.CanonicalMap
 open import Notation.Order
-open import MLTT.Plus-Properties
 open import TypeTopology.CompactTypes
-open import Naturals.Order hiding (<-≤-trans)
-
 open import UF.Base
 open import UF.Embeddings
 open import UF.Equiv
 open import UF.FunExt
+open import UF.Hedberg
 open import UF.Powerset
 open import UF.PropTrunc
+open import UF.Sets
 open import UF.Size
+open import UF.SubTypeClassifier
+open import UF.SubTypeClassifier-Properties
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
@@ -870,7 +873,7 @@ lower reals:
 \begin{code}
 
  infty : 𝓟 ℚ
- infty = λ q → ⊤Ω
+ infty = λ q → ⊤
 
  infty-is-lower-real : is-lower-real infty
  infty-is-lower-real = ∣ 𝟎 , ⋆ ∣ ,

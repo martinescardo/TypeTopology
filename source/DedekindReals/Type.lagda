@@ -16,12 +16,15 @@ open import UF.Base
 open import UF.PropTrunc
 open import UF.Powerset
 open import UF.Retracts
+open import UF.Sets
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.FunExt
 open import Integers.Type
 open import Rationals.Type
 open import Rationals.Order
+open import UF.Hedberg
+open import UF.SubTypeClassifier-Properties
 
 module DedekindReals.Type
          (fe : Fun-Ext)

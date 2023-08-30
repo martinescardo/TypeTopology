@@ -26,6 +26,10 @@ open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.UA-FunExt
 open import UF.Univalence
+open import UF.SubTypeClassifier
+open import UF.SubTypeClassifier-Properties
+open import UF.Sets
+open import UF.Hedberg
 
 𝓟 : 𝓤 ̇ → 𝓤 ⁺ ̇
 𝓟 {𝓤} X = X → Ω 𝓤

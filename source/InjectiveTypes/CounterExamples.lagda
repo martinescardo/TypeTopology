@@ -41,6 +41,8 @@ open import UF.ExcludedMiddle
 open import UF.FunExt
 open import UF.Miscelanea
 open import UF.Retracts
+open import UF.SubTypeClassifier
+open import UF.SubTypeClassifier-Properties
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.UA-FunExt

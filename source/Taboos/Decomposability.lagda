@@ -38,7 +38,10 @@ open import UF.EquivalenceExamples
 open import UF.ExcludedMiddle
 open import UF.FunExt
 open import UF.PropTrunc
+open import UF.Sets
 open import UF.Size
+open import UF.SubTypeClassifier
+open import UF.SubTypeClassifier-Properties
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.UA-FunExt
@@ -195,7 +198,7 @@ true to y. We collect all such functions in a type Ω-Path 𝓥 x y.
 \begin{code}
 
 Ω-Path : {X : 𝓤 ̇ } (𝓥 : Universe) → X → X → 𝓤 ⊔ (𝓥 ⁺) ̇
-Ω-Path {𝓤} {X} 𝓥 x y = Σ f ꞉ (Ω 𝓥 → X) , (f ⊥Ω ＝ x) × (f ⊤Ω ＝ y)
+Ω-Path {𝓤} {X} 𝓥 x y = Σ f ꞉ (Ω 𝓥 → X) , (f ⊥ ＝ x) × (f ⊤ ＝ y)
 
 \end{code}
 
@@ -212,16 +215,16 @@ type-of-ordinals-has-Ω-paths {𝓤} α β = f , γ⊥ , γ⊤
   f : Ω 𝓤 → Ordinal 𝓤
   f p = (Ω-to-ordinal (⇁ p) ×ₒ α) +ₒ (Ω-to-ordinal p ×ₒ β)
 
-  γ⊥ : f ⊥Ω ＝ α
-  γ⊥ = eqtoidₒ (ua 𝓤) fe' (f ⊥Ω) α (u , o , e , p)
+  γ⊥ : f ⊥ ＝ α
+  γ⊥ = eqtoidₒ (ua 𝓤) fe' (f ⊥) α (u , o , e , p)
    where
-    u : ⟨ f ⊥Ω ⟩ → ⟨ α ⟩
+    u : ⟨ f ⊥ ⟩ → ⟨ α ⟩
     u (inl (x , a)) = a
 
-    o : is-order-preserving (f ⊥Ω) α u
+    o : is-order-preserving (f ⊥) α u
     o (inl (x , a)) (inl (x , b)) (inr (refl , l)) = l
 
-    v : ⟨ α ⟩ → ⟨ f ⊥Ω ⟩
+    v : ⟨ α ⟩ → ⟨ f ⊥ ⟩
     v a = inl (𝟘-elim , a)
 
     vu : v ∘ u ∼ id
@@ -233,21 +236,21 @@ type-of-ordinals-has-Ω-paths {𝓤} α β = f , γ⊥ , γ⊤
     e : is-equiv u
     e = qinvs-are-equivs u (v , vu , uv)
 
-    p : is-order-preserving α (f ⊥Ω) v
+    p : is-order-preserving α (f ⊥) v
     p a b l = inr (refl , l)
 
-  γ⊤ : f ⊤Ω ＝ β
-  γ⊤ = eqtoidₒ (ua 𝓤) fe' (f ⊤Ω) β (u , o , e , p)
+  γ⊤ : f ⊤ ＝ β
+  γ⊤ = eqtoidₒ (ua 𝓤) fe' (f ⊤) β (u , o , e , p)
    where
-    u : ⟨ f ⊤Ω ⟩ → ⟨ β ⟩
+    u : ⟨ f ⊤ ⟩ → ⟨ β ⟩
     u (inl (f , _)) = 𝟘-elim (f ⋆)
     u (inr (⋆ , b)) = b
 
-    o : is-order-preserving (f ⊤Ω) β u
+    o : is-order-preserving (f ⊤) β u
     o (inl (f , _)) y l = 𝟘-elim (f ⋆)
     o (inr (⋆ , _)) (inr (⋆ , _)) (inr (_ , l)) = l
 
-    v : ⟨ β ⟩ → ⟨ f ⊤Ω ⟩
+    v : ⟨ β ⟩ → ⟨ f ⊤ ⟩
     v b = inr (⋆ , b)
 
     vu : v ∘ u ∼ id
@@ -260,7 +263,7 @@ type-of-ordinals-has-Ω-paths {𝓤} α β = f , γ⊥ , γ⊤
     e : is-equiv u
     e = qinvs-are-equivs u (v , vu , uv)
 
-    p : is-order-preserving β (f ⊤Ω) v
+    p : is-order-preserving β (f ⊤) v
     p b c l = inr (refl , l)
 
 decomposition-of-Ω-gives-WEM : decomposition (Ω 𝓤) → WEM 𝓤
@@ -322,19 +325,19 @@ decomposition-of-type-with-Ω-paths-gives-WEM {𝓤} {𝓥} {X}
   g : Ω 𝓥 → X
   g = pr₁ (c x₀ x₁)
 
-  gp : (g ⊥Ω ＝ x₀) × (g ⊤Ω ＝ x₁)
+  gp : (g ⊥ ＝ x₀) × (g ⊤ ＝ x₁)
   gp = pr₂ (c x₀ x₁)
 
-  I₀ = f (g ⊥Ω) ＝⟨ ap f (pr₁ gp) ⟩
-       f x₀     ＝⟨ e₀ ⟩
-       ₀        ∎
+  I₀ = f (g ⊥) ＝⟨ ap f (pr₁ gp) ⟩
+       f x₀    ＝⟨ e₀ ⟩
+       ₀       ∎
 
-  I₁ = f (g ⊤Ω) ＝⟨ ap f (pr₂ gp) ⟩
-       f x₁     ＝⟨ e₁ ⟩
-       ₁        ∎
+  I₁ = f (g ⊤) ＝⟨ ap f (pr₂ gp) ⟩
+       f x₁    ＝⟨ e₁ ⟩
+       ₁       ∎
 
   γ : WEM 𝓥
-  γ = decomposition-of-Ω-gives-WEM (f ∘ g , (⊥Ω , I₀) , (⊤Ω , I₁))
+  γ = decomposition-of-Ω-gives-WEM (f ∘ g , (⊥ , I₀) , (⊤ , I₁))
 
 decomposition-of-ordinals-type-gives-WEM : decomposition (Ordinal 𝓤) → WEM 𝓤
 decomposition-of-ordinals-type-gives-WEM d =

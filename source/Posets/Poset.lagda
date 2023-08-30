@@ -13,6 +13,8 @@ open import UF.FunExt
 
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
+open import UF.Hedberg
+open import UF.Sets
 
 module Posets.Poset
         (fe : Fun-Ext)

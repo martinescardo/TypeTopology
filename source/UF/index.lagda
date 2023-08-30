@@ -20,6 +20,7 @@ import UF.FunExt
 import UF.FunExt-Properties
 import UF.FunExt-from-Naive-FunExt
 import UF.Groupoids
+import UF.Hedberg
 import UF.IdEmbedding
 import UF.IdentitySystems
 import UF.ImageAndSurjection
@@ -49,12 +50,15 @@ import UF.Retracts-FunExt
 import UF.SIP
 import UF.SIP-Examples
 import UF.Section-Embedding
+import UF.Sets
 import UF.SetTrunc
 import UF.Size
 import UF.SmallnessProperties
 import UF.StructureIdentityPrinciple -- obsolete but keep
 import UF.Subsingletons
 import UF.Subsingletons-FunExt
+import UF.SubTypeClassifier
+import UF.SubTypeClassifier-Properties
 import UF.UA-FunExt
 import UF.Univalence
 import UF.UniverseEmbedding

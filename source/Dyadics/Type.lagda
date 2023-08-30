@@ -6,14 +6,12 @@ Andrew Sneap, 17 February 2022
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
 
-open import Integers.Type
 open import Integers.Exponentiation
 open import Integers.Multiplication
 open import Integers.Order
 open import Integers.Parity
-open import Rationals.Fractions hiding (_≈_ ; ≈-sym ; ≈-trans ; ≈-refl)
-open import Rationals.Multiplication renaming (_*_ to _ℚ*_)
-open import Rationals.Type
+open import Integers.Type
+open import MLTT.Plus-Properties
 open import Naturals.Addition
 open import Naturals.Division
 open import Naturals.Exponentiation
@@ -23,12 +21,15 @@ open import Naturals.Order
 open import Naturals.Parity
 open import Naturals.Properties
 open import Notation.Order
-open import MLTT.Plus-Properties
-open import UF.Base hiding (_≈_)
-open import UF.Miscelanea
-open import UF.Subsingletons
+open import Rationals.Fractions hiding (_≈_ ; ≈-sym ; ≈-trans ; ≈-refl)
+open import Rationals.Multiplication renaming (_*_ to _ℚ*_)
+open import Rationals.Type
 open import TypeTopology.DiscreteAndSeparated
 open import TypeTopology.SigmaDiscreteAndTotallySeparated
+open import UF.Base hiding (_≈_)
+open import UF.Miscelanea
+open import UF.Sets
+open import UF.Subsingletons
 
 module Dyadics.Type where
 

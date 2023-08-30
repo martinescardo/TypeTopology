@@ -6,15 +6,17 @@ The main result needed in this module is the extension lemma.
 
 {-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
 
+open import MLTT.List hiding ([_])
 open import MLTT.Spartan hiding (𝟚)
+open import Slice.Family
 open import UF.Base
 open import UF.Equiv hiding (_■)
-open import UF.PropTrunc
 open import UF.FunExt
-open import UF.Size
 open import UF.PropTrunc
-open import Slice.Family
-open import MLTT.List hiding ([_])
+open import UF.PropTrunc
+open import UF.Sets
+open import UF.Size
+open import UF.SubTypeClassifier
 
 module Locales.BooleanAlgebra
         (pt : propositional-truncations-exist)

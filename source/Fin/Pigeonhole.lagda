@@ -6,7 +6,7 @@ Martin Escardo, November-December 2019
 
 module Fin.Pigeonhole where
 
-open import UF.Subsingletons renaming (⊤Ω to ⊤)
+open import UF.Subsingletons
 
 open import Factorial.Swap
 open import Fin.Bishop

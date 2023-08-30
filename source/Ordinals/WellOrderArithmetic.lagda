@@ -14,6 +14,7 @@ open import MLTT.Spartan hiding (transitive)
 open import Ordinals.Notions
 
 open import UF.Base
+open import UF.Hedberg
 open import UF.Subsingletons
 open import UF.FunExt
 

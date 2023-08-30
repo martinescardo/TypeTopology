@@ -6,17 +6,19 @@ Expanded on demand whenever a general equivalence is needed.
 
 {-# OPTIONS --safe --without-K --exact-split #-}
 
+open import MLTT.Plus-Properties
 open import MLTT.Spartan
 open import MLTT.Two-Properties
-open import MLTT.Plus-Properties
 open import UF.Base
 open import UF.Equiv
 open import UF.FunExt
+open import UF.Hedberg
 open import UF.Lower-FunExt
+open import UF.PropIndexedPiSigma
 open import UF.Retracts
+open import UF.SubTypeClassifier
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import UF.PropIndexedPiSigma
 
 module UF.EquivalenceExamples where
 
@@ -887,24 +889,6 @@ pr₁-fiber-equiv {𝓤} {𝓥} {X} {Y} x =
   fiber pr₁ x                   ≃⟨ Σ-assoc ⟩
   (Σ x' ꞉ X , Y x' × (x' ＝ x))  ≃⟨ right-Id-equiv x ⟩
   Y x                           ■
-
-equal-⊤-≃ : propext 𝓤
-          → funext 𝓤 𝓤
-          → (p : Ω 𝓤) → (p ＝ ⊤Ω) ≃ (p holds)
-equal-⊤-≃ {𝓤} pe fe p = logically-equivalent-props-are-equivalent
-                         (Ω-is-set fe pe)
-                         (holds-is-prop p)
-                         (equal-⊤-holds p)
-                         (holds-gives-equal-⊤ pe fe p)
-
-equal-⊥-≃ : propext 𝓤
-          → funext 𝓤 𝓤
-          → (p : Ω 𝓤) → (p ＝ ⊥Ω) ≃ ¬ (p holds)
-equal-⊥-≃ {𝓤} pe fe p = logically-equivalent-props-are-equivalent
-                         (Ω-is-set fe pe)
-                         (negations-are-props (lower-funext 𝓤 𝓤 fe))
-                         (equal-⊥-fails p)
-                         (fails-gives-equal-⊥ pe fe p)
 
 \end{code}
 

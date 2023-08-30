@@ -20,8 +20,10 @@ open import UF.Base
 open import UF.Equiv
 open import UF.FunExt
 open import UF.Retracts
-open import UF.Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)
+open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
+open import UF.SubTypeClassifier
+open import UF.Hedberg
 
 is-isolated : {X : 𝓤 ̇ } → X → 𝓤 ̇
 is-isolated x = ∀ y → is-decidable (x ＝ y)

@@ -30,6 +30,7 @@ open import UF.FunExt
 open import UF.Miscelanea
 open import UF.PropIndexedPiSigma
 open import UF.Retracts
+open import UF.Sets
 open import UF.Subsingletons
 open import UF.UA-FunExt
 open import W.Properties (𝓤 ̇) id

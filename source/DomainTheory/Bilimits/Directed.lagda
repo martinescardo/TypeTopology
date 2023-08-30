@@ -38,7 +38,9 @@ https://github.com/agda/agda/issues/1625
 
 open import MLTT.Spartan hiding (J)
 open import UF.FunExt
+open import UF.Hedberg
 open import UF.PropTrunc
+open import UF.Sets
 
 module DomainTheory.Bilimits.Directed
         (pt : propositional-truncations-exist)

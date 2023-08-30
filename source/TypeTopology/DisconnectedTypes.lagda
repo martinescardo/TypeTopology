@@ -25,8 +25,9 @@ open import MLTT.Spartan
 open import MLTT.Two-Properties
 open import Naturals.Properties
 open import TypeTopology.DiscreteAndSeparated
-open import UF.Retracts
 open import UF.Equiv
+open import UF.Hedberg
+open import UF.Retracts
 
 \end{code}
 

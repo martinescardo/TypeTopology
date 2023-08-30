@@ -6,7 +6,7 @@ Martin Escardo, 19th March 2021.
 
 module Fin.Omega where
 
-open import UF.Subsingletons renaming (⊤Ω to ⊤)
+open import UF.Subsingletons
 
 open import Fin.Type
 open import MLTT.Plus-Properties
@@ -16,6 +16,7 @@ open import Notation.Order
 open import UF.Embeddings
 open import UF.FunExt
 open import UF.Subsingletons-FunExt
+open import UF.SubTypeClassifier
 
 having-three-distinct-points-covariant : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                                        → X ↪ Y

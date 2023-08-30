@@ -16,24 +16,23 @@ module CoNaturals.GenericConvergentSequence where
 
 open import MLTT.Spartan
 open import MLTT.Two-Properties
-
-open import Naturals.Properties
 open import Naturals.Addition renaming (_+_ to _∔_)
 open import Naturals.Order hiding (max)
-open import Notation.Order
+open import Naturals.Properties
 open import Notation.CanonicalMap
-
+open import Notation.Order
 open import TypeTopology.Density
 open import TypeTopology.DiscreteAndSeparated
-
 open import UF.Base
-open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
-open import UF.FunExt
 open import UF.Embeddings
 open import UF.Equiv
-open import UF.Retracts
+open import UF.FunExt
 open import UF.Miscelanea
+open import UF.Retracts
+open import UF.Sets
+open import UF.SubTypeClassifier
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
 
 funext₀ : 𝓤₁ ̇
 funext₀ = funext 𝓤₀ 𝓤₀

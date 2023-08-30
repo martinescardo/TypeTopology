@@ -19,21 +19,22 @@ module Lifting.UnivalentPrecategory
         (X : 𝓤 ̇ )
        where
 
+open import Lifting.IdentityViaSIP 𝓣
+open import Lifting.Lifting 𝓣
 open import UF.Base
-open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
 open import UF.Embeddings
 open import UF.Equiv
 open import UF.Equiv-FunExt
 open import UF.EquivalenceExamples
 open import UF.FunExt
 open import UF.Lower-FunExt
-open import UF.Univalence
-open import UF.UA-FunExt
+open import UF.Sets
 open import UF.StructureIdentityPrinciple
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
+open import UF.UA-FunExt
+open import UF.Univalence
 
-open import Lifting.Lifting 𝓣
-open import Lifting.IdentityViaSIP 𝓣
 \end{code}
 
 We define l ⊑ m to mean that if l is defined then so is m with the

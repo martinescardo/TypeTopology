@@ -19,6 +19,7 @@ open import Ordinals.Notions
 open import Ordinals.Type
 open import Ordinals.Underlying
 open import Ordinals.WellOrderArithmetic
+open import UF.SubTypeClassifier
 open import UF.Subsingletons
 
 prop-ordinal : (P : 𝓤 ̇ ) → is-prop P → Ordinal 𝓤
@@ -38,17 +39,17 @@ Here the subscript is the letter "o":
 \begin{code}
 
 𝟘ₒ 𝟙ₒ : {𝓤 : Universe} → Ordinal 𝓤
-𝟘ₒ = Ω-to-ordinal ⊥Ω
-𝟙ₒ = Ω-to-ordinal ⊤Ω
+𝟘ₒ = Ω-to-ordinal ⊥
+𝟙ₒ = Ω-to-ordinal ⊤
 
 𝟘ₒ-is-not-𝟙ₒ : 𝟘ₒ {𝓤} ≠ 𝟙ₒ {𝓤}
 𝟘ₒ-is-not-𝟙ₒ e = 𝟘-is-not-𝟙 (ap ⟨_⟩ e)
 
 𝟘ₒ-is-trichotomous : is-trichotomous (𝟘ₒ {𝓤})
-𝟘ₒ-is-trichotomous = prop-ordinal-is-trichotomous ⊥Ω
+𝟘ₒ-is-trichotomous = prop-ordinal-is-trichotomous ⊥
 
 𝟙ₒ-is-trichotomous : is-trichotomous (𝟙ₒ {𝓤})
-𝟙ₒ-is-trichotomous = prop-ordinal-is-trichotomous ⊤Ω
+𝟙ₒ-is-trichotomous = prop-ordinal-is-trichotomous ⊤
 
 \end{code}
 

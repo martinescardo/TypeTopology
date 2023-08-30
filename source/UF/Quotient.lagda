@@ -15,10 +15,14 @@ open import MLTT.Spartan
 open import UF.Base hiding (_≈_)
 open import UF.Equiv
 open import UF.FunExt
+open import UF.Hedberg
 open import UF.PropTrunc
+open import UF.Sets
+open import UF.Size
+open import UF.SubTypeClassifier
+open import UF.SubTypeClassifier-Properties
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import UF.Size
 
 is-prop-valued is-equiv-relation : {X : 𝓤 ̇ } → (X → X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
 is-prop-valued    _≈_ = ∀ x y → is-prop (x ≈ y)

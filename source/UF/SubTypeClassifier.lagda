@@ -1,0 +1,242 @@
+Martin Escardo
+
+The type of truth values and its basic notions and properties. More
+notions and properties are in UF.SubTypeClassifier-Properties.
+
+\begin{code}
+
+{-# OPTIONS --safe --without-K --exact-split #-}
+
+module UF.SubTypeClassifier where
+
+open import MLTT.Spartan
+open import UF.Subsingletons
+open import UF.FunExt
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
+open import UF.Base
+
+Ω : ∀ 𝓤 → 𝓤 ⁺ ̇
+Ω 𝓤 = Σ P ꞉ 𝓤 ̇ , is-prop P
+
+Ω₀ = Ω 𝓤₀
+
+_holds : Ω 𝓤 → 𝓤 ̇
+(P , i) holds = P
+
+holds-is-prop : (p : Ω 𝓤) → is-prop (p holds)
+holds-is-prop (P , i) = i
+
+to-Ω-＝ : funext 𝓤 𝓤
+        → {P Q : 𝓤 ̇ }
+          {i : is-prop P} {j : is-prop Q}
+        → P ＝ Q
+        → (P , i) ＝[ Ω 𝓤 ] (Q , j)
+to-Ω-＝ fe = to-subtype-＝ (λ _ → being-prop-is-prop fe)
+
+from-Ω-＝ : {P Q : 𝓤 ̇ }
+            {i : is-prop P} {j : is-prop Q}
+          → (P , i) ＝[ Ω 𝓤 ] (Q , j)
+          → P ＝ Q
+from-Ω-＝ = ap _holds
+
+⊥ ⊤ : Ω 𝓤
+⊥ = 𝟘 , 𝟘-is-prop   -- false
+⊤ = 𝟙 , 𝟙-is-prop   -- true
+
+⊥-doesnt-hold : ¬ (⊥ {𝓤} holds)
+⊥-doesnt-hold = 𝟘-elim
+
+⊤-holds : ⊤ {𝓤} holds
+⊤-holds = ⋆
+
+⊥-is-not-⊤ : ⊥ {𝓤} ≠ ⊤ {𝓤}
+⊥-is-not-⊤ b = 𝟘-elim (𝟘-is-not-𝟙 (ap _holds b))
+
+not : funext 𝓤 𝓤₀ → Ω 𝓤 → Ω 𝓤
+not fe (P , i) = (¬ P , negations-are-props fe)
+
+true-is-equal-⊤ : propext 𝓤
+                → funext 𝓤 𝓤
+                → (P : 𝓤 ̇ ) (i : is-prop P)
+                → P → (P , i) ＝ ⊤
+true-is-equal-⊤ pe fe P i p = to-Σ-＝ (holds-gives-equal-𝟙 pe P i p ,
+                                      being-prop-is-prop fe _ _)
+
+holds-gives-equal-⊤ : propext 𝓤 → funext 𝓤 𝓤 → (p : Ω 𝓤) → p holds → p ＝ ⊤
+holds-gives-equal-⊤ pe fe (P , i) = true-is-equal-⊤ pe fe P i
+
+equal-⊤-holds : (p : Ω 𝓤) → p ＝ ⊤ → p holds
+equal-⊤-holds .⊤ refl = ⋆
+
+equal-⊤-gives-holds : (p : Ω 𝓤) → p ＝ ⊤ → p holds
+equal-⊤-gives-holds p r = equal-𝟙-gives-holds (p holds) (ap pr₁ r)
+
+Ω-extensionality : funext 𝓤 𝓤
+                 → propext 𝓤
+                 → {p q : Ω 𝓤}
+                 → (p holds → q holds)
+                 → (q holds → p holds)
+                 → p ＝ q
+Ω-extensionality {𝓤} fe pe {p} {q} f g =
+ to-Σ-＝
+  (pe (holds-is-prop p) (holds-is-prop q) f g ,
+   being-prop-is-prop fe _ _)
+
+equal-⊥-gives-not-equal-⊤ : (fe : Fun-Ext)
+                            (pe : propext 𝓤)
+                            (p : Ω 𝓤)
+                          → p ＝ ⊥
+                          → not fe p ＝ ⊤
+equal-⊥-gives-not-equal-⊤ fe pe p r = γ
+ where
+  s : p holds ＝ 𝟘
+  s = ap _holds r
+
+  t : ¬ (p holds) ＝ 𝟙
+  t = ap ¬_ s ∙ not-𝟘-is-𝟙 fe pe
+
+  γ : not fe p ＝ ⊤
+  γ = to-subtype-＝ (λ _ → being-prop-is-prop fe) t
+
+false-is-equal-⊥ : propext 𝓤
+                 → funext 𝓤 𝓤
+                 → (P : 𝓤 ̇ ) (i : is-prop P)
+                 → ¬ P → (P , i) ＝ ⊥
+false-is-equal-⊥ pe fe P i f =
+ to-Σ-＝
+  (pe i 𝟘-is-prop (λ p → 𝟘-elim (f p)) 𝟘-elim ,
+   being-prop-is-prop fe _ _)
+
+fails-gives-equal-⊥ : propext 𝓤 → funext 𝓤 𝓤 → (p : Ω 𝓤) → ¬ (p holds) → p ＝ ⊥
+fails-gives-equal-⊥ pe fe (P , i) = false-is-equal-⊥ pe fe P i
+
+equal-⊥-fails : (p : Ω 𝓤) → p ＝ ⊥ → ¬ (p holds)
+equal-⊥-fails .⊥ refl = 𝟘-elim
+
+not-equal-⊤-gives-equal-⊥ : (fe : Fun-Ext)
+                            (pe : propext 𝓤)
+                            (p : Ω 𝓤)
+                          → not fe p ＝ ⊤
+                          → p ＝ ⊥
+not-equal-⊤-gives-equal-⊥ fe pe p r = γ
+ where
+  f : (not fe p) holds
+  f = Idtofun (ap _holds r ⁻¹) ⋆
+
+  t : p holds ＝ 𝟘
+  t = empty-types-are-＝-𝟘 fe pe f
+
+  γ : p ＝ ⊥
+  γ = to-subtype-＝ (λ _ → being-prop-is-prop fe) t
+
+equal-⊤-is-true : (P : 𝓤 ̇ ) (i : is-prop P) → (P , i) ＝ ⊤ → P
+equal-⊤-is-true P hp r = f ⋆
+ where
+  s : 𝟙 ＝ P
+  s = (ap pr₁ r)⁻¹
+
+  f : 𝟙 → P
+  f = transport id s
+
+Ω-ext : propext 𝓤
+      → funext 𝓤 𝓤
+      → {p q : Ω 𝓤}
+      → (p ＝ ⊤ → q ＝ ⊤)
+      → (q ＝ ⊤ → p ＝ ⊤)
+      → p ＝ q
+
+Ω-ext pe fe {P , i} {Q , j} f g = III
+ where
+  I : P → Q
+  I x = equal-⊤-is-true Q j (f (true-is-equal-⊤ pe fe P i x))
+
+  II : Q → P
+  II y = equal-⊤-is-true P i (g (true-is-equal-⊤ pe fe Q j y))
+
+  III : P , i ＝ Q , j
+  III = to-Σ-＝ (pe i j I II , being-prop-is-prop fe _ _ )
+
+Ω-discrete-gives-EM : funext 𝓤 𝓤
+                    → propext 𝓤
+                    → ((p q : Ω 𝓤) → is-decidable (p ＝ q))
+                    → (P : 𝓤 ̇ ) → is-prop P → P + ¬ P
+Ω-discrete-gives-EM {𝓤} fe pe δ P i = f (δ p q)
+ where
+  p q : Ω 𝓤
+  p = (P , i)
+  q = (𝟙 , 𝟙-is-prop)
+
+  f : is-decidable (p ＝ q) → P + ¬ P
+  f (inl e) = inl (equal-𝟙-gives-holds P (ap pr₁ e))
+  f (inr ν) = inr (λ (x : P) → ν (to-subtype-＝
+                                   (λ _ → being-prop-is-prop fe)
+                                   (holds-gives-equal-𝟙 pe P i x)))
+\end{code}
+
+Without excluded middle, we have that:
+
+\begin{code}
+
+no-truth-values-other-than-⊥-or-⊤ : funext 𝓤 𝓤
+                                  → propext 𝓤
+                                  → ¬ (Σ p ꞉ Ω 𝓤 , (p ≠ ⊥) × (p ≠ ⊤))
+no-truth-values-other-than-⊥-or-⊤ fe pe ((P , i) , (f , g)) = φ u
+ where
+  u : ¬ P
+  u p = g l
+    where
+     l : (P , i) ＝ ⊤
+     l = Ω-extensionality fe pe unique-to-𝟙 (λ _ → p)
+
+  φ : ¬¬ P
+  φ u = f l
+    where
+     l : (P , i) ＝ ⊥
+     l = Ω-extensionality fe pe (λ p → 𝟘-elim (u p)) unique-from-𝟘
+
+no-three-distinct-propositions : funext 𝓤 𝓤
+                               → propext 𝓤
+                               → ¬ has-three-distinct-points (Ω 𝓤)
+no-three-distinct-propositions fe pe ((p , q , r) , u , v , w) = XI
+ where
+  I : p ≠ ⊥
+  I a = no-truth-values-other-than-⊥-or-⊤ fe pe (q , II , III)
+   where
+    II : q ≠ ⊥
+    II b = u (a ∙ b ⁻¹)
+
+    III : q ≠ ⊤
+    III c = no-truth-values-other-than-⊥-or-⊤ fe pe (r , IV , V)
+     where
+      IV : r ≠ ⊥
+      IV d = w (d ∙ a ⁻¹)
+
+      V : r ≠ ⊤
+      V e = v (c ∙ e ⁻¹)
+
+  VI : p ≠ ⊤
+  VI a = no-truth-values-other-than-⊥-or-⊤ fe pe (q , VII , X)
+   where
+    VII : q ≠ ⊥
+    VII b = no-truth-values-other-than-⊥-or-⊤ fe pe (r , VIII , IX)
+     where
+      VIII : r ≠ ⊥
+      VIII c = v (b ∙ c ⁻¹)
+
+      IX : r ≠ ⊤
+      IX d = w (d ∙ a ⁻¹)
+
+    X : q ≠ ⊤
+    X e = u (a ∙ e ⁻¹)
+
+  XI : 𝟘
+  XI = no-truth-values-other-than-⊥-or-⊤ fe pe (p , I , VI)
+
+\end{code}
+
+The above function was added 19th March 2021.
+
+The above implies that if Fin n is embedded in Ω 𝓤, then n ≤ 2. That
+is, every finite subset of Ω has at most two elements. See the module
+Fin.lagda.

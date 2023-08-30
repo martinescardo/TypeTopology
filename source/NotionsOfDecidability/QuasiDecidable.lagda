@@ -67,6 +67,9 @@ open import MLTT.Spartan
 open import UF.PropTrunc
 open import UF.FunExt
 open import UF.Subsingletons
+open import UF.SubTypeClassifier renaming (⊥ to ⊥Ω ; ⊤ to ⊤Ω)
+open import UF.SubTypeClassifier-Properties
+open import UF.Sets
 
 \end{code}
 

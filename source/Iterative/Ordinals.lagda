@@ -67,6 +67,7 @@ open import UF.Embeddings
 open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.PairFun
+open import UF.Sets
 open import UF.Size
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt

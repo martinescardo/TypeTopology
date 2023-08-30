@@ -15,11 +15,11 @@ development below offers an alternative proof for 𝕊¹.
 
 open import MLTT.Spartan
 open import UF.Base
-
 open import UF.Equiv
 open import UF.FunExt
+open import UF.Hedberg
+open import UF.Sets
 open import UF.Subsingletons
-
 
 module Circle.Induction where
 

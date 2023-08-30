@@ -229,6 +229,8 @@ open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.UA-FunExt
 open import UF.UniverseEmbedding
+open import UF.Sets
+open import UF.SubTypeClassifier
 
 \end{code}
 

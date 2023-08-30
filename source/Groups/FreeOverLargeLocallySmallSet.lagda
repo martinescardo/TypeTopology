@@ -69,6 +69,7 @@ open import Groups.Type
 open import MLTT.List
 open import Relations.SRTclosure
 open import UF.Base
+open import UF.Sets
 open import UF.Embeddings
 open import UF.Equiv hiding (_≅_)
 open import UF.EquivalenceExamples

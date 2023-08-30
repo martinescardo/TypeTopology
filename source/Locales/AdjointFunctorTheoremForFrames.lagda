@@ -22,6 +22,7 @@ open import UF.Logic
 
 open AllCombinators pt fe
 open PropositionalTruncation pt
+open import UF.SubTypeClassifier
 
 open Locale
 

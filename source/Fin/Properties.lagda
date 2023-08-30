@@ -6,7 +6,7 @@ Martin Escardo, sometime between 2014 and 2021
 
 module Fin.Properties where
 
-open import UF.Subsingletons renaming (⊤Ω to ⊤)
+open import UF.Subsingletons
 
 open import MLTT.Spartan
 open import MLTT.Plus-Properties

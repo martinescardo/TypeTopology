@@ -30,6 +30,7 @@ open import UF.Miscelanea
 open import UF.FunExt
 open import UF.Size
 open import Various.LawvereFPT
+open import UF.SubTypeClassifier
 
 open retract-version
 

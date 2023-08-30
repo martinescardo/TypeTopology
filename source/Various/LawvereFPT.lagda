@@ -30,13 +30,15 @@ open import Naturals.Properties
 
 open import UF.Base
 open import UF.Embeddings
+open import UF.Equiv
+open import UF.FunExt
+open import UF.Miscelanea
+open import UF.Retracts
+open import UF.Sets
+open import UF.Size
+open import UF.SubTypeClassifier
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import UF.Retracts
-open import UF.Equiv
-open import UF.Miscelanea
-open import UF.FunExt
-open import UF.Size
 
 designated-fixed-point-property : 𝓤 ̇ → 𝓤 ̇
 designated-fixed-point-property X = (f : X → X) → Σ x ꞉ X , x ＝ f x

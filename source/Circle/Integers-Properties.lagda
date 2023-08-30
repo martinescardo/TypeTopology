@@ -11,7 +11,9 @@ open import Circle.Integers
 open import MLTT.Spartan
 open import UF.Base
 open import UF.Equiv
+open import UF.Hedberg
 open import UF.Miscelanea
+open import UF.Sets
 open import UF.Subsingletons
 
 module Circle.Integers-Properties where

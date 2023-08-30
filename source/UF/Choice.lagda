@@ -39,13 +39,17 @@ open import UF.Base
 open import UF.Equiv
 open import UF.ExcludedMiddle
 open import UF.FunExt
+open import UF.Hedberg
 open import UF.LeftCancellable
 open import UF.Miscelanea
 open import UF.Powerset
 open import UF.PropTrunc
 open import UF.Retracts
-open import UF.Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)
+open import UF.Sets
+open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
+open import UF.SubTypeClassifier
+open import UF.SubTypeClassifier-Properties
 
 module UF.Choice where
 
@@ -312,7 +316,7 @@ module ExcludedMiddle
  AC-gives-EM {𝓤} pe ac =
   Ω-discrete-gives-EM (fe _ _) (pe _)
    (ac-renders-all-sets-discrete {𝓤 ⁺} ac (Ω 𝓤)
-     (Ω-is-set (fe 𝓤 𝓤) (pe 𝓤)))
+                                 (Ω-is-set (fe 𝓤 𝓤) (pe 𝓤)))
 
  Choice-gives-Excluded-Middle : PropExt
                               → Axiom-of-Choice

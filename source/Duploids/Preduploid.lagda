@@ -25,6 +25,7 @@ open import UF.Retracts
 open import UF.hlevels
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
+open import UF.Hedberg
 
 open import Categories.Category fe
 open import Duploids.DeductiveSystem fe

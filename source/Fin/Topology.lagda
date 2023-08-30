@@ -11,8 +11,6 @@ using the corresponding properties for (finite) types.
 
 module Fin.Topology where
 
-open import UF.Subsingletons renaming (⊤Ω to ⊤)
-
 open import Fin.Bishop
 open import Fin.Properties
 open import Fin.Type
@@ -23,11 +21,14 @@ open import Notation.Order
 open import TypeTopology.CompactTypes
 open import TypeTopology.DiscreteAndSeparated
 open import UF.Equiv
-open import UF.Miscelanea
-open import UF.PropTrunc
+open import UF.EquivalenceExamples
 open import UF.ExcludedMiddle
 open import UF.FunExt
-open import UF.EquivalenceExamples
+open import UF.Miscelanea
+open import UF.PropTrunc
+open import UF.Sets
+open import UF.SubTypeClassifier
+open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
 \end{code}

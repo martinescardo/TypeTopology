@@ -19,11 +19,15 @@ open import UF.Embeddings
 open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.FunExt
+open import UF.Hedberg
 open import UF.Lower-FunExt
 open import UF.Retracts
+open import UF.Sets
 open import UF.Size
 open import UF.SmallnessProperties
-open import UF.Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)
+open import UF.SubTypeClassifier
+open import UF.SubTypeClassifier-Properties
+open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
 decidable-types-are-collapsible : {X : 𝓤 ̇ } → is-decidable X → collapsible X
@@ -179,33 +183,6 @@ equiv-to-discrete (f , e) = equivs-preserve-discreteness f e
 ℕ-is-set : is-set ℕ
 ℕ-is-set = discrete-types-are-sets ℕ-is-discrete
 
-𝟚-to-Ω : 𝟚 → Ω 𝓤
-𝟚-to-Ω ₀ = ⊥
-𝟚-to-Ω ₁ = ⊤
-
-module _ (fe : funext 𝓤 𝓤) (pe : propext 𝓤) where
-
- 𝟚-to-Ω-is-embedding : is-embedding (𝟚-to-Ω {𝓤})
- 𝟚-to-Ω-is-embedding _ (₀ , p) (₀ , q) = to-Σ-＝ (refl , Ω-is-set fe pe p q)
- 𝟚-to-Ω-is-embedding _ (₀ , p) (₁ , q) = 𝟘-elim (⊥-is-not-⊤ (p ∙ q ⁻¹))
- 𝟚-to-Ω-is-embedding _ (₁ , p) (₀ , q) = 𝟘-elim (⊥-is-not-⊤ (q ∙ p ⁻¹))
- 𝟚-to-Ω-is-embedding _ (₁ , p) (₁ , q) = to-Σ-＝ (refl , Ω-is-set fe pe p q)
-
- 𝟚-to-Ω-fiber : (p : Ω 𝓤) → fiber 𝟚-to-Ω p ≃ (¬ (p holds) + p holds)
- 𝟚-to-Ω-fiber p =
-  fiber (𝟚-to-Ω {𝓤}) p           ≃⟨ ≃-refl _ ⟩
-  (Σ n ꞉ 𝟚 , 𝟚-to-Ω {𝓤} n ＝ p ) ≃⟨ I₀ ⟩
-  (⊥ ＝ p) + (⊤ ＝ p)            ≃⟨ I₁ ⟩
-  (¬ (p holds) + p holds)        ■
-    where
-     I₀ = alternative-+
-     I₁ = +-cong
-           (＝-flip ● equal-⊥-≃ pe fe p)
-           (＝-flip ● equal-⊤-≃ pe fe p)
-
- 𝟚-to-Ω-is-small-map : (𝟚-to-Ω {𝓤}) is 𝓤 small-map
- 𝟚-to-Ω-is-small-map p = (¬ (p holds) + p holds) ,
-                                   ≃-sym (𝟚-to-Ω-fiber p)
 
 is-decidable-is-¬¬-stable : {X : 𝓤 ̇ } → is-decidable X → ¬¬-stable X
 is-decidable-is-¬¬-stable (inl x) φ = x
@@ -344,19 +321,7 @@ Added 25 August 2023.
 \begin{code}
 
 open import TypeTopology.DiscreteAndSeparated
-
-to-Ω-＝ : funext 𝓤 𝓤
-        → {P Q : 𝓤 ̇ }
-          {i : is-prop P} {j : is-prop Q}
-        → P ＝ Q
-        → (P , i) ＝[ Ω 𝓤 ] (Q , j)
-to-Ω-＝ fe = to-subtype-＝ (λ _ → being-prop-is-prop fe)
-
-from-Ω-＝ : {P Q : 𝓤 ̇ }
-            {i : is-prop P} {j : is-prop Q}
-          → (P , i) ＝[ Ω 𝓤 ] (Q , j)
-          → P ＝ Q
-from-Ω-＝ = ap _holds
+open import UF.SubTypeClassifier
 
 to-Ω¬¬-＝ : funext 𝓤 𝓤
           → {p q : Ω 𝓤}
@@ -473,6 +438,6 @@ module _ (fe : FunExt) (pe : PropExt) where
 
  𝟚-to-Ω¬¬-is-small-map : (𝟚-to-Ω¬¬ {𝓤}) is 𝓤 small-map
  𝟚-to-Ω¬¬-is-small-map (p , s) = (¬ (p holds) + p holds) ,
-                                   ≃-sym (𝟚-to-Ω¬¬-fiber (p , s))
+                                  ≃-sym (𝟚-to-Ω¬¬-fiber (p , s))
 
 \end{code}

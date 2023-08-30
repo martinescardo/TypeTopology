@@ -76,6 +76,7 @@ open import UF.Size
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.UA-FunExt
+open import UF.SubTypeClassifier
 
 private
  fe : FunExt
@@ -171,7 +172,7 @@ small-ainjective-types-with-two-distinct-points-gives-Ω¬¬-resizing
     VI  : (𝕡 : Ω¬¬ 𝓤) → pr₁ 𝕡 holds → s 𝕡 ≠ x₀
     VI 𝕡 h = VI₃
      where
-      VI₀ : Ω¬¬-to-Ω 𝕡 ＝ ⊤Ω
+      VI₀ : Ω¬¬-to-Ω 𝕡 ＝ ⊤
       VI₀ = holds-gives-equal-⊤ pe' fe' (Ω¬¬-to-Ω 𝕡) h
       VI₁ : 𝕡 ＝ ⊤Ω¬¬
       VI₁ = to-Ω¬¬-＝ fe' VI₀
@@ -294,7 +295,7 @@ module Ω¬¬-resizing-examples
    small-retracts
    (Ω 𝓤)
    ainj
-   ((⊥Ω , ⊤Ω) , ⊥-is-not-⊤)
+   ((⊥ , ⊤) , ⊥-is-not-⊤)
 
  Ω¬¬-ainjective : ainjective-type (Ω¬¬ 𝓤) 𝓤 𝓤
  Ω¬¬-ainjective {𝓤} = retract-of-ainjective (Ω¬¬ 𝓤) (Ω 𝓤)

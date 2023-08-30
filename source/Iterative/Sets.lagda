@@ -49,6 +49,7 @@ open import UF.EquivalenceExamples
 open import UF.Miscelanea
 open import UF.PairFun
 open import UF.Retracts
+open import UF.Sets
 open import UF.Size
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt

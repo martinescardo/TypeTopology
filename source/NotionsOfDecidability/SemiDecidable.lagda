@@ -68,9 +68,13 @@ open import UF.Equiv
 open import UF.Equiv-FunExt
 open import UF.EquivalenceExamples
 open import UF.FunExt
+open import UF.Hedberg
 open import UF.Miscelanea
 open import UF.Powerset
 open import UF.PropTrunc
+open import UF.Sets
+open import UF.SubTypeClassifier
+open import UF.SubTypeClassifier-Properties
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.UniverseEmbedding

@@ -21,15 +21,16 @@ module Lifting.Miscelanea-PropExt-FunExt
         (fe : Fun-Ext)
        where
 
-open import UF.Base
-open import UF.Equiv
-open import UF.Retracts
-open import UF.Subsingletons-FunExt
-
-open import Lifting.Lifting 𝓣
 open import Lifting.IdentityViaSIP 𝓣
+open import Lifting.Lifting 𝓣
 open import Lifting.Miscelanea 𝓣
 open import Lifting.Monad 𝓣
+open import UF.Base
+open import UF.Equiv
+open import UF.Hedberg
+open import UF.Retracts
+open import UF.Sets
+open import UF.Subsingletons-FunExt
 
 \end{code}
 

@@ -10,6 +10,7 @@ UF.SIP-Examples.
 module Groups.Type where
 open import MLTT.Spartan
 open import UF.Base
+open import UF.Sets
 open import UF.Subsingletons
 open import UF.FunExt
 open import UF.Subsingletons-FunExt

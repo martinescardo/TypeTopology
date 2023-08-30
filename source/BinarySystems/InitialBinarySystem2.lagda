@@ -10,6 +10,8 @@ background for this file.
 module BinarySystems.InitialBinarySystem2 where
 
 open import MLTT.Spartan
+open import UF.Hedberg
+open import UF.Sets
 
 data 𝔹 :  𝓤₀ ̇ where
  center : 𝔹

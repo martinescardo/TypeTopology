@@ -19,12 +19,13 @@ module Locales.CompactRegular
         (fe : Fun-Ext)
        where
 
-open import UF.Subsingletons
-open import UF.Logic
+open import Locales.AdjointFunctorTheoremForFrames
+open import Locales.Frame pt fe hiding (is-directed)
 open import Slice.Family
 open import UF.Equiv using (_≃_; logically-equivalent-props-give-is-equiv)
-open import Locales.Frame pt fe hiding (is-directed)
-open import Locales.AdjointFunctorTheoremForFrames
+open import UF.Logic
+open import UF.SubTypeClassifier
+open import UF.Subsingletons
 
 open AllCombinators pt fe
 open PropositionalTruncation pt
@@ -196,8 +197,8 @@ well-inside₀-is-not-prop pe = IF , ε
   𝟎-is-not-𝟏 : ¬ (𝟎[ IF ] ＝ 𝟏[ IF ])
   𝟎-is-not-𝟏 p = γ
    where
-    γ : ⊥Ω holds
-    γ = transport _holds (𝟏[ IF ] ＝⟨ p ⁻¹ ⟩ 𝟎[ IF ] ＝⟨ 𝟎-of-IF-is-⊥ pe ⟩ ⊥Ω ∎) ⋆
+    γ : ⊥ holds
+    γ = transport _holds (𝟏[ IF ] ＝⟨ p ⁻¹ ⟩ 𝟎[ IF ] ＝⟨ 𝟎-of-IF-is-⊥ pe ⟩ ⊥ ∎) ⋆
 
   ε : ¬ ((U V : ⟨ IF ⟩) → is-prop (well-inside₀ IF U V))
   ε ψ = 𝟎-is-not-𝟏 (pr₁ (from-Σ-＝ δ))
@@ -2420,8 +2421,8 @@ module SpectralityOfTheInitialFrame (𝓤 : Universe) (pe : propext 𝓤) where
 
  open Spectrality-of-𝟎 𝓤 pe
 
- bottom-of-𝟎Frm-is-⊥ : ⊥Ω ＝ 𝟎[ 𝟎-𝔽𝕣𝕞 pe ]
- bottom-of-𝟎Frm-is-⊥ = only-𝟎-is-below-𝟎 (𝟎-𝔽𝕣𝕞 pe) ⊥Ω (λ ())
+ bottom-of-𝟎Frm-is-⊥ : ⊥ ＝ 𝟎[ 𝟎-𝔽𝕣𝕞 pe ]
+ bottom-of-𝟎Frm-is-⊥ = only-𝟎-is-below-𝟎 (𝟎-𝔽𝕣𝕞 pe) ⊥ (λ ())
 
  𝟎Frm-is-compact : is-compact (𝟎-𝔽𝕣𝕞 pe) holds
  𝟎Frm-is-compact S (∣i∣ , u) p = ∥∥-rec ∃-is-prop † (p ⋆)

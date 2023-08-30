@@ -8,16 +8,17 @@ Ordinals like in the HoTT book and variations.
 
 {-# OPTIONS --safe --without-K --exact-split #-}
 
+open import MLTT.Plus-Properties using (+-commutative)
 open import MLTT.Spartan
 open import TypeTopology.DiscreteAndSeparated
-
 open import UF.Base
-open import UF.Subsingletons
-open import UF.FunExt
-open import UF.Subsingletons-FunExt
 open import UF.ExcludedMiddle
+open import UF.FunExt
+open import UF.Hedberg
 open import UF.PropTrunc
-open import MLTT.Plus-Properties using (+-commutative)
+open import UF.Sets
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
 
 module Ordinals.Notions
         {𝓤 𝓥 : Universe}
