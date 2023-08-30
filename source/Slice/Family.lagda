@@ -5,6 +5,7 @@
 module Slice.Family where
 
 open import MLTT.Spartan
+open import UF.Size
 
 \end{code}
 
@@ -59,3 +60,14 @@ syntax fmap-syntax (λ x → e) U = ⁅ e ∣ x ε U ⁆
 
 \end{code}
 
+Resizing of families.
+
+\begin{code}
+
+resize-family : {A : 𝓤  ̇}
+              → (S : Fam 𝓥 A)
+              → index S is 𝓦 small
+              → Fam 𝓦 A
+resize-family S (A₀ , s , e) = A₀ , (λ x → S [ s x ])
+
+\end{code}
