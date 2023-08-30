@@ -1,10 +1,10 @@
 Tom de Jong with Martin Escardo, 25th August 2023.
 
 The idea is that there should be no small injective types. However,
-with Ω-resizing, there are small injective types, for example Ω 𝓤₀.
-So we instead show that, under some conditions, small injective types
-give resizing. But at the moment we are able to derive Ω¬¬-resizing
-only.
+with Ω-resizing (a form of impredicativity for HoTT/UF), there are
+small injective types, for example Ω 𝓤₀.  So we instead show that,
+under some conditions, small injective types give resizing. But at the
+moment we are able to derive Ω¬¬-resizing only.
 
 It was previously known that if propositional resizing
 holds then
@@ -115,6 +115,9 @@ of
 But we haven't proved it in TypeTopology yet, and so we assume it as a
 hypothesis.
 
+TODO. Formalize the proof of the hypothesis provided in the above two
+papers.
+
 \begin{code}
 
 retracts-of-small-types-are-small : 𝓤ω
@@ -224,8 +227,27 @@ small₀-ainjective-types-with-two-distinct-points-gives-Ω¬¬-resizing =
 
 \end{code}
 
-Question. Can S¹ be injective, for some choice of universe parameter,
-without assuming excluded middle or resizing?
+Of course, making the universe parameters for the injectivity of D
+bigger doesn't help:
+
+\begin{code}
+
+small₁-ainjective-types-with-two-distinct-points-gives-Ω¬¬-resizing
+ : retracts-of-small-types-are-small
+ → (D : 𝓤₀ ̇ )
+ → ainjective-type D 𝓥 𝓦
+ → has-two-distinct-points D
+ → Ω¬¬ 𝓤₀ is 𝓤₀ small
+small₁-ainjective-types-with-two-distinct-points-gives-Ω¬¬-resizing =
+ small-ainjective-types-with-two-distinct-points-gives-Ω¬¬-resizing
+
+\end{code}
+
+Question. Can the homotopy circle S¹ be injective, for some choice of
+universe parameter, without assuming excluded middle or resizing? If
+not, can any other connected in the first universe 𝓤₀, possibly
+assuming higher-inductive types, be injective without classical or
+resizing assumptions?
 
 The above also shows that e.g. the result that
 
