@@ -38,7 +38,12 @@ to
 
  ainjective D (𝓤 ⁺) 𝓤
 
-for the above choices of D unless we have Ω¬¬-resizing.
+for the above choices of D unless we have Ω¬¬-resizing. In fact, the
+third parameter is irrelevant. For any 𝓥, we have that
+
+ ainjective D (𝓤 ⁺) 𝓥
+
+implies Ω¬¬-resizing for the above choices of D.
 
 \begin{code}
 
