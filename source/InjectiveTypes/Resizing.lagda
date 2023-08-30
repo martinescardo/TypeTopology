@@ -213,7 +213,7 @@ small-ainjective-types-with-two-distinct-points-gives-Ω¬¬-resizing
 A special case of the above is the following, which says that no type
 in the first universe 𝓤₀ can be injective as soon as it has two
 distinct points, other than in models that validate Ω¬¬ 𝓤₀ resizing
-(in which Ω¬¬ 𝓤₀, being a retract of Ω 𝓤₀, is injective) .
+(in which Ω¬¬ 𝓤₀, being a retract of Ω 𝓤₀, is injective).
 
 \begin{code}
 
@@ -246,7 +246,7 @@ small₁-ainjective-types-with-two-distinct-points-gives-Ω¬¬-resizing =
 
 Question. Can the homotopy circle S¹ be injective, for some choice of
 universe parameter, without assuming excluded middle or resizing? If
-not, can any other connected in the first universe 𝓤₀, possibly
+not, can any other connected type in the first universe 𝓤₀, possibly
 assuming higher-inductive types, be injective without classical or
 resizing assumptions?
 
