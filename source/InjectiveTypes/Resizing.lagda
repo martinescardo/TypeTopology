@@ -1,10 +1,10 @@
 Tom de Jong with Martin Escardo, 25th August 2023.
 
-The idea is that there are should be no small injective
-types. However, with Ω-resizing, there are small types, for example Ω 𝓤₀.
-So we instead show that, under some conditions, small injective
-types give resizing. But at the moment we are able to derive
-Ω¬¬-resizing only.
+The idea is that there should be no small injective types. However,
+with Ω-resizing, there are small injective types, for example Ω 𝓤₀.
+So we instead show that, under some conditions, small injective types
+give resizing. But at the moment we are able to derive Ω¬¬-resizing
+only.
 
 It was previously known that if propositional resizing
 holds then
@@ -44,6 +44,14 @@ third parameter is irrelevant. For any 𝓥, we have that
  ainjective D (𝓤 ⁺) 𝓥
 
 implies Ω¬¬-resizing for the above choices of D.
+
+We also show that for no type D in the first universe 𝓤₀ can we have
+
+ ainjective D 𝓤₀ 𝓤₀
+
+as soon as it has two distinct points, other than in models that
+validate Ω¬¬ 𝓤₀ resizing (in which Ω¬¬ 𝓤₀, being a retract of Ω 𝓤₀, is
+injective and serves as an example of such a D).
 
 \begin{code}
 
@@ -198,9 +206,9 @@ small-ainjective-types-with-two-distinct-points-gives-Ω¬¬-resizing
 \end{code}
 
 A special case of the above is the following, which says that no type
-in the first universe can be injective as soon as it has two distinct
-points, other than in models that validate Ω¬¬ 𝓤₀ resizing (in which
-Ω¬¬ 𝓤₀, being a retract of Ω 𝓤₀, is injective) .
+in the first universe 𝓤₀ can be injective as soon as it has two
+distinct points, other than in models that validate Ω¬¬ 𝓤₀ resizing
+(in which Ω¬¬ 𝓤₀, being a retract of Ω 𝓤₀, is injective) .
 
 \begin{code}
 
