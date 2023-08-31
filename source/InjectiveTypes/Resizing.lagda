@@ -1,4 +1,4 @@
-Tom de Jong with Martin Escardo, 25th August 2023.
+Tom de Jong and Martin Escardo, 25th August 2023.
 
 The idea is that there should be no small injective types. However,
 with Ω-resizing (a form of impredicativity for HoTT/UF), there are
