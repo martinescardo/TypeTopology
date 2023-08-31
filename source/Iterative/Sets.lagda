@@ -43,10 +43,10 @@ private
 open import Iterative.Multisets 𝓤
 open import Ordinals.Notions
 open import UF.Base
+open import UF.DiscreteAndSeparated
 open import UF.Embeddings
 open import UF.Equiv
 open import UF.EquivalenceExamples
-open import UF.Miscelanea
 open import UF.PairFun
 open import UF.Retracts
 open import UF.Sets

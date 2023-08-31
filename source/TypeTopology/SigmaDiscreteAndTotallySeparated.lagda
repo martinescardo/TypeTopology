@@ -25,7 +25,6 @@ open import UF.Base
 open import UF.DiscreteAndSeparated
 open import UF.Equiv
 open import UF.FunExt
-open import UF.Miscelanea
 open import UF.Sets
 open import UF.Subsingletons
 

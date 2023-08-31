@@ -25,7 +25,6 @@ open import UF.EquivalenceExamples
 open import UF.ExcludedMiddle
 open import UF.FunExt
 open import UF.ImageAndSurjection pt
-open import UF.Miscelanea
 open import UF.Sets
 open import UF.Sets-Properties
 open import UF.SubTypeClassifier

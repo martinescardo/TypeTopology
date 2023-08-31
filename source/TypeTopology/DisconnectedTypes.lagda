@@ -186,7 +186,6 @@ open import UF.Base
 open import UF.FunExt
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import UF.Miscelanea
 
 is-connected₀ : 𝓤 ̇ → 𝓤 ̇
 is-connected₀ X = (f : X → 𝟚) → wconstant f

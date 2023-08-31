@@ -27,7 +27,6 @@ open import UF.DiscreteAndSeparated
 open import UF.Embeddings
 open import UF.Equiv
 open import UF.FunExt
-open import UF.Miscelanea
 open import UF.NotNotStablePropositions
 open import UF.Retracts
 open import UF.Sets

@@ -12,7 +12,6 @@ open import MLTT.Plus-Properties
 open import MLTT.Spartan
 open import UF.DiscreteAndSeparated
 open import UF.Equiv
-open import UF.Miscelanea
 
 \end{code}
 

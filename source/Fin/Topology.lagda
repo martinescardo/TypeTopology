@@ -24,7 +24,6 @@ open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.ExcludedMiddle
 open import UF.FunExt
-open import UF.Miscelanea
 open import UF.PropTrunc
 open import UF.Sets
 open import UF.SubTypeClassifier

@@ -668,3 +668,38 @@ discrete-exponential-has-decidable-emptiness-of-exponent {𝓤} {𝓥} {X} {Y} f
   γ = f a
 
 \end{code}
+
+Added 19th Feb 2020:
+
+\begin{code}
+
+maps-of-props-into-h-isolated-points-are-embeddings :
+
+   {P : 𝓤 ̇ } {X : 𝓥 ̇ } (f : P → X)
+ → is-prop P
+ → ((p : P) → is-h-isolated (f p))
+ → is-embedding f
+
+maps-of-props-into-h-isolated-points-are-embeddings f i j q (p , s) (p' , s') =
+ to-Σ-＝ (i p p' , j p' _ s')
+
+maps-of-props-into-isolated-points-are-embeddings : {P : 𝓤 ̇ } {X : 𝓥 ̇ }
+                                                    (f : P → X)
+                                                  → is-prop P
+                                                  → ((p : P) → is-isolated (f p))
+                                                  → is-embedding f
+maps-of-props-into-isolated-points-are-embeddings f i j =
+ maps-of-props-into-h-isolated-points-are-embeddings f i
+  (λ p → isolated-is-h-isolated (f p) (j p))
+
+global-point-is-embedding : {X : 𝓤 ̇  } (f : 𝟙 {𝓥} → X)
+                          → is-h-isolated (f ⋆)
+                          → is-embedding f
+global-point-is-embedding f h =
+ maps-of-props-into-h-isolated-points-are-embeddings
+  f 𝟙-is-prop h'
+   where
+    h' : (p : 𝟙) → is-h-isolated (f p)
+    h' ⋆ = h
+
+\end{code}

@@ -30,7 +30,6 @@ instance
 ≤-is-prop-valued (succ m) (succ n) = ≤-is-prop-valued m n
 
 open import UF.Base
-open import UF.Miscelanea
 
 right-addition-is-embedding : (m n : ℕ) → is-prop (Σ k ꞉ ℕ , k +' m ＝ n)
 right-addition-is-embedding zero n (n , refl) (n , refl) = refl

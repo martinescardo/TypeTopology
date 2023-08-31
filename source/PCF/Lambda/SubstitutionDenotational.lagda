@@ -34,7 +34,6 @@ open import PCF.Lambda.ScottModelOfIfZero pt fe pe
 open import PCF.Lambda.ScottModelOfTerms pt fe pe
 open import PCF.Lambda.ScottModelOfTypes pt fe pe
 open import UF.Base
-open import UF.Miscelanea
 open import UF.Subsingletons
 
 open DcpoProductsGeneral 𝓤₀

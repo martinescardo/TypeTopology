@@ -22,13 +22,13 @@ open import Iterative.Multisets 𝓤
 open import Iterative.Sets ua 𝓤
 open import Taboos.Decomposability ua
 open import UF.Base
+open import UF.DiscreteAndSeparated
 open import UF.Embeddings
 open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.ExcludedMiddle
 open import UF.FunExt
 open import UF.HedbergApplications
-open import UF.Miscelanea
 open import UF.PropIndexedPiSigma
 open import UF.Retracts
 open import UF.Sets

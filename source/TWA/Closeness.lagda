@@ -36,7 +36,6 @@ open import Naturals.Sequence fe
 open import Notation.CanonicalMap
 open import Notation.Order
 open import UF.DiscreteAndSeparated
-open import UF.Miscelanea
 
 module sequences
         {𝓤 : Universe}

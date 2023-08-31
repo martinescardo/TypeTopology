@@ -31,7 +31,6 @@ open import Naturals.Order
 open import Notation.Order
 open import UF.Subsingletons
 open import UF.KrausLemma
-open import UF.Miscelanea
 open import UF.Hedberg
 
 \end{code}

@@ -181,8 +181,6 @@ right-lc x x refl = refl
                               (λ (p : x ＝ y) → inl (ap η p))
                               (λ (ν : x ≠ y) → inr (contrapositive (η-lc x y) ν))
 
-open import UF.Miscelanea
-
 𝕄-is-set : is-set 𝕄
 𝕄-is-set = discrete-types-are-sets 𝕄-is-discrete
 

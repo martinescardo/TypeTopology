@@ -74,7 +74,6 @@ open import UF.FunExt
 open import UF.Hedberg
 open import UF.LeftCancellable
 open import UF.Lower-FunExt
-open import UF.Miscelanea
 open import UF.NotNotStablePropositions
 open import UF.PropTrunc
 open import UF.Retracts

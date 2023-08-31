@@ -610,7 +610,6 @@ with a fairly direct proof.
 
 \begin{code}
 
- open import UF.Miscelanea
  open import MLTT.Two-Properties
  open import UF.UniverseEmbedding
 

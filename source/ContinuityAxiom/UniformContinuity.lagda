@@ -25,7 +25,6 @@ open import Naturals.Properties
 open import NotionsOfDecidability.Decidable
 open import UF.DiscreteAndSeparated
 open import UF.FunExt
-open import UF.Miscelanea
 open import UF.Subsingletons
 
 \end{code}

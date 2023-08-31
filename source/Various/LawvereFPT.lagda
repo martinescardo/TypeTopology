@@ -32,7 +32,6 @@ open import UF.Base
 open import UF.Embeddings
 open import UF.Equiv
 open import UF.FunExt
-open import UF.Miscelanea
 open import UF.Retracts
 open import UF.Sets
 open import UF.Size

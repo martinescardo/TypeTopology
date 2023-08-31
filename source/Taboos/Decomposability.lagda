@@ -460,7 +460,6 @@ because the type of ordinals is injective.
 open import InjectiveTypes.Blackboard fe
 open import InjectiveTypes.OverSmallMaps fe
 open import Ordinals.Injectivity
-open import UF.Miscelanea
 
 open ordinals-injectivity fe
 

@@ -41,7 +41,6 @@ open import UF.ExcludedMiddle
 open import UF.FunExt
 open import UF.Hedberg
 open import UF.LeftCancellable
-open import UF.Miscelanea
 open import UF.Powerset
 open import UF.PropTrunc
 open import UF.Retracts

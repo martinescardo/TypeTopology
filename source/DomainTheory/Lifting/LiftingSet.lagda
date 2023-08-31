@@ -30,7 +30,6 @@ module DomainTheory.Lifting.LiftingSet
 open import UF.Equiv
 open import UF.Hedberg
 open import UF.ImageAndSurjection pt
-open import UF.Miscelanea
 open import UF.Sets
 open import UF.Subsingletons-FunExt
 open import UF.Subsingletons-Properties

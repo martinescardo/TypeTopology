@@ -22,7 +22,6 @@ module DomainTheory.Basics.LeastFixedPoint
 
 open PropositionalTruncation pt
 
-open import UF.Miscelanea
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 

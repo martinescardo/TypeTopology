@@ -33,7 +33,6 @@ import UF.Large-Quotient
 import UF.LeftCancellable
 import UF.Logic
 import UF.Lower-FunExt
-import UF.Miscelanea
 import UF.NotNotStablePropositions
 import UF.PairFun
 import UF.Powerset
@@ -53,17 +52,17 @@ import UF.Retracts-FunExt
 import UF.SIP
 import UF.SIP-Examples
 import UF.Section-Embedding
+import UF.SetTrunc
 import UF.Sets
 import UF.Sets-Properties
-import UF.SetTrunc
 import UF.Size
 import UF.SmallnessProperties
 import UF.StructureIdentityPrinciple -- obsolete but keep
+import UF.SubTypeClassifier
+import UF.SubTypeClassifier-Properties
 import UF.Subsingletons
 import UF.Subsingletons-FunExt
 import UF.Subsingletons-Properties
-import UF.SubTypeClassifier
-import UF.SubTypeClassifier-Properties
 import UF.UA-FunExt
 import UF.Univalence
 import UF.UniverseEmbedding
