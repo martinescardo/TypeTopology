@@ -43,7 +43,7 @@ UF.hlevels uses global univalence.
 
 module hleveltwo (ua : Univalence)  where
 
-  open import UF.hlevels ua
+  open import UF.HLevels ua
 
   private
     fe : funext 𝓤 𝓤

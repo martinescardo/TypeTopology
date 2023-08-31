@@ -14,10 +14,10 @@
 
 {-# OPTIONS --without-K --exact-split #-}
 
-import index              -- Of --safe modules.
-import Unsafe.index       -- Of unsafe modules.
-import Redirection.index  -- For backward compatibility.
-import Pigeon.index       -- Disables termination check for bar recursion.
+import index                -- Of --safe modules.
+import Unsafe.index         -- Of unsafe modules.
+import Redirection.index    -- For backward compatibility.
+import InfinitePigeon.index -- Disables termination check for bar recursion.
 
 \end{code}
 

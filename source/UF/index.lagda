@@ -21,6 +21,7 @@ import UF.FunExt
 import UF.FunExt-Properties
 import UF.FunExt-from-Naive-FunExt
 import UF.Groupoids
+import UF.HLevels
 import UF.Hedberg
 import UF.HedbergApplications
 import UF.IdEmbedding
@@ -67,6 +68,5 @@ import UF.UA-FunExt
 import UF.Univalence
 import UF.UniverseEmbedding
 import UF.Yoneda
-import UF.hlevels
 
 \end{code}
