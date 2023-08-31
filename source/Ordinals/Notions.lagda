@@ -10,8 +10,8 @@ Ordinals like in the HoTT book and variations.
 
 open import MLTT.Plus-Properties using (+-commutative)
 open import MLTT.Spartan
-open import TypeTopology.DiscreteAndSeparated
 open import UF.Base
+open import UF.DiscreteAndSeparated
 open import UF.ExcludedMiddle
 open import UF.FunExt
 open import UF.Hedberg

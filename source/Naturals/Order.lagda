@@ -8,11 +8,12 @@ module Naturals.Order where
 
 open import MLTT.Spartan
 
-open import Ordinals.Notions
-open import UF.Subsingletons
 open import Naturals.Addition renaming (_+_ to _+'_)
 open import Naturals.Properties
 open import Notation.Order
+open import Ordinals.Notions
+open import UF.DiscreteAndSeparated
+open import UF.Subsingletons
 
 _≤ℕ_ : ℕ → ℕ → 𝓤₀ ̇
 zero ≤ℕ n        = 𝟙

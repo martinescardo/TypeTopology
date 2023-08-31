@@ -34,7 +34,7 @@ choice where X is a proposition (see https://arxiv.org/abs/1610.03346).
 {-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan
-open import TypeTopology.DiscreteAndSeparated
+open import UF.DiscreteAndSeparated
 open import UF.Base
 open import UF.Equiv
 open import UF.ExcludedMiddle
@@ -46,8 +46,10 @@ open import UF.Powerset
 open import UF.PropTrunc
 open import UF.Retracts
 open import UF.Sets
+open import UF.Sets-Properties
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
+open import UF.Subsingletons-Properties
 open import UF.SubTypeClassifier
 open import UF.SubTypeClassifier-Properties
 

@@ -17,11 +17,11 @@ module Lifting.Set
 open import Lifting.Lifting 𝓣
 open import UF.Base
 open import UF.FunExt
-open import UF.Hedberg
 open import UF.Retracts
 open import UF.Sets
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
+open import UF.Subsingletons-Properties
 
 lifting-of-set-is-set : funext 𝓣 𝓤
                       → funext 𝓣 𝓣

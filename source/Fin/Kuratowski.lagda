@@ -16,18 +16,18 @@ open import Fin.Type
 open import MLTT.Spartan
 open import MLTT.Two-Properties
 open import TypeTopology.CompactTypes
-open import TypeTopology.DiscreteAndSeparated
 open import UF.Base
+open import UF.DiscreteAndSeparated
 open import UF.Embeddings
 open import UF.Equiv
 open import UF.Equiv-FunExt
 open import UF.EquivalenceExamples
 open import UF.ExcludedMiddle
 open import UF.FunExt
-open import UF.Hedberg
 open import UF.ImageAndSurjection pt
 open import UF.Miscelanea
 open import UF.Sets
+open import UF.Sets-Properties
 open import UF.SubTypeClassifier
 open import UF.SubTypeClassifier-Properties
 open import UF.Subsingletons

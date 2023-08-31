@@ -10,21 +10,21 @@ are embedded in the reals.
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
 
+open import Integers.Type
 open import Notation.CanonicalMap
 open import Notation.Order
+open import Rationals.Order
+open import Rationals.Type
 open import UF.Base
-open import UF.PropTrunc
+open import UF.FunExt
 open import UF.Powerset
+open import UF.PropTrunc
 open import UF.Retracts
 open import UF.Sets
+open import UF.SubTypeClassifier-Properties
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import UF.FunExt
-open import Integers.Type
-open import Rationals.Type
-open import Rationals.Order
-open import UF.Hedberg
-open import UF.SubTypeClassifier-Properties
+open import UF.Subsingletons-Properties
 
 module DedekindReals.Type
          (fe : Fun-Ext)
@@ -130,7 +130,8 @@ isCut-is-prop L R = ×-is-prop (inhabited-left-is-prop L)
                               (located-is-prop L R)))))
 
 ℝ-is-set : is-set ℝ
-ℝ-is-set = Σ-is-set (×-is-set subset-of-ℚ-is-set subset-of-ℚ-is-set) λ (L , R) → props-are-sets (isCut-is-prop L R)
+ℝ-is-set = Σ-is-set (×-is-set subset-of-ℚ-is-set subset-of-ℚ-is-set)
+            λ (L , R) → props-are-sets (isCut-is-prop L R)
 
 lower-cut-of : ℝ → 𝓟 ℚ
 lower-cut-of ((L , R) , _) = L

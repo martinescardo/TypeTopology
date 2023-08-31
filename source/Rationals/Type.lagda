@@ -18,10 +18,9 @@ open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
 open import Naturals.Properties
 open import Notation.CanonicalMap
 open import Rationals.Fractions
-open import TypeTopology.DiscreteAndSeparated
 open import TypeTopology.SigmaDiscreteAndTotallySeparated
 open import UF.Base hiding (_≈_)
-open import UF.Miscelanea
+open import UF.DiscreteAndSeparated
 open import UF.Sets
 open import UF.Subsingletons
 

@@ -20,7 +20,7 @@ open import Naturals.Order
 open import Notation.Order
 open import NotionsOfDecidability.Complemented
 open import TypeTopology.CompactTypes
-open import TypeTopology.DiscreteAndSeparated
+open import UF.DiscreteAndSeparated
 open import UF.Equiv
 
 \end{code}

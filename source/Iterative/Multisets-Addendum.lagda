@@ -27,6 +27,7 @@ open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.ExcludedMiddle
 open import UF.FunExt
+open import UF.HedbergApplications
 open import UF.Miscelanea
 open import UF.PropIndexedPiSigma
 open import UF.Retracts

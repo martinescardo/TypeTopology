@@ -14,8 +14,7 @@ canonical inclusion of natural numbers in the integers.
 open import MLTT.Spartan renaming (_+_ to _∔_)
 open import MLTT.Unit-Properties
 open import Naturals.Properties
-open import TypeTopology.DiscreteAndSeparated
-open import UF.Miscelanea
+open import UF.DiscreteAndSeparated
 open import UF.Sets
 open import UF.Subsingletons
 

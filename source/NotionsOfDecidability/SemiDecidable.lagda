@@ -64,15 +64,16 @@ References
 
 open import MLTT.Spartan
 
+open import UF.DiscreteAndSeparated
 open import UF.Equiv
 open import UF.Equiv-FunExt
 open import UF.EquivalenceExamples
 open import UF.FunExt
-open import UF.Hedberg
-open import UF.Miscelanea
 open import UF.Powerset
+open import UF.NotNotStablePropositions
 open import UF.PropTrunc
 open import UF.Sets
+open import UF.Sets-Properties
 open import UF.SubTypeClassifier
 open import UF.SubTypeClassifier-Properties
 open import UF.Subsingletons
@@ -89,7 +90,6 @@ open import NotionsOfDecidability.Decidable
 open import NotionsOfDecidability.DecidableClassifier
 open import NotionsOfDecidability.Complemented
 open import TypeTopology.CompactTypes
-open import TypeTopology.DiscreteAndSeparated
 
 \end{code}
 

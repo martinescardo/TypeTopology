@@ -35,7 +35,7 @@ open import MLTT.Two-Properties
 open import Naturals.Sequence fe
 open import Notation.CanonicalMap
 open import Notation.Order
-open import TypeTopology.DiscreteAndSeparated
+open import UF.DiscreteAndSeparated
 open import UF.Miscelanea
 
 module sequences

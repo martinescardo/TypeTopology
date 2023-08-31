@@ -19,7 +19,7 @@ open import MLTT.Spartan
 open import MLTT.SpartanList
 open import Notation.Order
 open import TypeTopology.CompactTypes
-open import TypeTopology.DiscreteAndSeparated
+open import UF.DiscreteAndSeparated
 open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.ExcludedMiddle

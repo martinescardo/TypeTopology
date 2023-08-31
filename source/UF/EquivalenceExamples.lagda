@@ -12,13 +12,13 @@ open import MLTT.Two-Properties
 open import UF.Base
 open import UF.Equiv
 open import UF.FunExt
-open import UF.Hedberg
 open import UF.Lower-FunExt
 open import UF.PropIndexedPiSigma
 open import UF.Retracts
 open import UF.SubTypeClassifier
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
+open import UF.Subsingletons-Properties
 
 module UF.EquivalenceExamples where
 

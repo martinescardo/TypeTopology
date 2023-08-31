@@ -66,8 +66,8 @@ module TypeTopology.TotallySeparated where
 open import MLTT.Spartan
 open import MLTT.Two-Properties
 open import NotionsOfDecidability.Complemented
-open import TypeTopology.DiscreteAndSeparated hiding (tight)
 open import UF.Base
+open import UF.DiscreteAndSeparated hiding (tight)
 open import UF.Embeddings
 open import UF.Equiv
 open import UF.FunExt
@@ -75,9 +75,11 @@ open import UF.Hedberg
 open import UF.LeftCancellable
 open import UF.Lower-FunExt
 open import UF.Miscelanea
+open import UF.NotNotStablePropositions
 open import UF.PropTrunc
 open import UF.Retracts
 open import UF.Sets
+open import UF.Sets-Properties
 open import UF.SubTypeClassifier
 open import UF.SubTypeClassifier-Properties
 open import UF.Subsingletons

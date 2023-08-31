@@ -17,12 +17,12 @@ open import MLTT.Spartan
 open import NotionsOfDecidability.Complemented
 open import Taboos.WLPO
 open import TypeTopology.CompactTypes
-open import TypeTopology.DiscreteAndSeparated
 open import TypeTopology.FailureOfTotalSeparatedness
 open import TypeTopology.GenericConvergentSequenceCompactness
 open import TypeTopology.PropTychonoff
 open import TypeTopology.TotallySeparated
 open import UF.Base
+open import UF.DiscreteAndSeparated
 open import UF.Equiv
 open import UF.FunExt
 open import UF.Miscelanea

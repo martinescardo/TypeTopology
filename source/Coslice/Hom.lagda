@@ -12,11 +12,11 @@ open import UF.Embeddings
 open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.FunExt
-open import UF.Hedberg
 open import UF.IdentitySystems
 open import UF.PairFun as PairFun
 open import UF.Retracts
 open import UF.Subsingletons
+open import UF.Subsingletons-Properties
 
 module _ {A : 𝓦 ̇ } where
  Hom-Str-Type : A ↓ 𝓤 → A ↓ 𝓥 → 𝓤 ⊔ 𝓥 ̇

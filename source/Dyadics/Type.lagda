@@ -24,10 +24,9 @@ open import Notation.Order
 open import Rationals.Fractions hiding (_≈_ ; ≈-sym ; ≈-trans ; ≈-refl)
 open import Rationals.Multiplication renaming (_*_ to _ℚ*_)
 open import Rationals.Type
-open import TypeTopology.DiscreteAndSeparated
 open import TypeTopology.SigmaDiscreteAndTotallySeparated
 open import UF.Base hiding (_≈_)
-open import UF.Miscelanea
+open import UF.DiscreteAndSeparated
 open import UF.Sets
 open import UF.Subsingletons
 

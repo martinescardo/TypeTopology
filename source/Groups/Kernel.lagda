@@ -16,10 +16,10 @@ open import MLTT.Unit-Properties
 open import UF.Base
 open import UF.Embeddings
 open import UF.Equiv
-open import UF.Hedberg
 open import UF.Retracts
 open import UF.Sets
 open import UF.Subsingletons
+open import UF.Subsingletons-Properties
 
 \end{code}
 

@@ -1,3 +1,7 @@
+Martin Escardo
+
+Notion of equivalence and its basic properties.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K --exact-split #-}
@@ -5,12 +9,12 @@
 module UF.Equiv where
 
 open import MLTT.Spartan
-open import UF.Base
-open import UF.Hedberg
-open import UF.Sets
-open import UF.Subsingletons
-open import UF.Retracts
 open import MLTT.Unit-Properties
+open import UF.Base
+open import UF.Retracts
+open import UF.Sets
+open import UF.Sets-Properties
+open import UF.Subsingletons
 
 \end{code}
 

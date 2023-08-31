@@ -23,6 +23,7 @@ open import UF.Retracts
 open import UF.Sets
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
+open import UF.Subsingletons-Properties
 open import UF.UA-FunExt
 
 open import Groups.Type renaming (_≅_ to _≣_)

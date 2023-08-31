@@ -7,7 +7,7 @@ Martin Escardo 2011.
 
 {-# OPTIONS --safe --without-K --exact-split #-}
 
-module TypeTopology.DiscreteAndSeparated where
+module UF.DiscreteAndSeparated where
 
 open import MLTT.Spartan
 
@@ -17,13 +17,16 @@ open import Naturals.Properties
 open import NotionsOfDecidability.Complemented
 open import NotionsOfDecidability.Decidable
 open import UF.Base
+open import UF.Embeddings
 open import UF.Equiv
 open import UF.FunExt
+open import UF.Hedberg
+open import UF.HedbergApplications
 open import UF.Retracts
+open import UF.Sets
+open import UF.SubTypeClassifier
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import UF.SubTypeClassifier
-open import UF.Hedberg
 
 is-isolated : {X : 𝓤 ̇ } → X → 𝓤 ̇
 is-isolated x = ∀ y → is-decidable (x ＝ y)
@@ -475,6 +478,164 @@ infix  30 _≠[ℕ]_
 
 \end{code}
 
+\begin{code}
+
+decidable-types-are-collapsible : {X : 𝓤 ̇ } → is-decidable X → collapsible X
+decidable-types-are-collapsible (inl x) = pointed-types-are-collapsible x
+decidable-types-are-collapsible (inr u) = empty-types-are-collapsible u
+
+discrete-is-Id-collapsible : {X : 𝓤 ̇ } → is-discrete X → Id-collapsible X
+discrete-is-Id-collapsible d = decidable-types-are-collapsible (d _ _)
+
+discrete-types-are-sets : {X : 𝓤 ̇ } → is-discrete X → is-set X
+discrete-types-are-sets d = Id-collapsibles-are-sets (discrete-is-Id-collapsible d)
+
+being-isolated-is-prop : FunExt → {X : 𝓤 ̇ } (x : X) → is-prop (is-isolated x)
+being-isolated-is-prop {𝓤} fe x = prop-criterion γ
+ where
+  γ : is-isolated x → is-prop (is-isolated x)
+  γ i = Π-is-prop (fe 𝓤 𝓤)
+         (λ x → sum-of-contradictory-props
+                 (local-hedberg _ (λ y → decidable-types-are-collapsible (i y)) x)
+                 (negations-are-props (fe 𝓤 𝓤₀))
+                 (λ p n → n p))
+
+being-isolated'-is-prop : FunExt → {X : 𝓤 ̇ } (x : X) → is-prop (is-isolated' x)
+being-isolated'-is-prop {𝓤} fe x = prop-criterion γ
+ where
+  γ : is-isolated' x → is-prop (is-isolated' x)
+  γ i = Π-is-prop (fe 𝓤 𝓤)
+         (λ x → sum-of-contradictory-props
+                 (local-hedberg' _ (λ y → decidable-types-are-collapsible (i y)) x)
+                 (negations-are-props (fe 𝓤 𝓤₀))
+                 (λ p n → n p))
+
+being-discrete-is-prop : FunExt → {X : 𝓤 ̇ } → is-prop (is-discrete X)
+being-discrete-is-prop {𝓤} fe = Π-is-prop (fe 𝓤 𝓤) (being-isolated-is-prop fe)
+
+isolated-is-h-isolated : {X : 𝓤 ̇ } (x : X) → is-isolated x → is-h-isolated x
+isolated-is-h-isolated {𝓤} {X} x i {y} = local-hedberg x (λ y → γ y (i y)) y
+ where
+  γ : (y : X) → is-decidable (x ＝ y) → Σ f ꞉ (x ＝ y → x ＝ y) , wconstant f
+  γ y (inl p) = (λ _ → p) , (λ q r → refl)
+  γ y (inr n) = id , (λ q r → 𝟘-elim (n r))
+
+isolated-inl : {X : 𝓤 ̇ } (x : X) (i : is-isolated x) (y : X) (r : x ＝ y)
+             → i y ＝ inl r
+isolated-inl x i y r =
+  equality-cases (i y)
+   (λ (p : x ＝ y) (q : i y ＝ inl p)
+      → q ∙ ap inl (isolated-is-h-isolated x i p r))
+   (λ (h : x ≠ y) (q : i y ＝ inr h)
+      → 𝟘-elim(h r))
+
+isolated-inr : {X : 𝓤 ̇ }
+             → funext 𝓤 𝓤₀
+             → (x : X) (i : is-isolated x) (y : X) (n : x ≠ y) → i y ＝ inr n
+isolated-inr fe x i y n =
+  equality-cases (i y)
+   (λ (p : x ＝ y) (q : i y ＝ inl p)
+      → 𝟘-elim (n p))
+   (λ (m : x ≠ y) (q : i y ＝ inr m)
+      → q ∙ ap inr (dfunext fe (λ (p : x ＝ y) → 𝟘-elim (m p))))
+
+\end{code}
+
+The following variation of the above doesn't require function extensionality:
+
+\begin{code}
+
+isolated-inr' : {X : 𝓤 ̇ }
+                (x : X) (i : is-isolated x) (y : X) (n : x ≠ y)
+              → Σ m ꞉ x ≠ y , i y ＝ inr m
+isolated-inr' x i y n =
+  equality-cases (i y)
+   (λ (p : x ＝ y) (q : i y ＝ inl p)
+      → 𝟘-elim (n p))
+   (λ (m : x ≠ y) (q : i y ＝ inr m)
+      → m , q)
+
+discrete-inl : {X : 𝓤 ̇ } (d : is-discrete X) (x y : X) (r : x ＝ y)
+             → d x y ＝ inl r
+discrete-inl d x = isolated-inl x (d x)
+
+discrete-inr : funext 𝓤 𝓤₀
+             → {X : 𝓤 ̇ }
+               (d : is-discrete X)
+               (x y : X)
+               (n : ¬ (x ＝ y))
+             → d x y ＝ inr n
+discrete-inr fe d x = isolated-inr fe x (d x)
+
+isolated-Id-is-prop : {X : 𝓤 ̇ } (x : X)
+                    → is-isolated' x
+                    → (y : X) → is-prop (y ＝ x)
+isolated-Id-is-prop x i = local-hedberg' x (λ y → decidable-types-are-collapsible (i y))
+
+lc-maps-reflect-isolatedness : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                             → left-cancellable f
+                             → (x : X) → is-isolated (f x) → is-isolated x
+lc-maps-reflect-isolatedness f l x i y = γ (i (f y))
+ where
+  γ : (f x ＝ f y) + ¬ (f x ＝ f y) → (x ＝ y) + ¬ (x ＝ y)
+  γ (inl p) = inl (l p)
+  γ (inr n) = inr (contrapositive (ap f) n)
+
+lc-maps-reflect-discreteness : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                             → left-cancellable f
+                             → is-discrete Y
+                             → is-discrete X
+lc-maps-reflect-discreteness f l d x =
+ lc-maps-reflect-isolatedness f l x (d (f x))
+
+embeddings-reflect-isolatedness : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                                → is-embedding f
+                                → (x : X) → is-isolated (f x)
+                                → is-isolated x
+embeddings-reflect-isolatedness f e x i y = lc-maps-reflect-isolatedness f
+                                              (embeddings-are-lc f e) x i y
+
+equivs-reflect-isolatedness : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                            → is-equiv f
+                            → (x : X) → is-isolated (f x)
+                            → is-isolated x
+equivs-reflect-isolatedness f e = embeddings-reflect-isolatedness f
+                                   (equivs-are-embeddings f e)
+
+embeddings-reflect-discreteness : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                                → is-embedding f
+                                → is-discrete Y
+                                → is-discrete X
+embeddings-reflect-discreteness f e = lc-maps-reflect-discreteness f (embeddings-are-lc f e)
+
+equivs-preserve-discreteness : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                             → is-equiv f
+                             → is-discrete X
+                             → is-discrete Y
+equivs-preserve-discreteness f e = lc-maps-reflect-discreteness
+                                     (inverse f e)
+                                     (equivs-are-lc
+                                        (inverse f e)
+                                        (inverses-are-equivs f e))
+
+equiv-to-discrete : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                  → X ≃ Y
+                  → is-discrete X
+                  → is-discrete Y
+equiv-to-discrete (f , e) = equivs-preserve-discreteness f e
+
+𝟙-is-set : is-set (𝟙 {𝓤})
+𝟙-is-set = discrete-types-are-sets 𝟙-is-discrete
+
+𝟚-is-set : is-set 𝟚
+𝟚-is-set = discrete-types-are-sets 𝟚-is-discrete
+
+ℕ-is-set : is-set ℕ
+ℕ-is-set = discrete-types-are-sets ℕ-is-discrete
+
+\end{code}
+
+
 Added 14th Feb 2020:
 
 \begin{code}
@@ -507,53 +668,3 @@ discrete-exponential-has-decidable-emptiness-of-exponent {𝓤} {𝓥} {X} {Y} f
   γ = f a
 
 \end{code}
-
-Added by Tom de Jong in January 2022.
-
-Another logical place for these three lemmas would be Negation.lagda, but
-(1) the first lemma needs _⇔_ which is defined in Notation.General.lagda, which
-    imports Negation.lagda;
-(2) the second lemma needs _≃_ which is only defined in UF.Equiv.lagda;
-(3) the third lemma needs funext, which is only defined in UF.FunExt.lagda.
-
-\begin{code}
-
-¬¬-stable-⇔ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-            → X ⇔ Y
-            → ¬¬-stable X
-            → ¬¬-stable Y
-¬¬-stable-⇔ (f , g) σ h = f (σ (¬¬-functor g h))
-
-¬¬-stable-≃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-            → X ≃ Y
-            → ¬¬-stable X
-            → ¬¬-stable Y
-¬¬-stable-≃ e = ¬¬-stable-⇔ (⌜ e ⌝ , ⌜ e ⌝⁻¹)
-
-being-¬¬-stable-is-prop : {X : 𝓤 ̇ }
-                        → funext 𝓤 𝓤
-                        → is-prop X
-                        → is-prop (¬¬-stable X)
-being-¬¬-stable-is-prop fe i = Π-is-prop fe (λ _ → i)
-
-Ω¬¬ : (𝓤 : Universe)  → 𝓤 ⁺ ̇
-Ω¬¬ 𝓤 = Σ p ꞉ Ω 𝓤 , ¬¬-stable (p holds)
-
-Ω¬¬-is-¬¬-separated : funext 𝓤 𝓤
-                    → propext 𝓤
-                    → is-¬¬-separated (Ω¬¬ 𝓤)
-Ω¬¬-is-¬¬-separated fe pe (p , s) (q , t) ν = γ
- where
-  α : ¬¬ (p ＝ q)
-  α = ¬¬-functor (ap pr₁) ν
-
-  δ : p ＝ q
-  δ = equality-of-¬¬stable-propositions fe pe p q s t α
-
-  γ : (p , s) ＝ (q , t)
-  γ = to-subtype-＝ (λ p → Π-is-prop fe (λ _ → holds-is-prop p)) δ
-
-\end{code}
-
-TODO. The above can also be shown by first showing that Ω¬¬ 𝓤 is a
-retract of Ω 𝓤.

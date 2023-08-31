@@ -33,6 +33,7 @@ open import UF.ImageAndSurjection pt
 open import UF.Miscelanea
 open import UF.Sets
 open import UF.Subsingletons-FunExt
+open import UF.Subsingletons-Properties
 
 open PropositionalTruncation pt
 

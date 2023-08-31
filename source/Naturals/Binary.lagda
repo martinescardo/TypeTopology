@@ -46,7 +46,7 @@ open import Naturals.Properties
 open import UF.Equiv
 open import UF.Base
 open import UF.EquivalenceExamples
-open import UF.Miscelanea
+open import UF.DiscreteAndSeparated
 
 \end{code}
 

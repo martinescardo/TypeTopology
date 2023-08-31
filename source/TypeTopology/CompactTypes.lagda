@@ -83,8 +83,8 @@ open import MLTT.Spartan
 open import MLTT.Two-Properties
 open import NotionsOfDecidability.Complemented
 open import NotionsOfDecidability.Decidable
-open import TypeTopology.DiscreteAndSeparated
 open import UF.Base
+open import UF.DiscreteAndSeparated
 open import UF.Equiv
 open import UF.FunExt
 open import UF.Miscelanea

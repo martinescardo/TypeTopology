@@ -47,10 +47,10 @@ open import UF.Embeddings
 open import UF.Equiv hiding (_≅_)
 open import UF.EquivalenceExamples
 open import UF.FunExt
-open import UF.Hedberg
 open import UF.Retracts
 open import UF.SIP
 open import UF.Sets
+open import UF.Sets-Properties
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.UA-FunExt

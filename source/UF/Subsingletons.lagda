@@ -13,10 +13,9 @@ https://unimath.github.io/bham2017/uf.pdf
 
 module UF.Subsingletons where
 
+open import MLTT.Plus-Properties
 open import MLTT.Spartan
 open import MLTT.Unit-Properties
-
-open import MLTT.Plus-Properties
 open import UF.Base
 
 is-prop : 𝓤 ̇ → 𝓤 ̇

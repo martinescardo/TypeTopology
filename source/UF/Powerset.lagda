@@ -29,6 +29,7 @@ open import UF.Univalence
 open import UF.SubTypeClassifier
 open import UF.SubTypeClassifier-Properties
 open import UF.Sets
+open import UF.Sets-Properties
 open import UF.Hedberg
 
 𝓟 : 𝓤 ̇ → 𝓤 ⁺ ̇

@@ -7,8 +7,8 @@ Martin Escardo, 1st April 2013
 module Various.NonCollapsibleFamily where
 
 open import MLTT.Spartan
-open import TypeTopology.DiscreteAndSeparated
 open import UF.Base
+open import UF.DiscreteAndSeparated
 open import UF.Hedberg
 open import UF.KrausLemma
 open import UF.Subsingletons

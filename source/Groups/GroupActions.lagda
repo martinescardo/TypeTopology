@@ -28,12 +28,12 @@ open import UF.Equiv
 open import UF.Equiv-FunExt
 open import UF.EquivalenceExamples
 open import UF.FunExt
-open import UF.Hedberg
 open import UF.Powerset
 open import UF.Retracts
 open import UF.Sets
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
+open import UF.Subsingletons-Properties
 open import UF.UA-FunExt
 open import UF.Univalence
 

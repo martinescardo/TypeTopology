@@ -18,18 +18,18 @@ that the group axioms, as defined in Groups, form a proposition.
 
 open import MLTT.Spartan
 open import UF.Base hiding (_≈_)
-open import UF.Subsingletons
-open import UF.Sets
-open import UF.Hedberg
-open import UF.Powerset
+open import UF.Classifiers
+open import UF.Embeddings
 open import UF.Equiv
 open import UF.EquivalenceExamples
-open import UF.Embeddings
-open import UF.Univalence
 open import UF.FunExt
-open import UF.UA-FunExt
+open import UF.Powerset
+open import UF.Sets
+open import UF.Sets-Properties
+open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import UF.Classifiers
+open import UF.UA-FunExt
+open import UF.Univalence
 
 open import Groups.Type renaming (_≅_ to _≣_)
 

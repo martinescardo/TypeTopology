@@ -67,11 +67,11 @@ open PropositionalTruncation pt
 
 open import MLTT.Spartan
 open import UF.Base hiding (_≈_)
-open import UF.Hedberg
 open import UF.Sets
 open import UF.SubTypeClassifier
 open import UF.SubTypeClassifier-Properties
 open import UF.Subsingletons-FunExt
+open import UF.Subsingletons-Properties
 
 _≲_ : {A : 𝓤 ̇ } {B : 𝓥 ̇ } {X : 𝓣 ̇ } → (A → X) → (B → X) → 𝓤 ⊔ 𝓥 ⊔ 𝓣 ̇
 _≲_ {𝓤} {𝓥} {𝓣} {A} {B} f g = (a : A) → ∃ b ꞉ B , g b ＝ f a

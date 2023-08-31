@@ -25,8 +25,8 @@ open PropositionalTruncation pt
 
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import UF.Hedberg
 open import UF.Sets
+open import UF.Sets-Properties
 
 open import DomainTheory.Basics.Dcpo pt fe 𝓥
 open import DomainTheory.Basics.Miscelanea pt fe 𝓥

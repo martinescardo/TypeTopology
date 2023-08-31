@@ -27,10 +27,10 @@ open import Lifting.Miscelanea 𝓣
 open import Lifting.Monad 𝓣
 open import UF.Base
 open import UF.Equiv
-open import UF.Hedberg
 open import UF.Retracts
 open import UF.Sets
 open import UF.Subsingletons-FunExt
+open import UF.Subsingletons-Properties
 
 \end{code}
 

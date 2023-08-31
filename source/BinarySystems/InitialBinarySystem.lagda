@@ -24,6 +24,8 @@ quotients - it just happens to have the quotient we want.
 module BinarySystems.InitialBinarySystem where
 
 open import MLTT.Spartan
+open import UF.Sets-Properties
+open import UF.Subsingletons-Properties
 
 data 𝔹 : 𝓤₀ ̇ where
  L R : 𝔹

@@ -11,6 +11,7 @@ import UF.Classifiers-Old
 import UF.Connected
 import UF.CumulativeHierarchy               -- by de Jong, Kraus, Nordvall Forsberg and Xu.
 import UF.CumulativeHierarchy-LocallySmall  -- by de Jong, Kraus, Nordvall Forsberg and Xu.
+import UF.DiscreteAndSeparated
 import UF.Embeddings
 import UF.Equiv
 import UF.Equiv-FunExt
@@ -21,6 +22,7 @@ import UF.FunExt-Properties
 import UF.FunExt-from-Naive-FunExt
 import UF.Groupoids
 import UF.Hedberg
+import UF.HedbergApplications
 import UF.IdEmbedding
 import UF.IdentitySystems
 import UF.ImageAndSurjection
@@ -32,6 +34,7 @@ import UF.LeftCancellable
 import UF.Logic
 import UF.Lower-FunExt
 import UF.Miscelanea
+import UF.NotNotStablePropositions
 import UF.PairFun
 import UF.Powerset
 import UF.Powerset-Fin
@@ -51,12 +54,14 @@ import UF.SIP
 import UF.SIP-Examples
 import UF.Section-Embedding
 import UF.Sets
+import UF.Sets-Properties
 import UF.SetTrunc
 import UF.Size
 import UF.SmallnessProperties
 import UF.StructureIdentityPrinciple -- obsolete but keep
 import UF.Subsingletons
 import UF.Subsingletons-FunExt
+import UF.Subsingletons-Properties
 import UF.SubTypeClassifier
 import UF.SubTypeClassifier-Properties
 import UF.UA-FunExt

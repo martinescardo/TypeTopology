@@ -15,8 +15,8 @@ module W.Numbers where
 
 open import Fin.Type hiding (suc)
 open import NotionsOfDecidability.Decidable
-open import TypeTopology.DiscreteAndSeparated
 open import UF.Base
+open import UF.DiscreteAndSeparated
 open import UF.Embeddings
 open import UF.Equiv
 open import UF.EquivalenceExamples
@@ -482,5 +482,5 @@ LEM (𝓥 ⁺).
 
 \end{code}
 
-TODO. Show that 𝓝 the the structure of an ordinal. This requires more
+TODO. Show that 𝓝 has the structure of an ordinal. This requires more
 work.

@@ -20,8 +20,8 @@ open import Ordinals.WellOrderArithmetic
 open import UF.Base
 open import UF.Embeddings
 open import UF.Equiv
+open import UF.Subsingletons-Properties
 open import UF.Univalence
-open import UF.Hedberg
 
 module ordinals-injectivity (fe : FunExt) where
 

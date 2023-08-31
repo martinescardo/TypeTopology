@@ -24,7 +24,9 @@ open import UF.LeftCancellable
 open import UF.Lower-FunExt
 open import UF.Retracts
 open import UF.Sets
+open import UF.Sets-Properties
 open import UF.Subsingletons
+open import UF.Subsingletons-Properties
 
 Π-is-prop : funext 𝓤 𝓥
           → {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
