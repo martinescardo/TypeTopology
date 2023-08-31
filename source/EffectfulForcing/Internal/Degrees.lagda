@@ -46,7 +46,8 @@ degree-example₃ = refl
 \begin{code}
 
 rank : {Γ : Cxt} {τ : type} → T Γ τ → ℕ
-rank {_} {ι} _             = 0
+rank {_} {ι} Zero          = 0
+rank {_} {ι} (Succ t)      = rank t
 rank {_} {τ} (Rec t t₁ t₂) = max (max (degree τ) (rank t₁)) (rank t₂)
 rank {_} {τ} (ν _)         = degree τ
 rank {_} {τ} (ƛ t)         = rank t
