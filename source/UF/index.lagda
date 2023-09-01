@@ -24,6 +24,7 @@ import UF.Groupoids
 import UF.HLevels
 import UF.Hedberg
 import UF.HedbergApplications
+import UF.HiddenSwap
 import UF.IdEmbedding
 import UF.IdentitySystems
 import UF.ImageAndSurjection
