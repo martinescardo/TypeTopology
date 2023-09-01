@@ -94,3 +94,14 @@ hidden-swap {𝓤} {X} s = VIII
   VIII = VI , VII , V
 
 \end{code}
+
+Notice that there is some amount of redundancy in the formulation of
+the above theorem (or should we say construction?). Any involution is
+an equivalence. Hence we could have formulated the theorem as the
+seemingly weaker version
+
+              ∥ X ≃ 𝟚 ∥
+            → Σ f ꞉ X → X , (f ≠ id) × (f ∘ f ∼ id)
+
+from which we can actually recover the theorem as formulated as a
+corollary fairly directly, because involutions are equivalences.
