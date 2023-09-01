@@ -23,10 +23,19 @@ open import UF.Subsingletons-FunExt
 
 open PropositionalTruncation pt
 
+\end{code}
+
+What is noteworthy about the following is that, without knowing a
+specific equivalence of X with 𝟚, so that, in particular, we cannot
+get any particular point of X, we can still swap the two unknown
+points of X, so to speak.
+
+\begin{code}
+
 hidden-swap : {X : 𝓤 ̇ }
             → ∥ X ≃ 𝟚 ∥
-            → Σ 𝕗 ꞉ X ≃ X , (⌜ 𝕗 ⌝ ≠ id) × (⌜ 𝕗 ⌝ ∘ ⌜ 𝕗 ⌝ ∼ id)
-hidden-swap {𝓤} {X} s = VIII
+            → Σ f ꞉ (X → X) , (f ≠ id) × (f ∘ f ∼ id)
+hidden-swap {𝓤} {X} s = VII
  where
   I : (x : X) → X ≃ 𝟚 → Σ y ꞉ X , x ≠ y
   I x 𝕘 = ⌜ 𝕘 ⌝⁻¹ (complement (⌜ 𝕘 ⌝ x)) , I₀
@@ -47,10 +56,10 @@ hidden-swap {𝓤} {X} s = VIII
   II x y y' ν ν' = ∥∥-rec X-is-set (λ 𝕘 → d' 𝕘 x y y' ν ν') s
    where
     d' : X ≃ 𝟚 → (x y y' : X) → x ≠ y → x ≠ y' → y ＝ y'
-    d' 𝕘 x y y' ν ν' = equivs-are-lc ⌜ 𝕘 ⌝ ⌜ 𝕘 ⌝-is-equiv d₀
+    d' 𝕘 x y y' ν ν' = equivs-are-lc ⌜ 𝕘 ⌝ ⌜ 𝕘 ⌝-is-equiv II₀
      where
-      d₀ : ⌜ 𝕘 ⌝ y ＝ ⌜ 𝕘 ⌝ y'
-      d₀ = 𝟚-things-distinct-from-a-third-are-equal (⌜ 𝕘 ⌝ y) (⌜ 𝕘 ⌝ y') (⌜ 𝕘 ⌝ x)
+      II₀ : ⌜ 𝕘 ⌝ y ＝ ⌜ 𝕘 ⌝ y'
+      II₀ = 𝟚-things-distinct-from-a-third-are-equal (⌜ 𝕘 ⌝ y) (⌜ 𝕘 ⌝ y') (⌜ 𝕘 ⌝ x)
              (λ (p : ⌜ 𝕘 ⌝ y ＝ ⌜ 𝕘 ⌝ x)
                    → ν (equivs-are-lc ⌜ 𝕘 ⌝ ⌜ 𝕘 ⌝-is-equiv (p ⁻¹)))
              (λ (p : ⌜ 𝕘 ⌝ y' ＝ ⌜ 𝕘 ⌝ x)
@@ -78,30 +87,31 @@ hidden-swap {𝓤} {X} s = VIII
     V₂ : f (f x) ＝ x
     V₂ = II (f x) (f (f x)) x V₁ (≠-sym V₀)
 
-  VI : X ≃ X
-  VI = qinveq f (f , V , V)
-
-  VII : f ≠ id
-  VII p = VII₁
+  VI : f ≠ id
+  VI p = VI₁
    where
-    VII₀ : ∃ x ꞉ X , (x ≠ f x)
-    VII₀ = ∥∥-rec ∃-is-prop (λ 𝕘 → ∣ ⌜ 𝕘 ⌝⁻¹ ₀ , pr₂ (IV (⌜ 𝕘 ⌝⁻¹ ₀)) ∣) s
+    VI₀ : ∃ x ꞉ X , (x ≠ f x)
+    VI₀ = ∥∥-rec ∃-is-prop (λ 𝕘 → ∣ ⌜ 𝕘 ⌝⁻¹ ₀ , pr₂ (IV (⌜ 𝕘 ⌝⁻¹ ₀)) ∣) s
 
-    VII₁ : 𝟘
-    VII₁ = ∥∥-rec 𝟘-is-prop (λ (x , ν) → ν (happly (p ⁻¹) x)) VII₀
+    VI₁ : 𝟘
+    VI₁ = ∥∥-rec 𝟘-is-prop (λ (x , ν) → ν (happly (p ⁻¹) x)) VI₀
 
-  VIII :  Σ 𝕗 ꞉ X ≃ X , (⌜ 𝕗 ⌝ ≠ id) × (⌜ 𝕗 ⌝ ∘ ⌜ 𝕗 ⌝ ∼ id)
-  VIII = VI , VII , V
+  VII :  Σ f ꞉ (X → X) , (f ≠ id) × (f ∘ f ∼ id)
+  VII = f , VI , V
 
 \end{code}
 
-Notice that there is some amount of redundancy in the formulation of
-the above theorem (or should we say construction?). Any involution is
-an equivalence. Hence we could have formulated the theorem as the
-seemingly weaker version
+Because involutions are equivalences, we get the following.
 
-              ∥ X ≃ 𝟚 ∥
-            → Σ f ꞉ X → X , (f ≠ id) × (f ∘ f ∼ id)
+\begin{code}
 
-from which we can actually recover the theorem as formulated as a
-corollary fairly directly, because involutions are equivalences.
+hidden-swap-corollary : {X : 𝓤 ̇ }
+                      → ∥ X ≃ 𝟚 ∥
+                      → Σ 𝕗 ꞉ X ≃ X , ⌜ 𝕗 ⌝ ≠ id
+hidden-swap-corollary {𝓤} {X} s = I (hidden-swap s)
+ where
+  I : (Σ f ꞉ (X → X) , (f ≠ id) × (f ∘ f ∼ id))
+    → Σ 𝕗 ꞉ X ≃ X , (⌜ 𝕗 ⌝ ≠ id)
+  I (f , ν , i) = qinveq f (f , i , i) , ν
+
+\end{code}
