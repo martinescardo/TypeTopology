@@ -70,6 +70,18 @@ succ-monotone m n l = l
 succ-order-injective : (m n : ℕ) → succ m ≤ succ n → m ≤ n
 succ-order-injective m n l = l
 
+\end{code}
+
+We need the following modification of the first line of the following
+function for this file to pass with the --double-check flag in Agda 2.6.3:
+
+ ≤-induction : (P : (m n : ℕ) (l : m ≤ℕ n) → 𝓤 ̇ )
+
+Reported as issue #6815
+https://github.com/agda/agda/issues/6815
+
+\begin{code}
+
 ≤-induction : (P : (m n : ℕ) (l : m ≤ n) → 𝓤 ̇ )
             → ((n : ℕ) → P zero n (zero-least n))
             → ((m n : ℕ) (l : m ≤ n)

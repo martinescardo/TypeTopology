@@ -346,6 +346,11 @@ factor-is-embedding {𝓤} {𝓥} {𝓦} {X} {Y} {Z} f g i j = γ
   γ : is-embedding f
   γ = embedding-criterion' f c
 
+is-essential : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → (𝓦 : Universe) → 𝓤 ⊔ 𝓥 ⊔ (𝓦 ⁺) ̇
+is-essential f 𝓦 = (Z : 𝓦 ̇) (g : codomain f → Z)
+                 → is-embedding (g ∘ f)
+                 → is-embedding g
+
 precomp-is-embedding : FunExt
                      → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } (f : X → Y)
                      → is-embedding f
