@@ -94,11 +94,11 @@ with A : P → 𝓤 ̇ and g : (h : P) → S (A h).
 We need to construct a (total) element (X , s) of Σ S, with s : S X ,
 such that for all h : P we have that (X , s) = (A h , g h).
 
-This forces X = A h for any h : P. We have an equivalence
+This forces X = A h for any h : P. We have a fiberwise equivalence
 
  π : (h : P) → Π A ≃ A h
 
-By, univalence, π induces a fiberwise identification
+By univalence, π induces a fiberwise identification
 
  ϕ : (h : P) → Π A ＝ A h.
 
@@ -106,7 +106,7 @@ Hence we can take X to be Π A.
 
 To construct s, we need an assumption on S.
 
-Roughly, our assumption is that S is closed under prop-indexed
+Roughly, our assumption is that S is closed under proposition-indexed
 products, in the sense that from an element of the type
 (h : P) → S (A h) we can get an element of the type S (Π A).
 
@@ -114,8 +114,8 @@ More precisely, we always have a map
 
  σ : S (Π A) → ((h : P) → S (A h))
 
-in the opposite direction. We stipulate that it is an equivalence for
-any proposition P and any type family A of types indexed by P.
+in the opposite direction, and we stipulate that it is an equivalence
+for any proposition P and any type family A of types indexed by P.
 
 With this assumption, we can let s be the inverse of σ applied to g.
 
@@ -196,9 +196,9 @@ flabby with with respect to the universe 𝓤.
 
 \begin{code}
 
- aflabbiness-of-type-of-structures : closed-under-prop-Π
-                                   → aflabby (Σ S) 𝓤
- aflabbiness-of-type-of-structures σ-is-equiv = I
+ aflabbiness-of-type-of-structured-types : closed-under-prop-Π
+                                         → aflabby (Σ S) 𝓤
+ aflabbiness-of-type-of-structured-types σ-is-equiv = I
   where
    I : aflabby (Σ S) 𝓤
    I P P-is-prop f = (Π A , s) , II
@@ -231,30 +231,30 @@ flabby with with respect to the universe 𝓤.
        III = transport S (ϕ h) s ＝⟨ refl ⟩
              ⌜ e ⌝ s h           ＝⟨ refl ⟩
              ⌜ e ⌝ (⌜ e ⌝⁻¹ g) h ＝⟨ IV ⟩
-             g h ∎
+             g h                 ∎
         where
          IV = ap (λ - → - h) (inverses-are-sections ⌜ e ⌝ ⌜ e ⌝-is-equiv g)
 
 \end{code}
 
 It follows that the type Σ S is algebraically injective if S is closed
-under prop-indexed products, which is our main theorem.
+under proposition-indexed products, which is our main theorem.
 
 \begin{code}
 
  ainjectivity-of-type-of-structures : closed-under-prop-Π
                                     → ainjective-type (Σ S) 𝓤 𝓤
  ainjectivity-of-type-of-structures = aflabby-types-are-ainjective (Σ S)
-                                      ∘ aflabbiness-of-type-of-structures
+                                      ∘ aflabbiness-of-type-of-structured-types
 
 \end{code}
 
-Our assumption of closure under prop-indexed products may be difficult
-to check directly, because it involves transport along an
+Our assumption of closure under proposition-indexed products may be
+difficult to check directly, because it involves transport along an
 identification induced by an equivalence by univalence.
 
-In practice, we are often able to construct T and T-refl below, for S
-of interest, without using transport.
+In practice, however, we are often able to construct T and T-refl
+below, for S of interest, without using transport.
 
 \begin{code}
 
@@ -272,20 +272,20 @@ easier to check closure under products using T rather than transport
 \begin{code}
 
   transport-eqtoid : {X Y : 𝓤 ̇ } (𝕗 : X ≃ Y)
-                   → T 𝕗 ∼ transport S (eqtoid (ua 𝓤) X Y 𝕗)
+                   → T 𝕗 ∼ treq 𝕗
   transport-eqtoid {X} {Y} 𝕗 s = JEq (ua 𝓤) X A I Y 𝕗
    where
     A : (Y : 𝓤 ̇) (𝕗 : X ≃ Y) → 𝓥 ̇
-    A Y 𝕗 = T 𝕗 s ＝ transport S (eqtoid (ua 𝓤) X Y 𝕗) s
+    A Y 𝕗 = T 𝕗 s ＝ treq 𝕗 s
 
     I : A X (≃-refl X)
-    I = T (≃-refl X) s                                ＝⟨ II ⟩
+    I = T (≃-refl X) s                                ＝⟨ T-refl s ⟩
         s                                             ＝⟨ refl ⟩
-        transport S refl s                            ＝⟨ III ⟩
-        transport S (eqtoid (ua 𝓤) X X (≃-refl X)) s  ∎
+        transport S refl s                            ＝⟨ II ⟩
+        transport S (eqtoid (ua 𝓤) X X (≃-refl X)) s  ＝⟨ refl ⟩
+        treq (≃-refl X) s                             ∎
       where
-       II   = T-refl s
-       III  = (ap (λ - → transport S - s) (eqtoid-refl (ua 𝓤) X))⁻¹
+       II = (ap (λ - → transport S - s) (eqtoid-refl (ua 𝓤) X))⁻¹
 
 \end{code}
 
@@ -323,33 +323,25 @@ equivalently formulated with T:
   Π-closure-criterion : closed-under-prop-Π'
                       → closed-under-prop-Π
   Π-closure-criterion τ-is-equiv p A =
-   equiv-closed-under-∼
-    (τ p A)
-    (σ p A)
-    (τ-is-equiv p A)
-    (σ-and-τ-agree p A)
+   equiv-closed-under-∼ τ σ (τ-is-equiv p A) σ-and-τ-agree
    where
-    open canonical-map'
+    open canonical-map' p A
 
   Π-closure-criterion-converse : closed-under-prop-Π
                                → closed-under-prop-Π'
   Π-closure-criterion-converse σ-is-equiv p A =
-   equiv-closed-under-∼
-    (σ p A)
-    (τ p A)
-    (σ-is-equiv p A)
-    (∼-sym (σ-and-τ-agree p A))
+   equiv-closed-under-∼ σ τ (σ-is-equiv p A) (∼-sym σ-and-τ-agree)
    where
-    open canonical-map'
+    open canonical-map' p A
 
 \end{code}
 
-Example: The type of pointed types is algebraically injective.
+Example. The type of pointed types is algebraically injective.
 
 \begin{code}
 
-Pointed-Type : (𝓤 : Universe) → 𝓤 ⁺ ̇
-Pointed-Type 𝓤 = Σ X ꞉ 𝓤 ̇ , X
+Pointed-type : (𝓤 : Universe) → 𝓤 ⁺ ̇
+Pointed-type 𝓤 = Σ X ꞉ 𝓤 ̇ , X
 
 Pointed : 𝓤 ̇ → 𝓤 ̇
 Pointed X = X
@@ -367,19 +359,17 @@ Pointed-is-closed-under-prop-Π {𝓤} =
   c : closed-under-prop-Π' Pointed T T-refl
   c p A = id-is-equiv (Π A)
 
-ainjectivity-of-type-of-pointed-types : ainjective-type (Pointed-Type 𝓤) 𝓤 𝓤
+ainjectivity-of-type-of-pointed-types : ainjective-type (Pointed-type 𝓤) 𝓤 𝓤
 ainjectivity-of-type-of-pointed-types {𝓤} =
  ainjectivity-of-type-of-structures Pointed Pointed-is-closed-under-prop-Π
 
 \end{code}
 
-Example: The type of ∞-magmas is algebraically injective. The proof is
-an entirely routine application of the above general theorem.
+Example. The type of ∞-magmas is algebraically injective. The proof is
+an entirely routine application of the above general theorem after we
+guess what T should be.
 
 \begin{code}
-
-open import UF.SIP-Examples
-open monoid
 
 ∞-Magma : (𝓤 : Universe) → 𝓤 ⁺ ̇
 ∞-Magma 𝓤 = Σ X ꞉ 𝓤 ̇ , (X → X → X)
@@ -387,7 +377,8 @@ open monoid
 ∞-Magma-structure : 𝓤 ̇ → 𝓤 ̇
 ∞-Magma-structure = λ X → X → X → X
 
-∞-Magma-structure-is-closed-under-prop-Π : closed-under-prop-Π (∞-Magma-structure {𝓤})
+∞-Magma-structure-is-closed-under-prop-Π : closed-under-prop-Π
+                                            (∞-Magma-structure {𝓤})
 ∞-Magma-structure-is-closed-under-prop-Π {𝓤} =
  Π-closure-criterion S T T-refl τ-is-equiv
  where
@@ -426,7 +417,7 @@ open monoid
 
    ε : τ ∘ τ⁻¹ ∼ id
    ε g =
-    τ (τ⁻¹ g)                                                     ＝⟨ refl ⟩
+    τ (τ⁻¹ g)                                                       ＝⟨ refl ⟩
     (λ h a b → g h (⌜ π h ⌝ (⌜ π h ⌝⁻¹ a)) (⌜ π h ⌝ (⌜ π h ⌝⁻¹ b))) ＝⟨ I ⟩
     (λ h a b → g h a b)                                             ＝⟨ refl ⟩
     g                                                               ∎
@@ -437,7 +428,7 @@ open monoid
                (inverses-are-sections (⌜ π h ⌝) ⌜ π h ⌝-is-equiv b))))
 
    τ-is-equiv : is-equiv τ
-   τ-is-equiv = qinvs-are-equivs τ  (τ⁻¹ , η , ε)
+   τ-is-equiv = qinvs-are-equivs τ (τ⁻¹ , η , ε)
 
 ainjectivity-of-∞-Magma : ainjective-type (∞-Magma 𝓤) 𝓤 𝓤
 ainjectivity-of-∞-Magma {𝓤} =
@@ -447,8 +438,8 @@ ainjectivity-of-∞-Magma {𝓤} =
 
 \end{code}
 
-A corollary is that the type ∞-Magma 𝓤 doesn't have any decidable
-property unless weak excluded middle holds.
+A corollary is that the type ∞-Magma 𝓤 doesn't have any non-trivial
+decidable property unless weak excluded middle holds.
 
 \begin{code}
 
@@ -463,23 +454,24 @@ decomposition-of-∞-Magma-gives-WEM {𝓤} =
 The same is true for the type of pointed types, of course, and for any
 injective type.
 
-We now want to consider more examples, such as monoids, groups and
-1-categories. For that purpose, we write combinators, like in UF.SIP,
-to show that mathematical structures constructed from standard
-building blocks, such as the above, form injective types.
+We now want to consider more examples, such as monoids and groups. For
+that purpose, we write combinators, like in UF.SIP, to show that
+mathematical structures constructed from standard building blocks,
+such as the above, form injective types.
 
 \begin{code}
 
 variable
  𝓥₁ 𝓥₂ : Universe
 
-closed-under-prop-Π-× :
+closure-under-prop-Π-× :
       {S₁ : 𝓤 ̇ → 𝓥₁ ̇ } {S₂ : 𝓤 ̇ → 𝓥₂ ̇ }
     → closed-under-prop-Π S₁
     → closed-under-prop-Π S₂
     → closed-under-prop-Π (λ X → S₁ X × S₂ X)
 
-closed-under-prop-Π-× {𝓤} {𝓥₁} {𝓥₂} {S₁} {S₂} σ₁-is-equiv σ₂-is-equiv = σ-is-equiv
+closure-under-prop-Π-× {𝓤} {𝓥₁} {𝓥₂} {S₁} {S₂}
+                       σ₁-is-equiv σ₂-is-equiv = σ-is-equiv
  where
   S : 𝓤 ̇ → 𝓥₁ ⊔ 𝓥₂ ̇
   S X = S₁ X × S₂ X
@@ -556,7 +548,7 @@ open monoid
 
 ∞-Magma∙-structure-closed-under-Π : closed-under-prop-Π (∞-Magma∙-structure {𝓤})
 ∞-Magma∙-structure-closed-under-Π =
- closed-under-prop-Π-×
+ closure-under-prop-Π-×
   ∞-Magma-structure-is-closed-under-prop-Π
   Pointed-is-closed-under-prop-Π
 
@@ -573,24 +565,24 @@ conclude that the type of monoids is injective.
 
 \begin{code}
 
-closed-under-prop-Π-with-axioms
-   : (S : 𝓤 ̇ → 𝓥 ̇ )
-     (σ-is-equiv : closed-under-prop-Π S)
-     (axioms : (X : 𝓤 ̇ ) → S X → 𝓦 ̇ )
-     (axioms-are-prop-valued : (X : 𝓤 ̇) (s : S X) → is-prop (axioms X s))
-     (axioms-closed-under-prop-Π :
-            (p : Ω 𝓤 )
-            (A : p holds → 𝓤 ̇ )
-          → (α : (h : p holds) → S (A h))
-          → ((h : p holds) → axioms (A h) (α h))
-          → axioms (Π A) (inverse (canonical-map.σ S p A) (σ-is-equiv p A) α))
-   → closed-under-prop-Π (λ X → Σ s ꞉ S X , axioms X s)
-closed-under-prop-Π-with-axioms {𝓤} {𝓥} {𝓦}
-                                S
-                                σ-is-equiv
-                                axioms
-                                axioms-are-prop-valued
-                                axioms-closed-under-prop-Π = σₐ-is-equiv
+closure-under-prop-Π-with-axioms
+ : (S : 𝓤 ̇ → 𝓥 ̇ )
+   (σ-is-equiv : closed-under-prop-Π S)
+   (axioms : (X : 𝓤 ̇ ) → S X → 𝓦 ̇ )
+   (axioms-are-prop-valued : (X : 𝓤 ̇) (s : S X) → is-prop (axioms X s))
+   (axioms-closed-under-prop-Π :
+          (p : Ω 𝓤 )
+          (A : p holds → 𝓤 ̇ )
+        → (α : (h : p holds) → S (A h))
+        → ((h : p holds) → axioms (A h) (α h))
+        → axioms (Π A) (inverse (canonical-map.σ S p A) (σ-is-equiv p A) α))
+ → closed-under-prop-Π (λ X → Σ s ꞉ S X , axioms X s)
+closure-under-prop-Π-with-axioms {𝓤} {𝓥} {𝓦}
+                                 S
+                                 σ-is-equiv
+                                 axioms
+                                 axioms-are-prop-valued
+                                 axioms-closed-under-prop-Π = σₐ-is-equiv
    where
     Sₐ : 𝓤 ̇ → 𝓥 ⊔ 𝓦 ̇
     Sₐ X = Σ s ꞉ S X , axioms X s
@@ -651,15 +643,16 @@ closed-under-prop-Π-with-axioms {𝓤} {𝓥} {𝓦}
 
 \end{code}
 
-The above requires that the structures are closed under prop-indexed
-products with the pointwise operations (where the operations are
-specified very abstractly by a structure operator S). But in many
-cases, of course, such as monoids and groups, we have closure under
-arbitrary products under the pointwise operations. By the above, the
-type of any mathematical structure that is closed under arbitrary
-products is injective.
+The above requires that the structures are closed under
+proposition-indexed products with the pointwise operations (where the
+operations are specified very abstractly by a structure operator S).
+But in many cases of interest, of course, such as monoids and groups,
+we have closure under arbitrary products under the pointwise
+operations. By the above, the type of any mathematical structure that
+is closed under arbitrary products is injective.
 
-Example. The type of monoids is injective.
+Example. The type of monoids is injective. We just have to check that
+the monoid axioms are closed under Π.
 
 \begin{code}
 
@@ -716,7 +709,7 @@ Monoid-is-closed-under-prop-Π {𝓤} = V
                  λ (Ah-is-set , ln , rn , assoc) → assoc (f h) (g h) (k h))
 
   V : closed-under-prop-Π {𝓤} (λ X → Σ s ꞉ monoid-structure X , monoid-axioms X s)
-  V =  closed-under-prop-Π-with-axioms
+  V =  closure-under-prop-Π-with-axioms
         monoid-structure
         ∞-Magma∙-structure-closed-under-Π
         monoid-axioms
@@ -731,16 +724,16 @@ ainjectivity-of-Monoid {𝓤} =
 
 \end{code}
 
-NB. The type Ordinal 𝓤 of well-ordered sets in 𝓤 is also injective,
-but for a different reason.
-
 TODO. It is easy to add further axioms to monoids to get groups, and
 then show that the type of groups is injective using the above
 technique. I expect this to be entirely routine as the example of
 monoids.
 
-TODO. The type of posets should be injective, but with a different
-proof. May the proof for the type of ordinals can be adapted (check).
-
 TODO. More techniques are needed to show that the type of 1-categories
 would be injective. This is more interesting.
+
+NB. The type Ordinal 𝓤 of well-ordered sets in 𝓤 is also injective,
+but for a different reason.
+
+TODO. The type of posets should be injective, but with a different
+proof. May the proof for the type of ordinals can be adapted (check).
