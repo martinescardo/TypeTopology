@@ -25,7 +25,7 @@ open PropositionalTruncation pt
 
 hidden-swap : {X : 𝓤 ̇ }
             → ∥ X ≃ 𝟚 ∥
-            → Σ 𝕗 ꞉ X ≃ X , ⌜ 𝕗 ⌝ ≠ id
+            → Σ 𝕗 ꞉ X ≃ X , (⌜ 𝕗 ⌝ ≠ id) × (⌜ 𝕗 ⌝ ∘ ⌜ 𝕗 ⌝ ∼ id)
 hidden-swap {𝓤} {X} s = VIII
  where
   I : (x : X) → X ≃ 𝟚 → Σ y ꞉ X , x ≠ y
@@ -90,7 +90,7 @@ hidden-swap {𝓤} {X} s = VIII
     VII₁ : 𝟘
     VII₁ = ∥∥-rec 𝟘-is-prop (λ (x , ν) → ν (happly (p ⁻¹) x)) VII₀
 
-  VIII :  Σ 𝕗 ꞉ X ≃ X , ⌜ 𝕗 ⌝ ≠ id
-  VIII = VI , VII
+  VIII :  Σ 𝕗 ꞉ X ≃ X , (⌜ 𝕗 ⌝ ≠ id) × (⌜ 𝕗 ⌝ ∘ ⌜ 𝕗 ⌝ ∼ id)
+  VIII = VI , VII , V
 
 \end{code}
