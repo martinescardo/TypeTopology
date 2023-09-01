@@ -53,6 +53,7 @@ import UF.Retracts-FunExt
 import UF.SIP
 import UF.SIP-Examples
 import UF.Section-Embedding
+import UF.SemistrictIdentity
 import UF.SetTrunc
 import UF.Sets
 import UF.Sets-Properties
