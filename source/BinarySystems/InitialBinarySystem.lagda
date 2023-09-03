@@ -271,7 +271,7 @@ first universe 𝓤₀.
 
 open import UF.Hedberg
 open import UF.Sets
-open import UF.SubTypeClassifier
+open import UF.SubtypeClassifier
 open import UF.Subsingletons hiding (center)
 
 χ : 𝔹 → 𝔹 → Ω₀

@@ -16,7 +16,7 @@ open import Notation.Order
 open import UF.Embeddings
 open import UF.FunExt
 open import UF.Subsingletons-FunExt
-open import UF.SubTypeClassifier
+open import UF.SubtypeClassifier
 
 having-three-distinct-points-covariant : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                                        → X ↪ Y

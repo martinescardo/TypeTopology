@@ -22,7 +22,7 @@ open import UF.Equiv-FunExt
 open import UF.FunExt
 open import UF.FunExt-Properties
 open import UF.LeftCancellable
-open import UF.SubTypeClassifier
+open import UF.SubtypeClassifier
 open import UF.Univalence
 
 naive-univalence-gives-funext : is-univalent 𝓤 → ∀ {𝓥} → naive-funext 𝓥 𝓤

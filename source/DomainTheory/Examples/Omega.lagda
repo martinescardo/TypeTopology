@@ -31,8 +31,8 @@ open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.ImageAndSurjection pt
 open import UF.Subsingletons-FunExt
-open import UF.SubTypeClassifier hiding (⊥)
-open import UF.SubTypeClassifier-Properties
+open import UF.SubtypeClassifier hiding (⊥)
+open import UF.SubtypeClassifier-Properties
 open import UF.Sets
 open import Posets.Poset fe
 

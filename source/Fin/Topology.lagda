@@ -26,7 +26,7 @@ open import UF.ExcludedMiddle
 open import UF.FunExt
 open import UF.PropTrunc
 open import UF.Sets
-open import UF.SubTypeClassifier
+open import UF.SubtypeClassifier
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 

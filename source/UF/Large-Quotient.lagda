@@ -40,8 +40,8 @@ open import UF.Hedberg
 open import UF.PropTrunc
 open import UF.Sets
 open import UF.Sets-Properties
-open import UF.SubTypeClassifier
-open import UF.SubTypeClassifier-Properties
+open import UF.SubtypeClassifier
+open import UF.SubtypeClassifier-Properties
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 

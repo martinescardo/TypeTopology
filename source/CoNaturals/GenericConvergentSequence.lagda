@@ -30,7 +30,7 @@ open import UF.FunExt
 open import UF.NotNotStablePropositions
 open import UF.Retracts
 open import UF.Sets
-open import UF.SubTypeClassifier
+open import UF.SubtypeClassifier
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 

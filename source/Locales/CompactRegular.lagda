@@ -24,7 +24,7 @@ open import Locales.Frame pt fe hiding (is-directed)
 open import Slice.Family
 open import UF.Equiv using (_≃_; logically-equivalent-props-give-is-equiv)
 open import UF.Logic
-open import UF.SubTypeClassifier
+open import UF.SubtypeClassifier
 open import UF.Subsingletons
 
 open AllCombinators pt fe

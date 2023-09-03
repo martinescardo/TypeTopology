@@ -46,8 +46,8 @@ open import UF.Section-Embedding
 open import UF.Sets
 open import UF.Sets
 open import UF.Sets
-open import UF.SubTypeClassifier
-open import UF.SubTypeClassifier-Properties
+open import UF.SubtypeClassifier
+open import UF.SubtypeClassifier-Properties
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.UA-FunExt
@@ -369,8 +369,8 @@ universe, and of all other universes, of course:
   ψφ (inr y) (inr n) = 𝟘-elim (n ⋆)
 
   φψ : (p : Ω 𝓤) (d : is-decidable (p holds)) → φ (ψ p d) ＝ p
-  φψ p (inl h) = (true-is-equal-⊤  pe fe (p holds) (holds-is-prop p) h)⁻¹
-  φψ p (inr n) = (false-is-equal-⊥ pe fe (p holds) (holds-is-prop p) n)⁻¹
+  φψ p (inl h) = (true-gives-equal-⊤  pe fe (p holds) (holds-is-prop p) h)⁻¹
+  φψ p (inr n) = (false-gives-equal-⊥ pe fe (p holds) (holds-is-prop p) n)⁻¹
 
   γ : Ω-Resizing 𝓤 𝓥
   γ =  (𝟙 {𝓥} + 𝟙 {𝓥}) ,

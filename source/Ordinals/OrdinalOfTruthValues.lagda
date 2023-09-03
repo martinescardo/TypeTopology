@@ -23,8 +23,8 @@ open import Ordinals.Maps
 open import Ordinals.Notions
 open import Ordinals.Type
 open import Ordinals.Underlying
-open import UF.SubTypeClassifier
-open import UF.SubTypeClassifier-Properties
+open import UF.SubtypeClassifier
+open import UF.SubtypeClassifier-Properties
 
 Ωₒ : Ordinal (𝓤 ⁺)
 Ωₒ = Ω 𝓤 , _≺_ , pv , w , e , t
@@ -60,7 +60,7 @@ open import UF.SubTypeClassifier-Properties
   t p q r (a , _) (_ , b) = a , b
 
 ⊥-is-least : is-least Ωₒ ⊥
-⊥-is-least (P , i) (𝟘 , 𝟘-is-prop) (refl , q) = 𝟘-elim (equal-⊤-is-true 𝟘 𝟘-is-prop q)
+⊥-is-least (P , i) (𝟘 , 𝟘-is-prop) (refl , q) = 𝟘-elim (equal-⊤-gives-true 𝟘 𝟘-is-prop q)
 
 ⊤-is-largest : is-largest Ωₒ ⊤
 ⊤-is-largest (.𝟙 , .𝟙-is-prop) (.𝟘 , .𝟘-is-prop) (refl , refl) = refl , refl

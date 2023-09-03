@@ -26,7 +26,7 @@ open import UF.UA-FunExt
 open import UF.Univalence
 open import UF.Powerset
 open import UF.PropTrunc
-open import UF.SubTypeClassifier
+open import UF.SubtypeClassifier
 
 \end{code}
 

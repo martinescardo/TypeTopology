@@ -6,7 +6,7 @@ Properties of the type of truth values.
 
 {-# OPTIONS --safe --without-K --exact-split #-}
 
-module UF.SubTypeClassifier-Properties where
+module UF.SubtypeClassifier-Properties where
 
 open import MLTT.Plus-Properties
 open import MLTT.Spartan
@@ -18,7 +18,7 @@ open import UF.FunExt
 open import UF.Hedberg
 open import UF.Lower-FunExt
 open import UF.Sets
-open import UF.SubTypeClassifier
+open import UF.SubtypeClassifier
 open import UF.Subsingletons
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
@@ -79,7 +79,7 @@ equal-⊤-≃ : propext 𝓤
 equal-⊤-≃ {𝓤} pe fe p = logically-equivalent-props-are-equivalent
                          (Ω-is-set fe pe)
                          (holds-is-prop p)
-                         (equal-⊤-holds p)
+                         (equal-⊤-gives-holds p)
                          (holds-gives-equal-⊤ pe fe p)
 
 equal-⊥-≃ : propext 𝓤
@@ -88,7 +88,7 @@ equal-⊥-≃ : propext 𝓤
 equal-⊥-≃ {𝓤} pe fe p = logically-equivalent-props-are-equivalent
                          (Ω-is-set fe pe)
                          (negations-are-props (lower-funext 𝓤 𝓤 fe))
-                         (equal-⊥-fails p)
+                         (equal-⊥-gives-fails p)
                          (fails-gives-equal-⊥ pe fe p)
 
 module _ (fe : funext 𝓤 𝓤) (pe : propext 𝓤) where

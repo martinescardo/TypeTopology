@@ -566,7 +566,7 @@ to (ω +ₒ 𝟙ₒ) to get ℕ∞ₒ, unless LPO holds.
 \begin{code}
 
 open import UF.Retracts
-open import UF.SubTypeClassifier
+open import UF.SubtypeClassifier
 
 retract-Ω-of-Ordinal : retract (Ω 𝓤) of (Ordinal 𝓤)
 retract-Ω-of-Ordinal {𝓤} = r , s , η

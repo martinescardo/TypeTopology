@@ -21,7 +21,7 @@ open import Slice.Family
 open import UF.ImageAndSurjection pt
 open import UF.Logic
 open import UF.Powerset
-open import UF.SubTypeClassifier
+open import UF.SubtypeClassifier
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 

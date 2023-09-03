@@ -61,8 +61,8 @@ import UF.Sets-Properties
 import UF.Size
 import UF.SmallnessProperties
 import UF.StructureIdentityPrinciple -- obsolete but keep
-import UF.SubTypeClassifier
-import UF.SubTypeClassifier-Properties
+import UF.SubtypeClassifier
+import UF.SubtypeClassifier-Properties
 import UF.Subsingletons
 import UF.Subsingletons-FunExt
 import UF.Subsingletons-Properties

@@ -26,8 +26,8 @@ open import UF.PropIndexedPiSigma
 open import UF.PropTrunc
 open import UF.Retracts
 open import UF.Sets
-open import UF.SubTypeClassifier
-open import UF.SubTypeClassifier-Properties
+open import UF.SubtypeClassifier
+open import UF.SubtypeClassifier-Properties
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import W.Properties
@@ -229,7 +229,7 @@ We now assume functional and propositional extensionality.
         n                         ∎
      where
       II = to-𝓝-＝
-            (((true-is-equal-⊤ pe fe
+            (((true-gives-equal-⊤ pe fe
                 (is-positive n)
                 (being-positive-is-prop n)
                 pos)⁻¹) ,

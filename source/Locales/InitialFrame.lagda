@@ -23,7 +23,7 @@ open import UF.Logic
 open import UF.Subsingletons-FunExt
 open import Slice.Family
 open import Locales.Frame pt fe
-open import UF.SubTypeClassifier
+open import UF.SubtypeClassifier
 open AllCombinators pt fe
 
 \end{code}
@@ -47,10 +47,10 @@ P ⊑ Q = P ⇒ Q
 ⊑-is-antisymmetric pe {P} {Q} φ ψ = Ω-ext pe fe † ‡
  where
   † : P ＝ ⊤ → Q ＝ ⊤
-  † = holds-gives-equal-⊤ pe fe Q ∘ φ ∘ equal-⊤-is-true (P holds) (holds-is-prop P)
+  † = holds-gives-equal-⊤ pe fe Q ∘ φ ∘ equal-⊤-gives-true (P holds) (holds-is-prop P)
 
   ‡ : Q ＝ ⊤ → P ＝ ⊤
-  ‡ = holds-gives-equal-⊤ pe fe P ∘ ψ ∘ equal-⊤-is-true (Q holds) (holds-is-prop Q)
+  ‡ = holds-gives-equal-⊤ pe fe P ∘ ψ ∘ equal-⊤-gives-true (Q holds) (holds-is-prop Q)
 
 ⊑-is-partial-order : {𝓤 : Universe} → propext 𝓤 → is-partial-order (Ω 𝓤) _⊑_
 ⊑-is-partial-order pe =

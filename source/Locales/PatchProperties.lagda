@@ -13,7 +13,7 @@ open import UF.Base
 open import UF.EquivalenceExamples
 open import UF.FunExt
 open import UF.PropTrunc
-open import UF.SubTypeClassifier
+open import UF.SubtypeClassifier
 open import UF.UA-FunExt
 open import UF.Univalence
 

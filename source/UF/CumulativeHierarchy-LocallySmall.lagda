@@ -48,8 +48,8 @@ open import UF.Equiv-FunExt
 open import UF.Logic
 open import UF.Size
 open import UF.Subsingletons-FunExt
-open import UF.SubTypeClassifier
-open import UF.SubTypeClassifier-Properties
+open import UF.SubtypeClassifier
+open import UF.SubtypeClassifier-Properties
 
 open AllCombinators pt fe
 open PropositionalTruncation pt

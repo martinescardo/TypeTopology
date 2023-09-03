@@ -147,7 +147,7 @@ module Omega {𝓤} (pe : propext 𝓤) where
  open import Ordinals.OrdinalOfTruthValues fe 𝓤 pe
  open import Ordinals.Notions
  open import UF.Subsingletons-FunExt
- open import UF.SubTypeClassifier
+ open import UF.SubtypeClassifier
 
  Ωᵒ : Ordinalᵀ (𝓤 ⁺)
  Ωᵒ = Ωₒ , ⊤ , h

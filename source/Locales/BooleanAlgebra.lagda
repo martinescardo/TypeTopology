@@ -16,7 +16,7 @@ open import UF.PropTrunc
 open import UF.PropTrunc
 open import UF.Sets
 open import UF.Size
-open import UF.SubTypeClassifier
+open import UF.SubtypeClassifier
 
 module Locales.BooleanAlgebra
         (pt : propositional-truncations-exist)

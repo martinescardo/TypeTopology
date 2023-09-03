@@ -23,8 +23,8 @@ open import UF.Equiv hiding (_≅_)
 open import UF.SIP
 open import UF.SIP-Examples
 open import UF.Sets
-open import UF.SubTypeClassifier hiding (Ω₀)
-open import UF.SubTypeClassifier-Properties
+open import UF.SubtypeClassifier hiding (Ω₀)
+open import UF.SubtypeClassifier-Properties
 open import UF.Subsingletons-FunExt
 open import UF.UA-FunExt
 open import UF.Univalence

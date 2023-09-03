@@ -54,7 +54,7 @@ open import Ordinals.Underlying
 
 open import UF.Base
 open import UF.ExcludedMiddle
-open import UF.SubTypeClassifier
+open import UF.SubtypeClassifier
 open import UF.Subsingletons-FunExt
 
 fe₀ : funext 𝓤₀ 𝓤₀

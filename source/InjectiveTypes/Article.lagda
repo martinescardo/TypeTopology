@@ -230,7 +230,7 @@ open import UF.Subsingletons-FunExt
 open import UF.UA-FunExt
 open import UF.UniverseEmbedding
 open import UF.Sets
-open import UF.SubTypeClassifier
+open import UF.SubtypeClassifier
 
 \end{code}
 

@@ -19,7 +19,7 @@ open import Ordinals.Notions
 open import Ordinals.Type
 open import Ordinals.Underlying
 open import Ordinals.WellOrderArithmetic
-open import UF.SubTypeClassifier
+open import UF.SubtypeClassifier
 open import UF.Subsingletons
 
 prop-ordinal : (P : 𝓤 ̇ ) → is-prop P → Ordinal 𝓤

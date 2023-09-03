@@ -24,8 +24,8 @@ open import UF.Lower-FunExt
 open import UF.Retracts
 open import UF.Sets
 open import UF.Size
-open import UF.SubTypeClassifier
-open import UF.SubTypeClassifier-Properties
+open import UF.SubtypeClassifier
+open import UF.SubtypeClassifier-Properties
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
@@ -74,15 +74,15 @@ Added 25 August 2023 by Martin Escardo from the former file UF.Miscelanea.
 \begin{code}
 
 open import UF.DiscreteAndSeparated
-open import UF.SubTypeClassifier
+open import UF.SubtypeClassifier
 
-is-decidable-is-¬¬-stable : {X : 𝓤 ̇ } → is-decidable X → ¬¬-stable X
-is-decidable-is-¬¬-stable (inl x) φ = x
-is-decidable-is-¬¬-stable (inr u) φ = unique-from-𝟘(φ u)
+decidable-types-are-¬¬-stable : {X : 𝓤 ̇ } → is-decidable X → ¬¬-stable X
+decidable-types-are-¬¬-stable (inl x) φ = x
+decidable-types-are-¬¬-stable (inr u) φ = unique-from-𝟘(φ u)
 
-¬¬-stable-is-collapsible : funext 𝓤 𝓤₀
-                         → {X : 𝓤 ̇ } → ¬¬-stable X → collapsible X
-¬¬-stable-is-collapsible {𝓤} fe {X} s = (f , g)
+¬¬-stable-types-are-collapsible : funext 𝓤 𝓤₀
+                                → {X : 𝓤 ̇ } → ¬¬-stable X → collapsible X
+¬¬-stable-types-are-collapsible {𝓤} fe {X} s = (f , g)
  where
   f : X → X
   f x = s(λ u → u x)
@@ -96,16 +96,16 @@ is-decidable-is-¬¬-stable (inr u) φ = unique-from-𝟘(φ u)
   g : (x y : X) → f x ＝ f y
   g x y = ap s (claim₁ x y)
 
-¬¬-separated-is-Id-collapsible : funext 𝓤 𝓤₀ → {X : 𝓤 ̇ }
-                               → is-¬¬-separated X
-                               → Id-collapsible X
-¬¬-separated-is-Id-collapsible fe s = ¬¬-stable-is-collapsible fe (s _ _)
+¬¬-separated-types-are-Id-collapsible : funext 𝓤 𝓤₀ → {X : 𝓤 ̇ }
+                                      → is-¬¬-separated X
+                                      → Id-collapsible X
+¬¬-separated-types-are-Id-collapsible fe s = ¬¬-stable-types-are-collapsible fe (s _ _)
 
 ¬¬-separated-types-are-sets : funext 𝓤 𝓤₀ → {X : 𝓤 ̇ }
                             → is-¬¬-separated X
                             → is-set X
 ¬¬-separated-types-are-sets fe s =
- Id-collapsibles-are-sets (¬¬-separated-is-Id-collapsible fe s)
+ Id-collapsibles-are-sets (¬¬-separated-types-are-Id-collapsible fe s)
 
 being-¬¬-separated-is-prop : funext 𝓤 𝓤
                            → {X : 𝓤 ̇ }

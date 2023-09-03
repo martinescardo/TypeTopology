@@ -25,7 +25,7 @@ open import Slice.Family
 open import UF.Hedberg
 open import UF.Logic
 open import UF.Sets
-open import UF.SubTypeClassifier
+open import UF.SubtypeClassifier
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 

@@ -16,7 +16,7 @@ open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.FunExt
 open import UF.Size
-open import UF.SubTypeClassifier
+open import UF.SubtypeClassifier
 open import UF.Subsingletons
 open import UF.UA-FunExt
 open import UF.Univalence

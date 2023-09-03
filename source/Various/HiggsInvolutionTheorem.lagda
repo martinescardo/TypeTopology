@@ -28,7 +28,7 @@ open import UF.Base
 open import UF.Subsingletons
 open import UF.FunExt
 open import UF.Subsingletons-FunExt
-open import UF.SubTypeClassifier renaming (Ω to Ω')
+open import UF.SubtypeClassifier renaming (Ω to Ω')
 
 \end{code}
 

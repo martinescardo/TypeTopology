@@ -12,7 +12,7 @@ open import UF.FunExt
 open import UF.PropTrunc
 open import UF.Sets
 open import UF.Subsingletons
-open import UF.SubTypeClassifier
+open import UF.SubtypeClassifier
 
 module Posets.PosetReflection
         (pt : propositional-truncations-exist)

@@ -34,8 +34,8 @@ open import UF.ImageAndSurjection pt
 open import UF.Powerset
 open import UF.Powerset-Fin pt
 open import UF.Subsingletons-FunExt
-open import UF.SubTypeClassifier
-open import UF.SubTypeClassifier-Properties
+open import UF.SubtypeClassifier
+open import UF.SubtypeClassifier-Properties
 
 open import Posets.Poset fe
 

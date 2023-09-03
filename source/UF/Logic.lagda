@@ -12,7 +12,7 @@ module UF.Logic where
 open import MLTT.Spartan
 open import UF.FunExt
 open import UF.PropTrunc
-open import UF.SubTypeClassifier
+open import UF.SubtypeClassifier
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 

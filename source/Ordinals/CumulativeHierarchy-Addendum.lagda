@@ -85,7 +85,7 @@ open import UF.ImageAndSurjection pt
 open import UF.Quotient hiding (is-prop-valued)
 open import UF.Sets
 open import UF.Size
-open import UF.SubTypeClassifier
+open import UF.SubtypeClassifier
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.UA-FunExt

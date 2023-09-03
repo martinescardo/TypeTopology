@@ -68,8 +68,8 @@ open PropositionalTruncation pt
 open import MLTT.Spartan
 open import UF.Base hiding (_≈_)
 open import UF.Sets
-open import UF.SubTypeClassifier
-open import UF.SubTypeClassifier-Properties
+open import UF.SubtypeClassifier
+open import UF.SubtypeClassifier-Properties
 open import UF.Subsingletons-FunExt
 open import UF.Subsingletons-Properties
 

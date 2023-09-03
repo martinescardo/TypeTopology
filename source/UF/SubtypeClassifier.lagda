@@ -1,13 +1,13 @@
 Martin Escardo
 
 The type of truth values and its basic notions and properties. More
-notions and properties are in UF.SubTypeClassifier-Properties.
+notions and properties are in UF.SubtypeClassifier-Properties.
 
 \begin{code}
 
 {-# OPTIONS --safe --without-K --exact-split #-}
 
-module UF.SubTypeClassifier where
+module UF.SubtypeClassifier where
 
 open import MLTT.Spartan
 open import UF.Subsingletons
@@ -56,21 +56,18 @@ from-Ω-＝ = ap _holds
 not : funext 𝓤 𝓤₀ → Ω 𝓤 → Ω 𝓤
 not fe (P , i) = (¬ P , negations-are-props fe)
 
-true-is-equal-⊤ : propext 𝓤
-                → funext 𝓤 𝓤
-                → (P : 𝓤 ̇ ) (i : is-prop P)
-                → P → (P , i) ＝ ⊤
-true-is-equal-⊤ pe fe P i p = to-Σ-＝ (holds-gives-equal-𝟙 pe P i p ,
-                                      being-prop-is-prop fe _ _)
+true-gives-equal-⊤ : propext 𝓤
+                   → funext 𝓤 𝓤
+                   → (P : 𝓤 ̇ ) (i : is-prop P)
+                   → P → (P , i) ＝ ⊤
+true-gives-equal-⊤ pe fe P i p = to-Σ-＝ (holds-gives-equal-𝟙 pe P i p ,
+                                 being-prop-is-prop fe _ _)
 
 holds-gives-equal-⊤ : propext 𝓤 → funext 𝓤 𝓤 → (p : Ω 𝓤) → p holds → p ＝ ⊤
-holds-gives-equal-⊤ pe fe (P , i) = true-is-equal-⊤ pe fe P i
-
-equal-⊤-holds : (p : Ω 𝓤) → p ＝ ⊤ → p holds
-equal-⊤-holds .⊤ refl = ⋆
+holds-gives-equal-⊤ pe fe (P , i) = true-gives-equal-⊤ pe fe P i
 
 equal-⊤-gives-holds : (p : Ω 𝓤) → p ＝ ⊤ → p holds
-equal-⊤-gives-holds p r = equal-𝟙-gives-holds (p holds) (ap pr₁ r)
+equal-⊤-gives-holds .⊤ refl = ⋆
 
 Ω-extensionality : funext 𝓤 𝓤
                  → propext 𝓤
@@ -99,20 +96,20 @@ equal-⊥-gives-not-equal-⊤ fe pe p r = γ
   γ : not fe p ＝ ⊤
   γ = to-subtype-＝ (λ _ → being-prop-is-prop fe) t
 
-false-is-equal-⊥ : propext 𝓤
-                 → funext 𝓤 𝓤
-                 → (P : 𝓤 ̇ ) (i : is-prop P)
-                 → ¬ P → (P , i) ＝ ⊥
-false-is-equal-⊥ pe fe P i f =
+false-gives-equal-⊥ : propext 𝓤
+                    → funext 𝓤 𝓤
+                    → (P : 𝓤 ̇ ) (i : is-prop P)
+                    → ¬ P → (P , i) ＝ ⊥
+false-gives-equal-⊥ pe fe P i f =
  to-Σ-＝
   (pe i 𝟘-is-prop (λ p → 𝟘-elim (f p)) 𝟘-elim ,
    being-prop-is-prop fe _ _)
 
 fails-gives-equal-⊥ : propext 𝓤 → funext 𝓤 𝓤 → (p : Ω 𝓤) → ¬ (p holds) → p ＝ ⊥
-fails-gives-equal-⊥ pe fe (P , i) = false-is-equal-⊥ pe fe P i
+fails-gives-equal-⊥ pe fe (P , i) = false-gives-equal-⊥ pe fe P i
 
-equal-⊥-fails : (p : Ω 𝓤) → p ＝ ⊥ → ¬ (p holds)
-equal-⊥-fails .⊥ refl = 𝟘-elim
+equal-⊥-gives-fails : (p : Ω 𝓤) → p ＝ ⊥ → ¬ (p holds)
+equal-⊥-gives-fails .⊥ refl = 𝟘-elim
 
 not-equal-⊤-gives-equal-⊥ : (fe : Fun-Ext)
                             (pe : propext 𝓤)
@@ -130,8 +127,8 @@ not-equal-⊤-gives-equal-⊥ fe pe p r = γ
   γ : p ＝ ⊥
   γ = to-subtype-＝ (λ _ → being-prop-is-prop fe) t
 
-equal-⊤-is-true : (P : 𝓤 ̇ ) (i : is-prop P) → (P , i) ＝ ⊤ → P
-equal-⊤-is-true P hp r = f ⋆
+equal-⊤-gives-true : (P : 𝓤 ̇ ) (i : is-prop P) → (P , i) ＝ ⊤ → P
+equal-⊤-gives-true P hp r = f ⋆
  where
   s : 𝟙 ＝ P
   s = (ap pr₁ r)⁻¹
@@ -149,10 +146,10 @@ equal-⊤-is-true P hp r = f ⋆
 Ω-ext pe fe {P , i} {Q , j} f g = III
  where
   I : P → Q
-  I x = equal-⊤-is-true Q j (f (true-is-equal-⊤ pe fe P i x))
+  I x = equal-⊤-gives-true Q j (f (true-gives-equal-⊤ pe fe P i x))
 
   II : Q → P
-  II y = equal-⊤-is-true P i (g (true-is-equal-⊤ pe fe Q j y))
+  II y = equal-⊤-gives-true P i (g (true-gives-equal-⊤ pe fe Q j y))
 
   III : P , i ＝ Q , j
   III = to-Σ-＝ (pe i j I II , being-prop-is-prop fe _ _ )

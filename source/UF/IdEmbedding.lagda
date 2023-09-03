@@ -61,8 +61,8 @@ open import UF.FunExt
 open import UF.LeftCancellable
 open import UF.Lower-FunExt
 open import UF.Sets
-open import UF.SubTypeClassifier
-open import UF.SubTypeClassifier-Properties
+open import UF.SubtypeClassifier
+open import UF.SubtypeClassifier-Properties
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.Univalence

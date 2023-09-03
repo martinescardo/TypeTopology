@@ -27,7 +27,7 @@ module Locales.UniversalPropertyOfPatch
        where
 
 open import UF.Logic
-open import UF.SubTypeClassifier
+open import UF.SubtypeClassifier
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
