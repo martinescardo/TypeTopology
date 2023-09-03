@@ -116,8 +116,10 @@ Fin-to-Ω-embedding-is-equiv-iff-2-and-EM {𝓤} fe pe 2 (e , e-is-embedding) =
      where
       p : Ω 𝓤
       p = (P , P-is-prop)
+
       I₁ : is-decidable (e⁻¹ p ＝ e⁻¹ ⊤)
       I₁ = Fin-is-discrete (e⁻¹ p) (e⁻¹ ⊤)
+
       I₂ : is-decidable (e⁻¹ p ＝ e⁻¹ ⊤) → is-decidable (p holds)
       I₂ = map-is-decidable
            (λ (r : e⁻¹ p ＝ e⁻¹ ⊤)
@@ -136,6 +138,7 @@ Fin-to-Ω-embedding-is-equiv-iff-2-and-EM {𝓤} fe pe 2 (e , e-is-embedding) =
         (e 𝟏 ＝⟨ holds-gives-equal-⊤ pe fe (e 𝟏) h₁ ⟩
          ⊤   ＝⟨ (holds-gives-equal-⊤ pe fe (e 𝟎) h₀)⁻¹ ⟩
          e 𝟎 ∎))
+
     II₁ : ¬ (e 𝟎 holds) → e 𝟏 holds
     II₁ ν₀ = ¬¬-elim (em (e 𝟏 holds) (holds-is-prop (e 𝟏))) II₂
      where
