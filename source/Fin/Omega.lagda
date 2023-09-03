@@ -196,3 +196,5 @@ Fin-to-Ω-embedding-is-equiv-iff-2-and-EM {𝓤} fe pe (succ (succ (succ k))) �
   I = finite-subsets-of-Ω-have-at-most-2-elements fe pe (succ (succ (succ k))) 𝕖
 
 \end{code}
+
+TODO. Refactor the above prove in smaller meaningful components.
