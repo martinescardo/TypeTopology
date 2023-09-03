@@ -197,4 +197,4 @@ Fin-to-Ω-embedding-is-equiv-iff-2-and-EM {𝓤} fe pe (succ (succ (succ k))) �
 
 \end{code}
 
-TODO. Refactor the above prove in smaller meaningful components.
+TODO. Refactor the above proof in smaller meaningful components.
