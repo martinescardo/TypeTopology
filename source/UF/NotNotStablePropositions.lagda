@@ -1,4 +1,4 @@
-By Tom de Jong in January 2022.
+By Tom de Jong in January 2022 with later additions by Martin Escardo
 
 \begin{code}
 
@@ -69,7 +69,7 @@ being-¬¬-stable-is-prop fe i = Π-is-prop fe (λ _ → i)
 TODO. The above can also be shown by first showing that Ω¬¬ 𝓤 is a
 retract of Ω 𝓤.
 
-Added 25 August 2023 by Martin Escardo.
+Added 25 August 2023 by Martin Escardo from the former file UF.Miscelanea.
 
 \begin{code}
 
@@ -233,5 +233,29 @@ module _ (fe : FunExt) (pe : PropExt) where
  𝟚-to-Ω¬¬-is-small-map : (𝟚-to-Ω¬¬ {𝓤}) is 𝓤 small-map
  𝟚-to-Ω¬¬-is-small-map (p , s) = (¬ (p holds) + p holds) ,
                                   ≃-sym (𝟚-to-Ω¬¬-fiber (p , s))
+
+\end{code}
+
+Added 3rd September 2023 by Martin Escardo.
+
+\begin{code}
+
+two-Ω¬¬-props-distinct-from-a-third-are-equal : funext 𝓤 𝓤
+                                              → propext 𝓤
+                                              → (𝕡₀ 𝕡₁ 𝕢 : Ω¬¬ 𝓤) → 𝕡₀ ≠ 𝕢 → 𝕡₁ ≠ 𝕢 → 𝕡₀ ＝ 𝕡₁
+two-Ω¬¬-props-distinct-from-a-third-are-equal fe pe 𝕡₀ 𝕡₁ 𝕢 ν₀ ν₁ = III
+ where
+  I : ¬ (Ω¬¬-to-Ω 𝕡₀ ≠ Ω¬¬-to-Ω 𝕡₁)
+  I = no-three-distinct-propositions' fe pe
+      (Ω¬¬-to-Ω 𝕡₀) (Ω¬¬-to-Ω 𝕡₁) (Ω¬¬-to-Ω 𝕢)
+      (λ e → ν₀ (to-Ω¬¬-＝ fe e))
+      λ e → ν₁ (to-Ω¬¬-＝ fe e)
+
+  II : ¬ (𝕡₀ ≠ 𝕡₁)
+  II = ¬¬-functor (embeddings-are-lc Ω¬¬-to-Ω (Ω¬¬-to-Ω-is-embedding fe)) I
+
+  III : 𝕡₀ ＝ 𝕡₁
+  III = Ω¬¬-is-¬¬-separated fe pe 𝕡₀ 𝕡₁ II
+
 
 \end{code}

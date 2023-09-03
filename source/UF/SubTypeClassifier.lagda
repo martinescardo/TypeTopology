@@ -240,3 +240,15 @@ The above function was added 19th March 2021.
 The above implies that if Fin n is embedded in Ω 𝓤, then n ≤ 2. That
 is, every finite subset of Ω has at most two elements. See the module
 Fin.lagda.
+
+Added 3rd September 2023.
+
+\begin{code}
+
+no-three-distinct-propositions' : funext 𝓤 𝓤
+                                → propext 𝓤
+                                → (p₀ p₁ q : Ω 𝓤) → p₀ ≠ q → p₁ ≠ q → ¬ (p₀ ≠ p₁)
+no-three-distinct-propositions' fe pe p₀ p₁ q ν₀ ν₁ ν =
+ no-three-distinct-propositions fe pe ((p₀ , q , p₁) , (ν₀ , ≠-sym ν₁ , ≠-sym ν))
+
+\end{code}

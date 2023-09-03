@@ -102,7 +102,7 @@ higgs f lc = VIII
 \end{code}
 
 Added 23 Jan 2021. From a group structure on Ω we get excluded middle,
-as an application of Higgs Theorem. This doesn't seems to be known in
+as an application of Higgs Theorem. This doesn't seem to be known in
 the topos theory community. I've written a blog post about this here:
 
 https://homotopytypetheory.org/2021/01/23/can-the-type-of-truth-values-be-given-the-structure-of-a-group/
