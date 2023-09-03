@@ -257,5 +257,4 @@ two-Ω¬¬-props-distinct-from-a-third-are-equal fe pe 𝕡₀ 𝕡₁ 𝕢 ν�
   III : 𝕡₀ ＝ 𝕡₁
   III = Ω¬¬-is-¬¬-separated fe pe 𝕡₀ 𝕡₁ II
 
-
 \end{code}
