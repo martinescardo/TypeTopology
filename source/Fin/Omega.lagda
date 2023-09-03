@@ -94,7 +94,7 @@ Fin-to-Ω-embedding-is-equiv-iff-2-and-EM {𝓤} fe pe 1 (e , _) = I , II
          ⊤                 ∎
 
   II : (1 ＝ 2) × EM 𝓤 → is-equiv e
-  II (p , _) = 𝟘-elim (zero-not-positive 0 (succ-lc p))
+  II (r , _) = 𝟘-elim (zero-not-positive 0 (succ-lc r))
 
 Fin-to-Ω-embedding-is-equiv-iff-2-and-EM {𝓤} fe pe 2 (e , e-is-embedding) =
  I , II
@@ -164,9 +164,9 @@ Fin-to-Ω-embedding-is-equiv-iff-2-and-EM {𝓤} fe pe 2 (e , e-is-embedding) =
        → e (s p d d') ＝ p
     η' p (inl h) (inl h₀) = to-Ω-＝ fe
                              (pe (holds-is-prop (e 𝟎))
-                             (holds-is-prop p)
-                             (λ _ → h)
-                             (λ _ → h₀))
+                                 (holds-is-prop p)
+                                 (λ _ → h)
+                                 (λ _ → h₀))
     η' p (inl h) (inr ν₀) = to-Ω-＝ fe
                              (pe (holds-is-prop (e 𝟏))
                                  (holds-is-prop p)
@@ -179,9 +179,9 @@ Fin-to-Ω-embedding-is-equiv-iff-2-and-EM {𝓤} fe pe 2 (e , e-is-embedding) =
                                  λ (h : p holds) → 𝟘-elim (ν h))
     η' p (inr ν) (inr ν₀) = to-Ω-＝ fe
                              (pe (holds-is-prop (e 𝟎))
-                             (holds-is-prop p)
-                             (λ (h₀ : e 𝟎 holds) → 𝟘-elim (ν₀ h₀))
-                             (λ (h : p holds) → 𝟘-elim (ν h)))
+                                 (holds-is-prop p)
+                                 (λ (h₀ : e 𝟎 holds) → 𝟘-elim (ν₀ h₀))
+                                 (λ (h : p holds) → 𝟘-elim (ν h)))
     η : e ∘ e⁻¹ ∼ id
     η p = η' p (em (p holds) (holds-is-prop p))
                (em (e 𝟎 holds) (holds-is-prop (e 𝟎)))
