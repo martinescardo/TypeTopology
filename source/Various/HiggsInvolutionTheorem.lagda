@@ -49,7 +49,8 @@ We work with Ω of universe 𝓤:
 
 \begin{code}
 
-Ω = Ω' 𝓤
+private
+ Ω = Ω' 𝓤
 
 \end{code}
 
