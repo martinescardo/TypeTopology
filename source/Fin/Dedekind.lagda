@@ -56,6 +56,6 @@ module _ (pt : propositional-truncations-exist) where
  wconnected-types-are-Dedekind-finite =
   CSB-for-connected-types-without-EM.wconnected-types-are-Dedekind-finite pt
 
-
-
 \end{code}
+
+TODO. Relate this to the other notions of finiteness.
