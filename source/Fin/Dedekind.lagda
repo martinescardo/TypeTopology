@@ -37,8 +37,8 @@ open import Various.HiggsInvolutionTheorem
 
 \end{code}
 
-Example. A weakly connected type (a type that is connected if it is
-inhabited), is Dedekind finite, so, for instance, the circle S¹ is
+Example. A weakly connected type (a type that is (1-)connected if it
+is inhabited), is Dedekind finite, so, for instance, the circle S¹ is
 Dedekind finite.
 
 \begin{code}
