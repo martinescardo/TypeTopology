@@ -28,7 +28,7 @@ with only your name as author.
 
 ## Root of the development
 
- * [source/index.lagda](source/index.lagda] (only `--safe` modules`).
+ * [source/index.lagda](source/index.lagda) (only `--safe` modules`).
 
  * [source/AllModulesIndex.lagda](source/AllModules.lagda) (including "unsafe" ones).
 
