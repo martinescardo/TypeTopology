@@ -30,7 +30,7 @@ with only your name as author.
 
  * [source/index.lagda](source/index.lagda) (only `--safe` modules`).
 
- * [source/AllModulesIndex.lagda](source/AllModules.lagda) (including "unsafe" ones).
+ * [source/AllModulesIndex.lagda](source/AllModulesIndex.lagda) (including "unsafe" ones).
 
  * Each subdirectory in [source/](source/) has its own index file.
 
