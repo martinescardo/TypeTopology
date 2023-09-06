@@ -64,6 +64,7 @@ import Iterative.Multisets-Addendum
 import Iterative.Sets-Addendum
 import Iterative.Ordinals
 import InjectiveTypes.MathematicalStructures
+import InjectiveTypes.Sigma
 
 \end{code}
 

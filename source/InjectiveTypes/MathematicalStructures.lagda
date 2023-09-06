@@ -306,10 +306,10 @@ equivalently formulated with T:
 
    σ-and-τ-agree : σ ∼ τ
    σ-and-τ-agree s =
-    σ s                                                       ＝⟨ refl ⟩
-    ((λ h → transport S (eqtoid (ua 𝓤) (Π A) (A h) (π h)) s)) ＝⟨ I ⟩
-    (λ h → T (π h) s)                                         ＝⟨ refl ⟩
-    τ s                                                       ∎
+    σ s                                                     ＝⟨ refl ⟩
+    (λ h → transport S (eqtoid (ua 𝓤) (Π A) (A h) (π h)) s) ＝⟨ I ⟩
+    (λ h → T (π h) s)                                       ＝⟨ refl ⟩
+    τ s                                                     ∎
     where
      I = dfunext fe' (λ h → (transport-eqtoid (π h) s)⁻¹)
 
@@ -461,8 +461,9 @@ such as the above, form injective types.
 
 \begin{code}
 
-variable
- 𝓥₁ 𝓥₂ : Universe
+private
+ variable
+  𝓥₁ 𝓥₂ : Universe
 
 closure-under-prop-Π-× :
       {S₁ : 𝓤 ̇ → 𝓥₁ ̇ } {S₂ : 𝓤 ̇ → 𝓥₂ ̇ }
