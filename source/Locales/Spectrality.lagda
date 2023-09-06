@@ -86,3 +86,13 @@ is-spectral {_} {_} {𝓦} X = ⦅𝟏⦆ ∧ ⦅𝟐⦆
           × (U ＝ ⋁[ 𝒪 X ] S)
 
 \end{code}
+
+Spectral locales are compact:
+
+\begin{code}
+
+spectral-locales-are-compact : (X : Locale 𝓤 𝓥 𝓦)
+                             → (is-spectral X ⇒ is-compact X) holds
+spectral-locales-are-compact X ((κ , _) , _) = κ
+
+\end{code}
