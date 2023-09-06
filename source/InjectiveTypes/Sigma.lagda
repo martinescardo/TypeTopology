@@ -15,7 +15,7 @@ including universe levels.
 For the moment I am not going to work any further with this (until I
 really need it).
 
-For motivation, the reader should check the file
+For motivation, the reader should check [1].
 
 Two big improvements here are that
 
