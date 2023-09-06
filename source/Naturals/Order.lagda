@@ -9,6 +9,7 @@ module Naturals.Order where
 open import MLTT.Spartan
 
 open import Naturals.Addition renaming (_+_ to _+'_)
+open import Naturals.AbsoluteDifference
 open import Naturals.Properties
 open import Notation.Order
 open import Ordinals.Notions
@@ -802,5 +803,76 @@ product-order-cancellable x (succ y) z l = γ
 
 less-than-pos-mult : (x y z : ℕ) → x < y → x < y * succ z
 less-than-pos-mult x y z l = <-+ x y (y * z) l
+
+\end{code}
+
+Lane Biocini 2023
+
+Here we define some order lemmas for the Absolute Difference operation and then
+prove the analog of the triangle inequality for the Natural Numbers under it.
+
+\begin{code}
+
+≤-diff : (x y : ℕ) → ∣ x - y ∣ ≤ x +' y
+≤-diff x zero = ≤-refl x
+≤-diff zero (succ y) = ≤-+' zero y
+≤-diff (succ x) (succ y) = γ
+  where
+    Γ : (x +' y) ≤ℕ (succ x +' y)
+    Γ = ≤-trans (x +' y) (succ (x +' y)) (succ x +' y)
+                (≤-succ (x +' y))
+                (equal-gives-less-than-or-equal (succ (x +' y)) (succ x +' y)
+                                                (succ-left x y ⁻¹))
+
+    γ : ∣ x - y ∣ ≤ℕ succ (succ x +' y)
+    γ = ≤-trans₂ ∣ x - y ∣ (x +' y) (succ x +' y) (succ (succ x +' y))
+                 (≤-diff x y) Γ (≤-succ (succ x +' y))
+
+≤-diff-minus : (x y : ℕ) → x ≤ y +' ∣ y - x ∣
+≤-diff-minus zero y = ⋆
+≤-diff-minus (succ x) zero = ≤-+' zero x
+≤-diff-minus (succ x) (succ y) = γ
+  where
+    Γ : x ≤ℕ (y +' ∣ y - x ∣)
+    Γ = ≤-diff-minus x y
+
+    γ : succ x ≤ℕ (succ y +' ∣ y - x ∣)
+    γ = ≤-trans (succ x) (succ (y +' ∣ y - x ∣)) (succ y +' ∣ y - x ∣)
+                 (succ-monotone x (y +' ∣ y - x ∣) Γ)
+                 (equal-gives-less-than-or-equal
+                   (succ (y +' ∣ y - x ∣)) (succ y +' ∣ y - x ∣)
+                   (succ-left y ∣ y - x ∣ ⁻¹))
+
+≤-diff-plus : (x y : ℕ) → x ≤ℕ (∣ x - y ∣ +' y)
+≤-diff-plus zero y = ⋆
+≤-diff-plus (succ x) zero = ≤-refl x
+≤-diff-plus (succ x) (succ y) = ≤-diff-plus x y
+
+triangle-inequality : (x y z : ℕ) → ∣ x - z ∣ ≤ ∣ x - y ∣ +' ∣ y - z ∣
+triangle-inequality zero y z =
+  ≤-trans₂ ∣ zero - z ∣ z (y +' ∣ y - z ∣) (∣ zero - y ∣ +' ∣ y - z ∣) Γ α γ
+    where
+      Γ : ∣ zero - z ∣ ≤ℕ z
+      Γ = equal-gives-less-than-or-equal ∣ zero - z ∣ z
+                                         (minus-nothing z)
+
+      α : z ≤ℕ (y +' ∣ y - z ∣)
+      α = ≤-diff-minus z y
+
+      β : y ≤ℕ ∣ zero - y ∣
+      β = equal-gives-less-than-or-equal y ∣ zero - y ∣ (minus-nothing y ⁻¹)
+
+      γ : (y +' ∣ y - z ∣) ≤ℕ (∣ zero - y ∣ +' ∣ y - z ∣)
+      γ = ≤-adding y ∣ zero - y ∣ ∣ y - z ∣ ∣ y - z ∣ β (≤-refl ∣ y - z ∣)
+triangle-inequality (succ x) zero zero = ≤-refl x
+triangle-inequality (succ x) zero (succ z) =
+  ≤-trans₂ ∣ x - z ∣ (x +' z) (succ (x +' z)) (succ (succ x +' z))
+           (≤-diff x z)
+           (≤-succ (x +' z))
+           (≤-trans (x +' z) (succ (x +' z)) (succ x +' z) (≤-succ (x +' z)) α )
+    where
+      α = equal-gives-less-than-or-equal (succ (x +' z)) (succ x +' z) (succ-left x z ⁻¹)
+triangle-inequality (succ x) (succ y) zero = ≤-diff-plus x y
+triangle-inequality (succ x) (succ y) (succ z) = triangle-inequality x y z
 
 \end{code}
