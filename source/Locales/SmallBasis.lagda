@@ -23,6 +23,7 @@ open import Locales.Spectrality pt fe
 open import Slice.Family
 open import UF.ImageAndSurjection pt
 open import UF.Equiv renaming (_■ to _𝒬ℰ𝒟)
+open import MLTT.List using (List; map; _<$>_; []; _∷_)
 
 open PropositionalTruncation pt
 
@@ -376,5 +377,40 @@ spectral-and-small-𝒦-gives-basis {𝓤} {𝓦} X 𝕤 (𝒦₀ , e) = (𝒦�
              α iₖ                    ≤⟨ ⋁[ 𝒪 X ]-upper ⁅ α j ∣ j ε 𝒥 ⁆ (iₖ , ϑ) ⟩
              ⋁[ 𝒪 X ] (fmap-syntax (λ j → α j) 𝒥) ■
 
+
+\end{code}
+
+\begin{code}
+
+directified-basis-gives-basis : (X : Locale 𝓤 𝓥 𝓦) (ℬ : Fam 𝓦 ⟨ 𝒪 X ⟩)
+                           → (forms-basis-for (𝒪 X) ℬ) holds
+                           → forms-basis-for (𝒪 X) (directify (𝒪 X) ℬ) holds
+directified-basis-gives-basis {_} {_} {𝓦} X ℬ β = β↑
+ where
+  open Joins (λ x y → x ≤[ poset-of (𝒪 X) ] y)
+
+  ℬ↑ = directify (𝒪 X) ℬ
+
+  β↑ : forms-basis-for (𝒪 X) (directify (𝒪 X) ℬ) holds
+  β↑ U = ∥∥-rec ∃-is-prop † (β U)
+   where
+    † : Σ ℐ ꞉ Fam 𝓦 (index ℬ) , (U is-lub-of ⁅ ℬ [ i ] ∣ i ε ℐ ⁆) holds
+      → (Ǝ 𝒥 ꞉ Fam 𝓦 (index ℬ↑) ,
+          (U is-lub-of ⁅ ℬ↑ [ j ] ∣ j ε 𝒥 ⁆) holds) holds
+    † (ℐ , φ@(φ₁ , φ₂)) = ∣ ℐ↑ , ψ ∣
+     where
+      ℐ↑ : Fam 𝓦 (index ℬ↑)
+      ℐ↑ = List (index ℐ) , map (ℐ [_])
+
+      ψ : (U is-lub-of ⁅ (ℬ↑ [ is ]) ∣ is ε ℐ↑ ⁆ ) holds
+      ψ = ψ₁ , ψ₂
+       where
+        ψ₁ : (U is-an-upper-bound-of ⁅ (ℬ↑ [ is ]) ∣ is ε ℐ↑ ⁆) holds
+        ψ₁ []       = 𝟎-is-bottom (𝒪 X) U
+        ψ₁ (i ∷ is) = ∨[ 𝒪 X ]-least (φ₁ i) (ψ₁ is)
+
+        ψ₂ : ((V , _) : upper-bound ⁅ (ℬ↑ [ is ]) ∣ is ε ℐ↑ ⁆)
+           → (U ≤[ poset-of (𝒪 X) ] V) holds
+        ψ₂ (V , ϑ₁) = {!!}
 
 \end{code}
