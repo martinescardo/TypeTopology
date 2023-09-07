@@ -213,7 +213,7 @@ Having a directed basis is a proposition under certain favourable conditions.
 basic-iso-to-𝒦 : (X : Locale 𝓤 𝓥 𝓦)
                → ((ℬ , b) : directed-basisᴰ (𝒪 X))
                → consists-of-compact-opens X ℬ holds
-               → (Σ B ꞉ ⟨ 𝒪 X ⟩ , is-basic X B (ℬ , b) holds) ≃ 𝒦 X
+               → image (ℬ [_]) ≃ 𝒦 X
 basic-iso-to-𝒦 X (ℬ , β) κ =
  image (ℬ [_])             ≃⟨ Ⅰ ⟩
  image (ℬ-compact X [_])   ≃⟨ Ⅱ ⟩
@@ -337,7 +337,7 @@ spectral-and-small-𝒦-gives-basis {𝓤} {𝓦} X 𝕤 (𝒦₀ , e) = (𝒦�
   sec = pr₁ e
 
   ret : 𝒦 X → 𝒦₀
-  ret = pr₁ (pr₂ (pr₂ e))
+  ret = pr₁ (pr₁ (pr₂ e))
 
   α : 𝒦₀ → ⟨ 𝒪 X ⟩
   α = pr₁ ∘ sec
@@ -356,19 +356,25 @@ spectral-and-small-𝒦-gives-basis {𝓤} {𝓦} X 𝕤 (𝒦₀ , e) = (𝒦�
      where
       ♣ : (K : ⟨ 𝒪 X ⟩)
         → (is-compact-open X K ⇒ K ≤[ poset-of (𝒪 X) ] U ⇒ K ≤[ poset-of (𝒪 X) ] V) holds
-      ♣ K κ p = K ≤⟨ c₀ ⟩ ⋁[ 𝒪 X ] ⁅ α j ∣ j ε 𝒥 ⁆ ≤⟨ {!!} ⟩ V ■
+      ♣ K κ p = K ≤⟨ c₀ ⟩ ⋁[ 𝒪 X ] ⁅ α j ∣ j ε 𝒥 ⁆ ≤⟨ ⋁[ 𝒪 X ]-least ⁅ α j ∣ j ε 𝒥 ⁆ (V , (λ i → ψ i)) ⟩ V ■
        where
         iₖ : 𝒦₀
-        iₖ = pr₁ (pr₂ (pr₂ e)) (K , κ)
+        iₖ = ret (K , κ)
 
-        tmp : {!!} ＝ {!!}
-        tmp = pr₂ (pr₂ (pr₂ e)) iₖ
+        tmp : sec (ret (K , κ)) ＝ (K , κ)
+        tmp = pr₂ (pr₁ (pr₂ e)) (K , κ)
 
         ϑ : (α iₖ ≤[ poset-of (𝒪 X) ] U) holds
-        ϑ = α iₖ ＝⟨ pr₁ (from-Σ-＝ {!!}) ⟩ₚ K ≤⟨ p ⟩ U ■
+        ϑ = α iₖ                    ＝⟨ refl ⟩ₚ
+            pr₁ (sec (ret (K , κ))) ＝⟨ ap pr₁ tmp ⟩ₚ
+            K                       ≤⟨ p ⟩
+            U                       ■
 
         c₀ : (K ≤[ poset-of (𝒪 X) ] (⋁[ 𝒪 X ] ⁅ α j ∣ j ε 𝒥 ⁆)) holds
-        c₀ = K ＝⟨ {!!} ⟩ₚ α iₖ ≤⟨ ⋁[ 𝒪 X ]-upper ⁅ α j ∣ j ε 𝒥 ⁆ (iₖ , ϑ) ⟩ ⋁[ 𝒪 X ] (fmap-syntax (λ j → α j) 𝒥) ■
+        c₀ = K                       ＝⟨ pr₁ (from-Σ-＝ tmp) ⁻¹ ⟩ₚ
+             pr₁ (sec (ret (K , κ))) ＝⟨ refl ⟩ₚ
+             α iₖ                    ≤⟨ ⋁[ 𝒪 X ]-upper ⁅ α j ∣ j ε 𝒥 ⁆ (iₖ , ϑ) ⟩
+             ⋁[ 𝒪 X ] (fmap-syntax (λ j → α j) 𝒥) ■
 
 
 \end{code}
