@@ -1,8 +1,15 @@
 Martin Escardo, 16th August 2023
 
-We give conditions for types of mathematical structures, such as
-pointed types, ∞-magmas, monoids, groups, etc. to be algebraically
-injective. We use algebraic flabbiness as our main tool.
+We give a sufficient condition for types of mathematical structures,
+such as pointed types, ∞-magmas, monoids, groups, etc. to be
+algebraically injective. We use algebraic flabbiness as our main tool.
+
+This file is subsumed by [1] and [2], but it is still important for
+both the sake of motivation and the fact that is includes useful
+discussion, which probably should be read before reading [1] and [2].
+
+[1] InjectiveTypes.Sigma
+[2] InjectiveTypes.MathematicalStructuresMoreGeneral
 
 \begin{code}
 
@@ -26,17 +33,13 @@ open import InjectiveTypes.Blackboard fe
 open import MLTT.Spartan
 open import Taboos.Decomposability ua
 open import UF.Base
-open import UF.Embeddings
 open import UF.Equiv
-open import UF.Equiv-FunExt
-open import UF.EquivalenceExamples
 open import UF.ExcludedMiddle
 open import UF.PropIndexedPiSigma
 open import UF.Sets
-open import UF.Size
-open import UF.SubtypeClassifier
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
+open import UF.SubtypeClassifier
 
 \end{code}
 
@@ -66,16 +69,6 @@ universes-are-aflabby-Σ {𝓤} P P-is-prop A = Σ A , I
   I : (p : P) → Σ A ＝ A p
   I = λ p → eqtoid (ua 𝓤) (Σ A) (A p) (prop-indexed-sum P-is-prop p)
 
-aflabbly-constant-Π : (p : Ω 𝓤) (X : 𝓤 ̇ )
-                    → aflabby-extension universes-are-aflabby-Π p (λ _ → X)
-                    ＝ (p holds → X)
-aflabbly-constant-Π p X = refl
-
-aflabbly-constant-Σ : (p : Ω 𝓤) (X : 𝓤 ̇ )
-                    → aflabby-extension universes-are-aflabby-Σ p (λ _ → X)
-                    ＝ (p holds × X)
-aflabbly-constant-Σ p X = refl
-
 \end{code}
 
 We now want to show that several types of mathematical structures are
@@ -87,12 +80,12 @@ flabby. E.g. for ∞-magmas, we will have S X = X → X → X.
 Let f : P → Σ S be a "partial element" where P is a proposition. Then
 f is of the form
 
- f h = A h , g h
+ f h = A h , B h
 
-with A : P → 𝓤 ̇ and g : (h : P) → S (A h).
+with A : P → 𝓤 ̇ and B : (h : P) → S (A h).
 
 We need to construct a (total) element (X , s) of Σ S, with s : S X ,
-such that for all h : P we have that (X , s) = (A h , g h).
+such that for all h : P we have that (X , s) = (A h , B h).
 
 This forces X = A h for any h : P. We have a fiberwise equivalence
 
@@ -112,12 +105,16 @@ products, in the sense that from an element of the type
 
 More precisely, we always have a map
 
- σ : S (Π A) → ((h : P) → S (A h))
+ ρ : S (Π A) → ((h : P) → S (A h))
 
 in the opposite direction, and we stipulate that it is an equivalence
 for any proposition P and any type family A of types indexed by P.
 
-With this assumption, we can let s be the inverse of σ applied to g.
+With this assumption, we can let the element s be the inverse of ρ
+applied to B.
+
+Remark. With regards to the discussion in the introduction of this
+file, it is actually enough to require that ρ is has a section.
 
 \begin{code}
 
@@ -138,7 +135,7 @@ mind:
 
 \end{code}
 
-We now define "canonical maps" π, ϕ and σ parametrized by a
+We now define "canonical maps" π, ϕ and ρ parametrized by a
 proposition p and family A indexed by p.
 
 \begin{code}
@@ -165,18 +162,18 @@ proposition p and family A indexed by p.
   ϕ : (h : p holds) → Π A ＝ A h
   ϕ h = eqtoid (ua 𝓤) (Π A) (A h) (π h)
 
-  σ : S (Π A) → ((h : p holds) → S (A h))
-  σ s h = treq (π h) s
+  ρ : S (Π A) → ((h : p holds) → S (A h))
+  ρ s h = treq (π h) s
 
-  remark-σ : (s : S (Π A)) (h : p holds)
-           → σ s h ＝ transport S (eqtoid (ua 𝓤) (Π A) (A h) (π h)) s
-  remark-σ s h = refl
+  remark-ρ : (s : S (Π A)) (h : p holds)
+           → ρ s h ＝ transport S (eqtoid (ua 𝓤) (Π A) (A h) (π h)) s
+  remark-ρ s h = refl
 
 \end{code}
 
 Our assumption on S is that the map
 
-  σ p A : S (Π A) → ((h : p holds) → S (A h))
+  ρ p A : S (Π A) → ((h : p holds) → S (A h))
 
 is an equivalence for every p and A.
 
@@ -185,20 +182,20 @@ is an equivalence for every p and A.
  closed-under-prop-Π : 𝓤 ⁺ ⊔ 𝓥 ̇
  closed-under-prop-Π = (p : Ω 𝓤)
                        (A : p holds → 𝓤 ̇)
-                     → is-equiv (σ p A)
+                     → is-equiv (ρ p A)
   where
    open canonical-map
 
 \end{code}
 
-And the main lemma, under this assumption, is that Σ S is algebraically
+And the main lemma, under this assumption, is that Ρ S is algebraically
 flabby with with respect to the universe 𝓤.
 
 \begin{code}
 
  aflabbiness-of-type-of-structured-types : closed-under-prop-Π
                                          → aflabby (Σ S) 𝓤
- aflabbiness-of-type-of-structured-types σ-is-equiv = I
+ aflabbiness-of-type-of-structured-types ρ-is-equiv = I
   where
    I : aflabby (Σ S) 𝓤
    I P P-is-prop f = (Π A , s) , II
@@ -215,7 +212,7 @@ flabby with with respect to the universe 𝓤.
      open canonical-map p A
 
      e : S (Π A) ≃ ((h : p holds) → S (A h))
-     e = σ , σ-is-equiv p A
+     e = ρ , ρ-is-equiv p A
 
      g : (h : P) → S (A h)
      g = pr₂ ∘ f
@@ -304,9 +301,9 @@ equivalently formulated with T:
    τ : S (Π A) → (h : p holds) → S (A h)
    τ s h = T (π h) s
 
-   σ-and-τ-agree : σ ∼ τ
-   σ-and-τ-agree s =
-    σ s                                                     ＝⟨ refl ⟩
+   ρ-and-τ-agree : ρ ∼ τ
+   ρ-and-τ-agree s =
+    ρ s                                                     ＝⟨ refl ⟩
     (λ h → transport S (eqtoid (ua 𝓤) (Π A) (A h) (π h)) s) ＝⟨ I ⟩
     (λ h → T (π h) s)                                       ＝⟨ refl ⟩
     τ s                                                     ∎
@@ -323,14 +320,14 @@ equivalently formulated with T:
   Π-closure-criterion : closed-under-prop-Π'
                       → closed-under-prop-Π
   Π-closure-criterion τ-is-equiv p A =
-   equiv-closed-under-∼ τ σ (τ-is-equiv p A) σ-and-τ-agree
+   equiv-closed-under-∼ τ ρ (τ-is-equiv p A) ρ-and-τ-agree
    where
     open canonical-map' p A
 
   Π-closure-criterion-converse : closed-under-prop-Π
                                → closed-under-prop-Π'
-  Π-closure-criterion-converse σ-is-equiv p A =
-   equiv-closed-under-∼ σ τ (σ-is-equiv p A) (∼-sym σ-and-τ-agree)
+  Π-closure-criterion-converse ρ-is-equiv p A =
+   equiv-closed-under-∼ ρ τ (ρ-is-equiv p A) (∼-sym ρ-and-τ-agree)
    where
     open canonical-map' p A
 
@@ -469,7 +466,7 @@ closure-under-prop-Π-× :
     → closed-under-prop-Π (λ X → S₁ X × S₂ X)
 
 closure-under-prop-Π-× {𝓤} {𝓥₁} {𝓥₂} {S₁} {S₂}
-                       σ₁-is-equiv σ₂-is-equiv = σ-is-equiv
+                       ρ₁-is-equiv ρ₂-is-equiv = ρ-is-equiv
  where
   S : 𝓤 ̇ → 𝓥₁ ⊔ 𝓥₂ ̇
   S X = S₁ X × S₂ X
@@ -478,56 +475,56 @@ closure-under-prop-Π-× {𝓤} {𝓥₁} {𝓥₂} {S₁} {S₂}
            (A : p holds → 𝓤 ̇)
          where
 
-   open canonical-map S  p A using (σ ; ϕ)
-   open canonical-map S₁ p A renaming (σ to σ₁) using ()
-   open canonical-map S₂ p A renaming (σ to σ₂) using ()
+   open canonical-map S  p A using (ρ ; ϕ)
+   open canonical-map S₁ p A renaming (ρ to ρ₁) using ()
+   open canonical-map S₂ p A renaming (ρ to ρ₂) using ()
 
-   σ₁⁻¹ : ((h : p holds) → S₁ (A h)) → S₁ (Π A)
-   σ₁⁻¹ = inverse σ₁ (σ₁-is-equiv p A)
+   ρ₁⁻¹ : ((h : p holds) → S₁ (A h)) → S₁ (Π A)
+   ρ₁⁻¹ = inverse ρ₁ (ρ₁-is-equiv p A)
 
-   σ₂⁻¹ : ((h : p holds) → S₂ (A h)) → S₂ (Π A)
-   σ₂⁻¹ = inverse σ₂ (σ₂-is-equiv p A)
+   ρ₂⁻¹ : ((h : p holds) → S₂ (A h)) → S₂ (Π A)
+   ρ₂⁻¹ = inverse ρ₂ (ρ₂-is-equiv p A)
 
-   σ⁻¹ : ((h : p holds) → S (A h)) → S (Π A)
-   σ⁻¹ α = σ₁⁻¹ (λ h → pr₁ (α h)) , σ₂⁻¹ (λ h → pr₂ (α h))
+   ρ⁻¹ : ((h : p holds) → S (A h)) → S (Π A)
+   ρ⁻¹ α = ρ₁⁻¹ (λ h → pr₁ (α h)) , ρ₂⁻¹ (λ h → pr₂ (α h))
 
-   η : σ⁻¹ ∘ σ ∼ id
+   η : ρ⁻¹ ∘ ρ ∼ id
    η (s₁ , s₂) =
-    σ⁻¹ (σ (s₁ , s₂))                                         ＝⟨ refl ⟩
-    σ⁻¹ (λ h → transport S (ϕ h) (s₁ , s₂))                   ＝⟨ I ⟩
-    σ⁻¹ (λ h → transport S₁ (ϕ h) s₁ , transport S₂ (ϕ h) s₂) ＝⟨ refl ⟩
-    σ₁⁻¹ (σ₁ s₁) , σ₂⁻¹ (σ₂ s₂)                               ＝⟨ II ⟩
+    ρ⁻¹ (ρ (s₁ , s₂))                                         ＝⟨ refl ⟩
+    ρ⁻¹ (λ h → transport S (ϕ h) (s₁ , s₂))                   ＝⟨ I ⟩
+    ρ⁻¹ (λ h → transport S₁ (ϕ h) s₁ , transport S₂ (ϕ h) s₂) ＝⟨ refl ⟩
+    ρ₁⁻¹ (ρ₁ s₁) , ρ₂⁻¹ (ρ₂ s₂)                               ＝⟨ II ⟩
     (s₁ , s₂)                                                 ∎
      where
-      I  = ap σ⁻¹ (dfunext fe' (λ h → transport-× S₁ S₂ (ϕ h)))
+      I  = ap ρ⁻¹ (dfunext fe' (λ h → transport-× S₁ S₂ (ϕ h)))
       II = ap₂ _,_
-              (inverses-are-retractions σ₁ (σ₁-is-equiv p A) s₁)
-              (inverses-are-retractions σ₂ (σ₂-is-equiv p A) s₂)
+              (inverses-are-retractions ρ₁ (ρ₁-is-equiv p A) s₁)
+              (inverses-are-retractions ρ₂ (ρ₂-is-equiv p A) s₂)
 
-   ε : σ ∘ σ⁻¹ ∼ id
+   ε : ρ ∘ ρ⁻¹ ∼ id
    ε α = dfunext fe' I
     where
      α₁ = λ h → pr₁ (α h)
      α₂ = λ h → pr₂ (α h)
 
-     I : σ (σ⁻¹ α) ∼ α
+     I : ρ (ρ⁻¹ α) ∼ α
      I h =
-      σ (σ⁻¹ α) h                                                 ＝⟨ refl ⟩
-      transport S (ϕ h) (σ₁⁻¹ α₁ , σ₂⁻¹ α₂)                       ＝⟨ II ⟩
-      transport S₁ (ϕ h) (σ₁⁻¹ α₁) , transport S₂ (ϕ h) (σ₂⁻¹ α₂) ＝⟨ refl ⟩
-      σ₁ (σ₁⁻¹ α₁) h , σ₂ (σ₂⁻¹ α₂) h                             ＝⟨ III ⟩
+      ρ (ρ⁻¹ α) h                                                 ＝⟨ refl ⟩
+      transport S (ϕ h) (ρ₁⁻¹ α₁ , ρ₂⁻¹ α₂)                       ＝⟨ II ⟩
+      transport S₁ (ϕ h) (ρ₁⁻¹ α₁) , transport S₂ (ϕ h) (ρ₂⁻¹ α₂) ＝⟨ refl ⟩
+      ρ₁ (ρ₁⁻¹ α₁) h , ρ₂ (ρ₂⁻¹ α₂) h                             ＝⟨ III ⟩
       α₁ h , α₂ h                                                 ＝⟨ refl ⟩
       α h                                                         ∎
        where
         II  = transport-× S₁ S₂ (ϕ h)
         III = ap₂ _,_
                  (ap (λ - → - h)
-                     (inverses-are-sections σ₁ (σ₁-is-equiv p A) α₁))
+                     (inverses-are-sections ρ₁ (ρ₁-is-equiv p A) α₁))
                  (ap (λ - → - h)
-                     (inverses-are-sections σ₂ (σ₂-is-equiv p A) α₂))
+                     (inverses-are-sections ρ₂ (ρ₂-is-equiv p A) α₂))
 
-   σ-is-equiv : is-equiv σ
-   σ-is-equiv = qinvs-are-equivs σ (σ⁻¹ , η , ε)
+   ρ-is-equiv : is-equiv ρ
+   ρ-is-equiv = qinvs-are-equivs ρ (ρ⁻¹ , η , ε)
 
 \end{code}
 
@@ -565,7 +562,7 @@ conclude that the type of monoids is injective.
 
 closure-under-prop-Π-with-axioms
  : (S : 𝓤 ̇ → 𝓥 ̇ )
-   (σ-is-equiv : closed-under-prop-Π S)
+   (ρ-is-equiv : closed-under-prop-Π S)
    (axioms : (X : 𝓤 ̇ ) → S X → 𝓦 ̇ )
    (axioms-are-prop-valued : (X : 𝓤 ̇) (s : S X) → is-prop (axioms X s))
    (axioms-closed-under-prop-Π :
@@ -573,14 +570,14 @@ closure-under-prop-Π-with-axioms
           (A : p holds → 𝓤 ̇ )
         → (α : (h : p holds) → S (A h))
         → ((h : p holds) → axioms (A h) (α h))
-        → axioms (Π A) (inverse (canonical-map.σ S p A) (σ-is-equiv p A) α))
+        → axioms (Π A) (inverse (canonical-map.ρ S p A) (ρ-is-equiv p A) α))
  → closed-under-prop-Π (λ X → Σ s ꞉ S X , axioms X s)
 closure-under-prop-Π-with-axioms {𝓤} {𝓥} {𝓦}
                                  S
-                                 σ-is-equiv
+                                 ρ-is-equiv
                                  axioms
                                  axioms-are-prop-valued
-                                 axioms-closed-under-prop-Π = σₐ-is-equiv
+                                 axioms-closed-under-prop-Π = ρₐ-is-equiv
    where
     Sₐ : 𝓤 ̇ → 𝓥 ⊔ 𝓦 ̇
     Sₐ X = Σ s ꞉ S X , axioms X s
@@ -589,55 +586,55 @@ closure-under-prop-Π-with-axioms {𝓤} {𝓥} {𝓦}
              (A : p holds → 𝓤 ̇)
            where
 
-     open canonical-map S  p A using (σ ; ϕ)
-     open canonical-map Sₐ p A renaming (σ to σₐ) using ()
+     open canonical-map S  p A using (ρ ; ϕ)
+     open canonical-map Sₐ p A renaming (ρ to ρₐ) using ()
 
-     σ⁻¹ : ((h : p holds) → S (A h)) → S (Π A)
-     σ⁻¹ = inverse σ (σ-is-equiv p A)
+     ρ⁻¹ : ((h : p holds) → S (A h)) → S (Π A)
+     ρ⁻¹ = inverse ρ (ρ-is-equiv p A)
 
-     σₐ⁻¹ : ((h : p holds) → Sₐ (A h)) → Sₐ (Π A)
-     σₐ⁻¹ α = σ⁻¹ (λ h → pr₁ (α h)) ,
+     ρₐ⁻¹ : ((h : p holds) → Sₐ (A h)) → Sₐ (Π A)
+     ρₐ⁻¹ α = ρ⁻¹ (λ h → pr₁ (α h)) ,
               axioms-closed-under-prop-Π p A
                (λ h → pr₁ (α h))
                (λ h → pr₂ (α h))
 
-     η : σₐ⁻¹ ∘ σₐ ∼ id
+     η : ρₐ⁻¹ ∘ ρₐ ∼ id
      η (s , a) =
-      σₐ⁻¹ (σₐ (s , a))                       ＝⟨ refl ⟩
-      σₐ⁻¹ (λ h → transport Sₐ (ϕ h) (s , a)) ＝⟨ I ⟩
-      σₐ⁻¹ (λ h → transport S (ϕ h) s , _)    ＝⟨ refl ⟩
-      (σ⁻¹ (λ h → transport S (ϕ h) s) , _)   ＝⟨ refl ⟩
-      (σ⁻¹ (σ s) , _)                         ＝⟨ II ⟩
+      ρₐ⁻¹ (ρₐ (s , a))                       ＝⟨ refl ⟩
+      ρₐ⁻¹ (λ h → transport Sₐ (ϕ h) (s , a)) ＝⟨ I ⟩
+      ρₐ⁻¹ (λ h → transport S (ϕ h) s , _)    ＝⟨ refl ⟩
+      (ρ⁻¹ (λ h → transport S (ϕ h) s) , _)   ＝⟨ refl ⟩
+      (ρ⁻¹ (ρ s) , _)                         ＝⟨ II ⟩
       (s , a)                                 ∎
        where
-        I = ap σₐ⁻¹ (dfunext fe' (λ h → transport-Σ S axioms (A h) (ϕ h) s))
+        I = ap ρₐ⁻¹ (dfunext fe' (λ h → transport-Σ S axioms (A h) (ϕ h) s))
         II = to-subtype-＝
               (axioms-are-prop-valued (Π A))
-              (inverses-are-retractions σ (σ-is-equiv p A) s)
+              (inverses-are-retractions ρ (ρ-is-equiv p A) s)
 
-     ε : σₐ ∘ σₐ⁻¹ ∼ id
+     ε : ρₐ ∘ ρₐ⁻¹ ∼ id
      ε α = dfunext fe' I
       where
        α₁ = λ h → pr₁ (α h)
        α₂ = λ h → pr₂ (α h)
 
-       I : σₐ (σₐ⁻¹ α) ∼ α
+       I : ρₐ (ρₐ⁻¹ α) ∼ α
        I h =
-        σₐ (σₐ⁻¹ α) h                    ＝⟨ refl ⟩
-        σₐ (σ⁻¹ α₁ , _) h                ＝⟨ refl ⟩
-        transport Sₐ (ϕ h) (σ⁻¹ α₁ , _)  ＝⟨ II ⟩
-        (transport S (ϕ h) (σ⁻¹ α₁) , _) ＝⟨ refl ⟩
-        (σ (σ⁻¹ α₁) h , _)               ＝⟨ III ⟩
+        ρₐ (ρₐ⁻¹ α) h                    ＝⟨ refl ⟩
+        ρₐ (ρ⁻¹ α₁ , _) h                ＝⟨ refl ⟩
+        transport Sₐ (ϕ h) (ρ⁻¹ α₁ , _)  ＝⟨ II ⟩
+        (transport S (ϕ h) (ρ⁻¹ α₁) , _) ＝⟨ refl ⟩
+        (ρ (ρ⁻¹ α₁) h , _)               ＝⟨ III ⟩
         (α₁ h , α₂ h)                    ＝⟨ refl ⟩
         α h                              ∎
          where
-          II  = transport-Σ S axioms (A h) (ϕ h) (σ⁻¹ α₁)
+          II  = transport-Σ S axioms (A h) (ϕ h) (ρ⁻¹ α₁)
           III = to-subtype-＝
                  (axioms-are-prop-valued (A h))
-                 (ap (λ - → - h) (inverses-are-sections σ (σ-is-equiv p A) α₁))
+                 (ap (λ - → - h) (inverses-are-sections ρ (ρ-is-equiv p A) α₁))
 
-     σₐ-is-equiv : is-equiv σₐ
-     σₐ-is-equiv = qinvs-are-equivs σₐ (σₐ⁻¹ , η , ε)
+     ρₐ-is-equiv : is-equiv ρₐ
+     ρₐ-is-equiv = qinvs-are-equivs ρₐ (ρₐ⁻¹ , η , ε)
 
 \end{code}
 
@@ -660,25 +657,25 @@ Monoid-is-closed-under-prop-Π {𝓤} = V
  where
   open canonical-map monoid-structure
 
-  σ⁻¹ : (p : Ω 𝓤) (A : p holds → 𝓤 ̇)
+  ρ⁻¹ : (p : Ω 𝓤) (A : p holds → 𝓤 ̇)
       → ((h : p holds) → monoid-structure (A h)) → monoid-structure (Π A)
-  σ⁻¹ p A = inverse (σ p A) (∞-Magma∙-structure-closed-under-Π p A)
+  ρ⁻¹ p A = inverse (ρ p A) (∞-Magma∙-structure-closed-under-Π p A)
 
   axioms-closed-under-prop-Π
     : (p : Ω 𝓤)
       (A : p holds → 𝓤 ̇)
       (α : (h : p holds) → monoid-structure (A h))
     → ((h : p holds) → monoid-axioms (A h) (α h))
-    → monoid-axioms (Π A) (σ⁻¹ p A α)
+    → monoid-axioms (Π A) (ρ⁻¹ p A α)
   axioms-closed-under-prop-Π p A α F = I , II , III , IV
    where
-    σ⁻¹-remark : (p : Ω 𝓤)
+    ρ⁻¹-remark : (p : Ω 𝓤)
                  (A : p holds → 𝓤 ̇)
                  (α : (h : p holds) → monoid-structure (A h))
-               → σ⁻¹ p A α
+               → ρ⁻¹ p A α
                ＝ (λ (f : Π A) (g : Π A) (h : p holds) → pr₁ (α h) (f h) (g h)) ,
                                                          (λ h → pr₂ (α h))
-    σ⁻¹-remark p A α = refl
+    ρ⁻¹-remark p A α = refl
 
     _·_ : Π A → Π A → Π A
     f · g = λ h → pr₁ (α h) (f h) (g h)
