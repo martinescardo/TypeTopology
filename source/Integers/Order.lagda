@@ -6,6 +6,7 @@ Andrew Sneap, 26th November 2021
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
 
+open import Naturals.AbsoluteDifference using (∣_-_∣)
 open import Naturals.Order
 open import Notation.Order
 open import UF.Base
@@ -786,3 +787,77 @@ Added by Todd
  = ℤ-bigger-or-equal-not-less y x y≤x x<y
 
 \end{code}
+
+Lane Biocini 2023
+
+A proof of the triangle inequality in the Integers using the Absolute Difference
+operation defined in the Naturals. We first define a convenience lemma.
+
+\begin{code}
+
+ℕ-order-respects-ℤ-order'' : (m n : ℕ) → m ≤ n → pos m ≤ pos n
+ℕ-order-respects-ℤ-order'' zero n l = ℤ-zero-least-pos n
+ℕ-order-respects-ℤ-order'' (succ m) n l = ℕ-order-respects-ℤ-order m n l
+
+triangle-inequality₀ : (x y : ℕ) → abs (pos x +pos y) ≤ℕ abs (pos x) ℕ+ abs (pos y)
+triangle-inequality₀ x y = transport (_≤ℕ x ℕ+ y) γ (≤-refl (x ℕ+ y))
+  where
+    γ : x ℕ+ y ＝ abs (pos x +pos y)
+    γ = x ℕ+ y ＝⟨ ap abs (distributivity-pos-addition x y) ⁻¹ ⟩
+        abs (pos x +pos y) ∎
+
+triangle-inequality₁ : (x y : ℕ) → abs (pos x +negsucc y) ≤ℕ succ (x ℕ+ y)
+triangle-inequality₁ x y = transport (_≤ℕ succ (x ℕ+ y)) γ Γ
+  where
+    Γ : ∣ x - succ y ∣ ≤ℕ succ (x ℕ+ y)
+    Γ = triangle-inequality x 0 (succ y)
+
+    γ : ∣ x - succ y ∣ ＝ abs (pos x +negsucc y)
+    γ = abs-pos-plus-negsucc x y ⁻¹
+
+triangle-inequality₂ : (x y : ℕ) → abs (negsucc x +pos y) ≤ℕ (succ x ℕ+ y)
+triangle-inequality₂ x y = transport₂ _≤ℕ_ I II (triangle-inequality₁ y x)
+  where
+    I : abs (pos y +negsucc x) ＝ abs (negsucc x +pos y)
+    I = ap abs (ℤ+-comm (pos y) (negsucc x))
+
+    II : succ (y ℕ+ x) ＝ succ x ℕ+ y
+    II = ap succ (addition-commutativity y x) ∙ succ-left x y ⁻¹
+
+triangle-inequality₃ : (x y : ℕ) → abs (negsucc x +negsucc y) ≤ℕ succ (succ x ℕ+ y)
+triangle-inequality₃ x y = transport (_≤ℕ succ (succ x ℕ+ y)) γ Γ
+  where
+  Γ : abs (pos (succ x) + pos (succ y)) ≤ℕ succ (succ x ℕ+ y)
+  Γ = triangle-inequality₀ (succ x) (succ y)
+
+  γ : abs (pos (succ x) + pos (succ y)) ＝ abs (negsucc x +negsucc y)
+  γ = abs (succℤ (pos (succ x) +pos y)) ＝⟨ i ⟩
+      abs (- succℤ (pos (succ x) +pos y)) ＝⟨ ii ⟩
+      abs (negsucc x +negsucc y) ∎
+    where
+      i = abs-removes-neg-sign (succℤ (pos (succ x) +pos y))
+      ii = ap abs (negation-dist (pos (succ x)) (pos (succ y))) ⁻¹
+
+ℤ-triangle-inequality : (x y : ℤ) → abs (x + y) ≤ℕ abs x ℕ+ abs y
+ℤ-triangle-inequality (pos x) (pos y) = triangle-inequality₀ x y
+ℤ-triangle-inequality (pos x) (negsucc y) = triangle-inequality₁ x y
+ℤ-triangle-inequality (negsucc x) (pos y) = triangle-inequality₂ x y
+ℤ-triangle-inequality (negsucc x) (negsucc y) = triangle-inequality₃ x y
+
+ℤ-triangle-inequality' : (x y : ℤ) → absℤ (x + y) ≤ℤ absℤ x + absℤ y
+ℤ-triangle-inequality' x y = transport₂ _≤ℤ_ I II Γ
+  where
+    Γ : pos (abs (x + y)) ≤ℤ pos (abs x ℕ+ abs y)
+    Γ = ℕ-order-respects-ℤ-order'' (abs (x + y)) (abs x ℕ+ abs y) (ℤ-triangle-inequality x y)
+
+    I : pos (abs (x + y)) ＝ absℤ (x + y)
+    I = pos-abs-is-absℤ (x + y)
+
+    II : pos (abs x ℕ+ abs y) ＝ absℤ x + absℤ y
+    II = pos (abs x ℕ+ abs y) ＝⟨ i ⟩
+         (pos (abs x) +pos abs y) ＝⟨ ii ⟩
+         absℤ x + absℤ y ∎
+       where
+         i = distributivity-pos-addition (abs x) (abs y) ⁻¹
+         ii : (pos (abs x) +pos abs y) ＝ absℤ x + absℤ y
+         ii = ap₂ (λ x y → x + y) (pos-abs-is-absℤ x) (pos-abs-is-absℤ y)
