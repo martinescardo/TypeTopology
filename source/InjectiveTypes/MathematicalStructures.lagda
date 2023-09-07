@@ -461,11 +461,8 @@ such as the above, form injective types.
 
 \begin{code}
 
-private
- variable
-  𝓥₁ 𝓥₂ : Universe
-
 closure-under-prop-Π-× :
+      {𝓤 𝓥₁ 𝓥₂ : Universe}
       {S₁ : 𝓤 ̇ → 𝓥₁ ̇ } {S₂ : 𝓤 ̇ → 𝓥₂ ̇ }
     → closed-under-prop-Π S₁
     → closed-under-prop-Π S₂
