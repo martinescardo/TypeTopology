@@ -14,6 +14,7 @@ open import UF.PropTrunc
 open import UF.FunExt
 open import MLTT.Spartan
 open import UF.Logic
+open import UF.SubtypeClassifier
 open import Slice.Family
 
 module Locales.WayBelow (pt : propositional-truncations-exist)
