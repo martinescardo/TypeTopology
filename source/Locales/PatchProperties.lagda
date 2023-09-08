@@ -16,6 +16,7 @@ open import UF.PropTrunc
 open import UF.SubtypeClassifier
 open import UF.UA-FunExt
 open import UF.Univalence
+open import UF.Size
 
 \end{code}
 
@@ -23,20 +24,26 @@ open import UF.Univalence
 
 module Locales.PatchProperties
         (pt : propositional-truncations-exist)
-        (fe : Fun-Ext) where
+        (fe : Fun-Ext)
+        (sr : Set-Replacement pt)
+         where
 
 open import UF.Subsingletons
 open import UF.Logic
 open import UF.Equiv using (_≃_; logically-equivalent-props-give-is-equiv)
-open import Locales.Frame pt fe hiding (is-directed)
+open import Locales.Frame pt fe
 open import Locales.AdjointFunctorTheoremForFrames pt fe
 
 open AllCombinators pt fe
 open PropositionalTruncation pt
 open import Locales.Nucleus pt fe
-open import Locales.CompactRegular pt fe
-open import Locales.PatchLocale pt fe
+--open import Locales.CompactRegular pt fe
+open import Locales.PatchLocale pt fe sr
 open import Locales.HeytingImplication pt fe
+open import Locales.Compactness pt fe
+open import Locales.CompactRegular pt fe using (∨-is-scott-continuous)
+open import Locales.Spectrality pt fe
+open import Locales.SmallBasis pt fe sr
 
 open Locale
 
@@ -46,7 +53,7 @@ open Locale
 
 \begin{code}
 
-module BasicProperties (X : Locale 𝓤 𝓥 𝓦) (σ : is-spectral (𝒪 X) holds) where
+module BasicProperties (X : Locale 𝓤 𝓥 𝓦) (σ : is-spectral X holds) where
 
  open PatchConstruction X σ renaming (Perfect-Nucleus to Perfect-Nucleus-on-X;
                                       Patch to Patch-of-X)
@@ -60,7 +67,7 @@ cofinal in the original family.
 \begin{code}
 
  directedness-lemma : (K : Fam 𝓦 Perfect-Nucleus-on-X)
-                    → is-directed (poset-of (𝒪 Patch-of-X)) K holds
+                    → is-directed (𝒪 Patch-of-X) K holds
                     → let
                        K₀ = ⁅ pr₁ k ∣ k ε K ⁆
                       in
@@ -111,7 +118,7 @@ cofinal in the original family.
 \begin{code}
 
  directed-joins-are-computed-pointwise : (K : Fam 𝓦 Perfect-Nucleus-on-X)
-                                       → is-directed (poset-of (𝒪 Patch-of-X)) K holds
+                                       → is-directed (𝒪 Patch-of-X) K holds
                                        → (U : ⟨ 𝒪 X ⟩)
                                        → (⋁[ 𝒪 Patch-of-X ] K) $ U ＝ ⋁[ 𝒪 X ] ⁅ k $ U ∣ k ε K ⁆
  directed-joins-are-computed-pointwise K δ U =
@@ -143,7 +150,7 @@ cofinal in the original family.
 
 \begin{code}
 
-module ClosedNucleus (X : Locale 𝓤 𝓥 𝓦) (σ : is-spectral (𝒪 X) holds) where
+module ClosedNucleus (X : Locale 𝓤 𝓥 𝓦) (σ : is-spectral X holds) where
 
  open PatchConstruction X σ renaming (Perfect-Nucleus to Perfect-Nucleus-on-X)
 
@@ -154,15 +161,19 @@ module ClosedNucleus (X : Locale 𝓤 𝓥 𝓦) (σ : is-spectral (𝒪 X) hold
 
 \begin{code}
 
-module OpenNucleus (X : Locale 𝓤 𝓥 𝓥) (σ : is-spectral (𝒪 X) holds) where
+module OpenNucleus (X  : Locale 𝓤 𝓥 𝓥)
+                   (σ  : is-spectral X holds)
+                   (sk : 𝒦 X is 𝓥 small) where
 
  open PatchConstruction X σ renaming (Perfect-Nucleus to Perfect-Nucleus-on-X)
 
- X-has-small-basis : has-basis (𝒪 X) holds
- X-has-small-basis = spectral-frames-have-bases (𝒪 X) σ
+ X-spectralᴰ : spectralᴰ X
+ X-spectralᴰ = {!spectral-and-small-𝒦-gives-spectrality X σ sk!}
 
- 𝒦 : 𝓤 ⊔ 𝓥 ⁺ ̇
- 𝒦 = Σ K ꞉ ⟨ 𝒪 X ⟩ , is-compact-open (𝒪 X) K holds
+ X-has-small-basis : ∥ basisᴰ (𝒪 X) ∥
+ X-has-small-basis = ∣ spectralᴰ-implies-basisᴰ X {!X-basisᴰ!} ∣
+
+{--
 
  open HeytingImplicationConstruction X X-has-small-basis
 
@@ -1518,5 +1529,7 @@ module IgorsLemma (X Y : Locale (𝓤 ⁺) 𝓤 𝓤) (𝒷 : has-basis (𝒪 Y)
               (∨[ 𝒪 Y ]-upper₁ U (V ∧[ 𝒪 Y ] U)))
        𝕖 = ♣
        𝕗 = ap (λ - → W ∨[ 𝒪 X ] (f ⋆∙ -)) (∧[ 𝒪 Y ]-is-commutative V U)
+
+--}
 
 \end{code}
