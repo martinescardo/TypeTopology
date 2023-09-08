@@ -20,7 +20,7 @@ open import DomainTheory.Basics.Exponential pt fe 𝓤₀
 open import DomainTheory.Basics.Pointed pt fe 𝓤₀
 open import DomainTheory.Lifting.LiftingSet pt fe 𝓤₀ pe
 open import PCF.Lambda.AbstractSyntax pt
-open import UF.Miscelanea
+open import UF.DiscreteAndSeparated
 
 ℕ⊥ : DCPO⊥
 ℕ⊥ = 𝓛-DCPO⊥ ℕ-is-set

@@ -9,19 +9,17 @@ history dependent game.
 
 module Games.TicTacToe0 where
 
-open import TypeTopology.CompactTypes
-open import TypeTopology.DiscreteAndSeparated
-open import TypeTopology.SigmaDiscreteAndTotallySeparated
-
-open import MLTT.Spartan hiding (J)
-open import MLTT.Athenian
-open import Fin.Type
-open import Fin.Topology
 open import Fin.ArgMinMax
-
-open import Games.TypeTrees
+open import Fin.Topology
+open import Fin.Type
 open import Games.J
 open import Games.K
+open import Games.TypeTrees
+open import MLTT.Athenian
+open import MLTT.Spartan hiding (J)
+open import TypeTopology.CompactTypes
+open import TypeTopology.SigmaDiscreteAndTotallySeparated
+open import UF.DiscreteAndSeparated
 
 \end{code}
 

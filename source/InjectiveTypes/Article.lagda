@@ -229,6 +229,8 @@ open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.UA-FunExt
 open import UF.UniverseEmbedding
+open import UF.Sets
+open import UF.SubtypeClassifier
 
 \end{code}
 
@@ -994,7 +996,7 @@ choice is based on the fact that we get more uniform proofs.
 
 \begin{code}
 
-open import UF.hlevels ua
+open import UF.HLevels ua
 
 ℍ-aflabby : (n : ℕ) → aflabby (Σ X ꞉ 𝓤 ̇ , X is-of-hlevel n) 𝓤
 ℍ-aflabby n = subuniverse-aflabby-Π

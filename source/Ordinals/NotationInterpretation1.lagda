@@ -129,11 +129,11 @@ open import Ordinals.Type
 open import Ordinals.Underlying
 open import TypeTopology.CompactTypes
 open import TypeTopology.Density
-open import TypeTopology.DiscreteAndSeparated
 open import TypeTopology.SigmaDiscreteAndTotallySeparated
 open import TypeTopology.SquashedCantor fe hiding (Κ)
 open import TypeTopology.SquashedSum fe
 open import TypeTopology.TotallySeparated
+open import UF.DiscreteAndSeparated
 open import UF.Embeddings
 open import UF.PairFun
 open import UF.Retracts

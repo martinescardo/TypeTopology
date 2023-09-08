@@ -4,17 +4,17 @@
 
 module Naturals.index where
 
-import Naturals.Sequence
 import Naturals.Addition
 import Naturals.Binary
+import Naturals.Division
+import Naturals.Exponentiation
+import Naturals.HCF
+import Naturals.Multiplication
 import Naturals.Order
+import Naturals.Parity
 import Naturals.Properties
 import Naturals.RootsTruncation
+import Naturals.Sequence
 import Naturals.UniversalProperty
-import Naturals.Division
-import Naturals.Multiplication
-import Naturals.HCF
-import Naturals.Parity
-import Naturals.Exponentiation
 
 \end{code}

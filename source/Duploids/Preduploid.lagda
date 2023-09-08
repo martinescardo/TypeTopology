@@ -21,10 +21,11 @@ open PropositionalTruncation pt
 open import MLTT.Spartan
 open import UF.Base
 open import UF.Equiv
+open import UF.HLevels
 open import UF.Retracts
-open import UF.hlevels
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
+open import UF.Subsingletons-Properties
 
 open import Categories.Category fe
 open import Duploids.DeductiveSystem fe

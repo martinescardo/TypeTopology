@@ -15,8 +15,8 @@ module W.Numbers where
 
 open import Fin.Type hiding (suc)
 open import NotionsOfDecidability.Decidable
-open import TypeTopology.DiscreteAndSeparated
 open import UF.Base
+open import UF.DiscreteAndSeparated
 open import UF.Embeddings
 open import UF.Equiv
 open import UF.EquivalenceExamples
@@ -25,7 +25,10 @@ open import UF.FunExt
 open import UF.PropIndexedPiSigma
 open import UF.PropTrunc
 open import UF.Retracts
-open import UF.Subsingletons renaming (⊥Ω to ⊥ ; ⊤Ω to ⊤)
+open import UF.Sets
+open import UF.SubtypeClassifier
+open import UF.SubtypeClassifier-Properties
+open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import W.Properties
 open import W.Type
@@ -133,10 +136,10 @@ successor function amounts to the ordinary successor function.
  being-positive-is-prop n = holds-is-prop (positive n)
 
  Succ-is-positive : (n : 𝓝) → is-positive (Succ n)
- Succ-is-positive n = ⊤Ω-holds
+ Succ-is-positive n = ⊤-holds
 
  Zero-is-not-positive : ¬ is-positive Zero
- Zero-is-not-positive = ⊥Ω-doesnt-hold
+ Zero-is-not-positive = ⊥-doesnt-hold
 
  Succ-is-not-Zero : (n : 𝓝) → Succ n ≠ Zero
  Succ-is-not-Zero n e = Zero-is-not-positive
@@ -226,7 +229,7 @@ We now assume functional and propositional extensionality.
         n                         ∎
      where
       II = to-𝓝-＝
-            (((true-is-equal-⊤ pe fe
+            (((true-gives-equal-⊤ pe fe
                 (is-positive n)
                 (being-positive-is-prop n)
                 pos)⁻¹) ,
@@ -479,5 +482,5 @@ LEM (𝓥 ⁺).
 
 \end{code}
 
-TODO. Show that 𝓝 the the structure of an ordinal. This requires more
+TODO. Show that 𝓝 has the structure of an ordinal. This requires more
 work.

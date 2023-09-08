@@ -109,9 +109,46 @@ disagreement-taboo p q f g = basic-discontinuity-taboo r (r-lemma , r-lemma∞)
   r-lemma∞ : r ∞ ＝ ₁
   r-lemma∞ = Lemma[b≠c→b⊕c＝₁] g
 
-open import TypeTopology.DiscreteAndSeparated
+open import UF.DiscreteAndSeparated
 
 agreement-cotaboo :  ¬ WLPO → (p q : ℕ∞ → 𝟚) → ((n : ℕ) → p (ι n) ＝ q (ι n)) → p ∞ ＝ q ∞
-agreement-cotaboo φ p q f = 𝟚-is-¬¬-separated (p ∞) (q ∞) (contrapositive (disagreement-taboo p q f) φ)
+agreement-cotaboo φ p q f = 𝟚-is-¬¬-separated (p ∞) (q ∞)
+                             (contrapositive (disagreement-taboo p q f) φ)
+
+\end{code}
+
+Added 23rd August 2023. Variation.
+
+\begin{code}
+
+basic-discontinuity' : (ℕ∞ → ℕ∞) → 𝓤₀ ̇
+basic-discontinuity' f = ((n : ℕ) → f (ι n) ＝ ι 0) × (f ∞ ＝ ι 1)
+
+basic-discontinuity-taboo' : (f : ℕ∞ → ℕ∞) → basic-discontinuity' f → WLPO
+basic-discontinuity-taboo' f (f₀ , f₁) = VI
+ where
+  I : (u : ℕ∞) → f u ＝ ι 0 → u ≠ ∞
+  I u p q = Zero-not-Succ
+             (ι 0 ＝⟨ p ⁻¹ ⟩
+              f u ＝⟨ ap f q ⟩
+              f ∞ ＝⟨ f₁ ⟩
+              ι 1 ∎)
+
+  II : (u : ℕ∞) → f u ≠ ι 0 → u ＝ ∞
+  II u ν = not-finite-is-∞ (fe _ _) III
+   where
+    III : (n : ℕ) → u ≠ ι n
+    III n refl = V IV
+     where
+      IV : f (ι n) ＝ ι 0
+      IV = f₀ n
+
+      V : f (ι n) ≠ ι 0
+      V = ν
+
+  VI : WLPO
+  VI u = Cases (finite-isolated (fe _ _) 0 (f u))
+          (λ (p : ι 0 ＝ f u) → inr (I u (p ⁻¹)))
+          (λ (ν : ι 0 ≠ f u) → inl (II u (≠-sym ν)))
 
 \end{code}

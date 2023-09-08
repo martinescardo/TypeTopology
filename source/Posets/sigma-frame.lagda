@@ -29,12 +29,13 @@ open import UF.Subsingletons
 module Posets.sigma-frame (fe : Fun-Ext) where
 
 open import UF.Base
+open import UF.Equiv hiding (_≅_)
 open import UF.SIP
 open import UF.SIP-Examples
-open import UF.Equiv hiding (_≅_)
-open import UF.Univalence
+open import UF.Sets
 open import UF.Subsingletons-FunExt
 open import UF.UA-FunExt
+open import UF.Univalence
 
 σ-frame-structure : 𝓤 ̇ → 𝓤 ̇
 σ-frame-structure X = X × (X → X → X) × X × ((ℕ → X) → X)

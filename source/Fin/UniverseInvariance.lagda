@@ -19,7 +19,7 @@ open import UF.EquivalenceExamples
 open import UF.FunExt
 open import UF.PairFun
 open import UF.PropTrunc
-open import UF.Subsingletons renaming (⊤Ω to ⊤)
+open import UF.Subsingletons
 open import UF.UA-FunExt
 open import UF.Univalence
 open import UF.UniverseEmbedding

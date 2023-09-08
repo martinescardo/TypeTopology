@@ -21,12 +21,13 @@ open import UF.Univalence
 
 module UF.Groupoids where
 
-open import UF.FunExt
-open import UF.UA-FunExt
-open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
 open import UF.Equiv
 open import UF.EquivalenceExamples
+open import UF.FunExt
+open import UF.Sets
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
+open import UF.UA-FunExt
 
 is-groupoid : 𝓤 ̇ → 𝓤 ̇
 is-groupoid X = {x y : X} → is-set (x ＝ y)
@@ -42,7 +43,7 @@ UF.hlevels uses global univalence.
 
 module hleveltwo (ua : Univalence)  where
 
-  open import UF.hlevels ua
+  open import UF.HLevels ua
 
   private
     fe : funext 𝓤 𝓤

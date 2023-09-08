@@ -26,10 +26,10 @@ open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.Retracts
 open import UF.Equiv
-open import UF.Miscelanea
 open import UF.FunExt
 open import UF.Size
 open import Various.LawvereFPT
+open import UF.SubtypeClassifier
 
 open retract-version
 

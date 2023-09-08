@@ -14,18 +14,20 @@ relation coinciding with the binary meet order.
 
 open import MLTT.Spartan
 open import UF.FunExt
-open import UF.Subsingletons hiding (Ω₀)
+open import UF.Subsingletons
 
 module Posets.Frame (fe : Fun-Ext) where
 
 open import UF.Base
+open import UF.Equiv hiding (_≅_)
 open import UF.SIP
 open import UF.SIP-Examples
-open import UF.Equiv hiding (_≅_)
-open import UF.Univalence
+open import UF.Sets
+open import UF.SubtypeClassifier hiding (Ω₀)
+open import UF.SubtypeClassifier-Properties
 open import UF.Subsingletons-FunExt
 open import UF.UA-FunExt
-
+open import UF.Univalence
 
 module _ (𝓤 𝓥 : Universe) where
 
@@ -146,7 +148,7 @@ module _ (pe : Prop-Ext)
 
  Ω-qua-frame : ∀ 𝓤 𝓥 → Frame ((𝓤 ⊔ 𝓥)⁺) 𝓤
  Ω-qua-frame 𝓤 𝓥 = Ω₀ ,
-                   (⊤Ω , _∧Ω_ , ⋁Ω) ,
+                   (⊤ , _∧Ω_ , ⋁Ω) ,
                    Ω-is-set fe pe ,
                    ∧-is-idempotent ,
                    ∧-is-commutative ,
@@ -193,7 +195,7 @@ module _ (pe : Prop-Ext)
      γ : ((P × (Q × R)) , _) ＝ (((P × Q) × R) , _)
      γ = to-subtype-＝ (λ _ → being-prop-is-prop fe) r
 
-   ⊤-is-maximum : (𝕡 : Ω₀) → 𝕡 ≤Ω ⊤Ω
+   ⊤-is-maximum : (𝕡 : Ω₀) → 𝕡 ≤Ω ⊤
    ⊤-is-maximum (P , i) = γ
     where
      r : P × 𝟙 ＝ P

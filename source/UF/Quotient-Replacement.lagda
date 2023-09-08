@@ -20,6 +20,9 @@ replacement assumption (again, see UF.Size.lagda for details).
 
 open import UF.FunExt
 open import UF.PropTrunc
+open import UF.Sets
+open import UF.SubtypeClassifier
+open import UF.SubtypeClassifier-Properties
 open import UF.Subsingletons
 
 module UF.Quotient-Replacement
@@ -127,6 +130,16 @@ UF.Quotient.lagda.
                (equivs-are-qinvs ⌜ φ ⌝ (⌜⌝-is-equiv φ))))
        where
         open import UF.Equiv-FunExt using (qinv-pre)
+
+ η/ₛ-relates-identified-points : {x y : X} → η/ₛ x ＝ η/ₛ y → x ≈ y
+ η/ₛ-relates-identified-points {x} {y} eₛ = η/-relates-identified-points ≋ e
+  where
+   note : ⌜ φ ⌝⁻¹ (η/ ≋ x) ＝ ⌜ φ ⌝⁻¹ (η/ ≋ y)
+   note = eₛ
+   e = η/ ≋ x                   ＝⟨ (≃-sym-is-rinv φ (η/ ≋ x)) ⁻¹ ⟩
+       ⌜ φ ⌝ (⌜ φ ⌝⁻¹ (η/ ≋ x)) ＝⟨ ap ⌜ φ ⌝ note ⟩
+       ⌜ φ ⌝ (⌜ φ ⌝⁻¹ (η/ ≋ y)) ＝⟨ ≃-sym-is-rinv φ (η/ ≋ y) ⟩
+       η/ ≋ y                   ∎
 
 set-replacement-gives-set-quotients : Set-Replacement pt → set-quotients-exist
 set-replacement-gives-set-quotients R = record

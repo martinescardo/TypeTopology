@@ -10,14 +10,16 @@ July 1, 2021
 {-# OPTIONS --safe --without-K --exact-split #-}
 
 
+open import Groups.Type
 open import MLTT.Spartan
 open import MLTT.Unit-Properties
 open import UF.Base
-open import UF.Subsingletons
+open import UF.Embeddings
 open import UF.Equiv
 open import UF.Retracts
-open import UF.Embeddings
-open import Groups.Type
+open import UF.Sets
+open import UF.Subsingletons
+open import UF.Subsingletons-Properties
 
 \end{code}
 

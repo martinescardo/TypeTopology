@@ -22,10 +22,10 @@ open import UF.FunExt
 module TypeTopology.GenericConvergentSequenceCompactness (fe : funext 𝓤₀ 𝓤₀) where
 
 open import MLTT.Two-Properties
+open import UF.DiscreteAndSeparated
 open import UF.PropTrunc
 open import CoNaturals.GenericConvergentSequence
 open import Notation.CanonicalMap
-open import TypeTopology.DiscreteAndSeparated
 open import TypeTopology.CompactTypes
 
 \end{code}

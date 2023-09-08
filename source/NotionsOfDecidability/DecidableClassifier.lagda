@@ -16,6 +16,8 @@ open import MLTT.Spartan
 open import MLTT.Plus-Properties
 open import MLTT.Two-Properties
 open import UF.Subsingletons
+open import UF.SubtypeClassifier
+
 open import NotionsOfDecidability.Decidable
 open import NotionsOfDecidability.Complemented
 

@@ -21,10 +21,13 @@ module Locales.Frame
         (fe : Fun-Ext)
        where
 
-open import UF.Subsingletons
-open import UF.Logic
-open import UF.Subsingletons-FunExt
 open import Slice.Family
+open import UF.Hedberg
+open import UF.Logic
+open import UF.Sets
+open import UF.SubtypeClassifier
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
 
 open AllCombinators pt fe
 

@@ -30,13 +30,14 @@ open import Naturals.Properties
 
 open import UF.Base
 open import UF.Embeddings
+open import UF.Equiv
+open import UF.FunExt
+open import UF.Retracts
+open import UF.Sets
+open import UF.Size
+open import UF.SubtypeClassifier
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import UF.Retracts
-open import UF.Equiv
-open import UF.Miscelanea
-open import UF.FunExt
-open import UF.Size
 
 designated-fixed-point-property : 𝓤 ̇ → 𝓤 ̇
 designated-fixed-point-property X = (f : X → X) → Σ x ꞉ X , x ＝ f x
@@ -324,7 +325,7 @@ module Blechschmidt (pt : propositional-truncations-exist) where
 
  open PropositionalTruncation pt
  open import UF.ImageAndSurjection pt
- open import TypeTopology.DiscreteAndSeparated
+ open import UF.DiscreteAndSeparated
 
  Π-projection-has-section : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
                             (x₀ : X)
@@ -421,8 +422,8 @@ A variation, replacing discreteness by set-hood, at the cost of
 module Blechschmidt' (pt : propositional-truncations-exist) where
 
  open PropositionalTruncation pt
+ open import UF.DiscreteAndSeparated
  open import UF.ImageAndSurjection pt
- open import TypeTopology.DiscreteAndSeparated
 
  Π-projection-has-section : funext 𝓥 ((𝓤 ⊔ 𝓦)⁺)
                           → funext (𝓤 ⊔ 𝓦) (𝓤 ⊔ 𝓦)

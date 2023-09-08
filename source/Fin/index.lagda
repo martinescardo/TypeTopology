@@ -8,6 +8,7 @@ module Fin.index where
 
 import Fin.ArgMinMax
 import Fin.ArithmeticViaEquivalence
+import Fin.Dedekind
 import Fin.Bishop
 import Fin.Choice
 import Fin.Embeddings

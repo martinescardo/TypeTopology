@@ -38,7 +38,7 @@ module PCF.Combinatory.ScottModelOfPCF
 open PropositionalTruncation pt
 
 open import Naturals.Properties
-open import UF.Miscelanea
+open import UF.DiscreteAndSeparated
 
 open import PCF.Combinatory.PCF pt
 open import DomainTheory.Basics.Dcpo pt fe 𝓤₀

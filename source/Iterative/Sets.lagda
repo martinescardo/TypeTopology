@@ -23,8 +23,8 @@ open import MLTT.Spartan
 open import UF.Univalence
 
 module Iterative.Sets
-        (𝓤 : Universe)
         (ua : Univalence)
+        (𝓤 : Universe)
        where
 
 open import UF.FunExt
@@ -43,12 +43,13 @@ private
 open import Iterative.Multisets 𝓤
 open import Ordinals.Notions
 open import UF.Base
+open import UF.DiscreteAndSeparated
 open import UF.Embeddings
 open import UF.Equiv
 open import UF.EquivalenceExamples
-open import UF.Miscelanea
 open import UF.PairFun
 open import UF.Retracts
+open import UF.Sets
 open import UF.Size
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt

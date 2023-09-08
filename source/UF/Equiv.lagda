@@ -1,3 +1,7 @@
+Martin Escardo
+
+Notion of equivalence and its basic properties.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K --exact-split #-}
@@ -5,10 +9,12 @@
 module UF.Equiv where
 
 open import MLTT.Spartan
-open import UF.Base
-open import UF.Subsingletons
-open import UF.Retracts
 open import MLTT.Unit-Properties
+open import UF.Base
+open import UF.Retracts
+open import UF.Sets
+open import UF.Sets-Properties
+open import UF.Subsingletons
 
 \end{code}
 
@@ -320,22 +326,6 @@ transports-are-equivs refl = id-is-equiv _
 back-transports-are-equivs : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {x y : X} (p : x ＝ y)
                            → is-equiv (transport⁻¹ A p)
 back-transports-are-equivs p = transports-are-equivs (p ⁻¹)
-
-fiber : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → Y → 𝓤 ⊔ 𝓥 ̇
-fiber f y = Σ x ꞉ domain f , f x ＝ y
-
-fiber-point : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f : X → Y} {y : Y} → fiber f y → X
-fiber-point = pr₁
-
-fiber-identification : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f : X → Y} {y : Y} (w : fiber f y)
-                     → f (fiber-point w) ＝ y
-fiber-identification = pr₂
-
-each-fiber-of : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-              → (X → Y)
-              → (𝓤 ⊔ 𝓥 ̇ → 𝓦 ̇)
-              → 𝓥 ⊔ 𝓦 ̇
-each-fiber-of f P = ∀ y → P (fiber f y)
 
 is-vv-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 is-vv-equiv f = each-fiber-of f is-singleton

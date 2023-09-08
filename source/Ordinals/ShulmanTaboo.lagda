@@ -40,7 +40,7 @@ On 22/07/18 06:17, Michael Shulman wrote:
 open import MLTT.Spartan
 
 open import UF.FunExt
-open import UF.Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)
+open import UF.Subsingletons
 
 module Ordinals.ShulmanTaboo
        (fe : FunExt)
@@ -53,8 +53,9 @@ open import Ordinals.Notions
 open import Ordinals.Underlying
 
 open import UF.Base
-open import UF.Subsingletons-FunExt
 open import UF.ExcludedMiddle
+open import UF.SubtypeClassifier
+open import UF.Subsingletons-FunExt
 
 fe₀ : funext 𝓤₀ 𝓤₀
 fe₀ = fe 𝓤₀ 𝓤₀

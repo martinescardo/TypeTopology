@@ -13,8 +13,8 @@ open import MLTT.Spartan
 open import UF.Univalence
 
 module Iterative.Ordinals-Addendum
-        (𝓤 : Universe)
         (ua : Univalence)
+        {𝓤 : Universe}
        where
 
 open import UF.FunExt
@@ -39,8 +39,8 @@ add all we wanted to add, and clean-up when we finish.
 
 open import InjectiveTypes.Blackboard fe'
 open import Iterative.Multisets 𝓤
-open import Iterative.Ordinals 𝓤 ua
-open import Iterative.Sets 𝓤 ua
+open import Iterative.Ordinals ua 𝓤
+open import Iterative.Sets ua 𝓤
 open import Ordinals.Injectivity
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.Type hiding (Ord)

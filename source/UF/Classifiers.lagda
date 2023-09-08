@@ -26,14 +26,17 @@ open import MLTT.Spartan
 open import UF.Base
 open import UF.Embeddings
 open import UF.Equiv
-open import UF.Univalence
+open import UF.EquivalenceExamples
 open import UF.FunExt
-open import UF.UA-FunExt
+open import UF.Powerset hiding (𝕋)
+open import UF.Retracts
+open import UF.Sets
+open import UF.SubtypeClassifier
+open import UF.SubtypeClassifier-Properties
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import UF.Powerset hiding (𝕋)
-open import UF.EquivalenceExamples
-open import UF.Retracts
+open import UF.UA-FunExt
+open import UF.Univalence
 
 \end{code}
 

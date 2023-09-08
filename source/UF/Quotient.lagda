@@ -16,9 +16,14 @@ open import UF.Base hiding (_≈_)
 open import UF.Equiv
 open import UF.FunExt
 open import UF.PropTrunc
+open import UF.Sets
+open import UF.Sets-Properties
+open import UF.Size
+open import UF.SubtypeClassifier
+open import UF.SubtypeClassifier-Properties
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import UF.Size
+open import UF.Subsingletons-Properties
 
 is-prop-valued is-equiv-relation : {X : 𝓤 ̇ } → (X → X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
 is-prop-valued    _≈_ = ∀ x y → is-prop (x ≈ y)

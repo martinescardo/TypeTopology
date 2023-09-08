@@ -12,13 +12,13 @@ open import MLTT.Spartan
 open import UF.Univalence
 
 module Iterative.Sets-Addendum
-        (𝓤 : Universe)
         (ua : Univalence)
+        (𝓤 : Universe)
        where
 
 open import Iterative.Multisets 𝓤
-open import Iterative.Multisets-Addendum 𝓤 ua
-open import Iterative.Sets 𝓤 ua
+open import Iterative.Multisets-Addendum ua 𝓤
+open import Iterative.Sets ua 𝓤
 open import Taboos.Decomposability ua
 open import UF.ExcludedMiddle
 open import UF.FunExt
@@ -35,6 +35,15 @@ private
 
  fe' : FunExt
  fe' 𝓤 𝓥 = fe {𝓤} {𝓥}
+
+𝟘ⱽ : 𝕍
+𝟘ⱽ = 𝟘ᴹ , 𝟘ᴹ-is-iset
+
+𝟙ⱽ : 𝕍
+𝟙ⱽ = 𝟙ᴹ , 𝟙ᴹ-is-iset
+
+𝟘ⱽ-is-not-𝟙ⱽ : 𝟘ⱽ ≠ 𝟙ⱽ
+𝟘ⱽ-is-not-𝟙ⱽ p = 𝟘ᴹ-is-not-𝟙ᴹ (ap underlying-mset p)
 
 open import InjectiveTypes.Blackboard fe'
 

@@ -42,18 +42,19 @@ module UF.SIP-Examples where
 
 open import MLTT.Spartan
 open import Notation.Order
-
 open import UF.Base
-open import UF.SIP
-open import UF.Equiv hiding (_≅_)
-open import UF.Univalence
-open import UF.EquivalenceExamples
-open import UF.Subsingletons
 open import UF.Embeddings
-open import UF.Subsingletons-FunExt
+open import UF.Equiv hiding (_≅_)
+open import UF.EquivalenceExamples
 open import UF.FunExt
-open import UF.UA-FunExt
 open import UF.Retracts
+open import UF.SIP
+open import UF.Sets
+open import UF.Sets-Properties
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
+open import UF.UA-FunExt
+open import UF.Univalence
 open import UF.Yoneda
 
 module ∞-magma {𝓤 : Universe} where
