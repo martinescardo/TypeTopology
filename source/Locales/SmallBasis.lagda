@@ -462,14 +462,15 @@ basisₛ-covers-do-cover X σᴰ U = pr₁ (pr₂ (pr₁ (pr₂ σᴰ) U))
 
 basisₛ-is-directed-basis : (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ X)
                          → directed-basis-forᴰ (𝒪 X) (basisₛ X σᴰ)
-basisₛ-is-directed-basis X σᴰ U =
- cover-indexₛ X σᴰ U  , basisₛ-covers-do-cover X σᴰ U , (basisₛ-covers-are-directed X σᴰ U)
-  where
-   ℬ = basisₛ X σᴰ
+basisₛ-is-directed-basis X σᴰ U = cover-indexₛ X σᴰ U
+                                , basisₛ-covers-do-cover X σᴰ U
+                                , (basisₛ-covers-are-directed X σᴰ U)
+                                 where
+                                  ℬ = basisₛ X σᴰ
 
 basisₛ-contains-top : (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ X)
                     → contains-top (𝒪 X) (basisₛ X σᴰ) holds
-basisₛ-contains-top = {!!}
+basisₛ-contains-top X σᴰ = pr₁ (pr₂ (pr₂ (pr₂ σᴰ)))
 
 basisₛ-consists-of-compact-opens : (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ X)
                                  → consists-of-compact-opens X (basisₛ X σᴰ) holds
