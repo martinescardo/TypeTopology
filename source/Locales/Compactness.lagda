@@ -17,6 +17,7 @@ open import UF.Subsingletons
 open import UF.PropTrunc
 open import UF.FunExt
 open import MLTT.Spartan
+open import UF.SubtypeClassifier
 
 module Locales.Compactness (pt : propositional-truncations-exist)
                            (fe : Fun-Ext)                          where
