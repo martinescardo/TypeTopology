@@ -20,6 +20,7 @@ open import MLTT.List hiding ([_])
 open import MLTT.Pi
 open import Slice.Family
 open import UF.Subsingletons
+open import UF.SubtypeClassifier
 open import UF.Subsingletons-FunExt
 open import UF.Logic
 
