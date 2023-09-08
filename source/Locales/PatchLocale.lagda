@@ -918,7 +918,7 @@ module SmallPatchConstruction (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ X
  covers-are-directed′ = basisₛ-covers-are-directed X σᴰ
 
  X-is-spectral : is-spectral X holds
- X-is-spectral = {!!}
+ X-is-spectral = spectralᴰ-gives-spectrality X σᴰ
 
  open PatchConstruction X X-is-spectral renaming (Perfect-Nucleus
                                                    to Perfect-Nucleus-on-X)
@@ -940,8 +940,6 @@ module SmallPatchConstruction (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ X
  ≼-implies-≼ᵏ : (𝒿 𝓀 : Perfect-Nucleus-on-X) → (𝒿 ≼ 𝓀 ⇒ 𝒿 ≼ᵏ 𝓀) holds
  ≼-implies-≼ᵏ 𝒿 𝓀 p i = p (ℬ [ i ])
 
-{--
-
  ≼ᵏ-implies-≼ : (𝒿 𝓀 : Perfect-Nucleus-on-X) → (𝒿 ≼ᵏ 𝓀 ⇒ 𝒿 ≼ 𝓀) holds
  ≼ᵏ-implies-≼ 𝒿@(j , νⱼ , ζⱼ) 𝓀@(k , νₖ , ζₖ) p U =
   j U                                ＝⟨ i   ⟩ₚ
@@ -954,9 +952,9 @@ module SmallPatchConstruction (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ X
     open PosetReasoning (poset-of (𝒪 X))
 
     𝒥 : Fam 𝓦 (index ℬ)
-    𝒥 = covering-index-family (𝒪 X) ℬ (pr₁ (pr₁ (pr₂ σᴰ))) U
+    𝒥 = cover-indexₛ X σᴰ U
 
-    δ : is-directed (poset-of (𝒪 X)) ⁅ ℬ [ i ] ∣ i ε 𝒥 ⁆ holds
+    δ : is-directed (𝒪 X) ⁅ ℬ [ i ] ∣ i ε 𝒥 ⁆ holds
     δ = covers-are-directed′ U
 
     i   = ap j (covers (𝒪 X) ℬ ℬ-is-basis U)
@@ -1047,6 +1045,7 @@ module SmallPatchConstruction (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ X
                      , λ { (𝒿 , 𝒦) → distributivityₚ 𝒿 𝒦 }
                      }
 
+
  𝟎-is-id : 𝟎[ 𝒪 SmallPatch ] $_ ∼ id
  𝟎-is-id U = ≤-is-antisymmetric (poset-of (𝒪 X)) † ‡
   where
@@ -1061,7 +1060,5 @@ module SmallPatchConstruction (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ X
        𝟎[ 𝒪 SmallPatch ] $ U         ■
         where
          ※ = ⋁[ 𝒪 X ]-upper ⁅ α U ∣ α ε 𝔡𝔦𝔯 (∅ 𝓦) ⁆ []
-
---}
 
 \end{code}
