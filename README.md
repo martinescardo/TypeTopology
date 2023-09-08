@@ -49,6 +49,7 @@ Please add yourself the first time you contribute.
 * Igor Arrieta (iii)
 * Jon Sterling
 * Keri D'Angelo
+* Lane Biocini
 * Marc Bezem (i)
 * Martin Escardo
 * Nicolai Kraus
