@@ -21,7 +21,7 @@ that the following are equivalent:
 (1) 𝕀 is injective.
 (2) 𝕀 is a retract of 𝓤.
 (3) All propositions are projective:
-      (P : 𝓤 ̇  ) (Y : P → 𝓥 ̇  ) → is-prop P
+      (P : 𝓤 ̇  ) (Y : P → 𝓤 ̇  ) → is-prop P
                                 → ((p : P) → ∥ Y p ∥)
                                 → ∥ (p : P) → Y p ∥.
 (4) Every type has unspecified split support:
@@ -103,11 +103,11 @@ open import InjectiveTypes.Blackboard fe
 𝕀 : 𝓤 ⁺ ̇
 𝕀 = Σ X ꞉ 𝓤 ̇  , ∥ X ∥
 
-Propositions-Are-Projective : (𝓥 : Universe) → (𝓤 ⊔ 𝓥) ⁺ ̇
-Propositions-Are-Projective 𝓥 = (P : 𝓤 ̇  ) (Y : P → 𝓥 ̇  )
-                              → is-prop P
-                              → ((p : P) → ∥ Y p ∥)
-                              → ∥ ((p : P) → Y p) ∥
+Propositions-Are-Projective : 𝓤 ⁺ ̇
+Propositions-Are-Projective = (P : 𝓤 ̇  ) (Y : P → 𝓤 ̇  )
+                            → is-prop P
+                            → ((p : P) → ∥ Y p ∥)
+                            → ∥ ((p : P) → Y p) ∥
 
 Unspecified-Split-Support : 𝓤 ⁺ ̇
 Unspecified-Split-Support = (X : 𝓤 ̇  ) → ∥ (∥ X ∥ → X) ∥
