@@ -665,3 +665,31 @@ module Observation
    claim (inr u) = inr (λ p → u (a-s p))
 
 \end{code}
+
+Added Friday 8th September 2023.
+
+The axiom of propositional choice from
+https://doi.org/10.23638/LMCS-13(1:15)2017
+
+\begin{code}
+
+module Propositional-Choice
+        (pt : propositional-truncations-exist)
+        where
+
+ open PropositionalTruncation pt
+
+ PAC : {𝓤 𝓥 : Universe} → (𝓤 ⊔ 𝓥)⁺ ̇
+ PAC {𝓤} {𝓥} = (P : 𝓤 ̇ ) (Y : P → 𝓥 ̇ )
+              → is-set P
+              → (Π p ꞉ P , ∥ Y p ∥)
+              → ∥(Π p ꞉ P , Y p)∥
+
+\end{code}
+
+Notice that we don't require that this is a family of sets. Notice
+also that excluded middle implies PAC. For more information, see
+Theorem 7.7 of the above reference.
+
+TODO. Are these and more facts about this. Some of them can be adapted
+from this Agda file: https://www.cs.bham.ac.uk/~mhe/GeneralizedHedberg/html/GeneralizedHedberg.html
