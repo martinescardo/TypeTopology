@@ -5,6 +5,8 @@ will be broken down into smaller modules.
 
 \begin{code}[hide]
 
+{-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
+
 open import UF.PropTrunc
 open import UF.FunExt
 open import UF.Subsingletons
@@ -12,6 +14,7 @@ open import UF.Logic
 open import MLTT.Spartan
 open import UF.Size
 open import UF.Base
+open import UF.EquivalenceExamples using (Σ-assoc)
 
 module Locales.SmallBasis (pt : propositional-truncations-exist)
                           (fe : Fun-Ext)
@@ -403,8 +406,17 @@ spectral-and-small-𝒦-gives-directed-basis {_} {𝓦} X σ 𝕤 =
    ℬ↑ : Fam 𝓦 ⟨ 𝒪 X ⟩
    ℬ↑ = directify (𝒪 X) ℬ
 
+   β↑ : basis-forᴰ (𝒪 X) ℬ↑
+   β↑ = directified-basis-is-basis (𝒪 X) ℬ β
+
    ℬ↑-is-directed-basis-for-X : directed-basis-forᴰ (𝒪 X) ℬ↑
-   ℬ↑-is-directed-basis-for-X U = {!!}
+   ℬ↑-is-directed-basis-for-X U = pr₁ Σ-assoc (β↑ U , d)
+    where
+     𝒥 : Fam 𝓦 (index ℬ↑)
+     𝒥 = pr₁ (β↑ U)
+
+     d : is-directed (𝒪 X) ⁅ ℬ↑ [ j ] ∣ j ε 𝒥 ⁆ holds
+     d = covers-of-directified-basis-are-directed (𝒪 X) ℬ β U
 
 \end{code}
 
@@ -415,5 +427,46 @@ spectralᴰ {𝓤 = 𝓤} {𝓥} {𝓦} X =
  Σ ℬ ꞉ Fam 𝓦 ⟨ 𝒪 X ⟩ , directed-basis-forᴰ (𝒪 X) ℬ
                      × consists-of-compact-opens X ℬ holds
                      × closed-under-finite-meets (𝒪 X) ℬ holds
+
+basisₛ : (X : Locale 𝓤 𝓥 𝓦) → spectralᴰ X → Fam 𝓦 ⟨ 𝒪 X ⟩
+basisₛ {𝓤} {𝓥} {𝓦} X = pr₁
+
+basisₛ-is-basis : (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ X)
+                → basis-forᴰ (𝒪 X) (basisₛ X σᴰ)
+basisₛ-is-basis X σᴰ = directed-basis-is-basis (𝒪 X) (basisₛ X σᴰ) (pr₁ (pr₂ σᴰ))
+
+cover-indexₛ : (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ X)
+             → let
+                ℬ = basisₛ X σᴰ
+               in
+                ⟨ 𝒪 X ⟩ → Fam 𝓦 (index ℬ)
+cover-indexₛ X σᴰ U = pr₁ (basisₛ-is-basis X σᴰ U)
+
+basisₛ-covers-are-directed : (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ X) (U : ⟨ 𝒪 X ⟩)
+                           → let
+                              ℬ = basisₛ X σᴰ
+                              𝒥 = cover-indexₛ X σᴰ U
+                             in
+                              is-directed (𝒪 X) ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆ holds
+basisₛ-covers-are-directed X σᴰ U = pr₂ (pr₂ (pr₁ (pr₂ σᴰ) U))
+
+basisₛ-contains-top : {!!}
+basisₛ-contains-top = {!!}
+
+\end{code}
+
+Spectrality structure gives `is-spectral`.
+
+\begin{code}
+
+spectralᴰ-gives-spectrality : (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ X)
+                            → is-spectral X holds
+spectralᴰ-gives-spectrality X σᴰ = ⦅𝟏⦆ , {!!}
+ where
+  κ : is-compact X holds
+  κ = {!pr₁ (pr₂ (pr₂ (pr₂ σᴰ)))!}
+
+  ⦅𝟏⦆ : compacts-of-[ X ]-are-closed-under-finite-meets holds
+  ⦅𝟏⦆ = κ , {!!}
 
 \end{code}
