@@ -35,6 +35,9 @@ shown in [2].
 
 Also notice that (3) (and thus, (4)) follows from excluded middle.
 
+TODO: Explain how this gives an example of an injective Sigma-type whose index
+      type is not injective.
+
 
 References
 ──────────
