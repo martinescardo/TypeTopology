@@ -143,4 +143,32 @@ retract-gives-injectivity ret = retract-of-ainjective 𝕀 (𝓤 ̇ ) inj ret
   inj : ainjective-type (𝓤 ̇ ) 𝓤 𝓤
   inj = universes-are-ainjective-Π (ua 𝓤)
 
+flabbiness-gives-projective-propositions : aflabby 𝕀 𝓤
+                                         → Propositions-Are-Projective
+flabbiness-gives-projective-propositions ϕ P Y P-is-prop Y-inh = I
+ where
+  f : P → 𝕀
+  f p = (Y p , Y-inh p)
+  ext : Σ X ꞉ 𝕀 , ((p : P) → X ＝ f p)
+  ext = ϕ P P-is-prop f
+  X : 𝓤 ̇
+  X = pr₁ (pr₁ ext)
+  s : ∥ X ∥
+  s = pr₂ (pr₁ ext)
+  ext-property : (p : P) → (X , s) ＝ (Y p , Y-inh p)
+  ext-property = pr₂ ext
+  ext-property' : (p : P) → X ＝ Y p
+  ext-property' p = ap pr₁ (ext-property p)
+
+  II : X → (p : P) → Y p
+  II x p = idtofun X (Y p) (ext-property' p) x
+
+  I : ∥ ((p : P) → Y p) ∥
+  I = ∥∥-functor II s
+
+injectivity-gives-projective-propositions : ainjective-type 𝕀 𝓤 𝓤
+                                          → Propositions-Are-Projective
+injectivity-gives-projective-propositions inj =
+ flabbiness-gives-projective-propositions (ainjective-types-are-aflabby 𝕀 inj)
+
 \end{code}
