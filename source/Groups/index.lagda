@@ -6,7 +6,7 @@ module Groups.index where
 
 import Groups.Aut                          -- by Ettore Aldrovandi and Keri D'Angelo
 import Groups.Cokernel                     -- by Ettore Aldrovandi and Keri D'Angelo
-import Groups.Free                         -- by Bezem, Coquand, Dybjer and Escardo
+import Groups.FreeLarge                    -- by Bezem, Coquand, Dybjer and Escardo
 import Groups.FreeOverLargeLocallySmallSet -- by Bezem, Coquand, Dybjer and Escardo.
 import Groups.GroupActions                 -- by Ettore Aldrovandi and Keri D'Angelo
 import Groups.Homomorphisms                -- by Ettore Aldrovandi and Keri D'Angelo

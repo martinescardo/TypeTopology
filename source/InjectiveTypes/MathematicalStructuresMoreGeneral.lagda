@@ -425,7 +425,6 @@ Monoid-Π-condition {𝓤} =
     σ-remark : σ p A α ＝ (_·_ , e)
     σ-remark = refl
 
-
     I : is-set (Π A)
     I = Π-is-set fe' (λ h →
          case F h of
@@ -445,7 +444,6 @@ Monoid-Π-condition {𝓤} =
     IV f g k = dfunext fe' (λ h →
                 case F h of
                  λ (Ah-is-set , ln , rn , assoc) → assoc (f h) (g h) (k h))
-
 
 ainjectivity-of-Monoid : ainjective-type (Monoid {𝓤}) 𝓤 𝓤
 ainjectivity-of-Monoid {𝓤} =

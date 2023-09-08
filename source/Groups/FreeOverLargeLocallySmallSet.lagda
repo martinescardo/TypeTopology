@@ -64,7 +64,7 @@ module Groups.FreeOverLargeLocallySmallSet
         (pt : propositional-truncations-exist)
        where
 
-open import Groups.Free
+open import Groups.FreeLarge
 open import Groups.Type
 open import MLTT.List
 open import Relations.SRTclosure
