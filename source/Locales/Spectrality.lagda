@@ -75,15 +75,18 @@ We are now ready to define the notion of a spectral locale:
 
 \begin{code}
 
+has-a-directed-cover-of-compact-opens : (X : Locale 𝓤 𝓥 𝓦) (U : ⟨ 𝒪 X ⟩)
+                                      → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
+has-a-directed-cover-of-compact-opens {_} {_} {𝓦} X U =
+ Ǝ S ꞉ Fam 𝓦 ⟨ 𝒪 X ⟩ , consists-of-compact-opens X S holds
+                     × is-directed (𝒪 X) S holds
+                     × (U ＝ ⋁[ 𝒪 X ] S)
+
 is-spectral : Locale 𝓤 𝓥 𝓦 → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
 is-spectral {_} {_} {𝓦} X = ⦅𝟏⦆ ∧ ⦅𝟐⦆
  where
   ⦅𝟏⦆ = compacts-of-[ X ]-are-closed-under-finite-meets
-  ⦅𝟐⦆ = Ɐ U ꞉ ⟨ 𝒪 X ⟩ ,
-         Ǝ S ꞉ (Fam 𝓦 ⟨ 𝒪 X ⟩) ,
-            consists-of-compact-opens X S holds
-          × is-directed (𝒪 X) S holds
-          × (U ＝ ⋁[ 𝒪 X ] S)
+  ⦅𝟐⦆ = Ɐ U ꞉ ⟨ 𝒪 X ⟩ , has-a-directed-cover-of-compact-opens X U
 
 \end{code}
 

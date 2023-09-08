@@ -450,8 +450,33 @@ basisₛ-covers-are-directed : (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ 
                               is-directed (𝒪 X) ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆ holds
 basisₛ-covers-are-directed X σᴰ U = pr₂ (pr₂ (pr₁ (pr₂ σᴰ) U))
 
-basisₛ-contains-top : {!!}
+basisₛ-covers-do-cover : (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ X) (U : ⟨ 𝒪 X ⟩)
+                       → let
+                          ℬ = basisₛ X σᴰ
+                          𝒥 = cover-indexₛ X σᴰ U
+                          open Joins (λ U V → U ≤[ poset-of (𝒪 X) ] V)
+                         in
+                          (U is-lub-of ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆) holds
+basisₛ-covers-do-cover X σᴰ U = pr₁ (pr₂ (pr₁ (pr₂ σᴰ) U))
+
+basisₛ-is-directed-basis : (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ X)
+                         → directed-basis-forᴰ (𝒪 X) (basisₛ X σᴰ)
+basisₛ-is-directed-basis X σᴰ U =
+ cover-indexₛ X σᴰ U  , basisₛ-covers-do-cover X σᴰ U , (basisₛ-covers-are-directed X σᴰ U)
+  where
+   ℬ = basisₛ X σᴰ
+
+basisₛ-contains-top : (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ X)
+                    → contains-top (𝒪 X) (basisₛ X σᴰ) holds
 basisₛ-contains-top = {!!}
+
+basisₛ-consists-of-compact-opens : (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ X)
+                                 → consists-of-compact-opens X (basisₛ X σᴰ) holds
+basisₛ-consists-of-compact-opens X σᴰ = pr₁ (pr₂ (pr₂ σᴰ))
+
+basisₛ-closed-under-∧ : (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ X)
+                      → closed-under-binary-meets (𝒪 X) (basisₛ X σᴰ) holds
+basisₛ-closed-under-∧ X σᴰ = pr₂ (pr₂ (pr₂ (pr₂ σᴰ)))
 
 \end{code}
 
@@ -459,14 +484,86 @@ Spectrality structure gives `is-spectral`.
 
 \begin{code}
 
-spectralᴰ-gives-spectrality : (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ X)
+spectralᴰ-gives-spectrality : (X : Locale 𝓤 𝓥 𝓦)
+                            → spectralᴰ X
                             → is-spectral X holds
-spectralᴰ-gives-spectrality X σᴰ = ⦅𝟏⦆ , {!!}
+spectralᴰ-gives-spectrality X σᴰ = ⦅𝟏⦆ , ⦅𝟐⦆
  where
+  ℬ  = basisₛ X σᴰ
+  β↑ = basisₛ-is-directed-basis X σᴰ
+
+  † : (Σ iₜ ꞉ index ℬ , is-top (𝒪 X) (ℬ [ iₜ ]) holds) → is-compact X holds
+  † (iₜ , φ) =
+   transport
+    (λ - → is-compact-open X - holds)
+    (𝟏-is-unique (𝒪 X) (ℬ [ iₜ ]) φ)
+    (basisₛ-consists-of-compact-opens X σᴰ iₜ)
+
   κ : is-compact X holds
-  κ = {!pr₁ (pr₂ (pr₂ (pr₂ σᴰ)))!}
+  κ = ∥∥-rec (holds-is-prop (is-compact X)) † (basisₛ-contains-top X σᴰ)
+
+  𝕔 : compacts-of-[ X ]-are-closed-under-binary-meets holds
+  𝕔 K₁ K₂ κ₁ κ₂ = ∥∥-rec₂
+                   (holds-is-prop (is-compact-open X (K₁ ∧[ 𝒪 X ] K₂)))
+                   ‡
+                   K₁-is-basic
+                   K₂-is-basic
+   where
+    K₁-is-basic : is-basic X K₁ (ℬ , β↑) holds
+    K₁-is-basic = compact-opens-are-basic X (ℬ , β↑) K₁ κ₁
+
+    K₂-is-basic : is-basic X K₂ (ℬ , β↑) holds
+    K₂-is-basic = compact-opens-are-basic X (ℬ , β↑) K₂ κ₂
+
+    ‡ : Σ i₁ ꞉ index ℬ , ℬ [ i₁ ] ＝ K₁
+      → Σ i₂ ꞉ index ℬ , ℬ [ i₂ ] ＝ K₂
+      → is-compact-open X (K₁ ∧[ 𝒪 X ] K₂) holds
+    ‡ (i₁ , p₁) (i₂ , p₂) =
+     transport (λ - → is-compact-open X - holds) (p ⁻¹) ♣
+      where
+       p : K₁ ∧[ 𝒪 X ] K₂ ＝ ℬ [ i₁ ] ∧[ 𝒪 X ] ℬ [ i₂ ]
+       p = K₁ ∧[ 𝒪 X ] K₂             ＝⟨ Ⅰ ⟩
+           ℬ [ i₁ ] ∧[ 𝒪 X ] K₂       ＝⟨ Ⅱ ⟩
+           ℬ [ i₁ ] ∧[ 𝒪 X ] ℬ [ i₂ ] ∎
+            where
+             Ⅰ = ap (λ - → - ∧[ 𝒪 X ] K₂) (p₁ ⁻¹)
+             Ⅱ = ap (λ - → _ ∧[ 𝒪 X ] -) (p₂ ⁻¹)
+
+       open Meets (λ U V → U ≤[ poset-of (𝒪 X) ] V)
+
+       ♠ : (Σ i₃ ꞉ index ℬ , (((ℬ [ i₃ ]) is-glb-of ((ℬ [ i₁ ]) , (ℬ [ i₂ ]))) holds))
+         → is-compact-open X (ℬ [ i₁ ] ∧[ 𝒪 X ] ℬ [ i₂ ]) holds
+       ♠ (i₃ , φ) =
+        transport
+         (λ - → is-compact-open X - holds)
+         q
+         (basisₛ-consists-of-compact-opens X σᴰ i₃)
+          where
+           q : ℬ [ i₃ ] ＝ ℬ [ i₁ ] ∧[ 𝒪 X ] ℬ [ i₂ ]
+           q = ∧[ 𝒪 X ]-unique φ
+
+       ♣ : is-compact-open X (ℬ [ i₁ ] ∧[ 𝒪 X ] ℬ [ i₂ ]) holds
+       ♣ = ∥∥-rec
+            (holds-is-prop (is-compact-open X (ℬ [ i₁ ] ∧[ 𝒪 X ] ℬ [ i₂ ])))
+            ♠
+            (basisₛ-closed-under-∧ X σᴰ i₁ i₂)
 
   ⦅𝟏⦆ : compacts-of-[ X ]-are-closed-under-finite-meets holds
-  ⦅𝟏⦆ = κ , {!!}
+  ⦅𝟏⦆ = κ , 𝕔
+
+  ⦅𝟐⦆ : (U : ⟨ 𝒪 X ⟩) → has-a-directed-cover-of-compact-opens X U holds
+  ⦅𝟐⦆ U = ∣ ⁅ ℬ [ j ] ∣ j ε cover-indexₛ X σᴰ U ⁆ , ϑ , d , c ∣
+   where
+    ϑ : consists-of-compact-opens X ⁅ ℬ [ j ] ∣ j ε cover-indexₛ X σᴰ U ⁆ holds
+    ϑ i = basisₛ-consists-of-compact-opens X σᴰ (cover-indexₛ X σᴰ U [ i ])
+
+    d : is-directed (𝒪 X) ⁅ ℬ [ j ] ∣ j ε cover-indexₛ X σᴰ U ⁆ holds
+    d = basisₛ-covers-are-directed X σᴰ U
+
+    c : U ＝ ⋁[ 𝒪 X ] ⁅ ℬ [ j ] ∣ j ε cover-indexₛ X σᴰ U ⁆
+    c = ⋁[ 𝒪 X ]-unique
+         ⁅ ℬ [ j ] ∣ j ε cover-indexₛ X σᴰ U ⁆
+         U
+         (basisₛ-covers-do-cover X σᴰ U)
 
 \end{code}
