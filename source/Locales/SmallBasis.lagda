@@ -33,18 +33,20 @@ open Locale
 
 \end{code}
 
-We start by defining the notion of a basis.
+We start by defining the structure of having a basis. The superscript _ᴰ is our
+notational convention for marking that we are working with the structural
+version of a notion.
 
 \begin{code}
 
-forms-basis-for : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
-forms-basis-for {𝓦 = 𝓦} F (I , β) =
- Ɐ U ꞉ ⟨ F ⟩ , Ǝ J ꞉ Fam 𝓦 I , (U is-lub-of ⁅ β j ∣ j ε J ⁆) holds
+basis-forᴰ : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺  ̇
+basis-forᴰ {𝓦 = 𝓦} F (I , β) =
+ (U : ⟨ F ⟩) → Σ J ꞉ Fam 𝓦 I , (U is-lub-of ⁅ β j ∣ j ε J ⁆) holds
   where
    open Joins (λ x y → x ≤[ poset-of F ] y)
 
 basisᴰ : (F : Frame 𝓤 𝓥 𝓦) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺  ̇
-basisᴰ {𝓤} {𝓥} {𝓦} F = Σ ℬ ꞉ Fam 𝓦 ⟨ F ⟩ , forms-basis-for F ℬ holds
+basisᴰ {𝓤} {𝓥} {𝓦} F = Σ ℬ ꞉ Fam 𝓦 ⟨ F ⟩ , basis-forᴰ F ℬ
 
 \end{code}
 
@@ -53,30 +55,30 @@ families are directed.
 
 \begin{code}
 
-forms-directed-basis-for : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
-forms-directed-basis-for {𝓤} {𝓥} {𝓦} F ℬ@(I , β) =
- Ɐ U ꞉ ⟨ F ⟩ ,
-  Ǝ J ꞉ Fam 𝓦 I ,
+directed-basis-forᴰ : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺  ̇
+directed-basis-forᴰ {𝓤} {𝓥} {𝓦} F ℬ@(I , β) =
+ (U : ⟨ F ⟩) →
+  Σ J ꞉ Fam 𝓦 I ,
    (U is-lub-of ⁅ β j ∣ j ε J ⁆ ∧ is-directed F ⁅ β j ∣ j ε J ⁆) holds
     where
      open Joins (λ x y → x ≤[ poset-of F ] y)
 
 directed-basisᴰ : (F : Frame 𝓤 𝓥 𝓦) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺  ̇
 directed-basisᴰ {𝓤} {𝓥} {𝓦} F =
- Σ ℬ ꞉ Fam 𝓦 ⟨ F ⟩ , forms-directed-basis-for F ℬ holds
+ Σ ℬ ꞉ Fam 𝓦 ⟨ F ⟩ , directed-basis-forᴰ F ℬ
 
 directed-basis-is-basis : (F : Frame 𝓤 𝓥 𝓦) (ℬ : Fam 𝓦 ⟨ F ⟩)
-                        → forms-directed-basis-for F ℬ holds
-                        → forms-basis-for F ℬ holds
-directed-basis-is-basis {_} {_} {𝓦} F ℬ β U = ∥∥-rec ∃-is-prop † (β U)
+                        → directed-basis-forᴰ F ℬ
+                        → basis-forᴰ F ℬ
+directed-basis-is-basis {_} {_} {𝓦} F ℬ β U = † (β U)
  where
   open Joins (λ x y → x ≤[ poset-of F ] y)
 
   † : Σ J ꞉ Fam 𝓦 (index ℬ) ,
        (U is-lub-of ⁅ ℬ [ j ] ∣ j ε J ⁆ ∧ is-directed F ⁅ ℬ [ j ] ∣ j ε J ⁆)
         holds
-    → ∃ J ꞉ Fam 𝓦 (index ℬ) , (U is-lub-of ⁅ ℬ [ j ] ∣ j ε J ⁆) holds
-  † (J , c , _)= ∣ J , c ∣
+    → Σ J ꞉ Fam 𝓦 (index ℬ) , (U is-lub-of ⁅ ℬ [ j ] ∣ j ε J ⁆) holds
+  † (J , c , _)= J , c
 
 \end{code}
 
@@ -129,7 +131,7 @@ compact-opens-are-basic : (X : Locale 𝓤 𝓥 𝓦)
                         → (K : ⟨ 𝒪 X ⟩)
                         → is-compact-open X K holds
                         → is-basic X K b holds
-compact-opens-are-basic {_} {_} {𝓦} X (ℬ , β) K κ = ∥∥-rec (holds-is-prop (is-basic X K (ℬ , β))) ‡ (β K)
+compact-opens-are-basic {_} {_} {𝓦} X (ℬ , β) K κ = ‡ (β K)
  where
   open Joins (λ x y → x ≤[ poset-of (𝒪 X) ] y)
 
@@ -343,8 +345,8 @@ spectral-and-small-𝒦-gives-basis {𝓤} {𝓦} X 𝕤 (𝒦₀ , e) = (𝒦�
   α : 𝒦₀ → ⟨ 𝒪 X ⟩
   α = pr₁ ∘ sec
 
-  β : forms-basis-for (𝒪 X) (𝒦₀ , α) holds
-  β U = ∣ 𝒥 , † , ‡ ∣
+  β : basis-forᴰ (𝒪 X) (𝒦₀ , α)
+  β U = 𝒥 , † , ‡
    where
     𝒥 : Fam 𝓦 𝒦₀
     𝒥 = (Σ k ꞉ 𝒦₀ , (α k ≤[ poset-of (𝒪 X) ] U) holds) , pr₁
@@ -382,35 +384,36 @@ spectral-and-small-𝒦-gives-basis {𝓤} {𝓦} X 𝕤 (𝒦₀ , e) = (𝒦�
 
 \begin{code}
 
-directified-basis-gives-basis : (X : Locale 𝓤 𝓥 𝓦) (ℬ : Fam 𝓦 ⟨ 𝒪 X ⟩)
-                           → (forms-basis-for (𝒪 X) ℬ) holds
-                           → forms-basis-for (𝒪 X) (directify (𝒪 X) ℬ) holds
-directified-basis-gives-basis {_} {_} {𝓦} X ℬ β = β↑
- where
-  open Joins (λ x y → x ≤[ poset-of (𝒪 X) ] y)
+spectral-and-small-𝒦-gives-directed-basis : (X : Locale 𝓤 𝓦 𝓦)
+                                          → is-spectral X holds
+                                          → 𝒦 X is 𝓦 small
+                                          → directed-basisᴰ (𝒪 X)
+spectral-and-small-𝒦-gives-directed-basis {_} {𝓦} X σ 𝕤 =
+ ℬ↑ , ℬ↑-is-directed-basis-for-X
+  where
+   basis-X : basisᴰ (𝒪 X)
+   basis-X = spectral-and-small-𝒦-gives-basis X σ 𝕤
 
-  ℬ↑ = directify (𝒪 X) ℬ
+   ℬ : Fam 𝓦 ⟨ 𝒪 X ⟩
+   ℬ = pr₁ basis-X
 
-  β↑ : forms-basis-for (𝒪 X) (directify (𝒪 X) ℬ) holds
-  β↑ U = ∥∥-rec ∃-is-prop † (β U)
-   where
-    † : Σ ℐ ꞉ Fam 𝓦 (index ℬ) , (U is-lub-of ⁅ ℬ [ i ] ∣ i ε ℐ ⁆) holds
-      → (Ǝ 𝒥 ꞉ Fam 𝓦 (index ℬ↑) ,
-          (U is-lub-of ⁅ ℬ↑ [ j ] ∣ j ε 𝒥 ⁆) holds) holds
-    † (ℐ , φ@(φ₁ , φ₂)) = ∣ ℐ↑ , ψ ∣
-     where
-      ℐ↑ : Fam 𝓦 (index ℬ↑)
-      ℐ↑ = List (index ℐ) , map (ℐ [_])
+   β : basis-forᴰ (𝒪 X) ℬ
+   β = pr₂ basis-X
 
-      ψ : (U is-lub-of ⁅ (ℬ↑ [ is ]) ∣ is ε ℐ↑ ⁆ ) holds
-      ψ = ψ₁ , ψ₂
-       where
-        ψ₁ : (U is-an-upper-bound-of ⁅ (ℬ↑ [ is ]) ∣ is ε ℐ↑ ⁆) holds
-        ψ₁ []       = 𝟎-is-bottom (𝒪 X) U
-        ψ₁ (i ∷ is) = ∨[ 𝒪 X ]-least (φ₁ i) (ψ₁ is)
+   ℬ↑ : Fam 𝓦 ⟨ 𝒪 X ⟩
+   ℬ↑ = directify (𝒪 X) ℬ
 
-        ψ₂ : ((V , _) : upper-bound ⁅ (ℬ↑ [ is ]) ∣ is ε ℐ↑ ⁆)
-           → (U ≤[ poset-of (𝒪 X) ] V) holds
-        ψ₂ (V , ϑ₁) = {!!}
+   ℬ↑-is-directed-basis-for-X : directed-basis-forᴰ (𝒪 X) ℬ↑
+   ℬ↑-is-directed-basis-for-X U = {!!}
+
+\end{code}
+
+\begin{code}
+
+spectralᴰ : Locale 𝓤 𝓥 𝓦 → (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺) ̇
+spectralᴰ {𝓤 = 𝓤} {𝓥} {𝓦} X =
+ Σ ℬ ꞉ Fam 𝓦 ⟨ 𝒪 X ⟩ , directed-basis-forᴰ (𝒪 X) ℬ
+                     × consists-of-compact-opens X ℬ holds
+                     × closed-under-finite-meets (𝒪 X) ℬ holds
 
 \end{code}
