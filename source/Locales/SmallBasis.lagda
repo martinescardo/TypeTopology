@@ -480,6 +480,9 @@ basisₛ-closed-under-∧ : (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ X)
                       → closed-under-binary-meets (𝒪 X) (basisₛ X σᴰ) holds
 basisₛ-closed-under-∧ X σᴰ = pr₂ (pr₂ (pr₂ (pr₂ σᴰ)))
 
+spectralᴰ-implies-basisᴰ : (X : Locale 𝓤 𝓥 𝓦) → spectralᴰ X → basisᴰ (𝒪 X)
+spectralᴰ-implies-basisᴰ X σᴰ = basisₛ X σᴰ , basisₛ-is-basis X σᴰ
+
 \end{code}
 
 Spectrality structure gives `is-spectral`.
@@ -567,5 +570,31 @@ spectralᴰ-gives-spectrality X σᴰ = ⦅𝟏⦆ , ⦅𝟐⦆
          ⁅ ℬ [ j ] ∣ j ε cover-indexₛ X σᴰ U ⁆
          U
          (basisₛ-covers-do-cover X σᴰ U)
+
+\end{code}
+
+\begin{code}
+
+spectral-and-small-𝒦-implies-spectralᴰ : (X : Locale 𝓤 𝓥 𝓥)
+                                       → is-spectral X holds
+                                       → 𝒦 X is 𝓥 small
+                                       → spectralᴰ X
+spectral-and-small-𝒦-implies-spectralᴰ {𝓤} {𝓥} X σ 𝕤ₖ =
+ pr₁ Σ-assoc (spectral-and-small-𝒦-gives-directed-basis X σ 𝕤ₖ , κ , {!!})
+  where
+   ℬ : Fam 𝓥 ⟨ 𝒪 X ⟩
+   ℬ = pr₁ (spectral-and-small-𝒦-gives-basis X σ 𝕤ₖ)
+
+   ℬ↑ : Fam 𝓥 ⟨ 𝒪 X ⟩
+   ℬ↑ = pr₁ (spectral-and-small-𝒦-gives-directed-basis X σ 𝕤ₖ)
+
+   κ : consists-of-compact-opens X ℬ↑ holds
+   κ []       = 𝟎-is-compact X
+   κ (i ∷ is) = compact-opens-are-closed-under-∨
+                 X
+                 (ℬ [ i ])
+                 (ℬ↑ [ is ])
+                 {!!}
+                 {!!}
 
 \end{code}
