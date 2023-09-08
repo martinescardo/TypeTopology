@@ -665,23 +665,18 @@ Monoid-is-closed-under-prop-Π {𝓤} = V
     : (p : Ω 𝓤)
       (A : p holds → 𝓤 ̇)
       (α : (h : p holds) → monoid-structure (A h))
-    → ((h : p holds) → monoid-axioms (A h) (α h))
+      (F : (h : p holds) → monoid-axioms (A h) (α h))
     → monoid-axioms (Π A) (ρ⁻¹ p A α)
   axioms-closed-under-prop-Π p A α F = I , II , III , IV
    where
-    ρ⁻¹-remark : (p : Ω 𝓤)
-                 (A : p holds → 𝓤 ̇)
-                 (α : (h : p holds) → monoid-structure (A h))
-               → ρ⁻¹ p A α
-               ＝ (λ (f : Π A) (g : Π A) (h : p holds) → pr₁ (α h) (f h) (g h)) ,
-                                                         (λ h → pr₂ (α h))
-    ρ⁻¹-remark p A α = refl
-
     _·_ : Π A → Π A → Π A
     f · g = λ h → pr₁ (α h) (f h) (g h)
 
     e : Π A
     e h = pr₂ (α h)
+
+    ρ⁻¹-remark : ρ⁻¹ p A α ＝ (_·_ , e)
+    ρ⁻¹-remark = refl
 
     I : is-set (Π A)
     I = Π-is-set fe' (λ h →
