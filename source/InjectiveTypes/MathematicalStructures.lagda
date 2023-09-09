@@ -409,8 +409,8 @@ guess what T should be.
       where
        II = dfunext fe' (λ h →
              ap₂ (λ -₁ -₂ → (-₁ · -₂) h)
-                 (inverses-are-retractions (π h) α)
-                 (inverses-are-retractions (π h) β))
+                 (inverses-are-retractions' (π h) α)
+                 (inverses-are-retractions' (π h) β))
 
    ε : τ ∘ τ⁻¹ ∼ id
    ε g =
@@ -421,8 +421,8 @@ guess what T should be.
      where
       I = dfunext fe' (λ h → dfunext fe' (λ a → dfunext fe' (λ b →
            ap₂ (g h)
-               (inverses-are-sections (π h) a)
-               (inverses-are-sections (π h) b))))
+               (inverses-are-sections' (π h) a)
+               (inverses-are-sections' (π h) b))))
 
    τ-is-equiv : is-equiv τ
    τ-is-equiv = qinvs-are-equivs τ (τ⁻¹ , η , ε)
