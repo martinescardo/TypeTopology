@@ -252,7 +252,7 @@ So we prove the map in the universality triangle is a homomorphism.
              where
 
       φ≈ : ⟨ quotient-gr ⟩ → ⟨ G ⟩
-      φ≈ = mediating-map/ ≋ (group-is-set G) φ p
+      φ≈ = mediating-map/ ≋ (groups-are-sets G) φ p
 
       mediating-map-is-hom : is-hom quotient-gr G φ≈
       mediating-map-is-hom {x} {y} = δ x y
@@ -275,6 +275,6 @@ So we prove the map in the universality triangle is a homomorphism.
                   φ≈ (π≈ s) ·⟨ G ⟩ φ≈ (π≈ t) ∎
 
           δ : (x y : X≈) → φ≈ (x ·⟨ quotient-gr ⟩ y) ＝ (φ≈ x) ·⟨ G ⟩ (φ≈ y)
-          δ = /-induction₂ ≋ (λ x' y' → group-is-set G) γ
+          δ = /-induction₂ ≋ (λ x' y' → groups-are-sets G) γ
 
 \end{code}
