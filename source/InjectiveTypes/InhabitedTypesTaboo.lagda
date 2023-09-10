@@ -18,6 +18,7 @@ Most types one encounters in practice are "not" injective in the above sense.
 
 We consider here the type 𝕀 of inhabited types: 𝕀 = Σ X ꞉ 𝓤 ̇ , ∥ X ∥ and show
 that the following are equivalent:
+
 (1) 𝕀 is injective.
 (2) 𝕀 is a retract of 𝓤.
 (3) All propositions are projective:
@@ -176,5 +177,18 @@ unspecified-split-support-gives-projective-propositions uss =
  injectivity-gives-projective-propositions
   (retract-gives-injectivity
     (unspecified-split-support-gives-retract uss))
+
+\end{code}
+
+\begin{code}
+
+summary : (Unspecified-Split-Support → retract 𝕀 of (𝓤 ̇  ))
+        × (retract 𝕀 of (𝓤 ̇  ) → ainjective-type 𝕀 𝓤 𝓤)
+        × (ainjective-type 𝕀 𝓤 𝓤 → Propositions-Are-Projective)
+        × (Propositions-Are-Projective → Unspecified-Split-Support)
+summary = unspecified-split-support-gives-retract
+        , retract-gives-injectivity
+        , injectivity-gives-projective-propositions
+        , projective-propositions-gives-unspecified-split-support
 
 \end{code}
