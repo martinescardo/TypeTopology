@@ -102,6 +102,11 @@ technical condition, see the file InjectiveTypes.MathematicalStructures.
 
 \end{code}
 
+That this technical condition is sufficient but not necessary is
+illustrated in the file InjectiveTypes.InhabitednessTaboo, with the
+type of pointed types (which is injective) shown to be equivalent to a
+subtype of the type of inhabited types (which is "not" injective).
+
 One of the main results of this file is that if A satisfies the
 technical condition, then Σ x ꞉ X , A x is aflabb and hence
 ainjective.
