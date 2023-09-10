@@ -1,5 +1,8 @@
-\begin{code}
+[⇐ Index](../html/TWA.Thesis.index.html)
 
+# Formalisation of the Escardo-Simpson interval object
+
+```agda
 {-# OPTIONS --without-K --exact-split --safe #-}
 
 open import UF.FunExt
@@ -10,110 +13,137 @@ open import UF.Subsingletons
 module TWA.Thesis.Chapter5.IntervalObject (fe : FunExt) where
 
 open import Naturals.Sequence fe
+```
 
+## Midpoint algebras
+
+```
 associative' idempotent transpositional : {X : 𝓤 ̇ } → (X → X → X) → 𝓤 ̇
-associative'     _∙_ = ∀ a b c   → a ∙ (b ∙ c)       ＝ (a ∙ b) ∙ c
-idempotent       _∙_ = ∀ a       → a ∙ a             ＝ a
-transpositional  _∙_ = ∀ a b c d → (a ∙ b) ∙ (c ∙ d) ＝ (a ∙ c) ∙ (b ∙ d)
+associative'     _∙_
+ = ∀ a b c   → a ∙ (b ∙ c)       ＝ (a ∙ b) ∙ c
+idempotent       _∙_
+ = ∀ a       → a ∙ a             ＝ a
+transpositional  _∙_
+ = ∀ a b c d → (a ∙ b) ∙ (c ∙ d) ＝ (a ∙ c) ∙ (b ∙ d)
 
 seq-add-push : {A : 𝓤 ̇ } (α : ℕ → A) (n : ℕ)
-             → (λ (i : ℕ) → α (succ i +ℕ n)) ＝ (λ (i : ℕ) → α (succ (i +ℕ n)))
+             → (λ i → α (succ i +ℕ n)) ＝ (λ i → α (succ (i +ℕ n)))
 seq-add-push α 0 = refl
 seq-add-push α (succ n) = seq-add-push (α ∘ succ) n
 
--- Definition 5.1.16
 midpoint-algebra-axioms : (A : 𝓤 ̇ ) → (A → A → A) → 𝓤 ̇
-midpoint-algebra-axioms {𝓤} A _⊕_ = is-set A
-                                  × idempotent _⊕_ × commutative _⊕_ × transpositional _⊕_
+midpoint-algebra-axioms {𝓤} A _⊕_
+ = is-set A × idempotent _⊕_ × commutative _⊕_ × transpositional _⊕_
 
 Midpoint-algebra : (𝓤 : Universe) → 𝓤 ⁺ ̇
-Midpoint-algebra 𝓤 = Σ A ꞉ 𝓤 ̇ , Σ _⊕_ ꞉ (A → A → A) , (midpoint-algebra-axioms A _⊕_)
+Midpoint-algebra 𝓤
+ = Σ A ꞉ 𝓤 ̇ , Σ _⊕_ ꞉ (A → A → A) , (midpoint-algebra-axioms A _⊕_)
 
--- Definition 5.1.19
 cancellative : {X : 𝓤 ̇ } → (X → X → X) → 𝓤 ̇
 cancellative  _∙_ = ∀ a b c → a ∙ c ＝ b ∙ c → a ＝ b
+```
 
--- Definition 5.1.20-22
+## Iteration property
+
+```
 iterative : {A : 𝓤 ̇ } → (A → A → A) → 𝓤 ̇
-iterative {𝓤} {A} _⊕_ = Σ M ꞉ ((ℕ → A) → A) , ((a : ℕ → A) → M a ＝ a 0 ⊕ M (tail a))
-                                            × ((a x : ℕ → A)
-                                               → ((i : ℕ) → a i ＝ x i ⊕ a (succ i))
-                                               → a 0 ＝ M x)
+iterative {𝓤} {A} _⊕_
+ = Σ M ꞉ ((ℕ → A) → A) , ((a : ℕ → A) → M a ＝ a 0 ⊕ M (tail a))
+                       × ((a x : ℕ → A)
+                         → ((i : ℕ) → a i ＝ x i ⊕ a (succ i))
+                         → a 0 ＝ M x)
 
--- Lemma 5.1.28
 iterative-uniqueness· : {A : 𝓤 ̇ } → (_⊕_ : A → A → A)
                       → (F M : iterative _⊕_)
                       → pr₁ F ∼ pr₁ M
-iterative-uniqueness· {𝓤} {𝕀} _⊕_ (F , p₁ , q₁) (M , p₂ , q₂) x = q₂ M' x γ
-  where M' : ℕ → 𝕀
-        M' i = F (λ n → x (n +ℕ i))
-        γ : (i : ℕ) → M' i ＝ (x i ⊕ M' (succ i))
-        γ i = p₁ (λ n → x (n +ℕ i))
-            ∙ ap (λ - → x - ⊕ F (λ n → x (succ n +ℕ i))) (zero-left-neutral i)
-            ∙ ap (λ - → x i ⊕ F -) (seq-add-push x i)
+iterative-uniqueness· {𝓤} {𝕀} _⊕_ (F , p₁ , q₁) (M , p₂ , q₂) x
+ = q₂ M' x γ
+ where M' : ℕ → 𝕀
+       M' i = F (λ n → x (n +ℕ i))
+       γ : (i : ℕ) → M' i ＝ (x i ⊕ M' (succ i))
+       γ i = p₁ (λ n → x (n +ℕ i))
+           ∙ ap (λ - → x - ⊕ F (λ n → x (succ n +ℕ i)))
+                  (zero-left-neutral i)
+           ∙ ap (λ - → x i ⊕ F -) (seq-add-push x i)
 
--- Lemma 5.1.29
 iterative-uniqueness : {A : 𝓤 ̇ } → (_⊕_ : A → A → A)
                      → (F M : iterative _⊕_)
                      → pr₁ F ＝ pr₁ M
-iterative-uniqueness {𝓤} _⊕_ F M = dfunext (fe 𝓤 𝓤) (iterative-uniqueness· _⊕_ F M)
+iterative-uniqueness {𝓤} _⊕_ F M
+ = dfunext (fe 𝓤 𝓤) (iterative-uniqueness· _⊕_ F M)
+```
 
--- Definition 5.1.34
+## Convex bodies
+
+```
 convex-body-axioms : (A : 𝓤 ̇ ) → (A → A → A) → 𝓤 ̇
 convex-body-axioms {𝓤} A _⊕_ = (midpoint-algebra-axioms A _⊕_)
                              × (cancellative _⊕_)
                              × (iterative _⊕_)
 
 Convex-body : (𝓤 : Universe) → 𝓤 ⁺ ̇
-Convex-body 𝓤 = Σ A ꞉ 𝓤 ̇ , Σ _⊕_ ꞉ (A → A → A) , (convex-body-axioms A _⊕_)
+Convex-body 𝓤
+ = Σ A ꞉ 𝓤 ̇ , Σ _⊕_ ꞉ (A → A → A) , (convex-body-axioms A _⊕_)
 
 ⟨_⟩ : Convex-body 𝓤 → 𝓤 ̇
 ⟨ A , _ ⟩ = A
+```
 
+## Midpoint homomorphisms
+
+```
 midpoint-operation : (𝓐 : Convex-body 𝓤) → ⟨ 𝓐 ⟩ → ⟨ 𝓐 ⟩ → ⟨ 𝓐 ⟩
 midpoint-operation (A , _⊕_ , _) = _⊕_
 
 syntax midpoint-operation 𝓐 x y = x ⊕⟨ 𝓐 ⟩ y
 
--- Definition 5.1.17
 is-⊕-homomorphism : (𝓐 : Convex-body 𝓤) (𝓑 : Convex-body 𝓥)
                   → (⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩) → 𝓤 ⊔ 𝓥 ̇
-is-⊕-homomorphism 𝓐 𝓑 h = (x y : ⟨ 𝓐 ⟩) → h (x ⊕⟨ 𝓐 ⟩ y) ＝ h x ⊕⟨ 𝓑 ⟩ h y
+is-⊕-homomorphism 𝓐 𝓑 h
+ = (x y : ⟨ 𝓐 ⟩) → h (x ⊕⟨ 𝓐 ⟩ y) ＝ h x ⊕⟨ 𝓑 ⟩ h y
 
 id-is-⊕-homomorphism : (𝓐 : Convex-body 𝓤) → is-⊕-homomorphism 𝓐 𝓐 id
 id-is-⊕-homomorphism 𝓐 x y = refl
 
 ⊕-is-⊕-homomorphism-r : (𝓐 : Convex-body 𝓤)
-                    → (a : ⟨ 𝓐 ⟩) → is-⊕-homomorphism 𝓐 𝓐 (λ y → a ⊕⟨ 𝓐 ⟩ y)
+                      → (a : ⟨ 𝓐 ⟩)
+                      → is-⊕-homomorphism 𝓐 𝓐 (λ y → a ⊕⟨ 𝓐 ⟩ y)
 ⊕-is-⊕-homomorphism-r (𝓐 , _⊕_ , (_ , ⊕-idem , _ , ⊕-tran) , _) a x y
  =    a    ⊕ (x ⊕ y) ＝⟨ ap (_⊕ (x ⊕ y)) (⊕-idem a ⁻¹) ⟩
    (a ⊕ a) ⊕ (x ⊕ y) ＝⟨ ⊕-tran a a x y ⟩
    (a ⊕ x) ⊕ (a ⊕ y) ∎
 
 ⊕-is-⊕-homomorphism-l : (𝓐 : Convex-body 𝓤)
-                     → (b : ⟨ 𝓐 ⟩) → is-⊕-homomorphism 𝓐 𝓐 (λ x → x ⊕⟨ 𝓐 ⟩ b)
+                      → (b : ⟨ 𝓐 ⟩)
+                      → is-⊕-homomorphism 𝓐 𝓐 (λ x → x ⊕⟨ 𝓐 ⟩ b)
 ⊕-is-⊕-homomorphism-l (𝓐 , _⊕_ , (_ , ⊕-idem , _ , ⊕-tran) , _) b x y
  = (x ⊕ y) ⊕    b    ＝⟨ ap ((x ⊕ y) ⊕_) (⊕-idem b ⁻¹) ⟩
    (x ⊕ y) ⊕ (b ⊕ b) ＝⟨ ⊕-tran x y b b ⟩
    (x ⊕ b) ⊕ (y ⊕ b) ∎
 
--- Lemma 5.1.18
-⊕-hom-composition : (𝓐 : Convex-body 𝓤) (𝓑 : Convex-body 𝓥) (𝓒 : Convex-body 𝓦)
-                          → (h₁ : ⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩) → (h₂ : ⟨ 𝓑 ⟩ → ⟨ 𝓒 ⟩)
-                          → is-⊕-homomorphism 𝓐 𝓑 h₁ → is-⊕-homomorphism 𝓑 𝓒 h₂
-                          → is-⊕-homomorphism 𝓐 𝓒 (h₂ ∘ h₁)
+⊕-hom-composition : (𝓐 : Convex-body 𝓤)
+                    (𝓑 : Convex-body 𝓥)
+                    (𝓒 : Convex-body 𝓦)
+                  → (h₁ : ⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩) → (h₂ : ⟨ 𝓑 ⟩ → ⟨ 𝓒 ⟩)
+                  → is-⊕-homomorphism 𝓐 𝓑 h₁
+                  → is-⊕-homomorphism 𝓑 𝓒 h₂
+                  → is-⊕-homomorphism 𝓐 𝓒 (h₂ ∘ h₁)
 ⊕-hom-composition {𝓤} {𝓥} {𝓦} 𝓐 𝓑 𝓒 h₁ h₂ i₁ i₂ x y
  = (h₂ ∘ h₁) (x ⊕⟨ 𝓐 ⟩ y)                       ＝⟨ ap h₂ (i₁ x y) ⟩
          h₂  ((h₁ x) ⊕⟨ 𝓑 ⟩ (h₁ y))             ＝⟨ i₂ (h₁ x) (h₁ y) ⟩
              ((h₂ ∘ h₁) x) ⊕⟨ 𝓒 ⟩ ((h₂ ∘ h₁) y) ∎
+```
 
--- Definition 5.1.35/36/37 (35, 37 kind of missing, 38 missing)
-is-interval-object : (𝓘 : Convex-body 𝓤) (𝓥 : Universe) → ⟨ 𝓘 ⟩ → ⟨ 𝓘 ⟩ → 𝓤 ⊔ 𝓥 ⁺ ̇
-is-interval-object 𝓘 𝓥 u v =
-    (𝓐 : Convex-body 𝓥) (a b : ⟨ 𝓐 ⟩) -- h = affine a b
-   → ∃! h ꞉ (⟨ 𝓘 ⟩ → ⟨ 𝓐 ⟩) , (h u ＝ a)
-                            × (h v ＝ b)
-                            × ((x y : ⟨ 𝓘 ⟩) → h (x ⊕⟨ 𝓘 ⟩ y) ＝ h x ⊕⟨ 𝓐 ⟩ h y)
+## Interval objects
+
+```
+is-interval-object
+ : (𝓘 : Convex-body 𝓤) (𝓥 : Universe) → ⟨ 𝓘 ⟩ → ⟨ 𝓘 ⟩ → 𝓤 ⊔ 𝓥 ⁺ ̇
+is-interval-object 𝓘 𝓥 u v 
+ = (𝓐 : Convex-body 𝓥) (a b : ⟨ 𝓐 ⟩)
+ → ∃! h ꞉ (⟨ 𝓘 ⟩ → ⟨ 𝓐 ⟩)
+ , (h u ＝ a) × (h v ＝ b)
+ × ((x y : ⟨ 𝓘 ⟩) → h (x ⊕⟨ 𝓘 ⟩ y) ＝ h x ⊕⟨ 𝓐 ⟩ h y)
 
 record Interval-object (𝓤 : Universe) : 𝓤ω where
  field
@@ -123,7 +153,8 @@ record Interval-object (𝓤 : Universe) : 𝓤ω where
   mpaa : midpoint-algebra-axioms 𝕀 _⊕_
   ca : cancellative _⊕_
   ia : iterative _⊕_
-  universal-property : is-interval-object (𝕀 , _⊕_ , mpaa , ca , ia) 𝓤 u v
+  universal-property
+   : is-interval-object (𝕀 , _⊕_ , mpaa , ca , ia) 𝓤 u v
 
 module basic-interval-object-development {𝓤 : Universe}
  (io : Interval-object 𝓤) where
@@ -144,24 +175,28 @@ module basic-interval-object-development {𝓤 : Universe}
 
  𝓘 : Convex-body 𝓤
  𝓘 = 𝕀 , _⊕_ , mpaa , ⊕-canc , ia
+```
 
- -- Definition 5.1.39
+## Affine map
+
+```
  affine : 𝕀 → 𝕀 → 𝕀 → 𝕀
  affine x y = ∃!-witness (universal-property 𝓘 x y)
 
- -- Lemma 5.1.40
  affine-equation-l : (x y : 𝕀) → affine x y u ＝ x
- affine-equation-l x y = pr₁ (∃!-is-witness (universal-property 𝓘 x y))
+ affine-equation-l x y
+  = pr₁ (∃!-is-witness (universal-property 𝓘 x y))
 
  affine-equation-r : (x y : 𝕀) → affine x y v ＝ y
- affine-equation-r x y = pr₁ (pr₂ (∃!-is-witness (universal-property 𝓘 x y)))
+ affine-equation-r x y
+  = pr₁ (pr₂ (∃!-is-witness (universal-property 𝓘 x y)))
 
- -- Lemma 5.1.41
  affine-is-⊕-homomorphism : (x y : 𝕀) (a b : 𝕀)
-                        → affine x y (a ⊕ b) ＝ affine x y a ⊕ affine x y b
- affine-is-⊕-homomorphism x y = pr₂ (pr₂ (∃!-is-witness (universal-property 𝓘 x y)))
+                          → affine x y (a ⊕ b)
+                          ＝ affine x y a ⊕ affine x y b
+ affine-is-⊕-homomorphism x y
+  = pr₂ (pr₂ (∃!-is-witness (universal-property 𝓘 x y)))
 
- -- Lemma 5.1.43
  affine-uniqueness : (f : 𝕀 → 𝕀) (a b : 𝕀)
                    → f u ＝ a
                    → f v ＝ b
@@ -175,32 +210,35 @@ module basic-interval-object-development {𝓤 : Universe}
                    → f v ＝ b
                    → is-⊕-homomorphism 𝓘 𝓘 f
                    → affine a b ∼ f
- affine-uniqueness· f a b l r i x = ap (λ - → - x) (affine-uniqueness f a b l r i)
+ affine-uniqueness· f a b l r i x
+  = ap (λ - → - x) (affine-uniqueness f a b l r i)
 
- -- Lemma 5.1.44
  affine-uv-involutive : affine u v ∼ id
- affine-uv-involutive = affine-uniqueness· id u v refl refl (id-is-⊕-homomorphism 𝓘)
+ affine-uv-involutive
+  = affine-uniqueness· id u v refl refl (id-is-⊕-homomorphism 𝓘)
 
- -- Lemma 5.1.45
  affine-constant : (a : 𝕀) (x : 𝕀) → affine a a x ＝ a
- affine-constant a = affine-uniqueness· (λ _ → a) a a refl refl (λ _ _ → ⊕-idem a ⁻¹)
+ affine-constant a
+  = affine-uniqueness· (λ _ → a) a a refl refl (λ _ _ → ⊕-idem a ⁻¹)
+```
 
+## M properties
+
+```
  M : (ℕ → 𝕀) → 𝕀
  M = pr₁ ia
 
- -- Definition 5.1.21
  M-prop₁ : (a : ℕ → 𝕀) → M a ＝ a 0 ⊕ (M (a ∘ succ))
  M-prop₁ = pr₁ (pr₂ ia)
 
- -- Definition 5.1.20
- M-prop₂ : (a x : ℕ → 𝕀) → ((i : ℕ) → a i ＝ x i ⊕ a (succ i)) → a 0 ＝ M x
+ M-prop₂ : (a x : ℕ → 𝕀)
+         → ((i : ℕ) → a i ＝ x i ⊕ a (succ i))
+         → a 0 ＝ M x
  M-prop₂ = pr₂ (pr₂ ia)
 
- -- Lemma 5.1.23
  M-idem : (x : 𝕀) → M (λ _ → x) ＝ x
  M-idem x = M-prop₂ (λ _ → x) (λ _ → x) (λ _ → ⊕-idem x ⁻¹) ⁻¹
 
- -- Lemma 5.1.24
  M-hom : (x y : ℕ → 𝕀) → (M x ⊕ M y) ＝ M (λ i → x i ⊕ y i)
  M-hom x y = M-prop₂ M' (λ i → x i ⊕ y i) γ where
    M' : ℕ → 𝕀
@@ -209,31 +247,41 @@ module basic-interval-object-development {𝓤 : Universe}
    γ i = M (λ n → x (n +ℕ i)) ⊕ M (λ n → y (n +ℕ i))
              ＝⟨ ap (_⊕ M (λ n → y (n +ℕ i)))
                    (M-prop₁ (λ n → x (n +ℕ i))) ⟩
-         (x (0 +ℕ i) ⊕ M (λ n → x (succ n +ℕ i))) ⊕ M (λ n → y (n +ℕ i))
+         (x (0 +ℕ i) ⊕ M (λ n → x (succ n +ℕ i)))
+           ⊕ M (λ n → y (n +ℕ i))
              ＝⟨ ap ((x (0 +ℕ i) ⊕ M (λ n → x (succ n +ℕ i))) ⊕_)
                    (M-prop₁ (λ n → y (n +ℕ i))) ⟩
-         (x (0 +ℕ i) ⊕ M (λ n → x (succ n +ℕ i))) ⊕ (y (0 +ℕ i) ⊕ M (λ n → y (succ n +ℕ i)))
+         (x (0 +ℕ i) ⊕ M (λ n → x (succ n +ℕ i)))
+           ⊕ (y (0 +ℕ i) ⊕ M (λ n → y (succ n +ℕ i)))
              ＝⟨ ⊕-tran
                    (x (0 +ℕ i)) (M (λ n → x (succ n +ℕ i)))
                    (y (0 +ℕ i)) (M (λ n → y (succ n +ℕ i))) ⟩
-         ((x (0 +ℕ i) ⊕ y (0 +ℕ i)) ⊕ (M (λ n → x (succ n +ℕ i)) ⊕ M (λ n → y (succ n +ℕ i))))
+         ((x (0 +ℕ i) ⊕ y (0 +ℕ i))
+           ⊕ (M (λ n → x (succ n +ℕ i)) ⊕ M (λ n → y (succ n +ℕ i))))
              ＝⟨ ap (λ - → (x - ⊕ y -)
-                        ⊕ (M (λ n → x (succ n +ℕ i)) ⊕ M (λ n → y (succ n +ℕ i))))
+                           ⊕ (M (λ n → x (succ n +ℕ i))
+                             ⊕ M (λ n → y (succ n +ℕ i))))
                    (zero-left-neutral i) ⟩
-         ((x i ⊕ y i) ⊕ (M (λ n → x (succ n +ℕ i)) ⊕ M (λ n → y (succ n +ℕ i))))
-             ＝⟨ ap (λ - → (x i ⊕ y i) ⊕ (M - ⊕ M (λ n → y (succ n +ℕ i))))
+         ((x i ⊕ y i) ⊕ (M (λ n → x (succ n +ℕ i))
+           ⊕ M (λ n → y (succ n +ℕ i))))
+             ＝⟨ ap (λ - → (x i ⊕ y i)
+                           ⊕ (M - ⊕ M (λ n → y (succ n +ℕ i))))
                    (seq-add-push x i) ⟩
-         ((x i ⊕ y i) ⊕ (M (λ n → x (succ (n +ℕ i))) ⊕ M (λ n → y (succ n +ℕ i))))
-             ＝⟨ ap (λ - → (x i ⊕ y i) ⊕ (M (λ n → x (succ (n +ℕ i))) ⊕ M -))
+         ((x i ⊕ y i)
+           ⊕ (M (λ n → x (succ (n +ℕ i)))
+             ⊕ M (λ n → y (succ n +ℕ i))))
+             ＝⟨ ap (λ - → (x i ⊕ y i)
+                           ⊕ (M (λ n → x (succ (n +ℕ i))) ⊕ M -))
                    (seq-add-push y i) ⟩
          (x i ⊕ y i) ⊕ M' (succ i) ∎
 
- -- Lemma 5.1.25
- M-prop₁-inner : (x : ℕ → ℕ → 𝕀) → M (λ i → M (λ j → x i j))
-                                 ＝ M (λ i → x i 0 ⊕ M (λ j → x i (succ j)))
+ M-prop₁-inner : (x : ℕ → ℕ → 𝕀)
+               → M (λ i → M (λ j → x i j))
+               ＝ M (λ i → x i 0 ⊕ M (λ j → x i (succ j)))
  M-prop₁-inner x = ap M (dfunext (fe 𝓤₀ 𝓤) (λ i → M-prop₁ (x i)))
 
- M-symm : (x : ℕ → ℕ → 𝕀) → M (λ i → M (λ j → x i j)) ＝ M (λ i → (M λ j → x j i))
+ M-symm : (x : ℕ → ℕ → 𝕀)
+        → M (λ i → M (λ j → x i j)) ＝ M (λ i → (M λ j → x j i))
  M-symm x = M-prop₂ M' (λ i → M (λ j → x j i)) γ where
    M' : ℕ → 𝕀
    M' n = M (λ i → M (λ j → x i (j +ℕ n)))
@@ -255,9 +303,9 @@ module basic-interval-object-development {𝓤 : Universe}
                         → M (λ i → M (λ j → x i (succ j +ℕ n)))
                         ＝ M (λ i → M (λ j → x i (succ (j +ℕ n))))
        seq-seq-add-push x 0 = refl
-       seq-seq-add-push x (succ n) = seq-seq-add-push (λ i j → x i (succ j)) n
+       seq-seq-add-push x (succ n)
+        = seq-seq-add-push (λ i j → x i (succ j)) n
 
- -- Definition 5.1.26/Lemma 5.1.27
  ⊕-homs-are-M-homs : (h : 𝕀 → 𝕀) → is-⊕-homomorphism 𝓘 𝓘 h
            → (z : ℕ → 𝕀) → h (M z) ＝ M (λ n → h (z n))
  ⊕-homs-are-M-homs h hom z = M-prop₂ M' (λ n → h (z n)) γ where
@@ -277,25 +325,31 @@ module basic-interval-object-development {𝓤 : Universe}
          h (z i) ⊕ M' (succ i)
             ∎
 
- -- Corollary 5.1.42
- affine-M-hom : (x y : 𝕀) (z : ℕ → 𝕀) → affine x y (M z) ＝ M (λ n → affine x y (z n))
- affine-M-hom x y z = ⊕-homs-are-M-homs (affine x y) (affine-is-⊕-homomorphism x y) z
- 
+ affine-M-hom : (x y : 𝕀) (z : ℕ → 𝕀)
+              → affine x y (M z) ＝ M (λ n → affine x y (z n))
+ affine-M-hom x y z
+  = ⊕-homs-are-M-homs (affine x y) (affine-is-⊕-homomorphism x y) z
+```
+
+## Representing [-1,1]
+
+```
  −1 +1 : 𝕀
  −1 = u
  +1 = v
 
- -- Definition 5.1.46
  O : 𝕀
  O  = −1 ⊕ +1
+```
 
- -- Definition 5.1.47
+## Negation
+
+```
  −_ : 𝕀 → 𝕀
  −_ = affine +1 −1
 
  infixl 100 −_
 
- -- Lemma 5.1.48
  −-is-⊕-homomorphism : (a b : 𝕀) → − (a ⊕ b) ＝ − a ⊕ − b
  −-is-⊕-homomorphism = affine-is-⊕-homomorphism +1 −1
 
@@ -305,7 +359,6 @@ module basic-interval-object-development {𝓤 : Universe}
  +1-inverse : − +1 ＝ −1
  +1-inverse = affine-equation-r +1 −1
 
- -- Corollary 5.1.49
  O-inverse : − O ＝ O
  O-inverse =    − O      ＝⟨ −-is-⊕-homomorphism −1 +1 ⟩
              − −1 ⊕ − +1 ＝⟨ ap (_⊕ − +1) −1-inverse ⟩
@@ -313,7 +366,6 @@ module basic-interval-object-development {𝓤 : Universe}
                +1 ⊕ −1   ＝⟨ ⊕-comm +1 −1 ⟩
                   O      ∎
 
- -- Lemma 5.1.50
  −1-neg-inv : − − −1 ＝ −1
  −1-neg-inv = − − −1 ＝⟨ ap −_ −1-inverse ⟩
                 − +1 ＝⟨ +1-inverse ⟩
@@ -337,11 +389,6 @@ module basic-interval-object-development {𝓤 : Universe}
                           −1 +1 −1-neg-inv +1-neg-inv
                           −−-is-⊕-homomorphism
 
- fact : (x y : 𝕀) → x ⊕ − y ＝ − (− x ⊕ y)
- fact x y =     x ⊕ − y ＝⟨ ap (_⊕ (− y)) (−-involutive x ⁻¹) ⟩
-            − − x ⊕ − y ＝⟨ −-is-⊕-homomorphism (− x) y ⁻¹ ⟩
-            − (− x ⊕ y) ∎
-
  _⊖_ : 𝕀 → 𝕀 → 𝕀
  x ⊖ y = x ⊕ (− y)
 
@@ -358,14 +405,16 @@ module basic-interval-object-development {𝓤 : Universe}
                           (−-is-⊕-homomorphism x y)
                      ∙ ⊕-tran x y (− x) (− y))
               x
+```
 
- -- Definition 5.1.51
+## Multiplication
+
+```
  _*_ : 𝕀 → 𝕀 → 𝕀
  x * y = affine (− x) x y
 
  infixl 99 _*_
 
- -- Lemma 5.1.52
  *-gives-negation-l : (x : 𝕀) → x * −1 ＝ − x
  *-gives-negation-l x = affine-equation-l (− x) x
 
@@ -375,15 +424,13 @@ module basic-interval-object-development {𝓤 : Universe}
  *-is-⊕-homomorphism-l : (a : 𝕀) → is-⊕-homomorphism 𝓘 𝓘 (a *_)
  *-is-⊕-homomorphism-l a x y = affine-is-⊕-homomorphism (− a) a x y
 
- -- Lemma 5.1.53
  *-gives-negation-r : (y : 𝕀) → −1 * y ＝ − y
  *-gives-negation-r y = ap (λ - → affine - −1 y) −1-inverse
 
- -- Lemma 5.1.54
  *-gives-id-r : (y : 𝕀) → +1 * y ＝ y
- *-gives-id-r y = ap (λ - → affine - +1 y) +1-inverse ∙ affine-uv-involutive y
+ *-gives-id-r y
+  = ap (λ - → affine - +1 y) +1-inverse ∙ affine-uv-involutive y
 
- -- Lemma 5.1.56
  *-commutative : commutative _*_
  *-commutative x y = γ y
   where
@@ -408,7 +455,6 @@ module basic-interval-object-development {𝓤 : Universe}
        (− x) x (*-gives-negation-r x) (*-gives-id-r x)
        i
 
- -- Lemma 5.1.55 (TODO: Move after previous lemma in paper)
  *-gives-zero-l : (x : 𝕀) → x * O ＝ O
  *-gives-zero-l x = *-is-⊕-homomorphism-l x u v
                   ∙ ap (_⊕ (x * v)) (*-gives-negation-l x)
@@ -419,7 +465,6 @@ module basic-interval-object-development {𝓤 : Universe}
  *-gives-zero-r : (x : 𝕀) → O * x ＝ O
  *-gives-zero-r x = *-commutative O x ∙ *-gives-zero-l x
 
- -- Lemma 5.1.57
  *-is-⊕-homomorphism-r : (b : 𝕀) → is-⊕-homomorphism 𝓘 𝓘 (_* b)
  *-is-⊕-homomorphism-r b x y =
       (x ⊕ y) * b       ＝⟨ *-commutative (x ⊕ y) b ⟩
@@ -447,7 +492,6 @@ module basic-interval-object-development {𝓤 : Universe}
                 ＝⟨ affine-is-⊕-homomorphism +1 −1 (x * (− a)) (x * (− b)) ⟩
            − (x * − a) ⊕ − (x * − b) ∎
 
- -- Lemma 5.1.58
  *-assoc : (x y z : 𝕀) → x * (y * z) ＝ (x * y) * z
  *-assoc x y z = γ z ⁻¹
   where
@@ -465,35 +509,15 @@ module basic-interval-object-development {𝓤 : Universe}
            x * (y * a) ⊕ x * (y * b) ∎
    γ : (λ z → (x * y) * z) ∼ (λ z → x * (y * z))
    γ = affine-uniqueness· (λ z → x * (y * z)) (− (x * y)) (x * y) l r i
+```
 
- -- TODO: Below not in paper -- reconsider?
+## Halving
+
+```
  _/2 : 𝕀 → 𝕀
  _/2 = _⊕ O
  +1/2 = +1 /2
  −1/2 = −1 /2
+```
 
- _/4 : 𝕀 → 𝕀
- _/4 = _/2 ∘ _/2
-
- infixl 99 _/2
-
- −-half : (x : 𝕀) → − (x /2) ＝ − x /2
- −-half x = −-is-⊕-homomorphism x O ∙ ap (− x ⊕_) O-inverse
-
- O-half : O /2 ＝ O
- O-half = ⊕-idem O
-
- −1-half : − +1/2 ＝ −1/2
- −1-half = −-half +1 ∙ ap _/2 +1-inverse
-
- +1-half : − −1/2 ＝ +1/2
- +1-half = −-half −1 ∙ ap _/2 −1-inverse
-
- half-is-⊕-homomorphism : is-⊕-homomorphism 𝓘 𝓘 _/2
- half-is-⊕-homomorphism = ⊕-is-⊕-homomorphism-l 𝓘 O
-
- half-same : (x : 𝕀) → +1/2 * x ＝ x /2
- half-same x = ap (λ - → affine - +1/2 x) −1-half
-             ∙ affine-uniqueness· _/2 −1/2 +1/2
-               refl refl half-is-⊕-homomorphism x
-\end{code}
+[⇐ Index](../html/TWA.Thesis.index.html)
