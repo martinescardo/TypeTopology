@@ -33,7 +33,7 @@ church-rosser. This seems to be a bug, but we are not sure.
 
 \begin{code}
 
-module Groups.FreeLarge where
+module Groups.Free where
 
 open import MLTT.Spartan
 open import MLTT.Two
@@ -42,16 +42,18 @@ open import MLTT.Two-Properties
 open import Groups.Type
 open import MLTT.List
 
-open import UF.PropTrunc
-open import UF.Univalence
 open import UF.Base
-open import UF.Sets
-open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
 open import UF.Embeddings
 open import UF.Equiv
-open import UF.UA-FunExt
 open import UF.FunExt
+open import UF.PropTrunc
+open import UF.Quotient-Replacement
+open import UF.Sets
+open import UF.Size
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
+open import UF.UA-FunExt
+open import UF.Univalence
 
 \end{code}
 
@@ -625,6 +627,9 @@ universe levels:
    η/∾ : FA → FA/∾
    η/∾ = η/ -∾-
 
+   FA/∾-is-small : Set-Replacement pt → FA/∾ is 𝓤 small
+   FA/∾-is-small sr = resize-set-quotient pt fe pe sr -∾-
+
 \end{code}
 
 The above function η/∾ is the universal map into the quotient.
@@ -1014,7 +1019,7 @@ But for this one we do:
        where
         a : (f' : ⟨ 𝓕 ⟩ → ⟨ 𝓖 ⟩) → is-prop (is-hom 𝓕 𝓖 f' × f' ∘ ηᴳʳᵖ ∼ f)
         a f' = ×-is-prop (being-hom-is-prop fe 𝓕 𝓖 f')
-                         (Π-is-prop fe (λ a → group-is-set 𝓖))
+                         (Π-is-prop fe (λ a → groups-are-sets 𝓖))
 
         b : f' ＝ f₀
         b = dfunext fe
@@ -1045,6 +1050,9 @@ module FreeGroupInterface
 
  free-group : Group (𝓤 ⁺)
  free-group = 𝓕
+
+ free-group-carrier-is-small : Set-Replacement pt → ⟨ 𝓕 ⟩ is 𝓤 small
+ free-group-carrier-is-small = FA/∾-is-small
 
  η-free-group : A → ⟨ free-group ⟩
  η-free-group = ηᴳʳᵖ
@@ -1115,3 +1123,8 @@ increses universe levels. In the module FreeGroupOfLargeLocallySmallSet
 we show that for a large, locally small type type A : 𝓤⁺, the free
 group has a copy in the same universe 𝓤+ as A, and moreover, if the
 free group has a copy in 𝓤 then so must have the type A.
+
+Alternatively, we can assume set replacement. In the modules
+UF-Quotient and UF-Quotient-Replacement it is shown that the existence
+of small quotients is equivalent to the conjunction of set replacement
+and the existence of propositional truncations.
