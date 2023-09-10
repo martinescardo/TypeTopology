@@ -198,20 +198,6 @@ projective-propositions-gives-unspecified-split-support pap X =
 
 \end{code}
 
-The above allows us to give an alternative (w.r.t. [1]), non-direct proof of the
-following:
-
-\begin{code}
-
-unspecified-split-support-gives-projective-propositions :
- Unspecified-Split-Support → Propositions-Are-Projective
-unspecified-split-support-gives-projective-propositions uss =
- injectivity-gives-projective-propositions
-  (retract-gives-injectivity
-    (unspecified-split-support-gives-retract uss))
-
-\end{code}
-
 For convenience, we provide a summary of the chain of implications:
 
 \begin{code}
@@ -224,6 +210,20 @@ summary = unspecified-split-support-gives-retract
         , retract-gives-injectivity
         , injectivity-gives-projective-propositions
         , projective-propositions-gives-unspecified-split-support
+
+\end{code}
+
+Oberve that the concatenation of the first three implications yields an
+alternative (w.r.t. [1]), non-direct proof of the following:
+
+\begin{code}
+
+unspecified-split-support-gives-projective-propositions :
+ Unspecified-Split-Support → Propositions-Are-Projective
+unspecified-split-support-gives-projective-propositions uss =
+ injectivity-gives-projective-propositions
+  (retract-gives-injectivity
+    (unspecified-split-support-gives-retract uss))
 
 \end{code}
 
