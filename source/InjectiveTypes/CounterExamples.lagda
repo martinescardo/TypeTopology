@@ -18,7 +18,8 @@ its truncated version (injectivity), but this doesn't matter because
 most of our conclusions are propositions, and when they are not we can
 consider their truncations, which are also constructive taboos.
 
-More counter-examples are in the module InjectiveTypes.Resizing.
+More counter-examples are in the module InjectiveTypes.Resizing and in
+the module InjectiveTypes.InhabitedTypesTaboo.
 
 \begin{code}
 
