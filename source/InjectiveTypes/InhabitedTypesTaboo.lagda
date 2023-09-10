@@ -68,6 +68,7 @@ module InjectiveTypes.InhabitedTypesTaboo
 
 open PropositionalTruncation pt
 
+open import UF.Base
 open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.FunExt
@@ -90,9 +91,13 @@ private
  pe' {𝓤} = pe 𝓤
 
 open import InjectiveTypes.Blackboard fe
+open import InjectiveTypes.MathematicalStructures ua
 
 𝕀 : 𝓤 ⁺ ̇
 𝕀 = Σ X ꞉ 𝓤 ̇  , ∥ X ∥
+
+⟨_⟩ : 𝕀 → 𝓤 ̇
+⟨_⟩ = pr₁
 
 Propositions-Are-Projective : 𝓤 ⁺ ̇
 Propositions-Are-Projective = (P : 𝓤 ̇  ) (Y : P → 𝓤 ̇  )
@@ -108,7 +113,7 @@ unspecified-split-support-gives-retract : Unspecified-Split-Support
 unspecified-split-support-gives-retract uss = ρ , σ , ρσ
  where
   σ : 𝕀 → 𝓤 ̇
-  σ = pr₁
+  σ = ⟨_⟩
   ρ  : 𝓤 ̇ → 𝕀
   ρ X = (∥ X ∥ → X) , uss X
   ρσ : ρ ∘ σ ∼ id
@@ -146,7 +151,7 @@ flabbiness-gives-projective-propositions ϕ P Y P-is-prop Y-inh = I
   ext-property : (p : P) → (X , s) ＝ (Y p , Y-inh p)
   ext-property = pr₂ ext
   ext-property' : (p : P) → X ＝ Y p
-  ext-property' p = ap pr₁ (ext-property p)
+  ext-property' p = ap ⟨_⟩ (ext-property p)
 
   II : X → (p : P) → Y p
   II x p = idtofun X (Y p) (ext-property' p) x
@@ -190,5 +195,32 @@ summary = unspecified-split-support-gives-retract
         , retract-gives-injectivity
         , injectivity-gives-projective-propositions
         , projective-propositions-gives-unspecified-split-support
+
+\end{code}
+
+\begin{code}
+
+𝓤∙ : 𝓤 ⁺ ̇
+𝓤∙ = Σ X ꞉ 𝓤 ̇  , X
+
+𝓤∙-is-injective : ainjective-type 𝓤∙ 𝓤 𝓤
+𝓤∙-is-injective = ainjectivity-of-type-of-pointed-types
+
+𝓤∙-as-Σ-type-over-𝕀 : 𝓤∙ ≃ (Σ I ꞉ 𝕀 , ⟨ I ⟩)
+𝓤∙-as-Σ-type-over-𝕀 = 𝓤∙                      ≃⟨ Σ-cong e ⟩
+                      (Σ X ꞉ 𝓤 ̇  , ∥ X ∥ × X) ≃⟨ ≃-sym Σ-assoc ⟩
+                      (Σ I ꞉ 𝕀 , ⟨ I ⟩)       ■
+ where
+  e : (X : 𝓤 ̇  ) → X ≃ ∥ X ∥ × X
+  e X = qinveq f (g , η , ε)
+   where
+    f : X → ∥ X ∥ × X
+    f x = ∣ x ∣ , x
+    g : ∥ X ∥ × X → X
+    g = pr₂
+    η : g ∘ f ∼ id
+    η x = refl
+    ε : f ∘ g ∼ id
+    ε (s , x) = to-×-＝ (∥∥-is-prop ∣ x ∣ s) refl
 
 \end{code}
