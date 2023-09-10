@@ -3,7 +3,7 @@ Martin Escardo and Tom de Jong, July 2023.
 Some constructions with iterative multisets.
 
  * The universe is a retract of the type 𝕄 of iterative multisets.
- * 𝕄 is algebraicly injective.
+ * 𝕄 is algebraically injective.
 
 
 \begin{code}
@@ -105,7 +105,7 @@ The universe 𝓤 is embedded as a retract of 𝕄.
 
 \end{code}
 
-The type of multisets is algebraicly injective.
+The type of multisets is algebraically injective.
 
 \begin{code}
 

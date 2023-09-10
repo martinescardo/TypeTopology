@@ -73,7 +73,7 @@ extends  = aflabby-extension-property
 
 \end{code}
 
-We now assume that an algebraicly flabbly type X is given. Recall that
+We now assume that an algebraically flabbly type X is given. Recall that
 algebraic flabbiness is data rather than merely property.
 
 \begin{code}
