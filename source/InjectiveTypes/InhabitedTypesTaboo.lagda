@@ -1,4 +1,4 @@
-Tom de Jong & Martín Escardó, 8 September 2023.
+Tom de Jong & Martín Escardó, 8 & 10 September 2023.
 
 Formalising a discussion of 7 September.
 
@@ -38,10 +38,9 @@ Also notice that (3) (and thus, (4)) follows from excluded middle.
 
 
 It is noteworthy that this yields an example of an injective Σ-type whose index
-type is "not" injective, as follows:
-The type of pointed types
+type is "not" injective, as follows: The type of pointed types
   𝓤∙ = Σ X ꞉ 𝓤 ̇ , X
-is injective, as proved in InjectiveTypes.MathematicalStructures and is
+is injective, as proved in InjectiveTypes.MathematicalStructures, and is
 (equivalent) to the Σ-type
   Σ I ꞉ 𝕀 , pr₁ 𝕀,
 indexed over the "non"-injective type 𝕀.
@@ -100,11 +99,25 @@ private
 open import InjectiveTypes.Blackboard fe
 open import InjectiveTypes.MathematicalStructures ua
 
+\end{code}
+
+We write 𝕀 for the type of inhabited of types (in the fixed, but arbitrary
+universe 𝓤).
+
+\begin{code}
+
 𝕀 : 𝓤 ⁺ ̇
 𝕀 = Σ X ꞉ 𝓤 ̇  , ∥ X ∥
 
 ⟨_⟩ : 𝕀 → 𝓤 ̇
 ⟨_⟩ = pr₁
+
+\end{code}
+
+We define the two (equivalent) choice principles, labelled (3) and (4) at the
+top of this file.
+
+\begin{code}
 
 Propositions-Are-Projective : 𝓤 ⁺ ̇
 Propositions-Are-Projective = (P : 𝓤 ̇  ) (Y : P → 𝓤 ̇  )
@@ -114,6 +127,13 @@ Propositions-Are-Projective = (P : 𝓤 ̇  ) (Y : P → 𝓤 ̇  )
 
 Unspecified-Split-Support : 𝓤 ⁺ ̇
 Unspecified-Split-Support = (X : 𝓤 ̇  ) → ∥ (∥ X ∥ → X) ∥
+
+\end{code}
+
+We now prove the equivalence of statemements (1)─(4) and summarise the chain of
+implications at the end.
+
+\begin{code}
 
 unspecified-split-support-gives-retract : Unspecified-Split-Support
                                         → retract 𝕀 of (𝓤 ̇  )
@@ -192,6 +212,8 @@ unspecified-split-support-gives-projective-propositions uss =
 
 \end{code}
 
+For convenience, we provide a summary of the chain of implications:
+
 \begin{code}
 
 summary : (Unspecified-Split-Support → retract 𝕀 of (𝓤 ̇  ))
@@ -204,6 +226,14 @@ summary = unspecified-split-support-gives-retract
         , projective-propositions-gives-unspecified-split-support
 
 \end{code}
+
+Finally, we recall that the type 𝓤∙ of pointed types *is* injective and record
+that 𝓤∙ is equivalent to the Σ-type
+  Σ I ꞉ 𝕀 , pr₁ 𝕀,
+which is indexed over the "non"-injective type 𝕀.
+
+Hence, this gives an example of an injective Σ-type whose indexing type is "not"
+injective.
 
 \begin{code}
 
