@@ -36,8 +36,15 @@ shown in [2].
 
 Also notice that (3) (and thus, (4)) follows from excluded middle.
 
-TODO: Explain how this gives an example of an injective Sigma-type whose index
-      type is not injective.
+
+It is noteworthy that this yields an example of an injective Σ-type whose index
+type is "not" injective, as follows:
+The type of pointed types
+  𝓤∙ = Σ X ꞉ 𝓤 ̇ , X
+is injective, as proved in InjectiveTypes.MathematicalStructures and is
+(equivalent) to the Σ-type
+  Σ I ꞉ 𝕀 , pr₁ 𝕀,
+indexed over the "non"-injective type 𝕀.
 
 
 References
