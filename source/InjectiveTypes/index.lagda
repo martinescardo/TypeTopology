@@ -16,11 +16,16 @@ module InjectiveTypes.index where
 
 import InjectiveTypes.Article
 import InjectiveTypes.Blackboard
-import InjectiveTypes.CounterExamples
-
 \end{code}
 
 The following have been done after the above article was published.
+
+\begin{code}
+
+import InjectiveTypes.CounterExamples
+import InjectiveTypes.InhabitedTypesTaboo
+
+\end{code}
 
 Injectivity plays a major role in the construction of "searchable" or
 "compact" types:
