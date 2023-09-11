@@ -21,6 +21,7 @@ module Posets.PosetReflection
        where
 
 open import UF.Base hiding (_≈_)
+open import Quotient.Type
 open import Quotient.Large pt fe pe hiding (/-induction)
 open import UF.ImageAndSurjection pt
 open import UF.Subsingletons-FunExt

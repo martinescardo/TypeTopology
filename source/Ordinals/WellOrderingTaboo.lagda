@@ -308,6 +308,7 @@ module swan'
 
  open import MLTT.Two-Properties
 
+ open import Quotient.Type
  open import Quotient.Large pt fe pe
  open import UF.ImageAndSurjection pt
 

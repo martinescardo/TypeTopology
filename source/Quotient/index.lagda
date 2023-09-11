@@ -4,8 +4,8 @@
 
 module Quotient.index where
 
-import Quotient.Large
 import Quotient.Type
+import Quotient.Large
 import Quotient.FromSetReplacement
 import Quotient.GivesSetReplacement
 import Quotient.GivesPropTrunc
@@ -13,14 +13,14 @@ import Quotient.FromPropTrunc-F
 
 \end{code}
 
+ * Type
+
+   Defines the existence small quotients type and its basic theory.
+
  * Large
 
    Constructs large quotients from propositional truncations, function
    extensionality and propositional extensionality.
-
- * Type
-
-   Defines small quotient type and its basic theory.
 
  * FromSetReplacement
 

@@ -229,7 +229,7 @@ because y ∈ 𝕍-set f if and only if y is in the image of f.
    x = 𝕍-set f
 
   open total-space-of-an-element-of-𝕍 x σ
-  open set-quotients-exist sq
+  open general-set-quotients-exist sq
 
   𝕋x-≃-image-f : 𝕋x ≃ image f
   𝕋x-≃-image-f = Σ-cong h
@@ -284,7 +284,7 @@ equivalent to a large one. We do *not* use resizing axioms.
          (f : A → 𝕍)
         where
 
-  open set-quotients-exist sq
+  open general-set-quotients-exist sq
   open extending-relations-to-quotient fe pe
 
   _~_ : A → A → 𝓤 ⁺ ̇

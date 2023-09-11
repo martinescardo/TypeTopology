@@ -67,13 +67,14 @@ module Groups.FreeOverLargeLocallySmallSet
 open import Groups.Free
 open import Groups.Type
 open import MLTT.List
+open import Quotient.Large pt fe pe
+open import Quotient.Type
 open import Relations.SRTclosure
 open import UF.Base
-open import UF.Sets
 open import UF.Embeddings
 open import UF.Equiv hiding (_≅_)
 open import UF.EquivalenceExamples
-open import Quotient.Large pt fe pe
+open import UF.Sets
 open import UF.Size
 open import UF.SmallnessProperties
 

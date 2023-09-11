@@ -42,6 +42,7 @@ open import MLTT.Two-Properties
 open import Groups.Type
 open import MLTT.List
 
+open import Quotient.Type
 open import Quotient.FromSetReplacement
 open import UF.Base
 open import UF.Embeddings

@@ -33,6 +33,7 @@ is postulated - any non-MLTT axiom has to be an explicit assumption
 
 open import MLTT.Spartan
 
+open import Quotient.Type
 open import UF.Base hiding (_≈_)
 open import UF.Equiv
 open import UF.FunExt
@@ -68,19 +69,6 @@ themselves.)
 
 Then, for example, the function is-prop-valued defined below takes
 values in the least upper bound of 𝓤 and 𝓥, which is denoted by 𝓤 ⊔ 𝓥.
-
-We first define the type of five functions and then define them, where
-_≈_ is a variable:
-
-\begin{code}
-
-is-prop-valued is-equiv-relation : {X : 𝓤 ̇ } → (X → X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
-is-prop-valued _≈_    = ∀ x y → is-prop (x ≈ y)
-is-equiv-relation _≈_ = is-prop-valued _≈_
-                      × reflexive _≈_
-                      × symmetric _≈_
-                      × transitive _≈_
-\end{code}
 
 Now, using an anonymous module UF.with parameters (corresponding to a
 section in Coq), we assume propositional truncations that stay in the
@@ -279,6 +267,75 @@ universe 𝓦.
 
 \end{code}
 
+We should have proved (and used) this instead:
+
+\begin{code}
+
+ universal-property' : ∀ {𝓦} (A : 𝓦 ̇ )
+                    → is-set A
+                    → (f : X → A)
+                    → ({x x' : X} → x ≈ x' → f x ＝ f x')
+                    → ∃! f' ꞉ ( X/≈ → A), f' ∘ η ∼ f
+ universal-property' {𝓦} A iss f pr = ic
+  where
+   φ : (x' : X/≈) → is-prop (Σ a ꞉ A , ∃ x ꞉ X ,  (η x ＝ x') × (f x ＝ a))
+   φ = quotient-induction _ γ induction-step
+     where
+      induction-step : (y : X) → is-prop (Σ a ꞉ A , ∃ x ꞉ X ,  (η x ＝ η y) × (f x ＝ a))
+      induction-step x (a , d) (b , e) = to-Σ-＝ (p , ∥∥-is-prop _ _)
+       where
+        h : (Σ x' ꞉ X , (η x' ＝ η x) × (f x' ＝ a))
+          → (Σ y' ꞉ X , (η y' ＝ η x) × (f y' ＝ b))
+          → a ＝ b
+        h (x' , r , s) (y' , t , u) = s ⁻¹ ∙ pr (η-equal-equiv (r ∙ t ⁻¹)) ∙ u
+
+        p : a ＝ b
+        p = ∥∥-rec iss (λ σ → ∥∥-rec iss (h σ) e) d
+
+      γ : (x' : X/≈) → is-prop (is-prop (Σ a ꞉ A , ∃ x ꞉ X , (η x ＝ x') × (f x ＝ a)))
+      γ x' = being-prop-is-prop fe
+
+   k : (x' : X/≈) → Σ a ꞉ A , ∃ x ꞉ X , (η x ＝ x') × (f x ＝ a)
+   k = quotient-induction _ φ induction-step
+    where
+     induction-step : (y : X) → Σ a ꞉ A , ∃ x ꞉ X , (η x ＝ η y) × (f x ＝ a)
+     induction-step x = f x , ∣ x , refl , refl ∣
+
+   f' : X/≈ → A
+   f' x' = pr₁ (k x')
+
+   r : f' ∘ η ∼ f
+   r = h
+    where
+     g : (y : X) → ∃ x ꞉ X , (η x ＝ η y) × (f x ＝ f' (η y))
+     g y = pr₂ (k (η y))
+
+     j : (y : X) → (Σ x ꞉ X , (η x ＝ η y) × (f x ＝ f' (η y))) → f' (η y) ＝ f y
+     j y (x , p , q) = q ⁻¹ ∙ pr (η-equal-equiv p)
+
+     h : (y : X) → f' (η y) ＝ f y
+     h y = ∥∥-rec iss (j y) (g y)
+
+   c : (σ : Σ f'' ꞉ (X/≈ → A), f'' ∘ η ∼ f) → (f' , r) ＝ σ
+   c (f'' , s) = to-Σ-＝ (t , v) -- (t , v)
+    where
+     w : ∀ x → f' (η x) ＝ f'' (η x)
+     w x = r x ∙ (s x)⁻¹
+
+     t : f' ＝ f''
+     t = dfunext fe (quotient-induction _ (λ _ → iss) w)
+
+     u : f'' ∘ η ∼ f
+     u = transport (λ - → - ∘ η ∼ f) t r
+
+     v : u ＝ s
+     v = dfunext fe (λ x → iss (u x) (s x))
+
+   ic : ∃! f' ꞉ (X/≈ → A), f' ∘ η ∼ f
+   ic = (f' , r) , c
+
+\end{code}
+
 Added 11th February 2021. We now repackage the above for convenient
 use:
 
@@ -289,13 +346,9 @@ module _ {𝓤 𝓥 : Universe} where
  open quotient
  open import UF.ImageAndSurjection pt
 
- EqRel : 𝓤 ̇ → 𝓤 ⊔ (𝓥 ⁺) ̇
- EqRel X = Σ R ꞉ (X → X → 𝓥 ̇ ) , is-equiv-relation R
 
- _≈[_]_ : {X : 𝓤 ̇ } → X → EqRel X → X → 𝓥 ̇
- x ≈[ _≈_ , _ ] y = x ≈ y
 
- _/_ : (X : 𝓤 ̇ ) → EqRel X → 𝓤 ⊔ (𝓥 ⁺) ̇
+ _/_ : (X : 𝓤 ̇ ) → EqRel {𝓤} {𝓥} X → 𝓤 ⊔ (𝓥 ⁺) ̇
  X / (_≈_ , p , r , s , t) = X/≈ X _≈_ p r s t
 
  module _ {X : 𝓤 ̇ }
@@ -327,10 +380,13 @@ module _ {𝓤 𝓥 : Universe} where
                → (x' : X / ≋) → P x'
   /-induction' {𝓦} {P} = surjection-induction η/ η/-is-surjection P
 
-  identifies-related-points : {A : 𝓦 ̇ } → (X → A) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
-  identifies-related-points f = ∀ {x x'} → x ≈ x' → f x ＝ f x'
+  identifies-related-points' : {A : 𝓦 ̇ } → (X → A) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
+  identifies-related-points' f = ∀ {x x'} → x ≈ x' → f x ＝ f x'
 
-  η/-identifies-related-points : identifies-related-points η/
+  /-is-set : is-set (X / ≋)
+  /-is-set = X/≈-is-set X _≈_ ≈p ≈r ≈s ≈t
+
+  η/-identifies-related-points : identifies-related-points' η/
   η/-identifies-related-points = η-equiv-equal X _≈_ ≈p ≈r ≈s ≈t
 
   η/-relates-identified-points : {x y : X}
@@ -345,24 +401,30 @@ module _ {𝓤 𝓥 : Universe} where
    abstract
     universal-property/ : is-set A
                         → (f : X → A)
-                        → identifies-related-points f
+                        → identifies-related-points' f
                         → ∃! f' ꞉ (X / ≋ → A), f' ∘ η/ ＝ f
     universal-property/ = universal-property X _≈_ ≈p ≈r ≈s ≈t A
 
+    /-universality : is-set A
+                   → (f : X → A)
+                   → identifies-related-points' f
+                   → ∃! f' ꞉ (X / ≋ → A), f' ∘ η/ ∼ f
+    /-universality = universal-property' X _≈_ ≈p ≈r ≈s ≈t A
+
     mediating-map/ : is-set A
                    → (f : X → A)
-                   → identifies-related-points f
+                   → identifies-related-points' f
                    → X / ≋ → A
     mediating-map/ i f p = pr₁ (center (universal-property/ i f p))
 
     universality-triangle/＝ : (i : is-set A) (f : X → A)
-                              (p : identifies-related-points f)
+                              (p : identifies-related-points' f)
                             → mediating-map/ i f p ∘ η/ ＝ f
     universality-triangle/＝ i f p = pr₂ (center (universal-property/ i f p))
 
 
     universality-triangle/ : (i : is-set A) (f : X → A)
-                             (p : identifies-related-points f)
+                             (p : identifies-related-points' f)
                            → mediating-map/ i f p ∘ η/ ∼ f
     universality-triangle/ i f p = happly (universality-triangle/＝ i f p)
 
@@ -376,7 +438,7 @@ module _ {𝓤 𝓥 : Universe} where
       f : X → A
       f = g ∘ η/
 
-      j : identifies-related-points f
+      j : identifies-related-points' f
       j e = ap g (η/-identifies-related-points e)
 
       q : mediating-map/ i f j ＝ g
@@ -404,12 +466,12 @@ Extending unary and binary operations to the quotient:
 \begin{code}
 
   extension/ : (f : X → X / ≋)
-             → identifies-related-points f
+             → identifies-related-points' f
              → (X / ≋ → X / ≋)
   extension/ = mediating-map/ quotient-is-set
 
   extension-triangle/ : (f : X → X / ≋)
-                        (i : identifies-related-points f)
+                        (i : identifies-related-points' f)
                       → extension/ f i ∘ η/ ∼ f
   extension-triangle/ = universality-triangle/ quotient-is-set
 
@@ -419,7 +481,7 @@ Extending unary and binary operations to the quotient:
 
    abstract
     private
-      π : identifies-related-points (η/ ∘ f)
+      π : identifies-related-points' (η/ ∘ f)
       π e = η/-identifies-related-points (p e)
 
    extension₁/ : X / ≋ → X / ≋
@@ -434,7 +496,7 @@ Extending unary and binary operations to the quotient:
 
    abstract
     private
-     π : (x : X) → identifies-related-points (η/ ∘ f x)
+     π : (x : X) → identifies-related-points' (η/ ∘ f x)
      π x {y} {y'} e = η/-identifies-related-points (p {x} {y} {x} {y'} (≈r x) e)
 
      p' : (x : X) {y y' : X} → y ≈ y' → f x y ≈ f x y'
@@ -605,3 +667,26 @@ quotients-equivalent X (_≈_  , ≈p ,  ≈r  , ≈s  , ≈t )
   γ = qinveq f (f' , α' , α)
 
 \end{code}
+
+Added 11 Sep 2023 by Martin Escardo. Package part of the above into
+the type of existence of large quotients.
+
+\begin{code}
+
+large-set-quotients : large-set-quotients-exist
+large-set-quotients =
+ record
+   { _/_ = _/_
+   ; η/ = η/
+   ; η/-identifies-related-points = η/-identifies-related-points
+   ; /-is-set = /-is-set
+   ; /-universality = /-universality
+   }
+
+pt-fe-pe-give-large-effective-set-quotients : are-effective large-set-quotients
+pt-fe-pe-give-large-effective-set-quotients {𝓤} {𝓥} X {R} {x} {y} =
+ η/-relates-identified-points R
+
+\end{code}
+
+TODO. Add that the large quotients we get are locally small.

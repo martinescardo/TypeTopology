@@ -1,6 +1,7 @@
 Tom de Jong, 4 & 5 April 2022.
 
-Quotients.
+Quotients. Much of this material is moved from or abstracted from the
+earlier 2018 module Quotient.Large by Martin Escardo.
 
 \begin{code}
 
@@ -23,8 +24,10 @@ open import UF.Subsingletons-FunExt
 
 is-prop-valued is-equiv-relation : {X : 𝓤 ̇ } → (X → X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
 is-prop-valued    _≈_ = ∀ x y → is-prop (x ≈ y)
-is-equiv-relation _≈_ = is-prop-valued _≈_ × reflexive  _≈_
-                      × symmetric      _≈_ × transitive _≈_
+is-equiv-relation _≈_ = is-prop-valued _≈_
+                      × reflexive      _≈_
+                      × symmetric      _≈_
+                      × transitive     _≈_
 
 EqRel : {𝓤 𝓥 : Universe} → 𝓤 ̇ → 𝓤 ⊔ (𝓥 ⁺) ̇
 EqRel {𝓤} {𝓥} X = Σ R ꞉ (X → X → 𝓥 ̇ ) , is-equiv-relation R
@@ -55,7 +58,8 @@ record general-set-quotients-exist (F : Universe → Universe) : 𝓤ω where
   /-is-set : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } (≋ : EqRel {𝓤} {𝓥} X) → is-set (X / ≋)
   /-universality : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } (≋ : EqRel {𝓤} {𝓥} X)
                    {𝓦 : Universe} {Y : 𝓦 ̇ }
-                 → is-set Y → (f : X → Y)
+                 → is-set Y
+                 → (f : X → Y)
                  → identifies-related-points ≋ f
                  → ∃! f̅ ꞉ (X / ≋ → Y) , f̅ ∘ η/ ≋ ∼ f
 
@@ -104,12 +108,11 @@ particular, the quotient of type in 𝓤 by a 𝓤-valued equivalence relation l
 in 𝓤 again.
 
 The following is boilerplate and duplicates some of the material in
-Quotient.Type.lagda, where large set quotients are constructed using propositional
+Quotient.Large, where large set quotients are constructed using propositional
 truncations, function extensionality and propositional extensionality.
 
 We need the boilerplate in OrdinalOfOrdinalsSuprema.lagda, where we use set
 quotients to construct small suprema of small ordinals.
-
 
 A quotient is said to be effective if for every x, y : X, we have x ≈ y whenever
 η/ x ＝ ‌η/ y. Notice that we did not include effectivity as a requirement in
@@ -287,5 +290,17 @@ We now define the existence of small and large quotients:
 set-quotients-exist large-set-quotients-exist : 𝓤ω
 set-quotients-exist       = general-set-quotients-exist id
 large-set-quotients-exist = general-set-quotients-exist (_⁺)
+
+\end{code}
+
+\begin{code}
+
+are-effective : {F : Universe → Universe} → general-set-quotients-exist F → 𝓤ω
+are-effective {F} sq = {𝓤 𝓥 : Universe} (X : 𝓤 ̇ )
+                       {R : EqRel {𝓤} {𝓥} X}
+                       {x y : X}
+                     → η/ R x ＝ η/ R y → x ≈[ R ] y
+ where
+  open general-set-quotients-exist sq
 
 \end{code}

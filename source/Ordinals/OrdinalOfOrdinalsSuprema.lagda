@@ -108,7 +108,7 @@ module construction-using-quotient
         (α : I → Ordinal 𝓤)
        where
 
- open set-quotients-exist sq
+ open general-set-quotients-exist sq
 
  private
   pt : propositional-truncations-exist
@@ -1016,7 +1016,7 @@ ordinal-of-ordinals-has-small-suprema'' :
 ordinal-of-ordinals-has-small-suprema'' sq =
  ordinal-of-ordinals-has-small-suprema' pt R
   where
-   open set-quotients-exist sq
+   open general-set-quotients-exist sq
    pt : propositional-truncations-exist
    pt = propositional-truncations-from-set-quotients sq fe'
    R : Set-Replacement pt

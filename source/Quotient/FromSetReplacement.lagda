@@ -39,7 +39,7 @@ open import UF.ImageAndSurjection
 open import UF.Equiv
 
 open import Quotient.Large pt fe pe
-open import Quotient.Type using (set-quotients-exist)
+open import Quotient.Type -- using (set-quotients-exist ; is-effective ; EqRel)
 open import UF.Size
 
 module _
@@ -82,7 +82,7 @@ module _
 
 We now use the above resizing to construct a quotient that strictly lives in the
 universe 𝓤 ⊔ 𝓥, yielding set quotients as defined in
-Quotient.Type.lagda.
+Quotient.Quotient.lagda.
 
 \begin{code}
 
@@ -141,13 +141,19 @@ Quotient.Type.lagda.
        ⌜ φ ⌝ (⌜ φ ⌝⁻¹ (η/ ≋ y)) ＝⟨ ≃-sym-is-rinv φ (η/ ≋ y) ⟩
        η/ ≋ y                   ∎
 
-set-replacement-gives-set-quotients : Set-Replacement pt → set-quotients-exist
-set-replacement-gives-set-quotients R = record
+set-quotients-from-set-replacement : Set-Replacement pt → set-quotients-exist
+set-quotients-from-set-replacement R = record
  { _/_                          = λ X → X/ₛ≈ R
  ; η/                           = η/ₛ R
  ; η/-identifies-related-points = η/ₛ-identifies-related-points R
  ; /-is-set                     = /ₛ-is-set R
  ; /-universality               = /ₛ-universality R
  }
+
+set-replacement-gives-effective-set-quotients
+ : (sr : Set-Replacement pt)
+ → are-effective (set-quotients-from-set-replacement sr)
+set-replacement-gives-effective-set-quotients sr {𝓤} {𝓥} X {R} {x} {y} =
+ η/ₛ-relates-identified-points sr R
 
 \end{code}
