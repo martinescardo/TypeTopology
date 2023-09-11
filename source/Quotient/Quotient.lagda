@@ -8,7 +8,7 @@ Assuming set quotients, we
 
 {-# OPTIONS --safe --without-K --exact-split #-}
 
-module UF.Quotient where
+module Quotient.Quotient where
 
 open import MLTT.Spartan
 
@@ -99,7 +99,7 @@ particular, the quotient of type in 𝓤 by a 𝓤-valued equivalence relation l
 in 𝓤 again.
 
 The following is boilerplate and duplicates some of the material in
-UF.Quotient.lagda, where large set quotients are constructed using propositional
+Quotient.Quotient.lagda, where large set quotients are constructed using propositional
 truncations, function extensionality and propositional extensionality.
 
 We need the boilerplate in OrdinalOfOrdinalsSuprema.lagda, where we use set
@@ -113,7 +113,7 @@ least in the presence of function extensionality and propositonal
 extensionality, as Martín observed. The proof is as follows:
 
 (1) First construct propositional truncations using assumed set quotients.
-(2) Construct another (large) quotient as described in UF.Large-Quotients.lagda.
+(2) Construct another (large) quotient as described in Quotient.Larges.lagda.
 (3) This large quotient is effective, but has to be isomorphic to the assumed
     set quotient, hence this quotient has to be effective as well.
 

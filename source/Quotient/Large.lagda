@@ -45,7 +45,7 @@ open import UF.SubtypeClassifier-Properties
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
-module UF.Large-Quotient
+module Quotient.Large
         (pt  : propositional-truncations-exist)
         (fe  : Fun-Ext)
         (pe  : Prop-Ext)

@@ -403,7 +403,7 @@ an arbitrary well founded order) also appears at the bottom of [Acz77, p. 743].
  open import Ordinals.ArithmeticProperties ua
  open import Ordinals.OrdinalOfOrdinalsSuprema ua
 
- open import UF.Quotient hiding (is-prop-valued)
+ open import Quotient.Quotient hiding (is-prop-valued)
 
  module 𝕍-to-Ord-construction
          (sq : set-quotients-exist)

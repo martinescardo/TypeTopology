@@ -73,7 +73,7 @@ open import UF.Sets
 open import UF.Embeddings
 open import UF.Equiv hiding (_≅_)
 open import UF.EquivalenceExamples
-open import UF.Large-Quotient pt fe pe
+open import Quotient.Large pt fe pe
 open import UF.Size
 open import UF.SmallnessProperties
 

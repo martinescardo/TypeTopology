@@ -29,7 +29,7 @@ notably doesn't use set quotients.
 {-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
 
 
-open import UF.Quotient
+open import Quotient.Quotient
 open import UF.Univalence
 
 module Ordinals.OrdinalOfOrdinalsSuprema
@@ -589,7 +589,7 @@ We now formalize an alternative construction due to Martín Escardó that doesn'
 use set quotients, but instead relies on Set Replacement (as defined and
 explained in UF.Size.lagda) to obtain a small ordinal at the end.
 
-(As proved in UF.Quotient.lagda and UF-Quotient-Replacement.lagda, Set
+(As proved in Quotient.Quotient.lagda and UF-Quotient-Replacement.lagda, Set
 Replacement is equivalent to having small set quotients.)
 
 \begin{code}
@@ -1002,7 +1002,7 @@ module _ (pt : propositional-truncations-exist) where
 
 \end{code}
 
-As proved in UF.Quotient.lagda and UF-Quotient-Replacement.lagda, Set
+As proved in Quotient.Quotient.lagda and UF-Quotient-Replacement.lagda, Set
 Replacement is equivalent to having small set quotients, so it follows
 immediately that (just as above) Ordinal 𝓤 has small suprema if we assume the
 existence of (small) set quotients.

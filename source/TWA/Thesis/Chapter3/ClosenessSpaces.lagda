@@ -9,7 +9,7 @@ open import TypeTopology.DiscreteAndSeparated
 open import UF.FunExt
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import UF.Quotient
+open import Quotient.Quotient
 open import UF.Miscelanea
 open import MLTT.Two-Properties
 
@@ -33,7 +33,7 @@ pr₂ (≤-≼-relationship (succ n) 0) n≼m
  = Succ-not-≼-Zero (n ↑) n≼m
 pr₂ (≤-≼-relationship (succ n) (succ m)) n≼m
  = pr₂ (≤-≼-relationship n m) (Succ-loc (n ↑) (m ↑) n≼m)
- 
+
 -- Lemma 3.2.18 [ TODO: Remove from paper ]
 
 -- Lemma 3.2.19
@@ -42,7 +42,7 @@ is-decreasing' : (v : ℕ∞) (n : ℕ) → (i : ℕ) → i ≤ n
 is-decreasing' v
  = regress (λ z → pr₁ v z ＝ ₁) (λ n → ≤₂-criterion-converse (pr₂ v n))
 
-positive-below-n : (i n : ℕ) → pr₁ (Succ (n ↑)) i ＝ ₁ → i ≤ n 
+positive-below-n : (i n : ℕ) → pr₁ (Succ (n ↑)) i ＝ ₁ → i ≤ n
 positive-below-n zero n snᵢ=1 = ⋆
 positive-below-n (succ i) (succ n) snᵢ=1 = positive-below-n i n snᵢ=1
 
@@ -70,7 +70,7 @@ is-closeness c
 is-closeness-space : (X : 𝓤 ̇ ) → 𝓤 ̇
 is-closeness-space X = Σ c ꞉ (X → X → ℕ∞) , is-closeness c
 
-ClosenessSpace : (𝓤 : Universe) → 𝓤 ⁺  ̇ 
+ClosenessSpace : (𝓤 : Universe) → 𝓤 ⁺  ̇
 ClosenessSpace 𝓤
  = Σ X ꞉ 𝓤 ̇ , is-closeness-space X
 
@@ -78,7 +78,7 @@ ClosenessSpace 𝓤
 ⟨ X , _ ⟩ = X
 
 -- Definition 3.2.23 [ Doesn't say in paper that this is an equiv rel ? TODO ]
-C : (X : ClosenessSpace 𝓤) → ℕ → ⟨ X ⟩ → ⟨ X ⟩ → 𝓤₀ ̇   
+C : (X : ClosenessSpace 𝓤) → ℕ → ⟨ X ⟩ → ⟨ X ⟩ → 𝓤₀ ̇
 C (X , c , _) n x y = (n ↑) ≼ c x y
 
 C-prop : (X : ClosenessSpace 𝓤) (n : ℕ) → is-prop-valued (C X n)
@@ -89,7 +89,7 @@ C-refl : (X : ClosenessSpace 𝓤) (n : ℕ) → reflexive (C X n)
 C-refl (X , c , i , e , s , u) n x
  = transport ((n ↑) ≼_) (e x ⁻¹) (∞-maximal (n ↑))
 
-C-sym : (X : ClosenessSpace 𝓤) (n : ℕ) → symmetric (C X n) 
+C-sym : (X : ClosenessSpace 𝓤) (n : ℕ) → symmetric (C X n)
 C-sym (X , c , i , e , s , u) n x y Cxy
  = transport ((n ↑) ≼_) (s x y) Cxy
 
@@ -105,7 +105,7 @@ C-is-eq : (X : ClosenessSpace 𝓤) (n : ℕ)
         → is-equiv-relation (C X n)
 C-is-eq X n = C-prop X n , C-refl X n , C-sym X n , C-trans X n
 
-CΩ : (X : ClosenessSpace 𝓤) → ℕ → ⟨ X ⟩ → ⟨ X ⟩ → Ω 𝓤₀   
+CΩ : (X : ClosenessSpace 𝓤) → ℕ → ⟨ X ⟩ → ⟨ X ⟩ → Ω 𝓤₀
 CΩ X n x y = C X n x y , C-prop X n x y
 
 C⁼ : (X : ClosenessSpace 𝓤) (n : ℕ) → EqRel ⟨ X ⟩
@@ -115,14 +115,14 @@ C⁼ X n = C X n , C-is-eq X n
 
 -- Definition 3.2.25
 f-continuous : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥)
-             → (f : ⟨ X ⟩ → ⟨ Y ⟩) → 𝓤 ̇  
+             → (f : ⟨ X ⟩ → ⟨ Y ⟩) → 𝓤 ̇
 f-continuous X Y f
  = (ϵ : ℕ) → (x₁ : ⟨ X ⟩) → Σ δ ꞉ ℕ , ((x₂ : ⟨ X ⟩)
  → C X δ x₁ x₂ → C Y ϵ (f x₁) (f x₂))
 
 -- Definition 3.2.26
 f-ucontinuous : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥)
-              → (f : ⟨ X ⟩ → ⟨ Y ⟩) → 𝓤 ̇  
+              → (f : ⟨ X ⟩ → ⟨ Y ⟩) → 𝓤 ̇
 f-ucontinuous X Y f
  = (ϵ : ℕ) → Σ δ ꞉ ℕ , ((x₁ x₂ : ⟨ X ⟩)
  → C X δ x₁ x₂ → C Y ϵ (f x₁) (f x₂))
@@ -136,11 +136,11 @@ ucontinuous-continuous X Y f ϕ ϵ x₁ = pr₁ (ϕ ϵ)  , pr₂ (ϕ ϵ) x₁
 
 -- Definition 3.2.28
 p-ucontinuous : (X : ClosenessSpace 𝓤)
-              → (p : ⟨ X ⟩ → Ω 𝓦) → 𝓤 ⊔ 𝓦  ̇  
+              → (p : ⟨ X ⟩ → Ω 𝓦) → 𝓤 ⊔ 𝓦  ̇
 p-ucontinuous X p
  = Σ δ ꞉ ℕ , ((x₁ x₂ : ⟨ X ⟩)
  → C X δ x₁ x₂ → (p x₁ holds → p x₂ holds))
-           
+
 -- Examples 3.2.3 [ TODO Finish file ]
 -- in Thesis.Chapter3.ClosenessSpaces-Examples fe
 
@@ -162,7 +162,7 @@ _cover-of_ : ℕ → ClosenessSpace 𝓤 → (𝓥 : Universe) → 𝓤 ⊔ (�
 (ϵ cover-of X) 𝓥 = Σ X' ꞉ 𝓥 ̇ , X' is ϵ cover-of X
 
 -- Definition 3.3.3
-totally-bounded : ClosenessSpace 𝓤 → (𝓥 : Universe) → 𝓤 ⊔ (𝓥 ⁺) ̇ 
+totally-bounded : ClosenessSpace 𝓤 → (𝓥 : Universe) → 𝓤 ⊔ (𝓥 ⁺) ̇
 totally-bounded X 𝓥
  = (ϵ : ℕ) → Σ (X' , _) ꞉ (ϵ cover-of X) 𝓥 , finite-discrete X'
 
@@ -171,7 +171,7 @@ totally-bounded X 𝓥
 
 open set-quotients-exist sq
 
-semi-searchable : (C : ClosenessSpace {𝓤}) → 𝓤 ⊔ 𝓦 ⁺  ̇ 
+semi-searchable : (C : ClosenessSpace {𝓤}) → 𝓤 ⊔ 𝓦 ⁺  ̇
 semi-searchable {𝓤} {𝓦} (X , ci)
  = (n : ℕ) → searchable {𝓤} {𝓦} (X / cloeq (X , ci) n)
 
@@ -224,4 +224,3 @@ semi-searchable⇒c-searchable {𝓤} {𝓦} (X , ci) r S p (δ , ϕ)
    x₀ = pr₁ (r δ) x₀/
    γ₀ : x₀/ ＝ η/ (cloeq (X , ci) δ) x₀
    γ₀ = pr₂ (r δ) x₀/ ⁻¹
-   

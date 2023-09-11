@@ -154,6 +154,7 @@ import NotionsOfDecidability.index
 import Ordinals.index
 import PCF.index
 import Posets.index
+import Quotient.index
 import Relations.index
 import Rationals.index
 import Slice.index

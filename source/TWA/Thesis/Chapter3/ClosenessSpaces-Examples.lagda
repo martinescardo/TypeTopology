@@ -13,7 +13,7 @@ open import TypeTopology.DiscreteAndSeparated
 open import UF.FunExt
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import UF.Quotient
+open import Quotient.Quotient
 open import UF.Miscelanea
 open import UF.Embeddings
 open import MLTT.Two-Properties
@@ -33,13 +33,13 @@ c⟨ (X , c , _) ⟩ = c
 ×-clofun' X Y (x₁ , y₁) (x₂ , y₂)
  = min (c⟨ X ⟩ x₁ x₂) (c⟨ Y ⟩ y₁ y₂)
 
-min-∞-l : (u v : ℕ∞) → min u v ＝ ∞ → u ＝ ∞ 
+min-∞-l : (u v : ℕ∞) → min u v ＝ ∞ → u ＝ ∞
 min-∞-l u v min＝∞
  = to-subtype-＝ (being-decreasing-is-prop (fe _ _))
      (dfunext (fe _ _)
        (λ i → Lemma[min𝟚ab＝₁→a＝₁] (ap (λ - → pr₁ - i) min＝∞)))
-       
-min-∞-r : (u v : ℕ∞) → min u v ＝ ∞ → v ＝ ∞ 
+
+min-∞-r : (u v : ℕ∞) → min u v ＝ ∞ → v ＝ ∞
 min-∞-r u v min＝∞
  = to-subtype-＝ (being-decreasing-is-prop (fe _ _))
      (dfunext (fe _ _)
@@ -258,8 +258,8 @@ discrete-seq-clofun-e
  : {X : 𝓤 ̇ } → (d : is-discrete X)
  → indistinguishable-are-equal (discrete-seq-clofun d)
 discrete-seq-clofun-e d α β cαβ=∞
- = discrete-seq-clofun'-e d α β (λ n → ap (λ - → pr₁ - n) cαβ=∞) 
-     
+ = discrete-seq-clofun'-e d α β (λ n → ap (λ - → pr₁ - n) cαβ=∞)
+
 discrete-seq-clofun-i : {X : 𝓤 ̇ } → (d : is-discrete X)
                       → self-indistinguishable (discrete-seq-clofun d)
 discrete-seq-clofun-i d α
@@ -405,7 +405,7 @@ open import TWA.Thesis.Chapter5.SignedDigit
  = ap (λ - → pr₁ - 0) (s 0 (x 0) (y 0))
  where
   s : (n : ℕ) → is-symmetric c⟨ T n ⟩
-  s n = pr₁ (pr₂ (pr₂ (pr₂ (pr₂ (T n))))) 
+  s n = pr₁ (pr₂ (pr₂ (pr₂ (pr₂ (T n)))))
 Π-clofun'-s T x y (succ n)
  = ap (λ - → min𝟚 - (Π-clofun' (T ∘ succ) (x ∘ succ) (y ∘ succ) n))
      (ap (λ - → pr₁ - (succ n)) (s 0 (x 0) (y 0)))
@@ -419,7 +419,7 @@ Lemma[min𝟚abcd＝₁→min𝟚ac＝₁] : (a b c d : 𝟚)
                             → min𝟚 (min𝟚 a b) (min𝟚 c d) ＝ ₁
                             → min𝟚 a c ＝ ₁
 Lemma[min𝟚abcd＝₁→min𝟚ac＝₁] ₁ ₁ ₁ ₁ e = refl
- 
+
 Lemma[min𝟚abcd＝₁→min𝟚bd＝₁] : (a b c d : 𝟚)
                             → min𝟚 (min𝟚 a b) (min𝟚 c d) ＝ ₁
                             → min𝟚 b d ＝ ₁
@@ -521,7 +521,7 @@ open import UF.EquivalenceExamples
   μ : {n : ℕ} → (λ (x : Fin n) → g (h x)) ∼ (λ x → x)
   μ {succ n} 𝟎       = refl
   μ {succ n} (suc x) = ap suc (μ x)
-  
+
 Vec-finite-discrete : {F : 𝓤 ̇ } (ϵ : ℕ) → finite-discrete F
                     → finite-discrete (Vec F ϵ)
 Vec-finite-discrete {𝓤} {F} zero (n , f) = 1 , qinveq g (h , η , μ)
@@ -568,12 +568,12 @@ Vec-finite-discrete {𝓤} {F} (succ ϵ) (n , f)
     , (C (ℕ→D-ClosenessSpace d) ϵ α (Vec-to-Seq x₀ v))
   ζ : (α : ℕ → F) (ϵ n : ℕ) → n < succ ϵ
     → (α ∼ⁿ (Vec-to-Seq x₀ (α 0 ∷ pr₁ (γ ϵ (α ∘ succ))))) (succ n)
-  
+
   γ 0 α = [] , (λ _ ())
   γ (succ ϵ) α
    = (α 0 ∷ pr₁ (γ ϵ (α ∘ succ)))
    , λ n n⊏ϵ → decidable-𝟚₁ (discrete-decidable-seq _ _ _ (succ n))
-                 (ζ (λ z → α z) ϵ n (⊏-gives-< n (succ ϵ) n⊏ϵ)) 
+                 (ζ (λ z → α z) ϵ n (⊏-gives-< n (succ ϵ) n⊏ϵ))
 
   ζ α ϵ n n<ϵ zero i<n = refl
   ζ α (succ ϵ) (succ n) n<ϵ (succ i) i<n = ζ (α ∘ succ) ϵ n n<ϵ i i<n

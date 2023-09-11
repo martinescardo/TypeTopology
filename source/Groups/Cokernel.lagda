@@ -38,7 +38,7 @@ module Groups.Cokernel
        where
 
 open import UF.ImageAndSurjection pt
-open import UF.Large-Quotient pt fe pe
+open import Quotient.Large pt fe pe
 
 open import Groups.Type renaming (_≅_ to _≣_)
 open import Groups.Triv

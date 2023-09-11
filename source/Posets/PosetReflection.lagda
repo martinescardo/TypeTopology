@@ -1,7 +1,7 @@
 Tom de Jong, 3 June 2022
 
 The poset reflection of a preorder, using (large) set quotients as constructed
-in UF.Large-Quotient.
+in Quotient.Large.
 
 \begin{code}
 
@@ -21,7 +21,7 @@ module Posets.PosetReflection
        where
 
 open import UF.Base hiding (_≈_)
-open import UF.Large-Quotient pt fe pe hiding (/-induction)
+open import Quotient.Large pt fe pe hiding (/-induction)
 open import UF.ImageAndSurjection pt
 open import UF.Subsingletons-FunExt
 

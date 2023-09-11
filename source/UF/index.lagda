@@ -31,7 +31,6 @@ import UF.ImageAndSurjection
 import UF.ImageAndSurjection-F
 import UF.Knapp-UA
 import UF.KrausLemma
-import UF.Large-Quotient
 import UF.LeftCancellable
 import UF.Logic
 import UF.Lower-FunExt
@@ -46,9 +45,6 @@ import UF.PreUnivalence
 import UF.PropIndexedPiSigma
 import UF.PropTrunc
 import UF.PropTrunc-F
-import UF.Quotient
-import UF.Quotient-F
-import UF.Quotient-Replacement
 import UF.Retracts
 import UF.Retracts-FunExt
 import UF.SIP

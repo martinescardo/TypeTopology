@@ -1,7 +1,7 @@
 Tom de Jong, 5 April 2022, after discussion with Martín.
 (Refactoring an earlier addition dated 15 March 2022.)
 
-The construction of set quotients in UF.Large-Quotients.lagda takes a type X : 𝓤
+The construction of set quotients in Quotient.Larges.lagda takes a type X : 𝓤
 and a 𝓥-valued equivalence relation and constructs the quotient as a type in 𝓥 ⁺
 ⊔ 𝓤.
 
@@ -25,7 +25,7 @@ open import UF.SubtypeClassifier
 open import UF.SubtypeClassifier-Properties
 open import UF.Subsingletons
 
-module UF.Quotient-Replacement
+module Quotient.Replacement
         (pt : propositional-truncations-exist)
         (fe : Fun-Ext)
         (pe : Prop-Ext)
@@ -38,8 +38,8 @@ open import UF.Subsingletons-FunExt
 open import UF.ImageAndSurjection
 open import UF.Equiv
 
-open import UF.Large-Quotient pt fe pe
-open import UF.Quotient using (set-quotients-exist)
+open import Quotient.Large pt fe pe
+open import Quotient.Quotient using (set-quotients-exist)
 open import UF.Size
 
 module _
@@ -82,7 +82,7 @@ module _
 
 We now use the above resizing to construct a quotient that strictly lives in the
 universe 𝓤 ⊔ 𝓥, yielding set quotients as defined in
-UF.Quotient.lagda.
+Quotient.Quotient.lagda.
 
 \begin{code}
 
