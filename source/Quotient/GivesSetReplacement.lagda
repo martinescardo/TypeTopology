@@ -26,7 +26,7 @@ module _
         (pt : propositional-truncations-exist)
        where
 
- open set-quotients-exist sq
+ open general-set-quotients-exist sq
  open PropositionalTruncation pt
  open import UF.ImageAndSurjection pt
 

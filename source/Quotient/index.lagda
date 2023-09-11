@@ -13,7 +13,6 @@ import Quotient.FromPropTrunc-F
 
 \end{code}
 
-
  * Large
 
    Constructs large quotients from propositional truncations, function
@@ -21,7 +20,7 @@ import Quotient.FromPropTrunc-F
 
  * Type
 
-   Defines small quotient type its basic theory.
+   Defines small quotient type and its basic theory.
 
  * FromSetReplacement
 

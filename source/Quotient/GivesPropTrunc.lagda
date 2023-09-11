@@ -21,7 +21,7 @@ open import UF.Subsingletons-Properties
 
 module _ (sq : set-quotients-exist) where
 
- open set-quotients-exist sq
+ open general-set-quotients-exist sq
 
  private
   module _ {X : 𝓤 ̇ } where

@@ -76,8 +76,10 @@ _≈_ is a variable:
 
 is-prop-valued is-equiv-relation : {X : 𝓤 ̇ } → (X → X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
 is-prop-valued _≈_    = ∀ x y → is-prop (x ≈ y)
-is-equiv-relation _≈_ = is-prop-valued _≈_ × reflexive _≈_ × symmetric _≈_ × transitive _≈_
-
+is-equiv-relation _≈_ = is-prop-valued _≈_
+                      × reflexive _≈_
+                      × symmetric _≈_
+                      × transitive _≈_
 \end{code}
 
 Now, using an anonymous module UF.with parameters (corresponding to a

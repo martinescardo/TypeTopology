@@ -36,9 +36,18 @@ identifies-related-points : {X : 𝓤 ̇ } (≈ : EqRel {𝓤} {𝓥} X) {Y : �
                           → (X → Y) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
 identifies-related-points (_≈_ , _) f = ∀ {x x'} → x ≈ x' → f x ＝ f x'
 
-record set-quotients-exist : 𝓤ω where
+\end{code}
+
+To account for the module Quotient.Large, and, at the same time, usual
+(small) quotients, we introduce a parametric definion of existence of
+quotients. For small quotients we take F = id, and for large quotients
+we take F = _⁺ (see below).
+
+\begin{code}
+
+record general-set-quotients-exist (F : Universe → Universe) : 𝓤ω where
  field
-  _/_ : {𝓤 𝓥 : Universe} (X : 𝓤 ̇ ) → EqRel {𝓤} {𝓥} X → 𝓤 ⊔ 𝓥 ̇
+  _/_ : {𝓤 𝓥 : Universe} (X : 𝓤 ̇ ) → EqRel {𝓤} {𝓥} X → 𝓤 ⊔ F 𝓥 ̇
   η/ : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } (≋ : EqRel {𝓤} {𝓥} X) → X → X / ≋
   η/-identifies-related-points : {𝓤 𝓥 : Universe}
                                  {X : 𝓤 ̇ } (≋ : EqRel {𝓤} {𝓥} X)
@@ -72,12 +81,12 @@ The induction principle follows from the universal property.
     ΣP-is-set : is-set (Σ P)
     ΣP-is-set = subsets-of-sets-are-sets (X / ≋) P (/-is-set ≋)
                                          (λ {x'} → P-is-prop-valued x')
-    F : ∃! f̅ ꞉ (X / ≋ → Σ P) , f̅ ∘ η/ ≋ ∼ f
-    F = /-universality ≋ ΣP-is-set f f-identifies-related-points
+    u : ∃! f̅ ꞉ (X / ≋ → Σ P) , f̅ ∘ η/ ≋ ∼ f
+    u = /-universality ≋ ΣP-is-set f f-identifies-related-points
     f̅ : X / ≋ → Σ P
-    f̅ = ∃!-witness F
+    f̅ = ∃!-witness u
     f̅-after-η-is-f : f̅ ∘ η/ ≋ ∼ f
-    f̅-after-η-is-f = ∃!-is-witness F
+    f̅-after-η-is-f = ∃!-is-witness u
     f̅-section-of-pr₁ : pr₁ ∘ f̅ ＝ id
     f̅-section-of-pr₁ = ap pr₁ (singletons-are-props c (pr₁ ∘ f̅ , h)
                                                       (id , λ x → refl))
@@ -232,7 +241,6 @@ binary and ternary versions of quotient induction.
    /-induction₂ (λ x' y' → Π-is-prop fe (p x' y'))
                 (λ x y → /-induction ≋ (p (η/ ≋ x) (η/ ≋ y)) (h x y))
 
-
  quotients-equivalent : (X : 𝓤 ̇ ) (R : EqRel {𝓤} {𝓥} X) (R' : EqRel {𝓤} {𝓦} X)
                       → ({x y : X} → x ≈[ R ] y ⇔ x ≈[ R' ] y)
                       → (X / R) ≃ (X / R')
@@ -269,5 +277,15 @@ binary and ternary versions of quotient induction.
    α' = /-induction ≋ (λ _ → /-is-set ≋) a'
    γ : (X / ≋) ≃ (X / ≋')
    γ = qinveq f (f' , α' , α)
+
+\end{code}
+
+We now define the existence of small and large quotients:
+
+\begin{code}
+
+set-quotients-exist large-set-quotients-exist : 𝓤ω
+set-quotients-exist       = general-set-quotients-exist id
+large-set-quotients-exist = general-set-quotients-exist (_⁺)
 
 \end{code}
