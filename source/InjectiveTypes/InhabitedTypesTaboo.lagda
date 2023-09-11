@@ -279,8 +279,8 @@ Non-Empty as a retract of the universe without having to take recourse to a
 choice principle like we did in the construction
 unspecified-split-support-gives-retract.
 
-This also serves to highlight the (constructive) difference(s) between the
-propostional truncation and the double negation.
+This also serves to highlight the (constructive) difference(s) between
+propositional truncation and double negation.
 
 \begin{code}
 
