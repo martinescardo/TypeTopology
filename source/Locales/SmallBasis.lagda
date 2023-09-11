@@ -307,30 +307,6 @@ basic-is-small X (ℬ , b) ψ =
 
 \begin{code}
 
-spectral-yoneda : (X : Locale 𝓤 𝓥 𝓦)
-                → is-spectral X holds
-                → (U V : ⟨ 𝒪 X ⟩)
-                → (((K , _) : 𝒦 X) → (K ≤[ poset-of (𝒪 X) ] U) holds → (K ≤[ poset-of (𝒪 X) ] V) holds)
-                → (U ≤[ poset-of (𝒪 X) ] V) holds
-spectral-yoneda {_} {_} {𝓦} X (_ , c) U V φ =
- ∥∥-rec (holds-is-prop (U ≤[ poset-of (𝒪 X) ] V)) † (c U)
-  where
-   open PosetReasoning (poset-of (𝒪 X))
-
-   † : Σ S ꞉ Fam 𝓦 ⟨ 𝒪 X ⟩ ,
-        consists-of-compact-opens X S holds × (is-directed (𝒪 X) S holds) × (U ＝ ⋁[ 𝒪 X ] S)
-     → (U ≤[ poset-of (𝒪 X) ] V) holds
-   † (S , κ , d , c) = U            ≤⟨ Ⅰ ⟩
-                       ⋁[ 𝒪 X ] S   ≤⟨ Ⅱ ⟩
-                       V            ■
-                        where
-                         Ⅰ = reflexivity+ (poset-of (𝒪 X)) c
-                         Ⅱ = ⋁[ 𝒪 X ]-least S (V , (λ i → φ (S [ i ] , κ i) (S [ i ] ≤⟨ ⋁[ 𝒪 X ]-upper S i ⟩ ⋁[ 𝒪 X ] S ＝⟨ c ⁻¹ ⟩ₚ U ■)))
-
-\end{code}
-
-\begin{code}
-
 spectral-and-small-𝒦-gives-basis : (X : Locale 𝓤 𝓦 𝓦)
                                  → is-spectral X holds
                                  → 𝒦 X is 𝓦 small

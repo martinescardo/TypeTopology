@@ -44,6 +44,7 @@ open import Locales.Compactness pt fe
 open import Locales.CompactRegular pt fe using (∨-is-scott-continuous)
 open import Locales.Spectrality pt fe
 open import Locales.SmallBasis pt fe sr
+open import Locales.CharacterisationOfContinuity pt fe
 
 open Locale
 
@@ -168,12 +169,10 @@ module OpenNucleus (X  : Locale 𝓤 𝓥 𝓥)
  open PatchConstruction X σ renaming (Perfect-Nucleus to Perfect-Nucleus-on-X)
 
  X-spectralᴰ : spectralᴰ X
- X-spectralᴰ = {!spectral-and-small-𝒦-gives-spectrality X σ sk!}
+ X-spectralᴰ = spectral-and-small-𝒦-implies-spectralᴰ X σ sk
 
  X-has-small-basis : ∥ basisᴰ (𝒪 X) ∥
- X-has-small-basis = ∣ spectralᴰ-implies-basisᴰ X {!X-basisᴰ!} ∣
-
-{--
+ X-has-small-basis = ∣ spectralᴰ-implies-basisᴰ X X-spectralᴰ ∣
 
  open HeytingImplicationConstruction X X-has-small-basis
 
@@ -268,17 +267,16 @@ module OpenNucleus (X  : Locale 𝓤 𝓥 𝓥)
              ((U ==> V) ∧[ 𝒪 X ] U) ∧[ 𝒪 X ] W                       ≤⟨ vii ⟩
              V ∧[ 𝒪 X ] W ■
 
- opn-perfect : ((K , _) : 𝒦) → is-perfect (opn K) holds
- opn-perfect (K , κ) =
-  characterisation-of-continuity (𝒪 X) (𝒪 X) σ (opn K) (opn-monotone K) γ
+ opn-perfect : ((K , _) : 𝒦 X) → is-perfect (opn K) holds
+ opn-perfect (K , κ) = characterisation-of-continuity X X σ (opn K) (opn-monotone K) γ
    where
     open PosetReasoning (poset-of (𝒪 X))
 
-    γ : continuity-condition (𝒪 X) (𝒪 X) (opn K) holds
+    γ : continuity-condition X X (opn K) holds
     γ K₂ U κ₂ p = ∣ (K ∧[ 𝒪 X ] K₂) , κ′ , ♠ , ♥ ∣
      where
-      κ′ : is-compact-open (𝒪 X) (K ∧[ 𝒪 X ] K₂) holds
-      κ′ = compacts-closed-under-∧-in-spectral-frames (𝒪 X) σ K K₂ κ κ₂
+      κ′ : is-compact-open X (K ∧[ 𝒪 X ] K₂) holds
+      κ′ = binary-coherence X σ K K₂ κ κ₂
 
       ♠ : ((K ∧[ 𝒪 X ] K₂) ≤[ poset-of (𝒪 X) ] U) holds
       ♠ = K ∧[ 𝒪 X ] K₂          ≤⟨ i  ⟩
@@ -299,8 +297,8 @@ module OpenNucleus (X  : Locale 𝓤 𝓥 𝓥)
                   , opn-is-idempotent U
                   , opn-preserves-meets U
 
- ¬‘_’ : 𝒦 → Perfect-Nucleus-on-X
- ¬‘ (K , κ) ’ = K ==>_ , opn-is-nucleus K , opn-perfect (K , κ)
+ ¬‘_’ : 𝒦 X → Perfect-Nucleus-on-X
+ ¬‘ (K , κ) ’ = K ==>_ , (opn-is-nucleus K , opn-perfect (K , κ))
 
 \end{code}
 
@@ -398,29 +396,51 @@ module OpenNucleus (X  : Locale 𝓤 𝓥 𝓥)
    † = heyting-implication₁ U (j V) (U ==> V) ♠
    ‡ = heyting-implication₁ (j U) (j V) (U ==> j V) ♣
 
-
 \end{code}
 
 \begin{code}
 
-module Epsilon (X : Locale (𝓤 ⁺) 𝓤 𝓤) (σᴰ : spectralᴰ (𝒪 X)) where
+module Epsilon (X : Locale (𝓤 ⁺) 𝓤 𝓤) (σᴰ : spectralᴰ X) where
 
- open PatchConstruction X ∣ σᴰ ∣ renaming (Perfect-Nucleus to Perfect-Nucleus-on-X)
+ σ : is-spectral X holds
+ σ = spectralᴰ-gives-spectrality X σᴰ
+
+ ℬ↑ : Fam 𝓤 ⟨ 𝒪 X ⟩
+ ℬ↑ = basisₛ X σᴰ
+
+ d : directed-basisᴰ (𝒪 X)
+ d = ℬ↑ , basisₛ-is-directed-basis X σᴰ
+
+ β : has-basis (𝒪 X) holds
+ β = ∣ spectralᴰ-implies-basisᴰ X σᴰ ∣
+
+ κ : consists-of-compact-opens X ℬ↑ holds
+ κ = basisₛ-consists-of-compact-opens X σᴰ
+
+ sk : 𝒦 X is 𝓤 small
+ sk = 𝒦-is-small X d κ (local-smallness X)
+
+ open PatchConstruction X σ renaming (Perfect-Nucleus to Perfect-Nucleus-on-X)
  open SmallPatchConstruction X σᴰ renaming (SmallPatch to Patchₛ-X)
- open ClosedNucleus X ∣ σᴰ ∣
- open OpenNucleus X ∣ σᴰ ∣
- open HeytingImplicationConstruction X (spectral-frames-have-bases (𝒪 X) ∣ σᴰ ∣)
+ open ClosedNucleus X σ
+ open OpenNucleus X σ sk
+ open HeytingImplicationConstruction X β
 
- 𝟎ₖ : 𝒦
- 𝟎ₖ = 𝟎[ 𝒪 X ] , 𝟎-is-compact (𝒪 X)
+ 𝟎ₖ : 𝒦 X
+ 𝟎ₖ = 𝟎[ 𝒪 X ] , 𝟎-is-compact X
 
  ¬‘’-reflects-𝟎 : ¬‘ 𝟎ₖ ’ ＝ 𝟏[ 𝒪 Patchₛ-X ]
- ¬‘’-reflects-𝟎 = only-𝟏-is-above-𝟏 (𝒪 Patchₛ-X) ¬‘ 𝟎ₖ ’ †
+ ¬‘’-reflects-𝟎 = perfect-nuclei-eq ¬‘ 𝟎ₖ ’ 𝟏[ 𝒪 Patchₛ-X ] †
   where
    open PosetReasoning (poset-of (𝒪 X))
 
-   † : (𝟏[ 𝒪 Patchₛ-X ] ≼ᵏ ¬‘ 𝟎ₖ ’) holds
-   † i = ex-falso-quodlibet (ℬ [ i ])
+   foo : (U : ⟨ 𝒪 X ⟩) → rel-syntax (poset-of (𝒪 X)) (𝟏[ 𝒪 Patchₛ-X ] $ U) (¬‘ 𝟎ₖ ’ $ U) holds
+   foo U = {!!}
+
+   † : ¬‘ 𝟎ₖ ’ $_ ＝ 𝟏[ 𝒪 Patchₛ-X ] $_
+   † = dfunext fe λ U → ≤-is-antisymmetric (poset-of (𝒪 X)) (𝟏-is-top (𝒪 X) (¬‘ 𝟎ₖ ’ $ U)) (foo U)
+
+{--
 
  ϵ-preserves-𝟏 : ‘ 𝟏[ 𝒪 X ] ’ ＝ 𝟏[ 𝒪 Patchₛ-X ]
  ϵ-preserves-𝟏 = perfect-nuclei-eq ‘ 𝟏[ 𝒪 X ] ’ 𝟏[ 𝒪 Patchₛ-X ] (dfunext fe †)
