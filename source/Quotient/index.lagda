@@ -7,8 +7,8 @@ module Quotient.index where
 import Quotient.Large
 import Quotient.Type
 import Quotient.FromSetReplacement
-import Quotient.GivesPropTrunc
 import Quotient.GivesSetReplacement
+import Quotient.GivesPropTrunc
 import Quotient.FromPropTrunc-F
 
 \end{code}
