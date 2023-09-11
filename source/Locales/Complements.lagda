@@ -31,14 +31,29 @@ open Locale
 
 \end{code}
 
-An open _U_ in a frame _A_ is *clopen* iff it is well-inside itself.
+An open `x` in a frame `L` is *clopen* iff it has complement `x′`.
 
 \begin{code}
 
 is-boolean-complement-of : (L : Frame 𝓤 𝓥 𝓦) → ⟨ L ⟩ → ⟨ L ⟩ → Ω 𝓤
-is-boolean-complement-of F x x′ =
+is-boolean-complement-of F x′ x =
  (x ∧[ F ] x′ ＝[ iss ]＝ 𝟎[ F ]) ∧ (x ∨[ F ] x′ ＝[ iss ]＝ 𝟏[ F ])
   where
    iss = carrier-of-[ poset-of F ]-is-set
+
+\end{code}
+
+\begin{code}
+
+complementation-is-symmetric : (F : Frame 𝓤 𝓥 𝓦) (x y : ⟨ F ⟩)
+                             → (is-boolean-complement-of F x y
+                             ⇒  is-boolean-complement-of F y x) holds
+complementation-is-symmetric F x y (φ , ψ) = † , ‡
+ where
+  † : x ∧[ F ] y ＝ 𝟎[ F ]
+  † = x ∧[ F ] y ＝⟨ ∧[ F ]-is-commutative x y ⟩ y ∧[ F ] x ＝⟨ φ ⟩ 𝟎[ F ] ∎
+
+  ‡ : x ∨[ F ] y ＝ 𝟏[ F ]
+  ‡ = x ∨[ F ] y ＝⟨ ∨[ F ]-is-commutative x y ⟩ y ∨[ F ] x ＝⟨ ψ ⟩ 𝟏[ F ] ∎
 
 \end{code}
