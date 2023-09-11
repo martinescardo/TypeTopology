@@ -46,6 +46,11 @@ is injective, as proved in InjectiveTypes.MathematicalStructures, and is
 indexed over the "non"-injective type 𝕀.
 
 
+To illustrate the constructive differences between the propositional truncation
+and the double negation, we show ─ in contrast to the above ─ that the type of
+non-empty types *is* injective.
+
+
 References
 ──────────
 [1] Nicolai Kraus, Martín Escardó, Thierry Coquand and Thorsten Altenkirch.
@@ -74,6 +79,8 @@ module InjectiveTypes.InhabitedTypesTaboo
 
 open PropositionalTruncation pt
 
+open import MLTT.Negation
+
 open import UF.Base
 open import UF.Equiv
 open import UF.EquivalenceExamples
@@ -101,13 +108,17 @@ open import InjectiveTypes.MathematicalStructures ua
 
 \end{code}
 
-We write 𝕀 for the type of inhabited of types (in the fixed, but arbitrary
-universe 𝓤).
+We define the type of inhabited of types (in a fixed, but arbitrary universe 𝓤).
+For convenience we also write 𝕀 for this type in this file.
 
 \begin{code}
 
-𝕀 : 𝓤 ⁺ ̇
-𝕀 = Σ X ꞉ 𝓤 ̇  , ∥ X ∥
+Inhabited : 𝓤 ⁺ ̇
+Inhabited = Σ X ꞉ 𝓤 ̇  , ∥ X ∥
+
+private
+ 𝕀 : 𝓤 ⁺ ̇
+ 𝕀 = Inhabited
 
 ⟨_⟩ : 𝕀 → 𝓤 ̇
 ⟨_⟩ = pr₁
@@ -259,5 +270,53 @@ injective.
     η x = refl
     ε : f ∘ g ∼ id
     ε (s , x) = to-×-＝ (∥∥-is-prop ∣ x ∣ s) refl
+
+\end{code}
+
+In contrast to the fact that the type of inhabited types is "not" injective, the
+type of non-empty types *is* injective. Notice how we prove this by establishing
+Non-Empty as a retract of the universe without having to take recourse to a
+choice principle like we did in the construction
+unspecified-split-support-gives-retract.
+
+This also serves to highlight the (constructive) difference(s) between the
+propostional truncation and the double negation.
+
+\begin{code}
+
+Non-Empty : 𝓤 ⁺ ̇
+Non-Empty = Σ X ꞉ 𝓤 ̇  , is-nonempty X
+
+Non-Empty-retract : retract Non-Empty of (𝓤 ̇  )
+Non-Empty-retract = ρ , σ , ρσ
+ where
+  ρ : 𝓤 ̇ → Non-Empty
+  ρ X = (¬¬ X → X) , p
+   where
+    p : ¬¬ (¬¬ X → X)
+    p = double-negation-of-implication→ q
+     where
+      q : ¬ (¬¬ (¬¬ X) × ¬ X)
+      q (h₁ , h₂) = h₁ (¬¬-intro h₂)
+  σ : Non-Empty → 𝓤 ̇
+  σ = pr₁
+  ρσ : ρ ∘ σ ∼ id
+  ρσ (X , X-non-empty) = to-subtype-＝ (λ Y → negations-are-props fe')
+                                       (eqtoid (ua 𝓤) (¬¬ X → X) X e)
+   where
+    e = (¬¬ X → X) ≃⟨ I ⟩
+        (𝟙{𝓤} → X) ≃⟨ ≃-sym (𝟙→ fe') ⟩
+        X          ■
+     where
+      I = →cong'' fe' fe' (idtoeq (¬¬ X) 𝟙 II)
+       where
+        II : ¬¬ X ＝ 𝟙
+        II = holds-gives-equal-𝟙 pe' (¬¬ X) (negations-are-props fe') X-non-empty
+
+Non-Empty-is-injective : ainjective-type Non-Empty 𝓤 𝓤
+Non-Empty-is-injective =
+ retract-of-ainjective Non-Empty (𝓤 ̇  )
+                       (universes-are-ainjective-Π (ua 𝓤))
+                       Non-Empty-retract
 
 \end{code}
