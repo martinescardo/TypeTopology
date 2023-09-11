@@ -45,7 +45,7 @@ is equivalent to the image of f : A → 𝕍 (with A : 𝓤), which is a small t
 to equivalence thanks to the fact that 𝕍 is locally small.
 
 (This general fact on small images of maps into locally small sets is recorded
-in the module set-replacement-construction in the file UF/Quotient.lagda.)
+in the module set-replacement-construction in the file Quotient.GivesSetReplacement.)
 
 Specifically, the image of f is equivalent to the set quotient A/~ where ~
 relates two elements if f identifies them. We then prove that
@@ -77,12 +77,14 @@ module Ordinals.CumulativeHierarchy-Addendum
         (𝓤 : Universe)
        where
 
+open import Quotient.Type hiding (is-prop-valued)
+open import Quotient.GivesSetReplacement
+
 open import UF.Base hiding (_≈_)
 open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.FunExt
 open import UF.ImageAndSurjection pt
-open import Quotient.Quotient hiding (is-prop-valued)
 open import UF.Sets
 open import UF.Size
 open import UF.SubtypeClassifier

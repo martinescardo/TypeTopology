@@ -64,7 +64,7 @@ rank = 𝕍-induction (λ _ → 𝕆) {!!}
 
 
 open import UF.PropTrunc
-open import Quotient.Quotient -- hiding (is-prop-valued)
+open import Quotient.Type -- hiding (is-prop-valued)
 
 open import Ordinals.Arithmetic fe'
 open import Ordinals.ArithmeticProperties ua

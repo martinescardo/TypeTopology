@@ -9,7 +9,7 @@ open import Notation.Order
 open import Naturals.Order
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import Quotient.Quotient
+open import Quotient.Type
 open import UF.Embeddings
 open import UF.Equiv
 open import CoNaturals.GenericConvergentSequence

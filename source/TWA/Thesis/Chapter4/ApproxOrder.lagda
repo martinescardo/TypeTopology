@@ -4,7 +4,7 @@
 
 open import MLTT.Spartan
 open import UF.FunExt
-open import Quotient.Quotient
+open import Quotient.Type
 
 module TWA.Thesis.Chapter4.ApproxOrder (fe : FunExt) where
 

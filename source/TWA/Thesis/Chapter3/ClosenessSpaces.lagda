@@ -9,7 +9,7 @@ open import TypeTopology.DiscreteAndSeparated
 open import UF.FunExt
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import Quotient.Quotient
+open import Quotient.Type
 open import UF.Miscelanea
 open import MLTT.Two-Properties
 

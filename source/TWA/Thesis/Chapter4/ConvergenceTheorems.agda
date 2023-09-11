@@ -3,7 +3,7 @@
 open import UF.FunExt
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import Quotient.Quotient
+open import Quotient.Type
 open import MLTT.Spartan
 open import Notation.Order
 open import Naturals.Order
