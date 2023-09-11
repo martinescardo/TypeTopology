@@ -575,18 +575,45 @@ spectralᴰ-gives-spectrality X σᴰ = ⦅𝟏⦆ , ⦅𝟐⦆
 
 \begin{code}
 
+open import Locales.CompactRegular pt fe using (directify-preserves-closure-under-∧)
+
 spectral-and-small-𝒦-implies-spectralᴰ : (X : Locale 𝓤 𝓥 𝓥)
                                        → is-spectral X holds
                                        → 𝒦 X is 𝓥 small
                                        → spectralᴰ X
-spectral-and-small-𝒦-implies-spectralᴰ {𝓤} {𝓥} X σ 𝕤ₖ =
- pr₁ Σ-assoc (spectral-and-small-𝒦-gives-directed-basis X σ 𝕤ₖ , κ , {!!})
+spectral-and-small-𝒦-implies-spectralᴰ {𝓤} {𝓥} X σ 𝕤ₖ@(𝒦₀ , e) =
+ pr₁ Σ-assoc (spectral-and-small-𝒦-gives-directed-basis X σ 𝕤ₖ , κ , μ↑)
   where
    ℬ : Fam 𝓥 ⟨ 𝒪 X ⟩
    ℬ = pr₁ (spectral-and-small-𝒦-gives-basis X σ 𝕤ₖ)
 
+   β : is-basis-for (𝒪 X) ℬ
+   β = pr₂ (spectral-and-small-𝒦-gives-basis X σ 𝕤ₖ)
+
+   sec : 𝒦₀ → 𝒦 X
+   sec = pr₁ e
+
+   ret : 𝒦 X → 𝒦₀
+   ret = pr₁ (pr₁ (pr₂ e))
+
+
+   q : (K : ⟨ 𝒪 X ⟩) (κ : is-compact-open X K holds)
+     → sec (ret (K , κ)) ＝ (K , κ)
+   q K κ = pr₂ (pr₁ (pr₂ e)) (K , κ)
+
+   q₀ : (K : ⟨ 𝒪 X ⟩) (κ : is-compact-open X K holds)
+      → pr₁ (sec (ret (K , κ))) ＝ K
+   q₀ K κ = pr₁ (from-Σ-＝ (q K κ))
+
+   ℬ-consists-of-compact-opens : (i : index ℬ)
+                               → is-compact-open X (ℬ [ i ]) holds
+   ℬ-consists-of-compact-opens i = pr₂ (sec i)
+
    ℬ↑ : Fam 𝓥 ⟨ 𝒪 X ⟩
    ℬ↑ = pr₁ (spectral-and-small-𝒦-gives-directed-basis X σ 𝕤ₖ)
+
+   β↑ : directed-basis-forᴰ (𝒪 X) ℬ↑
+   β↑ = pr₂ (spectral-and-small-𝒦-gives-directed-basis X σ 𝕤ₖ)
 
    κ : consists-of-compact-opens X ℬ↑ holds
    κ []       = 𝟎-is-compact X
@@ -594,7 +621,54 @@ spectral-and-small-𝒦-implies-spectralᴰ {𝓤} {𝓥} X σ 𝕤ₖ =
                  X
                  (ℬ [ i ])
                  (ℬ↑ [ is ])
-                 {!!}
-                 {!!}
+                 (ℬ-consists-of-compact-opens i)
+                 (κ is)
+
+   κ₁ : is-compact-open X 𝟏[ 𝒪 X ] holds
+   κ₁ = spectral-implies-compact X σ
+
+   τ↑ : contains-top (𝒪 X) ℬ↑ holds
+   τ↑ = ∣ (ret (𝟏[ 𝒪 X ] , κ₁) ∷ []) , † ∣
+    where
+     ‡ : 𝟏[ 𝒪 X ] ＝ (ℬ [ ret (𝟏[ 𝒪 X ] , κ₁) ] ∨[ 𝒪 X ] 𝟎[ 𝒪 X ])
+     ‡ = 𝟏[ 𝒪 X ]                                    ＝⟨ q₀ 𝟏[ 𝒪 X ] (pr₁ (pr₁ σ)) ⁻¹ ⟩
+         ℬ [ ret (𝟏[ 𝒪 X ] , κ₁) ]                   ＝⟨ 𝟎-left-unit-of-∨ (𝒪 X) (ℬ [ ret (𝟏[ 𝒪 X ] , κ₁) ]) ⁻¹ ⟩
+         ℬ [ ret (𝟏[ 𝒪 X ] , κ₁) ] ∨[ 𝒪 X ] 𝟎[ 𝒪 X ] ∎
+
+     † : is-top (𝒪 X) (ℬ [ ret (𝟏[ 𝒪 X ] , κ₁) ] ∨[ 𝒪 X ] 𝟎[ 𝒪 X ]) holds
+     † = transport (λ - → is-top (𝒪 X) - holds) ‡ (𝟏-is-top (𝒪 X))
+
+   μ : closed-under-binary-meets (𝒪 X) ℬ holds
+   μ i j =
+    ∣ k , transport (λ - → (- is-glb-of (ℬ [ i ] , ℬ [ j ])) holds) ※ † ∣
+     where
+      open Meets (λ x y → x ≤[ poset-of (𝒪 X) ] y)
+
+      κᵢ : is-compact-open X (ℬ [ i ]) holds
+      κᵢ = ℬ-consists-of-compact-opens i
+
+      κⱼ : is-compact-open X (ℬ [ j ]) holds
+      κⱼ = ℬ-consists-of-compact-opens j
+
+      κ∧ : is-compact-open X (ℬ [ i ] ∧[ 𝒪 X ] ℬ [ j ]) holds
+      κ∧ = binary-coherence X σ (ℬ [ i ]) (ℬ [ j ]) κᵢ κⱼ
+
+      k : 𝒦₀
+      k = ret ((ℬ [ i ] ∧[ 𝒪 X ] ℬ [ j ]) , κ∧)
+
+      † : ((ℬ [ i ] ∧[ 𝒪 X ] ℬ [ j ]) is-glb-of (ℬ [ i ] , ℬ [ j ])) holds
+      † = (∧[ 𝒪 X ]-lower₁ (ℬ [ i ]) (ℬ [ j ]) , ∧[ 𝒪 X ]-lower₂ (ℬ [ i ]) (ℬ [ j ]))
+        , (λ (V , p) → ∧[ 𝒪 X ]-greatest (ℬ [ i ]) (ℬ [ j ]) _ (pr₁ p) (pr₂ p))
+
+
+      ※ : ℬ [ i ] ∧[ 𝒪 X ] ℬ [ j ] ＝ ℬ [ k ]
+      ※ = ℬ [ i ] ∧[ 𝒪 X ] ℬ [ j ]                          ＝⟨ Ⅰ    ⟩
+          pr₁ (sec (ret ((ℬ [ i ] ∧[ 𝒪 X ] ℬ [ j ]) , κ∧))) ＝⟨ refl ⟩
+          ℬ [ k ]                                           ∎
+           where
+            Ⅰ = pr₁ (from-Σ-＝ (q (ℬ [ i ] ∧[ 𝒪 X ] ℬ [ j ]) κ∧ ⁻¹))
+
+   μ↑ : closed-under-finite-meets (𝒪 X) ℬ↑ holds
+   μ↑ = τ↑ , directify-preserves-closure-under-∧ (𝒪 X) ℬ β μ
 
 \end{code}

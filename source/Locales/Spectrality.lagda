@@ -100,3 +100,19 @@ spectral-locales-are-compact : (X : Locale 𝓤 𝓥 𝓦)
 spectral-locales-are-compact X ((κ , _) , _) = κ
 
 \end{code}
+
+We define a couple of projections of the components of being a spectral locale.
+
+\begin{code}
+
+binary-coherence : (X : Locale 𝓤 𝓥 𝓦) (σ : is-spectral X holds) (K₁ K₂ : ⟨ 𝒪 X ⟩)
+                 → (is-compact-open X K₁
+                 ⇒ is-compact-open X K₂
+                 ⇒ is-compact-open X (K₁ ∧[ 𝒪 X ] K₂)) holds
+binary-coherence X σ = pr₂ (pr₁ σ)
+
+spectral-implies-compact : (X : Locale 𝓤 𝓥 𝓦) (σ : is-spectral X holds)
+                         → is-compact-open X 𝟏[ 𝒪 X ] holds
+spectral-implies-compact X σ = pr₁ (pr₁ σ)
+
+\end{code}
