@@ -8,7 +8,8 @@ at the place of contribution.
 
 An [html rendering of the Agda
 code](http://www.cs.bham.ac.uk/~mhe/TypeTopology/index.html) is hosted at
-[Martin Escardo](https://www.cs.bham.ac.uk/~mhe/index.html)'s institutional web page.
+[Martin Escardo](https://www.cs.bham.ac.uk/~mhe/index.html)'s institutional web
+page.
 
 ## How to cite
 
@@ -23,15 +24,14 @@ You can use the following BibTeX entry to cite `TypeTopology`:
 }
 ```
 
-If you are citing only your own files, then create a different bibtex file
-with only your name as author.
+If you are citing only your own files, then create a different bibtex file with
+only your name as author.
 
 ## Root of the development
 
  * [source/index.lagda](source/index.lagda) (only `--safe` modules).
-
- * [source/AllModulesIndex.lagda](source/AllModulesIndex.lagda) (including "unsafe" ones).
-
+ * [source/AllModulesIndex.lagda](source/AllModulesIndex.lagda) (including
+   "unsafe" ones).
  * Each subdirectory in [source/](source/) has its own index file.
 
 ## Current contributors in alphabetical order of first name
@@ -70,7 +70,8 @@ they contributed to constructions, theorems and proofs via the hands
 of Tom de Jong.
 
 (iii) These authors didn't write single line of Agda code here, but they
-contributed to constructions, theorems and proofs via the hands of Ayberk Tosun.
+contributed to constructions, theorems and proofs via the hands of Ayberk
+Tosun.
 
 ## Publications resulting from [`TypeTopology`]()
 
@@ -120,10 +121,12 @@ contributed to constructions, theorems and proofs via the hands of Ayberk Tosun.
 
    https://doi.org/10.1016/j.apal.2016.04.010
 
-1. Martín H. Escardó and Cory Knapp. *Partial elements and recursion
-   via dominances in univalent type theory.* [Leibniz International
-   Proceedings in Informatics
-   (LIPIcs)](https://www.dagstuhl.de/en/publishing/series/details/LIPIcs), Proceedings of [CSL 2017](https://www.math-stockholm.se/konferenser-och-akti/logic-in-stockholm-2/26th-eacsl-annual-co/computer-science-logic-2017-august-20-24-1.717663).
+1. Martín H. Escardó and Cory Knapp. *Partial elements and recursion via
+   dominances in univalent type theory.* [Leibniz International Proceedings in
+   Informatics
+   (LIPIcs)](https://www.dagstuhl.de/en/publishing/series/details/LIPIcs),
+   Proceedings of [CSL
+   2017](https://www.math-stockholm.se/konferenser-och-akti/logic-in-stockholm-2/26th-eacsl-annual-co/computer-science-logic-2017-august-20-24-1.717663).
 
    https://doi.org/10.4230/LIPIcs.CSL.2017.21
 
