@@ -8,9 +8,11 @@ open import MLTT.Spartan hiding (𝟚)
 open import UF.PropTrunc
 open import UF.FunExt
 open import UF.UA-FunExt
+open import UF.Size
 
 module Locales.ZeroDimensionality (pt : propositional-truncations-exist)
-                                  (fe : Fun-Ext)                           where
+                                  (fe : Fun-Ext)
+                                  (sr : Set-Replacement pt) where
 
 \end{code}
 
@@ -33,13 +35,15 @@ Importations of other locale theory modules.
 \begin{code}
 
 open import Locales.AdjointFunctorTheoremForFrames
-open import Locales.Frame            pt fe
+
+open import Locales.Frame            pt fe           hiding (is-directed-basis)
 open import Locales.WayBelow         pt fe
 open import Locales.Compactness      pt fe
 open import Locales.Complements      pt fe
 open import Locales.GaloisConnection pt fe
 open import Locales.InitialFrame     pt fe
 open import Locales.Clopen           pt fe
+open import Locales.SmallBasis       pt fe sr
 
 open Locale
 
@@ -49,17 +53,32 @@ open Locale
 
 zero-dimensionalᴰ : Frame 𝓤 𝓥 𝓦 → (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺) ̇
 zero-dimensionalᴰ {𝓦 = 𝓦} F =
- Σ ℬ ꞉ Fam 𝓦 ⟨ F ⟩ , is-directed-basis F ℬ
+ Σ ℬ ꞉ Fam 𝓦 ⟨ F ⟩ , directed-basis-forᴰ F ℬ
                    × consists-of-clopens F ℬ holds
 
 \end{code}
 
 \begin{code}
 
+basis-zd : (L : Frame 𝓤 𝓥 𝓦) → zero-dimensionalᴰ L → Fam 𝓦 ⟨ L ⟩
+basis-zd L = pr₁
+
+cover-index-zd : (L : Frame 𝓤 𝓥 𝓦) (zd : zero-dimensionalᴰ L)
+               → ⟨ L ⟩ → Fam 𝓦 (index (basis-zd L zd))
+cover-index-zd L zd U = pr₁ (pr₁ (pr₂ zd) U)
+
+basis-zd-covers-are-directed : (L : Frame 𝓤 𝓥 𝓦) (zd : zero-dimensionalᴰ L)
+                             → (U : ⟨ L ⟩)
+                             → is-directed L ⁅ basis-zd L zd [ j ] ∣ j ε cover-index-zd L zd U ⁆ holds
+basis-zd-covers-are-directed L zd U = pr₂ (pr₂ (pr₁ (pr₂ zd) U))
+
+basis-zd-covers-do-cover : ?
+basis-zd-covers-do-cover = ?
+
 basis-of-zero-dimensionalᴰ-frame : (L : Frame 𝓤 𝓥 𝓦)
                                  → zero-dimensionalᴰ L
-                                 → Σ ℬ ꞉ Fam 𝓦 ⟨ L ⟩ , is-basis-for L ℬ
-basis-of-zero-dimensionalᴰ-frame L (ℬ , (β , _) , _) = ℬ , β
+                                 → Σ ℬ ꞉ Fam 𝓦 ⟨ L ⟩ , directed-basis-forᴰ L ℬ
+basis-of-zero-dimensionalᴰ-frame L (ℬ , β , _) = ℬ , β
 
 is-zero-dimensional : Frame 𝓤 𝓥 𝓦 → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
 is-zero-dimensional F = ∥ zero-dimensionalᴰ F ∥Ω

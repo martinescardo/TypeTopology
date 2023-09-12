@@ -41,17 +41,43 @@ open import Locales.Compactness      pt fe
 open import Locales.Complements      pt fe
 open import Locales.GaloisConnection pt fe
 open import Locales.InitialFrame     pt fe
-open import Locales.ZeroDimensionality pt fe
 open import Locales.Spectrality        pt fe
-open import Locales.Stone              pt fe
-open import Locales.Clopen             pt fe
+open import Locales.ZeroDimensionality pt fe sr
+open import Locales.Stone              pt fe sr
 open import Locales.SmallBasis         pt fe sr
+open import Locales.Clopen             pt fe
 
 open Locale
 
 \end{code}
 
 \begin{code}
+
+stoneᴰ-implies-spectralᴰ : (X : Locale 𝓤 𝓥 𝓦) → stoneᴰ X → spectralᴰ X
+stoneᴰ-implies-spectralᴰ {_} {_} {𝓦} X (κₓ , zdₓ) = ℬ , β , {!!}
+ where
+  open Joins (λ x y → x ≤[ poset-of (𝒪 X) ] y)
+
+  ℬ : Fam 𝓦 ⟨ 𝒪 X ⟩
+  ℬ = basis-zd (𝒪 X) zdₓ
+
+  β : directed-basis-forᴰ (𝒪 X) ℬ
+  β U = cover-index-zd (𝒪 X) zdₓ U , (†₁ , {!!}) , d
+   where
+    𝒥 : Fam 𝓦 (index ℬ)
+    𝒥 = cover-index-zd (𝒪 X) zdₓ U
+
+    †₁ : (U is-an-upper-bound-of ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆) holds
+    †₁ j = {!!}
+
+    d : is-directed (𝒪 X) ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆ holds
+    d = basis-zd-covers-are-directed (𝒪 X) zdₓ U
+
+\end{code}
+
+\begin{code}
+
+{--
 
 stone-locales-are-spectral : (X : Locale 𝓤 𝓥 𝓦)
                            → (is-stone X ⇒ is-spectral X) holds
@@ -102,5 +128,7 @@ stone-locales-are-spectral X σ@(κ , ζ) =
 
      † : closed-under-finite-meets F ℬ holds
      † = †₁ , †₂
+
+--}
 
 \end{code}

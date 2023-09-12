@@ -8,9 +8,11 @@ open import MLTT.Spartan hiding (𝟚)
 open import UF.PropTrunc
 open import UF.FunExt
 open import UF.UA-FunExt
+open import UF.Size
 
 module Locales.Stone (pt : propositional-truncations-exist)
-                     (fe : Fun-Ext)                           where
+                     (fe : Fun-Ext)
+                     (sr : Set-Replacement pt)               where
 
 \end{code}
 
@@ -39,9 +41,16 @@ open import Locales.Compactness      pt fe
 open import Locales.Complements      pt fe
 open import Locales.GaloisConnection pt fe
 open import Locales.InitialFrame     pt fe
-open import Locales.ZeroDimensionality pt fe
+open import Locales.ZeroDimensionality pt fe sr
 
 open Locale
+
+\end{code}
+
+\begin{code}
+
+stoneᴰ : (X : Locale 𝓤 𝓥 𝓦) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺  ̇
+stoneᴰ X = is-compact X holds × zero-dimensionalᴰ (𝒪 X)
 
 \end{code}
 
