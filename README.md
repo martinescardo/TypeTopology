@@ -98,12 +98,10 @@ Tosun.
 
    https://doi.org/10.1007/978-3-642-38946-7_14
 
-1. Martín H. Escardó. *Constructive decidability of classical
-   continuity.*  [Mathematical Structures in Computer
-   Science](https://www.cambridge.org/core/journals/mathematical-structures-in-computer-science),
-   Volume 25 , Special Issue 7: Computing with Infinite Data:
-   Topological and Logical Foundations Part 1 , October 2015 ,
-   pp. 1578 - 1589 DOI:
+1. Martín H. Escardó. *Constructive decidability of classical continuity.*
+   [Mathematical Structures in Computer Science][MSCS], Volume 25, Special
+   Issue 7: Computing with Infinite Data: Topological and Logical Foundations
+   Part 1, October 2015, pp. 1578 - 1589 DOI:
 
    https://doi.org/10.1017/S096012951300042X
 
@@ -124,16 +122,15 @@ Tosun.
 1. Martín H. Escardó and Cory Knapp. *Partial elements and recursion via
    dominances in univalent type theory.* [Leibniz International Proceedings in
    Informatics
-   (LIPIcs)](https://www.dagstuhl.de/en/publishing/series/details/LIPIcs),
+   (LIPIcs)][LIPICS],
    Proceedings of [CSL
    2017](https://www.math-stockholm.se/konferenser-och-akti/logic-in-stockholm-2/26th-eacsl-annual-co/computer-science-logic-2017-august-20-24-1.717663).
 
    https://doi.org/10.4230/LIPIcs.CSL.2017.21
 
-1. Nicolai Kraus, Martín H. Escardó, T. Coquand, T. Altenkirch.
-   *Notions of Anonymous Existence in Martin-Löf Type Theory.*  [Logical
-   Methods in Computer Science](https://lmcs.episciences.org/), March
-   24, 2017, Volume 13, Issue 1.
+1. Nicolai Kraus, Martín H. Escardó, T. Coquand, T. Altenkirch. *Notions of
+   Anonymous Existence in Martin-Löf Type Theory.*  [Logical Methods in
+   Computer Science][LMCS], March 24, 2017, Volume 13, Issue 1.
 
    https://doi.org/10.23638/LMCS-13(1:15)2017
 
@@ -219,3 +216,6 @@ Tosun.
 [LICS21]: https://easyconferences.eu/lics2021/
 [LICS23]: https://lics.siglog.org/lics23/
 [MFPS38]: https://www.cs.cornell.edu/mfps-2022/
+[LMCS]: https://lmcs.episciences.org/
+[MSCS]: https://www.cambridge.org/core/journals/mathematical-structures-in-computer-science
+[LIPICS]: https://www.dagstuhl.de/en/publishing/series/details/LIPIcs
