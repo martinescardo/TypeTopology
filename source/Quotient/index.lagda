@@ -9,7 +9,8 @@ import Quotient.Large
 import Quotient.FromSetReplacement
 import Quotient.GivesSetReplacement
 import Quotient.GivesPropTrunc
-import Quotient.FromPropTrunc-F
+import Quotient.Effectivity
+import Quotient.Large-Variation
 
 \end{code}
 
@@ -19,8 +20,9 @@ import Quotient.FromPropTrunc-F
 
  * Large
 
-   Constructs large quotients from propositional truncations, function
-   extensionality and propositional extensionality.
+   Constructs large, effective quotients from propositional
+   truncations, function extensionality and propositional
+   extensionality.
 
  * FromSetReplacement
 
@@ -36,7 +38,11 @@ import Quotient.FromPropTrunc-F
    Constructs propositional truncations from quotients and function
    extensionality.
 
- * FromPropTrunc-F
+ * Effectivity
 
-   Adds a parameter F to the large quotients module to control the
+   Shows that all quotients are effective.
+
+ * Large-Variation
+
+   Adds a parameter to the large quotients module to control the
    universe where propositional truncation lives.

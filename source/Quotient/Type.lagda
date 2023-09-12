@@ -48,9 +48,9 @@ we take F = _⁺ (see below).
 
 \begin{code}
 
-record general-set-quotients-exist (F : Universe → Universe) : 𝓤ω where
+record general-set-quotients-exist (ℓ : Universe → Universe) : 𝓤ω where
  field
-  _/_ : {𝓤 𝓥 : Universe} (X : 𝓤 ̇ ) → EqRel {𝓤} {𝓥} X → 𝓤 ⊔ F 𝓥 ̇
+  _/_ : {𝓤 𝓥 : Universe} (X : 𝓤 ̇ ) → EqRel {𝓤} {𝓥} X → 𝓤 ⊔ ℓ 𝓥 ̇
   η/ : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } (≋ : EqRel {𝓤} {𝓥} X) → X → X / ≋
   η/-identifies-related-points : {𝓤 𝓥 : Universe}
                                  {X : 𝓤 ̇ } (≋ : EqRel {𝓤} {𝓥} X)
@@ -121,7 +121,7 @@ least in the presence of function extensionality and propositonal
 extensionality, as Martín observed. The proof is as follows:
 
 (1) First construct propositional truncations using assumed set quotients.
-(2) Construct another (large) quotient as described in Quotient.Larges.lagda.
+(2) Construct another (large) quotient as described in Quotient.Large.
 (3) This large quotient is effective, but has to be isomorphic to the assumed
     set quotient, hence this quotient has to be effective as well.
 
@@ -293,13 +293,17 @@ large-set-quotients-exist = general-set-quotients-exist (_⁺)
 
 \end{code}
 
+It turns out that quotients, if they exist, are necessarily
+effective. This is proved the module Quotient.Effective. But we need
+to include the definition here.
+
 \begin{code}
 
-are-effective : {F : Universe → Universe} → general-set-quotients-exist F → 𝓤ω
-are-effective {F} sq = {𝓤 𝓥 : Universe} (X : 𝓤 ̇ )
-                       {R : EqRel {𝓤} {𝓥} X}
-                       {x y : X}
-                     → η/ R x ＝ η/ R y → x ≈[ R ] y
+are-effective : {ℓ : Universe → Universe} → general-set-quotients-exist ℓ → 𝓤ω
+are-effective sq = {𝓤 𝓥 : Universe} (X : 𝓤 ̇ )
+                   {R : EqRel {𝓤} {𝓥} X}
+                   {x y : X}
+                 → η/ R x ＝ η/ R y → x ≈[ R ] y
  where
   open general-set-quotients-exist sq
 

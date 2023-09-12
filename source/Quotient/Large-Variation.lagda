@@ -24,7 +24,7 @@ open import UF.Subsingletons-FunExt
 open import UF.PropTrunc-F
 open import UF.ImageAndSurjection-F
 
-module Quotient.FromPropTrunc-F
+module Quotient.Large-Variation
         (F   : Universe → Universe)
         (pt  : propositional-truncations-exist F)
         (fe  : Fun-Ext)
