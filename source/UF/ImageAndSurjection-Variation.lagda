@@ -11,14 +11,14 @@ For more comments and explanations, see the original files.
 
 open import MLTT.Spartan
 
-module UF.ImageAndSurjection-F (F : Universe → Universe) where
+module UF.ImageAndSurjection-Variation (F : Universe → Universe) where
 
 open import UF.Base
 open import UF.Embeddings
 open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.Hedberg
-open import UF.PropTrunc-F F
+open import UF.PropTrunc-Variation F
 open import UF.Retracts
 open import UF.Sets
 open import UF.Sets-Properties

@@ -21,8 +21,8 @@ open import UF.SubtypeClassifier-Properties
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
-open import UF.PropTrunc-F
-open import UF.ImageAndSurjection-F
+open import UF.PropTrunc-Variation
+open import UF.ImageAndSurjection-Variation
 
 module Quotient.Large-Variation
         (F   : Universe → Universe)
