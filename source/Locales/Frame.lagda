@@ -1903,8 +1903,8 @@ cofinal-implies-join-covered F R S φ = ⋁[ F ]-least R ((⋁[ F ] S) , β)
   β : (i : index R) → ((R [ i ]) ≤[ poset-of F ] (⋁[ F ] S)) holds
   β i = ∥∥-rec (holds-is-prop ((R [ i ]) ≤[ poset-of F ] (⋁[ F ] S))) γ (φ i)
    where
-    γ : Σ j ꞉ index S , ((R [ i ]) ≤[ poset-of F ] (S [ j ])) holds
-        → ((R [ i ]) ≤[ poset-of F ] (⋁[ F ] S)) holds
+    γ : Σ j ꞉ index S , (R [ i ] ≤[ poset-of F ] (S [ j ])) holds
+        → (R [ i ] ≤[ poset-of F ] (⋁[ F ] S)) holds
     γ (j , p) = R [ i ] ≤⟨ p ⟩ S [ j ] ≤⟨ ⋁[ F ]-upper S j ⟩ ⋁[ F ] S ■
 
 bicofinal-implies-same-join : (F : Frame 𝓤 𝓥 𝓦) (R S : Fam 𝓦 ⟨ F ⟩)
