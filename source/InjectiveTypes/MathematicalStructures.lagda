@@ -37,8 +37,8 @@ open import UF.Equiv
 open import UF.ExcludedMiddle
 open import UF.PropIndexedPiSigma
 open import UF.Sets
+open import UF.Sets-Properties
 open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
 open import UF.SubtypeClassifier
 
 \end{code}

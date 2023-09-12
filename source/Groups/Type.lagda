@@ -8,9 +8,11 @@ UF.SIP-Examples.
 {-# OPTIONS --safe --without-K --exact-split #-}
 
 module Groups.Type where
+
 open import MLTT.Spartan
 open import UF.Base
 open import UF.Sets
+open import UF.Sets-Properties
 open import UF.Subsingletons
 open import UF.FunExt
 open import UF.Subsingletons-FunExt

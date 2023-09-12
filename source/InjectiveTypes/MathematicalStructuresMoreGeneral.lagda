@@ -37,12 +37,11 @@ open import MLTT.Spartan
 open import Taboos.Decomposability ua
 open import UF.Base
 open import UF.Equiv
-open import UF.EquivalenceExamples
 open import UF.ExcludedMiddle
 open import UF.PropIndexedPiSigma
 open import UF.Retracts
 open import UF.Sets
-open import UF.Subsingletons-FunExt
+open import UF.Sets-Properties
 open import UF.SubtypeClassifier
 
 \end{code}

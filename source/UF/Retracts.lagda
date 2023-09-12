@@ -7,7 +7,6 @@ module UF.Retracts where
 open import MLTT.AlternativePlus
 open import MLTT.Spartan
 open import UF.Base
-open import UF.Sets
 open import UF.Subsingletons
 
 has-section : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
@@ -65,23 +64,6 @@ retract-of-prop : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                 → is-prop Y
 retract-of-prop (r , s , rs) = subtypes-of-props-are-props' s
                                 (sections-are-lc s (r , rs))
-
-Σ-is-set : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
-         → is-set X
-         → ((x : X) → is-set (A x))
-         → is-set (Σ A)
-Σ-is-set {𝓤} {𝓥} {X} {A} i j {σ} {τ} = γ
- where
-  S = Σ p ꞉ pr₁ σ ＝ pr₁ τ , transport A p (pr₂ σ) ＝ pr₂ τ
-
-  a : is-prop S
-  a = Σ-is-prop i (λ p → j (pr₁ τ))
-
-  b : retract (σ ＝ τ) of S
-  b = to-Σ-＝ , from-Σ-＝ , tofrom-Σ-＝
-
-  γ : is-prop (σ ＝ τ)
-  γ = retract-of-prop b a
 
 identity-retraction : {X : 𝓤 ̇ } → retract X of X
 identity-retraction = id , id , λ x → refl

@@ -14,12 +14,9 @@ open import Groups.Type
 open import MLTT.Spartan
 open import UF.Base
 open import UF.Embeddings
-open import UF.Equiv
-open import UF.EquivalenceExamples
 open import UF.PropTrunc
-open import UF.Retracts
 open import UF.Sets
-open import UF.Subsingletons
+open import UF.Sets-Properties
 open import UF.Subsingletons-Properties
 
 \end{code}

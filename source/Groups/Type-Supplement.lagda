@@ -27,11 +27,9 @@ module Groups.Type-Supplement where
 
 open import Groups.Type hiding (group-axioms-is-prop)
 open import MLTT.Spartan
-open import UF.Base
-open import UF.Equiv hiding (_≅_ ; ≅-refl)
 open import UF.FunExt
-open import UF.Hedberg
 open import UF.Sets
+open import UF.Sets-Properties
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 

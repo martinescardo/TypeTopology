@@ -22,19 +22,18 @@ did with σ-sup-lattices. Perhaps it would be better to define a
 
 {-# OPTIONS --safe --without-K --exact-split #-}
 
-open import MLTT.Spartan
 open import UF.FunExt
-open import UF.Subsingletons
 
 module Posets.sigma-frame (fe : Fun-Ext) where
 
-open import UF.Base
+open import MLTT.Spartan
 open import UF.Equiv hiding (_≅_)
 open import UF.SIP
 open import UF.SIP-Examples
 open import UF.Sets
+open import UF.Sets-Properties
+open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import UF.UA-FunExt
 open import UF.Univalence
 
 σ-frame-structure : 𝓤 ̇ → 𝓤 ̇

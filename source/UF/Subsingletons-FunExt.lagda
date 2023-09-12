@@ -16,15 +16,11 @@ About (sub)singletons using function extensionality.
 module UF.Subsingletons-FunExt where
 
 open import MLTT.Spartan
-
 open import UF.Base
 open import UF.FunExt
 open import UF.Hedberg
-open import UF.LeftCancellable
-open import UF.Lower-FunExt
 open import UF.Retracts
 open import UF.Sets
-open import UF.Sets-Properties
 open import UF.Subsingletons
 open import UF.Subsingletons-Properties
 
@@ -123,51 +119,6 @@ being-singleton-is-prop fe {X} (x , φ) (y , γ) = δ
            → funext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
            → is-prop (∃! A)
 ∃!-is-prop fe = being-singleton-is-prop fe
-
-Π-is-set : funext 𝓤 𝓥
-         → {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
-         → ((x : X) → is-set (A x))
-         → is-set (Π A)
-Π-is-set {𝓤} {𝓥} fe {X} {A} isa {f} {g} = b
- where
-  a : is-prop (f ∼ g)
-  a p q = dfunext fe λ x → isa x (p x) (q x)
-
-  b : is-prop (f ＝ g)
-  b = left-cancellable-reflects-is-prop
-       happly
-       (section-lc happly (pr₂ (fe f g)))
-       a
-
-\end{code}
-
-The crucial lemma of the following proof is being-set-is-prop'. The
-rest of the code is to deal with implicit arguments in conjunction
-with function extensionality. The solution is not ideal. Ideally,
-functions with implicit parameters should be the same as their
-versions with explicit parameters.
-
-\begin{code}
-
-being-set-is-prop : funext 𝓤 𝓤 → {X : 𝓤 ̇ } → is-prop (is-set X)
-being-set-is-prop {𝓤} fe {X} = h
- where
-  is-set' : 𝓤 ̇ → 𝓤 ̇
-  is-set' X = (x y : X) → is-prop (x ＝ y)
-
-  being-set-is-prop' : {X : 𝓤 ̇ } → funext 𝓤 𝓤 → is-prop (is-set' X)
-  being-set-is-prop' fe = Π-is-prop fe
-                           (λ x → Π-is-prop fe
-                           (λ y → being-prop-is-prop fe))
-
-  f : {X : 𝓤 ̇ } → is-set' X → is-set X
-  f s {x} {y} = s x y
-
-  g : {X : 𝓤 ̇ } → is-set X → is-set' X
-  g s x y = s {x} {y}
-
-  h : is-prop (is-set X)
-  h = subtypes-of-props-are-props' g (ap f) (being-set-is-prop' fe)
 
 negations-are-props : {X : 𝓤 ̇ } → funext 𝓤 𝓤₀ → is-prop (¬ X)
 negations-are-props fe = Π-is-prop fe (λ x → 𝟘-is-prop)

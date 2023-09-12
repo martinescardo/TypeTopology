@@ -8,7 +8,6 @@ Properties of the type of truth values.
 
 module UF.SubtypeClassifier-Properties where
 
-open import MLTT.Plus-Properties
 open import MLTT.Spartan
 open import UF.Base
 open import UF.Embeddings
@@ -18,8 +17,8 @@ open import UF.FunExt
 open import UF.Hedberg
 open import UF.Lower-FunExt
 open import UF.Sets
+open import UF.Sets-Properties
 open import UF.SubtypeClassifier
-open import UF.Subsingletons
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 

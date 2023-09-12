@@ -22,9 +22,9 @@ open import UF.Univalence
 module UF.Groupoids where
 
 open import UF.Equiv
-open import UF.EquivalenceExamples
 open import UF.FunExt
 open import UF.Sets
+open import UF.Sets-Properties
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.UA-FunExt

@@ -12,8 +12,6 @@ open import MLTT.Spartan
 open import MLTT.Unit-Properties
 open import UF.Base
 open import UF.Retracts
-open import UF.Sets
-open import UF.Sets-Properties
 open import UF.Subsingletons
 
 \end{code}
@@ -672,12 +670,6 @@ logically-equivalent-props-are-equivalent : {P : 𝓤 ̇ } {Q : 𝓥 ̇ }
 logically-equivalent-props-are-equivalent i j f g =
   (f , logically-equivalent-props-give-is-equiv i j f g)
 
-equiv-to-set : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-             → X ≃ Y
-             → is-set Y
-             → is-set X
-equiv-to-set e = subtypes-of-sets-are-sets' ⌜ e ⌝
-                  (equivs-are-lc ⌜ e ⌝ (⌜⌝-is-equiv e))
 \end{code}
 
 5th March 2019. A more direct proof that quasi-invertible maps

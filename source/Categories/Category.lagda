@@ -15,6 +15,7 @@ open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.Equiv-FunExt
 open import UF.Sets
+open import UF.Sets-Properties
 
 \end{code}
 

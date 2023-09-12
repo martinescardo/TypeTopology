@@ -44,8 +44,7 @@ open import UF.PropTrunc
 open import UF.Retracts
 open import UF.Section-Embedding
 open import UF.Sets
-open import UF.Sets
-open import UF.Sets
+open import UF.Sets-Properties
 open import UF.SubtypeClassifier
 open import UF.SubtypeClassifier-Properties
 open import UF.Subsingletons
