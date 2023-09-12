@@ -51,5 +51,3 @@ is-stone : (X : Locale 𝓤 𝓥 𝓦) → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
 is-stone X = is-compact X ∧ is-zero-dimensional (𝒪 X)
 
 \end{code}
-
-\begin{code}

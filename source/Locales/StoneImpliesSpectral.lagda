@@ -71,7 +71,7 @@ stone-locales-are-spectral X σ@(κ , ζ) =
      τ : ∥ Σ i ꞉ index ℬ , 𝟏[ F ] ＝ ℬ [ i ] ∥
      τ = {! compact-opens-are-basic-in-compact-frames F ℬ δ κ 𝟏[ F ] κ !}
 
-     †₁ :  ?
+     †₁ :  {!!}
      †₁ = ∥∥-rec (holds-is-prop (contains-top F ℬ)) ‡₁ τ
       where
        ‡₁ : (Σ i ꞉ index ℬ , 𝟏[ F ] ＝ ℬ [ i ]) → contains-top (𝒪 X) ℬ holds

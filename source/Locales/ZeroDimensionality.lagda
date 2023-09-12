@@ -62,6 +62,6 @@ basis-of-zero-dimensionalᴰ-frame : (L : Frame 𝓤 𝓥 𝓦)
 basis-of-zero-dimensionalᴰ-frame L (ℬ , (β , _) , _) = ℬ , β
 
 is-zero-dimensional : Frame 𝓤 𝓥 𝓦 → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
-is-zero-dimensional {𝓦 = 𝓦} F = ∥ zero-dimensionalᴰ F ∥Ω
+is-zero-dimensional F = ∥ zero-dimensionalᴰ F ∥Ω
 
 \end{code}
