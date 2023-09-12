@@ -1236,11 +1236,11 @@ module PatchStoneᴰ (X : Locale (𝓤 ⁺) 𝓤 𝓤) (σᴰ : spectralᴰ X) w
      γ₁ : consists-of-clopens (𝒪 Patchₛ-X) ℬ-patch holds
      γ₁ = ℬ-patchₛ-consists-of-clopens
 
- patchₛ-is-stone : is-stone (𝒪 Patchₛ-X) holds
+ patchₛ-is-stone : is-stone Patchₛ-X holds
  patchₛ-is-stone = patchₛ-is-compact , patchₛ-zero-dimensional
 
- patchₛ-is-spectral : is-spectral (𝒪 Patchₛ-X) holds
- patchₛ-is-spectral = stone-locales-are-spectral (𝒪 Patchₛ-X) patchₛ-is-stone
+ patchₛ-is-spectral : is-spectral Patchₛ-X holds
+ patchₛ-is-spectral = {! stone-locales-are-spectral (𝒪 Patchₛ-X) patchₛ-is-stone !}
 
 {--
 
