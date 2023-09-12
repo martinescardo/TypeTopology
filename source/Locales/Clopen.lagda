@@ -82,6 +82,19 @@ is-clopen F U = is-clopen₀ F U , is-clopen₀-is-prop F U
 
 \begin{code}
 
+𝟏-is-clopen : (L : Frame 𝓤 𝓥 𝓦) → is-clopen L 𝟏[ L ] holds
+𝟏-is-clopen L = 𝟎[ L ] , † , ‡
+ where
+  † : 𝟏[ L ] ∧[ L ] 𝟎[ L ] ＝ 𝟎[ L ]
+  † = 𝟎-right-annihilator-for-∧ L 𝟏[ L ]
+
+  ‡ : 𝟏[ L ] ∨[ L ] 𝟎[ L ] ＝ 𝟏[ L ]
+  ‡ = 𝟏-left-annihilator-for-∨ L 𝟎[ L ]
+
+\end{code}
+
+\begin{code}
+
 consists-of-clopens : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓦)
 consists-of-clopens F S = Ɐ i ꞉ index S , is-clopen F (S [ i ])
 
