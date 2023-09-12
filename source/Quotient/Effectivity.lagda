@@ -23,7 +23,10 @@ extensionality. The proof is as follows:
 open import UF.FunExt
 open import UF.Subsingletons
 
-module Quotient.Effectivity where
+module Quotient.Effectivity
+        (fe : Fun-Ext)
+        (pe : Prop-Ext)
+       where
 
 open import MLTT.Spartan
 open import Quotient.Type
@@ -38,11 +41,9 @@ open import UF.SubtypeClassifier
 open import UF.SubtypeClassifier-Properties
 open import UF.Subsingletons-FunExt
 
-quotients-are-effective : (fe : Fun-Ext)
-                          (pe : Prop-Ext)
-                          (sq : set-quotients-exist)
+quotients-are-effective : (sq : set-quotients-exist)
                         → are-effective sq
-quotients-are-effective fe pe sq = sq-effective
+quotients-are-effective sq = sq-effective
  where
   pt : propositional-truncations-exist
   pt = propositional-truncations-from-set-quotients sq fe
@@ -51,10 +52,10 @@ quotients-are-effective fe pe sq = sq-effective
   lsq = large-set-quotients pt fe pe
 
   lsq-effective : are-effective lsq
-  lsq-effective = pt-fe-pe-give-large-effective-set-quotients pt fe pe
+  lsq-effective = large-effective-set-quotients pt fe pe
 
   sq-effective : are-effective sq
-  sq-effective {𝓤} {𝓥} X {R} {x} {y} p = γ
+  sq-effective {𝓤} {𝓥} X R {x} {y} p = γ
    where
     module s = general-set-quotients-exist sq
     module l = general-set-quotients-exist lsq
@@ -89,6 +90,6 @@ quotients-are-effective fe pe sq = sq-effective
         ηₗ y    ∎
 
     γ : x ≈[ R ] y
-    γ = lsq-effective X {R} {x} {y} q
+    γ = lsq-effective X R {x} {y} q
 
 \end{code}

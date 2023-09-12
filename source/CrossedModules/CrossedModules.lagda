@@ -23,8 +23,11 @@ open import Groups.Kernel
 open import Groups.Image
 open import Groups.Cokernel
 
+open import Quotient.Type
+
 module CrossedModules.CrossedModules
-  where
+        (sq : set-quotients-exist)
+       where
 
 \end{code}
 
@@ -191,7 +194,6 @@ module homotopygroups {G : CrossedModule {𝓤} {𝓥}} (pt : propositional-trun
 
 
   π₀ : Group _
-  π₀ = cokernel-gr (G ₁) (G ₀) (∂ G) (is-∂ G) ∂-has-norm-im
-
+  π₀ = cokernel-gr sq ((G ₁)) (G ₀) (∂ G) (is-∂ G) ∂-has-norm-im
 
 \end{code}

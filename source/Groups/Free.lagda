@@ -598,6 +598,8 @@ higher-inductive types other than propositional truncation:
 \begin{code}
 
    open import Quotient.Large pt fe pe
+   open import Quotient.Effectivity fe pe
+   open general-set-quotients-exist large-set-quotients
    open psrt pt _▷_ public
 
 \end{code}
@@ -653,20 +655,20 @@ left-cancellable map:
 
 \begin{code}
 
+   η/∾-relates-identified-points : {s t : FA} → η/∾ s ＝ η/∾ t → s ∾ t
+   η/∾-relates-identified-points = large-effective-set-quotients FA -∾-
+
    ηᴳʳᵖ-lc : is-set A → {a b : A} → ηᴳʳᵖ a ＝ ηᴳʳᵖ b → a ＝ b
    ηᴳʳᵖ-lc i p = η-identifies-∾-related-points i
-                (η/-relates-identified-points -∾- p)
+                  (η/∾-relates-identified-points p)
 
    ηᴳʳᵖ-is-embedding : is-set A → is-embedding ηᴳʳᵖ
    ηᴳʳᵖ-is-embedding i = lc-maps-into-sets-are-embeddings ηᴳʳᵖ
-                         (ηᴳʳᵖ-lc i)
-                         (quotient-is-set -∾-)
+                          (ηᴳʳᵖ-lc i)
+                          (/-is-set -∾-)
 
    η/∾-identifies-related-points : {s t : FA} → s ∾ t → η/∾ s ＝ η/∾ t
    η/∾-identifies-related-points = η/-identifies-related-points -∾-
-
-   η/∾-relates-identified-points : {s t : FA} → η/∾ s ＝ η/∾ t → s ∾ t
-   η/∾-relates-identified-points = η/-relates-identified-points -∾-
 
 \end{code}
 
@@ -711,13 +713,13 @@ The following proofs rely on the above naturality conditions:
 \begin{code}
 
    ln/ : left-neutral e/ _·_
-   ln/ = /-induction -∾- (λ x → e/ · x ＝ x) (λ x → quotient-is-set -∾-) γ
+   ln/ = /-induction -∾- (λ _ → /-is-set -∾-) γ
     where
      γ : (s : FA) → η/∾ [] · η/∾ s ＝ η/∾ s
      γ = ·-natural []
 
    rn/ : right-neutral e/ _·_
-   rn/ = /-induction -∾- (λ x → x · e/ ＝ x) (λ x → quotient-is-set -∾-) γ
+   rn/ = /-induction -∾- (λ _ → /-is-set -∾-) γ
     where
      γ : (s : FA) → η/∾ s · η/∾ [] ＝ η/∾ s
      γ s = η/∾ s · η/∾ [] ＝⟨ ·-natural s [] ⟩
@@ -725,7 +727,7 @@ The following proofs rely on the above naturality conditions:
            η/∾ s          ∎
 
    invl/ : (x : FA/∾) → inv/ x · x ＝ e/
-   invl/ = /-induction -∾- (λ x → (inv/ x · x) ＝ e/) (λ x → quotient-is-set -∾-) γ
+   invl/ = /-induction -∾- (λ _ → /-is-set -∾-) γ
     where
      γ : (s : FA) → inv/ (η/∾ s) · η/∾ s ＝ e/
      γ s = inv/ (η/∾ s) · η/∾ s  ＝⟨ ap (_· η/∾ s) (inv/-natural s) ⟩
@@ -735,7 +737,7 @@ The following proofs rely on the above naturality conditions:
            e/                    ∎
 
    invr/ : (x : FA/∾) → x · inv/ x ＝ e/
-   invr/ = /-induction -∾- (λ x → x · inv/ x ＝ e/) (λ x → quotient-is-set -∾-) γ
+   invr/ = /-induction -∾- (λ _ → /-is-set -∾-) γ
     where
      γ : (s : FA) → η/∾ s · inv/ (η/∾ s) ＝ e/
      γ s = η/∾ s · inv/ (η/∾ s)  ＝⟨ ap (η/∾ s ·_) (inv/-natural s) ⟩
@@ -745,14 +747,12 @@ The following proofs rely on the above naturality conditions:
            e/                    ∎
 
    assoc/ : associative _·_
-   assoc/ = /-induction -∾- (λ x → ∀ y z → (x · y) · z ＝ x · (y · z))
-             (λ x → Π₂-is-prop fe (λ y z → quotient-is-set -∾-))
+   assoc/ = /-induction -∾-
+             (λ x → Π₂-is-prop fe (λ y z → /-is-set -∾-))
              (λ s → /-induction -∾-
-                      (λ y → ∀ z → (η/∾ s · y) · z ＝ η/∾ s · (y · z))
-                      (λ y → Π-is-prop fe (λ z → quotient-is-set -∾-))
+                      (λ y → Π-is-prop fe (λ z → /-is-set -∾-))
                       (λ t → /-induction -∾-
-                               (λ z → (η/∾ s · η/∾ t) · z ＝ η/∾ s · (η/∾ t · z))
-                               (λ z → quotient-is-set -∾-)
+                               (λ z → /-is-set -∾-)
                                (γ s t)))
           where
            γ : (s t u : FA) → (η/∾ s · η/∾ t) · η/∾ u ＝ η/∾ s · (η/∾ t · η/∾ u)
@@ -770,7 +770,7 @@ So we have constructed a group with underlying set FA/∾ and a map
 \begin{code}
 
    𝓕 : Group (𝓤 ⁺)
-   𝓕 = (FA/∾ , _·_ , quotient-is-set -∾- , assoc/ , e/ , ln/ , rn/ ,
+   𝓕 = (FA/∾ , _·_ , /-is-set -∾- , assoc/ , e/ , ln/ , rn/ ,
         (λ x → inv/ x , invl/ x , invr/ x))
 \end{code}
 
@@ -939,9 +939,9 @@ homomorphism like h):
          IV  = ap₂ _*_ ((f'-/triangle s)⁻¹) ((f'-/triangle t)⁻¹)
 
       γ : (x y : FA / -∾-) → f' (x · y) ＝ f' x * f' y
-      γ = /-induction -∾- (λ x → ∀ y → f' (x · y) ＝ f' x * f' y)
+      γ = /-induction -∾-
            (λ x → Π-is-prop fe (λ y → G-is-set))
-           (λ s → /-induction -∾- (λ y → f' (η/∾ s · y) ＝ f' (η/∾ s) * f' y)
+           (λ s → /-induction -∾-
                    (λ a → G-is-set)
                    (δ s))
 \end{code}
@@ -952,8 +952,8 @@ to assume that f₀ and f₁ are group homomorphisms:
 \begin{code}
 
     f'-uniqueness-∾ : (f₀ f₁ : FA/∾ → G) → f₀ ∘ η/∾ ∼ h → f₁ ∘ η/∾ ∼ h → f₀ ∼ f₁
-    f'-uniqueness-∾ f₀ f₁ p q = at-most-one-mediating-map/ -∾- G-is-set f₀ f₁
-                                   (λ s → p s ∙ (q s)⁻¹)
+    f'-uniqueness-∾ f₀ f₁ p q = at-most-one-mediating-map/ -∾-
+                                 G-is-set f₀ f₁ (λ s → p s ∙ (q s)⁻¹)
 
 \end{code}
 
@@ -1006,7 +1006,7 @@ But for this one we do:
              I'   = ap f₁ (·-natural (finv (η a)) s)
 
       γ : f₀ ∼ f₁
-      γ = /-induction -∾- (λ x → f₀ x ＝ f₁ x) (λ x → G-is-set) δ
+      γ = /-induction -∾- (λ x → G-is-set) δ
 
     f'-uniqueness : ∃! f' ꞉ (⟨ 𝓕 ⟩ → ⟨ 𝓖 ⟩) , is-hom 𝓕 𝓖 f'
                                              × f' ∘ ηᴳʳᵖ ∼ f

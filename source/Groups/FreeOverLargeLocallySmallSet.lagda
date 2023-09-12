@@ -381,6 +381,8 @@ FA/∾, which lives in the higher universe 𝓤⁺⁺.
 
 \begin{code}
 
+ open general-set-quotients-exist large-set-quotients
+
  FA/∥≏∥ : 𝓤⁺ ̇
  FA/∥≏∥ = FA / -∥≏∥-
 
@@ -468,7 +470,6 @@ suffices to prove it for elements of the form η/∾ s with s : FA.
 
  NB-ηᴳʳᵖ-is-medium : ηᴳʳᵖ is 𝓤⁺ small-map
  NB-ηᴳʳᵖ-is-medium = /-induction -∾-
-                      (λ y → fiber ηᴳʳᵖ y is 𝓤⁺ small)
                       smallness-of-ηᴳʳᵖ-fibers-is-prop
                       induction-step
   where
@@ -478,7 +479,7 @@ suffices to prove it for elements of the form η/∾ s with s : FA.
              (η a ∥≏∥ s)          ■
     where
      I = logically-equivalent-props-are-equivalent
-            (quotient-is-set -∾-)
+            (/-is-set -∾-)
             ∥∥-is-prop
             η/∾-relates-identified-points
             η/∾-identifies-related-points
@@ -619,7 +620,7 @@ With this we can further reduce the size of the universal map ηᴳʳᵖ:
 
  fiber-η/∾-lemma : (a : A) (s : FA) → (η/∾ (η a) ＝ η/∾ s) ≃ (η a ∾ s)
  fiber-η/∾-lemma a s = logically-equivalent-props-are-equivalent
-                        (quotient-is-set -∾-)
+                        (/-is-set -∾-)
                         ∥∥-is-prop
                         η/∾-relates-identified-points
                         η/∾-identifies-related-points
@@ -639,7 +640,6 @@ With this we can further reduce the size of the universal map ηᴳʳᵖ:
 
  ηᴳʳᵖ-is-small : ηᴳʳᵖ is 𝓤 small-map
  ηᴳʳᵖ-is-small = /-induction -∾-
-                  (λ y → fiber ηᴳʳᵖ y is 𝓤 small)
                   smallness-of-ηᴳʳᵖ-fibers-is-prop
                   the-ηᴳʳᵖ-fibers-of-equivalence-classes-are-small
 \end{code}

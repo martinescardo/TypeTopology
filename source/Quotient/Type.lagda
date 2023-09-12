@@ -1,4 +1,4 @@
-Tom de Jong, 4 & 5 April 2022.
+Martin Escardo and Tom de Jong, August 2018, April 2022, September 2023.
 
 Quotients. Much of this material is moved from or abstracted from the
 earlier 2018 module Quotient.Large by Martin Escardo.
@@ -35,7 +35,9 @@ EqRel {𝓤} {𝓥} X = Σ R ꞉ (X → X → 𝓥 ̇ ) , is-equiv-relation R
 _≈[_]_ : {X : 𝓤 ̇ } → X → EqRel X → X → 𝓥 ̇
 x ≈[ _≈_ , _ ] y = x ≈ y
 
-identifies-related-points : {X : 𝓤 ̇ } (≈ : EqRel {𝓤} {𝓥} X) {Y : 𝓦 ̇ }
+identifies-related-points : {X : 𝓤 ̇ }
+                          → EqRel {𝓤} {𝓥} X
+                          → {Y : 𝓦 ̇ }
                           → (X → Y) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
 identifies-related-points (_≈_ , _) f = ∀ {x x'} → x ≈ x' → f x ＝ f x'
 
@@ -107,12 +109,8 @@ of X : 𝓤 by a 𝓥-valued equivalence relation is assumed to live in 𝓤 ⊔
 particular, the quotient of type in 𝓤 by a 𝓤-valued equivalence relation lives
 in 𝓤 again.
 
-The following is boilerplate and duplicates some of the material in
-Quotient.Large, where large set quotients are constructed using propositional
-truncations, function extensionality and propositional extensionality.
-
-We need the boilerplate in OrdinalOfOrdinalsSuprema.lagda, where we use set
-quotients to construct small suprema of small ordinals.
+The following are facts about quotients, moved from Quotient.Large as
+they are of general use.
 
 \begin{code}
 
@@ -121,6 +119,15 @@ quotients to construct small suprema of small ordinals.
          (≋@(_≈_ , ≈p , ≈r , ≈s , ≈t) : EqRel {𝓤} {𝓥} X)
         where
 
+  module _ (pt : propositional-truncations-exist) where
+
+   open PropositionalTruncation pt
+   open import UF.ImageAndSurjection pt
+
+   η/-is-surjection : is-surjection (η/ {𝓤} {𝓥} {X} ≋)
+   η/-is-surjection = /-induction ≋
+                       (λ x' → being-in-the-image-is-prop x' (η/ ≋))
+                       (λ x → ∣ x , refl ∣)
   module _
           {A : 𝓦 ̇ }
           (A-is-set : is-set A)
@@ -129,12 +136,109 @@ quotients to construct small suprema of small ordinals.
    mediating-map/ : (f : X → A)
                   → identifies-related-points ≋ f
                   → X / ≋ → A
-   mediating-map/ f p = ∃!-witness (/-universality ≋ A-is-set f p)
+   mediating-map/ f j = ∃!-witness (/-universality ≋ A-is-set f j)
 
    universality-triangle/ : (f : X → A)
-                            (p : identifies-related-points ≋ f)
-                          → mediating-map/ f p ∘ η/ ≋ ∼ f
-   universality-triangle/ f p = ∃!-is-witness (/-universality ≋ A-is-set f p)
+                            (j : identifies-related-points ≋ f)
+                          → mediating-map/ f j ∘ η/ ≋ ∼ f
+   universality-triangle/ f j = ∃!-is-witness (/-universality ≋ A-is-set f j)
+
+   at-most-one-mediating-map/ : (g h : X / ≋ → A)
+                              → g ∘ η/ ≋ ∼ h ∘ η/ ≋
+                              → g ∼ h
+   at-most-one-mediating-map/ g h p x = γ
+    where
+     f : X → A
+     f = g ∘ η/ ≋
+
+     j : identifies-related-points ≋ f
+     j e = ap g (η/-identifies-related-points ≋ e)
+
+     q : mediating-map/ f j ＝ g
+     q = witness-uniqueness (λ f̅ → f̅ ∘ η/ ≋ ∼ f)
+          (/-universality ≋ A-is-set f j)
+          (mediating-map/ f j)
+          g
+          (universality-triangle/ f j)
+          (λ x → refl)
+
+     r : mediating-map/ f j ＝ h
+     r = witness-uniqueness (λ f' → f' ∘ η/ ≋ ∼ f)
+          (/-universality ≋ A-is-set f j)
+          (mediating-map/ f j)
+          h
+          (universality-triangle/ f j)
+          (λ x → (p x)⁻¹)
+
+     γ = g x                  ＝⟨ happly (q ⁻¹) x ⟩
+         mediating-map/ f j x ＝⟨ happly r x ⟩
+         h x                  ∎
+
+  extension/ : (f : X → X / ≋)
+             → identifies-related-points ≋ f
+             → (X / ≋ → X / ≋)
+  extension/ = mediating-map/ (/-is-set ≋)
+
+  extension-triangle/ : (f : X → X / ≋)
+                        (i : identifies-related-points ≋ f)
+                      → extension/ f i ∘ η/ ≋ ∼ f
+  extension-triangle/ = universality-triangle/ (/-is-set ≋)
+
+  module _ (f : X → X)
+           (p : {x y : X} → x ≈ y → f x ≈ f y)
+         where
+
+   abstract
+    private
+      π : identifies-related-points ≋ (η/ ≋ ∘ f)
+      π e = η/-identifies-related-points ≋ (p e)
+
+   extension₁/ : X / ≋ → X / ≋
+   extension₁/ = extension/ (η/ ≋ ∘ f) π
+
+   naturality/ : extension₁/ ∘ η/ ≋ ∼ η/ ≋ ∘ f
+   naturality/ = universality-triangle/ (/-is-set ≋) (η/ ≋ ∘ f) π
+
+  module _ (f : X → X → X)
+           (p : {x y x' y' : X} → x ≈ x' → y ≈ y' → f x y ≈ f x' y')
+         where
+
+   abstract
+    private
+     π : (x : X) → identifies-related-points ≋ (η/ ≋ ∘ f x)
+     π x {y} {y'} e = η/-identifies-related-points ≋ (p {x} {y} {x} {y'} (≈r x) e)
+
+     p' : (x : X) {y y' : X} → y ≈ y' → f x y ≈ f x y'
+     p' x {x'} {y'} = p {x} {x'} {x} {y'} (≈r x)
+
+     f₁ : X → X / ≋ → X / ≋
+     f₁ x = extension₁/ (f x) (p' x)
+
+     n/ : (x : X) → f₁ x ∘ η/ ≋ ∼ η/ ≋ ∘ f x
+     n/ x = naturality/ (f x) (p' x)
+
+     δ : {x x' : X} → x ≈ x' → (y : X) → f₁ x (η/ ≋ y) ＝ f₁ x' (η/ ≋ y)
+     δ {x} {x'} e y =
+       f₁ x (η/ ≋ y)   ＝⟨ naturality/ (f x) (p' x) y ⟩
+       η/ ≋ (f x y)    ＝⟨ η/-identifies-related-points ≋ (p e (≈r y)) ⟩
+       η/ ≋ (f x' y)   ＝⟨ (naturality/ (f x') (p' x') y)⁻¹ ⟩
+       f₁ x' (η/ ≋ y)  ∎
+
+     ρ : (b : X / ≋) {x x' : X} → x ≈ x' → f₁ x b ＝ f₁ x' b
+     ρ b {x} {x'} e = /-induction ≋ (λ y → /-is-set ≋) (δ e) b
+
+     f₂ : X / ≋ → X / ≋ → X / ≋
+     f₂ d e = extension/ (λ x → f₁ x e) (ρ e) d
+
+   extension₂/ : X / ≋ → X / ≋ → X / ≋
+   extension₂/ = f₂
+
+   abstract
+    naturality₂/ : (x y : X) → f₂ (η/ ≋ x) (η/ ≋ y) ＝ η/ ≋ (f x y)
+    naturality₂/ x y =
+     f₂ (η/ ≋ x) (η/ ≋ y) ＝⟨ extension-triangle/ (λ x → f₁ x (η/ ≋ y)) (ρ (η/ ≋ y)) x ⟩
+     f₁ x (η/ ≋ y)        ＝⟨ naturality/ (f x) (p (≈r x)) y ⟩
+     η/ ≋ (f x y)         ∎
 
 \end{code}
 
@@ -195,12 +299,12 @@ We extend unary and binary prop-valued relations to the quotient.
               r₁ x        (η/ ≋ y) ＝⟨ extension-rel-triangle₁ (r x) (p' x) y ⟩
               r  x            y    ∎
 
-     extension-rel₂ : X / ≋ → X / ≋ → Ω 𝓣
-     extension-rel₂ = r₂
+    extension-rel₂ : X / ≋ → X / ≋ → Ω 𝓣
+    extension-rel₂ = r₂
 
-     extension-rel-triangle₂ : (x y : X)
-                             → extension-rel₂ (η/ ≋ x) (η/ ≋ y) ＝ r x y
-     extension-rel-triangle₂ = τ
+    extension-rel-triangle₂ : (x y : X)
+                            → extension-rel₂ (η/ ≋ x) (η/ ≋ y) ＝ r x y
+    extension-rel-triangle₂ = τ
 
 \end{code}
 
@@ -288,7 +392,7 @@ to include the definition here.
 
 are-effective : {ℓ : Universe → Universe} → general-set-quotients-exist ℓ → 𝓤ω
 are-effective sq = {𝓤 𝓥 : Universe} (X : 𝓤 ̇ )
-                   {R : EqRel {𝓤} {𝓥} X}
+                   (R : EqRel {𝓤} {𝓥} X)
                    {x y : X}
                  → η/ R x ＝ η/ R y → x ≈[ R ] y
  where

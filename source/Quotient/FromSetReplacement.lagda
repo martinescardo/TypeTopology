@@ -42,6 +42,8 @@ open import Quotient.Large pt fe pe
 open import Quotient.Type -- using (set-quotients-exist ; is-effective ; EqRel)
 open import UF.Size
 
+open general-set-quotients-exist large-set-quotients
+
 module _
         (R : Set-Replacement pt)
         {X : 𝓤 ̇ }
@@ -56,7 +58,7 @@ module _
   resize-set-quotient = R equiv-rel (X , (≃-refl X)) γ
                           (powersets-are-sets'' fe fe pe)
    where
-    open quotient X _≈_ ≈p ≈r ≈s ≈t using (equiv-rel)
+    open large-quotient X ≋ using (equiv-rel)
     γ : (X → Ω 𝓥) is-locally 𝓤 ⊔ 𝓥 small
     γ f g = S , ≃-sym e
      where
@@ -95,7 +97,7 @@ Quotient.Quotient.lagda.
  η/ₛ-identifies-related-points : identifies-related-points ≋ η/ₛ
  η/ₛ-identifies-related-points e = ap ⌜ φ ⌝⁻¹ (η/-identifies-related-points ≋ e)
  /ₛ-is-set : is-set (X/ₛ≈)
- /ₛ-is-set = equiv-to-set φ (quotient-is-set ≋)
+ /ₛ-is-set = equiv-to-set φ (/-is-set ≋)
  /ₛ-induction : ∀ {𝓦} {P : X/ₛ≈ → 𝓦 ̇ }
               → ((x' : X/ₛ≈) → is-prop (P x'))
               → ((x : X) → P (η/ₛ x))
@@ -105,7 +107,7 @@ Quotient.Quotient.lagda.
    P' : X / ≋ → 𝓦 ̇
    P' = P ∘ ⌜ φ ⌝⁻¹
    γ : (y : X / ≋) → P' y
-   γ = /-induction' ≋ (λ y → i (⌜ φ ⌝⁻¹ y)) h
+   γ = /-induction ≋ (λ y → i (⌜ φ ⌝⁻¹ y)) h
    e : ⌜ φ ⌝⁻¹ (⌜ φ ⌝ x') ＝ x'
    e = ≃-sym-is-linv φ x'
  /ₛ-universality : {A : 𝓦 ̇ } → is-set A
@@ -113,18 +115,16 @@ Quotient.Quotient.lagda.
                  → identifies-related-points ≋ f
                  → ∃! f' ꞉ (X/ₛ≈ → A), f' ∘ η/ₛ ∼ f
  /ₛ-universality {𝓦} {A} i f p =
-  equiv-to-singleton (≃-sym e) (universal-property/ ≋ i f p)
+  equiv-to-singleton (≃-sym e) (/-universality ≋ i f p)
    where
-    e = (Σ f' ꞉ (X / ≋ → A)  , f' ∘ η/ ≋ ＝ f)        ≃⟨ ⦅1⦆ ⟩
-        (Σ f' ꞉ (X / ≋ → A)  , f' ∘ η/ ≋ ∼ f)        ≃⟨ ⦅2⦆ ⟩
-        (Σ f' ꞉ (X / ≋ → A)  , f' ∘ ⌜ φ ⌝ ∘ η/ₛ ∼ f) ≃⟨ ⦅3⦆ ⟩
+    e = (Σ f' ꞉ (X / ≋ → A)  , f' ∘ η/ ≋ ∼ f)        ≃⟨ ⦅1⦆ ⟩
+        (Σ f' ꞉ (X / ≋ → A)  , f' ∘ ⌜ φ ⌝ ∘ η/ₛ ∼ f) ≃⟨ ⦅2⦆ ⟩
         (Σ f' ꞉ (X/ₛ≈ → A) , f' ∘ η/ₛ ∼ f)         ■
      where
-      ⦅1⦆ = Σ-cong (λ f' → ≃-funext fe (f' ∘ η/ ≋) f)
-      ⦅2⦆ = Σ-cong
+      ⦅1⦆ = Σ-cong
             (λ f' → Π-cong fe fe (λ x → ＝-cong-l (f' (η/ ≋ x)) (f x)
                                     (ap f' ((≃-sym-is-rinv φ (η/ ≋ x)) ⁻¹))))
-      ⦅3⦆ = Σ-change-of-variable _ (_∘ ⌜ φ ⌝)
+      ⦅2⦆ = Σ-change-of-variable _ (_∘ ⌜ φ ⌝)
             (qinvs-are-equivs (_∘ ⌜ φ ⌝)
               (qinv-pre (λ _ _ → dfunext fe) ⌜ φ ⌝
                (equivs-are-qinvs ⌜ φ ⌝ (⌜⌝-is-equiv φ))))
@@ -132,7 +132,7 @@ Quotient.Quotient.lagda.
         open import UF.Equiv-FunExt using (qinv-pre)
 
  η/ₛ-relates-identified-points : {x y : X} → η/ₛ x ＝ η/ₛ y → x ≈ y
- η/ₛ-relates-identified-points {x} {y} eₛ = η/-relates-identified-points ≋ e
+ η/ₛ-relates-identified-points {x} {y} eₛ = large-effective-set-quotients X ≋ e
   where
    note : ⌜ φ ⌝⁻¹ (η/ ≋ x) ＝ ⌜ φ ⌝⁻¹ (η/ ≋ y)
    note = eₛ
@@ -153,7 +153,7 @@ set-quotients-from-set-replacement R = record
 set-replacement-gives-effective-set-quotients
  : (sr : Set-Replacement pt)
  → are-effective (set-quotients-from-set-replacement sr)
-set-replacement-gives-effective-set-quotients sr {𝓤} {𝓥} X {R} {x} {y} =
+set-replacement-gives-effective-set-quotients sr {𝓤} {𝓥} X R {x} {y} =
  η/ₛ-relates-identified-points sr R
 
 \end{code}
