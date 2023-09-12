@@ -114,19 +114,6 @@ truncations, function extensionality and propositional extensionality.
 We need the boilerplate in OrdinalOfOrdinalsSuprema.lagda, where we use set
 quotients to construct small suprema of small ordinals.
 
-A quotient is said to be effective if for every x, y : X, we have x ≈ y whenever
-η/ x ＝ ‌η/ y. Notice that we did not include effectivity as a requirement in
-'set-quotients-exist'. But actually it follows from the other properties, at
-least in the presence of function extensionality and propositonal
-extensionality, as Martín observed. The proof is as follows:
-
-(1) First construct propositional truncations using assumed set quotients.
-(2) Construct another (large) quotient as described in Quotient.Large.
-(3) This large quotient is effective, but has to be isomorphic to the assumed
-    set quotient, hence this quotient has to be effective as well.
-
-TODO: Implement this in Agda.
-
 \begin{code}
 
  module _
