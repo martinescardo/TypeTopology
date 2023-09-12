@@ -1125,7 +1125,7 @@ we show that for a large, locally small type type A : 𝓤⁺, the free
 group has a copy in the same universe 𝓤+ as A, and moreover, if the
 free group has a copy in 𝓤 then so must have the type A.
 
-Alternatively, we can assume set replacement. In the modules
-UF-Quotient and UF-Quotient-Replacement it is shown that the existence
-of small quotients is equivalent to the conjunction of set replacement
-and the existence of propositional truncations.
+Alternatively, we can assume set replacement. In the Quotient modules
+it is shown that the existence of small quotients is equivalent to the
+conjunction of set replacement and the existence of propositional
+truncations.
