@@ -41,9 +41,9 @@ open import UF.SubtypeClassifier
 open import UF.SubtypeClassifier-Properties
 open import UF.Subsingletons-FunExt
 
-quotients-are-effective : (sq : set-quotients-exist)
-                        → are-effective sq
-quotients-are-effective sq = sq-effective
+effectivity : (sq : set-quotients-exist)
+            → are-effective sq
+effectivity sq = sq-effective
  where
   pt : propositional-truncations-exist
   pt = propositional-truncations-from-set-quotients sq fe

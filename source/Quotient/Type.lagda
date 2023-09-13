@@ -163,7 +163,7 @@ they are of general use.
           (λ x → refl)
 
      r : mediating-map/ f j ＝ h
-     r = witness-uniqueness (λ f' → f' ∘ η/ ≋ ∼ f)
+     r = witness-uniqueness (λ f̅ → f̅ ∘ η/ ≋ ∼ f)
           (/-universality ≋ A-is-set f j)
           (mediating-map/ f j)
           h
@@ -342,32 +342,32 @@ binary and ternary versions of quotient induction.
    ≋' = (_≈'_ , ≈p' , ≈r' , ≈s' , ≈t')
    i : {x y : X} → x ≈ y → η/ ≋' x ＝ η/ ≋' y
    i e = η/-identifies-related-points ≋' (lr-implication ε e)
-   i' : {x y : X} → x ≈' y → η/ ≋ x ＝ η/ ≋ y
-   i' e = η/-identifies-related-points ≋ (rl-implication ε e)
+   i⁻¹ : {x y : X} → x ≈' y → η/ ≋ x ＝ η/ ≋ y
+   i⁻¹ e = η/-identifies-related-points ≋ (rl-implication ε e)
    f : X / ≋ → X / ≋'
    f = mediating-map/ ≋ (/-is-set ≋') (η/ ≋') i
-   f' : X / ≋' → X / ≋
-   f' = mediating-map/ ≋' (/-is-set ≋) (η/ ≋) i'
-   a : (x : X) → f (f' (η/ ≋' x)) ＝ η/ ≋' x
-   a x = f (f' (η/ ≋' x)) ＝⟨ I ⟩
-         f (η/ ≋ x)       ＝⟨ II ⟩
-         η/ ≋' x          ∎
+   f⁻¹ : X / ≋' → X / ≋
+   f⁻¹ = mediating-map/ ≋' (/-is-set ≋) (η/ ≋) i⁻¹
+   a : (x : X) → f (f⁻¹ (η/ ≋' x)) ＝ η/ ≋' x
+   a x = f (f⁻¹ (η/ ≋' x)) ＝⟨ I ⟩
+         f (η/ ≋ x)        ＝⟨ II ⟩
+         η/ ≋' x           ∎
     where
-     I  = ap f (universality-triangle/ ≋' (/-is-set ≋) (η/ ≋) i' x)
+     I  = ap f (universality-triangle/ ≋' (/-is-set ≋) (η/ ≋) i⁻¹ x)
      II = universality-triangle/ ≋ (/-is-set ≋') (η/ ≋') i x
-   α : f ∘ f' ∼ id
+   α : f ∘ f⁻¹ ∼ id
    α = /-induction ≋' (λ _ → /-is-set ≋') a
-   a' : (x : X) → f' (f (η/ ≋ x)) ＝ η/ ≋ x
-   a' x = f' (f (η/ ≋ x)) ＝⟨ I ⟩
-         f' (η/ ≋' x)     ＝⟨ II ⟩
+   b : (x : X) → f⁻¹ (f (η/ ≋ x)) ＝ η/ ≋ x
+   b x = f⁻¹ (f (η/ ≋ x)) ＝⟨ I ⟩
+         f⁻¹ (η/ ≋' x)    ＝⟨ II ⟩
          η/ ≋ x           ∎
     where
-     I  = ap f' (universality-triangle/ ≋ (/-is-set ≋') (η/ ≋') i x)
-     II = universality-triangle/ ≋' (/-is-set ≋) (η/ ≋) i' x
-   α' : f' ∘ f ∼ id
-   α' = /-induction ≋ (λ _ → /-is-set ≋) a'
+     I  = ap f⁻¹ (universality-triangle/ ≋ (/-is-set ≋') (η/ ≋') i x)
+     II = universality-triangle/ ≋' (/-is-set ≋) (η/ ≋) i⁻¹ x
+   β : f⁻¹ ∘ f ∼ id
+   β = /-induction ≋ (λ _ → /-is-set ≋) b
    γ : (X / ≋) ≃ (X / ≋')
-   γ = qinveq f (f' , α' , α)
+   γ = qinveq f (f⁻¹ , β , α)
 
 \end{code}
 

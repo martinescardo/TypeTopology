@@ -33,28 +33,22 @@ church-rosser. This seems to be a bug, but we are not sure.
 
 \begin{code}
 
-module Groups.Free where
 
-open import MLTT.Spartan
-open import MLTT.Two
-open import MLTT.Two-Properties
+module Groups.Free where
 
 open import Groups.Type
 open import MLTT.List
-
+open import MLTT.Spartan
+open import MLTT.Two
+open import MLTT.Two-Properties
 open import Quotient.Type
-open import Quotient.FromSetReplacement
 open import UF.Base
 open import UF.Embeddings
-open import UF.Equiv
 open import UF.FunExt
 open import UF.PropTrunc
 open import UF.Sets
-open import UF.Size
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import UF.UA-FunExt
-open import UF.Univalence
 
 \end{code}
 
@@ -586,8 +580,13 @@ extensionality.
 
   module free-group-construction-step₂
           (fe : Fun-Ext)
-          (pe : Prop-Ext)
+          (ℓ : Universe → Universe)
+          (sq : general-set-quotients-exist ℓ)
+          (η/-relates-identified-points : are-effective sq)
         where
+
+   𝓤̅ : Universe
+   𝓤̅ = 𝓤 ⊔ ℓ 𝓤
 
 \end{code}
 
@@ -597,9 +596,7 @@ higher-inductive types other than propositional truncation:
 
 \begin{code}
 
-   open import Quotient.Large pt fe pe
-   open import Quotient.Effectivity fe pe
-   open general-set-quotients-exist large-set-quotients
+   open general-set-quotients-exist sq
    open psrt pt _▷_ public
 
 \end{code}
@@ -624,14 +621,11 @@ universe levels:
 
 \begin{code}
 
-   FA/∾ : 𝓤 ⁺ ̇
+   FA/∾ : 𝓤̅  ̇
    FA/∾ = FA / -∾-
 
    η/∾ : FA → FA/∾
    η/∾ = η/ -∾-
-
-   FA/∾-is-small : Set-Replacement pt → FA/∾ is 𝓤 small
-   FA/∾-is-small sr = resize-set-quotient pt fe pe sr -∾-
 
 \end{code}
 
@@ -656,7 +650,7 @@ left-cancellable map:
 \begin{code}
 
    η/∾-relates-identified-points : {s t : FA} → η/∾ s ＝ η/∾ t → s ∾ t
-   η/∾-relates-identified-points = large-effective-set-quotients -∾-
+   η/∾-relates-identified-points = η/-relates-identified-points -∾-
 
    ηᴳʳᵖ-lc : is-set A → {a b : A} → ηᴳʳᵖ a ＝ ηᴳʳᵖ b → a ＝ b
    ηᴳʳᵖ-lc i p = η-identifies-∾-related-points i
@@ -769,7 +763,7 @@ So we have constructed a group with underlying set FA/∾ and a map
 
 \begin{code}
 
-   𝓕 : Group (𝓤 ⁺)
+   𝓕 : Group 𝓤̅
    𝓕 = (FA/∾ , _·_ , /-is-set -∾- , assoc/ , e/ , ln/ , rn/ ,
         (λ x → inv/ x , invl/ x , invr/ x))
 \end{code}
@@ -801,8 +795,8 @@ assume another group G with a map f : A → G:
 
 \end{code}
 
-Our objective is to construct f' from f making the universality
-triangle commute. As a first step in the construction of f', we
+Our objective is to construct f̅ from f making the universality
+triangle commute. As a first step in the construction of f̅, we
 construct a map h by induction of lists:
 
 \begin{code}
@@ -856,7 +850,7 @@ group, which it isn't):
 \end{code}
 
 We also need the following property of the map h in order to construct
-our desired group homomorphism f':
+our desired group homomorphism f̅:
 
 \begin{code}
 
@@ -892,16 +886,16 @@ our desired group homomorphism f':
 
 \end{code}
 
-We can then finally construct the unique homorphism f' extending f
+We can then finally construct the unique homorphism f̅ extending f
 using the universal property of quotients, using the above map h:
 
 \begin{code}
 
-    f' : FA/∾ → G
-    f' = mediating-map/ -∾- G-is-set h h-identifies-∾-related-points
+    f̅ : FA/∾ → G
+    f̅ = mediating-map/ -∾- G-is-set h h-identifies-∾-related-points
 
-    f'-/triangle : f' ∘ η/∾ ∼ h
-    f'-/triangle = universality-triangle/ -∾- G-is-set h h-identifies-∾-related-points
+    f̅-/triangle : f̅ ∘ η/∾ ∼ h
+    f̅-/triangle = universality-triangle/ -∾- G-is-set h h-identifies-∾-related-points
 
 \end{code}
 
@@ -910,11 +904,11 @@ free group:
 
 \begin{code}
 
-    f'-triangle : f' ∘ ηᴳʳᵖ ∼ f
-    f'-triangle a = f' (η/∾ (η a)) ＝⟨ f'-/triangle (η a) ⟩
-                    h (η a)        ＝⟨ refl ⟩
-                    f a * e        ＝⟨ G-rn (f a) ⟩
-                    f a            ∎
+    f̅-triangle : f̅ ∘ ηᴳʳᵖ ∼ f
+    f̅-triangle a = f̅ (η/∾ (η a)) ＝⟨ f̅-/triangle (η a) ⟩
+                    h (η a)      ＝⟨ refl ⟩
+                    f a * e      ＝⟨ G-rn (f a) ⟩
+                    f a          ∎
 
 \end{code}
 
@@ -923,22 +917,22 @@ homomorphism like h):
 
 \begin{code}
 
-    f'-is-hom : is-hom 𝓕 𝓖 f'
-    f'-is-hom {x} {y} = γ x y
+    f̅-is-hom : is-hom 𝓕 𝓖 f̅
+    f̅-is-hom {x} {y} = γ x y
      where
-      δ : (s t : FA) → f' (η/∾ s · η/∾ t) ＝ f' (η/∾ s) * f' (η/∾ t)
-      δ s t = f' (η/∾ s · η/∾ t)      ＝⟨ I ⟩
-              f' (η/∾ (s ++ t))       ＝⟨ II ⟩
-              h (s ++ t)              ＝⟨ III ⟩
-              h s * h t               ＝⟨ IV ⟩
-              f' (η/∾ s) * f' (η/∾ t) ∎
+      δ : (s t : FA) → f̅ (η/∾ s · η/∾ t) ＝ f̅ (η/∾ s) * f̅ (η/∾ t)
+      δ s t = f̅ (η/∾ s · η/∾ t)     ＝⟨ I ⟩
+              f̅ (η/∾ (s ++ t))      ＝⟨ II ⟩
+              h (s ++ t)            ＝⟨ III ⟩
+              h s * h t             ＝⟨ IV ⟩
+              f̅ (η/∾ s) * f̅ (η/∾ t) ∎
         where
-         I   = ap f' (·-natural s t)
-         II  = f'-/triangle (s ++ t)
+         I   = ap f̅ (·-natural s t)
+         II  = f̅-/triangle (s ++ t)
          III = h-is-hom s t
-         IV  = ap₂ _*_ ((f'-/triangle s)⁻¹) ((f'-/triangle t)⁻¹)
+         IV  = ap₂ _*_ ((f̅-/triangle s)⁻¹) ((f̅-/triangle t)⁻¹)
 
-      γ : (x y : FA / -∾-) → f' (x · y) ＝ f' x * f' y
+      γ : (x y : FA / -∾-) → f̅ (x · y) ＝ f̅ x * f̅ y
       γ = /-induction -∾-
            (λ x → Π-is-prop fe (λ y → G-is-set))
            (λ s → /-induction -∾-
@@ -946,14 +940,14 @@ homomorphism like h):
                    (δ s))
 \end{code}
 
-Notice that for the following uniqueness property of f' we don't need
+Notice that for the following uniqueness property of f̅ we don't need
 to assume that f₀ and f₁ are group homomorphisms:
 
 \begin{code}
 
-    f'-uniqueness-∾ : (f₀ f₁ : FA/∾ → G) → f₀ ∘ η/∾ ∼ h → f₁ ∘ η/∾ ∼ h → f₀ ∼ f₁
-    f'-uniqueness-∾ f₀ f₁ p q = at-most-one-mediating-map/ -∾-
-                                 G-is-set f₀ f₁ (λ s → p s ∙ (q s)⁻¹)
+    f̅-uniqueness-∾ : (f₀ f₁ : FA/∾ → G) → f₀ ∘ η/∾ ∼ h → f₁ ∘ η/∾ ∼ h → f₀ ∼ f₁
+    f̅-uniqueness-∾ f₀ f₁ p q = at-most-one-mediating-map/ -∾-
+                                G-is-set f₀ f₁ (λ s → p s ∙ (q s)⁻¹)
 
 \end{code}
 
@@ -961,13 +955,13 @@ But for this one we do:
 
 \begin{code}
 
-    f'-uniqueness' : (f₀ f₁ : FA/∾ → G)
+    f̅-uniqueness' : (f₀ f₁ : FA/∾ → G)
                   → is-hom 𝓕 𝓖 f₀
                   → is-hom 𝓕 𝓖 f₁
                   → f₀ ∘ ηᴳʳᵖ ∼ f
                   → f₁ ∘ ηᴳʳᵖ ∼ f
                   → f₀ ∼ f₁
-    f'-uniqueness' f₀ f₁ i₀ i₁ f₀-triangle f₁-triangle = γ
+    f̅-uniqueness' f₀ f₁ i₀ i₁ f₀-triangle f₁-triangle = γ
      where
       p : f₀ ∘ ηᴳʳᵖ ∼ f₁ ∘ ηᴳʳᵖ
       p x = f₀-triangle x ∙ (f₁-triangle x)⁻¹
@@ -1008,25 +1002,27 @@ But for this one we do:
       γ : f₀ ∼ f₁
       γ = /-induction -∾- (λ x → G-is-set) δ
 
-    f'-uniqueness : ∃! f' ꞉ (⟨ 𝓕 ⟩ → ⟨ 𝓖 ⟩) , is-hom 𝓕 𝓖 f'
-                                             × f' ∘ ηᴳʳᵖ ∼ f
-    f'-uniqueness = γ
+    f̅-uniqueness : ∃! f̅ ꞉ (⟨ 𝓕 ⟩ → ⟨ 𝓖 ⟩)
+                        , is-hom 𝓕 𝓖 f̅
+                        × f̅ ∘ ηᴳʳᵖ ∼ f
+    f̅-uniqueness = γ
      where
-      c : Σ f' ꞉ (⟨ 𝓕 ⟩ → ⟨ 𝓖 ⟩) , is-hom 𝓕 𝓖 f' × f' ∘ ηᴳʳᵖ ∼ f
-      c = (f' , f'-is-hom , f'-triangle)
+      c : Σ f̅ ꞉ (⟨ 𝓕 ⟩ → ⟨ 𝓖 ⟩) , is-hom 𝓕 𝓖 f̅ × f̅ ∘ ηᴳʳᵖ ∼ f
+      c = (f̅ , f̅-is-hom , f̅-triangle)
 
       i : is-central _ c
       i (f₀ , f₀-is-hom , f₀-triangle) = to-subtype-＝ a b
        where
-        a : (f' : ⟨ 𝓕 ⟩ → ⟨ 𝓖 ⟩) → is-prop (is-hom 𝓕 𝓖 f' × f' ∘ ηᴳʳᵖ ∼ f)
-        a f' = ×-is-prop (being-hom-is-prop fe 𝓕 𝓖 f')
-                         (Π-is-prop fe (λ a → groups-are-sets 𝓖))
+        a : (f̅ : ⟨ 𝓕 ⟩ → ⟨ 𝓖 ⟩) → is-prop (is-hom 𝓕 𝓖 f̅ × f̅ ∘ ηᴳʳᵖ ∼ f)
+        a f̅ = ×-is-prop
+               (being-hom-is-prop fe 𝓕 𝓖 f̅)
+               (Π-is-prop fe (λ a → groups-are-sets 𝓖))
 
-        b : f' ＝ f₀
+        b : f̅ ＝ f₀
         b = dfunext fe
-             (f'-uniqueness' f' f₀ f'-is-hom f₀-is-hom f'-triangle f₀-triangle)
+             (f̅-uniqueness' f̅ f₀ f̅-is-hom f₀-is-hom f̅-triangle f₀-triangle)
 
-      γ : ∃! f' ꞉ (⟨ 𝓕 ⟩ → ⟨ 𝓖 ⟩) , is-hom 𝓕 𝓖 f' × f' ∘ ηᴳʳᵖ ∼ f
+      γ : ∃! f̅ ꞉ (⟨ 𝓕 ⟩ → ⟨ 𝓖 ⟩) , is-hom 𝓕 𝓖 f̅ × f̅ ∘ ηᴳʳᵖ ∼ f
       γ = c , i
 
 \end{code}
@@ -1040,20 +1036,19 @@ We summarize the important parts in the following interface:
 module FreeGroupInterface
         (pt : propositional-truncations-exist)
         (fe : Fun-Ext)
-        (pe : Prop-Ext)
+        (ℓ : Universe → Universe)
+        (sq : general-set-quotients-exist ℓ)
+        (η/-relates-identified-points : are-effective sq)
         {𝓤 : Universe}
         (A : 𝓤 ̇ )
        where
 
  open free-group-construction A
  open free-group-construction-step₁ pt
- open free-group-construction-step₂ fe pe
+ open free-group-construction-step₂ fe ℓ sq η/-relates-identified-points
 
- free-group : Group (𝓤 ⁺)
+ free-group : Group 𝓤̅
  free-group = 𝓕
-
- free-group-carrier-is-small : Set-Replacement pt → ⟨ 𝓕 ⟩ is 𝓤 small
- free-group-carrier-is-small = FA/∾-is-small
 
  η-free-group : A → ⟨ free-group ⟩
  η-free-group = ηᴳʳᵖ
@@ -1070,20 +1065,21 @@ module FreeGroupInterface
         (λ x → pr₁ (pr₂ (inversion x))) (λ x → pr₂ (pr₂ (inversion x))) G-assoc f
 
   free-group-extension : ⟨ free-group ⟩ → ⟨ 𝓖 ⟩
-  free-group-extension = f'
+  free-group-extension = f̅
 
   free-group-is-hom : is-hom free-group 𝓖 free-group-extension
-  free-group-is-hom = f'-is-hom
+  free-group-is-hom = f̅-is-hom
 
   free-group-triangle : free-group-extension ∘ η-free-group ∼ f
-  free-group-triangle = f'-triangle
+  free-group-triangle = f̅-triangle
 
   extension-to-free-group-uniqueness :
 
-    ∃! f' ꞉ (⟨ free-group ⟩ → ⟨ 𝓖 ⟩) , is-hom free-group 𝓖 f'
-                                     × f' ∘ η-free-group ∼ f
+    ∃! f̅ ꞉ (⟨ free-group ⟩ → ⟨ 𝓖 ⟩)
+         , is-hom free-group 𝓖 f̅
+         × f̅ ∘ η-free-group ∼ f
 
-  extension-to-free-group-uniqueness = f'-uniqueness
+  extension-to-free-group-uniqueness = f̅-uniqueness
 
 \end{code}
 
@@ -1098,34 +1094,156 @@ hence an embedding.
 
 \begin{code}
 
-free-groups-exist : propositional-truncations-exist
-                  → Fun-Ext
-                  → Prop-Ext
-                  → (A : 𝓤 ̇ )
-                  → Σ 𝓕 ꞉ Group (𝓤 ⁺)
-                  , Σ η ꞉ (A → ⟨ 𝓕 ⟩)
-                  , ((𝓖 : Group 𝓥) (f : A → ⟨ 𝓖 ⟩)
-                        → ∃! f' ꞉ (⟨ 𝓕 ⟩ → ⟨ 𝓖 ⟩) , is-hom 𝓕 𝓖 f' × f' ∘ η ∼ f)
-                  × (is-set A → is-embedding η)
+general-free-groups-exist
+  : propositional-truncations-exist
+  → Fun-Ext
+  → (ℓ : Universe → Universe)
+  → (sq : general-set-quotients-exist ℓ)
+  → are-effective sq
+  → (A : 𝓤 ̇ )
+  → Σ 𝓕 ꞉ Group (𝓤 ⊔ ℓ 𝓤)
+  , Σ η ꞉ (A → ⟨ 𝓕 ⟩)
+  , ((𝓖 : Group 𝓥) (f : A → ⟨ 𝓖 ⟩)
+        → ∃! f̅ ꞉ (⟨ 𝓕 ⟩ → ⟨ 𝓖 ⟩)
+               , is-hom 𝓕 𝓖 f̅
+               × f̅ ∘ η ∼ f)
+  × (is-set A → is-embedding η)
 
-free-groups-exist pt fe pe A = free-group A  ,
-                               η-free-group A ,
-                               extension-to-free-group-uniqueness A ,
-                               η-free-group-is-embedding A
+general-free-groups-exist pt fe ℓ sq eff A = free-group A  ,
+                                   η-free-group A ,
+                                   extension-to-free-group-uniqueness A ,
+                                   η-free-group-is-embedding A
  where
-  open FreeGroupInterface pt fe pe
+  open FreeGroupInterface pt fe ℓ sq eff
 
 \end{code}
 
-Notice that the free group construction increases the universe level,
-but the universal property eliminates into any universe. This is
-because our construction of quotients via propositional truncation
-increses universe levels. In the module FreeGroupOfLargeLocallySmallSet
-we show that for a large, locally small type type A : 𝓤⁺, the free
-group has a copy in the same universe 𝓤+ as A, and moreover, if the
-free group has a copy in 𝓤 then so must have the type A.
+We are interested in the following three corollaries.
 
-Alternatively, we can assume set replacement. In the Quotient modules
-it is shown that the existence of small quotients is equivalent to the
-conjunction of set replacement and the existence of propositional
-truncations.
+The first one assumes the small set quotients exist and derives their
+effectivity from functional and propositional extensionality to get
+that small free groups exist, choosing ℓ = id.
+
+\begin{code}
+
+open import Quotient.Effectivity
+
+small-free-groups-exist
+  : propositional-truncations-exist
+  → Fun-Ext
+  → Prop-Ext
+  → set-quotients-exist
+  → (A : 𝓤 ̇ )
+  → Σ 𝓕 ꞉ Group 𝓤
+  , Σ η ꞉ (A → ⟨ 𝓕 ⟩)
+  , ((𝓖 : Group 𝓥) (f : A → ⟨ 𝓖 ⟩)
+        → ∃! f̅ ꞉ (⟨ 𝓕 ⟩ → ⟨ 𝓖 ⟩)
+               , is-hom 𝓕 𝓖 f̅
+               × f̅ ∘ η ∼ f)
+  × (is-set A → is-embedding η)
+small-free-groups-exist pt fe pe sq =
+ general-free-groups-exist pt fe id sq (effectivity fe pe sq)
+
+\end{code}
+
+The second one assumes set replacement to construct quotients, and
+again uses ℓ = id.
+
+\begin{code}
+
+open import Quotient.FromSetReplacement
+open import UF.Size
+
+small-free-groups-exist'
+  : (pt : propositional-truncations-exist)
+  → Set-Replacement pt
+  → Fun-Ext
+  → Prop-Ext
+  → (A : 𝓤 ̇ )
+  → Σ 𝓕 ꞉ Group 𝓤
+  , Σ η ꞉ (A → ⟨ 𝓕 ⟩)
+  , ((𝓖 : Group 𝓥) (f : A → ⟨ 𝓖 ⟩)
+        → ∃! f̅ ꞉ (⟨ 𝓕 ⟩ → ⟨ 𝓖 ⟩)
+               , is-hom 𝓕 𝓖 f̅
+               × f̅ ∘ η ∼ f)
+  × (is-set A → is-embedding η)
+small-free-groups-exist' pt sr fe pe =
+ general-free-groups-exist pt fe id
+  (set-quotients-from-set-replacement pt fe pe sr)
+  (set-replacement-gives-effective-set-quotients pt fe pe sr)
+
+\end{code}
+
+Notice that set replacement (defined in UF.Size) is equivalent to the
+existence of small quotients in the presence of propositions
+truncations and functional and propositional extensionality:
+
+\begin{code}
+
+private
+ module _ (pt : propositional-truncations-exist)
+          (fe : Fun-Ext)
+          (pe : Prop-Ext)
+        where
+
+  open import Quotient.GivesSetReplacement
+
+  remark→ : Set-Replacement pt → set-quotients-exist
+  remark→ = set-quotients-from-set-replacement pt fe pe
+
+  remark← : set-quotients-exist → Set-Replacement pt
+  remark← sq = set-replacement-from-set-quotients-and-prop-trunc sq pt
+
+\end{code}
+
+The third one drops set replacement, but instead construct large
+quotients, with ℓ = (_⁺).
+
+\begin{code}
+
+open import Quotient.Large
+
+large-free-groups-exist
+  : propositional-truncations-exist
+  → Fun-Ext
+  → Prop-Ext
+  → (A : 𝓤 ̇ )
+  → Σ 𝓕 ꞉ Group (𝓤 ⁺)
+  , Σ η ꞉ (A → ⟨ 𝓕 ⟩)
+  , ((𝓖 : Group 𝓥) (f : A → ⟨ 𝓖 ⟩)
+        → ∃! f̅ ꞉ (⟨ 𝓕 ⟩ → ⟨ 𝓖 ⟩)
+               , is-hom 𝓕 𝓖 f̅
+               × f̅ ∘ η ∼ f)
+  × (is-set A → is-embedding η)
+large-free-groups-exist pt fe pe =
+ general-free-groups-exist pt fe (_⁺)
+  (large-set-quotients pt fe pe)
+  (large-effective-set-quotients pt fe pe)
+
+\end{code}
+
+The fourth one is the observation that univalence and propositional
+truncations suffice to construct large free groups.
+
+\begin{code}
+
+open import UF.UA-FunExt
+open import UF.Univalence
+
+large-free-groups-exist'
+  : Univalence
+  → propositional-truncations-exist
+  → (A : 𝓤 ̇ )
+  → Σ 𝓕 ꞉ Group (𝓤 ⁺)
+  , Σ η ꞉ (A → ⟨ 𝓕 ⟩)
+  , ((𝓖 : Group 𝓥) (f : A → ⟨ 𝓖 ⟩)
+        → ∃! f̅ ꞉ (⟨ 𝓕 ⟩ → ⟨ 𝓖 ⟩)
+               , is-hom 𝓕 𝓖 f̅
+               × f̅ ∘ η ∼ f)
+  × (is-set A → is-embedding η)
+large-free-groups-exist' ua pt =
+ large-free-groups-exist pt
+  (Univalence-gives-Fun-Ext ua)
+  (Univalence-gives-Prop-Ext ua)
+
+\end{code}
