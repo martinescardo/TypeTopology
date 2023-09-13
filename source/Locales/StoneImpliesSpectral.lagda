@@ -208,6 +208,8 @@ stoneᴰ-implies-spectralᴰ {_} {_} {𝓦} X (κₓ , zdₓ) = ℬ , β , κ , 
 
 \end{code}
 
+`stoneᴰ X` implies that `X` is spectral.
+
 \begin{code}
 
 stone-locales-are-spectral : (X : Locale 𝓤 𝓥 𝓦) → stoneᴰ X → is-spectral X holds
