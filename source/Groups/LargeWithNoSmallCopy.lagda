@@ -58,7 +58,7 @@ open import UF.FunExt
 open import UF.PropTrunc
 open import UF.Subsingletons
 
-module Groups.FreeOverLargeLocallySmallSet
+module Groups.LargeWithNoSmallCopy
         (fe : Fun-Ext)
         (pe : Prop-Ext)
         (pt : propositional-truncations-exist)

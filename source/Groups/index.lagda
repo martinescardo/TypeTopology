@@ -7,7 +7,7 @@ module Groups.index where
 import Groups.Type                         -- by [1]
 import Groups.Subgroups                    -- by [1], copied to this place by [3]
 import Groups.Free                         -- by [2]
-import Groups.FreeOverLargeLocallySmallSet -- by [2]
+import Groups.LargeWithNoSmallCopy         -- by [2]
 import Groups.Aut                          -- by [3]
 import Groups.Cokernel                     -- by [3]
 import Groups.GroupActions                 -- by [3]
