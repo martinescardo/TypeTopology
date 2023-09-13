@@ -95,12 +95,12 @@ module Sup-Lattice-Small-Basis {𝓤 𝓦 𝓥 : Universe} (L : Sup-Lattice 𝓤
   ↓ᴮ-inclusion : (x : ⟨ L ⟩) → ↓ᴮ x → ⟨ L ⟩
   ↓ᴮ-inclusion x = q ∘ pr₁
 
-  has-small-basis : 𝓤 ⊔ 𝓦 ⊔ 𝓥 ⁺  ̇
-  has-small-basis = (x : ⟨ L ⟩) →
+  is-small-basis : 𝓤 ⊔ 𝓦 ⊔ 𝓥 ⁺  ̇
+  is-small-basis = (x : ⟨ L ⟩) →
                     ((b : B) → ((q b ≤ x) holds) is 𝓥 small) ×
                     ((x is-lub-of (↓ᴮ x , ↓ᴮ-inclusion x)) holds)
 
-  module Small-Basis-Facts (h : has-small-basis) where
+  module Small-Basis-Facts (h : is-small-basis) where
 
    ≤-is-small : (x : ⟨ L ⟩) (b : B) → ((q b ≤ x) holds) is 𝓥 small
    ≤-is-small x b = pr₁ (h x) b
@@ -124,13 +124,13 @@ module Sup-Lattice-Small-Basis {𝓤 𝓦 𝓥 : Universe} (L : Sup-Lattice 𝓤
    _≤ᴮ_-is-prop-valued {b} {x} =
     equiv-to-prop _≤ᴮ_-≃-_≤_ (holds-is-prop ((q b) ≤ x))
 
-   small-↓̂ᴮ : ⟨ L ⟩ → 𝓥  ̇
-   small-↓̂ᴮ x = Σ b ꞉ B , b ≤ᴮ x
+   small-↓ᴮ : ⟨ L ⟩ → 𝓥  ̇
+   small-↓ᴮ x = Σ b ꞉ B , b ≤ᴮ x
 
-   small-↓ᴮ-inclusion : (x : ⟨ L ⟩) → small-↓̂ᴮ x → ⟨ L ⟩
+   small-↓ᴮ-inclusion : (x : ⟨ L ⟩) → small-↓ᴮ x → ⟨ L ⟩
    small-↓ᴮ-inclusion x = q ∘ pr₁
 
-   small-↓ᴮ-≃-↓ᴮ : {x : ⟨ L ⟩} → small-↓̂ᴮ x ≃ ↓ᴮ x
+   small-↓ᴮ-≃-↓ᴮ : {x : ⟨ L ⟩} → small-↓ᴮ x ≃ ↓ᴮ x
    small-↓ᴮ-≃-↓ᴮ {x} = Σ-cong' P Q f
     where
      P : B → 𝓥  ̇
@@ -141,7 +141,7 @@ module Sup-Lattice-Small-Basis {𝓤 𝓦 𝓥 : Universe} (L : Sup-Lattice 𝓤
      f b = _≤ᴮ_-≃-_≤_ {b} {x}
 
    ↓ᴮ-is-small : {x : ⟨ L ⟩} → ↓ᴮ x is 𝓥 small
-   ↓ᴮ-is-small {x} = (small-↓̂ᴮ x , small-↓ᴮ-≃-↓ᴮ {x})
+   ↓ᴮ-is-small {x} = (small-↓ᴮ x , small-↓ᴮ-≃-↓ᴮ {x})
 
 \end{code}
 
@@ -175,7 +175,7 @@ module Inductive-Definitions (𝓤 𝓦 𝓥 : Universe)
 
   open Small-Basis q
 
-  module Ind-ϕ (h : has-small-basis) where
+  module Ind-ϕ (h : is-small-basis) where
 
    open Small-Basis-Facts h
 
