@@ -8,14 +8,14 @@ module Locales.index where
 
 import Locales.Frame
 import Locales.InitialFrame
-import Locales.CompactRegular
+import Locales.CompactRegular -- DEPRECATED
 import Locales.GaloisConnection
 import Locales.AdjointFunctorTheoremForFrames
 import Locales.HeytingImplication
 import Locales.PatchLocale
 import Locales.PatchProperties
 import Locales.BooleanAlgebra
-import Locales.UniversalPropertyOfPatch -- with contributions by Igor Arrieta.
+-- import Locales.UniversalPropertyOfPatch -- with contributions by Igor Arrieta.
 import Locales.ScottLocale
 import Locales.PatchOfOmega
 
