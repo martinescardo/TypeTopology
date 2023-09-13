@@ -29,14 +29,14 @@ open import MLTT.Two-Properties
 open import Naturals.Properties
 
 open import UF.Base
-open import UF.Embeddings
+open import UF.Equiv
+open import UF.FunExt
+open import UF.Retracts
+open import UF.Sets
+open import UF.Sets-Properties
+open import UF.SubtypeClassifier
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import UF.Retracts
-open import UF.Equiv
-open import UF.Miscelanea
-open import UF.FunExt
-open import UF.Size
 
 designated-fixed-point-property : 𝓤 ̇ → 𝓤 ̇
 designated-fixed-point-property X = (f : X → X) → Σ x ꞉ X , x ＝ f x
@@ -175,9 +175,6 @@ As a simple application, it follows that negation doesn't have fixed points:
 
  \begin{code}
 
- open import UF.Subsingletons
- open import UF.Subsingletons-FunExt
-
  not-no-fp : (fe : funext 𝓤 𝓤₀) → ¬ (Σ P ꞉ Ω 𝓤 , P ＝ not fe P)
  not-no-fp {𝓤} fe (P , p) = ¬-no-fp (P holds , q)
   where
@@ -292,8 +289,6 @@ module surjection-version (pt : propositional-truncations-exist) where
 
  \begin{code}
 
- open import MLTT.Two
-
  cantor-uncountable : ¬ (Σ φ ꞉ (ℕ → (ℕ → 𝟚)), is-surjection φ)
  cantor-uncountable (φ , s) = γ
   where
@@ -324,7 +319,7 @@ module Blechschmidt (pt : propositional-truncations-exist) where
 
  open PropositionalTruncation pt
  open import UF.ImageAndSurjection pt
- open import TypeTopology.DiscreteAndSeparated
+ open import UF.DiscreteAndSeparated
 
  Π-projection-has-section : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
                             (x₀ : X)
@@ -422,7 +417,6 @@ module Blechschmidt' (pt : propositional-truncations-exist) where
 
  open PropositionalTruncation pt
  open import UF.ImageAndSurjection pt
- open import TypeTopology.DiscreteAndSeparated
 
  Π-projection-has-section : funext 𝓥 ((𝓤 ⊔ 𝓦)⁺)
                           → funext (𝓤 ⊔ 𝓦) (𝓤 ⊔ 𝓦)

@@ -61,13 +61,12 @@ module Factorial.Law (fe : FunExt) where
 open import Factorial.Swap
 open import MLTT.Plus-Properties
 open import MLTT.Spartan
-open import TypeTopology.DiscreteAndSeparated
 open import UF.Base
+open import UF.DiscreteAndSeparated
 open import UF.Embeddings
 open import UF.Equiv
 open import UF.Equiv-FunExt
 open import UF.EquivalenceExamples
-open import UF.Miscelanea
 open import UF.Retracts
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt

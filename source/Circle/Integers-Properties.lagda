@@ -10,9 +10,11 @@ open import Circle.Integers
 
 open import MLTT.Spartan
 open import UF.Base
+open import UF.DiscreteAndSeparated
 open import UF.Equiv
-open import UF.Miscelanea
+open import UF.Sets
 open import UF.Subsingletons
+open import UF.Subsingletons-Properties
 
 module Circle.Integers-Properties where
 

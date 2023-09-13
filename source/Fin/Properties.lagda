@@ -6,17 +6,17 @@ Martin Escardo, sometime between 2014 and 2021
 
 module Fin.Properties where
 
-open import UF.Subsingletons renaming (⊤Ω to ⊤)
+open import UF.Subsingletons
 
-open import MLTT.Spartan
-open import MLTT.Plus-Properties
-open import Fin.Type
-open import Notation.Order
-open import TypeTopology.DiscreteAndSeparated
-open import UF.Equiv
 open import Factorial.PlusOneLC
+open import Fin.Type
+open import MLTT.Plus-Properties
+open import MLTT.Spartan
 open import MLTT.Unit-Properties
+open import Notation.Order
+open import UF.DiscreteAndSeparated
 open import UF.Embeddings
+open import UF.Equiv
 
 \end{code}
 

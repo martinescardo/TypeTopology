@@ -8,17 +8,17 @@ Completed on the 2nd of June 2023.
 
 {-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
 
-open import MLTT.Spartan hiding (𝟚)
-open import UF.Base
-open import UF.PropTrunc
-open import UF.FunExt
-open import UF.Size
-open import UF.Equiv renaming (_■ to _𝔔𝔈𝔇)
-open import UF.Retracts
-open import UF.Embeddings
-open import UF.PropTrunc
-open import Slice.Family
 open import MLTT.List hiding ([_])
+open import MLTT.Spartan hiding (𝟚)
+open import Slice.Family
+open import UF.Base
+open import UF.Embeddings
+open import UF.Equiv renaming (_■ to _𝔔𝔈𝔇)
+open import UF.FunExt
+open import UF.PropTrunc
+open import UF.PropTrunc
+open import UF.Retracts
+open import UF.Size
 
 module Locales.UniversalPropertyOfPatch
         (pt : propositional-truncations-exist)
@@ -26,21 +26,22 @@ module Locales.UniversalPropertyOfPatch
         (sr : Set-Replacement pt)
        where
 
-open import UF.Subsingletons
 open import UF.Logic
+open import UF.SubtypeClassifier
+open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
 open AllCombinators pt fe
 open import UF.ImageAndSurjection
 
-open import Locales.Frame pt fe
+open import Locales.AdjointFunctorTheoremForFrames pt fe
 open import Locales.CompactRegular pt fe
+open import Locales.Frame pt fe
+open import Locales.GaloisConnection pt fe
+open import Locales.HeytingImplication pt fe
+open import Locales.Nucleus pt fe
 open import Locales.PatchLocale pt fe
 open import Locales.PatchProperties pt fe
-open import Locales.HeytingImplication pt fe
-open import Locales.GaloisConnection pt fe
-open import Locales.AdjointFunctorTheoremForFrames pt fe
-open import Locales.Nucleus pt fe
 
 open PropositionalTruncation pt
 

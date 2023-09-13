@@ -7,11 +7,9 @@ Martin Escardo 2011.
 module NotionsOfDecidability.Decidable where
 
 open import MLTT.Spartan
-
-open import MLTT.Plus-Properties
 open import MLTT.Two-Properties
-open import UF.Subsingletons
 open import UF.Equiv
+open import UF.Subsingletons
 
 ¬¬-elim : {A : 𝓤 ̇ } → is-decidable A → ¬¬ A → A
 ¬¬-elim (inl a) f = a

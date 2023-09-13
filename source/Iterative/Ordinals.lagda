@@ -36,8 +36,8 @@ open import MLTT.Spartan
 open import UF.Univalence
 
 module Iterative.Ordinals
-        (𝓤 : Universe)
         (ua : Univalence)
+        (𝓤 : Universe)
        where
 
 open import UF.FunExt
@@ -54,7 +54,7 @@ private
  fe' 𝓤 𝓥 = fe {𝓤} {𝓥}
 
 open import Iterative.Multisets 𝓤
-open import Iterative.Sets 𝓤 ua
+open import Iterative.Sets ua 𝓤
 open import Ordinals.Equivalence
 open import Ordinals.Notions
 open import Ordinals.OrdinalOfOrdinals ua
@@ -67,6 +67,7 @@ open import UF.Embeddings
 open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.PairFun
+open import UF.Sets
 open import UF.Size
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt

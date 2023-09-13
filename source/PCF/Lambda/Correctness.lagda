@@ -33,7 +33,6 @@ open import PCF.Lambda.ScottModelOfContexts pt fe pe
 open import PCF.Lambda.ScottModelOfTerms pt fe pe
 open import PCF.Lambda.ScottModelOfTypes pt fe pe
 open import PCF.Lambda.SubstitutionDenotational pt fe pe
-open import UF.Miscelanea
 
 open DcpoProductsGeneral 𝓤₀
 open IfZeroDenotationalSemantics pe

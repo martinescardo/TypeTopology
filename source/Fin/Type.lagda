@@ -6,7 +6,7 @@ Martin Escardo, 2014.
 
 module Fin.Type where
 
-open import UF.Subsingletons renaming (⊤Ω to ⊤)
+open import UF.Subsingletons
 
 open import MLTT.Spartan
 open import MLTT.Plus-Properties

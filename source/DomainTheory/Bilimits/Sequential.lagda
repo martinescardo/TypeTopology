@@ -27,9 +27,9 @@ open import Naturals.Properties
 open import Naturals.Order hiding (subtraction')
 open import Notation.Order
 
+open import UF.DiscreteAndSeparated
 open import UF.Equiv
 open import UF.EquivalenceExamples
-open import UF.Miscelanea
 open import UF.Subsingletons
 
 module SequentialDiagram

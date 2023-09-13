@@ -64,13 +64,18 @@ References
 
 open import MLTT.Spartan
 
+open import UF.DiscreteAndSeparated
 open import UF.Equiv
 open import UF.Equiv-FunExt
 open import UF.EquivalenceExamples
 open import UF.FunExt
-open import UF.Miscelanea
 open import UF.Powerset
+open import UF.NotNotStablePropositions
 open import UF.PropTrunc
+open import UF.Sets
+open import UF.Sets-Properties
+open import UF.SubtypeClassifier
+open import UF.SubtypeClassifier-Properties
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.UniverseEmbedding
@@ -85,7 +90,6 @@ open import NotionsOfDecidability.Decidable
 open import NotionsOfDecidability.DecidableClassifier
 open import NotionsOfDecidability.Complemented
 open import TypeTopology.CompactTypes
-open import TypeTopology.DiscreteAndSeparated
 
 \end{code}
 
@@ -374,16 +378,9 @@ where
 open import UF.Embeddings
 open import Notation.CanonicalMap
 
-Ω¬¬-to-Ω : Ω¬¬ 𝓤 → Ω 𝓤
-Ω¬¬-to-Ω = pr₁
-
 instance
  canonical-map-Ω¬¬-to-Ω : Canonical-Map (Ω¬¬ 𝓤) (Ω 𝓤)
  ι {{canonical-map-Ω¬¬-to-Ω}} = Ω¬¬-to-Ω
-
-Ω¬¬-to-Ω-is-embedding : is-embedding (canonical-map (Ω¬¬ 𝓤) (Ω 𝓤))
-Ω¬¬-to-Ω-is-embedding =
- pr₁-is-embedding (λ P → being-¬¬-stable-is-prop fe (holds-is-prop P))
 
 Ωˢᵈ : (𝓤 : Universe) → 𝓤 ⁺ ̇
 Ωˢᵈ 𝓤 = Σ X ꞉ 𝓤 ̇  , is-semidecidable X
@@ -650,7 +647,7 @@ NB: The map e : Ωˢᵈ 𝓤 → Ω¬¬ 𝓤 in the type of MP-in-terms-of-Ω¬�
 Ωˢᵈ-to-Ω¬¬-is-embedding e h = factor-is-embedding e Ω¬¬-to-Ω
                                (embedding-closed-under-∼ Ωˢᵈ-to-Ω (Ω¬¬-to-Ω ∘ e)
                                  Ωˢᵈ-to-Ω-is-embedding (λ p → (h p) ⁻¹))
-                               Ω¬¬-to-Ω-is-embedding
+                               (Ω¬¬-to-Ω-is-embedding fe)
 
 \end{code}
 

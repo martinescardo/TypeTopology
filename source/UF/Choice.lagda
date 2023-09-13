@@ -34,18 +34,23 @@ choice where X is a proposition (see https://arxiv.org/abs/1610.03346).
 {-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan
-open import TypeTopology.DiscreteAndSeparated
+open import UF.DiscreteAndSeparated
 open import UF.Base
 open import UF.Equiv
 open import UF.ExcludedMiddle
 open import UF.FunExt
+open import UF.Hedberg
 open import UF.LeftCancellable
-open import UF.Miscelanea
 open import UF.Powerset
 open import UF.PropTrunc
 open import UF.Retracts
-open import UF.Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)
+open import UF.Sets
+open import UF.Sets-Properties
+open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
+open import UF.Subsingletons-Properties
+open import UF.SubtypeClassifier
+open import UF.SubtypeClassifier-Properties
 
 module UF.Choice where
 
@@ -312,7 +317,7 @@ module ExcludedMiddle
  AC-gives-EM {𝓤} pe ac =
   Ω-discrete-gives-EM (fe _ _) (pe _)
    (ac-renders-all-sets-discrete {𝓤 ⁺} ac (Ω 𝓤)
-     (Ω-is-set (fe 𝓤 𝓤) (pe 𝓤)))
+                                 (Ω-is-set (fe 𝓤 𝓤) (pe 𝓤)))
 
  Choice-gives-Excluded-Middle : PropExt
                               → Axiom-of-Choice
@@ -660,3 +665,31 @@ module Observation
    claim (inr u) = inr (λ p → u (a-s p))
 
 \end{code}
+
+Added Friday 8th September 2023.
+
+The axiom of propositional choice from
+https://doi.org/10.23638/LMCS-13(1:15)2017
+
+\begin{code}
+
+module Propositional-Choice
+        (pt : propositional-truncations-exist)
+        where
+
+ open PropositionalTruncation pt
+
+ PAC : {𝓤 𝓥 : Universe} → (𝓤 ⊔ 𝓥)⁺ ̇
+ PAC {𝓤} {𝓥} = (P : 𝓤 ̇ ) (Y : P → 𝓥 ̇ )
+              → is-set P
+              → (Π p ꞉ P , ∥ Y p ∥)
+              → ∥(Π p ꞉ P , Y p)∥
+
+\end{code}
+
+Notice that we don't require that this is a family of sets. Notice
+also that excluded middle implies PAC. For more information, see
+Theorem 7.7 of the above reference.
+
+TODO. Are these and more facts about this. Some of them can be adapted
+from this Agda file: https://www.cs.bham.ac.uk/~mhe/GeneralizedHedberg/html/GeneralizedHedberg.html

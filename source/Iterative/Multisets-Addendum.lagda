@@ -3,7 +3,7 @@ Martin Escardo and Tom de Jong, July 2023.
 Some constructions with iterative multisets.
 
  * The universe is a retract of the type 𝕄 of iterative multisets.
- * 𝕄 is algebraicly injective.
+ * 𝕄 is algebraically injective.
 
 
 \begin{code}
@@ -14,22 +14,24 @@ open import MLTT.Spartan
 open import UF.Univalence
 
 module Iterative.Multisets-Addendum
-        (𝓤 : Universe)
         (ua : Univalence)
+        (𝓤 : Universe)
        where
 
 open import Iterative.Multisets 𝓤
-open import Iterative.Sets 𝓤 ua
+open import Iterative.Sets ua 𝓤
 open import Taboos.Decomposability ua
 open import UF.Base
+open import UF.DiscreteAndSeparated
 open import UF.Embeddings
 open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.ExcludedMiddle
 open import UF.FunExt
-open import UF.Miscelanea
+open import UF.HedbergApplications
 open import UF.PropIndexedPiSigma
 open import UF.Retracts
+open import UF.Sets
 open import UF.Subsingletons
 open import UF.UA-FunExt
 open import W.Properties (𝓤 ̇) id
@@ -62,6 +64,19 @@ The universe 𝓤 is embedded as a retract of 𝕄.
 𝟘ᴹ-is-h-isolated : is-h-isolated 𝟘ᴹ
 𝟘ᴹ-is-h-isolated {ssup X φ} = isets-are-h-isolated 𝟘ᴹ 𝟘ᴹ-is-iset
 
+𝟙ᴹ : 𝕄
+𝟙ᴹ = ssup 𝟙 λ ⋆ → 𝟘ᴹ
+
+𝟙ᴹ-is-iset : is-iterative-set 𝟙ᴹ
+𝟙ᴹ-is-iset = global-point-is-embedding (λ ⋆ → 𝟘ᴹ) 𝟘ᴹ-is-h-isolated ,
+             λ ⋆ → 𝟘ᴹ-is-iset
+
+𝟙ᴹ-is-h-isolated : is-h-isolated 𝟙ᴹ
+𝟙ᴹ-is-h-isolated {ssup X φ} = isets-are-h-isolated 𝟙ᴹ 𝟙ᴹ-is-iset
+
+𝟘ᴹ-is-not-𝟙ᴹ : 𝟘ᴹ ≠ 𝟙ᴹ
+𝟘ᴹ-is-not-𝟙ᴹ p = 𝟘-is-not-𝟙 (ap 𝕄-root p)
+
 𝓤-to-𝕄 : 𝓤 ̇ → 𝕄
 𝓤-to-𝕄 X = ssup X (λ x → 𝟘ᴹ)
 
@@ -90,7 +105,7 @@ The universe 𝓤 is embedded as a retract of 𝕄.
 
 \end{code}
 
-The type of multisets is algebraicly injective.
+The type of multisets is algebraically injective.
 
 \begin{code}
 
@@ -150,6 +165,9 @@ excluded middle holds.
 \begin{code}
 
 decomposition-of-𝕄-gives-WEM : decomposition 𝕄 → WEM 𝓤
-decomposition-of-𝕄-gives-WEM = decomposition-of-ainjective-type-gives-WEM 𝕄 𝕄-is-ainjective
+decomposition-of-𝕄-gives-WEM =
+ decomposition-of-ainjective-type-gives-WEM
+  𝕄
+  𝕄-is-ainjective
 
 \end{code}

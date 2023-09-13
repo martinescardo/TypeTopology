@@ -28,7 +28,7 @@ open PropositionalTruncation pt
 
 open import UF.Equiv
 open import UF.ImageAndSurjection pt
-open import UF.Miscelanea
+open import UF.Sets
 open import UF.Subsingletons-FunExt
 
 open import Lifting.Lifting 𝓥 hiding (⊥)

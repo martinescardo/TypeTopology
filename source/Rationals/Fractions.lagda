@@ -12,18 +12,18 @@ possibility of a zero-denominator.
 open import MLTT.Spartan renaming (_+_ to _∔_)
 
 open import Integers.Abs
-open import Integers.Type
 open import Integers.HCF
 open import Integers.Multiplication
 open import Integers.Order
+open import Integers.Type
 open import Naturals.Division
 open import Naturals.HCF
 open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
 open import Naturals.Properties
-open import TypeTopology.DiscreteAndSeparated
 open import TypeTopology.SigmaDiscreteAndTotallySeparated
 open import UF.Base hiding (_≈_)
-open import UF.Miscelanea
+open import UF.DiscreteAndSeparated
+open import UF.Sets
 open import UF.Subsingletons
 
 module Rationals.Fractions where

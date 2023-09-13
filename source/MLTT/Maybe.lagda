@@ -23,7 +23,7 @@ Nothing-is-isolated' : {A : 𝓤 ̇ } (x : Maybe A) → is-decidable (x ＝ Noth
 Nothing-is-isolated' Nothing  = inl refl
 Nothing-is-isolated' (Just a) = inr Just-is-not-Nothing
 
-open import UF.Miscelanea
+open import UF.DiscreteAndSeparated
 open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.Subsingletons

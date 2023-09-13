@@ -2,8 +2,8 @@
 
 open import UF.FunExt
 open import UF.Subsingletons
-open import UF.Subsingletons-FunExt  
-open import UF.Quotient
+open import UF.Subsingletons-FunExt
+open import Quotient.Type
 open import MLTT.Spartan
 open import Notation.Order
 open import Naturals.Order
@@ -73,7 +73,7 @@ invert-rel : {X : 𝓤 ̇ } → (X → X → 𝓥 ̇ ) → (X → X → 𝓥 ̇ 
 invert-rel R x y = R y x
 
 invert-rel' : {X : 𝓤 ̇ } → (X → X → ℕ → 𝓥 ̇ ) → (X → X → ℕ → 𝓥 ̇ )
-invert-rel' R x y = R y x 
+invert-rel' R x y = R y x
 
 invert-preorder-is-preorder : {X : 𝓤 ̇ } → (_≤_ : X → X → 𝓥 ̇ )
                             → is-preorder _≤_
@@ -119,14 +119,14 @@ invert-approx-order-is-approx-order X _≤_ _≤ⁿ_ (pre' , lin' , c' , a')
 is_global-maximal : ℕ → {𝓤 𝓥 : Universe}
                   → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                   → (_≤ⁿ_ : Y → Y → ℕ → 𝓦 ̇ )
-                  → (f : X → Y) → X → 𝓦 ⊔ 𝓤  ̇ 
+                  → (f : X → Y) → X → 𝓦 ⊔ 𝓤  ̇
 (is ϵ global-maximal) {𝓤} {𝓥} {X} _≤ⁿ_ f x₀
  = is ϵ global-minimal (invert-rel' _≤ⁿ_) f x₀
 
 has_global-maximal : ℕ → {𝓤 𝓥 : Universe} {X : 𝓤 ̇ }
                    → {Y : 𝓥 ̇ }
                    → (_≤ⁿ_ : Y → Y → ℕ → 𝓦 ̇ )
-                   → (f : X → Y) → (𝓦 ⊔ 𝓤) ̇ 
+                   → (f : X → Y) → (𝓦 ⊔ 𝓤) ̇
 (has ϵ global-maximal) {𝓤} {𝓥} {𝓦} {X} _≤ⁿ_ f
  = Σ ((is ϵ global-maximal) {𝓤} {𝓥} {𝓦} {X} _≤ⁿ_ f)
 
