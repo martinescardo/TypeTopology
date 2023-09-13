@@ -23,7 +23,7 @@ module Locales.Compactness (pt : propositional-truncations-exist)
                            (fe : Fun-Ext)                          where
 
 open import Locales.Frame     pt fe
-open import Locales.WayBelow  pt fe
+open import Locales.WayBelowRelation.Definition  pt fe
 open import UF.Logic
 open import Slice.Family
 
