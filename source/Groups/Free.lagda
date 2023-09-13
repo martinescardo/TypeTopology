@@ -656,7 +656,7 @@ left-cancellable map:
 \begin{code}
 
    η/∾-relates-identified-points : {s t : FA} → η/∾ s ＝ η/∾ t → s ∾ t
-   η/∾-relates-identified-points = large-effective-set-quotients FA -∾-
+   η/∾-relates-identified-points = large-effective-set-quotients -∾-
 
    ηᴳʳᵖ-lc : is-set A → {a b : A} → ηᴳʳᵖ a ＝ ηᴳʳᵖ b → a ＝ b
    ηᴳʳᵖ-lc i p = η-identifies-∾-related-points i

@@ -381,6 +381,6 @@ surjective.
                    π≈ y        ∎
 
         lemma1 : (y : ⟨ Y ⟩) → e⟨ Y ⟩ ≈ y
-        lemma1 y = quotients-are-effective fe pe sq ⟨ Y ⟩ ≋ (lemma2 y)
+        lemma1 y = quotients-are-effective fe pe sq ≋ (lemma2 y)
 
 \end{code}

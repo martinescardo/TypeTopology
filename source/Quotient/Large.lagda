@@ -272,7 +272,7 @@ large-set-quotients =
   }
 
 large-effective-set-quotients : are-effective large-set-quotients
-large-effective-set-quotients {𝓤} {𝓥} X ≋ {x} {y} =
+large-effective-set-quotients {𝓤} {𝓥} {X} ≋ {x} {y} =
  large-quotient.η-relates-identified-points X ≋
 
 \end{code}

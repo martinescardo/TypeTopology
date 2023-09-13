@@ -214,9 +214,6 @@ they are of general use.
      f₁ : X → X / ≋ → X / ≋
      f₁ x = extension₁/ (f x) (p' x)
 
-     n/ : (x : X) → f₁ x ∘ η/ ≋ ∼ η/ ≋ ∘ f x
-     n/ x = naturality/ (f x) (p' x)
-
      δ : {x x' : X} → x ≈ x' → (y : X) → f₁ x (η/ ≋ y) ＝ f₁ x' (η/ ≋ y)
      δ {x} {x'} e y =
        f₁ x (η/ ≋ y)   ＝⟨ naturality/ (f x) (p' x) y ⟩
@@ -391,7 +388,7 @@ to include the definition here.
 \begin{code}
 
 are-effective : {ℓ : Universe → Universe} → general-set-quotients-exist ℓ → 𝓤ω
-are-effective sq = {𝓤 𝓥 : Universe} (X : 𝓤 ̇ )
+are-effective sq = {𝓤 𝓥 : Universe} {X : 𝓤 ̇ }
                    (R : EqRel {𝓤} {𝓥} X)
                    {x y : X}
                  → η/ R x ＝ η/ R y → x ≈[ R ] y
