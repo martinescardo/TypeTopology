@@ -372,6 +372,23 @@ syntax join-of F U = ⋁[ F ] U
 
 \begin{code}
 
+∧[_]-is-glb : (A : Frame 𝓤 𝓥 𝓦) (x y : ⟨ A ⟩)
+            → let
+               open Meets (λ x y → x ≤[ poset-of A ] y)
+              in
+               ((x ∧[ A ] y) is-glb-of (x , y)) holds
+∧[_]-is-glb (A , _ , _ , (_ , γ , _ , _)) x y = γ (x , y)
+
+∧[_]-is-glb⋆ : (A : Frame 𝓤 𝓥 𝓦) {x y z : ⟨ A ⟩}
+             → let
+                open Meets (λ x y → x ≤[ poset-of A ] y)
+               in
+                z ＝ x ∧[ A ] y → (z is-glb-of (x , y)) holds
+∧[_]-is-glb⋆ L@(A , _ , _ , (_ , γ , _ , _)) {x} {y} {z} p =
+ transport (λ - → (- is-glb-of (x , y)) holds) (p ⁻¹) (∧[ L ]-is-glb x y)
+  where
+   open Meets (λ x y → x ≤[ poset-of L ] y)
+
 ∧[_]-lower₁ : (A : Frame 𝓤 𝓥 𝓦) (x y : ⟨ A ⟩)
             → ((x ∧[ A ] y) ≤[ poset-of A ] x) holds
 ∧[_]-lower₁ (A , _ , _ , (_ , γ , _ , _)) x y = pr₁ (pr₁ (γ (x , y)))
