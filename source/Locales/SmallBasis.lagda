@@ -22,7 +22,7 @@ module Locales.SmallBasis (pt : propositional-truncations-exist)
 
 open import Locales.Frame       pt fe hiding (has-directed-basis₀)
 open import Locales.Compactness pt fe
-open import Locales.Spectrality pt fe
+open import Locales.Spectrality.SpectralLocale pt fe
 open import Slice.Family
 open import UF.SubtypeClassifier
 open import UF.ImageAndSurjection pt
