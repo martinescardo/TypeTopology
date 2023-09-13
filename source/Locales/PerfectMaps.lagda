@@ -17,7 +17,7 @@ module Locales.PerfectMaps (pt : propositional-truncations-exist)
 
 open import Locales.AdjointFunctorTheoremForFrames
 open import Locales.Frame pt fe
-open import Locales.WayBelow pt fe
+open import Locales.WayBelowRelation.Definition pt fe
 open import Locales.Compactness pt fe
 open import Slice.Family
 -- open import UF.Equiv using (_≃_; logically-equivalent-props-give-is-equiv)
