@@ -24,8 +24,8 @@ open import UF.SubtypeClassifier
 open import UF.Subsingletons-FunExt
 open import UF.Logic
 
-module Locales.Spectrality (pt : propositional-truncations-exist)
-                           (fe : Fun-Ext)                          where
+module Locales.Spectrality.SpectralLocale (pt : propositional-truncations-exist)
+                                          (fe : Fun-Ext) where
 
 open import Locales.Frame pt fe
 open import Locales.Compactness pt fe
@@ -105,6 +105,9 @@ spectral-locales-are-compact X ((κ , _) , _) = κ
 
 We define a couple of projections of the components of being a spectral locale.
 
+We denote by `binary-coherence` the fact that that the compact opens are closed
+under binary meets.
+
 \begin{code}
 
 binary-coherence : (X : Locale 𝓤 𝓥 𝓦) (σ : is-spectral X holds) (K₁ K₂ : ⟨ 𝒪 X ⟩)
@@ -112,6 +115,12 @@ binary-coherence : (X : Locale 𝓤 𝓥 𝓦) (σ : is-spectral X holds) (K₁ 
                  ⇒ is-compact-open X K₂
                  ⇒ is-compact-open X (K₁ ∧[ 𝒪 X ] K₂)) holds
 binary-coherence X σ = pr₂ (pr₁ σ)
+
+\end{code}
+
+The fact that the top open is compact is denoted `spectral-implies-compact`.
+
+\begin{code}
 
 spectral-implies-compact : (X : Locale 𝓤 𝓥 𝓦) (σ : is-spectral X holds)
                          → is-compact-open X 𝟏[ 𝒪 X ] holds
