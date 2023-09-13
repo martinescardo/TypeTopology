@@ -1,7 +1,11 @@
 Ian Ray 01/09/2023.
 
-We formalize Curi's (CZF) notion of Abstract Inductive Definition from a
-small generated lattice.
+We formalize Curi's (CZF) notion of Abstract Inductive Definition from a Sup-Lattice L with small
+basis B (and q : B → L). An abstract inductive defintion is a subset ϕ : L × B → Prop which can be
+thought of as a 'inference rule'. Fortunately, induction rules are first class citizens in type
+theory unlike CZF. Using the power of agda's data type constructor (which is justified by inductive
+types in book HoTT) we can automatically construct the least ϕ-closed subset given ϕ. We open this
+file by defining Sup-Lattices.
 
 \begin{code}
 
@@ -13,6 +17,7 @@ open import UF.PropTrunc
 open import UF.Logic
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
+open import UF.SubtypeClassifier
 open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.Size
@@ -42,12 +47,6 @@ module Sup-Lattice-Def (𝓤 𝓦 𝓥 : Universe) where
  sup-lattice-structure : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ⁺ ⊔ 𝓦 ⁺ ̇
  sup-lattice-structure A = Σ d ꞉ (sup-lattice-data A) , is-sup-lattice d
 
-\end{code}
-
-We now define a sup lattice
-
-\begin{code}
-
 Sup-Lattice : (𝓤 𝓦 𝓥 : Universe) → (𝓤 ⊔ 𝓦 ⊔ 𝓥) ⁺  ̇
 Sup-Lattice 𝓤 𝓦 𝓥 = Σ A ꞉ 𝓤  ̇ , rest A
  where
@@ -76,7 +75,9 @@ is-lub-for (A , (_≤_ , ⋁_) , order , is-lub-of) = is-lub-of
 
 \end{code}
 
-We now define a small basis for lattices.
+We now define a small basis for a Sup-Lattice. This consists of a type B in a fixed universe and a
+map q from B to the carrier of the Sup-Lattice. In sense to be made precise the pair B and q generate
+the Sup-Lattice. This notion we be integral in developing the rest of our theory.
 
 \begin{code}
 
@@ -145,8 +146,8 @@ module Sup-Lattice-Small-Basis {𝓤 𝓦 𝓥 : Universe} (L : Sup-Lattice 𝓤
 
 \end{code}
 
-We now define an inductive type from a small generating lattice and
-show...
+We pause to introduce some universe polymorphic powerset notation which will allow the final product
+in the coming section to appear more like its set theoretic incarnation.
 
 \begin{code}
 
@@ -160,6 +161,15 @@ module Universe-Polymorphic-Powerset (𝓥 : Universe) where
    
    _⊆_ : {𝓣 𝓦 : Universe} {X : 𝓥  ̇} → 𝓟 {𝓣} X → 𝓟 {𝓦} X →  𝓥 ⊔ 𝓣 ⊔ 𝓦  ̇
    A ⊆ B = ∀ x → x ∈ A → x ∈ B
+
+\end{code}
+
+Now it is time to define the least closed subset of an inductive definition. We start by defining an
+auxillary untruncated inductive family and provide an induction principle, etc. We then take the
+propositional truncation of this family which yields a predicate and subsequently prove that it is
+the least-closed subset under the inductive definition.
+
+\begin{code}
 
 module Inductive-Definitions (𝓤 𝓦 𝓥 : Universe)
                              (L : Sup-Lattice 𝓤 𝓦 𝓥)
@@ -256,7 +266,8 @@ module Inductive-Definitions (𝓤 𝓦 𝓥 : Universe)
 
 \end{code}
 
-We now work towards defining a monotone operator on a certain class of inductive definitions.
+We now work towards defining a monotone operator on a certain class of inductive definitions which we
+will call 'local'. This monotone operator will have a least-fixed point when 𝓘 ϕ is small.
 
 \begin{code}
 
