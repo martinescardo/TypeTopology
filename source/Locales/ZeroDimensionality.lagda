@@ -42,7 +42,7 @@ open import Locales.Compactness      pt fe
 open import Locales.Complements      pt fe
 open import Locales.GaloisConnection pt fe
 open import Locales.InitialFrame     pt fe
-open import Locales.Clopen           pt fe
+open import Locales.Clopen           pt fe sr
 open import Locales.SmallBasis       pt fe sr
 
 open Locale
