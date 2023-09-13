@@ -14,7 +14,7 @@ module Locales.Clopen (pt : propositional-truncations-exist)
 
 open import Locales.AdjointFunctorTheoremForFrames
 open import Locales.Frame pt fe
-open import Locales.WayBelow pt fe
+open import Locales.WayBelowRelation.Definition pt fe
 open import Locales.Compactness pt fe
 open import Locales.Complements pt fe
 open import Slice.Family
@@ -172,5 +172,27 @@ consists-of-clopens F S = Ɐ i ꞉ index S , is-clopen F (S [ i ])
         Ⅷ = ∨[ F ]-assoc x′ y′ y
         Ⅸ = ap (λ - → x′ ∨[ F ] -) (pr₂ ψ)
         Ⅹ = 𝟏-right-annihilator-for-∨ F x′
+
+\end{code}
+
+\begin{code}
+
+clopens-are-closed-under-∧ : (F : Frame 𝓤 𝓥 𝓦) (x y : ⟨ F ⟩)
+                           → (is-clopen F x
+                           ⇒  is-clopen F y
+                           ⇒  is-clopen F (x ∧[ F ] y)) holds
+clopens-are-closed-under-∧ F x y ϟ₁@(x′ , φ₁ , φ₂) ϟ₂@(y′ , ψ₁ , ψ₂) =
+ (x′ ∨[ F ] y′) , †
+  where
+   ‡₁ : is-boolean-complement-of F x x′ holds
+   ‡₁ = (x′ ∧[ F ] x ＝⟨ ∧[ F ]-is-commutative x′ x ⟩ x ∧[ F ] x′ ＝⟨ φ₁ ⟩ 𝟎[ F ] ∎)
+      , (x′ ∨[ F ] x ＝⟨ ∨[ F ]-is-commutative x′ x ⟩ x ∨[ F ] x′ ＝⟨ φ₂ ⟩ 𝟏[ F ] ∎)
+
+   ‡₂ : is-boolean-complement-of F y y′ holds
+   ‡₂ = (y′ ∧[ F ] y ＝⟨ ∧[ F ]-is-commutative y′ y ⟩ y ∧[ F ] y′ ＝⟨ ψ₁ ⟩ 𝟎[ F ] ∎)
+      , (y′ ∨[ F ] y ＝⟨ ∨[ F ]-is-commutative y′ y ⟩ y ∨[ F ] y′ ＝⟨ ψ₂ ⟩ 𝟏[ F ] ∎)
+
+   † : is-boolean-complement-of F (x′ ∨[ F ] y′) (x ∧[ F ] y) holds
+   † = ∧-complement F ‡₁ ‡₂
 
 \end{code}
