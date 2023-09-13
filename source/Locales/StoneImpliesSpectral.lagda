@@ -12,7 +12,7 @@ open import UF.Size
 
 module Locales.StoneImpliesSpectral (pt : propositional-truncations-exist)
                                     (fe : Fun-Ext)
-                                    (sr : Set-Replacement pt)              where
+                                    (sr : Set-Replacement pt) where
 
 \end{code}
 
