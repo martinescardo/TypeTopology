@@ -36,7 +36,7 @@ Importations of other locale theory modules.
 
 open import Locales.AdjointFunctorTheoremForFrames
 open import Locales.Frame            pt fe
-open import Locales.WayBelow         pt fe
+open import Locales.WayBelowRelation.Definition pt fe
 open import Locales.Compactness      pt fe
 open import Locales.Complements      pt fe
 open import Locales.GaloisConnection pt fe
