@@ -49,6 +49,9 @@ open Locale
 
 \end{code}
 
+The following is the definition of the notion of a _zero-dimensionality
+structure_.
+
 \begin{code}
 
 zero-dimensionalᴰ : Frame 𝓤 𝓥 𝓦 → (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺) ̇
@@ -57,6 +60,8 @@ zero-dimensionalᴰ {𝓦 = 𝓦} F =
                    × consists-of-clopens F ℬ holds
 
 \end{code}
+
+We define some projections for the components of a ZD structure.
 
 \begin{code}
 
@@ -97,6 +102,13 @@ basis-zd-consists-of-clopens : (L : Frame 𝓤 𝓥 𝓦) (zd : zero-dimensional
                                in
                                 consists-of-clopens L ℬ holds
 basis-zd-consists-of-clopens L zd = pr₂ (pr₂ zd)
+
+\end{code}
+
+The notion of a zero-dimensional frame can then be defined simply as the
+truncation of this structure.
+
+\begin{code}
 
 is-zero-dimensional : Frame 𝓤 𝓥 𝓦 → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
 is-zero-dimensional F = ∥ zero-dimensionalᴰ F ∥Ω
