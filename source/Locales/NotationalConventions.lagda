@@ -44,3 +44,7 @@ The version that is a property is called `is-spectral`.
 _ = is-spectral
 
 \end{code}
+
+\section{Locales vs. frames}
+
+TODO
