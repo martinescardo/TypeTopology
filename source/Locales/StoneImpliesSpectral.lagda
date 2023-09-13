@@ -210,58 +210,10 @@ stoneᴰ-implies-spectralᴰ {_} {_} {𝓦} X (κₓ , zdₓ) = ℬ , β , κ , 
 
 \begin{code}
 
-{--
-
-stone-locales-are-spectral : (X : Locale 𝓤 𝓥 𝓦)
-                           → (is-stone X ⇒ is-spectral X) holds
-stone-locales-are-spectral X σ@(κ , ζ) =
- ∥∥-rec (holds-is-prop (is-spectral X)) ♣ ζ
-  where
-   F = 𝒪 X
-
-   open Meets (λ x y → x ≤[ poset-of F ] y) hiding (is-top)
-
-   ♣ : zero-dimensionalᴰ F → is-spectral X holds
-   ♣ (ℬ , δ , ψ) = {! ∣ ℬ , δ , ϑ , † ∣ !}
-    where
-     ϑ : consists-of-compact-opens X ℬ holds
-     ϑ is = {! pr₁ (clopen-iff-compact-in-stone-frame F σ (ℬ [ is ])) (ψ is) !}
-
-     τ : ∥ Σ i ꞉ index ℬ , 𝟏[ F ] ＝ ℬ [ i ] ∥
-     τ = {! compact-opens-are-basic-in-compact-frames F ℬ δ κ 𝟏[ F ] κ !}
-
-     †₁ :  {!!}
-     †₁ = ∥∥-rec (holds-is-prop (contains-top F ℬ)) ‡₁ τ
-      where
-       ‡₁ : (Σ i ꞉ index ℬ , 𝟏[ F ] ＝ ℬ [ i ]) → contains-top (𝒪 X) ℬ holds
-       ‡₁ (i , p) = ∣ i , transport (λ - → is-top F - holds) p (𝟏-is-top F) ∣
-
-     †₂ : closed-under-binary-meets F ℬ holds
-     †₂ i j = ∥∥-rec ∃-is-prop ‡₂ υ
-      where
-       χ : is-clopen F (ℬ [ i ] ∧[ F ] ℬ [ j ]) holds
-       χ = {! clopens-are-closed-under-∧ F (ℬ [ i ]) (ℬ [ j ]) (ψ i) (ψ j) !}
-
-       υ : ∥ Σ k ꞉ index ℬ , (ℬ [ i ]) ∧[ F ] (ℬ [ j ]) ＝ ℬ [ k ] ∥
-       υ = {! clopens-are-basic-in-stone-locales F σ ℬ δ (ℬ [ i ] ∧[ F ] ℬ [ j ]) χ !}
-
-       ‡₂ : (Σ k ꞉ index ℬ , (ℬ [ i ]) ∧[ F ] (ℬ [ j ]) ＝ ℬ [ k ])
-          → ∥ Σ k ꞉ index ℬ , ((ℬ [ k ]) is-glb-of (ℬ [ i ] , ℬ [ j ])) holds ∥
-       ‡₂ (k , p) = ∣ k , ‡₃ ∣
-        where
-         ρ₁ = ∧[ F ]-lower₁ (ℬ [ i ]) (ℬ [ j ])
-         ρ₂ = ∧[ F ]-lower₂ (ℬ [ i ]) (ℬ [ j ])
-         ρ₃ = λ { (z , p , q) → ∧[ F ]-greatest (ℬ [ i ]) (ℬ [ j ]) z p q }
-
-         ‡₃ : ((ℬ [ k ]) is-glb-of (ℬ [ i ] , ℬ [ j ])) holds
-         ‡₃ = transport
-               (λ - → (- is-glb-of (ℬ [ i ] , ℬ [ j ])) holds)
-               p
-               ((ρ₁ , ρ₂) , ρ₃)
-
-     † : closed-under-finite-meets F ℬ holds
-     † = †₁ , †₂
-
---}
+stone-locales-are-spectral : (X : Locale 𝓤 𝓥 𝓦) → stoneᴰ X → is-spectral X holds
+stone-locales-are-spectral X σ@(κ , ζ) = spectralᴰ-gives-spectrality X σᴰ
+ where
+  σᴰ : spectralᴰ X
+  σᴰ = stoneᴰ-implies-spectralᴰ X σ
 
 \end{code}
