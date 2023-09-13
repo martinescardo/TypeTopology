@@ -8,19 +8,23 @@ open import MLTT.Spartan hiding (𝟚)
 open import UF.PropTrunc
 open import UF.FunExt
 open import UF.UA-FunExt
+open import UF.Size
 
 module Locales.Clopen (pt : propositional-truncations-exist)
-                      (fe : Fun-Ext)                           where
+                      (fe : Fun-Ext)
+                      (sr : Set-Replacement pt) where
 
 open import Locales.AdjointFunctorTheoremForFrames
 open import Locales.Frame pt fe
 open import Locales.WayBelowRelation.Definition pt fe
 open import Locales.Compactness pt fe
 open import Locales.Complements pt fe
+open import Locales.WellInside pt fe sr
 open import Slice.Family
 open import UF.Logic
 open import UF.Subsingletons
 open import UF.SubtypeClassifier
+open import MLTT.List hiding ([_])
 
 open AllCombinators pt fe
 open PropositionalTruncation pt
@@ -194,5 +198,104 @@ clopens-are-closed-under-∧ F x y ϟ₁@(x′ , φ₁ , φ₂) ϟ₂@(y′ , ψ
 
    † : is-boolean-complement-of F (x′ ∨[ F ] y′) (x ∧[ F ] y) holds
    † = ∧-complement F ‡₁ ‡₂
+
+\end{code}
+
+Given a family `S`, consisting of clopens, then `directify S` also consists of
+clopens.
+
+\begin{code}
+
+clopens-are-closed-under-∨ : (F : Frame 𝓤 𝓥 𝓦) (x y : ⟨ F ⟩)
+                           → (is-clopen F x
+                           ⇒  is-clopen F y
+                           ⇒  is-clopen F (x ∨[ F ] y)) holds
+clopens-are-closed-under-∨ F x y (x′ , ϡ₁ , ϟ₁) (y′ , ϡ₂ , ϟ₂) =
+ (x′ ∧[ F ] y′) , † , ‡
+  where
+   open PosetReasoning (poset-of F)
+
+   †₁ : (((x ∨[ F ] y) ∧[ F ] (x′ ∧[ F ] y′)) ≤[ poset-of F ] 𝟎[ F ]) holds
+   †₁ =
+    (x ∨[ F ] y) ∧[ F ] (x′ ∧[ F ] y′)                         ＝⟨ Ⅰ ⟩ₚ
+    (x ∧[ F ] (x′ ∧[ F ] y′)) ∨[ F ] (y ∧[ F ] (x′ ∧[ F ] y′)) ≤⟨ Ⅱ ⟩
+    (x ∧[ F ] x′) ∨[ F ] (y ∧[ F ] (x′ ∧[ F ] y′))             ≤⟨ Ⅲ ⟩
+    (x ∧[ F ] x′) ∨[ F ] (y ∧[ F ] y′)                         ≤⟨ Ⅳ ⟩
+    𝟎[ F ] ∨[ F ] (y ∧[ F ] y′)                                ≤⟨ Ⅴ ⟩
+    𝟎[ F ] ∨[ F ] 𝟎[ F ]                                       ＝⟨ Ⅵ ⟩ₚ
+    𝟎[ F ]                                                     ■
+     where
+      Ⅰ = binary-distributivity-right F
+      Ⅱ = ∨[ F ]-left-monotone  (∧[ F ]-right-monotone (∧[ F ]-lower₁ x′ y′))
+      Ⅲ = ∨[ F ]-right-monotone (∧[ F ]-right-monotone (∧[ F ]-lower₂ x′ y′))
+      Ⅳ = ∨[ F ]-left-monotone  (reflexivity+ (poset-of F) ϡ₁)
+      Ⅴ = ∨[ F ]-right-monotone (reflexivity+ (poset-of F) ϡ₂)
+      Ⅵ = ∨[ F ]-is-idempotent 𝟎[ F ] ⁻¹
+
+   † : (x ∨[ F ] y) ∧[ F ] (x′ ∧[ F ] y′) ＝ 𝟎[ F ]
+   † = only-𝟎-is-below-𝟎 F _ †₁
+
+   ‡₁ : (𝟏[ F ] ≤[ poset-of F ] ((x ∨[ F ] y) ∨[ F ] (x′ ∧[ F ] y′))) holds
+   ‡₁ =
+    𝟏[ F ]                                                      ＝⟨ Ⅰ ⟩ₚ
+    𝟏[ F ] ∧[ F ] 𝟏[ F ]                                        ≤⟨ Ⅱ ⟩
+    (x ∨[ F ] x′) ∧[ F ] 𝟏[ F ]                                 ≤⟨ Ⅲ ⟩
+    (x ∨[ F ] x′) ∧[ F ] (y ∨[ F ] y′)                          ≤⟨ Ⅳ ⟩
+    ((x ∨[ F ] y ) ∨[ F ] x′)∧[ F ] (y ∨[ F ] y′)               ≤⟨ Ⅴ ⟩
+    ((x ∨[ F ] y ) ∨[ F ] x′) ∧[ F ] ((x ∨[ F ] y ) ∨[ F ] y′)  ＝⟨ Ⅵ ⟩ₚ
+    (x ∨[ F ] y) ∨[ F ] (x′ ∧[ F ] y′)                          ■
+     where
+      Ⅰ = ∧[ F ]-is-idempotent 𝟏[ F ]
+      Ⅱ = ∧[ F ]-left-monotone  (reflexivity+ (poset-of F) (ϟ₁ ⁻¹))
+      Ⅲ = ∧[ F ]-right-monotone (reflexivity+ (poset-of F) (ϟ₂ ⁻¹))
+      Ⅳ = ∧[ F ]-left-monotone (∨[ F ]-left-monotone (∨[ F ]-upper₁ x y))
+      Ⅴ = ∧[ F ]-right-monotone (∨[ F ]-left-monotone (∨[ F ]-upper₂ x y))
+      Ⅵ = binary-distributivity-op F (x ∨[ F ] y) x′ y′ ⁻¹
+
+   ‡ : (x ∨[ F ] y) ∨[ F ] (x′ ∧[ F ] y′) ＝ 𝟏[ F ]
+   ‡ = only-𝟏-is-above-𝟏 F _ ‡₁
+
+\end{code}
+
+The bottom element is always clopen.
+
+\begin{code}
+
+𝟎-is-clopen : (F : Frame 𝓤 𝓥 𝓦) → is-clopen₀ F 𝟎[ F ]
+𝟎-is-clopen F = 𝟏[ F ] , β , γ
+ where
+  β : 𝟎[ F ] ∧[ F ] 𝟏[ F ] ＝ 𝟎[ F ]
+  β = 𝟎-left-annihilator-for-∧ F 𝟏[ F ]
+
+  γ : 𝟎[ F ] ∨[ F ] 𝟏[ F ] ＝ 𝟏[ F ]
+  γ = 𝟏-right-annihilator-for-∨ F 𝟎[ F ]
+
+\end{code}
+
+\begin{code}
+
+directification-preserves-clopenness : (F : Frame 𝓤 𝓥 𝓦)
+                                     → (ℬ : Fam 𝓦 ⟨ F ⟩)
+                                     → (consists-of-clopens F ℬ
+                                     ⇒ consists-of-clopens F (directify F ℬ))
+                                       holds
+directification-preserves-clopenness F ℬ ξ []       = 𝟎-is-clopen F
+directification-preserves-clopenness F ℬ ξ (i ∷ is) =
+ clopens-are-closed-under-∨ F (ℬ [ i ]) (directify F ℬ [ is ]) (ξ i) ℐℋ
+  where
+   abstract
+    ℐℋ : is-clopen F (directify F ℬ [ is ]) holds
+    ℐℋ = directification-preserves-clopenness F ℬ ξ is
+
+\end{code}
+
+
+\begin{code}
+
+well-inside-itself-implies-clopen : (X : Locale 𝓤 𝓥 𝓦)
+                                  → (U : ⟨ 𝒪 X ⟩)
+                                  → ((U ⋜[ 𝒪 X ] U) ⇒ is-clopen (𝒪 X) U) holds
+well-inside-itself-implies-clopen X U =
+ ∥∥-rec (holds-is-prop (is-clopen (𝒪 X) U)) id
 
 \end{code}
