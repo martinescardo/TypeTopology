@@ -17,5 +17,6 @@ import Locales.PatchProperties
 import Locales.BooleanAlgebra
 import Locales.UniversalPropertyOfPatch -- with contributions by Igor Arrieta.
 import Locales.ScottLocale
+import Locales.PatchOfOmega
 
 \end{code}

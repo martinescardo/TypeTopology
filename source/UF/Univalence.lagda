@@ -369,29 +369,3 @@ equiv-induction {𝓤} {𝓥} ua X P b Y f e = JEq ua X A b Y (f , e)
   A Y (f , _) = P Y f
 
 \end{code}
-
-Added 16th August 2023.
-
-\begin{code}
-
-transport-eqtoid : (ua : is-univalent 𝓤)
-                   (S : 𝓤 ̇ → 𝓥 ̇ )
-                   (T : {X Y : 𝓤 ̇ } → (X ≃ Y) → S X → S Y)
-                   (T-refl : {X : 𝓤 ̇ } → T (≃-refl X) ∼ id)
-                   {X Y : 𝓤 ̇ } (𝕗 : X ≃ Y)
-                 → T 𝕗 ∼ transport S (eqtoid ua X Y 𝕗)
-transport-eqtoid {𝓤} {𝓥} ua S T T-refl {X} {Y} 𝕗 s = JEq ua X A I Y 𝕗
- where
-  A : (Y : 𝓤 ̇) (𝕗 : X ≃ Y) → 𝓥 ̇
-  A Y 𝕗 = T 𝕗 s ＝ transport S (eqtoid ua X Y 𝕗) s
-
-  I : A X (≃-refl X)
-  I = T (≃-refl X) s                           ＝⟨ II ⟩
-      s                                        ＝⟨ refl ⟩
-      transport S refl s                       ＝⟨ III ⟩
-      transport S (eqtoid ua X X (≃-refl X)) s  ∎
-    where
-     II   = T-refl s
-     III  = (ap (λ - → transport S - s) (eqtoid-refl ua X))⁻¹
-
-\end{code}

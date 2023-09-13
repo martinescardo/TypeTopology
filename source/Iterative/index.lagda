@@ -2,8 +2,15 @@ Martin Escardo & Tom de Jong, June 2023.
 
 Iterative multisets, iterative sets, and iterative ordinals.
 
-For an exposition of what is done here, see this post:
+For a blog-post style exposition of what is done here, see this post:
+https://mathstodon.xyz/@MartinEscardo/110912588238494225
+
+And earlier one is here:
 https://mathstodon.xyz/@MartinEscardo/110753930251021051
+
+Feel free to ask questions or make remarks there.
+
+Notice also that the files here also include comments.
 
 \begin{code}
 

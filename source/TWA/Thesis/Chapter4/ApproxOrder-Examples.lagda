@@ -9,7 +9,7 @@ open import Notation.Order
 open import Naturals.Order
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import UF.Quotient
+open import Quotient.Type
 open import UF.Embeddings
 open import UF.Equiv
 open import CoNaturals.GenericConvergentSequence
@@ -78,7 +78,7 @@ inclusion-order-is-linear-order
 
 -- Corollary 4.1.10
 finite-order : {F : 𝓤 ̇ } → finite-discrete F → F → F → 𝓤₀  ̇
-finite-order (n , _ , (h , _) , _) = inclusion-order h _≤𝔽_ 
+finite-order (n , _ , (h , _) , _) = inclusion-order h _≤𝔽_
 
 finite-order-is-linear-order : {F : 𝓤 ̇ } → (f : finite-discrete F)
                              → is-linear-order (finite-order f)
@@ -160,7 +160,7 @@ embedding-strict-order-trichotomous
  where
   f-lc : (x y : X) (e : f x ＝ f y) → x , e ＝ y , refl
   f-lc x y fx＝fy = η (f y) (x , fx＝fy) (y , refl)
-  
+
 finite-strict-order-is-strict-order
  : {F : 𝓤 ̇ } → (f : finite-discrete F)
  → is-strict-order (finite-strict-order f)
@@ -177,7 +177,7 @@ finite-strict-order-trichotomous (n , f)
 
 discrete-lexicorder : {F : 𝓤 ̇ } → is-discrete F
                     → (_<_ : F → F → 𝓥 ̇ )
-                    → (ℕ → F) → (ℕ → F) → 𝓤 ⊔ 𝓥  ̇ 
+                    → (ℕ → F) → (ℕ → F) → 𝓤 ⊔ 𝓥  ̇
 discrete-lexicorder f _<_ α β
  = (α ∼ β) + (Σ n ꞉ ℕ , ((α ∼ⁿ β) n × (α n) < (β n)))
 
@@ -409,7 +409,7 @@ finite-approx-lexicorder-is-approx-order f
 inclusion-approx-order
  : {X : 𝓤 ̇ } {Y : ClosenessSpace 𝓥} (f : X → ⟨ Y ⟩)
  → (_≤ⁿ_ : ⟨ Y ⟩ → ⟨ Y ⟩ → ℕ → 𝓦  ̇)
- → X → X → ℕ → 𝓦  ̇ 
+ → X → X → ℕ → 𝓦  ̇
 inclusion-approx-order f _≤ⁿ_ x y = f x ≤ⁿ f y
 
 Σ-order : {X : 𝓤 ̇ } → (P : X → 𝓥 ̇ ) → (_≤_ : X → X → 𝓦  ̇)
@@ -430,7 +430,7 @@ inclusion-approx-order f _≤ⁿ_ x y = f x ≤ⁿ f y
   p (x , _) (y , _) = p' x y
 
 Σ-approx-order : {X : 𝓤 ̇ } → (P : X → 𝓥 ̇ ) → (_≤ⁿ_ : X → X → ℕ → 𝓦  ̇)
-               → Σ P → Σ P → ℕ → 𝓦  ̇ 
+               → Σ P → Σ P → ℕ → 𝓦  ̇
 Σ-approx-order P _≤ⁿ_ (x , _) (y , _) = x ≤ⁿ y
 
 Σ-approx-order-is-approx-order
@@ -510,7 +510,7 @@ pr₂ (pr₂ (pr₂ <₂-is-strict)) ₁ ₁ = 𝟘-is-prop
  = Σ-order-is-preorder is-decreasing
      ℕ→𝟚-lexicorder ℕ→𝟚-lexicorder-is-preorder
 
-ℕ→𝟚-approx-lexicorder : (ℕ → 𝟚) → (ℕ → 𝟚) → ℕ → 𝓤₀ ̇ 
+ℕ→𝟚-approx-lexicorder : (ℕ → 𝟚) → (ℕ → 𝟚) → ℕ → 𝓤₀ ̇
 ℕ→𝟚-approx-lexicorder = discrete-approx-lexicorder 𝟚-is-discrete _<₂_
 
 ℕ→𝟚-approx-lexicorder-is-approx-order

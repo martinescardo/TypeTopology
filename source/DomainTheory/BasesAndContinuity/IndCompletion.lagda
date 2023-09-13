@@ -34,6 +34,7 @@ open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
+open import UF.Sets
 
 open import DomainTheory.Basics.Dcpo pt fe 𝓥
 open import DomainTheory.Basics.Miscelanea pt fe 𝓥

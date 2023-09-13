@@ -8,16 +8,17 @@ Ordinals like in the HoTT book and variations.
 
 {-# OPTIONS --safe --without-K --exact-split #-}
 
-open import MLTT.Spartan
-open import TypeTopology.DiscreteAndSeparated
-
-open import UF.Base
-open import UF.Subsingletons
-open import UF.FunExt
-open import UF.Subsingletons-FunExt
-open import UF.ExcludedMiddle
-open import UF.PropTrunc
 open import MLTT.Plus-Properties using (+-commutative)
+open import MLTT.Spartan
+open import UF.Base
+open import UF.DiscreteAndSeparated
+open import UF.ExcludedMiddle
+open import UF.FunExt
+open import UF.Hedberg
+open import UF.PropTrunc
+open import UF.Sets
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
 
 module Ordinals.Notions
         {𝓤 𝓥 : Universe}
@@ -958,8 +959,6 @@ is-well-founded₂ = (p : X → 𝟚) → ((x : X) → ((y : X) → y < x → p 
 
 well-founded-Wellfounded₂ : is-well-founded → is-well-founded₂
 well-founded-Wellfounded₂ w p = transfinite-induction w (λ x → p x ＝ ₁)
-
-open import UF.Miscelanea
 
 being-well-founded₂-is-prop : FunExt → is-prop is-well-founded₂
 being-well-founded₂-is-prop fe = Π₃-is-prop (λ {𝓤} {𝓥} → fe 𝓤 𝓥)

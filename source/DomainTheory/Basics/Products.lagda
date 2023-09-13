@@ -17,9 +17,9 @@ open PropositionalTruncation pt
 
 open import Posets.Poset fe
 open import UF.Base
-open import UF.Miscelanea
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
+open import UF.Sets
 
 open PosetAxioms
 

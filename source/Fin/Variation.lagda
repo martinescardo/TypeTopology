@@ -6,7 +6,7 @@ Martin Escardo, 2nd December 2019
 
 module Fin.Variation where
 
-open import UF.Subsingletons renaming (⊤Ω to ⊤)
+open import UF.Subsingletons
 
 open import Fin.Type
 open import MLTT.Spartan

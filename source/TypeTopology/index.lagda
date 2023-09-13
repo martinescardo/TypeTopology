@@ -14,7 +14,6 @@ import TypeTopology.ConvergentSequenceHasInf
 import TypeTopology.DecidabilityOfNonContinuity
 import TypeTopology.Density
 import TypeTopology.DisconnectedTypes
-import TypeTopology.DiscreteAndSeparated
 import TypeTopology.ExtendedSumCompact
 import TypeTopology.FailureOfTotalSeparatedness
 import TypeTopology.GenericConvergentSequenceCompactness

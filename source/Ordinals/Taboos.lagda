@@ -13,7 +13,7 @@ open import Ordinals.Maps
 open import Ordinals.Notions
 open import Ordinals.Type
 open import Ordinals.Underlying
-open import TypeTopology.DiscreteAndSeparated hiding (𝟚-is-discrete)
+open import UF.DiscreteAndSeparated hiding (𝟚-is-discrete)
 open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.ExcludedMiddle
