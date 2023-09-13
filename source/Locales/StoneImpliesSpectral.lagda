@@ -157,6 +157,9 @@ stoneᴰ-implies-spectralᴰ {_} {_} {𝓦} X (κₓ , zdₓ) = ℬ , β , κ , 
   ℬ : Fam 𝓦 ⟨ 𝒪 X ⟩
   ℬ = basis-zd (𝒪 X) zdₓ
 
+  φ : consists-of-clopens (𝒪 X) ℬ holds
+  φ = basis-zd-consists-of-clopens (𝒪 X) zdₓ
+
   β : directed-basis-forᴰ (𝒪 X) ℬ
   β U = cover-index-zd (𝒪 X) zdₓ U , † , d
    where
@@ -185,11 +188,20 @@ stoneᴰ-implies-spectralᴰ {_} {_} {𝓦} X (κₓ , zdₓ) = ℬ , β , κ , 
         (λ { (j , p) → ∣ j , transport (λ - → is-top (𝒪 X) - holds) (p ⁻¹) (𝟏-is-top (𝒪 X)) ∣ })
         (clopens-are-basic X (κₓ , zdₓ) (ℬ , β) 𝟏[ 𝒪 X ] (𝟏-is-clopen (𝒪 X)))
 
+  open Meets (λ x y → x ≤[ poset-of (𝒪 X) ] y)
+
   μ₂ : closed-under-binary-meets (𝒪 X) ℬ holds
-  μ₂ i j = {!!}
+  μ₂ i j = ∥∥-rec ∃-is-prop † ξ
    where
     ν : is-clopen (𝒪 X) (ℬ [ i ] ∧[ 𝒪 X ] ℬ [ j ]) holds
-    ν = {!!}
+    ν = clopens-are-closed-under-∧ (𝒪 X) (ℬ [ i ]) (ℬ [ j ]) (φ i) (φ j)
+
+    ξ : is-basic X (ℬ [ i ] ∧[ 𝒪 X ] ℬ [ j ]) (ℬ , β) holds
+    ξ = clopens-are-basic X (κₓ , zdₓ) (ℬ , β) (ℬ [ i ] ∧[ 𝒪 X ] ℬ [ j ]) ν
+
+    † : Σ k ꞉ index ℬ , ℬ [ k ] ＝ ℬ [ i ] ∧[ 𝒪 X ] ℬ [ j ]
+      → (Ǝ k ꞉ index ℬ , ((ℬ [ k ]) is-glb-of (ℬ [ i ] , ℬ [ j ])) holds) holds
+    † (k , p) = ∣ k , ∧[ 𝒪 X ]-is-glb⋆ p ∣
 
   μ : closed-under-finite-meets (𝒪 X) ℬ holds
   μ = μ₀ , μ₂
