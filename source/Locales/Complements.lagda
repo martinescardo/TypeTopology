@@ -24,8 +24,7 @@ open AllCombinators pt fe
 open PropositionalTruncation pt
 
 open import Locales.GaloisConnection pt fe
-
-open import Locales.InitialFrame pt fe
+open import Locales.InitialFrame     pt fe
 
 open Locale
 
