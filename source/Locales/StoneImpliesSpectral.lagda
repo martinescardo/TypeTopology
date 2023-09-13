@@ -53,6 +53,8 @@ open Locale
 
 \end{code}
 
+The well inside relation implies the way below relation.
+
 \begin{code}
 
 ⋜₀-implies-≪-in-compact-frames : (X : Locale 𝓤 𝓥 𝓦)
@@ -71,11 +73,12 @@ open Locale
    T = ⁅ W ∨[ F ] Sᵢ ∣ Sᵢ ε S ⁆
 
    δ : (𝟏[ F ] ≤ (⋁[ F ] T)) holds
-   δ = 𝟏[ F ]                           ＝⟨ c₂ ⁻¹                              ⟩ₚ
-       V ∨[ F ] W                       ≤⟨ ∨[ F ]-left-monotone q             ⟩
-       (⋁[ F ] S) ∨[ F ] W              ＝⟨ ∨[ F ]-is-commutative (⋁[ F ] S) W ⟩ₚ
-       W ∨[ F ] (⋁[ F ] S)              ＝⟨ ∨-is-scott-continuous-eq (𝒪 X) W S d   ⟩ₚ
-       ⋁[ F ] ⁅ W ∨[ F ] Sᵢ ∣ Sᵢ ε S ⁆  ■
+   δ =
+    𝟏[ F ]                           ＝⟨ c₂ ⁻¹                              ⟩ₚ
+    V ∨[ F ] W                       ≤⟨ ∨[ F ]-left-monotone q             ⟩
+    (⋁[ F ] S) ∨[ F ] W              ＝⟨ ∨[ F ]-is-commutative (⋁[ F ] S) W ⟩ₚ
+    W ∨[ F ] (⋁[ F ] S)              ＝⟨ ∨-is-scott-continuous-eq (𝒪 X) W S d   ⟩ₚ
+    ⋁[ F ] ⁅ W ∨[ F ] Sᵢ ∣ Sᵢ ε S ⁆  ■
 
    ε : ((W ∨[ F ] (⋁[ F ] S)) ≤ (⋁[ F ] T)) holds
    ε = W ∨[ F ] (⋁[ F ] S)              ≤⟨ 𝟏-is-top F (W ∨[ F ] (⋁[ F ] S)) ⟩
@@ -104,32 +107,29 @@ open Locale
 
      ι = only-𝟏-is-above-𝟏 F ((S [ i ]) ∨[ F ] W) η
 
+\end{code}
+
+\begin{code}
+
 ⋜-implies-≪-in-compact-frames : (X : Locale 𝓤 𝓥 𝓦)
                               → is-compact X holds
-                              → (U V : ⟨ 𝒪 X ⟩) → (U ⋜[ 𝒪 X ] V ⇒ U ≪[ 𝒪 X ] V) holds
+                              → (U V : ⟨ 𝒪 X ⟩)
+                              → (U ⋜[ 𝒪 X ] V ⇒ U ≪[ 𝒪 X ] V) holds
 ⋜-implies-≪-in-compact-frames X κ U V =
  ∥∥-rec (holds-is-prop (U ≪[ 𝒪 X ] V)) (⋜₀-implies-≪-in-compact-frames X κ U V)
 
 \end{code}
 
-Clopens are compact in Stone locales.
+Clopens are compact in compact locales.
 
 \begin{code}
 
 clopens-are-compact-in-compact-locales : (X : Locale 𝓤 𝓥 𝓦)
-                                     → is-compact X holds
-                                     → (U : ⟨ 𝒪 X ⟩)
-                                     → (is-clopen (𝒪 X) U
-                                     ⇒  is-compact-open X U) holds
+                                       → is-compact X holds
+                                       → (U : ⟨ 𝒪 X ⟩)
+                                       → (is-clopen (𝒪 X) U
+                                       ⇒  is-compact-open X U) holds
 clopens-are-compact-in-compact-locales X κ U =
- ⋜₀-implies-≪-in-compact-frames X κ U U
-
-clopens-are-compact-in-stone-locales : (X : Locale 𝓤 𝓥 𝓦)
-                                     → is-compact X holds
-                                     → (U : ⟨ 𝒪 X ⟩)
-                                     → (is-clopen (𝒪 X) U
-                                     ⇒  is-compact-open X U) holds
-clopens-are-compact-in-stone-locales X κ U =
  ⋜₀-implies-≪-in-compact-frames X κ U U
 
 \end{code}
@@ -171,22 +171,28 @@ stoneᴰ-implies-spectralᴰ {_} {_} {𝓦} X (κₓ , zdₓ) = ℬ , β , κ , 
 
   X-is-compact : is-compact X holds
   X-is-compact =
-   clopens-are-compact-in-stone-locales X κₓ 𝟏[ 𝒪 X ] (𝟏-is-clopen (𝒪 X))
+   clopens-are-compact-in-compact-locales X κₓ 𝟏[ 𝒪 X ] (𝟏-is-clopen (𝒪 X))
 
   κ : consists-of-compact-opens X ℬ holds
-  κ i = clopens-are-compact-in-stone-locales X κₓ (ℬ [ i ]) 𝕔
+  κ i = clopens-are-compact-in-compact-locales X κₓ (ℬ [ i ]) 𝕔
    where
     𝕔 : is-clopen (𝒪 X) (ℬ [ i ]) holds
     𝕔 = basis-zd-consists-of-clopens (𝒪 X) zdₓ i
 
-  τ : contains-top (𝒪 X) ℬ holds
-  τ = ∥∥-rec
-       (holds-is-prop (contains-top (𝒪 X) ℬ))
-       (λ { (j , p) → ∣ j , transport (λ - → is-top (𝒪 X) - holds) (p ⁻¹) (𝟏-is-top (𝒪 X)) ∣ })
-       (clopens-are-basic X (κₓ , zdₓ) (ℬ , β) 𝟏[ 𝒪 X ] (𝟏-is-clopen (𝒪 X)))
+  μ₀ : contains-top (𝒪 X) ℬ holds
+  μ₀ = ∥∥-rec
+        (holds-is-prop (contains-top (𝒪 X) ℬ))
+        (λ { (j , p) → ∣ j , transport (λ - → is-top (𝒪 X) - holds) (p ⁻¹) (𝟏-is-top (𝒪 X)) ∣ })
+        (clopens-are-basic X (κₓ , zdₓ) (ℬ , β) 𝟏[ 𝒪 X ] (𝟏-is-clopen (𝒪 X)))
+
+  μ₂ : closed-under-binary-meets (𝒪 X) ℬ holds
+  μ₂ i j = {!!}
+   where
+    ν : is-clopen (𝒪 X) (ℬ [ i ] ∧[ 𝒪 X ] ℬ [ j ]) holds
+    ν = {!!}
 
   μ : closed-under-finite-meets (𝒪 X) ℬ holds
-  μ = τ , {!clopens-are-compact-in-stone-locales!}
+  μ = μ₀ , μ₂
 
 \end{code}
 
