@@ -39,7 +39,7 @@ open PropositionalTruncation pt
 open import Locales.Nucleus pt fe
 open import Locales.SmallBasis pt fe sr
 open import Locales.Compactness pt fe
-open import Locales.Spectrality pt fe
+open import Locales.Spectrality.SpectralLocale pt fe
 
 \end{code}
 
