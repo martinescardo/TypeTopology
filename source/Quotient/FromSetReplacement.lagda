@@ -133,7 +133,7 @@ Quotient.Quotient.lagda.
         open import UF.Equiv-FunExt using (qinv-pre)
 
  η/ₛ-relates-identified-points : {x y : X} → η/ₛ x ＝ η/ₛ y → x ≈ y
- η/ₛ-relates-identified-points {x} {y} eₛ = large-effective-set-quotients X ≋ e
+ η/ₛ-relates-identified-points {x} {y} eₛ = large-effective-set-quotients ≋ e
   where
    note : ⌜ φ ⌝⁻¹ (η/ ≋ x) ＝ ⌜ φ ⌝⁻¹ (η/ ≋ y)
    note = eₛ
@@ -154,7 +154,7 @@ set-quotients-from-set-replacement R = record
 set-replacement-gives-effective-set-quotients
  : (sr : Set-Replacement pt)
  → are-effective (set-quotients-from-set-replacement sr)
-set-replacement-gives-effective-set-quotients sr {𝓤} {𝓥} X R {x} {y} =
+set-replacement-gives-effective-set-quotients sr {𝓤} {𝓥} R {x} {y} =
  η/ₛ-relates-identified-points sr R
 
 \end{code}

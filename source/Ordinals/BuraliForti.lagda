@@ -609,7 +609,7 @@ We need to assume that propositional truncations exist.
 \begin{code}
 
 open import Groups.Type
-open import Groups.FreeOverLargeLocallySmallSet
+open import Groups.LargeWithNoSmallCopy
 open import UF.PropTrunc
 
 module _ (pt : propositional-truncations-exist) where

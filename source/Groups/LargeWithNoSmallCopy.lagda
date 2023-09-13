@@ -58,7 +58,7 @@ open import UF.FunExt
 open import UF.PropTrunc
 open import UF.Subsingletons
 
-module Groups.FreeOverLargeLocallySmallSet
+module Groups.LargeWithNoSmallCopy
         (fe : Fun-Ext)
         (pe : Prop-Ext)
         (pt : propositional-truncations-exist)
@@ -78,7 +78,7 @@ open import UF.Sets
 open import UF.Size
 open import UF.SmallnessProperties
 
-open FreeGroupInterface pt fe pe
+open FreeGroupInterface pt fe (_⁺) large-set-quotients large-effective-set-quotients
 
 private
 
@@ -367,7 +367,7 @@ SRT).
 
 \begin{code}
 
- open free-group-construction-step₂ fe pe
+ open free-group-construction-step₂ fe (_⁺) large-set-quotients large-effective-set-quotients
 
  -∥≏∥- : EqRel {𝓤⁺} {𝓤} FA
  -∥≏∥- = _∥≏∥_ , is-equiv-rel-transport _∾_ _∥≏∥_ (λ s t → ∥∥-is-prop)

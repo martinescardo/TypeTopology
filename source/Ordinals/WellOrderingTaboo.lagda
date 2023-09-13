@@ -401,7 +401,7 @@ module swan'
 
   P-must-hold : P
   P-must-hold =
-   ∥∥-rec P-is-prop γ (large-effective-set-quotients 𝟚 ≋ ≈-identifies-₀-and-₁)
+   ∥∥-rec P-is-prop γ (large-effective-set-quotients ≋ ≈-identifies-₀-and-₁)
     where
      γ : (₀ ＝ ₁) + P → P
      γ (inl e) = 𝟘-elim (zero-is-not-one e)

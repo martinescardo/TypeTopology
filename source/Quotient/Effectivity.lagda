@@ -41,9 +41,9 @@ open import UF.SubtypeClassifier
 open import UF.SubtypeClassifier-Properties
 open import UF.Subsingletons-FunExt
 
-quotients-are-effective : (sq : set-quotients-exist)
-                        → are-effective sq
-quotients-are-effective sq = sq-effective
+effectivity : (sq : set-quotients-exist)
+            → are-effective sq
+effectivity sq = sq-effective
  where
   pt : propositional-truncations-exist
   pt = propositional-truncations-from-set-quotients sq fe
@@ -55,7 +55,7 @@ quotients-are-effective sq = sq-effective
   lsq-effective = large-effective-set-quotients pt fe pe
 
   sq-effective : are-effective sq
-  sq-effective {𝓤} {𝓥} X R {x} {y} p = γ
+  sq-effective {𝓤} {𝓥} {X} R {x} {y} p = γ
    where
     module s = general-set-quotients-exist sq
     module l = general-set-quotients-exist lsq
@@ -90,6 +90,6 @@ quotients-are-effective sq = sq-effective
         ηₗ y    ∎
 
     γ : x ≈[ R ] y
-    γ = lsq-effective X R {x} {y} q
+    γ = lsq-effective R {x} {y} q
 
 \end{code}
