@@ -14,12 +14,12 @@ open import UF.SubtypeClassifier
 module Locales.CharacterisationOfContinuity (pt : propositional-truncations-exist)
                                             (fe : Fun-Ext)                          where
 
-open import Locales.Frame     pt fe
-open import Locales.WayBelow  pt fe
+open import Locales.Frame               pt fe
+open import Locales.WayBelowRelation.Definition pt fe
 open import UF.Logic
 open import Slice.Family
 open import Locales.Compactness pt fe
-open import Locales.Spectrality pt fe
+open import Locales.Spectrality.SpectralLocale pt fe
 
 open PropositionalTruncation pt
 open Existential pt
