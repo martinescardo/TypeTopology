@@ -21,6 +21,7 @@ open import UF.SubtypeClassifier
 open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.Size
+open import UF.Retracts
 
 module Posets.InductiveTypesfromSmallGeneratedLattice 
         (pt : propositional-truncations-exist)
@@ -75,9 +76,76 @@ is-lub-for (A , (_≤_ , ⋁_) , order , is-lub-of) = is-lub-of
 
 \end{code}
 
+We take a quick detour to show if a type is small and has a map to the carrier then it has a join.
+
+\begin{code}
+
+module Small-Types-have-Joins {𝓤 𝓦 𝓥 𝓣 : Universe} (L : Sup-Lattice 𝓤 𝓦 𝓥)
+                              (T : 𝓣  ̇) (t : T is 𝓥 small) (m : T → ⟨ L ⟩)
+                              where
+ 
+ _≤_ : ⟨ L ⟩ → ⟨ L ⟩ → Ω 𝓦
+ _≤_ = order-of L
+
+ ⋁_ : Fam 𝓥 ⟨ L ⟩ → ⟨ L ⟩
+ ⋁_ = join-for L
+
+ small-type : 𝓥  ̇
+ small-type = pr₁ t
+
+ small-≃ : small-type ≃ T
+ small-≃ = pr₂ t
+
+ small-map : small-type → T
+ small-map = ⌜ small-≃ ⌝
+
+ is-equiv-small-map : is-equiv small-map
+ is-equiv-small-map = pr₂ small-≃
+
+ small-map-inv : T → small-type
+ small-map-inv =  ⌜ small-≃ ⌝⁻¹
+
+ has-section-small-map : has-section small-map
+ has-section-small-map = pr₁ is-equiv-small-map
+
+ is-section-small-map : is-section small-map
+ is-section-small-map = pr₂ is-equiv-small-map
+
+ section-small-map : small-map ∘ small-map-inv ∼ id
+ section-small-map = pr₂ has-section-small-map
+
+ retraction-small-map : small-map-inv ∘ small-map ∼ id
+ retraction-small-map = inverses-are-retractions' small-≃
+
+ small-type-inclusion : small-type → ⟨ L ⟩
+ small-type-inclusion = m ∘ small-map
+
+ s : ⟨ L ⟩
+ s = ⋁ (small-type , small-type-inclusion)
+
+ open Joins _≤_
+
+ is-small-implies-has-join : (s is-lub-of ((T , m))) holds
+ is-small-implies-has-join = (s-upper-bound , s-is-least-upper-bound)
+  where
+   s-upper-bound : (s is-an-upper-bound-of (T , m)) holds
+   s-upper-bound t = t-≤-s
+    where
+     t-≤-s : (m t ≤ s) holds
+     t-≤-s = transport (λ z → (m z ≤ s) holds) (section-small-map t)
+              (pr₁ (is-lub-for L (small-type , small-type-inclusion)) (small-map-inv t))
+   s-is-least-upper-bound : (is-upbnd : upper-bound (T , m)) → (s ≤ pr₁ is-upbnd) holds
+   s-is-least-upper-bound (u , is-upbnd-T) = s-≤-u
+    where
+     s-≤-u : (s ≤ u) holds
+     s-≤-u = pr₂ (is-lub-for L (small-type , small-type-inclusion))
+                 ((u , λ i → is-upbnd-T (small-map i)))
+
+\end{code}
+
 We now define a small basis for a Sup-Lattice. This consists of a type B in a fixed universe and a
-map q from B to the carrier of the Sup-Lattice. In sense to be made precise the pair B and q generate
-the Sup-Lattice. This notion we be integral in developing the rest of our theory.
+map q from B to the carrier of the Sup-Lattice. In a sense to be made precise the pair B and q generate
+the Sup-Lattice. This notion will be integral in developing the rest of our theory.
 
 \begin{code}
 
