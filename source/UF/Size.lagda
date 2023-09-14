@@ -861,6 +861,10 @@ equivs-have-any-size : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
 equivs-have-any-size {𝓤} {𝓥} {𝓦} {X} {Y} f e y =
  singletons-have-any-size (equivs-are-vv-equivs f e y)
 
+equivs-have-any-size' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (𝕗 : X ≃ Y)
+                     → ⌜ 𝕗 ⌝ is 𝓦 small-map
+equivs-have-any-size' (f , e) = equivs-have-any-size f e
+
 \end{code}
 
 The following notion of local smallness is due to Egbert Rijke, in his
