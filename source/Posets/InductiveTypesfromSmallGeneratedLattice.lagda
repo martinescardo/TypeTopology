@@ -81,7 +81,7 @@ We take a quick detour to show if a type is small and has a map to the carrier t
 \begin{code}
 
 module Small-Types-have-Joins {𝓤 𝓦 𝓥 𝓣 : Universe} (L : Sup-Lattice 𝓤 𝓦 𝓥)
-                              (T : 𝓣  ̇) (t : T is 𝓥 small) (m : T → ⟨ L ⟩)
+                              (T : 𝓣  ̇) (m : T → ⟨ L ⟩) (t : T is 𝓥 small)
                               where
  
  _≤_ : ⟨ L ⟩ → ⟨ L ⟩ → Ω 𝓦
@@ -125,8 +125,8 @@ module Small-Types-have-Joins {𝓤 𝓦 𝓥 𝓣 : Universe} (L : Sup-Lattice 
 
  open Joins _≤_
 
- is-small-implies-has-join : (s is-lub-of ((T , m))) holds
- is-small-implies-has-join = (s-upper-bound , s-is-least-upper-bound)
+ is-lub-of-both : (s is-lub-of ((T , m))) holds
+ is-lub-of-both = (s-upper-bound , s-least-upper-bound)
   where
    s-upper-bound : (s is-an-upper-bound-of (T , m)) holds
    s-upper-bound t = t-≤-s
@@ -134,8 +134,8 @@ module Small-Types-have-Joins {𝓤 𝓦 𝓥 𝓣 : Universe} (L : Sup-Lattice 
      t-≤-s : (m t ≤ s) holds
      t-≤-s = transport (λ z → (m z ≤ s) holds) (section-small-map t)
               (pr₁ (is-lub-for L (small-type , small-type-inclusion)) (small-map-inv t))
-   s-is-least-upper-bound : (is-upbnd : upper-bound (T , m)) → (s ≤ pr₁ is-upbnd) holds
-   s-is-least-upper-bound (u , is-upbnd-T) = s-≤-u
+   s-least-upper-bound : (is-upbnd : upper-bound (T , m)) → (s ≤ pr₁ is-upbnd) holds
+   s-least-upper-bound (u , is-upbnd-T) = s-≤-u
     where
      s-≤-u : (s ≤ u) holds
      s-≤-u = pr₂ (is-lub-for L (small-type , small-type-inclusion))
@@ -342,8 +342,8 @@ will call 'local'. This monotone operator will have a least-fixed point when �
    S : (ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)) → (a : ⟨ L ⟩) → 𝓤 ⊔ 𝓦 ⊔ 𝓥  ̇
    S ϕ a = Σ b ꞉ B , (Ǝ a' ꞉ ⟨ L ⟩ , ϕ (a' , b) holds × (a' ≤ a) holds) holds
 
-   S-monotone : (ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)) → (x y : ⟨ L ⟩) → (x ≤ y) holds → S ϕ x → S ϕ y
-   S-monotone ϕ x y o = f
+   S-monotone-ish : (ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)) → (x y : ⟨ L ⟩) → (x ≤ y) holds → S ϕ x → S ϕ y
+   S-monotone-ish ϕ x y o = f
     where
      f : S ϕ x → S ϕ y
      f (b , c) = (b , g c)
@@ -355,6 +355,15 @@ will call 'local'. This monotone operator will have a least-fixed point when �
          g' : Σ a' ꞉ ⟨ L ⟩ , (ϕ (a' , b) holds) × ((a' ≤ x) holds) →
               (Ǝ a' ꞉ ⟨ L ⟩ , (ϕ (a' , b) holds) × ((a' ≤ y) holds)) holds
          g' (a' , p , r) = ∣ (a' , p , is-transitive-for L a' x y r o) ∣
+
+   S-has-sup-implies-monotone : (ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)) → (x y s₁ s₂ : ⟨ L ⟩) → (x ≤ y) holds →
+                                (s₁ is-lub-of (S ϕ x , q ∘ pr₁)) holds →
+                                (s₂ is-lub-of (S ϕ y , q ∘ pr₁)) holds →
+                                (s₁ ≤ s₂) holds
+   S-has-sup-implies-monotone ϕ x y s₁ s₂ o is-sup-1 is-sup-2 = pr₂ is-sup-1 ((s₂ , f))
+    where
+     f : (s₂ is-an-upper-bound-of (S ϕ x , q ∘ pr₁)) holds
+     f (b , e) = pr₁ is-sup-2 (S-monotone-ish ϕ x y o ((b , e)))
          
    _is-local : (ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)) → 𝓤 ⊔ 𝓦 ⊔ (𝓥 ⁺)  ̇
    ϕ is-local = (a : ⟨ L ⟩) → S ϕ a is 𝓥 small
@@ -373,44 +382,25 @@ will call 'local'. This monotone operator will have a least-fixed point when �
     S-small-map-inv : (a : ⟨ L ⟩) → S ϕ a → S-small a 
     S-small-map-inv a = ⌜ S-small-≃ a ⌝⁻¹
 
-    S-small-monotone : (x y : ⟨ L ⟩) → (x ≤ y) holds → S-small x → S-small y
-    S-small-monotone x y o = S-small-map-inv y ∘ S-monotone ϕ x y o ∘ S-small-map x
+    S-small-monotone-ish : (x y : ⟨ L ⟩) → (x ≤ y) holds → S-small x → S-small y
+    S-small-monotone-ish x y o = S-small-map-inv y ∘ S-monotone-ish ϕ x y o ∘ S-small-map x
 
     Γ : ⟨ L ⟩ → ⟨ L ⟩
     Γ a = ⋁ ((S-small a , q ∘ pr₁ ∘ S-small-map a))
 
-    cofinal : Fam 𝓥 ⟨ L ⟩ → Fam 𝓥 ⟨ L ⟩ → Ω (𝓦 ⊔ 𝓥)
-    cofinal (X , q₁) (Y , q₂) = Ɐ x ꞉ X , Ǝ y ꞉ Y , (q₁ x ≤ q₂ y) holds
-
-    cofinality-implies-ordering-of-joins : (R T : Fam 𝓥 ⟨ L ⟩) → cofinal R T holds → ((⋁ R) ≤ (⋁ T)) holds
-    cofinality-implies-ordering-of-joins (X , q₁) (Y , q₂) C = {!!}
-
     Γ-is-monotone : (x y : ⟨ L ⟩) → (x ≤ y) holds → (Γ x ≤ Γ y) holds
-    Γ-is-monotone x y o =
-     cofinality-implies-ordering-of-joins (S-small x , q ∘ pr₁ ∘ S-small-map x)
-                                          (S-small y , q ∘ pr₁ ∘ S-small-map y) C
+    Γ-is-monotone x y o = S-has-sup-implies-monotone ϕ x y (Γ x) (Γ y) o Γ-x-is-sup Γ-y-is-sup
      where
-      C : cofinal (S-small x , q ∘ pr₁ ∘ S-small-map x)
-                  (S-small y , q ∘ pr₁ ∘ S-small-map y) holds
-      C s = {!!}
-
-    Γ-is-monotone' : (x y : ⟨ L ⟩) → (x ≤ y) holds → (Γ x ≤ Γ y) holds
-    Γ-is-monotone' x y o = pr₂ (is-lub-for L (S-small x , q ∘ pr₁ ∘ S-small-map x))
-                           ((Γ y , is-upperbound))
-     where
-      upperbound-y-implies-upperbound-x :
-       ((Γ y) is-an-upper-bound-of (S-small y , q ∘ pr₁ ∘ S-small-map y)) holds →
-       ((Γ y) is-an-upper-bound-of (S-small x , q ∘ pr₁ ∘ S-small-map x)) holds
-      upperbound-y-implies-upperbound-x up-for-y i = {!!}
-      is-upperbound : ((Γ y) is-an-upper-bound-of (S-small x , q ∘ pr₁ ∘ S-small-map x)) holds
-      is-upperbound = upperbound-y-implies-upperbound-x
-                      (pr₁ (is-lub-for L (S-small y , q ∘ pr₁ ∘ S-small-map y)))
-
-
+      Γ-x-is-sup : (Γ x is-lub-of (S ϕ x , q ∘ pr₁)) holds
+      Γ-x-is-sup = is-lub-of-both
+       where
+       open Small-Types-have-Joins L (S ϕ x) (q ∘ pr₁) (i x)       
+      Γ-y-is-sup : (Γ y is-lub-of (S ϕ y , q ∘ pr₁)) holds
+      Γ-y-is-sup = is-lub-of-both
+       where
+       open Small-Types-have-Joins L (S ϕ y) (q ∘ pr₁) (i y)
 
 
 \end{code}
-
-
 
 
