@@ -101,6 +101,6 @@ infix  3  _⁻¹
 infix  1 _∎
 infixr 0 _＝⟨_⟩_
 infixl 2 _∙_
-infix  4  _∼_
+infix  4 _∼_
 
 \end{code}
