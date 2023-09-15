@@ -60,7 +60,7 @@ module _
                           (powersets-are-sets'' fe fe pe)
    where
     open large-quotient X ≋ using (equiv-rel)
-    γ : (X → Ω 𝓥) is-locallyin 𝓤 ⊔ 𝓥 small
+    γ : (X → Ω 𝓥) is-locally 𝓤 ⊔ 𝓥 small
     γ f g = S , ≃-sym e
      where
       S : 𝓤 ⊔ 𝓥 ̇
