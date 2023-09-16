@@ -22,6 +22,7 @@ open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.Size
 open import UF.Retracts
+open import UF.UniverseEmbedding
 
 module Posets.InductiveTypesfromSmallGeneratedLattice 
         (pt : propositional-truncations-exist)
@@ -74,9 +75,18 @@ is-lub-for : (L : Sup-Lattice 𝓤 𝓦 𝓥) → (U : Fam 𝓥 ⟨ L ⟩) →
                                          ((order-of L) Joins.is-lub-of join-for L U) U holds
 is-lub-for (A , (_≤_ , ⋁_) , order , is-lub-of) = is-lub-of
 
+module Monotone-Maps {𝓤 𝓦 𝓥 : Universe} (L : Sup-Lattice 𝓤 𝓦 𝓥) where
+
+ _≤_ : ⟨ L ⟩ → ⟨ L ⟩ → Ω 𝓦
+ _≤_ = order-of L
+
+ _is-monotone : (f : ⟨ L ⟩ → ⟨ L ⟩) → 𝓤 ⊔ 𝓦  ̇
+ f is-monotone = (x y : ⟨ L ⟩) → (x ≤ y) holds → (f x ≤ f y) holds
+
 \end{code}
 
-We take a quick detour to show if a type is small and has a map to the carrier then it has a join.
+We take a quick detour to show if a type is small and has a map to the carrier then it has a join. This seems
+like strict requirement but as we will see it occurs often when consider a lattice with a base.
 
 \begin{code}
 
@@ -388,7 +398,9 @@ will call 'local'. This monotone operator will have a least-fixed point when �
     Γ : ⟨ L ⟩ → ⟨ L ⟩
     Γ a = ⋁ ((S-small a , q ∘ pr₁ ∘ S-small-map a))
 
-    Γ-is-monotone : (x y : ⟨ L ⟩) → (x ≤ y) holds → (Γ x ≤ Γ y) holds
+    open Monotone-Maps L hiding (_≤_)
+
+    Γ-is-monotone : Γ is-monotone
     Γ-is-monotone x y o = S-has-sup-implies-monotone ϕ x y (Γ x) (Γ y) o Γ-x-is-sup Γ-y-is-sup
      where
       Γ-x-is-sup : (Γ x is-lub-of (S ϕ x , q ∘ pr₁)) holds
@@ -400,6 +412,19 @@ will call 'local'. This monotone operator will have a least-fixed point when �
        where
        open Small-Types-have-Joins L (S ϕ y) (q ∘ pr₁) (i y)
 
+   open Monotone-Maps L hiding (_≤_)
+
+   mono-map-gives-ind-def : (f : ⟨ L ⟩ → ⟨ L ⟩) → f is-monotone →
+               Σ ϕ ꞉ (⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)) , Σ i ꞉ (ϕ is-local) , ((x : ⟨ L ⟩) → (Local-ϕ.Γ ϕ i) x ＝ f x)
+   mono-map-gives-ind-def f f-mono = (ϕ , i , H)
+    where
+     ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)
+     ϕ (a , b) = ( Lift 𝓤 (b ≤ᴮ f a) , equiv-to-prop (Lift-≃ 𝓤 (b ≤ᴮ f a)) _≤ᴮ_-is-prop-valued )
+     i : ϕ is-local 
+     i a = (small-↓ᴮ (f a) , {!!})
+     H : (x : ⟨ L ⟩) → (Local-ϕ.Γ ϕ i) x ＝ f x
+     H x = {!!}
+     
 
 \end{code}
 
