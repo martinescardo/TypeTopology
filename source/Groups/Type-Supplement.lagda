@@ -21,19 +21,17 @@ This is vestigial. The proof that group-axioms is prop is in Groups.Type
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --no-sized-types --no-guardedness --auto-inline --exact-split #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module Groups.Type-Supplement where
---open import SpartanMLTT
-open import MLTT.Spartan
-open import UF.Base
-open import UF.Subsingletons
-open import UF.FunExt
-open import UF.Subsingletons-FunExt
-open import UF.Equiv hiding (_≅_ ; ≅-refl)
+
 open import Groups.Type hiding (group-axioms-is-prop)
-
-
+open import MLTT.Spartan
+open import UF.FunExt
+open import UF.Sets
+open import UF.Sets-Properties
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
 
 \end{code}
 

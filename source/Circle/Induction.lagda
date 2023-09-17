@@ -11,15 +11,15 @@ development below offers an alternative proof for 𝕊¹.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan
 open import UF.Base
-
 open import UF.Equiv
 open import UF.FunExt
+open import UF.Sets
+open import UF.Sets-Properties
 open import UF.Subsingletons
-
 
 module Circle.Induction where
 

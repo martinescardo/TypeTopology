@@ -24,7 +24,7 @@ GenericConvergentSequence)
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import UF.FunExt
 
@@ -183,8 +183,8 @@ Feb 2020):
 
 \begin{code}
 
-open import TypeTopology.DiscreteAndSeparated
 open import Naturals.Properties
+open import UF.DiscreteAndSeparated
 
 [LPO→ℕ]-discrete-gives-¬LPO-decidable : is-discrete (LPO → ℕ) → is-decidable (¬ LPO)
 [LPO→ℕ]-discrete-gives-¬LPO-decidable =

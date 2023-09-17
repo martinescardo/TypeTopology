@@ -2,7 +2,7 @@ Martin Escardo, 18 January 2021.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline --lossy-unification #-}
+{-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
 
 open import UF.Univalence
 
@@ -566,6 +566,7 @@ to (ω +ₒ 𝟙ₒ) to get ℕ∞ₒ, unless LPO holds.
 \begin{code}
 
 open import UF.Retracts
+open import UF.SubtypeClassifier
 
 retract-Ω-of-Ordinal : retract (Ω 𝓤) of (Ordinal 𝓤)
 retract-Ω-of-Ordinal {𝓤} = r , s , η
@@ -601,8 +602,7 @@ module _ {𝓤 : Universe} where
 
  open import Ordinals.OrdinalOfTruthValues fe 𝓤 (pe 𝓤)
 
- open import TypeTopology.DiscreteAndSeparated
- open import UF.Miscelanea
+ open import UF.DiscreteAndSeparated
 
  ⊴-add-taboo : Ωₒ ⊴ (𝟙ₒ +ₒ Ωₒ) → WEM 𝓤
  ⊴-add-taboo (f , s) = V
@@ -612,20 +612,20 @@ module _ {𝓤 : Universe} where
    I (inr x) (inl ⋆) l = 𝟘-elim l
    I (inr x) (inr y) l = 𝟘-elim l
 
-   II : f ⊥Ω ＝ inl ⋆
-   II = simulations-preserve-least Ωₒ (𝟙ₒ +ₒ Ωₒ) ⊥Ω (inl ⋆) f s ⊥-is-least I
+   II : f ⊥ ＝ inl ⋆
+   II = simulations-preserve-least Ωₒ (𝟙ₒ +ₒ Ωₒ) ⊥ (inl ⋆) f s ⊥-is-least I
 
-   III : is-isolated (f ⊥Ω)
+   III : is-isolated (f ⊥)
    III = transport⁻¹ is-isolated II (inl-is-isolated ⋆ (𝟙-is-discrete ⋆))
 
-   IV : is-isolated ⊥Ω
-   IV = lc-maps-reflect-isolatedness f (simulations-are-lc Ωₒ (𝟙ₒ +ₒ Ωₒ) f s) ⊥Ω III
+   IV : is-isolated ⊥
+   IV = lc-maps-reflect-isolatedness f (simulations-are-lc Ωₒ (𝟙ₒ +ₒ Ωₒ) f s) ⊥ III
 
    V : ∀ P → is-prop P → ¬ P + ¬¬ P
    V P i = Cases (IV (P , i))
-            (λ (e : ⊥Ω ＝ (P , i))
+            (λ (e : ⊥ ＝ (P , i))
                   → inl (equal-𝟘-is-empty (ap pr₁ (e ⁻¹))))
-            (λ (ν : ⊥Ω ≠ (P , i))
+            (λ (ν : ⊥ ≠ (P , i))
                   → inr (contrapositive
                           (λ (u : ¬ P)
                                 → to-subtype-＝ (λ _ → being-prop-is-prop fe')

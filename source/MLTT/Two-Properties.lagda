@@ -5,14 +5,16 @@ in the module SpartanMLTT. Here we develop some general machinery.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module MLTT.Two-Properties where
 
 open import MLTT.Spartan
 open import MLTT.Unit-Properties
+open import Naturals.Properties
 open import Notation.Order
-
+open import UF.FunExt
+open import UF.Retracts
 open import UF.Subsingletons
 
 𝟚-Cases : {A : 𝓤 ̇ } → 𝟚 → A → A → A
@@ -423,8 +425,41 @@ Lemma[b≠₁→b＝₀] : {b : 𝟚} → ¬ (b ＝ ₁) → b ＝ ₀
 Lemma[b≠₁→b＝₀] {₀} f = refl
 Lemma[b≠₁→b＝₀] {₁} f = 𝟘-elim (f refl)
 
-\end{code}
+𝟚-ℕ-embedding : 𝟚 → ℕ
+𝟚-ℕ-embedding ₀ = 0
+𝟚-ℕ-embedding ₁ = 1
 
+𝟚-ℕ-embedding-is-lc : left-cancellable 𝟚-ℕ-embedding
+𝟚-ℕ-embedding-is-lc {₀} {₀} refl = refl
+𝟚-ℕ-embedding-is-lc {₀} {₁} r    = 𝟘-elim (positive-not-zero 0 (r ⁻¹))
+𝟚-ℕ-embedding-is-lc {₁} {₀} r    = 𝟘-elim (positive-not-zero 0 r)
+𝟚-ℕ-embedding-is-lc {₁} {₁} refl = refl
+
+C-B-embedding : (ℕ → 𝟚) → (ℕ → ℕ)
+C-B-embedding α = 𝟚-ℕ-embedding ∘ α
+
+C-B-embedding-is-lc : funext 𝓤₀ 𝓤₀ → left-cancellable C-B-embedding
+C-B-embedding-is-lc fe {α} {β} p = dfunext fe h
+ where
+  h : (n : ℕ) → α n ＝ β n
+  h n = 𝟚-ℕ-embedding-is-lc (ap (λ - → - n) p)
+
+𝟚-retract-of-ℕ : retract 𝟚 of ℕ
+𝟚-retract-of-ℕ = r , s , rs
+ where
+  r : ℕ → 𝟚
+  r 0        = ₀
+  r (succ n) = ₁
+
+  s : 𝟚 → ℕ
+  s ₀ = 0
+  s ₁ = 1
+
+  rs : r ∘ s ∼ id
+  rs ₀ = refl
+  rs ₁ = refl
+
+\end{code}
 
 Fixities and precedences:
 

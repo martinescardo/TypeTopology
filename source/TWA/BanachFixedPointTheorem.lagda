@@ -4,7 +4,7 @@ A version of the Banach fixed-point theorem for ultracloseness spaces.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import UF.FunExt
 
@@ -15,7 +15,6 @@ open import CoNaturals.GenericConvergentSequence hiding (min)
 open import CoNaturals.Arithmetic fe
 open import TWA.Closeness fe
 open import Naturals.Order
-open import UF.Miscelanea
 open import Naturals.Properties
 open import Notation.Order
 open import Notation.CanonicalMap

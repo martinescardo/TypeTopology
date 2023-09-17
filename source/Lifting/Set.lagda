@@ -6,7 +6,7 @@ propositions and two instances of function extensionality.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan
 
@@ -14,12 +14,15 @@ module Lifting.Set
   (𝓣 : Universe) -- fix a universe for the propositions
   where
 
-open import UF.Subsingletons
-open import UF.Base
-open import UF.Retracts
-open import UF.FunExt
-open import UF.Subsingletons-FunExt
 open import Lifting.Lifting 𝓣
+open import UF.Base
+open import UF.FunExt
+open import UF.Retracts
+open import UF.Sets
+open import UF.Sets-Properties
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
+open import UF.Subsingletons-Properties
 
 lifting-of-set-is-set : funext 𝓣 𝓤
                       → funext 𝓣 𝓣

@@ -2,11 +2,11 @@ Martin Escardo, November-December 2019
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module Fin.Pigeonhole where
 
-open import UF.Subsingletons renaming (⊤Ω to ⊤)
+open import UF.Subsingletons
 
 open import Factorial.Swap
 open import Fin.Bishop
@@ -21,7 +21,7 @@ open import Naturals.Order
 open import Notation.Order
 open import NotionsOfDecidability.Complemented
 open import NotionsOfDecidability.Decidable
-open import TypeTopology.DiscreteAndSeparated
+open import UF.DiscreteAndSeparated
 open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.FunExt

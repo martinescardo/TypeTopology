@@ -5,7 +5,7 @@ hence finite joins).
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan
 open import UF.FunExt
@@ -14,10 +14,12 @@ open import UF.Subsingletons
 module Posets.sigma-sup-lattice (fe : Fun-Ext) where
 
 open import UF.Base
-open import UF.SIP
 open import UF.Equiv hiding (_≅_)
-open import UF.Univalence
+open import UF.Hedberg
+open import UF.SIP
+open import UF.Sets
 open import UF.Subsingletons-FunExt
+open import UF.Univalence
 
 σ-suplat-structure : 𝓤 ̇ → 𝓤 ̇
 σ-suplat-structure X = X × ((ℕ → X) → X)

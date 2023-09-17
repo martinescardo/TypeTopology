@@ -59,23 +59,28 @@ apartness relation is a set, and so this reflection is always a set.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module TypeTopology.TotallySeparated where
 
 open import MLTT.Spartan
 open import MLTT.Two-Properties
 open import NotionsOfDecidability.Complemented
-open import TypeTopology.DiscreteAndSeparated hiding (tight)
 open import UF.Base
+open import UF.DiscreteAndSeparated hiding (tight)
 open import UF.Embeddings
 open import UF.Equiv
 open import UF.FunExt
+open import UF.Hedberg
 open import UF.LeftCancellable
 open import UF.Lower-FunExt
-open import UF.Miscelanea
+open import UF.NotNotStablePropositions
 open import UF.PropTrunc
 open import UF.Retracts
+open import UF.Sets
+open import UF.Sets-Properties
+open import UF.SubtypeClassifier
+open import UF.SubtypeClassifier-Properties
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
@@ -271,11 +276,11 @@ open import UF.ExcludedMiddle
   p : Ω 𝓤
   p = (P , P-is-prop)
 
-  b : ¬¬ (p ＝ ⊤Ω)
+  b : ¬¬ (p ＝ ⊤)
   b = ¬¬-functor (holds-gives-equal-⊤ pe fe p) not-not-P
 
-  c : p ＝ ⊤Ω
-  c = Ω-is-¬¬-separated p ⊤Ω b
+  c : p ＝ ⊤
+  c = Ω-is-¬¬-separated p ⊤ b
 
   d : P
   d = equal-⊤-gives-holds p c
@@ -292,8 +297,8 @@ open import UF.ExcludedMiddle
                              → is-totally-separated (Ω 𝓤)
                              → EM 𝓤
 Ω-totally-separated-gives-EM {𝓤} pe fe Ω-is-totally-separated =
-  Ω-separated-gives-EM pe fe
-    (totally-separated-types-are-separated (Ω 𝓤) Ω-is-totally-separated)
+ Ω-separated-gives-EM pe fe
+  (totally-separated-types-are-separated (Ω 𝓤) Ω-is-totally-separated)
 
 \end{code}
 
@@ -514,42 +519,42 @@ totally-separated-gives-totally-separated₂ : funext 𝓤 𝓤₀
                                            → is-totally-separated X
                                            → is-totally-separated₂ X
 totally-separated-gives-totally-separated₂ fe {X} τ φ (x , p) (y , q) = γ
-  where
-   s : eval X x ＝ eval X y
-   s = eval X x ＝⟨ p ⟩
+ where
+  s : eval X x ＝ eval X y
+  s = eval X x  ＝⟨ p ⟩
        φ        ＝⟨ q ⁻¹ ⟩
        eval X y ∎
 
-   t : x ＝ y
-   t = τ (happly s)
+  t : x ＝ y
+  t = τ (happly s)
 
-   r : transport (λ - → eval X - ＝ φ) t p ＝ q
-   r = totally-separated-types-are-sets fe
+  r : transport (λ - → eval X - ＝ φ) t p ＝ q
+  r = totally-separated-types-are-sets fe
        ((X → 𝟚) → 𝟚)
        (Π-is-totally-separated fe (λ p → 𝟚-is-totally-separated))
        (transport (λ - → eval X - ＝ φ) t p)
        q
 
-   γ : (x , p) ＝ (y , q)
-   γ = to-Σ-＝ (t , r)
+  γ : (x , p) ＝ (y , q)
+  γ = to-Σ-＝ (t , r)
 
 totally-separated₂-gives-totally-separated : funext 𝓤 𝓤₀
                                            → {X : 𝓤 ̇ }
                                            → is-totally-separated₂ X
                                            → is-totally-separated X
 totally-separated₂-gives-totally-separated fe {X} i {x} {y} e = ap pr₁ q
-  where
-   φ : (X → 𝟚) → 𝟚
-   φ = eval X x
+ where
+  φ : (X → 𝟚) → 𝟚
+  φ = eval X x
 
-   h : is-prop (fiber (eval X) φ)
-   h = i φ
+  h : is-prop (fiber (eval X) φ)
+  h = i φ
 
-   g : eval X y ＝ φ
-   g = dfunext fe (λ p → (e p)⁻¹)
+  g : eval X y ＝ φ
+  g = dfunext fe (λ p → (e p)⁻¹)
 
-   q : x , refl ＝ y , g
-   q = h (x , refl) (y , g)
+  q : x , refl ＝ y , g
+  q = h (x , refl) (y , g)
 
 \end{code}
 
@@ -865,10 +870,10 @@ apartness relation _♯₂ is tight:
                  → (p : Ω 𝓤) → p holds ∨ ¬ (p holds)
  ♯Ω-cotran-taboo c p = ∥∥-functor II I
   where
-   I : (⊥Ω ♯Ω p) ∨ (⊤Ω ♯Ω p)
-   I = c ⊥Ω ⊤Ω p (inr (𝟘-elim , ⋆))
+   I : (⊥ ♯Ω p) ∨ (⊤ ♯Ω p)
+   I = c ⊥ ⊤ p (inr (𝟘-elim , ⋆))
 
-   II : (⊥Ω ♯Ω p) + (⊤Ω ♯Ω p) → (p holds) + ¬ (p holds)
+   II : (⊥ ♯Ω p) + (⊤ ♯Ω p) → (p holds) + ¬ (p holds)
    II (inl (inr (a , b))) = inl b
    II (inr (inl (a , b))) = inr b
    II (inr (inr (a , b))) = inl b

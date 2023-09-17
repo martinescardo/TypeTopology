@@ -5,7 +5,7 @@ Haskell and print within compiled programs.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --auto-inline #-}
+{-# OPTIONS --without-K --exact-split #-}
 
 module Unsafe.Haskell where
 

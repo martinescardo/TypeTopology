@@ -17,16 +17,17 @@ and
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module TypeTopology.DisconnectedTypes where
 
 open import MLTT.Spartan
 open import MLTT.Two-Properties
 open import Naturals.Properties
-open import TypeTopology.DiscreteAndSeparated
-open import UF.Retracts
+open import UF.DiscreteAndSeparated
 open import UF.Equiv
+open import UF.Hedberg
+open import UF.Retracts
 
 \end{code}
 
@@ -185,7 +186,6 @@ open import UF.Base
 open import UF.FunExt
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import UF.Miscelanea
 
 is-connected₀ : 𝓤 ̇ → 𝓤 ̇
 is-connected₀ X = (f : X → 𝟚) → wconstant f

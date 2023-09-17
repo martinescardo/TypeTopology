@@ -21,7 +21,7 @@ We then discuss further codistance axioms.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan
 open import UF.FunExt
@@ -35,8 +35,7 @@ open import MLTT.Two-Properties
 open import Naturals.Sequence fe
 open import Notation.CanonicalMap
 open import Notation.Order
-open import TypeTopology.DiscreteAndSeparated
-open import UF.Miscelanea
+open import UF.DiscreteAndSeparated
 
 module sequences
         {𝓤 : Universe}

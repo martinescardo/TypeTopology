@@ -5,23 +5,21 @@ history dependent game.
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --no-sized-types --no-guardedness --auto-inline --exact-split #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module Games.TicTacToe0 where
 
-open import TypeTopology.CompactTypes
-open import TypeTopology.DiscreteAndSeparated
-open import TypeTopology.SigmaDiscreteAndTotallySeparated
-
-open import MLTT.Spartan hiding (J)
-open import MLTT.Athenian
-open import Fin.Type
-open import Fin.Topology
 open import Fin.ArgMinMax
-
-open import Games.TypeTrees
+open import Fin.Topology
+open import Fin.Type
 open import Games.J
 open import Games.K
+open import Games.TypeTrees
+open import MLTT.Athenian
+open import MLTT.Spartan hiding (J)
+open import TypeTopology.CompactTypes
+open import TypeTopology.SigmaDiscreteAndTotallySeparated
+open import UF.DiscreteAndSeparated
 
 \end{code}
 
@@ -170,7 +168,7 @@ The game tree, with a bound on which we perform induction:
 
 \begin{code}
 
-tree : Board → ℕ → 𝕋
+tree : Board → ℕ → 𝑻
 tree b         0        = []
 tree b@(p , A) (succ k) with wins (opponent p) A | Move-decidable b
 ...                        | true  | _     = []
@@ -258,6 +256,6 @@ selections b@(p , A) (succ k) with wins (opponent p) A | Move-decidable b
 
 
 p : Path (Xt tic-tac-toe)
-p = J-sequence (selections board₀ 9) (q tic-tac-toe)
+p = sequenceᴶ (selections board₀ 9) (q tic-tac-toe)
 
 \end{code}

@@ -6,7 +6,7 @@ and that 1/(n+1) converges to 0.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline --lossy-unification #-}
+{-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
 
@@ -230,7 +230,7 @@ constant-sequence-converges q (ε , 0<ε) = 0 , γ
   II = transport (0ℚ <_) I 0<ε
 
   γ : 𝟘
-  γ = ℚ<-not-itself 0ℚ II
+  γ = ℚ<-irrefl 0ℚ II
 ⟨1/sn⟩-converges ε₊@(((negsucc x , a) , p) , 0<ε) = 𝟘-elim γ
  where
   γ : 𝟘

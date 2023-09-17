@@ -25,7 +25,7 @@ which seems to be a new result.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module UF.Size where
 
@@ -37,19 +37,23 @@ open import UF.Equiv-FunExt
 open import UF.EquivalenceExamples
 open import UF.ExcludedMiddle
 open import UF.FunExt
+open import UF.Hedberg
 open import UF.KrausLemma
 open import UF.PropIndexedPiSigma
 open import UF.PropTrunc
 open import UF.Retracts
 open import UF.Section-Embedding
-open import UF.Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)
+open import UF.Sets
+open import UF.Sets-Properties
+open import UF.SubtypeClassifier
+open import UF.SubtypeClassifier-Properties
+open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.UA-FunExt
 open import UF.Univalence
 open import UF.UniverseEmbedding
 
 \end{code}
-
 
 We say that a type X has size 𝓥, or that it is 𝓥 small if it is
 equivalent to a type in the universe 𝓥:
@@ -58,6 +62,9 @@ equivalent to a type in the universe 𝓥:
 
 _is_small : 𝓤 ̇ → (𝓥 : Universe) → 𝓥 ⁺  ⊔ 𝓤 ̇
 X is 𝓥 small = Σ Y ꞉ 𝓥 ̇ , Y ≃ X
+
+native-size : (X : 𝓤 ̇ ) → X is 𝓤 small
+native-size X = X , ≃-refl X
 
 resized : (X : 𝓤 ̇ ) → X is 𝓥 small → 𝓥 ̇
 resized X = pr₁
@@ -361,8 +368,8 @@ universe, and of all other universes, of course:
   ψφ (inr y) (inr n) = 𝟘-elim (n ⋆)
 
   φψ : (p : Ω 𝓤) (d : is-decidable (p holds)) → φ (ψ p d) ＝ p
-  φψ p (inl h) = (true-is-equal-⊤  pe fe (p holds) (holds-is-prop p) h)⁻¹
-  φψ p (inr n) = (false-is-equal-⊥ pe fe (p holds) (holds-is-prop p) n)⁻¹
+  φψ p (inl h) = (true-gives-equal-⊤  pe fe (p holds) (holds-is-prop p) h)⁻¹
+  φψ p (inr n) = (false-gives-equal-⊥ pe fe (p holds) (holds-is-prop p) n)⁻¹
 
   γ : Ω-Resizing 𝓤 𝓥
   γ =  (𝟙 {𝓥} + 𝟙 {𝓥}) ,
@@ -592,7 +599,7 @@ module Image
  restriction : (f : X → Y) → image f → Y
  restriction f (y , _) = y
 
- restriction-embedding : (f : X → Y) → is-embedding(restriction f)
+ restriction-embedding : (f : X → Y) → is-embedding (restriction f)
  restriction-embedding f = pr₁-is-embedding (λ y → resize-is-prop R _ _)
 
  corestriction : (f : X → Y) → X → image f
@@ -603,8 +610,6 @@ module Image
 TODO. Prove the properties / perform the constructions in
 UF.ImageAndSurjection. Better: reorganize the code so that reproving
 is not necessary.
-
-\end{code}
 
 Added 24 January 2020 (originally proved 19 November 2019) by Tom de Jong.
 
@@ -703,6 +708,10 @@ f is 𝓦 small-map = ∀ y → fiber f y is 𝓦 small
 _is-small-map : {X Y : 𝓤 ⁺ ̇ } → (X → Y) → 𝓤 ⁺ ̇
 _is-small-map {𝓤} f = f is 𝓤 small-map
 
+native-size-of-map : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                   → f is 𝓤 ⊔ 𝓥 small-map
+native-size-of-map f y = native-size (fiber f y)
+
 \end{code}
 
 Obsolete notation used in some publications:
@@ -718,6 +727,12 @@ private
 The above should not be used anymore, but should be kept here.
 
 \begin{code}
+
+𝟚-to-Ω-is-small-map : funext 𝓤 𝓤
+                    → propext 𝓤
+                    → (𝟚-to-Ω {𝓤}) is 𝓤 small-map
+𝟚-to-Ω-is-small-map fe pe p = (¬ (p holds) + p holds) ,
+                              ≃-sym (𝟚-to-Ω-fiber fe pe p)
 
 size-contravariance : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                     → f is 𝓦 small-map
@@ -796,30 +811,38 @@ size-of-section-embedding {𝓤} {𝓥} {X} {Y} s (r , η) e y = γ
   γ : (fiber s y) is 𝓥 small
   γ = B , δ
 
-section-embedding-size-contravariance : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                                      → is-embedding f
-                                      → is-section f
+section-embedding-size-contravariance : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (s : X → Y)
+                                      → is-embedding s
+                                      → is-section s
                                       → Y is 𝓦 small
                                       → X is 𝓦 small
-section-embedding-size-contravariance {𝓤} {𝓥} {𝓦} {X} {Y} f e (g , η) (Y' , h , i) = γ
+section-embedding-size-contravariance {𝓤} {𝓥} {𝓦} {X} {Y} s e (g , η) (Y' , h , i) = γ
  where
   h⁻¹ : Y → Y'
   h⁻¹ = inverse h i
 
-  f' : X → Y'
-  f' = h⁻¹ ∘ f
+  s' : X → Y'
+  s' = h⁻¹ ∘ s
 
-  η' = λ x → g (h (h⁻¹ (f x))) ＝⟨ ap g (inverses-are-sections h i (f x)) ⟩
-             g (f x)           ＝⟨ η x ⟩
+  η' = λ x → g (h (h⁻¹ (s x))) ＝⟨ ap g (inverses-are-sections h i (s x)) ⟩
+             g (s x)           ＝⟨ η x ⟩
              x                 ∎
 
-  δ : f' is 𝓦 small-map
-  δ = size-of-section-embedding f' (g ∘ h , η')
+  δ : s' is 𝓦 small-map
+  δ = size-of-section-embedding s' (g ∘ h , η')
        (∘-is-embedding e (equivs-are-embeddings h⁻¹
                          (inverses-are-equivs h i)))
 
   γ : X is 𝓦 small
-  γ = size-contravariance f' δ (Y' , ≃-refl Y')
+  γ = size-contravariance s' δ (Y' , ≃-refl Y')
+
+embedded-retract-is-small : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                            (ρ : retract X of Y)
+                          → is-embedding (section ρ)
+                          → Y is 𝓦 small
+                          → X is 𝓦 small
+embedded-retract-is-small (r , s , rs) s-is-embedding Y-is-small =
+ section-embedding-size-contravariance s s-is-embedding (r , rs) Y-is-small
 
 ≃-size-contravariance : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                       → X ≃ Y
@@ -837,6 +860,10 @@ equivs-have-any-size : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                      → f is 𝓦 small-map
 equivs-have-any-size {𝓤} {𝓥} {𝓦} {X} {Y} f e y =
  singletons-have-any-size (equivs-are-vv-equivs f e y)
+
+equivs-have-any-size' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (𝕗 : X ≃ Y)
+                     → ⌜ 𝕗 ⌝ is 𝓦 small-map
+equivs-have-any-size' (f , e) = equivs-have-any-size f e
 
 \end{code}
 
@@ -887,6 +914,67 @@ x ≠⟦ ls ⟧ y = ¬ (x ＝⟦ ls ⟧ y)
 
 \end{code}
 
+Added 11 Jul 2023 by Martin Escardo.
+
+\begin{code}
+
+subtype-is-small : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+                 → ((x : X) → is-prop (A x))
+                 → X is 𝓦 small
+                 → Σ A is 𝓥 ⊔ 𝓦 small
+subtype-is-small {𝓤} {𝓥} {𝓦} {X} {A} A-is-prop-valued (X' , 𝕗) = S , 𝕘
+ where
+  S : 𝓥 ⊔ 𝓦 ̇
+  S = Σ x' ꞉ X' , A (⌜ 𝕗 ⌝ x')
+
+  𝕘 = (Σ x' ꞉ X' , A (⌜ 𝕗 ⌝ x')) ≃⟨ Σ-change-of-variable-≃ A 𝕗 ⟩
+      (Σ x ꞉ X , A x)            ■
+
+subtype-is-locally-small : {X : 𝓤 ⁺ ̇ } {A : X → 𝓤 ⁺ ̇ }
+                         → ((x : X) → is-prop (A x))
+                         → is-locally-small X
+                         → is-locally-small (Σ A)
+subtype-is-locally-small A-is-prop-valued X-is-ls (x , a) (y , b) = γ
+ where
+  γ : is-small ((x , a) ＝ (y , b))
+  γ = x ＝⟦ X-is-ls ⟧ y ,
+     (x ＝⟦ X-is-ls ⟧ y     ≃⟨ resizing-condition (X-is-ls x y) ⟩
+     (x ＝ y)               ≃⟨ I ⟩
+     ((x , a) ＝ (y , b))   ■)
+    where
+     I = ≃-sym (ap pr₁ ,
+                embedding-gives-embedding'
+                 pr₁
+                 (pr₁-is-embedding A-is-prop-valued)
+                 (x , a)
+                 (y , b))
+
+subtype-is-locally-small⁻ : {X : 𝓤 ⁺ ̇ } {A : X → 𝓤 ̇ }
+                          → ((x : X) → is-prop (A x))
+                          → is-locally-small X
+                          → is-locally-small (Σ A)
+subtype-is-locally-small⁻ A-is-prop-valued X-is-ls (x , a) (y , b) = γ
+ where
+  γ : is-small ((x , a) ＝ (y , b))
+  γ = x ＝⟦ X-is-ls ⟧ y ,
+     (x ＝⟦ X-is-ls ⟧ y     ≃⟨ resizing-condition (X-is-ls x y) ⟩
+     (x ＝ y)               ≃⟨ I ⟩
+     ((x , a) ＝ (y , b))   ■)
+    where
+     I = ≃-sym (ap pr₁ ,
+                embedding-gives-embedding'
+                 pr₁
+                 (pr₁-is-embedding A-is-prop-valued)
+                 (x , a)
+                 (y , b))
+
+\end{code}
+
+TODO. Generalize the above to resize (the values of) A as well.
+
+TODO. Add a characterization of equality of subtypes somewhere (the
+proof is "I" above. Perhaps in UF.EquivalenceExamples.)
+
 Added 5 April 2022 by Tom de Jong, after discussion with Martín.
 (Refactoring an earlier addition dated 15 March 2022.)
 
@@ -905,11 +993,11 @@ different in two ways:
 [Rijke2017] shows that the replacement of [Bezem+2022] is provable in the
 presence of a univalent universes 𝓤 closed under pushouts.
 
-In UF.Quotient.lagda, we prove that Set Replacement is provable if we assume
+In Quotient.Type.lagda, we prove that Set Replacement is provable if we assume
 that for every X : 𝓤 and 𝓥-valued equivalence relation ≈, the set quotient X / ≈
 exists in 𝓤 ⊔ 𝓥.
 
-In UF.Quotient.lagda we prove the converse using a specific construction of
+In Quotient.Type.lagda we prove the converse using a specific construction of
 quotients, similar to [Corollary 5.1, Rijke2017].
 
 Thus, Set Replacement is equivalent to having set quotients in 𝓤 ⊔ 𝓥 for every
@@ -936,7 +1024,7 @@ module _ (pt : propositional-truncations-exist) where
  open import UF.ImageAndSurjection pt
 
  Set-Replacement : 𝓤ω
- Set-Replacement = {𝓦 𝓣 𝓤 𝓥 : Universe} {X : 𝓣 ̇  } {Y : 𝓦 ̇  } (f : X → Y)
+ Set-Replacement = {𝓦 𝓣 𝓤 𝓥 : Universe} {X : 𝓣 ̇ } {Y : 𝓦 ̇ } (f : X → Y)
                  → X is 𝓤 small
                  → Y is-locally 𝓥 small
                  → is-set Y

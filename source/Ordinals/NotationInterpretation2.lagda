@@ -38,7 +38,7 @@ This is a draft version that needs polishing and more explanation.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan
 open import UF.FunExt
@@ -65,15 +65,14 @@ open import Taboos.WLPO
 open import TypeTopology.CompactTypes
 open import TypeTopology.ConvergentSequenceHasInf
 open import TypeTopology.Density
-open import TypeTopology.DiscreteAndSeparated
 open import TypeTopology.InfProperty
 open import TypeTopology.PropInfTychonoff fe
 open import TypeTopology.PropTychonoff fe
 open import TypeTopology.SigmaDiscreteAndTotallySeparated
 open import UF.Base
 open import UF.Embeddings
+open import UF.DiscreteAndSeparated
 open import UF.Equiv
-open import UF.Miscelanea
 open import UF.PairFun
 open import UF.Retracts
 open import UF.Subsingletons
@@ -213,7 +212,7 @@ The above gives an extension up to ordinal equivalence
 module Κ-extension (ν : E) (A : ⟨ Δ ν ⟩ → E) where
 
  ϕ : (x : ⟨ Δ ν ⟩) → [ 𝓚 ν A (ι ν x) ] ≃ₒ [ Κ (A x) ]
- ϕ = ↗-property (Κ ∘ A) (j ν)
+ ϕ = ↗-propertyₒ (Κ ∘ A) (j ν)
 
  φ : (x : ⟨ Δ ν ⟩) → ⟨ 𝓚 ν A (ι ν x) ⟩ → ⟨ Κ (A x) ⟩
  φ x = ≃ₒ-to-fun [ 𝓚 ν A (ι ν x) ] [ Κ (A x) ] (ϕ x)

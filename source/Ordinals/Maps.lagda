@@ -4,7 +4,7 @@ Various maps of ordinals, including equivalences.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import UF.Univalence
 
@@ -142,7 +142,7 @@ simulations-are-lc α β f (i , p) = γ
     → is-accessible (underlying-order α) y
     → f x ＝ f y
     → x ＝ y
-  φ x y (step s) (step t) r = Extensionality α x y g h
+  φ x y (acc s) (acc t) r = Extensionality α x y g h
    where
     g : (u : ⟨ α ⟩) → u ≺⟨ α ⟩ x → u ≺⟨ α ⟩ y
     g u l = d
@@ -176,6 +176,15 @@ simulations-are-lc α β f (i , p) = γ
 
   γ : left-cancellable f
   γ {x} {y} = φ x y (Well-foundedness α x) (Well-foundedness α y)
+
+simulations-are-embeddings : FunExt
+                           → (α : Ordinal 𝓤) (β : Ordinal 𝓥)
+                             (f : ⟨ α ⟩ → ⟨ β ⟩)
+                           → is-simulation α β f
+                           → is-embedding f
+simulations-are-embeddings fe α β f s = lc-maps-into-sets-are-embeddings f
+                                         (simulations-are-lc α β f s)
+                                         (underlying-type-is-set fe β)
 
 being-initial-segment-is-prop : Fun-Ext
                               → (α : Ordinal 𝓤) (β : Ordinal 𝓥)
@@ -313,7 +322,7 @@ at-most-one-simulation α β f f' (i , p) (i' , p') x = γ
   φ : ∀ x
     → is-accessible (underlying-order α) x
     → f x ＝ f' x
-  φ x (step u) = Extensionality β (f x) (f' x) a b
+  φ x (acc u) = Extensionality β (f x) (f' x) a b
    where
     IH : ∀ y → y ≺⟨ α ⟩ x → f y ＝ f' y
     IH y l = φ y (u y l)
@@ -455,7 +464,7 @@ module _ (pt : propositional-truncations-exist)
      → is-accessible (underlying-order α) y
      → f x ＝ f y
      → x ＝ y
-   φ x y (step s) (step t) r = Extensionality α x y g h
+   φ x y (acc s) (acc t) r = Extensionality α x y g h
     where
      g : (u : ⟨ α ⟩) → u ≺⟨ α ⟩ x → u ≺⟨ α ⟩ y
      g u l = ∥∥-rec (Prop-valuedness α u y) b (i y (f u) a)

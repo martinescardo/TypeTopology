@@ -11,7 +11,7 @@ g ·⟨ G ᵒᵖ ⟩ h = h ·⟨ G ⟩ g
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 
 open import MLTT.Spartan
@@ -23,7 +23,7 @@ module Groups.Opposite where
 _ᵒᵖ : Group 𝓤 → Group 𝓤
 G ᵒᵖ = ⟨ G ⟩ , (
                (λ g h → h ·⟨ G ⟩ g) ,
-                 (group-is-set G) ,
+                 (groups-are-sets G) ,
                    ((λ x y z → (assoc G z y x) ⁻¹) ,
                      (unit G) ,
                        ((λ x → unit-right G x) , ((λ x → unit-left G x) ,

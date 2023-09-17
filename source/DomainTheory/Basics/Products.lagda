@@ -2,7 +2,7 @@ Brendan Hart 2019-2020
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --exact-split --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan
 open import UF.PropTrunc
@@ -17,9 +17,9 @@ open PropositionalTruncation pt
 
 open import Posets.Poset fe
 open import UF.Base
-open import UF.Miscelanea
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
+open import UF.Sets
 
 open PosetAxioms
 

@@ -3,11 +3,11 @@ Martin Escardo, 4th October 2018
 The ordinal of truth values in a universe 𝓤.
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan
 open import UF.FunExt
-open import UF.Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)
+open import UF.Subsingletons
 
 module Ordinals.OrdinalOfTruthValues
        (fe : FunExt)
@@ -23,6 +23,8 @@ open import Ordinals.Maps
 open import Ordinals.Notions
 open import Ordinals.Type
 open import Ordinals.Underlying
+open import UF.SubtypeClassifier
+open import UF.SubtypeClassifier-Properties
 
 Ωₒ : Ordinal (𝓤 ⁺)
 Ωₒ = Ω 𝓤 , _≺_ , pv , w , e , t
@@ -34,13 +36,13 @@ open import Ordinals.Underlying
   pv p q = ×-is-prop (Ω-is-set (fe 𝓤 𝓤) pe) (Ω-is-set (fe 𝓤 𝓤) pe)
 
   w : is-well-founded _≺_
-  w p = step s
+  w p = acc s
    where
     t : (q : Ω 𝓤) →  q ≺ ⊥ → is-accessible _≺_ q
     t ⊥ (refl , b) = 𝟘-elim (⊥-is-not-⊤ b)
 
     ⊥-accessible : is-accessible _≺_ ⊥
-    ⊥-accessible = step t
+    ⊥-accessible = acc t
 
     s : (q : Ω 𝓤) → q ≺ p → is-accessible _≺_ q
     s ⊥ (refl , b) = ⊥-accessible
@@ -58,7 +60,7 @@ open import Ordinals.Underlying
   t p q r (a , _) (_ , b) = a , b
 
 ⊥-is-least : is-least Ωₒ ⊥
-⊥-is-least (P , i) (𝟘 , 𝟘-is-prop) (refl , q) = 𝟘-elim (equal-⊤-is-true 𝟘 𝟘-is-prop q)
+⊥-is-least (P , i) (𝟘 , 𝟘-is-prop) (refl , q) = 𝟘-elim (equal-⊤-gives-true 𝟘 𝟘-is-prop q)
 
 ⊤-is-largest : is-largest Ωₒ ⊤
 ⊤-is-largest (.𝟙 , .𝟙-is-prop) (.𝟘 , .𝟘-is-prop) (refl , refl) = refl , refl

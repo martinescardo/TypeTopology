@@ -5,7 +5,7 @@ Ordinals.NotationInterpretation2.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan
 open import UF.FunExt
@@ -19,14 +19,13 @@ open import MLTT.Two
 open import MLTT.Two-Properties
 
 open import UF.Base
+open import UF.DiscreteAndSeparated
 open import UF.Equiv
 open import UF.Equiv-FunExt
 open import UF.ExcludedMiddle
 open import UF.Retracts
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-
-open import TypeTopology.DiscreteAndSeparated
 
 κ : (P : 𝓤 ̇ ) → 𝟚 → (P → 𝟚)
 κ P n = λ _ → n

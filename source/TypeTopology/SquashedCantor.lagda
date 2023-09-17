@@ -14,7 +14,7 @@ a Cantor retract.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import UF.FunExt
 
@@ -393,7 +393,7 @@ do using the fact that ∞ is the unique fixed point of Succ).
 
 \begin{code}
 
-open import TypeTopology.DiscreteAndSeparated
+open import UF.DiscreteAndSeparated
 
 Head-Cons : (u : ℕ∞) (φ : Cantor[ u ]) → Head (Cons (u , φ)) ＝ u
 Head-Cons = λ u φ → ap (λ - → - φ) (γ u)

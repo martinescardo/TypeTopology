@@ -6,7 +6,7 @@ is used explicitly as a hypothesis each time it is needed.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module UF.FunExt where
 
@@ -74,24 +74,22 @@ happly-lc fe f g = section-lc happly (equivs-are-sections happly (fe f g))
 
 inverse-happly-is-dfunext : {𝓤 𝓥 : Universe}
                             {A : 𝓤 ̇ } {B : 𝓥 ̇ }
-                            (fe0 : funext 𝓤 𝓥)
-                            (fe1 : funext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥))
+                            (fe₀ : funext 𝓤 𝓥)
+                            (fe₁ : funext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥))
                             (f g : A → B)
-                          → inverse (happly' f g) (fe0 f g) ＝ dfunext fe0
-inverse-happly-is-dfunext fe0 fe1 f g =
- dfunext fe1 λ h →
- happly-lc fe0 f g
-  (happly' f g (inverse (happly' f g) (fe0 f g) h)
-     ＝⟨ inverses-are-sections _ (fe0 f g) h ⟩
-   h ＝⟨ happly-funext fe0 f g h ⁻¹ ⟩
-   happly' f g (dfunext fe0 h) ∎)
-
+                          → inverse (happly' f g) (fe₀ f g) ＝ dfunext fe₀
+inverse-happly-is-dfunext fe₀ fe₁ f g =
+ dfunext fe₁ λ h →
+ happly-lc fe₀ f g
+  (happly' f g (inverse (happly' f g) (fe₀ f g) h)
+     ＝⟨ inverses-are-sections _ (fe₀ f g) h ⟩
+   h ＝⟨ happly-funext fe₀ f g h ⁻¹ ⟩
+   happly' f g (dfunext fe₀ h) ∎)
 
 dfunext-refl : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
                (fe : funext 𝓤 𝓥)
                (f : Π A)
-             → dfunext fe (λ (x : X)
-             → 𝓻𝓮𝒻𝓵 (f x)) ＝ refl
+             → dfunext fe (λ (x : X) → 𝓻𝓮𝒻𝓵 (f x)) ＝ refl
 dfunext-refl fe f = happly-lc fe f f (happly-funext fe f f (λ x → refl))
 
 ap-funext : {X : 𝓥 ̇ } {Y : 𝓦 ̇ }

@@ -4,7 +4,7 @@ In this file I define the absolute value for rational numbers,
 and prove properties of the absolute value.
 
 \begin{code}
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
 
@@ -176,10 +176,10 @@ abs-of-pos-is-pos' p l = abs-of-pos-is-pos p (ℚ<-coarser-than-≤ 0ℚ p l)
   V e = 𝟘-elim (cases Vγ₁ Vγ₂ (ℚ-abs-inverse x))
    where
     Vγ₁ : ¬ (abs x ＝ x)
-    Vγ₁ e' = ℚ<-not-itself x (transport (x <_) (e ⁻¹ ∙ e') l₂)
+    Vγ₁ e' = ℚ<-irrefl x (transport (x <_) (e ⁻¹ ∙ e') l₂)
 
     Vγ₂ : ¬ (abs x ＝ - x)
-    Vγ₂ e' = ℚ<-not-itself x (transport (_< x) VI l₁)
+    Vγ₂ e' = ℚ<-irrefl x (transport (_< x) VI l₁)
      where
       VI : - y ＝ x
       VI = - y     ＝⟨ ap -_ (e ⁻¹)       ⟩

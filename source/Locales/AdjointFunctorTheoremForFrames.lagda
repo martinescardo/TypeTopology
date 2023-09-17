@@ -2,7 +2,7 @@ Ayberk Tosun, 1 March 2022.
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 open import UF.Base
@@ -16,11 +16,13 @@ module Locales.AdjointFunctorTheoremForFrames
 
 open import Locales.Frame pt fe
 open import Locales.GaloisConnection pt fe
+open import Slice.Family
 open import UF.Subsingletons
 open import UF.Logic
 
 open AllCombinators pt fe
 open PropositionalTruncation pt
+open import UF.SubtypeClassifier
 
 open Locale
 
@@ -55,7 +57,7 @@ module AdjointFunctorTheorem (X : Locale 𝓤' 𝓥 𝓥)
     β : (f (⋁[ 𝒪 Y ] S) is-an-upper-bound-of ⁅ f s ∣ s ε S ⁆) holds
     β i = μ (S [ i ] , ⋁[ 𝒪 Y ] S) (⋁[ 𝒪 Y ]-upper S i)
 
-    γ : (Ɐ (u , _) ∶ upper-bound ⁅ f s ∣ s ε S ⁆ , f (⋁[ 𝒪 Y ] S) ≤[ 𝒪Xₚ ] u) holds
+    γ : (Ɐ (u , _) ꞉ upper-bound ⁅ f s ∣ s ε S ⁆ , f (⋁[ 𝒪 Y ] S) ≤[ 𝒪Xₚ ] u) holds
     γ (u , q) = pr₂ (p (⋁[ 𝒪 Y ] S) u) (⋁[ 𝒪 Y ]-least S (g u , δ))
      where
       δ : (g u is-a-ub-of S) holds

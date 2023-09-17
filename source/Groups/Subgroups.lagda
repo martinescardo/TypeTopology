@@ -14,23 +14,24 @@ that the group axioms, as defined in Groups, form a proposition.
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --no-sized-types --no-guardedness --auto-inline --exact-split #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan
 open import UF.Base hiding (_≈_)
-open import UF.Subsingletons
-open import UF.Powerset
+open import UF.Classifiers
+open import UF.Embeddings
 open import UF.Equiv
 open import UF.EquivalenceExamples
-open import UF.Embeddings
-open import UF.Univalence
 open import UF.FunExt
-open import UF.UA-FunExt
+open import UF.Powerset
+open import UF.Sets
+open import UF.Sets-Properties
+open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import UF.Classifiers
+open import UF.UA-FunExt
+open import UF.Univalence
 
 open import Groups.Type renaming (_≅_ to _≣_)
-
 
 module Groups.Subgroups
        (𝓤 : Universe)
@@ -208,7 +209,7 @@ module _ (G : Group 𝓤) where
                                      h unitH ∎)
 
      j : is-set X
-     j = subtypes-of-sets-are-sets' h h-lc (group-is-set G)
+     j = subtypes-of-sets-are-sets' h h-lc (groups-are-sets G)
 
      τ : T X
      τ = _*_ , (j , (assocH , unitH , (unitH-left , (unitH-right , group-axiomH))))

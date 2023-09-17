@@ -7,18 +7,20 @@ July 1, 2021
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 
 
+open import Groups.Type renaming (_≅_ to _≣_)
+open import MLTT.Id
 open import MLTT.Spartan
 open import MLTT.Unit
 open import MLTT.Unit-Properties
-open import MLTT.Id
-open import UF.Subsingletons
 open import UF.Base
 open import UF.Equiv
 open import UF.Retracts
-open import Groups.Type renaming (_≅_ to _≣_)
+open import UF.Sets
+open import UF.Subsingletons
+open import UF.Subsingletons-Properties
 
 \end{code}
 
