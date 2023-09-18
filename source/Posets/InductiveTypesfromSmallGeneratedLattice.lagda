@@ -457,9 +457,9 @@ will call 'local'. This monotone operator will have a least-fixed point when �
 
    open Monotone-Maps L hiding (_≤_)
 
-   mono-map-gives-ind-def : (f : ⟨ L ⟩ → ⟨ L ⟩) → f is-monotone →
+   mono-map-give-local-ind-def : (f : ⟨ L ⟩ → ⟨ L ⟩) → f is-monotone →
                Σ ϕ ꞉ (⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)) , Σ i ꞉ (ϕ is-local) , ((x : ⟨ L ⟩) → (Local-ϕ.Γ ϕ i) x ＝ f x)
-   mono-map-gives-ind-def f f-mono = (ϕ , i , H)
+   mono-map-give-local-ind-def f f-mono = (ϕ , i , H)
     where
      ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)
      ϕ (a , b) = ( Lift 𝓤 (b ≤ᴮ f a) , equiv-to-prop (Lift-≃ 𝓤 (b ≤ᴮ f a)) _≤ᴮ_-is-prop-valued )
@@ -508,11 +508,3 @@ will call 'local'. This monotone operator will have a least-fixed point when �
 \end{code}
 
 
-     H : (x : ⟨ L ⟩) → f x ＝ (Local-ϕ.Γ ϕ i) x
-     H x = ≃-families-＝-sup (f x) ((Local-ϕ.Γ ϕ i) x) (is-supᴮ (f x)) {!!}
-      where
-       open Local-ϕ ϕ i
-       equiv-3 : S-small x ≃ small-↓ᴮ (f x) 
-       equiv-3 = ≃-comp (S-small-≃ x) (≃-sym (equiv-1 x))
-       open Equivalent-Families-have-same-Join L (small-↓ᴮ (f x)) (S-small x) equiv-3
-                                                 (small-↓ᴮ-inclusion (f x))
