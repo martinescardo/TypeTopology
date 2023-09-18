@@ -78,8 +78,9 @@ is-antisymmetric-for L = pr₂ (is-partial-order-for L)
 is-transitive-for : (L : Sup-Lattice 𝓤 𝓦 𝓥) → is-transitive (order-of L) holds
 is-transitive-for L = pr₂ (pr₁ (is-partial-order-for L))
 
-is-lub-for : (L : Sup-Lattice 𝓤 𝓦 𝓥) → (U : Fam 𝓥 ⟨ L ⟩) →
-                                         ((order-of L) Joins.is-lub-of join-for L U) U holds
+is-lub-for : (L : Sup-Lattice 𝓤 𝓦 𝓥)
+           → (U : Fam 𝓥 ⟨ L ⟩)
+           → ((order-of L) Joins.is-lub-of join-for L U) U holds
 is-lub-for (A , (_≤_ , ⋁_) , order , is-lub-of) = is-lub-of
 
 module Monotone-Maps {𝓤 𝓦 𝓥 : Universe} (L : Sup-Lattice 𝓤 𝓦 𝓥) where
@@ -98,8 +99,11 @@ demonstrate when equivalent index types have the same join.
 
 \begin{code}
 
-module Small-Types-have-Joins {𝓤 𝓦 𝓥 𝓣 : Universe} (L : Sup-Lattice 𝓤 𝓦 𝓥)
-                              (T : 𝓣  ̇) (m : T → ⟨ L ⟩) (t : T is 𝓥 small)
+module Small-Types-have-Joins {𝓤 𝓦 𝓥 𝓣 : Universe}
+                              (L : Sup-Lattice 𝓤 𝓦 𝓥)
+                              (T : 𝓣  ̇)
+                              (m : T → ⟨ L ⟩)
+                              (t : T is 𝓥 small)
                               where
  
  _≤_ : ⟨ L ⟩ → ⟨ L ⟩ → Ω 𝓦
@@ -159,8 +163,11 @@ module Small-Types-have-Joins {𝓤 𝓦 𝓥 𝓣 : Universe} (L : Sup-Lattice 
      s-≤-u = pr₂ (is-lub-for L (small-type , small-type-inclusion))
                  ((u , λ i → is-upbnd-T (small-map i)))
 
-module Equivalent-Families-have-same-Join {𝓤 𝓦 𝓥 𝓣 𝓣' : Universe} (L : Sup-Lattice 𝓤 𝓦 𝓥)
-                                          (T : 𝓣  ̇) (T' : 𝓣'  ̇) (e : T' ≃ T)
+module Equivalent-Families-have-same-Join {𝓤 𝓦 𝓥 𝓣 𝓣' : Universe}
+                                          (L : Sup-Lattice 𝓤 𝓦 𝓥)
+                                          (T : 𝓣  ̇)
+                                          (T' : 𝓣'  ̇)
+                                          (e : T' ≃ T)
                                           (m : T → ⟨ L ⟩)
                                           where
 
@@ -172,8 +179,10 @@ module Equivalent-Families-have-same-Join {𝓤 𝓦 𝓥 𝓣 𝓣' : Universe}
 
  open Joins _≤_
 
- ≃-families-＝-sup : (s s' : ⟨ L ⟩) →
-                     (s is-lub-of (T , m)) holds → (s' is-lub-of (T' , m ∘ ⌜ e ⌝ )) holds → s ＝ s'
+ ≃-families-＝-sup : (s s' : ⟨ L ⟩)
+                   → (s is-lub-of (T , m)) holds
+                   → (s' is-lub-of (T' , m ∘ ⌜ e ⌝ )) holds
+                   → s ＝ s'
  ≃-families-＝-sup s s' is-sup is-sup' = is-antisymmetric-for L s-≤-s' s'-≤-s
   where
    s-≤-s' : (s ≤ s') holds
@@ -211,9 +220,9 @@ module Sup-Lattice-Small-Basis {𝓤 𝓦 𝓥 : Universe} (L : Sup-Lattice 𝓤
   ↓ᴮ-inclusion x = q ∘ pr₁
 
   is-small-basis : 𝓤 ⊔ 𝓦 ⊔ 𝓥 ⁺  ̇
-  is-small-basis = (x : ⟨ L ⟩) →
-                    ((b : B) → ((q b ≤ x) holds) is 𝓥 small) ×
-                    ((x is-lub-of (↓ᴮ x , ↓ᴮ-inclusion x)) holds)
+  is-small-basis = (x : ⟨ L ⟩)
+                 → ((b : B) → ((q b ≤ x) holds) is 𝓥 small) ×
+                   ((x is-lub-of (↓ᴮ x , ↓ᴮ-inclusion x)) holds)
 
   module Small-Basis-Facts (h : is-small-basis) where
 
@@ -295,9 +304,7 @@ the least-closed subset under the inductive definition.
 
 \begin{code}
 
-module Inductive-Definitions (𝓤 𝓦 𝓥 : Universe)
-                             (L : Sup-Lattice 𝓤 𝓦 𝓥)
-                             where
+module Inductive-Definitions (𝓤 𝓦 𝓥 : Universe) (L : Sup-Lattice 𝓤 𝓦 𝓥) where
 
  open Sup-Lattice-Small-Basis L
  open Joins _≤_
@@ -311,22 +318,29 @@ module Inductive-Definitions (𝓤 𝓦 𝓥 : Universe)
    open Small-Basis-Facts h
 
    data I (ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)) : B → (𝓤 ⊔ 𝓥 ⁺)  ̇ where
-    c-cl : (U : B → Ω 𝓥) → ((b : B) → ((U b) holds → I ϕ b)) →
-           (b : B) → b ≤ᴮ (⋁ ((Σ b ꞉ B , (U b) holds) , q ∘ pr₁)) → I ϕ b
-    ϕ-cl : (a : ⟨ L ⟩) → (b : B) → (ϕ (a , b)) holds →
-           ((b' : B) → (b' ≤ᴮ a → I ϕ b')) → I ϕ b
+    c-cl : (U : B → Ω 𝓥)
+         → ((b : B) → ((U b) holds → I ϕ b))
+         → (b : B) → b ≤ᴮ (⋁ ((Σ b ꞉ B , (U b) holds) , q ∘ pr₁))
+         → I ϕ b
+    ϕ-cl : (a : ⟨ L ⟩)
+         → (b : B)
+         → (ϕ (a , b)) holds
+         → ((b' : B) → (b' ≤ᴮ a → I ϕ b'))
+         → I ϕ b
 
-   I-induction : (P : {ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)} (b : B) → I ϕ b → 𝓣  ̇) →
-                 {ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)} →
-                  ((U : B → Ω 𝓥) → (f : (x : B) → (U x holds → I ϕ x)) →
-                  (f' : (x : B) → (u : U x holds) → P x (f x u)) →
-                  (b : B) → (g : (b ≤ᴮ (⋁ ((Σ x ꞉ B , U x holds) , q ∘ pr₁)))) →
-                  P b (c-cl U f b g)) →
-                 ((a : ⟨ L ⟩) → (b : B) → (p : ϕ (a , b) holds) →
-                  (f : (x : B) → (x ≤ᴮ a → I ϕ x)) →
-                  (f' : (x : B) → (o : x ≤ᴮ a) → P x (f x o)) →
-                  P b (ϕ-cl a b p f)) →
-                 (b : B) → (i : I ϕ b) → P b i
+   I-induction : (P : {ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)} → (b : B) → I ϕ b → 𝓣  ̇)
+               → {ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)}
+               → ((U : B → Ω 𝓥) → (f : (x : B) → (U x holds → I ϕ x))
+                → (f' : (x : B) → (u : U x holds) → P x (f x u))
+                → (b : B) → (g : (b ≤ᴮ (⋁ ((Σ x ꞉ B , U x holds) , q ∘ pr₁))))
+                → P b (c-cl U f b g))
+               → ((a : ⟨ L ⟩)
+                → (b : B)
+                → (p : ϕ (a , b) holds)
+                → (f : (x : B) → (x ≤ᴮ a → I ϕ x))
+                → (f' : (x : B) → (o : x ≤ᴮ a) → P x (f x o))
+                → P b (ϕ-cl a b p f))
+               → (b : B) → (i : I ϕ b) → P b i
    I-induction P {ϕ} IH₁ IH₂ = θ
     where
      θ : (b : B) → (i : I ϕ b) → P b i
@@ -339,30 +353,43 @@ module Inductive-Definitions (𝓤 𝓦 𝓥 : Universe)
        r : (x : B) → (o : x ≤ᴮ a) → P x (f x o)
        r x o = θ x (f x o)
 
-   I-recursion : (P : B → 𝓣  ̇) → {ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)} → 
-                 ((U : B → Ω 𝓥) → ((x : B) → (U x holds → I ϕ x)) → 
-                  ((x : B) → (U x holds → P x)) →
-                  (b : B) → (b ≤ᴮ (⋁ ((Σ b ꞉ B , U b holds) , q ∘ pr₁))) → P b) →
-                 ((a : ⟨ L ⟩) → (b : B) → (ϕ (a , b) holds) →
-                  ((x : B) → (x ≤ᴮ a → I ϕ x)) → ((x : B) → (x ≤ᴮ a → P x)) → P b) →
-                 (b : B) → I ϕ b → P b
+   I-recursion : (P : B → 𝓣  ̇)
+               → {ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)}
+               → ((U : B → Ω 𝓥)
+                → ((x : B) → (U x holds → I ϕ x))
+                → ((x : B) → (U x holds → P x))
+                → (b : B) → (b ≤ᴮ (⋁ ((Σ b ꞉ B , U b holds) , q ∘ pr₁))) → P b)
+               → ((a : ⟨ L ⟩)
+                → (b : B)
+                → (ϕ (a , b) holds)
+                → ((x : B) → (x ≤ᴮ a → I ϕ x)) → ((x : B) → (x ≤ᴮ a → P x)) → P b)
+               → (b : B) → I ϕ b → P b
    I-recursion P = I-induction (λ b → (λ _ → P b))
 
-   I-is-initial : (P : B → 𝓣  ̇) → {ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)} → 
-                  ((U : B → Ω 𝓥) → ((b : B) → (U b holds → P b)) →
-                   ((b : B) → (b ≤ᴮ (⋁ ((Σ b ꞉ B , U b holds) , q ∘ pr₁))) → P b)) →
-                  ((a : ⟨ L ⟩) → (b : B) → (ϕ (a , b) holds) →
-                   ((b' : B) → (b' ≤ᴮ a → P b')) → P b) →
-                  (b : B) → I ϕ b → P b
+   I-is-initial : (P : B → 𝓣  ̇)
+                → {ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)}
+                → ((U : B → Ω 𝓥)
+                 → ((b : B) → (U b holds → P b))
+                 → ((b : B) → (b ≤ᴮ (⋁ ((Σ b ꞉ B , U b holds) , q ∘ pr₁))) → P b))
+                → ((a : ⟨ L ⟩)
+                 → (b : B)
+                 → (ϕ (a , b) holds)
+                 → ((b' : B) → (b' ≤ᴮ a → P b')) → P b)
+                → (b : B) → I ϕ b → P b
    I-is-initial {𝓣} P {ϕ} IH₁ IH₂ b i = I-recursion P R S b i
     where
-     R : (U : B → Ω 𝓥) →
-         ((x : B) → U x holds → I ϕ x) →
-         ((x : B) → U x holds → P x) →
-         (x : B) → x ≤ᴮ (⋁ (Sigma B (λ b₂ → U b₂ holds) , q ∘ pr₁)) → P x
+     R : (U : B → Ω 𝓥)
+       → ((x : B) → U x holds → I ϕ x)
+       → ((x : B) → U x holds → P x)
+       → (x : B) → x ≤ᴮ (⋁ (Sigma B (λ b₂ → U b₂ holds) , q ∘ pr₁))
+       → P x
      R U f f' x g = IH₁ U f' x g
-     S : (a : ⟨ L ⟩) (b : B) → ϕ (a , b) holds →
-         ((x : B) → x ≤ᴮ a → I ϕ x) → ((x : B) → x ≤ᴮ a → P x) → P b
+     S : (a : ⟨ L ⟩)
+       → (b : B)
+       → ϕ (a , b) holds
+       → ((x : B) → x ≤ᴮ a → I ϕ x)
+       → ((x : B) → x ≤ᴮ a → P x)
+       → P b
      S a b p f f' = IH₂ a b p f'
 
    open PropositionalTruncation pt
@@ -371,12 +398,16 @@ module Inductive-Definitions (𝓤 𝓦 𝓥 : Universe)
    𝓘 : (ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)) → 𝓟 {𝓤 ⊔ 𝓥 ⁺} B
    𝓘 ϕ b = (∥ I ϕ b ∥ , ∥∥-is-prop)
 
-   𝓘-is-least-closed-subset : (P : 𝓟 {𝓣} B) → {ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)} →
-                              ((U : 𝓟 {𝓥} B) → (U ⊆ P) →
-                               ((b : B) → (b ≤ᴮ (⋁ ((Σ b ꞉ B , b ∈ U) , q ∘ pr₁))) →  b ∈ P)) →
-                              ((a : ⟨ L ⟩) → (b : B) → (ϕ (a , b) holds) →
-                               ((b' : B) → (b' ≤ᴮ a → b' ∈ P)) → b ∈ P) →
-                              𝓘 ϕ ⊆ P
+   𝓘-is-least-closed-subset : (P : 𝓟 {𝓣} B)
+                            → {ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)}
+                            → ((U : 𝓟 {𝓥} B)
+                             → (U ⊆ P)
+                             → ((b : B) → (b ≤ᴮ (⋁ ((Σ b ꞉ B , b ∈ U) , q ∘ pr₁))) →  b ∈ P))
+                            → ((a : ⟨ L ⟩)
+                             → (b : B)
+                             → (ϕ (a , b) holds)
+                             → ((b' : B) → (b' ≤ᴮ a → b' ∈ P)) → b ∈ P)
+                            → 𝓘 ϕ ⊆ P
    𝓘-is-least-closed-subset {𝓣} P {ϕ} IH₁ IH₂ b = ∥∥-rec (holds-is-prop (P b)) θ
     where
      θ : I ϕ b → b ∈ P
@@ -401,18 +432,20 @@ will call 'local'. This monotone operator will have a least-fixed point when �
      f : S ϕ x → S ϕ y
      f (b , c) = (b , g c)
       where
-       g : (Ǝ a' ꞉ ⟨ L ⟩ , (ϕ (a' , b) holds) × ((a' ≤ x) holds)) holds →
-            (Ǝ a' ꞉ ⟨ L ⟩ , (ϕ (a' , b) holds) × ((a' ≤ y) holds)) holds
+       g : (Ǝ a' ꞉ ⟨ L ⟩ , (ϕ (a' , b) holds) × ((a' ≤ x) holds)) holds
+         → (Ǝ a' ꞉ ⟨ L ⟩ , (ϕ (a' , b) holds) × ((a' ≤ y) holds)) holds
        g = ∥∥-rec ∥∥-is-prop g'
         where
-         g' : Σ a' ꞉ ⟨ L ⟩ , (ϕ (a' , b) holds) × ((a' ≤ x) holds) →
-              (Ǝ a' ꞉ ⟨ L ⟩ , (ϕ (a' , b) holds) × ((a' ≤ y) holds)) holds
+         g' : Σ a' ꞉ ⟨ L ⟩ , (ϕ (a' , b) holds) × ((a' ≤ x) holds)
+            → (Ǝ a' ꞉ ⟨ L ⟩ , (ϕ (a' , b) holds) × ((a' ≤ y) holds)) holds
          g' (a' , p , r) = ∣ (a' , p , is-transitive-for L a' x y r o) ∣
 
-   S-has-sup-implies-monotone : (ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)) → (x y s₁ s₂ : ⟨ L ⟩) → (x ≤ y) holds →
-                                (s₁ is-lub-of (S ϕ x , q ∘ pr₁)) holds →
-                                (s₂ is-lub-of (S ϕ y , q ∘ pr₁)) holds →
-                                (s₁ ≤ s₂) holds
+   S-has-sup-implies-monotone : (ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥))
+                              → (x y s₁ s₂ : ⟨ L ⟩)
+                              → (x ≤ y) holds
+                              → (s₁ is-lub-of (S ϕ x , q ∘ pr₁)) holds
+                              → (s₂ is-lub-of (S ϕ y , q ∘ pr₁)) holds
+                              → (s₁ ≤ s₂) holds
    S-has-sup-implies-monotone ϕ x y s₁ s₂ o is-sup-1 is-sup-2 = pr₂ is-sup-1 ((s₂ , f))
     where
      f : (s₂ is-an-upper-bound-of (S ϕ x , q ∘ pr₁)) holds
@@ -457,8 +490,10 @@ will call 'local'. This monotone operator will have a least-fixed point when �
 
    open Monotone-Maps L hiding (_≤_)
 
-   mono-map-give-local-ind-def : (f : ⟨ L ⟩ → ⟨ L ⟩) → f is-monotone →
-               Σ ϕ ꞉ (⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)) , Σ i ꞉ (ϕ is-local) , ((x : ⟨ L ⟩) → (Local-ϕ.Γ ϕ i) x ＝ f x)
+   mono-map-give-local-ind-def : (f : ⟨ L ⟩ → ⟨ L ⟩)
+                               → f is-monotone
+                               → Σ ϕ ꞉ (⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)) ,
+                                Σ i ꞉ (ϕ is-local) , ((x : ⟨ L ⟩) → (Local-ϕ.Γ ϕ i) x ＝ f x)
    mono-map-give-local-ind-def f f-mono = (ϕ , i , H)
     where
      ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)
