@@ -82,11 +82,9 @@ set to construct the free group and establish its universal
 property. But if A is a set then the universal map η is automatically
 an embedding.
 
-We first formulate the main theorems of this file before proving them.
+We first formulate the main results of this file before proving them.
 
-We first state a technical lemma, which has most of our theorems as
-immediate consequences (given the work on quotients done in other
-modules).
+We first state a technical lemma.
 
 \begin{code}
 
@@ -250,6 +248,14 @@ Groups.Large, in order to prove that there is a group in 𝓤⁺ with no
 isomorphic copy in the universe 𝓤, where it is crucial that η is
 tiny. The 𝓤⁺ smallness of η, given by the previous lemma and
 corollaries, is not enough.
+
+Remark. Notice that if propositional resizing is available, then η is
+automatically tiny, because it is an embedding, and the fibers of
+embeddings are propositions, so that the technical lemma is
+sufficient. For example, propositional resizing is available if we
+assume excluded middle. Additionally, in this case, the construction
+of the free group can considerably simplified, because we can work
+with words in normal form, as in classical textbooks.
 
 Organization:
 
