@@ -27,9 +27,18 @@ way to do it is already present in the module Fin.lagda.)
 module Groups.Free where
 
 open import Groups.Type
+open import MLTT.List
 open import MLTT.Spartan
+open import MLTT.Two
+open import MLTT.Two-Properties
+open import Quotient.Effectivity
+open import Quotient.FromSetReplacement
+open import Quotient.GivesSetReplacement
+open import Quotient.Large
 open import Quotient.Type
+open import UF.Base
 open import UF.Embeddings
+open import UF.Equiv hiding (_≅_)
 open import UF.EquivalenceExamples
 open import UF.FunExt
 open import UF.PropTrunc
@@ -37,6 +46,9 @@ open import UF.Sets
 open import UF.Size
 open import UF.SmallnessProperties
 open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
+open import UF.UA-FunExt
+open import UF.Univalence
 
 \end{code}
 
@@ -78,7 +90,7 @@ modules).
 
 \begin{code}
 
-free-groups-from-general-set-quotients
+Lemma[free-groups-from-general-set-quotients]
  : propositional-truncations-exist
  → Fun-Ext
  → (ℓ : Universe → Universe)
@@ -87,6 +99,8 @@ free-groups-from-general-set-quotients
  → (A : 𝓤 ̇ ) → good-freely-generated-group-exists A (𝓤 ⊔ ℓ 𝓤) (𝓤 ⊔ ℓ 𝓤)
 
 \end{code}
+
+The proof is postponed.
 
 We are interested in ℓ = id and ℓ = (_⁺) and we are interested in the
 following corollaries, which don't mention ℓ.
@@ -99,16 +113,14 @@ effectivity of quotients, although with a rather different proof.)
 
 \begin{code}
 
-open import Quotient.Effectivity
-
-free-groups-from-small-set-quotients
+Corollary₁[free-groups-from-small-set-quotients]
  : propositional-truncations-exist
  → Fun-Ext
  → Prop-Ext
  → set-quotients-exist
  → (A : 𝓤 ̇ ) → good-freely-generated-group-exists A 𝓤 𝓤
-free-groups-from-small-set-quotients pt fe pe sq =
- free-groups-from-general-set-quotients pt fe id sq (effectivity fe pe sq)
+Corollary₁[free-groups-from-small-set-quotients] pt fe pe sq =
+ Lemma[free-groups-from-general-set-quotients] pt fe id sq (effectivity fe pe sq)
 
 \end{code}
 
@@ -117,16 +129,14 @@ again uses ℓ = id.
 
 \begin{code}
 
-open import Quotient.FromSetReplacement
-
-free-groups-from-pt-fe-pe-sr
+Corollary₂[free-groups-from-pt-fe-pe-sr]
  : (pt : propositional-truncations-exist)
  → Fun-Ext
  → Prop-Ext
  → Set-Replacement pt
  → (A : 𝓤 ̇ ) → good-freely-generated-group-exists A 𝓤 𝓤
-free-groups-from-pt-fe-pe-sr pt fe pe sr =
- free-groups-from-general-set-quotients pt fe id
+Corollary₂[free-groups-from-pt-fe-pe-sr] pt fe pe sr =
+ Lemma[free-groups-from-general-set-quotients] pt fe id
   (set-quotients-from-set-replacement pt fe pe sr)
   (set-replacement-gives-effective-set-quotients pt fe pe sr)
 
@@ -144,8 +154,6 @@ private
           (pe : Prop-Ext)
         where
 
-  open import Quotient.GivesSetReplacement
-
   remark→ : Set-Replacement pt → set-quotients-exist
   remark→ = set-quotients-from-set-replacement pt fe pe
 
@@ -161,15 +169,13 @@ eliminating in all universes).
 
 \begin{code}
 
-open import Quotient.Large
-
-large-free-groups-from-pt-fe-pe
+Corollary₃[large-free-groups-from-pt-fe-pe]
  : propositional-truncations-exist
  → Fun-Ext
  → Prop-Ext
  → (A : 𝓤 ̇ ) → good-freely-generated-group-exists A (𝓤 ⁺) (𝓤 ⁺)
-large-free-groups-from-pt-fe-pe pt fe pe =
- free-groups-from-general-set-quotients pt fe (_⁺)
+Corollary₃[large-free-groups-from-pt-fe-pe] pt fe pe =
+ Lemma[free-groups-from-general-set-quotients] pt fe (_⁺)
   (large-set-quotients pt fe pe)
   (large-effective-set-quotients pt fe pe)
 
@@ -180,26 +186,54 @@ truncations suffice to construct large free groups.
 
 \begin{code}
 
-open import UF.UA-FunExt
-open import UF.Univalence
-
-large-free-groups-from-ua-pt
+Corollary₄[large-free-groups-from-ua-pt]
   : Univalence
   → propositional-truncations-exist
   → (A : 𝓤 ̇ ) → good-freely-generated-group-exists A (𝓤 ⁺) (𝓤 ⁺)
-large-free-groups-from-ua-pt ua pt =
- large-free-groups-from-pt-fe-pe pt
+Corollary₄[large-free-groups-from-ua-pt] ua pt =
+ Corollary₃[large-free-groups-from-pt-fe-pe] pt
   (Univalence-gives-Fun-Ext ua)
   (Univalence-gives-Prop-Ext ua)
 
 \end{code}
 
-We also prove the following theorem, which is not a corollary of the above
-technical lemma but instead requires a careful enhancement of its proof.
+We also prove the following two theorems, which are not corollaries of
+the above technical lemma but instead require a careful enhancement of
+its proof. They both assume that the type A of generators lives in the
+universe 𝓤⁺, and reduce the size of η from 𝓤⁺ to 𝓤, but with different
+assumptions.
+
+For both we assume that A is a large, locally small type.
+
+For the first one we assume the existence of quotients.
 
 \begin{code}
 
-free-groups-of-large-locally-small-types
+Theorem₁[large-free-groups-from-set-quotients]
+ : propositional-truncations-exist
+ → Fun-Ext
+ → Prop-Ext
+ → set-quotients-exist
+ → (A : 𝓤 ⁺ ̇ )
+ → is-locally-small A
+ → good-freely-generated-group-exists A (𝓤 ⁺) 𝓤
+
+\end{code}
+
+The proof is posponed.
+
+This means that if A is large and locally small, we can construct the
+group freely generated by A in the same universe as A, so that
+additionally η is 𝓤 small, rather than 𝓤⁺ small, which is what the
+previous corollaries give. We say that η is tiny.
+
+The second doesn't assume quotients, and instead constructs quotients
+from the assumptions, and resizes it down to 𝓤⁺ using the local
+smallness of A and the lemmas used to prove the above theorem.
+
+\begin{code}
+
+Theorem₂[free-groups-of-large-locally-small-types]
  : propositional-truncations-exist
  → Fun-Ext
  → Prop-Ext
@@ -209,35 +243,27 @@ free-groups-of-large-locally-small-types
 
 \end{code}
 
-This means that if A is large and locally small, we can construct the
-group freely generated by A in the same universe as A, assuming only
-propositional truncations and functional and propositional
-extensionality, so that additionally η is 𝓤 small, rather than 𝓤⁺
-small, which is what the previous theorems give. We say that η is tiny.
+The proof is postponed.
 
-It is this last theorem that we need, in the module Groups.Large, in
-order to prove that there is a group in 𝓤⁺ with no isomorphic copy in
-the universe 𝓤, where it is crucial that η is 𝓤 small. The 𝓤⁺
-smallness of η, given by the previous theorems, it is not enough.
+It is any of these two theorems that we need, in the module
+Groups.Large, in order to prove that there is a group in 𝓤⁺ with no
+isomorphic copy in the universe 𝓤, where it is crucial that η is
+tiny. The 𝓤⁺ smallness of η, given by the previous lemma and
+corollaries, is not enough.
 
 Organization:
 
  * The proof of the above technical lemma is in the submodule
    free-group-construction.
 
- * Its enhancement is in the module resize-free-group.
+ * Its enhancement is in the submodules resize-insertion-of-generators
+   and resize-free-group.
 
 We now proceed to prove the technical lemma. The set-hood requirement
-is needed later only, and so we don't include it as an assumption in
+is needed only later, and so we don't include it as an assumption in
 the following anonymous module:
 
 \begin{code}
-
-open import MLTT.List
-open import MLTT.Two
-open import MLTT.Two-Properties
-open import UF.Base
-open import UF.Subsingletons-FunExt
 
 module free-group-construction
         {𝓤 : Universe}
@@ -1274,7 +1300,7 @@ We can now prove the tecnical lemma.
 
 \begin{code}
 
-free-groups-from-general-set-quotients pt fe ℓ sq eff A =
+Lemma[free-groups-from-general-set-quotients] pt fe ℓ sq eff A =
  record
   { 𝓕 = free-group
   ; η = η-free-group
@@ -1298,9 +1324,7 @@ slight weakening of the local smallness condition on the type A.
 
 \begin{code}
 
-open import UF.Equiv hiding (_≅_)
-
-module resize-free-group
+module resize-insertion-of-generators
         (fe : Fun-Ext)
         (pe : Prop-Ext)
         (pt : propositional-truncations-exist)
@@ -1309,6 +1333,9 @@ module resize-free-group
         (_＝₀_    : A → A → 𝓤 ̇ )
         (refl₀    : (a : A) → a ＝₀ a)
         (from-＝₀ : (a b : A) → a ＝₀ b → a ＝ b)
+        (ℓ : Universe → Universe)
+        (sq : general-set-quotients-exist ℓ)
+        (η/-relates-identified-points : are-effective sq)
        where
 
  open FreeGroupInterface pt fe (_⁺)
@@ -1317,15 +1344,14 @@ module resize-free-group
 
  open free-group-construction A
 
- private
-  𝓤⁺  = 𝓤 ⁺
-  𝓤⁺⁺ = 𝓤⁺ ⁺
+ 𝓤⁺  = 𝓤 ⁺
+ 𝓤⁺⁺ = 𝓤⁺ ⁺
 
-  fe' : FunExt
-  fe' 𝓤 𝓥 = fe {𝓤} {𝓥}
+ fe' : FunExt
+ fe' 𝓤 𝓥 = fe {𝓤} {𝓥}
 
-  pe' : PropExt
-  pe' 𝓤 = pe {𝓤}
+ pe' : PropExt
+ pe' 𝓤 = pe {𝓤}
 
 \end{code}
 
@@ -1334,12 +1360,6 @@ certain equivalence relation _∾_ : FA → FA → 𝓤⁺. To reduce the size o
 the quotient, we reduce the size of (propositional) values of this
 equivalence relation using the assumed relation _＝₀_ and functions
 refl₀ and from-＝₀.
-
-At this point, in order to understand the following constructions, it
-is necessary to first understand the constructions in the module
-Group.Free, because here we resize down several of the
-constructions performed in that file, exploiting the (weakened version
-of the) local smalless of the type A.
 
 \begin{code}
 
@@ -1506,216 +1526,20 @@ corresponding notion of reduct for such chains:
 
 \end{code}
 
-And with this we obtain a relation _≏_ whose propositional truncation
-will be logically equivalent to the equivalence relation _∾_ used to
-quotient FA to get the group freely generated by A. The relation _∾_
-itself is the propositional truncation of a suitable relation _∿_,
-which we now use for that purpose.
+Now notice that ηᴳʳᵖ is large.
 
 \begin{code}
-
- _≏_ : FA → FA → 𝓤 ̇
- s ≏ t = Σ m ꞉ ℕ ,
-         Σ n ꞉ ℕ ,
-         Σ ρ ꞉ redex-chain m s ,
-         Σ σ ꞉ redex-chain n t , chain-reduct s m ρ  ＝[FA] chain-reduct t n σ
-
- ≏-gives-∿ : (s t : FA) → s ≏ t → s ∿ t
- ≏-gives-∿ s t (m , n , ρ , σ , p) = γ
-  where
-   a : s ▷⋆ chain-reduct s m ρ
-   a = m , chain-lemma→ s m ρ
-
-   b : t ▷⋆ chain-reduct t n σ
-   b = n , chain-lemma→ t n σ
-
-   c : Σ u ꞉ FA , (s ▷⋆ u) × (t ▷⋆ u)
-   c = chain-reduct t n σ  , transport (s ▷⋆_) (from-＝[FA] p) a , b
-
-   γ : s ∿ t
-   γ = to-∿ s t c
-
- ∿-gives-≏ : (s t : FA) → s ∿ t → s ≏ t
- ∿-gives-≏ s t e = γ a
-  where
-   a : Σ u ꞉ FA , (s ▷⋆ u) × (t ▷⋆ u)
-   a = from-∿ Church-Rosser s t e
-
-   γ : type-of a → s ≏ t
-   γ (u , (m , ρ) , (n , σ)) = δ b c
-    where
-     b : Σ ρ ꞉ redex-chain m s , chain-reduct s m ρ ＝ u
-     b = chain-lemma← s u m ρ
-
-     c : Σ σ ꞉ redex-chain n t , chain-reduct t n σ ＝ u
-     c = chain-lemma← t u n σ
-
-     δ : type-of b → type-of c → s ≏ t
-     δ (ρ , p) (σ , q) = m , n , ρ , σ , to-＝[FA] (p ∙ q ⁻¹)
 
  open free-group-construction-step₁ pt
+ open free-group-construction-step₂ fe ℓ sq η/-relates-identified-points
 
- _∥≏∥_ : FA → FA → 𝓤 ̇
- s ∥≏∥ t = ∥ s ≏ t ∥
-
- ∾-is-logically-equivalent-to-∥≏∥ : (s t : FA) → s ∾ t ⇔ s ∥≏∥ t
- ∾-is-logically-equivalent-to-∥≏∥ s t = ∥∥-functor (∿-gives-≏ s t) ,
-                                       ∥∥-functor (≏-gives-∿ s t)
-\end{code}
-
-And so we also get a type equivalence, because logically equivalent
-propositions are equivalent types:
-
-\begin{code}
-
- ∿-is-equivalent-to-∥≏∥ : (s t : FA) → (s ∾ t) ≃ (s ∥≏∥ t)
- ∿-is-equivalent-to-∥≏∥ s t =
-  logically-equivalent-props-are-equivalent
-   ∥∥-is-prop
-   ∥∥-is-prop
-   (lr-implication (∾-is-logically-equivalent-to-∥≏∥ s t))
-   (rl-implication (∾-is-logically-equivalent-to-∥≏∥ s t))
+ ηᴳʳᵖ-is-large : ηᴳʳᵖ is 𝓤 ⁺ ⊔ ℓ (𝓤 ⁺) small-map
+ ηᴳʳᵖ-is-large = native-size-of-map ηᴳʳᵖ
 
 \end{code}
 
-Being logically equivalent to an equivalence relation, the relation
-∥≏∥ is itself an equivalence relation (this is proved in the module
-SRT).
-
-\begin{code}
-
- open free-group-construction-step₂ fe (_⁺)
-  (large-set-quotients pt fe pe)
-  (large-effective-set-quotients pt fe pe)
-
- -∥≏∥- : EqRel {𝓤⁺} {𝓤} FA
- -∥≏∥- = _∥≏∥_ , is-equiv-rel-transport _∾_ _∥≏∥_ (λ s t → ∥∥-is-prop)
-                 ∾-is-logically-equivalent-to-∥≏∥ ∾-is-equiv-rel
-\end{code}
-
-By a general construction in the module UF.LargeQuotient, we conclude
-that FA/∾ ≃ FA/∥≏∥. What is crucial for our purposes is that FA/∥≏∥
-lives in the lower universe 𝓤⁺, as opposed to the original quotient
-FA/∾, which lives in the higher universe 𝓤⁺⁺.
-
-\begin{code}
-
- open general-set-quotients-exist (large-set-quotients pt fe pe)
-
- FA/∥≏∥ : 𝓤⁺ ̇
- FA/∥≏∥ = FA / -∥≏∥-
-
- FA/∾-to-FA/∥≏∥ : FA/∾ ≃ FA/∥≏∥
- FA/∾-to-FA/∥≏∥ = quotients-equivalent FA -∾- -∥≏∥-
-                  (λ {s} {t} → ∾-is-logically-equivalent-to-∥≏∥ s t)
-
- native-universe-of-free-group : universe-of ⟨ free-group A ⟩ ＝ 𝓤 ⁺⁺
- native-universe-of-free-group = refl
-
- resized-free-group-carrier : ⟨ free-group A ⟩ is 𝓤⁺ small
- resized-free-group-carrier = γ
-  where
-   γ : Σ F ꞉ 𝓤⁺ ̇ , F ≃ ⟨ free-group A ⟩
-   γ = FA/∥≏∥ , ≃-sym FA/∾-to-FA/∥≏∥
-
-\end{code}
-
-The following relies on transporting group structures along
-equivalences, which is implemented in the module Group.Type
-(unfortunately, one cannot apply univalence for that purpose, because
-the types live in different universes and hence one can't form their
-identity type, and so this transport has to be done manually).
-
-NB. If we assume cumulativity in our type theory, the above transport
-can be done with univalence directly. TODO. Write down the proof here
-in English (and perhaps also in Agda using --cumulativity).
-
-\begin{code}
-
- small-free-group : Σ 𝓕' ꞉ Group 𝓤⁺ , 𝓕' ≅ 𝓕
- small-free-group = resized-group 𝓕 resized-free-group-carrier
-
- 𝓕⁻ : Group 𝓤⁺
- 𝓕⁻ = pr₁ small-free-group
-
- 𝕜 : 𝓕⁻ ≅ 𝓕
- 𝕜 = pr₂ small-free-group
-
- k : ⟨ 𝓕⁻ ⟩ ≃ ⟨ 𝓕 ⟩
- k = ≅-to-≃ 𝓕⁻ 𝓕 𝕜
-
- k-is-hom : is-hom 𝓕⁻  𝓕 ⌜ k ⌝
- k-is-hom = ≅-to-≃-is-hom 𝓕⁻ 𝓕 𝕜
-
- η⁻ : A → ⟨ 𝓕⁻ ⟩
- η⁻ = ⌜ k ⌝⁻¹ ∘ ηᴳʳᵖ
-
- universality⁻ : {𝓦 : Universe} (𝓖 : Group 𝓦) (f : A → ⟨ 𝓖 ⟩)
-               → ∃! f̅ ꞉ (⟨ 𝓕⁻ ⟩ → ⟨ 𝓖 ⟩)
-                      , is-hom 𝓕⁻ 𝓖 f̅
-                      × f̅ ∘ η⁻ ∼ f
- universality⁻ 𝓖 f =
-  equiv-to-singleton I (extension-to-free-group-uniqueness A 𝓖 f)
-  where
-   I : (Σ g ꞉ (⟨ 𝓕⁻ ⟩ → ⟨ 𝓖 ⟩) , is-hom 𝓕⁻ 𝓖 g  ×  g ∘ η⁻ ∼ f)
-     ≃ (Σ h ꞉ (⟨ 𝓕 ⟩  → ⟨ 𝓖 ⟩) , is-hom 𝓕  𝓖 h  ×  h ∘ ηᴳʳᵖ ∼ f)
-   I = qinveq ϕ (ψ , ψϕ , ϕψ)
-    where
-     ϕ : (Σ g ꞉ (⟨ 𝓕⁻ ⟩ → ⟨ 𝓖 ⟩) , is-hom 𝓕⁻ 𝓖 g × g ∘ η⁻ ∼ f)
-       → (Σ h ꞉ (⟨ 𝓕 ⟩ → ⟨ 𝓖 ⟩) , is-hom 𝓕 𝓖 h × h ∘ ηᴳʳᵖ ∼ f)
-     ϕ (g , i , e) = g ∘ ⌜ k ⌝⁻¹ ,
-                     ∘-is-hom 𝓕 𝓕⁻ 𝓖 ⌜ k ⌝⁻¹ g
-                       (inverses-are-homs' 𝓕⁻ 𝓕 k k-is-hom)
-                       i ,
-                     e
-
-     ψ : codomain ϕ → domain ϕ
-     ψ (h , j , d) =  h ∘ ⌜ k ⌝ ,
-                      ∘-is-hom 𝓕⁻ 𝓕 𝓖 ⌜ k ⌝ h k-is-hom j ,
-                      d'
-      where
-       d' : (a : A) → h (⌜ k ⌝ (η⁻ a)) ＝ f a
-       d' a = h (⌜ k ⌝ (η⁻ a))             ＝⟨ refl ⟩
-              h (⌜ k ⌝ (⌜ k ⌝⁻¹ (ηᴳʳᵖ a))) ＝⟨ III ⟩
-              h (ηᴳʳᵖ a)                   ＝⟨ d a ⟩
-              f a                          ∎
-        where
-         III = ap h (inverses-are-sections' k (ηᴳʳᵖ a))
-
-     ϕψ : ϕ ∘ ψ ∼ id
-     ϕψ (h , j , d) = to-subtype-＝
-                       (λ f → ×-is-prop
-                               (being-hom-is-prop fe 𝓕 𝓖 f)
-                               (Π-is-prop fe (λ _ → groups-are-sets 𝓖)))
-                       (dfunext fe (λ x → ap h (inverses-are-sections' k x)))
-
-     ψϕ : ψ ∘ ϕ ∼ id
-     ψϕ (g , i , e) = to-subtype-＝
-                       (λ f → ×-is-prop
-                               (being-hom-is-prop fe 𝓕⁻ 𝓖 f)
-                               (Π-is-prop fe (λ _ → groups-are-sets 𝓖)))
-                       (dfunext fe (λ y → ap g (inverses-are-retractions' k y)))
-
- η⁻-is-embedding : is-set A → is-embedding η⁻
- η⁻-is-embedding i = ∘-is-embedding
-                      (η-free-group-is-embedding A i)
-                      (equivs-are-embeddings' (≃-sym k))
-
-\end{code}
-
-The gives the free group to its desired size.
-
-We now want to show that η has size 𝓤. Its native size is 𝓤⁺⁺, and we
-will reduce it to 𝓤.
-
-\begin{code}
-
- η⁻-is-large : ηᴳʳᵖ is 𝓤⁺⁺ small-map
- η⁻-is-large = native-size-of-map ηᴳʳᵖ
-
-\end{code}
-
-Using the above development, we can make it smaller.
+For our purposes, we need ηᴳʳᵖ to be 𝓤 small, or "tiny", which we
+achieve applying the above development.
 
 Recall that the function η/∾ : FA → FA/∾ is the universal map into the
 quotient, and, by definition, the universal map ηᴳʳᵖ : A → FA/∾ into
@@ -1727,7 +1551,6 @@ We now need to assume that A is a set to be able to proceed.
 
 \begin{code}
 
-
  module _ (A-is-set : is-set A) where
 
   smallness-of-ηᴳʳᵖ-fibers-is-prop : {𝓦 : Universe} (y : FA/∾)
@@ -1738,45 +1561,14 @@ We now need to assume that A is a set to be able to proceed.
 
 \end{code}
 
-The following remark is not used anywhere. It says that ηᴳʳᵖ is small,
-in the sense that its fibers live in the same universe as that of
-generators, namely 𝓤⁺.
+Recall that the function η/∾ : FA → FA/∾ is the universal map into the
+quotient, and, by definition, the universal map ηᴳʳᵖ : A → FA/∾ into
+the free group is the composite η/∾ ∘ η, where η : A → FA is the
+insertion of generators before quotienting FA, and where η/∾ is the
+universal map into the quotient.
 
-\begin{code}
-
-  NB-ηᴳʳᵖ-is-small : ηᴳʳᵖ is 𝓤⁺ small-map
-  NB-ηᴳʳᵖ-is-small = /-induction -∾-
-                       smallness-of-ηᴳʳᵖ-fibers-is-prop
-                       induction-step
-   where
-    III : (a : A) (s : FA) → (η/∾ (η a) ＝ η/∾ s) ≃ (η a ∥≏∥ s)
-    III a s = (η/∾ (η a) ＝ η/∾ s) ≃⟨ I ⟩
-              (η a ∾ s)            ≃⟨ II ⟩
-              (η a ∥≏∥ s)          ■
-     where
-      I = logically-equivalent-props-are-equivalent
-           (/-is-set -∾-)
-           ∥∥-is-prop
-           η/∾-relates-identified-points
-           η/∾-identifies-related-points
-      II = ∿-is-equivalent-to-∥≏∥ (η a) s
-
-    IV : (s : FA) → fiber ηᴳʳᵖ (η/∾ s) ≃ (Σ a ꞉ A , η a ∥≏∥ s)
-    IV s = (Σ a ꞉ A , η/∾ (η a) ＝ η/∾ s) ≃⟨ Σ-cong (λ a → III a s) ⟩
-           (Σ a ꞉ A , η a ∥≏∥ s)          ■
-
-    notice : (s : FA) → universe-of (fiber ηᴳʳᵖ (η/∾ s)) ＝ 𝓤⁺⁺
-    notice s = refl
-
-    induction-step : (s : FA) → fiber ηᴳʳᵖ (η/∾ s) is 𝓤⁺ small
-    induction-step s = (Σ a ꞉ A , η a ∥≏∥ s) , ≃-sym (IV s)
-
-\end{code}
-
-But the above resizing of the map ηᴳʳᵖ is not small enough for our
-purposes, which require ηᴳʳᵖ to be 𝓤 small, or "tiny".  Recall that
-ηᴳʳᵖ a = η/∾ (η a). We first discuss the fibers of η, then those of
-η/∾, and finally those of ηᴳʳᵖ.
+We first discuss the fibers of η, then those of η/∾, and finally those
+of ηᴳʳᵖ.
 
 The fiber type Σ a ꞉ A , η a ＝ s lives in the universe 𝓤⁺. In the next
 step we construct a copy of this fiber type in the first universe 𝓤₀.
@@ -1891,9 +1683,12 @@ And this is the desired size reduction:
                        (∾-fiber-η-lemma← s)
 \end{code}
 
-With this we can further reduce the size of the universal map ηᴳʳᵖ:
+With this we can reduce the size of the universal map ηᴳʳᵖ down to 𝓤,
+as desired:
 
 \begin{code}
+
+  open general-set-quotients-exist sq
 
   fiber-η/∾-lemma : (a : A) (s : FA) → (η/∾ (η a) ＝ η/∾ s) ≃ (η a ∾ s)
   fiber-η/∾-lemma a s = logically-equivalent-props-are-equivalent
@@ -1919,26 +1714,281 @@ With this we can further reduce the size of the universal map ηᴳʳᵖ:
   ηᴳʳᵖ-is-tiny = /-induction -∾-
                   smallness-of-ηᴳʳᵖ-fibers-is-prop
                   the-ηᴳʳᵖ-fibers-of-equivalence-classes-are-tiny
-
-  ⌜k⌝⁻¹-is-small : ⌜ k ⌝⁻¹ is 𝓤 small-map
-  ⌜k⌝⁻¹-is-small = equivs-have-any-size' (≃-sym k)
-
-  η⁻-is-tiny : η⁻ is 𝓤 small-map
-  η⁻-is-tiny = ∘-small-maps ηᴳʳᵖ-is-tiny ⌜k⌝⁻¹-is-small
-
 \end{code}
 
-We now have all ingredients needed to prove the remaining theorem.
+This proves Theorem₁.
 
 \begin{code}
 
-free-groups-of-large-locally-small-types {𝓤} pt fe pe A A-ls =
+Theorem₁[large-free-groups-from-set-quotients] {𝓤} pt fe pe sq A A-ls =
+ record
+  { 𝓕 = 𝓕
+  ; η = ηᴳʳᵖ
+  ; universality = extension-to-free-group-uniqueness
+  ; η-is-embedding = η-free-group-is-embedding
+  ; η-is-small = ηᴳʳᵖ-is-tiny
+  }
+ where
+  open general-set-quotients-exist sq
+  open free-group-construction A
+  open free-group-construction-step₁ pt
+  open free-group-construction-step₂ fe id sq (effectivity fe pe sq)
+  open FreeGroupInterface pt fe id sq (effectivity fe pe sq) A
+  open resize-insertion-of-generators fe pe pt
+        A
+        Id⟦ A-ls ⟧
+        (λ _ → ⟦ A-ls ⟧-refl)
+        (λ _ _ p → ＝⟦ A-ls ⟧-gives-＝ p)
+        id
+        sq
+        (effectivity fe pe sq)
+
+\end{code}
+
+We now use the construction in the module
+resize-insertion-of-generators to prove Theorem₂.
+
+\begin{code}
+
+module resize-free-group
+        (fe : Fun-Ext)
+        (pe : Prop-Ext)
+        (pt : propositional-truncations-exist)
+        {𝓤        : Universe}
+        (A        : 𝓤 ⁺ ̇)
+        (_＝₀_    : A → A → 𝓤 ̇ )
+        (refl₀    : (a : A) → a ＝₀ a)
+        (from-＝₀ : (a b : A) → a ＝₀ b → a ＝ b)
+       where
+
+ open FreeGroupInterface pt fe (_⁺)
+  (large-set-quotients pt fe pe)
+  (large-effective-set-quotients pt fe pe)
+
+ open resize-insertion-of-generators fe pe pt A _＝₀_ refl₀ from-＝₀ (_⁺)
+  (large-set-quotients pt fe pe)
+  (large-effective-set-quotients pt fe pe)
+
+ open free-group-construction A
+
+\end{code}
+
+Using the results of resize-insertion-of-generators, we obtain a
+relation _≏_ whose propositional truncation is logically equivalent to
+the equivalence relation _∾_ used to quotient FA to get the group
+freely generated by A.  The relation _∾_ itself is the propositional
+truncation of a suitable relation _∿_, which we now use for that
+purpose.
+
+\begin{code}
+
+ _≏_ : FA → FA → 𝓤 ̇
+ s ≏ t = Σ m ꞉ ℕ ,
+         Σ n ꞉ ℕ ,
+         Σ ρ ꞉ redex-chain m s ,
+         Σ σ ꞉ redex-chain n t , chain-reduct s m ρ  ＝[FA] chain-reduct t n σ
+
+ ≏-gives-∿ : (s t : FA) → s ≏ t → s ∿ t
+ ≏-gives-∿ s t (m , n , ρ , σ , p) = γ
+  where
+   a : s ▷⋆ chain-reduct s m ρ
+   a = m , chain-lemma→ s m ρ
+
+   b : t ▷⋆ chain-reduct t n σ
+   b = n , chain-lemma→ t n σ
+
+   c : Σ u ꞉ FA , (s ▷⋆ u) × (t ▷⋆ u)
+   c = chain-reduct t n σ  , transport (s ▷⋆_) (from-＝[FA] p) a , b
+
+   γ : s ∿ t
+   γ = to-∿ s t c
+
+ ∿-gives-≏ : (s t : FA) → s ∿ t → s ≏ t
+ ∿-gives-≏ s t e = γ a
+  where
+   a : Σ u ꞉ FA , (s ▷⋆ u) × (t ▷⋆ u)
+   a = from-∿ Church-Rosser s t e
+
+   γ : type-of a → s ≏ t
+   γ (u , (m , ρ) , (n , σ)) = δ b c
+    where
+     b : Σ ρ ꞉ redex-chain m s , chain-reduct s m ρ ＝ u
+     b = chain-lemma← s u m ρ
+
+     c : Σ σ ꞉ redex-chain n t , chain-reduct t n σ ＝ u
+     c = chain-lemma← t u n σ
+
+     δ : type-of b → type-of c → s ≏ t
+     δ (ρ , p) (σ , q) = m , n , ρ , σ , to-＝[FA] (p ∙ q ⁻¹)
+
+ open free-group-construction-step₁ pt
+
+ _∥≏∥_ : FA → FA → 𝓤 ̇
+ s ∥≏∥ t = ∥ s ≏ t ∥
+
+ ∾-is-logically-equivalent-to-∥≏∥ : (s t : FA) → s ∾ t ⇔ s ∥≏∥ t
+ ∾-is-logically-equivalent-to-∥≏∥ s t = ∥∥-functor (∿-gives-≏ s t) ,
+                                       ∥∥-functor (≏-gives-∿ s t)
+\end{code}
+
+And so we also get a type equivalence, because logically equivalent
+propositions are equivalent types:
+
+\begin{code}
+
+ ∿-is-equivalent-to-∥≏∥ : (s t : FA) → (s ∾ t) ≃ (s ∥≏∥ t)
+ ∿-is-equivalent-to-∥≏∥ s t =
+  logically-equivalent-props-are-equivalent
+   ∥∥-is-prop
+   ∥∥-is-prop
+   (lr-implication (∾-is-logically-equivalent-to-∥≏∥ s t))
+   (rl-implication (∾-is-logically-equivalent-to-∥≏∥ s t))
+
+\end{code}
+
+Being logically equivalent to an equivalence relation.
+
+\begin{code}
+
+ open free-group-construction-step₂ fe (_⁺)
+  (large-set-quotients pt fe pe)
+  (large-effective-set-quotients pt fe pe)
+
+ -∥≏∥- : EqRel {𝓤⁺} {𝓤} FA
+ -∥≏∥- = _∥≏∥_ , is-equiv-rel-transport _∾_ _∥≏∥_ (λ s t → ∥∥-is-prop)
+                 ∾-is-logically-equivalent-to-∥≏∥ ∾-is-equiv-rel
+\end{code}
+
+Hence we conclude that FA/∾ ≃ FA/∥≏∥. What is crucial for our purposes
+is that FA/∥≏∥ lives in the lower universe 𝓤⁺, as opposed to the
+original quotient FA/∾, which lives in the higher universe 𝓤⁺⁺.
+
+\begin{code}
+
+ open general-set-quotients-exist (large-set-quotients pt fe pe)
+
+ FA/∥≏∥ : 𝓤⁺ ̇
+ FA/∥≏∥ = FA / -∥≏∥-
+
+ FA/∾-to-FA/∥≏∥ : FA/∾ ≃ FA/∥≏∥
+ FA/∾-to-FA/∥≏∥ = quotients-equivalent FA -∾- -∥≏∥-
+                  (λ {s} {t} → ∾-is-logically-equivalent-to-∥≏∥ s t)
+
+ native-universe-of-free-group : universe-of ⟨ free-group A ⟩ ＝ 𝓤 ⁺⁺
+ native-universe-of-free-group = refl
+
+ resized-free-group-carrier : ⟨ free-group A ⟩ is 𝓤⁺ small
+ resized-free-group-carrier = γ
+  where
+   γ : Σ F ꞉ 𝓤⁺ ̇ , F ≃ ⟨ free-group A ⟩
+   γ = FA/∥≏∥ , ≃-sym FA/∾-to-FA/∥≏∥
+
+\end{code}
+
+The following relies on transporting group structures along
+equivalences, which is implemented in the module Group.Type
+(unfortunately, one cannot apply univalence for that purpose, because
+the types live in different universes and hence one can't form their
+identity type, and so this transport has to be done manually).
+
+NB. If we assume cumulativity in our type theory, the above transport
+can be done with univalence directly. TODO. Write down the proof here
+in English (and perhaps also in Agda using --cumulativity).
+
+\begin{code}
+
+ small-free-group : Σ 𝓕' ꞉ Group 𝓤⁺ , 𝓕' ≅ 𝓕
+ small-free-group = resized-group 𝓕 resized-free-group-carrier
+
+ 𝓕⁻ : Group 𝓤⁺
+ 𝓕⁻ = pr₁ small-free-group
+
+ 𝕜 : 𝓕⁻ ≅ 𝓕
+ 𝕜 = pr₂ small-free-group
+
+ k : ⟨ 𝓕⁻ ⟩ ≃ ⟨ 𝓕 ⟩
+ k = ≅-to-≃ 𝓕⁻ 𝓕 𝕜
+
+ k-is-hom : is-hom 𝓕⁻  𝓕 ⌜ k ⌝
+ k-is-hom = ≅-to-≃-is-hom 𝓕⁻ 𝓕 𝕜
+
+ η⁻ : A → ⟨ 𝓕⁻ ⟩
+ η⁻ = ⌜ k ⌝⁻¹ ∘ ηᴳʳᵖ
+
+ universality⁻ : {𝓦 : Universe} (𝓖 : Group 𝓦) (f : A → ⟨ 𝓖 ⟩)
+               → ∃! f̅ ꞉ (⟨ 𝓕⁻ ⟩ → ⟨ 𝓖 ⟩)
+                      , is-hom 𝓕⁻ 𝓖 f̅
+                      × f̅ ∘ η⁻ ∼ f
+ universality⁻ 𝓖 f =
+  equiv-to-singleton I (extension-to-free-group-uniqueness A 𝓖 f)
+  where
+   I : (Σ g ꞉ (⟨ 𝓕⁻ ⟩ → ⟨ 𝓖 ⟩) , is-hom 𝓕⁻ 𝓖 g  ×  g ∘ η⁻ ∼ f)
+     ≃ (Σ h ꞉ (⟨ 𝓕 ⟩  → ⟨ 𝓖 ⟩) , is-hom 𝓕  𝓖 h  ×  h ∘ ηᴳʳᵖ ∼ f)
+   I = qinveq ϕ (ψ , ψϕ , ϕψ)
+    where
+     ϕ : (Σ g ꞉ (⟨ 𝓕⁻ ⟩ → ⟨ 𝓖 ⟩) , is-hom 𝓕⁻ 𝓖 g × g ∘ η⁻ ∼ f)
+       → (Σ h ꞉ (⟨ 𝓕 ⟩ → ⟨ 𝓖 ⟩) , is-hom 𝓕 𝓖 h × h ∘ ηᴳʳᵖ ∼ f)
+     ϕ (g , i , e) = g ∘ ⌜ k ⌝⁻¹ ,
+                     ∘-is-hom 𝓕 𝓕⁻ 𝓖 ⌜ k ⌝⁻¹ g
+                       (inverses-are-homs' 𝓕⁻ 𝓕 k k-is-hom)
+                       i ,
+                     e
+
+     ψ : codomain ϕ → domain ϕ
+     ψ (h , j , d) =  h ∘ ⌜ k ⌝ ,
+                      ∘-is-hom 𝓕⁻ 𝓕 𝓖 ⌜ k ⌝ h k-is-hom j ,
+                      d'
+      where
+       d' : (a : A) → h (⌜ k ⌝ (η⁻ a)) ＝ f a
+       d' a = h (⌜ k ⌝ (η⁻ a))             ＝⟨ refl ⟩
+              h (⌜ k ⌝ (⌜ k ⌝⁻¹ (ηᴳʳᵖ a))) ＝⟨ III ⟩
+              h (ηᴳʳᵖ a)                   ＝⟨ d a ⟩
+              f a                          ∎
+        where
+         III = ap h (inverses-are-sections' k (ηᴳʳᵖ a))
+
+     ϕψ : ϕ ∘ ψ ∼ id
+     ϕψ (h , j , d) = to-subtype-＝
+                       (λ f → ×-is-prop
+                               (being-hom-is-prop fe 𝓕 𝓖 f)
+                               (Π-is-prop fe (λ _ → groups-are-sets 𝓖)))
+                       (dfunext fe (λ x → ap h (inverses-are-sections' k x)))
+
+     ψϕ : ψ ∘ ϕ ∼ id
+     ψϕ (g , i , e) = to-subtype-＝
+                       (λ f → ×-is-prop
+                               (being-hom-is-prop fe 𝓕⁻ 𝓖 f)
+                               (Π-is-prop fe (λ _ → groups-are-sets 𝓖)))
+                       (dfunext fe (λ y → ap g (inverses-are-retractions' k y)))
+
+ η⁻-is-embedding : is-set A → is-embedding η⁻
+ η⁻-is-embedding i = ∘-is-embedding
+                      (η-free-group-is-embedding A i)
+                      (equivs-are-embeddings' (≃-sym k))
+
+
+ η⁻-is-large : ηᴳʳᵖ is 𝓤⁺⁺ small-map
+ η⁻-is-large = native-size-of-map ηᴳʳᵖ
+
+ ⌜k⌝⁻¹-is-tiny : ⌜ k ⌝⁻¹ is 𝓤 small-map
+ ⌜k⌝⁻¹-is-tiny = equivs-have-any-size' (≃-sym k)
+
+ η⁻-is-tiny : is-set A → η⁻ is 𝓤 small-map
+ η⁻-is-tiny i = ∘-small-maps (ηᴳʳᵖ-is-tiny i) ⌜k⌝⁻¹-is-tiny
+
+\end{code}
+
+This concludes the proof of Theorem₂.
+
+\begin{code}
+
+Theorem₂[free-groups-of-large-locally-small-types] {𝓤} pt fe pe A A-ls =
  record
   { 𝓕 = 𝓕⁻
   ; η = η⁻
   ; universality = universality⁻
   ; η-is-embedding = η⁻-is-embedding
-  ; η-is-small = λ A → η⁻-is-tiny A
+  ; η-is-small = η⁻-is-tiny
   }
  where
   open resize-free-group fe pe pt
@@ -1948,43 +1998,3 @@ free-groups-of-large-locally-small-types {𝓤} pt fe pe A A-ls =
         (λ _ _ p → ＝⟦ A-ls ⟧-gives-＝ p)
 
 \end{code}
-
-Can we have the following?
-
-\begin{code}
-
-{-
-large-free-groups-from-set-quotients
- : propositional-truncations-exist
- → Fun-Ext
- → Prop-Ext
- → set-quotients-exist
- → (A : 𝓤 ⁺ ̇ ) → is-set A → good-freely-generated-group-exists A (𝓤 ⁺) 𝓤
-large-free-groups-from-set-quotients {𝓤} pt fe pe sq A A-is-set =
- record
-  { 𝓕 = 𝓕
-  ; η = ηᴳʳᵖ
-  ; universality = extension-to-free-group-uniqueness
-  ; η-is-embedding = η-free-group-is-embedding
-  ; η-is-small = {!!}
-  }
- where
-  open general-set-quotients-exist sq
-  open free-group-construction A
-  open free-group-construction-step₁ pt
-  open free-group-construction-step₂ fe id sq (effectivity fe pe sq)
-  open FreeGroupInterface pt fe id sq (effectivity fe pe sq) A
--}
-
-\end{code}
-
-Yes, because quotients are isomorphic to constructed large quotients,
-and so we can use free-groups-of-large-locally-small-types. And I
-don't think there is an easy direct, proof. The problem is the proof
-that the insertion of generators η is 𝓤 small (its native size is
-𝓤⁺). I don't see how to do this without the method of redexes. This
-method is used in free-groups-of-large-locally-small-types to both
-
- (1) reduced the size of the free group carrier, *and*
-
- (2) establish the 𝓤-smallness of η.
