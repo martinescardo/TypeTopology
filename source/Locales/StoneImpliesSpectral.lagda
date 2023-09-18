@@ -45,7 +45,7 @@ open import Locales.Spectrality.SpectralLocale pt fe
 open import Locales.ZeroDimensionality pt fe sr
 open import Locales.Stone              pt fe sr
 open import Locales.SmallBasis         pt fe sr
-open import Locales.Clopen             pt fe
+open import Locales.Clopen             pt fe sr
 open import Locales.WellInside         pt fe sr
 open import Locales.ScottContinuity    pt fe sr
 
