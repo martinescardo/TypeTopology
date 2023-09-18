@@ -23,6 +23,7 @@ open import UF.EquivalenceExamples
 open import UF.Size
 open import UF.Retracts
 open import UF.UniverseEmbedding
+open import UF.Equiv-FunExt
 
 module Posets.InductiveTypesfromSmallGeneratedLattice 
         (pt : propositional-truncations-exist)
@@ -68,6 +69,12 @@ join-for (A , (_≤_ , ⋁_) , rest) = ⋁_
 is-partial-order-for : (L : Sup-Lattice 𝓤 𝓦 𝓥) → is-partial-order ⟨ L ⟩ (order-of L)
 is-partial-order-for (A , (_≤_ , ⋁_) , order , is-lub-of) = order
 
+is-reflexive-for : (L : Sup-Lattice 𝓤 𝓦 𝓥) → is-reflexive (order-of L) holds
+is-reflexive-for L = pr₁ (pr₁ (is-partial-order-for L))
+
+is-antisymmetric-for : (L : Sup-Lattice 𝓤 𝓦 𝓥) → is-antisymmetric (order-of L) 
+is-antisymmetric-for L = pr₂ (is-partial-order-for L)
+
 is-transitive-for : (L : Sup-Lattice 𝓤 𝓦 𝓥) → is-transitive (order-of L) holds
 is-transitive-for L = pr₂ (pr₁ (is-partial-order-for L))
 
@@ -86,7 +93,8 @@ module Monotone-Maps {𝓤 𝓦 𝓥 : Universe} (L : Sup-Lattice 𝓤 𝓦 𝓥
 \end{code}
 
 We take a quick detour to show if a type is small and has a map to the carrier then it has a join. This seems
-like strict requirement but as we will see it occurs often when consider a lattice with a base.
+like strict requirement but as we will see it occurs often when consider a lattice with a base. We then
+demonstrate when equivalent index types have the same join.
 
 \begin{code}
 
@@ -151,6 +159,31 @@ module Small-Types-have-Joins {𝓤 𝓦 𝓥 𝓣 : Universe} (L : Sup-Lattice 
      s-≤-u = pr₂ (is-lub-for L (small-type , small-type-inclusion))
                  ((u , λ i → is-upbnd-T (small-map i)))
 
+module Equivalent-Families-have-same-Join {𝓤 𝓦 𝓥 𝓣 𝓣' : Universe} (L : Sup-Lattice 𝓤 𝓦 𝓥)
+                                          (T : 𝓣  ̇) (T' : 𝓣'  ̇) (e : T' ≃ T)
+                                          (m : T → ⟨ L ⟩)
+                                          where
+
+ _≤_ : ⟨ L ⟩ → ⟨ L ⟩ → Ω 𝓦
+ _≤_ = order-of L
+
+ ⋁_ : Fam 𝓥 ⟨ L ⟩ → ⟨ L ⟩
+ ⋁_ = join-for L
+
+ open Joins _≤_
+
+ ≃-families-＝-sup : (s s' : ⟨ L ⟩) →
+                     (s is-lub-of (T , m)) holds → (s' is-lub-of (T' , m ∘ ⌜ e ⌝ )) holds → s ＝ s'
+ ≃-families-＝-sup s s' is-sup is-sup' = is-antisymmetric-for L s-≤-s' s'-≤-s
+  where
+   s-≤-s' : (s ≤ s') holds
+   s-≤-s' = (pr₂ is-sup) (s' , λ t → transport (λ z → (z ≤ s') holds) (＝-1 t) (pr₁ is-sup' (⌜ e ⌝⁻¹ t)))
+    where
+     ＝-1 : (t : T) → m (⌜ e ⌝ (⌜ e ⌝⁻¹ t)) ＝ m t
+     ＝-1 t = ap m (naive-inverses-are-sections ⌜ e ⌝ (pr₂ e) t)
+   s'-≤-s : (s' ≤ s) holds
+   s'-≤-s = pr₂ is-sup' (s , λ t' → pr₁ is-sup (⌜ e ⌝ t'))
+
 \end{code}
 
 We now define a small basis for a Sup-Lattice. This consists of a type B in a fixed universe and a
@@ -163,6 +196,9 @@ module Sup-Lattice-Small-Basis {𝓤 𝓦 𝓥 : Universe} (L : Sup-Lattice 𝓤
 
  _≤_ : ⟨ L ⟩ → ⟨ L ⟩ → Ω 𝓦
  _≤_ = order-of L
+
+ ⋁_ : Fam 𝓥 ⟨ L ⟩ → ⟨ L ⟩
+ ⋁_ = join-for L
 
  open Joins _≤_
 
@@ -184,8 +220,8 @@ module Sup-Lattice-Small-Basis {𝓤 𝓦 𝓥 : Universe} (L : Sup-Lattice 𝓤
    ≤-is-small : (x : ⟨ L ⟩) (b : B) → ((q b ≤ x) holds) is 𝓥 small
    ≤-is-small x b = pr₁ (h x) b
 
-   x-is-sup : (x : ⟨ L ⟩) → (x is-lub-of (↓ᴮ x , ↓ᴮ-inclusion x)) holds
-   x-is-sup x = pr₂ (h x)
+   is-sup : (x : ⟨ L ⟩) → (x is-lub-of (↓ᴮ x , ↓ᴮ-inclusion x)) holds
+   is-sup x = pr₂ (h x)
 
    _≤ᴮ_ : (b : B) (x : ⟨ L ⟩) → 𝓥  ̇
    b ≤ᴮ x = pr₁ (≤-is-small x b)
@@ -222,6 +258,16 @@ module Sup-Lattice-Small-Basis {𝓤 𝓦 𝓥 : Universe} (L : Sup-Lattice 𝓤
    ↓ᴮ-is-small : {x : ⟨ L ⟩} → ↓ᴮ x is 𝓥 small
    ↓ᴮ-is-small {x} = (small-↓ᴮ x , small-↓ᴮ-≃-↓ᴮ {x})
 
+   is-sup'ᴮ : (x : ⟨ L ⟩) → x ＝ ⋁ (small-↓ᴮ x , small-↓ᴮ-inclusion x)
+   is-sup'ᴮ x = ≃-families-＝-sup x (⋁ (small-↓ᴮ x , small-↓ᴮ-inclusion x)) (is-sup x)
+                                 (is-lub-for L ((small-↓ᴮ x , small-↓ᴮ-inclusion x)))
+    where
+     open Equivalent-Families-have-same-Join L (↓ᴮ x) (small-↓ᴮ x) small-↓ᴮ-≃-↓ᴮ (↓ᴮ-inclusion x) hiding (⋁_)
+
+   is-supᴮ : (x : ⟨ L ⟩) → (x is-lub-of (small-↓ᴮ x , small-↓ᴮ-inclusion x)) holds
+   is-supᴮ x = transport (λ z → (z is-lub-of (small-↓ᴮ x , small-↓ᴮ-inclusion x)) holds)
+                         (is-sup'ᴮ x ⁻¹) (is-lub-for L ((small-↓ᴮ x , small-↓ᴮ-inclusion x)))
+
 \end{code}
 
 We pause to introduce some universe polymorphic powerset notation which will allow the final product
@@ -252,9 +298,6 @@ the least-closed subset under the inductive definition.
 module Inductive-Definitions (𝓤 𝓦 𝓥 : Universe)
                              (L : Sup-Lattice 𝓤 𝓦 𝓥)
                              where
- 
- ⋁_ : Fam 𝓥 ⟨ L ⟩ → ⟨ L ⟩
- ⋁_ = join-for L
 
  open Sup-Lattice-Small-Basis L
  open Joins _≤_
@@ -396,7 +439,7 @@ will call 'local'. This monotone operator will have a least-fixed point when �
     S-small-monotone-ish x y o = S-small-map-inv y ∘ S-monotone-ish ϕ x y o ∘ S-small-map x
 
     Γ : ⟨ L ⟩ → ⟨ L ⟩
-    Γ a = ⋁ ((S-small a , q ∘ pr₁ ∘ S-small-map a))
+    Γ a = ⋁ (S-small a , q ∘ pr₁ ∘ S-small-map a)
 
     open Monotone-Maps L hiding (_≤_)
 
@@ -406,11 +449,11 @@ will call 'local'. This monotone operator will have a least-fixed point when �
       Γ-x-is-sup : (Γ x is-lub-of (S ϕ x , q ∘ pr₁)) holds
       Γ-x-is-sup = is-lub-of-both
        where
-       open Small-Types-have-Joins L (S ϕ x) (q ∘ pr₁) (i x)       
+        open Small-Types-have-Joins L (S ϕ x) (q ∘ pr₁) (i x)       
       Γ-y-is-sup : (Γ y is-lub-of (S ϕ y , q ∘ pr₁)) holds
       Γ-y-is-sup = is-lub-of-both
        where
-       open Small-Types-have-Joins L (S ϕ y) (q ∘ pr₁) (i y)
+        open Small-Types-have-Joins L (S ϕ y) (q ∘ pr₁) (i y)
 
    open Monotone-Maps L hiding (_≤_)
 
@@ -420,12 +463,56 @@ will call 'local'. This monotone operator will have a least-fixed point when �
     where
      ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)
      ϕ (a , b) = ( Lift 𝓤 (b ≤ᴮ f a) , equiv-to-prop (Lift-≃ 𝓤 (b ≤ᴮ f a)) _≤ᴮ_-is-prop-valued )
+     equiv-1 : (a : ⟨ L ⟩) → small-↓ᴮ (f a) ≃ S ϕ a
+     equiv-1 a = Σ-cong' (λ z → z ≤ᴮ f a)
+                         ((λ z → (Ǝ a' ꞉ ⟨ L ⟩ , ϕ (a' , z) holds × (a' ≤ a) holds) holds)) equiv-2
+      where
+       equiv-2 : (z : B) → (z ≤ᴮ f a) ≃ (Ǝ a' ꞉ ⟨ L ⟩ , ϕ (a' , z) holds × (a' ≤ a) holds) holds
+       equiv-2 z = ⌜ prop-≃-≃-⇔ fe _≤ᴮ_-is-prop-valued ∥∥-is-prop ⌝⁻¹ (map-1 , map-2)
+        where
+         map-1 : z ≤ᴮ f a → (Ǝ a' ꞉ ⟨ L ⟩ , ϕ (a' , z) holds × (a' ≤ a) holds) holds
+         map-1 o = ∣ (a , ⌜ ≃-Lift 𝓤 (z ≤ᴮ f a) ⌝ o , is-reflexive-for L a) ∣
+         map-2 : (Ǝ a' ꞉ ⟨ L ⟩ , ϕ (a' , z) holds × (a' ≤ a) holds) holds → z ≤ᴮ f a
+         map-2 = ∥∥-rec _≤ᴮ_-is-prop-valued map-3
+          where
+           map-3 : Σ a' ꞉ ⟨ L ⟩ , ϕ (a' , z) holds × (a' ≤ a) holds → z ≤ᴮ f a
+           map-3 (a' , o , r) =
+              _≤_-to-_≤ᴮ_ (is-transitive-for L (q z) (f a') (f a)
+                                               (_≤ᴮ_-to-_≤_ (⌜ ≃-Lift 𝓤 (z ≤ᴮ f a') ⌝⁻¹ o))
+                                               (f-mono a' a r))
      i : ϕ is-local 
-     i a = (small-↓ᴮ (f a) , {!!})
+     i a = (small-↓ᴮ (f a) , equiv-1 a)
+     G : (x : ⟨ L ⟩) → (f x is-lub-of (S ϕ x , q ∘ pr₁)) holds 
+     G x = (f-is-upbnd , f-is-least)
+      where
+       f-is-upbnd : (f x is-an-upper-bound-of (S ϕ x , q ∘ pr₁)) holds
+       f-is-upbnd (b , e) = map-4 e
+        where
+         map-4 : (Ǝ a' ꞉ ⟨ L ⟩ , ϕ (a' , b) holds × (a' ≤ x) holds) holds → (q b ≤ f x) holds
+         map-4 = ∥∥-rec (holds-is-prop (q b ≤ f x)) map-5
+          where
+           map-5 : Σ a' ꞉ ⟨ L ⟩ , ϕ (a' , b) holds × (a' ≤ x) holds → (q b ≤ f x) holds
+           map-5 (a' , o , r) = is-transitive-for L (q b) (f a') (f x)
+                                (_≤ᴮ_-to-_≤_ (⌜ ≃-Lift 𝓤 (b ≤ᴮ f a') ⌝⁻¹ o)) (f-mono a' x r)
+       f-is-least : (z : upper-bound (S ϕ x , q ∘ pr₁)) → (f x ≤ pr₁ z) holds
+       f-is-least (u , is-upbnd) = pr₂ (is-supᴮ (f x)) (u , λ z → is-upbnd (⌜ equiv-1 x ⌝ z))
      H : (x : ⟨ L ⟩) → (Local-ϕ.Γ ϕ i) x ＝ f x
-     H x = {!!}
+     H x = ≃-families-＝-sup ((Local-ϕ.Γ ϕ i) x) (f x) is-lub-of-both (G x)
+      where
+       open Local-ϕ ϕ i
+       open Equivalent-Families-have-same-Join L (S ϕ x) (S ϕ x) (id , id-is-equiv (S ϕ x)) (q ∘ pr₁)
+       open Small-Types-have-Joins L (S ϕ x) (q ∘ pr₁) (i x) 
+       
      
 
 \end{code}
 
 
+     H : (x : ⟨ L ⟩) → f x ＝ (Local-ϕ.Γ ϕ i) x
+     H x = ≃-families-＝-sup (f x) ((Local-ϕ.Γ ϕ i) x) (is-supᴮ (f x)) {!!}
+      where
+       open Local-ϕ ϕ i
+       equiv-3 : S-small x ≃ small-↓ᴮ (f x) 
+       equiv-3 = ≃-comp (S-small-≃ x) (≃-sym (equiv-1 x))
+       open Equivalent-Families-have-same-Join L (small-↓ᴮ (f x)) (S-small x) equiv-3
+                                                 (small-↓ᴮ-inclusion (f x))
