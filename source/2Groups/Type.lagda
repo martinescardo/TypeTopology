@@ -28,18 +28,22 @@ open import Groups.Type using (⟨_⟩)
 
 \end{code}
 
-The mathematical structure of a 2-Group, or categorical group. The
-main structure is of course an operation X → X → X as usual, but since
-in categorical algebra the underlying carrier is a category, the
-structure also affects morphisms. The most important property of the
-structure on morphisms is functoriality, which in categorical algebra
-is a reflection of the fact that the operation is overall a functor.
+The mathematical structure of a 2-Group, or categorical group.
 
-In our case, there should be a companion structure defined on identity
-types.  More precisely, given a specific tensor structure on X, we
-postulate there exists a lift to the identity types, and we require
-that the companion structure satisfy an interchange law with respect
-to the underlying structure.
+The main structure is of course an operation X → X → X as usual, but
+since in categorical algebra the underlying carrier is a category, the
+structure also affects morphisms. This means the structure also gives
+a binary operation on morphisms, in a compatible way.  The most
+important property of the structure on morphisms is functoriality,
+which in categorical algebra is a reflection of the fact that the
+operation is overall a functor.
+
+In our case, we interpret morphisms as paths. Therefore there should
+be a companion structure defined on identity types.  More precisely,
+given a specific tensor structure on X, we postulate there exists a
+tensor structure on identity types, lifting the one on X, and we
+require that the tensor structure on the identity types satisfy an
+interchange law with respect to the underlying structure.
 
 \begin{code}
 
