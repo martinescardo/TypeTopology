@@ -8,7 +8,7 @@ There is also a proof in Egbert Rijke's book (to appear).
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import Fin.Bishop
 open import Fin.Type
@@ -19,7 +19,7 @@ open import UF.EquivalenceExamples
 open import UF.FunExt
 open import UF.PairFun
 open import UF.PropTrunc
-open import UF.Subsingletons renaming (⊤Ω to ⊤)
+open import UF.Subsingletons
 open import UF.UA-FunExt
 open import UF.Univalence
 open import UF.UniverseEmbedding

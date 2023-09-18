@@ -1,3 +1,4 @@
+   TypeTopology
 
    Various new theorems in univalent mathematics written in Agda
    -------------------------------------------------------------
@@ -9,15 +10,11 @@
 
    Tested with Agda 2.6.3
 
-   The main new results are about compact types, totally separated
-   types, compact ordinals and injective types, but there are many
-   other things (see the clickable index below).
-
    * Our main use of this development is as a personal blackboard or
-     notepad for our research. In particular, some modules have better
-     and better results or approaches, as time progresses, with the
-     significant steps kept, and with failed ideas and calculations
-     eventually erased.
+     notepad for our research and that of collaborators. In
+     particular, some modules have better and better results or
+     approaches, as time progresses, with the significant steps kept,
+     and with failed ideas and calculations eventually erased.
 
    * We offer this page as a preliminary announcement of results to be
      submitted for publication, of the kind we would get when we visit
@@ -28,7 +25,7 @@
      are included (sometimes with embellishments).
 
    * The required material on HoTT/UF has been developed on demand
-     over the years to fullfil the needs of the above as they arise,
+     over the years to fulfill the needs of the above as they arise,
      and hence is somewhat chaotic. It will continue to expand as the
      need arises. Its form is the result of evolution rather than
      intelligent design (paraphrasing Linus Torvalds).
@@ -36,7 +33,7 @@
      Our lecture notes develop HoTT/UF in Agda in a more principled
      way, and offers better approaches to some constructions and
      simpler proofs of some (previously) difficult theorems.
-     (https://www.cs.bham.ac.uk/~mhe/HoTT-UF.in-Agda-Lecture-Notes/)
+     (https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/)
 
      Our philosophy, here and in the lecture notes, is to work with a
      minimal Martin-Löf type theory, and use principles from HoTT/UF
@@ -56,15 +53,11 @@
      inconsistent (as is well known), countable Tychonoff, and
      compactness of the Cantor type using countable Tychonoff.
 
-     (https://www.cs.bham.ac.uk/~mhe/TypeTopology/Unsafe.index.html)
+     (https://www.cs.bham.ac.uk/~mhe/TypeTopology/AllModulesIndex.html)
 
-   * In our last count, this development has 126k lines, including
-     comments and blank lines. But we don't update the count
-     frequently.
-
-   * A module dependency graph is available, updated manually from
-     time to time last tine on 19th December 2022:
-     https://www.cs.bham.ac.uk/~mhe/TypeTopology/dependency-graph.pdf
+   * In our last count, on 12th September 2023, this development has
+     609 files and 172k lines of code, including comments and blank
+     lines. But we don't update the count frequently.
 
 Philosophy of the repository
 ----------------------------
@@ -87,7 +80,7 @@ Philosophy of the repository
 
    * We work in a minimal subset of Agda to implement Spartan MLTT and
      work with it. In particular, we restrict ourselves to safe
-     features (with the flag --safe).
+     features (with the flags --safe --no-sized-types --no-guardedness).
 
    * Some functions, and theorems, and definitions need HoTT/UF
      axioms. They are always given explicitly as
@@ -113,7 +106,7 @@ Philosophy of the repository
      because at present it is not known whether (some) cubical type
      theory has an interpretation in any ∞ topos.
 
-   * Howover, by fulfilling the HoTT hypotheses with Cubical-Agda
+   * However, by fulfilling the HoTT hypotheses with Cubical-Agda
      implementations, we should be able to run the constructions and
      proofs given here, so that we get constructivity in the
      computational sense (as opposed to constructivity in the sense of
@@ -123,51 +116,60 @@ Click at the imported module names to navigate to them:
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module index where
 
 import BinarySystems.index
 import CantorSchroederBernstein.index
-import Categories.index               -- by Jon Sterling
-import Circle.index                   -- by Tom de Jong
+import Categories.index
+import Circle.index
 import CoNaturals.index
-import CrossedModules.index           -- by Ettore Aldrovandi and Keri D'Angelo
-import DedekindReals.index            -- by Andrew Sneap
-import DomainTheory.index             -- by Tom de Jong
+import ContinuityAxiom.index
+import Coslice.index
+import CrossedModules.index
+import DedekindReals.index
+import DomainTheory.index
 import Dominance.index
-import Duploids.index                 -- by Jon Sterling
-import Dyadics.index                  -- by Andrew Sneap
-import DyadicsInductive.index         -- by Tom de Jong
+import Duploids.index
+import Dyadics.index
+import DyadicsInductive.index
+import EffectfulForcing.index
 import Factorial.index
-import Field.index                    -- by Andrew Sneap
+import Field.index
 import Fin.index
-import Games.index                    -- by Martin Escardo and Paulo Oliva
-import Groups.index                   -- originally by Martin Escardo with many additions
-                                      -- by Ettore Aldrovandi and Keri D'Angelo
+import Games.index
+import Groups.index
 import InjectiveTypes.index
-import Integers.index                 -- by Andrew Sneap
+import Integers.index
+import Iterative.index
 import Lifting.index
-import Locales.index                  -- by Ayberk Tosun
-import MGS.index                      -- Modular version of https://github.com/martinescardo/HoTT-UF-Agda-Lecture-Notes
+import Locales.index
+import MGS.index
 import MLTT.index
-import MetricSpaces.index             -- by Andrew Sneap
-import Modal.index                    -- by Jon Sterling
+import MetricSpaces.index
+import Modal.index
 import Naturals.index
 import Notation.index
-import NotionsOfDecidability.index    -- by Tom de Jong and Martin Escardo
+import NotionsOfDecidability.index
 import Ordinals.index
-import Posets.index                   -- by Tom de Jong and Martin Escardo
-import Rationals.index                -- by Andrew Sneap
+import PCF.index
+import Posets.index
+import Quotient.index
+import Relations.index
+import Rationals.index
 import Slice.index
-import TWA.index                      -- by Todd Waugh Ambridge
+import TWA.index
 import Taboos.index
 import TypeTopology.index
 import UF.index
 import Various.index
+import W.index
 
 \end{code}
 
-The UF modules (univalent foundations) have been developed, on demand,
-for use in the other modules. The modules UF.Yoneda, UF.IdEmbedding
-and UF.Factorial contain new results.
+TODO. Explain what each of the above does here.
+
+The above includes only the --safe modules. A list of all modules is here:
+
+https://www.cs.bham.ac.uk/~mhe/TypeTopology/AllModulesIndex.html

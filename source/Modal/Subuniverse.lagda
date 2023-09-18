@@ -2,7 +2,7 @@ Jon Sterling, started 27th Sep 2022
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module Modal.Subuniverse where
 
@@ -17,7 +17,7 @@ subuniverse
  : (𝓤 𝓥 : Universe)
  → (𝓤 ⊔ 𝓥)⁺ ̇
 subuniverse 𝓤 𝓥 =
- Σ P ꞉ (𝓤 ̇ → 𝓥 ̇) ,
+ Σ P ꞉ (𝓤 ̇ → 𝓥 ̇ ),
  Π A ꞉ 𝓤 ̇ ,
  is-prop (P A)
 

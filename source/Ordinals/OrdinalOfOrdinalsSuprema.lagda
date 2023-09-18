@@ -26,10 +26,10 @@ notably doesn't use set quotients.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline --lossy-unification #-}
+{-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
 
 
-open import UF.Quotient
+open import Quotient.Type
 open import UF.Univalence
 
 module Ordinals.OrdinalOfOrdinalsSuprema
@@ -37,19 +37,23 @@ module Ordinals.OrdinalOfOrdinalsSuprema
        where
 
 open import MLTT.Spartan
-
-open import UF.Base hiding (_≈_)
-open import UF.Equiv
-open import UF.FunExt
-open import UF.UA-FunExt
-open import UF.PropTrunc
-open import UF.Size
-open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
+open import Ordinals.Equivalence
+open import Ordinals.Maps
 open import Ordinals.Notions hiding (is-prop-valued)
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.Type
 open import Ordinals.Underlying
+open import Quotient.GivesPropTrunc
+open import Quotient.GivesSetReplacement
+open import UF.Base hiding (_≈_)
+open import UF.Equiv
+open import UF.FunExt
+open import UF.PropTrunc
+open import UF.Size
+open import UF.SubtypeClassifier
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
+open import UF.UA-FunExt
 
 private
  fe : FunExt
@@ -79,7 +83,7 @@ statement is a proposition.)
 
 Ordinal-Of-Ordinals-Has-Small-Suprema : (𝓤 : Universe) → 𝓤 ⁺ ̇
 Ordinal-Of-Ordinals-Has-Small-Suprema 𝓤 =
-   (I : 𝓤 ̇  ) (α : I → Ordinal 𝓤)
+   (I : 𝓤 ̇ ) (α : I → Ordinal 𝓤)
  → Σ β ꞉ Ordinal 𝓤 , ((i : I) → α i ⊴ β)
                    × ((γ : Ordinal 𝓤) → ((i : I) → α i ⊴ γ) → β ⊴ γ)
 
@@ -88,7 +92,7 @@ Ordinal-Of-Ordinals-Has-Small-Suprema-is-prop :
 Ordinal-Of-Ordinals-Has-Small-Suprema-is-prop =
  Π₂-is-prop fe' h
   where
-   h : (I : 𝓤 ̇  ) (α : I → Ordinal 𝓤)
+   h : (I : 𝓤 ̇ ) (α : I → Ordinal 𝓤)
      → is-prop (Σ β ꞉ Ordinal 𝓤 , ((i : I) → α i ⊴ β)
                                 × ((γ : Ordinal 𝓤) → ((i : I) → α i ⊴ γ)
                                                    → β ⊴ γ))
@@ -100,15 +104,15 @@ Ordinal-Of-Ordinals-Has-Small-Suprema-is-prop =
 
 module construction-using-quotient
         (sq : set-quotients-exist)
-        {I : 𝓤 ̇  }
+        {I : 𝓤 ̇ }
         (α : I → Ordinal 𝓤)
        where
 
- open set-quotients-exist sq
+ open general-set-quotients-exist sq
 
  private
   pt : propositional-truncations-exist
-  pt = propositional-truncations-from-set-quotients fe'
+  pt = propositional-truncations-from-set-quotients sq fe'
 
  open extending-relations-to-quotient fe' pe'
  open PropositionalTruncation pt
@@ -142,7 +146,7 @@ unquotiented type Σ i ꞉ I , ⟨ α i ⟩.
   ≺-is-well-founded : is-well-founded _≺_
   ≺-is-well-founded = transfinite-induction-converse _≺_ wf
    where
-    wf : Well-founded _≺_
+    wf : is-Well-founded _≺_
     wf P IH (i , x) = lemma (α i ↓ x) i x refl
      where
       P̃ : Ordinal 𝓤 → 𝓤 ⁺ ̇
@@ -290,7 +294,7 @@ induced order on Σα.
 \begin{code}
 
  ≋ : EqRel Σα
- ≋ = _≈_ , (λ _ _   → the-type-of-ordinals-is-a-set)
+ ≋ = _≈_ , (λ _ _   → the-type-of-ordinals-is-a-set (ua 𝓤) fe')
          , (λ _     → refl)
          , (λ _ _   → _⁻¹)
          , (λ _ _ _ → _∙_)
@@ -329,7 +333,7 @@ induced order on Σα.
  ≺/-to-≺ = Idtofun ≺/-＝-≺
 
  ≺-to-≺/ : {p q : Σα} → p ≺ q → [ p ] ≺/ [ q ]
- ≺-to-≺/ = back-Idtofun ≺/-＝-≺
+ ≺-to-≺/ = Idtofun⁻¹ ≺/-＝-≺
 
  ≺/-is-prop-valued : is-prop-valued _≺/_
  ≺/-is-prop-valued x y = holds-is-prop (x ≺/[Ω] y)
@@ -372,7 +376,7 @@ induced order on Σα.
     where
      ϕ : (p : Σα) → ((q : Σα) → q ≺ p → is-accessible _≺/_ [ q ])
        → is-accessible _≺/_ [ p ]
-     ϕ p IH = step IH'
+     ϕ p IH = acc IH'
       where
        IH' : (y : α/) → y ≺/ [ p ] → is-accessible _≺/_ y
        IH' = /-induction ≋ (λ q → Π-is-prop fe' (λ _ → a q))
@@ -397,12 +401,12 @@ Next, we show that the quotient α/ is the least upper bound of α.
  α/-is-upper-bound i = ([_] ∘ ι i , sim)
   where
    sim : is-simulation (α i) α/-Ord (λ x → [ i , x ])
-   sim = simulation-unprime pt (α i) α/-Ord (λ x → [ i , x ])
+   sim = simulation-unprime pt fe (α i) α/-Ord (λ x → [ i , x ])
           (init-seg , order-pres)
     where
      order-pres : is-order-preserving (α i) α/-Ord (λ x → [ i , x ])
      order-pres x y l = ≺-to-≺/ {i , x} {i , y} (ι-is-order-preserving i x y l)
-     init-seg : is-initial-segment' pt (α i) α/-Ord (λ x → [ i , x ])
+     init-seg : is-initial-segment' pt fe (α i) α/-Ord (λ x → [ i , x ])
      init-seg x = /-induction ≋ (λ y → Π-is-prop fe' λ _ → ∃-is-prop) claim
       where
        claim : (p : Σα) → [ p ] ≺/ [ i , x ]
@@ -441,12 +445,12 @@ Next, we show that the quotient α/ is the least upper bound of α.
                  f/-＝-f̃ f/-＝-f̃
                  (f̃-is-order-preserving p q (≺/-to-≺ l))
    f/-is-simulation : is-simulation α/-Ord β f/
-   f/-is-simulation = simulation-unprime pt α/-Ord β f/ σ
+   f/-is-simulation = simulation-unprime pt fe α/-Ord β f/ σ
     where
-     σ : is-simulation' pt α/-Ord β f/
+     σ : is-simulation' pt fe α/-Ord β f/
      σ = init-seg , f/-is-order-preserving
       where
-       init-seg : is-initial-segment' pt α/-Ord β f/
+       init-seg : is-initial-segment' pt fe α/-Ord β f/
        init-seg = /-induction ≋ prp ρ
         where
          prp : (x : α/)
@@ -526,11 +530,11 @@ Next, we resize α/ using:
    ≈⁻r : reflexive _≈⁻_
    ≈⁻r (i , x) = ≃ₒ-refl (α i ↓ x)
    ≈⁻p : is-prop-valued _≈⁻_
-   ≈⁻p (i , x) (j , y) = ≃ₒ-is-prop-valued (α i ↓ x) (α j ↓ y)
+   ≈⁻p (i , x) (j , y) = ≃ₒ-is-prop-valued fe' (α i ↓ x) (α j ↓ y)
 
  ≋-≃-≋⁻ : {p q : Σα} → p ≈[ ≋ ] q ⇔ p ≈[ ≋⁻ ] q
  ≋-≃-≋⁻ {(i , x)} {(j , y)} = (idtoeqₒ (α i ↓ x) (α j ↓ y))
-                            , (eqtoidₒ (α i ↓ x) (α j ↓ y))
+                            , (eqtoidₒ (ua 𝓤) fe' (α i ↓ x) (α j ↓ y))
 
  private
   α/⁻ : 𝓤 ̇
@@ -587,7 +591,7 @@ We now formalize an alternative construction due to Martín Escardó that doesn'
 use set quotients, but instead relies on Set Replacement (as defined and
 explained in UF.Size.lagda) to obtain a small ordinal at the end.
 
-(As proved in UF.Quotient.lagda and UF-Quotient-Replacement.lagda, Set
+(As proved in Quotient.Type.lagda and UF-Quotient-Replacement.lagda, Set
 Replacement is equivalent to having small set quotients.)
 
 \begin{code}
@@ -596,7 +600,7 @@ open import UF.EquivalenceExamples
 
 module construction-using-image
         (pt : propositional-truncations-exist)
-        {I : 𝓤 ̇  }
+        {I : 𝓤 ̇ }
         (α : I → Ordinal 𝓤)
        where
 
@@ -674,7 +678,7 @@ The ordinal structure on the image of σ will be the one induced from Ordinal �
                           → (t : ∃ i ꞉ I , γ ⊲ α i)
                           → is-accessible _≺_ (γ , t))
        → (s : ∃ i ꞉ I , β ⊲ α i) → is-accessible _≺_ (β , s)
-     ϕ β IH s = step IH'
+     ϕ β IH s = acc IH'
       where
        IH' : (γ : α⁺) → γ ≺ (β , s) → is-accessible _≺_ γ
        IH' (γ , t) l = IH γ l t
@@ -920,8 +924,8 @@ Next, we resize α⁺ using:
   private
    small-image : is-small (image σ)
    small-image = replacement σ ((Σ i ꞉ I , ⟨ α i ⟩) , ≃-refl _)
-                               (λ β γ → β ≃ₒ γ , ≃-sym (UAₒ-≃ β γ))
-                               the-type-of-ordinals-is-a-set
+                               (λ β γ → β ≃ₒ γ , ≃-sym (UAₒ-≃ (ua 𝓤) fe' β γ))
+                               (the-type-of-ordinals-is-a-set (ua 𝓤) fe')
    α⁻ : 𝓤 ̇
    α⁻ = pr₁ small-image
 
@@ -944,7 +948,7 @@ Next, we resize α⁺ using:
 
   α⁻-is-upper-bound : (i : I) → α i ⊴ α⁻-Ord
   α⁻-is-upper-bound i = ⊴-trans (α i) α⁺-Ord α⁻-Ord
-                        (α⁺-is-upper-bound i)
+                       (α⁺-is-upper-bound i)
                         (≃ₒ-to-⊴ α⁺-Ord α⁻-Ord α⁺-≃ₒ-α⁻)
 
 \end{code}
@@ -1000,7 +1004,7 @@ module _ (pt : propositional-truncations-exist) where
 
 \end{code}
 
-As proved in UF.Quotient.lagda and UF-Quotient-Replacement.lagda, Set
+As proved in Quotient.Type.lagda and UF-Quotient-Replacement.lagda, Set
 Replacement is equivalent to having small set quotients, so it follows
 immediately that (just as above) Ordinal 𝓤 has small suprema if we assume the
 existence of (small) set quotients.
@@ -1012,11 +1016,11 @@ ordinal-of-ordinals-has-small-suprema'' :
 ordinal-of-ordinals-has-small-suprema'' sq =
  ordinal-of-ordinals-has-small-suprema' pt R
   where
-   open set-quotients-exist sq
+   open general-set-quotients-exist sq
    pt : propositional-truncations-exist
-   pt = propositional-truncations-from-set-quotients fe'
+   pt = propositional-truncations-from-set-quotients sq fe'
    R : Set-Replacement pt
-   R = set-replacement-from-set-quotients sq pt
+   R = set-replacement-from-set-quotients-and-prop-trunc sq pt
 
 \end{code}
 
@@ -1032,7 +1036,7 @@ module suprema
  open PropositionalTruncation pt
  open import UF.ImageAndSurjection pt
 
- module _ {I : 𝓤 ̇  } (α : I → Ordinal 𝓤) where
+ module _ {I : 𝓤 ̇ } (α : I → Ordinal 𝓤) where
 
   open construction-using-image pt α
 

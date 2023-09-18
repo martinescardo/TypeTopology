@@ -61,12 +61,15 @@ We have:
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan
 open import UF.PropTrunc
 open import UF.FunExt
 open import UF.Subsingletons
+open import UF.SubtypeClassifier renaming (⊥ to ⊥Ω ; ⊤ to ⊤Ω)
+open import UF.SubtypeClassifier-Properties
+open import UF.Sets
 
 \end{code}
 
@@ -259,7 +262,9 @@ propositions:
 \begin{code}
 
 is-semidecidable' : 𝓤 ̇ → 𝓤 ⁺ ̇
-is-semidecidable' {𝓤} X = ∃ A ꞉ (ℕ → 𝓤 ̇ ), ((n : ℕ) → decidable (A n)) × (X ≃ (∃ n ꞉ ℕ , A n))
+is-semidecidable' {𝓤} X = ∃ A ꞉ (ℕ → 𝓤 ̇ )
+                              , ((n : ℕ) → is-decidable (A n))
+                              × (X ≃ (∃ n ꞉ ℕ , A n))
 
 \end{code}
 
@@ -278,8 +283,8 @@ totality-of-semidecidability-data ua =
   (Σ X ꞉ 𝓤₀ ̇ , Σ α ꞉ (ℕ → 𝟚), X ≃ (∃ n ꞉ ℕ , α n ＝ ₁)) ≃⟨ i ⟩
   (Σ α ꞉ (ℕ → 𝟚), Σ X ꞉ 𝓤₀ ̇ , X ≃ (∃ n ꞉ ℕ , α n ＝ ₁)) ≃⟨ ii ⟩
   (Σ α ꞉ (ℕ → 𝟚), Σ X ꞉ 𝓤₀ ̇ , (∃ n ꞉ ℕ , α n ＝ ₁) ≃ X) ≃⟨ iii ⟩
-  (ℕ → 𝟚) × 𝟙 {𝓤₀}                                     ≃⟨ iv ⟩
-  (ℕ → 𝟚)                                              ■
+  (ℕ → 𝟚) × 𝟙 {𝓤₀}                                      ≃⟨ iv ⟩
+  (ℕ → 𝟚)                                               ■
  where
   i   = Σ-flip
   ii  = Σ-cong (λ α → Σ-cong (λ X → ≃-Sym'' (univalence-gives-funext ua)))
@@ -376,7 +381,7 @@ We collect the quasidecidable propositions in the type 𝓠:
 
  𝓠-is-set : is-set 𝓠
  𝓠-is-set = subtypes-of-sets-are-sets 𝓠→Ω
-             (embeddings-are-lc 𝓠→Ω 𝓠→Ω-is-embedding)
+             𝓠→Ω-is-embedding
              (Ω-is-set fe pe)
 
  ⊥ : 𝓠

@@ -2,13 +2,14 @@ Andrew Sneap
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module Integers.index where
 
 import Integers.Abs
 import Integers.Addition
 import Integers.Division
+import Integers.Exponentiation
 import Integers.HCF
 import Integers.Type
 import Integers.Multiplication

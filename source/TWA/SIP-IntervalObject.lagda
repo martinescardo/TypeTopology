@@ -15,7 +15,7 @@ for the structure.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan
 open import UF.FunExt
@@ -25,13 +25,15 @@ module TWA.SIP-IntervalObject {𝓤 : Universe} (fe' : FunExt) where
 fe : funext 𝓥 𝓦
 fe {𝓥} {𝓦} = fe' 𝓥 𝓦
 
+open import TWA.Escardo-Simpson-LICS2001 fe'
 open import UF.Base
-open import UF.Univalence
 open import UF.Equiv
-open import UF.Subsingletons-FunExt
 open import UF.SIP
 open import UF.SIP-Examples
-open import TWA.Escardo-Simpson-LICS2001 fe'
+open import UF.Sets
+open import UF.Sets-Properties
+open import UF.Subsingletons-FunExt
+open import UF.Univalence
 
 open sip
 open sip-with-axioms

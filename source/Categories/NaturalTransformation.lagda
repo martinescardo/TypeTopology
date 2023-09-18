@@ -2,22 +2,22 @@ Jon Sterling, started 16th Dec 2022
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import UF.FunExt
 
 module Categories.NaturalTransformation (fe : Fun-Ext) where
 
+open import Categories.Category fe
+open import Categories.Functor fe
 open import MLTT.Spartan
 open import UF.Base
 open import UF.Equiv
-open import UF.Retracts
+open import UF.Sets
+open import UF.Sets-Properties
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import UF.Equiv-FunExt
-
-open import Categories.Category fe
-open import Categories.Functor fe
+open import UF.Subsingletons-Properties
 
 module natural-transformation (𝓒 : precategory 𝓤 𝓥) (𝓓 : precategory 𝓤' 𝓥') where
  private

@@ -31,21 +31,26 @@ choice where X is a proposition (see https://arxiv.org/abs/1610.03346).
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan
-open import TypeTopology.DiscreteAndSeparated
+open import UF.DiscreteAndSeparated
 open import UF.Base
 open import UF.Equiv
 open import UF.ExcludedMiddle
 open import UF.FunExt
+open import UF.Hedberg
 open import UF.LeftCancellable
-open import UF.Miscelanea
 open import UF.Powerset
 open import UF.PropTrunc
 open import UF.Retracts
-open import UF.Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)
+open import UF.Sets
+open import UF.Sets-Properties
+open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
+open import UF.Subsingletons-Properties
+open import UF.SubtypeClassifier
+open import UF.SubtypeClassifier-Properties
 
 module UF.Choice where
 
@@ -240,7 +245,7 @@ module ExcludedMiddle
 
  decidability-lemma : {X : 𝓤 ̇ } (a : 𝟚 → X)
                     → ((x : X) → (∃ i ꞉ 𝟚 , a i ＝ x) → Σ i ꞉ 𝟚 , a i ＝ x)
-                    → decidable (a ₀ ＝ a ₁)
+                    → is-decidable (a ₀ ＝ a ₁)
  decidability-lemma a c = claim (𝟚-is-discrete (s(r ₀)) (s(r ₁)))
   where
    r : 𝟚 → image a
@@ -273,7 +278,7 @@ module ExcludedMiddle
    s-a : {i j : 𝟚} → s(r i) ＝ s(r j) → a i ＝ a j
    s-a p = r-a (s-lc p)
 
-   claim : decidable (s(r ₀) ＝ s(r ₁)) → decidable (a ₀ ＝ a ₁)
+   claim : is-decidable (s(r ₀) ＝ s(r ₁)) → is-decidable (a ₀ ＝ a ₁)
    claim (inl p) = inl (s-a p)
    claim (inr u) = inr (contrapositive a-s u)
 
@@ -281,14 +286,14 @@ module ExcludedMiddle
                      → is-set X
                      → (a : 𝟚 → X)
                      → ∥((x : X) → (∃ i ꞉ 𝟚 , a i ＝ x) → Σ i ꞉ 𝟚 , a i ＝ x)∥
-                     → decidable (a ₀ ＝ a ₁)
+                     → is-decidable (a ₀ ＝ a ₁)
  decidability-lemma₂ i a =
   ∥∥-rec (decidability-of-prop-is-prop (fe _ _) i) (decidability-lemma a)
 
  ac-renders-all-sets-discrete' : AC {𝓤} {𝓤}
                                → (X : 𝓤 ̇ )
                                → is-set X
-                               → (a : 𝟚 → X) → decidable (a ₀ ＝ a ₁)
+                               → (a : 𝟚 → X) → is-decidable (a ₀ ＝ a ₁)
  ac-renders-all-sets-discrete' {𝓤} ac X i a =
   decidability-lemma₂ i a (ac₂ X A i j)
   where
@@ -304,7 +309,7 @@ module ExcludedMiddle
  ac-renders-all-sets-discrete : AC {𝓤} {𝓤}
                               → (X : 𝓤 ̇ )
                               → is-set X
-                              → (a₀ a₁ : X) → decidable (a₀ ＝ a₁)
+                              → (a₀ a₁ : X) → is-decidable (a₀ ＝ a₁)
  ac-renders-all-sets-discrete {𝓤} ac X isx a₀ a₁ =
   ac-renders-all-sets-discrete' {𝓤} ac X isx (𝟚-cases a₀ a₁)
 
@@ -312,7 +317,7 @@ module ExcludedMiddle
  AC-gives-EM {𝓤} pe ac =
   Ω-discrete-gives-EM (fe _ _) (pe _)
    (ac-renders-all-sets-discrete {𝓤 ⁺} ac (Ω 𝓤)
-     (Ω-is-set (fe 𝓤 𝓤) (pe 𝓤)))
+                                 (Ω-is-set (fe 𝓤 𝓤) (pe 𝓤)))
 
  Choice-gives-Excluded-Middle : PropExt
                               → Axiom-of-Choice
@@ -578,11 +583,11 @@ module choice-functions
    II (ε⁺ , f) x = ε , ε-behaviour
 
     where
-     ε' : (A : 𝓟 X) → decidable (is-inhabited A) → X
+     ε' : (A : 𝓟 X) → is-decidable (is-inhabited A) → X
      ε' A (inl i) = ε⁺ (A , i)
      ε' A (inr ν) = x
 
-     d : (A : 𝓟 X) → decidable (is-inhabited A)
+     d : (A : 𝓟 X) → is-decidable (is-inhabited A)
      d A = em (is-inhabited A) (being-inhabited-is-prop A)
 
      ε : 𝓟 X → X
@@ -590,7 +595,7 @@ module choice-functions
 
      ε'-behaviour : (A : 𝓟 X)
                   → is-inhabited A
-                  → (δ : decidable (is-inhabited A))
+                  → (δ : is-decidable (is-inhabited A))
                   →  ε' A δ ∈ A
      ε'-behaviour A _ (inl j) = f A j
      ε'-behaviour A i (inr ν) = 𝟘-elim (ν i)
@@ -620,7 +625,7 @@ module Observation
 
  decidability-observation : {X : 𝓤 ̇ } (a : 𝟚 → X)
                           → ((x : X) → ¬¬ (Σ i ꞉ 𝟚 , a i ＝ x) → Σ i ꞉ 𝟚 , a i ＝ x)
-                          → decidable (a ₀ ＝ a ₁)
+                          → is-decidable (a ₀ ＝ a ₁)
  decidability-observation {𝓤} {X} a c = claim (𝟚-is-discrete (s(r ₀)) (s(r ₁)))
   where
    Y = Σ x ꞉ X , ¬¬ (Σ i ꞉ 𝟚 , a i ＝ x)
@@ -655,8 +660,36 @@ module Observation
    s-a : {i j : 𝟚} → s(r i) ＝ s(r j) → a i ＝ a j
    s-a p = r-a (s-lc p)
 
-   claim : decidable (s(r ₀) ＝ s(r ₁)) → decidable (a ₀ ＝ a ₁)
+   claim : is-decidable (s(r ₀) ＝ s(r ₁)) → is-decidable (a ₀ ＝ a ₁)
    claim (inl p) = inl (s-a p)
    claim (inr u) = inr (λ p → u (a-s p))
 
 \end{code}
+
+Added Friday 8th September 2023.
+
+The axiom of propositional choice from
+https://doi.org/10.23638/LMCS-13(1:15)2017
+
+\begin{code}
+
+module Propositional-Choice
+        (pt : propositional-truncations-exist)
+        where
+
+ open PropositionalTruncation pt
+
+ PAC : {𝓤 𝓥 : Universe} → (𝓤 ⊔ 𝓥)⁺ ̇
+ PAC {𝓤} {𝓥} = (P : 𝓤 ̇ ) (Y : P → 𝓥 ̇ )
+              → is-set P
+              → (Π p ꞉ P , ∥ Y p ∥)
+              → ∥(Π p ꞉ P , Y p)∥
+
+\end{code}
+
+Notice that we don't require that this is a family of sets. Notice
+also that excluded middle implies PAC. For more information, see
+Theorem 7.7 of the above reference.
+
+TODO. Are these and more facts about this. Some of them can be adapted
+from this Agda file: https://www.cs.bham.ac.uk/~mhe/GeneralizedHedberg/html/GeneralizedHedberg.html

@@ -2,11 +2,11 @@ Martin Escardo, sometime between 2014 and 2021.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module Fin.Embeddings where
 
-open import UF.Subsingletons renaming (⊤Ω to ⊤)
+open import UF.Subsingletons
 
 open import Fin.Properties
 open import Fin.Type

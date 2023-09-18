@@ -4,7 +4,7 @@ Brouwer ordinal codes.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module Ordinals.Brouwer where
 

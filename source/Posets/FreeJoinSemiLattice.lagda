@@ -8,7 +8,7 @@ subsets of X.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import UF.PropTrunc
 
@@ -24,10 +24,12 @@ open import Posets.JoinSemiLattices
 open import UF.Base
 open import UF.Equiv
 open import UF.FunExt
+open import UF.Hedberg
 open import UF.ImageAndSurjection pt
 open import UF.Lower-FunExt
 open import UF.Powerset
 open import UF.Powerset-Fin pt
+open import UF.Sets
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 

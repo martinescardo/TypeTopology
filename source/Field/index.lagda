@@ -2,7 +2,7 @@ Andrew Sneap
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module Field.index where
 

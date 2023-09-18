@@ -6,7 +6,7 @@ still use the terminology "ordinal" here.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module Ordinals.WellOrderArithmetic where
 
@@ -14,8 +14,9 @@ open import MLTT.Spartan hiding (transitive)
 open import Ordinals.Notions
 
 open import UF.Base
-open import UF.Subsingletons
 open import UF.FunExt
+open import UF.Subsingletons
+open import UF.Subsingletons-Properties
 
 \end{code}
 
@@ -46,7 +47,7 @@ module prop
  transitive x y z a = 𝟘-elim a
 
  well-founded : is-well-founded _<_
- well-founded x = step (λ y a → 𝟘-elim a)
+ well-founded x = acc (λ y a → 𝟘-elim a)
 
  well-order : is-well-order _<_
  well-order = prop-valued , well-founded , extensional , transitive
@@ -125,14 +126,14 @@ and then adapt the following definitions.
  well-founded w w' = g
   where
    φ : (x : X) → is-accessible _<_ x → is-accessible _⊏_ (inl x)
-   φ x (step σ) = step τ
+   φ x (acc σ) = acc τ
     where
      τ : (s : X + Y) → s ⊏ inl x → is-accessible _⊏_ s
      τ (inl x') l = φ x' (σ x' l)
      τ (inr y') l = 𝟘-elim l
 
    γ : (y : Y) → is-accessible _≺_ y → is-accessible _⊏_ (inr y)
-   γ y (step σ) = step τ
+   γ y (acc σ) = acc τ
     where
      τ : (s : X + Y) → s ⊏ inr y → is-accessible _⊏_ s
      τ (inl x)  l = φ x (w x)
@@ -248,7 +249,7 @@ module times
    P = is-accessible _⊏_
 
    γ : (x : X) → ((x' : X) → x' < x → (y' : Y) → P (x' , y')) → (y : Y) → P (x , y)
-   γ x s = transfinite-induction _≺_ w' (λ y → P (x , y)) (λ y f → step (ψ y f))
+   γ x s = transfinite-induction _≺_ w' (λ y → P (x , y)) (λ y f → acc (ψ y f))
     where
      ψ : (y : Y) → ((y' : Y) → y' ≺ y → P (x , y')) → (z' : X × Y) → z' ⊏ (x , y) → P z'
      ψ y f (x' , y') (inl l) = s x' l y'
@@ -389,7 +390,7 @@ retract-accessible _<_ _≺_ r s η φ = transfinite-induction' _<_ P γ
   P = λ x → is-accessible _≺_ (r x)
 
   γ : ∀ x → (∀ x' → x' < x → is-accessible _≺_ (r x')) → is-accessible _≺_ (r x)
-  γ x τ = step σ
+  γ x τ = acc σ
    where
     σ : ∀ y → y ≺ r x → is-accessible _≺_ y
     σ y l = transport (is-accessible _≺_) (η y) m
@@ -562,7 +563,7 @@ lemma.
 
  well-founded : ((p : P) → is-well-founded (_<_ {p}))
               → is-well-founded _≺_
- well-founded w u = step σ
+ well-founded w u = acc σ
   where
    σ : (v : Π X) → v ≺ u → is-accessible _≺_ v
    σ v (p , l) = d
@@ -650,7 +651,7 @@ module sum
      → (y : Y x) → P (x , y)
    γ x s = transfinite-induction _≺_ (w' x)
             (λ y → P (x , y))
-            (λ y f → step (ψ y f))
+            (λ y f → acc (ψ y f))
     where
      ψ : (y : Y x)
        → ((y' : Y x) → y' ≺ y → P (x , y'))
@@ -822,7 +823,7 @@ module sum-top
 
 \begin{code}
 
-open import TypeTopology.DiscreteAndSeparated
+open import UF.DiscreteAndSeparated
 
 module sum-cotransitive
         (fe : FunExt)

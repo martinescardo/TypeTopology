@@ -5,7 +5,7 @@ particular, this dcpo is algebraic.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline --lossy-unification #-}
+{-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
 
 open import MLTT.Spartan
 
@@ -21,8 +21,8 @@ module DomainTheory.Lifting.LiftingSetAlgebraic
        where
 
 open import UF.Equiv
-open import UF.Miscelanea
 open import UF.ImageAndSurjection pt
+open import UF.Sets
 open import UF.Subsingletons-FunExt
 
 open PropositionalTruncation pt

@@ -5,12 +5,14 @@ another file.
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --auto-inline #-} -- --exact-split
+{-# OPTIONS --safe --without-K #-} -- --exact-split
 
 
 module Games.TicTacToe2 where
 
 open import MLTT.Spartan hiding (J)
+open import MLTT.Fin
+open import MLTT.List
 
 data 𝟛 : Type where
  O-wins draw X-wins : 𝟛
@@ -18,7 +20,8 @@ data 𝟛 : Type where
 open import Games.Constructor 𝟛
 open import Games.FiniteHistoryDependent 𝟛
 open import Games.TypeTrees
-open import MLTT.NonSpartanMLTTTypes
+open import Games.J
+open import MLTT.Athenian
 open import TypeTopology.SigmaDiscreteAndTotallySeparated
 
 open list-util
@@ -123,6 +126,8 @@ predicate q:
       k X-wins = y , a
       k r      = g vs b
 
+  open J-definitions 𝟛
+
   argmin : (m : Cell) (ms : List Cell) → 𝟛 → (Move (m ∷ ms) → 𝟛) → Move (m ∷ ms)
   argmin m ms r q = argmax m ms (flip r) (λ xs → flip (q xs))
 
@@ -132,8 +137,8 @@ predicate q:
   arg O (m ∷ ms) e q = argmin m ms (q (m , ||-left-intro (m is-in ms) (==-refl m))) q
 
   play : (b : Board) → Move (available-moves b) → Board
-  play (board X as xs os) (c , e) = board O (remove-first c as) (insert c xs) os
-  play (board O as xs os) (c , e) = board X (remove-first c as) xs            (insert c os)
+  play (board X as xs os) (c , e) = board O (remove c as) (insert c xs) os
+  play (board O as xs os) (c , e) = board X (remove c as) xs            (insert c os)
 
   transition : Board → 𝟛 + (Σ M ꞉ Type , (M → Board) × J M)
   transition b@(board next as xs os) =
@@ -153,7 +158,7 @@ s₂ : Path (Xt tic-tac-toe₂)
 s₂ = strategic-path (selection-strategy (selections tic-tac-toe₂J) (q tic-tac-toe₂))
 
 u₂ : Path (Xt tic-tac-toe₂)
-u₂ = J-sequence (selections tic-tac-toe₂J) (q tic-tac-toe₂)
+u₂ = sequenceᴶ (selections tic-tac-toe₂J) (q tic-tac-toe₂)
 
 l₂ : ℕ
 l₂ = plength s₂
@@ -174,7 +179,7 @@ l₂-test = refl
 
 {- slow
 
-open import NonSpartanMLTTTypes
+open import Athenian
 
 u₂-test : s₂ ＝ (𝟎 :: refl)
            :: ((𝟒 :: refl)

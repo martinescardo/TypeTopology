@@ -2,10 +2,11 @@ Martin Escardo
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module Taboos.index where
 
+import Taboos.Decomposability
 import Taboos.BasicDiscontinuity
 import Taboos.LPO
 import Taboos.WLPO

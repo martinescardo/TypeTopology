@@ -4,9 +4,9 @@ Based on `ayberkt/formal-topology-in-UF`.
 
 \begin{code}[hide]
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline --lossy-unification #-}
+{-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
 
-open import MLTT.Spartan
+open import MLTT.Spartan hiding (𝟚)
 open import UF.Base
 open import UF.PropTrunc
 open import UF.FunExt
@@ -19,11 +19,13 @@ module Locales.CompactRegular
         (fe : Fun-Ext)
        where
 
-open import UF.Subsingletons
-open import UF.Logic
-open import UF.Equiv using (_≃_; logically-equivalent-props-give-is-equiv)
-open import Locales.Frame pt fe hiding (is-directed)
 open import Locales.AdjointFunctorTheoremForFrames
+open import Locales.Frame pt fe hiding (is-directed)
+open import Slice.Family
+open import UF.Equiv using (_≃_; logically-equivalent-props-give-is-equiv)
+open import UF.Logic
+open import UF.SubtypeClassifier
+open import UF.Subsingletons
 
 open AllCombinators pt fe
 open PropositionalTruncation pt
@@ -46,7 +48,7 @@ good idea to address this duplication at some point.
 is-directed : (P : Poset 𝓤 𝓥) → (S : Fam 𝓦 ∣ P ∣ₚ) → Ω (𝓥 ⊔ 𝓦)
 is-directed P (I , s) =
    ∥ I ∥Ω
- ∧ (Ɐ i ∶ I , Ɐ j ∶ I , Ǝ k ∶ I , ((s i ≤ s k) ∧ (s j ≤ s k)) holds)
+ ∧ (Ɐ i ꞉ I , Ɐ j ꞉ I , Ǝ k ꞉ I , ((s i ≤ s k) ∧ (s j ≤ s k)) holds)
   where open PosetNotation P using (_≤_)
 
 \end{code}
@@ -55,8 +57,8 @@ is-directed P (I , s) =
 
 way-below : (F : Frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
 way-below {𝓤 = 𝓤} {𝓦 = 𝓦} F U V =
- Ɐ S ∶ Fam 𝓦 ⟨ F ⟩ , is-directed (poset-of F) S ⇒
-  V ≤ (⋁[ F ] S) ⇒ (Ǝ i ∶ index S , (U ≤ S [ i ]) holds)
+ Ɐ S ꞉ Fam 𝓦 ⟨ F ⟩ , is-directed (poset-of F) S ⇒
+  V ≤ (⋁[ F ] S) ⇒ (Ǝ i ꞉ index S , (U ≤ S [ i ]) holds)
    where
     open PosetNotation (poset-of F) using (_≤_)
 
@@ -164,13 +166,13 @@ complement” predicate (i.e. is well inside itself) is propositional.
 
 \begin{code}
 
-well-inside₀-is-not-prop : is-univalent 𝓤₀
-                        → Σ F ꞉ Frame 𝓤₁ 𝓤₀ 𝓤₀ ,
-                           (¬ ((U V : ⟨ F ⟩) → is-prop (U ⋜₀[ F ] V)))
-well-inside₀-is-not-prop ua = IF , ε
+well-inside₀-is-not-prop : propext 𝓤₀
+                         → Σ F ꞉ Frame 𝓤₁ 𝓤₀ 𝓤₀ ,
+                            (¬ ((U V : ⟨ F ⟩) → is-prop (U ⋜₀[ F ] V)))
+well-inside₀-is-not-prop pe = IF , ε
  where
   IF : Frame 𝓤₁ 𝓤₀ 𝓤₀ -- “IF” standing for “initial frame”.
-  IF = 𝟎-𝔽𝕣𝕞 ua
+  IF = 𝟎-𝔽𝕣𝕞 pe
 
   γ₂ : 𝟎[ IF ] ⋜₀[ IF ] 𝟏[ IF ]
   γ₂ = 𝟏[ IF ] , (β , γ)
@@ -195,8 +197,8 @@ well-inside₀-is-not-prop ua = IF , ε
   𝟎-is-not-𝟏 : ¬ (𝟎[ IF ] ＝ 𝟏[ IF ])
   𝟎-is-not-𝟏 p = γ
    where
-    γ : ⊥Ω holds
-    γ = transport _holds (𝟏[ IF ] ＝⟨ p ⁻¹ ⟩ 𝟎[ IF ] ＝⟨ 𝟎-of-IF-is-⊥ ua ⟩ ⊥Ω ∎) ⋆
+    γ : ⊥ holds
+    γ = transport _holds (𝟏[ IF ] ＝⟨ p ⁻¹ ⟩ 𝟎[ IF ] ＝⟨ 𝟎-of-IF-is-⊥ pe ⟩ ⊥ ∎) ⋆
 
   ε : ¬ ((U V : ⟨ IF ⟩) → is-prop (well-inside₀ IF U V))
   ε ψ = 𝟎-is-not-𝟏 (pr₁ (from-Σ-＝ δ))
@@ -377,8 +379,11 @@ complementation-is-symmetric F x y (φ , ψ) = † , ‡
         Ⅸ = ap (λ - → x′ ∨[ F ] -) (pr₂ ψ)
         Ⅹ = 𝟏-right-annihilator-for-∨ F x′
 
+is-complement-of : (F : Frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → ⟨ F ⟩ → 𝓤  ̇
+is-complement-of F x′ x = (x ∧[ F ] x′ ＝ 𝟎[ F ]) × (x ∨[ F ] x′ ＝ 𝟏[ F ])
+
 is-clopen₀ : (F : Frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → 𝓤 ̇
-is-clopen₀ F U = Σ W ꞉ ⟨ F ⟩ , (U ∧[ F ] W ＝ 𝟎[ F ]) × (U ∨[ F ] W ＝ 𝟏[ F ])
+is-clopen₀ F U = Σ W ꞉ ⟨ F ⟩ , is-complement-of F W U
 
 is-clopen₀-is-prop : (F : Frame 𝓤 𝓥 𝓦) → (U : ⟨ F ⟩) → is-prop (is-clopen₀ F U)
 is-clopen₀-is-prop F U (W₁ , p₁ , q₁) (W₂ , p₂ , q₂) = to-subtype-＝ β γ
@@ -410,6 +415,19 @@ is-clopen₀-is-prop F U (W₁ , p₁ , q₁) (W₂ , p₂ , q₂) = to-subtype-
         vi   = binary-distributivity F W₂ U W₁ ⁻¹
         vii  = ap (λ - → W₂ ∧[ F ] -) q₁
         viii = 𝟏-right-unit-of-∧ F W₂
+
+complements-are-unique : (F : Frame 𝓤 𝓥 𝓦) (U V₁ V₂ : ⟨ F ⟩)
+                       → is-complement-of F V₁ U
+                       → is-complement-of F V₂ U
+                       → V₁ ＝ V₂
+complements-are-unique F U V₁ V₂ p q =
+ pr₁ (from-Σ-＝ (is-clopen₀-is-prop F U φ ψ))
+  where
+   φ : is-clopen₀ F U
+   φ = V₁ , p
+
+   ψ : is-clopen₀ F U
+   ψ = V₂ , q
 
 is-clopen : (F : Frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → Ω 𝓤
 is-clopen F U = is-clopen₀ F U , is-clopen₀-is-prop F U
@@ -449,6 +467,22 @@ clopenness-equivalent-to-well-inside-itself F U =
 
   γ : 𝟎[ F ] ∨[ F ] 𝟏[ F ] ＝ 𝟏[ F ]
   γ = 𝟏-right-annihilator-for-∨ F 𝟎[ F ]
+
+𝟏-is-clopen : (F : Frame 𝓤 𝓥 𝓦) → 𝟏[ F ] ⋜₀[ F ] 𝟏[ F ]
+𝟏-is-clopen F = 𝟎[ F ] , β , γ
+ where
+  β : 𝟏[ F ] ∧[ F ] 𝟎[ F ] ＝ 𝟎[ F ]
+  β = 𝟎-right-annihilator-for-∧ F 𝟏[ F ]
+
+  γ : 𝟏[ F ] ∨[ F ] 𝟎[ F ] ＝ 𝟏[ F ]
+  γ = 𝟏-left-annihilator-for-∨ F 𝟎[ F ]
+
+𝟎-is-compact : (F : Frame 𝓤 𝓥 𝓦) → is-compact-open F 𝟎[ F ] holds
+𝟎-is-compact F S (∣i∣ , _) p = ∥∥-rec ∃-is-prop † ∣i∣
+ where
+  † : index S
+    → ∃ i ꞉ index S , (𝟎[ F ] ≤[ poset-of F ] (S [ i ])) holds
+  † i = ∣ i , 𝟎-is-bottom F (S [ i ]) ∣
 
 \end{code}
 
@@ -522,6 +556,41 @@ well-inside-is-join-stable F {U₁} {U₂} {V} =
 
 \end{code}
 
+\begin{code}
+
+frame-homomorphisms-preserve-complements : (F G : Frame 𝓤 𝓥 𝓦)
+                                         → (h : F ─f→ G)
+                                         → {x x′ : ⟨ F ⟩}
+                                         → is-complement-of F x′ x
+                                         → is-complement-of G (h .pr₁ x) (h .pr₁ x′)
+frame-homomorphisms-preserve-complements F G 𝒽@(h , _ , μ) {x} {x′} (φ , ψ) = † , ‡
+ where
+  † : (h x′) ∧[ G ] (h x) ＝ 𝟎[ G ]
+  † = h x′ ∧[ G ] h x   ＝⟨ Ⅰ ⟩
+      h (x′ ∧[ F ] x)   ＝⟨ Ⅱ ⟩
+      h 𝟎[ F ]          ＝⟨ Ⅲ ⟩
+      𝟎[ G ]            ∎
+       where
+        Ⅰ = frame-homomorphisms-preserve-meets F G 𝒽 x′ x ⁻¹
+        Ⅱ = ap h (x′ ∧[ F ] x   ＝⟨ ∧[ F ]-is-commutative x′ x ⟩
+                  x ∧[ F ] x′   ＝⟨ φ ⟩
+                  𝟎[ F ]        ∎)
+        Ⅲ = frame-homomorphisms-preserve-bottom F G 𝒽
+
+  ‡ : h x′ ∨[ G ] h x ＝ 𝟏[ G ]
+  ‡ = h x′ ∨[ G ] h x   ＝⟨ Ⅰ ⟩
+      h (x′ ∨[ F ] x)   ＝⟨ Ⅱ ⟩
+      h 𝟏[ F ]          ＝⟨ Ⅲ ⟩
+      𝟏[ G ]            ∎
+       where
+        Ⅰ = frame-homomorphisms-preserve-binary-joins F G 𝒽 x′ x ⁻¹
+        Ⅱ = ap h (x′ ∨[ F ] x ＝⟨ ∨[ F ]-is-commutative x′ x ⟩
+                  x ∨[ F ] x′ ＝⟨ ψ ⟩
+                  𝟏[ F ]      ∎)
+        Ⅲ = frame-homomorphisms-preserve-top F G 𝒽
+
+\end{code}
+
 \section{Some properties}
 
 \begin{code}
@@ -538,7 +607,7 @@ well-inside-is-join-stable F {U₁} {U₂} {V} =
   β : ((U ∨[ F ] (⋁[ F ] S)) is-an-upper-bound-of ⁅ U ∨[ F ] Sᵢ ∣ Sᵢ ε S ⁆) holds
   β i = ∨[ F ]-right-monotone (⋁[ F ]-upper S i)
 
-  γ : (Ɐ (U′ , _) ∶ upper-bound ⁅ U ∨[ F ] Sᵢ ∣ Sᵢ ε S ⁆ ,
+  γ : (Ɐ (U′ , _) ꞉ upper-bound ⁅ U ∨[ F ] Sᵢ ∣ Sᵢ ε S ⁆ ,
         ((U ∨[ F ] (⋁[ F ] S)) ≤ U′)) holds
   γ (u′ , p) = ∨[ F ]-least γ₁ γ₂
    where
@@ -729,7 +798,7 @@ basic covering family for some open `U` is well inside `U`.
 is-regular-basis : (F : Frame 𝓤 𝓥 𝓦)
                  → (ℬ : Fam 𝓦 ⟨ F ⟩) → (β : is-basis-for F ℬ) → Ω (𝓤 ⊔ 𝓦)
 is-regular-basis F ℬ β =
- Ɐ U ∶ ⟨ F ⟩ , let 𝒥 = pr₁ (β U) in Ɐ j ∶ (index 𝒥) , ℬ [ 𝒥 [ j ] ] ⋜[ F ] U
+ Ɐ U ꞉ ⟨ F ⟩ , let 𝒥 = pr₁ (β U) in Ɐ j ꞉ (index 𝒥) , ℬ [ 𝒥 [ j ] ] ⋜[ F ] U
 
 \end{code}
 
@@ -768,7 +837,7 @@ directification-preserves-regularity F ℬ β r U = γ
   𝒥  = pr₁ (β U)
   𝒥↑ = pr₁ (β↑ U)
 
-  γ : (Ɐ js ∶ index 𝒥↑ , ℬ↑ [ 𝒥↑ [ js ] ] ⋜[ F ] U) holds
+  γ : (Ɐ js ꞉ index 𝒥↑ , ℬ↑ [ 𝒥↑ [ js ] ] ⋜[ F ] U) holds
   γ []       = 𝟎-is-well-inside-anything F U
   γ (j ∷ js) = well-inside-is-join-stable F (r U j) (γ js)
 
@@ -825,7 +894,7 @@ which the result we are interested in follows:
 
 compacts-are-clopen-in-regular-frames : (F : Frame 𝓤 𝓥 𝓦)
                                       → is-regular F holds
-                                      → (Ɐ U ∶ ⟨ F ⟩ ,
+                                      → (Ɐ U ꞉ ⟨ F ⟩ ,
                                           is-compact-open F U ⇒ is-clopen F U) holds
 compacts-are-clopen-in-regular-frames F r U =
  well-inside-itself-implies-clopen F U ∘ ≪-implies-⋜-in-regular-frames F r U U
@@ -840,18 +909,17 @@ clopen elements.
 \begin{code}
 
 consists-of-clopens : (F : Frame 𝓤 𝓥 𝓦) → (S : Fam 𝓦 ⟨ F ⟩) → Ω (𝓤 ⊔ 𝓦)
-consists-of-clopens F S = Ɐ i ∶ index S , is-clopen F (S [ i ])
+consists-of-clopens F S = Ɐ i ꞉ index S , is-clopen F (S [ i ])
 
 zero-dimensionalᴰ : Frame 𝓤 𝓥 𝓦 → (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺) ̇
 zero-dimensionalᴰ {𝓦 = 𝓦} F =
- Σ ℬ ꞉ Fam 𝓦 ⟨ F ⟩ , is-basis-for F ℬ
-                   × closed-under-finite-joins F ℬ holds
+ Σ ℬ ꞉ Fam 𝓦 ⟨ F ⟩ , is-directed-basis F ℬ
                    × consists-of-clopens F ℬ holds
 
 basis-of-zero-dimensionalᴰ-frame : (L : Frame 𝓤 𝓥 𝓦)
                                  → zero-dimensionalᴰ L
                                  → Σ ℬ ꞉ Fam 𝓦 ⟨ L ⟩ , is-basis-for L ℬ
-basis-of-zero-dimensionalᴰ-frame L (ℬ , β , _) = ℬ , β
+basis-of-zero-dimensionalᴰ-frame L (ℬ , (β , _) , _) = ℬ , β
 
 is-zero-dimensional : Frame 𝓤 𝓥 𝓦 → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
 is-zero-dimensional {𝓦 = 𝓦} F = ∥ zero-dimensionalᴰ F ∥Ω
@@ -859,7 +927,7 @@ is-zero-dimensional {𝓦 = 𝓦} F = ∥ zero-dimensionalᴰ F ∥Ω
 basis-of-zero-dimensional-frame : (F : Frame 𝓤 𝓥 𝓦)
                                 → (is-zero-dimensional F ⇒ has-basis F) holds
 basis-of-zero-dimensional-frame F =
- ∥∥-rec (holds-is-prop (has-basis F)) λ { (ℬ , δ , _) → ∣ ℬ , δ ∣ }
+ ∥∥-rec (holds-is-prop (has-basis F)) λ { (ℬ , (δ , _) , _) → ∣ ℬ , δ ∣ }
 
 \end{code}
 
@@ -914,6 +982,23 @@ clopens-are-closed-under-∨ F x y (x′ , ϡ₁ , ϟ₁) (y′ , ϡ₂ , ϟ₂)
    ‡ : (x ∨[ F ] y) ∨[ F ] (x′ ∧[ F ] y′) ＝ 𝟏[ F ]
    ‡ = only-𝟏-is-above-𝟏 F _ ‡₁
 
+clopens-are-closed-under-∧ : (F : Frame 𝓤 𝓥 𝓦) (x y : ⟨ F ⟩)
+                           → (is-clopen F x
+                           ⇒  is-clopen F y
+                           ⇒  is-clopen F (x ∧[ F ] y)) holds
+clopens-are-closed-under-∧ F x y ϟ₁@(x′ , φ₁ , φ₂) ϟ₂@(y′ , ψ₁ , ψ₂) = (x′ ∨[ F ] y′) , †
+ where
+  ϡ₁ : is-boolean-complement-of F x x′ holds
+  ϡ₁ = (x′ ∧[ F ] x ＝⟨ ∧[ F ]-is-commutative x′ x ⟩ x ∧[ F ] x′ ＝⟨ φ₁ ⟩ 𝟎[ F ] ∎)
+     , (x′ ∨[ F ] x ＝⟨ ∨[ F ]-is-commutative x′ x ⟩ x ∨[ F ] x′ ＝⟨ φ₂ ⟩ 𝟏[ F ] ∎)
+
+  ϡ₂ : is-boolean-complement-of F y y′ holds
+  ϡ₂ = (y′ ∧[ F ] y ＝⟨ ∧[ F ]-is-commutative y′ y ⟩ y ∧[ F ] y′ ＝⟨ ψ₁ ⟩ 𝟎[ F ] ∎)
+     , (y′ ∨[ F ] y ＝⟨ ∨[ F ]-is-commutative y′ y ⟩ y ∨[ F ] y′ ＝⟨ ψ₂ ⟩ 𝟏[ F ] ∎)
+
+  † : is-boolean-complement-of F (x′ ∨[ F ] y′) (x ∧[ F ] y) holds
+  † = ∧-complement F ϡ₁ ϡ₂
+
 directification-preserves-clopenness : (F : Frame 𝓤 𝓥 𝓦)
                                      → (ℬ : Fam 𝓦 ⟨ F ⟩)
                                      → (consists-of-clopens F ℬ
@@ -923,7 +1008,9 @@ directification-preserves-clopenness F ℬ ξ []       = 𝟎-is-clopen F
 directification-preserves-clopenness F ℬ ξ (i ∷ is) =
  clopens-are-closed-under-∨ F (ℬ [ i ]) (directify F ℬ [ is ]) (ξ i) ℐℋ
   where
-   ℐℋ = directification-preserves-clopenness F ℬ ξ is
+   abstract
+    ℐℋ : is-clopen F (directify F ℬ [ is ]) holds
+    ℐℋ = directification-preserves-clopenness F ℬ ξ is
 
 \end{code}
 
@@ -940,7 +1027,7 @@ zero-dimensional-locales-are-regular {𝓦 = 𝓦} F =
    open Joins (λ x y → x ≤[ poset-of F ] y)
 
    γ : zero-dimensionalᴰ F → is-regular F holds
-   γ (ℬ , β , _ , ξ) = ∣ ℬ , δ ∣
+   γ (ℬ , β , ξ) = ∣ ℬ , δ ∣
     where
      δ : Π U ꞉ ⟨ F ⟩ ,
           Σ J ꞉ Fam 𝓦 (index ℬ) ,
@@ -948,16 +1035,24 @@ zero-dimensional-locales-are-regular {𝓦 = 𝓦} F =
            × (Π i ꞉ index J , (ℬ [ J [ i ] ] ⋜[ F ] U) holds)
      δ U = 𝒥 , c , ε
       where
-       𝒥 = pr₁ (β U)
+       𝒥 = pr₁ (pr₁ β U)
 
        c : (U is-lub-of ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆) holds
-       c = pr₂ (β U)
+       c = pr₂ (pr₁ β U)
 
        ε : Π i ꞉ index 𝒥 , (ℬ [ 𝒥 [ i ] ] ⋜[ F ] U) holds
        ε i = ↑↑-is-upwards-closed F ∣ ξ (𝒥 [ i ]) ∣ (pr₁ c i)
         where
          η : ((ℬ [ 𝒥 [ i ] ]) ≤[ poset-of F ] (ℬ [ 𝒥 [ i ] ])) holds
          η = ≤-is-reflexive (poset-of F) (ℬ [ 𝒥 [ i ] ])
+
+compacts-are-clopen-in-zero-dimensional-locales : (F : Frame 𝓤 𝓥 𝓦)
+                                                → is-zero-dimensional F holds
+                                                → (C : ⟨ F ⟩)
+                                                → is-compact-open F C holds
+                                                → is-clopen F C holds
+compacts-are-clopen-in-zero-dimensional-locales F =
+ compacts-are-clopen-in-regular-frames F ∘ zero-dimensional-locales-are-regular F
 
 \end{code}
 
@@ -999,12 +1094,12 @@ clopen-iff-compact-in-stone-frame F (κ , ζ) U = β , γ
 \begin{code}
 
 contains-top : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦)
-contains-top F U = Ǝ t ∶ index U , is-top F (U [ t ]) holds
+contains-top F U = Ǝ t ꞉ index U , is-top F (U [ t ]) holds
 
 closed-under-binary-meets : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦)
 closed-under-binary-meets F 𝒮 =
- Ɐ i ∶ index 𝒮 , Ɐ j ∶ index 𝒮 ,
-  Ǝ k ∶ index 𝒮 , ((𝒮 [ k ]) is-glb-of (𝒮 [ i ] , 𝒮 [ j ])) holds
+ Ɐ i ꞉ index 𝒮 , Ɐ j ꞉ index 𝒮 ,
+  Ǝ k ꞉ index 𝒮 , ((𝒮 [ k ]) is-glb-of (𝒮 [ i ] , 𝒮 [ j ])) holds
    where
     open Meets (λ x y → x ≤[ poset-of F ] y)
 
@@ -1012,7 +1107,7 @@ closed-under-finite-meets : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ �
 closed-under-finite-meets F S = contains-top F S ∧ closed-under-binary-meets F S
 
 consists-of-compact-opens : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
-consists-of-compact-opens F U = Ɐ i ∶ index U , is-compact-open F (U [ i ])
+consists-of-compact-opens F U = Ɐ i ꞉ index U , is-compact-open F (U [ i ])
 
 \end{code}
 
@@ -1074,7 +1169,7 @@ coherence-list F ℬ (φ , ψ) (i ∷ is) = ∥∥-rec ∥∥-is-prop † ih
       β : ((ℬ [ j ]) is-a-lower-bound-of (ℬ [ i ] , finite-meet F ℬ is)) holds
       β = transport (λ - → ((ℬ [ j ]) is-a-lower-bound-of (ℬ [ i ] , -)) holds) p ξ
 
-      γ : (Ɐ (l , _) ∶ lower-bound (ℬ [ i ] , finite-meet F ℬ is) ,
+      γ : (Ɐ (l , _) ꞉ lower-bound (ℬ [ i ] , finite-meet F ℬ is) ,
             l ≤[ poset-of F ] (ℬ [ j ])) holds
       γ (l , ζ) = l                                  ≤⟨ Ⅰ ⟩
                   ℬ [ i ] ∧[ F ] finite-meet F ℬ is  ＝⟨ Ⅱ ⟩ₚ
@@ -1094,88 +1189,7 @@ coherence-list F ℬ (φ , ψ) (i ∷ is) = ∥∥-rec ∥∥-is-prop † ih
 is-spectral-map : (F : Frame 𝓤 𝓥 𝓥) (G : Frame 𝓤' 𝓥 𝓥)
                 → (F ─f→ G) → Ω (𝓤 ⊔ 𝓤' ⊔ 𝓥 ⁺)
 is-spectral-map F G (f , _) =
- Ɐ x ∶ ⟨ F ⟩ , is-compact-open F x  ⇒ is-compact-open G (f x)
-
-\end{code}
-
-\begin{code}
-
-open Locale
-
-module PerfectMaps (X : Locale 𝓤 𝓥 𝓥) (Y : Locale 𝓤' 𝓥 𝓥)
-                                      (𝒷 : has-basis (𝒪 Y) holds) where
-
- open AdjointFunctorTheorem pt fe X Y 𝒷
- open ContinuousMapNotation X Y
-
-\end{code}
-
-A continuous map `f : X → Y` is called *perfect* if its right adjoint is
-Scott-continuous.
-
-\begin{code}
-
- is-perfect-map : (X ─c→ Y) → Ω (𝓤 ⊔ 𝓤' ⊔ 𝓥 ⁺)
- is-perfect-map f = is-scott-continuous (𝒪 X) (𝒪 Y) (pr₁ (right-adjoint-of f))
-
-\end{code}
-
-\begin{code}
-
- perfect-preserves-way-below : (𝒻 : X ─c→ Y)
-                             → is-perfect-map 𝒻 holds
-                             → (U V : ⟨ 𝒪 Y ⟩)
-                             → (U ≪[ 𝒪 Y ] V) holds
-                             → (𝒻 ⋆∙ U ≪[ 𝒪 X ] 𝒻 ⋆∙ V) holds
- perfect-preserves-way-below f φ U V ϑ S δ p = γ
-  where
-   open GaloisConnectionBetween (poset-of (𝒪 Y)) (poset-of (𝒪 X))
-   open PosetReasoning (poset-of (𝒪 Y))
-
-   T : Fam 𝓥 ⟨ 𝒪 Y ⟩
-   T = ⁅ f ⁎· V ∣ V ε S ⁆
-
-   ζ₁ : (V ≤[ poset-of (𝒪 Y) ] (f ⁎· (⋁[ 𝒪 X ] S))) holds
-   ζ₁ = adjunction-inequality-forward f (join-of (𝒪 X) S) V p
-
-   ζ₂ : (V ≤[ poset-of (𝒪 Y) ] (⋁[ 𝒪 Y ] ⁅ f ⁎· V ∣ V ε S ⁆)) holds
-   ζ₂ = V                             ≤⟨ ζ₁ ⟩
-        f ⁎· (⋁[ 𝒪 X ] S)             ＝⟨ †  ⟩ₚ
-        ⋁[ 𝒪 Y ] ⁅ f ⁎· V ∣ V ε S ⁆   ■
-         where
-          † = scott-continuous-join-eq (𝒪 X) (𝒪 Y) (f ⁎·_) φ S δ
-
-   T-is-directed : is-directed (poset-of (𝒪 Y)) T holds
-   T-is-directed =
-    monotone-image-on-directed-family-is-directed (𝒪 X) (𝒪 Y) S δ (f ⁎·_) μ
-     where
-      μ : is-monotonic (poset-of (𝒪 X)) (poset-of (𝒪 Y)) (f ⁎·_) holds
-      μ = pr₂ (right-adjoint-of f)
-
-   γ : (Ǝ k ∶ index S , ((f ⋆∙ U) ≤[ poset-of (𝒪 X) ] (S [ k ])) holds) holds
-   γ = ∥∥-rec ∃-is-prop ϵ (ϑ T T-is-directed ζ₂)
-    where
-     ϵ : _
-     ϵ (k , q) = ∣ k , † ∣
-      where
-       † : ((f ⋆∙ U) ≤[ poset-of (𝒪 X) ] (S [ k ])) holds
-       † = adjunction-inequality-backward f (S [ k ]) U q
-
- compact-codomain-of-perfect-map-implies-compact-domain : (𝒻 : X ─c→ Y)
-                                                        → is-perfect-map 𝒻 holds
-                                                        → is-compact (𝒪 Y) holds
-                                                        → is-compact (𝒪 X) holds
- compact-codomain-of-perfect-map-implies-compact-domain 𝒻@(f , φ , _) p κ = γ
-  where
-   β : (f 𝟏[ 𝒪 Y ] ≪[ 𝒪 X ] f 𝟏[ 𝒪 Y ]) holds
-   β = perfect-preserves-way-below 𝒻 p 𝟏[ 𝒪 Y ] 𝟏[ 𝒪 Y ] κ
-
-   γ : (𝟏[ 𝒪 X ] ≪[ 𝒪 X ] 𝟏[ 𝒪 X ]) holds
-   γ = transport (λ - → (- ≪[ 𝒪 X ] -) holds) φ β
-
- perfect-implies-spectral : (f : X ─c→ Y)
-                          → (is-perfect-map f ⇒ is-spectral-map (𝒪 Y) (𝒪 X) f) holds
- perfect-implies-spectral 𝒻@(f , _) φ U κ = perfect-preserves-way-below 𝒻 φ U U κ
+ Ɐ x ꞉ ⟨ F ⟩ , is-compact-open F x  ⇒ is-compact-open G (f x)
 
 \end{code}
 
@@ -1234,11 +1248,13 @@ Scott-continuous.
 
 compact-rel-syntax : (F : Frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
 compact-rel-syntax F U V =
- Ɐ W ∶ ⟨ F ⟩ , is-compact-open F W ⇒ W ≤[ poset-of F ] U ⇒ W ≤[ poset-of F ] V
+ Ɐ W ꞉ ⟨ F ⟩ , is-compact-open F W ⇒ W ≤[ poset-of F ] U ⇒ W ≤[ poset-of F ] V
 
 syntax compact-rel-syntax F U V = U ≤ₖ[ F ] V
 
-spectral-yoneda : (F : Frame 𝓤 𝓥 𝓦) → is-spectral F holds → (U V : ⟨ F ⟩)
+spectral-yoneda : (F : Frame 𝓤 𝓥 𝓦)
+                → is-spectral F holds
+                → (U V : ⟨ F ⟩)
                 → (U ≤ₖ[ F ] V ⇒ U ≤[ poset-of F ] V) holds
 spectral-yoneda {𝓦 = 𝓦} F σ U V χ =
  ∥∥-rec (holds-is-prop (U ≤[ poset-of F ] V)) γ σ
@@ -1274,48 +1290,191 @@ spectral-yoneda {𝓦 = 𝓦} F σ U V χ =
 
 \begin{code}
 
-compacts-are-basic-in-spectralᴰ-frames : (F : Frame 𝓤 𝓥 𝓦)
-                                       → (σ : spectralᴰ F)
-                                       → (U : ⟨ F ⟩)
-                                       → is-compact-open F U holds
-                                       → let
-                                          ℬ  = basisₛ F σ
-                                          I  = index ℬ
-                                         in
-                                          ∥ Σ i ꞉ I , U ＝ ℬ [ i ] ∥
-compacts-are-basic-in-spectralᴰ-frames {𝓦 = 𝓦} F σ@(_ , β , _) U κ =
- ∥∥-rec ∥∥-is-prop γ (κ ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆ d p₁)
+open Locale
+
+module PerfectMaps (X : Locale 𝓤 𝓥 𝓥) (Y : Locale 𝓤' 𝓥 𝓥)
+                                      (𝒷 : has-basis (𝒪 Y) holds) where
+
+ open AdjointFunctorTheorem pt fe X Y 𝒷
+ open ContinuousMapNotation X Y
+
+\end{code}
+
+A continuous map `f : X → Y` is called *perfect* if its right adjoint is
+Scott-continuous.
+
+\begin{code}
+
+ is-perfect-map : (X ─c→ Y) → Ω (𝓤 ⊔ 𝓤' ⊔ 𝓥 ⁺)
+ is-perfect-map f = is-scott-continuous (𝒪 X) (𝒪 Y) (pr₁ (right-adjoint-of f))
+
+\end{code}
+
+\begin{code}
+
+ perfect-preserves-way-below : (𝒻 : X ─c→ Y)
+                             → is-perfect-map 𝒻 holds
+                             → (U V : ⟨ 𝒪 Y ⟩)
+                             → (U ≪[ 𝒪 Y ] V) holds
+                             → (𝒻 ⋆∙ U ≪[ 𝒪 X ] 𝒻 ⋆∙ V) holds
+ perfect-preserves-way-below f φ U V ϑ S δ p = γ
+  where
+   open GaloisConnectionBetween (poset-of (𝒪 Y)) (poset-of (𝒪 X))
+   open PosetReasoning (poset-of (𝒪 Y))
+
+   T : Fam 𝓥 ⟨ 𝒪 Y ⟩
+   T = ⁅ f ⁎· V ∣ V ε S ⁆
+
+   ζ₁ : (V ≤[ poset-of (𝒪 Y) ] (f ⁎· (⋁[ 𝒪 X ] S))) holds
+   ζ₁ = adjunction-inequality-forward f (join-of (𝒪 X) S) V p
+
+   ζ₂ : (V ≤[ poset-of (𝒪 Y) ] (⋁[ 𝒪 Y ] ⁅ f ⁎· V ∣ V ε S ⁆)) holds
+   ζ₂ = V                             ≤⟨ ζ₁ ⟩
+        f ⁎· (⋁[ 𝒪 X ] S)             ＝⟨ †  ⟩ₚ
+        ⋁[ 𝒪 Y ] ⁅ f ⁎· V ∣ V ε S ⁆   ■
+         where
+          † = scott-continuous-join-eq (𝒪 X) (𝒪 Y) (f ⁎·_) φ S δ
+
+   T-is-directed : is-directed (poset-of (𝒪 Y)) T holds
+   T-is-directed =
+    monotone-image-on-directed-family-is-directed (𝒪 X) (𝒪 Y) S δ (f ⁎·_) μ
+     where
+      μ : is-monotonic (poset-of (𝒪 X)) (poset-of (𝒪 Y)) (f ⁎·_) holds
+      μ = pr₂ (right-adjoint-of f)
+
+   γ : (Ǝ k ꞉ index S , ((f ⋆∙ U) ≤[ poset-of (𝒪 X) ] (S [ k ])) holds) holds
+   γ = ∥∥-rec ∃-is-prop ϵ (ϑ T T-is-directed ζ₂)
+    where
+     ϵ : _
+     ϵ (k , q) = ∣ k , † ∣
+      where
+       † : ((f ⋆∙ U) ≤[ poset-of (𝒪 X) ] (S [ k ])) holds
+       † = adjunction-inequality-backward f (S [ k ]) U q
+
+ compact-codomain-of-perfect-map-implies-compact-domain : (𝒻 : X ─c→ Y)
+                                                        → is-perfect-map 𝒻 holds
+                                                        → is-compact (𝒪 Y) holds
+                                                        → is-compact (𝒪 X) holds
+ compact-codomain-of-perfect-map-implies-compact-domain 𝒻@(f , φ , _) p κ = γ
+  where
+   β : (f 𝟏[ 𝒪 Y ] ≪[ 𝒪 X ] f 𝟏[ 𝒪 Y ]) holds
+   β = perfect-preserves-way-below 𝒻 p 𝟏[ 𝒪 Y ] 𝟏[ 𝒪 Y ] κ
+
+   γ : (𝟏[ 𝒪 X ] ≪[ 𝒪 X ] 𝟏[ 𝒪 X ]) holds
+   γ = transport (λ - → (- ≪[ 𝒪 X ] -) holds) φ β
+
+ perfect-maps-are-spectral : (f : X ─c→ Y)
+                          → (is-perfect-map f ⇒ is-spectral-map (𝒪 Y) (𝒪 X) f) holds
+ perfect-maps-are-spectral 𝒻@(f , _) φ U κ = perfect-preserves-way-below 𝒻 φ U U κ
+
+ spectral-maps-are-perfect : (f : X ─c→ Y)
+                           → is-spectral (𝒪 Y) holds
+                           → (is-spectral-map (𝒪 Y) (𝒪 X) f ⇒ is-perfect-map f) holds
+ spectral-maps-are-perfect f 𝕤 σ S δ = † , ‡
+  where
+   open Joins (λ U V → U ≤[ poset-of (𝒪 Y) ] V)
+   open PosetReasoning (poset-of (𝒪 Y))
+
+   f⁺ : 𝒪 Y ─f→ 𝒪 X
+   f⁺ = f
+
+   f₊ : ⟨ 𝒪 X ⟩ → ⟨ 𝒪 Y ⟩
+   f₊ = right-adjoint-of f⁺ .pr₁
+
+   f₊-is-monotone : is-monotonic (poset-of (𝒪 X)) (poset-of (𝒪 Y)) f₊ holds
+   f₊-is-monotone = right-adjoint-of f⁺ .pr₂
+
+   † : (f₊ (⋁[ 𝒪 X ] S) is-an-upper-bound-of ⁅ f₊ V ∣ V ε S ⁆) holds
+   † i = f₊ (S [ i ]) ≤⟨ ※ ⟩ f₊ (⋁[ 𝒪 X ] S) ■
+    where
+     ※ = f₊-is-monotone (S [ i ] , ⋁[ 𝒪 X ] S) (⋁[ 𝒪 X ]-upper S i)
+
+   ‡ : ((W , _) : upper-bound ⁅ f₊ V ∣ V ε S ⁆)
+     → (f₊ (⋁[ 𝒪 X ] S) ≤[ poset-of (𝒪 Y) ] W) holds
+   ‡ (W , p) = spectral-yoneda (𝒪 Y) 𝕤 (f₊ (⋁[ 𝒪 X ] S)) W ※
+    where
+     ※ : (C : ⟨ 𝒪 Y ⟩)
+       → is-compact-open (𝒪 Y) C holds
+       → (C ≤[ poset-of (𝒪 Y) ] (f₊ (⋁[ 𝒪 X ] S))) holds
+       → (C ≤[ poset-of (𝒪 Y) ] W) holds
+     ※ C κ q = ∥∥-rec (holds-is-prop (C ≤[ poset-of (𝒪 Y) ] W)) γ (κ′ S δ β)
+      where
+       κ′ : is-compact-open (𝒪 X) (f ⋆∙ C) holds
+       κ′ = σ C κ
+
+       β : (f ⋆∙ C ≤[ poset-of (𝒪 X) ] (⋁[ 𝒪 X ] S)) holds
+       β = adjunction-inequality-backward f⁺ (⋁[ 𝒪 X ] S) C q
+
+       γ : (Σ i ꞉ index S , (f ⋆∙ C ≤[ poset-of (𝒪 X) ] S [ i ]) holds)
+         → (C ≤[ poset-of (𝒪 Y) ] W) holds
+       γ (i , r) = C ≤⟨ Ⅰ ⟩ f₊ (S [ i ]) ≤⟨ Ⅱ ⟩ W ■
+        where
+         Ⅰ = adjunction-inequality-forward f (S [ i ]) C r
+         Ⅱ = p i
+
+\end{code}
+
+
+
+\begin{code}
+
+compact-opens-are-basic-in-compact-frames : (F : Frame 𝓤 𝓥 𝓦)
+                                          → (ℬ : Fam 𝓦 ⟨ F ⟩)
+                                          → is-directed-basis F ℬ
+                                          → is-compact F holds
+                                          → (x : ⟨ F ⟩)
+                                          → is-compact-open F x holds
+                                          → ∥ Σ i ꞉ index ℬ , x ＝ ℬ [ i ] ∥
+compact-opens-are-basic-in-compact-frames F ℬ β κ x ϟ  =
+ ∥∥-rec ∥∥-is-prop † (ϟ ⁅ ℬ [ i ] ∣ i ε 𝒥 ⁆ ð γ)
   where
    open PosetReasoning (poset-of F)
 
-   ℬ = basisₛ F σ
+   β₀ : is-basis-for F ℬ
+   β₀ = pr₁ β
 
-   𝒥 : Fam 𝓦 (index ℬ)
-   𝒥 = pr₁ (pr₁ β U)
+   𝒥 = covering-index-family F ℬ β₀ x
 
-   p : U ＝ ⋁[ F ] ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆
-   p = covers F ℬ (pr₁ β) U
+   ð : is-directed (poset-of F) ⁅ ℬ [ i ] ∣ i ε 𝒥 ⁆ holds
+   ð = pr₂ β x
 
-   p₁ : (U ≤[ poset-of F ] (⋁[ F ] ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆)) holds
-   p₁ = reflexivity+ (poset-of F) p
+   γ : (x ≤[ poset-of F ] (⋁[ F ] ⁅ ℬ [ i ] ∣ i ε 𝒥 ⁆)) holds
+   γ = reflexivity+ (poset-of F) (covers F ℬ β₀ x)
 
-   p₂ : ((⋁[ F ] ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆) ≤[ poset-of F ] U) holds
-   p₂ = reflexivity+ (poset-of F) (p ⁻¹)
-
-   d : is-directed (poset-of F) ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆ holds
-   d = pr₂ β U
-
-   γ : Σ k ꞉ index 𝒥 , (U ≤[ poset-of F ] (ℬ [ 𝒥 [ k ] ])) holds
-     → ∥ Σ i ꞉ index ℬ , U ＝ ℬ [ i ] ∥
-   γ (k , q) = ∣ 𝒥 [ k ] , ≤-is-antisymmetric (poset-of F) δ ϵ ∣
+   † : Σ i ꞉ index 𝒥 , (x ≤[ poset-of F ] (ℬ [ 𝒥 [ i ] ])) holds
+     → ∥ Σ i ꞉ index ℬ , x ＝ ℬ [ i ] ∥
+   † (i , p) = ∣ 𝒥 [ i ] , ≤-is-antisymmetric (poset-of F) p q ∣
     where
-     δ : (U ≤[ poset-of F ] (ℬ [ 𝒥 [ k ] ])) holds
-     δ = q
+     q : ((ℬ [ 𝒥 [ i ] ]) ≤[ poset-of F ] x) holds
+     q = ℬ [ 𝒥 [ i ] ]              ≤⟨ ⋁[ F ]-upper ⁅ ℬ [ i ] ∣ i ε 𝒥 ⁆ i ⟩
+         ⋁[ F ] ⁅ ℬ [ i ] ∣ i ε 𝒥 ⁆ ＝⟨ covers F ℬ β₀ x ⁻¹                ⟩ₚ
+         x                          ■
 
-     ϵ : ((ℬ [ 𝒥 [ k ] ]) ≤[ poset-of F ] U) holds
-     ϵ = ℬ [ 𝒥 [ k ] ]                ≤⟨ ⋁[ F ]-upper ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆ k ⟩
-         ⋁[ F ] ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆   ≤⟨ p₂                                 ⟩
-         U                            ■
+\end{code}
+
+\begin{code}
+
+module BasicComplements (L : Frame 𝓤 𝓥 𝓦) (𝕜 : is-compact L holds) (zᴰ : zero-dimensionalᴰ L) where
+
+ private
+  ℬ : Fam 𝓦 ⟨ L ⟩
+  ℬ = pr₁ zᴰ
+
+ ¬ₓ_ : Σ c ꞉ ⟨ L ⟩ , is-compact-open L c holds → ⟨ L ⟩
+ ¬ₓ_ (c , κ) = k
+  where
+   k : ⟨ L ⟩
+   k = pr₁ (pr₂ (clopen-iff-compact-in-stone-frame L (𝕜 , ∣ zᴰ ∣ ) c) κ)
+
+ ¬ₓ-gives-complement : (c : ⟨ L ⟩)
+                     → (κ : is-compact-open L c holds)
+                     → is-complement-of L (¬ₓ (c , κ)) c
+ ¬ₓ-gives-complement c κ =
+  pr₂ (pr₂ (clopen-iff-compact-in-stone-frame L (𝕜 , ∣ zᴰ ∣ ) c) κ)
+
+\end{code}
+
+\begin{code}
 
 spectral-implies-compact : (F : Frame 𝓤 𝓥 𝓦) → (is-spectral F ⇒ is-compact F) holds
 spectral-implies-compact F σ = ∥∥-rec (holds-is-prop (is-compact F)) γ σ
@@ -1329,6 +1488,91 @@ spectral-implies-compact F σ = ∥∥-rec (holds-is-prop (is-compact F)) γ σ
      where
       δ : ℬ [ t ] ＝ 𝟏[ F ]
       δ = only-𝟏-is-above-𝟏 F (ℬ [ t ]) (φ 𝟏[ F ])
+
+clopens-are-basic-in-stone-locales : (F : Frame 𝓤 𝓥 𝓦)
+                                   → is-stone F holds
+                                   → (ℬ : Fam 𝓦 ⟨ F ⟩)
+                                   → is-directed-basis F ℬ
+                                   → (x : ⟨ F ⟩)
+                                   → is-clopen F x holds
+                                   → ∥ Σ i ꞉ index ℬ , x ＝ ℬ [ i ] ∥
+clopens-are-basic-in-stone-locales F (κ , _) ℬ δ x ζ =
+ compact-opens-are-basic-in-compact-frames F ℬ δ κ x †
+  where
+   † : is-compact-open F x holds
+   † = clopens-are-compact-in-compact-frames F κ x ζ
+
+compacts-are-basic-in-spectralᴰ-frames : (F : Frame 𝓤 𝓥 𝓦)
+                                       → (σ : spectralᴰ F)
+                                       → (U : ⟨ F ⟩)
+                                       → is-compact-open F U holds
+                                       → let
+                                          ℬ  = basisₛ F σ
+                                          I  = index ℬ
+                                         in
+                                          ∥ Σ i ꞉ I , U ＝ ℬ [ i ] ∥
+compacts-are-basic-in-spectralᴰ-frames {𝓦 = 𝓦} F σ@(_ , β , _) U κ =
+ compact-opens-are-basic-in-compact-frames F (basisₛ F σ) β † U κ
+  where
+   † = spectral-implies-compact F ∣ σ ∣
+
+\end{code}
+
+Stone locales are spectral.
+
+\begin{code}
+
+stone-locales-are-spectral : (F : Frame 𝓤 𝓥 𝓦)
+                           → (is-stone F ⇒ is-spectral F) holds
+stone-locales-are-spectral F σ@(κ , ζ) =
+ ∥∥-rec (holds-is-prop (is-spectral F)) ♣ ζ
+  where
+   open Meets (λ x y → x ≤[ poset-of F ] y) hiding (is-top)
+
+   ♣ : zero-dimensionalᴰ F → is-spectral F holds
+   ♣ (ℬ , δ , ψ) = ∣ ℬ , δ , ϑ , † ∣
+    where
+     ϑ : consists-of-compact-opens F ℬ holds
+     ϑ is = pr₁ (clopen-iff-compact-in-stone-frame F σ (ℬ [ is ])) (ψ is)
+
+     τ : ∥ Σ i ꞉ index ℬ , 𝟏[ F ] ＝ ℬ [ i ] ∥
+     τ = compact-opens-are-basic-in-compact-frames F ℬ δ κ 𝟏[ F ] κ
+
+     †₁ : contains-top F ℬ holds
+     †₁ = ∥∥-rec (holds-is-prop (contains-top F ℬ)) ‡₁ τ
+      where
+       ‡₁ : (Σ i ꞉ index ℬ , 𝟏[ F ] ＝ ℬ [ i ]) → contains-top F ℬ holds
+       ‡₁ (i , p) = ∣ i , transport (λ - → is-top F - holds) p (𝟏-is-top F) ∣
+
+     †₂ : closed-under-binary-meets F ℬ holds
+     †₂ i j = ∥∥-rec ∃-is-prop ‡₂ υ
+      where
+       χ : is-clopen F (ℬ [ i ] ∧[ F ] ℬ [ j ]) holds
+       χ = clopens-are-closed-under-∧ F (ℬ [ i ]) (ℬ [ j ]) (ψ i) (ψ j)
+
+       υ : ∥ Σ k ꞉ index ℬ , (ℬ [ i ]) ∧[ F ] (ℬ [ j ]) ＝ ℬ [ k ] ∥
+       υ = clopens-are-basic-in-stone-locales F σ ℬ δ (ℬ [ i ] ∧[ F ] ℬ [ j ]) χ
+
+       ‡₂ : (Σ k ꞉ index ℬ , (ℬ [ i ]) ∧[ F ] (ℬ [ j ]) ＝ ℬ [ k ])
+          → ∥ Σ k ꞉ index ℬ , ((ℬ [ k ]) is-glb-of (ℬ [ i ] , ℬ [ j ])) holds ∥
+       ‡₂ (k , p) = ∣ k , ‡₃ ∣
+        where
+         ρ₁ = ∧[ F ]-lower₁ (ℬ [ i ]) (ℬ [ j ])
+         ρ₂ = ∧[ F ]-lower₂ (ℬ [ i ]) (ℬ [ j ])
+         ρ₃ = λ { (z , p , q) → ∧[ F ]-greatest (ℬ [ i ]) (ℬ [ j ]) z p q }
+
+         ‡₃ : ((ℬ [ k ]) is-glb-of (ℬ [ i ] , ℬ [ j ])) holds
+         ‡₃ = transport
+               (λ - → (- is-glb-of (ℬ [ i ] , ℬ [ j ])) holds)
+               p
+               ((ρ₁ , ρ₂) , ρ₃)
+
+     † : closed-under-finite-meets F ℬ holds
+     † = †₁ , †₂
+
+\end{code}
+
+\begin{code}
 
 compacts-closed-under-∧-in-spectral-frames : (F : Frame 𝓤 𝓥 𝓦)
                                            → is-spectral F holds
@@ -1415,9 +1659,9 @@ L`, compact `b : M` with `b ≤ h(x)`, there is some compact `a : L` such that `
 continuity-condition : (L : Frame 𝓤 𝓥 𝓦) (M : Frame 𝓤' 𝓥' 𝓦)
                      → (⟨ L ⟩ → ⟨ M ⟩) → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺ ⊔ 𝓤' ⊔ 𝓥')
 continuity-condition L M h =
- Ɐ b ∶ ⟨ M ⟩ , Ɐ x ∶ ⟨ L ⟩ , is-compact-open M b ⇒
+ Ɐ b ꞉ ⟨ M ⟩ , Ɐ x ꞉ ⟨ L ⟩ , is-compact-open M b ⇒
   b ≤[ poset-of M ] h x ⇒
-   (Ǝ a ∶ ⟨ L ⟩ ,
+   (Ǝ a ꞉ ⟨ L ⟩ ,
      ((is-compact-open L a ∧ a ≤[ poset-of L ] x ∧ b ≤[ poset-of M ] h a) holds))
 
 \end{code}
@@ -1442,7 +1686,7 @@ characterisation-of-continuity L M σ h μ ζ S δ = β , γ
   β : (h (⋁[ L ] S) is-an-upper-bound-of ⁅ h s ∣ s ε S ⁆) holds
   β i = μ (S [ i ] , ⋁[ L ] S) (⋁[ L ]-upper S i)
 
-  γ : (Ɐ (u , _) ∶ upper-bound ⁅ h s ∣ s ε S ⁆ ,
+  γ : (Ɐ (u , _) ꞉ upper-bound ⁅ h s ∣ s ε S ⁆ ,
         h (⋁[ L ] S) ≤[ poset-of M ] u) holds
   γ (u , φ) = spectral-yoneda M σ (h (⋁[ L ] S)) u ε
    where
@@ -1599,5 +1843,654 @@ compact-join-lemma F σ U V K κ ψ = ∥∥-rec ∃-is-prop † φ₁
                       ∧ K₂ ≤[ poset-of F ] V
                       ∧ (K ≤[ poset-of F ] (K₁ ∨[ F ] K₂))) holds
     φ₂ = characterisation-of-continuity-op F F σ c₂ ζ₂ K V κ q₁
+
+\end{code}
+
+\begin{code}
+
+open import Locales.HeytingImplication pt fe
+
+module LemmasAboutHeytingComplementation (X : Locale 𝓤 𝓥 𝓥)
+                                         (𝒷 : has-basis (𝒪 X) holds) where
+
+ open HeytingImplicationConstruction X 𝒷
+
+ complement-is-heyting-complement : (C C′ : ⟨ 𝒪 X ⟩)
+                                  → is-complement-of (𝒪 X) C′ C
+                                  → C′ ＝ C ==> 𝟎[ 𝒪 X ]
+ complement-is-heyting-complement C C′ (p , q) =
+  ≤-is-antisymmetric (poset-of (𝒪 X)) † ‡
+   where
+    open PosetReasoning (poset-of (𝒪 X))
+
+    ※ : (((C ==> 𝟎[ 𝒪 X ]) ∧[ 𝒪 X ] (C ∨[ 𝒪 X ] C′)) ≤[ poset-of (𝒪 X) ] C′) holds
+    ※ =
+     (C ==> 𝟎[ 𝒪 X ]) ∧[ 𝒪 X ] (C ∨[ 𝒪 X ] C′)                             ＝⟨ Ⅰ ⟩ₚ
+     ((C ==> 𝟎[ 𝒪 X ]) ∧[ 𝒪 X ] C) ∨[ 𝒪 X ] ((C ==> 𝟎[ 𝒪 X ]) ∧[ 𝒪 X ] C′) ≤⟨ Ⅱ  ⟩
+     C′                                                                    ■
+      where
+       Ⅰ = binary-distributivity (𝒪 X) (C ==> 𝟎[ 𝒪 X ]) C C′
+       Ⅱ = ∨[ 𝒪 X ]-least
+            ((C ==> 𝟎[ 𝒪 X ]) ∧[ 𝒪 X ] C    ≤⟨ mp-right C 𝟎[ 𝒪 X ]  ⟩
+             𝟎[ 𝒪 X ]                       ≤⟨ 𝟎-is-bottom (𝒪 X) C′ ⟩
+             C′                             ■)
+            (∧[ 𝒪 X ]-lower₂ (C ==> 𝟎[ 𝒪 X ]) C′)
+
+    † : (C′ ≤[ poset-of (𝒪 X) ] (C ==> 𝟎[ 𝒪 X ])) holds
+    † = heyting-implication₁ C 𝟎[ 𝒪 X ] C′ †₁
+     where
+      †₁ : ((C′ ∧[ 𝒪 X ] C) ≤[ poset-of (𝒪 X) ] 𝟎[ 𝒪 X ]) holds
+      †₁ = C′ ∧[ 𝒪 X ] C   ＝⟨ ∧[ 𝒪 X ]-is-commutative C′ C ⟩ₚ
+           C  ∧[ 𝒪 X ] C′  ＝⟨ p ⟩ₚ
+           𝟎[ 𝒪 X ]        ■
+
+    ‡ : (C ==> 𝟎[ 𝒪 X ] ≤[ poset-of (𝒪 X) ] C′) holds
+    ‡ = C ==> 𝟎[ 𝒪 X ]          ≤⟨ Ⅰ                ⟩
+        (C ∨[ 𝒪 X ] C′) ==> C′  ＝⟨ Ⅱ               ⟩ₚ
+        𝟏[ 𝒪 X ] ==> C′         ＝⟨ 𝟏-==>-law C′ ⁻¹ ⟩ₚ
+        C′                      ■
+         where
+          Ⅰ = heyting-implication₁ (C ∨[ 𝒪 X ] C′) C′ (C ==> 𝟎[ 𝒪 X ]) ※
+          Ⅱ = ap (λ - → - ==> C′) q
+
+ heyting-complement-is-complement : (C C′ : ⟨ 𝒪 X ⟩)
+                                  → is-complement-of (𝒪 X) C′ C
+                                  → is-complement-of (𝒪 X) (C ==> 𝟎[ 𝒪 X ]) C
+ heyting-complement-is-complement C C′ (p , q) = † , ‡
+  where
+   † : C ∧[ 𝒪 X ] (C ==> 𝟎[ 𝒪 X ]) ＝ 𝟎[ 𝒪 X ]
+   † = C ∧[ 𝒪 X ] (C ==> 𝟎[ 𝒪 X ])  ＝⟨ ※ ⟩
+       C ∧[ 𝒪 X ] C′                ＝⟨ p ⟩
+       𝟎[ 𝒪 X ]                     ∎
+        where
+         ※ = ap
+              (λ - → C ∧[ 𝒪 X ] -)
+              (complement-is-heyting-complement C C′ (p , q) ⁻¹)
+
+
+   ‡ : C ∨[ 𝒪 X ] (C ==> 𝟎[ 𝒪 X ]) ＝ 𝟏[ 𝒪 X ]
+   ‡ = C ∨[ 𝒪 X ] (C ==> 𝟎[ 𝒪 X ])  ＝⟨ ※ ⟩
+       C ∨[ 𝒪 X ] C′                ＝⟨ q ⟩
+       𝟏[ 𝒪 X ]                     ∎
+        where
+         ※ = ap
+              (λ - → C ∨[ 𝒪 X ] -)
+              (complement-is-heyting-complement C C′ (p , q) ⁻¹)
+
+ material-implication : (C U : ⟨ 𝒪 X ⟩)
+                      → is-clopen₀ (𝒪 X) C
+                      → (C ==> U) ＝ (C ==> 𝟎[ 𝒪 X ]) ∨[ 𝒪 X ] U
+ material-implication C U (C′ , p , q) = ≤-is-antisymmetric (poset-of (𝒪 X)) † ‡
+  where
+   open PosetReasoning (poset-of (𝒪 X))
+
+   † : ((C ==> U) ≤[ poset-of (𝒪 X) ] ((C ==> 𝟎[ 𝒪 X ]) ∨[ 𝒪 X ] U)) holds
+   † = (C ==> U)                                         ≤⟨ Ⅰ ⟩
+       (C ∨[ 𝒪 X ] C′) ==> ((C ==> 𝟎[ 𝒪 X ]) ∨[ 𝒪 X ] U) ＝⟨ Ⅱ ⟩ₚ
+       𝟏[ 𝒪 X ] ==> ((C ==> 𝟎[ 𝒪 X ]) ∨[ 𝒪 X ] U)        ＝⟨ Ⅲ ⟩ₚ
+       (C ==> 𝟎[ 𝒪 X ]) ∨[ 𝒪 X ] U                       ■
+        where
+         ※ = (C ==> U) ∧[ 𝒪 X ] (C ∨[ 𝒪 X ] C′)                        ＝⟨ Ⅰ ⟩ₚ
+             ((C ==> U) ∧[ 𝒪 X ] C) ∨[ 𝒪 X ] ((C ==> U) ∧[ 𝒪 X ] C′)   ≤⟨ Ⅱ  ⟩
+             U ∨[ 𝒪 X ] ((C ==> U) ∧[ 𝒪 X ] C′)                        ≤⟨ Ⅲ  ⟩
+             U ∨[ 𝒪 X ] C′                                             ＝⟨ Ⅳ ⟩ₚ
+             C′ ∨[ 𝒪 X ] U                                             ＝⟨ Ⅴ ⟩ₚ
+             (C ==> 𝟎[ 𝒪 X ]) ∨[ 𝒪 X ] U                               ■
+              where
+               Ⅰ = binary-distributivity (𝒪 X) (C ==> U) C C′
+               Ⅱ = ∨[ 𝒪 X ]-left-monotone (mp-right C U)
+               Ⅲ = ∨[ 𝒪 X ]-right-monotone (∧[ 𝒪 X ]-lower₂ (C ==> U) C′)
+               Ⅳ = ∨[ 𝒪 X ]-is-commutative U C′
+               Ⅴ = ap
+                    (λ - → - ∨[ 𝒪 X ] U)
+                    (complement-is-heyting-complement C C′ (p , q))
+
+         Ⅰ = heyting-implication₁
+              (C ∨[ 𝒪 X ] C′)
+              ((C ==> 𝟎[ 𝒪 X ]) ∨[ 𝒪 X ] U)
+              (C ==> U)
+              ※
+         Ⅱ = ap (λ - → - ==> ((C ==> 𝟎[ 𝒪 X ]) ∨[ 𝒪 X ] U)) q
+         Ⅲ = 𝟏-==>-law ((C ==> 𝟎[ 𝒪 X ]) ∨[ 𝒪 X ] U) ⁻¹
+
+   ‡ : (((C ==> 𝟎[ 𝒪 X ]) ∨[ 𝒪 X ] U) ≤[ poset-of (𝒪 X) ] (C ==> U)) holds
+   ‡ = heyting-implication₁ C U ((C ==> 𝟎[ 𝒪 X ]) ∨[ 𝒪 X ] U) ‡₁
+    where
+     ‡₁ : ((((C ==> 𝟎[ 𝒪 X ]) ∨[ 𝒪 X ] U) ∧[ 𝒪 X ] C)
+            ≤[ poset-of (𝒪 X) ]
+           U) holds
+     ‡₁ = ((C ==> 𝟎[ 𝒪 X ]) ∨[ 𝒪 X ] U) ∧[ 𝒪 X ] C               ＝⟨ Ⅰ ⟩ₚ
+          ((C ==> 𝟎[ 𝒪 X ]) ∧[ 𝒪 X ] C) ∨[ 𝒪 X ] (U ∧[ 𝒪 X ] C)  ≤⟨ Ⅱ ⟩
+          U                                                      ■
+           where
+            ※ = (C ==> 𝟎[ 𝒪 X ]) ∧[ 𝒪 X ] C    ≤⟨ mp-right C 𝟎[ 𝒪 X ] ⟩
+                𝟎[ 𝒪 X ]                       ≤⟨ 𝟎-is-bottom (𝒪 X) U ⟩
+                U                              ■
+
+            Ⅰ = binary-distributivity-right (𝒪 X)
+            Ⅱ = ∨[ 𝒪 X ]-least ※ (∧[ 𝒪 X ]-lower₁ U C)
+
+ double-negation-elimination : (C : ⟨ 𝒪 X ⟩)
+                             → is-clopen₀ (𝒪 X) C
+                             → (C ==> 𝟎[ 𝒪 X ]) ==> 𝟎[ 𝒪 X ] ＝ C
+ double-negation-elimination C (C′ , p , q) =
+  ≤-is-antisymmetric (poset-of (𝒪 X)) † ‡
+   where
+    open PosetReasoning (poset-of (𝒪 X))
+
+    † : (((C ==> 𝟎[ 𝒪 X ]) ==> 𝟎[ 𝒪 X ]) ≤[ poset-of (𝒪 X) ] C) holds
+    † = (C ==> 𝟎[ 𝒪 X ]) ==> 𝟎[ 𝒪 X ]        ＝⟨ Ⅰ ⟩ₚ
+        C′ ==> 𝟎[ 𝒪 X ]                      ＝⟨ Ⅱ ⟩ₚ
+        C                                    ■
+         where
+          Ⅰ = ap
+               (λ - → - ==> 𝟎[ 𝒪 X ])
+               (complement-is-heyting-complement C C′ (p , q) ⁻¹)
+          Ⅱ = complement-is-heyting-complement C′ C (Ⅱ₁ , Ⅱ₂) ⁻¹
+               where
+                Ⅱ₁ = C′ ∧[ 𝒪 X ] C     ＝⟨ ∧[ 𝒪 X ]-is-commutative C′ C ⟩
+                     C  ∧[ 𝒪 X ] C′    ＝⟨ p                            ⟩
+                     𝟎[ 𝒪 X ]          ∎
+                Ⅱ₂ = C′ ∨[ 𝒪 X ] C     ＝⟨ ∨[ 𝒪 X ]-is-commutative C′ C ⟩
+                     C  ∨[ 𝒪 X ] C′    ＝⟨ q                            ⟩
+                     𝟏[ 𝒪 X ]          ∎
+
+    ‡ : (C ≤[ poset-of (𝒪 X) ] (C ==> 𝟎[ 𝒪 X ]) ==> 𝟎[ 𝒪 X ]) holds
+    ‡ = heyting-implication₁ (C ==> 𝟎[ 𝒪 X ]) 𝟎[ 𝒪 X ] C ‡₁
+     where
+      ‡₁ : ((C ∧[ 𝒪 X ] (C ==> 𝟎[ 𝒪 X ])) ≤[ poset-of (𝒪 X) ] 𝟎[ 𝒪 X ]) holds
+      ‡₁ = mp-left C 𝟎[ 𝒪 X ]
+
+ negation-∨-lemma₁ : {U V W : ⟨ 𝒪 X ⟩}
+                   → is-clopen₀ (𝒪 X) V
+                   → (U ≤[ poset-of (𝒪 X) ] (V ∨[ 𝒪 X ] W)) holds
+                   → ((U ∧[ 𝒪 X ] (V ==> 𝟎[ 𝒪 X ]))
+                       ≤[ poset-of (𝒪 X) ]
+                      W) holds
+ negation-∨-lemma₁ {U} {V} {W} (V′ , p , q) φ =
+  U ∧[ 𝒪 X ] (V ==> 𝟎[ 𝒪 X ])               ＝⟨ Ⅰ ⟩ₚ
+  U ∧[ 𝒪 X ] V′                             ≤⟨ Ⅱ  ⟩
+  (V ∨[ 𝒪 X ] W) ∧[ 𝒪 X ] V′                ＝⟨ Ⅲ ⟩ₚ
+  (V ∧[ 𝒪 X ] V′) ∨[ 𝒪 X ] (W ∧[ 𝒪 X ] V′)  ＝⟨ Ⅳ ⟩ₚ
+  𝟎[ 𝒪 X ] ∨[ 𝒪 X ] (W ∧[ 𝒪 X ] V′)         ＝⟨ Ⅴ ⟩ₚ
+  W ∧[ 𝒪 X ] V′                             ≤⟨  Ⅵ ⟩
+  W                                         ■
+   where
+    open PosetReasoning (poset-of (𝒪 X))
+
+    Ⅰ = ap
+         (λ - → U ∧[ 𝒪 X ] -)
+         (complement-is-heyting-complement V V′ (p , q) ⁻¹)
+    Ⅱ = ∧[ 𝒪 X ]-left-monotone φ
+    Ⅲ = binary-distributivity-right (𝒪 X)
+    Ⅳ = ap (λ - → - ∨[ 𝒪 X ] (W ∧[ 𝒪 X ] V′)) p
+    Ⅴ = 𝟎-right-unit-of-∨ (𝒪 X) (W ∧[ 𝒪 X ] V′)
+    Ⅵ = ∧[ 𝒪 X ]-lower₁ W V′
+
+ negation-∨-lemma₂ : {U V W : ⟨ 𝒪 X ⟩}
+                → is-clopen₀ (𝒪 X) V
+                 → ((U ∧[ 𝒪 X ] (V ==> 𝟎[ 𝒪 X ]))
+                     ≤[ poset-of (𝒪 X) ]
+                    W) holds
+                 → (U ≤[ poset-of (𝒪 X) ] (V ∨[ 𝒪 X ] W)) holds
+ negation-∨-lemma₂ {U} {V} {W} (V′ , p , q) φ =
+  U                                                      ＝⟨ Ⅰ ⟩ₚ
+  U ∧[ 𝒪 X ] 𝟏[ 𝒪 X ]                                    ＝⟨ Ⅱ ⟩ₚ
+  U ∧[ 𝒪 X ] (V ∨[ 𝒪 X ] V′)                             ＝⟨ Ⅲ ⟩ₚ
+  (U ∧[ 𝒪 X ] V) ∨[ 𝒪 X ] (U ∧[ 𝒪 X ] V′)                ＝⟨ Ⅳ ⟩ₚ
+  (U ∧[ 𝒪 X ] V) ∨[ 𝒪 X ] (U ∧[ 𝒪 X ] (V ==> 𝟎[ 𝒪 X ]))  ≤⟨ Ⅴ  ⟩
+  (U ∧[ 𝒪 X ] V) ∨[ 𝒪 X ] W                              ≤⟨ Ⅵ  ⟩
+  V ∨[ 𝒪 X ] W                                           ■
+   where
+    open PosetReasoning (poset-of (𝒪 X))
+
+    Ⅰ =  𝟏-right-unit-of-∧ (𝒪 X) U ⁻¹
+    Ⅱ = ap (λ - → U ∧[ 𝒪 X ] -) (q ⁻¹)
+    Ⅲ = binary-distributivity (𝒪 X) U V V′
+    Ⅳ = ap
+         (λ - → (U ∧[ 𝒪 X ] V) ∨[ 𝒪 X ] (U ∧[ 𝒪 X ] -))
+         (complement-is-heyting-complement V V′ (p , q))
+    Ⅴ = ∨[ 𝒪 X ]-right-monotone φ
+    Ⅵ = ∨[ 𝒪 X ]-left-monotone (∧[ 𝒪 X ]-lower₂ U V)
+
+\end{code}
+
+\section{CNF Transformation for Spectrality}
+
+Section added on 2023-08-17.
+
+Given a basis closed under binary meets, the directification of that basis using
+the `directify` function is also closed under binary meets. The reason is that
+the meets of joins can be turned into joins of meets. In this section, we prove
+this fact.
+
+To define CNF transformation, we need the following function
+`conjunct-with-list` which takes some `x` and some list `y₁ , … , yₙ` and
+computes `(x ∧ y₁) , … , (x ∧ yₙ)`.
+
+\begin{code}
+
+conjunct-with-list : (F : Frame 𝓤 𝓥 𝓦)
+                   → ⟨ F ⟩ → List ⟨ F ⟩ → List ⟨ F ⟩
+conjunct-with-list F x = map (λ - → x ∧[ F ] -)
+
+cnf-transform : (F : Frame 𝓤 𝓥 𝓦)
+              → List ⟨ F ⟩ → List ⟨ F ⟩ → ⟨ F ⟩
+cnf-transform F []       ys = 𝟎[ F ]
+cnf-transform F (x ∷ xs) ys =
+ (⋁ₗ[ F ] conjunct-with-list F x ys) ∨[ F ] cnf-transform F xs ys
+
+\end{code}
+
+Given some `x : ⟨ F ⟩` and a list `(y₁ , … , yₙ) : List ⟨ F ⟩`,
+`x ∧ (y₁ ∨ … ∨ yₙ) ＝ (x ∧ y₁) ∨ … ∨ (x ∧ yₙ)`, which is of course just an
+instance of the distributivity law. We prove this fact next.
+
+\begin{code}
+
+distributivity-list : (F : Frame 𝓤 𝓥 𝓦) (x : ⟨ F ⟩) (ys : List ⟨ F ⟩)
+                    → x ∧[ F ] (⋁ₗ[ F ] ys) ＝ ⋁ₗ[ F ] (conjunct-with-list F x ys)
+distributivity-list F x []       = 𝟎-right-annihilator-for-∧ F x
+distributivity-list F x (y ∷ ys) =
+ x ∧[ F ] (y ∨[ F ] (⋁ₗ[ F ] ys))                         ＝⟨ Ⅰ    ⟩
+ (x ∧[ F ] y) ∨[ F ] (x ∧[ F ] (⋁ₗ[ F ] ys))              ＝⟨ Ⅱ    ⟩
+ (x ∧[ F ] y) ∨[ F ] (⋁ₗ[ F ] conjunct-with-list F x ys)  ＝⟨ refl ⟩
+ ⋁ₗ[ F ] (conjunct-with-list F x (y ∷ ys))                ∎
+  where
+   Ⅰ = binary-distributivity F x y (join-list F ys)
+   Ⅱ = ap (λ - → (x ∧[ F ] y) ∨[ F ] -) (distributivity-list F x ys)
+
+\end{code}
+
+With `distributivity-list` in hand, we are ready to prove the correctness of the
+CNF transformation procedure.
+
+\begin{code}
+
+cnf-transform-correct : (F : Frame 𝓤 𝓥 𝓦) (xs ys : List ⟨ F ⟩)
+                      → (⋁ₗ[ F ] xs) ∧[ F ] (⋁ₗ[ F ] ys) ＝ cnf-transform F xs ys
+cnf-transform-correct F []       ys = 𝟎-left-annihilator-for-∧ F ((⋁ₗ[ F ] ys))
+cnf-transform-correct F (x ∷ xs) ys =
+ (x ∨[ F ] (⋁ₗ[ F ] xs)) ∧[ F ] (⋁ₗ[ F ] ys)                       ＝⟨ Ⅰ    ⟩
+ (x ∧[ F ] (⋁ₗ[ F ] ys)) ∨[ F ] ((⋁ₗ[ F ] xs) ∧[ F ] (⋁ₗ[ F ] ys)) ＝⟨ Ⅱ    ⟩
+ (x ∧[ F ] (⋁ₗ[ F ] ys)) ∨[ F ] cnf-transform F xs ys              ＝⟨ Ⅲ    ⟩
+ (⋁ₗ[ F ] conjunct-with-list F x ys) ∨[ F ] cnf-transform F xs ys  ＝⟨ refl ⟩
+ cnf-transform F (x ∷ xs) ys                                       ∎
+  where
+   Ⅰ = binary-distributivity-right F
+   Ⅱ = ap
+        (λ - → (x ∧[ F ] (⋁ₗ[ F ] ys)) ∨[ F ] -)
+        (cnf-transform-correct F xs ys)
+   Ⅲ = ap (λ - → - ∨[ F ] cnf-transform F xs ys) (distributivity-list F x ys)
+
+\end{code}
+
+We now start proving, making use of `cnf-transform-correct`, that the CNF
+transformation of two basic opens is itself basic.
+
+We first prove the analogous fact that the `conjunct-with-list` function:
+
+\begin{code}
+
+conjunct-with-list-is-basic : (F : Frame 𝓤 𝓥 𝓦) (ℬ : Fam 𝓦 ⟨ F ⟩)
+                            → (β : is-basis-for F ℬ)
+                            → closed-under-binary-meets F ℬ holds
+                            → let
+                               ℬ↑ = directify F ℬ
+                               β↑ = directified-basis-is-basis F ℬ β
+                              in
+                               (i : index ℬ) (is : index ℬ↑) →
+                                ∃ ks ꞉ index ℬ↑ ,
+                                  ℬ↑ [ ks ]
+                                  ＝ ⋁ₗ[ F ] (conjunct-with-list F (ℬ [ i ]) ((ℬ [_]) <$> is))
+conjunct-with-list-is-basic F ℬ β p i []       = ∣ [] , refl ∣
+conjunct-with-list-is-basic F ℬ β p i (j ∷ js) = ∥∥-rec ∃-is-prop γ μ
+ where
+  open Meets (λ x y → x ≤[ poset-of F ] y)
+
+  ℬ↑ = directify F ℬ
+
+\end{code}
+
+We know by the closure of `ℬ` under binary meets that the meet of `ℬ[ i ]` and
+`ℬ[ j ]` is in the basis, given by some index `k`.
+
+\begin{code}
+
+  μ : ∃ k ꞉ index ℬ , ((ℬ [ k ]) is-glb-of (ℬ [ i ] , ℬ [ j ])) holds
+  μ = p i j
+
+\end{code}
+
+We unpack this truncated sigma inside `γ`:
+
+\begin{code}
+
+  γ : Σ k ꞉ index ℬ , ((ℬ [ k ]) is-glb-of (ℬ [ i ] , ℬ [ j ])) holds
+    → ∃ ks ꞉ index ℬ↑ ,
+       ℬ↑ [ ks ] ＝ ⋁ₗ[ F ] (conjunct-with-list F (ℬ [ i ]) ((ℬ [_]) <$> (j ∷ js)))
+  γ (k , q) = ∥∥-rec ∃-is-prop δ IH
+   where
+
+\end{code}
+
+Now, by the I.H. on `ℬ[ i ]`, we also get some `ks` corresponding to the index
+of conjuncting `ℬ[ i ]` with each `ℬ[ j ]` given by `js.`
+
+\begin{code}
+
+    IH : ∃ ks ꞉ index ℬ↑ ,
+          ℬ↑ [ ks ] ＝ ⋁ₗ[ F ] (conjunct-with-list F (ℬ [ i ]) ((ℬ [_]) <$> js))
+    IH = conjunct-with-list-is-basic F ℬ β p i js
+
+\end{code}
+
+Once again, we unpack this truncated sigma inside `δ`:
+
+\begin{code}
+
+    δ : Σ ks ꞉ index ℬ↑ ,
+         ℬ↑ [ ks ] ＝ ⋁ₗ[ F ] (conjunct-with-list F (ℬ [ i ]) ((ℬ [_]) <$> js))
+      → ∃ ls ꞉ index ℬ↑ ,
+         ℬ↑ [ ls ] ＝ ⋁ₗ[ F ] (conjunct-with-list F (ℬ [ i ]) ((ℬ [_]) <$> (j ∷ js)))
+    δ (ks , r) = ∣ (k ∷ ks) , † ∣
+     where
+
+\end{code}
+
+The list of indices that we need for the desired result is then simply `k ∷ ks`.
+The proof that this satisfies the desired property is given in `†` below.
+
+\begin{code}
+
+      w = ⋁ₗ[ F ] (conjunct-with-list F (ℬ [ i ]) ((ℬ [_]) <$> js))
+
+      † : ℬ↑ [ k ∷ ks ]
+          ＝ ⋁ₗ[ F ] (conjunct-with-list F (ℬ [ i ]) ((ℬ [_]) <$> (j ∷ js)))
+      † =
+       ℬ [ k ] ∨[ F ] ℬ↑ [ ks ]                                        ＝⟨ Ⅰ    ⟩
+       ℬ [ k ] ∨[ F ] w                                                ＝⟨ Ⅱ    ⟩
+       (ℬ [ i ] ∧[ F ] ℬ [ j ]) ∨[ F ] w                               ＝⟨ refl ⟩
+       ⋁ₗ[ F ] (conjunct-with-list F (ℬ [ i ]) ((ℬ [_]) <$> (j ∷ js))) ∎
+        where
+         Ⅰ = ap (λ - → ℬ [ k ] ∨[ F ] -) r
+         Ⅱ = ap (λ - → - ∨[ F ] w) (∧[ F ]-unique q)
+
+\end{code}
+
+We are now ready to prove the desired result: that the meet of two basic opens
+is basic.
+
+\begin{code}
+
+cnf-transform-is-basic : (F : Frame 𝓤 𝓥 𝓦) (ℬ : Fam 𝓦 ⟨ F ⟩)
+                       → (β : is-basis-for F ℬ)
+                       → closed-under-binary-meets F ℬ holds
+                       → let
+                          ℬ↑ = directify F ℬ
+                          β↑ = directified-basis-is-basis F ℬ β
+                         in
+                          (is js : index ℬ↑) →
+                           ∃ ks ꞉ index ℬ↑ ,
+                            ℬ↑ [ ks ] ＝ (ℬ↑ [ is ]) ∧[ F ] (ℬ↑ [ js ])
+cnf-transform-is-basic F ℬ β p [] js =
+ ∣ [] , (𝟎-left-annihilator-for-∧ F (directify F ℬ [ js ]) ⁻¹) ∣
+cnf-transform-is-basic F ℬ β p (i ∷ is) js =
+ ∥∥-rec ∥∥-is-prop γ (cnf-transform-is-basic F ℬ β p is js)
+  where
+   ℬ↑ = directify F ℬ
+
+\end{code}
+
+We first record the following trivial `lemma`:
+
+\begin{code}
+
+   lemma : (is js : index ℬ↑)
+         → ℬ↑ [ is ] ∧[ F ] ℬ↑ [ js ]
+           ＝ join-in-frame′ F ℬ is ∧[ F ] join-in-frame′ F ℬ js
+   lemma is js =
+    let
+      Ⅰ = ap
+           (λ - → - ∧[ F ] ℬ↑ [ js ])
+           (join-in-frame-equality F ℬ is)
+      Ⅱ = ap
+           (λ - → (⋁ₗ[ F ] ((ℬ [_]) <$> is)) ∧[ F ] -)
+           (join-in-frame-equality F ℬ js)
+    in
+     ℬ↑ [ is ] ∧[ F ] ℬ↑ [ js ]                                   ＝⟨ Ⅰ ⟩
+     (⋁ₗ[ F ] ((ℬ [_]) <$> is)) ∧[ F ] ℬ↑ [ js ]                  ＝⟨ Ⅱ ⟩
+     (⋁ₗ[ F ] ((ℬ [_]) <$> is)) ∧[ F ] (⋁ₗ[ F ] ((ℬ [_]) <$> js)) ∎
+
+\end{code}
+
+In `γ`, we unpack the truncated sigma given by the I.H.:
+
+\begin{code}
+
+   γ : Σ ks ꞉ index ℬ↑ , ℬ↑ [ ks ] ＝ ℬ↑ [ is ] ∧[ F ] ℬ↑ [ js ]
+     → ∃ ks ꞉ index ℬ↑ , ℬ↑ [ ks ] ＝ (ℬ [ i ] ∨[ F ] ℬ↑ [ is ]) ∧[ F ] ℬ↑ [ js ]
+   γ (ks , q) =
+    let
+
+\end{code}
+
+We know by `conjunct-with-list-is-basic` that there is a basis index
+corresponding to `conjunct-with-list (ℬ [ i ]) ((ℬ [_]) <$> js)`. We refer to
+this as `ls`.
+
+\begin{code}
+
+     † : ∃ ls ꞉ index ℬ↑ ,
+          ℬ↑ [ ls ] ＝ ⋁ₗ[ F ] (conjunct-with-list F (ℬ [ i ]) ((ℬ [_]) <$> js))
+     † = conjunct-with-list-is-basic F ℬ β p i js
+
+    in
+
+\end{code}
+
+We proceed by truncation recursion on this truncated sigma, with the contents
+unpacked in the function `δ`.
+
+\begin{code}
+
+     ∥∥-rec ∃-is-prop δ †
+      where
+
+\end{code}
+
+As we will have to refer to `(ℬ [_]) <$> is` and `(ℬ [_]) <$> js` frequently,
+we introduce abbrevations for them:
+
+\begin{code}
+
+       ℬ-is = (ℬ [_]) <$> is
+       ℬ-js = (ℬ [_]) <$> js
+
+\end{code}
+
+Combining `lemma` and the correctness of `cnf-transform`, we have that `ℬ↑[ ks
+]` is the CNF transformation of the meet of the joins of `is` and `js`.
+
+\begin{code}
+
+       ♣ : ℬ↑ [ ks ] ＝ cnf-transform F ((ℬ [_]) <$> is) ((ℬ [_]) <$> js)
+       ♣ =
+        ℬ↑ [ ks ]                                           ＝⟨ Ⅰ ⟩
+        ℬ↑ [ is ] ∧[ F ] ℬ↑ [ js ]                          ＝⟨ Ⅱ ⟩
+        (⋁ₗ[ F ] ℬ-is) ∧[ F ] (⋁ₗ[ F ] ((ℬ [_]) <$> js))    ＝⟨ Ⅲ ⟩
+        cnf-transform F ℬ-is ((ℬ [_]) <$> js)               ∎
+         where
+          Ⅰ = q
+          Ⅱ = lemma is js
+          Ⅲ = cnf-transform-correct F ℬ-is ℬ-js
+
+\end{code}
+
+As `⋁ₗ[ F ] (conjunct-with-list F (ℬ [ i ]) ((ℬ [_]) <$> js))` is mentioned
+quite frequently, we introduce the abbreviation `w` for it:
+
+\begin{code}
+
+       w = ⋁ₗ[ F ] (conjunct-with-list F (ℬ [ i ]) ((ℬ [_]) <$> js))
+
+\end{code}
+
+The desired list of indices is just `ls ++ ks`:
+
+\begin{code}
+
+       δ : (Σ ls ꞉ index ℬ↑ , ℬ↑ [ ls ] ＝ w)
+         → ∃ ms ꞉ index ℬ↑ ,
+            ℬ↑ [ ms ] ＝ (ℬ [ i ] ∨[ F ] ℬ↑ [ is ]) ∧[ F ] ℬ↑ [ js ]
+       δ (ls , r) = ∣ (ls ++ ks) , ‡ ∣
+        where
+
+\end{code}
+
+\begin{code}
+
+        ‡ : ℬ↑ [ ls ++ ks ] ＝ (ℬ [ i ] ∨[ F ] ℬ↑ [ is ]) ∧[ F ] ℬ↑ [ js ]
+        ‡ =
+         ℬ↑ [ ls ++ ks ]                                        ＝⟨ Ⅰ    ⟩
+         ℬ↑ [ ls ] ∨[ F ] ℬ↑ [ ks ]                             ＝⟨ Ⅱ    ⟩
+         w ∨[ F ] ℬ↑ [ ks ]                                     ＝⟨ Ⅲ    ⟩
+         w ∨[ F ] (cnf-transform F ℬ-is ℬ-js)                   ＝⟨ refl ⟩
+         cnf-transform F ((ℬ [_]) <$> (i ∷ is)) ℬ-js            ＝⟨ Ⅳ    ⟩
+         (⋁ₗ[ F ] ((ℬ [_]) <$> (i ∷ is))) ∧[ F ] (⋁ₗ[ F ] ℬ-js) ＝⟨ Ⅴ    ⟩
+         (ℬ↑ [ i ∷ is ]) ∧[ F ] join-list F ℬ-js                ＝⟨ Ⅵ    ⟩
+         (ℬ↑ [ i ∷ is ]) ∧[ F ] (ℬ↑ [ js ])                     ＝⟨ refl ⟩
+         (ℬ [ i ] ∨[ F ] ℬ↑ [ is ]) ∧[ F ] (ℬ↑ [ js ])          ∎
+          where
+           Ⅰ = directify-functorial F ℬ ls ks
+           Ⅱ = ap (λ - → - ∨[ F ] ℬ↑ [ ks ]) r
+           Ⅲ = ap (λ - → w ∨[ F ] -) ♣
+           Ⅳ = cnf-transform-correct F ((ℬ [_]) <$> (i ∷ is)) ℬ-js ⁻¹
+           Ⅴ = ap
+                (λ - → - ∧[ F ] (⋁ₗ[ F ] ℬ-js))
+                (join-in-frame-equality F ℬ (i ∷ is) ⁻¹)
+           Ⅵ = ap
+                (λ - → (ℬ↑ [ i ∷ is ]) ∧[ F ] -)
+                (join-in-frame-equality F ℬ js ⁻¹)
+
+\end{code}
+
+This is the result that we wanted: directification of a basis preserves its
+closure under binary meets. In the following definition, we make this a bit more
+explicit:
+
+\begin{code}
+
+directify-preserves-closure-under-∧ : (F : Frame 𝓤 𝓥 𝓦)
+                                    → (ℬ : Fam 𝓦 ⟨ F ⟩)
+                                    → (β : is-basis-for F ℬ)
+                                    → closed-under-binary-meets F ℬ holds
+                                    → let
+                                       ℬ↑ = directify F ℬ
+                                       β↑ = directified-basis-is-basis F ℬ β
+                                      in
+                                       closed-under-binary-meets F ℬ↑ holds
+directify-preserves-closure-under-∧ F ℬ β ϑ is js =
+ ∥∥-rec ∃-is-prop γ (cnf-transform-is-basic F ℬ β ϑ is js)
+  where
+   open Meets (λ x y → x ≤[ poset-of F ] y)
+
+   ℬ↑ = directify F ℬ
+   x  = ℬ↑ [ is ]
+   y  = ℬ↑ [ js ]
+
+   γ : Σ ks ꞉ (index ℬ↑) , ℬ↑ [ ks ] ＝ ℬ↑ [ is ] ∧[ F ] ℬ↑ [ js ]
+     → ∃ ks ꞉ index ℬ↑ , (((ℬ↑ [ ks ]) is-glb-of (x , y)) holds)
+   γ (ks , p) =
+    let
+     † : ((x ∧[ F ] y) is-glb-of (x , y)) holds
+     † = (∧[ F ]-lower₁ x y  , ∧[ F ]-lower₂ x y)
+       , λ (z , p) → uncurry (∧[ F ]-greatest x y z) p
+    in
+     ∣ ks , transport (λ - → (- is-glb-of (x , y)) holds) (p ⁻¹) † ∣
+
+\end{code}
+
+Section added on 2023-08-17.
+
+\section{Spectrality of the initial frame}
+
+\begin{code}
+
+module SpectralityOfTheInitialFrame (𝓤 : Universe) (pe : propext 𝓤) where
+
+ open Spectrality-of-𝟎 𝓤 pe
+
+ bottom-of-𝟎Frm-is-⊥ : ⊥ ＝ 𝟎[ 𝟎-𝔽𝕣𝕞 pe ]
+ bottom-of-𝟎Frm-is-⊥ = only-𝟎-is-below-𝟎 (𝟎-𝔽𝕣𝕞 pe) ⊥ (λ ())
+
+ 𝟎Frm-is-compact : is-compact (𝟎-𝔽𝕣𝕞 pe) holds
+ 𝟎Frm-is-compact S (∣i∣ , u) p = ∥∥-rec ∃-is-prop † (p ⋆)
+  where
+   † : (Σ j ꞉ index S , ((S [ j ]) holds))
+     → ∃ j ꞉ index S , (𝟏[ 𝟎-𝔽𝕣𝕞 pe ] ≤[ poset-of (𝟎-𝔽𝕣𝕞 pe) ] S [ j ]) holds
+   † (j , q) = ∣ j , (λ _ → q) ∣
+
+ ℬ𝟎-consists-of-compact-opens : consists-of-compact-opens (𝟎-𝔽𝕣𝕞 pe) ℬ𝟎 holds
+ ℬ𝟎-consists-of-compact-opens (inl ⋆) =
+  transport
+   (λ - → is-compact-open (𝟎-𝔽𝕣𝕞 pe) - holds)
+   (bottom-of-𝟎Frm-is-⊥ ⁻¹)
+   (𝟎-is-compact (𝟎-𝔽𝕣𝕞 pe))
+ ℬ𝟎-consists-of-compact-opens (inr ⋆) = 𝟎Frm-is-compact
+
+ and₂-lemma₁ : (x y : 𝟚 𝓤) → (ℬ𝟎 [ and₂ x y ] ≤[ poset-of (𝟎-𝔽𝕣𝕞 pe) ] ℬ𝟎 [ x ]) holds
+ and₂-lemma₁ (inl ⋆) y       = λ ()
+ and₂-lemma₁ (inr ⋆) (inl ⋆) = λ ()
+ and₂-lemma₁ (inr ⋆) (inr ⋆) = λ { ⋆ → ⋆ }
+
+ and₂-lemma₂ : (x y : 𝟚 𝓤) → (ℬ𝟎 [ and₂ x y ] ≤[ poset-of (𝟎-𝔽𝕣𝕞 pe) ] ℬ𝟎 [ y ]) holds
+ and₂-lemma₂ (inl ⋆) y       = λ ()
+ and₂-lemma₂ (inr ⋆) (inl ⋆) = λ ()
+ and₂-lemma₂ (inr ⋆) (inr ⋆) = λ { ⋆ → ⋆ }
+
+ open Meets (λ x y → x ≤[ poset-of (𝟎-𝔽𝕣𝕞 pe) ] y) hiding (is-top)
+
+ and₂-lemma₃ : (x y : 𝟚 𝓤) ((z , _) : lower-bound (ℬ𝟎 [ x ] , ℬ𝟎 [ y ]))
+             → (z ≤[ poset-of (𝟎-𝔽𝕣𝕞 pe) ] ℬ𝟎 [ and₂ x y ]) holds
+ and₂-lemma₃ (inl ⋆) y (z , p₁ , p₂) = p₁
+ and₂-lemma₃ (inr ⋆) y (z , p₁ , p₂) = p₂
+
+ ℬ𝟎-is-closed-under-binary-meets : closed-under-binary-meets (𝟎-𝔽𝕣𝕞 pe) ℬ𝟎 holds
+ ℬ𝟎-is-closed-under-binary-meets i j = ∣ and₂ i j , (†₁ , †₂) , and₂-lemma₃ i j ∣
+  where
+   †₁ : (ℬ𝟎 [ and₂ i j ] ≤[ poset-of (𝟎-𝔽𝕣𝕞 pe) ] ℬ𝟎 [ i ]) holds
+   †₁ = and₂-lemma₁ i j
+
+   †₂ : (ℬ𝟎 [ and₂ i j ] ≤[ poset-of (𝟎-𝔽𝕣𝕞 pe) ] ℬ𝟎 [ j ]) holds
+   †₂ = and₂-lemma₂ i j
+
+ 𝟎-𝔽𝕣𝕞-is-spectral : is-spectral (𝟎-𝔽𝕣𝕞 pe) holds
+ 𝟎-𝔽𝕣𝕞-is-spectral = ∣ ℬ𝟎↑ , ℬ𝟎-is-directed-basis-for-𝟎 , κ , γ ∣
+  where
+   κ : consists-of-compact-opens (𝟎-𝔽𝕣𝕞 pe) ℬ𝟎↑ holds
+   κ []       = 𝟎-is-compact (𝟎-𝔽𝕣𝕞 pe)
+   κ (i ∷ is) = compacts-are-closed-under-joins
+                 (𝟎-𝔽𝕣𝕞 pe)
+                 (ℬ𝟎 [ i ])
+                 (ℬ𝟎↑ [ is ])
+                 (ℬ𝟎-consists-of-compact-opens i)
+                 (κ is)
+
+   t : is-top (𝟎-𝔽𝕣𝕞 pe) (𝟏[ 𝟎-𝔽𝕣𝕞 pe ] ∨[ 𝟎-𝔽𝕣𝕞 pe ] 𝟎[ 𝟎-𝔽𝕣𝕞 pe ]) holds
+   t = transport
+        (λ - → is-top (𝟎-𝔽𝕣𝕞 pe) - holds)
+        (𝟎-left-unit-of-∨ (𝟎-𝔽𝕣𝕞 pe) 𝟏[ 𝟎-𝔽𝕣𝕞 pe ] ⁻¹)
+        (𝟏-is-top (𝟎-𝔽𝕣𝕞 pe))
+
+   c : closed-under-binary-meets (𝟎-𝔽𝕣𝕞 pe) ℬ𝟎↑ holds
+   c = directify-preserves-closure-under-∧
+        (𝟎-𝔽𝕣𝕞 pe)
+        ℬ𝟎
+        ℬ𝟎-is-basis-for-𝟎
+        ℬ𝟎-is-closed-under-binary-meets
+
+   γ : closed-under-finite-meets (𝟎-𝔽𝕣𝕞 pe) ℬ𝟎↑ holds
+   γ = ∣ (inr ⋆ ∷ []) , t ∣ , c
 
 \end{code}

@@ -1,40 +1,35 @@
 Martin Escardo, November-December 2019
 
+We consider a situation in which anonymous existence gives explicit
+existence.
+
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module Fin.Choice where
 
-open import UF.Subsingletons renaming (⊤Ω to ⊤)
-
-open import MLTT.Spartan
-open import MLTT.Plus-Properties
-open import Fin.Type
-open import Fin.Properties
-open import Notation.Order
-open import TypeTopology.DiscreteAndSeparated
-open import UF.Equiv
-open import UF.PropTrunc
-open import UF.FunExt
-open import NotionsOfDecidability.Decidable
-open import NotionsOfDecidability.Complemented
-open import UF.Subsingletons-FunExt
 open import Fin.Order
-
-\end{code}
-
-We now consider a situation in which anonymous existence gives
-explicit existence:
-
-\begin{code}
+open import Fin.Properties
+open import Fin.Type
+open import MLTT.Plus-Properties
+open import MLTT.Spartan
+open import Notation.Order
+open import NotionsOfDecidability.Complemented
+open import NotionsOfDecidability.Decidable
+open import UF.DiscreteAndSeparated
+open import UF.Equiv
+open import UF.FunExt
+open import UF.PropTrunc
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
 
 module _ (pt : propositional-truncations-exist) where
 
  open PropositionalTruncation pt
 
  Σ-min-from-∃ : FunExt → {n : ℕ} (A : Fin n → 𝓤 ̇ )
-             → complemented A
+             → is-complemented A
              → is-prop-valued-family A
              → ∃ A
              → Σ-min A
@@ -43,7 +38,7 @@ module _ (pt : propositional-truncations-exist) where
 
  Fin-Σ-from-∃' : FunExt
                → {n : ℕ} (A : Fin n → 𝓤 ̇ )
-               → complemented A
+               → is-complemented A
                → is-prop-valued-family A
                → ∃ A
                → Σ A
@@ -58,7 +53,7 @@ But the prop-valuedness of A is actually not needed, with more work:
 
  Fin-Σ-from-∃ : FunExt
               → {n : ℕ} (A : Fin n → 𝓤 ̇ )
-              → complemented A
+              → is-complemented A
               → ∃ A
               → Σ A
 
@@ -67,10 +62,10 @@ But the prop-valuedness of A is actually not needed, with more work:
    A' : Fin n → 𝓤 ̇
    A' x = ∥ A x ∥
 
-   δ' : complemented A'
+   δ' : is-complemented A'
    δ' x = d (δ x)
     where
-     d : decidable (A x) → decidable (A' x)
+     d : is-decidable (A x) → is-decidable (A' x)
      d (inl a) = inl ∣ a ∣
      d (inr u) = inr (∥∥-rec 𝟘-is-prop u)
 

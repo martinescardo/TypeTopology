@@ -2,7 +2,7 @@ Martin Escardo, 8th December 2019.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module Fin.Bishop where
 
@@ -10,12 +10,13 @@ open import Fin.Properties
 open import Fin.Type
 open import MLTT.Spartan
 open import UF.Base
+open import UF.DiscreteAndSeparated
 open import UF.Equiv
 open import UF.Equiv-FunExt
 open import UF.EquivalenceExamples
 open import UF.FunExt
-open import UF.Miscelanea
 open import UF.PropTrunc
+open import UF.Sets-Properties
 open import UF.Subsingletons
 open import UF.UA-FunExt
 open import UF.Univalence
@@ -38,7 +39,7 @@ finite-linear-order X = Σ n ꞉ ℕ , X ≃ Fin n
 
 \end{code}
 
-Exercise: If X ≃ Fin n, then the type Finite X has n! elements (solved
+Exercise: If X ≃ Fin n, then the type finite-linear-order X has n! elements (solved
 elsewhere in TypeTopology).
 
 \begin{code}

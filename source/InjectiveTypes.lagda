@@ -6,7 +6,7 @@ Please follow the link after the import:
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 import InjectiveTypes.Blackboard
 

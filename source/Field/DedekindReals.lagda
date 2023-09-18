@@ -2,7 +2,7 @@ Andrew Sneap, 7 February 2021
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --lossy-unification #-}
+{-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
 
@@ -19,8 +19,9 @@ module Field.DedekindReals
          (pe : Prop-Ext)
  where
 
-open import DedekindReals.Type pe pt fe
-open import DedekindReals.Order pe pt fe
+open import DedekindReals.Type fe pe pt
+open import DedekindReals.Order fe pe pt
+
 {-
 DedekindRealsField : Field-structure ℝ { 𝓤₀ }
 DedekindRealsField = ({!!} , {!!} , _♯_) , ℝ-is-set , {!!} , {!!} , {!!} , {!!} , {!!} , (0ℝ , 1ℝ) , ℝ-zero-apart-from-one , {!!} , {!!} , {!!} , {!!}

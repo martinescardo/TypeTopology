@@ -18,24 +18,22 @@ Torsors are in their own file Torsos.lagda
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --auto-inline --exact-split #-}
-
-open import MLTT.Spartan
-open import UF.Base hiding (_≈_)
-open import UF.Subsingletons
-open import UF.Powerset
-open import UF.Equiv
-open import UF.EquivalenceExamples
-open import UF.Embeddings
-open import UF.Univalence
-open import UF.Equiv-FunExt
-open import UF.FunExt
-open import UF.UA-FunExt
-open import UF.Subsingletons-FunExt
-open import UF.Retracts
-open import UF.Classifiers
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import Groups.Type renaming (_≅_ to _≣_)
+open import MLTT.Spartan
+open import UF.Base hiding (_≈_)
+open import UF.Embeddings
+open import UF.Equiv
+open import UF.Equiv-FunExt
+open import UF.FunExt
+open import UF.Sets
+open import UF.Sets-Properties
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
+open import UF.Subsingletons-Properties
+open import UF.UA-FunExt
+open import UF.Univalence
 
 module Groups.GroupActions where
 
@@ -44,7 +42,7 @@ module _ (G : Group 𝓤) where
   action-structure : 𝓤 ̇ → 𝓤 ̇
   action-structure X = ⟨ G ⟩ → X → X
 
-  action-axioms : (X : 𝓤 ̇) → action-structure X → 𝓤 ̇
+  action-axioms : (X : 𝓤 ̇ ) → action-structure X → 𝓤 ̇
   action-axioms X _·_ = is-set X ×
                         ((g h : ⟨ G ⟩)(x : X) → (g ·⟨ G ⟩ h) · x ＝ g · (h · x)) ×
                         ((x : X) → (unit G) · x ＝ x)
@@ -140,12 +138,12 @@ does. Conversely, a homomorphism to Aut (X) gives an action.
 
 
   module from-automorphism (fe : funext 𝓤 𝓤)
-                           (X : 𝓤 ̇) (i : is-set X)
+                           (X : 𝓤 ̇ )(i : is-set X)
                            (σ : ⟨ G ⟩ → Aut X)
                              where
     open import Groups.Aut
     open import Groups.Opposite
-      
+
     hom-to-Aut-gives-action : is-hom G ((𝔸ut fe X i) ᵒᵖ ) σ → Action
     hom-to-Aut-gives-action is = X , ((λ g → pr₁ (σ g)) ,
                             (i , (λ g h → happly (ap pr₁ (is {g} {h}))) ,
@@ -218,7 +216,7 @@ Equivariant maps.
     where
       i : is-set (action-carrier 𝕐)
       i = carrier-is-set 𝕐
-      
+
       γ : is-prop (is-equivariant 𝕏 𝕐 f)
       γ = Π-is-prop fe
                     (λ g → Π-is-prop fe
@@ -226,7 +224,7 @@ Equivariant maps.
 
   is-equivariant-comp : (𝕏 𝕐 ℤ : Action)
                       → (p : ⟨ 𝕏 ⟩ → ⟨ 𝕐 ⟩) (i : is-equivariant 𝕏 𝕐 p)
-                      → (q : ⟨ 𝕐 ⟩ → ⟨ ℤ ⟩) (j : is-equivariant 𝕐 ℤ q) 
+                      → (q : ⟨ 𝕐 ⟩ → ⟨ ℤ ⟩) (j : is-equivariant 𝕐 ℤ q)
                       → (is-equivariant 𝕏 ℤ (q ∘ p))
   is-equivariant-comp 𝕏 𝕐 ℤ p i q j g x = q (p (g · x)) ＝⟨ ap q (i g x) ⟩
                                           q (g * (p x)) ＝⟨ j g (p x) ⟩
@@ -249,7 +247,7 @@ structures.
   ＝-is-equivariant : funext 𝓤 𝓤
                     → (𝕏 𝕐 : Action)
                     → (p : ⟨ 𝕏 ⟩ ＝ ⟨ 𝕐 ⟩)
-                    → (transport Action-structure p (pr₂ 𝕏)  ＝ pr₂ 𝕐 ) ≃ 
+                    → (transport Action-structure p (pr₂ 𝕏)  ＝ pr₂ 𝕐 ) ≃
                      is-equivariant 𝕏 𝕐 (idtofun ⟨ 𝕏 ⟩ ⟨ 𝕐 ⟩ p)
   pr₁ (＝-is-equivariant fe (X , as) (.X , .as) refl) refl = λ g x → refl
   pr₂ (＝-is-equivariant fe (X , as) (.X , as') refl) =
@@ -280,7 +278,7 @@ The above function is called is_equivariant_identity in UniMath.
   underlying-function : (𝕏 𝕐 : Action) (u : Action-Map 𝕏 𝕐) → ⟨ 𝕏 ⟩ → ⟨ 𝕐 ⟩
   underlying-function _ _ u = pr₁ u
 
-  equivariance : {𝕏 𝕐 : Action} (u : Action-Map 𝕏 𝕐) → 
+  equivariance : {𝕏 𝕐 : Action} (u : Action-Map 𝕏 𝕐) →
                  is-equivariant 𝕏 𝕐 (underlying-function 𝕏 𝕐 u)
   equivariance u = pr₂ u
 
@@ -316,13 +314,13 @@ The above function is called is_equivariant_identity in UniMath.
 
   underlying-iso : (𝕏 𝕐 : Action) → Action-Iso 𝕏 𝕐 → ⟨ 𝕏 ⟩ ≃ ⟨ 𝕐 ⟩
   underlying-iso 𝕏 𝕐 u = pr₁ u
-                   
+
   underlying-iso-is-embedding : funext 𝓤 𝓤
                               → (𝕏 𝕐 : Action)
                               → is-embedding (underlying-iso 𝕏 𝕐)
   underlying-iso-is-embedding fe 𝕏 𝕐 =
     pr₁-is-embedding (λ f → is-equivariant-is-prop fe 𝕏 𝕐 (pr₁ f))
-                           
+
   underlying-iso-injectivity : funext 𝓤 𝓤
                              → (𝕏 𝕐 : Action)
                              → (u v : Action-Iso 𝕏 𝕐)
@@ -330,9 +328,9 @@ The above function is called is_equivariant_identity in UniMath.
   underlying-iso-injectivity fe 𝕏 𝕐 u v =
     ≃-sym (embedding-criterion-converse
              (underlying-iso 𝕏 𝕐)
-             (underlying-iso-is-embedding fe 𝕏 𝕐) u v) 
+             (underlying-iso-is-embedding fe 𝕏 𝕐) u v)
 
-  
+
   underlying-Action-Map : (𝕏 𝕐 : Action) → Action-Iso 𝕏 𝕐
                         → Action-Map 𝕏 𝕐
   underlying-Action-Map _ _ ((f , _) , is) = f , is
@@ -393,7 +391,7 @@ type-checking.
         T 𝕏 𝕐 = Σ u ꞉ ⟨ 𝕏 ⟩ ＝ ⟨ 𝕐 ⟩ , transport Action-structure u (pr₂ 𝕏) ＝ pr₂ 𝕐
 
         Φ : (𝕏 ＝ 𝕐) → T 𝕏 𝕐
-        Φ = from-Σ-＝ 
+        Φ = from-Σ-＝
 
         Φ' : T 𝕏 𝕐 → (𝕏 ＝ 𝕐)
         Φ' = to-Σ-＝
@@ -425,7 +423,7 @@ type-checking.
           where
             inv-Ψ : invertible Ψ
             inv-Ψ = Ψ' , (Ψ'Ψ-id , ΨΨ'-id)
-            
+
         ll : is-equiv Φ
         ll = qinvs-are-equivs Φ inv-Φ
           where
@@ -455,7 +453,7 @@ A shorthand for the action structure. Convenient in function signature types.
 \begin{code}
 
 action-op-syntax : (G : Group 𝓤) (𝕏 : Action G) → action-structure G ⟨ 𝕏 ⟩
-action-op-syntax G 𝕏 = action-op G 𝕏 
+action-op-syntax G 𝕏 = action-op G 𝕏
 syntax action-op-syntax G 𝕏 g x = g ◂⟨ G ∣ 𝕏 ⟩ x
 
 \end{code}
@@ -494,4 +492,3 @@ action-pullback {H = H} {G} f i ρ = (action-carrier G ρ) ,
 
 TODO: The left adjoint, that is, the map H Sets → G Sets along the
 homomorphism H → G. It uses the quotient module.
-

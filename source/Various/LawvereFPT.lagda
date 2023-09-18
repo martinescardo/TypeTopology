@@ -15,9 +15,11 @@ extensions of MLTT, or hypotheses, such as propositional truncation.
 Many other things have been added since the above abstract was
 written.
 
+See also the file Various.CantorTheoremForEmbeddings by Jon Sterling.
+
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module Various.LawvereFPT where
 
@@ -27,12 +29,14 @@ open import MLTT.Two-Properties
 open import Naturals.Properties
 
 open import UF.Base
+open import UF.Equiv
+open import UF.FunExt
+open import UF.Retracts
+open import UF.Sets
+open import UF.Sets-Properties
+open import UF.SubtypeClassifier
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import UF.Retracts
-open import UF.Equiv
-open import UF.Miscelanea
-open import UF.FunExt
 
 designated-fixed-point-property : 𝓤 ̇ → 𝓤 ̇
 designated-fixed-point-property X = (f : X → X) → Σ x ꞉ X , x ＝ f x
@@ -171,9 +175,6 @@ As a simple application, it follows that negation doesn't have fixed points:
 
  \begin{code}
 
- open import UF.Subsingletons
- open import UF.Subsingletons-FunExt
-
  not-no-fp : (fe : funext 𝓤 𝓤₀) → ¬ (Σ P ꞉ Ω 𝓤 , P ＝ not fe P)
  not-no-fp {𝓤} fe (P , p) = ¬-no-fp (P holds , q)
   where
@@ -288,8 +289,6 @@ module surjection-version (pt : propositional-truncations-exist) where
 
  \begin{code}
 
- open import MLTT.Two
-
  cantor-uncountable : ¬ (Σ φ ꞉ (ℕ → (ℕ → 𝟚)), is-surjection φ)
  cantor-uncountable (φ , s) = γ
   where
@@ -320,7 +319,7 @@ module Blechschmidt (pt : propositional-truncations-exist) where
 
  open PropositionalTruncation pt
  open import UF.ImageAndSurjection pt
- open import TypeTopology.DiscreteAndSeparated
+ open import UF.DiscreteAndSeparated
 
  Π-projection-has-section : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
                             (x₀ : X)
@@ -418,7 +417,6 @@ module Blechschmidt' (pt : propositional-truncations-exist) where
 
  open PropositionalTruncation pt
  open import UF.ImageAndSurjection pt
- open import TypeTopology.DiscreteAndSeparated
 
  Π-projection-has-section : funext 𝓥 ((𝓤 ⊔ 𝓦)⁺)
                           → funext (𝓤 ⊔ 𝓦) (𝓤 ⊔ 𝓦)
@@ -534,7 +532,7 @@ NB. If 𝓥 is 𝓤 or 𝓤', then X : A → 𝓤 ⁺ ̇.
 
 \end{code}
 
-See also http://www.cs.bham.ac.uk/~mhe/TypeTopology/Type-in-Type-False.html
+See also the module Unsafe.Type-in-Type-False.
 
 Added 12 October 2018. The paper
 
@@ -569,13 +567,13 @@ module GeneralizedCoquand where
         → 𝟘
  Lemma₀ {𝓤} A T S ρ σ η = γ
   where
-   open import MLTT.W
+   open import W.Type
 
    𝕎 : 𝓤 ̇
    𝕎 = W A T
 
    α : 𝕎 → (𝕎 → 𝓤 ̇ )
-   α (sup _ φ) = fiber φ
+   α (ssup _ φ) = fiber φ
 
    module _ (X : 𝓤 ̇ ) where
 
@@ -583,7 +581,7 @@ module GeneralizedCoquand where
      H w = α w w → X
 
      R : 𝕎
-     R = sup (S (Σ H)) (pr₁ ∘ ρ)
+     R = ssup (S (Σ H)) (pr₁ ∘ ρ)
 
      B : 𝓤 ̇
      B = α R R
@@ -725,7 +723,7 @@ Further generalization, where we intend to use P = is-set.
 
 \begin{code}
 
-open import MLTT.W
+open import W.Type
 
 module Coquand-further-generalized (𝓤 𝓥 : Universe)
          (P : 𝓤 ̇ → 𝓥 ̇ )
@@ -757,7 +755,7 @@ module Coquand-further-generalized (𝓤 𝓥 : Universe)
     𝕎 = W A T
 
     α : 𝕎 → (𝕎 → 𝓤 ̇ )
-    α (sup _ φ) = fiber φ
+    α (ssup _ φ) = fiber φ
 
     module _ (X : 𝓤 ̇ ) (X-is-P : P X) where
 
@@ -770,7 +768,7 @@ module Coquand-further-generalized (𝓤 𝓥 : Universe)
             (λ w → P-exponential-ideal X (α w w) X-is-P)
 
       R : 𝕎
-      R = sup (S (Σ H) p) (pr₁ ∘ ρ p)
+      R = ssup (S (Σ H) p) (pr₁ ∘ ρ p)
 
       B : 𝓤 ̇
       B = α R R
@@ -853,7 +851,7 @@ extensionality:
 
 \begin{code}
 
-open import MLTT.W-Properties
+open import W.Properties
 
 silly-theorem : funext 𝓤 𝓤 → ¬ (Σ A ꞉ 𝓤 ̇ , is-set A × (hSet 𝓤 ≃ A))
 silly-theorem {𝓤} fe (A , A-is-set , e) =
@@ -864,7 +862,7 @@ silly-theorem {𝓤} fe (A , A-is-set , e) =
   𝟘-is-set
   (λ X Y X-is-set → Π-is-set fe (λ _ → X-is-set))
   (λ X Y → Σ-is-set)
-  (λ X X-is-set → W-is-set fe)
+  (λ X X-is-set → W-is-set X X-is-set fe)
   ((A , A-is-set) , e)
 
 \end{code}
@@ -884,7 +882,7 @@ sillier-theorem {𝓤} fe (A , A-is-prop , e) =
   𝟘-is-prop
   (λ X Y X-is-prop → Π-is-prop fe (λ _ → X-is-prop))
   (λ X Y → Σ-is-prop)
-  (λ X X-is-set → W-is-prop fe)
+  (λ X X-is-set → W-is-prop X X-is-set fe)
   ((A , A-is-prop) , e)
 
 \end{code}

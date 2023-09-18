@@ -2,7 +2,7 @@ Martin Escardo
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module TypeTopology.index where
 
@@ -14,7 +14,6 @@ import TypeTopology.ConvergentSequenceHasInf
 import TypeTopology.DecidabilityOfNonContinuity
 import TypeTopology.Density
 import TypeTopology.DisconnectedTypes
-import TypeTopology.DiscreteAndSeparated
 import TypeTopology.ExtendedSumCompact
 import TypeTopology.FailureOfTotalSeparatedness
 import TypeTopology.GenericConvergentSequenceCompactness

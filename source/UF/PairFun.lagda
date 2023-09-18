@@ -5,16 +5,17 @@ the resulting function.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module UF.PairFun where
 
 open import MLTT.Spartan
 open import TypeTopology.Density
 
-open import UF.Subsingletons
-open import UF.Equiv
 open import UF.Embeddings
+open import UF.Equiv
+open import UF.EquivalenceExamples
+open import UF.Subsingletons
 
 module _ {𝓤 𝓥 𝓦 𝓣}
          {X : 𝓤 ̇ }
@@ -55,7 +56,7 @@ module _ {𝓤 𝓥 𝓦 𝓣}
  pair-fun-is-embedding e d (y , b) = h
   where
    i : is-prop (pair-fun-fiber' y b)
-   i = subtype-of-prop-is-prop
+   i = subtypes-of-props-are-props'
         pr₁
         (pr₁-lc (λ {w} → d (pr₁ w) (transport⁻¹ B (pr₂ w) b)))
         (e y)
@@ -128,12 +129,68 @@ module _ {𝓤 𝓥 𝓦 𝓣}
                            (t x b)})
          (s y)
 
-pair-fun-equiv : {X : 𝓤 ̇} {A : X → 𝓥 ̇}
-                 {Y : 𝓦 ̇} {B : Y → 𝓣 ̇}
+pair-fun-equiv : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+                 {Y : 𝓦 ̇ } {B : Y → 𝓣 ̇ }
                  (f : X ≃ Y)
                → ((x : X) → A x ≃ B (⌜ f ⌝ x))
                → Σ A ≃ Σ B
 pair-fun-equiv f g = pair-fun ⌜ f ⌝ (λ x → ⌜ g x ⌝) ,
                      pair-fun-is-equiv _ _ ⌜ f ⌝-is-equiv (λ x → ⌜ g x ⌝-is-equiv)
+
+Σ-change-of-variable-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                                 (A : X → 𝓦 ̇ ) (g : Y → X)
+                               → is-embedding g
+                               → (Σ y ꞉ Y , A (g y)) ↪ (Σ x ꞉ X , A x)
+Σ-change-of-variable-embedding A g e = pair-fun g (λ _ → id) ,
+                                       pair-fun-is-embedding
+                                        g
+                                        (λ _ → id)
+                                        e
+                                        (λ _ → id-is-embedding)
+
+pair-fun-embedding : {X : 𝓤 ̇ }
+                     {A : X → 𝓥 ̇ }
+                     {Y : 𝓦 ̇ }
+                     {B : Y → 𝓣 ̇ }
+                   → (e : X ↪ Y)
+                   → ((x : X) → A x ↪ B (⌊ e ⌋ x))
+                   → Σ A ↪ Σ B
+pair-fun-embedding (f , i) g = pair-fun f (λ x → ⌊ g x ⌋) ,
+                               pair-fun-is-embedding
+                                f
+                                ((λ x → ⌊ g x ⌋))
+                                i
+                                (λ x → ⌊ g x ⌋-is-embedding)
+
+
+pair-fun-is-embedding-special : {𝓤 𝓥 𝓦 : Universe}
+                                {X : 𝓤 ̇  } {Y : 𝓥 ̇  } {B : Y → 𝓦 ̇  }
+                              → (f : X → Y)
+                              → (g : (x : X) → B (f x))
+                              → is-embedding f
+                              → ((y : Y) → is-prop (B y))
+                              → is-embedding (λ x → f x , g x)
+pair-fun-is-embedding-special {𝓤} {𝓥} {𝓦} {X} {Y} {B} f g f-emb B-is-prop = e
+ where
+  k : X ≃ X × 𝟙 {𝓤}
+  k = ≃-sym 𝟙-rneutral
+
+  k-emb : is-embedding ⌜ k ⌝
+  k-emb = equivs-are-embeddings ⌜ k ⌝ ⌜ k ⌝-is-equiv
+
+  h : X → Σ B
+  h x = f x , g x
+
+  g' : (x : X) → 𝟙 → B (f x)
+  g' x _ = g x
+
+  g'-emb : (x : X) → is-embedding (g' x)
+  g'-emb x = maps-of-props-are-embeddings (g' x) 𝟙-is-prop (B-is-prop (f x))
+
+  remark : h ＝ pair-fun f g' ∘ ⌜ k ⌝
+  remark = refl
+
+  e : is-embedding h
+  e = ∘-is-embedding k-emb (pair-fun-is-embedding f g' f-emb g'-emb)
 
 \end{code}

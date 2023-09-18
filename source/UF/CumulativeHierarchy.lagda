@@ -51,11 +51,11 @@ References
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import UF.FunExt
-open import UF.Subsingletons
 open import UF.PropTrunc
+open import UF.Subsingletons
 
 module UF.CumulativeHierarchy
         (pt : propositional-truncations-exist)
@@ -67,7 +67,11 @@ open PropositionalTruncation pt
 
 open import MLTT.Spartan
 open import UF.Base hiding (_≈_)
+open import UF.Sets
+open import UF.SubtypeClassifier
+open import UF.SubtypeClassifier-Properties
 open import UF.Subsingletons-FunExt
+open import UF.Subsingletons-Properties
 
 _≲_ : {A : 𝓤 ̇ } {B : 𝓥 ̇ } {X : 𝓣 ̇ } → (A → X) → (B → X) → 𝓤 ⊔ 𝓥 ⊔ 𝓣 ̇
 _≲_ {𝓤} {𝓥} {𝓣} {A} {B} f g = (a : A) → ∃ b ꞉ B , g b ＝ f a
@@ -355,7 +359,7 @@ subset relation (⊆) and proofs of ∈-extensionality and ∈-induction.
 
   to-∈-of-𝕍-set : {x : 𝕍} {A : 𝓤 ̇ } {f : A → 𝕍}
                   → (∃ a ꞉ A , f a ＝ x) → (x ∈ 𝕍-set f)
-  to-∈-of-𝕍-set {x} {A} {f} = back-Idtofun (∈-for-𝕍-sets x f)
+  to-∈-of-𝕍-set {x} {A} {f} = Idtofun⁻¹ (∈-for-𝕍-sets x f)
 
   _⊆_ : 𝕍 → 𝕍 → 𝓤 ⁺ ̇
   x ⊆ y = (v : 𝕍) → v ∈ x → v ∈ y
@@ -400,7 +404,7 @@ set-theoretic axioms: ∈-extensionality and ∈-induction.
                            (λ _ → Π₂-is-prop fe (λ _ _ → 𝕍-is-large-set))
                            γ
     where
-     γ : {B : 𝓤 ̇  } (g : B → 𝕍)
+     γ : {B : 𝓤 ̇ } (g : B → 𝕍)
        → 𝕍-set g ⊆ 𝕍-set f → 𝕍-set f ⊆ 𝕍-set g → 𝕍-set g ＝ 𝕍-set f
      γ g s t = 𝕍-set-ext g f (⊆-to-≲ g f s , ⊆-to-≲ f g t)
 

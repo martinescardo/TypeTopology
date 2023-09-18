@@ -31,14 +31,16 @@ Contents:
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan
 open import UF.Base
 open import UF.Equiv
+open import UF.EquivalenceExamples
+open import UF.Sets
+open import UF.Sets-Properties
 open import UF.Univalence
 open import UF.Yoneda
-open import UF.EquivalenceExamples
 
 module UF.StructureIdentityPrinciple where
 

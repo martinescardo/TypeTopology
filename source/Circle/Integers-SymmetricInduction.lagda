@@ -10,7 +10,7 @@ UniMath" by Bezem, Buchholtz, Grayson and Shulman
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import Naturals.UniversalProperty
 
@@ -109,16 +109,7 @@ module Circle.Integers-SymmetricInduction where
        → (Σ hₚ ꞉ Π (A ∘ pos) , Σ hₙ ꞉ Π (A ∘ neg) , Qₚ (hₒ ⋆) hₚ × Qₙ' (hₒ ⋆) hₙ)
        ≃ (  (Σ hₚ ꞉ Π (A ∘ pos) , Qₚ (hₒ ⋆) hₚ)
           × (Σ hₙ ꞉ Π (A ∘ neg) , Qₙ' (hₒ ⋆) hₙ))
-     γ hₒ = qinveq φ (ψ , η , ε)
-      where
-       φ : _
-       φ (hₙ , hₚ , q' , q) = ((hₙ , q') , (hₚ , q))
-       ψ : _
-       ψ ((hₙ , q') , (hₚ , q)) = hₙ , hₚ , q' , q
-       η : ψ ∘ φ ∼ id
-       η _ = refl
-       ε : φ ∘ ψ ∼ id
-       ε _ = refl
+     γ hₒ = Σ-interchange
    VII  = Σ-cong (λ hₒ → ×-cong (singleton-≃-𝟙 {𝓤} {𝓤₀} (γ hₒ)) (≃-refl _))
     where
      γ : (hₒ : Π (A ∘ ⌜𝟎⌝))
@@ -134,7 +125,7 @@ module Circle.Integers-SymmetricInduction where
     where
      γ : (hₒ : Π (A ∘ ⌜𝟎⌝)) (hₙ : Π (A ∘ neg))
        → Qₙ' (hₒ ⋆) hₙ ≃ Qₙ (hₒ ⋆) hₙ
-     γ hₒ hₙ = ×-cong γ₀ (Π-cong fe fe ℕ _ _ γₙ)
+     γ hₒ hₙ = ×-cong γ₀ (Π-cong fe fe γₙ)
       where
        f₀ = ⌜ f (neg 0) ⌝
        f₀⁻¹ = ⌜ (f (neg 0)) ⌝⁻¹

@@ -4,21 +4,22 @@ Size matters.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan
 
 module Lifting.Size (𝓣 : Universe) where
 
-open import UF.Subsingletons
-open import UF.Size
-open import UF.Equiv
-open import UF.Univalence
-open import UF.FunExt
-open import UF.UA-FunExt
-open import UF.EquivalenceExamples
-open import Lifting.Lifting 𝓣
 open import Lifting.IdentityViaSIP
+open import Lifting.Lifting 𝓣
+open import UF.Equiv
+open import UF.EquivalenceExamples
+open import UF.FunExt
+open import UF.Size
+open import UF.SubtypeClassifier
+open import UF.Subsingletons
+open import UF.UA-FunExt
+open import UF.Univalence
 
 \end{code}
 
@@ -77,38 +78,49 @@ universes except the first, i.e., all successor universes 𝓤 ⁺.
 
 \begin{code}
 
-𝓛-resize : is-univalent 𝓣 → is-univalent 𝓤 → Propositional-resizing
-         → (X : 𝓤 ⁺ ̇ ) → (𝓛 X) is (𝓤 ⁺) small
+𝓛-resize : is-univalent 𝓣
+         → is-univalent 𝓤
+         → Propositional-resizing
+         → (X : 𝓤 ⁺ ̇ ) → 𝓛 X is (𝓤 ⁺) small
 𝓛-resize {𝓤} ua ua' ρ X = L , e
  where
   L : 𝓤 ⁺ ̇
   L = Σ P ꞉ 𝓤 ̇ , (P → X) × is-prop P
+
   e : L ≃ 𝓛 X
   e = qinveq φ (γ , γφ , φγ)
    where
     φ : L → 𝓛 X
     φ (P , f , i) = resize ρ P i , f ∘ from-resize ρ P i , resize-is-prop ρ P i
+
     γ : 𝓛 X → L
     γ (Q , g , j) = resize ρ Q j , g ∘ from-resize ρ Q j , resize-is-prop ρ Q j
+
     φγ : (l : 𝓛 X) → φ (γ l) ＝ l
     φγ (Q , g , j) = ⋍-gives-＝ 𝓣 ua (a , b)
      where
       a : resize ρ (resize ρ Q j) (resize-is-prop ρ Q j) ≃ Q
-      a = qinveq (from-resize ρ Q j ∘ from-resize ρ (resize ρ Q j) (resize-is-prop ρ Q j))
-                 (to-resize ρ (resize ρ Q j) (resize-is-prop ρ Q j) ∘ to-resize ρ Q j ,
-                 (λ r → resize-is-prop ρ (resize ρ Q j) (resize-is-prop ρ Q j) _ r) ,
-                 (λ q → j _ q))
+      a = qinveq
+           (from-resize ρ Q j ∘ from-resize ρ (resize ρ Q j) (resize-is-prop ρ Q j))
+           (to-resize ρ (resize ρ Q j) (resize-is-prop ρ Q j) ∘ to-resize ρ Q j ,
+           (λ r → resize-is-prop ρ (resize ρ Q j) (resize-is-prop ρ Q j) _ r) ,
+           (λ q → j _ q))
+
       b : g ∘ from-resize ρ Q j ∘ from-resize ρ (resize ρ Q j) (resize-is-prop ρ Q j) ＝ g ∘ ⌜ a ⌝
       b = ap (g ∘_) (dfunext (univalence-gives-funext ua) (λ r → j _ (⌜ a ⌝ r)))
+
     γφ : (m : L) → γ (φ m) ＝ m
     γφ (P , f , i) = ⋍-gives-＝ 𝓤 ua' (a , b)
      where
       a : resize ρ (resize ρ P i) (resize-is-prop ρ P i) ≃ P
-      a = qinveq (from-resize ρ P i ∘ from-resize ρ (resize ρ P i) (resize-is-prop ρ P i))
-                 (to-resize ρ (resize ρ P i) (resize-is-prop ρ P i) ∘ to-resize ρ P i ,
-                 (λ r → resize-is-prop ρ (resize ρ P i) (resize-is-prop ρ P i) _ r) ,
-                 (λ q → i _ q))
-      b : f ∘ from-resize ρ P i ∘ from-resize ρ (resize ρ P i) (resize-is-prop ρ P i) ＝ f ∘ ⌜ a ⌝
+      a = qinveq
+           (from-resize ρ P i ∘ from-resize ρ (resize ρ P i) (resize-is-prop ρ P i))
+           (to-resize ρ (resize ρ P i) (resize-is-prop ρ P i) ∘ to-resize ρ P i ,
+           (λ r → resize-is-prop ρ (resize ρ P i) (resize-is-prop ρ P i) _ r) ,
+           (λ q → i _ q))
+
+      b : f ∘ from-resize ρ P i ∘ from-resize ρ (resize ρ P i) (resize-is-prop ρ P i)
+        ＝ f ∘ ⌜ a ⌝
       b = ap (f ∘_) (dfunext (univalence-gives-funext ua') (λ r → i _ (⌜ a ⌝ r)))
 
 \end{code}
@@ -122,11 +134,16 @@ functional extensionality. But this is probably not worth the trouble,
 as it would imply developing a copy of the SIP with this different
 assumption.
 
+Added 14t Feb 2022. Actually, function extensionality and
+propositional extensionality together give univalence for
+propositions, as proved in the module UF.Equiv-FunExt.
+
 Added 8th Feb 2019.
 
 \begin{code}
 
-𝓛-resizing₀ : Ω-resizing₀ 𝓣 → (X : 𝓣 ̇ ) → (𝓛 X) is 𝓣 small
+𝓛-resizing₀ : Ω-resizing₀ 𝓣
+            → (X : 𝓣 ̇ ) → 𝓛 X is 𝓣 small
 𝓛-resizing₀ (Ω₀ , e₀) X = (Σ p ꞉ Ω₀ , (up p holds → X)) , ≃-comp d e
  where
   up : Ω₀ → Ω 𝓣
@@ -151,7 +168,8 @@ more parsimonious.
 
 \begin{code}
 
-𝓛-resizing : Ω-resizing 𝓣 → (X : 𝓣 ̇ ) → (𝓛 X) is 𝓣 small
+𝓛-resizing : Ω-resizing 𝓣
+           → (X : 𝓣 ̇ ) → 𝓛 X is 𝓣 small
 𝓛-resizing (O , ε) X = (Σ p ꞉ O , (up p holds → X)) , ≃-comp d e
  where
   up : O → Ω 𝓣

@@ -21,19 +21,17 @@ This is vestigial. The proof that group-axioms is prop is in Groups.Type
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --auto-inline --exact-split #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module Groups.Type-Supplement where
---open import SpartanMLTT
-open import MLTT.Spartan
-open import UF.Base
-open import UF.Subsingletons
-open import UF.FunExt
-open import UF.Subsingletons-FunExt
-open import UF.Equiv hiding (_≅_ ; ≅-refl)
+
 open import Groups.Type hiding (group-axioms-is-prop)
-
-
+open import MLTT.Spartan
+open import UF.FunExt
+open import UF.Sets
+open import UF.Sets-Properties
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
 
 \end{code}
 
@@ -43,7 +41,7 @@ UF.SIP-Examples.
 \begin{code}
 
 monoid-axioms-is-prop : funext 𝓤 𝓤
-                      → (X : 𝓤 ̇) (m : monoid-structure X)
+                      → (X : 𝓤 ̇ )(m : monoid-structure X)
                       → is-prop (monoid-axioms X m)
 monoid-axioms-is-prop fe X (_·_ , e) a = γ a
   where
@@ -72,7 +70,7 @@ UF.SIP-Examples.
 group-structure₁ : 𝓤 ̇ → 𝓤 ̇
 group-structure₁ X = Σ m ꞉ monoid-structure X , monoid-axioms X m
 
-group-axiom₁ : (X : 𝓤 ̇) → monoid-structure X → 𝓤 ̇
+group-axiom₁ : (X : 𝓤 ̇ )→ monoid-structure X → 𝓤 ̇
 group-axiom₁ X (_·_ , e) = (x : X) → Σ x' ꞉ X , (x' · x ＝ e) × (x · x' ＝ e)
 
 group-axiom₁-is-prop : funext 𝓤 𝓤

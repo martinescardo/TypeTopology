@@ -2,7 +2,7 @@ Martin Escardo 20-21 December 2012
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan
 open import MLTT.Two-Properties
@@ -25,7 +25,7 @@ roots-infimum p x = root-lower-bound p x × upper-bound-of-root-lower-bounds p x
 has-inf : 𝓤 ⊔ 𝓥 ̇
 has-inf = (p : X → 𝟚) → Σ x ꞉ X , conditional-root p x × roots-infimum p x
 
-has-inf-gives-compact∙ : has-inf → compact∙ X
+has-inf-gives-compact∙ : has-inf → is-compact∙ X
 has-inf-gives-compact∙ h p = f (h p)
  where
   f : (Σ x₀ ꞉ X , conditional-root p x₀ × roots-infimum p x₀)
@@ -41,10 +41,10 @@ has-inf-gives-compact∙ h p = f (h p)
     k : p x₀ ＝ ₁ → (x : X) → p x ＝ ₁
     k e = u (g' (equal-₁-different-from-₀ e))
 
-has-inf-gives-compact : has-inf → compact X
-has-inf-gives-compact = compact∙-gives-compact ∘ has-inf-gives-compact∙
+has-inf-gives-compact : has-inf → is-compact X
+has-inf-gives-compact = compact∙-types-are-compact ∘ has-inf-gives-compact∙
 
-has-inf-gives-Compact : {𝓦 : Universe} → has-inf → Compact X {𝓦}
-has-inf-gives-Compact = compact-gives-Compact ∘ has-inf-gives-compact
+has-inf-gives-Compact : {𝓦 : Universe} → has-inf → is-Compact X {𝓦}
+has-inf-gives-Compact = compact-types-are-Compact ∘ has-inf-gives-compact
 
 \end{code}

@@ -23,7 +23,7 @@ constructively, well, taboos!
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module Taboos.WLPO where
 
@@ -33,7 +33,7 @@ open import CoNaturals.GenericConvergentSequence
 WLPO : 𝓤₀ ̇
 WLPO = (u : ℕ∞) → (u ＝ ∞) + (u ≠ ∞)
 
-open import TypeTopology.DiscreteAndSeparated
+open import UF.DiscreteAndSeparated
 
 \end{code}
 
@@ -71,3 +71,17 @@ WLPO-gives-ℕ∞-discrete fe wlpo u v =
 More discussion about WLPO is included in the modules
 TheTopologyOfTheUniverse and FailureOfTotalSeparatedness, among
 others.
+
+Notice that weak excluded middle implies WLPO.
+
+\begin{code}
+
+open import UF.ExcludedMiddle
+
+WEM-gives-WLPO : FunExt → WEM 𝓤₀ → WLPO
+WEM-gives-WLPO fe wem u = Cases (wem (u ＝ ∞) (ℕ∞-is-set (fe 𝓤₀ 𝓤₀)))
+                           (λ (p : (u ≠ ∞))
+                                 → inr p)
+                           (λ (ν : ¬ (u ≠ ∞))
+                                 → inl (ℕ∞-is-¬¬-separated (fe 𝓤₀ 𝓤₀) u ∞ ν))
+\end{code}

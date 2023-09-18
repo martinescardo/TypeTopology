@@ -12,7 +12,7 @@ completion, see below for details.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline --lossy-unification #-}
+{-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
 -- The flag --lossy-unification roughly reduces the timechecking
 -- time by 50%.
 
@@ -182,7 +182,7 @@ later directify by taking finite joins.
 \begin{code}
 
  module _
-         (Bᴰ Bᴱ : 𝓥 ̇  )
+         (Bᴰ Bᴱ : 𝓥 ̇ )
          (βᴰ : Bᴰ → ⟨ 𝓓 ⟩)
          (βᴱ : Bᴱ → ⟪ 𝓔 ⟫)
          (κᴰ : is-small-compact-basis 𝓓     βᴰ)
@@ -371,7 +371,7 @@ module _
         (pe : Prop-Ext)
         (𝓓 : DCPO {𝓤} {𝓣})
         (𝓔 : DCPO {𝓤'} {𝓣'})
-        {Bᴰ Bᴱ : 𝓥 ̇  }
+        {Bᴰ Bᴱ : 𝓥 ̇ }
         (βᴰ : Bᴰ → ⟨ 𝓓 ⟩)
         (βᴱ : Bᴱ → ⟨ 𝓔 ⟩)
         (βᴰ-is-small-basis : is-small-basis 𝓓 βᴰ)

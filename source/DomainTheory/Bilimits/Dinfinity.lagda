@@ -8,7 +8,7 @@ The construction of D∞ is based on Scott's "Continuous lattices"
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline --lossy-unification #-}
+{-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
 
 \end{code}
 
@@ -44,6 +44,7 @@ module DomainTheory.Bilimits.Dinfinity
 open PropositionalTruncation pt
 
 open import UF.Base
+open import UF.Subsingletons-Properties
 
 open import DomainTheory.Basics.Dcpo pt fe 𝓤₀
 open import DomainTheory.Basics.Exponential pt fe 𝓤₀

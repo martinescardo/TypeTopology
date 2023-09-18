@@ -1,8 +1,10 @@
+Martin Escardo.
+
 General terminology and notation.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module Notation.General where
 
@@ -12,8 +14,31 @@ open import MLTT.Universes
 open import MLTT.Id
 open import MLTT.Negation public
 
+\end{code}
+
+The notation `Type 𝓤` should be avoided in favour of `𝓤 ̇`, but some
+module do use it.
+
+\begin{code}
+
 Type  = Set
 Type₁ = Set₁
+
+fiber : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → Y → 𝓤 ⊔ 𝓥 ̇
+fiber f y = Σ x ꞉ domain f , f x ＝ y
+
+fiber-point : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f : X → Y} {y : Y} → fiber f y → X
+fiber-point = pr₁
+
+fiber-identification : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f : X → Y} {y : Y} (w : fiber f y)
+                     → f (fiber-point w) ＝ y
+fiber-identification = pr₂
+
+each-fiber-of : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+              → (X → Y)
+              → (𝓤 ⊔ 𝓥 ̇ → 𝓦 ̇)
+              → 𝓥 ⊔ 𝓦 ̇
+each-fiber-of f P = ∀ y → P (fiber f y)
 
 reflexive : {X : 𝓤 ̇ } → (X → X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
 reflexive R = ∀ x → R x x
@@ -65,14 +90,14 @@ lr-implication = pr₁
 rl-implication : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X ⇔ Y) → (Y → X)
 rl-implication = pr₂
 
-⇔-sym : {X : 𝓤' ̇  } {Y : 𝓥' ̇  } → X ⇔ Y → Y ⇔ X
+⇔-sym : {X : 𝓤' ̇ } {Y : 𝓥' ̇ } → X ⇔ Y → Y ⇔ X
 ⇔-sym (f , g) = (g , f)
 
-⇔-trans : {X : 𝓤' ̇  } {Y : 𝓥' ̇  } {Z : 𝓦' ̇  }
+⇔-trans : {X : 𝓤' ̇ } {Y : 𝓥' ̇ } {Z : 𝓦' ̇ }
         → X ⇔ Y → Y ⇔ Z → X ⇔ Z
 ⇔-trans (f , g) (h , k) = (h ∘ f , g ∘ k)
 
-⇔-refl : {X : 𝓤' ̇  } → X ⇔ X
+⇔-refl : {X : 𝓤' ̇ } → X ⇔ X
 ⇔-refl = (id , id)
 
 \end{code}

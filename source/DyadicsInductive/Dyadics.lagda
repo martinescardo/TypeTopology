@@ -6,15 +6,14 @@ Dyadic rationals (https://en.wikipedia.org/wiki/Dyadic_rational)
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module DyadicsInductive.Dyadics where
 
 open import MLTT.Spartan
 open import MLTT.Unit-Properties
-open import TypeTopology.DiscreteAndSeparated
-
-open import UF.Miscelanea
+open import UF.DiscreteAndSeparated
+open import UF.Sets
 open import UF.Subsingletons
 
 \end{code}
@@ -102,18 +101,18 @@ right-lc = ap f
 𝔻-is-discrete (left x)  middle    = inr (λ p → middle-is-not-left (p ⁻¹))
 𝔻-is-discrete (left x)  (left y)  = cases a b (𝔻-is-discrete x y)
  where
-  a : x ＝ y → decidable (left x ＝ left y)
+  a : x ＝ y → is-decidable (left x ＝ left y)
   a = inl ∘ ap left
-  b : ¬ (x ＝ y) → decidable (left x ＝ left y)
+  b : ¬ (x ＝ y) → is-decidable (left x ＝ left y)
   b = inr ∘ contrapositive left-lc
 𝔻-is-discrete (left x)  (right y) = inr left-is-not-right
 𝔻-is-discrete (right x) middle    = inr (λ p → middle-is-not-right (p ⁻¹))
 𝔻-is-discrete (right x) (left y)  = inr (λ p → left-is-not-right (p ⁻¹))
 𝔻-is-discrete (right x) (right y) = cases a b (𝔻-is-discrete x y)
  where
-  a : x ＝ y → decidable (right x ＝ right y)
+  a : x ＝ y → is-decidable (right x ＝ right y)
   a = inl ∘ ap right
-  b : ¬ (x ＝ y) → decidable (right x ＝ right y)
+  b : ¬ (x ＝ y) → is-decidable (right x ＝ right y)
   b = inr ∘ contrapositive right-lc
 
 𝔻-is-set : is-set 𝔻

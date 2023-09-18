@@ -2,7 +2,7 @@ Andrew Sneap
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module Rationals.index where
 
@@ -15,6 +15,7 @@ import Rationals.MinMax
 import Rationals.Multiplication
 import Rationals.Negation
 import Rationals.Order
+import Rationals.Positive
 import Rationals.Fractions
 import Rationals.FractionsOperations
 import Rationals.FractionsOrder

@@ -2,20 +2,20 @@ Martin Escardo, 1st April 2013
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module Various.NonCollapsibleFamily where
 
 open import MLTT.Spartan
-
 open import UF.Base
-open import UF.Subsingletons
+open import UF.DiscreteAndSeparated
+open import UF.Hedberg
 open import UF.KrausLemma
-open import TypeTopology.DiscreteAndSeparated
+open import UF.Subsingletons
 
 decidable-equality-criterion : (X : 𝓤 ̇ )
-                               (a : 𝟚 → X) → ((x : X) → collapsible(Σ i ꞉ 𝟚 , a i ＝ x))
-                             → decidable(a ₀ ＝ a ₁)
+                               (a : 𝟚 → X) → ((x : X) → collapsible (Σ i ꞉ 𝟚 , a i ＝ x))
+                             → is-decidable(a ₀ ＝ a ₁)
 decidable-equality-criterion {𝓤} X a c = equal-or-different
  where
   κ : (x : X) → (Σ i ꞉ 𝟚 , a i ＝ x) → Σ i ꞉ 𝟚 , a i ＝ x

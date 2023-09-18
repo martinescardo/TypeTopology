@@ -11,7 +11,7 @@ the univalence of the universe U, namely
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module UF.Knapp-UA where
 

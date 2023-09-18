@@ -2,7 +2,7 @@ Jon Sterling, started 16th Dec 2022
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import UF.FunExt
 
@@ -14,13 +14,19 @@ open import UF.Equiv
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.Equiv-FunExt
+open import UF.Sets
+open import UF.Sets-Properties
 
--- We prefer composition in diagrammatic order.
+\end{code}
+
+We prefer composition in diagrammatic order.
+
+\begin{code}
 
 category-structure : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
 category-structure 𝓤 𝓥 =
  Σ ob ꞉ (𝓤 ̇),
- Σ hom ꞉ (ob → ob → 𝓥 ̇) ,
+ Σ hom ꞉ (ob → ob → 𝓥 ̇ ),
  Σ idn ꞉ ((A : ob) → hom A A) ,
  ((A B C : ob) (f : hom A B) (g : hom B C) → hom A C)
 

@@ -5,13 +5,13 @@ July 17, 2021
 --------------------------------------------------------------------------------
 
 Opposite of a Group. Given a group G, its opposite G ᵒᵖ has the same
-underlying type, but the "opposite" group structure: 
+underlying type, but the "opposite" group structure:
 
 g ·⟨ G ᵒᵖ ⟩ h = h ·⟨ G ⟩ g
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 
 open import MLTT.Spartan
@@ -23,7 +23,7 @@ module Groups.Opposite where
 _ᵒᵖ : Group 𝓤 → Group 𝓤
 G ᵒᵖ = ⟨ G ⟩ , (
                (λ g h → h ·⟨ G ⟩ g) ,
-                 (group-is-set G) ,
+                 (groups-are-sets G) ,
                    ((λ x y z → (assoc G z y x) ⁻¹) ,
                      (unit G) ,
                        ((λ x → unit-right G x) , ((λ x → unit-left G x) ,
@@ -61,7 +61,7 @@ unless G is abelian.  In fact this is equivalent to G being abelian.
 \begin{code}
 
 underlying-id-is-hom : (G : Group 𝓤) (ab : is-abelian G)
-                     → is-hom G (G ᵒᵖ) id 
+                     → is-hom G (G ᵒᵖ) id
 underlying-id-is-hom G ab {x} {y} = ab x y
 
 op-hom-gives-abelian : (G : Group 𝓤)

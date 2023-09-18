@@ -4,7 +4,7 @@ Closure properties of some ordinal constructions.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import UF.FunExt
 
@@ -28,7 +28,6 @@ open import Ordinals.ToppedType fe
 open import Ordinals.Underlying
 open import TypeTopology.CompactTypes
 open import TypeTopology.ConvergentSequenceHasInf
-open import TypeTopology.DiscreteAndSeparated
 open import TypeTopology.InfProperty
 open import TypeTopology.LexicographicCompactness
 open import TypeTopology.PropInfTychonoff
@@ -36,9 +35,9 @@ open import TypeTopology.SigmaDiscreteAndTotallySeparated
 open import TypeTopology.SquashedCantor fe
 open import TypeTopology.SquashedSum fe
 open import UF.Base
+open import UF.DiscreteAndSeparated
 open import UF.Embeddings
 open import UF.Equiv
-open import UF.Miscelanea
 open import UF.PairFun
 open import UF.Retracts
 open import UF.Subsingletons
@@ -54,10 +53,10 @@ Ordinal-indexed sums of topped ordinals are closed under compactness:
 \begin{code}
 
 ∑-compact∙ : (τ : Ordᵀ) (υ : ⟨ τ ⟩ → Ordᵀ)
-           → compact∙ ⟨ τ ⟩
-           → ((x : ⟨ τ ⟩) → compact∙ ⟨ υ x ⟩)
-           → compact∙ ⟨ ∑ τ υ ⟩
-∑-compact∙ τ υ ε δ = Σ-compact∙ ε δ
+           → is-compact∙ ⟨ τ ⟩
+           → ((x : ⟨ τ ⟩) → is-compact∙ ⟨ υ x ⟩)
+           → is-compact∙ ⟨ ∑ τ υ ⟩
+∑-compact∙ τ υ ε δ = Σ-is-compact∙ ε δ
 
 \end{code}
 
@@ -325,7 +324,7 @@ pair-fun-is-order-reflecting τ υ A B f g φ e γ (x , a) (y , b) (inl l)      
 pair-fun-is-order-reflecting τ υ A B f g φ e γ (x , a) (y , b) (inr (r , l)) = inr (c r , p)
  where
   e' : is-equiv (ap f)
-  e' = embedding-embedding' f e x y
+  e' = embedding-gives-embedding' f e x y
 
   c : f x ＝ f y → x ＝ y
   c = inverse (ap f) e'

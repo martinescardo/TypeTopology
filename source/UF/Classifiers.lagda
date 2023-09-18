@@ -18,7 +18,7 @@ September 2022.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module UF.Classifiers where
 
@@ -26,14 +26,16 @@ open import MLTT.Spartan
 open import UF.Base
 open import UF.Embeddings
 open import UF.Equiv
-open import UF.Univalence
-open import UF.FunExt
-open import UF.UA-FunExt
-open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
-open import UF.Powerset hiding (𝕋)
 open import UF.EquivalenceExamples
+open import UF.FunExt
 open import UF.Retracts
+open import UF.Sets
+open import UF.Sets-Properties
+open import UF.SubtypeClassifier
+open import UF.SubtypeClassifier-Properties
+open import UF.Subsingletons
+open import UF.UA-FunExt
+open import UF.Univalence
 
 \end{code}
 
@@ -443,7 +445,7 @@ more general universes in the following:
 
 Σ-fibers : is-univalent 𝓤
          → funext 𝓤 (𝓤 ⁺)
-         → {X : 𝓤 ̇ } {Y : 𝓤 ̇ }
+         → {X Y : 𝓤 ̇ }
          → fiber (∑ Y) X ≃ (X → Y)
 Σ-fibers {𝓤} ua fe⁺ {X} {Y} =
   (Σ A ꞉ (Y → 𝓤 ̇ ) , Σ A ＝ X) ≃⟨ Σ-cong (λ A → univalence-≃ ua (Σ A) X) ⟩

@@ -4,7 +4,7 @@ Cf. The lifting monad.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan
 
@@ -71,10 +71,7 @@ to-span {𝓤} {𝓥} {𝓦} {𝓤'} {A} {B} {C} f g X =
  (Σ j ꞉ (X → A × B) , f ∘ pr₁ ∘ j ∼ g ∘ pr₂ ∘ j) ≃⟨ iii ⟩
  to-span f g X                                   ■
   where
-   i   = Π-cong fe fe X
-          (λ _ → pullback f g)
-          (λ _ → Σ p ꞉ A × B , f (pr₁ p) ＝ g (pr₂ p))
-          (λ x → ≃-sym Σ-assoc)
+   i   = Π-cong fe fe (λ x → ≃-sym Σ-assoc)
    ii  = ΠΣ-distr-≃
    iii = qinveq ϕ (ψ , (λ x → refl) , (λ x → refl))
     where

@@ -4,7 +4,7 @@ This file needs reorganization and clean-up.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module UF.Base where
 
@@ -75,8 +75,8 @@ Idtofun-retraction refl _ = refl
 Idtofun-section : {X Y : 𝓤 ̇ } (p : X ＝ Y) → Idtofun (p ⁻¹) ∘ Idtofun p ∼ id
 Idtofun-section refl _ = refl
 
-back-Idtofun : {X Y : 𝓤 ̇ } → X ＝ Y → Y → X
-back-Idtofun = transport⁻¹ id
+Idtofun⁻¹ : {X Y : 𝓤 ̇ } → X ＝ Y → Y → X
+Idtofun⁻¹ = transport⁻¹ id
 
 forth-and-back-transport : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
                            {x y : X} (p : x ＝ y) {a : A x}
@@ -108,14 +108,27 @@ transport-× : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ )
             ＝ (transport A p (pr₁ c) , transport B p (pr₂ c))
 transport-× A B refl = refl
 
+transportd : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : (x : X) → A x → 𝓦 ̇ )
+             {x : X}  (a : A x) {y : X} (p : x ＝ y)
+           → B x a → B y (transport A p a)
+
+transportd A B a refl = id
+
+transport-Σ : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : (x : X) → A x → 𝓦 ̇ )
+              {x : X} (y : X) (p : x ＝ y) (a : A x) {b : B x a}
+            → transport (λ x → Σ y ꞉ A x , B x y) p (a , b)
+            ＝ transport A p a , transportd A B a p b
+
+transport-Σ A B {x} x refl a = refl
+
 transport-∙ : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
               {x y z : X} (q : x ＝ y) (p : y ＝ z) {a : A x}
-            → transport A  (q ∙ p) a ＝ transport A p (transport A q a)
+            → transport A (q ∙ p) a ＝ transport A p (transport A q a)
 transport-∙ A refl refl = refl
 
 transport-∙' : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
                {x y z : X} (q : x ＝ y) (p : y ＝ z)
-             → transport A  (q ∙ p) ＝ transport A p ∘ transport A q
+             → transport A (q ∙ p) ＝ transport A p ∘ transport A q
 transport-∙' A refl refl = refl
 
 transport-ap : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : Y → 𝓦 ̇ )
@@ -203,6 +216,11 @@ ap₂ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y → Z) {x₀ x
     → y₀ ＝ y₁
     → f x₀ y₀ ＝ f x₁ y₁
 ap₂ f refl refl = refl
+
+ap₃ : {W : 𝓣 ̇} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+      (f : W → X → Y → Z) {w₀ w₁ : W} {x₀ x₁ : X} {y₀ y₁ : Y}
+    → w₀ ＝ w₁ → x₀ ＝ x₁ → y₀ ＝ y₁ → f w₀ x₀ y₀ ＝ f w₁ x₁ y₁
+ap₃ f refl refl refl = refl
 
 refl-left-neutral : {X : 𝓤 ̇ } {x y : X} {p : x ＝ y}
                   → refl ∙ p ＝ p
@@ -336,8 +354,8 @@ from-Σ-＝ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {σ τ : Σ Y} (r : σ ＝ τ)
 from-Σ-＝ r = (ap pr₁ r , from-Σ-＝' r)
 
 to-Σ-＝ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {σ τ : Σ A}
-       → (Σ p ꞉ pr₁ σ ＝ pr₁ τ , transport A p (pr₂ σ) ＝ pr₂ τ)
-       → σ ＝ τ
+        → (Σ p ꞉ pr₁ σ ＝ pr₁ τ , transport A p (pr₂ σ) ＝ pr₂ τ)
+        → σ ＝ τ
 to-Σ-＝ (refl , refl) = refl
 
 ap-pr₁-to-Σ-＝ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {σ τ : Σ A}
@@ -346,8 +364,8 @@ ap-pr₁-to-Σ-＝ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {σ τ : Σ A}
 ap-pr₁-to-Σ-＝ (refl , refl) = refl
 
 to-Σ-＝' : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {x : X} {y y' : Y x}
-        → y ＝ y'
-        → (x , y) ＝[ Σ Y ] (x , y')
+         → y ＝ y'
+         → (x , y) ＝[ Σ Y ] (x , y')
 to-Σ-＝' {𝓤} {𝓥} {X} {Y} {x} = ap (λ - → (x , -))
 
 fromto-Σ-＝ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
@@ -357,7 +375,7 @@ fromto-Σ-＝ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
 fromto-Σ-＝ (refl , refl) = refl
 
 tofrom-Σ-＝ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {σ τ : Σ A} (r : σ ＝ τ)
-           → to-Σ-＝ (from-Σ-＝ r) ＝ r
+            → to-Σ-＝ (from-Σ-＝ r) ＝ r
 tofrom-Σ-＝ refl = refl
 
 ap-pr₁-to-×-＝ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {z t : X × Y}

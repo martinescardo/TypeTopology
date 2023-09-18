@@ -12,23 +12,24 @@ universal property.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan
-open import UF.Base
 
-open import UF.Embeddings
+open import UF.Base
 open import UF.Equiv hiding (_≅_)
-open import UF.EquivalenceExamples
 open import UF.Equiv-FunExt
+open import UF.EquivalenceExamples
 open import UF.FunExt
 open import UF.Lower-FunExt
+open import UF.PropTrunc
 open import UF.SIP
+open import UF.Sets
+open import UF.Sets-Properties
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import UF.PropTrunc
-open import UF.Univalence
 open import UF.UA-FunExt
+open import UF.Univalence
 
 open import Circle.Integers
 open import Circle.Integers-Properties
@@ -97,7 +98,7 @@ sns-data = (ι , ρ , θ)
   h : {X : 𝓤₀ ̇ } {f g : Tℤ-structure X}
     → canonical-map ι ρ f g ∼ id {𝓤₀} {f ＝ g}
   h refl = refl
-  θ : {X : 𝓤₀ ̇} (f g : Tℤ-structure X)
+  θ : {X : 𝓤₀ ̇ } (f g : Tℤ-structure X)
     → is-equiv (canonical-map ι ρ f g)
   θ f g = equiv-closed-under-∼ _ _ (id-is-equiv (f ＝ g)) h
 

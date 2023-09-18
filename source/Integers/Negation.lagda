@@ -4,7 +4,7 @@ This file defines negation of integers.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
 
@@ -21,7 +21,8 @@ infix 31 -_
 
 \end{code}
 
-These proofs are all by definition, however we must consider each case seperately.
+These proofs are all by definition, however we must consider each case
+seperately.
 
 \begin{code}
 
