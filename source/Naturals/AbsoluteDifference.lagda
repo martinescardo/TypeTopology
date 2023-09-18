@@ -1,10 +1,10 @@
-Lane Biocini 2023
+Lane Biocini, 07 September 2023
 
-This module defines the Absolute Difference operation, where we take two numbers
-and return the absolute value of the remainder left over after subtracting one
-from the other. It also defines some useful lemmas that will come in handy when
-we tackle the triangle inequality in the Integers, and also to prove the
-Natural Number analog for the triangle inequality.
+This module defines the Absolute Difference operation, where we take two
+numbers and return the absolute value of the remainder left over after
+subtracting one from the other. It also defines some useful lemmas that
+will come in handy when we tackle the triangle inequality in the Integers,
+and also to prove the Natural Number analog for the triangle inequality.
 
 \begin{code}
 
@@ -36,7 +36,7 @@ diff-commutative (succ x) (succ y) = diff-commutative x y
 diff-sum : (x y : ℕ) → ∣ x + y - y ∣ ＝ x
 diff-sum zero zero = refl
 diff-sum zero (succ y) = ap (λ u → ∣ u - y ∣) (zero-left-neutral y)
-                         ∙ exact-difference-is-zero y
+                       ∙ exact-difference-is-zero y
 diff-sum (succ x) zero = refl
 diff-sum (succ x) (succ y) = diff-sum (succ x) y
 
