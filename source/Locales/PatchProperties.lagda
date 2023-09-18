@@ -1268,13 +1268,14 @@ module PatchStoneᴰ (X : Locale (𝓤 ⁺) 𝓤 𝓤) (σᴰ : spectralᴰ X) w
  patchₛ-is-stone =
   stoneᴰ-implies-stone Patchₛ-X (patchₛ-is-compact , patchₛ-zero-dimensionalᴰ)
 
+ patchₛ-spectralᴰ : spectralᴰ Patchₛ-X
+ patchₛ-spectralᴰ = stoneᴰ-implies-spectralᴰ
+                     Patchₛ-X
+                     (patchₛ-is-compact , patchₛ-zero-dimensionalᴰ)
+
  patchₛ-is-spectral : is-spectral Patchₛ-X holds
- patchₛ-is-spectral = spectralᴰ-gives-spectrality Patchₛ-X 𝕤ᴰ
-  where
-   𝕤ᴰ : spectralᴰ Patchₛ-X
-   𝕤ᴰ = stoneᴰ-implies-spectralᴰ
-         Patchₛ-X
-         (patchₛ-is-compact , patchₛ-zero-dimensionalᴰ)
+ patchₛ-is-spectral =
+  spectralᴰ-gives-spectrality Patchₛ-X patchₛ-spectralᴰ
 
 \end{code}
 

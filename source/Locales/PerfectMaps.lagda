@@ -137,3 +137,46 @@ Perfect maps preserve the way below relation.
   perfect-preserves-way-below 𝒻 φ U U κ
 
 \end{code}
+
+\begin{code}
+
+ open Joins (λ x y → x ≤[ poset-of (𝒪 Y) ] y)
+
+ scott-continuous-join-eq⁻ : (h : ⟨ 𝒪 X ⟩ → ⟨ 𝒪 Y ⟩)
+                           → ((S : Fam 𝓥 ⟨ 𝒪 X ⟩) → is-directed (𝒪 X) S holds →  h (⋁[ 𝒪 X ] S) ＝ ⋁[ 𝒪 Y ] ⁅ h V ∣ V ε S ⁆)
+                           → is-scott-continuous (𝒪 X) (𝒪 Y) h holds
+ scott-continuous-join-eq⁻ f φ S = {!!}
+
+ spectral-maps-are-perfect : (f : X ─c→ Y)
+                           → (is-spectral-map f ⇒ is-perfect-map f) holds
+ spectral-maps-are-perfect f σ S δ = scott-continuous-join-eq⁻ f₊ † S δ
+  where
+   f⁺ : ⟨ 𝒪 Y ⟩ → ⟨ 𝒪 X ⟩
+   f⁺ = f ⋆∙_
+
+   f₊ : ⟨ 𝒪 X ⟩ → ⟨ 𝒪 Y ⟩
+   f₊ = f ⁎·_
+
+   † : (S : Fam 𝓥 ⟨ 𝒪 X ⟩)
+     → is-directed (𝒪 X) S holds
+     → f ⁎· (⋁[ 𝒪 X ] S) ＝ ⋁[ 𝒪 Y ] ⁅ f ⁎· V ∣ V ε S ⁆
+   † S δ = ≤-is-antisymmetric (poset-of (𝒪 Y)) †₁ †₂
+    where
+     open PosetReasoning (poset-of (𝒪 X))
+
+     †₁ : (f ⁎· (⋁[ 𝒪 X ] S) ≤[ poset-of (𝒪 Y) ] (⋁[ 𝒪 Y ] ⁅ f ⁎· V ∣ V ε S ⁆)) holds
+     †₁ = {!adjunction-inequality-forward f ? ? ?!}
+
+     ‡₂ : (f ⋆∙ (⋁[ 𝒪 Y ] ⁅ f ⁎· V ∣ V ε S ⁆) ≤[ poset-of (𝒪 X) ] (⋁[ 𝒪 X ] S)) holds
+     ‡₂ = f ⋆∙ (⋁[ 𝒪 Y ] ⁅ f ⁎· V ∣ V ε S ⁆)       ≤⟨ Ⅰ ⟩
+          ⋁[ 𝒪 X ] ⁅ f ⋆∙ (f ⁎· V) ∣ V ε S ⁆       ≤⟨ Ⅱ ⟩
+          ⋁[ 𝒪 X ] ⁅ V ∣ V ε S ⁆                   ■
+           where
+            Ⅰ = {!!}
+            Ⅱ = {!!}
+
+     †₂ : ((⋁[ 𝒪 Y ] ⁅ f ⁎· V ∣ V ε S ⁆) ≤[ poset-of (𝒪 Y) ] f ⁎· (⋁[ 𝒪 X ] S)) holds
+     †₂ = adjunction-inequality-forward f (⋁[ 𝒪 X ] S) (⋁[ 𝒪 Y ] ⁅ f ⁎· V ∣ V ε S ⁆) ‡₂
+
+
+\end{code}
