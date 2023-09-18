@@ -15,19 +15,19 @@ called "Decidability of non-continuity".
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan
 open import UF.FunExt
 
 module TypeTopology.DecidabilityOfNonContinuity (fe : funext 𝓤₀ 𝓤₀) where
 
-open import MLTT.Two-Properties
-open import TypeTopology.DiscreteAndSeparated
-open import TypeTopology.ADecidableQuantificationOverTheNaturals fe
 open import CoNaturals.GenericConvergentSequence
-open import NotionsOfDecidability.Decidable
+open import MLTT.Two-Properties
 open import Notation.CanonicalMap
+open import NotionsOfDecidability.Decidable
+open import TypeTopology.ADecidableQuantificationOverTheNaturals fe
+open import UF.DiscreteAndSeparated
 
 Lemma-3·1 : (q : ℕ∞ → ℕ∞ → 𝟚)
           → is-decidable ((m : ℕ) → ¬ ((n : ℕ) → q (ι m) (ι n) ＝ ₁))

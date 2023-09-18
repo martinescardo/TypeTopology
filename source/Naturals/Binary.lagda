@@ -37,7 +37,7 @@ Applications:
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module Naturals.Binary where
 
@@ -46,7 +46,7 @@ open import Naturals.Properties
 open import UF.Equiv
 open import UF.Base
 open import UF.EquivalenceExamples
-open import UF.Miscelanea
+open import UF.DiscreteAndSeparated
 
 \end{code}
 

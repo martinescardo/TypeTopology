@@ -4,7 +4,7 @@ This file needs reorganization and clean-up.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module UF.Base where
 
@@ -107,6 +107,19 @@ transport-× : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ )
             → transport (λ x → A x × B x) p c
             ＝ (transport A p (pr₁ c) , transport B p (pr₂ c))
 transport-× A B refl = refl
+
+transportd : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : (x : X) → A x → 𝓦 ̇ )
+             {x : X}  (a : A x) {y : X} (p : x ＝ y)
+           → B x a → B y (transport A p a)
+
+transportd A B a refl = id
+
+transport-Σ : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : (x : X) → A x → 𝓦 ̇ )
+              {x : X} (y : X) (p : x ＝ y) (a : A x) {b : B x a}
+            → transport (λ x → Σ y ꞉ A x , B x y) p (a , b)
+            ＝ transport A p a , transportd A B a p b
+
+transport-Σ A B {x} x refl a = refl
 
 transport-∙ : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
               {x y z : X} (q : x ＝ y) (p : y ＝ z) {a : A x}
@@ -341,8 +354,8 @@ from-Σ-＝ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {σ τ : Σ Y} (r : σ ＝ τ)
 from-Σ-＝ r = (ap pr₁ r , from-Σ-＝' r)
 
 to-Σ-＝ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {σ τ : Σ A}
-       → (Σ p ꞉ pr₁ σ ＝ pr₁ τ , transport A p (pr₂ σ) ＝ pr₂ τ)
-       → σ ＝ τ
+        → (Σ p ꞉ pr₁ σ ＝ pr₁ τ , transport A p (pr₂ σ) ＝ pr₂ τ)
+        → σ ＝ τ
 to-Σ-＝ (refl , refl) = refl
 
 ap-pr₁-to-Σ-＝ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {σ τ : Σ A}
@@ -351,8 +364,8 @@ ap-pr₁-to-Σ-＝ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {σ τ : Σ A}
 ap-pr₁-to-Σ-＝ (refl , refl) = refl
 
 to-Σ-＝' : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {x : X} {y y' : Y x}
-        → y ＝ y'
-        → (x , y) ＝[ Σ Y ] (x , y')
+         → y ＝ y'
+         → (x , y) ＝[ Σ Y ] (x , y')
 to-Σ-＝' {𝓤} {𝓥} {X} {Y} {x} = ap (λ - → (x , -))
 
 fromto-Σ-＝ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
@@ -362,7 +375,7 @@ fromto-Σ-＝ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
 fromto-Σ-＝ (refl , refl) = refl
 
 tofrom-Σ-＝ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {σ τ : Σ A} (r : σ ＝ τ)
-           → to-Σ-＝ (from-Σ-＝ r) ＝ r
+            → to-Σ-＝ (from-Σ-＝ r) ＝ r
 tofrom-Σ-＝ refl = refl
 
 ap-pr₁-to-×-＝ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {z t : X × Y}

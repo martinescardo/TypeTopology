@@ -7,10 +7,12 @@
     This is based on work of Coquand, Setzer and Hancock, in particular:
 
     (i) Coquand, Hancock and Setzer (1997)
-    http://www.cse.chalmers.se/~coquand/ordinal.ps
+        http://www.cse.chalmers.se/~coquand/ordinal.ps
 
     (ii) Hancock (Russell'08 Proof Theory meets Type Theory, Swansea)
-    http://www.cs.swan.ac.uk/~csetzer/russell08/slides/hancock.pdf
+         https://web.archive.org/web/20220723181746/http://www.cs.swan.ac.uk/~csetzer/russell08/slides/hancock.pdf
+
+         See also his MGS'08 lecture notes https://www.cs.bham.ac.uk/~mhe/events/MGS08/notes/proofTheory.pdf
 
     An interesting and powerful idea is their use of "lenses", which
     allows to define rather large ordinals, in particular in the
@@ -33,9 +35,8 @@
     operations, and hence the ordinal ε₀ and much higher indeed. But I
     will content myself with defining ε₀, which is not definable in
     system T, as an illustration of what dependent types and universes
-    add in terms of expressivity. But it is easy to get higher using
-    what is defined here. If you want to get really high, then you
-    should study lenses: http://personal.cis.strath.ac.uk/~ph/
+    add in terms of expressivity. But it is easy to get higher
+    ordinals using what is defined here.
 
     We proceed in three steps to define addition, multiplication and
     exponentiation, and hence ε₀ and much higher.
@@ -82,7 +83,7 @@
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module Ordinals.Codes where
 

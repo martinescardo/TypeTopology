@@ -4,7 +4,7 @@ We specialize the work of Directed.lagda to ℕ-indexed diagrams.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan
 open import UF.PropTrunc
@@ -27,9 +27,9 @@ open import Naturals.Properties
 open import Naturals.Order hiding (subtraction')
 open import Notation.Order
 
+open import UF.DiscreteAndSeparated
 open import UF.Equiv
 open import UF.EquivalenceExamples
-open import UF.Miscelanea
 open import UF.Subsingletons
 
 module SequentialDiagram

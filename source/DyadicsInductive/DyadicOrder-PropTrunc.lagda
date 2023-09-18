@@ -6,7 +6,7 @@ No endpoints, density and binary interpolation for (𝔻 , ≺) formulated using
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan
 open import DyadicsInductive.Dyadics

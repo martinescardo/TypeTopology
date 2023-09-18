@@ -82,7 +82,7 @@ References
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline --lossy-unification #-}
+{-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
 
 open import MLTT.Spartan
 
@@ -199,7 +199,7 @@ theoretic ordinal.
  ∈-is-well-founded : is-well-founded _∈_
  ∈-is-well-founded = ∈-induction (is-accessible _∈_)
                                  (λ x → accessibility-is-prop _∈_ fe' x)
-                                 (λ x IH → step IH)
+                                 (λ x IH → acc IH)
 
  ∈ᵒʳᵈ-is-well-founded : is-well-founded _∈ᵒʳᵈ_
  ∈ᵒʳᵈ-is-well-founded = transfinite-induction-converse _∈ᵒʳᵈ_ W
@@ -403,13 +403,14 @@ an arbitrary well founded order) also appears at the bottom of [Acz77, p. 743].
  open import Ordinals.ArithmeticProperties ua
  open import Ordinals.OrdinalOfOrdinalsSuprema ua
 
- open import UF.Quotient hiding (is-prop-valued)
+ open import Quotient.Type hiding (is-prop-valued)
+ open import Quotient.GivesSetReplacement
 
  module 𝕍-to-Ord-construction
          (sq : set-quotients-exist)
         where
 
-  open suprema pt (set-replacement-from-set-quotients sq pt)
+  open suprema pt (set-replacement-from-set-quotients-and-prop-trunc sq pt)
 
   private
    𝕍-to-Ord-aux : {A : 𝓤 ̇ } → (A → 𝕍) → (A → Ord) → Ord

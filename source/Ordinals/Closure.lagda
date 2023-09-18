@@ -4,7 +4,7 @@ Closure properties of some ordinal constructions.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import UF.FunExt
 
@@ -28,7 +28,6 @@ open import Ordinals.ToppedType fe
 open import Ordinals.Underlying
 open import TypeTopology.CompactTypes
 open import TypeTopology.ConvergentSequenceHasInf
-open import TypeTopology.DiscreteAndSeparated
 open import TypeTopology.InfProperty
 open import TypeTopology.LexicographicCompactness
 open import TypeTopology.PropInfTychonoff
@@ -36,9 +35,9 @@ open import TypeTopology.SigmaDiscreteAndTotallySeparated
 open import TypeTopology.SquashedCantor fe
 open import TypeTopology.SquashedSum fe
 open import UF.Base
+open import UF.DiscreteAndSeparated
 open import UF.Embeddings
 open import UF.Equiv
-open import UF.Miscelanea
 open import UF.PairFun
 open import UF.Retracts
 open import UF.Subsingletons

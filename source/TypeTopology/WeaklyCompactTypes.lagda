@@ -5,7 +5,7 @@ the module CompactTypes for the strong notion.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan
 
@@ -16,12 +16,11 @@ open import Notation.Order
 open import Taboos.WLPO
 open import TypeTopology.CompactTypes
 open import TypeTopology.DisconnectedTypes
-open import TypeTopology.DiscreteAndSeparated
 open import TypeTopology.TotallySeparated
 open import UF.Base
+open import UF.DiscreteAndSeparated
 open import UF.Equiv
 open import UF.FunExt
-open import UF.Miscelanea
 open import UF.PropTrunc
 open import UF.Retracts
 open import UF.Retracts-FunExt

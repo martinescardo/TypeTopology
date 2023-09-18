@@ -4,15 +4,14 @@ The swap automorphism.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module Factorial.Swap where
 
 open import MLTT.Plus-Properties
 open import MLTT.Spartan
-open import TypeTopology.DiscreteAndSeparated
+open import UF.DiscreteAndSeparated
 open import UF.Equiv
-open import UF.Miscelanea
 
 \end{code}
 

@@ -2,7 +2,7 @@ Brendan Hart 2019-2020
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --exact-split --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan
 open import UF.FunExt
@@ -33,7 +33,6 @@ open import PCF.Lambda.ScottModelOfContexts pt fe pe
 open import PCF.Lambda.ScottModelOfTerms pt fe pe
 open import PCF.Lambda.ScottModelOfTypes pt fe pe
 open import PCF.Lambda.SubstitutionDenotational pt fe pe
-open import UF.Miscelanea
 
 open DcpoProductsGeneral 𝓤₀
 open IfZeroDenotationalSemantics pe

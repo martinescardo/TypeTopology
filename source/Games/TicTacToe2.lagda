@@ -5,7 +5,7 @@ another file.
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --no-sized-types --no-guardedness --auto-inline #-} -- --exact-split
+{-# OPTIONS --safe --without-K #-} -- --exact-split
 
 
 module Games.TicTacToe2 where
@@ -158,7 +158,7 @@ s₂ : Path (Xt tic-tac-toe₂)
 s₂ = strategic-path (selection-strategy (selections tic-tac-toe₂J) (q tic-tac-toe₂))
 
 u₂ : Path (Xt tic-tac-toe₂)
-u₂ = J-sequence (selections tic-tac-toe₂J) (q tic-tac-toe₂)
+u₂ = sequenceᴶ (selections tic-tac-toe₂J) (q tic-tac-toe₂)
 
 l₂ : ℕ
 l₂ = plength s₂

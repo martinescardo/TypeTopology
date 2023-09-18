@@ -10,7 +10,7 @@ The theorem says that, for any p : ℕ∞ → 𝟚, the proposition
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan
 open import UF.FunExt
@@ -23,8 +23,8 @@ open import Notation.CanonicalMap
 open import NotionsOfDecidability.Complemented
 open import NotionsOfDecidability.Decidable
 open import TypeTopology.CompactTypes
-open import TypeTopology.DiscreteAndSeparated
 open import TypeTopology.GenericConvergentSequenceCompactness fe
+open import UF.DiscreteAndSeparated
 open import UF.PropTrunc
 
 Lemma-8·1 : (p : ℕ∞ → 𝟚) → (Σ x ꞉ ℕ∞ , (x ≠ ∞) × (p x ＝ ₀))

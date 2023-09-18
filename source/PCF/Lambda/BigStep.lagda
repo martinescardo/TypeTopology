@@ -4,7 +4,7 @@ We define big step semantics of PCF.Lambda.
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --exact-split --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import UF.PropTrunc
 

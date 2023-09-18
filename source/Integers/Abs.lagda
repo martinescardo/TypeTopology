@@ -5,11 +5,13 @@ of abs, along with positive and negative properties of integers.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
 
+open import Naturals.AbsoluteDifference
 open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
+open import Integers.Addition
 open import Integers.Multiplication
 open import Integers.Negation
 open import Integers.Type
@@ -167,5 +169,32 @@ abs-over-mult' (negsucc x) (negsucc y) = I
     i   = ap absℤ (minus-times-minus-is-positive (pos (succ x)) (pos (succ y)))
     ii  = ap absℤ (pos-multiplication-equiv-to-ℕ (succ x) (succ y))
     iii = pos-multiplication-equiv-to-ℕ (succ x) (succ y) ⁻¹
+
+\end{code}
+
+Lane Biocini, 07 September 2023
+
+In this section I prove a convenience lemma about the Absolute Value
+operation, then go on to prove a lemma regarding the equivalence of the
+addition of a positive and negative Integer to the Absolute Difference
+operation in the Naturals, which will help us when we prove the triangle
+inequality in the Integers.
+
+\begin{code}
+
+pos-abs-is-absℤ : (x : ℤ) → pos (abs x) ＝ absℤ x
+pos-abs-is-absℤ (pos x) = refl
+pos-abs-is-absℤ (negsucc x) = refl
+
+abs-pos-plus-negsucc : (x y : ℕ) → abs (pos x +negsucc y) ＝ ∣ x - succ y ∣
+abs-pos-plus-negsucc zero y = ap abs (ℤ+-comm (pos 0) (negsucc y))
+abs-pos-plus-negsucc (succ x) zero = refl
+abs-pos-plus-negsucc (succ x) (succ y) =
+ abs (predℤ (pos (succ x) +negsucc y)) ＝⟨ i ⟩
+ abs (pos x +negsucc y) ＝⟨ abs-pos-plus-negsucc x y ⟩
+ ∣ x - succ y ∣          ∎
+  where
+   i : abs (predℤ (pos (succ x) +negsucc y)) ＝ abs (pos x +negsucc y)
+   i = ap abs (ℤ-left-pred (pos (succ x)) (negsucc y)) ⁻¹
 
 \end{code}

@@ -2,7 +2,7 @@ Brendan Hart 2019-2020
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --exact-split --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan
 open import UF.FunExt
@@ -20,7 +20,6 @@ open PropositionalTruncation pt
 open import Naturals.Properties
 open import PCF.Lambda.AbstractSyntax pt
 open import UF.Base
-open import UF.Miscelanea
 open import UF.Subsingletons
 
 ids : {n : ℕ} {Γ : Context n} {A : type} → Γ ∋ A → PCF Γ A

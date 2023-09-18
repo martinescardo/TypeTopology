@@ -7,7 +7,7 @@ the least element and binary joins.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module Posets.JoinSemiLattices where
 
@@ -15,6 +15,7 @@ open import MLTT.Spartan
 open import Fin.Type
 
 open import UF.Subsingletons
+open import UF.Sets
 
 record JoinSemiLattice (𝓥 𝓣 : Universe) : 𝓤ω where
   field

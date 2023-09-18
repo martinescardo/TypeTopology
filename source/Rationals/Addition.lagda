@@ -5,7 +5,7 @@ addition.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness  --lossy-unification #-}
+{-# OPTIONS --safe --without-K --exact-split  --lossy-unification #-}
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
 

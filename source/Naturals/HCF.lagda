@@ -5,19 +5,19 @@ In this file I define common divisors, and HCF's, along with a proof
 that the Euclidean Algorithm produces HCF's.
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
 
 open import Naturals.Addition
 open import Naturals.Division
 open import Naturals.Multiplication
-open import Naturals.Properties
 open import Naturals.Order
+open import Naturals.Properties
 open import Notation.Order
 open import UF.Base
+open import UF.DiscreteAndSeparated
 open import UF.FunExt
-open import UF.Miscelanea
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 

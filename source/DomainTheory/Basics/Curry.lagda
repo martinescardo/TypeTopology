@@ -2,7 +2,7 @@ Brendan Hart 2019-2020
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --exact-split --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan
 open import UF.FunExt
@@ -23,7 +23,6 @@ open import DomainTheory.Basics.Pointed pt fe 𝓥
 open import DomainTheory.Basics.FunctionComposition pt fe 𝓥
 open import DomainTheory.Basics.Products pt fe
 open import DomainTheory.Basics.ProductsContinuity pt fe 𝓥
-open import UF.Miscelanea
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 

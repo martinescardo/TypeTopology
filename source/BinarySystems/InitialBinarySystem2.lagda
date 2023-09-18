@@ -5,11 +5,15 @@ background for this file.
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --no-sized-types --no-guardedness --auto-inline --exact-split #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module BinarySystems.InitialBinarySystem2 where
 
 open import MLTT.Spartan
+open import UF.DiscreteAndSeparated
+open import UF.Sets
+open import UF.Sets-Properties
+open import UF.Subsingletons-Properties
 
 data 𝔹 :  𝓤₀ ̇ where
  center : 𝔹
@@ -176,8 +180,6 @@ right-lc x x refl = refl
 𝕄-is-discrete (η x) (η y) = Cases (𝔹-is-discrete x y)
                               (λ (p : x ＝ y) → inl (ap η p))
                               (λ (ν : x ≠ y) → inr (contrapositive (η-lc x y) ν))
-
-open import UF.Miscelanea
 
 𝕄-is-set : is-set 𝕄
 𝕄-is-set = discrete-types-are-sets 𝕄-is-discrete

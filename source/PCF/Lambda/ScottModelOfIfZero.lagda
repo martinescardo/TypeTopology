@@ -2,7 +2,7 @@ Brendan Hart 2019-2020
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --exact-split --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan
 open import UF.FunExt
@@ -27,7 +27,6 @@ open import DomainTheory.Lifting.LiftingSet pt fe 𝓤₀ pe
 open import PCF.Combinatory.PCFCombinators pt fe 𝓤₀
 open import PCF.Lambda.AbstractSyntax pt
 open import PCF.Lambda.ScottModelOfContexts pt fe pe
-open import UF.Miscelanea
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 

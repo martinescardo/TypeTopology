@@ -1,6 +1,6 @@
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module UF.index where
 
@@ -11,6 +11,7 @@ import UF.Classifiers-Old
 import UF.Connected
 import UF.CumulativeHierarchy               -- by de Jong, Kraus, Nordvall Forsberg and Xu.
 import UF.CumulativeHierarchy-LocallySmall  -- by de Jong, Kraus, Nordvall Forsberg and Xu.
+import UF.DiscreteAndSeparated
 import UF.Embeddings
 import UF.Equiv
 import UF.Equiv-FunExt
@@ -20,17 +21,20 @@ import UF.FunExt
 import UF.FunExt-Properties
 import UF.FunExt-from-Naive-FunExt
 import UF.Groupoids
+import UF.HLevels
+import UF.Hedberg
+import UF.HedbergApplications
+import UF.HiddenSwap
 import UF.IdEmbedding
 import UF.IdentitySystems
 import UF.ImageAndSurjection
-import UF.ImageAndSurjection-F
+import UF.ImageAndSurjection-Variation
 import UF.Knapp-UA
 import UF.KrausLemma
-import UF.Large-Quotient
 import UF.LeftCancellable
 import UF.Logic
 import UF.Lower-FunExt
-import UF.Miscelanea
+import UF.NotNotStablePropositions
 import UF.PairFun
 import UF.Powerset
 import UF.Powerset-Fin
@@ -40,25 +44,27 @@ import UF.PreSIP-Examples
 import UF.PreUnivalence
 import UF.PropIndexedPiSigma
 import UF.PropTrunc
-import UF.PropTrunc-F
-import UF.Quotient
-import UF.Quotient-F
-import UF.Quotient-Replacement
+import UF.PropTrunc-Variation
 import UF.Retracts
 import UF.Retracts-FunExt
 import UF.SIP
 import UF.SIP-Examples
 import UF.Section-Embedding
+import UF.SemistrictIdentity
 import UF.SetTrunc
+import UF.Sets
+import UF.Sets-Properties
 import UF.Size
 import UF.SmallnessProperties
-import UF.StructureIdentityPrinciple -- obsolete but keep
+import UF.StructureIdentityPrinciple -- Obsolete but keep. Use UF.SIP instead
+import UF.SubtypeClassifier
+import UF.SubtypeClassifier-Properties
 import UF.Subsingletons
 import UF.Subsingletons-FunExt
+import UF.Subsingletons-Properties
 import UF.UA-FunExt
 import UF.Univalence
 import UF.UniverseEmbedding
 import UF.Yoneda
-import UF.hlevels
 
 \end{code}

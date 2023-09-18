@@ -1,21 +1,22 @@
 Jonathan Sterling, 22nd March 2023.
 
 \begin{code}
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module Coslice.Hom where
 
+open import Coslice.Type
 open import MLTT.Spartan
 open import UF.Base
-open import UF.Retracts
-open import UF.Equiv
 open import UF.Embeddings
+open import UF.Equiv
+open import UF.EquivalenceExamples
 open import UF.FunExt
 open import UF.IdentitySystems
 open import UF.PairFun as PairFun
+open import UF.Retracts
 open import UF.Subsingletons
-open import UF.EquivalenceExamples
-open import Coslice.Type
+open import UF.Subsingletons-Properties
 
 module _ {A : 𝓦 ̇ } where
  Hom-Str-Type : A ↓ 𝓤 → A ↓ 𝓥 → 𝓤 ⊔ 𝓥 ̇

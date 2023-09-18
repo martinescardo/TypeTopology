@@ -2,7 +2,7 @@ Martin Escardo
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module UF.Embeddings where
 
@@ -10,17 +10,21 @@ open import MLTT.Spartan
 
 open import MLTT.Plus-Properties
 open import UF.Base
-open import UF.Subsingletons
 open import UF.Equiv
+open import UF.Equiv-FunExt
 open import UF.EquivalenceExamples
-open import UF.LeftCancellable
-open import UF.Yoneda
-open import UF.Retracts
 open import UF.FunExt
+open import UF.LeftCancellable
 open import UF.Lower-FunExt
+open import UF.Retracts
+open import UF.Sets
+open import UF.Sets-Properties
+open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import UF.Univalence
+open import UF.Subsingletons-Properties
 open import UF.UA-FunExt
+open import UF.Univalence
+open import UF.Yoneda
 
 is-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 is-embedding f = each-fiber-of f is-prop
@@ -117,6 +121,10 @@ equivs-are-embeddings : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
 equivs-are-embeddings f e = vv-equivs-are-embeddings f
                              (equivs-are-vv-equivs f e)
 
+equivs-are-embeddings' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (𝕗 : X ≃ Y)
+                      → is-embedding ⌜ 𝕗 ⌝
+equivs-are-embeddings' (f , e) = equivs-are-embeddings f e
+
 ≃-gives-↪ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X ≃ Y → X ↪ Y
 ≃-gives-↪ (f , i) = (f , equivs-are-embeddings f i)
 
@@ -192,13 +200,18 @@ embedding-gives-embedding' {𝓤} {𝓥} {X} {Y} f ise = g
          (center (c x))
          (centrality (c x)))
 
+embedding-criterion-converse' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                             → is-embedding f
+                             → (x' x : X)
+                             → (x' ＝ x) ≃ (f x' ＝ f x)
+embedding-criterion-converse' f e x' x = ap f {x'} {x} ,
+                                         embedding-gives-embedding' f e x' x
+
 embedding-criterion-converse : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                              → is-embedding f
                              → (x' x : X)
                              → (f x' ＝ f x) ≃ (x' ＝ x)
-embedding-criterion-converse f e x' x = ≃-sym
-                                         (ap f {x'} {x} ,
-                                          embedding-gives-embedding' f e x' x)
+embedding-criterion-converse f e x' x = ≃-sym (embedding-criterion-converse' f e x' x)
 
 embedding'-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                        (f : X → Y)
@@ -237,6 +250,15 @@ pr₁-is-embedding f x ((x , y') , refl) ((x , y'') , refl) = g
  where
   g : (x , y') , refl ＝ (x , y'') , refl
   g = ap (λ - → (x , -) , refl) (f x y' y'')
+
+
+to-subtype-＝-≃ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+                → ((x : X) → is-prop (A x))
+                → {x y : X} {a : A x} {b : A y}
+                → (x ＝ y) ≃ ((x , a) ＝ (y , b))
+to-subtype-＝-≃ A-is-prop-valued {x} {y} {a} {b} =
+ embedding-criterion-converse pr₁ (pr₁-is-embedding A-is-prop-valued) (x , a) (y , b)
+
 
 pr₁-lc-bis : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
            → ({x : X} → is-prop (Y x))
@@ -299,12 +321,12 @@ lc-maps-are-embeddings-with-K : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
 lc-maps-are-embeddings-with-K {𝓤} {𝓥} {X} {Y} f f-lc k =
  lc-maps-into-sets-are-embeddings f f-lc (k Y)
 
-
-\end{code}
-
-TODO. Redo the above proof using the technique of the following proof.
-
-\begin{code}
+factor-is-lc : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+               (f : X → Y)
+               (g : Y → Z)
+             → left-cancellable (g ∘ f)
+             → left-cancellable f
+factor-is-lc f g gf-lc {x} {x'} p = gf-lc (ap g p)
 
 factor-is-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
                       (f : X → Y)
@@ -328,11 +350,16 @@ factor-is-embedding {𝓤} {𝓥} {𝓦} {X} {Y} {Z} f g i j = γ
   γ : is-embedding f
   γ = embedding-criterion' f c
 
-embedding-exponential : FunExt
-                      → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } (f : X → Y)
-                      → is-embedding f
-                      → is-embedding (λ (φ : A → X) → f ∘ φ)
-embedding-exponential {𝓤} {𝓥} {𝓦} fe {X} {Y} {A} f i = γ
+is-essential : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → (𝓦 : Universe) → 𝓤 ⊔ 𝓥 ⊔ (𝓦 ⁺) ̇
+is-essential f 𝓦 = (Z : 𝓦 ̇) (g : codomain f → Z)
+                 → is-embedding (g ∘ f)
+                 → is-embedding g
+
+precomp-is-embedding : FunExt
+                     → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } (f : X → Y)
+                     → is-embedding f
+                     → is-embedding (λ (φ : A → X) → f ∘ φ)
+precomp-is-embedding {𝓤} {𝓥} {𝓦} fe {X} {Y} {A} f i = γ
  where
   g : (φ φ' : A → X) (a : A) → (φ a ＝ φ' a) ≃ (f (φ a) ＝ f (φ' a))
   g φ φ' a = ap f {φ a} {φ' a} , embedding-gives-embedding' f i (φ a) (φ' a)
@@ -510,6 +537,37 @@ embedding-into-prop i (f , e) x y = d
 
    d : x ＝ y
    d = inverse a b c
+
+\end{code}
+
+Added by Martin Escardo 12th July 2023.
+
+Assuming univalence, the canonical map of X = Y into X → Y is an
+embedding.
+
+\begin{code}
+
+idtofun-is-embedding : is-univalent 𝓤
+                     → {X Y : 𝓤 ̇ } → is-embedding (idtofun X Y)
+idtofun-is-embedding ua {X} {Y} =
+ ∘-is-embedding
+  (equivs-are-embeddings (idtoeq X Y) (ua X Y))
+  (pr₁-is-embedding (being-equiv-is-prop'' (univalence-gives-funext ua)))
+ where
+  remark : pr₁ ∘ idtoeq X Y ＝ idtofun X Y
+  remark = refl
+
+Idtofun-is-embedding : is-univalent 𝓤
+                     → funext (𝓤 ⁺) 𝓤
+                     → {X Y : 𝓤 ̇ } → is-embedding (Idtofun {𝓤} {X} {Y})
+Idtofun-is-embedding ua fe {X} {Y} =
+ transport
+  is-embedding
+  (dfunext fe (idtofun-agreement X Y))
+  (idtofun-is-embedding ua)
+
+unique-from-𝟘-is-embedding : {X : 𝓤 ̇ } → is-embedding (unique-from-𝟘 {𝓤} {𝓥} {X})
+unique-from-𝟘-is-embedding x (y , p) = 𝟘-elim y
 
 \end{code}
 

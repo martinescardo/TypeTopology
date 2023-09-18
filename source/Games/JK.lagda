@@ -2,14 +2,13 @@ Martin Escardo, Paulo Oliva, 2023
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan hiding (J)
 
 module Games.JK where
 
 open import UF.FunExt
-open import Games.Base
 open import Games.Monad
 open import Games.J
 open import Games.K
@@ -27,8 +26,8 @@ module JK (R : Type) where
                   → overline (ε ⊗ᴶ δ) ∼ overline ε ⊗ᴷ (λ x → overline (δ x))
  overline-theorem ε δ q = refl
 
- _is-a-selection-of_ : {X : Type} → J X → K X → Type
- ε is-a-selection-of ϕ = overline ε ∼ ϕ
+ _attains_ : {X : Type} → J X → K X → Type
+ ε attains ϕ = overline ε ∼ ϕ
 
 \end{code}
 

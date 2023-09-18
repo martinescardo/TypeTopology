@@ -9,7 +9,7 @@ category.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan
 
@@ -19,21 +19,22 @@ module Lifting.UnivalentPrecategory
         (X : 𝓤 ̇ )
        where
 
+open import Lifting.IdentityViaSIP 𝓣
+open import Lifting.Lifting 𝓣
 open import UF.Base
-open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
 open import UF.Embeddings
 open import UF.Equiv
 open import UF.Equiv-FunExt
 open import UF.EquivalenceExamples
 open import UF.FunExt
 open import UF.Lower-FunExt
-open import UF.Univalence
-open import UF.UA-FunExt
+open import UF.Sets
 open import UF.StructureIdentityPrinciple
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
+open import UF.UA-FunExt
+open import UF.Univalence
 
-open import Lifting.Lifting 𝓣
-open import Lifting.IdentityViaSIP 𝓣
 \end{code}
 
 We define l ⊑ m to mean that if l is defined then so is m with the
@@ -96,6 +97,9 @@ If X is a set, then _⊑_ is a partial order:
 
 TODO. This order is directed complete (easy). We should also do least
 fixed points of continuous maps.
+
+This TODO was implemented by Tom de Jong in the file
+DomainTheory.Lifting.LiftingSet.lagda.
 
 Next we show that for any l : 𝓛 X,
 
@@ -443,7 +447,7 @@ is-𝓛-equiv : (l m : 𝓛 X) → l ⊑ m → 𝓣 ⁺ ⊔ 𝓤 ̇
 is-𝓛-equiv l m α = (n : 𝓛 X) → is-equiv (𝓛-pre-comp-with l m α n)
 
 being-𝓛-equiv-is-prop : funext (𝓣 ⁺ ⊔ 𝓤) (𝓣 ⊔ 𝓤)
-                        → (l m : 𝓛 X) (α : l ⊑ m) → is-prop (is-𝓛-equiv l m α)
+                      → (l m : 𝓛 X) (α : l ⊑ m) → is-prop (is-𝓛-equiv l m α)
 being-𝓛-equiv-is-prop fe l m α =
  Π-is-prop fe
   (λ n → being-equiv-is-prop''
@@ -592,8 +596,8 @@ module univalence-of-𝓛 (ua : is-univalent 𝓣)
 
  𝓛-is-univalent : (l m : 𝓛 X) → is-equiv (Id-to-𝓛-eq l m)
  𝓛-is-univalent l = universality-equiv l (𝓛-refl l)
-                      (central-point-is-universal (l ≃⟨𝓛⟩_) (l , 𝓛-refl l)
-                        (singletons-are-props (𝓛-is-univalent' l) (l , 𝓛-refl l)))
+                     (central-point-is-universal (l ≃⟨𝓛⟩_) (l , 𝓛-refl l)
+                       (singletons-are-props (𝓛-is-univalent' l) (l , 𝓛-refl l)))
   where
    open import UF.Yoneda
 
@@ -616,7 +620,7 @@ We have yet another equivalence, using the above techniques:
           → (l : 𝓛 X) → is-singleton (⊥ ⊑ l)
 ⊥-initial fe fe' l = ⊥-least l ,
                      (λ α → to-Σ-＝ (dfunext fe (λ z → unique-from-𝟘 z) ,
-                                    dfunext fe'(λ z → unique-from-𝟘 z)))
+                                     dfunext fe'(λ z → unique-from-𝟘 z)))
 
 η-＝-gives-⊑ : {x y : X} → x ＝ y → η x ⊑ η y
 η-＝-gives-⊑ {x} {y} p = id , (λ d → p)

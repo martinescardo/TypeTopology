@@ -18,24 +18,22 @@ Torsors are in their own file Torsos.lagda
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --no-sized-types --no-guardedness --auto-inline --exact-split #-}
-
-open import MLTT.Spartan
-open import UF.Base hiding (_≈_)
-open import UF.Subsingletons
-open import UF.Powerset
-open import UF.Equiv
-open import UF.EquivalenceExamples
-open import UF.Embeddings
-open import UF.Univalence
-open import UF.Equiv-FunExt
-open import UF.FunExt
-open import UF.UA-FunExt
-open import UF.Subsingletons-FunExt
-open import UF.Retracts
-open import UF.Classifiers
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import Groups.Type renaming (_≅_ to _≣_)
+open import MLTT.Spartan
+open import UF.Base hiding (_≈_)
+open import UF.Embeddings
+open import UF.Equiv
+open import UF.Equiv-FunExt
+open import UF.FunExt
+open import UF.Sets
+open import UF.Sets-Properties
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
+open import UF.Subsingletons-Properties
+open import UF.UA-FunExt
+open import UF.Univalence
 
 module Groups.GroupActions where
 
@@ -44,7 +42,7 @@ module _ (G : Group 𝓤) where
   action-structure : 𝓤 ̇ → 𝓤 ̇
   action-structure X = ⟨ G ⟩ → X → X
 
-  action-axioms : (X : 𝓤 ̇ )→ action-structure X → 𝓤 ̇
+  action-axioms : (X : 𝓤 ̇ ) → action-structure X → 𝓤 ̇
   action-axioms X _·_ = is-set X ×
                         ((g h : ⟨ G ⟩)(x : X) → (g ·⟨ G ⟩ h) · x ＝ g · (h · x)) ×
                         ((x : X) → (unit G) · x ＝ x)
