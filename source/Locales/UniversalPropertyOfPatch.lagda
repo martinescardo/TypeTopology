@@ -35,13 +35,19 @@ open AllCombinators pt fe
 open import UF.ImageAndSurjection
 
 open import Locales.AdjointFunctorTheoremForFrames pt fe
-open import Locales.CompactRegular pt fe
+-- open import Locales.CompactRegular pt fe
 open import Locales.Frame pt fe
 open import Locales.GaloisConnection pt fe
 open import Locales.HeytingImplication pt fe
 open import Locales.Nucleus pt fe
-open import Locales.PatchLocale pt fe
-open import Locales.PatchProperties pt fe
+open import Locales.PatchLocale pt fe sr
+open import Locales.PatchProperties pt fe sr
+
+open import Locales.Compactness pt fe
+open import Locales.Spectrality.SpectralLocale pt fe
+open import Locales.Spectrality.SpectralMap pt fe
+open import Locales.SmallBasis pt fe sr
+open import Locales.ZeroDimensionality pt fe sr
 
 open PropositionalTruncation pt
 
@@ -70,11 +76,11 @@ property for the small version of Patch (which we often denote `Patchₛ`).
 
 module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤)
                          (X  : Locale (𝓤 ⁺) 𝓤 𝓤)
-                         (σᴰ : spectralᴰ (𝒪 A))
+                         (σᴰ : spectralᴰ A)
                          (𝕫ᴰ : zero-dimensionalᴰ (𝒪 X))
-                         (𝕜  : is-compact (𝒪 X) holds)
+                         (𝕜  : is-compact X holds)
                          (𝒻 : X ─c→ A)
-                         (μ : is-spectral-map (𝒪 A) (𝒪 X) 𝒻 holds) where
+                         (μ : is-spectral-map A X 𝒻 holds) where
 
 \end{code}
 
@@ -90,10 +96,16 @@ As prevoiusly mentioned, we assume
 
 \begin{code}
 
- open PatchConstruction A ∣ σᴰ ∣
-  using (nucleus-of; _≼_; _$_; perfect-nuclei-eq; idₙ; 𝔡𝔦𝔯)
- open ClosedNucleus A ∣ σᴰ ∣
- open OpenNucleus A ∣ σᴰ ∣
+ σ : is-spectral A holds
+ σ = spectralᴰ-gives-spectrality A σᴰ
+
+ sk : 𝒦 A is 𝓤 small
+ sk = spectralᴰ-implies-small-𝒦 A σᴰ
+
+ open PatchConstruction A σ  using (nucleus-of; _≼_; _$_; perfect-nuclei-eq;
+                                    idₙ; 𝔡𝔦𝔯)
+ open ClosedNucleus     A σ
+ open OpenNucleus       A σᴰ
 
  open SmallPatchConstruction A σᴰ
   using (𝟎-is-id; ≼-implies-≼ᵏ; ≼ᵏ-implies-≼; _≼ᵏ_)
@@ -105,7 +117,7 @@ As prevoiusly mentioned, we assume
 \begin{code}
 
  X-has-basis : has-basis (𝒪 X) holds
- X-has-basis = ∣ pr₁ 𝕫ᴰ , pr₁ (pr₁ (pr₂ 𝕫ᴰ)) ∣
+ X-has-basis = ∣ zero-dimensionalᴰ-implies-has-basis (𝒪 X) 𝕫ᴰ ∣
 
 \end{code}
 
@@ -117,8 +129,8 @@ function of the basis.
  Bₐ : 𝓤  ̇
  Bₐ = pr₁ (pr₁ σᴰ)
 
- β : Bₐ → ⟨ 𝒪 A ⟩
- β = pr₂ (pr₁ σᴰ)
+ βₐ : Bₐ → ⟨ 𝒪 A ⟩
+ βₐ = pr₂ (pr₁ σᴰ)
 
 \end{code}
 
@@ -137,14 +149,16 @@ the enumeration function.
 
 \begin{code}
 
- β-is-directed-basis : is-directed-basis (𝒪 A) (Bₐ , β)
- β-is-directed-basis = pr₁ (pr₂ σᴰ)
+ β-is-directed-basis : is-directed-basis (𝒪 A) (Bₐ , βₐ)
+ β-is-directed-basis = basisₛ-is-basis A σᴰ , basisₛ-covers-are-directed A σᴰ
 
- β-is-basis-for-A : is-basis-for (𝒪 A) (Bₐ , β)
+
+ β-is-basis-for-A : is-basis-for (𝒪 A) (Bₐ , βₐ)
  β-is-basis-for-A = pr₁ β-is-directed-basis
 
+
  A-has-basis : has-basis (𝒪 A) holds
- A-has-basis = spectral-frames-have-bases (𝒪 A) ∣ σᴰ ∣
+ A-has-basis = ∣ {!!} , {!!} ∣
 
  infixl 4 _∧ₓ_
 
@@ -171,13 +185,13 @@ the enumeration function.
 
 \end{code}
 
-It is often convenient to have a version of `β` that also gives the proof
+It is often convenient to have a version of `βₐ` that also gives the proof
 of compactness of the basic open it returns.
 
 \begin{code}
 
- βₖ : Bₐ → 𝒦
- βₖ m = β m , pr₁ (pr₂ (pr₂ σᴰ)) m
+ βₖ : Bₐ → 𝒦 A
+ βₖ m = βₐ m , pr₁ (pr₂ (pr₂ σᴰ)) m
 
 \end{code}
 
@@ -214,11 +228,15 @@ TODO: improve the naming.
 
 \begin{code}
 
+{--
+
  𝔏 : ⟨ 𝒪 Patchₛ-A ⟩ → Bₐ → Bₐ → Ω 𝓤
- 𝔏 𝒿 m n = (‘ β m ’ ∧[ 𝒪 Patchₛ-A ] ¬‘ βₖ n ’) ≼ᵏ 𝒿
+ 𝔏 𝒿 m n = (‘ βₐ m ’ ∧[ 𝒪 Patchₛ-A ] ¬‘ ? ’) ≼ᵏ 𝒿
 
  below : ⟨ 𝒪 Patchₛ-A ⟩ → 𝓤  ̇
  below 𝒿 = Σ m ꞉ Bₐ , Σ n ꞉ Bₐ , 𝔏 𝒿 m n holds
+
+{--
 
 \end{code}
 
@@ -227,7 +245,7 @@ This is the unique function that we define that makes our diagram commute.
 \begin{code}
 
  f⁻⁺ : ⟨ 𝒪 Patchₛ-A ⟩ → ⟨ 𝒪 X ⟩
- f⁻⁺ 𝒿 = ⋁[ 𝒪 X ] ⁅ (𝒻 ⋆∙ β m) ∧ₓ ¬𝒻⋆ (β n) ∣ (m , n , p) ∶ below 𝒿 ⁆
+ f⁻⁺ 𝒿 = ⋁[ 𝒪 X ] ⁅ (𝒻 ⋆∙ βₐ m) ∧ₓ ¬𝒻⋆ (βₐ n) ∣ (m , n , p) ∶ below 𝒿 ⁆
 
 \end{code}
 
@@ -237,47 +255,49 @@ equivalence of the two is quite important and is used in the proofs below.
 \begin{code}
 
  f⁻⁺₂ : ⟨ 𝒪 Patchₛ-A ⟩ → ⟨ 𝒪 X ⟩
- f⁻⁺₂ 𝒿@(j , _) = ⋁[ 𝒪 X ] ⁅ 𝒻 ⋆∙ j (β n) ∧[ 𝒪 X ] ¬𝒻⋆ (β n) ∣ n ∶ Bₐ ⁆
+ f⁻⁺₂ 𝒿@(j , _) = ⋁[ 𝒪 X ] ⁅ 𝒻 ⋆∙ j (βₐ n) ∧[ 𝒪 X ] ¬𝒻⋆ (βₐ n) ∣ n ∶ Bₐ ⁆
 
  f⁻⁺₂-equiv-f⁻⁺₁ : (𝒿 : ⟨ 𝒪 Patchₛ-A ⟩) → f⁻⁺ 𝒿 ＝ f⁻⁺₂ 𝒿
  f⁻⁺₂-equiv-f⁻⁺₁ 𝒿@(j , _) = ≤-is-antisymmetric (poset-of (𝒪 X)) † ‡
   where
    S : Fam 𝓤 ⟨ 𝒪 X ⟩
-   S = ⁅ (𝒻 ⋆∙ β m) ∧ₓ ¬𝒻⋆ (β n) ∣ (m , n , p) ∶ below 𝒿 ⁆
+   S = ⁅ (𝒻 ⋆∙ βₐ m) ∧ₓ ¬𝒻⋆ (βₐ n) ∣ (m , n , p) ∶ below 𝒿 ⁆
 
    T : Fam 𝓤 ⟨ 𝒪 X ⟩
-   T = ⁅ 𝒻 ⋆∙ j (β n) ∧ₓ ¬𝒻⋆ (β n) ∣ n ∶ Bₐ ⁆
+   T = ⁅ 𝒻 ⋆∙ j (βₐ n) ∧ₓ ¬𝒻⋆ (βₐ n) ∣ n ∶ Bₐ ⁆
 
    †₀ : cofinal-in (𝒪 X) S T holds
    †₀ (m , n , p) = ∣ n , ※ ∣
     where
      open PosetReasoning (poset-of (𝒪 A))
 
-     Ⅰ = ∨[ 𝒪 A ]-upper₁ (β m) (β n)
-     Ⅱ = 𝟏-right-unit-of-∧ (𝒪 A) (β m ∨[ 𝒪 A ] β n) ⁻¹
+     Ⅰ = ∨[ 𝒪 A ]-upper₁ (βₐ m) (βₐ n)
+     Ⅱ = 𝟏-right-unit-of-∧ (𝒪 A) (βₐ m ∨[ 𝒪 A ] βₐ n) ⁻¹
      Ⅲ = ap
-          (λ - → (β m ∨[ 𝒪 A ] β n) ∧[ 𝒪 A ] -)
-          (heyting-implication-identityₐ (β n) ⁻¹)
+          (λ - → (βₐ m ∨[ 𝒪 A ] βₐ n) ∧[ 𝒪 A ] -)
+          (heyting-implication-identityₐ (βₐ n) ⁻¹)
 
-     q : (β m ≤[ poset-of (𝒪 A) ] j (β n)) holds
-     q = β m                                                ≤⟨ Ⅰ     ⟩
-         β m ∨[ 𝒪 A ] β n                                   ＝⟨ Ⅱ    ⟩ₚ
-         (β m ∨[ 𝒪 A ] β n) ∧[ 𝒪 A ] 𝟏[ 𝒪 A ]               ＝⟨ Ⅲ    ⟩ₚ
-         (β m ∨[ 𝒪 A ] β n) ∧[ 𝒪 A ] (β n ==>ₐ β n)         ＝⟨ refl ⟩ₚ
-         (β m ∨[ 𝒪 A ] β n) ∧[ 𝒪 A ] (¬‘ βₖ n ’ .pr₁ (β n)) ＝⟨ refl ⟩ₚ
-         (‘ β m ’ ∧[ 𝒪 Patchₛ-A ] ¬‘ βₖ n ’) .pr₁ (β n)     ≤⟨ p n   ⟩
-         j (β n)                                            ■
+     q : (βₐ m ≤[ poset-of (𝒪 A) ] j (βₐ n)) holds
+     q = βₐ m                                                ≤⟨ Ⅰ     ⟩
+         βₐ m ∨[ 𝒪 A ] βₐ n                                   ＝⟨ Ⅱ    ⟩ₚ
+         (βₐ m ∨[ 𝒪 A ] βₐ n) ∧[ 𝒪 A ] 𝟏[ 𝒪 A ]               ＝⟨ Ⅲ    ⟩ₚ
+         (βₐ m ∨[ 𝒪 A ] βₐ n) ∧[ 𝒪 A ] (βₐ n ==>ₐ βₐ n)         ＝⟨ refl ⟩ₚ
+         (βₐ m ∨[ 𝒪 A ] βₐ n) ∧[ 𝒪 A ] (¬‘ βₖ n ’ .pr₁ (βₐ n)) ＝⟨ refl ⟩ₚ
+         (‘ βₐ m ’ ∧[ 𝒪 Patchₛ-A ] ¬‘ βₖ n ’) .pr₁ (βₐ n)     ≤⟨ p n   ⟩
+         j (βₐ n)                                            ■
 
-     ※ : ((𝒻 ⋆∙ β m ∧[ 𝒪 X ] ¬𝒻⋆ (β n))
+     ※ : ((𝒻 ⋆∙ βₐ m ∧[ 𝒪 X ] ¬𝒻⋆ (βₐ n))
            ≤[ poset-of (𝒪 X) ]
-          (𝒻 ⋆∙ j (β n) ∧[ 𝒪 X ] (¬𝒻⋆ (β n)))) holds
+          (𝒻 ⋆∙ j (βₐ n) ∧[ 𝒪 X ] (¬𝒻⋆ (βₐ n)))) holds
      ※ = ∧[ 𝒪 X ]-left-monotone
           (frame-morphisms-are-monotonic
             (𝒪 A)
             (𝒪 X)
             (𝒻 ⋆∙_)
             (𝒻 .pr₂)
-            (β m , j (β n)) q)
+            (βₐ m , j (βₐ n)) q)
+
+
 
    † : ((⋁[ 𝒪 X ] S) ≤[ poset-of (𝒪 X) ] (⋁[ 𝒪 X ] T)) holds
    † = cofinal-implies-join-covered (𝒪 X) S T †₀
@@ -292,18 +312,18 @@ equivalence of the two is quite important and is used in the proofs below.
       let
        open PosetReasoning (poset-of (𝒪 X))
       in
-       𝒻 ⋆∙ j (β n) ∧[ 𝒪 X ] ¬𝒻⋆ (β n)                       ＝⟨ Ⅰ  ⟩ₚ
-       𝒻 ⋆∙ (⋁[ 𝒪 A ] ⁅ β i ∣ i ε 𝒥 ⁆) ∧[ 𝒪 X ] ¬𝒻⋆ (β n)    ＝⟨ Ⅱ  ⟩ₚ
-       (⋁[ 𝒪 X ] ⁅ 𝒻 ⋆∙ (β i) ∣ i ε 𝒥 ⁆) ∧[ 𝒪 X ] ¬𝒻⋆ (β n)  ＝⟨ Ⅲ  ⟩ₚ
-       ⋁[ 𝒪 X ] ⁅ 𝒻 ⋆∙ (β i) ∧[ 𝒪 X ] ¬𝒻⋆ (β n) ∣ i ε 𝒥 ⁆    ≤⟨ Ⅳ   ⟩
+       𝒻 ⋆∙ j (βₐ n) ∧[ 𝒪 X ] ¬𝒻⋆ (βₐ n)                       ＝⟨ Ⅰ  ⟩ₚ
+       𝒻 ⋆∙ (⋁[ 𝒪 A ] ⁅ βₐ i ∣ i ε 𝒥 ⁆) ∧[ 𝒪 X ] ¬𝒻⋆ (βₐ n)    ＝⟨ Ⅱ  ⟩ₚ
+       (⋁[ 𝒪 X ] ⁅ 𝒻 ⋆∙ (βₐ i) ∣ i ε 𝒥 ⁆) ∧[ 𝒪 X ] ¬𝒻⋆ (βₐ n)  ＝⟨ Ⅲ  ⟩ₚ
+       ⋁[ 𝒪 X ] ⁅ 𝒻 ⋆∙ (βₐ i) ∧[ 𝒪 X ] ¬𝒻⋆ (βₐ n) ∣ i ε 𝒥 ⁆    ≤⟨ Ⅳ   ⟩
        ⋁[ 𝒪 X ] S                                            ■
       where
        𝒥 : Fam 𝓤 Bₐ
-       𝒥 = pr₁ (pr₁ (pr₁ (pr₂ σᴰ)) (j (β n)))
+       𝒥 = pr₁ (pr₁ (pr₁ (pr₂ σᴰ)) (j (βₐ n)))
 
        ♠ : ((⋁[ 𝒪 X ] S)
              is-an-upper-bound-of
-            ⁅ 𝒻 ⋆∙ (β i) ∧[ 𝒪 X ] ¬𝒻⋆ (β n) ∣ i ε 𝒥 ⁆) holds
+            ⁅ 𝒻 ⋆∙ (βₐ i) ∧[ 𝒪 X ] ¬𝒻⋆ (βₐ n) ∣ i ε 𝒥 ⁆) holds
        ♠ i = ⋁[ 𝒪 X ]-upper S (𝒥 [ i ] , n , ♢)
         where
          open PosetReasoning (poset-of (𝒪 A))
@@ -311,45 +331,47 @@ equivalence of the two is quite important and is used in the proofs below.
 
          ♢ : 𝔏 𝒿 (𝒥 [ i ]) n holds
          ♢ m =
-          (‘ β (𝒥 [ i ]) ’ ∧[ 𝒪 Patchₛ-A ] ¬‘ βₖ n ’) .pr₁ (β m)      ＝⟨ refl ⟩ₚ
-          ((β (𝒥 [ i ]) ∨[ 𝒪 A ] β m) ∧[ 𝒪 A ] (β n ==>ₐ β m))        ≤⟨ Ⅰ     ⟩
-          (j (β n) ∨[ 𝒪 A ] β m) ∧[ 𝒪 A ] (β n ==>ₐ β m)              ≤⟨ Ⅱ     ⟩
-          (j (β n) ∨[ 𝒪 A ] β m) ∧[ 𝒪 A ] (β n ==>ₐ j (β m))          ＝⟨ Ⅲ    ⟩ₚ
-          (j (β n) ∨[ 𝒪 A ] β m) ∧[ 𝒪 A ] (j (β n) ==>ₐ j (β m))      ≤⟨ Ⅳ     ⟩
-          (j (β n) ∨[ 𝒪 A ] j (β m)) ∧[ 𝒪 A ] (j (β n) ==>ₐ j (β m))  ＝⟨ Ⅴ    ⟩ₚ
-          (j (β m) ∨[ 𝒪 A ] j (β n)) ∧[ 𝒪 A ] (j (β n) ==>ₐ j (β m))  ＝⟨ Ⅵ    ⟩ₚ
-          j (β m)                                                     ■
+          (‘ βₐ (𝒥 [ i ]) ’ ∧[ 𝒪 Patchₛ-A ] ¬‘ βₖ n ’) .pr₁ (βₐ m)      ＝⟨ refl ⟩ₚ
+          ((βₐ (𝒥 [ i ]) ∨[ 𝒪 A ] βₐ m) ∧[ 𝒪 A ] (βₐ n ==>ₐ βₐ m))        ≤⟨ Ⅰ     ⟩
+          (j (βₐ n) ∨[ 𝒪 A ] βₐ m) ∧[ 𝒪 A ] (βₐ n ==>ₐ βₐ m)              ≤⟨ Ⅱ     ⟩
+          (j (βₐ n) ∨[ 𝒪 A ] βₐ m) ∧[ 𝒪 A ] (βₐ n ==>ₐ j (βₐ m))          ＝⟨ Ⅲ    ⟩ₚ
+          (j (βₐ n) ∨[ 𝒪 A ] βₐ m) ∧[ 𝒪 A ] (j (βₐ n) ==>ₐ j (βₐ m))      ≤⟨ Ⅳ     ⟩
+          (j (βₐ n) ∨[ 𝒪 A ] j (βₐ m)) ∧[ 𝒪 A ] (j (βₐ n) ==>ₐ j (βₐ m))  ＝⟨ Ⅴ    ⟩ₚ
+          (j (βₐ m) ∨[ 𝒪 A ] j (βₐ n)) ∧[ 𝒪 A ] (j (βₐ n) ==>ₐ j (βₐ m))  ＝⟨ Ⅵ    ⟩ₚ
+          j (βₐ m)                                                     ■
            where
-            ♣ = β (𝒥 [ i ]) ≤⟨ 𝕒 ⟩ ⋁[ 𝒪 A ] ⁅ β i ∣ i ε 𝒥 ⁆  ＝⟨ 𝕓 ⟩ₚ j (β n) ■
+            ♣ = βₐ (𝒥 [ i ]) ≤⟨ 𝕒 ⟩ ⋁[ 𝒪 A ] ⁅ βₐ i ∣ i ε 𝒥 ⁆  ＝⟨ 𝕓 ⟩ₚ j (βₐ n) ■
                  where
-                  𝕒 = ⋁[ 𝒪 A ]-upper ⁅ β i ∣ i ε 𝒥 ⁆ i
-                  𝕓 = covers (𝒪 A) (Bₐ , β) β-is-basis-for-A (j (β n)) ⁻¹
+                  𝕒 = ⋁[ 𝒪 A ]-upper ⁅ βₐ i ∣ i ε 𝒥 ⁆ i
+                  𝕓 = covers (𝒪 A) (Bₐ , βₐ) β-is-basis-for-A (j (βₐ n)) ⁻¹
 
             Ⅰ = ∧[ 𝒪 A ]-left-monotone (∨[ 𝒪 A ]-left-monotone ♣)
             Ⅱ = ∧[ 𝒪 A ]-right-monotone
-                 (==>ₐ-right-monotone (𝓃₁ (𝒪 A) (nucleus-of 𝒿) (β m)))
+                 (==>ₐ-right-monotone (𝓃₁ (𝒪 A) (nucleus-of 𝒿) (βₐ m)))
             Ⅲ = ap
-                 (λ - → (j (β n) ∨[ 𝒪 A ] β m) ∧[ 𝒪 A ] -)
-                 (nucleus-heyting-implication-law (β n) (β m))
+                 (λ - → (j (βₐ n) ∨[ 𝒪 A ] βₐ m) ∧[ 𝒪 A ] -)
+                 (nucleus-heyting-implication-law (βₐ n) (βₐ m))
             Ⅳ = ∧[ 𝒪 A ]-left-monotone
-                 (∨[ 𝒪 A ]-right-monotone (𝓃₁ (𝒪 A) (nucleus-of 𝒿) (β m)))
+                 (∨[ 𝒪 A ]-right-monotone (𝓃₁ (𝒪 A) (nucleus-of 𝒿) (βₐ m)))
             Ⅴ = ap
-                 (λ - → - ∧[ 𝒪 A ] (j (β n) ==>ₐ j (β m)))
-                 (∨[ 𝒪 A ]-is-commutative (j (β n)) (j (β m)))
-            Ⅵ = H₈ₐ (j (β m)) (j (β n)) ⁻¹
+                 (λ - → - ∧[ 𝒪 A ] (j (βₐ n) ==>ₐ j (βₐ m)))
+                 (∨[ 𝒪 A ]-is-commutative (j (βₐ n)) (j (βₐ m)))
+            Ⅵ = H₈ₐ (j (βₐ m)) (j (βₐ n)) ⁻¹
 
        Ⅰ = ap
-            (λ - → 𝒻 ⋆∙ - ∧[ 𝒪 X ] ¬𝒻⋆ (β n))
-            (covers (𝒪 A) (Bₐ , β) β-is-basis-for-A (j (β n)))
+            (λ - → 𝒻 ⋆∙ - ∧[ 𝒪 X ] ¬𝒻⋆ (βₐ n))
+            (covers (𝒪 A) (Bₐ , βₐ) β-is-basis-for-A (j (βₐ n)))
        Ⅱ = ap
-            (λ - → - ∧[ 𝒪 X ] ¬𝒻⋆ (β n))
+            (λ - → - ∧[ 𝒪 X ] ¬𝒻⋆ (βₐ n))
             (frame-homomorphisms-preserve-all-joins
               (𝒪 A)
               (𝒪 X)
               𝒻
-              ⁅ β i ∣ i ε 𝒥 ⁆)
-       Ⅲ = distributivity′-right (𝒪 X) (¬𝒻⋆ (β n)) ⁅ 𝒻 ⋆∙ (β i) ∣ i ε 𝒥 ⁆
-       Ⅳ = ⋁[ 𝒪 X ]-least ⁅ 𝒻 ⋆∙ (β i) ∧ₓ ¬𝒻⋆ (β n) ∣ i ε 𝒥 ⁆ ((⋁[ 𝒪 X ] S) , ♠)
+              ⁅ βₐ i ∣ i ε 𝒥 ⁆)
+       Ⅲ = distributivity′-right (𝒪 X) (¬𝒻⋆ (βₐ n)) ⁅ 𝒻 ⋆∙ (βₐ i) ∣ i ε 𝒥 ⁆
+       Ⅳ = ⋁[ 𝒪 X ]-least ⁅ 𝒻 ⋆∙ (βₐ i) ∧ₓ ¬𝒻⋆ (βₐ n) ∣ i ε 𝒥 ⁆ ((⋁[ 𝒪 X ] S) , ♠)
+
+{--
 
 \end{code}
 
@@ -366,11 +388,11 @@ separate proof
  f⁻⁺-is-monotone (𝒿 , 𝓀) p = cofinal-implies-join-covered (𝒪 X) 𝒮 𝒯 †
   where
    𝒮 : Fam 𝓤 ⟨ 𝒪 X ⟩
-   𝒮 = ⁅ (𝒻 ⋆∙ β m) ∧[ 𝒪 X ] ¬𝒻⋆ (β n)
+   𝒮 = ⁅ (𝒻 ⋆∙ βₐ m) ∧[ 𝒪 X ] ¬𝒻⋆ (βₐ n)
          ∣ (m , n , p) ∶ Σ m ꞉ Bₐ , Σ n ꞉ Bₐ , 𝔏 𝒿 m n holds ⁆
 
    𝒯 : Fam 𝓤 ⟨ 𝒪 X ⟩
-   𝒯 = ⁅ (𝒻 ⋆∙ β m) ∧[ 𝒪 X ] ¬𝒻⋆ (β n)
+   𝒯 = ⁅ (𝒻 ⋆∙ βₐ m) ∧[ 𝒪 X ] ¬𝒻⋆ (βₐ n)
          ∣ (m , n , p) ∶ Σ m ꞉ Bₐ , Σ n ꞉ Bₐ , 𝔏 𝓀 m n holds ⁆
 
    † : cofinal-in (𝒪 X) 𝒮 𝒯 holds
@@ -379,12 +401,12 @@ separate proof
      open PosetReasoning (poset-of (𝒪 A))
 
      ‡ : 𝔏 𝓀 m n holds
-     ‡ l = (‘ β m ’ ∧[ 𝒪 Patchₛ-A ] ¬‘ βₖ n ’) .pr₁ (β l)   ≤⟨ q l ⟩
-           𝒿 $ (β l)                                        ≤⟨ p l ⟩
-           𝓀 $ (β l)                                        ■
+     ‡ l = (‘ βₐ m ’ ∧[ 𝒪 Patchₛ-A ] ¬‘ βₖ n ’) .pr₁ (βₐ l)   ≤⟨ q l ⟩
+           𝒿 $ (βₐ l)                                        ≤⟨ p l ⟩
+           𝓀 $ (βₐ l)                                        ■
 
      ♣ : (_ ≤[ poset-of (𝒪 X) ] _) holds
-     ♣ = ≤-is-reflexive (poset-of (𝒪 X)) ((𝒻 ⋆∙ β m) ∧[ 𝒪 X ] ¬𝒻⋆ (β n))
+     ♣ = ≤-is-reflexive (poset-of (𝒪 X)) ((𝒻 ⋆∙ βₐ m) ∧[ 𝒪 X ] ¬𝒻⋆ (βₐ n))
 
  f⁻⁺ₘ : poset-of (𝒪 Patchₛ-A) ─m→ poset-of (𝒪 X)
  f⁻⁺ₘ = f⁻⁺ , f⁻⁺-is-monotone
@@ -396,9 +418,10 @@ separate proof
  open PatchStoneᴰ A σᴰ
 
  Patchₛ-A-has-basis : has-basis (𝒪 Patchₛ-A) holds
- Patchₛ-A-has-basis = spectral-frames-have-bases
-                       (𝒪 Patchₛ-A)
-                       patchₛ-is-spectral
+ Patchₛ-A-has-basis = ?
+  -- spectral-frames-have-bases
+  -- (𝒪 Patchₛ-A)
+  -- patchₛ-is-spectral
 
 \end{code}
 
@@ -468,7 +491,7 @@ We prove that `f⁻⁺` preserves the top element of `𝒪(Patchₛ-A)`.
           𝟎[ 𝒪 A ]
           (𝟎-is-compact (𝒪 A)))
         where
-         ‡ : Σ i ꞉ Bₐ , 𝟎[ 𝒪 A ] ＝ β i
+         ‡ : Σ i ꞉ Bₐ , 𝟎[ 𝒪 A ] ＝ ?
            → (𝟏[ 𝒪 X ] ≤[ poset-of (𝒪 X) ] f⁻⁺ 𝟏[ 𝒪 Patchₛ-A ]) holds
          ‡ (i , p) =
           𝟏[ 𝒪 X ]                                                ＝⟨ Ⅰ    ⟩ₚ
@@ -491,8 +514,8 @@ We prove that `f⁻⁺` preserves the top element of `𝒪(Patchₛ-A)`.
                    (𝟏[ 𝒪 X ]                     ＝⟨ 𝕒    ⟩
                     𝟎[ 𝒪 X ] ==> 𝟎[ 𝒪 X ]        ＝⟨ 𝕓    ⟩
                     (𝒻 ⋆∙ 𝟎[ 𝒪 A ]) ==> 𝟎[ 𝒪 X ] ＝⟨ 𝕔    ⟩
-                    (𝒻 ⋆∙ (β i)) ==> 𝟎[ 𝒪 X ]    ＝⟨ refl ⟩
-                    ¬𝒻⋆ (β i)                    ∎)
+                    (𝒻 ⋆∙ ?) ==> 𝟎[ 𝒪 X ]    ＝⟨ refl ⟩
+                    ¬𝒻⋆ ?                    ∎)
             Ⅳ   = ⋁[ 𝒪 X ]-upper ⁅ 𝒻 ⋆∙ 𝟏[ 𝒪 A ] ∧[ 𝒪 X ] ¬𝒻⋆ (β n) ∣ n ∶ Bₐ ⁆ i
             Ⅱ   = ap
                    (λ - → - ∧[ 𝒪 X ] 𝟏[ 𝒪 X ])
@@ -1475,5 +1498,9 @@ ump-of-patch {𝓤} A σ X 𝕤 𝒻 μ = ∥∥-rec₂ (being-singleton-is-prop
 
        ϟ : (𝒿 : ⟨ 𝒪 Patch-A ⟩) → f⁻⁺ 𝒿 ＝ f⁻₁ 𝒿
        ϟ = 𝒻⁻-is-unique-ext 𝒻⁻₁′ p
+
+-- --}
+-- --}
+-- --}
 
 \end{code}

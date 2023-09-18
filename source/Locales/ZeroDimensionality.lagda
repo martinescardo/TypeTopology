@@ -114,3 +114,44 @@ is-zero-dimensional : Frame 𝓤 𝓥 𝓦 → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
 is-zero-dimensional F = ∥ zero-dimensionalᴰ F ∥Ω
 
 \end{code}
+
+\begin{code}
+
+zero-dimensionalᴰ-implies-has-basis : (L : Frame 𝓤 𝓥 𝓦)
+                                    → zero-dimensionalᴰ L → basisᴰ L
+zero-dimensionalᴰ-implies-has-basis {𝓤} {𝓥} {𝓦} L zd = ℬ , †
+ where
+  open Joins (λ x y → x ≤[ poset-of L ] y)
+
+  ℬ : Fam 𝓦 ⟨ L ⟩
+  ℬ = basis-zd L zd
+
+  † : basis-forᴰ L ℬ
+  † U = 𝒥 , φ
+   where
+    𝒥 = cover-index-zd L zd U
+
+    φ : (U is-lub-of ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆) holds
+    φ = basis-zd-covers-do-cover L zd U
+
+zero-dimensionalᴰ-implies-has-directed-basis : (L : Frame 𝓤 𝓥 𝓦)
+                                    → zero-dimensionalᴰ L → directed-basisᴰ L
+zero-dimensionalᴰ-implies-has-directed-basis {𝓤} {𝓥} {𝓦} L zd = ℬ , †
+ where
+  open Joins (λ x y → x ≤[ poset-of L ] y)
+
+  ℬ : Fam 𝓦 ⟨ L ⟩
+  ℬ = basis-zd L zd
+
+  † : directed-basis-forᴰ L ℬ
+  † U = 𝒥 , φ , d
+   where
+    𝒥 = cover-index-zd L zd U
+
+    φ : (U is-lub-of ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆) holds
+    φ = basis-zd-covers-do-cover L zd U
+
+    d : is-directed L ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆ holds
+    d = basis-zd-covers-are-directed L zd U
+
+\end{code}
