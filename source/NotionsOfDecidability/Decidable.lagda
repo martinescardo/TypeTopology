@@ -44,6 +44,13 @@ pointed-is-decidable = inl
 𝟙-is-decidable : is-decidable (𝟙 {𝓤})
 𝟙-is-decidable = pointed-is-decidable ⋆
 
+equivs-are-decidable : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (𝕗 : X ≃ Y)
+                     → each-fiber-of ⌜ 𝕗 ⌝ is-decidable
+equivs-are-decidable 𝕗 y = inl (⌜ 𝕗 ⌝⁻¹ y , inverses-are-sections' 𝕗 y)
+
+id-is-decidable : {X : 𝓤 ̇ } → each-fiber-of (id {𝓤} {X}) is-decidable
+id-is-decidable x = inl (x , refl)
+
 decidable-closed-under-Σ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
                          → is-prop X
                          → is-decidable X

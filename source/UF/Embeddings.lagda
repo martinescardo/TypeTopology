@@ -121,6 +121,10 @@ equivs-are-embeddings : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
 equivs-are-embeddings f e = vv-equivs-are-embeddings f
                              (equivs-are-vv-equivs f e)
 
+equivs-are-embeddings' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (𝕗 : X ≃ Y)
+                      → is-embedding ⌜ 𝕗 ⌝
+equivs-are-embeddings' (f , e) = equivs-are-embeddings f e
+
 ≃-gives-↪ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X ≃ Y → X ↪ Y
 ≃-gives-↪ (f , i) = (f , equivs-are-embeddings f i)
 

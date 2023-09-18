@@ -4,6 +4,7 @@
 
 module Naturals.index where
 
+import Naturals.AbsoluteDifference
 import Naturals.Addition
 import Naturals.Binary
 import Naturals.Division

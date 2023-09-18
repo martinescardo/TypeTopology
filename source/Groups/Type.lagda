@@ -273,6 +273,19 @@ homs-preserve-invs G H f m x = γ
 is-iso : (G : Group 𝓤) (H : Group 𝓥) → (⟨ G ⟩ → ⟨ H ⟩) → 𝓤 ⊔ 𝓥 ̇
 is-iso G H f = is-equiv f × is-hom G H f
 
+group-isos-are-equivs : (G : Group 𝓤) (H : Group 𝓥)
+                        {f : ⟨ G ⟩ → ⟨ H ⟩}
+                      → is-iso G H f
+                      → is-equiv f
+group-isos-are-equivs G H = pr₁
+
+group-isos-are-homs : (G : Group 𝓤) (H : Group 𝓥)
+                      {f : ⟨ G ⟩ → ⟨ H ⟩}
+                     → is-iso G H f
+                     → is-hom G H f
+group-isos-are-homs G H = pr₂
+
+
 inverses-are-homs : (G : Group 𝓤) (H : Group 𝓥) (f : ⟨ G ⟩ → ⟨ H ⟩)
                   → (i : is-equiv f)
                   → is-hom G H f
@@ -307,6 +320,13 @@ group ismorphism when importing it.
 
 _≅_ : Group 𝓤 → Group 𝓥 → 𝓤 ⊔ 𝓥 ̇
 G ≅ H = Σ f ꞉ (⟨ G ⟩ → ⟨ H ⟩) , is-iso G H f
+
+≅-to-≃ : (G : Group 𝓤) (H : Group 𝓥) → G ≅ H → ⟨ G ⟩ ≃ ⟨ H ⟩
+≅-to-≃ G H (f , f-is-iso) = (f , group-isos-are-equivs G H f-is-iso)
+
+≅-to-≃-is-hom : (G : Group 𝓤) (H : Group 𝓥) (𝕗 : G ≅ H)
+              → is-hom G H ⌜ ≅-to-≃ G H 𝕗 ⌝
+≅-to-≃-is-hom G H (f , f-is-iso) = group-isos-are-homs G H f-is-iso
 
 ≅-refl : (G : Group 𝓤) → G ≅ G
 ≅-refl G = id , id-is-equiv ⟨ G ⟩ , id-is-hom G

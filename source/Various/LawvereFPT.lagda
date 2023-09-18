@@ -15,7 +15,7 @@ extensions of MLTT, or hypotheses, such as propositional truncation.
 Many other things have been added since the above abstract was
 written.
 
-See also the file Various.CantorTheoremForSurjections by Jon Sterling.
+See also the file Various.CantorTheoremForEmbeddings by Jon Sterling.
 
 \begin{code}
 

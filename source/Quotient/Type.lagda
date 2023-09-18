@@ -45,8 +45,8 @@ identifies-related-points (_≈_ , _) f = ∀ {x x'} → x ≈ x' → f x ＝ f 
 
 To account for the module Quotient.Large, and, at the same time, usual
 (small) quotients, we introduce a parametric definion of existence of
-quotients. For small quotients we take F = id, and for large quotients
-we take F = _⁺ (see below).
+quotients. For small quotients we take ℓ = id, and for large quotients
+we take ℓ = (_⁺) (see below).
 
 \begin{code}
 

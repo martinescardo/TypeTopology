@@ -172,12 +172,13 @@ abs-over-mult' (negsucc x) (negsucc y) = I
 
 \end{code}
 
-Lane Biocini 2023
+Lane Biocini, 07 September 2023
 
-In this section I prove a convenience lemma about the Absolute Value operation,
-then go on to prove a lemma regarding the equivalence of the addition of a positive
-and negative Integer to the Absolute Difference operation in the Naturals, which
-will help us when we prove the triangle inequality in the Integers.
+In this section I prove a convenience lemma about the Absolute Value
+operation, then go on to prove a lemma regarding the equivalence of the
+addition of a positive and negative Integer to the Absolute Difference
+operation in the Naturals, which will help us when we prove the triangle
+inequality in the Integers.
 
 \begin{code}
 
@@ -189,11 +190,11 @@ abs-pos-plus-negsucc : (x y : ℕ) → abs (pos x +negsucc y) ＝ ∣ x - succ y
 abs-pos-plus-negsucc zero y = ap abs (ℤ+-comm (pos 0) (negsucc y))
 abs-pos-plus-negsucc (succ x) zero = refl
 abs-pos-plus-negsucc (succ x) (succ y) =
-  abs (predℤ (pos (succ x) +negsucc y)) ＝⟨ i ⟩
-  abs (pos x +negsucc y) ＝⟨ abs-pos-plus-negsucc x y ⟩
-  ∣ x - succ y ∣ ∎
-    where
-      i : abs (predℤ (pos (succ x) +negsucc y)) ＝ abs (pos x +negsucc y)
-      i = ap abs (ℤ-left-pred (pos (succ x)) (negsucc y)) ⁻¹
+ abs (predℤ (pos (succ x) +negsucc y)) ＝⟨ i ⟩
+ abs (pos x +negsucc y) ＝⟨ abs-pos-plus-negsucc x y ⟩
+ ∣ x - succ y ∣          ∎
+  where
+   i : abs (predℤ (pos (succ x) +negsucc y)) ＝ abs (pos x +negsucc y)
+   i = ap abs (ℤ-left-pred (pos (succ x)) (negsucc y)) ⁻¹
 
 \end{code}
