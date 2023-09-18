@@ -8,7 +8,7 @@ but increases universe levels. We start with that formulation.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan
 open import UF.PropTrunc
@@ -17,9 +17,11 @@ module UF.Connected (pt : propositional-truncations-exist) where
 
 open PropositionalTruncation pt
 
+open import UF.FunExt
+open import UF.Hedberg
+open import UF.Sets
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import UF.FunExt
 
 is-wconnected : 𝓤 ̇ → 𝓤 ̇
 is-wconnected X = (x y : X) → ∥ x ＝ y ∥

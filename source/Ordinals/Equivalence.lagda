@@ -4,7 +4,7 @@ Equivalence of ordinals.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan
 open import Ordinals.Maps
@@ -19,6 +19,7 @@ open import UF.EquivalenceExamples
 open import UF.FunExt
 open import UF.PreSIP-Examples
 open import UF.PreUnivalence
+open import UF.Sets
 open import UF.Size
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt

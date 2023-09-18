@@ -13,7 +13,7 @@ https://www.cs.bham.ac.uk/~mhe/.talks/map2011/
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import UF.FunExt
 
@@ -22,6 +22,7 @@ module TWA.Escardo-Simpson-LICS2001 (fe : FunExt) where
 open import MLTT.Spartan
 open import Naturals.Addition renaming (_+_ to _+ℕ_)
 open import Naturals.Sequence fe
+open import UF.Sets
 open import UF.Subsingletons public
 
 \end{code}

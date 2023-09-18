@@ -22,7 +22,7 @@ https://github.com/BrendanHart/Investigating-Properties-of-PCF/blob/master/Inves
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline --lossy-unification #-}
+{-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
 
 open import MLTT.Spartan
 open import UF.PropTrunc
@@ -38,7 +38,7 @@ module PCF.Combinatory.ScottModelOfPCF
 open PropositionalTruncation pt
 
 open import Naturals.Properties
-open import UF.Miscelanea
+open import UF.DiscreteAndSeparated
 
 open import PCF.Combinatory.PCF pt
 open import DomainTheory.Basics.Dcpo pt fe 𝓤₀

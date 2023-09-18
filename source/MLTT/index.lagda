@@ -2,7 +2,7 @@ Martin Escardo
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module MLTT.index where
 
@@ -33,7 +33,5 @@ import MLTT.Unit-Properties
 import MLTT.Unit-Type
 import MLTT.Universes
 import MLTT.Vector
-import MLTT.W
-import MLTT.W-Properties
 
 \end{code}

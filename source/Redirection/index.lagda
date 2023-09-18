@@ -5,7 +5,7 @@ papers, blogs etc. of files that have been moved to different places.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module Redirection.index where
 

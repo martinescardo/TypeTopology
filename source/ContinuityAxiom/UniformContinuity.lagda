@@ -13,7 +13,7 @@ first m positions.
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --exact-split --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module ContinuityAxiom.UniformContinuity where
 
@@ -23,9 +23,8 @@ open import MLTT.Spartan
 open import MLTT.Two-Properties
 open import Naturals.Properties
 open import NotionsOfDecidability.Decidable
-open import TypeTopology.DiscreteAndSeparated
+open import UF.DiscreteAndSeparated
 open import UF.FunExt
-open import UF.Miscelanea
 open import UF.Subsingletons
 
 \end{code}

@@ -11,7 +11,7 @@ TODO: Variable reorganization.
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --no-sized-types --no-guardedness --auto-inline --exact-split #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 
 open import MLTT.Spartan
@@ -447,7 +447,7 @@ Hom : {G : Group 𝓤} → Tors G → Tors G → 𝓤 ̇
 Hom {G} X Y = Action-Map G (pr₁ X) (pr₁ Y)
 
 trivial-torsor : (G : Group 𝓤) → Tors G
-trivial-torsor G = (⟨ G ⟩ , ((multiplication G) , ((group-is-set G) , ((assoc G) , (unit-left G))))) ,
+trivial-torsor G = (⟨ G ⟩ , ((multiplication G) , ((groups-are-sets G) , ((assoc G) , (unit-left G))))) ,
                    (∣ unit G ∣ , λ x → qinvs-are-equivs  (λ a → a ·⟨ G ⟩ x)
                                        ((λ a → a ·⟨ G ⟩ (inv G x)) ,
                                      ((λ a → ((a ·⟨ G ⟩ x) ·⟨ G ⟩ (inv G x) ＝⟨ assoc G _ _ _ ⟩

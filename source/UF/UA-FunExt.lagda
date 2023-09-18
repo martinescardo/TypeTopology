@@ -11,18 +11,19 @@ depend on univalence.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module UF.UA-FunExt where
 
 open import MLTT.Spartan
 open import UF.Base
 open import UF.Equiv
-open import UF.Univalence
-open import UF.LeftCancellable
+open import UF.Equiv-FunExt
 open import UF.FunExt
 open import UF.FunExt-Properties
-open import UF.Equiv-FunExt
+open import UF.LeftCancellable
+open import UF.SubtypeClassifier
+open import UF.Univalence
 
 naive-univalence-gives-funext : is-univalent 𝓤 → ∀ {𝓥} → naive-funext 𝓥 𝓤
 naive-univalence-gives-funext {𝓤} ua {𝓥} {X} {Y} {f₀} {f₁} h = γ

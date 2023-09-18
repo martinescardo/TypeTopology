@@ -9,14 +9,14 @@ canonical inclusion of natural numbers in the integers.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
-open import TypeTopology.DiscreteAndSeparated
-open import Naturals.Properties
 open import MLTT.Unit-Properties
+open import Naturals.Properties
+open import UF.DiscreteAndSeparated
+open import UF.Sets
 open import UF.Subsingletons
-open import UF.Miscelanea
 
 module Integers.Type where
 

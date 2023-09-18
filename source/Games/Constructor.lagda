@@ -4,7 +4,7 @@ This module has functions to build games.
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --no-sized-types --no-guardedness --auto-inline --exact-split #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan hiding (J)
 
@@ -31,7 +31,7 @@ data GameJ : Type₁ where
  leaf   : R → GameJ
  branch : (X : Type) (Xf : X → GameJ) (ε : J X) → GameJ
 
-dtt : GameJ → 𝕋
+dtt : GameJ → 𝑻
 dtt (leaf x)        = []
 dtt (branch X Xf ε) = X ∷ λ x → dtt (Xf x)
 
@@ -60,7 +60,7 @@ Selection-Strategy-TheoremJ : Fun-Ext
                             → is-optimal (Game-from-GameJ Γ) (strategyJ Γ)
 Selection-Strategy-TheoremJ fe Γ = γ
  where
-  δ : (Γ : GameJ) → (selections Γ) are-selections-of (quantifiers Γ)
+  δ : (Γ : GameJ) → (selections Γ) Attains (quantifiers Γ)
   δ (leaf r)        = ⟨⟩
   δ (branch X Xf ε) = (λ p → refl) , (λ x → δ (Xf x))
 

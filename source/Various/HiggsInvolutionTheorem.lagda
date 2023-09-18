@@ -21,13 +21,14 @@ the topos theory community.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan
 open import UF.Base
-open import UF.Subsingletons renaming (Ω to Ω' ; ⊤Ω to ⊤ ; ⊥Ω to ⊥)
+open import UF.Subsingletons
 open import UF.FunExt
 open import UF.Subsingletons-FunExt
+open import UF.SubtypeClassifier renaming (Ω to Ω')
 
 \end{code}
 
@@ -48,7 +49,8 @@ We work with Ω of universe 𝓤:
 
 \begin{code}
 
-Ω = Ω' 𝓤
+private
+ Ω = Ω' 𝓤
 
 \end{code}
 
@@ -101,7 +103,7 @@ higgs f lc = VIII
 \end{code}
 
 Added 23 Jan 2021. From a group structure on Ω we get excluded middle,
-as an application of Higgs Theorem. This doesn't seems to be known in
+as an application of Higgs Theorem. This doesn't seem to be known in
 the topos theory community. I've written a blog post about this here:
 
 https://homotopytypetheory.org/2021/01/23/can-the-type-of-truth-values-be-given-the-structure-of-a-group/

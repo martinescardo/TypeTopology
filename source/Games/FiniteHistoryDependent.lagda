@@ -1,5 +1,9 @@
 Martin Escardo, Paulo Oliva, 2-27 July 2021
 
+A paper based on this file is available at
+https://doi.org/10.48550/arXiv.2212.07735
+To appear in TCS.
+
 We study finite, history dependent games of perfect information using
 selection functions and dependent-type trees.
 
@@ -31,14 +35,13 @@ We assume a given type R of outcomes for games as a module parameter.
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --no-sized-types --no-guardedness --auto-inline #-} -- --exact-split
+{-# OPTIONS --safe --without-K #-} -- --exact-split
 
 open import MLTT.Spartan hiding (J)
 
 module Games.FiniteHistoryDependent (R : Type) where
 
 open import Games.Monad
-open import Games.Base
 open import Games.J
 open import Games.K
 open import Games.JK
@@ -66,13 +69,18 @@ In the same way as the type of moves at a given stage of the game
 depends on the previously played moves, so do the quantifiers and
 selection functions.
 
-𝓚 assigns a quantifier to each node in a given tree:
+𝓚 decorates each internal node X of a type tree with the type K X of
+quantifiers over X.
 
 \begin{code}
 
-𝓚 : 𝕋 → Type
-𝓚 []       = 𝟙
-𝓚 (X ∷ Xf) = K X × ((x : X) → 𝓚 (Xf x))
+𝓚 : 𝑻 → Type
+𝓚 = structure K
+
+remark-𝓚 : {X : Type} {Xf : X → 𝑻}
+         → (𝓚 []       ＝ 𝟙)
+         × (𝓚 (X ∷ Xf) ＝ K X × ((x : X) → 𝓚 (Xf x)))
+remark-𝓚 = refl , refl
 
 \end{code}
 
@@ -86,9 +94,8 @@ but using our tree representation of games instead:
 
 \begin{code}
 
-K-sequence : {Xt : 𝕋} → 𝓚 Xt → K (Path Xt)
-K-sequence {[]}     ⟨⟩        = λ q → q ⟨⟩
-K-sequence {X ∷ Xf} (ϕ :: ϕf) = ϕ ⊗ᴷ (λ x → K-sequence {Xf x} (ϕf x))
+sequenceᴷ : {Xt : 𝑻} → 𝓚 Xt → K (Path Xt)
+sequenceᴷ = path-sequence (𝕂 R)
 
 \end{code}
 
@@ -102,7 +109,7 @@ quantifier tree ϕt and an outcome function q:
 record Game : Type₁ where
  constructor game
  field
-  Xt : 𝕋
+  Xt : 𝑻
   q  : Path Xt → R
   ϕt : 𝓚 Xt
 
@@ -119,18 +126,22 @@ quantifiers applied to the outcome function (Theorem 3.1 of [1]).
 \begin{code}
 
 optimal-outcome : Game → R
-optimal-outcome (game Xt q ϕt) = K-sequence ϕt q
+optimal-outcome (game Xt q ϕt) = sequenceᴷ ϕt q
 
 \end{code}
 
-A strategy defines how to pick a path of a tree. The type Strategy of
-all possible strategies is constructed as follows (Definition 4 of [1]):
+A strategy assigns a move to each mode of a tree. This corresponds to
+Definition 4 of [1]:
 
 \begin{code}
 
-Strategy : 𝕋 -> Type
-Strategy []       = 𝟙
-Strategy (X ∷ Xf) = X × ((x : X) → Strategy (Xf x))
+Strategy : 𝑻 -> Type
+Strategy = structure id
+
+remark-Strategy : {X : Type} {Xf : X → 𝑻}
+                → (Strategy []       ＝ 𝟙)
+                × (Strategy (X ∷ Xf) ＝ X × ((x : X) → Strategy (Xf x)))
+remark-Strategy = refl , refl
 
 \end{code}
 
@@ -144,9 +155,14 @@ We get a path in the tree by following any given strategy:
 
 \begin{code}
 
-strategic-path : {Xt : 𝕋} → Strategy Xt → Path Xt
-strategic-path {[]}     ⟨⟩        = ⟨⟩
-strategic-path {X ∷ Xf} (x :: σf) = x :: strategic-path {Xf x} (σf x)
+strategic-path : {Xt : 𝑻} → Strategy Xt → Path Xt
+strategic-path = path-sequence 𝕀𝕕
+
+remark-strategic-path : {X : Type} {Xf : X → 𝑻} {x : X}
+                        {σf : (x : X) → Strategy (Xf x)}
+                      → (strategic-path {[]}     ⟨⟩        ＝ ⟨⟩)
+                      × (strategic-path {X ∷ Xf} (x :: σf) ＝ x :: strategic-path (σf x))
+remark-strategic-path = refl , refl
 
 \end{code}
 
@@ -177,13 +193,11 @@ is convenient to define this notion by induction on the game tree Xt:
 
 \begin{code}
 
-is-sgpe : {Xt : 𝕋} → 𝓚 Xt → (Path Xt → R) → Strategy Xt → Type
+is-sgpe : {Xt : 𝑻} → 𝓚 Xt → (Path Xt → R) → Strategy Xt → Type
 is-sgpe {[]}     ⟨⟩        q ⟨⟩         = 𝟙
 is-sgpe {X ∷ Xf} (ϕ :: ϕf) q (x₀ :: σf) =
-
-      (sub q x₀ (strategic-path (σf x₀)) ＝ ϕ (λ x → sub q x (strategic-path (σf x))))
-    ×
-      ((x : X) → is-sgpe {Xf x} (ϕf x) (sub q x) (σf x))
+   (curry q x₀ (strategic-path (σf x₀)) ＝ ϕ (λ x → curry q x (strategic-path (σf x))))
+ × ((x : X) → is-sgpe {Xf x} (ϕf x) (curry q x) (σf x))
 
 \end{code}
 
@@ -200,14 +214,14 @@ In the above definition:
 
    So the first part
 
-     sub q x₀ (strategic-path (σf x₀)) ＝ ϕ (λ x → sub q x (strategic-path (σf x)))
+     curry q x₀ (strategic-path (σf x₀)) ＝ ϕ (λ x → curry q x (strategic-path (σf x)))
 
    of the definition is as in the comment above, but with a partial
    play of length k=0, and the second (inductive) part, says that the
    substrategy σf x, for any deviation x, is in subgame perfect
    equilibrium in the subgame
 
-     (Xf x , R , ϕf x , sub q x).
+     (Xf x , R , ϕf x , curry q x).
 
 As discussed above, we say that a strategy for a game is optimal if it
 is in subgame perfect equilibrium.
@@ -228,21 +242,21 @@ The following is Theorem 3.1 of reference [1].
 \begin{code}
 
 sgpe-lemma : Fun-Ext
-           → (Xt : 𝕋) (ϕt : 𝓚 Xt) (q : Path Xt → R) (σ : Strategy Xt)
+           → (Xt : 𝑻) (ϕt : 𝓚 Xt) (q : Path Xt → R) (σ : Strategy Xt)
            → is-sgpe ϕt q σ
-           → q (strategic-path σ) ＝ K-sequence ϕt q
+           → q (strategic-path σ) ＝ sequenceᴷ ϕt q
 sgpe-lemma fe []       ⟨⟩        q ⟨⟩        ⟨⟩       = refl
 sgpe-lemma fe (X ∷ Xf) (ϕ :: ϕt) q (a :: σf) (h :: t) = γ
  where
-  observation-t : type-of t ＝ ((x : X) → is-sgpe (ϕt x) (sub q x) (σf x))
+  observation-t : type-of t ＝ ((x : X) → is-sgpe (ϕt x) (curry q x) (σf x))
   observation-t = refl
 
-  IH : (x : X) → sub q x (strategic-path (σf x)) ＝ K-sequence (ϕt x) (sub q x)
-  IH x = sgpe-lemma fe (Xf x) (ϕt x) (sub q x) (σf x) (t x)
+  IH : (x : X) → curry q x (strategic-path (σf x)) ＝ sequenceᴷ (ϕt x) (curry q x)
+  IH x = sgpe-lemma fe (Xf x) (ϕt x) (curry q x) (σf x) (t x)
 
-  γ = sub q a (strategic-path (σf a))           ＝⟨ h ⟩
-      ϕ (λ x → sub q x (strategic-path (σf x))) ＝⟨ ap ϕ (dfunext fe IH) ⟩
-      ϕ (λ x → K-sequence (ϕt x) (sub q x))     ∎
+  γ = curry q a (strategic-path (σf a))           ＝⟨ h ⟩
+      ϕ (λ x → curry q x (strategic-path (σf x))) ＝⟨ ap ϕ (dfunext fe IH) ⟩
+      ϕ (λ x → sequenceᴷ (ϕt x) (curry q x))      ∎
 
 \end{code}
 
@@ -263,13 +277,17 @@ We now show how to use selection functions to compute a sgpe strategy.
 We use selection functions, as in Section 2 of reference [1], defined
 in another module.
 
-𝓙 assigns selection functions to the nodes.
+𝓙 assigns types of selection functions to the nodes.
 
 \begin{code}
 
-𝓙 : 𝕋 → Type
-𝓙 []       = 𝟙
-𝓙 (X ∷ Xf) = J X × ((x : X) → 𝓙 (Xf x))
+𝓙 : 𝑻 → Type
+𝓙 = structure J
+
+remark-𝓙 : {X : Type} {Xf : X → 𝑻}
+         → (𝓙 [] ＝ 𝟙)
+         × (𝓙 (X ∷ Xf) ＝ J X × ((x : X) → 𝓙 (Xf x)))
+remark-𝓙 = refl , refl
 
 \end{code}
 
@@ -282,9 +300,8 @@ reference [1], but using our tree representation of games instead:
 
 \begin{code}
 
-J-sequence : {Xt : 𝕋} → 𝓙 Xt → J (Path Xt)
-J-sequence {[]}     ⟨⟩        = λ q → ⟨⟩
-J-sequence {X ∷ Xf} (ε :: εf) = ε ⊗ᴶ (λ x → J-sequence {Xf x} (εf x))
+sequenceᴶ : {Xt : 𝑻} → 𝓙 Xt → J (Path Xt)
+sequenceᴶ = path-sequence (𝕁 R)
 
 \end{code}
 
@@ -294,15 +311,18 @@ here, for the moment, we consider only single-valued quantifiers.
 
 \begin{code}
 
-selection-strategy : {Xt : 𝕋} → 𝓙 Xt → (Path Xt → R) → Strategy Xt
+selection-strategy : {Xt : 𝑻} → 𝓙 Xt → (Path Xt → R) → Strategy Xt
 selection-strategy {[]}     ⟨⟩           q = ⟨⟩
 selection-strategy {X ∷ Xf} εt@(ε :: εf) q = x₀ :: σf
  where
+  xs : Path (X ∷ Xf)
+  xs = sequenceᴶ εt q
+
   x₀ : X
-  x₀ = path-head (J-sequence εt q)
+  x₀ = path-head xs
 
   σf : (x : X) → Strategy (Xf x)
-  σf x = selection-strategy {Xf x} (εf x) (sub q x)
+  σf x = selection-strategy {Xf x} (εf x) (curry q x)
 
 \end{code}
 
@@ -320,10 +340,10 @@ obvious way, by induction:
 
 open JK R
 
-_are-selections-of_ : {Xt : 𝕋} → 𝓙 Xt → 𝓚 Xt → Type
-_are-selections-of_ {[]}     ⟨⟩        ⟨⟩        = 𝟙
-_are-selections-of_ {X ∷ Xf} (ε :: εf) (ϕ :: ϕf) = (ε is-a-selection-of ϕ)
-                                                 × ((x : X) → (εf x) are-selections-of (ϕf x))
+_Attains_ : {Xt : 𝑻} → 𝓙 Xt → 𝓚 Xt → Type
+_Attains_ {[]}     ⟨⟩        ⟨⟩        = 𝟙
+_Attains_ {X ∷ Xf} (ε :: εf) (ϕ :: ϕf) = (ε attains ϕ)
+                                       × ((x : X) → (εf x) Attains (ϕf x))
 
 \end{code}
 
@@ -332,7 +352,7 @@ function of a tree:
 
 \begin{code}
 
-Overline : {Xt : 𝕋} → 𝓙 Xt → 𝓚 Xt
+Overline : {Xt : 𝑻} → 𝓙 Xt → 𝓚 Xt
 Overline {[]}     ⟨⟩        = ⟨⟩
 Overline {X ∷ Xf} (ε :: εs) = overline ε :: (λ x → Overline {Xf x} (εs x))
 
@@ -343,8 +363,8 @@ The following is proved by straightforward induction on trees:
 \begin{code}
 
 observation : Fun-Ext
-            → {Xt : 𝕋} (εt : 𝓙 Xt) (ϕt : 𝓚 Xt)
-            → εt are-selections-of ϕt
+            → {Xt : 𝑻} (εt : 𝓙 Xt) (ϕt : 𝓚 Xt)
+            → εt Attains ϕt
             → Overline εt ＝ ϕt
 observation fe {[]}     ⟨⟩        ⟨⟩        ⟨⟩        = refl
 observation fe {X ∷ Xf} (ε :: εf) (ϕ :: ϕf) (a :: af) = γ
@@ -361,6 +381,14 @@ observation fe {X ∷ Xf} (ε :: εf) (ϕ :: ϕf) (a :: af) = γ
   γ : overline ε :: (λ x → Overline (εf x)) ＝ ϕ :: ϕf
   γ = ap₂ _::_ I II
 
+observation-converse : {Xt : 𝑻} (εt : 𝓙 Xt) (ϕt : 𝓚 Xt)
+                     → Overline εt ＝ ϕt
+                     → εt Attains ϕt
+observation-converse {[]}     εt ϕt p = ⟨⟩
+observation-converse {X ∷ Xf} (ε :: εf)
+                     (.(λ p → p (ε p)) :: .(λ x → Overline (εf x))) refl =
+ (λ x → refl) :: (λ x → observation-converse (εf x) (Overline (εf x)) refl)
+
 \end{code}
 
 Notice that the converse is also true, that is, if Overline εt ＝ ϕt
@@ -368,61 +396,61 @@ then εt are selections of ϕt, but we don't need this fact here.
 
 \begin{code}
 
-main-lemma : {Xt : 𝕋} (εt : 𝓙 Xt) (q : Path Xt → R)
+main-lemma : {Xt : 𝑻} (εt : 𝓙 Xt) (q : Path Xt → R)
            → strategic-path (selection-strategy εt q)
-           ＝ J-sequence εt q
+           ＝ sequenceᴶ εt q
 main-lemma {[]}     ⟨⟩           q = refl
 main-lemma {X ∷ Xf} εt@(ε :: εf) q =
  strategic-path (selection-strategy (ε :: εf) q) ＝⟨ refl ⟩
  x₀ :: strategic-path (σf x₀)                    ＝⟨ ap (x₀ ::_) IH ⟩
- x₀ :: J-sequence {Xf x₀} (εf x₀) (sub q x₀)     ＝⟨ refl ⟩
+ x₀ :: sequenceᴶ {Xf x₀} (εf x₀) (curry q x₀)    ＝⟨ refl ⟩
  x₀ :: ν x₀                                      ＝⟨ refl ⟩
- (ε ⊗ᴶ (λ x → J-sequence {Xf x} (εf x))) q       ＝⟨ refl ⟩
- J-sequence (ε :: εf) q                          ∎
+ (ε ⊗ᴶ (λ x → sequenceᴶ {Xf x} (εf x))) q        ＝⟨ refl ⟩
+ sequenceᴶ (ε :: εf) q                           ∎
  where
   ν : (x : X) → Path (Xf x)
-  ν x = J-sequence {Xf x} (εf x) (sub q x)
+  ν x = sequenceᴶ {Xf x} (εf x) (curry q x)
 
   x₀ : X
-  x₀ = ε (λ x → sub q x (ν x))
+  x₀ = ε (λ x → curry q x (ν x))
 
   σf : (x : X) → Strategy (Xf x)
-  σf x = selection-strategy {Xf x} (εf x) (sub q x)
+  σf x = selection-strategy {Xf x} (εf x) (curry q x)
 
-  IH : strategic-path (σf x₀) ＝ J-sequence {Xf x₀} (εf x₀) (sub q x₀)
-  IH = main-lemma (εf x₀) (sub q x₀)
+  IH : strategic-path (σf x₀) ＝ sequenceᴶ {Xf x₀} (εf x₀) (curry q x₀)
+  IH = main-lemma (εf x₀) (curry q x₀)
 
 selection-strategy-lemma : Fun-Ext
-                         → {Xt : 𝕋} (εt : 𝓙 Xt) (q : Path Xt → R)
+                         → {Xt : 𝑻} (εt : 𝓙 Xt) (q : Path Xt → R)
                          → is-sgpe (Overline εt) q (selection-strategy εt q)
 selection-strategy-lemma fe {[]}     ⟨⟩           q = ⟨⟩
 selection-strategy-lemma fe {X ∷ Xf} εt@(ε :: εf) q = γ
  where
   σf : (x : X) → Strategy (Xf x)
-  σf x = selection-strategy (εf x) (sub q x)
+  σf x = selection-strategy (εf x) (curry q x)
 
   x₀ x₁ : X
-  x₀ = ε (λ x → sub q x (J-sequence (εf x) (sub q x)))
-  x₁ = ε (λ x → sub q x (strategic-path (σf x)))
+  x₀ = ε (λ x → curry q x (sequenceᴶ (εf x) (curry q x)))
+  x₁ = ε (λ x → curry q x (strategic-path (σf x)))
 
-  I : (x : X) → strategic-path (σf x) ＝ J-sequence (εf x) (sub q x)
-  I x = main-lemma (εf x) (sub q x)
+  I : (x : X) → strategic-path (σf x) ＝ sequenceᴶ (εf x) (curry q x)
+  I x = main-lemma (εf x) (curry q x)
 
   II : x₁ ＝ x₀
-  II = ap (λ - → ε (λ x → sub q x (- x))) (dfunext fe I)
+  II = ap (λ - → ε (λ x → curry q x (- x))) (dfunext fe I)
 
-  III = overline ε (λ x → sub q x (strategic-path (σf x))) ＝⟨ refl ⟩
-        sub q x₁ (strategic-path (σf x₁))                  ＝⟨ IV ⟩
-        sub q x₀ (strategic-path (σf x₀))                  ∎
+  III = overline ε (λ x → curry q x (strategic-path (σf x))) ＝⟨ refl ⟩
+        curry q x₁ (strategic-path (σf x₁))                  ＝⟨ IV ⟩
+        curry q x₀ (strategic-path (σf x₀))                  ∎
 
    where
-    IV = ap (λ - → sub q - (strategic-path (σf -))) II
+    IV = ap (λ - → curry q - (strategic-path (σf -))) II
 
   IH : (x : X) → is-sgpe
                    (Overline (εf x))
-                   (sub q x)
-                   (selection-strategy (εf x) (sub q x))
-  IH x = selection-strategy-lemma fe (εf x) (sub q x)
+                   (curry q x)
+                   (selection-strategy (εf x) (curry q x))
+  IH x = selection-strategy-lemma fe (εf x) (curry q x)
 
   γ : is-sgpe (Overline εt) q (x₀ :: σf)
   γ = (III ⁻¹) :: IH
@@ -435,9 +463,9 @@ optimal strategies, corresponds to Theorem 6.2 of [1].
 \begin{code}
 
 selection-strategy-theorem : Fun-Ext
-                           → {Xt : 𝕋} (εt : 𝓙 Xt)
+                           → {Xt : 𝑻} (εt : 𝓙 Xt)
                              (ϕt : 𝓚 Xt) (q : Path Xt → R)
-                           → εt are-selections-of ϕt
+                           → εt Attains ϕt
                            → is-sgpe ϕt q (selection-strategy εt q)
 selection-strategy-theorem fe εt ϕt q a = III
  where
@@ -453,7 +481,7 @@ selection-strategy-theorem fe εt ϕt q a = III
 
 Selection-Strategy-Theorem : Fun-Ext
                            → (G : Game) (εt : 𝓙 (Xt G))
-                           → εt are-selections-of (ϕt G)
+                           → εt Attains (ϕt G)
                            → is-optimal G (selection-strategy εt (q G))
 Selection-Strategy-Theorem fe (game Xt ϕt q) εt = selection-strategy-theorem fe εt q ϕt
 
@@ -465,10 +493,10 @@ Added 27th August 2023 after the above was submitted for publication.
 
 selection-strategy-corollary : Fun-Ext
                              → (G : Game) (εt : 𝓙 (Xt G))
-                             → εt are-selections-of (ϕt G)
-                             → q G (J-sequence εt (q G)) ＝ optimal-outcome G
+                             → εt Attains (ϕt G)
+                             → q G (sequenceᴶ εt (q G)) ＝ optimal-outcome G
 selection-strategy-corollary fe G εt a =
- q G (J-sequence εt (q G))                          ＝⟨ I ⟩
+ q G (sequenceᴶ εt (q G))                           ＝⟨ I ⟩
  q G (strategic-path (selection-strategy εt (q G))) ＝⟨ II ⟩
  optimal-outcome G                                  ∎
   where

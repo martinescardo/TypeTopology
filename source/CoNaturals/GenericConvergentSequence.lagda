@@ -10,30 +10,29 @@ lemmas. More additions after that date.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module CoNaturals.GenericConvergentSequence where
 
 open import MLTT.Spartan
 open import MLTT.Two-Properties
-
-open import Naturals.Properties
 open import Naturals.Addition renaming (_+_ to _∔_)
 open import Naturals.Order hiding (max)
-open import Notation.Order
+open import Naturals.Properties
 open import Notation.CanonicalMap
-
+open import Notation.Order
 open import TypeTopology.Density
-open import TypeTopology.DiscreteAndSeparated
-
 open import UF.Base
-open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
-open import UF.FunExt
+open import UF.DiscreteAndSeparated
 open import UF.Embeddings
 open import UF.Equiv
+open import UF.FunExt
+open import UF.NotNotStablePropositions
 open import UF.Retracts
-open import UF.Miscelanea
+open import UF.Sets
+open import UF.SubtypeClassifier
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
 
 funext₀ : 𝓤₁ ̇
 funext₀ = funext 𝓤₀ 𝓤₀
@@ -140,6 +139,7 @@ open import TypeTopology.TotallySeparated
                               (ℕ∞-retract-of-Cantor fe)
                               (Cantor-is-totally-separated fe)
 
+
 Zero : ℕ∞
 Zero = (λ i → ₀) , (λ i → ≤₂-refl {₀})
 
@@ -175,6 +175,17 @@ is-positive u = 0 ⊏ u
 
 positivity : ℕ∞ → 𝟚
 positivity u = ι u 0
+
+𝟚-retract-of-ℕ∞ : retract 𝟚 of ℕ∞
+𝟚-retract-of-ℕ∞  = positivity , s , η
+ where
+  s : 𝟚 → ℕ∞
+  s ₀ = Zero
+  s ₁ = Succ Zero
+
+  η : positivity ∘ s ∼ id
+  η ₀ = refl
+  η ₁ = refl
 
 is-Zero-Zero : is-Zero Zero
 is-Zero-Zero = refl
@@ -661,13 +672,13 @@ finite-accessible = course-of-values-induction (λ n → is-accessible _≺_ (ι
   φ : (n : ℕ)
     → ((m : ℕ) → m < n → is-accessible _≺_ (ι m))
     → is-accessible _≺_ (ι n)
-  φ n σ = step τ
+  φ n σ = acc τ
    where
     τ : (u : ℕ∞) → u ≺ ι n → is-accessible _≺_ u
     τ u (m , r , l) = transport⁻¹ (is-accessible _≺_) r (σ m (⊏-gives-< m n l))
 
 ≺-well-founded : is-well-founded _≺_
-≺-well-founded v = step σ
+≺-well-founded v = acc σ
  where
   σ : (u : ℕ∞) → u ≺ v → is-accessible _≺_ u
   σ u (n , r , l) = transport⁻¹ (is-accessible _≺_) r (finite-accessible n)

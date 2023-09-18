@@ -9,7 +9,7 @@ the modified definition in private communication.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import UF.PropTrunc
 open import UF.FunExt
@@ -21,10 +21,10 @@ open PropositionalTruncation pt
 open import MLTT.Spartan
 open import UF.Base
 open import UF.Equiv
-open import UF.Retracts
-open import UF.hlevels
+open import UF.Sets-Properties
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
+open import UF.Subsingletons-Properties
 
 open import Categories.Category fe
 open import Duploids.DeductiveSystem fe

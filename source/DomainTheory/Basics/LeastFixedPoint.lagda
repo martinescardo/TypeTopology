@@ -9,7 +9,7 @@ typechecking.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline --lossy-unification #-}
+{-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
 
 open import MLTT.Spartan
 open import UF.FunExt
@@ -22,7 +22,6 @@ module DomainTheory.Basics.LeastFixedPoint
 
 open PropositionalTruncation pt
 
-open import UF.Miscelanea
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 

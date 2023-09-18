@@ -6,7 +6,7 @@ See remarks below for an explanation.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan
 open import UF.FunExt
@@ -24,16 +24,16 @@ open import MLTT.Two-Properties
 open import Notation.CanonicalMap hiding ([_])
 open import TypeTopology.CompactTypes
 open import TypeTopology.Density
-open import TypeTopology.DiscreteAndSeparated
 open import TypeTopology.ExtendedSumCompact fe
 open import TypeTopology.GenericConvergentSequenceCompactness fe₀
 open import TypeTopology.SigmaDiscreteAndTotallySeparated
 open import UF.Base
+open import UF.DiscreteAndSeparated
 open import UF.Embeddings
 open import UF.Equiv
-open import UF.Miscelanea
 open import UF.PairFun
 open import UF.Subsingletons
+open import UF.Subsingletons-Properties
 
 \end{code}
 

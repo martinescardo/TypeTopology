@@ -5,7 +5,7 @@ Examples of type trees.
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --no-sized-types --no-guardedness --auto-inline --exact-split --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module Games.Examples where
 
@@ -19,7 +19,7 @@ module permutations where
 
  open import MLTT.Athenian
 
- no-repetitions : ℕ → Type → 𝕋
+ no-repetitions : ℕ → Type → 𝑻
  no-repetitions 0        X = []
  no-repetitions (succ n) X = X ∷ λ (x : X) → no-repetitions n (Σ y ꞉ X , y ≠ x)
 
@@ -48,7 +48,7 @@ module search (fe : Fun-Ext) where
  ε₂ : J Bool
  ε₂ p = p true
 
- h : ℕ → 𝕋
+ h : ℕ → 𝑻
  h 0        = []
  h (succ n) = Bool ∷ λ _ → h n
 
@@ -57,7 +57,7 @@ module search (fe : Fun-Ext) where
  εs (succ n) = ε₂ :: λ _ → εs n
 
  ε : (n : ℕ) → J (Path (h n))
- ε n = J-sequence (εs n)
+ ε n = sequenceᴶ (εs n)
 
  qq : (n : ℕ) → Path (h n) → Bool
  qq 0        ⟨⟩        = true
@@ -88,17 +88,17 @@ TODO. Define game isomorphism (and possibly homomorphism more generally).
 
 \begin{code}
 
- data 𝕋' (X : Type) : Type₁ where
-  []  : 𝕋' X
-  _∷_ : (A : X → Type) (Xf : (x : X) → A x → 𝕋' X) → 𝕋' X
+ data 𝑻' (X : Type) : Type₁ where
+  []  : 𝑻' X
+  _∷_ : (A : X → Type) (Xf : (x : X) → A x → 𝑻' X) → 𝑻' X
 
  record Game⁻ : Type₁ where
   constructor game⁻
   field
-   Xt  : 𝕋
+   Xt  : 𝑻
    q   : Path Xt → R
 
 \end{code}
 
-TODO. Game⁻ ≃ (Σ R : Type, 𝕋' R). In Game⁻, we know how to play the
+TODO. Game⁻ ≃ (Σ R : Type, 𝑻' R). In Game⁻, we know how to play the
 game, but we don't know what the objective of the game is.

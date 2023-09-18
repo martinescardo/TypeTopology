@@ -7,11 +7,9 @@ using the corresponding properties for (finite) types.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module Fin.Topology where
-
-open import UF.Subsingletons renaming (⊤Ω to ⊤)
 
 open import Fin.Bishop
 open import Fin.Properties
@@ -21,13 +19,15 @@ open import MLTT.Spartan
 open import MLTT.SpartanList
 open import Notation.Order
 open import TypeTopology.CompactTypes
-open import TypeTopology.DiscreteAndSeparated
+open import UF.DiscreteAndSeparated
 open import UF.Equiv
-open import UF.Miscelanea
-open import UF.PropTrunc
+open import UF.EquivalenceExamples
 open import UF.ExcludedMiddle
 open import UF.FunExt
-open import UF.EquivalenceExamples
+open import UF.PropTrunc
+open import UF.Sets
+open import UF.SubtypeClassifier
+open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
 \end{code}

@@ -67,18 +67,20 @@ bisimulations. This gives a technique for establishing equalities on
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import UF.FunExt
 
 module CoNaturals.UniversalProperty (fe : FunExt) where
 
-open import MLTT.Spartan
 open import CoNaturals.GenericConvergentSequence
-open import Notation.CanonicalMap
-
-open import MLTT.Two-Properties
 open import MLTT.Plus-Properties
+open import MLTT.Spartan
+open import MLTT.Two-Properties
+open import Notation.CanonicalMap
+open import UF.Sets
+open import UF.Sets-Properties
+open import UF.Subsingletons-Properties
 
 private
  fe₀ : funext 𝓤₀ 𝓤₀

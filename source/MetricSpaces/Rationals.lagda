@@ -5,7 +5,7 @@ respect to the usual metric.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
 
@@ -123,7 +123,7 @@ B-ℚ x y (ε , 0<ε) = abs (x - y) < ε
   I = ℚ≤-split 0ℚ α 0≤α
 
   γ₁ : 0ℚ < α → x ＝ y
-  γ₁ l = 𝟘-elim (ℚ<-not-itself α (f (α , l )))
+  γ₁ l = 𝟘-elim (ℚ<-irrefl α (f (α , l )))
 
   γ₂ : 0ℚ ＝ abs (x - y) → x ＝ y
   γ₂ e = x         ＝⟨ ℚ-inverse-intro'''' x y                       ⟩

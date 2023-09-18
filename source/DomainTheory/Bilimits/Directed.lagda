@@ -14,7 +14,7 @@ closed under structural continuity/algebraicity and having a small (compact) bas
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline --lossy-unification #-}
+{-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
 
 \end{code}
 
@@ -39,6 +39,8 @@ https://github.com/agda/agda/issues/1625
 open import MLTT.Spartan hiding (J)
 open import UF.FunExt
 open import UF.PropTrunc
+open import UF.Sets
+open import UF.Sets-Properties
 
 module DomainTheory.Bilimits.Directed
         (pt : propositional-truncations-exist)
@@ -51,6 +53,7 @@ open PropositionalTruncation pt
 
 open import UF.Equiv
 open import UF.EquivalenceExamples
+open import UF.Hedberg
 open import UF.ImageAndSurjection pt
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
@@ -849,7 +852,7 @@ criteria for calculating its supremum and for it being directed.
 \begin{code}
 
  module 𝓓∞-family
-         (J : (i : I) → 𝓥 ̇  )
+         (J : (i : I) → 𝓥 ̇ )
          (α : (i : I) → J i → ⟨ 𝓓 i ⟩)
         where
 

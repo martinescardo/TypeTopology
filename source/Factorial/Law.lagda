@@ -45,7 +45,7 @@ But if P is a proposition, then
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import UF.FunExt
 
@@ -61,13 +61,12 @@ module Factorial.Law (fe : FunExt) where
 open import Factorial.Swap
 open import MLTT.Plus-Properties
 open import MLTT.Spartan
-open import TypeTopology.DiscreteAndSeparated
 open import UF.Base
+open import UF.DiscreteAndSeparated
 open import UF.Embeddings
 open import UF.Equiv
 open import UF.Equiv-FunExt
 open import UF.EquivalenceExamples
-open import UF.Miscelanea
 open import UF.Retracts
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt

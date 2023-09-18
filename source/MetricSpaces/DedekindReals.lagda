@@ -10,7 +10,7 @@ Cauchy approximation sequences, limits of such sequences, and the corollary that
 any cauchy sequence has a limit is are implemented as described.
 
 \begin{code}
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --lossy-unification --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
 
@@ -605,7 +605,7 @@ cal-lo (f , α) p q p<q = ∥∥-functor γ II
     I = cale-lo-lemma p q p<q
 
     II : (p + ε₂ + ε₂ < f ε₂₊) ∨ (f ε₂₊ < q - ε₂ - ε₂)
-    II = located-from-real (f (ε₂ , 0<ε₂)) (p + ε₂ + ε₂) (q - ε₂ - ε₂) I
+    II = ℝ-locatedness (f (ε₂ , 0<ε₂)) (p + ε₂ + ε₂) (q - ε₂ - ε₂) I
 
     γ : (p + ε₂ + ε₂ < f ε₂₊) ∔ (f ε₂₊ < q - ε₂ - ε₂)
       → p ∈ cal-L (f , α) ∔ q ∈ cal-R (f , α)
@@ -676,7 +676,7 @@ cal-di (f , α) = disjoint→trans L R (cal-lo (f , α)) γ
         XII = ℚ<-trans 0ℚ (ε₂ + ε₄) 0ℚ 0<ε₅ XI
 
         γ'' : 𝟘
-        γ'' = ℚ<-not-itself 0ℚ XII
+        γ'' = ℚ<-irrefl 0ℚ XII
 
       γ₂ : 𝟘
       γ₂ = ∥∥-rec 𝟘-is-prop γ₁ (α ε₁₊ ε₃₊)
@@ -774,7 +774,7 @@ ca-limit-is-limit (f , α) = y , y-is-limit
       γ₁ (inr y<q) = (p - ε₁ - ε₃ , q) , (l₇ , l₂) , (l₈ , y<q) , γ'
 
       γ₂ : (p < y) ∨ (y < q)
-      γ₂ = located-from-real y p q p<q
+      γ₂ = ℝ-locatedness y p q p<q
 
 ℝ-CauchySequence : (S : ℕ → ℝ) → 𝓤₀ ̇
 ℝ-CauchySequence = cauchy-sequence ℝ ℝ-metric-space

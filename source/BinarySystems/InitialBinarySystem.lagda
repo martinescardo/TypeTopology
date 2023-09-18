@@ -19,11 +19,13 @@ quotients - it just happens to have the quotient we want.
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --no-sized-types --no-guardedness --auto-inline --exact-split --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module BinarySystems.InitialBinarySystem where
 
 open import MLTT.Spartan
+open import UF.Sets-Properties
+open import UF.Subsingletons-Properties
 
 data 𝔹 : 𝓤₀ ̇ where
  L R : 𝔹
@@ -267,7 +269,10 @@ first universe 𝓤₀.
 
 \begin{code}
 
-open import UF.Subsingletons hiding (center) renaming (⊥Ω to ⊥ ; ⊤Ω to ⊤)
+open import UF.Hedberg
+open import UF.Sets
+open import UF.SubtypeClassifier
+open import UF.Subsingletons hiding (center)
 
 χ : 𝔹 → 𝔹 → Ω₀
 χ L    L      = ⊤

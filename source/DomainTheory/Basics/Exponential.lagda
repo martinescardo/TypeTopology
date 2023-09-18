@@ -9,7 +9,7 @@ useful when proving that exponentials of sup-complete dcpos are algebraic.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan hiding (J)
 open import UF.FunExt
@@ -25,6 +25,8 @@ open PropositionalTruncation pt
 
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
+open import UF.Sets
+open import UF.Sets-Properties
 
 open import DomainTheory.Basics.Dcpo pt fe 𝓥
 open import DomainTheory.Basics.Miscelanea pt fe 𝓥
@@ -277,7 +279,7 @@ module _
 
  open is-sup-complete 𝓔-is-sup-complete
 
- sup-of-continuous-functions : {I : 𝓥 ̇  } → (I → DCPO[ 𝓓 , 𝓔 ]) → DCPO[ 𝓓 , 𝓔 ]
+ sup-of-continuous-functions : {I : 𝓥 ̇ } → (I → DCPO[ 𝓓 , 𝓔 ]) → DCPO[ 𝓓 , 𝓔 ]
  sup-of-continuous-functions {I} α = (f , c)
   where
    f : ⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩
@@ -329,7 +331,7 @@ module _
    ; ⋁-is-sup = λ {I} → lemma
    }
    where
-    lemma : {I : 𝓥 ̇  } (α : I → DCPO[ 𝓓 , 𝓔 ])
+    lemma : {I : 𝓥 ̇ } (α : I → DCPO[ 𝓓 , 𝓔 ])
           → is-sup (underlying-order (𝓓 ⟹ᵈᶜᵖᵒ 𝓔))
              (sup-of-continuous-functions α) α
     lemma {I} α = (ub , lb-of-ubs)

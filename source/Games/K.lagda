@@ -2,13 +2,12 @@ Martin Escardo, Paulo Oliva, 2023
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan hiding (J)
 
 module Games.K where
 
-open import Games.Base
 open import Games.Monad
 
 𝕂 : Type → Monad
@@ -35,16 +34,16 @@ module K-definitions (R : Type) where
  ⊗ᴷ-direct-definition : {X : Type} {Y : X → Type}
                         (ϕ : K X)
                         (γ : (x : X) → K (Y x))
-                      → ϕ ⊗ᴷ γ ∼ (λ q → ϕ (λ x → γ x (sub q x)))
+                      → ϕ ⊗ᴷ γ ∼ (λ q → ϕ (λ x → γ x (curry q x)))
  ⊗ᴷ-direct-definition ϕ γ q = refl
 
  ηᴷ : {X : Type} → X → K X
  ηᴷ = η (𝕂 R)
 
- K-ext : {X Y : Type} → (X → K Y) → K X → K Y
- K-ext = ext (𝕂 R)
+ extᴷ : {X Y : Type} → (X → K Y) → K X → K Y
+ extᴷ = ext (𝕂 R)
 
- K-map : {X Y : Type} → (X → Y) → K X → K Y
- K-map = map (𝕂 R)
+ mapᴷ : {X Y : Type} → (X → Y) → K X → K Y
+ mapᴷ = map (𝕂 R)
 
 \end{code}

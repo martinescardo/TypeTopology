@@ -1,27 +1,26 @@
 Martin Escardo, Paulo Oliva, 2-27 July 2021
 
-Example: Tic-tac-toe. We have two versions. The other version is in
-another file.
+Example: Tic-tac-toe. We have three versions. The other versions are
+in other files.
 
 TODO. Organaze this module better, following the organization of TicTacToe0.
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --no-sized-types --no-guardedness --auto-inline #-} -- --exact-split
+{-# OPTIONS --safe --without-K #-} -- --exact-split
 
 
 
 module Games.TicTacToe1 where
 
-open import TypeTopology.CompactTypes
-open import TypeTopology.DiscreteAndSeparated
-open import TypeTopology.SigmaDiscreteAndTotallySeparated
-
-open import MLTT.Spartan hiding (J)
-open import MLTT.Athenian
-open import Fin.Type
-open import Fin.Topology
 open import Fin.ArgMinMax
+open import Fin.Topology
+open import Fin.Type
+open import MLTT.Athenian
+open import MLTT.Spartan hiding (J)
+open import TypeTopology.CompactTypes
+open import TypeTopology.SigmaDiscreteAndTotallySeparated
+open import UF.DiscreteAndSeparated
 
 𝟛 : Type
 𝟛 = Fin 3

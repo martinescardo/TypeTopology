@@ -4,7 +4,7 @@ In collaboration with Marc Bezem, Thierry Coquand, Peter Dybjer.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module UF.SmallnessProperties where
 
@@ -22,13 +22,6 @@ open import UF.FunExt
 open import UF.PropTrunc
 open import UF.Size
 open import UF.Subsingletons
-
-native-size : (X : 𝓤 ̇ ) → X is 𝓤 small
-native-size X = X , ≃-refl X
-
-native-size-of-map : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                   → f is 𝓤 ⊔ 𝓥 small-map
-native-size-of-map f y = native-size (fiber f y)
 
 smallness-closed-under-≃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                          → X is 𝓦 small
@@ -83,13 +76,8 @@ decidable-embeddings-have-any-size : (𝓦 : Universe)
 decidable-embeddings-have-any-size 𝓦 {X} {Y} {f} e δ y =
  decidable-propositions-have-any-size (fiber f y) (e y) (δ y)
 
-id-is-decidable : {X : 𝓤 ̇ } → each-fiber-of (id {𝓤} {X}) is-decidable
-id-is-decidable x = inl (x , refl)
-
 id-has-any-size : (𝓦 : Universe) {X : 𝓤 ̇ } → (id {𝓤} {X}) is 𝓦 small-map
-id-has-any-size 𝓦 = decidable-embeddings-have-any-size 𝓦
-                      id-is-embedding
-                      id-is-decidable
+id-has-any-size 𝓦 {𝓤} = equivs-have-any-size id (id-is-equiv 𝓤)
 
 ∘-decidable-embeddings : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
                          {f : X → Y} {g : Y → Z}

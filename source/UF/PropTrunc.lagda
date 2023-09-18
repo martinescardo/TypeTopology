@@ -2,7 +2,7 @@ Martin Escardo
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module UF.PropTrunc where
 
@@ -36,6 +36,9 @@ module PropositionalTruncation (pt : propositional-truncations-exist) where
 
  open propositional-truncations-exist pt public
 
+ exit-∥∥ : {P : 𝓤 ̇ } → is-prop P → ∥ P ∥ → P
+ exit-∥∥ i = ∥∥-rec i id
+
  ∥∥-induction : {X : 𝓤 ̇ } {P : ∥ X ∥ → 𝓥 ̇ }
              → ((s : ∥ X ∥) → is-prop (P s))
              → ((x : X) → P ∣ x ∣)
@@ -60,7 +63,7 @@ module PropositionalTruncation (pt : propositional-truncations-exist) where
    f (x , φ) = singletons-are-props (x , φ) , ∣ x ∣
 
    g : is-prop X × ∥ X ∥ → is-singleton X
-   g (i , s) = ∥∥-rec i id s , i (∥∥-rec i id s)
+   g (i , s) = exit-∥∥ i s , i (exit-∥∥ i s)
 
  ∥∥-functor : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → ∥ X ∥ → ∥ Y ∥
  ∥∥-functor f = ∥∥-rec ∥∥-is-prop (λ x → ∣ f x ∣)
@@ -91,6 +94,14 @@ module PropositionalTruncation (pt : propositional-truncations-exist) where
  infixr -1 Exists
  infixr -1 ¬Exists
 
+ remove-truncation-inside-∃ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
+                            → (∃ x ꞉ X , ∥ Y x ∥)
+                            → (∃ x ꞉ X , Y x )
+ remove-truncation-inside-∃ =
+  ∥∥-rec ∃-is-prop
+   (λ (x , s) → ∥∥-rec ∃-is-prop
+                 (λ y → ∣ x , y ∣) s)
+
  Nat∃ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X → 𝓦 ̇ } → Nat A B → ∃ A → ∃ B
  Nat∃ ζ = ∥∥-functor (NatΣ ζ)
 
@@ -112,6 +123,10 @@ module PropositionalTruncation (pt : propositional-truncations-exist) where
            → (Q → S)
            → P ∨ Q → R ∨ S
  ∨-functor f g = ∥∥-functor (+functor f g)
+
+ ∨-flip : {P : 𝓤 ̇ } {Q : 𝓥 ̇ }
+        → P ∨ Q → Q ∨ P
+ ∨-flip = ∥∥-functor (cases inr inl)
 
  left-fails-gives-right-holds : {P : 𝓤 ̇ } {Q : 𝓥 ̇ }
                               → is-prop Q
@@ -148,7 +163,7 @@ module PropositionalTruncation (pt : propositional-truncations-exist) where
 
  prop-is-equivalent-to-its-truncation : {X : 𝓤 ̇ } → is-prop X → ∥ X ∥ ≃ X
  prop-is-equivalent-to-its-truncation i =
-  logically-equivalent-props-are-equivalent ∥∥-is-prop i (∥∥-rec i id) ∣_∣
+  logically-equivalent-props-are-equivalent ∥∥-is-prop i (exit-∥∥ i) ∣_∣
 
  not-exists₀-implies-forall₁ : {X : 𝓤 ̇ } (p : X → 𝟚)
                              → ¬ (∃ x ꞉ X , p x ＝ ₀)

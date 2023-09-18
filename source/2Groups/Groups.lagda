@@ -30,16 +30,16 @@ Group-structure-is-cat-group : (X : Group 𝓤)
 Group-structure-is-cat-group X .isMonoidalGrpd ._⊗_ = multiplication X
 Group-structure-is-cat-group X .isMonoidalGrpd .e = unit X
 Group-structure-is-cat-group X .isMonoidalGrpd .is-monoidal-grpd = record
-                                                                     { is-grpd = sets-are-groupoids (group-is-set X)
+                                                                     { is-grpd = sets-are-groupoids (groups-are-sets X)
                                                                      ; is-assoc = assoc X
-                                                                     ; has-pentagon = group-is-set X _ _
+                                                                     ; has-pentagon = groups-are-sets X _ _
                                                                      ; unit-left = Groups.Type.unit-left X
                                                                      ; unit-right = Groups.Type.unit-right X
-                                                                     ; has-assoc-neutral = group-is-set X  _ _
+                                                                     ; has-assoc-neutral = groups-are-sets X  _ _
                                                                      }
 Group-structure-is-cat-group X .isCatGroup =
   record { ⊗-inv = λ x → inv X x , (inv-right X x) , (inv-left X x ⁻¹)
-         ; ⊗-inv-axioms = λ _ → (group-is-set X _ _) , (group-is-set X _ _) }
+         ; ⊗-inv-axioms = λ _ → (groups-are-sets X _ _) , (groups-are-sets X _ _) }
 
 
 Group-is-2-Group : Group 𝓤 → 2-Group 𝓤
