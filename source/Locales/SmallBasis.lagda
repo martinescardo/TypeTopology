@@ -28,6 +28,9 @@ open import UF.SubtypeClassifier
 open import UF.ImageAndSurjection pt
 open import UF.Equiv renaming (_■ to _𝒬ℰ𝒟)
 open import MLTT.List using (List; map; _<$>_; []; _∷_)
+open import UF.Univalence using (Univalence)
+open import UF.Sets using (is-set)
+open import UF.Subsingletons-FunExt
 
 open PropositionalTruncation pt
 
@@ -169,7 +172,7 @@ type of compact opens of a locale to be small:
 
 \begin{code}
 
-has-small-𝒦 : Locale 𝓤 𝓥 𝓦 → (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)  ̇
+has-small-𝒦 : Locale 𝓤 𝓥 𝓦 → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺  ̇
 has-small-𝒦 {_} {_} {𝓦} X = 𝒦 X is 𝓦 small
 
 \end{code}
@@ -459,6 +462,11 @@ basisₛ-closed-under-∧ X σᴰ = pr₂ (pr₂ (pr₂ (pr₂ σᴰ)))
 spectralᴰ-implies-basisᴰ : (X : Locale 𝓤 𝓥 𝓦) → spectralᴰ X → basisᴰ (𝒪 X)
 spectralᴰ-implies-basisᴰ X σᴰ = basisₛ X σᴰ , basisₛ-is-basis X σᴰ
 
+spectralᴰ-implies-directed-basisᴰ : (X : Locale 𝓤 𝓥 𝓦)
+                                  → spectralᴰ X → directed-basisᴰ (𝒪 X)
+spectralᴰ-implies-directed-basisᴰ X σᴰ =
+ basisₛ X σᴰ , basisₛ-is-directed-basis X σᴰ
+
 \end{code}
 
 Spectrality structure gives `is-spectral`.
@@ -646,5 +654,76 @@ spectral-and-small-𝒦-implies-spectralᴰ {𝓤} {𝓥} X σ 𝕤ₖ@(𝒦₀ 
 
    μ↑ : closed-under-finite-meets (𝒪 X) ℬ↑ holds
    μ↑ = τ↑ , directify-preserves-closure-under-∧ (𝒪 X) ℬ β μ
+
+\end{code}
+
+\begin{code}
+
+spectralᴰ-implies-small-𝒦 : (X : Locale 𝓤 𝓥 𝓥) → spectralᴰ X → has-small-𝒦 X
+spectralᴰ-implies-small-𝒦 {𝓤} {𝓥} X σᴰ = 𝒦-is-small X (ℬ , β) κ ζ
+ where
+  ℬ : Fam 𝓥 ⟨ 𝒪 X ⟩
+  ℬ = basisₛ X σᴰ
+
+  β : directed-basis-forᴰ (𝒪 X) ℬ
+  β = basisₛ-is-directed-basis X σᴰ
+
+  κ : consists-of-compact-opens X ℬ holds
+  κ = basisₛ-consists-of-compact-opens X σᴰ
+
+  ζ : ⟨ 𝒪 X ⟩ is-locally 𝓥 small
+  ζ = local-smallness X
+
+\end{code}
+
+\begin{code}
+
+is-spectral-with-small-basis : (ua : Univalence) (X : Locale 𝓤 𝓥 𝓥) → Ω (𝓤 ⊔ 𝓥 ⁺)
+is-spectral-with-small-basis {𝓤} {𝓥} ua X =
+ is-spectral X ∧ has-small-𝒦 X , being-small-is-prop ua (𝒦 X) 𝓥
+
+\end{code}
+
+\begin{code}
+
+ssb-implies-spectralᴰ : (ua : Univalence) (X : Locale 𝓤 𝓥 𝓥)
+                      → is-spectral-with-small-basis ua X holds
+                      → spectralᴰ X
+ssb-implies-spectralᴰ ua X (σ , 𝕤) = spectral-and-small-𝒦-implies-spectralᴰ X σ 𝕤
+
+spectralᴰ-implies-ssb : (ua : Univalence) (X : Locale 𝓤 𝓥 𝓥)
+                      → spectralᴰ X → is-spectral-with-small-basis ua X holds
+spectralᴰ-implies-ssb ua X σᴰ =
+ spectralᴰ-gives-spectrality X σᴰ ,  spectralᴰ-implies-small-𝒦 X σᴰ
+
+\end{code}
+
+\begin{code}
+
+truncated-spectralᴰ-implies-spectral : (ua : Univalence) (X : Locale 𝓤 𝓥 𝓥)
+                                     → ∥ spectralᴰ X ∥ → is-spectral X holds
+truncated-spectralᴰ-implies-spectral ua X p =
+ ∥∥-rec (holds-is-prop (is-spectral X)) † p
+  where
+   † : spectralᴰ X → is-spectral X holds
+   † = pr₁ ∘ spectralᴰ-implies-ssb ua X
+
+truncated-spectralᴰ-implies-spectralᴰ : (ua : Univalence) (X : Locale 𝓤 𝓥 𝓥)
+                                      → ∥ spectralᴰ X ∥ → spectralᴰ X
+truncated-spectralᴰ-implies-spectralᴰ {𝓤} {𝓥} ua X p =
+ spectral-and-small-𝒦-implies-spectralᴰ
+  X
+  (truncated-spectralᴰ-implies-spectral ua X p)
+  †
+   where
+    φ : spectralᴰ X → 𝒦 X is 𝓥 small
+    φ σᴰ = 𝒦-is-small
+            X
+            (spectralᴰ-implies-directed-basisᴰ X σᴰ)
+            (basisₛ-consists-of-compact-opens X σᴰ)
+            (local-smallness X)
+
+    † : 𝒦 X is 𝓥 small
+    † = ∥∥-rec (being-small-is-prop ua (𝒦 X) 𝓥) φ p
 
 \end{code}
