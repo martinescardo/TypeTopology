@@ -42,13 +42,13 @@ hydra regeneration mechanism
 \begin{code}
 
 data HeadLocation₀ : List Hydra → 𝓤₀ ̇  where
-  here : {hs : List Hydra} → HeadLocation₀ (Head ∷ hs)
-  next : {h : Hydra} {hs : List Hydra} → HeadLocation₀ hs → HeadLocation₀ (h ∷ hs)
+ here : {hs : List Hydra} → HeadLocation₀ (Head ∷ hs)
+ next : {h : Hydra} {hs : List Hydra} → HeadLocation₀ hs → HeadLocation₀ (h ∷ hs)
 
 data HeadLocation₁ : List Hydra → 𝓤₀ ̇  where
-  here₀ : {hs hs' : List Hydra} → HeadLocation₀ hs → HeadLocation₁ (Node hs ∷ hs')
-  here₁ : {hs hs' : List Hydra} → HeadLocation₁ hs → HeadLocation₁ (Node hs ∷ hs')
-  next  : {h : Hydra} {hs : List Hydra} → HeadLocation₁ hs → HeadLocation₁ (h ∷ hs)
+ here₀ : {hs hs' : List Hydra} → HeadLocation₀ hs → HeadLocation₁ (Node hs ∷ hs')
+ here₁ : {hs hs' : List Hydra} → HeadLocation₁ hs → HeadLocation₁ (Node hs ∷ hs')
+ next  : {h : Hydra} {hs : List Hydra} → HeadLocation₁ hs → HeadLocation₁ (h ∷ hs)
 
 HeadLocation : Hydra → 𝓤₀ ̇
 HeadLocation (Node hs) = HeadLocation₀ hs + HeadLocation₁ hs
@@ -108,7 +108,7 @@ pattern step₁ n l eq = (n , inr (l , eq))
 ⊲'-is-well-founded : is-well-founded _⊲'_
 
 ⊲-is-well-founded (Node hs) = acc (recurs (⊲'-is-well-founded hs))
-  where
+ where
   recurs : {hs : List Hydra}
          → is-accessible (_⊲'_) hs
          → (h' : Hydra) → h' ⊲ Node hs
@@ -117,7 +117,7 @@ pattern step₁ n l eq = (n , inr (l , eq))
 
 ⊲'-is-well-founded [] = acc (λ h r → 𝟘-elim ([]-is-minimum h r))
 ⊲'-is-well-founded (h ∷ hs) = acc (recurs (⊲-is-well-founded h) (⊲'-is-well-founded hs))
-  where
+ where
   recurs : {h : Hydra} {hs : List Hydra}
          → is-accessible _⊲_ h
          → is-accessible _⊲'_ hs
@@ -128,7 +128,7 @@ pattern step₁ n l eq = (n , inr (l , eq))
   recurs (acc rec₁) (acc rec₂) hs' (step₁ n (next l) refl)  = acc (recurs (acc rec₁) (rec₂ _ (step₁ n l refl)))
   recurs (acc rec₁) (acc rec₂) hs' (step₁ n (here₁ l) refl) = acc (recurs (rec₁ _ (step n (inr l) refl)) (acc rec₂))
   recurs (acc rec₁) (acc rec₂) hs' (step₁ n (here₀ l) refl) = recurs' n
-    where
+   where
     recurs' : (n : ℕ) → is-accessible _⊲'_ (cons-mult _ (succ n) _)
     recurs' 0        = acc (recurs (rec₁ _ (step 0 (inl l) refl)) (acc rec₂))
     recurs' (succ n) = acc (recurs (rec₁ _ (step 0 (inl l) refl)) (recurs' n))
@@ -143,7 +143,7 @@ leftmost-head₀ : (hs : List Hydra) → hs ≠ [] → HeadLocation₀ hs + Head
 leftmost-head₀ []                    neq = 𝟘-elim (neq refl)
 leftmost-head₀ (Head ∷ _)            neq = inl here
 leftmost-head₀ ((Node (h ∷ hs)) ∷ _) neq = leftmost-head₀' (leftmost-head₀ (h ∷ hs) (λ ()))
-  where
+ where
   leftmost-head₀' : HeadLocation₀ (h ∷ hs) + HeadLocation₁ (h ∷ hs)
                   → HeadLocation₀ _ + HeadLocation₁ _
   leftmost-head₀' (inl l) = inr (here₀ l)
@@ -155,7 +155,7 @@ leftmost-head (Node (h ∷ hs)) neq = leftmost-head₀ (h ∷ hs) (λ ())
 
 f-Hydra : (n : ℕ) → ℕ
 f-Hydra n = battle 1 (tall-hydra n) (⊲-is-well-founded _)
-  where
+ where
   tall-hydra : (n : ℕ) → Hydra
   tall-hydra 0 = Node []
   tall-hydra (succ n) = Node (tall-hydra n ∷ [])
@@ -164,8 +164,8 @@ f-Hydra n = battle 1 (tall-hydra n) (⊲-is-well-founded _)
   battle turn Head            (acc rec₁ ) = 0
   battle turn (Node (h ∷ hs)) (acc rec₁ ) = succ (battle (succ turn) (cut turn (Node (h ∷ hs)) cut-head) (rec₁ _ (turn , (cut-head , refl))))
    where
-   cut-head : HeadLocation (Node (h ∷ hs))
-   cut-head = leftmost-head _ (λ ())
+    cut-head : HeadLocation (Node (h ∷ hs))
+    cut-head = leftmost-head _ (λ ())
 
 f-Hydra0 : f-Hydra 0 ＝ 0
 f-Hydra0 = refl
