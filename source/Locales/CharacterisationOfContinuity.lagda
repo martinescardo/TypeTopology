@@ -20,6 +20,7 @@ open import UF.Logic
 open import Slice.Family
 open import Locales.Compactness pt fe
 open import Locales.Spectrality.SpectralLocale pt fe
+open import Locales.Spectrality.Properties     pt fe
 
 open PropositionalTruncation pt
 open Existential pt
@@ -64,7 +65,7 @@ characterisation-of-continuity Y X σ h μ ζ S δ = β , γ
 
   γ : (Ɐ (u , _) ꞉ upper-bound ⁅ h s ∣ s ε S ⁆ ,
         h (⋁[ (𝒪 Y) ] S) ≤[ poset-of (𝒪 X) ] u) holds
-  γ (u , φ) = spectral-yoneda X σ (h (⋁[ 𝒪 Y ] S)) u † -- spectral-yoneda M σ (h (⋁[ L ] S)) u ε
+  γ (u , φ) = spectral-yoneda X σ (h (⋁[ 𝒪 Y ] S)) u †
    where
     † : ((K , _) : 𝒦 X)
       → (K ≤[ poset-of (𝒪 X) ] h (⋁[ 𝒪 Y ] S) ⇒ K  ≤[ poset-of (𝒪 X) ] u) holds

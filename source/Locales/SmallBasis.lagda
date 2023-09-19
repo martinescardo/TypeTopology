@@ -31,6 +31,7 @@ open import MLTT.List using (List; map; _<$>_; []; _∷_)
 open import UF.Univalence using (Univalence)
 open import UF.Sets using (is-set)
 open import UF.Subsingletons-FunExt
+open import Locales.Spectrality.Properties pt fe
 
 open PropositionalTruncation pt
 
