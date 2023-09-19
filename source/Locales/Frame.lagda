@@ -1830,6 +1830,17 @@ open Locale
 _─c→_ : Locale 𝓤 𝓥 𝓦 → Locale 𝓤′ 𝓥′ 𝓦 → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺ ⊔ 𝓤′ ̇
 X ─c→ Y = (𝒪 Y) ─f→ (𝒪 X)
 
+continuity-of : (X : Locale 𝓤 𝓥 𝓦) (Y : Locale 𝓤′ 𝓥′ 𝓦) (f : X ─c→ Y)
+              → (S : Fam 𝓦 ⟨ 𝒪 Y ⟩)
+              → f .pr₁ (⋁[ 𝒪 Y ] S) ＝ ⋁[ 𝒪 X ] ⁅ f .pr₁ V ∣ V ε S ⁆
+continuity-of X Y f S =
+ ⋁[ 𝒪 X ]-unique ⁅ f $ V ∣ V ε S ⁆ (f $ (⋁[ 𝒪 Y ] S)) (pr₂ (pr₂ (pr₂ f)) S)
+  where
+   open Joins (λ x y → x ≤[ poset-of (𝒪 X) ] y)
+
+   infixr 25 _$_
+   _$_ = pr₁
+
 module ContinuousMapNotation (X : Locale 𝓤 𝓥 𝓦) (Y : Locale 𝓤' 𝓥' 𝓦) where
 
  infix 9 _⋆
