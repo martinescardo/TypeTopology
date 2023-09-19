@@ -19,6 +19,8 @@ open import Locales.AdjointFunctorTheoremForFrames
 open import Locales.Frame pt fe
 open import Locales.WayBelowRelation.Definition pt fe
 open import Locales.Compactness pt fe
+open import Locales.Spectrality.SpectralLocale pt fe
+open import Locales.Spectrality.Properties     pt fe
 open import Slice.Family
 -- open import UF.Equiv using (_≃_; logically-equivalent-props-give-is-equiv)
 open import UF.Logic
@@ -147,15 +149,33 @@ Perfect maps preserve the way below relation.
                            → is-scott-continuous (𝒪 X) (𝒪 Y) h holds
  scott-continuous-join-eq⁻ f φ S = {!!}
 
- spectral-maps-are-perfect : (f : X ─c→ Y)
+ open GaloisConnectionBetween (poset-of (𝒪 Y)) (poset-of (𝒪 X))
+
+ spectral-maps-are-perfect : is-spectral Y holds
+                           → (f : X ─c→ Y)
                            → (is-spectral-map f ⇒ is-perfect-map f) holds
- spectral-maps-are-perfect f σ S δ = scott-continuous-join-eq⁻ f₊ † S δ
+ spectral-maps-are-perfect 𝕤 f σ S δ = scott-continuous-join-eq⁻ f₊ † S δ
   where
+   open PosetNotation (poset-of (𝒪 X))
+   open PosetNotation (poset-of (𝒪 Y)) renaming (_≤_ to _≤y_)
+
+   infix -2 _≤∙_
+   _≤∙_ = _≤y_
+
+   f₊ₘ : poset-of (𝒪 X) ─m→ poset-of (𝒪 Y)
+   f₊ₘ = right-adjoint-of f
+
    f⁺ : ⟨ 𝒪 Y ⟩ → ⟨ 𝒪 X ⟩
    f⁺ = f ⋆∙_
 
+   f⁺ₘ : poset-of (𝒪 Y) ─m→ poset-of (𝒪 X)
+   f⁺ₘ = f⁺ , frame-morphisms-are-monotonic (𝒪 Y) (𝒪 X) f⁺ (pr₂ f)
+
    f₊ : ⟨ 𝒪 X ⟩ → ⟨ 𝒪 Y ⟩
    f₊ = f ⁎·_
+
+   𝕒 : (f⁺ₘ ⊣ f₊ₘ) holds
+   𝕒 = f₊-is-right-adjoint-of-f⁺ f
 
    † : (S : Fam 𝓥 ⟨ 𝒪 X ⟩)
      → is-directed (𝒪 X) S holds
@@ -164,19 +184,35 @@ Perfect maps preserve the way below relation.
     where
      open PosetReasoning (poset-of (𝒪 X))
 
-     †₁ : (f ⁎· (⋁[ 𝒪 X ] S) ≤[ poset-of (𝒪 Y) ] (⋁[ 𝒪 Y ] ⁅ f ⁎· V ∣ V ε S ⁆)) holds
-     †₁ = {!adjunction-inequality-forward f ? ? ?!}
+     †₁ : (f ⁎· (⋁[ 𝒪 X ] S) ≤∙ ⋁[ 𝒪 Y ] ⁅ f ⁎· V ∣ V ε S ⁆) holds
+     †₁ =
+      spectral-yoneda Y 𝕤 (f ⁎· (⋁[ 𝒪 X ] S)) (⋁[ 𝒪 Y ] ⁅ f ⁎· V ∣ V ε S ⁆) r
+       where
+        r : ((f ⁎· (⋁[ 𝒪 X ] S)) ≤ₖ[ Y ] (⋁[ 𝒪 Y ] ⁅ f ⁎· V ∣ V ε S ⁆)) holds
+        r (K , κ) = {!!}
 
-     ‡₂ : (f ⋆∙ (⋁[ 𝒪 Y ] ⁅ f ⁎· V ∣ V ε S ⁆) ≤[ poset-of (𝒪 X) ] (⋁[ 𝒪 X ] S)) holds
-     ‡₂ = f ⋆∙ (⋁[ 𝒪 Y ] ⁅ f ⁎· V ∣ V ε S ⁆)       ≤⟨ Ⅰ ⟩
-          ⋁[ 𝒪 X ] ⁅ f ⋆∙ (f ⁎· V) ∣ V ε S ⁆       ≤⟨ Ⅱ ⟩
-          ⋁[ 𝒪 X ] ⁅ V ∣ V ε S ⁆                   ■
-           where
-            Ⅰ = {!!}
-            Ⅱ = {!!}
+     ‡₂ : (f ⋆∙ (⋁[ 𝒪 Y ] ⁅ f ⁎· V ∣ V ε S ⁆) ≤ (⋁[ 𝒪 X ] S)) holds
+     ‡₂ =
+      f ⋆∙ (⋁[ 𝒪 Y ] ⁅ f ⁎· V ∣ V ε S ⁆)       ＝⟨ Ⅰ ⟩ₚ
+      ⋁[ 𝒪 X ] ⁅ f ⋆∙ (f ⁎· V) ∣ V ε S ⁆       ≤⟨ Ⅱ ⟩
+      ⋁[ 𝒪 X ] ⁅ V ∣ V ε S ⁆                   ■
+       where
+        ※ : cofinal-in (𝒪 X) ⁅ f ⋆∙ (f ⁎· V) ∣ V ε S ⁆ S holds
+        ※ i = ∣ i , counit f⁺ₘ f₊ₘ 𝕒 (S [ i ]) ∣
 
-     †₂ : ((⋁[ 𝒪 Y ] ⁅ f ⁎· V ∣ V ε S ⁆) ≤[ poset-of (𝒪 Y) ] f ⁎· (⋁[ 𝒪 X ] S)) holds
-     †₂ = adjunction-inequality-forward f (⋁[ 𝒪 X ] S) (⋁[ 𝒪 Y ] ⁅ f ⁎· V ∣ V ε S ⁆) ‡₂
+        Ⅰ = continuity-of X Y f ⁅ f ⁎· V ∣ V ε S ⁆
+        Ⅱ = cofinal-implies-join-covered
+             (𝒪 X)
+             ⁅ f ⋆∙ (f ⁎· V) ∣ V ε S ⁆
+             S
+             ※
+
+     †₂ : (⋁[ 𝒪 Y ] ⁅ f ⁎· V ∣ V ε S ⁆ ≤∙ f ⁎· (⋁[ 𝒪 X ] S)) holds
+     †₂ = adjunction-inequality-forward
+           f
+           (⋁[ 𝒪 X ] S)
+           (⋁[ 𝒪 Y ] ⁅ f ⁎· V ∣ V ε S ⁆)
+           ‡₂
 
 
 \end{code}
