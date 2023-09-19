@@ -14,7 +14,6 @@ case in general that for an embedding X → Y, is Y is small then X is
 small. This is the case, however, if the embedding has small fibers
 (in which case we say that it is small).
 
-
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}
@@ -52,7 +51,7 @@ large-group-with-no-small-copy : (Σ A ꞉ 𝓤 ⁺ ̇  , is-set A
 large-group-with-no-small-copy {𝓤} (A , A-is-set , A-is-large , A-ls) = 𝓕 , γ
  where
   g : good-freely-generated-group-exists A (𝓤 ⁺) 𝓤
-  g = free-groups-of-large-locally-small-types pt fe pe A A-ls
+  g = Theorem₂[free-groups-of-large-locally-small-types] pt fe pe A A-ls
 
   open good-freely-generated-group-exists g
 
@@ -78,7 +77,7 @@ small copy.
 
 Remarks.
 
-What can we choose for the large, locally small set?
+1. What can we choose for the large, locally small set?
 
  * Our choice is the type of ordinals.
 
@@ -98,3 +97,11 @@ What can we choose for the large, locally small set?
  * Another question is whether there is a large, discrete set, as this
    would considerably simplify the construction of the free group. One
    of us conjectures that there isn't, in general, such a set.
+
+2. Notice that is the axiom of choice is available, we don't need to
+   use free groups as above, because the axiom of choice is equivalent
+   to the statement that any non-empty set has some group
+   structure. Although we don't get an explicit group with this
+   construction, its existence is enough in order to prove that the
+   type of groups in universe 𝓤 is not equivalent to the type of
+   groups in the next universe 𝓤⁺.
