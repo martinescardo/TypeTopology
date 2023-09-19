@@ -145,9 +145,15 @@ Perfect maps preserve the way below relation.
  open Joins (λ x y → x ≤[ poset-of (𝒪 Y) ] y)
 
  scott-continuous-join-eq⁻ : (h : ⟨ 𝒪 X ⟩ → ⟨ 𝒪 Y ⟩)
-                           → ((S : Fam 𝓥 ⟨ 𝒪 X ⟩) → is-directed (𝒪 X) S holds →  h (⋁[ 𝒪 X ] S) ＝ ⋁[ 𝒪 Y ] ⁅ h V ∣ V ε S ⁆)
+                           → ((S : Fam 𝓥 ⟨ 𝒪 X ⟩)
+                              → is-directed (𝒪 X) S holds
+                              → h (⋁[ 𝒪 X ] S) ＝ ⋁[ 𝒪 Y ] ⁅ h V ∣ V ε S ⁆)
                            → is-scott-continuous (𝒪 X) (𝒪 Y) h holds
- scott-continuous-join-eq⁻ f φ S = {!!}
+ scott-continuous-join-eq⁻ h φ S δ =
+  transport
+   (λ - → (- is-lub-of ⁅ h V ∣ V ε S ⁆) holds)
+   (φ S δ ⁻¹)
+   (⋁[ 𝒪 Y ]-upper ⁅ h V ∣ V ε S ⁆ , ⋁[ 𝒪 Y ]-least ⁅ h V ∣ V ε S ⁆)
 
  open GaloisConnectionBetween (poset-of (𝒪 Y)) (poset-of (𝒪 X))
 
@@ -183,13 +189,32 @@ Perfect maps preserve the way below relation.
    † S δ = ≤-is-antisymmetric (poset-of (𝒪 Y)) †₁ †₂
     where
      open PosetReasoning (poset-of (𝒪 X))
+     open PosetReasoning (poset-of (𝒪 Y)) using    ()
+                                          renaming (_≤⟨_⟩_ to _≤⟨_⟩∙_;
+                                                    _■ to _𝔔𝔈𝔇)
+
+     ϑ : ((f ⁎· (⋁[ 𝒪 X ] S)) ≤ₖ[ Y ] (⋁[ 𝒪 Y ] ⁅ f ⁎· V ∣ V ε S ⁆)) holds
+     ϑ (K , κ) p = ∥∥Ω-rec ※ (κ′ S δ q)
+      where
+       κ′ : is-compact-open X (f⁺ K) holds
+       κ′ = σ K κ
+
+       q : (f⁺ K ≤ (⋁[ 𝒪 X ] S)) holds
+       q = adjunction-inequality-backward f (⋁[ 𝒪 X ] S) K p
+
+       ※ : Σ k ꞉ index S , (f⁺ K ≤ S [ k ]) holds
+         → (K ≤∙ ⋁[ 𝒪 Y ] ⁅ f ⁎· V ∣ V ε S ⁆) holds
+       ※ (k , p) =
+        K                           ≤⟨ Ⅰ  ⟩∙
+        f ⁎· (S [ k ])              ≤⟨ Ⅱ ⟩∙
+        ⋁[ 𝒪 Y ] ⁅ f ⁎· V ∣ V ε S ⁆ 𝔔𝔈𝔇
+         where
+          Ⅰ = adjunction-inequality-forward f (S [ k ]) K p
+          Ⅱ = ⋁[ 𝒪 Y ]-upper ⁅ f ⁎· V ∣ V ε S ⁆ k
 
      †₁ : (f ⁎· (⋁[ 𝒪 X ] S) ≤∙ ⋁[ 𝒪 Y ] ⁅ f ⁎· V ∣ V ε S ⁆) holds
      †₁ =
-      spectral-yoneda Y 𝕤 (f ⁎· (⋁[ 𝒪 X ] S)) (⋁[ 𝒪 Y ] ⁅ f ⁎· V ∣ V ε S ⁆) r
-       where
-        r : ((f ⁎· (⋁[ 𝒪 X ] S)) ≤ₖ[ Y ] (⋁[ 𝒪 Y ] ⁅ f ⁎· V ∣ V ε S ⁆)) holds
-        r (K , κ) = {!!}
+      spectral-yoneda Y 𝕤 (f ⁎· (⋁[ 𝒪 X ] S)) (⋁[ 𝒪 Y ] ⁅ f ⁎· V ∣ V ε S ⁆) ϑ
 
      ‡₂ : (f ⋆∙ (⋁[ 𝒪 Y ] ⁅ f ⁎· V ∣ V ε S ⁆) ≤ (⋁[ 𝒪 X ] S)) holds
      ‡₂ =
