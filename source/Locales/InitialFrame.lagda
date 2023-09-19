@@ -24,6 +24,7 @@ open import UF.Subsingletons-FunExt
 open import Slice.Family
 open import Locales.Frame pt fe
 open import UF.SubtypeClassifier
+
 open AllCombinators pt fe
 
 \end{code}
@@ -289,6 +290,15 @@ main-lemma pe P p =
 𝟎-𝔽𝕣𝕞-initial : {𝓦 : Universe} (pe : propext 𝓦) (F : Frame 𝓤 𝓥 𝓦)
               → is-singleton (𝟎-𝔽𝕣𝕞 pe ─f→ F)
 𝟎-𝔽𝕣𝕞-initial pe F = (𝒻 pe F) , 𝒻-is-unique pe F
+
+\end{code}
+
+The initial frame is the terminal locale
+
+\begin{code}
+
+𝟏Loc : {𝓤 : Universe} (pe : propext 𝓤) → Locale (𝓤 ⁺) 𝓤 𝓤
+𝟏Loc {𝓤} pe = record { ⟨_⟩ₗ = Ω 𝓤 ; frame-str-of = pr₂ (𝟎-𝔽𝕣𝕞 pe) }
 
 \end{code}
 

@@ -25,6 +25,7 @@ open import UF.Logic
 open import UF.Subsingletons
 open import UF.SubtypeClassifier
 open import MLTT.List hiding ([_])
+open import UF.Base using (from-Σ-＝)
 
 open AllCombinators pt fe
 open PropositionalTruncation pt
@@ -297,5 +298,16 @@ well-inside-itself-implies-clopen : (X : Locale 𝓤 𝓥 𝓦)
                                   → ((U ⋜[ 𝒪 X ] U) ⇒ is-clopen (𝒪 X) U) holds
 well-inside-itself-implies-clopen X U =
  ∥∥-rec (holds-is-prop (is-clopen (𝒪 X) U)) id
+
+\end{code}
+
+\begin{code}
+
+complements-are-unique : (F : Frame 𝓤 𝓥 𝓦) (U V₁ V₂ : ⟨ F ⟩)
+                       → is-boolean-complement-of F V₁ U holds
+                       → is-boolean-complement-of F V₂ U holds
+                       → V₁ ＝ V₂
+complements-are-unique F U V₁ V₂ p q =
+ pr₁ (from-Σ-＝ (is-clopen₀-is-prop F U (V₁ , p) (V₂ , q)))
 
 \end{code}

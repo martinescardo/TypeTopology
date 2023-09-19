@@ -19,6 +19,7 @@ open import Locales.Compactness pt fe
 open import Slice.Family
 open import UF.Logic
 open import UF.SubtypeClassifier
+open import UF.Base using (from-Σ-＝)
 
 open AllCombinators pt fe
 open PropositionalTruncation pt
@@ -130,5 +131,40 @@ complement-of-meet L {x} {y} {x′} {y′} φ ψ = β , γ
         Ⅷ = ∨[ F ]-assoc x′ y′ y
         Ⅸ = ap (λ - → x′ ∨[ F ] -) (pr₂ ψ)
         Ⅹ = 𝟏-right-annihilator-for-∨ F x′
+
+\end{code}
+
+\begin{code}
+
+frame-homomorphisms-preserve-complements : (F G : Frame 𝓤 𝓥 𝓦)
+                                         → (h : F ─f→ G)
+                                         → {x x′ : ⟨ F ⟩}
+                                         → is-boolean-complement-of F x′ x holds
+                                         → is-boolean-complement-of G (h .pr₁ x) (h .pr₁ x′) holds
+frame-homomorphisms-preserve-complements F G 𝒽@(h , _ , μ) {x} {x′} (φ , ψ) = † , ‡
+ where
+  † : (h x′) ∧[ G ] (h x) ＝ 𝟎[ G ]
+  † = h x′ ∧[ G ] h x   ＝⟨ Ⅰ ⟩
+      h (x′ ∧[ F ] x)   ＝⟨ Ⅱ ⟩
+      h 𝟎[ F ]          ＝⟨ Ⅲ ⟩
+      𝟎[ G ]            ∎
+       where
+        Ⅰ = frame-homomorphisms-preserve-meets F G 𝒽 x′ x ⁻¹
+        Ⅱ = ap h (x′ ∧[ F ] x   ＝⟨ ∧[ F ]-is-commutative x′ x ⟩
+                  x ∧[ F ] x′   ＝⟨ φ ⟩
+                  𝟎[ F ]        ∎)
+        Ⅲ = frame-homomorphisms-preserve-bottom F G 𝒽
+
+  ‡ : h x′ ∨[ G ] h x ＝ 𝟏[ G ]
+  ‡ = h x′ ∨[ G ] h x   ＝⟨ Ⅰ ⟩
+      h (x′ ∨[ F ] x)   ＝⟨ Ⅱ ⟩
+      h 𝟏[ F ]          ＝⟨ Ⅲ ⟩
+      𝟏[ G ]            ∎
+       where
+        Ⅰ = frame-homomorphisms-preserve-binary-joins F G 𝒽 x′ x ⁻¹
+        Ⅱ = ap h (x′ ∨[ F ] x ＝⟨ ∨[ F ]-is-commutative x′ x ⟩
+                  x ∨[ F ] x′ ＝⟨ ψ ⟩
+                  𝟏[ F ]      ∎)
+        Ⅲ = frame-homomorphisms-preserve-top F G 𝒽
 
 \end{code}

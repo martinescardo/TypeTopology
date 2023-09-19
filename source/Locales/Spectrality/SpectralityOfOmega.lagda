@@ -16,6 +16,7 @@ open import UF.FunExt
 open import UF.Subsingletons
 open import UF.SubtypeClassifier
 open import UF.Size
+open import UF.EquivalenceExamples
 
 module Locales.Spectrality.SpectralityOfOmega
         (pt : propositional-truncations-exist)
@@ -40,20 +41,37 @@ open Spectrality-of-𝟎 𝓤 pe
 bottom-of-𝟎Frm-is-⊥ : ⊥ ＝ 𝟎[ 𝟎-𝔽𝕣𝕞 pe ]
 bottom-of-𝟎Frm-is-⊥ = only-𝟎-is-below-𝟎 (𝟎-𝔽𝕣𝕞 pe) ⊥ (λ ())
 
-𝟎Frm-is-compact : is-compact (𝟎-𝔽𝕣𝕞 pe) holds
+Ω-frm : Frame (𝓤 ⁺) 𝓤 𝓤
+Ω-frm = 𝟎-𝔽𝕣𝕞 pe
+
+𝟏-loc : Locale (𝓤 ⁺) 𝓤 𝓤
+𝟏-loc = record { ⟨_⟩ₗ = ⟨ Ω-frm ⟩ ; frame-str-of = pr₂ Ω-frm }
+
+𝟎Frm-is-compact : is-compact 𝟏-loc holds
 𝟎Frm-is-compact S (∣i∣ , u) p = ∥∥-rec ∃-is-prop † (p ⋆)
  where
   † : (Σ j ꞉ index S , ((S [ j ]) holds))
     → ∃ j ꞉ index S , (𝟏[ 𝟎-𝔽𝕣𝕞 pe ] ≤[ poset-of (𝟎-𝔽𝕣𝕞 pe) ] S [ j ]) holds
   † (j , q) = ∣ j , (λ _ → q) ∣
 
-ℬ𝟎-consists-of-compact-opens : consists-of-compact-opens (𝟎-𝔽𝕣𝕞 pe) ℬ𝟎 holds
+ℬ𝟎-consists-of-compact-opens : consists-of-compact-opens 𝟏-loc ℬ𝟎 holds
 ℬ𝟎-consists-of-compact-opens (inl ⋆) =
  transport
-  (λ - → is-compact-open (𝟎-𝔽𝕣𝕞 pe) - holds)
+  (λ - → is-compact-open 𝟏-loc - holds)
   (bottom-of-𝟎Frm-is-⊥ ⁻¹)
-  (𝟎-is-compact (𝟎-𝔽𝕣𝕞 pe))
+  (𝟎-is-compact 𝟏-loc)
 ℬ𝟎-consists-of-compact-opens (inr ⋆) = 𝟎Frm-is-compact
+
+ℬ𝟎↑-consists-of-compact-opens : consists-of-compact-opens 𝟏-loc ℬ𝟎↑ holds
+ℬ𝟎↑-consists-of-compact-opens []       = 𝟎-is-compact 𝟏-loc
+ℬ𝟎↑-consists-of-compact-opens (i ∷ is) =
+ compact-opens-are-closed-under-∨ 𝟏-loc (ℬ𝟎 [ i ]) (ℬ𝟎↑ [ is ]) κ IH
+  where
+   κ : is-compact-open 𝟏-loc (ℬ𝟎 [ i ]) holds
+   κ = ℬ𝟎-consists-of-compact-opens i
+
+   IH : is-compact-open 𝟏-loc (ℬ𝟎↑ [ is ]) holds
+   IH = ℬ𝟎↑-consists-of-compact-opens is
 
 and₂-lemma₁ : (x y : 𝟚 𝓤) → (ℬ𝟎 [ and₂ x y ] ≤[ poset-of (𝟎-𝔽𝕣𝕞 pe) ] ℬ𝟎 [ x ]) holds
 and₂-lemma₁ (inl ⋆) y       = λ ()
@@ -81,34 +99,46 @@ and₂-lemma₃ (inr ⋆) y (z , p₁ , p₂) = p₂
   †₂ : (ℬ𝟎 [ and₂ i j ] ≤[ poset-of (𝟎-𝔽𝕣𝕞 pe) ] ℬ𝟎 [ j ]) holds
   †₂ = and₂-lemma₂ i j
 
-𝟎-𝔽𝕣𝕞-is-spectral : is-spectral (𝟎-𝔽𝕣𝕞 pe) holds
-𝟎-𝔽𝕣𝕞-is-spectral = ∣ ℬ𝟎↑ , ℬ𝟎-is-directed-basis-for-𝟎 , κ , γ ∣
+
+ℬ𝟎↑-directed-basisᴰ : directed-basisᴰ (𝟎-𝔽𝕣𝕞 pe)
+ℬ𝟎↑-directed-basisᴰ = ℬ𝟎↑ , β↑
  where
-  κ : consists-of-compact-opens (𝟎-𝔽𝕣𝕞 pe) ℬ𝟎↑ holds
-  κ []       = 𝟎-is-compact (𝟎-𝔽𝕣𝕞 pe)
-  κ (i ∷ is) = compact-opens-are-closed-under-∨
-                (𝟎-𝔽𝕣𝕞 pe)
-                (ℬ𝟎 [ i ])
-                (ℬ𝟎↑ [ is ])
-                (ℬ𝟎-consists-of-compact-opens i)
-                (κ is)
+  -- TODO: get rid of these projections.
+  β↑ : directed-basis-forᴰ (𝟎-𝔽𝕣𝕞 pe) ℬ𝟎↑
+  β↑ U = pr₁ (pr₁ ℬ𝟎-is-directed-basis-for-𝟎 U)
+       , (pr₂ (pr₁ ℬ𝟎-is-directed-basis-for-𝟎 U)
+       , pr₂ ℬ𝟎-is-directed-basis-for-𝟎 U)
 
-  t : is-top (𝟎-𝔽𝕣𝕞 pe) (𝟏[ 𝟎-𝔽𝕣𝕞 pe ] ∨[ 𝟎-𝔽𝕣𝕞 pe ] 𝟎[ 𝟎-𝔽𝕣𝕞 pe ]) holds
-  t = transport
-       (λ - → is-top (𝟎-𝔽𝕣𝕞 pe) - holds)
-       (𝟎-left-unit-of-∨ (𝟎-𝔽𝕣𝕞 pe) 𝟏[ 𝟎-𝔽𝕣𝕞 pe ] ⁻¹)
-       (𝟏-is-top (𝟎-𝔽𝕣𝕞 pe))
+𝟎-𝔽𝕣𝕞-is-spectral : is-spectral 𝟏-loc holds
+𝟎-𝔽𝕣𝕞-is-spectral =
+ spectralᴰ-gives-spectrality
+  𝟏-loc
+  (ℬ𝟎↑ , pr₂ ℬ𝟎↑-directed-basisᴰ , ℬ𝟎↑-consists-of-compact-opens , γ)
+  where
+   κ : consists-of-compact-opens 𝟏-loc ℬ𝟎↑ holds
+   κ []       = 𝟎-is-compact 𝟏-loc
+   κ (i ∷ is) = compact-opens-are-closed-under-∨
+                 𝟏-loc
+                 (ℬ𝟎 [ i ])
+                 (ℬ𝟎↑ [ is ])
+                 (ℬ𝟎-consists-of-compact-opens i)
+                 (κ is)
 
-  c : closed-under-binary-meets (𝟎-𝔽𝕣𝕞 pe) ℬ𝟎↑ holds
-  c = ?
-   -- directify-preserves-closure-under-∧
-   --     (𝟎-𝔽𝕣𝕞 pe)
-   --     ℬ𝟎
-   --     ℬ𝟎-is-basis-for-𝟎
-   --     ℬ𝟎-is-closed-under-binary-meets
+   t : is-top (𝟎-𝔽𝕣𝕞 pe) (𝟏[ 𝟎-𝔽𝕣𝕞 pe ] ∨[ 𝟎-𝔽𝕣𝕞 pe ] 𝟎[ 𝟎-𝔽𝕣𝕞 pe ]) holds
+   t = transport
+        (λ - → is-top (𝟎-𝔽𝕣𝕞 pe) - holds)
+        (𝟎-left-unit-of-∨ (𝟎-𝔽𝕣𝕞 pe) 𝟏[ 𝟎-𝔽𝕣𝕞 pe ] ⁻¹)
+        (𝟏-is-top (𝟎-𝔽𝕣𝕞 pe))
 
-  γ : closed-under-finite-meets (𝟎-𝔽𝕣𝕞 pe) ℬ𝟎↑ holds
-  γ = ∣ (inr ⋆ ∷ []) , t ∣ , c
+   c : closed-under-binary-meets (𝟎-𝔽𝕣𝕞 pe) ℬ𝟎↑ holds
+   c = {!directify-preserves-closure-under-∧!}
+    -- directify-preserves-closure-under-∧
+    --     (𝟎-𝔽𝕣𝕞 pe)
+    --     ℬ𝟎
+    --     ℬ𝟎-is-basis-for-𝟎
+    --     ℬ𝟎-is-closed-under-binary-meets
 
+   γ : closed-under-finite-meets (𝟎-𝔽𝕣𝕞 pe) ℬ𝟎↑ holds
+   γ = ∣ (inr ⋆ ∷ []) , t ∣ , c
 
 \end{code}
