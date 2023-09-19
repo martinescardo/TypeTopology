@@ -50,14 +50,14 @@ Please add yourself the first time you contribute.
 * Jon Sterling
 * Keri D'Angelo
 * Lane Biocini
-* Marc Bezem (i)
+* Marc Bezem
 * Martin Escardo
 * Nicolai Kraus
 * Ohad Kammar
 * Paul Levy (i)
 * Paulo Oliva
-* Peter Dybjer (i)
-* Thierry Coquand (i)
+* Peter Dybjer
+* Thierry Coquand
 * Todd Waugh Ambridge
 * Tom de Jong
 * Vincent Rahli
