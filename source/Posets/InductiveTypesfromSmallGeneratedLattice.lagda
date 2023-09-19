@@ -83,7 +83,23 @@ is-lub-for : (L : Sup-Lattice 𝓤 𝓦 𝓥)
            → ((order-of L) Joins.is-lub-of join-for L U) U holds
 is-lub-for (A , (_≤_ , ⋁_) , order , is-lub-of) = is-lub-of
 
-module Monotone-Maps {𝓤 𝓦 𝓥 : Universe} (L : Sup-Lattice 𝓤 𝓦 𝓥) where
+is-an-upper-bound-for_of_ : (L : Sup-Lattice 𝓤 𝓦 𝓥)
+                          → (U : Fam 𝓥 ⟨ L ⟩)
+                          → ((order-of L) Joins.is-an-upper-bound-of join-for L U) U holds
+is-an-upper-bound-for L of U = pr₁ (is-lub-for L U)
+
+is-least-upper-bound-for_of_ : (L : Sup-Lattice 𝓤 𝓦 𝓥)
+                             → (U : Fam 𝓥 ⟨ L ⟩)
+                             → ((u' , _) : Joins.upper-bound (order-of L) U) → (order-of L (join-for L U) u') holds
+is-least-upper-bound-for L of U = pr₂ (is-lub-for L U)
+
+\end{code}
+
+We define a monotone endo-map on lattice. This is sufficient as our intent is to study fixed-points.
+
+\begin{code}
+
+module Monotone-Endo-Maps {𝓤 𝓦 𝓥 : Universe} (L : Sup-Lattice 𝓤 𝓦 𝓥) where
 
  _≤_ : ⟨ L ⟩ → ⟨ L ⟩ → Ω 𝓦
  _≤_ = order-of L
@@ -153,15 +169,22 @@ module Small-Types-have-Joins {𝓤 𝓦 𝓥 𝓣 : Universe}
    s-upper-bound : (s is-an-upper-bound-of (T , m)) holds
    s-upper-bound t = t-≤-s
     where
-     t-≤-s : (m t ≤ s) holds
+     t-≤-s : (m t ≤ s) holds 
      t-≤-s = transport (λ z → (m z ≤ s) holds) (section-small-map t)
-              (pr₁ (is-lub-for L (small-type , small-type-inclusion)) (small-map-inv t))
-   s-least-upper-bound : (is-upbnd : upper-bound (T , m)) → (s ≤ pr₁ is-upbnd) holds
+                       ((is-an-upper-bound-for L of (small-type , small-type-inclusion)) (small-map-inv t))
+   s-least-upper-bound : ((u , _) : upper-bound (T , m)) → (s ≤ u) holds
    s-least-upper-bound (u , is-upbnd-T) = s-≤-u
     where
      s-≤-u : (s ≤ u) holds
      s-≤-u = pr₂ (is-lub-for L (small-type , small-type-inclusion))
                  ((u , λ i → is-upbnd-T (small-map i)))
+
+\end{code}
+
+We also quickly show when the join of equivalents types can be identified.
+This will prove useful in the coming section.
+
+\begin{code}
 
 module Equivalent-Families-have-same-Join {𝓤 𝓦 𝓥 𝓣 𝓣' : Universe}
                                           (L : Sup-Lattice 𝓤 𝓦 𝓥)
@@ -183,15 +206,16 @@ module Equivalent-Families-have-same-Join {𝓤 𝓦 𝓥 𝓣 𝓣' : Universe}
                    → (s is-lub-of (T , m)) holds
                    → (s' is-lub-of (T' , m ∘ ⌜ e ⌝ )) holds
                    → s ＝ s'
- ≃-families-＝-sup s s' is-sup is-sup' = is-antisymmetric-for L s-≤-s' s'-≤-s
+ ≃-families-＝-sup s s' (is-upbnd , is-least-upbnd) (is-upbnd' , is-least-upbnd') =
+   is-antisymmetric-for L s-≤-s' s'-≤-s
   where
    s-≤-s' : (s ≤ s') holds
-   s-≤-s' = (pr₂ is-sup) (s' , λ t → transport (λ z → (z ≤ s') holds) (＝-1 t) (pr₁ is-sup' (⌜ e ⌝⁻¹ t)))
+   s-≤-s' = is-least-upbnd (s' , λ t → transport (λ z → (z ≤ s') holds) (＝-1 t) (is-upbnd' (⌜ e ⌝⁻¹ t)))
     where
      ＝-1 : (t : T) → m (⌜ e ⌝ (⌜ e ⌝⁻¹ t)) ＝ m t
      ＝-1 t = ap m (naive-inverses-are-sections ⌜ e ⌝ (pr₂ e) t)
    s'-≤-s : (s' ≤ s) holds
-   s'-≤-s = pr₂ is-sup' (s , λ t' → pr₁ is-sup (⌜ e ⌝ t'))
+   s'-≤-s = is-least-upbnd' (s , λ t' → is-upbnd (⌜ e ⌝ t'))
 
 \end{code}
 
@@ -277,6 +301,14 @@ module Sup-Lattice-Small-Basis {𝓤 𝓦 𝓥 : Universe} (L : Sup-Lattice 𝓤
    is-supᴮ x = transport (λ z → (z is-lub-of (small-↓ᴮ x , small-↓ᴮ-inclusion x)) holds)
                          (is-sup'ᴮ x ⁻¹) (is-lub-for L ((small-↓ᴮ x , small-↓ᴮ-inclusion x)))
 
+   is-upper-boundᴮ : (x : ⟨ L ⟩) → (x is-an-upper-bound-of (small-↓ᴮ x , small-↓ᴮ-inclusion x)) holds
+   is-upper-boundᴮ x = pr₁ (is-supᴮ x)
+
+   is-least-upper-boundᴮ : (x : ⟨ L ⟩)
+                         → ((u' , _) : upper-bound (small-↓ᴮ x , small-↓ᴮ-inclusion x))
+                         → (x ≤ u') holds
+   is-least-upper-boundᴮ x = pr₂ (is-supᴮ x)
+
 \end{code}
 
 We pause to introduce some universe polymorphic powerset notation which will allow the final product
@@ -353,8 +385,8 @@ module Inductive-Definitions (𝓤 𝓦 𝓥 : Universe) (L : Sup-Lattice 𝓤 �
        r : (x : B) → (o : x ≤ᴮ a) → P x (f x o)
        r x o = θ x (f x o)
 
-   I-recursion : (P : B → 𝓣  ̇)
-               → {ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)}
+   I-recursion : {ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)}
+               → (P : B → 𝓣  ̇)
                → ((U : B → Ω 𝓥)
                 → ((x : B) → (U x holds → I ϕ x))
                 → ((x : B) → (U x holds → P x))
@@ -364,10 +396,10 @@ module Inductive-Definitions (𝓤 𝓦 𝓥 : Universe) (L : Sup-Lattice 𝓤 �
                 → (ϕ (a , b) holds)
                 → ((x : B) → (x ≤ᴮ a → I ϕ x)) → ((x : B) → (x ≤ᴮ a → P x)) → P b)
                → (b : B) → I ϕ b → P b
-   I-recursion P = I-induction (λ b → (λ _ → P b))
+   I-recursion {ϕ} P = I-induction (λ b → (λ _ → P b))
 
-   I-is-initial : (P : B → 𝓣  ̇)
-                → {ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)}
+   I-is-initial : {ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)}
+                → (P : B → 𝓣  ̇)
                 → ((U : B → Ω 𝓥)
                  → ((b : B) → (U b holds → P b))
                  → ((b : B) → (b ≤ᴮ (⋁ ((Σ b ꞉ B , U b holds) , q ∘ pr₁))) → P b))
@@ -376,7 +408,7 @@ module Inductive-Definitions (𝓤 𝓦 𝓥 : Universe) (L : Sup-Lattice 𝓤 �
                  → (ϕ (a , b) holds)
                  → ((b' : B) → (b' ≤ᴮ a → P b')) → P b)
                 → (b : B) → I ϕ b → P b
-   I-is-initial {𝓣} P {ϕ} IH₁ IH₂ b i = I-recursion P R S b i
+   I-is-initial {𝓣} {ϕ} P IH₁ IH₂ b i = I-recursion P R S b i
     where
      R : (U : B → Ω 𝓥)
        → ((x : B) → U x holds → I ϕ x)
@@ -398,8 +430,8 @@ module Inductive-Definitions (𝓤 𝓦 𝓥 : Universe) (L : Sup-Lattice 𝓤 �
    𝓘 : (ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)) → 𝓟 {𝓤 ⊔ 𝓥 ⁺} B
    𝓘 ϕ b = (∥ I ϕ b ∥ , ∥∥-is-prop)
 
-   𝓘-is-least-closed-subset : (P : 𝓟 {𝓣} B)
-                            → {ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)}
+   𝓘-is-least-closed-subset : {ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)}
+                            → (P : 𝓟 {𝓣} B)
                             → ((U : 𝓟 {𝓥} B)
                              → (U ⊆ P)
                              → ((b : B) → (b ≤ᴮ (⋁ ((Σ b ꞉ B , b ∈ U) , q ∘ pr₁))) →  b ∈ P))
@@ -408,7 +440,7 @@ module Inductive-Definitions (𝓤 𝓦 𝓥 : Universe) (L : Sup-Lattice 𝓤 �
                              → (ϕ (a , b) holds)
                              → ((b' : B) → (b' ≤ᴮ a → b' ∈ P)) → b ∈ P)
                             → 𝓘 ϕ ⊆ P
-   𝓘-is-least-closed-subset {𝓣} P {ϕ} IH₁ IH₂ b = ∥∥-rec (holds-is-prop (P b)) θ
+   𝓘-is-least-closed-subset {𝓣} {ϕ} P IH₁ IH₂ b = ∥∥-rec (holds-is-prop (P b)) θ
     where
      θ : I ϕ b → b ∈ P
      θ = I-is-initial P' IH₁ IH₂ b
@@ -441,15 +473,16 @@ will call 'local'. This monotone operator will have a least-fixed point when �
          g' (a' , p , r) = ∣ (a' , p , is-transitive-for L a' x y r o) ∣
 
    S-has-sup-implies-monotone : (ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥))
-                              → (x y s₁ s₂ : ⟨ L ⟩)
+                              → (x y s s' : ⟨ L ⟩)
                               → (x ≤ y) holds
-                              → (s₁ is-lub-of (S ϕ x , q ∘ pr₁)) holds
-                              → (s₂ is-lub-of (S ϕ y , q ∘ pr₁)) holds
-                              → (s₁ ≤ s₂) holds
-   S-has-sup-implies-monotone ϕ x y s₁ s₂ o is-sup-1 is-sup-2 = pr₂ is-sup-1 ((s₂ , f))
+                              → (s is-lub-of (S ϕ x , q ∘ pr₁)) holds
+                              → (s' is-lub-of (S ϕ y , q ∘ pr₁)) holds
+                              → (s ≤ s') holds
+   S-has-sup-implies-monotone ϕ x y s s' o (is-upbnd , is-least-upbnd) (is-upbnd' , is-least-upbnd') =
+     is-least-upbnd ((s' , f))
     where
-     f : (s₂ is-an-upper-bound-of (S ϕ x , q ∘ pr₁)) holds
-     f (b , e) = pr₁ is-sup-2 (S-monotone-ish ϕ x y o ((b , e)))
+     f : (s' is-an-upper-bound-of (S ϕ x , q ∘ pr₁)) holds
+     f (b , e) = is-upbnd' (S-monotone-ish ϕ x y o ((b , e)))
          
    _is-local : (ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)) → 𝓤 ⊔ 𝓦 ⊔ (𝓥 ⁺)  ̇
    ϕ is-local = (a : ⟨ L ⟩) → S ϕ a is 𝓥 small
@@ -474,7 +507,7 @@ will call 'local'. This monotone operator will have a least-fixed point when �
     Γ : ⟨ L ⟩ → ⟨ L ⟩
     Γ a = ⋁ (S-small a , q ∘ pr₁ ∘ S-small-map a)
 
-    open Monotone-Maps L hiding (_≤_)
+    open Monotone-Endo-Maps L hiding (_≤_)
 
     Γ-is-monotone : Γ is-monotone
     Γ-is-monotone x y o = S-has-sup-implies-monotone ϕ x y (Γ x) (Γ y) o Γ-x-is-sup Γ-y-is-sup
@@ -488,12 +521,12 @@ will call 'local'. This monotone operator will have a least-fixed point when �
        where
         open Small-Types-have-Joins L (S ϕ y) (q ∘ pr₁) (i y)
 
-   open Monotone-Maps L hiding (_≤_)
+   open Monotone-Endo-Maps L hiding (_≤_)
 
    mono-map-give-local-ind-def : (f : ⟨ L ⟩ → ⟨ L ⟩)
                                → f is-monotone
-                               → Σ ϕ ꞉ (⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)) ,
-                                Σ i ꞉ (ϕ is-local) , ((x : ⟨ L ⟩) → (Local-ϕ.Γ ϕ i) x ＝ f x)
+                               → Σ ϕ ꞉ (⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)) , Σ i ꞉ (ϕ is-local) ,
+                                   ((x : ⟨ L ⟩) → (Local-ϕ.Γ ϕ i) x ＝ f x)
    mono-map-give-local-ind-def f f-mono = (ϕ , i , H)
     where
      ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)
@@ -529,8 +562,8 @@ will call 'local'. This monotone operator will have a least-fixed point when �
            map-5 : Σ a' ꞉ ⟨ L ⟩ , ϕ (a' , b) holds × (a' ≤ x) holds → (q b ≤ f x) holds
            map-5 (a' , o , r) = is-transitive-for L (q b) (f a') (f x)
                                 (_≤ᴮ_-to-_≤_ (⌜ ≃-Lift 𝓤 (b ≤ᴮ f a') ⌝⁻¹ o)) (f-mono a' x r)
-       f-is-least : (z : upper-bound (S ϕ x , q ∘ pr₁)) → (f x ≤ pr₁ z) holds
-       f-is-least (u , is-upbnd) = pr₂ (is-supᴮ (f x)) (u , λ z → is-upbnd (⌜ equiv-1 x ⌝ z))
+       f-is-least : ((u , _) : upper-bound (S ϕ x , q ∘ pr₁)) → (f x ≤ u) holds
+       f-is-least (u , is-upbnd) = (is-least-upper-boundᴮ (f x)) (u , λ z → is-upbnd (⌜ equiv-1 x ⌝ z))
      H : (x : ⟨ L ⟩) → (Local-ϕ.Γ ϕ i) x ＝ f x
      H x = ≃-families-＝-sup ((Local-ϕ.Γ ϕ i) x) (f x) is-lub-of-both (G x)
       where
@@ -538,8 +571,6 @@ will call 'local'. This monotone operator will have a least-fixed point when �
        open Equivalent-Families-have-same-Join L (S ϕ x) (S ϕ x) (id , id-is-equiv (S ϕ x)) (q ∘ pr₁)
        open Small-Types-have-Joins L (S ϕ x) (q ∘ pr₁) (i x) 
        
-     
-
 \end{code}
 
 
