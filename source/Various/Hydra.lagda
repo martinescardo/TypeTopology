@@ -8,8 +8,8 @@ terms of Hydra(n).
 [1] https://en.wikipedia.org/wiki/Hydra_game
 
 [2] Kirby, Laurie; Paris, Jeff. Bull. Accessible independence results
-   for Peano arithmetic.  London Math. Soc, 14 (1982), 285-293.
-   http://logic.amu.edu.pl/images/3/3c/Kirbyparis.pdf
+    for Peano arithmetic.  London Math. Soc, 14 (1982), 285-293.
+    http://logic.amu.edu.pl/images/3/3c/Kirbyparis.pdf
 
 \begin{code}
 
