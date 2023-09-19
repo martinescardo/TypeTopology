@@ -53,7 +53,7 @@ open import Locales.ZeroDimensionality         pt fe sr
 open import Locales.Stone                      pt fe sr
 open import Locales.StoneImpliesSpectral       pt fe sr
 open import Locales.ScottContinuity            pt fe sr
-open import Locales.Spectrality.Properties     pt fe sr
+open import Locales.Spectrality.Properties     pt fe
 
 open PropositionalTruncation pt
 
@@ -913,7 +913,7 @@ As mentioned previously, `closed-image U` is a perfect nucleus for any `U :
          (𝒪 A)
          𝒻₊
          (‘ U ’ₓ .pr₁)
-         {! (spectral-maps-are-perfect 𝒻 ∣ σᴰ ∣ μ) !}
+         (spectral-maps-are-perfect σ {!!} {!!})
          ( ∨-is-scott-continuous (𝒪 X) U)
          where
           open PerfectMaps X A A-has-basis
