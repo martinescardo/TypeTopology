@@ -1,5 +1,5 @@
-Alice Laroche, the 18th of September 2023.
-Using ideas and notations from Ayberk Tosun
+Alice Laroche, the 18th of September 2023,
+using ideas and notations from Ayberk Tosun.
 
 This file is a formalisation of Kirby-Paris Hydra game.  We show that
 every battle eventually ends, and use this fact to compute the first
