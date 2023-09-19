@@ -53,6 +53,7 @@ open import Locales.ZeroDimensionality         pt fe sr
 open import Locales.Stone                      pt fe sr
 open import Locales.StoneImpliesSpectral       pt fe sr
 open import Locales.ScottContinuity            pt fe sr
+open import Locales.Spectrality.Properties     pt fe sr
 
 open PropositionalTruncation pt
 
