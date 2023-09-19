@@ -1,6 +1,16 @@
 Alice Laroche, the 18th of September 2023
 Using ideas and notations from Ayberk Tosun
 
+This file is a formalisation of Kirby-Paris hydras game.
+We show that every battle eventually end, and use this fact to compute the first
+terms of Hydra(n)
+
+[1] https://en.wikipedia.org/wiki/Hydra_game
+
+[2] Kirby, Laurie; Paris, Jeff. Bull. Accessible independence results for Peano arithmetic.
+London Math. Soc, 14 (1982), 285-293.
+http://logic.amu.edu.pl/images/3/3c/Kirbyparis.pdf
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K --exact-split #-}
@@ -42,13 +52,18 @@ hydra regeneration mechanism
 \begin{code}
 
 data HeadLocation₀ : List Hydra → 𝓤₀ ̇  where
- here : {hs : List Hydra} → HeadLocation₀ (Head ∷ hs)
- next : {h : Hydra} {hs : List Hydra} → HeadLocation₀ hs → HeadLocation₀ (h ∷ hs)
+ here : {hs : List Hydra}
+      → HeadLocation₀ (Head ∷ hs)
+ next : {h : Hydra} {hs : List Hydra}
+      → HeadLocation₀ hs → HeadLocation₀ (h ∷ hs)
 
 data HeadLocation₁ : List Hydra → 𝓤₀ ̇  where
- here₀ : {hs hs' : List Hydra} → HeadLocation₀ hs → HeadLocation₁ (Node hs ∷ hs')
- here₁ : {hs hs' : List Hydra} → HeadLocation₁ hs → HeadLocation₁ (Node hs ∷ hs')
- next  : {h : Hydra} {hs : List Hydra} → HeadLocation₁ hs → HeadLocation₁ (h ∷ hs)
+ here₀ : {hs hs' : List Hydra}
+       → HeadLocation₀ hs → HeadLocation₁ (Node hs ∷ hs')
+ here₁ : {hs hs' : List Hydra}
+       → HeadLocation₁ hs → HeadLocation₁ (Node hs ∷ hs')
+ next  : {h : Hydra} {hs : List Hydra}
+       → HeadLocation₁ hs → HeadLocation₁ (h ∷ hs)
 
 HeadLocation : Hydra → 𝓤₀ ̇
 HeadLocation (Node hs) = HeadLocation₀ hs + HeadLocation₁ hs
@@ -116,7 +131,8 @@ pattern step₁ n l eq = (n , inr (l , eq))
   recurs (acc rec₁) (Node hs') r = acc (recurs (rec₁ hs' (⊲⇒⊲' r)))
 
 ⊲'-is-well-founded [] = acc (λ h r → 𝟘-elim ([]-is-minimum h r))
-⊲'-is-well-founded (h ∷ hs) = acc (recurs (⊲-is-well-founded h) (⊲'-is-well-founded hs))
+⊲'-is-well-founded (h ∷ hs) =
+ acc (recurs (⊲-is-well-founded h) (⊲'-is-well-founded hs))
  where
   recurs : {h : Hydra} {hs : List Hydra}
          → is-accessible _⊲_ h
@@ -124,9 +140,12 @@ pattern step₁ n l eq = (n , inr (l , eq))
          → (hs' : List Hydra) → hs' ⊲' (h ∷ hs)
          → is-accessible _⊲'_ hs'
   recurs (acc rec₁) (acc rec₂) hs' (step₀ n here refl)      = acc rec₂
-  recurs (acc rec₁) (acc rec₂) hs' (step₀ n (next l) refl)  = acc (recurs (acc rec₁) (rec₂ _ (step₀ n l refl)))
-  recurs (acc rec₁) (acc rec₂) hs' (step₁ n (next l) refl)  = acc (recurs (acc rec₁) (rec₂ _ (step₁ n l refl)))
-  recurs (acc rec₁) (acc rec₂) hs' (step₁ n (here₁ l) refl) = acc (recurs (rec₁ _ (step n (inr l) refl)) (acc rec₂))
+  recurs (acc rec₁) (acc rec₂) hs' (step₀ n (next l) refl)  =
+   acc (recurs (acc rec₁) (rec₂ _ (step₀ n l refl)))
+  recurs (acc rec₁) (acc rec₂) hs' (step₁ n (next l) refl)  =
+   acc (recurs (acc rec₁) (rec₂ _ (step₁ n l refl)))
+  recurs (acc rec₁) (acc rec₂) hs' (step₁ n (here₁ l) refl) =
+   acc (recurs (rec₁ _ (step n (inr l) refl)) (acc rec₂))
   recurs (acc rec₁) (acc rec₂) hs' (step₁ n (here₀ l) refl) = recurs' n
    where
     recurs' : (n : ℕ) → is-accessible _⊲'_ (cons-mult _ (succ n) _)
@@ -139,10 +158,12 @@ We can now define Hydra(n) and compute its four first terms.
 
 \begin{code}
 
-leftmost-head₀ : (hs : List Hydra) → hs ≠ [] → HeadLocation₀ hs + HeadLocation₁ hs
+leftmost-head₀ : (hs : List Hydra) → hs ≠ []
+               → HeadLocation₀ hs + HeadLocation₁ hs
 leftmost-head₀ []                    neq = 𝟘-elim (neq refl)
 leftmost-head₀ (Head ∷ _)            neq = inl here
-leftmost-head₀ ((Node (h ∷ hs)) ∷ _) neq = leftmost-head₀' (leftmost-head₀ (h ∷ hs) (λ ()))
+leftmost-head₀ ((Node (h ∷ hs)) ∷ _) neq =
+ leftmost-head₀' (leftmost-head₀ (h ∷ hs) (λ ()))
  where
   leftmost-head₀' : HeadLocation₀ (h ∷ hs) + HeadLocation₁ (h ∷ hs)
                   → HeadLocation₀ _ + HeadLocation₁ _
@@ -162,10 +183,14 @@ f-Hydra n = battle 1 (tall-hydra n) (⊲-is-well-founded _)
 
   battle : ℕ → (h : Hydra) → is-accessible _⊲_ h → ℕ
   battle turn Head            (acc rec₁ ) = 0
-  battle turn (Node (h ∷ hs)) (acc rec₁ ) = succ (battle (succ turn) (cut turn (Node (h ∷ hs)) cut-head) (rec₁ _ (turn , (cut-head , refl))))
+  battle turn (Node (h ∷ hs)) (acc rec₁ ) =
+   succ (battle (succ turn) cut-hydra (rec₁ cut-hydra (turn , cut-head , refl)))
    where
     cut-head : HeadLocation (Node (h ∷ hs))
     cut-head = leftmost-head _ (λ ())
+
+    cut-hydra : Hydra
+    cut-hydra = cut turn (Node (h ∷ hs)) cut-head
 
 f-Hydra0 : f-Hydra 0 ＝ 0
 f-Hydra0 = refl
