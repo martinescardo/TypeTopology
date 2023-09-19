@@ -190,9 +190,12 @@ Tosun.
 
 1. Tom de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg and Chuangjie
    Xu. *Set-Theoretic and Type-Theoretic Ordinals Coincide.*
-   To appear at [LICS 2023][LICS23]. June 2023.
+   [Logic in Computer Science (LICS)](https://dl.acm.org/conference/lics),
+   Proceedings of [LICS 2023][LICS23]. June 2023.
 
-   https://arxiv.org/abs/2301.10696
+   https://doi.org/10.1109/LICS56636.2023.10175762
+
+   Publicly available at https://arxiv.org/abs/2301.10696.
 
 1. Tom de Jong and Martín H. Escardó. *On Small Types in Univalent
    Foundations.* [Logical Methods in Computer
