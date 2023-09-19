@@ -109,9 +109,8 @@ module Monotone-Endo-Maps {𝓤 𝓦 𝓥 : Universe} (L : Sup-Lattice 𝓤 𝓦
 
 \end{code}
 
-We take a quick detour to show if a type is small and has a map to the carrier then it has a join. This seems
-like strict requirement but as we will see it occurs often when consider a lattice with a base. We then
-demonstrate when equivalent index types have the same join.
+We take a quick detour to show if a type is small and has a map to the carrier then it has a join.
+This seems like strict requirement but as we will see it occurs often when considering a lattice with a base. 
 
 \begin{code}
 
@@ -569,7 +568,36 @@ will call 'local'. This monotone operator will have a least-fixed point when �
       where
        open Local-ϕ ϕ i
        open Equivalent-Families-have-same-Join L (S ϕ x) (S ϕ x) (id , id-is-equiv (S ϕ x)) (q ∘ pr₁)
-       open Small-Types-have-Joins L (S ϕ x) (q ∘ pr₁) (i x) 
+       open Small-Types-have-Joins L (S ϕ x) (q ∘ pr₁) (i x)
+
+   module Correspondance-small-ϕ-closed-types-non-inc-points {𝓣 : Universe}
+                                                             (ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥))
+                                                             (i : ϕ is-local)
+                                                             where
+   
+    _is-small-ϕ-closed-subset : Σ P ꞉ 𝓟 {𝓣} B , (Σ b ꞉ B , b ∈ P) is 𝓥 small → 𝓤 ⊔ (𝓥 ⁺) ⊔ 𝓣  ̇
+    (P , v) is-small-ϕ-closed-subset = ((U : 𝓟 {𝓥} B)
+                                 → (U ⊆ P)
+                                 → ((b : B) → (b ≤ᴮ (⋁ ((Σ b ꞉ B , b ∈ U) , q ∘ pr₁))) →  b ∈ P))
+                                → ((a : ⟨ L ⟩)
+                                 → (b : B)
+                                 → (ϕ (a , b) holds)
+                                 → ((b' : B) → (b' ≤ᴮ a → b' ∈ P)) → b ∈ P)
+
+    small-ϕ-closed-subsets : {!𝓤 ⊔ (𝓥 ⁺) ⊔ (𝓣 ⁺)!}  ̇
+    small-ϕ-closed-subsets =  Σ (P , v) ꞉ Σ P ꞉ 𝓟 {𝓣} B , (Σ b ꞉ B , b ∈ P) is 𝓥 small
+                           , (P , v) is-small-ϕ-closed-subset
+
+    _is-non-inc-point : (a : ⟨ L ⟩) → 𝓦  ̇
+    a is-non-inc-point = (Γ a ≤ a) holds
+     where
+      open Local-ϕ ϕ i
+
+    non-inc-points : 𝓤 ⊔ 𝓦  ̇
+    non-inc-points = Σ a ꞉ ⟨ L ⟩ , (a is-non-inc-point)
+
+    small-ϕ-closed-subsets-≃-non-inc-points : small-ϕ-closed-subsets ≃ non-inc-points
+    small-ϕ-closed-subsets-≃-non-inc-points = {!!}
        
 \end{code}
 
