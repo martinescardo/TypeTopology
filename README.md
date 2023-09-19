@@ -45,8 +45,8 @@ Please add yourself the first time you contribute.
 * Chuangjie Xu
 * Cory Knapp
 * Ettore Aldrovandi
-* Fredrik Nordvall Forsberg (ii)
-* Igor Arrieta (iii)
+* Fredrik Nordvall Forsberg
+* Igor Arrieta (ii)
 * Jon Sterling
 * Keri D'Angelo
 * Lane Biocini
@@ -66,11 +66,7 @@ Please add yourself the first time you contribute.
 they contributed to constructions, theorems and proofs via the hands
 of Martin Escardo.
 
-(ii) These authors didn't write any single line of Agda code here, but
-they contributed to constructions, theorems and proofs via the hands
-of Tom de Jong.
-
-(iii) These authors didn't write single line of Agda code here, but they
+(ii) These authors didn't write single line of Agda code here, but they
 contributed to constructions, theorems and proofs via the hands of Ayberk
 Tosun.
 
