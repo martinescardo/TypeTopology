@@ -35,20 +35,17 @@ Importations of other locale theory modules.
 
 \begin{code}
 
-open import Locales.AdjointFunctorTheoremForFrames
-open import Locales.Frame            pt fe
-open import Locales.WayBelowRelation.Definition pt fe
-open import Locales.Compactness      pt fe
-open import Locales.Complements      pt fe
-open import Locales.GaloisConnection pt fe
-open import Locales.InitialFrame     pt fe
-open import Locales.Spectrality.SpectralLocale pt fe
-open import Locales.ZeroDimensionality pt fe sr
-open import Locales.Stone              pt fe sr
-open import Locales.SmallBasis         pt fe sr
-open import Locales.Clopen             pt fe sr
-open import Locales.WellInside         pt fe sr
-open import Locales.ScottContinuity    pt fe sr
+open import Locales.Frame                         pt fe
+open import Locales.WayBelowRelation.Definition   pt fe
+open import Locales.Compactness                   pt fe
+open import Locales.Complements                   pt fe
+open import Locales.GaloisConnection              pt fe
+open import Locales.InitialFrame                  pt fe
+open import Locales.Spectrality.SpectralLocale    pt fe
+open import Locales.SmallBasis                    pt fe sr
+open import Locales.Clopen                        pt fe sr
+open import Locales.WellInside                    pt fe sr
+open import Locales.ScottContinuity               pt fe sr
 
 open Locale
 
@@ -225,37 +222,5 @@ compacts-are-clopen-in-regular-frames : (X : Locale 𝓤 𝓥 𝓦)
                                           is-compact-open X U ⇒ is-clopen (𝒪 X) U) holds
 compacts-are-clopen-in-regular-frames X r U =
  well-inside-itself-implies-clopen X U ∘ ≪-implies-⋜-in-regular-frames (𝒪 X) r U U
-
-\end{code}
-
-\begin{code}
-
-zero-dimensional-locales-are-regular : (F : Frame 𝓤 𝓥 𝓦)
-                                     → is-zero-dimensional F holds
-                                     → is-regular F holds
-zero-dimensional-locales-are-regular {𝓦 = 𝓦} F =
- ∥∥-rec (holds-is-prop (is-regular F)) γ
-  where
-   open Joins (λ x y → x ≤[ poset-of F ] y)
-
-   γ : zero-dimensionalᴰ F → is-regular F holds
-   γ zd@(ℬ , β , ξ) = ∣ ℬ , δ ∣
-    where
-     δ : Π U ꞉ ⟨ F ⟩ ,
-          Σ J ꞉ Fam 𝓦 (index ℬ) ,
-             (U is-lub-of (fmap-syntax (_[_] ℬ) J)) holds
-           × (Π i ꞉ index J , (ℬ [ J [ i ] ] ⋜[ F ] U) holds)
-     δ U = 𝒥 , c , ε
-      where
-       𝒥 = cover-index-zd F zd U
-
-       c : (U is-lub-of ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆) holds
-       c = basis-zd-covers-do-cover F zd U
-
-       ε : Π i ꞉ index 𝒥 , (ℬ [ 𝒥 [ i ] ] ⋜[ F ] U) holds
-       ε i = ↑↑-is-upwards-closed F ∣ ξ (𝒥 [ i ]) ∣ (pr₁ c i)
-        where
-         η : ((ℬ [ 𝒥 [ i ] ]) ≤[ poset-of F ] (ℬ [ 𝒥 [ i ] ])) holds
-         η = ≤-is-reflexive (poset-of F) (ℬ [ 𝒥 [ i ] ])
 
 \end{code}
