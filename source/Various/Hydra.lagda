@@ -1,15 +1,15 @@
-Alice Laroche, the 18th of September 2023
-Using ideas and notations from Ayberk Tosun
+Alice Laroche, the 18th of September 2023,
+using ideas and notations from Ayberk Tosun.
 
-This file is a formalisation of Kirby-Paris hydras game.
-We show that every battle eventually end, and use this fact to compute the first
-terms of Hydra(n)
+This file is a formalisation of Kirby-Paris Hydra game.  We show that
+every battle eventually ends, and use this fact to compute the first
+terms of Hydra(n).
 
 [1] https://en.wikipedia.org/wiki/Hydra_game
 
-[2] Kirby, Laurie; Paris, Jeff. Bull. Accessible independence results for Peano arithmetic.
-London Math. Soc, 14 (1982), 285-293.
-http://logic.amu.edu.pl/images/3/3c/Kirbyparis.pdf
+[2] Kirby, Laurie; Paris, Jeff. Bull. Accessible independence results
+    for Peano arithmetic.  London Math. Soc, 14 (1982), 285-293.
+    http://logic.amu.edu.pl/images/3/3c/Kirbyparis.pdf
 
 \begin{code}
 
@@ -25,7 +25,7 @@ open import Ordinals.Notions
 \end{code}
 
 The type of Hydra is defined inductively: It is a list of subhydras
-where empty list represent heads
+where empty list represent heads.
 
 \begin{code}
 
@@ -45,9 +45,9 @@ defeated = Node []
 
 \end{code}
 
-We define the type of head's locations using two inductive type.
-This is to know if the head is a child or a grandchild, to help implementing
-hydra regeneration mechanism
+We define the type of head's locations using two inductive type.  This
+is to know if the head is a child or a grandchild, to help
+implementing hydra regeneration mechanism.
 
 \begin{code}
 
@@ -71,7 +71,7 @@ HeadLocation (Node hs) = HeadLocation₀ hs + HeadLocation₁ hs
 \end{code}
 
 Similarly, we define two cutting functions, one for cutting child head
-and for cutting a grand-child head and regrowing subheads
+and for cutting a grand-child head and regrowing subheads.
 
 \begin{code}
 
@@ -80,7 +80,7 @@ cons-mult x 0 xs = xs
 cons-mult x (succ n) xs = x ∷ (cons-mult x n xs)
 
 cut₀ : (hs : List Hydra) → HeadLocation₀ hs → List Hydra
-cut₀ (h ∷ hs) (here)    = hs 
+cut₀ (h ∷ hs) (here)    = hs
 cut₀ (h ∷ hs) (next l)  = h ∷ (cut₀ hs l)
 
 cut₁ : ℕ → (hs : List Hydra) → HeadLocation₁ hs → List Hydra
@@ -94,8 +94,8 @@ cut n (Node hs) (inr l) = Node (cut₁ n hs l)
 
 \end{code}
 
-To prove that the process of cutting hydra's heads always end, we define
-a relation between hydras and prove it's well founded.
+To prove that the process of cutting hydra's heads always end, we
+define a relation between hydras and prove it's well founded.
 
 \begin{code}
 
