@@ -574,18 +574,17 @@ will call 'local'. This monotone operator will have a least-fixed point when �
                                                              (i : ϕ is-local)
                                                              where
    
-    _is-small-ϕ-closed-subset : Σ P ꞉ 𝓟 {𝓤 ⊔ 𝓥} B , (Σ b ꞉ B , b ∈ P) is 𝓥 small → 𝓤 ⊔ (𝓥 ⁺)  ̇
-    (P , v) is-small-ϕ-closed-subset = ((U : 𝓟 {𝓥} B)
-                                      → (U ⊆ P)
-                                      → ((b : B) → (b ≤ᴮ (⋁ ((Σ b ꞉ B , b ∈ U) , q ∘ pr₁))) →  b ∈ P))
-                                     → ((a : ⟨ L ⟩)
-                                      → (b : B)
-                                      → (ϕ (a , b) holds)
-                                      → ((b' : B) → (b' ≤ᴮ a → b' ∈ P)) → b ∈ P)
+    _is-small-ϕ-closed-subset : (P : 𝓟 {𝓥} B) → 𝓤 ⊔ (𝓥 ⁺)  ̇
+    P is-small-ϕ-closed-subset = ((U : 𝓟 {𝓥} B)
+                                → (U ⊆ P)
+                                → ((b : B) → (b ≤ᴮ (⋁ ((Σ b ꞉ B , b ∈ U) , q ∘ pr₁))) →  b ∈ P))
+                               → ((a : ⟨ L ⟩)
+                                → (b : B)
+                                → (ϕ (a , b) holds)
+                                → ((b' : B) → (b' ≤ᴮ a → b' ∈ P)) → b ∈ P)
 
-    small-ϕ-closed-subsets : (𝓤 ⁺) ⊔ (𝓥 ⁺)  ̇
-    small-ϕ-closed-subsets =  Σ (P , v) ꞉ Σ P ꞉ 𝓟 {𝓤 ⊔ 𝓥} B , (Σ b ꞉ B , b ∈ P) is 𝓥 small
-                           , (P , v) is-small-ϕ-closed-subset
+    small-ϕ-closed-subsets : 𝓤 ⊔ (𝓥 ⁺)  ̇
+    small-ϕ-closed-subsets =  Σ P ꞉ 𝓟 {𝓥} B , P is-small-ϕ-closed-subset
 
     _is-non-inc-point : (a : ⟨ L ⟩) → 𝓦  ̇
     a is-non-inc-point = (Γ a ≤ a) holds
