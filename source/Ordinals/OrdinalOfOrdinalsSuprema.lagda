@@ -29,7 +29,7 @@ notably doesn't use set quotients.
 {-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
 
 
-open import UF.Quotient
+open import Quotient.Type
 open import UF.Univalence
 
 module Ordinals.OrdinalOfOrdinalsSuprema
@@ -43,6 +43,8 @@ open import Ordinals.Notions hiding (is-prop-valued)
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.Type
 open import Ordinals.Underlying
+open import Quotient.GivesPropTrunc
+open import Quotient.GivesSetReplacement
 open import UF.Base hiding (_≈_)
 open import UF.Equiv
 open import UF.FunExt
@@ -106,11 +108,11 @@ module construction-using-quotient
         (α : I → Ordinal 𝓤)
        where
 
- open set-quotients-exist sq
+ open general-set-quotients-exist sq
 
  private
   pt : propositional-truncations-exist
-  pt = propositional-truncations-from-set-quotients fe'
+  pt = propositional-truncations-from-set-quotients sq fe'
 
  open extending-relations-to-quotient fe' pe'
  open PropositionalTruncation pt
@@ -589,7 +591,7 @@ We now formalize an alternative construction due to Martín Escardó that doesn'
 use set quotients, but instead relies on Set Replacement (as defined and
 explained in UF.Size.lagda) to obtain a small ordinal at the end.
 
-(As proved in UF.Quotient.lagda and UF-Quotient-Replacement.lagda, Set
+(As proved in Quotient.Type.lagda and UF-Quotient-Replacement.lagda, Set
 Replacement is equivalent to having small set quotients.)
 
 \begin{code}
@@ -1002,7 +1004,7 @@ module _ (pt : propositional-truncations-exist) where
 
 \end{code}
 
-As proved in UF.Quotient.lagda and UF-Quotient-Replacement.lagda, Set
+As proved in Quotient.Type.lagda and UF-Quotient-Replacement.lagda, Set
 Replacement is equivalent to having small set quotients, so it follows
 immediately that (just as above) Ordinal 𝓤 has small suprema if we assume the
 existence of (small) set quotients.
@@ -1014,11 +1016,11 @@ ordinal-of-ordinals-has-small-suprema'' :
 ordinal-of-ordinals-has-small-suprema'' sq =
  ordinal-of-ordinals-has-small-suprema' pt R
   where
-   open set-quotients-exist sq
+   open general-set-quotients-exist sq
    pt : propositional-truncations-exist
-   pt = propositional-truncations-from-set-quotients fe'
+   pt = propositional-truncations-from-set-quotients sq fe'
    R : Set-Replacement pt
-   R = set-replacement-from-set-quotients sq pt
+   R = set-replacement-from-set-quotients-and-prop-trunc sq pt
 
 \end{code}
 

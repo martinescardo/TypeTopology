@@ -8,6 +8,7 @@ Based on `ayberkt/formal-topology-in-UF`.
 
 open import MLTT.List hiding ([_])
 open import MLTT.Pi
+open import UF.Size
 open import MLTT.Spartan
 open import Slice.Family
 open import UF.Base
@@ -25,17 +26,20 @@ open import UF.Univalence
 module Locales.PatchLocale
         (pt : propositional-truncations-exist)
         (fe : Fun-Ext)
+        (sr : Set-Replacement pt)
        where
 
 open import UF.Subsingletons
 open import UF.Logic
 open import UF.Equiv using (_≃_; logically-equivalent-props-give-is-equiv)
-open import Locales.Frame pt fe hiding (is-directed)
+open import Locales.Frame pt fe
 
 open AllCombinators pt fe
 open PropositionalTruncation pt
 open import Locales.Nucleus pt fe
-open import Locales.CompactRegular pt fe
+open import Locales.SmallBasis pt fe sr
+open import Locales.Compactness pt fe
+open import Locales.Spectrality.SpectralLocale pt fe
 
 \end{code}
 
@@ -45,7 +49,7 @@ We fix a locale `X` for the remainder of this module.
 
 open Locale
 
-module PatchConstruction (X : Locale 𝓤 𝓥 𝓦) (σ : is-spectral (𝒪 X) holds) where
+module PatchConstruction (X : Locale 𝓤 𝓥 𝓦) (σ : is-spectral X holds) where
 
  _≤_ : ⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩ → Ω 𝓥
  U ≤ V = U ≤[ poset-of (𝒪 X) ] V
@@ -552,7 +556,7 @@ The definition of the join:
         (^**-functorial K₁ is js U)
         (⋁[ 𝒪 X ]-upper _ (is ++ js))
 
-      δ : is-directed (poset-of (𝒪 X)) ⁅ pr₁ α U ∣ α ε K₁ ^* ⁆ holds
+      δ : is-directed (𝒪 X) ⁅ pr₁ α U ∣ α ε K₁ ^* ⁆ holds
       δ = (^*-inhabited K₁) , γ
            where
             γ : _
@@ -891,16 +895,16 @@ when proving distributivity.
 
 \begin{code}
 
-module SmallPatchConstruction (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ (𝒪 X)) where
+module SmallPatchConstruction (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ X) where
 
  ℬ : Fam 𝓦 ⟨ 𝒪 X ⟩
- ℬ = basisₛ (𝒪 X) σᴰ
+ ℬ = basisₛ X σᴰ
 
- ℬₖ : Fam 𝓦 (Σ C ꞉ ⟨ 𝒪 X ⟩ , is-compact-open (𝒪 X) C holds)
+ ℬₖ : Fam 𝓦 (Σ C ꞉ ⟨ 𝒪 X ⟩ , is-compact-open X C holds)
  ℬₖ = index ℬ , λ i → ℬ [ i ] , pr₁ (pr₂ (pr₂ σᴰ)) i
 
- ℬ-is-basis : is-basis-for (𝒪 X) ℬ
- ℬ-is-basis = pr₁ (pr₁ (pr₂ σᴰ))
+ ℬ-is-basis : basis-forᴰ (𝒪 X) ℬ
+ ℬ-is-basis = basisₛ-is-basis X σᴰ
 
  cover : (U : ⟨ 𝒪 X ⟩) → Fam 𝓦 ⟨ 𝒪 X ⟩
  cover U =
@@ -909,11 +913,15 @@ module SmallPatchConstruction (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ (
   in
    ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆
 
- covers-are-directed : (U : ⟨ 𝒪 X ⟩)
-                     → is-directed (poset-of (𝒪 X)) (cover U) holds
- covers-are-directed = pr₂ (pr₁ (pr₂ σᴰ))
+ covers-are-directed′ : (U : ⟨ 𝒪 X ⟩)
+                     → is-directed (𝒪 X) (cover U) holds
+ covers-are-directed′ = basisₛ-covers-are-directed X σᴰ
 
- open PatchConstruction X ∣ σᴰ ∣ renaming (Perfect-Nucleus to Perfect-Nucleus-on-X)
+ X-is-spectral : is-spectral X holds
+ X-is-spectral = spectralᴰ-gives-spectrality X σᴰ
+
+ open PatchConstruction X X-is-spectral renaming (Perfect-Nucleus
+                                                   to Perfect-Nucleus-on-X)
 
  _≼ᵏ_ : Perfect-Nucleus-on-X → Perfect-Nucleus-on-X → Ω (𝓥 ⊔ 𝓦)
  _≼ᵏ_ (j , ζⱼ) (k , ζₖ) =
@@ -944,10 +952,10 @@ module SmallPatchConstruction (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ (
     open PosetReasoning (poset-of (𝒪 X))
 
     𝒥 : Fam 𝓦 (index ℬ)
-    𝒥 = covering-index-family (𝒪 X) ℬ (pr₁ (pr₁ (pr₂ σᴰ))) U
+    𝒥 = cover-indexₛ X σᴰ U
 
-    δ : is-directed (poset-of (𝒪 X)) ⁅ ℬ [ i ] ∣ i ε 𝒥 ⁆ holds
-    δ = covers-are-directed U
+    δ : is-directed (𝒪 X) ⁅ ℬ [ i ] ∣ i ε 𝒥 ⁆ holds
+    δ = covers-are-directed′ U
 
     i   = ap j (covers (𝒪 X) ℬ ℬ-is-basis U)
     ii  = scott-continuous-join-eq (𝒪 X) (𝒪 X) j ζⱼ ⁅ ℬ [ i ] ∣ i ε 𝒥 ⁆ δ
@@ -1036,6 +1044,7 @@ module SmallPatchConstruction (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ (
                      , ⋁ₙ-is-joinₖ
                      , λ { (𝒿 , 𝒦) → distributivityₚ 𝒿 𝒦 }
                      }
+
 
  𝟎-is-id : 𝟎[ 𝒪 SmallPatch ] $_ ∼ id
  𝟎-is-id U = ≤-is-antisymmetric (poset-of (𝒪 X)) † ‡

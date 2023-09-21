@@ -113,6 +113,9 @@ module JT-definitions
  JT : Type → Type
  JT = functor 𝕁𝕋
 
+ KT : Type → Type
+ KT X = (X → T R) → R
+
  ηᴶᵀ : {X : Type} → X → JT X
  ηᴶᵀ = η 𝕁𝕋
 
@@ -128,7 +131,7 @@ module JT-definitions
        → JT (Σ x ꞉ X , Y x)
  _⊗ᴶᵀ_ = _⊗_ 𝕁𝕋
 
- α-overlineᵀ : {X : Type} → JT X → (X → T R) → R
+ α-overlineᵀ : {X : Type} → JT X → KT X
  α-overlineᵀ ε = λ p → α (extᵀ p (ε p))
 
  _α-attainsᵀ_ : {X : Type} → JT X → K X → Type

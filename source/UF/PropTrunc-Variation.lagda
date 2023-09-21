@@ -11,7 +11,7 @@ For more comments and explanations, see the original files.
 
 open import MLTT.Spartan
 
-module UF.PropTrunc-F (F : Universe → Universe) where
+module UF.PropTrunc-Variation (F : Universe → Universe) where
 
 open import MLTT.Plus-Properties
 open import UF.Base

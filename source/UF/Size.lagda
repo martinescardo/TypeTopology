@@ -44,8 +44,7 @@ open import UF.PropTrunc
 open import UF.Retracts
 open import UF.Section-Embedding
 open import UF.Sets
-open import UF.Sets
-open import UF.Sets
+open import UF.Sets-Properties
 open import UF.SubtypeClassifier
 open import UF.SubtypeClassifier-Properties
 open import UF.Subsingletons
@@ -862,6 +861,10 @@ equivs-have-any-size : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
 equivs-have-any-size {𝓤} {𝓥} {𝓦} {X} {Y} f e y =
  singletons-have-any-size (equivs-are-vv-equivs f e y)
 
+equivs-have-any-size' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (𝕗 : X ≃ Y)
+                     → ⌜ 𝕗 ⌝ is 𝓦 small-map
+equivs-have-any-size' (f , e) = equivs-have-any-size f e
+
 \end{code}
 
 The following notion of local smallness is due to Egbert Rijke, in his
@@ -990,11 +993,11 @@ different in two ways:
 [Rijke2017] shows that the replacement of [Bezem+2022] is provable in the
 presence of a univalent universes 𝓤 closed under pushouts.
 
-In UF.Quotient.lagda, we prove that Set Replacement is provable if we assume
+In Quotient.Type.lagda, we prove that Set Replacement is provable if we assume
 that for every X : 𝓤 and 𝓥-valued equivalence relation ≈, the set quotient X / ≈
 exists in 𝓤 ⊔ 𝓥.
 
-In UF.Quotient.lagda we prove the converse using a specific construction of
+In Quotient.Type.lagda we prove the converse using a specific construction of
 quotients, similar to [Corollary 5.1, Rijke2017].
 
 Thus, Set Replacement is equivalent to having set quotients in 𝓤 ⊔ 𝓥 for every

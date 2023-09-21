@@ -20,24 +20,20 @@ Torsors are in their own file Torsos.lagda
 
 {-# OPTIONS --safe --without-K --exact-split #-}
 
+open import Groups.Type renaming (_≅_ to _≣_)
 open import MLTT.Spartan
 open import UF.Base hiding (_≈_)
-open import UF.Classifiers
 open import UF.Embeddings
 open import UF.Equiv
 open import UF.Equiv-FunExt
-open import UF.EquivalenceExamples
 open import UF.FunExt
-open import UF.Powerset
-open import UF.Retracts
 open import UF.Sets
+open import UF.Sets-Properties
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.Subsingletons-Properties
 open import UF.UA-FunExt
 open import UF.Univalence
-
-open import Groups.Type renaming (_≅_ to _≣_)
 
 module Groups.GroupActions where
 

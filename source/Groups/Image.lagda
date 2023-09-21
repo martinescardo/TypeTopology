@@ -14,12 +14,9 @@ open import Groups.Type
 open import MLTT.Spartan
 open import UF.Base
 open import UF.Embeddings
-open import UF.Equiv
-open import UF.EquivalenceExamples
 open import UF.PropTrunc
-open import UF.Retracts
 open import UF.Sets
-open import UF.Subsingletons
+open import UF.Sets-Properties
 open import UF.Subsingletons-Properties
 
 \end{code}
@@ -61,7 +58,7 @@ module _ (X : Group 𝓤) (Y : Group 𝓥) (f : ⟨ X ⟩ → ⟨ Y ⟩) (isf : 
            ∣ ((x₁ ·⟨ X ⟩ x₂) , ((isf {x₁} {x₂} ∙ fact Y (f x₁) y₁ (f x₂) y₂ u₁ u₂ ) ) )∣
 
          is-set-im : is-set Im
-         is-set-im = Σ-is-set (group-is-set Y) (λ _ → props-are-sets ∥∥-is-prop)
+         is-set-im = Σ-is-set (groups-are-sets Y) (λ _ → props-are-sets ∥∥-is-prop)
 
          assoc-im : associative group-structure-im
          assoc-im (y₀ , p₀) (y₁ , p₁) (y₂ , p₂) = to-Σ-＝ ( (assoc Y y₀ y₁ y₂) , ∥∥-is-prop _ _ )
@@ -114,7 +111,7 @@ it is a surjection.
      group-image-inj-is-embedding = lc-maps-into-sets-are-embeddings
                                     group-image-inj
                                     group-image-inj-is-lc
-                                    (group-is-set Y)
+                                    (groups-are-sets Y)
 
      group-image-inj-is-embedding₁ : is-embedding group-image-inj
      group-image-inj-is-embedding₁ = pr₁-is-embedding (λ y → ∃-is-prop)

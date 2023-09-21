@@ -38,6 +38,7 @@ open import UF.Base
 open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.Sets
+open import UF.Sets-Properties
 open import UF.Univalence
 open import UF.Yoneda
 

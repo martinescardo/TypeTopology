@@ -8,7 +8,8 @@ at the place of contribution.
 
 An [html rendering of the Agda
 code](http://www.cs.bham.ac.uk/~mhe/TypeTopology/index.html) is hosted at
-[Martin Escardo](https://www.cs.bham.ac.uk/~mhe/index.html)'s institutional web page.
+[Martin Escardo](https://www.cs.bham.ac.uk/~mhe/index.html)'s institutional web
+page.
 
 ## How to cite
 
@@ -23,15 +24,14 @@ You can use the following BibTeX entry to cite `TypeTopology`:
 }
 ```
 
-If you are citing only your own files, then create a different bibtex file
-with only your name as author.
+If you are citing only your own files, then create a different bibtex file with
+only your name as author.
 
 ## Root of the development
 
  * [source/index.lagda](source/index.lagda) (only `--safe` modules).
-
- * [source/AllModulesIndex.lagda](source/AllModulesIndex.lagda) (including "unsafe" ones).
-
+ * [source/AllModulesIndex.lagda](source/AllModulesIndex.lagda) (including
+   "unsafe" ones).
  * Each subdirectory in [source/](source/) has its own index file.
 
 ## Current contributors in alphabetical order of first name
@@ -45,18 +45,19 @@ Please add yourself the first time you contribute.
 * Chuangjie Xu
 * Cory Knapp
 * Ettore Aldrovandi
-* Fredrik Nordvall Forsberg (ii)
-* Igor Arrieta (iii)
+* Fredrik Nordvall Forsberg
+* Igor Arrieta (ii)
 * Jon Sterling
 * Keri D'Angelo
-* Marc Bezem (i)
+* Lane Biocini
+* Marc Bezem
 * Martin Escardo
 * Nicolai Kraus
 * Ohad Kammar
 * Paul Levy (i)
 * Paulo Oliva
-* Peter Dybjer (i)
-* Thierry Coquand (i)
+* Peter Dybjer
+* Thierry Coquand
 * Todd Waugh Ambridge
 * Tom de Jong
 * Vincent Rahli
@@ -65,12 +66,9 @@ Please add yourself the first time you contribute.
 they contributed to constructions, theorems and proofs via the hands
 of Martin Escardo.
 
-(ii) These authors didn't write any single line of Agda code here, but
-they contributed to constructions, theorems and proofs via the hands
-of Tom de Jong.
-
-(iii) These authors didn't write single line of Agda code here, but they
-contributed to constructions, theorems and proofs via the hands of Ayberk Tosun.
+(ii) These authors didn't write single line of Agda code here, but they
+contributed to constructions, theorems and proofs via the hands of Ayberk
+Tosun.
 
 ## Publications resulting from [`TypeTopology`]()
 
@@ -97,12 +95,10 @@ contributed to constructions, theorems and proofs via the hands of Ayberk Tosun.
 
    https://doi.org/10.1007/978-3-642-38946-7_14
 
-1. Martín H. Escardó. *Constructive decidability of classical
-   continuity.*  [Mathematical Structures in Computer
-   Science](https://www.cambridge.org/core/journals/mathematical-structures-in-computer-science),
-   Volume 25 , Special Issue 7: Computing with Infinite Data:
-   Topological and Logical Foundations Part 1 , October 2015 ,
-   pp. 1578 - 1589 DOI:
+1. Martín H. Escardó. *Constructive decidability of classical continuity.*
+   [Mathematical Structures in Computer Science][MSCS], Volume 25, Special
+   Issue 7: Computing with Infinite Data: Topological and Logical Foundations
+   Part 1, October 2015, pp. 1578 - 1589 DOI:
 
    https://doi.org/10.1017/S096012951300042X
 
@@ -120,17 +116,18 @@ contributed to constructions, theorems and proofs via the hands of Ayberk Tosun.
 
    https://doi.org/10.1016/j.apal.2016.04.010
 
-1. Martín H. Escardó and Cory Knapp. *Partial elements and recursion
-   via dominances in univalent type theory.* [Leibniz International
-   Proceedings in Informatics
-   (LIPIcs)](https://www.dagstuhl.de/en/publishing/series/details/LIPIcs), Proceedings of [CSL 2017](https://www.math-stockholm.se/konferenser-och-akti/logic-in-stockholm-2/26th-eacsl-annual-co/computer-science-logic-2017-august-20-24-1.717663).
+1. Martín H. Escardó and Cory Knapp. *Partial elements and recursion via
+   dominances in univalent type theory.* [Leibniz International Proceedings in
+   Informatics
+   (LIPIcs)][LIPICS],
+   Proceedings of [CSL
+   2017](https://www.math-stockholm.se/konferenser-och-akti/logic-in-stockholm-2/26th-eacsl-annual-co/computer-science-logic-2017-august-20-24-1.717663).
 
    https://doi.org/10.4230/LIPIcs.CSL.2017.21
 
-1. Nicolai Kraus, Martín H. Escardó, T. Coquand, T. Altenkirch.
-   *Notions of Anonymous Existence in Martin-Löf Type Theory.*  [Logical
-   Methods in Computer Science](https://lmcs.episciences.org/), March
-   24, 2017, Volume 13, Issue 1.
+1. Nicolai Kraus, Martín H. Escardó, T. Coquand, T. Altenkirch. *Notions of
+   Anonymous Existence in Martin-Löf Type Theory.*  [Logical Methods in
+   Computer Science][LMCS], March 24, 2017, Volume 13, Issue 1.
 
    https://doi.org/10.23638/LMCS-13(1:15)2017
 
@@ -189,9 +186,12 @@ contributed to constructions, theorems and proofs via the hands of Ayberk Tosun.
 
 1. Tom de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg and Chuangjie
    Xu. *Set-Theoretic and Type-Theoretic Ordinals Coincide.*
-   To appear at [LICS 2023][LICS23]. June 2023.
+   [Logic in Computer Science (LICS)](https://dl.acm.org/conference/lics),
+   Proceedings of [LICS 2023][LICS23]. June 2023.
 
-   https://arxiv.org/abs/2301.10696
+   https://doi.org/10.1109/LICS56636.2023.10175762
+
+   Publicly available at https://arxiv.org/abs/2301.10696.
 
 1. Tom de Jong and Martín H. Escardó. *On Small Types in Univalent
    Foundations.* [Logical Methods in Computer
@@ -216,3 +216,6 @@ contributed to constructions, theorems and proofs via the hands of Ayberk Tosun.
 [LICS21]: https://easyconferences.eu/lics2021/
 [LICS23]: https://lics.siglog.org/lics23/
 [MFPS38]: https://www.cs.cornell.edu/mfps-2022/
+[LMCS]: https://lmcs.episciences.org/
+[MSCS]: https://www.cambridge.org/core/journals/mathematical-structures-in-computer-science
+[LIPICS]: https://www.dagstuhl.de/en/publishing/series/details/LIPIcs

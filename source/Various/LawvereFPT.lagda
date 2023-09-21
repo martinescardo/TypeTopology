@@ -15,7 +15,7 @@ extensions of MLTT, or hypotheses, such as propositional truncation.
 Many other things have been added since the above abstract was
 written.
 
-See also the file Various.CantorTheoremForSurjections by Jon Sterling.
+See also the file Various.CantorTheoremForEmbeddings by Jon Sterling.
 
 \begin{code}
 
@@ -29,12 +29,11 @@ open import MLTT.Two-Properties
 open import Naturals.Properties
 
 open import UF.Base
-open import UF.Embeddings
 open import UF.Equiv
 open import UF.FunExt
 open import UF.Retracts
 open import UF.Sets
-open import UF.Size
+open import UF.Sets-Properties
 open import UF.SubtypeClassifier
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
@@ -176,9 +175,6 @@ As a simple application, it follows that negation doesn't have fixed points:
 
  \begin{code}
 
- open import UF.Subsingletons
- open import UF.Subsingletons-FunExt
-
  not-no-fp : (fe : funext 𝓤 𝓤₀) → ¬ (Σ P ꞉ Ω 𝓤 , P ＝ not fe P)
  not-no-fp {𝓤} fe (P , p) = ¬-no-fp (P holds , q)
   where
@@ -292,8 +288,6 @@ module surjection-version (pt : propositional-truncations-exist) where
  (ℕ → ℕ) are uncountable:
 
  \begin{code}
-
- open import MLTT.Two
 
  cantor-uncountable : ¬ (Σ φ ꞉ (ℕ → (ℕ → 𝟚)), is-surjection φ)
  cantor-uncountable (φ , s) = γ
@@ -422,7 +416,6 @@ A variation, replacing discreteness by set-hood, at the cost of
 module Blechschmidt' (pt : propositional-truncations-exist) where
 
  open PropositionalTruncation pt
- open import UF.DiscreteAndSeparated
  open import UF.ImageAndSurjection pt
 
  Π-projection-has-section : funext 𝓥 ((𝓤 ⊔ 𝓦)⁺)

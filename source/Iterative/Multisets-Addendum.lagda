@@ -3,7 +3,7 @@ Martin Escardo and Tom de Jong, July 2023.
 Some constructions with iterative multisets.
 
  * The universe is a retract of the type 𝕄 of iterative multisets.
- * 𝕄 is algebraicly injective.
+ * 𝕄 is algebraically injective.
 
 
 \begin{code}
@@ -51,7 +51,8 @@ open import InjectiveTypes.Blackboard fe'
 
 \end{code}
 
-The universe 𝓤 is embedded as a retract of 𝕄.
+The universe 𝓤 is embedded as a retract of 𝕄. This seems to be a new
+observation.
 
 \begin{code}
 
@@ -86,13 +87,19 @@ The universe 𝓤 is embedded as a retract of 𝕄.
 𝓤-is-retract-of-𝕄 : retract (𝓤 ̇ ) of 𝕄
 𝓤-is-retract-of-𝕄 = 𝕄-root , 𝓤-to-𝕄 , 𝓤-to-𝕄-is-section
 
+\end{code}
+
+Although a section is not an embedding in general, in this case it is.
+
+\begin{code}
+
 𝓤-to-𝕄-is-embedding : is-embedding 𝓤-to-𝕄
 𝓤-to-𝕄-is-embedding M@(ssup Y φ) = II
  where
-  I = fiber 𝓤-to-𝕄 M ≃⟨ ≃-refl _ ⟩
-      (Σ X ꞉ 𝓤 ̇ , ssup X (λ x → 𝟘ᴹ) ＝ (ssup Y φ))                     ≃⟨ I₀ ⟩
-      (Σ X ꞉ 𝓤 ̇ , Σ p ꞉ X ＝ Y , (λ x → 𝟘ᴹ) ＝ φ ∘ Idtofun p)          ≃⟨ I₁ ⟩
-      (Σ (X , p) ꞉ (Σ X ꞉ 𝓤 ̇ , X ＝ Y) , (λ x → 𝟘ᴹ) ＝ φ ∘ Idtofun p)  ■
+  I = fiber 𝓤-to-𝕄 M                                                  ≃⟨ ≃-refl _ ⟩
+      (Σ X ꞉ 𝓤 ̇ , ssup X (λ x → 𝟘ᴹ) ＝ (ssup Y φ))                    ≃⟨ I₀ ⟩
+      (Σ X ꞉ 𝓤 ̇ , Σ p ꞉ X ＝ Y , (λ x → 𝟘ᴹ) ＝ φ ∘ Idtofun p)         ≃⟨ I₁ ⟩
+      (Σ (X , p) ꞉ (Σ X ꞉ 𝓤 ̇ , X ＝ Y) , (λ x → 𝟘ᴹ) ＝ φ ∘ Idtofun p) ■
    where
     I₀ = Σ-cong (λ X → 𝕄-＝)
     I₁ = ≃-sym Σ-assoc
@@ -105,7 +112,8 @@ The universe 𝓤 is embedded as a retract of 𝕄.
 
 \end{code}
 
-The type of multisets is algebraicly injective.
+The type of multisets is algebraically injective, which is a new
+result.
 
 \begin{code}
 
@@ -160,7 +168,7 @@ prop-indexed-sumᴹ {X} {A} i x₀ = V
 \end{code}
 
 It follows that 𝕄 has no non-trivial decidable properties unless weak
-excluded middle holds.
+excluded middle holds, which also seems to be a new result.
 
 \begin{code}
 

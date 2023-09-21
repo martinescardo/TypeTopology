@@ -1,6 +1,6 @@
 Martin Escardo and Tom de Jong, October 2021
 
-Modified from UF.Large-Quotient.lagda to add the parameter F.
+Modified from Quotient.Large to add the parameter F.
 
 We use F to control the universe where propositional truncations live.
 For more comments and explanations, see the original files.
@@ -21,10 +21,10 @@ open import UF.SubtypeClassifier-Properties
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
-open import UF.PropTrunc-F
-open import UF.ImageAndSurjection-F
+open import UF.PropTrunc-Variation
+open import UF.ImageAndSurjection-Variation
 
-module UF.Quotient-F
+module Quotient.Large-Variation
         (F   : Universe → Universe)
         (pt  : propositional-truncations-exist F)
         (fe  : Fun-Ext)

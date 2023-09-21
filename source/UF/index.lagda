@@ -28,10 +28,9 @@ import UF.HiddenSwap
 import UF.IdEmbedding
 import UF.IdentitySystems
 import UF.ImageAndSurjection
-import UF.ImageAndSurjection-F
+import UF.ImageAndSurjection-Variation
 import UF.Knapp-UA
 import UF.KrausLemma
-import UF.Large-Quotient
 import UF.LeftCancellable
 import UF.Logic
 import UF.Lower-FunExt
@@ -45,10 +44,7 @@ import UF.PreSIP-Examples
 import UF.PreUnivalence
 import UF.PropIndexedPiSigma
 import UF.PropTrunc
-import UF.PropTrunc-F
-import UF.Quotient
-import UF.Quotient-F
-import UF.Quotient-Replacement
+import UF.PropTrunc-Variation
 import UF.Retracts
 import UF.Retracts-FunExt
 import UF.SIP
@@ -60,7 +56,7 @@ import UF.Sets
 import UF.Sets-Properties
 import UF.Size
 import UF.SmallnessProperties
-import UF.StructureIdentityPrinciple -- obsolete but keep
+import UF.StructureIdentityPrinciple -- Obsolete but keep. Use UF.SIP instead
 import UF.SubtypeClassifier
 import UF.SubtypeClassifier-Properties
 import UF.Subsingletons

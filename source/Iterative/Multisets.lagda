@@ -3,7 +3,7 @@ Martin Escardo & Tom de Jong, June 2023.
 Iterative multisets.
 
 See the module Iterative.index for bibliographic references regarding
-this file.
+this file. All the results of this file are in Håkon Gylterud [3].
 
 \begin{code}
 

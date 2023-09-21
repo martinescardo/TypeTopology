@@ -1,5 +1,7 @@
 \begin{code}
 
+{-# OPTIONS --safe --without-K --exact-split #-}
+
 open import UF.FunExt
 open import UF.Logic
 open import MLTT.Spartan hiding (𝟚)
@@ -16,6 +18,9 @@ open import Locales.Frame pt fe hiding (𝟚)
 open import DomainTheory.Lifting.LiftingSet pt fe
 open import DomainTheory.Basics.Pointed pt fe 𝓤
 open import Slice.Family
+
+open import UF.SubtypeClassifier
+open import UF.Subsingletons-Properties
 
 \end{code}
 

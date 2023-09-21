@@ -37,12 +37,11 @@ open import MLTT.Spartan
 open import Taboos.Decomposability ua
 open import UF.Base
 open import UF.Equiv
-open import UF.EquivalenceExamples
 open import UF.ExcludedMiddle
 open import UF.PropIndexedPiSigma
 open import UF.Retracts
 open import UF.Sets
-open import UF.Subsingletons-FunExt
+open import UF.Sets-Properties
 open import UF.SubtypeClassifier
 
 \end{code}
@@ -323,8 +322,8 @@ guess what T should be.
      where
       I = dfunext fe' (λ h → dfunext fe' (λ a → dfunext fe' (λ b →
            ap₂ (g h)
-               (inverses-are-sections (⌜ π h ⌝) ⌜ π h ⌝-is-equiv a)
-               (inverses-are-sections (⌜ π h ⌝) ⌜ π h ⌝-is-equiv b))))
+               (inverses-are-sections' (π h) a)
+               (inverses-are-sections' (π h) b))))
 
    ρΠ-has-section : has-section (ρΠ S T T-refl p A)
    ρΠ-has-section = σ , ρσ

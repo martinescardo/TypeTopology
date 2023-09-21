@@ -269,6 +269,10 @@ module _
         (𝓓 : DCPO {𝓤} {𝓣})
        where
 
+ open import Quotient.Type
+ open import Quotient.Large pt fe pe
+ open general-set-quotients-exist large-set-quotients
+
  open Ind-completion 𝓓
  open Ind-completion-poset-reflection pe 𝓓
 
@@ -324,7 +328,7 @@ module _
       (×-is-prop (Π-is-prop fe (λ _ → prop-valuedness 𝓓 x (∐-map/ τ')))
                  (Π-is-prop fe (λ _ → ≤-is-prop-valued (L x) τ')))
      lemma : (σ : str-cont) (τ' : Ind/≈) → ((L x ≤ τ') ⇔ (x ⊑⟨ 𝓓 ⟩ ∐-map/ τ'))
-     lemma σ = /-induction adj-condition-is-prop L-is-ladj'
+     lemma σ = /-induction ≋ adj-condition-is-prop L-is-ladj'
       where
        L-is-ladj' : (τ : Ind)
                   → (L x ≤ η τ) ⇔ (x ⊑⟨ 𝓓 ⟩ ∐-map/ (η τ))

@@ -13,9 +13,8 @@ open import Categories.Functor fe
 open import MLTT.Spartan
 open import UF.Base
 open import UF.Equiv
-open import UF.Equiv-FunExt
-open import UF.Retracts
 open import UF.Sets
+open import UF.Sets-Properties
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.Subsingletons-Properties

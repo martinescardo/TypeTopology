@@ -18,6 +18,7 @@ open import UF.Base
 open import UF.DiscreteAndSeparated
 open import UF.Equiv
 open import UF.Sets
+open import UF.Sets-Properties
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 

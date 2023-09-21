@@ -47,6 +47,7 @@ open import UF.EquivalenceExamples
 open import UF.Equiv-FunExt
 open import UF.Logic
 open import UF.Size
+open import UF.Sets-Properties
 open import UF.Subsingletons-FunExt
 open import UF.SubtypeClassifier
 open import UF.SubtypeClassifier-Properties

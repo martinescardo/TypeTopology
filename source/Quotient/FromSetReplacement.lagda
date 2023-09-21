@@ -1,9 +1,9 @@
-Tom de Jong, 5 April 2022, after discussion with Martín.
+Tom de Jong, 5 April 2022, after discussion with Martín Escardó.
 (Refactoring an earlier addition dated 15 March 2022.)
 
-The construction of set quotients in UF.Large-Quotients.lagda takes a type X : 𝓤
-and a 𝓥-valued equivalence relation and constructs the quotient as a type in 𝓥 ⁺
-⊔ 𝓤.
+The construction of set quotients in Quotient.Large takes a type X : 𝓤
+and a 𝓥-valued equivalence relation and constructs the quotient as a
+type in 𝓥 ⁺ ⊔ 𝓤.
 
 If we assume Set Replacement, as defined and explained in UF.Size.lagda, then we
 get a quotient in 𝓥 ⊔ 𝓤. In particular, for a 𝓤-valued equivalence relation on a
@@ -21,11 +21,12 @@ replacement assumption (again, see UF.Size.lagda for details).
 open import UF.FunExt
 open import UF.PropTrunc
 open import UF.Sets
+open import UF.Sets-Properties
 open import UF.SubtypeClassifier
 open import UF.SubtypeClassifier-Properties
 open import UF.Subsingletons
 
-module UF.Quotient-Replacement
+module Quotient.FromSetReplacement
         (pt : propositional-truncations-exist)
         (fe : Fun-Ext)
         (pe : Prop-Ext)
@@ -38,9 +39,11 @@ open import UF.Subsingletons-FunExt
 open import UF.ImageAndSurjection
 open import UF.Equiv
 
-open import UF.Large-Quotient pt fe pe
-open import UF.Quotient using (set-quotients-exist)
+open import Quotient.Large pt fe pe
+open import Quotient.Type -- using (set-quotients-exist ; is-effective ; EqRel)
 open import UF.Size
+
+open general-set-quotients-exist large-set-quotients
 
 module _
         (R : Set-Replacement pt)
@@ -56,7 +59,7 @@ module _
   resize-set-quotient = R equiv-rel (X , (≃-refl X)) γ
                           (powersets-are-sets'' fe fe pe)
    where
-    open quotient X _≈_ ≈p ≈r ≈s ≈t using (equiv-rel)
+    open large-quotient X ≋ using (equiv-rel)
     γ : (X → Ω 𝓥) is-locally 𝓤 ⊔ 𝓥 small
     γ f g = S , ≃-sym e
      where
@@ -82,7 +85,7 @@ module _
 
 We now use the above resizing to construct a quotient that strictly lives in the
 universe 𝓤 ⊔ 𝓥, yielding set quotients as defined in
-UF.Quotient.lagda.
+Quotient.Quotient.lagda.
 
 \begin{code}
 
@@ -95,7 +98,7 @@ UF.Quotient.lagda.
  η/ₛ-identifies-related-points : identifies-related-points ≋ η/ₛ
  η/ₛ-identifies-related-points e = ap ⌜ φ ⌝⁻¹ (η/-identifies-related-points ≋ e)
  /ₛ-is-set : is-set (X/ₛ≈)
- /ₛ-is-set = equiv-to-set φ (quotient-is-set ≋)
+ /ₛ-is-set = equiv-to-set φ (/-is-set ≋)
  /ₛ-induction : ∀ {𝓦} {P : X/ₛ≈ → 𝓦 ̇ }
               → ((x' : X/ₛ≈) → is-prop (P x'))
               → ((x : X) → P (η/ₛ x))
@@ -105,7 +108,7 @@ UF.Quotient.lagda.
    P' : X / ≋ → 𝓦 ̇
    P' = P ∘ ⌜ φ ⌝⁻¹
    γ : (y : X / ≋) → P' y
-   γ = /-induction' ≋ (λ y → i (⌜ φ ⌝⁻¹ y)) h
+   γ = /-induction ≋ (λ y → i (⌜ φ ⌝⁻¹ y)) h
    e : ⌜ φ ⌝⁻¹ (⌜ φ ⌝ x') ＝ x'
    e = ≃-sym-is-linv φ x'
  /ₛ-universality : {A : 𝓦 ̇ } → is-set A
@@ -113,18 +116,16 @@ UF.Quotient.lagda.
                  → identifies-related-points ≋ f
                  → ∃! f' ꞉ (X/ₛ≈ → A), f' ∘ η/ₛ ∼ f
  /ₛ-universality {𝓦} {A} i f p =
-  equiv-to-singleton (≃-sym e) (universal-property/ ≋ i f p)
+  equiv-to-singleton (≃-sym e) (/-universality ≋ i f p)
    where
-    e = (Σ f' ꞉ (X / ≋ → A)  , f' ∘ η/ ≋ ＝ f)        ≃⟨ ⦅1⦆ ⟩
-        (Σ f' ꞉ (X / ≋ → A)  , f' ∘ η/ ≋ ∼ f)        ≃⟨ ⦅2⦆ ⟩
-        (Σ f' ꞉ (X / ≋ → A)  , f' ∘ ⌜ φ ⌝ ∘ η/ₛ ∼ f) ≃⟨ ⦅3⦆ ⟩
+    e = (Σ f' ꞉ (X / ≋ → A)  , f' ∘ η/ ≋ ∼ f)        ≃⟨ ⦅1⦆ ⟩
+        (Σ f' ꞉ (X / ≋ → A)  , f' ∘ ⌜ φ ⌝ ∘ η/ₛ ∼ f) ≃⟨ ⦅2⦆ ⟩
         (Σ f' ꞉ (X/ₛ≈ → A) , f' ∘ η/ₛ ∼ f)         ■
      where
-      ⦅1⦆ = Σ-cong (λ f' → ≃-funext fe (f' ∘ η/ ≋) f)
-      ⦅2⦆ = Σ-cong
+      ⦅1⦆ = Σ-cong
             (λ f' → Π-cong fe fe (λ x → ＝-cong-l (f' (η/ ≋ x)) (f x)
                                     (ap f' ((≃-sym-is-rinv φ (η/ ≋ x)) ⁻¹))))
-      ⦅3⦆ = Σ-change-of-variable _ (_∘ ⌜ φ ⌝)
+      ⦅2⦆ = Σ-change-of-variable _ (_∘ ⌜ φ ⌝)
             (qinvs-are-equivs (_∘ ⌜ φ ⌝)
               (qinv-pre (λ _ _ → dfunext fe) ⌜ φ ⌝
                (equivs-are-qinvs ⌜ φ ⌝ (⌜⌝-is-equiv φ))))
@@ -132,7 +133,7 @@ UF.Quotient.lagda.
         open import UF.Equiv-FunExt using (qinv-pre)
 
  η/ₛ-relates-identified-points : {x y : X} → η/ₛ x ＝ η/ₛ y → x ≈ y
- η/ₛ-relates-identified-points {x} {y} eₛ = η/-relates-identified-points ≋ e
+ η/ₛ-relates-identified-points {x} {y} eₛ = large-effective-set-quotients ≋ e
   where
    note : ⌜ φ ⌝⁻¹ (η/ ≋ x) ＝ ⌜ φ ⌝⁻¹ (η/ ≋ y)
    note = eₛ
@@ -141,13 +142,19 @@ UF.Quotient.lagda.
        ⌜ φ ⌝ (⌜ φ ⌝⁻¹ (η/ ≋ y)) ＝⟨ ≃-sym-is-rinv φ (η/ ≋ y) ⟩
        η/ ≋ y                   ∎
 
-set-replacement-gives-set-quotients : Set-Replacement pt → set-quotients-exist
-set-replacement-gives-set-quotients R = record
+set-quotients-from-set-replacement : Set-Replacement pt → set-quotients-exist
+set-quotients-from-set-replacement R = record
  { _/_                          = λ X → X/ₛ≈ R
  ; η/                           = η/ₛ R
  ; η/-identifies-related-points = η/ₛ-identifies-related-points R
  ; /-is-set                     = /ₛ-is-set R
  ; /-universality               = /ₛ-universality R
  }
+
+set-replacement-gives-effective-set-quotients
+ : (sr : Set-Replacement pt)
+ → are-effective (set-quotients-from-set-replacement sr)
+set-replacement-gives-effective-set-quotients sr {𝓤} {𝓥} R {x} {y} =
+ η/ₛ-relates-identified-points sr R
 
 \end{code}
