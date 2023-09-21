@@ -30,6 +30,7 @@ open import Locales.Frame        pt fe
 open import Locales.Compactness  pt fe
 open import Slice.Family
 open import Locales.Spectrality.SpectralLocale pt fe
+open import Locales.Spectrality.BasisDirectification pt fe sr
 open import Locales.SmallBasis pt fe sr
 
 open import UF.Logic
@@ -131,12 +132,11 @@ and₂-lemma₃ (inr ⋆) y (z , p₁ , p₂) = p₂
         (𝟏-is-top (𝟎-𝔽𝕣𝕞 pe))
 
    c : closed-under-binary-meets (𝟎-𝔽𝕣𝕞 pe) ℬ𝟎↑ holds
-   c = {!directify-preserves-closure-under-∧!}
-    -- directify-preserves-closure-under-∧
-    --     (𝟎-𝔽𝕣𝕞 pe)
-    --     ℬ𝟎
-    --     ℬ𝟎-is-basis-for-𝟎
-    --     ℬ𝟎-is-closed-under-binary-meets
+   c = directify-preserves-closure-under-∧
+        (𝟎-𝔽𝕣𝕞 pe)
+        ℬ𝟎
+        ℬ𝟎-is-basis-for-𝟎
+        ℬ𝟎-is-closed-under-binary-meets
 
    γ : closed-under-finite-meets (𝟎-𝔽𝕣𝕞 pe) ℬ𝟎↑ holds
    γ = ∣ (inr ⋆ ∷ []) , t ∣ , c
