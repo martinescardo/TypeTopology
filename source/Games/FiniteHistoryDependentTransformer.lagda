@@ -56,54 +56,6 @@ open JT-definitions 𝕋 R 𝓐 fe
 
 \end{code}
 
-For some of the results proved below, we need the monad T to satisfy
-the condition extᵀ-const defined in Games.Monads, which says that the
-Kleisli extension of a constant function is itself constant. Ohad
-Kammar pointed out to us that this condition is equivalent to the
-monad being affine. A proof is included in the module Games.Monad.
-
-\begin{code}
-
-mapᵀ-path-head : {X : Type} {Xf : X → 𝑻}
-                 (a : T X) (b : (x : X) → T (Path (Xf x)))
-               → ext-const 𝕋
-               → mapᵀ path-head (a ⊗ᵀ b) ＝ a
-mapᵀ-path-head {X} {Xf} a b ext-const =
-  mapᵀ path-head (a ⊗ᵀ b)                                  ＝⟨ refl ⟩
-  extᵀ (ηᵀ ∘ path-head) (a ⊗ᵀ b)                           ＝⟨ refl ⟩
-  extᵀ g (a ⊗ᵀ b)                                          ＝⟨ refl ⟩
-  extᵀ g (extᵀ (λ x → mapᵀ (x ::_) (b x)) a)               ＝⟨ refl ⟩
-  extᵀ g (extᵀ (λ x → extᵀ (ηᵀ ∘ (x ::_)) (b x)) a)        ＝⟨ ⦅1⦆ ⟩
-  extᵀ (extᵀ g ∘ (λ x → extᵀ (ηᵀ ∘ (x ::_)) (b x))) a      ＝⟨ refl ⟩
-  extᵀ (extᵀ g ∘ (λ x → extᵀ (f x) (b x))) a               ＝⟨ refl ⟩
-  extᵀ (λ x → extᵀ g (extᵀ (f x) (b x))) a                 ＝⟨ refl ⟩
-  extᵀ (λ x → (extᵀ g ∘ extᵀ (f x)) (b x)) a               ＝⟨ ⦅2⦆ ⟩
-  extᵀ (λ x → extᵀ (extᵀ g ∘ (f x)) (b x)) a               ＝⟨ refl ⟩
-  extᵀ (λ x → extᵀ (λ xs → extᵀ g (ηᵀ (x :: xs))) (b x)) a ＝⟨ ⦅3⦆ ⟩
-  extᵀ (λ x → extᵀ (λ xs → g (x :: xs)) (b x)) a           ＝⟨ refl ⟩
-  extᵀ (λ x → extᵀ (λ _ → ηᵀ x) (b x)) a                   ＝⟨ ⦅4⦆ ⟩
-  extᵀ ηᵀ a                                                ＝⟨ extᵀ-η a ⟩
-  a                                                        ∎
- where
-  g : Path (X ∷ Xf) → T X
-  g = ηᵀ ∘ path-head
-
-  f : (x : X) → Path (Xf x) → T (Path (X ∷ Xf))
-  f x = ηᵀ ∘ (x ::_)
-
-  I : ∀ x → (extᵀ g ∘ extᵀ (f x)) (b x) ＝ extᵀ (extᵀ g ∘ (f x)) (b x)
-  I x = (assocᵀ g (f x) (b x))⁻¹
-
-  II : (x : X) (xs : Path (Xf x)) → extᵀ g (ηᵀ (x :: xs)) ＝ g (x :: xs)
-  II x xs = unitᵀ g (x :: xs)
-
-  ⦅1⦆ = (assocᵀ g (λ x → extᵀ (f x) (b x)) a)⁻¹
-  ⦅2⦆ = ap (λ - → extᵀ - a) (fext I)
-  ⦅3⦆ = ap (λ - →  extᵀ (λ x → extᵀ (- x) (b x)) a) (fext (λ x → fext (II x)))
-  ⦅4⦆ = ap (λ - → extᵀ - a) (fext (λ x → ext-const (ηᵀ x) (b x)))
-
-\end{code}
-
 The type of trees with JT structure.
 
 \begin{code}
@@ -122,60 +74,6 @@ T-strategic-path = path-sequence 𝕋
 
 \end{code}
 
-We now express the tensor _⊗ᴶᵀ_ in terms of the tensor _⊗ᵀ_ as in
-Lemma 2.3 of reference [2] above.
-
-\begin{code}
-
-module _ {X  : Type}
-         {Y  : X → Type}
-         (ε  : JT X)
-         (δ  : (x : X) → JT (Y x))
- where
-
- private
-  ν : ((Σ x ꞉ X , Y x) → T R) → (x : X) → T (Y x)
-  ν q x = δ x (λ y → q (x , y))
-
-  τ : ((Σ x ꞉ X , Y x) → T R) → T X
-  τ q = ε (λ x → extᵀ (λ y → q (x , y)) (ν q x))
-
- ⊗ᴶᵀ-in-terms-of-⊗ᵀ : (q : (Σ x ꞉ X , Y x) → T R)
-                    → (ε ⊗ᴶᵀ δ) q ＝ τ q ⊗ᵀ ν q
- ⊗ᴶᵀ-in-terms-of-⊗ᵀ q =
-    (ε ⊗ᴶᵀ δ) q                                          ＝⟨ refl ⟩
-    extᴶᵀ (λ x → extᴶᵀ (λ y _ → ηᵀ (x , y)) (δ x)) ε q   ＝⟨ ⦅1⦆ ⟩
-    extᴶᵀ Θ ε q                                          ＝⟨ refl ⟩
-    extᵀ (λ x → Θ x q) (ε (λ x → extᵀ q (Θ x q)))        ＝⟨ ⦅2⦆ ⟩
-    extᵀ (λ x → Θ x q) (τ q)                             ＝⟨ refl ⟩
-    τ q ⊗ᵀ ν q                                           ∎
-     where
-      Θ : X → JT (Σ x ꞉ X , Y x)
-      Θ x r = extᵀ (λ y → ηᵀ (x , y)) (ν r x)
-
-      I : (λ x → extᴶᵀ (λ y _ → ηᵀ (x , y)) (δ x)) ＝ Θ
-      I = fext (λ x →
-          fext (λ r → ap (λ - → extᵀ (λ y → ηᵀ (x , y)) (δ x (λ y → - (x , y))))
-                         (fext (unitᵀ r))))
-
-      ⦅1⦆ = ap (λ - → extᴶᵀ - ε q) I
-
-      II : ∀ x → extᵀ q ∘ extᵀ (λ y → ηᵀ (x , y)) ＝ extᵀ (λ y → q (x , y))
-      II x = extᵀ q ∘ extᵀ (λ y → ηᵀ (x , y))               ＝⟨ ⦅i⦆ ⟩
-             (λ x' → extᵀ (extᵀ q ∘ (λ y → ηᵀ (x , y))) x') ＝⟨ refl ⟩
-             extᵀ (λ y → ((extᵀ q) ∘ ηᵀ) (x , y))           ＝⟨ ⦅ii⦆ ⟩
-             extᵀ (λ y → q (x , y))                         ∎
-       where
-        ⦅i⦆  = fext (λ x' → (assocᵀ q (λ y → ηᵀ (x , y)) x')⁻¹)
-        ⦅ii⦆ = ap extᵀ (fext (λ y → unitᵀ q (x , y)))
-
-      III : ε (λ x → extᵀ q (extᵀ (λ y → ηᵀ (x , y)) (ν q x))) ＝ τ q
-      III = ap ε (fext (λ x → ap (λ - → - (ν q x)) (II x)))
-
-      ⦅2⦆ = ap (extᵀ (λ x → Θ x q)) III
-
-\end{code}
-
 We now generalize the notion of perfect equillibrium from [1]. The
 case 𝕋 = 𝕀𝕕, the identity monad, specializes to the original
 definition in [1].
@@ -183,9 +81,9 @@ definition in [1].
 \begin{code}
 
 is-T-pe' : {X : Type} {Xf : X → 𝑻}
-          (q : (Σ x ꞉ X , Path (Xf x)) → R)
-          (ϕ : K X)
-          (σ : T-Strategy (X ∷ Xf))  → Type
+           (q : (Σ x ꞉ X , Path (Xf x)) → R)
+           (ϕ : K X)
+           (σ : T-Strategy (X ∷ Xf))  → Type
 is-T-pe' {X} {Xf} q ϕ σ@(t :: σf)  =
 
  α-extᵀ q (T-strategic-path σ)
@@ -267,8 +165,113 @@ T-selection-strategy {X ∷ Xf} εt@(ε :: εf) q = t₀ :: σf
 
 \end{code}
 
-The following is the main lemma of this file. It is here that we use
-⊗ᴶᵀ-in-terms-of-⊗ᵀ.
+For the next technical lemma, we need the monad T to satisfy the
+condition extᵀ-const defined in Games.Monads, which says that the
+Kleisli extension of a constant function is itself constant. Ohad
+Kammar pointed out to us that this condition is equivalent to the
+monad being affine. A proof is included in the module Games.Monad.
+
+TODO. Explain the intuition of the condition extᵀ-const and
+equivalents.
+
+\begin{code}
+
+mapᵀ-path-head : {X : Type} {Xf : X → 𝑻}
+                 (a : T X) (b : (x : X) → T (Path (Xf x)))
+               → ext-const 𝕋
+               → mapᵀ path-head (a ⊗ᵀ b) ＝ a
+mapᵀ-path-head {X} {Xf} a b ext-const =
+  mapᵀ path-head (a ⊗ᵀ b)                                  ＝⟨ refl ⟩
+  extᵀ (ηᵀ ∘ path-head) (a ⊗ᵀ b)                           ＝⟨ refl ⟩
+  extᵀ g (a ⊗ᵀ b)                                          ＝⟨ refl ⟩
+  extᵀ g (extᵀ (λ x → mapᵀ (x ::_) (b x)) a)               ＝⟨ refl ⟩
+  extᵀ g (extᵀ (λ x → extᵀ (ηᵀ ∘ (x ::_)) (b x)) a)        ＝⟨ ⦅1⦆ ⟩
+  extᵀ (extᵀ g ∘ (λ x → extᵀ (ηᵀ ∘ (x ::_)) (b x))) a      ＝⟨ refl ⟩
+  extᵀ (extᵀ g ∘ (λ x → extᵀ (f x) (b x))) a               ＝⟨ refl ⟩
+  extᵀ (λ x → extᵀ g (extᵀ (f x) (b x))) a                 ＝⟨ refl ⟩
+  extᵀ (λ x → (extᵀ g ∘ extᵀ (f x)) (b x)) a               ＝⟨ ⦅2⦆ ⟩
+  extᵀ (λ x → extᵀ (extᵀ g ∘ (f x)) (b x)) a               ＝⟨ refl ⟩
+  extᵀ (λ x → extᵀ (λ xs → extᵀ g (ηᵀ (x :: xs))) (b x)) a ＝⟨ ⦅3⦆ ⟩
+  extᵀ (λ x → extᵀ (λ xs → g (x :: xs)) (b x)) a           ＝⟨ refl ⟩
+  extᵀ (λ x → extᵀ (λ _ → ηᵀ x) (b x)) a                   ＝⟨ ⦅4⦆ ⟩
+  extᵀ ηᵀ a                                                ＝⟨ extᵀ-η a ⟩
+  a                                                        ∎
+ where
+  g : Path (X ∷ Xf) → T X
+  g = ηᵀ ∘ path-head
+
+  f : (x : X) → Path (Xf x) → T (Path (X ∷ Xf))
+  f x = ηᵀ ∘ (x ::_)
+
+  I : ∀ x → (extᵀ g ∘ extᵀ (f x)) (b x) ＝ extᵀ (extᵀ g ∘ (f x)) (b x)
+  I x = (assocᵀ g (f x) (b x))⁻¹
+
+  II : (x : X) (xs : Path (Xf x)) → extᵀ g (ηᵀ (x :: xs)) ＝ g (x :: xs)
+  II x xs = unitᵀ g (x :: xs)
+
+  ⦅1⦆ = (assocᵀ g (λ x → extᵀ (f x) (b x)) a)⁻¹
+  ⦅2⦆ = ap (λ - → extᵀ - a) (fext I)
+  ⦅3⦆ = ap (λ - →  extᵀ (λ x → extᵀ (- x) (b x)) a) (fext (λ x → fext (II x)))
+  ⦅4⦆ = ap (λ - → extᵀ - a) (fext (λ x → ext-const (ηᵀ x) (b x)))
+
+\end{code}
+
+We also need the following technical lemma, which expresses the tensor
+_⊗ᴶᵀ_ in terms of the tensor _⊗ᵀ_ as in Lemma 2.3 of reference [2]
+above.
+
+\begin{code}
+
+module _ {X  : Type}
+         {Y  : X → Type}
+         (ε  : JT X)
+         (δ  : (x : X) → JT (Y x))
+ where
+
+ private
+  ν : ((Σ x ꞉ X , Y x) → T R) → (x : X) → T (Y x)
+  ν q x = δ x (λ y → q (x , y))
+
+  τ : ((Σ x ꞉ X , Y x) → T R) → T X
+  τ q = ε (λ x → extᵀ (λ y → q (x , y)) (ν q x))
+
+ ⊗ᴶᵀ-in-terms-of-⊗ᵀ : (q : (Σ x ꞉ X , Y x) → T R)
+                    → (ε ⊗ᴶᵀ δ) q ＝ τ q ⊗ᵀ ν q
+ ⊗ᴶᵀ-in-terms-of-⊗ᵀ q =
+    (ε ⊗ᴶᵀ δ) q                                          ＝⟨ refl ⟩
+    extᴶᵀ (λ x → extᴶᵀ (λ y _ → ηᵀ (x , y)) (δ x)) ε q   ＝⟨ ⦅1⦆ ⟩
+    extᴶᵀ Θ ε q                                          ＝⟨ refl ⟩
+    extᵀ (λ x → Θ x q) (ε (λ x → extᵀ q (Θ x q)))        ＝⟨ ⦅2⦆ ⟩
+    extᵀ (λ x → Θ x q) (τ q)                             ＝⟨ refl ⟩
+    τ q ⊗ᵀ ν q                                           ∎
+     where
+      Θ : X → JT (Σ x ꞉ X , Y x)
+      Θ x r = extᵀ (λ y → ηᵀ (x , y)) (ν r x)
+
+      I : (λ x → extᴶᵀ (λ y _ → ηᵀ (x , y)) (δ x)) ＝ Θ
+      I = fext (λ x →
+          fext (λ r → ap (λ - → extᵀ (λ y → ηᵀ (x , y)) (δ x (λ y → - (x , y))))
+                         (fext (unitᵀ r))))
+
+      ⦅1⦆ = ap (λ - → extᴶᵀ - ε q) I
+
+      II : ∀ x → extᵀ q ∘ extᵀ (λ y → ηᵀ (x , y)) ＝ extᵀ (λ y → q (x , y))
+      II x = extᵀ q ∘ extᵀ (λ y → ηᵀ (x , y))               ＝⟨ ⦅i⦆ ⟩
+             (λ x' → extᵀ (extᵀ q ∘ (λ y → ηᵀ (x , y))) x') ＝⟨ refl ⟩
+             extᵀ (λ y → ((extᵀ q) ∘ ηᵀ) (x , y))           ＝⟨ ⦅ii⦆ ⟩
+             extᵀ (λ y → q (x , y))                         ∎
+       where
+        ⦅i⦆  = fext (λ x' → (assocᵀ q (λ y → ηᵀ (x , y)) x')⁻¹)
+        ⦅ii⦆ = ap extᵀ (fext (λ y → unitᵀ q (x , y)))
+
+      III : ε (λ x → extᵀ q (extᵀ (λ y → ηᵀ (x , y)) (ν q x))) ＝ τ q
+      III = ap ε (fext (λ x → ap (λ - → - (ν q x)) (II x)))
+
+      ⦅2⦆ = ap (extᵀ (λ x → Θ x q)) III
+
+\end{code}
+
+The following is the main lemma of this file.
 
 Given a selection tree εt over Xt and an outcome function q, we can
 either sequence εt and apply it to q to obtain a monadic path on Xt,
