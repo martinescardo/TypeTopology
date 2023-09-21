@@ -20,18 +20,18 @@ module Locales.PatchOfOmega (pt : propositional-truncations-exist)
 
 open import Locales.Frame                          pt fe
 open import Locales.Spectrality.SpectralLocale     pt fe
-open import Locales.Spectrality.SpectralityOfOmega pt fe
+open import Locales.Spectrality.SpectralityOfOmega pt fe sr
 open import Locales.PatchLocale                    pt fe sr
 open import Locales.InitialFrame                   pt fe
-
-Ω-frm : Frame (𝓤 ⁺) 𝓤 𝓤
-Ω-frm = 𝟎-𝔽𝕣𝕞 pe
 
 \end{code}
 
 This is the terminal locale which I denote by `𝟏-loc`
 
 \begin{code}
+
+𝟏L : Locale (𝓤 ⁺) 𝓤 𝓤
+𝟏L = 𝟏-loc 𝓤 pe
 
 \end{code}
 
@@ -41,8 +41,8 @@ We know that `Ω-Frm` is spectral.
 
 open Spectrality-of-𝟎 𝓤 pe
 
-Ω-is-spectral : is-spectral 𝟏-loc holds
-Ω-is-spectral = {!𝟎-𝔽𝕣𝕞-is-spectral !}
+Ω-is-spectral :  is-spectral 𝟏L holds
+Ω-is-spectral = 𝟎-𝔽𝕣𝕞-is-spectral 𝓤 pe
 
 \end{code}
 
@@ -50,11 +50,9 @@ This means that we can easily compute the patch of `Ω`.
 
 \begin{code}
 
-open PatchConstruction 𝟏-loc {!Ω-is-spectral!} renaming (Patch to patch-Ω)
+open PatchConstruction 𝟏L Ω-is-spectral renaming (Patch to patch-Ω)
 
 patch-of-Ω : Locale (𝓤 ⁺) (𝓤 ⁺) 𝓤
 patch-of-Ω = patch-Ω
 
 \end{code}
-
-TODO: Prove that this is the frame of booleans.
