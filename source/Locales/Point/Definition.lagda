@@ -52,4 +52,7 @@ module DefnOfCPF (X : Locale 𝓤 𝓥 𝓦) where
  is-completely-prime F = Ɐ S ꞉ Fam 𝓦 ⟨ 𝒪 X ⟩ ,
                           (⋁[ 𝒪 X ] S) ∈ₚ F ⇒ (Ǝ i ꞉ index S , (S [ i ]) ∈ F)
 
+ Point : 𝓤 ⁺ ⊔ 𝓥 ⊔ 𝓦 ⁺  ̇
+ Point = Σ F ꞉ 𝓟 ⟨ 𝒪 X ⟩ , (is-filter F ∧ is-completely-prime F) holds
+
 \end{code}
