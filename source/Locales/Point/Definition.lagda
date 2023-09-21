@@ -3,6 +3,8 @@ Ayberk Tosun.
 Started on 8  September 2023.
 Updated on 21 September 2023.
 
+This module contains the definition of point of a locale.
+
 \begin{code}[hide]
 
 {-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
