@@ -107,6 +107,9 @@ module Truncation (pt : propositional-truncations-exist) where
   ∥_∥Ω : 𝓤 ̇  → Ω 𝓤
   ∥ A ∥Ω = ∥ A ∥ , ∥∥-is-prop
 
+  ∥∥Ω-rec : {X : 𝓤  ̇} {P : Ω 𝓥} → (X → P holds) → ∥ X ∥ → P holds
+  ∥∥Ω-rec {𝓤} {𝓥} {X} {P} = ∥∥-rec (holds-is-prop P)
+
 \end{code}
 
 \section{Existential quantification}
