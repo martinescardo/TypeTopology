@@ -336,7 +336,7 @@ T-main-lemma ext-const {X ∷ Xf} εt@(ε :: εf) q = γ
 is-in-head-equilibrium : (G : Game) → 𝓙𝓣 (Xt G) → Type
 is-in-head-equilibrium (game [] q ϕt) εs = 𝟙
 is-in-head-equilibrium G@(game (X ∷ Xf) q (ϕ :: ϕf)) εt@(ε :: εf) =
-  ε α-attainsᵀ ϕ → is-T-pe' q ϕ (T-selection-strategy εt q)
+ ε α-attainsᵀ ϕ → is-T-pe' q ϕ (T-selection-strategy εt q)
 
 {-
 impossible : {X : Type} (ε : JT X)
