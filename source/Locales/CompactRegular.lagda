@@ -1425,7 +1425,7 @@ compact-opens-are-basic-in-compact-frames : (F : Frame 𝓤 𝓥 𝓦)
                                           → (x : ⟨ F ⟩)
                                           → is-compact-open F x holds
                                           → ∥ Σ i ꞉ index ℬ , x ＝ ℬ [ i ] ∥
-compact-opens-are-basic-in-compact-frames F ℬ β κ x ϟ  =
+compact-opens-are-basic-in-compact-frames F ℬ β _ x ϟ  =
  ∥∥-rec ∥∥-is-prop † (ϟ ⁅ ℬ [ i ] ∣ i ε 𝒥 ⁆ ð γ)
   where
    open PosetReasoning (poset-of F)

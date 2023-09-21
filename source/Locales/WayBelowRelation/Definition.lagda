@@ -9,21 +9,23 @@ will be broken down into smaller modules.
 
 {-# OPTIONS --safe --without-K --exact-split #-}
 
-open import UF.Subsingletons
 open import UF.PropTrunc
 open import UF.FunExt
 open import MLTT.Spartan
 open import UF.Logic
+open import UF.SubtypeClassifier
 open import Slice.Family
 
-module Locales.WayBelow (pt : propositional-truncations-exist)
-                        (fe : Fun-Ext)                          where
+module Locales.WayBelowRelation.Definition (pt : propositional-truncations-exist)
+                                           (fe : Fun-Ext) where
 
 open import Locales.Frame pt fe
 
 open AllCombinators pt fe
 
 \end{code}
+
+The way below relation.
 
 \begin{code}
 
@@ -33,6 +35,12 @@ way-below {𝓤 = 𝓤} {𝓦 = 𝓦} F U V =
   V ≤ (⋁[ F ] S) ⇒ (Ǝ i ꞉ index S , (U ≤ S [ i ]) holds)
    where
     open PosetNotation (poset-of F) using (_≤_)
+
+\end{code}
+
+Given a frame `F`, `_≪[ F ]_` denotes its way below relation.
+
+\begin{code}
 
 infix 5 way-below
 
