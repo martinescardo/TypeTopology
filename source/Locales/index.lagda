@@ -6,9 +6,6 @@ Ayberk Tosun.
 
 module Locales.index where
 
-import Locales.InitialFrame
-
-
 import Locales.AdjointFunctorTheoremForFrames    -- (1)
 
 import Locales.BooleanAlgebra                    -- (2)
@@ -19,7 +16,9 @@ import Locales.ClassificationOfScottOpens        -- (4)
 
 import Locales.Clopen                            -- (5)
 
-import Locales.CompactRegular -- DEPRECATED      -- (6)
+-- ↓ DEPRECATED DO NOT USE ↓ --
+import Locales.CompactRegular                    -- (6)
+-- ↑ DEPRECATED DO NOT USE ↑ --
 
 import Locales.Compactness                       -- (7)
 
@@ -41,7 +40,7 @@ import Locales.Nucleus                           -- (15)
 
 import Locales.PatchLocale                       -- (16)
 
--- import Locales.PatchOfOmega                   -- (17)
+import Locales.PatchOfOmega                      -- (17)
 
 import Locales.PatchProperties                   -- (18)
 
@@ -63,18 +62,21 @@ import Locales.StoneImpliesSpectral              -- (26)
 
 import Locales.WellInside                        -- (27)
 
-import Locales.ZeroDimensionality
+import Locales.ZeroDimensionality                -- (28)
 
-import Locales.Spectrality.SpectralLocale
+import Locales.Spectrality.SpectralLocale        -- (29)
 
-import Locales.Spectrality.SpectralMap
+import Locales.Spectrality.SpectralMap           -- (30)
 
--- import Locales.Spectrality.SpectralityOfOmega
+import Locales.Spectrality.SpectralityOfOmega    -- (31)
 
-import Locales.WayBelowRelation.Definition
+import Locales.WayBelowRelation.Definition       -- (32)
 
-import Locales.WayBelowRelation.Properties
+import Locales.WayBelowRelation.Properties       -- (33)
 
--- import Locales.UniversalPropertyOfPatch -- with contributions by Igor Arrieta.
+-- with contribution by Igor Arrieta
+import Locales.UniversalPropertyOfPatch          -- (34)
+
+import Locales.Spectrality.BasisDirectification  -- (35)
 
 \end{code}
