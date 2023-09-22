@@ -17,13 +17,18 @@ open import UF.Subsingletons
 open import UF.PropTrunc
 open import UF.FunExt
 open import MLTT.Spartan
+open import UF.SubtypeClassifier
 
 module Locales.Compactness (pt : propositional-truncations-exist)
                            (fe : Fun-Ext)                          where
 
-open import Locales.Frame    pt fe
-open import Locales.WayBelow pt fe
+open import Locales.Frame     pt fe
+open import Locales.WayBelowRelation.Definition  pt fe
+open import UF.Logic
 open import Slice.Family
+
+open PropositionalTruncation pt
+open Existential pt
 
 open Locale
 
@@ -74,5 +79,55 @@ starts with a large and locally small locale, the resulting family would live in
 
 ℬ-compact₀ : (X : Locale (𝓤 ⁺) 𝓤 𝓤) → Fam (𝓤 ⁺) ⟨ 𝒪 X ⟩
 ℬ-compact₀ = ℬ-compact
+
+\end{code}
+
+\section{Properties of compactness}
+
+\begin{code}
+
+𝟎-is-compact : (X : Locale 𝓤 𝓥 𝓦) → is-compact-open X 𝟎[ 𝒪 X ] holds
+𝟎-is-compact X S (∣i∣ , _) p = ∥∥-rec ∃-is-prop † ∣i∣
+ where
+  † : index S → ∃ i ꞉ index S , (𝟎[ 𝒪 X ] ≤[ poset-of (𝒪 X) ] S [ i ]) holds
+  † i = ∣ i , 𝟎-is-bottom (𝒪 X) (S [ i ]) ∣
+
+\end{code}
+
+The binary join of two compact opens is compact.
+
+\begin{code}
+
+compact-opens-are-closed-under-∨ : (X : Locale 𝓤 𝓥 𝓦) (K₁ K₂ : ⟨ 𝒪 X ⟩)
+                                 → is-compact-open X K₁ holds
+                                 → is-compact-open X K₂ holds
+                                 → is-compact-open X (K₁ ∨[ 𝒪 X ] K₂) holds
+compact-opens-are-closed-under-∨ X U V κ₁ κ₂ S δ p =
+ ∥∥-rec₂ ∃-is-prop † (κ₁ S δ φ) (κ₂ S δ ψ)
+  where
+   open PosetNotation  (poset-of (𝒪 X)) using (_≤_)
+   open PosetReasoning (poset-of (𝒪 X))
+
+   † : Σ i₁ ꞉ index S , (U ≤[ poset-of (𝒪 X) ] S [ i₁ ]) holds
+     → Σ i₂ ꞉ index S , (V ≤[ poset-of (𝒪 X) ] S [ i₂ ]) holds
+     → ∃ i₃ ꞉ index S  , ((U ∨[ 𝒪 X ] V) ≤ S [ i₃ ]) holds
+   † (i₁ , p₁) (i₂ , p₂) = ∥∥-rec ∃-is-prop ‡ (pr₂ δ i₁ i₂)
+    where
+     ‡ : Σ i₃ ꞉ index S , (S [ i₁ ] ≤ S [ i₃ ]) holds
+                        × (S [ i₂ ] ≤ S [ i₃ ]) holds
+       → ∃ i₃ ꞉ index S  , ((U ∨[ 𝒪 X ] V) ≤ S [ i₃ ]) holds
+     ‡ (i₃ , q , r) = ∣ i₃ , ∨[ 𝒪 X ]-least ♠ ♣ ∣
+      where
+       ♠ : (U ≤[ poset-of (𝒪 X) ] (S [ i₃ ])) holds
+       ♠ = U ≤⟨ p₁ ⟩ S [ i₁ ] ≤⟨ q ⟩ S [ i₃ ] ■
+
+       ♣ : (V ≤[ poset-of (𝒪 X) ] (S [ i₃ ])) holds
+       ♣ = V ≤⟨ p₂ ⟩ S [ i₂ ] ≤⟨ r ⟩ S [ i₃ ] ■
+
+   φ : (U ≤ (⋁[ 𝒪 X ] S)) holds
+   φ = U ≤⟨ ∨[ 𝒪 X ]-upper₁ U V ⟩ U ∨[ 𝒪 X ] V ≤⟨ p ⟩ ⋁[ 𝒪 X ] S ■
+
+   ψ : (V ≤[ poset-of (𝒪 X) ] (⋁[ 𝒪 X ] S)) holds
+   ψ = V ≤⟨ ∨[ 𝒪 X ]-upper₂ U V ⟩ U ∨[ 𝒪 X ] V ≤⟨ p ⟩ ⋁[ 𝒪 X ] S ■
 
 \end{code}
