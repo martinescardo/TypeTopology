@@ -160,7 +160,8 @@ module special-classifier-single-universe (𝓤 : Universe) where
                     → funext 𝓤 (𝓤 ⁺)
                     → (P : 𝓤 ̇ → 𝓥 ̇ ) (Y : 𝓤 ̇ )
                     → is-equiv (χ-special P Y)
- χ-special-is-equiv ua fe P Y = classifier-gives-special-classifier (universes-are-classifiers ua fe) P Y
+ χ-special-is-equiv ua fe P Y = classifier-gives-special-classifier
+                                 (universes-are-classifiers ua fe) P Y
 
  special-classification : is-univalent 𝓤
                         → funext 𝓤 (𝓤 ⁺)
