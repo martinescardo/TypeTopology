@@ -109,6 +109,54 @@ module Monotone-Endo-Maps {𝓤 𝓦 𝓥 : Universe} (L : Sup-Lattice 𝓤 𝓦
 
 \end{code}
 
+We pause to introduce some universe polymorphic powerset notation this will allow us to develop results
+in a notation familiar to set theorists.
+
+\begin{code}
+
+module Universe-Polymorphic-Powerset (𝓥 : Universe) where
+
+   𝓟 : {𝓣 : Universe} → 𝓥  ̇ → 𝓥 ⊔ 𝓣 ⁺  ̇
+   𝓟 {𝓣} X = X → Ω 𝓣
+
+   _∈_ : {𝓣 : Universe} {X : 𝓥  ̇} → X → 𝓟 {𝓣} X → 𝓣  ̇
+   x ∈ A = A x holds
+   
+   _⊆_ : {𝓣 𝓦 : Universe} {X : 𝓥  ̇} → 𝓟 {𝓣} X → 𝓟 {𝓦} X →  𝓥 ⊔ 𝓣 ⊔ 𝓦  ̇
+   A ⊆ B = ∀ x → x ∈ A → x ∈ B
+
+\end{code}
+
+We now show that when one subset contains another the join of their total spaces are ordered as
+expected. This result is a familar to set theorist...
+
+\begin{code}
+
+module Subsets-Order-Joins {𝓤 𝓦 𝓥 : Universe}
+                           (L : Sup-Lattice 𝓤 𝓦 𝓥)
+                           (A : 𝓥  ̇)
+                           (m : A → ⟨ L ⟩)
+                           where
+
+ _≤_ : ⟨ L ⟩ → ⟨ L ⟩ → Ω 𝓦
+ x ≤ y = order-of L x y
+
+ ⋁_ : Fam 𝓥 ⟨ L ⟩ → ⟨ L ⟩
+ ⋁_ = join-for L
+
+ open Joins _≤_
+ open Universe-Polymorphic-Powerset 𝓥
+
+ joins-preserve-containment : {P : 𝓟 {𝓥} A} {Q : 𝓟 {𝓥} A}
+                            → (C : P ⊆ Q)
+                            → ((⋁ ((Σ a ꞉ A , a ∈ P) , m ∘ pr₁)) ≤ (⋁ ((Σ a ꞉ A , a ∈ Q ) , m ∘ pr₁))) holds
+ joins-preserve-containment {P} {Q} C =
+   (is-least-upper-bound-for L of ((Σ a ꞉ A , a ∈ P ) , m ∘ pr₁))
+    (⋁ ((Σ a ꞉ A , a ∈ Q ) , m ∘ pr₁) , λ (b , b-in-P)
+                                        → (is-an-upper-bound-for L of ((Σ a ꞉ A , a ∈ Q ) , m ∘ pr₁)) (b , C b b-in-P))
+
+\end{code}
+
 We take a quick detour to show if a type is small and has a map to the carrier then it has a join.
 This seems like strict requirement but as we will see it occurs often when considering a lattice with a base. 
 
@@ -307,24 +355,6 @@ module Sup-Lattice-Small-Basis {𝓤 𝓦 𝓥 : Universe} (L : Sup-Lattice 𝓤
                          → ((u' , _) : upper-bound (small-↓ᴮ x , small-↓ᴮ-inclusion x))
                          → (x ≤ u') holds
    is-least-upper-boundᴮ x = pr₂ (is-supᴮ x)
-
-\end{code}
-
-We pause to introduce some universe polymorphic powerset notation which will allow the final product
-in the coming section to appear more like its set theoretic incarnation.
-
-\begin{code}
-
-module Universe-Polymorphic-Powerset (𝓥 : Universe) where
-
-   𝓟 : {𝓣 : Universe} → 𝓥  ̇ → 𝓥 ⊔ 𝓣 ⁺  ̇
-   𝓟 {𝓣} X = X → Ω 𝓣
-
-   _∈_ : {𝓣 : Universe} {X : 𝓥  ̇} → X → 𝓟 {𝓣} X → 𝓣  ̇
-   x ∈ A = A x holds
-   
-   _⊆_ : {𝓣 𝓦 : Universe} {X : 𝓥  ̇} → 𝓟 {𝓣} X → 𝓟 {𝓦} X →  𝓥 ⊔ 𝓣 ⊔ 𝓦  ̇
-   A ⊆ B = ∀ x → x ∈ A → x ∈ B
 
 \end{code}
 
