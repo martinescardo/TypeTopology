@@ -66,3 +66,9 @@ The type of points of a locale is then the completely prime filters.
  Point = Σ F ꞉ 𝓟 ⟨ 𝒪 X ⟩ , (is-filter F ∧ is-completely-prime F) holds
 
 \end{code}
+
+With this definition of point as a completely prime filter, the points of a
+locale `X` must be in bijection with continuous maps from `X → 𝟏` (where `𝟏`
+denotes the terminal locale).
+
+TODO: prove this fact.
