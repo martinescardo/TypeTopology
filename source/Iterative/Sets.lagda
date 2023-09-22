@@ -486,7 +486,7 @@ The following result, implementing the above idea, seems to be new.
  → Σ h ꞉ ((A : 𝕍) → P A)
        , ((X : 𝓤 ̇ ) (ϕ : X → 𝕍) (e : is-embedding ϕ)
        → h (𝕍-ssup X ϕ e) ＝ f X ϕ e (λ x → h (ϕ x)))
-𝕍-Induction {𝓥} P f = h , III
+𝕍-Induction {𝓥} P f = h , IV
  where
   f' : (A : 𝕍) → ((x : 𝕍-root A) → P (𝕍-forest A x)) → P A
   f' A@(M@(ssup X φ) , i@(φ-emb , φ-iter)) g = II
@@ -499,13 +499,13 @@ The following result, implementing the above idea, seems to be new.
   h : (A : 𝕍) → P A
   h = pr₁ (𝕍-Induction' P f')
 
-  II : (A : 𝕍) → h A ＝ f' A (λ x → h (𝕍-forest A x))
-  II = pr₂ (𝕍-Induction' P f')
+  III : (A : 𝕍) → h A ＝ f' A (λ x → h (𝕍-forest A x))
+  III = pr₂ (𝕍-Induction' P f')
 
-  III : (X : 𝓤 ̇) (ϕ : X → 𝕍) (e : is-embedding ϕ)
+  IV : (X : 𝓤 ̇) (ϕ : X → 𝕍) (e : is-embedding ϕ)
      → h (𝕍-ssup X ϕ e) ＝ f X ϕ e (λ x → h (ϕ x))
-  III X ϕ e =
-   h A                                                               ＝⟨ II A ⟩
+  IV X ϕ e =
+   h A                                                               ＝⟨ III A ⟩
    f' A (λ x → h (ϕ x))                                              ＝⟨ refl ⟩
    t P                (𝕍-η A)             (f X ϕ e' (λ x → h (ϕ x))) ＝⟨ i ⟩
    t P                (ap (𝕍-ssup X ϕ) p) (f X ϕ e' (λ x → h (ϕ x))) ＝⟨ ii ⟩
@@ -516,7 +516,7 @@ The following result, implementing the above idea, seems to be new.
      A  = 𝕍-ssup X ϕ e
      e' = 𝕍-forest-is-embedding A
 
-     p : 𝕍-forest-is-embedding A ＝ e
+     p : e' ＝ e
      p = being-embedding-is-prop fe ϕ e' e
 
      q : 𝕍-η A ＝ ap (𝕍-ssup X ϕ) p
