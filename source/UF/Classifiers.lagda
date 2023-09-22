@@ -14,7 +14,7 @@ September 2022.
    * Ω 𝓤 is the embedding classifier.
    * The type of pointed types is the retraction classifier.
    * The type inhabited types is the surjection classifier.
-   * The fiber of Σ are non-dependent function types.
+   * The fibers of Σ are non-dependent function types.
 
 \begin{code}
 
@@ -31,9 +31,9 @@ open import UF.FunExt
 open import UF.Retracts
 open import UF.Sets
 open import UF.Sets-Properties
+open import UF.Subsingletons
 open import UF.SubtypeClassifier
 open import UF.SubtypeClassifier-Properties
-open import UF.Subsingletons
 open import UF.UA-FunExt
 open import UF.Univalence
 
