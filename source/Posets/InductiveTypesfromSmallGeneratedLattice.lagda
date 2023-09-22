@@ -608,24 +608,55 @@ will call 'local'. This monotone operator will have a least-fixed point when �
     P is-small-ϕ-closed-subset = ((U : 𝓟 {𝓥} B)
                                 → (U ⊆ P)
                                 → ((b : B) → (b ≤ᴮ (⋁ ((Σ b ꞉ B , b ∈ U) , q ∘ pr₁))) →  b ∈ P))
-                               → ((a : ⟨ L ⟩)
+                               × ((a : ⟨ L ⟩)
                                 → (b : B)
                                 → (ϕ (a , b) holds)
                                 → ((b' : B) → (b' ≤ᴮ a → b' ∈ P)) → b ∈ P)
 
+    is-small-ϕ-closed-subset-is-predicate : (P : 𝓟 {𝓥} B) → is-prop (P is-small-ϕ-closed-subset)
+    is-small-ϕ-closed-subset-is-predicate P =
+      ×-is-prop (Π-is-prop fe λ U → Π-is-prop fe (λ C → Π-is-prop fe (λ b → Π-is-prop fe (λ f → holds-is-prop (P b)))))
+                (Π-is-prop fe (λ a → Π-is-prop fe (λ b → Π-is-prop fe (λ p → Π-is-prop fe (λ f → holds-is-prop (P b))))))
+
     small-ϕ-closed-subsets : 𝓤 ⊔ (𝓥 ⁺)  ̇
     small-ϕ-closed-subsets =  Σ P ꞉ 𝓟 {𝓥} B , P is-small-ϕ-closed-subset
 
-    _is-non-inc-point : (a : ⟨ L ⟩) → 𝓦  ̇
-    a is-non-inc-point = (Γ a ≤ a) holds
+    _is-non-inc : (a : ⟨ L ⟩) → 𝓦  ̇
+    a is-non-inc = (Γ a ≤ a) holds
+     where
+      open Local-ϕ ϕ i
+
+    is-non-inc-is-predicate : (a : ⟨ L ⟩) → is-prop(a is-non-inc)
+    is-non-inc-is-predicate a = holds-is-prop {!Γ a ≤ a!}
      where
       open Local-ϕ ϕ i
 
     non-inc-points : 𝓤 ⊔ 𝓦  ̇
-    non-inc-points = Σ a ꞉ ⟨ L ⟩ , (a is-non-inc-point)
+    non-inc-points = Σ a ꞉ ⟨ L ⟩ , (a is-non-inc)
+
+    small-ϕ-closed-subsets-to-non-inc-points : small-ϕ-closed-subsets → non-inc-points
+    small-ϕ-closed-subsets-to-non-inc-points (P , c-closed , ϕ-closed) = (⋁ ((Σ b ꞉ B , b ∈ P) , q ∘ pr₁) , is-non-inc)
+     where
+      is-non-inc : (⋁ ((Σ b ꞉ B , b ∈ P) , q ∘ pr₁)) is-non-inc
+      is-non-inc = {!!}
+
+    non-inc-points-to-small-ϕ-closed-subsets : non-inc-points → small-ϕ-closed-subsets
+    non-inc-points-to-small-ϕ-closed-subsets (a , is-non-inc) = ({!!} , {!!} , {!!})
+     where
+      P-a : 𝓟 {𝓥} B
+      P-a b = (b ≤ᴮ a , _≤ᴮ_-is-prop-valued)
+      c-closed : (U : 𝓟 {𝓥} B)
+               → (U ⊆ P-a)
+               → ((b : B) → (b ≤ᴮ (⋁ ((Σ b ꞉ B , b ∈ U) , q ∘ pr₁))) →  b ∈ P-a)
+      c-closed U C b o = {!!}
+      ϕ-closed : (a : ⟨ L ⟩)
+               → (b : B)
+               → (ϕ (a , b) holds)
+               → ((b' : B) → (b' ≤ᴮ a → b' ∈ P-a)) → b ∈ P-a
+      ϕ-closed a b p f = {!!}
 
     small-ϕ-closed-subsets-≃-non-inc-points : small-ϕ-closed-subsets ≃ non-inc-points
-    small-ϕ-closed-subsets-≃-non-inc-points = {!!}
+    small-ϕ-closed-subsets-≃-non-inc-points = ({!!} , {!!})
        
 \end{code}
 
