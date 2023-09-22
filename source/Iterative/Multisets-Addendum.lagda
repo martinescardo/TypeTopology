@@ -78,14 +78,14 @@ observation.
 𝟘ᴹ-is-not-𝟙ᴹ : 𝟘ᴹ ≠ 𝟙ᴹ
 𝟘ᴹ-is-not-𝟙ᴹ p = 𝟘-is-not-𝟙 (ap 𝕄-root p)
 
-𝓤-to-𝕄 : 𝓤 ̇ → 𝕄
-𝓤-to-𝕄 X = ssup X (λ x → 𝟘ᴹ)
+universe-to-𝕄 : 𝓤 ̇ → 𝕄
+universe-to-𝕄 X = ssup X (λ x → 𝟘ᴹ)
 
-𝓤-to-𝕄-is-section : 𝕄-root ∘ 𝓤-to-𝕄 ∼ id
-𝓤-to-𝕄-is-section X = refl
+universe-to-𝕄-is-section : 𝕄-root ∘ universe-to-𝕄 ∼ id
+universe-to-𝕄-is-section X = refl
 
 𝓤-is-retract-of-𝕄 : retract (𝓤 ̇ ) of 𝕄
-𝓤-is-retract-of-𝕄 = 𝕄-root , 𝓤-to-𝕄 , 𝓤-to-𝕄-is-section
+𝓤-is-retract-of-𝕄 = 𝕄-root , universe-to-𝕄 , universe-to-𝕄-is-section
 
 \end{code}
 
@@ -93,10 +93,10 @@ Although a section is not an embedding in general, in this case it is.
 
 \begin{code}
 
-𝓤-to-𝕄-is-embedding : is-embedding 𝓤-to-𝕄
-𝓤-to-𝕄-is-embedding M@(ssup Y φ) = II
+universe-to-𝕄-is-embedding : is-embedding universe-to-𝕄
+universe-to-𝕄-is-embedding M@(ssup Y φ) = II
  where
-  I = fiber 𝓤-to-𝕄 M                                                  ≃⟨ ≃-refl _ ⟩
+  I = fiber universe-to-𝕄 M                                           ≃⟨ ≃-refl _ ⟩
       (Σ X ꞉ 𝓤 ̇ , ssup X (λ x → 𝟘ᴹ) ＝ (ssup Y φ))                    ≃⟨ I₀ ⟩
       (Σ X ꞉ 𝓤 ̇ , Σ p ꞉ X ＝ Y , (λ x → 𝟘ᴹ) ＝ φ ∘ Idtofun p)         ≃⟨ I₁ ⟩
       (Σ (X , p) ꞉ (Σ X ꞉ 𝓤 ̇ , X ＝ Y) , (λ x → 𝟘ᴹ) ＝ φ ∘ Idtofun p) ■
@@ -104,7 +104,7 @@ Although a section is not an embedding in general, in this case it is.
     I₀ = Σ-cong (λ X → 𝕄-＝)
     I₁ = ≃-sym Σ-assoc
 
-  II : is-prop (fiber 𝓤-to-𝕄 M)
+  II : is-prop (fiber universe-to-𝕄 M)
   II = equiv-to-prop I
         (subsets-of-props-are-props _ _
           (singleton-types'-are-props Y)

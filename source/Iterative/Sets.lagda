@@ -493,6 +493,7 @@ The following result, implementing the above idea, seems to be new.
    where
     I : P (𝕍-ssup X (𝕍-forest A) (𝕍-forest-is-embedding A))
     I = f X (𝕍-forest A) (𝕍-forest-is-embedding A) g
+
     II : P A
     II = transport P (𝕍-η A) I
 
