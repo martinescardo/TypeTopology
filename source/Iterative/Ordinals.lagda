@@ -550,6 +550,11 @@ We now discuss various equivalent induction principles on 𝕆.
     I : P α
     I = f α IH
 
+𝕆-recursion' : (P : 𝓥 ̇ )
+             → ((α : 𝕆) → (𝕆-root α → P) → P)
+             → 𝕆 → P
+𝕆-recursion' P = 𝕆-induction' (λ _ → P)
+
 \end{code}
 
 TODO. Do things get nicer if use use induction on 𝕍 rather than 𝕄 in
@@ -591,6 +596,20 @@ follows automatically.
           (𝕆-forest-is-embedding α)
           (𝕆-forest-is-lower-closed α)
           IH
+
+𝕆-recursion : (P : 𝓥 ̇ )
+            → ((X : 𝓤 ̇ ) (ϕ : X → 𝕆)
+                  → is-embedding ϕ
+                  → is-lower-closed ϕ
+                  → (X → P)
+                  → P)
+            → 𝕆 → P
+𝕆-recursion P f = 𝕆-induction (λ _ → P) (λ X ϕ e l s → f X ϕ e l s)
+
+𝕆-iteration : (P : 𝓥 ̇ )
+            → ((X : 𝓤 ̇ ) → (X → P) → P)
+            → 𝕆 → P
+𝕆-iteration P f = 𝕆-induction (λ _ → P) (λ X ϕ e l → f X)
 
 \end{code}
 
@@ -1325,5 +1344,3 @@ Ordinals-agreement-is-unique = pointed-props-are-singletons
                                 Ordinals-agreement
                                 (the-type-of-ordinals-is-a-set (ua (𝓤 ⁺)) fe)
 \end{code}
-
-And this is the main theorem of this file.

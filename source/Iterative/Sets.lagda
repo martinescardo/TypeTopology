@@ -465,27 +465,113 @@ The following result, implementing the above idea, seems to be new.
 
 \begin{code}
 
+𝕍-Induction'
+ : (P : 𝕍 → 𝓥 ̇ )
+   (f : (A : 𝕍) → ((x : 𝕍-root A) → P (𝕍-forest A x)) → P A)
+ → Σ h ꞉ ((A : 𝕍) → P A)
+       , ((A : 𝕍) → h A ＝ f A (λ x → h (𝕍-forest A x)))
+𝕍-Induction' P f = (λ (M , i) → H M i) , p
+ where
+  H : (M : 𝕄) (i : is-iterative-set M) → P (M , i)
+  H M@(ssup X φ) i@(_ , φ-iter) = f (M , i) (λ x → H (φ x) (φ-iter x))
+
+  p : (A : 𝕍) → _ ＝ _
+  p (M@(ssup X φ) , i@(_ , φ-iter)) = refl
+
+𝕍-Induction
+ : (P : 𝕍 → 𝓥 ̇ )
+ → (f : (X : 𝓤 ̇ ) (ϕ : X → 𝕍) (e : is-embedding ϕ)
+      → ((x : X) → P (ϕ x))
+      → P (𝕍-ssup X ϕ e))
+ → Σ h ꞉ ((A : 𝕍) → P A)
+       , ((X : 𝓤 ̇ ) (ϕ : X → 𝕍) (e : is-embedding ϕ)
+       → h (𝕍-ssup X ϕ e) ＝ f X ϕ e (λ x → h (ϕ x)))
+𝕍-Induction {𝓥} P f = h , IV
+ where
+  f' : (A : 𝕍) → ((x : 𝕍-root A) → P (𝕍-forest A x)) → P A
+  f' A@(M@(ssup X φ) , i@(φ-emb , φ-iter)) g = II
+   where
+    I : P (𝕍-ssup X (𝕍-forest A) (𝕍-forest-is-embedding A))
+    I = f X (𝕍-forest A) (𝕍-forest-is-embedding A) g
+
+    II : P A
+    II = transport P (𝕍-η A) I
+
+  h : (A : 𝕍) → P A
+  h = pr₁ (𝕍-Induction' P f')
+
+  III : (A : 𝕍) → h A ＝ f' A (λ x → h (𝕍-forest A x))
+  III = pr₂ (𝕍-Induction' P f')
+
+  IV : (X : 𝓤 ̇) (ϕ : X → 𝕍) (e : is-embedding ϕ)
+     → h (𝕍-ssup X ϕ e) ＝ f X ϕ e (λ x → h (ϕ x))
+  IV X ϕ e =
+   h A                                                               ＝⟨ III A ⟩
+   f' A (λ x → h (ϕ x))                                              ＝⟨ refl ⟩
+   t P                (𝕍-η A)             (f X ϕ e' (λ x → h (ϕ x))) ＝⟨ i ⟩
+   t P                (ap (𝕍-ssup X ϕ) p) (f X ϕ e' (λ x → h (ϕ x))) ＝⟨ ii ⟩
+   t (P ∘ 𝕍-ssup X ϕ) p                   (f X ϕ e' (λ x → h (ϕ x))) ＝⟨ iii ⟩
+   f X ϕ e (λ x → h (ϕ x))                                           ∎
+    where
+     t = transport
+     A  = 𝕍-ssup X ϕ e
+     e' = 𝕍-forest-is-embedding A
+
+     p : e' ＝ e
+     p = being-embedding-is-prop fe ϕ e' e
+
+     q : 𝕍-η A ＝ ap (𝕍-ssup X ϕ) p
+     q = 𝕍-is-set _ _
+
+     i   = ap (λ - → t P - (f X ϕ e' (λ x → h (ϕ x)))) q
+     ii  = (transport-ap P (𝕍-ssup X ϕ) p)⁻¹
+     iii = apd (λ - → f X ϕ - (λ x → h (ϕ x))) p
+
 𝕍-induction : (P : 𝕍 → 𝓥 ̇ )
             → ((X : 𝓤 ̇ ) (ϕ : X → 𝕍) (e : is-embedding ϕ)
                   → ((x : X) → P (ϕ x))
                   → P (𝕍-ssup X ϕ e))
             → (A : 𝕍) → P A
-𝕍-induction P f (M , i) = h M i
- where
-  h : (M : 𝕄) (i : is-iterative-set M) → P (M , i)
-  h M@(ssup X φ) i@(φ-emb , φ-iter) = II
-   where
-    A : 𝕍
-    A = (M , i)
+𝕍-induction P f = pr₁ (𝕍-Induction P f)
 
-    IH : (x : X) → P (𝕍-forest A x)
-    IH x = h (φ x) (φ-iter x)
+𝕍-induction-behaviour
+ : (P : 𝕍 → 𝓥 ̇ )
+ → (f : (X : 𝓤 ̇ ) (ϕ : X → 𝕍) (e : is-embedding ϕ)
+      → ((x : X) → P (ϕ x))
+      → P (𝕍-ssup X ϕ e))
+ → (X : 𝓤 ̇ ) (ϕ : X → 𝕍) (e : is-embedding ϕ)
+ → 𝕍-induction P f (𝕍-ssup X ϕ e) ＝ f X ϕ e (λ x → 𝕍-induction P f (ϕ x))
+𝕍-induction-behaviour P f = pr₂ (𝕍-Induction P f)
 
-    I : P (𝕍-ssup X (𝕍-forest A) (𝕍-forest-is-embedding A))
-    I = f X (𝕍-forest A) (𝕍-forest-is-embedding A) IH
 
-    II : P A
-    II = transport P (𝕍-η A) I
+𝕍-recursion : (P : 𝓥 ̇ )
+            → ((X : 𝓤 ̇ ) (ϕ : X → 𝕍)
+                  → is-embedding ϕ
+                  → (X → P)
+                  → P)
+            → 𝕍 → P
+𝕍-recursion P = 𝕍-induction (λ _ → P)
+
+𝕍-recursion-behaviour
+ : (P : 𝓥 ̇ )
+ → (f : (X : 𝓤 ̇ ) (ϕ : X → 𝕍) (e : is-embedding ϕ)
+      → (X → P)
+      → P)
+ → (X : 𝓤 ̇ ) (ϕ : X → 𝕍) (e : is-embedding ϕ)
+ → 𝕍-recursion P f (𝕍-ssup X ϕ e) ＝ f X ϕ e (λ x → 𝕍-recursion P f (ϕ x))
+𝕍-recursion-behaviour P = 𝕍-induction-behaviour (λ _ → P)
+
+𝕍-iteration : (P : 𝓥 ̇ )
+            → ((X : 𝓤 ̇ ) → (X → P) → P)
+            → 𝕍 → P
+𝕍-iteration P f = 𝕍-recursion P (λ X ϕ e → f X)
+
+𝕍-iteration-behaviour
+ : (P : 𝓥 ̇ )
+ → (f : (X : 𝓤 ̇ ) → (X → P) → P)
+ → (X : 𝓤 ̇ ) (ϕ : X → 𝕍) (e : is-embedding ϕ)
+ → 𝕍-iteration P f (𝕍-ssup X ϕ e) ＝ f X (λ x → 𝕍-iteration P f (ϕ x))
+𝕍-iteration-behaviour P f = 𝕍-recursion-behaviour P (λ X ϕ e → f X)
 
 \end{code}
 

@@ -46,6 +46,7 @@ open import MLTT.Two
 open import MLTT.Two-Properties
 open import Quotient.Effectivity
 open import Quotient.FromSetReplacement
+open import Quotient.GivesPropTrunc
 open import Quotient.GivesSetReplacement
 open import Quotient.Large
 open import Quotient.Type
@@ -139,13 +140,15 @@ effectivity of quotients, although with a rather different proof.)
 \begin{code}
 
 Corollary₁[free-groups-from-small-set-quotients]
- : propositional-truncations-exist
- → Fun-Ext
+ : Fun-Ext
  → Prop-Ext
  → set-quotients-exist
  → (A : 𝓤 ̇ ) → good-freely-generated-group-exists A 𝓤 𝓤
-Corollary₁[free-groups-from-small-set-quotients] pt fe pe sq =
- Lemma[free-groups-from-general-set-quotients] pt fe id sq (effectivity fe pe sq)
+Corollary₁[free-groups-from-small-set-quotients] fe pe sq =
+ Lemma[free-groups-from-general-set-quotients]
+  (propositional-truncations-from-set-quotients sq fe)
+  fe id sq
+  (effectivity fe pe sq)
 
 \end{code}
 
@@ -236,8 +239,7 @@ For the first one we assume the existence of small quotients.
 \begin{code}
 
 Theorem₁[large-free-groups-from-set-quotients]
- : propositional-truncations-exist
- → Fun-Ext
+ : Fun-Ext
  → Prop-Ext
  → set-quotients-exist
  → (A : 𝓤 ⁺ ̇ )
@@ -1767,7 +1769,7 @@ This concludes the proof of Theorem₁.
 
 \begin{code}
 
-Theorem₁[large-free-groups-from-set-quotients] {𝓤} pt fe pe sq A A-ls =
+Theorem₁[large-free-groups-from-set-quotients] {𝓤} fe pe sq A A-ls =
  record
   { 𝓕 = 𝓕
   ; η = ηᴳʳᵖ
@@ -1776,6 +1778,9 @@ Theorem₁[large-free-groups-from-set-quotients] {𝓤} pt fe pe sq A A-ls =
   ; η-is-small = ηᴳʳᵖ-is-tiny
   }
  where
+  pt : propositional-truncations-exist
+  pt = propositional-truncations-from-set-quotients sq fe
+
   open general-set-quotients-exist sq
   open free-group-construction A
   open free-group-construction-step₁ pt
@@ -1785,7 +1790,7 @@ Theorem₁[large-free-groups-from-set-quotients] {𝓤} pt fe pe sq A A-ls =
         A
         Id⟦ A-ls ⟧
         (λ _ → ⟦ A-ls ⟧-refl)
-        (λ _ _ p → ＝⟦ A-ls ⟧-gives-＝ p)
+        (λ _ _ → ＝⟦ A-ls ⟧-gives-＝)
         id
         sq
         (effectivity fe pe sq)
@@ -2038,6 +2043,6 @@ Theorem₂[free-groups-of-large-locally-small-types] {𝓤} pt fe pe A A-ls =
         A
         Id⟦ A-ls ⟧
         (λ _ → ⟦ A-ls ⟧-refl)
-        (λ _ _ p → ＝⟦ A-ls ⟧-gives-＝ p)
+        (λ _ _ → ＝⟦ A-ls ⟧-gives-＝)
 
 \end{code}
