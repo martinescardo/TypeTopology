@@ -31,6 +31,8 @@ open AllCombinators pt fe
 
 \end{code}
 
+We define the standard notion of _completely prime filter_.
+
 \begin{code}
 
 module DefnOfCPF (X : Locale 𝓤 𝓥 𝓦) where
@@ -53,6 +55,12 @@ module DefnOfCPF (X : Locale 𝓤 𝓥 𝓦) where
  is-completely-prime : 𝓟 ⟨ 𝒪 X ⟩ → Ω (𝓤 ⊔ 𝓦 ⁺)
  is-completely-prime F = Ɐ S ꞉ Fam 𝓦 ⟨ 𝒪 X ⟩ ,
                           (⋁[ 𝒪 X ] S) ∈ₚ F ⇒ (Ǝ i ꞉ index S , (S [ i ]) ∈ F)
+
+\end{code}
+
+The type of points of a locale is then the completely prime filters.
+
+\begin{code}
 
  Point : 𝓤 ⁺ ⊔ 𝓥 ⊔ 𝓦 ⁺  ̇
  Point = Σ F ꞉ 𝓟 ⟨ 𝒪 X ⟩ , (is-filter F ∧ is-completely-prime F) holds
