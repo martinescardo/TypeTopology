@@ -27,6 +27,7 @@ open import UF.Equiv-FunExt
 
 module Posets.InductiveTypesfromSmallGeneratedLattice (pt : propositional-truncations-exist)
                                                       (fe : Fun-Ext)
+                                                      (pe : Prop-Ext)
                                                       where
 
 open import Locales.Frame pt fe hiding (⟨_⟩)
@@ -599,8 +600,7 @@ will call 'local'. This monotone operator will have a least-fixed point when �
        open Equivalent-Families-have-same-Join L (S ϕ x) (S ϕ x) (id , id-is-equiv (S ϕ x)) (q ∘ pr₁)
        open Small-Types-have-Joins L (S ϕ x) (q ∘ pr₁) (i x)
 
-   module Correspondance-small-ϕ-closed-types-non-inc-points (pe : propext 𝓥)
-                                                             (ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥))
+   module Correspondance-small-ϕ-closed-types-non-inc-points (ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥))
                                                              (i : ϕ is-local)
                                                              where
    
