@@ -114,7 +114,9 @@ that r has a pointwise section).
 
  \end{code}
 
-As a simple application, it follows that negation doesn't have fixed points:
+As a simple application, it follows that negation doesn't have fixed
+points. This is a new observation, which was added to the nLab after
+it was observed here.
 
  \begin{code}
 
