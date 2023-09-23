@@ -9,8 +9,8 @@ import UF.Choice
 import UF.Classifiers
 import UF.Classifiers-Old
 import UF.Connected
-import UF.CumulativeHierarchy               -- by de Jong, Kraus, Nordvall Forsberg and Xu.
-import UF.CumulativeHierarchy-LocallySmall  -- by de Jong, Kraus, Nordvall Forsberg and Xu.
+import UF.CumulativeHierarchy               -- by [1]
+import UF.CumulativeHierarchy-LocallySmall  -- by [1]
 import UF.DiscreteAndSeparated
 import UF.Embeddings
 import UF.Equiv
@@ -65,6 +65,9 @@ import UF.Subsingletons-Properties
 import UF.UA-FunExt
 import UF.Univalence
 import UF.UniverseEmbedding
+import UF.Universes
 import UF.Yoneda
 
 \end{code}
+
+[1] de Jong, Kraus, Nordvall Forsberg and Xu.
