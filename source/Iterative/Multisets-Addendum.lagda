@@ -34,6 +34,7 @@ open import UF.HedbergApplications
 open import UF.PropIndexedPiSigma
 open import UF.Retracts
 open import UF.Sets
+open import UF.Size
 open import UF.Subsingletons
 open import UF.UA-FunExt
 open import W.Properties (𝓤 ̇) id
@@ -95,7 +96,6 @@ universe-to-𝕄-is-section X = refl
 
 \end{code}
 
-
 Although a section is not an embedding in general, in this case it is.
 
 \begin{code}
@@ -116,6 +116,84 @@ universe-to-𝕄-is-embedding M@(ssup Y φ) = II
         (subsets-of-props-are-props _ _
           (singleton-types'-are-props Y)
           (constant-maps-are-h-isolated fe 𝟘ᴹ 𝟘ᴹ-is-h-isolated))
+
+\end{code}
+
+Submultisets.
+
+\begin{code}
+
+separation : (M : 𝕄) (P : 𝕄 → 𝓤 ̇ )
+           → Σ M' ꞉ 𝕄 , ((N : 𝕄) → (N ⁅ M') ≃ (N ⁅ M × P N))
+separation M@(ssup X φ) P = M' , Q
+ where
+  M' : 𝕄
+  M' = ssup (Σ x ꞉ X , P (φ x)) (λ (x , p) → φ x)
+
+  Q→ : (N : 𝕄) → N ⁅ M' → N ⁅ M × P N
+  Q→ N ((x , p) , refl) = (x , refl) , p
+
+  Q← : (N : 𝕄) → N ⁅ M × P N → N ⁅ M'
+  Q← N ((x , refl) , p) = (x , p) , refl
+
+  η : (N : 𝕄) → Q← N ∘ Q→ N ∼ id
+  η N ((x , p) , refl) = refl
+
+  ε : (N : 𝕄) → Q→ N ∘ Q← N ∼ id
+  ε N ((x , refl) , p) = refl
+
+  Q : (N : 𝕄) → N ⁅ M' ≃ (N ⁅ M × P N)
+  Q N = qinveq (Q→ N) (Q← N , η N , ε N)
+
+submultiset : 𝕄 → (𝕄 → 𝓤 ̇ ) → 𝕄
+submultiset M P = pr₁ (separation M P)
+
+submultiset-≃ : (M : 𝕄) (P : 𝕄 → 𝓤 ̇ )
+              → (N : 𝕄) → (N ⁅ submultiset M P) ≃ (N ⁅ M × P N)
+submultiset-≃ M P = pr₂ (separation M P)
+
+\end{code}
+
+The type of multisets is large, in the sense that it doesn' have a small copy
+
+\begin{code}
+
+𝕄-is-large : is-large 𝕄
+𝕄-is-large (X , 𝕗) = III
+ where
+  have-𝕗 : X ≃ 𝕄
+  have-𝕗 = 𝕗
+
+  notice : (universe-of X ＝ 𝓤)
+         × (universe-of 𝕄 ＝ 𝓤⁺)
+  notice = refl , refl
+
+  M : 𝕄
+  M = ssup X ⌜ 𝕗 ⌝
+
+  M-universal : (N : 𝕄) → N ⁅ M
+  M-universal N = ⌜ 𝕗 ⌝⁻¹ N , inverses-are-sections' 𝕗 N
+
+  P : (N : 𝕄) → 𝓤 ̇
+  P N = ¬ (N ⁅⁻ N)
+
+  R : 𝕄
+  R = submultiset M P
+
+  g : (N : 𝕄) → (N ⁅ R) ≃ (N ⁅ M × ¬ (N ⁅⁻ N))
+  g = submultiset-≃ M P
+
+  h : (R ⁅ R) ≃ (R ⁅⁻ R)
+  h = ⁅⁻≃⁅ ua R R
+
+  I : R ⁅⁻ R → ¬ (R ⁅⁻ R)
+  I i = pr₂ (⌜ g R ⌝ (⌜ h ⌝⁻¹ i))
+
+  II : ¬ (R ⁅⁻ R) → R ⁅⁻ R
+  II ν = ⌜ h ⌝ (⌜ g R ⌝⁻¹ (M-universal R , ν))
+
+  III : 𝟘
+  III = not-equivalent-to-own-negation (I , II)
 
 \end{code}
 
