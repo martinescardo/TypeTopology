@@ -153,7 +153,7 @@ submultiset-≃ M P = pr₂ (𝕄-separation M P)
 
 \end{code}
 
-The type of multisets is large, in the sense that it doesn' have a small copy
+The type of multisets is large, in the sense that it doesn' have a small copy.
 
 \begin{code}
 

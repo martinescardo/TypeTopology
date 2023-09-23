@@ -91,7 +91,8 @@ subset-⇔ A P = pr₂ (𝕍-separation A P)
 
 \end{code}
 
-The type of multisets is large, in the sense that it doesn' have a small copy
+The type of multisets is large, in the sense that it doesn' have a
+small copy.
 
 \begin{code}
 
@@ -106,9 +107,7 @@ The type of multisets is large, in the sense that it doesn' have a small copy
   notice = refl , refl
 
   A : 𝕍
-  A = ssup X (underlying-mset ∘ ⌜ 𝕗 ⌝) ,
-      ∘-is-embedding (equivs-are-embeddings' 𝕗) underlying-mset-is-embedding ,
-      (isets-are-iterative ∘ ⌜ 𝕗 ⌝)
+  A = 𝕍-ssup X ⌜ 𝕗 ⌝ (equivs-are-embeddings' 𝕗)
 
   A-universal : (B : 𝕍) → B ∈ A
   A-universal B = ⌜ 𝕗 ⌝⁻¹ B , ap underlying-mset (inverses-are-sections' 𝕗 B)
