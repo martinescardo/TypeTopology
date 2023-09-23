@@ -25,10 +25,9 @@ open import UF.Retracts
 open import UF.UniverseEmbedding
 open import UF.Equiv-FunExt
 
-module Posets.InductiveTypesfromSmallGeneratedLattice 
-        (pt : propositional-truncations-exist)
-        (fe : Fun-Ext)
-       where
+module Posets.InductiveTypesfromSmallGeneratedLattice (pt : propositional-truncations-exist)
+                                                      (fe : Fun-Ext)
+                                                      where
 
 open import Locales.Frame pt fe hiding (⟨_⟩)
 open import Slice.Family
@@ -600,7 +599,8 @@ will call 'local'. This monotone operator will have a least-fixed point when �
        open Equivalent-Families-have-same-Join L (S ϕ x) (S ϕ x) (id , id-is-equiv (S ϕ x)) (q ∘ pr₁)
        open Small-Types-have-Joins L (S ϕ x) (q ∘ pr₁) (i x)
 
-   module Correspondance-small-ϕ-closed-types-non-inc-points (ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥))
+   module Correspondance-small-ϕ-closed-types-non-inc-points (pe : propext 𝓥)
+                                                             (ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥))
                                                              (i : ϕ is-local)
                                                              where
    
@@ -627,7 +627,7 @@ will call 'local'. This monotone operator will have a least-fixed point when �
       open Local-ϕ ϕ i
 
     is-non-inc-is-predicate : (a : ⟨ L ⟩) → is-prop(a is-non-inc)
-    is-non-inc-is-predicate a = holds-is-prop {!Γ a ≤ a!}
+    is-non-inc-is-predicate a = holds-is-prop (Γ a ≤ a)
      where
       open Local-ϕ ϕ i
 
@@ -635,29 +635,109 @@ will call 'local'. This monotone operator will have a least-fixed point when �
     non-inc-points = Σ a ꞉ ⟨ L ⟩ , (a is-non-inc)
 
     small-ϕ-closed-subsets-to-non-inc-points : small-ϕ-closed-subsets → non-inc-points
-    small-ϕ-closed-subsets-to-non-inc-points (P , c-closed , ϕ-closed) = (⋁ ((Σ b ꞉ B , b ∈ P) , q ∘ pr₁) , is-non-inc)
+    small-ϕ-closed-subsets-to-non-inc-points (P , c-closed , ϕ-closed) = (sup-P , is-non-inc)
      where
-      is-non-inc : (⋁ ((Σ b ꞉ B , b ∈ P) , q ∘ pr₁)) is-non-inc
-      is-non-inc = {!!}
+      sup-P : ⟨ L ⟩
+      sup-P = ⋁ ((Σ b ꞉ B , b ∈ P) , q ∘ pr₁)
+      open Subsets-Order-Joins L B q hiding (⋁_ ; _≤_)
+      is-non-inc : sup-P is-non-inc
+      is-non-inc = Γ-is-least-upper-bound (sup-P , is-upper-bound)
+       where
+        open Local-ϕ ϕ i
+        open Small-Types-have-Joins L (S ϕ sup-P) (q ∘ pr₁) (i sup-P) hiding (⋁_ ; _≤_)
+        Γ-is-sup : (Γ sup-P is-lub-of (S ϕ sup-P , q ∘ pr₁)) holds
+        Γ-is-sup = is-lub-of-both
+        Γ-is-least-upper-bound : ((u , _) : upper-bound (S ϕ sup-P , q ∘ pr₁)) → (Γ sup-P ≤ u) holds
+        Γ-is-least-upper-bound = pr₂ Γ-is-sup
+        b-in-P-to-b-≤-sup-P : (b : B) → b ∈ P → (q(b) ≤ sup-P) holds
+        b-in-P-to-b-≤-sup-P b b-in-P = (is-an-upper-bound-for L of ((Σ b ꞉ B , b ∈ P) , q ∘ pr₁)) (b , b-in-P)
+        un-trunc-map : (b : B) → Σ a ꞉ ⟨ L ⟩ , ϕ(a , b) holds × (a ≤ sup-P) holds → (q(b) ≤ sup-P) holds
+        un-trunc-map b (a , p , o) = b-in-P-to-b-≤-sup-P b (ϕ-closed a b p (ϕ-hypothesis))
+         where
+          ϕ-hypothesis : (b' : B) → b' ≤ᴮ a → b' ∈ P
+          ϕ-hypothesis b' r = c-closed P (λ x → id) b' b'-≤-sup-P
+           where
+            b'-≤-sup-P : b' ≤ᴮ sup-P
+            b'-≤-sup-P = _≤_-to-_≤ᴮ_ (is-transitive-for L (q b') a sup-P (_≤ᴮ_-to-_≤_ r) o)
+        is-upper-bound : ((b , e) : S ϕ sup-P) → (q(b) ≤ sup-P) holds
+        is-upper-bound (b , e) = ∥∥-rec (holds-is-prop (q(b) ≤ sup-P)) (un-trunc-map b) e
 
     non-inc-points-to-small-ϕ-closed-subsets : non-inc-points → small-ϕ-closed-subsets
-    non-inc-points-to-small-ϕ-closed-subsets (a , is-non-inc) = ({!!} , {!!} , {!!})
+    non-inc-points-to-small-ϕ-closed-subsets (a , is-non-inc) = (Q a , c-closed , ϕ-closed)
      where
-      P-a : 𝓟 {𝓥} B
-      P-a b = (b ≤ᴮ a , _≤ᴮ_-is-prop-valued)
+      Q : (x : ⟨ L ⟩) → 𝓟 {𝓥} B
+      Q x b = (b ≤ᴮ x , _≤ᴮ_-is-prop-valued)
+      sup-Q_ : (x : ⟨ L ⟩) → ⟨ L ⟩
+      sup-Q x = ⋁ ((Σ b ꞉ B , b ∈ Q x) , q ∘ pr₁)
+      _＝-sup-Q : (x : ⟨ L ⟩) → x ＝ sup-Q x
+      x ＝-sup-Q = is-sup'ᴮ x
+      open Subsets-Order-Joins L B q hiding (_≤_ ; ⋁_)
       c-closed : (U : 𝓟 {𝓥} B)
-               → (U ⊆ P-a)
-               → ((b : B) → (b ≤ᴮ (⋁ ((Σ b ꞉ B , b ∈ U) , q ∘ pr₁))) →  b ∈ P-a)
-      c-closed U C b o = {!!}
-      ϕ-closed : (a : ⟨ L ⟩)
+               → (U ⊆ Q a)
+               → ((b : B) → (b ≤ᴮ (⋁ ((Σ b ꞉ B , b ∈ U) , q ∘ pr₁))) →  b ∈ Q a)
+      c-closed U C b o = _≤_-to-_≤ᴮ_ (is-transitive-for L (q b)
+                                     (⋁ ((Σ b ꞉ B , b ∈ U) , q ∘ pr₁))
+                                     a
+                                     (_≤ᴮ_-to-_≤_ o)
+                                     (transport (λ z → ((⋁ ((Σ b ꞉ B , b ∈ U) , q ∘ pr₁)) ≤ z) holds)
+                                                (a ＝-sup-Q ⁻¹)
+                                                (joins-preserve-containment {U} {Q a} C)))
+      ϕ-closed : (a' : ⟨ L ⟩)
                → (b : B)
-               → (ϕ (a , b) holds)
-               → ((b' : B) → (b' ≤ᴮ a → b' ∈ P-a)) → b ∈ P-a
-      ϕ-closed a b p f = {!!}
+               → (ϕ (a' , b) holds)
+               → ((b' : B) → (b' ≤ᴮ a' → b' ∈ Q a)) → b ∈ Q a
+      ϕ-closed a' b p f = trunc-map b ∣ (a' , p , a'-≤-a) ∣
+       where
+        open Local-ϕ ϕ i
+        open Small-Types-have-Joins L (S ϕ a) (q ∘ pr₁) (i a) hiding (⋁_ ; _≤_)
+        Γ-is-sup : (Γ a is-lub-of (S ϕ a , q ∘ pr₁)) holds
+        Γ-is-sup = is-lub-of-both
+        Γ-an-upper-bound : (Γ a is-an-upper-bound-of (S ϕ a , q ∘ pr₁)) holds
+        Γ-an-upper-bound = pr₁ Γ-is-sup
+        trunc-map : (x : B) → (Ǝ a'' ꞉ ⟨ L ⟩ , ϕ (a'' , x) holds × (a'' ≤ a) holds) holds → x ≤ᴮ a
+        trunc-map x e = _≤_-to-_≤ᴮ_ (is-transitive-for L (q x) (Γ a) a (Γ-an-upper-bound (x , e)) (is-non-inc))
+        a'-≤-a : (a' ≤ a) holds
+        a'-≤-a = transport (λ z → (z ≤ a) holds)
+                           (a' ＝-sup-Q ⁻¹)
+                           (transport (λ z → ((sup-Q a') ≤ z) holds)
+                                             (a ＝-sup-Q ⁻¹)
+                                             (joins-preserve-containment {Q a'} {Q a} f))
+
 
     small-ϕ-closed-subsets-≃-non-inc-points : small-ϕ-closed-subsets ≃ non-inc-points
-    small-ϕ-closed-subsets-≃-non-inc-points = ({!!} , {!!})
+    small-ϕ-closed-subsets-≃-non-inc-points =
+      (small-ϕ-closed-subsets-to-non-inc-points , qinvs-are-equivs small-ϕ-closed-subsets-to-non-inc-points is-qinv)
+     where
+      H : non-inc-points-to-small-ϕ-closed-subsets ∘ small-ϕ-closed-subsets-to-non-inc-points ∼ id
+      H (P , c-closed , ϕ-closed) = to-subtype-＝ is-small-ϕ-closed-subset-is-predicate P'-＝-P
+       where
+        sup-P : ⟨ L ⟩
+        sup-P = pr₁ (small-ϕ-closed-subsets-to-non-inc-points (P , c-closed , ϕ-closed))
+        P' : 𝓟 {𝓥} B
+        P' = pr₁ (non-inc-points-to-small-ϕ-closed-subsets
+                (small-ϕ-closed-subsets-to-non-inc-points (P , c-closed , ϕ-closed)))
+        P'-＝-P : P' ＝ P
+        P'-＝-P = naive-funext-term P'-∼-P
+         where
+          naive-funext-term : P' ∼ P → P' ＝ P
+          naive-funext-term = pr₁ (pr₁ (fe P' P))
+          P'-∼-P : P' ∼ P
+          P'-∼-P x = to-Ω-＝ fe (pe _≤ᴮ_-is-prop-valued (holds-is-prop (P x)) P'-to-P P-to-P')
+           where
+            P'-to-P : x ≤ᴮ sup-P → x ∈ P
+            P'-to-P = c-closed P (λ z → id) x
+            P-to-P' : x ∈ P → x ≤ᴮ sup-P
+            P-to-P' r = _≤_-to-_≤ᴮ_ ((is-an-upper-bound-for L of ((Σ b ꞉ B , b ∈ P) , q ∘ pr₁)) (x , r))
+      G : small-ϕ-closed-subsets-to-non-inc-points ∘ non-inc-points-to-small-ϕ-closed-subsets ∼ id
+      G (a , is-non-inc) = to-subtype-＝ is-non-inc-is-predicate sup-P-＝-a
+       where
+        P : 𝓟 {𝓥} B
+        P = pr₁ (non-inc-points-to-small-ϕ-closed-subsets (a , is-non-inc))
+        sup-P : ⟨ L ⟩
+        sup-P = pr₁ (small-ϕ-closed-subsets-to-non-inc-points (non-inc-points-to-small-ϕ-closed-subsets (a , is-non-inc)))
+        sup-P-＝-a : sup-P ＝ a
+        sup-P-＝-a = is-sup'ᴮ a ⁻¹
+      is-qinv : qinv small-ϕ-closed-subsets-to-non-inc-points
+      is-qinv = (non-inc-points-to-small-ϕ-closed-subsets , H , G)
        
 \end{code}
-
-
