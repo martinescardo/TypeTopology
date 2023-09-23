@@ -350,8 +350,8 @@ By definition, an iterative multiset is an iterative set if its
 \begin{code}
 
 𝕍-forest-is-embedding : (A : 𝕍) → is-embedding (𝕍-forest A)
-𝕍-forest-is-embedding A@(ssup X φ , φ-emb , is) =
- pair-fun-is-embedding-special φ is φ-emb being-iset-is-prop
+𝕍-forest-is-embedding A@(ssup X φ , φ-emb , φ-iter) =
+ pair-fun-is-embedding-special φ φ-iter φ-emb being-iset-is-prop
 
 \end{code}
 

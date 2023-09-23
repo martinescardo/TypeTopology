@@ -37,7 +37,6 @@ open import UF.Sets
 open import UF.Size
 open import UF.Subsingletons
 open import UF.UA-FunExt
-open import W.Properties (𝓤 ̇) id
 open import W.Type
 
 private
@@ -123,9 +122,9 @@ Submultisets.
 
 \begin{code}
 
-separation : (M : 𝕄) (P : 𝕄 → 𝓤 ̇ )
-           → Σ M' ꞉ 𝕄 , ((N : 𝕄) → (N ⁅ M') ≃ (N ⁅ M × P N))
-separation M@(ssup X φ) P = M' , Q
+𝕄-separation : (M : 𝕄) (P : 𝕄 → 𝓤 ̇ )
+             → Σ M' ꞉ 𝕄 , ((N : 𝕄) → (N ⁅ M') ≃ (N ⁅ M × P N))
+𝕄-separation M@(ssup X φ) P = M' , Q
  where
   M' : 𝕄
   M' = ssup (Σ x ꞉ X , P (φ x)) (λ (x , p) → φ x)
@@ -146,11 +145,11 @@ separation M@(ssup X φ) P = M' , Q
   Q N = qinveq (Q→ N) (Q← N , η N , ε N)
 
 submultiset : 𝕄 → (𝕄 → 𝓤 ̇ ) → 𝕄
-submultiset M P = pr₁ (separation M P)
+submultiset M P = pr₁ (𝕄-separation M P)
 
 submultiset-≃ : (M : 𝕄) (P : 𝕄 → 𝓤 ̇ )
               → (N : 𝕄) → (N ⁅ submultiset M P) ≃ (N ⁅ M × P N)
-submultiset-≃ M P = pr₂ (separation M P)
+submultiset-≃ M P = pr₂ (𝕄-separation M P)
 
 \end{code}
 
