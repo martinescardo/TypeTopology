@@ -717,10 +717,8 @@ will call 'local'. This monotone operator will have a least-fixed point when �
         P' = pr₁ (non-inc-points-to-small-ϕ-closed-subsets
                 (small-ϕ-closed-subsets-to-non-inc-points (P , c-closed , ϕ-closed)))
         P'-＝-P : P' ＝ P
-        P'-＝-P = naive-funext-term P'-∼-P
+        P'-＝-P = dfunext fe {!P'-∼-P!} 
          where
-          naive-funext-term : P' ∼ P → P' ＝ P
-          naive-funext-term = pr₁ (pr₁ (fe P' P))
           P'-∼-P : P' ∼ P
           P'-∼-P x = to-Ω-＝ fe (pe _≤ᴮ_-is-prop-valued (holds-is-prop (P x)) P'-to-P P-to-P')
            where
@@ -739,5 +737,55 @@ will call 'local'. This monotone operator will have a least-fixed point when �
         sup-P-＝-a = is-sup'ᴮ a ⁻¹
       is-qinv : qinv small-ϕ-closed-subsets-to-non-inc-points
       is-qinv = (non-inc-points-to-small-ϕ-closed-subsets , H , G)
+
+    module Small-𝓘-ϕ (j : (b : B) → (b ∈ 𝓘 ϕ) is 𝓥 small) where
+
+     small-𝓘-ϕ : (b : B) →  𝓥  ̇
+     small-𝓘-ϕ b = pr₁ (j b) 
+
+     small-𝓘-ϕ-≃𝓘-ϕ : (b : B) → small-𝓘-ϕ b ≃ b ∈ 𝓘 ϕ 
+     small-𝓘-ϕ-≃𝓘-ϕ b = pr₂ (j b)
+
+     small-𝓘-ϕ-is-prop-valued : {b : B} → is-prop (small-𝓘-ϕ b)
+     small-𝓘-ϕ-is-prop-valued {b} = equiv-to-prop (small-𝓘-ϕ-≃𝓘-ϕ b) (holds-is-prop (𝓘 ϕ b))
+
+     𝓘-ϕ-is-small-subset : 𝓟 {𝓥} B
+     𝓘-ϕ-is-small-subset = λ b → (small-𝓘-ϕ b , small-𝓘-ϕ-is-prop-valued)
+
+     small-𝓘-ϕ-c-closed : (U : 𝓟 {𝓥} B)
+                        → U ⊆ 𝓘-ϕ-is-small-subset
+                        → (b : B) → b ≤ᴮ (⋁ ((Σ b ꞉ B , b ∈ U) , q ∘ pr₁))
+                        → b ∈ 𝓘-ϕ-is-small-subset
+     small-𝓘-ϕ-c-closed = {!!}
+
+     small-𝓘-ϕ-ϕ-closed : (a : ⟨ L ⟩)
+                        → (b : B)
+                        → ϕ (a , b) holds
+                        → ((b' : B) → b' ≤ᴮ a → b' ∈ 𝓘-ϕ-is-small-subset)
+                        → b ∈ 𝓘-ϕ-is-small-subset
+     small-𝓘-ϕ-ϕ-closed = {!!}
+
+     total-space-𝓘-ϕ-is-small : (Σ b ꞉ B , b ∈ 𝓘 ϕ) is 𝓥 small
+     total-space-𝓘-ϕ-is-small = ((Σ b ꞉ B , small-𝓘-ϕ b) , Σ-cong λ b → small-𝓘-ϕ-≃𝓘-ϕ b)
+
+     e : (Σ b ꞉ B , small-𝓘-ϕ b) ≃ (Σ b ꞉ B , b ∈ 𝓘 ϕ)
+     e = pr₂ total-space-𝓘-ϕ-is-small
+
+     sup-𝓘-ϕ : ⟨ L ⟩
+     sup-𝓘-ϕ = ⋁ ((Σ b ꞉ B , small-𝓘-ϕ b) , q ∘ pr₁ ∘ ⌜ e ⌝)
+
+     sup-𝓘-ϕ-is-lub : (sup-𝓘-ϕ is-lub-of ((Σ b ꞉ B , b ∈ 𝓘 ϕ) , q ∘ pr₁)) holds
+     sup-𝓘-ϕ-is-lub = is-lub-of-both
+      where
+       open Small-Types-have-Joins L (Σ b ꞉ B , b ∈ 𝓘 ϕ) (q ∘ pr₁) total-space-𝓘-ϕ-is-small
+
+     open Local-ϕ ϕ i
+
+     Γ-has-least-fixed-point : (Γ sup-𝓘-ϕ ＝ sup-𝓘-ϕ) × ((a : ⟨ L ⟩) → (sup-𝓘-ϕ ≤ a) holds)
+     Γ-has-least-fixed-point = ({!!} , {!!})
+      where
+       Γ-sup-≤-sup : (Γ sup-𝓘-ϕ ≤ sup-𝓘-ϕ) holds
+       Γ-sup-≤-sup = pr₂ (small-ϕ-closed-subsets-to-non-inc-points
+                         (𝓘-ϕ-is-small-subset , small-𝓘-ϕ-c-closed , small-𝓘-ϕ-ϕ-closed))
        
 \end{code}
