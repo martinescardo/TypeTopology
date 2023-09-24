@@ -86,12 +86,12 @@ universe-to-𝕄 X = ssup X (λ x → 𝟘ᴹ)
 universe-to-𝕄-is-section : 𝕄-root ∘ universe-to-𝕄 ∼ id
 universe-to-𝕄-is-section X = refl
 
-𝓤-is-retract-of-𝕄 : retract (𝓤 ̇ ) of 𝕄
-𝓤-is-retract-of-𝕄 = 𝕄-root , universe-to-𝕄 , universe-to-𝕄-is-section
+universe-is-retract-of-𝕄 : retract (𝓤 ̇ ) of 𝕄
+universe-is-retract-of-𝕄 = 𝕄-root , universe-to-𝕄 , universe-to-𝕄-is-section
 
 𝕄-is-not-set : ¬ (is-set 𝕄)
 𝕄-is-not-set i = universes-are-not-sets (ua 𝓤)
-                  (retract-of-set 𝓤-is-retract-of-𝕄 i)
+                  (retract-of-set universe-is-retract-of-𝕄 i)
 
 \end{code}
 
