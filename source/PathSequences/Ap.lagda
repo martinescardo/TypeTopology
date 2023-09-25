@@ -15,8 +15,6 @@ open import MLTT.Spartan
 open import UF.Base
 open import UF.Equiv
 open import PathSequences.Base
-open import PathSequences.Concat
-open import PathSequences.Split
 open import PathSequences.Reasoning
 
 module PathSequences.Ap where
