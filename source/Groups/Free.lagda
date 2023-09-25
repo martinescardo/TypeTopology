@@ -278,7 +278,7 @@ Theorem₂[free-groups-of-large-locally-small-types]
 \end{code}
 
 The proof is postponed. It is more or less routine, given the work
-done to prove Theorem₂.
+done to prove Theorem₁.
 
 It is any of these two theorems that we need, in the module
 Groups.Large, in order to prove that there is a group in 𝓤⁺ with no
