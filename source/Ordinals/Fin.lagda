@@ -1,4 +1,7 @@
 Alice Laroche, 25th September 2023
+
+Fin n is an ordinal
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K --exact-split #-}
@@ -32,7 +35,7 @@ import Naturals.Order as ℕ
 <-is-extensional (succ n) 𝟎 (suc x) i≼j j≼i = 𝟘-elim (j≼i 𝟎 ⋆)
 <-is-extensional (succ n) (suc i) 𝟎 i≼j j≼i = 𝟘-elim (i≼j 𝟎 ⋆)
 <-is-extensional (succ n) (suc i) (suc j) i≼j j≼i =
-  ap suc (<-is-extensional n i j (i≼j ∘ suc) (j≼i ∘ suc))
+ ap suc (<-is-extensional n i j (i≼j ∘ suc) (j≼i ∘ suc))
 
 <-trans : (n : ℕ) → is-transitive {X = Fin n} _<_
 <-trans n i j k = ℕ.<-trans ⟦ i ⟧ ⟦ j ⟧ ⟦ k ⟧
