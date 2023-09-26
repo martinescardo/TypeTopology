@@ -699,6 +699,17 @@ is-small {𝓤} X = X is 𝓤 small
 is-large : 𝓤 ⁺ ̇ → 𝓤 ⁺ ̇
 is-large X = ¬ is-small X
 
+universes-are-large : is-large (𝓤 ̇ )
+universes-are-large = II
+ where
+  open import Various.LawvereFPT
+
+  I : ¬ (Σ X ꞉ 𝓤 ̇ , 𝓤 ̇ ≃ X)
+  I = generalized-Coquand.Theorem
+
+  II : ¬ (Σ X ꞉ 𝓤 ̇ , X ≃ 𝓤 ̇ )
+  II = contrapositive (λ (X , 𝕗) → (X , ≃-sym 𝕗)) I
+
 _is_small-map : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
               → (X → Y)
               → (𝓦 : Universe)

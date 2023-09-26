@@ -153,7 +153,8 @@ submultiset-≃ M P = pr₂ (𝕄-separation M P)
 
 \end{code}
 
-The type of multisets is large, in the sense that it doesn' have a small copy.
+The type of multisets is large, in the sense that it doesn' have a
+small copy.
 
 \begin{code}
 
@@ -196,6 +197,26 @@ The type of multisets is large, in the sense that it doesn' have a small copy.
 
 \end{code}
 
+The above is Russell's paradox adapted to multisets. But we also have
+the following alternative proof:
+
+\begin{code}
+
+𝕄-is-large' : is-large 𝕄
+𝕄-is-large' 𝕄-is-small = universes-are-large I
+ where
+  I : (𝓤 ̇) is 𝓤 small
+  I = embedded-retract-is-small
+       universe-is-retract-of-𝕄
+       universe-to-𝕄-is-embedding
+       𝕄-is-small
+
+\end{code}
+
+However, this proof, when expanded, is essentially the same as
+that of Russell's paradox.
+
+
 The type of multisets is algebraically injective, which is a new
 result.
 
@@ -209,33 +230,29 @@ result.
 prop-indexed-sumᴹ : {X : 𝓤 ̇ } {A : X → 𝕄}
                   → is-prop X
                   → (x₀ : X) → Σᴹ A ＝ A x₀
-prop-indexed-sumᴹ {X} {A} i x₀ = V
+prop-indexed-sumᴹ {X} {A} i x₀ = IV
  where
   𝕗 = (Σ x ꞉ X , 𝕄-root (A x)) ≃⟨ prop-indexed-sum i x₀ ⟩
       𝕄-root (A x₀)            ■
 
-  remark : ⌜ 𝕗 ⌝ ＝ (λ (x , y) → transport (λ - → W-root (A -)) (i x x₀) y)
+  remark : ⌜ 𝕗 ⌝ ＝ (λ (x , y) → transport (λ - → 𝕄-root (A -)) (i x x₀) y)
   remark = refl
 
   I : ((x , y) : Σ x ꞉ X , 𝕄-root (A x))
       (p : x ＝ x₀)
-    → 𝕄-forest (A x) y ＝ 𝕄-forest (A x₀) (transport (λ - → W-root (A -)) p y)
+    → 𝕄-forest (A x) y ＝ 𝕄-forest (A x₀) (transport (λ - → 𝕄-root (A -)) p y)
   I _ refl = refl
 
   II : ((x , y) : Σ x ꞉ X , 𝕄-root (A x))
      → 𝕄-forest (A x) y ＝ 𝕄-forest (A x₀) (⌜ 𝕗 ⌝ (x , y))
   II (x , y) = I (x , y) (i x x₀)
 
-  III : ((x , y) : Σ x ꞉ X , 𝕄-root (A x))
-     → 𝕄-forest (A x) y ≃ᴹ 𝕄-forest (A x₀) (⌜ 𝕗 ⌝ (x , y))
-  III σ = idtoeqᴹ _ _ (II σ)
+  III : Σᴹ A ≃ᴹ ssup (𝕄-root (A x₀)) (𝕄-forest (A x₀))
+  III = 𝕗 , (λ σ → idtoeqᴹ _ _ (II σ))
 
-  IV : Σᴹ A ≃ᴹ ssup (𝕄-root (A x₀)) (𝕄-forest (A x₀))
-  IV = 𝕗 , III
-
-  V = Σᴹ A                                    ＝⟨ ⌜ 𝕄-=-≃ ua _ _ ⌝⁻¹ IV ⟩
-      ssup (𝕄-root (A x₀)) (𝕄-forest (A x₀)) ＝⟨ 𝕄-η (A x₀) ⟩
-      A x₀                                    ∎
+  IV = Σᴹ A                                    ＝⟨ ⌜ 𝕄-＝-≃ ua _ _ ⌝⁻¹ III ⟩
+       ssup (𝕄-root (A x₀)) (𝕄-forest (A x₀)) ＝⟨ 𝕄-η (A x₀) ⟩
+       A x₀                                    ∎
 
 𝕄-is-ainjective : ainjective-type 𝕄 𝓤 𝓤
 𝕄-is-ainjective {X} {Y} j j-emb f = f\j , f\j-ext
