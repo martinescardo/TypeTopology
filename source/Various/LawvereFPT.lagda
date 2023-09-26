@@ -558,7 +558,7 @@ of Lemma₀ by a second application of LFPT.
 
 \begin{code}
 
-module GeneralizedCoquand where
+module generalized-Coquand where
 
  Lemma₀ : (A : 𝓤 ̇ )
           (T : A → 𝓤 ̇ )
