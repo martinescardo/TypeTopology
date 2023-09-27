@@ -358,10 +358,10 @@ module Sup-Lattice-Small-Basis {𝓤 𝓦 𝓥 : Universe} (L : Sup-Lattice 𝓤
 
 \end{code}
 
-Now it is time to define the least closed subset of an inductive definition. We start by defining an
-auxillary untruncated inductive family and provide an induction principle, etc. We then take the
-propositional truncation of this family which yields a predicate and subsequently prove that it is
-the least-closed subset under the inductive definition.
+Now it is time to define the least closed subset of an inductive definition. We are currently exploring
+an alternative approach to defining the least-closed subset as a Higher Inductive Type, since HIT's are not
+supported in Type Topology we postulate the existence of such a type as well as it's induction principle
+and work with it axiomatically.
 
 \begin{code}
 
@@ -370,13 +370,127 @@ module Inductive-Definitions (𝓤 𝓦 𝓥 : Universe) (L : Sup-Lattice 𝓤 �
  open Sup-Lattice-Small-Basis L
  open Joins _≤_
 
- module _ {B : 𝓥  ̇} (q : B → ⟨ L ⟩) where
+ module Ind-Small-Basis {B : 𝓥  ̇} (q : B → ⟨ L ⟩) where
 
   open Small-Basis q
 
-  module Ind-ϕ (h : is-small-basis) where
+  module Ind-Basis-Facts (h : is-small-basis) where
 
    open Small-Basis-Facts h
+
+   record Inductively-Generated-Subset-Exists (ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)): 𝓤ω where
+    constructor
+     inductively-generated-subset
+
+    field
+     Ind : B → (𝓤 ⊔ 𝓥 ⁺)  ̇
+     Ind-trunc : (b : B) → is-prop (Ind b)
+     c-closed : (U : B → Ω 𝓥)
+              → ((b : B) → ((U b) holds → Ind b))
+              → (b : B) → b ≤ᴮ (⋁ ((Σ b ꞉ B , (U b) holds) , q ∘ pr₁))
+              → Ind b
+     ϕ-closed : (a : ⟨ L ⟩)
+              → (b : B)
+              → (ϕ (a , b)) holds
+              → ((b' : B) → (b' ≤ᴮ a → Ind b'))
+              → Ind b
+     Ind-induction : (P : (b : B) → Ind b → Ω 𝓣)
+                   → ((U : B → Ω 𝓥) → (f : (x : B) → (U x holds → Ind x))
+                    → ((x : B) → (u : U x holds) → (P x (f x u)) holds)
+                    → (b : B) → (g : (b ≤ᴮ (⋁ ((Σ x ꞉ B , U x holds) , q ∘ pr₁))))
+                    → (P b (c-closed U f b g)) holds)
+                   → ((a : ⟨ L ⟩)
+                    → (b : B)
+                    → (p : ϕ (a , b) holds)
+                    → (f : (x : B) → (x ≤ᴮ a → Ind x))
+                    → ((x : B) → (o : x ≤ᴮ a) → (P x (f x o)) holds)
+                    → (P b (ϕ-closed a b p f)) holds)
+                   → (b : B) → (i : Ind b) → (P b i) holds
+
+   module Trun-Ind-Def (ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)) (ind-e : Inductively-Generated-Subset-Exists ϕ) where
+
+    open Inductively-Generated-Subset-Exists ind-e
+    open Universe-Polymorphic-Powerset 𝓥
+
+    𝓘nd : 𝓟 {𝓤 ⊔ 𝓥 ⁺} B
+    𝓘nd b = (Ind b , Ind-trunc b)
+
+    𝓘nd-is-c-closed : (U : 𝓟 {𝓥} B)
+                    → (U ⊆ 𝓘nd)
+                    → (b : B) → b ≤ᴮ (⋁ ((Σ b ꞉ B , b ∈ U) , q ∘ pr₁))
+                    → b ∈ 𝓘nd
+    𝓘nd-is-c-closed = c-closed
+
+    𝓘nd-is-ϕ-closed : (a : ⟨ L ⟩)
+                    → (b : B)
+                    → (ϕ (a , b)) holds
+                    → ((b' : B) → (b' ≤ᴮ a → b' ∈ 𝓘nd))
+                    → b ∈ 𝓘nd
+    𝓘nd-is-ϕ-closed = ϕ-closed
+
+    𝓘nd-induction : (P : (b : B) → b ∈ 𝓘nd → Ω 𝓣)
+                  → ((U : 𝓟 {𝓥} B) → (f : U ⊆ 𝓘nd)
+                   → ((x : B) → (u : x ∈ U) → (P x (f x u)) holds)
+                   → (b : B) → (g : (b ≤ᴮ (⋁ ((Σ x ꞉ B , x ∈ U) , q ∘ pr₁))))
+                   → (P b (c-closed U f b g)) holds)
+                  → ((a : ⟨ L ⟩)
+                   → (b : B)
+                   → (p : ϕ (a , b) holds)
+                   → (f : (x : B) → (x ≤ᴮ a → x ∈ 𝓘nd))
+                   → ((x : B) → (o : x ≤ᴮ a) → (P x (f x o)) holds)
+                   → (P b (ϕ-closed a b p f)) holds)
+                  → (b : B) → (i : b ∈ 𝓘nd) → (P b i) holds
+    𝓘nd-induction = Ind-induction
+
+    𝓘nd-recursion : (P : 𝓟 {𝓣} B)
+                  → ((U : 𝓟 {𝓥} B)
+                   → (U ⊆ 𝓘nd)
+                   → (U ⊆ P)
+                   → (b : B) → (b ≤ᴮ (⋁ ((Σ b ꞉ B , b ∈ U) , q ∘ pr₁)))
+                   → b ∈ P)
+                  → ((a : ⟨ L ⟩)
+                   → (b : B)
+                   → (ϕ (a , b) holds)
+                   → ((x : B) → (x ≤ᴮ a → x ∈ 𝓘nd))
+                   → ((x : B) → (x ≤ᴮ a → x ∈ P))
+                   → b ∈ P)
+                  → 𝓘nd ⊆ P
+    𝓘nd-recursion P = 𝓘nd-induction λ b → (λ _ → P b)
+
+    𝓘nd-is-initial : (P : 𝓟 {𝓣} B)
+                   → ((U : 𝓟 {𝓥} B)
+                    → (U ⊆ P)
+                    → ((b : B) → (b ≤ᴮ (⋁ ((Σ b ꞉ B , b ∈ U) , q ∘ pr₁)))
+                    → b ∈ P))
+                   → ((a : ⟨ L ⟩)
+                    → (b : B)
+                    → (ϕ (a , b) holds)
+                    → ((b' : B) → (b' ≤ᴮ a → b' ∈ P)) → b ∈ P)
+                   → 𝓘nd ⊆ P
+    𝓘nd-is-initial {𝓣} P IH₁ IH₂ b b-in-𝓘nd = 𝓘nd-recursion P R S b b-in-𝓘nd
+     where
+      R : (U : 𝓟 {𝓥} B)
+        → U ⊆ 𝓘nd
+        → U ⊆ P
+        → (x : B) → x ≤ᴮ (⋁ ((Σ b ꞉ B , b ∈ U) , q ∘ pr₁))
+        →  x ∈ P
+      R U C₁ C₂ x o = IH₁ U C₂ x o
+      S : (a : ⟨ L ⟩)
+        → (x : B)
+        → ϕ (a , x) holds
+        → ((z : B) → z ≤ᴮ a → z ∈ 𝓘nd)
+        → ((z : B) → z ≤ᴮ a → z ∈ P)
+        → x ∈ P
+      S a x p f g = IH₂ a x p g
+
+
+\end{code}
+
+We leave this section in for now while we expirement with the new formulation. One could argue that
+the existence of this section is in a small way a proof of concept. Although it fails due the truncation
+not occuring simulataneously with the other constructors as the type is freely generated.
+
+\begin{code}
 
    data I (ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)) : B → (𝓤 ⊔ 𝓥 ⁺)  ̇ where
     c-cl : (U : B → Ω 𝓥)
@@ -392,14 +506,14 @@ module Inductive-Definitions (𝓤 𝓦 𝓥 : Universe) (L : Sup-Lattice 𝓤 �
    I-induction : (P : {ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)} → (b : B) → I ϕ b → 𝓣  ̇)
                → {ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)}
                → ((U : B → Ω 𝓥) → (f : (x : B) → (U x holds → I ϕ x))
-                → (f' : (x : B) → (u : U x holds) → P x (f x u))
+                → ((x : B) → (u : U x holds) → P x (f x u))
                 → (b : B) → (g : (b ≤ᴮ (⋁ ((Σ x ꞉ B , U x holds) , q ∘ pr₁))))
                 → P b (c-cl U f b g))
                → ((a : ⟨ L ⟩)
                 → (b : B)
                 → (p : ϕ (a , b) holds)
                 → (f : (x : B) → (x ≤ᴮ a → I ϕ x))
-                → (f' : (x : B) → (o : x ≤ᴮ a) → P x (f x o))
+                → ((x : B) → (o : x ≤ᴮ a) → P x (f x o))
                 → P b (ϕ-cl a b p f))
                → (b : B) → (i : I ϕ b) → P b i
    I-induction P {ϕ} IH₁ IH₂ = θ
@@ -419,11 +533,14 @@ module Inductive-Definitions (𝓤 𝓦 𝓥 : Universe) (L : Sup-Lattice 𝓤 �
                → ((U : B → Ω 𝓥)
                 → ((x : B) → (U x holds → I ϕ x))
                 → ((x : B) → (U x holds → P x))
-                → (b : B) → (b ≤ᴮ (⋁ ((Σ b ꞉ B , U b holds) , q ∘ pr₁))) → P b)
+                → (b : B) → (b ≤ᴮ (⋁ ((Σ b ꞉ B , U b holds) , q ∘ pr₁)))
+                → P b)
                → ((a : ⟨ L ⟩)
                 → (b : B)
                 → (ϕ (a , b) holds)
-                → ((x : B) → (x ≤ᴮ a → I ϕ x)) → ((x : B) → (x ≤ᴮ a → P x)) → P b)
+                → ((x : B) → (x ≤ᴮ a → I ϕ x))
+                → ((x : B) → (x ≤ᴮ a → P x))
+                → P b)
                → (b : B) → I ϕ b → P b
    I-recursion {ϕ} P = I-induction (λ b → (λ _ → P b))
 
@@ -717,7 +834,7 @@ will call 'local'. This monotone operator will have a least-fixed point when �
         P' = pr₁ (non-inc-points-to-small-ϕ-closed-subsets
                 (small-ϕ-closed-subsets-to-non-inc-points (P , c-closed , ϕ-closed)))
         P'-＝-P : P' ＝ P
-        P'-＝-P = dfunext fe {!P'-∼-P!} 
+        P'-＝-P = dfunext fe P'-∼-P 
          where
           P'-∼-P : P' ∼ P
           P'-∼-P x = to-Ω-＝ fe (pe _≤ᴮ_-is-prop-valued (holds-is-prop (P x)) P'-to-P P-to-P')
@@ -738,54 +855,59 @@ will call 'local'. This monotone operator will have a least-fixed point when �
       is-qinv : qinv small-ϕ-closed-subsets-to-non-inc-points
       is-qinv = (non-inc-points-to-small-ϕ-closed-subsets , H , G)
 
-    module Small-𝓘-ϕ (j : (b : B) → (b ∈ 𝓘 ϕ) is 𝓥 small) where
+    module Small-𝓘nd-exists (ind-e : Inductively-Generated-Subset-Exists ϕ) where
 
-     small-𝓘-ϕ : (b : B) →  𝓥  ̇
-     small-𝓘-ϕ b = pr₁ (j b) 
+     open Trun-Ind-Def ϕ ind-e
+     open Inductively-Generated-Subset-Exists ind-e
 
-     small-𝓘-ϕ-≃𝓘-ϕ : (b : B) → small-𝓘-ϕ b ≃ b ∈ 𝓘 ϕ 
-     small-𝓘-ϕ-≃𝓘-ϕ b = pr₂ (j b)
+     module Small-𝓘nd (j : (b : B) → (b ∈ 𝓘nd) is 𝓥 small) where
 
-     small-𝓘-ϕ-is-prop-valued : {b : B} → is-prop (small-𝓘-ϕ b)
-     small-𝓘-ϕ-is-prop-valued {b} = equiv-to-prop (small-𝓘-ϕ-≃𝓘-ϕ b) (holds-is-prop (𝓘 ϕ b))
+      small-𝓘 : (b : B) →  𝓥  ̇
+      small-𝓘 b = pr₁ (j b) 
 
-     𝓘-ϕ-is-small-subset : 𝓟 {𝓥} B
-     𝓘-ϕ-is-small-subset = λ b → (small-𝓘-ϕ b , small-𝓘-ϕ-is-prop-valued)
+      small-𝓘-≃-𝓘nd : (b : B) → small-𝓘 b ≃ b ∈ 𝓘nd 
+      small-𝓘-≃-𝓘nd b = pr₂ (j b)
 
-     small-𝓘-ϕ-c-closed : (U : 𝓟 {𝓥} B)
-                        → U ⊆ 𝓘-ϕ-is-small-subset
+      small-𝓘-is-prop-valued : {b : B} → is-prop (small-𝓘 b)
+      small-𝓘-is-prop-valued {b} = equiv-to-prop (small-𝓘-≃-𝓘nd b) (Ind-trunc b)
+
+      𝓘-is-small-subset : 𝓟 {𝓥} B
+      𝓘-is-small-subset = λ b → (small-𝓘 b , small-𝓘-is-prop-valued)
+
+      small-𝓘-is-c-closed : (U : 𝓟 {𝓥} B)
+                        → U ⊆ 𝓘-is-small-subset
                         → (b : B) → b ≤ᴮ (⋁ ((Σ b ꞉ B , b ∈ U) , q ∘ pr₁))
-                        → b ∈ 𝓘-ϕ-is-small-subset
-     small-𝓘-ϕ-c-closed = {!!}
-
-     small-𝓘-ϕ-ϕ-closed : (a : ⟨ L ⟩)
+                        → b ∈ 𝓘-is-small-subset
+      small-𝓘-is-c-closed U C b o = {!!}
+      
+      small-𝓘-is-ϕ-closed : (a : ⟨ L ⟩)
                         → (b : B)
                         → ϕ (a , b) holds
-                        → ((b' : B) → b' ≤ᴮ a → b' ∈ 𝓘-ϕ-is-small-subset)
-                        → b ∈ 𝓘-ϕ-is-small-subset
-     small-𝓘-ϕ-ϕ-closed = {!!}
+                        → ((b' : B) → b' ≤ᴮ a → b' ∈ 𝓘-is-small-subset)
+                        → b ∈ 𝓘-is-small-subset
+      small-𝓘-is-ϕ-closed a b p f = {!!}
 
-     total-space-𝓘-ϕ-is-small : (Σ b ꞉ B , b ∈ 𝓘 ϕ) is 𝓥 small
-     total-space-𝓘-ϕ-is-small = ((Σ b ꞉ B , small-𝓘-ϕ b) , Σ-cong λ b → small-𝓘-ϕ-≃𝓘-ϕ b)
+      total-space-𝓘-is-small : (Σ b ꞉ B , b ∈ 𝓘nd) is 𝓥 small
+      total-space-𝓘-is-small = ((Σ b ꞉ B , small-𝓘 b) , Σ-cong λ b → small-𝓘-≃-𝓘nd b)
+   
+      e : (Σ b ꞉ B , small-𝓘 b) ≃ (Σ b ꞉ B , b ∈ 𝓘nd)
+      e = pr₂ total-space-𝓘-is-small
 
-     e : (Σ b ꞉ B , small-𝓘-ϕ b) ≃ (Σ b ꞉ B , b ∈ 𝓘 ϕ)
-     e = pr₂ total-space-𝓘-ϕ-is-small
+      sup-𝓘 : ⟨ L ⟩
+      sup-𝓘 = ⋁ ((Σ b ꞉ B , small-𝓘 b) , q ∘ pr₁ ∘ ⌜ e ⌝)
 
-     sup-𝓘-ϕ : ⟨ L ⟩
-     sup-𝓘-ϕ = ⋁ ((Σ b ꞉ B , small-𝓘-ϕ b) , q ∘ pr₁ ∘ ⌜ e ⌝)
+      sup-𝓘-is-lub : (sup-𝓘 is-lub-of ((Σ b ꞉ B , b ∈ 𝓘nd) , q ∘ pr₁)) holds
+      sup-𝓘-is-lub = is-lub-of-both
+       where
+        open Small-Types-have-Joins L (Σ b ꞉ B , b ∈ 𝓘nd) (q ∘ pr₁) total-space-𝓘-is-small
 
-     sup-𝓘-ϕ-is-lub : (sup-𝓘-ϕ is-lub-of ((Σ b ꞉ B , b ∈ 𝓘 ϕ) , q ∘ pr₁)) holds
-     sup-𝓘-ϕ-is-lub = is-lub-of-both
-      where
-       open Small-Types-have-Joins L (Σ b ꞉ B , b ∈ 𝓘 ϕ) (q ∘ pr₁) total-space-𝓘-ϕ-is-small
+      open Local-ϕ ϕ i
 
-     open Local-ϕ ϕ i
-
-     Γ-has-least-fixed-point : (Γ sup-𝓘-ϕ ＝ sup-𝓘-ϕ) × ((a : ⟨ L ⟩) → (sup-𝓘-ϕ ≤ a) holds)
-     Γ-has-least-fixed-point = ({!!} , {!!})
-      where
-       Γ-sup-≤-sup : (Γ sup-𝓘-ϕ ≤ sup-𝓘-ϕ) holds
-       Γ-sup-≤-sup = pr₂ (small-ϕ-closed-subsets-to-non-inc-points
-                         (𝓘-ϕ-is-small-subset , small-𝓘-ϕ-c-closed , small-𝓘-ϕ-ϕ-closed))
+      Γ-has-least-fixed-point : (Γ sup-𝓘 ＝ sup-𝓘) × ((a : ⟨ L ⟩) → (sup-𝓘 ≤ a) holds)
+      Γ-has-least-fixed-point = ({!!} , {!!})
+       where
+        Γ-sup-≤-sup : (Γ sup-𝓘 ≤ sup-𝓘) holds
+        Γ-sup-≤-sup = pr₂ (small-ϕ-closed-subsets-to-non-inc-points
+                          (𝓘-is-small-subset , small-𝓘-is-c-closed , small-𝓘-is-ϕ-closed))
        
 \end{code}
