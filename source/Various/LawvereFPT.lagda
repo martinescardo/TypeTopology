@@ -114,7 +114,9 @@ that r has a pointwise section).
 
  \end{code}
 
-As a simple application, it follows that negation doesn't have fixed points:
+As a simple application, it follows that negation doesn't have fixed
+points. This is a new observation, which was added to the nLab after
+it was observed here.
 
  \begin{code}
 
@@ -556,7 +558,7 @@ of Lemma₀ by a second application of LFPT.
 
 \begin{code}
 
-module GeneralizedCoquand where
+module generalized-Coquand where
 
  Lemma₀ : (A : 𝓤 ̇ )
           (T : A → 𝓤 ̇ )
@@ -886,38 +888,3 @@ sillier-theorem {𝓤} fe (A , A-is-prop , e) =
   ((A , A-is-prop) , e)
 
 \end{code}
-
-What we (Bezem, Coquand, Dybjer, Escardo) really want to prove is that
-
-  ¬ (Σ A ꞉ 𝓤 ̇ , hSet 𝓤 ≃ A), (†)
-
-without requiring that A is a set.
-
-Marc Bezem wants this:
-
-  ¬ (Σ A ꞉ 𝓤 ̇ , ∥ 𝓤 ∥₀ ≃ A).  (††)
-
-Does it follow from this that
-
-  ¬ (Σ A ꞉ 𝓤 ̇ , hSet 𝓤 ≃ A)?
-
-What does follow from (††) is that the inclusion hSet 𝓤 → hSet (𝓤 ⁺) is
-not an equivalence, which is what we want. So (††) implies (†).
-
-Thierry Coquand asks: does the following help:
-
-\begin{code}
-
-Gylterud : 𝓤 ⁺ ̇
-Gylterud {𝓤} = W (hSet 𝓤) pr₁
-
-\end{code}
-
-Intuitively, this is the groupoid of multisets. This occurs in Håkon
-Gylterud's PhD thesis (Multisets in Type Theory, 2016).
-
-Tonny Hurkens has a different way to get a contradiction from
-type-in-type, that maybe can be adapted to get what we want.
-
-Some of these questions are answered in the module BuraliForti
-(December 2020).
