@@ -8,15 +8,17 @@ module UF.PropIndexedPiSigma where
 
 open import MLTT.Spartan
 open import UF.Base
-open import UF.Subsingletons
-open import UF.FunExt
 open import UF.Equiv
+open import UF.FunExt
+open import UF.Subsingletons
+open import UF.Subsingletons-Properties
+
 
 Π-proj : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } (a : X) → Π Y → Y a
 Π-proj a f = f a
 
-Π-incl : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } → is-prop X → (a : X) → Y a → Π Y
-Π-incl {𝓤} {𝓥} {X} {Y} i a y x = transport Y (i a x) y
+Π-inj : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } → is-prop X → (a : X) → Y a → Π Y
+Π-inj {𝓤} {𝓥} {X} {Y} i a y x = transport Y (i a x) y
 
 Π-proj-is-equiv : funext 𝓤 𝓥
                 → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
@@ -36,11 +38,11 @@ open import UF.Equiv
   ε' : (f : Π Y) (x : X) → transport Y (i a x) (f a) ＝ f x
   ε' f x = ε'' f (i a x)
 
-  ε : (f : Π Y) → Π-incl i a (Π-proj a f) ＝ f
+  ε : (f : Π Y) → Π-inj i a (Π-proj a f) ＝ f
   ε φ = dfunext fe (ε' φ)
 
   γ : is-equiv (Π-proj a)
-  γ = qinvs-are-equivs (Π-proj a) (Π-incl i a , ε , η)
+  γ = qinvs-are-equivs (Π-proj a) (Π-inj i a , ε , η)
 
 prop-indexed-product : funext 𝓤 𝓥
                      → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }

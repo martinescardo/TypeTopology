@@ -7,19 +7,20 @@ dcpo from the `DomainTheory` development due to Tom de Jong.
 
 {-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
 
-open import MLTT.Spartan
-open import UF.Base
-open import UF.PropTrunc
-open import UF.FunExt
-open import UF.Univalence
-open import UF.UA-FunExt
-open import UF.EquivalenceExamples
 open import MLTT.List hiding ([_])
 open import MLTT.Pi
+open import MLTT.Spartan
 open import Slice.Family
+open import UF.Base
+open import UF.EquivalenceExamples
+open import UF.FunExt
+open import UF.Logic
+open import UF.PropTrunc
+open import UF.SubtypeClassifier
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import UF.Logic
+open import UF.UA-FunExt
+open import UF.Univalence
 
 \end{code}
 
@@ -101,15 +102,15 @@ The top Scott open.
 \begin{code}
 
  ⊤ₛ : 𝒪ₛ
- ⊤ₛ = (λ _ → ⊤Ω {𝓦}) , υ , ι
+ ⊤ₛ = (λ _ → ⊤ {𝓦}) , υ , ι
   where
-   υ : is-upwards-closed (λ _ → ⊤Ω) holds
+   υ : is-upwards-closed (λ _ → ⊤) holds
    υ _ _ _ _ = ⋆
 
-   ι : is-inaccessible-by-directed-joins (λ _ → ⊤Ω) holds
+   ι : is-inaccessible-by-directed-joins (λ _ → ⊤) holds
    ι (S , (∣i∣ , γ)) ⋆ = ∥∥-rec ∃-is-prop † ∣i∣
     where
-     † : index S → ∃ _ ꞉ index S , ⊤Ω holds
+     † : index S → ∃ _ ꞉ index S , ⊤ holds
      † i = ∣ i , ⋆ ∣
 
  ⊤ₛ-is-top : (U : 𝒪ₛ) → (U ⊆ₛ ⊤ₛ) holds

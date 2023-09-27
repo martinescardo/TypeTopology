@@ -427,8 +427,8 @@ operations. More generally:
 \end{code}
 
 This is the case for any monad of a certain kind, but the way we
-proved this above with using our characterizations of the algebras
-applies only to our monad.
+proved this above using our characterizations of the algebras applies
+only to our monad.
 
 The following examples are crucial for injectivity. They say that the
 universe is an algebra in at least two ways, with ∐ = Σ and ∐ = Π

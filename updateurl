@@ -74,10 +74,10 @@ ln -s TypeTopology.CompactTypes.html Published.TypeTopology.CompactTypes.html
 ln -s TypeTopology.Density.html Published.TypeTopology.Density.html
 ln -s TypeTopology.DiscreteAndSeparated.html Published.TypeTopology.DiscreteAndSeparated.html
 ln -s TypeTopology.SimpleTypes.html Published.TypeTopology.SimpleTypes.html
-ln -s UF.Quotient-F.html Published.UF.Quotient-F.html
-ln -s UF.Quotient.html Published.UF.Quotient.html
-ln -s UF.Quotient-Replacement.html Published.UF.Quotient-Replacement.html
-ln -s UF.Large-Quotient.html Published.UF.Large-Quotient.html
+ln -s Quotient.Large-Variation.html Published.UF.Quotient-F.html
+ln -s Quotient.index.html Published.UF.Quotient.html
+ln -s Quotient.index.html Published.UF.Quotient-Replacement.html
+ln -s Quotient.Large.html Published.UF.Large-Quotient.html
 ln -s Various.Dedekind.html Published.Various.Dedekind.html
 
 # Further links using the Published.* scheme

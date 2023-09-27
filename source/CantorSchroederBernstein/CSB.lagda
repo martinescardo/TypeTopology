@@ -51,19 +51,20 @@ open import MLTT.Spartan
 open import Naturals.Properties
 open import NotionsOfDecidability.Decidable
 open import TypeTopology.CompactTypes
-open import TypeTopology.DiscreteAndSeparated
 open import TypeTopology.GenericConvergentSequenceCompactness
 open import UF.Base
+open import UF.DiscreteAndSeparated
 open import UF.Embeddings
 open import UF.Equiv
 open import UF.ExcludedMiddle
 open import UF.FunExt
 open import UF.Lower-FunExt
-open import UF.Miscelanea
 open import UF.PropTrunc
 open import UF.Retracts
+open import UF.Sets
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
+open import UF.Subsingletons-Properties
 
 \end{code}
 

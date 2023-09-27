@@ -12,15 +12,15 @@ https://lmcs.episciences.org/2027
 module UF.Section-Embedding where
 
 open import MLTT.Spartan
-
 open import UF.Base
-open import UF.Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)
-open import UF.Equiv
-open import UF.Retracts
 open import UF.Embeddings
+open import UF.Equiv
 open import UF.EquivalenceExamples
+open import UF.Hedberg
 open import UF.KrausLemma
 open import UF.PropTrunc
+open import UF.Retracts
+open import UF.Subsingletons
 
 splits : {X : 𝓤 ̇ } → (X → X) → (𝓥 : Universe) → 𝓤 ⊔ (𝓥 ⁺) ̇
 splits {𝓤} {X} f 𝓥 = Σ A ꞉ 𝓥 ̇

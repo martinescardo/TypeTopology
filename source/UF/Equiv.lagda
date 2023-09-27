@@ -1,3 +1,7 @@
+Martin Escardo
+
+Notion of equivalence and its basic properties.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K --exact-split #-}
@@ -5,10 +9,10 @@
 module UF.Equiv where
 
 open import MLTT.Spartan
-open import UF.Base
-open import UF.Subsingletons
-open import UF.Retracts
 open import MLTT.Unit-Properties
+open import UF.Base
+open import UF.Retracts
+open import UF.Subsingletons
 
 \end{code}
 
@@ -177,6 +181,10 @@ inverses-are-retractions f ((g , ε) , (g' , η)) = η'
          g' (f x)         ＝⟨ η x ⟩
          x                ∎
 
+inverses-are-retractions' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (𝕗 : X ≃ Y)
+                          → ⌜ 𝕗 ⌝⁻¹ ∘ ⌜ 𝕗 ⌝  ∼ id
+inverses-are-retractions' (f , e) = inverses-are-retractions f e
+
 equivs-are-qinvs : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                  → is-equiv f
                  → qinv f
@@ -199,6 +207,10 @@ inverses-are-sections f e@((g , ε) , (g' , η)) = ε'
          f (g (f (g y))) ＝⟨ ap f (inverses-are-retractions f e (g y)) ⟩
          f (g y)         ＝⟨ ε y ⟩
          y               ∎
+
+inverses-are-sections' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (𝕗 : X ≃ Y)
+                      → ⌜ 𝕗 ⌝ ∘ ⌜ 𝕗 ⌝⁻¹  ∼ id
+inverses-are-sections' (f , e) = inverses-are-sections f e
 
 inverses-are-equivs : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f)
                     → is-equiv (inverse f e)
@@ -229,9 +241,9 @@ qinveq : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) → qinv f → X ≃ Y
 qinveq f q = (f , qinvs-are-equivs f q)
 
 lc-split-surjections-are-equivs : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                               → left-cancellable f
-                               → ((y : Y) → Σ x ꞉ X , f x ＝ y)
-                               → is-equiv f
+                                → left-cancellable f
+                                → ((y : Y) → Σ x ꞉ X , f x ＝ y)
+                                → is-equiv f
 lc-split-surjections-are-equivs f l s = qinvs-are-equivs f (g , η , ε)
  where
   g : codomain f → domain f
@@ -320,22 +332,6 @@ transports-are-equivs refl = id-is-equiv _
 back-transports-are-equivs : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {x y : X} (p : x ＝ y)
                            → is-equiv (transport⁻¹ A p)
 back-transports-are-equivs p = transports-are-equivs (p ⁻¹)
-
-fiber : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → Y → 𝓤 ⊔ 𝓥 ̇
-fiber f y = Σ x ꞉ domain f , f x ＝ y
-
-fiber-point : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f : X → Y} {y : Y} → fiber f y → X
-fiber-point = pr₁
-
-fiber-identification : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f : X → Y} {y : Y} (w : fiber f y)
-                     → f (fiber-point w) ＝ y
-fiber-identification = pr₂
-
-each-fiber-of : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-              → (X → Y)
-              → (𝓤 ⊔ 𝓥 ̇ → 𝓦 ̇)
-              → 𝓥 ⊔ 𝓦 ̇
-each-fiber-of f P = ∀ y → P (fiber f y)
 
 is-vv-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 is-vv-equiv f = each-fiber-of f is-singleton
@@ -674,12 +670,6 @@ logically-equivalent-props-are-equivalent : {P : 𝓤 ̇ } {Q : 𝓥 ̇ }
 logically-equivalent-props-are-equivalent i j f g =
   (f , logically-equivalent-props-give-is-equiv i j f g)
 
-equiv-to-set : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-             → X ≃ Y
-             → is-set Y
-             → is-set X
-equiv-to-set e = subtypes-of-sets-are-sets' ⌜ e ⌝
-                  (equivs-are-lc ⌜ e ⌝ (⌜⌝-is-equiv e))
 \end{code}
 
 5th March 2019. A more direct proof that quasi-invertible maps

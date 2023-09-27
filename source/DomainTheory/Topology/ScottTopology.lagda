@@ -16,14 +16,15 @@ module DomainTheory.Topology.ScottTopology
 
 open PropositionalTruncation pt
 
+open import Posets.Poset fe
+open import Slice.Family
+open import UF.ImageAndSurjection pt
+open import UF.Logic
+open import UF.Powerset
+open import UF.SubtypeClassifier
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import Posets.Poset fe
-open import UF.ImageAndSurjection pt
-open import UF.Powerset
-open import Slice.Family
 
-open import UF.Logic
 open Universal fe
 open Existential pt
 open Implication fe

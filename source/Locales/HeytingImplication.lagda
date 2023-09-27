@@ -16,8 +16,9 @@ module Locales.HeytingImplication
 
 open import Locales.Frame pt fe
 open import Locales.GaloisConnection pt fe
-open import UF.Subsingletons
 open import UF.Logic
+open import UF.SubtypeClassifier
+open import UF.Subsingletons
 
 open AllCombinators pt fe
 open PropositionalTruncation pt

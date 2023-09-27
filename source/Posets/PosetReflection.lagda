@@ -1,7 +1,7 @@
 Tom de Jong, 3 June 2022
 
 The poset reflection of a preorder, using (large) set quotients as constructed
-in UF.Large-Quotient.
+in Quotient.Large.
 
 \begin{code}
 
@@ -10,7 +10,9 @@ in UF.Large-Quotient.
 open import MLTT.Spartan
 open import UF.FunExt
 open import UF.PropTrunc
+open import UF.Sets
 open import UF.Subsingletons
+open import UF.SubtypeClassifier
 
 module Posets.PosetReflection
         (pt : propositional-truncations-exist)
@@ -18,10 +20,14 @@ module Posets.PosetReflection
         (pe : Prop-Ext)
        where
 
+open import Quotient.Type
+open import Quotient.Large pt fe pe
 open import UF.Base hiding (_≈_)
-open import UF.Large-Quotient pt fe pe hiding (/-induction)
 open import UF.ImageAndSurjection pt
 open import UF.Subsingletons-FunExt
+
+open general-set-quotients-exist large-set-quotients
+open extending-relations-to-quotient fe pe
 
 module poset-reflection
         (X : 𝓤 ̇ )
@@ -65,7 +71,7 @@ module poset-reflection
  poset-reflection-carrier = X / ≋
 
  poset-reflection-is-set : is-set poset-reflection-carrier
- poset-reflection-is-set = quotient-is-set ≋
+ poset-reflection-is-set = /-is-set ≋
 
  _≤_ : X / ≋ → X / ≋ → 𝓣 ̇
  x' ≤ y' = (x' ≤Ω y') holds
@@ -77,7 +83,7 @@ module poset-reflection
  η = η/ ≋
 
  η-is-surjection : is-surjection η
- η-is-surjection = η/-is-surjection ≋
+ η-is-surjection = η/-is-surjection ≋ pt
 
  η-reflects-order : {x y : X} → η x ≤ η y → x ≲ y
  η-reflects-order {x} {y} =
@@ -90,30 +96,24 @@ module poset-reflection
  η-⇔-order : {x y : X} → x ≲ y ⇔ η x ≤ η y
  η-⇔-order = η-preserves-order , η-reflects-order
 
- /-induction : ∀ {𝓦} {P : X / ≋ → 𝓦 ̇ }
-             → ((x' : X / ≋) → is-prop (P x'))
-             → ((x : X) → P (η x))
-             → (x' : X / ≋) → P x'
- /-induction = /-induction' ≋
-
  ≤-is-reflexive : (x' : X / ≋) → x' ≤ x'
- ≤-is-reflexive = /-induction (λ x' → ≤-is-prop-valued x' x')
-                              (λ x → η-preserves-order (≲-is-reflexive x))
+ ≤-is-reflexive = /-induction ≋ (λ x' → ≤-is-prop-valued x' x')
+                                (λ x → η-preserves-order (≲-is-reflexive x))
 
  ≤-is-transitive : (x' y' z' : X / ≋) → x' ≤ y' → y' ≤ z' → x' ≤ z'
  ≤-is-transitive =
-  /-induction₃ ≋ (λ x' y' z' → Π₂-is-prop fe (λ _ _ → ≤-is-prop-valued x' z'))
-                 (λ x y z k l → η-preserves-order
-                                 (≲-is-transitive x y z
-                                   (η-reflects-order k)
-                                   (η-reflects-order l)))
+  /-induction₃ fe ≋ (λ x' y' z' → Π₂-is-prop fe (λ _ _ → ≤-is-prop-valued x' z'))
+                    (λ x y z k l → η-preserves-order
+                                    (≲-is-transitive x y z
+                                      (η-reflects-order k)
+                                      (η-reflects-order l)))
 
  ≤-is-antisymmetric : (x' y' : X / ≋) → x' ≤ y' → y' ≤ x' → x' ＝ y'
  ≤-is-antisymmetric =
-  /-induction₂ ≋ (λ x' q → Π₂-is-prop fe (λ _ _ → quotient-is-set ≋))
-                 (λ x y k l → η/-identifies-related-points ≋
-                               ( η-reflects-order k
-                               , η-reflects-order l))
+  /-induction₂ fe ≋ (λ x' q → Π₂-is-prop fe (λ _ _ → /-is-set ≋))
+                    (λ x y k l → η/-identifies-related-points ≋
+                                  ( η-reflects-order k
+                                  , η-reflects-order l))
 
 \end{code}
 
@@ -137,16 +137,16 @@ it is convenient to assume it (for now) anyway.
                                                ⊑-antisym f f-mon =
   (f̃ , f̃-mon , f̃-eq) , σ
    where
-    μ : ∃! f̃ ꞉ (X / ≋ → Q), f̃ ∘ η ＝ f
-    μ = universal-property/ ≋
+    μ : ∃! f̃ ꞉ (X / ≋ → Q), f̃ ∘ η ∼ f
+    μ = /-universality ≋
          Q-is-set f (λ {x} {y} (k , l) → ⊑-antisym (f x) (f y)
                                           (f-mon x y k) (f-mon y x l))
     f̃ : X / ≋ → Q
     f̃ = ∃!-witness μ
     f̃-eq : f̃ ∘ η ∼ f
-    f̃-eq = happly (∃!-is-witness μ)
+    f̃-eq = ∃!-is-witness μ
     f̃-mon : (x' y' : X / ≋) → x' ≤ y' → f̃ x' ⊑ f̃ y'
-    f̃-mon = /-induction₂ ≋
+    f̃-mon = /-induction₂ fe ≋
              (λ x' y' → Π-is-prop fe (λ _ → ⊑-prop (f̃ x') (f̃ y')))
              (λ x y l → transport₂ _⊑_ ((f̃-eq x) ⁻¹) ((f̃-eq y) ⁻¹)
                          (f-mon x y (η-reflects-order l)))
@@ -157,7 +157,7 @@ it is convenient to assume it (for now) anyway.
     f̃-is-unique g g-mon g-eq = happly e
      where
       e : f̃ ＝ g
-      e = ap pr₁ (∃!-uniqueness' μ (g , (dfunext fe g-eq)))
+      e = ap pr₁ (∃!-uniqueness' μ (g , g-eq))
     σ : is-central (Σ g ꞉ (X / ≋ → Q)
                         , ((x' y' : X / ≋) → x' ≤ y' → g x' ⊑ g y')
                         × g ∘ η ∼ f)

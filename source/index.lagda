@@ -1,3 +1,4 @@
+   TypeTopology
 
    Various new theorems in univalent mathematics written in Agda
    -------------------------------------------------------------
@@ -54,8 +55,8 @@
 
      (https://www.cs.bham.ac.uk/~mhe/TypeTopology/AllModulesIndex.html)
 
-   * In our last count, on 23rd July 2023, this development has 578
-     files and 165k lines of code, including comments and blank
+   * In our last count, on 12th September 2023, this development has
+     626 files and 176k lines of code, including comments and blank
      lines. But we don't update the count frequently.
 
 Philosophy of the repository
@@ -154,6 +155,7 @@ import NotionsOfDecidability.index
 import Ordinals.index
 import PCF.index
 import Posets.index
+import Quotient.index
 import Relations.index
 import Rationals.index
 import Slice.index

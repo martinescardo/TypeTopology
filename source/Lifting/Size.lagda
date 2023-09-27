@@ -10,15 +10,16 @@ open import MLTT.Spartan
 
 module Lifting.Size (𝓣 : Universe) where
 
-open import UF.Subsingletons
-open import UF.Size
-open import UF.Equiv
-open import UF.Univalence
-open import UF.FunExt
-open import UF.UA-FunExt
-open import UF.EquivalenceExamples
-open import Lifting.Lifting 𝓣
 open import Lifting.IdentityViaSIP
+open import Lifting.Lifting 𝓣
+open import UF.Equiv
+open import UF.EquivalenceExamples
+open import UF.FunExt
+open import UF.Size
+open import UF.SubtypeClassifier
+open import UF.Subsingletons
+open import UF.UA-FunExt
+open import UF.Univalence
 
 \end{code}
 
@@ -167,7 +168,8 @@ more parsimonious.
 
 \begin{code}
 
-𝓛-resizing : Ω-resizing 𝓣 → (X : 𝓣 ̇ ) → 𝓛 X is 𝓣 small
+𝓛-resizing : Ω-resizing 𝓣
+           → (X : 𝓣 ̇ ) → 𝓛 X is 𝓣 small
 𝓛-resizing (O , ε) X = (Σ p ꞉ O , (up p holds → X)) , ≃-comp d e
  where
   up : O → Ω 𝓣
@@ -184,4 +186,5 @@ more parsimonious.
              ((λ (P , f ,  i) → (P , i) , f) ,
              (λ _ → refl) ,
              (λ _ → refl))
+
 \end{code}

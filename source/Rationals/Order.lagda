@@ -139,6 +139,9 @@ toℚ-< (x , a) (y , b) l = γ
 1/4<1/2 : 1/4 < 1/2
 1/4<1/2 = 1 , refl
 
+1/4<1 : 1/4 < 1ℚ
+1/4<1 = 2 , refl
+
 0<4/5 : 0ℚ < 4/5
 0<4/5 = 3 , refl
 
@@ -496,8 +499,8 @@ rounded-lemma₀ (succ a) =
 ℚ<-adding-zero : (p q : ℚ) → 0ℚ < p → 0ℚ < q → 0ℚ < p + q
 ℚ<-adding-zero p q l₁ l₂ = ℚ<-adding 0ℚ p 0ℚ q l₁ l₂
 
-ℚ<-not-itself : (p : ℚ) → ¬ (p < p)
-ℚ<-not-itself ((x , a) , _) l = ℤ-equal-not-less-than (x ℤ* (pos (succ a))) l
+ℚ<-irrefl : (p : ℚ) → ¬ (p < p)
+ℚ<-irrefl ((x , a) , _) l = ℤ-equal-not-less-than (x ℤ* (pos (succ a))) l
 
 ℚ≤-split : (p q : ℚ) → p ≤ q → (p < q) ∔ (p ＝ q)
 ℚ≤-split ((x , a) , α) ((y , b) , β) l = cases II III I
@@ -713,7 +716,7 @@ order1ℚ' p = ℚ<-subtraction-preserves-order p 1ℚ (0 , refl)
 
   γ : - y < - x ∔ (- y ＝ - x) → - y < - x
   γ (inl il) = il
-  γ (inr ir) = 𝟘-elim (ℚ<-not-itself x (transport (x <_) γ' l))
+  γ (inr ir) = 𝟘-elim (ℚ<-irrefl x (transport (x <_) γ' l))
    where
     γ' : y ＝ x
     γ' = y       ＝⟨ ℚ-minus-minus y    ⟩
@@ -768,7 +771,7 @@ order1ℚ' p = ℚ<-subtraction-preserves-order p 1ℚ (0 , refl)
   γ = ℚ<-coarser-than-≤ 0ℚ ((negsucc x , a) , α) l
 
 ℚ<-positive-not-zero : (p : ℚ) → 0ℚ < p → ¬ (p ＝ 0ℚ)
-ℚ<-positive-not-zero p 0<p e = ℚ<-not-itself p γ
+ℚ<-positive-not-zero p 0<p e = ℚ<-irrefl p γ
  where
   γ : p < p
   γ = transport (_< p) (e ⁻¹) 0<p
@@ -792,11 +795,11 @@ order1ℚ' p = ℚ<-subtraction-preserves-order p 1ℚ (0 , refl)
 
 ℚ-equal-or-less-than-is-prop : (x y : ℚ) → is-prop ((x ＝ y) ∔ (y < x))
 ℚ-equal-or-less-than-is-prop x y (inl l) (inl r) = ap inl (ℚ-is-set l r)
-ℚ-equal-or-less-than-is-prop x y (inl l) (inr r) = 𝟘-elim (ℚ<-not-itself y γ)
+ℚ-equal-or-less-than-is-prop x y (inl l) (inr r) = 𝟘-elim (ℚ<-irrefl y γ)
  where
   γ : y < y
   γ = transport (y <_) l r
-ℚ-equal-or-less-than-is-prop x y (inr l) (inl r) = 𝟘-elim (ℚ<-not-itself x γ)
+ℚ-equal-or-less-than-is-prop x y (inr l) (inl r) = 𝟘-elim (ℚ<-irrefl x γ)
  where
   γ : x < x
   γ = transport (_< x) (r ⁻¹) l
@@ -813,15 +816,15 @@ order1ℚ' p = ℚ<-subtraction-preserves-order p 1ℚ (0 , refl)
   II : (y₁ : (x ＝ y) ∔ (y < x))
      → ℚ-trichotomous x y ＝ inr y₁
      → ℚ-trichotomous x y ＝ inl l
-  II (inl e) _ = 𝟘-elim (ℚ<-not-itself y (transport (_< y) e l))
-  II (inr lt) _ = 𝟘-elim (ℚ<-not-itself x (ℚ<-trans x y x l lt))
+  II (inl e) _ = 𝟘-elim (ℚ<-irrefl y (transport (_< y) e l))
+  II (inr lt) _ = 𝟘-elim (ℚ<-irrefl x (ℚ<-trans x y x l lt))
 
 ℚ-trich-b : (x y : ℚ) → (r : (x ＝ y) ∔ (y < x)) → ℚ-trichotomous x y ＝ inr r
 ℚ-trich-b x y r = equality-cases (ℚ-trichotomous x y) I II
  where
   I : (l : x < y) → ℚ-trichotomous x y ＝ inl l → ℚ-trichotomous x y ＝ inr r
-  I l _ = Cases r (λ e → 𝟘-elim (ℚ<-not-itself y (transport (_< y) e l)))
-                   λ e → 𝟘-elim (ℚ<-not-itself x (ℚ<-trans x y x l e))
+  I l _ = Cases r (λ e → 𝟘-elim (ℚ<-irrefl y (transport (_< y) e l)))
+                   λ e → 𝟘-elim (ℚ<-irrefl x (ℚ<-trans x y x l e))
   II : (s : (x ＝ y) ∔ (y < x))
      → ℚ-trichotomous x y ＝ inr s
      → ℚ-trichotomous x y ＝ inr r
@@ -834,12 +837,12 @@ order1ℚ' p = ℚ<-subtraction-preserves-order p 1ℚ (0 , refl)
 ℚ-trich-c x e = equality-cases (ℚ-trichotomous x x) I II
  where
   I : (k : x < x) → ℚ-trichotomous x x ＝ inl k → ℚ-trichotomous x x ＝ inr e
-  I k f = 𝟘-elim (ℚ<-not-itself x k)
+  I k f = 𝟘-elim (ℚ<-irrefl x k)
 
   II : (k : (x ＝ x) ∔ (x < x))
      → ℚ-trichotomous x x ＝ inr k
      → ℚ-trichotomous x x ＝ inr e
-  II k l = Cases k III (λ - → 𝟘-elim (ℚ<-not-itself x -) )
+  II k l = Cases k III (λ - → 𝟘-elim (ℚ<-irrefl x -) )
    where
     III : x ＝ x → ℚ-trichotomous x x ＝ inr e
     III z = l ∙ ap inr (ℚ-equal-or-less-than-is-prop x x k e)
@@ -913,7 +916,7 @@ trisect x y l = (x + d * 1/3 , x + d * 2/3) , γ₁ , γ₂ , γ₃ , γ₄  , �
 ℚ≤-anti p q l₁ l₂ = I (ℚ≤-split p q l₁) (ℚ≤-split q p l₂)
  where
   I : (p < q) ∔ (p ＝ q) → (q < p) ∔ (q ＝ p) → p ＝ q
-  I (inl l) (inl r) = 𝟘-elim (ℚ<-not-itself p (ℚ<-trans p q p l r))
+  I (inl l) (inl r) = 𝟘-elim (ℚ<-irrefl p (ℚ<-trans p q p l r))
   I (inl l) (inr r) = r ⁻¹
   I (inr e) (inl f) = e
   I (inr e) (inr f) = e
