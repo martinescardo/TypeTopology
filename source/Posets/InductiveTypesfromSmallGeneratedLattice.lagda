@@ -855,7 +855,7 @@ will call 'local'. This monotone operator will have a least-fixed point when �
       is-qinv : qinv small-ϕ-closed-subsets-to-non-inc-points
       is-qinv = (non-inc-points-to-small-ϕ-closed-subsets , H , G)
 
-    module Small-𝓘nd-exists (ind-e : Inductively-Generated-Subset-Exists ϕ) where
+    module Small-𝓘nd-from-exists (ind-e : Inductively-Generated-Subset-Exists ϕ) where
 
      open Trun-Ind-Def ϕ ind-e
      open Inductively-Generated-Subset-Exists ind-e
@@ -868,6 +868,12 @@ will call 'local'. This monotone operator will have a least-fixed point when �
       small-𝓘-≃-𝓘nd : (b : B) → small-𝓘 b ≃ b ∈ 𝓘nd 
       small-𝓘-≃-𝓘nd b = pr₂ (j b)
 
+      small-𝓘-to-𝓘nd : (b : B) → small-𝓘 b → b ∈ 𝓘nd
+      small-𝓘-to-𝓘nd b = ⌜ small-𝓘-≃-𝓘nd b ⌝
+
+      𝓘nd-to-small-𝓘 : (b : B) → b ∈ 𝓘nd → small-𝓘 b
+      𝓘nd-to-small-𝓘 b = ⌜ small-𝓘-≃-𝓘nd b ⌝⁻¹
+
       small-𝓘-is-prop-valued : {b : B} → is-prop (small-𝓘 b)
       small-𝓘-is-prop-valued {b} = equiv-to-prop (small-𝓘-≃-𝓘nd b) (Ind-trunc b)
 
@@ -878,14 +884,14 @@ will call 'local'. This monotone operator will have a least-fixed point when �
                         → U ⊆ 𝓘-is-small-subset
                         → (b : B) → b ≤ᴮ (⋁ ((Σ b ꞉ B , b ∈ U) , q ∘ pr₁))
                         → b ∈ 𝓘-is-small-subset
-      small-𝓘-is-c-closed U C b o = {!!}
+      small-𝓘-is-c-closed U C b o = 𝓘nd-to-small-𝓘 b (𝓘nd-is-c-closed U (λ x → small-𝓘-to-𝓘nd x ∘ C x) b o)
       
       small-𝓘-is-ϕ-closed : (a : ⟨ L ⟩)
                         → (b : B)
                         → ϕ (a , b) holds
                         → ((b' : B) → b' ≤ᴮ a → b' ∈ 𝓘-is-small-subset)
                         → b ∈ 𝓘-is-small-subset
-      small-𝓘-is-ϕ-closed a b p f = {!!}
+      small-𝓘-is-ϕ-closed a b p f = 𝓘nd-to-small-𝓘 b (𝓘nd-is-ϕ-closed a b p (λ b' → small-𝓘-to-𝓘nd b' ∘ f b'))
 
       total-space-𝓘-is-small : (Σ b ꞉ B , b ∈ 𝓘nd) is 𝓥 small
       total-space-𝓘-is-small = ((Σ b ꞉ B , small-𝓘 b) , Σ-cong λ b → small-𝓘-≃-𝓘nd b)
