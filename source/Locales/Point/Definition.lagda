@@ -35,26 +35,26 @@ We define the standard notion of _completely prime filter_.
 
 \begin{code}
 
-module DefnOfCPF (X : Locale 𝓤 𝓥 𝓦) where
+module DefnOfCPF (X : Locale (𝓤 ⁺) 𝓤 𝓤) where
 
  open PosetNotation (poset-of (𝒪 X))
 
- closed-under-binary-meets : 𝓟 ⟨ 𝒪 X ⟩ → Ω 𝓤
+ closed-under-binary-meets : (⟨ 𝒪 X ⟩ → Ω 𝓤) → Ω (𝓤 ⁺)
  closed-under-binary-meets F =
   Ɐ U ꞉ ⟨ 𝒪 X ⟩ , Ɐ V ꞉ ⟨ 𝒪 X ⟩ , U ∈ₚ F ⇒ V ∈ₚ F ⇒ (U ∧[ 𝒪 X ] V) ∈ₚ F
 
- closed-under-finite-meets : 𝓟 ⟨ 𝒪 X ⟩ → Ω 𝓤
+ closed-under-finite-meets : (⟨ 𝒪 X ⟩ → Ω 𝓤) → Ω (𝓤 ⁺)
  closed-under-finite-meets F = 𝟏[ 𝒪 X ] ∈ₚ F ∧ closed-under-binary-meets F
 
- is-upwards-closed : 𝓟 ⟨ 𝒪 X ⟩ → Ω (𝓤 ⊔ 𝓥)
- is-upwards-closed F = Ɐ U ꞉ ⟨ 𝒪 X ⟩ , Ɐ V ꞉ ⟨ 𝒪 X ⟩ , U ∈ₚ F ⇒ U ≤ V ⇒ V ∈ₚ F
+ is-upwards-closed : (⟨ 𝒪 X ⟩ → Ω 𝓤) → Ω (𝓤 ⁺)
+ is-upwards-closed ϕ = Ɐ U ꞉ ⟨ 𝒪 X ⟩ , Ɐ V ꞉ ⟨ 𝒪 X ⟩ , (ϕ U) ⇒ U ≤ V ⇒ ϕ V
 
- is-filter : 𝓟 ⟨ 𝒪 X ⟩ → Ω (𝓤 ⊔ 𝓥)
- is-filter F = is-upwards-closed F ∧ closed-under-finite-meets F
+ is-filter : (⟨ 𝒪 X ⟩ → Ω 𝓤) → Ω (𝓤 ⁺)
+ is-filter ϕ = is-upwards-closed ϕ ∧ closed-under-finite-meets ϕ
 
- is-completely-prime : 𝓟 ⟨ 𝒪 X ⟩ → Ω (𝓤 ⊔ 𝓦 ⁺)
- is-completely-prime F = Ɐ S ꞉ Fam 𝓦 ⟨ 𝒪 X ⟩ ,
-                          (⋁[ 𝒪 X ] S) ∈ₚ F ⇒ (Ǝ i ꞉ index S , (S [ i ]) ∈ F)
+ is-completely-prime : (⟨ 𝒪 X ⟩ → Ω 𝓤) → Ω (𝓤 ⁺)
+ is-completely-prime ϕ = Ɐ S ꞉ Fam 𝓤 ⟨ 𝒪 X ⟩ ,
+                          ϕ (⋁[ 𝒪 X ] S) ⇒ (Ǝ i ꞉ index S , ϕ (S [ i ]) holds)
 
 \end{code}
 
@@ -62,8 +62,8 @@ The type of points of a locale is then the completely prime filters.
 
 \begin{code}
 
- Point : 𝓤 ⁺ ⊔ 𝓥 ⊔ 𝓦 ⁺  ̇
- Point = Σ F ꞉ 𝓟 ⟨ 𝒪 X ⟩ , (is-filter F ∧ is-completely-prime F) holds
+ Point : 𝓤 ⁺  ̇
+ Point = Σ ϕ ꞉ (⟨ 𝒪 X ⟩ → Ω 𝓤) , (is-filter ϕ ∧ is-completely-prime ϕ) holds
 
 \end{code}
 
