@@ -57,6 +57,9 @@ module DefnOfCPF (X : Locale (𝓤 ⁺) 𝓤 𝓤) where
  is-completely-prime ϕ = Ɐ S ꞉ Fam 𝓤 ⟨ 𝒪 X ⟩ ,
                           ϕ (⋁[ 𝒪 X ] S) ⇒ (Ǝ i ꞉ index S , ϕ (S [ i ]) holds)
 
+ is-cpf : (⟨ 𝒪 X ⟩ → Ω 𝓤) → Ω (𝓤 ⁺)
+ is-cpf ϕ = is-filter ϕ ∧ is-completely-prime ϕ
+
 \end{code}
 
 The type of points of a locale is then the completely prime filters.
@@ -64,7 +67,7 @@ The type of points of a locale is then the completely prime filters.
 \begin{code}
 
  Point : 𝓤 ⁺  ̇
- Point = Σ ϕ ꞉ (⟨ 𝒪 X ⟩ → Ω 𝓤) , (is-filter ϕ ∧ is-completely-prime ϕ) holds
+ Point = Σ ϕ ꞉ (⟨ 𝒪 X ⟩ → Ω 𝓤) , is-cpf ϕ holds
 
 \end{code}
 
@@ -73,7 +76,8 @@ locale `X` must be in bijection with continuous maps `𝟏 → X` (where `Ω` de
 the terminal locale).
 
 
-We give an equivalent definition using records for the convenience of having
+We give an equivalent definition using records for the convenienc
+e of having
 projections
 
 \begin{code}
@@ -82,10 +86,14 @@ record Pointᵣ (X : Locale (𝓤 ⁺) 𝓤 𝓤) : 𝓤 ⁺  ̇ where
  open DefnOfCPF X
 
  field
-  point : ⟨ 𝒪 X ⟩ → Ω 𝓤
+  point        : ⟨ 𝒪 X ⟩ → Ω 𝓤
+  point-is-cpf : is-cpf point holds
 
-  point-is-filter           : is-filter           point holds
-  point-is-completely-prime : is-completely-prime point holds
+ point-is-filter : is-filter point holds
+ point-is-filter = pr₁ point-is-cpf
+
+ point-is-completely-prime : is-completely-prime point holds
+ point-is-completely-prime = pr₂ point-is-cpf
 
  point-is-upwards-closed : is-upwards-closed point holds
  point-is-upwards-closed = pr₁ point-is-filter
@@ -102,11 +110,7 @@ record Pointᵣ (X : Locale (𝓤 ⁺) 𝓤 𝓤) : 𝓤 ⁺  ̇ where
 open DefnOfCPF
 
 to-pointᵣ : (X : Locale (𝓤 ⁺) 𝓤 𝓤) → Point X → Pointᵣ X
-to-pointᵣ X x = record
-                 { point                     = pr₁ x
-                 ; point-is-filter           = pr₁ (pr₂ x)
-                 ; point-is-completely-prime = pr₂ (pr₂ x)
-                 }
+to-pointᵣ X (ϕ , cpf) = record { point = ϕ ; point-is-cpf = cpf }
 
 to-point : (X : Locale (𝓤 ⁺) 𝓤 𝓤) → Pointᵣ X → Point X
 to-point X x = point x , point-is-filter x , point-is-completely-prime x
@@ -116,5 +120,53 @@ to-point X x = point x , point-is-filter x , point-is-completely-prime x
 point-rec-equiv : (X : Locale (𝓤 ⁺) 𝓤 𝓤) → Pointᵣ X ≃ Point X
 point-rec-equiv X =
  to-point X , (to-pointᵣ X , λ _ → refl) , (to-pointᵣ X) , (λ _ → refl)
+
+\end{code}
+
+\begin{code}
+
+record Point′ᵣ (X : Locale (𝓤 ⁺) 𝓤 𝓤) : 𝓤 ⁺  ̇ where
+ field
+  point                     : ⟨ 𝒪 X ⟩ → Ω 𝓤
+  point-is-upwards-closed   : is-upwards-closed X point holds
+  point-contains-top        : (𝟏[ 𝒪 X ] ∈ₚ point) holds
+  point-is-closed-under-∧   : closed-under-binary-meets X point holds
+  point-is-completely-prime : is-completely-prime X point holds
+
+ point-is-cpf : is-cpf X point holds
+ point-is-cpf = (⦅𝟏⦆ , ⦅𝟐⦆ , ⦅𝟑⦆) , ⦅𝟒⦆
+  where
+   ⦅𝟏⦆ : is-upwards-closed X point holds
+   ⦅𝟏⦆ = point-is-upwards-closed
+
+   ⦅𝟐⦆ : 𝟏[ 𝒪 X ] ∈ point
+   ⦅𝟐⦆ = point-contains-top
+
+   ⦅𝟑⦆ : closed-under-binary-meets X point holds
+   ⦅𝟑⦆ = point-is-closed-under-∧
+
+   ⦅𝟒⦆ : is-completely-prime X point holds
+   ⦅𝟒⦆ = point-is-completely-prime
+
+\end{code}
+
+\begin{code}
+
+to-point′ᵣ : (X : Locale (𝓤 ⁺) 𝓤 𝓤) → Pointᵣ X → Point′ᵣ X
+to-point′ᵣ X 𝓍 =
+ record
+  { point                     = Pointᵣ.point 𝓍
+  ; point-is-upwards-closed   = Pointᵣ.point-is-upwards-closed 𝓍
+  ; point-contains-top        = Pointᵣ.point-contains-top 𝓍
+  ; point-is-closed-under-∧   = Pointᵣ.point-is-closed-under-∧ 𝓍
+  ; point-is-completely-prime = Pointᵣ.point-is-completely-prime 𝓍
+  }
+
+point′ᵣ-to-pointᵣ : (X : Locale (𝓤 ⁺) 𝓤 𝓤) → Point′ᵣ X → Pointᵣ X
+point′ᵣ-to-pointᵣ X 𝓍 =
+ record
+  { point        = Point′ᵣ.point 𝓍
+  ; point-is-cpf = Point′ᵣ.point-is-cpf 𝓍
+  }
 
 \end{code}
