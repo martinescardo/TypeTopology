@@ -61,17 +61,6 @@ open import UF.Subsingletons-FunExt
   pc : {p q : Ω 𝓤} → Σ f ꞉ (p ＝ q → p ＝ q) , wconstant f
   pc {p} {q} = (f p q , wconstant-f p q)
 
-powersets-are-sets'' : funext 𝓤 (𝓥 ⁺)
-                     → funext 𝓥 𝓥
-                     → propext 𝓥
-                     → {A : 𝓤 ̇ } → is-set (A → Ω 𝓥)
-powersets-are-sets'' fe fe' pe = Π-is-set fe (λ x → Ω-is-set fe' pe)
-
-powersets-are-sets : funext 𝓥 (𝓥 ⁺)
-                   → propext 𝓥
-                   → {A : 𝓥 ̇ } → is-set (A → Ω 𝓥)
-powersets-are-sets {𝓥} fe = powersets-are-sets'' fe (lower-funext 𝓥 (𝓥 ⁺) fe)
-
 equal-⊤-≃ : propext 𝓤
           → funext 𝓤 𝓤
           → (p : Ω 𝓤) → (p ＝ ⊤) ≃ (p holds)

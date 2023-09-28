@@ -19,6 +19,7 @@ replacement assumption (again, see UF.Size.lagda for details).
 {-# OPTIONS --safe --without-K --exact-split #-}
 
 open import UF.FunExt
+open import UF.Powerset
 open import UF.PropTrunc
 open import UF.Sets
 open import UF.Sets-Properties

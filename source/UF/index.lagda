@@ -37,6 +37,7 @@ import UF.Lower-FunExt
 import UF.NotNotStablePropositions
 import UF.PairFun
 import UF.Powerset
+import UF.Powerset-MultiUniverse
 import UF.Powerset-Fin
 import UF.Powerset-Resizing
 import UF.PreSIP
