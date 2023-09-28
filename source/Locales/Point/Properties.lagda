@@ -24,7 +24,6 @@ module Locales.Point.Properties (pt : propositional-truncations-exist)
 
 open import Slice.Family
 open import UF.Powerset
--- open import Slice.Family
 open import UF.SubtypeClassifier
 
 open import Locales.Frame            pt fe
@@ -122,25 +121,43 @@ We by `𝟏L` the terminal locale.
 
 open DefnOfCPF
 
-𝔰₀-gives-filter : (X : Locale (𝓤 ⁺) 𝓤 𝓤) (𝒻 : 𝟏L ─c→ X)
-                → is-filter X (𝔰₀ X 𝒻) holds
-𝔰₀-gives-filter X 𝒻 = † , ‡
+𝔰₀-gives-cpf : (X : Locale (𝓤 ⁺) 𝓤 𝓤) (𝒻 : 𝟏L ─c→ X)
+                → is-cpf X (𝔰₀ X 𝒻) holds
+𝔰₀-gives-cpf X 𝒻 = Point′ᵣ.point-is-cpf 𝓍
  where
-  † : is-upwards-closed X (𝔰₀ X 𝒻) holds
-  † = {!!}
+  open ContinuousMapNotation 𝟏L X using (_⋆∙_)
 
-  ‡ : {!!}
-  ‡ = {!!}
+  υ : is-upwards-closed X (𝒻 ⋆∙_) holds
+  υ U V p q =
+   frame-morphisms-are-monotonic (𝒪 X) (𝒪 𝟏L) (𝒻 ⋆∙_) (𝒻 .pr₂) (U , V) p q
 
-\end{code}
+  τ : 𝟏[ 𝒪 X ] ∈ (𝒻 ⋆∙_)
+  τ = equal-⊤-gives-holds
+       (𝒻 ⋆∙ 𝟏[ 𝒪 X ])
+       (frame-homomorphisms-preserve-top (𝒪 X) (𝒪 𝟏L) 𝒻)
 
--- to-cpf : (X : Locale (𝓤 ⁺) 𝓤 𝓤) → (⟨ 𝒪 X ⟩ → ⟨ 𝒪 𝟏L ⟩) → Point X
--- to-cpf X P = {!!} , {!!}
+  μ : closed-under-binary-meets X (𝒻 ⋆∙_) holds
+  μ U V p q = equal-⊤-gives-holds
+               (𝒻 ⋆∙ (U ∧[ 𝒪 X ] V))
+               †
+   where
+    † : 𝒻 ⋆∙ meet-of (𝒪 X) U V ＝ ⊤
+    † = (𝒻 ⋆∙ meet-of (𝒪 X) U V)  ＝⟨ frame-homomorphisms-preserve-meets (𝒪 X) (𝒪 𝟏L) 𝒻 U V ⟩
+        𝒻 ⋆∙ U ∧[ 𝒪 𝟏L ] (𝒻 ⋆∙ V) ＝⟨ ap (λ - → - ∧ (𝒻 ⋆∙ V)) (holds-gives-equal-⊤ pe fe (𝒻 ⋆∙ U) p) ⟩
+        ⊤      ∧[ 𝒪 𝟏L ] (𝒻 ⋆∙ V) ＝⟨ ap (λ - → ⊤ ∧ -) (holds-gives-equal-⊤ pe fe (𝒻 ⋆∙ V) q) ⟩
+        ⊤      ∧[ 𝒪 𝟏L ] ⊤        ＝⟨ ∧[ 𝒪 𝟏L ]-is-idempotent ⊤ ⁻¹ ⟩
+        ⊤ ∎
 
--- tmp : ⟨ 𝒪 𝟏L ⟩ ＝ Ω (𝓤 ⁺)
--- tmp = refl
+  cp : is-completely-prime X (𝒻 ⋆∙_) holds
+  cp S δ = {!!}
 
--- to-map : (X : Locale (𝓤 ⁺) 𝓤 𝓤) → Point X → 𝟏L ─c→ X
--- to-map X ℱ = {!to-predicate X ℱ!} , {!!}
+  𝓍 : Point′ᵣ X
+  𝓍 = record
+       { point                     = 𝒻 ⋆∙_
+       ; point-is-upwards-closed   = υ
+       ; point-contains-top        = τ
+       ; point-is-closed-under-∧   = μ
+       ; point-is-completely-prime = cp
+       }
 
 \end{code}
