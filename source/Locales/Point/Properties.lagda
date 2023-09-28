@@ -118,6 +118,22 @@ We by `𝟏L` the terminal locale.
 
 \end{code}
 
+\begin{code}
+
+open DefnOfCPF
+
+𝔰₀-gives-filter : (X : Locale (𝓤 ⁺) 𝓤 𝓤) (𝒻 : 𝟏L ─c→ X)
+                → is-filter X (𝔰₀ X 𝒻) holds
+𝔰₀-gives-filter X 𝒻 = † , ‡
+ where
+  † : is-upwards-closed X (𝔰₀ X 𝒻) holds
+  † = {!!}
+
+  ‡ : {!!}
+  ‡ = {!!}
+
+\end{code}
+
 -- to-cpf : (X : Locale (𝓤 ⁺) 𝓤 𝓤) → (⟨ 𝒪 X ⟩ → ⟨ 𝒪 𝟏L ⟩) → Point X
 -- to-cpf X P = {!!} , {!!}
 
