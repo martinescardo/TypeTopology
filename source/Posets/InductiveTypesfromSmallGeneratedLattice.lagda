@@ -909,11 +909,66 @@ will call 'local'. This monotone operator will have a least-fixed point when �
 
       open Local-ϕ ϕ i
 
-      Γ-has-least-fixed-point : (Γ sup-𝓘 ＝ sup-𝓘) × ((a : ⟨ L ⟩) → (sup-𝓘 ≤ a) holds)
-      Γ-has-least-fixed-point = ({!!} , {!!})
+      Γ-has-least-fixed-point : (Γ sup-𝓘 ＝ sup-𝓘) × ((a : ⟨ L ⟩) → (Γ a ＝ a) → (sup-𝓘 ≤ a) holds)
+      Γ-has-least-fixed-point = (is-antisymmetric-for L Γ-sup-≤-sup sup-≤-Γ-sup , sup-𝓘-≤)
        where
         Γ-sup-≤-sup : (Γ sup-𝓘 ≤ sup-𝓘) holds
         Γ-sup-≤-sup = pr₂ (small-ϕ-closed-subsets-to-non-inc-points
                           (𝓘-is-small-subset , small-𝓘-is-c-closed , small-𝓘-is-ϕ-closed))
-       
+        sup-≤-Γ-sup : (sup-𝓘 ≤ Γ sup-𝓘) holds
+        sup-≤-Γ-sup = transport (λ z → (sup-𝓘 ≤ z) holds) sup-Q-＝-Γ-sup sup-𝓘-≤-sup-Q
+         where
+          open Subsets-Order-Joins L B q hiding (_≤_ ; ⋁_)
+          Γ-Γ-sup-≤-Γ-sup : (Γ (Γ sup-𝓘) ≤ Γ sup-𝓘) holds
+          Γ-Γ-sup-≤-Γ-sup = Γ-is-monotone (Γ sup-𝓘) sup-𝓘 Γ-sup-≤-sup
+          Q-Γ-sup : 𝓟 {𝓥} B
+          Q-Γ-sup = pr₁ (non-inc-points-to-small-ϕ-closed-subsets (Γ sup-𝓘 , Γ-Γ-sup-≤-Γ-sup))
+          Q-is-c-closed : (U : 𝓟 {𝓥} B)
+                        → (U ⊆ Q-Γ-sup)
+                        → ((b : B) → (b ≤ᴮ (⋁ ((Σ b ꞉ B , b ∈ U) , q ∘ pr₁))) →  b ∈ Q-Γ-sup)
+          Q-is-c-closed = pr₁ (pr₂ (non-inc-points-to-small-ϕ-closed-subsets (Γ sup-𝓘 , Γ-Γ-sup-≤-Γ-sup)))
+          Q-is-ϕ-closed : (a' : ⟨ L ⟩)
+                        → (b : B)
+                        → (ϕ (a' , b) holds)
+                        → ((b' : B) → (b' ≤ᴮ a' → b' ∈ Q-Γ-sup)) → b ∈ Q-Γ-sup
+          Q-is-ϕ-closed = pr₂ (pr₂ (non-inc-points-to-small-ϕ-closed-subsets (Γ sup-𝓘 , Γ-Γ-sup-≤-Γ-sup)))
+          𝓘nd-⊆-Q-Γ-sup : 𝓘nd ⊆ Q-Γ-sup
+          𝓘nd-⊆-Q-Γ-sup = 𝓘nd-is-initial Q-Γ-sup Q-is-c-closed Q-is-ϕ-closed
+          𝓘-is-small-subset-⊆-Q-Γ-sup : 𝓘-is-small-subset ⊆ Q-Γ-sup
+          𝓘-is-small-subset-⊆-Q-Γ-sup = λ z → 𝓘nd-⊆-Q-Γ-sup z ∘ small-𝓘-to-𝓘nd z
+          sup-Q : ⟨ L ⟩
+          sup-Q = ⋁ ((Σ b ꞉ B , b ∈ Q-Γ-sup) , q ∘ pr₁)
+          sup-𝓘-≤-sup-Q : (sup-𝓘 ≤ sup-Q) holds
+          sup-𝓘-≤-sup-Q = joins-preserve-containment {𝓘-is-small-subset} {Q-Γ-sup} 𝓘-is-small-subset-⊆-Q-Γ-sup
+          sup-Q-＝-Γ-sup : sup-Q ＝ Γ sup-𝓘
+          sup-Q-＝-Γ-sup = is-sup'ᴮ (Γ sup-𝓘) ⁻¹
+        sup-𝓘-≤ : (a : ⟨ L ⟩) → (Γ a ＝ a) → (sup-𝓘 ≤ a) holds
+        sup-𝓘-≤ a p = transport (λ z → (sup-𝓘 ≤ z) holds) sup-P-＝-a sup-𝓘-≤-sup-P
+         where
+          open Subsets-Order-Joins L B q hiding (_≤_ ; ⋁_)
+          Γ-a-≤-a : (Γ a ≤ a) holds
+          Γ-a-≤-a = transport (λ z → (Γ a ≤ z) holds) p (is-reflexive-for L (Γ a))
+          P-a : 𝓟 {𝓥} B
+          P-a = pr₁ (non-inc-points-to-small-ϕ-closed-subsets (a , Γ-a-≤-a))
+          P-is-c-closed : (U : 𝓟 {𝓥} B)
+                        → (U ⊆ P-a)
+                        → ((b : B) → (b ≤ᴮ (⋁ ((Σ b ꞉ B , b ∈ U) , q ∘ pr₁))) →  b ∈ P-a)
+          P-is-c-closed = pr₁ (pr₂ (non-inc-points-to-small-ϕ-closed-subsets (a , Γ-a-≤-a)))
+          P-is-ϕ-closed : (a' : ⟨ L ⟩)
+                        → (b : B)
+                        → (ϕ (a' , b) holds)
+                        → ((b' : B) → (b' ≤ᴮ a' → b' ∈ P-a)) → b ∈ P-a
+          P-is-ϕ-closed = pr₂ (pr₂ (non-inc-points-to-small-ϕ-closed-subsets (a , Γ-a-≤-a)))
+          𝓘nd-⊆-P-a : 𝓘nd ⊆ P-a
+          𝓘nd-⊆-P-a = 𝓘nd-is-initial P-a P-is-c-closed P-is-ϕ-closed
+          𝓘-is-small-subset-⊆-P-a : 𝓘-is-small-subset ⊆ P-a
+          𝓘-is-small-subset-⊆-P-a = λ z → 𝓘nd-⊆-P-a z ∘ small-𝓘-to-𝓘nd z
+          sup-P : ⟨ L ⟩
+          sup-P = ⋁ ((Σ b ꞉ B , b ∈ P-a) , q ∘ pr₁)
+          sup-𝓘-≤-sup-P : (sup-𝓘 ≤ sup-P) holds
+          sup-𝓘-≤-sup-P = joins-preserve-containment {𝓘-is-small-subset} {P-a} 𝓘-is-small-subset-⊆-P-a
+          sup-P-＝-a : sup-P ＝ a
+          sup-P-＝-a = is-sup'ᴮ a ⁻¹
+
+
 \end{code}
