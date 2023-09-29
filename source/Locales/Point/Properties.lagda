@@ -138,9 +138,7 @@ open DefnOfCPF
        (frame-homomorphisms-preserve-top (𝒪 X) (𝒪 𝟏L) 𝒻)
 
   μ : closed-under-binary-meets X (𝒻 ⋆∙_) holds
-  μ U V p q = equal-⊤-gives-holds
-               (𝒻 ⋆∙ (U ∧[ 𝒪 X ] V))
-               †
+  μ U V p q = equal-⊤-gives-holds (𝒻 ⋆∙ (U ∧[ 𝒪 X ] V)) †
    where
     † : 𝒻 ⋆∙ meet-of (𝒪 X) U V ＝ ⊤
     † = (𝒻 ⋆∙ (U ∧[ 𝒪 X ] V))
