@@ -166,6 +166,7 @@ import TypeTopology.index
 import UF.index
 import Various.index
 import W.index
+import WildCategories.index
 
 \end{code}
 
