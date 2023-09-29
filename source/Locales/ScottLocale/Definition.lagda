@@ -28,7 +28,7 @@ We assume the existence of propositional truncations as well as function extensi
 
 \begin{code}
 
-module Locales.ScottLocale
+module Locales.ScottLocale.Definition
         (pt : propositional-truncations-exist)
         (fe : Fun-Ext)
         (𝓥  : Universe)
