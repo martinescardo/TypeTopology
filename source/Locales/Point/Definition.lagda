@@ -22,7 +22,7 @@ module Locales.Point.Definition (pt : propositional-truncations-exist)
                                 (fe : Fun-Ext)
                                 where
 
-open import UF.Powerset
+open import UF.Powerset-MultiUniverse
 open import Slice.Family
 open import Locales.Frame  pt fe
 
@@ -40,24 +40,24 @@ module DefnOfCPF (X : Locale (𝓤 ⁺) 𝓤 𝓤) where
 
  open PosetNotation (poset-of (𝒪 X))
 
- closed-under-binary-meets : (⟨ 𝒪 X ⟩ → Ω 𝓤) → Ω (𝓤 ⁺)
+ closed-under-binary-meets : 𝓟 {𝓤} ⟨ 𝒪 X ⟩ → Ω (𝓤 ⁺)
  closed-under-binary-meets F =
   Ɐ U ꞉ ⟨ 𝒪 X ⟩ , Ɐ V ꞉ ⟨ 𝒪 X ⟩ , U ∈ₚ F ⇒ V ∈ₚ F ⇒ (U ∧[ 𝒪 X ] V) ∈ₚ F
 
- closed-under-finite-meets : (⟨ 𝒪 X ⟩ → Ω 𝓤) → Ω (𝓤 ⁺)
+ closed-under-finite-meets : 𝓟 ⟨ 𝒪 X ⟩ → Ω (𝓤 ⁺)
  closed-under-finite-meets ϕ = 𝟏[ 𝒪 X ] ∈ₚ ϕ ∧ closed-under-binary-meets ϕ
 
- is-upwards-closed : (⟨ 𝒪 X ⟩ → Ω 𝓤) → Ω (𝓤 ⁺)
+ is-upwards-closed : 𝓟 {𝓤} ⟨ 𝒪 X ⟩ → Ω (𝓤 ⁺)
  is-upwards-closed ϕ = Ɐ U ꞉ ⟨ 𝒪 X ⟩ , Ɐ V ꞉ ⟨ 𝒪 X ⟩ , U ≤ V ⇒ ϕ U ⇒ ϕ V
 
- is-filter : (⟨ 𝒪 X ⟩ → Ω 𝓤) → Ω (𝓤 ⁺)
+ is-filter : 𝓟 {𝓤} ⟨ 𝒪 X ⟩ → Ω (𝓤 ⁺)
  is-filter ϕ = is-upwards-closed ϕ ∧ closed-under-finite-meets ϕ
 
- is-completely-prime : (⟨ 𝒪 X ⟩ → Ω 𝓤) → Ω (𝓤 ⁺)
+ is-completely-prime : 𝓟 {𝓤} ⟨ 𝒪 X ⟩ → Ω (𝓤 ⁺)
  is-completely-prime ϕ = Ɐ S ꞉ Fam 𝓤 ⟨ 𝒪 X ⟩ ,
                           ϕ (⋁[ 𝒪 X ] S) ⇒ (Ǝ i ꞉ index S , ϕ (S [ i ]) holds)
 
- is-cpf : (⟨ 𝒪 X ⟩ → Ω 𝓤) → Ω (𝓤 ⁺)
+ is-cpf : 𝓟 {𝓤} ⟨ 𝒪 X ⟩ → Ω (𝓤 ⁺)
  is-cpf ϕ = is-filter ϕ ∧ is-completely-prime ϕ
 
 \end{code}
@@ -67,7 +67,7 @@ The type of points of a locale is then the completely prime filters.
 \begin{code}
 
  Point : 𝓤 ⁺  ̇
- Point = Σ ϕ ꞉ (⟨ 𝒪 X ⟩ → Ω 𝓤) , is-cpf ϕ holds
+ Point = Σ ϕ ꞉ 𝓟 {𝓤} ⟨ 𝒪 X ⟩ , is-cpf ϕ holds
 
 \end{code}
 
@@ -91,7 +91,7 @@ record Pointᵣ (X : Locale (𝓤 ⁺) 𝓤 𝓤) : 𝓤 ⁺  ̇ where
  open DefnOfCPF X
 
  field
-  point        : ⟨ 𝒪 X ⟩ → Ω 𝓤
+  point        : 𝓟 {𝓤} ⟨ 𝒪 X ⟩
   point-is-cpf : is-cpf point holds
 
  point-is-filter : is-filter point holds
@@ -132,7 +132,7 @@ point-rec-equiv X =
 
 record Point′ᵣ (X : Locale (𝓤 ⁺) 𝓤 𝓤) : 𝓤 ⁺  ̇ where
  field
-  point                     : ⟨ 𝒪 X ⟩ → Ω 𝓤
+  point                     : 𝓟 {𝓤} ⟨ 𝒪 X ⟩
   point-is-upwards-closed   : is-upwards-closed X point holds
   point-contains-top        : (𝟏[ 𝒪 X ] ∈ₚ point) holds
   point-is-closed-under-∧   : closed-under-binary-meets X point holds
