@@ -43,7 +43,7 @@ open AllCombinators pt fe
 
 \end{code}
 
-We by `𝟏L` the terminal locale.
+We denote by `𝟏L` the terminal locale.
 
 \begin{code}
 
@@ -51,6 +51,12 @@ We by `𝟏L` the terminal locale.
 𝟏L = 𝟏Loc pe
 
 \end{code}
+
+The map sending a CPF to a continuous map `𝟏 → X` is called `𝔯` (for "retract")
+and its section is called `𝔰` (for "section"). We first define the underlying
+functions of these and call them `𝔯₀` and `𝔰₀`. We then prove separately that
+the results they give satisfy the desired conditions of being a continuous map
+and being a completely prime filter (respectively).
 
 \begin{code}
 
