@@ -57,7 +57,7 @@ module DefnOfCPF (X : Locale (𝓤 ⁺) 𝓤 𝓤) where
  is-completely-prime ϕ = Ɐ S ꞉ Fam 𝓤 ⟨ 𝒪 X ⟩ ,
                           ϕ (⋁[ 𝒪 X ] S) ⇒ (Ǝ i ꞉ index S , ϕ (S [ i ]) holds)
 
- is-cpf : 𝓟 {𝓤} ⟨ 𝒪 X ⟩ → Ω (𝓤 ⁺)
+ is-cpf : 𝓟 ⟨ 𝒪 X ⟩ → Ω (𝓤 ⁺)
  is-cpf ϕ = is-filter ϕ ∧ is-completely-prime ϕ
 
 \end{code}
@@ -91,7 +91,7 @@ record Pointᵣ (X : Locale (𝓤 ⁺) 𝓤 𝓤) : 𝓤 ⁺  ̇ where
  open DefnOfCPF X
 
  field
-  point        : 𝓟 {𝓤} ⟨ 𝒪 X ⟩
+  point        : 𝓟 ⟨ 𝒪 X ⟩
   point-is-cpf : is-cpf point holds
 
  point-is-filter : is-filter point holds
