@@ -486,120 +486,13 @@ module Inductive-Definitions (𝓤 𝓦 𝓥 : Universe) (L : Sup-Lattice 𝓤 �
 
 \end{code}
 
-We leave this section in for now while we expirement with the new formulation. One could argue that
-the existence of this section is in a small way a proof of concept. Although it fails due the truncation
-not occuring simulataneously with the other constructors as the type is freely generated.
-
-\begin{code}
-
-   data I (ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)) : B → (𝓤 ⊔ 𝓥 ⁺)  ̇ where
-    c-cl : (U : B → Ω 𝓥)
-         → ((b : B) → ((U b) holds → I ϕ b))
-         → (b : B) → b ≤ᴮ (⋁ ((Σ b ꞉ B , (U b) holds) , q ∘ pr₁))
-         → I ϕ b
-    ϕ-cl : (a : ⟨ L ⟩)
-         → (b : B)
-         → (ϕ (a , b)) holds
-         → ((b' : B) → (b' ≤ᴮ a → I ϕ b'))
-         → I ϕ b
-
-   I-induction : (P : {ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)} → (b : B) → I ϕ b → 𝓣  ̇)
-               → {ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)}
-               → ((U : B → Ω 𝓥) → (f : (x : B) → (U x holds → I ϕ x))
-                → ((x : B) → (u : U x holds) → P x (f x u))
-                → (b : B) → (g : (b ≤ᴮ (⋁ ((Σ x ꞉ B , U x holds) , q ∘ pr₁))))
-                → P b (c-cl U f b g))
-               → ((a : ⟨ L ⟩)
-                → (b : B)
-                → (p : ϕ (a , b) holds)
-                → (f : (x : B) → (x ≤ᴮ a → I ϕ x))
-                → ((x : B) → (o : x ≤ᴮ a) → P x (f x o))
-                → P b (ϕ-cl a b p f))
-               → (b : B) → (i : I ϕ b) → P b i
-   I-induction P {ϕ} IH₁ IH₂ = θ
-    where
-     θ : (b : B) → (i : I ϕ b) → P b i
-     θ b (c-cl U f .b g) = IH₁ U f r b g
-      where
-       r : (x : B) → (u : U x holds) → P x (f x u)
-       r x u = θ x (f x u)
-     θ b (ϕ-cl a .b p f) = IH₂ a b p f r
-      where
-       r : (x : B) → (o : x ≤ᴮ a) → P x (f x o)
-       r x o = θ x (f x o)
-
-   I-recursion : {ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)}
-               → (P : B → 𝓣  ̇)
-               → ((U : B → Ω 𝓥)
-                → ((x : B) → (U x holds → I ϕ x))
-                → ((x : B) → (U x holds → P x))
-                → (b : B) → (b ≤ᴮ (⋁ ((Σ b ꞉ B , U b holds) , q ∘ pr₁)))
-                → P b)
-               → ((a : ⟨ L ⟩)
-                → (b : B)
-                → (ϕ (a , b) holds)
-                → ((x : B) → (x ≤ᴮ a → I ϕ x))
-                → ((x : B) → (x ≤ᴮ a → P x))
-                → P b)
-               → (b : B) → I ϕ b → P b
-   I-recursion {ϕ} P = I-induction (λ b → (λ _ → P b))
-
-   I-is-initial : {ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)}
-                → (P : B → 𝓣  ̇)
-                → ((U : B → Ω 𝓥)
-                 → ((b : B) → (U b holds → P b))
-                 → ((b : B) → (b ≤ᴮ (⋁ ((Σ b ꞉ B , U b holds) , q ∘ pr₁))) → P b))
-                → ((a : ⟨ L ⟩)
-                 → (b : B)
-                 → (ϕ (a , b) holds)
-                 → ((b' : B) → (b' ≤ᴮ a → P b')) → P b)
-                → (b : B) → I ϕ b → P b
-   I-is-initial {𝓣} {ϕ} P IH₁ IH₂ b i = I-recursion P R S b i
-    where
-     R : (U : B → Ω 𝓥)
-       → ((x : B) → U x holds → I ϕ x)
-       → ((x : B) → U x holds → P x)
-       → (x : B) → x ≤ᴮ (⋁ (Sigma B (λ b₂ → U b₂ holds) , q ∘ pr₁))
-       → P x
-     R U f f' x g = IH₁ U f' x g
-     S : (a : ⟨ L ⟩)
-       → (b : B)
-       → ϕ (a , b) holds
-       → ((x : B) → x ≤ᴮ a → I ϕ x)
-       → ((x : B) → x ≤ᴮ a → P x)
-       → P b
-     S a b p f f' = IH₂ a b p f'
-
-   open PropositionalTruncation pt
-   open Universe-Polymorphic-Powerset 𝓥
-
-   𝓘 : (ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)) → 𝓟 {𝓤 ⊔ 𝓥 ⁺} B
-   𝓘 ϕ b = (∥ I ϕ b ∥ , ∥∥-is-prop)
-
-   𝓘-is-least-closed-subset : {ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)}
-                            → (P : 𝓟 {𝓣} B)
-                            → ((U : 𝓟 {𝓥} B)
-                             → (U ⊆ P)
-                             → ((b : B) → (b ≤ᴮ (⋁ ((Σ b ꞉ B , b ∈ U) , q ∘ pr₁))) →  b ∈ P))
-                            → ((a : ⟨ L ⟩)
-                             → (b : B)
-                             → (ϕ (a , b) holds)
-                             → ((b' : B) → (b' ≤ᴮ a → b' ∈ P)) → b ∈ P)
-                            → 𝓘 ϕ ⊆ P
-   𝓘-is-least-closed-subset {𝓣} {ϕ} P IH₁ IH₂ b = ∥∥-rec (holds-is-prop (P b)) θ
-    where
-     θ : I ϕ b → b ∈ P
-     θ = I-is-initial P' IH₁ IH₂ b
-      where
-       P' : B → 𝓣  ̇
-       P' x = x ∈ P
-
-\end{code}
-
 We now work towards defining a monotone operator on a certain class of inductive definitions which we
 will call 'local'. This monotone operator will have a least-fixed point when 𝓘 ϕ is small.
 
 \begin{code}
+
+   open PropositionalTruncation pt
+   open Universe-Polymorphic-Powerset 𝓥
 
    S : (ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)) → (a : ⟨ L ⟩) → 𝓤 ⊔ 𝓦 ⊔ 𝓥  ̇
    S ϕ a = Σ b ꞉ B , (Ǝ a' ꞉ ⟨ L ⟩ , ϕ (a' , b) holds × (a' ≤ a) holds) holds
@@ -738,6 +631,22 @@ will call 'local'. This monotone operator will have a least-fixed point when �
     small-ϕ-closed-subsets : 𝓤 ⊔ (𝓥 ⁺)  ̇
     small-ϕ-closed-subsets =  Σ P ꞉ 𝓟 {𝓥} B , P is-small-ϕ-closed-subset
 
+    subset-of-small-ϕ-closed-subset : small-ϕ-closed-subsets → 𝓟 {𝓥} B
+    subset-of-small-ϕ-closed-subset (P , c-clsd , ϕ-clsd) = P
+
+    c-closed-of-small-ϕ-closed-subset : (X : small-ϕ-closed-subsets)
+                                      → ((U : 𝓟 {𝓥} B)
+                                      → (U ⊆ subset-of-small-ϕ-closed-subset X)
+                                      → ((b : B) → (b ≤ᴮ (⋁ ((Σ b ꞉ B , b ∈ U) , q ∘ pr₁))) →  b ∈ subset-of-small-ϕ-closed-subset X))
+    c-closed-of-small-ϕ-closed-subset (P , c-clsd , ϕ-clsd) = c-clsd
+
+    ϕ-closed-of-small-ϕ-closed-subset : (X : small-ϕ-closed-subsets)
+                                      → ((a : ⟨ L ⟩)
+                                      → (b : B)
+                                      → (ϕ (a , b) holds)
+                                      → ((b' : B) → (b' ≤ᴮ a → b' ∈ subset-of-small-ϕ-closed-subset X)) → b ∈ subset-of-small-ϕ-closed-subset X)
+    ϕ-closed-of-small-ϕ-closed-subset (P , c-clsd , ϕ-clsd) = ϕ-clsd
+
     _is-non-inc : (a : ⟨ L ⟩) → 𝓦  ̇
     a is-non-inc = (Γ a ≤ a) holds
      where
@@ -750,6 +659,12 @@ will call 'local'. This monotone operator will have a least-fixed point when �
 
     non-inc-points : 𝓤 ⊔ 𝓦  ̇
     non-inc-points = Σ a ꞉ ⟨ L ⟩ , (a is-non-inc)
+
+    point-non-inc-points : non-inc-points → ⟨ L ⟩
+    point-non-inc-points (a , non-inc) = a
+
+    is-non-inc-non-inc-points : (X : non-inc-points) → (point-non-inc-points X) is-non-inc
+    is-non-inc-non-inc-points (a , non-inc) = non-inc
 
     small-ϕ-closed-subsets-to-non-inc-points : small-ϕ-closed-subsets → non-inc-points
     small-ϕ-closed-subsets-to-non-inc-points (P , c-closed , ϕ-closed) = (sup-P , is-non-inc)
@@ -829,10 +744,9 @@ will call 'local'. This monotone operator will have a least-fixed point when �
       H (P , c-closed , ϕ-closed) = to-subtype-＝ is-small-ϕ-closed-subset-is-predicate P'-＝-P
        where
         sup-P : ⟨ L ⟩
-        sup-P = pr₁ (small-ϕ-closed-subsets-to-non-inc-points (P , c-closed , ϕ-closed))
+        sup-P = point-non-inc-points (small-ϕ-closed-subsets-to-non-inc-points (P , c-closed , ϕ-closed))
         P' : 𝓟 {𝓥} B
-        P' = pr₁ (non-inc-points-to-small-ϕ-closed-subsets
-                (small-ϕ-closed-subsets-to-non-inc-points (P , c-closed , ϕ-closed)))
+        P' = subset-of-small-ϕ-closed-subset (non-inc-points-to-small-ϕ-closed-subsets (small-ϕ-closed-subsets-to-non-inc-points (P , c-closed , ϕ-closed)))
         P'-＝-P : P' ＝ P
         P'-＝-P = dfunext fe P'-∼-P 
          where
@@ -847,9 +761,9 @@ will call 'local'. This monotone operator will have a least-fixed point when �
       G (a , is-non-inc) = to-subtype-＝ is-non-inc-is-predicate sup-P-＝-a
        where
         P : 𝓟 {𝓥} B
-        P = pr₁ (non-inc-points-to-small-ϕ-closed-subsets (a , is-non-inc))
+        P = subset-of-small-ϕ-closed-subset (non-inc-points-to-small-ϕ-closed-subsets (a , is-non-inc))
         sup-P : ⟨ L ⟩
-        sup-P = pr₁ (small-ϕ-closed-subsets-to-non-inc-points (non-inc-points-to-small-ϕ-closed-subsets (a , is-non-inc)))
+        sup-P = point-non-inc-points (small-ϕ-closed-subsets-to-non-inc-points (non-inc-points-to-small-ϕ-closed-subsets (a , is-non-inc)))
         sup-P-＝-a : sup-P ＝ a
         sup-P-＝-a = is-sup'ᴮ a ⁻¹
       is-qinv : qinv small-ϕ-closed-subsets-to-non-inc-points
@@ -926,12 +840,12 @@ will call 'local'. This monotone operator will have a least-fixed point when �
           Q-is-c-closed : (U : 𝓟 {𝓥} B)
                         → (U ⊆ Q-Γ-sup)
                         → ((b : B) → (b ≤ᴮ (⋁ ((Σ b ꞉ B , b ∈ U) , q ∘ pr₁))) →  b ∈ Q-Γ-sup)
-          Q-is-c-closed = pr₁ (pr₂ (non-inc-points-to-small-ϕ-closed-subsets (Γ sup-𝓘 , Γ-Γ-sup-≤-Γ-sup)))
+          Q-is-c-closed = c-closed-of-small-ϕ-closed-subset (non-inc-points-to-small-ϕ-closed-subsets (Γ sup-𝓘 , Γ-Γ-sup-≤-Γ-sup))
           Q-is-ϕ-closed : (a' : ⟨ L ⟩)
                         → (b : B)
                         → (ϕ (a' , b) holds)
                         → ((b' : B) → (b' ≤ᴮ a' → b' ∈ Q-Γ-sup)) → b ∈ Q-Γ-sup
-          Q-is-ϕ-closed = pr₂ (pr₂ (non-inc-points-to-small-ϕ-closed-subsets (Γ sup-𝓘 , Γ-Γ-sup-≤-Γ-sup)))
+          Q-is-ϕ-closed = ϕ-closed-of-small-ϕ-closed-subset (non-inc-points-to-small-ϕ-closed-subsets (Γ sup-𝓘 , Γ-Γ-sup-≤-Γ-sup))
           𝓘nd-⊆-Q-Γ-sup : 𝓘nd ⊆ Q-Γ-sup
           𝓘nd-⊆-Q-Γ-sup = 𝓘nd-is-initial Q-Γ-sup Q-is-c-closed Q-is-ϕ-closed
           𝓘-is-small-subset-⊆-Q-Γ-sup : 𝓘-is-small-subset ⊆ Q-Γ-sup
@@ -953,12 +867,12 @@ will call 'local'. This monotone operator will have a least-fixed point when �
           P-is-c-closed : (U : 𝓟 {𝓥} B)
                         → (U ⊆ P-a)
                         → ((b : B) → (b ≤ᴮ (⋁ ((Σ b ꞉ B , b ∈ U) , q ∘ pr₁))) →  b ∈ P-a)
-          P-is-c-closed = pr₁ (pr₂ (non-inc-points-to-small-ϕ-closed-subsets (a , Γ-a-≤-a)))
+          P-is-c-closed = c-closed-of-small-ϕ-closed-subset (non-inc-points-to-small-ϕ-closed-subsets (a , Γ-a-≤-a))
           P-is-ϕ-closed : (a' : ⟨ L ⟩)
                         → (b : B)
                         → (ϕ (a' , b) holds)
                         → ((b' : B) → (b' ≤ᴮ a' → b' ∈ P-a)) → b ∈ P-a
-          P-is-ϕ-closed = pr₂ (pr₂ (non-inc-points-to-small-ϕ-closed-subsets (a , Γ-a-≤-a)))
+          P-is-ϕ-closed = ϕ-closed-of-small-ϕ-closed-subset (non-inc-points-to-small-ϕ-closed-subsets (a , Γ-a-≤-a))
           𝓘nd-⊆-P-a : 𝓘nd ⊆ P-a
           𝓘nd-⊆-P-a = 𝓘nd-is-initial P-a P-is-c-closed P-is-ϕ-closed
           𝓘-is-small-subset-⊆-P-a : 𝓘-is-small-subset ⊆ P-a
