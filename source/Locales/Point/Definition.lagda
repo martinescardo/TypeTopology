@@ -72,13 +72,18 @@ The type of points of a locale is then the completely prime filters.
 \end{code}
 
 With this definition of point as a completely prime filter, the points of a
-locale `X` must be in bijection with continuous maps `𝟏 → X` (where `Ω` denotes
+locale `X` must be in bijection with continuous maps `𝟏 → X` (where `𝟏` denotes
 the terminal locale).
 
+\section{Equivalent definitions using records}
 
-We give an equivalent definition using records for the convenienc
-e of having
-projections
+We give two equivalent definitions using records to avoid using projections
+and pairings to construct inhabitants of the `Point` type.
+
+  * `Pointᵣ` corresponds directly to the Σ definition of `Point`.
+  * `Point′ᵣ` is another equivalent definition that breaks down the conjuncts
+    involved in the notion of being a completely prime filter. This is
+    convenient when constructing inhabitants of `Point`.
 
 \begin{code}
 
