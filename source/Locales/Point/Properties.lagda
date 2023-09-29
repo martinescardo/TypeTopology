@@ -1,6 +1,7 @@
 Ayberk Tosun
 
 Started on 22 September 2023.
+Proof of bijection completed on 29 September 2023.
 
 This module contains the proof that points of a locale are in bijection with the
 completely prime filters.
