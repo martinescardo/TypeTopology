@@ -25,6 +25,7 @@ module Locales.Point.Properties (pt : propositional-truncations-exist)
 open import Slice.Family
 open import UF.Powerset
 open import UF.SubtypeClassifier
+open import UF.Sets
 
 open import Locales.Frame            pt fe
 open import Locales.Point.Definition pt fe
@@ -142,14 +143,31 @@ open DefnOfCPF
                †
    where
     † : 𝒻 ⋆∙ meet-of (𝒪 X) U V ＝ ⊤
-    † = (𝒻 ⋆∙ meet-of (𝒪 X) U V)  ＝⟨ frame-homomorphisms-preserve-meets (𝒪 X) (𝒪 𝟏L) 𝒻 U V ⟩
-        𝒻 ⋆∙ U ∧[ 𝒪 𝟏L ] (𝒻 ⋆∙ V) ＝⟨ ap (λ - → - ∧ (𝒻 ⋆∙ V)) (holds-gives-equal-⊤ pe fe (𝒻 ⋆∙ U) p) ⟩
-        ⊤      ∧[ 𝒪 𝟏L ] (𝒻 ⋆∙ V) ＝⟨ ap (λ - → ⊤ ∧ -) (holds-gives-equal-⊤ pe fe (𝒻 ⋆∙ V) q) ⟩
+    † = (𝒻 ⋆∙ (U ∧[ 𝒪 X ] V))
+         ＝⟨ frame-homomorphisms-preserve-meets (𝒪 X) (𝒪 𝟏L) 𝒻 U V ⟩
+        𝒻 ⋆∙ U ∧[ 𝒪 𝟏L ] (𝒻 ⋆∙ V)
+         ＝⟨ ap (λ - → - ∧ (𝒻 ⋆∙ V)) (holds-gives-equal-⊤ pe fe (𝒻 ⋆∙ U) p) ⟩
+        ⊤      ∧[ 𝒪 𝟏L ] (𝒻 ⋆∙ V)
+         ＝⟨ ap (λ - → ⊤ ∧ -) (holds-gives-equal-⊤ pe fe (𝒻 ⋆∙ V) q) ⟩
         ⊤      ∧[ 𝒪 𝟏L ] ⊤        ＝⟨ ∧[ 𝒪 𝟏L ]-is-idempotent ⊤ ⁻¹ ⟩
         ⊤ ∎
 
   cp : is-completely-prime X (𝒻 ⋆∙_) holds
-  cp S δ = {!!}
+  cp S p = equal-⊤-gives-holds (⋁[ 𝒪 𝟏L ] ⁅ 𝒻 ⋆∙ U ∣ U ε S ⁆) q
+   where
+    ς : is-set ⟨ 𝒪 𝟏L ⟩
+    ς = carrier-of-[ poset-of (𝒪 𝟏L) ]-is-set
+
+    Ⅰ = frame-homomorphisms-preserve-all-joins (𝒪 X) (𝒪 𝟏L) 𝒻 S ⁻¹
+    Ⅱ = holds-gives-equal-⊤ pe fe (𝒻 ⋆∙ (⋁[ 𝒪 X ] S)) p
+
+    p′ : 𝒻 ⋆∙ (⋁[ 𝒪 X ] S) ＝ ⊤
+    p′ = holds-gives-equal-⊤ pe fe (𝒻 ⋆∙ (⋁[ 𝒪 X ] S)) p
+
+    q : ⋁[ 𝒪 𝟏L ] ⁅ 𝒻 ⋆∙ U ∣ U ε S ⁆ ＝ ⊤
+    q = ⋁[ 𝒪 𝟏L ] ⁅ 𝒻 ⋆∙ U ∣ U ε S ⁆   ＝⟨ Ⅰ ⟩
+        𝒻 ⋆∙ (⋁[ 𝒪 X ] S)              ＝⟨ Ⅱ ⟩
+        ⊤                              ∎
 
   𝓍 : Point′ᵣ X
   𝓍 = record
