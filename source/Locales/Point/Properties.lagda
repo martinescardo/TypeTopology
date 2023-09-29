@@ -25,7 +25,7 @@ module Locales.Point.Properties (pt : propositional-truncations-exist)
                                  where
 
 open import Slice.Family
-open import UF.Powerset
+open import UF.Powerset-MultiUniverse
 open import UF.SubtypeClassifier
 open import UF.Sets
 open import UF.Equiv
@@ -64,7 +64,7 @@ and being a completely prime filter (respectively).
 𝔯₀ : (X : Locale (𝓤 ⁺) 𝓤 𝓤) → Point X → ⟨ 𝒪 X ⟩ → ⟨ 𝒪 𝟏L ⟩
 𝔯₀ X (ϕ , cpf) U = ϕ U
 
-𝔰₀ : (X : Locale (𝓤 ⁺) 𝓤 𝓤) → (𝟏L ─c→ X) → (⟨ 𝒪 X ⟩ → Ω 𝓤)
+𝔰₀ : (X : Locale (𝓤 ⁺) 𝓤 𝓤) → (𝟏L ─c→ X) → 𝓟 {𝓤} ⟨ 𝒪 X ⟩
 𝔰₀ X 𝒻 U = 𝒻 ⋆∙ U
  where
   open ContinuousMapNotation 𝟏L X using (_⋆∙_)
