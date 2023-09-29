@@ -38,7 +38,7 @@ domain.
 
 \begin{code}
 
-open import Locales.ScottLocale pt fe 𝓤
+open import Locales.ScottLocale.Definition pt fe 𝓤
 
 open DefnOfScottLocale (𝕊-dcpo ⁻) 𝓤 pe
 open Locale
