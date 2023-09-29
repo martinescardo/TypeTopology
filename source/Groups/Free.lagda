@@ -1634,8 +1634,8 @@ step we construct a copy of this fiber type in the first universe 𝓤₀.
 
 \begin{code}
 
-  NB-native-universe-fiber-η : (s : FA) → universe-of (fiber η s) ＝ 𝓤⁺
-  NB-native-universe-fiber-η s = refl
+  NB-native-universe-fiber-η : η is 𝓤⁺ small-map
+  NB-native-universe-fiber-η = native-size-of-map η
 
   η-is-decidable : each-fiber-of η is-decidable
   η-is-decidable = ∘-decidable-embeddings
