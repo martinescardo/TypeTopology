@@ -1,11 +1,13 @@
 Ian Ray 01/09/2023.
 
-We formalize Curi's (CZF) notion of Abstract Inductive Definition from a Sup-Lattice L with small
+We formalize Curi's notion of Abstract Inductive Definition (CZF) from a Sup-Lattice L with small
 basis B (and q : B → L). An abstract inductive defintion is a subset ϕ : L × B → Prop which can be
-thought of as a 'inference rule'. Fortunately, induction rules are first class citizens in type
-theory unlike CZF. Using the power of agda's data type constructor (which is justified by inductive
-types in book HoTT) we can automatically construct the least ϕ-closed subset given ϕ. We open this
-file by defining Sup-Lattices.
+thought of as a 'inference rule'. Fortunately, unlike CZF, induction rules are first class citizens
+in type theory. Using HoTT + HITs we can construct the least closed subset under an inductive
+definition ϕ. Although, it should be noted that HITs are not native to the TypeTopology library we
+simply postulate the existence of the type and work with it axiomatically. This postulate is of
+course justified as the proposed HIT is quite tame. It is a very special case of a QIT, one may be
+inclined to call it a Predicate Inducitve Type (PrIT). We open this file by defining Sup-Lattices.
 
 \begin{code}
 
@@ -95,7 +97,7 @@ is-least-upper-bound-for L of U = pr₂ (is-lub-for L U)
 
 \end{code}
 
-We define a monotone endo-map on lattice. This is sufficient as our intent is to study fixed-points.
+We define a monotone endo-map on lattice. This is sufficient as our intent is fixed-points.
 
 \begin{code}
 
@@ -128,7 +130,7 @@ module Universe-Polymorphic-Powerset (𝓥 : Universe) where
 \end{code}
 
 We now show that when one subset contains another the join of their total spaces are ordered as
-expected. This result is a familar to set theorist...
+expected. 
 
 \begin{code}
 
@@ -157,8 +159,9 @@ module Subsets-Order-Joins {𝓤 𝓦 𝓥 : Universe}
 
 \end{code}
 
-We take a quick detour to show if a type is small and has a map to the carrier then it has a join.
-This seems like strict requirement but as we will see it occurs often when considering a lattice with a base. 
+We now show if a type is small and has a map to the carrier then it has a join.
+This seems like strict requirement but as we will see it occurs often when
+considering a lattice with a basis. 
 
 \begin{code}
 
@@ -358,10 +361,9 @@ module Sup-Lattice-Small-Basis {𝓤 𝓦 𝓥 : Universe} (L : Sup-Lattice 𝓤
 
 \end{code}
 
-Now it is time to define the least closed subset of an inductive definition. We are currently exploring
-an alternative approach to defining the least-closed subset as a Higher Inductive Type, since HIT's are not
-supported in Type Topology we postulate the existence of such a type as well as it's induction principle
-and work with it axiomatically.
+Now it is time to define the least closed subset of an inductive definition. We utilize the notion of
+Higher Inductive Type (HITs), since HIT's are not supported in Type Topology we postulate the existence
+of such a type as well as it's induction principle and work with it axiomatically.
 
 \begin{code}
 
@@ -491,8 +493,23 @@ will call 'local'. This monotone operator will have a least-fixed point when �
 
 \begin{code}
 
+module Local-Inductive-Definitions (𝓤 𝓦 𝓥 : Universe) (L : Sup-Lattice 𝓤 𝓦 𝓥) where
+
+ open Sup-Lattice-Small-Basis L
+ open Joins _≤_
+
+ module Local-Small-Basis {B : 𝓥  ̇} (q : B → ⟨ L ⟩) where
+
+  open Small-Basis q
+
+  module Local-Basis-Facts (h : is-small-basis) where
+
+   open Small-Basis-Facts h
    open PropositionalTruncation pt
    open Universe-Polymorphic-Powerset 𝓥
+   open Inductive-Definitions 𝓤 𝓦 𝓥 L
+   open Ind-Small-Basis q
+   open Ind-Basis-Facts h
 
    S : (ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)) → (a : ⟨ L ⟩) → 𝓤 ⊔ 𝓦 ⊔ 𝓥  ̇
    S ϕ a = Σ b ꞉ B , (Ǝ a' ꞉ ⟨ L ⟩ , ϕ (a' , b) holds × (a' ≤ a) holds) holds
