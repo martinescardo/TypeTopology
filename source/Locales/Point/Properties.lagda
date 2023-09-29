@@ -15,6 +15,7 @@ open import UF.PropTrunc
 open import UF.FunExt
 open import UF.Logic
 open import UF.Subsingletons
+open import UF.Retracts
 
 module Locales.Point.Properties (pt : propositional-truncations-exist)
                                 (fe : Fun-Ext)
@@ -26,6 +27,7 @@ open import Slice.Family
 open import UF.Powerset
 open import UF.SubtypeClassifier
 open import UF.Sets
+open import UF.Equiv
 
 open import Locales.Frame            pt fe
 open import Locales.Point.Definition pt fe
@@ -175,5 +177,30 @@ open DefnOfCPF
        ; point-is-closed-under-∧   = μ
        ; point-is-completely-prime = cp
        }
+
+\end{code}
+
+\begin{code}
+
+𝔯 : (X : Locale (𝓤 ⁺) 𝓤 𝓤) → Point X → 𝟏L ─c→ X
+𝔯 X 𝓍 = 𝔯₀ X 𝓍 , 𝔯₀-gives-frame-homomorphism X 𝓍
+
+𝔰 : (X : Locale (𝓤 ⁺) 𝓤 𝓤) → 𝟏L ─c→ X → Point X
+𝔰 X 𝒻 = 𝔰₀ X 𝒻 , 𝔰₀-gives-cpf X 𝒻
+
+cpf-equiv-continuous-map-into-Ω : (X : Locale (𝓤 ⁺) 𝓤 𝓤) → Point X ≃ 𝟏L ─c→ X
+cpf-equiv-continuous-map-into-Ω X = 𝔯 X , † , ‡
+ where
+  sec : (𝔯 X ∘ 𝔰 X) ∼ id
+  sec 𝒻 = continuous-map-equality (𝒪 X) (𝒪 𝟏L) (𝔯 X (𝔰 X 𝒻)) 𝒻 λ _ → refl
+
+  ret : (𝔰 X ∘ 𝔯 X) ∼ id
+  ret 𝓍 = to-subtype-＝ (holds-is-prop ∘ is-cpf X) (dfunext fe λ _ → refl)
+
+  † : has-section (𝔯 X)
+  † = 𝔰 X , sec
+
+  ‡ : is-section (𝔯 X)
+  ‡ = 𝔰 X , ret
 
 \end{code}
