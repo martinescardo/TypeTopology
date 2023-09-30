@@ -79,15 +79,6 @@ We denote by `I` the index type of the basis:
  ℬ : Fam 𝓤 ⟨ 𝓓 ⟩∙
  ℬ = (I , β)
 
- 𝒪ₛ-equality : (U V : 𝒪ₛ)
-             → ((i j : I) → (ℬ [ i ]) ∈ₛ U  ＝ (ℬ [ j ]) ∈ₛ V)
-             → U ＝ V
- 𝒪ₛ-equality U V φ =
-  to-subtype-＝ (holds-is-prop ∘ is-scott-open) {!pe ? ? ? ?!}
-   where
-    † : {!!}
-    † = {!!}
-
 \end{code}
 
 These are ordered by inclusion.
@@ -99,11 +90,44 @@ These are ordered by inclusion.
  _⊆ₛ_ : 𝒪ₛ → 𝒪ₛ → Ω 𝓤
  (U , _) ⊆ₛ (V , _) = Ɐ i ꞉ I , U (ℬ [ i ]) ⇒ V (ℬ [ i ])
 
+ _⊆_ : 𝒪ₛ → 𝒪ₛ → Ω (𝓤 ⁺)
+ (U , _) ⊆ (V , _) = Ɐ x ꞉ ⟨ 𝓓 ⟩∙ , U x ⇒ V x
+
  ⊆ₛ-is-reflexive : is-reflexive _⊆ₛ_ holds
  ⊆ₛ-is-reflexive (U , δ) _ = id
 
  ⊆ₛ-is-transitive : is-transitive _⊆ₛ_ holds
  ⊆ₛ-is-transitive (U , δ) (V , ϵ) (W , ζ) p q x = q x ∘ p x
+
+ ⊆ₛ-implies-⊆ : (𝔘 𝔙 : 𝒪ₛ) → (𝔘 ⊆ₛ 𝔙 ⇒ 𝔘 ⊆ 𝔙) holds
+ ⊆ₛ-implies-⊆ (U , _) (V , _) φ x p = {!!}
+  where
+   S : Fam 𝓤 ⟨ 𝓓 ⟩∙
+   S = index-of-compact-family 𝕒 x , compact-family 𝕒 x
+
+   S↑ : Fam↑
+   S↑ = S , compact-family-is-directed 𝕒 x
+
+   eq : x ＝ ⋁ S↑
+   eq = compact-family-∐-＝ 𝕒 x ⁻¹
+
+ 𝒪ₛ-equality : (U V : 𝒪ₛ)
+             → ((i j : I) → (ℬ [ i ]) ∈ₛ U  ＝ (ℬ [ j ]) ∈ₛ V)
+             → U ＝ V
+ 𝒪ₛ-equality U V φ =
+  to-subtype-＝ (holds-is-prop ∘ is-scott-open) (dfunext fe †)
+   where
+    † : (x : ⟨ 𝓓 ⟩∙) → x ∈ₛ U ＝ x ∈ₛ V
+    † x = to-subtype-＝ (λ _ → being-prop-is-prop fe) ‡
+     where
+      ♣ : (x ∈ₛ U ⇒ x ∈ₛ V) holds
+      ♣ p = {!!}
+
+      ♠ : (x ∈ₛ V ⇒ x ∈ₛ U) holds
+      ♠ q = {!!}
+
+      ‡ : (x ∈ₛ U) holds ＝ (x ∈ₛ V) holds
+      ‡ = pe (holds-is-prop (x ∈ₛ U)) (holds-is-prop (x ∈ₛ V)) ♣ ♠
 
  -- ⊆ₛ-is-antisymmetric : is-antisymmetric _⊆ₛ_
  -- ⊆ₛ-is-antisymmetric {U} {V} p q =
