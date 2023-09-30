@@ -36,6 +36,16 @@ module _ {X : 𝓤 ̇ } {x y : X} where
   ＝-＝ₛ-equiv : (s t : x ≡ y) → (s ＝↓ t) ≃ (s ＝ₛ t)
   ＝-＝ₛ-equiv s t = ＝ₛ-in , (＝ₛ-out , λ _ → refl) , (＝ₛ-out , λ _ → refl)
 
+\end{code}
+
+  TODO: there is a function
+
+  ＝ₛ-level : {s t : x ≡ y} {n : ℕ} → X is-of-level n → (s ＝ₛ t) is-of-level (n - 2)
+
+  which awaits implementation once I figure out how to deal with the global univalence in UF.HLlevels
+
+\begin{code}
+
   _⁻¹ₛ : {s t : x ≡ y} → s ＝ₛ t → t ＝ₛ s
   ＝ₛ-in p ⁻¹ₛ = ＝ₛ-in (p ⁻¹)
 
@@ -77,12 +87,41 @@ The first is a utility only used in the latter reasoning items.
           iii = ap ([ take n s ↓] ∙_) ([↓]-hom t (drop m (drop n s)))
           iv   = [↓]-hom (take n s) (t ∙≡ drop m (drop n s))
 
+\end{code}
+
+The following makes definitional equalities visible, for example:
+
+  p ◃∙ ap f refl ◃∙ q ◃∎ ＝ₛ⟨id⟩ 
+  p ◃∙ refl ◃∙ q ◃∎      ∎ₛ
+
+\begin{code}
+
   infixr 10 _＝ₛ⟨id⟩_
   _＝ₛ⟨id⟩_ : (s : x ≡ y) {u : x ≡ y}
           → s ＝ₛ u
           → s ＝ₛ u
   s ＝ₛ⟨id⟩ e = e  -- ＝ₛ-in (＝ₛ-out e)
 
+\end{code}
+
+  The following rewrites an entire expression using a _＝ₛ_ path
+  between path sequences. The usage is like:
+
+  s ＝ₛ⟨ p ⟩
+  q ∎ₛ
+
+  or something like:
+
+  s ＝ₛ⟨ p ⟩
+  t ＝ₛ⟨ q ⟩
+  r ∎ₛ
+
+  where s, t, u, v (the latter three implicit) are in x ≡ y, and p, q,
+  r are paths like:
+
+  p : s ＝ₛ t, q : t ＝ₛ u, r : u ＝ₛ v
+
+\begin{code}
 
   infixr 10 _＝ₛ⟨_⟩_
   _＝ₛ⟨_⟩_ : (s : x ≡ y) {t u : x ≡ y}
@@ -91,37 +130,98 @@ The first is a utility only used in the latter reasoning items.
          → s ＝ₛ u
   s ＝ₛ⟨ p ⟩ q = p ∙ₛ q
 
+\end{code}
 
-  infixr 10 _＝ₛ₁⟨_⟩_
-  _＝ₛ₁⟨_⟩_ : (s : x ≡ y) {u : x ≡ y}
-          → {r : x ＝ y}
-          → [ s ↓] ＝ r
-          → r ◃∎ ＝ₛ u
-          → s ＝ₛ u
-  s ＝ₛ₁⟨ p ⟩ q = ＝ₛ-in p  ∙ₛ q
+  The following rewrites a segment of a path sequences using a _＝ₛ_
+  path. For example, if we have path sequences
 
-  
-  infixr 10 _＝↓⟨_&_&_⟩_
-  _＝↓⟨_&_&_⟩_ : (s : x ≡ y) {u : x ≡ y}
-              → (m n : ℕ)
-              → {r : point-from-start m s ≡ point-from-start n (drop m s)}
+  p ◃∙ (q ∙ r) ⁻¹ ◃∙ s ◃∎
+
+  and
+
+  p ◃∙ r ⁻¹ ◃∙ q ⁻¹ ◃∙ s ◃∎
+
+  and let's say 
+
+  α : (q ∙ r) ⁻¹ ◃∎ ＝ₛ r ⁻¹ ◃∙ q ⁻¹ ◃∎
+
+  then we write
+
+  p ◃∙ (q ∙ r) ⁻¹ ◃∙ s ◃∎     ＝ₛ⟨ α ⟩
+  p ◃∙ r ⁻¹ ◃∙ q ⁻¹ ◃∙ s ◃∎   ∎ₛ
+
+\begin{code}
+
+  infixr 10 _＝ₛ⟨_&_&_⟩_
+  _＝ₛ⟨_&_&_⟩_ : (s : x ≡ y) {u : x ≡ y}
+                (m n : ℕ)
+                {r : point-from-start m s ≡ point-from-start n (drop m s)}
               → take n (drop m s) ＝ₛ r
               → take m s ∙≡ r ∙≡ drop n (drop m s) ＝ₛ u
               → s ＝ₛ u
-  _＝↓⟨_&_&_⟩_ s {u} m n {r} p q = ＝ₛ-in (s ＝↓⟨ m & n & r & ＝ₛ-out p ⟩ ＝ₛ-out q )
+  _＝ₛ⟨_&_&_⟩_ s m n {r} p q = ＝ₛ-in (s ＝↓⟨ m & n & r & ＝ₛ-out p ⟩ ＝ₛ-out q)
+  
+\end{code}
 
+  The following rewrites and entire expression using an equality (the
+  usual ＝) 
 
-  infixr 10 _＝↓₁⟨_&_&_⟩_
-  _＝↓₁⟨_&_&_⟩_ : (s : x ≡ y) {u : x ≡ y}
-               → (m n : ℕ)
-               → {r : point-from-start m s ＝ point-from-start n (drop m s)}
-               → [ take n (drop m s) ↓] ＝ r
-               → take m s ∙≡ r ◃∙ drop n (drop m s) ＝ₛ u
-               → s ＝ₛ u
-  _＝↓₁⟨_&_&_⟩_ s {u} m n {r} p q = s ＝↓⟨ m & n & ＝ₛ-in p ⟩ q
+  We write:
 
+  s ＝↓⟨ p ⟩
+  q ∎ₛ
 
+\begin{code}
+
+  infixr 10 _＝↓⟨_⟩_
+  _＝↓⟨_⟩_ : (s : x ≡ y) {u : x ≡ y}
+            {r : x ＝ y }
+          → [ s ↓] ＝ r
+          → r ◃∎ ＝ₛ u
+          → s ＝ₛ u
+  s ＝↓⟨ p ⟩ q = ＝ₛ-in p ∙ₛ q
+
+\end{code}
+
+  The following rewrites a segment of a path sequence using a standard
+  equality ＝
+
+  For example, if we have something like
+
+  p ◃∙ (ap f q) ⁻¹ ◃∙ s ◃∎
+
+  and
+
+  p ◃∙ (ap f q ⁻¹) ◃∙ s ◃∎
+
+  and let's say 
+
+  α : (ap f q) ⁻¹ ◃∎ ＝ ap f q ⁻¹ 
+
+  then we write
+
+  p ◃∙ (ap f q) ⁻¹ ◃∙ s ◃∎  ＝↓⟨ α ⟩
+  p ◃∙ ap f q ⁻¹ ◃∙ s ◃∎    ∎ₛ
+
+\begin{code}
+
+  infixr 10 _＝↓⟨_&_&_⟩_
+  _＝↓⟨_&_&_⟩_ : (s : x ≡ y) {u : x ≡ y}
+              → (m n : ℕ)
+              → {r : point-from-start m s ＝ point-from-start n (drop m s)}
+              → [ take n (drop m s) ↓] ＝ r
+              → take m s ∙≡ r ◃∙ drop n (drop m s) ＝ₛ u
+              → s ＝ₛ u
+  _＝↓⟨_&_&_⟩_ s {u} m n {r} p q = s ＝ₛ⟨ m &  n &  ＝ₛ-in p ⟩ q
+
+\end{code}
+
+  This closes
+
+\begin{code}
+  
   infix 15 _∎ₛ
   _∎ₛ : (s : x ≡ y) → s ＝ₛ s
   _ ∎ₛ = ＝ₛ-in refl
+
 \end{code}
