@@ -78,4 +78,7 @@ I find it convenient to define the type of directed families.
  𝒪ₛ : 𝓤 ⊔ 𝓦 ⁺ ⊔ 𝓥 ⁺ ⊔ 𝓣  ̇
  𝒪ₛ = Σ P ꞉ (⟨ 𝓓 ⟩ → Ω 𝓦) , is-scott-open P holds
 
+ _∈ₛ_ : ⟨ 𝓓 ⟩ → 𝒪ₛ → Ω 𝓦
+ x ∈ₛ U = U .pr₁ x
+
 \end{code}
