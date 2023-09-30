@@ -625,18 +625,18 @@ module Correspondance-small-ϕ-closed-types-non-inc-points {𝓤 𝓦 𝓥 : Uni
                                                           (q : B → ⟨ L ⟩)
                                                            where
 
- open Local-Inductive-Definitions L q
  open Small-Basis L q
  open Joins _≤_
+ open Local-Inductive-Definitions L q
 
  module Correspondance-from-Basis-Facts (h : is-small-basis) where
 
-  open Local-from-Basis-Facts h
   open Small-Basis-Facts h
   open PropositionalTruncation pt
   open Universe-Polymorphic-Powerset 𝓥
   open Inductive-Definitions L q
   open Ind-from-Basis-Facts h
+  open Local-from-Basis-Facts h
 
   module Correspondance-from-Locally-Small-ϕ (ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)) (i : ϕ is-local) where
 
@@ -793,7 +793,7 @@ module Correspondance-small-ϕ-closed-types-non-inc-points {𝓤 𝓦 𝓥 : Uni
     open Trun-Ind-Def ϕ ind-e
     open Inductively-Generated-Subset-Exists ind-e
 
-    module Small-𝓘nd (j : (b : B) → (b ∈ 𝓘nd) is 𝓥 small) where
+    module _ (j : (b : B) → (b ∈ 𝓘nd) is 𝓥 small) where
 
      small-𝓘 : (b : B) →  𝓥  ̇
      small-𝓘 b = pr₁ (j b) 
@@ -844,8 +844,8 @@ module Correspondance-small-ϕ-closed-types-non-inc-points {𝓤 𝓦 𝓥 : Uni
      Γ-has-least-fixed-point = (is-antisymmetric-for L Γ-sup-≤-sup sup-≤-Γ-sup , sup-𝓘-≤)
       where
        Γ-sup-≤-sup : ((Γ ϕ i) sup-𝓘 ≤ sup-𝓘) holds
-       Γ-sup-≤-sup = pr₂ (small-ϕ-closed-subsets-to-non-inc-points
-                         (𝓘-is-small-subset , small-𝓘-is-c-closed , small-𝓘-is-ϕ-closed))
+       Γ-sup-≤-sup = is-non-inc-non-inc-points (small-ϕ-closed-subsets-to-non-inc-points
+                                               (𝓘-is-small-subset , small-𝓘-is-c-closed , small-𝓘-is-ϕ-closed))
        sup-≤-Γ-sup : (sup-𝓘 ≤ (Γ ϕ i) sup-𝓘) holds
        sup-≤-Γ-sup = transport (λ z → (sup-𝓘 ≤ z) holds) sup-Q-＝-Γ-sup sup-𝓘-≤-sup-Q
         where
@@ -853,7 +853,7 @@ module Correspondance-small-ϕ-closed-types-non-inc-points {𝓤 𝓦 𝓥 : Uni
          Γ-Γ-sup-≤-Γ-sup : ((Γ ϕ i) ((Γ ϕ i) sup-𝓘) ≤ (Γ ϕ i) sup-𝓘) holds
          Γ-Γ-sup-≤-Γ-sup = Γ-is-monotone ϕ i ((Γ ϕ i) sup-𝓘) sup-𝓘 Γ-sup-≤-sup
          Q-Γ-sup : 𝓟 {𝓥} B
-         Q-Γ-sup = pr₁ (non-inc-points-to-small-ϕ-closed-subsets ((Γ ϕ i) sup-𝓘 , Γ-Γ-sup-≤-Γ-sup))
+         Q-Γ-sup = subset-of-small-ϕ-closed-subset (non-inc-points-to-small-ϕ-closed-subsets ((Γ ϕ i) sup-𝓘 , Γ-Γ-sup-≤-Γ-sup))
          Q-is-c-closed : (U : 𝓟 {𝓥} B)
                        → (U ⊆ Q-Γ-sup)
                        → ((b : B) → (b ≤ᴮ (⋁ ((Σ b ꞉ B , b ∈ U) , q ∘ pr₁))) →  b ∈ Q-Γ-sup)
@@ -880,7 +880,7 @@ module Correspondance-small-ϕ-closed-types-non-inc-points {𝓤 𝓦 𝓥 : Uni
          Γ-a-≤-a : ((Γ ϕ i) a ≤ a) holds
          Γ-a-≤-a = transport (λ z → ((Γ ϕ i) a ≤ z) holds) p (is-reflexive-for L ((Γ ϕ i) a))
          P-a : 𝓟 {𝓥} B
-         P-a = pr₁ (non-inc-points-to-small-ϕ-closed-subsets (a , Γ-a-≤-a))
+         P-a = subset-of-small-ϕ-closed-subset (non-inc-points-to-small-ϕ-closed-subsets (a , Γ-a-≤-a))
          P-is-c-closed : (U : 𝓟 {𝓥} B)
                        → (U ⊆ P-a)
                        → ((b : B) → (b ≤ᴮ (⋁ ((Σ b ꞉ B , b ∈ U) , q ∘ pr₁))) →  b ∈ P-a)
