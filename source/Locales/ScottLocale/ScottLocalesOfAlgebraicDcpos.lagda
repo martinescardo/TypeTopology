@@ -47,6 +47,8 @@ open import DomainTheory.Topology.ScottTopology pt fe 𝓤
 open import DomainTheory.BasesAndContinuity.Continuity pt fe 𝓤
 open import DomainTheory.BasesAndContinuity.Bases pt fe 𝓤
 
+open import Locales.ScottLocale.Definition pt fe 𝓤
+
 open PropositionalTruncation pt
 
 \end{code}
@@ -57,6 +59,7 @@ module ScottLocaleConstruction (𝓓 : DCPO {𝓤 ⁺} {𝓤}) (hscb : has-speci
 
  open import DomainTheory.Lifting.LiftingSet pt fe 𝓤 pe
  open DefnOfScottTopology 𝓓 𝓤
+ open DefnOfScottLocale 𝓓 𝓤 pe using (𝒪ₛ-equality)
 
 \end{code}
 
@@ -124,10 +127,10 @@ These are ordered by inclusion.
         r : ((S [ i ]) ∈ₛ 𝔙) holds
         r = φ (pr₁ i) q
 
- 𝒪ₛ-equality : (U V : 𝒪ₛ)
-             → ((i : I) → (ℬ [ i ]) ∈ₛ U  ＝ (ℬ [ i ]) ∈ₛ V)
-             → U ＝ V
- 𝒪ₛ-equality 𝔘@(U , (υ , ι)) 𝔙 φ =
+ 𝒪ₛ-equalityₛ : (U V : 𝒪ₛ)
+              → ((i : I) → (ℬ [ i ]) ∈ₛ U  ＝ (ℬ [ i ]) ∈ₛ V)
+              → U ＝ V
+ 𝒪ₛ-equalityₛ 𝔘@(U , (υ , ι)) 𝔙 φ =
   to-subtype-＝ (holds-is-prop ∘ is-scott-open) (dfunext fe †)
    where
     † : (x : ⟨ 𝓓 ⟩∙) → x ∈ₛ 𝔘 ＝ x ∈ₛ 𝔙
@@ -148,18 +151,22 @@ These are ordered by inclusion.
       ‡ : (x ∈ₛ 𝔘) holds ＝ (x ∈ₛ 𝔙) holds
       ‡ = pe (holds-is-prop (x ∈ₛ 𝔘)) (holds-is-prop (x ∈ₛ 𝔙)) ♣ ♠
 
- -- ⊆ₛ-is-antisymmetric : is-antisymmetric _⊆ₛ_
- -- ⊆ₛ-is-antisymmetric {U} {V} p q =
- --  𝒪ₛ-equality
- --   U
- --   V
- --   (dfunext fe λ i → to-subtype-＝
- --     (λ _ → being-prop-is-prop fe)
- --     (pe
- --       (holds-is-prop {!!})
- --       (holds-is-prop {!!})
- --       {!p ?!}
- --       {!!}))
+ ⊆-is-antisymmetric : is-antisymmetric _⊆_
+ ⊆-is-antisymmetric {𝔘} {𝔙} p q =
+  𝒪ₛ-equality 𝔘 𝔙
+   (dfunext fe λ x →
+     to-subtype-＝
+      (λ _ → being-prop-is-prop fe)
+      (pe (holds-is-prop (x ∈ₛ 𝔘)) (holds-is-prop (x ∈ₛ 𝔙)) (p x) (q x)))
+
+ ⊆ₛ-is-antisymmetric : is-antisymmetric _⊆ₛ_
+ ⊆ₛ-is-antisymmetric {𝔘} {𝔙} p q = ⊆-is-antisymmetric † ‡
+  where
+   † : (𝔘 ⊆ 𝔙) holds
+   † = ⊆ₛ-implies-⊆ 𝔘 𝔙 p
+
+   ‡ : (𝔙 ⊆ 𝔘) holds
+   ‡ = ⊆ₛ-implies-⊆ 𝔙 𝔘 q
 
  -- ⊆ₛ-is-partial-order : is-partial-order 𝒪ₛ _⊆ₛ_
  -- ⊆ₛ-is-partial-order = (⊆ₛ-is-reflexive , ⊆ₛ-is-transitive) , ⊆ₛ-is-antisymmetric
