@@ -100,34 +100,53 @@ These are ordered by inclusion.
  ⊆ₛ-is-transitive (U , δ) (V , ϵ) (W , ζ) p q x = q x ∘ p x
 
  ⊆ₛ-implies-⊆ : (𝔘 𝔙 : 𝒪ₛ) → (𝔘 ⊆ₛ 𝔙 ⇒ 𝔘 ⊆ 𝔙) holds
- ⊆ₛ-implies-⊆ (U , _) (V , _) φ x p = {!!}
-  where
-   S : Fam 𝓤 ⟨ 𝓓 ⟩∙
-   S = index-of-compact-family 𝕒 x , compact-family 𝕒 x
+ ⊆ₛ-implies-⊆ 𝔘@(U , ι₁ , υ₁) 𝔙@(V , ι₂ , υ₂) φ x p =
+  transport (λ - → (- ∈ₛ 𝔙) holds) (eq ⁻¹) †
+   where
+    S : Fam 𝓤 ⟨ 𝓓 ⟩∙
+    S = index-of-compact-family 𝕒 x , compact-family 𝕒 x
 
-   S↑ : Fam↑
-   S↑ = S , compact-family-is-directed 𝕒 x
+    S↑ : Fam↑
+    S↑ = S , compact-family-is-directed 𝕒 x
 
-   eq : x ＝ ⋁ S↑
-   eq = compact-family-∐-＝ 𝕒 x ⁻¹
+    eq : x ＝ ⋁ S↑
+    eq = compact-family-∐-＝ 𝕒 x ⁻¹
+
+    p′ : ((⋁ S↑) ∈ₛ 𝔘) holds
+    p′ = transport (λ - → (- ∈ₛ 𝔘) holds) eq p
+
+    † : ((⋁ S↑) ∈ₛ 𝔙) holds
+    † = ∥∥-rec (holds-is-prop ((⋁ S↑) ∈ₛ 𝔙)) ‡ (υ₁ S↑ p′)
+     where
+      ‡ : Σ i ꞉ index S , ((S [ i ]) ∈ₛ 𝔘) holds → ((⋁ S↑) ∈ₛ 𝔙) holds
+      ‡ (i , q) = ι₂ (S [ i ]) (⋁ S↑) r (⋁-is-upperbound S↑ i)
+       where
+        r : ((S [ i ]) ∈ₛ 𝔙) holds
+        r = φ (pr₁ i) q
 
  𝒪ₛ-equality : (U V : 𝒪ₛ)
-             → ((i j : I) → (ℬ [ i ]) ∈ₛ U  ＝ (ℬ [ j ]) ∈ₛ V)
+             → ((i : I) → (ℬ [ i ]) ∈ₛ U  ＝ (ℬ [ i ]) ∈ₛ V)
              → U ＝ V
- 𝒪ₛ-equality U V φ =
+ 𝒪ₛ-equality 𝔘@(U , (υ , ι)) 𝔙 φ =
   to-subtype-＝ (holds-is-prop ∘ is-scott-open) (dfunext fe †)
    where
-    † : (x : ⟨ 𝓓 ⟩∙) → x ∈ₛ U ＝ x ∈ₛ V
+    † : (x : ⟨ 𝓓 ⟩∙) → x ∈ₛ 𝔘 ＝ x ∈ₛ 𝔙
     † x = to-subtype-＝ (λ _ → being-prop-is-prop fe) ‡
      where
-      ♣ : (x ∈ₛ U ⇒ x ∈ₛ V) holds
-      ♣ p = {!!}
+      foo : (𝔘 ⊆ₛ 𝔙) holds
+      foo i p = transport (λ - → - holds) (φ i) p
 
-      ♠ : (x ∈ₛ V ⇒ x ∈ₛ U) holds
-      ♠ q = {!!}
+      bar : (𝔙 ⊆ₛ 𝔘) holds
+      bar i p = transport _holds (φ i ⁻¹) p
 
-      ‡ : (x ∈ₛ U) holds ＝ (x ∈ₛ V) holds
-      ‡ = pe (holds-is-prop (x ∈ₛ U)) (holds-is-prop (x ∈ₛ V)) ♣ ♠
+      ♣ : (x ∈ₛ 𝔘 ⇒ x ∈ₛ 𝔙) holds
+      ♣ = ⊆ₛ-implies-⊆ 𝔘 𝔙 foo x
+
+      ♠ : (x ∈ₛ 𝔙 ⇒ x ∈ₛ 𝔘) holds
+      ♠ = ⊆ₛ-implies-⊆ 𝔙 𝔘 bar x
+
+      ‡ : (x ∈ₛ 𝔘) holds ＝ (x ∈ₛ 𝔙) holds
+      ‡ = pe (holds-is-prop (x ∈ₛ 𝔘)) (holds-is-prop (x ∈ₛ 𝔙)) ♣ ♠
 
  -- ⊆ₛ-is-antisymmetric : is-antisymmetric _⊆ₛ_
  -- ⊆ₛ-is-antisymmetric {U} {V} p q =

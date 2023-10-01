@@ -65,6 +65,13 @@ I find it convenient to define the type of directed families.
  ⋁ (S , δ) =
   the-sup (underlying-order 𝓓) (directed-completeness 𝓓 (index S) (S [_]) δ )
 
+ ⋁-is-sup : (S : Fam↑) → is-sup (underlying-order 𝓓) (⋁ S) (S .pr₁ [_])
+ ⋁-is-sup (S , δ) =
+  sup-property (underlying-order 𝓓) (directed-completeness 𝓓 (index S) (S [_]) δ)
+
+ ⋁-is-upperbound : (S : Fam↑) → is-upperbound (underlying-order 𝓓) (⋁ S) (S .pr₁ [_])
+ ⋁-is-upperbound S = pr₁ (⋁-is-sup S)
+
  is-upwards-closed : 𝓟 {𝓦} ⟨ 𝓓 ⟩ → Ω (𝓤 ⊔ 𝓣 ⊔ 𝓦)
  is-upwards-closed P = Ɐ x ꞉ ⟨ 𝓓 ⟩ , Ɐ y ꞉ ⟨ 𝓓 ⟩ , P x ⇒ x ⊑⟨ 𝓓 ⟩ₚ y ⇒ P y
 
