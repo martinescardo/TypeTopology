@@ -168,7 +168,7 @@ These are ordered by inclusion.
    ‡ : (𝔙 ⊆ 𝔘) holds
    ‡ = ⊆ₛ-implies-⊆ 𝔙 𝔘 q
 
- -- ⊆ₛ-is-partial-order : is-partial-order 𝒪ₛ _⊆ₛ_
- -- ⊆ₛ-is-partial-order = (⊆ₛ-is-reflexive , ⊆ₛ-is-transitive) , ⊆ₛ-is-antisymmetric
+ ⊆ₛ-is-partial-order : is-partial-order 𝒪ₛ _⊆ₛ_
+ ⊆ₛ-is-partial-order = (⊆ₛ-is-reflexive , ⊆ₛ-is-transitive) , ⊆ₛ-is-antisymmetric
 
 \end{code}
