@@ -1,11 +1,19 @@
-Ayberk Tosun, 29 September 2023
+Ayberk Tosun.
 
-This module contains a definition of the Scott locale of a large and locally
+Started on 29 September 2023
+Finished on 2 October 2023.
+
+This module contains the definition of the Scott locale of a large and locally
 small _algebraic_ dcpo, using the definition of algebraic dcpo from the
 `DomainTheory` development due to Tom de Jong.
 
 If one starts with an algebraic dcpo, one can ensure that the resulting Scott
-locale is small by quantifying over only the basic/compact opens.
+locale is small by quantifying over only the basic/compact opens. This is the
+difference between the construction in this module and the one in
+`ScottLocale.Definition`
+
+TODO: in the future, it would be good to call the other module something
+else other than `Definition`.
 
 \begin{code}[hide]
 
@@ -52,6 +60,10 @@ open import Locales.ScottLocale.Definition pt fe 𝓤
 open PropositionalTruncation pt
 
 \end{code}
+
+The construction is carried out over a large and locally small dcpo 𝓓 equipped
+with a small compact basis i.e. is _structurally algebraic_ in the terminology
+of Tom de Jong. I also use the term "structure of algebraicity" for this.
 
 \begin{code}
 
