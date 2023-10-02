@@ -89,3 +89,27 @@ I find it convenient to define the type of directed families.
  x ∈ₛ U = U .pr₁ x
 
 \end{code}
+
+\begin{code}
+
+ record 𝒪ₛᴿ : 𝓤 ⊔ 𝓦 ⁺ ⊔ 𝓥 ⁺ ⊔ 𝓣  ̇ where
+  field
+   pred : ⟨ 𝓓 ⟩ → Ω 𝓦
+
+   pred-is-upwards-closed : is-upwards-closed pred holds
+   pred-is-inaccessible-by-dir-joins : is-inaccessible-by-directed-joins pred holds
+
+ to-𝒪ₛᴿ : 𝒪ₛ → 𝒪ₛᴿ
+ to-𝒪ₛᴿ (P , υ , ι) = record
+                       { pred                              = P
+                       ; pred-is-upwards-closed            = υ
+                       ; pred-is-inaccessible-by-dir-joins = ι
+                       }
+
+ from-𝒪ₛᴿ : 𝒪ₛᴿ → 𝒪ₛ
+ from-𝒪ₛᴿ 𝔘 =
+  𝔘 .pred , 𝔘 .pred-is-upwards-closed , 𝔘 .pred-is-inaccessible-by-dir-joins
+   where
+    open 𝒪ₛᴿ
+
+\end{code}
