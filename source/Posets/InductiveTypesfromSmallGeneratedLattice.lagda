@@ -25,7 +25,7 @@ open import UF.EquivalenceExamples
 open import UF.Size
 open import UF.Retracts
 open import UF.UniverseEmbedding
-open import UF.Equiv-FunExt
+open import UF.Equiv-FunExt 
 
 module Posets.InductiveTypesfromSmallGeneratedLattice (pt : propositional-truncations-exist)
                                                       (fe : Fun-Ext)
@@ -34,6 +34,7 @@ module Posets.InductiveTypesfromSmallGeneratedLattice (pt : propositional-trunca
 
 open import Locales.Frame pt fe hiding (⟨_⟩)
 open import Slice.Family
+open import UF.ImageAndSurjection pt
 
 open AllCombinators pt fe
 
@@ -370,7 +371,7 @@ module Inductive-Definitions {𝓤 𝓦 𝓥 : Universe} {B : 𝓥  ̇} (L : Sup
  open Small-Basis L q
  open Joins _≤_
 
- module Ind-from-Basis-Facts (h : is-small-basis) where
+ module Ind-from-Small-Basis-Facts (h : is-small-basis) where
 
   open Small-Basis-Facts h
 
@@ -489,17 +490,17 @@ module Local-Inductive-Definitions {𝓤 𝓦 𝓥 : Universe} {B : 𝓥  ̇} (L
 
  open Small-Basis L q
  open Joins _≤_
+ open Inductive-Definitions L q 
 
- module Local-from-Basis-Facts (h : is-small-basis) where
+ module Local-from-Small-Basis-Facts (h : is-small-basis) where
 
-  open Small-Basis-Facts h
   open PropositionalTruncation pt
   open Universe-Polymorphic-Powerset 𝓥
-  open Inductive-Definitions L q
-  open Ind-from-Basis-Facts h
+  open Small-Basis-Facts h
 
   S : (ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)) → (a : ⟨ L ⟩) → 𝓤 ⊔ 𝓦 ⊔ 𝓥  ̇
   S ϕ a = Σ b ꞉ B , (Ǝ a' ꞉ ⟨ L ⟩ , ϕ (a' , b) holds × (a' ≤ a) holds) holds
+
   S-monotone-ish : (ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)) → (x y : ⟨ L ⟩) → (x ≤ y) holds → S ϕ x → S ϕ y
   S-monotone-ish ϕ x y o = f
    where
@@ -627,16 +628,16 @@ module Correspondance-small-ϕ-closed-types-non-inc-points {𝓤 𝓦 𝓥 : Uni
 
  open Small-Basis L q
  open Joins _≤_
+ open Inductive-Definitions L q
  open Local-Inductive-Definitions L q
 
- module Correspondance-from-Basis-Facts (h : is-small-basis) where
+ module Correspondance-from-Small-Basis-Facts (h : is-small-basis) where
 
-  open Small-Basis-Facts h
   open PropositionalTruncation pt
   open Universe-Polymorphic-Powerset 𝓥
-  open Inductive-Definitions L q
-  open Ind-from-Basis-Facts h
-  open Local-from-Basis-Facts h
+  open Small-Basis-Facts h
+  open Ind-from-Small-Basis-Facts h
+  open Local-from-Small-Basis-Facts h
 
   module Correspondance-from-Locally-Small-ϕ (ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)) (i : ϕ is-local) where
 
@@ -790,8 +791,8 @@ module Correspondance-small-ϕ-closed-types-non-inc-points {𝓤 𝓦 𝓥 : Uni
 
    module Small-𝓘nd-from-exists (ind-e : Inductively-Generated-Subset-Exists ϕ) where
 
-    open Trun-Ind-Def ϕ ind-e
     open Inductively-Generated-Subset-Exists ind-e
+    open Trun-Ind-Def ϕ ind-e
 
     module _ (j : (b : B) → (b ∈ 𝓘nd) is 𝓥 small) where
 
@@ -900,6 +901,47 @@ module Correspondance-small-ϕ-closed-types-non-inc-points {𝓤 𝓦 𝓥 : Uni
          sup-𝓘-≤-sup-P = joins-preserve-containment {𝓘-is-small-subset} {P-a} 𝓘-is-small-subset-⊆-P-a
          sup-P-＝-a : sup-P ＝ a
          sup-P-＝-a = is-sup'ᴮ a ⁻¹
+
+\end{code}
+
+We now define what it means for an inductive definition to be bounded.
+
+\begin{code}
+
+module Bounded-Inductive-Definition {𝓤 𝓦 𝓥 : Universe}
+                                    {B : 𝓥  ̇}
+                                    (L : Sup-Lattice 𝓤 𝓦 𝓥)
+                                    (q : B → ⟨ L ⟩)
+                                     where
+
+ open Small-Basis L q
+ open Joins _≤_
+
+ module Bounded-from-Small-Basis-Facts (h : is-small-basis) where
+
+  open Small-Basis-Facts h
+  open Universe-Polymorphic-Powerset (𝓥 ⁺)
+
+  _is-a-bound-for_ : 𝓟 {𝓥} (𝓥  ̇) → (ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)) → 𝓤 ⊔ 𝓦 ⊔ (𝓥 ⁺)  ̇
+  A is-a-bound-for ϕ = (b : B)
+                     → (a : ⟨ L ⟩)
+                     → ϕ(a , b) holds
+                     → Σ X ꞉ 𝓥  ̇ , Σ Y ꞉ 𝓥  ̇ , Σ f ꞉ (X → Y) , X ∈ A × image f ≃ ↓ᴮ a
+
+  _is-bounded : (ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)) → 𝓤 ⊔ 𝓦 ⊔ (𝓥 ⁺)  ̇
+  ϕ is-bounded = ((a : ⟨ L ⟩) → (Σ b ꞉ B , ϕ(a , b) holds) is 𝓥 small) × (Σ A ꞉ 𝓟 {𝓥} (𝓥  ̇) , A is-a-bound-for ϕ)
+
+  open Local-Inductive-Definitions L q
+  open Local-from-Small-Basis-Facts h
+
+  bounded-implies-local : (ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)) → ϕ is-bounded → ϕ is-local
+  bounded-implies-local ϕ (is-small , bound) a = {!!}
+
+\end{code}
+
+We now define what it means for a Lattice to have a small presentation.
+
+\begin{code}
 
 
 \end{code}
