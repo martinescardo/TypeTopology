@@ -1,18 +1,18 @@
 Ayberk Tosun, 29 September 2023
 
-This module contains a definition of the Scott locale of a dcpo, using the definition of
-dcpo from the `DomainTheory` development due to Tom de Jong.
+This module contains a definition of the Scott locale of a large and locally
+small _algebraic_ dcpo, using the definition of algebraic dcpo from the
+`DomainTheory` development due to Tom de Jong.
+
+If one starts with an algebraic dcpo, one can ensure that the resulting Scott
+locale is small by quantifying over only the basic/compact opens.
 
 \begin{code}[hide]
 
-{-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
-open import MLTT.List hiding ([_])
-open import MLTT.Pi
 open import MLTT.Spartan
 open import Slice.Family
-open import UF.Base
-open import UF.EquivalenceExamples
 open import UF.FunExt
 open import UF.Logic
 open import UF.PropTrunc
@@ -20,13 +20,12 @@ open import UF.SubtypeClassifier
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.Powerset-MultiUniverse hiding (_⊆_)
-open import UF.UA-FunExt
-open import UF.Univalence
-open import Slice.Family
 
 \end{code}
 
-We assume the existence of propositional truncations as well as function extensionality.
+We assume the existence of propositional truncations as well as function
+extensionality, and we assume a universe 𝓤 over which we consider large and
+locally small dcpos.
 
 \begin{code}
 
@@ -56,7 +55,9 @@ open PropositionalTruncation pt
 
 \begin{code}
 
-module ScottLocaleConstruction (𝓓 : DCPO {𝓤 ⁺} {𝓤}) (hscb : has-specified-small-compact-basis 𝓓) (pe : propext 𝓤) where
+module ScottLocaleConstruction (𝓓    : DCPO {𝓤 ⁺} {𝓤})
+                               (hscb : has-specified-small-compact-basis 𝓓)
+                               (pe   : propext 𝓤)                          where
 
  open import DomainTheory.Lifting.LiftingSet pt fe 𝓤 pe
  open DefnOfScottTopology 𝓓 𝓤
@@ -64,7 +65,8 @@ module ScottLocaleConstruction (𝓓 : DCPO {𝓤 ⁺} {𝓤}) (hscb : has-speci
 
 \end{code}
 
-`𝒪ₛ` is the type of 𝓦-Scott-opens over dcpo `𝓓`.
+We denote by `𝕒` the fact that the dcpo `𝓓` in consideration is _structurally
+algebraic_.
 
 \begin{code}
 
@@ -73,19 +75,25 @@ module ScottLocaleConstruction (𝓓 : DCPO {𝓤 ⁺} {𝓤}) (hscb : has-speci
 
 \end{code}
 
-We denote by `I` the index type of the basis:
+We denote by `I` the index type of the basis and by `β` its enumeration
+function.
 
 \begin{code}
 
  I = pr₁ hscb
  β = pr₁ (pr₂ hscb)
 
+\end{code}
+
+\begin{code}
+
  ℬ : Fam 𝓤 ⟨ 𝓓 ⟩∙
- ℬ = (I , β)
+ ℬ = I , β
 
 \end{code}
 
-These are ordered by inclusion.
+The order `_⊆ₛ_` is the small version of the relation that quantifies only
+over the basic opens. The order `_⊆_` is the large version.
 
 \begin{code}
 
@@ -174,6 +182,8 @@ These are ordered by inclusion.
 
 \end{code}
 
+The top open.
+
 \begin{code}
 
  ⊤ₛ : 𝒪ₛ
@@ -192,6 +202,8 @@ These are ordered by inclusion.
  ⊤ₛ-is-top U = λ _ _ → ⋆
 
 \end{code}
+
+The meet of two opens.
 
 \begin{code}
 
@@ -227,6 +239,8 @@ These are ordered by inclusion.
    ‡ (W , p) x q = pr₁ p x q , pr₂ p x q
 
 \end{code}
+
+The 𝓤-join of opens.
 
 \begin{code}
 
@@ -284,13 +298,10 @@ These are ordered by inclusion.
    † i y p = ∣ i , p ∣
 
    ‡ : ((U , _) : upper-bound S) → ((⋁ₛ S) ⊆ₛ U) holds
-   ‡ ((U , δ) , p) = tmp
+   ‡ ((U , δ) , p) i = ∥∥-rec (holds-is-prop (U (ℬ [ i ]))) ※
     where
-     tmp : (i : I) → (((ℬ [ i ]) ∈ₛ (⋁ₛ S)) ⇒ U (ℬ [ i ])) holds
-     tmp i = ∥∥-rec (holds-is-prop (U (ℬ [ i ]))) ※
-      where
-       ※ : Σ j ꞉ index S , ((ℬ [ i ]) ∈ₛ (S [ j ])) holds → U (ℬ [ i ]) holds
-       ※ (j , q) = p j i q
+     ※ : Σ j ꞉ index S , ((ℬ [ i ]) ∈ₛ (S [ j ])) holds → U (ℬ [ i ]) holds
+     ※ (j , q) = p j i q
 
 \end{code}
 
@@ -300,11 +311,12 @@ These are ordered by inclusion.
  distributivityₛ U S = ⊆ₛ-is-antisymmetric † ‡
   where
    † : ((U ∧ₛ (⋁ₛ S)) ⊆ₛ (⋁ₛ ⁅ U ∧ₛ V ∣ V ε S ⁆)) holds
-   † i (p , q) = ∥∥-rec (holds-is-prop ((⋁ₛ ⁅ U ∧ₛ V ∣ V ε S ⁆) .pr₁ (ℬ [ i ]))) †₀ q
-    where
-     †₀ : Σ k ꞉ index S , ((S [ k ]) .pr₁ (ℬ [ i ])) holds
-        → (⋁ₛ ⁅ U ∧ₛ V ∣ V ε S ⁆) .pr₁ (ℬ [ i ]) holds
-     †₀ (i , r) = ∣ i , (p , r) ∣
+   † i (p , q) =
+    ∥∥-rec (holds-is-prop ((ℬ [ i ]) ∈ₛ (⋁ₛ ⁅ U ∧ₛ V ∣ V ε S ⁆))) †₀ q
+     where
+      †₀ : Σ k ꞉ index S , ((S [ k ]) .pr₁ (ℬ [ i ])) holds
+         → (⋁ₛ ⁅ U ∧ₛ V ∣ V ε S ⁆) .pr₁ (ℬ [ i ]) holds
+      †₀ (i , r) = ∣ i , (p , r) ∣
 
    ‡ : ((⋁ₛ ⁅ U ∧ₛ V ∣ V ε S ⁆) ⊆ₛ (U ∧ₛ (⋁ₛ S))) holds
    ‡ i p = ∥∥-rec (holds-is-prop ((U ∧ₛ (⋁ₛ S)) .pr₁ (ℬ [ i ]))) ‡₀ p
@@ -324,6 +336,12 @@ These are ordered by inclusion.
                     , (λ (U , V) → ∧ₛ-is-meet U V)
                     , ⋁ₛ-is-join
                     , λ (U , S) → distributivityₛ U S
+
+\end{code}
+
+We finally define the locally small Scott locale of algebraic dcpo `𝓓`:
+
+\begin{code}
 
  ScottLocale : Locale (𝓤 ⁺) 𝓤 𝓤
  ScottLocale = record { ⟨_⟩ₗ = 𝒪ₛ ; frame-str-of = 𝒪ₛ-frame-structure }
