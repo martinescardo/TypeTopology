@@ -559,7 +559,7 @@ closed under retracts, the claim follows.
        f : code base → base ＝ base
        f = loops ∘ δ
        I   = transport-along-→ code (_＝_ base) loop f
-       II  = refl
+       II  = ? -- refl
        III = ap ((_∙ loop) ∘ f ∘_)
               (dfunext (lower-funext 𝓤₀ 𝓤 fe) transport-code-loop⁻¹-is-pred-ℤ')
        IV  = ap (λ - → (_∙ loop) ∘ loops ∘ - ∘ pred-ℤ ∘ δ)

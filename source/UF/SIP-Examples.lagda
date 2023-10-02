@@ -1520,6 +1520,7 @@ module contrived-example (𝓤 : Universe) where
      (λ φ γ → equiv-closed-under-∼ _ _ (id-is-equiv (φ ＝ γ)) (λ {(refl {φ}) → 𝓻𝓮𝒻𝓵 (𝓻𝓮𝒻𝓵 φ)})))
     (X , φ) (Y , γ)
 
+{-
 module generalized-functor-algebra
          {𝓤 𝓥 : Universe}
          (F : 𝓤 ̇ → 𝓥 ̇ )
@@ -1552,8 +1553,8 @@ module generalized-functor-algebra
      i = transports-are-equivs (ρ (X , β))
 
      h : canonical-map ι ρ α β ∼ c
-     h refl = ρ (X , α)           ＝⟨ refl-left-neutral ⁻¹ ⟩
-              𝓻𝓮𝒻𝓵 α ∙ ρ (X , α) ∎
+     h refl = {!!} {- ρ (X , α)           ＝⟨ refl-left-neutral ⁻¹ ⟩
+              𝓻𝓮𝒻𝓵 α ∙ ρ (X , α) ∎ -}
 
      γ : is-equiv (canonical-map ι ρ α β)
      γ = equiv-closed-under-∼ c (canonical-map ι ρ α β) i h
@@ -1565,6 +1566,7 @@ module generalized-functor-algebra
 
  characterization-of-functor-algebra-＝ ua X Y α β =
    characterization-of-＝ ua sns-data (X , α) (Y , β)
+-}
 
 type-valued-preorder-S : 𝓤 ̇ → 𝓤 ⊔ (𝓥 ⁺) ̇
 type-valued-preorder-S {𝓤} {𝓥} X = Σ _≤_ ꞉ (X → X → 𝓥 ̇ )

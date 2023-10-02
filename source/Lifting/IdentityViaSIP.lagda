@@ -30,6 +30,29 @@ open import Lifting.Lifting 𝓣
 _⋍_ : 𝓛 X → 𝓛 X → 𝓣 ⊔ 𝓤 ̇
 l ⋍ m = Σ e ꞉ is-defined l ≃ is-defined m , value l ＝ value m ∘ ⌜ e ⌝
 
+S : 𝓣 ̇  → 𝓣 ⊔ 𝓤 ̇
+S P = P → X
+
+S-equiv : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓣 ⊔ 𝓤 ̇
+S-equiv l m (f , e) = pr₂ l ＝ pr₂ m ∘ f
+
+S-refl : (A : Σ S) → S-equiv A A (≃-refl ⟨ A ⟩)
+S-refl A = refl
+
+S-id-structure : (X : 𝓣  ̇) (s t : S X)
+               → S-equiv (X , s) (X , t) (≃-refl X) → s ＝ t
+S-id-structure X s t = id
+
+S-transport : (A : Σ S)
+                (s : S ⟨ A ⟩)
+                (υ : S-equiv A (⟨ A ⟩ , s) (≃-refl ⟨ A ⟩))
+              → transport
+                   (λ - → S-equiv A (⟨ A ⟩ , -) (≃-refl ⟨ A ⟩))
+                   (S-id-structure ⟨ A ⟩ (structure A) s υ)
+                   (S-refl A)
+              ＝ υ
+S-transport A s refl = refl
+
 𝓛-Id : is-univalent 𝓣 → (l m : 𝓛 X) → (l ＝ m) ≃ (l ⋍ m)
 𝓛-Id ua = ＝-is-≃ₛ'
  where
@@ -38,10 +61,10 @@ l ⋍ m = Σ e ꞉ is-defined l ≃ is-defined m , value l ＝ value m ∘ ⌜ e
         (λ P → P → X)
         (λ P s → is-prop P)
         (λ P s → being-prop-is-prop (univalence-gives-funext ua))
-        (λ {l m (f , e) → pr₂ l ＝ pr₂ m ∘ f})
+        S-equiv -- (λ {l m (f , e) → pr₂ l ＝ pr₂ m ∘ f})
         (λ l → refl)
         (λ P ε δ → id)
-        (λ A τ υ → refl-left-neutral)
+        S-transport
 
 ⋍-gives-＝ : is-univalent 𝓣 → {l m : 𝓛 X} → (l ⋍ m) → l ＝ m
 ⋍-gives-＝ ua = ⌜ 𝓛-Id ua _ _ ⌝⁻¹

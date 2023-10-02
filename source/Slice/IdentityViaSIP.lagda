@@ -27,6 +27,29 @@ open import Slice.Slice 𝓣
 _⋍_ : 𝓕 X → 𝓕 X → 𝓣 ⊔ 𝓤 ̇
 l ⋍ m = Σ e ꞉ source l ≃ source m , family l ＝ family m ∘ ⌜ e ⌝
 
+S : 𝓣 ̇  → 𝓣 ⊔ 𝓤 ̇
+S P = P → X
+
+S-equiv : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓣 ⊔ 𝓤 ̇
+S-equiv l m (f , e) = family l ＝ family m ∘ f
+
+S-refl : (A : Σ S) → S-equiv A A (≃-refl ⟨ A ⟩)
+S-refl l = refl
+
+S-id-structure : (X : 𝓣 ̇ ) (s t : S X)
+                → S-equiv (X , s) (X , t) (≃-refl X) → s ＝ t
+S-id-structure _ _ _ = id
+
+S-transport : (A : Σ S)
+               (s : S ⟨ A ⟩)
+               (υ : S-equiv A (⟨ A ⟩ , s) (≃-refl ⟨ A ⟩))
+             → transport
+                  (λ - → S-equiv A (⟨ A ⟩ , -) (≃-refl ⟨ A ⟩))
+                  (S-id-structure ⟨ A ⟩ (structure A) s υ)
+                  (S-refl A)
+             ＝ υ
+S-transport _ _ refl = refl
+
 𝓕-Id : is-univalent 𝓣 → (l m : 𝓕 X) → (l ＝ m) ≃ (l ⋍ m)
 𝓕-Id ua = ＝-is-≃ₛ'
  where
@@ -36,7 +59,7 @@ l ⋍ m = Σ e ꞉ source l ≃ source m , family l ＝ family m ∘ ⌜ e ⌝
         (λ {l m (f , e) → family l ＝ family m ∘ f})
         (λ l → refl)
         (λ P ε δ → id)
-        (λ A τ υ → refl-left-neutral)
+        S-transport --S-transport -- (λ A τ υ → refl-left-neutral)
 
 ⋍-gives-＝ : is-univalent 𝓣 → {l m : 𝓕 X} → (l ⋍ m) → l ＝ m
 ⋍-gives-＝ ua = ⌜ 𝓕-Id ua _ _ ⌝⁻¹

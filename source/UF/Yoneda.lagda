@@ -294,7 +294,8 @@ Hedberg-lemma : {X : 𝓤 ̇ }
                 (y : X)
                 (p : x ＝ y)
               → η x refl ∙ p ＝ η y p
-Hedberg-lemma x η = yoneda-lemma x (Id x) η
+-- Hedberg-lemma x η = {!!} -- yoneda-lemma x (Id x) η
+Hedberg-lemma x η y refl = refl
 
 idemp-is-id : {X : 𝓤 ̇ }
               {x : X}
@@ -635,7 +636,7 @@ yoneda-lemma-Id : {X : 𝓤 ̇ } (x {y} : X)
                   (z : X)
                   (p : y ＝ z)
                 → (yoneda-elem-Id x η) ∙ p ＝ η z p
-yoneda-lemma-Id x {y} = yoneda-lemma y (Id x)
+yoneda-lemma-Id x {y} η _ refl = refl -- yoneda-lemma y (Id x)
 
 Yoneda-lemma-Id : {X : 𝓤 ̇ }
                   (x {y} : X)
@@ -705,8 +706,8 @@ refl-left-neutral-bis : {X : 𝓤 ̇ }
                         {x y : X}
                         {p : x ＝ y}
                       → refl ∙ p ＝ p
-refl-left-neutral-bis {𝓤} {X} {x} {y} {p} =
- yoneda-lemma x (Id x) (λ y p → p) y p
+refl-left-neutral-bis {𝓤} {X} {x} {y} {refl} = refl
+-- yoneda-lemma x (Id x) (λ y p → p) y p
 
 ⁻¹-involutive-bis : {X : 𝓤 ̇ }
                     {x y : X}

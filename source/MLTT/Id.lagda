@@ -44,7 +44,8 @@ rhs : {X : 𝓤 ̇ } {x y : X} → x ＝ y → X
 rhs {𝓤} {X} {x} {y} p = y
 
 _∙_ : {X : 𝓤 ̇ } {x y z : X} → x ＝ y → y ＝ z → x ＝ z
-p ∙ q = transport (lhs p ＝_) q p
+p ∙ refl = p
+-- transport (lhs p ＝_) q p
 
 _⁻¹ : {X : 𝓤 ̇ } → {x y : X} → x ＝ y → y ＝ x
 p ⁻¹ = transport (_＝ lhs p) p refl

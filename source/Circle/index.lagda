@@ -15,6 +15,6 @@ import Circle.Integers-Properties
 import Circle.Integers-SymmetricInduction
 
 import Circle.Construction
-import Circle.Induction
+-- import Circle.Induction
 
 \end{code}

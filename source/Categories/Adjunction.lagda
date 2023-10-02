@@ -77,10 +77,10 @@ module adjunction-of-precategories (𝓒 : precategory 𝓤 𝓥) (𝓓 : precat
       (associator-inverse F G F)
       ([𝓒,𝓓].seq
        (left-whiskering.whisk F counit)
-       (left-unitor F))
+       ?) -- (left-unitor F))
 
     G-η : [𝓓,𝓒].hom G G-[F-G]
-    G-η = [𝓓,𝓒].seq (left-unitor-inverse G) (left-whiskering.whisk G unit)
+    G-η = [𝓓,𝓒].seq (left-unitor-inverse G) ? -- (left-whiskering.whisk G unit)
 
     ϵ-G : [𝓓,𝓒].hom G-[F-G] G
     ϵ-G =

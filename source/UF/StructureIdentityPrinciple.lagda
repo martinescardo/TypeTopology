@@ -277,7 +277,7 @@ module ∞-magma (𝓤 : Universe) (ua : is-univalent 𝓤) where
                     (S-id-structure ⟨ A ⟩ (structure A) s υ)
                     (S-refl A)
                ＝ υ
- S-transport A m υ = refl-left-neutral
+ S-transport A m refl = refl -- refl-left-neutral
 
  open gsip 𝓤 𝓤 ua S S-equiv S-refl S-id-structure S-transport
 
@@ -353,12 +353,29 @@ module ∞-proto-topological-spaces (𝓤 𝓥 : Universe) (ua : is-univalent �
  S : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
  S X = (X → R) → R
 
+ S-equiv : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓤 ⊔ 𝓥 ̇
+ S-equiv A B (f , e) = (λ V → structure A (V ∘ f)) ＝ structure B
+
+ S-refl : (A : Σ S) → S-equiv A A (≃-refl ⟨ A ⟩)
+ S-refl A = refl
+
+ S-id-structure : (X : 𝓤 ̇) (s t : S X)
+                → S-equiv (X , s) (X , t) (≃-refl X) → s ＝ t
+ S-id-structure X s t = id
+
+ S-transport : (A : Σ S)
+               (s : S ⟨ A ⟩)
+               (υ : S-equiv A (⟨ A ⟩ , s) (≃-refl ⟨ A ⟩))
+             → transport (λ - → S-equiv A (⟨ A ⟩ , -) (≃-refl ⟨ A ⟩)) υ (S-refl A)
+             ＝ υ
+ S-transport A s refl = refl
+
  open gsip
-       𝓤 (𝓤 ⊔ 𝓥) ua S
-       (λ {A B (f , e) → (λ V → structure A (V ∘ f)) ＝ structure B})
+       𝓤 (𝓤 ⊔ 𝓥) ua S S-equiv S-refl S-id-structure S-transport
+{-       S-equiv -- (λ {A B (f , e) → (λ V → structure A (V ∘ f)) ＝ structure B})
        (λ A → refl)
        (λ X τ σ → id)
-       (λ A τ υ → refl-left-neutral)
+       ? -- (λ A τ ν → S-transport A τ ν) --refl-left-neutral) -}
 
  fact : (A B : Σ S)
       → (A ＝ B) ≃ (Σ f ꞉ (⟨ A ⟩ → ⟨ B ⟩)
@@ -397,12 +414,25 @@ module ∞-proto-metric-spaces (𝓤 𝓥 : Universe) (ua : is-univalent 𝓤) (
  S : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
  S X = X → X → R
 
+ S-equiv : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓤 ⊔ 𝓥 ̇
+ S-equiv A B (f , e) = structure A ＝ (λ x x' → structure B (f x) (f x'))
+
+ S-refl : (A : Σ S) → S-equiv A A (≃-refl ⟨ A ⟩)
+ S-refl A = refl
+
+ S-transport : (A : Σ S)
+               (s : S ⟨ A ⟩)
+               (υ : S-equiv A (⟨ A ⟩ , s) (≃-refl ⟨ A ⟩))
+             → transport (λ - → S-equiv A (⟨ A ⟩ , -) (≃-refl ⟨ A ⟩)) υ (S-refl A)
+             ＝ υ
+ S-transport A s refl = refl
+
  open gsip
        𝓤 (𝓤 ⊔ 𝓥) ua S
        (λ {A B (f , e) → structure A ＝ (λ x x' → structure B (f x) (f x'))})
        (λ A → refl)
        (λ X d e → id)
-       (λ A s υ → refl-left-neutral)
+       S-transport -- refl-left-neutral)
 
  fact : (A B : Σ S)
       → (A ＝ B) ≃ (Σ f ꞉ (⟨ A ⟩ → ⟨ B ⟩)
@@ -428,12 +458,25 @@ module selection-spaces (𝓤 𝓥 : Universe) (ua : is-univalent 𝓤) (R : �
  S : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
  S X = (X → R) → X
 
+ S-equiv : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓤 ⊔ 𝓥 ̇
+ S-equiv A B (f , e) = (λ V → f (structure A (V ∘ f))) ＝ structure B
+
+ S-refl : (A : Σ S) → S-equiv A A (≃-refl ⟨ A ⟩)
+ S-refl A = refl
+
+ S-transport : (A : Σ S)
+               (s : S ⟨ A ⟩)
+               (υ : S-equiv A (⟨ A ⟩ , s) (≃-refl ⟨ A ⟩))
+             → transport (λ - → S-equiv A (⟨ A ⟩ , -) (≃-refl ⟨ A ⟩)) υ (S-refl A)
+             ＝ υ
+ S-transport A s refl = refl
+
  open gsip
        𝓤 (𝓤 ⊔ 𝓥) ua S
        (λ {A B (f , e) → (λ V → f (structure A (V ∘ f))) ＝ structure B})
        (λ A → refl)
        (λ X ε δ → id)
-       (λ A τ υ → refl-left-neutral)
+       S-transport -- refl-left-neutral)
 
  fact : (A B : Σ S)
       → (A ＝ B) ≃ (Σ f ꞉ (⟨ A ⟩ → ⟨ B ⟩)

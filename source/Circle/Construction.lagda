@@ -589,7 +589,7 @@ principle.
 
 \begin{code}
 
-open import Circle.Induction
+{- open import Circle.Induction
 
 module _
         (fe : FunExt)
@@ -606,6 +606,6 @@ module _
  Tℤ-induction-comp : (Tℤ-induction base , apd Tℤ-induction loop)
                    ＝[ Σ y ꞉ A base , transport A loop y ＝ y ] (a , l)
  Tℤ-induction-comp = 𝕊¹-induction-comp
-                      (equiv-to-set loops-at-base-equivalent-to-ℤ ℤ-is-set)
+                      (equiv-to-set loops-at-base-equivalent-to-ℤ ℤ-is-set) -}
 
 \end{code}
