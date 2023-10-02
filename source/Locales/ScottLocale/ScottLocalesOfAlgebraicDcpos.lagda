@@ -19,6 +19,7 @@ open import UF.PropTrunc
 open import UF.SubtypeClassifier
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
+open import UF.Powerset-MultiUniverse hiding (_⊆_)
 open import UF.UA-FunExt
 open import UF.Univalence
 open import Slice.Family
@@ -170,5 +171,108 @@ These are ordered by inclusion.
 
  ⊆ₛ-is-partial-order : is-partial-order 𝒪ₛ _⊆ₛ_
  ⊆ₛ-is-partial-order = (⊆ₛ-is-reflexive , ⊆ₛ-is-transitive) , ⊆ₛ-is-antisymmetric
+
+\end{code}
+
+\begin{code}
+
+ ⊤ₛ : 𝒪ₛ
+ ⊤ₛ = (λ _ → ⊤ {𝓤}) , υ , ι
+  where
+   υ : is-upwards-closed (λ _ → ⊤) holds
+   υ _ _ _ _ = ⋆
+
+   ι : is-inaccessible-by-directed-joins (λ _ → ⊤) holds
+   ι (S , (∣i∣ , γ)) ⋆ = ∥∥-rec ∃-is-prop † ∣i∣
+    where
+     † : index S → ∃ _ ꞉ index S , ⊤ holds
+     † i = ∣ i , ⋆ ∣
+
+ ⊤ₛ-is-top : (U : 𝒪ₛ) → (U ⊆ₛ ⊤ₛ) holds
+ ⊤ₛ-is-top U = λ _ _ → ⋆
+
+\end{code}
+
+\begin{code}
+
+ _∧ₛ_ : 𝒪ₛ → 𝒪ₛ → 𝒪ₛ
+ (U , (υ₁ , ι₁)) ∧ₛ (V , (υ₂ , ι₂)) = (λ x → U x ∧ V x) , υ , ι
+  where
+   υ : is-upwards-closed (λ x → U x ∧ V x) holds
+   υ x y (p₁ , p₂) q = υ₁ x y p₁ q , υ₂ x y p₂ q
+
+   ι : is-inaccessible-by-directed-joins (λ x → U x ∧ V x) holds
+   ι (S , δ) (p , q) = ∥∥-rec₂ ∃-is-prop γ (ι₁ (S , δ) p) (ι₂ (S , δ) q)
+    where
+     γ : Σ i ꞉ index S , U (S [ i ]) holds
+       → Σ j ꞉ index S , V (S [ j ]) holds
+       → ∃ k ꞉ index S , (U (S [ k ]) ∧ V (S [ k ])) holds
+     γ (i , r₁) (j , r₂) = ∥∥-rec ∃-is-prop † (pr₂ δ i j)
+      where
+       † : Σ k₀ ꞉ index S ,
+            ((S [ i ]) ⊑⟨ 𝓓 ⟩ₚ (S [ k₀ ]) ∧ (S [ j ]) ⊑⟨ 𝓓 ⟩ₚ (S [ k₀ ])) holds
+         → ∃ k ꞉ index S , (U (S [ k ]) ∧ V (S [ k ])) holds
+       † (k₀ , φ , ψ) =
+        ∣ k₀ , υ₁ (S [ i ]) (S [ k₀ ]) r₁ φ , υ₂ (S [ j ]) (S [ k₀ ]) r₂ ψ ∣
+
+ open Meets _⊆ₛ_
+
+ ∧ₛ-is-meet : (U V : 𝒪ₛ) → ((U ∧ₛ V) is-glb-of ((U , V))) holds
+ ∧ₛ-is-meet U V = † , ‡
+  where
+   † : ((U ∧ₛ V) is-a-lower-bound-of (U , V)) holds
+   † = (λ _ (p , _) → p) , (λ _ (_ , q) → q)
+
+   ‡ : ((W , _) : lower-bound (U , V)) → (W ⊆ₛ (U ∧ₛ V)) holds
+   ‡ (W , p) x q = pr₁ p x q , pr₂ p x q
+
+\end{code}
+
+\begin{code}
+
+ ⋁ₛ_ : Fam 𝓤 𝒪ₛ → 𝒪ₛ
+ ⋁ₛ_ S@(_ , up) = from-𝒪ₛᴿ 𝔘
+  where
+   open 𝒪ₛᴿ
+
+   ⋃S : 𝓟 {𝓤} ⟨ 𝓓 ⟩∙
+   ⋃S x = Ǝ i ꞉ index S , (x ∈ₛ (S [ i ])) holds
+
+   υ : is-upwards-closed ⋃S holds
+   υ x y p q = ∥∥-rec (holds-is-prop (⋃S y)) † p
+    where
+     † : Σ i ꞉ index S , (x ∈ₛ (S [ i ])) holds → ⋃S y holds
+     † (i , r) = ∣ i , ♣ ∣
+      where
+       Sᵢᴿ : 𝒪ₛᴿ
+       Sᵢᴿ = to-𝒪ₛᴿ (S [ i ])
+
+       ♣ : (y ∈ₛ (S [ i ])) holds
+       ♣ = pred-is-upwards-closed Sᵢᴿ x y r q
+
+   ι : is-inaccessible-by-directed-joins ⋃S holds
+   ι (T , δ) p = ∥∥-rec ∃-is-prop † p
+    where
+     † : Σ i ꞉ index S , ((⋁ (T , δ)) ∈ₛ (S [ i ])) holds
+       → ∃ i ꞉ index T , ⋃S (T [ i ]) holds
+     † (i , r) = ∥∥-rec ∃-is-prop ‡ ♠
+      where
+
+       Sᵢᴿ : 𝒪ₛᴿ
+       Sᵢᴿ = to-𝒪ₛᴿ (S [ i ])
+
+       ♠ : ∃ k ꞉ index T , pred Sᵢᴿ (T [ k ]) holds
+       ♠ = pred-is-inaccessible-by-dir-joins Sᵢᴿ (T , δ) r
+
+       ‡ : (Σ k ꞉ index T , pred Sᵢᴿ (T [ k ]) holds)
+         → ∃ i ꞉ index T , ⋃S (T [ i ]) holds
+       ‡ (k , q) = ∣ k , ∣ i , q ∣ ∣
+
+   𝔘 : 𝒪ₛᴿ
+   𝔘 = record
+        { pred                              = ⋃S
+        ; pred-is-upwards-closed            = υ
+        ; pred-is-inaccessible-by-dir-joins = ι
+        }
 
 \end{code}
