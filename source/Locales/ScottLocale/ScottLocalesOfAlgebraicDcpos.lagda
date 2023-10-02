@@ -275,4 +275,57 @@ These are ordered by inclusion.
         ; pred-is-inaccessible-by-dir-joins = ι
         }
 
+ open Joins _⊆ₛ_
+
+ ⋁ₛ-is-join : (S : Fam 𝓤 𝒪ₛ) → ((⋁ₛ S) is-lub-of S) holds
+ ⋁ₛ-is-join S = † , ‡
+  where
+   † : ((⋁ₛ S) is-an-upper-bound-of S) holds
+   † i y p = ∣ i , p ∣
+
+   ‡ : ((U , _) : upper-bound S) → ((⋁ₛ S) ⊆ₛ U) holds
+   ‡ ((U , δ) , p) = tmp
+    where
+     tmp : (i : I) → (((ℬ [ i ]) ∈ₛ (⋁ₛ S)) ⇒ U (ℬ [ i ])) holds
+     tmp i = ∥∥-rec (holds-is-prop (U (ℬ [ i ]))) ※
+      where
+       ※ : Σ j ꞉ index S , ((ℬ [ i ]) ∈ₛ (S [ j ])) holds → U (ℬ [ i ]) holds
+       ※ (j , q) = p j i q
+
+\end{code}
+
+\begin{code}
+
+ distributivityₛ : (U : 𝒪ₛ) (S : Fam 𝓤 𝒪ₛ) → U ∧ₛ (⋁ₛ S) ＝ ⋁ₛ ⁅ U ∧ₛ V ∣ V ε S ⁆
+ distributivityₛ U S = ⊆ₛ-is-antisymmetric † ‡
+  where
+   † : ((U ∧ₛ (⋁ₛ S)) ⊆ₛ (⋁ₛ ⁅ U ∧ₛ V ∣ V ε S ⁆)) holds
+   † i (p , q) = ∥∥-rec (holds-is-prop ((⋁ₛ ⁅ U ∧ₛ V ∣ V ε S ⁆) .pr₁ (ℬ [ i ]))) †₀ q
+    where
+     †₀ : Σ k ꞉ index S , ((S [ k ]) .pr₁ (ℬ [ i ])) holds
+        → (⋁ₛ ⁅ U ∧ₛ V ∣ V ε S ⁆) .pr₁ (ℬ [ i ]) holds
+     †₀ (i , r) = ∣ i , (p , r) ∣
+
+   ‡ : ((⋁ₛ ⁅ U ∧ₛ V ∣ V ε S ⁆) ⊆ₛ (U ∧ₛ (⋁ₛ S))) holds
+   ‡ i p = ∥∥-rec (holds-is-prop ((U ∧ₛ (⋁ₛ S)) .pr₁ (ℬ [ i ]))) ‡₀ p
+    where
+     ‡₀ : (Σ k ꞉ index S , ((U ∧ₛ (S [ k ])) .pr₁ (ℬ [ i ]) holds))
+        → (U ∧ₛ (⋁ₛ S)) .pr₁ (ℬ [ i ]) holds
+     ‡₀ (i , (q , r)) = q , ∣ i , r ∣
+
+\end{code}
+
+\begin{code}
+
+ 𝒪ₛ-frame-structure : frame-structure 𝓤 𝓤 𝒪ₛ
+ 𝒪ₛ-frame-structure = (_⊆ₛ_ , ⊤ₛ , _∧ₛ_ , ⋁ₛ_)
+                    , ⊆ₛ-is-partial-order
+                    , ⊤ₛ-is-top
+                    , (λ (U , V) → ∧ₛ-is-meet U V)
+                    , ⋁ₛ-is-join
+                    , λ (U , S) → distributivityₛ U S
+
+ ScottLocale : Locale (𝓤 ⁺) 𝓤 𝓤
+ ScottLocale = record { ⟨_⟩ₗ = 𝒪ₛ ; frame-str-of = 𝒪ₛ-frame-structure }
+
 \end{code}
