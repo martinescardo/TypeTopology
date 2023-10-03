@@ -237,3 +237,19 @@ We now have everything we need to write down the Scott locale of `𝓓`.
  ScottLocale = record { ⟨_⟩ₗ = 𝒪ₛ ; frame-str-of = 𝒪ₛ-frame-structure }
 
 \end{code}
+
+For clarity, we define the special case of `ScottLocale` for the large and
+locally small case.
+
+\begin{code}
+
+module DefnOfScottLocaleLocallySmallCase (𝓓  : DCPO {𝓥 ⁺} {𝓥})
+                                         (pe : propext 𝓥)        where
+
+
+ open DefnOfScottLocale 𝓓 𝓥 pe
+
+ ScottLocale' : Locale (𝓥 ⁺) (𝓥 ⁺) 𝓥
+ ScottLocale' = ScottLocale
+
+\end{code}
