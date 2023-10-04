@@ -921,21 +921,39 @@ module Bounded-Inductive-Definition {𝓤 𝓦 𝓥 : Universe}
 
   open Small-Basis-Facts h
   open Universe-Polymorphic-Powerset (𝓥 ⁺)
+  open PropositionalTruncation pt
 
-  _is-a-bound-for_ : 𝓟 {𝓥} (𝓥  ̇) → (ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)) → 𝓤 ⊔ 𝓦 ⊔ (𝓥 ⁺)  ̇
-  A is-a-bound-for ϕ = (b : B)
-                     → (a : ⟨ L ⟩)
-                     → ϕ(a , b) holds
-                     → Σ X ꞉ 𝓥  ̇ , Σ Y ꞉ 𝓥  ̇ , Σ f ꞉ (X → Y) , X ∈ A × image f ≃ ↓ᴮ a
+  _is-a-small-cover-of_ : (X : 𝓥  ̇) → (Y : 𝓣  ̇) → 𝓥 ⊔ 𝓣  ̇
+  X is-a-small-cover-of Y = X ↠ Y
+
+  _has-a-bound : (ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)) → 𝓤 ⊔ 𝓦 ⊔ (𝓥 ⁺)  ̇
+  ϕ has-a-bound = Σ J ꞉ 𝓥  ̇ , Σ α ꞉ (J → 𝓥  ̇) , ((a : ⟨ L ⟩)
+                                               → (b : B)
+                                               → ϕ (a , b) holds
+                                               → (Ǝ j ꞉ J , (α j is-a-small-cover-of ↓ᴮ a)) holds)
+
+  bound-index : {ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)} → ϕ has-a-bound → 𝓥  ̇
+  bound-index (J , α , covering) = J
+
+  bound-family : {ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)} → (bnd : ϕ has-a-bound) → (bound-index {ϕ} bnd → 𝓥  ̇)
+  bound-family (J , α , covering) = α
+
+  covering-condition : {ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)}
+                     → (bnd : ϕ has-a-bound)
+                     → ((a : ⟨ L ⟩)
+                     → (b : B)
+                     → ϕ (a , b) holds
+                     → (Ǝ j ꞉ (bound-index {ϕ} bnd) , ((bound-family {ϕ} bnd) j is-a-small-cover-of ↓ᴮ a)) holds)
+  covering-condition (J , α , covering) = covering
 
   _is-bounded : (ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)) → 𝓤 ⊔ 𝓦 ⊔ (𝓥 ⁺)  ̇
-  ϕ is-bounded = ((a : ⟨ L ⟩) → (Σ b ꞉ B , ϕ(a , b) holds) is 𝓥 small) × (Σ A ꞉ 𝓟 {𝓥} (𝓥  ̇) , A is-a-bound-for ϕ)
+  ϕ is-bounded = ((a : ⟨ L ⟩) → (b : B) → (ϕ (a , b) holds) is 𝓥 small) × (ϕ has-a-bound)
 
   open Local-Inductive-Definitions L q
   open Local-from-Small-Basis-Facts h
 
-  bounded-implies-local : (ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)) → ϕ is-bounded → ϕ is-local
-  bounded-implies-local ϕ (is-small , bound) a = {!!}
+  _bounded-implies-local : (ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)) → ϕ is-bounded → ϕ is-local
+  (ϕ bounded-implies-local) (ϕ-small , ϕ-has-bound) a = {!!}
 
 \end{code}
 
