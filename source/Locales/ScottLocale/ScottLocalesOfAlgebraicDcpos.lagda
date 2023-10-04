@@ -13,7 +13,13 @@ is the difference between the construction in this module and the one in
 `ScottLocale.Definition`
 
 TODO: in the future, it would be good to call the other module something
-else other than `Definition`.
+else other than `Definition`, because it's not a very useful construction.
+
+TODO: The construction in the module that is currently called
+`ScottLocale.Definition` is almost the same things as the one here. In the
+future, it might be good to refactor the common structure that they share into a
+separate module, and make both of them instances of this --- or something along
+these lines.
 
 \begin{code}[hide]
 
