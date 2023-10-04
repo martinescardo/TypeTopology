@@ -61,9 +61,13 @@ open PropositionalTruncation pt
 
 \end{code}
 
-The construction is carried out over a large and locally small dcpo 𝓓 equipped
-with a small compact basis i.e. is _structurally algebraic_ in the terminology
-of Tom de Jong. I also use the term "structure of algebraicity" for this.
+The construction is carried out over a large and locally small dcpo `𝓓` equipped
+with a small compact basis. Because the type of small compact bases for large
+and locally small dcpos has _split support_, the construction can also be
+carried out without assuming a specified small compact basis.
+
+TODO: use the following module to do the same construction with only the
+truncation of the basis in consideration.
 
 \begin{code}
 
