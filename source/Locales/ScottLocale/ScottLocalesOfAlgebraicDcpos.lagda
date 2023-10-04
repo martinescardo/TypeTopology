@@ -8,8 +8,8 @@ small _algebraic_ dcpo, using the definition of algebraic dcpo from the
 `DomainTheory` development due to Tom de Jong.
 
 If one starts with an algebraic dcpo, one can ensure that the resulting Scott
-locale is small by quantifying over only the basic/compact opens. This is the
-difference between the construction in this module and the one in
+locale is locally small by quantifying over only the basic/compact opens. This
+is the difference between the construction in this module and the one in
 `ScottLocale.Definition`
 
 TODO: in the future, it would be good to call the other module something
