@@ -1,7 +1,7 @@
 Ayberk Tosun, 30 June 2023
 
-This module contains a definition of the Scott locale of a dcpo, using the definition of
-dcpo from the `DomainTheory` development due to Tom de Jong.
+This module contains a definition of the Scott locale of a dcpo, using the
+definition of dcpo from the `DomainTheory` development due to Tom de Jong.
 
 \begin{code}[hide]
 
