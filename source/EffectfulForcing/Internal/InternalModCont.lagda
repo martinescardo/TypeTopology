@@ -308,20 +308,28 @@ is-boolean : 〈〉 ⊢ baire → 𝓤₀  ̇
 is-boolean α =
  (n : 〈〉 ⊢ ι) → (⟦ α ⟧₀ ⟦ n ⟧₀ ＝ zero) + (⟦ α ⟧₀ ⟦ n ⟧₀ ＝ succ zero)
 
-uni-max-question : D ℕ 𝟚 ℕ → (ℕ → 𝟚) → ℕ
-uni-max-question (D.η n)   α = 0
-uni-max-question (D.β φ n) α = max n (max n₁ n₂)
+uni-max-question : D ℕ 𝟚 ℕ → ℕ
+uni-max-question (D.η n)   = 0
+uni-max-question (D.β φ n) = max n (max n₁ n₂)
  where
   n₁ : ℕ
-  n₁ = uni-max-question (φ ₀) α
+  n₁ = uni-max-question (φ ₀)
 
   n₂ : ℕ
-  n₂ = uni-max-question (φ ₁) α
+  n₂ = uni-max-question (φ ₁)
 
--- internal-uniform-continuity : (t : 〈〉 ⊢ (baire ⇒ ι)) (α β : 〈〉 ⊢ baire)
---                             → is-boolean α
---                             → is-boolean β
---                             → {!!}
--- internal-uniform-continuity = {!!}
+uni-modulus : D ℕ 𝟚 ℕ → ℕ
+uni-modulus = succ ∘ uni-max-question
+
+uniform-modulusᵀ : {Γ : Cxt}
+                 → Γ ⊢ baire ⇒ ι
+                 → {!!}
+uniform-modulusᵀ = {!!}
+
+internal-uni-mod-correct : (t : 〈〉 ⊢ (baire ⇒ ι)) (α β : 〈〉 ⊢ baire)
+                         → is-boolean α
+                         → is-boolean β
+                         → {!!}
+internal-uni-mod-correct = {!!}
 
 \end{code}
