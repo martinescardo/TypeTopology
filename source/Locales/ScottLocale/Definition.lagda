@@ -45,10 +45,13 @@ open PropositionalTruncation pt
 
 \end{code}
 
-We carry out the construction in the following submodule which is parameterised by
+We carry out the construction in the following submodule which is parametrised
+by
 
-  1. a dcpo `𝓓`,
-  2. a universe `𝓦` where the Scott-open subsets live,
+  1. a dcpo `𝓓` whose (a) carrier set lives in universe `𝓤`, (b) whose relation
+     lives in universe `𝓣`, and (c) whose directed joins are over families with
+     index types living in universe `𝓥`.
+  2. a universe `𝓦` where the Scott-open subsets are to live,
   3. an assumption that `𝓦` satisfies propositional extensionality.
 
 \begin{code}
