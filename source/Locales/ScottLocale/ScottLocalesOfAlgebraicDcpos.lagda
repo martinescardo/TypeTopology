@@ -12,8 +12,10 @@ locale is locally small by quantifying over only the basic/compact opens. This
 is the difference between the construction in this module and the one in
 `ScottLocale.Definition`
 
-TODO: in the future, it would be good to call the other module something
-else other than `Definition`, because it's not a very useful construction.
+TODO: In the future, it would be good to call the other module something else
+other than `Definition`, because it's not a very useful construction. It should
+have a name conveying the fact that it's an overly general construction that is
+not useful in most cases.
 
 TODO: The construction in the module that is currently called
 `ScottLocale.Definition` is almost the same things as the one here. In the
