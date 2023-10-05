@@ -35,7 +35,7 @@ open import UF.PropTrunc
 open import UF.SubtypeClassifier
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import UF.Powerset-MultiUniverse hiding (_⊆_)
+open import UF.Powerset-MultiUniverse
 
 \end{code}
 
@@ -118,7 +118,7 @@ function.
 \end{code}
 
 The order `_⊆ₖ_` is the small version of the relation that quantifies only
-over the basic opens. The order `_⊆_` is the large version.
+over the basic opens. The order `_⊆ₛ_` is the large version.
 
 \begin{code}
 
@@ -127,16 +127,13 @@ over the basic opens. The order `_⊆_` is the large version.
  _⊆ₖ_ : 𝒪ₛ → 𝒪ₛ → Ω 𝓤
  (U , _) ⊆ₖ (V , _) = Ɐ i ꞉ I , U (ℬ [ i ]) ⇒ V (ℬ [ i ])
 
- _⊆_ : 𝒪ₛ → 𝒪ₛ → Ω (𝓤 ⁺)
- (U , _) ⊆ (V , _) = Ɐ x ꞉ ⟨ 𝓓 ⟩∙ , U x ⇒ V x
-
  ⊆ₖ-is-reflexive : is-reflexive _⊆ₖ_ holds
  ⊆ₖ-is-reflexive (U , δ) _ = id
 
  ⊆ₖ-is-transitive : is-transitive _⊆ₖ_ holds
  ⊆ₖ-is-transitive (U , δ) (V , ϵ) (W , ζ) p q x = q x ∘ p x
 
- ⊆ₖ-implies-⊆ : (𝔘 𝔙 : 𝒪ₛ) → (𝔘 ⊆ₖ 𝔙 ⇒ 𝔘 ⊆ 𝔙) holds
+ ⊆ₖ-implies-⊆ : (𝔘 𝔙 : 𝒪ₛ) → (𝔘 ⊆ₖ 𝔙 ⇒ 𝔘 ⊆ₛ 𝔙) holds
  ⊆ₖ-implies-⊆ 𝔘@(U , ι₁ , υ₁) 𝔙@(V , ι₂ , υ₂) φ x p =
   transport (λ - → (- ∈ₛ 𝔙) holds) (eq ⁻¹) †
    where
@@ -185,7 +182,7 @@ over the basic opens. The order `_⊆_` is the large version.
       ‡ : (x ∈ₛ 𝔘) holds ＝ (x ∈ₛ 𝔙) holds
       ‡ = pe (holds-is-prop (x ∈ₛ 𝔘)) (holds-is-prop (x ∈ₛ 𝔙)) ♣ ♠
 
- ⊆-is-antisymmetric : is-antisymmetric _⊆_
+ ⊆-is-antisymmetric : is-antisymmetric _⊆ₛ_
  ⊆-is-antisymmetric {𝔘} {𝔙} p q =
   𝒪ₛ-equality 𝔘 𝔙
    (dfunext fe λ x →
@@ -196,10 +193,10 @@ over the basic opens. The order `_⊆_` is the large version.
  ⊆ₖ-is-antisymmetric : is-antisymmetric _⊆ₖ_
  ⊆ₖ-is-antisymmetric {𝔘} {𝔙} p q = ⊆-is-antisymmetric † ‡
   where
-   † : (𝔘 ⊆ 𝔙) holds
+   † : (𝔘 ⊆ₛ 𝔙) holds
    † = ⊆ₖ-implies-⊆ 𝔘 𝔙 p
 
-   ‡ : (𝔙 ⊆ 𝔘) holds
+   ‡ : (𝔙 ⊆ₛ 𝔘) holds
    ‡ = ⊆ₖ-implies-⊆ 𝔙 𝔘 q
 
  ⊆ₖ-is-partial-order : is-partial-order 𝒪ₛ _⊆ₖ_
