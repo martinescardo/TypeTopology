@@ -58,10 +58,11 @@ open Conjunction
 
 open import Locales.Frame pt fe
 
-open import DomainTheory.Basics.Dcpo pt fe 𝓤 renaming (⟨_⟩ to ⟨_⟩∙)
-open import DomainTheory.Topology.ScottTopology pt fe 𝓤
+open import DomainTheory.Basics.Dcpo                   pt fe 𝓤 renaming
+                                                                (⟨_⟩ to ⟨_⟩∙)
+open import DomainTheory.Topology.ScottTopology        pt fe 𝓤
 open import DomainTheory.BasesAndContinuity.Continuity pt fe 𝓤
-open import DomainTheory.BasesAndContinuity.Bases pt fe 𝓤
+open import DomainTheory.BasesAndContinuity.Bases      pt fe 𝓤
 
 open import Locales.ScottLocale.Definition pt fe 𝓤
 
@@ -85,7 +86,7 @@ module ScottLocaleConstruction (𝓓    : DCPO {𝓤 ⁺} {𝓤})
 
  open import DomainTheory.Lifting.LiftingSet pt fe 𝓤 pe
  open DefnOfScottTopology 𝓓 𝓤
- open DefnOfScottLocale 𝓓 𝓤 pe using (𝒪ₛ-equality)
+ open DefnOfScottLocale 𝓓 𝓤 pe using (𝒪ₛ-equality; _⊆ₛ_)
 
 \end{code}
 
@@ -116,27 +117,27 @@ function.
 
 \end{code}
 
-The order `_⊆ₛ_` is the small version of the relation that quantifies only
+The order `_⊆ₖ_` is the small version of the relation that quantifies only
 over the basic opens. The order `_⊆_` is the large version.
 
 \begin{code}
 
  open structurally-algebraic
 
- _⊆ₛ_ : 𝒪ₛ → 𝒪ₛ → Ω 𝓤
- (U , _) ⊆ₛ (V , _) = Ɐ i ꞉ I , U (ℬ [ i ]) ⇒ V (ℬ [ i ])
+ _⊆ₖ_ : 𝒪ₛ → 𝒪ₛ → Ω 𝓤
+ (U , _) ⊆ₖ (V , _) = Ɐ i ꞉ I , U (ℬ [ i ]) ⇒ V (ℬ [ i ])
 
  _⊆_ : 𝒪ₛ → 𝒪ₛ → Ω (𝓤 ⁺)
  (U , _) ⊆ (V , _) = Ɐ x ꞉ ⟨ 𝓓 ⟩∙ , U x ⇒ V x
 
- ⊆ₛ-is-reflexive : is-reflexive _⊆ₛ_ holds
- ⊆ₛ-is-reflexive (U , δ) _ = id
+ ⊆ₖ-is-reflexive : is-reflexive _⊆ₖ_ holds
+ ⊆ₖ-is-reflexive (U , δ) _ = id
 
- ⊆ₛ-is-transitive : is-transitive _⊆ₛ_ holds
- ⊆ₛ-is-transitive (U , δ) (V , ϵ) (W , ζ) p q x = q x ∘ p x
+ ⊆ₖ-is-transitive : is-transitive _⊆ₖ_ holds
+ ⊆ₖ-is-transitive (U , δ) (V , ϵ) (W , ζ) p q x = q x ∘ p x
 
- ⊆ₛ-implies-⊆ : (𝔘 𝔙 : 𝒪ₛ) → (𝔘 ⊆ₛ 𝔙 ⇒ 𝔘 ⊆ 𝔙) holds
- ⊆ₛ-implies-⊆ 𝔘@(U , ι₁ , υ₁) 𝔙@(V , ι₂ , υ₂) φ x p =
+ ⊆ₖ-implies-⊆ : (𝔘 𝔙 : 𝒪ₛ) → (𝔘 ⊆ₖ 𝔙 ⇒ 𝔘 ⊆ 𝔙) holds
+ ⊆ₖ-implies-⊆ 𝔘@(U , ι₁ , υ₁) 𝔙@(V , ι₂ , υ₂) φ x p =
   transport (λ - → (- ∈ₛ 𝔙) holds) (eq ⁻¹) †
    where
     S : Fam 𝓤 ⟨ 𝓓 ⟩∙
@@ -169,17 +170,17 @@ over the basic opens. The order `_⊆_` is the large version.
     † : (x : ⟨ 𝓓 ⟩∙) → x ∈ₛ 𝔘 ＝ x ∈ₛ 𝔙
     † x = to-subtype-＝ (λ _ → being-prop-is-prop fe) ‡
      where
-      foo : (𝔘 ⊆ₛ 𝔙) holds
+      foo : (𝔘 ⊆ₖ 𝔙) holds
       foo i p = transport (λ - → - holds) (φ i) p
 
-      bar : (𝔙 ⊆ₛ 𝔘) holds
+      bar : (𝔙 ⊆ₖ 𝔘) holds
       bar i p = transport _holds (φ i ⁻¹) p
 
       ♣ : (x ∈ₛ 𝔘 ⇒ x ∈ₛ 𝔙) holds
-      ♣ = ⊆ₛ-implies-⊆ 𝔘 𝔙 foo x
+      ♣ = ⊆ₖ-implies-⊆ 𝔘 𝔙 foo x
 
       ♠ : (x ∈ₛ 𝔙 ⇒ x ∈ₛ 𝔘) holds
-      ♠ = ⊆ₛ-implies-⊆ 𝔙 𝔘 bar x
+      ♠ = ⊆ₖ-implies-⊆ 𝔙 𝔘 bar x
 
       ‡ : (x ∈ₛ 𝔘) holds ＝ (x ∈ₛ 𝔙) holds
       ‡ = pe (holds-is-prop (x ∈ₛ 𝔘)) (holds-is-prop (x ∈ₛ 𝔙)) ♣ ♠
@@ -192,17 +193,17 @@ over the basic opens. The order `_⊆_` is the large version.
       (λ _ → being-prop-is-prop fe)
       (pe (holds-is-prop (x ∈ₛ 𝔘)) (holds-is-prop (x ∈ₛ 𝔙)) (p x) (q x)))
 
- ⊆ₛ-is-antisymmetric : is-antisymmetric _⊆ₛ_
- ⊆ₛ-is-antisymmetric {𝔘} {𝔙} p q = ⊆-is-antisymmetric † ‡
+ ⊆ₖ-is-antisymmetric : is-antisymmetric _⊆ₖ_
+ ⊆ₖ-is-antisymmetric {𝔘} {𝔙} p q = ⊆-is-antisymmetric † ‡
   where
    † : (𝔘 ⊆ 𝔙) holds
-   † = ⊆ₛ-implies-⊆ 𝔘 𝔙 p
+   † = ⊆ₖ-implies-⊆ 𝔘 𝔙 p
 
    ‡ : (𝔙 ⊆ 𝔘) holds
-   ‡ = ⊆ₛ-implies-⊆ 𝔙 𝔘 q
+   ‡ = ⊆ₖ-implies-⊆ 𝔙 𝔘 q
 
- ⊆ₛ-is-partial-order : is-partial-order 𝒪ₛ _⊆ₛ_
- ⊆ₛ-is-partial-order = (⊆ₛ-is-reflexive , ⊆ₛ-is-transitive) , ⊆ₛ-is-antisymmetric
+ ⊆ₖ-is-partial-order : is-partial-order 𝒪ₛ _⊆ₖ_
+ ⊆ₖ-is-partial-order = (⊆ₖ-is-reflexive , ⊆ₖ-is-transitive) , ⊆ₖ-is-antisymmetric
 
 \end{code}
 
@@ -222,7 +223,7 @@ The top open.
      † : index S → ∃ _ ꞉ index S , ⊤ holds
      † i = ∣ i , ⋆ ∣
 
- ⊤ₛ-is-top : (U : 𝒪ₛ) → (U ⊆ₛ ⊤ₛ) holds
+ ⊤ₛ-is-top : (U : 𝒪ₛ) → (U ⊆ₖ ⊤ₛ) holds
  ⊤ₛ-is-top U = λ _ _ → ⋆
 
 \end{code}
@@ -251,7 +252,7 @@ The meet of two opens.
        † (k₀ , φ , ψ) =
         ∣ k₀ , υ₁ (S [ i ]) (S [ k₀ ]) r₁ φ , υ₂ (S [ j ]) (S [ k₀ ]) r₂ ψ ∣
 
- open Meets _⊆ₛ_
+ open Meets _⊆ₖ_
 
  ∧ₛ-is-meet : (U V : 𝒪ₛ) → ((U ∧ₛ V) is-glb-of ((U , V))) holds
  ∧ₛ-is-meet U V = † , ‡
@@ -259,7 +260,7 @@ The meet of two opens.
    † : ((U ∧ₛ V) is-a-lower-bound-of (U , V)) holds
    † = (λ _ (p , _) → p) , (λ _ (_ , q) → q)
 
-   ‡ : ((W , _) : lower-bound (U , V)) → (W ⊆ₛ (U ∧ₛ V)) holds
+   ‡ : ((W , _) : lower-bound (U , V)) → (W ⊆ₖ (U ∧ₛ V)) holds
    ‡ (W , p) x q = pr₁ p x q , pr₂ p x q
 
 \end{code}
@@ -313,7 +314,7 @@ The 𝓤-join of opens.
         ; pred-is-inaccessible-by-dir-joins = ι
         }
 
- open Joins _⊆ₛ_
+ open Joins _⊆ₖ_
 
  ⋁ₛ-is-join : (S : Fam 𝓤 𝒪ₛ) → ((⋁ₛ S) is-lub-of S) holds
  ⋁ₛ-is-join S = † , ‡
@@ -321,7 +322,7 @@ The 𝓤-join of opens.
    † : ((⋁ₛ S) is-an-upper-bound-of S) holds
    † i y p = ∣ i , p ∣
 
-   ‡ : ((U , _) : upper-bound S) → ((⋁ₛ S) ⊆ₛ U) holds
+   ‡ : ((U , _) : upper-bound S) → ((⋁ₛ S) ⊆ₖ U) holds
    ‡ ((U , δ) , p) i = ∥∥-rec (holds-is-prop (U (ℬ [ i ]))) ※
     where
      ※ : Σ j ꞉ index S , ((ℬ [ i ]) ∈ₛ (S [ j ])) holds → U (ℬ [ i ]) holds
@@ -332,9 +333,9 @@ The 𝓤-join of opens.
 \begin{code}
 
  distributivityₛ : (U : 𝒪ₛ) (S : Fam 𝓤 𝒪ₛ) → U ∧ₛ (⋁ₛ S) ＝ ⋁ₛ ⁅ U ∧ₛ V ∣ V ε S ⁆
- distributivityₛ U S = ⊆ₛ-is-antisymmetric † ‡
+ distributivityₛ U S = ⊆ₖ-is-antisymmetric † ‡
   where
-   † : ((U ∧ₛ (⋁ₛ S)) ⊆ₛ (⋁ₛ ⁅ U ∧ₛ V ∣ V ε S ⁆)) holds
+   † : ((U ∧ₛ (⋁ₛ S)) ⊆ₖ (⋁ₛ ⁅ U ∧ₛ V ∣ V ε S ⁆)) holds
    † i (p , q) =
     ∥∥-rec (holds-is-prop ((ℬ [ i ]) ∈ₛ (⋁ₛ ⁅ U ∧ₛ V ∣ V ε S ⁆))) †₀ q
      where
@@ -342,7 +343,7 @@ The 𝓤-join of opens.
          → (⋁ₛ ⁅ U ∧ₛ V ∣ V ε S ⁆) .pr₁ (ℬ [ i ]) holds
       †₀ (i , r) = ∣ i , (p , r) ∣
 
-   ‡ : ((⋁ₛ ⁅ U ∧ₛ V ∣ V ε S ⁆) ⊆ₛ (U ∧ₛ (⋁ₛ S))) holds
+   ‡ : ((⋁ₛ ⁅ U ∧ₛ V ∣ V ε S ⁆) ⊆ₖ (U ∧ₛ (⋁ₛ S))) holds
    ‡ i p = ∥∥-rec (holds-is-prop ((U ∧ₛ (⋁ₛ S)) .pr₁ (ℬ [ i ]))) ‡₀ p
     where
      ‡₀ : (Σ k ꞉ index S , ((U ∧ₛ (S [ k ])) .pr₁ (ℬ [ i ]) holds))
@@ -354,8 +355,8 @@ The 𝓤-join of opens.
 \begin{code}
 
  𝒪ₛ-frame-structure : frame-structure 𝓤 𝓤 𝒪ₛ
- 𝒪ₛ-frame-structure = (_⊆ₛ_ , ⊤ₛ , _∧ₛ_ , ⋁ₛ_)
-                    , ⊆ₛ-is-partial-order
+ 𝒪ₛ-frame-structure = (_⊆ₖ_ , ⊤ₛ , _∧ₛ_ , ⋁ₛ_)
+                    , ⊆ₖ-is-partial-order
                     , ⊤ₛ-is-top
                     , (λ (U , V) → ∧ₛ-is-meet U V)
                     , ⋁ₛ-is-join
