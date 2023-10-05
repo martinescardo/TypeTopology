@@ -510,7 +510,7 @@ module _
 
 We can improve on the above in the presence of univalence and set replacement,
 in which case we can derive structural-algebraicity from an unspecified small
-compact basis. This is explained and formalised in CompactBasis-SplitSupport.
+compact basis. This is explained and formalised in CompactBasis.
 
 \end{code}
 

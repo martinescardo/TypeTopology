@@ -51,7 +51,7 @@ import DomainTheory.Basics.WayBelow        -- (7)
 
 1. The theory of small (compact) bases
 2. With univalence and set replacement, the type of small compact bases has
-   split support (j.w.w. Ayberk Tosun; added 4 October 2023)
+   split support (j.w.w. Ayberk Tosun; added 4 & 5 October 2023)
 3. The theory of continuous/algebraic dcpos
 4. A discussion on possible definitions of continuous dcpo
 5. The Ind-completion is used to discuss the notion of (structurally/pseudo-)
@@ -60,12 +60,12 @@ import DomainTheory.Basics.WayBelow        -- (7)
    bases are closed under exponentials
 -}
 
-import DomainTheory.BasesAndContinuity.Bases                     -- (1)
-import DomainTheory.BasesAndContinuity.CompactBasis-SplitSupport -- (2)
-import DomainTheory.BasesAndContinuity.Continuity                -- (3)
-import DomainTheory.BasesAndContinuity.ContinuityDiscussion      -- (4)
-import DomainTheory.BasesAndContinuity.IndCompletion             -- (5)
-import DomainTheory.BasesAndContinuity.StepFunctions             -- (6)
+import DomainTheory.BasesAndContinuity.Bases                -- (1)
+import DomainTheory.BasesAndContinuity.CompactBasis         -- (2)
+import DomainTheory.BasesAndContinuity.Continuity           -- (3)
+import DomainTheory.BasesAndContinuity.ContinuityDiscussion -- (4)
+import DomainTheory.BasesAndContinuity.IndCompletion        -- (5)
+import DomainTheory.BasesAndContinuity.StepFunctions        -- (6)
 
 {- Bilimits
 
