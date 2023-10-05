@@ -65,7 +65,7 @@ module DefnOfScottLocale (𝓓 : DCPO {𝓤} {𝓣}) (𝓦 : Universe) (pe : pro
 
 \begin{code}
 
- 𝒪ₛ-equality : (U V : 𝒪ₛ) → U .pr₁ ＝ V .pr₁ → U ＝ V
+ 𝒪ₛ-equality : (𝔘 𝔙 : 𝒪ₛ) → _∈ₛ 𝔘 ＝ _∈ₛ 𝔙 → 𝔘 ＝ 𝔙
  𝒪ₛ-equality U V = to-subtype-＝ (holds-is-prop ∘ is-scott-open)
 
 \end{code}
