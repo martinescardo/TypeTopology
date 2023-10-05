@@ -17,8 +17,11 @@ open import UF.FunExt
 open import UF.LeftCancellable
 open import UF.Lower-FunExt
 open import UF.Retracts
+open import UF.Sets
+open import UF.Sets-Properties
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
+open import UF.Subsingletons-Properties
 open import UF.UA-FunExt
 open import UF.Univalence
 open import UF.Yoneda
@@ -118,6 +121,10 @@ equivs-are-embeddings : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
 equivs-are-embeddings f e = vv-equivs-are-embeddings f
                              (equivs-are-vv-equivs f e)
 
+equivs-are-embeddings' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (𝕗 : X ≃ Y)
+                      → is-embedding ⌜ 𝕗 ⌝
+equivs-are-embeddings' (f , e) = equivs-are-embeddings f e
+
 ≃-gives-↪ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X ≃ Y → X ↪ Y
 ≃-gives-↪ (f , i) = (f , equivs-are-embeddings f i)
 
@@ -193,13 +200,18 @@ embedding-gives-embedding' {𝓤} {𝓥} {X} {Y} f ise = g
          (center (c x))
          (centrality (c x)))
 
+embedding-criterion-converse' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                             → is-embedding f
+                             → (x' x : X)
+                             → (x' ＝ x) ≃ (f x' ＝ f x)
+embedding-criterion-converse' f e x' x = ap f {x'} {x} ,
+                                         embedding-gives-embedding' f e x' x
+
 embedding-criterion-converse : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                              → is-embedding f
                              → (x' x : X)
                              → (f x' ＝ f x) ≃ (x' ＝ x)
-embedding-criterion-converse f e x' x = ≃-sym
-                                         (ap f {x'} {x} ,
-                                          embedding-gives-embedding' f e x' x)
+embedding-criterion-converse f e x' x = ≃-sym (embedding-criterion-converse' f e x' x)
 
 embedding'-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                        (f : X → Y)
@@ -309,13 +321,6 @@ lc-maps-are-embeddings-with-K : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
 lc-maps-are-embeddings-with-K {𝓤} {𝓥} {X} {Y} f f-lc k =
  lc-maps-into-sets-are-embeddings f f-lc (k Y)
 
-
-\end{code}
-
-TODO. Redo the above proof using the technique of the following proof.
-
-\begin{code}
-
 factor-is-lc : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
                (f : X → Y)
                (g : Y → Z)
@@ -344,6 +349,11 @@ factor-is-embedding {𝓤} {𝓥} {𝓦} {X} {Y} {Z} f g i j = γ
 
   γ : is-embedding f
   γ = embedding-criterion' f c
+
+is-essential : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → (𝓦 : Universe) → 𝓤 ⊔ 𝓥 ⊔ (𝓦 ⁺) ̇
+is-essential f 𝓦 = (Z : 𝓦 ̇) (g : codomain f → Z)
+                 → is-embedding (g ∘ f)
+                 → is-embedding g
 
 precomp-is-embedding : FunExt
                      → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } (f : X → Y)

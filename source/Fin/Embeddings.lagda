@@ -6,7 +6,7 @@ Martin Escardo, sometime between 2014 and 2021.
 
 module Fin.Embeddings where
 
-open import UF.Subsingletons renaming (⊤Ω to ⊤)
+open import UF.Subsingletons
 
 open import Fin.Properties
 open import Fin.Type

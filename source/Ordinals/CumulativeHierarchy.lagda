@@ -403,13 +403,14 @@ an arbitrary well founded order) also appears at the bottom of [Acz77, p. 743].
  open import Ordinals.ArithmeticProperties ua
  open import Ordinals.OrdinalOfOrdinalsSuprema ua
 
- open import UF.Quotient hiding (is-prop-valued)
+ open import Quotient.Type hiding (is-prop-valued)
+ open import Quotient.GivesSetReplacement
 
  module 𝕍-to-Ord-construction
          (sq : set-quotients-exist)
         where
 
-  open suprema pt (set-replacement-from-set-quotients sq pt)
+  open suprema pt (set-replacement-from-set-quotients-and-prop-trunc sq pt)
 
   private
    𝕍-to-Ord-aux : {A : 𝓤 ̇ } → (A → 𝕍) → (A → Ord) → Ord

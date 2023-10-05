@@ -1,3 +1,5 @@
+Martin Escardo.
+
 General terminology and notation.
 
 \begin{code}
@@ -12,8 +14,31 @@ open import MLTT.Universes
 open import MLTT.Id
 open import MLTT.Negation public
 
+\end{code}
+
+The notation `Type 𝓤` should be avoided in favour of `𝓤 ̇`, but some
+module do use it.
+
+\begin{code}
+
 Type  = Set
 Type₁ = Set₁
+
+fiber : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → Y → 𝓤 ⊔ 𝓥 ̇
+fiber f y = Σ x ꞉ domain f , f x ＝ y
+
+fiber-point : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f : X → Y} {y : Y} → fiber f y → X
+fiber-point = pr₁
+
+fiber-identification : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f : X → Y} {y : Y} (w : fiber f y)
+                     → f (fiber-point w) ＝ y
+fiber-identification = pr₂
+
+each-fiber-of : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+              → (X → Y)
+              → (𝓤 ⊔ 𝓥 ̇ → 𝓦 ̇)
+              → 𝓥 ⊔ 𝓦 ̇
+each-fiber-of f P = ∀ y → P (fiber f y)
 
 reflexive : {X : 𝓤 ̇ } → (X → X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
 reflexive R = ∀ x → R x x

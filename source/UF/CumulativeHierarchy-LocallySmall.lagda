@@ -31,8 +31,8 @@ References
 {-# OPTIONS --safe --without-K --exact-split #-}
 
 open import UF.FunExt
-open import UF.Subsingletons
 open import UF.PropTrunc
+open import UF.Subsingletons
 
 module UF.CumulativeHierarchy-LocallySmall
         (pt : propositional-truncations-exist)
@@ -47,7 +47,10 @@ open import UF.EquivalenceExamples
 open import UF.Equiv-FunExt
 open import UF.Logic
 open import UF.Size
+open import UF.Sets-Properties
 open import UF.Subsingletons-FunExt
+open import UF.SubtypeClassifier
+open import UF.SubtypeClassifier-Properties
 
 open AllCombinators pt fe
 open PropositionalTruncation pt

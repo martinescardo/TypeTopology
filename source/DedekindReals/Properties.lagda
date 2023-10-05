@@ -36,7 +36,7 @@ open import Rationals.Limits fe pe pt
 open PropositionalTruncation pt
 
 trans→disjoint : (L R : 𝓟 ℚ) → disjoint L R → (q : ℚ) → ¬ (q ∈ L × q ∈ R)
-trans→disjoint L R d q (q∈L , q∈R) = ℚ<-not-itself q γ
+trans→disjoint L R d q (q∈L , q∈R) = ℚ<-irrefl q γ
  where
   γ : q < q
   γ = d q q (q∈L , q∈R)
@@ -110,7 +110,7 @@ disjoint→trans L R loc dis p q (p∈L , q∈R) = cases₃ γ₁ γ₂ γ₃ I
      = ∨-elim ∃-is-prop γ₂ γ₃ IV
      where
       IV : (u < x) ∨ (x < v)
-      IV = located-from-real x u v u<v
+      IV = ℝ-locatedness x u v u<v
 
       γ₂ : (u < x) → ∃ (u , v) ꞉ ℚ × ℚ , (u < x < v) × (v - u < ε)
       γ₂ u<x = γ₁ n u q u<x x<q V (transport (_< ε) α l)

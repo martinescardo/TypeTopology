@@ -108,6 +108,19 @@ transport-× : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ )
             ＝ (transport A p (pr₁ c) , transport B p (pr₂ c))
 transport-× A B refl = refl
 
+transportd : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : (x : X) → A x → 𝓦 ̇ )
+             {x : X}  (a : A x) {y : X} (p : x ＝ y)
+           → B x a → B y (transport A p a)
+
+transportd A B a refl = id
+
+transport-Σ : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : (x : X) → A x → 𝓦 ̇ )
+              {x : X} (y : X) (p : x ＝ y) (a : A x) {b : B x a}
+            → transport (λ x → Σ y ꞉ A x , B x y) p (a , b)
+            ＝ transport A p a , transportd A B a p b
+
+transport-Σ A B {x} x refl a = refl
+
 transport-∙ : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
               {x y z : X} (q : x ＝ y) (p : y ＝ z) {a : A x}
             → transport A (q ∙ p) a ＝ transport A p (transport A q a)
@@ -204,10 +217,73 @@ ap₂ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y → Z) {x₀ x
     → f x₀ y₀ ＝ f x₁ y₁
 ap₂ f refl refl = refl
 
+\end{code}
+
+Added by Ettore Aldrovandi, Sun Sep 24 00:35:12 UTC 2023
+
+\begin{code}
+
+ap₂-refl-left : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y → Z) {x : X} {y₀ y₁ : Y}
+                (q : y₀ ＝ y₁)
+              → ap₂ f refl q ＝ ap (f x) q
+ap₂-refl-left f refl = refl
+
+ap₂-refl-right : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y → Z) {x₀ x₁ : X} {y : Y}
+                (p : x₀ ＝ x₁)
+              → ap₂ f p refl ＝ ap (λ v → f v y) p
+ap₂-refl-right f refl = refl
+
+ap₂-∙ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y → Z) {x₀ x₁ x₂ : X} {y₀ y₁ y₂ : Y}
+        (p₀ : x₀ ＝ x₁) (p₁ : x₁ ＝ x₂)
+        (q₀ : y₀ ＝ y₁) (q₁ :  y₁ ＝ y₂)
+      → ap₂ f (p₀ ∙ p₁) (q₀ ∙ q₁) ＝ ap₂ f p₀ q₀ ∙ ap₂ f p₁ q₁
+ap₂-∙ f refl refl refl refl = refl
+
+\end{code}
+
+
+\begin{code}
+
 ap₃ : {W : 𝓣 ̇} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
       (f : W → X → Y → Z) {w₀ w₁ : W} {x₀ x₁ : X} {y₀ y₁ : Y}
     → w₀ ＝ w₁ → x₀ ＝ x₁ → y₀ ＝ y₁ → f w₀ x₀ y₀ ＝ f w₁ x₁ y₁
 ap₃ f refl refl refl = refl
+
+\end{code}
+
+Added by Ettore Aldrovandi, Sun Sep 24 00:35:12 UTC 2023
+
+\begin{code}
+
+ap₃-∙ : {W : 𝓣 ̇} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+        (f : W → X → Y → Z) {w₀ w₁ w₂ : W} {x₀ x₁ x₂ : X} {y₀ y₁ y₂ : Y}
+        (r₀ : w₀ ＝ w₁) (r₁ : w₁ ＝ w₂)
+        (p₀ : x₀ ＝ x₁) (p₁ : x₁ ＝ x₂)
+        (q₀ : y₀ ＝ y₁) (q₁ :  y₁ ＝ y₂)
+      → ap₃ f (r₀ ∙ r₁) (p₀ ∙ p₁) (q₀ ∙ q₁) ＝ ap₃ f r₀ p₀ q₀ ∙ ap₃ f r₁ p₁ q₁
+ap₃-∙ f refl refl refl refl refl refl = refl
+
+ap₃-refl-left : {W : 𝓣 ̇} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+                (f : W → X → Y → Z) {w : W} {x₀ x₁ : X} {y₀ y₁ : Y}
+                (p : x₀ ＝ x₁) (q : y₀ ＝ y₁)
+              → ap₃ f refl p q ＝ ap₂ (f w) p q
+ap₃-refl-left f refl refl = refl
+
+ap₃-refl-mid : {W : 𝓣 ̇} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+               (f : W → X → Y → Z) {w₀ w₁ : W} {x : X} {y₀ y₁ : Y}
+               (r : w₀ ＝ w₁) (q : y₀ ＝ y₁)
+              → ap₃ f r refl q ＝ ap₂ (λ w y → f w x y) r q
+ap₃-refl-mid f refl refl = refl
+
+ap₃-refl-right : {W : 𝓣 ̇} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+               (f : W → X → Y → Z) {w₀ w₁ : W} {x₀ x₁ : X} {y : Y}
+               (r : w₀ ＝ w₁) (p : x₀ ＝ x₁)
+              → ap₃ f r p refl ＝ ap₂ (λ w x → f w x y) r p
+ap₃-refl-right f refl refl = refl
+
+\end{code}
+
+\begin{code}
 
 refl-left-neutral : {X : 𝓤 ̇ } {x y : X} {p : x ＝ y}
                   → refl ∙ p ＝ p
@@ -409,4 +485,14 @@ transport-along-→ : {X : 𝓤 ̇ } (Y : X → 𝓥 ̇ ) (Z : X → 𝓦 ̇ )
                   ＝ transport Z p ∘ f ∘ transport Y (p ⁻¹)
 transport-along-→ Y Z refl f = refl
 
+\end{code}
+
+Added by Ettore Aldrovandi
+September 19, 2022:
+
+\begin{code}
+
+ap-refl : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) {x : X}
+        → ap f (𝓻𝓮𝒻𝓵 x) ＝ 𝓻𝓮𝒻𝓵 (f x)
+ap-refl f = refl
 \end{code}

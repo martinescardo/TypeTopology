@@ -1,3 +1,8 @@
+Martin Escardo
+
+A better version is in MGS.Yoneda, but currently we are using this
+one.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K --exact-split #-}
@@ -192,7 +197,8 @@ equivalent to η being a natural retraction, and we start with it:
 
 Yoneda-section-forth : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
                        (x : X) (η : Nat (Id x) A)
-                     → ∃! A → (y : X) → has-section (η y)
+                     → ∃! A
+                     → (y : X) → has-section (η y)
 Yoneda-section-forth {𝓤} {𝓥} {X} {A} x η i y = g
  where
   u : is-universal-element-of A (x , yoneda-elem x A η)
@@ -207,7 +213,8 @@ Yoneda-section-forth {𝓤} {𝓥} {X} {A} x η i y = g
   g = has-section-closed-under-∼' (universality-section x (yoneda-elem x A η) u y) h
 
 Yoneda-section-back : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (x : X) (η : Nat (Id x) A)
-                    → ((y : X) → has-section (η y)) → ∃! A
+                    → ((y : X) → has-section (η y))
+                    → ∃! A
 Yoneda-section-back {𝓤} {𝓥} {X} {A} x η φ = c
  where
   h : ∀ y → yoneda-nat x A (yoneda-elem x A η) y ∼ η y

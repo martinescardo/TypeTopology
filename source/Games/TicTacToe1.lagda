@@ -13,15 +13,14 @@ TODO. Organaze this module better, following the organization of TicTacToe0.
 
 module Games.TicTacToe1 where
 
-open import TypeTopology.CompactTypes
-open import TypeTopology.DiscreteAndSeparated
-open import TypeTopology.SigmaDiscreteAndTotallySeparated
-
-open import MLTT.Spartan hiding (J)
-open import MLTT.Athenian
-open import Fin.Type
-open import Fin.Topology
 open import Fin.ArgMinMax
+open import Fin.Topology
+open import Fin.Type
+open import MLTT.Athenian
+open import MLTT.Spartan hiding (J)
+open import TypeTopology.CompactTypes
+open import TypeTopology.SigmaDiscreteAndTotallySeparated
+open import UF.DiscreteAndSeparated
 
 𝟛 : Type
 𝟛 = Fin 3

@@ -115,7 +115,9 @@ open import UF.PairFun
 open import UF.PropIndexedPiSigma
 open import UF.PropTrunc
 open import UF.Retracts
+open import UF.Sets
 open import UF.Size
+open import UF.SubtypeClassifier
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.UA-FunExt
@@ -1077,9 +1079,16 @@ aflabby D 𝓤 = (P : 𝓤 ̇ )
             → (f : P → D)
             → Σ d ꞉ D , ((p : P) → d ＝ f p)
 
+aflabby-extension : {D : 𝓦 ̇ } → aflabby D 𝓤 → (p : Ω 𝓤) → (p holds → D) → D
+aflabby-extension  ϕ (P , P-is-prop) f = pr₁ (ϕ P P-is-prop f)
+
+aflabby-extension-property : {D : 𝓦 ̇ } (ϕ : aflabby D 𝓤)
+                             (p : Ω 𝓤) (f : (p holds → D)) (h : p holds)
+                           → aflabby-extension ϕ p f ＝ f h
+aflabby-extension-property  ϕ (P , P-is-prop) f = pr₂ (ϕ P P-is-prop f)
+
 aflabby-pointed : (D : 𝓦 ̇ ) → aflabby D 𝓤 → D
 aflabby-pointed D φ = pr₁ (φ 𝟘 𝟘-is-prop unique-from-𝟘)
-
 
 ainjective-types-are-aflabby : (D : 𝓦 ̇ ) → ainjective-type D 𝓤 𝓥 → aflabby D 𝓤
 ainjective-types-are-aflabby {𝓦} {𝓤} {𝓥} D i P isp f =

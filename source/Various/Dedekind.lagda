@@ -36,20 +36,23 @@ See also the discussion at https://twitter.com/EscardoMartin/status/147339326101
 
 {-# OPTIONS --safe --without-K --exact-split #-}
 
+open import MLTT.Plus-Properties
 open import MLTT.Spartan
+open import Naturals.Order hiding (<-≤-trans)
 open import Notation.CanonicalMap
 open import Notation.Order
-open import MLTT.Plus-Properties
 open import TypeTopology.CompactTypes
-open import Naturals.Order hiding (<-≤-trans)
-
 open import UF.Base
 open import UF.Embeddings
 open import UF.Equiv
 open import UF.FunExt
 open import UF.Powerset
 open import UF.PropTrunc
+open import UF.Sets
+open import UF.Sets-Properties
 open import UF.Size
+open import UF.SubtypeClassifier
+open import UF.SubtypeClassifier-Properties
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
@@ -870,7 +873,7 @@ lower reals:
 \begin{code}
 
  infty : 𝓟 ℚ
- infty = λ q → ⊤Ω
+ infty = λ q → ⊤
 
  infty-is-lower-real : is-lower-real infty
  infty-is-lower-real = ∣ 𝟎 , ⋆ ∣ ,
@@ -1552,9 +1555,8 @@ Apartness of real numbers and its basic properties:
                              (cases (λ (ℓ : y < z) → inr (inl ℓ))
                                     (λ (ℓ : z < x) → inl (inr ℓ)))
                              (<-cotrans y x ℓ z)
-
- ♯-tight : (x y : ℝ) → ¬ (x ♯ y) → x ＝ y
- ♯-tight x y ν = ≤-ℝ-ℝ-antisym x y III IV
+ ♯-is-tight : (x y : ℝ) → ¬ (x ♯ y) → x ＝ y
+ ♯-is-tight x y ν = ≤-ℝ-ℝ-antisym x y III IV
   where
    I : x ≮ y
    I ℓ = ν (inl ℓ)
@@ -1569,7 +1571,7 @@ Apartness of real numbers and its basic properties:
    IV = ≤₂-gives-≤ y x I
 
  ℝ-is-¬¬-separated : (x y : ℝ) → ¬¬ (x ＝ y) → x ＝ y
- ℝ-is-¬¬-separated x y ϕ = ♯-tight x y (c ϕ)
+ ℝ-is-¬¬-separated x y ϕ = ♯-is-tight x y (c ϕ)
   where
    c : ¬¬ (x ＝ y) → ¬ (x ♯ y)
    c = contrapositive (♯-gives-≠ x y)
@@ -1622,7 +1624,8 @@ upper bound of the family x.
 
  module _ {𝐼 : 𝓤 ̇ } where
 
-  F = 𝐼 → ℝ
+  private
+   F = 𝐼 → ℝ
 
   instance
    order-F-ℝ : Order F ℝ
@@ -2034,3 +2037,161 @@ Some (overlapping) problems:
 \end{code}
 
 Should some of the above ∃ be Σ and/or vice-versa?
+
+Added 22 August 2023. The lower reals have arbitrary sups if we remove
+the inhabitation condition, so that we get a point -∞, in addition to
+a point ∞ which is already present (this is well known).
+
+TODO. Maybe remove the the inhabitation condition from the lower
+reals. It doesn't reall belong there.
+
+\begin{code}
+{-
+ ℝᴸᴼ : 𝓤⁺ ̇
+ ℝᴸᴼ = Σ L ꞉ 𝓟 ℚ , is-lower L × is-upper-open L
+
+ -∞ᴸᴼ : ℝᴸᴼ
+ -∞ᴸᴼ = ?
+
+ ∞ᴸᴼ : ℝᴸᴼ
+ ∞ᴸᴼ = ?
+
+ lowercutᴸᴼ : ℝᴸᴼ → 𝓟 ℚ
+ lowercutᴸᴼ (L , _ , _) = L
+
+ lowercutᴸᴼ-lc : (x y : ℝᴸᴼ) → lowercutᴸᴼ x ＝ lowercutᴸᴼ y → x ＝ y
+ lowercutᴸᴼ-lc x y e = ?
+
+
+ instance
+  strict-order-ℚ-ℝᴸᴼ : Strict-Order ℚ ℝᴸᴼ
+  _<_ {{strict-order-ℚ-ℝᴸᴼ}} p x = p ∈ lowercutᴸᴼ x
+
+ instance
+  order-ℝᴸᴼ-ℝᴸᴼ : Order ℝᴸᴼ ℝᴸᴼ
+  _≤_ {{order-ℝᴸᴼ-ℝᴸᴼ}} x y = (p : ℚ) → p < x → p < y
+
+
+ ≤-ℝᴸᴼ-ℝᴸᴼ-antisym : (x y : ℝᴸᴼ) → x ≤ y → y ≤ x → x ＝ y
+ ≤-ℝᴸᴼ-ℝᴸᴼ-antisym x y l m = lowercutᴸᴼ-lc x y γ
+  where
+   γ : lowercutᴸᴼ x ＝ lowercutᴸᴼ y
+   γ = subset-extensionality'' pe fe fe l m
+
+
+ module _ {𝐼 : 𝓤 ̇ } where
+
+  private
+   Fᴸᴼ = 𝐼 → ℝᴸᴼ
+
+  instance
+   order-F-ℝᴸᴼ : Order Fᴸᴼ ℝᴸᴼ
+   _≤_ {{order-F-ℝᴸᴼ}} x y = (i : 𝐼) → x i ≤ y
+
+  ≤-F-ℝᴸᴼ-is-prop-valued : (x : Fᴸᴼ) (y : ℝᴸᴼ)
+                           → is-prop (x ≤ y)
+  ≤-F-ℝᴸᴼ-is-prop-valued x y = Π-is-prop fe (λ i → ?)
+
+  _has-lubᴸᴼ_ : Fᴸᴼ → ℝᴸᴼ → 𝓤⁺ ̇
+  x has-lubᴸᴼ y = (x ≤ y) × ((z : ℝᴸᴼ) → x ≤ z → y ≤ z)
+
+  _has-a-lubᴸᴼ : Fᴸᴼ → 𝓤⁺ ̇
+  x has-a-lubᴸᴼ = Σ y ꞉ ℝᴸᴼ , (x has-lubᴸᴼ y)
+
+  having-lubᴸᴼ-is-prop : (x : Fᴸᴼ) (y : ℝᴸᴼ)
+                      → is-prop (x has-lubᴸᴼ y)
+  having-lubᴸᴼ-is-prop x y = ?
+
+  having-a-lub-is-propᴸᴼ : (x : Fᴸᴼ) → is-prop (x has-a-lubᴸᴼ)
+  having-a-lub-is-propᴸᴼ x (y , a , b) (y' , a' , b') = γ
+   where
+    I : y ＝ y'
+    I = ≤-ℝᴸᴼ-ℝᴸᴼ-antisym y y' (b y' a') (b' y a)
+
+    γ : (y , a , b) ＝ (y' , a' , b')
+    γ = to-subtype-＝ (having-lubᴸᴼ-is-prop x) I
+
+  instance
+   strict-order-ℚ-Fᴸᴼ : Strict-Order ℚ Fᴸᴼ
+   _<_ {{strict-order-ℚ-Fᴸᴼ}} p x = ∃ i ꞉ 𝐼 , p < x i
+
+  strict-order-ℚ-Fᴸᴼ-is-prop : (p : ℚ) (x : Fᴸᴼ) → is-prop (p < x)
+  strict-order-ℚ-Fᴸᴼ-is-prop p x = ∃-is-prop
+
+
+{-
+  instance
+   strict-order-ℚ-F : Strict-Order ℚ F
+   _<_ {{strict-order-ℚ-F}} p x = ∃ i ꞉ 𝐼 , p < x i
+
+  strict-order-ℚ-F-is-prop : (p : ℚ) (x : F) → is-prop (p < x)
+  strict-order-ℚ-F-is-prop p x = ∃-is-prop
+
+  strict-order-ℚ-F-observation : (p : ℚ) (x : F)
+                               → (p ≮ x) ⇔ (x ≤ ι p)
+  strict-order-ℚ-F-observation p x = f , g
+   where
+    f : p ≮ x → x ≤ ι p
+    f ν i = I
+     where
+      I : (q : ℚ) → q < x i → q < p
+      I q l = ℚ-order-criterion q p II III
+       where
+        II : p ≮ q
+        II m = ν ∣ i , lowercut-is-lower (x i) q l p m ∣
+
+        III : q ≠ p
+        III refl = ν ∣ i , l ∣
+
+    g : x ≤ ι p → p ≮ x
+    g l = ∥∥-rec 𝟘-is-prop I
+     where
+      I : ¬ (Σ i ꞉ 𝐼 , p < x i)
+      I (i , m) = <-ℚ-ℚ-irrefl p (l i p m)
+-}
+  is-upper-boundedᴸᴼ : Fᴸᴼ → 𝓤⁺ ̇
+  is-upper-boundedᴸᴼ x = ∃ y ꞉ ℝᴸᴼ , (x ≤ y)
+
+
+  lubᴸᴼ : (x : Fᴸᴼ) → x has-a-lubᴸᴼ
+  lubᴸᴼ x = y , ?
+   where
+    L : 𝓟 ℚ
+    L p = (p < x) , ? -- strict-order-ℚ-Fᴸᴼ-is-prop p x
+
+
+    L-lower : (q : ℚ) → q < x → (p : ℚ) → p < q → p < x
+    L-lower q l p m = ?
+    -- ∥∥-functor (λ (i , k) → i , lowercut-is-lower (x i) q k p m) l
+
+    L-upper-open : (p : ℚ) → p < x → ∃ p' ꞉ ℚ , ((p < p') × (p' < x))
+    L-upper-open p = ∥∥-rec ∃-is-prop f
+     where
+      f : (Σ i ꞉ 𝐼 , p < x i) → ∃ p' ꞉ ℚ , ((p < p') × (p' < x))
+      f (i , l) = ? {- ∥∥-functor g (lowercut-is-upper-open (x i) p l)
+       where
+        g : (Σ p' ꞉ ℚ , (p < p') × (p' < x i)) → Σ p' ꞉ ℚ , ((p < p') × (p' < x))
+        g (p' , m , o) = p' , m , ∣ i , o ∣
+-}
+    y : ℝᴸᴼ
+    y = (L , L-lower , L-upper-open)
+
+    a : x ≤ y
+    a i p l = ∣ i , l ∣
+{-
+    b : (z : ℝᴸᴼ) → x ≤ z → y ≤ z
+    b z l p = ∥∥-rec (<-ℚ-ℝᴸᴼ-is-prop-valued p z) f
+     where
+      f : (Σ i ꞉ 𝐼 , p < x i) → p < z
+      f (i , m) = l i p m
+-}
+  instance
+   strict-order-F-ℚᴸᴼ : Strict-Order Fᴸᴼ ℚ
+   _<_ {{strict-order-F-ℚᴸᴼ}} x q = (i : 𝐼) → x i < q
+
+{-
+  <-F-ℚᴸᴼ-is-prop-valued : (q : ℚ) (x : F) → is-prop (x < q)
+  <-F-ℚᴸᴼ-is-prop-valued q x = Π-is-prop fe (λ i → <-ℝᴸᴼ-ℚ-is-prop-valued (x i) q)
+-}
+-}
+\end{code}

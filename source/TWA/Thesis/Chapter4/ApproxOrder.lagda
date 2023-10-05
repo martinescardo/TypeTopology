@@ -4,14 +4,14 @@
 
 open import MLTT.Spartan
 open import UF.FunExt
-open import UF.Quotient
+open import Quotient.Type
 
 module TWA.Thesis.Chapter4.ApproxOrder (fe : FunExt) where
 
 open import TWA.Thesis.Chapter3.ClosenessSpaces fe
 
 -- Definition 4.1.4
-is-preorder : {X : 𝓤  ̇ } → (X → X → 𝓦  ̇ ) → 𝓤 ⊔ 𝓦  ̇ 
+is-preorder : {X : 𝓤  ̇ } → (X → X → 𝓦  ̇ ) → 𝓤 ⊔ 𝓦  ̇
 is-preorder _≤_ = reflexive _≤_
                 × transitive _≤_
                 × is-prop-valued _≤_
@@ -22,7 +22,7 @@ is-linear-order {_} {_} {X} _≤_
  = is-preorder _≤_
  × ((x y : X) → (x ≤ y) + (y ≤ x))
 
-is-strict-order : {X : 𝓤  ̇ } → (X → X → 𝓦  ̇ ) → 𝓤 ⊔ 𝓦  ̇ 
+is-strict-order : {X : 𝓤  ̇ } → (X → X → 𝓦  ̇ ) → 𝓤 ⊔ 𝓦  ̇
 is-strict-order {_} {_} {X} _<_
  = ((x : X) → ¬ (x < x))
  × transitive _<_
@@ -75,7 +75,7 @@ apart-total : {X : ClosenessSpace 𝓤}
             → (_≤_  : ⟨ X ⟩ → ⟨ X ⟩ → 𝓦 ̇ )
             → (_≤ⁿ_ : ⟨ X ⟩ → ⟨ X ⟩ → ℕ → 𝓦'  ̇ )
             → is-approx-order X _≤_ _≤ⁿ_
-            → (ϵ : ℕ) (x y : ⟨ X ⟩) 
+            → (ϵ : ℕ) (x y : ⟨ X ⟩)
             → ¬ C X ϵ x y → (x ≤ y) + (y ≤ x)
 apart-total {_} {_} {_} {X} _≤_ _≤ⁿ_ (p , l , c , a) ϵ x y ¬Bϵxy
  = Cases (pr₂ (l ϵ) x y)

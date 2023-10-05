@@ -6,17 +6,19 @@ Expanded on demand whenever a general equivalence is needed.
 
 {-# OPTIONS --safe --without-K --exact-split #-}
 
+open import MLTT.Plus-Properties
 open import MLTT.Spartan
 open import MLTT.Two-Properties
-open import MLTT.Plus-Properties
 open import UF.Base
 open import UF.Equiv
 open import UF.FunExt
 open import UF.Lower-FunExt
+open import UF.PropIndexedPiSigma
 open import UF.Retracts
+open import UF.SubtypeClassifier
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import UF.PropIndexedPiSigma
+open import UF.Subsingletons-Properties
 
 module UF.EquivalenceExamples where
 
@@ -88,6 +90,24 @@ curry-uncurry {𝓤} {𝓥} {𝓦} fe = curry-uncurry' (fe 𝓤 (𝓥 ⊔ 𝓦))
 
   η : ∀ τ → f (g τ) ＝ τ
   η (y , x , p) = refl
+
+Σ-interchange : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : X → 𝓦 ̇ } {B : Y → 𝓣 ̇ }
+              → (Σ x ꞉ X , Σ y ꞉ Y , A x × B y)
+              ≃ ((Σ x ꞉ X , A x) × (Σ y ꞉ Y , B y))
+Σ-interchange {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} {A} {B} = qinveq f (g , ε , η)
+ where
+  f : (Σ x ꞉ X , Σ y ꞉ Y , A x × B y)
+    → ((Σ x ꞉ X , A x) × (Σ y ꞉ Y , B y))
+  f (x , y , a , b) = ((x , a) , (y , b))
+
+  g : codomain f → domain f
+  g ((x , a) , (y , b)) = (x , y , a , b)
+
+  ε : ∀ σ → g (f σ) ＝ σ
+  ε (x , y , a , b) = refl
+
+  η : ∀ τ → f (g τ) ＝ τ
+  η ((x , a) , (y , b)) = refl
 
 Σ-cong : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {Y' : X → 𝓦 ̇ }
        → ((x : X) → Y x ≃ Y' x)
@@ -887,24 +907,6 @@ pr₁-fiber-equiv {𝓤} {𝓥} {X} {Y} x =
   fiber pr₁ x                   ≃⟨ Σ-assoc ⟩
   (Σ x' ꞉ X , Y x' × (x' ＝ x))  ≃⟨ right-Id-equiv x ⟩
   Y x                           ■
-
-equal-⊤-≃ : propext 𝓤
-          → funext 𝓤 𝓤
-          → (p : Ω 𝓤) → (p ＝ ⊤Ω) ≃ (p holds)
-equal-⊤-≃ {𝓤} pe fe p = logically-equivalent-props-are-equivalent
-                         (Ω-is-set fe pe)
-                         (holds-is-prop p)
-                         (equal-⊤-holds p)
-                         (holds-gives-equal-⊤ pe fe p)
-
-equal-⊥-≃ : propext 𝓤
-          → funext 𝓤 𝓤
-          → (p : Ω 𝓤) → (p ＝ ⊥Ω) ≃ ¬ (p holds)
-equal-⊥-≃ {𝓤} pe fe p = logically-equivalent-props-are-equivalent
-                         (Ω-is-set fe pe)
-                         (negations-are-props (lower-funext 𝓤 𝓤 fe))
-                         (equal-⊥-fails p)
-                         (fails-gives-equal-⊥ pe fe p)
 
 \end{code}
 

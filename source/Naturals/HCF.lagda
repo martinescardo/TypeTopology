@@ -12,12 +12,12 @@ open import MLTT.Spartan renaming (_+_ to _∔_)
 open import Naturals.Addition
 open import Naturals.Division
 open import Naturals.Multiplication
-open import Naturals.Properties
 open import Naturals.Order
+open import Naturals.Properties
 open import Notation.Order
 open import UF.Base
+open import UF.DiscreteAndSeparated
 open import UF.FunExt
-open import UF.Miscelanea
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 

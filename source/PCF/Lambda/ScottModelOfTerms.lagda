@@ -32,7 +32,7 @@ open import PCF.Lambda.AbstractSyntax pt
 open import PCF.Lambda.ScottModelOfContexts pt fe pe
 open import PCF.Lambda.ScottModelOfIfZero pt fe pe
 open import PCF.Lambda.ScottModelOfTypes pt fe pe
-open import UF.Miscelanea
+open import UF.DiscreteAndSeparated
 
 open DcpoProductsGeneral 𝓤₀
 

@@ -322,6 +322,8 @@ is derived from the fact that Lift 𝓥 X ≃ X using i : is-set X.
 
 \begin{code}
 
+open import UF.Sets
+
 Lift-hSet-doesnt-have-section : ¬ has-section (Lift-hSet {𝓤} (𝓤 ⁺))
 Lift-hSet-doesnt-have-section {𝓤} (s , η) = γ
  where
@@ -607,7 +609,7 @@ We need to assume that propositional truncations exist.
 \begin{code}
 
 open import Groups.Type
-open import Groups.FreeOverLargeLocallySmallSet
+open import Groups.Large
 open import UF.PropTrunc
 
 module _ (pt : propositional-truncations-exist) where

@@ -22,6 +22,7 @@ module TWA.Escardo-Simpson-LICS2001 (fe : FunExt) where
 open import MLTT.Spartan
 open import Naturals.Addition renaming (_+_ to _+ℕ_)
 open import Naturals.Sequence fe
+open import UF.Sets
 open import UF.Subsingletons public
 
 \end{code}

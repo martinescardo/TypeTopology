@@ -12,12 +12,11 @@ higher-type computation".
 
 open import MLTT.Spartan
 open import MLTT.Two-Properties
-open import TypeTopology.DiscreteAndSeparated
 open import Naturals.Order
 open import Notation.Order
-
 open import UF.FunExt
 open import UF.Base
+open import UF.DiscreteAndSeparated
 
 module TypeTopology.CantorSearch (fe : funext 𝓤₀ 𝓤₀) where
 
