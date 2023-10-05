@@ -66,6 +66,8 @@ open import DomainTheory.BasesAndContinuity.Bases      pt fe 𝓤
 
 open import Locales.ScottLocale.Definition pt fe 𝓤
 
+open Locale
+
 open PropositionalTruncation pt
 
 \end{code}
@@ -86,7 +88,11 @@ module ScottLocaleConstruction (𝓓    : DCPO {𝓤 ⁺} {𝓤})
 
  open import DomainTheory.Lifting.LiftingSet pt fe 𝓤 pe
  open DefnOfScottTopology 𝓓 𝓤
- open DefnOfScottLocale 𝓓 𝓤 pe using (𝒪ₛ-equality; _⊆ₛ_)
+ open DefnOfScottLocale 𝓓 𝓤 pe using (𝒪ₛ-equality; _⊆ₛ_; ⊆ₛ-is-reflexive;
+                                      ⊆ₛ-is-transitive; ⊆ₛ-is-antisymmetric;
+                                      ⊤ₛ; ⊤ₛ-is-top; _∧ₛ_; ∧ₛ-is-meet;
+                                      distributivityₛ; ⋁ₛ_; ⋁ₛ-is-join)
+                               renaming (ScottLocale to ScottLocale′)
 
 \end{code}
 
@@ -127,12 +133,6 @@ over the basic opens. The order `_⊆ₛ_` is the large version.
  _⊆ₖ_ : 𝒪ₛ → 𝒪ₛ → Ω 𝓤
  (U , _) ⊆ₖ (V , _) = Ɐ i ꞉ I , U (ℬ [ i ]) ⇒ V (ℬ [ i ])
 
- ⊆ₖ-is-reflexive : is-reflexive _⊆ₖ_ holds
- ⊆ₖ-is-reflexive (U , δ) _ = id
-
- ⊆ₖ-is-transitive : is-transitive _⊆ₖ_ holds
- ⊆ₖ-is-transitive (U , δ) (V , ϵ) (W , ζ) p q x = q x ∘ p x
-
  ⊆ₖ-implies-⊆ : (𝔘 𝔙 : 𝒪ₛ) → (𝔘 ⊆ₖ 𝔙 ⇒ 𝔘 ⊆ₛ 𝔙) holds
  ⊆ₖ-implies-⊆ 𝔘@(U , ι₁ , υ₁) 𝔙@(V , ι₂ , υ₂) φ x p =
   transport (λ - → (- ∈ₛ 𝔙) holds) (eq ⁻¹) †
@@ -158,40 +158,23 @@ over the basic opens. The order `_⊆ₛ_` is the large version.
         r : ((S [ i ]) ∈ₛ 𝔙) holds
         r = φ (pr₁ i) q
 
- 𝒪ₛ-equalityₛ : (U V : 𝒪ₛ)
-              → ((i : I) → (ℬ [ i ]) ∈ₛ U  ＝ (ℬ [ i ]) ∈ₛ V)
-              → U ＝ V
- 𝒪ₛ-equalityₛ 𝔘@(U , (υ , ι)) 𝔙 φ =
-  to-subtype-＝ (holds-is-prop ∘ is-scott-open) (dfunext fe †)
-   where
-    † : (x : ⟨ 𝓓 ⟩∙) → x ∈ₛ 𝔘 ＝ x ∈ₛ 𝔙
-    † x = to-subtype-＝ (λ _ → being-prop-is-prop fe) ‡
-     where
-      foo : (𝔘 ⊆ₖ 𝔙) holds
-      foo i p = transport (λ - → - holds) (φ i) p
+ ⊆-implies-⊆ₖ : (𝔘 𝔙 : 𝒪ₛ) → (𝔘 ⊆ₛ 𝔙 ⇒ 𝔘 ⊆ₖ 𝔙) holds
+ ⊆-implies-⊆ₖ 𝔘 𝔙 p = p ∘ (ℬ [_])
 
-      bar : (𝔙 ⊆ₖ 𝔘) holds
-      bar i p = transport _holds (φ i ⁻¹) p
+ ⊆-iff-⊆ₖ : (𝔘 𝔙 : 𝒪ₛ) → (𝔘 ⊆ₛ 𝔙 ↔ 𝔘 ⊆ₖ 𝔙) holds
+ ⊆-iff-⊆ₖ 𝔘 𝔙 = ⊆-implies-⊆ₖ 𝔘 𝔙 , ⊆ₖ-implies-⊆ 𝔘 𝔙
 
-      ♣ : (x ∈ₛ 𝔘 ⇒ x ∈ₛ 𝔙) holds
-      ♣ = ⊆ₖ-implies-⊆ 𝔘 𝔙 foo x
+ ⊆ₖ-is-reflexive : is-reflexive _⊆ₖ_ holds
+ ⊆ₖ-is-reflexive 𝔘@(U , δ) = ⊆-implies-⊆ₖ 𝔘 𝔘 (⊆ₛ-is-reflexive 𝔘)
 
-      ♠ : (x ∈ₛ 𝔙 ⇒ x ∈ₛ 𝔘) holds
-      ♠ = ⊆ₖ-implies-⊆ 𝔙 𝔘 bar x
-
-      ‡ : (x ∈ₛ 𝔘) holds ＝ (x ∈ₛ 𝔙) holds
-      ‡ = pe (holds-is-prop (x ∈ₛ 𝔘)) (holds-is-prop (x ∈ₛ 𝔙)) ♣ ♠
-
- ⊆-is-antisymmetric : is-antisymmetric _⊆ₛ_
- ⊆-is-antisymmetric {𝔘} {𝔙} p q =
-  𝒪ₛ-equality 𝔘 𝔙
-   (dfunext fe λ x →
-     to-subtype-＝
-      (λ _ → being-prop-is-prop fe)
-      (pe (holds-is-prop (x ∈ₛ 𝔘)) (holds-is-prop (x ∈ₛ 𝔙)) (p x) (q x)))
+ ⊆ₖ-is-transitive : is-transitive _⊆ₖ_ holds
+ ⊆ₖ-is-transitive 𝔘@(U , δ) 𝔙@(V , ϵ) 𝔚@(W , ζ) p q = ⊆-implies-⊆ₖ 𝔘 𝔚 †
+  where
+   † : (𝔘 ⊆ₛ 𝔚) holds
+   † = ⊆ₛ-is-transitive 𝔘 𝔙 𝔚 (⊆ₖ-implies-⊆ 𝔘 𝔙 p) (⊆ₖ-implies-⊆ 𝔙 𝔚 q)
 
  ⊆ₖ-is-antisymmetric : is-antisymmetric _⊆ₖ_
- ⊆ₖ-is-antisymmetric {𝔘} {𝔙} p q = ⊆-is-antisymmetric † ‡
+ ⊆ₖ-is-antisymmetric {𝔘} {𝔙} p q = ⊆ₛ-is-antisymmetric † ‡
   where
    † : (𝔘 ⊆ₛ 𝔙) holds
    † = ⊆ₖ-implies-⊆ 𝔘 𝔙 p
@@ -208,20 +191,8 @@ The top open.
 
 \begin{code}
 
- ⊤ₛ : 𝒪ₛ
- ⊤ₛ = (λ _ → ⊤ {𝓤}) , υ , ι
-  where
-   υ : is-upwards-closed (λ _ → ⊤) holds
-   υ _ _ _ _ = ⋆
-
-   ι : is-inaccessible-by-directed-joins (λ _ → ⊤) holds
-   ι (S , (∣i∣ , γ)) ⋆ = ∥∥-rec ∃-is-prop † ∣i∣
-    where
-     † : index S → ∃ _ ꞉ index S , ⊤ holds
-     † i = ∣ i , ⋆ ∣
-
- ⊤ₛ-is-top : (U : 𝒪ₛ) → (U ⊆ₖ ⊤ₛ) holds
- ⊤ₛ-is-top U = λ _ _ → ⋆
+ ⊤ₛ-is-top-wrt-⊆ₖ : (𝔘 : 𝒪ₛ) → (𝔘 ⊆ₖ ⊤ₛ) holds
+ ⊤ₛ-is-top-wrt-⊆ₖ 𝔘 = ⊆-implies-⊆ₖ 𝔘 ⊤ₛ (⊤ₛ-is-top 𝔘)
 
 \end{code}
 
@@ -229,36 +200,24 @@ The meet of two opens.
 
 \begin{code}
 
- _∧ₛ_ : 𝒪ₛ → 𝒪ₛ → 𝒪ₛ
- (U , (υ₁ , ι₁)) ∧ₛ (V , (υ₂ , ι₂)) = (λ x → U x ∧ V x) , υ , ι
-  where
-   υ : is-upwards-closed (λ x → U x ∧ V x) holds
-   υ x y (p₁ , p₂) q = υ₁ x y p₁ q , υ₂ x y p₂ q
-
-   ι : is-inaccessible-by-directed-joins (λ x → U x ∧ V x) holds
-   ι (S , δ) (p , q) = ∥∥-rec₂ ∃-is-prop γ (ι₁ (S , δ) p) (ι₂ (S , δ) q)
-    where
-     γ : Σ i ꞉ index S , U (S [ i ]) holds
-       → Σ j ꞉ index S , V (S [ j ]) holds
-       → ∃ k ꞉ index S , (U (S [ k ]) ∧ V (S [ k ])) holds
-     γ (i , r₁) (j , r₂) = ∥∥-rec ∃-is-prop † (pr₂ δ i j)
-      where
-       † : Σ k₀ ꞉ index S ,
-            ((S [ i ]) ⊑⟨ 𝓓 ⟩ₚ (S [ k₀ ]) ∧ (S [ j ]) ⊑⟨ 𝓓 ⟩ₚ (S [ k₀ ])) holds
-         → ∃ k ꞉ index S , (U (S [ k ]) ∧ V (S [ k ])) holds
-       † (k₀ , φ , ψ) =
-        ∣ k₀ , υ₁ (S [ i ]) (S [ k₀ ]) r₁ φ , υ₂ (S [ j ]) (S [ k₀ ]) r₂ ψ ∣
-
  open Meets _⊆ₖ_
 
- ∧ₛ-is-meet : (U V : 𝒪ₛ) → ((U ∧ₛ V) is-glb-of ((U , V))) holds
- ∧ₛ-is-meet U V = † , ‡
+ ∧ₛ-is-meet-wrt-⊆ₖ : (𝔘 𝔙 : 𝒪ₛ) → ((𝔘 ∧ₛ 𝔙) is-glb-of (𝔘 , 𝔙)) holds
+ ∧ₛ-is-meet-wrt-⊆ₖ 𝔘 𝔙 = † , ‡
   where
-   † : ((U ∧ₛ V) is-a-lower-bound-of (U , V)) holds
-   † = (λ _ (p , _) → p) , (λ _ (_ , q) → q)
+   † : ((𝔘 ∧ₛ 𝔙) is-a-lower-bound-of (𝔘 , 𝔙)) holds
+   † = ⊆-implies-⊆ₖ (𝔘 ∧ₛ 𝔙) 𝔘 (∧[ 𝒪 ScottLocale′ ]-lower₁ 𝔘 𝔙)
+     , ⊆-implies-⊆ₖ (𝔘 ∧ₛ 𝔙) 𝔙 (∧[ 𝒪 ScottLocale′ ]-lower₂ 𝔘 𝔙)
 
-   ‡ : ((W , _) : lower-bound (U , V)) → (W ⊆ₖ (U ∧ₛ V)) holds
-   ‡ (W , p) x q = pr₁ p x q , pr₂ p x q
+   ‡ : ((W , _) : lower-bound (𝔘 , 𝔙)) → (W ⊆ₖ (𝔘 ∧ₛ 𝔙)) holds
+   ‡ (𝔚 , p , q) =
+    ⊆-implies-⊆ₖ 𝔚 (𝔘 ∧ₛ 𝔙) (∧[ 𝒪 ScottLocale′ ]-greatest 𝔘 𝔙 𝔚 ♣ ♠)
+     where
+      ♣ : (𝔚 ⊆ₛ 𝔘) holds
+      ♣ = ⊆ₖ-implies-⊆ 𝔚 𝔘 p
+
+      ♠ : (𝔚 ⊆ₛ 𝔙) holds
+      ♠ = ⊆ₖ-implies-⊆ 𝔚 𝔙 q
 
 \end{code}
 
@@ -266,86 +225,19 @@ The 𝓤-join of opens.
 
 \begin{code}
 
- ⋁ₛ_ : Fam 𝓤 𝒪ₛ → 𝒪ₛ
- ⋁ₛ_ S@(_ , up) = from-𝒪ₛᴿ 𝔘
-  where
-   open 𝒪ₛᴿ
-
-   ⋃S : 𝓟 {𝓤} ⟨ 𝓓 ⟩∙
-   ⋃S x = Ǝ i ꞉ index S , (x ∈ₛ (S [ i ])) holds
-
-   υ : is-upwards-closed ⋃S holds
-   υ x y p q = ∥∥-rec (holds-is-prop (⋃S y)) † p
-    where
-     † : Σ i ꞉ index S , (x ∈ₛ (S [ i ])) holds → ⋃S y holds
-     † (i , r) = ∣ i , ♣ ∣
-      where
-       Sᵢᴿ : 𝒪ₛᴿ
-       Sᵢᴿ = to-𝒪ₛᴿ (S [ i ])
-
-       ♣ : (y ∈ₛ (S [ i ])) holds
-       ♣ = pred-is-upwards-closed Sᵢᴿ x y r q
-
-   ι : is-inaccessible-by-directed-joins ⋃S holds
-   ι (T , δ) p = ∥∥-rec ∃-is-prop † p
-    where
-     † : Σ i ꞉ index S , ((⋁ (T , δ)) ∈ₛ (S [ i ])) holds
-       → ∃ i ꞉ index T , ⋃S (T [ i ]) holds
-     † (i , r) = ∥∥-rec ∃-is-prop ‡ ♠
-      where
-
-       Sᵢᴿ : 𝒪ₛᴿ
-       Sᵢᴿ = to-𝒪ₛᴿ (S [ i ])
-
-       ♠ : ∃ k ꞉ index T , pred Sᵢᴿ (T [ k ]) holds
-       ♠ = pred-is-inaccessible-by-dir-joins Sᵢᴿ (T , δ) r
-
-       ‡ : (Σ k ꞉ index T , pred Sᵢᴿ (T [ k ]) holds)
-         → ∃ i ꞉ index T , ⋃S (T [ i ]) holds
-       ‡ (k , q) = ∣ k , ∣ i , q ∣ ∣
-
-   𝔘 : 𝒪ₛᴿ
-   𝔘 = record
-        { pred                              = ⋃S
-        ; pred-is-upwards-closed            = υ
-        ; pred-is-inaccessible-by-dir-joins = ι
-        }
-
  open Joins _⊆ₖ_
 
- ⋁ₛ-is-join : (S : Fam 𝓤 𝒪ₛ) → ((⋁ₛ S) is-lub-of S) holds
- ⋁ₛ-is-join S = † , ‡
+ ⋁ₛ-is-join-wrt-⊆ₖ : (S : Fam 𝓤 𝒪ₛ) → ((⋁ₛ S) is-lub-of S) holds
+ ⋁ₛ-is-join-wrt-⊆ₖ S = † , ‡
   where
    † : ((⋁ₛ S) is-an-upper-bound-of S) holds
-   † i y p = ∣ i , p ∣
+   † i = ⊆-implies-⊆ₖ (S [ i ]) (⋁ₛ S) (⋁[ 𝒪 ScottLocale′ ]-upper S i)
 
    ‡ : ((U , _) : upper-bound S) → ((⋁ₛ S) ⊆ₖ U) holds
-   ‡ ((U , δ) , p) i = ∥∥-rec (holds-is-prop (U (ℬ [ i ]))) ※
+   ‡ (𝔘 , p) = ⊆-implies-⊆ₖ (⋁ₛ S) 𝔘 ((⋁[ 𝒪 ScottLocale′ ]-least S (𝔘 , ※)))
     where
-     ※ : Σ j ꞉ index S , ((ℬ [ i ]) ∈ₛ (S [ j ])) holds → U (ℬ [ i ]) holds
-     ※ (j , q) = p j i q
-
-\end{code}
-
-\begin{code}
-
- distributivityₛ : (U : 𝒪ₛ) (S : Fam 𝓤 𝒪ₛ) → U ∧ₛ (⋁ₛ S) ＝ ⋁ₛ ⁅ U ∧ₛ V ∣ V ε S ⁆
- distributivityₛ U S = ⊆ₖ-is-antisymmetric † ‡
-  where
-   † : ((U ∧ₛ (⋁ₛ S)) ⊆ₖ (⋁ₛ ⁅ U ∧ₛ V ∣ V ε S ⁆)) holds
-   † i (p , q) =
-    ∥∥-rec (holds-is-prop ((ℬ [ i ]) ∈ₛ (⋁ₛ ⁅ U ∧ₛ V ∣ V ε S ⁆))) †₀ q
-     where
-      †₀ : Σ k ꞉ index S , ((S [ k ]) .pr₁ (ℬ [ i ])) holds
-         → (⋁ₛ ⁅ U ∧ₛ V ∣ V ε S ⁆) .pr₁ (ℬ [ i ]) holds
-      †₀ (i , r) = ∣ i , (p , r) ∣
-
-   ‡ : ((⋁ₛ ⁅ U ∧ₛ V ∣ V ε S ⁆) ⊆ₖ (U ∧ₛ (⋁ₛ S))) holds
-   ‡ i p = ∥∥-rec (holds-is-prop ((U ∧ₛ (⋁ₛ S)) .pr₁ (ℬ [ i ]))) ‡₀ p
-    where
-     ‡₀ : (Σ k ꞉ index S , ((U ∧ₛ (S [ k ])) .pr₁ (ℬ [ i ]) holds))
-        → (U ∧ₛ (⋁ₛ S)) .pr₁ (ℬ [ i ]) holds
-     ‡₀ (i , (q , r)) = q , ∣ i , r ∣
+     ※ : (i : index S) → ((S [ i ]) ⊆ₛ 𝔘) holds
+     ※ i = ⊆ₖ-implies-⊆ (S [ i ]) 𝔘 (p i)
 
 \end{code}
 
@@ -354,9 +246,9 @@ The 𝓤-join of opens.
  𝒪ₛ-frame-structure : frame-structure 𝓤 𝓤 𝒪ₛ
  𝒪ₛ-frame-structure = (_⊆ₖ_ , ⊤ₛ , _∧ₛ_ , ⋁ₛ_)
                     , ⊆ₖ-is-partial-order
-                    , ⊤ₛ-is-top
-                    , (λ (U , V) → ∧ₛ-is-meet U V)
-                    , ⋁ₛ-is-join
+                    , ⊤ₛ-is-top-wrt-⊆ₖ
+                    , (λ (U , V) → ∧ₛ-is-meet-wrt-⊆ₖ U V)
+                    , ⋁ₛ-is-join-wrt-⊆ₖ
                     , λ (U , S) → distributivityₛ U S
 
 \end{code}
