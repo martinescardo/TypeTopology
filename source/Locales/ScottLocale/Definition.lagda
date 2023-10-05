@@ -92,7 +92,7 @@ These are ordered by inclusion.
    V
    (dfunext fe λ x → to-subtype-＝
      (λ _ → being-prop-is-prop fe)
-     (pe (holds-is-prop (U .pr₁ x)) (holds-is-prop (V .pr₁ x)) (p x) (q x)))
+     (pe (holds-is-prop (x ∈ₛ U)) (holds-is-prop (x ∈ₛ V)) (p x) (q x)))
 
  ⊆ₛ-is-partial-order : is-partial-order 𝒪ₛ _⊆ₛ_
  ⊆ₛ-is-partial-order = (⊆ₛ-is-reflexive , ⊆ₛ-is-transitive) , ⊆ₛ-is-antisymmetric
