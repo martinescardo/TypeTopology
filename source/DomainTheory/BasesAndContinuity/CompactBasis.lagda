@@ -1,5 +1,33 @@
 Tom de Jong and Ayberk Tosun, 4 & 5 October 2023
 
+
+Given an algebraic dcpo 𝓓, the subset K of compact elements forms a basis for 𝓓.
+In our predicative context, we consider *small* bases, however, and a priori
+there is no reason for K to be a small type.
+
+However, if 𝓓 comes equipped with what we call a small compact basis, then set
+replacement¹ implies that K is small.
+
+If we moreover assume univalence, then the relevant small condition is a
+property, which means that having an unspecified small compact basis is
+sufficient.
+
+In particular, with set replacement and univalence, we can show:
+  ∥ has-specified-small-compact-basis 𝓓 ∥ → has-specified-small-compact-basis 𝓓.
+In other words, the type (has-specified-small-compact-basis 𝓓) has split
+support.
+
+This observation is due to Ayberk Tosun (23 September 2023) and was formalised,
+with the addition of many explanatory comments, by Tom de Jong on 4 & 5 October
+2023.
+
+Towards the end, we also clarify how the fact that K is the unique basis (as a
+subset) consisting of compact elements fits in to our framework.
+
+¹ Set replacement says: if f : X → Y is a map from a small type to a locally
+  small set, then the image of f is small.
+  It is equivalent to having small set quotients, see Quotient.index.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K --exact-split #-}
@@ -36,6 +64,8 @@ open import DomainTheory.BasesAndContinuity.Continuity pt fe 𝓥
 As announced above, we start by establishing as many as properties of K as
 possible without considering that K needs to be small.
 
+For this, we only assume that our dcpo is algebraic (in the truncated sense).
+
 \begin{code}
 
 module basis-of-compact-elements
@@ -57,6 +87,13 @@ module basis-of-compact-elements
 
  ↓ᴷ-inclusion : (x : ⟨ 𝓓 ⟩) → ↓ᴷ x → ⟨ 𝓓 ⟩
  ↓ᴷ-inclusion x = ι ∘ pr₁
+
+\end{code}
+
+We show that every element x of 𝓓 is the *directed* supremum of the inclusion
+  (Σ k ꞉ K ,  k ⊑ x) → ⟨ 𝓓 ⟩.
+
+\begin{code}
 
  ↓ᴷ-is-inhabited : (x : ⟨ 𝓓 ⟩) → ∥ ↓ᴷ x ∥
  ↓ᴷ-is-inhabited x = ∥∥-rec ∥∥-is-prop γ is-alg
@@ -152,6 +189,9 @@ module basis-of-compact-elements
 
 \end{code}
 
+Assuming set replacement, and a *specified* small compact basis, we deduce that
+K is a small type.
+
 \begin{code}
 
 module resize-using-specified-small-compact-basis
@@ -204,6 +244,13 @@ module resize-using-specified-small-compact-basis
 
 \end{code}
 
+If we additionally assume univalence, then we can prove that K is small from
+assuming an *unspecified* small compact basis.
+
+The need for univalence lies in the fact (being-small-is-prop) that it implies
+that smallness is a property. (In fact, univalence is equivalent to this, in
+some precise sense, see UF.Size.)
+
 \begin{code}
 
 open import UF.Univalence
@@ -240,6 +287,8 @@ module resize-using-unspecified-small-compact-basis
 
 \end{code}
 
+We now package things up, using the small copy Kₛ of K and reindexing along the
+equivalence Kₛ ≃ K, to produce a small compact basis.
 
 \begin{code}
 
@@ -269,6 +318,9 @@ module resize-using-unspecified-small-compact-basis
    }
 
 \end{code}
+
+Finally, we arrive at the result announced at the top of this file: the type
+(has-specified-small-compact-basis 𝓓) has split support.
 
 \begin{code}
 
@@ -305,6 +357,8 @@ compact basis.
    ∘ specified-small-compact-basis-has-split-support
 
 \end{code}
+
+Another formulation is that we have the following logical equivalence:
 
 \begin{code}
 
