@@ -35,7 +35,7 @@ open import Various.File1 ua 𝓤
 
   eq' : 𝕄-forest (φ x) y ＝ φ x
   eq' = transportd 𝕄-root (λ -₁ -₂ → 𝕄-forest -₁ -₂ ＝ -₁) x (eq ⁻¹) eq
-  
+
 succᴹ : 𝕄 → 𝕄
 succᴹ M = ssup (𝕄-root M + 𝟙 {𝓤}) (cases (𝕄-forest M) (λ ⋆ → M))
 
@@ -58,7 +58,7 @@ succᴹ-preserves-iset M is-iset = III , IV
   III = disjoint-cases-embedding _ _
          (𝕄-forest-is-embedding M is-iset)
          II
-         (λ x ⋆ eq → 𝕄-dont-contain-themself M (x , eq))
+         (λ x ⋆ eq → 𝕄-dont-contain-themselves M (x , eq))
 
   IV : (x : 𝕄-root (succᴹ M)) → is-iterative-set (𝕄-forest (succᴹ M) x)
   IV = dep-cases (𝕄-subtrees-are-iterative M is-iset) (λ ⋆ → is-iset)
