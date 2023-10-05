@@ -24,15 +24,14 @@ open import UF.Univalence
 
 \end{code}
 
-We assume the existence of propositional truncations as well as function extensionality.
+We assume the existence of propositional truncations as well as function
+extensionality.
 
 \begin{code}
 
-module Locales.ScottLocale.Definition
-        (pt : propositional-truncations-exist)
-        (fe : Fun-Ext)
-        (𝓥  : Universe)
-        where
+module Locales.ScottLocale.Definition (pt : propositional-truncations-exist)
+                                      (fe : Fun-Ext)
+                                      (𝓥  : Universe)                      where
 
 open Universal fe
 open Implication fe
