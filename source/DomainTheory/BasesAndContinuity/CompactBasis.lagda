@@ -14,15 +14,14 @@ sufficient.
 
 In particular, with set replacement and univalence, we can show:
   ∥ has-specified-small-compact-basis 𝓓 ∥ → has-specified-small-compact-basis 𝓓.
-In other words, the type (has-specified-small-compact-basis 𝓓) has split
-support.
+In other words, the type (has-specified-small-compact-basis 𝓓) has split support.
 
 This observation is due to Ayberk Tosun (23 September 2023) and was formalised,
-with the addition of many explanatory comments, by Tom de Jong on 4 & 5 October
-2023.
+with the addition of many explanatory comments, by Tom de Jong.
 
 Towards the end, we also clarify how the fact that K is the unique basis (as a
 subset) consisting of compact elements fits in to our framework.
+
 
 ¹ Set replacement says: if f : X → Y is a map from a small type to a locally
   small set, then the image of f is small.
@@ -91,7 +90,7 @@ module basis-of-compact-elements
 \end{code}
 
 We show that every element x of 𝓓 is the *directed* supremum of the inclusion
-  (Σ k ꞉ K ,  k ⊑ x) → ⟨ 𝓓 ⟩.
+  (Σ k ꞉ K , k ⊑⟨ 𝓓 ⟩ x) → ⟨ 𝓓 ⟩.
 
 \begin{code}
 
@@ -189,8 +188,8 @@ We show that every element x of 𝓓 is the *directed* supremum of the inclusion
 
 \end{code}
 
-Assuming set replacement, and a *specified* small compact basis, we deduce that
-K is a small type.
+Assuming set replacement and a *specified* small compact basis, we deduce that K
+is a small type.
 
 \begin{code}
 
@@ -247,9 +246,9 @@ module resize-using-specified-small-compact-basis
 If we additionally assume univalence, then we can prove that K is small from
 assuming an *unspecified* small compact basis.
 
-The need for univalence lies in the fact (being-small-is-prop) that it implies
-that smallness is a property. (In fact, univalence is equivalent to this, in
-some precise sense, see UF.Size.)
+The need for univalence lies in the fact that it implies that smallness is a
+property (being-small-is-prop).
+(In fact, univalence is equivalent to this, in some precise sense, see UF.Size.)
 
 \begin{code}
 
@@ -287,8 +286,8 @@ module resize-using-unspecified-small-compact-basis
 
 \end{code}
 
-We now package things up, using the small copy Kₛ of K and reindexing along the
-equivalence Kₛ ≃ K, to produce a small compact basis.
+We now package things up, using the small copy Kₛ of K and a reindexing along
+the equivalence Kₛ ≃ K, to produce a small compact basis.
 
 \begin{code}
 
@@ -370,8 +369,47 @@ Another formulation is that we have the following logical equivalence:
 
 \end{code}
 
-TODO.
+We note that the above cannot be promoted to an equivalence of types, because
+the left-hand side, the type (has-specified-small-compact-basis 𝓓), is not a
+proposition. This may seem puzzling, especially to domain theorists, as there is
+a unique basis (as a subset) which consists of compact elements, so we stop to
+explain this here.
 
-We stress that the above cannot be promoted to an equivalence of types as there
-could be several small compact bases for 𝓓. In a sense, the above says that
-there is a canonical one though (which is given by all compact elements).
+Recall that
+  has-specified-small-compact-basis 𝓓 :=
+    Σ B ꞉ 𝓥 ̇ , Σ β ꞉ (B → ⟨ 𝓓 ⟩) , (1) × (2) × (3)
+with (1)─(3) expressing that:
+  (1) all elements β b are compact,
+  (2) (β b ⊑⟨ 𝓓 ⟩ x) is a small type for all elements x, and
+  (3) the family (Σ b ꞉ B , β b ⊑⟨ 𝓓 ⟩) → ⟨ 𝓓 ⟩ is directed with sup x.
+
+If we drop smallness condition (2) and allow for B to live in larger universes
+than 𝓥, then K, the subset of compact elements with its inclusion K → ⟨ 𝓓 ⟩,
+will fit the specification.
+
+If we now add the condition that β is an embedding (as it is for K), then we get
+the type
+    Σ B ꞉ _ ̇̇ , Σ β ꞉ (B → ⟨ 𝓓 ⟩) , (1) × (3) × (β is an embedding)
+which *is* a proposition: it has a unique element in case 𝓓 is algebraic, given
+by the *subset* of compact elements of 𝓓. (This is true because any basis must
+contain all compact elements.)
+
+This raises a question: why don't we require β to be an embedding in our
+definition of a small compact basis to obtain a property instead of truncating
+the type has-specified-small-compact-basis?
+
+The reason is that it could be useful, as we illustrate now:
+
+  The canonical map from lists into the powerset of a set X,
+    β : List X → 𝓟 X
+  is a small compact basis for the algebraic dcpo 𝓟 X. This map is not an
+  embedding, as any permutation of a list will give rise to the same subset.
+
+  If we insisted on having an embedding, we would instead have to use the
+  inclusion of the Kuratowski finite subsets 𝓚 X into 𝓟 X.  However, 𝓚 X is not
+  a small type without additional assumptions, such as HITs or more specifically,
+  set replacement (as 𝓚 X is precisely the image of the map β : List X → 𝓟 X).
+
+Returning to the main line of thought, we conclude that, in the presence of set
+replacement and univalence, if there is some unspecified small compact basis,
+then the subset K of compact elements is suitably small.
