@@ -23,12 +23,14 @@ open import UF.SubtypeClassifier
 open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.Size
+open import UF.SmallnessProperties
 open import UF.Retracts
 open import UF.UniverseEmbedding
 open import UF.Equiv-FunExt 
 
 module Posets.InductiveTypesfromSmallGeneratedLattice (pt : propositional-truncations-exist)
                                                       (fe : Fun-Ext)
+                                                      (fe' : FunExt)
                                                       (pe : Prop-Ext)
                                                       where
 
@@ -261,12 +263,51 @@ module Equivalent-Families-have-same-Join {𝓤 𝓦 𝓥 𝓣 𝓣' : Universe}
    is-antisymmetric-for L s-≤-s' s'-≤-s
   where
    s-≤-s' : (s ≤ s') holds
-   s-≤-s' = is-least-upbnd (s' , λ t → transport (λ z → (z ≤ s') holds) (＝-1 t) (is-upbnd' (⌜ e ⌝⁻¹ t)))
+   s-≤-s' = is-least-upbnd (s' , λ t → transport (λ z → (z ≤ s') holds) (＝₁ t) (is-upbnd' (⌜ e ⌝⁻¹ t)))
     where
-     ＝-1 : (t : T) → m (⌜ e ⌝ (⌜ e ⌝⁻¹ t)) ＝ m t
-     ＝-1 t = ap m (naive-inverses-are-sections ⌜ e ⌝ (pr₂ e) t)
+     ＝₁ : (t : T) → m (⌜ e ⌝ (⌜ e ⌝⁻¹ t)) ＝ m t
+     ＝₁ t = ap m (naive-inverses-are-sections ⌜ e ⌝ (pr₂ e) t)
    s'-≤-s : (s' ≤ s) holds
    s'-≤-s = is-least-upbnd' (s , λ t' → is-upbnd (⌜ e ⌝ t'))
+
+\end{code}
+
+We prove a similar result when a surjection exists between families. 
+
+\begin{code}
+
+module Surjection-implies-equal-joins {𝓤 𝓦 𝓥 𝓣 𝓣' : Universe}
+                                      (L : Sup-Lattice 𝓤 𝓦 𝓥)
+                                      (T : 𝓣  ̇)
+                                      (T' : 𝓣'  ̇)
+                                      (e : T' ↠ T)
+                                      (m : T → ⟨ L ⟩)
+                                      where
+
+ _≤_ : ⟨ L ⟩ → ⟨ L ⟩ → Ω 𝓦
+ _≤_ = order-of L
+
+ ⋁_ : Fam 𝓥 ⟨ L ⟩ → ⟨ L ⟩
+ ⋁_ = join-for L
+
+ open Joins _≤_
+ open PropositionalTruncation pt
+
+ ↠-families-＝-sup : (s s' : ⟨ L ⟩)
+                   → (s is-lub-of (T , m)) holds
+                   → (s' is-lub-of (T' , m ∘ ⌞ e ⌟)) holds
+                   → s ＝ s'
+ ↠-families-＝-sup s s' (is-upbnd , is-least-upbnd) (is-upbnd' , is-least-upbnd') = is-antisymmetric-for L s-≤-s' s'-≤-s
+  where
+   s-≤-s' : (s ≤ s') holds
+   s-≤-s' = is-least-upbnd (s' , λ t → map₂ t (⌞⌟-is-surjection e t))
+    where
+     map₁ : (t : T) → Σ t' ꞉ T' , ⌞ e ⌟ t' ＝ t → (m t ≤ s') holds
+     map₁ t (t' , path) = transport (λ z → (m z ≤ s') holds) path (is-upbnd' t')
+     map₂ : (t : T) → (Ǝ t' ꞉ T' , ⌞ e ⌟ t' ＝ t) holds → (m t ≤ s') holds
+     map₂ t = ∥∥-rec (holds-is-prop (m t ≤ s')) (map₁ t)
+   s'-≤-s : (s' ≤ s) holds
+   s'-≤-s = is-least-upbnd' (s , λ t' → is-upbnd (⌞ e ⌟ t'))
 
 \end{code}
 
@@ -304,6 +345,14 @@ module Small-Basis {𝓤 𝓦 𝓥 : Universe} {B : 𝓥  ̇} (L : Sup-Lattice �
 
   is-sup : (x : ⟨ L ⟩) → (x is-lub-of (↓ᴮ x , ↓ᴮ-inclusion x)) holds
   is-sup x = pr₂ (h x)
+
+  is-upper-bound-↓ : (x : ⟨ L ⟩) → (x is-an-upper-bound-of (↓ᴮ x , ↓ᴮ-inclusion x)) holds
+  is-upper-bound-↓ x = pr₁ (is-sup x)
+
+  is-least-upper-bound-↓ : (x : ⟨ L ⟩)
+                        → ((u' , _) : upper-bound (↓ᴮ x , ↓ᴮ-inclusion x))
+                        → (x ≤ u') holds
+  is-least-upper-bound-↓ x = pr₂ (is-sup x)
 
   _≤ᴮ_ : (b : B) (x : ⟨ L ⟩) → 𝓥  ̇
   b ≤ᴮ x = pr₁ (≤-is-small x b)
@@ -927,24 +976,24 @@ module Bounded-Inductive-Definition {𝓤 𝓦 𝓥 : Universe}
   X is-a-small-cover-of Y = X ↠ Y
 
   _has-a-bound : (ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)) → 𝓤 ⊔ 𝓦 ⊔ (𝓥 ⁺)  ̇
-  ϕ has-a-bound = Σ J ꞉ 𝓥  ̇ , Σ α ꞉ (J → 𝓥  ̇) , ((a : ⟨ L ⟩)
+  ϕ has-a-bound = Σ I ꞉ 𝓥  ̇ , Σ α ꞉ (I → 𝓥  ̇) , ((a : ⟨ L ⟩)
                                                → (b : B)
                                                → ϕ (a , b) holds
-                                               → (Ǝ j ꞉ J , (α j is-a-small-cover-of ↓ᴮ a)) holds)
+                                               → (Ǝ i ꞉ I , α i is-a-small-cover-of ↓ᴮ a) holds)
 
   bound-index : {ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)} → ϕ has-a-bound → 𝓥  ̇
-  bound-index (J , α , covering) = J
+  bound-index (I , α , covering) = I
 
   bound-family : {ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)} → (bnd : ϕ has-a-bound) → (bound-index {ϕ} bnd → 𝓥  ̇)
-  bound-family (J , α , covering) = α
+  bound-family (I , α , covering) = α
 
   covering-condition : {ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)}
                      → (bnd : ϕ has-a-bound)
                      → ((a : ⟨ L ⟩)
                      → (b : B)
                      → ϕ (a , b) holds
-                     → (Ǝ j ꞉ (bound-index {ϕ} bnd) , ((bound-family {ϕ} bnd) j is-a-small-cover-of ↓ᴮ a)) holds)
-  covering-condition (J , α , covering) = covering
+                     → (Ǝ i ꞉ (bound-index {ϕ} bnd) , ((bound-family {ϕ} bnd) i is-a-small-cover-of ↓ᴮ a)) holds)
+  covering-condition (I , α , covering) = covering
 
   _is-bounded : (ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)) → 𝓤 ⊔ 𝓦 ⊔ (𝓥 ⁺)  ̇
   ϕ is-bounded = ((a : ⟨ L ⟩) → (b : B) → (ϕ (a , b) holds) is 𝓥 small) × (ϕ has-a-bound)
@@ -953,7 +1002,79 @@ module Bounded-Inductive-Definition {𝓤 𝓦 𝓥 : Universe}
   open Local-from-Small-Basis-Facts h
 
   _bounded-implies-local : (ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)) → ϕ is-bounded → ϕ is-local
-  (ϕ bounded-implies-local) (ϕ-small , ϕ-has-bound) a = {!!}
+  (ϕ bounded-implies-local) (ϕ-small , ϕ-has-bound) a = smallness-closed-under-≃ small-type-is-small small-type-≃-S
+   where
+    I : 𝓥  ̇
+    I = bound-index {ϕ} ϕ-has-bound
+    α : I → 𝓥  ̇
+    α = bound-family {ϕ} ϕ-has-bound
+    cov : (a : ⟨ L ⟩)
+        → (b : B)
+        → ϕ (a , b) holds
+        → (Ǝ i ꞉ I , (α i is-a-small-cover-of ↓ᴮ a)) holds
+    cov = covering-condition {ϕ} ϕ-has-bound
+    small-type : 𝓤 ⊔ 𝓦 ⊔ 𝓥  ̇
+    small-type = Σ b ꞉ B , ((Ǝ i ꞉ I , ((Ǝ m ꞉ (α i → ↓ᴮ a) , (ϕ ((⋁ (α i , q ∘ pr₁ ∘ m)) , b) holds)) holds)) holds)
+    small-type-is-small : small-type is 𝓥 small
+    small-type-is-small =
+     Σ-is-small (B , ≃-refl B)
+                (λ b → ∥∥-is-small pt
+                                   (Σ-is-small (I , ≃-refl I)
+                                               λ i → ∥∥-is-small pt
+                                                                 (Σ-is-small (Π-is-small (fe') (α i , ≃-refl (α i)) λ _ → ↓ᴮ-is-small)
+                                                                             λ m → ϕ-small (⋁ (α i , q ∘ pr₁ ∘ m)) b)))
+
+    small-type-to-S : small-type → S ϕ a
+    small-type-to-S (b , e) = (b , map₄ e)
+     where
+      map₁ : (i : I) → (Σ m ꞉ (α i → ↓ᴮ a) , (ϕ ((⋁ (α i , q ∘ pr₁ ∘ m)) , b) holds))
+           → (Ǝ a' ꞉ ⟨ L ⟩ , ϕ (a' , b) holds × (a' ≤ a) holds) holds
+      map₁ i (m , p) = ∣ (⋁ (α i , q ∘ pr₁ ∘ m) , p , (is-least-upper-bound-for L of (α i , q ∘ pr₁ ∘ m)) (a , λ z → is-upper-bound-↓ a (m z))) ∣
+      map₂ : (i : I) → ((Ǝ m ꞉ (α i → ↓ᴮ a) , (ϕ ((⋁ (α i , q ∘ pr₁ ∘ m)) , b) holds)) holds)
+           → (Ǝ a' ꞉ ⟨ L ⟩ , ϕ (a' , b) holds × (a' ≤ a) holds) holds
+      map₂ i = ∥∥-rec ∥∥-is-prop (map₁ i)
+      map₃ : Σ i ꞉ I , ((Ǝ m ꞉ (α i → ↓ᴮ a) , (ϕ ((⋁ (α i , q ∘ pr₁ ∘ m)) , b) holds)) holds)
+           → (Ǝ a' ꞉ ⟨ L ⟩ , ϕ (a' , b) holds × (a' ≤ a) holds) holds
+      map₃ = uncurry map₂
+      map₄ : (Ǝ i ꞉ I , ((Ǝ m ꞉ (α i → ↓ᴮ a) , (ϕ ((⋁ (α i , q ∘ pr₁ ∘ m)) , b) holds)) holds)) holds
+           → (Ǝ a' ꞉ ⟨ L ⟩ , ϕ (a' , b) holds × (a' ≤ a) holds) holds
+      map₄ = ∥∥-rec ∥∥-is-prop map₃
+
+    S-to-small-type : S ϕ a → small-type
+    S-to-small-type (b , e) = (b , map₄ e)
+     where
+      ι : (a' : ⟨ L ⟩) → (a' ≤ a) holds → ↓ᴮ a' → ↓ᴮ a
+      ι a' o (x , r) = (x , is-transitive-for L (q x) a' a r o)
+      map₁ : (a' : ⟨ L ⟩) →  ϕ (a' , b) holds → (a' ≤ a) holds → (Σ i ꞉ I , (α i is-a-small-cover-of ↓ᴮ a'))
+          → (Ǝ i ꞉ I , ((Ǝ m ꞉ (α i → ↓ᴮ a) , (ϕ ((⋁ (α i , q ∘ pr₁ ∘ m)) , b) holds)) holds)) holds
+      map₁ a' p o (i , α-covers) = ∣ (i , ∣ (m , p') ∣) ∣
+       where
+        open Surjection-implies-equal-joins L (↓ᴮ a') (α i) α-covers (q ∘ pr₁) hiding (⋁_ ; _≤_)
+        m : α i → ↓ᴮ a
+        m = ι a' o ∘ ⌞  α-covers ⌟
+        path : a' ＝ ⋁ (α i , q ∘ pr₁ ∘ m)
+        path = ↠-families-＝-sup a' (⋁ (α i , q ∘ pr₁ ∘ m)) (is-sup a') (is-lub-for L (α i , q ∘ pr₁ ∘ m))
+        p' : ϕ ((⋁ (α i , q ∘ pr₁ ∘ m)) , b) holds
+        p' = transport (λ z → ϕ (z , b) holds) path p
+      map₂ : (a' : ⟨ L ⟩) → ϕ (a' , b) holds → (a' ≤ a) holds → (Ǝ i ꞉ I , (α i is-a-small-cover-of ↓ᴮ a')) holds
+          → (Ǝ i ꞉ I , ((Ǝ m ꞉ (α i → ↓ᴮ a) , (ϕ ((⋁ (α i , q ∘ pr₁ ∘ m)) , b) holds)) holds)) holds
+      map₂ a' p o = ∥∥-rec ∥∥-is-prop (map₁ a' p o)
+      map₃ : Σ a' ꞉ ⟨ L ⟩ , ϕ (a' , b) holds × (a' ≤ a) holds
+           → (Ǝ i ꞉ I , ((Ǝ m ꞉ (α i → ↓ᴮ a) , (ϕ ((⋁ (α i , q ∘ pr₁ ∘ m)) , b) holds)) holds)) holds
+      map₃ (a' , p , o) = map₂ a' p o (cov a' b p)
+      map₄ : (Ǝ a' ꞉ ⟨ L ⟩ , ϕ (a' , b) holds × (a' ≤ a) holds) holds
+           → (Ǝ i ꞉ I , ((Ǝ m ꞉ (α i → ↓ᴮ a) , (ϕ ((⋁ (α i , q ∘ pr₁ ∘ m)) , b) holds)) holds)) holds
+      map₄ = ∥∥-rec ∥∥-is-prop map₃
+
+    small-type-≃-S : small-type ≃ S ϕ a
+    small-type-≃-S = (small-type-to-S , qinvs-are-equivs small-type-to-S is-qinv)
+     where
+      H : S-to-small-type ∘ small-type-to-S ∼ id
+      H (b , e) = to-subtype-＝ (λ _ → ∥∥-is-prop) refl
+      G : small-type-to-S ∘ S-to-small-type ∼ id
+      G (b , e) = to-subtype-＝ (λ _ → ∥∥-is-prop) refl
+      is-qinv : qinv small-type-to-S
+      is-qinv = (S-to-small-type , H , G)
 
 \end{code}
 
