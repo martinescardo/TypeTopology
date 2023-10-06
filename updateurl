@@ -84,3 +84,6 @@ ln -s Various.Dedekind.html Published.Various.Dedekind.html
 # Added by Tom de Jong - 31 March 2023, 18 April 2023
 ln -s UF.Size.html Published.UF.Size.html
 ln -s UF.ImageAndSurjection.html Published.UF.ImageAndSurjection.html
+
+# Added by Tom de Jong on 3 October 2023.
+ln -s PCF.Lambda.index.html Published.PCF.Lambda.index.html

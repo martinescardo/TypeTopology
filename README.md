@@ -42,6 +42,7 @@ Please add yourself the first time you contribute.
 * Andrew Sneap
 * Ayberk Tosun
 * Brendan Hart
+* Bruno Paiva
 * Chuangjie Xu
 * Cory Knapp
 * Ettore Aldrovandi

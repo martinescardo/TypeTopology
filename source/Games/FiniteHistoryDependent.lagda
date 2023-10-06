@@ -354,7 +354,7 @@ function of a tree:
 
 Overline : {Xt : 𝑻} → 𝓙 Xt → 𝓚 Xt
 Overline {[]}     ⟨⟩        = ⟨⟩
-Overline {X ∷ Xf} (ε :: εs) = overline ε :: (λ x → Overline {Xf x} (εs x))
+Overline {X ∷ Xf} (ε :: εf) = overline ε :: (λ x → Overline {Xf x} (εf x))
 
 \end{code}
 

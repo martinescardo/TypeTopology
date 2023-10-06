@@ -8,7 +8,7 @@ properties in univalent style.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan
 
@@ -134,15 +134,18 @@ to-from-W-＝ refl = refl
 from-to-W-＝ : {x  : X} {φ  : A x  → 𝕎}
                {x' : X} {φ' : A x' → 𝕎}
             → (σ : Σ p ꞉ x ＝ x' , (φ ＝ φ' ∘ transport A p))
-            → from-W-＝ (to-W-＝ σ) ＝ σ
+            → from-W-＝ (to-W-＝ {x} {φ} {x'} {φ'} σ) ＝  σ
 from-to-W-＝ (refl , refl) = refl
 
 W-＝ : {x  : X} {φ  : A x  → 𝕎}
        {x' : X} {φ' : A x' → 𝕎}
      → (ssup x φ ＝[ 𝕎 ] ssup x' φ')
      ≃ (Σ p ꞉ x ＝ x' , (φ ＝ φ' ∘ transport A p))
-W-＝ = qinveq (from-W-＝) (to-W-＝ , to-from-W-＝ , from-to-W-＝)
-
+W-＝ {x} {φ} {x'} {φ'} = qinveq
+                          from-W-＝
+                          (to-W-＝ ,
+                           to-from-W-＝ ,
+                           from-to-W-＝ {x} {φ} {x'} {φ'})
 \end{code}
 
 From this we conclude that if X is a proposition or a set, then 𝕎 is a

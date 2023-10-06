@@ -761,6 +761,15 @@ join-preserving-implies-scott-continuous F G f φ S _ = γ
        (φ S ⁻¹)
        (⋁[ G ]-upper ⁅ f s ∣ s ε S ⁆ , ⋁[ G ]-least ⁅ f s ∣ s ε S ⁆)
 
+continuous-map-equality : (F : Frame 𝓤 𝓥 𝓦) (G : Frame 𝓤' 𝓥' 𝓦)
+                        → (h₁ h₂  : F ─f→ G)
+                        → ((x : ⟨ F ⟩) → h₁ .pr₁ x ＝ h₂ .pr₁ x)
+                        → h₁ ＝ h₂
+continuous-map-equality F G h₁ h₂ ψ = to-subtype-＝ † (dfunext fe ψ)
+ where
+  † : (f : ⟨ F ⟩ → ⟨ G ⟩) → is-prop (is-a-frame-homomorphism F G f holds)
+  † f = holds-is-prop (is-a-frame-homomorphism F G f)
+
 \end{code}
 
 \section{Some properties of frames}
