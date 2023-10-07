@@ -308,23 +308,48 @@ is-boolean : 〈〉 ⊢ baire → 𝓤₀  ̇
 is-boolean α =
  (n : 〈〉 ⊢ ι) → (⟦ α ⟧₀ ⟦ n ⟧₀ ＝ zero) + (⟦ α ⟧₀ ⟦ n ⟧₀ ＝ succ zero)
 
-uni-max-question : D ℕ 𝟚 ℕ → ℕ
-uni-max-question (D.η n)   = 0
-uni-max-question (D.β φ n) = max n (max n₁ n₂)
+max-questionᵁ : D ℕ 𝟚 ℕ → ℕ
+max-questionᵁ (D.η n)   = 0
+max-questionᵁ (D.β φ n) = max n (max n₁ n₂)
  where
   n₁ : ℕ
-  n₁ = uni-max-question (φ ₀)
+  n₁ = max-questionᵁ (φ ₀)
 
   n₂ : ℕ
-  n₂ = uni-max-question (φ ₁)
+  n₂ = max-questionᵁ (φ ₁)
+
+max-questionᵁ⋆ : D⋆ ℕ 𝟚 ℕ ℕ → ℕ
+max-questionᵁ⋆ d = d (λ _ → 0) (λ g x → max x (max (g ₀) (g ₁)))
+
+max-questionᵁ⋆-agreement : (d : D ℕ 𝟚 ℕ)
+                         → max-questionᵁ d ＝ max-questionᵁ⋆ (church-encode d)
+max-questionᵁ⋆-agreement (D.η n)   = refl
+max-questionᵁ⋆-agreement (D.β φ n) = †
+ where
+  ch-encode = church-encode
+
+  IH₀ : max-questionᵁ (φ ₀) ＝ max-questionᵁ⋆ (church-encode (φ ₀))
+  IH₀ = max-questionᵁ⋆-agreement (φ ₀)
+
+  IH₁ : max-questionᵁ (φ ₁) ＝ max-questionᵁ⋆ (church-encode (φ ₁))
+  IH₁ = max-questionᵁ⋆-agreement (φ ₁)
+
+  Ⅰ = ap (λ - → max - (max-questionᵁ (φ ₁))) IH₀
+  Ⅱ = ap (λ - → max (max-questionᵁ⋆ (church-encode (φ ₀))) -) IH₁
+
+  ‡ =
+   max (max-questionᵁ (φ ₀)) (max-questionᵁ (φ ₁))                           ＝⟨ Ⅰ ⟩
+   max (max-questionᵁ⋆ (ch-encode (φ ₀))) (max-questionᵁ (φ ₁))              ＝⟨ Ⅱ ⟩
+   max (max-questionᵁ⋆ (ch-encode (φ ₀))) (max-questionᵁ⋆ (ch-encode (φ ₁))) ∎
+
+  † : max-questionᵁ (D.β φ n) ＝ max-questionᵁ⋆ (church-encode (D.β φ n))
+  † = ap (max n) ‡
 
 uni-modulus : D ℕ 𝟚 ℕ → ℕ
-uni-modulus = succ ∘ uni-max-question
+uni-modulus = succ ∘ max-questionᵁ
 
-uniform-modulusᵀ : {Γ : Cxt}
-                 → Γ ⊢ baire ⇒ ι
-                 → {!!}
-uniform-modulusᵀ = {!!}
+uni-max-questionᵀ : {Γ : Cxt} → Γ ⊢ (⌜B⌝ ι ι) ⇒ ι
+uni-max-questionᵀ = {!!}
 
 internal-uni-mod-correct : (t : 〈〉 ⊢ (baire ⇒ ι)) (α β : 〈〉 ⊢ baire)
                          → is-boolean α
