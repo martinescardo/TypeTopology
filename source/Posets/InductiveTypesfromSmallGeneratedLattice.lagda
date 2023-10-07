@@ -1082,5 +1082,28 @@ We now define what it means for a Lattice to have a small presentation.
 
 \begin{code}
 
+module Small-Presentation-of-Lattice {𝓤 𝓦 𝓥 : Universe}
+                                     {B : 𝓥  ̇}
+                                     (L : Sup-Lattice 𝓤 𝓦 𝓥)
+                                     (q : B → ⟨ L ⟩)
+                                      where
+
+ open Small-Basis L q
+ open Joins _≤_
+
+ module Small-Presentation-from-Small-Basis-Facts (h : is-small-basis) where
+
+  open Small-Basis-Facts h
+  open Universe-Polymorphic-Powerset 𝓥 
+  open PropositionalTruncation pt
+
+  _is-a-small-presentation' : Σ I ꞉ 𝓥  ̇ , (I → B) × (I → 𝓟 {𝓥} B) → (𝓥 ⁺)  ̇
+  (I , r , R) is-a-small-presentation' = (b : B) → (X : 𝓟 {𝓥} B) → (b ≤ᴮ (⋁ ((Σ x ꞉ B , x ∈ X) , q ∘ pr₁))) ≃ ((Ǝ i ꞉ I , R i ⊆ X × (r i ＝ b)) holds)
+
+  _is-a-small-presentation : ((B × 𝓟 {𝓥} B) → Ω 𝓥) → (𝓥 ⁺)  ̇
+  R is-a-small-presentation = (b : B) → (X : 𝓟 {𝓥} B) → b ≤ᴮ (⋁ ((Σ x ꞉ B , x ∈ X) , q ∘ pr₁)) ≃ ((Ǝ Y ꞉ 𝓟 {𝓥} B , Y ⊆ X × R (b , Y) holds) holds)
+
+  has-small-presentation : (𝓥 ⁺)  ̇
+  has-small-presentation = Σ R ꞉ ((B × 𝓟 {𝓥} B) → Ω 𝓥) , R is-a-small-presentation
 
 \end{code}
