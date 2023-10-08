@@ -6,7 +6,9 @@ Started on 2023-10-07.
 
 \begin{code}
 
-module EffectfulForcing.Internal.InternalModUniCont where
+open import UF.FunExt
+
+module EffectfulForcing.Internal.InternalModUniCont (fe : Fun-Ext) where
 
 open import MLTT.Spartan hiding (rec; _^_)
 open import MLTT.List
@@ -28,6 +30,7 @@ open import EffectfulForcing.Internal.External
 open import EffectfulForcing.Internal.Subst
 open import EffectfulForcing.MFPSAndVariations.SystemT
  using (type; ι; _⇒_;〖_〗)
+open import EffectfulForcing.Internal.InternalModCont fe using (maxᵀ)
 
 \end{code}
 
@@ -70,7 +73,8 @@ max-questionᵤ⋆ : D⋆ ℕ 𝟚 ℕ ℕ → ℕ
 max-questionᵤ⋆ d = d (λ _ → 0) (λ g x → max x (max (g ₀) (g ₁)))
 
 max-questionᵤᵀ : {Γ : Cxt} → Γ ⊢ (⌜B⌝ ι ι) ⇒ ι
-max-questionᵤᵀ = ƛ (ν₀ · ƛ Zero · {!!})
+max-questionᵤᵀ =
+ ƛ (ν₀ · (ƛ Zero) · ƛ (ƛ (maxᵀ · ν₀ · (maxᵀ · (ν₁ · numeral 0) · (ν₁ · numeral 1)))))
 
 max-questionᵤ⋆-agreement : (d : D ℕ 𝟚 ℕ)
                          → max-questionᵤ d ＝ max-questionᵤ⋆ (church-encode d)
