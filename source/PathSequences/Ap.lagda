@@ -98,9 +98,10 @@ sequences:
             → s ＝ₛ t
             → ap-seq s ＝ₛ ap-seq t
   ap-seq-＝ₛ {s = s} {t} (＝ₛ-in p) = ap-seq s        ＝ₛ⟨ ∙-ap-seq s ⟩
-                                     ap f [ s ↓] ◃∎ ＝ₛ₁⟨ ap (ap f) p ⟩
+                                     ap f [ s ↓] ◃∎ ＝↓⟨ ap (ap f) p ⟩
                                      ap f [ t ↓] ◃∎ ＝ₛ⟨ ap-seq-∙ t ⟩
                                      ap-seq t ∎ₛ
+
 \end{code}
 
 Two-variable version of the above
