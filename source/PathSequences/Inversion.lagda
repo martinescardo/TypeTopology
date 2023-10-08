@@ -26,6 +26,8 @@ seq⁻¹ : {x x' : X} → x ≡ x' → x' ≡ x
 seq⁻¹ [] = []
 seq⁻¹ (p ◃∙ s) = seq⁻¹  s ∙▹ (p ⁻¹)
 
+reverse = seq⁻¹
+
 seq⁻¹-∙▹ : {x x' x'' : X} (s : x ≡ x') (p : x' ＝ x'')
          → seq⁻¹ (s ∙▹ p) ＝ (p ⁻¹) ◃∙ seq⁻¹ s
 seq⁻¹-∙▹ [] p = refl
