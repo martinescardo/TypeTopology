@@ -68,7 +68,6 @@ max-questionᵤ (D.β φ n) = max n (max n₁ n₂)
   n₂ : ℕ
   n₂ = max-questionᵤ (φ ₁)
 
-
 max-questionᵤ⋆ : D⋆ ℕ 𝟚 ℕ ℕ → ℕ
 max-questionᵤ⋆ d = d (λ _ → 0) (λ g x → max x (max (g ₀) (g ₁)))
 
