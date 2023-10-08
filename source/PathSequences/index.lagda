@@ -4,6 +4,7 @@ Path Sequences library
 Ettore Aldrovandi, ealdrovandi@fsu.edu
 
 Begun November 2022
+October 2023
 --------------------------------------------------------------------------------
 
 This is a port of the PathSeq path manipulation library found in the
@@ -18,7 +19,10 @@ module PathSequences.index where
 
 import PathSequences.Base
 import PathSequences.Concat
-import PathSequences.Convenience
 import PathSequences.Split
+import PathSequences.Reasoning
+import PathSequences.Ap
+import PathSequences.Inversion
+import PathSequences.Rotations
 
 \end{code}
