@@ -658,7 +658,7 @@ deJong-resizing-implies-propositional-resizing : (ua : Univalence)
                                                → deJong-resizing 𝓤 𝓥
                                                → propositional-resizing 𝓤 𝓥
 deJong-resizing-implies-propositional-resizing ua 𝓤 𝓥 r P i =
-  being-small-is-idempotent ua 𝓤 𝓥 P i (r P)
+ being-small-is-idempotent ua 𝓤 𝓥 P i (r P)
 
 being-small-is-idempotent-converse : (ua : Univalence) (𝓤 𝓥 : Universe) (Y : 𝓤 ̇ )
                                    → Y is 𝓥 small
