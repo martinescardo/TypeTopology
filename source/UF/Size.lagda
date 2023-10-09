@@ -673,19 +673,19 @@ being-small-is-idempotent-≃ : (ua : Univalence) (𝓤 𝓥 : Universe) (Y : �
                             → ((Y is 𝓥 small) is 𝓥 small) ≃ (Y is 𝓥 small)
 being-small-is-idempotent-≃ ua 𝓤 𝓥 Y i =
  logically-equivalent-props-are-equivalent
-   (being-small-is-prop ua (Y is 𝓥 small) 𝓥)
-   (being-small-is-prop ua Y 𝓥)
-   (being-small-is-idempotent ua 𝓤 𝓥 Y i)
-   (being-small-is-idempotent-converse ua 𝓤 𝓥 Y)
+  (being-small-is-prop ua (Y is 𝓥 small) 𝓥)
+  (being-small-is-prop ua Y 𝓥)
+  (being-small-is-idempotent ua 𝓤 𝓥 Y i)
+  (being-small-is-idempotent-converse ua 𝓤 𝓥 Y)
 
 being-small-is-idempotent-＝ : (ua : Univalence) (𝓤 𝓥 : Universe) (Y : 𝓤 ̇ )
                             → is-prop Y
                             → ((Y is 𝓥 small) is 𝓥 small) ＝ (Y is 𝓥 small)
 being-small-is-idempotent-＝ ua 𝓤 𝓥 Y i =
-  eqtoid (ua (𝓤 ⊔ 𝓥 ⁺))
-    ((Y is 𝓥 small) is 𝓥 small)
-    (Y is 𝓥 small)
-    (being-small-is-idempotent-≃ ua 𝓤 𝓥 Y i)
+ eqtoid (ua (𝓤 ⊔ 𝓥 ⁺))
+  ((Y is 𝓥 small) is 𝓥 small)
+  (Y is 𝓥 small)
+  (being-small-is-idempotent-≃ ua 𝓤 𝓥 Y i)
 
 \end{code}
 
