@@ -80,8 +80,8 @@ Obsolete notation used in some publications:
 \begin{code}
 
 private
-  _has-size_ : 𝓤 ̇ → (𝓥 : Universe) → 𝓥 ⁺  ⊔ 𝓤 ̇
-  X has-size 𝓥 = X is 𝓥 small
+ _has-size_ : 𝓤 ̇ → (𝓥 : Universe) → 𝓥 ⁺  ⊔ 𝓤 ̇
+ X has-size 𝓥 = X is 𝓥 small
 
 \end{code}
 
