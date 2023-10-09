@@ -508,6 +508,12 @@ module _
 
 \end{code}
 
+We can improve on the above in the presence of univalence and set replacement,
+in which case we can derive structural-algebraicity from an unspecified small
+compact basis. This is explained and formalised in CompactBasis.
+
+\end{code}
+
 The following technical lemmas give us criteria for directedness and calculating
 suprema of the collection Σ b : B , β b ≪⟨ 𝓓 ⟩ x.
 
