@@ -96,7 +96,6 @@ The following makes definitional equalities visible, for example:
 
 \begin{code}
 
-  infixr 10 _＝ₛ⟨id⟩_
   _＝ₛ⟨id⟩_ : (s : x ≡ y) {u : x ≡ y}
           → s ＝ₛ u
           → s ＝ₛ u
@@ -123,7 +122,6 @@ The following makes definitional equalities visible, for example:
 
 \begin{code}
 
-  infixr 10 _＝ₛ⟨_⟩_
   _＝ₛ⟨_⟩_ : (s : x ≡ y) {t u : x ≡ y}
          → s ＝ₛ t
          → t ＝ₛ u
@@ -152,7 +150,6 @@ The following makes definitional equalities visible, for example:
 
 \begin{code}
 
-  infixr 10 _＝ₛ⟨_&_&_⟩_
   _＝ₛ⟨_&_&_⟩_ : (s : x ≡ y) {u : x ≡ y}
                 (m n : ℕ)
                 {r : point-from-start m s ≡ point-from-start n (drop m s)}
@@ -173,7 +170,6 @@ The following makes definitional equalities visible, for example:
 
 \begin{code}
 
-  infixr 10 _＝↓⟨_⟩_
   _＝↓⟨_⟩_ : (s : x ≡ y) {u : x ≡ y}
             {r : x ＝ y }
           → [ s ↓] ＝ r
@@ -205,7 +201,6 @@ The following makes definitional equalities visible, for example:
 
 \begin{code}
 
-  infixr 10 _＝↓⟨_&_&_⟩_
   _＝↓⟨_&_&_⟩_ : (s : x ≡ y) {u : x ≡ y}
               → (m n : ℕ)
               → {r : point-from-start m s ＝ point-from-start n (drop m s)}
@@ -220,8 +215,18 @@ The following makes definitional equalities visible, for example:
 
 \begin{code}
   
-  infix 15 _∎ₛ
   _∎ₛ : (s : x ≡ y) → s ＝ₛ s
   _ ∎ₛ = ＝ₛ-in refl
 
+\end{code}
+
+Fixities
+
+\begin{code}
+  infixr 10 _＝ₛ⟨id⟩_
+  infixr 10 _＝ₛ⟨_⟩_
+  infixr 10 _＝ₛ⟨_&_&_⟩_
+  infixr 10 _＝↓⟨_⟩_
+  infixr 10 _＝↓⟨_&_&_⟩_
+  infix 15 _∎ₛ
 \end{code}
