@@ -16,8 +16,14 @@ In particular, with set replacement and univalence, we can show:
   ∥ has-specified-small-compact-basis 𝓓 ∥ → has-specified-small-compact-basis 𝓓.
 In other words, the type (has-specified-small-compact-basis 𝓓) has split support.
 
-This observation is due to Ayberk Tosun (23 September 2023) and was formalised,
-with the addition of many explanatory comments, by Tom de Jong.
+Having a specified small compact basis is useful as we can use the small basis
+to replace large quantifications by small ones for example, for example to show
+that exponentials are locally small.
+
+The split support observation is due to Ayberk Tosun (23 September 2023) and was
+formalised, with the addition of many explanatory comments, by Tom de Jong.
+Ayberk previously formalised the result for spectrality in the context of locale
+theory in Locales.SmallBasis (truncated-spectralᴰ-implies-spectral).
 
 Towards the end, we also clarify how the fact that K is the unique basis (as a
 subset) consisting of compact elements fits in to our framework.
