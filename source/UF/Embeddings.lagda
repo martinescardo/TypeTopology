@@ -587,12 +587,6 @@ Added by Martin Escardo and Tom de Jong 10th October 2023.
 
   II : is-embedding h
   II = g-ess W h I
-{-
-Idtofun-is-essential : is-univalent 𝓤
-                     → funext (𝓤 ⁺) 𝓤
-                     → {X Y : 𝓤 ̇ } → is-essential (Idtofun {𝓤} {X} {Y}) {!!}
-Idtofun-is-essential ua fe {X} {Y} Z g is-emb z = {!!}
--}
 
 \end{code}
 
