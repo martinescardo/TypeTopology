@@ -28,8 +28,9 @@ universe strictly higher than that of X in general:
 
 \begin{code}
 
-the-universe-of-𝓛 : {X : 𝓤 ̇ } → universe-of (𝓛 X) ＝ 𝓣 ⁺ ⊔ 𝓤
-the-universe-of-𝓛 = refl
+private
+ the-universe-of-𝓛 : (X : 𝓤 ̇ ) → 𝓣 ⁺ ⊔ 𝓤 ̇
+ the-universe-of-𝓛 = 𝓛
 
 \end{code}
 
@@ -38,8 +39,9 @@ increase:
 
 \begin{code}
 
-𝓛-universe-preservation : {X : 𝓣 ⁺ ⊔ 𝓤 ̇ } → universe-of (𝓛 X) ＝ universe-of X
-𝓛-universe-preservation = refl
+private
+ 𝓛-universe-preservation : (X : 𝓣 ⁺ ⊔ 𝓤 ̇ ) → 𝓣 ⁺ ⊔ 𝓤 ̇
+ 𝓛-universe-preservation = 𝓛
 
 \end{code}
 
@@ -48,8 +50,9 @@ don't increase the size:
 
 \begin{code}
 
-the-universe-of-𝓛𝓛 : {X : 𝓤 ̇ } → universe-of (𝓛 (𝓛 X)) ＝ universe-of (𝓛 X)
-the-universe-of-𝓛𝓛 = refl
+private
+ the-universe-of-𝓛𝓛 : (X : 𝓤 ̇ ) → 𝓣 ⁺ ⊔ 𝓤 ̇
+ the-universe-of-𝓛𝓛 X = 𝓛 (𝓛 X)
 
 \end{code}
 
@@ -58,8 +61,9 @@ then the first application of 𝓛 has its result in the next universe 𝓣⁺.
 
 \begin{code}
 
-the-universe-of-𝓛' : {X : 𝓣 ̇ } → universe-of (𝓛 X) ＝ 𝓣 ⁺
-the-universe-of-𝓛' = refl
+private
+ the-universe-of-𝓛' : (X : 𝓣 ̇ ) → 𝓣 ⁺ ̇
+ the-universe-of-𝓛' = 𝓛
 
 \end{code}
 
@@ -67,8 +71,9 @@ But if 𝓤 is taken to be the successor 𝓣 ⁺ of 𝓣 then it is preserved b
 
 \begin{code}
 
-the-universe-of-𝓛⁺ : {X : 𝓣 ⁺ ̇ } → universe-of (𝓛 X) ＝ universe-of X
-the-universe-of-𝓛⁺ = refl
+private
+ the-universe-of-𝓛⁺ : (X : 𝓣 ⁺ ̇ ) → 𝓣 ⁺ ̇
+ the-universe-of-𝓛⁺ = 𝓛
 
 \end{code}
 

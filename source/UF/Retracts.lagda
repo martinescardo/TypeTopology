@@ -338,7 +338,7 @@ _◁⟨_⟩_ : (X : 𝓤 ̇ ) {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } → X ◁ Y → Y �
 _ ◁⟨ d ⟩ e = retracts-compose e d
 
 ◁-refl : (X : 𝓤 ̇ ) → X ◁ X
-◁-refl X = identity-retraction {universe-of X} {X}
+◁-refl {𝓤} X = identity-retraction {𝓤} {X}
 
 
 _◀ : (X : 𝓤 ̇ ) → X ◁ X
