@@ -26,8 +26,6 @@ seq⁻¹ : {x x' : X} → x ≡ x' → x' ≡ x
 seq⁻¹ [] = []
 seq⁻¹ (p ◃∙ s) = seq⁻¹  s ∙▹ (p ⁻¹)
 
-reverse = seq⁻¹
-
 seq⁻¹-∙▹ : {x x' x'' : X} (s : x ≡ x') (p : x' ＝ x'')
          → seq⁻¹ (s ∙▹ p) ＝ (p ⁻¹) ◃∙ seq⁻¹ s
 seq⁻¹-∙▹ [] p = refl
@@ -74,5 +72,29 @@ seq⁻¹-right-inverse s = ＝ₛ-in ( [ s ∙≡ seq⁻¹ s ↓]     ＝⟨ [�
                                 [ s ↓] ∙ [ seq⁻¹ s ↓] ＝⟨ ap ([ s ↓] ∙_) (＝ₛ-out (seq⁻¹-sym-[↓] s)) ⟩
                                 [ s ↓] ∙ [ s ↓] ⁻¹    ＝⟨ ( right-inverse [ s ↓] ) ⁻¹ ⟩
                                  refl                  ∎ )
+
+\end{code}
+
+Alternative names
+
+\begin{code}
+
+seq-reverse = seq⁻¹
+reverse = seq⁻¹
+
+seq-reverse-∙▹ = seq⁻¹-∙▹
+seq-reverse-flip = seq⁻¹-∙▹
+
+seq-reverse-involutive = seq⁻¹-involutive
+
+sym-seq-reverse = sym-[↓]-seq⁻¹
+
+seq-reverse-sym = seq⁻¹-sym-[↓]
+
+seq-reverse-＝ₛ = seq⁻¹-＝ₛ
+
+seq-reverse-left-inverse = seq⁻¹-left-inverse
+
+seq-reverse-right-inverse = seq⁻¹-right-inverse
 
 \end{code}
