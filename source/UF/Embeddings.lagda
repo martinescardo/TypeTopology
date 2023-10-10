@@ -590,6 +590,15 @@ Added by Martin Escardo and Tom de Jong 10th October 2023.
 
 \end{code}
 
+We originally hoped to prove that Idtofun was essential, but it's not:
+while the composite
+
+           Idtofun            evaluate at 0
+  (𝟚 ≃ 𝟚) ---------→ (𝟚 → 𝟚) ---------------> 𝟚
+
+is an embedding, the evaluation map isn't.
+
+
 Fixities:
 
 \begin{code}
