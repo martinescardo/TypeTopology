@@ -9,7 +9,7 @@ library to TypeTopology.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --safe #-}
 
 open import MLTT.Spartan
 open import UF.Base
