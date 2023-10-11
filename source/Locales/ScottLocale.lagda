@@ -153,7 +153,6 @@ The meet of two Scott opens.
    ‡ : ((W , _) : lower-bound (U , V)) → (W ⊆ₛ (U ∧ₛ V)) holds
    ‡ (W , p) x q = pr₁ p x q , pr₂ p x q
 
-
 \end{code}
 
 The union of a 𝓦-family of Scott opens.

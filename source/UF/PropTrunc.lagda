@@ -165,6 +165,9 @@ module PropositionalTruncation (pt : propositional-truncations-exist) where
  prop-is-equivalent-to-its-truncation i =
   logically-equivalent-props-are-equivalent ∥∥-is-prop i (exit-∥∥ i) ∣_∣
 
+ equiv-to-own-truncation-implies-prop : {X : 𝓤  ̇} → X ≃ ∥ X ∥  → is-prop X
+ equiv-to-own-truncation-implies-prop {𝓤} {X} e = equiv-to-prop e ∥∥-is-prop
+
  not-exists₀-implies-forall₁ : {X : 𝓤 ̇ } (p : X → 𝟚)
                              → ¬ (∃ x ꞉ X , p x ＝ ₀)
                              → ∀ (x : X) → p x ＝ ₁

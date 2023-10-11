@@ -269,7 +269,7 @@ module _ (pt : propositional-truncations-exist) where
 
 \end{code}
 
-The above shows that weak excluded middle, De Morgan amd truncated De
+The above shows that weak excluded middle, De Morgan and truncated De
 Morgan are logically equivalent (https://ncatlab.org/nlab/show/De%20Morgan%20laws).
 
 \begin{code}

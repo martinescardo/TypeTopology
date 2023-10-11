@@ -409,13 +409,13 @@ discrete-factorial X d = γ
 perfect-factorial : (X : 𝓤 ̇ )
                   → is-perfect X
                   → Aut X ≃ Aut (X + 𝟙)
-perfect-factorial X i =
+perfect-factorial {𝓤} X i =
   Aut X                          ≃⟨ I ⟩
   𝟙 × Aut X                      ≃⟨ II ⟩
   co-derived-set (X + 𝟙) × Aut X ≃⟨ III ⟩
   Aut (X + 𝟙)                    ■
    where
-    I   =  ≃-sym (𝟙-lneutral {universe-of X} {universe-of X})
+    I   =  ≃-sym (𝟙-lneutral {𝓤} {𝓤})
     II  = ×-cong (≃-sym (singleton-≃-𝟙 (perfect-coderived-singleton X i))) (≃-refl (Aut X))
     III = general-factorial X
 

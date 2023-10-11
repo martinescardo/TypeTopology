@@ -18,6 +18,7 @@ open import UF.FunExt
 open import UF.PropTrunc
 open import UF.PropTrunc
 open import UF.Retracts
+open import UF.EquivalenceExamples
 open import UF.Size
 
 module Locales.UniversalPropertyOfPatch
@@ -35,13 +36,27 @@ open AllCombinators pt fe
 open import UF.ImageAndSurjection
 
 open import Locales.AdjointFunctorTheoremForFrames pt fe
-open import Locales.CompactRegular pt fe
-open import Locales.Frame pt fe
-open import Locales.GaloisConnection pt fe
-open import Locales.HeytingImplication pt fe
-open import Locales.Nucleus pt fe
-open import Locales.PatchLocale pt fe
-open import Locales.PatchProperties pt fe
+-- open import Locales.CompactRegular pt fe
+open import Locales.Frame                      pt fe
+open import Locales.GaloisConnection           pt fe
+open import Locales.HeytingImplication         pt fe
+open import Locales.Nucleus                    pt fe
+open import Locales.Spectrality.SpectralLocale pt fe
+open import Locales.Spectrality.SpectralMap    pt fe
+open import Locales.PerfectMaps                pt fe
+open import Locales.Spectrality.Properties     pt fe
+open import Locales.Compactness                pt fe
+open import Locales.Complements                pt fe
+
+open import Locales.SmallBasis                 pt fe sr
+open import Locales.ZeroDimensionality         pt fe sr
+open import Locales.Stone                      pt fe sr
+open import Locales.StoneImpliesSpectral       pt fe sr
+open import Locales.ScottContinuity            pt fe sr
+open import Locales.Clopen                     pt fe sr
+open import Locales.HeytingComplementation     pt fe sr
+open import Locales.PatchLocale                pt fe sr
+open import Locales.PatchProperties            pt fe sr
 
 open PropositionalTruncation pt
 
@@ -70,11 +85,11 @@ property for the small version of Patch (which we often denote `Patchₛ`).
 
 module UniversalProperty (A : Locale (𝓤 ⁺) 𝓤 𝓤)
                          (X  : Locale (𝓤 ⁺) 𝓤 𝓤)
-                         (σᴰ : spectralᴰ (𝒪 A))
+                         (σᴰ : spectralᴰ A)
                          (𝕫ᴰ : zero-dimensionalᴰ (𝒪 X))
-                         (𝕜  : is-compact (𝒪 X) holds)
+                         (𝕜  : is-compact X holds)
                          (𝒻 : X ─c→ A)
-                         (μ : is-spectral-map (𝒪 A) (𝒪 X) 𝒻 holds) where
+                         (μ : is-spectral-map A X 𝒻 holds) where
 
 \end{code}
 
@@ -90,10 +105,16 @@ As prevoiusly mentioned, we assume
 
 \begin{code}
 
- open PatchConstruction A ∣ σᴰ ∣
-  using (nucleus-of; _≼_; _$_; perfect-nuclei-eq; idₙ; 𝔡𝔦𝔯)
- open ClosedNucleus A ∣ σᴰ ∣
- open OpenNucleus A ∣ σᴰ ∣
+ σ : is-spectral A holds
+ σ = spectralᴰ-gives-spectrality A σᴰ
+
+ sk : 𝒦 A is 𝓤 small
+ sk = spectralᴰ-implies-small-𝒦 A σᴰ
+
+ open PatchConstruction A σ  using (nucleus-of; _≼_; _$_; perfect-nuclei-eq;
+                                    idₙ; 𝔡𝔦𝔯)
+ open ClosedNucleus     A σ
+ open OpenNucleus       A σᴰ sk
 
  open SmallPatchConstruction A σᴰ
   using (𝟎-is-id; ≼-implies-≼ᵏ; ≼ᵏ-implies-≼; _≼ᵏ_)
@@ -105,7 +126,7 @@ As prevoiusly mentioned, we assume
 \begin{code}
 
  X-has-basis : has-basis (𝒪 X) holds
- X-has-basis = ∣ pr₁ 𝕫ᴰ , pr₁ (pr₁ (pr₂ 𝕫ᴰ)) ∣
+ X-has-basis = ∣ zero-dimensionalᴰ-implies-has-basis (𝒪 X) 𝕫ᴰ ∣
 
 \end{code}
 
@@ -117,8 +138,8 @@ function of the basis.
  Bₐ : 𝓤  ̇
  Bₐ = pr₁ (pr₁ σᴰ)
 
- β : Bₐ → ⟨ 𝒪 A ⟩
- β = pr₂ (pr₁ σᴰ)
+ βₐ : Bₐ → ⟨ 𝒪 A ⟩
+ βₐ = pr₂ (pr₁ σᴰ)
 
 \end{code}
 
@@ -137,14 +158,21 @@ the enumeration function.
 
 \begin{code}
 
- β-is-directed-basis : is-directed-basis (𝒪 A) (Bₐ , β)
- β-is-directed-basis = pr₁ (pr₂ σᴰ)
+ β-is-directed-basis : is-directed-basis (𝒪 A) (Bₐ , βₐ)
+ β-is-directed-basis = basisₛ-is-basis A σᴰ , basisₛ-covers-are-directed A σᴰ
 
- β-is-basis-for-A : is-basis-for (𝒪 A) (Bₐ , β)
+ A-directed-basisᴰ : directed-basisᴰ (𝒪 A)
+ A-directed-basisᴰ = basisₛ A σᴰ , †
+  where
+   † : directed-basis-forᴰ (𝒪 A) (Bₐ , βₐ)
+   † U = pr₁ Σ-assoc (basisₛ-is-basis A σᴰ U , basisₛ-covers-are-directed A σᴰ U)
+
+ β-is-basis-for-A : is-basis-for (𝒪 A) (Bₐ , βₐ)
  β-is-basis-for-A = pr₁ β-is-directed-basis
 
+
  A-has-basis : has-basis (𝒪 A) holds
- A-has-basis = spectral-frames-have-bases (𝒪 A) ∣ σᴰ ∣
+ A-has-basis = ∣ (Bₐ , βₐ) , β-is-basis-for-A ∣
 
  infixl 4 _∧ₓ_
 
@@ -171,13 +199,16 @@ the enumeration function.
 
 \end{code}
 
-It is often convenient to have a version of `β` that also gives the proof
+It is often convenient to have a version of `βₐ` that also gives the proof
 of compactness of the basic open it returns.
 
 \begin{code}
 
- βₖ : Bₐ → 𝒦
- βₖ m = β m , pr₁ (pr₂ (pr₂ σᴰ)) m
+ κₐ : (i : Bₐ) → is-compact-open A (βₐ i) holds
+ κₐ = basisₛ-consists-of-compact-opens A σᴰ
+
+ βₖ : Bₐ → 𝒦 A
+ βₖ i = βₐ i , κₐ i
 
 \end{code}
 
@@ -215,7 +246,7 @@ TODO: improve the naming.
 \begin{code}
 
  𝔏 : ⟨ 𝒪 Patchₛ-A ⟩ → Bₐ → Bₐ → Ω 𝓤
- 𝔏 𝒿 m n = (‘ β m ’ ∧[ 𝒪 Patchₛ-A ] ¬‘ βₖ n ’) ≼ᵏ 𝒿
+ 𝔏 𝒿 m n = (‘ βₐ m ’ ∧[ 𝒪 Patchₛ-A ] ¬‘ βₖ n ’) ≼ᵏ 𝒿
 
  below : ⟨ 𝒪 Patchₛ-A ⟩ → 𝓤  ̇
  below 𝒿 = Σ m ꞉ Bₐ , Σ n ꞉ Bₐ , 𝔏 𝒿 m n holds
@@ -227,7 +258,7 @@ This is the unique function that we define that makes our diagram commute.
 \begin{code}
 
  f⁻⁺ : ⟨ 𝒪 Patchₛ-A ⟩ → ⟨ 𝒪 X ⟩
- f⁻⁺ 𝒿 = ⋁[ 𝒪 X ] ⁅ (𝒻 ⋆∙ β m) ∧ₓ ¬𝒻⋆ (β n) ∣ (m , n , p) ∶ below 𝒿 ⁆
+ f⁻⁺ 𝒿 = ⋁[ 𝒪 X ] ⁅ (𝒻 ⋆∙ βₐ m) ∧ₓ ¬𝒻⋆ (βₐ n) ∣ (m , n , p) ∶ below 𝒿 ⁆
 
 \end{code}
 
@@ -237,47 +268,48 @@ equivalence of the two is quite important and is used in the proofs below.
 \begin{code}
 
  f⁻⁺₂ : ⟨ 𝒪 Patchₛ-A ⟩ → ⟨ 𝒪 X ⟩
- f⁻⁺₂ 𝒿@(j , _) = ⋁[ 𝒪 X ] ⁅ 𝒻 ⋆∙ j (β n) ∧[ 𝒪 X ] ¬𝒻⋆ (β n) ∣ n ∶ Bₐ ⁆
+ f⁻⁺₂ 𝒿@(j , _) = ⋁[ 𝒪 X ] ⁅ 𝒻 ⋆∙ j (βₐ n) ∧[ 𝒪 X ] ¬𝒻⋆ (βₐ n) ∣ n ∶ Bₐ ⁆
 
  f⁻⁺₂-equiv-f⁻⁺₁ : (𝒿 : ⟨ 𝒪 Patchₛ-A ⟩) → f⁻⁺ 𝒿 ＝ f⁻⁺₂ 𝒿
  f⁻⁺₂-equiv-f⁻⁺₁ 𝒿@(j , _) = ≤-is-antisymmetric (poset-of (𝒪 X)) † ‡
   where
    S : Fam 𝓤 ⟨ 𝒪 X ⟩
-   S = ⁅ (𝒻 ⋆∙ β m) ∧ₓ ¬𝒻⋆ (β n) ∣ (m , n , p) ∶ below 𝒿 ⁆
+   S = ⁅ (𝒻 ⋆∙ βₐ m) ∧ₓ ¬𝒻⋆ (βₐ n) ∣ (m , n , p) ∶ below 𝒿 ⁆
 
    T : Fam 𝓤 ⟨ 𝒪 X ⟩
-   T = ⁅ 𝒻 ⋆∙ j (β n) ∧ₓ ¬𝒻⋆ (β n) ∣ n ∶ Bₐ ⁆
+   T = ⁅ 𝒻 ⋆∙ j (βₐ n) ∧ₓ ¬𝒻⋆ (βₐ n) ∣ n ∶ Bₐ ⁆
 
    †₀ : cofinal-in (𝒪 X) S T holds
    †₀ (m , n , p) = ∣ n , ※ ∣
     where
      open PosetReasoning (poset-of (𝒪 A))
 
-     Ⅰ = ∨[ 𝒪 A ]-upper₁ (β m) (β n)
-     Ⅱ = 𝟏-right-unit-of-∧ (𝒪 A) (β m ∨[ 𝒪 A ] β n) ⁻¹
+     Ⅰ = ∨[ 𝒪 A ]-upper₁ (βₐ m) (βₐ n)
+     Ⅱ = 𝟏-right-unit-of-∧ (𝒪 A) (βₐ m ∨[ 𝒪 A ] βₐ n) ⁻¹
      Ⅲ = ap
-          (λ - → (β m ∨[ 𝒪 A ] β n) ∧[ 𝒪 A ] -)
-          (heyting-implication-identityₐ (β n) ⁻¹)
+          (λ - → (βₐ m ∨[ 𝒪 A ] βₐ n) ∧[ 𝒪 A ] -)
+          (heyting-implication-identityₐ (βₐ n) ⁻¹)
 
-     q : (β m ≤[ poset-of (𝒪 A) ] j (β n)) holds
-     q = β m                                                ≤⟨ Ⅰ     ⟩
-         β m ∨[ 𝒪 A ] β n                                   ＝⟨ Ⅱ    ⟩ₚ
-         (β m ∨[ 𝒪 A ] β n) ∧[ 𝒪 A ] 𝟏[ 𝒪 A ]               ＝⟨ Ⅲ    ⟩ₚ
-         (β m ∨[ 𝒪 A ] β n) ∧[ 𝒪 A ] (β n ==>ₐ β n)         ＝⟨ refl ⟩ₚ
-         (β m ∨[ 𝒪 A ] β n) ∧[ 𝒪 A ] (¬‘ βₖ n ’ .pr₁ (β n)) ＝⟨ refl ⟩ₚ
-         (‘ β m ’ ∧[ 𝒪 Patchₛ-A ] ¬‘ βₖ n ’) .pr₁ (β n)     ≤⟨ p n   ⟩
-         j (β n)                                            ■
+     q : (βₐ m ≤[ poset-of (𝒪 A) ] j (βₐ n)) holds
+     q = βₐ m                                                ≤⟨ Ⅰ     ⟩
+         βₐ m ∨[ 𝒪 A ] βₐ n                                   ＝⟨ Ⅱ    ⟩ₚ
+         (βₐ m ∨[ 𝒪 A ] βₐ n) ∧[ 𝒪 A ] 𝟏[ 𝒪 A ]               ＝⟨ Ⅲ    ⟩ₚ
+         (βₐ m ∨[ 𝒪 A ] βₐ n) ∧[ 𝒪 A ] (βₐ n ==>ₐ βₐ n)         ＝⟨ refl ⟩ₚ
+         (βₐ m ∨[ 𝒪 A ] βₐ n) ∧[ 𝒪 A ] (¬‘ βₖ n ’ .pr₁ (βₐ n)) ＝⟨ refl ⟩ₚ
+         (‘ βₐ m ’ ∧[ 𝒪 Patchₛ-A ] ¬‘ βₖ n ’) .pr₁ (βₐ n)     ≤⟨ p n   ⟩
+         j (βₐ n)                                            ■
 
-     ※ : ((𝒻 ⋆∙ β m ∧[ 𝒪 X ] ¬𝒻⋆ (β n))
+     ※ : ((𝒻 ⋆∙ βₐ m ∧[ 𝒪 X ] ¬𝒻⋆ (βₐ n))
            ≤[ poset-of (𝒪 X) ]
-          (𝒻 ⋆∙ j (β n) ∧[ 𝒪 X ] (¬𝒻⋆ (β n)))) holds
+          (𝒻 ⋆∙ j (βₐ n) ∧[ 𝒪 X ] (¬𝒻⋆ (βₐ n)))) holds
      ※ = ∧[ 𝒪 X ]-left-monotone
           (frame-morphisms-are-monotonic
             (𝒪 A)
             (𝒪 X)
             (𝒻 ⋆∙_)
             (𝒻 .pr₂)
-            (β m , j (β n)) q)
+            (βₐ m , j (βₐ n)) q)
+
 
    † : ((⋁[ 𝒪 X ] S) ≤[ poset-of (𝒪 X) ] (⋁[ 𝒪 X ] T)) holds
    † = cofinal-implies-join-covered (𝒪 X) S T †₀
@@ -292,18 +324,18 @@ equivalence of the two is quite important and is used in the proofs below.
       let
        open PosetReasoning (poset-of (𝒪 X))
       in
-       𝒻 ⋆∙ j (β n) ∧[ 𝒪 X ] ¬𝒻⋆ (β n)                       ＝⟨ Ⅰ  ⟩ₚ
-       𝒻 ⋆∙ (⋁[ 𝒪 A ] ⁅ β i ∣ i ε 𝒥 ⁆) ∧[ 𝒪 X ] ¬𝒻⋆ (β n)    ＝⟨ Ⅱ  ⟩ₚ
-       (⋁[ 𝒪 X ] ⁅ 𝒻 ⋆∙ (β i) ∣ i ε 𝒥 ⁆) ∧[ 𝒪 X ] ¬𝒻⋆ (β n)  ＝⟨ Ⅲ  ⟩ₚ
-       ⋁[ 𝒪 X ] ⁅ 𝒻 ⋆∙ (β i) ∧[ 𝒪 X ] ¬𝒻⋆ (β n) ∣ i ε 𝒥 ⁆    ≤⟨ Ⅳ   ⟩
+       𝒻 ⋆∙ j (βₐ n) ∧[ 𝒪 X ] ¬𝒻⋆ (βₐ n)                       ＝⟨ Ⅰ  ⟩ₚ
+       𝒻 ⋆∙ (⋁[ 𝒪 A ] ⁅ βₐ i ∣ i ε 𝒥 ⁆) ∧[ 𝒪 X ] ¬𝒻⋆ (βₐ n)    ＝⟨ Ⅱ  ⟩ₚ
+       (⋁[ 𝒪 X ] ⁅ 𝒻 ⋆∙ (βₐ i) ∣ i ε 𝒥 ⁆) ∧[ 𝒪 X ] ¬𝒻⋆ (βₐ n)  ＝⟨ Ⅲ  ⟩ₚ
+       ⋁[ 𝒪 X ] ⁅ 𝒻 ⋆∙ (βₐ i) ∧[ 𝒪 X ] ¬𝒻⋆ (βₐ n) ∣ i ε 𝒥 ⁆    ≤⟨ Ⅳ   ⟩
        ⋁[ 𝒪 X ] S                                            ■
       where
        𝒥 : Fam 𝓤 Bₐ
-       𝒥 = pr₁ (pr₁ (pr₁ (pr₂ σᴰ)) (j (β n)))
+       𝒥 = cover-indexₛ A σᴰ (j (βₐ n))
 
        ♠ : ((⋁[ 𝒪 X ] S)
              is-an-upper-bound-of
-            ⁅ 𝒻 ⋆∙ (β i) ∧[ 𝒪 X ] ¬𝒻⋆ (β n) ∣ i ε 𝒥 ⁆) holds
+            ⁅ 𝒻 ⋆∙ (βₐ i) ∧[ 𝒪 X ] ¬𝒻⋆ (βₐ n) ∣ i ε 𝒥 ⁆) holds
        ♠ i = ⋁[ 𝒪 X ]-upper S (𝒥 [ i ] , n , ♢)
         where
          open PosetReasoning (poset-of (𝒪 A))
@@ -311,45 +343,45 @@ equivalence of the two is quite important and is used in the proofs below.
 
          ♢ : 𝔏 𝒿 (𝒥 [ i ]) n holds
          ♢ m =
-          (‘ β (𝒥 [ i ]) ’ ∧[ 𝒪 Patchₛ-A ] ¬‘ βₖ n ’) .pr₁ (β m)      ＝⟨ refl ⟩ₚ
-          ((β (𝒥 [ i ]) ∨[ 𝒪 A ] β m) ∧[ 𝒪 A ] (β n ==>ₐ β m))        ≤⟨ Ⅰ     ⟩
-          (j (β n) ∨[ 𝒪 A ] β m) ∧[ 𝒪 A ] (β n ==>ₐ β m)              ≤⟨ Ⅱ     ⟩
-          (j (β n) ∨[ 𝒪 A ] β m) ∧[ 𝒪 A ] (β n ==>ₐ j (β m))          ＝⟨ Ⅲ    ⟩ₚ
-          (j (β n) ∨[ 𝒪 A ] β m) ∧[ 𝒪 A ] (j (β n) ==>ₐ j (β m))      ≤⟨ Ⅳ     ⟩
-          (j (β n) ∨[ 𝒪 A ] j (β m)) ∧[ 𝒪 A ] (j (β n) ==>ₐ j (β m))  ＝⟨ Ⅴ    ⟩ₚ
-          (j (β m) ∨[ 𝒪 A ] j (β n)) ∧[ 𝒪 A ] (j (β n) ==>ₐ j (β m))  ＝⟨ Ⅵ    ⟩ₚ
-          j (β m)                                                     ■
+          (‘ βₐ (𝒥 [ i ]) ’ ∧[ 𝒪 Patchₛ-A ] ¬‘ βₖ n ’) .pr₁ (βₐ m)      ＝⟨ refl ⟩ₚ
+          ((βₐ (𝒥 [ i ]) ∨[ 𝒪 A ] βₐ m) ∧[ 𝒪 A ] (βₐ n ==>ₐ βₐ m))        ≤⟨ Ⅰ     ⟩
+          (j (βₐ n) ∨[ 𝒪 A ] βₐ m) ∧[ 𝒪 A ] (βₐ n ==>ₐ βₐ m)              ≤⟨ Ⅱ     ⟩
+          (j (βₐ n) ∨[ 𝒪 A ] βₐ m) ∧[ 𝒪 A ] (βₐ n ==>ₐ j (βₐ m))          ＝⟨ Ⅲ    ⟩ₚ
+          (j (βₐ n) ∨[ 𝒪 A ] βₐ m) ∧[ 𝒪 A ] (j (βₐ n) ==>ₐ j (βₐ m))      ≤⟨ Ⅳ     ⟩
+          (j (βₐ n) ∨[ 𝒪 A ] j (βₐ m)) ∧[ 𝒪 A ] (j (βₐ n) ==>ₐ j (βₐ m))  ＝⟨ Ⅴ    ⟩ₚ
+          (j (βₐ m) ∨[ 𝒪 A ] j (βₐ n)) ∧[ 𝒪 A ] (j (βₐ n) ==>ₐ j (βₐ m))  ＝⟨ Ⅵ    ⟩ₚ
+          j (βₐ m)                                                     ■
            where
-            ♣ = β (𝒥 [ i ]) ≤⟨ 𝕒 ⟩ ⋁[ 𝒪 A ] ⁅ β i ∣ i ε 𝒥 ⁆  ＝⟨ 𝕓 ⟩ₚ j (β n) ■
+            ♣ = βₐ (𝒥 [ i ]) ≤⟨ 𝕒 ⟩ ⋁[ 𝒪 A ] ⁅ βₐ i ∣ i ε 𝒥 ⁆  ＝⟨ 𝕓 ⟩ₚ j (βₐ n) ■
                  where
-                  𝕒 = ⋁[ 𝒪 A ]-upper ⁅ β i ∣ i ε 𝒥 ⁆ i
-                  𝕓 = covers (𝒪 A) (Bₐ , β) β-is-basis-for-A (j (β n)) ⁻¹
+                  𝕒 = ⋁[ 𝒪 A ]-upper ⁅ βₐ i ∣ i ε 𝒥 ⁆ i
+                  𝕓 = covers (𝒪 A) (Bₐ , βₐ) β-is-basis-for-A (j (βₐ n)) ⁻¹
 
             Ⅰ = ∧[ 𝒪 A ]-left-monotone (∨[ 𝒪 A ]-left-monotone ♣)
             Ⅱ = ∧[ 𝒪 A ]-right-monotone
-                 (==>ₐ-right-monotone (𝓃₁ (𝒪 A) (nucleus-of 𝒿) (β m)))
+                 (==>ₐ-right-monotone (𝓃₁ (𝒪 A) (nucleus-of 𝒿) (βₐ m)))
             Ⅲ = ap
-                 (λ - → (j (β n) ∨[ 𝒪 A ] β m) ∧[ 𝒪 A ] -)
-                 (nucleus-heyting-implication-law (β n) (β m))
+                 (λ - → (j (βₐ n) ∨[ 𝒪 A ] βₐ m) ∧[ 𝒪 A ] -)
+                 (nucleus-heyting-implication-law (βₐ n) (βₐ m))
             Ⅳ = ∧[ 𝒪 A ]-left-monotone
-                 (∨[ 𝒪 A ]-right-monotone (𝓃₁ (𝒪 A) (nucleus-of 𝒿) (β m)))
+                 (∨[ 𝒪 A ]-right-monotone (𝓃₁ (𝒪 A) (nucleus-of 𝒿) (βₐ m)))
             Ⅴ = ap
-                 (λ - → - ∧[ 𝒪 A ] (j (β n) ==>ₐ j (β m)))
-                 (∨[ 𝒪 A ]-is-commutative (j (β n)) (j (β m)))
-            Ⅵ = H₈ₐ (j (β m)) (j (β n)) ⁻¹
+                 (λ - → - ∧[ 𝒪 A ] (j (βₐ n) ==>ₐ j (βₐ m)))
+                 (∨[ 𝒪 A ]-is-commutative (j (βₐ n)) (j (βₐ m)))
+            Ⅵ = H₈ₐ (j (βₐ m)) (j (βₐ n)) ⁻¹
 
        Ⅰ = ap
-            (λ - → 𝒻 ⋆∙ - ∧[ 𝒪 X ] ¬𝒻⋆ (β n))
-            (covers (𝒪 A) (Bₐ , β) β-is-basis-for-A (j (β n)))
+            (λ - → 𝒻 ⋆∙ - ∧[ 𝒪 X ] ¬𝒻⋆ (βₐ n))
+            (covers (𝒪 A) (Bₐ , βₐ) β-is-basis-for-A (j (βₐ n)))
        Ⅱ = ap
-            (λ - → - ∧[ 𝒪 X ] ¬𝒻⋆ (β n))
+            (λ - → - ∧[ 𝒪 X ] ¬𝒻⋆ (βₐ n))
             (frame-homomorphisms-preserve-all-joins
               (𝒪 A)
               (𝒪 X)
               𝒻
-              ⁅ β i ∣ i ε 𝒥 ⁆)
-       Ⅲ = distributivity′-right (𝒪 X) (¬𝒻⋆ (β n)) ⁅ 𝒻 ⋆∙ (β i) ∣ i ε 𝒥 ⁆
-       Ⅳ = ⋁[ 𝒪 X ]-least ⁅ 𝒻 ⋆∙ (β i) ∧ₓ ¬𝒻⋆ (β n) ∣ i ε 𝒥 ⁆ ((⋁[ 𝒪 X ] S) , ♠)
+              ⁅ βₐ i ∣ i ε 𝒥 ⁆)
+       Ⅲ = distributivity′-right (𝒪 X) (¬𝒻⋆ (βₐ n)) ⁅ 𝒻 ⋆∙ (βₐ i) ∣ i ε 𝒥 ⁆
+       Ⅳ = ⋁[ 𝒪 X ]-least ⁅ 𝒻 ⋆∙ (βₐ i) ∧ₓ ¬𝒻⋆ (βₐ n) ∣ i ε 𝒥 ⁆ ((⋁[ 𝒪 X ] S) , ♠)
 
 \end{code}
 
@@ -366,11 +398,11 @@ separate proof
  f⁻⁺-is-monotone (𝒿 , 𝓀) p = cofinal-implies-join-covered (𝒪 X) 𝒮 𝒯 †
   where
    𝒮 : Fam 𝓤 ⟨ 𝒪 X ⟩
-   𝒮 = ⁅ (𝒻 ⋆∙ β m) ∧[ 𝒪 X ] ¬𝒻⋆ (β n)
+   𝒮 = ⁅ (𝒻 ⋆∙ βₐ m) ∧[ 𝒪 X ] ¬𝒻⋆ (βₐ n)
          ∣ (m , n , p) ∶ Σ m ꞉ Bₐ , Σ n ꞉ Bₐ , 𝔏 𝒿 m n holds ⁆
 
    𝒯 : Fam 𝓤 ⟨ 𝒪 X ⟩
-   𝒯 = ⁅ (𝒻 ⋆∙ β m) ∧[ 𝒪 X ] ¬𝒻⋆ (β n)
+   𝒯 = ⁅ (𝒻 ⋆∙ βₐ m) ∧[ 𝒪 X ] ¬𝒻⋆ (βₐ n)
          ∣ (m , n , p) ∶ Σ m ꞉ Bₐ , Σ n ꞉ Bₐ , 𝔏 𝓀 m n holds ⁆
 
    † : cofinal-in (𝒪 X) 𝒮 𝒯 holds
@@ -379,12 +411,12 @@ separate proof
      open PosetReasoning (poset-of (𝒪 A))
 
      ‡ : 𝔏 𝓀 m n holds
-     ‡ l = (‘ β m ’ ∧[ 𝒪 Patchₛ-A ] ¬‘ βₖ n ’) .pr₁ (β l)   ≤⟨ q l ⟩
-           𝒿 $ (β l)                                        ≤⟨ p l ⟩
-           𝓀 $ (β l)                                        ■
+     ‡ l = (‘ βₐ m ’ ∧[ 𝒪 Patchₛ-A ] ¬‘ βₖ n ’) .pr₁ (βₐ l)   ≤⟨ q l ⟩
+           𝒿 $ (βₐ l)                                        ≤⟨ p l ⟩
+           𝓀 $ (βₐ l)                                        ■
 
      ♣ : (_ ≤[ poset-of (𝒪 X) ] _) holds
-     ♣ = ≤-is-reflexive (poset-of (𝒪 X)) ((𝒻 ⋆∙ β m) ∧[ 𝒪 X ] ¬𝒻⋆ (β n))
+     ♣ = ≤-is-reflexive (poset-of (𝒪 X)) ((𝒻 ⋆∙ βₐ m) ∧[ 𝒪 X ] ¬𝒻⋆ (βₐ n))
 
  f⁻⁺ₘ : poset-of (𝒪 Patchₛ-A) ─m→ poset-of (𝒪 X)
  f⁻⁺ₘ = f⁻⁺ , f⁻⁺-is-monotone
@@ -395,10 +427,12 @@ separate proof
 
  open PatchStoneᴰ A σᴰ
 
- Patchₛ-A-has-basis : has-basis (𝒪 Patchₛ-A) holds
- Patchₛ-A-has-basis = spectral-frames-have-bases
-                       (𝒪 Patchₛ-A)
-                       patchₛ-is-spectral
+ Patchₛ-A-basisᴰ : basisᴰ (𝒪 Patchₛ-A)
+ Patchₛ-A-basisᴰ =
+  spectralᴰ-implies-basisᴰ Patchₛ-A patchₛ-spectralᴰ
+
+ -- Patchₛ-A-has-basis : has-basis (𝒪 Patchₛ-A) holds
+ -- Patchₛ-A-has-basis = ?
 
 \end{code}
 
@@ -406,7 +440,7 @@ Some horrible import bureaucracy below 😬
 
 \begin{code}
 
- open AdjointFunctorTheorem X Patchₛ-A Patchₛ-A-has-basis
+ open AdjointFunctorTheorem X Patchₛ-A ∣ Patchₛ-A-basisᴰ ∣
   hiding (f₊-is-right-adjoint-of-f⁺)
  open AdjointFunctorTheorem Patchₛ-A X X-has-basis
   using ()
@@ -457,51 +491,48 @@ We prove that `f⁻⁺` preserves the top element of `𝒪(Patchₛ-A)`.
    open PosetReasoning (poset-of (𝒪 X))
 
    † : (𝟏[ 𝒪 X ] ≤[ poset-of (𝒪 X) ] f⁻⁺ 𝟏[ 𝒪 Patchₛ-A ]) holds
-   † = ∥∥-rec
-        (holds-is-prop (𝟏[ 𝒪 X ] ≤[ poset-of (𝒪 X) ] f⁻⁺ 𝟏[ 𝒪 Patchₛ-A ]))
-        ‡
-        (compact-opens-are-basic-in-compact-frames
-          (𝒪 A)
-          (Bₐ , β)
-          (pr₁ (pr₂ σᴰ))
-          (spectral-implies-compact (𝒪 A) ∣ σᴰ ∣)
-          𝟎[ 𝒪 A ]
-          (𝟎-is-compact (𝒪 A)))
-        where
-         ‡ : Σ i ꞉ Bₐ , 𝟎[ 𝒪 A ] ＝ β i
-           → (𝟏[ 𝒪 X ] ≤[ poset-of (𝒪 X) ] f⁻⁺ 𝟏[ 𝒪 Patchₛ-A ]) holds
-         ‡ (i , p) =
-          𝟏[ 𝒪 X ]                                                ＝⟨ Ⅰ    ⟩ₚ
-          𝟏[ 𝒪 X ] ∧[ 𝒪 X ] 𝟏[ 𝒪 X ]                              ＝⟨ Ⅱ    ⟩ₚ
-          𝒻 ⋆∙ 𝟏[ 𝒪 A ] ∧[ 𝒪 X ] 𝟏[ 𝒪 X ]                         ＝⟨ Ⅲ    ⟩ₚ
-          𝒻 ⋆∙ 𝟏[ 𝒪 A ] ∧[ 𝒪 X ] ¬𝒻⋆ (β i)                        ≤⟨  Ⅳ    ⟩
-          ⋁[ 𝒪 X ] ⁅ 𝒻 ⋆∙ 𝟏[ 𝒪 A ] ∧[ 𝒪 X ] ¬𝒻⋆ (β n) ∣ n ∶ Bₐ ⁆  ＝⟨ refl ⟩ₚ
-          f⁻⁺₂ 𝟏[ 𝒪 Patchₛ-A ]                                    ＝⟨ Ⅴ    ⟩ₚ
-          f⁻⁺  𝟏[ 𝒪 Patchₛ-A ]                                    ■
-           where
-            𝕒   = heyting-implication-identity 𝟎[ 𝒪 X ] ⁻¹
-            𝕓   = ap
+   † =
+    ∥∥-rec
+     (holds-is-prop (𝟏[ 𝒪 X ] ≤[ poset-of (𝒪 X) ] f⁻⁺ 𝟏[ 𝒪 Patchₛ-A ]))
+     ‡
+     (compact-opens-are-basic A A-directed-basisᴰ 𝟎[ 𝒪 A ] (𝟎-is-compact A))
+      where
+       ‡ : Σ i ꞉ Bₐ , βₐ i ＝ 𝟎[ 𝒪 A ]
+         → (𝟏[ 𝒪 X ] ≤[ poset-of (𝒪 X) ] f⁻⁺ 𝟏[ 𝒪 Patchₛ-A ]) holds
+       ‡ (i , p′) =
+        𝟏[ 𝒪 X ]                                                ＝⟨ Ⅰ    ⟩ₚ
+        𝟏[ 𝒪 X ] ∧[ 𝒪 X ] 𝟏[ 𝒪 X ]                              ＝⟨ Ⅱ    ⟩ₚ
+        𝒻 ⋆∙ 𝟏[ 𝒪 A ] ∧[ 𝒪 X ] 𝟏[ 𝒪 X ]                         ＝⟨ Ⅲ    ⟩ₚ
+        𝒻 ⋆∙ 𝟏[ 𝒪 A ] ∧[ 𝒪 X ] ¬𝒻⋆ (βₐ i)                        ≤⟨  Ⅳ    ⟩
+        ⋁[ 𝒪 X ] ⁅ 𝒻 ⋆∙ 𝟏[ 𝒪 A ] ∧[ 𝒪 X ] ¬𝒻⋆ (βₐ n) ∣ n ∶ Bₐ ⁆  ＝⟨ refl ⟩ₚ
+        f⁻⁺₂ 𝟏[ 𝒪 Patchₛ-A ]                                    ＝⟨ Ⅴ    ⟩ₚ
+        f⁻⁺  𝟏[ 𝒪 Patchₛ-A ]                                    ■
+         where
+          p   = p′ ⁻¹
+          𝕒   = heyting-implication-identity 𝟎[ 𝒪 X ] ⁻¹
+          𝕓   = ap
                    (λ - → - ==> 𝟎[ 𝒪 X ])
                    (frame-homomorphisms-preserve-bottom (𝒪 A) (𝒪 X) 𝒻 ⁻¹)
-            𝕔   = ap (λ - → (𝒻 ⋆∙ -) ==> 𝟎[ 𝒪 X ]) p
+          𝕔   = ap (λ - → (𝒻 ⋆∙ -) ==> 𝟎[ 𝒪 X ]) p
 
-            Ⅰ   = ∧[ 𝒪 X ]-is-idempotent 𝟏[ 𝒪 X ]
-            Ⅲ   = ap
-                   (λ - → 𝒻 ⋆∙ 𝟏[ 𝒪 A ] ∧[ 𝒪 X ] -)
-                   (𝟏[ 𝒪 X ]                     ＝⟨ 𝕒    ⟩
-                    𝟎[ 𝒪 X ] ==> 𝟎[ 𝒪 X ]        ＝⟨ 𝕓    ⟩
-                    (𝒻 ⋆∙ 𝟎[ 𝒪 A ]) ==> 𝟎[ 𝒪 X ] ＝⟨ 𝕔    ⟩
-                    (𝒻 ⋆∙ (β i)) ==> 𝟎[ 𝒪 X ]    ＝⟨ refl ⟩
-                    ¬𝒻⋆ (β i)                    ∎)
-            Ⅳ   = ⋁[ 𝒪 X ]-upper ⁅ 𝒻 ⋆∙ 𝟏[ 𝒪 A ] ∧[ 𝒪 X ] ¬𝒻⋆ (β n) ∣ n ∶ Bₐ ⁆ i
-            Ⅱ   = ap
-                   (λ - → - ∧[ 𝒪 X ] 𝟏[ 𝒪 X ])
-                   (frame-homomorphisms-preserve-top (𝒪 A) (𝒪 X) 𝒻 ⁻¹)
-            Ⅴ   = f⁻⁺₂-equiv-f⁻⁺₁ 𝟏[ 𝒪 Patchₛ-A ] ⁻¹
+          Ⅰ   = ∧[ 𝒪 X ]-is-idempotent 𝟏[ 𝒪 X ]
+          Ⅲ   = ap
+                 (λ - → 𝒻 ⋆∙ 𝟏[ 𝒪 A ] ∧[ 𝒪 X ] -)
+                 (𝟏[ 𝒪 X ]                     ＝⟨ 𝕒    ⟩
+                 𝟎[ 𝒪 X ] ==> 𝟎[ 𝒪 X ]        ＝⟨ 𝕓    ⟩
+                 (𝒻 ⋆∙ 𝟎[ 𝒪 A ]) ==> 𝟎[ 𝒪 X ] ＝⟨ 𝕔    ⟩
+                 (𝒻 ⋆∙ βₐ i) ==> 𝟎[ 𝒪 X ]    ＝⟨ refl ⟩
+                 ¬𝒻⋆ (βₐ i)                    ∎)
+          Ⅳ   = ⋁[ 𝒪 X ]-upper ⁅ 𝒻 ⋆∙ 𝟏[ 𝒪 A ] ∧[ 𝒪 X ] ¬𝒻⋆ (βₐ n) ∣ n ∶ Bₐ ⁆ i
+          Ⅱ   = ap
+                 (λ - → - ∧[ 𝒪 X ] 𝟏[ 𝒪 X ])
+                 (frame-homomorphisms-preserve-top (𝒪 A) (𝒪 X) 𝒻 ⁻¹)
+          Ⅴ   = f⁻⁺₂-equiv-f⁻⁺₁ 𝟏[ 𝒪 Patchₛ-A ] ⁻¹
 
 \end{code}
 
 The function `f⁻⁺` preserves binary meets.
+
 
 \begin{code}
 
@@ -516,28 +547,28 @@ The function `f⁻⁺` preserves binary meets.
 
    ＝⟨ refl ⟩
 
-  ⋁[ 𝒪 X ] ⁅ 𝒻 ⋆∙ (j (β n) ∧[ 𝒪 A ] k (β n)) ∧[ 𝒪 X ] ¬𝒻⋆ (β n) ∣ n ∶ Bₐ ⁆
+  ⋁[ 𝒪 X ] ⁅ 𝒻 ⋆∙ (j (βₐ n) ∧[ 𝒪 A ] k (βₐ n)) ∧[ 𝒪 X ] ¬𝒻⋆ (βₐ n) ∣ n ∶ Bₐ ⁆
 
    ＝⟨ Ⅱ    ⟩
 
-  ⋁[ 𝒪 X ] ⁅ (𝒻 ⋆∙ j (β n) ∧[ 𝒪 X ] 𝒻 ⋆∙ k (β n)) ∧[ 𝒪 X ] ¬𝒻⋆ (β n) ∣ n ∶ Bₐ ⁆
+  ⋁[ 𝒪 X ] ⁅ (𝒻 ⋆∙ j (βₐ n) ∧[ 𝒪 X ] 𝒻 ⋆∙ k (βₐ n)) ∧[ 𝒪 X ] ¬𝒻⋆ (βₐ n) ∣ n ∶ Bₐ ⁆
 
    ＝⟨ Ⅲ ⟩
 
-  ⋁[ 𝒪 X ] ⁅ (𝒻 ⋆∙ j (β n)  ∧[ 𝒪 X ] ¬𝒻⋆ (β n))
+  ⋁[ 𝒪 X ] ⁅ (𝒻 ⋆∙ j (βₐ n)  ∧[ 𝒪 X ] ¬𝒻⋆ (βₐ n))
              ∧[ 𝒪 X ]
-             (𝒻 ⋆∙ k (β n) ∧[ 𝒪 X ] ¬𝒻⋆ (β n)) ∣ n ∶ Bₐ ⁆
+             (𝒻 ⋆∙ k (βₐ n) ∧[ 𝒪 X ] ¬𝒻⋆ (βₐ n)) ∣ n ∶ Bₐ ⁆
    ＝⟨ Ⅳ ⟩
 
-  ⋁[ 𝒪 X ] ⁅ (𝒻 ⋆∙ j (β m)  ∧[ 𝒪 X ] ¬𝒻⋆ (β m))
+  ⋁[ 𝒪 X ] ⁅ (𝒻 ⋆∙ j (βₐ m)  ∧[ 𝒪 X ] ¬𝒻⋆ (βₐ m))
              ∧[ 𝒪 X ]
-             (𝒻 ⋆∙ k (β n) ∧[ 𝒪 X ] ¬𝒻⋆ (β n)) ∣ (m , n) ∶ Bₐ × Bₐ ⁆
+             (𝒻 ⋆∙ k (βₐ n) ∧[ 𝒪 X ] ¬𝒻⋆ (βₐ n)) ∣ (m , n) ∶ Bₐ × Bₐ ⁆
 
    ＝⟨ Ⅴ ⟩
 
-  (⋁[ 𝒪 X ] ⁅ (𝒻 ⋆∙ j (β n)) ∧[ 𝒪 X ] ¬𝒻⋆ (β n) ∣ n ∶ Bₐ ⁆)
+  (⋁[ 𝒪 X ] ⁅ (𝒻 ⋆∙ j (βₐ n)) ∧[ 𝒪 X ] ¬𝒻⋆ (βₐ n) ∣ n ∶ Bₐ ⁆)
    ∧[ 𝒪 X ]
-  (⋁[ 𝒪 X ] ⁅ (𝒻 ⋆∙ k (β n)) ∧[ 𝒪 X ] ¬𝒻⋆ (β n) ∣ n ∶ Bₐ ⁆)
+  (⋁[ 𝒪 X ] ⁅ (𝒻 ⋆∙ k (βₐ n)) ∧[ 𝒪 X ] ¬𝒻⋆ (βₐ n) ∣ n ∶ Bₐ ⁆)
 
    ＝⟨ refl ⟩
 
@@ -554,50 +585,50 @@ The function `f⁻⁺` preserves binary meets.
          (λ - → ⋁[ 𝒪 X ] (Bₐ , -))
          (dfunext fe λ n →
            ap
-            (λ - → - ∧[ 𝒪 X ] ¬𝒻⋆ (β n))
-            (frame-homomorphisms-preserve-meets (𝒪 A) (𝒪 X) 𝒻 (j (β n)) (k (β n))))
+            (λ - → - ∧[ 𝒪 X ] ¬𝒻⋆ (βₐ n))
+            (frame-homomorphisms-preserve-meets (𝒪 A) (𝒪 X) 𝒻 (j (βₐ n)) (k (βₐ n))))
     Ⅲ = ap
          (λ - → ⋁[ 𝒪 X ] (Bₐ , -))
          (dfunext fe λ n →
            let
             𝕒 = ap
-                 (λ - → (𝒻 ⋆∙ j (β n) ∧[ 𝒪 X ] 𝒻 ⋆∙ k (β n)) ∧[ 𝒪 X ] -)
-                 (∧[ 𝒪 X ]-is-idempotent (¬𝒻⋆ (β n)))
+                 (λ - → (𝒻 ⋆∙ j (βₐ n) ∧[ 𝒪 X ] 𝒻 ⋆∙ k (βₐ n)) ∧[ 𝒪 X ] -)
+                 (∧[ 𝒪 X ]-is-idempotent (¬𝒻⋆ (βₐ n)))
             𝕓 = ∧[ 𝒪 X ]-is-associative
-                 (𝒻 ⋆∙ j (β n))
-                 (𝒻 ⋆∙ k (β n))
-                 (¬𝒻⋆ (β n) ∧[ 𝒪 X ] ¬𝒻⋆ (β n)) ⁻¹
+                 (𝒻 ⋆∙ j (βₐ n))
+                 (𝒻 ⋆∙ k (βₐ n))
+                 (¬𝒻⋆ (βₐ n) ∧[ 𝒪 X ] ¬𝒻⋆ (βₐ n)) ⁻¹
             𝕔 = ap
-                 (λ - → 𝒻 ⋆∙ j (β n) ∧[ 𝒪 X ] -)
-                 (∧[ 𝒪 X ]-is-associative (𝒻 ⋆∙ k (β n)) (¬𝒻⋆ (β n)) (¬𝒻⋆ (β n)))
+                 (λ - → 𝒻 ⋆∙ j (βₐ n) ∧[ 𝒪 X ] -)
+                 (∧[ 𝒪 X ]-is-associative (𝒻 ⋆∙ k (βₐ n)) (¬𝒻⋆ (βₐ n)) (¬𝒻⋆ (βₐ n)))
             𝕕 = ap
-                 (λ - → 𝒻 ⋆∙ j (β n) ∧[ 𝒪 X ] (- ∧[ 𝒪 X ] ¬𝒻⋆ (β n)))
-                 (∧[ 𝒪 X ]-is-commutative (𝒻 ⋆∙ k (β n)) (¬𝒻⋆ (β n)))
+                 (λ - → 𝒻 ⋆∙ j (βₐ n) ∧[ 𝒪 X ] (- ∧[ 𝒪 X ] ¬𝒻⋆ (βₐ n)))
+                 (∧[ 𝒪 X ]-is-commutative (𝒻 ⋆∙ k (βₐ n)) (¬𝒻⋆ (βₐ n)))
             𝕖 = ap
-                 (λ - → 𝒻 ⋆∙ j (β n) ∧[ 𝒪 X ] -)
-                 (∧[ 𝒪 X ]-is-associative (¬𝒻⋆ (β n)) (𝒻 ⋆∙ k (β n)) (¬𝒻⋆ (β n)) ⁻¹)
+                 (λ - → 𝒻 ⋆∙ j (βₐ n) ∧[ 𝒪 X ] -)
+                 (∧[ 𝒪 X ]-is-associative (¬𝒻⋆ (βₐ n)) (𝒻 ⋆∙ k (βₐ n)) (¬𝒻⋆ (βₐ n)) ⁻¹)
             𝕗 = ∧[ 𝒪 X ]-is-associative
-                 (𝒻 ⋆∙ j (β n))
-                 (¬𝒻⋆ (β n))
-                 (𝒻 ⋆∙ k (β n) ∧[ 𝒪 X ] (¬𝒻⋆ (β n)))
+                 (𝒻 ⋆∙ j (βₐ n))
+                 (¬𝒻⋆ (βₐ n))
+                 (𝒻 ⋆∙ k (βₐ n) ∧[ 𝒪 X ] (¬𝒻⋆ (βₐ n)))
            in
-            𝒻 ⋆∙ j (β n) ∧ₓ 𝒻 ⋆∙ k (β n) ∧ₓ ¬𝒻⋆ (β n)
+            𝒻 ⋆∙ j (βₐ n) ∧ₓ 𝒻 ⋆∙ k (βₐ n) ∧ₓ ¬𝒻⋆ (βₐ n)
              ＝⟨ 𝕒 ⟩
-            𝒻 ⋆∙ j (β n) ∧ₓ 𝒻 ⋆∙ k (β n) ∧ₓ (¬𝒻⋆ (β n) ∧ₓ ¬𝒻⋆ (β n))
+            𝒻 ⋆∙ j (βₐ n) ∧ₓ 𝒻 ⋆∙ k (βₐ n) ∧ₓ (¬𝒻⋆ (βₐ n) ∧ₓ ¬𝒻⋆ (βₐ n))
              ＝⟨ 𝕓 ⟩
-            𝒻 ⋆∙ j (β n) ∧ₓ (𝒻 ⋆∙ k (β n) ∧ₓ (¬𝒻⋆ (β n) ∧ₓ ¬𝒻⋆ (β n)))
+            𝒻 ⋆∙ j (βₐ n) ∧ₓ (𝒻 ⋆∙ k (βₐ n) ∧ₓ (¬𝒻⋆ (βₐ n) ∧ₓ ¬𝒻⋆ (βₐ n)))
              ＝⟨ 𝕔 ⟩
-            𝒻 ⋆∙ j (β n) ∧ₓ (((𝒻 ⋆∙ k (β n)) ∧ₓ ¬𝒻⋆ (β n)) ∧ₓ ¬𝒻⋆ (β n))
+            𝒻 ⋆∙ j (βₐ n) ∧ₓ (((𝒻 ⋆∙ k (βₐ n)) ∧ₓ ¬𝒻⋆ (βₐ n)) ∧ₓ ¬𝒻⋆ (βₐ n))
              ＝⟨ 𝕕 ⟩
-            𝒻 ⋆∙ j (β n) ∧ₓ ((¬𝒻⋆ (β n) ∧ₓ 𝒻 ⋆∙ (k (β n))) ∧ₓ ¬𝒻⋆ (β n))
+            𝒻 ⋆∙ j (βₐ n) ∧ₓ ((¬𝒻⋆ (βₐ n) ∧ₓ 𝒻 ⋆∙ (k (βₐ n))) ∧ₓ ¬𝒻⋆ (βₐ n))
              ＝⟨ 𝕖 ⟩
-            𝒻 ⋆∙ j (β n) ∧ₓ (¬𝒻⋆ (β n) ∧ₓ ((𝒻 ⋆∙ k (β n)) ∧ₓ ¬𝒻⋆ (β n)))
+            𝒻 ⋆∙ j (βₐ n) ∧ₓ (¬𝒻⋆ (βₐ n) ∧ₓ ((𝒻 ⋆∙ k (βₐ n)) ∧ₓ ¬𝒻⋆ (βₐ n)))
              ＝⟨ 𝕗 ⟩
-            (𝒻 ⋆∙ j (β n)  ∧ₓ ¬𝒻⋆ (β n)) ∧ₓ (𝒻 ⋆∙ k (β n) ∧ₓ ¬𝒻⋆ (β n))
+            (𝒻 ⋆∙ j (βₐ n)  ∧ₓ ¬𝒻⋆ (βₐ n)) ∧ₓ (𝒻 ⋆∙ k (βₐ n) ∧ₓ ¬𝒻⋆ (βₐ n))
              ∎)
 
-    lhs₁ = ⁅ (𝒻 ⋆∙ j (β n)  ∧ₓ ¬𝒻⋆ (β n)) ∧ₓ (𝒻 ⋆∙ k (β n) ∧ₓ ¬𝒻⋆ (β n)) ∣ n ∶ Bₐ ⁆
-    rhs₁ = ⁅ (𝒻 ⋆∙ j (β m)  ∧ₓ ¬𝒻⋆ (β m)) ∧ₓ (𝒻 ⋆∙ k (β n) ∧ₓ ¬𝒻⋆ (β n))
+    lhs₁ = ⁅ (𝒻 ⋆∙ j (βₐ n)  ∧ₓ ¬𝒻⋆ (βₐ n)) ∧ₓ (𝒻 ⋆∙ k (βₐ n) ∧ₓ ¬𝒻⋆ (βₐ n)) ∣ n ∶ Bₐ ⁆
+    rhs₁ = ⁅ (𝒻 ⋆∙ j (βₐ m)  ∧ₓ ¬𝒻⋆ (βₐ m)) ∧ₓ (𝒻 ⋆∙ k (βₐ n) ∧ₓ ¬𝒻⋆ (βₐ n))
             ∣ (m , n) ∶ Bₐ × Bₐ ⁆
 
     † : cofinal-in (𝒪 X) lhs₁ rhs₁ holds
@@ -606,53 +637,53 @@ The function `f⁻⁺` preserves binary meets.
     ‡ : cofinal-in (𝒪 X) rhs₁ lhs₁ holds
     ‡ (m , n) = ∥∥-rec ∃-is-prop ϡ ※
      where
-      ϡ : (Σ o ꞉ Bₐ , β o ＝ β m ∨[ 𝒪 A ] β n)
+      ϡ : (Σ o ꞉ Bₐ , βₐ o ＝ βₐ m ∨[ 𝒪 A ] βₐ n)
         → ∃ o ꞉ Bₐ , (rhs₁ [ (m , n) ] ≤[ poset-of (𝒪 X) ] lhs₁ [ o ]) holds
       ϡ (o , p) = ∣ o , ϟ ∣
        where
         𝕒₁ = ∧[ 𝒪 X ]-is-associative
-              (𝒻 ⋆∙ j (β m))
-              (¬𝒻⋆ (β m))
-              (𝒻 ⋆∙ k (β n) ∧[ 𝒪 X ] ¬𝒻⋆ (β n)) ⁻¹
+              (𝒻 ⋆∙ j (βₐ m))
+              (¬𝒻⋆ (βₐ m))
+              (𝒻 ⋆∙ k (βₐ n) ∧[ 𝒪 X ] ¬𝒻⋆ (βₐ n)) ⁻¹
         𝕒₂ = ap
-              (λ - → 𝒻 ⋆∙ j (β m) ∧[ 𝒪 X ] -)
-              (∧[ 𝒪 X ]-is-associative (¬𝒻⋆ (β m)) (𝒻 ⋆∙ k (β n)) (¬𝒻⋆ (β n)))
+              (λ - → 𝒻 ⋆∙ j (βₐ m) ∧[ 𝒪 X ] -)
+              (∧[ 𝒪 X ]-is-associative (¬𝒻⋆ (βₐ m)) (𝒻 ⋆∙ k (βₐ n)) (¬𝒻⋆ (βₐ n)))
         𝕒₃ = ap
-              (λ - → 𝒻 ⋆∙ j (β m) ∧[ 𝒪 X ] (- ∧[ 𝒪 X ] ¬𝒻⋆ (β n)))
-              (∧[ 𝒪 X ]-is-commutative (¬𝒻⋆ (β m)) (𝒻 ⋆∙ k (β n)))
+              (λ - → 𝒻 ⋆∙ j (βₐ m) ∧[ 𝒪 X ] (- ∧[ 𝒪 X ] ¬𝒻⋆ (βₐ n)))
+              (∧[ 𝒪 X ]-is-commutative (¬𝒻⋆ (βₐ m)) (𝒻 ⋆∙ k (βₐ n)))
         𝕒₄ = ap
-              (λ - → 𝒻 ⋆∙ j (β m) ∧[ 𝒪 X ] -)
-              (∧[ 𝒪 X ]-is-associative (𝒻 ⋆∙ k (β n)) (¬𝒻⋆ (β m)) (¬𝒻⋆ (β n)) ⁻¹)
+              (λ - → 𝒻 ⋆∙ j (βₐ m) ∧[ 𝒪 X ] -)
+              (∧[ 𝒪 X ]-is-associative (𝒻 ⋆∙ k (βₐ n)) (¬𝒻⋆ (βₐ m)) (¬𝒻⋆ (βₐ n)) ⁻¹)
         𝕒₅ = ∧[ 𝒪 X ]-is-associative
-              (𝒻 ⋆∙ j (β m))
-              (𝒻 ⋆∙ k (β n))
-              (¬𝒻⋆ (β m) ∧[ 𝒪 X ] ¬𝒻⋆ (β n))
+              (𝒻 ⋆∙ j (βₐ m))
+              (𝒻 ⋆∙ k (βₐ n))
+              (¬𝒻⋆ (βₐ m) ∧[ 𝒪 X ] ¬𝒻⋆ (βₐ n))
         𝕒₆ = ap
-              (λ - → - ∧[ 𝒪 X ] (¬𝒻⋆ (β m) ∧[ 𝒪 X ] ¬𝒻⋆ (β n)))
-              (frame-homomorphisms-preserve-meets (𝒪 A) (𝒪 X) 𝒻 (j (β m)) (k (β n)) ⁻¹)
+              (λ - → - ∧[ 𝒪 X ] (¬𝒻⋆ (βₐ m) ∧[ 𝒪 X ] ¬𝒻⋆ (βₐ n)))
+              (frame-homomorphisms-preserve-meets (𝒪 A) (𝒪 X) 𝒻 (j (βₐ m)) (k (βₐ n)) ⁻¹)
 
-        𝕒  = (𝒻 ⋆∙ j (β m) ∧ₓ ¬𝒻⋆ (β m)) ∧ₓ (𝒻 ⋆∙ k (β n) ∧ₓ ¬𝒻⋆ (β n))    ＝⟨ 𝕒₁ ⟩
-             𝒻 ⋆∙ j (β m) ∧ₓ (¬𝒻⋆ (β m) ∧ₓ (𝒻 ⋆∙ k (β n) ∧ₓ ¬𝒻⋆ (β n)))    ＝⟨ 𝕒₂ ⟩
-             𝒻 ⋆∙ j (β m) ∧ₓ ((¬𝒻⋆ (β m) ∧ₓ 𝒻 ⋆∙ k (β n)) ∧ₓ ¬𝒻⋆ (β n))    ＝⟨ 𝕒₃ ⟩
-             𝒻 ⋆∙ j (β m) ∧ₓ (𝒻 ⋆∙ (k (β n)) ∧ₓ ¬𝒻⋆ (β m) ∧ₓ ¬𝒻⋆ (β n))    ＝⟨ 𝕒₄ ⟩
-             𝒻 ⋆∙ j (β m) ∧ₓ (𝒻 ⋆∙ (k (β n)) ∧ₓ (¬𝒻⋆ (β m) ∧ₓ ¬𝒻⋆ (β n)))  ＝⟨ 𝕒₅ ⟩
-             (𝒻 ⋆∙ j (β m) ∧ₓ 𝒻 ⋆∙ (k (β n))) ∧ₓ (¬𝒻⋆ (β m) ∧ₓ ¬𝒻⋆ (β n))  ＝⟨ 𝕒₆ ⟩
-             (𝒻 ⋆∙ (j (β m) ∧[ 𝒪 A ] k (β n))) ∧ₓ (¬𝒻⋆ (β m) ∧ₓ ¬𝒻⋆ (β n)) ∎
-        𝕓₁ = j (β m) ∧[ 𝒪 A ] k (β n)   ≤⟨ ∧[ 𝒪 A ]-lower₁ (j (β m)) (k (β n)) ⟩
-             j (β m)                    ≤⟨ ♠                                   ⟩
-             j (β m ∨[ 𝒪 A ] β n)       ＝⟨ ap j p ⁻¹                          ⟩ₚ
-             j (β o)                    ■
+        𝕒  = (𝒻 ⋆∙ j (βₐ m) ∧ₓ ¬𝒻⋆ (βₐ m)) ∧ₓ (𝒻 ⋆∙ k (βₐ n) ∧ₓ ¬𝒻⋆ (βₐ n))    ＝⟨ 𝕒₁ ⟩
+             𝒻 ⋆∙ j (βₐ m) ∧ₓ (¬𝒻⋆ (βₐ m) ∧ₓ (𝒻 ⋆∙ k (βₐ n) ∧ₓ ¬𝒻⋆ (βₐ n)))    ＝⟨ 𝕒₂ ⟩
+             𝒻 ⋆∙ j (βₐ m) ∧ₓ ((¬𝒻⋆ (βₐ m) ∧ₓ 𝒻 ⋆∙ k (βₐ n)) ∧ₓ ¬𝒻⋆ (βₐ n))    ＝⟨ 𝕒₃ ⟩
+             𝒻 ⋆∙ j (βₐ m) ∧ₓ (𝒻 ⋆∙ (k (βₐ n)) ∧ₓ ¬𝒻⋆ (βₐ m) ∧ₓ ¬𝒻⋆ (βₐ n))    ＝⟨ 𝕒₄ ⟩
+             𝒻 ⋆∙ j (βₐ m) ∧ₓ (𝒻 ⋆∙ (k (βₐ n)) ∧ₓ (¬𝒻⋆ (βₐ m) ∧ₓ ¬𝒻⋆ (βₐ n)))  ＝⟨ 𝕒₅ ⟩
+             (𝒻 ⋆∙ j (βₐ m) ∧ₓ 𝒻 ⋆∙ (k (βₐ n))) ∧ₓ (¬𝒻⋆ (βₐ m) ∧ₓ ¬𝒻⋆ (βₐ n))  ＝⟨ 𝕒₆ ⟩
+             (𝒻 ⋆∙ (j (βₐ m) ∧[ 𝒪 A ] k (βₐ n))) ∧ₓ (¬𝒻⋆ (βₐ m) ∧ₓ ¬𝒻⋆ (βₐ n)) ∎
+        𝕓₁ = j (βₐ m) ∧[ 𝒪 A ] k (βₐ n)   ≤⟨ ∧[ 𝒪 A ]-lower₁ (j (βₐ m)) (k (βₐ n)) ⟩
+             j (βₐ m)                    ≤⟨ ♠                                   ⟩
+             j (βₐ m ∨[ 𝒪 A ] βₐ n)       ＝⟨ ap j p ⁻¹                          ⟩ₚ
+             j (βₐ o)                    ■
               where
                open PosetReasoning (poset-of (𝒪 A))
                ♠ = nuclei-are-monotone
                     (𝒪 A)
                     (nucleus-of 𝒿)
                     (_ , _)
-                    (∨[ 𝒪 A ]-upper₁ (β m) (β n))
-        𝕓₂ = j (β m) ∧[ 𝒪 A ] k (β n) ≤⟨ ∧[ 𝒪 A ]-lower₂ (j (β m)) (k (β n)) ⟩
-             k (β n)                  ≤⟨ ♠                                   ⟩
-             k (β m ∨[ 𝒪 A ] β n)     ＝⟨ ap k p ⁻¹ ⟩ₚ
-             k (β o)                  ■
+                    (∨[ 𝒪 A ]-upper₁ (βₐ m) (βₐ n))
+        𝕓₂ = j (βₐ m) ∧[ 𝒪 A ] k (βₐ n) ≤⟨ ∧[ 𝒪 A ]-lower₂ (j (βₐ m)) (k (βₐ n)) ⟩
+             k (βₐ n)                  ≤⟨ ♠                                   ⟩
+             k (βₐ m ∨[ 𝒪 A ] βₐ n)     ＝⟨ ap k p ⁻¹ ⟩ₚ
+             k (βₐ o)                  ■
               where
                open PosetReasoning (poset-of (𝒪 A))
 
@@ -660,107 +691,99 @@ The function `f⁻⁺` preserves binary meets.
                     (𝒪 A)
                     (nucleus-of 𝓀)
                     (_ , _)
-                    (∨[ 𝒪 A ]-upper₂ (β m) (β n))
+                    (∨[ 𝒪 A ]-upper₂ (βₐ m) (βₐ n))
         𝕓  = ∧[ 𝒪 X ]-left-monotone
               (frame-morphisms-are-monotonic
                 (𝒪 A)
                 (𝒪 X)
                 (pr₁ 𝒻)
                 (pr₂ 𝒻)
-                ((j (β m) ∧[ 𝒪 A ] k (β n)) , (j (β o) ∧[ 𝒪 A ] k (β o)))
+                ((j (βₐ m) ∧[ 𝒪 A ] k (βₐ n)) , (j (βₐ o) ∧[ 𝒪 A ] k (βₐ o)))
                 (∧[ 𝒪 A ]-greatest
-                  (j (β o))
-                  (k (β o))
-                  (j (β m) ∧[ 𝒪 A ] k (β n))
+                  (j (βₐ o))
+                  (k (βₐ o))
+                  (j (βₐ m) ∧[ 𝒪 A ] k (βₐ n))
                   𝕓₁
                   𝕓₂))
 
-        ♣ : ((¬𝒻⋆ (β m) ∧ₓ ¬𝒻⋆ (β n)) ≤[ poset-of (𝒪 X) ] ¬𝒻⋆ (β o)) holds
-        ♣ = ¬𝒻⋆ (β m) ∧ₓ ¬𝒻⋆ (β n)                                  ＝⟨ refl ⟩ₚ
-            ((𝒻 ⋆∙ β m) ==> 𝟎[ 𝒪 X ]) ∧ₓ ((𝒻 ⋆∙ β n) ==> 𝟎[ 𝒪 X ])  ＝⟨ 𝟏    ⟩ₚ
-            ((𝒻 ⋆∙ (β m) ∨[ 𝒪 X ] (𝒻 ⋆∙ (β n))) ==> 𝟎[ 𝒪 X ])       ＝⟨ 𝟐    ⟩ₚ
-            ((𝒻 ⋆∙ (β m ∨[ 𝒪 A ] β n)) ==> 𝟎[ 𝒪 X ])                ＝⟨ 𝟑    ⟩ₚ
-            ¬𝒻⋆ (β o)                                               ■
+        ♣ : ((¬𝒻⋆ (βₐ m) ∧ₓ ¬𝒻⋆ (βₐ n)) ≤[ poset-of (𝒪 X) ] ¬𝒻⋆ (βₐ o)) holds
+        ♣ = ¬𝒻⋆ (βₐ m) ∧ₓ ¬𝒻⋆ (βₐ n)                                  ＝⟨ refl ⟩ₚ
+            ((𝒻 ⋆∙ βₐ m) ==> 𝟎[ 𝒪 X ]) ∧ₓ ((𝒻 ⋆∙ βₐ n) ==> 𝟎[ 𝒪 X ])  ＝⟨ 𝟏    ⟩ₚ
+            ((𝒻 ⋆∙ (βₐ m) ∨[ 𝒪 X ] (𝒻 ⋆∙ (βₐ n))) ==> 𝟎[ 𝒪 X ])       ＝⟨ 𝟐    ⟩ₚ
+            ((𝒻 ⋆∙ (βₐ m ∨[ 𝒪 A ] βₐ n)) ==> 𝟎[ 𝒪 X ])                ＝⟨ 𝟑    ⟩ₚ
+            ¬𝒻⋆ (βₐ o)                                               ■
          where
           open PosetReasoning (poset-of (𝒪 X))
 
-          𝟏 = ==>-left-reverses-joins (𝒻 ⋆∙ (β m)) (𝒻 ⋆∙ (β n)) 𝟎[ 𝒪 X ]
+          𝟏 = ==>-left-reverses-joins (𝒻 ⋆∙ (βₐ m)) (𝒻 ⋆∙ (βₐ n)) 𝟎[ 𝒪 X ]
           𝟐 = ap
                (λ - → - ==> 𝟎[ 𝒪 X ])
-               (frame-homomorphisms-preserve-binary-joins (𝒪 A) (𝒪 X) 𝒻 (β m) (β n) ⁻¹)
+               (frame-homomorphisms-preserve-binary-joins (𝒪 A) (𝒪 X) 𝒻 (βₐ m) (βₐ n) ⁻¹)
           𝟑 = ap (λ - → (𝒻 ⋆∙ -) ==> 𝟎[ 𝒪 X ]) (p ⁻¹)
 
         𝕔 = ∧[ 𝒪 X ]-right-monotone ♣
         𝕕 = ap
-             (λ - → - ∧[ 𝒪 X ] ¬𝒻⋆ (β o))
+             (λ - → - ∧[ 𝒪 X ] ¬𝒻⋆ (βₐ o))
              (frame-homomorphisms-preserve-meets
                (𝒪 A)
                (𝒪 X)
                𝒻
-               (j (β o))
-               (k (β o)))
+               (j (βₐ o))
+               (k (βₐ o)))
         𝕖 =
-         (𝒻 ⋆∙ j (β o) ∧ₓ 𝒻 ⋆∙ k (β o)) ∧ₓ ¬𝒻⋆ (β o)                ＝⟨ 𝟏 ⟩
-         (𝒻 ⋆∙ j (β o) ∧ₓ 𝒻 ⋆∙ k (β o)) ∧ₓ (¬𝒻⋆ (β o) ∧ₓ ¬𝒻⋆ (β o)) ＝⟨ 𝟐 ⟩
-         𝒻 ⋆∙ j (β o) ∧ₓ (𝒻 ⋆∙ k (β o) ∧ₓ (¬𝒻⋆ (β o) ∧ₓ ¬𝒻⋆ (β o))) ＝⟨ 𝟑 ⟩
-         𝒻 ⋆∙ j (β o) ∧ₓ ((𝒻 ⋆∙ k (β o) ∧ₓ ¬𝒻⋆ (β o)) ∧ₓ ¬𝒻⋆ (β o)) ＝⟨ 𝟒 ⟩
-         𝒻 ⋆∙ j (β o) ∧ₓ ((¬𝒻⋆ (β o) ∧ₓ 𝒻 ⋆∙ k (β o)) ∧ₓ ¬𝒻⋆ (β o)) ＝⟨ 𝟓 ⟩
-         𝒻 ⋆∙ j (β o) ∧ₓ (¬𝒻⋆ (β o) ∧ₓ (𝒻 ⋆∙ k (β o) ∧ₓ ¬𝒻⋆ (β o))) ＝⟨ 𝟔 ⟩
-         (𝒻 ⋆∙ j (β o) ∧ₓ ¬𝒻⋆ (β o)) ∧ₓ (𝒻 ⋆∙ k (β o) ∧ₓ ¬𝒻⋆ (β o)) ∎
+         (𝒻 ⋆∙ j (βₐ o) ∧ₓ 𝒻 ⋆∙ k (βₐ o)) ∧ₓ ¬𝒻⋆ (βₐ o)                ＝⟨ 𝟏 ⟩
+         (𝒻 ⋆∙ j (βₐ o) ∧ₓ 𝒻 ⋆∙ k (βₐ o)) ∧ₓ (¬𝒻⋆ (βₐ o) ∧ₓ ¬𝒻⋆ (βₐ o)) ＝⟨ 𝟐 ⟩
+         𝒻 ⋆∙ j (βₐ o) ∧ₓ (𝒻 ⋆∙ k (βₐ o) ∧ₓ (¬𝒻⋆ (βₐ o) ∧ₓ ¬𝒻⋆ (βₐ o))) ＝⟨ 𝟑 ⟩
+         𝒻 ⋆∙ j (βₐ o) ∧ₓ ((𝒻 ⋆∙ k (βₐ o) ∧ₓ ¬𝒻⋆ (βₐ o)) ∧ₓ ¬𝒻⋆ (βₐ o)) ＝⟨ 𝟒 ⟩
+         𝒻 ⋆∙ j (βₐ o) ∧ₓ ((¬𝒻⋆ (βₐ o) ∧ₓ 𝒻 ⋆∙ k (βₐ o)) ∧ₓ ¬𝒻⋆ (βₐ o)) ＝⟨ 𝟓 ⟩
+         𝒻 ⋆∙ j (βₐ o) ∧ₓ (¬𝒻⋆ (βₐ o) ∧ₓ (𝒻 ⋆∙ k (βₐ o) ∧ₓ ¬𝒻⋆ (βₐ o))) ＝⟨ 𝟔 ⟩
+         (𝒻 ⋆∙ j (βₐ o) ∧ₓ ¬𝒻⋆ (βₐ o)) ∧ₓ (𝒻 ⋆∙ k (βₐ o) ∧ₓ ¬𝒻⋆ (βₐ o)) ∎
           where
            𝟏 = ap
-                (λ - → (𝒻 ⋆∙ j (β o) ∧ₓ 𝒻 ⋆∙ k (β o)) ∧ₓ -)
-                (∧[ 𝒪 X ]-is-idempotent (¬𝒻⋆ (β o)))
+                (λ - → (𝒻 ⋆∙ j (βₐ o) ∧ₓ 𝒻 ⋆∙ k (βₐ o)) ∧ₓ -)
+                (∧[ 𝒪 X ]-is-idempotent (¬𝒻⋆ (βₐ o)))
            𝟐 = ∧[ 𝒪 X ]-is-associative
-                (𝒻 ⋆∙ j (β o))
-                (𝒻 ⋆∙ k (β o))
-                (¬𝒻⋆ (β o) ∧ₓ ¬𝒻⋆ (β o)) ⁻¹
+                (𝒻 ⋆∙ j (βₐ o))
+                (𝒻 ⋆∙ k (βₐ o))
+                (¬𝒻⋆ (βₐ o) ∧ₓ ¬𝒻⋆ (βₐ o)) ⁻¹
            𝟑 = ap
-                (λ - → 𝒻 ⋆∙ (j (β o)) ∧ₓ -)
-                (∧[ 𝒪 X ]-is-associative (𝒻 ⋆∙ k (β o)) (¬𝒻⋆ (β  o)) (¬𝒻⋆ (β o)))
+                (λ - → 𝒻 ⋆∙ (j (βₐ o)) ∧ₓ -)
+                (∧[ 𝒪 X ]-is-associative (𝒻 ⋆∙ k (βₐ o)) (¬𝒻⋆ (βₐ  o)) (¬𝒻⋆ (βₐ o)))
            𝟒 = ap
-                (λ - → 𝒻 ⋆∙ j (β o) ∧ₓ (- ∧ₓ ¬𝒻⋆ (β o)))
-                (∧[ 𝒪 X ]-is-commutative (𝒻 ⋆∙ k (β o)) (¬𝒻⋆ (β o)))
+                (λ - → 𝒻 ⋆∙ j (βₐ o) ∧ₓ (- ∧ₓ ¬𝒻⋆ (βₐ o)))
+                (∧[ 𝒪 X ]-is-commutative (𝒻 ⋆∙ k (βₐ o)) (¬𝒻⋆ (βₐ o)))
            𝟓 = ap
-                (λ - → 𝒻 ⋆∙ j (β o) ∧ₓ -)
-                (∧[ 𝒪 X ]-is-associative (¬𝒻⋆ (β o)) (𝒻 ⋆∙ k (β o)) (¬𝒻⋆ (β o)) ⁻¹)
+                (λ - → 𝒻 ⋆∙ j (βₐ o) ∧ₓ -)
+                (∧[ 𝒪 X ]-is-associative (¬𝒻⋆ (βₐ o)) (𝒻 ⋆∙ k (βₐ o)) (¬𝒻⋆ (βₐ o)) ⁻¹)
            𝟔 = ∧[ 𝒪 X ]-is-associative
-                (𝒻 ⋆∙ j (β o))
-                (¬𝒻⋆ (β o))
-                (𝒻 ⋆∙ k (β o) ∧ₓ ¬𝒻⋆ (β o))
+                (𝒻 ⋆∙ j (βₐ o))
+                (¬𝒻⋆ (βₐ o))
+                (𝒻 ⋆∙ k (βₐ o) ∧ₓ ¬𝒻⋆ (βₐ o))
 
         open PosetReasoning (poset-of (𝒪 X))
 
-        ϟ = (𝒻 ⋆∙ j (β m) ∧ₓ ¬𝒻⋆ (β m)) ∧ₓ (𝒻 ⋆∙ k (β n) ∧ₓ ¬𝒻⋆ (β n))    ＝⟨ 𝕒 ⟩ₚ
-            (𝒻 ⋆∙ (j (β m) ∧[ 𝒪 A ] k (β n))) ∧ₓ (¬𝒻⋆ (β m) ∧ₓ ¬𝒻⋆ (β n)) ≤⟨ 𝕓  ⟩
-            𝒻 ⋆∙ (j (β o) ∧[ 𝒪 A ] k (β o)) ∧ₓ (¬𝒻⋆ (β m) ∧ₓ ¬𝒻⋆ (β n))   ≤⟨ 𝕔  ⟩
-            𝒻 ⋆∙ (j (β o) ∧[ 𝒪 A ] k (β o)) ∧ₓ ¬𝒻⋆ (β o)                  ＝⟨ 𝕕 ⟩ₚ
-            (𝒻 ⋆∙ j (β o) ∧ₓ 𝒻 ⋆∙ k (β o)) ∧ₓ ¬𝒻⋆ (β o)                   ＝⟨ 𝕖 ⟩ₚ
-            (𝒻 ⋆∙ j (β o) ∧ₓ ¬𝒻⋆ (β o)) ∧ₓ (𝒻 ⋆∙ k (β o) ∧ₓ ¬𝒻⋆ (β o))    ■
+        ϟ = (𝒻 ⋆∙ j (βₐ m) ∧ₓ ¬𝒻⋆ (βₐ m)) ∧ₓ (𝒻 ⋆∙ k (βₐ n) ∧ₓ ¬𝒻⋆ (βₐ n))    ＝⟨ 𝕒 ⟩ₚ
+            (𝒻 ⋆∙ (j (βₐ m) ∧[ 𝒪 A ] k (βₐ n))) ∧ₓ (¬𝒻⋆ (βₐ m) ∧ₓ ¬𝒻⋆ (βₐ n)) ≤⟨ 𝕓  ⟩
+            𝒻 ⋆∙ (j (βₐ o) ∧[ 𝒪 A ] k (βₐ o)) ∧ₓ (¬𝒻⋆ (βₐ m) ∧ₓ ¬𝒻⋆ (βₐ n))   ≤⟨ 𝕔  ⟩
+            𝒻 ⋆∙ (j (βₐ o) ∧[ 𝒪 A ] k (βₐ o)) ∧ₓ ¬𝒻⋆ (βₐ o)                  ＝⟨ 𝕕 ⟩ₚ
+            (𝒻 ⋆∙ j (βₐ o) ∧ₓ 𝒻 ⋆∙ k (βₐ o)) ∧ₓ ¬𝒻⋆ (βₐ o)                   ＝⟨ 𝕖 ⟩ₚ
+            (𝒻 ⋆∙ j (βₐ o) ∧ₓ ¬𝒻⋆ (βₐ o)) ∧ₓ (𝒻 ⋆∙ k (βₐ o) ∧ₓ ¬𝒻⋆ (βₐ o))    ■
 
-      ※ : ∃ o ꞉ Bₐ , β o ＝ β m ∨[ 𝒪 A ] β n
+      ξ : is-compact-open A (βₐ m ∨[ 𝒪 A ] βₐ n) holds
+      ξ = compact-opens-are-closed-under-∨ A (βₐ m) (βₐ n) (κₐ m) (κₐ n)
+
+      ※ : ∃ o ꞉ Bₐ , βₐ o ＝ βₐ m ∨[ 𝒪 A ] βₐ n
       ※ = ∥∥-rec
            ∃-is-prop
-           (λ { (o , p) → ∣ o , (p ⁻¹) ∣ })
-           (compact-opens-are-basic-in-compact-frames
-             (𝒪 A)
-             (Bₐ , β)
-             (pr₁ (pr₂ σᴰ))
-             (spectral-implies-compact (𝒪 A) ∣ σᴰ ∣)
-             (β m ∨[ 𝒪 A ] β n)
-             (compacts-are-closed-under-joins
-               (𝒪 A)
-               (β m)
-               (β n)
-               (pr₂ (βₖ m))
-               (pr₂ (βₖ n))))
+           (λ { (o , p′) → ∣ o , p′ ∣ })
+           (compact-opens-are-basic A A-directed-basisᴰ (βₐ m ∨[ 𝒪 A ] βₐ n) ξ)
 
     Ⅳ = bicofinal-implies-same-join (𝒪 X) lhs₁ rhs₁ † ‡
 
     Ⅴ = distributivity+
          (𝒪 X)
-         ⁅ (𝒻 ⋆∙ j (β n)) ∧[ 𝒪 X ] ¬𝒻⋆ (β n) ∣ n ∶ Bₐ ⁆
-         ⁅ (𝒻 ⋆∙ k (β n)) ∧[ 𝒪 X ] ¬𝒻⋆ (β n) ∣ n ∶ Bₐ ⁆ ⁻¹
+         ⁅ (𝒻 ⋆∙ j (βₐ n)) ∧[ 𝒪 X ] ¬𝒻⋆ (βₐ n) ∣ n ∶ Bₐ ⁆
+         ⁅ (𝒻 ⋆∙ k (βₐ n)) ∧[ 𝒪 X ] ¬𝒻⋆ (βₐ n) ∣ n ∶ Bₐ ⁆ ⁻¹
     Ⅵ = ap₂
          (λ x y → x ∧[ 𝒪 X ] y)
          (f⁻⁺₂-equiv-f⁻⁺₁ 𝒿 ⁻¹)
@@ -773,7 +796,10 @@ auxiliary definitions and lemmas.
 
 \begin{code}
 
- open ClosedNucleus X (stone-locales-are-spectral (𝒪 X) (𝕜 , ∣ 𝕫ᴰ ∣))
+ X-is-spectral : is-spectral X holds
+ X-is-spectral = stone-locales-are-spectral X (𝕜 , 𝕫ᴰ)
+
+ open ClosedNucleus X X-is-spectral
   using    ()
   renaming (‘_’ to ‘_’ₓ)
 
@@ -890,7 +916,7 @@ As mentioned previously, `closed-image U` is a perfect nucleus for any `U :
          (𝒪 A)
          𝒻₊
          (‘ U ’ₓ .pr₁)
-         (spectral-maps-are-perfect 𝒻 ∣ σᴰ ∣ μ)
+         (spectral-maps-are-perfect σ 𝒻 μ)
          (∨-is-scott-continuous (𝒪 X) U)
          where
           open PerfectMaps X A A-has-basis
@@ -930,49 +956,49 @@ As mentioned previously, `closed-image U` is a perfect nucleus for any `U :
   where
    open IgorsLemma  X A A-has-basis
    open PerfectMaps X A A-has-basis
-   open LemmasAboutHeytingComplementation X X-has-basis
+   open HeytingComplementationLemmas X X-has-basis
 
    ϑ₁ : (f⁻⁺ 𝒿 ≤ₓ U ⇒ 𝒿 ≤[ poset-of (𝒪 Patchₛ-A) ] (f⁻₊ U)) holds
    ϑ₁ φ n =
     adjunction-inequality-forwardₓ
      𝒻
-     (U ∨[ 𝒪 X ] 𝒻 ⋆∙ β n)
-     (j (β n))
+     (U ∨[ 𝒪 X ] 𝒻 ⋆∙ (βₐ n))
+     (j (βₐ n))
      ψ
       where
        open PosetReasoning (poset-of (𝒪 X))
 
-       κ : is-clopen₀ (𝒪 X) (𝒻 ⋆∙ β n)
-       κ = compacts-are-clopen-in-zero-dimensional-locales
-            (𝒪 X)
-            ∣ 𝕫ᴰ ∣
-            (𝒻 ⋆∙ β n)
-            (μ (β n) (pr₂ (βₖ n)))
+       κ′ : is-clopen₀ (𝒪 X) (𝒻 ⋆∙ (βₐ n))
+       κ′ = compacts-are-clopen-in-zd-locales
+             X
+             ∣ 𝕫ᴰ ∣
+             (𝒻 ⋆∙ βₐ n)
+             (μ (βₐ n) (κ n))
 
-       ϟ : ((𝒻 ⋆∙ j (β n) ∧[ 𝒪 X ] ((𝒻 ⋆∙ β n) ==> 𝟎[ 𝒪 X ]))
+       ϟ : ((𝒻 ⋆∙ j (βₐ n) ∧[ 𝒪 X ] ((𝒻 ⋆∙ βₐ n) ==> 𝟎[ 𝒪 X ]))
                  ≤[ poset-of (𝒪 X) ]
                 U) holds
        ϟ =
-        𝒻 ⋆∙ j (β n) ∧[ 𝒪 X ] ((𝒻 ⋆∙ β n) ==> 𝟎[ 𝒪 X ]) ≤⟨ Ⅰ ⟩
+        𝒻 ⋆∙ j (βₐ n) ∧[ 𝒪 X ] ((𝒻 ⋆∙ βₐ n) ==> 𝟎[ 𝒪 X ]) ≤⟨ Ⅰ ⟩
         f⁻⁺₂ 𝒿                                          ＝⟨ Ⅱ   ⟩ₚ
         f⁻⁺  𝒿                                          ≤⟨ φ    ⟩
         U                                               ■
          where
           Ⅰ = ⋁[ 𝒪 X ]-upper
-               ⁅ 𝒻 ⋆∙ j (β n) ∧[ 𝒪 X ] ¬𝒻⋆ (β n) ∣ n ∶ Bₐ ⁆
+               ⁅ 𝒻 ⋆∙ j (βₐ n) ∧[ 𝒪 X ] ¬𝒻⋆ (βₐ n) ∣ n ∶ Bₐ ⁆
                n
           Ⅱ = f⁻⁺₂-equiv-f⁻⁺₁ 𝒿 ⁻¹
 
-       ※ : (𝒻 ⋆∙ j (β n) ≤[ poset-of (𝒪 X) ] (𝒻 ⋆∙ β n ∨[ 𝒪 X ] U)) holds
-       ※ = negation-∨-lemma₂ κ ϟ
+       ※ : (𝒻 ⋆∙ j (βₐ n) ≤[ poset-of (𝒪 X) ] (𝒻 ⋆∙ βₐ n ∨[ 𝒪 X ] U)) holds
+       ※ = negation-∨-lemma₂ κ′ ϟ
 
-       ψ : (𝒻 ⋆∙ j (β n) ≤[ poset-of (𝒪 X) ] (U ∨[ 𝒪 X ] 𝒻 ⋆∙ β n)) holds
-       ψ = 𝒻 ⋆∙ j (β n)          ≤⟨ ※ ⟩
-           𝒻 ⋆∙ (β n) ∨[ 𝒪 X ] U ＝⟨ ∨[ 𝒪 X ]-is-commutative (𝒻 ⋆∙ β n) U ⟩ₚ
-           U ∨[ 𝒪 X ] 𝒻 ⋆∙ (β n) ■
+       ψ : (𝒻 ⋆∙ j (βₐ n) ≤[ poset-of (𝒪 X) ] (U ∨[ 𝒪 X ] 𝒻 ⋆∙ βₐ n)) holds
+       ψ = 𝒻 ⋆∙ j (βₐ n)          ≤⟨ ※ ⟩
+           𝒻 ⋆∙ (βₐ n) ∨[ 𝒪 X ] U ＝⟨ ∨[ 𝒪 X ]-is-commutative (𝒻 ⋆∙ βₐ n) U ⟩ₚ
+           U ∨[ 𝒪 X ] 𝒻 ⋆∙ (βₐ n) ■
 
    S =
-    ⁅ (𝒻 ⋆∙ β m) ∧ₓ ¬𝒻⋆ (β n)
+    ⁅ (𝒻 ⋆∙ βₐ m) ∧ₓ ¬𝒻⋆ (βₐ n)
      ∣ (m , n , p) ∶ Σ m ꞉ Bₐ , Σ n ꞉ Bₐ , 𝔏 𝒿 m n holds ⁆
 
    ϑ₂ : (𝒿 ≤[ poset-of (𝒪 Patchₛ-A) ] (f⁻₊ U)) holds
@@ -980,70 +1006,67 @@ As mentioned previously, `closed-image U` is a perfect nucleus for any `U :
    ϑ₂ φ = ⋁[ 𝒪 X ]-least S (U , †)
     where
      open Joins (λ x y → x ≤[ poset-of (𝒪 X) ] y)
-     open PatchConstruction A ∣ σᴰ ∣ using (⋁ₙ; _⋏_)
+     open PatchConstruction A σ using (⋁ₙ; _⋏_)
 
      † : (U is-an-upper-bound-of S) holds
      † (m , n , p) = goal
       where
        ψ : (U : ⟨ 𝒪 A ⟩)
-         → (((‘ β m ’ ⋏ ¬‘ βₖ n ’) .pr₁ U) ≤[ poset-of (𝒪 A)  ] j U) holds
-       ψ = ≼ᵏ-implies-≼ (‘ β m ’ ∧[ 𝒪 Patchₛ-A ] ¬‘ βₖ n ’) 𝒿 p
+         → (((‘ βₐ m ’ ⋏ ¬‘ βₖ n ’) .pr₁ U) ≤[ poset-of (𝒪 A)  ] j U) holds
+       ψ = ≼ᵏ-implies-≼ (‘ βₐ m ’ ∧[ 𝒪 Patchₛ-A ] ¬‘ βₖ n ’) 𝒿 p
 
-       κ : is-clopen₀ (𝒪 X) (𝒻 ⋆∙ β n)
-       κ = compacts-are-clopen-in-zero-dimensional-locales
-            (𝒪 X)
-            ∣ 𝕫ᴰ ∣
-            (𝒻 ⋆∙ β n)
-            (μ (β n) (pr₂ (βₖ n)))
+       κ′ : is-clopen₀ (𝒪 X) (𝒻 ⋆∙ βₐ n)
+       κ′ =
+        compacts-are-clopen-in-zd-locales X ∣ 𝕫ᴰ ∣ (𝒻 ⋆∙ βₐ n) (μ (βₐ n) (κ n))
 
        ϡ : (T : ⟨ 𝒪 A ⟩)
-         → (((𝒻 ⋆∙ (β m ∨[ 𝒪 A ] T)) ∧[ 𝒪 X ] 𝒻 ⋆∙ (β n ==>ₐ T))
+         → (((𝒻 ⋆∙ (βₐ m ∨[ 𝒪 A ] T)) ∧[ 𝒪 X ] 𝒻 ⋆∙ (βₐ n ==>ₐ T))
              ≤[ poset-of (𝒪 X) ]
             (U ∨[ 𝒪 X ] 𝒻 ⋆∙ T)) holds
        ϡ T =
         let
          open PosetReasoning (poset-of (𝒪 X))
         in
-         𝒻 ⋆∙ (β m ∨[ 𝒪 A ] T) ∧[ 𝒪 X ] 𝒻 ⋆∙ (β n ==>ₐ T)  ＝⟨ Ⅰ ⟩ₚ
-         𝒻 ⋆∙ ((β m ∨[ 𝒪 A ] T) ∧[ 𝒪 A ] (β n ==>ₐ T))     ≤⟨ Ⅱ  ⟩
+         𝒻 ⋆∙ (βₐ m ∨[ 𝒪 A ] T) ∧[ 𝒪 X ] 𝒻 ⋆∙ (βₐ n ==>ₐ T)  ＝⟨ Ⅰ ⟩ₚ
+         𝒻 ⋆∙ ((βₐ m ∨[ 𝒪 A ] T) ∧[ 𝒪 A ] (βₐ n ==>ₐ T))     ≤⟨ Ⅱ  ⟩
          U ∨[ 𝒪 X ] (𝒻 ⋆∙ T)                               ■
         where
-         ♣ : (((β m ∨[ 𝒪 A ] T) ∧[ 𝒪 A ] (β n ==>ₐ T))
+         ♣ : (((βₐ m ∨[ 𝒪 A ] T) ∧[ 𝒪 A ] (βₐ n ==>ₐ T))
                ≤[ poset-of (𝒪 A) ]
               𝒻₊ (U ∨[ 𝒪 X ] (𝒻 ⋆∙ T))) holds
-         ♣ = (β m ∨[ 𝒪 A ] T) ∧[ 𝒪 A ] (β n ==>ₐ T)    ≤⟨ Ⅰ ⟩
+         ♣ = (βₐ m ∨[ 𝒪 A ] T) ∧[ 𝒪 A ] (βₐ n ==>ₐ T)    ≤⟨ Ⅰ ⟩
              j T                                       ≤⟨ Ⅱ ⟩
              𝒻₊ (U ∨[ 𝒪 X ] 𝒻 ⋆∙ T)                    ■
           where
            open PosetReasoning (poset-of (𝒪 A))
 
-           Ⅰ = ≼ᵏ-implies-≼ (‘ β m ’ ∧[ 𝒪 Patchₛ-A ] ¬‘ βₖ n ’) 𝒿 p T
+           Ⅰ = ≼ᵏ-implies-≼ (‘ βₐ m ’ ∧[ 𝒪 Patchₛ-A ] ¬‘ βₖ n ’) 𝒿 p T
            Ⅱ = ≼ᵏ-implies-≼ 𝒿 (f⁻₊ U) φ T
 
          Ⅰ = frame-homomorphisms-preserve-meets
               (𝒪 A)
               (𝒪 X)
               𝒻
-              (β m ∨[ 𝒪 A ] T)
-              (β n ==>ₐ T) ⁻¹
+              (βₐ m ∨[ 𝒪 A ] T)
+              (βₐ n ==>ₐ T) ⁻¹
          Ⅱ = adjunction-inequality-backwardₓ
               𝒻
               (U ∨[ 𝒪 X ] 𝒻 ⋆∙ T)
-              ((β m ∨[ 𝒪 A ] T) ∧[ 𝒪 A ] (β n ==>ₐ T))
+              ((βₐ m ∨[ 𝒪 A ] T) ∧[ 𝒪 A ] (βₐ n ==>ₐ T))
               ♣
 
-       ϟ : (𝒻 ⋆∙ β m ≤[ poset-of (𝒪 X) ] (U ∨[ 𝒪 X ] 𝒻 ⋆∙ β n)) holds
-       ϟ = igors-lemma-⇐ 𝒻 (β m) (β n) U ϡ
+       ϟ : (𝒻 ⋆∙ βₐ m ≤[ poset-of (𝒪 X) ] (U ∨[ 𝒪 X ] 𝒻 ⋆∙ βₐ n)) holds
+       ϟ = igors-lemma-⇐ 𝒻 (βₐ m) (βₐ n) U ϡ
 
-       ϑ : (𝒻 ⋆∙ β m ≤[ poset-of (𝒪 X) ] (𝒻 ⋆∙ β n ∨[ 𝒪 X ] U)) holds
-       ϑ = 𝒻 ⋆∙ β m               ≤⟨ ϟ ⟩
-           U ∨[ 𝒪 X ] 𝒻 ⋆∙ β n    ＝⟨ ∨[ 𝒪 X ]-is-commutative U (𝒻 ⋆∙ β n) ⟩ₚ
-           𝒻 ⋆∙ β n ∨[ 𝒪 X ] U    ■
+       ϑ : (𝒻 ⋆∙ βₐ m ≤[ poset-of (𝒪 X) ] (𝒻 ⋆∙ βₐ n ∨[ 𝒪 X ] U)) holds
+       ϑ = 𝒻 ⋆∙ βₐ m               ≤⟨ ϟ ⟩
+           U ∨[ 𝒪 X ] 𝒻 ⋆∙ βₐ n    ＝⟨ ∨[ 𝒪 X ]-is-commutative U (𝒻 ⋆∙ βₐ n) ⟩ₚ
+           𝒻 ⋆∙ βₐ n ∨[ 𝒪 X ] U    ■
             where
              open PosetReasoning (poset-of (𝒪 X))
 
-       goal : (((𝒻 ⋆∙ β m) ∧[ 𝒪 X ] ¬𝒻⋆ (β n)) ≤[ poset-of (𝒪 X) ] U) holds
-       goal = negation-∨-lemma₁ κ ϑ
+       goal : (((𝒻 ⋆∙ βₐ m) ∧[ 𝒪 X ] ¬𝒻⋆ (βₐ n)) ≤[ poset-of (𝒪 X) ] U) holds
+       goal = negation-∨-lemma₁ κ′ ϑ
 
 \end{code}
 
@@ -1074,17 +1097,18 @@ diagram commute.
 
  easy-lemma : (𝒻⁻₀@(f⁻₀ , _) : X ─c→ Patchₛ-A)
             → (n : Bₐ)
-            → is-complement-of (𝒪 X) (f⁻₀ ¬‘ βₖ n ’) (f⁻₀ ‘ β n ’)
+            → is-boolean-complement-of (𝒪 X) (f⁻₀ ¬‘ βₖ n ’) (f⁻₀ ‘ βₐ n ’) holds
  easy-lemma 𝒻⁻₀ n =
   frame-homomorphisms-preserve-complements (𝒪 Patchₛ-A) (𝒪 X) 𝒻⁻₀ †
    where
     open PatchComplementation A σᴰ
 
-    ‡ : is-boolean-complement-of (𝒪 Patchₛ-A) ¬‘ βₖ n ’ ‘ β n ’ holds
-    ‡ = open-complements-closed (β n) (pr₂ (βₖ n))
+    ‡ : is-boolean-complement-of (𝒪 Patchₛ-A) ¬‘ βₖ n ’ ‘ βₐ n ’ holds
+    ‡ = open-complements-closed (βₐ n) (pr₂ (βₖ n))
 
-    † : is-complement-of (𝒪 Patchₛ-A) ‘ β n ’ ¬‘ βₖ n ’
-    † = complementation-is-symmetric (𝒪 Patchₛ-A) ¬‘ βₖ n ’ ‘ β n ’ ‡
+    † : is-boolean-complement-of (𝒪 Patchₛ-A) ‘ βₐ n ’ ¬‘ βₖ n ’ holds
+    † = complementation-is-symmetric (𝒪 Patchₛ-A) ¬‘ βₖ n ’ ‘ βₐ n ’ ‡
+
 
 \end{code}
 
@@ -1100,34 +1124,34 @@ We call this lemma `commutes-with-open-nucleus`.
 \begin{code}
 
  commutes-with-open-nucleus : (𝒻⁻₀@(f⁻₀ , _) : X ─c→ Patchₛ-A)
-                            → ((n : Bₐ) → 𝒻 ⋆∙ (β n) ＝ f⁻₀ ‘ β n ’)
-                            → (n : Bₐ) →  ¬𝒻⋆ (β n) ＝ f⁻₀ ¬‘ βₖ n ’
+                            → ((n : Bₐ) → 𝒻 ⋆∙ (βₐ n) ＝ f⁻₀ ‘ βₐ n ’)
+                            → (n : Bₐ) →  ¬𝒻⋆ (βₐ n) ＝ f⁻₀ ¬‘ βₖ n ’
  commutes-with-open-nucleus 𝒻⁻₀@(f⁻₀ , _) ϑ n =
-  complements-are-unique (𝒪 X) (𝒻 ⋆∙ (β n)) (¬𝒻⋆ (β n)) (f⁻₀ ¬‘ βₖ n ’) φ ψ
+  complements-are-unique (𝒪 X) (𝒻 ⋆∙ (βₐ n)) (¬𝒻⋆ (βₐ n)) (f⁻₀ ¬‘ βₖ n ’) φ ψ
    where
-    open LemmasAboutHeytingComplementation X X-has-basis
+    open HeytingComplementationLemmas X X-has-basis
 
-    ν : is-clopen (𝒪 X) (𝒻 ⋆∙ β n) holds
-    ν = compacts-are-clopen-in-zero-dimensional-locales
-         (𝒪 X)
+    ν : is-clopen (𝒪 X) (𝒻 ⋆∙ (βₐ n)) holds
+    ν = compacts-are-clopen-in-zd-locales
+         X
          ∣ 𝕫ᴰ ∣
-         (𝒻 ⋆∙ (β n))
-         (μ (β n) (pr₂ (βₖ n)))
+         (𝒻 ⋆∙ βₐ n)
+         (μ (βₐ n) (κ n))
 
     C = pr₁ ν
 
-    C-complements-𝒻⋆βn : is-complement-of (𝒪 X) C (𝒻 ⋆∙ (β n))
+    C-complements-𝒻⋆βn : is-boolean-complement-of (𝒪 X) C (𝒻 ⋆∙ (βₐ n)) holds
     C-complements-𝒻⋆βn = pr₂ ν
 
-    φ : is-complement-of (𝒪 X) (¬𝒻⋆ (β n)) (𝒻 ⋆∙ β n)
+    φ : is-boolean-complement-of (𝒪 X) (¬𝒻⋆ (βₐ n)) (𝒻 ⋆∙ (βₐ n)) holds
     φ = transport
-         (λ - → is-complement-of (𝒪 X) - (𝒻 ⋆∙ β n))
-         (complement-is-heyting-complement (𝒻 ⋆∙ β n) C C-complements-𝒻⋆βn)
+         (λ - → is-boolean-complement-of (𝒪 X) - (𝒻 ⋆∙ (βₐ n)) holds)
+         (complement-is-heyting-complement (𝒻 ⋆∙ (βₐ n)) C C-complements-𝒻⋆βn)
          C-complements-𝒻⋆βn
 
-    ψ : is-complement-of (𝒪 X) (f⁻₀ ¬‘ βₖ n ’) (𝒻 ⋆∙ β n)
+    ψ : is-boolean-complement-of (𝒪 X) (f⁻₀ ¬‘ βₖ n ’) (𝒻 ⋆∙ (βₐ n)) holds
     ψ = transport
-         (λ - → is-complement-of (𝒪 X) (f⁻₀ ¬‘ βₖ n ’) -)
+         (λ - → is-boolean-complement-of (𝒪 X) (f⁻₀ ¬‘ βₖ n ’) - holds)
          (ϑ n ⁻¹)
          (easy-lemma 𝒻⁻₀ n)
 
@@ -1141,74 +1165,68 @@ prove that `𝒻⁻` makes the diagram commute.
  𝒻⁻-makes-the-diagram-commute : (U : ⟨ 𝒪 A ⟩) → 𝒻 ⋆∙ U  ＝ f⁻⁺ ‘ U ’
  𝒻⁻-makes-the-diagram-commute U = ≤-is-antisymmetric (poset-of (𝒪 X)) † ‡
   where
-   𝟎-is-basic : ∃ t ꞉ Bₐ , 𝟎[ 𝒪 A ] ＝ β t
-   𝟎-is-basic = compact-opens-are-basic-in-compact-frames
-                 (𝒪 A)
-                 (Bₐ , β)
-                 β-is-directed-basis
-                 (spectral-implies-compact (𝒪 A) ∣ σᴰ ∣)
-                 𝟎[ 𝒪 A ]
-                 (𝟎-is-compact (𝒪 A))
+   𝟎-is-basic : is-basic A 𝟎[ 𝒪 A ] A-directed-basisᴰ holds
+   𝟎-is-basic = compact-opens-are-basic A A-directed-basisᴰ 𝟎[ 𝒪 A ] (𝟎-is-compact A)
 
    ℒ : Fam 𝓤 Bₐ
-   ℒ = covering-index-family (𝒪 A) (Bₐ , β) β-is-basis-for-A U
+   ℒ = covering-index-family (𝒪 A) (Bₐ , βₐ) β-is-basis-for-A U
 
-   ℒ-covers-U : U ＝ ⋁[ 𝒪 A ] ⁅ β l ∣ l ε ℒ ⁆
-   ℒ-covers-U = covers (𝒪 A) (Bₐ , β) β-is-basis-for-A U
+   ℒ-covers-U : U ＝ ⋁[ 𝒪 A ] ⁅ βₐ l ∣ l ε ℒ ⁆
+   ℒ-covers-U = covers (𝒪 A) (Bₐ , βₐ) β-is-basis-for-A U
 
-   Ⅲ : ((⋁[ 𝒪 X ] ⁅ 𝒻 ⋆∙ (β l) ∣ l ε ℒ ⁆) ≤[ poset-of (𝒪 X) ] f⁻⁺ ‘ U ’) holds
-   Ⅲ = ⋁[ 𝒪 X ]-least ⁅ 𝒻 ⋆∙ (β l) ∣ l ε ℒ ⁆ (f⁻⁺ ‘ U ’ , ※)
+   Ⅲ : ((⋁[ 𝒪 X ] ⁅ 𝒻 ⋆∙ (βₐ l) ∣ l ε ℒ ⁆) ≤[ poset-of (𝒪 X) ] f⁻⁺ ‘ U ’) holds
+   Ⅲ = ⋁[ 𝒪 X ]-least ⁅ 𝒻 ⋆∙ (βₐ l) ∣ l ε ℒ ⁆ (f⁻⁺ ‘ U ’ , ※)
     where
      open Joins (λ x y → x ≤[ poset-of (𝒪 A) ] y)
       using () renaming (_is-lub-of_ to _is-lub-ofₐ_;
                          _is-an-upper-bound-of_ to _is-an-upper-bound-ofₐ_)
 
-     ※ : (l : index ℒ) → (𝒻 ⋆∙ (β (ℒ [ l ])) ≤[ poset-of (𝒪 X) ] f⁻⁺ ‘ U ’) holds
+     ※ : (l : index ℒ) → (𝒻 ⋆∙ (βₐ (ℒ [ l ])) ≤[ poset-of (𝒪 X) ] f⁻⁺ ‘ U ’) holds
      ※ l = ∥∥-rec
-            (holds-is-prop (𝒻 ⋆∙ (β (ℒ [ l ])) ≤[ poset-of (𝒪 X) ] f⁻⁺ ‘ U ’))
+            (holds-is-prop (𝒻 ⋆∙ (βₐ (ℒ [ l ])) ≤[ poset-of (𝒪 X) ] f⁻⁺ ‘ U ’))
             ♣
             𝟎-is-basic
       where
-       ♣ : Σ t ꞉ Bₐ , 𝟎[ 𝒪 A ] ＝ β t
-         → (𝒻 ⋆∙ β (ℒ [ l ]) ≤[ poset-of (𝒪 X) ] f⁻⁺ ‘ U ’) holds
-       ♣ (t , p) =
+       ♣ : Σ t ꞉ Bₐ , βₐ t ＝ 𝟎[ 𝒪 A ]
+         → (𝒻 ⋆∙ βₐ (ℒ [ l ]) ≤[ poset-of (𝒪 X) ] f⁻⁺ ‘ U ’) holds
+       ♣ (t , q) =
         let
          open PosetReasoning (poset-of (𝒪 X))
         in
-         𝒻 ⋆∙ (β (ℒ [ l ]))                         ＝⟨ 𝟏 ⟩ₚ
-         𝒻 ⋆∙ (β (ℒ [ l ])) ∧[ 𝒪 X ] 𝟏[ 𝒪 X ]       ＝⟨ 𝟐 ⟩ₚ
-         𝒻 ⋆∙ (β (ℒ [ l ])) ∧[ 𝒪 X ] ¬𝒻⋆ 𝟎[ 𝒪 A ]   ＝⟨ 𝟑 ⟩ₚ
-         𝒻 ⋆∙ (β (ℒ [ l ])) ∧[ 𝒪 X ] ¬𝒻⋆ (β t)      ≤⟨ 𝟒  ⟩
+         𝒻 ⋆∙ (βₐ (ℒ [ l ]))                         ＝⟨ 𝟏 ⟩ₚ
+         𝒻 ⋆∙ (βₐ (ℒ [ l ])) ∧[ 𝒪 X ] 𝟏[ 𝒪 X ]       ＝⟨ 𝟐 ⟩ₚ
+         𝒻 ⋆∙ (βₐ (ℒ [ l ])) ∧[ 𝒪 X ] ¬𝒻⋆ 𝟎[ 𝒪 A ]   ＝⟨ 𝟑 ⟩ₚ
+         𝒻 ⋆∙ (βₐ (ℒ [ l ])) ∧[ 𝒪 X ] ¬𝒻⋆ (βₐ t)      ≤⟨ 𝟒  ⟩
          f⁻⁺ ‘ U ’                                  ■
           where
            ♠ = λ n →
             let
              open PosetReasoning (poset-of (𝒪 A))
-             ※ = β (ℒ [ l ])                ≤⟨ ⋁[ 𝒪 A ]-upper ⁅ β l ∣ l ε ℒ ⁆ l ⟩
-                 ⋁[ 𝒪 A ] ⁅ β l ∣ l ε ℒ ⁆   ＝⟨ ℒ-covers-U ⁻¹                   ⟩ₚ
-                 U                          ≤⟨ ∨[ 𝒪 A ]-upper₁ U (β n)          ⟩
-                 U ∨[ 𝒪 A ] β n             ■
-             𝕒 = ap (λ - → (β (ℒ [ l ]) ∨[ 𝒪 A ] β n) ∧[ 𝒪 A ] (- ==>ₐ β n)) (p ⁻¹)
+             ※ = βₐ (ℒ [ l ])                ≤⟨ ⋁[ 𝒪 A ]-upper ⁅ βₐ l ∣ l ε ℒ ⁆ l ⟩
+                 ⋁[ 𝒪 A ] ⁅ βₐ l ∣ l ε ℒ ⁆   ＝⟨ ℒ-covers-U ⁻¹                   ⟩ₚ
+                 U                          ≤⟨ ∨[ 𝒪 A ]-upper₁ U (βₐ n)          ⟩
+                 U ∨[ 𝒪 A ] βₐ n             ■
+             𝕒 = ap (λ - → (βₐ (ℒ [ l ]) ∨[ 𝒪 A ] βₐ n) ∧[ 𝒪 A ] (- ==>ₐ βₐ n)) q
              𝕓 = ap
-                  (λ - → (β (ℒ [ l ]) ∨[ 𝒪 A ] β n) ∧[ 𝒪 A ] -)
+                  (λ - → (βₐ (ℒ [ l ]) ∨[ 𝒪 A ] βₐ n) ∧[ 𝒪 A ] -)
                   (only-𝟏-is-above-𝟏
                     (𝒪 A)
-                    (𝟎[ 𝒪 A ] ==>ₐ β n)
-                    (ex-falso-quodlibetₐ (β n)))
-             𝕔 = 𝟏-right-unit-of-∧ (𝒪 A) (β (ℒ [ l ]) ∨[ 𝒪 A ] β n)
-             𝕕 = ∨[ 𝒪 A ]-least ※ (∨[ 𝒪 A ]-upper₂ U (β n))
+                    (𝟎[ 𝒪 A ] ==>ₐ βₐ n)
+                    (ex-falso-quodlibetₐ (βₐ n)))
+             𝕔 = 𝟏-right-unit-of-∧ (𝒪 A) (βₐ (ℒ [ l ]) ∨[ 𝒪 A ] βₐ n)
+             𝕕 = ∨[ 𝒪 A ]-least ※ (∨[ 𝒪 A ]-upper₂ U (βₐ n))
             in
-             (β (ℒ [ l ]) ∨[ 𝒪 A ] β n) ∧[ 𝒪 A ] (β t ==>ₐ β n)      ＝⟨ 𝕒 ⟩ₚ
-             (β (ℒ [ l ]) ∨[ 𝒪 A ] β n) ∧[ 𝒪 A ] (𝟎[ 𝒪 A ] ==>ₐ β n) ＝⟨ 𝕓 ⟩ₚ
-             (β (ℒ [ l ]) ∨[ 𝒪 A ] β n) ∧[ 𝒪 A ] 𝟏[ 𝒪 A ]            ＝⟨ 𝕔 ⟩ₚ
-             β (ℒ [ l ]) ∨[ 𝒪 A ] β n                                ≤⟨ 𝕕  ⟩
-             U ∨[ 𝒪 A ] β n                                          ■
+             (βₐ (ℒ [ l ]) ∨[ 𝒪 A ] βₐ n) ∧[ 𝒪 A ] (βₐ t ==>ₐ βₐ n)      ＝⟨ 𝕒 ⟩ₚ
+             (βₐ (ℒ [ l ]) ∨[ 𝒪 A ] βₐ n) ∧[ 𝒪 A ] (𝟎[ 𝒪 A ] ==>ₐ βₐ n) ＝⟨ 𝕓 ⟩ₚ
+             (βₐ (ℒ [ l ]) ∨[ 𝒪 A ] βₐ n) ∧[ 𝒪 A ] 𝟏[ 𝒪 A ]            ＝⟨ 𝕔 ⟩ₚ
+             βₐ (ℒ [ l ]) ∨[ 𝒪 A ] βₐ n                                ≤⟨ 𝕕  ⟩
+             U ∨[ 𝒪 A ] βₐ n                                          ■
 
-           𝟏 = 𝟏-right-unit-of-∧ (𝒪 X) (𝒻 ⋆∙ (β (ℒ [ l ]))) ⁻¹
-           𝟐 = ap (λ - → 𝒻 ⋆∙ β (ℒ [ l ]) ∧[ 𝒪 X ] -)   (¬𝒻⋆𝟎-is-𝟏 ⁻¹)
-           𝟑 = ap (λ - → 𝒻 ⋆∙ β (ℒ [ l ]) ∧[ 𝒪 X ] ¬𝒻⋆ -) p
+           𝟏 = 𝟏-right-unit-of-∧ (𝒪 X) (𝒻 ⋆∙ (βₐ (ℒ [ l ]))) ⁻¹
+           𝟐 = ap (λ - → 𝒻 ⋆∙ βₐ (ℒ [ l ]) ∧[ 𝒪 X ] -)   (¬𝒻⋆𝟎-is-𝟏 ⁻¹)
+           𝟑 = ap (λ - → 𝒻 ⋆∙ βₐ (ℒ [ l ]) ∧[ 𝒪 X ] ¬𝒻⋆ -) (q ⁻¹)
            𝟒 = ⋁[ 𝒪 X ]-upper
-                ⁅ 𝒻 ⋆∙ β m ∧[ 𝒪 X ] ¬𝒻⋆ (β n) ∣ (m , n , p) ∶ below ‘ U ’ ⁆
+                ⁅ 𝒻 ⋆∙ βₐ m ∧[ 𝒪 X ] ¬𝒻⋆ (βₐ n) ∣ (m , n , p) ∶ below ‘ U ’ ⁆
                 (ℒ [ l ] , t , ♠)
 
    † : (𝒻 ⋆∙ U ≤[ poset-of (𝒪 X) ] f⁻⁺ ‘ U ’) holds
@@ -1217,12 +1235,12 @@ prove that `𝒻⁻` makes the diagram commute.
      open PosetReasoning (poset-of (𝒪 X))
     in
      𝒻 ⋆∙ U                            ＝⟨ Ⅰ ⟩ₚ
-     𝒻 ⋆∙ (⋁[ 𝒪 A ] ⁅ β l ∣ l ε ℒ ⁆)   ＝⟨ Ⅱ ⟩ₚ
-     ⋁[ 𝒪 X ] ⁅ 𝒻 ⋆∙ (β l) ∣ l ε ℒ ⁆   ≤⟨  Ⅲ ⟩
+     𝒻 ⋆∙ (⋁[ 𝒪 A ] ⁅ βₐ l ∣ l ε ℒ ⁆)   ＝⟨ Ⅱ ⟩ₚ
+     ⋁[ 𝒪 X ] ⁅ 𝒻 ⋆∙ (βₐ l) ∣ l ε ℒ ⁆   ≤⟨  Ⅲ ⟩
      f⁻⁺ ‘ U ’                         ■
       where
        Ⅰ = ap (𝒻 ⋆∙_) ℒ-covers-U
-       Ⅱ = frame-homomorphisms-preserve-all-joins (𝒪 A) (𝒪 X) 𝒻 ⁅ β l ∣ l ε ℒ ⁆
+       Ⅱ = frame-homomorphisms-preserve-all-joins (𝒪 A) (𝒪 X) 𝒻 ⁅ βₐ l ∣ l ε ℒ ⁆
 
    ‡ : (f⁻⁺ ‘ U ’ ≤[ poset-of (𝒪 X) ] 𝒻 ⋆∙ U) holds
    ‡ = f⁻⁺  ‘ U ’  ＝⟨ f⁻⁺₂-equiv-f⁻⁺₁ ‘ U ’ ⟩ₚ
@@ -1232,28 +1250,28 @@ prove that `𝒻⁻` makes the diagram commute.
      open PosetReasoning (poset-of (𝒪 X))
 
      ϟ : (n : Bₐ)
-       → ((𝒻 ⋆∙ (U ∨[ 𝒪 A ] β n) ∧ₓ ¬𝒻⋆ (β n)) ≤ₓ 𝒻 ⋆∙ U) holds
+       → ((𝒻 ⋆∙ (U ∨[ 𝒪 A ] βₐ n) ∧ₓ ¬𝒻⋆ (βₐ n)) ≤ₓ 𝒻 ⋆∙ U) holds
      ϟ n =
-      𝒻 ⋆∙ (U ∨[ 𝒪 A ] β n) ∧ₓ ¬𝒻⋆ (β n)                         ＝⟨ 𝟏 ⟩ₚ
-      (𝒻 ⋆∙ U ∨[ 𝒪 X ] 𝒻 ⋆∙ β n) ∧ₓ ((𝒻 ⋆∙ (β n)) ==> 𝟎[ 𝒪 X ])  ＝⟨ 𝟐 ⟩ₚ
-      (𝒻 ⋆∙ U ∧ₓ ¬𝒻⋆ (β n)) ∨[ 𝒪 X ] (𝒻 ⋆∙ (β n) ∧ₓ ¬𝒻⋆ (β n))   ≤⟨  𝟑 ⟩
-      𝒻 ⋆∙ U ∨[ 𝒪 X ] (𝒻 ⋆∙ (β n) ∧ₓ ¬𝒻⋆ (β n))                  ≤⟨  𝟒 ⟩
+      𝒻 ⋆∙ (U ∨[ 𝒪 A ] βₐ n) ∧ₓ ¬𝒻⋆ (βₐ n)                         ＝⟨ 𝟏 ⟩ₚ
+      (𝒻 ⋆∙ U ∨[ 𝒪 X ] 𝒻 ⋆∙ βₐ n) ∧ₓ ((𝒻 ⋆∙ (βₐ n)) ==> 𝟎[ 𝒪 X ])  ＝⟨ 𝟐 ⟩ₚ
+      (𝒻 ⋆∙ U ∧ₓ ¬𝒻⋆ (βₐ n)) ∨[ 𝒪 X ] (𝒻 ⋆∙ (βₐ n) ∧ₓ ¬𝒻⋆ (βₐ n))   ≤⟨  𝟑 ⟩
+      𝒻 ⋆∙ U ∨[ 𝒪 X ] (𝒻 ⋆∙ (βₐ n) ∧ₓ ¬𝒻⋆ (βₐ n))                  ≤⟨  𝟒 ⟩
       (𝒻 ⋆∙ U) ∨[ 𝒪 X ] 𝟎[ 𝒪 X ]                                 ＝⟨ 𝟓 ⟩ₚ
       𝒻 ⋆∙ U                                                     ■
        where
         𝟏 = ap
-             (λ - → - ∧[ 𝒪 X ] ¬𝒻⋆ (β n))
-             (frame-homomorphisms-preserve-binary-joins (𝒪 A) (𝒪 X) 𝒻 U (β n))
+             (λ - → - ∧[ 𝒪 X ] ¬𝒻⋆ (βₐ n))
+             (frame-homomorphisms-preserve-binary-joins (𝒪 A) (𝒪 X) 𝒻 U (βₐ n))
         𝟐 = binary-distributivity-right (𝒪 X)
         𝟑 = ∨[ 𝒪 X ]-left-monotone
              (∧[ 𝒪 X ]-lower₁
                (𝒻 ⋆∙ U)
-               ((𝒻 ⋆∙ β n) ==> 𝟎[ 𝒪 X ]))
-        𝟒 = ∨[ 𝒪 X ]-right-monotone (mp-left (𝒻 ⋆∙ β n) 𝟎[ 𝒪 X ])
+               ((𝒻 ⋆∙ βₐ n) ==> 𝟎[ 𝒪 X ]))
+        𝟒 = ∨[ 𝒪 X ]-right-monotone (mp-left (𝒻 ⋆∙ βₐ n) 𝟎[ 𝒪 X ])
         𝟓 =  𝟎-left-unit-of-∨ (𝒪 X) (𝒻 ⋆∙ U)
 
      ※ = ⋁[ 𝒪 X ]-least
-          ⁅ 𝒻 ⋆∙ (U ∨[ 𝒪 A ] β n) ∧[ 𝒪 X ] ¬𝒻⋆ (β n) ∣ n ∶ Bₐ ⁆
+          ⁅ 𝒻 ⋆∙ (U ∨[ 𝒪 A ] βₐ n) ∧[ 𝒪 X ] ¬𝒻⋆ (βₐ n) ∣ n ∶ Bₐ ⁆
           (𝒻 ⋆∙ U , ϟ)
 
 \end{code}
@@ -1282,16 +1300,16 @@ proof.
   f⁻⁺ (⋁ₙ ⁅ (𝔠 k) ⋏ (𝔬 l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆)            ＝⟨ Ⅱ ⟩
   ⋁[ 𝒪 X ] ⁅ f⁻⁺ (𝔠 k ⋏ 𝔬 l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆          ＝⟨ Ⅲ ⟩
   ⋁[ 𝒪 X ] ⁅ f⁻⁺ (𝔠 k) ∧ₓ f⁻⁺ (𝔬 l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆   ＝⟨ Ⅳ ⟩
-  ⋁[ 𝒪 X ] ⁅ f⁻⁺ (𝔠 k) ∧ₓ ¬𝒻⋆ (β l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆   ＝⟨ Ⅴ ⟩
-  ⋁[ 𝒪 X ] ⁅ 𝒻 ⋆∙ (β k) ∧ₓ ¬𝒻⋆ (β l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆  ＝⟨ Ⅵ ⟩
-  ⋁[ 𝒪 X ] ⁅ 𝒻 ⋆∙ (β k) ∧ₓ f⁻₀ (𝔬 l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆  ＝⟨ Ⅶ ⟩
+  ⋁[ 𝒪 X ] ⁅ f⁻⁺ (𝔠 k) ∧ₓ ¬𝒻⋆ (βₐ l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆   ＝⟨ Ⅴ ⟩
+  ⋁[ 𝒪 X ] ⁅ 𝒻 ⋆∙ (βₐ k) ∧ₓ ¬𝒻⋆ (βₐ l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆  ＝⟨ Ⅵ ⟩
+  ⋁[ 𝒪 X ] ⁅ 𝒻 ⋆∙ (βₐ k) ∧ₓ f⁻₀ (𝔬 l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆  ＝⟨ Ⅶ ⟩
   ⋁[ 𝒪 X ] ⁅ f⁻₀ (𝔠 k) ∧ₓ f⁻₀ (𝔬 l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆   ＝⟨ Ⅷ ⟩
   ⋁[ 𝒪 X ] ⁅ f⁻₀ (𝔠 k ⋏ 𝔬 l) ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆          ＝⟨ Ⅸ ⟩
   f⁻₀ (⋁ₙ ⁅ 𝔠 k ⋏ 𝔬 l ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆)                ＝⟨ Ⅹ ⟩
   f⁻₀ 𝒿                                                                 ∎
    where
-    open BasisOfPatch A σᴰ
-    open PatchConstruction A ∣ σᴰ ∣ using (⋁ₙ; _⋏_)
+    open BasisOfPatch A σᴰ hiding (σ)
+    open PatchConstruction A σ using (⋁ₙ; _⋏_)
 
     ν : 𝒿 ＝ ⋁[ 𝒪 Patchₛ-A ] ⁅ 𝔠 k ⋏ 𝔬 l ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆
     ν = main-covering-lemma 𝒿
@@ -1314,25 +1332,25 @@ proof.
             (λ - → (f⁻⁺ (𝔠 k)) ∧[ 𝒪 X ] -)
             (commutes-with-open-nucleus 𝒻⁻⁺ ※ l ⁻¹) }))
              where
-              ※ = 𝒻⁻-makes-the-diagram-commute ∘ β
+              ※ = 𝒻⁻-makes-the-diagram-commute ∘ βₐ
     Ⅴ = ap
          ctx
          ((dfunext fe (λ { ((k , l) , p) →
             ap
-             (λ - → - ∧[ 𝒪 X ] ¬𝒻⋆ (β l))
-             (𝒻⁻-makes-the-diagram-commute (β k) ⁻¹) })))
+             (λ - → - ∧[ 𝒪 X ] ¬𝒻⋆ (βₐ l))
+             (𝒻⁻-makes-the-diagram-commute (βₐ k) ⁻¹) })))
     Ⅵ = ap
          ctx
          (dfunext fe λ { ((k , l) , p) →
            ap
-            (λ - → 𝒻 ⋆∙ (β k) ∧[ 𝒪 X ] -)
-            (commutes-with-open-nucleus 𝒻⁻₀ (ϑ ∘ β) l) })
+            (λ - → 𝒻 ⋆∙ (βₐ k) ∧[ 𝒪 X ] -)
+            (commutes-with-open-nucleus 𝒻⁻₀ (ϑ ∘ βₐ) l) })
     Ⅶ = ap
          ctx
          (dfunext fe λ { ((k , l) , p) →
            ap
             (λ - → - ∧[ 𝒪 X ] f⁻₀ (𝔬 l))
-            (ϑ (β k)) })
+            (ϑ (βₐ k)) })
     Ⅷ = ap
          ctx
          (dfunext fe λ { ((k , l) , p) →
@@ -1364,7 +1382,7 @@ proof.
        → is-prop (is-a-frame-homomorphism (𝒪 Patchₛ-A) (𝒪 X) ℊ⁻ holds)
     γ ℊ⁻ = holds-is-prop (is-a-frame-homomorphism (𝒪 Patchₛ-A) (𝒪 X) ℊ⁻)
 
-    open LemmasAboutHeytingComplementation X X-has-basis
+    open HeytingComplementationLemmas X X-has-basis
     open BasisOfPatch A σᴰ
 
     † : (𝒿 : ⟨ 𝒪 Patchₛ-A ⟩) → f⁻⁺ 𝒿 ＝ f⁻₀ 𝒿
@@ -1374,26 +1392,33 @@ proof.
  proof-of-ump =
   ((f⁻⁺ , 𝒻⁻-α , 𝒻⁻-β , 𝒻⁻-γ) , 𝒻⁻-makes-the-diagram-commute) , 𝒻⁻-is-unique
 
-ump-of-patch : {𝓤 : Universe}
-             → (A : Locale (𝓤 ⁺) 𝓤 𝓤)
-             → (σ : is-spectral (𝒪 A) holds)
+ump-of-patch : {𝓤  : Universe}
+             → (A  : Locale (𝓤 ⁺) 𝓤 𝓤)
+             → (σ  : is-spectral A holds)
+             → (sk : has-small-𝒦 A)
              → (X : Locale (𝓤 ⁺) 𝓤 𝓤)
-             → is-stone (𝒪 X) holds
+             → is-stone X holds
              → (𝒻@(f , _) : X ─c→ A)
-             → is-spectral-map (𝒪 A) (𝒪 X) 𝒻 holds
+             → is-spectral-map A X 𝒻 holds
              → let
+                σ′ : spectralᴰ A
+                σ′ = spectral-and-small-𝒦-implies-spectralᴰ A σ sk
+
                 open PatchConstruction A σ renaming (Patch to Patch-A)
                 open ClosedNucleus A σ
-                open OpenNucleus A σ
+                open OpenNucleus A σ′
                in
                 ∃! 𝒻⁻ ꞉ X ─c→ Patch-A , ((U : ⟨ 𝒪 A ⟩) → f U  ＝ 𝒻⁻ .pr₁ ‘ U ’)
-ump-of-patch {𝓤} A σ X 𝕤 𝒻 μ = ∥∥-rec₂ (being-singleton-is-prop fe) γ σ (pr₂ 𝕤)
+ump-of-patch {𝓤} A σ sk X 𝕤 𝒻 μ = ∥∥-rec₂ (being-singleton-is-prop fe) γ ∣ σ′ ∣ (pr₂ 𝕤)
  where
+  σ′ : spectralᴰ A
+  σ′ = spectral-and-small-𝒦-implies-spectralᴰ A σ sk
+
   open PatchConstruction A σ renaming (Patch to Patch-A)
   open ClosedNucleus A σ
-  open OpenNucleus A σ
+  open OpenNucleus A σ′
 
-  γ : spectralᴰ (𝒪 A)
+  γ : spectralᴰ A
     → zero-dimensionalᴰ (𝒪 X)
     → ∃! 𝒻⁻ ꞉ (X ─c→ Patch-A) , ((U : ⟨ 𝒪 A ⟩) → 𝒻 .pr₁ U  ＝ 𝒻⁻ .pr₁ ‘ U ’)
   γ σᴰ 𝕫ᴰ = (𝒻⁻₀ , 𝒻⁻-makes-the-diagram-commute) , 𝔠
@@ -1457,7 +1482,7 @@ ump-of-patch {𝓤} A σ X 𝕤 𝒻 μ = ∥∥-rec₂ (being-singleton-is-prop
                      (⋁[ 𝒪 Patchₛ-A ]-upper S i)
 
              φ₂ : ((⋁[ 𝒪 Patch-A ] S) ≼ᵏ (⋁[ 𝒪 Patchₛ-A ] S)) holds
-             φ₂ = ⋁[ 𝒪 Patch-A ]-least S ((⋁[ 𝒪 Patchₛ-A ] S) , ψ₂) ∘ β
+             φ₂ = ⋁[ 𝒪 Patch-A ]-least S ((⋁[ 𝒪 Patchₛ-A ] S) , ψ₂) ∘ βₐ
 
            ‡ : ((U , _) : upper-bound ⁅ f⁻₁ U ∣ U ε S ⁆)
              → (f⁻₁ (⋁[ 𝒪 Patchₛ-A ] S) ≤ₓ U) holds
@@ -1475,5 +1500,11 @@ ump-of-patch {𝓤} A σ X 𝕤 𝒻 μ = ∥∥-rec₂ (being-singleton-is-prop
 
        ϟ : (𝒿 : ⟨ 𝒪 Patch-A ⟩) → f⁻⁺ 𝒿 ＝ f⁻₁ 𝒿
        ϟ = 𝒻⁻-is-unique-ext 𝒻⁻₁′ p
+
+{--
+
+-- --}
+-- --}
+-- --}
 
 \end{code}

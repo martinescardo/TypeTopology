@@ -1,4 +1,4 @@
-Tom de Jong, 4 & 5 April 2022.
+.Tom de Jong, 4 & 5 April 2022.
 
 Assuming set quotients, we derive propositional truncations in the
 presence of function extensionality.

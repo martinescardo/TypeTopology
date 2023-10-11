@@ -16,7 +16,7 @@ import Quotient.Large-Variation
 
  * Type
 
-   Defines the existence small quotients type and its basic theory.
+   Defines the existence of small quotients type and its basic theory.
 
  * Large
 
