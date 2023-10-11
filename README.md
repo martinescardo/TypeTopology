@@ -42,22 +42,23 @@ Please add yourself the first time you contribute.
 * Andrew Sneap
 * Ayberk Tosun
 * Brendan Hart
+* Bruno Paiva
 * Chuangjie Xu
 * Cory Knapp
 * Ettore Aldrovandi
-* Fredrik Nordvall Forsberg (ii)
-* Igor Arrieta (iii)
+* Fredrik Nordvall Forsberg
+* Igor Arrieta (ii)
 * Jon Sterling
 * Keri D'Angelo
 * Lane Biocini
-* Marc Bezem (i)
+* Marc Bezem
 * Martin Escardo
 * Nicolai Kraus
 * Ohad Kammar
 * Paul Levy (i)
 * Paulo Oliva
-* Peter Dybjer (i)
-* Thierry Coquand (i)
+* Peter Dybjer
+* Thierry Coquand
 * Todd Waugh Ambridge
 * Tom de Jong
 * Vincent Rahli
@@ -66,11 +67,7 @@ Please add yourself the first time you contribute.
 they contributed to constructions, theorems and proofs via the hands
 of Martin Escardo.
 
-(ii) These authors didn't write any single line of Agda code here, but
-they contributed to constructions, theorems and proofs via the hands
-of Tom de Jong.
-
-(iii) These authors didn't write single line of Agda code here, but they
+(ii) These authors didn't write single line of Agda code here, but they
 contributed to constructions, theorems and proofs via the hands of Ayberk
 Tosun.
 
@@ -190,9 +187,12 @@ Tosun.
 
 1. Tom de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg and Chuangjie
    Xu. *Set-Theoretic and Type-Theoretic Ordinals Coincide.*
-   To appear at [LICS 2023][LICS23]. June 2023.
+   [Logic in Computer Science (LICS)](https://dl.acm.org/conference/lics),
+   Proceedings of [LICS 2023][LICS23]. June 2023.
 
-   https://arxiv.org/abs/2301.10696
+   https://doi.org/10.1109/LICS56636.2023.10175762
+
+   Publicly available at https://arxiv.org/abs/2301.10696.
 
 1. Tom de Jong and Martín H. Escardó. *On Small Types in Univalent
    Foundations.* [Logical Methods in Computer

@@ -237,7 +237,7 @@ global-≃-ap : Univalence
             → (A : global-property-of-types)
             → cumulative A
             → (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) → X ≃ Y → A X ≃ A Y
-global-≃-ap ua = global-≃-ap' ua id
+global-≃-ap ua = global-≃-ap' ua (λ 𝓤 → 𝓤)
 
 global-≃-ap⁺ : Univalence
             → (A : global-property-of-types⁺)

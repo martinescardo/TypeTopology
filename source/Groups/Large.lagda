@@ -1,5 +1,5 @@
 Martin Escardo
-15 February 2021.
+15 February 2021, updated September 2023.
 
 In collaboration with Marc Bezem, Thierry Coquand and Peter Dybjer.
 
@@ -10,10 +10,12 @@ in the successor 𝓤⁺ and doesn't have an equivalent copy in 𝓤.
 
 Notice that if P is a proposition the unique map P → 𝟙 is an
 embedding, but P may be large while 𝟙 is small. Hence it is not the
-case in general that for an embedding X → Y, is Y is small then X is
+case in general that for an embedding X → Y, if Y is small then X is
 small. This is the case, however, if the embedding has small fibers
 (in which case we say that it is small).
 
+Most of the work for the conclusions of this file is done, and
+explained, in the module Groups.Free.
 
 \begin{code}
 
@@ -44,6 +46,13 @@ open import UF.Sets
 open import UF.Size
 open import UF.SmallnessProperties
 
+\end{code}
+
+Given any large, locally small set A, we can construct a large group
+with no small copy.
+
+\begin{code}
+
 large-group-with-no-small-copy : (Σ A ꞉ 𝓤 ⁺ ̇  , is-set A
                                               × is-large A
                                               × is-locally-small A)
@@ -52,7 +61,7 @@ large-group-with-no-small-copy : (Σ A ꞉ 𝓤 ⁺ ̇  , is-set A
 large-group-with-no-small-copy {𝓤} (A , A-is-set , A-is-large , A-ls) = 𝓕 , γ
  where
   g : good-freely-generated-group-exists A (𝓤 ⁺) 𝓤
-  g = free-groups-of-large-locally-small-types pt fe pe A A-ls
+  g = Theorem₂[free-groups-of-large-locally-small-types] pt fe pe A A-ls
 
   open good-freely-generated-group-exists g
 
@@ -78,7 +87,7 @@ small copy.
 
 Remarks.
 
-What can we choose for the large, locally small set?
+1. What can we choose for the large, locally small set?
 
  * Our choice is the type of ordinals.
 
@@ -87,14 +96,23 @@ What can we choose for the large, locally small set?
     (i)   The function type 𝓤 → 𝟚.
     (ii)  The function type 𝓤 → Ω 𝓤.
     (iii) The set truncation of 𝓤.
+    (iv)  The type of iterative sets following Leversha, Aczel and Gylterud.
 
    The candidate (i) doesn't work in the absence of classical logic,
    because there is a non-constant function 𝓤 → 𝟚 if and only if de
    Morgan Law holds (which is equivalent to excluded middle for
    negative propositions). https://doi.org/10.1016/j.apal.2016.04.010
 
-   The candidates (ii) and (iii) may work, but so far we haven't succeeded.
+   The candidates (ii-iv) may work, but so far we haven't succeeded.
 
  * Another question is whether there is a large, discrete set, as this
    would considerably simplify the construction of the free group. One
    of us conjectures that there isn't, in general, such a set.
+
+2. Notice that if the axiom of choice is available, we don't need to
+   use free groups as above, because the axiom of choice is equivalent
+   to the statement that any non-empty set has some group
+   structure. Although we don't get an explicit group with this
+   construction, its existence is enough in order to prove that the
+   type of groups in universe 𝓤 is not (canonically) equivalent to the
+   type of groups in the next universe 𝓤⁺.

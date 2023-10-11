@@ -20,7 +20,7 @@ open import Posets.Poset fe
 open import Slice.Family
 open import UF.ImageAndSurjection pt
 open import UF.Logic
-open import UF.Powerset
+open import UF.Powerset-MultiUniverse
 open import UF.SubtypeClassifier
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
@@ -65,14 +65,14 @@ I find it convenient to define the type of directed families.
  ⋁ (S , δ) =
   the-sup (underlying-order 𝓓) (directed-completeness 𝓓 (index S) (S [_]) δ )
 
- is-upwards-closed : (⟨ 𝓓 ⟩ → Ω 𝓦) → Ω (𝓤 ⊔ 𝓣 ⊔ 𝓦)
+ is-upwards-closed : 𝓟 {𝓦} ⟨ 𝓓 ⟩ → Ω (𝓤 ⊔ 𝓣 ⊔ 𝓦)
  is-upwards-closed P = Ɐ x ꞉ ⟨ 𝓓 ⟩ , Ɐ y ꞉ ⟨ 𝓓 ⟩ , P x ⇒ x ⊑⟨ 𝓓 ⟩ₚ y ⇒ P y
 
- is-inaccessible-by-directed-joins : (⟨ 𝓓 ⟩ → Ω 𝓦) → Ω (𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ⊔ 𝓦)
+ is-inaccessible-by-directed-joins : 𝓟 {𝓦} ⟨ 𝓓 ⟩ → Ω (𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ⊔ 𝓦)
  is-inaccessible-by-directed-joins P =
   Ɐ (S , δ) ꞉ Fam↑ , P (⋁ (S , δ)) ⇒ (Ǝ i ꞉ index S , P (S [ i ]) holds)
 
- is-scott-open : (⟨ 𝓓 ⟩ → Ω 𝓦) → Ω (𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ⊔ 𝓦)
+ is-scott-open : 𝓟 {𝓦} ⟨ 𝓓 ⟩ → Ω (𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ⊔ 𝓦)
  is-scott-open P = is-upwards-closed P ∧ is-inaccessible-by-directed-joins P
 
  𝒪ₛ : 𝓤 ⊔ 𝓦 ⁺ ⊔ 𝓥 ⁺ ⊔ 𝓣  ̇

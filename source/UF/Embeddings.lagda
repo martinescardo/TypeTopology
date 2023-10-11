@@ -571,6 +571,34 @@ unique-from-𝟘-is-embedding x (y , p) = 𝟘-elim y
 
 \end{code}
 
+Added by Martin Escardo and Tom de Jong 10th October 2023.
+
+\begin{code}
+
+∘-is-essential : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+                 {f : X → Y} {g : Y → Z}
+               → is-essential f 𝓣
+               → is-essential g 𝓣
+               → is-essential (g ∘ f) 𝓣
+∘-is-essential {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} {Z} {f} {g} f-ess g-ess W h ghf-emb = II
+ where
+  I : is-embedding (h ∘ g)
+  I = f-ess W (h ∘ g) ghf-emb
+
+  II : is-embedding h
+  II = g-ess W h I
+
+\end{code}
+
+We originally hoped to prove that Idtofun was essential, but it's not:
+while the composite
+
+           Idtofun            evaluate at 0
+  (𝟚 ≃ 𝟚) ---------→ (𝟚 → 𝟚) ---------------> 𝟚
+
+is an embedding, the evaluation map isn't.
+
+
 Fixities:
 
 \begin{code}

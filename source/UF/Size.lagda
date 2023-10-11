@@ -449,8 +449,9 @@ the second universe 𝓤₁:
 Ω-resizing₁-≃-from-pr-pe-fe {𝓤} ρ pe fe =
   ≃-sym (resizing-condition (Ω-resizing₁-from-pr-pe-fe {𝓤} ρ pe fe))
 
-Ω-𝓤₀-lives-in-𝓤₁ : universe-of (Ω 𝓤₀) ＝ 𝓤₁
-Ω-𝓤₀-lives-in-𝓤₁ = refl
+private
+ Ω-𝓤₀-lives-in-𝓤₁ : 𝓤₁ ̇
+ Ω-𝓤₀-lives-in-𝓤₁ = Ω 𝓤₀
 
 \end{code}
 
@@ -548,20 +549,22 @@ universes).
 
 \begin{code}
 
-∥_∥⁺ : 𝓤 ̇ → 𝓤 ⁺ ̇
-∥ X ∥⁺ = (P : universe-of X ̇ ) → is-prop P → (X → P) → P
+module _ {𝓤 : Universe} where
 
-∥∥⁺-is-prop : FunExt → {X : 𝓤 ̇ } → is-prop (∥ X ∥⁺)
-∥∥⁺-is-prop fe = Π-is-prop (fe _ _)
-                   (λ P → Π-is-prop (fe _ _)
-                           (λ i → Π-is-prop (fe _ _)
-                                    (λ u → i)))
+ ∥_∥⁺ : 𝓤 ̇ → 𝓤 ⁺ ̇
+ ∥ X ∥⁺ = (P :  𝓤 ̇ ) → is-prop P → (X → P) → P
 
-∣_∣⁺ : {X : 𝓤 ̇ } → X → ∥ X ∥⁺
-∣ x ∣⁺ = λ P i u → u x
+ ∥∥⁺-is-prop : FunExt → {X : 𝓤 ̇ } → is-prop (∥ X ∥⁺)
+ ∥∥⁺-is-prop fe = Π-is-prop (fe _ _)
+                    (λ P → Π-is-prop (fe _ _)
+                            (λ i → Π-is-prop (fe _ _)
+                                     (λ u → i)))
 
-∥∥⁺-rec : {X P : 𝓤 ̇ } → is-prop P → (X → P) → ∥ X ∥⁺ → P
-∥∥⁺-rec {𝓤} {X} {P} i u s = s P i u
+ ∣_∣⁺ : {X : 𝓤 ̇ } → X → ∥ X ∥⁺
+ ∣ x ∣⁺ = λ P i u → u x
+
+ ∥∥⁺-rec : {X P : 𝓤 ̇ } → is-prop P → (X → P) → ∥ X ∥⁺ → P
+ ∥∥⁺-rec {X} {P} i u s = s P i u
 
 resizing-truncation : FunExt
                     → Propositional-resizing
@@ -698,6 +701,17 @@ is-small {𝓤} X = X is 𝓤 small
 
 is-large : 𝓤 ⁺ ̇ → 𝓤 ⁺ ̇
 is-large X = ¬ is-small X
+
+universes-are-large : is-large (𝓤 ̇ )
+universes-are-large = II
+ where
+  open import Various.LawvereFPT
+
+  I : ¬ (Σ X ꞉ 𝓤 ̇ , 𝓤 ̇ ≃ X)
+  I = generalized-Coquand.Theorem
+
+  II : ¬ (Σ X ꞉ 𝓤 ̇ , X ≃ 𝓤 ̇ )
+  II = contrapositive (λ (X , 𝕗) → (X , ≃-sym 𝕗)) I
 
 _is_small-map : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
               → (X → Y)

@@ -30,13 +30,6 @@ private
  fe' : FunExt
  fe' 𝓤 𝓥 = fe {𝓤} {𝓥}
 
-\end{code}
-
-There are more imports than needed here. But let's keep them until we
-add all we wanted to add, and clean-up when we finish.
-
-\begin{code}
-
 open import InjectiveTypes.Blackboard fe'
 open import Iterative.Multisets 𝓤
 open import Iterative.Ordinals ua 𝓤
@@ -93,3 +86,9 @@ Ord-is-retract-of-𝕍 pe = embedding-retract Ord 𝕍 Ord-to-𝕍
                           (ainjective-resizing {𝓤} {𝓤} pe (Ordinal 𝓤)
                             (Ordinal-is-ainjective (ua 𝓤)))
 \end{code}
+
+It is actually possible to prove this without propositional
+resizing. For the retraction, we map an iterative set to its rank. For
+this we need set quotients or, equivalently, set replacement. This is
+done in [5] (see the list of references in the index file) for the
+higher-inductive definition of 𝕍.
