@@ -23,6 +23,13 @@ open import PathSequences.Inversion
 
 module PathSequences.Rotations {X : 𝓤 ̇ } where
 
+\end{code}
+
+The order of the arguments p, q, r, below is the same as in the
+original library. It follows their occurrences in the output.
+
+\begin{code}
+
 pre-rotate-in : {x y z : X} {q : y ≡ z} {p : x ＝ y} {r : x ≡ z}
               → p ◃∙ q ＝ₛ r
               → q ＝ₛ (p ⁻¹) ◃∙ r
