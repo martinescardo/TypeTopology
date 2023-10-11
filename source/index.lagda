@@ -120,7 +120,6 @@ Click at the imported module names to navigate to them:
 
 module index where
 
-import 2Groups.index                  --by Ettore Aldrovandi and Keri D'Angelo
 import BinarySystems.index
 import CantorSchroederBernstein.index
 import Categories.index
