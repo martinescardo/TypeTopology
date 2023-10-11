@@ -28,6 +28,16 @@ module PathSequences.Rotations {X : 𝓤 ̇ } where
 The order of the arguments p, q, r, below is the same as in the
 original library. It follows their occurrences in the output.
 
+By the same token, the "in" and "out" suffixes refer to whether the
+moving piece is "in" or "out" the output.
+
+The "pre" and "post" prefixes refer to the position of the moving
+piece: "pre" if it is in front, "post" if it is at the end.
+
+For the "-seq-" versions a whole path-sequence is moving, whereas for
+the others it is a single term in an identity type. The former are
+based on the latter type, of course.
+
 \begin{code}
 
 pre-rotate-in : {x y z : X} {q : y ≡ z} {p : x ＝ y} {r : x ≡ z}
