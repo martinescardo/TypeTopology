@@ -1,7 +1,7 @@
 Ian Ray 01/09/2023.
 
 We formalize Curi's notion of Abstract Inductive Definition (CZF) from a Sup-Lattice L with small
-basis B (and q : B → L). An abstract inductive defintion is a subset ϕ : L × B → Prop which can be
+basis B (and q : B → L). An abstract inductive defintion is a subset ϕ : B × L → Prop which can be
 thought of as a 'inference rule'. Fortunately, unlike CZF, induction rules are first class citizens
 in type theory. Using HoTT + HITs we can construct the least closed subset under an inductive
 definition ϕ. Although, it should be noted that HITs are not native to the TypeTopology library we
@@ -26,7 +26,8 @@ open import UF.Size
 open import UF.SmallnessProperties
 open import UF.Retracts
 open import UF.UniverseEmbedding
-open import UF.Equiv-FunExt 
+open import UF.Equiv-FunExt
+open import UF.Powerset-MultiUniverse
 
 module Posets.InductiveTypesfromSmallGeneratedLattice (pt : propositional-truncations-exist)
                                                       (fe : Fun-Ext)
@@ -114,24 +115,6 @@ module Monotone-Endo-Maps {𝓤 𝓦 𝓥 : Universe} (L : Sup-Lattice 𝓤 𝓦
 
 \end{code}
 
-We pause to introduce some universe polymorphic powerset notation this will allow us to develop results
-in a notation familiar to set theorists.
-
-\begin{code}
-
-module Universe-Polymorphic-Powerset (𝓥 : Universe) where
-
-   𝓟 : {𝓣 : Universe} → 𝓥  ̇ → 𝓥 ⊔ 𝓣 ⁺  ̇
-   𝓟 {𝓣} X = X → Ω 𝓣
-
-   _∈_ : {𝓣 : Universe} {X : 𝓥  ̇} → X → 𝓟 {𝓣} X → 𝓣  ̇
-   x ∈ A = A x holds
-   
-   _⊆_ : {𝓣 𝓦 : Universe} {X : 𝓥  ̇} → 𝓟 {𝓣} X → 𝓟 {𝓦} X →  𝓥 ⊔ 𝓣 ⊔ 𝓦  ̇
-   A ⊆ B = ∀ x → x ∈ A → x ∈ B
-
-\end{code}
-
 We now show that when one subset contains another the join of their total spaces are ordered as
 expected. 
 
@@ -150,7 +133,6 @@ module Subsets-Order-Joins {𝓤 𝓦 𝓥 : Universe}
  ⋁_ = join-for L
 
  open Joins _≤_
- open Universe-Polymorphic-Powerset 𝓥
 
  joins-preserve-containment : {P : 𝓟 {𝓥} A} {Q : 𝓟 {𝓥} A}
                             → (C : P ⊆ Q)
@@ -424,39 +406,38 @@ module Inductive-Definitions {𝓤 𝓦 𝓥 : Universe} {B : 𝓥  ̇} (L : Sup
 
   open Small-Basis-Facts h
 
-  record Inductively-Generated-Subset-Exists (ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)): 𝓤ω where
+  record Inductively-Generated-Subset-Exists (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩)): 𝓤ω where
    constructor
     inductively-generated-subset
 
    field
     Ind : B → (𝓤 ⊔ 𝓥 ⁺)  ̇
     Ind-trunc : (b : B) → is-prop (Ind b)
-    c-closed : (U : B → Ω 𝓥)
-             → ((b : B) → ((U b) holds → Ind b))
-             → (b : B) → b ≤ᴮ (⋁ ((Σ b ꞉ B , (U b) holds) , q ∘ pr₁))
+    c-closed : (U : 𝓟 {𝓥} B)
+             → ((b : B) → (b ∈ U → Ind b))
+             → (b : B) → b ≤ᴮ (⋁ ((Σ b ꞉ B , b ∈ U) , q ∘ pr₁))
              → Ind b
     ϕ-closed : (a : ⟨ L ⟩)
              → (b : B)
-             → (ϕ (a , b)) holds
+             → (b , a) ∈ ϕ
              → ((b' : B) → (b' ≤ᴮ a → Ind b'))
              → Ind b
-    Ind-induction : (P : (b : B) → Ind b → Ω 𝓣)
-                  → ((U : B → Ω 𝓥) → (f : (x : B) → (U x holds → Ind x))
-                   → ((x : B) → (u : U x holds) → (P x (f x u)) holds)
+    Ind-induction : (P : (b : B) → 𝓟 {𝓣} (Ind b))
+                  → ((U : 𝓟 {𝓥} B) → (f : (x : B) → (x ∈ U → Ind x))
+                   → ((x : B) → (u : x ∈ U) → f x u ∈ P x)
                    → (b : B) → (g : (b ≤ᴮ (⋁ ((Σ x ꞉ B , U x holds) , q ∘ pr₁))))
-                   → (P b (c-closed U f b g)) holds)
+                   → c-closed U f b g ∈ P b)
                   → ((a : ⟨ L ⟩)
                    → (b : B)
-                   → (p : ϕ (a , b) holds)
+                   → (p : (b , a) ∈ ϕ)
                    → (f : (x : B) → (x ≤ᴮ a → Ind x))
-                   → ((x : B) → (o : x ≤ᴮ a) → (P x (f x o)) holds)
-                   → (P b (ϕ-closed a b p f)) holds)
-                  → (b : B) → (i : Ind b) → (P b i) holds
+                   → ((x : B) → (o : x ≤ᴮ a) → f x o ∈ P x)
+                   → ϕ-closed a b p f ∈ P b)
+                  → (b : B) → (i : Ind b) → i ∈ P b
 
-  module Trun-Ind-Def (ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)) (ind-e : Inductively-Generated-Subset-Exists ϕ) where
+  module Trun-Ind-Def (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩)) (ind-e : Inductively-Generated-Subset-Exists ϕ) where
 
    open Inductively-Generated-Subset-Exists ind-e
-   open Universe-Polymorphic-Powerset 𝓥
 
    𝓘nd : 𝓟 {𝓤 ⊔ 𝓥 ⁺} B
    𝓘nd b = (Ind b , Ind-trunc b)
@@ -469,23 +450,23 @@ module Inductive-Definitions {𝓤 𝓦 𝓥 : Universe} {B : 𝓥  ̇} (L : Sup
 
    𝓘nd-is-ϕ-closed : (a : ⟨ L ⟩)
                    → (b : B)
-                   → (ϕ (a , b)) holds
+                   → (b , a) ∈ ϕ
                    → ((b' : B) → (b' ≤ᴮ a → b' ∈ 𝓘nd))
                    → b ∈ 𝓘nd
    𝓘nd-is-ϕ-closed = ϕ-closed
 
-   𝓘nd-induction : (P : (b : B) → b ∈ 𝓘nd → Ω 𝓣)
+   𝓘nd-induction : (P : (b : B) → 𝓟 {𝓣} (b ∈ 𝓘nd))
                  → ((U : 𝓟 {𝓥} B) → (f : U ⊆ 𝓘nd)
-                  → ((x : B) → (u : x ∈ U) → (P x (f x u)) holds)
+                  → ((x : B) → (u : x ∈ U) → f x u ∈ P x)
                   → (b : B) → (g : (b ≤ᴮ (⋁ ((Σ x ꞉ B , x ∈ U) , q ∘ pr₁))))
-                  → (P b (c-closed U f b g)) holds)
+                  → c-closed U f b g ∈ P b)
                  → ((a : ⟨ L ⟩)
                   → (b : B)
-                  → (p : ϕ (a , b) holds)
+                  → (p : (b , a) ∈ ϕ)
                   → (f : (x : B) → (x ≤ᴮ a → x ∈ 𝓘nd))
-                  → ((x : B) → (o : x ≤ᴮ a) → (P x (f x o)) holds)
-                  → (P b (ϕ-closed a b p f)) holds)
-                 → (b : B) → (i : b ∈ 𝓘nd) → (P b i) holds
+                  → ((x : B) → (o : x ≤ᴮ a) → f x o ∈ P x)
+                  → ϕ-closed a b p f ∈ P b)
+                 → (b : B) → (i : b ∈ 𝓘nd) → i ∈ P b
    𝓘nd-induction = Ind-induction
 
    𝓘nd-recursion : (P : 𝓟 {𝓣} B)
@@ -496,7 +477,7 @@ module Inductive-Definitions {𝓤 𝓦 𝓥 : Universe} {B : 𝓥  ̇} (L : Sup
                   → b ∈ P)
                  → ((a : ⟨ L ⟩)
                   → (b : B)
-                  → (ϕ (a , b) holds)
+                  → (b , a) ∈ ϕ
                   → ((x : B) → (x ≤ᴮ a → x ∈ 𝓘nd))
                   → ((x : B) → (x ≤ᴮ a → x ∈ P))
                   → b ∈ P)
@@ -510,7 +491,7 @@ module Inductive-Definitions {𝓤 𝓦 𝓥 : Universe} {B : 𝓥  ̇} (L : Sup
                    → b ∈ P))
                   → ((a : ⟨ L ⟩)
                    → (b : B)
-                   → (ϕ (a , b) holds)
+                   → (b , a) ∈ ϕ
                    → ((b' : B) → (b' ≤ᴮ a → b' ∈ P)) → b ∈ P)
                   → 𝓘nd ⊆ P
    𝓘nd-is-initial {𝓣} P IH₁ IH₂ b b-in-𝓘nd = 𝓘nd-recursion P R S b b-in-𝓘nd
@@ -523,7 +504,7 @@ module Inductive-Definitions {𝓤 𝓦 𝓥 : Universe} {B : 𝓥  ̇} (L : Sup
      R U C₁ C₂ x o = IH₁ U C₂ x o
      S : (a : ⟨ L ⟩)
        → (x : B)
-       → ϕ (a , x) holds
+       → (x , a) ∈ ϕ
        → ((z : B) → z ≤ᴮ a → z ∈ 𝓘nd)
        → ((z : B) → z ≤ᴮ a → z ∈ P)
        → x ∈ P
@@ -544,27 +525,26 @@ module Local-Inductive-Definitions {𝓤 𝓦 𝓥 : Universe} {B : 𝓥  ̇} (L
  module Local-from-Small-Basis-Facts (h : is-small-basis) where
 
   open PropositionalTruncation pt
-  open Universe-Polymorphic-Powerset 𝓥
   open Small-Basis-Facts h
 
-  S : (ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)) → (a : ⟨ L ⟩) → 𝓤 ⊔ 𝓦 ⊔ 𝓥  ̇
-  S ϕ a = Σ b ꞉ B , (Ǝ a' ꞉ ⟨ L ⟩ , ϕ (a' , b) holds × (a' ≤ a) holds) holds
+  S : (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩)) → (a : ⟨ L ⟩) → 𝓤 ⊔ 𝓦 ⊔ 𝓥  ̇
+  S ϕ a = Σ b ꞉ B , (Ǝ a' ꞉ ⟨ L ⟩ , (b , a') ∈ ϕ × (a' ≤ a) holds) holds
 
-  S-monotone-ish : (ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)) → (x y : ⟨ L ⟩) → (x ≤ y) holds → S ϕ x → S ϕ y
+  S-monotone-ish : (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩)) → (x y : ⟨ L ⟩) → (x ≤ y) holds → S ϕ x → S ϕ y
   S-monotone-ish ϕ x y o = f
    where
     f : S ϕ x → S ϕ y
     f (b , c) = (b , g c)
      where
-      g : (Ǝ a' ꞉ ⟨ L ⟩ , (ϕ (a' , b) holds) × ((a' ≤ x) holds)) holds
-        → (Ǝ a' ꞉ ⟨ L ⟩ , (ϕ (a' , b) holds) × ((a' ≤ y) holds)) holds
+      g : (Ǝ a' ꞉ ⟨ L ⟩ , ((b , a') ∈ ϕ) × ((a' ≤ x) holds)) holds
+        → (Ǝ a' ꞉ ⟨ L ⟩ , ((b , a') ∈ ϕ) × ((a' ≤ y) holds)) holds
       g = ∥∥-rec ∥∥-is-prop g'
        where
-        g' : Σ a' ꞉ ⟨ L ⟩ , (ϕ (a' , b) holds) × ((a' ≤ x) holds)
-           → (Ǝ a' ꞉ ⟨ L ⟩ , (ϕ (a' , b) holds) × ((a' ≤ y) holds)) holds
+        g' : Σ a' ꞉ ⟨ L ⟩ , ((b , a') ∈ ϕ) × ((a' ≤ x) holds)
+           → (Ǝ a' ꞉ ⟨ L ⟩ , ((b , a') ∈ ϕ) × ((a' ≤ y) holds)) holds
         g' (a' , p , r) = ∣ (a' , p , is-transitive-for L a' x y r o) ∣
 
-  S-has-sup-implies-monotone : (ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥))
+  S-has-sup-implies-monotone : (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩))
                              → (x y s s' : ⟨ L ⟩)
                              → (x ≤ y) holds
                              → (s is-lub-of (S ϕ x , q ∘ pr₁)) holds
@@ -576,10 +556,10 @@ module Local-Inductive-Definitions {𝓤 𝓦 𝓥 : Universe} {B : 𝓥  ̇} (L
     f : (s' is-an-upper-bound-of (S ϕ x , q ∘ pr₁)) holds
     f (b , e) = is-upbnd' (S-monotone-ish ϕ x y o ((b , e)))
         
-  _is-local : (ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)) → 𝓤 ⊔ 𝓦 ⊔ (𝓥 ⁺)  ̇
+  _is-local : (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩)) → 𝓤 ⊔ 𝓦 ⊔ (𝓥 ⁺)  ̇
   ϕ is-local = (a : ⟨ L ⟩) → S ϕ a is 𝓥 small
 
-  module _ (ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)) (i : ϕ is-local) where
+  module _ (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩)) (i : ϕ is-local) where
    
    S-small : (a : ⟨ L ⟩) → 𝓥  ̇
    S-small a = pr₁ (i a)
@@ -617,25 +597,25 @@ module Local-Inductive-Definitions {𝓤 𝓦 𝓥 : Universe} {B : 𝓥  ̇} (L
 
   mono-map-give-local-ind-def : (f : ⟨ L ⟩ → ⟨ L ⟩)
                               → f is-monotone
-                              → Σ ϕ ꞉ (⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)) , Σ i ꞉ (ϕ is-local) ,
+                              → Σ ϕ ꞉ 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩) , Σ i ꞉ (ϕ is-local) ,
                                  ((x : ⟨ L ⟩) → (Γ ϕ i) x ＝ f x)
   mono-map-give-local-ind-def f f-mono = (ϕ , i , H)
    where
-    ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)
-    ϕ (a , b) = ( Lift 𝓤 (b ≤ᴮ f a) , equiv-to-prop (Lift-≃ 𝓤 (b ≤ᴮ f a)) _≤ᴮ_-is-prop-valued )
+    ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩)
+    ϕ (b , a) = ( Lift 𝓤 (b ≤ᴮ f a) , equiv-to-prop (Lift-≃ 𝓤 (b ≤ᴮ f a)) _≤ᴮ_-is-prop-valued )
     equiv-1 : (a : ⟨ L ⟩) → small-↓ᴮ (f a) ≃ S ϕ a
     equiv-1 a = Σ-cong' (λ z → z ≤ᴮ f a)
-                        ((λ z → (Ǝ a' ꞉ ⟨ L ⟩ , ϕ (a' , z) holds × (a' ≤ a) holds) holds)) equiv-2
+                        ((λ z → (Ǝ a' ꞉ ⟨ L ⟩ , (z , a') ∈ ϕ × (a' ≤ a) holds) holds)) equiv-2
      where
-      equiv-2 : (z : B) → (z ≤ᴮ f a) ≃ (Ǝ a' ꞉ ⟨ L ⟩ , ϕ (a' , z) holds × (a' ≤ a) holds) holds
+      equiv-2 : (z : B) → (z ≤ᴮ f a) ≃ (Ǝ a' ꞉ ⟨ L ⟩ , (z , a') ∈ ϕ × (a' ≤ a) holds) holds
       equiv-2 z = ⌜ prop-≃-≃-⇔ fe _≤ᴮ_-is-prop-valued ∥∥-is-prop ⌝⁻¹ (map-1 , map-2)
        where
-        map-1 : z ≤ᴮ f a → (Ǝ a' ꞉ ⟨ L ⟩ , ϕ (a' , z) holds × (a' ≤ a) holds) holds
+        map-1 : z ≤ᴮ f a → (Ǝ a' ꞉ ⟨ L ⟩ , (z , a') ∈ ϕ × (a' ≤ a) holds) holds
         map-1 o = ∣ (a , ⌜ ≃-Lift 𝓤 (z ≤ᴮ f a) ⌝ o , is-reflexive-for L a) ∣
-        map-2 : (Ǝ a' ꞉ ⟨ L ⟩ , ϕ (a' , z) holds × (a' ≤ a) holds) holds → z ≤ᴮ f a
+        map-2 : (Ǝ a' ꞉ ⟨ L ⟩ , (z , a') ∈ ϕ × (a' ≤ a) holds) holds → z ≤ᴮ f a
         map-2 = ∥∥-rec _≤ᴮ_-is-prop-valued map-3
          where
-          map-3 : Σ a' ꞉ ⟨ L ⟩ , ϕ (a' , z) holds × (a' ≤ a) holds → z ≤ᴮ f a
+          map-3 : Σ a' ꞉ ⟨ L ⟩ , (z , a') ∈ ϕ × (a' ≤ a) holds → z ≤ᴮ f a
           map-3 (a' , o , r) =
              _≤_-to-_≤ᴮ_ (is-transitive-for L (q z) (f a') (f a)
                                               (_≤ᴮ_-to-_≤_ (⌜ ≃-Lift 𝓤 (z ≤ᴮ f a') ⌝⁻¹ o))
@@ -648,10 +628,10 @@ module Local-Inductive-Definitions {𝓤 𝓦 𝓥 : Universe} {B : 𝓥  ̇} (L
       f-is-upbnd : (f x is-an-upper-bound-of (S ϕ x , q ∘ pr₁)) holds
       f-is-upbnd (b , e) = map-4 e
        where
-        map-4 : (Ǝ a' ꞉ ⟨ L ⟩ , ϕ (a' , b) holds × (a' ≤ x) holds) holds → (q b ≤ f x) holds
+        map-4 : (Ǝ a' ꞉ ⟨ L ⟩ , (b , a') ∈ ϕ × (a' ≤ x) holds) holds → (q b ≤ f x) holds
         map-4 = ∥∥-rec (holds-is-prop (q b ≤ f x)) map-5
          where
-          map-5 : Σ a' ꞉ ⟨ L ⟩ , ϕ (a' , b) holds × (a' ≤ x) holds → (q b ≤ f x) holds
+          map-5 : Σ a' ꞉ ⟨ L ⟩ , (b , a') ∈ ϕ × (a' ≤ x) holds → (q b ≤ f x) holds
           map-5 (a' , o , r) = is-transitive-for L (q b) (f a') (f x)
                                (_≤ᴮ_-to-_≤_ (⌜ ≃-Lift 𝓤 (b ≤ᴮ f a') ⌝⁻¹ o)) (f-mono a' x r)
       f-is-least : ((u , _) : upper-bound (S ϕ x , q ∘ pr₁)) → (f x ≤ u) holds
@@ -683,12 +663,11 @@ module Correspondance-small-ϕ-closed-types-non-inc-points {𝓤 𝓦 𝓥 : Uni
  module Correspondance-from-Small-Basis-Facts (h : is-small-basis) where
 
   open PropositionalTruncation pt
-  open Universe-Polymorphic-Powerset 𝓥
   open Small-Basis-Facts h
   open Ind-from-Small-Basis-Facts h
   open Local-from-Small-Basis-Facts h
 
-  module Correspondance-from-Locally-Small-ϕ (ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)) (i : ϕ is-local) where
+  module Correspondance-from-Locally-Small-ϕ (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩)) (i : ϕ is-local) where
 
    _is-small-ϕ-closed-subset : (P : 𝓟 {𝓥} B) → 𝓤 ⊔ (𝓥 ⁺)  ̇
    P is-small-ϕ-closed-subset = ((U : 𝓟 {𝓥} B)
@@ -696,7 +675,7 @@ module Correspondance-small-ϕ-closed-types-non-inc-points {𝓤 𝓦 𝓥 : Uni
                                → ((b : B) → (b ≤ᴮ (⋁ ((Σ b ꞉ B , b ∈ U) , q ∘ pr₁))) →  b ∈ P))
                               × ((a : ⟨ L ⟩)
                                → (b : B)
-                               → (ϕ (a , b) holds)
+                               → ((b , a) ∈ ϕ)
                                → ((b' : B) → (b' ≤ᴮ a → b' ∈ P)) → b ∈ P)
 
    is-small-ϕ-closed-subset-is-predicate : (P : 𝓟 {𝓥} B) → is-prop (P is-small-ϕ-closed-subset)
@@ -719,7 +698,7 @@ module Correspondance-small-ϕ-closed-types-non-inc-points {𝓤 𝓦 𝓥 : Uni
    ϕ-closed-of-small-ϕ-closed-subset : (X : small-ϕ-closed-subsets)
                                      → ((a : ⟨ L ⟩)
                                      → (b : B)
-                                     → (ϕ (a , b) holds)
+                                     → ((b , a) ∈ ϕ)
                                      → ((b' : B) → (b' ≤ᴮ a → b' ∈ subset-of-small-ϕ-closed-subset X)) → b ∈ subset-of-small-ϕ-closed-subset X)
    ϕ-closed-of-small-ϕ-closed-subset (P , c-clsd , ϕ-clsd) = ϕ-clsd
 
@@ -754,7 +733,7 @@ module Correspondance-small-ϕ-closed-types-non-inc-points {𝓤 𝓦 𝓥 : Uni
        Γ-is-least-upper-bound = pr₂ Γ-is-sup
        b-in-P-to-b-≤-sup-P : (b : B) → b ∈ P → (q(b) ≤ sup-P) holds
        b-in-P-to-b-≤-sup-P b b-in-P = (is-an-upper-bound-for L of ((Σ b ꞉ B , b ∈ P) , q ∘ pr₁)) (b , b-in-P)
-       un-trunc-map : (b : B) → Σ a ꞉ ⟨ L ⟩ , ϕ(a , b) holds × (a ≤ sup-P) holds → (q(b) ≤ sup-P) holds
+       un-trunc-map : (b : B) → Σ a ꞉ ⟨ L ⟩ , (b , a) ∈ ϕ × (a ≤ sup-P) holds → (q(b) ≤ sup-P) holds
        un-trunc-map b (a , p , o) = b-in-P-to-b-≤-sup-P b (ϕ-closed a b p (ϕ-hypothesis))
         where
          ϕ-hypothesis : (b' : B) → b' ≤ᴮ a → b' ∈ P
@@ -787,7 +766,7 @@ module Correspondance-small-ϕ-closed-types-non-inc-points {𝓤 𝓦 𝓥 : Uni
                                                (joins-preserve-containment {U} {Q a} C)))
      ϕ-closed : (a' : ⟨ L ⟩)
               → (b : B)
-              → (ϕ (a' , b) holds)
+              → ((b , a') ∈ ϕ)
               → ((b' : B) → (b' ≤ᴮ a' → b' ∈ Q a)) → b ∈ Q a
      ϕ-closed a' b p f = trunc-map b ∣ (a' , p , a'-≤-a) ∣
       where
@@ -796,7 +775,7 @@ module Correspondance-small-ϕ-closed-types-non-inc-points {𝓤 𝓦 𝓥 : Uni
        Γ-is-sup = is-lub-of-both
        Γ-an-upper-bound : ((Γ ϕ i) a is-an-upper-bound-of (S ϕ a , q ∘ pr₁)) holds
        Γ-an-upper-bound = pr₁ Γ-is-sup
-       trunc-map : (x : B) → (Ǝ a'' ꞉ ⟨ L ⟩ , ϕ (a'' , x) holds × (a'' ≤ a) holds) holds → x ≤ᴮ a
+       trunc-map : (x : B) → (Ǝ a'' ꞉ ⟨ L ⟩ , (x , a'') ∈ ϕ × (a'' ≤ a) holds) holds → x ≤ᴮ a
        trunc-map x e = _≤_-to-_≤ᴮ_ (is-transitive-for L (q x) ((Γ ϕ i) a) a (Γ-an-upper-bound (x , e)) (is-non-inc))
        a'-≤-a : (a' ≤ a) holds
        a'-≤-a = transport (λ z → (z ≤ a) holds)
@@ -871,7 +850,7 @@ module Correspondance-small-ϕ-closed-types-non-inc-points {𝓤 𝓦 𝓥 : Uni
       
      small-𝓘-is-ϕ-closed : (a : ⟨ L ⟩)
                          → (b : B)
-                         → ϕ (a , b) holds
+                         → (b , a) ∈ ϕ
                          → ((b' : B) → b' ≤ᴮ a → b' ∈ 𝓘-is-small-subset)
                          → b ∈ 𝓘-is-small-subset
      small-𝓘-is-ϕ-closed a b p f = 𝓘nd-to-small-𝓘 b (𝓘nd-is-ϕ-closed a b p (λ b' → small-𝓘-to-𝓘nd b' ∘ f b'))
@@ -910,7 +889,7 @@ module Correspondance-small-ϕ-closed-types-non-inc-points {𝓤 𝓦 𝓥 : Uni
          Q-is-c-closed = c-closed-of-small-ϕ-closed-subset (non-inc-points-to-small-ϕ-closed-subsets ((Γ ϕ i) sup-𝓘 , Γ-Γ-sup-≤-Γ-sup))
          Q-is-ϕ-closed : (a' : ⟨ L ⟩)
                        → (b : B)
-                       → (ϕ (a' , b) holds)
+                       → ((b , a') ∈ ϕ)
                        → ((b' : B) → (b' ≤ᴮ a' → b' ∈ Q-Γ-sup)) → b ∈ Q-Γ-sup
          Q-is-ϕ-closed = ϕ-closed-of-small-ϕ-closed-subset (non-inc-points-to-small-ϕ-closed-subsets ((Γ ϕ i) sup-𝓘 , Γ-Γ-sup-≤-Γ-sup))
          𝓘nd-⊆-Q-Γ-sup : 𝓘nd ⊆ Q-Γ-sup
@@ -937,7 +916,7 @@ module Correspondance-small-ϕ-closed-types-non-inc-points {𝓤 𝓦 𝓥 : Uni
          P-is-c-closed = c-closed-of-small-ϕ-closed-subset (non-inc-points-to-small-ϕ-closed-subsets (a , Γ-a-≤-a))
          P-is-ϕ-closed : (a' : ⟨ L ⟩)
                        → (b : B)
-                       → (ϕ (a' , b) holds)
+                       → ((b , a') ∈ ϕ)
                        → ((b' : B) → (b' ≤ᴮ a' → b' ∈ P-a)) → b ∈ P-a
          P-is-ϕ-closed = ϕ-closed-of-small-ϕ-closed-subset (non-inc-points-to-small-ϕ-closed-subsets (a , Γ-a-≤-a))
          𝓘nd-⊆-P-a : 𝓘nd ⊆ P-a
@@ -969,39 +948,38 @@ module Bounded-Inductive-Definition {𝓤 𝓦 𝓥 : Universe}
  module Bounded-from-Small-Basis-Facts (h : is-small-basis) where
 
   open Small-Basis-Facts h
-  open Universe-Polymorphic-Powerset (𝓥 ⁺)
   open PropositionalTruncation pt
 
   _is-a-small-cover-of_ : (X : 𝓥  ̇) → (Y : 𝓣  ̇) → 𝓥 ⊔ 𝓣  ̇
   X is-a-small-cover-of Y = X ↠ Y
 
-  _has-a-bound : (ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)) → 𝓤 ⊔ 𝓦 ⊔ (𝓥 ⁺)  ̇
+  _has-a-bound : (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩)) → 𝓤 ⊔ 𝓦 ⊔ (𝓥 ⁺)  ̇
   ϕ has-a-bound = Σ I ꞉ 𝓥  ̇ , Σ α ꞉ (I → 𝓥  ̇) , ((a : ⟨ L ⟩)
                                                → (b : B)
-                                               → ϕ (a , b) holds
+                                               → (b , a) ∈ ϕ
                                                → (Ǝ i ꞉ I , α i is-a-small-cover-of ↓ᴮ a) holds)
 
-  bound-index : {ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)} → ϕ has-a-bound → 𝓥  ̇
+  bound-index : {ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩)} → ϕ has-a-bound → 𝓥  ̇
   bound-index (I , α , covering) = I
 
-  bound-family : {ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)} → (bnd : ϕ has-a-bound) → (bound-index {ϕ} bnd → 𝓥  ̇)
+  bound-family : {ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩)} → (bnd : ϕ has-a-bound) → (bound-index {ϕ} bnd → 𝓥  ̇)
   bound-family (I , α , covering) = α
 
-  covering-condition : {ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)}
+  covering-condition : {ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩)}
                      → (bnd : ϕ has-a-bound)
                      → ((a : ⟨ L ⟩)
                      → (b : B)
-                     → ϕ (a , b) holds
+                     → (b , a) ∈ ϕ
                      → (Ǝ i ꞉ (bound-index {ϕ} bnd) , ((bound-family {ϕ} bnd) i is-a-small-cover-of ↓ᴮ a)) holds)
   covering-condition (I , α , covering) = covering
 
-  _is-bounded : (ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)) → 𝓤 ⊔ 𝓦 ⊔ (𝓥 ⁺)  ̇
-  ϕ is-bounded = ((a : ⟨ L ⟩) → (b : B) → (ϕ (a , b) holds) is 𝓥 small) × (ϕ has-a-bound)
+  _is-bounded : (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩)) → 𝓤 ⊔ 𝓦 ⊔ (𝓥 ⁺)  ̇
+  ϕ is-bounded = ((a : ⟨ L ⟩) → (b : B) → ((b , a) ∈ ϕ) is 𝓥 small) × (ϕ has-a-bound)
 
   open Local-Inductive-Definitions L q
   open Local-from-Small-Basis-Facts h
 
-  _bounded-implies-local : (ϕ : ⟨ L ⟩ × B → Ω (𝓤 ⊔ 𝓥)) → ϕ is-bounded → ϕ is-local
+  _bounded-implies-local : (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩)) → ϕ is-bounded → ϕ is-local
   (ϕ bounded-implies-local) (ϕ-small , ϕ-has-bound) a = smallness-closed-under-≃ small-type-is-small small-type-≃-S
    where
     I : 𝓥  ̇
@@ -1010,11 +988,11 @@ module Bounded-Inductive-Definition {𝓤 𝓦 𝓥 : Universe}
     α = bound-family {ϕ} ϕ-has-bound
     cov : (a : ⟨ L ⟩)
         → (b : B)
-        → ϕ (a , b) holds
+        → (b , a) ∈ ϕ
         → (Ǝ i ꞉ I , (α i is-a-small-cover-of ↓ᴮ a)) holds
     cov = covering-condition {ϕ} ϕ-has-bound
     small-type : 𝓤 ⊔ 𝓦 ⊔ 𝓥  ̇
-    small-type = Σ b ꞉ B , ((Ǝ i ꞉ I , ((Ǝ m ꞉ (α i → ↓ᴮ a) , (ϕ ((⋁ (α i , q ∘ pr₁ ∘ m)) , b) holds)) holds)) holds)
+    small-type = Σ b ꞉ B , ((Ǝ i ꞉ I , ((Ǝ m ꞉ (α i → ↓ᴮ a) , ((b , (⋁ (α i , q ∘ pr₁ ∘ m))) ∈ ϕ)) holds)) holds)
     small-type-is-small : small-type is 𝓥 small
     small-type-is-small =
      Σ-is-small (B , ≃-refl B)
@@ -1027,17 +1005,17 @@ module Bounded-Inductive-Definition {𝓤 𝓦 𝓥 : Universe}
     small-type-to-S : small-type → S ϕ a
     small-type-to-S (b , e) = (b , map₄ e)
      where
-      map₁ : (i : I) → (Σ m ꞉ (α i → ↓ᴮ a) , (ϕ ((⋁ (α i , q ∘ pr₁ ∘ m)) , b) holds))
-           → (Ǝ a' ꞉ ⟨ L ⟩ , ϕ (a' , b) holds × (a' ≤ a) holds) holds
+      map₁ : (i : I) → (Σ m ꞉ (α i → ↓ᴮ a) , ((b , (⋁ (α i , q ∘ pr₁ ∘ m))) ∈ ϕ))
+           → (Ǝ a' ꞉ ⟨ L ⟩ , (b , a') ∈ ϕ × (a' ≤ a) holds) holds
       map₁ i (m , p) = ∣ (⋁ (α i , q ∘ pr₁ ∘ m) , p , (is-least-upper-bound-for L of (α i , q ∘ pr₁ ∘ m)) (a , λ z → is-upper-bound-↓ a (m z))) ∣
-      map₂ : (i : I) → ((Ǝ m ꞉ (α i → ↓ᴮ a) , (ϕ ((⋁ (α i , q ∘ pr₁ ∘ m)) , b) holds)) holds)
-           → (Ǝ a' ꞉ ⟨ L ⟩ , ϕ (a' , b) holds × (a' ≤ a) holds) holds
+      map₂ : (i : I) → ((Ǝ m ꞉ (α i → ↓ᴮ a) , ((b , (⋁ (α i , q ∘ pr₁ ∘ m))) ∈ ϕ)) holds)
+           → (Ǝ a' ꞉ ⟨ L ⟩ , (b , a') ∈ ϕ × (a' ≤ a) holds) holds
       map₂ i = ∥∥-rec ∥∥-is-prop (map₁ i)
-      map₃ : Σ i ꞉ I , ((Ǝ m ꞉ (α i → ↓ᴮ a) , (ϕ ((⋁ (α i , q ∘ pr₁ ∘ m)) , b) holds)) holds)
-           → (Ǝ a' ꞉ ⟨ L ⟩ , ϕ (a' , b) holds × (a' ≤ a) holds) holds
+      map₃ : Σ i ꞉ I , ((Ǝ m ꞉ (α i → ↓ᴮ a) , ((b , (⋁ (α i , q ∘ pr₁ ∘ m))) ∈ ϕ)) holds)
+           → (Ǝ a' ꞉ ⟨ L ⟩ , (b , a') ∈ ϕ × (a' ≤ a) holds) holds
       map₃ = uncurry map₂
-      map₄ : (Ǝ i ꞉ I , ((Ǝ m ꞉ (α i → ↓ᴮ a) , (ϕ ((⋁ (α i , q ∘ pr₁ ∘ m)) , b) holds)) holds)) holds
-           → (Ǝ a' ꞉ ⟨ L ⟩ , ϕ (a' , b) holds × (a' ≤ a) holds) holds
+      map₄ : (Ǝ i ꞉ I , ((Ǝ m ꞉ (α i → ↓ᴮ a) , ((b , (⋁ (α i , q ∘ pr₁ ∘ m))) ∈ ϕ)) holds)) holds
+           → (Ǝ a' ꞉ ⟨ L ⟩ , (b , a') ∈ ϕ × (a' ≤ a) holds) holds
       map₄ = ∥∥-rec ∥∥-is-prop map₃
 
     S-to-small-type : S ϕ a → small-type
@@ -1045,8 +1023,8 @@ module Bounded-Inductive-Definition {𝓤 𝓦 𝓥 : Universe}
      where
       ι : (a' : ⟨ L ⟩) → (a' ≤ a) holds → ↓ᴮ a' → ↓ᴮ a
       ι a' o (x , r) = (x , is-transitive-for L (q x) a' a r o)
-      map₁ : (a' : ⟨ L ⟩) →  ϕ (a' , b) holds → (a' ≤ a) holds → (Σ i ꞉ I , (α i is-a-small-cover-of ↓ᴮ a'))
-          → (Ǝ i ꞉ I , ((Ǝ m ꞉ (α i → ↓ᴮ a) , (ϕ ((⋁ (α i , q ∘ pr₁ ∘ m)) , b) holds)) holds)) holds
+      map₁ : (a' : ⟨ L ⟩) →  (b , a') ∈ ϕ → (a' ≤ a) holds → (Σ i ꞉ I , (α i is-a-small-cover-of ↓ᴮ a'))
+          → (Ǝ i ꞉ I , ((Ǝ m ꞉ (α i → ↓ᴮ a) , ((b , (⋁ (α i , q ∘ pr₁ ∘ m))) ∈ ϕ)) holds)) holds
       map₁ a' p o (i , α-covers) = ∣ (i , ∣ (m , p') ∣) ∣
        where
         open Surjection-implies-equal-joins L (↓ᴮ a') (α i) α-covers (q ∘ pr₁) hiding (⋁_ ; _≤_)
@@ -1054,16 +1032,16 @@ module Bounded-Inductive-Definition {𝓤 𝓦 𝓥 : Universe}
         m = ι a' o ∘ ⌞  α-covers ⌟
         path : a' ＝ ⋁ (α i , q ∘ pr₁ ∘ m)
         path = ↠-families-＝-sup a' (⋁ (α i , q ∘ pr₁ ∘ m)) (is-sup a') (is-lub-for L (α i , q ∘ pr₁ ∘ m))
-        p' : ϕ ((⋁ (α i , q ∘ pr₁ ∘ m)) , b) holds
-        p' = transport (λ z → ϕ (z , b) holds) path p
-      map₂ : (a' : ⟨ L ⟩) → ϕ (a' , b) holds → (a' ≤ a) holds → (Ǝ i ꞉ I , (α i is-a-small-cover-of ↓ᴮ a')) holds
-          → (Ǝ i ꞉ I , ((Ǝ m ꞉ (α i → ↓ᴮ a) , (ϕ ((⋁ (α i , q ∘ pr₁ ∘ m)) , b) holds)) holds)) holds
+        p' : (b , (⋁ (α i , q ∘ pr₁ ∘ m))) ∈ ϕ
+        p' = transport (λ z → (b , z) ∈ ϕ) path p
+      map₂ : (a' : ⟨ L ⟩) → (b , a') ∈ ϕ → (a' ≤ a) holds → (Ǝ i ꞉ I , (α i is-a-small-cover-of ↓ᴮ a')) holds
+          → (Ǝ i ꞉ I , ((Ǝ m ꞉ (α i → ↓ᴮ a) , ((b , (⋁ (α i , q ∘ pr₁ ∘ m))) ∈ ϕ)) holds)) holds
       map₂ a' p o = ∥∥-rec ∥∥-is-prop (map₁ a' p o)
-      map₃ : Σ a' ꞉ ⟨ L ⟩ , ϕ (a' , b) holds × (a' ≤ a) holds
-           → (Ǝ i ꞉ I , ((Ǝ m ꞉ (α i → ↓ᴮ a) , (ϕ ((⋁ (α i , q ∘ pr₁ ∘ m)) , b) holds)) holds)) holds
+      map₃ : Σ a' ꞉ ⟨ L ⟩ , (b , a') ∈ ϕ × (a' ≤ a) holds
+           → (Ǝ i ꞉ I , ((Ǝ m ꞉ (α i → ↓ᴮ a) , ((b , (⋁ (α i , q ∘ pr₁ ∘ m))) ∈ ϕ)) holds)) holds
       map₃ (a' , p , o) = map₂ a' p o (cov a' b p)
-      map₄ : (Ǝ a' ꞉ ⟨ L ⟩ , ϕ (a' , b) holds × (a' ≤ a) holds) holds
-           → (Ǝ i ꞉ I , ((Ǝ m ꞉ (α i → ↓ᴮ a) , (ϕ ((⋁ (α i , q ∘ pr₁ ∘ m)) , b) holds)) holds)) holds
+      map₄ : (Ǝ a' ꞉ ⟨ L ⟩ , (b , a') ∈ ϕ × (a' ≤ a) holds) holds
+           → (Ǝ i ꞉ I , ((Ǝ m ꞉ (α i → ↓ᴮ a) , ((b , (⋁ (α i , q ∘ pr₁ ∘ m))) ∈ ϕ)) holds)) holds
       map₄ = ∥∥-rec ∥∥-is-prop map₃
 
     small-type-≃-S : small-type ≃ S ϕ a
@@ -1094,16 +1072,12 @@ module Small-Presentation-of-Lattice {𝓤 𝓦 𝓥 : Universe}
  module Small-Presentation-from-Small-Basis-Facts (h : is-small-basis) where
 
   open Small-Basis-Facts h
-  open Universe-Polymorphic-Powerset 𝓥 
   open PropositionalTruncation pt
 
-  _is-a-small-presentation' : Σ I ꞉ 𝓥  ̇ , (I → B) × (I → 𝓟 {𝓥} B) → (𝓥 ⁺)  ̇
-  (I , r , R) is-a-small-presentation' = (b : B) → (X : 𝓟 {𝓥} B) → (b ≤ᴮ (⋁ ((Σ x ꞉ B , x ∈ X) , q ∘ pr₁))) ≃ ((Ǝ i ꞉ I , R i ⊆ X × (r i ＝ b)) holds)
-
-  _is-a-small-presentation : ((B × 𝓟 {𝓥} B) → Ω 𝓥) → (𝓥 ⁺)  ̇
-  R is-a-small-presentation = (b : B) → (X : 𝓟 {𝓥} B) → b ≤ᴮ (⋁ ((Σ x ꞉ B , x ∈ X) , q ∘ pr₁)) ≃ ((Ǝ Y ꞉ 𝓟 {𝓥} B , Y ⊆ X × R (b , Y) holds) holds)
+  _is-a-small-presentation : 𝓟 {𝓥} (B × 𝓟 {𝓥} B) → (𝓥 ⁺)  ̇
+  R is-a-small-presentation = (b : B) → (X : 𝓟 {𝓥} B) → b ≤ᴮ (⋁ ((Σ x ꞉ B , x ∈ X) , q ∘ pr₁)) ≃ ((Ǝ Y ꞉ 𝓟 {𝓥} B , Y ⊆ X × (b , Y) ∈ R) holds)
 
   has-small-presentation : (𝓥 ⁺)  ̇
-  has-small-presentation = Σ R ꞉ ((B × 𝓟 {𝓥} B) → Ω 𝓥) , R is-a-small-presentation
+  has-small-presentation = Σ R ꞉ 𝓟 {𝓥} (B × 𝓟 {𝓥} B) , R is-a-small-presentation
 
 \end{code}
