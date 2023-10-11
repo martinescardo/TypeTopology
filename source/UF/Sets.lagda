@@ -1,5 +1,7 @@
 Martin Escardo
 
+Sets (0-types).
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K --exact-split #-}
@@ -22,6 +24,14 @@ data or structure).
 
 is-h-isolated : {X : 𝓤 ̇ } → X → 𝓤 ̇
 is-h-isolated x = ∀ {y} → is-prop (x ＝ y)
+
+h-isolatedness-criterion : {X : 𝓤 ̇ } {x : X}
+                         → is-prop (x ＝ x)
+                         → is-h-isolated x
+h-isolatedness-criterion {𝓤} {X} {x} i {y} = γ
+ where
+  γ : is-prop (x ＝ y)
+  γ refl = i refl
 
 is-set : 𝓤 ̇ → 𝓤 ̇
 is-set X = {x : X} → is-h-isolated x

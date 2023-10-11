@@ -1,6 +1,7 @@
 Martin Escardo, July 2023
 
-A type of numbers used to measure lengths of paths in trees in W-types.
+A type of numbers used to measure lengths of paths in trees in W-types
+(see the module W.Paths).
 
 For an exposition of what is done here, see the post 7/6 of this thread:
 https://mathstodon.xyz/@MartinEscardo/110753930251021051
@@ -316,9 +317,10 @@ empty complement.
 
 \end{code}
 
-We now assume functional and propositional extensionality. Sections
-are not necessarily embeddings
-(https://doi.org/10.2168/LMCS-12(3:9)2016), but sections into sets are:
+We now assume functional and propositional extensionality
+again. Sections are not necessarily embeddings
+(https://doi.org/10.2168/LMCS-12(3:9)2016), but sections into sets
+are:
 
 \begin{code}
 

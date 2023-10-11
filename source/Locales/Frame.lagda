@@ -372,6 +372,23 @@ syntax join-of F U = ⋁[ F ] U
 
 \begin{code}
 
+∧[_]-is-glb : (A : Frame 𝓤 𝓥 𝓦) (x y : ⟨ A ⟩)
+            → let
+               open Meets (λ x y → x ≤[ poset-of A ] y)
+              in
+               ((x ∧[ A ] y) is-glb-of (x , y)) holds
+∧[_]-is-glb (A , _ , _ , (_ , γ , _ , _)) x y = γ (x , y)
+
+∧[_]-is-glb⋆ : (A : Frame 𝓤 𝓥 𝓦) {x y z : ⟨ A ⟩}
+             → let
+                open Meets (λ x y → x ≤[ poset-of A ] y)
+               in
+                z ＝ x ∧[ A ] y → (z is-glb-of (x , y)) holds
+∧[_]-is-glb⋆ L@(A , _ , _ , (_ , γ , _ , _)) {x} {y} {z} p =
+ transport (λ - → (- is-glb-of (x , y)) holds) (p ⁻¹) (∧[ L ]-is-glb x y)
+  where
+   open Meets (λ x y → x ≤[ poset-of L ] y)
+
 ∧[_]-lower₁ : (A : Frame 𝓤 𝓥 𝓦) (x y : ⟨ A ⟩)
             → ((x ∧[ A ] y) ≤[ poset-of A ] x) holds
 ∧[_]-lower₁ (A , _ , _ , (_ , γ , _ , _)) x y = pr₁ (pr₁ (γ (x , y)))
@@ -743,6 +760,15 @@ join-preserving-implies-scott-continuous F G f φ S _ = γ
        (λ - → (- is-lub-of (fmap-syntax (λ s → f s)) S) holds)
        (φ S ⁻¹)
        (⋁[ G ]-upper ⁅ f s ∣ s ε S ⁆ , ⋁[ G ]-least ⁅ f s ∣ s ε S ⁆)
+
+continuous-map-equality : (F : Frame 𝓤 𝓥 𝓦) (G : Frame 𝓤' 𝓥' 𝓦)
+                        → (h₁ h₂  : F ─f→ G)
+                        → ((x : ⟨ F ⟩) → h₁ .pr₁ x ＝ h₂ .pr₁ x)
+                        → h₁ ＝ h₂
+continuous-map-equality F G h₁ h₂ ψ = to-subtype-＝ † (dfunext fe ψ)
+ where
+  † : (f : ⟨ F ⟩ → ⟨ G ⟩) → is-prop (is-a-frame-homomorphism F G f holds)
+  † f = holds-is-prop (is-a-frame-homomorphism F G f)
 
 \end{code}
 
@@ -1413,6 +1439,15 @@ has-directed-basis₀ {𝓦 = 𝓦} F =
 has-directed-basis : (F : Frame 𝓤 𝓥 𝓦) → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
 has-directed-basis {𝓦 = 𝓦} F = ∥ has-directed-basis₀ F ∥Ω
 
+directed-cover : (F : Frame 𝓤 𝓥 𝓦) → has-directed-basis₀ F → ⟨ F ⟩ → Fam 𝓦 ⟨ F ⟩
+directed-cover F (ℬ , β) U = ⁅ ℬ [ i ] ∣ i ε pr₁ (pr₁ β U) ⁆
+
+covers-are-directed : (F : Frame 𝓤 𝓥 𝓦)
+                    → (b : has-directed-basis₀ F)
+                    → (U : ⟨ F ⟩)
+                    → is-directed F (directed-cover F b U) holds
+covers-are-directed F (ℬ , β) U = pr₂ β U
+
 \end{code}
 
 The main development in this section is that every small basis can be
@@ -1804,6 +1839,17 @@ open Locale
 _─c→_ : Locale 𝓤 𝓥 𝓦 → Locale 𝓤′ 𝓥′ 𝓦 → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺ ⊔ 𝓤′ ̇
 X ─c→ Y = (𝒪 Y) ─f→ (𝒪 X)
 
+continuity-of : (X : Locale 𝓤 𝓥 𝓦) (Y : Locale 𝓤′ 𝓥′ 𝓦) (f : X ─c→ Y)
+              → (S : Fam 𝓦 ⟨ 𝒪 Y ⟩)
+              → f .pr₁ (⋁[ 𝒪 Y ] S) ＝ ⋁[ 𝒪 X ] ⁅ f .pr₁ V ∣ V ε S ⁆
+continuity-of X Y f S =
+ ⋁[ 𝒪 X ]-unique ⁅ f $ V ∣ V ε S ⁆ (f $ (⋁[ 𝒪 Y ] S)) (pr₂ (pr₂ (pr₂ f)) S)
+  where
+   open Joins (λ x y → x ≤[ poset-of (𝒪 X) ] y)
+
+   infixr 25 _$_
+   _$_ = pr₁
+
 module ContinuousMapNotation (X : Locale 𝓤 𝓥 𝓦) (Y : Locale 𝓤' 𝓥' 𝓦) where
 
  infix 9 _⋆
@@ -1894,8 +1940,8 @@ cofinal-implies-join-covered F R S φ = ⋁[ F ]-least R ((⋁[ F ] S) , β)
   β : (i : index R) → ((R [ i ]) ≤[ poset-of F ] (⋁[ F ] S)) holds
   β i = ∥∥-rec (holds-is-prop ((R [ i ]) ≤[ poset-of F ] (⋁[ F ] S))) γ (φ i)
    where
-    γ : Σ j ꞉ index S , ((R [ i ]) ≤[ poset-of F ] (S [ j ])) holds
-        → ((R [ i ]) ≤[ poset-of F ] (⋁[ F ] S)) holds
+    γ : Σ j ꞉ index S , (R [ i ] ≤[ poset-of F ] (S [ j ])) holds
+        → (R [ i ] ≤[ poset-of F ] (⋁[ F ] S)) holds
     γ (j , p) = R [ i ] ≤⟨ p ⟩ S [ j ] ≤⟨ ⋁[ F ]-upper S j ⟩ ⋁[ F ] S ■
 
 bicofinal-implies-same-join : (F : Frame 𝓤 𝓥 𝓦) (R S : Fam 𝓦 ⟨ F ⟩)

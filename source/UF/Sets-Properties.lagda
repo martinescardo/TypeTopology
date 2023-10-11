@@ -29,6 +29,13 @@ subtypes-of-sets-are-sets' {𝓤} {𝓥} {X} m i h = Id-collapsibles-are-sets (f
   g : {x x' : X} (r s : x ＝ x') → f r ＝ f s
   g r s = ap i (h (ap m r) (ap m s))
 
+retract-of-set : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+               → retract X of Y
+               → is-set Y
+               → is-set X
+retract-of-set {𝓤} {𝓥} {X} (r , s , rs) =
+ subtypes-of-sets-are-sets' s (sections-are-lc s (r , rs))
+
 subsets-of-sets-are-sets : (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ )
                          → is-set X
                          → ({x : X} → is-prop (Y x))
