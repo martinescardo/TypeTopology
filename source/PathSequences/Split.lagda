@@ -28,10 +28,12 @@ n over the empty sequence always returns the base point of the
 sequence.
 
 \begin{code}
+
 point-from-start : (n : ℕ) {x y : X} (s : x ≡ y) → X
 point-from-start zero {x} s = x
 point-from-start (succ n) {x} [] = x
 point-from-start (succ n) {x} (p ◃∙ s) = point-from-start n s
+
 \end{code}
 
 
@@ -39,6 +41,7 @@ point-from-start (succ n) {x} (p ◃∙ s) = point-from-start n s
 of the original sequence.
 
 \begin{code}
+
 drop : ( n : ℕ) {x y : X} (s : x ≡ y) → point-from-start n s ≡ y
 drop zero s = s
 drop (succ n) [] = []
@@ -46,6 +49,7 @@ drop (succ n) (p ◃∙ s) = drop n s
 
 tail : {x y : X} (s : x ≡ y) → point-from-start 1 s ≡ y
 tail = drop 1
+
 \end{code}
 
 
@@ -53,10 +57,12 @@ tail = drop 1
 from start), that is, the complementary operation to `drap`.
 
 \begin{code}
+
 take : (n : ℕ) {x y : X} (s : x ≡ y) → x ≡ point-from-start n s
 take zero s = []
 take (succ n) [] = []
 take (succ n) (p ◃∙ s) = p ◃∙ (take n s)
+
 \end{code}
 
 Given a path sequence, build a different one with the same end points:
@@ -76,10 +82,11 @@ take-drop-split' (succ n) (p ◃∙ s) = ap (p ◃∙_) (take-drop-split' n s)
 
 take-drop-split : {x y : X} (n : ℕ) (s : x ≡ y)
                 → [ s ↓] ◃∎ ＝ₛ [ take n s ↓] ◃∙ [ drop n s ↓] ◃∎
-take-drop-split n s = ＝ₛ-in ( [ s ↓]                        ＝⟨ ap (λ v → ≡-to-＝ v) (take-drop-split' n s) ⟩
-                              [ take n s ∙≡ drop n s ↓]     ＝⟨ ≡-to-＝-hom (take n s ) (drop n s) ⁻¹ ⟩
-                              [ take n s ↓] ∙ [ drop n s ↓]  ∎
-                              )
+take-drop-split n s = ＝ₛ-in (
+ [ s ↓]                        ＝⟨ ap ≡-to-＝ (take-drop-split' n s) ⟩
+ [ take n s ∙≡ drop n s ↓]     ＝⟨ ≡-to-＝-hom (take n s ) (drop n s) ⁻¹ ⟩
+ [ take n s ↓] ∙ [ drop n s ↓] ∎
+ )
 
 \end{code}
 
@@ -93,32 +100,33 @@ The "point from end" function comes in two different forms,
 \begin{code}
 
 private 
-  last1 : {x y : X} (s : x ≡ y) → X
-  last1 {x} [] = x
-  last1 {x} (p ◃∙ []) = x
-  last1 (p ◃∙ p₁ ◃∙ s) = last1 (p₁ ◃∙ s)
+
+ last1 : {x y : X} (s : x ≡ y) → X
+ last1 {x} [] = x
+ last1 {x} (p ◃∙ []) = x
+ last1 (p ◃∙ p₁ ◃∙ s) = last1 (p₁ ◃∙ s)
 
 
-  strip : {x y : X} (s : x ≡ y) → x ≡ last1 s
-  strip [] = []
-  strip (p ◃∙ []) = []
-  strip (p ◃∙ p₁ ◃∙ s) = p ◃∙ strip (p₁ ◃∙ s)
+ strip : {x y : X} (s : x ≡ y) → x ≡ last1 s
+ strip [] = []
+ strip (p ◃∙ []) = []
+ strip (p ◃∙ p₁ ◃∙ s) = p ◃∙ strip (p₁ ◃∙ s)
 
-  split : {x y : X} (s : x ≡ y)
-        → Σ z ꞉ X , x ≡ z × (z ＝ y)
-  split {x} [] = x , ([] , refl)
-  split {x} (p ◃∙ []) = x , [] , p
-  split {x} (p ◃∙ p₁ ◃∙ s) = let z , s' , q = split (p₁ ◃∙ s)
-                                    in z , (p ◃∙ s' , q) 
+ split : {x y : X} (s : x ≡ y)
+       → Σ z ꞉ X , x ≡ z × (z ＝ y)
+ split {x} [] = x , ([] , refl)
+ split {x} (p ◃∙ []) = x , [] , p
+ split {x} (p ◃∙ p₁ ◃∙ s) = let z , s' , q = split (p₁ ◃∙ s)
+                                   in z , (p ◃∙ s' , q) 
 
-  point-from-end : (n : ℕ) {x y : X} (s : x ≡ y) → X
-  point-from-end zero {x} {y} s = y
-  point-from-end (succ n) s = point-from-end n (strip s)
+ point-from-end : (n : ℕ) {x y : X} (s : x ≡ y) → X
+ point-from-end zero {x} {y} s = y
+ point-from-end (succ n) s = point-from-end n (strip s)
 
-  point-from-end' : (n : ℕ) {x y : X} (s : x ≡ y) → X
-  point-from-end' n {x} [] = x
-  point-from-end' zero (p ◃∙ s) = point-from-end' zero s
-  point-from-end' (succ n) (p ◃∙ s) = point-from-end' n (pr₁ (pr₂ (split (p ◃∙ s))))
+ point-from-end' : (n : ℕ) {x y : X} (s : x ≡ y) → X
+ point-from-end' n {x} [] = x
+ point-from-end' zero (p ◃∙ s) = point-from-end' zero s
+ point-from-end' (succ n) (p ◃∙ s) = point-from-end' n (pr₁ (pr₂ (split (p ◃∙ s))))
 
 \end{code}
 
@@ -126,13 +134,16 @@ private
 is true for the variant `point-from-end'`.
 
 \begin{code}
-private
-  point-from-end-lemma : (m : ℕ) (x : X) → point-from-end m {x} {x} [] ＝ x
-  point-from-end-lemma zero x = refl
-  point-from-end-lemma (succ m) x = point-from-end-lemma m x
 
-  point-from-end'-lemma : (m : ℕ) (x : X) → point-from-end' m {x} {x} [] ＝ x
-  point-from-end'-lemma m x = refl
+private
+
+ point-from-end-lemma : (m : ℕ) (x : X) → point-from-end m {x} {x} [] ＝ x
+ point-from-end-lemma zero x = refl
+ point-from-end-lemma (succ m) x = point-from-end-lemma m x
+
+ point-from-end'-lemma : (m : ℕ) (x : X) → point-from-end' m {x} {x} [] ＝ x
+ point-from-end'-lemma m x = refl
+
 \end{code}
 
 Using "take from end" we define the analogs of "drop" and "take," but
@@ -141,23 +152,27 @@ starting from the end of the path-sequence.
 \begin{code}
 
 private
-  take-from-end : (n : ℕ) {x y : X} (s : x ≡ y) → x ≡ point-from-end n s
-  take-from-end zero s = s
-  take-from-end (succ n) s = take-from-end n (strip s)
+
+ take-from-end : (n : ℕ) {x y : X} (s : x ≡ y) → x ≡ point-from-end n s
+ take-from-end zero s = s
+ take-from-end (succ n) s = take-from-end n (strip s)
 
 
-  drop-from-end : (n : ℕ) {x y : X} (s : x ≡ y) → point-from-end' n s ≡ y
-  drop-from-end n {x} [] = []
-  drop-from-end zero {x} (p ◃∙ s) = drop-from-end zero s
-  drop-from-end (succ n) (p ◃∙ s) = let z , (t , q) = split (p ◃∙ s)
-                                            in drop-from-end n t ∙▹ q
+ drop-from-end : (n : ℕ) {x y : X} (s : x ≡ y) → point-from-end' n s ≡ y
+ drop-from-end n {x} [] = []
+ drop-from-end zero {x} (p ◃∙ s) = drop-from-end zero s
+ drop-from-end (succ n) (p ◃∙ s) = let z , (t , q) = split (p ◃∙ s)
+                                           in drop-from-end n t ∙▹ q
+
 \end{code}
 
 The following names are also found in the orginal implementation.
 
 \begin{code}
+
 !- = take-from-end
 #- = drop-from-end
+
 \end{code}
 
 Fixities and convenience settings.

@@ -75,11 +75,11 @@ pre-rotate-seq-in : {x y z : X} {q : y ≡ z} {p : x ≡ y} {r : x ≡ z}
                   → q ＝ₛ (seq⁻¹ p) ∙≡ r
 pre-rotate-seq-in {q = q} {[]} {r} e = e
 pre-rotate-seq-in {q = q} {p ◃∙ s} {r} e =
-                    q 
-                      ＝ₛ⟨ pre-rotate-seq-in {q = q} (pre-rotate-in e) ⟩
-                    (seq⁻¹ s) ∙≡ ((p ⁻¹) ◃∙ r)
-                      ＝ₛ⟨ ＝ₛ-in ((ap ≡-to-＝ (∙≡-assoc (seq⁻¹ s) ((p ⁻¹) ◃∎) r)) ⁻¹) ⟩
-                    ((seq⁻¹ s ∙▹ (p ⁻¹)) ∙≡ r) ∎ₛ
+ q                          ＝ₛ⟨ pre-rotate-seq-in {q = q} (pre-rotate-in e) ⟩
+ (seq⁻¹ s) ∙≡ ((p ⁻¹) ◃∙ r) ＝ₛ⟨ ＝ₛ-in i ⟩
+ ((seq⁻¹ s ∙▹ (p ⁻¹)) ∙≡ r) ∎ₛ
+  where
+   i = (ap ≡-to-＝ (∙≡-assoc (seq⁻¹ s) ((p ⁻¹) ◃∎) r)) ⁻¹
 
 
 pre-rotate'-seq-in : {x y z : X} {p : x ≡ y} {r : x ≡ z} {q : y ≡ z}
@@ -91,13 +91,14 @@ pre-rotate'-seq-in e = pre-rotate-seq-in (e ⁻¹ₛ) ⁻¹ₛ
 post-rotate'-in : {x y z : X} {r : x ≡ z} {q : y ＝ z} {p : x ≡ y}
                 → r ＝ₛ p ∙▹ q
                 → r ∙▹ (q ⁻¹) ＝ₛ p
-post-rotate'-in {r = r} {q = refl} {p} e = (r ∙▹ (refl ⁻¹)) ＝ₛ⟨ ＝ₛ-in refl ⟩
-                                           r ∙▹ refl        ＝ₛ⟨ ＝ₛ-in refl ⟩
-                                           r ∙≡ (refl ◃∎)   ＝ₛ⟨ ＝ₛ-in (([↓]-hom r _) ⁻¹) ⟩
-                                           r                ＝ₛ⟨ e ⟩
-                                           p ∙▹ refl        ＝ₛ⟨ ＝ₛ-in refl ⟩
-                                           p ∙≡ (refl ◃∎)   ＝ₛ⟨ ＝ₛ-in (([↓]-hom p _) ⁻¹) ⟩
-                                           p ∎ₛ
+post-rotate'-in {r = r} {q = refl} {p} e =
+ (r ∙▹ (refl ⁻¹)) ＝ₛ⟨ ＝ₛ-in refl ⟩
+ r ∙▹ refl        ＝ₛ⟨ ＝ₛ-in refl ⟩
+ r ∙≡ (refl ◃∎)   ＝ₛ⟨ ＝ₛ-in (([↓]-hom r _) ⁻¹) ⟩
+ r                ＝ₛ⟨ e ⟩
+ p ∙▹ refl        ＝ₛ⟨ ＝ₛ-in refl ⟩
+ p ∙≡ (refl ◃∎)   ＝ₛ⟨ ＝ₛ-in (([↓]-hom p _) ⁻¹) ⟩
+ p ∎ₛ
 
 
 post-rotate-in : {x y z : X} {p : x ≡ y} {r : x ≡ z} {q : y ＝ z}
@@ -110,29 +111,32 @@ post-rotate-out : {x y z : X} {p : x ≡ y} {q : y ＝ z} {r : x ≡ z}
                 → p ＝ₛ r ∙▹ (q ⁻¹)
                 → p ∙▹ q ＝ₛ r
 post-rotate-out {p = p} {q} {r} e = 
-                (p ∙▹ q)         ＝ₛ⟨ ＝ₛ-in (ap (λ v → ≡-to-＝ (p ∙▹ v)) (⁻¹-involutive q ⁻¹)) ⟩
-                p ∙▹ ((q ⁻¹) ⁻¹) ＝ₛ⟨ post-rotate'-in e ⟩ 
-                r         ∎ₛ
+ (p ∙▹ q)         
+  ＝ₛ⟨ ＝ₛ-in (ap (λ v → ≡-to-＝ (p ∙▹ v)) (⁻¹-involutive q ⁻¹)) ⟩
+ p ∙▹ ((q ⁻¹) ⁻¹) ＝ₛ⟨ post-rotate'-in e ⟩ 
+ r                ∎ₛ
 
 
 post-rotate'-seq-in : {x y z : X} {r : x ≡ z} {q : y ≡ z} {p : x ≡ y}
                     → r ＝ₛ p ∙≡ q
                     → r ∙≡ (seq⁻¹ q) ＝ₛ p
-post-rotate'-seq-in {r = r} {[]} {p} e = r ∙≡ [] ＝ₛ⟨ []-∙≡-right-neutral-＝ₛ r ⟩
-                                         r       ＝ₛ⟨ e ⟩
-                                         p ∙≡ [] ＝ₛ⟨ []-∙≡-right-neutral-＝ₛ p ⟩
-                                         p       ∎ₛ
+post-rotate'-seq-in {r = r} {[]} {p} e = 
+ r ∙≡ [] ＝ₛ⟨ []-∙≡-right-neutral-＝ₛ r ⟩
+ r       ＝ₛ⟨ e ⟩
+ p ∙≡ [] ＝ₛ⟨ []-∙≡-right-neutral-＝ₛ p ⟩
+ p       ∎ₛ
 post-rotate'-seq-in {r = r} {q ◃∙ s} {p} e =
-                    r ∙≡ (seq⁻¹ s ∙▹ (q ⁻¹))               ＝ₛ⟨ ＝ₛ-in (ap ≡-to-＝ (∙≡-assoc r (seq⁻¹ s) ((q ⁻¹) ◃∎) ⁻¹)) ⟩
-                    (r ∙≡ seq⁻¹ s) ∙▹ (q ⁻¹)               ＝ₛ⟨ post-rotate'-in {r = r ∙≡ seq⁻¹ s} {q} {p} e' ⟩
-                    p                                      ∎ₛ
-                      where
-                        e'' : r ＝ₛ ((p ∙▹ q) ∙≡ s)
-                        e'' = r               ＝ₛ⟨ e ⟩
-                              (p ∙≡ q ◃∙ s)   ＝ₛ⟨ ＝ₛ-in (ap ≡-to-＝ (∙≡-assoc p (q ◃∎) s ⁻¹)) ⟩ 
-                              ((p ∙▹ q) ∙≡ s) ∎ₛ
-                        e' : (r ∙≡ seq⁻¹ s) ＝ₛ (p ∙▹ q)
-                        e' = post-rotate'-seq-in {r = r} {s} {p ∙▹ q} e''
+ r ∙≡ (seq⁻¹ s ∙▹ (q ⁻¹)) ＝ₛ⟨ ＝ₛ-in i ⟩
+ (r ∙≡ seq⁻¹ s) ∙▹ (q ⁻¹) ＝ₛ⟨ post-rotate'-in {r = r ∙≡ seq⁻¹ s} {q} {p} e' ⟩
+ p                        ∎ₛ
+  where
+   i = ap ≡-to-＝ (∙≡-assoc r (seq⁻¹ s) ((q ⁻¹) ◃∎) ⁻¹)
+   e'' : r ＝ₛ ((p ∙▹ q) ∙≡ s)
+   e'' = r               ＝ₛ⟨ e ⟩
+         (p ∙≡ q ◃∙ s)   ＝ₛ⟨ ＝ₛ-in (ap ≡-to-＝ (∙≡-assoc p (q ◃∎) s ⁻¹)) ⟩ 
+         ((p ∙▹ q) ∙≡ s) ∎ₛ
+   e' : (r ∙≡ seq⁻¹ s) ＝ₛ (p ∙▹ q)
+   e' = post-rotate'-seq-in {r = r} {s} {p ∙▹ q} e''
 
 
 post-rotate-seq-in : {x y z : X} {p : x ≡ y} {r : x ≡ z} {q : y ≡ z}
@@ -144,9 +148,12 @@ post-rotate-seq-in {p = p} {r} {q} e = post-rotate'-seq-in (e ⁻¹ₛ) ⁻¹ₛ
 post-rotate'-seq-out : {x y z : X} {r : x ≡ z} {p : x ≡ y} {q : y ≡ z}
                      → r ∙≡ seq⁻¹ q ＝ₛ p
                      → r ＝ₛ p ∙≡ q
-post-rotate'-seq-out {r = r} {p} {q} e = r                    ＝ₛ⟨ post-rotate-seq-in e ⟩
-                                         p ∙≡ seq⁻¹ (seq⁻¹ q) ＝ₛ⟨ ＝ₛ-in (ap (λ v → [ p ∙≡ v ↓]) (seq⁻¹-involutive q)) ⟩
-                                         p ∙≡ q ∎ₛ
+post-rotate'-seq-out {r = r} {p} {q} e =
+ r                    ＝ₛ⟨ post-rotate-seq-in e ⟩
+ p ∙≡ seq⁻¹ (seq⁻¹ q) ＝ₛ⟨ ＝ₛ-in i ⟩
+ p ∙≡ q ∎ₛ
+  where
+   i = ap (λ v → [ p ∙≡ v ↓]) (seq⁻¹-involutive q)
 
 post-rotate-seq-out : {x y z : X} {p : x ≡ y} {q : y ≡ z} {r : x ≡ z}
                     → p ＝ₛ r ∙≡ seq⁻¹ q
