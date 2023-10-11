@@ -17,7 +17,7 @@ HoTT-Agda library at https://github.com/HoTT/HoTT-Agda
 
 module PathSequences.index where
 
-import PathSequences.Base
+import PathSequences.Type
 import PathSequences.Concat
 import PathSequences.Split
 import PathSequences.Reasoning

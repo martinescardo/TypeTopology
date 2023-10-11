@@ -12,7 +12,7 @@ library to TypeTopology.
 
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
-module PathSequences.Base where
+module PathSequences.Type where
 
 open import MLTT.Spartan
 open import UF.Base
@@ -94,7 +94,6 @@ of identity types is normalized. See the module PathSequences.Concat
 
 infix 30 ≡-to-＝ 
 syntax ≡-to-＝ s = [ s ↓]
--- [_↓] = ≡-to-＝ 
 
 \end{code}
 
@@ -133,7 +132,6 @@ Fixities
 
 \begin{code}
 
--- infix  30 [_↓]
 infix  90 _◃∎
 infixr 80 _◃∙_
 infix  30 _≡_

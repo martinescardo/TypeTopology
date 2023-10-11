@@ -16,7 +16,7 @@ module PathSequences.Concat where
 
 open import MLTT.Spartan
 open import UF.Base
-open import PathSequences.Base
+open import PathSequences.Type
 
 \end{code}
 

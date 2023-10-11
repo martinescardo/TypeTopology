@@ -13,9 +13,8 @@ library to TypeTopology.
 {-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
 
 open import MLTT.Spartan
---open import MLTT.Natural-Numbers-Type 
 open import UF.Base
-open import PathSequences.Base
+open import PathSequences.Type
 open import PathSequences.Concat
 
 module PathSequences.Split {X : 𝓤 ̇ } where
