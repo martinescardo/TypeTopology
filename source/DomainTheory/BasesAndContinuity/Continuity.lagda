@@ -506,3 +506,117 @@ module _
   ∥∥-functor structural-continuity-of-dcpo-preserved-by-continuous-retract
 
 \end{code}
+
+If we assume propositional resizing, we can recover a continuity structure on 𝓓
+from the property.
+
+\begin{code}
+
+module _ where
+
+ open import UF.Size hiding (is-locally-small; is-small)
+
+ structurally-continuous-if-continuous : (psz : propositional-resizing (𝓥 ⁺ ⊔ 𝓣) 𝓥)
+                                         (𝓓 : DCPO {𝓥} {𝓣})
+                                       → is-continuous-dcpo 𝓓
+                                       → structurally-continuous 𝓓
+ structurally-continuous-if-continuous psz 𝓓 c =
+  record
+   { index-of-approximating-family = index
+   ; approximating-family = family
+   ; approximating-family-is-directed = family-is-directed
+   ; approximating-family-is-way-below = family-is-way-below
+   ; approximating-family-∐-＝ = family-∐-＝
+   }
+   where
+    index : ⟨ 𝓓 ⟩ → 𝓥 ̇
+    index x = Σ y ꞉ ⟨ 𝓓 ⟩ , resize psz (y ≪⟨ 𝓓 ⟩ x) (≪-is-prop-valued 𝓓)
+
+    make-index : {x : ⟨ 𝓓 ⟩} (y : ⟨ 𝓓 ⟩) → y ≪⟨ 𝓓 ⟩ x → index x
+    make-index y p = y , (to-resize psz _ (≪-is-prop-valued 𝓓) p)
+
+    family : (x : ⟨ 𝓓 ⟩) → index x → ⟨ 𝓓 ⟩
+    family x = pr₁
+
+    ≪-from-resize : {x y : ⟨ 𝓓 ⟩}
+                   → resize psz (x ≪⟨ 𝓓 ⟩ y) (≪-is-prop-valued 𝓓)
+                   → x ≪⟨ 𝓓 ⟩ y
+    ≪-from-resize p = from-resize psz _ (≪-is-prop-valued 𝓓) p
+
+    family-is-directed : (x : ⟨ 𝓓 ⟩) → is-Directed 𝓓 (family x)
+    family-is-directed x = ∥∥-rec (being-directed-is-prop _ (family x)) γ c
+     where
+      γ : structurally-continuous 𝓓 → is-Directed 𝓓 (family x)
+      γ sc = family-is-inhabited , family-is-semidirected
+       where
+        open structurally-continuous sc
+
+        approximating-family-index-to-index : {x : ⟨ 𝓓 ⟩}
+                                              (i : index-of-approximating-family x)
+                                            → index x
+        approximating-family-index-to-index {x} i =
+         make-index (approximating-family x i)
+          (approximating-family-is-way-below x i)
+
+        family-is-inhabited : ∥ index x ∥
+        family-is-inhabited =
+         ∥∥-functor
+          approximating-family-index-to-index
+          (inhabited-if-Directed 𝓓 _ (approximating-family-is-directed x))
+
+        family-is-semidirected : is-Semidirected 𝓓 (family x)
+        family-is-semidirected (y₁ , y₁≪x) (y₂ , y₂≪x) =
+         ∥∥-rec₂ ∃-is-prop f h1 h2
+         where
+           f : Σ i ꞉ index-of-approximating-family x , y₁ ⊑⟨ 𝓓 ⟩ approximating-family x i
+             → Σ j ꞉ index-of-approximating-family x , y₂ ⊑⟨ 𝓓 ⟩ approximating-family x j
+             → ∃ k ꞉ index x , y₁ ⊑⟨ 𝓓 ⟩ family x k ×
+                               y₂ ⊑⟨ 𝓓 ⟩ family x k
+           f (i , y₁⊑αᵢ) (j , y₂⊑αⱼ) =
+            ∥∥-functor g (semidirected-if-Directed 𝓓 _ (approximating-family-is-directed x) i j)
+            where
+             g : Σ k ꞉ index-of-approximating-family x ,
+                  approximating-family x i ⊑⟨ 𝓓 ⟩ approximating-family x k ×
+                  approximating-family x j ⊑⟨ 𝓓 ⟩ approximating-family x k
+               → Σ k ꞉ index x ,
+                  y₁ ⊑⟨ 𝓓 ⟩ family x k ×
+                  y₂ ⊑⟨ 𝓓 ⟩ family x k
+             g (k , αᵢ⊑αₖ , αⱼ⊑αₖ) =
+              approximating-family-index-to-index k ,
+              transitivity 𝓓 _ _ _ y₁⊑αᵢ αᵢ⊑αₖ ,
+              transitivity 𝓓 _ _ _ y₂⊑αⱼ αⱼ⊑αₖ
+
+           h1 : ∃ i ꞉ index-of-approximating-family x , y₁ ⊑⟨ 𝓓 ⟩ approximating-family x i
+           h1 = (≪-from-resize y₁≪x) _ _ (approximating-family-is-directed x)
+                 (approximating-family-∐-⊒ x)
+
+           h2 : ∃ i ꞉ index-of-approximating-family x , y₂ ⊑⟨ 𝓓 ⟩ approximating-family x i
+           h2 = (≪-from-resize y₂≪x) _ _ (approximating-family-is-directed x)
+                 (approximating-family-∐-⊒ x)
+
+    family-is-way-below : (x : ⟨ 𝓓 ⟩) → is-way-upperbound 𝓓 x (family x)
+    family-is-way-below x (y , y≪x) = ≪-from-resize y≪x
+
+    family-∐-＝ : (x : ⟨ 𝓓 ⟩) → ∐ 𝓓 (family-is-directed x) ＝ x
+    family-∐-＝ x = ∥∥-rec (sethood 𝓓) γ c
+     where
+      γ : structurally-continuous 𝓓 → ∐ 𝓓 (family-is-directed x) ＝ x
+      γ sc = antisymmetry 𝓓 _ _
+              (∐-is-lowerbound-of-upperbounds 𝓓 _ _
+                λ (y , y≪x) → ≪-to-⊑ 𝓓 (≪-from-resize y≪x))
+              (x                                        ⊑⟨ 𝓓 ⟩[ ⦅1⦆ ]
+               ∐ 𝓓 (approximating-family-is-directed x) ⊑⟨ 𝓓 ⟩[ ⦅2⦆ ]
+               ∐ 𝓓 (family-is-directed x)               ∎⟨ 𝓓 ⟩)
+       where
+        open structurally-continuous sc
+
+        ⦅1⦆ = approximating-family-∐-⊒ x
+
+        ⦅2⦆ : ∐ 𝓓 (approximating-family-is-directed x) ⊑⟨ 𝓓 ⟩ ∐ 𝓓 (family-is-directed x)
+        ⦅2⦆ = ∐-is-lowerbound-of-upperbounds 𝓓 _ _
+              λ i → ∐-is-upperbound 𝓓 (family-is-directed x)
+                     (make-index
+                      (approximating-family x i)
+                      (approximating-family-is-way-below x i))
+
+\end{code}
