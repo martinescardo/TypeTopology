@@ -1,7 +1,7 @@
 Ayberk Tosun.
 
-Started on 29 September 2023
-Finished on 2 October 2023.
+Started  on: 29 September 2023.
+Finished on: 2 October 2023.
 
 This module contains the definition of the Scott locale of a large and locally
 small dcpo with a specified small compact basis, a notion defined in Tom de
