@@ -147,17 +147,17 @@ the basic opens. The order `_⊆ₛ_` is the large version.
         r : ((S [ i ]) ∈ₛ 𝔙) holds
         r = φ (pr₁ i) q
 
- ⊆-implies-⊆ₖ : (𝔘 𝔙 : 𝒪ₛ) → (𝔘 ⊆ₛ 𝔙 ⇒ 𝔘 ⊆ₖ 𝔙) holds
- ⊆-implies-⊆ₖ 𝔘 𝔙 p = p ∘ (ℬ [_])
+ ⊆ₛ-implies-⊆ₖ : (𝔘 𝔙 : 𝒪ₛ) → (𝔘 ⊆ₛ 𝔙 ⇒ 𝔘 ⊆ₖ 𝔙) holds
+ ⊆ₛ-implies-⊆ₖ 𝔘 𝔙 p = p ∘ (ℬ [_])
 
  ⊆-iff-⊆ₖ : (𝔘 𝔙 : 𝒪ₛ) → (𝔘 ⊆ₛ 𝔙 ↔ 𝔘 ⊆ₖ 𝔙) holds
- ⊆-iff-⊆ₖ 𝔘 𝔙 = ⊆-implies-⊆ₖ 𝔘 𝔙 , ⊆ₖ-implies-⊆ 𝔘 𝔙
+ ⊆-iff-⊆ₖ 𝔘 𝔙 = ⊆ₛ-implies-⊆ₖ 𝔘 𝔙 , ⊆ₖ-implies-⊆ 𝔘 𝔙
 
  ⊆ₖ-is-reflexive : is-reflexive _⊆ₖ_ holds
- ⊆ₖ-is-reflexive 𝔘@(U , δ) = ⊆-implies-⊆ₖ 𝔘 𝔘 (⊆ₛ-is-reflexive 𝔘)
+ ⊆ₖ-is-reflexive 𝔘@(U , δ) = ⊆ₛ-implies-⊆ₖ 𝔘 𝔘 (⊆ₛ-is-reflexive 𝔘)
 
  ⊆ₖ-is-transitive : is-transitive _⊆ₖ_ holds
- ⊆ₖ-is-transitive 𝔘@(U , δ) 𝔙@(V , ϵ) 𝔚@(W , ζ) p q = ⊆-implies-⊆ₖ 𝔘 𝔚 †
+ ⊆ₖ-is-transitive 𝔘@(U , δ) 𝔙@(V , ϵ) 𝔚@(W , ζ) p q = ⊆ₛ-implies-⊆ₖ 𝔘 𝔚 †
   where
    † : (𝔘 ⊆ₛ 𝔚) holds
    † = ⊆ₛ-is-transitive 𝔘 𝔙 𝔚 (⊆ₖ-implies-⊆ 𝔘 𝔙 p) (⊆ₖ-implies-⊆ 𝔙 𝔚 q)
@@ -181,7 +181,7 @@ The top open.
 \begin{code}
 
  ⊤ₛ-is-top-wrt-⊆ₖ : (𝔘 : 𝒪ₛ) → (𝔘 ⊆ₖ ⊤ₛ) holds
- ⊤ₛ-is-top-wrt-⊆ₖ 𝔘 = ⊆-implies-⊆ₖ 𝔘 ⊤ₛ (⊤ₛ-is-top 𝔘)
+ ⊤ₛ-is-top-wrt-⊆ₖ 𝔘 = ⊆ₛ-implies-⊆ₖ 𝔘 ⊤ₛ (⊤ₛ-is-top 𝔘)
 
 \end{code}
 
@@ -195,12 +195,12 @@ The meet of two opens.
  ∧ₛ-is-meet-wrt-⊆ₖ 𝔘 𝔙 = † , ‡
   where
    † : ((𝔘 ∧ₛ 𝔙) is-a-lower-bound-of (𝔘 , 𝔙)) holds
-   † = ⊆-implies-⊆ₖ (𝔘 ∧ₛ 𝔙) 𝔘 (∧[ 𝒪 ScottLocale′ ]-lower₁ 𝔘 𝔙)
-     , ⊆-implies-⊆ₖ (𝔘 ∧ₛ 𝔙) 𝔙 (∧[ 𝒪 ScottLocale′ ]-lower₂ 𝔘 𝔙)
+   † = ⊆ₛ-implies-⊆ₖ (𝔘 ∧ₛ 𝔙) 𝔘 (∧[ 𝒪 ScottLocale′ ]-lower₁ 𝔘 𝔙)
+     , ⊆ₛ-implies-⊆ₖ (𝔘 ∧ₛ 𝔙) 𝔙 (∧[ 𝒪 ScottLocale′ ]-lower₂ 𝔘 𝔙)
 
    ‡ : ((W , _) : lower-bound (𝔘 , 𝔙)) → (W ⊆ₖ (𝔘 ∧ₛ 𝔙)) holds
    ‡ (𝔚 , p , q) =
-    ⊆-implies-⊆ₖ 𝔚 (𝔘 ∧ₛ 𝔙) (∧[ 𝒪 ScottLocale′ ]-greatest 𝔘 𝔙 𝔚 ♣ ♠)
+    ⊆ₛ-implies-⊆ₖ 𝔚 (𝔘 ∧ₛ 𝔙) (∧[ 𝒪 ScottLocale′ ]-greatest 𝔘 𝔙 𝔚 ♣ ♠)
      where
       ♣ : (𝔚 ⊆ₛ 𝔘) holds
       ♣ = ⊆ₖ-implies-⊆ 𝔚 𝔘 p
@@ -220,10 +220,10 @@ The 𝓤-join of opens.
  ⋁ₛ-is-join-wrt-⊆ₖ S = † , ‡
   where
    † : ((⋁ₛ S) is-an-upper-bound-of S) holds
-   † i = ⊆-implies-⊆ₖ (S [ i ]) (⋁ₛ S) (⋁[ 𝒪 ScottLocale′ ]-upper S i)
+   † i = ⊆ₛ-implies-⊆ₖ (S [ i ]) (⋁ₛ S) (⋁[ 𝒪 ScottLocale′ ]-upper S i)
 
    ‡ : ((U , _) : upper-bound S) → ((⋁ₛ S) ⊆ₖ U) holds
-   ‡ (𝔘 , p) = ⊆-implies-⊆ₖ (⋁ₛ S) 𝔘 ((⋁[ 𝒪 ScottLocale′ ]-least S (𝔘 , ※)))
+   ‡ (𝔘 , p) = ⊆ₛ-implies-⊆ₖ (⋁ₛ S) 𝔘 ((⋁[ 𝒪 ScottLocale′ ]-least S (𝔘 , ※)))
     where
      ※ : (i : index S) → ((S [ i ]) ⊆ₛ 𝔘) holds
      ※ i = ⊆ₖ-implies-⊆ (S [ i ]) 𝔘 (p i)
