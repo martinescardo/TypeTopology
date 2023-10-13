@@ -4,24 +4,13 @@ Started on 29 September 2023
 Finished on 2 October 2023.
 
 This module contains the definition of the Scott locale of a large and locally
-small _algebraic_ dcpo, using the definition of algebraic dcpo from the
-`DomainTheory` development due to Tom de Jong.
+small dcpo with a specified small compact basis, a notion defined in Tom de
+Jong's domain theory development.
 
-If one starts with an algebraic dcpo, one can ensure that the resulting Scott
-locale is locally small by quantifying over only the basic/compact opens. This
-is the difference between the construction in this module and the one in
-`ScottLocale.Definition`
-
-TODO: In the future, it would be good to call the other module something else
-other than `Definition`, because it's not a very useful construction. It should
-have a name conveying the fact that it's an overly general construction that is
-not useful in most cases.
-
-TODO: The construction in the module that is currently called
-`ScottLocale.Definition` is almost the same things as the one here. In the
-future, it might be good to refactor the common structure that they share into a
-separate module, and make both of them instances of this --- or something along
-these lines.
+If one starts with a dcpo with a specified small compact basis, one can ensure
+that the resulting Scott locale is locally small by quantifying over only the
+basic/compact opens. This is the difference between the construction in this
+module and the one in `ScottLocale.Definition`
 
 \begin{code}[hide]
 
@@ -40,7 +29,7 @@ open import UF.Powerset-MultiUniverse
 \end{code}
 
 We assume the existence of propositional truncations as well as function
-extensionality, and we assume a universe 𝓤 over which we consider large and
+extensionality, and we assume a universe `𝓤` over which we consider large and
 locally small dcpos.
 
 \begin{code}
@@ -123,8 +112,8 @@ function.
 
 \end{code}
 
-The order `_⊆ₖ_` is the small version of the relation that quantifies only
-over the basic opens. The order `_⊆ₛ_` is the large version.
+The order `_⊆ₖ_` is the small version of the relation that quantifies only over
+the basic opens. The order `_⊆ₛ_` is the large version.
 
 \begin{code}
 
