@@ -411,7 +411,7 @@ module Inductive-Definitions {𝓤 𝓦 𝓥 : Universe} {B : 𝓥  ̇} (L : Sup
     inductively-generated-subset
 
    field
-    Ind : B → (𝓤 ⊔ 𝓥 ⁺)  ̇
+    Ind : B → 𝓤 ⊔ 𝓥 ⁺  ̇
     Ind-trunc : (b : B) → is-prop (Ind b)
     c-closed : (U : 𝓟 {𝓥} B)
              → ((b : B) → (b ∈ U → Ind b))
