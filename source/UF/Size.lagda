@@ -80,8 +80,8 @@ Obsolete notation used in some publications:
 \begin{code}
 
 private
-  _has-size_ : 𝓤 ̇ → (𝓥 : Universe) → 𝓥 ⁺  ⊔ 𝓤 ̇
-  X has-size 𝓥 = X is 𝓥 small
+ _has-size_ : 𝓤 ̇ → (𝓥 : Universe) → 𝓥 ⁺  ⊔ 𝓤 ̇
+ X has-size 𝓥 = X is 𝓥 small
 
 \end{code}
 
@@ -96,6 +96,7 @@ propositional-resizing 𝓤 𝓥 = (P : 𝓤 ̇ ) → is-prop P → P is 𝓥 sm
 
 Propositional-Resizing : 𝓤ω
 Propositional-Resizing = {𝓤 𝓥 : Universe} → propositional-resizing 𝓤 𝓥
+
 \end{code}
 
 Propositional resizing from a universe to a higher universe just
@@ -660,7 +661,7 @@ deJong-resizing-implies-propositional-resizing : (ua : Univalence)
                                                → deJong-resizing 𝓤 𝓥
                                                → propositional-resizing 𝓤 𝓥
 deJong-resizing-implies-propositional-resizing ua 𝓤 𝓥 r P i =
-  being-small-is-idempotent ua 𝓤 𝓥 P i (r P)
+ being-small-is-idempotent ua 𝓤 𝓥 P i (r P)
 
 being-small-is-idempotent-converse : (ua : Univalence) (𝓤 𝓥 : Universe) (Y : 𝓤 ̇ )
                                    → Y is 𝓥 small
@@ -675,19 +676,19 @@ being-small-is-idempotent-≃ : (ua : Univalence) (𝓤 𝓥 : Universe) (Y : �
                             → ((Y is 𝓥 small) is 𝓥 small) ≃ (Y is 𝓥 small)
 being-small-is-idempotent-≃ ua 𝓤 𝓥 Y i =
  logically-equivalent-props-are-equivalent
-   (being-small-is-prop ua (Y is 𝓥 small) 𝓥)
-   (being-small-is-prop ua Y 𝓥)
-   (being-small-is-idempotent ua 𝓤 𝓥 Y i)
-   (being-small-is-idempotent-converse ua 𝓤 𝓥 Y)
+  (being-small-is-prop ua (Y is 𝓥 small) 𝓥)
+  (being-small-is-prop ua Y 𝓥)
+  (being-small-is-idempotent ua 𝓤 𝓥 Y i)
+  (being-small-is-idempotent-converse ua 𝓤 𝓥 Y)
 
 being-small-is-idempotent-＝ : (ua : Univalence) (𝓤 𝓥 : Universe) (Y : 𝓤 ̇ )
                             → is-prop Y
                             → ((Y is 𝓥 small) is 𝓥 small) ＝ (Y is 𝓥 small)
 being-small-is-idempotent-＝ ua 𝓤 𝓥 Y i =
-  eqtoid (ua (𝓤 ⊔ 𝓥 ⁺))
-    ((Y is 𝓥 small) is 𝓥 small)
-    (Y is 𝓥 small)
-    (being-small-is-idempotent-≃ ua 𝓤 𝓥 Y i)
+ eqtoid (ua (𝓤 ⊔ 𝓥 ⁺))
+  ((Y is 𝓥 small) is 𝓥 small)
+  (Y is 𝓥 small)
+  (being-small-is-idempotent-≃ ua 𝓤 𝓥 Y i)
 
 \end{code}
 

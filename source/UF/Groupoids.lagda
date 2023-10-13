@@ -26,6 +26,7 @@ open import UF.FunExt
 open import UF.Sets
 open import UF.Sets-Properties
 open import UF.Subsingletons
+open import UF.Subsingletons-Properties
 open import UF.Subsingletons-FunExt
 open import UF.UA-FunExt
 
@@ -35,6 +36,15 @@ is-groupoid X = {x y : X} → is-set (x ＝ y)
 being-groupoid-is-prop : funext 𝓤 𝓤 → {X : 𝓤 ̇ } → is-prop (is-groupoid X)
 being-groupoid-is-prop fe = Π-is-prop' fe (λ x →
                             Π-is-prop' fe (λ x' → being-set-is-prop fe))
+\end{code}
+
+Sets are Groupoids.
+
+\begin{code}
+
+sets-are-groupoids : {X : 𝓤 ̇} → is-set X → is-groupoid X
+sets-are-groupoids i = props-are-sets i
+
 \end{code}
 
 UF.hlevels uses global univalence.

@@ -153,6 +153,7 @@ import Naturals.index
 import Notation.index
 import NotionsOfDecidability.index
 import Ordinals.index
+import PathSequences.index
 import PCF.index
 import Posets.index
 import Quotient.index
