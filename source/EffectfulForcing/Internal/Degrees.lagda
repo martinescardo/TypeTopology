@@ -1,5 +1,7 @@
 Ayberk Tosun
 
+Finished on 31 August 2023.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}
