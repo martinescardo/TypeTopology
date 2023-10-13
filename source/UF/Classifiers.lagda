@@ -452,3 +452,5 @@ more general universes in the following:
   (Σ A ꞉ (Y → 𝓤 ̇ ) , Σ A ＝ X) ≃⟨ Σ-cong (λ A → univalence-≃ ua (Σ A) X) ⟩
   (Σ A ꞉ (Y → 𝓤 ̇ ) , Σ A ≃ X)  ≃⟨ Σ-fibers-≃ {𝓤} {𝓤} ua fe⁺ ⟩
   (X → Y)                       ■
+
+\end{code}
