@@ -25,6 +25,7 @@ instance
  Order-ℕ-ℕ : Order ℕ ℕ
  _≤_ {{Order-ℕ-ℕ}} = _≤ℕ_
 
+
 ≤-is-prop-valued : (m n : ℕ) → is-prop (m ≤ n)
 ≤-is-prop-valued zero     n        = 𝟙-is-prop
 ≤-is-prop-valued (succ m) zero     = 𝟘-is-prop
@@ -812,6 +813,8 @@ Here we define some order lemmas for the Absolute Difference operation
 and then prove the analog of the triangle inequality for the Natural
 Numbers under it.
 
+Slight refactoring on 12 October 2023
+
 \begin{code}
 
 ≤-diff : (x y : ℕ) → ∣ x - y ∣ ≤ x +' y
@@ -854,13 +857,13 @@ triangle-inequality zero y z =
  ≤-trans₂ ∣ zero - z ∣ z (y +' ∣ y - z ∣) (∣ zero - y ∣ +' ∣ y - z ∣) Γ α γ
   where
    Γ : ∣ zero - z ∣ ≤ℕ z
-   Γ = equal-gives-less-than-or-equal ∣ zero - z ∣ z (minus-nothing z)
+   Γ = equal-gives-less-than-or-equal ∣ zero - z ∣ z (minus-nothing z ⁻¹)
 
    α : z ≤ℕ (y +' ∣ y - z ∣)
    α = ≤-diff-minus z y
 
    β : y ≤ℕ ∣ zero - y ∣
-   β = equal-gives-less-than-or-equal y ∣ zero - y ∣ (minus-nothing y ⁻¹)
+   β = equal-gives-less-than-or-equal y ∣ zero - y ∣ (minus-nothing y)
 
    γ : (y +' ∣ y - z ∣) ≤ℕ (∣ zero - y ∣ +' ∣ y - z ∣)
    γ = ≤-adding y ∣ zero - y ∣ ∣ y - z ∣ ∣ y - z ∣ β (≤-refl ∣ y - z ∣)
@@ -876,5 +879,43 @@ triangle-inequality (succ x) zero (succ z) =
         (succ-left x z ⁻¹)
 triangle-inequality (succ x) (succ y) zero = ≤-diff-plus x y
 triangle-inequality (succ x) (succ y) (succ z) = triangle-inequality x y z
+
+\end{code}
+
+Lane Biocini, 18 September 2023
+
+Another lemma for Absolute Difference
+
+\begin{code}
+triangle-inequality-bound : (a b : ℕ) → ¬ (succ (a +' b) ≤ ∣ a - b ∣)
+triangle-inequality-bound a b l = not-less-than-itself (a +' b) γ
+  where
+    Γ : ∣ a - b ∣ ≤ a +' b
+    Γ = ≤-diff a b
+
+    γ : succ (a +' b) ≤ (a +' b)
+    γ = ≤-trans (succ (a +' b)) ∣ a - b ∣ (a +' b) l Γ
+
+triangle-inequality-bound' : (a b : ℕ) → ¬ (succ (succ a +' b) ≤ℕ ∣ a - b ∣)
+triangle-inequality-bound' a b l = triangle-inequality-bound a b γ
+ where
+  Γ : succ (a +' b) ≤ℕ succ a +' b
+  Γ = equal-gives-less-than-or-equal (succ (a +' b)) (succ a +' b) (succ-left a b ⁻¹)
+
+  γ : succ (a +' b) ≤ℕ ∣ a - b ∣
+  γ = ≤-trans₂ (succ (a +' b)) (succ a ∔ b) (succ (succ a ∔ b)) ∣ a - b ∣
+               Γ (≤-succ (succ a ∔ b) ) l
+\end{code}
+
+\begin{code}
+
+_<ℕ_<ℕ_ : ℕ → ℕ → ℕ → 𝓤₀ ̇
+p <ℕ n <ℕ q = p < n × (n < q)
+
+instance
+ Strict-Order-Chain-ℕ-ℕ-ℕ : Strict-Order-Chain ℕ ℕ ℕ (_<ℕ_) (_<ℕ_)
+ _<_<_ {{Strict-Order-Chain-ℕ-ℕ-ℕ}} = _<ℕ_<ℕ_
+
+
 
 \end{code}
