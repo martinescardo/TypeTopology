@@ -28,12 +28,12 @@ open import UF.Embeddings
 open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.FunExt
+open import UF.Powerset hiding (𝕋)
 open import UF.Retracts
 open import UF.Sets
 open import UF.Sets-Properties
 open import UF.Subsingletons
 open import UF.SubtypeClassifier
-open import UF.SubtypeClassifier-Properties
 open import UF.UA-FunExt
 open import UF.Univalence
 
@@ -452,3 +452,5 @@ more general universes in the following:
   (Σ A ꞉ (Y → 𝓤 ̇ ) , Σ A ＝ X) ≃⟨ Σ-cong (λ A → univalence-≃ ua (Σ A) X) ⟩
   (Σ A ꞉ (Y → 𝓤 ̇ ) , Σ A ≃ X)  ≃⟨ Σ-fibers-≃ {𝓤} {𝓤} ua fe⁺ ⟩
   (X → Y)                       ■
+
+\end{code}

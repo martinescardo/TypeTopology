@@ -164,9 +164,12 @@ small copy.
   have-𝕗 : X ≃ 𝕄
   have-𝕗 = 𝕗
 
-  notice : (universe-of X ＝ 𝓤)
-         × (universe-of 𝕄 ＝ 𝓤⁺)
-  notice = refl , refl
+  private
+   remark-X : 𝓤 ̇
+   remark-X = X
+
+   remark-𝕄 : 𝓤⁺ ̇
+   remark-𝕄 = 𝕄
 
   M : 𝕄
   M = ssup X ⌜ 𝕗 ⌝
@@ -203,7 +206,7 @@ the following alternative proof:
 \begin{code}
 
 𝕄-is-large' : is-large 𝕄
-𝕄-is-large' 𝕄-is-small = universes-are-large I
+𝕄-is-large' 𝕄-is-small = II
  where
   I : (𝓤 ̇) is 𝓤 small
   I = embedded-retract-is-small
@@ -211,11 +214,13 @@ the following alternative proof:
        universe-to-𝕄-is-embedding
        𝕄-is-small
 
+  II : 𝟘
+  II = universes-are-large I
+
 \end{code}
 
 However, this proof, when expanded, is essentially the same as
 that of Russell's paradox.
-
 
 The type of multisets is algebraically injective, which is a new
 result.
