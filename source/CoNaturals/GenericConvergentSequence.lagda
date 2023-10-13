@@ -16,24 +16,23 @@ module CoNaturals.GenericConvergentSequence where
 
 open import MLTT.Spartan
 open import MLTT.Two-Properties
-
-open import Naturals.Properties
 open import Naturals.Addition renaming (_+_ to _∔_)
 open import Naturals.Order hiding (max)
-open import Notation.Order
+open import Naturals.Properties
 open import Notation.CanonicalMap
-
+open import Notation.Order
 open import TypeTopology.Density
-open import TypeTopology.DiscreteAndSeparated
-
 open import UF.Base
-open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
-open import UF.FunExt
+open import UF.DiscreteAndSeparated
 open import UF.Embeddings
 open import UF.Equiv
+open import UF.FunExt
+open import UF.NotNotStablePropositions
 open import UF.Retracts
-open import UF.Miscelanea
+open import UF.Sets
+open import UF.SubtypeClassifier
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
 
 funext₀ : 𝓤₁ ̇
 funext₀ = funext 𝓤₀ 𝓤₀
@@ -140,6 +139,7 @@ open import TypeTopology.TotallySeparated
                               (ℕ∞-retract-of-Cantor fe)
                               (Cantor-is-totally-separated fe)
 
+
 Zero : ℕ∞
 Zero = (λ i → ₀) , (λ i → ≤₂-refl {₀})
 
@@ -175,6 +175,17 @@ is-positive u = 0 ⊏ u
 
 positivity : ℕ∞ → 𝟚
 positivity u = ι u 0
+
+𝟚-retract-of-ℕ∞ : retract 𝟚 of ℕ∞
+𝟚-retract-of-ℕ∞  = positivity , s , η
+ where
+  s : 𝟚 → ℕ∞
+  s ₀ = Zero
+  s ₁ = Succ Zero
+
+  η : positivity ∘ s ∼ id
+  η ₀ = refl
+  η ₁ = refl
 
 is-Zero-Zero : is-Zero Zero
 is-Zero-Zero = refl

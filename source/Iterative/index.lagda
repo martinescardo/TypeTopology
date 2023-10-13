@@ -37,31 +37,35 @@ Ordinals.CumulativeHierarchy.lagda.
 
 References.
 
-  * Peter Aczel. "The Type Theoretic Interpretation of Constructive
+[1] Peter Aczel. "The Type Theoretic Interpretation of Constructive
     Set Theory". Studies in Logic and the Foundations of Mathematics,
     Volume 96, 1978, Pages 55-66.
     https://doi.org/10.1016/S0049-237X(08)71989-X
 
-  * Gerald Leversha. "Formal Systems for Constructive Mathematics".
+[2] Gerald Leversha. "Formal Systems for Constructive Mathematics".
     PhD Thesis, 1976, The University of Manchester (United
     Kingdom). Department of Pure and Applied Mathematics.
     https://www.librarysearch.manchester.ac.uk/permalink/44MAN_INST/1r887gn/alma992983521804701631
 
-  * Håkon Gylterud. "Multisets in type theory".  Mathematical
+[3] Håkon Gylterud. "Multisets in type theory".  Mathematical
     Proceedings of the Cambridge Philosophical Society, Volume 169,
     Issue 1, 2020, pp. 1-18. https://doi.org/10.1017/S0305004119000045
 
-  * H. R. Gylterud, "From multisets to sets in homotopy type theory".
+[4] H. R. Gylterud, "From multisets to sets in homotopy type theory".
     The Journal of Symbolic Logic, vol. 83, no. 3, pp. 1132–1146,
     2018. https://doi.org/10.1017/jsl.2017.84
 
-  * Tom de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg and
+[5] Tom de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg and
     Chuangjie Xu. "Set-Theoretic and Type-Theoretic Ordinals
     Coincide". To appear at LICS 2023, June 2023.
     https://arxiv.org/abs/2301.10696
 
-  * Elisabeth Bonnevier, Håkon Robbestad Gylterud, Daniel Gratzer, and
+[6] Elisabeth Bonnevier, Håkon Robbestad Gylterud, Daniel Gratzer, and
     Anders Mörtberg, "The category of iterative sets in HoTT".
     Workshop on Homotopy Type Theory/ Univalent Foundations
     Vienna, Austria, April 22-23, 2023
     https://hott-uf.github.io/2023/
+
+[7] W. C. Powell. "Extending Gödel's negative interpretation to ZF".
+    The Journal of Symbolic Logic, vol. 40, no. 2, pp. 221–229, 1975.
+    https://doi.org/10.2307/2271902

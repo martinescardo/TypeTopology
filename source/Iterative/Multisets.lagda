@@ -3,7 +3,7 @@ Martin Escardo & Tom de Jong, June 2023.
 Iterative multisets.
 
 See the module Iterative.index for bibliographic references regarding
-this file.
+this file. All the results of this file are in Håkon Gylterud [3].
 
 \begin{code}
 
@@ -282,7 +282,7 @@ singleton-typesᴹ-are-singletons : Univalence
                                 → (M : 𝕄) → is-singleton (singleton-typeᴹ M)
 singleton-typesᴹ-are-singletons ua M = M-center M , M-centrality ua M
 
-idtoeqᴹ : (M t : 𝕄) → M ＝ t → M ≃ᴹ t
+idtoeqᴹ : (M N : 𝕄) → M ＝ N → M ≃ᴹ N
 idtoeqᴹ M M refl = ≃ᴹ-refl M
 
 idtoeqᴹ-is-equiv : Univalence
@@ -300,9 +300,9 @@ idtoeqᴹ-is-equiv ua M = I
   I : (t : 𝕄) → is-equiv (idtoeqᴹ M t)
   I = NatΣ-equiv-gives-fiberwise-equiv (idtoeqᴹ M) f-is-equiv
 
-𝕄-=-≃ : Univalence
+𝕄-＝-≃ : Univalence
       → (M N : 𝕄) → (M ＝ N) ≃ (M ≃ᴹ N)
-𝕄-=-≃ ua M N = idtoeqᴹ M N , idtoeqᴹ-is-equiv ua M N
+𝕄-＝-≃ ua M N = idtoeqᴹ M N , idtoeqᴹ-is-equiv ua M N
 
 \end{code}
 
@@ -312,7 +312,7 @@ And here is the desired conclusion:
 
 𝕄-is-locally-small : Univalence
                    → is-locally-small 𝕄
-𝕄-is-locally-small ua M N = M ≃ᴹ N , ≃-sym (𝕄-=-≃ ua M N)
+𝕄-is-locally-small ua M N = M ≃ᴹ N , ≃-sym (𝕄-＝-≃ ua M N)
 
 \end{code}
 
@@ -326,6 +326,6 @@ M ⁅⁻ N = Σ x ꞉ 𝕄-root N , 𝕄-forest N x ≃ᴹ M
 
 ⁅⁻≃⁅ : Univalence
      → (M N : 𝕄) → (M ⁅ N) ≃ (M ⁅⁻ N)
-⁅⁻≃⁅ ua M N = Σ-cong (λ x → 𝕄-=-≃ ua (𝕄-forest N x) M)
+⁅⁻≃⁅ ua M N = Σ-cong (λ x → 𝕄-＝-≃ ua (𝕄-forest N x) M)
 
 \end{code}

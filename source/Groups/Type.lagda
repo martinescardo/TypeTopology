@@ -8,8 +8,11 @@ UF.SIP-Examples.
 {-# OPTIONS --safe --without-K --exact-split #-}
 
 module Groups.Type where
+
 open import MLTT.Spartan
 open import UF.Base
+open import UF.Sets
+open import UF.Sets-Properties
 open import UF.Subsingletons
 open import UF.FunExt
 open import UF.Subsingletons-FunExt
@@ -128,7 +131,6 @@ monoid-structure-of (X , _·_ , i , a , e , l , r , ι) = (_·_ , e)
 monoid-axioms-of : (G : Group 𝓤) → monoid-axioms ⟨ G ⟩ (monoid-structure-of G)
 monoid-axioms-of (X , _·_ , i , a , e , l , r , ι) = i , l , r , a
 
-
 inv-lemma : (X : 𝓤 ̇ ) (_·_ : X → X → X) (e : X)
           → monoid-axioms X (_·_ , e)
           → (x y z : X)
@@ -150,8 +152,8 @@ multiplication (X , _·_ , _) = _·_
 
 syntax multiplication G x y = x ·⟨ G ⟩ y
 
-group-is-set : (G : Group 𝓤) → is-set ⟨ G ⟩
-group-is-set (X , _·_ , i , a , e , l , r , u) = i
+groups-are-sets : (G : Group 𝓤) → is-set ⟨ G ⟩
+groups-are-sets (X , _·_ , i , a , e , l , r , u) = i
 
 unit : (G : Group 𝓤) → ⟨ G ⟩
 unit (X , _·_ , i , a , e , l , r , u) = e
@@ -201,7 +203,7 @@ being-hom-is-prop : Fun-Ext
                   → is-prop (is-hom G H f)
 being-hom-is-prop fe G H f = Π-is-prop' fe
                               (λ x → Π-is-prop' fe
-                                      (λ y → group-is-set H))
+                                      (λ y → groups-are-sets H))
 
 preserves-unit : (G : Group 𝓤) (H : Group 𝓥) → (⟨ G ⟩ → ⟨ H ⟩) → 𝓥 ̇
 preserves-unit G H f = f (unit G) ＝ unit H
@@ -271,6 +273,19 @@ homs-preserve-invs G H f m x = γ
 is-iso : (G : Group 𝓤) (H : Group 𝓥) → (⟨ G ⟩ → ⟨ H ⟩) → 𝓤 ⊔ 𝓥 ̇
 is-iso G H f = is-equiv f × is-hom G H f
 
+group-isos-are-equivs : (G : Group 𝓤) (H : Group 𝓥)
+                        {f : ⟨ G ⟩ → ⟨ H ⟩}
+                      → is-iso G H f
+                      → is-equiv f
+group-isos-are-equivs G H = pr₁
+
+group-isos-are-homs : (G : Group 𝓤) (H : Group 𝓥)
+                      {f : ⟨ G ⟩ → ⟨ H ⟩}
+                     → is-iso G H f
+                     → is-hom G H f
+group-isos-are-homs G H = pr₂
+
+
 inverses-are-homs : (G : Group 𝓤) (H : Group 𝓥) (f : ⟨ G ⟩ → ⟨ H ⟩)
                   → (i : is-equiv f)
                   → is-hom G H f
@@ -291,6 +306,11 @@ inverses-are-homs G H f i h {x} {y} = γ
       g (f (g x ·⟨ G ⟩ g y))     ＝⟨ ε _ ⟩
       g x ·⟨ G ⟩ g y             ∎
 
+inverses-are-homs' : (G : Group 𝓤) (H : Group 𝓥) (𝕗 : ⟨ G ⟩ ≃ ⟨ H ⟩)
+                   → is-hom G H ⌜ 𝕗 ⌝
+                   → is-hom H G (⌜ 𝕗 ⌝⁻¹)
+inverses-are-homs' G H (f , i) = inverses-are-homs G H f i
+
 \end{code}
 
 Users of this module may wish to rename the following symbol _≅_ for
@@ -300,6 +320,13 @@ group ismorphism when importing it.
 
 _≅_ : Group 𝓤 → Group 𝓥 → 𝓤 ⊔ 𝓥 ̇
 G ≅ H = Σ f ꞉ (⟨ G ⟩ → ⟨ H ⟩) , is-iso G H f
+
+≅-to-≃ : (G : Group 𝓤) (H : Group 𝓥) → G ≅ H → ⟨ G ⟩ ≃ ⟨ H ⟩
+≅-to-≃ G H (f , f-is-iso) = (f , group-isos-are-equivs G H f-is-iso)
+
+≅-to-≃-is-hom : (G : Group 𝓤) (H : Group 𝓥) (𝕗 : G ≅ H)
+              → is-hom G H ⌜ ≅-to-≃ G H 𝕗 ⌝
+≅-to-≃-is-hom G H (f , f-is-iso) = group-isos-are-homs G H f-is-iso
 
 ≅-refl : (G : Group 𝓤) → G ≅ G
 ≅-refl G = id , id-is-equiv ⟨ G ⟩ , id-is-hom G
@@ -409,8 +436,6 @@ resized-group {𝓤} {𝓥} G (Y , f , f-is-equiv) = γ
   γ : codomain δ
   γ = δ (transport-Group-structure G Y f f-is-equiv)
 
-open import UF.UniverseEmbedding
-
 transport-Group-structure₁ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                           → X ≃ Y
                           → Group-structure X
@@ -420,6 +445,7 @@ transport-Group-structure₁ {𝓤} {𝓥} {X} {Y} (f , f-is-equiv) s =
        (inverse f f-is-equiv)
        (inverses-are-equivs f f-is-equiv))
 
+open import UF.UniverseEmbedding
 
 Lift-Group : ∀ {𝓤} 𝓥 → Group 𝓤 → Group (𝓤 ⊔ 𝓥)
 Lift-Group {𝓤} 𝓥 (X , s) = Lift 𝓥 X , transport-Group-structure₁ (≃-Lift 𝓥 X) s

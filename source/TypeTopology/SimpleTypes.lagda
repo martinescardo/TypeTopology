@@ -13,7 +13,6 @@ holds (Tychonoff Theorem).)
 {-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan
-open import TypeTopology.DisconnectedTypes
 open import UF.FunExt
 open import UF.PropTrunc
 
@@ -22,6 +21,10 @@ module TypeTopology.SimpleTypes
         (pt : propositional-truncations-exist)
        where
 
+open import TypeTopology.DisconnectedTypes
+open import TypeTopology.TotallySeparated
+open import TypeTopology.WeaklyCompactTypes fe pt renaming (is-Π-compact to is-compact)
+open import UF.DiscreteAndSeparated
 open import UF.Retracts
 open import UF.Retracts-FunExt
 
@@ -29,9 +32,6 @@ data simple-type : 𝓤₀ ̇ → 𝓤₁ ̇ where
  base : simple-type ℕ
  step : {X Y : 𝓤₀ ̇ } → simple-type X → simple-type Y → simple-type (X → Y)
 
-open import TypeTopology.DiscreteAndSeparated
-open import TypeTopology.TotallySeparated
-open import TypeTopology.WeaklyCompactTypes fe pt renaming (is-Π-compact to is-compact)
 
 simple-types-are-totally-separated : {X : 𝓤₀ ̇ }
                                    → simple-type X
@@ -87,11 +87,11 @@ on the notion of total separatedness:
 
 \begin{code}
 
-simple-types-rℕ : {X : 𝓤₀ ̇ } → simple-type X → retract ℕ of X
-simple-types-rℕ = simple-types-r identity-retraction
+ℕ-is-retract-of-any-simple-type : {X : 𝓤₀ ̇ } → simple-type X → retract ℕ of X
+ℕ-is-retract-of-any-simple-type = simple-types-r identity-retraction
 
 stcwlpo' : {X : 𝓤₀ ̇ } → simple-type X → is-compact X → WLPO'
-stcwlpo' s = retract-is-Π-compact (simple-types-rℕ s)
+stcwlpo' s = retract-is-Π-compact (ℕ-is-retract-of-any-simple-type s)
 
 \end{code}
 

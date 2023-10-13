@@ -66,16 +66,21 @@ module TypeTopology.TotallySeparated where
 open import MLTT.Spartan
 open import MLTT.Two-Properties
 open import NotionsOfDecidability.Complemented
-open import TypeTopology.DiscreteAndSeparated hiding (tight)
 open import UF.Base
+open import UF.DiscreteAndSeparated hiding (tight)
 open import UF.Embeddings
 open import UF.Equiv
 open import UF.FunExt
+open import UF.Hedberg
 open import UF.LeftCancellable
 open import UF.Lower-FunExt
-open import UF.Miscelanea
+open import UF.NotNotStablePropositions
+open import UF.Powerset hiding (𝕋)
 open import UF.PropTrunc
 open import UF.Retracts
+open import UF.Sets
+open import UF.Sets-Properties
+open import UF.SubtypeClassifier
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
@@ -271,11 +276,11 @@ open import UF.ExcludedMiddle
   p : Ω 𝓤
   p = (P , P-is-prop)
 
-  b : ¬¬ (p ＝ ⊤Ω)
+  b : ¬¬ (p ＝ ⊤)
   b = ¬¬-functor (holds-gives-equal-⊤ pe fe p) not-not-P
 
-  c : p ＝ ⊤Ω
-  c = Ω-is-¬¬-separated p ⊤Ω b
+  c : p ＝ ⊤
+  c = Ω-is-¬¬-separated p ⊤ b
 
   d : P
   d = equal-⊤-gives-holds p c
@@ -865,10 +870,10 @@ apartness relation _♯₂ is tight:
                  → (p : Ω 𝓤) → p holds ∨ ¬ (p holds)
  ♯Ω-cotran-taboo c p = ∥∥-functor II I
   where
-   I : (⊥Ω ♯Ω p) ∨ (⊤Ω ♯Ω p)
-   I = c ⊥Ω ⊤Ω p (inr (𝟘-elim , ⋆))
+   I : (⊥ ♯Ω p) ∨ (⊤ ♯Ω p)
+   I = c ⊥ ⊤ p (inr (𝟘-elim , ⋆))
 
-   II : (⊥Ω ♯Ω p) + (⊤Ω ♯Ω p) → (p holds) + ¬ (p holds)
+   II : (⊥ ♯Ω p) + (⊤ ♯Ω p) → (p holds) + ¬ (p holds)
    II (inl (inr (a , b))) = inl b
    II (inr (inl (a , b))) = inr b
    II (inr (inr (a , b))) = inl b

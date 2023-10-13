@@ -15,6 +15,7 @@ open import MLTT.Spartan
 open import Fin.Type
 
 open import UF.Subsingletons
+open import UF.Sets
 
 record JoinSemiLattice (𝓥 𝓣 : Universe) : 𝓤ω where
   field

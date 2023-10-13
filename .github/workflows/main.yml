@@ -10,12 +10,13 @@ jobs:
   typecheck:
     runs-on: ubuntu-latest
     name: Typechecking
+    if: github.event.pull_request.draft == false
     steps:
     - name: "Clone repository"
       uses: actions/checkout@v2
     - name: Run Agda
       id: typecheck
-      uses: ayberkt/agda-github-action@v3.1
+      uses: ayberkt/agda-github-action@v3.4
       with:
         main-file: AllModulesIndex.lagda
         source-dir: source

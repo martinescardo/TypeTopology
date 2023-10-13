@@ -8,9 +8,11 @@ module UF.PropIndexedPiSigma where
 
 open import MLTT.Spartan
 open import UF.Base
-open import UF.Subsingletons
-open import UF.FunExt
 open import UF.Equiv
+open import UF.FunExt
+open import UF.Subsingletons
+open import UF.Subsingletons-Properties
+
 
 Π-proj : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } (a : X) → Π Y → Y a
 Π-proj a f = f a

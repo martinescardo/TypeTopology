@@ -65,7 +65,6 @@ weaker notion that doesn't require this is the following.
   tail : {w : 𝕎} (s : ∥ A (W-root w) ∥) (as : Path w) → Path (W-forest w (head s as))
   tail {ssup x φ} s as = pr₂ (as s)
 
-
   Path₀-gives-Path : (w : 𝕎) → Path₀ w → Path w
   Path₀-gives-Path (ssup x φ) (inl e)         a₀ = 𝟘-elim (∥∥-rec 𝟘-is-prop e a₀)
   Path₀-gives-Path (ssup x φ) (inr (a , as))  a₀ = a , Path₀-gives-Path (φ a) as
@@ -82,5 +81,5 @@ generalized natural numbers.
                                (λ (s : ∥ A x ∥) → Path-length (φ (head s as)) (tail s as))
 \end{code}
 
-For example, descending chains in ordinals can be seeing as paths in a
+For example, descending chains in ordinals can be seen as paths in a
 W-type of ordinals. See Iterative.index.

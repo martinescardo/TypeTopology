@@ -65,7 +65,6 @@ tree:
 
 \begin{code}
 
-
 R : {σ : type} → (Baire → Set⟦ σ ⟧) → B-Set⟦ σ ⟧ → 𝓤₀ ̇
 R {ι}     n n' = (α : Baire) → n α ＝ decode α n'
 R {σ ⇒ τ} f f' = (x : Baire → Set⟦ σ ⟧)(x' : B-Set⟦ σ ⟧)

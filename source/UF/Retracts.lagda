@@ -4,19 +4,30 @@
 
 module UF.Retracts where
 
-open import MLTT.Spartan
 open import MLTT.AlternativePlus
+open import MLTT.Spartan
 open import UF.Base
 open import UF.Subsingletons
 
 has-section : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 has-section r = Σ s ꞉ (codomain r → domain r), r ∘ s ∼ id
 
+section-of : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (r : X → Y)
+           → has-section r
+           → (Y → X)
+section-of r (s , rs) = s
+
+section-equation : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (r : X → Y)
+                 → (h : has-section r)
+                 → r ∘ section-of r h ∼ id
+section-equation r (s , rs) = rs
+
 is-section : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 is-section s = Σ r ꞉ (codomain s → domain s), r ∘ s ∼ id
 
 sections-are-lc : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (s : X → Y)
-                → is-section s → left-cancellable s
+                → is-section s
+                → left-cancellable s
 sections-are-lc s (r , rs) {x} {x'} p = (rs x)⁻¹ ∙ ap r p ∙ rs x'
 
 retract_of_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
@@ -29,7 +40,8 @@ section : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → retract X of Y → (X → Y)
 section (r , s , rs) = s
 
 section-is-section : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-                   → (ρ : retract X of Y) → is-section (section ρ)
+                   → (ρ : retract X of Y)
+                   → is-section (section ρ)
 section-is-section (r , s , rs) = r , rs
 
 retract-condition : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (ρ : retract X of Y)
@@ -52,23 +64,6 @@ retract-of-prop : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                 → is-prop Y
 retract-of-prop (r , s , rs) = subtypes-of-props-are-props' s
                                 (sections-are-lc s (r , rs))
-
-Σ-is-set : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
-         → is-set X
-         → ((x : X) → is-set (A x))
-         → is-set (Σ A)
-Σ-is-set {𝓤} {𝓥} {X} {A} i j {σ} {τ} = γ
- where
-  S = Σ p ꞉ pr₁ σ ＝ pr₁ τ , transport A p (pr₂ σ) ＝ pr₂ τ
-
-  a : is-prop S
-  a = Σ-is-prop i (λ p → j (pr₁ τ))
-
-  b : retract (σ ＝ τ) of S
-  b = to-Σ-＝ , from-Σ-＝ , tofrom-Σ-＝
-
-  γ : is-prop (σ ＝ τ)
-  γ = retract-of-prop b a
 
 identity-retraction : {X : 𝓤 ̇ } → retract X of X
 identity-retraction = id , id , λ x → refl
@@ -225,7 +220,8 @@ retracts-compose (r , s , rs) (r' , s' , rs') =
   fg (₁ , y) = ap (λ - → (₁ , -)) (tu y)
 
 Σ-reindex-retract : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : X → 𝓦 ̇ } (r : Y → X)
-                  → has-section r → retract (Σ A) of (Σ (A ∘ r))
+                  → has-section r
+                  → retract (Σ A) of (Σ (A ∘ r))
 Σ-reindex-retract {𝓤} {𝓥} {𝓦} {X} {Y} {A} r (s , rs) = γ , φ , γφ
  where
   γ : (Σ y ꞉ Y , A (r y)) → Σ A
@@ -342,7 +338,7 @@ _◁⟨_⟩_ : (X : 𝓤 ̇ ) {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } → X ◁ Y → Y �
 _ ◁⟨ d ⟩ e = retracts-compose e d
 
 ◁-refl : (X : 𝓤 ̇ ) → X ◁ X
-◁-refl X = identity-retraction {universe-of X} {X}
+◁-refl {𝓤} X = identity-retraction {𝓤} {X}
 
 
 _◀ : (X : 𝓤 ̇ ) → X ◁ X
@@ -377,17 +373,10 @@ ap-of-section-is-section {𝓤} {𝓥} {X} {Y} s (r , rs) x x' = ρ , ρap
     ii  = ap (λ - → (rs x) ⁻¹ ∙ - ∙ rs x') (ap-ap s r p)
     iii = homotopies-are-natural'' (r ∘ s) id rs {x} {x'} {p}
 
-\end{code}
-
-I would phrase this in terms of fibers, but fiber is defined in UF.Equiv which
-imports this file.
-
-\begin{code}
-
 Σ-section-retract : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (ρ : Y ◁ Z) (g : X → Y)
                   → (y : Y)
-                  → (Σ x ꞉ X , g x ＝ y)
-                  ◁ (Σ x ꞉ X , section ρ (g x) ＝ section ρ y)
+                  → fiber g y
+                  ◁ fiber (section ρ ∘ g) (section ρ y)
 Σ-section-retract {𝓤} {𝓥} {𝓦} {X} {Y} {Z} (r , s , rs) g y =
  Σ-retract (λ x → g x ＝ y) (λ x → s (g x) ＝ s y) γ
   where

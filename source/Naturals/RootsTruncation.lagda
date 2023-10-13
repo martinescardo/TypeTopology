@@ -16,8 +16,8 @@ equality with any other point of the type is decidable.
 
 open import MLTT.Spartan
 
+open import UF.DiscreteAndSeparated
 open import UF.Base
-open import TypeTopology.DiscreteAndSeparated
 
 module Naturals.RootsTruncation
         (𝓤 : Universe)
@@ -29,10 +29,9 @@ module Naturals.RootsTruncation
 open import MLTT.Plus-Properties
 open import Naturals.Order
 open import Notation.Order
-
 open import UF.Subsingletons
 open import UF.KrausLemma
-open import UF.Miscelanea
+open import UF.Hedberg
 
 \end{code}
 

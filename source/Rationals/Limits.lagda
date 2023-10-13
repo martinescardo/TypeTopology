@@ -230,7 +230,7 @@ constant-sequence-converges q (ε , 0<ε) = 0 , γ
   II = transport (0ℚ <_) I 0<ε
 
   γ : 𝟘
-  γ = ℚ<-not-itself 0ℚ II
+  γ = ℚ<-irrefl 0ℚ II
 ⟨1/sn⟩-converges ε₊@(((negsucc x , a) , p) , 0<ε) = 𝟘-elim γ
  where
   γ : 𝟘

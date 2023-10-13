@@ -22,6 +22,7 @@ open import UF.Univalence
 open import UF.UA-FunExt
 open import UF.FunExt
 open import UF.Embeddings
+open import UF.SubtypeClassifier
 
 module type-classifier
         {𝓤 : Universe}

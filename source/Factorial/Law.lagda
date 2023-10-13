@@ -61,13 +61,12 @@ module Factorial.Law (fe : FunExt) where
 open import Factorial.Swap
 open import MLTT.Plus-Properties
 open import MLTT.Spartan
-open import TypeTopology.DiscreteAndSeparated
 open import UF.Base
+open import UF.DiscreteAndSeparated
 open import UF.Embeddings
 open import UF.Equiv
 open import UF.Equiv-FunExt
 open import UF.EquivalenceExamples
-open import UF.Miscelanea
 open import UF.Retracts
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
@@ -410,13 +409,13 @@ discrete-factorial X d = γ
 perfect-factorial : (X : 𝓤 ̇ )
                   → is-perfect X
                   → Aut X ≃ Aut (X + 𝟙)
-perfect-factorial X i =
+perfect-factorial {𝓤} X i =
   Aut X                          ≃⟨ I ⟩
   𝟙 × Aut X                      ≃⟨ II ⟩
   co-derived-set (X + 𝟙) × Aut X ≃⟨ III ⟩
   Aut (X + 𝟙)                    ■
    where
-    I   =  ≃-sym (𝟙-lneutral {universe-of X} {universe-of X})
+    I   =  ≃-sym (𝟙-lneutral {𝓤} {𝓤})
     II  = ×-cong (≃-sym (singleton-≃-𝟙 (perfect-coderived-singleton X i))) (≃-refl (Aut X))
     III = general-factorial X
 

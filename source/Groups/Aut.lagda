@@ -13,17 +13,15 @@ We assume functional extensionality at level 𝓤.
 
 {-# OPTIONS --safe --without-K --exact-split #-}
 
+open import Groups.Type renaming (_≅_ to _≣_)
 open import MLTT.Spartan
 open import UF.Base hiding (_≈_)
-open import UF.Subsingletons
 open import UF.Equiv
 open import UF.Equiv-FunExt
 open import UF.FunExt
-open import UF.UA-FunExt
-open import UF.Subsingletons-FunExt
-open import UF.Retracts
-
-open import Groups.Type renaming (_≅_ to _≣_)
+open import UF.Sets
+open import UF.Sets-Properties
+open import UF.Subsingletons-Properties
 
 module Groups.Aut where
 

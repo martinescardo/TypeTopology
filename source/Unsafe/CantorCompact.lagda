@@ -47,7 +47,7 @@ Discreteness of ((ℕ → 𝟚) → ℕ):
 
 \begin{code}
 
-open import TypeTopology.DiscreteAndSeparated
+open import UF.DiscreteAndSeparated
 
 Cantor→ℕ-is-discrete : is-discrete ((ℕ → 𝟚) → ℕ)
 Cantor→ℕ-is-discrete = discrete-to-power-compact-is-discrete' (fe 𝓤₀ 𝓤₀)

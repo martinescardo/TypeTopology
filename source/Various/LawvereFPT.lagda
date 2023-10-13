@@ -15,7 +15,7 @@ extensions of MLTT, or hypotheses, such as propositional truncation.
 Many other things have been added since the above abstract was
 written.
 
-See also the file Various.CantorTheoremForSurjections by Jon Sterling.
+See also the file Various.CantorTheoremForEmbeddings by Jon Sterling.
 
 \begin{code}
 
@@ -29,14 +29,14 @@ open import MLTT.Two-Properties
 open import Naturals.Properties
 
 open import UF.Base
-open import UF.Embeddings
+open import UF.Equiv
+open import UF.FunExt
+open import UF.Retracts
+open import UF.Sets
+open import UF.Sets-Properties
+open import UF.SubtypeClassifier
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import UF.Retracts
-open import UF.Equiv
-open import UF.Miscelanea
-open import UF.FunExt
-open import UF.Size
 
 designated-fixed-point-property : 𝓤 ̇ → 𝓤 ̇
 designated-fixed-point-property X = (f : X → X) → Σ x ꞉ X , x ＝ f x
@@ -114,7 +114,9 @@ that r has a pointwise section).
 
  \end{code}
 
-As a simple application, it follows that negation doesn't have fixed points:
+As a simple application, it follows that negation doesn't have fixed
+points. This is a new observation, which was added to the nLab after
+it was observed here.
 
  \begin{code}
 
@@ -174,9 +176,6 @@ As a simple application, it follows that negation doesn't have fixed points:
  Ω 𝓤 → Ω 𝓤, to show that P → 𝟘 is a proposition.
 
  \begin{code}
-
- open import UF.Subsingletons
- open import UF.Subsingletons-FunExt
 
  not-no-fp : (fe : funext 𝓤 𝓤₀) → ¬ (Σ P ꞉ Ω 𝓤 , P ＝ not fe P)
  not-no-fp {𝓤} fe (P , p) = ¬-no-fp (P holds , q)
@@ -292,8 +291,6 @@ module surjection-version (pt : propositional-truncations-exist) where
 
  \begin{code}
 
- open import MLTT.Two
-
  cantor-uncountable : ¬ (Σ φ ꞉ (ℕ → (ℕ → 𝟚)), is-surjection φ)
  cantor-uncountable (φ , s) = γ
   where
@@ -324,7 +321,7 @@ module Blechschmidt (pt : propositional-truncations-exist) where
 
  open PropositionalTruncation pt
  open import UF.ImageAndSurjection pt
- open import TypeTopology.DiscreteAndSeparated
+ open import UF.DiscreteAndSeparated
 
  Π-projection-has-section : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
                             (x₀ : X)
@@ -422,7 +419,6 @@ module Blechschmidt' (pt : propositional-truncations-exist) where
 
  open PropositionalTruncation pt
  open import UF.ImageAndSurjection pt
- open import TypeTopology.DiscreteAndSeparated
 
  Π-projection-has-section : funext 𝓥 ((𝓤 ⊔ 𝓦)⁺)
                           → funext (𝓤 ⊔ 𝓦) (𝓤 ⊔ 𝓦)
@@ -562,7 +558,7 @@ of Lemma₀ by a second application of LFPT.
 
 \begin{code}
 
-module GeneralizedCoquand where
+module generalized-Coquand where
 
  Lemma₀ : (A : 𝓤 ̇ )
           (T : A → 𝓤 ̇ )
@@ -892,38 +888,3 @@ sillier-theorem {𝓤} fe (A , A-is-prop , e) =
   ((A , A-is-prop) , e)
 
 \end{code}
-
-What we (Bezem, Coquand, Dybjer, Escardo) really want to prove is that
-
-  ¬ (Σ A ꞉ 𝓤 ̇ , hSet 𝓤 ≃ A), (†)
-
-without requiring that A is a set.
-
-Marc Bezem wants this:
-
-  ¬ (Σ A ꞉ 𝓤 ̇ , ∥ 𝓤 ∥₀ ≃ A).  (††)
-
-Does it follow from this that
-
-  ¬ (Σ A ꞉ 𝓤 ̇ , hSet 𝓤 ≃ A)?
-
-What does follow from (††) is that the inclusion hSet 𝓤 → hSet (𝓤 ⁺) is
-not an equivalence, which is what we want. So (††) implies (†).
-
-Thierry Coquand asks: does the following help:
-
-\begin{code}
-
-Gylterud : 𝓤 ⁺ ̇
-Gylterud {𝓤} = W (hSet 𝓤) pr₁
-
-\end{code}
-
-Intuitively, this is the groupoid of multisets. This occurs in Håkon
-Gylterud's PhD thesis (Multisets in Type Theory, 2016).
-
-Tonny Hurkens has a different way to get a contradiction from
-type-in-type, that maybe can be adapted to get what we want.
-
-Some of these questions are answered in the module BuraliForti
-(December 2020).

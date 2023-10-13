@@ -15,9 +15,11 @@ module Locales.GaloisConnection
          where
 
 open import Locales.Frame pt fe
+open import UF.Logic
+open import UF.SubtypeClassifier
+open import UF.SubtypeClassifier-Properties
 open import UF.Subsingletons
 
-open import UF.Logic
 open AllCombinators pt fe
 
 \end{code}
