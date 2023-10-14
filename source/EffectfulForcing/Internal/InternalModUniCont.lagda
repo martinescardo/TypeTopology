@@ -48,15 +48,36 @@ baire = ι ⇒ ι
 
 \end{code}
 
-When we restrict to the Cantor space, the internal modulus of continuity
-operator gives us a _uniform_ modulus of continuity. In this section, we prove
-this fact.
+When we restrict to the Cantor space, we can define an operation that gives us a
+_uniform_ modulus of continuity. In this section, we prove this fact.
+
+To define the Cantor space, it's tempting to augment System T with the type of
+Booleans. However, we refrain from doing that here as to avoid repeating all our
+proofs on System T. Instead, we adopt the approach of working with `baire` under
+the implicit assumption that its range is `{0, 1}`. We define all operations on
+baire under this assumption, and prove that modulus of uniform continuity
+operation satisfies its specification, under the assumption of being Boolean,
+which we define now.
 
 \begin{code}
 
 is-boolean : 〈〉 ⊢ baire → 𝓤₀  ̇
 is-boolean α =
  (n : 〈〉 ⊢ ι) → (⟦ α ⟧₀ ⟦ n ⟧₀ ＝ zero) + (⟦ α ⟧₀ ⟦ n ⟧₀ ＝ succ zero)
+
+\end{code}
+
+Following the conventions of the `InternalModCont` module, we define three
+versions of the same operation.
+
+  1. `max-questionᵤ`, that works on the external inductive type encoding of
+     dialogue trees in Agda,
+  2. `max-questionᵤ⋆`, that works on the external Church encoding of dialogue
+     trees in Agda, and
+  3. `max-questionᵤᵀ`, that is a System T function working on the Church
+     encoding of dialogue trees in System T.
+
+\begin{code}
 
 max-questionᵤ : D ℕ 𝟚 ℕ → ℕ
 max-questionᵤ (D.η n)   = 0
