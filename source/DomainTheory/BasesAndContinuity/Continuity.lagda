@@ -551,10 +551,9 @@ module _ where
        where
         open structurally-continuous sc
 
-        approximating-family-index-to-index : {x : ⟨ 𝓓 ⟩}
-                                              (i : index-of-approximating-family x)
+        approximating-family-index-to-index : (i : index-of-approximating-family x)
                                             → index x
-        approximating-family-index-to-index {x} i =
+        approximating-family-index-to-index i =
          make-index (approximating-family x i)
           (approximating-family-is-way-below x i)
 
@@ -659,10 +658,9 @@ module _ where
        where
         open structurally-algebraic sa
 
-        compact-family-index-to-index : {x : ⟨ 𝓓 ⟩}
-                                        (i : index-of-compact-family x)
+        compact-family-index-to-index : (i : index-of-compact-family x)
                                       → index x
-        compact-family-index-to-index {x} i =
+        compact-family-index-to-index i =
          make-index
           (compact-family x i)
           (compact-family-is-compact x i)
