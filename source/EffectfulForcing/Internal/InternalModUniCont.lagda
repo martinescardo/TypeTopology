@@ -89,12 +89,20 @@ max-questionᵤ (D.β φ n) = max n (max n₁ n₂)
   n₂ : ℕ
   n₂ = max-questionᵤ (φ ₁)
 
+\end{code}
+
+\begin{code}
+
 max-questionᵤ⋆ : D⋆ ℕ 𝟚 ℕ ℕ → ℕ
 max-questionᵤ⋆ d = d (λ _ → 0) (λ g x → max x (max (g ₀) (g ₁)))
 
 max-questionᵤᵀ : {Γ : Cxt} → Γ ⊢ (⌜B⌝ ι ι) ⇒ ι
 max-questionᵤᵀ =
  ƛ (ν₀ · (ƛ Zero) · ƛ (ƛ (maxᵀ · ν₀ · (maxᵀ · (ν₁ · numeral 0) · (ν₁ · numeral 1)))))
+
+\end{code}
+
+\begin{code}
 
 max-questionᵤ⋆-agreement : (d : D ℕ 𝟚 ℕ)
                          → max-questionᵤ d ＝ max-questionᵤ⋆ (church-encode d)
@@ -120,16 +128,32 @@ max-questionᵤ⋆-agreement (D.β φ n) = †
   † : max-questionᵤ (D.β φ n) ＝ max-questionᵤ⋆ (church-encode (D.β φ n))
   † = ap (max n) ‡
 
-uni-modulus : D ℕ 𝟚 ℕ → ℕ
-uni-modulus = succ ∘ max-questionᵤ
+\end{code}
 
-modulusᵤᵀ : {Γ : Cxt} →  Γ ⊢ (⌜B⌝ ι ι) ⇒ ι
-modulusᵤᵀ = comp · Succ' · max-questionᵤᵀ
+We now define the analogue of `modulus` from `InternalModCont`, following the
+same conventions.
+
+\begin{code}
+
+modulusᵤ : D ℕ 𝟚 ℕ → ℕ
+modulusᵤ = succ ∘ max-questionᵤ
+
+\end{code}
+
+\begin{code}
+
+modulusᵤᵀ : {Γ : Cxt} →  Γ ⊢ baire ⇒ ι → B-context【 Γ 】 ι ⊢ ι
+modulusᵤᵀ t = Succ' · (max-questionᵤᵀ · ⌜dialogue-tree⌝ t)
+
+\end{code}
+
+\begin{code}
 
 internal-uni-mod-correct : (t : 〈〉 ⊢ (baire ⇒ ι)) (α β : 〈〉 ⊢ baire)
                          → is-boolean α
                          → is-boolean β
-                         → {!!}
-internal-uni-mod-correct = {!!}
+                         → ⟦ α ⟧₀ ＝⦅ ⟦ modulusᵤᵀ t ⟧₀ ⦆ ⟦ β ⟧₀
+                         → ⟦ t · α ⟧₀ ＝ ⟦ t · β ⟧₀
+internal-uni-mod-correct t α β ψ₁ ψ₂ = {!!}
 
 \end{code}
