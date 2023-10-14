@@ -102,6 +102,9 @@ max-questionᵤ⋆-agreement (D.β φ n) = †
 uni-modulus : D ℕ 𝟚 ℕ → ℕ
 uni-modulus = succ ∘ max-questionᵤ
 
+modulusᵤᵀ : {Γ : Cxt} →  Γ ⊢ (⌜B⌝ ι ι) ⇒ ι
+modulusᵤᵀ = comp · Succ' · max-questionᵤᵀ
+
 internal-uni-mod-correct : (t : 〈〉 ⊢ (baire ⇒ ι)) (α β : 〈〉 ⊢ baire)
                          → is-boolean α
                          → is-boolean β
