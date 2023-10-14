@@ -507,6 +507,8 @@ module _
 
 \end{code}
 
+Simcha van Collem, 12th October 2023
+
 If we assume propositional resizing, we can recover a continuity/algebraic
 structure on 𝓓 from the respective properties.
 
@@ -567,31 +569,31 @@ module _ where
         family-is-semidirected (y₁ , y₁≪x) (y₂ , y₂≪x) =
          ∥∥-rec₂ ∃-is-prop f h1 h2
          where
-           f : Σ i ꞉ index-of-approximating-family x , y₁ ⊑⟨ 𝓓 ⟩ approximating-family x i
-             → Σ j ꞉ index-of-approximating-family x , y₂ ⊑⟨ 𝓓 ⟩ approximating-family x j
-             → ∃ k ꞉ index x , y₁ ⊑⟨ 𝓓 ⟩ family x k ×
-                               y₂ ⊑⟨ 𝓓 ⟩ family x k
-           f (i , y₁⊑αᵢ) (j , y₂⊑αⱼ) =
-            ∥∥-functor g (semidirected-if-Directed 𝓓 _ (approximating-family-is-directed x) i j)
-            where
-             g : Σ k ꞉ index-of-approximating-family x ,
-                  approximating-family x i ⊑⟨ 𝓓 ⟩ approximating-family x k ×
-                  approximating-family x j ⊑⟨ 𝓓 ⟩ approximating-family x k
-               → Σ k ꞉ index x ,
-                  y₁ ⊑⟨ 𝓓 ⟩ family x k ×
-                  y₂ ⊑⟨ 𝓓 ⟩ family x k
-             g (k , αᵢ⊑αₖ , αⱼ⊑αₖ) =
-              approximating-family-index-to-index k ,
-              transitivity 𝓓 _ _ _ y₁⊑αᵢ αᵢ⊑αₖ ,
-              transitivity 𝓓 _ _ _ y₂⊑αⱼ αⱼ⊑αₖ
+          f : Σ i ꞉ index-of-approximating-family x , y₁ ⊑⟨ 𝓓 ⟩ approximating-family x i
+            → Σ j ꞉ index-of-approximating-family x , y₂ ⊑⟨ 𝓓 ⟩ approximating-family x j
+            → ∃ k ꞉ index x , y₁ ⊑⟨ 𝓓 ⟩ family x k ×
+                              y₂ ⊑⟨ 𝓓 ⟩ family x k
+          f (i , y₁⊑αᵢ) (j , y₂⊑αⱼ) =
+           ∥∥-functor g (semidirected-if-Directed 𝓓 _ (approximating-family-is-directed x) i j)
+           where
+            g : Σ k ꞉ index-of-approximating-family x ,
+                 approximating-family x i ⊑⟨ 𝓓 ⟩ approximating-family x k ×
+                 approximating-family x j ⊑⟨ 𝓓 ⟩ approximating-family x k
+              → Σ k ꞉ index x ,
+                 y₁ ⊑⟨ 𝓓 ⟩ family x k ×
+                 y₂ ⊑⟨ 𝓓 ⟩ family x k
+            g (k , αᵢ⊑αₖ , αⱼ⊑αₖ) =
+             approximating-family-index-to-index k ,
+             transitivity 𝓓 _ _ _ y₁⊑αᵢ αᵢ⊑αₖ ,
+             transitivity 𝓓 _ _ _ y₂⊑αⱼ αⱼ⊑αₖ
 
-           h1 : ∃ i ꞉ index-of-approximating-family x , y₁ ⊑⟨ 𝓓 ⟩ approximating-family x i
-           h1 = (≪-from-resize y₁≪x) _ _ (approximating-family-is-directed x)
-                 (approximating-family-∐-⊒ x)
+          h1 : ∃ i ꞉ index-of-approximating-family x , y₁ ⊑⟨ 𝓓 ⟩ approximating-family x i
+          h1 = (≪-from-resize y₁≪x) _ _ (approximating-family-is-directed x)
+                (approximating-family-∐-⊒ x)
 
-           h2 : ∃ i ꞉ index-of-approximating-family x , y₂ ⊑⟨ 𝓓 ⟩ approximating-family x i
-           h2 = (≪-from-resize y₂≪x) _ _ (approximating-family-is-directed x)
-                 (approximating-family-∐-⊒ x)
+          h2 : ∃ i ꞉ index-of-approximating-family x , y₂ ⊑⟨ 𝓓 ⟩ approximating-family x i
+          h2 = (≪-from-resize y₂≪x) _ _ (approximating-family-is-directed x)
+                (approximating-family-∐-⊒ x)
 
     family-is-way-below : (x : ⟨ 𝓓 ⟩) → is-way-upperbound 𝓓 x (family x)
     family-is-way-below x (y , y≪x) = ≪-from-resize y≪x
