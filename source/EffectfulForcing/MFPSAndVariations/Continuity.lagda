@@ -9,6 +9,8 @@ module EffectfulForcing.MFPSAndVariations.Continuity where
 open import MLTT.Spartan
 open import MLTT.Athenian
 open import Naturals.Order
+open import UF.Retracts
+open import UF.Equiv
 
 Baire : 𝓤₀ ̇
 Baire = ℕ → ℕ
@@ -281,5 +283,155 @@ modulus of continuity computed by a proof of `is-continuous₀`:
 
 modulus-at₀ : (f : Baire → ℕ) → is-continuous₀ f → Baire → ℕ
 modulus-at₀ f c α = pr₁ (c α)
+
+\end{code}
+
+\section{Uniform continuity}
+
+We start by defining the notion of being Boolean: a point `α : Baire` of the
+Baire space is called Boolean if its range is a subset of `{0, 1}`.
+
+\begin{code}
+
+is-boolean : ℕ → 𝓤₀  ̇
+is-boolean n = (n ＝ 0) + (n ＝ 1)
+
+to-nat : 𝟚 → ℕ
+to-nat = 𝟚-cases 0 1
+
+to-nat-gives-boolean : (b : 𝟚) → is-boolean (to-nat b)
+to-nat-gives-boolean ₀ = inl refl
+to-nat-gives-boolean ₁ = inr refl
+
+to-bool : (n : ℕ) → is-boolean n → 𝟚
+to-bool 0 (inl refl) = ₀
+to-bool 1 (inr refl) = ₁
+
+is-boolean-point : Baire → 𝓤₀  ̇
+is-boolean-point α = (n : ℕ) → is-boolean (α n)
+
+\end{code}
+
+Using this, we could give an alternative definition of the Cantor space.
+
+\begin{code}
+
+Cantor₀ : 𝓤₀  ̇
+Cantor₀ = Σ α ꞉ Baire , is-boolean-point α
+
+\end{code}
+
+Which is clearly equivalent to the previous definition.
+
+\begin{code}
+
+to-baire : Cantor → Baire
+to-baire α = to-nat ∘ α
+
+to-baire-gives-boolean-point : (α : Cantor) → is-boolean-point (to-baire α)
+to-baire-gives-boolean-point α = to-nat-gives-boolean ∘ α
+
+to-cantor₀ : Cantor → Cantor₀
+to-cantor₀ α = to-baire α , to-baire-gives-boolean-point α
+
+to-cantor : Cantor₀ → Cantor
+to-cantor (α , p) = λ n → to-bool (α n) (p n)
+
+to-nat-0-implies-is-₀ : (b : 𝟚) → to-nat b ＝ 0 → b ＝ ₀
+to-nat-0-implies-is-₀ ₀ p = refl
+
+to-nat-1-implies-is-₁ : (b : 𝟚) → to-nat b ＝ 1 → b ＝ ₁
+to-nat-1-implies-is-₁ ₁ p = refl
+
+to-cantor-cancels-to-cantor₀ : (α : Cantor) → to-cantor (to-cantor₀ α) ∼ α
+to-cantor-cancels-to-cantor₀ α = †
+ where
+  † : (n : ℕ) → to-bool (to-nat (α n)) (to-baire-gives-boolean-point α n) ＝ α n
+  † n = cases †₁ †₂ (to-baire-gives-boolean-point α n)
+   where
+    †₁ : to-nat (α n) ＝ 0
+       → to-bool (to-nat (α n)) (to-baire-gives-boolean-point α n) ＝ α n
+    †₁ p = to-bool (to-nat (α n)) (to-nat-gives-boolean (α n)) ＝⟨ Ⅰ ⟩
+           to-bool 0 (inl refl)                                ＝⟨ Ⅱ ⟩
+           α n                                                 ∎
+            where
+             Ⅰ = ap
+                  (λ - → to-bool (to-nat -) (to-nat-gives-boolean -))
+                  (to-nat-0-implies-is-₀ (α n) p)
+             Ⅱ = to-nat-0-implies-is-₀ (α n) p ⁻¹
+
+    †₂ : to-nat (α n) ＝ 1
+       → to-bool (to-nat (α n)) (to-baire-gives-boolean-point α n) ＝ α n
+    †₂ p = to-bool (to-nat (α n)) (to-nat-gives-boolean (α n)) ＝⟨ Ⅰ ⟩
+           to-bool 1 (inr refl)                                ＝⟨ Ⅱ ⟩
+           α n                                                 ∎
+            where
+             Ⅰ = ap
+                  (λ - → to-bool (to-nat -) (to-nat-gives-boolean -))
+                  (to-nat-1-implies-is-₁ (α n) p)
+             Ⅱ = to-nat-1-implies-is-₁ (α n) p ⁻¹
+
+\end{code}
+
+\begin{code}
+
+maximumᵤ : BT ℕ → ℕ
+maximumᵤ []      = 0
+maximumᵤ (n ∷ φ) = max n (max (maximumᵤ (φ ₀)) (maximumᵤ (φ ₁)))
+
+\end{code}
+
+\begin{code}
+
+to-cantor₀-map : (Cantor → ℕ) → Cantor₀ → ℕ
+to-cantor₀-map f = f ∘ to-cantor
+
+\end{code}
+
+\begin{code}
+
+is-uniformly-continuous₀ : (Cantor → ℕ) → 𝓤₀  ̇
+is-uniformly-continuous₀ f =
+ Σ n ꞉ ℕ , ((ξ₁@(α₁ , _) ξ₂@(α₂ , _) : Cantor₀) → α₁ ＝⦅ n ⦆ α₂ → f₀ ξ₁ ＝ f₀ ξ₂)
+  where
+   f₀ : Cantor₀ → ℕ
+   f₀ = to-cantor₀-map f
+
+\end{code}
+
+\begin{code}
+
+uni-continuity-implies-uni-continuity₀ : (f : Cantor → ℕ)
+                                       → is-uniformly-continuous  f
+                                       → is-uniformly-continuous₀ f
+uni-continuity-implies-uni-continuity₀ f 𝔠 = †
+ where
+  t : BT ℕ
+  t = pr₁ 𝔠
+
+  n : ℕ
+  n = succ (maximumᵤ (pr₁ 𝔠))
+
+  f₀ : Cantor₀ → ℕ
+  f₀ = to-cantor₀-map f
+
+  fb : (α : Baire) → is-boolean-point α → ℕ
+  fb α ϑ = f₀ (α , ϑ)
+
+  ‡ : (α₁ α₂ : Baire) (ϑ₁ : is-boolean-point α₁) (ϑ₂ : is-boolean-point α₂)
+    → α₁ ＝⦅ n ⦆ α₂ → f₀ (α₁ , ϑ₁) ＝ f₀ (α₂ , ϑ₂)
+  ‡ α₁ α₂ ϑ₁ ϑ₂ p = pr₂ 𝔠 α₁′ α₂′ {!!}
+    where
+     tmp : {!!}
+     tmp = ＝⦅⦆-implies-＝⟪⟫-for-suitable-modulus α₁ α₂ {!t!} p
+
+     α₁′ : Cantor
+     α₁′ = to-cantor (α₁ , ϑ₁)
+
+     α₂′ : Cantor
+     α₂′ = to-cantor (α₂ , ϑ₂)
+
+  † : is-uniformly-continuous₀ f
+  † = n , λ (α₁ , ϑ₁) (α₂ , ϑ₂) → ‡ α₁ α₂ ϑ₁ ϑ₂
 
 \end{code}
