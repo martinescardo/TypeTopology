@@ -154,6 +154,12 @@ internal-uni-mod-correct : (t : 〈〉 ⊢ (baire ⇒ ι)) (α β : 〈〉 ⊢ b
                          → is-boolean β
                          → ⟦ α ⟧₀ ＝⦅ ⟦ modulusᵤᵀ t ⟧₀ ⦆ ⟦ β ⟧₀
                          → ⟦ t · α ⟧₀ ＝ ⟦ t · β ⟧₀
-internal-uni-mod-correct t α β ψ₁ ψ₂ = {!!}
+internal-uni-mod-correct t α β ψ₁ ψ₂ ϑ = †
+ where
+  c₀ : is-continuous₀ ⟦ t ⟧₀
+  c₀ = {!!}
+
+  † : ⟦ t · α ⟧₀ ＝ ⟦ t · β ⟧₀
+  † = {!!}
 
 \end{code}
