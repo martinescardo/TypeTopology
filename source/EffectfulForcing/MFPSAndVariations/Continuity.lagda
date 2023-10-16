@@ -142,7 +142,7 @@ bit.
 
 \begin{code}
 
-_＝⟪_⟫₀_ : Baire → List ℕ → Baire → 𝓤₀  ̇
+_＝⟪_⟫₀_ : {X : 𝓤₀  ̇} → (ℕ → X) → List ℕ → (ℕ → X) → 𝓤₀  ̇
 _＝⟪_⟫₀_ α s α′ = (i : ℕ) → member i s → α i ＝ α′ i
 
 ＝⟪⟫₀-cons : (α α′ : Baire) (i : ℕ) (is : List ℕ)
@@ -152,6 +152,32 @@ _＝⟪_⟫₀_ α s α′ = (i : ℕ) → member i s → α i ＝ α′ i
 \end{code}
 
 \begin{code}
+
+＝⟪⟫-functorial₁ : {X : 𝓤₀  ̇} → (α₁ α₂ : ℕ → X) (ms ns : List ℕ)
+                 → α₁ ＝⟪ ms ++ ns ⟫₀ α₂ → (α₁ ＝⟪ ms ⟫₀ α₂) × (α₁ ＝⟪ ns ⟫₀ α₂)
+＝⟪⟫-functorial₁ α₁ α₂ ms ns p = † , ‡
+ where
+  † : α₁ ＝⟪ ms ⟫₀ α₂
+  † n q = p n (right-concatenation-preserves-membership n ms ns q)
+
+  ‡ : α₁ ＝⟪ ns ⟫₀ α₂
+  ‡ n q = p n (left-concatenation-preserves-membership n ns ms q)
+
+＝⟪⟫-functorial₂ : {X : 𝓤₀  ̇} → (α₁ α₂ : ℕ → X) (ms ns : List ℕ)
+                 → (α₁ ＝⟪ ms ⟫₀ α₂) × (α₁ ＝⟪ ns ⟫₀ α₂) → α₁ ＝⟪ ms ++ ns ⟫₀ α₂
+＝⟪⟫-functorial₂ α₁ α₂ ms ns (p , q) i r =
+ cases (p i) (q i) (++-membership₁ i ms ns r)
+  where
+   † : member i ms → α₁ i ＝ α₂ i
+   † = p i
+
+   ‡ : member i ns → α₁ i ＝ α₂ i
+   ‡ = q i
+
+＝⟪⟫-functorial : {X : 𝓤₀  ̇} → (α₁ α₂ : ℕ → X) (ms ns : List ℕ)
+                → α₁ ＝⟪ ms ++ ns ⟫₀ α₂ ⇔ (α₁ ＝⟪ ms ⟫₀ α₂) × (α₁ ＝⟪ ns ⟫₀ α₂)
+＝⟪⟫-functorial α₁ α₂ ms ns =
+ ＝⟪⟫-functorial₁ α₁ α₂ ms ns , ＝⟪⟫-functorial₂ α₁ α₂ ms ns
 
 ＝⟪⟫₀-implies-＝⟪⟫ : (α α′ : Baire) (s : List ℕ)
                    → α ＝⟪ s ⟫₀ α′
@@ -201,6 +227,7 @@ member-implies-below-max (n ∷ ns) m (in-tail p) =
 
   † : α ＝⟪ s ⟫₀ α′
   † i p = agreement→ α α′ m t i (member-implies-below-max s i p)
+
 
 continuity-implies-continuity₀ : (f : Baire → ℕ)
                                → is-continuous f → is-continuous₀ f
@@ -379,6 +406,9 @@ maximumᵤ : BT ℕ → ℕ
 maximumᵤ []      = 0
 maximumᵤ (n ∷ φ) = max n (max (maximumᵤ (φ ₀)) (maximumᵤ (φ ₁)))
 
+maximumᵤ′ : List ℕ → ℕ
+maximumᵤ′ ns = {!!}
+
 \end{code}
 
 \begin{code}
@@ -401,6 +431,28 @@ is-uniformly-continuous₀ f =
 
 \begin{code}
 
+linearize : {X : 𝓤₀  ̇} → BT X → List X
+linearize []      = []
+linearize (x ∷ φ) = x ∷ linearize (φ ₀) ++ linearize (φ ₁)
+
+＝⟪⟫₀-implies-＝⟦⟧ : (α₁ α₂ : Baire) (t : BT ℕ)
+                   → α₁ ＝⟪ linearize t ⟫₀ α₂ → α₁ ＝⟦ t ⟧ α₂
+＝⟪⟫₀-implies-＝⟦⟧ α₁ α₂ []      p = []
+＝⟪⟫₀-implies-＝⟦⟧ α₁ α₂ (x ∷ φ) p = p x in-head ∷ †
+ where
+  ϑ : α₁ ＝⟪ linearize (φ ₀) ++ linearize (φ ₁) ⟫₀ α₂
+  ϑ = ＝⟪⟫₀-cons α₁ α₂ x (linearize (φ ₀) ++ linearize (φ ₁)) p
+
+  ς₀ : α₁ ＝⟪ linearize (φ ₀) ⟫₀ α₂
+  ς₀ = pr₁ (＝⟪⟫-functorial₁ α₁ α₂ (linearize (φ ₀)) (linearize (φ ₁)) ϑ)
+
+  ς₁ : α₁ ＝⟪ linearize (φ ₁) ⟫₀ α₂
+  ς₁ = pr₂ (＝⟪⟫-functorial₁ α₁ α₂ (linearize (φ ₀)) (linearize (φ ₁)) ϑ)
+
+  † : (j : 𝟚) → α₁ ＝⟦ φ j ⟧ α₂
+  † ₀ = ＝⟪⟫₀-implies-＝⟦⟧ α₁ α₂ (φ ₀) ς₀
+  † ₁ = ＝⟪⟫₀-implies-＝⟦⟧ α₁ α₂ (φ ₁) ς₁
+
 uni-continuity-implies-uni-continuity₀ : (f : Cantor → ℕ)
                                        → is-uniformly-continuous  f
                                        → is-uniformly-continuous₀ f
@@ -420,16 +472,16 @@ uni-continuity-implies-uni-continuity₀ f 𝔠 = †
 
   ‡ : (α₁ α₂ : Baire) (ϑ₁ : is-boolean-point α₁) (ϑ₂ : is-boolean-point α₂)
     → α₁ ＝⦅ n ⦆ α₂ → f₀ (α₁ , ϑ₁) ＝ f₀ (α₂ , ϑ₂)
-  ‡ α₁ α₂ ϑ₁ ϑ₂ p = pr₂ 𝔠 α₁′ α₂′ {!!}
+  ‡ α₁ α₂ ϑ₁ ϑ₂ p = pr₂ 𝔠 α₁′ α₂′ tmp
     where
-     tmp : {!!}
-     tmp = ＝⦅⦆-implies-＝⟪⟫-for-suitable-modulus α₁ α₂ {!t!} p
-
      α₁′ : Cantor
      α₁′ = to-cantor (α₁ , ϑ₁)
 
      α₂′ : Cantor
      α₂′ = to-cantor (α₂ , ϑ₂)
+
+     tmp : α₁′ ＝⟦ pr₁ 𝔠 ⟧ α₂′
+     tmp = {!＝⟪⟫₀-implies-＝⟦⟧ !}
 
   † : is-uniformly-continuous₀ f
   † = n , λ (α₁ , ϑ₁) (α₂ , ϑ₂) → ‡ α₁ α₂ ϑ₁ ϑ₂
