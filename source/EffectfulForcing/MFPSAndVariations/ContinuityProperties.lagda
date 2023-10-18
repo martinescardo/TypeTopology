@@ -258,22 +258,22 @@ Baire space is called Boolean if its range is a subset of `{0, 1}`.
 
 \begin{code}
 
-is-boolean : ℕ → 𝓤₀  ̇
-is-boolean n = (n ＝ 0) + (n ＝ 1)
+is-boolean-valued : ℕ → 𝓤₀  ̇
+is-boolean-valued n = (n ＝ 0) + (n ＝ 1)
 
 to-nat : 𝟚 → ℕ
 to-nat = 𝟚-cases 0 1
 
-to-nat-gives-boolean : (b : 𝟚) → is-boolean (to-nat b)
+to-nat-gives-boolean : (b : 𝟚) → is-boolean-valued (to-nat b)
 to-nat-gives-boolean ₀ = inl refl
 to-nat-gives-boolean ₁ = inr refl
 
-to-bool : (n : ℕ) → is-boolean n → 𝟚
+to-bool : (n : ℕ) → is-boolean-valued n → 𝟚
 to-bool 0 (inl refl) = ₀
 to-bool 1 (inr refl) = ₁
 
 is-boolean-point : Baire → 𝓤₀  ̇
-is-boolean-point α = (n : ℕ) → is-boolean (α n)
+is-boolean-point α = (n : ℕ) → is-boolean-valued (α n)
 
 \end{code}
 
