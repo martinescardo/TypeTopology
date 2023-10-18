@@ -154,8 +154,8 @@ modulusᵤᵀ t = Succ' · (max-questionᵤᵀ · ⌜dialogue-tree⌝ t)
 \begin{code}
 
 internal-uni-mod-correct : (t : 〈〉 ⊢ (baire ⇒ ι)) (α β : 〈〉 ⊢ baire)
-                         → is-boolean α
-                         → is-boolean β
+                         → is-boolean-valued α
+                         → is-boolean-valued β
                          → ⟦ α ⟧₀ ＝⦅ ⟦ modulusᵤᵀ t ⟧₀ ⦆ ⟦ β ⟧₀
                          → ⟦ t · α ⟧₀ ＝ ⟦ t · β ⟧₀
 internal-uni-mod-correct t α β ψ₁ ψ₂ ϑ = †
