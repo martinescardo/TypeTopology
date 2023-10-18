@@ -75,8 +75,8 @@ is-continuous₀ f =
 
 We now formulate an alternative non-inductive version of the `_＝⟪_⟫_` relation
 that we call `_＝⟪_⟫₀_` and prove its logical equivalence with `_＝⟪_⟫_`. The
-motivation for the non-inductive formulation is that it simplifies the proof a
-bit.
+motivation for the non-inductive formulation is to use it as an intermediate
+step to simplify our proofs.
 
 \begin{code}
 
