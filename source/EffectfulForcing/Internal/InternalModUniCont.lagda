@@ -108,7 +108,7 @@ max-questionᵤᵀ =
 
 \begin{code}
 
-max-questionᵤ⋆-agreement : (d : D ℕ 𝟚 ℕ)
+max-questionᵤ⋆-agreement : (d : C ℕ)
                          → max-questionᵤ d ＝ max-questionᵤ⋆ (church-encode d)
 max-questionᵤ⋆-agreement (D.η n)   = refl
 max-questionᵤ⋆-agreement (D.β φ n) = †
@@ -139,7 +139,7 @@ same conventions.
 
 \begin{code}
 
-modulusᵤ : D ℕ 𝟚 ℕ → ℕ
+modulusᵤ : C ℕ → ℕ
 modulusᵤ = succ ∘ max-questionᵤ
 
 \end{code}
