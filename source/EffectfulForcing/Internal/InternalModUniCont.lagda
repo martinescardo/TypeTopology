@@ -19,7 +19,7 @@ open import EffectfulForcing.Internal.SystemT
 open import EffectfulForcing.MFPSAndVariations.Combinators
 open import EffectfulForcing.MFPSAndVariations.Dialogue
  using (eloquent; D; dialogue; eloquent-functions-are-continuous;
-        dialogue-continuity; generic)
+        dialogue-continuity; generic; B; C)
 open import EffectfulForcing.MFPSAndVariations.Continuity
  using (is-continuous; is-continuous₀; continuity-implies-continuity₀;
         _＝⦅_⦆_; _＝⟪_⟫_; modulus-at₀; maximum)
