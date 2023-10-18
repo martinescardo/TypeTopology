@@ -13,6 +13,7 @@ open import EffectfulForcing.MFPSAndVariations.Continuity
 
 open import MLTT.Spartan
 open import MLTT.Athenian
+open import Naturals.Order
 
 \end{code}
 
