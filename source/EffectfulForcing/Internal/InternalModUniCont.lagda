@@ -166,4 +166,7 @@ internal-uni-mod-correct t α β ψ₁ ψ₂ ϑ = †
   † : ⟦ t · α ⟧₀ ＝ ⟦ t · β ⟧₀
   † = {!!}
 
+-- One can prove a theorem saying max-question-in-boolean-paths is the same
+-- thing as max-question followed by a pruning.
+
 \end{code}
