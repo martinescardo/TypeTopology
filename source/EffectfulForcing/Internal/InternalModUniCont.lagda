@@ -79,7 +79,11 @@ versions of the same operation.
 
 \begin{code}
 
-max-questionᵤ : D ℕ 𝟚 ℕ → ℕ
+-- TODO
+-- Should be called max-question-0-1.
+-- or max-boolean-question.
+-- or max-question-in-boolean-paths
+max-questionᵤ : C ℕ → ℕ
 max-questionᵤ (D.η n)   = 0
 max-questionᵤ (D.β φ n) = max n (max n₁ n₂)
  where
