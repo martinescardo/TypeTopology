@@ -8,7 +8,6 @@ module EffectfulForcing.MFPSAndVariations.Continuity where
 
 open import MLTT.Spartan
 open import MLTT.Athenian
-open import Naturals.Order
 open import UF.Retracts
 open import UF.Equiv
 
