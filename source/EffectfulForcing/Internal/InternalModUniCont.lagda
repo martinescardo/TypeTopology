@@ -61,8 +61,8 @@ which we define now.
 
 \begin{code}
 
-is-boolean : 〈〉 ⊢ baire → 𝓤₀  ̇
-is-boolean α =
+is-boolean-valued : 〈〉 ⊢ baire → 𝓤₀  ̇
+is-boolean-valued α =
  (n : 〈〉 ⊢ ι) → (⟦ α ⟧₀ ⟦ n ⟧₀ ＝ zero) + (⟦ α ⟧₀ ⟦ n ⟧₀ ＝ succ zero)
 
 \end{code}
