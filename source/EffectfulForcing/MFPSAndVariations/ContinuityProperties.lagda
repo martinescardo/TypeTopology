@@ -83,17 +83,29 @@ step to simplify our proofs.
 _＝⟪_⟫₀_ : {X : 𝓤₀  ̇} → (ℕ → X) → List ℕ → (ℕ → X) → 𝓤₀  ̇
 _＝⟪_⟫₀_ α₁ s α₂ = (i : ℕ) → member i s → α₁ i ＝ α₂ i
 
+\end{code}
+
+It is an obvious fact that equality up to `i ∷ is` (with `_＝⟪_⟫₀_`) entails
+equality up to `is`. We record this fact as `＝⟪⟫₀-cons`.
+
+\begin{code}
+
 ＝⟪⟫₀-cons : (α α′ : Baire) (i : ℕ) (is : List ℕ)
            → α ＝⟪ i ∷ is ⟫₀ α′ → α ＝⟪ is ⟫₀ α′
 ＝⟪⟫₀-cons α α′ i is t j p = t j (in-tail p)
 
 \end{code}
 
+We now generalize this fact. Equality up to `ms ++ ns` entails both equality up
+to `ms` and up to `ns`. In other words, `α₁ ＝⟪_⟫₁ α₂` is a semigroup
+homomorphism from semigroup `(List ℕ, _++_)` into semigroup `(𝓤₀, _×_)`.
+
 \begin{code}
 
-＝⟪⟫-functorial₁ : {X : 𝓤₀  ̇} → (α₁ α₂ : ℕ → X) (ms ns : List ℕ)
-                 → α₁ ＝⟪ ms ++ ns ⟫₀ α₂ → (α₁ ＝⟪ ms ⟫₀ α₂) × (α₁ ＝⟪ ns ⟫₀ α₂)
-＝⟪⟫-functorial₁ α₁ α₂ ms ns p = † , ‡
+＝⟪⟫-split-concatenated-lists-into-conjunction
+ : {X : 𝓤₀  ̇} → (α₁ α₂ : ℕ → X) (ms ns : List ℕ)
+ → α₁ ＝⟪ ms ++ ns ⟫₀ α₂ → (α₁ ＝⟪ ms ⟫₀ α₂) × (α₁ ＝⟪ ns ⟫₀ α₂)
+＝⟪⟫-split-concatenated-lists-into-conjunction α₁ α₂ ms ns p = † , ‡
  where
   † : α₁ ＝⟪ ms ⟫₀ α₂
   † n q = p n (right-concatenation-preserves-membership n ms ns q)
@@ -101,21 +113,16 @@ _＝⟪_⟫₀_ α₁ s α₂ = (i : ℕ) → member i s → α₁ i ＝ α₂ i
   ‡ : α₁ ＝⟪ ns ⟫₀ α₂
   ‡ n q = p n (left-concatenation-preserves-membership n ns ms q)
 
-＝⟪⟫-functorial₂ : {X : 𝓤₀  ̇} → (α₁ α₂ : ℕ → X) (ms ns : List ℕ)
-                 → (α₁ ＝⟪ ms ⟫₀ α₂) × (α₁ ＝⟪ ns ⟫₀ α₂) → α₁ ＝⟪ ms ++ ns ⟫₀ α₂
-＝⟪⟫-functorial₂ α₁ α₂ ms ns (p , q) i r =
+conjunction-of-＝⟪⟫₀-implies-concatenation
+ : {X : 𝓤₀  ̇} (α₁ α₂ : ℕ → X) (ms ns : List ℕ)
+ → (α₁ ＝⟪ ms ⟫₀ α₂) × (α₁ ＝⟪ ns ⟫₀ α₂) → α₁ ＝⟪ ms ++ ns ⟫₀ α₂
+conjunction-of-＝⟪⟫₀-implies-concatenation α₁ α₂ ms ns (p , q) i r =
  cases (p i) (q i) (++-membership₁ i ms ns r)
-  where
-   † : member i ms → α₁ i ＝ α₂ i
-   † = p i
-
-   ‡ : member i ns → α₁ i ＝ α₂ i
-   ‡ = q i
 
 ＝⟪⟫-functorial : {X : 𝓤₀  ̇} → (α₁ α₂ : ℕ → X) (ms ns : List ℕ)
                 → α₁ ＝⟪ ms ++ ns ⟫₀ α₂ ⇔ (α₁ ＝⟪ ms ⟫₀ α₂) × (α₁ ＝⟪ ns ⟫₀ α₂)
 ＝⟪⟫-functorial α₁ α₂ ms ns =
- ＝⟪⟫-functorial₁ α₁ α₂ ms ns , ＝⟪⟫-functorial₂ α₁ α₂ ms ns
+ ＝⟪⟫-split-concatenated-lists-into-conjunction α₁ α₂ ms ns , conjunction-of-＝⟪⟫₀-implies-concatenation α₁ α₂ ms ns
 
 ＝⟪⟫₀-implies-＝⟪⟫ : (α α′ : Baire) (s : List ℕ)
                    → α ＝⟪ s ⟫₀ α′
@@ -425,10 +432,10 @@ is-uniformly-continuous₀ f =
   ϑ = ＝⟪⟫₀-cons α₁ α₂ x (sequentialize (φ ₀) ++ sequentialize (φ ₁)) p
 
   ς₀ : α₁ ＝⟪ sequentialize (φ ₀) ⟫₀ α₂
-  ς₀ = pr₁ (＝⟪⟫-functorial₁ α₁ α₂ (sequentialize (φ ₀)) (sequentialize (φ ₁)) ϑ)
+  ς₀ = pr₁ (＝⟪⟫-split-concatenated-lists-into-conjunction α₁ α₂ (sequentialize (φ ₀)) (sequentialize (φ ₁)) ϑ)
 
   ς₁ : α₁ ＝⟪ sequentialize (φ ₁) ⟫₀ α₂
-  ς₁ = pr₂ (＝⟪⟫-functorial₁ α₁ α₂ (sequentialize (φ ₀)) (sequentialize (φ ₁)) ϑ)
+  ς₁ = pr₂ (＝⟪⟫-split-concatenated-lists-into-conjunction α₁ α₂ (sequentialize (φ ₀)) (sequentialize (φ ₁)) ϑ)
 
   † : (j : 𝟚) → α₁ ＝⟦ φ j ⟧ α₂
   † ₀ = ＝⟪⟫₀-implies-＝⟦⟧ α₁ α₂ (φ ₀) ς₀
