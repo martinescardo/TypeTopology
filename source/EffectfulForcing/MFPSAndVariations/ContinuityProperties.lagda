@@ -3,7 +3,7 @@ Ayberk Tosun.
 Formulations of some alternative definitions of the notion of continuity from
 `MFPSAndVariations.Continuity` and proofs of their equivalences.
 
-First equivalence proved on 2023-06-13.
+First equivalence, for continuity, proved on 2023-06-13.
 
 \begin{code}
 
@@ -59,9 +59,11 @@ agreement← α α′ (succ n) φ = φ 0 ⋆ , (agreement← (tl α) (tl α′) 
 
 \end{code}
 
+\section{Continuity}
+
 Using the `_＝⦅_⦆_` relation, we express the “usual” notion of continuity
-mentioned in the TODO. We call this `is-continuous₀` and prove at the end of
-the module that it is logically equivalent to `is-continuous`.
+mentioned in the TODO. We call this `is-continuous₀` and prove at the end of the
+module that it is logically equivalent to `is-continuous`.
 
 \begin{code}
 
