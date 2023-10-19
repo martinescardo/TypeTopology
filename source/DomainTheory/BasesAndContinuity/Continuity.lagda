@@ -535,7 +535,7 @@ module _ where
     index x = Σ y ꞉ ⟨ 𝓓 ⟩ , resize psz (y ≪⟨ 𝓓 ⟩ x) (≪-is-prop-valued 𝓓)
 
     make-index : {x : ⟨ 𝓓 ⟩} (y : ⟨ 𝓓 ⟩) → y ≪⟨ 𝓓 ⟩ x → index x
-    make-index y p = y , (to-resize psz _ (≪-is-prop-valued 𝓓) p)
+    make-index y p = y , to-resize psz _ (≪-is-prop-valued 𝓓) p
 
     family : (x : ⟨ 𝓓 ⟩) → index x → ⟨ 𝓓 ⟩
     family x = pr₁
