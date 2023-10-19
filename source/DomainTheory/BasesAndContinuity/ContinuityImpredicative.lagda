@@ -1,7 +1,15 @@
 Simcha van Collem, 12th October 2023
 
-If we assume propositional resizing, we can recover a continuity/algebraic
-structure on 𝓓 from the respective properties.
+For a locally small dcpo 𝓓, whose carrier type lives in 𝓥, we can construct
+continuous and algebraic structures from their respective properties. We do this
+by making a canonical choice for the approximating and compact families:
+the approximating family at x consists of all elements way below x, and the
+compact family at x consists of all compact elements ordered below x. Their
+index types live in 𝓥, as we assumed the carrier type of 𝓓 to live in 𝓥 and 𝓓 is
+locally small.
+
+To prove the required properties for these families, we can access the
+unspecified continuous/algebraic structure, as we are proving a proposition.
 
 \begin{code}
 
