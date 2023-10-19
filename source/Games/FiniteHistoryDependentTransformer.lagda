@@ -47,7 +47,7 @@ module Games.FiniteHistoryDependentTransformer
 open import Games.FiniteHistoryDependent R
      using (𝓚 ; Game ; game ; sequenceᴷ ; optimal-outcome)
 
-open Game public
+open Game
 
 fext : DN-funext 𝓤₀ 𝓤₀
 fext = dfunext fe
