@@ -116,25 +116,31 @@ homomorphism from semigroup `(List ℕ, _++_)` into semigroup `(𝓤₀, _×_)`.
   ‡ : α₁ ＝⟪ ns ⟫₀ α₂
   ‡ n q = p n (left-concatenation-preserves-membership n ns ms q)
 
-conjunction-of-＝⟪⟫₀-implies-concatenation
+＝⟪⟫-++-lemma₂
  : {X : 𝓤₀  ̇} (α₁ α₂ : ℕ → X) (ms ns : List ℕ)
  → (α₁ ＝⟪ ms ⟫₀ α₂) × (α₁ ＝⟪ ns ⟫₀ α₂) → α₁ ＝⟪ ms ++ ns ⟫₀ α₂
-conjunction-of-＝⟪⟫₀-implies-concatenation α₁ α₂ ms ns (p , q) i r =
- cases (p i) (q i) (++-membership₁ i ms ns r)
+＝⟪⟫-++-lemma₂ α₁ α₂ ms ns (p , q) i r = cases (p i) (q i) (++-membership₁ i ms ns r)
 
-＝⟪⟫-functorial : {X : 𝓤₀  ̇} → (α₁ α₂ : ℕ → X) (ms ns : List ℕ)
-                → α₁ ＝⟪ ms ++ ns ⟫₀ α₂ ⇔ (α₁ ＝⟪ ms ⟫₀ α₂) × (α₁ ＝⟪ ns ⟫₀ α₂)
-＝⟪⟫-functorial α₁ α₂ ms ns =
- ＝⟪⟫-split-concatenated-lists-into-conjunction α₁ α₂ ms ns , conjunction-of-＝⟪⟫₀-implies-concatenation α₁ α₂ ms ns
+＝⟪⟫-respects-list-concatenation
+ : {X : 𝓤₀  ̇} (α₁ α₂ : ℕ → X) (ms ns : List ℕ)
+ → α₁ ＝⟪ ms ++ ns ⟫₀ α₂ ⇔ (α₁ ＝⟪ ms ⟫₀ α₂) × (α₁ ＝⟪ ns ⟫₀ α₂)
+＝⟪⟫-respects-list-concatenation α₁ α₂ ms ns = ＝⟪⟫-++-lemma₁ α₁ α₂ ms ns
+                                             , ＝⟪⟫-++-lemma₂ α₁ α₂ ms ns
 
-＝⟪⟫₀-implies-＝⟪⟫ : (α α′ : Baire) (s : List ℕ)
-                   → α ＝⟪ s ⟫₀ α′
-                   → α ＝⟪ s ⟫  α′
+\end{code}
+
+The alternative version of `_＝⟪_⟫_` that we defined implies the original
+version and vice versa.
+
+\begin{code}
+
+＝⟪⟫₀-implies-＝⟪⟫ : {X : 𝓤₀  ̇} (α α′ : ℕ → X) (s : List ℕ)
+                   → α ＝⟪ s ⟫₀ α′ → α ＝⟪ s ⟫  α′
 ＝⟪⟫₀-implies-＝⟪⟫ α α′ []       t = []
 ＝⟪⟫₀-implies-＝⟪⟫ α α′ (i ∷ is) t =
  (t i in-head) ∷ (＝⟪⟫₀-implies-＝⟪⟫ α α′ is (＝⟪⟫₀-cons α α′ i is t))
 
-＝⟪⟫-implies-＝⟪⟫₀ : (α α′ : Baire) (s : List ℕ) → α ＝⟪ s ⟫ α′ → α ＝⟪ s ⟫₀ α′
+＝⟪⟫-implies-＝⟪⟫₀ : (α β : Baire) (s : List ℕ) → α ＝⟪ s ⟫ β → α ＝⟪ s ⟫₀ β
 ＝⟪⟫-implies-＝⟪⟫₀ α α′ []       []       i ()
 ＝⟪⟫-implies-＝⟪⟫₀ α α′ (i ∷ is) (p ∷ ps) i in-head     = p
 ＝⟪⟫-implies-＝⟪⟫₀ α α′ (_ ∷ is) (p ∷ ps) j (in-tail q) =
@@ -142,7 +148,7 @@ conjunction-of-＝⟪⟫₀-implies-concatenation α₁ α₂ ms ns (p , q) i r 
 
 \end{code}
 
-We define the `maximum` function computing the maximum of a given list of
+We now define the `maximum` function computing the maximum of a given list of
 natural numbers.
 
 \begin{code}
@@ -151,6 +157,10 @@ maximum : List ℕ → ℕ
 maximum = foldr max 0
 
 \end{code}
+
+Recall that the first (logical) equivalence we would like to prove is that
+between `is-continuous` and `is-continuous₀`. We tackle this in the next
+section, and the converse direction in the section after that.
 
 \section{`is-continuous` implies `is-continuous₀`}
 
@@ -194,7 +204,7 @@ continuity-implies-continuity₀ f c = †
 
 \section{`is-continuous₀` implies `is-continuous`}
 
-We now address the other direction.
+We now address the converse direction which is harder.
 
 We first define the `range` function such that `range n` is the list `[0..n]`
 ad prove its completeness.
@@ -248,6 +258,19 @@ continuity₀-implies-continuity f c α = range m , γ
 
   γ : (α′ : Baire) → α ＝⟪ range m ⟫ α′ → f α ＝ f α′
   γ α′ p = pr₂ (c α) α′ (＝⟪⟫-range-implies-＝⦅⦆ α α′ m p)
+
+\end{code}
+
+Finally, we record the logical equivalence as a fact in itself.
+
+\begin{code}
+
+continuity₀-iff-continuity : (f : Baire → ℕ)
+                           → is-continuous₀ f ⇔ is-continuous f
+continuity₀-iff-continuity f = † , ‡
+ where
+  † = continuity₀-implies-continuity f
+  ‡ = continuity-implies-continuity₀ f
 
 \end{code}
 
