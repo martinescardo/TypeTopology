@@ -286,31 +286,39 @@ modulus-at₀ f c α = pr₁ (c α)
 
 \section{Uniform continuity}
 
-We start by defining the notion of being Boolean: a point `α : Baire` of the
-Baire space is called Boolean if its range is a subset of `{0, 1}`.
+We start by defining the notion of being Boolean-valued: a point `α : Baire` of
+the Baire space is called Boolean if its range is a subset of `{0, 1}`.
 
 \begin{code}
 
 is-boolean-valued : ℕ → 𝓤₀  ̇
 is-boolean-valued n = (n ＝ 0) + (n ＝ 1)
 
-to-nat : 𝟚 → ℕ
-to-nat = 𝟚-cases 0 1
+embed-into-ℕ : 𝟚 → ℕ
+embed-into-ℕ = embedding-𝟚-ℕ
 
-to-nat-gives-boolean : (b : 𝟚) → is-boolean-valued (to-nat b)
-to-nat-gives-boolean ₀ = inl refl
-to-nat-gives-boolean ₁ = inr refl
+embed-into-ℕ-gives-boolean : (b : 𝟚) → is-boolean-valued (embed-into-ℕ b)
+embed-into-ℕ-gives-boolean ₀ = inl refl
+embed-into-ℕ-gives-boolean ₁ = inr refl
 
 to-bool : (n : ℕ) → is-boolean-valued n → 𝟚
 to-bool 0 (inl refl) = ₀
 to-bool 1 (inr refl) = ₁
+
+\end{code}
+
+A point `α : Baire` of the Baire space is called Boolean-valued if its range is
+a subset of {`₀`, `₁`}.
+
+\begin{code}
 
 is-boolean-point : Baire → 𝓤₀  ̇
 is-boolean-point α = (n : ℕ) → is-boolean-valued (α n)
 
 \end{code}
 
-Using this, we could give an alternative definition of the Cantor space.
+Using this, we can give an alternative definition of the Cantor space as the
+subtype of Baire space consisting of the Boolean points,
 
 \begin{code}
 
@@ -319,55 +327,62 @@ Cantor₀ = Σ α ꞉ Baire , is-boolean-point α
 
 \end{code}
 
-Which is clearly equivalent to the previous definition.
+which is clearly equivalent to the previous definition.
 
 \begin{code}
 
-to-baire : Cantor → Baire
-to-baire α = to-nat ∘ α
+to-baire-gives-boolean-point : (α : Cantor) → is-boolean-point (embedding-C-B α)
+to-baire-gives-boolean-point α = embed-into-ℕ-gives-boolean ∘ α
 
-to-baire-gives-boolean-point : (α : Cantor) → is-boolean-point (to-baire α)
-to-baire-gives-boolean-point α = to-nat-gives-boolean ∘ α
+\end{code}
+
+We can prove the equivalence between `Cantor` and `Cantor₀`.
+
+\begin{code}
 
 to-cantor₀ : Cantor → Cantor₀
-to-cantor₀ α = to-baire α , to-baire-gives-boolean-point α
+to-cantor₀ α = embedding-C-B α , to-baire-gives-boolean-point α
 
 to-cantor : Cantor₀ → Cantor
 to-cantor (α , p) = λ n → to-bool (α n) (p n)
 
-to-nat-0-implies-is-₀ : (b : 𝟚) → to-nat b ＝ 0 → b ＝ ₀
-to-nat-0-implies-is-₀ ₀ p = refl
+\end{code}
 
-to-nat-1-implies-is-₁ : (b : 𝟚) → to-nat b ＝ 1 → b ＝ ₁
-to-nat-1-implies-is-₁ ₁ p = refl
+\begin{code}
+
+embed-into-ℕ-0-implies-is-₀ : (b : 𝟚) → embed-into-ℕ b ＝ 0 → b ＝ ₀
+embed-into-ℕ-0-implies-is-₀ ₀ p = refl
+
+embed-into-ℕ-1-implies-is-₁ : (b : 𝟚) → embed-into-ℕ b ＝ 1 → b ＝ ₁
+embed-into-ℕ-1-implies-is-₁ ₁ p = refl
 
 to-cantor-cancels-to-cantor₀ : (α : Cantor) → to-cantor (to-cantor₀ α) ∼ α
 to-cantor-cancels-to-cantor₀ α = †
  where
-  † : (n : ℕ) → to-bool (to-nat (α n)) (to-baire-gives-boolean-point α n) ＝ α n
+  † : (n : ℕ) → to-bool (embed-into-ℕ (α n)) (to-baire-gives-boolean-point α n) ＝ α n
   † n = cases †₁ †₂ (to-baire-gives-boolean-point α n)
    where
-    †₁ : to-nat (α n) ＝ 0
-       → to-bool (to-nat (α n)) (to-baire-gives-boolean-point α n) ＝ α n
-    †₁ p = to-bool (to-nat (α n)) (to-nat-gives-boolean (α n)) ＝⟨ Ⅰ ⟩
+    †₁ : embed-into-ℕ (α n) ＝ 0
+       → to-bool (embed-into-ℕ (α n)) (to-baire-gives-boolean-point α n) ＝ α n
+    †₁ p = to-bool (embed-into-ℕ (α n)) (embed-into-ℕ-gives-boolean (α n)) ＝⟨ Ⅰ ⟩
            to-bool 0 (inl refl)                                ＝⟨ Ⅱ ⟩
            α n                                                 ∎
             where
              Ⅰ = ap
-                  (λ - → to-bool (to-nat -) (to-nat-gives-boolean -))
-                  (to-nat-0-implies-is-₀ (α n) p)
-             Ⅱ = to-nat-0-implies-is-₀ (α n) p ⁻¹
+                  (λ - → to-bool (embed-into-ℕ -) (embed-into-ℕ-gives-boolean -))
+                  (embed-into-ℕ-0-implies-is-₀ (α n) p)
+             Ⅱ = embed-into-ℕ-0-implies-is-₀ (α n) p ⁻¹
 
-    †₂ : to-nat (α n) ＝ 1
-       → to-bool (to-nat (α n)) (to-baire-gives-boolean-point α n) ＝ α n
-    †₂ p = to-bool (to-nat (α n)) (to-nat-gives-boolean (α n)) ＝⟨ Ⅰ ⟩
+    †₂ : embed-into-ℕ (α n) ＝ 1
+       → to-bool (embed-into-ℕ (α n)) (to-baire-gives-boolean-point α n) ＝ α n
+    †₂ p = to-bool (embed-into-ℕ (α n)) (embed-into-ℕ-gives-boolean (α n)) ＝⟨ Ⅰ ⟩
            to-bool 1 (inr refl)                                ＝⟨ Ⅱ ⟩
            α n                                                 ∎
             where
              Ⅰ = ap
-                  (λ - → to-bool (to-nat -) (to-nat-gives-boolean -))
-                  (to-nat-1-implies-is-₁ (α n) p)
-             Ⅱ = to-nat-1-implies-is-₁ (α n) p ⁻¹
+                  (λ - → to-bool (embed-into-ℕ -) (embed-into-ℕ-gives-boolean -))
+                  (embed-into-ℕ-1-implies-is-₁ (α n) p)
+             Ⅱ = embed-into-ℕ-1-implies-is-₁ (α n) p ⁻¹
 
 \end{code}
 
