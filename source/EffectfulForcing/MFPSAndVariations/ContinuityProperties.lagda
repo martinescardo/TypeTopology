@@ -92,22 +92,23 @@ equality up to `is`. We record this fact as `＝⟪⟫₀-cons`.
 
 \begin{code}
 
-＝⟪⟫₀-cons : (α α′ : Baire) (i : ℕ) (is : List ℕ)
+＝⟪⟫₀-cons : {X : 𝓤₀  ̇} (α α′ : ℕ → X) (i : ℕ) (is : List ℕ)
            → α ＝⟪ i ∷ is ⟫₀ α′ → α ＝⟪ is ⟫₀ α′
 ＝⟪⟫₀-cons α α′ i is t j p = t j (in-tail p)
 
 \end{code}
 
+
 We now generalize this fact. Equality up to `ms ++ ns` entails both equality up
-to `ms` and up to `ns`. In other words, `α₁ ＝⟪_⟫₁ α₂` is a semigroup
+to `ms` and up to `ns`. In other words, `α₁ ＝⟪_⟫₀ α₂` is a semigroup
 homomorphism from semigroup `(List ℕ, _++_)` into semigroup `(𝓤₀, _×_)`.
 
 \begin{code}
 
-＝⟪⟫-split-concatenated-lists-into-conjunction
+＝⟪⟫-++-lemma₁
  : {X : 𝓤₀  ̇} → (α₁ α₂ : ℕ → X) (ms ns : List ℕ)
  → α₁ ＝⟪ ms ++ ns ⟫₀ α₂ → (α₁ ＝⟪ ms ⟫₀ α₂) × (α₁ ＝⟪ ns ⟫₀ α₂)
-＝⟪⟫-split-concatenated-lists-into-conjunction α₁ α₂ ms ns p = † , ‡
+＝⟪⟫-++-lemma₁ α₁ α₂ ms ns p = † , ‡
  where
   † : α₁ ＝⟪ ms ⟫₀ α₂
   † n q = p n (right-concatenation-preserves-membership n ms ns q)
