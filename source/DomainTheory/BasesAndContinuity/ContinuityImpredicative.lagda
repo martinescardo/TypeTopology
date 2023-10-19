@@ -158,6 +158,8 @@ module _
    ; compact-family-∐-＝ = family-∐-＝
    }
    where
+    open is-locally-small ls
+
     _≪ₛ_ : ⟨ 𝓓 ⟩ → ⟨ 𝓓 ⟩ → 𝓥 ̇
     x ≪ₛ y = resized (x ≪⟨ 𝓓 ⟩ y)
                (≪-is-small-valued pe 𝓓 (is-continuous-dcpo-if-algebraic-dcpo 𝓓 a) ls x y)
@@ -173,10 +175,10 @@ module _
     ≪-to-≪ₛ = ⌜ ≪ₛ-≃-≪ ⌝⁻¹
 
     index : ⟨ 𝓓 ⟩ → 𝓥 ̇
-    index x = Σ y ꞉ ⟨ 𝓓 ⟩ , (y ≪ₛ y) × (y ≪ₛ x)
+    index x = Σ y ꞉ ⟨ 𝓓 ⟩ , (y ≪ₛ y) × (y ⊑ₛ x)
 
-    make-index : {x : ⟨ 𝓓 ⟩} → (y : ⟨ 𝓓 ⟩) → is-compact 𝓓 y → y ≪⟨ 𝓓 ⟩ x → index x
-    make-index y y≪y y≪x = y , ≪-to-≪ₛ y≪y , ≪-to-≪ₛ y≪x
+    make-index : {x : ⟨ 𝓓 ⟩} → (y : ⟨ 𝓓 ⟩) → is-compact 𝓓 y → y ⊑⟨ 𝓓 ⟩ x → index x
+    make-index y y≪y y⊑x = y , ≪-to-≪ₛ y≪y , ⊑-to-⊑ₛ y⊑x
 
     family : (x : ⟨ 𝓓 ⟩) → index x → ⟨ 𝓓 ⟩
     family x = pr₁
@@ -195,10 +197,7 @@ module _
          make-index
           (compact-family x i)
           (compact-family-is-compact x i)
-          (≪-⊑-to-≪ 𝓓 (compact-family-is-compact x i)
-           (compact-family x i                 ⊑⟨ 𝓓 ⟩[ ⦅1⦆ ]
-            ∐ 𝓓 (compact-family-is-directed x) ⊑⟨ 𝓓 ⟩[ ⦅2⦆ ]
-            x                                  ∎⟨ 𝓓 ⟩))
+          (compact-family-is-upperbound x i)
          where
           ⦅1⦆ = ∐-is-upperbound 𝓓 (compact-family-is-directed x) i
           ⦅2⦆ = ＝-to-⊑ 𝓓 (compact-family-∐-＝ x)
@@ -210,7 +209,7 @@ module _
           (inhabited-if-Directed 𝓓 _ (compact-family-is-directed x))
 
         family-is-semidirected : is-Semidirected 𝓓 (family x)
-        family-is-semidirected (y₁ , y₁≪ₛy₁ , y₁≪ₛx) (y₂ , y₂≪ₛy₂ , y₂≪ₛx) =
+        family-is-semidirected (y₁ , y₁≪ₛy₁ , y₁⊑ₛx) (y₂ , y₂≪ₛy₂ , y₂⊑ₛx) =
          ∥∥-rec₂ ∃-is-prop f h1 h2
          where
           f : Σ i ꞉ index-of-compact-family x , y₁ ⊑⟨ 𝓓 ⟩ compact-family x i
@@ -232,14 +231,16 @@ module _
              transitivity 𝓓 _ _ _ y₂⊑αⱼ αⱼ⊑αₖ
 
           h1 : ∃ i ꞉ index-of-compact-family x , y₁ ⊑⟨ 𝓓 ⟩ compact-family x i
-          h1 = (≪ₛ-to-≪ y₁≪ₛx) _ _ _ (＝-to-⊒ 𝓓 (compact-family-∐-＝ x))
+          h1 = ≪-⊑-to-≪ 𝓓 (≪ₛ-to-≪ y₁≪ₛy₁) (⊑ₛ-to-⊑ y₁⊑ₛx) _ _ _
+                (＝-to-⊒ 𝓓 (compact-family-∐-＝ x))
 
           h2 : ∃ j ꞉ index-of-compact-family x , y₂ ⊑⟨ 𝓓 ⟩ compact-family x j
-          h2 = (≪ₛ-to-≪ y₂≪ₛx) _ _ _ (＝-to-⊒ 𝓓 (compact-family-∐-＝ x))
+          h2 = ≪-⊑-to-≪ 𝓓 (≪ₛ-to-≪ y₂≪ₛy₂) (⊑ₛ-to-⊑ y₂⊑ₛx) _ _ _
+                (＝-to-⊒ 𝓓 (compact-family-∐-＝ x))
 
     -- FIXME: Agda loops whenever we fill this goal...
     family-is-compact : (x : ⟨ 𝓓 ⟩) (i : index x) → is-compact 𝓓 (family x i)
-    family-is-compact x (y , y≪ₛy , y≪ₛx) = ≪ₛ-to-≪ {! y≪ₛy  !}
+    family-is-compact x (y , y≪ₛy , y⊑ₛx) = ≪ₛ-to-≪ {! y≪ₛy  !}
 
     family-∐-＝ : (x : ⟨ 𝓓 ⟩) → ∐ 𝓓 (family-is-directed x) ＝ x
     family-∐-＝ x = ∥∥-rec (sethood 𝓓) γ a
@@ -247,8 +248,7 @@ module _
       γ : structurally-algebraic 𝓓 → ∐ 𝓓 (family-is-directed x) ＝ x
       γ sa = antisymmetry 𝓓 _ _
               (∐-is-lowerbound-of-upperbounds 𝓓 _ _
-                -- FIXME: Agda loops whenever we fill this goal...
-                λ (y , y≪ₛy , y≪ₛx) → ≪-to-⊑ 𝓓 (≪ₛ-to-≪ {!  y≪ₛx !}))
+                λ (y , y≪ₛy , y⊑ₛx) → ⊑ₛ-to-⊑ y⊑ₛx)
               (x                                  ⊑⟨ 𝓓 ⟩[ ⦅1⦆ ]
                ∐ 𝓓 (compact-family-is-directed x) ⊑⟨ 𝓓 ⟩[ ⦅2⦆ ]
                ∐ 𝓓 (family-is-directed x)         ∎⟨ 𝓓 ⟩)
@@ -263,15 +263,9 @@ module _
           g : (i : index-of-compact-family x)
             → compact-family x i ⊑⟨ 𝓓 ⟩ ∐ 𝓓 (family-is-directed x)
           g i = ∐-is-upperbound 𝓓 (family-is-directed x)
-                 (make-index (compact-family x i) (compact-family-is-compact x i) αᵢ≪x)
-           where
-            αᵢ≪x : compact-family x i ≪⟨ 𝓓 ⟩ x
-            αᵢ≪x = ≪-⊑-to-≪ 𝓓 (compact-family-is-compact x i)
-                    (compact-family x i                 ⊑⟨ 𝓓 ⟩[ ⦅3⦆ ]
-                     ∐ 𝓓 (compact-family-is-directed x) ⊑⟨ 𝓓 ⟩[ ⦅4⦆ ]
-                     x                                  ∎⟨ 𝓓 ⟩)
-             where
-              ⦅3⦆ = ∐-is-upperbound 𝓓 _ _
-              ⦅4⦆ = ＝-to-⊑ 𝓓 (compact-family-∐-＝ x)
+                 (make-index
+                  (compact-family x i)
+                  (compact-family-is-compact x i)
+                  (compact-family-is-upperbound x i))
 
 \end{code}
