@@ -7,6 +7,8 @@ First equivalence, for continuity, proved on 2023-06-13.
 
 \begin{code}
 
+{-# OPTIONS --safe --without-K --exact-split #-}
+
 module EffectfulForcing.MFPSAndVariations.ContinuityProperties where
 
 open import EffectfulForcing.MFPSAndVariations.Continuity
