@@ -473,10 +473,10 @@ is-uniformly-continuous₀ f =
   ϑ = ＝⟪⟫₀-cons α₁ α₂ x (sequentialize (φ ₀) ++ sequentialize (φ ₁)) p
 
   ς₀ : α₁ ＝⟪ sequentialize (φ ₀) ⟫₀ α₂
-  ς₀ = pr₁ (＝⟪⟫-split-concatenated-lists-into-conjunction α₁ α₂ (sequentialize (φ ₀)) (sequentialize (φ ₁)) ϑ)
+  ς₀ = pr₁ (＝⟪⟫-++-lemma₁ α₁ α₂ (sequentialize (φ ₀)) (sequentialize (φ ₁)) ϑ)
 
   ς₁ : α₁ ＝⟪ sequentialize (φ ₁) ⟫₀ α₂
-  ς₁ = pr₂ (＝⟪⟫-split-concatenated-lists-into-conjunction α₁ α₂ (sequentialize (φ ₀)) (sequentialize (φ ₁)) ϑ)
+  ς₁ = pr₂ (＝⟪⟫-++-lemma₁ α₁ α₂ (sequentialize (φ ₀)) (sequentialize (φ ₁)) ϑ)
 
   † : (j : 𝟚) → α₁ ＝⟦ φ j ⟧ α₂
   † ₀ = ＝⟪⟫₀-implies-＝⟦⟧ α₁ α₂ (φ ₀) ς₀
