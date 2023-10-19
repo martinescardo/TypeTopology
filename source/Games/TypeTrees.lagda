@@ -197,21 +197,3 @@ private
  structure'-∷ S X Xf = refl
 
 \end{code}
-
-The following are not used any more, because we work with hereditary
-properties instead.
-
-Partial, possibly empty, paths in 𝑻's:
-
-\begin{code}
-
-pPath : 𝑻 → Type
-pPath []       = 𝟙
-pPath (X ∷ Xf) = 𝟙 + (Σ x ꞉ X , pPath (Xf x))
-
-sub𝑻 : (Xt : 𝑻) → pPath Xt → 𝑻
-sub𝑻 []       ⟨⟩              = []
-sub𝑻 (X ∷ Xf) (inl ⟨⟩)        = X ∷ Xf
-sub𝑻 (X ∷ Xf) (inr (x :: xs)) = sub𝑻 (Xf x) xs
-
-\end{code}
