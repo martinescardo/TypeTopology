@@ -19,7 +19,11 @@ module DomainTheory.BasesAndContinuity.ContinuityImpredicative
 
 open PropositionalTruncation pt
 
+open import UF.Base hiding (_≈_)
+open import UF.Equiv
+
 open import UF.Size hiding (is-locally-small; is-small)
+open import UF.Subsingletons
 
 open import DomainTheory.Basics.Dcpo pt fe 𝓥
 open import DomainTheory.Basics.Miscelanea pt fe 𝓥
@@ -28,8 +32,9 @@ open import DomainTheory.Basics.WayBelow pt fe 𝓥
 open import DomainTheory.BasesAndContinuity.Continuity pt fe 𝓥
 
 module _
-        (psz : propositional-resizing (𝓥 ⁺ ⊔ 𝓣) 𝓥) 
+        (pe : Prop-Ext)
         (𝓓 : DCPO {𝓥} {𝓣})
+        (ls : is-locally-small 𝓓)
        where
 
  structurally-continuous-if-continuous : is-continuous-dcpo 𝓓
@@ -43,19 +48,27 @@ module _
    ; approximating-family-∐-＝ = family-∐-＝
    }
    where
+    _≪ₛ_ : ⟨ 𝓓 ⟩ → ⟨ 𝓓 ⟩ → 𝓥 ̇
+    x ≪ₛ y = resized (x ≪⟨ 𝓓 ⟩ y) (≪-is-small-valued pe 𝓓 c ls x y)
+
+    -- FIXME: Agda loops whenever we fill this goal...
+    ≪ₛ-≃-≪ : {x y : ⟨ 𝓓 ⟩} → x ≪ₛ y ≃ x ≪⟨ 𝓓 ⟩ y
+    ≪ₛ-≃-≪ = {! resizing-condition (≪-is-small-valued pe 𝓓 c ls _ _)  !}
+
+    ≪ₛ-to-≪ : {x y : ⟨ 𝓓 ⟩} → x ≪ₛ y → x ≪⟨ 𝓓 ⟩ y
+    ≪ₛ-to-≪ = ⌜ ≪ₛ-≃-≪ ⌝
+
+    ≪-to-≪ₛ : {x y : ⟨ 𝓓 ⟩} → x ≪⟨ 𝓓 ⟩ y → x ≪ₛ y
+    ≪-to-≪ₛ = ⌜ ≪ₛ-≃-≪ ⌝⁻¹
+
     index : ⟨ 𝓓 ⟩ → 𝓥 ̇
-    index x = Σ y ꞉ ⟨ 𝓓 ⟩ , resize psz (y ≪⟨ 𝓓 ⟩ x) (≪-is-prop-valued 𝓓)
+    index x = Σ y ꞉ ⟨ 𝓓 ⟩ , y ≪ₛ x
 
     make-index : {x : ⟨ 𝓓 ⟩} (y : ⟨ 𝓓 ⟩) → y ≪⟨ 𝓓 ⟩ x → index x
-    make-index y p = y , to-resize psz _ (≪-is-prop-valued 𝓓) p
+    make-index {x} y y≪x = y , ≪-to-≪ₛ y≪x
 
     family : (x : ⟨ 𝓓 ⟩) → index x → ⟨ 𝓓 ⟩
     family x = pr₁
-
-    ≪-from-resize : {x y : ⟨ 𝓓 ⟩}
-                   → resize psz (x ≪⟨ 𝓓 ⟩ y) (≪-is-prop-valued 𝓓)
-                   → x ≪⟨ 𝓓 ⟩ y
-    ≪-from-resize p = from-resize psz _ (≪-is-prop-valued 𝓓) p
 
     family-is-directed : (x : ⟨ 𝓓 ⟩) → is-Directed 𝓓 (family x)
     family-is-directed x = ∥∥-rec (being-directed-is-prop _ (family x)) γ c
@@ -78,7 +91,7 @@ module _
           (inhabited-if-Directed 𝓓 _ (approximating-family-is-directed x))
 
         family-is-semidirected : is-Semidirected 𝓓 (family x)
-        family-is-semidirected (y₁ , y₁≪x) (y₂ , y₂≪x) =
+        family-is-semidirected (y₁ , y₁≪ₛx) (y₂ , y₂≪ₛx) =
          ∥∥-rec₂ ∃-is-prop f h1 h2
          where
           f : Σ i ꞉ index-of-approximating-family x , y₁ ⊑⟨ 𝓓 ⟩ approximating-family x i
@@ -100,15 +113,16 @@ module _
              transitivity 𝓓 _ _ _ y₂⊑αⱼ αⱼ⊑αₖ
 
           h1 : ∃ i ꞉ index-of-approximating-family x , y₁ ⊑⟨ 𝓓 ⟩ approximating-family x i
-          h1 = (≪-from-resize y₁≪x) _ _ (approximating-family-is-directed x)
+          h1 = (≪ₛ-to-≪ y₁≪ₛx) _ _ (approximating-family-is-directed x)
                 (approximating-family-∐-⊒ x)
 
           h2 : ∃ i ꞉ index-of-approximating-family x , y₂ ⊑⟨ 𝓓 ⟩ approximating-family x i
-          h2 = (≪-from-resize y₂≪x) _ _ (approximating-family-is-directed x)
+          h2 = (≪ₛ-to-≪ y₂≪ₛx) _ _ (approximating-family-is-directed x)
                 (approximating-family-∐-⊒ x)
 
+    -- FIXME: Agda loops whenever we fill this goal...
     family-is-way-below : (x : ⟨ 𝓓 ⟩) → is-way-upperbound 𝓓 x (family x)
-    family-is-way-below x (y , y≪x) = ≪-from-resize y≪x
+    family-is-way-below x (y , y≪ₛx) = ≪ₛ-to-≪ {! y≪ₛx  !}
 
     family-∐-＝ : (x : ⟨ 𝓓 ⟩) → ∐ 𝓓 (family-is-directed x) ＝ x
     family-∐-＝ x = ∥∥-rec (sethood 𝓓) γ c
@@ -116,7 +130,8 @@ module _
       γ : structurally-continuous 𝓓 → ∐ 𝓓 (family-is-directed x) ＝ x
       γ sc = antisymmetry 𝓓 _ _
               (∐-is-lowerbound-of-upperbounds 𝓓 _ _
-                λ (y , y≪x) → ≪-to-⊑ 𝓓 (≪-from-resize y≪x))
+                -- FIXME: Agda loops whenever we fill this goal...
+                λ (y , y≪ₛx) → ≪-to-⊑ 𝓓 (≪ₛ-to-≪ {! y≪ₛx  !}))
               (x                                        ⊑⟨ 𝓓 ⟩[ ⦅1⦆ ]
                ∐ 𝓓 (approximating-family-is-directed x) ⊑⟨ 𝓓 ⟩[ ⦅2⦆ ]
                ∐ 𝓓 (family-is-directed x)               ∎⟨ 𝓓 ⟩)
@@ -143,24 +158,28 @@ module _
    ; compact-family-∐-＝ = family-∐-＝
    }
    where
+    _≪ₛ_ : ⟨ 𝓓 ⟩ → ⟨ 𝓓 ⟩ → 𝓥 ̇
+    x ≪ₛ y = resized (x ≪⟨ 𝓓 ⟩ y)
+               (≪-is-small-valued pe 𝓓 (is-continuous-dcpo-if-algebraic-dcpo 𝓓 a) ls x y)
+
+    -- FIXME: Agda loops whenever we fill this goal...
+    ≪ₛ-≃-≪ : {x y : ⟨ 𝓓 ⟩} → x ≪ₛ y ≃ x ≪⟨ 𝓓 ⟩ y
+    ≪ₛ-≃-≪ = {! resizing-condition (≪-is-small-valued pe 𝓓 (is-continuous-dcpo-if-algebraic-dcpo 𝓓 a) ls _ _)  !}
+
+    ≪ₛ-to-≪ : {x y : ⟨ 𝓓 ⟩} → x ≪ₛ y → x ≪⟨ 𝓓 ⟩ y
+    ≪ₛ-to-≪ = ⌜ ≪ₛ-≃-≪ ⌝
+
+    ≪-to-≪ₛ : {x y : ⟨ 𝓓 ⟩} → x ≪⟨ 𝓓 ⟩ y → x ≪ₛ y
+    ≪-to-≪ₛ = ⌜ ≪ₛ-≃-≪ ⌝⁻¹
+
     index : ⟨ 𝓓 ⟩ → 𝓥 ̇
-    index x = Σ y ꞉ ⟨ 𝓓 ⟩ ,
-               resize psz (is-compact 𝓓 y) (being-compact-is-prop 𝓓 y) ×
-               resize psz (y ≪⟨ 𝓓 ⟩ x) (≪-is-prop-valued 𝓓)
+    index x = Σ y ꞉ ⟨ 𝓓 ⟩ , (y ≪ₛ y) × (y ≪ₛ x)
 
     make-index : {x : ⟨ 𝓓 ⟩} → (y : ⟨ 𝓓 ⟩) → is-compact 𝓓 y → y ≪⟨ 𝓓 ⟩ x → index x
-    make-index y y≪y y≪x =
-     y ,
-     to-resize psz _ (being-compact-is-prop 𝓓 y) y≪y ,
-     to-resize psz _ (≪-is-prop-valued 𝓓) y≪x
+    make-index y y≪y y≪x = y , ≪-to-≪ₛ y≪y , ≪-to-≪ₛ y≪x
 
     family : (x : ⟨ 𝓓 ⟩) → index x → ⟨ 𝓓 ⟩
     family x = pr₁
-
-    ≪-from-resize : {x y : ⟨ 𝓓 ⟩}
-                   → resize psz (x ≪⟨ 𝓓 ⟩ y) (≪-is-prop-valued 𝓓)
-                   → x ≪⟨ 𝓓 ⟩ y
-    ≪-from-resize p = from-resize psz _ (≪-is-prop-valued 𝓓) p
 
     family-is-directed : (x : ⟨ 𝓓 ⟩) → is-Directed 𝓓 (family x)
     family-is-directed x = ∥∥-rec (being-directed-is-prop _ (family x)) γ a
@@ -191,7 +210,7 @@ module _
           (inhabited-if-Directed 𝓓 _ (compact-family-is-directed x))
 
         family-is-semidirected : is-Semidirected 𝓓 (family x)
-        family-is-semidirected (y₁ , y₁≪y₁ , y₁≪x) (y₂ , y₂≪y₂ , y₂≪x) =
+        family-is-semidirected (y₁ , y₁≪ₛy₁ , y₁≪ₛx) (y₂ , y₂≪ₛy₂ , y₂≪ₛx) =
          ∥∥-rec₂ ∃-is-prop f h1 h2
          where
           f : Σ i ꞉ index-of-compact-family x , y₁ ⊑⟨ 𝓓 ⟩ compact-family x i
@@ -213,13 +232,14 @@ module _
              transitivity 𝓓 _ _ _ y₂⊑αⱼ αⱼ⊑αₖ
 
           h1 : ∃ i ꞉ index-of-compact-family x , y₁ ⊑⟨ 𝓓 ⟩ compact-family x i
-          h1 = ≪-from-resize y₁≪x _ _ _ (＝-to-⊒ 𝓓 (compact-family-∐-＝ x))
+          h1 = (≪ₛ-to-≪ y₁≪ₛx) _ _ _ (＝-to-⊒ 𝓓 (compact-family-∐-＝ x))
 
           h2 : ∃ j ꞉ index-of-compact-family x , y₂ ⊑⟨ 𝓓 ⟩ compact-family x j
-          h2 = ≪-from-resize y₂≪x _ _ _ (＝-to-⊒ 𝓓 (compact-family-∐-＝ x))
+          h2 = (≪ₛ-to-≪ y₂≪ₛx) _ _ _ (＝-to-⊒ 𝓓 (compact-family-∐-＝ x))
 
+    -- FIXME: Agda loops whenever we fill this goal...
     family-is-compact : (x : ⟨ 𝓓 ⟩) (i : index x) → is-compact 𝓓 (family x i)
-    family-is-compact x (y , y≪y , y≪x) = ≪-from-resize y≪y
+    family-is-compact x (y , y≪ₛy , y≪ₛx) = ≪ₛ-to-≪ {! y≪ₛy  !}
 
     family-∐-＝ : (x : ⟨ 𝓓 ⟩) → ∐ 𝓓 (family-is-directed x) ＝ x
     family-∐-＝ x = ∥∥-rec (sethood 𝓓) γ a
@@ -227,7 +247,8 @@ module _
       γ : structurally-algebraic 𝓓 → ∐ 𝓓 (family-is-directed x) ＝ x
       γ sa = antisymmetry 𝓓 _ _
               (∐-is-lowerbound-of-upperbounds 𝓓 _ _
-                λ (y , y≪y , y≪x) → ≪-to-⊑ 𝓓 (≪-from-resize y≪x))
+                -- FIXME: Agda loops whenever we fill this goal...
+                λ (y , y≪ₛy , y≪ₛx) → ≪-to-⊑ 𝓓 (≪ₛ-to-≪ {!  y≪ₛx !}))
               (x                                  ⊑⟨ 𝓓 ⟩[ ⦅1⦆ ]
                ∐ 𝓓 (compact-family-is-directed x) ⊑⟨ 𝓓 ⟩[ ⦅2⦆ ]
                ∐ 𝓓 (family-is-directed x)         ∎⟨ 𝓓 ⟩)
