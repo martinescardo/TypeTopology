@@ -59,9 +59,8 @@ module _
     _≪ₛ_ : ⟨ 𝓓 ⟩ → ⟨ 𝓓 ⟩ → 𝓥 ̇
     x ≪ₛ y = resized (x ≪⟨ 𝓓 ⟩ y) (≪-is-small-valued pe 𝓓 c ls x y)
 
-    -- FIXME: Agda loops whenever we fill this goal...
     ≪ₛ-≃-≪ : {x y : ⟨ 𝓓 ⟩} → x ≪ₛ y ≃ x ≪⟨ 𝓓 ⟩ y
-    ≪ₛ-≃-≪ = {! resizing-condition (≪-is-small-valued pe 𝓓 c ls _ _)  !}
+    ≪ₛ-≃-≪ = resizing-condition (≪-is-small-valued pe 𝓓 c ls _ _)
 
     ≪ₛ-to-≪ : {x y : ⟨ 𝓓 ⟩} → x ≪ₛ y → x ≪⟨ 𝓓 ⟩ y
     ≪ₛ-to-≪ = ⌜ ≪ₛ-≃-≪ ⌝
@@ -128,9 +127,8 @@ module _
           h2 = (≪ₛ-to-≪ y₂≪ₛx) _ _ (approximating-family-is-directed x)
                 (approximating-family-∐-⊒ x)
 
-    -- FIXME: Agda loops whenever we fill this goal...
     family-is-way-below : (x : ⟨ 𝓓 ⟩) → is-way-upperbound 𝓓 x (family x)
-    family-is-way-below x (y , y≪ₛx) = ≪ₛ-to-≪ {! y≪ₛx  !}
+    family-is-way-below x (y , y≪ₛx) = ≪ₛ-to-≪ y≪ₛx
 
     family-∐-＝ : (x : ⟨ 𝓓 ⟩) → ∐ 𝓓 (family-is-directed x) ＝ x
     family-∐-＝ x = ∥∥-rec (sethood 𝓓) γ c
@@ -138,8 +136,7 @@ module _
       γ : structurally-continuous 𝓓 → ∐ 𝓓 (family-is-directed x) ＝ x
       γ sc = antisymmetry 𝓓 _ _
               (∐-is-lowerbound-of-upperbounds 𝓓 _ _
-                -- FIXME: Agda loops whenever we fill this goal...
-                λ (y , y≪ₛx) → ≪-to-⊑ 𝓓 (≪ₛ-to-≪ {! y≪ₛx  !}))
+                λ (y , y≪ₛx) → ≪-to-⊑ 𝓓 (≪ₛ-to-≪ y≪ₛx))
               (x                                        ⊑⟨ 𝓓 ⟩[ ⦅1⦆ ]
                ∐ 𝓓 (approximating-family-is-directed x) ⊑⟨ 𝓓 ⟩[ ⦅2⦆ ]
                ∐ 𝓓 (family-is-directed x)               ∎⟨ 𝓓 ⟩)
@@ -170,11 +167,13 @@ module _
 
     _≪ₛ_ : ⟨ 𝓓 ⟩ → ⟨ 𝓓 ⟩ → 𝓥 ̇
     x ≪ₛ y = resized (x ≪⟨ 𝓓 ⟩ y)
-               (≪-is-small-valued pe 𝓓 (is-continuous-dcpo-if-algebraic-dcpo 𝓓 a) ls x y)
+               (≪-is-small-valued pe 𝓓
+                (is-continuous-dcpo-if-algebraic-dcpo 𝓓 a) ls x y)
 
-    -- FIXME: Agda loops whenever we fill this goal...
     ≪ₛ-≃-≪ : {x y : ⟨ 𝓓 ⟩} → x ≪ₛ y ≃ x ≪⟨ 𝓓 ⟩ y
-    ≪ₛ-≃-≪ = {! resizing-condition (≪-is-small-valued pe 𝓓 (is-continuous-dcpo-if-algebraic-dcpo 𝓓 a) ls _ _)  !}
+    ≪ₛ-≃-≪ = resizing-condition
+                (≪-is-small-valued pe 𝓓
+                 (is-continuous-dcpo-if-algebraic-dcpo 𝓓 a) ls _ _)
 
     ≪ₛ-to-≪ : {x y : ⟨ 𝓓 ⟩} → x ≪ₛ y → x ≪⟨ 𝓓 ⟩ y
     ≪ₛ-to-≪ = ⌜ ≪ₛ-≃-≪ ⌝
@@ -246,9 +245,8 @@ module _
           h2 = ≪-⊑-to-≪ 𝓓 (≪ₛ-to-≪ y₂≪ₛy₂) (⊑ₛ-to-⊑ y₂⊑ₛx) _ _ _
                 (＝-to-⊒ 𝓓 (compact-family-∐-＝ x))
 
-    -- FIXME: Agda loops whenever we fill this goal...
     family-is-compact : (x : ⟨ 𝓓 ⟩) (i : index x) → is-compact 𝓓 (family x i)
-    family-is-compact x (y , y≪ₛy , y⊑ₛx) = ≪ₛ-to-≪ {! y≪ₛy  !}
+    family-is-compact x (y , y≪ₛy , y⊑ₛx) = ≪ₛ-to-≪ y≪ₛy
 
     family-∐-＝ : (x : ⟨ 𝓓 ⟩) → ∐ 𝓓 (family-is-directed x) ＝ x
     family-∐-＝ x = ∥∥-rec (sethood 𝓓) γ a
