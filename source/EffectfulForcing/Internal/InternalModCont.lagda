@@ -24,8 +24,8 @@ open import EffectfulForcing.MFPSAndVariations.Dialogue
  using (eloquent; D; dialogue; eloquent-functions-are-continuous;
         dialogue-continuity; generic)
 open import EffectfulForcing.MFPSAndVariations.Continuity
- using (is-continuous; is-continuous₀; continuity-implies-continuity₀;
-        _＝⦅_⦆_; _＝⟪_⟫_; modulus-at₀; maximum)
+ using (is-continuous; _＝⟪_⟫_)
+open import EffectfulForcing.MFPSAndVariations.ContinuityProperties
 open import EffectfulForcing.Internal.Correctness
  using (Rnorm-generic; is-dialogue-for; extβ; Rnorm-lemma₀; Rnorm)
 open import EffectfulForcing.Internal.External
