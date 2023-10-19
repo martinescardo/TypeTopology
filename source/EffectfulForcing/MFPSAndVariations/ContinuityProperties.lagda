@@ -399,23 +399,22 @@ maximumᵤ (n ∷ φ) = max n (max (maximumᵤ (φ ₀)) (maximumᵤ (φ ₁)))
 maximumᵤ′ : BT ℕ → ℕ
 maximumᵤ′ = maximum ∘ sequentialize
 
--- maximum-maps-++-to-max : (ms ns : List ℕ)
---                        → maximum (ms ++ ns) ＝ max (maximum ms) (maximum ns)
--- maximum-maps-++-to-max []       ns = refl
--- maximum-maps-++-to-max (m ∷ ms) ns = †
---  where
---   IH : maximum (ms ++ ns) ＝ max (maximum ms) (maximum ns)
---   IH = maximum-maps-++-to-max ms ns
+maximum-maps-++-to-max-of-maximum
+ : (ms ns : List ℕ)
+ → maximum (ms ++ ns) ＝ max (maximum ms) (maximum ns)
+maximum-maps-++-to-max-of-maximum []       ns = refl
+maximum-maps-++-to-max-of-maximum (m ∷ ms) ns = †
+ where
+  IH : maximum (ms ++ ns) ＝ max (maximum ms) (maximum ns)
+  IH = maximum-maps-++-to-max-of-maximum ms ns
 
---   Ⅰ = ap (max m) IH
---   Ⅱ = {!!}
+  Ⅰ = ap (max m) IH
+  Ⅱ = max-assoc m (maximum ms) (maximum ns) ⁻¹
 
---   † : max m (maximum (ms ++ ns)) ＝ max (max m (maximum (ms))) (maximum ns)
---   † = max m (maximum (ms ++ ns))              ＝⟨ Ⅰ ⟩
---       max m (max (maximum ms) (maximum ns))   ＝⟨ {!!} ⟩
---       max (max m (maximum ms)) (maximum ns)   ∎
-
-{--
+  † : max m (maximum (ms ++ ns)) ＝ max (max m (maximum (ms))) (maximum ns)
+  † = max m (maximum (ms ++ ns))              ＝⟨ Ⅰ ⟩
+      max m (max (maximum ms) (maximum ns))   ＝⟨ Ⅱ ⟩
+      max (max m (maximum ms)) (maximum ns)   ∎
 
 maximumᵤ′-equivalent-to-maximumᵤ : (t : BT ℕ) → maximumᵤ t ＝ maximumᵤ′ t
 maximumᵤ′-equivalent-to-maximumᵤ []      = refl
@@ -426,6 +425,9 @@ maximumᵤ′-equivalent-to-maximumᵤ (n ∷ φ) = †
 
   Ⅰ = ap (λ - → max - (maximumᵤ (φ ₁))) IH₁
   Ⅱ = ap (max (maximumᵤ′ (φ ₀))) IH₂
+  Ⅲ = maximum-maps-++-to-max-of-maximum
+       (sequentialize (φ ₀))
+       (sequentialize (φ ₁)) ⁻¹
 
   ‡ : max (maximumᵤ (φ ₀)) (maximumᵤ (φ ₁))
     ＝ maximum (sequentialize (φ ₀) ++ sequentialize (φ ₁))
@@ -433,14 +435,12 @@ maximumᵤ′-equivalent-to-maximumᵤ (n ∷ φ) = †
    max (maximumᵤ (φ ₀)) (maximumᵤ (φ ₁))                               ＝⟨ Ⅰ ⟩
    max (maximumᵤ′ (φ ₀)) (maximumᵤ (φ ₁))                              ＝⟨ Ⅱ ⟩
    max (maximumᵤ′ (φ ₀)) (maximumᵤ′ (φ ₁))                             ＝⟨ refl ⟩
-   max (maximum (sequentialize (φ ₀))) (maximum (sequentialize (φ ₁))) ＝⟨ {!!} ⟩
+   max (maximum (sequentialize (φ ₀))) (maximum (sequentialize (φ ₁))) ＝⟨ Ⅲ ⟩
    maximum (sequentialize (φ ₀) ++ sequentialize (φ ₁))                ∎
 
   † : max n (max (maximumᵤ (φ ₀)) (maximumᵤ (φ ₁)))
     ＝ max n (maximum (sequentialize (φ ₀) ++ sequentialize (φ ₁)))
   † = ap (max n) ‡
-
---}
 
 \end{code}
 
