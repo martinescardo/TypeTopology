@@ -58,7 +58,8 @@ import DomainTheory.Basics.WayBelow        -- (7)
    split support (j.w.w. Ayberk Tosun; added 4 & 5 October 2023)
 3. The theory of continuous/algebraic dcpos
 4. A discussion on possible definitions of continuous dcpo
-5. Continuous/algebraic dcpos in an impredicative setting
+5. Continuous/algebraic dcpos in an impredicative setting (Simcha van Collem;
+   added October 2023)
 6. The Ind-completion is used to discuss the notion of (structurally/pseudo-)
    continuous dcpos
 7. Using step functions we show that sup-complete dcpos with small compact
