@@ -122,8 +122,8 @@ the basic opens. The order `_⊆ₛ_` is the large version.
  _⊆ₖ_ : 𝒪ₛ → 𝒪ₛ → Ω 𝓤
  (U , _) ⊆ₖ (V , _) = Ɐ i ꞉ I , U (ℬ [ i ]) ⇒ V (ℬ [ i ])
 
- ⊆ₖ-implies-⊆ : (𝔘 𝔙 : 𝒪ₛ) → (𝔘 ⊆ₖ 𝔙 ⇒ 𝔘 ⊆ₛ 𝔙) holds
- ⊆ₖ-implies-⊆ 𝔘@(U , ι₁ , υ₁) 𝔙@(V , ι₂ , υ₂) φ x p =
+ ⊆ₖ-implies-⊆ₛ : (𝔘 𝔙 : 𝒪ₛ) → (𝔘 ⊆ₖ 𝔙 ⇒ 𝔘 ⊆ₛ 𝔙) holds
+ ⊆ₖ-implies-⊆ₛ 𝔘@(U , ι₁ , υ₁) 𝔙@(V , ι₂ , υ₂) φ x p =
   transport (λ - → (- ∈ₛ 𝔙) holds) (eq ⁻¹) †
    where
     S : Fam 𝓤 ⟨ 𝓓 ⟩∙
@@ -150,8 +150,8 @@ the basic opens. The order `_⊆ₛ_` is the large version.
  ⊆ₛ-implies-⊆ₖ : (𝔘 𝔙 : 𝒪ₛ) → (𝔘 ⊆ₛ 𝔙 ⇒ 𝔘 ⊆ₖ 𝔙) holds
  ⊆ₛ-implies-⊆ₖ 𝔘 𝔙 p = p ∘ (ℬ [_])
 
- ⊆-iff-⊆ₖ : (𝔘 𝔙 : 𝒪ₛ) → (𝔘 ⊆ₛ 𝔙 ↔ 𝔘 ⊆ₖ 𝔙) holds
- ⊆-iff-⊆ₖ 𝔘 𝔙 = ⊆ₛ-implies-⊆ₖ 𝔘 𝔙 , ⊆ₖ-implies-⊆ 𝔘 𝔙
+ ⊆ₛ-iff-⊆ₖ : (𝔘 𝔙 : 𝒪ₛ) → (𝔘 ⊆ₛ 𝔙 ↔ 𝔘 ⊆ₖ 𝔙) holds
+ ⊆ₛ-iff-⊆ₖ 𝔘 𝔙 = ⊆ₛ-implies-⊆ₖ 𝔘 𝔙 , ⊆ₖ-implies-⊆ₛ 𝔘 𝔙
 
  ⊆ₖ-is-reflexive : is-reflexive _⊆ₖ_ holds
  ⊆ₖ-is-reflexive 𝔘@(U , δ) = ⊆ₛ-implies-⊆ₖ 𝔘 𝔘 (⊆ₛ-is-reflexive 𝔘)
@@ -160,16 +160,16 @@ the basic opens. The order `_⊆ₛ_` is the large version.
  ⊆ₖ-is-transitive 𝔘@(U , δ) 𝔙@(V , ϵ) 𝔚@(W , ζ) p q = ⊆ₛ-implies-⊆ₖ 𝔘 𝔚 †
   where
    † : (𝔘 ⊆ₛ 𝔚) holds
-   † = ⊆ₛ-is-transitive 𝔘 𝔙 𝔚 (⊆ₖ-implies-⊆ 𝔘 𝔙 p) (⊆ₖ-implies-⊆ 𝔙 𝔚 q)
+   † = ⊆ₛ-is-transitive 𝔘 𝔙 𝔚 (⊆ₖ-implies-⊆ₛ 𝔘 𝔙 p) (⊆ₖ-implies-⊆ₛ 𝔙 𝔚 q)
 
  ⊆ₖ-is-antisymmetric : is-antisymmetric _⊆ₖ_
  ⊆ₖ-is-antisymmetric {𝔘} {𝔙} p q = ⊆ₛ-is-antisymmetric † ‡
   where
    † : (𝔘 ⊆ₛ 𝔙) holds
-   † = ⊆ₖ-implies-⊆ 𝔘 𝔙 p
+   † = ⊆ₖ-implies-⊆ₛ 𝔘 𝔙 p
 
    ‡ : (𝔙 ⊆ₛ 𝔘) holds
-   ‡ = ⊆ₖ-implies-⊆ 𝔙 𝔘 q
+   ‡ = ⊆ₖ-implies-⊆ₛ 𝔙 𝔘 q
 
  ⊆ₖ-is-partial-order : is-partial-order 𝒪ₛ _⊆ₖ_
  ⊆ₖ-is-partial-order = (⊆ₖ-is-reflexive , ⊆ₖ-is-transitive) , ⊆ₖ-is-antisymmetric
@@ -203,10 +203,10 @@ The meet of two opens.
     ⊆ₛ-implies-⊆ₖ 𝔚 (𝔘 ∧ₛ 𝔙) (∧[ 𝒪 ScottLocale′ ]-greatest 𝔘 𝔙 𝔚 ♣ ♠)
      where
       ♣ : (𝔚 ⊆ₛ 𝔘) holds
-      ♣ = ⊆ₖ-implies-⊆ 𝔚 𝔘 p
+      ♣ = ⊆ₖ-implies-⊆ₛ 𝔚 𝔘 p
 
       ♠ : (𝔚 ⊆ₛ 𝔙) holds
-      ♠ = ⊆ₖ-implies-⊆ 𝔚 𝔙 q
+      ♠ = ⊆ₖ-implies-⊆ₛ 𝔚 𝔙 q
 
 \end{code}
 
@@ -226,7 +226,7 @@ The 𝓤-join of opens.
    ‡ (𝔘 , p) = ⊆ₛ-implies-⊆ₖ (⋁ₛ S) 𝔘 ((⋁[ 𝒪 ScottLocale′ ]-least S (𝔘 , ※)))
     where
      ※ : (i : index S) → ((S [ i ]) ⊆ₛ 𝔘) holds
-     ※ i = ⊆ₖ-implies-⊆ (S [ i ]) 𝔘 (p i)
+     ※ i = ⊆ₖ-implies-⊆ₛ (S [ i ]) 𝔘 (p i)
 
 \end{code}
 
