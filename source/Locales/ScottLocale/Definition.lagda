@@ -72,7 +72,8 @@ module DefnOfScottLocale (𝓓 : DCPO {𝓤} {𝓣}) (𝓦 : Universe) (pe : pro
 
 \end{code}
 
-These are ordered by inclusion.
+These are ordered by inclusion. The subscript `ₛ` in the symbol `⊆ₛ` is intended
+be mnemonic for "Scott open".
 
 \begin{code}
 
