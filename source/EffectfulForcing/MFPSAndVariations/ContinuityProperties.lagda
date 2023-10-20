@@ -364,25 +364,27 @@ to-cantor-cancels-to-cantor₀ α = †
    where
     †₁ : embed-into-ℕ (α n) ＝ 0
        → to-bool (embed-into-ℕ (α n)) (to-baire-gives-boolean-point α n) ＝ α n
-    †₁ p = to-bool (embed-into-ℕ (α n)) (embed-into-ℕ-gives-boolean (α n)) ＝⟨ Ⅰ ⟩
-           to-bool 0 (inl refl)                                ＝⟨ Ⅱ ⟩
-           α n                                                 ∎
-            where
-             Ⅰ = ap
-                  (λ - → to-bool (embed-into-ℕ -) (embed-into-ℕ-gives-boolean -))
-                  (embed-into-ℕ-0-implies-is-₀ (α n) p)
-             Ⅱ = embed-into-ℕ-0-implies-is-₀ (α n) p ⁻¹
+    †₁ p =
+     to-bool (embed-into-ℕ (α n)) (embed-into-ℕ-gives-boolean (α n)) ＝⟨ Ⅰ ⟩
+     to-bool 0 (inl refl)                                            ＝⟨ Ⅱ ⟩
+     α n                                                             ∎
+      where
+       Ⅰ = ap
+            (λ - → to-bool (embed-into-ℕ -) (embed-into-ℕ-gives-boolean -))
+            (embed-into-ℕ-0-implies-is-₀ (α n) p)
+       Ⅱ = embed-into-ℕ-0-implies-is-₀ (α n) p ⁻¹
 
     †₂ : embed-into-ℕ (α n) ＝ 1
        → to-bool (embed-into-ℕ (α n)) (to-baire-gives-boolean-point α n) ＝ α n
-    †₂ p = to-bool (embed-into-ℕ (α n)) (embed-into-ℕ-gives-boolean (α n)) ＝⟨ Ⅰ ⟩
-           to-bool 1 (inr refl)                                ＝⟨ Ⅱ ⟩
-           α n                                                 ∎
-            where
-             Ⅰ = ap
-                  (λ - → to-bool (embed-into-ℕ -) (embed-into-ℕ-gives-boolean -))
-                  (embed-into-ℕ-1-implies-is-₁ (α n) p)
-             Ⅱ = embed-into-ℕ-1-implies-is-₁ (α n) p ⁻¹
+    †₂ p =
+     to-bool (embed-into-ℕ (α n)) (embed-into-ℕ-gives-boolean (α n)) ＝⟨ Ⅰ ⟩
+     to-bool 1 (inr refl)                                            ＝⟨ Ⅱ ⟩
+     α n                                                             ∎
+      where
+       Ⅰ = ap
+            (λ - → to-bool (embed-into-ℕ -) (embed-into-ℕ-gives-boolean -))
+            (embed-into-ℕ-1-implies-is-₁ (α n) p)
+       Ⅱ = embed-into-ℕ-1-implies-is-₁ (α n) p ⁻¹
 
 \end{code}
 
