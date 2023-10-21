@@ -310,18 +310,14 @@ We could show that if the converse holds then so does LEM in 𝓥.
 \end{code}
 
 Next we will fromalize the first retract lemma. The result will allows use to exhibit the type of not-not stable propositions
-as a retract of a local non-trivial δ-complete poset. 
+as a retract of a locally small non-trivial δ-complete poset. 
 
 \begin{code}
 
-module Retract-Lemmas (𝓤  𝓦  𝓥 : Universe) (A : Poset 𝓤 𝓦) where
+module Local-Smallness (𝓤  𝓦  𝓥 : Universe) (A : Poset 𝓤 𝓦) where
 
- open δ-complete-poset 𝓥 A
- open Universal fe
- open PosetReasoning A
- open non-trivial-posets A
- open Positive-Posets 𝓤 𝓦 𝓥 A
- open Joins (_≤_)
+ _≤_ : ∣ A ∣ₚ → ∣ A ∣ₚ → Ω 𝓦
+ _≤_ = rel-syntax A
 
  is-locally-small-≤ : 𝓤 ⊔ 𝓦 ⊔ (𝓥 ⁺)  ̇
  is-locally-small-≤ = (x y : ∣ A ∣ₚ) → ((x ≤ y) holds) is 𝓥 small
@@ -342,6 +338,17 @@ module Retract-Lemmas (𝓤  𝓦  𝓥 : Universe) (A : Poset 𝓤 𝓦) where
 
   ≤-to-≤ⱽ : (x y : ∣ A ∣ₚ) → (x ≤ y) holds → x ≤ⱽ y
   ≤-to-≤ⱽ x y = ⌜ ≤ⱽ-≃-≤ x y ⌝⁻¹
+
+
+module Retract-Lemmas (𝓤  𝓦  𝓥 : Universe) (A : Poset 𝓤 𝓦) where
+
+ open δ-complete-poset 𝓥 A
+ open Universal fe
+ open PosetReasoning A
+ open non-trivial-posets A
+ open Positive-Posets 𝓤 𝓦 𝓥 A
+ open Local-Smallness 𝓤 𝓦 𝓥 A hiding (_≤_)
+ open Joins (_≤_)
 
  module def-Δ (i : is-δ-complete) {x y : ∣ A ∣ₚ} (x-≤-y : (x ≤ y) holds) where
 
@@ -487,7 +494,20 @@ This allows us to exhibit the type of propositions as a retract of a local non-t
       path₅ : (𝟙 , 𝟙-is-prop) ＝ P
       path₅ = path₁ ∙ path₂ ∙ path₃ ∙ path₄
       𝟙-＝-P : 𝟙 ＝ P holds
-      𝟙-＝-P = ap pr₁ {!path₅!}
+      𝟙-＝-P = ap pr₁ path₅
    
 \end{code}
 
+We will now define what it means for a δ-complete poset to be small.
+
+\begin{code}
+
+module Small-δ-complete-poset (𝓤 𝓦 𝓥 : Universe) (A : Poset 𝓤 𝓦) where
+
+ open δ-complete-poset 𝓥 A
+ open Local-Smallness 𝓤 𝓦 𝓥 A hiding (_≤_)
+
+ Poset-is-small : is-δ-complete → 𝓤 ⊔ 𝓦 ⊔ (𝓥 ⁺)  ̇
+ Poset-is-small i = is-locally-small-≤ × ∣ A ∣ₚ is 𝓥 small
+
+\end{code}
