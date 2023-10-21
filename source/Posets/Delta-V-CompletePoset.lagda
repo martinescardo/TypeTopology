@@ -452,13 +452,42 @@ This allows us to exhibit the type of propositions as a retract of a local non-t
     H : r ∘ (Δ (≤-is-transitive A x y z x-≤-y y-≤-z)) ∼ id
     H P = to-subtype-＝ (λ _ → being-prop-is-prop fe)
                                       (pe (≤ⱽ-is-prop z (Δ (t z y-≤-z) P))
-                                          (holds-is-prop {!P!})
+                                          (holds-is-prop P)
                                           (f P)
                                           (g P))
  
-  Δ-section-to-positive : (z : ∣ A ∣ₚ) → (y-≤-z : (y ≤ z) holds) → is-section (Δ (t z y-≤-z)) → x < y
-  Δ-section-to-positive z y-≤-z (r , H) = {!!}
-
-
+  Δ-section-to-positive : ((z : ∣ A ∣ₚ) → (y-≤-z : (y ≤ z) holds) → is-section (Δ (t z y-≤-z))) → x < y
+  Δ-section-to-positive G = (x-≤-y , sup-condition-Δ)
+   where
+    r : (z : ∣ A ∣ₚ) → (y ≤ z) holds → (∣ A ∣ₚ → Ω 𝓥)
+    r z y-≤-z = pr₁ (G z y-≤-z)
+    H : (z : ∣ A ∣ₚ) → (y-≤-z : (y ≤ z) holds) → (r z y-≤-z) ∘ (Δ (t z y-≤-z)) ∼ id
+    H z y-≤-z = pr₂ (G z y-≤-z)
+    sup-condition-Δ : (z : ∣ A ∣ₚ)
+                    → (y ≤ z) holds
+                    → (P : Ω 𝓥)
+                    → (z is-lub-of ((𝟙 + (P holds)) , δ x z P)) holds
+                    → P holds
+    sup-condition-Δ z y-≤-z P (z-is-ub-Δ , z-has-lub-cond-Δ) = idtofun 𝟙 (P holds) 𝟙-＝-P ⋆
+     where
+      z-≤-Δ : (z ≤ Δ (t z y-≤-z) P) holds
+      z-≤-Δ = z-has-lub-cond-Δ (Δ (t z y-≤-z) P , is-ub-of-δ i x z (t z y-≤-z) P)
+      Δ-≤-z : (Δ (t z y-≤-z) P ≤ z) holds
+      Δ-≤-z = sup-δ-≤-upper i x z (t z y-≤-z) P
+      z-＝-Δ : z ＝ Δ (t z y-≤-z) P
+      z-＝-Δ = ≤-is-antisymmetric A z-≤-Δ Δ-≤-z
+      path₁ : (𝟙 , 𝟙-is-prop) ＝ (r z y-≤-z) (Δ (t z y-≤-z) (𝟙 , 𝟙-is-prop))
+      path₁ = (H z y-≤-z (𝟙 , 𝟙-is-prop)) ⁻¹
+      path₂ : (r z y-≤-z) (Δ (t z y-≤-z) (𝟙 , 𝟙-is-prop)) ＝ (r z y-≤-z) z
+      path₂ = ap (r z y-≤-z) ((upper-＝-sup-δ i x z (t z y-≤-z) (𝟙 , 𝟙-is-prop) ⋆) ⁻¹)
+      path₃ : (r z y-≤-z) z ＝ (r z y-≤-z) (Δ (t z y-≤-z) P)
+      path₃ = ap (r z y-≤-z) z-＝-Δ
+      path₄ : (r z y-≤-z) (Δ (t z y-≤-z) P) ＝ P
+      path₄ = H z y-≤-z P
+      path₅ : (𝟙 , 𝟙-is-prop) ＝ P
+      path₅ = path₁ ∙ path₂ ∙ path₃ ∙ path₄
+      𝟙-＝-P : 𝟙 ＝ P holds
+      𝟙-＝-P = ap pr₁ {!path₅!}
+   
 \end{code}
 
