@@ -14,6 +14,7 @@ open import UF.Logic
 
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
+open import UF.SubtypeClassifier
 
 module Posets.TwoElementPoset
  (pt : propositional-truncations-exist)
