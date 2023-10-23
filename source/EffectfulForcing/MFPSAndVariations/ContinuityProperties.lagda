@@ -434,10 +434,10 @@ maximumᵤ′-equivalent-to-maximumᵤ (n ∷ φ) = †
   ‡ : max (maximumᵤ (φ ₀)) (maximumᵤ (φ ₁))
     ＝ maximum (sequentialize (φ ₀) ++ sequentialize (φ ₁))
   ‡ =
-   max (maximumᵤ (φ ₀)) (maximumᵤ (φ ₁))                               ＝⟨ Ⅰ ⟩
-   max (maximumᵤ′ (φ ₀)) (maximumᵤ (φ ₁))                              ＝⟨ Ⅱ ⟩
+   max (maximumᵤ (φ ₀)) (maximumᵤ (φ ₁))                               ＝⟨ Ⅰ    ⟩
+   max (maximumᵤ′ (φ ₀)) (maximumᵤ (φ ₁))                              ＝⟨ Ⅱ    ⟩
    max (maximumᵤ′ (φ ₀)) (maximumᵤ′ (φ ₁))                             ＝⟨ refl ⟩
-   max (maximum (sequentialize (φ ₀))) (maximum (sequentialize (φ ₁))) ＝⟨ Ⅲ ⟩
+   max (maximum (sequentialize (φ ₀))) (maximum (sequentialize (φ ₁))) ＝⟨ Ⅲ    ⟩
    maximum (sequentialize (φ ₀) ++ sequentialize (φ ₁))                ∎
 
   † : max n (max (maximumᵤ (φ ₀)) (maximumᵤ (φ ₁)))
