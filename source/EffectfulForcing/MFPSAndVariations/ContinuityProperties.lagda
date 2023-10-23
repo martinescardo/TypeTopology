@@ -16,6 +16,7 @@ open import EffectfulForcing.MFPSAndVariations.Continuity
 open import MLTT.Spartan
 open import MLTT.Athenian
 open import Naturals.Order
+open import UF.Retracts
 
 \end{code}
 
@@ -325,6 +326,9 @@ subtype of Baire space consisting of the Boolean points,
 Cantor₀ : 𝓤₀  ̇
 Cantor₀ = Σ α ꞉ Baire , is-boolean-point α
 
+point-of : Cantor₀ → Baire
+point-of (α , _) = α
+
 \end{code}
 
 which is clearly equivalent to the previous definition.
@@ -385,6 +389,29 @@ to-cantor-cancels-to-cantor₀ α = †
             (λ - → to-bool (embed-into-ℕ -) (embed-into-ℕ-gives-boolean -))
             (embed-into-ℕ-1-implies-is-₁ (α n) p)
        Ⅱ = embed-into-ℕ-1-implies-is-₁ (α n) p ⁻¹
+
+point-of-lemma : (α : Cantor)
+               → point-of (to-cantor₀ α) ∼ embedding-𝟚-ℕ ∘ α
+point-of-lemma α = λ _ → refl
+
+＝⟦⟧-cantor₀-equivalence : (α β : Cantor) (t : BT ℕ)
+                         → α ＝⟦ t ⟧ β
+                         → point-of (to-cantor₀ α) ＝⟦ t ⟧ point-of (to-cantor₀ β)
+＝⟦⟧-cantor₀-equivalence α β []      _       = []
+＝⟦⟧-cantor₀-equivalence α β (n ∷ φ) (p ∷ ψ) = † ∷ γ
+ where
+  † : embedding-𝟚-ℕ (α n) ＝ embedding-𝟚-ℕ (β n)
+  † = ap embedding-𝟚-ℕ p
+
+  γ : (i : 𝟚) → point-of (to-cantor₀ α) ＝⟦ φ i ⟧ point-of (to-cantor₀ β)
+  γ ₀ = ＝⟦⟧-cantor₀-equivalence α β (φ ₀) (ψ ₀)
+  γ ₁ = ＝⟦⟧-cantor₀-equivalence α β (φ ₁) (ψ ₁)
+
+yet-another-lemma : (α β : Cantor) (t : BT ℕ)
+                  → embedding-C-B α ＝⟦ t ⟧ embedding-C-B β
+                  → α ＝⟦ t ⟧ β
+yet-another-lemma α β []      p       = []
+yet-another-lemma α β (i ∷ φ) (p ∷ ψ) = {!!}
 
 \end{code}
 
@@ -502,37 +529,52 @@ is-uniformly-continuous₀ f =
   † : α ＝⟪ ms ++ ns ⟫₀ β
   † = ＝⟪⟫-++-lemma₂ α β ms ns (IH₁ , IH₂)
 
--- uni-continuity-implies-uni-continuity₀ : (f : Cantor → ℕ)
---                                        → is-uniformly-continuous  f
---                                        → is-uniformly-continuous₀ f
--- uni-continuity-implies-uni-continuity₀ f 𝔠 = †
---  where
---   t : BT ℕ
---   t = pr₁ 𝔠
+uni-continuity-implies-uni-continuity₀ : (f : Cantor → ℕ)
+                                       → is-uniformly-continuous  f
+                                       → is-uniformly-continuous₀ f
+uni-continuity-implies-uni-continuity₀ f 𝔠 = †
+ where
+  t : BT ℕ
+  t = pr₁ 𝔠
 
---   n : ℕ
---   n = succ (maximumᵤ (pr₁ 𝔠))
+  n : ℕ
+  n = succ (maximumᵤ (pr₁ 𝔠))
 
---   f₀ : Cantor₀ → ℕ
---   f₀ = to-cantor₀-map f
+  f₀ : Cantor₀ → ℕ
+  f₀ = to-cantor₀-map f
 
---   fb : (α : Baire) → is-boolean-point α → ℕ
---   fb α ϑ = f₀ (α , ϑ)
+  fb : (α : Baire) → is-boolean-point α → ℕ
+  fb α ϑ = f₀ (α , ϑ)
 
---   ‡ : (α₁ α₂ : Baire) (ϑ₁ : is-boolean-point α₁) (ϑ₂ : is-boolean-point α₂)
---     → α₁ ＝⦅ n ⦆ α₂ → f₀ (α₁ , ϑ₁) ＝ f₀ (α₂ , ϑ₂)
---   ‡ α₁ α₂ ϑ₁ ϑ₂ p = pr₂ 𝔠 α₁′ α₂′ tmp
---     where
---      α₁′ : Cantor
---      α₁′ = to-cantor (α₁ , ϑ₁)
+  ‡ : (α₁ α₂ : Baire) (ϑ₁ : is-boolean-point α₁) (ϑ₂ : is-boolean-point α₂)
+    → α₁ ＝⦅ n ⦆ α₂ → f₀ (α₁ , ϑ₁) ＝ f₀ (α₂ , ϑ₂)
+  ‡ α₁ α₂ ϑ₁ ϑ₂ p = pr₂ 𝔠 α₁′ α₂′ tmp
+    where
+     α₁′ : Cantor
+     α₁′ = to-cantor (α₁ , ϑ₁)
 
---      α₂′ : Cantor
---      α₂′ = to-cantor (α₂ , ϑ₂)
+     α₂′ : Cantor
+     α₂′ = to-cantor (α₂ , ϑ₂)
 
---      tmp : α₁′ ＝⟦ pr₁ 𝔠 ⟧ α₂′
---      tmp = {!＝⟪⟫₀-implies-＝⟦⟧ !}
+     tmp₃ : tl α₁ ＝⦅ maximumᵤ′ t ⦆ (tl α₂)
+     tmp₃ = transport (λ - → tl α₁ ＝⦅ - ⦆ tl α₂) (maximumᵤ′-equivalent-to-maximumᵤ t) (pr₂ p)
 
-  -- † : is-uniformly-continuous₀ f
-  -- † = n , λ (α₁ , ϑ₁) (α₂ , ϑ₂) → ‡ α₁ α₂ ϑ₁ ϑ₂
+     tmp′′ : α₁ ＝⦅ succ (maximum (sequentialize t)) ⦆ α₂
+     tmp′′ = pr₁ p , tmp₃
+
+     tmp′ : α₁ ＝⟦ pr₁ 𝔠 ⟧ α₂
+     tmp′ = ＝⟪⟫₀-implies-＝⟦⟧ α₁ α₂ t (＝⟪⟫-implies-＝⟪⟫₀ α₁ α₂ (sequentialize t) (＝⦅⦆-implies-＝⟪⟫-for-suitable-modulus α₁ α₂ (sequentialize t) tmp′′))
+
+     foo-bar : α₁′ ＝⟦ pr₁ 𝔠 ⟧ α₂′
+     foo-bar = {!!}
+
+     tmp : α₁′ ＝⟦ pr₁ 𝔠 ⟧ α₂′
+     tmp = yet-another-lemma α₁′ α₂′ t foo
+      where
+       foo : embedding-C-B (to-cantor (α₁ , ϑ₁)) ＝⟦ t ⟧ embedding-C-B (to-cantor (α₂ , ϑ₂))
+       foo = {!!}
+
+  † : is-uniformly-continuous₀ f
+  † = n , λ (α₁ , ϑ₁) (α₂ , ϑ₂) → ‡ α₁ α₂ ϑ₁ ϑ₂
 
 \end{code}
