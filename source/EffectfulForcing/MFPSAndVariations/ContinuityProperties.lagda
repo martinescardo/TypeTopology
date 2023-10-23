@@ -486,9 +486,21 @@ is-uniformly-continuous₀ f =
 
 ＝⟦⟧-implies-＝⟪⟫₀ : (α β : Baire) (t : BT ℕ)
                    → α ＝⟦ t ⟧ β → α ＝⟪ sequentialize t ⟫₀ β
-＝⟦⟧-implies-＝⟪⟫₀ _ _ []      _ _ ()
-＝⟦⟧-implies-＝⟪⟫₀ α β (n ∷ φ) i p in-head     = {!!}
-＝⟦⟧-implies-＝⟪⟫₀ α β (n ∷ φ) i p (in-tail q) = {!!}
+＝⟦⟧-implies-＝⟪⟫₀ _ _ []      _       _ ()
+＝⟦⟧-implies-＝⟪⟫₀ α β (n ∷ φ) (p ∷ _) _ in-head     = p
+＝⟦⟧-implies-＝⟪⟫₀ α β (n ∷ φ) (p ∷ ψ) i (in-tail q) = † i q
+ where
+  ms = sequentialize (φ ₀)
+  ns = sequentialize (φ ₁)
+
+  IH₁ : α ＝⟪ ms ⟫₀ β
+  IH₁ = ＝⟦⟧-implies-＝⟪⟫₀ α β (φ ₀) (ψ ₀)
+
+  IH₂ : α ＝⟪ ns ⟫₀ β
+  IH₂ = ＝⟦⟧-implies-＝⟪⟫₀ α β (φ ₁) (ψ ₁)
+
+  † : α ＝⟪ ms ++ ns ⟫₀ β
+  † = ＝⟪⟫-++-lemma₂ α β ms ns (IH₁ , IH₂)
 
 -- uni-continuity-implies-uni-continuity₀ : (f : Cantor → ℕ)
 --                                        → is-uniformly-continuous  f
