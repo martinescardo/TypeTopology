@@ -314,6 +314,13 @@ lc-maps-into-sets-are-embeddings {𝓤} {𝓥} {X} {Y} f f-lc iss y (x , p) (x' 
    γ : x , p ＝ x' , p'
    γ = to-Σ-Id (r , q)
 
+sections-into-sets-are-embeddings : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                                  → is-section f
+                                  → is-set Y
+                                  → is-embedding f
+sections-into-sets-are-embeddings f f-is-section Y-is-set =
+ lc-maps-into-sets-are-embeddings f (sections-are-lc f f-is-section) Y-is-set
+
 lc-maps-are-embeddings-with-K : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                               → left-cancellable f
                               → K-axiom 𝓥
