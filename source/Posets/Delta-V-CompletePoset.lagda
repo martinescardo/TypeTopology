@@ -21,6 +21,8 @@ open import UF.Equiv
 open import UF.Retracts
 open import UF.Subsingletons-FunExt
 open import UF.NotNotStablePropositions
+open import UF.Embeddings
+open import UF.Sets
 
 module Posets.Delta-V-CompletePoset
  (pt : propositional-truncations-exist)
@@ -310,7 +312,7 @@ We could show that if the converse holds then so does LEM in 𝓥.
 \end{code}
 
 Next we will fromalize the first retract lemma. The result will allows use to exhibit the type of not-not stable propositions
-as a retract of a locally small non-trivial δ-complete poset. 
+as a retract of a locally small non-trivial δ-complete poset. We start by defining local smallness.
 
 \begin{code}
 
@@ -343,7 +345,6 @@ module Local-Smallness (𝓤  𝓦  𝓥 : Universe) (A : Poset 𝓤 𝓦) where
 module Retract-Lemmas (𝓤  𝓦  𝓥 : Universe) (A : Poset 𝓤 𝓦) where
 
  open δ-complete-poset 𝓥 A
- open Universal fe
  open PosetReasoning A
  open non-trivial-posets A
  open Positive-Posets 𝓤 𝓦 𝓥 A
@@ -507,7 +508,38 @@ module Small-δ-complete-poset (𝓤 𝓦 𝓥 : Universe) (A : Poset 𝓤 𝓦)
  open δ-complete-poset 𝓥 A
  open Local-Smallness 𝓤 𝓦 𝓥 A hiding (_≤_)
 
- Poset-is-small : is-δ-complete → 𝓤 ⊔ 𝓦 ⊔ (𝓥 ⁺)  ̇
- Poset-is-small i = is-locally-small-≤ × ∣ A ∣ₚ is 𝓥 small
+ _poset-is-small : is-δ-complete → 𝓤 ⊔ 𝓦 ⊔ (𝓥 ⁺)  ̇
+ δ-complete poset-is-small = is-locally-small-≤ × ∣ A ∣ₚ is 𝓥 small
+
+\end{code}
+
+Now we can prove the main theorems.
+
+\begin{code}
+
+module Large-Posets-Theorems (𝓤 𝓦 𝓥 : Universe) (A : Poset 𝓤 𝓦) where
+
+ open δ-complete-poset 𝓥 A
+ open non-trivial-posets A
+ open Positive-Posets 𝓤 𝓦 𝓥 A
+ open positive-posets
+ open Local-Smallness 𝓤 𝓦 𝓥 A hiding (_≤_)
+ open Small-δ-complete-poset 𝓤 𝓦 𝓥 A
+ open Retract-Lemmas 𝓤 𝓦 𝓥 A
+
+ small-positive-implies-resizing : (δ-complete : is-δ-complete) → is-positive-poset δ-complete → δ-complete poset-is-small → Ω-Resizing 𝓥 𝓥
+ small-positive-implies-resizing δ-complete (x , y , x-≤-y , sup-condition) (locally-small , carrier-small) =
+  embedded-retract-is-small Δ-Retract Δ-Embedding carrier-small
+  where
+   open retract-lemma₂ locally-small δ-complete x y x-≤-y
+   open def-Δ δ-complete
+   r : ∣ A ∣ₚ → Ω 𝓥
+   r = pr₁ (positive-to-Δ-section (x-≤-y , sup-condition) y (≤-is-reflexive A y))
+   H : r ∘ Δ (≤-is-transitive A x y y x-≤-y (≤-is-reflexive A y)) ∼ id
+   H = pr₂ (positive-to-Δ-section (x-≤-y , sup-condition) y (≤-is-reflexive A y))
+   Δ-Retract : retract Ω 𝓥 of ∣ A ∣ₚ
+   Δ-Retract = (r , Δ (≤-is-transitive A x y y x-≤-y (≤-is-reflexive A y)) , H)
+   Δ-Embedding : is-embedding (section Δ-Retract)
+   Δ-Embedding = sections-into-sets-are-embeddings (Δ (≤-is-transitive A x y y x-≤-y (≤-is-reflexive A y))) (r , H) carrier-of-[ A ]-is-set 
 
 \end{code}
