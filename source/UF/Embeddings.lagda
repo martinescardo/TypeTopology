@@ -213,11 +213,11 @@ embedding-criterion-converse : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                              → (f x' ＝ f x) ≃ (x' ＝ x)
 embedding-criterion-converse f e x' x = ≃-sym (embedding-criterion-converse' f e x' x)
 
-embedding'-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-                       (f : X → Y)
-                     → is-embedding' f
-                     → is-embedding f
-embedding'-embedding {𝓤} {𝓥} {X} {Y} f ise = g
+embedding'-gives-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                             (f : X → Y)
+                           → is-embedding' f
+                           → is-embedding f
+embedding'-gives-embedding {𝓤} {𝓥} {X} {Y} f ise = g
  where
   e : (x : X) → is-central (Σ x' ꞉ X , f x ＝ f x') (x , refl)
   e x = universal-element-is-central
@@ -362,11 +362,11 @@ is-essential f 𝓦 = (Z : 𝓦 ̇) (g : codomain f → Z)
                  → is-embedding (g ∘ f)
                  → is-embedding g
 
-precomp-is-embedding : FunExt
-                     → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } (f : X → Y)
-                     → is-embedding f
-                     → is-embedding (λ (φ : A → X) → f ∘ φ)
-precomp-is-embedding {𝓤} {𝓥} {𝓦} fe {X} {Y} {A} f i = γ
+postcomp-is-embedding : FunExt
+                      → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } (f : X → Y)
+                      → is-embedding f
+                      → is-embedding (λ (φ : A → X) → f ∘ φ)
+postcomp-is-embedding {𝓤} {𝓥} {𝓦} fe {X} {Y} {A} f i = γ
  where
   g : (φ φ' : A → X) (a : A) → (φ a ＝ φ' a) ≃ (f (φ a) ＝ f (φ' a))
   g φ φ' a = ap f {φ a} {φ' a} , embedding-gives-embedding' f i (φ a) (φ' a)
