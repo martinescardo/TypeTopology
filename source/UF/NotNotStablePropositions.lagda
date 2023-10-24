@@ -66,12 +66,12 @@ being-¬¬-stable-is-prop fe i = Π-is-prop fe (λ _ → i)
 
 \end{code}
 
-A weakening of the notion of Ω-rezing.
+A weakening of the notion of Ω-Rezing.
 
 \begin{code}
 
-¬¬Ω-Resizing : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥 )⁺ ̇
-¬¬Ω-Resizing 𝓤 𝓥 = (Ω¬¬ 𝓤) is 𝓥 small
+Ω¬¬-Resizing : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥 )⁺ ̇
+Ω¬¬-Resizing 𝓤 𝓥 = (Ω¬¬ 𝓤) is 𝓥 small
 
 \end{code}
 
