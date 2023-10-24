@@ -11,7 +11,7 @@ operator.
 
 open import UF.FunExt
 
-module EffectfulForcing.Internal.InternalModCont (fe : Fun-Ext) where
+module EffectfulForcing.Internal.InternalModCont where
 
 open import MLTT.Spartan hiding (rec; _^_)
 open import MLTT.List
@@ -185,12 +185,11 @@ max-question⋆-agreement (D.β φ n) α = †
   † = ap (max n) IH
 
 max-questionᵀ-agreement-with-max-question⋆ : (d : 〈〉 ⊢ ⌜D⋆⌝ ι ι ι ι) (α : ℕ → ℕ)
-                                           → ⟦ max-questionᵀ · d ⟧₀ α
-                                             ＝ max-question⋆ ⟦ d ⟧₀ α
+                                           → ⟦ max-questionᵀ · d ⟧₀ α ＝ max-question⋆ ⟦ d ⟧₀ α
 max-questionᵀ-agreement-with-max-question⋆ d α =
  ap
   (⟦ d ⟧₀ (λ _ → 0))
-  (dfunext fe λ g → dfunext fe λ x → maxᵀ-correct x (g (α x)))
+  {!!} -- (dfunext fe λ g → dfunext fe λ x → maxᵀ-correct x (g (α x)))
 
 
 \end{code}
@@ -289,7 +288,7 @@ church-encode-to-D-rec : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {A : 𝓣 
                      → (β′ : (Y → A) → X → A)
                      → church-encode d η′ β′ ＝ D-rec η′ β′ d
 church-encode-to-D-rec (D.η _)   η′ β′ = refl
-church-encode-to-D-rec {Y = Y} (D.β φ x) η′ β′ = ap (λ - → β′ - x) (dfunext fe †)
+church-encode-to-D-rec {Y = Y} (D.β φ x) η′ β′ = ap (λ - → β′ - x) {!!} -- (dfunext fe †)
  where
   † : (y : Y) → church-encode (φ y) η′ β′ ＝ D-rec η′ β′ (φ y)
   † y = church-encode-to-D-rec (φ y) η′ β′
