@@ -182,3 +182,6 @@ module _ {𝓤 : Universe} (fe : Fun-Ext) (pe : propext 𝓤) where
   Ω-autoembedding-apart-from-id-gives-EM (≃-gives-↪ 𝕗 , p₀ , ν)
 
 \end{code}
+
+Notice that we can replace "Σ" by "∃" in the above propositions, to
+get the same conclusion EM 𝓤, because the type EM 𝓤 is a proposition.
