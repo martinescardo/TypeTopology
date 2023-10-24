@@ -16,7 +16,7 @@ Scedrov. Thanks to Phil Scott for bringing my attention to this proof
 during a visit to Birmingham.
 
 Added 23 Jan 2021. From a group structure on Ω we get excluded middle,
-as an application of Higgs Theorem. This doesn't seems to be known in
+as an application of Higgs Theorem. This doesn't seem to be known in
 the topos theory community.
 
 \begin{code}
