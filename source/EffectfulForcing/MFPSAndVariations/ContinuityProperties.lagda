@@ -407,11 +407,6 @@ point-of-lemma α = λ _ → refl
   γ ₀ = ＝⟦⟧-cantor₀-equivalence α β (φ ₀) (ψ ₀)
   γ ₁ = ＝⟦⟧-cantor₀-equivalence α β (φ ₁) (ψ ₁)
 
-yet-another-lemma : (α β : Cantor) (t : BT ℕ)
-                  → embedding-C-B α ＝⟦ t ⟧ embedding-C-B β
-                  → α ＝⟦ t ⟧ β
-yet-another-lemma α β []      p       = []
-yet-another-lemma α β (i ∷ φ) (p ∷ ψ) = {!!}
 
 \end{code}
 
@@ -529,6 +524,34 @@ is-uniformly-continuous₀ f =
   † : α ＝⟪ ms ++ ns ⟫₀ β
   † = ＝⟪⟫-++-lemma₂ α β ms ns (IH₁ , IH₂)
 
+to-bool-congruence : (m : ℕ)
+                   → (n : ℕ)
+                   → (𝒷₁ : is-boolean-valued m)
+                   → (𝒷₂ : is-boolean-valued n)
+                   → m ＝ n
+                   → to-bool m 𝒷₁ ＝ to-bool n 𝒷₂
+to-bool-congruence zero            zero            (inl refl) (inl refl) _ = refl
+to-bool-congruence (succ zero)     (succ zero)     (inr refl) (inr refl) _ = refl
+to-bool-congruence (succ (succ _)) (succ (succ _)) (inl ())   (inl _)    _
+to-bool-congruence (succ (succ _)) (succ (succ _)) (inl ())   (inr _)    _
+to-bool-congruence (succ (succ _)) (succ (succ _)) (inr ())   (inl _)    _
+to-bool-congruence (succ (succ _)) (succ (succ _)) (inr ())   (inr _)    _
+
+to-cantor-＝⟦⟧ : (α₁ α₂ : Baire)
+              (ϑ₁ : is-boolean-point α₁) (ϑ₂ : is-boolean-point α₂)
+              (t : BT ℕ)
+            → α₁ ＝⟦ t ⟧ α₂
+            → to-cantor (α₁ , ϑ₁) ＝⟦ t ⟧ to-cantor (α₂ , ϑ₂)
+to-cantor-＝⟦⟧ α₁ α₂ ϑ₁ ϑ₂ []       _      = []
+to-cantor-＝⟦⟧ α₁ α₂ ϑ₁ ϑ₂ (n ∷ φ) (p ∷ ψ) = β ∷ γ
+ where
+  β : to-bool (α₁ n) (ϑ₁ n) ＝ to-bool (α₂ n) (ϑ₂ n)
+  β = to-bool-congruence (α₁ n) (α₂ n) (ϑ₁ n) (ϑ₂ n) p
+
+  γ : (b : 𝟚) → to-cantor (α₁ , ϑ₁) ＝⟦ φ b ⟧ to-cantor (α₂ , ϑ₂)
+  γ ₀ = to-cantor-＝⟦⟧ α₁ α₂ ϑ₁ ϑ₂ (φ ₀) (ψ ₀)
+  γ ₁ = to-cantor-＝⟦⟧ α₁ α₂ ϑ₁ ϑ₂ (φ ₁) (ψ ₁)
+
 uni-continuity-implies-uni-continuity₀ : (f : Cantor → ℕ)
                                        → is-uniformly-continuous  f
                                        → is-uniformly-continuous₀ f
@@ -548,31 +571,28 @@ uni-continuity-implies-uni-continuity₀ f 𝔠 = †
 
   ‡ : (α₁ α₂ : Baire) (ϑ₁ : is-boolean-point α₁) (ϑ₂ : is-boolean-point α₂)
     → α₁ ＝⦅ n ⦆ α₂ → f₀ (α₁ , ϑ₁) ＝ f₀ (α₂ , ϑ₂)
-  ‡ α₁ α₂ ϑ₁ ϑ₂ p = pr₂ 𝔠 α₁′ α₂′ tmp
-    where
-     α₁′ : Cantor
-     α₁′ = to-cantor (α₁ , ϑ₁)
+  ‡ α₁ α₂ ϑ₁ ϑ₂ (p , q) = pr₂ 𝔠 (to-cantor (α₁ , ϑ₁)) (to-cantor (α₂ , ϑ₂)) Ͱ
+   where
+    ϝ : tl α₁ ＝⦅ maximumᵤ′ t ⦆ (tl α₂)
+    ϝ = transport
+         (λ - → tl α₁ ＝⦅ - ⦆ tl α₂)
+         (maximumᵤ′-equivalent-to-maximumᵤ t)
+         q
 
-     α₂′ : Cantor
-     α₂′ = to-cantor (α₂ , ϑ₂)
+    ϟ : α₁ ＝⦅ succ (maximum (sequentialize t)) ⦆ α₂
+    ϟ = p , ϝ
 
-     tmp₃ : tl α₁ ＝⦅ maximumᵤ′ t ⦆ (tl α₂)
-     tmp₃ = transport (λ - → tl α₁ ＝⦅ - ⦆ tl α₂) (maximumᵤ′-equivalent-to-maximumᵤ t) (pr₂ p)
+    ϡ : α₁ ＝⟪ sequentialize t ⟫ α₂
+    ϡ = ＝⦅⦆-implies-＝⟪⟫-for-suitable-modulus α₁ α₂ (sequentialize t) ϟ
 
-     tmp′′ : α₁ ＝⦅ succ (maximum (sequentialize t)) ⦆ α₂
-     tmp′′ = pr₁ p , tmp₃
+    ϸ : α₁ ＝⟪ sequentialize t ⟫₀ α₂
+    ϸ = ＝⟪⟫-implies-＝⟪⟫₀ α₁ α₂ (sequentialize t) ϡ
 
-     tmp′ : α₁ ＝⟦ pr₁ 𝔠 ⟧ α₂
-     tmp′ = ＝⟪⟫₀-implies-＝⟦⟧ α₁ α₂ t (＝⟪⟫-implies-＝⟪⟫₀ α₁ α₂ (sequentialize t) (＝⦅⦆-implies-＝⟪⟫-for-suitable-modulus α₁ α₂ (sequentialize t) tmp′′))
+    ϻ : α₁ ＝⟦ t ⟧ α₂
+    ϻ = ＝⟪⟫₀-implies-＝⟦⟧ α₁ α₂ t ϸ
 
-     foo-bar : α₁′ ＝⟦ pr₁ 𝔠 ⟧ α₂′
-     foo-bar = {!!}
-
-     tmp : α₁′ ＝⟦ pr₁ 𝔠 ⟧ α₂′
-     tmp = yet-another-lemma α₁′ α₂′ t foo
-      where
-       foo : embedding-C-B (to-cantor (α₁ , ϑ₁)) ＝⟦ t ⟧ embedding-C-B (to-cantor (α₂ , ϑ₂))
-       foo = {!!}
+    Ͱ : to-cantor (α₁ , ϑ₁) ＝⟦ t ⟧ to-cantor (α₂ , ϑ₂)
+    Ͱ = to-cantor-＝⟦⟧ α₁ α₂ ϑ₁ ϑ₂ t ϻ
 
   † : is-uniformly-continuous₀ f
   † = n , λ (α₁ , ϑ₁) (α₂ , ϑ₂) → ‡ α₁ α₂ ϑ₁ ϑ₂
