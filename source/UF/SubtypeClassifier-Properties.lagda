@@ -100,3 +100,84 @@ module _ (fe : funext 𝓤 𝓤) (pe : propext 𝓤) where
            (＝-flip ● equal-⊤-≃ pe fe p)
 
 \end{code}
+
+Added 24th August 2023.
+
+\begin{code}
+
+open import UF.Embeddings
+open import UF.ExcludedMiddle
+
+module _ {𝓤 : Universe} (fe : Fun-Ext) (pe : propext 𝓤) where
+
+ open import Various.HiggsInvolutionTheorem {𝓤} fe pe
+
+ Ω-autoembedding-that-maps-⊥-to-⊤-gives-EM : (Σ 𝕗 ꞉ Ω 𝓤 ↪ Ω 𝓤 , ⌊ 𝕗 ⌋ ⊤ ＝ ⊥)
+                                           → EM 𝓤
+ Ω-autoembedding-that-maps-⊥-to-⊤-gives-EM ((f , f-is-emb) , e) = II
+  where
+   f-is-involutive : involutive f
+   f-is-involutive = higgs f (embeddings-are-lc f f-is-emb)
+
+   I : ((P : 𝓤 ̇ ) → is-prop P → Σ Q ꞉ 𝓤 ̇ , (P ⇔ ¬ Q))
+   I P P-is-prop = f p holds , g , h
+    where
+     p : Ω 𝓤
+     p = (P , P-is-prop)
+
+     g : P → ¬ (f p holds)
+     g p-holds = equal-⊥-gives-fails (f p)
+                  (f p ＝⟨ ap f (holds-gives-equal-⊤ pe fe p p-holds) ⟩
+                   f ⊤ ＝⟨ e ⟩
+                   ⊥   ∎)
+
+     h : ¬ (f p holds) → P
+     h ν = equal-⊤-gives-holds p
+            (p       ＝⟨ (f-is-involutive p)⁻¹ ⟩
+             f (f p) ＝⟨ ap f (fails-gives-equal-⊥ pe fe (f p) ν) ⟩
+             f ⊥     ＝⟨ ap f (e ⁻¹) ⟩
+             f (f ⊤) ＝⟨ f-is-involutive ⊤ ⟩
+             ⊤       ∎)
+
+   II : EM 𝓤
+   II = all-props-negative-gives-EM fe I
+
+ Ω-autoembedding-apart-from-id-gives-EM : (Σ 𝕗 ꞉ Ω 𝓤 ↪ Ω 𝓤 , Σ p₀ ꞉ Ω 𝓤 , ⌊ 𝕗 ⌋ p₀ ≠ p₀) → EM 𝓤
+ Ω-autoembedding-apart-from-id-gives-EM (𝕗@(f , f-is-emb) , p₀ , ν) =
+  Ω-autoembedding-that-maps-⊥-to-⊤-gives-EM (𝕗 , γ)
+  where
+   f-is-involutive : involutive f
+   f-is-involutive = higgs f (embeddings-are-lc f f-is-emb)
+
+   I : ¬ (f ⊤ ＝ ⊤)
+   I e = VI
+    where
+     II : p₀ ≠ ⊤
+     II e₀ = ν (transport⁻¹ (λ - → f - ＝ -) e₀ e)
+     III : p₀ ＝ ⊥
+     III = false-gives-equal-⊥ pe fe (p₀ holds) (holds-is-prop p₀)
+            (contrapositive (holds-gives-equal-⊤ pe fe p₀) II)
+     IV : f ⊥ ≠ ⊥
+     IV e₁ = ν (transport⁻¹ (λ - → f - ＝ -) III e₁)
+     V : f ⊥ ≠ ⊤
+     V e₂ = ⊥-is-not-⊤
+              (⊥ ＝⟨ (f-is-involutive ⊥)⁻¹ ⟩
+              f (f ⊥) ＝⟨ ap f e₂ ⟩
+              f ⊤ ＝⟨ e ⟩
+              ⊤ ∎)
+     VI : 𝟘
+     VI = no-truth-values-other-than-⊥-or-⊤ fe pe
+           (f ⊥ , IV , V)
+
+   γ : f ⊤ ＝ ⊥
+   γ = false-gives-equal-⊥ pe fe (f ⊤ holds) (holds-is-prop (f ⊤))
+        (contrapositive (holds-gives-equal-⊤ pe fe (f ⊤)) I)
+
+ Ω-automorphism-that-maps-⊥-to-⊤-gives-EM : (Σ 𝕗 ꞉ Ω 𝓤 ≃ Ω 𝓤 , ⌜ 𝕗 ⌝ ⊤ ＝ ⊥) → EM 𝓤
+ Ω-automorphism-that-maps-⊥-to-⊤-gives-EM (𝕗 , e) = Ω-autoembedding-that-maps-⊥-to-⊤-gives-EM (≃-gives-↪ 𝕗 , e)
+
+ Ω-automorphism-apart-from-id-gives-EM : (Σ 𝕗 ꞉ Ω 𝓤 ≃ Ω 𝓤 , Σ p₀ ꞉ Ω 𝓤 , ⌜ 𝕗 ⌝ p₀ ≠ p₀) → EM 𝓤
+ Ω-automorphism-apart-from-id-gives-EM (𝕗 , p₀ , ν) =
+  Ω-autoembedding-apart-from-id-gives-EM (≃-gives-↪ 𝕗 , p₀ , ν)
+
+\end{code}

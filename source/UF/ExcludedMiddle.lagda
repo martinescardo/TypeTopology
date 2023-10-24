@@ -98,6 +98,20 @@ DNE-gives-EM fe dne P isp = dne (P + ¬ P)
                              (decidability-of-prop-is-prop fe isp)
                              fake-¬¬-EM
 
+all-props-negative-gives-DNE : funext 𝓤 𝓤₀
+                            → ((P : 𝓤 ̇ ) → is-prop P → Σ Q ꞉ 𝓤 ̇ , (P ⇔ ¬ Q))
+                            → DNE 𝓤
+all-props-negative-gives-DNE {𝓤} fe ϕ P P-is-prop = I (ϕ P P-is-prop)
+ where
+  I : (Σ Q ꞉ 𝓤 ̇ , (P ⇔ ¬ Q)) → ¬¬ P → P
+  I (Q , f , g) ν = g (three-negations-imply-one (double-contrapositive f ν))
+
+all-props-negative-gives-EM : funext 𝓤 𝓤₀
+                            → ((P : 𝓤 ̇ ) → is-prop P → Σ Q ꞉ 𝓤 ̇ , (P ⇔ ¬ Q))
+                            → EM 𝓤
+all-props-negative-gives-EM {𝓤} fe ϕ = DNE-gives-EM fe
+                                        (all-props-negative-gives-DNE fe ϕ)
+
 fe-and-em-give-propositional-truncations : FunExt
                                          → Excluded-Middle
                                          → propositional-truncations-exist
