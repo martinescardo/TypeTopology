@@ -113,14 +113,14 @@ module _ {𝓤 : Universe} (fe : Fun-Ext) (pe : propext 𝓤) where
  open import Various.HiggsInvolutionTheorem {𝓤} fe pe
 
  Ω-autoembedding-that-maps-⊤-to-⊥-gives-EM
-   : (Σ 𝕗 ꞉ Ω 𝓤 ↪ Ω 𝓤 , ⌊ 𝕗 ⌋ ⊤ ＝ ⊥)
-   → EM 𝓤
+  : (Σ 𝕗 ꞉ Ω 𝓤 ↪ Ω 𝓤 , ⌊ 𝕗 ⌋ ⊤ ＝ ⊥)
+  → EM 𝓤
  Ω-autoembedding-that-maps-⊤-to-⊥-gives-EM ((f , f-is-emb) , e) = II
   where
    f-is-involutive : involutive f
    f-is-involutive = higgs f (embeddings-are-lc f f-is-emb)
 
-   I : ((P : 𝓤 ̇ ) → is-prop P → Σ Q ꞉ 𝓤 ̇ , (P ⇔ ¬ Q))
+   I : (P : 𝓤 ̇ ) → is-prop P → Σ Q ꞉ 𝓤 ̇ , (P ⇔ ¬ Q)
    I P P-is-prop = f p holds , g , h
     where
      p : Ω 𝓤
@@ -144,8 +144,8 @@ module _ {𝓤 : Universe} (fe : Fun-Ext) (pe : propext 𝓤) where
    II = all-props-negative-gives-EM fe I
 
  Ω-autoembedding-apart-from-id-gives-EM
-   : (Σ 𝕗 ꞉ Ω 𝓤 ↪ Ω 𝓤 , Σ p₀ ꞉ Ω 𝓤 , ⌊ 𝕗 ⌋ p₀ ≠ p₀)
-   → EM 𝓤
+  : (Σ 𝕗 ꞉ Ω 𝓤 ↪ Ω 𝓤 , Σ p₀ ꞉ Ω 𝓤 , ⌊ 𝕗 ⌋ p₀ ≠ p₀)
+  → EM 𝓤
  Ω-autoembedding-apart-from-id-gives-EM (𝕗@(f , f-is-emb) , p₀ , ν) =
   Ω-autoembedding-that-maps-⊤-to-⊥-gives-EM (𝕗 , VII)
   where
@@ -157,11 +157,14 @@ module _ {𝓤 : Universe} (fe : Fun-Ext) (pe : propext 𝓤) where
     where
      II : p₀ ≠ ⊤
      II e₀ = ν (transport⁻¹ (λ - → f - ＝ -) e₀ e)
+
      III : p₀ ＝ ⊥
      III = false-gives-equal-⊥ pe fe (p₀ holds) (holds-is-prop p₀)
             (contrapositive (holds-gives-equal-⊤ pe fe p₀) II)
+
      IV : f ⊥ ≠ ⊥
      IV e₁ = ν (transport⁻¹ (λ - → f - ＝ -) III e₁)
+
      V : f ⊥ ≠ ⊤
      V e₂ = ⊥-is-not-⊤
               (⊥ ＝⟨ (f-is-involutive ⊥)⁻¹ ⟩
@@ -174,16 +177,16 @@ module _ {𝓤 : Universe} (fe : Fun-Ext) (pe : propext 𝓤) where
 
    VII : f ⊤ ＝ ⊥
    VII = false-gives-equal-⊥ pe fe (f ⊤ holds) (holds-is-prop (f ⊤))
-        (contrapositive (holds-gives-equal-⊤ pe fe (f ⊤)) I)
+          (contrapositive (holds-gives-equal-⊤ pe fe (f ⊤)) I)
 
  Ω-automorphism-that-maps-⊤-to-⊥-gives-EM
-   : (Σ 𝕗 ꞉ Ω 𝓤 ≃ Ω 𝓤 , ⌜ 𝕗 ⌝ ⊤ ＝ ⊥)
-   → EM 𝓤
+  : (Σ 𝕗 ꞉ Ω 𝓤 ≃ Ω 𝓤 , ⌜ 𝕗 ⌝ ⊤ ＝ ⊥)
+  → EM 𝓤
  Ω-automorphism-that-maps-⊤-to-⊥-gives-EM (𝕗 , e) =
   Ω-autoembedding-that-maps-⊤-to-⊥-gives-EM (≃-gives-↪ 𝕗 , e)
 
  Ω-automorphism-apart-from-id-gives-EM
-   : (Σ 𝕗 ꞉ Ω 𝓤 ≃ Ω 𝓤 , Σ p₀ ꞉ Ω 𝓤 , ⌜ 𝕗 ⌝ p₀ ≠ p₀)
+  : (Σ 𝕗 ꞉ Ω 𝓤 ≃ Ω 𝓤 , Σ p₀ ꞉ Ω 𝓤 , ⌜ 𝕗 ⌝ p₀ ≠ p₀)
   → EM 𝓤
  Ω-automorphism-apart-from-id-gives-EM (𝕗 , p₀ , ν) =
   Ω-autoembedding-apart-from-id-gives-EM (≃-gives-↪ 𝕗 , p₀ , ν)
