@@ -101,7 +101,7 @@ module _ (fe : funext 𝓤 𝓤) (pe : propext 𝓤) where
 
 \end{code}
 
-Added 24th August 2023.
+Added 24th October 2023.
 
 \begin{code}
 
@@ -170,6 +170,7 @@ module _ {𝓤 : Universe} (fe : Fun-Ext) (pe : propext 𝓤) where
              f (f ⊥) ＝⟨ ap f e₂ ⟩
              f ⊤ ＝⟨ e ⟩
              ⊤ ∎)
+
      VI : 𝟘
      VI = no-truth-values-other-than-⊥-or-⊤ fe pe
            (f ⊥ , IV , V)
