@@ -527,10 +527,7 @@ module Large-Posets-Theorems (𝓤 𝓦 𝓥 : Universe) (A : Poset 𝓤 𝓦) w
  open Small-δ-complete-poset 𝓤 𝓦 𝓥 A
  open Retract-Lemmas 𝓤 𝓦 𝓥 A
 
- ¬¬Ω-Resizing : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥 )⁺ ̇
- ¬¬Ω-Resizing 𝓤 𝓥 = (Ω¬¬ 𝓤) is 𝓥 small
-
- small-non-trivial-poset-implies-¬¬resizing : (δ-complete : is-δ-complete) → is-non-trivial-poset → δ-complete poset-is-small → ¬¬Ω-Resizing 𝓥 𝓥
+ small-non-trivial-poset-implies-¬¬resizing : (δ-complete : is-δ-complete) → is-non-trivial-poset → δ-complete poset-is-small → Ω¬¬-Resizing 𝓥 𝓥
  small-non-trivial-poset-implies-¬¬resizing δ-complete (x , y , x-≤-y , x-≠-y) (locally-small , carrier-small) =
   embedded-retract-is-small Δ-Retract Δ-Embedding carrier-small
   where
@@ -545,6 +542,9 @@ module Large-Posets-Theorems (𝓤 𝓦 𝓥 : Universe) (A : Poset 𝓤 𝓦) w
    Δ-Embedding : is-embedding (section Δ-Retract)
    Δ-Embedding = sections-into-sets-are-embeddings (Δ x-≤-y ∘ Ω¬¬-to-Ω) (r , H) carrier-of-[ A ]-is-set
 
+ ¬¬resizing-implies-small-non-trivial-poset : Ω¬¬-Resizing 𝓥 𝓥 → {!!}
+ ¬¬resizing-implies-small-non-trivial-poset = {!!}
+ 
  small-positive-poset-implies-resizing : (δ-complete : is-δ-complete) → is-positive-poset δ-complete → δ-complete poset-is-small → Ω-Resizing 𝓥 𝓥
  small-positive-poset-implies-resizing δ-complete (x , y , x-≤-y , sup-condition) (locally-small , carrier-small) =
   embedded-retract-is-small Δ-Retract Δ-Embedding carrier-small
@@ -558,6 +558,9 @@ module Large-Posets-Theorems (𝓤 𝓦 𝓥 : Universe) (A : Poset 𝓤 𝓦) w
    Δ-Retract : retract Ω 𝓥 of ∣ A ∣ₚ
    Δ-Retract = (r , Δ (≤-is-transitive A x y y x-≤-y (≤-is-reflexive A y)) , H)
    Δ-Embedding : is-embedding (section Δ-Retract)
-   Δ-Embedding = sections-into-sets-are-embeddings (Δ (≤-is-transitive A x y y x-≤-y (≤-is-reflexive A y))) (r , H) carrier-of-[ A ]-is-set 
+   Δ-Embedding = sections-into-sets-are-embeddings (Δ (≤-is-transitive A x y y x-≤-y (≤-is-reflexive A y))) (r , H) carrier-of-[ A ]-is-set
+
+ resizing-implies-small-positive-poset : Ω-Resizing 𝓥 𝓥 → {!!}
+ resizing-implies-small-positive-poset = {!!}
 
 \end{code}
