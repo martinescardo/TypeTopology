@@ -100,8 +100,8 @@ function.
 
 \begin{code}
 
- I = pr₁ hscb
- β = pr₁ (pr₂ hscb)
+ I = index-of-compact-basis 𝓓 hscb
+ β = family-of-basic-opens  𝓓 hscb
 
 \end{code}
 
