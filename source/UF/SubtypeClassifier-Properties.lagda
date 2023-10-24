@@ -146,8 +146,7 @@ module _ {𝓤 : Universe} (fe : Fun-Ext) (pe : propext 𝓤) where
  Ω-autoembedding-apart-from-id-gives-EM
   : (Σ 𝕗 ꞉ Ω 𝓤 ↪ Ω 𝓤 , Σ p₀ ꞉ Ω 𝓤 , ⌊ 𝕗 ⌋ p₀ ≠ p₀)
   → EM 𝓤
- Ω-autoembedding-apart-from-id-gives-EM (𝕗@(f , f-is-emb) , p₀ , ν) =
-  Ω-autoembedding-that-maps-⊤-to-⊥-gives-EM (𝕗 , VII)
+ Ω-autoembedding-apart-from-id-gives-EM (𝕗@(f , f-is-emb) , p₀ , ν) = VIII
   where
    f-is-involutive : involutive f
    f-is-involutive = higgs f (embeddings-are-lc f f-is-emb)
@@ -167,10 +166,10 @@ module _ {𝓤 : Universe} (fe : Fun-Ext) (pe : propext 𝓤) where
 
      V : f ⊥ ≠ ⊤
      V e₂ = ⊥-is-not-⊤
-              (⊥ ＝⟨ (f-is-involutive ⊥)⁻¹ ⟩
-              f (f ⊥) ＝⟨ ap f e₂ ⟩
-              f ⊤ ＝⟨ e ⟩
-              ⊤ ∎)
+             (⊥ ＝⟨ (f-is-involutive ⊥)⁻¹ ⟩
+             f (f ⊥) ＝⟨ ap f e₂ ⟩
+             f ⊤ ＝⟨ e ⟩
+             ⊤ ∎)
      VI : 𝟘
      VI = no-truth-values-other-than-⊥-or-⊤ fe pe
            (f ⊥ , IV , V)
@@ -178,6 +177,9 @@ module _ {𝓤 : Universe} (fe : Fun-Ext) (pe : propext 𝓤) where
    VII : f ⊤ ＝ ⊥
    VII = false-gives-equal-⊥ pe fe (f ⊤ holds) (holds-is-prop (f ⊤))
           (contrapositive (holds-gives-equal-⊤ pe fe (f ⊤)) I)
+
+   VIII : EM 𝓤
+   VIII = Ω-autoembedding-that-maps-⊤-to-⊥-gives-EM (𝕗 , VII)
 
  Ω-automorphism-that-maps-⊤-to-⊥-gives-EM
   : (Σ 𝕗 ꞉ Ω 𝓤 ≃ Ω 𝓤 , ⌜ 𝕗 ⌝ ⊤ ＝ ⊥)
