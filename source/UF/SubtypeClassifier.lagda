@@ -101,9 +101,7 @@ false-gives-equal-⊥ : propext 𝓤
                     → (P : 𝓤 ̇ ) (i : is-prop P)
                     → ¬ P → (P , i) ＝ ⊥
 false-gives-equal-⊥ pe fe P i f =
- to-Σ-＝
-  (pe i 𝟘-is-prop (λ p → 𝟘-elim (f p)) 𝟘-elim ,
-   being-prop-is-prop fe _ _)
+ to-Ω-＝ fe (pe i 𝟘-is-prop (λ p → 𝟘-elim (f p)) 𝟘-elim)
 
 fails-gives-equal-⊥ : propext 𝓤 → funext 𝓤 𝓤 → (p : Ω 𝓤) → ¬ (p holds) → p ＝ ⊥
 fails-gives-equal-⊥ pe fe (P , i) = false-gives-equal-⊥ pe fe P i
