@@ -473,6 +473,19 @@ maximumᵤ′-equivalent-to-maximumᵤ (n ∷ φ) = †
 to-cantor₀-map : (Cantor → ℕ) → Cantor₀ → ℕ
 to-cantor₀-map f = f ∘ to-cantor
 
+to-cantor₀-map-equality : (f g :  Cantor → ℕ)
+                        → f ∼ g → to-cantor₀-map f ∼ to-cantor₀-map g
+to-cantor₀-map-equality f g ε = ε ∘ to-cantor
+
+to-cantor₀-map-lemma : (f : Cantor → ℕ)
+                     → (α β : Cantor)
+                     → f α ＝ f β
+                     → to-cantor₀-map f (to-cantor₀ α) ＝ {!!}
+to-cantor₀-map-lemma f α β p = {!!}
+  -- where
+  --  Ⅰ = ap f {!to-cantor-cancels-to-cantor₀ α!}
+  --  Ⅱ = {!!}
+
 \end{code}
 
 \begin{code}
@@ -566,9 +579,6 @@ uni-continuity-implies-uni-continuity₀ f 𝔠 = †
   f₀ : Cantor₀ → ℕ
   f₀ = to-cantor₀-map f
 
-  fb : (α : Baire) → is-boolean-point α → ℕ
-  fb α ϑ = f₀ (α , ϑ)
-
   ‡ : (α₁ α₂ : Baire) (ϑ₁ : is-boolean-point α₁) (ϑ₂ : is-boolean-point α₂)
     → α₁ ＝⦅ n ⦆ α₂ → f₀ (α₁ , ϑ₁) ＝ f₀ (α₂ , ϑ₂)
   ‡ α₁ α₂ ϑ₁ ϑ₂ (p , q) = pr₂ 𝔠 (to-cantor (α₁ , ϑ₁)) (to-cantor (α₂ , ϑ₂)) Ͱ
@@ -595,6 +605,50 @@ uni-continuity-implies-uni-continuity₀ f 𝔠 = †
     Ͱ = to-cantor-＝⟦⟧ α₁ α₂ ϑ₁ ϑ₂ t ϻ
 
   † : is-uniformly-continuous₀ f
-  † = n , λ (α₁ , ϑ₁) (α₂ , ϑ₂) → ‡ α₁ α₂ ϑ₁ ϑ₂
+  † = n , (λ (α₁ , ϑ₁) (α₂ , ϑ₂) → ‡ α₁ α₂ ϑ₁ ϑ₂)
+
+\end{code}
+
+To prove the converse direction, we define analogue of the range function.
+
+\begin{code}
+
+singleton : ℕ → BT ℕ
+singleton n = n ∷ λ { ₀ → [] ; ₁ → [] }
+
+pred : ℕ → ℕ
+pred zero     = zero
+pred (succ n) = n
+
+rangeᵤ : (n : ℕ) → BT ℕ
+rangeᵤ zero         = singleton 0
+rangeᵤ (succ zero)  = zero   ∷ λ { ₀ → singleton 1 ; ₁ → [] }
+rangeᵤ (succ n)     = succ n ∷ λ { ₀ → rangeᵤ n    ; ₁ → singleton (pred n) }
+
+＝⟦⟧-up-to-range-m-implies-＝⦅⦆-up-to-m : (α β : Baire) (m : ℕ)
+                                        → α ＝⟦ rangeᵤ m ⟧ β
+                                        → α ＝⦅ m ⦆ β
+＝⟦⟧-up-to-range-m-implies-＝⦅⦆-up-to-m α β zero = λ _ → ⋆
+＝⟦⟧-up-to-range-m-implies-＝⦅⦆-up-to-m α β (succ zero) (p ∷ _) = p , ⋆
+＝⟦⟧-up-to-range-m-implies-＝⦅⦆-up-to-m α β (succ (succ m)) (p ∷ φ) =
+ (pr₁ (＝⟦⟧-up-to-range-m-implies-＝⦅⦆-up-to-m α β (succ m) (φ ₀))) , {!!} , {!!}
+
+uni-continuity₀-implies-uni-continuity : (f : Cantor → ℕ)
+                                       → is-uniformly-continuous₀ f
+                                       → is-uniformly-continuous f
+uni-continuity₀-implies-uni-continuity f ζ = rangeᵤ m , †
+ where
+  m : ℕ
+  m = pr₁ ζ
+
+  f₀ : Cantor₀ → ℕ
+  f₀ = to-cantor₀-map f
+
+  ‡ : (α β : Baire) (𝒷₁ : is-boolean-point α) (𝒷₂ : is-boolean-point β)
+    → α ＝⟦ rangeᵤ m ⟧ β → f₀ (α , 𝒷₁) ＝ f₀ (β , 𝒷₂)
+  ‡ α β 𝒷₁ 𝒷₂ ϑ = pr₂ ζ (α , 𝒷₁) (β , 𝒷₂) (＝⟦⟧-up-to-range-m-implies-＝⦅⦆-up-to-m α β m ϑ)
+
+  † : (α β : Cantor) → α ＝⟦ rangeᵤ m ⟧ β → f α ＝ f β
+  † α β p = {! to-cantor₀-map-equality f !}
 
 \end{code}
