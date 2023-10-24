@@ -78,6 +78,14 @@ module Implication (fe : Fun-Ext) where
  _↔_ : Ω 𝓤 → Ω 𝓥 → Ω (𝓤 ⊔ 𝓥)
  P ↔ Q = (P ⇒ Q) ∧ (Q ⇒ P)
 
+ biimplication-forward : (P : Ω 𝓤) (Q : Ω 𝓥)
+                       → (P ↔ Q) holds → (P ⇒ Q) holds
+ biimplication-forward P Q (φ , _) = φ
+
+ biimplication-backward : (P : Ω 𝓤) (Q : Ω 𝓥)
+                        → (P ↔ Q) holds → (Q ⇒ P) holds
+ biimplication-backward P Q (_ , ψ) = ψ
+
  infixr 3 _↔_
 
 \end{code}
