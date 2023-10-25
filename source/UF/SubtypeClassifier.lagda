@@ -145,6 +145,15 @@ not-equal-⊤-gives-equal-⊥ fe pe p r = γ
   γ : p ＝ ⊥
   γ = to-subtype-＝ (λ _ → being-prop-is-prop fe) t
 
+different-from-⊤-gives-equal-⊥ : (fe : Fun-Ext)
+                                 (pe : propext 𝓤)
+                                 (p : Ω 𝓤)
+                               → p ≠ ⊤
+                               → p ＝ ⊥
+different-from-⊤-gives-equal-⊥ fe pe p ν =
+ false-gives-equal-⊥ pe fe (p holds) (holds-is-prop p)
+  (contrapositive (holds-gives-equal-⊤ pe fe p) ν)
+
 equal-⊤-gives-true : (P : 𝓤 ̇ ) (i : is-prop P) → (P , i) ＝ ⊤ → P
 equal-⊤-gives-true P hp r = f ⋆
  where

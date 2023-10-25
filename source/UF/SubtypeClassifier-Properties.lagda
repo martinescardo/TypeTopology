@@ -101,7 +101,8 @@ module _ (fe : funext 𝓤 𝓤) (pe : propext 𝓤) where
 
 \end{code}
 
-Added 24th October 2023.
+Added 24th October 2023. You can discuss the following at
+https://mathstodon.xyz/deck/@MartinEscardo/111291658836418672
 
 \begin{code}
 
@@ -151,33 +152,30 @@ module _ {𝓤 : Universe} (fe : Fun-Ext) (pe : propext 𝓤) where
    f-is-involutive : involutive f
    f-is-involutive = higgs f (embeddings-are-lc f f-is-emb)
 
-   I : ¬ (f ⊤ ＝ ⊤)
+   I : f ⊤ ≠ ⊤
    I e = VI
     where
      II : p₀ ≠ ⊤
      II e₀ = ν (transport⁻¹ (λ - → f - ＝ -) e₀ e)
 
      III : p₀ ＝ ⊥
-     III = false-gives-equal-⊥ pe fe (p₀ holds) (holds-is-prop p₀)
-            (contrapositive (holds-gives-equal-⊤ pe fe p₀) II)
+     III = different-from-⊤-gives-equal-⊥ fe pe p₀ II
 
      IV : f ⊥ ≠ ⊥
      IV e₁ = ν (transport⁻¹ (λ - → f - ＝ -) III e₁)
 
      V : f ⊥ ≠ ⊤
      V e₂ = ⊥-is-not-⊤
-             (⊥ ＝⟨ (f-is-involutive ⊥)⁻¹ ⟩
+             (⊥      ＝⟨ (f-is-involutive ⊥)⁻¹ ⟩
              f (f ⊥) ＝⟨ ap f e₂ ⟩
-             f ⊤ ＝⟨ e ⟩
-             ⊤ ∎)
+             f ⊤     ＝⟨ e ⟩
+             ⊤       ∎)
 
      VI : 𝟘
-     VI = no-truth-values-other-than-⊥-or-⊤ fe pe
-           (f ⊥ , IV , V)
+     VI = no-truth-values-other-than-⊥-or-⊤ fe pe (f ⊥ , IV , V)
 
    VII : f ⊤ ＝ ⊥
-   VII = false-gives-equal-⊥ pe fe (f ⊤ holds) (holds-is-prop (f ⊤))
-          (contrapositive (holds-gives-equal-⊤ pe fe (f ⊤)) I)
+   VII = different-from-⊤-gives-equal-⊥ fe pe (f ⊤) I
 
    VIII : EM 𝓤
    VIII = Ω-autoembedding-that-maps-⊤-to-⊥-gives-EM (𝕗 , VII)
@@ -198,3 +196,5 @@ module _ {𝓤 : Universe} (fe : Fun-Ext) (pe : propext 𝓤) where
 
 Notice that we can replace "Σ" by "∃" in the above propositions, to
 get the same conclusion EM 𝓤, because the type EM 𝓤 is a proposition.
+
+Notice also that the converses of the above propositions also hold.
