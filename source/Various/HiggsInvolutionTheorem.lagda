@@ -80,19 +80,10 @@ higgs f lc = VIII
   V p = IV (f p)
 
   VI : (p : Ω) → f p ＝ ⊤ → f (f (f p)) ＝ ⊤
-  VI p r = iv ∙ r
-   where
-    i : f (f p) ＝ f ⊤
-    i = ap f r
-
-    ii : f ⊤ ＝ p
-    ii = (III p r)⁻¹
-
-    iii : f (f p) ＝ p
-    iii = i ∙ ii
-
-    iv : f (f (f p)) ＝ f p
-    iv = ap f iii
+  VI p r = f (f (f p)) ＝⟨ ap (f ∘ f) r ⟩
+           f (f ⊤)     ＝⟨ ap f ((III p r)⁻¹) ⟩
+           f p         ＝⟨ r ⟩
+           ⊤           ∎
 
   VII : (p : Ω) → f (f (f p)) ＝ f p
   VII p = Ω-ext pe fe (V p) (VI p)
