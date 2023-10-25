@@ -197,4 +197,4 @@ module _ {𝓤 : Universe} (fe : Fun-Ext) (pe : propext 𝓤) where
 Notice that we can replace "Σ" by "∃" in the above propositions, to
 get the same conclusion EM 𝓤, because the type EM 𝓤 is a proposition.
 
-Notice also that the converses of the above propositions also hold.
+Notice also that the converses of the above propositions hold.
