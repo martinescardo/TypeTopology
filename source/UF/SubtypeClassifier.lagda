@@ -150,9 +150,13 @@ different-from-⊤-gives-equal-⊥ : (fe : Fun-Ext)
                                  (p : Ω 𝓤)
                                → p ≠ ⊤
                                → p ＝ ⊥
-different-from-⊤-gives-equal-⊥ fe pe p ν =
- false-gives-equal-⊥ pe fe (p holds) (holds-is-prop p)
-  (contrapositive (holds-gives-equal-⊤ pe fe p) ν)
+different-from-⊤-gives-equal-⊥ fe pe p ν = II
+ where
+  I : ¬ (p holds)
+  I = contrapositive (holds-gives-equal-⊤ pe fe p) ν
+
+  II : p ＝ ⊥
+  II = false-gives-equal-⊥ pe fe (p holds) (holds-is-prop p) I
 
 equal-⊤-gives-true : (P : 𝓤 ̇ ) (i : is-prop P) → (P , i) ＝ ⊤ → P
 equal-⊤-gives-true P hp r = f ⋆
