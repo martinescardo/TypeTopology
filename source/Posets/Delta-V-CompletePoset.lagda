@@ -89,9 +89,11 @@ module δ-complete-poset {𝓤 𝓦 : Universe} (𝓥 : Universe) (A : Poset �
   where
    x-≤-sup : (x ≤ sup-of-δ i x y o P) holds
    x-≤-sup = is-ub-of-δ i x y o P (inl ⋆)
+
    x-is-ub : (x is-an-upper-bound-of ((𝟙 + (P holds)) , δ x y P)) holds
    x-is-ub (inl ⋆) = ≤-is-reflexive A x
    x-is-ub (inr in-P) = 𝟘-induction (not-P in-P)
+
    sup-≤-x : (sup-of-δ i x y o P ≤ x) holds
    sup-≤-x = has-lub-cond-δ i x y o P (x , x-is-ub)
 
@@ -105,9 +107,11 @@ module δ-complete-poset {𝓤 𝓦 : Universe} (𝓥 : Universe) (A : Poset �
   where
    y-≤-sup : (y ≤ sup-of-δ i x y o P) holds
    y-≤-sup = is-ub-of-δ i x y o P (inr in-P)
+
    y-is-ub : (y is-an-upper-bound-of ((𝟙 + (P holds)) , δ x y P)) holds
    y-is-ub (inl ⋆) = o
    y-is-ub (inr in-P) = ≤-is-reflexive A y
+
    sup-≤-y : (sup-of-δ i x y o P ≤ y) holds
    sup-≤-y = has-lub-cond-δ i x y o P (y , y-is-ub)
    
@@ -141,8 +145,7 @@ We now define the type of δ_𝓥 complete posets.
 Poset-δ : (D : δ-complete-Poset 𝓤 𝓦 𝓥) → Poset 𝓤 𝓦
 Poset-δ D = pr₁ D
 
-is-δ-complete-δ : (D : δ-complete-Poset 𝓤 𝓦 𝓥) →
- δ-complete-poset.is-δ-complete 𝓥 (Poset-δ D)
+is-δ-complete-δ : (D : δ-complete-Poset 𝓤 𝓦 𝓥) → δ-complete-poset.is-δ-complete 𝓥 (Poset-δ D)
 is-δ-complete-δ D = pr₂ D
 
 \end{code}
@@ -366,6 +369,7 @@ module Retract-Lemmas (𝓤  𝓦  𝓥 : Universe) (A : Poset 𝓤 𝓦) where
    where
     r : ∣ A ∣ₚ → Ω¬¬ 𝓥
     r z = ((¬ (z ≤ⱽ x) , negations-are-props fe) , ¬-is-¬¬-stable)
+
     f : ((P , P-¬¬-stable) : Ω¬¬ 𝓥) → ¬ (Δ P ≤ⱽ x) → P holds
     f (P , P-¬¬-stable) not-Δ-≤-x = P-¬¬-stable not-not-P
      where
@@ -374,13 +378,16 @@ module Retract-Lemmas (𝓤  𝓦  𝓥 : Universe) (A : Poset 𝓤 𝓦) where
        where
         x-＝-Δ : x ＝ Δ P
         x-＝-Δ = lower-＝-sup-δ i x y x-≤-y P not-P
+
     g : ((P , P-¬¬-stable) : Ω¬¬ 𝓥) → P holds → ¬ (Δ P ≤ⱽ x)
     g (P , P-¬¬-stable) in-P Δ-≤-x = x-≠-y (≤-is-antisymmetric A x-≤-y y-≤-x)
      where
       y-＝-Δ : y ＝ Δ P
       y-＝-Δ = upper-＝-sup-δ i x y x-≤-y P in-P
+
       y-≤-x : (y ≤ x) holds
       y-≤-x = transport (λ z → (z ≤ x) holds) (y-＝-Δ ⁻¹) (≤ⱽ-to-≤ (Δ P) x Δ-≤-x)
+
     H : r ∘ Δ ∘ Ω¬¬-to-Ω ∼ id
     H (P , P-¬¬-stable) = to-subtype-＝ (λ X → being-¬¬-stable-is-prop fe (holds-is-prop X))
                                         (to-subtype-＝ (λ Y → being-prop-is-prop fe)
@@ -394,18 +401,25 @@ module Retract-Lemmas (𝓤  𝓦  𝓥 : Universe) (A : Poset 𝓤 𝓦) where
    where
     path₁ : x ＝ Δ ⊥
     path₁ = lower-＝-sup-δ i x y x-≤-y ⊥ ⊥-doesnt-hold
+
     path₂ : r x ＝ r (Δ ⊥)
     path₂ = ap r path₁
+
     path₃ : r (Δ ⊥) ＝ (⊥ , 𝟘-is-¬¬-stable)
     path₃ = H (⊥ , 𝟘-is-¬¬-stable)
+
     r-x-＝-𝟘 : r x ＝ (⊥ , 𝟘-is-¬¬-stable)
     r-x-＝-𝟘 = path₂ ∙ path₃
+
     path₄ : y ＝ Δ ⊤
     path₄ = upper-＝-sup-δ i x y x-≤-y ⊤ ⊤-holds
+
     path₅ : r y ＝ r (Δ ⊤)
     path₅ = ap r path₄
+
     path₆ : r (Δ ⊤) ＝ (⊤ , 𝟙-is-¬¬-stable)
     path₆ = H (⊤ , 𝟙-is-¬¬-stable)
+
     r-y-＝-𝟙 : r y ＝ (⊤ , 𝟙-is-¬¬-stable)
     r-y-＝-𝟙 = path₅ ∙ path₆
 
@@ -433,6 +447,7 @@ This allows us to exhibit the type of propositions as a retract of a local non-t
    where
     r : ∣ A ∣ₚ → Ω 𝓥
     r w = (z ≤ⱽ w , ≤ⱽ-is-prop z w)
+
     f : (P : Ω 𝓥) → z ≤ⱽ Δ (t z y-≤-z) P → P holds
     f P z-≤ⱽ-Δ = sup-condition x-<-z
                                z
@@ -444,19 +459,25 @@ This allows us to exhibit the type of propositions as a retract of a local non-t
      where
       z-≤-Δ : (z ≤ Δ (t z y-≤-z) P) holds
       z-≤-Δ = ≤ⱽ-to-≤ z (Δ (t z y-≤-z) P) z-≤ⱽ-Δ
+
       Δ-≤-z : (Δ (t z y-≤-z) P ≤ z) holds
       Δ-≤-z = sup-δ-≤-upper i x z (t z y-≤-z) P
+
       z-＝-Δ : z ＝ Δ (t z y-≤-z) P
       z-＝-Δ = ≤-is-antisymmetric A z-≤-Δ Δ-≤-z
+
       x-<-z : x < z
       x-<-z = transitivity-lemma₂ i x y z (x-<-y , y-≤-z)
+
     g : (P : Ω 𝓥) → P holds → z ≤ⱽ Δ (t z y-≤-z) P
     g P in-P = ≤-to-≤ⱽ z (Δ (t z y-≤-z) P) z-≤-Δ
      where
       z-＝-Δ : z ＝ Δ (t z y-≤-z) P
       z-＝-Δ = upper-＝-sup-δ i x z (t z y-≤-z) P in-P
+
       z-≤-Δ : (z ≤ Δ (t z y-≤-z) P) holds
       z-≤-Δ = transport (λ v → (z ≤ v) holds) z-＝-Δ (≤-is-reflexive A z)
+
     H : r ∘ (Δ (≤-is-transitive A x y z x-≤-y y-≤-z)) ∼ id
     H P = to-subtype-＝ (λ _ → being-prop-is-prop fe)
                                       (pe (≤ⱽ-is-prop z (Δ (t z y-≤-z) P))
@@ -469,8 +490,10 @@ This allows us to exhibit the type of propositions as a retract of a local non-t
    where
     r : (z : ∣ A ∣ₚ) → (y ≤ z) holds → (∣ A ∣ₚ → Ω 𝓥)
     r z y-≤-z = pr₁ (G z y-≤-z)
+
     H : (z : ∣ A ∣ₚ) → (y-≤-z : (y ≤ z) holds) → (r z y-≤-z) ∘ (Δ (t z y-≤-z)) ∼ id
     H z y-≤-z = pr₂ (G z y-≤-z)
+
     sup-condition-Δ : (z : ∣ A ∣ₚ)
                     → (y ≤ z) holds
                     → (P : Ω 𝓥)
@@ -480,20 +503,28 @@ This allows us to exhibit the type of propositions as a retract of a local non-t
      where
       z-≤-Δ : (z ≤ Δ (t z y-≤-z) P) holds
       z-≤-Δ = z-has-lub-cond-Δ (Δ (t z y-≤-z) P , is-ub-of-δ i x z (t z y-≤-z) P)
+
       Δ-≤-z : (Δ (t z y-≤-z) P ≤ z) holds
       Δ-≤-z = sup-δ-≤-upper i x z (t z y-≤-z) P
+
       z-＝-Δ : z ＝ Δ (t z y-≤-z) P
       z-＝-Δ = ≤-is-antisymmetric A z-≤-Δ Δ-≤-z
+
       path₁ : ⊤ ＝ (r z y-≤-z) (Δ (t z y-≤-z) ⊤)
       path₁ = (H z y-≤-z ⊤) ⁻¹
+
       path₂ : (r z y-≤-z) (Δ (t z y-≤-z) ⊤) ＝ (r z y-≤-z) z
       path₂ = ap (r z y-≤-z) ((upper-＝-sup-δ i x z (t z y-≤-z) ⊤ ⊤-holds) ⁻¹)
+
       path₃ : (r z y-≤-z) z ＝ (r z y-≤-z) (Δ (t z y-≤-z) P)
       path₃ = ap (r z y-≤-z) z-＝-Δ
+
       path₄ : (r z y-≤-z) (Δ (t z y-≤-z) P) ＝ P
       path₄ = H z y-≤-z P
+
       path₅ : ⊤ ＝ P
       path₅ = path₁ ∙ path₂ ∙ path₃ ∙ path₄
+
       𝟙-＝-P : 𝟙 ＝ P holds
       𝟙-＝-P = ap pr₁ path₅
    
@@ -517,7 +548,7 @@ Now we can prove the main theorems.
 
 \begin{code}
 
-module Large-Posets-Theorems (𝓤 𝓦 𝓥 : Universe) (A : Poset 𝓤 𝓦) where
+module Predicative-Taboos (𝓤 𝓦 𝓥 : Universe) (A : Poset 𝓤 𝓦) where
 
  open δ-complete-poset 𝓥 A
  open non-trivial-posets A
@@ -533,12 +564,16 @@ module Large-Posets-Theorems (𝓤 𝓦 𝓥 : Universe) (A : Poset 𝓤 𝓦) w
   where
    open retract-lemma₁ locally-small δ-complete x y x-≤-y
    open def-Δ δ-complete
+
    r : ∣ A ∣ₚ → Ω¬¬ 𝓥
    r = pr₁ (non-trivial-to-Δ-section x-≠-y)
+
    H : r ∘ Δ x-≤-y ∘ Ω¬¬-to-Ω ∼ id
    H = pr₂ (non-trivial-to-Δ-section x-≠-y)
+
    Δ-Retract : retract Ω¬¬ 𝓥 of ∣ A ∣ₚ
    Δ-Retract = (r , Δ x-≤-y ∘ Ω¬¬-to-Ω , H)
+
    Δ-Embedding : is-embedding (section Δ-Retract)
    Δ-Embedding = sections-into-sets-are-embeddings (Δ x-≤-y ∘ Ω¬¬-to-Ω) (r , H) carrier-of-[ A ]-is-set
 
@@ -551,12 +586,16 @@ module Large-Posets-Theorems (𝓤 𝓦 𝓥 : Universe) (A : Poset 𝓤 𝓦) w
   where
    open retract-lemma₂ locally-small δ-complete x y x-≤-y
    open def-Δ δ-complete
+
    r : ∣ A ∣ₚ → Ω 𝓥
    r = pr₁ (positive-to-Δ-section (x-≤-y , sup-condition) y (≤-is-reflexive A y))
+
    H : r ∘ Δ (≤-is-transitive A x y y x-≤-y (≤-is-reflexive A y)) ∼ id
    H = pr₂ (positive-to-Δ-section (x-≤-y , sup-condition) y (≤-is-reflexive A y))
+
    Δ-Retract : retract Ω 𝓥 of ∣ A ∣ₚ
    Δ-Retract = (r , Δ (≤-is-transitive A x y y x-≤-y (≤-is-reflexive A y)) , H)
+
    Δ-Embedding : is-embedding (section Δ-Retract)
    Δ-Embedding = sections-into-sets-are-embeddings (Δ (≤-is-transitive A x y y x-≤-y (≤-is-reflexive A y))) (r , H) carrier-of-[ A ]-is-set
 
