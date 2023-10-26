@@ -104,17 +104,20 @@ module _ (fe : funext 𝓤 𝓤) (pe : propext 𝓤) where
 Added 24th October 2023. You can discuss the following at
 https://mathstodon.xyz/deck/@MartinEscardo/111291658836418672
 
+From the existence of certain automorphisms of Ω, we conclude that
+excluded middle holds.
+
 \begin{code}
 
 open import UF.Embeddings
 open import UF.ExcludedMiddle
 
-involution-lemma : {X : 𝓤 ̇ } (f : X → X)
-                 → involutive f
-                 → {x y : X}
-                 → f x ＝ y
-                 → f y ＝ x
-involution-lemma f f-involutive {x} {y} e =
+involution-swap : {X : 𝓤 ̇ } (f : X → X)
+                → involutive f
+                → {x y : X}
+                → f x ＝ y
+                → f y ＝ x
+involution-swap f f-involutive {x} {y} e =
  f y     ＝⟨ ap f (e ⁻¹) ⟩
  f (f x) ＝⟨ f-involutive x ⟩
  x       ∎
@@ -176,7 +179,7 @@ module _ {𝓤 : Universe} (fe : Fun-Ext) (pe : propext 𝓤) where
 
      V : f ⊥ ≠ ⊤
      V e₂ = ⊥-is-not-⊤
-             (⊥       ＝⟨ (involution-lemma f f-is-involutive e₂)⁻¹ ⟩
+             (⊥       ＝⟨ (involution-swap f f-is-involutive e₂)⁻¹ ⟩
               f ⊤     ＝⟨ e ⟩
               ⊤       ∎)
 
@@ -208,7 +211,22 @@ get the same conclusion EM 𝓤, because the type EM 𝓤 is a proposition.
 
 Notice also that the converses of the above propositions hold.
 
-Added 26 OCtober 2023. We continue in the above anonymous module.
+Added 26 October 2023. We continue in the above anonymous module with
+the same assumptions.
+
+We show that there can't be any automorphism of Ω 𝓤 distinct from the
+identity unless excluded middle holds.
+
+The fact eval-at-⊤-is-lc stated and proved below, which is our main
+lemma, is attributed to Denis Higgs in the literature [1], without any
+explicit citation I could find, with diagramatic proofs in topos
+theory rather than proofs in the internal language of a topos. Our
+internal proofs don't necessarily follow the external diagramatic
+proofs.
+
+[1] Peter Freyd. Choice and well-ordering.
+    Annals of Pure and Applied Logic 35 (1987) 149-166.
+    https://core.ac.uk/download/pdf/81927529.pdf
 
 \begin{code}
 
@@ -224,6 +242,7 @@ Added 26 OCtober 2023. We continue in the above anonymous module.
  eval-at-⊤-is-lc : left-cancellable eval-at-⊤
  eval-at-⊤-is-lc {𝕗} {𝕘} e = I
   where
+   f g : Ω 𝓤 → Ω 𝓤
    f = ⌜ 𝕗 ⌝
    g = ⌜ 𝕘 ⌝
 
@@ -237,15 +256,15 @@ Added 26 OCtober 2023. We continue in the above anonymous module.
    g-involutive = higgs g (equivs-are-lc g ⌜ 𝕘 ⌝-is-equiv)
 
    V : (p : Ω 𝓤) → g p ＝ ⊤ → f p ＝ ⊤
-   V p e₂ = involution-lemma f f-involutive
-              (f ⊤ ＝⟨ e ⟩
-               g ⊤ ＝⟨ (involution-lemma g g-involutive e₂) ⟩
-               p   ∎)
+   V p e₂ = involution-swap f f-involutive
+             (f ⊤ ＝⟨ e ⟩
+              g ⊤ ＝⟨ (involution-swap g g-involutive e₂) ⟩
+              p   ∎)
 
    IV : (p : Ω 𝓤) → f p ＝ ⊤ → g p ＝ ⊤
-   IV p e₁ = involution-lemma g g-involutive
+   IV p e₁ = involution-swap g g-involutive
               (g ⊤ ＝⟨ e ⁻¹ ⟩
-               f ⊤ ＝⟨ (involution-lemma f f-involutive e₁) ⟩
+               f ⊤ ＝⟨ (involution-swap f f-involutive e₁) ⟩
                p   ∎)
 
    III : f ∼ g
@@ -259,7 +278,31 @@ Added 26 OCtober 2023. We continue in the above anonymous module.
 
 \end{code}
 
-TODO. Now I have to leave.
+From this we conclude that there can't be any automorphism of Ω 𝓤
+distinct from the identity unless excluded middle holds. I don't
+think this has been observed before in the literature, but it may have
+been observed in the folklore.
 
-Corollary. If f ⊤ ＝ ⊤ then f ＝ id.
-Corollary. If f ≠ id then f ⊤ ＝ ⊥ and hence excluded middle holds.
+\begin{code}
+
+ Ω-automorphism-distinct-from-𝕚𝕕-gives-EM
+  : (Σ 𝕗 ꞉ Ω 𝓤 ≃ Ω 𝓤 , 𝕗 ≠ 𝕚𝕕)
+  → EM 𝓤
+ Ω-automorphism-distinct-from-𝕚𝕕-gives-EM (𝕗 , ν) = IV
+  where
+   f : Ω 𝓤 → Ω 𝓤
+   f = ⌜ 𝕗 ⌝
+
+   I : f ⊤ ＝ ⊤ → 𝕗 ＝ 𝕚𝕕
+   I e = eval-at-⊤-is-lc {𝕗} {𝕚𝕕} e
+
+   II : f ⊤ ≠ ⊤
+   II = contrapositive I ν
+
+   III : f ⊤ ＝ ⊥
+   III = different-from-⊤-gives-equal-⊥ fe pe (f ⊤) II
+
+   IV : EM 𝓤
+   IV = Ω-automorphism-that-maps-⊤-to-⊥-gives-EM (𝕗 , III)
+
+\end{code}
