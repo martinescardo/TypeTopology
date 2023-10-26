@@ -294,7 +294,7 @@ been observed in the folklore.
    f = ⌜ 𝕗 ⌝
 
    I : f ⊤ ＝ ⊤ → 𝕗 ＝ 𝕚𝕕
-   I e = eval-at-⊤-is-lc {𝕗} {𝕚𝕕} e
+   I = eval-at-⊤-is-lc {𝕗} {𝕚𝕕}
 
    II : f ⊤ ≠ ⊤
    II = contrapositive I ν
