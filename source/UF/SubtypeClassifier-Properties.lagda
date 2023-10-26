@@ -214,8 +214,9 @@ Added 26 OCtober 2023. We continue in the above anonymous module.
 
  open import UF.Equiv-FunExt
 
- fe' : FunExt
- fe' 𝓥 𝓦 = fe {𝓥} {𝓦}
+ private
+  fe' : FunExt
+  fe' 𝓥 𝓦 = fe {𝓥} {𝓦}
 
  eval-at-⊤ : (Ω 𝓤 ≃ Ω 𝓤) → Ω 𝓤
  eval-at-⊤ 𝕗 = ⌜ 𝕗 ⌝ ⊤
