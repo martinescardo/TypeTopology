@@ -212,10 +212,10 @@ no-truth-values-other-than-⊥-or-⊤ : funext 𝓤 𝓤
 no-truth-values-other-than-⊥-or-⊤ fe pe ((P , i) , (f , g)) = φ u
  where
   u : ¬ P
-  u p = g l
+  u h = g l
     where
      l : (P , i) ＝ ⊤
-     l = Ω-extensionality fe pe unique-to-𝟙 (λ _ → p)
+     l = Ω-extensionality fe pe unique-to-𝟙 (λ _ → h)
 
   φ : ¬¬ P
   φ u = f l
