@@ -1,11 +1,12 @@
 ---
-author:      "Ayberk Tosun"
+title:       Bounded completeness of a dcpo
+author:      Ayberk Tosun
 start-date:  2023-10-26
 ---
 
-Ayberk Tosun
+Ayberk Tosun.
 
-Started on: 2023-10-26
+Started on 26 October 2023.
 
 \begin{code}[hide]
 
@@ -68,11 +69,12 @@ We denote by `_⊑_` the informating ordering of the dcpo `𝓓`.
 
 \end{code}
 
-We also define a reformulation of having an upper bound. The reason for this
-reformulation is to have a version more suitable the notion of family that I use
-(Ayberk Tosun), which is the one from `Slice.Family`. Moreover, it is also
-convenient have a version of this notion that is packaged up with the proof of
-propositional so that it can be defined as an `Ω`-valued function.
+We also define a reformulation `has-supₚ` of `has-sup` from `Basics.Dcpo`. The
+reason for this reformulation is to have a version more suitable to use with
+notion of family that I (Ayberk) use, which is the one from `Slice.Family`.
+Moreover, it is also convenient have a version of this notion that is packaged
+up with the proof of its propositionality so that it can be defined directly as
+an `Ω`-valued function.
 
 \begin{code}
 
@@ -82,13 +84,12 @@ propositional so that it can be defined as an `Ω`-valued function.
 
 \end{code}
 
-
-Bounded completeness then says any family that has an upper bound, also has a
-least upper bound.
+Bounded completeness then says that any family that has an upper bound also has
+a least upper bound.
 
 \begin{code}
 
- bounded-complete : Ω (𝓤 ⊔ (𝓣 ⁺) ⊔ 𝓤)
+ bounded-complete : Ω (𝓤 ⊔ 𝓣 ⁺)
  bounded-complete = Ɐ S ꞉ Fam 𝓣 ⟨ 𝓓 ⟩ , has-an-upper-bound S ⇒ has-supₚ S
 
 \end{code}
