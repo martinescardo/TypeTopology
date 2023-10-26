@@ -21,7 +21,7 @@ open import UF.Subsingletons
 -- open import UF.Subsingletons-FunExt
 -- open import UF.Powerset-MultiUniverse
 
-module DomainTheory.BasesAndContinuity.BoundedCompleteness
+module DomainTheory.BasesAndContinuity.ScottDomain
         (pt : propositional-truncations-exist)
         (fe : Fun-Ext)
         (𝓥  : Universe) where
@@ -91,5 +91,18 @@ a least upper bound.
 
  bounded-complete : Ω (𝓤 ⊔ 𝓣 ⁺)
  bounded-complete = Ɐ S ꞉ Fam 𝓣 ⟨ 𝓓 ⟩ , has-an-upper-bound S ⇒ has-supₚ S
+
+\end{code}
+
+We now proceed to define the notion of a Scott domain.
+
+\begin{code}
+
+module DefinitionOfScottDomain (𝓓 : DCPO {𝓤} {𝓣}) where
+
+ open DefinitionOfBoundedCompleteness
+
+ is-scott-domain : 𝓤 ⊔ 𝓥 ⁺ ⊔ 𝓣 ⁺  ̇
+ is-scott-domain = structurally-algebraic 𝓓 × bounded-complete 𝓓 holds
 
 \end{code}
