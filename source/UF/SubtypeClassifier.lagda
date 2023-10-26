@@ -145,6 +145,19 @@ not-equal-⊤-gives-equal-⊥ fe pe p r = γ
   γ : p ＝ ⊥
   γ = to-subtype-＝ (λ _ → being-prop-is-prop fe) t
 
+different-from-⊤-gives-equal-⊥ : (fe : Fun-Ext)
+                                 (pe : propext 𝓤)
+                                 (p : Ω 𝓤)
+                               → p ≠ ⊤
+                               → p ＝ ⊥
+different-from-⊤-gives-equal-⊥ fe pe p ν = II
+ where
+  I : ¬ (p holds)
+  I = contrapositive (holds-gives-equal-⊤ pe fe p) ν
+
+  II : p ＝ ⊥
+  II = false-gives-equal-⊥ pe fe (p holds) (holds-is-prop p) I
+
 equal-⊤-gives-true : (P : 𝓤 ̇ ) (i : is-prop P) → (P , i) ＝ ⊤ → P
 equal-⊤-gives-true P hp r = f ⋆
  where
@@ -199,10 +212,10 @@ no-truth-values-other-than-⊥-or-⊤ : funext 𝓤 𝓤
 no-truth-values-other-than-⊥-or-⊤ fe pe ((P , i) , (f , g)) = φ u
  where
   u : ¬ P
-  u p = g l
+  u h = g l
     where
      l : (P , i) ＝ ⊤
-     l = Ω-extensionality fe pe unique-to-𝟙 (λ _ → p)
+     l = Ω-extensionality fe pe unique-to-𝟙 (λ _ → h)
 
   φ : ¬¬ P
   φ u = f l

@@ -16,7 +16,7 @@ Scedrov. Thanks to Phil Scott for bringing my attention to this proof
 during a visit to Birmingham.
 
 Added 23 Jan 2021. From a group structure on Ω we get excluded middle,
-as an application of Higgs Theorem. This doesn't seems to be known in
+as an application of Higgs Theorem. This doesn't seem to be known in
 the topos theory community.
 
 \begin{code}
@@ -61,44 +61,35 @@ involutive if f (f p) ＝ p.
 
 higgs : (f : Ω → Ω) → left-cancellable f → involutive f
 higgs f lc = VIII
-  where
-   I : (p : Ω) → f p ＝ ⊤ → p ＝ ⊤ → f ⊤ ＝ ⊤
-   I p r s = transport (λ - → f - ＝ ⊤) s r
+ where
+  I : (p : Ω) → f p ＝ ⊤ → p ＝ ⊤ → f ⊤ ＝ ⊤
+  I p r s = transport (λ - → f - ＝ ⊤) s r
 
-   II : (p : Ω) → f p ＝ ⊤ → f ⊤ ＝ ⊤ → p ＝ ⊤
-   II p r s = lc (f p ＝⟨ r ⟩
-                  ⊤   ＝⟨ s ⁻¹ ⟩
-                  f ⊤ ∎)
+  II : (p : Ω) → f p ＝ ⊤ → f ⊤ ＝ ⊤ → p ＝ ⊤
+  II p r s = lc (f p ＝⟨ r ⟩
+                 ⊤   ＝⟨ s ⁻¹ ⟩
+                 f ⊤ ∎)
 
-   III : (p : Ω) → f p ＝ ⊤ → p ＝ f ⊤
-   III p r = Ω-ext pe fe (I p r) (II p r)
+  III : (p : Ω) → f p ＝ ⊤ → p ＝ f ⊤
+  III p r = Ω-ext pe fe (I p r) (II p r)
 
-   IV : (p : Ω) → f (f p) ＝ ⊤ → p ＝ ⊤
-   IV p r = lc (III (f p) r)
+  IV : (p : Ω) → f (f p) ＝ ⊤ → p ＝ ⊤
+  IV p r = lc (III (f p) r)
 
-   V : (p : Ω) → f (f (f p)) ＝ ⊤ → f p ＝ ⊤
-   V p = IV (f p)
+  V : (p : Ω) → f (f (f p)) ＝ ⊤ → f p ＝ ⊤
+  V p = IV (f p)
 
-   VI : (p : Ω) → f p ＝ ⊤ → f (f (f p)) ＝ ⊤
-   VI p r = iv ∙ r
-    where
-     i : f (f p) ＝ f ⊤
-     i = ap f r
+  VI : (p : Ω) → f p ＝ ⊤ → f (f (f p)) ＝ ⊤
+  VI p r = f (f (f p)) ＝⟨ ap (f ∘ f) r ⟩
+           f (f ⊤)     ＝⟨ ap f ((III p r)⁻¹) ⟩
+           f p         ＝⟨ r ⟩
+           ⊤           ∎
 
-     ii : f ⊤ ＝ p
-     ii = (III p r)⁻¹
+  VII : (p : Ω) → f (f (f p)) ＝ f p
+  VII p = Ω-ext pe fe (V p) (VI p)
 
-     iii : f (f p) ＝ p
-     iii = i ∙ ii
-
-     iv : f (f (f p)) ＝ f p
-     iv = ap f iii
-
-   VII : (p : Ω) → f (f (f p)) ＝ f p
-   VII p = Ω-ext pe fe (V p) (VI p)
-
-   VIII : (p : Ω) → f (f p) ＝ p
-   VIII p = lc (VII p)
+  VIII : (p : Ω) → f (f p) ＝ p
+  VIII p = lc (VII p)
 
 \end{code}
 
@@ -147,11 +138,11 @@ lc-monoid-structure-on-Ω-gives-EM O _⊕_ left-neutral right-neutral assoc lc =
 
   to-＝ : {p q : Ω} → p ⊕ q ＝ O → p ＝ q
   to-＝ {p} {q} e = p           ＝⟨ (right-neutral p)⁻¹ ⟩
-                   p ⊕ O       ＝⟨ ap (p ⊕_) (e ⁻¹) ⟩
-                   p ⊕ (p ⊕ q) ＝⟨ (assoc p p q)⁻¹ ⟩
-                   (p ⊕ p) ⊕ q ＝⟨ ap (_⊕ q) (own-inv p) ⟩
-                   O ⊕ q       ＝⟨ left-neutral q ⟩
-                   q           ∎
+                    p ⊕ O       ＝⟨ ap (p ⊕_) (e ⁻¹) ⟩
+                    p ⊕ (p ⊕ q) ＝⟨ (assoc p p q)⁻¹ ⟩
+                    (p ⊕ p) ⊕ q ＝⟨ ap (_⊕ q) (own-inv p) ⟩
+                    O ⊕ q       ＝⟨ left-neutral q ⟩
+                    q           ∎
 
   f : Ω → Ω
   f p = p ⊕ (⊥ ⊕ ⊤)
@@ -164,7 +155,7 @@ lc-monoid-structure-on-Ω-gives-EM O _⊕_ left-neutral right-neutral assoc lc =
               p                       ∎
 
   α : (p : Ω) → f p ＝ ⊤ → p ＝ ⊥
-  α p e = to-＝ (p ⊕ ⊥             ＝⟨ (right-neutral (p ⊕ ⊥))⁻¹ ⟩
+  α p e = to-＝ (p ⊕ ⊥            ＝⟨ (right-neutral (p ⊕ ⊥))⁻¹ ⟩
                 (p ⊕ ⊥) ⊕ O       ＝⟨ ap ((p ⊕ ⊥) ⊕_) ((own-inv ⊤)⁻¹) ⟩
                 (p ⊕ ⊥) ⊕ (⊤ ⊕ ⊤) ＝⟨ (assoc (p ⊕ ⊥) ⊤ ⊤)⁻¹ ⟩
                 ((p ⊕ ⊥) ⊕ ⊤) ⊕ ⊤ ＝⟨ ap (_⊕ ⊤) (assoc p ⊥ ⊤) ⟩
@@ -210,16 +201,16 @@ Additional facts that are not needed to conclude excluded middle:
 
   from-＝ : (p q : Ω) → p ＝ q → p ⊕ q ＝ O
   from-＝ p q e = p ⊕ q ＝⟨ ap (_⊕ q) e ⟩
-                 q ⊕ q ＝⟨ own-inv q ⟩
-                 O     ∎
+                  q ⊕ q ＝⟨ own-inv q ⟩
+                  O     ∎
 
   abelian : (p q : Ω) → p ⊕ q ＝ q ⊕ p
   abelian p q = to-＝ ((p ⊕ q) ⊕ (q ⊕ p) ＝⟨ assoc p q (q ⊕ p) ⟩
-                      p ⊕ (q ⊕ (q ⊕ p)) ＝⟨ ap (p ⊕_) ((assoc q q p)⁻¹) ⟩
-                      p ⊕ ((q ⊕ q) ⊕ p) ＝⟨ ap (λ - → p ⊕ (- ⊕ p)) (own-inv q) ⟩
-                      p ⊕ (O ⊕ p)       ＝⟨ ap (p ⊕_) (left-neutral p) ⟩
-                      p ⊕ p             ＝⟨ own-inv p ⟩
-                      O                 ∎)
+                      p ⊕ (q ⊕ (q ⊕ p))  ＝⟨ ap (p ⊕_) ((assoc q q p)⁻¹) ⟩
+                      p ⊕ ((q ⊕ q) ⊕ p)  ＝⟨ ap (λ - → p ⊕ (- ⊕ p)) (own-inv q) ⟩
+                      p ⊕ (O ⊕ p)        ＝⟨ ap (p ⊕_) (left-neutral p) ⟩
+                      p ⊕ p              ＝⟨ own-inv p ⟩
+                      O                  ∎)
 
   charac₂-of-f : (p : Ω) → f p ＝ (⊥ ⊕ ⊤) ⊕ p
   charac₂-of-f p = abelian p (⊥ ⊕ ⊤)

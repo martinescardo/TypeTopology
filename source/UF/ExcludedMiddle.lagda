@@ -378,6 +378,3 @@ Global-Choice'-gives-Global-Choice gc X = gc (X + ¬ X)
 \end{code}
 
 Global choice contradicts univalence.
-
-TODO. Show that weak excluded middle is equivalent to De Morgan's Law.
-https://ncatlab.org/nlab/show/De+Morgan+duality
