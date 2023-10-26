@@ -219,9 +219,9 @@ identity unless excluded middle holds.
 
 The fact eval-at-⊤-is-lc stated and proved below, which is our main
 lemma, is attributed to Denis Higgs in the literature [1], without any
-explicit citation I could find, with diagramatic proofs in topos
+explicit citation I could find, with diagrammatic proofs in topos
 theory rather than proofs in the internal language of a topos. Our
-internal proofs don't necessarily follow the external diagramatic
+internal proofs don't necessarily follow the external diagrammatic
 proofs.
 
 [1] Peter Freyd. Choice and well-ordering.
@@ -258,13 +258,13 @@ proofs.
    V : (p : Ω 𝓤) → g p ＝ ⊤ → f p ＝ ⊤
    V p e₂ = involution-swap f f-involutive
              (f ⊤ ＝⟨ e ⟩
-              g ⊤ ＝⟨ (involution-swap g g-involutive e₂) ⟩
+              g ⊤ ＝⟨ involution-swap g g-involutive e₂ ⟩
               p   ∎)
 
    IV : (p : Ω 𝓤) → f p ＝ ⊤ → g p ＝ ⊤
    IV p e₁ = involution-swap g g-involutive
               (g ⊤ ＝⟨ e ⁻¹ ⟩
-               f ⊤ ＝⟨ (involution-swap f f-involutive e₁) ⟩
+               f ⊤ ＝⟨ involution-swap f f-involutive e₁ ⟩
                p   ∎)
 
    III : f ∼ g
