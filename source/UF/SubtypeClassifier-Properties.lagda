@@ -109,6 +109,16 @@ https://mathstodon.xyz/deck/@MartinEscardo/111291658836418672
 open import UF.Embeddings
 open import UF.ExcludedMiddle
 
+involution-lemma : {X : 𝓤 ̇ } (f : X → X)
+                 → involutive f
+                 → {x y : X}
+                 → f x ＝ y
+                 → f y ＝ x
+involution-lemma f f-involutive {x} {y} e =
+ f y     ＝⟨ ap f (e ⁻¹) ⟩
+ f (f x) ＝⟨ f-involutive x ⟩
+ x       ∎
+
 module _ {𝓤 : Universe} (fe : Fun-Ext) (pe : propext 𝓤) where
 
  open import Various.HiggsInvolutionTheorem {𝓤} fe pe
@@ -166,10 +176,9 @@ module _ {𝓤 : Universe} (fe : Fun-Ext) (pe : propext 𝓤) where
 
      V : f ⊥ ≠ ⊤
      V e₂ = ⊥-is-not-⊤
-             (⊥      ＝⟨ (f-is-involutive ⊥)⁻¹ ⟩
-             f (f ⊥) ＝⟨ ap f e₂ ⟩
-             f ⊤     ＝⟨ e ⟩
-             ⊤       ∎)
+             (⊥       ＝⟨ (involution-lemma f f-is-involutive e₂)⁻¹ ⟩
+              f ⊤     ＝⟨ e ⟩
+              ⊤       ∎)
 
      VI : 𝟘
      VI = no-truth-values-other-than-⊥-or-⊤ fe pe (f ⊥ , IV , V)
@@ -198,3 +207,58 @@ Notice that we can replace "Σ" by "∃" in the above propositions, to
 get the same conclusion EM 𝓤, because the type EM 𝓤 is a proposition.
 
 Notice also that the converses of the above propositions hold.
+
+Added 26 OCtober 2023. We continue in the above anonymous module.
+
+\begin{code}
+
+ open import UF.Equiv-FunExt
+
+ fe' : FunExt
+ fe' 𝓥 𝓦 = fe {𝓥} {𝓦}
+
+ eval-at-⊤ : (Ω 𝓤 ≃ Ω 𝓤) → Ω 𝓤
+ eval-at-⊤ 𝕗 = ⌜ 𝕗 ⌝ ⊤
+
+ eval-at-⊤-is-lc : left-cancellable eval-at-⊤
+ eval-at-⊤-is-lc {𝕗} {𝕘} e = I
+  where
+   f = ⌜ 𝕗 ⌝
+   g = ⌜ 𝕘 ⌝
+
+   have-e : f ⊤ ＝ g ⊤
+   have-e = e
+
+   f-involutive : involutive f
+   f-involutive = higgs f (equivs-are-lc f ⌜ 𝕗 ⌝-is-equiv)
+
+   g-involutive : involutive g
+   g-involutive = higgs g (equivs-are-lc g ⌜ 𝕘 ⌝-is-equiv)
+
+   V : (p : Ω 𝓤) → g p ＝ ⊤ → f p ＝ ⊤
+   V p e₂ = involution-lemma f f-involutive
+              (f ⊤ ＝⟨ e ⟩
+               g ⊤ ＝⟨ (involution-lemma g g-involutive e₂) ⟩
+               p   ∎)
+
+   IV : (p : Ω 𝓤) → f p ＝ ⊤ → g p ＝ ⊤
+   IV p e₁ = involution-lemma g g-involutive
+              (g ⊤ ＝⟨ e ⁻¹ ⟩
+               f ⊤ ＝⟨ (involution-lemma f f-involutive e₁) ⟩
+               p   ∎)
+
+   III : f ∼ g
+   III p = Ω-ext pe fe (IV p) (V p)
+
+   II : f ＝ g
+   II = dfunext fe III
+
+   I : 𝕗 ＝ 𝕘
+   I = to-subtype-＝ (being-equiv-is-prop fe') II
+
+\end{code}
+
+TODO. Now I have to leave.
+
+Corollary. If f ⊤ ＝ ⊤ then f ＝ id.
+Corollary. If f ≠ id then f ⊤ ＝ ⊥ and hence excluded middle holds.
