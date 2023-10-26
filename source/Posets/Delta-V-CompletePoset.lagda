@@ -151,7 +151,7 @@ is-δ-complete-δ D = pr₂ D
 
 module non-trivial-posets {𝓤  𝓦 : Universe} (A : Poset 𝓤 𝓦) where
  is-non-trivial-poset : 𝓤 ⊔ 𝓦 ̇
- is-non-trivial-poset =  Σ x ꞉ ∣ A ∣ₚ , ( Σ y ꞉ ∣ A ∣ₚ , (x ≤[ A ] y) holds × ¬ (x ＝ y))
+ is-non-trivial-poset =  Σ x ꞉ ∣ A ∣ₚ , ( Σ y ꞉ ∣ A ∣ₚ , (x ≤[ A ] y) holds × (x ≠ y))
 
  lower : is-non-trivial-poset → ∣ A ∣ₚ
  lower i = pr₁ i
@@ -162,7 +162,7 @@ module non-trivial-posets {𝓤  𝓦 : Universe} (A : Poset 𝓤 𝓦) where
  ordering : (i : is-non-trivial-poset) → (lower i ≤[ A ] upper i) holds
  ordering i = pr₁ (pr₂ (pr₂ i))
 
- nequal : (i : is-non-trivial-poset) → ¬ (lower i ＝ upper i)
+ nequal : (i : is-non-trivial-poset) → lower i ≠ upper i
  nequal i = pr₂ (pr₂ (pr₂ i))
 
  module _ (𝓥 : Universe) (i : is-non-trivial-poset) where
@@ -178,12 +178,12 @@ module non-trivial-posets {𝓤  𝓦 : Universe} (A : Poset 𝓤 𝓦) where
   wlem-lemma : (P : Ω 𝓥)
              → ((x is-lub-of ((𝟙 + P holds) , (δ x y P))) holds → ¬ (P holds))
                × ((y is-lub-of ((𝟙 + P holds) , (δ x y P))) holds → ¬ ¬ (P holds)) 
-  pr₁ (wlem-lemma P) (x-is-ub , _) p = x-≠-y (≤-is-antisymmetric A (x-≤-y) (x-is-ub (inr p)))
-  pr₂ (wlem-lemma P) (_ , y-has-lub-cond) np = x-≠-y (≤-is-antisymmetric A (x-≤-y) (y-has-lub-cond (x , x-is-ub)))
+  pr₁ (wlem-lemma P) (x-is-ub , _) in-P = x-≠-y (≤-is-antisymmetric A (x-≤-y) (x-is-ub (inr in-P)))
+  pr₂ (wlem-lemma P) (_ , y-has-lub-cond) not-P = x-≠-y (≤-is-antisymmetric A (x-≤-y) (y-has-lub-cond (x , x-is-ub)))
    where
     x-is-ub : (x is-an-upper-bound-of ((𝟙 + P holds) , δ x y P)) holds
     x-is-ub (inl ✯) = ≤-is-reflexive A x
-    x-is-ub (inr p) = 𝟘-induction (np p)
+    x-is-ub (inr in-P) = 𝟘-induction (not-P in-P)
     
 \end{code}
 
@@ -252,15 +252,15 @@ module Positive-Posets (𝓤  𝓦  𝓥 : Universe) (A : Poset 𝓤 𝓦) where
   strictly-below-implies-non-trivial : (x y : ∣ A ∣ₚ)
                                      → is-δ-complete
                                      → (x < y)
-                                     → (x ≤ y) holds × ¬ (x ＝ y)
+                                     → (x ≤ y) holds × (x ≠ y)
   pr₁ (strictly-below-implies-non-trivial x y i c) = order-< c
   pr₂ (strictly-below-implies-non-trivial x y i c) p =
-   𝟘-induction (sup-condition c y (≤-is-reflexive A y) (𝟘{𝓥} , 𝟘-is-prop {𝓥}) (y-is-ub , y-has-lub-cond))
+   𝟘-induction (sup-condition c y (≤-is-reflexive A y) ⊥ (y-is-ub , y-has-lub-cond))
     where
-     y-is-ub : (y is-an-upper-bound-of ((𝟙 + ((𝟘 , 𝟘-is-prop) holds)) , δ x y (𝟘 , 𝟘-is-prop))) holds
+     y-is-ub : (y is-an-upper-bound-of ((𝟙 + (⊥ holds)) , δ x y ⊥)) holds
      y-is-ub (inl ⋆) = order-< c
 
-     y-has-lub-cond : (Ɐ u ꞉ (upper-bound ((𝟙 + ((𝟘 , 𝟘-is-prop) holds)) , δ x y (𝟘 , 𝟘-is-prop))) , y ≤ (pr₁ u)) holds
+     y-has-lub-cond : (Ɐ u ꞉ (upper-bound ((𝟙 + (⊥ holds)) , δ x y ⊥)) , y ≤ (pr₁ u)) holds
      y-has-lub-cond u = y ＝⟨ p ⁻¹ ⟩ₚ pr₂ u (inl ⋆)
 
 \end{code}
@@ -392,21 +392,21 @@ module Retract-Lemmas (𝓤  𝓦  𝓥 : Universe) (A : Poset 𝓤 𝓦) where
   Δ-section-to-non-trivial : is-section (Δ ∘ Ω¬¬-to-Ω) → x ≠ y
   Δ-section-to-non-trivial (r , H) x-＝-y = 𝟘-is-not-𝟙 (ap (pr₁ ∘ pr₁) (r-x-＝-𝟘 ⁻¹ ∙ ap r x-＝-y ∙ r-y-＝-𝟙))
    where
-    path₁ : x ＝ Δ (𝟘 , 𝟘-is-prop)
-    path₁ = lower-＝-sup-δ i x y x-≤-y (𝟘 , 𝟘-is-prop) (λ z → 𝟘-induction z)
-    path₂ : r x ＝ r (Δ (𝟘 , 𝟘-is-prop))
+    path₁ : x ＝ Δ ⊥
+    path₁ = lower-＝-sup-δ i x y x-≤-y ⊥ ⊥-doesnt-hold
+    path₂ : r x ＝ r (Δ ⊥)
     path₂ = ap r path₁
-    path₃ : r (Δ (𝟘 , 𝟘-is-prop)) ＝ ((𝟘 , 𝟘-is-prop) , 𝟘-is-¬¬-stable)
-    path₃ = H ((𝟘 , 𝟘-is-prop) , 𝟘-is-¬¬-stable)
-    r-x-＝-𝟘 : r x ＝ ((𝟘 , 𝟘-is-prop) , 𝟘-is-¬¬-stable)
+    path₃ : r (Δ ⊥) ＝ (⊥ , 𝟘-is-¬¬-stable)
+    path₃ = H (⊥ , 𝟘-is-¬¬-stable)
+    r-x-＝-𝟘 : r x ＝ (⊥ , 𝟘-is-¬¬-stable)
     r-x-＝-𝟘 = path₂ ∙ path₃
-    path₄ : y ＝ Δ (𝟙 , 𝟙-is-prop)
-    path₄ = upper-＝-sup-δ i x y x-≤-y (𝟙 , 𝟙-is-prop) ⋆
-    path₅ : r y ＝ r (Δ (𝟙 , 𝟙-is-prop))
+    path₄ : y ＝ Δ ⊤
+    path₄ = upper-＝-sup-δ i x y x-≤-y ⊤ ⊤-holds
+    path₅ : r y ＝ r (Δ ⊤)
     path₅ = ap r path₄
-    path₆ : r (Δ (𝟙 , 𝟙-is-prop)) ＝ ((𝟙 , 𝟙-is-prop) , 𝟙-is-¬¬-stable)
-    path₆ = H ((𝟙 , 𝟙-is-prop) , 𝟙-is-¬¬-stable)
-    r-y-＝-𝟙 : r y ＝ ((𝟙 , 𝟙-is-prop) , 𝟙-is-¬¬-stable)
+    path₆ : r (Δ ⊤) ＝ (⊤ , 𝟙-is-¬¬-stable)
+    path₆ = H (⊤ , 𝟙-is-¬¬-stable)
+    r-y-＝-𝟙 : r y ＝ (⊤ , 𝟙-is-¬¬-stable)
     r-y-＝-𝟙 = path₅ ∙ path₆
 
 \end{code}
@@ -484,15 +484,15 @@ This allows us to exhibit the type of propositions as a retract of a local non-t
       Δ-≤-z = sup-δ-≤-upper i x z (t z y-≤-z) P
       z-＝-Δ : z ＝ Δ (t z y-≤-z) P
       z-＝-Δ = ≤-is-antisymmetric A z-≤-Δ Δ-≤-z
-      path₁ : (𝟙 , 𝟙-is-prop) ＝ (r z y-≤-z) (Δ (t z y-≤-z) (𝟙 , 𝟙-is-prop))
-      path₁ = (H z y-≤-z (𝟙 , 𝟙-is-prop)) ⁻¹
-      path₂ : (r z y-≤-z) (Δ (t z y-≤-z) (𝟙 , 𝟙-is-prop)) ＝ (r z y-≤-z) z
-      path₂ = ap (r z y-≤-z) ((upper-＝-sup-δ i x z (t z y-≤-z) (𝟙 , 𝟙-is-prop) ⋆) ⁻¹)
+      path₁ : ⊤ ＝ (r z y-≤-z) (Δ (t z y-≤-z) ⊤)
+      path₁ = (H z y-≤-z ⊤) ⁻¹
+      path₂ : (r z y-≤-z) (Δ (t z y-≤-z) ⊤) ＝ (r z y-≤-z) z
+      path₂ = ap (r z y-≤-z) ((upper-＝-sup-δ i x z (t z y-≤-z) ⊤ ⊤-holds) ⁻¹)
       path₃ : (r z y-≤-z) z ＝ (r z y-≤-z) (Δ (t z y-≤-z) P)
       path₃ = ap (r z y-≤-z) z-＝-Δ
       path₄ : (r z y-≤-z) (Δ (t z y-≤-z) P) ＝ P
       path₄ = H z y-≤-z P
-      path₅ : (𝟙 , 𝟙-is-prop) ＝ P
+      path₅ : ⊤ ＝ P
       path₅ = path₁ ∙ path₂ ∙ path₃ ∙ path₄
       𝟙-＝-P : 𝟙 ＝ P holds
       𝟙-＝-P = ap pr₁ path₅
