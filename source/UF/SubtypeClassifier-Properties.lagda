@@ -321,9 +321,10 @@ that excluded middle holds, and hence Ω ≃ 𝟚, and therefore f is
 negation. So this is a constructive proof in which we deduce excluded
 middle as an intermediate step. And once we conclude that this type is
 a proposition, we see that it is equivalent to the type EM 𝓤, which is
-also a proposition, as these two propositions imply each other (and
-hence equal if we assume univalence):
+also a proposition, as these two propositions imply each other:
 
  (Σ f ꞉ Ω 𝓤 ≃ Ω 𝓤 , f ≠ id) ≃ EM 𝓤
+
+and hence they are equal if we further assume univalence.
 
 TODO. Write down this argument in Agda.
