@@ -169,13 +169,19 @@ module _ {𝓤 : Universe} (fe : Fun-Ext) (pe : propext 𝓤) where
    I e = VI
     where
      II : p₀ ≠ ⊤
-     II e₀ = ν (transport⁻¹ (λ - → f - ＝ -) e₀ e)
+     II e₀ = ν II'
+      where
+       II' : f p₀ ＝ p₀
+       II' = transport⁻¹ (λ - → f - ＝ -) e₀ e
 
      III : p₀ ＝ ⊥
      III = different-from-⊤-gives-equal-⊥ fe pe p₀ II
 
      IV : f ⊥ ≠ ⊥
-     IV e₁ = ν (transport⁻¹ (λ - → f - ＝ -) III e₁)
+     IV e₁ = ν IV'
+      where
+       IV' : f p₀ ＝ p₀
+       IV' = transport⁻¹ (λ - → f - ＝ -) III e₁
 
      V : f ⊥ ≠ ⊤
      V e₂ = ⊥-is-not-⊤
@@ -307,10 +313,17 @@ been observed in the folklore.
 
 \end{code}
 
-In follows that the type Σ f ꞉ Ω 𝓤 ≃ Ω 𝓤 , f ≠ id is a proposition,
-constructively. In boolean toposes it is a a singleton, in non-boolean
+It follows that the type Σ f ꞉ Ω 𝓤 ≃ Ω 𝓤 , f ≠ id is a proposition,
+constructively. In boolean toposes it is a singleton, in non-boolean
 toposes it is empty, and in all toposes it is a subsingleton.  This is
 because from any hypothetical element (f , ν) of this type we conclude
 that excluded middle holds, and hence Ω ≃ 𝟚, and therefore f is
 negation. So this is a constructive proof in which we deduce excluded
-middle as an intermediate step.
+middle as an intermediate step. And once we conclude that this type is
+a proposition, we see that it is equivalent to the type EM 𝓤, which is
+also a proposition, as these two propositions imply each other (and
+hence equal if we assume univalence):
+
+ (Σ f ꞉ Ω 𝓤 ≃ Ω 𝓤 , f ≠ id) ≃ EM 𝓤
+
+TODO. Write down this argument in Agda.
