@@ -306,3 +306,11 @@ been observed in the folklore.
    IV = Ω-automorphism-that-maps-⊤-to-⊥-gives-EM (𝕗 , III)
 
 \end{code}
+
+In follows that the type Σ f ꞉ Ω 𝓤 ≃ Ω 𝓤 , f ≠ id is a proposition,
+constructively. In boolean toposes it is a a singleton, in non-boolean
+toposes it is empty, and in all toposes it is a subsingleton.  This is
+because from any hypothetical element (f , ν) of this type we conclude
+that excluded middle holds, and hence Ω ≃ 𝟚, and therefore f is
+negation. So this is a constructive proof in which we deduce excluded
+middle as an intermediate step.
