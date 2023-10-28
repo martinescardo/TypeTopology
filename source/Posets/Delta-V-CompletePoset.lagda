@@ -31,8 +31,8 @@ module Posets.Delta-V-CompletePoset
   where
 
 open import Locales.Frame pt fe hiding (𝟚)
-
 open import Posets.TwoElementPoset pt fe
+open AllCombinators pt fe
 
 module δ-complete-poset {𝓤 𝓦 : Universe} (𝓥 : Universe) (A : Poset 𝓤 𝓦) where
 
@@ -153,6 +153,7 @@ is-δ-complete-δ D = pr₂ D
 \begin{code}
 
 module non-trivial-posets {𝓤  𝓦 : Universe} (A : Poset 𝓤 𝓦) where
+
  is-non-trivial-poset : 𝓤 ⊔ 𝓦 ̇
  is-non-trivial-poset =  Σ x ꞉ ∣ A ∣ₚ , ( Σ y ꞉ ∣ A ∣ₚ , (x ≤[ A ] y) holds × (x ≠ y))
 
@@ -263,7 +264,7 @@ module Positive-Posets (𝓤  𝓦  𝓥 : Universe) (A : Poset 𝓤 𝓦) where
      y-is-ub : (y is-an-upper-bound-of ((𝟙 + (⊥ holds)) , δ x y ⊥)) holds
      y-is-ub (inl ⋆) = order-< c
 
-     y-has-lub-cond : (Ɐ u ꞉ (upper-bound ((𝟙 + (⊥ holds)) , δ x y ⊥)) , y ≤ (pr₁ u)) holds
+     y-has-lub-cond : (u : (upper-bound ((𝟙 + (⊥ holds)) , δ x y ⊥))) → (y ≤ (pr₁ u)) holds
      y-has-lub-cond u = y ＝⟨ p ⁻¹ ⟩ₚ pr₂ u (inl ⋆)
 
 \end{code}
@@ -288,7 +289,7 @@ We could show that if the converse holds then so does LEM in 𝓥.
       w-is-ub (inl ⋆) = ≤-is-transitive A y z w (order-< y-<-z) z-≤-w
       w-is-ub (inr p) = ≤-is-reflexive A w
 
-      w-has-lub-cond : (Ɐ (u , u-is-ub) ꞉ (upper-bound ((𝟙 + (P holds)) , δ y w P)) , w ≤ u) holds 
+      w-has-lub-cond : ((u , u-is-ub) : (upper-bound ((𝟙 + (P holds)) , δ y w P))) → (w ≤ u) holds 
       w-has-lub-cond (u , u-is-ub) = w-has-lub-condₓ (u , u-is-ubₓ)
        where
         u-is-ubₓ : (u is-an-upper-bound-of ((𝟙 + (P holds)) , δ x w P)) holds
@@ -319,15 +320,12 @@ as a retract of a locally small non-trivial δ-complete poset. We start by defin
 
 \begin{code}
 
-module Local-Smallness (𝓤  𝓦  𝓥 : Universe) (A : Poset 𝓤 𝓦) where
+module Local-Smallness (𝓤  𝓦  𝓥 : Universe) (A : Poset 𝓤 𝓦) (_≤_ : ∣ A ∣ₚ → ∣ A ∣ₚ → Ω 𝓦)  where
 
- _≤_ : ∣ A ∣ₚ → ∣ A ∣ₚ → Ω 𝓦
- _≤_ = rel-syntax A
+ is-locally-small-order : 𝓤 ⊔ 𝓦 ⊔ (𝓥 ⁺)  ̇
+ is-locally-small-order = (x y : ∣ A ∣ₚ) → ((x ≤ y) holds) is 𝓥 small
 
- is-locally-small-≤ : 𝓤 ⊔ 𝓦 ⊔ (𝓥 ⁺)  ̇
- is-locally-small-≤ = (x y : ∣ A ∣ₚ) → ((x ≤ y) holds) is 𝓥 small
-
- module local-smallness (l : is-locally-small-≤) where
+ module local-smallness (l : is-locally-small-order) where
 
   _≤ⱽ_ : (x y : ∣ A ∣ₚ) → 𝓥  ̇
   x ≤ⱽ y = pr₁ (l x y)
@@ -351,7 +349,7 @@ module Retract-Lemmas (𝓤  𝓦  𝓥 : Universe) (A : Poset 𝓤 𝓦) where
  open PosetReasoning A
  open non-trivial-posets A
  open Positive-Posets 𝓤 𝓦 𝓥 A
- open Local-Smallness 𝓤 𝓦 𝓥 A hiding (_≤_)
+ open Local-Smallness 𝓤 𝓦 𝓥 A _≤_
  open Joins (_≤_)
 
  module def-Δ (i : is-δ-complete) {x y : ∣ A ∣ₚ} (x-≤-y : (x ≤ y) holds) where
@@ -359,7 +357,7 @@ module Retract-Lemmas (𝓤  𝓦  𝓥 : Universe) (A : Poset 𝓤 𝓦) where
   Δ : Ω 𝓥 → ∣ A ∣ₚ
   Δ P = sup-of-δ i x y x-≤-y P
 
- module retract-lemma₁ (l : is-locally-small-≤) (i : is-δ-complete) (x y : ∣ A ∣ₚ) (x-≤-y : (x ≤ y) holds) where
+ module retract-lemma₁ (l : is-locally-small-order) (i : is-δ-complete) (x y : ∣ A ∣ₚ) (x-≤-y : (x ≤ y) holds) where
 
   open local-smallness l
   open def-Δ i x-≤-y
@@ -432,7 +430,7 @@ This allows us to exhibit the type of propositions as a retract of a local non-t
 
 \begin{code}
 
- module retract-lemma₂ (l : is-locally-small-≤) (i : is-δ-complete) (x y : ∣ A ∣ₚ) (x-≤-y : (x ≤ y) holds) where
+ module retract-lemma₂ (l : is-locally-small-order) (i : is-δ-complete) (x y : ∣ A ∣ₚ) (x-≤-y : (x ≤ y) holds) where
 
   open positive-posets i
   open local-smallness l
@@ -537,10 +535,75 @@ We will now define what it means for a δ-complete poset to be small.
 module Small-δ-complete-poset (𝓤 𝓦 𝓥 : Universe) (A : Poset 𝓤 𝓦) where
 
  open δ-complete-poset 𝓥 A
- open Local-Smallness 𝓤 𝓦 𝓥 A hiding (_≤_)
+ open Local-Smallness 𝓤 𝓦 𝓥 A _≤_
 
- _poset-is-small : is-δ-complete → 𝓤 ⊔ 𝓦 ⊔ (𝓥 ⁺)  ̇
- δ-complete poset-is-small = is-locally-small-≤ × ∣ A ∣ₚ is 𝓥 small
+ module small-δ-complete-poset (i : is-δ-complete) where
+
+  poset-is-small : 𝓤 ⊔ 𝓦 ⊔ (𝓥 ⁺)  ̇
+  poset-is-small = is-locally-small-order × ∣ A ∣ₚ is 𝓥 small
+
+\end{code}
+
+We take a quick detour to give two concrete examples of non-trivial and positive δ-complete posets:
+the type of not-not stable propositions and the type of propositions.
+
+\begin{code}
+
+module Examples-δ-complete-Posets (𝓥 : Universe) where
+
+ _⊑_ : Ω 𝓥 → Ω 𝓥 → 𝓥  ̇
+ P ⊑ Q = P holds → Q holds
+
+ ⊑-is-prop-valued : (P Q : Ω 𝓥) → is-prop (P ⊑ Q) 
+ ⊑-is-prop-valued P Q = Π-is-prop fe (λ _ → holds-is-prop Q)
+
+ ⊑-is-reflexive : (P : Ω 𝓥) → P ⊑ P
+ ⊑-is-reflexive _ = id
+
+ ⊑-is-antisymmetric : {P Q : Ω 𝓥} → P ⊑ Q → Q ⊑ P → P ＝ Q
+ ⊑-is-antisymmetric {P} {Q} o r = to-subtype-＝ (λ _ → being-prop-is-prop fe) (pe (holds-is-prop P) (holds-is-prop Q) o r)
+
+ ⊑-is-transitive : (P Q R : Ω 𝓥) → P ⊑ Q → Q ⊑ R → P ⊑ R
+ ⊑-is-transitive P Q R o r p = r (o p)
+
+ Ω-Poset : Poset (𝓥 ⁺) 𝓥
+ Ω-Poset = (Ω 𝓥 ,
+            (λ P → λ Q → (P ⊑ Q , ⊑-is-prop-valued P Q)) ,
+            (((λ P → ⊑-is-reflexive P) , λ P → λ Q → λ R → ⊑-is-transitive P Q R) , λ o → λ r → ⊑-is-antisymmetric o r))
+
+ open Local-Smallness (𝓥 ⁺) 𝓥 𝓥 Ω-Poset (λ P → λ Q → (P ⊑ Q , ⊑-is-prop-valued P Q))
+
+ ⊑-is-locally-small : is-locally-small-order
+ ⊑-is-locally-small P Q = (P ⊑ Q , ≃-refl (P ⊑ Q))
+
+ open δ-complete-poset 𝓥 Ω-Poset
+
+ Ω-δ-complete : is-δ-complete
+ Ω-δ-complete Q R Q-⊑-R P = ((Ǝ i ꞉ (𝟙 + P holds) , (δ Q R P i holds)) , (is-upbnd , has-sup-cond))
+  where
+   open Joins (λ Q → λ R → (Q ⊑ R , ⊑-is-prop-valued Q R))
+   open propositional-truncations-exist pt
+   is-upbnd : ((Ǝ i ꞉ (𝟙 + P holds) , (δ Q R P i holds)) is-an-upper-bound-of ((𝟙 + P holds) , (δ Q R P))) holds
+   is-upbnd i e = ∣ (i , e) ∣
+   has-sup-cond : ((U , _) : upper-bound ((𝟙 + P holds) , (δ Q R P))) → (Ǝ i ꞉ (𝟙 + P holds) , (δ Q R P i holds)) ⊑ U
+   has-sup-cond (U , U-is-upbnd) = ∥∥-rec (holds-is-prop U) f
+    where
+     f : Σ i ꞉ (𝟙 + (P holds)) , δ Q R P i holds → U holds
+     f (i , e) = U-is-upbnd i e
+
+ open Positive-Posets (𝓥 ⁺) 𝓥 𝓥 Ω-Poset
+ open positive-posets Ω-δ-complete
+
+ Ω-positive : is-positive-poset
+ Ω-positive = (⊥ , ⊤ , (𝟘-elim , f))
+  where
+   open Joins (λ Q → λ R → (Q ⊑ R , ⊑-is-prop-valued Q R))
+   f : (Q : Ω 𝓥) → ⊤ ⊑ Q → (P : Ω 𝓥) → (Q is-lub-of ((𝟙 + (P holds)) , δ ⊥ Q P)) holds → P holds
+   f Q o P (Q-is-upbnd , Q-has-lub-cond) = Q-has-lub-cond (P , P-is-upbnd) (o ⋆)
+    where
+     P-is-upbnd : (P is-an-upper-bound-of ((𝟙 + (P holds)) , δ ⊥ Q P)) holds
+     P-is-upbnd (inr p) e = p
+
 
 \end{code}
 
@@ -554,11 +617,14 @@ module Predicative-Taboos (𝓤 𝓦 𝓥 : Universe) (A : Poset 𝓤 𝓦) wher
  open non-trivial-posets A
  open Positive-Posets 𝓤 𝓦 𝓥 A
  open positive-posets
- open Local-Smallness 𝓤 𝓦 𝓥 A hiding (_≤_)
+ open Local-Smallness 𝓤 𝓦 𝓥 A _≤_
  open Small-δ-complete-poset 𝓤 𝓦 𝓥 A
  open Retract-Lemmas 𝓤 𝓦 𝓥 A
 
- small-non-trivial-poset-implies-¬¬resizing : (δ-complete : is-δ-complete) → is-non-trivial-poset → δ-complete poset-is-small → Ω¬¬-Resizing 𝓥 𝓥
+ small-non-trivial-poset-implies-¬¬resizing : (δ-complete : is-δ-complete)
+                                            → is-non-trivial-poset
+                                            → small-δ-complete-poset.poset-is-small δ-complete
+                                            → Ω¬¬-Resizing 𝓥 𝓥
  small-non-trivial-poset-implies-¬¬resizing δ-complete (x , y , x-≤-y , x-≠-y) (locally-small , carrier-small) =
   embedded-retract-is-small Δ-Retract Δ-Embedding carrier-small
   where
@@ -576,11 +642,11 @@ module Predicative-Taboos (𝓤 𝓦 𝓥 : Universe) (A : Poset 𝓤 𝓦) wher
 
    Δ-Embedding : is-embedding (section Δ-Retract)
    Δ-Embedding = sections-into-sets-are-embeddings (Δ x-≤-y ∘ Ω¬¬-to-Ω) (r , H) carrier-of-[ A ]-is-set
-
- ¬¬resizing-implies-small-non-trivial-poset : Ω¬¬-Resizing 𝓥 𝓥 → {!!}
- ¬¬resizing-implies-small-non-trivial-poset = {!!}
  
- small-positive-poset-implies-resizing : (δ-complete : is-δ-complete) → is-positive-poset δ-complete → δ-complete poset-is-small → Ω-Resizing 𝓥 𝓥
+ small-positive-poset-implies-resizing : (δ-complete : is-δ-complete)
+                                       → is-positive-poset δ-complete
+                                       → small-δ-complete-poset.poset-is-small δ-complete
+                                       → Ω-Resizing 𝓥 𝓥
  small-positive-poset-implies-resizing δ-complete (x , y , x-≤-y , sup-condition) (locally-small , carrier-small) =
   embedded-retract-is-small Δ-Retract Δ-Embedding carrier-small
   where
@@ -599,7 +665,20 @@ module Predicative-Taboos (𝓤 𝓦 𝓥 : Universe) (A : Poset 𝓤 𝓦) wher
    Δ-Embedding : is-embedding (section Δ-Retract)
    Δ-Embedding = sections-into-sets-are-embeddings (Δ (≤-is-transitive A x y y x-≤-y (≤-is-reflexive A y))) (r , H) carrier-of-[ A ]-is-set
 
- resizing-implies-small-positive-poset : Ω-Resizing 𝓥 𝓥 → {!!}
- resizing-implies-small-positive-poset = {!!}
+module Resizing-Implication (𝓥 : Universe) where
+
+ open Examples-δ-complete-Posets 𝓥
+ open δ-complete-poset 𝓥 Ω-Poset
+ open non-trivial-posets Ω-Poset
+ open Positive-Posets (𝓥 ⁺) 𝓥 𝓥 Ω-Poset
+ open positive-posets Ω-δ-complete
+ open Small-δ-complete-poset (𝓥 ⁺) 𝓥 𝓥 Ω-Poset
+ open small-δ-complete-poset Ω-δ-complete
+
+ ¬¬resizing-implies-small-non-trivial-poset : Ω¬¬-Resizing 𝓥 𝓥 → Σ P ꞉ Poset (𝓥 ⁺) 𝓥 , is-δ-complete × is-non-trivial-poset × poset-is-small
+ ¬¬resizing-implies-small-non-trivial-poset resize = {!!}
+
+ resizing-implies-small-positive-poset : Ω-Resizing 𝓥 𝓥 → Σ P ꞉ Poset (𝓥 ⁺) 𝓥 , is-δ-complete × is-positive-poset × poset-is-small
+ resizing-implies-small-positive-poset resize = (Ω-Poset , Ω-δ-complete , Ω-positive , ⊑-is-locally-small , resize)
 
 \end{code}
