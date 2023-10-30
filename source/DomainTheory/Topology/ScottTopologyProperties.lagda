@@ -72,3 +72,16 @@ Conversely, if the principal filter is Scott open then `c` is a compact element.
   κ ((I , ι) , δ) p
 
 \end{code}
+
+We can now record this as a logical equivalence.
+
+\begin{code}
+
+ principal-filter-scott-open-iff-compact :
+  (x : ⟨ 𝓓 ⟩) → is-scott-open (↑[ 𝓓 ] x) holds ⇔ is-compact 𝓓 x
+ principal-filter-scott-open-iff-compact x = Ⅰ , Ⅱ
+  where
+   Ⅰ = principal-filter-scott-open-implies-compact x
+   Ⅱ = compact-implies-principal-filter-is-scott-open x
+
+\end{code}
