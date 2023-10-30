@@ -60,3 +60,15 @@ module Properties (𝓓 : DCPO {𝓤} {𝓥}) where
    Ⅱ (S , δ) = κ (index S) (S [_]) δ
 
 \end{code}
+
+Conversely, if the principal filter is Scott open then `c` is a compact element.
+
+\begin{code}
+
+ principal-filter-scott-open-implies-compact : (c : ⟨ 𝓓 ⟩)
+                                             → is-scott-open (↑[ 𝓓 ] c) holds
+                                             → is-compact 𝓓 c
+ principal-filter-scott-open-implies-compact c (υ , κ) I ι δ p =
+  κ ((I , ι) , δ) p
+
+\end{code}
