@@ -18,14 +18,21 @@ module DomainTheory.Topology.ScottTopologyProperties
         (fe : Fun-Ext)
         (𝓥  : Universe) where
 
+open import UF.Logic
+open Existential pt
+open Conjunction
+
+open PowersetOperations
+
 open import UF.Powerset-MultiUniverse
 open import Slice.Family
 
 open PropositionalTruncation pt
 
-open import DomainTheory.Topology.ScottTopology pt fe 𝓥
-open import DomainTheory.Basics.Dcpo            pt fe 𝓥
-open import DomainTheory.Basics.WayBelow        pt fe 𝓥
+open import DomainTheory.Topology.ScottTopology        pt fe 𝓥
+open import DomainTheory.Basics.Dcpo                   pt fe 𝓥
+open import DomainTheory.BasesAndContinuity.Continuity pt fe 𝓥
+open import DomainTheory.Basics.WayBelow               pt fe 𝓥
 
 
 \end{code}
@@ -83,5 +90,36 @@ We can now record this as a logical equivalence.
   where
    Ⅰ = principal-filter-scott-open-implies-compact x
    Ⅱ = compact-implies-principal-filter-is-scott-open x
+
+\end{code}
+
+\begin{code}
+
+module PropertiesAlgebraic (𝓓 : DCPO {𝓤} {𝓥})
+                           (𝕒 : structurally-algebraic 𝓓) where
+
+ open DefnOfScottTopology 𝓓 𝓥
+
+ open structurally-algebraic
+
+ join-of-compact-opens : 𝓟 {𝓥} ⟨ 𝓓 ⟩ → 𝓟 ⟨ 𝓓 ⟩
+ join-of-compact-opens U x = Ǝ c ꞉ ⟨ 𝓓 ⟩ , (is-compact 𝓓 c ∧ c ∈ₚ U ∧ c ∈ₚ (↑[ 𝓓 ] x)) holds
+
+ characterization-of-scott-open₁ : (U : 𝓟 ⟨ 𝓓 ⟩)
+                                 → is-scott-open U holds
+                                 → U ⊆ join-of-compact-opens U
+ characterization-of-scott-open₁ U (υ , κ) x p = {!!}
+  where
+   S : Fam 𝓥 ⟨ 𝓓 ⟩
+   S = index-of-compact-family 𝕒 x , compact-family 𝕒 x
+
+   S↑ : Fam↑
+   S↑ = S , compact-family-is-directed 𝕒 x
+
+   q : x ＝ ⋁ S↑
+   q = compact-family-∐-＝ 𝕒 x ⁻¹
+
+   r : (Ǝ c₀ ꞉ ⟨ 𝓓 ⟩ , c₀ ⊑⟨ 𝓓 ⟩ x) holds
+   r = {!p!}
 
 \end{code}
