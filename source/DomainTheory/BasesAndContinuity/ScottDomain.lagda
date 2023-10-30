@@ -30,6 +30,7 @@ open import Slice.Family
 
 open import DomainTheory.Basics.Dcpo                   pt fe 𝓥
 open import DomainTheory.BasesAndContinuity.Continuity pt fe 𝓥
+open import DomainTheory.BasesAndContinuity.Bases      pt fe 𝓥
 
 open import Locales.Frame hiding (⟨_⟩)
 
@@ -102,7 +103,12 @@ module DefinitionOfScottDomain (𝓓 : DCPO {𝓤} {𝓣}) where
 
  open DefinitionOfBoundedCompleteness
 
- is-scott-domain : 𝓤 ⊔ 𝓥 ⁺ ⊔ 𝓣 ⁺  ̇
- is-scott-domain = structurally-algebraic 𝓓 × bounded-complete 𝓓 holds
+ has-unspecified-small-compact-basisₚ : Ω (𝓤 ⊔ 𝓥 ⁺ ⊔ 𝓣)
+ has-unspecified-small-compact-basisₚ = has-unspecified-small-compact-basis 𝓓
+                                      , ∃-is-prop
+
+ is-scott-domain : Ω (𝓤 ⊔ 𝓥 ⁺ ⊔ 𝓣 ⁺)
+ is-scott-domain =
+  has-unspecified-small-compact-basisₚ ∧ bounded-complete 𝓓
 
 \end{code}
