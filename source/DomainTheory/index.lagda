@@ -139,10 +139,12 @@ import DomainTheory.ScottModelOfPCF.ScottModelOfPCF -- (2)
 {- Topology (by Ayberk Tosun)
 
 0. The definition of the Scott topology of a dcpo
+1. Some properties of the Scott topology of a dcpo
 
 -}
 
-import DomainTheory.Topology.ScottTopology          -- (0)
+import DomainTheory.Topology.ScottTopology           -- (0)
+import DomainTheory.Topology.ScottTopologyProperties -- (1)
 
 \end{code}
 
