@@ -583,8 +583,10 @@ module Ω-δ-complete-positive-Poset (𝓥 : Universe) where
   where
    open Joins (λ Q → λ R → (Q ⊑ R , ⊑-is-prop-valued Q R))
    open propositional-truncations-exist pt
+
    is-upbnd : ((Ǝ i ꞉ (𝟙 + P holds) , (δ Q R P i holds)) is-an-upper-bound-of ((𝟙 + P holds) , (δ Q R P))) holds
    is-upbnd i e = ∣ (i , e) ∣
+
    has-sup-cond : ((U , _) : upper-bound ((𝟙 + P holds) , (δ Q R P))) → (Ǝ i ꞉ (𝟙 + P holds) , (δ Q R P i holds)) ⊑ U
    has-sup-cond (U , U-is-upbnd) = ∥∥-rec (holds-is-prop U) f
     where
@@ -639,17 +641,30 @@ module Ω¬¬-δ-complete-non-trivial-Poset (𝓥 : Universe) where
 
  Ω¬¬-δ-complete : is-δ-complete
  Ω¬¬-δ-complete Q R Q-⊑-R P =
-   (((¬¬ (((Ǝ i ꞉ (𝟙 + P holds) , (δ Q R P i) holds') holds)) , negations-are-props fe) , ¬-is-¬¬-stable) , ({!!} , {!!})) 
+   (((¬¬ (((Ǝ i ꞉ (𝟙 + P holds) , (δ Q R P i) holds') holds)) , negations-are-props fe) , ¬-is-¬¬-stable) , (is-upbnd , has-lub-cond)) 
   where
    open Joins (λ Q → λ R → (Q ⊑ R , ⊑-is-prop-valued Q R))
    open propositional-truncations-exist pt
-   is-upbnd : (({!!}) is-an-upper-bound-of ((𝟙 + P holds) , δ Q R P)) holds
-   is-upbnd i e = ∣ (i , e) ∣
-   has-sup-cond : ((U , _) : upper-bound ((𝟙 + P holds) , δ Q R P)) → ({!!}) ⊑ U
-   has-sup-cond (U , U-is-upbnd) = {!!}
+
+   E : Ω¬¬ 𝓥
+   E = ((¬¬ ((Ǝ i ꞉ (𝟙 + P holds) , (δ Q R P i) holds') holds) , negations-are-props fe) , ¬-is-¬¬-stable)
+   
+   is-upbnd : (E is-an-upper-bound-of ((𝟙 + P holds) , δ Q R P)) holds 
+   is-upbnd i δ-i not-exists = not-exists ∣ (i , δ-i) ∣
+
+   has-lub-cond : ((U , _) : upper-bound ((𝟙 + P holds) , δ Q R P)) → E ⊑ U
+   has-lub-cond (U , U-is-upbnd) = E-⊑-U
     where
-     f : {!!} 
-     f (i , e) = U-is-upbnd i e
+     untrunc-map : Σ i ꞉ (𝟙 + (P holds)) , δ Q R P i holds' → U holds'
+     untrunc-map (i , δ-i) = U-is-upbnd i δ-i
+     f : (Ǝ i ꞉ (𝟙 + P holds) , (δ Q R P i) holds') holds → U holds'
+     f = ∥∥-rec (holds'-is-prop U) untrunc-map
+     g : ¬¬ ((Ǝ i ꞉ (𝟙 + P holds) , (δ Q R P i) holds') holds) → ¬¬ (U holds')
+     g = double-contrapositive f
+     h : ¬¬ (U holds') → U holds'
+     h = holds'-is-¬¬-stable U
+     E-⊑-U : E ⊑ U
+     E-⊑-U = h ∘ g
 
  open non-trivial-posets Ω¬¬-Poset
 
@@ -658,7 +673,7 @@ module Ω¬¬-δ-complete-non-trivial-Poset (𝓥 : Universe) where
 
 \end{code}
 
-Now we can prove the main theorems.
+Now we can prove the main theorems (see Chapter 6 Section 2.4 of Tom de Jong's thesis).
 
 \begin{code}
 
@@ -720,6 +735,17 @@ module Resizing-Implication (𝓥 : Universe) where
 
  module _ where
 
+  open Ω¬¬-δ-complete-non-trivial-Poset 𝓥
+  open δ-complete-poset 𝓥 Ω¬¬-Poset
+  open non-trivial-posets Ω¬¬-Poset
+  open Small-δ-complete-poset (𝓥 ⁺) 𝓥 𝓥 Ω¬¬-Poset
+  open small-δ-complete-poset Ω¬¬-δ-complete
+
+  ¬¬resizing-implies-small-non-trivial-poset : Ω¬¬-Resizing 𝓥 𝓥 → Σ P ꞉ Poset (𝓥 ⁺) 𝓥 , is-δ-complete × is-non-trivial-poset × poset-is-small
+  ¬¬resizing-implies-small-non-trivial-poset resize = (Ω¬¬-Poset , Ω¬¬-δ-complete , Ω¬¬-is-non-trivial , ⊑-is-locally-small , resize)
+
+ module _ where
+
   open Ω-δ-complete-positive-Poset 𝓥
   open δ-complete-poset 𝓥 Ω-Poset
   open Positive-Posets (𝓥 ⁺) 𝓥 𝓥 Ω-Poset
@@ -729,16 +755,5 @@ module Resizing-Implication (𝓥 : Universe) where
 
   resizing-implies-small-positive-poset : Ω-Resizing 𝓥 𝓥 → Σ P ꞉ Poset (𝓥 ⁺) 𝓥 , is-δ-complete × is-positive-poset × poset-is-small
   resizing-implies-small-positive-poset resize = (Ω-Poset , Ω-δ-complete , Ω-positive , ⊑-is-locally-small , resize)
-
- module _ where
-
-  open Ω¬¬-δ-complete-non-trivial-Poset 𝓥
-  open δ-complete-poset 𝓥 Ω¬¬-Poset
-  open non-trivial-posets Ω¬¬-Poset
-  open Small-δ-complete-poset (𝓥 ⁺) 𝓥 𝓥 Ω¬¬-Poset
-  open small-δ-complete-poset Ω¬¬-δ-complete
-
-  ¬¬resizing-implies-small-non-trivial-poset : Ω¬¬-Resizing 𝓥 𝓥 → Σ P ꞉ Poset (𝓥 ⁺) 𝓥 , is-δ-complete × is-non-trivial-poset × poset-is-small
-  ¬¬resizing-implies-small-non-trivial-poset resize = (Ω¬¬-Poset , Ω¬¬-δ-complete , Ω¬¬-is-non-trivial , ⊑-is-locally-small , resize)
 
 \end{code}
