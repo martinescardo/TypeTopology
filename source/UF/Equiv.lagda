@@ -62,6 +62,9 @@ id-is-equiv X = (id , λ x → refl) , (id , λ x → refl)
 ≃-refl : (X : 𝓤 ̇ ) → X ≃ X
 ≃-refl X = id , id-is-equiv X
 
+𝕚𝕕 : {X : 𝓤 ̇ } → X ≃ X
+𝕚𝕕 = ≃-refl _
+
 ∘-is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {f : X → Y} {f' : Y → Z}
            → is-equiv f
            → is-equiv f'

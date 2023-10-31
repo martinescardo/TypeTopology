@@ -3,6 +3,8 @@ Martin Escardo, 15 August 2014, with additions 23 January 2021.
 Higgs' Involution Theorem. In any topos, if f : Ω → Ω is a
 monomorphism, then it is an involution.
 
+This is attributed to Denis Higgs in the literature.
+
 We adapt and prove the result in univalent mathematics, using
 propositional and functional extensionality. (We don't rely on
 propositional resizing (or impredicativity).)
@@ -16,8 +18,8 @@ Scedrov. Thanks to Phil Scott for bringing my attention to this proof
 during a visit to Birmingham.
 
 Added 23 Jan 2021. From a group structure on Ω we get excluded middle,
-as an application of Higgs Theorem. This doesn't seem to be known in
-the topos theory community.
+as an application of Higgs Involution Theorem. This doesn't seem to be
+known in the topos theory community.
 
 \begin{code}
 

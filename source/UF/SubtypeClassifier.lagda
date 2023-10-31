@@ -69,17 +69,6 @@ holds-gives-equal-⊤ pe fe (P , i) = true-gives-equal-⊤ pe fe P i
 equal-⊤-gives-holds : (p : Ω 𝓤) → p ＝ ⊤ → p holds
 equal-⊤-gives-holds .⊤ refl = ⋆
 
-Ω-extensionality : funext 𝓤 𝓤
-                 → propext 𝓤
-                 → {p q : Ω 𝓤}
-                 → (p holds → q holds)
-                 → (q holds → p holds)
-                 → p ＝ q
-Ω-extensionality {𝓤} fe pe {p} {q} f g =
- to-Σ-＝
-  (pe (holds-is-prop p) (holds-is-prop q) f g ,
-   being-prop-is-prop fe _ _)
-
 equal-⊥-gives-not-equal-⊤ : (fe : Fun-Ext)
                             (pe : propext 𝓤)
                             (p : Ω 𝓤)
@@ -167,6 +156,17 @@ equal-⊤-gives-true P hp r = f ⋆
   f : 𝟙 → P
   f = transport id s
 
+Ω-extensionality : funext 𝓤 𝓤
+                 → propext 𝓤
+                 → {p q : Ω 𝓤}
+                 → (p holds → q holds)
+                 → (q holds → p holds)
+                 → p ＝ q
+Ω-extensionality {𝓤} fe pe {p} {q} f g =
+ to-Σ-＝
+  (pe (holds-is-prop p) (holds-is-prop q) f g ,
+   being-prop-is-prop fe _ _)
+
 Ω-ext : propext 𝓤
       → funext 𝓤 𝓤
       → {p q : Ω 𝓤}
@@ -183,7 +183,7 @@ equal-⊤-gives-true P hp r = f ⋆
   II y = equal-⊤-gives-true P i (g (true-gives-equal-⊤ pe fe Q j y))
 
   III : P , i ＝ Q , j
-  III = to-Σ-＝ (pe i j I II , being-prop-is-prop fe _ _ )
+  III = Ω-extensionality fe pe I II
 
 Ω-discrete-gives-EM : funext 𝓤 𝓤
                     → propext 𝓤
