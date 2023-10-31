@@ -549,7 +549,7 @@ the type of not-not stable propositions and the type of propositions.
 
 \begin{code}
 
-module Examples-δ-complete-Posets (𝓥 : Universe) where
+module Ω-δ-complete-positive-Poset (𝓥 : Universe) where
 
  _⊑_ : Ω 𝓥 → Ω 𝓥 → 𝓥  ̇
  P ⊑ Q = P holds → Q holds
@@ -604,6 +604,57 @@ module Examples-δ-complete-Posets (𝓥 : Universe) where
      P-is-upbnd : (P is-an-upper-bound-of ((𝟙 + (P holds)) , δ ⊥ Q P)) holds
      P-is-upbnd (inr p) e = p
 
+module Ω¬¬-δ-complete-non-trivial-Poset (𝓥 : Universe) where
+
+ _⊑_ : Ω¬¬ 𝓥 → Ω¬¬ 𝓥 → 𝓥  ̇
+ P ⊑ Q = P holds' → Q holds'
+
+ ⊑-is-prop-valued : (P Q : Ω¬¬ 𝓥) → is-prop (P ⊑ Q) 
+ ⊑-is-prop-valued P Q = Π-is-prop fe (λ _ → holds'-is-prop Q)
+
+ ⊑-is-reflexive : (P : Ω¬¬ 𝓥) → P ⊑ P
+ ⊑-is-reflexive _ = id
+
+ ⊑-is-antisymmetric : {P Q : Ω¬¬ 𝓥} → P ⊑ Q → Q ⊑ P → P ＝ Q 
+ ⊑-is-antisymmetric {P} {Q} o r =
+   to-subtype-＝ (λ X → being-¬¬-stable-is-prop fe (holds-is-prop X))
+                 (to-subtype-＝ (λ _ → being-prop-is-prop fe) (pe (holds'-is-prop P) (holds'-is-prop Q) o r))
+
+ ⊑-is-transitive : (P Q R : Ω¬¬ 𝓥) → P ⊑ Q → Q ⊑ R → P ⊑ R
+ ⊑-is-transitive P Q R o r p = r (o p)
+
+ Ω¬¬-Poset : Poset (𝓥 ⁺) 𝓥
+ Ω¬¬-Poset = (Ω¬¬ 𝓥 ,
+            (λ P → λ Q → (P ⊑ Q , ⊑-is-prop-valued P Q)) ,
+            (((λ P → ⊑-is-reflexive P)
+              , λ P → λ Q → λ R → ⊑-is-transitive P Q R)
+              , λ o → λ r → ⊑-is-antisymmetric o r))
+
+ open Local-Smallness (𝓥 ⁺) 𝓥 𝓥 Ω¬¬-Poset (λ P → λ Q → (P ⊑ Q , ⊑-is-prop-valued P Q))
+
+ ⊑-is-locally-small : is-locally-small-order
+ ⊑-is-locally-small P Q = (P ⊑ Q , ≃-refl (P ⊑ Q))
+
+ open δ-complete-poset 𝓥 Ω¬¬-Poset
+
+ Ω¬¬-δ-complete : is-δ-complete
+ Ω¬¬-δ-complete Q R Q-⊑-R P =
+   (((¬¬ (((Ǝ i ꞉ (𝟙 + P holds) , (δ Q R P i) holds') holds)) , negations-are-props fe) , ¬-is-¬¬-stable) , ({!!} , {!!})) 
+  where
+   open Joins (λ Q → λ R → (Q ⊑ R , ⊑-is-prop-valued Q R))
+   open propositional-truncations-exist pt
+   is-upbnd : (({!!}) is-an-upper-bound-of ((𝟙 + P holds) , δ Q R P)) holds
+   is-upbnd i e = ∣ (i , e) ∣
+   has-sup-cond : ((U , _) : upper-bound ((𝟙 + P holds) , δ Q R P)) → ({!!}) ⊑ U
+   has-sup-cond (U , U-is-upbnd) = {!!}
+    where
+     f : {!!} 
+     f (i , e) = U-is-upbnd i e
+
+ open non-trivial-posets Ω¬¬-Poset
+
+ Ω¬¬-is-non-trivial : is-non-trivial-poset
+ Ω¬¬-is-non-trivial = ((⊥ , 𝟘-is-¬¬-stable) , (⊤ , 𝟙-is-¬¬-stable) , (λ z → 𝟘-elim z) , (λ np → 𝟘-is-not-𝟙 (ap (pr₁ ∘ pr₁) np)))
 
 \end{code}
 
@@ -667,18 +718,27 @@ module Predicative-Taboos (𝓤 𝓦 𝓥 : Universe) (A : Poset 𝓤 𝓦) wher
 
 module Resizing-Implication (𝓥 : Universe) where
 
- open Examples-δ-complete-Posets 𝓥
- open δ-complete-poset 𝓥 Ω-Poset
- open non-trivial-posets Ω-Poset
- open Positive-Posets (𝓥 ⁺) 𝓥 𝓥 Ω-Poset
- open positive-posets Ω-δ-complete
- open Small-δ-complete-poset (𝓥 ⁺) 𝓥 𝓥 Ω-Poset
- open small-δ-complete-poset Ω-δ-complete
+ module _ where
 
- ¬¬resizing-implies-small-non-trivial-poset : Ω¬¬-Resizing 𝓥 𝓥 → Σ P ꞉ Poset (𝓥 ⁺) 𝓥 , is-δ-complete × is-non-trivial-poset × poset-is-small
- ¬¬resizing-implies-small-non-trivial-poset resize = {!!}
+  open Ω-δ-complete-positive-Poset 𝓥
+  open δ-complete-poset 𝓥 Ω-Poset
+  open Positive-Posets (𝓥 ⁺) 𝓥 𝓥 Ω-Poset
+  open positive-posets Ω-δ-complete
+  open Small-δ-complete-poset (𝓥 ⁺) 𝓥 𝓥 Ω-Poset
+  open small-δ-complete-poset Ω-δ-complete
 
- resizing-implies-small-positive-poset : Ω-Resizing 𝓥 𝓥 → Σ P ꞉ Poset (𝓥 ⁺) 𝓥 , is-δ-complete × is-positive-poset × poset-is-small
- resizing-implies-small-positive-poset resize = (Ω-Poset , Ω-δ-complete , Ω-positive , ⊑-is-locally-small , resize)
+  resizing-implies-small-positive-poset : Ω-Resizing 𝓥 𝓥 → Σ P ꞉ Poset (𝓥 ⁺) 𝓥 , is-δ-complete × is-positive-poset × poset-is-small
+  resizing-implies-small-positive-poset resize = (Ω-Poset , Ω-δ-complete , Ω-positive , ⊑-is-locally-small , resize)
+
+ module _ where
+
+  open Ω¬¬-δ-complete-non-trivial-Poset 𝓥
+  open δ-complete-poset 𝓥 Ω¬¬-Poset
+  open non-trivial-posets Ω¬¬-Poset
+  open Small-δ-complete-poset (𝓥 ⁺) 𝓥 𝓥 Ω¬¬-Poset
+  open small-δ-complete-poset Ω¬¬-δ-complete
+
+  ¬¬resizing-implies-small-non-trivial-poset : Ω¬¬-Resizing 𝓥 𝓥 → Σ P ꞉ Poset (𝓥 ⁺) 𝓥 , is-δ-complete × is-non-trivial-poset × poset-is-small
+  ¬¬resizing-implies-small-non-trivial-poset resize = (Ω¬¬-Poset , Ω¬¬-δ-complete , Ω¬¬-is-non-trivial , ⊑-is-locally-small , resize)
 
 \end{code}
