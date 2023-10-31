@@ -17,6 +17,81 @@ open import UF.Base using (transport₂ ; transport₃ ; ap₂ ; ap₃)
 open import MGS.hlevels using (hedberg)
 open import MGS.MLTT using (has-decidable-equality)
 
+-- TODO maybe this should be moved to a new file?
+-- Extensional equality for types realizable in System T
+
+_≡_ : {A : type} (f g : 〖 A 〗) → Type
+_≡_ {ι} f g = f ＝ g
+_≡_ {σ ⇒ τ} f g = (a b : 〖 σ 〗) → a ≡ b → f a ≡ g b
+
+≡T : (A : type) (f g : 〖 A 〗) → Type
+≡T A f g = f ≡ g
+
+syntax ≡T A f g = f ≡[ A ] g
+
+rec-respects-≡ : {σ : type} {a₁ a₂ : 〖 ι ⇒ σ ⇒ σ 〗} {b₁ b₂ : 〖 σ 〗} {c₁ c₂ : ℕ}
+      → a₁ ≡ a₂
+      → b₁ ≡ b₂
+      → c₁ ≡ c₂
+      → rec a₁ b₁ c₁ ≡ rec a₂ b₂ c₂
+rec-respects-≡ {σ} {a₁} {a₂} {b₁} {b₂} {zero}    {zero}     e₁ e₂ refl = e₂
+rec-respects-≡ {σ} {a₁} {a₂} {b₁} {b₂} {succ c₁} {succ .c₁} e₁ e₂ refl =
+ e₁ c₁ c₁ refl (rec a₁ b₁ c₁) (rec a₂ b₂ c₁) (rec-respects-≡ {c₁ = c₁} e₁ e₂ refl)
+
+_【≡】_ : {Γ : Cxt} (a b : 【 Γ 】) → Type
+_【≡】_ {Γ} a b = {σ : type} (i : ∈Cxt σ Γ) → a i ≡ b i
+
+≡-refl : {Γ : Cxt} {σ : type} (t : T Γ σ) (u v : 【 Γ 】)
+       → u 【≡】 v → ⟦ t ⟧ u ≡ ⟦ t ⟧ v
+≡-refl {Γ} {.ι} Zero u v e = refl
+≡-refl {Γ} {.ι} (Succ t) u v e = ap succ (≡-refl t u v e)
+≡-refl {Γ} {σ} (Rec t t₁ t₂) u v e =
+ rec-respects-≡ (≡-refl t u v e) (≡-refl t₁ u v e) (≡-refl t₂ u v e)
+≡-refl {Γ} {σ} (ν i) u v e = e i
+≡-refl {Γ} {σ ⇒ τ} (ƛ t) u v e a b k = ≡-refl t (u ‚ a) (v ‚ b) i
+ where
+  i : (u ‚ a) 【≡】 (v ‚ b)
+  i {τ'} (∈Cxt0 .Γ) = k
+  i {τ'} (∈CxtS .σ j) = e j
+≡-refl {Γ} {σ} (t · t₁) u v e =
+ ≡-refl t u v e (⟦ t₁ ⟧ u) (⟦ t₁ ⟧ v) (≡-refl t₁ u v e)
+
+≡-refl₀ : {σ : type} (t : T₀ σ) → ⟦ t ⟧₀ ≡ ⟦ t ⟧₀
+≡-refl₀ {σ} t = ≡-refl t ⟨⟩ ⟨⟩ (λ ())
+
+≡-symm : {σ : type} {a b : 〖 σ 〗}
+       → a ≡ b → b ≡ a
+≡-symm {ι} {a} {.a} refl = refl
+≡-symm {σ ⇒ τ} {a} {b} e a₁ a₂ a≡ =
+ ≡-symm {τ} {a a₂} {b a₁} (e a₂ a₁ (≡-symm {σ} {a₁} {a₂} a≡))
+
+≡-trans : {σ : type} {a b c : 〖 σ 〗} → a ≡ b → b ≡ c → a ≡ c
+≡-trans {ι}     a＝b b＝c = a＝b ∙ b＝c
+≡-trans {σ ⇒ τ} a≡b b≡c t u t≡u =
+ ≡-trans ((a≡b t t (≡-trans t≡u (≡-symm t≡u)))) ((b≡c t u t≡u))
+
+≡ₗ : {σ : type} {a b : 〖 σ 〗} → a ≡ b → a ≡ a
+≡ₗ e = ≡-trans e (≡-symm e)
+
+≡ᵣ : {σ : type} {a b : 〖 σ 〗} → a ≡ b → b ≡ b
+≡ᵣ e = ≡-trans (≡-symm e) e
+
+-- Notation for chaining equalities
+
+_≡⟨_⟩_ : {σ : type} (x : 〖 σ 〗) {y z : 〖 σ 〗} → x ≡ y → y ≡ z → x ≡ z
+_ ≡⟨ p ⟩ q = ≡-trans p q
+
+_＝≡⟨_⟩_ : {σ : type} (x : 〖 σ 〗) {y z : 〖 σ 〗} → x ＝ y → y ≡ z → x ≡ z
+_ ＝≡⟨ refl ⟩ q = q
+
+_≡＝⟨_⟩_ : {σ : type} (x : 〖 σ 〗) {y z : 〖 σ 〗} → x ≡ y → y ＝ z → x ≡ z
+_ ≡＝⟨ p ⟩ refl = p
+
+infixr 0 _≡⟨_⟩_
+infixr 0 _＝≡⟨_⟩_
+infixr 0 _≡＝⟨_⟩_
+
+-- Machinery for substitutions
 
 -- Γ₁ ⊆ Γ₂ states that Γ₁ is a sub context of Γ₂
 _⊆_ : (Γ₁ Γ₂ : Cxt) → Type
@@ -417,79 +492,6 @@ close-eta {Γ₁} {Γ₂} {σ}     s1 s2 (t · t₁)      e =
     ∎
 ⌜close⌝ {A} {σ}       {Γ} (t · t₁)    {Δ} s = ap₂ _·_ (⌜close⌝ t s) (⌜close⌝ t₁ s)
 
-_≡_ : {A : type} (f g : 〖 A 〗) → Type
-_≡_ {ι} f g = f ＝ g
-_≡_ {σ ⇒ τ} f g = (a b : 〖 σ 〗) → a ≡ b → f a ≡ g b
-
-≡T : (A : type) (f g : 〖 A 〗) → Type
-≡T A f g = f ≡ g
-
-syntax ≡T A f g = f ≡[ A ] g
-
-≡rec-aux : {σ : type} {a₁ a₂ : 〖 ι ⇒ σ ⇒ σ 〗} {b₁ b₂ : 〖 σ 〗} {c : ℕ}
-         → a₁ ≡ a₂
-         → b₁ ≡ b₂
-         → rec a₁ b₁ c ≡ rec a₂ b₂ c
-≡rec-aux {σ} {a₁} {a₂} {b₁} {b₂} {zero} e₁ e₂ = e₂
-≡rec-aux {σ} {a₁} {a₂} {b₁} {b₂} {succ c} e₁ e₂ =
- e₁ c c refl _ _ (≡rec-aux {σ} {a₁} {a₂} {b₁} {b₂} {c} e₁ e₂)
-
-≡rec : {σ : type} {a₁ a₂ : 〖 ι ⇒ σ ⇒ σ 〗} {b₁ b₂ : 〖 σ 〗} {c₁ c₂ : ℕ}
-      → a₁ ≡ a₂
-      → b₁ ≡ b₂
-      → c₁ ≡ c₂
-      → rec a₁ b₁ c₁ ≡ rec a₂ b₂ c₂
-≡rec {σ} {a₁} {a₂} {b₁} {b₂} {c₁} {.c₁} e₁ e₂ refl =
- ≡rec-aux {σ} {a₁} {a₂} {b₁} {b₂} {c₁} e₁ e₂
-
-_【≡】_ : {Γ : Cxt} (a b : 【 Γ 】) → Type
-_【≡】_ {Γ} a b = {σ : type} (i : ∈Cxt σ Γ) → a i ≡ b i
-
-≡-refl : {Γ : Cxt} {σ : type} (t : T Γ σ) (u v : 【 Γ 】)
-       → u 【≡】 v → ⟦ t ⟧ u ≡ ⟦ t ⟧ v
-≡-refl {Γ} {.ι} Zero u v e = refl
-≡-refl {Γ} {.ι} (Succ t) u v e = ap succ (≡-refl t u v e)
-≡-refl {Γ} {σ} (Rec t t₁ t₂) u v e =
- ≡rec (≡-refl t u v e) (≡-refl t₁ u v e) (≡-refl t₂ u v e)
-≡-refl {Γ} {σ} (ν i) u v e = e i
-≡-refl {Γ} {σ ⇒ τ} (ƛ t) u v e a b k = ≡-refl t (u ‚ a) (v ‚ b) i
- where
-  i : (u ‚ a) 【≡】 (v ‚ b)
-  i {τ'} (∈Cxt0 .Γ) = k
-  i {τ'} (∈CxtS .σ j) = e j
-≡-refl {Γ} {σ} (t · t₁) u v e =
- ≡-refl t u v e (⟦ t₁ ⟧ u) (⟦ t₁ ⟧ v) (≡-refl t₁ u v e)
-
-≡-refl₀ : {σ : type} (t : T₀ σ) → ⟦ t ⟧₀ ≡ ⟦ t ⟧₀
-≡-refl₀ {σ} t = ≡-refl t ⟨⟩ ⟨⟩ (λ ())
-
-≡-sym : {σ : type} {a b : 〖 σ 〗}
-       → a ≡ b
-       → b ≡ a
-≡-sym {ι} {a} {.a} refl = refl
-≡-sym {σ ⇒ τ} {a} {b} e a₁ a₂ a≡ =
- ≡-sym {τ} {a a₂} {b a₁} (e a₂ a₁ (≡-sym {σ} {a₁} {a₂} a≡))
-
-≡-trans : {σ : type} {a b c : 〖 σ 〗}
-         → a ≡ b
-         → b ≡ c
-         → a ≡ c
-≡-trans {ι} {a} {.a} {c} refl e₂ = e₂
-≡-trans {σ ⇒ τ} {a} {b} {c} e₁ e₂ a₁ a₂ a≡ =
- ≡-trans {τ} {a a₁} {b a₁} {c a₂}
-         (e₁ a₁ a₁ (≡-trans {σ} {a₁} {a₂} {a₁} a≡ (≡-sym a≡)))
-         (e₂ a₁ a₂ a≡)
-
-≡ₗ : {σ : type} {a b : 〖 σ 〗}
-       → a ≡ b
-       → a ≡ a
-≡ₗ {σ} {a} {b} e = ≡-trans e (≡-sym e)
-
-≡ᵣ : {σ : type} {a b : 〖 σ 〗}
-       → a ≡ b
-       → b ≡ b
-≡ᵣ {σ} {a} {b} e = ≡-trans (≡-sym e) e
-
 【⊆】 : {Γ Δ : Cxt} (s : Γ ⊆ Δ) → 【 Δ 】 → 【 Γ 】
 【⊆】 {Γ} {Δ} s c {τ} i = c (s i)
 
@@ -499,7 +501,7 @@ _【≡】_ {Γ} a b = {σ : type} (i : ∈Cxt σ Γ) → a i ≡ b i
 ⟦weaken⟧ {Γ} {Δ} {_} Zero s c c' e = refl
 ⟦weaken⟧ {Γ} {Δ} {_} (Succ t) s c c' e = ap succ (⟦weaken⟧ t s c c' e)
 ⟦weaken⟧ {Γ} {Δ} {σ} (Rec t t₁ t₂) s c c' e =
- ≡rec (⟦weaken⟧ t s c c' e) (⟦weaken⟧ t₁ s c c' e) (⟦weaken⟧ t₂ s c c' e)
+ rec-respects-≡ (⟦weaken⟧ t s c c' e) (⟦weaken⟧ t₁ s c c' e) (⟦weaken⟧ t₂ s c c' e)
 ⟦weaken⟧ {Γ} {Δ} {σ} (ν i) s c c' e = e i
 ⟦weaken⟧ {Γ} {Δ} {σ ⇒ τ} (ƛ t) s c c' e a b x =
  ⟦weaken⟧ t (⊆,, σ s) (c ‚ a) (c' ‚ b) x'
@@ -537,7 +539,7 @@ _【≡】_ {Γ} a b = {σ : type} (i : ∈Cxt σ Γ) → a i ≡ b i
 ⟦close⟧ {Γ} {Δ} Zero s c c' r e = refl
 ⟦close⟧ {Γ} {Δ} (Succ t) s c c' r e = ap succ (⟦close⟧ t s c c' r e)
 ⟦close⟧ {Γ} {Δ} (Rec t t₁ t₂) s c c' r e =
- ≡rec (⟦close⟧ t s c c' r e) (⟦close⟧ t₁ s c c' r e) (⟦close⟧ t₂ s c c' r e)
+ rec-respects-≡ (⟦close⟧ t s c c' r e) (⟦close⟧ t₁ s c c' r e) (⟦close⟧ t₂ s c c' r e)
 ⟦close⟧ {Γ} {Δ} (ν i) s c c' r e = e i
 ⟦close⟧ {Γ} {Δ} {σ ⇒ τ} (ƛ t) s c c' r e a b z =
  ⟦close⟧ t (Subƛ s) (c ‚ a) (c' ‚ b) (【≡】-is-refl‚ c a r (≡ₗ z)) x
@@ -717,19 +719,6 @@ close-Sub,,-as-close-Subƛ {Γ} {σ} {τ} t ys y =
  close (close t (Subƛ ys)) (Sub1 y)
   ∎
 
-_≡⟨_⟩_ : {σ : type} (x : 〖 σ 〗) {y z : 〖 σ 〗} → x ≡ y → y ≡ z → x ≡ z
-_ ≡⟨ p ⟩ q = ≡-trans p q
-
-_＝≡⟨_⟩_ : {σ : type} (x : 〖 σ 〗) {y z : 〖 σ 〗} → x ＝ y → y ≡ z → x ≡ z
-_ ＝≡⟨ refl ⟩ q = q
-
-_≡＝⟨_⟩_ : {σ : type} (x : 〖 σ 〗) {y z : 〖 σ 〗} → x ≡ y → y ＝ z → x ≡ z
-_ ≡＝⟨ p ⟩ refl = p
-
-infixr 0 _≡⟨_⟩_
-infixr 0 _＝≡⟨_⟩_
-infixr 0 _≡＝⟨_⟩_
-
 ⟦weaken,-weaken,⟧ : {Γ : Cxt} {σ₁ σ₂ τ : type}
                     (s : 【 Γ 】)
                     (y : 〖 σ₁ 〗) (z : 〖 σ₂ 〗)
@@ -762,7 +751,7 @@ infixr 0 _≡＝⟨_⟩_
  ⟦ weaken, σ (weaken, σ a) ⟧ (s ‚ y ‚ z)
   ≡⟨ ⟦weaken,-weaken,⟧ s y z a ry rs ⟩
  ⟦ a ⟧ s
-  ≡＝⟨ ≡-sym (⟦weaken,⟧ a σ (s ‚ x) s rs) ⟩
+  ≡＝⟨ ≡-symm (⟦weaken,⟧ a σ (s ‚ x) s rs) ⟩
  ⟦ weaken, σ a ⟧ (s ‚ x)
   ∎
 
@@ -770,7 +759,7 @@ infixr 0 _≡＝⟨_⟩_
 【≡】-trans {Γ} {a} {b} {c} e₁ e₂ {τ} i = ≡-trans (e₁ i) (e₂ i)
 
 【≡】-sym : {Γ : Cxt} {a b : 【 Γ 】} → a 【≡】 b → b 【≡】 a
-【≡】-sym {Γ} {a} {b} e {τ} i = ≡-sym (e i)
+【≡】-sym {Γ} {a} {b} e {τ} i = ≡-symm (e i)
 
 【≡】-is-refl-【Sub₀】 : {Γ : Cxt} (s : Sub₀ Γ) → 【≡】-is-refl (【Sub₀】 s)
 【≡】-is-refl-【Sub₀】 {Γ} s {τ} i = ≡-refl (s i) ⟨⟩ ⟨⟩ (λ ())
@@ -784,7 +773,7 @@ infixr 0 _≡＝⟨_⟩_
                      → (【Sub】 (Sub,, ys u) ⟨⟩) 【≡】 (【Sub】 (Subƛ ys) (⟨⟩ ‚ ⟦ u ⟧₀))
 【≡】-【Sub】-Sub,, {Γ} {σ} ys u {.σ} (∈Cxt0 .Γ) = ≡-refl u _ _ (λ ())
 【≡】-【Sub】-Sub,, {Γ} {σ} ys u {τ} (∈CxtS .σ i) =
- ≡-sym (⟦weaken,⟧ (ys i) σ _ _ (λ ()))
+ ≡-symm (⟦weaken,⟧ (ys i) σ _ _ (λ ()))
 
 【≡】-【Sub】-⊆Sub : {Γ : Cxt} (s : Sub₀ Γ)
                    → (【Sub】 (⊆Sub (∈CxtS ι) (Subƛ s)) (⟨⟩ ‚ zero)) 【≡】 (【Sub₀】 s)
