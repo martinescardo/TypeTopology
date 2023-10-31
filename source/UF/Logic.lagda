@@ -153,21 +153,6 @@ module Negation-of-equality (fe : Fun-Ext) where
 
 \end{code}
 
-\section{Propositional versions of subset operations}
-
-\begin{code}
-
-module PowersetOperations where
-
- open import UF.Powerset
-
- infix  40 _∈ₚ_
-
- _∈ₚ_ : {X : 𝓤  ̇} → X → (X → Ω 𝓥) → Ω 𝓥
- x ∈ₚ A = A x
-
-\end{code}
-
 \section{A module for importing all combinators}
 
 \begin{code}
@@ -184,6 +169,5 @@ module AllCombinators
  open Existential          pt public
  open Truncation           pt public
  open Negation-of-equality fe public
- open PowersetOperations      public
 
 \end{code}
