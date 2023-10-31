@@ -426,7 +426,7 @@ module Retract-Lemmas (𝓤  𝓦  𝓥 : Universe) (A : Poset 𝓤 𝓦) where
 Is it worth it to collect the two directions as an iff statement?
 
 We now formalize the second retract lemma. Here we replace the assumption of non-triviality with positivity.
-This allows us to exhibit the type of propositions as a retract of a local non-trivial δ-complete poset. 
+This allows us to exhibit the type of propositions as a retract of a local positive δ-complete poset. 
 
 \begin{code}
 
@@ -731,7 +731,7 @@ module Predicative-Taboos (𝓤 𝓦 𝓥 : Universe) (A : Poset 𝓤 𝓦) wher
    Δ-Embedding : is-embedding (section Δ-Retract)
    Δ-Embedding = sections-into-sets-are-embeddings (Δ (≤-is-transitive A x y y x-≤-y (≤-is-reflexive A y))) (r , H) carrier-of-[ A ]-is-set
 
-module Resizing-Implication (𝓥 : Universe) where
+module Resizing-Implications (𝓥 : Universe) where
 
  module _ where
 
