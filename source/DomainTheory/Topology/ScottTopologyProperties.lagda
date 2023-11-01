@@ -102,13 +102,17 @@ module PropertiesAlgebraic (𝓓 : DCPO {𝓤} {𝓥})
 
  open structurally-algebraic
 
+ is-compactₚ : ⟨ 𝓓 ⟩ → Ω (𝓤 ⊔ 𝓥 ⁺)
+ is-compactₚ x = is-compact 𝓓 x , being-compact-is-prop 𝓓 x
+
  join-of-compact-opens : 𝓟 {𝓥} ⟨ 𝓓 ⟩ → 𝓟 ⟨ 𝓓 ⟩
- join-of-compact-opens U x = Ǝ c ꞉ ⟨ 𝓓 ⟩ , (is-compact 𝓓 c ∧ c ∈ₚ U ∧ c ∈ₚ (↑[ 𝓓 ] x)) holds
+ join-of-compact-opens U x =
+   Ǝ c ꞉ ⟨ 𝓓 ⟩ , (is-compactₚ c ∧ c ∈ₚ U ∧ c ∈ₚ (↑[ 𝓓 ] x)) holds
 
  characterization-of-scott-open₁ : (U : 𝓟 ⟨ 𝓓 ⟩)
                                  → is-scott-open U holds
                                  → U ⊆ join-of-compact-opens U
- characterization-of-scott-open₁ U (υ , κ) x p = {!!}
+ characterization-of-scott-open₁ U (υ , ϟ) x p = {!!}
   where
    S : Fam 𝓥 ⟨ 𝓓 ⟩
    S = index-of-compact-family 𝕒 x , compact-family 𝕒 x
@@ -119,7 +123,16 @@ module PropertiesAlgebraic (𝓓 : DCPO {𝓤} {𝓥})
    q : x ＝ ⋁ S↑
    q = compact-family-∐-＝ 𝕒 x ⁻¹
 
-   r : (Ǝ c₀ ꞉ ⟨ 𝓓 ⟩ , c₀ ⊑⟨ 𝓓 ⟩ x) holds
-   r = {!p!}
+   κ : (i : index S) → is-compact 𝓓 (S [ i ])
+   κ = compact-family-is-compact 𝕒 x
+
+   φ : U (⋁ S↑) holds
+   φ = transport (λ - → U - holds) q p
+
+   r : (Ǝ c₀ ꞉ ⟨ 𝓓 ⟩ , (is-compactₚ c) ∧ ? ∧ (c₀ ⊑⟨ 𝓓 ⟩ x)) holds
+   r = ∥∥-rec ∃-is-prop † (ϟ S↑ φ)
+    where
+     † : Σ i ꞉ index S , U (S [ i ]) holds → ∃ c₀ ꞉ ⟨ 𝓓 ⟩ , c₀ ⊑⟨ 𝓓 ⟩ x
+     † (i , p) = {!!}
 
 \end{code}
