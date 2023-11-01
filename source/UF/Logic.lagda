@@ -33,6 +33,28 @@ module Conjunction where
 
 \end{code}
 
+Added by Martin Escardo 1st Nov 2023.
+
+\begin{code}
+
+ module _ (pe : propext 𝓤) (fe : funext 𝓤 𝓤) where
+
+  ∧-intro : {p q : Ω 𝓤} → p ＝ ⊤ → q ＝ ⊤ → p ∧ q ＝ ⊤
+  ∧-intro {p} {q} a b = holds-gives-equal-⊤ pe fe (p ∧ q)
+                         (equal-⊤-gives-holds p a , equal-⊤-gives-holds q b)
+
+  ∧-elim-L : (p q : Ω 𝓤) → p ∧ q ＝ ⊤ → p ＝ ⊤
+  ∧-elim-L p q c = holds-gives-equal-⊤ pe fe p
+                    (pr₁ (equal-⊤-gives-holds (p ∧ q) c))
+
+  ∧-elim-R : (p q : Ω 𝓤) → p ∧ q ＝ ⊤ → q ＝ ⊤
+  ∧-elim-R p q c = holds-gives-equal-⊤ pe fe q
+                    (pr₂ (equal-⊤-gives-holds (p ∧ q) c))
+
+\end{code}
+
+End of addition.
+
 \section{Universal quantification}
 
 \begin{code}
@@ -78,6 +100,8 @@ module Implication (fe : Fun-Ext) where
  _↔_ : Ω 𝓤 → Ω 𝓥 → Ω (𝓤 ⊔ 𝓥)
  P ↔ Q = (P ⇒ Q) ∧ (Q ⇒ P)
 
+ infixr 3 _↔_
+
  biimplication-forward : (P : Ω 𝓤) (Q : Ω 𝓥)
                        → (P ↔ Q) holds → (P ⇒ Q) holds
  biimplication-forward P Q (φ , _) = φ
@@ -86,9 +110,40 @@ module Implication (fe : Fun-Ext) where
                         → (P ↔ Q) holds → (Q ⇒ P) holds
  biimplication-backward P Q (_ , ψ) = ψ
 
- infixr 3 _↔_
+\end{code}
+
+Added by Martin Escardo 1st Nov 2023.
+
+\begin{code}
+
+ module _ (pe : propext 𝓤) where
+
+  ↔-refl : (p : Ω 𝓤) → (p ↔ p) ＝ ⊤
+  ↔-refl p = holds-gives-equal-⊤ pe fe
+              (p ↔ p)
+              (id , id)
+
+  ＝-gives-↔  : (p q : Ω 𝓤) →  p ＝ q → (p ↔ q) ＝ ⊤
+  ＝-gives-↔ p p refl = ↔-refl p
+
+  ↔-gives-＝ : (p q : Ω 𝓤) → (p ↔ q) ＝ ⊤ → p ＝ q
+  ↔-gives-＝ p q e = Ω-ext pe fe f g
+   where
+    f : p ＝ ⊤ → q ＝ ⊤
+    f a = holds-gives-equal-⊤ pe fe q
+          (equal-⊤-gives-holds (p ⇒ q)
+            (∧-elim-L pe fe (p ⇒ q) (q ⇒ p) e)
+            (equal-⊤-gives-holds p a))
+
+    g : q ＝ ⊤ → p ＝ ⊤
+    g a = holds-gives-equal-⊤ pe fe p
+          (equal-⊤-gives-holds (q ⇒ p)
+            (∧-elim-R pe fe (p ⇒ q) (q ⇒ p) e)
+            (equal-⊤-gives-holds q a))
 
 \end{code}
+
+End of addition.
 
 \section{Disjunction}
 

@@ -228,9 +228,12 @@ lemma, is attributed to Denis Higgs in the literature [1], without any
 explicit citation I could find, with diagrammatic proofs in topos
 theory rather than proofs in the internal language of a topos. Our
 internal proofs don't necessarily follow the external diagrammatic
-proofs.
+proofs. See also [2].
 
-[1] Peter Freyd. Choice and well-ordering.
+[1] Peter T. Johnstone. Automorphisms of \Omega. Algebra Universalis,
+    9 (1979) 1-7.
+
+[2] Peter Freyd. Choice and well-ordering.
     Annals of Pure and Applied Logic 35 (1987) 149-166.
     https://core.ac.uk/download/pdf/81927529.pdf
 
@@ -328,3 +331,37 @@ also a proposition, as these two propositions imply each other:
 and hence they are equal if we further assume univalence.
 
 TODO. Write down this argument in Agda.
+
+Added 1st November 2023. We continue in the above anynymous module.
+
+\begin{code}
+
+ open import UF.Logic
+ open Implication fe
+ open Conjunction
+
+ can-recover-auto-equivalence-from-its-value-at-⊤
+  : (𝕗 : Ω 𝓤 ≃ Ω 𝓤)
+    (p : Ω 𝓤)
+  → ⌜ 𝕗 ⌝ p ＝ (p ↔ ⌜ 𝕗 ⌝ ⊤)
+ can-recover-auto-equivalence-from-its-value-at-⊤ 𝕗@(f , f-is-equiv) p = I
+  where
+   f-involutive : involutive f
+   f-involutive = higgs f (equivs-are-lc f ⌜ 𝕗 ⌝-is-equiv)
+
+   III : (p ↔ f ⊤) ＝ ⊤ → f p ＝ ⊤
+   III e = involution-swap f f-involutive (III₀ ⁻¹)
+    where
+     III₀ : p ＝ f ⊤
+     III₀ = ↔-gives-＝ pe p (f ⊤) e
+
+   II : f p ＝ ⊤ → (p ↔ f ⊤) ＝ ⊤
+   II e = ＝-gives-↔ pe p (f ⊤) (II₀ ⁻¹)
+    where
+     II₀ : f ⊤ ＝ p
+     II₀ = involution-swap f f-involutive e
+
+   I : f p ＝ (p ↔ f ⊤)
+   I = Ω-ext pe fe II III
+
+\end{code}
