@@ -4,7 +4,7 @@ Properties of the type of truth values.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module UF.SubtypeClassifier-Properties where
 
@@ -18,9 +18,9 @@ open import UF.Hedberg
 open import UF.Lower-FunExt
 open import UF.Sets
 open import UF.Sets-Properties
-open import UF.SubtypeClassifier
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
+open import UF.SubtypeClassifier
 
 𝟚-to-Ω : 𝟚 → Ω 𝓤
 𝟚-to-Ω ₀ = ⊥

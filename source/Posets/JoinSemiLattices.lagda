@@ -7,7 +7,7 @@ the least element and binary joins.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Posets.JoinSemiLattices where
 

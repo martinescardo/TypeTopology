@@ -45,7 +45,7 @@ given n, and prove that it indeed gives a putative root.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Various.RootsOfBooleanFunctions where
 

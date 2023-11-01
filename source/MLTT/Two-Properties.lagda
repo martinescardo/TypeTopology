@@ -5,7 +5,7 @@ in the module SpartanMLTT. Here we develop some general machinery.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module MLTT.Two-Properties where
 

@@ -11,7 +11,7 @@ Inversion of path sequences.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --safe #-}
 
 open import MLTT.Spartan
 open import UF.Base
@@ -29,7 +29,7 @@ seq⁻¹ (p ◃∙ s) = seq⁻¹  s ∙▹ (p ⁻¹)
 seq⁻¹-∙▹ : {x x' x'' : X} (s : x ≡ x') (p : x' ＝ x'')
          → seq⁻¹ (s ∙▹ p) ＝ (p ⁻¹) ◃∙ seq⁻¹ s
 seq⁻¹-∙▹ [] p = refl
-seq⁻¹-∙▹ (p₁ ◃∙ s) p = ap (_∙▹ (p₁ ⁻¹)) (seq⁻¹-∙▹ s p)  
+seq⁻¹-∙▹ (p₁ ◃∙ s) p = ap (_∙▹ (p₁ ⁻¹)) (seq⁻¹-∙▹ s p)
 
 seq⁻¹-involutive : {x x' : X} (s : x ≡ x')
                  → seq⁻¹ (seq⁻¹ s) ＝ s
@@ -47,7 +47,7 @@ sym-[↓]-seq⁻¹ [] = ＝ₛ-in refl
 sym-[↓]-seq⁻¹ (p ◃∙ s) =
  ([(p ◃∙  s) ↓] ⁻¹) ◃∎     ＝ₛ⟨ ＝ₛ-in refl ⟩
  ((p ∙ [ s ↓]) ⁻¹) ◃∎      ＝ₛ⟨ ＝ₛ-in ( ⁻¹-contravariant p ([ s ↓]) ⁻¹) ⟩
- ([ s ↓] ⁻¹) ◃∙ (p ⁻¹) ◃∎  ＝ₛ⟨ 0 & 1 & sym-[↓]-seq⁻¹ s ⟩ 
+ ([ s ↓] ⁻¹) ◃∙ (p ⁻¹) ◃∎  ＝ₛ⟨ 0 & 1 & sym-[↓]-seq⁻¹ s ⟩
  seq⁻¹ s ∙▹ (p ⁻¹) ∎ₛ
 
 seq⁻¹-sym-[↓] : {x x' : X} (s : x ≡ x')

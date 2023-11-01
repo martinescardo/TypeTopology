@@ -14,7 +14,7 @@ Notice also that the files here also include comments.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Iterative.index where
 

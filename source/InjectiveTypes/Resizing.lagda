@@ -56,7 +56,7 @@ injective and serves as an example of such a D).
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import UF.Univalence
 open import UF.PropTrunc

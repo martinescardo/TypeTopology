@@ -5,7 +5,7 @@ extensionality as the equivalence of happly for suitable parameters.)
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module UF.Equiv-FunExt where
 

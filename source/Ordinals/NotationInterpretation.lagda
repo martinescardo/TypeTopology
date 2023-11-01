@@ -5,7 +5,7 @@ OrdinalNotationInterpretation1.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Ordinals.NotationInterpretation where
 

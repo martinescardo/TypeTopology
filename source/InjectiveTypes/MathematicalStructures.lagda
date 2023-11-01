@@ -13,7 +13,7 @@ discussion, which probably should be read before reading [1] and [2].
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import UF.Univalence
 

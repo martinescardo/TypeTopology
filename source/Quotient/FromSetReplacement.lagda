@@ -16,7 +16,7 @@ replacement assumption (again, see UF.Size.lagda for details).
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import UF.FunExt
 open import UF.Powerset

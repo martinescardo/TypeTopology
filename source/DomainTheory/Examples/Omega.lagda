@@ -8,7 +8,7 @@ characterize the compact elements of Ω 𝓤 as the decidable propositions.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 

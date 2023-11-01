@@ -4,7 +4,7 @@ This module is mainly for use in connection with ordinals.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module TypeTopology.LexicographicCompactness where
 

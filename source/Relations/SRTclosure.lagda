@@ -14,7 +14,7 @@ Martin Escardo, 3 February 2021.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan hiding (_^_)
 

@@ -15,7 +15,7 @@ Ind-completion is a preorder and not a poset is seen to be important there.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan hiding (J)
 open import UF.FunExt

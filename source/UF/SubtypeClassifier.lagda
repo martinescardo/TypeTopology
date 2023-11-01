@@ -5,16 +5,16 @@ notions and properties are in UF.SubtypeClassifier-Properties.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module UF.SubtypeClassifier where
 
 open import MLTT.Spartan
-open import UF.Subsingletons
+open import UF.Base
 open import UF.FunExt
 open import UF.Subsingletons
+open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import UF.Base
 
 Ω : ∀ 𝓤 → 𝓤 ⁺ ̇
 Ω 𝓤 = Σ P ꞉ 𝓤 ̇ , is-prop P

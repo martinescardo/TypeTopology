@@ -10,7 +10,7 @@ from 21 March 2018 is included at the end.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Factorial.PlusOneLC where
 

@@ -4,7 +4,7 @@ In this file I define the absolute value for rational numbers,
 and prove properties of the absolute value.
 
 \begin{code}
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
 

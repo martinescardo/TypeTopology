@@ -5,7 +5,7 @@ semantics.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module EffectfulForcing.MFPSAndVariations.CombinatoryT where
 

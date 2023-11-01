@@ -15,7 +15,7 @@ we will not repeat here. But we still add some remarks.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
+{-# OPTIONS --safe --without-K --lossy-unification #-}
 
 open import UF.Univalence
 

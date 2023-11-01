@@ -5,7 +5,7 @@ In this file, I define directly addition of the Dedekind reals, and
 show that the Reals are a group with respect to addition.
 
 \begin{code}
-{-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
+{-# OPTIONS --safe --without-K --lossy-unification #-}
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
 open import UF.Base

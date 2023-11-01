@@ -5,7 +5,7 @@ Based in part by the `Cubical.Functions.Logic` module UF.of
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module UF.Logic where
 

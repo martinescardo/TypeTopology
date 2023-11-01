@@ -18,7 +18,7 @@ module UF.Powerset specializes this module to the case 𝓤=𝓥.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module UF.Powerset-MultiUniverse where
 

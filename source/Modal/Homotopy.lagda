@@ -4,7 +4,7 @@ This file contains some lemmas about precomposing embeddings onto homotopies.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Modal.Homotopy where
 

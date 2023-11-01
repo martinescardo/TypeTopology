@@ -35,7 +35,7 @@ need more work, which is explained below.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K #-}
+{-# OPTIONS --safe --without-K --no-exact-split #-}
 
 module Groups.Free where
 

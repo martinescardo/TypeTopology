@@ -4,7 +4,7 @@ Notion of equivalence and its basic properties.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module UF.Equiv where
 

@@ -13,7 +13,7 @@
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split #-}
+{-# OPTIONS --without-K #-}
 
 import index                -- Of --safe modules.
 import Unsafe.index         -- Of unsafe modules.

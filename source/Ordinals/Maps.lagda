@@ -4,7 +4,7 @@ Various maps of ordinals, including equivalences.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import UF.Univalence
 

@@ -11,7 +11,7 @@ J'-comp) with a "propositional computation rule" J'-comp for J'.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Universes
 

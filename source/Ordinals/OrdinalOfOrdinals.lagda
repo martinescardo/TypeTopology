@@ -10,7 +10,7 @@ ordinal, (4) the type of ordinals is locally small.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import UF.Univalence
 

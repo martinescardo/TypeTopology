@@ -5,7 +5,7 @@ In this file I define common divisors, and HCF's, along with a proof
 that the Euclidean Algorithm produces HCF's.
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
 

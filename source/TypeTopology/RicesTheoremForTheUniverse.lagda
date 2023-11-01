@@ -62,7 +62,7 @@ that module (or in fact any axiom other than extensionality).
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import UF.FunExt
 

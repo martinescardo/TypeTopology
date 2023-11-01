@@ -13,7 +13,7 @@ Types 2019 meeting
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Redirection.Types2019 where
 

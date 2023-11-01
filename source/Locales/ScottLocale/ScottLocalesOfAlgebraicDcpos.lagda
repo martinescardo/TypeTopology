@@ -14,7 +14,7 @@ module and the one in `ScottLocale.Definition`
 
 \begin{code}[hide]
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 open import Slice.Family

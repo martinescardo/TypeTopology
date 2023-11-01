@@ -5,7 +5,7 @@ https://mathstodon.xyz/@MartinEscardo/109395006766077334
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Factorial.index where
 

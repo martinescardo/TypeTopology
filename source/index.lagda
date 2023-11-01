@@ -116,7 +116,7 @@ Click at the imported module names to navigate to them:
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module index where
 

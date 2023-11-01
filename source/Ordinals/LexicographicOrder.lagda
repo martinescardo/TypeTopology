@@ -11,7 +11,7 @@ even on (Σ x ꞉ X , Y x) if Y and S depend on X.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Ordinals.LexicographicOrder where
 
