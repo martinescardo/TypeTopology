@@ -18,7 +18,7 @@ module UF.Powerset specializes this module to the case 𝓤=𝓥.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module UF.Powerset-MultiUniverse where
 
@@ -76,14 +76,14 @@ syntax comprehension X (λ x → A) = ⁅ x ꞉ X ∣ A ⁆
 full : {X : 𝓤 ̇ } →  𝓟 {𝓥} X
 full _ = 𝟙 , 𝟙-is-prop
 
+_∈ₚ_ : {X : 𝓤  ̇} → X → (X → Ω 𝓥) → Ω 𝓥
+x ∈ₚ A = A x
+
 _∈_ : {X : 𝓤 ̇ } → X → 𝓟 {𝓥} X → 𝓥 ̇
-x ∈ A = A x holds
+x ∈ A =  x ∈ₚ A holds
 
 _∉_ : {X : 𝓤 ̇ } → X → 𝓟 {𝓥} X → 𝓥 ̇
 x ∉ A = ¬ (x ∈ A)
-
-infix  40 _∈_
-infix  40 _∉_
 
 is-empty-subset : {X : 𝓤 ̇ } → 𝓟 {𝓥} X → 𝓤 ⊔ 𝓥 ̇
 is-empty-subset {𝓤} {𝓥} {X} A = (x : X) → x ∉ A
@@ -450,5 +450,15 @@ module unions-of-small-families
    where
     γ : (Σ i ꞉ I , x ∈ α i) → x ∈ A
     γ (i , a) = ub i x a
+
+\end{code}
+
+Fixities.
+
+\begin{code}
+
+infix  40 _∈ₚ_
+infix  40 _∈_
+infix  40 _∉_
 
 \end{code}

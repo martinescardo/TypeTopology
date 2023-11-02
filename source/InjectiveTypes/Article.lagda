@@ -193,7 +193,7 @@ this module.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 open import UF.PropTrunc
@@ -1331,7 +1331,7 @@ ainjective-retract-sub {𝓤} {𝓣} R A φ X β i =
   k = j ∘_
 
   b : is-embedding k
-  b = precomp-is-embedding fe j a
+  b = postcomp-is-embedding fe j a
 
   l : X → (X → Σ A)
   l x x' = (x ＝ x') , β x x'

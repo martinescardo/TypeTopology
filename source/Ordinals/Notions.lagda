@@ -6,7 +6,7 @@ Ordinals like in the HoTT book and variations.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Plus-Properties using (+-commutative)
 open import MLTT.Spartan

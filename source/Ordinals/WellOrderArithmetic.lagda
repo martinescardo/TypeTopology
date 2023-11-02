@@ -6,7 +6,7 @@ still use the terminology "ordinal" here.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Ordinals.WellOrderArithmetic where
 

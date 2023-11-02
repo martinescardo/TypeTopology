@@ -4,7 +4,7 @@ In this file I define rational numbers.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import Integers.Abs
 open import Integers.Multiplication renaming (_*_ to _ℤ*_)

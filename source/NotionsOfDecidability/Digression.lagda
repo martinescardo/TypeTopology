@@ -4,7 +4,7 @@ Based on this discussion: https://twitter.com/EgbertRijke/status/142944386845029
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module NotionsOfDecidability.Digression where
 

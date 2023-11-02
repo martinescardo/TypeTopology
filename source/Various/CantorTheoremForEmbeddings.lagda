@@ -11,7 +11,7 @@ Various.LawvereFPT.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Various.CantorTheoremForEmbeddings where
 

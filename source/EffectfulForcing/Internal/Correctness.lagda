@@ -4,7 +4,7 @@ We prove the correctness of the internal translation.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module EffectfulForcing.Internal.Correctness where
 

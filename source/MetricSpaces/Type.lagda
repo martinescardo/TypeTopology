@@ -4,7 +4,7 @@ In this file I define the types of complete metric spaces, along with
 Cauchy and convergent sequences.
 
 \begin{code}
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
 

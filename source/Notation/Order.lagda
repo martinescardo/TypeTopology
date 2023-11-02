@@ -4,7 +4,7 @@ Type-class for notation for strict orders.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Notation.Order where
 
@@ -116,5 +116,33 @@ record Order-Chain {𝓤} {𝓥} {𝓦} {𝓣} {𝓧 : Universe}
  infix 30 _≤_≤_
 
 open Order-Chain {{...}} public
+
+\end{code}
+
+Lane Biocini, 10 October 2023
+
+Define a general notation for reasoning chains
+
+\begin{code}
+record Reflexive-Order {𝓤} (X : 𝓤 ̇ )
+ (_R_ : X → X → 𝓤 ̇ ) : 𝓤 ̇  where
+ field
+  _▨ : (x : X) → x R x
+
+ infix 1 _▨
+
+open Reflexive-Order {{...}} public
+
+record Reasoning-Chain {𝓤} {𝓥} {𝓦} {𝓣} {𝓧 : Universe}
+ (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) (Z : 𝓦 ̇ )
+ (_R₁_ : X → Y → 𝓦 ̇ )
+ (_R₂_ : Y → Z → 𝓣 ̇ )
+ (_R₃_ : X → Z → 𝓧 ̇ ) : (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣 ⊔ 𝓧)⁺ ̇  where
+ field
+  _⸴_⊢_ : (x : X) {y : Y} {z : Z} → x R₁ y → y R₂ z → x R₃ z
+
+ infixr 0 _⸴_⊢_
+
+open Reasoning-Chain {{...}} public
 
 \end{code}

@@ -2,7 +2,7 @@ Martin Escardo, 19th March 2021.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Fin.Omega where
 

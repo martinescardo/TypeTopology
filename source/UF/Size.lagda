@@ -25,7 +25,7 @@ which seems to be a new result.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module UF.Size where
 
@@ -80,8 +80,8 @@ Obsolete notation used in some publications:
 \begin{code}
 
 private
-  _has-size_ : 𝓤 ̇ → (𝓥 : Universe) → 𝓥 ⁺  ⊔ 𝓤 ̇
-  X has-size 𝓥 = X is 𝓥 small
+ _has-size_ : 𝓤 ̇ → (𝓥 : Universe) → 𝓥 ⁺  ⊔ 𝓤 ̇
+ X has-size 𝓥 = X is 𝓥 small
 
 \end{code}
 
@@ -96,6 +96,7 @@ propositional-resizing 𝓤 𝓥 = (P : 𝓤 ̇ ) → is-prop P → P is 𝓥 sm
 
 Propositional-Resizing : 𝓤ω
 Propositional-Resizing = {𝓤 𝓥 : Universe} → propositional-resizing 𝓤 𝓥
+
 \end{code}
 
 Propositional resizing from a universe to a higher universe just
@@ -449,8 +450,9 @@ the second universe 𝓤₁:
 Ω-resizing₁-≃-from-pr-pe-fe {𝓤} ρ pe fe =
   ≃-sym (resizing-condition (Ω-resizing₁-from-pr-pe-fe {𝓤} ρ pe fe))
 
-Ω-𝓤₀-lives-in-𝓤₁ : universe-of (Ω 𝓤₀) ＝ 𝓤₁
-Ω-𝓤₀-lives-in-𝓤₁ = refl
+private
+ Ω-𝓤₀-lives-in-𝓤₁ : 𝓤₁ ̇
+ Ω-𝓤₀-lives-in-𝓤₁ = Ω 𝓤₀
 
 \end{code}
 
@@ -548,20 +550,22 @@ universes).
 
 \begin{code}
 
-∥_∥⁺ : 𝓤 ̇ → 𝓤 ⁺ ̇
-∥ X ∥⁺ = (P : universe-of X ̇ ) → is-prop P → (X → P) → P
+module _ {𝓤 : Universe} where
 
-∥∥⁺-is-prop : FunExt → {X : 𝓤 ̇ } → is-prop (∥ X ∥⁺)
-∥∥⁺-is-prop fe = Π-is-prop (fe _ _)
-                   (λ P → Π-is-prop (fe _ _)
-                           (λ i → Π-is-prop (fe _ _)
-                                    (λ u → i)))
+ ∥_∥⁺ : 𝓤 ̇ → 𝓤 ⁺ ̇
+ ∥ X ∥⁺ = (P :  𝓤 ̇ ) → is-prop P → (X → P) → P
 
-∣_∣⁺ : {X : 𝓤 ̇ } → X → ∥ X ∥⁺
-∣ x ∣⁺ = λ P i u → u x
+ ∥∥⁺-is-prop : FunExt → {X : 𝓤 ̇ } → is-prop (∥ X ∥⁺)
+ ∥∥⁺-is-prop fe = Π-is-prop (fe _ _)
+                    (λ P → Π-is-prop (fe _ _)
+                            (λ i → Π-is-prop (fe _ _)
+                                     (λ u → i)))
 
-∥∥⁺-rec : {X P : 𝓤 ̇ } → is-prop P → (X → P) → ∥ X ∥⁺ → P
-∥∥⁺-rec {𝓤} {X} {P} i u s = s P i u
+ ∣_∣⁺ : {X : 𝓤 ̇ } → X → ∥ X ∥⁺
+ ∣ x ∣⁺ = λ P i u → u x
+
+ ∥∥⁺-rec : {X P : 𝓤 ̇ } → is-prop P → (X → P) → ∥ X ∥⁺ → P
+ ∥∥⁺-rec {X} {P} i u s = s P i u
 
 resizing-truncation : FunExt
                     → Propositional-resizing
@@ -657,7 +661,7 @@ deJong-resizing-implies-propositional-resizing : (ua : Univalence)
                                                → deJong-resizing 𝓤 𝓥
                                                → propositional-resizing 𝓤 𝓥
 deJong-resizing-implies-propositional-resizing ua 𝓤 𝓥 r P i =
-  being-small-is-idempotent ua 𝓤 𝓥 P i (r P)
+ being-small-is-idempotent ua 𝓤 𝓥 P i (r P)
 
 being-small-is-idempotent-converse : (ua : Univalence) (𝓤 𝓥 : Universe) (Y : 𝓤 ̇ )
                                    → Y is 𝓥 small
@@ -672,19 +676,19 @@ being-small-is-idempotent-≃ : (ua : Univalence) (𝓤 𝓥 : Universe) (Y : �
                             → ((Y is 𝓥 small) is 𝓥 small) ≃ (Y is 𝓥 small)
 being-small-is-idempotent-≃ ua 𝓤 𝓥 Y i =
  logically-equivalent-props-are-equivalent
-   (being-small-is-prop ua (Y is 𝓥 small) 𝓥)
-   (being-small-is-prop ua Y 𝓥)
-   (being-small-is-idempotent ua 𝓤 𝓥 Y i)
-   (being-small-is-idempotent-converse ua 𝓤 𝓥 Y)
+  (being-small-is-prop ua (Y is 𝓥 small) 𝓥)
+  (being-small-is-prop ua Y 𝓥)
+  (being-small-is-idempotent ua 𝓤 𝓥 Y i)
+  (being-small-is-idempotent-converse ua 𝓤 𝓥 Y)
 
 being-small-is-idempotent-＝ : (ua : Univalence) (𝓤 𝓥 : Universe) (Y : 𝓤 ̇ )
                             → is-prop Y
                             → ((Y is 𝓥 small) is 𝓥 small) ＝ (Y is 𝓥 small)
 being-small-is-idempotent-＝ ua 𝓤 𝓥 Y i =
-  eqtoid (ua (𝓤 ⊔ 𝓥 ⁺))
-    ((Y is 𝓥 small) is 𝓥 small)
-    (Y is 𝓥 small)
-    (being-small-is-idempotent-≃ ua 𝓤 𝓥 Y i)
+ eqtoid (ua (𝓤 ⊔ 𝓥 ⁺))
+  ((Y is 𝓥 small) is 𝓥 small)
+  (Y is 𝓥 small)
+  (being-small-is-idempotent-≃ ua 𝓤 𝓥 Y i)
 
 \end{code}
 

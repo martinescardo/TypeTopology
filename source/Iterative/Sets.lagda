@@ -17,7 +17,7 @@ so we assume it globally.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
+{-# OPTIONS --safe --without-K --lossy-unification #-}
 
 open import MLTT.Spartan
 open import UF.Univalence
@@ -311,7 +311,7 @@ literature.
   II : is-embedding ((φ ∘_) ∘ Idtofun)
   II = ∘-is-embedding
         (Idtofun-is-embedding (ua 𝓤) fe)
-        (precomp-is-embedding fe' φ φ-emb)
+        (postcomp-is-embedding fe' φ φ-emb)
 
   III : is-prop (ssup X φ ＝ M)
   III = equiv-to-prop I (II (𝕄-forest M))

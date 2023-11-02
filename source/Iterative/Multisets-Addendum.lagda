@@ -8,7 +8,7 @@ Some constructions with iterative multisets.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 open import UF.Sets-Properties
@@ -164,9 +164,12 @@ small copy.
   have-𝕗 : X ≃ 𝕄
   have-𝕗 = 𝕗
 
-  notice : (universe-of X ＝ 𝓤)
-         × (universe-of 𝕄 ＝ 𝓤⁺)
-  notice = refl , refl
+  private
+   remark-X : 𝓤 ̇
+   remark-X = X
+
+   remark-𝕄 : 𝓤⁺ ̇
+   remark-𝕄 = 𝕄
 
   M : 𝕄
   M = ssup X ⌜ 𝕗 ⌝

@@ -8,7 +8,7 @@ here from nondependent functions to dependent functions.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Naturals.UniversalProperty where
 

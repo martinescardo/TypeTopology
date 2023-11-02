@@ -3,7 +3,7 @@ Jonathan Sterling, June 2023
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import Dominance.Definition
 open import MLTT.Spartan

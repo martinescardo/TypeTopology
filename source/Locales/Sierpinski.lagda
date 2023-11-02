@@ -1,6 +1,6 @@
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import UF.FunExt
 open import UF.Logic
@@ -38,7 +38,7 @@ domain.
 
 \begin{code}
 
-open import Locales.ScottLocale pt fe 𝓤
+open import Locales.ScottLocale.Definition pt fe 𝓤
 
 open DefnOfScottLocale (𝕊-dcpo ⁻) 𝓤 pe
 open Locale

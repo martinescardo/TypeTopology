@@ -2,7 +2,7 @@ By Tom de Jong in January 2022 with later additions by Martin Escardo
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module UF.NotNotStablePropositions where
 
@@ -66,8 +66,14 @@ being-¬¬-stable-is-prop fe i = Π-is-prop fe (λ _ → i)
 
 \end{code}
 
-TODO. The above can also be shown by first showing that Ω¬¬ 𝓤 is a
-retract of Ω 𝓤.
+A weakening of the notion of Ω-Rezing.
+
+\begin{code}
+
+Ω¬¬-Resizing : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥 )⁺ ̇
+Ω¬¬-Resizing 𝓤 𝓥 = (Ω¬¬ 𝓤) is 𝓥 small
+
+\end{code}
 
 Added 25 August 2023 by Martin Escardo from the former file UF.Miscelanea.
 

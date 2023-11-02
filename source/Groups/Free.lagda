@@ -35,7 +35,7 @@ need more work, which is explained below.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K #-}
+{-# OPTIONS --safe --without-K --no-exact-split #-}
 
 module Groups.Free where
 
@@ -147,7 +147,7 @@ Corollary₁[free-groups-from-small-set-quotients]
 Corollary₁[free-groups-from-small-set-quotients] fe pe sq =
  Lemma[free-groups-from-general-set-quotients]
   (propositional-truncations-from-set-quotients sq fe)
-  fe id sq
+  fe (λ 𝓤 → 𝓤) sq
   (effectivity fe pe sq)
 
 \end{code}
@@ -164,7 +164,7 @@ Corollary₂[free-groups-from-pt-fe-pe-sr]
  → Set-Replacement pt
  → (A : 𝓤 ̇ ) → good-freely-generated-group-exists A 𝓤 𝓤
 Corollary₂[free-groups-from-pt-fe-pe-sr] pt fe pe sr =
- Lemma[free-groups-from-general-set-quotients] pt fe id
+ Lemma[free-groups-from-general-set-quotients] pt fe (λ 𝓤 → 𝓤)
   (set-quotients-from-set-replacement pt fe pe sr)
   (set-replacement-gives-effective-set-quotients pt fe pe sr)
 
@@ -1784,14 +1784,14 @@ Theorem₁[large-free-groups-from-set-quotients] {𝓤} fe pe sq A A-ls =
   open general-set-quotients-exist sq
   open free-group-construction A
   open free-group-construction-step₁ pt
-  open free-group-construction-step₂ fe id sq (effectivity fe pe sq)
-  open FreeGroupInterface pt fe id sq (effectivity fe pe sq) A
+  open free-group-construction-step₂ fe (λ 𝓤 → 𝓤) sq (effectivity fe pe sq)
+  open FreeGroupInterface pt fe (λ 𝓤 → 𝓤) sq (effectivity fe pe sq) A
   open resize-universal-map fe pe pt
         A
         Id⟦ A-ls ⟧
         (λ _ → ⟦ A-ls ⟧-refl)
         (λ _ _ → ＝⟦ A-ls ⟧-gives-＝)
-        id
+        (λ 𝓤 → 𝓤)
         sq
         (effectivity fe pe sq)
 
@@ -1920,8 +1920,9 @@ original quotient FA/∾, which lives in the higher universe 𝓤⁺⁺.
  FA/∾-to-FA/∥≏∥ = quotients-equivalent FA -∾- -∥≏∥-
                   (λ {s} {t} → ∾-is-logically-equivalent-to-∥≏∥ s t)
 
- native-universe-of-free-group : universe-of ⟨ free-group A ⟩ ＝ 𝓤 ⁺⁺
- native-universe-of-free-group = refl
+ private
+  native-universe-of-free-group : 𝓤 ⁺⁺ ̇
+  native-universe-of-free-group = ⟨ free-group A ⟩
 
  resized-free-group-carrier : ⟨ free-group A ⟩ is 𝓤⁺ small
  resized-free-group-carrier = γ

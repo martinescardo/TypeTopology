@@ -11,7 +11,7 @@ About (sub)singletons using function extensionality.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module UF.Subsingletons-FunExt where
 

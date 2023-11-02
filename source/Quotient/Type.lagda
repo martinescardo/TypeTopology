@@ -5,7 +5,7 @@ earlier 2018 module Quotient.Large by Martin Escardo.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Quotient.Type where
 
@@ -376,7 +376,7 @@ We now define the existence of small and large quotients:
 \begin{code}
 
 set-quotients-exist large-set-quotients-exist : 𝓤ω
-set-quotients-exist       = general-set-quotients-exist id
+set-quotients-exist       = general-set-quotients-exist (λ 𝓤 → 𝓤)
 large-set-quotients-exist = general-set-quotients-exist (_⁺)
 
 \end{code}

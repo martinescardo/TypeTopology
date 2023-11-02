@@ -2,7 +2,7 @@ Ayberk Tosun, 14 June 2023.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 open import UF.FunExt
@@ -65,6 +65,13 @@ I find it convenient to define the type of directed families.
  ⋁ (S , δ) =
   the-sup (underlying-order 𝓓) (directed-completeness 𝓓 (index S) (S [_]) δ )
 
+ ⋁-is-sup : (S : Fam↑) → is-sup (underlying-order 𝓓) (⋁ S) (S .pr₁ [_])
+ ⋁-is-sup (S , δ) =
+  sup-property (underlying-order 𝓓) (directed-completeness 𝓓 (index S) (S [_]) δ)
+
+ ⋁-is-upperbound : (S : Fam↑) → is-upperbound (underlying-order 𝓓) (⋁ S) (S .pr₁ [_])
+ ⋁-is-upperbound S = pr₁ (⋁-is-sup S)
+
  is-upwards-closed : 𝓟 {𝓦} ⟨ 𝓓 ⟩ → Ω (𝓤 ⊔ 𝓣 ⊔ 𝓦)
  is-upwards-closed P = Ɐ x ꞉ ⟨ 𝓓 ⟩ , Ɐ y ꞉ ⟨ 𝓓 ⟩ , P x ⇒ x ⊑⟨ 𝓓 ⟩ₚ y ⇒ P y
 
@@ -77,5 +84,32 @@ I find it convenient to define the type of directed families.
 
  𝒪ₛ : 𝓤 ⊔ 𝓦 ⁺ ⊔ 𝓥 ⁺ ⊔ 𝓣  ̇
  𝒪ₛ = Σ P ꞉ (⟨ 𝓓 ⟩ → Ω 𝓦) , is-scott-open P holds
+
+ _∈ₛ_ : ⟨ 𝓓 ⟩ → 𝒪ₛ → Ω 𝓦
+ x ∈ₛ U = U .pr₁ x
+
+\end{code}
+
+\begin{code}
+
+ record 𝒪ₛᴿ : 𝓤 ⊔ 𝓦 ⁺ ⊔ 𝓥 ⁺ ⊔ 𝓣  ̇ where
+  field
+   pred : ⟨ 𝓓 ⟩ → Ω 𝓦
+
+   pred-is-upwards-closed : is-upwards-closed pred holds
+   pred-is-inaccessible-by-dir-joins : is-inaccessible-by-directed-joins pred holds
+
+ to-𝒪ₛᴿ : 𝒪ₛ → 𝒪ₛᴿ
+ to-𝒪ₛᴿ (P , υ , ι) = record
+                       { pred                              = P
+                       ; pred-is-upwards-closed            = υ
+                       ; pred-is-inaccessible-by-dir-joins = ι
+                       }
+
+ from-𝒪ₛᴿ : 𝒪ₛᴿ → 𝒪ₛ
+ from-𝒪ₛᴿ 𝔘 =
+  𝔘 .pred , 𝔘 .pred-is-upwards-closed , 𝔘 .pred-is-inaccessible-by-dir-joins
+   where
+    open 𝒪ₛᴿ
 
 \end{code}

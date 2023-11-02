@@ -2,7 +2,7 @@ Jon Sterling, started 27th Sep 2022
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Modal.Subuniverse where
 

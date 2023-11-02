@@ -2,7 +2,7 @@ Martin Escardo, 8th December 2019.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Fin.Bishop where
 

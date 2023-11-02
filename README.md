@@ -58,6 +58,7 @@ Please add yourself the first time you contribute.
 * Paul Levy (i)
 * Paulo Oliva
 * Peter Dybjer
+* Simcha van Collem
 * Thierry Coquand
 * Todd Waugh Ambridge
 * Tom de Jong

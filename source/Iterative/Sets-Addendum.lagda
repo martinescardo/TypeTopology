@@ -8,7 +8,7 @@ Some constructions with iterative sets.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 open import UF.Univalence
@@ -102,9 +102,12 @@ small copy.
   have-𝕗 : X ≃ 𝕍
   have-𝕗 = 𝕗
 
-  notice : (universe-of X ＝ 𝓤)
-         × (universe-of 𝕍 ＝ 𝓤⁺)
-  notice = refl , refl
+  private
+   remark-X : 𝓤 ̇
+   remark-X = X
+
+   remark-𝕍 : 𝓤⁺ ̇
+   remark-𝕍 = 𝕍
 
   A : 𝕍
   A = 𝕍-ssup X ⌜ 𝕗 ⌝ (equivs-are-embeddings' 𝕗)

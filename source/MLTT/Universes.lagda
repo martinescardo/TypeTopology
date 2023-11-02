@@ -1,6 +1,6 @@
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module MLTT.Universes where
 
@@ -17,12 +17,12 @@ variable
 
 \end{code}
 
-The following should be the only use of the Agda keyword 'Set' in this
+The following should be the only use of the Agda keyword `Set` in this
 development:
 
 \begin{code}
 
-_̇ : (𝓤 : Universe) → _
+_̇ : (𝓤 : Universe) → Set (𝓤 ⁺)
 𝓤 ̇ = Set 𝓤
 
 𝓤₁ = 𝓤₀ ⁺
@@ -30,15 +30,6 @@ _̇ : (𝓤 : Universe) → _
 
 _⁺⁺ : Universe → Universe
 𝓤 ⁺⁺ = 𝓤 ⁺ ⁺
-
-\end{code}
-
-This is mainly to avoid naming implicit arguments:
-
-\begin{code}
-
-universe-of : (X : 𝓤 ̇ ) → Universe
-universe-of {𝓤} X = 𝓤
 
 \end{code}
 

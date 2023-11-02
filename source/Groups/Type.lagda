@@ -5,7 +5,7 @@ UF.SIP-Examples.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Groups.Type where
 
