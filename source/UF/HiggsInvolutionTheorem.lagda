@@ -1,4 +1,5 @@
-Martin Escardo, 15 August 2014, with additions 23 January 2021.
+Martin Escardo, 15 August 2014, with additions 23 January 2021,
+October-November 2023.
 
 Higgs' Involution Theorem. In any topos, if f : Ω → Ω is a
 monomorphism, then it is an involution.
@@ -21,16 +22,18 @@ Added 23 Jan 2021. From a group structure on Ω we get excluded middle,
 as an application of Higgs Involution Theorem. This doesn't seem to be
 known in the topos theory community.
 
+Added 24 Oct 2023. More about automorphisms of Ω.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 open import UF.Base
-open import UF.Subsingletons
 open import UF.FunExt
+open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import UF.SubtypeClassifier renaming (Ω to Ω')
+open import UF.SubtypeClassifier renaming (Ω to Ω-at-universe)
 
 \end{code}
 
@@ -52,7 +55,7 @@ We work with Ω of universe 𝓤:
 \begin{code}
 
 private
- Ω = Ω' 𝓤
+ Ω = Ω-at-universe 𝓤
 
 \end{code}
 
@@ -249,3 +252,245 @@ This shows that any cancellative monoid structure on Ω is
 automatically an abelian group structure (which is not very surprising
 given that we have already established excluded middle, but justifies
 our additive notation).
+
+Added 24th October 2023. More about automorphisms of Ω.
+
+You can discuss this at
+https://mathstodon.xyz/deck/@MartinEscardo/111291658836418672
+
+From the existence of certain automorphisms of Ω, we conclude that
+excluded middle holds.
+
+\begin{code}
+
+Ω-automorphism-that-maps-⊤-to-⊥-gives-EM
+ : (Σ 𝕗 ꞉ Ω ≃ Ω , ⌜ 𝕗 ⌝ ⊤ ＝ ⊥)
+ → EM 𝓤
+Ω-automorphism-that-maps-⊤-to-⊥-gives-EM ((f , f-is-equiv) , e) = II
+ where
+  f-is-involutive : involutive f
+  f-is-involutive = automorphisms-of-Ω-are-involutive f f-is-equiv
+
+  I : (P : 𝓤 ̇ ) → is-prop P → Σ Q ꞉ 𝓤 ̇ , (P ⇔ ¬ Q)
+  I P P-is-prop = f p holds , g , h
+   where
+    p : Ω
+    p = (P , P-is-prop)
+
+    g : P → ¬ (f p holds)
+    g p-holds = equal-⊥-gives-fails (f p)
+                 (f p ＝⟨ ap f (holds-gives-equal-⊤ pe fe p p-holds) ⟩
+                  f ⊤ ＝⟨ e ⟩
+                  ⊥   ∎)
+
+    h : ¬ (f p holds) → P
+    h ν = equal-⊤-gives-holds p
+           (p       ＝⟨ (f-is-involutive p)⁻¹ ⟩
+            f (f p) ＝⟨ ap f (fails-gives-equal-⊥ pe fe (f p) ν) ⟩
+            f ⊥     ＝⟨ ap f (e ⁻¹) ⟩
+            f (f ⊤) ＝⟨ f-is-involutive ⊤ ⟩
+            ⊤       ∎)
+
+  II : EM 𝓤
+  II = all-props-negative-gives-EM fe I
+
+open import UF.SubtypeClassifier-Properties
+
+Ω-automorphism-swap-≃ : (𝕗 : Ω ≃ Ω)
+                      → {p q : Ω}
+                      → (⌜ 𝕗 ⌝ p ＝ q) ≃ (⌜ 𝕗 ⌝ q ＝ p)
+Ω-automorphism-swap-≃ 𝕗 {p} {q} =
+ involution-swap-≃ ⌜ 𝕗 ⌝
+  (automorphisms-of-Ω-are-involutive ⌜ 𝕗 ⌝ ⌜ 𝕗 ⌝-is-equiv)
+  (Ω-is-set fe pe)
+
+Ω-automorphism-apart-from-id-gives-EM
+ : (Σ 𝕗 ꞉ Ω ≃ Ω , Σ p₀ ꞉ Ω , ⌜ 𝕗 ⌝ p₀ ≠ p₀)
+ → EM 𝓤
+Ω-automorphism-apart-from-id-gives-EM (𝕗@(f , f-is-equiv) , p₀ , ν) = VIII
+ where
+  I : f ⊤ ≠ ⊤
+  I e = VI
+   where
+    II : p₀ ≠ ⊤
+    II e₀ = ν II'
+     where
+      II' : f p₀ ＝ p₀
+      II' = transport⁻¹ (λ - → f - ＝ -) e₀ e
+
+    III : p₀ ＝ ⊥
+    III = different-from-⊤-gives-equal-⊥ fe pe p₀ II
+
+    IV : f ⊥ ≠ ⊥
+    IV e₁ = ν IV'
+     where
+      IV' : f p₀ ＝ p₀
+      IV' = transport⁻¹ (λ - → f - ＝ -) III e₁
+
+    V : f ⊥ ≠ ⊤
+    V e₂ = ⊥-is-not-⊤
+            (⊥       ＝⟨ (⌜ Ω-automorphism-swap-≃ 𝕗 ⌝ e₂)⁻¹ ⟩
+             f ⊤     ＝⟨ e ⟩
+             ⊤       ∎)
+
+    VI : 𝟘
+    VI = no-truth-values-other-than-⊥-or-⊤ fe pe (f ⊥ , IV , V)
+
+  VII : f ⊤ ＝ ⊥
+  VII = different-from-⊤-gives-equal-⊥ fe pe (f ⊤) I
+
+  VIII : EM 𝓤
+  VIII = Ω-automorphism-that-maps-⊤-to-⊥-gives-EM (𝕗 , VII)
+
+\end{code}
+
+Notice that we can replace "Σ" by "∃" in the above propositions, to
+get the same conclusion EM 𝓤, because the type EM 𝓤 is a proposition.
+
+Notice also that the converses of the above propositions hold.
+
+Added 26 October 2023.
+
+We show that there can't be any automorphism of Ω distinct from the
+identity unless excluded middle holds.
+
+The fact eval-at-⊤-is-lc stated and proved below, which is our main
+lemma, is attributed to Denis Higgs in the literature [1], without any
+explicit citation I could find, with diagrammatic proofs in topos
+theory rather than proofs in the internal language of a topos. Our
+internal proofs don't necessarily follow the external diagrammatic
+proofs. See also [2].
+
+[1] Peter T. Johnstone. Automorphisms of \Omega. Algebra Universalis,
+   9 (1979) 1-7.
+
+[2] Peter Freyd. Choice and well-ordering.
+   Annals of Pure and Applied Logic 35 (1987) 149-166.
+   https://core.ac.uk/download/pdf/81927529.pdf
+
+\begin{code}
+
+open import UF.Equiv-FunExt
+
+private
+ fe' : FunExt
+ fe' 𝓥 𝓦 = fe {𝓥} {𝓦}
+
+eval-at-⊤ : (Ω ≃ Ω) → Ω
+eval-at-⊤ 𝕗 = ⌜ 𝕗 ⌝ ⊤
+
+eval-at-⊤-is-lc : left-cancellable eval-at-⊤
+eval-at-⊤-is-lc {𝕗} {𝕘} e = I
+ where
+  f g : Ω → Ω
+  f = ⌜ 𝕗 ⌝
+  g = ⌜ 𝕘 ⌝
+
+  have-e : f ⊤ ＝ g ⊤
+  have-e = e
+
+  V : (p : Ω) → g p ＝ ⊤ → f p ＝ ⊤
+  V p e₂ = ⌜ Ω-automorphism-swap-≃ 𝕗 ⌝
+            (f ⊤ ＝⟨ e ⟩
+             g ⊤ ＝⟨ ⌜ Ω-automorphism-swap-≃ 𝕘 ⌝ e₂ ⟩
+             p   ∎)
+
+  IV : (p : Ω) → f p ＝ ⊤ → g p ＝ ⊤
+  IV p e₁ = ⌜ Ω-automorphism-swap-≃ 𝕘 ⌝
+             (g ⊤ ＝⟨ e ⁻¹ ⟩
+              f ⊤ ＝⟨ ⌜ Ω-automorphism-swap-≃ 𝕗 ⌝  e₁ ⟩
+              p   ∎)
+
+  III : f ∼ g
+  III p = Ω-ext pe fe (IV p) (V p)
+
+  II : f ＝ g
+  II = dfunext fe III
+
+  I : 𝕗 ＝ 𝕘
+  I = to-subtype-＝ (being-equiv-is-prop fe') II
+
+\end{code}
+
+From this we conclude that there can't be any automorphism of Ω
+distinct from the identity unless excluded middle holds. I don't
+think this has been observed before in the literature, but it may have
+been observed in the folklore.
+
+\begin{code}
+
+Ω-automorphism-distinct-from-𝕚𝕕-gives-EM
+ : (Σ 𝕗 ꞉ Ω ≃ Ω , 𝕗 ≠ 𝕚𝕕)
+ → EM 𝓤
+Ω-automorphism-distinct-from-𝕚𝕕-gives-EM (𝕗 , ν) = IV
+ where
+  f : Ω → Ω
+  f = ⌜ 𝕗 ⌝
+
+  I : f ⊤ ＝ ⊤ → 𝕗 ＝ 𝕚𝕕
+  I = eval-at-⊤-is-lc {𝕗} {𝕚𝕕}
+
+  II : f ⊤ ≠ ⊤
+  II = contrapositive I ν
+
+  III : f ⊤ ＝ ⊥
+  III = different-from-⊤-gives-equal-⊥ fe pe (f ⊤) II
+
+  IV : EM 𝓤
+  IV = Ω-automorphism-that-maps-⊤-to-⊥-gives-EM (𝕗 , III)
+
+\end{code}
+
+It follows that the type Σ f ꞉ Ω ≃ Ω , f ≠ id is a proposition,
+constructively. In boolean toposes it is a singleton, in non-boolean
+toposes it is empty, and in all toposes it is a subsingleton.  This is
+because from any hypothetical element (f , ν) of this type we conclude
+that excluded middle holds, and hence Ω ≃ 𝟚, and therefore f is
+negation. So this is a constructive proof in which we deduce excluded
+middle as an intermediate step. And once we conclude that this type is
+a proposition, we see that it is equivalent to the type EM 𝓤, which is
+also a proposition, as these two propositions imply each other:
+
+(Σ f ꞉ Ω ≃ Ω , f ≠ id) ≃ EM 𝓤
+
+and hence they are equal if we further assume univalence.
+
+TODO. Write down this argument in Agda.
+
+Added 1st November 2023.
+
+\begin{code}
+
+open import UF.Logic
+open Implication fe
+open Conjunction
+
+can-recover-auto-equivalence-from-its-value-at-⊤
+ : (𝕗 : Ω ≃ Ω)
+   (p : Ω)
+ → ⌜ 𝕗 ⌝ p ＝ (p ↔ ⌜ 𝕗 ⌝ ⊤)
+can-recover-auto-equivalence-from-its-value-at-⊤ 𝕗@(f , f-is-equiv) p = I
+ where
+  III : (p ↔ f ⊤) ＝ ⊤ → f p ＝ ⊤
+  III e = ⌜ Ω-automorphism-swap-≃ 𝕗 ⌝ (III₀ ⁻¹)
+   where
+    III₀ : p ＝ f ⊤
+    III₀ = ↔-gives-＝ pe p (f ⊤) e
+
+  II : f p ＝ ⊤ → (p ↔ f ⊤) ＝ ⊤
+  II e = ＝-gives-↔ pe p (f ⊤) (II₀ ⁻¹)
+   where
+    II₀ : f ⊤ ＝ p
+    II₀ = ⌜ Ω-automorphism-swap-≃ 𝕗 ⌝ e
+
+  I : f p ＝ (p ↔ f ⊤)
+  I = Ω-ext pe fe II III
+
+\end{code}
+
+  ↔-equals-＝ : (p q : Ω) → ((p ↔ q) ＝ ⊤) ≃ (p ＝ q)
+  ↔-equals-＝ p q = qinveq
+                   (↔-gives-＝ pe p q)
+                   (＝-gives-↔ pe p q ,
+                   (λ _ → Ω-is-set fe pe _ _) ,
+                   (λ _ → Ω-is-set fe pe _ _))
