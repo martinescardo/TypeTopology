@@ -10,6 +10,7 @@ Based in part by the `Cubical.Functions.Logic` module UF.of
 module UF.Logic where
 
 open import MLTT.Spartan
+open import UF.Equiv
 open import UF.FunExt
 open import UF.PropTrunc
 open import UF.SubtypeClassifier

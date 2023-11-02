@@ -811,6 +811,47 @@ Added by Tom de Jong, November 2021.
 
 \end{code}
 
+Added by Martin Escardo 2nd November 2023.
+
+\begin{code}
+
+involutions-are-equivs : {X : 𝓤 ̇ }
+                       → (f : X → X)
+                       → involutive f
+                       → is-equiv f
+involutions-are-equivs f f-involutive =
+ qinvs-are-equivs f (f , f-involutive , f-involutive)
+
+involution-swap : {X : 𝓤 ̇ } (f : X → X)
+                → involutive f
+                → {x y : X}
+                → f x ＝ y
+                → f y ＝ x
+involution-swap f f-involutive {x} {y} e =
+ f y     ＝⟨ ap f (e ⁻¹) ⟩
+ f (f x) ＝⟨ f-involutive x ⟩
+ x       ∎
+
+open import UF.Sets
+
+involution-swap-≃ : {X : 𝓤 ̇ } (f : X → X)
+                  → involutive f
+                  → is-set X
+                  → {x y : X}
+                  → (f x ＝ y) ≃ (f y ＝ x)
+involution-swap-≃ f f-involutive X-is-set {x} {y} =
+ qinveq (involution-swap f f-involutive {x} {y})
+        (involution-swap f f-involutive {y} {x},
+         I y x ,
+         I x y)
+ where
+  I : ∀ a b →  involution-swap f f-involutive {a} {b}
+            ∘ (involution-swap f f-involutive {b} {a})
+            ∼ id
+  I a b e = X-is-set _ _
+
+\end{code}
+
 Associativities and precedences.
 
 \begin{code}

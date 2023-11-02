@@ -238,7 +238,7 @@ doubletons-are-Kuratowki-finite x₀ x₁ = ∣ 2 , doubleton-map x₀ x₁ , do
 decidable-equality-gives-doubleton-finite : {X : 𝓤 ̇ } (x₀ x₁ : X)
                                           → is-set X
                                           → is-decidable (x₀ ＝ x₁)
-                                          → is-finite (Σ x ꞉ X , (x ＝ x₀) ∨ (x ＝ x₁))
+                                          → is-finite (doubleton x₀ x₁)
 decidable-equality-gives-doubleton-finite x₀ x₁ X-is-set δ = γ δ
  where
   γ : is-decidable (x₀ ＝ x₁) → is-finite (doubleton x₀ x₁)
@@ -283,7 +283,7 @@ decidable-equality-gives-doubleton-finite x₀ x₁ X-is-set δ = γ δ
 doubleton-finite-gives-decidable-equality : funext 𝓤 𝓤₀
                                           → {X : 𝓤 ̇ } (x₀ x₁ : X)
                                           → is-set X
-                                          → is-finite (Σ x ꞉ X , (x ＝ x₀) ∨ (x ＝ x₁))
+                                          → is-finite (doubleton x₀ x₁)
                                           → is-decidable (x₀ ＝ x₁)
 doubleton-finite-gives-decidable-equality fe x₀ x₁ X-is-set ϕ = δ
  where

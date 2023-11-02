@@ -95,6 +95,26 @@ higgs f lc = VIII
 
 \end{code}
 
+Added 2nd November 2023. Some immediate corollaries.
+
+\begin{code}
+
+open import UF.Embeddings
+open import UF.Equiv
+
+autoembeddings-of-Ω-are-involutive : (f : Ω → Ω) → is-embedding f → involutive f
+autoembeddings-of-Ω-are-involutive f e = higgs f (embeddings-are-lc f e)
+
+automorphisms-of-Ω-are-equivs : (f : Ω → Ω) → is-embedding f → is-equiv f
+automorphisms-of-Ω-are-equivs f e =
+ involutions-are-equivs f (autoembeddings-of-Ω-are-involutive f e)
+
+automorphisms-of-Ω-are-involutive : (f : Ω → Ω) → is-equiv f → involutive f
+automorphisms-of-Ω-are-involutive f e = higgs f (equivs-are-lc f e)
+
+
+\end{code}
+
 Added 23 Jan 2021. From a group structure on Ω we get excluded middle,
 as an application of Higgs Theorem. This doesn't seem to be known in
 the topos theory community. I've written a blog post about this here:

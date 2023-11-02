@@ -4,7 +4,7 @@ Properties of the type of truth values.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K #-}
+{-# OPTIONS --safe --without-K --lossy-unification #-}
 
 module UF.SubtypeClassifier-Properties where
 
@@ -21,10 +21,6 @@ open import UF.Sets-Properties
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.SubtypeClassifier
-
-𝟚-to-Ω : 𝟚 → Ω 𝓤
-𝟚-to-Ω ₀ = ⊥
-𝟚-to-Ω ₁ = ⊤
 
 Ω-is-set : funext 𝓤 𝓤 → propext 𝓤 → is-set (Ω 𝓤)
 Ω-is-set {𝓤} fe pe = Id-collapsibles-are-sets pc
@@ -79,6 +75,10 @@ equal-⊥-≃ {𝓤} pe fe p = logically-equivalent-props-are-equivalent
                          (equal-⊥-gives-fails p)
                          (fails-gives-equal-⊥ pe fe p)
 
+𝟚-to-Ω : 𝟚 → Ω 𝓤
+𝟚-to-Ω ₀ = ⊥
+𝟚-to-Ω ₁ = ⊤
+
 module _ (fe : funext 𝓤 𝓤) (pe : propext 𝓤) where
 
  𝟚-to-Ω-is-embedding : is-embedding (𝟚-to-Ω {𝓤})
@@ -112,27 +112,17 @@ excluded middle holds.
 open import UF.Embeddings
 open import UF.ExcludedMiddle
 
-involution-swap : {X : 𝓤 ̇ } (f : X → X)
-                → involutive f
-                → {x y : X}
-                → f x ＝ y
-                → f y ＝ x
-involution-swap f f-involutive {x} {y} e =
- f y     ＝⟨ ap f (e ⁻¹) ⟩
- f (f x) ＝⟨ f-involutive x ⟩
- x       ∎
-
 module _ {𝓤 : Universe} (fe : Fun-Ext) (pe : propext 𝓤) where
 
  open import Various.HiggsInvolutionTheorem {𝓤} fe pe
 
- Ω-autoembedding-that-maps-⊤-to-⊥-gives-EM
-  : (Σ 𝕗 ꞉ Ω 𝓤 ↪ Ω 𝓤 , ⌊ 𝕗 ⌋ ⊤ ＝ ⊥)
+ Ω-automorphism-that-maps-⊤-to-⊥-gives-EM
+  : (Σ 𝕗 ꞉ Ω 𝓤 ≃ Ω 𝓤 , ⌜ 𝕗 ⌝ ⊤ ＝ ⊥)
   → EM 𝓤
- Ω-autoembedding-that-maps-⊤-to-⊥-gives-EM ((f , f-is-emb) , e) = II
+ Ω-automorphism-that-maps-⊤-to-⊥-gives-EM ((f , f-is-equiv) , e) = II
   where
    f-is-involutive : involutive f
-   f-is-involutive = higgs f (embeddings-are-lc f f-is-emb)
+   f-is-involutive = automorphisms-of-Ω-are-involutive f f-is-equiv
 
    I : (P : 𝓤 ̇ ) → is-prop P → Σ Q ꞉ 𝓤 ̇ , (P ⇔ ¬ Q)
    I P P-is-prop = f p holds , g , h
@@ -157,14 +147,19 @@ module _ {𝓤 : Universe} (fe : Fun-Ext) (pe : propext 𝓤) where
    II : EM 𝓤
    II = all-props-negative-gives-EM fe I
 
- Ω-autoembedding-apart-from-id-gives-EM
-  : (Σ 𝕗 ꞉ Ω 𝓤 ↪ Ω 𝓤 , Σ p₀ ꞉ Ω 𝓤 , ⌊ 𝕗 ⌋ p₀ ≠ p₀)
-  → EM 𝓤
- Ω-autoembedding-apart-from-id-gives-EM (𝕗@(f , f-is-emb) , p₀ , ν) = VIII
-  where
-   f-is-involutive : involutive f
-   f-is-involutive = higgs f (embeddings-are-lc f f-is-emb)
+ Ω-automorphism-swap-≃ : (𝕗 : Ω 𝓤 ≃ Ω 𝓤)
+                       → {p q : Ω 𝓤}
+                       → (⌜ 𝕗 ⌝ p ＝ q) ≃ (⌜ 𝕗 ⌝ q ＝ p)
+ Ω-automorphism-swap-≃ 𝕗 {p} {q} =
+  involution-swap-≃ ⌜ 𝕗 ⌝
+   (automorphisms-of-Ω-are-involutive ⌜ 𝕗 ⌝ ⌜ 𝕗 ⌝-is-equiv)
+   (Ω-is-set fe pe)
 
+ Ω-automorphism-apart-from-id-gives-EM
+  : (Σ 𝕗 ꞉ Ω 𝓤 ≃ Ω 𝓤 , Σ p₀ ꞉ Ω 𝓤 , ⌜ 𝕗 ⌝ p₀ ≠ p₀)
+  → EM 𝓤
+ Ω-automorphism-apart-from-id-gives-EM (𝕗@(f , f-is-equiv) , p₀ , ν) = VIII
+  where
    I : f ⊤ ≠ ⊤
    I e = VI
     where
@@ -185,7 +180,7 @@ module _ {𝓤 : Universe} (fe : Fun-Ext) (pe : propext 𝓤) where
 
      V : f ⊥ ≠ ⊤
      V e₂ = ⊥-is-not-⊤
-             (⊥       ＝⟨ (involution-swap f f-is-involutive e₂)⁻¹ ⟩
+             (⊥       ＝⟨ (⌜ Ω-automorphism-swap-≃ 𝕗 ⌝ e₂)⁻¹ ⟩
               f ⊤     ＝⟨ e ⟩
               ⊤       ∎)
 
@@ -196,19 +191,7 @@ module _ {𝓤 : Universe} (fe : Fun-Ext) (pe : propext 𝓤) where
    VII = different-from-⊤-gives-equal-⊥ fe pe (f ⊤) I
 
    VIII : EM 𝓤
-   VIII = Ω-autoembedding-that-maps-⊤-to-⊥-gives-EM (𝕗 , VII)
-
- Ω-automorphism-that-maps-⊤-to-⊥-gives-EM
-  : (Σ 𝕗 ꞉ Ω 𝓤 ≃ Ω 𝓤 , ⌜ 𝕗 ⌝ ⊤ ＝ ⊥)
-  → EM 𝓤
- Ω-automorphism-that-maps-⊤-to-⊥-gives-EM (𝕗 , e) =
-  Ω-autoembedding-that-maps-⊤-to-⊥-gives-EM (≃-gives-↪ 𝕗 , e)
-
- Ω-automorphism-apart-from-id-gives-EM
-  : (Σ 𝕗 ꞉ Ω 𝓤 ≃ Ω 𝓤 , Σ p₀ ꞉ Ω 𝓤 , ⌜ 𝕗 ⌝ p₀ ≠ p₀)
-  → EM 𝓤
- Ω-automorphism-apart-from-id-gives-EM (𝕗 , p₀ , ν) =
-  Ω-autoembedding-apart-from-id-gives-EM (≃-gives-↪ 𝕗 , p₀ , ν)
+   VIII = Ω-automorphism-that-maps-⊤-to-⊥-gives-EM (𝕗 , VII)
 
 \end{code}
 
@@ -258,22 +241,16 @@ proofs. See also [2].
    have-e : f ⊤ ＝ g ⊤
    have-e = e
 
-   f-involutive : involutive f
-   f-involutive = higgs f (equivs-are-lc f ⌜ 𝕗 ⌝-is-equiv)
-
-   g-involutive : involutive g
-   g-involutive = higgs g (equivs-are-lc g ⌜ 𝕘 ⌝-is-equiv)
-
    V : (p : Ω 𝓤) → g p ＝ ⊤ → f p ＝ ⊤
-   V p e₂ = involution-swap f f-involutive
+   V p e₂ = ⌜ Ω-automorphism-swap-≃ 𝕗 ⌝
              (f ⊤ ＝⟨ e ⟩
-              g ⊤ ＝⟨ involution-swap g g-involutive e₂ ⟩
+              g ⊤ ＝⟨ ⌜ Ω-automorphism-swap-≃ 𝕘 ⌝ e₂ ⟩
               p   ∎)
 
    IV : (p : Ω 𝓤) → f p ＝ ⊤ → g p ＝ ⊤
-   IV p e₁ = involution-swap g g-involutive
+   IV p e₁ = ⌜ Ω-automorphism-swap-≃ 𝕘 ⌝
               (g ⊤ ＝⟨ e ⁻¹ ⟩
-               f ⊤ ＝⟨ involution-swap f f-involutive e₁ ⟩
+               f ⊤ ＝⟨ ⌜ Ω-automorphism-swap-≃ 𝕗 ⌝  e₁ ⟩
                p   ∎)
 
    III : f ∼ g
@@ -346,11 +323,8 @@ Added 1st November 2023. We continue in the above anynymous module.
   → ⌜ 𝕗 ⌝ p ＝ (p ↔ ⌜ 𝕗 ⌝ ⊤)
  can-recover-auto-equivalence-from-its-value-at-⊤ 𝕗@(f , f-is-equiv) p = I
   where
-   f-involutive : involutive f
-   f-involutive = higgs f (equivs-are-lc f ⌜ 𝕗 ⌝-is-equiv)
-
    III : (p ↔ f ⊤) ＝ ⊤ → f p ＝ ⊤
-   III e = involution-swap f f-involutive (III₀ ⁻¹)
+   III e = ⌜ Ω-automorphism-swap-≃ 𝕗 ⌝ (III₀ ⁻¹)
     where
      III₀ : p ＝ f ⊤
      III₀ = ↔-gives-＝ pe p (f ⊤) e
@@ -359,9 +333,16 @@ Added 1st November 2023. We continue in the above anynymous module.
    II e = ＝-gives-↔ pe p (f ⊤) (II₀ ⁻¹)
     where
      II₀ : f ⊤ ＝ p
-     II₀ = involution-swap f f-involutive e
+     II₀ = ⌜ Ω-automorphism-swap-≃ 𝕗 ⌝ e
 
    I : f p ＝ (p ↔ f ⊤)
    I = Ω-ext pe fe II III
 
 \end{code}
+
+   ↔-equals-＝ : (p q : Ω 𝓤) → ((p ↔ q) ＝ ⊤) ≃ (p ＝ q)
+   ↔-equals-＝ p q = qinveq
+                    (↔-gives-＝ pe p q)
+                    (＝-gives-↔ pe p q ,
+                    (λ _ → Ω-is-set fe pe _ _) ,
+                    (λ _ → Ω-is-set fe pe _ _))
