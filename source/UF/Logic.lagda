@@ -13,9 +13,10 @@ open import MLTT.Spartan
 open import UF.Equiv
 open import UF.FunExt
 open import UF.PropTrunc
-open import UF.SubtypeClassifier
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
+open import UF.SubtypeClassifier
+open import UF.SubtypeClassifier-Properties
 
 \end{code}
 
@@ -119,6 +120,16 @@ Added by Martin Escardo 1st Nov 2023.
 
  module _ (pe : propext 𝓤) where
 
+  ↔-swap : (p q : Ω 𝓤) → (p ↔ q) holds → (q ↔ p) holds
+  ↔-swap p q (h , k) = (k , h)
+
+  ↔-swap' : (p q : Ω 𝓤) → (p ↔ q) ＝ ⊤ → (q ↔ p) ＝ ⊤
+  ↔-swap' p q e = holds-gives-equal-⊤ pe fe (q ↔ p)
+                   (↔-swap p q (equal-⊤-gives-holds (p ↔ q) e))
+
+  ↔-sym : (p q : Ω 𝓤) → (p ↔ q) ＝ (q ↔ p)
+  ↔-sym p q = Ω-ext pe fe (↔-swap' p q) (↔-swap' q p)
+
   ↔-refl : (p : Ω 𝓤) → (p ↔ p) ＝ ⊤
   ↔-refl p = holds-gives-equal-⊤ pe fe
               (p ↔ p)
@@ -141,6 +152,13 @@ Added by Martin Escardo 1st Nov 2023.
           (equal-⊤-gives-holds (q ⇒ p)
             (∧-elim-R pe fe (p ⇒ q) (q ⇒ p) e)
             (equal-⊤-gives-holds q a))
+
+  ↔-equiv-to-＝ : (p q : Ω 𝓤) → ((p ↔ q) ＝ ⊤) ≃ (p ＝ q)
+  ↔-equiv-to-＝ p q = qinveq
+                       (↔-gives-＝ p q)
+                       (＝-gives-↔ p q ,
+                       (λ _ → Ω-is-set fe pe _ _) ,
+                       (λ _ → Ω-is-set fe pe _ _))
 
 \end{code}
 

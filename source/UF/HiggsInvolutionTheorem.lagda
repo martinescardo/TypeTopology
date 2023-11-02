@@ -149,7 +149,7 @@ lc-monoid-structure-on-Ω-gives-EM : (O : Ω)
                                   → right-neutral O _⊕_
                                   → associative _⊕_
                                   → ((p : Ω) → left-cancellable (p ⊕_))
-                                  → excluded-middle 𝓤
+                                  → EM 𝓤
 lc-monoid-structure-on-Ω-gives-EM O _⊕_ left-neutral right-neutral assoc lc = γ
  where
   invol : (p : Ω) → involutive (p ⊕_)
@@ -215,7 +215,7 @@ lc-monoid-structure-on-Ω-gives-EM O _⊕_ left-neutral right-neutral assoc lc =
   δ : (P : 𝓤 ̇ ) → is-prop P → ¬¬ P → P
   δ P i = Idtofun (ap _holds (ν (P , i)))
 
-  γ : excluded-middle 𝓤
+  γ : EM 𝓤
   γ = DNE-gives-EM fe δ
 
 \end{code}
@@ -380,7 +380,7 @@ eval-at-⊤ : (Ω ≃ Ω) → Ω
 eval-at-⊤ 𝕗 = ⌜ 𝕗 ⌝ ⊤
 
 eval-at-⊤-is-lc : left-cancellable eval-at-⊤
-eval-at-⊤-is-lc {𝕗} {𝕘} e = I
+eval-at-⊤-is-lc {𝕗} {𝕘} e = III
  where
   f g : Ω → Ω
   f = ⌜ 𝕗 ⌝
@@ -389,26 +389,17 @@ eval-at-⊤-is-lc {𝕗} {𝕘} e = I
   have-e : f ⊤ ＝ g ⊤
   have-e = e
 
-  V : (p : Ω) → g p ＝ ⊤ → f p ＝ ⊤
-  V p e₂ = ⌜ Ω-automorphism-swap-≃ 𝕗 ⌝
-            (f ⊤ ＝⟨ e ⟩
-             g ⊤ ＝⟨ ⌜ Ω-automorphism-swap-≃ 𝕘 ⌝ e₂ ⟩
-             p   ∎)
+  I : (p : Ω) → (f p ＝ ⊤) ≃ (g p ＝ ⊤)
+  I p = (f p ＝ ⊤) ≃⟨ Ω-automorphism-swap-≃ 𝕗 ⟩
+        (f ⊤ ＝ p) ≃⟨ transport-≃ (_＝ p) e ⟩
+        (g ⊤ ＝ p) ≃⟨ Ω-automorphism-swap-≃ 𝕘 ⟩
+        (g p ＝ ⊤) ■
 
-  IV : (p : Ω) → f p ＝ ⊤ → g p ＝ ⊤
-  IV p e₁ = ⌜ Ω-automorphism-swap-≃ 𝕘 ⌝
-             (g ⊤ ＝⟨ e ⁻¹ ⟩
-              f ⊤ ＝⟨ ⌜ Ω-automorphism-swap-≃ 𝕗 ⌝  e₁ ⟩
-              p   ∎)
+  II : f ∼ g
+  II p = Ω-ext' pe fe (I p)
 
-  III : f ∼ g
-  III p = Ω-ext pe fe (IV p) (V p)
-
-  II : f ＝ g
-  II = dfunext fe III
-
-  I : 𝕗 ＝ 𝕘
-  I = to-subtype-＝ (being-equiv-is-prop fe') II
+  III : 𝕗 ＝ 𝕘
+  III = to-subtype-＝ (being-equiv-is-prop fe') (dfunext fe II)
 
 \end{code}
 
@@ -461,6 +452,7 @@ Added 1st November 2023.
 
 \begin{code}
 
+open import UF.EquivalenceExamples
 open import UF.Logic
 open Implication fe
 open Conjunction
@@ -469,28 +461,11 @@ can-recover-auto-equivalence-from-its-value-at-⊤
  : (𝕗 : Ω ≃ Ω)
    (p : Ω)
  → ⌜ 𝕗 ⌝ p ＝ (p ↔ ⌜ 𝕗 ⌝ ⊤)
-can-recover-auto-equivalence-from-its-value-at-⊤ 𝕗@(f , f-is-equiv) p = I
- where
-  III : (p ↔ f ⊤) ＝ ⊤ → f p ＝ ⊤
-  III e = ⌜ Ω-automorphism-swap-≃ 𝕗 ⌝ (III₀ ⁻¹)
-   where
-    III₀ : p ＝ f ⊤
-    III₀ = ↔-gives-＝ pe p (f ⊤) e
-
-  II : f p ＝ ⊤ → (p ↔ f ⊤) ＝ ⊤
-  II e = ＝-gives-↔ pe p (f ⊤) (II₀ ⁻¹)
-   where
-    II₀ : f ⊤ ＝ p
-    II₀ = ⌜ Ω-automorphism-swap-≃ 𝕗 ⌝ e
-
-  I : f p ＝ (p ↔ f ⊤)
-  I = Ω-ext pe fe II III
+can-recover-auto-equivalence-from-its-value-at-⊤ 𝕗@(f , _) p =
+ Ω-ext' pe fe
+  ((f p ＝ ⊤)       ≃⟨ Ω-automorphism-swap-≃ 𝕗 ⟩
+   (f ⊤ ＝ p)       ≃⟨ ≃-sym (↔-equiv-to-＝ pe (f ⊤) p) ⟩
+   ((f ⊤ ↔ p) ＝ ⊤) ≃⟨ transport-≃ (_＝ ⊤) (↔-sym pe (f ⊤) p) ⟩
+   ((p ↔ f ⊤) ＝ ⊤) ■)
 
 \end{code}
-
-  ↔-equals-＝ : (p q : Ω) → ((p ↔ q) ＝ ⊤) ≃ (p ＝ q)
-  ↔-equals-＝ p q = qinveq
-                   (↔-gives-＝ pe p q)
-                   (＝-gives-↔ pe p q ,
-                   (λ _ → Ω-is-set fe pe _ _) ,
-                   (λ _ → Ω-is-set fe pe _ _))

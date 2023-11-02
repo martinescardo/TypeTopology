@@ -11,6 +11,7 @@ module UF.SubtypeClassifier where
 
 open import MLTT.Spartan
 open import UF.Base
+open import UF.Equiv
 open import UF.FunExt
 open import UF.Subsingletons
 open import UF.Subsingletons
@@ -173,7 +174,6 @@ equal-⊤-gives-true P hp r = f ⋆
       → (p ＝ ⊤ → q ＝ ⊤)
       → (q ＝ ⊤ → p ＝ ⊤)
       → p ＝ q
-
 Ω-ext pe fe {P , i} {Q , j} f g = III
  where
   I : P → Q
@@ -184,6 +184,13 @@ equal-⊤-gives-true P hp r = f ⋆
 
   III : P , i ＝ Q , j
   III = Ω-extensionality fe pe I II
+
+Ω-ext' : propext 𝓤
+       → funext 𝓤 𝓤
+       → {p q : Ω 𝓤}
+       → (p ＝ ⊤) ≃ (q ＝ ⊤)
+       → p ＝ q
+Ω-ext' pe fe 𝕗 = Ω-ext pe fe ⌜ 𝕗 ⌝ ⌜ 𝕗 ⌝⁻¹
 
 Ω-discrete-gives-EM : funext 𝓤 𝓤
                     → propext 𝓤
