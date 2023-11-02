@@ -15,7 +15,7 @@ Types 2019 meeting
 
 {-# OPTIONS --safe --without-K #-}
 
-module Redirection.Types2019 where
+module Various.Types2019 where
 
 \end{code}
 

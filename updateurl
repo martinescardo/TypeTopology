@@ -38,7 +38,7 @@ ln -s Ordinals.Notions.html Ordinal-Notions.html
 ln -s Ordinals.OrdinalOfOrdinals.html OrdinalOfOrdinals.html
 ln -s Ordinals.WellOrderTransport.html OrdinalsWellOrderTransport.html
 ln -s Ordinals.index.html Ordinals.html
-ln -s Redirection.Types2019.html Types2019.html
+ln -s Various.Types2019.html Types2019.html
 ln -s Slice.Slice.html Slice.html
 ln -s TypeTopology.ADecidableQuantificationOverTheNaturals.html ADecidableQuantificationOverTheNaturals.html
 ln -s TypeTopology.DiscreteAndSeparated.html DiscreteAndSeparated.html
