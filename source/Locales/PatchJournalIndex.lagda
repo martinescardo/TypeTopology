@@ -11,9 +11,32 @@ module Locales.PatchJournalIndex (pt : propositional-truncations-exist)
 open import MLTT.Spartan           hiding (𝟚)
 open import UF.SubtypeClassifier
 
-open import Locales.Frame                      pt fe
+open import Locales.Frame pt fe
+open import UF.Size
+open import Locales.Nucleus pt fe
 
 open Locale
+
+\end{code}
+
+\begin{code}
+
+defn∶vsmall : (𝓥 : Universe) → 𝓤  ̇ → 𝓤 ⊔ 𝓥 ⁺  ̇
+defn∶vsmall 𝓥 A = A is 𝓥 small
+
+\end{code}
+
+\begin{code}
+
+defn∶local-resizing : (𝓤 𝓥 : Universe) → 𝓤 ⁺ ⊔ 𝓥 ⁺  ̇
+defn∶local-resizing 𝓤 𝓥 = propositional-resizing 𝓤 𝓥
+
+\end{code}
+
+\begin{code}
+
+defn∶nucleus : Frame 𝓤 𝓥 𝓦 → 𝓤 ⊔ 𝓥  ̇
+defn∶nucleus = Nucleus
 
 \end{code}
 
