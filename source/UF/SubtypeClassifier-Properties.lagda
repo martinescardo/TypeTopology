@@ -114,7 +114,7 @@ open import UF.ExcludedMiddle
 
 module _ {𝓤 : Universe} (fe : Fun-Ext) (pe : propext 𝓤) where
 
- open import Various.HiggsInvolutionTheorem {𝓤} fe pe
+ open import UF.HiggsInvolutionTheorem {𝓤} fe pe
 
  Ω-automorphism-that-maps-⊤-to-⊥-gives-EM
   : (Σ 𝕗 ꞉ Ω 𝓤 ≃ Ω 𝓤 , ⌜ 𝕗 ⌝ ⊤ ＝ ⊥)

@@ -39,7 +39,7 @@ extensionality:
 
 \begin{code}
 
-module Various.HiggsInvolutionTheorem
+module UF.HiggsInvolutionTheorem
         {𝓤 : Universe}
         (fe : Fun-Ext)
         (pe : propext 𝓤)
