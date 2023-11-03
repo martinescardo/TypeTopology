@@ -511,8 +511,8 @@ to-ℍ-＝ r s {i} {j} = to-subtype-＝ being-higgs-is-prop
    II  = embedding-criterion-converse' f (equivs-are-embeddings' 𝕗) p q
    III = ≃-sym (↔-equiv-to-＝ pe (f p) (f q))
 
-eval-at-⊤-gives-higgs : (𝕗 : Aut Ω) → is-higgs (eval-at-⊤ 𝕗)
-eval-at-⊤-gives-higgs 𝕗@(f , _) p = II
+eval-at-⊤-is-higgs : (𝕗 : Aut Ω) → is-higgs (eval-at-⊤ 𝕗)
+eval-at-⊤-is-higgs 𝕗@(f , _) p = II
  where
   I = p ↔ ⊤           ＝⟨ I₀ ⟩
       f p ↔ f ⊤       ＝⟨ I₁ ⟩
@@ -525,7 +525,7 @@ eval-at-⊤-gives-higgs 𝕗@(f , _) p = II
   II = transport (_＝ p) I (⊤-↔-neutral pe p)
 
 Aut-Ω-to-ℍ : Aut Ω → ℍ
-Aut-Ω-to-ℍ 𝕗 = eval-at-⊤ 𝕗 , eval-at-⊤-gives-higgs 𝕗
+Aut-Ω-to-ℍ 𝕗 = eval-at-⊤ 𝕗 , eval-at-⊤-is-higgs 𝕗
 
 ℍ-to-Aut-Ω : ℍ → Aut Ω
 ℍ-to-Aut-Ω (r , i) = g , involutions-are-equivs g g-is-involutive
