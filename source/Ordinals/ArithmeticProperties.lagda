@@ -1184,21 +1184,232 @@ module _ (pt : propositional-truncations-exist)
        g'' = ∥∥-rec (⊲-is-prop-valued _ _) g' (initial-segment-of-sup-is-initial-segment-of-some-component β b)
 
    b' : (i : I) → (α +ₒ β i) ⊴ (α +ₒ sup β)
-   b' i = ≼-gives-⊴ _ _ h
-    where
-     h : (u : Ordinal _) → u ⊲ (α +ₒ β i) → u ⊲ (α +ₒ sup β)
-     h u (inl a , r) = transport (λ - → - ⊲ (α +ₒ sup β)) (u=α↓a ⁻¹) (+ₒ-⊲-left a)
-      where
-       u=α↓a : u ＝ α ↓ a
-       u=α↓a = r ∙ +ₒ-↓-left a ⁻¹
-     h u (inr b , r) = transport (λ - → - ⊲ (α +ₒ sup β)) (u=α+βi↓b ⁻¹) (+ₒ-increasing-on-right βi↓b<supβ)
-      where
-       u=α+βi↓b : u ＝ α +ₒ (β i ↓ b)
-       u=α+βi↓b = r ∙ +ₒ-↓-right b ⁻¹
-       βi↓b<supβ : (β i ↓ b)  ⊲ sup β
-       βi↓b<supβ = (_ , (initial-segment-of-sup-at-component β i b ⁻¹))
+   b' i = ≼-gives-⊴ _ _ (+ₒ-right-monotone α (β i) (sup β) (⊴-gives-≼ _ _ (sup-is-upper-bound β i)))
 
    b : sup (λ i → α +ₒ β i) ⊴ (α +ₒ sup β)
    b = sup-is-lower-bound-of-upper-bounds (λ i → α +ₒ β i) (α +ₒ sup β) b'
+
+\end{code}
+
+Similarly, multiplication satisfies the expected recursive equations.
+
+\begin{code}
+
+×ₒ-zero : (α : Ordinal 𝓤) → α ×ₒ 𝟘ₒ {𝓤} ＝ 𝟘ₒ
+×ₒ-zero α = ⊴-antisym _ _ α×𝟘⊴𝟘 (𝟘ₒ-least-⊴ (α ×ₒ 𝟘ₒ))
+ where
+  α×𝟘⊴𝟘 : (α ×ₒ 𝟘ₒ) ⊴ 𝟘ₒ
+  α×𝟘⊴𝟘 = (λ x → 𝟘-elim (pr₂ x)) , (λ x → 𝟘-elim (pr₂ x)) , λ x → 𝟘-elim (pr₂ x)
+
+-- +ₒ commutes with successors
+
+𝟙ₒ-left-neutral-×ₒ : (α : Ordinal 𝓤) → 𝟙ₒ {𝓤} ×ₒ α ＝ α
+𝟙ₒ-left-neutral-×ₒ {𝓤 = 𝓤} α = eqtoidₒ (ua _) fe' _ _ h
+ where
+  f : 𝟙 × ⟨ α ⟩ → ⟨ α ⟩
+  f = pr₂
+
+  g : ⟨ α ⟩ → 𝟙 × ⟨ α ⟩
+  g = ( _ ,_)
+
+  f-order-preserving : is-order-preserving (𝟙ₒ {𝓤} ×ₒ α) α f
+  f-order-preserving x y (inl p) = p
+
+  f-is-equiv : is-equiv f
+  f-is-equiv = qinvs-are-equivs f (g , η , ε)
+   where
+    η : g ∘ f ∼ id
+    η x = refl
+
+    ε : f ∘ g ∼ id
+    ε x = refl
+
+  g-order-preserving : is-order-preserving α (𝟙ₒ {𝓤} ×ₒ α) g
+  g-order-preserving x y p = inl p
+
+  h : (𝟙ₒ {𝓤} ×ₒ α) ≃ₒ α
+  h = f , f-order-preserving , f-is-equiv , g-order-preserving
+
+
+𝟙ₒ-right-neutral-×ₒ : (α : Ordinal 𝓤) → α ×ₒ 𝟙ₒ {𝓤} ＝ α
+𝟙ₒ-right-neutral-×ₒ {𝓤 = 𝓤} α = eqtoidₒ (ua _) fe' _ _ h
+ where
+  f : ⟨ α ⟩ × 𝟙 → ⟨ α ⟩
+  f = pr₁
+
+  g : ⟨ α ⟩ → ⟨ α ⟩ × 𝟙
+  g = (_, _ )
+
+  f-order-preserving : is-order-preserving (α ×ₒ 𝟙ₒ {𝓤}) α f
+  f-order-preserving x y (inr (refl , p)) = p
+
+  f-is-equiv : is-equiv f
+  f-is-equiv = qinvs-are-equivs f (g , η , ε)
+   where
+    η : g ∘ f ∼ id
+    η x = refl
+
+    ε : f ∘ g ∼ id
+    ε x = refl
+
+  g-order-preserving : is-order-preserving α (α ×ₒ 𝟙ₒ {𝓤}) g
+  g-order-preserving x y p = inr (refl , p)
+
+  h : (α ×ₒ 𝟙ₒ {𝓤}) ≃ₒ α
+  h = f , f-order-preserving , f-is-equiv , g-order-preserving
+
+×ₒ-distributes-+ₒ-right : (α β γ : Ordinal 𝓤) → α ×ₒ (β +ₒ γ) ＝ (α ×ₒ β) +ₒ (α ×ₒ γ)
+×ₒ-distributes-+ₒ-right α β γ = eqtoidₒ (ua _) fe' _ _ h
+ where
+  f : ⟨ α ×ₒ (β +ₒ γ) ⟩ → ⟨ (α ×ₒ β) +ₒ (α ×ₒ γ) ⟩
+  f (a , inl b) = inl (a , b)
+  f (a , inr c) = inr (a , c)
+
+  g : ⟨ (α ×ₒ β) +ₒ (α ×ₒ γ) ⟩ → ⟨ α ×ₒ (β +ₒ γ) ⟩
+  g (inl (a , b)) = a , inl b
+  g (inr (a , c)) = a , inr c
+
+  f-order-preserving : is-order-preserving _ _ f
+  f-order-preserving (a , inl b) (a' , inl b') (inl p) = inl p
+  f-order-preserving (a , inl b) (a' , inr c') (inl p) = p
+  f-order-preserving (a , inr c) (a' , inr c') (inl p) = inl p
+  f-order-preserving (a , inl b) (a' , inl .b) (inr (refl , q)) = inr (refl , q)
+  f-order-preserving (a , inr c) (a' , inr .c) (inr (refl , q)) = inr (refl , q)
+
+  f-is-equiv : is-equiv f
+  f-is-equiv = qinvs-are-equivs f (g , η , ε)
+   where
+    η : g ∘ f ∼ id
+    η (a , inl b) = refl
+    η (a , inr c) = refl
+
+    ε : f ∘ g ∼ id
+    ε (inl (a , b)) = refl
+    ε (inr (a , c)) = refl
+
+  g-order-preserving : is-order-preserving _ _ g
+  g-order-preserving (inl (a , b)) (inl (a' , b')) (inl p) = inl p
+  g-order-preserving (inl (a , b)) (inl (a' , .b)) (inr (refl , q)) = inr (refl , q)
+  g-order-preserving (inl (a , b)) (inr (a' , c')) p = inl p
+  g-order-preserving (inr (a , c)) (inr (a' , c')) (inl p) = inl p
+  g-order-preserving (inr (a , c)) (inr (a' , c')) (inr (refl , q)) = inr (refl , q)
+
+  h : (α ×ₒ (β +ₒ γ)) ≃ₒ ((α ×ₒ β) +ₒ (α ×ₒ γ))
+  h = f , f-order-preserving , f-is-equiv , g-order-preserving
+
+×ₒ-succ : (α β : Ordinal 𝓤) → α ×ₒ (β +ₒ 𝟙ₒ) ＝ (α ×ₒ β) +ₒ α
+×ₒ-succ α β =
+  α ×ₒ (β +ₒ 𝟙ₒ)          ＝⟨ ×ₒ-distributes-+ₒ-right α β 𝟙ₒ ⟩
+  ((α ×ₒ β) +ₒ (α ×ₒ 𝟙ₒ)) ＝⟨ ap ((α ×ₒ β) +ₒ_) (𝟙ₒ-right-neutral-×ₒ α)  ⟩
+  (α ×ₒ β) +ₒ α           ∎
+
+
+×ₒ-↓ : (α β : Ordinal 𝓤) → (a : ⟨ α ⟩)(b : ⟨ β ⟩) → (α ×ₒ β) ↓ (a , b) ＝ (α ×ₒ (β ↓ b)) +ₒ (α ↓ a)
+×ₒ-↓ α β a b = eqtoidₒ (ua _) fe' _ _ h
+ where
+  f : _
+  f ((x , y) , inl p) = inl (x , (y , p))
+  f ((x , y) , inr (r , q)) = inr (x , q)
+
+  g : _
+  g (inl (x , y , p)) = (x , y) , inl p
+  g (inr (x , q)) = (x , b) , inr (refl , q)
+
+  f-order-preserving : is-order-preserving _ _ f
+  f-order-preserving ((x , y) , inl p)       ((x' , y') , inl p')        (inl z) = inl z
+  f-order-preserving ((x , y) , inl p) ((x' , .y) , inl p') (inr (refl , z)) = inr (to-Σ-＝ (refl , Prop-valuedness β _ _ p p') , z)
+  f-order-preserving ((x , y) , inl p)       ((x' , y') , inr (r' , q')) z = ⋆
+  f-order-preserving ((x , y) , inr (refl , q)) ((x' , y') , inl p') (inl z) = 𝟘-elim (irrefl β y (Transitivity β _ _ _ z p'))
+  f-order-preserving ((x , y) , inr (refl , q)) ((x' , .y) , inl p') (inr (refl , z)) = 𝟘-elim (irrefl β y p')
+  f-order-preserving ((x , y) , inr (refl , q)) ((x' , .y) , inr (refl , q')) (inl z) = 𝟘-elim (irrefl β y z)
+  f-order-preserving ((x , y) , inr (refl , q)) ((x' , .y) , inr (refl , q')) (inr (_ , z)) = z
+
+  f-is-equiv : is-equiv f
+  f-is-equiv = qinvs-are-equivs f (g , η , ε)
+   where
+    η : g ∘ f ∼ id
+    η ((x , y) , inl p) = refl
+    η ((x , y) , inr (refl , q)) = refl
+
+    ε : f ∘ g ∼ id
+    ε (inl (x , y)) = refl
+    ε (inr x) = refl
+
+  g-order-preserving : is-order-preserving _ _ g
+  g-order-preserving (inl (x , y , p)) (inl (x' , y' , p')) (inl z) = inl z
+  g-order-preserving (inl (x , y , p)) (inl (x' , y' , p')) (inr (refl , z)) = inr (refl , z)
+  g-order-preserving (inl (x , y , p)) (inr (x' , q')) _ = inl p
+  g-order-preserving (inr (x , q)) (inr (x' , q')) z = inr (refl , z)
+
+  h : _ ≃ₒ _
+  h = f , f-order-preserving , f-is-equiv , g-order-preserving
+
+×ₒ-increasing-on-right : {α β γ : Ordinal 𝓤}
+                       → 𝟘ₒ ⊲ α
+                       → β ⊲ γ
+                       → (α ×ₒ β) ⊲ (α ×ₒ γ)
+×ₒ-increasing-on-right {α = α} {β} {γ} (a , α↓a=0) (c , r) = (a , c) , eq
+ where
+  eq = α ×ₒ β                    ＝⟨ 𝟘ₒ-right-neutral (α ×ₒ β) ⁻¹ ⟩
+       (α ×ₒ β) +ₒ 𝟘ₒ            ＝⟨ ap₂ (λ - ~ → (α ×ₒ -) +ₒ ~) r α↓a=0 ⟩
+       (α ×ₒ (γ ↓ c)) +ₒ (α ↓ a) ＝⟨ ×ₒ-↓ α γ a c ⁻¹ ⟩
+       (α ×ₒ γ) ↓ (a , c)        ∎
+
+×ₒ-right-monotone-⊴ : (α β γ : Ordinal 𝓤)
+                    → β ⊴ γ
+                    → (α ×ₒ β) ⊴ (α ×ₒ γ)
+×ₒ-right-monotone-⊴ α β γ (g , sim-g) = f , f-initial-segment , f-order-preserving
+ where
+   f : ⟨ α ×ₒ β ⟩ → ⟨ α ×ₒ γ ⟩
+   f (a , b) = a , g b
+
+   f-initial-segment : is-initial-segment (α ×ₒ β) (α ×ₒ γ) f
+   f-initial-segment (a , b) (a' , c') (inl p) = (a' , c) , inl r , ap (a' ,_) q
+    where
+     c  = pr₁ (simulations-are-initial-segments _ _ g sim-g b c' p)
+     r = pr₁ (pr₂ (simulations-are-initial-segments _ _ g sim-g b c' p))
+     q = pr₂ (pr₂ (simulations-are-initial-segments _ _ g sim-g b c' p))
+
+   f-initial-segment (a , b) (a' , .(pr₂ (f (a , b)))) (inr (refl , q)) = (a' , b) , (inr (refl , q) , refl)
+
+   f-order-preserving : is-order-preserving (α ×ₒ β) (α ×ₒ γ) f
+   f-order-preserving (a , b) (a' , b') (inl p) = inl (simulations-are-order-preserving β γ g sim-g b b' p)
+   f-order-preserving (a , b) (a' , b') (inr (refl , q)) = inr (refl , q)
+
+module _ (pt : propositional-truncations-exist)
+         (sr : Set-Replacement pt)
+       where
+
+ open import Ordinals.OrdinalOfOrdinalsSuprema ua
+ open suprema pt sr
+ open PropositionalTruncation pt
+
+ -- +ₒ commutes with suprema
+ ×ₒ-sup : (α : Ordinal 𝓤){I : 𝓤 ̇ } (β : I → Ordinal 𝓤) → α ×ₒ sup β ＝ sup (λ i → α ×ₒ β i)
+ ×ₒ-sup α {I} β = ⊴-antisym _ _ a b
+   where
+     a : (α ×ₒ sup β) ⊴ sup (λ i → α ×ₒ β i)
+     a = ≼-gives-⊴ _ _ h
+       where
+        h : (u : Ordinal _) → u ⊲ (α ×ₒ sup β) → u ⊲ sup (λ i → α ×ₒ β i)
+        h u ((a , y) , r) = transport (λ - → - ⊲ sup (λ i → α ×ₒ β i)) (r ⁻¹) g''
+         where
+          g' : Σ i ꞉ I , Σ z ꞉ ⟨ β i ⟩ , sup β ↓ y ＝ (β i) ↓ z → ((α ×ₒ sup β) ↓ (a , y)) ⊲ sup (λ i → α ×ₒ β i)
+          g' (i , z , q) = _ , eq where
+            eq =
+              (α ×ₒ sup β) ↓ (a , y)        ＝⟨ ×ₒ-↓ α (sup β) a y ⟩
+              (α ×ₒ (sup β ↓ y)) +ₒ (α ↓ a) ＝⟨ ap (λ - → ((α ×ₒ -) +ₒ (α ↓ a))) q ⟩
+              (α ×ₒ (β i ↓ z)) +ₒ (α ↓ a)   ＝⟨ ×ₒ-↓ α (β i) a z ⁻¹ ⟩
+              (α ×ₒ β i) ↓ (a , z)          ＝⟨ initial-segment-of-sup-at-component (λ j → α ×ₒ β j) i (a , z) ⁻¹ ⟩
+              sup (λ i₁ → α ×ₒ β i₁) ↓ _    ∎
+
+          g'' : ((α ×ₒ sup β) ↓ (a , y)) ⊲ sup (λ i → α ×ₒ β i)
+          g'' = ∥∥-rec (⊲-is-prop-valued _ _) g' (initial-segment-of-sup-is-initial-segment-of-some-component β y)
+
+     b' : (i : I) → (α ×ₒ β i) ⊴ (α ×ₒ sup β)
+     b' i = ×ₒ-right-monotone-⊴ α (β i) (sup β) (sup-is-upper-bound β i)
+
+     b : sup (λ i → α ×ₒ β i) ⊴ (α ×ₒ sup β)
+     b = sup-is-lower-bound-of-upper-bounds (λ i → α ×ₒ β i) (α ×ₒ sup β) b'
 
 \end{code}
