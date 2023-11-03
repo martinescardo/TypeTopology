@@ -417,7 +417,7 @@ instance
 Ωᵈᵉᶜ-to-Ωˢᵈ-left-cancellable : left-cancellable (canonical-map (Ωᵈᵉᶜ 𝓤) (Ωˢᵈ 𝓤))
 Ωᵈᵉᶜ-to-Ωˢᵈ-left-cancellable {𝓤} {(X , _)} {(Y , _)} e =
  to-subtype-＝ (λ (P , i) → decidability-of-prop-is-prop fe i)
-              (Ω-extensionality fe pe
+              (Ω-extensionality pe fe
                (idtofun (X holds) (Y holds) (ap pr₁ e))
                (idtofun (Y holds) (X holds) (ap pr₁ (e ⁻¹))))
 

@@ -309,7 +309,7 @@ induced order on Σα.
   ≺-congruence : {p q p' q' : Σα} → p ≈ p' → q ≈ q'
                → (p ≺[Ω] q) ＝ (p' ≺[Ω] q')
   ≺-congruence {(i , x)} {(j , y)} {(i' , x')} {(j' , y')} e₁ e₂ =
-   Ω-extensionality fe' pe' ⦅1⦆ ⦅2⦆
+   Ω-extensionality pe' fe' ⦅1⦆ ⦅2⦆
     where
      ⦅1⦆ : (α i ↓ x) ⊲ (α j ↓ y) → (α i' ↓ x') ⊲ (α j' ↓ y')
      ⦅1⦆ l = transport₂ _⊲_ e₁ e₂ l

@@ -308,7 +308,7 @@ equivalent to a large one. We do *not* use resizing axioms.
     ρ : {a b a' b' : A}
       → a ~ a' → b ~ b' → f a ∈[Ω] f b ＝ f a' ∈[Ω] f b'
     ρ {a} {b} {a'} {b'} e e' =
-     Ω-extensionality fe pe (transport₂ _∈_ e e')
+     Ω-extensionality pe fe (transport₂ _∈_ e e')
                             (transport₂ _∈_ (e ⁻¹) (e' ⁻¹))
 
   _≺_ : A/~ → A/~ → 𝓤 ⁺ ̇

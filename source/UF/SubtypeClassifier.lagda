@@ -157,16 +157,22 @@ equal-⊤-gives-true P hp r = f ⋆
   f : 𝟙 → P
   f = transport id s
 
-Ω-extensionality : funext 𝓤 𝓤
-                 → propext 𝓤
+Ω-extensionality : propext 𝓤
+                 → funext 𝓤 𝓤
                  → {p q : Ω 𝓤}
                  → (p holds → q holds)
                  → (q holds → p holds)
                  → p ＝ q
-Ω-extensionality {𝓤} fe pe {p} {q} f g =
- to-Σ-＝
-  (pe (holds-is-prop p) (holds-is-prop q) f g ,
-   being-prop-is-prop fe _ _)
+Ω-extensionality pe fe {p} {q} f g =
+ to-Ω-＝ fe (pe (holds-is-prop p) (holds-is-prop q) f g)
+
+Ω-extensionality' : propext 𝓤
+                  → funext 𝓤 𝓤
+                  → {p q : Ω 𝓤}
+                  → (p holds ≃ q holds)
+                  → p ＝ q
+Ω-extensionality' pe fe {p} {q} 𝕗 =
+ Ω-extensionality pe fe ⌜ 𝕗 ⌝ ⌜ 𝕗 ⌝⁻¹
 
 Ω-ext : propext 𝓤
       → funext 𝓤 𝓤
@@ -183,7 +189,7 @@ equal-⊤-gives-true P hp r = f ⋆
   II y = equal-⊤-gives-true P i (g (true-gives-equal-⊤ pe fe Q j y))
 
   III : P , i ＝ Q , j
-  III = Ω-extensionality fe pe I II
+  III = Ω-extensionality pe fe I II
 
 Ω-ext' : propext 𝓤
        → funext 𝓤 𝓤
@@ -222,13 +228,13 @@ no-truth-values-other-than-⊥-or-⊤ fe pe ((P , i) , (f , g)) = φ u
   u h = g l
     where
      l : (P , i) ＝ ⊤
-     l = Ω-extensionality fe pe unique-to-𝟙 (λ _ → h)
+     l = Ω-extensionality pe fe unique-to-𝟙 (λ _ → h)
 
   φ : ¬¬ P
   φ u = f l
     where
      l : (P , i) ＝ ⊥
-     l = Ω-extensionality fe pe (λ p → 𝟘-elim (u p)) unique-from-𝟘
+     l = Ω-extensionality pe fe (λ p → 𝟘-elim (u p)) unique-from-𝟘
 
 no-three-distinct-propositions : funext 𝓤 𝓤
                                → propext 𝓤

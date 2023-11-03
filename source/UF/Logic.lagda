@@ -118,7 +118,16 @@ Added by Martin Escardo 1st Nov 2023.
 
 \begin{code}
 
+ ↔-gives-⇒ = biimplication-forward
+ ↔-gives-⇐ = biimplication-backward
+
  module _ (pe : propext 𝓤) where
+
+  ⊤-↔-neutral : (p : Ω 𝓤) → (p ↔ ⊤) ＝ p
+  ⊤-↔-neutral p =
+   Ω-extensionality pe fe
+   (λ (h : (p ↔ ⊤ {𝓤}) holds) → ↔-gives-⇐ p ⊤ h ⊤-holds)
+   (λ (h : p holds) → (λ _ → ⊤-holds) , (λ _ → h))
 
   ↔-swap : (p q : Ω 𝓤) → (p ↔ q) holds → (q ↔ p) holds
   ↔-swap p q (h , k) = (k , h)
@@ -130,6 +139,11 @@ Added by Martin Escardo 1st Nov 2023.
   ↔-sym : (p q : Ω 𝓤) → (p ↔ q) ＝ (q ↔ p)
   ↔-sym p q = Ω-ext pe fe (↔-swap' p q) (↔-swap' q p)
 
+  ⊤-↔-neutral' : (p : Ω 𝓤) → (⊤ ↔ p) ＝ p
+  ⊤-↔-neutral' p = (⊤ ↔ p ＝⟨ ↔-sym ⊤ p ⟩
+                    p ↔ ⊤ ＝⟨ ⊤-↔-neutral p ⟩
+                    p     ∎)
+
   ↔-refl : (p : Ω 𝓤) → (p ↔ p) ＝ ⊤
   ↔-refl p = holds-gives-equal-⊤ pe fe
               (p ↔ p)
@@ -139,19 +153,13 @@ Added by Martin Escardo 1st Nov 2023.
   ＝-gives-↔ p p refl = ↔-refl p
 
   ↔-gives-＝ : (p q : Ω 𝓤) → (p ↔ q) ＝ ⊤ → p ＝ q
-  ↔-gives-＝ p q e = Ω-ext pe fe f g
+  ↔-gives-＝ p q e = Ω-extensionality pe fe f g
    where
-    f : p ＝ ⊤ → q ＝ ⊤
-    f a = holds-gives-equal-⊤ pe fe q
-          (equal-⊤-gives-holds (p ⇒ q)
-            (∧-elim-L pe fe (p ⇒ q) (q ⇒ p) e)
-            (equal-⊤-gives-holds p a))
+    f : p holds → q holds
+    f = ↔-gives-⇒ p q (equal-⊤-gives-holds (p ↔ q) e)
 
-    g : q ＝ ⊤ → p ＝ ⊤
-    g a = holds-gives-equal-⊤ pe fe p
-          (equal-⊤-gives-holds (q ⇒ p)
-            (∧-elim-R pe fe (p ⇒ q) (q ⇒ p) e)
-            (equal-⊤-gives-holds q a))
+    g : q holds → p holds
+    g = ↔-gives-⇐ p q (equal-⊤-gives-holds (p ↔ q) e)
 
   ↔-equiv-to-＝ : (p q : Ω 𝓤) → ((p ↔ q) ＝ ⊤) ≃ (p ＝ q)
   ↔-equiv-to-＝ p q = qinveq

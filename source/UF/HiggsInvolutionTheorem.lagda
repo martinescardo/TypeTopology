@@ -33,7 +33,7 @@ open import UF.Base
 open import UF.FunExt
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import UF.SubtypeClassifier renaming (Ω to Ω-at-universe)
+open import UF.SubtypeClassifier renaming (Ω to Ω-of-universe)
 
 \end{code}
 
@@ -55,7 +55,8 @@ We work with Ω of universe 𝓤:
 \begin{code}
 
 private
- Ω = Ω-at-universe 𝓤
+ Ω  = Ω-of-universe 𝓤
+ Ω⁺ = Ω-of-universe (𝓤 ⁺)
 
 \end{code}
 
@@ -264,7 +265,7 @@ excluded middle holds.
 \begin{code}
 
 Ω-automorphism-that-maps-⊤-to-⊥-gives-EM
- : (Σ 𝕗 ꞉ Ω ≃ Ω , ⌜ 𝕗 ⌝ ⊤ ＝ ⊥)
+ : (Σ 𝕗 ꞉ Aut Ω , ⌜ 𝕗 ⌝ ⊤ ＝ ⊥)
  → EM 𝓤
 Ω-automorphism-that-maps-⊤-to-⊥-gives-EM ((f , f-is-equiv) , e) = II
  where
@@ -296,7 +297,7 @@ excluded middle holds.
 
 open import UF.SubtypeClassifier-Properties
 
-Ω-automorphism-swap-≃ : (𝕗 : Ω ≃ Ω)
+Ω-automorphism-swap-≃ : (𝕗 : Aut Ω)
                       → {p q : Ω}
                       → (⌜ 𝕗 ⌝ p ＝ q) ≃ (⌜ 𝕗 ⌝ q ＝ p)
 Ω-automorphism-swap-≃ 𝕗 {p} {q} =
@@ -305,7 +306,7 @@ open import UF.SubtypeClassifier-Properties
   (Ω-is-set fe pe)
 
 Ω-automorphism-apart-from-id-gives-EM
- : (Σ 𝕗 ꞉ Ω ≃ Ω , Σ p₀ ꞉ Ω , ⌜ 𝕗 ⌝ p₀ ≠ p₀)
+ : (Σ 𝕗 ꞉ Aut Ω , Σ p₀ ꞉ Ω , ⌜ 𝕗 ⌝ p₀ ≠ p₀)
  → EM 𝓤
 Ω-automorphism-apart-from-id-gives-EM (𝕗@(f , f-is-equiv) , p₀ , ν) = VIII
  where
@@ -362,11 +363,11 @@ internal proofs don't necessarily follow the external diagrammatic
 proofs. See also [2].
 
 [1] Peter T. Johnstone. Automorphisms of \Omega. Algebra Universalis,
-   9 (1979) 1-7.
+    9 (1979) 1-7.
 
-[2] Peter Freyd. Choice and well-ordering.
-   Annals of Pure and Applied Logic 35 (1987) 149-166.
-   https://core.ac.uk/download/pdf/81927529.pdf
+[2] Peter Freyd. Choice and well-ordering.  Annals of Pure and Applied
+    Logic 35 (1987) 149-166.
+    https://core.ac.uk/download/pdf/81927529.pdf
 
 \begin{code}
 
@@ -376,7 +377,7 @@ private
  fe' : FunExt
  fe' 𝓥 𝓦 = fe {𝓥} {𝓦}
 
-eval-at-⊤ : (Ω ≃ Ω) → Ω
+eval-at-⊤ : Aut Ω → Ω
 eval-at-⊤ 𝕗 = ⌜ 𝕗 ⌝ ⊤
 
 eval-at-⊤-is-lc : left-cancellable eval-at-⊤
@@ -401,6 +402,11 @@ eval-at-⊤-is-lc {𝕗} {𝕘} e = III
   III : 𝕗 ＝ 𝕘
   III = to-subtype-＝ (being-equiv-is-prop fe') (dfunext fe II)
 
+eval-at-⊤-is-embedding : is-embedding eval-at-⊤
+eval-at-⊤-is-embedding = lc-maps-into-sets-are-embeddings
+                          eval-at-⊤ eval-at-⊤-is-lc
+                          (Ω-is-set fe pe)
+
 \end{code}
 
 From this we conclude that there can't be any automorphism of Ω
@@ -411,7 +417,7 @@ been observed in the folklore.
 \begin{code}
 
 Ω-automorphism-distinct-from-𝕚𝕕-gives-EM
- : (Σ 𝕗 ꞉ Ω ≃ Ω , 𝕗 ≠ 𝕚𝕕)
+ : (Σ 𝕗 ꞉ Aut Ω , 𝕗 ≠ 𝕚𝕕)
  → EM 𝓤
 Ω-automorphism-distinct-from-𝕚𝕕-gives-EM (𝕗 , ν) = IV
  where
@@ -432,7 +438,7 @@ been observed in the folklore.
 
 \end{code}
 
-It follows that the type Σ f ꞉ Ω ≃ Ω , f ≠ id is a proposition,
+It follows that the type Σ f ꞉ Aut Ω , f ≠ id is a proposition,
 constructively. In boolean toposes it is a singleton, in non-boolean
 toposes it is empty, and in all toposes it is a subsingleton.  This is
 because from any hypothetical element (f , ν) of this type we conclude
@@ -442,7 +448,7 @@ middle as an intermediate step. And once we conclude that this type is
 a proposition, we see that it is equivalent to the type EM 𝓤, which is
 also a proposition, as these two propositions imply each other:
 
-(Σ f ꞉ Ω ≃ Ω , f ≠ id) ≃ EM 𝓤
+(Σ f ꞉ Aut Ω , f ≠ id) ≃ EM 𝓤
 
 and hence they are equal if we further assume univalence.
 
@@ -452,13 +458,13 @@ Added 1st November 2023.
 
 \begin{code}
 
-open import UF.EquivalenceExamples
 open import UF.Logic
 open Implication fe
 open Conjunction
+open Universal fe
 
 can-recover-auto-equivalence-from-its-value-at-⊤
- : (𝕗 : Ω ≃ Ω)
+ : (𝕗 : Aut Ω)
    (p : Ω)
  → ⌜ 𝕗 ⌝ p ＝ (p ↔ ⌜ 𝕗 ⌝ ⊤)
 can-recover-auto-equivalence-from-its-value-at-⊤ 𝕗@(f , _) p =
@@ -467,5 +473,95 @@ can-recover-auto-equivalence-from-its-value-at-⊤ 𝕗@(f , _) p =
    (f ⊤ ＝ p)       ≃⟨ ≃-sym (↔-equiv-to-＝ pe (f ⊤) p) ⟩
    ((f ⊤ ↔ p) ＝ ⊤) ≃⟨ transport-≃ (_＝ ⊤) (↔-sym pe (f ⊤) p) ⟩
    ((p ↔ f ⊤) ＝ ⊤) ■)
+
+\end{code}
+
+Added 2nd November 2023.
+
+\begin{code}
+
+is-higgs : Ω → 𝓤 ⁺ ̇
+is-higgs r = (p : Ω) → ((p ↔ r) ↔ r) ＝ p
+
+being-higgs-is-prop : (r : Ω) → is-prop (is-higgs r)
+being-higgs-is-prop r = Π-is-prop fe (λ p → Ω-is-set fe pe)
+
+ℍ : 𝓤 ⁺ ̇
+ℍ = Σ r ꞉ Ω , is-higgs r
+
+to-ℍ-＝ : (r s : Ω) (i : is-higgs r) (j : is-higgs s)
+       → r ＝ s
+       → (r , i) ＝[ ℍ ] (s , j)
+to-ℍ-＝ r s i j = to-subtype-＝ being-higgs-is-prop
+
+Ω-automorphisms-are-↔-embeddings : (𝕗 : Aut Ω)
+                                   (p q : Ω)
+                                 → (p ↔ q) ＝ (⌜ 𝕗 ⌝ p ↔ ⌜ 𝕗 ⌝ q)
+Ω-automorphisms-are-↔-embeddings 𝕗@(f , f-is-equiv) p q =
+ Ω-ext' pe fe
+  (((p ↔ q) ＝ ⊤)     ≃⟨ I ⟩
+   (p ＝ q)           ≃⟨ II ⟩
+   (f p ＝ f q)       ≃⟨ III ⟩
+   ((f p ↔ f q) ＝ ⊤) ■)
+  where
+   I   = ↔-equiv-to-＝ pe p q
+   II  = embedding-criterion-converse' f (equivs-are-embeddings' 𝕗) p q
+   III = ≃-sym (↔-equiv-to-＝ pe (f p) (f q))
+
+eval-at-⊤-gives-higgs : (𝕗 : Aut Ω) → is-higgs (eval-at-⊤ 𝕗)
+eval-at-⊤-gives-higgs 𝕗@(f , f-is-equiv) p = II
+ where
+  I = p ↔ ⊤           ＝⟨ I₀ ⟩
+      f p ↔ f ⊤       ＝⟨ I₁ ⟩
+      (p ↔ f ⊤) ↔ f ⊤ ∎
+   where
+    I₀ = Ω-automorphisms-are-↔-embeddings 𝕗 p ⊤
+    I₁ = ap (_↔ f ⊤) (can-recover-auto-equivalence-from-its-value-at-⊤ 𝕗 p)
+
+  II : ((p ↔ f ⊤) ↔ f ⊤) ＝ p
+  II = transport (_＝ p) I (⊤-↔-neutral pe p)
+
+ϕ : Aut Ω → ℍ
+ϕ 𝕗 = eval-at-⊤ 𝕗 , eval-at-⊤-gives-higgs 𝕗
+
+ψ : ℍ → Aut Ω
+ψ (r , i) = g , involutions-are-equivs g g-is-involutive
+ where
+  g : Ω → Ω
+  g p = p ↔ r
+
+  g-is-involutive : involutive g
+  g-is-involutive = i
+
+ψϕ : ψ ∘ ϕ ∼ id
+ψϕ 𝕗@(f , f-is-equiv) =
+ to-≃-＝ fe g f _ _ h
+ where
+  g : Ω → Ω
+  g p = p ↔ f ⊤
+
+  h : g ∼ f
+  h p = (can-recover-auto-equivalence-from-its-value-at-⊤ 𝕗 p)⁻¹
+
+ϕψ : ϕ ∘ ψ ∼ id
+ϕψ (r , i) = to-ℍ-＝ (⊤ ↔ r) r _ _ (⊤-↔-neutral' pe r)
+
+Aut-Ω-is-equiv-to-ℍ : Aut Ω ≃ ℍ
+Aut-Ω-is-equiv-to-ℍ = qinveq ϕ (ψ , ψϕ , ϕψ)
+
+\end{code}
+
+TODO. Complete proof that is-higgs r ⇔ is-higgs' r.
+
+\begin{code}
+
+open import UF.PropTrunc
+
+module _ (pt : propositional-truncations-exist) where
+
+ open Disjunction pt
+
+ is-higgs' : Ω → 𝓤 ⁺ ̇
+ is-higgs' r = (p : Ω) → (p ∨ (p ⇒ r)) holds
 
 \end{code}

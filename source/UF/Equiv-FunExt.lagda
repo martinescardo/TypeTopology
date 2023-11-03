@@ -214,6 +214,15 @@ being-equiv-is-prop'' fe = being-equiv-is-prop' fe fe fe fe
   q : transport is-equiv p d ＝ e
   q = being-equiv-is-prop' fe₀ f₁ f₂ fe₀ (h ∘ g ∘ f) _ _
 
+to-≃-＝ : Fun-Ext
+        → {X : 𝓤 ̇ } {Y : 𝓥 ̇}
+          (f g : X → Y) (i : is-equiv f) (j : is-equiv g)
+        → f ∼ g
+        → (f , i) ＝[ X ≃ Y ] (g , j)
+to-≃-＝ fe f g i j h = to-subtype-＝
+                        (being-equiv-is-prop' fe fe fe fe)
+                        (dfunext fe h)
+
 ≃-assoc : FunExt
         → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {T : 𝓣 ̇ }
           (α : X ≃ Y) (β : Y ≃ Z) (γ : Z ≃ T)
