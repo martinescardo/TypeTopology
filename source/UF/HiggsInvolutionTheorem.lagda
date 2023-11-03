@@ -362,11 +362,13 @@ theory rather than proofs in the internal language of a topos. Our
 internal proofs don't necessarily follow the external diagrammatic
 proofs. See also [2].
 
-[1] Peter T. Johnstone. Automorphisms of \Omega. Algebra Universalis,
+[1] Peter T. Johnstone. Automorphisms of Ω. Algebra Universalis,
     9 (1979) 1-7.
+    https://doi.org/10.1007/BF02488012
 
 [2] Peter Freyd. Choice and well-ordering.  Annals of Pure and Applied
     Logic 35 (1987) 149-166.
+    https://doi.org/10.1016/0168-0072(87)90060-1
     https://core.ac.uk/download/pdf/81927529.pdf
 
 \begin{code}
