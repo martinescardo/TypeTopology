@@ -56,13 +56,13 @@ Rnorm-preserves-⟦⟧ : {σ : type} (d : B〖 σ 〗) (t u : {A : type} → T�
                    → ({A : type} → ⟦ t ⟧₀ ≡[ (B-type〖 σ 〗 A) ] ⟦ u ⟧₀)
                    → Rnorm d t
                    → Rnorm d u
-Rnorm-preserves-⟦⟧ {ι} d t u t≡u Rnorm-d-t η₁ η₂ η₁≡η₂ β₁ β₂ β₁≡β₂ =
- ⟦ u ⟧₀ η₁ β₁          ≡⟨ ≡-symm (t≡u η₁ η₁ (≡ₗ η₁≡η₂) β₁ β₁ (≡ₗ β₁≡β₂)) ⟩
- ⟦ t ⟧₀ η₁ β₁          ≡＝⟨ Rnorm-d-t η₁ η₂ η₁≡η₂ β₁ β₂ β₁≡β₂ ⟩
+Rnorm-preserves-⟦⟧ {ι} d t u t≡u Rnorm-d-t {A} {η₁} {η₂} η₁≡η₂ {β₁} {β₂} β₁≡β₂ =
+ ⟦ u ⟧₀ η₁ β₁          ≡⟨ ≡-symm (t≡u {A} (≡ₗ η₁ η₁≡η₂) (≡ₗ β₁ β₁≡β₂)) ⟩
+ ⟦ t ⟧₀ η₁ β₁          ≡＝⟨ Rnorm-d-t η₁≡η₂ β₁≡β₂ ⟩
  church-encode d η₂ β₂ ∎
 Rnorm-preserves-⟦⟧ {σ ⇒ τ} d t u t≡u Rnorm-t v₁ v₂ Rnorm-vs =
  Rnorm-preserves-⟦⟧ (d v₁) (t · v₂) (u · v₂)
-                    (t≡u ⟦ v₂ ⟧₀ ⟦ v₂ ⟧₀ (≡-refl₀ v₂))
+                    (t≡u (≡-refl₀ v₂))
                     (Rnorm-t v₁ v₂ Rnorm-vs)
 
 \end{code}
@@ -79,134 +79,195 @@ Require fact that Rnorm is parametric when proving the reflects-≡ lemmas.
 \begin{code}
 
 -- TODO this should be moved to the definition of numeral?
-⟦numeral⟧ : (n : ℕ) → ⟦ numeral n ⟧₀ ＝ n
-⟦numeral⟧ zero = refl
-⟦numeral⟧ (succ n) = ap succ (⟦numeral⟧ n)
+⟦numeral⟧ : {Γ : Cxt} (γ : 【 Γ 】) (n : ℕ) → ⟦ numeral n ⟧ γ ≡ n
+⟦numeral⟧ γ  zero    = refl
+⟦numeral⟧ γ (succ n) = ap succ (⟦numeral⟧ γ n)
+
+⟦numeral⟧₀ : (n : ℕ) → ⟦ numeral n ⟧₀ ＝ n
+⟦numeral⟧₀  n = ⟦numeral⟧ ⟨⟩ n
 
 Rnorm-ηnumeral : (n : ℕ) → Rnorm (η n) (⌜η⌝ · numeral n)
-Rnorm-ηnumeral n η₁ η₂ η₁≡η₂ β₁ β₂ β₁≡β₂ = η₁≡η₂ ⟦ numeral n ⟧₀ n (⟦numeral⟧ n)
+Rnorm-ηnumeral n η₁≡η₂ β₁≡β₂ = η₁≡η₂ (⟦numeral⟧₀ n)
 
-Rnorm-η-reflects-≡ : (n₁ : ℕ) (n₂ : T₀ ι)
-                   → Rnorm (η n₁) (⌜η⌝ · n₂)
-                   →  ⟦ numeral n₁ ⟧₀ ≡ ⟦ n₂ ⟧₀
-Rnorm-η-reflects-≡ n₁ n₂ Rnorm-ns =
- ⟦ numeral n₁ ⟧₀ ≡⟨ ⟦numeral⟧ n₁ ⟩
- n₁              ≡⟨ ≡-symm (Rnorm-ns η₁ η₁ η₁≡η₁ β₁ β₁ β₁≡β₁) ⟩
+Rnorm-η-implies-≡ : {n₁ : ℕ} {n₂ : T₀ ι}
+                  → Rnorm (η n₁) (⌜η⌝ · n₂)
+                  → ⟦ numeral n₁ ⟧₀ ≡ ⟦ n₂ ⟧₀
+Rnorm-η-implies-≡ {n₁} {n₂} Rnorm-ns =
+ ⟦ numeral n₁ ⟧₀ ≡⟨ ⟦numeral⟧₀ n₁ ⟩
+ n₁              ≡⟨ ≡-symm (Rnorm-ns η₁≡η₁ β₁≡β₁) ⟩
  ⟦ n₂ ⟧₀ ∎
  where
   η₁ : ℕ → ℕ
   η₁ n = n
 
   η₁≡η₁ : η₁ ≡ η₁
-  η₁≡η₁ n₁ n₂ n₁＝n₂ = n₁＝n₂
+  η₁≡η₁ n₁＝n₂ = n₁＝n₂
 
   β₁ : (ℕ → ℕ) → ℕ → ℕ
   β₁ ϕ n = 0
 
   β₁≡β₁ : β₁ ≡ β₁
-  β₁≡β₁ ϕ₁ ϕ₂ ϕ₁≡ϕ₂ n₁ n₂ n₁≡n₂ = refl
+  β₁≡β₁ ϕ₁≡ϕ₂ n₁≡n₂ = refl
 
+-- TODO give this a better name
 
---church-encode-β : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {A : 𝓣 ̇ } (ψ : Y → D X Y Z) (y : X)
---                  (η' : Z → A) (β' : (Y → A) → X → A)
---                → church-encode (β ψ y) η' β' ＝ β' (λ y → church-encode (ψ y) η' β') y
---church-encode-β {X} {Y} {Z} {A} ψ y η' β' = refl
+η-type : type → type
+η-type A = ι ⇒ A
 
-Β : (A : type) → type
-Β A = (ι ⇒ A) ⇒ (ι ⇒ A)
+β-type : type → type
+β-type A = (ι ⇒ A) ⇒ ι ⇒ A
 
--- TODO can we extract the two A's into a single A
-branch : ({A : type} → T₀ (⌜B⌝ ι A)) → {A : type} → ℕ → T₀ (⌜B⌝ ι A)
-branch t {A} n =
+branch : ({A : type} → T₀ (⌜B⌝ ι A)) → {A : type} → T₀ (ι ⇒ ⌜B⌝ ι A)
+branch t {A} =
  -- λ i. λ η. λ β. t η' β' h
- ƛ (ƛ (ƛ (weaken₀ t · η₁ · β₁ · h))) · numeral n
+ ƛ (ƛ (ƛ (weaken₀ (t {A'}) · η' · β' · h)))
  where
+  -- To pull out the branching ϕ we use the following elimination type
+  A' : type
+  A' = β-type A ⇒ A
+
   -- λ n. λ k. η(n)
-  η₁ : T (〈〉 ,, ι ,, (ι ⇒ A) ,, Β A) (ι ⇒ Β A ⇒ A)
-  η₁ = ƛ (ƛ (ν₃ · ν₁))
+  η' : T (〈〉 ,, ι ,, η-type A ,, β-type A) (η-type A')
+  η' = ƛ (ƛ (ν₃ · ν₁))
 
   -- λ g. λ n. λ h. h (λ j. g j β) n
-  β₁ : T (〈〉 ,, ι ,, (ι ⇒ A) ,, Β A) ((ι ⇒ Β A ⇒ A) ⇒ ι ⇒ Β A ⇒ A)
-  β₁ = ƛ (ƛ (ƛ (ν₀ · ƛ (ν₃ · ν₀ · ν₄) · ν₁)))
+  β' : T (〈〉 ,, ι ,, η-type A ,, β-type A) (β-type A')
+  β' = ƛ (ƛ (ƛ (ν₀ · ƛ (ν₃ · ν₀ · ν₄) · ν₁)))
 
   -- λ k. λ n.k i
-  h : T (〈〉 ,, ι ,, (ι ⇒ A) ,, Β A) (Β A)
+  h : T (〈〉 ,, ι ,, η-type A ,, β-type A) (β-type A)
   h = ƛ (ƛ (ν₁ · ν₄))
 
-Rnorm-branch : {ϕ : ℕ → B ℕ} {n : ℕ} {t : {A : type} → T₀ (⌜B⌝ ι A)} (i : ℕ)
-               → Rnorm (β ϕ n) t
-               → Rnorm (ϕ i) (branch t i)
-Rnorm-branch {ϕ} {n} {t} i Rnorm-βt {A} η₁ η₂ η₁≡η₂ β₁ β₂ β₁≡β₂ =
- ⟦ branch t i ⟧₀ η₁ β₁                     ≡⟨ {!!} ⟩
- ⟦ t {((ι ⇒ A) ⇒ (ι ⇒ A)) ⇒ A} ⟧₀ η₀ β₀ h₀ ≡⟨ {!!} ⟩
- church-encode (β ϕ n) η₀ β₀ h₀            ≡＝⟨ {!q (ϕ i)!} ⟩
- church-encode (ϕ i) η₂ β₂                 ∎
--- ϕ i n t h A η' β' eη eβ = {!!}
- --⟦ branch t i ⟧₀ η' β'
- -- ≡⟨ ⟦weaken₀⟧ (t {Β A ⇒ A}) (⟨⟩ ‚ i ‚ η' ‚ β') η₀ η₀ η₀≡ β₀ β₀ β₀≡ h₀ h₀ h₀≡ ⟩
- --⟦ t {((ι ⇒ A) ⇒ (ι ⇒ A)) ⇒ A} ⟧₀ η₀ β₀ h₀
- -- ≡⟨ h (Β A ⇒ A) η₀ β₀ extη₀ extβ₀ h₀ h₀ exth₀ ⟩
- --church-encode (β ϕ n) η₀ β₀ h₀
- -- ≡＝⟨ q (ϕ i) ⟩
- --church-encode (ϕ i) η' β'
- -- ∎
+\end{code}
+
+⟦B-branch⟧ : (ϕ : ℕ → B ℕ) (i : ℕ) (n : ℕ) (t : {A : type} → T₀ (⌜B⌝ ι A))
+           → Rnorm (β ϕ n) t
+           → ⟦ B-branch t ⟧₀ i ≣⋆ church-encode (ϕ i)
+⟦B-branch⟧ ϕ i n t h A η' β' eη eβ =
+ ⟦ B-branch t ⟧₀ i η' β'
+  ≡⟨ ⟦weaken₀⟧ (t {Β A ⇒ A}) (⟨⟩ ‚ i ‚ η' ‚ β') η₀ η₀ η₀≡ β₀ β₀ β₀≡ h₀ h₀ h₀≡ ⟩
+ ⟦ t {((ι ⇒ A) ⇒ (ι ⇒ A)) ⇒ A} ⟧₀ η₀ β₀ h₀
+  ≡⟨ h (Β A ⇒ A) η₀ β₀ extη₀ extβ₀ h₀ h₀ exth₀ ⟩
+ church-encode (β ϕ n) η₀ β₀ h₀
+  ≡＝⟨ q (ϕ i) ⟩
+ church-encode (ϕ i) η' β'
+  ∎
  where
   η₀ : 〖 ι ⇒ Β A ⇒ A 〗
-  η₀ = λ n → λ k → η₁ n
+  η₀ = λ n → λ k → η' n
 
   β₀ : 〖 (ι ⇒ Β A ⇒ A) ⇒ ι ⇒ Β A ⇒ A 〗
-  β₀ = λ g → λ n → λ h → h (λ j → g j β₁) n
+  β₀ = λ g → λ n → λ h → h (λ j → g j β') n
 
   h₀ : 〖 Β A 〗
   h₀ = λ k → λ n → k i
 
- -- η₀≡ : η₀ ≡ η₀
- -- η₀≡ a .a refl a₁ b₁ a≡₁ = ? -- eη a
+  η₀≡ : η₀ ≡ η₀
+  η₀≡ a .a refl a₁ b₁ a≡₁ = eη a
 
- -- β₀≡ : β₀ ≡ β₀
- -- β₀≡ a b a≡ a₁ .a₁ refl a₂ b₂ a≡₂ =
- --  a≡₂ _ _ (λ a₃ b₃ a≡₃ → a≡ a₃ b₃ a≡₃ β' β' ?) _ _ refl
+  β₀≡ : β₀ ≡ β₀
+  β₀≡ a b a≡ a₁ .a₁ refl a₂ b₂ a≡₂ =
+   a≡₂ _ _ (λ a₃ b₃ a≡₃ → a≡ a₃ b₃ a≡₃ β' β' (extβℕ eβ)) _ _ refl
 
- -- h₀≡ : h₀ ≡ h₀
- -- h₀≡ a b a≡ a₁ b₁ a≡₁ = a≡ _ _ refl
+  h₀≡ : h₀ ≡ h₀
+  h₀≡ a b a≡ a₁ b₁ a≡₁ = a≡ _ _ refl
 
- -- extη₀ : η₀ ≡ η₀
- -- extη₀ n a b a≡ = ? -- eη n
+  extη₀ : extη η₀
+  extη₀ n a b a≡ = eη n
 
- -- extβ₀ : β₀ ≡ β₀
- -- extβ₀ f g x y x≡ f≡ a b a≡ =
- --  a≡ _ _ f≡g _ _ x≡
- --  where
- --   f≡g : (a₁ b₁ : ℕ) → a₁ ＝ b₁ → f a₁ β' ≡ g b₁ β'
- --   f≡g a₁ .a₁ refl = f≡ a₁ _ _ β≡
- --    where
- --     β≡ : (a₂ b₁ : ℕ → 〖 A 〗)
- --        → ((a₃ b₂ : ℕ) → a₃ ＝ b₂ → a₂ a₃ ≡ b₁ b₂)
- --        → (a₃ b₂ : ℕ) → a₃ ＝ b₂ → β' a₂ a₃ ≡ β' b₁ b₂
- --     β≡ a₂ b₂ a≡₂ a₃ .a₃ refl =
- --      eβ _ _ _ _ refl (λ y → a≡₂ y y refl)
+  extβ₀ : extβ β₀
+  extβ₀ f g x y x≡ f≡ a b a≡ =
+   a≡ _ _ f≡g _ _ x≡
+   where
+    f≡g : (a₁ b₁ : ℕ) → a₁ ＝ b₁ → f a₁ β' ≡ g b₁ β'
+    f≡g a₁ .a₁ refl = f≡ a₁ _ _ β≡
+     where
+      β≡ : (a₂ b₁ : ℕ → 〖 A 〗)
+         → ((a₃ b₂ : ℕ) → a₃ ＝ b₂ → a₂ a₃ ≡ b₁ b₂)
+         → (a₃ b₂ : ℕ) → a₃ ＝ b₂ → β' a₂ a₃ ≡ β' b₁ b₂
+      β≡ a₂ b₂ a≡₂ a₃ .a₃ refl =
+       eβ _ _ _ _ refl (λ y → a≡₂ y y refl)
 
- -- exth₀ : (a b : ℕ → 〖 A 〗)
- --       → ((a₁ b₁ : ℕ) → a₁ ＝ b₁ → a a₁ ≡ b b₁)
- --       → (a₁ b₁ : ℕ) → a₁ ＝ b₁ → a i ≡ b i
- -- exth₀ a b e a₁ b₁ a≡ = e i i refl
+  exth₀ : (a b : ℕ → 〖 A 〗)
+        → ((a₁ b₁ : ℕ) → a₁ ＝ b₁ → a a₁ ≡ b b₁)
+        → (a₁ b₁ : ℕ) → a₁ ＝ b₁ → a i ≡ b i
+  exth₀ a b e a₁ b₁ a≡ = e i i refl
 
- -- q : (d : B ℕ) → church-encode d η₀ β₀ β' ≡ church-encode d η' β'
- -- q (η x) = eη x
- -- q (β ψ y) = eβ _ _ _ _ refl (λ j → q (ψ j))
---
---η⋆≣⋆ : (x : ℕ) (x' : T₀ ι) → η⋆ {_} {_} {_} {_} {ℕ} {ℕ} ⟦ x' ⟧₀ ≣⋆ η⋆ x → ⟦ x' ⟧₀ ≡ x
---η⋆≣⋆ x x' h = h ι (λ z → z) (λ z → z) extη-id extβ-id
---
---Rnorm-reify-β : (ϕ : ℕ → B ℕ) (n : ℕ) (t : {A : type} → T₀ (⌜B⌝ ι A))
---                → Rnorm (β ϕ n) t
---                → Σ ϕ' ꞉ ({A : type} → T₀ (ι ⇒ ⌜B⌝ ι A))
---                , Σ n' ꞉ T₀ ι
---                , ⟦ t ⟧₀ ≣⋆ ⟦ ⌜β⌝ · ϕ' · n' ⟧₀
---                × Rnorm (β ϕ n) (⌜β⌝ · ϕ' · n')
---                × (⟦ n' ⟧₀ ≡ n)
---                × ((x : ℕ) → Rnorm (ϕ x) (ϕ' · numeral x))
---Rnorm-reify-β ϕ n t eq = ϕ' , n' , eq' , rβ , ⟦numeral⟧ n , rϕ
+  q : (d : B ℕ) → church-encode d η₀ β₀ β' ≡ church-encode d η' β'
+  q (η x) = eη x
+  q (β ψ y) = eβ _ _ _ _ refl (λ j → q (ψ j))
+
+
+\begin{code}
+
+-- TODO can this proof be tidied at all?
+Rnorm-branch : {ϕ : ℕ → B ℕ} {n : ℕ} {t : {A : type} → T₀ (⌜B⌝ ι A)} (i : ℕ)
+               → Rnorm (β ϕ n) t
+               → Rnorm (ϕ i) (branch t · numeral i)
+               --→ ⟦ branch t · numeral i⟧ i ≡ church-encode (ϕ i)
+Rnorm-branch {ϕ} {n} {t} i Rnorm-βt {A} {η₁} {η₂} η₁≡η₂ {β₁} {β₂} β₁≡β₂ =
+ ⟦ branch t · numeral i ⟧₀ η₁ β₁                        ＝≡⟨ refl ⟩
+ ⟦ weaken₀ t ⟧ (⟨⟩ ‚ ⟦ numeral i ⟧₀ ‚ η₁ ‚ β₁) η₀ β₀ h₀ ≡⟨ I η₀≡η₀ β₀≡β₀ h₀≡h₁ ⟩
+ church-encode (β ϕ n) η₀ β₀ h₁                         ＝≡⟨ refl ⟩
+ church-encode (ϕ i) η₀ β₀ β₁                           ≡＝⟨ q (ϕ i) ⟩
+ church-encode (ϕ i) η₂ β₂                              ∎
+ where
+  -- To pull out the branching ϕ we use the following elimination type
+  A' : type
+  A' = β-type A ⇒ A
+
+  I : ⟦ weaken₀ (t {A'}) ⟧ (⟨⟩ ‚ ⟦ numeral i ⟧₀ ‚ η₁ ‚ β₁) ≡ church-encode (β ϕ n)
+  I = ≡-trans {⌜B⌝ ι _} (⟦weaken₀⟧ t ((⟨⟩ ‚ ⟦ numeral i ⟧ ⟨⟩ ‚ η₁ ‚ β₁))) Rnorm-βt
+
+  η₀ : 〖 η-type A' 〗
+  η₀ = λ n → λ k → η₁ n
+
+  η₀≡η₀ : η₀ ≡ η₀
+  η₀≡η₀ n₁≡n₂ k₁≡k₂ = ≡ₗ η₁ η₁≡η₂ n₁≡n₂
+
+  β₀ : 〖 β-type A' 〗
+  β₀ = λ g → λ n → λ h → h (λ j → g j β₁) n
+
+  β₀≡β₀ : β₀ ≡ β₀
+  β₀≡β₀ g₁≡g₂ n₁≡n₂ h₁≡h₂ = h₁≡h₂ (λ j₁≡j₂ → g₁≡g₂ j₁≡j₂ (≡ₗ β₁ β₁≡β₂)) n₁≡n₂
+
+  h₀ : 〖 β-type A 〗
+  h₀ = λ k → λ n → k ⟦ numeral i ⟧₀
+
+  h₁ : 〖 β-type A 〗
+  h₁ = λ k → λ n → k i
+
+  h₀≡h₁ : h₀ ≡ h₁
+  h₀≡h₁ k₁≡k₂ n₁≡n₂ = k₁≡k₂ (⟦numeral⟧₀ i)
+
+  q : (d : B ℕ) → church-encode d η₀ β₀ β₁ ≡ church-encode d η₂ β₂
+  q (η x)   = η₁≡η₂ refl
+  q (β ψ y) = β₁≡β₂ ψ≡ψ refl
+   where
+    ψ≡ψ : (λ i → church-encode (ψ i) η₀ β₀ β₁) ≡ (λ i → church-encode (ψ i) η₂ β₂)
+    ψ≡ψ {j} {.j} refl = q (ψ j)
+
+Rnorm-β-implies-Rnorm-ϕ : {ϕ₁ : ℕ → B ℕ} {n₁ : ℕ}
+                          {ϕ₂ : {A : type} → T₀ (ι ⇒  ⌜B⌝ ι A)} {n₂ : T₀ ι}
+                          (i : ℕ)
+                        → Rnorm (β ϕ₁ n₁) (⌜β⌝ · ϕ₂ · n₂)
+                        → Rnorm (ϕ₁ i) (ϕ₂ · numeral i)
+Rnorm-β-implies-Rnorm-ϕ = {!!}
+
+Rnorm-β-implies-n-≡ : {ϕ₁ : ℕ → B ℕ} {n₁ : ℕ}
+                      {ϕ₂ : {A : type} → T₀ (ι ⇒ ⌜B⌝ ι A)} {n₂ : T₀ ι}
+                    → Rnorm (β ϕ₁ n₁) (⌜β⌝ · ϕ₂ · n₂)
+Rnorm-β-implies-n-≡ = {!!}
+
+Rnorm-reify-β : (ϕ : ℕ → B ℕ) (n : ℕ) (t : {A : type} → T₀ (⌜B⌝ ι A))
+                → Rnorm (β ϕ n) t
+                → Σ ϕ' ꞉ ({A : type} → T₀ (ι ⇒ ⌜B⌝ ι A))
+                , Σ n' ꞉ T₀ ι
+                , ({A : type} → ⟦ t ⟧₀ ≡[ ⌜B⌝ ι A ] ⟦ ⌜β⌝ · ϕ' · n' ⟧₀)
+                × Rnorm (β ϕ n) (⌜β⌝ · ϕ' · n')
+                × (⟦ n' ⟧₀ ≡ n)
+                × ((x : ℕ) → Rnorm (ϕ x) (ϕ' · numeral x))
+Rnorm-reify-β = {!!}
 -- where
 --  -- We get the branching at t with the following
 --  ϕ' : {A : type} → T₀ (ι ⇒ ⌜B⌝ ι A)
@@ -232,29 +293,28 @@ Rnorm-branch {ϕ} {n} {t} i Rnorm-βt {A} η₁ η₂ η₁≡η₂ β₁ β₂ 
 --  rϕ x = transport (λ k → ⟦ B-branch t ⟧₀ k ≣⋆ church-encode (ϕ x))
 --                   (⟦numeral⟧ x ⁻¹) (⟦B-branch⟧ ϕ x n t eq)
 --
----- TODO: can we generalize this?
---church-encode-kleisli-extension : {A : type} (η' : ℕ → 〖 A 〗)
---                                  (β' : (ℕ → 〖 A 〗) → ℕ → 〖 A 〗)
---                                  (d : B ℕ)
---                                → extη η'
---                                → extβ β'
---                                → (f : ℕ → B ℕ) (f' : {A : type} → T₀ (ι ⇒ ⌜B⌝ ι A))
---                                → ((x : ℕ) → Rnorm (f x) (f' · numeral x))
---                                → church-encode (kleisli-extension f d) η' β'
---                                ≡ kleisli-extension⋆ ⟦ f' ⟧₀ (church-encode d) η' β'
---church-encode-kleisli-extension {A} η' β' (η x) eη eβ f f' rf =
--- church-encode (f x) η' β'
---  ≡⟨ ≡-symm (rf x A η' β' eη eβ) ⟩
--- ⟦ f' · numeral x ⟧₀ η' β'
---  ≡＝⟨ ≡-refl₀ f' _ _ (⟦numeral⟧ x) _ _ (extηℕ eη) _ _ (extβℕ eβ) ⟩
--- ⟦ f' ⟧₀ x η' β'
---  ∎
---church-encode-kleisli-extension {A} η' β' (β g y) eη eβ f f' rf =
--- church-encode (β (λ j → kleisli-extension f (g j)) y) η' β'
---  ≡＝⟨ eβ _ _ _ _ refl (λ y → church-encode-kleisli-extension {A} η' β' (g y) eη eβ f f' rf) ⟩
--- church-encode (β g y) (λ z → ⟦ f' ⟧₀ z η' β') β'
---  ∎
---
+-- TODO: can we generalize this?
+church-encode-kleisli-extension : {A : type} (d : B ℕ)
+                                → (f₁ : ℕ → B ℕ) (f₂ : {A : type} → T₀ (ι ⇒ ⌜B⌝ ι A))
+                                → ((i : ℕ) → Rnorm (f₁ i) (f₂ · numeral i))
+                                → church-encode (kleisli-extension f₁ d)
+                                  ≡[ ⌜B⌝ ι A ] kleisli-extension⋆ ⟦ f₂ ⟧₀ (church-encode d)
+church-encode-kleisli-extension {A} (η n) f₁ f₂ f₁≡f₂ =
+ church-encode (f₁ n)                             ≡⟨ ≡-symm {⌜B⌝ ι A} (f₁≡f₂ n) ⟩
+ ⟦ f₂ ⟧₀ ⟦ numeral n ⟧₀                           ≡＝⟨ ≡-refl₀ f₂ (⟦numeral⟧₀ n) ⟩
+ kleisli-extension⋆ ⟦ f₂ ⟧₀ (church-encode (η n)) ∎
+church-encode-kleisli-extension {A} (β ϕ n) f₁ f₂ f₁≡f₂ {η₁} {η₂} η₁≡η₂ {β₁} {β₂} β₁≡β₂ =
+ β₁≡β₂ ϕ₁≡ϕ₂ refl
+ where
+  ϕ₁ : ℕ → 〖 A 〗
+  ϕ₁ i = church-encode (kleisli-extension f₁ (ϕ i)) η₁ β₁
+
+  ϕ₂ : ℕ → 〖 A 〗
+  ϕ₂ i = kleisli-extension⋆ ⟦ f₂ ⟧₀ (church-encode (ϕ i)) η₂ β₂
+
+  ϕ₁≡ϕ₂ : ϕ₁ ≡ ϕ₂
+  ϕ₁≡ϕ₂ {i} {.i} refl = church-encode-kleisli-extension (ϕ i) f₁ f₂ f₁≡f₂ η₁≡η₂ β₁≡β₂
+
 --⟦⌜Kleisli-extension⌝⟧ : {X A σ : type} {Γ Δ : Cxt} (xs : 【 Γ 】) (ys : 【 Δ 】)
 --                      → ⟦ ⌜Kleisli-extension⌝ {X} {A} {σ} ⟧ xs
 --                      ≡ ⟦ ⌜Kleisli-extension⌝ {X} {A} {σ} ⟧ ys
