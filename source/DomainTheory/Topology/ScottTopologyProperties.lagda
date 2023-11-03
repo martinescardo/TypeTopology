@@ -114,7 +114,7 @@ module PropertiesAlgebraic (𝓓 : DCPO {𝓤} {𝓥})
  characterization-of-scott-open₁ : (U : 𝓟 ⟨ 𝓓 ⟩)
                                  → is-scott-open U holds
                                  → U ⊆ join-of-compact-opens U
- characterization-of-scott-open₁ U (υ , κ) x p = {!!}
+ characterization-of-scott-open₁ U (υ , ξ) x p = †
   where
    S : Fam 𝓥 ⟨ 𝓓 ⟩
    S = index-of-compact-family 𝕒 x , compact-family 𝕒 x
@@ -125,7 +125,20 @@ module PropertiesAlgebraic (𝓓 : DCPO {𝓤} {𝓥})
    q : x ＝ ⋁ S↑
    q = compact-family-∐-＝ 𝕒 x ⁻¹
 
-   r : (Ǝ c₀ ꞉ ⟨ 𝓓 ⟩ , c₀ ⊑⟨ 𝓓 ⟩ x) holds
-   r = {!p!}
+   κ : (i : index S) → is-compactₚ (S [ i ]) holds
+   κ = compact-family-is-compact 𝕒 x
+
+   ψ : is-upperbound (underlying-order 𝓓) x (S [_])
+   ψ i = transport (λ - → (S [ i ]) ⊑⟨ 𝓓 ⟩ -) (q ⁻¹) (⋁-is-upperbound S↑ i)
+
+   φ : (⋁ S↑) ∈ U
+   φ = transport (λ - → - ∈ U) q p
+
+   ‡ : Σ i ꞉ index S , (S [ i ]) ∈ U
+     → ∃ c₀ ꞉ ⟨ 𝓓 ⟩ , (is-compactₚ c₀ ∧ c₀ ∈ₚ U ∧ x ∈ₚ ↑[ 𝓓 ] c₀) holds
+   ‡ (i , μ) = ∣ S [ i ] , κ i , μ , ψ i ∣
+
+   † : ∃ c₀ ꞉ ⟨ 𝓓 ⟩ , (is-compactₚ c₀ ∧ c₀ ∈ₚ U ∧ x ∈ₚ ↑[ 𝓓 ] c₀) holds
+   † = ∥∥-rec ∃-is-prop ‡ (ξ S↑ φ)
 
 \end{code}
