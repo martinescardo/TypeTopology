@@ -32,6 +32,7 @@ private
 
 open import MLTT.Plus-Properties
 open import MLTT.Spartan
+open import MLTT.Sigma
 open import Notation.CanonicalMap
 open import Ordinals.Arithmetic fe
 open import Ordinals.ConvergentSequence ua
@@ -1132,5 +1133,72 @@ alternative-plusₒ τ₀ τ₁ = e
 alternative-plus : (τ₀ τ₁ : Ordinalᵀ 𝓤)
                  → [ τ₀ +ᵒ τ₁ ] ＝ ([ τ₀ ] +ₒ [ τ₁ ])
 alternative-plus τ₀ τ₁ = eqtoidₒ (ua _) fe' _ _ (alternative-plusₒ τ₀ τ₁)
+
+\end{code}
+
+Added 3 November 2023 by Fredrik Nordvall Forsberg.
+
+Addition satisfies the expected recursive equations (which classically
+define addition).
+
+\begin{code}
+
++ₒ-zero : (α : Ordinal 𝓤) → α +ₒ 𝟘ₒ ＝ α
++ₒ-zero = 𝟘ₒ-right-neutral
+
+-- +ₒ commutes with successors
++ₒ-succ : (α β : Ordinal 𝓤) → α +ₒ (β +ₒ 𝟙ₒ) ＝ (α +ₒ β) +ₒ 𝟙ₒ
++ₒ-succ α β = (+ₒ-assoc α β 𝟙ₒ) ⁻¹
+
+module _ (pt : propositional-truncations-exist)
+         (sr : Set-Replacement pt)
+       where
+
+ open import Ordinals.OrdinalOfOrdinalsSuprema ua
+ open suprema pt sr
+ open PropositionalTruncation pt
+
+ -- +ₒ commutes with non-empty suprema
+ +ₒ-sup : (α : Ordinal 𝓤){I : 𝓤 ̇ } (β : I → Ordinal 𝓤) → (i : I) → α +ₒ sup β ＝ sup (λ i → α +ₒ β i)
+ +ₒ-sup α {I} β i₀ = ⊴-antisym _ _ a b
+  where
+   a : (α +ₒ sup β) ⊴ sup (λ i → α +ₒ β i)
+   a = ≼-gives-⊴ _ _ g
+    where
+     g : (u : Ordinal _) → u ⊲ (α +ₒ sup β) → u ⊲ sup (λ i → α +ₒ β i)
+     g u (inl a , r) = transport (λ - → - ⊲ sup (λ i → α +ₒ β i)) (u=α↓a ⁻¹) a↓a<⋁α+β-
+       where
+        u=α↓a : u ＝ α ↓ a
+        u=α↓a = r ∙ +ₒ-↓-left a ⁻¹
+        a↓a<⋁α+β- : (α ↓ a) ⊲ sup (λ i → α +ₒ β i)
+        a↓a<⋁α+β- = (pr₁ (sup-is-upper-bound (λ i → α +ₒ β i) i₀) (inl a)) ,
+                    (+ₒ-↓-left a ∙ initial-segment-of-sup-at-component (λ i → α +ₒ β i) i₀ (inl a) ⁻¹)
+     g u (inr b , r) = transport (λ - → - ⊲ sup (λ i → α +ₒ β i)) (u=α+βi↓b ⁻¹) g''
+      where
+       u=α+βi↓b : u ＝ α +ₒ (sup β ↓ b)
+       u=α+βi↓b = r ∙ +ₒ-↓-right b ⁻¹
+       g' : Σ i ꞉ I , Σ y ꞉ ⟨ β i ⟩ , sup β ↓ b ＝ (β i) ↓ y → (α +ₒ (sup β ↓ b)) ⊲ sup (λ i → α +ₒ β i)
+       g' (i , y , r) = transport (λ - → (α +ₒ -) ⊲ sup (λ j → α +ₒ β j)) (r ⁻¹)
+                         (_ , (+ₒ-↓-right y ∙ initial-segment-of-sup-at-component (λ j → α +ₒ β j) i (inr y) ⁻¹) )
+       g'' : (α +ₒ (sup β ↓ b)) ⊲ sup (λ i → α +ₒ β i)
+       g'' = ∥∥-rec (⊲-is-prop-valued _ _) g' (initial-segment-of-sup-is-initial-segment-of-some-component β b)
+
+   b' : (i : I) → (α +ₒ β i) ⊴ (α +ₒ sup β)
+   b' i = ≼-gives-⊴ _ _ h
+    where
+     h : (u : Ordinal _) → u ⊲ (α +ₒ β i) → u ⊲ (α +ₒ sup β)
+     h u (inl a , r) = transport (λ - → - ⊲ (α +ₒ sup β)) (u=α↓a ⁻¹) (+ₒ-⊲-left a)
+      where
+       u=α↓a : u ＝ α ↓ a
+       u=α↓a = r ∙ +ₒ-↓-left a ⁻¹
+     h u (inr b , r) = transport (λ - → - ⊲ (α +ₒ sup β)) (u=α+βi↓b ⁻¹) (+ₒ-increasing-on-right βi↓b<supβ)
+      where
+       u=α+βi↓b : u ＝ α +ₒ (β i ↓ b)
+       u=α+βi↓b = r ∙ +ₒ-↓-right b ⁻¹
+       βi↓b<supβ : (β i ↓ b)  ⊲ sup β
+       βi↓b<supβ = (_ , (initial-segment-of-sup-at-component β i b ⁻¹))
+
+   b : sup (λ i → α +ₒ β i) ⊴ (α +ₒ sup β)
+   b = sup-is-lower-bound-of-upper-bounds (λ i → α +ₒ β i) (α +ₒ sup β) b'
 
 \end{code}
