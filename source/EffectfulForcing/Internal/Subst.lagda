@@ -91,11 +91,11 @@ _【≡】_ {Γ} a b = {σ : type} (i : ∈Cxt σ Γ) → a i ≡ b i
 ≡-trans {σ ⇒ τ} f₁≡f₂ f₂≡f₃ x₁≡x₂ =
  ≡-trans ((f₁≡f₂ (≡-trans x₁≡x₂ (≡-symm x₁≡x₂)))) ((f₂≡f₃ x₁≡x₂))
 
-≡ₗ : {σ : type} {a b : 〖 σ 〗} → a ≡ b → a ≡ a
-≡ₗ e = ≡-trans e (≡-symm e)
+≡ₗ : {σ : type} (a : 〖 σ 〗) {b : 〖 σ 〗} → a ≡ b → a ≡ a
+≡ₗ a e = ≡-trans e (≡-symm e)
 
-≡ᵣ : {σ : type} {a b : 〖 σ 〗} → a ≡ b → b ≡ b
-≡ᵣ e = ≡-trans (≡-symm e) e
+≡ᵣ : {σ : type} (b : 〖 σ 〗) {a : 〖 σ 〗} → a ≡ b → b ≡ b
+≡ᵣ b e = ≡-trans (≡-symm e) e
 
 -- Notation for chaining equalities
 
@@ -561,7 +561,7 @@ close-eta {Γ₁} {Γ₂} {σ}     s1 s2 (t · t₁)      e =
  rec-respects-≡ (⟦close⟧ t s c c' r e) (⟦close⟧ t₁ s c c' r e) (⟦close⟧ t₂ s c c' r e)
 ⟦close⟧ {Γ} {Δ} (ν i) s c c' r e = e i
 ⟦close⟧ {Γ} {Δ} {σ ⇒ τ} (ƛ t) s c c' r e  z =
- ⟦close⟧ t (Subƛ s) (c ‚ _) (c' ‚ _) (【≡】-is-refl‚ c _ r (≡ₗ z)) x
+ ⟦close⟧ t (Subƛ s) (c ‚ _) (c' ‚ _) (【≡】-is-refl‚ c _ r (≡ₗ _ z)) x
  where
   x : (【Sub】 (Subƛ s) (c ‚ _)) 【≡】 (c' ‚ _)
   x {σ'} (∈Cxt0 .Γ) = z
