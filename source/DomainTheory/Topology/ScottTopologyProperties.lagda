@@ -104,6 +104,9 @@ module PropertiesAlgebraic (𝓓 : DCPO {𝓤} {𝓥})
 
  open structurally-algebraic
 
+ is-compactₚ : ⟨ 𝓓 ⟩ → Ω (𝓤 ⊔ 𝓥 ⁺)
+ is-compactₚ x = is-compact 𝓓 x , being-compact-is-prop 𝓓 x
+
  join-of-compact-opens : 𝓟 {𝓥} ⟨ 𝓓 ⟩ → 𝓟 ⟨ 𝓓 ⟩
  join-of-compact-opens U x = Ǝ c ꞉ ⟨ 𝓓 ⟩ , (is-compact 𝓓 c ∧ c ∈ₚ U ∧ c ∈ₚ (↑[ 𝓓 ] x)) holds
 
