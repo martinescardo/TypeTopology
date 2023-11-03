@@ -108,7 +108,8 @@ module PropertiesAlgebraic (𝓓 : DCPO {𝓤} {𝓥})
  is-compactₚ x = is-compact 𝓓 x , being-compact-is-prop 𝓓 x
 
  join-of-compact-opens : 𝓟 {𝓥} ⟨ 𝓓 ⟩ → 𝓟 ⟨ 𝓓 ⟩
- join-of-compact-opens U x = Ǝ c ꞉ ⟨ 𝓓 ⟩ , (is-compact 𝓓 c ∧ c ∈ₚ U ∧ c ∈ₚ (↑[ 𝓓 ] x)) holds
+ join-of-compact-opens U x =
+  Ǝ c ꞉ ⟨ 𝓓 ⟩ , (is-compactₚ c ∧ c ∈ₚ U ∧ x ∈ₚ (↑[ 𝓓 ] c)) holds
 
  characterization-of-scott-open₁ : (U : 𝓟 ⟨ 𝓓 ⟩)
                                  → is-scott-open U holds
