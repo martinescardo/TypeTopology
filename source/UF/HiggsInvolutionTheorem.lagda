@@ -583,10 +583,10 @@ composition-corresponds-to-logical-equivalence 𝕗@(f , _) 𝕘@(g , _) = I
       g ⊤ ↔ f ⊤ ∎
 
 open import Groups.Type
-open import Groups.Symmetric
+open import Groups.Symmetric fe
 
 symmetric-Ω : Group (𝓤 ⁺)
-symmetric-Ω = symmetric-group fe Ω (Ω-is-set fe pe)
+symmetric-Ω = symmetric-group Ω (Ω-is-set fe pe)
 
 ℍ-group-lemma : Σ s ꞉ Group-structure ℍ
                     , is-hom (ℍ , s) symmetric-Ω ℍ-to-Aut-Ω
@@ -619,5 +619,5 @@ module _ (pt : propositional-truncations-exist) where
 
 \end{code}
 
-TODO. Write proof that is-higgs r ⇔ is-higgs' r. (Easy if we know
-enough general logic.)
+TODO. Write proof that is-higgs r ⇔ is-higgs' r. Easy if we know
+enough general logic.
