@@ -42,6 +42,8 @@ open import DomainTheory.Basics.WayBelow               pt fe 𝓥
 principal-filter : (𝓓 : DCPO {𝓤} {𝓥}) → ⟨ 𝓓 ⟩ → 𝓟 ⟨ 𝓓 ⟩
 principal-filter 𝓓 c x = c ⊑⟨ 𝓓 ⟩ x , prop-valuedness 𝓓 c x
 
+infix 45 principal-filter
+
 syntax principal-filter 𝓓 x = ↑[ 𝓓 ] x
 
 \end{code}
