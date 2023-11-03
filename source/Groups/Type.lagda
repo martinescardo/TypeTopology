@@ -424,10 +424,15 @@ transport-Group-structure {𝓤} {𝓥} (X , _·_ , i , a , e , l , r , ι)
   γ : Σ s ꞉ Group-structure Y , is-hom (Y , s) G f
   γ = s , f-is-hom
 
-resized-group : (G : Group 𝓤)
-              → (Σ Y ꞉ 𝓥 ̇ , Y ≃ ⟨ G ⟩)
-              → Σ H ꞉ Group 𝓥 , H ≅ G
-resized-group {𝓤} {𝓥} G (Y , f , f-is-equiv) = γ
+transport-Group-structure' : (G : Group 𝓤) (Y : 𝓥 ̇ ) (𝕗 : Y ≃ ⟨ G ⟩)
+                           → Σ s ꞉ Group-structure Y , is-hom (Y , s) G ⌜ 𝕗 ⌝
+transport-Group-structure' G Y 𝕗 =
+ transport-Group-structure G Y ⌜ 𝕗 ⌝ ⌜ 𝕗 ⌝-is-equiv
+
+group-copy : (G : Group 𝓤)
+           → (Σ Y ꞉ 𝓥 ̇ , Y ≃ ⟨ G ⟩)
+           → Σ H ꞉ Group 𝓥 , H ≅ G
+group-copy {𝓤} {𝓥} G (Y , f , f-is-equiv) = γ
  where
   δ : (Σ s ꞉ Group-structure Y , is-hom (Y , s) G f)
     → Σ H ꞉ Group 𝓥 , H ≅ G
@@ -452,7 +457,7 @@ Lift-Group {𝓤} 𝓥 (X , s) = Lift 𝓥 X , transport-Group-structure₁ (≃
 
 Lifted-Group-is-isomorphic : ∀ {𝓤} {𝓥} (G : Group 𝓤) → Lift-Group 𝓥 G ≅ G
 Lifted-Group-is-isomorphic {𝓤} {𝓥} G =
- pr₂ (resized-group G (Lift 𝓥 ⟨ G ⟩ , Lift-is-universe-embedding 𝓥 ⟨ G ⟩))
+ pr₂ (group-copy G (Lift 𝓥 ⟨ G ⟩ , Lift-is-universe-embedding 𝓥 ⟨ G ⟩))
 
 \end{code}
 

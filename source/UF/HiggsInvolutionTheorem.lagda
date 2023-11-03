@@ -104,7 +104,7 @@ Added 2nd November 2023. Some immediate corollaries.
 \begin{code}
 
 open import UF.Embeddings
-open import UF.Equiv
+open import UF.Equiv hiding (_≅_ ; ≅-refl)
 
 autoembeddings-of-Ω-are-involutive : (f : Ω → Ω) → is-embedding f → involutive f
 autoembeddings-of-Ω-are-involutive f e = higgs f (embeddings-are-lc f e)
@@ -381,12 +381,8 @@ eval-at-⊤ : Aut Ω → Ω
 eval-at-⊤ 𝕗 = ⌜ 𝕗 ⌝ ⊤
 
 eval-at-⊤-is-lc : left-cancellable eval-at-⊤
-eval-at-⊤-is-lc {𝕗} {𝕘} e = III
+eval-at-⊤-is-lc {𝕗@(f , _)} {𝕘@(g , _)} e = III
  where
-  f g : Ω → Ω
-  f = ⌜ 𝕗 ⌝
-  g = ⌜ 𝕘 ⌝
-
   have-e : f ⊤ ＝ g ⊤
   have-e = e
 
@@ -400,7 +396,7 @@ eval-at-⊤-is-lc {𝕗} {𝕘} e = III
   II p = Ω-ext' pe fe (I p)
 
   III : 𝕗 ＝ 𝕘
-  III = to-subtype-＝ (being-equiv-is-prop fe') (dfunext fe II)
+  III = to-≃-＝ fe II
 
 eval-at-⊤-is-embedding : is-embedding eval-at-⊤
 eval-at-⊤-is-embedding = lc-maps-into-sets-are-embeddings
@@ -476,7 +472,8 @@ can-recover-auto-equivalence-from-its-value-at-⊤ 𝕗@(f , _) p =
 
 \end{code}
 
-Added 2nd November 2023.
+Added 2nd November 2023. Definiton of the Higgs object ℍ and proof
+that it is equivalent to Aut Ω.
 
 \begin{code}
 
@@ -489,10 +486,16 @@ being-higgs-is-prop r = Π-is-prop fe (λ p → Ω-is-set fe pe)
 ℍ : 𝓤 ⁺ ̇
 ℍ = Σ r ꞉ Ω , is-higgs r
 
-to-ℍ-＝ : (r s : Ω) (i : is-higgs r) (j : is-higgs s)
+⟪_⟫ : ℍ → Ω
+⟪ r , _ ⟫ = r
+
+⟪_⟫-is-higgs : (h : ℍ) → is-higgs ⟪ h ⟫
+⟪ _ , i ⟫-is-higgs = i
+
+to-ℍ-＝ : (r s : Ω) {i : is-higgs r} {j : is-higgs s}
        → r ＝ s
        → (r , i) ＝[ ℍ ] (s , j)
-to-ℍ-＝ r s i j = to-subtype-＝ being-higgs-is-prop
+to-ℍ-＝ r s {i} {j} = to-subtype-＝ being-higgs-is-prop
 
 Ω-automorphisms-are-↔-embeddings : (𝕗 : Aut Ω)
                                    (p q : Ω)
@@ -509,7 +512,7 @@ to-ℍ-＝ r s i j = to-subtype-＝ being-higgs-is-prop
    III = ≃-sym (↔-equiv-to-＝ pe (f p) (f q))
 
 eval-at-⊤-gives-higgs : (𝕗 : Aut Ω) → is-higgs (eval-at-⊤ 𝕗)
-eval-at-⊤-gives-higgs 𝕗@(f , f-is-equiv) p = II
+eval-at-⊤-gives-higgs 𝕗@(f , _) p = II
  where
   I = p ↔ ⊤           ＝⟨ I₀ ⟩
       f p ↔ f ⊤       ＝⟨ I₁ ⟩
@@ -521,11 +524,11 @@ eval-at-⊤-gives-higgs 𝕗@(f , f-is-equiv) p = II
   II : ((p ↔ f ⊤) ↔ f ⊤) ＝ p
   II = transport (_＝ p) I (⊤-↔-neutral pe p)
 
-ϕ : Aut Ω → ℍ
-ϕ 𝕗 = eval-at-⊤ 𝕗 , eval-at-⊤-gives-higgs 𝕗
+Aut-Ω-to-ℍ : Aut Ω → ℍ
+Aut-Ω-to-ℍ 𝕗 = eval-at-⊤ 𝕗 , eval-at-⊤-gives-higgs 𝕗
 
-ψ : ℍ → Aut Ω
-ψ (r , i) = g , involutions-are-equivs g g-is-involutive
+ℍ-to-Aut-Ω : ℍ → Aut Ω
+ℍ-to-Aut-Ω (r , i) = g , involutions-are-equivs g g-is-involutive
  where
   g : Ω → Ω
   g p = p ↔ r
@@ -533,9 +536,8 @@ eval-at-⊤-gives-higgs 𝕗@(f , f-is-equiv) p = II
   g-is-involutive : involutive g
   g-is-involutive = i
 
-ψϕ : ψ ∘ ϕ ∼ id
-ψϕ 𝕗@(f , f-is-equiv) =
- to-≃-＝ fe g f _ _ h
+η-ℍ : ℍ-to-Aut-Ω ∘ Aut-Ω-to-ℍ ∼ id
+η-ℍ 𝕗@(f , f-is-equiv) = to-≃-＝ fe h
  where
   g : Ω → Ω
   g p = p ↔ f ⊤
@@ -543,15 +545,66 @@ eval-at-⊤-gives-higgs 𝕗@(f , f-is-equiv) p = II
   h : g ∼ f
   h p = (can-recover-auto-equivalence-from-its-value-at-⊤ 𝕗 p)⁻¹
 
-ϕψ : ϕ ∘ ψ ∼ id
-ϕψ (r , i) = to-ℍ-＝ (⊤ ↔ r) r _ _ (⊤-↔-neutral' pe r)
+ε-ℍ : Aut-Ω-to-ℍ ∘ ℍ-to-Aut-Ω ∼ id
+ε-ℍ (r , i) = to-ℍ-＝ (⊤ ↔ r) r (⊤-↔-neutral' pe r)
 
 Aut-Ω-is-equiv-to-ℍ : Aut Ω ≃ ℍ
-Aut-Ω-is-equiv-to-ℍ = qinveq ϕ (ψ , ψϕ , ϕψ)
+Aut-Ω-is-equiv-to-ℍ = qinveq Aut-Ω-to-ℍ (ℍ-to-Aut-Ω , η-ℍ , ε-ℍ)
 
 \end{code}
 
-TODO. Complete proof that is-higgs r ⇔ is-higgs' r.
+The type Aut Ω is a group under composition, where the neutral element
+is the identity automorphism and the inverse of any element is itself.
+That is, Aut Ω is a boolean group, or a group order 2. We now show
+that the group structure on ℍ induced by the above equivalence is
+given by logical equivalence _↔_ with neutral element ⊤.
+
+Notice that our convention is that composition _●_ of equivalences is
+in the diagrammatic order, rather than the applicative order. And I
+regret that - in particular, there isn't any contravariance in the
+next lemma. But in the end it doesn't matter, because both of these
+group operations are commutative.
+
+The following amounts to saying that  g (f ⊤) ＝ g ⊤ ↔ f ⊤.
+
+\begin{code}
+
+identity-corresponds-to-⊤
+ : eval-at-⊤ 𝕚𝕕 ＝ ⊤
+identity-corresponds-to-⊤ = refl
+
+composition-corresponds-to-logical-equivalence
+ : (𝕗 𝕘 : Aut Ω)
+ → eval-at-⊤ (𝕗 ● 𝕘) ＝ eval-at-⊤ 𝕘 ↔ eval-at-⊤ 𝕗
+composition-corresponds-to-logical-equivalence 𝕗@(f , _) 𝕘@(g , _) = I
+ where
+  I = g (f ⊤)   ＝⟨ can-recover-auto-equivalence-from-its-value-at-⊤ 𝕘 (f ⊤) ⟩
+      f ⊤ ↔ g ⊤ ＝⟨ ↔-sym pe (f ⊤) (g ⊤) ⟩
+      g ⊤ ↔ f ⊤ ∎
+
+open import Groups.Type
+open import Groups.Symmetric
+
+symmetric-Ω : Group (𝓤 ⁺)
+symmetric-Ω = symmetric-group fe Ω (Ω-is-set fe pe)
+
+ℍ-group-lemma : Σ s ꞉ Group-structure ℍ
+                    , is-hom (ℍ , s) symmetric-Ω ℍ-to-Aut-Ω
+ℍ-group-lemma =
+ transport-Group-structure' symmetric-Ω ℍ (≃-sym Aut-Ω-is-equiv-to-ℍ)
+
+ℍ-group : Group (𝓤 ⁺)
+ℍ-group = ℍ , pr₁ ℍ-group-lemma
+
+Johnstone : ℍ-group ≅ symmetric-Ω
+Johnstone = pr₂ (group-copy symmetric-Ω (ℍ , ≃-sym Aut-Ω-is-equiv-to-ℍ))
+
+\end{code}
+
+TODO. Characterize the unit of ℍ-group as ⊤ and its multiplication as
+_↔_. Easy, given what we have already proved.
+
+Alternative characterization of the Higgs property.
 
 \begin{code}
 
@@ -565,3 +618,6 @@ module _ (pt : propositional-truncations-exist) where
  is-higgs' r = (p : Ω) → (p ∨ (p ⇒ r)) holds
 
 \end{code}
+
+TODO. Write proof that is-higgs r ⇔ is-higgs' r. (Easy if we know
+enough general logic.)
