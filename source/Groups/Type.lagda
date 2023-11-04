@@ -5,7 +5,7 @@ UF.SIP-Examples.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K #-}
+{-# OPTIONS --safe --without-K --lossy-unification #-}
 
 module Groups.Type where
 
@@ -365,6 +365,7 @@ transport-Group-structure {𝓤} {𝓥} (X , _·_ , i , a , e , l , r , ι)
   G : Group 𝓤
   G = X , _·_ , i , a , e , l , r , ι
 
+  -- abstract (speeds things up but breaks some things - try opaque blocks)
   g : X → Y
   g = inverse f f-is-equiv
 
@@ -376,6 +377,7 @@ transport-Group-structure {𝓤} {𝓥} (X , _·_ , i , a , e , l , r , ι)
 
   f-is-hom : {y y' : Y} → f (g (f y · f y')) ＝ f y · f y'
   f-is-hom {y} {y'} = η (f y · f y')
+  -- end of abstract
 
   _•_ : Y → Y → Y
   y • y' = g (f y · f y')

@@ -35,7 +35,7 @@ need more work, which is explained below.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --no-exact-split #-}
+{-# OPTIONS --safe --without-K --no-exact-split --lossy-unification #-}
 
 module Groups.Free where
 
