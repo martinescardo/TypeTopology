@@ -607,9 +607,9 @@ symmetric-group-of-Ω = symmetric-group Ω (Ω-is-set fe pe)
 ℍ-group : Group (𝓤 ⁺)
 ℍ-group = ℍ , pr₁ ℍ-group-lemma
 
-Johnstone : ℍ-group ≅ symmetric-group-of-Ω
-Johnstone = pr₂ (group-copy symmetric-group-of-Ω
-                 (ℍ , ≃-sym Aut-Ω-is-equiv-to-ℍ))
+johnstone : ℍ-group ≅ symmetric-group-of-Ω
+johnstone = pr₂ (group-copy symmetric-group-of-Ω
+                (ℍ , ≃-sym Aut-Ω-is-equiv-to-ℍ))
 
 \end{code}
 
