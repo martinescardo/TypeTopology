@@ -580,7 +580,7 @@ identity-corresponds-to-⊤ = refl
 
 \end{code}
 
-The following amounts to saying that  g (f ⊤) ＝ g ⊤ ↔ f ⊤.
+The following amounts to saying that  g (f ⊤) ＝ (g ⊤ ↔ f ⊤).
 
 \begin{code}
 
@@ -608,7 +608,7 @@ symmetric-group-of-Ω = symmetric-group Ω (Ω-is-set fe pe)
 
 johnstone : ℍ-group ≅ symmetric-group-of-Ω
 johnstone = pr₂ (group-copy symmetric-group-of-Ω
-                (ℍ , ≃-sym Aut-Ω-is-equiv-to-ℍ))
+                  (ℍ , ≃-sym Aut-Ω-is-equiv-to-ℍ))
 
 \end{code}
 
