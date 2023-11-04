@@ -109,8 +109,8 @@ open import UF.Equiv hiding (_≅_ ; ≅-refl)
 autoembeddings-of-Ω-are-involutive : (f : Ω → Ω) → is-embedding f → involutive f
 autoembeddings-of-Ω-are-involutive f e = higgs f (embeddings-are-lc f e)
 
-automorphisms-of-Ω-are-equivs : (f : Ω → Ω) → is-embedding f → is-equiv f
-automorphisms-of-Ω-are-equivs f e =
+autoembeddings-of-Ω-are-equivs : (f : Ω → Ω) → is-embedding f → is-equiv f
+autoembeddings-of-Ω-are-equivs f e =
  involutions-are-equivs f (autoembeddings-of-Ω-are-involutive f e)
 
 automorphisms-of-Ω-are-involutive : (f : Ω → Ω) → is-equiv f → involutive f
