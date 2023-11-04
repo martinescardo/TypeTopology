@@ -116,7 +116,6 @@ automorphisms-of-Ω-are-equivs f e =
 automorphisms-of-Ω-are-involutive : (f : Ω → Ω) → is-equiv f → involutive f
 automorphisms-of-Ω-are-involutive f e = higgs f (equivs-are-lc f e)
 
-
 \end{code}
 
 Added 23 Jan 2021. From a group structure on Ω we get excluded middle,
@@ -305,6 +304,12 @@ open import UF.SubtypeClassifier-Properties
   (automorphisms-of-Ω-are-involutive ⌜ 𝕗 ⌝ ⌜ 𝕗 ⌝-is-equiv)
   (Ω-is-set fe pe)
 
+\end{code}
+
+A stronger version of the following is proved below.
+
+\begin{code}
+
 Ω-automorphism-apart-from-id-gives-EM
  : (Σ 𝕗 ꞉ Aut Ω , Σ p₀ ꞉ Ω , ⌜ 𝕗 ⌝ p₀ ≠ p₀)
  → EM 𝓤
@@ -461,11 +466,11 @@ open Implication fe
 open Conjunction
 open Universal fe
 
-can-recover-auto-equivalence-from-its-value-at-⊤
+can-recover-automorphism-from-its-value-at-⊤
  : (𝕗 : Aut Ω)
    (p : Ω)
  → ⌜ 𝕗 ⌝ p ＝ (p ↔ ⌜ 𝕗 ⌝ ⊤)
-can-recover-auto-equivalence-from-its-value-at-⊤ 𝕗@(f , _) p =
+can-recover-automorphism-from-its-value-at-⊤ 𝕗@(f , _) p =
  Ω-ext' pe fe
   ((f p ＝ ⊤)       ≃⟨ Ω-automorphism-swap-≃ 𝕗 ⟩
    (f ⊤ ＝ p)       ≃⟨ ≃-sym (↔-equiv-to-＝ pe (f ⊤) p) ⟩
@@ -521,7 +526,7 @@ eval-at-⊤-is-higgs 𝕗@(f , _) p = II
       (p ↔ f ⊤) ↔ f ⊤ ∎
    where
     I₀ = Ω-automorphisms-are-↔-embeddings 𝕗 p ⊤
-    I₁ = ap (_↔ f ⊤) (can-recover-auto-equivalence-from-its-value-at-⊤ 𝕗 p)
+    I₁ = ap (_↔ f ⊤) (can-recover-automorphism-from-its-value-at-⊤ 𝕗 p)
 
   II : ((p ↔ f ⊤) ↔ f ⊤) ＝ p
   II = transport (_＝ p) I (⊤-↔-neutral pe p)
@@ -545,7 +550,7 @@ Aut-Ω-to-ℍ 𝕗 = eval-at-⊤ 𝕗 , eval-at-⊤-is-higgs 𝕗
   g p = p ↔ f ⊤
 
   h : g ∼ f
-  h p = (can-recover-auto-equivalence-from-its-value-at-⊤ 𝕗 p)⁻¹
+  h p = (can-recover-automorphism-from-its-value-at-⊤ 𝕗 p)⁻¹
 
 ε-ℍ : Aut-Ω-to-ℍ ∘ ℍ-to-Aut-Ω ∼ id
 ε-ℍ (r , i) = to-ℍ-＝ (⊤ ↔ r) r (⊤-↔-neutral' pe r)
@@ -567,39 +572,44 @@ regret that - in particular, there isn't any contravariance in the
 next lemma. But in the end it doesn't matter, because both of these
 group operations are commutative.
 
-The following amounts to saying that  g (f ⊤) ＝ g ⊤ ↔ f ⊤.
-
 \begin{code}
 
 identity-corresponds-to-⊤
  : eval-at-⊤ 𝕚𝕕 ＝ ⊤
 identity-corresponds-to-⊤ = refl
 
+\end{code}
+
+The following amounts to saying that  g (f ⊤) ＝ g ⊤ ↔ f ⊤.
+
+\begin{code}
+
 composition-corresponds-to-logical-equivalence
  : (𝕗 𝕘 : Aut Ω)
  → eval-at-⊤ (𝕗 ● 𝕘) ＝ eval-at-⊤ 𝕘 ↔ eval-at-⊤ 𝕗
 composition-corresponds-to-logical-equivalence 𝕗@(f , _) 𝕘@(g , _) = I
  where
-  I = g (f ⊤)   ＝⟨ can-recover-auto-equivalence-from-its-value-at-⊤ 𝕘 (f ⊤) ⟩
+  I = g (f ⊤)   ＝⟨ can-recover-automorphism-from-its-value-at-⊤ 𝕘 (f ⊤) ⟩
       f ⊤ ↔ g ⊤ ＝⟨ ↔-sym pe (f ⊤) (g ⊤) ⟩
       g ⊤ ↔ f ⊤ ∎
 
 open import Groups.Type
 open import Groups.Symmetric fe
 
-symmetric-Ω : Group (𝓤 ⁺)
-symmetric-Ω = symmetric-group Ω (Ω-is-set fe pe)
+symmetric-group-of-Ω : Group (𝓤 ⁺)
+symmetric-group-of-Ω = symmetric-group Ω (Ω-is-set fe pe)
 
 ℍ-group-lemma : Σ s ꞉ Group-structure ℍ
-                    , is-hom (ℍ , s) symmetric-Ω ℍ-to-Aut-Ω
+                    , is-hom (ℍ , s) symmetric-group-of-Ω ℍ-to-Aut-Ω
 ℍ-group-lemma =
- transport-Group-structure' symmetric-Ω ℍ (≃-sym Aut-Ω-is-equiv-to-ℍ)
+ transport-Group-structure' symmetric-group-of-Ω ℍ (≃-sym Aut-Ω-is-equiv-to-ℍ)
 
 ℍ-group : Group (𝓤 ⁺)
 ℍ-group = ℍ , pr₁ ℍ-group-lemma
 
-Johnstone : ℍ-group ≅ symmetric-Ω
-Johnstone = pr₂ (group-copy symmetric-Ω (ℍ , ≃-sym Aut-Ω-is-equiv-to-ℍ))
+Johnstone : ℍ-group ≅ symmetric-group-of-Ω
+Johnstone = pr₂ (group-copy symmetric-group-of-Ω
+                 (ℍ , ≃-sym Aut-Ω-is-equiv-to-ℍ))
 
 \end{code}
 
