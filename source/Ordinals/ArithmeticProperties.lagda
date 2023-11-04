@@ -1195,11 +1195,17 @@ Similarly, multiplication satisfies the expected recursive equations.
 
 \begin{code}
 
-×ₒ-zero : (α : Ordinal 𝓤) → α ×ₒ 𝟘ₒ {𝓤} ＝ 𝟘ₒ
-×ₒ-zero α = ⊴-antisym _ _ α×𝟘⊴𝟘 (𝟘ₒ-least-⊴ (α ×ₒ 𝟘ₒ))
+×ₒ-zero-right : (α : Ordinal 𝓤) → α ×ₒ 𝟘ₒ {𝓤} ＝ 𝟘ₒ
+×ₒ-zero-right α = ⊴-antisym _ _ α×𝟘⊴𝟘 (𝟘ₒ-least-⊴ (α ×ₒ 𝟘ₒ))
  where
   α×𝟘⊴𝟘 : (α ×ₒ 𝟘ₒ) ⊴ 𝟘ₒ
   α×𝟘⊴𝟘 = (λ x → 𝟘-elim (pr₂ x)) , (λ x → 𝟘-elim (pr₂ x)) , λ x → 𝟘-elim (pr₂ x)
+
+×ₒ-zero-left : (α : Ordinal 𝓤) → 𝟘ₒ {𝓤} ×ₒ α ＝ 𝟘ₒ
+×ₒ-zero-left α = ⊴-antisym _ _ 𝟘×α⊴𝟘 (𝟘ₒ-least-⊴ (𝟘ₒ ×ₒ α))
+ where
+  𝟘×α⊴𝟘 : (𝟘ₒ {𝓤} ×ₒ α) ⊴ 𝟘ₒ {𝓤}
+  𝟘×α⊴𝟘 = (λ x → 𝟘-elim (pr₁ x)) , (λ x → 𝟘-elim (pr₁ x)) , λ x → 𝟘-elim (pr₁ x)
 
 -- +ₒ commutes with successors
 
@@ -1257,6 +1263,33 @@ Similarly, multiplication satisfies the expected recursive equations.
 
   h : (α ×ₒ 𝟙ₒ {𝓤}) ≃ₒ α
   h = f , f-order-preserving , f-is-equiv , g-order-preserving
+
+×ₒ-assoc : (α β γ : Ordinal 𝓤) → (α ×ₒ β) ×ₒ γ ＝ α ×ₒ (β ×ₒ γ)
+×ₒ-assoc α β γ = eqtoidₒ (ua _) fe' ((α  ×ₒ β) ×ₒ γ) (α  ×ₒ (β ×ₒ γ)) h
+ where
+  f : ⟨ (α ×ₒ β) ×ₒ γ ⟩ → ⟨ α ×ₒ (β ×ₒ γ) ⟩
+  f ((a , b) , c) = (a , (b , c))
+
+  g : ⟨ α ×ₒ (β ×ₒ γ) ⟩ → ⟨ (α ×ₒ β) ×ₒ γ ⟩
+  g (a , (b , c)) = ((a , b) , c)
+
+  f-equiv : is-equiv f
+  f-equiv = qinvs-are-equivs f (g , (λ x → refl) , (λ x → refl))
+
+  f-preserves-order : is-order-preserving  ((α  ×ₒ β) ×ₒ γ) (α  ×ₒ (β ×ₒ γ)) f
+  f-preserves-order ((a , b) , c) ((a' , b') , c') (inl p) = inl (inl p)
+  f-preserves-order ((a , b) , c) ((a' , b') , c') (inr (r , inl p)) = inl (inr (r , p))
+  f-preserves-order ((a , b) , c) ((a' , b') , c') (inr (r , inr (u , q))) = inr (to-×-＝ u r , q)
+
+  f-reflects-order : is-order-reflecting ((α  ×ₒ β) ×ₒ γ) (α  ×ₒ (β ×ₒ γ)) f
+  f-reflects-order ((a , b) , c) ((a' , b') , c') (inl (inl p)) = inl p
+  f-reflects-order ((a , b) , c) ((a' , b') , c') (inl (inr (r , q))) = inr (r , (inl q))
+  f-reflects-order ((a , b) , c) ((a' , b') , c') (inr (r , q)) = inr (pr₂ (from-×-＝' r) , (inr (pr₁ (from-×-＝' r) , q)))
+
+  h : ((α  ×ₒ β) ×ₒ γ) ≃ₒ (α  ×ₒ (β ×ₒ γ))
+  h = f , order-preserving-reflecting-equivs-are-order-equivs
+           ((α  ×ₒ β) ×ₒ γ) (α  ×ₒ (β ×ₒ γ))
+           f f-equiv f-preserves-order f-reflects-order
 
 ×ₒ-distributes-+ₒ-right : (α β γ : Ordinal 𝓤) → α ×ₒ (β +ₒ γ) ＝ (α ×ₒ β) +ₒ (α ×ₒ γ)
 ×ₒ-distributes-+ₒ-right α β γ = eqtoidₒ (ua _) fe' _ _ h
@@ -1384,7 +1417,7 @@ module _ (pt : propositional-truncations-exist)
  open suprema pt sr
  open PropositionalTruncation pt
 
- -- +ₒ commutes with suprema
+ -- ×ₒ commutes with suprema
  ×ₒ-sup : (α : Ordinal 𝓤){I : 𝓤 ̇ } (β : I → Ordinal 𝓤) → α ×ₒ sup β ＝ sup (λ i → α ×ₒ β i)
  ×ₒ-sup α {I} β = ⊴-antisym _ _ a b
    where
