@@ -324,6 +324,8 @@ G ≅ H = Σ f ꞉ (⟨ G ⟩ → ⟨ H ⟩) , is-iso G H f
 ≅-to-≃ : (G : Group 𝓤) (H : Group 𝓥) → G ≅ H → ⟨ G ⟩ ≃ ⟨ H ⟩
 ≅-to-≃ G H (f , f-is-iso) = (f , group-isos-are-equivs G H f-is-iso)
 
+iso-to-equiv = ≅-to-≃
+
 ≅-to-≃-is-hom : (G : Group 𝓤) (H : Group 𝓥) (𝕗 : G ≅ H)
               → is-hom G H ⌜ ≅-to-≃ G H 𝕗 ⌝
 ≅-to-≃-is-hom G H (f , f-is-iso) = group-isos-are-homs G H f-is-iso
@@ -363,15 +365,14 @@ transport-Group-structure {𝓤} {𝓥} (X , _·_ , i , a , e , l , r , ι)
   G : Group 𝓤
   G = X , _·_ , i , a , e , l , r , ι
 
-  abstract
-   g : X → Y
-   g = inverse f f-is-equiv
+  g : X → Y
+  g = inverse f f-is-equiv
 
-   η : f ∘ g ∼ id
-   η = inverses-are-sections f f-is-equiv
+  η : f ∘ g ∼ id
+  η = inverses-are-sections f f-is-equiv
 
-   ε : g ∘ f ∼ id
-   ε = inverses-are-retractions f f-is-equiv
+  ε : g ∘ f ∼ id
+  ε = inverses-are-retractions f f-is-equiv
 
   f-is-hom : {y y' : Y} → f (g (f y · f y')) ＝ f y · f y'
   f-is-hom {y} {y'} = η (f y · f y')

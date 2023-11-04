@@ -4,7 +4,7 @@ Properties of the type of truth values.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --lossy-unification #-}
+{-# OPTIONS --safe --without-K #-}
 
 module UF.SubtypeClassifier-Properties where
 
