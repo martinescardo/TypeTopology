@@ -587,11 +587,10 @@ The following amounts to saying that  g (f ⊤) ＝ g ⊤ ↔ f ⊤.
 composition-corresponds-to-logical-equivalence
  : (𝕗 𝕘 : Aut Ω)
  → eval-at-⊤ (𝕗 ● 𝕘) ＝ eval-at-⊤ 𝕘 ↔ eval-at-⊤ 𝕗
-composition-corresponds-to-logical-equivalence 𝕗@(f , _) 𝕘@(g , _) = I
- where
-  I = g (f ⊤)   ＝⟨ can-recover-automorphism-from-its-value-at-⊤ 𝕘 (f ⊤) ⟩
-      f ⊤ ↔ g ⊤ ＝⟨ ↔-sym pe (f ⊤) (g ⊤) ⟩
-      g ⊤ ↔ f ⊤ ∎
+composition-corresponds-to-logical-equivalence 𝕗@(f , _) 𝕘@(g , _) =
+ g (f ⊤)   ＝⟨ can-recover-automorphism-from-its-value-at-⊤ 𝕘 (f ⊤) ⟩
+ f ⊤ ↔ g ⊤ ＝⟨ ↔-sym pe (f ⊤) (g ⊤) ⟩
+ g ⊤ ↔ f ⊤ ∎
 
 open import Groups.Type
 open import Groups.Symmetric fe
