@@ -30,10 +30,7 @@ open import UF.Subsingletons
 open import UF.SubtypeClassifier
 
 Ω-is-Dedekind-finite : Fun-Ext → Prop-Ext → is-Dedekind-finite (Ω 𝓤)
-Ω-is-Dedekind-finite fe pe f f-is-embedding = qinvs-are-equivs f (f , h , h)
- where
-  h : f ∘ f ∼ id
-  h = higgs fe pe f (embeddings-are-lc f f-is-embedding)
+Ω-is-Dedekind-finite fe pe = autoembeddings-of-Ω-are-equivs fe pe
 
 \end{code}
 

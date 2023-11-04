@@ -24,6 +24,9 @@ known in the topos theory community.
 
 Added 24 Oct 2023. More about automorphisms of Ω.
 
+You can discuss the results developed here at
+https://mathstodon.xyz/deck/@MartinEscardo/111291658836418672
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K --lossy-unification #-}
@@ -67,8 +70,8 @@ involutive if f (f p) ＝ p.
 
 \begin{code}
 
-higgs : (f : Ω → Ω) → left-cancellable f → involutive f
-higgs f lc = VIII
+higgs-involution-theorem : (f : Ω → Ω) → left-cancellable f → involutive f
+higgs-involution-theorem f lc = VIII
  where
   I : (p : Ω) → f p ＝ ⊤ → p ＝ ⊤ → f ⊤ ＝ ⊤
   I p r s = transport (λ - → f - ＝ ⊤) s r
@@ -110,23 +113,29 @@ open import UF.Equiv hiding (_≅_ ; ≅-refl)
 open import UF.Equiv-FunExt
 
 autoembeddings-of-Ω-are-involutive : (f : Ω → Ω) → is-embedding f → involutive f
-autoembeddings-of-Ω-are-involutive f e = higgs f (embeddings-are-lc f e)
+autoembeddings-of-Ω-are-involutive f e =
+ higgs-involution-theorem f (embeddings-are-lc f e)
 
 autoembeddings-of-Ω-are-equivs : (f : Ω → Ω) → is-embedding f → is-equiv f
 autoembeddings-of-Ω-are-equivs f e =
  involutions-are-equivs f (autoembeddings-of-Ω-are-involutive f e)
 
 automorphisms-of-Ω-are-involutive : (f : Ω → Ω) → is-equiv f → involutive f
-automorphisms-of-Ω-are-involutive f e = higgs f (equivs-are-lc f e)
+automorphisms-of-Ω-are-involutive f e =
+ higgs-involution-theorem f (equivs-are-lc f e)
 
 Aut-Ω-is-boolean : (𝕗 : Aut Ω) → 𝕗 ● 𝕗 ＝ 𝕚𝕕
 Aut-Ω-is-boolean 𝕗@(f , e) = to-≃-＝ fe (automorphisms-of-Ω-are-involutive f e)
 
 \end{code}
 
+Notice that the fact that the autoembeddings of Ω are equivalences
+says that Ω is Dedekind finite.
+
 Added 23 Jan 2021. From a group structure on Ω we get excluded middle,
-as an application of Higgs Theorem. This doesn't seem to be known in
-the topos theory community. I've written a blog post about this here:
+as an application of Higgs Involution Theorem. This doesn't seem to be
+known in the topos theory community. I've written a blog post about
+this here:
 
 https://homotopytypetheory.org/2021/01/23/can-the-type-of-truth-values-be-given-the-structure-of-a-group/
 
@@ -159,7 +168,7 @@ lc-monoid-structure-on-Ω-gives-EM : (O : Ω)
 lc-monoid-structure-on-Ω-gives-EM O _⊕_ left-neutral right-neutral assoc lc = γ
  where
   invol : (p : Ω) → involutive (p ⊕_)
-  invol p = higgs (p ⊕_) (lc p)
+  invol p = higgs-involution-theorem (p ⊕_) (lc p)
 
   own-inv : (p : Ω) → p ⊕ p ＝ O
   own-inv p = p ⊕ p       ＝⟨ (right-neutral (p ⊕ p))⁻¹ ⟩
@@ -247,10 +256,14 @@ Additional facts that are not needed to conclude excluded middle:
   charac₂-of-f p = abelian p (⊥ ⊕ ⊤)
 
   f-invol' : involutive f
-  f-invol' p = f (f p)                   ＝⟨ charac₂-of-f (f p) ⟩
-               ((⊥ ⊕ ⊤) ⊕ f p)           ＝⟨ ap ((⊥ ⊕ ⊤) ⊕_) (charac₂-of-f p) ⟩
-               ((⊥ ⊕ ⊤) ⊕ ((⊥ ⊕ ⊤) ⊕ p)) ＝⟨ higgs ((⊥ ⊕ ⊤) ⊕_) (lc (⊥ ⊕ ⊤)) p ⟩
-               p ∎
+  f-invol' p = f (f p)                   ＝⟨ I ⟩
+               ((⊥ ⊕ ⊤) ⊕ f p)           ＝⟨ II ⟩
+               ((⊥ ⊕ ⊤) ⊕ ((⊥ ⊕ ⊤) ⊕ p)) ＝⟨ III ⟩
+               p                         ∎
+              where
+               I   = charac₂-of-f (f p)
+               II  = ap ((⊥ ⊕ ⊤) ⊕_) (charac₂-of-f p)
+               III = higgs-involution-theorem ((⊥ ⊕ ⊤) ⊕_) (lc (⊥ ⊕ ⊤)) p
 
 \end{code}
 
@@ -260,9 +273,6 @@ given that we have already established excluded middle, but justifies
 our additive notation).
 
 Added 24th October 2023. More about automorphisms of Ω.
-
-You can discuss this at
-https://mathstodon.xyz/deck/@MartinEscardo/111291658836418672
 
 From the existence of certain automorphisms of Ω, we conclude that
 excluded middle holds.
@@ -488,16 +498,16 @@ Definiton of the Higgs object ℍ.
 
 \begin{code}
 
-is-higgs : Ω → 𝓤⁺ ̇
-is-higgs r = (p : Ω) → ((p ↔ r) ↔ r) ＝ p
+is-widespread : Ω → 𝓤⁺ ̇
+is-widespread r = (p : Ω) → ((p ↔ r) ↔ r) ＝ p
 
-being-higgs-is-prop : (r : Ω) → is-prop (is-higgs r)
+being-higgs-is-prop : (r : Ω) → is-prop (is-widespread r)
 being-higgs-is-prop r = Π-is-prop fe (λ p → Ω-is-set fe pe)
 
 ℍ : 𝓤⁺ ̇
-ℍ = Σ r ꞉ Ω , is-higgs r
+ℍ = Σ r ꞉ Ω , is-widespread r
 
-to-ℍ-＝ : (r s : Ω) {i : is-higgs r} {j : is-higgs s}
+to-ℍ-＝ : (r s : Ω) {i : is-widespread r} {j : is-widespread s}
        → r ＝ s
        → (r , i) ＝[ ℍ ] (s , j)
 to-ℍ-＝ r s {i} {j} = to-subtype-＝ being-higgs-is-prop
@@ -516,8 +526,8 @@ to-ℍ-＝ r s {i} {j} = to-subtype-＝ being-higgs-is-prop
    II  = embedding-criterion-converse' f (equivs-are-embeddings' 𝕗) p q
    III = ≃-sym (↔-equiv-to-＝ pe (f p) (f q))
 
-eval-at-⊤-is-higgs : (𝕗 : Aut Ω) → is-higgs (eval-at-⊤ 𝕗)
-eval-at-⊤-is-higgs 𝕗@(f , _) p = II
+eval-at-⊤-is-widespread : (𝕗 : Aut Ω) → is-widespread (eval-at-⊤ 𝕗)
+eval-at-⊤-is-widespread 𝕗@(f , _) p = II
  where
   I = p ↔ ⊤           ＝⟨ I₀ ⟩
       f p ↔ f ⊤       ＝⟨ I₁ ⟩
@@ -530,7 +540,7 @@ eval-at-⊤-is-higgs 𝕗@(f , _) p = II
   II = transport (_＝ p) I (⊤-↔-neutral pe p)
 
 Aut-Ω-to-ℍ : Aut Ω → ℍ
-Aut-Ω-to-ℍ 𝕗 = eval-at-⊤ 𝕗 , eval-at-⊤-is-higgs 𝕗
+Aut-Ω-to-ℍ 𝕗 = eval-at-⊤ 𝕗 , eval-at-⊤-is-widespread 𝕗
 
 ℍ-to-Aut-Ω : ℍ → Aut Ω
 ℍ-to-Aut-Ω (r , i) = (λ p → p ↔ r) , involutions-are-equivs _ i
@@ -579,8 +589,8 @@ open import Groups.Symmetric fe
 ⟪_⟫ : ℍ → Ω
 ⟪ r , _ ⟫ = r
 
-⟪_⟫-is-higgs : (x : ℍ) → is-higgs ⟪ x ⟫
-⟪ _ , i ⟫-is-higgs = i
+⟪_⟫-is-widespread : (x : ℍ) → is-widespread ⟪ x ⟫
+⟪ _ , i ⟫-is-widespread = i
 
 𝓚-isomorphism-explicitly : (x : ℍ) (p : Ω)
                          → ⌜ ℍ-to-Aut-Ω x ⌝ p ＝ (p ↔ ⟪ x ⟫)
@@ -601,13 +611,13 @@ The unit of 𝓗 is ⊤ and its multiplication is logical equivalence.
  (⊤ ↔ ⟪ x ⟫) ↔ ⟪ y ⟫ ＝⟨ ap (_↔ ⟪ y ⟫) (⊤-↔-neutral' pe ⟪ x ⟫) ⟩
  ⟪ x ⟫ ↔ ⟪ y ⟫       ∎
 
-corollary-⊤ : is-higgs ⊤
-corollary-⊤ = ⟪ unit 𝓗 ⟫-is-higgs
+corollary-⊤ : is-widespread ⊤
+corollary-⊤ = ⟪ unit 𝓗 ⟫-is-widespread
 
 corollary-↔ : (r s : Ω)
-            → is-higgs r
-            → is-higgs s
-            → is-higgs (r ↔ s)
+            → is-widespread r
+            → is-widespread s
+            → is-widespread (r ↔ s)
 corollary-↔ r s i j = II
  where
   x y : ℍ
@@ -617,8 +627,32 @@ corollary-↔ r s i j = II
   I : ⟪ x ·⟨ 𝓗 ⟩ y ⟫ ＝ (r ↔ s)
   I = 𝓗-multiplication x y
 
-  II : is-higgs (r ↔ s)
-  II = transport is-higgs I ⟪ x ·⟨ 𝓗 ⟩ y ⟫-is-higgs
+  II : is-widespread (r ↔ s)
+  II = transport is-widespread I ⟪ x ·⟨ 𝓗 ⟩ y ⟫-is-widespread
+
+↔-assoc : (r s t : Ω)
+        → is-widespread r
+        → is-widespread s
+        → is-widespread t
+        → (r ↔ s) ↔ t ＝ r ↔ (s ↔ t)
+↔-assoc r s t i j k = I
+ where
+  _·_ : ℍ → ℍ → ℍ
+  x · y = x ·⟨ 𝓗 ⟩ y
+
+  x y z : ℍ
+  x = (r , i)
+  y = (s , j)
+  z = (t , k)
+
+  I =  (r ↔ s) ↔ t             ＝⟨ refl ⟩
+       (⟪ x ⟫ ↔ ⟪ y ⟫) ↔ ⟪ z ⟫ ＝⟨ ap (_↔ ⟪ z ⟫) ((𝓗-multiplication _ _)⁻¹) ⟩
+       ⟪ x · y ⟫ ↔ ⟪ z ⟫       ＝⟨ (𝓗-multiplication _ _)⁻¹ ⟩
+       ⟪ (x · y) · z ⟫         ＝⟨ ap ⟪_⟫ (assoc 𝓗 x y z) ⟩
+       ⟪ x · (y · z) ⟫         ＝⟨ 𝓗-multiplication _ _ ⟩
+       ⟪ x ⟫ ↔ ⟪ y · z ⟫       ＝⟨ ap (⟪ x ⟫ ↔_) (𝓗-multiplication _ _) ⟩
+       ⟪ x ⟫ ↔ (⟪ y ⟫ ↔ ⟪ z ⟫) ＝⟨ refl ⟩
+       r ↔ (s ↔ t)             ∎
 
 \end{code}
 
@@ -632,10 +666,10 @@ module _ (pt : propositional-truncations-exist) where
 
  open Disjunction pt
 
- is-higgs' : Ω → 𝓤⁺ ̇
- is-higgs' r = (p : Ω) → (p ∨ (p ⇒ r)) holds
+ is-widespread' : Ω → 𝓤⁺ ̇
+ is-widespread' r = (p : Ω) → (p ∨ (p ⇒ r)) holds
 
 \end{code}
 
-TODO. Write proof that is-higgs r ⇔ is-higgs' r. Easy if we know
-enough general constructive logic.
+TODO. Write proof that is-widespread r ⇔ is-widespread' r. Easy if we
+know enough general constructive logic.
