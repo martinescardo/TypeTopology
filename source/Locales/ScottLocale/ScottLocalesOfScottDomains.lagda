@@ -13,6 +13,7 @@ Started on: 2023-10-25.
 {-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan
+open import MLTT.List
 open import Slice.Family
 open import UF.FunExt
 open import UF.Logic
@@ -21,10 +22,12 @@ open import UF.SubtypeClassifier
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.Powerset-MultiUniverse
+open import UF.Size
 
 module Locales.ScottLocale.ScottLocalesOfScottDomains
         (pt : propositional-truncations-exist)
         (fe : Fun-Ext)
+        (sr : Set-Replacement pt)
         (𝓤  : Universe) where
 
 open import DomainTheory.Basics.Dcpo                         pt fe 𝓤
@@ -33,6 +36,8 @@ open import DomainTheory.BasesAndContinuity.Bases            pt fe 𝓤
 open import DomainTheory.BasesAndContinuity.CompactBasis     pt fe 𝓤
 open import Locales.ScottLocale.ScottLocalesOfAlgebraicDcpos pt fe 𝓤
 open import Locales.Frame                                    pt fe
+
+open import Locales.SmallBasis pt fe sr
 
 open Universal fe
 open Implication fe
@@ -63,13 +68,32 @@ We denote by `𝒮𝓓` the Scott locale of the dcpo `𝓓`.
  𝒮𝓓 : Locale (𝓤 ⁺) 𝓤 𝓤
  𝒮𝓓 = ScottLocale hscb pe
 
+ B𝓓 : 𝓤  ̇
+ B𝓓 = index-of-compact-basis 𝓓 hscb
+
 \end{code}
 
 We now construct the basis for this locale.
 
 \begin{code}
 
+ from-list₀ : List B𝓓 → 𝓟 ⟨ 𝓓 ⟩∙
+ from-list₀ []       = {!!}
+ from-list₀ (k ∷ ks) = {!!}
+
+ from-list : List B𝓓 → ⟨ 𝒪 𝒮𝓓 ⟩
+ from-list = {!!}
+
  basis-for-𝒮𝓓 : Fam 𝓤 ⟨ 𝒪 𝒮𝓓 ⟩
- basis-for-𝒮𝓓 = {!!} , {!!}
+ basis-for-𝒮𝓓 = List B𝓓 , from-list
+
+ σᴰ : spectralᴰ 𝒮𝓓
+ σᴰ = basis-for-𝒮𝓓 , {!!} , ({!!} , (τ , μ))
+  where
+   τ : contains-top (𝒪 𝒮𝓓) basis-for-𝒮𝓓 holds
+   τ = {!!}
+
+   μ : closed-under-binary-meets (𝒪 𝒮𝓓) basis-for-𝒮𝓓 holds
+   μ = {!!}
 
 \end{code}
