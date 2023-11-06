@@ -501,8 +501,8 @@ Definiton of the Higgs object ℍ.
 is-widespread : Ω → 𝓤⁺ ̇
 is-widespread r = (p : Ω) → ((p ↔ r) ↔ r) ＝ p
 
-being-higgs-is-prop : (r : Ω) → is-prop (is-widespread r)
-being-higgs-is-prop r = Π-is-prop fe (λ p → Ω-is-set fe pe)
+being-widespread-is-prop : (r : Ω) → is-prop (is-widespread r)
+being-widespread-is-prop r = Π-is-prop fe (λ p → Ω-is-set fe pe)
 
 ℍ : 𝓤⁺ ̇
 ℍ = Σ r ꞉ Ω , is-widespread r
@@ -510,7 +510,7 @@ being-higgs-is-prop r = Π-is-prop fe (λ p → Ω-is-set fe pe)
 to-ℍ-＝ : (r s : Ω) {i : is-widespread r} {j : is-widespread s}
        → r ＝ s
        → (r , i) ＝[ ℍ ] (s , j)
-to-ℍ-＝ r s {i} {j} = to-subtype-＝ being-higgs-is-prop
+to-ℍ-＝ r s {i} {j} = to-subtype-＝ being-widespread-is-prop
 
 Ω-automorphisms-are-↔-embeddings : (𝕗 : Aut Ω)
                                    (p q : Ω)
