@@ -635,7 +635,7 @@ corollary-↔-assoc : (r s t : Ω)
                   → is-widespread s
                   → is-widespread t
                   → (r ↔ s) ↔ t ＝ r ↔ (s ↔ t)
-corollary-↔-assoc↔-assoc r s t i j k = I
+corollary-↔-assoc r s t i j k = I
  where
   _·_ : ℍ → ℍ → ℍ
   x · y = x ·⟨ 𝓗 ⟩ y
