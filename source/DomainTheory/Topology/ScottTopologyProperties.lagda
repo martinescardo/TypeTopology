@@ -141,10 +141,10 @@ module PropertiesAlgebraic (𝓓 : DCPO {𝓤} {𝓥})
    † : ∃ c₀ ꞉ ⟨ 𝓓 ⟩ , (is-compactₚ c₀ ∧ c₀ ∈ₚ U ∧ x ∈ₚ ↑[ 𝓓 ] c₀) holds
    † = ∥∥-rec ∃-is-prop ‡ (ξ S↑ φ)
 
- characterization-of-scott-open₂ : (U : 𝓟 ⟨ 𝓓 ⟩)
-                                 → is-scott-open U holds
-                                 → join-of-compact-opens U ⊆ U
- characterization-of-scott-open₂ U (υ , _) x p =
+ characterization-of-scott-opens₂ : (U : 𝓟 ⟨ 𝓓 ⟩)
+                                  → is-scott-open U holds
+                                  → join-of-compact-opens U ⊆ U
+ characterization-of-scott-opens₂ U (υ , _) x p =
   ∥∥-rec (holds-is-prop (x ∈ₚ U)) † p
    where
     † : Σ c ꞉ ⟨ 𝓓 ⟩ , (is-compactₚ c ∧ c ∈ₚ U ∧ principal-filter 𝓓 c x) holds
