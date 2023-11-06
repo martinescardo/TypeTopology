@@ -4,7 +4,7 @@ General terminology and notation.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Notation.General where
 

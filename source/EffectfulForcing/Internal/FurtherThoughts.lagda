@@ -2,7 +2,7 @@ Martin Escardo, Vincent Rahli, Bruno da Rocha Paiva, Ayberk Tosun 20 May 2023
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module EffectfulForcing.Internal.FurtherThoughts where
 

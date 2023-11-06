@@ -9,7 +9,7 @@ them in alphabetical order.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module EffectfulForcing.MFPSAndVariations.index where
 

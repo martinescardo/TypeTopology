@@ -3,7 +3,7 @@ Andrew Sneap, February-March 2022
 In this file I define min and max for rationals.
 
 \begin{code}
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
 

@@ -14,7 +14,7 @@ There are three submodules:
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module UF.SIP where
 

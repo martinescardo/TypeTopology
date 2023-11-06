@@ -28,7 +28,7 @@ pruning in the file Games.alpha-beta).
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import Games.TypeTrees
 open import Games.Monad

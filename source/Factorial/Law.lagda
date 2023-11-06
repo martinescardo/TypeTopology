@@ -45,7 +45,7 @@ But if P is a proposition, then
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import UF.FunExt
 

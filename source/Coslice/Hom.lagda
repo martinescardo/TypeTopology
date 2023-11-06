@@ -1,7 +1,7 @@
 Jonathan Sterling, 22nd March 2023.
 
 \begin{code}
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Coslice.Hom where
 

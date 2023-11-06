@@ -5,7 +5,7 @@ in Quotient.Large.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 open import UF.FunExt
@@ -58,7 +58,7 @@ module poset-reflection
  private
   ≲-congruence : {x y x' y' : X} → x ≈ x' → y ≈ y' → x ≲Ω y ＝ x' ≲Ω y'
   ≲-congruence {x} {y} {x'} {y'} (k , l) (u , v) =
-   Ω-extensionality fe pe
+   Ω-extensionality pe fe
     (λ m → ≲-is-transitive x' x y' l
             (≲-is-transitive x y y' m u))
     (λ m → ≲-is-transitive x x' y k

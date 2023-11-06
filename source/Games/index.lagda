@@ -5,7 +5,7 @@ Refactored and slightly improved October 2022, and then again in April
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Games.index where
 

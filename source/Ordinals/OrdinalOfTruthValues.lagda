@@ -3,7 +3,7 @@ Martin Escardo, 4th October 2018
 The ordinal of truth values in a universe 𝓤.
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 open import UF.FunExt

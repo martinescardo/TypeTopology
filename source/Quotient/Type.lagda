@@ -5,7 +5,7 @@ earlier 2018 module Quotient.Large by Martin Escardo.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Quotient.Type where
 

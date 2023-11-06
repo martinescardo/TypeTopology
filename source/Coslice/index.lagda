@@ -7,7 +7,7 @@ characterize path spaces, etc.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Coslice.index where
 

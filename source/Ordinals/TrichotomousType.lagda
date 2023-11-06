@@ -4,7 +4,7 @@ The subtype Ordinal₃ 𝓤 of Ordinal 𝓤 consisting of trichotomous ordinals.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import UF.FunExt
 

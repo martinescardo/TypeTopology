@@ -2,7 +2,7 @@ Negation (and emptiness).
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module MLTT.Negation where
 

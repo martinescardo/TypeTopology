@@ -2,7 +2,7 @@ By Tom de Jong in January 2022 with later additions by Martin Escardo
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module UF.NotNotStablePropositions where
 

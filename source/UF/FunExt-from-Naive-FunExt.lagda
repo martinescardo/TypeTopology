@@ -15,7 +15,7 @@ Point 2. is already proved in UF.Equiv-Funext.lagda
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module UF.FunExt-from-Naive-FunExt where
 

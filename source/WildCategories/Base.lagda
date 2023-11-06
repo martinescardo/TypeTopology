@@ -1,7 +1,7 @@
 Jon Sterling and Mike Shulman, September 2023.
 
 \begin{code}
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module WildCategories.Base where
 

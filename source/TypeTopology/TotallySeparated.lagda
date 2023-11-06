@@ -59,7 +59,7 @@ apartness relation is a set, and so this reflection is always a set.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module TypeTopology.TotallySeparated where
 

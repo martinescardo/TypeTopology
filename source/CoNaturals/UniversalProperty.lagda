@@ -67,7 +67,7 @@ bisimulations. This gives a technique for establishing equalities on
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import UF.FunExt
 

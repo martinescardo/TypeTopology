@@ -16,7 +16,7 @@ replacement assumption (again, see UF.Size.lagda for details).
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import UF.FunExt
 open import UF.Powerset
@@ -80,7 +80,7 @@ module _
                   (×-is-prop (Π-is-prop fe (λ _ → holds-is-prop (g x)))
                              (Π-is-prop fe (λ _ → holds-is-prop (f x))))
                   (λ p → transport _holds p , transport⁻¹ _holds p)
-                  (λ (u , v) → Ω-extensionality fe pe u v)
+                  (λ (u , v) → Ω-extensionality pe fe u v)
 
 \end{code}
 

@@ -10,7 +10,7 @@ UniMath" by Bezem, Buchholtz, Grayson and Shulman
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import Naturals.UniversalProperty
 

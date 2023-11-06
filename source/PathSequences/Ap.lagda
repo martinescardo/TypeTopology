@@ -9,7 +9,7 @@ library to TypeTopology.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --safe #-}
 
 open import MLTT.Spartan
 open import UF.Base
@@ -21,7 +21,7 @@ module PathSequences.Ap where
 
 \end{code}
 
-ap-seq is the extension of ap to path sequences. 
+ap-seq is the extension of ap to path sequences.
 
 \begin{code}
 
@@ -41,7 +41,7 @@ on PathSeq x x', of course).
 x ≡ x' ----------> f x ≡ f x'
   |                    |
   | [ _↓]              | [_ ↓]
-  ↓                    ↓ 
+  ↓                    ↓
 x ＝ x' ---------> f x ＝ f x'
           ap f
 
@@ -70,8 +70,8 @@ On the other hand, we have
           ap-seq f
 x ≡ x' ----------> f x ≡ f x'
   |                    ↑
-  | [ _↓]              | _◃∎ 
-  ↓                    | 
+  | [ _↓]              | _◃∎
+  ↓                    |
 x ＝ x' ---------> f x ＝ f x'
           ap f
 
@@ -109,14 +109,14 @@ Two-variable version of the above
 \begin{code}
 
 module _ {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y → Z) where
-  
+
  ap₂-seq : {x x' : X} {y y' : Y}
          → x ≡ x' →  y ≡ y'
          → f x y ≡ f x' y'
  ap₂-seq [] [] = []
- ap₂-seq {x} [] (p ◃∙ t) = ap-seq (f x) (p ◃∙ t) 
+ ap₂-seq {x} [] (p ◃∙ t) = ap-seq (f x) (p ◃∙ t)
  ap₂-seq {y = y} (p ◃∙ s) [] = ap-seq (λ x → f x y) (p ◃∙ s)
- ap₂-seq (p ◃∙ s) (q ◃∙ t) = ap₂ f p q ◃∙ ap₂-seq s t 
+ ap₂-seq (p ◃∙ s) (q ◃∙ t) = ap₂ f p q ◃∙ ap₂-seq s t
 
 \end{code}
 
@@ -126,7 +126,7 @@ Once again, [_↓] acts as a natural transformation as
 x ≡ x' × y ≡ y' ----------> f x y ≡ f x' y'
        |                          |
        | [ _↓]                    | [_ ↓]
-       ↓                          ↓ 
+       ↓                          ↓
 x ＝ x' × y ＝ y' ---------> f x y ＝ f x' y'
                   ap₂ f
 
@@ -141,7 +141,7 @@ and then as a lift
  ≡-＝-nat₂ {x} [] (p ◃∙ t) =
     ap₂ f refl (p ∙ [ t ↓])              ＝⟨ ap₂-refl-left f _ ⟩
     ap (f x) (p ∙ [ t ↓])                ＝⟨ ap-∙ (f x) p ([ t ↓]) ⟩
-    ap (f x) p ∙ (ap (f x) [ t ↓])       
+    ap (f x) p ∙ (ap (f x) [ t ↓])
                ＝⟨ ap (λ v → (ap (f x) p) ∙ v) (ap-seq-∙-= (f x) t) ⟩
     ap (f x) p ∙ [ ap-seq (f x) t ↓] ∎
  ≡-＝-nat₂ {y = y} (p ◃∙ s) [] =
@@ -151,7 +151,7 @@ and then as a lift
     ap f₂ p ∙ [ (ap-seq f₂ s) ↓] ∎
       where
         f₂ = λ v → f v y
- ≡-＝-nat₂ (p ◃∙ s) (q ◃∙ t) = 
+ ≡-＝-nat₂ (p ◃∙ s) (q ◃∙ t) =
     ap₂ f (p ∙ [ s ↓]) (q ∙ [ t ↓]) ＝⟨ ap₂-∙ f p ([ s ↓]) q ([ t ↓]) ⟩
     ap₂ f p q ∙ ap₂ f [ s ↓] [ t ↓] ＝⟨ ap (λ v → ap₂ f p q ∙ v) (≡-＝-nat₂ s t) ⟩
     ap₂ f p q ∙ [ (ap₂-seq s t) ↓] ∎
@@ -165,7 +165,7 @@ and then as a lift
 
  ∙-ap₂-seq : {x x' : X} {y y' : Y}
            → (s : x ≡ x') (t : y ≡ y')
-           → ap₂-seq s t ＝ₛ ap₂ f [ s ↓] [ t ↓] ◃∎ 
- ∙-ap₂-seq s t = (ap₂-seq-∙ s t) ⁻¹ₛ 
+           → ap₂-seq s t ＝ₛ ap₂ f [ s ↓] [ t ↓] ◃∎
+ ∙-ap₂-seq s t = (ap₂-seq-∙ s t) ⁻¹ₛ
 
 \end{code}

@@ -11,7 +11,7 @@ principle that every subsingleton type is inhabited or empty.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module UF.ExcludedMiddle where
 

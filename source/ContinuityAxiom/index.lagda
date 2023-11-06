@@ -5,7 +5,7 @@ Curry–Howard Interpretation (TLCA'2015).
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module ContinuityAxiom.index where
 
