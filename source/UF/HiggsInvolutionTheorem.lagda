@@ -565,7 +565,7 @@ Aut-Ω-to-ℍ 𝕗 = eval-at-⊤ 𝕗 , eval-at-⊤-is-widespread 𝕗
 The type Aut Ω is a group under composition, the symmetric group on Ω,
 where the neutral element is the identity automorphism and the inverse
 of any element is itself.  That is, Aut Ω is a boolean group, or a
-group order 2. We now show that the group structure on ℍ induced by
+group of order 2. We now show that the group structure on ℍ induced by
 the above equivalence is given by logical equivalence _↔_ with neutral
 element ⊤.
 
@@ -630,12 +630,12 @@ corollary-↔ r s i j = II
   II : is-widespread (r ↔ s)
   II = transport is-widespread I ⟪ x ·⟨ 𝓗 ⟩ y ⟫-is-widespread
 
-↔-assoc : (r s t : Ω)
-        → is-widespread r
-        → is-widespread s
-        → is-widespread t
-        → (r ↔ s) ↔ t ＝ r ↔ (s ↔ t)
-↔-assoc r s t i j k = I
+corollary-↔-assoc : (r s t : Ω)
+                  → is-widespread r
+                  → is-widespread s
+                  → is-widespread t
+                  → (r ↔ s) ↔ t ＝ r ↔ (s ↔ t)
+corollary-↔-assoc↔-assoc r s t i j k = I
  where
   _·_ : ℍ → ℍ → ℍ
   x · y = x ·⟨ 𝓗 ⟩ y
@@ -656,7 +656,7 @@ corollary-↔ r s i j = II
 
 \end{code}
 
-Alternative characterization of the Higgs property.
+Alternative characterization of the widespread property.
 
 \begin{code}
 
