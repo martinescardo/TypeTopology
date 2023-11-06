@@ -2,7 +2,8 @@ Ian Ray, 25 July 2023.
 
 Formalizing the auxilary notion of a delta-V-complete poset which is
 sufficient for the main theorems of Section 6.2 from Tom de Jong's thesis
-(https://arxiv.org/abs/2301.12405)
+  https://arxiv.org/abs/2301.12405
+  https://tdejong.com/writings/phd-thesis.pdf
 involving impredicativity (resizing axioms) in order theory.
 
 \begin{code}
@@ -626,13 +627,18 @@ module Ω¬¬-δ-complete-non-trivial-Poset (𝓥 : Universe) where
 
  Ω¬¬-δ-complete : is-δ-complete
  Ω¬¬-δ-complete Q R Q-⊑-R P =
-   (((¬¬ (((Ǝ i ꞉ (𝟙 + P holds) , (δ Q R P i) holds') holds)) , negations-are-props fe) , ¬-is-¬¬-stable) , (is-upbnd , has-lub-cond)) 
+   (((¬¬ (((Ǝ i ꞉ (𝟙 + P holds) , (δ Q R P i) holds') holds)) ,
+   negations-are-props fe) ,
+   ¬-is-¬¬-stable) ,
+   (is-upbnd , has-lub-cond)) 
   where
    open Joins (λ Q → λ R → (Q ⊑ R , ⊑-is-prop-valued Q R))
    open propositional-truncations-exist pt
 
    E : Ω¬¬ 𝓥
-   E = ((¬¬ ((Ǝ i ꞉ (𝟙 + P holds) , (δ Q R P i) holds') holds) , negations-are-props fe) , ¬-is-¬¬-stable)
+   E = ((¬¬ ((Ǝ i ꞉ (𝟙 + P holds) , (δ Q R P i) holds') holds) ,
+       negations-are-props fe) ,
+       ¬-is-¬¬-stable)
    
    is-upbnd : (E is-an-upper-bound-of (δ-fam Q R P)) holds 
    is-upbnd i δ-i not-exists = not-exists ∣ (i , δ-i) ∣
@@ -654,7 +660,8 @@ module Ω¬¬-δ-complete-non-trivial-Poset (𝓥 : Universe) where
  open non-trivial-posets Ω¬¬-Poset
 
  Ω¬¬-is-non-trivial : is-non-trivial-poset
- Ω¬¬-is-non-trivial = ((⊥ , 𝟘-is-¬¬-stable) , (⊤ , 𝟙-is-¬¬-stable) , 𝟘-elim , (λ np → 𝟘-is-not-𝟙 (ap (pr₁ ∘ pr₁) np)))
+ Ω¬¬-is-non-trivial = ((⊥ , 𝟘-is-¬¬-stable) , (⊤ , 𝟙-is-¬¬-stable) ,
+                      𝟘-elim , (λ np → 𝟘-is-not-𝟙 (ap (pr₁ ∘ pr₁) np)))
 
 \end{code}
 
@@ -714,7 +721,9 @@ module Predicative-Taboos (𝓤 𝓦 𝓥 : Universe) (A : Poset 𝓤 𝓦) wher
    Δ-Retract = (r , Δ (≤-is-transitive A x y y x-≤-y (≤-is-reflexive A y)) , H)
 
    Δ-Embedding : is-embedding (section Δ-Retract)
-   Δ-Embedding = sections-into-sets-are-embeddings (Δ (≤-is-transitive A x y y x-≤-y (≤-is-reflexive A y))) (r , H) carrier-of-[ A ]-is-set
+   Δ-Embedding = sections-into-sets-are-embeddings (Δ (≤-is-transitive A x y y x-≤-y (≤-is-reflexive A y)))
+                                                   (r , H)
+                                                   carrier-of-[ A ]-is-set
 
 module Resizing-Implications (𝓥 : Universe) where
 
