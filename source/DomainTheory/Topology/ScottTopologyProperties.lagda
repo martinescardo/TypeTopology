@@ -20,6 +20,8 @@ module DomainTheory.Topology.ScottTopologyProperties
 
 open import UF.Logic
 open Existential pt
+open Implication fe
+open Universal   fe
 open Conjunction
 
 open PowersetOperations
@@ -150,5 +152,18 @@ module PropertiesAlgebraic (𝓓 : DCPO {𝓤} {𝓥})
     † : Σ c ꞉ ⟨ 𝓓 ⟩ , (is-compactₚ c ∧ c ∈ₚ U ∧ principal-filter 𝓓 c x) holds
       → x ∈ₚ U holds
     † (c , _ , q , r) = υ c x q r
+
+\end{code}
+
+\begin{code}
+
+ characterization-of-scott-opens : (U : 𝓟 {𝓥} ⟨ 𝓓 ⟩)
+                                 → (is-scott-open U ⇒
+                                    (Ɐ x ꞉ ⟨ 𝓓 ⟩ ,
+                                      U x ↔ join-of-compact-opens U x)) holds
+ characterization-of-scott-opens U ς x = ⦅⇒⦆ , ⦅⇐⦆
+  where
+   ⦅⇒⦆ = characterization-of-scott-opens₁ U ς x
+   ⦅⇐⦆ = characterization-of-scott-opens₂ U ς x
 
 \end{code}
