@@ -24,6 +24,9 @@ open Implication fe
 open Universal   fe
 open Conjunction
 
+open import UF.Size
+open import UF.Equiv
+
 open PowersetOperations
 
 open import UF.Powerset-MultiUniverse
@@ -165,5 +168,21 @@ module PropertiesAlgebraic (𝓓 : DCPO {𝓤} {𝓥})
   where
    ⦅⇒⦆ = characterization-of-scott-opens₁ U ς x
    ⦅⇐⦆ = characterization-of-scott-opens₂ U ς x
+
+\end{code}
+
+\begin{code}
+
+ resize-join-of-compact-opens : (U : 𝓟 {𝓥} ⟨ 𝓓 ⟩) (x : ⟨ 𝓓 ⟩)
+                              → is-scott-open U holds
+                              → (join-of-compact-opens U x holds) is 𝓥 small
+ resize-join-of-compact-opens U x ς = x ∈ U , ε
+  where
+   ε : (x ∈ U) ≃ join-of-compact-opens U x holds
+   ε = logically-equivalent-props-are-equivalent
+        (holds-is-prop (U x))
+        ∃-is-prop
+        (characterization-of-scott-opens₁ U ς x)
+        (characterization-of-scott-opens₂ U ς x)
 
 \end{code}
