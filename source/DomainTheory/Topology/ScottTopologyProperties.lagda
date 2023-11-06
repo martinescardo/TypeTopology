@@ -111,10 +111,10 @@ module PropertiesAlgebraic (𝓓 : DCPO {𝓤} {𝓥})
  join-of-compact-opens U x =
   Ǝ c ꞉ ⟨ 𝓓 ⟩ , (is-compactₚ c ∧ c ∈ₚ U ∧ x ∈ₚ (↑[ 𝓓 ] c)) holds
 
- characterization-of-scott-open₁ : (U : 𝓟 ⟨ 𝓓 ⟩)
-                                 → is-scott-open U holds
-                                 → U ⊆ join-of-compact-opens U
- characterization-of-scott-open₁ U (υ , ξ) x p = †
+ characterization-of-scott-opens₁ : (U : 𝓟 ⟨ 𝓓 ⟩)
+                                  → is-scott-open U holds
+                                  → U ⊆ join-of-compact-opens U
+ characterization-of-scott-opens₁ U (υ , ξ) x p = †
   where
    S : Fam 𝓥 ⟨ 𝓓 ⟩
    S = index-of-compact-family 𝕒 x , compact-family 𝕒 x
