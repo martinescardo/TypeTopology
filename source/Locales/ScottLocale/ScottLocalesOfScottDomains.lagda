@@ -102,15 +102,26 @@ We now construct the basis for this locale.
 
 \begin{code}
 
- from-list₀ : List B → 𝓟 {𝓤 ⁺} {𝓤 ⁺} ⟨ 𝓓 ⟩∙
- from-list₀ []       = ∅
- from-list₀ (b ∷ bs) = λ x → x ∈ₚ ↑[ 𝓓 ] (β b) ∨ x ∈ₚ from-list₀ bs
+ open DefnOfScottTopology 𝓓 𝓤
+ open Properties 𝓓
 
- from-list-is-upwards-closed : List B → {!is-upwards-closed!}
- from-list-is-upwards-closed = {!!}
+ open binary-unions-of-subsets pt
+
+ from-list₀ : List B → 𝓟 {𝓤} {𝓤 ⁺} ⟨ 𝓓 ⟩∙
+ from-list₀ = foldr _∪_ ∅ ∘ map (principal-filter 𝓓 ∘ β)
+
+ from-list-is-upwards-closed : (ks : List B)
+                             → is-upwards-closed (from-list₀ ks) holds
+ from-list-is-upwards-closed []       x y () q
+ from-list-is-upwards-closed (b ∷ bs) x y p  q =
+  ∥∥-rec (holds-is-prop (y ∈ₚ from-list₀ (b ∷ bs))) † p
+   where
+    † : (β b ⊑⟨ 𝓓 ⟩ x) + x ∈ from-list₀ bs → from-list₀ (b ∷ bs) y holds
+    † (inl r) = ∣ inl (principal-filter-is-upwards-closed (β b) x y r q) ∣
+    † (inr r) = ∣ inr (from-list-is-upwards-closed bs x y r q) ∣
 
  from-list : List B → ⟨ 𝒪 𝒮𝓓 ⟩
- from-list = {!!}
+ from-list ks = from-list₀ ks , {!!}
 
  basis-for-𝒮𝓓 : Fam 𝓤 ⟨ 𝒪 𝒮𝓓 ⟩
  basis-for-𝒮𝓓 = List B , from-list
