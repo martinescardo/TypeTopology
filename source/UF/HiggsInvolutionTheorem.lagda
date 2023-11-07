@@ -738,7 +738,7 @@ TODO. Write the above proof purely equationally.
  widespread-gives-widespread' : (r : Ω)
                               → is-widespread  r
                               → is-widespread' r
- widespread-gives-widespread' r@(R , R-is-prop) w = III
+ widespread-gives-widespread' r@(R , R-is-prop) w = IV
   where
    have-w : (p : Ω) → ((p ↔ r) ↔ r) ＝ p
    have-w = w
@@ -759,5 +759,8 @@ TODO. Write the above proof purely equationally.
            ((λ (e : P' ⇔ R) → II (lr-implication e)) ,
            (λ (ρ : R) → (λ (_ : P') → ρ) ,
                         (λ (_ : R) → ∣ inr (λ (_ : P) → ρ) ∣)))
+
+    IV : (p ∨ (p ⇒ r)) holds
+    IV = III
 
 \end{code}
