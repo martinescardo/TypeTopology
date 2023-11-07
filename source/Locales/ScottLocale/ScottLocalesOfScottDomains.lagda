@@ -13,7 +13,7 @@ Started on: 2023-10-25.
 {-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan
-open import MLTT.List
+open import MLTT.List hiding ([_])
 open import Slice.Family
 open import UF.FunExt
 open import UF.Logic
@@ -34,7 +34,9 @@ open import DomainTheory.Basics.Dcpo                         pt fe 𝓤
  renaming (⟨_⟩ to ⟨_⟩∙)
 open import DomainTheory.Basics.Pointed                      pt fe 𝓤
  renaming (⊥ to ⊥d)
+open import DomainTheory.Basics.WayBelow                     pt fe 𝓤
 open import DomainTheory.BasesAndContinuity.Bases            pt fe 𝓤
+open import DomainTheory.BasesAndContinuity.Continuity       pt fe 𝓤
 open import DomainTheory.BasesAndContinuity.CompactBasis     pt fe 𝓤
 open import Locales.ScottLocale.ScottLocalesOfAlgebraicDcpos pt fe 𝓤
 open import DomainTheory.Topology.ScottTopology              pt fe 𝓤
@@ -87,6 +89,13 @@ We denote by `(B, β)` the algebraic basis of the pointed dcpo 𝓓.
  β : B → ⟨ 𝓓 ⟩∙
  β i = family-of-basic-opens 𝓓 hscb i
 
+ open structurally-algebraic
+
+ scb : is-small-compact-basis 𝓓 (family-of-basic-opens 𝓓 hscb)
+ scb = small-compact-basis 𝓓 hscb
+
+ open is-small-compact-basis scb
+
 \end{code}
 
 We define some nice notation for the prop-valued equality of the dcpo `𝓓`.
@@ -119,6 +128,25 @@ We now construct the basis for this locale.
     † : (β b ⊑⟨ 𝓓 ⟩ x) + x ∈ from-list₀ bs → from-list₀ (b ∷ bs) y holds
     † (inl r) = ∣ inl (principal-filter-is-upwards-closed (β b) x y r q) ∣
     † (inr r) = ∣ inr (from-list-is-upwards-closed bs x y r q) ∣
+
+ from-list-is-inaccessible-by-directed-joins : (ks : List B)
+                                             → is-inaccessible-by-directed-joins
+                                                (from-list₀ ks)
+                                                 holds
+ from-list-is-inaccessible-by-directed-joins []       (S , δ) ()
+ from-list-is-inaccessible-by-directed-joins (k ∷ ks) (S , δ) p =
+  ∥∥-rec ∃-is-prop † p
+   where
+    σ : is-scott-open (principal-filter 𝓓 (β k)) holds
+    σ = compact-implies-principal-filter-is-scott-open (β k) (basis-is-compact k)
+
+    υ : is-upwards-closed {!!} holds
+    υ = 𝒪ₛᴿ.pred-is-upwards-closed (to-𝒪ₛᴿ (↑[ 𝓓 ] (β k) , σ))
+
+    † : (β k ⊑⟨ 𝓓 ⟩ (⋁ (S , δ))) + (⋁ (S , δ)) ∈ from-list₀ ks
+      → ∃ i ꞉ index S , (S [ i ]) ∈ from-list₀ (k ∷ ks)
+    † (inl q) = {!compact-implies-principal-filter-is-scott-open!}
+    † (inr q) = {!!}
 
  from-list : List B → ⟨ 𝒪 𝒮𝓓 ⟩
  from-list ks = from-list₀ ks , {!!}
