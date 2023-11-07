@@ -766,38 +766,3 @@ Added 7th November 2023.
     IV = III
 
 \end{code}
-
-Shorter proof of widespread'-gives-widespread:
-
-\begin{code}
-{-
- widespread'-gives-widespread-bis : (r : Ω)
-                                  → is-widespread' r
-                                  → is-widespread  r
- widespread'-gives-widespread-bis r@(R , _) w' = IV
-  where
-   have-w' : (p : Ω) → (p ∨ (p ⇒ r)) holds
-   have-w' = w'
-
-   module _ (p@(P , _) : Ω) where
-
-    I : P + (P → R) → ((P ↔ R) ↔ R) → P
-    I (inl π) _       = π
-    I (inr f) (g , h) = {!!}
-     where
-      I₀ : (R → P) + ((R → P) → R) → P
-      I₀ (inl u) = {!!}
-      I₀ (inr v) = {!!}
-
-    II : P + (P → R) → P → ((P ↔ R) ↔ R)
-    II (inl π) _ = (λ (e : P ↔ R) → lr-implication e π) ,
-                   (λ (ρ : R) → (λ (_ : P) → ρ) , (λ _ → π))
-    II (inr f) π = (λ _ → f π) ,
-                   (λ (ρ : R) → (λ (_ : P) → ρ) , λ (_ : R) → π)
-
-    IV : ((p ⇔ r) ⇔ r) ＝ p
-    IV = Ω-extensionality pe fe
-          (∥∥-rec (Π-is-prop fe (λ _ → holds-is-prop p)) I (w' p))
-          (∥∥-rec (Π-is-prop fe (λ _ → holds-is-prop ((p ⇔ r) ⇔ r))) II (w' p))
--}
-\end{code}
