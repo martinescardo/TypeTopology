@@ -100,8 +100,9 @@ function.
 
 \begin{code}
 
- I = index-of-compact-basis 𝓓 hscb
- β = family-of-basic-opens  𝓓 hscb
+ private
+  I = index-of-compact-basis 𝓓 hscb
+  β = family-of-basic-opens  𝓓 hscb
 
 \end{code}
 
