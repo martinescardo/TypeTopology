@@ -733,19 +733,29 @@ Added 6th November 2023.
 
 TODO. Write the above proof purely equationally.
 
-TODO. Prove the converse.
-
 \begin{code}
-{-
+
  widespread-gives-widespread' : (r : Ω)
                               → is-widespread  r
                               → is-widespread' r
- widespread-gives-widespread' r w = w'
+ widespread-gives-widespread' r@(R , R-is-prop) w p@(P , P-is-prop) = III
   where
    have-w : (p : Ω) → ((p ↔ r) ↔ r) ＝ p
    have-w = w
 
-   w' : is-widespread' r
-   w' = {!!}
--}
+   P' : 𝓤 ̇
+   P' = ∥ P + (P → R) ∥
+
+   I : ((P' ⇔ R) ⇔ R) ⇔ P'
+   I = equal-⊤-gives-holds _ (＝-gives-↔ pe _ _ (w (P' , ∥∥-is-prop)))
+
+   II : (P' → R) → R
+   II f = f ∣ inr (λ (π : P) → f ∣ inl π ∣) ∣
+
+   III : P'
+   III = lr-implication I
+          ((λ (e : P' ⇔ R) → II (lr-implication e)) ,
+          (λ (ρ : R) → (λ (_ : P') → ρ) ,
+                       (λ (_ : R) → ∣ inr (λ (_ : P) → ρ) ∣)))
+
 \end{code}
