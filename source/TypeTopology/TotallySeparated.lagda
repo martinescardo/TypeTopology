@@ -634,7 +634,8 @@ rather than direct proofs (as in the proof of tight reflection below).
    ie : (γ : (A → 𝟚) → 𝟚) → is-prop (Σ a ꞉ A , eval A a ＝ γ)
    ie = totally-separated-gives-totally-separated₂ fe' τ
 
-   h : (φ : (X → 𝟚) → 𝟚) → (∃ x ꞉ X , eval X x ＝ φ)
+   h : (φ : (X → 𝟚) → 𝟚)
+     → (∃ x ꞉ X , eval X x ＝ φ)
      → Σ a ꞉ A , eval A a ＝ (λ q → φ (q ∘ f))
    h φ = ∥∥-rec (ie γ) u
     where
@@ -730,8 +731,8 @@ this context, it makes sense to restrict our attention to S-separated
 types.
 
 Another useful thing is that in any type X we can define an apartness
-relation x♯y by ∃(p:X→𝟚), p (x)‌≠p (y), which is tight iff X is totally
-separated, where tightness means ¬ (x♯y)→x=y. Part of the following
+relation x♯y by ∃ p : X→𝟚 , p x ‌≠p y, which is tight iff X is totally
+separated, where tightness means ¬ (x ♯ y)→ x = y. Part of the following
 should be moved to another module about apartness, but I keep it here
 for the moment.
 
@@ -775,13 +776,13 @@ module Apartness
  apartness-is-irreflexive _♯_ (p , i , s , c) = i
 
  apartness-is-symmetric : {X : 𝓤 ̇ } (_♯_ : X → X → 𝓥 ̇ )
-                          → is-apartness _♯_
-                          → is-symmetric _♯_
+                        → is-apartness _♯_
+                        → is-symmetric _♯_
  apartness-is-symmetric _♯_ (p , i , s , c) = s
 
  apartness-is-cotransitive : {X : 𝓤 ̇ } (_♯_ : X → X → 𝓥 ̇ )
-                          → is-apartness _♯_
-                          → is-cotransitive _♯_
+                           → is-apartness _♯_
+                           → is-cotransitive _♯_
  apartness-is-cotransitive _♯_ (p , i , s , c) = c
 
 \end{code}

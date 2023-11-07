@@ -39,19 +39,30 @@ Added by Martin Escardo 1st Nov 2023.
 
 \begin{code}
 
+ ∧-intro' : (p q : Ω 𝓤) → p holds → q holds → (p ∧ q) holds
+ ∧-intro' p q a b = (a , b)
+
+ ∧-elim-L' : (p q : Ω 𝓤) → (p ∧ q) holds → p holds
+ ∧-elim-L' p q = pr₁
+
+ ∧-elim-R' : (p q : Ω 𝓤) → (p ∧ q) holds → q holds
+ ∧-elim-R' p q = pr₂
+
  module _ (pe : propext 𝓤) (fe : funext 𝓤 𝓤) where
 
-  ∧-intro : {p q : Ω 𝓤} → p ＝ ⊤ → q ＝ ⊤ → p ∧ q ＝ ⊤
-  ∧-intro {p} {q} a b = holds-gives-equal-⊤ pe fe (p ∧ q)
-                         (equal-⊤-gives-holds p a , equal-⊤-gives-holds q b)
+  ∧-intro : (p q : Ω 𝓤) → p ＝ ⊤ → q ＝ ⊤ → p ∧ q ＝ ⊤
+  ∧-intro p q a b = holds-gives-equal-⊤ pe fe (p ∧ q)
+                     (∧-intro' p q
+                       (equal-⊤-gives-holds p a)
+                       (equal-⊤-gives-holds q b))
 
   ∧-elim-L : (p q : Ω 𝓤) → p ∧ q ＝ ⊤ → p ＝ ⊤
   ∧-elim-L p q c = holds-gives-equal-⊤ pe fe p
-                    (pr₁ (equal-⊤-gives-holds (p ∧ q) c))
+                    (∧-elim-L' p q (equal-⊤-gives-holds (p ∧ q) c))
 
   ∧-elim-R : (p q : Ω 𝓤) → p ∧ q ＝ ⊤ → q ＝ ⊤
   ∧-elim-R p q c = holds-gives-equal-⊤ pe fe q
-                    (pr₂ (equal-⊤-gives-holds (p ∧ q) c))
+                    (∧-elim-R' p q (equal-⊤-gives-holds (p ∧ q) c))
 
 \end{code}
 

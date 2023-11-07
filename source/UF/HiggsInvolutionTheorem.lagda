@@ -671,5 +671,81 @@ module _ (pt : propositional-truncations-exist) where
 
 \end{code}
 
-TODO. Write proof that is-widespread r ⇔ is-widespread' r. Easy if we
-know enough general constructive logic.
+Added 6th November 2023.
+
+\begin{code}
+
+ open PropositionalTruncation pt hiding (_∨_)
+
+ widespread'-gives-widespread : (r : Ω)
+                              → is-widespread' r
+                              → is-widespread  r
+ widespread'-gives-widespread r w' = w
+  where
+   I : (p : Ω)
+     → (p holds + (p holds → r holds))
+     → ((p ↔ r) ↔ r) ＝ p
+   I p (inl h) =
+    (p ↔ r) ↔ r ＝⟨ ap (λ - → (- ↔ r) ↔ r) I₀ ⟩
+    (⊤ ↔ r) ↔ r ＝⟨ ap (_↔ r) (⊤-↔-neutral' pe r) ⟩
+    r ↔ r       ＝⟨ ↔-refl pe r ⟩
+    ⊤           ＝⟨ I₀ ⁻¹ ⟩
+    p           ∎
+     where
+      I₀ : p ＝ ⊤
+      I₀ = holds-gives-equal-⊤ pe fe p h
+
+   I p (inr f) = Ω-ext pe fe I₁ I₂
+    where
+     have-f : (p ⇒ r) holds
+     have-f = f
+
+     I₁ : (p ↔ r) ↔ r ＝ ⊤ → p ＝ ⊤
+     I₁ e₁ =
+      p     ＝⟨ I₄ ⟩
+      r     ＝⟨ (↔-gives-＝ pe _ _ e₁)⁻¹ ⟩
+      p ↔ r ＝⟨ ＝-gives-↔ pe _ _ I₄ ⟩
+      ⊤     ∎
+       where
+        I₂ : r ⇒ (p ↔ r) ＝ ⊤
+        I₂ = ∧-elim-R pe fe _ _ e₁
+
+        I₃ : (r ⇒ (p ↔ r)) holds
+        I₃ = equal-⊤-gives-holds _ I₂
+
+        g : (r ⇒ p) holds
+        g x = ∧-elim-R' _ _ (I₃ x) x
+
+        I₄ : p ＝ r
+        I₄ = Ω-extensionality pe fe f g
+
+     I₂ : p ＝ ⊤ → (p ↔ r) ↔ r ＝ ⊤
+     I₂ e₂ =
+      (p ↔ r) ↔ r ＝⟨ ap (λ - → (- ↔ r) ↔ r) e₂ ⟩
+      (⊤ ↔ r) ↔ r ＝⟨ ap (_↔ r) (⊤-↔-neutral' pe r) ⟩
+      r ↔ r       ＝⟨ ↔-refl pe r ⟩
+      ⊤           ∎
+
+   w : is-widespread r
+   w p = ∥∥-rec (Ω-is-set fe pe) (I p) (w' p)
+
+\end{code}
+
+TODO. Write the above proof purely equationally.
+
+TODO. Prove the converse.
+
+\begin{code}
+{-
+ widespread-gives-widespread' : (r : Ω)
+                              → is-widespread  r
+                              → is-widespread' r
+ widespread-gives-widespread' r w = w'
+  where
+   have-w : (p : Ω) → ((p ↔ r) ↔ r) ＝ p
+   have-w = w
+
+   w' : is-widespread' r
+   w' = {!!}
+-}
+\end{code}
