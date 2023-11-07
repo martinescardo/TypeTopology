@@ -99,8 +99,8 @@ Church-encoded dialogue tree translation for all System T terms.
 ⟦numeral⟧₀ : (n : ℕ) → ⟦ numeral n ⟧₀ ＝ n
 ⟦numeral⟧₀  n = ⟦numeral⟧ ⟨⟩ n
 
-Rnorm-numeral : (n : ℕ) → Rnorm (η n) (⌜η⌝ · numeral n)
-Rnorm-numeral n η₁≡η₂ β₁≡β₂ = η₁≡η₂ (⟦numeral⟧₀ n)
+Rnorm-η : (n : ℕ) → Rnorm (η n) (⌜η⌝ · numeral n)
+Rnorm-η n η₁≡η₂ β₁≡β₂ = η₁≡η₂ (⟦numeral⟧₀ n)
 
 Rnorm-η-implies-≡ : {n₁ : ℕ} {n₂ : T₀ ι}
                   → Rnorm (η n₁) (⌜η⌝ · n₂)
@@ -600,7 +600,7 @@ Rnorm-lemma {Γ} {σ} γ₁ γ₂ (Rec t u v) Rnorm-γs =
     r : Rnorm (B⟦ t ⟧ γ₁ (η n) (rn n)) (rn' · Succ (numeral n))
     r = Rnorm-respects-≡
          (≡-symm (compute-Rec-Succ ⌜ t ⌝ ⌜ u ⌝ (numeral n) γ₂))
-         (rt (η n) (⌜η⌝ · numeral n) (Rnorm-numeral n)
+         (rt (η n) (⌜η⌝ · numeral n) (Rnorm-η n)
              (rn n) (Rec (ƛ (weaken, ι (close ⌜ t ⌝ γ₂) · (⌜η⌝ · ν₀))) (close ⌜ u ⌝ γ₂) (numeral n))
              (Rnorm-respects-≡
                (compute-Rec-Succ2 ⌜ t ⌝ ⌜ u ⌝ (numeral n) γ₂)
