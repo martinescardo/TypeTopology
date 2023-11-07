@@ -939,10 +939,10 @@ https://nforum.ncatlab.org/discussion/8282/points-of-the-localic-quotient-with-r
  not-apart-have-same-apart : {X : 𝓤 ̇ } (x y : X) (_♯_ : X → X → 𝓥 ̇ )
                            → is-apartness _♯_
                            → ¬ (x ♯ y)
-                           → ((z : X) → x ♯ z ⇔ y ♯ z)
+                           → ((z : X) → x ♯ z ↔ y ♯ z)
  not-apart-have-same-apart {𝓤} {𝓥} {X} x y _♯_ (p , i , s , c) = g
   where
-   g : ¬ (x ♯ y) → (z : X) → x ♯ z ⇔ y ♯ z
+   g : ¬ (x ♯ y) → (z : X) → x ♯ z ↔ y ♯ z
    g n z = g₁ , g₂
     where
      g₁ : x ♯ z → y ♯ z
@@ -962,11 +962,11 @@ https://nforum.ncatlab.org/discussion/8282/points-of-the-localic-quotient-with-r
 
  have-same-apart-are-not-apart : {X : 𝓤 ̇ } (x y : X) (_♯_ : X → X → 𝓥 ̇ )
                                → is-apartness _♯_
-                               → ((z : X) → x ♯ z ⇔ y ♯ z)
+                               → ((z : X) → x ♯ z ↔ y ♯ z)
                                → ¬ (x ♯ y)
  have-same-apart-are-not-apart {𝓤} {𝓥} {X} x y _♯_ (p , i , s , c) = f
   where
-   f : ((z : X) → x ♯ z ⇔ y ♯ z) → ¬ (x ♯ y)
+   f : ((z : X) → x ♯ z ↔ y ♯ z) → ¬ (x ♯ y)
    f φ a = i y (pr₁(φ y) a)
 
 \end{code}
@@ -1137,7 +1137,7 @@ https://nforum.ncatlab.org/discussion/8282/points-of-the-localic-quotient-with-r
   α-lemma : (x y : X) → x ~ y → α x ＝ α y
   α-lemma x y na = dfunext fe' h
    where
-    f : (z : X) → x ♯ z ⇔ y ♯ z
+    f : (z : X) → x ♯ z ↔ y ♯ z
     f = not-apart-have-same-apart x y _♯_ ♯a na
 
     g : (z : X) → x ♯ z ＝ y ♯ z

@@ -276,7 +276,7 @@ module singleton-subsets
  ∈-❴❵ : {x : X} → x ∈ ❴ x ❵
  ∈-❴❵ {x} = refl
 
- ❴❵-subset-characterization : {x : X} (A : 𝓟 {𝓥} X) → x ∈ A ⇔ ❴ x ❵ ⊆ A
+ ❴❵-subset-characterization : {x : X} (A : 𝓟 {𝓥} X) → x ∈ A ↔ ❴ x ❵ ⊆ A
  ❴❵-subset-characterization {𝓥} {x} A = ⦅⇒⦆ , ⦅⇐⦆
   where
    ⦅⇒⦆ : x ∈ A → ❴ x ❵ ⊆ A

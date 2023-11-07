@@ -93,8 +93,8 @@ module poset-reflection
  η-preserves-order {x} {y} =
   Idtofun (ap pr₁ ((extension-rel-triangle₂ ≋ _≲Ω_ ≲-congruence x y) ⁻¹))
 
- η-⇔-order : {x y : X} → x ≲ y ⇔ η x ≤ η y
- η-⇔-order = η-preserves-order , η-reflects-order
+ η-↔-order : {x y : X} → x ≲ y ↔ η x ≤ η y
+ η-↔-order = η-preserves-order , η-reflects-order
 
  ≤-is-reflexive : (x' : X / ≋) → x' ≤ x'
  ≤-is-reflexive = /-induction ≋ (λ x' → ≤-is-prop-valued x' x')

@@ -479,7 +479,7 @@ is-T-optimal₂ G σ =
 
 T-sgpe-equiv : (G : Game) (σ : T-Strategy (Xt G))
              → is-T-optimal  G σ
-             ⇔ is-T-optimal₂ G σ
+             ↔ is-T-optimal₂ G σ
 T-sgpe-equiv (game Xt q ϕt) σ = I ϕt q σ , II ϕt q σ
  where
   I : {Xt : 𝑻} (ϕt : 𝓚 Xt) (q : Path Xt → R) (σ : T-Strategy Xt)
@@ -499,7 +499,7 @@ T-sgpe-equiv (game Xt q ϕt) σ = I ϕt q σ , II ϕt q σ
 
 {-
 T-sgpe-equiv : (G : Game) (σ : T-Strategy (Xt G))
-             → is-T-optimal G σ ⇔ is-T-optimal₂ G σ
+             → is-T-optimal G σ ↔ is-T-optimal₂ G σ
 T-sgpe-equiv (game Xt q ϕt) σ = I ϕt q σ , II ϕt q σ
 
 is-in-subgame-perfect-equilibrium : (G : Game) → 𝓙𝓣 (Xt G) → Type

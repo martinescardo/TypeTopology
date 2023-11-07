@@ -12,7 +12,7 @@ is the type of automorphisms of the type X.
 
 This is proved by Danielsson in
 
- http://www.cse.chalmers.se/~nad/listings/equality/Function-universe.html#[⊤⊎↔⊤⊎]↔[⊤⊎×↔]
+ http://www.cse.chalmers.se/~nad/listings/equality/Function-universe.html#[⊤⊎↔⊤⊎]⇔[⊤⊎×↔]
 
 See also Coquand's
 

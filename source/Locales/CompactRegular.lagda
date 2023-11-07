@@ -1075,7 +1075,7 @@ clopen-iff-compact-in-stone-frame : (F : Frame 𝓤 𝓥 𝓦)
                                   → is-stone F holds
                                   → (U : ⟨ F ⟩)
                                   → (is-clopen F U holds)
-                                  ⇔ (is-compact-open F U holds)
+                                  ↔ (is-compact-open F U holds)
 clopen-iff-compact-in-stone-frame F (κ , ζ) U = β , γ
  where
   β : (is-clopen F U ⇒ is-compact-open F U) holds
