@@ -240,8 +240,7 @@ compute-Rec-Succ {A} {σ} {Γ} a b n s =
   (rec (λ x → ⟦ close (weaken, ι (weaken, ι a) · (⌜η⌝ · ν₀)) (Subƛ (Subƛ s)) ⟧ (⟨⟩ ‚ succ ⟦ n ⟧₀ ‚ x))
        (⟦ close (weaken, ι b) (Subƛ s) ⟧ (⟨⟩ ‚ succ ⟦ n ⟧₀))
        ⟦ n ⟧₀)
-  --≡＝⟨ e1 _ _ (λ a₁ b₁ a≡₁ a₂ b₂ a≡₂ → a≡₁ _ _ refl) _ _ e2 ⟩
-  ≡＝⟨ {!!} ⟩
+  ≡＝⟨ e1 (λ z _ → z refl) e2 ⟩
  ⟦ close a s ⟧₀
   (η⋆ ⟦ n ⟧₀)
   (rec ⟦ ƛ (weaken, ι (close a s) · (⌜η⌝ · ν₀)) ⟧₀ ⟦ close b s ⟧₀ ⟦ n ⟧₀)
@@ -277,8 +276,7 @@ compute-Rec-Succ {A} {σ} {Γ} a b n s =
    ⟦ weaken, ι (weaken, ι a) ⟧ (【Sub₀】 s ‚ succ ⟦ n ⟧₀ ‚ ⟦ n ⟧₀)
     ≡⟨ ⟦weaken,-weaken,⟧ (【Sub₀】 s) (succ ⟦ n ⟧₀) ⟦ n ⟧₀ a refl (【≡】-is-refl-【Sub₀】 s) ⟩
    ⟦ a ⟧ (【Sub₀】 s)
-    -- ≡＝⟨ ≡-symm (⟦close⟧' a s) ⟩
-    ≡＝⟨ {!!} ⟩
+    ≡＝⟨ ≡-symm {B-type〖 ι ⇒ σ ⇒ σ 〗 A} (⟦close⟧' a s) ⟩
    ⟦ close a s ⟧₀
     ∎
 
@@ -311,53 +309,40 @@ compute-Rec-Succ {A} {σ} {Γ} a b n s =
      ≡ ⟦ weaken, ι (close a s) ⟧ (⟨⟩ ‚ i) (η⋆ i) v
   e5 i u v e =
    ⟦ close (weaken, ι (weaken, ι a)) (Subƛ (Subƛ s)) ⟧ (⟨⟩ ‚ succ ⟦ n ⟧₀ ‚ i) (η⋆ i) u
-    --≡⟨ ⟦close⟧ (weaken, ι (weaken, ι a)) (Subƛ (Subƛ s)) (⟨⟩ ‚ succ ⟦ n ⟧₀ ‚ i)
-    --    (【Sub】 (Subƛ (Subƛ s)) (⟨⟩ ‚ succ ⟦ n ⟧₀ ‚ i))
-    --    (【≡】-is-refl‚ _ _ (【≡】-is-refl‚ _ _ (λ ()) refl) refl)
-    --    (【≡】-【Sub】-Subƛ' _ _ _ refl refl)
-    --    _ _ (λ a₁ b₁ a≡₁ a₂ b₂ a≡₂ → a≡₁ _ _ refl) _ _ e ⟩
-    ≡⟨ {!!} ⟩
+    ≡⟨ ⟦close⟧ (weaken, ι (weaken, ι a))
+               (Subƛ (Subƛ s))
+               (⟨⟩ ‚ succ ⟦ n ⟧₀ ‚ i)
+               (【Sub】 (Subƛ (Subƛ s)) (⟨⟩ ‚ succ (⟦ n ⟧ ⟨⟩) ‚ i))
+               ((【≡】-is-refl‚ _ _ (【≡】-is-refl‚ _ _ (λ ()) refl) refl))
+               ((【≡】-【Sub】-Subƛ' _ _ _ refl refl)) (λ z _ → z refl) e ⟩
    ⟦ weaken, ι (weaken, ι a) ⟧ (【Sub】 (Subƛ (Subƛ s)) (⟨⟩ ‚ succ ⟦ n ⟧₀ ‚ i)) (η⋆ i) v
-    --≡⟨ ≡-refl (weaken, ι (weaken, ι a))
-    --          _ _
-    --          (【≡】-【Sub】-Subƛ2 s (succ ⟦ n ⟧₀) i refl refl)
-    --          _ _ {!η⋆≡η⋆ !} _ _ (≡ᵣ e) ⟩
-    ≡⟨ {!!} ⟩
+    ≡⟨ ≡-refl (weaken, ι (weaken, ι a))
+              ((【≡】-【Sub】-Subƛ2 s (succ ⟦ n ⟧₀) i refl refl))
+              (λ z _ → z refl) (≡ᵣ v e) ⟩
    ⟦ weaken, ι (weaken, ι a) ⟧ (【Sub₀】 s ‚ succ ⟦ n ⟧₀ ‚ i) (η⋆ i) v
-    --≡⟨ ⟦weaken,-weaken,⟧ (【Sub₀】 s) (succ ⟦ n ⟧₀)
-    --                     i a refl
-    --                     (【≡】-is-refl-【Sub₀】 s)
-    --                     _ _ {!η⋆≡η⋆ !} _ _ (≡ᵣ e) ⟩
-    ≡⟨ {!!} ⟩
+    ≡⟨  ⟦weaken,-weaken,⟧ (【Sub₀】 s) (succ ⟦ n ⟧₀) i a refl (【≡】-is-refl-【Sub₀】 s) (η⋆≡η⋆ refl) (≡ᵣ v e) ⟩
    ⟦ a ⟧ (【Sub₀】 s ) (η⋆ i) v
-    --≡⟨ ≡-symm (⟦close⟧ a s (【⊆】 (∈CxtS ι) (⟨⟩ ‚ i))
-    --                  (【Sub₀】 s) (λ ())
-    --                  (【≡】-is-refl-【Sub₀】 s)
-    --                  _ _ {! η⋆≡η⋆ !} _ _ (≡ᵣ e)) ⟩
-    ≡⟨ {!!} ⟩
+    ≡⟨ ≡-symm {B-type〖 σ 〗 A}
+              (⟦close⟧ a s (【⊆】 (∈CxtS ι) (⟨⟩ ‚ i))
+                       (【Sub₀】 s) (λ ())
+                       (【≡】-is-refl-【Sub₀】 s)
+                       (η⋆≡η⋆ refl) (≡ᵣ v e)) ⟩
    ⟦ close a s ⟧ (【⊆】 (⊆, 〈〉 ι) (⟨⟩ ‚ i)) (η⋆ i) v
-    --≡＝⟨ ≡-symm (⟦weaken,⟧ (close a s) ι _ _ (λ ()) _ _ {! η⋆≡η⋆ !} _ _ (≡ᵣ e)) ⟩
-    ≡＝⟨ {!!} ⟩
+    ≡＝⟨ ≡-symm (⟦weaken,⟧ (close a s) ι _ _ (λ ()) (η⋆≡η⋆ refl) (≡ᵣ v e)) ⟩
    ⟦ weaken, ι (close a s) ⟧ (⟨⟩ ‚ i) (η⋆ i) v
     ∎
 
-  e7 : (i j : ℕ) → i ＝ j → (u v : 〖 B-type〖 σ 〗 A 〗)
+  e7 : {i j : ℕ} → i ＝ j → {u v : 〖 B-type〖 σ 〗 A 〗}
      → u ≡ v
      → ⟦ close (weaken, ι (weaken, ι a)) (Subƛ (Subƛ s)) ⟧ (⟨⟩ ‚ succ ⟦ n ⟧₀ ‚ i) (η⋆ i) u
      ≡ ⟦ weaken, ι (close a s) ⟧ (⟨⟩ ‚ j) (η⋆ j) v
-  e7 i .i refl u v e = e5 i u v e
+  e7 {i} {.i} refl {u} {v} e = e5 i u v e
 
   e2 : rec (λ x → ⟦ close (weaken, ι (weaken, ι a) · (⌜η⌝ · ν₀)) (Subƛ (Subƛ s)) ⟧ (⟨⟩ ‚ succ ⟦ n ⟧₀ ‚ x))
         (⟦ close (weaken, ι b) (Subƛ s) ⟧ (⟨⟩ ‚ succ ⟦ n ⟧₀))
         ⟦ n ⟧₀
      ≡ rec ⟦ ƛ (weaken, ι (close a s) · (⌜η⌝ · ν₀)) ⟧₀ ⟦ close b s ⟧₀ ⟦ n ⟧₀
-  e2 = rec-respects-≡ {_}
-        {λ x → ⟦ close (weaken, ι (weaken, ι a) · (⌜η⌝ · ν₀)) (Subƛ (Subƛ s)) ⟧ (⟨⟩ ‚ succ ⟦ n ⟧₀ ‚ x)}
-        {⟦ ƛ (weaken, ι (close a s) · (⌜η⌝ · ν₀)) ⟧₀}
-        {⟦ close (weaken, ι b) (Subƛ s) ⟧ (⟨⟩ ‚ succ ⟦ n ⟧₀)}
-        {⟦ close b s ⟧₀}
-        {⟦ n ⟧₀} {⟦ n ⟧₀}
-        {!!} {!!} {!!} -- e7 e3 (≡-refl₀ n)
+  e2 = rec≡rec e7 e3 (≡-refl₀ n)
 
 -- as opposed to compute-Rec-Succ, this one does not "reduce" as much
 compute-Rec-Succ2 : {A σ : type} {Γ : Cxt}
@@ -366,17 +351,12 @@ compute-Rec-Succ2 : {A σ : type} {Γ : Cxt}
                         (n : T₀ ι)
                         (s : Sub₀ Γ)
                       → ⟦ close (ƛ (Rec (ƛ (weaken, ι (weaken, ι a) · (⌜η⌝ · ν₀))) (weaken, ι b) ν₀)) s  · n ⟧₀
-                      ≡ ⟦ Rec (ƛ (weaken, ι (close a s) · (⌜η⌝ · ν₀))) (close b s) n ⟧₀
+                        ≡ ⟦ Rec (ƛ (weaken, ι (close a s) · (⌜η⌝ · ν₀))) (close b s) n ⟧₀
 compute-Rec-Succ2 {A} {σ} {Γ} a b n s =
  rec (λ y → ⟦ close (weaken, ι (weaken, ι a)) (Subƛ (Subƛ s)) ⟧ (⟨⟩ ‚ ⟦ n ⟧₀ ‚ y) (η⋆ y))
      (⟦ close (weaken, ι b) (Subƛ s) ⟧ (⟨⟩ ‚ ⟦ n ⟧₀))
      ⟦ n ⟧₀
-  --≡＝⟨ rec-respects-≡ {_}
-  --       {λ y → ⟦ close (weaken, ι (weaken, ι a)) (Subƛ (Subƛ s)) ⟧ (⟨⟩ ‚ ⟦ n ⟧₀ ‚ y) (η⋆ y)}
-  --       {λ y → ⟦ weaken, ι (close a s) ⟧ (⟨⟩ ‚ y) (η⋆ y)}
-  --       {⟦ close (weaken, ι b) (Subƛ s) ⟧ (⟨⟩ ‚ ⟦ n ⟧₀)} {⟦ close b s ⟧₀}
-  --       {⟦ n ⟧₀} {⟦ n ⟧₀} refl ⟩
-  ≡＝⟨ {!!} ⟩
+  ≡＝⟨ rec≡rec e5 e1 (≡-refl₀ n) ⟩
  rec (λ y → ⟦ weaken, ι (close a s) ⟧ (⟨⟩ ‚ y) (η⋆ y))
      ⟦ close b s ⟧₀
      ⟦ n ⟧₀
@@ -393,40 +373,35 @@ compute-Rec-Succ2 {A} {σ} {Γ} a b n s =
      ≡ ⟦ weaken, ι (close a s) ⟧ (⟨⟩ ‚ i) (η⋆ i) v
   e3 i u v e =
    ⟦ close (weaken, ι (weaken, ι a)) (Subƛ (Subƛ s)) ⟧ (⟨⟩ ‚ ⟦ n ⟧₀ ‚ i) (η⋆ i) u
-    --≡⟨ ⟦close⟧ (weaken, ι (weaken, ι a)) (Subƛ (Subƛ s)) (⟨⟩ ‚ ⟦ n ⟧₀ ‚ i)
-    --    (【Sub】 (Subƛ (Subƛ s)) (⟨⟩ ‚ ⟦ n ⟧₀ ‚ i))
-    --    (【≡】-is-refl‚ _ _ (【≡】-is-refl‚ _ _ (λ ()) refl) refl)
-    --    (【≡】-【Sub】-Subƛ' _ _ _ refl refl)
-    --    _ _ {! η⋆≡η⋆ !} _ _ e ⟩
-    ≡⟨ {!!} ⟩
+    ≡⟨ ⟦close⟧ (weaken, ι (weaken, ι a)) (Subƛ (Subƛ s)) (⟨⟩ ‚ ⟦ n ⟧₀ ‚ i)
+        (【Sub】 (Subƛ (Subƛ s)) (⟨⟩ ‚ ⟦ n ⟧₀ ‚ i))
+        (【≡】-is-refl‚ _ _ (【≡】-is-refl‚ _ _ (λ ()) refl) refl)
+        (【≡】-【Sub】-Subƛ' _ _ _ refl refl)
+        (η⋆≡η⋆ refl) e ⟩
    ⟦ weaken, ι (weaken, ι a) ⟧ (【Sub】 (Subƛ (Subƛ s)) (⟨⟩ ‚ ⟦ n ⟧₀ ‚ i)) (η⋆ i) v
-    --≡⟨ ≡-refl (weaken, ι (weaken, ι a))
-    --          _ _ (【≡】-【Sub】-Subƛ2 s (⟦ n ⟧₀) i refl refl)
-    --          _ _ {! η⋆ι≡ i!} _ _ (≡ᵣ e) ⟩
-    ≡⟨ {!!} ⟩
+    ≡⟨ ≡-refl (weaken, ι (weaken, ι a))
+              (【≡】-【Sub】-Subƛ2 s (⟦ n ⟧₀) i refl refl)
+              (η⋆≡η⋆ refl) (≡ᵣ v e) ⟩
    ⟦ weaken, ι (weaken, ι a) ⟧ (【Sub₀】 s ‚ ⟦ n ⟧₀ ‚ i) (η⋆ i) v
-    --≡⟨ ⟦weaken,-weaken,⟧ (【Sub₀】 s) (⟦ n ⟧₀)
-    --                     i a refl
-    --                     (【≡】-is-refl-【Sub₀】 s)
-    --                     _ _ {!η⋆ι≡ i!} _ _ (≡ᵣ e) ⟩
-    ≡⟨ {!!} ⟩
+    ≡⟨ ⟦weaken,-weaken,⟧ (【Sub₀】 s) (⟦ n ⟧₀)
+                         i a refl
+                         (【≡】-is-refl-【Sub₀】 s)
+                         (η⋆≡η⋆ refl) (≡ᵣ v e) ⟩
    ⟦ a ⟧ (【Sub₀】 s ) (η⋆ i) v
-    --≡⟨ ≡-symm (⟦close⟧ a s (【⊆】 (∈CxtS ι) (⟨⟩ ‚ i))
-    --                  (【Sub₀】 s) (λ ())
-    --                  (【≡】-is-refl-【Sub₀】 s)
-    --                  _ _ {!η⋆ι≡ i!} _ _ (≡ᵣ e)) ⟩
-    ≡⟨ {!!} ⟩
+    ≡⟨ ≡-symm (⟦close⟧ a s (【⊆】 (∈CxtS ι) (⟨⟩ ‚ i))
+                      (【Sub₀】 s) (λ ())
+                      (【≡】-is-refl-【Sub₀】 s)
+                      (η⋆≡η⋆ refl) (≡ᵣ v e)) ⟩
    ⟦ close a s ⟧ (【⊆】 (⊆, 〈〉 ι) (⟨⟩ ‚ i)) (η⋆ i) v
-    -- ≡＝⟨ ≡-symm (⟦weaken,⟧ (close a s) ι _ _ (λ ()) _ _ {!(η⋆ι≡ i)!} _ _ (≡ᵣ e)) ⟩
-    ≡＝⟨ {!!} ⟩
+    ≡＝⟨ ≡-symm (⟦weaken,⟧ (close a s) ι _ _ (λ ()) (η⋆≡η⋆ refl) (≡ᵣ v e)) ⟩
    ⟦ weaken, ι (close a s) ⟧ (⟨⟩ ‚ i) (η⋆ i) v
     ∎
 
-  e5 : (i j : ℕ) → i ＝ j → (u v : 〖 B-type〖 σ 〗 A 〗)
+  e5 : {i j : ℕ} → i ＝ j → {u v : 〖 B-type〖 σ 〗 A 〗}
      → u ≡ v
      → ⟦ close (weaken, ι (weaken, ι a)) (Subƛ (Subƛ s)) ⟧ (⟨⟩ ‚ ⟦ n ⟧₀ ‚ i) (η⋆ i) u
      ≡ ⟦ weaken, ι (close a s) ⟧ (⟨⟩ ‚ j) (η⋆ j) v
-  e5 i .i refl u v e = e3 i u v e
+  e5 {i} {.i} refl {u} {v} e = e3 i u v e
 
   e2 : {τ : type} (i : ∈Cxt τ Γ)
      → ⟦ weaken, ι (s i) ⟧ (⟨⟩ ‚ ⟦ n ⟧₀)
@@ -460,7 +435,7 @@ compute-Rec-Succ2 {A} {σ} {Γ} a b n s =
                   (⟦ weaken, ι ⌜ b ⌝ ⟧ (s ‚ b₁))
                   b₁
 ⟦⌜Rec⌝⟧-aux {A} {σ} {Γ} s a b a₁ b₁ a≡₁ r =
- rec-respects-≡ c (≡-symm (⟦weaken,⟧ ⌜ b ⌝ ι (s ‚ b₁) s r)) a≡₁
+ rec≡rec c (≡-symm (⟦weaken,⟧ ⌜ b ⌝ ι (s ‚ b₁) s r)) a≡₁
  where
   c : {a₂ b₂ : ℕ}
     → a₂ ＝ b₂
@@ -487,12 +462,9 @@ compute-Rec-Succ2 {A} {σ} {Γ} a b n s =
  ⟦ ⌜Kleisli-extension⌝ {ι} {A} {σ} ⟧ (s ‚ ⟦ ⌜ a ⌝ ⟧ s ‚ ⟦ ⌜ b ⌝ ⟧ s)
   (λ x → rec (λ y → ⟦ ⌜ a ⌝ ⟧ s (η⋆ y)) (⟦ ⌜ b ⌝ ⟧ s) x)
   (⟦ ⌜ c ⌝ ⟧ s)
-  --≡＝⟨ ⟦⌜Kleisli-extension⌝⟧ (s ‚ ⟦ ⌜ a ⌝ ⟧ s ‚ ⟦ ⌜ b ⌝ ⟧ s) s
-  --     (λ x → rec (λ y → ⟦ ⌜ a ⌝ ⟧ s (η⋆ y)) (⟦ ⌜ b ⌝ ⟧ s) x)
-  --     (λ x → rec (λ y → ⟦ weaken, ι (weaken, ι ⌜ a ⌝) ⟧ (s ‚ x ‚ y) (η⋆ y)) (⟦ weaken, ι ⌜ b ⌝ ⟧ (s ‚ x)) x)
-  --     (λ a₁ b₁ a≡ → ⟦⌜Rec⌝⟧-aux s a b a₁ b₁ a≡ r)
-  --     (⟦ ⌜ c ⌝ ⟧ s) (⟦ ⌜ c ⌝ ⟧ s) (≡-refl ⌜ c ⌝ s s r) ⟩
-  ≡＝⟨ {!!} ⟩
+  ≡＝⟨ ⟦⌜Kleisli-extension⌝⟧ (s ‚ ⟦ ⌜ a ⌝ ⟧ s ‚ ⟦ ⌜ b ⌝ ⟧ s) s
+       (λ {a₁} {b₁} a≡ → ⟦⌜Rec⌝⟧-aux s a b a₁ b₁ a≡ r)
+       (≡-refl ⌜ c ⌝ r) ⟩
  ⟦ ⌜Kleisli-extension⌝ {ι} {A} {σ}
    · (ƛ (Rec (ƛ (weaken, ι (weaken, ι ⌜ a ⌝) · (⌜η⌝ · ν₀))) (weaken, ι ⌜ b ⌝) ν₀))
    · ⌜ c ⌝ ⟧ s
@@ -562,7 +534,8 @@ Rnorm-lemma γ₁ γ₂ (Succ t) Rnorm-γs =
         ≡ church-encode (B-functor succ (B⟦ t ⟧ γ₁))
   II = church-encode-is-natural (B⟦ t ⟧ γ₁) succ≡succ
 
-Rnorm-lemma {Γ} {σ} γ₁ γ₂ (Rec t u v) Rnorm-γs = {!!}
+Rnorm-lemma {Γ} {σ} γ₁ γ₂ (Rec t u v) Rnorm-γs =
+  Rnorm-respects-≡ {!!} {!!}
 -- Rnorm-respects-≡
 --   (rec' (B⟦ t ⟧ γ₁) (B⟦ u ⟧ γ₁) (B⟦ v ⟧ γ₁))
 --   (⌜Kleisli-extension⌝
