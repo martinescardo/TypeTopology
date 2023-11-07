@@ -733,10 +733,10 @@ Added 6th November 2023.
 \end{code}
 
 TODO. Write the above proof purely equationally. In order to do this,
-first formulate and prove the equal definition of Heyting algebra in
-other modules. Or to begin with, for simplicity, just prove in
-UF.Logic that Ω satisfies the equations that define a distributive
-lattice to be a Heyting algebra.
+first formulate and prove the equational definition of Heyting algebra
+in other modules. Or to begin with, for simplicity, just prove in
+UF.Logic that Ω satisfies the equations that define a lattice to be a
+Heyting algebra.
 
 Added 7th November 2023.
 
