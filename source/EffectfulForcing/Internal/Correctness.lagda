@@ -65,19 +65,6 @@ Rnorm-respects-≡ {σ ⇒ τ} {d} {t} {u} t≡u Rnorm-t v₁ v₂ Rnorm-vs =
                     (t≡u (≡-refl₀ v₂))
                     (Rnorm-t v₁ v₂ Rnorm-vs)
 
-\end{code}
-
-As Rnorm quantifies over all System T types, we can elimate a family of
-church-encoded trees into different types, allowing us to reify terms into
-the shape of ⌜η⌝ or ⌜β⌝.
-
-This sort of reification is crucial when we need to pattern match on the
-constructor of a church-encoded tree.
-
-Require fact that Rnorm is parametric when proving the reflects-≡ lemmas.
-
-\begin{code}
-
 -- TODO this should be moved to the definition of numeral?
 ⟦numeral⟧ : {Γ : Cxt} (γ : 【 Γ 】) (n : ℕ) → ⟦ numeral n ⟧ γ ≡ n
 ⟦numeral⟧ γ  zero    = refl
@@ -86,8 +73,30 @@ Require fact that Rnorm is parametric when proving the reflects-≡ lemmas.
 ⟦numeral⟧₀ : (n : ℕ) → ⟦ numeral n ⟧₀ ＝ n
 ⟦numeral⟧₀  n = ⟦numeral⟧ ⟨⟩ n
 
--- TODO give this a better name and move it probably
+Rnorm-numeral : (n : ℕ) → Rnorm (η n) (⌜η⌝ · numeral n)
+Rnorm-numeral n η₁≡η₂ β₁≡β₂ = η₁≡η₂ (⟦numeral⟧₀ n)
 
+Rnorm-η-implies-≡ : {n₁ : ℕ} {n₂ : T₀ ι}
+                  → Rnorm (η n₁) (⌜η⌝ · n₂)
+                  → ⟦ numeral n₁ ⟧₀ ≡ ⟦ n₂ ⟧₀
+Rnorm-η-implies-≡ {n₁} {n₂} Rnorm-ns =
+ ⟦ numeral n₁ ⟧₀ ≡⟨ ⟦numeral⟧₀ n₁ ⟩
+ n₁              ≡⟨ ≡-symm (Rnorm-ns η₁≡η₁ β₁≡β₁) ⟩
+ ⟦ n₂ ⟧₀ ∎
+ where
+  η₁ : ℕ → ℕ
+  η₁ n = n
+
+  η₁≡η₁ : η₁ ≡ η₁
+  η₁≡η₁ n₁＝n₂ = n₁＝n₂
+
+  β₁ : (ℕ → ℕ) → ℕ → ℕ
+  β₁ ϕ n = 0
+
+  β₁≡β₁ : β₁ ≡ β₁
+  β₁≡β₁ ϕ₁≡ϕ₂ n₁≡n₂ = refl
+
+-- TODO give this a better name and move it probably
 η-type : type → type
 η-type A = ι ⇒ A
 
@@ -535,66 +544,45 @@ Rnorm-lemma γ₁ γ₂ (Succ t) Rnorm-γs =
   II = church-encode-is-natural (B⟦ t ⟧ γ₁) succ≡succ
 
 Rnorm-lemma {Γ} {σ} γ₁ γ₂ (Rec t u v) Rnorm-γs =
-  Rnorm-respects-≡ {!!} {!!}
--- Rnorm-respects-≡
---   (rec' (B⟦ t ⟧ γ₁) (B⟦ u ⟧ γ₁) (B⟦ v ⟧ γ₁))
---   (⌜Kleisli-extension⌝
---    · close (ƛ (Rec (ƛ (weaken, ι (weaken, ι ⌜ t ⌝) · (⌜η⌝ · ν₀))) (weaken, ι ⌜ u ⌝) ν₀)) γ₂
---    · close ⌜ v ⌝ γ₂)
---   (close ⌜ Rec t u v ⌝ γ₂)
---   (λ A → ≡-symm (⟦close-⌜Rec⌝⟧ {A} γ₂ t u v))
---   c1
--- where
---  rt : (x  : B〖 ι 〗) (x' : {A : type} → T₀ (B-type〖 ι 〗 A)) (rx : Rnorm {ι} x x')
---       (y  : B〖 σ 〗) (y' : {A : type} → T₀ (B-type〖 σ 〗 A)) (ry : Rnorm {σ} y y')
---     → Rnorm (B⟦ t ⟧ γ₁ x y) (close ⌜ t ⌝ γ₂ · x' · y')
---  rt = Rnorm-lemma γ₁ γ₂ t Rnorm-γs
---
---  rn : ℕ → B〖 σ 〗
---  rn n = rec (B⟦ t ⟧ γ₁ ∘ η) (B⟦ u ⟧ γ₁) n
---
---  rn' : {A : type} → T₀ (ι ⇒ B-type〖 σ 〗 A)
---  rn' = close (ƛ (Rec (ƛ (weaken, ι (weaken, ι ⌜ t ⌝) · (⌜η⌝ · ν₀))) (weaken, ι ⌜ u ⌝) ν₀)) γ₂
---
---  rnn' : (n : ℕ) → Rnorm (rn n) (rn' · numeral n)
---  rnn' zero = r
---   where
---    r : Rnorm (B⟦ u ⟧ γ₁) (rn' · Zero)
---    r = Rnorm-respects-≡
---         (B⟦ u ⟧ γ₁) (close ⌜ u ⌝ γ₂) (rn' · Zero)
---         (λ A → ≡-symm (compute-Rec-Zero {A} (ƛ (weaken, ι (weaken, ι ⌜ t ⌝) · (⌜η⌝ · ν₀))) ⌜ u ⌝ γ₂))
---         (Rnorm-lemma γ₁ γ₂ u Rnorm-γs)
---  rnn' (succ n) = r
---   where
---    r : Rnorm (B⟦ t ⟧ γ₁ (η n) (rn n)) (rn' · Succ (numeral n))
---    r = Rnorm-respects-≡
---         (B⟦ t ⟧ γ₁ (η n) (rn n))
---         (close ⌜ t ⌝ γ₂
---          · (⌜η⌝ · numeral n)
---          · Rec (ƛ (weaken, ι (close ⌜ t ⌝ γ₂) · (⌜η⌝ · ν₀))) (close ⌜ u ⌝ γ₂) (numeral n))
---         (rn' · Succ (numeral n))
---         (λ A → ≡-symm (compute-Rec-Succ {A} ⌜ t ⌝ ⌜ u ⌝ (numeral n) γ₂))
---         (rt (η n) (⌜η⌝ · numeral n) (Rnorm-ηnumeral n)
---             (rn n) (Rec (ƛ (weaken, ι (close ⌜ t ⌝ γ₂) · (⌜η⌝ · ν₀))) (close ⌜ u ⌝ γ₂) (numeral n))
---             (Rnorm-respects-≡
---               (rn n)
---               (close (ƛ (Rec (ƛ (weaken, ι (weaken, ι ⌜ t ⌝) · (⌜η⌝ · ν₀))) (weaken, ι ⌜ u ⌝) ν₀)) γ₂
---                · numeral n)
---               (Rec (ƛ (weaken, ι (close ⌜ t ⌝ γ₂) · (⌜η⌝ · ν₀))) (close ⌜ u ⌝ γ₂) (numeral n))
---               (λ A → compute-Rec-Succ2 {A} ⌜ t ⌝ ⌜ u ⌝ (numeral n) γ₂)
---               (rnn' n)))
---
---  rnn'' : (n : ℕ) (n' : T₀ ι) → Rnorm (η n) (⌜η⌝ · n') → Rnorm (rn n) (rn' · n')
---  rnn'' n n' r =
---   Rnorm-respects-≡
---    (rn n) (rn' · numeral n) (rn' · n')
---    (λ A → ≡-symm (≡-refl₀ rn' _ _ (Rnormη⌜η⌝ n n' r)))
---    (rnn' n)
---
---  c1 : Rnorm (Kleisli-extension rn (B⟦ v ⟧ γ₁))
---             (⌜Kleisli-extension⌝ · rn' · close ⌜ v ⌝ γ₂)
---  c1 = Rnorm-kleisli-lemma rn rn' rnn' (B⟦ v ⟧ γ₁) (close ⌜ v ⌝ γ₂) (Rnorm-lemma γ₁ γ₂ v Rnorm-γs)
---
+  Rnorm-respects-≡ (≡-symm (⟦close-⌜Rec⌝⟧ γ₂ t u v)) c1
+ where
+  rt : (x  : B〖 ι 〗) (x' : {A : type} → T₀ (B-type〖 ι 〗 A)) (rx : Rnorm {ι} x x')
+       (y  : B〖 σ 〗) (y' : {A : type} → T₀ (B-type〖 σ 〗 A)) (ry : Rnorm {σ} y y')
+     → Rnorm (B⟦ t ⟧ γ₁ x y) (close ⌜ t ⌝ γ₂ · x' · y')
+  rt = Rnorm-lemma γ₁ γ₂ t Rnorm-γs
+
+  rn : ℕ → B〖 σ 〗
+  rn n = rec (B⟦ t ⟧ γ₁ ∘ η) (B⟦ u ⟧ γ₁) n
+
+  rn' : {A : type} → T₀ (ι ⇒ B-type〖 σ 〗 A)
+  rn' = close (ƛ (Rec (ƛ (weaken, ι (weaken, ι ⌜ t ⌝) · (⌜η⌝ · ν₀))) (weaken, ι ⌜ u ⌝) ν₀)) γ₂
+
+  rnn' : (n : ℕ) → Rnorm (rn n) (rn' · numeral n)
+  rnn' zero = r
+   where
+    r : Rnorm (B⟦ u ⟧ γ₁) (rn' · Zero)
+    r = Rnorm-respects-≡
+         (≡-symm (compute-Rec-Zero (ƛ (weaken, ι (weaken, ι ⌜ t ⌝) · (⌜η⌝ · ν₀))) ⌜ u ⌝ γ₂))
+         (Rnorm-lemma γ₁ γ₂ u Rnorm-γs)
+  rnn' (succ n) = r
+   where
+    r : Rnorm (B⟦ t ⟧ γ₁ (η n) (rn n)) (rn' · Succ (numeral n))
+    r = Rnorm-respects-≡
+         (≡-symm (compute-Rec-Succ ⌜ t ⌝ ⌜ u ⌝ (numeral n) γ₂))
+         (rt (η n) (⌜η⌝ · numeral n) (Rnorm-numeral n)
+             (rn n) (Rec (ƛ (weaken, ι (close ⌜ t ⌝ γ₂) · (⌜η⌝ · ν₀))) (close ⌜ u ⌝ γ₂) (numeral n))
+             (Rnorm-respects-≡
+               (compute-Rec-Succ2 ⌜ t ⌝ ⌜ u ⌝ (numeral n) γ₂)
+               (rnn' n)))
+
+  rnn'' : (n : ℕ) (n' : T₀ ι) → Rnorm (η n) (⌜η⌝ · n') → Rnorm (rn n) (rn' · n')
+  rnn'' n n' r =
+   Rnorm-respects-≡ (≡-refl₀ rn' (Rnorm-η-implies-≡ {n} {n'} r)) (rnn' n)
+
+  c1 : Rnorm (Kleisli-extension rn (B⟦ v ⟧ γ₁))
+             (⌜Kleisli-extension⌝ · rn' · close ⌜ v ⌝ γ₂)
+  c1 = Rnorm-kleisli-lemma rn rn' rnn' (B⟦ v ⟧ γ₁) (close ⌜ v ⌝ γ₂) (Rnorm-lemma γ₁ γ₂ v Rnorm-γs)
+
 Rnorm-lemma γ₁ γ₂ (ν i) Rnorm-γs = Rnorm-γs i
 
 Rnorm-lemma γ₁ γ₂ (ƛ t) Rnorm-γs u₁ u₂ Rnorm-us = Rnorm-respects-≡ I IH
@@ -643,42 +631,14 @@ dialogue⋆≡dialogue⋆ d₁≡d₂ =
   dialogue⋆-β≡dialogue⋆-β : dialogue⋆-β ≡ dialogue⋆-β
   dialogue⋆-β≡dialogue⋆-β ϕ₁≡ϕ₂ x₁≡x₂ α₁≡α₂ = ϕ₁≡ϕ₂ (α₁≡α₂ x₁≡x₂) α₁≡α₂
 
----- a consequence of Rnorm-lemma for terms of type ι
---Rnorm-lemmaι : (t : T₀ ι) (α : Baire)
---             → dialogue⋆ ⟦ ⌜ t ⌝ ⟧₀ ≡ dialogue⋆ (church-encode B⟦ t ⟧₀)
---Rnorm-lemmaι t α =
--- dialogue⋆ ⟦ ⌜ t ⌝ ⟧₀
---  ≡⟨ ≡-symm (⟦closeν⟧ ⌜ t ⌝ _ (λ ()) _ _ η≡ _ _ β≡) ⟩
--- dialogue⋆ ⟦ close ⌜ t ⌝ ν ⟧₀
---  ≡＝⟨ Rnorm-lemma ⟪⟫ ν t (λ ()) ((ι ⇒ ι) ⇒ ι) η' β' eη eβ ⟩
--- dialogue⋆ (church-encode B⟦ t ⟧₀)
---  ∎
--- where
---  η' : ℕ → Baire → ℕ
---  η' = λ z α → z
---
---  β' : (ℕ → Baire → ℕ) → ℕ → Baire → ℕ
---  β' = λ φ x α → φ (α x) α
---
---  η≡ : η' ≡ η'
---  η≡ a b a≡ a₁ b₁ a≡₁ = a≡
---
---  β≡ : β' ≡ β'
---  β≡ a b a≡ a₁ b₁ a≡₁ a₂ b₂ a≡₂ = a≡ _ _ (a≡₂ _ _ a≡₁) _ _ a≡₂
---
---  eη : extη η'
---  eη x a b a≡ = refl
---
---  eβ : extβ β'
---  eβ a b x .x refl a≡ a₁ b₁ a≡₁ =
---   a≡ _ _ _ a≡₁ ∙ a≡b _ _ (a≡₁ _ _ refl ⁻¹) ⁻¹ ∙ a≡ _ _ _ a≡₁
---   where
---    a≡b : (n m : ℕ) → n ＝ m → a n a₁ ＝ b m b₁
---    a≡b n .n refl = a≡ _ _ _ a≡₁
---
 Rnorm-lemma₀ : {σ : type} (t : T₀ σ) → Rnorm B⟦ t ⟧₀ ⌜ t ⌝
 Rnorm-lemma₀ {σ} t =
  Rnorm-respects-≡ (⟦closeν⟧ ⌜ t ⌝ _ (λ ())) (Rnorm-lemma ⟪⟫ ν t (λ ()))
+
+-- TODO do we want to keep this? It seems a bit pointless to have this as a lemma
+Rnorm-lemmaι : (t : T₀ ι)
+             → dialogue⋆ ⟦ ⌜ t ⌝ ⟧₀ ≡ dialogue⋆ (church-encode B⟦ t ⟧₀)
+Rnorm-lemmaι t = dialogue⋆≡dialogue⋆ (Rnorm-lemma₀ t)
 
 Rnorm-generic : Rnorm generic ⌜generic⌝
 Rnorm-generic = Rnorm-kleisli-lemma {ι} (β η) (⌜β⌝ · ⌜η⌝) βη≡⌜βη⌝
