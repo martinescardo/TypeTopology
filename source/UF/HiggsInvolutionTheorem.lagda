@@ -738,24 +738,26 @@ TODO. Write the above proof purely equationally.
  widespread-gives-widespread' : (r : Ω)
                               → is-widespread  r
                               → is-widespread' r
- widespread-gives-widespread' r@(R , R-is-prop) w p@(P , P-is-prop) = III
+ widespread-gives-widespread' r@(R , R-is-prop) w = III
   where
    have-w : (p : Ω) → ((p ↔ r) ↔ r) ＝ p
    have-w = w
 
-   P' : 𝓤 ̇
-   P' = ∥ P + (P → R) ∥
+   module _ (p@(P , P-is-prop) : Ω) where
 
-   I : ((P' ⇔ R) ⇔ R) ⇔ P'
-   I = equal-⊤-gives-holds _ (＝-gives-↔ pe _ _ (w (P' , ∥∥-is-prop)))
+    P' : 𝓤 ̇
+    P' = ∥ P + (P → R) ∥
 
-   II : (P' → R) → R
-   II f = f ∣ inr (λ (π : P) → f ∣ inl π ∣) ∣
+    I : ((P' ⇔ R) ⇔ R) ⇔ P'
+    I = equal-⊤-gives-holds _ (＝-gives-↔ pe _ _ (w (P' , ∥∥-is-prop)))
 
-   III : P'
-   III = lr-implication I
-          ((λ (e : P' ⇔ R) → II (lr-implication e)) ,
-          (λ (ρ : R) → (λ (_ : P') → ρ) ,
-                       (λ (_ : R) → ∣ inr (λ (_ : P) → ρ) ∣)))
+    II : (P' → R) → R
+    II f = f ∣ inr (λ (π : P) → f ∣ inl π ∣) ∣
+
+    III : P'
+    III = lr-implication I
+           ((λ (e : P' ⇔ R) → II (lr-implication e)) ,
+           (λ (ρ : R) → (λ (_ : P') → ρ) ,
+                        (λ (_ : R) → ∣ inr (λ (_ : P) → ρ) ∣)))
 
 \end{code}
