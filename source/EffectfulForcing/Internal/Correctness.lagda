@@ -32,38 +32,64 @@ translation.
 From this result and the main-lemma we can derive an internal result of
 strong continuity in System T.
 
+
+We say that an inductive dialogue tree is the dialogue tree for a family of
+System T Church-encoded dialogue trees if they are extensionally equal for
+all possible instantiations.
+
 \begin{code}
 
 is-dialogue-for : B ℕ → ({A : type} → T₀ (B-type〖 ι 〗 A)) → Type
 is-dialogue-for d t = {A : type} → ⟦ t ⟧₀ ≡[ B-type〖 ι 〗 A ] church-encode d
 
--- Logical relation for internal dialogue trees which can be pattern matched on
--- and for functions that preserve said pattern matching.
+\end{code}
+
+The logical relation Rnorm is defined hereditary extension of `is-dialogue-for`
+and `Rnorms` is defined as the pointwise extension of `Rnorm` to contexts.
+
+\begin{code}
+
 Rnorm : {σ : type} (d : B〖 σ 〗) (t : {A : type} → T₀ (B-type〖 σ 〗 A)) → Type
 Rnorm {ι}     d t = is-dialogue-for d t
 Rnorm {σ ⇒ τ} d t = (u : B〖 σ 〗) (u' : {A : type} → T₀ (B-type〖 σ 〗 A))
                   → Rnorm u u' → Rnorm (d u) (t · u')
 
--- internal semantics of contexts as dialogue trees
+-- TODO move this into Subst?
 IB【_】 : Cxt → type → Type
 IB【 Γ 】 A = Sub₀ (B-context【 Γ 】 A)
 
 Rnorms : {Γ : Cxt} → B【 Γ 】 → ({A : type} → IB【 Γ 】 A) → Type
 Rnorms {Γ} xs ys = {σ : type} (i : ∈Cxt σ Γ) → Rnorm (xs i) (ys (∈Cxt-B-type i))
 
--- To avoid the operational semantics, we use the following lemma.
+
+\end{code}
+
+In this development we avoid the operational semantics of System T by instead
+reasoning with the Agda functions the System T terms present. As a result,
+instead of showing that the logical relation `Rnorm` is preserved by
+the evaluation of functions, we show that it is preserved by extensional
+equality.
+
+\begin{code}
+
 Rnorm-respects-≡ : {σ : type} {d : B〖 σ 〗} {t u : {A : type} → T₀ (B-type〖 σ 〗 A)}
                    → ({A : type} → ⟦ t ⟧₀ ≡[ (B-type〖 σ 〗 A) ] ⟦ u ⟧₀)
                    → Rnorm d t
                    → Rnorm d u
-Rnorm-respects-≡ {ι} {d} {t} {u} t≡u Rnorm-d-t {A} {η₁} {η₂} η₁≡η₂ {β₁} {β₂} β₁≡β₂ =
- ⟦ u ⟧₀ η₁ β₁          ≡⟨ ≡-symm (t≡u {A} (≡ₗ η₁ η₁≡η₂) (≡ₗ β₁ β₁≡β₂)) ⟩
- ⟦ t ⟧₀ η₁ β₁          ≡＝⟨ Rnorm-d-t η₁≡η₂ β₁≡β₂ ⟩
- church-encode d η₂ β₂ ∎
+Rnorm-respects-≡ {ι} {d} {t} {u} t≡u Rnorm-d-t {A} =
+ ⟦ u ⟧₀          ≡⟨ ≡-symm {⌜B⌝ ι A} t≡u ⟩
+ ⟦ t ⟧₀          ≡＝⟨ Rnorm-d-t {A} ⟩
+ church-encode d ∎
 Rnorm-respects-≡ {σ ⇒ τ} {d} {t} {u} t≡u Rnorm-t v₁ v₂ Rnorm-vs =
- Rnorm-respects-≡ -- (d v₁) (t · v₂) (u · v₂)
-                    (t≡u (≡-refl₀ v₂))
-                    (Rnorm-t v₁ v₂ Rnorm-vs)
+ Rnorm-respects-≡ (t≡u (≡-refl₀ v₂)) (Rnorm-t v₁ v₂ Rnorm-vs)
+
+\end{code}
+
+We prove the fundamental theorem of the `Rnorm` logical relation in
+`Rnorm-lemma`, which relates the inductive dialogue tree translation and the
+Church-encoded dialogue tree translation for all System T terms.
+
+\begin{code}
 
 -- TODO this should be moved to the definition of numeral?
 ⟦numeral⟧ : {Γ : Cxt} (γ : 【 Γ 】) (n : ℕ) → ⟦ numeral n ⟧ γ ≡ n
@@ -103,7 +129,16 @@ Rnorm-η-implies-≡ {n₁} {n₂} Rnorm-ns =
 β-type : type → type
 β-type A = (ι ⇒ A) ⇒ ι ⇒ A
 
--- TODO: can we generalize this?
+\end{code}
+
+The System T term `Rec` is interpreted by the dialogue tree semantics using
+`Kleisli-extension`, so when proving `Rnorm-lemma` we will need to know that
+`Kleisli-extension` and `⌜Kleisli-extension⌝` will preserve functions related
+by `Rnorm`.
+
+\begin{code}
+
+-- TODO could probably generalise to extensionally equal dialogue trees d
 church-encode-kleisli-extension : {A : type} (d : B ℕ)
                                 → (f₁ : ℕ → B ℕ) (f₂ : {A : type} → T₀ (ι ⇒ ⌜B⌝ ι A))
                                 → ((i : ℕ) → Rnorm (f₁ i) (f₂ · numeral i))
@@ -134,9 +169,6 @@ church-encode-kleisli-extension {A} (β ϕ n) f₁ f₂ f₁≡f₂ {η₁} {η�
 ⟦⌜Kleisli-extension⌝⟧ {X} {A} {σ ⇒ τ} {Γ} {Δ} xs ys g₁≡g₂ f₁≡f₂ x₁≡x₂ =
  ⟦⌜Kleisli-extension⌝⟧ _ _ (λ y₁≡y₂ → g₁≡g₂ y₁≡y₂ x₁≡x₂) f₁≡f₂
 
--- Recursion in System T is interpreted by the internal dialogue tree translation
--- using ⌜Kleisli-extension⌝, so to prove the fundamental theorem of Rnorm we
--- need to know that ⌜Kleisli-extension⌝ preserves Rnorm.
 Rnorm-kleisli-lemma : {σ : type}
 
                       (f₁ : ℕ → B〖 σ 〗)
@@ -192,9 +224,8 @@ Rnorm-kleisli-lemma {σ ⇒ τ} f₁ f₂ Rnorm-fs n₁ n₂ Rnorm-ns u₁ u₂ 
   IH = Rnorm-kleisli-lemma f₁' f₂' Rnorm-fs' n₁ n₂ Rnorm-ns
 
 
--- TODO is it possible to prove this in general?
--- We could when using ≣⋆ but it seems it would only be true when
--- g : ℕ → ℕ now that we are using ≡
+-- TODO this should be derivable from Rnorm-kleisli-lemma or
+-- church-encode-kleisli-extension
 church-encode-is-natural : {g₁ g₂ :  ℕ → ℕ} (d : B ℕ)
                          → g₁ ≡ g₂
                          → {A : type}
@@ -640,6 +671,16 @@ Rnorm-lemmaι : (t : T₀ ι)
              → dialogue⋆ ⟦ ⌜ t ⌝ ⟧₀ ≡ dialogue⋆ (church-encode B⟦ t ⟧₀)
 Rnorm-lemmaι t = dialogue⋆≡dialogue⋆ (Rnorm-lemma₀ t)
 
+\end{code}
+
+Having proved the fundamental theorem of the Rnorm logical relation, we
+can derive as a corollary the correctness of `⌜dialogue-tree⌝` as building
+an internal dialogue tree for a System T term of type `(ι ⇒ ι) ⇒ ι`. This is
+done by reducing to the correctness of the external `dialogue-tree` function,
+shown correct by `dialogue-tree-correct`.
+
+\begin{code}
+
 Rnorm-generic : Rnorm generic ⌜generic⌝
 Rnorm-generic = Rnorm-kleisli-lemma {ι} (β η) (⌜β⌝ · ⌜η⌝) βη≡⌜βη⌝
  where
@@ -656,13 +697,12 @@ Rnorm-generic = Rnorm-kleisli-lemma {ι} (β η) (⌜β⌝ · ⌜η⌝) βη≡�
  dialogue⋆ ⟦ ⌜dialogue-tree⌝ t ⟧₀ α            ∎
  where
   I : church-encode (dialogue-tree t) ≡ ⟦ ⌜dialogue-tree⌝ t ⟧₀
-  I = ≡-symm {⌜B⌝ ι ((ι ⇒ ι) ⇒ ι)}
-       (Rnorm-lemma₀ t generic ⌜generic⌝ Rnorm-generic)
+  I = ≡-symm {⌜B⌝ ι ((ι ⇒ ι) ⇒ ι)} (Rnorm-lemma₀ t generic ⌜generic⌝ Rnorm-generic)
 
   α≡α : α ≡ α
   α≡α = ap α
 
--- TODO what is this for again, is it for Ayberk's stuff?
+-- TODO should this be moved
 ⌜dialogue⌝ : {Γ : Cxt}
            → T (B-context【 Γ 】 ((ι ⇒ ι) ⇒ ι)) (⌜B⌝ ι ((ι ⇒ ι) ⇒ ι))
            → T (B-context【 Γ 】 ((ι ⇒ ι) ⇒ ι)) ((ι ⇒ ι) ⇒ ι)
