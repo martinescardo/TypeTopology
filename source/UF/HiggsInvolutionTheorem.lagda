@@ -377,11 +377,11 @@ We show that there can't be any automorphism of Ω distinct from the
 identity unless excluded middle holds.
 
 The fact eval-at-⊤-is-lc stated and proved below, which is our main
-lemma, is attributed to Denis Higgs in the literature [1], without any
-explicit citation I could find, with diagrammatic proofs in topos
+lemma, is attributed to Denis Higgs in the literature [1] [2], without
+any explicit citation I could find, with diagrammatic proofs in topos
 theory rather than proofs in the internal language of a topos. Our
 internal proofs don't necessarily follow the external diagrammatic
-proofs. See also [2].
+proofs.
 
 [1] Peter T. Johnstone. Automorphisms of Ω. Algebra Universalis,
     9 (1979) 1-7.
@@ -494,7 +494,7 @@ can-recover-automorphism-from-its-value-at-⊤ 𝕗@(f , _) p =
 
 \end{code}
 
-Definiton of the Higgs object ℍ.
+The Higgs object ℍ as defined by Johnstone in [1].
 
 \begin{code}
 
@@ -656,7 +656,8 @@ corollary-⇔-assoc r s t i j k = I
 
 \end{code}
 
-Alternative characterization of the widespread property.
+Alternative characterization of the widespread property, as stated in
+Johnstone's Elephant.
 
 \begin{code}
 
@@ -731,7 +732,11 @@ Added 6th November 2023.
 
 \end{code}
 
-TODO. Write the above proof purely equationally.
+TODO. Write the above proof purely equationally. In order to do this,
+first formulate and prove the equal definition of Heyting algebra in
+other modules. Or to begin with, for simplicity, just prove in
+UF.Logic that Ω satisfies the equations that define a distributive
+lattice to be a Heyting algebra.
 
 Added 7th November 2023.
 
