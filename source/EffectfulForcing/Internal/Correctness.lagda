@@ -688,6 +688,10 @@ Rnorm-generic = Rnorm-kleisli-lemma {ι} (β η) (⌜β⌝ · ⌜η⌝) βη≡�
   βη≡⌜βη⌝ : (x : ℕ) → is-dialogue-for (β η x) (⌜β⌝ · ⌜η⌝ · numeral x)
   βη≡⌜βη⌝ x η₁≡η₂ β₁≡β₂ = β₁≡β₂ η₁≡η₂ (⟦numeral⟧₀ x)
 
+dialogue-tree-agreement : (t : T₀ ((ι ⇒ ι) ⇒ ι)) {A : type}
+                        → ⟦ ⌜dialogue-tree⌝ t ⟧₀ ≡[ ⌜B⌝ ι A ] church-encode (dialogue-tree t)
+dialogue-tree-agreement t = Rnorm-lemma₀ t generic ⌜generic⌝ Rnorm-generic
+
 ⌜dialogue-tree⌝-correct : (t : T₀ ((ι ⇒ ι) ⇒ ι))
                           (α : Baire)
                         → ⟦ t ⟧₀ α ＝ dialogue⋆ ⟦ ⌜dialogue-tree⌝ t ⟧₀ α
@@ -698,7 +702,7 @@ Rnorm-generic = Rnorm-kleisli-lemma {ι} (β η) (⌜β⌝ · ⌜η⌝) βη≡�
  dialogue⋆ ⟦ ⌜dialogue-tree⌝ t ⟧₀ α            ∎
  where
   I : church-encode (dialogue-tree t) ≡ ⟦ ⌜dialogue-tree⌝ t ⟧₀
-  I = ≡-symm {⌜B⌝ ι ((ι ⇒ ι) ⇒ ι)} (Rnorm-lemma₀ t generic ⌜generic⌝ Rnorm-generic)
+  I = ≡-symm {⌜B⌝ ι ((ι ⇒ ι) ⇒ ι)} (dialogue-tree-agreement t)
 
   α≡α : α ≡ α
   α≡α = ap α
