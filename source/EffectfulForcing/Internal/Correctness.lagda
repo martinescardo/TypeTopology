@@ -21,6 +21,7 @@ open import EffectfulForcing.Internal.Internal hiding (B⋆⟦_⟧ ; dialogue-tr
 open import EffectfulForcing.Internal.External
 open import EffectfulForcing.Internal.SystemT
 open import EffectfulForcing.Internal.Subst
+open import EffectfulForcing.Internal.ExtensionalEquality
 open import UF.Base using (transport₂ ; transport₃ ; ap₂ ; ap₃)
 
 \end{code}
