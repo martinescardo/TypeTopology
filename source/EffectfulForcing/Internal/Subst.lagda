@@ -18,18 +18,7 @@ open import EffectfulForcing.Internal.SystemT
 open import UF.Base using (transport₂ ; transport₃ ; ap₂ ; ap₃)
 open import MGS.hlevels using (hedberg)
 open import MGS.MLTT using (has-decidable-equality)
-
--- TODO maybe this should be moved to a new file?
--- Extensional equality for types realizable in System T
-
-_≡_ : {A : type} (f g : 〖 A 〗) → Type
-_≡_ {ι}     n₁ n₂ = n₁ ＝ n₂
-_≡_ {σ ⇒ τ} f₁ f₂ = {x₁ x₂ : 〖 σ 〗} → x₁ ≡ x₂ → f₁ x₁ ≡ f₂ x₂
-
-≡T : (A : type) (f g : 〖 A 〗) → Type
-≡T A f g = f ≡ g
-
-syntax ≡T A f g = f ≡[ A ] g
+open import EffectfulForcing.Internal.ExtensionalEquality
 
 rec≡rec : {σ : type} → rec ≡[ ( ι ⇒ σ ⇒ σ ) ⇒ σ ⇒ ι ⇒ σ ] rec
 rec≡rec f₁≡f₂ x₁≡x₂ {zero}    {zero}     refl = x₁≡x₂
