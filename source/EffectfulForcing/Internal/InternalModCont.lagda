@@ -27,7 +27,8 @@ open import EffectfulForcing.MFPSAndVariations.Continuity
  using (is-continuous; is-continuous₀; continuity-implies-continuity₀;
         _＝⦅_⦆_; _＝⟪_⟫_; modulus-at₀; maximum)
 open import EffectfulForcing.Internal.Correctness
- using (Rnorm-generic; is-dialogue-for; Rnorm-lemma₀; Rnorm)
+ using (Rnorm-generic; is-dialogue-for; Rnorm-lemma₀; Rnorm;
+        dialogue-tree-agreement)
 open import EffectfulForcing.Internal.External
  using (eloquence-theorem; dialogue-tree; ⟪⟫; B⟦_⟧; B⟦_⟧₀)
 open import EffectfulForcing.Internal.Subst
@@ -185,13 +186,12 @@ max-question⋆-agreement (D.β φ n) α = †
     ＝ church-encode (D.β φ n) (λ _ → 0) (λ g x → max x (g (α x)))
   † = ap (max n) IH
 
--- max-questionᵀ-agreement-with-max-question⋆ : (d : 〈〉 ⊢ ⌜D⋆⌝ ι ι ι ι) (α : ℕ → ℕ)
---                                            → ⟦ max-questionᵀ · d ⟧₀ α ＝ max-question⋆ ⟦ d ⟧₀ α
--- max-questionᵀ-agreement-with-max-question⋆ d α = {!!}
---  -- ap (⟦ d ⟧₀ (λ _ → 0)) † -- (dfunext fe λ g → dfunext fe λ x → maxᵀ-correct x (g (α x)))
---   where
---    † : ⟦ ƛ (ƛ (maxᵀ · ν₀ · (ν₁ · (ν₂ · ν₀)))) ⟧ (⟨⟩ ‚ ⟦ d ⟧₀ ‚ α) ≡ (λ g x → max x (g (α x)))
---    † = {!!}
+max-questionᵀ-agreement-with-max-question⋆ : ⟦ max-questionᵀ ⟧₀ ≡ max-question⋆
+max-questionᵀ-agreement-with-max-question⋆ {d} {d′} q {α} {β} eq  =
+ ⟦ maxᵀ ⟧₀ 0 (d (λ _ → 0) (⟦ ƛ (ƛ (maxᵀ · ν₀ · (ν₁ · (ν₂ · ν₀)))) ⟧ (⟨⟩ ‚ d ‚ α)))    ＝⟨ refl ⟩
+ d (λ _ → 0) (⟦ ƛ (ƛ (maxᵀ · ν₀ · (ν₁ · (ν₂ · ν₀)))) ⟧ (⟨⟩ ‚ d ‚ α))    ＝⟨ {!!} ⟩
+ d′ (λ _ → 0) (λ g x → max x (g (β x)))                    ＝⟨ refl ⟩
+ max-question⋆ d′ β               ∎
 
 
 \end{code}
@@ -230,24 +230,20 @@ main-lemma : (t : 〈〉 ⊢ (baire ⇒ ι)) (α : ℕ → ℕ)
            → ⟦ max-questionᵀ · (⌜dialogue-tree⌝ t) ⟧₀ α
              ＝ max-question₀ (dialogue-tree t) α
 main-lemma t α =
- ⟦ max-questionᵀ · ⌜dialogue-tree⌝ t ⟧₀ α           ＝⟨ refl ⟩
- ⟦ max-questionᵀ ⟧₀ ⟦ ⌜dialogue-tree⌝ t ⟧₀ α        ＝⟨ Ⅰ ⟩
- max-question⋆ (church-encode (dialogue-tree t)) α  ＝⟨ Ⅲ ⟩
- max-question  (dialogue-tree t) α                  ＝⟨ Ⅳ ⟩
- max-question₀ (dialogue-tree t) α                  ∎
+ ⟦ max-questionᵀ · ⌜dialogue-tree⌝ t ⟧₀ α                 ＝⟨ refl ⟩
+ ⟦ max-questionᵀ ⟧₀ ⟦ ⌜dialogue-tree⌝ t ⟧₀ α              ＝⟨ Ⅰ    ⟩
+ max-question⋆ (church-encode (dialogue-tree t)) α        ＝⟨ Ⅱ    ⟩
+ max-question  (dialogue-tree t) α                        ＝⟨ Ⅲ    ⟩
+ max-question₀ (dialogue-tree t) α                        ∎
   where
    † : Rnorm (B⟦ t ⟧₀ generic) (⌜ t ⌝ · ⌜generic⌝)
    † = Rnorm-lemma₀ t generic ⌜generic⌝ Rnorm-generic
 
-   ext : {!!}
-   ext = {!!}
-    -- max m (f (α m)) ＝⟨ ap (λ - → max - (f (α -))) p ⟩
-    -- max n (f (α n)) ＝⟨ ap (max n) (φ (α n))         ⟩
-    -- max n (g (α )) ∎
-
-   Ⅰ = {!!}
-   Ⅲ = max-question⋆-agreement (dialogue-tree t) α ⁻¹
-   Ⅳ = max-question₀-agreement (dialogue-tree t) α
+   Ⅰ = max-questionᵀ-agreement-with-max-question⋆
+        (dialogue-tree-agreement t)
+        (ap α)
+   Ⅱ = max-question⋆-agreement (dialogue-tree t) α ⁻¹
+   Ⅲ = max-question₀-agreement (dialogue-tree t) α
 
 internal-mod-cont-correct : (t : 〈〉 ⊢ (baire ⇒ ι)) (α β : 〈〉 ⊢ baire)
                           → ⟦ α ⟧₀ ＝⦅ ⟦ modulusᵀ t · α ⟧₀ ⦆ ⟦ β ⟧₀
