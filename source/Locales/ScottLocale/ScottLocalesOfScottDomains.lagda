@@ -119,22 +119,22 @@ We now construct the basis for this locale.
  from-list₀ : List B → 𝓟 {𝓤} {𝓤 ⁺} ⟨ 𝓓 ⟩∙
  from-list₀ = foldr _∪_ ∅ ∘ map (principal-filter 𝓓 ∘ β)
 
- from-list-is-upwards-closed : (ks : List B)
-                             → is-upwards-closed (from-list₀ ks) holds
- from-list-is-upwards-closed []       x y () q
- from-list-is-upwards-closed (b ∷ bs) x y p  q =
+ from-list₀-is-upwards-closed : (ks : List B)
+                              → is-upwards-closed (from-list₀ ks) holds
+ from-list₀-is-upwards-closed []       x y () q
+ from-list₀-is-upwards-closed (b ∷ bs) x y p  q =
   ∥∥-rec (holds-is-prop (y ∈ₚ from-list₀ (b ∷ bs))) † p
    where
     † : (β b ⊑⟨ 𝓓 ⟩ x) + x ∈ from-list₀ bs → from-list₀ (b ∷ bs) y holds
     † (inl r) = ∣ inl (principal-filter-is-upwards-closed (β b) x y r q) ∣
-    † (inr r) = ∣ inr (from-list-is-upwards-closed bs x y r q) ∣
+    † (inr r) = ∣ inr (from-list₀-is-upwards-closed bs x y r q) ∣
 
- from-list-is-inaccessible-by-directed-joins : (ks : List B)
+ from-list₀-is-inaccessible-by-directed-joins : (ks : List B)
                                              → is-inaccessible-by-directed-joins
                                                 (from-list₀ ks)
                                                  holds
- from-list-is-inaccessible-by-directed-joins []       (S , δ) ()
- from-list-is-inaccessible-by-directed-joins (k ∷ ks) (S , δ) p =
+ from-list₀-is-inaccessible-by-directed-joins []       (S , δ) ()
+ from-list₀-is-inaccessible-by-directed-joins (k ∷ ks) (S , δ) p =
   ∥∥-rec ∃-is-prop † p
    where
     σ : is-scott-open (↑[ 𝓓 ] β k) holds
@@ -148,11 +148,31 @@ We now construct the basis for this locale.
 
     † : (β k ⊑⟨ 𝓓 ⟩ (⋁ (S , δ))) + (⋁ (S , δ)) ∈ from-list₀ ks
       → ∃ i ꞉ index S , (S [ i ]) ∈ from-list₀ (k ∷ ks)
-    † (inl q) = ?
-    † (inr q) = {!!}
+    † (inl q) = let
+                 ‡ : Σ i ꞉ index S , (S [ i ]) ∈ ↑[ 𝓓 ] β k
+                   → ∃ i ꞉ index S , (S [ i ]) ∈ from-list₀ (k ∷ ks)
+                 ‡ = λ { (i , p) → ∣ i , ∣ inl p ∣ ∣ }
+                in
+                 ∥∥-rec ∃-is-prop ‡ (ι (S , δ) q)
+    † (inr q) = let
+                 IH : ∃ i ꞉ index S , (S [ i ]) ∈ from-list₀ ks
+                 IH = from-list₀-is-inaccessible-by-directed-joins ks (S , δ) q
+
+                 ‡ : Σ i ꞉ index S , (S [ i ]) ∈ from-list₀ ks
+                   → ∃ i ꞉ index S , (S [ i ]) ∈ from-list₀ (k ∷ ks)
+                 ‡ = λ { (i , r) → ∣ i , ∣ inr r ∣ ∣ }
+                in
+                 ∥∥-rec ∃-is-prop ‡ IH
+
+ from-list₀-gives-scott-opens : (ks : List B)
+                              → is-scott-open (from-list₀ ks) holds
+ from-list₀-gives-scott-opens ks = ⦅𝟏⦆ , ⦅𝟐⦆
+  where
+   ⦅𝟏⦆ = from-list₀-is-upwards-closed ks
+   ⦅𝟐⦆ = from-list₀-is-inaccessible-by-directed-joins ks
 
  from-list : List B → ⟨ 𝒪 𝒮𝓓 ⟩
- from-list ks = from-list₀ ks , {!!}
+ from-list ks = from-list₀ ks , from-list₀-gives-scott-opens ks
 
  basis-for-𝒮𝓓 : Fam 𝓤 ⟨ 𝒪 𝒮𝓓 ⟩
  basis-for-𝒮𝓓 = List B , from-list
