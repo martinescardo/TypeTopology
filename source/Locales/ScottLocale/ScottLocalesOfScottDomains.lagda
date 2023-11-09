@@ -177,13 +177,16 @@ We now construct the basis for this locale.
  basis-for-𝒮𝓓 : Fam 𝓤 ⟨ 𝒪 𝒮𝓓 ⟩
  basis-for-𝒮𝓓 = List B , from-list
 
- -- σᴰ : spectralᴰ 𝒮𝓓
- -- σᴰ = basis-for-𝒮𝓓 , {!!} , ({!!} , (τ , μ))
- --  where
- --   τ : contains-top (𝒪 𝒮𝓓) basis-for-𝒮𝓓 holds
- --   τ = {!!}
+ 𝒮𝓓-dir-basis-forᴰ : directed-basis-forᴰ (𝒪 𝒮𝓓) basis-for-𝒮𝓓
+ 𝒮𝓓-dir-basis-forᴰ U = ({!!} , {!!}) , {!!}
 
- --   μ : closed-under-binary-meets (𝒪 𝒮𝓓) basis-for-𝒮𝓓 holds
- --   μ = {!!}
+ σᴰ : spectralᴰ 𝒮𝓓
+ σᴰ = basis-for-𝒮𝓓 , 𝒮𝓓-dir-basis-forᴰ , ({!!} , (τ , μ))
+  where
+   τ : contains-top (𝒪 𝒮𝓓) basis-for-𝒮𝓓 holds
+   τ = {!!}
+
+   μ : closed-under-binary-meets (𝒪 𝒮𝓓) basis-for-𝒮𝓓 holds
+   μ = {!!}
 
 \end{code}
