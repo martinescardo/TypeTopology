@@ -186,6 +186,7 @@ max-question⋆-agreement (D.β φ n) α = †
     ＝ church-encode (D.β φ n) (λ _ → 0) (λ g x → max x (g (α x)))
   † = ap (max n) IH
 
+-- Re-factored to avoid using function extensionality together with Bruno Paiva.
 max-questionᵀ-agreement-with-max-question⋆ : ⟦ max-questionᵀ ⟧₀ ≡ max-question⋆
 max-questionᵀ-agreement-with-max-question⋆ {d} {d′} q {α} {β} eq  =
  ⟦ maxᵀ ⟧₀ 0 (d (λ _ → 0) (⟦ ƛ (ƛ (maxᵀ · ν₀ · (ν₁ · (ν₂ · ν₀)))) ⟧ (⟨⟩ ‚ d ‚ α)))    ＝⟨ refl ⟩
