@@ -62,10 +62,6 @@ module Properties (𝓓 : DCPO {𝓤} {𝓥}) where
 
  open DefnOfScottTopology 𝓓 𝓥
 
- principal-scott-open : (c : ⟨ 𝓓 ⟩)
-                      → {!!}
- principal-scott-open = {!!}
-
  principal-filter-is-upwards-closed : (x : ⟨ 𝓓 ⟩)
                                     → is-upwards-closed (↑[ 𝓓 ] x) holds
  principal-filter-is-upwards-closed x y z p q =
