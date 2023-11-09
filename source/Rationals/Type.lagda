@@ -4,7 +4,7 @@ In this file I define rational numbers.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import Integers.Abs
 open import Integers.Multiplication renaming (_*_ to _ℤ*_)
@@ -157,7 +157,7 @@ dnomrP' (x , a) = γ
 1/4 = toℚ (pos 1 , 3)
 3/4 = toℚ (pos 3 , 3)
 
-equiv-equality : (p q : 𝔽) → p ≈ q ⇔ toℚ p ＝ toℚ q
+equiv-equality : (p q : 𝔽) → p ≈ q ↔ toℚ p ＝ toℚ q
 equiv-equality (x , a) (y , b) = γ₁ , γ₂
  where
   a' b' h h' : ℕ

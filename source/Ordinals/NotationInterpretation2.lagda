@@ -38,7 +38,7 @@ This is a draft version that needs polishing and more explanation.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 open import UF.FunExt
@@ -605,7 +605,7 @@ LPO-gives-ι-is-equiv lpo (⌜Σ⌝ ν A)   = pair-fun-is-equiv
  where
   open Κ-extension ν A
 
-ι-is-equiv-iff-LPO : ((ν : E) → is-equiv (ι ν)) ⇔ LPO
+ι-is-equiv-iff-LPO : ((ν : E) → is-equiv (ι ν)) ↔ LPO
 ι-is-equiv-iff-LPO = ι-is-equiv-gives-LPO , LPO-gives-ι-is-equiv
 
 \end{code}

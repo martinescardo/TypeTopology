@@ -19,7 +19,7 @@ Other local assumptions belonging to HoTT/UF are discussed below.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import UF.Univalence
 

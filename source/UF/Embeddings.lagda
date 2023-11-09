@@ -2,7 +2,7 @@ Martin Escardo
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module UF.Embeddings where
 
@@ -213,11 +213,11 @@ embedding-criterion-converse : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                              → (f x' ＝ f x) ≃ (x' ＝ x)
 embedding-criterion-converse f e x' x = ≃-sym (embedding-criterion-converse' f e x' x)
 
-embedding'-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-                       (f : X → Y)
-                     → is-embedding' f
-                     → is-embedding f
-embedding'-embedding {𝓤} {𝓥} {X} {Y} f ise = g
+embedding'-gives-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                             (f : X → Y)
+                           → is-embedding' f
+                           → is-embedding f
+embedding'-gives-embedding {𝓤} {𝓥} {X} {Y} f ise = g
  where
   e : (x : X) → is-central (Σ x' ꞉ X , f x ＝ f x') (x , refl)
   e x = universal-element-is-central
@@ -314,6 +314,13 @@ lc-maps-into-sets-are-embeddings {𝓤} {𝓥} {X} {Y} f f-lc iss y (x , p) (x' 
    γ : x , p ＝ x' , p'
    γ = to-Σ-Id (r , q)
 
+sections-into-sets-are-embeddings : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                                  → is-section f
+                                  → is-set Y
+                                  → is-embedding f
+sections-into-sets-are-embeddings f f-is-section Y-is-set =
+ lc-maps-into-sets-are-embeddings f (sections-are-lc f f-is-section) Y-is-set
+
 lc-maps-are-embeddings-with-K : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                               → left-cancellable f
                               → K-axiom 𝓥
@@ -355,11 +362,11 @@ is-essential f 𝓦 = (Z : 𝓦 ̇) (g : codomain f → Z)
                  → is-embedding (g ∘ f)
                  → is-embedding g
 
-precomp-is-embedding : FunExt
-                     → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } (f : X → Y)
-                     → is-embedding f
-                     → is-embedding (λ (φ : A → X) → f ∘ φ)
-precomp-is-embedding {𝓤} {𝓥} {𝓦} fe {X} {Y} {A} f i = γ
+postcomp-is-embedding : FunExt
+                      → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } (f : X → Y)
+                      → is-embedding f
+                      → is-embedding (λ (φ : A → X) → f ∘ φ)
+postcomp-is-embedding {𝓤} {𝓥} {𝓦} fe {X} {Y} {A} f i = γ
  where
   g : (φ φ' : A → X) (a : A) → (φ a ＝ φ' a) ≃ (f (φ a) ＝ f (φ' a))
   g φ φ' a = ap f {φ a} {φ' a} , embedding-gives-embedding' f i (φ a) (φ' a)

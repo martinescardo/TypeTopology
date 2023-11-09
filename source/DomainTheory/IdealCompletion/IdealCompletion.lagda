@@ -8,7 +8,7 @@ Further properties and developments are in the file IdealCompletion-Properties.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan hiding (J)
 

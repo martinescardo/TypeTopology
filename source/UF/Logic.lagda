@@ -5,16 +5,18 @@ Based in part by the `Cubical.Functions.Logic` module UF.of
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module UF.Logic where
 
 open import MLTT.Spartan
+open import UF.Equiv
 open import UF.FunExt
 open import UF.PropTrunc
-open import UF.SubtypeClassifier
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
+open import UF.SubtypeClassifier
+open import UF.SubtypeClassifier-Properties
 
 \end{code}
 
@@ -32,6 +34,39 @@ module Conjunction where
  infixr 4 _∧_
 
 \end{code}
+
+Added by Martin Escardo 1st Nov 2023.
+
+\begin{code}
+
+ ∧-intro' : (p q : Ω 𝓤) → p holds → q holds → (p ∧ q) holds
+ ∧-intro' p q a b = (a , b)
+
+ ∧-elim-L' : (p q : Ω 𝓤) → (p ∧ q) holds → p holds
+ ∧-elim-L' p q = pr₁
+
+ ∧-elim-R' : (p q : Ω 𝓤) → (p ∧ q) holds → q holds
+ ∧-elim-R' p q = pr₂
+
+ module _ (pe : propext 𝓤) (fe : funext 𝓤 𝓤) where
+
+  ∧-intro : (p q : Ω 𝓤) → p ＝ ⊤ → q ＝ ⊤ → p ∧ q ＝ ⊤
+  ∧-intro p q a b = holds-gives-equal-⊤ pe fe (p ∧ q)
+                     (∧-intro' p q
+                       (equal-⊤-gives-holds p a)
+                       (equal-⊤-gives-holds q b))
+
+  ∧-elim-L : (p q : Ω 𝓤) → p ∧ q ＝ ⊤ → p ＝ ⊤
+  ∧-elim-L p q c = holds-gives-equal-⊤ pe fe p
+                    (∧-elim-L' p q (equal-⊤-gives-holds (p ∧ q) c))
+
+  ∧-elim-R : (p q : Ω 𝓤) → p ∧ q ＝ ⊤ → q ＝ ⊤
+  ∧-elim-R p q c = holds-gives-equal-⊤ pe fe q
+                    (∧-elim-R' p q (equal-⊤-gives-holds (p ∧ q) c))
+
+\end{code}
+
+End of addition.
 
 \section{Universal quantification}
 
@@ -75,12 +110,78 @@ module Implication (fe : Fun-Ext) where
 
  open Conjunction
 
- _↔_ : Ω 𝓤 → Ω 𝓥 → Ω (𝓤 ⊔ 𝓥)
- P ↔ Q = (P ⇒ Q) ∧ (Q ⇒ P)
+ _⇔_ : Ω 𝓤 → Ω 𝓥 → Ω (𝓤 ⊔ 𝓥)
+ P ⇔ Q = (P ⇒ Q) ∧ (Q ⇒ P)
 
- infixr 3 _↔_
+ infixr 3 _⇔_
+
+ biimplication-forward : (P : Ω 𝓤) (Q : Ω 𝓥)
+                       → (P ⇔ Q) holds → (P ⇒ Q) holds
+ biimplication-forward P Q (φ , _) = φ
+
+ biimplication-backward : (P : Ω 𝓤) (Q : Ω 𝓥)
+                        → (P ⇔ Q) holds → (Q ⇒ P) holds
+ biimplication-backward P Q (_ , ψ) = ψ
 
 \end{code}
+
+Added by Martin Escardo 1st Nov 2023.
+
+\begin{code}
+
+ ⇔-gives-⇒ = biimplication-forward
+ ⇔-gives-⇐ = biimplication-backward
+
+ module _ (pe : propext 𝓤) where
+
+  ⊤-⇔-neutral : (p : Ω 𝓤) → (p ⇔ ⊤) ＝ p
+  ⊤-⇔-neutral p =
+   Ω-extensionality pe fe
+   (λ (h : (p ⇔ ⊤ {𝓤}) holds) → ⇔-gives-⇐ p ⊤ h ⊤-holds)
+   (λ (h : p holds) → (λ _ → ⊤-holds) , (λ _ → h))
+
+  ⇔-swap : (p q : Ω 𝓤) → (p ⇔ q) holds → (q ⇔ p) holds
+  ⇔-swap p q (h , k) = (k , h)
+
+  ⇔-swap' : (p q : Ω 𝓤) → (p ⇔ q) ＝ ⊤ → (q ⇔ p) ＝ ⊤
+  ⇔-swap' p q e = holds-gives-equal-⊤ pe fe (q ⇔ p)
+                   (⇔-swap p q (equal-⊤-gives-holds (p ⇔ q) e))
+
+  ⇔-sym : (p q : Ω 𝓤) → (p ⇔ q) ＝ (q ⇔ p)
+  ⇔-sym p q = Ω-ext pe fe (⇔-swap' p q) (⇔-swap' q p)
+
+  ⊤-⇔-neutral' : (p : Ω 𝓤) → (⊤ ⇔ p) ＝ p
+  ⊤-⇔-neutral' p = (⊤ ⇔ p ＝⟨ ⇔-sym ⊤ p ⟩
+                    p ⇔ ⊤ ＝⟨ ⊤-⇔-neutral p ⟩
+                    p     ∎)
+
+  ⇔-refl : (p : Ω 𝓤) → (p ⇔ p) ＝ ⊤
+  ⇔-refl p = holds-gives-equal-⊤ pe fe
+              (p ⇔ p)
+              (id , id)
+
+  ＝-gives-⇔  : (p q : Ω 𝓤) →  p ＝ q → (p ⇔ q) ＝ ⊤
+  ＝-gives-⇔ p p refl = ⇔-refl p
+
+  ⇔-gives-＝ : (p q : Ω 𝓤) → (p ⇔ q) ＝ ⊤ → p ＝ q
+  ⇔-gives-＝ p q e = Ω-extensionality pe fe f g
+   where
+    f : p holds → q holds
+    f = ⇔-gives-⇒ p q (equal-⊤-gives-holds (p ⇔ q) e)
+
+    g : q holds → p holds
+    g = ⇔-gives-⇐ p q (equal-⊤-gives-holds (p ⇔ q) e)
+
+  ⇔-equiv-to-＝ : (p q : Ω 𝓤) → ((p ⇔ q) ＝ ⊤) ≃ (p ＝ q)
+  ⇔-equiv-to-＝ p q = qinveq
+                       (⇔-gives-＝ p q)
+                       (＝-gives-⇔ p q ,
+                       (λ _ → Ω-is-set fe pe _ _) ,
+                       (λ _ → Ω-is-set fe pe _ _))
+
+\end{code}
+
+End of addition.
 
 \section{Disjunction}
 
@@ -145,21 +246,6 @@ module Negation-of-equality (fe : Fun-Ext) where
 
 \end{code}
 
-\section{Propositional versions of subset operations}
-
-\begin{code}
-
-module PowersetOperations where
-
- open import UF.Powerset
-
- infix  40 _∈ₚ_
-
- _∈ₚ_ : {X : 𝓤  ̇} → X → (X → Ω 𝓥) → Ω 𝓥
- x ∈ₚ A = A x
-
-\end{code}
-
 \section{A module for importing all combinators}
 
 \begin{code}
@@ -176,6 +262,5 @@ module AllCombinators
  open Existential          pt public
  open Truncation           pt public
  open Negation-of-equality fe public
- open PowersetOperations      public
 
 \end{code}

@@ -5,7 +5,7 @@ one.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module UF.Yoneda where
 
@@ -230,7 +230,7 @@ Yoneda-section-back {𝓤} {𝓥} {X} {A} x η φ = c
   c = (x , yoneda-elem x A η) , (universal-element-is-central (x , yoneda-elem x A η) u)
 
 Yoneda-section : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (x : X) (η : Nat (Id x) A)
-               → ∃! A ⇔ ((y : X) → has-section (η y))
+               → ∃! A ↔ ((y : X) → has-section (η y))
 Yoneda-section x η = Yoneda-section-forth x η , Yoneda-section-back x η
 
 \end{code}
@@ -243,7 +243,7 @@ equiv-adj : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
             (f : X → Y)
             (g : Y → X)
             (η : (x : X) (y : Y) → f x ＝ y → g y ＝ x)
-          → ((x : X) (y : Y) → has-section (η x y)) ⇔ is-vv-equiv g
+          → ((x : X) (y : Y) → has-section (η x y)) ↔ is-vv-equiv g
 equiv-adj f g η = (λ i x → Yoneda-section-back (f x) (η x) (i x)) ,
                   (λ φ x → Yoneda-section-forth (f x) (η x) (φ x))
 
@@ -556,7 +556,7 @@ univalence-via-singletons← φ X = universality-equiv X (≃-refl X)
                                     (X , ≃-refl X)
                                     (singletons-are-props (φ X) (X , ≃-refl X)))
 
-univalence-via-singletons : is-univalent 𝓤 ⇔ ((X : 𝓤 ̇ ) → ∃! Y ꞉ 𝓤 ̇  , X ≃ Y)
+univalence-via-singletons : is-univalent 𝓤 ↔ ((X : 𝓤 ̇ ) → ∃! Y ꞉ 𝓤 ̇  , X ≃ Y)
 univalence-via-singletons = (univalence-via-singletons→ , univalence-via-singletons←)
 
 \end{code}

@@ -2,7 +2,7 @@ Andrew Sneap, 17 February 2022
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
 open import Dyadics.Type

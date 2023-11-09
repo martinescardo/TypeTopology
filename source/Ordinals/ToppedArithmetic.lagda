@@ -17,7 +17,7 @@ cumbersome and (2) requires much work in other modules.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import UF.FunExt
 

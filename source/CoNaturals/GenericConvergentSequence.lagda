@@ -10,7 +10,7 @@ lemmas. More additions after that date.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module CoNaturals.GenericConvergentSequence where
 

@@ -1,11 +1,11 @@
 Ayberk Tosun, 30 June 2023
 
-This module contains a definition of the Scott locale of a dcpo, using the definition of
-dcpo from the `DomainTheory` development due to Tom de Jong.
+This module contains a definition of the Scott locale of a dcpo, using the
+definition of dcpo from the `DomainTheory` development due to Tom de Jong.
 
 \begin{code}[hide]
 
-{-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
+{-# OPTIONS --safe --without-K --lossy-unification #-}
 
 open import MLTT.List hiding ([_])
 open import MLTT.Pi
@@ -24,15 +24,14 @@ open import UF.Univalence
 
 \end{code}
 
-We assume the existence of propositional truncations as well as function extensionality.
+We assume the existence of propositional truncations as well as function
+extensionality.
 
 \begin{code}
 
-module Locales.ScottLocale
-        (pt : propositional-truncations-exist)
-        (fe : Fun-Ext)
-        (𝓥  : Universe)
-        where
+module Locales.ScottLocale.Definition (pt : propositional-truncations-exist)
+                                      (fe : Fun-Ext)
+                                      (𝓥  : Universe)                      where
 
 open Universal fe
 open Implication fe
@@ -46,10 +45,13 @@ open PropositionalTruncation pt
 
 \end{code}
 
-We carry out the construction in the following submodule which is parameterised by
+We carry out the construction in the following submodule which is parametrised
+by
 
-  1. a dcpo `𝓓`,
-  2. a universe `𝓦` where the Scott-open subsets live,
+  1. a dcpo `𝓓` whose (a) carrier set lives in universe `𝓤`, (b) whose relation
+     lives in universe `𝓣`, and (c) whose directed joins are over families with
+     index types living in universe `𝓥`.
+  2. a universe `𝓦` where the Scott-open subsets are to live,
   3. an assumption that `𝓦` satisfies propositional extensionality.
 
 \begin{code}
@@ -65,12 +67,13 @@ module DefnOfScottLocale (𝓓 : DCPO {𝓤} {𝓣}) (𝓦 : Universe) (pe : pro
 
 \begin{code}
 
- 𝒪ₛ-equality : (U V : 𝒪ₛ) → U .pr₁ ＝ V .pr₁ → U ＝ V
+ 𝒪ₛ-equality : (𝔘 𝔙 : 𝒪ₛ) → _∈ₛ 𝔘 ＝ _∈ₛ 𝔙 → 𝔘 ＝ 𝔙
  𝒪ₛ-equality U V = to-subtype-＝ (holds-is-prop ∘ is-scott-open)
 
 \end{code}
 
-These are ordered by inclusion.
+These are ordered by inclusion. The subscript `ₛ` in the symbol `⊆ₛ` is intended
+be mnemonic for "Scott open".
 
 \begin{code}
 
@@ -90,7 +93,7 @@ These are ordered by inclusion.
    V
    (dfunext fe λ x → to-subtype-＝
      (λ _ → being-prop-is-prop fe)
-     (pe (holds-is-prop (U .pr₁ x)) (holds-is-prop (V .pr₁ x)) (p x) (q x)))
+     (pe (holds-is-prop (x ∈ₛ U)) (holds-is-prop (x ∈ₛ V)) (p x) (q x)))
 
  ⊆ₛ-is-partial-order : is-partial-order 𝒪ₛ _⊆ₛ_
  ⊆ₛ-is-partial-order = (⊆ₛ-is-reflexive , ⊆ₛ-is-transitive) , ⊆ₛ-is-antisymmetric
@@ -235,5 +238,21 @@ We now have everything we need to write down the Scott locale of `𝓓`.
 
  ScottLocale : Locale (𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ⊔ 𝓦 ⁺) (𝓤 ⊔ 𝓦) 𝓦
  ScottLocale = record { ⟨_⟩ₗ = 𝒪ₛ ; frame-str-of = 𝒪ₛ-frame-structure }
+
+\end{code}
+
+For clarity, we define the special case of `ScottLocale` for the large and
+locally small case.
+
+\begin{code}
+
+module DefnOfScottLocaleLocallySmallCase (𝓓  : DCPO {𝓥 ⁺} {𝓥})
+                                         (pe : propext 𝓥)        where
+
+
+ open DefnOfScottLocale 𝓓 𝓥 pe
+
+ ScottLocale' : Locale (𝓥 ⁺) (𝓥 ⁺) 𝓥
+ ScottLocale' = ScottLocale
 
 \end{code}

@@ -15,7 +15,7 @@ Ind-completion is a preorder and not a poset is seen to be important there.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan hiding (J)
 open import UF.FunExt
@@ -195,12 +195,12 @@ left adjunct to x for every x : D.
 \begin{code}
 
  _is-left-adjunct-to_ : Ind → ⟨ 𝓓 ⟩ → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
- α is-left-adjunct-to x = (β : Ind) → (α ≲ β) ⇔ (x ⊑⟨ 𝓓 ⟩ ∐-map β)
+ α is-left-adjunct-to x = (β : Ind) → (α ≲ β) ↔ (x ⊑⟨ 𝓓 ⟩ ∐-map β)
 
  being-left-adjunct-to-is-prop : (σ : Ind) (x : ⟨ 𝓓 ⟩)
                                → is-prop (σ is-left-adjunct-to x)
  being-left-adjunct-to-is-prop σ x =
-  Π-is-prop fe (λ τ → ⇔-is-prop fe fe (≲-is-prop-valued σ τ)
+  Π-is-prop fe (λ τ → ↔-is-prop fe fe (≲-is-prop-valued σ τ)
                                       (prop-valuedness 𝓓 x (∐-map τ)))
 
  left-adjoint-to-∐-map : (⟨ 𝓓 ⟩ → Ind) → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
@@ -350,7 +350,7 @@ module Ind-completion-poset-reflection
  left-adjoint-to-∐-map/ : (⟨ 𝓓 ⟩ → Ind/≈)
                         → 𝓥 ⁺ ⊔ 𝓣 ⁺ ⊔ 𝓤 ̇
  left-adjoint-to-∐-map/ L' =
-  (x : ⟨ 𝓓 ⟩) (α' : Ind/≈) → (L' x ≤ α') ⇔ (x ⊑⟨ 𝓓 ⟩ ∐-map/ α')
+  (x : ⟨ 𝓓 ⟩) (α' : Ind/≈) → (L' x ≤ α') ↔ (x ⊑⟨ 𝓓 ⟩ ∐-map/ α')
 
  being-left-adjoint-to-∐-map/-is-prop : (L' : ⟨ 𝓓 ⟩ → Ind/≈)
                                       → is-prop (left-adjoint-to-∐-map/ L')

@@ -13,7 +13,7 @@ HoTT-Agda library at https://github.com/HoTT/HoTT-Agda
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --safe --auto-inline #-}
 
 module PathSequences.index where
 

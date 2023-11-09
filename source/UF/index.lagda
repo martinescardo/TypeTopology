@@ -1,6 +1,6 @@
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module UF.index where
 
@@ -21,6 +21,7 @@ import UF.FunExt
 import UF.FunExt-Properties
 import UF.FunExt-from-Naive-FunExt
 import UF.Groupoids
+import UF.HiggsInvolutionTheorem
 import UF.HLevels
 import UF.Hedberg
 import UF.HedbergApplications

@@ -193,7 +193,7 @@ this module.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 open import UF.PropTrunc
@@ -888,7 +888,7 @@ ainjective-resizing₄ = ainjective-resizing₁
 ainjective-resizing₅ : (D : 𝓦 ̇ ) → ainjective-type D 𝓤 𝓤₀ → ainjective-type D 𝓤 𝓤
 ainjective-resizing₅ = ainjective-resizing₁
 
-ainjective-resizing₆ : (D : 𝓦 ̇ ) → ainjective-type D 𝓤 𝓤₀ ⇔ ainjective-type D 𝓤 𝓤
+ainjective-resizing₆ : (D : 𝓦 ̇ ) → ainjective-type D 𝓤 𝓤₀ ↔ ainjective-type D 𝓤 𝓤
 ainjective-resizing₆ D = (ainjective-resizing₁ D , ainjective-resizing₁ D)
 
 \end{code}
@@ -1278,7 +1278,7 @@ propositional resizing:
 
 ainjective-characterization : propositional-resizing (𝓤 ⁺) 𝓤
                             → (D : 𝓤 ̇ ) → ainjective-type D 𝓤 𝓤
-                                        ⇔ (Σ X ꞉ 𝓤 ̇ , retract D of (X → 𝓤 ̇ ))
+                                        ↔ (Σ X ꞉ 𝓤 ̇ , retract D of (X → 𝓤 ̇ ))
 ainjective-characterization {𝓤} R D = a , b
  where
   a : ainjective-type D 𝓤 𝓤 → Σ X ꞉ 𝓤 ̇ , retract D of (X → 𝓤 ̇ )
@@ -1331,7 +1331,7 @@ ainjective-retract-sub {𝓤} {𝓣} R A φ X β i =
   k = j ∘_
 
   b : is-embedding k
-  b = precomp-is-embedding fe j a
+  b = postcomp-is-embedding fe j a
 
   l : X → (X → Σ A)
   l x x' = (x ＝ x') , β x x'
@@ -1357,7 +1357,7 @@ ainjective-ntype-characterization : Propositional-resizing
                                   → (n : ℕ)
                                   → D is-of-hlevel (succ n)
                                   → ainjective-type D 𝓤 𝓤
-                                  ⇔ (Σ X ꞉ 𝓤 ̇ , retract D of
+                                  ↔ (Σ X ꞉ 𝓤 ̇ , retract D of
                                                  (X → Σ X ꞉ 𝓤 ̇  , X is-of-hlevel n))
 ainjective-ntype-characterization {𝓤} R D n h = (a , b)
  where
@@ -1385,7 +1385,7 @@ In particular, the injective sets are the retracts of powersets.
 ainjective-set-characterization : Propositional-resizing
                                 → (D : 𝓤 ̇ )
                                 → is-set D
-                                → ainjective-type D 𝓤 𝓤 ⇔ (Σ X ꞉ 𝓤 ̇ , retract D of
+                                → ainjective-type D 𝓤 𝓤 ↔ (Σ X ꞉ 𝓤 ̇ , retract D of
                                                                         (X → Ω 𝓤))
 ainjective-set-characterization {𝓤} R D s =
  ainjective-ntype-characterization R D zero (λ x x' → s {x} {x'})
@@ -1536,7 +1536,7 @@ Injectivity in terms of algebraic injectivity in the presence of resizing I
 
 injectivity-in-terms-of-ainjectivity' : propositional-resizing (𝓤 ⁺) 𝓤
                                       → (D : 𝓤  ̇ ) → injective-type D 𝓤 (𝓤 ⁺)
-                                                   ⇔ ∥ ainjective-type D 𝓤 (𝓤 ⁺) ∥
+                                                   ↔ ∥ ainjective-type D 𝓤 (𝓤 ⁺) ∥
 injectivity-in-terms-of-ainjectivity' {𝓤} R D = a , b
   where
    a : injective-type D 𝓤 (𝓤 ⁺) → ∥ ainjective-type D 𝓤 (𝓤 ⁺) ∥
@@ -1607,7 +1607,7 @@ the lifting monad:
 ainjectives-in-terms-of-free-𝓛-algebras : (D : 𝓣 ̇ )
                                         → propositional-resizing (𝓣 ⁺) 𝓣
                                         → ainjective-type D 𝓣 𝓣
-                                        ⇔ (Σ X ꞉ 𝓣 ̇ , retract D of (𝓛 {𝓣} X))
+                                        ↔ (Σ X ꞉ 𝓣 ̇ , retract D of (𝓛 {𝓣} X))
 ainjectives-in-terms-of-free-𝓛-algebras {𝓣} D R = a , b
   where
    a : ainjective-type D 𝓣 𝓣 → Σ X ꞉ 𝓣 ̇ , retract D of (𝓛 X)
@@ -1633,7 +1633,7 @@ UF.Size). We refer to this kind of impredicativity as Ω-resizing.
 
 injectivity-in-terms-of-ainjectivity : Ω-resizing 𝓤
                                      → (D  : 𝓤 ̇ ) → injective-type D 𝓤 𝓤
-                                                  ⇔ ∥ ainjective-type D 𝓤 𝓤 ∥
+                                                  ↔ ∥ ainjective-type D 𝓤 𝓤 ∥
 injectivity-in-terms-of-ainjectivity {𝓤} ω D = γ , ∥ainjective∥-gives-injective D
  where
   open import Lifting.Size 𝓤

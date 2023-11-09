@@ -1,6 +1,6 @@
 -- Martin Escardo and Paulo Oliva 2011
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module InfinitePigeon.Naturals where
 
