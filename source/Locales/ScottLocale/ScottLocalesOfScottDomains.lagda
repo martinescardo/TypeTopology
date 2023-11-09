@@ -137,15 +137,18 @@ We now construct the basis for this locale.
  from-list-is-inaccessible-by-directed-joins (k ∷ ks) (S , δ) p =
   ∥∥-rec ∃-is-prop † p
    where
-    σ : is-scott-open (principal-filter 𝓓 (β k)) holds
+    σ : is-scott-open (↑[ 𝓓 ] β k) holds
     σ = compact-implies-principal-filter-is-scott-open (β k) (basis-is-compact k)
 
-    υ : is-upwards-closed {!!} holds
+    υ : is-upwards-closed (↑[ 𝓓 ] (β k)) holds
     υ = 𝒪ₛᴿ.pred-is-upwards-closed (to-𝒪ₛᴿ (↑[ 𝓓 ] (β k) , σ))
+
+    ι : is-inaccessible-by-directed-joins (↑[ 𝓓 ] β k) holds
+    ι = 𝒪ₛᴿ.pred-is-inaccessible-by-dir-joins (to-𝒪ₛᴿ (↑[ 𝓓 ] (β k) , σ))
 
     † : (β k ⊑⟨ 𝓓 ⟩ (⋁ (S , δ))) + (⋁ (S , δ)) ∈ from-list₀ ks
       → ∃ i ꞉ index S , (S [ i ]) ∈ from-list₀ (k ∷ ks)
-    † (inl q) = {!compact-implies-principal-filter-is-scott-open!}
+    † (inl q) = ?
     † (inr q) = {!!}
 
  from-list : List B → ⟨ 𝒪 𝒮𝓓 ⟩
@@ -154,13 +157,13 @@ We now construct the basis for this locale.
  basis-for-𝒮𝓓 : Fam 𝓤 ⟨ 𝒪 𝒮𝓓 ⟩
  basis-for-𝒮𝓓 = List B , from-list
 
- σᴰ : spectralᴰ 𝒮𝓓
- σᴰ = basis-for-𝒮𝓓 , {!!} , ({!!} , (τ , μ))
-  where
-   τ : contains-top (𝒪 𝒮𝓓) basis-for-𝒮𝓓 holds
-   τ = {!!}
+ -- σᴰ : spectralᴰ 𝒮𝓓
+ -- σᴰ = basis-for-𝒮𝓓 , {!!} , ({!!} , (τ , μ))
+ --  where
+ --   τ : contains-top (𝒪 𝒮𝓓) basis-for-𝒮𝓓 holds
+ --   τ = {!!}
 
-   μ : closed-under-binary-meets (𝒪 𝒮𝓓) basis-for-𝒮𝓓 holds
-   μ = {!!}
+ --   μ : closed-under-binary-meets (𝒪 𝒮𝓓) basis-for-𝒮𝓓 holds
+ --   μ = {!!}
 
 \end{code}
