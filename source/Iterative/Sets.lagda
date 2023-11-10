@@ -278,6 +278,9 @@ discussion: the "material" (iterative set) one and the "structural"
 one (0-type or set). The reader should keep this distinction in mind
 for the comments and code below.
 
+The following uses the fact that any type with an extensional order is
+automatically a set.
+
 \begin{code}
 
 𝕍-is-set : is-set 𝕍
@@ -540,7 +543,6 @@ The following result, implementing the above idea, seems to be new.
  → (X : 𝓤 ̇ ) (ϕ : X → 𝕍) (e : is-embedding ϕ)
  → 𝕍-induction P f (𝕍-ssup X ϕ e) ＝ f X ϕ e (λ x → 𝕍-induction P f (ϕ x))
 𝕍-induction-behaviour P f = pr₂ (𝕍-Induction P f)
-
 
 𝕍-recursion : (P : 𝓥 ̇ )
             → ((X : 𝓤 ̇ ) (ϕ : X → 𝕍)
