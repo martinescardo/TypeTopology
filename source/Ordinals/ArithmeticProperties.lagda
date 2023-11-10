@@ -1409,6 +1409,7 @@ Similarly, multiplication satisfies the expected recursive equations.
    f-order-preserving (a , b) (a' , b') (inl p) = inl (simulations-are-order-preserving β γ g sim-g b b' p)
    f-order-preserving (a , b) (a' , b') (inr (refl , q)) = inr (refl , q)
 
+
 module _ (pt : propositional-truncations-exist)
          (sr : Set-Replacement pt)
        where
@@ -1444,5 +1445,132 @@ module _ (pt : propositional-truncations-exist)
 
      b : sup (λ i → α ×ₒ β i) ⊴ (α ×ₒ sup β)
      b = sup-is-lower-bound-of-upper-bounds (λ i → α ×ₒ β i) (α ×ₒ sup β) b'
+
+\end{code}
+
+\begin{code}
+×ₒ-≼-left : (α β : Ordinal 𝓤)
+          → {a a' : ⟨ α ⟩}
+          → {b : ⟨ β ⟩}
+          → a ≼⟨ α ⟩ a'
+          → (a , b) ≼⟨ α ×ₒ β ⟩ (a' , b)
+×ₒ-≼-left α β {a} {a'} {b} p (a₀ , b₀) (inl r) = inl r
+×ₒ-≼-left α β {a} {a'} {b} p (a₀ , b₀) (inr (eq , r)) = inr (eq , (p a₀ r))
+
+simulation-product-lemma : (α β γ : Ordinal 𝓤)
+                         → (p : 𝟘ₒ ⊲ α)
+                         → (f : (α ×ₒ β) ⊴ (α ×ₒ γ))
+                         → (a : ⟨ α ⟩)(b : ⟨ β ⟩) →  pr₁ f (a , b) ＝ (a , pr₂ (pr₁ f (pr₁ p , b)))
+simulation-product-lemma {𝓤} α β γ (a₀ , α↓a₀＝𝟘) (f , sim , op) a b = Transfinite-induction (α ×ₒ β) P g (a , b)
+ where
+  f' : ⟨ α ×ₒ β ⟩ → ⟨ α ×ₒ γ ⟩
+  f' (a , b) = (a , pr₂ (f (a₀ , b)))
+
+  P : ⟨ α ×ₒ β ⟩ → 𝓤 ̇
+  P (a , b) = (f (a , b)) ＝ f' (a , b)
+
+  g : (ab : ⟨ α ×ₒ β ⟩) → ((ab' : ⟨ α ×ₒ β ⟩) → ab' ≺⟨ α ×ₒ β ⟩ ab → P ab') → P ab
+  g (a , b) ih = Extensionality (α ×ₒ γ) _ _ h₀ h₁
+   where
+    h₀ : (a'c' : ⟨ α ×ₒ γ ⟩) → a'c' ≺⟨ α ×ₒ γ ⟩ f (a , b) → a'c' ≺⟨ α ×ₒ γ ⟩ f' (a , b)
+    h₀ (a' , c') p = transport (λ - → - ≺⟨ α ×ₒ γ ⟩ f' (a , b)) e goal
+     where
+      a₁ : ⟨ α ⟩
+      a₁ = pr₁ (pr₁ (sim (a , b) (a' , c') p))
+      b₁ : ⟨ β ⟩
+      b₁ = pr₂ (pr₁ (sim (a , b) (a' , c') p))
+      p' : (a₁ , b₁) ≺⟨ α ×ₒ β ⟩ (a , b)
+      p' = pr₁ (pr₂ (sim (a , b) (a' , c') p))
+      eq : f (a₁ , b₁) ＝ (a' , c')
+      eq = pr₂ (pr₂ (sim (a , b) (a' , c') p))
+
+      e : f' (a₁ , b₁) ＝ (a' , c')
+      e = ih (a₁ , b₁) p' ⁻¹ ∙ eq
+
+      a₀' : ⟨ α ⟩
+      a₀' = pr₁ (f (a₀ , b))
+      goal : (a₁ , pr₂ (f (a₀ , b₁))) ≺⟨ α ×ₒ γ ⟩  (a , pr₂ (f (a₀ , b)))
+      goal = Cases p'
+               (λ (r : b₁ ≺⟨ β ⟩ b)
+                  → Cases (op (a₀' , b₁) (a₀ , b) (inl r))
+                      (λ (rr : (pr₂ (f (a₀' , b₁)) ≺⟨ γ ⟩ pr₂ (f (a₀ , b))))
+                              → inl (transport (λ - → - ≺⟨ γ ⟩ pr₂ (f (a₀ , b)))
+                                               (ap pr₂ (ih (a₀' , b₁) (inl r)))
+                                               rr))
+                      (λ (rr : (pr₂ (f (a₀' , b₁)) ＝ pr₂ (f (a₀ , b))) × (pr₁ (f (a₀' , b₁))) ≺⟨ α ⟩ a₀')
+                             → 𝟘-elim (irrefl α a₀' (transport (λ - → - ≺⟨ α ⟩ a₀')
+                                                               (ap pr₁ (ih (a₀' , b₁) (inl r)))
+                                                               (pr₂ rr)))))
+               (λ (r : (b₁ ＝ b) × (a₁ ≺⟨ α ⟩ a)) → inr (ap (λ - → pr₂ (f (a₀ , -))) (pr₁ r) , pr₂ r))
+    h₁ : (u : ⟨ α ×ₒ γ ⟩) → u ≺⟨ α ×ₒ γ ⟩ f' (a , b) → u ≺⟨ α ×ₒ γ ⟩ f  (a , b)
+    h₁ (a' , c') (inl p) = q (a' , c') (inl p)
+     where
+      a₀-bot : is-bot (underlying-order α) a₀
+      a₀-bot x p = 𝟘-elim (transport ⟨_⟩ (α↓a₀＝𝟘 ⁻¹) (x , p))
+      a₀≼a : a₀ ≼⟨ α ⟩ a
+      a₀≼a = is-bot-gives-is-bot' (underlying-order α) a₀ a₀-bot a
+
+      q : f (a₀ , b) ≼⟨ α ×ₒ γ ⟩ f (a , b)
+      q = simulations-are-monotone _ _ f (sim , op) (a₀ , b) (a , b) (×ₒ-≼-left α β a₀≼a)
+    h₁ (a' , c') (inr (r , q)) = transport⁻¹ (λ - → - ≺⟨ α ×ₒ γ ⟩ f  (a , b)) eq
+                                             (op (a' , b) (a , b) (inr (refl , q)))
+     where
+      eq : (a' , c') ＝ f (a' , b)
+      eq = (a' , c')               ＝⟨ ap (a' ,_) r ⟩
+           (a' , pr₂ (f (a₀ , b))) ＝⟨ refl ⟩
+           f' (a' , b)             ＝⟨ ih (a' , b) (inr (refl , q)) ⁻¹ ⟩
+           f  (a' , b)             ∎
+
+×ₒ-left-cancellable : (α β γ : Ordinal 𝓤)
+                    → 𝟘ₒ ⊲ α
+                    → (α ×ₒ β) ＝ (α ×ₒ γ)
+                    → β ＝ γ
+×ₒ-left-cancellable {𝓤} α β γ (a₀ , α↓a₀＝𝟘) m = transfinite-induction-on-OO P g β γ m
+ where
+  P : Ordinal 𝓤 → 𝓤 ⁺ ̇
+  P β = (γ : Ordinal 𝓤) → (α ×ₒ β) ＝ (α ×ₒ γ) → β ＝ γ
+
+  g : (β : Ordinal 𝓤) → ((b : ⟨ β ⟩) → P (β ↓ b)) → P β
+  g β ih γ m = Extensionality (OO 𝓤) β γ (to-≼ u₀) (to-≼ u₁)
+   where
+    u : (β γ : Ordinal 𝓤) → (α ×ₒ β) ＝ (α ×ₒ γ)
+      → (b : ⟨ β ⟩) → Σ c ꞉ ⟨ γ ⟩ , (α ×ₒ (β ↓ b) ＝ α ×ₒ (γ ↓ c))
+    u β γ m b = c , eq
+     where
+      f : ⟨ α ×ₒ β ⟩ → ⟨ α ×ₒ γ ⟩
+      f = ≃ₒ-to-fun _ _ (idtoeqₒ _ _ m)
+
+      p : (α β : Ordinal 𝓤)
+        → (a : ⟨ α ⟩)
+        → (e : α ＝ β)
+        → (α ↓ a) ＝ (β ↓ (≃ₒ-to-fun _ _ (idtoeqₒ _ _ e)) a)
+      p α α a refl = refl
+
+      a₀' : ⟨ α ⟩
+      a₀' = pr₁ (f (a₀ , b))
+      c : ⟨ γ ⟩
+      c = pr₂ (f (a₀ , b))
+
+      q : (a₀' , c) ＝ (a₀ , c)
+      q = simulation-product-lemma α β γ (a₀ , α↓a₀＝𝟘)
+            (f , order-equivs-are-simulations _ _ f
+                   (≃ₒ-to-fun-is-order-equiv _ _ (idtoeqₒ _ _ m))) a₀ b
+
+      eq : α ×ₒ (β ↓ b) ＝ α ×ₒ (γ ↓ c)
+      eq = α ×ₒ (β ↓ b)                ＝⟨ 𝟘ₒ-right-neutral (α ×ₒ (β ↓ b)) ⁻¹ ⟩
+           (α ×ₒ (β ↓ b)) +ₒ 𝟘ₒ        ＝⟨ ap ((α ×ₒ (β ↓ b)) +ₒ_) α↓a₀＝𝟘 ⟩
+           (α ×ₒ (β ↓ b)) +ₒ (α ↓ a₀)  ＝⟨ ×ₒ-↓ α β a₀ b ⁻¹ ⟩
+           (α ×ₒ β) ↓ (a₀ , b)         ＝⟨ p (α ×ₒ β) (α ×ₒ γ) (a₀ , b) m ⟩
+           (α ×ₒ γ) ↓ (a₀' , c)        ＝⟨ ap ((α ×ₒ γ) ↓_) q ⟩
+           (α ×ₒ γ) ↓ (a₀ , c)         ＝⟨ ×ₒ-↓ α γ a₀ c ⟩
+           (α ×ₒ (γ ↓ c)) +ₒ (α ↓ a₀)  ＝⟨ ap ((α ×ₒ (γ ↓ c)) +ₒ_) (α↓a₀＝𝟘 ⁻¹) ⟩
+           (α ×ₒ (γ ↓ c)) +ₒ 𝟘ₒ        ＝⟨ 𝟘ₒ-right-neutral (α ×ₒ (γ ↓ c)) ⟩
+           α ×ₒ (γ ↓ c)                ∎
+
+    u₀ : (b : ⟨ β ⟩) → (β ↓ b) ⊲ γ
+    u₀ b = let (c , eq) = u β γ m b in (c , ih b (γ ↓ c) eq)
+
+    u₁ : (c : ⟨ γ ⟩) → (γ ↓ c) ⊲ β
+    u₁ c = let (b , eq) = u γ β (m ⁻¹) c in b , (ih b (γ ↓ c) (eq ⁻¹) ⁻¹)
 
 \end{code}
