@@ -1878,7 +1878,7 @@ for that purpose.
  _∥≏∥_ : FA → FA → 𝓤 ̇
  s ∥≏∥ t = ∥ s ≏ t ∥
 
- ∾-is-logically-equivalent-to-∥≏∥ : (s t : FA) → s ∾ t ⇔ s ∥≏∥ t
+ ∾-is-logically-equivalent-to-∥≏∥ : (s t : FA) → s ∾ t ↔ s ∥≏∥ t
  ∾-is-logically-equivalent-to-∥≏∥ s t = ∥∥-functor (∿-gives-≏ s t) ,
                                        ∥∥-functor (≏-gives-∿ s t)
 \end{code}

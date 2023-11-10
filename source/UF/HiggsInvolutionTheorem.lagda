@@ -287,7 +287,7 @@ excluded middle holds.
   f-is-involutive : involutive f
   f-is-involutive = automorphisms-of-Ω-are-involutive f f-is-equiv
 
-  I : (P : 𝓤 ̇ ) → is-prop P → Σ Q ꞉ 𝓤 ̇ , (P ⇔ ¬ Q)
+  I : (P : 𝓤 ̇ ) → is-prop P → Σ Q ꞉ 𝓤 ̇ , (P ↔ ¬ Q)
   I P P-is-prop = f p holds , g , h
    where
     p : Ω
@@ -377,11 +377,11 @@ We show that there can't be any automorphism of Ω distinct from the
 identity unless excluded middle holds.
 
 The fact eval-at-⊤-is-lc stated and proved below, which is our main
-lemma, is attributed to Denis Higgs in the literature [1], without any
-explicit citation I could find, with diagrammatic proofs in topos
+lemma, is attributed to Denis Higgs in the literature [1] [2], without
+any explicit citation I could find, with diagrammatic proofs in topos
 theory rather than proofs in the internal language of a topos. Our
 internal proofs don't necessarily follow the external diagrammatic
-proofs. See also [2].
+proofs.
 
 [1] Peter T. Johnstone. Automorphisms of Ω. Algebra Universalis,
     9 (1979) 1-7.
@@ -484,22 +484,22 @@ open Universal fe
 can-recover-automorphism-from-its-value-at-⊤
  : (𝕗 : Aut Ω)
    (p : Ω)
- → ⌜ 𝕗 ⌝ p ＝ (p ↔ ⌜ 𝕗 ⌝ ⊤)
+ → ⌜ 𝕗 ⌝ p ＝ (p ⇔ ⌜ 𝕗 ⌝ ⊤)
 can-recover-automorphism-from-its-value-at-⊤ 𝕗@(f , _) p =
  Ω-ext' pe fe
   ((f p ＝ ⊤)       ≃⟨ Ω-automorphism-swap-≃ 𝕗 ⟩
-   (f ⊤ ＝ p)       ≃⟨ ≃-sym (↔-equiv-to-＝ pe (f ⊤) p) ⟩
-   ((f ⊤ ↔ p) ＝ ⊤) ≃⟨ transport-≃ (_＝ ⊤) (↔-sym pe (f ⊤) p) ⟩
-   ((p ↔ f ⊤) ＝ ⊤) ■)
+   (f ⊤ ＝ p)       ≃⟨ ≃-sym (⇔-equiv-to-＝ pe (f ⊤) p) ⟩
+   ((f ⊤ ⇔ p) ＝ ⊤) ≃⟨ transport-≃ (_＝ ⊤) (⇔-sym pe (f ⊤) p) ⟩
+   ((p ⇔ f ⊤) ＝ ⊤) ■)
 
 \end{code}
 
-Definiton of the Higgs object ℍ.
+The Higgs object ℍ as defined by Johnstone in [1].
 
 \begin{code}
 
 is-widespread : Ω → 𝓤⁺ ̇
-is-widespread r = (p : Ω) → ((p ↔ r) ↔ r) ＝ p
+is-widespread r = (p : Ω) → ((p ⇔ r) ⇔ r) ＝ p
 
 being-widespread-is-prop : (r : Ω) → is-prop (is-widespread r)
 being-widespread-is-prop r = Π-is-prop fe (λ p → Ω-is-set fe pe)
@@ -512,47 +512,47 @@ to-ℍ-＝ : (r s : Ω) {i : is-widespread r} {j : is-widespread s}
        → (r , i) ＝[ ℍ ] (s , j)
 to-ℍ-＝ r s {i} {j} = to-subtype-＝ being-widespread-is-prop
 
-Ω-automorphisms-are-↔-embeddings : (𝕗 : Aut Ω)
+Ω-automorphisms-are-⇔-embeddings : (𝕗 : Aut Ω)
                                    (p q : Ω)
-                                 → (p ↔ q) ＝ (⌜ 𝕗 ⌝ p ↔ ⌜ 𝕗 ⌝ q)
-Ω-automorphisms-are-↔-embeddings 𝕗@(f , f-is-equiv) p q =
+                                 → (p ⇔ q) ＝ (⌜ 𝕗 ⌝ p ⇔ ⌜ 𝕗 ⌝ q)
+Ω-automorphisms-are-⇔-embeddings 𝕗@(f , f-is-equiv) p q =
  Ω-ext' pe fe
-  (((p ↔ q) ＝ ⊤)     ≃⟨ I ⟩
+  (((p ⇔ q) ＝ ⊤)     ≃⟨ I ⟩
    (p ＝ q)           ≃⟨ II ⟩
    (f p ＝ f q)       ≃⟨ III ⟩
-   ((f p ↔ f q) ＝ ⊤) ■)
+   ((f p ⇔ f q) ＝ ⊤) ■)
   where
-   I   = ↔-equiv-to-＝ pe p q
+   I   = ⇔-equiv-to-＝ pe p q
    II  = embedding-criterion-converse' f (equivs-are-embeddings' 𝕗) p q
-   III = ≃-sym (↔-equiv-to-＝ pe (f p) (f q))
+   III = ≃-sym (⇔-equiv-to-＝ pe (f p) (f q))
 
 eval-at-⊤-is-widespread : (𝕗 : Aut Ω) → is-widespread (eval-at-⊤ 𝕗)
 eval-at-⊤-is-widespread 𝕗@(f , _) p = II
  where
-  I = p ↔ ⊤           ＝⟨ I₀ ⟩
-      f p ↔ f ⊤       ＝⟨ I₁ ⟩
-      (p ↔ f ⊤) ↔ f ⊤ ∎
+  I = p ⇔ ⊤           ＝⟨ I₀ ⟩
+      f p ⇔ f ⊤       ＝⟨ I₁ ⟩
+      (p ⇔ f ⊤) ⇔ f ⊤ ∎
    where
-    I₀ = Ω-automorphisms-are-↔-embeddings 𝕗 p ⊤
-    I₁ = ap (_↔ f ⊤) (can-recover-automorphism-from-its-value-at-⊤ 𝕗 p)
+    I₀ = Ω-automorphisms-are-⇔-embeddings 𝕗 p ⊤
+    I₁ = ap (_⇔ f ⊤) (can-recover-automorphism-from-its-value-at-⊤ 𝕗 p)
 
-  II : ((p ↔ f ⊤) ↔ f ⊤) ＝ p
-  II = transport (_＝ p) I (⊤-↔-neutral pe p)
+  II : ((p ⇔ f ⊤) ⇔ f ⊤) ＝ p
+  II = transport (_＝ p) I (⊤-⇔-neutral pe p)
 
 Aut-Ω-to-ℍ : Aut Ω → ℍ
 Aut-Ω-to-ℍ 𝕗 = eval-at-⊤ 𝕗 , eval-at-⊤-is-widespread 𝕗
 
 ℍ-to-Aut-Ω : ℍ → Aut Ω
-ℍ-to-Aut-Ω (r , i) = (λ p → p ↔ r) , involutions-are-equivs _ i
+ℍ-to-Aut-Ω (r , i) = (λ p → p ⇔ r) , involutions-are-equivs _ i
 
 η-ℍ : ℍ-to-Aut-Ω ∘ Aut-Ω-to-ℍ ∼ id
 η-ℍ 𝕗@(f , f-is-equiv) = to-≃-＝ fe h
  where
-  h : (λ p → p ↔ f ⊤) ∼ f
+  h : (λ p → p ⇔ f ⊤) ∼ f
   h p = (can-recover-automorphism-from-its-value-at-⊤ 𝕗 p)⁻¹
 
 ε-ℍ : Aut-Ω-to-ℍ ∘ ℍ-to-Aut-Ω ∼ id
-ε-ℍ (r , i) = to-ℍ-＝ (⊤ ↔ r) r (⊤-↔-neutral' pe r)
+ε-ℍ (r , i) = to-ℍ-＝ (⊤ ⇔ r) r (⊤-⇔-neutral' pe r)
 
 ℍ-to-Aut-Ω-is-equiv : is-equiv ℍ-to-Aut-Ω
 ℍ-to-Aut-Ω-is-equiv = qinvs-are-equivs ℍ-to-Aut-Ω (Aut-Ω-to-ℍ , ε-ℍ , η-ℍ)
@@ -566,7 +566,7 @@ The type Aut Ω is a group under composition, the symmetric group on Ω,
 where the neutral element is the identity automorphism and the inverse
 of any element is itself.  That is, Aut Ω is a boolean group, or a
 group of order 2. We now show that the group structure on ℍ induced by
-the above equivalence is given by logical equivalence _↔_ with neutral
+the above equivalence is given by logical equivalence _⇔_ with neutral
 element ⊤.
 
 \begin{code}
@@ -593,7 +593,7 @@ open import Groups.Symmetric fe
 ⟪ _ , i ⟫-is-widespread = i
 
 𝓚-isomorphism-explicitly : (x : ℍ) (p : Ω)
-                         → ⌜ ℍ-to-Aut-Ω x ⌝ p ＝ (p ↔ ⟪ x ⟫)
+                         → ⌜ ℍ-to-Aut-Ω x ⌝ p ＝ (p ⇔ ⟪ x ⟫)
 𝓚-isomorphism-explicitly x p = refl
 
 \end{code}
@@ -605,37 +605,37 @@ The unit of 𝓗 is ⊤ and its multiplication is logical equivalence.
 𝓗-unit : ⟪ unit 𝓗 ⟫ ＝ ⊤
 𝓗-unit = refl
 
-𝓗-multiplication : (x y : ℍ) → ⟪ x ·⟨ 𝓗 ⟩ y ⟫ ＝ (⟪ x ⟫ ↔ ⟪ y ⟫)
+𝓗-multiplication : (x y : ℍ) → ⟪ x ·⟨ 𝓗 ⟩ y ⟫ ＝ (⟪ x ⟫ ⇔ ⟪ y ⟫)
 𝓗-multiplication x y =
  ⟪ x ·⟨ 𝓗 ⟩ y ⟫     ＝⟨ refl ⟩
- (⊤ ↔ ⟪ x ⟫) ↔ ⟪ y ⟫ ＝⟨ ap (_↔ ⟪ y ⟫) (⊤-↔-neutral' pe ⟪ x ⟫) ⟩
- ⟪ x ⟫ ↔ ⟪ y ⟫       ∎
+ (⊤ ⇔ ⟪ x ⟫) ⇔ ⟪ y ⟫ ＝⟨ ap (_⇔ ⟪ y ⟫) (⊤-⇔-neutral' pe ⟪ x ⟫) ⟩
+ ⟪ x ⟫ ⇔ ⟪ y ⟫       ∎
 
 corollary-⊤ : is-widespread ⊤
 corollary-⊤ = ⟪ unit 𝓗 ⟫-is-widespread
 
-corollary-↔ : (r s : Ω)
+corollary-⇔ : (r s : Ω)
             → is-widespread r
             → is-widespread s
-            → is-widespread (r ↔ s)
-corollary-↔ r s i j = II
+            → is-widespread (r ⇔ s)
+corollary-⇔ r s i j = II
  where
   x y : ℍ
   x = (r , i)
   y = (s , j)
 
-  I : ⟪ x ·⟨ 𝓗 ⟩ y ⟫ ＝ (r ↔ s)
+  I : ⟪ x ·⟨ 𝓗 ⟩ y ⟫ ＝ (r ⇔ s)
   I = 𝓗-multiplication x y
 
-  II : is-widespread (r ↔ s)
+  II : is-widespread (r ⇔ s)
   II = transport is-widespread I ⟪ x ·⟨ 𝓗 ⟩ y ⟫-is-widespread
 
-corollary-↔-assoc : (r s t : Ω)
+corollary-⇔-assoc : (r s t : Ω)
                   → is-widespread r
                   → is-widespread s
                   → is-widespread t
-                  → (r ↔ s) ↔ t ＝ r ↔ (s ↔ t)
-corollary-↔-assoc r s t i j k = I
+                  → (r ⇔ s) ⇔ t ＝ r ⇔ (s ⇔ t)
+corollary-⇔-assoc r s t i j k = I
  where
   _·_ : ℍ → ℍ → ℍ
   x · y = x ·⟨ 𝓗 ⟩ y
@@ -645,18 +645,19 @@ corollary-↔-assoc r s t i j k = I
   y = (s , j)
   z = (t , k)
 
-  I =  (r ↔ s) ↔ t             ＝⟨ refl ⟩
-       (⟪ x ⟫ ↔ ⟪ y ⟫) ↔ ⟪ z ⟫ ＝⟨ ap (_↔ ⟪ z ⟫) ((𝓗-multiplication _ _)⁻¹) ⟩
-       ⟪ x · y ⟫ ↔ ⟪ z ⟫       ＝⟨ (𝓗-multiplication _ _)⁻¹ ⟩
+  I =  (r ⇔ s) ⇔ t             ＝⟨ refl ⟩
+       (⟪ x ⟫ ⇔ ⟪ y ⟫) ⇔ ⟪ z ⟫ ＝⟨ ap (_⇔ ⟪ z ⟫) ((𝓗-multiplication _ _)⁻¹) ⟩
+       ⟪ x · y ⟫ ⇔ ⟪ z ⟫       ＝⟨ (𝓗-multiplication _ _)⁻¹ ⟩
        ⟪ (x · y) · z ⟫         ＝⟨ ap ⟪_⟫ (assoc 𝓗 x y z) ⟩
        ⟪ x · (y · z) ⟫         ＝⟨ 𝓗-multiplication _ _ ⟩
-       ⟪ x ⟫ ↔ ⟪ y · z ⟫       ＝⟨ ap (⟪ x ⟫ ↔_) (𝓗-multiplication _ _) ⟩
-       ⟪ x ⟫ ↔ (⟪ y ⟫ ↔ ⟪ z ⟫) ＝⟨ refl ⟩
-       r ↔ (s ↔ t)             ∎
+       ⟪ x ⟫ ⇔ ⟪ y · z ⟫       ＝⟨ ap (⟪ x ⟫ ⇔_) (𝓗-multiplication _ _) ⟩
+       ⟪ x ⟫ ⇔ (⟪ y ⟫ ⇔ ⟪ z ⟫) ＝⟨ refl ⟩
+       r ⇔ (s ⇔ t)             ∎
 
 \end{code}
 
-Alternative characterization of the widespread property.
+Alternative characterization of the widespread property, as stated in
+Johnstone's Elephant.
 
 \begin{code}
 
@@ -671,5 +672,102 @@ module _ (pt : propositional-truncations-exist) where
 
 \end{code}
 
-TODO. Write proof that is-widespread r ⇔ is-widespread' r. Easy if we
-know enough general constructive logic.
+Added 6th November 2023.
+
+\begin{code}
+
+ open PropositionalTruncation pt hiding (_∨_)
+
+ widespread'-gives-widespread : (r : Ω)
+                              → is-widespread' r
+                              → is-widespread  r
+ widespread'-gives-widespread r w' = w
+  where
+   I : (p : Ω)
+     → (p holds + (p holds → r holds))
+     → ((p ⇔ r) ⇔ r) ＝ p
+   I p (inl h) =
+    (p ⇔ r) ⇔ r ＝⟨ ap (λ - → (- ⇔ r) ⇔ r) I₀ ⟩
+    (⊤ ⇔ r) ⇔ r ＝⟨ ap (_⇔ r) (⊤-⇔-neutral' pe r) ⟩
+    r ⇔ r       ＝⟨ ⇔-refl pe r ⟩
+    ⊤           ＝⟨ I₀ ⁻¹ ⟩
+    p           ∎
+     where
+      I₀ : p ＝ ⊤
+      I₀ = holds-gives-equal-⊤ pe fe p h
+
+   I p (inr f) = Ω-ext pe fe I₁ I₂
+    where
+     have-f : (p ⇒ r) holds
+     have-f = f
+
+     I₁ : (p ⇔ r) ⇔ r ＝ ⊤ → p ＝ ⊤
+     I₁ e₁ =
+      p     ＝⟨ I₄ ⟩
+      r     ＝⟨ (⇔-gives-＝ pe _ _ e₁)⁻¹ ⟩
+      p ⇔ r ＝⟨ ＝-gives-⇔ pe _ _ I₄ ⟩
+      ⊤     ∎
+       where
+        I₂ : r ⇒ (p ⇔ r) ＝ ⊤
+        I₂ = ∧-elim-R pe fe _ _ e₁
+
+        I₃ : (r ⇒ (p ⇔ r)) holds
+        I₃ = equal-⊤-gives-holds _ I₂
+
+        g : (r ⇒ p) holds
+        g x = ∧-elim-R' _ _ (I₃ x) x
+
+        I₄ : p ＝ r
+        I₄ = Ω-extensionality pe fe f g
+
+     I₂ : p ＝ ⊤ → (p ⇔ r) ⇔ r ＝ ⊤
+     I₂ e₂ =
+      (p ⇔ r) ⇔ r ＝⟨ ap (λ - → (- ⇔ r) ⇔ r) e₂ ⟩
+      (⊤ ⇔ r) ⇔ r ＝⟨ ap (_⇔ r) (⊤-⇔-neutral' pe r) ⟩
+      r ⇔ r       ＝⟨ ⇔-refl pe r ⟩
+      ⊤           ∎
+
+   w : is-widespread r
+   w p = ∥∥-rec (Ω-is-set fe pe) (I p) (w' p)
+
+\end{code}
+
+TODO. Write the above proof purely equationally. In order to do this,
+first formulate and prove the equational definition of Heyting algebra
+in other modules. Or to begin with, for simplicity, just prove in
+UF.Logic that Ω satisfies the equations that define a lattice to be a
+Heyting algebra.
+
+Added 7th November 2023.
+
+\begin{code}
+
+ widespread-gives-widespread' : (r : Ω)
+                              → is-widespread  r
+                              → is-widespread' r
+ widespread-gives-widespread' r@(R , R-is-prop) w = IV
+  where
+   have-w : (p : Ω) → ((p ⇔ r) ⇔ r) ＝ p
+   have-w = w
+
+   module _ (p@(P , P-is-prop) : Ω) where
+
+    P' : 𝓤 ̇
+    P' = ∥ P + (P → R) ∥
+
+    I : ((P' ↔ R) ↔ R) ↔ P'
+    I = equal-⊤-gives-holds _ (＝-gives-⇔ pe _ _ (w (P' , ∥∥-is-prop)))
+
+    II : (P' → R) → R
+    II f = f ∣ inr (λ (π : P) → f ∣ inl π ∣) ∣
+
+    III : P'
+    III = lr-implication I
+           ((λ (e : P' ↔ R) → II (lr-implication e)) ,
+            (λ (ρ : R) → (λ (_ : P') → ρ) ,
+                         (λ (_ : R) → ∣ inr (λ (_ : P) → ρ) ∣)))
+
+    IV : (p ∨ (p ⇒ r)) holds
+    IV = III
+
+\end{code}

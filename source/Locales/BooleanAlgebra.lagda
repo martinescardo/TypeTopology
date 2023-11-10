@@ -313,7 +313,7 @@ embedding-preserves-and-reflects-order : (B : BooleanAlgebra 𝓤′ 𝓥′) (L
                                        → (μ : is-ba-embedding B L η holds)
                                        → (x y : ⟪ B ⟫)
                                        → (x ≤[ poset-of-ba B ] y
-                                       ↔ η x ≤[ poset-of L ] η y) holds
+                                       ⇔ η x ≤[ poset-of L ] η y) holds
 embedding-preserves-and-reflects-order B L η μ x y = † , ‡
  where
   η-meet-preserving : (x y : ⟪ B ⟫) → η (x ⋏[ B ] y) ＝ η x ∧[ L ] η y

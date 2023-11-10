@@ -67,7 +67,7 @@ _+_ : ℝ → ℝ → ℝ
                 (r ℚ+ (z ℚ+ (ℚ- (r ℚ+ s)))) ℚ+ s                ＝⟨ ap ((λ - → (r ℚ+ (z ℚ+ (ℚ- -))) ℚ+ s)) (e ⁻¹) ⟩
                 (r ℚ+ (z ℚ+ (ℚ- t))) ℚ+ s                       ∎
 
-  rounded-left-z : (z : ℚ) → (z ∈ L-z ⇔ (∃ t ꞉ ℚ , (z < t) × t ∈ L-z))
+  rounded-left-z : (z : ℚ) → (z ∈ L-z ↔ (∃ t ꞉ ℚ , (z < t) × t ∈ L-z))
   rounded-left-z z = I , II
    where
     I : z ∈ L-z → ∃ t ꞉ ℚ , (z < t) × t ∈ L-z
@@ -105,7 +105,7 @@ _+_ : ℝ → ℝ → ℝ
           IV : z ＝ r ℚ+ (z ℚ- t) ℚ+ s
           IV = ψ z r t s e
 
-  rounded-right-z : (z : ℚ) → (z ∈ R-z) ⇔ (∃ q ꞉ ℚ , ((q < z) × (q ∈ R-z)))
+  rounded-right-z : (z : ℚ) → (z ∈ R-z) ↔ (∃ q ꞉ ℚ , ((q < z) × (q ∈ R-z)))
   rounded-right-z z = I , II
    where
     I : z ∈ R-z → ∃ q ꞉ ℚ , q < z × q ∈ R-z

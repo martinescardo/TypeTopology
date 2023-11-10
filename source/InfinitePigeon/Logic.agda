@@ -38,8 +38,8 @@ infixr 10 _∧_
 ∧-elim₁ : {A₀ A₁ : Ω} → A₀ ∧ A₁ → A₁
 ∧-elim₁ (∧-intro a₀ a₁) = a₁
 
-_⇔_ : Ω → Ω → Ω
-A ⇔ B = (A → B) ∧ (B → A)
+_↔_ : Ω → Ω → Ω
+A ↔ B = (A → B) ∧ (B → A)
 
 
 data _∨_ (A₀ A₁ : Ω) : Ω where

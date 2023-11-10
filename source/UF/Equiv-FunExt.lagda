@@ -456,12 +456,12 @@ Added 24th Feb 2023.
 
 \begin{code}
 
-prop-≃-≃-⇔ : Fun-Ext
+prop-≃-≃-↔ : Fun-Ext
            → {P : 𝓤 ̇ } {Q : 𝓥 ̇ }
            → is-prop P
            → is-prop Q
-           → (P ≃ Q) ≃ (P ⇔ Q)
-prop-≃-≃-⇔ fe i j = qinveq (λ f → ⌜ f ⌝ ,  ⌜ f ⌝⁻¹)
+           → (P ≃ Q) ≃ (P ↔ Q)
+prop-≃-≃-↔ fe i j = qinveq (λ f → ⌜ f ⌝ ,  ⌜ f ⌝⁻¹)
                      ((λ (g , h) → qinveq g
                                     (h ,
                                     (λ p → i (h (g p)) p) ,
@@ -471,14 +471,14 @@ prop-≃-≃-⇔ fe i j = qinveq (λ f → ⌜ f ⌝ ,  ⌜ f ⌝⁻¹)
                                refl) ,
                       (λ _ → refl))
 
-prop-＝-≃-⇔ : Prop-Ext
+prop-＝-≃-↔ : Prop-Ext
             → Fun-Ext
             → {P Q : 𝓤 ̇ }
             → is-prop P
             → is-prop Q
-            → (P ＝ Q) ≃ (P ⇔ Q)
-prop-＝-≃-⇔ pe fe i j = prop-univalent-≃ pe fe _ _ j
-                      ● prop-≃-≃-⇔ fe i j
+            → (P ＝ Q) ≃ (P ↔ Q)
+prop-＝-≃-↔ pe fe i j = prop-univalent-≃ pe fe _ _ j
+                      ● prop-≃-≃-↔ fe i j
 
 \end{code}
 

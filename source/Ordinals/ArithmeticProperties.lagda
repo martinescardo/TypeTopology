@@ -849,7 +849,7 @@ its predecessors:
 
  is-limit-ordinal-fact : (α : Ordinal 𝓤)
                        → is-limit-ordinal α
-                       ⇔ α ＝ ⌊ α ⌋
+                       ↔ α ＝ ⌊ α ⌋
  is-limit-ordinal-fact α = (λ ℓ → ⊴-antisym _ _ ℓ (⌊⌋-lower-bound α)) ,
                            (λ p → transport (α ⊴_) p (⊴-refl α))
 

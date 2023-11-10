@@ -189,7 +189,7 @@ propositions.
 
 \begin{code}
 
-compact-iff-decidable : (P : Ω 𝓤) → is-compact Ω-DCPO P ⇔ is-decidable (P holds)
+compact-iff-decidable : (P : Ω 𝓤) → is-compact Ω-DCPO P ↔ is-decidable (P holds)
 compact-iff-decidable P = ⦅⇒⦆ , ⦅⇐⦆
  where
   ⦅⇒⦆ : is-compact Ω-DCPO P → is-decidable (P holds)

@@ -50,7 +50,7 @@ Added 12 September 2018.
 
 Conversely, assuming function extensionality, WLPO implies that ℕ∞ is
 discrete. The proof uses a codistance (or closeness) function
-c : ℕ∞ → ℕ∞ → ℕ∞ such that c u v ＝ ∞ ⇔ u ＝ v.
+c : ℕ∞ → ℕ∞ → ℕ∞ such that c u v ＝ ∞ ↔ u ＝ v.
 
 \begin{code}
 

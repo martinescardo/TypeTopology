@@ -65,7 +65,7 @@ module _
     γ f g = S , ≃-sym e
      where
       S : 𝓤 ⊔ 𝓥 ̇
-      S = (x : X) → f x holds ⇔ g x holds
+      S = (x : X) → f x holds ↔ g x holds
       e : (f ＝ g) ≃ S
       e = (f ＝ g) ≃⟨ ≃-funext fe f g ⟩
           f ∼ g   ≃⟨ I ⟩
@@ -74,7 +74,7 @@ module _
         I : (f ∼ g) ≃ S
         I = Π-cong fe fe II
          where
-          II : (x : X) → (f x ＝ g x) ≃ (f x holds ⇔ g x holds)
+          II : (x : X) → (f x ＝ g x) ≃ (f x holds ↔ g x holds)
           II x = logically-equivalent-props-are-equivalent
                   (Ω-is-set fe pe)
                   (×-is-prop (Π-is-prop fe (λ _ → holds-is-prop (g x)))
