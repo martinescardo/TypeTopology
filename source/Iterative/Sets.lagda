@@ -278,8 +278,6 @@ discussion: the "material" (iterative set) one and the "structural"
 one (0-type or set). The reader should keep this distinction in mind
 for the comments and code below.
 
-The following is proved by Gylterud [4] with a different argument.
-
 \begin{code}
 
 𝕍-is-set : is-set 𝕍
@@ -331,7 +329,7 @@ isets-are-h-isolated (ssup X φ) (φ-emb , _) = 𝕄-ssup-is-h-isolated X φ φ-
 \end{code}
 
 Because a subtype of any type whatsoever consisting of h-isolated
-elements is a 0-type, we get a third proof that the type of iterative
+elements is a 0-type, we get a second proof that the type of iterative
 sets is a 0-type.
 
 \begin{code}
