@@ -67,7 +67,7 @@ open import UF.PropTrunc
 open import Quotient.Type -- hiding (is-prop-valued)
 
 open import Ordinals.Arithmetic fe'
-open import Ordinals.ArithmeticProperties ua
+open import Ordinals.AdditionProperties ua
 open import Ordinals.OrdinalOfOrdinalsSuprema ua
 
 module 𝕍-to-Ord-construction

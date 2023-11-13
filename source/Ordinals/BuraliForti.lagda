@@ -536,7 +536,7 @@ Monoids:
 
 \begin{code}
 
- open import Ordinals.ArithmeticProperties ua
+ open import Ordinals.AdditionProperties ua
 
  monoid-structure : 𝓤 ̇ → 𝓤 ̇
  monoid-structure X = (X → X → X) × X

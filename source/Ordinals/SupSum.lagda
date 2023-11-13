@@ -142,7 +142,7 @@ module _ {𝓤 : Universe}
   where
    open import Ordinals.OrdinalOfTruthValues fe 𝓤 (pe 𝓤)
    open Omega (pe 𝓤)
-   open import Ordinals.ArithmeticProperties ua
+   open import Ordinals.AdditionProperties ua
 
    τ = 𝟚ᵒ
 

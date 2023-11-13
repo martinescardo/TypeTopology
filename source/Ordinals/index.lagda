@@ -7,7 +7,8 @@ Martin Escardo
 module Ordinals.index where
 
 import Ordinals.Arithmetic
-import Ordinals.ArithmeticProperties
+import Ordinals.AdditionProperties
+import Ordinals.MultiplicationProperties      -- by de Jong, Kraus, Nordvall Forsberg, and Xu.
 import Ordinals.Brouwer
 import Ordinals.BuraliForti                   -- by Bezem, Coquand, Dybjer and Escardo.
 import Ordinals.Closure
