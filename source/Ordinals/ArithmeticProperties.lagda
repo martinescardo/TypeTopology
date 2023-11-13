@@ -221,12 +221,6 @@ neutral, but we give a direct proof instead.
   h : ((α +ₒ 𝟙ₒ) ↓ inr ⋆) ≃ₒ α
   h = f , f-order-preserving , f-is-equiv , g-order-preserving
 
-\end{code}
-
-End of addition.
-
-\begin{code}
-
 +ₒ-⊲-left : {α β : Ordinal 𝓤} (a : ⟨ α ⟩)
           → (α ↓ a) ⊲ (α +ₒ β)
 +ₒ-⊲-left {𝓤} {α} {β} a = inl a , +ₒ-↓-left a
@@ -1080,7 +1074,7 @@ Therefore, constructively, it is not necessarily the case that every
 ordinal is either a successor or a limit.
 
 TODO (1st June 2023). A classically equivalently definition of limit
-ordinal α is that there is some β < α, and for evert β < α there is γ
+ordinal α is that there is some β < α, and for every β < α there is γ
 with β < γ < α. We have that ℕ∞ is a limit ordinal in this sense.
 
 Added 4th May 2022.
@@ -1136,7 +1130,7 @@ alternative-plus τ₀ τ₁ = eqtoidₒ (ua _) fe' _ _ (alternative-plusₒ τ�
 
 \end{code}
 
-Added 3 November 2023 by Fredrik Nordvall Forsberg.
+Added 13 November 2023 by Fredrik Nordvall Forsberg.
 
 Addition satisfies the expected recursive equations (which classically
 define addition).
@@ -1158,12 +1152,12 @@ module _ (pt : propositional-truncations-exist)
  open suprema pt sr
  open PropositionalTruncation pt
 
- -- +ₒ commutes with non-empty suprema
- +ₒ-sup : (α : Ordinal 𝓤){I : 𝓤 ̇ } (β : I → Ordinal 𝓤) → (i : I) → α +ₒ sup β ＝ sup (λ i → α +ₒ β i)
- +ₒ-sup α {I} β i₀ = ⊴-antisym _ _ a b
+ -- +ₒ commutes with inhabited suprema
+ +ₒ-sup : (α : Ordinal 𝓤){I : 𝓤 ̇ } (β : I → Ordinal 𝓤) → ∥ I ∥ → α +ₒ sup β ＝ sup (λ i → α +ₒ β i)
+ +ₒ-sup α {I} β = ∥∥-rec (the-type-of-ordinals-is-a-set (ua _) fe') (λ i₀ → ⊴-antisym _ _ (a i₀) b)
   where
-   a : (α +ₒ sup β) ⊴ sup (λ i → α +ₒ β i)
-   a = ≼-gives-⊴ _ _ g
+   a : I → (α +ₒ sup β) ⊴ sup (λ i → α +ₒ β i)
+   a i₀ = ≼-gives-⊴ _ _ g
     where
      g : (u : Ordinal _) → u ⊲ (α +ₒ sup β) → u ⊲ sup (λ i → α +ₒ β i)
      g u (inl a , r) = transport (λ - → - ⊲ sup (λ i → α +ₒ β i)) (u=α↓a ⁻¹) a↓a<⋁α+β-
@@ -1191,7 +1185,9 @@ module _ (pt : propositional-truncations-exist)
 
 \end{code}
 
-Similarly, multiplication satisfies the expected recursive equations.
+End of addition.
+
+Properties of multiplication, added 13 November 2023 by Fredrik Nordvall Forsberg.
 
 \begin{code}
 
@@ -1206,8 +1202,6 @@ Similarly, multiplication satisfies the expected recursive equations.
  where
   𝟘×α⊴𝟘 : (𝟘ₒ {𝓤} ×ₒ α) ⊴ 𝟘ₒ {𝓤}
   𝟘×α⊴𝟘 = (λ x → 𝟘-elim (pr₁ x)) , (λ x → 𝟘-elim (pr₁ x)) , λ x → 𝟘-elim (pr₁ x)
-
--- +ₒ commutes with successors
 
 𝟙ₒ-left-neutral-×ₒ : (α : Ordinal 𝓤) → 𝟙ₒ {𝓤} ×ₒ α ＝ α
 𝟙ₒ-left-neutral-×ₒ {𝓤 = 𝓤} α = eqtoidₒ (ua _) fe' _ _ h
@@ -1235,7 +1229,6 @@ Similarly, multiplication satisfies the expected recursive equations.
 
   h : (𝟙ₒ {𝓤} ×ₒ α) ≃ₒ α
   h = f , f-order-preserving , f-is-equiv , g-order-preserving
-
 
 𝟙ₒ-right-neutral-×ₒ : (α : Ordinal 𝓤) → α ×ₒ 𝟙ₒ {𝓤} ＝ α
 𝟙ₒ-right-neutral-×ₒ {𝓤 = 𝓤} α = eqtoidₒ (ua _) fe' _ _ h
@@ -1330,13 +1323,6 @@ Similarly, multiplication satisfies the expected recursive equations.
   h : (α ×ₒ (β +ₒ γ)) ≃ₒ ((α ×ₒ β) +ₒ (α ×ₒ γ))
   h = f , f-order-preserving , f-is-equiv , g-order-preserving
 
-×ₒ-succ : (α β : Ordinal 𝓤) → α ×ₒ (β +ₒ 𝟙ₒ) ＝ (α ×ₒ β) +ₒ α
-×ₒ-succ α β =
-  α ×ₒ (β +ₒ 𝟙ₒ)          ＝⟨ ×ₒ-distributes-+ₒ-right α β 𝟙ₒ ⟩
-  ((α ×ₒ β) +ₒ (α ×ₒ 𝟙ₒ)) ＝⟨ ap ((α ×ₒ β) +ₒ_) (𝟙ₒ-right-neutral-×ₒ α)  ⟩
-  (α ×ₒ β) +ₒ α           ∎
-
-
 ×ₒ-↓ : (α β : Ordinal 𝓤) → (a : ⟨ α ⟩)(b : ⟨ β ⟩) → (α ×ₒ β) ↓ (a , b) ＝ (α ×ₒ (β ↓ b)) +ₒ (α ↓ a)
 ×ₒ-↓ α β a b = eqtoidₒ (ua _) fe' _ _ h
  where
@@ -1409,46 +1395,6 @@ Similarly, multiplication satisfies the expected recursive equations.
    f-order-preserving (a , b) (a' , b') (inl p) = inl (simulations-are-order-preserving β γ g sim-g b b' p)
    f-order-preserving (a , b) (a' , b') (inr (refl , q)) = inr (refl , q)
 
-
-module _ (pt : propositional-truncations-exist)
-         (sr : Set-Replacement pt)
-       where
-
- open import Ordinals.OrdinalOfOrdinalsSuprema ua
- open suprema pt sr
- open PropositionalTruncation pt
-
- -- ×ₒ commutes with suprema
- ×ₒ-sup : (α : Ordinal 𝓤){I : 𝓤 ̇ } (β : I → Ordinal 𝓤) → α ×ₒ sup β ＝ sup (λ i → α ×ₒ β i)
- ×ₒ-sup α {I} β = ⊴-antisym _ _ a b
-   where
-     a : (α ×ₒ sup β) ⊴ sup (λ i → α ×ₒ β i)
-     a = ≼-gives-⊴ _ _ h
-       where
-        h : (u : Ordinal _) → u ⊲ (α ×ₒ sup β) → u ⊲ sup (λ i → α ×ₒ β i)
-        h u ((a , y) , r) = transport (λ - → - ⊲ sup (λ i → α ×ₒ β i)) (r ⁻¹) g''
-         where
-          g' : Σ i ꞉ I , Σ z ꞉ ⟨ β i ⟩ , sup β ↓ y ＝ (β i) ↓ z → ((α ×ₒ sup β) ↓ (a , y)) ⊲ sup (λ i → α ×ₒ β i)
-          g' (i , z , q) = _ , eq where
-            eq =
-              (α ×ₒ sup β) ↓ (a , y)        ＝⟨ ×ₒ-↓ α (sup β) a y ⟩
-              (α ×ₒ (sup β ↓ y)) +ₒ (α ↓ a) ＝⟨ ap (λ - → ((α ×ₒ -) +ₒ (α ↓ a))) q ⟩
-              (α ×ₒ (β i ↓ z)) +ₒ (α ↓ a)   ＝⟨ ×ₒ-↓ α (β i) a z ⁻¹ ⟩
-              (α ×ₒ β i) ↓ (a , z)          ＝⟨ initial-segment-of-sup-at-component (λ j → α ×ₒ β j) i (a , z) ⁻¹ ⟩
-              sup (λ i₁ → α ×ₒ β i₁) ↓ _    ∎
-
-          g'' : ((α ×ₒ sup β) ↓ (a , y)) ⊲ sup (λ i → α ×ₒ β i)
-          g'' = ∥∥-rec (⊲-is-prop-valued _ _) g' (initial-segment-of-sup-is-initial-segment-of-some-component β y)
-
-     b' : (i : I) → (α ×ₒ β i) ⊴ (α ×ₒ sup β)
-     b' i = ×ₒ-right-monotone-⊴ α (β i) (sup β) (sup-is-upper-bound β i)
-
-     b : sup (λ i → α ×ₒ β i) ⊴ (α ×ₒ sup β)
-     b = sup-is-lower-bound-of-upper-bounds (λ i → α ×ₒ β i) (α ×ₒ sup β) b'
-
-\end{code}
-
-\begin{code}
 ×ₒ-≼-left : (α β : Ordinal 𝓤)
           → {a a' : ⟨ α ⟩}
           → {b : ⟨ β ⟩}
@@ -1457,11 +1403,22 @@ module _ (pt : propositional-truncations-exist)
 ×ₒ-≼-left α β {a} {a'} {b} p (a₀ , b₀) (inl r) = inl r
 ×ₒ-≼-left α β {a} {a'} {b} p (a₀ , b₀) (inr (eq , r)) = inr (eq , (p a₀ r))
 
-simulation-product-lemma : (α β γ : Ordinal 𝓤)
+\end{code}
+
+To prove that multiplication is left cancellable, we require the
+following technical lemma: if α > 𝟘, then every simulation from α ×ₒ β
+to α ×ₒ γ decomposes as the identity on the first component, and a
+function from β → γ only on the second component (that is, independent
+of the first component).
+
+\begin{code}
+
+simulation-product-decomposition : (α β γ : Ordinal 𝓤)
                          → (p : 𝟘ₒ ⊲ α)
-                         → (f : (α ×ₒ β) ⊴ (α ×ₒ γ))
-                         → (a : ⟨ α ⟩)(b : ⟨ β ⟩) →  pr₁ f (a , b) ＝ (a , pr₂ (pr₁ f (pr₁ p , b)))
-simulation-product-lemma {𝓤} α β γ (a₀ , α↓a₀＝𝟘) (f , sim , op) a b = Transfinite-induction (α ×ₒ β) P g (a , b)
+                         → (f : ⟨ α ×ₒ β ⟩ → ⟨ α ×ₒ γ ⟩)
+                         → is-simulation (α ×ₒ β) (α ×ₒ γ) f
+                         → (a : ⟨ α ⟩)(b : ⟨ β ⟩) →  f (a , b) ＝ (a , pr₂ (f (pr₁ p , b)))
+simulation-product-decomposition {𝓤} α β γ (a₀ , α↓a₀＝𝟘) f (sim , op) a b = Transfinite-induction (α ×ₒ β) P g (a , b)
  where
   f' : ⟨ α ×ₒ β ⟩ → ⟨ α ×ₒ γ ⟩
   f' (a , b) = (a , pr₂ (f (a₀ , b)))
@@ -1502,6 +1459,7 @@ simulation-product-lemma {𝓤} α β γ (a₀ , α↓a₀＝𝟘) (f , sim , op
                                                                (ap pr₁ (ih (a₀' , b₁) (inl r)))
                                                                (pr₂ rr)))))
                (λ (r : (b₁ ＝ b) × (a₁ ≺⟨ α ⟩ a)) → inr (ap (λ - → pr₂ (f (a₀ , -))) (pr₁ r) , pr₂ r))
+
     h₁ : (u : ⟨ α ×ₒ γ ⟩) → u ≺⟨ α ×ₒ γ ⟩ f' (a , b) → u ≺⟨ α ×ₒ γ ⟩ f  (a , b)
     h₁ (a' , c') (inl p) = q (a' , c') (inl p)
      where
@@ -1520,6 +1478,24 @@ simulation-product-lemma {𝓤} α β γ (a₀ , α↓a₀＝𝟘) (f , sim , op
            (a' , pr₂ (f (a₀ , b))) ＝⟨ refl ⟩
            f' (a' , b)             ＝⟨ ih (a' , b) (inr (refl , q)) ⁻¹ ⟩
            f  (a' , b)             ∎
+
+\end{code}
+
+The following result states that multiplication for ordinals can be
+cancelled on the left. Interestingly, Andrew Swan [Swa18] proved that
+the corresponding result for mere sets is not provable constructively
+already for α = 𝟚: there are toposes where the statement
+
+𝟚 × X ≃ 𝟚 × Y → X ≃ Y
+
+is not true for certain objects X and Y in the topos.
+
+[Swa18] Andrew Swan
+        On Dividing by Two in Constructive Mathematics
+        2018
+        https://arxiv.org/abs/1804.04490
+
+\begin{code}
 
 ×ₒ-left-cancellable : (α β γ : Ordinal 𝓤)
                     → 𝟘ₒ ⊲ α
@@ -1552,8 +1528,8 @@ simulation-product-lemma {𝓤} α β γ (a₀ , α↓a₀＝𝟘) (f , sim , op
       c = pr₂ (f (a₀ , b))
 
       q : (a₀' , c) ＝ (a₀ , c)
-      q = simulation-product-lemma α β γ (a₀ , α↓a₀＝𝟘)
-            (f , order-equivs-are-simulations _ _ f
+      q = simulation-product-decomposition α β γ (a₀ , α↓a₀＝𝟘)
+            f (order-equivs-are-simulations _ _ f
                    (≃ₒ-to-fun-is-order-equiv _ _ (idtoeqₒ _ _ m))) a₀ b
 
       eq : α ×ₒ (β ↓ b) ＝ α ×ₒ (γ ↓ c)
@@ -1572,5 +1548,58 @@ simulation-product-lemma {𝓤} α β γ (a₀ , α↓a₀＝𝟘) (f , sim , op
 
     u₁ : (c : ⟨ γ ⟩) → (γ ↓ c) ⊲ β
     u₁ c = let (b , eq) = u γ β (m ⁻¹) c in b , (ih b (γ ↓ c) (eq ⁻¹) ⁻¹)
+
+\end{code}
+
+Finally, multiplication satisfies the expected recursive equations.
+
+\begin{code}
+
+×ₒ-zero : (α : Ordinal 𝓤) → α ×ₒ 𝟘ₒ {𝓤} ＝ 𝟘ₒ
+×ₒ-zero = ×ₒ-zero-right
+
+-- ×ₒ for successors is repeated addition
+×ₒ-succ : (α β : Ordinal 𝓤) → α ×ₒ (β +ₒ 𝟙ₒ) ＝ (α ×ₒ β) +ₒ α
+×ₒ-succ α β =
+  α ×ₒ (β +ₒ 𝟙ₒ)          ＝⟨ ×ₒ-distributes-+ₒ-right α β 𝟙ₒ ⟩
+  ((α ×ₒ β) +ₒ (α ×ₒ 𝟙ₒ)) ＝⟨ ap ((α ×ₒ β) +ₒ_) (𝟙ₒ-right-neutral-×ₒ α)  ⟩
+  (α ×ₒ β) +ₒ α           ∎
+
+
+module _ (pt : propositional-truncations-exist)
+         (sr : Set-Replacement pt)
+       where
+
+ open import Ordinals.OrdinalOfOrdinalsSuprema ua
+ open suprema pt sr
+ open PropositionalTruncation pt
+
+ -- ×ₒ commutes with suprema
+ ×ₒ-sup : (α : Ordinal 𝓤){I : 𝓤 ̇ } (β : I → Ordinal 𝓤) → α ×ₒ sup β ＝ sup (λ i → α ×ₒ β i)
+ ×ₒ-sup α {I} β = ⊴-antisym _ _ a b
+   where
+     a : (α ×ₒ sup β) ⊴ sup (λ i → α ×ₒ β i)
+     a = ≼-gives-⊴ _ _ h
+       where
+        h : (u : Ordinal _) → u ⊲ (α ×ₒ sup β) → u ⊲ sup (λ i → α ×ₒ β i)
+        h u ((a , y) , r) = transport (λ - → - ⊲ sup (λ i → α ×ₒ β i)) (r ⁻¹) g''
+         where
+          g' : Σ i ꞉ I , Σ z ꞉ ⟨ β i ⟩ , sup β ↓ y ＝ (β i) ↓ z → ((α ×ₒ sup β) ↓ (a , y)) ⊲ sup (λ i → α ×ₒ β i)
+          g' (i , z , q) = _ , eq where
+            eq =
+              (α ×ₒ sup β) ↓ (a , y)        ＝⟨ ×ₒ-↓ α (sup β) a y ⟩
+              (α ×ₒ (sup β ↓ y)) +ₒ (α ↓ a) ＝⟨ ap (λ - → ((α ×ₒ -) +ₒ (α ↓ a))) q ⟩
+              (α ×ₒ (β i ↓ z)) +ₒ (α ↓ a)   ＝⟨ ×ₒ-↓ α (β i) a z ⁻¹ ⟩
+              (α ×ₒ β i) ↓ (a , z)          ＝⟨ initial-segment-of-sup-at-component (λ j → α ×ₒ β j) i (a , z) ⁻¹ ⟩
+              sup (λ i₁ → α ×ₒ β i₁) ↓ _    ∎
+
+          g'' : ((α ×ₒ sup β) ↓ (a , y)) ⊲ sup (λ i → α ×ₒ β i)
+          g'' = ∥∥-rec (⊲-is-prop-valued _ _) g' (initial-segment-of-sup-is-initial-segment-of-some-component β y)
+
+     b' : (i : I) → (α ×ₒ β i) ⊴ (α ×ₒ sup β)
+     b' i = ×ₒ-right-monotone-⊴ α (β i) (sup β) (sup-is-upper-bound β i)
+
+     b : sup (λ i → α ×ₒ β i) ⊴ (α ×ₒ sup β)
+     b = sup-is-lower-bound-of-upper-bounds (λ i → α ×ₒ β i) (α ×ₒ sup β) b'
 
 \end{code}
