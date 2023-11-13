@@ -3,7 +3,7 @@ Tom de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg, Chuangjie Xu,
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import UF.Univalence
 
@@ -70,11 +70,16 @@ module _ {X : 𝓤 ̇  } (R : X → X → 𝓥 ̇  ) where
  lex-transitive tr (x ∷ xs) (.x ∷ ys) (.x ∷ zs) (tail-lex refl p) (tail-lex refl q)
   = tail-lex refl (lex-transitive tr xs ys zs p q)
 
+ []-lex-bot : is-bot (lex R) []
+ []-lex-bot xs ()
+
+ []-acc : is-accessible (lex R) []
+ []-acc = acc (λ zs q → 𝟘-elim ([]-lex-bot _ q))
 
  data is-decreasing : List X → 𝓤 ⊔ 𝓥 ̇  where
   []-decr : is-decreasing []
   sing-decr : {x : X} → is-decreasing [ x ]
-  many-decr : {x y : X}{xs : List X} → R x y → is-decreasing (y ∷ xs) → is-decreasing (x ∷ y ∷ xs)
+  many-decr : {x y : X}{xs : List X} → R y x → is-decreasing (y ∷ xs) → is-decreasing (x ∷ y ∷ xs)
 
  DecreasingList : (𝓤 ⊔ 𝓥) ̇
  DecreasingList = Σ xs ꞉ List X , is-decreasing xs
@@ -82,9 +87,11 @@ module _ {X : 𝓤 ̇  } (R : X → X → 𝓥 ̇  ) where
  lex-decr : DecreasingList → DecreasingList → 𝓤 ⊔ 𝓥 ̇
  lex-decr (xs , _) (ys , _) = lex R xs ys
 
- lex-wellfounded : is-well-founded R → is-well-founded lex-decr
- lex-wellfounded wf = {!!}
+ []-acc-decr : (p : is-decreasing []) → is-accessible lex-decr ([] , p)
+ []-acc-decr []-decr = acc (λ xs q → 𝟘-elim ([]-lex-bot _ q))
 
+ lex-wellfounded : is-well-founded R → is-well-founded lex-decr
+ lex-wellfounded = ?
 
  -- this is not helpful below
  -- (do you also need transitivity?)
