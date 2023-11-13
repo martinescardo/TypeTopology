@@ -1220,6 +1220,30 @@ And with this we get the promised equivalence.
                  (dfunext fe (η-cantor β))
 \end{code}
 
+Added 13th November 2023. The number ∞ is coded as the constantly ₀
+sequence, and the number n is coded as the sequence that has ₁ and
+position n (and nowhere else).
+
+\begin{code}
+
+ more-info₀ : (i : ℕ) → ϕ (ℕ∞-to-ℕ→𝟚 ∞) i ＝ ₀
+ more-info₀ zero     = refl
+ more-info₀ (succ i) = refl
+
+ more-info₁ : (n : ℕ) → ϕ (ℕ∞-to-ℕ→𝟚 (ι n)) n ＝ ₁
+ more-info₁ 0        = refl
+ more-info₁ (succ n) =
+  ϕ (ℕ∞-to-ℕ→𝟚 (ι (n ∔ 1))) (n ∔ 1)                       ＝⟨ refl ⟩
+  ℕ∞-to-ℕ→𝟚 (ι (n ∔ 1)) n ⊕ ℕ∞-to-ℕ→𝟚 (ι (n ∔ 1)) (n ∔ 1) ＝⟨ I ⟩
+  ₁ ⊕ ₀                                                   ＝⟨ refl ⟩
+  ₁                                                       ∎
+  where
+   I = ap₂ _⊕_ (ℕ-to-ℕ∞-diagonal₁ n) (ℕ-to-ℕ∞-diagonal₀ n)
+
+\end{code}
+
+End of addition.
+
 We export the above outside the module:
 
 \begin{code}
