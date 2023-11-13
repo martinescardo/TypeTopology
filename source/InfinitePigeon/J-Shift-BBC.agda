@@ -1,6 +1,6 @@
 -- Martin Escardo and Paulo Oliva 2011
 
-{-# OPTIONS --no-termination-check --without-K --exact-split #-}
+{-# OPTIONS --no-termination-check --without-K #-}
 
 -- We use the Berardi-Bezem-Coquand functional to realize the J-Shift
 -- (and hence the K-Shift in another module).

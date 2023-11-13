@@ -4,7 +4,7 @@ Arguments due to Mike Shulman, typed into Agda by Jon Sterling.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module WildCategories.index where
 

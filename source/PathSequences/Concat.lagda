@@ -10,7 +10,7 @@ library to TypeTopology.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --safe #-}
 
 module PathSequences.Concat where
 
@@ -52,7 +52,7 @@ path sequences.
 
 \end{code}
 
-We see ∙≡-assoc is more fundamental. 
+We see ∙≡-assoc is more fundamental.
 Resuming…
 
 \begin{code}

@@ -2,7 +2,7 @@ Chuangjie Xu, 2015
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K #-} -- --exact-split
+{-# OPTIONS --safe --without-K --no-exact-split #-} --
 
 module ContinuityAxiom.Preliminaries where
 

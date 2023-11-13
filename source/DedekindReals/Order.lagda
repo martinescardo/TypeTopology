@@ -5,7 +5,7 @@ In this file I define order of Dedekind Reals, and prove
 some key properties.
 
 \begin{code}
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
 

@@ -5,7 +5,7 @@ identity types _＝_, and universes 𝓤, 𝓥, 𝓦, ....
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module MLTT.Spartan where
 

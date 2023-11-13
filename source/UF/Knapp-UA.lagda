@@ -11,7 +11,7 @@ the univalence of the universe U, namely
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module UF.Knapp-UA where
 
@@ -202,7 +202,7 @@ see from the proof, we can replace qinv by is-equiv:
 
 UA-characterization :
                      ((X Y : 𝓤 ̇ ) (f : X → Y) → qinv f → fiber (transport id) f)
-                   ⇔ is-univalent 𝓤
+                   ↔ is-univalent 𝓤
 UA-characterization {𝓤} = (forth , back)
  where
   forth : ((X Y : 𝓤 ̇ ) (f : X → Y) → qinv f → Σ p ꞉ X ＝ Y , transport id p ＝ f) → is-univalent 𝓤

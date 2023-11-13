@@ -5,7 +5,7 @@ UF.SIP-Examples.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K --lossy-unification #-}
 
 module Groups.Type where
 
@@ -324,6 +324,8 @@ G ≅ H = Σ f ꞉ (⟨ G ⟩ → ⟨ H ⟩) , is-iso G H f
 ≅-to-≃ : (G : Group 𝓤) (H : Group 𝓥) → G ≅ H → ⟨ G ⟩ ≃ ⟨ H ⟩
 ≅-to-≃ G H (f , f-is-iso) = (f , group-isos-are-equivs G H f-is-iso)
 
+iso-to-equiv = ≅-to-≃
+
 ≅-to-≃-is-hom : (G : Group 𝓤) (H : Group 𝓥) (𝕗 : G ≅ H)
               → is-hom G H ⌜ ≅-to-≃ G H 𝕗 ⌝
 ≅-to-≃-is-hom G H (f , f-is-iso) = group-isos-are-homs G H f-is-iso
@@ -363,18 +365,19 @@ transport-Group-structure {𝓤} {𝓥} (X , _·_ , i , a , e , l , r , ι)
   G : Group 𝓤
   G = X , _·_ , i , a , e , l , r , ι
 
-  abstract
-   g : X → Y
-   g = inverse f f-is-equiv
+  -- abstract (speeds things up but breaks some things - try opaque blocks)
+  g : X → Y
+  g = inverse f f-is-equiv
 
-   η : f ∘ g ∼ id
-   η = inverses-are-sections f f-is-equiv
+  η : f ∘ g ∼ id
+  η = inverses-are-sections f f-is-equiv
 
-   ε : g ∘ f ∼ id
-   ε = inverses-are-retractions f f-is-equiv
+  ε : g ∘ f ∼ id
+  ε = inverses-are-retractions f f-is-equiv
 
   f-is-hom : {y y' : Y} → f (g (f y · f y')) ＝ f y · f y'
   f-is-hom {y} {y'} = η (f y · f y')
+  -- end of abstract
 
   _•_ : Y → Y → Y
   y • y' = g (f y · f y')
@@ -424,10 +427,15 @@ transport-Group-structure {𝓤} {𝓥} (X , _·_ , i , a , e , l , r , ι)
   γ : Σ s ꞉ Group-structure Y , is-hom (Y , s) G f
   γ = s , f-is-hom
 
-resized-group : (G : Group 𝓤)
-              → (Σ Y ꞉ 𝓥 ̇ , Y ≃ ⟨ G ⟩)
-              → Σ H ꞉ Group 𝓥 , H ≅ G
-resized-group {𝓤} {𝓥} G (Y , f , f-is-equiv) = γ
+transport-Group-structure' : (G : Group 𝓤) (Y : 𝓥 ̇ ) (𝕗 : Y ≃ ⟨ G ⟩)
+                           → Σ s ꞉ Group-structure Y , is-hom (Y , s) G ⌜ 𝕗 ⌝
+transport-Group-structure' G Y 𝕗 =
+ transport-Group-structure G Y ⌜ 𝕗 ⌝ ⌜ 𝕗 ⌝-is-equiv
+
+group-copy : (G : Group 𝓤)
+           → (Σ Y ꞉ 𝓥 ̇ , Y ≃ ⟨ G ⟩)
+           → Σ H ꞉ Group 𝓥 , H ≅ G
+group-copy {𝓤} {𝓥} G (Y , f , f-is-equiv) = γ
  where
   δ : (Σ s ꞉ Group-structure Y , is-hom (Y , s) G f)
     → Σ H ꞉ Group 𝓥 , H ≅ G
@@ -452,7 +460,7 @@ Lift-Group {𝓤} 𝓥 (X , s) = Lift 𝓥 X , transport-Group-structure₁ (≃
 
 Lifted-Group-is-isomorphic : ∀ {𝓤} {𝓥} (G : Group 𝓤) → Lift-Group 𝓥 G ≅ G
 Lifted-Group-is-isomorphic {𝓤} {𝓥} G =
- pr₂ (resized-group G (Lift 𝓥 ⟨ G ⟩ , Lift-is-universe-embedding 𝓥 ⟨ G ⟩))
+ pr₂ (group-copy G (Lift 𝓥 ⟨ G ⟩ , Lift-is-universe-embedding 𝓥 ⟨ G ⟩))
 
 \end{code}
 

@@ -2,7 +2,7 @@ Martin Escardo 2011.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module NotionsOfDecidability.Decidable where
 
@@ -19,8 +19,8 @@ map-is-decidable : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → (A → B) → (B → A) →
 map-is-decidable f g (inl x) = inl (f x)
 map-is-decidable f g (inr h) = inr (λ y → h (g y))
 
-map-is-decidable-⇔ : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → (A ⇔ B) → (is-decidable A ⇔ is-decidable B)
-map-is-decidable-⇔ (f , g) = map-is-decidable f g , map-is-decidable g f
+map-is-decidable-↔ : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → (A ↔ B) → (is-decidable A ↔ is-decidable B)
+map-is-decidable-↔ (f , g) = map-is-decidable f g , map-is-decidable g f
 
 decidability-is-closed-under-≃ : {A : 𝓤 ̇ } {B : 𝓥 ̇ }
                                → (A ≃ B)
