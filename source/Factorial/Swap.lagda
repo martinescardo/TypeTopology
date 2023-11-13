@@ -4,7 +4,7 @@ The swap automorphism.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Factorial.Swap where
 

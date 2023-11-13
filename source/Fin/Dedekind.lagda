@@ -2,7 +2,7 @@ Martin Escardo, 3rd September 2023.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Fin.Dedekind where
 
@@ -25,15 +25,12 @@ Example. The type Ω 𝓤 of propositions is Dedekind finite.
 \begin{code}
 
 open import UF.FunExt
+open import UF.HiggsInvolutionTheorem
 open import UF.Subsingletons
 open import UF.SubtypeClassifier
-open import Various.HiggsInvolutionTheorem
 
 Ω-is-Dedekind-finite : Fun-Ext → Prop-Ext → is-Dedekind-finite (Ω 𝓤)
-Ω-is-Dedekind-finite fe pe f f-is-embedding = qinvs-are-equivs f (f , h , h)
- where
-  h : f ∘ f ∼ id
-  h = higgs fe pe f (embeddings-are-lc f f-is-embedding)
+Ω-is-Dedekind-finite fe pe = autoembeddings-of-Ω-are-equivs fe pe
 
 \end{code}
 

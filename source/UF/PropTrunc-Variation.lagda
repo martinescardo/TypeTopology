@@ -7,7 +7,7 @@ For more comments and explanations, see the original files.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 
@@ -49,7 +49,7 @@ module PropositionalTruncation (pt : propositional-truncations-exist) where
  is-singleton'-is-prop : {X : 𝓤 ̇ } → funext 𝓤 𝓤 → is-prop (is-prop X × ∥ X ∥)
  is-singleton'-is-prop fe = Σ-is-prop (being-prop-is-prop fe) (λ _ → ∥∥-is-prop)
 
- the-singletons-are-the-inhabited-propositions : {X : 𝓤 ̇ } → is-singleton X ⇔ is-prop X × ∥ X ∥
+ the-singletons-are-the-inhabited-propositions : {X : 𝓤 ̇ } → is-singleton X ↔ is-prop X × ∥ X ∥
  the-singletons-are-the-inhabited-propositions {𝓤} {X} = f , g
   where
    f : is-singleton X → is-prop X × ∥ X ∥

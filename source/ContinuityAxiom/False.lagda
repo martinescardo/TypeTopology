@@ -186,7 +186,7 @@ is not part of MLTT:
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module ContinuityAxiom.False where
 

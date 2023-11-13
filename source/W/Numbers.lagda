@@ -8,7 +8,7 @@ https://mathstodon.xyz/@MartinEscardo/110753930251021051
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan hiding (_^_)
 

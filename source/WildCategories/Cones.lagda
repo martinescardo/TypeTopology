@@ -20,7 +20,7 @@ has an initial object when it possesses a semicoherent cone over the identity
 functor.
 
 \begin{code}
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module WildCategories.Cones where
 

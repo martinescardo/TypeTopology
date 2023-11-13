@@ -2,7 +2,7 @@ Martin Escardo 20-21 December 2012
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 open import MLTT.Two-Properties

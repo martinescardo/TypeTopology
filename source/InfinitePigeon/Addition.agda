@@ -1,4 +1,4 @@
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module InfinitePigeon.Addition where
 

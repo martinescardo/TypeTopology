@@ -8,7 +8,7 @@ following the following papers:
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Modal.index where
 

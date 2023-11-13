@@ -4,7 +4,7 @@ Gödel's system T and its standard set-theoretical semantics.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module EffectfulForcing.MFPSAndVariations.SystemT where
 

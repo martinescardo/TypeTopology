@@ -14,7 +14,7 @@ closed under structural continuity/algebraicity and having a small (compact) bas
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
+{-# OPTIONS --safe --without-K --lossy-unification #-}
 
 \end{code}
 

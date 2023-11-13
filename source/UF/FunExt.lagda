@@ -6,7 +6,7 @@ is used explicitly as a hypothesis each time it is needed.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module UF.FunExt where
 

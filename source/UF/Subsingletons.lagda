@@ -9,7 +9,7 @@ https://unimath.github.io/bham2017/uf.pdf
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module UF.Subsingletons where
 
