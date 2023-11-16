@@ -79,6 +79,7 @@ TODO. Formulate the usual notions of (uniform) continuity and prove
 that they are logically equivalent to the above.
 
 TODO completed for continuity in `ContinuityProperties.lagda` by Ayberk Tosun on
-13/06/2023.
+2023-06-13.
 
-TODO Complete the same to-do for uniform continuity.
+TODO completed for uniform continuity in `ContinuityProperties.lagda` by Ayberk
+Tosun at 2023-11-16T23:47:43.

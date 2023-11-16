@@ -753,3 +753,15 @@ uni-continuity₀-implies-uni-continuity f ζ = rangeᵤ m , †
     p′ = ＝⟦⟧-boolean-lemma α β m p
 
 \end{code}
+
+\begin{code}
+
+uni-continuity-equivalent-to-uni-continuity : (f : Cantor → ℕ)
+                                            → is-uniformly-continuous₀ f
+                                              ⇔ is-uniformly-continuous f
+uni-continuity-equivalent-to-uni-continuity f = ⦅⇒⦆ , ⦅⇐⦆
+ where
+  ⦅⇒⦆ = uni-continuity₀-implies-uni-continuity f
+  ⦅⇐⦆ = uni-continuity-implies-uni-continuity₀ f
+
+\end{code}
