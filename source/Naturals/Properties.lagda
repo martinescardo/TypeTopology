@@ -1,4 +1,4 @@
-Natural numbers
+Natural numbers properties
 
 \begin{code}
 
@@ -6,12 +6,7 @@ Natural numbers
 
 module Naturals.Properties where
 
-open import MLTT.Universes
-open import MLTT.NaturalNumbers
-open import MLTT.Negation
-open import MLTT.Id
-open import MLTT.Empty
-open import MLTT.Unit
+open import MLTT.Spartan
 open import MLTT.Unit-Properties
 
 pred : ℕ → ℕ
@@ -43,6 +38,21 @@ succ-no-fp (succ n) p = succ-no-fp n (succ-lc p)
 ℕ-cases {𝓦} {P} zero c₀ cₛ     = c₀ refl
 ℕ-cases {𝓦} {P} (succ n) c₀ cₛ = cₛ n refl
 
+double power2 : ℕ → ℕ
+
+double 0        = 0
+double (succ n) = succ (succ (double n))
+
+double-lc : {m n : ℕ} → double m ＝ double n → m ＝ n
+double-lc {zero} {zero} p = refl
+double-lc {succ m} {succ n} p = ap succ IH
+ where
+  IH : m ＝ n
+  IH = double-lc {m} {n} (succ-lc (succ-lc p))
+
+power2 0        = 1
+power2 (succ n) = double (power2 n)
+
 \end{code}
 
 Added 12/05/2022 by Andrew Sneap.
@@ -60,3 +70,5 @@ pred-succ : (x : ℕ) → pred (succ x) ＝ x
 pred-succ x = refl
 
 \end{code}
+
+End of addition.
