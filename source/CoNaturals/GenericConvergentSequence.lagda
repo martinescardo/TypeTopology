@@ -34,9 +34,6 @@ open import UF.SubtypeClassifier
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
-funext₀ : 𝓤₁ ̇
-funext₀ = funext 𝓤₀ 𝓤₀
-
 \end{code}
 
 Definition (The generic convergent sequence).  We use u,v,x to range
@@ -95,8 +92,10 @@ force-decreasing-unchanged α d (succ i) = g
 ℕ→𝟚-to-ℕ∞ β = force-decreasing β , force-decreasing-is-decreasing β
 
 ℕ→𝟚-to-ℕ∞-is-retraction : funext₀ → (x : ℕ∞) → ℕ→𝟚-to-ℕ∞ (ι x) ＝ x
-ℕ→𝟚-to-ℕ∞-is-retraction fe (α , d) = to-Σ-＝ (dfunext fe (force-decreasing-unchanged α d) ,
-                                             being-decreasing-is-prop fe α _ _)
+ℕ→𝟚-to-ℕ∞-is-retraction fe (α , d) =
+ to-Σ-＝
+  (dfunext fe (force-decreasing-unchanged α d) ,
+   being-decreasing-is-prop fe α _ _)
 
 ℕ∞-retract-of-Cantor : funext₀ → retract ℕ∞ of (ℕ → 𝟚)
 ℕ∞-retract-of-Cantor fe = ℕ→𝟚-to-ℕ∞ , ι , ℕ→𝟚-to-ℕ∞-is-retraction fe

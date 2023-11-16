@@ -79,14 +79,16 @@ LPO-gives-compact-ℕ ℓ β = γ
     x : ℕ∞
     x = (α , force-decreasing-is-decreasing β)
 
-    d : is-decidable(Σ n ꞉ ℕ , x ＝ ι n)
+    d : is-decidable (Σ n ꞉ ℕ , x ＝ ι n)
     d = ℓ x
 
     a : (Σ n ꞉ ℕ , x ＝ ι n) → A
     a (n , p) = inl (force-decreasing-is-not-much-smaller β n c)
       where
         c : α n ＝ ₀
-        c = ap (λ - → ι - n) p ∙ ℕ-to-ℕ∞-diagonal₀ n
+        c = α n       ＝⟨ ap (λ - → ι - n) p ⟩
+            ι (ι n) n ＝⟨ ℕ-to-ℕ∞-diagonal₀ n ⟩
+            ₀         ∎
 
     b : (¬ (Σ n ꞉ ℕ , x ＝ ι n)) → A
     b u = inr g
