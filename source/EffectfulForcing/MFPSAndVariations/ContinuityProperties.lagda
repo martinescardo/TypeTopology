@@ -17,8 +17,13 @@ open import EffectfulForcing.MFPSAndVariations.Continuity
 
 open import MLTT.Spartan
 open import MLTT.Athenian
+open import MLTT.Two-Properties
 open import Naturals.Order
+open import Naturals.Properties using (zero-not-positive)
 open import UF.Retracts
+open import UF.Embeddings
+open import UF.Subsingletons
+open import MGS.hlevels using (ℕ-is-set)
 
 \end{code}
 
@@ -297,12 +302,9 @@ the Baire space is called Boolean if its range is a subset of `{0, 1}`.
 is-boolean-valued : ℕ → 𝓤₀  ̇
 is-boolean-valued n = (n ＝ 0) + (n ＝ 1)
 
-embed-into-ℕ : 𝟚 → ℕ
-embed-into-ℕ = embedding-𝟚-ℕ
-
-embed-into-ℕ-gives-boolean : (b : 𝟚) → is-boolean-valued (embed-into-ℕ b)
-embed-into-ℕ-gives-boolean ₀ = inl refl
-embed-into-ℕ-gives-boolean ₁ = inr refl
+embedding-𝟚-ℕ-gives-boolean : (b : 𝟚) → is-boolean-valued (embedding-𝟚-ℕ b)
+embedding-𝟚-ℕ-gives-boolean ₀ = inl refl
+embedding-𝟚-ℕ-gives-boolean ₁ = inr refl
 
 to-bool : (n : ℕ) → is-boolean-valued n → 𝟚
 to-bool 0 (inl refl) = ₀
@@ -338,7 +340,7 @@ which is clearly equivalent to the previous definition.
 \begin{code}
 
 to-baire-gives-boolean-point : (α : Cantor) → is-boolean-point (embedding-C-B α)
-to-baire-gives-boolean-point α = embed-into-ℕ-gives-boolean ∘ α
+to-baire-gives-boolean-point α = embedding-𝟚-ℕ-gives-boolean ∘ α
 
 \end{code}
 
@@ -356,41 +358,86 @@ to-cantor (α , p) = λ n → to-bool (α n) (p n)
 
 \begin{code}
 
-embed-into-ℕ-0-implies-is-₀ : (b : 𝟚) → embed-into-ℕ b ＝ 0 → b ＝ ₀
-embed-into-ℕ-0-implies-is-₀ ₀ p = refl
+embedding-𝟚-ℕ-0-implies-is-₀ : (b : 𝟚) → embedding-𝟚-ℕ b ＝ 0 → b ＝ ₀
+embedding-𝟚-ℕ-0-implies-is-₀ ₀ p = refl
 
-embed-into-ℕ-1-implies-is-₁ : (b : 𝟚) → embed-into-ℕ b ＝ 1 → b ＝ ₁
-embed-into-ℕ-1-implies-is-₁ ₁ p = refl
+embedding-𝟚-ℕ-1-implies-is-₁ : (b : 𝟚) → embedding-𝟚-ℕ b ＝ 1 → b ＝ ₁
+embedding-𝟚-ℕ-1-implies-is-₁ ₁ p = refl
+
+embedding-𝟚-ℕ-is-embedding : is-embedding embedding-𝟚-ℕ
+embedding-𝟚-ℕ-is-embedding m (b , p) (c , q) = to-subtype-＝ † ♢
+ where
+  † : (b : 𝟚) → is-prop (embedding-𝟚-ℕ b ＝ m)
+  † b = ℕ-is-set (embedding-𝟚-ℕ b) m
+
+  φ : embedding-𝟚-ℕ b ＝ embedding-𝟚-ℕ c
+  φ = embedding-𝟚-ℕ b ＝⟨ p ⟩ m ＝⟨ q ⁻¹ ⟩ embedding-𝟚-ℕ c ∎
+
+  ϑ₁ : b ＝ ₀ → c ＝ ₀ → b ＝ c
+  ϑ₁ p q = b ＝⟨ p ⟩ ₀ ＝⟨ q ⁻¹ ⟩ c ∎
+
+  ϑ₂ : b ＝ ₀ → c ＝ ₁ → b ＝ c
+  ϑ₂ p q = 𝟘-elim (zero-not-positive (embedding-𝟚-ℕ ₀) ϟ)
+   where
+    ϟ : 0 ＝ 1
+    ϟ = 0               ＝⟨ refl                  ⟩
+        embedding-𝟚-ℕ ₀ ＝⟨ ap embedding-𝟚-ℕ p ⁻¹ ⟩
+        embedding-𝟚-ℕ b ＝⟨ φ                     ⟩
+        embedding-𝟚-ℕ c ＝⟨ ap embedding-𝟚-ℕ q    ⟩
+        embedding-𝟚-ℕ ₁ ＝⟨ refl                  ⟩
+        1               ∎
+
+  ϑ₃ : b ＝ ₁ → c ＝ ₀ → b ＝ c
+  ϑ₃ p q = 𝟘-elim (zero-not-positive (embedding-𝟚-ℕ ₀) ϟ)
+   where
+    ϟ : 0 ＝ 1
+    ϟ = 0                  ＝⟨ refl                 ⟩
+        embedding-𝟚-ℕ ₀   ＝⟨ ap embedding-𝟚-ℕ q ⁻¹ ⟩
+        embedding-𝟚-ℕ c   ＝⟨ φ ⁻¹                  ⟩
+        embedding-𝟚-ℕ b   ＝⟨ ap embedding-𝟚-ℕ p    ⟩
+        1                  ∎
+
+  ϑ₄ : b ＝ ₁ → c ＝ ₁ → b ＝ c
+  ϑ₄ p q = b ＝⟨ p ⟩ ₁ ＝⟨ q ⁻¹ ⟩ c ∎
+
+  ξ : b ＝ ₀ → b ＝ c
+  ξ r = cases (ϑ₁ r) (ϑ₂ r) (𝟚-possibilities c)
+
+  ζ : b ＝ ₁ → b ＝ c
+  ζ r = cases (ϑ₃ r) (ϑ₄ r) (𝟚-possibilities c)
+
+  ♢ : b ＝ c
+  ♢ = cases ξ ζ (𝟚-possibilities b)
 
 to-cantor-cancels-to-cantor₀ : (α : Cantor) → to-cantor (to-cantor₀ α) ＝ α
 to-cantor-cancels-to-cantor₀ α = dfunext fe †
  where
-  † : (n : ℕ) → to-bool (embed-into-ℕ (α n)) (to-baire-gives-boolean-point α n) ＝ α n
+  † : (n : ℕ) → to-bool (embedding-𝟚-ℕ (α n)) (to-baire-gives-boolean-point α n) ＝ α n
   † n = cases †₁ †₂ (to-baire-gives-boolean-point α n)
    where
-    †₁ : embed-into-ℕ (α n) ＝ 0
-       → to-bool (embed-into-ℕ (α n)) (to-baire-gives-boolean-point α n) ＝ α n
+    †₁ : embedding-𝟚-ℕ (α n) ＝ 0
+       → to-bool (embedding-𝟚-ℕ (α n)) (to-baire-gives-boolean-point α n) ＝ α n
     †₁ p =
-     to-bool (embed-into-ℕ (α n)) (embed-into-ℕ-gives-boolean (α n)) ＝⟨ Ⅰ ⟩
+     to-bool (embedding-𝟚-ℕ (α n)) (embedding-𝟚-ℕ-gives-boolean (α n)) ＝⟨ Ⅰ ⟩
      to-bool 0 (inl refl)                                            ＝⟨ Ⅱ ⟩
      α n                                                             ∎
       where
        Ⅰ = ap
-            (λ - → to-bool (embed-into-ℕ -) (embed-into-ℕ-gives-boolean -))
-            (embed-into-ℕ-0-implies-is-₀ (α n) p)
-       Ⅱ = embed-into-ℕ-0-implies-is-₀ (α n) p ⁻¹
+            (λ - → to-bool (embedding-𝟚-ℕ -) (embedding-𝟚-ℕ-gives-boolean -))
+            (embedding-𝟚-ℕ-0-implies-is-₀ (α n) p)
+       Ⅱ = embedding-𝟚-ℕ-0-implies-is-₀ (α n) p ⁻¹
 
-    †₂ : embed-into-ℕ (α n) ＝ 1
-       → to-bool (embed-into-ℕ (α n)) (to-baire-gives-boolean-point α n) ＝ α n
+    †₂ : embedding-𝟚-ℕ (α n) ＝ 1
+       → to-bool (embedding-𝟚-ℕ (α n)) (to-baire-gives-boolean-point α n) ＝ α n
     †₂ p =
-     to-bool (embed-into-ℕ (α n)) (embed-into-ℕ-gives-boolean (α n)) ＝⟨ Ⅰ ⟩
+     to-bool (embedding-𝟚-ℕ (α n)) (embedding-𝟚-ℕ-gives-boolean (α n)) ＝⟨ Ⅰ ⟩
      to-bool 1 (inr refl)                                            ＝⟨ Ⅱ ⟩
      α n                                                             ∎
       where
        Ⅰ = ap
-            (λ - → to-bool (embed-into-ℕ -) (embed-into-ℕ-gives-boolean -))
-            (embed-into-ℕ-1-implies-is-₁ (α n) p)
-       Ⅱ = embed-into-ℕ-1-implies-is-₁ (α n) p ⁻¹
+            (λ - → to-bool (embedding-𝟚-ℕ -) (embedding-𝟚-ℕ-gives-boolean -))
+            (embedding-𝟚-ℕ-1-implies-is-₁ (α n) p)
+       Ⅱ = embedding-𝟚-ℕ-1-implies-is-₁ (α n) p ⁻¹
 
 point-of-lemma : (α : Cantor)
                → point-of (to-cantor₀ α) ∼ embedding-𝟚-ℕ ∘ α
@@ -495,6 +542,19 @@ to-cantor₀-map-lemma f α β p =
    Ⅰ = ap f (to-cantor-cancels-to-cantor₀ α)
    Ⅱ = p
    Ⅲ = ap f (to-cantor-cancels-to-cantor₀ β) ⁻¹
+
+to-cantor₀-map-lemma′ : (f : Cantor → ℕ)
+                      → (α β : Cantor)
+                      → to-cantor₀-map f (to-cantor₀ α) ＝ to-cantor₀-map f (to-cantor₀ β)
+                      → f α ＝ f β
+to-cantor₀-map-lemma′ f α β p = f α                          ＝⟨ Ⅰ ⟩
+                                f (to-cantor (to-cantor₀ α)) ＝⟨ Ⅱ ⟩
+                                f (to-cantor (to-cantor₀ β)) ＝⟨ Ⅲ ⟩
+                                f β                          ∎
+ where
+  Ⅰ = ap f (to-cantor-cancels-to-cantor₀ α ⁻¹ )
+  Ⅱ = p
+  Ⅲ = ap f (to-cantor-cancels-to-cantor₀ β)
 
 \end{code}
 
@@ -651,22 +711,45 @@ rangeᵤ (succ n) = succ n ∷ λ { ₀ → [] ; ₁ → rangeᵤ n }
   φ = ＝⟪⟫-range-implies-＝⦅⦆ α β m
   ψ = ＝⟦⟧-up-to-rangeᵤ-m-implies-＝⟪⟫-up-to-range-m α β m
 
--- uni-continuity₀-implies-uni-continuity : (f : Cantor → ℕ)
---                                        → is-uniformly-continuous₀ f
---                                        → is-uniformly-continuous f
--- uni-continuity₀-implies-uni-continuity f ζ = rangeᵤ m , †
---  where
---   m : ℕ
---   m = pr₁ ζ
+＝⟦⟧-boolean-lemma : (α β : Cantor) (m : ℕ)
+                   → α ＝⟦ rangeᵤ m ⟧ β
+                   → embedding-C-B α ＝⟦ rangeᵤ m ⟧ embedding-C-B β
+＝⟦⟧-boolean-lemma α β zero (p ∷ _) = ap embedding-𝟚-ℕ p ∷ (λ { ₀ → [] ; ₁ → [] })
+＝⟦⟧-boolean-lemma α β (succ m) (p ∷ φ) =
+ ap embedding-𝟚-ℕ p ∷ λ { ₀ → [] ; ₁ → ＝⟦⟧-boolean-lemma α β m (φ ₁) }
 
---   f₀ : Cantor₀ → ℕ
---   f₀ = to-cantor₀-map f
+uni-continuity₀-implies-uni-continuity : (f : Cantor → ℕ)
+                                       → is-uniformly-continuous₀ f
+                                       → is-uniformly-continuous f
+uni-continuity₀-implies-uni-continuity f ζ = rangeᵤ m , †
+ where
+  m : ℕ
+  m = pr₁ ζ
 
---   ‡ : (α β : Baire) (𝒷₁ : is-boolean-point α) (𝒷₂ : is-boolean-point β)
---     → α ＝⟦ rangeᵤ m ⟧ β → f₀ (α , 𝒷₁) ＝ f₀ (β , 𝒷₂)
---   ‡ α β 𝒷₁ 𝒷₂ ϑ = pr₂ ζ (α , 𝒷₁) (β , 𝒷₂) (＝⟦⟧-up-to-range-m-implies-＝⦅⦆-up-to-m α β m ϑ)
+  f₀ : Cantor₀ → ℕ
+  f₀ = to-cantor₀-map f
 
---   † : (α β : Cantor) → α ＝⟦ rangeᵤ m ⟧ β → f α ＝ f β
---   † α β p = {! to-cantor₀-map-equality f !}
+  ‡ : (α β : Baire) (𝒷₁ : is-boolean-point α) (𝒷₂ : is-boolean-point β)
+    → α ＝⟦ rangeᵤ m ⟧ β → f₀ (α , 𝒷₁) ＝ f₀ (β , 𝒷₂)
+  ‡ α β 𝒷₁ 𝒷₂ ϑ =
+   pr₂ ζ (α , 𝒷₁) (β , 𝒷₂) (＝⟦⟧-up-to-range-m-implies-＝⦅⦆-up-to-m α β m ϑ)
+
+  † : (α β : Cantor) → α ＝⟦ rangeᵤ m ⟧ β → f α ＝ f β
+  † α β p = to-cantor₀-map-lemma′ f α β (‡ α′ β′ 𝒷₁ 𝒷₂ p′)
+   where
+    α′ : Baire
+    α′ = embedding-C-B α
+
+    𝒷₁ : (n : ℕ) → is-boolean-valued (α′ n)
+    𝒷₁ = to-baire-gives-boolean-point α
+
+    β′ : Baire
+    β′ = embedding-C-B β
+
+    𝒷₂ : (n : ℕ) → is-boolean-valued (β′ n)
+    𝒷₂ = to-baire-gives-boolean-point β
+
+    p′ : α′ ＝⟦ rangeᵤ m ⟧ β′
+    p′ = ＝⟦⟧-boolean-lemma α β m p
 
 \end{code}
