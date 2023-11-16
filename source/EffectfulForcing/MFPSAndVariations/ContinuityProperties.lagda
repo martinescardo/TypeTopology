@@ -9,7 +9,9 @@ First equivalence, for continuity, proved on 2023-06-13.
 
 {-# OPTIONS --safe --without-K --exact-split #-}
 
-module EffectfulForcing.MFPSAndVariations.ContinuityProperties where
+open import UF.FunExt
+
+module EffectfulForcing.MFPSAndVariations.ContinuityProperties (fe : Fun-Ext) where
 
 open import EffectfulForcing.MFPSAndVariations.Continuity
 
@@ -360,8 +362,8 @@ embed-into-ℕ-0-implies-is-₀ ₀ p = refl
 embed-into-ℕ-1-implies-is-₁ : (b : 𝟚) → embed-into-ℕ b ＝ 1 → b ＝ ₁
 embed-into-ℕ-1-implies-is-₁ ₁ p = refl
 
-to-cantor-cancels-to-cantor₀ : (α : Cantor) → to-cantor (to-cantor₀ α) ∼ α
-to-cantor-cancels-to-cantor₀ α = †
+to-cantor-cancels-to-cantor₀ : (α : Cantor) → to-cantor (to-cantor₀ α) ＝ α
+to-cantor-cancels-to-cantor₀ α = dfunext fe †
  where
   † : (n : ℕ) → to-bool (embed-into-ℕ (α n)) (to-baire-gives-boolean-point α n) ＝ α n
   † n = cases †₁ †₂ (to-baire-gives-boolean-point α n)
@@ -477,14 +479,22 @@ to-cantor₀-map-equality : (f g :  Cantor → ℕ)
                         → f ∼ g → to-cantor₀-map f ∼ to-cantor₀-map g
 to-cantor₀-map-equality f g ε = ε ∘ to-cantor
 
--- to-cantor₀-map-lemma : (f : Cantor → ℕ)
---                      → (α β : Cantor)
---                      → f α ＝ f β
---                      → to-cantor₀-map f (to-cantor₀ α) ＝ {!!}
--- to-cantor₀-map-lemma f α β p = {!!}
---   -- where
---   --  Ⅰ = ap f {!to-cantor-cancels-to-cantor₀ α!}
---   --  Ⅱ = {!!}
+to-cantor₀-map-lemma : (f : Cantor → ℕ)
+                     → (α β : Cantor)
+                     → f α ＝ f β
+                     → to-cantor₀-map f (to-cantor₀ α)
+                       ＝ to-cantor₀-map f (to-cantor₀ β)
+to-cantor₀-map-lemma f α β p =
+ to-cantor₀-map f (to-cantor₀ α) ＝⟨ refl ⟩
+ f (to-cantor (to-cantor₀ α))    ＝⟨ Ⅰ    ⟩
+ f α                             ＝⟨ Ⅱ    ⟩
+ f β                             ＝⟨ Ⅲ    ⟩
+ f (to-cantor (to-cantor₀ β))    ＝⟨ refl ⟩
+ to-cantor₀-map f (to-cantor₀ β) ∎
+  where
+   Ⅰ = ap f (to-cantor-cancels-to-cantor₀ α)
+   Ⅱ = p
+   Ⅲ = ap f (to-cantor-cancels-to-cantor₀ β) ⁻¹
 
 \end{code}
 
