@@ -21,8 +21,8 @@ open import EffectfulForcing.MFPSAndVariations.Dialogue
  using (eloquent; D; dialogue; eloquent-functions-are-continuous;
         dialogue-continuity; generic; B; C)
 open import EffectfulForcing.MFPSAndVariations.Continuity
- using (is-continuous; _＝⟪_⟫_)
-open import EffectfulForcing.MFPSAndVariations.ContinuityProperties
+ using (is-continuous; _＝⟪_⟫_; C-restriction)
+open import EffectfulForcing.MFPSAndVariations.ContinuityProperties fe
 open import EffectfulForcing.Internal.Correctness
  using (Rnorm-generic; is-dialogue-for; extβ; Rnorm-lemma₀; Rnorm)
 open import EffectfulForcing.Internal.External
@@ -160,11 +160,26 @@ internal-uni-mod-correct : (t : 〈〉 ⊢ (baire ⇒ ι)) (α β : 〈〉 ⊢ b
                          → ⟦ t · α ⟧₀ ＝ ⟦ t · β ⟧₀
 internal-uni-mod-correct t α β ψ₁ ψ₂ ϑ = †
  where
-  c₀ : is-continuous₀ ⟦ t ⟧₀
+  f : (ℕ → ℕ) → ℕ
+  f = ⟦ t ⟧₀
+
+  f₀ : (ℕ → 𝟚) → ℕ
+  f₀ = C-restriction f
+
+  c₀ : is-uniformly-continuous₀ f₀
   c₀ = {!!}
 
-  † : ⟦ t · α ⟧₀ ＝ ⟦ t · β ⟧₀
-  † = {!!}
+  mᵤ : ℕ
+  mᵤ = pr₁ c₀
+
+  α′ : Cantor₀
+  α′ = ⟦ α ⟧₀ , {!!}
+
+  β′ : {!!}
+  β′ = {!!}
+
+  † : f ⟦ α ⟧₀ ＝ f ⟦ β ⟧₀
+  † = {!!} -- pr₂ (c₀ ⟦ α ⟧₀) ⟦ β ⟧₀ {!!}
 
 -- One can prove a theorem saying max-question-in-boolean-paths is the same
 -- thing as max-question followed by a pruning.
