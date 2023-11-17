@@ -1242,12 +1242,3 @@ position n (and nowhere else).
 \end{code}
 
 End of addition.
-
-We export the above outside the module:
-
-\begin{code}
-
-ℕ∞-charac : funext₀ → ℕ∞ ≃ (Σ β ꞉ (ℕ → 𝟚), has-at-most-one-₁ β)
-ℕ∞-charac = an-automorphism-and-an-equivalence.ℕ∞-charac
-
-\end{code}

@@ -34,7 +34,7 @@ See also the discussion at https://twitter.com/EscardoMartin/status/147339326101
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K #-}
+{-# OPTIONS --safe --without-K --lossy-unification #-}
 
 open import MLTT.Plus-Properties
 open import MLTT.Spartan
