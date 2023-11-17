@@ -25,7 +25,7 @@ open import EffectfulForcing.MFPSAndVariations.Dialogue
         dialogue-continuity; generic)
 open import EffectfulForcing.MFPSAndVariations.Continuity
  using (is-continuous; _＝⟪_⟫_)
-open import EffectfulForcing.MFPSAndVariations.ContinuityProperties
+open import EffectfulForcing.MFPSAndVariations.ContinuityProperties fe
 open import EffectfulForcing.Internal.Correctness
  using (Rnorm-generic; is-dialogue-for; extβ; Rnorm-lemma₀; Rnorm)
 open import EffectfulForcing.Internal.External
