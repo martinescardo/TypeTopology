@@ -85,10 +85,6 @@ The predecessor operator.
 
 \begin{code}
 
-pred : ℕ → ℕ
-pred zero     = zero
-pred (succ n) = n
-
 predᵀ : {Γ : Cxt} → Γ ⊢ ι ⇒ ι
 predᵀ = Rec' {σ = ι} · (ƛ (ƛ ν₁)) · Zero
 
