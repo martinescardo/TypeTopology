@@ -33,9 +33,9 @@ private
 
 \end{code}
 
-The definition of LLPO uses _∨_ rather than _+_. But show that with
-_+_, LLPO implies WLPO, but it is known that LLPO with _∨_ doesn't
-(there are counter-models).
+The definition of LLPO uses _∨_ rather than _+_. We show that LLPO
+defined with _+_ implies WLPO, although it is known that LLPO defined with
+_∨_ doesn't (there are counter-models).
 
 \begin{code}
 
