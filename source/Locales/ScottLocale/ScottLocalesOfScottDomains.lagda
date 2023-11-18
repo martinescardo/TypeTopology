@@ -43,6 +43,8 @@ open import DomainTheory.Topology.ScottTopology              pt fe 𝓤
 open import DomainTheory.Topology.ScottTopologyProperties    pt fe 𝓤
 open import Locales.Frame                                    pt fe
  hiding (∅)
+open import Locales.Compactness                              pt fe
+ hiding (is-compact)
 
 open import Locales.SmallBasis pt fe sr
 
@@ -56,6 +58,13 @@ open PowersetOperations
 open Locale
 
 open PropositionalTruncation pt hiding (_∨_)
+
+\end{code}
+
+\begin{code}
+
+_⊆⊆_ : {𝓤 𝓥 : Universe} {X : 𝓤  ̇} → List X → 𝓟 {𝓥} {𝓤} X → 𝓤 ⊔ 𝓥  ̇
+_⊆⊆_ {_} {_} {X} xs U = (x : X) → member x xs → x ∈ U
 
 \end{code}
 
@@ -171,14 +180,80 @@ We now construct the basis for this locale.
    ⦅𝟏⦆ = from-list₀-is-upwards-closed ks
    ⦅𝟐⦆ = from-list₀-is-inaccessible-by-directed-joins ks
 
- from-list : List B → ⟨ 𝒪 𝒮𝓓 ⟩
- from-list ks = from-list₀ ks , from-list₀-gives-scott-opens ks
+ from-list₀-lemma : (x : ⟨ 𝓓 ⟩∙) (ks : List B)
+                  → x ∈ from-list₀ ks → ∃ k ꞉ B , member k ks × β k ⊑⟨ 𝓓 ⟩ x
+ from-list₀-lemma x []       = λ ()
+ from-list₀-lemma x (k ∷ ks) p = ∥∥-rec ∃-is-prop † p
+  where
+   † : principal-filter 𝓓 (β k) x holds + x ∈ from-list₀ ks
+     → ∃ k₀ ꞉ B , member k₀ (k ∷ ks) × underlying-order 𝓓 (β k₀) x
+   † (inl q) = ∣ k , (in-head , q) ∣
+   † (inr q) = ∥∥-rec
+                ∃-is-prop
+                (λ { (k₀ , r , s) → ∣ k₀ , in-tail r , s ∣ })
+                (from-list₀-lemma x ks q)
+
+\end{code}
+
+\begin{code}
+
+ γ : List B → ⟨ 𝒪 𝒮𝓓 ⟩
+ γ ks = from-list₀ ks , from-list₀-gives-scott-opens ks
+
+\end{code}
+
+\begin{code}
+
+ γ-idempotence-lemma : (𝔘 : ⟨ 𝒪 𝒮𝓓 ⟩) (bs : List B)
+                     → (γ bs ≤[ poset-of (𝒪 𝒮𝓓) ] 𝔘) holds
+                     → ∃ b ꞉ B , member b bs × {!((↑[ 𝓓 ] ?) ≤[ poset-of (𝒪 𝒮𝓓) ] 𝔘) holds!}
+ γ-idempotence-lemma = {!!}
+
+\end{code}
+
+\begin{code}
+
+ γ-gives-compact-opens : (b⃗ : List B) → is-compact-open 𝒮𝓓 (γ b⃗) holds
+ γ-gives-compact-opens b⃗ S δ p = {! !}
+
+\end{code}
+
+\begin{code}
 
  basis-for-𝒮𝓓 : Fam 𝓤 ⟨ 𝒪 𝒮𝓓 ⟩
- basis-for-𝒮𝓓 = List B , from-list
+ basis-for-𝒮𝓓 = List B , γ
+
+ open PropertiesAlgebraic 𝓓 (𝕒 hscb pe)
 
  𝒮𝓓-dir-basis-forᴰ : directed-basis-forᴰ (𝒪 𝒮𝓓) basis-for-𝒮𝓓
- 𝒮𝓓-dir-basis-forᴰ U = ({!!} , {!!}) , {!!}
+ 𝒮𝓓-dir-basis-forᴰ U@(_ , so) = (D , δ) , † , {!!}
+   where
+    open Joins (λ x y → x ≤[ poset-of (𝒪 𝒮𝓓) ] y)
+
+    Uᴿ : 𝒪ₛᴿ
+    Uᴿ = to-𝒪ₛᴿ U
+
+    open 𝒪ₛᴿ Uᴿ renaming (pred to 𝔘)
+
+    D : 𝓤  ̇
+    D = (Σ b⃗ ꞉ (List B) , ((b : B) → member b b⃗ → (β b) ∈ 𝔘))
+
+    δ : (Σ b⃗ ꞉ (List B) , ((b : B) → member b b⃗ → (β b) ∈ 𝔘)) → List B
+    δ = pr₁
+
+    †₁ : (U is-an-upper-bound-of ⁅ γ d ∣ d ε (D , δ) ⁆) holds
+    †₁ (b⃗ , r) b p =
+     ∥∥-rec (holds-is-prop (β b ∈ₚ 𝔘)) ‡₁ (from-list₀-lemma (β b) b⃗ p)
+      where
+       ‡₁ : Σ k ꞉ B , member k b⃗ × β k ⊑⟨ 𝓓 ⟩ β b → β b ∈ 𝔘
+       ‡₁ (k , q , φ) = pred-is-upwards-closed (β k) (β b) (r k q) φ
+
+    †₂ : ((U′ , _) : upper-bound ⁅ γ d ∣ d ε (D , δ) ⁆)
+       → (U ≤[ poset-of (𝒪 𝒮𝓓) ] U′) holds
+    †₂ (U′ , p) = {!!}
+
+    † : (U is-lub-of ⁅ γ d ∣ d ε (D , δ) ⁆) holds
+    † = †₁ , †₂
 
  σᴰ : spectralᴰ 𝒮𝓓
  σᴰ = basis-for-𝒮𝓓 , 𝒮𝓓-dir-basis-forᴰ , ({!!} , (τ , μ))
