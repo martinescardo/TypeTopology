@@ -47,7 +47,7 @@ untruncated-LLPO = (α : ℕ → 𝟚)
 
 \end{code}
 
-The following version, is equivalent, which shows that (untruncated)
+The following version is equivalent, which shows that (untruncated)
 LLPO is an instance of De Morgan Law.
 
 \begin{code}
@@ -274,7 +274,7 @@ WLPO-gives-untruncated-LLPO = {!!}
 
 \end{code}
 
-We know formalate (truncated) LLPO.
+We now formalate (truncated) LLPO.
 
 \begin{code}
 
