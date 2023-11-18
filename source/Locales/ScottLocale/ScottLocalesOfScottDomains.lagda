@@ -23,6 +23,10 @@ open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.Powerset-MultiUniverse
 open import UF.Size
+open import UF.Classifiers
+open import UF.Univalence
+open import UF.Equiv
+open import UF.Embeddings
 
 module Locales.ScottLocale.ScottLocalesOfScottDomains
         (pt : propositional-truncations-exist)
@@ -254,6 +258,11 @@ We now construct the basis for this locale.
 
     † : (U is-lub-of ⁅ γ d ∣ d ε (D , δ) ⁆) holds
     † = †₁ , †₂
+
+ fun-fact : (ua : is-univalent 𝓤) (fe : funext 𝓤 (𝓤 ⁺))
+          → (X : 𝓤  ̇)
+          → Subtypes' 𝓤 X ≃ (X → Ω 𝓤)
+ fun-fact ua fe X = Ω-is-subtype-classifier' {𝓤 = 𝓤} {𝓥 = 𝓤} ua fe X
 
  σᴰ : spectralᴰ 𝒮𝓓
  σᴰ = basis-for-𝒮𝓓 , 𝒮𝓓-dir-basis-forᴰ , ({!!} , (τ , μ))
