@@ -37,6 +37,20 @@ The definition of LLPO uses _∨_ rather than _+_. We show that LLPO
 defined with _+_ implies WLPO, although it is known that LLPO defined with
 _∨_ doesn't (there are counter-models).
 
+LLPO says that for every binary sequence with at most one , either
+even terms or the odd terms are all 0. It is known that WLPO (it is
+decidable whether a given binary sequence is constantly 0) implies
+LLPO.
+
+We can implement this disjunction with "+" or "∨", and we discuss
+both here.
+
+With "∨", it is known that LLPO doesn't imply WLPO (there are
+counter-models).
+
+The main result in this file is that LLPO defined with "+" implies
+WLPO. This seems to be a new result.
+
 \begin{code}
 
 untruncated-LLPO : 𝓤₀ ̇
