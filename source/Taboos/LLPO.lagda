@@ -292,22 +292,22 @@ module _ (pt : propositional-truncations-exist) where
 
 \end{code}
 
-The most natural form of LLPO for what we've done above is the followd.
+The most natural form of LLPO for what we've done above is the following.
 
 \begin{code}
 
- ℕ-∞-LLPO : 𝓤₀ ̇
- ℕ-∞-LLPO = (u v : ℕ∞) → ¬ (is-finite u × is-finite v) → (u ＝ ∞) ∨ (v ＝ ∞)
+ ℕ∞-LLPO : 𝓤₀ ̇
+ ℕ∞-LLPO = (u v : ℕ∞) → ¬ (is-finite u × is-finite v) → (u ＝ ∞) ∨ (v ＝ ∞)
 
 \end{code}
 
-TODO. (Easy, given what we've proved.) Show that ℕ-∞-LLPO and LLPO are
+TODO. (Easy, given what we've proved.) Show that ℕ∞-LLPO and LLPO are
 logically equivalent (and hence equivalent).
 
 TODO. Give a better version of untruncated-LLPO-gives-WLPO using
 this. The proof won't be different. It will just be a factorization
 through the proof of the previous TODO.
 
-LLPO doesn't imply WLPO (there are published refereced - find and
+LLPO doesn't imply WLPO (there are published refereces - find and
 include them here). One example seems to Johnstone's topological
 topos, but this is unpublished as far as I know.
