@@ -1,4 +1,4 @@
-ℕ-to-ℕ∞' nMartin Escardo 2012.
+Martin Escardo 2012.
 
 See my JSL paper "Infinite sets that satisfy the principle of
 omniscience" for a discussion of the type ℕ∞ defined here.
@@ -65,12 +65,12 @@ force-decreasing β 0        = β 0
 force-decreasing β (succ i) = min𝟚 (β (i ∔ 1)) (force-decreasing β i)
 
 force-decreasing-is-decreasing : (β : ℕ → 𝟚) → is-decreasing (force-decreasing β)
-force-decreasing-is-decreasing β zero     = Lemma[minab≤₂b]
+force-decreasing-is-decreasing β 0        = Lemma[minab≤₂b]
 force-decreasing-is-decreasing β (succ i) = Lemma[minab≤₂b] {β (i ∔ 2)}
                                                             {force-decreasing β (i ∔ 1)}
 
 force-decreasing-unchanged : (α : ℕ → 𝟚) → is-decreasing α → force-decreasing α ∼ α
-force-decreasing-unchanged α d zero     = refl
+force-decreasing-unchanged α d 0        = refl
 force-decreasing-unchanged α d (succ i) = g
   where
     IH : force-decreasing α i ＝ α i
@@ -101,13 +101,13 @@ force-decreasing-unchanged α d (succ i) = g
 ℕ∞-retract-of-Cantor fe = ℕ→𝟚-to-ℕ∞ , ι , ℕ→𝟚-to-ℕ∞-is-retraction fe
 
 force-decreasing-is-smaller : (β : ℕ → 𝟚) (i : ℕ) → force-decreasing β i ≤ β i
-force-decreasing-is-smaller β zero     = ≤₂-refl
+force-decreasing-is-smaller β 0        = ≤₂-refl
 force-decreasing-is-smaller β (succ i) = Lemma[minab≤₂a]
 
 force-decreasing-is-not-much-smaller : (β : ℕ → 𝟚) (n : ℕ)
                                      → force-decreasing β n ＝ ₀
                                      → Σ m ꞉ ℕ , β m ＝ ₀
-force-decreasing-is-not-much-smaller β zero  p    = zero , p
+force-decreasing-is-not-much-smaller β 0  p       = 0 , p
 force-decreasing-is-not-much-smaller β (succ n) p = f c
   where
     A = Σ m ꞉ ℕ , β m ＝ ₀
@@ -339,7 +339,8 @@ Succ-criterion fe {u} {n} r s = ℕ∞-to-ℕ→𝟚-lc fe claim
      where
       lemma₀ : (i : ℕ) → u ⊑ i ∔ 1
       lemma₀ 0        = s
-      lemma₀ (succ i) = [a＝₁→b＝₁]-gives-[b＝₀→a＝₀] (≤₂-criterion-converse (pr₂ u (i ∔ 1))) (lemma₀ i)
+      lemma₀ (succ i) = [a＝₁→b＝₁]-gives-[b＝₀→a＝₀]
+                         (≤₂-criterion-converse (pr₂ u (i ∔ 1))) (lemma₀ i)
   lemma u (succ n) r s 0 = lemma₁ (n ∔ 1) r
      where
       lemma₁ : (n : ℕ) → n ⊏ u → is-positive u
@@ -473,7 +474,7 @@ being-finite-is-prop = ℕ-to-ℕ∞-is-embedding
 ℕ-to-ℕ∞-is-finite n = (n , refl)
 
 Zero-is-finite : is-finite Zero
-Zero-is-finite = ℕ-to-ℕ∞-is-finite zero
+Zero-is-finite = ℕ-to-ℕ∞-is-finite 0
 
 Zero-is-finite' : funext₀ → (u : ℕ∞) → is-Zero u → is-finite u
 Zero-is-finite' fe u z = transport⁻¹
@@ -482,7 +483,7 @@ Zero-is-finite' fe u z = transport⁻¹
                            Zero-is-finite
 
 is-finite-down : (u : ℕ∞) → is-finite (Succ u) → is-finite u
-is-finite-down u (zero , r)   = 𝟘-elim (Zero-not-Succ r)
+is-finite-down u (0 , r)      = 𝟘-elim (Zero-not-Succ r)
 is-finite-down u (succ n , r) = n , Succ-lc r
 
 is-finite-up : (u : ℕ∞) → is-finite u → is-finite (Succ u)
@@ -530,14 +531,14 @@ Succ-not-≼-Zero : (u : ℕ∞) → ¬ (Succ u ≼ Zero)
 Succ-not-≼-Zero u l = zero-is-not-one (l zero refl)
 
 Succ-monotone : (u v : ℕ∞) → u ≼ v → Succ u ≼ Succ v
-Succ-monotone u v l zero p = p
+Succ-monotone u v l 0        p = p
 Succ-monotone u v l (succ n) p = l n p
 
 Succ-loc : (u v : ℕ∞) → Succ u ≼ Succ v → u ≼ v
 Succ-loc u v l n = l (n ∔ 1)
 
 above-Succ-is-positive : (u v : ℕ∞) → Succ u ≼ v → is-positive v
-above-Succ-is-positive u v l = l zero refl
+above-Succ-is-positive u v l = l 0 refl
 
 ≼-unfold-Succ : funext₀ → (u v : ℕ∞) → Succ u ≼ v → Succ u ≼ Succ (Pred v)
 ≼-unfold-Succ fe u v l = transport (λ - → Succ u ≼ -)
@@ -626,15 +627,15 @@ finite-≺-Succ a (n , p) = transport (_≺ Succ a) p
 open import Naturals.Order
 
 <-gives-⊏ : (m n : ℕ) → m < n →  m ⊏ ι n
-<-gives-⊏ zero     zero     l = 𝟘-elim l
-<-gives-⊏ zero     (succ n) l = refl
-<-gives-⊏ (succ m) zero     l = 𝟘-elim l
+<-gives-⊏ 0        0        l = 𝟘-elim l
+<-gives-⊏ 0        (succ n) l = refl
+<-gives-⊏ (succ m) 0        l = 𝟘-elim l
 <-gives-⊏ (succ m) (succ n) l = <-gives-⊏ m n l
 
 ⊏-gives-< : (m n : ℕ) →  m ⊏ ι n → m < n
-⊏-gives-< zero     zero     l = 𝟘-elim (zero-is-not-one l)
-⊏-gives-< zero     (succ n) l = zero-least n
-⊏-gives-< (succ m) zero     l = 𝟘-elim (zero-is-not-one l)
+⊏-gives-< 0        0        l = 𝟘-elim (zero-is-not-one l)
+⊏-gives-< 0        (succ n) l = zero-least n
+⊏-gives-< (succ m) 0        l = 𝟘-elim (zero-is-not-one l)
 ⊏-gives-< (succ m) (succ n) l = ⊏-gives-< m n l
 
 ⊏-back : (u : ℕ∞) (n : ℕ) → n ∔ 1 ⊏ u → n ⊏ u
@@ -732,7 +733,7 @@ proved above, that ≺ is well founded:
                  ≺-trans
 
 ℕ-to-ℕ∞-lemma : funext₀ → (u : ℕ∞) (n : ℕ) → u ⊑ n → Σ m ꞉ ℕ , (m ≤ n) × (u ＝ ι m)
-ℕ-to-ℕ∞-lemma fe u zero p     = zero , ≤-refl zero , is-Zero-equal-Zero fe p
+ℕ-to-ℕ∞-lemma fe u 0        p = 0 , ≤-refl 0 , is-Zero-equal-Zero fe p
 ℕ-to-ℕ∞-lemma fe u (succ n) p = g (𝟚-is-discrete (ι u n) ₀)
  where
   IH : u ⊑ n → Σ m ꞉ ℕ , (m ≤ n) × (u ＝ ι m)
@@ -900,7 +901,7 @@ Characterization of ⊏.
           → (n : ℕ) (u : ℕ∞)
           → n ⊏ u
           → Σ v ꞉ ℕ∞ , u ＝ (Succ ^ (n ∔ 1)) v
-⊏-charac→ fe₀ zero u l = Pred u , (positive-equal-Succ fe₀ l)
+⊏-charac→ fe₀ 0        u l = Pred u , (positive-equal-Succ fe₀ l)
 ⊏-charac→ fe₀ (succ n) u l = γ
  where
   IH : Σ v ꞉ ℕ∞ , Pred u ＝ (Succ ^ (n ∔ 1)) v
@@ -919,7 +920,7 @@ Characterization of ⊏.
 
 ⊏-charac← : funext₀ → (n : ℕ) (u : ℕ∞)
            → (Σ v ꞉ ℕ∞ , u ＝ (Succ ^ (n ∔ 1)) v) → n ⊏ u
-⊏-charac← fe₀ zero u (v , refl) = refl
+⊏-charac← fe₀ 0        u (v , refl) = refl
 ⊏-charac← fe₀ (succ n) u (v , refl) = γ
  where
   IH : n ⊏ Pred u
@@ -956,15 +957,19 @@ bounded-is-finite fe n u le = case ℕ-to-ℕ∞-lemma fe u n le of
 finite-trichotomous : funext₀
                     → (n : ℕ) (u : ℕ∞)
                     → (ι n ≺ u) + (ι n ＝ u) + (u ≺ ι n)
-finite-trichotomous fe 0        u = 𝟚-equality-cases
-                                     (λ (l : is-Zero u) → inr (inl ((is-Zero-equal-Zero fe l)⁻¹)))
-                                     (λ (m : is-positive u) → inl (⊏-gives-≺ 0 u m))
-finite-trichotomous fe (succ n) u = 𝟚-equality-cases
-                                     (λ (l : u ⊑ succ n) →
-                                           𝟚-equality-cases
-                                            (λ (a : u ⊑ n) → inr (inr (⊑-succ-gives-≺ fe n u a)))
-                                            (λ (b : n ⊏ u) → inr (inl ((Succ-criterion fe b l)⁻¹))))
-                                     (λ (m : succ n ⊏ u) → inl (⊏-gives-≺ (succ n) u m))
+finite-trichotomous fe 0 u =
+ 𝟚-equality-cases
+  (λ (l : is-Zero u) → inr (inl ((is-Zero-equal-Zero fe l)⁻¹)))
+  (λ (m : is-positive u)
+        → inl (⊏-gives-≺ 0 u m))
+finite-trichotomous fe (succ n) u =
+ 𝟚-equality-cases
+  (λ (l : u ⊑ succ n) →
+        𝟚-equality-cases
+         (λ (a : u ⊑ n) → inr (inr (⊑-succ-gives-≺ fe n u a)))
+         (λ (b : n ⊏ u) → inr (inl ((Succ-criterion fe b l)⁻¹))))
+  (λ (m : succ n ⊏ u) → inl (⊏-gives-≺ (succ n) u m))
+
 \end{code}
 
 TODO. Move the following to a sepatate file.
@@ -1073,7 +1078,7 @@ is-finite' : ℕ∞' → 𝓤₀ ̇
 is-finite' u = T (ℕ∞'-to-ℕ→𝟚 u)
 
 Zero'-is-finite : is-finite' Zero'
-Zero'-is-finite = zero , refl
+Zero'-is-finite = 0 , refl
 
 finiteness'-preservation : (u : ℕ∞')
                           → is-finite' u
@@ -1081,7 +1086,7 @@ finiteness'-preservation : (u : ℕ∞')
 finiteness'-preservation _ (n , e) = succ n , e
 
 ℕ-to-ℕ∞'-is-finite' : (n : ℕ) → is-finite' (ι n)
-ℕ-to-ℕ∞'-is-finite' 0        = zero , refl
+ℕ-to-ℕ∞'-is-finite' 0        = Zero'-is-finite
 ℕ-to-ℕ∞'-is-finite' (succ n) = finiteness'-preservation (ι n)
                                 (ℕ-to-ℕ∞'-is-finite' n)
 
@@ -1133,7 +1138,7 @@ private
 
 \end{code}
 
-Now we discuss the restrictions of ϕ and γ mentioned above. Notice
+We now discuss the restrictions of ϕ and γ mentioned above. Notice
 that the following is by four cases without induction.
 
 \begin{code}
@@ -1142,7 +1147,7 @@ that the following is by four cases without induction.
            → (α : ℕ → 𝟚)
            → is-decreasing α
            → has-at-most-one-₁ (ϕ α)
-ϕ-property fe α δ (0 , p) (0 , q)      = to-subtype-＝ (λ _ → 𝟚-is-set) refl
+ϕ-property fe α δ (0 , p) (0 ,      q) = to-subtype-＝ (λ _ → 𝟚-is-set) refl
 ϕ-property fe α δ (0 , p) (succ m , q) = 𝟘-elim (Zero-not-Succ (II ⁻¹ ∙ IV))
  where
   u : ℕ∞
@@ -1253,7 +1258,7 @@ a suitable induction hypothesis.
 γ-lemma : (β : ℕ → 𝟚)
         → has-at-most-one-₁ β
         → (n : ℕ) → β (n ∔ 1) ＝ ₁ → (k : ℕ) → k ≤ n → γ β k ＝ ₁
-γ-lemma β π n p zero l = w
+γ-lemma β π n p 0 l = w
  where
   w : complement (β 0) ＝ ₁
   w = complement-intro₀ (at-most-one-₁-Lemma₁ β π (positive-not-zero n) p)
@@ -1332,7 +1337,7 @@ And with this we get the promised equivalence.
 
  private
   trivial-fact : (i : ℕ) → ϕ (ℕ∞-to-ℕ→𝟚 ∞) i ＝ ₀
-  trivial-fact zero     = refl
+  trivial-fact 0        = refl
   trivial-fact (succ i) = refl
 
  Zero-preservation : ℕ∞-to-ℕ∞' Zero ＝ Zero'
