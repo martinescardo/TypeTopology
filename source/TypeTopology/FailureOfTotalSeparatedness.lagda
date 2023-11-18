@@ -43,7 +43,7 @@ open import MLTT.Spartan
 
 open import MLTT.Two-Properties
 open import CoNaturals.GenericConvergentSequence
-open import Taboos.BasicDiscontinuity
+open import Taboos.BasicDiscontinuity (fe 𝓤₀ 𝓤₀)
 open import Taboos.WLPO
 open import UF.Base
 open import Notation.CanonicalMap
@@ -101,7 +101,7 @@ module concrete-example where
 \begin{code}
 
  failure : (p : X → 𝟚) → p ∞₀ ≠ p ∞₁ → WLPO
- failure p = disagreement-taboo fe p₀ p₁ lemma
+ failure p = disagreement-taboo p₀ p₁ lemma
   where
    p₀ : ℕ∞ → 𝟚
    p₀ u = p (u , λ r → ₀)

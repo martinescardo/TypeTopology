@@ -9,45 +9,48 @@ Lesser Limited Principle of Omniscience.
 module Taboos.LLPO where
 
 open import CoNaturals.GenericConvergentSequence
-open import MLTT.Spartan
 open import MLTT.Plus-Properties
+open import MLTT.Spartan
 open import MLTT.Two-Properties
-open import Naturals.Properties
 open import Naturals.Parity
+open import Naturals.Properties
+open import Notation.CanonicalMap
+open import Taboos.BasicDiscontinuity
 open import Taboos.WLPO
+open import UF.Equiv
+open import UF.FunExt
 open import UF.PropTrunc
 open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
-open import UF.Equiv
-open import UF.Base
-open import UF.DiscreteAndSeparated
-open import UF.FunExt
 
-T : (ℕ → 𝟚) → 𝓤₀ ̇
-T α = Σ n ꞉ ℕ , α n ＝ ₁
+private
+ T : (ℕ → 𝟚) → 𝓤₀ ̇
+ T α = Σ n ꞉ ℕ , α n ＝ ₁
 
-to-T-＝ : {α : ℕ → 𝟚}
-          {n n' : ℕ}
-        → n ＝ n'
-        → {e : α n ＝ ₁} {e' : α n' ＝ ₁}
-        → (n , e) ＝[ T α ] (n' , e')
-to-T-＝ p = to-subtype-＝ (λ - → 𝟚-is-set) p
+private
+ instance
+  Canonical-Map-ℕ-ℕ∞' : Canonical-Map ℕ ℕ∞'
+  ι {{Canonical-Map-ℕ-ℕ∞'}} = ℕ-to-ℕ∞'
 
-index-uniqueness : (α : ℕ → 𝟚)
-                 → is-prop (T α)
-                 → {n n' : ℕ} → α n ＝ ₁ → α n' ＝ ₁ → n ＝ n'
-index-uniqueness α i {n} {n'} e e' = ap pr₁ (i (n , e) (n' , e'))
+\end{code}
 
-index-uniqueness-converse : (α : ℕ → 𝟚)
-                          → ({n n' : ℕ} → α n ＝ ₁ → α n' ＝ ₁ → n ＝ n')
-                          → is-prop (T α)
-index-uniqueness-converse α ϕ (n , e) (n' , e') = to-T-＝ (ϕ e e')
+The definition of LLPO uses _∨_ rather than _+_. But show that with
+_+_, LLPO implies WLPO, but it is known that LLPO with _∨_ doesn't
+(there are counter-models).
+
+\begin{code}
 
 untruncated-LLPO : 𝓤₀ ̇
 untruncated-LLPO = (α : ℕ → 𝟚)
                  → is-prop (T α)
                  → ((n : ℕ) → α ( double n) ＝ ₀)
                  + ((n : ℕ) → α (sdouble n) ＝ ₀)
+
+\end{code}
+
+The following version, is equivalent, which shows that (untruncated)
+LLPO is an instance of De Morgan Law.
+
+\begin{code}
 
 untruncated-LLPO' : 𝓤₀ ̇
 untruncated-LLPO' = (β γ : ℕ → 𝟚)
@@ -136,34 +139,26 @@ prime llpo β γ i j ν = III
                → ¬T-gives-not-T (λ n → (α-γ n)⁻¹ ∙ ψ n))
          II
 
-{-
+\end{code}
+
+The following result seems to be new (and I announced it years ago in
+the constructivenews mailing list).
+
+\begin{code}
+
 untruncated-LLPO-gives-WLPO : funext₀ → untruncated-LLPO' → WLPO
 untruncated-LLPO-gives-WLPO fe llpo = wlpo
  where
-  ℕ∞' = Σ α ꞉ (ℕ → 𝟚) , is-prop (T α)
-
-  H : ℕ∞' → 𝓤₀ ̇
-  H (α , i) = T α
-
-  ℕ∞'-to-ℕ→𝟚 : ℕ∞' → (ℕ → 𝟚)
-  ℕ∞'-to-ℕ→𝟚 = pr₁
-
-  ℕ∞'-to-ℕ→𝟚-prop : (u : ℕ∞') → is-prop (T (ℕ∞'-to-ℕ→𝟚 u))
-  ℕ∞'-to-ℕ→𝟚-prop = pr₂
-
-  ∞' : ℕ∞'
-  ∞' = (λ _ → ₀) , (λ (n , e) (n' , e') → 𝟘-elim (zero-is-not-one e))
-
-  ϕ : (u v : ℕ∞') → ¬ H u + ¬ H v → 𝟚
+  ϕ : (u v : ℕ∞') → ¬ is-finite' u + ¬ is-finite' v → 𝟚
   ϕ u v (inl l) = ₀
   ϕ u v (inr r) = ₁
 
-  l₀ : (u : ℕ∞') → ¬ H u + ¬ H ∞'
+  l₀ : (u : ℕ∞') → ¬ is-finite' u + ¬ is-finite' ∞'
   l₀ u = llpo (ℕ∞'-to-ℕ→𝟚 u)      (ℕ∞'-to-ℕ→𝟚 ∞')
               (ℕ∞'-to-ℕ→𝟚-prop u) (ℕ∞'-to-ℕ→𝟚-prop ∞')
               (λ (_ , (_ , e)) → zero-is-not-one e)
 
-  l₁ : (u : ℕ∞') → ¬ H ∞' + ¬ H u
+  l₁ : (u : ℕ∞') → ¬ is-finite' ∞' + ¬ is-finite' u
   l₁ u = llpo (ℕ∞'-to-ℕ→𝟚 ∞')      (ℕ∞'-to-ℕ→𝟚 u)
               (ℕ∞'-to-ℕ→𝟚-prop ∞') (ℕ∞'-to-ℕ→𝟚-prop u)
               (λ ((_ , e) , _) → zero-is-not-one e)
@@ -173,7 +168,6 @@ untruncated-LLPO-gives-WLPO fe llpo = wlpo
                   (ℕ∞'-to-ℕ→𝟚-prop ∞') (ℕ∞'-to-ℕ→𝟚-prop ∞'))
                   (dfunext fe (λ (((_ , e) , _) : T (λ _ → ₀) × T (λ _ → ₀))
                                                 → 𝟘-elim (zero-is-not-one e)))
-
   f₀ f₁ : ℕ∞' → 𝟚
   f₀ u = ϕ u  ∞' (l₀ u)
   f₁ u = ϕ ∞' u  (l₁ u)
@@ -188,25 +182,76 @@ untruncated-LLPO-gives-WLPO fe llpo = wlpo
      f₀ ∞'           ＝⟨ e₀ ⟩
      ₁               ∎ )
 
-  ϕ₀-property : (u : ℕ∞') (d : ¬ H u + ¬ H ∞') → H u → ϕ u ∞' d ＝ ₁
+  ϕ₀-property : (u : ℕ∞') (d : ¬ is-finite' u + ¬ is-finite' ∞')
+              → is-finite' u
+              → ϕ u ∞' d ＝ ₁
   ϕ₀-property u (inl l) h = 𝟘-elim (l h)
   ϕ₀-property u (inr _) h = refl
 
-  ϕ₁-property : (u : ℕ∞') (d : ¬ H ∞' + ¬ H u) → H u → ϕ ∞' u d ＝ ₀
+  ϕ₁-property : (u : ℕ∞') (d : ¬ is-finite' ∞' + ¬ is-finite' u)
+              → is-finite' u
+              → ϕ ∞' u d ＝ ₀
   ϕ₁-property u (inl _) h = refl
   ϕ₁-property u (inr r) h = 𝟘-elim (r h)
 
-  f₀-property : (u : ℕ∞') → H u → f₀ u ＝ ₁
+  f₀-property : (u : ℕ∞') → is-finite' u → f₀ u ＝ ₁
   f₀-property u = ϕ₀-property u (l₀ u)
 
-  f₁-property : (u : ℕ∞') → H u → f₁ u ＝ ₀
+  f₁-property : (u : ℕ∞') → is-finite' u → f₁ u ＝ ₀
   f₁-property u = ϕ₁-property u (l₁ u)
 
   wlpo₀ : f₀ ∞' ＝ ₀ → WLPO
-  wlpo₀ = {!because f₀ is discontinuous!}
+  wlpo₀ e = wlpo
+   where
+    𝕗₀ : ℕ∞ → 𝟚
+    𝕗₀ = complement ∘ f₀ ∘ ⌜ ℕ∞-to-ℕ∞'-≃ fe ⌝
+
+    b₀ : (n : ℕ) → 𝕗₀ (ι n) ＝ ₀
+    b₀ n = 𝕗₀ (ι n)                                   ＝⟨ refl ⟩
+           complement (f₀ (⌜ ℕ∞-to-ℕ∞'-≃ fe ⌝ (ι n))) ＝⟨ I ⟩
+           complement (f₀ (ι n))                      ＝⟨ II ⟩
+           complement ₁                               ＝⟨ refl ⟩
+           ₀                                          ∎
+            where
+             I  = ap (complement ∘ f₀) (finite-preservation fe n)
+             II = ap complement (f₀-property (ι n) (ℕ-to-ℕ∞'-is-finite' n))
+
+
+    b₁ : 𝕗₀ ∞ ＝ ₁
+    b₁ = 𝕗₀ ∞                                   ＝⟨ refl ⟩
+         complement (f₀ (⌜ ℕ∞-to-ℕ∞'-≃ fe ⌝ ∞)) ＝⟨ I ⟩
+         complement (f₀ ∞')                     ＝⟨ II ⟩
+         complement ₀                           ＝⟨ refl ⟩
+         ₁                                      ∎
+          where
+           I  = ap (complement ∘ f₀) (∞-preservation fe)
+           II = ap complement e
+
+    wlpo : WLPO
+    wlpo = basic-discontinuity-taboo fe 𝕗₀ (b₀ , b₁)
 
   wlpo₁ : f₁ ∞' ＝ ₁ → WLPO
-  wlpo₁ = {!because f₀ is discontinuous!}
+  wlpo₁ e = wlpo
+   where
+    𝕗₁ : ℕ∞ → 𝟚
+    𝕗₁ = f₁ ∘ ⌜ ℕ∞-to-ℕ∞'-≃ fe ⌝
+
+    b₀ : (n : ℕ) → 𝕗₁ (ι n) ＝ ₀
+    b₀ n = 𝕗₁ (ι n)                      ＝⟨ refl ⟩
+           f₁ (⌜ ℕ∞-to-ℕ∞'-≃ fe ⌝ (ι n)) ＝⟨ ap f₁ (finite-preservation fe n) ⟩
+           f₁ (ι n)                      ＝⟨ I ⟩
+           ₀                             ∎
+            where
+             I = f₁-property (ι n) (ℕ-to-ℕ∞'-is-finite' n)
+
+    b₁ : 𝕗₁ ∞ ＝ ₁
+    b₁ = 𝕗₁ ∞                      ＝⟨ refl ⟩
+         f₁ (⌜ ℕ∞-to-ℕ∞'-≃ fe ⌝ ∞) ＝⟨ ap f₁ (∞-preservation fe) ⟩
+         f₁ ∞'                     ＝⟨ e ⟩
+         ₁                         ∎
+
+    wlpo : WLPO
+    wlpo = basic-discontinuity-taboo fe 𝕗₁ (b₀ , b₁)
 
   wlpo : WLPO
   wlpo = Cases (𝟚-possibilities (f₀ ∞'))
@@ -216,9 +261,22 @@ untruncated-LLPO-gives-WLPO fe llpo = wlpo
                     (λ (e₁ : f₁ ∞' ＝ ₀) → 𝟘-elim (f-property (e₀ , e₁)))
                     (λ (e₁ : f₁ ∞' ＝ ₁) → wlpo₁ e₁))
 
+\end{code}
+
+TODO. (Easy, but perhaps laborious.) Show the following.
+
+\begin{code}
+
+{-
 WLPO-gives-untruncated-LLPO : WLPO-traditional → untruncated-LLPO
 WLPO-gives-untruncated-LLPO = {!!}
 -}
+
+\end{code}
+
+We know formalate (truncated) LLPO.
+
+\begin{code}
 
 module _ (pt : propositional-truncations-exist) where
 
@@ -232,9 +290,24 @@ module _ (pt : propositional-truncations-exist) where
  untruncated-LLPO-gives-LLPO : untruncated-LLPO → LLPO
  untruncated-LLPO-gives-LLPO ullpo α i = ∣ ullpo α i ∣
 
+\end{code}
+
+The most natural form of LLPO for what we've done above is the followd.
+
+\begin{code}
+
  ℕ-∞-LLPO : 𝓤₀ ̇
  ℕ-∞-LLPO = (u v : ℕ∞) → ¬ (is-finite u × is-finite v) → (u ＝ ∞) ∨ (v ＝ ∞)
 
 \end{code}
 
-LLPO doesn't imply WLPO (find reference with a counter-model).
+TODO. (Easy, given what we've proved.) Show that ℕ-∞-LLPO and LLPO are
+logically equivalent (and hence equivalent).
+
+TODO. Give a better version of untruncated-LLPO-gives-WLPO using
+this. The proof won't be different. It will just be a factorization
+through the proof of the previous TODO.
+
+LLPO doesn't imply WLPO (there are published refereced - find and
+include them here). One example seems to Johnstone's topological
+topos, but this is unpublished as far as I know.

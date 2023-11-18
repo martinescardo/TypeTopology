@@ -30,19 +30,18 @@ open import UF.FunExt
 
 module Taboos.LPO (fe : FunExt) where
 
+open import CoNaturals.GenericConvergentSequence
 open import MLTT.Spartan
+open import MLTT.Two-Properties
+open import Naturals.Order
+open import Notation.CanonicalMap
+open import Notation.Order
+open import TypeTopology.CompactTypes
 open import UF.Base
-open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
 open import UF.Embeddings
 open import UF.Equiv
-
-open import MLTT.Two-Properties
-open import CoNaturals.GenericConvergentSequence
-open import TypeTopology.CompactTypes
-open import Naturals.Order
-open import Notation.Order
-open import Notation.CanonicalMap
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
 
 private
  fe₀ = fe 𝓤₀ 𝓤₀
