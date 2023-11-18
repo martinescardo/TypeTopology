@@ -980,7 +980,7 @@ The function ϕ restricts to an equivalence between ℕ∞ and the subtype
 
 of the Cantor type (the sequences with at most one ₁).
 
-Notice that the condition on β can be expressed as "is-prop (fiber β ₁)".
+Notice that the condition on α can be expressed as "is-prop (fiber α ₁)".
 
 \begin{code}
 
@@ -1072,6 +1072,9 @@ private
 is-finite' : ℕ∞' → 𝓤₀ ̇
 is-finite' u = T (ℕ∞'-to-ℕ→𝟚 u)
 
+Zero'-is-finite : is-finite' Zero'
+Zero'-is-finite = zero , refl
+
 finiteness'-preservation : (u : ℕ∞')
                           → is-finite' u
                           → is-finite' (Succ' u)
@@ -1084,6 +1087,9 @@ finiteness'-preservation _ (n , e) = succ n , e
 
 ∞' : ℕ∞'
 ∞' = (λ _ → ₀) , (λ (n , e) (n' , e') → 𝟘-elim (zero-is-not-one e))
+
+∞'-is-not-finite : ¬ is-finite' ∞'
+∞'-is-not-finite (n , e) = zero-is-not-one e
 
 \end{code}
 
@@ -1296,8 +1302,6 @@ sequence if it is given a sequence with at most one ₁:
 
   IV : γ β (n ∔ 1) ≤ γ β n
   IV = III
-
-
 
 module _ (fe : funext₀) where
 
