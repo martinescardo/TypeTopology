@@ -251,12 +251,6 @@ We now construct the basis for this locale.
 
 \begin{code}
 
- -- γ-idempotence-lemma : (𝔘 : ⟨ 𝒪 𝒮𝓓 ⟩) (bs : List B)
- --                     → (γ bs ≤[ poset-of (𝒪 𝒮𝓓) ] 𝔘) holds
- --                     → ∃ b ꞉ B , member b bs × ({!!} holds)
- -- γ-idempotence-lemma 𝔘 [] p = {!!}
- -- γ-idempotence-lemma 𝔘 (x ∷ bs) p = {!!}
-
  principal-filter-is-compact : (b : B)
                              → is-compact-open 𝒮𝓓 ↑ˢ[ (β b , ϟ b) ] holds
  principal-filter-is-compact b S δ p = ∥∥-rec ∃-is-prop † q
@@ -318,7 +312,7 @@ We now construct the basis for this locale.
  open PropertiesAlgebraic 𝓓 𝕒
 
  𝒮𝓓-dir-basis-forᴰ : directed-basis-forᴰ (𝒪 𝒮𝓓) basis-for-𝒮𝓓
- 𝒮𝓓-dir-basis-forᴰ U@(_ , so) = (D , δ) , † , {!!}
+ 𝒮𝓓-dir-basis-forᴰ U@(_ , so) = (D , δ) , † , 𝒹
    where
     open Joins (λ x y → x ≤[ poset-of (𝒪 𝒮𝓓) ] y)
 
@@ -342,29 +336,28 @@ We now construct the basis for this locale.
 
     †₂ : ((U′ , _) : upper-bound ⁅ γ d ∣ d ε (D , δ) ⁆)
        → (U ≤[ poset-of (𝒪 𝒮𝓓) ] U′) holds
-    †₂ (U′ , ψ) k p = tmp k (reflexivity 𝓓 (β k))
+    †₂ (U′ , ψ) k p = ‡₂ k (reflexivity 𝓓 (β k))
      where
-      wrz : (β k ∈ₛ U) holds
-      wrz = p
+      r : ↑ˢ[ β k , ϟ k ] ＝ γ (k ∷ [])
+      r =
+       ↑ˢ[ β k , ϟ k ]                         ＝⟨ Ⅰ ⟩
+       ↑ˢ[ β k , ϟ k ] ∨[ 𝒪 𝒮𝓓 ] 𝟎[ 𝒪 𝒮𝓓 ]     ＝⟨ Ⅱ ⟩
+       γ (k ∷ [])                              ∎
+        where
+         Ⅰ = 𝟎-left-unit-of-∨ (𝒪 𝒮𝓓) ↑ˢ[ β k , ϟ k ] ⁻¹
+         Ⅱ = γ-equal-to-γ₁ (k ∷ []) ⁻¹
 
-      qrz : ↑ˢ[ β k , ϟ k ] ＝ γ (k ∷ [])
-      qrz = ↑ˢ[ β k , ϟ k ]                 ＝⟨ 𝟎-left-unit-of-∨ (𝒪 𝒮𝓓) ↑ˢ[ β k , ϟ k ] ⁻¹ ⟩
-            ↑ˢ[ β k , ϟ k ] ∨[ 𝒪 𝒮𝓓 ] 𝟎[ 𝒪 𝒮𝓓 ]  ＝⟨ γ-equal-to-γ₁ (k ∷ []) ⁻¹ ⟩
-            γ (k ∷ [])      ∎
-
-      tmp : (↑ˢ[ β k , ϟ k ] ≤[ poset-of (𝒪 𝒮𝓓) ] U′) holds
-      tmp = transport
-             (λ - → rel-syntax (poset-of (𝒪 𝒮𝓓)) - U′ holds)
-             (qrz ⁻¹)
-             (ψ ((k ∷ []) , λ { _ in-head → p }))
+      ‡₂ : (↑ˢ[ β k , ϟ k ] ≤[ poset-of (𝒪 𝒮𝓓) ] U′) holds
+      ‡₂ = transport
+            (λ - → (- ≤[ poset-of (𝒪 𝒮𝓓) ] U′) holds)
+            (r ⁻¹)
+            (ψ ((k ∷ []) , λ { _ in-head → p }))
 
     † : (U is-lub-of ⁅ γ d ∣ d ε (D , δ) ⁆) holds
     † = †₁ , †₂
 
- fun-fact : (ua : is-univalent 𝓤) (fe : funext 𝓤 (𝓤 ⁺))
-          → (X : 𝓤  ̇)
-          → Subtypes' 𝓤 X ≃ (X → Ω 𝓤)
- fun-fact ua fe X = Ω-is-subtype-classifier' {𝓤 = 𝓤} {𝓥 = 𝓤} ua fe X
+    𝒹 : {!is-directed!}
+    𝒹 = {!!}
 
  σᴰ : spectralᴰ 𝒮𝓓
  σᴰ = basis-for-𝒮𝓓 , 𝒮𝓓-dir-basis-forᴰ , (γ-gives-compact-opens , {!!})
