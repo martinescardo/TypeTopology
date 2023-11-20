@@ -295,3 +295,28 @@ Remove first occurrence:
  delete' {n} x (xs , p) m = remove x xs , remove-length x xs m n p
 
 \end{code}
+
+Added by Ayberk Tosun on 2023-11-20.
+
+\begin{code}
+
+member-in-++ : {X : 𝓤  ̇} (is js : List X) (x : X)
+             → member x (is ++ js) → member x is + member x js
+member-in-++ []       js x p = inr p
+member-in-++ (i ∷ is) js _ in-head = inl in-head
+member-in-++ (i ∷ is) js x (in-tail p) = cases †₁ †₂ (member-in-++ is js x p)
+ where
+  †₁ : member x is → member x (i ∷ is) + member x js
+  †₁ q = inl (in-tail q)
+
+  †₂ : member x js → member x (i ∷ is) + member x js
+  †₂ q = inr q
+
+member-left-monotone : {X : 𝓤  ̇} (is js : List X) (x : X)
+                     → member x is → member x (is ++ js)
+member-left-monotone (i ∷ is) [] i in-head = in-head
+member-left-monotone (i ∷ is) [] x (in-tail p) = in-tail (transport (λ - → member x -) ([]-right-neutral is) p)
+member-left-monotone (i ∷ is) (j ∷ js) .i in-head = in-head
+member-left-monotone (i ∷ is) (j ∷ js) x (in-tail p) = in-tail (member-left-monotone is (j ∷ js) x p)
+
+\end{code}
