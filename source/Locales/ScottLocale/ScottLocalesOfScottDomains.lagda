@@ -244,8 +244,8 @@ We now construct the basis for this locale.
 \begin{code}
 
  γ-gives-compact-opens : (b⃗ : List B) → is-compact-open 𝒮𝓓 (γ b⃗) holds
- γ-gives-compact-opens []       S (ι , _) p = ∥∥-rec ∃-is-prop (λ i → ∣ i , (λ _ ()) ∣) ι
- γ-gives-compact-opens (b ∷ bs) S (_ , υ) p = †
+ γ-gives-compact-opens []       S   (ι , _) p = ∥∥-rec ∃-is-prop (λ i → ∣ i , (λ _ ()) ∣) ι
+ γ-gives-compact-opens (b ∷ bs) S δ@(ι , υ) p = †
   where
    open PosetNotation  (poset-of (𝒪 𝒮𝓓))
    open PosetReasoning (poset-of (𝒪 𝒮𝓓))
@@ -255,7 +255,7 @@ We now construct the basis for this locale.
       , compact-implies-principal-filter-is-scott-open (β b) (basis-is-compact b)
 
    b-compact : is-compact-open 𝒮𝓓 𝔘ᶜ holds
-   b-compact = {!!}
+   b-compact = principal-filter-is-compact b
 
    𝔘ᶜᵣ : 𝒪ₛᴿ
    𝔘ᶜᵣ = to-𝒪ₛᴿ 𝔘ᶜ
@@ -263,8 +263,30 @@ We now construct the basis for this locale.
    φ : (𝔘ᶜ ≤ (⋁[ 𝒪 𝒮𝓓 ] S)) holds
    φ k q = p k ∣ inl q ∣
 
-   † : ∃ i ꞉ index S , ((γ (b ∷ bs) ≤[ poset-of (𝒪 𝒮𝓓) ] (S [ i ])) holds)
-   † = ∥∥-rec {!!} {!!} {!!}
+   ψ : (γ bs ≤[ poset-of (𝒪 𝒮𝓓) ] (⋁[ 𝒪 𝒮𝓓 ] S)) holds
+   ψ k r = p k ∣ inr r ∣
+
+   ϑ : γ (b ∷ bs) .pr₁ ⊆ (⋁[ 𝒪 𝒮𝓓 ] S) .pr₁
+   ϑ =
+    ∪-is-lowerbound-of-upperbounds
+     (↑[ 𝓓 ] (β b))
+     (from-list₀ bs)
+     ((⋁[ 𝒪 𝒮𝓓 ] S) .pr₁)
+     ϑ₁
+     ϑ₂
+      where
+       ϑ₁ = ⊆ₖ-implies-⊆ₛ 𝔘ᶜ     (⋁[ 𝒪 𝒮𝓓 ] S) φ
+       ϑ₂ = ⊆ₖ-implies-⊆ₛ (γ bs) (⋁[ 𝒪 𝒮𝓓 ] S) ψ
+
+   IH : is-compact-open 𝒮𝓓 (γ bs) holds
+   IH = γ-gives-compact-opens bs
+
+   † : ∃ i ꞉ index S , ((γ (b ∷ bs) ≤[ poset-of (𝒪 𝒮𝓓) ] S [ i ]) holds)
+   † = ∥∥-rec ∃-is-prop ‡ (IH S δ ψ)
+    where
+     ‡ : Σ i ꞉ index S , (γ bs ≤[ poset-of (𝒪 𝒮𝓓) ] S [ i ]) holds
+       → ∃ i ꞉ index S , (γ (b ∷ bs) ≤[ poset-of (𝒪 𝒮𝓓) ] (S [ i ])) holds
+     ‡ = {!!}
 
 \end{code}
 
