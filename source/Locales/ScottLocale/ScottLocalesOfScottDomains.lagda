@@ -301,6 +301,13 @@ We now construct the basis for this locale.
    † : is-compact-open 𝒮𝓓 (γ₁ (b ∷ bs)) holds
    † = compact-opens-are-closed-under-∨ 𝒮𝓓 𝔘ᶜ (γ₁ bs) b-compact IH
 
+ γ-gives-compact-opens : (bs : List B) → is-compact-open 𝒮𝓓 (γ bs) holds
+ γ-gives-compact-opens bs =
+  transport (λ - → is-compact-open 𝒮𝓓 - holds) (γ-equal-to-γ₁ bs ⁻¹) †
+   where
+    † : is-compact-open 𝒮𝓓 (γ₁ bs) holds
+    † = γ₁-gives-compact-opens bs
+
 \end{code}
 
 \begin{code}
@@ -335,7 +342,21 @@ We now construct the basis for this locale.
 
     †₂ : ((U′ , _) : upper-bound ⁅ γ d ∣ d ε (D , δ) ⁆)
        → (U ≤[ poset-of (𝒪 𝒮𝓓) ] U′) holds
-    †₂ (U′ , p) = {!!}
+    †₂ (U′ , ψ) k p = tmp k (reflexivity 𝓓 (β k))
+     where
+      wrz : (β k ∈ₛ U) holds
+      wrz = p
+
+      qrz : ↑ˢ[ β k , ϟ k ] ＝ γ (k ∷ [])
+      qrz = ↑ˢ[ β k , ϟ k ]                 ＝⟨ 𝟎-left-unit-of-∨ (𝒪 𝒮𝓓) ↑ˢ[ β k , ϟ k ] ⁻¹ ⟩
+            ↑ˢ[ β k , ϟ k ] ∨[ 𝒪 𝒮𝓓 ] 𝟎[ 𝒪 𝒮𝓓 ]  ＝⟨ γ-equal-to-γ₁ (k ∷ []) ⁻¹ ⟩
+            γ (k ∷ [])      ∎
+
+      tmp : (↑ˢ[ β k , ϟ k ] ≤[ poset-of (𝒪 𝒮𝓓) ] U′) holds
+      tmp = transport
+             (λ - → rel-syntax (poset-of (𝒪 𝒮𝓓)) - U′ holds)
+             (qrz ⁻¹)
+             (ψ ((k ∷ []) , λ { _ in-head → p }))
 
     † : (U is-lub-of ⁅ γ d ∣ d ε (D , δ) ⁆) holds
     † = †₁ , †₂
@@ -346,12 +367,12 @@ We now construct the basis for this locale.
  fun-fact ua fe X = Ω-is-subtype-classifier' {𝓤 = 𝓤} {𝓥 = 𝓤} ua fe X
 
  σᴰ : spectralᴰ 𝒮𝓓
- σᴰ = basis-for-𝒮𝓓 , 𝒮𝓓-dir-basis-forᴰ , ({!!} , (τ , μ))
-  where
-   τ : contains-top (𝒪 𝒮𝓓) basis-for-𝒮𝓓 holds
-   τ = {!!}
+ σᴰ = basis-for-𝒮𝓓 , 𝒮𝓓-dir-basis-forᴰ , (γ-gives-compact-opens , {!!})
+  -- where
+  --  τ : contains-top (𝒪 𝒮𝓓) basis-for-𝒮𝓓 holds
+  --  τ = {!!}
 
-   μ : closed-under-binary-meets (𝒪 𝒮𝓓) basis-for-𝒮𝓓 holds
-   μ = {!!}
+  --  μ : closed-under-binary-meets (𝒪 𝒮𝓓) basis-for-𝒮𝓓 holds
+  --  μ = {!!}
 
 \end{code}
