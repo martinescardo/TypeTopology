@@ -25,7 +25,7 @@ open import UF.Powerset-MultiUniverse
 open import UF.Size
 open import UF.Classifiers
 open import UF.Univalence
-open import UF.Equiv
+open import UF.Equiv hiding (_■)
 open import UF.Embeddings
 
 module Locales.ScottLocale.ScottLocalesOfScottDomains
@@ -42,6 +42,7 @@ open import DomainTheory.Basics.WayBelow                     pt fe 𝓤
 open import DomainTheory.BasesAndContinuity.Bases            pt fe 𝓤
 open import DomainTheory.BasesAndContinuity.Continuity       pt fe 𝓤
 open import DomainTheory.BasesAndContinuity.CompactBasis     pt fe 𝓤
+open import Locales.ScottLocale.Definition                   pt fe 𝓤
 open import Locales.ScottLocale.ScottLocalesOfAlgebraicDcpos pt fe 𝓤
 open import DomainTheory.Topology.ScottTopology              pt fe 𝓤
 open import DomainTheory.Topology.ScottTopologyProperties    pt fe 𝓤
@@ -79,7 +80,7 @@ module SpectralScottLocaleConstruction
         (hscb : has-specified-small-compact-basis 𝓓)
         (pe   : propext 𝓤) where
 
- open ScottLocaleConstruction 𝓓
+ open ScottLocaleConstruction 𝓓 hscb pe
 
 \end{code}
 
@@ -88,7 +89,7 @@ We denote by `𝒮𝓓` the Scott locale of the dcpo `𝓓`.
 \begin{code}
 
  𝒮𝓓 : Locale (𝓤 ⁺) 𝓤 𝓤
- 𝒮𝓓 = ScottLocale hscb pe
+ 𝒮𝓓 = ScottLocale
 
 \end{code}
 
@@ -108,6 +109,10 @@ We denote by `(B, β)` the algebraic basis of the pointed dcpo 𝓓.
  scb = small-compact-basis 𝓓 hscb
 
  open is-small-compact-basis scb
+
+
+ ϟ : (b : B) → is-compact 𝓓 (β b)
+ ϟ = basis-is-compact
 
 \end{code}
 
@@ -208,17 +213,58 @@ We now construct the basis for this locale.
 
 \begin{code}
 
- γ-idempotence-lemma : (𝔘 : ⟨ 𝒪 𝒮𝓓 ⟩) (bs : List B)
-                     → (γ bs ≤[ poset-of (𝒪 𝒮𝓓) ] 𝔘) holds
-                     → ∃ b ꞉ B , member b bs × {!((↑[ 𝓓 ] ?) ≤[ poset-of (𝒪 𝒮𝓓) ] 𝔘) holds!}
- γ-idempotence-lemma = {!!}
+ -- γ-idempotence-lemma : (𝔘 : ⟨ 𝒪 𝒮𝓓 ⟩) (bs : List B)
+ --                     → (γ bs ≤[ poset-of (𝒪 𝒮𝓓) ] 𝔘) holds
+ --                     → ∃ b ꞉ B , member b bs × ({!!} holds)
+ -- γ-idempotence-lemma 𝔘 [] p = {!!}
+ -- γ-idempotence-lemma 𝔘 (x ∷ bs) p = {!!}
+
+ principal-filter-is-compact : (b : B)
+                             → is-compact-open 𝒮𝓓 ↑ˢ[ (β b , ϟ b) ] holds
+ principal-filter-is-compact b S δ p = ∥∥-rec ∃-is-prop † q
+  where
+   p′ : (↑ˢ[ (β b , ϟ b) ] ⊆ₖ (⋁[ 𝒪 𝒮𝓓 ] S)) holds
+   p′ i r = p i r
+
+   q : (β b ∈ₛ (⋁[ 𝒪 𝒮𝓓 ] S)) holds
+   q = p b (reflexivity 𝓓 (β b))
+
+   † : Σ k ꞉ index S , (β b ∈ₛ (S [ k ])) holds
+     → ∃ i ꞉ index S , ((↑ˢ[ β b , ϟ b ]) ≤[ poset-of (𝒪 𝒮𝓓) ] (S [ i ])) holds
+   † (k , φ) = ∣ k , ‡ ∣
+    where
+     Sₖᴿ : 𝒪ₛᴿ
+     Sₖᴿ = to-𝒪ₛᴿ (S [ k ])
+
+     ‡ : (↑ˢ[ β b , ϟ b ] ≤[ poset-of (𝒪 𝒮𝓓) ] (S [ k ])) holds
+     ‡ d r = 𝒪ₛᴿ.pred-is-upwards-closed Sₖᴿ (β b) (β d) φ r
 
 \end{code}
 
 \begin{code}
 
  γ-gives-compact-opens : (b⃗ : List B) → is-compact-open 𝒮𝓓 (γ b⃗) holds
- γ-gives-compact-opens b⃗ S δ p = {! !}
+ γ-gives-compact-opens []       S (ι , _) p = ∥∥-rec ∃-is-prop (λ i → ∣ i , (λ _ ()) ∣) ι
+ γ-gives-compact-opens (b ∷ bs) S (_ , υ) p = †
+  where
+   open PosetNotation  (poset-of (𝒪 𝒮𝓓))
+   open PosetReasoning (poset-of (𝒪 𝒮𝓓))
+
+   𝔘ᶜ : ⟨ 𝒪 𝒮𝓓 ⟩
+   𝔘ᶜ = ↑[ 𝓓 ] (β b)
+      , compact-implies-principal-filter-is-scott-open (β b) (basis-is-compact b)
+
+   b-compact : is-compact-open 𝒮𝓓 𝔘ᶜ holds
+   b-compact = {!!}
+
+   𝔘ᶜᵣ : 𝒪ₛᴿ
+   𝔘ᶜᵣ = to-𝒪ₛᴿ 𝔘ᶜ
+
+   φ : (𝔘ᶜ ≤ (⋁[ 𝒪 𝒮𝓓 ] S)) holds
+   φ k q = p k ∣ inl q ∣
+
+   † : ∃ i ꞉ index S , ((γ (b ∷ bs) ≤[ poset-of (𝒪 𝒮𝓓) ] (S [ i ])) holds)
+   † = ∥∥-rec {!!} {!!} {!!}
 
 \end{code}
 
@@ -227,7 +273,7 @@ We now construct the basis for this locale.
  basis-for-𝒮𝓓 : Fam 𝓤 ⟨ 𝒪 𝒮𝓓 ⟩
  basis-for-𝒮𝓓 = List B , γ
 
- open PropertiesAlgebraic 𝓓 (𝕒 hscb pe)
+ open PropertiesAlgebraic 𝓓 𝕒
 
  𝒮𝓓-dir-basis-forᴰ : directed-basis-forᴰ (𝒪 𝒮𝓓) basis-for-𝒮𝓓
  𝒮𝓓-dir-basis-forᴰ U@(_ , so) = (D , δ) , † , {!!}

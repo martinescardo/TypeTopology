@@ -105,6 +105,16 @@ We can now record this as a logical equivalence.
 
 \end{code}
 
+Notation for the principal Scott open.
+
+\begin{code}
+
+ ↑ˢ[_] : (Σ c ꞉ ⟨ 𝓓 ⟩ , is-compact 𝓓 c) → Σ S ꞉ 𝓟 {𝓥} ⟨ 𝓓 ⟩ , is-scott-open S holds
+ ↑ˢ[ (c , κ) ] =
+  principal-filter 𝓓 c , compact-implies-principal-filter-is-scott-open c κ
+
+\end{code}
+
 \begin{code}
 
 module PropertiesAlgebraic (𝓓 : DCPO {𝓤} {𝓥})
