@@ -107,52 +107,35 @@ module _ {X : 𝓤 ̇  } (R : X → X → 𝓥 ̇  ) where
                → is-accessible lex-decr (xs , δ)
                → (ε : is-decreasing (x ∷ xs))
                → is-accessible lex-decr ((x ∷ xs) , ε)
-  -- lex-decr-acc x (acc α) xs δ (acc β) ε =
   lex-decr-acc =
-   transfinite-induction' R
-    (λ x → (xs : List X) (δ : is-decreasing xs)
-               → is-accessible lex-decr (xs , δ)
-               → (ε : is-decreasing (x ∷ xs))
-               → is-accessible lex-decr ((x ∷ xs) , ε))
-    g
+   transfinite-induction' R P ϕ
      where
-      g : (x : X) →
-            ((y : X) → R y x
-                → (xs : List X) (δ : is-decreasing xs)
-                → is-accessible lex-decr (xs , δ)
-                → (ε : is-decreasing (y ∷ xs))
-                → is-accessible lex-decr ((y ∷ xs) , ε)) →
-                  (xs : List X) (δ : is-decreasing xs) →
-                  is-accessible lex-decr (xs , δ) →
-                  (ε' : is-decreasing (x ∷ xs)) →
-                  is-accessible lex-decr ((x ∷ xs) , ε')
-      g x IH xs δ β =
-        transfinite-induction' lex-decr
-          (λ (xs , _) → (ε' : is-decreasing (x ∷ xs)) → is-accessible lex-decr ((x ∷ xs) , ε'))
-          h
-          (xs , δ) β
+      Q : X → DecreasingList → 𝓤 ⊔ 𝓥 ̇
+      Q x (xs , _) = (ε' : is-decreasing (x ∷ xs)) → is-accessible lex-decr ((x ∷ xs) , ε')
+      P : X → 𝓤 ⊔ 𝓥 ̇
+      P x = (xs : List X) (δ : is-decreasing xs)
+          → is-accessible lex-decr (xs , δ)
+          → Q x (xs , δ)
+
+      ϕ : (x : X) → ((y : X) → R y x → P y) → P x
+      ϕ x IH xs δ β = transfinite-induction' lex-decr (Q x) (λ (xs , ε) → ϕ' xs ε) (xs , δ) β
        where
-        h : (x₁ : DecreasingList) →
-              ((y : DecreasingList) →
-               lex-decr y x₁ →
-               (ε' : is-decreasing (x ∷ pr₁ y)) →
-               is-accessible lex-decr ((x ∷ pr₁ y) , ε')) →
-              (ε' : is-decreasing (x ∷ pr₁ x₁)) →
-              is-accessible lex-decr ((x ∷ pr₁ x₁) , ε')
-        h = {!!}
-  {- acc g
-   where
-    g : (ys : DecreasingList)
-      → lex-decr ys ((x ∷ xs) , ε)
-      → is-accessible lex-decr ys
-    g (.[] , _) []-lex = []-acc-decr
-    g ((y ∷ []) , ε') (head-lex p) = lex-decr-acc y (α y p) [] []-decr []-acc-decr ε'
-    g ((y ∷ z ∷ ys) , ε') (head-lex p) =
-     lex-decr-acc y (α y p) (z ∷ ys) (is-decreasing-tail ε')
-                  (g ((z ∷ ys) , is-decreasing-tail ε') (head-lex (tr z y x (is-decreasing-heads ε') p)))
-                  ε'
-    g ((.x ∷ ys) , ε') (tail-lex refl l) =
-     lex-decr-acc x (acc α) ys (is-decreasing-tail ε') (β (ys , is-decreasing-tail ε') l) ε' -}
+        ϕ' : (xs : List X) → (ε : is-decreasing xs)
+           → ((ys : DecreasingList) → lex-decr ys (xs , ε) → Q x ys)
+           → Q x (xs , ε)
+        ϕ' xs _ IH₂ ε' = acc (λ (ys , ε) → g ys ε)
+         where
+          g : (ys : List X) → (ε : is-decreasing ys)
+             → lex-decr (ys , ε) ((x ∷ xs) , ε')
+             → is-accessible lex-decr (ys , ε)
+          g [] ε p = []-acc-decr
+          g (y ∷ []) ε (head-lex p) = IH y p [] []-decr []-acc-decr ε
+          g (y ∷ z ∷ ys) ε (head-lex p) =
+            IH y p (z ∷ ys) (is-decreasing-tail ε)
+               (g (z ∷ ys) (is-decreasing-tail ε) (head-lex (tr z y x (is-decreasing-heads ε) p)))
+               ε
+          {-# CATCHALL #-}
+          g (.x ∷ ys) ε (tail-lex refl l) = IH₂ (ys , is-decreasing-tail ε) l ε
 
   lex-wellfounded' : is-well-founded R
                    → (xs : List X) (δ : is-decreasing xs)
