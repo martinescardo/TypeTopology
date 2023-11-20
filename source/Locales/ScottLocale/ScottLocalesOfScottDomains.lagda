@@ -12,7 +12,7 @@ Started on: 2023-10-25.
 
 {-# OPTIONS --safe --without-K --exact-split #-}
 
-open import MLTT.Spartan
+open import MLTT.Spartan hiding (𝟚)
 open import MLTT.List hiding ([_])
 open import Slice.Family
 open import UF.FunExt
@@ -212,6 +212,40 @@ We now construct the basis for this locale.
  γ₁ : List B → ⟨ 𝒪 𝒮𝓓 ⟩
  γ₁ []       = 𝟎[ 𝒪 𝒮𝓓 ]
  γ₁ (k ∷ ks) = ↑ˢ[ (β k , ϟ k) ] ∨[ 𝒪 𝒮𝓓 ] γ₁ ks
+
+\end{code}
+
+\begin{code}
+
+ γ-below-γ₁ : (bs : List B) → (γ bs ≤[ poset-of (𝒪 𝒮𝓓) ] γ₁ bs) holds
+ γ-below-γ₁ []       _ ()
+ γ-below-γ₁ (i ∷ is) j p =
+  ∥∥-rec (holds-is-prop (γ₁ (i ∷ is) .pr₁ (β j))) † p
+   where
+    IH : (γ is ≤[ poset-of (𝒪 𝒮𝓓) ] γ₁ is) holds
+    IH = γ-below-γ₁ is
+
+    † : (β i ⊑⟨ 𝓓 ⟩ β j) + (β j ∈ₛ γ is) holds
+      → ((β j) ∈ₛ γ₁ (i ∷ is)) holds
+    † (inl q) = ∣ inl ⋆ , q      ∣
+    † (inr q) = ∣ inr ⋆ , IH j q ∣
+
+ γ₁-below-γ : (bs : List B) → (γ₁ bs ≤[ poset-of (𝒪 𝒮𝓓) ] γ bs) holds
+ γ₁-below-γ []       j p = 𝟎-is-bottom (𝒪 𝒮𝓓) (γ []) j p
+ γ₁-below-γ (i ∷ is) j p = ∥∥-rec (holds-is-prop (β j ∈ₛ γ (i ∷ is))) † p
+  where
+   IH : (γ₁ is ≤[ poset-of (𝒪 𝒮𝓓) ] γ is) holds
+   IH = γ₁-below-γ is
+
+   † : (Σ k ꞉ 𝟚 𝓤 ,
+         (β j ∈ₛ (⁅ ↑ˢ[ (β i , ϟ i ) ] , γ₁ is ⁆ [ k ])) holds)
+     → (β j ∈ₛ γ (i ∷ is)) holds
+   † (inl ⋆ , r) = ∣ inl r        ∣
+   † (inr ⋆ , r) = ∣ inr (IH j r) ∣
+
+ γ-equal-to-γ₁ : (bs : List B) → γ bs ＝ γ₁ bs
+ γ-equal-to-γ₁ bs =
+  ≤-is-antisymmetric (poset-of (𝒪 𝒮𝓓)) (γ-below-γ₁ bs) (γ₁-below-γ bs)
 
 \end{code}
 
