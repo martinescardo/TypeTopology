@@ -36,6 +36,7 @@ module Locales.ScottLocale.ScottLocalesOfScottDomains
 
 open import DomainTheory.Basics.Dcpo                         pt fe 𝓤
  renaming (⟨_⟩ to ⟨_⟩∙)
+ hiding   (is-directed)
 open import DomainTheory.Basics.Pointed                      pt fe 𝓤
  renaming (⊥ to ⊥d)
 open import DomainTheory.Basics.WayBelow                     pt fe 𝓤
@@ -356,8 +357,23 @@ We now construct the basis for this locale.
     † : (U is-lub-of ⁅ γ d ∣ d ε (D , δ) ⁆) holds
     † = †₁ , †₂
 
-    𝒹 : {!is-directed!}
-    𝒹 = {!!}
+    𝒹↑ : ((is , _) (js , _) : D)
+       → ∃ (ks , _) ꞉ D ,
+            (γ is ≤[ poset-of (𝒪 𝒮𝓓) ] γ ks) holds
+          × (γ js ≤[ poset-of (𝒪 𝒮𝓓) ] γ ks) holds
+    𝒹↑ (is , 𝕚) (js , 𝕛)= ∣ ((is ++ js) , ♣) , μ , ν ∣
+     where
+      μ : (γ is ≤[ poset-of (𝒪 𝒮𝓓) ] γ (is ++ js)) holds
+      μ i p = {!member-left-monotone!}
+
+      ν : (γ js ≤[ poset-of (𝒪 𝒮𝓓) ] γ (is ++ js)) holds
+      ν = {!!}
+
+      ♣ : (b : B) → member b (is ++ js) → 𝔘 (β b) holds
+      ♣ b q = cases (𝕚 b) (𝕛 b) (member-in-++ is js b q)
+
+    𝒹 : is-directed (𝒪 𝒮𝓓) (⁅ γ d ∣ d ε (D , δ) ⁆) holds
+    𝒹 = ∣ [] , (λ _ ()) ∣ , 𝒹↑
 
  σᴰ : spectralᴰ 𝒮𝓓
  σᴰ = basis-for-𝒮𝓓 , 𝒮𝓓-dir-basis-forᴰ , (γ-gives-compact-opens , {!!})
