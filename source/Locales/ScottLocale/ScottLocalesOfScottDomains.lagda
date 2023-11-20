@@ -209,6 +209,10 @@ We now construct the basis for this locale.
  γ : List B → ⟨ 𝒪 𝒮𝓓 ⟩
  γ ks = from-list₀ ks , from-list₀-gives-scott-opens ks
 
+ γ₁ : List B → ⟨ 𝒪 𝒮𝓓 ⟩
+ γ₁ []       = 𝟎[ 𝒪 𝒮𝓓 ]
+ γ₁ (k ∷ ks) = ↑ˢ[ (β k , ϟ k) ] ∨[ 𝒪 𝒮𝓓 ] γ₁ ks
+
 \end{code}
 
 \begin{code}
@@ -243,13 +247,10 @@ We now construct the basis for this locale.
 
 \begin{code}
 
- γ-gives-compact-opens : (b⃗ : List B) → is-compact-open 𝒮𝓓 (γ b⃗) holds
- γ-gives-compact-opens []       S   (ι , _) p = ∥∥-rec ∃-is-prop (λ i → ∣ i , (λ _ ()) ∣) ι
- γ-gives-compact-opens (b ∷ bs) S δ@(ι , υ) p = †
+ γ₁-gives-compact-opens : (b⃗ : List B) → is-compact-open 𝒮𝓓 (γ₁ b⃗) holds
+ γ₁-gives-compact-opens []       = 𝟎-is-compact 𝒮𝓓
+ γ₁-gives-compact-opens (b ∷ bs) = †
   where
-   open PosetNotation  (poset-of (𝒪 𝒮𝓓))
-   open PosetReasoning (poset-of (𝒪 𝒮𝓓))
-
    𝔘ᶜ : ⟨ 𝒪 𝒮𝓓 ⟩
    𝔘ᶜ = ↑[ 𝓓 ] (β b)
       , compact-implies-principal-filter-is-scott-open (β b) (basis-is-compact b)
@@ -260,33 +261,11 @@ We now construct the basis for this locale.
    𝔘ᶜᵣ : 𝒪ₛᴿ
    𝔘ᶜᵣ = to-𝒪ₛᴿ 𝔘ᶜ
 
-   φ : (𝔘ᶜ ≤ (⋁[ 𝒪 𝒮𝓓 ] S)) holds
-   φ k q = p k ∣ inl q ∣
+   IH : is-compact-open 𝒮𝓓 (γ₁ bs) holds
+   IH = γ₁-gives-compact-opens bs
 
-   ψ : (γ bs ≤[ poset-of (𝒪 𝒮𝓓) ] (⋁[ 𝒪 𝒮𝓓 ] S)) holds
-   ψ k r = p k ∣ inr r ∣
-
-   ϑ : γ (b ∷ bs) .pr₁ ⊆ (⋁[ 𝒪 𝒮𝓓 ] S) .pr₁
-   ϑ =
-    ∪-is-lowerbound-of-upperbounds
-     (↑[ 𝓓 ] (β b))
-     (from-list₀ bs)
-     ((⋁[ 𝒪 𝒮𝓓 ] S) .pr₁)
-     ϑ₁
-     ϑ₂
-      where
-       ϑ₁ = ⊆ₖ-implies-⊆ₛ 𝔘ᶜ     (⋁[ 𝒪 𝒮𝓓 ] S) φ
-       ϑ₂ = ⊆ₖ-implies-⊆ₛ (γ bs) (⋁[ 𝒪 𝒮𝓓 ] S) ψ
-
-   IH : is-compact-open 𝒮𝓓 (γ bs) holds
-   IH = γ-gives-compact-opens bs
-
-   † : ∃ i ꞉ index S , ((γ (b ∷ bs) ≤[ poset-of (𝒪 𝒮𝓓) ] S [ i ]) holds)
-   † = ∥∥-rec ∃-is-prop ‡ (IH S δ ψ)
-    where
-     ‡ : Σ i ꞉ index S , (γ bs ≤[ poset-of (𝒪 𝒮𝓓) ] S [ i ]) holds
-       → ∃ i ꞉ index S , (γ (b ∷ bs) ≤[ poset-of (𝒪 𝒮𝓓) ] (S [ i ])) holds
-     ‡ = {!!}
+   † : is-compact-open 𝒮𝓓 (γ₁ (b ∷ bs)) holds
+   † = compact-opens-are-closed-under-∨ 𝒮𝓓 𝔘ᶜ (γ₁ bs) b-compact IH
 
 \end{code}
 
