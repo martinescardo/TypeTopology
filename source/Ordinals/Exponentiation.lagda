@@ -59,6 +59,9 @@ lex-for-ordinal α = lex (underlying-order α)
 
 syntax lex-for-ordinal α xs ys = xs ≺⟨List α ⟩ ys
 
+is-irreflexive : {X : 𝓤 ̇  } (R : X → X → 𝓥 ̇  ) → 𝓤 ⊔ 𝓥 ̇
+is-irreflexive R = ∀ x → ¬ (R x x)
+
 module _ {X : 𝓤 ̇  } (R : X → X → 𝓥 ̇  ) where
 
  lex-transitive : is-transitive R → is-transitive (lex R)
@@ -158,10 +161,37 @@ module _ {X : 𝓤 ̇  } (R : X → X → 𝓥 ̇  ) where
     g ((y ∷ ys) , d) (head-lex p) = lex-decr-acc y (wf y) ys {!!} {!!} {!!}
   lex-wellfounded wf (.(_ ∷ _ ∷ _) , many-decr x dec) = {!!} -}
 
+ lex-irreflexive : is-irreflexive R → is-irreflexive (lex R)
+ lex-irreflexive ir (x ∷ xs) (head-lex p) = ir x p
+ lex-irreflexive ir (x ∷ xs) (tail-lex e q) = lex-irreflexive ir xs q
+
  -- this is not helpful below
- -- (do you also need transitivity?)
- lex-extensional : is-extensional R → is-extensional (lex R)
- lex-extensional = {!!}
+ lex-extensional : is-irreflexive R → is-extensional R → is-extensional (lex R)
+ lex-extensional ir ext [] [] p q = refl
+ lex-extensional ir ext [] (y ∷ ys) p q = 𝟘-elim ([]-lex-bot [] (q [] []-lex))
+ lex-extensional ir ext (x ∷ xs) [] p q = 𝟘-elim ([]-lex-bot [] (p [] []-lex))
+ lex-extensional ir ext (x ∷ xs) (y ∷ ys) p q = ap₂ _∷_ e₀ e₁
+  where
+   p₀ : ∀ z → R z x → R z y
+   p₀ z zRx with (p (z ∷ ys) (head-lex zRx))
+   p₀ z zRx | head-lex zRy = zRy
+   p₀ z zRx | tail-lex _ ysRys = 𝟘-elim (lex-irreflexive ir ys ysRys)
+   q₀ : ∀ z → R z y → R z x
+   q₀ z zRy with (q (z ∷ xs) (head-lex zRy))
+   q₀ z zRy | head-lex zRx = zRx
+   q₀ z zRy | tail-lex _ xsRxs = 𝟘-elim (lex-irreflexive ir xs xsRxs)
+   e₀ : x ＝ y
+   e₀ = ext x y p₀ q₀
+   p₁ : ∀ zs → lex R zs xs → lex R zs ys
+   p₁ zs zsRxs with (p (x ∷ zs) (tail-lex refl zsRxs))
+   p₁ zs zsRxs | head-lex xRy = 𝟘-elim (ir y (transport (λ z → R z y) e₀ xRy))
+   p₁ zs zsRxs | tail-lex _ zsRys = zsRys
+   q₁ : ∀ zs → lex R zs ys → lex R zs xs
+   q₁ zs zsRys with (q (y ∷ zs) (tail-lex refl zsRys))
+   q₁ zs zsRys | head-lex yRx = 𝟘-elim (ir y (transport (λ z → R y z) e₀ yRx))
+   q₁ zs zsRys | tail-lex _ zsRxs = zsRxs
+   e₁ : xs ＝ ys
+   e₁ = lex-extensional ir ext xs ys p₁ q₁
 
 
 -- can we get away with different universes like this?
