@@ -419,3 +419,71 @@ The reason is that it could be useful, as we illustrate now:
 Returning to the main line of thought, we conclude that, in the presence of set
 replacement and univalence, if there is some unspecified small compact basis,
 then the subset K of compact elements is suitably small.
+
+
+TODO. Merge properly
+
+
+\begin{code}
+
+module _
+        (𝓓 : DCPO {𝓤} {𝓣})
+        (x : ⟨ 𝓓 ⟩)
+       where
+
+ compact-elements-below : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
+ compact-elements-below = Σ c ꞉ ⟨ 𝓓 ⟩ , is-compact 𝓓 c × (c ⊑⟨ 𝓓 ⟩ x)
+
+-- private
+ -- Kₓ = compact-elements-below
+
+ compact-elements-below-inclusion : compact-elements-below → ⟨ 𝓓 ⟩
+ compact-elements-below-inclusion = pr₁
+
+-- private
+ -- ιₓ = compact-elements-below-inclusion
+
+is-algebraic-dcpo' : (𝓓 : DCPO {𝓤} {𝓣})
+                   → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
+is-algebraic-dcpo' 𝓓 =
+    ((x : ⟨ 𝓓 ⟩)
+        → is-small (compact-elements-below 𝓓 x))
+  × ((x : ⟨ 𝓓 ⟩)
+        → is-Directed 𝓓 (compact-elements-below-inclusion 𝓓 x))
+  × ((x : ⟨ 𝓓 ⟩)
+        → is-sup (underlying-order 𝓓) x (compact-elements-below-inclusion 𝓓 x))
+
+module _
+        (𝓓 : DCPO {𝓤} {𝓣})
+       where
+
+ algebraic'-implies-structurally-algebraic : is-algebraic-dcpo' 𝓓
+                                           → structurally-algebraic 𝓓
+ algebraic'-implies-structurally-algebraic is-alg' =
+  record
+   { index-of-compact-family = Kₛ
+   ; compact-family = ιₛ
+   ; compact-family-is-directed = λ x → reindexed-family-is-directed 𝓓 (≃-sym (resizing-condition (Kₓ-is-small x))) (ιₓ x) (ιₓ-is-directed x)
+   ; compact-family-is-compact = λ x i → pr₁ (pr₂ (⌜ resizing-condition (Kₓ-is-small x) ⌝ i))
+   ; compact-family-∐-＝ = λ x → sups-are-unique (underlying-order 𝓓)
+                                                 (pr₁ (axioms-of-dcpo 𝓓))
+                                                 (ιₛ x) -- (ιₓ x)
+                                                 (∐-is-sup 𝓓 _)
+                                                 (reindexed-family-sup 𝓓 (≃-sym (resizing-condition (Kₓ-is-small x))) (ιₓ x) x (pr₂ (pr₂ is-alg') x))
+   }
+   where
+    Kₓ : (x : ⟨ 𝓓 ⟩) → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣  ̇
+    Kₓ x = compact-elements-below 𝓓 x
+    ιₓ : (x : ⟨ 𝓓 ⟩) → compact-elements-below 𝓓 x → ⟨ 𝓓 ⟩
+    ιₓ x = compact-elements-below-inclusion 𝓓 x
+
+    Kₓ-is-small : (x : ⟨ 𝓓 ⟩) → is-small (Kₓ x)
+    Kₓ-is-small = pr₁ is-alg'
+    ιₓ-is-directed : (x : ⟨ 𝓓 ⟩) → is-Directed 𝓓 (ιₓ x)
+    ιₓ-is-directed = pr₁ (pr₂ is-alg')
+    Kₛ : ⟨ 𝓓 ⟩ → 𝓥 ̇
+    Kₛ x = resized (Kₓ x) (Kₓ-is-small x)
+    ιₛ : (x : ⟨ 𝓓 ⟩) → Kₛ x → ⟨ 𝓓 ⟩
+    ιₛ x = ιₓ x ∘ ⌜ resizing-condition (Kₓ-is-small x) ⌝
+
+\end{code}
