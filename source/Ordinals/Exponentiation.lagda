@@ -3,7 +3,7 @@ Tom de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg, Chuangjie Xu,
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K --no-exact-split #-}
 
 open import UF.Univalence
 
@@ -17,6 +17,7 @@ open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.ExcludedMiddle
 open import UF.FunExt
+open import UF.Sets
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.UA-FunExt
@@ -132,8 +133,7 @@ module _ {X : 𝓤 ̇  } (R : X → X → 𝓥 ̇  ) where
            IH y p (z ∷ ys) (is-decreasing-tail ε)
               (g (z ∷ ys) (is-decreasing-tail ε) (head-lex (tr z y x (is-decreasing-heads ε) p)))
               ε
-         g (.x ∷ ys@[])      ε (tail-lex refl l) = IH₂ (ys , is-decreasing-tail ε) l ε
-         g (.x ∷ ys@(_ ∷ _)) ε (tail-lex refl l) = IH₂ (ys , is-decreasing-tail ε) l ε
+         g (.x ∷ ys) ε (tail-lex refl l) = IH₂ (ys , is-decreasing-tail ε) l ε
 
  lex-wellfounded : is-transitive R → is-well-founded R → is-well-founded lex-decr
  lex-wellfounded tr wf (xs , δ) = lex-wellfounded' wf xs δ
@@ -190,20 +190,80 @@ module _ {X : 𝓤 ̇  } (R : X → X → 𝓥 ̇  ) where
 
 \begin{code}
 
+ lex-prop-valued : is-set X → is-prop-valued R → is-irreflexive R → is-prop-valued (lex R)
+ lex-prop-valued st pr irR [] (y ∷ ys) []-lex []-lex = refl
+ lex-prop-valued st pr irR (x ∷ xs) (y ∷ ys) (head-lex p) (head-lex q) = ap head-lex (pr x y p q)
+ lex-prop-valued st pr irR (.y ∷ xs) (y ∷ ys) (head-lex p) (tail-lex refl qs) = 𝟘-elim (irR y p)
+ lex-prop-valued st pr irR (x ∷ xs) (.x ∷ ys) (tail-lex refl ps) (head-lex q) = 𝟘-elim (irR x q)
+ lex-prop-valued st pr irR (x ∷ xs) (y ∷ ys) (tail-lex e ps) (tail-lex r qs) =
+  ap₂ tail-lex (st e r) (lex-prop-valued st pr irR xs ys ps qs)
+
+\end{code}
+
+\begin{code}
+
 
 -- can we get away with different universes like this?
+module _ (α : Ordinal 𝓤)(β : Ordinal 𝓥) where
 
-⟨[𝟙+_]^_⟩ : Ordinal 𝓤 → Ordinal 𝓥 → 𝓤 ⊔ 𝓥 ̇
-⟨[𝟙+ α ]^ β ⟩ = Σ xs ꞉ List ⟨ β ×ₒ α ⟩ , is-decreasing (underlying-order α) (map pr₂ xs)
+ ⟨[𝟙+_]^_⟩ : 𝓤 ⊔ 𝓥 ̇
+ ⟨[𝟙+_]^_⟩ = Σ xs ꞉ List ⟨ β ×ₒ α ⟩ , is-decreasing (underlying-order α) (map pr₂ xs)
 
-exponential-order : {𝓤 𝓥 : Universe} → (α : Ordinal 𝓤) → (β : Ordinal 𝓥) → ⟨[𝟙+ α ]^ β ⟩ → ⟨[𝟙+ α ]^ β ⟩ → 𝓤 ⊔ 𝓥 ̇
-exponential-order α β (xs , _) (ys , _) = xs ≺⟨List (β ×ₒ α) ⟩ ys
+ underlying-list : ⟨[𝟙+_]^_⟩ → List ⟨ β ×ₒ α ⟩
+ underlying-list (xs , _) = xs
+
+ underlying-list-decreasing-base : (xs : ⟨[𝟙+_]^_⟩) → is-decreasing (underlying-order α) (map pr₂ (underlying-list xs))
+ underlying-list-decreasing-base (xs , p) = p
+
+ underlying-list-decreasing : (xs : ⟨[𝟙+_]^_⟩) → is-decreasing (underlying-order (β ×ₒ α)) (underlying-list xs)
+ underlying-list-decreasing (xs , p) = is-decreasing-pr₂-to-is-decreasing xs p
+  where
+   is-decreasing-pr₂-to-is-decreasing : (xs : List ⟨ β ×ₒ α ⟩)
+                                      → is-decreasing (underlying-order α) (map pr₂ xs)
+                                      → is-decreasing (underlying-order (β ×ₒ α)) xs
+   is-decreasing-pr₂-to-is-decreasing [] _ = []-decr
+   is-decreasing-pr₂-to-is-decreasing (x ∷ []) _ = sing-decr
+   is-decreasing-pr₂-to-is-decreasing (x ∷ x' ∷ xs) (many-decr p ps)
+    = many-decr (inl p) (is-decreasing-pr₂-to-is-decreasing (x' ∷ xs) ps)
+
+ exponential-order : ⟨[𝟙+_]^_⟩ → ⟨[𝟙+_]^_⟩ → 𝓤 ⊔ 𝓥 ̇
+ exponential-order (xs , _) (ys , _) = xs ≺⟨List (β ×ₒ α) ⟩ ys
+
+ exponential-order-prop-valued : is-prop-valued exponential-order
+ exponential-order-prop-valued (xs , _) (ys , _)
+   = lex-prop-valued _ (underlying-type-is-set fe (β ×ₒ α))
+                       (Prop-valuedness (β ×ₒ α))
+                       (irrefl (β ×ₒ α))
+                       xs
+                       ys
+
+ exponential-order-wellfounded : is-well-founded exponential-order
+ exponential-order-wellfounded (xs , δ) =
+  acc-lex-decr-to-acc-exponential xs δ (lex-wellfounded (underlying-order (β ×ₒ α)) (Transitivity (β ×ₒ α)) (Well-foundedness (β ×ₒ α)) _)
+  where
+   acc-lex-decr-to-acc-exponential : (xs : List ⟨ β ×ₒ α ⟩)
+                                   → (δ : is-decreasing (underlying-order α) (map pr₂ xs))
+                                   → is-accessible (lex-decr (underlying-order (β ×ₒ α))) ((xs , underlying-list-decreasing (xs , δ)))
+                                   → is-accessible exponential-order (xs , δ)
+   acc-lex-decr-to-acc-exponential xs δ (acc h) =
+    acc λ (ys , ε) ys<xs → acc-lex-decr-to-acc-exponential ys ε (h (ys ,  underlying-list-decreasing (ys , ε)) ys<xs)
+
+ exponential-order-transitive : is-transitive exponential-order
+ exponential-order-transitive (xs , _) (ys , _) (zs , _) p q =
+  lex-transitive (underlying-order (β ×ₒ α)) (Transitivity (β ×ₒ α)) xs ys zs p q
 
 [𝟙+_]^_ : Ordinal 𝓤 → Ordinal 𝓥 → Ordinal (𝓤 ⊔ 𝓥)
 [𝟙+ α ]^ β = ⟨[𝟙+ α ]^ β ⟩
            , exponential-order α β
+           , exponential-order-prop-valued α β
+           , exponential-order-wellfounded α β
            , {!!}
-           , {!!}
+           , exponential-order-transitive α β
+
+
+{-
+
+-}
 
 
 -- prove that (1 + A) ^ X is an ordinal
