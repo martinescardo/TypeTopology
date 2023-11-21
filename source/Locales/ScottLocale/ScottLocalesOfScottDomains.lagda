@@ -252,6 +252,46 @@ We now construct the basis for this locale.
 
 \begin{code}
 
+ γ-lemma₁ : (is js : List B) → (γ is ≤[ poset-of (𝒪 𝒮𝓓) ] γ (is ++ js)) holds
+ γ-lemma₁ []       js       = λ _ ()
+ γ-lemma₁ (i ∷ is) []       = let
+                               open PosetNotation (poset-of (𝒪 𝒮𝓓))
+
+                               † : (i ∷ is) ＝ (i ∷ is) ++ []
+                               † = []-right-neutral (i ∷ is)
+
+                               ‡ : (γ (i ∷ is) ≤ γ (i ∷ is)) holds
+                               ‡ = ≤-is-reflexive (poset-of (𝒪 𝒮𝓓)) (γ (i ∷ is))
+                              in
+                               transport (λ - → (γ (i ∷ is) ≤ γ -) holds) † ‡
+ γ-lemma₁ (i ∷ is) (j ∷ js) x p = Ⅲ x (Ⅱ x (Ⅰ x p))
+   where
+    † : (γ₁ is ≤[ poset-of (𝒪 𝒮𝓓) ] γ₁ (is ++ (j ∷ js))) holds
+    † y q =
+     γ-below-γ₁ (is ++ (j ∷ js)) y (γ-lemma₁ is (j ∷ js) y (γ₁-below-γ is y q))
+
+    Ⅰ = γ-below-γ₁ (i ∷ is)
+    Ⅱ = ∨[ 𝒪 𝒮𝓓 ]-right-monotone †
+    Ⅲ = γ₁-below-γ (i ∷ (is ++ (j ∷ js)))
+
+ γ-lemma₂ : (is js : List B) → (γ js ≤[ poset-of (𝒪 𝒮𝓓) ] γ (is ++ js)) holds
+ γ-lemma₂ is          []       = λ _ ()
+ γ-lemma₂ []       js@(_ ∷ _)  = ≤-is-reflexive (poset-of (𝒪 𝒮𝓓)) (γ js)
+ γ-lemma₂ (i ∷ is)    (j ∷ js) x p = Ⅲ x foo
+  where
+   † : (γ₁ (j ∷ js) ≤[ poset-of (𝒪 𝒮𝓓) ] γ₁ (is ++ (j ∷ js))) holds
+   † y q = {!!}
+
+   Ⅰ = γ-below-γ₁ (is ++ (j ∷ js))
+   Ⅲ = γ₁-below-γ ((i ∷ is) ++ (j ∷ js))
+
+   foo : (β x ∈ₛ γ₁ ((i ∷ is) ++ (j ∷ js))) holds
+   foo = ∨[ 𝒪 𝒮𝓓 ]-right-monotone † x {!!}
+
+\end{code}
+
+\begin{code}
+
  principal-filter-is-compact : (b : B)
                              → is-compact-open 𝒮𝓓 ↑ˢ[ (β b , ϟ b) ] holds
  principal-filter-is-compact b S δ p = ∥∥-rec ∃-is-prop † q
@@ -361,14 +401,8 @@ We now construct the basis for this locale.
        → ∃ (ks , _) ꞉ D ,
             (γ is ≤[ poset-of (𝒪 𝒮𝓓) ] γ ks) holds
           × (γ js ≤[ poset-of (𝒪 𝒮𝓓) ] γ ks) holds
-    𝒹↑ (is , 𝕚) (js , 𝕛)= ∣ ((is ++ js) , ♣) , μ , ν ∣
+    𝒹↑ (is , 𝕚) (js , 𝕛)= ∣ ((is ++ js) , ♣) , γ-lemma₁ is js , γ-lemma₂ is js ∣
      where
-      μ : (γ is ≤[ poset-of (𝒪 𝒮𝓓) ] γ (is ++ js)) holds
-      μ i p = {!member-left-monotone!}
-
-      ν : (γ js ≤[ poset-of (𝒪 𝒮𝓓) ] γ (is ++ js)) holds
-      ν = {!!}
-
       ♣ : (b : B) → member b (is ++ js) → 𝔘 (β b) holds
       ♣ b q = cases (𝕚 b) (𝕛 b) (member-in-++ is js b q)
 
