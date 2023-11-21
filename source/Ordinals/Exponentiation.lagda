@@ -76,9 +76,6 @@ module _ {X : 𝓤 ̇  } (R : X → X → 𝓥 ̇  ) where
  []-lex-bot : is-bot (lex R) []
  []-lex-bot xs ()
 
- []-acc : is-accessible (lex R) []
- []-acc = acc (λ zs q → 𝟘-elim ([]-lex-bot _ q))
-
  data is-decreasing : List X → 𝓤 ⊔ 𝓥 ̇  where
   []-decr : is-decreasing []
   sing-decr : {x : X} → is-decreasing [ x ]
@@ -96,70 +93,66 @@ module _ {X : 𝓤 ̇  } (R : X → X → 𝓥 ̇  ) where
 
  lex-decr : DecreasingList → DecreasingList → 𝓤 ⊔ 𝓥 ̇
  lex-decr (xs , _) (ys , _) = lex R xs ys
+\end{code}
 
+\begin{code}
  []-acc-decr : {p : is-decreasing []} → is-accessible lex-decr ([] , p)
  []-acc-decr {[]-decr} = acc (λ xs q → 𝟘-elim ([]-lex-bot _ q))
 
- module _
-   (tr : is-transitive R)
+ lex-decr-acc : is-transitive R
+              → (x : X) → is-accessible R x
+              → (xs : List X) (δ : is-decreasing xs)
+              → is-accessible lex-decr (xs , δ)
+              → (ε : is-decreasing (x ∷ xs))
+              → is-accessible lex-decr ((x ∷ xs) , ε)
+ lex-decr-acc tr =
+  transfinite-induction' R P ϕ
+    where
+     Q : X → DecreasingList → 𝓤 ⊔ 𝓥 ̇
+     Q x (xs , _) = (ε' : is-decreasing (x ∷ xs)) → is-accessible lex-decr ((x ∷ xs) , ε')
+     P : X → 𝓤 ⊔ 𝓥 ̇
+     P x = (xs : List X) (δ : is-decreasing xs)
+         → is-accessible lex-decr (xs , δ)
+         → Q x (xs , δ)
 
-   where
+     ϕ : (x : X) → ((y : X) → R y x → P y) → P x
+     ϕ x IH xs δ β = transfinite-induction' lex-decr (Q x) (λ (xs , ε) → ϕ' xs ε) (xs , δ) β
+      where
+       ϕ' : (xs : List X) → (ε : is-decreasing xs)
+          → ((ys : DecreasingList) → lex-decr ys (xs , ε) → Q x ys)
+          → Q x (xs , ε)
+       ϕ' xs _ IH₂ ε' = acc (λ (ys , ε) → g ys ε)
+        where
+         g : (ys : List X) → (ε : is-decreasing ys)
+            → lex-decr (ys , ε) ((x ∷ xs) , ε')
+            → is-accessible lex-decr (ys , ε)
+         g [] ε p = []-acc-decr
+         g (y ∷ []) ε (head-lex p) = IH y p [] []-decr []-acc-decr ε
+         g (y ∷ z ∷ ys) ε (head-lex p) =
+           IH y p (z ∷ ys) (is-decreasing-tail ε)
+              (g (z ∷ ys) (is-decreasing-tail ε) (head-lex (tr z y x (is-decreasing-heads ε) p)))
+              ε
+         g (.x ∷ ys@[])      ε (tail-lex refl l) = IH₂ (ys , is-decreasing-tail ε) l ε
+         g (.x ∷ ys@(_ ∷ _)) ε (tail-lex refl l) = IH₂ (ys , is-decreasing-tail ε) l ε
 
-  lex-decr-acc : (x : X) → is-accessible R x
-               → (xs : List X) (δ : is-decreasing xs)
-               → is-accessible lex-decr (xs , δ)
-               → (ε : is-decreasing (x ∷ xs))
-               → is-accessible lex-decr ((x ∷ xs) , ε)
-  lex-decr-acc =
-   transfinite-induction' R P ϕ
-     where
-      Q : X → DecreasingList → 𝓤 ⊔ 𝓥 ̇
-      Q x (xs , _) = (ε' : is-decreasing (x ∷ xs)) → is-accessible lex-decr ((x ∷ xs) , ε')
-      P : X → 𝓤 ⊔ 𝓥 ̇
-      P x = (xs : List X) (δ : is-decreasing xs)
-          → is-accessible lex-decr (xs , δ)
-          → Q x (xs , δ)
+ lex-wellfounded : is-transitive R → is-well-founded R → is-well-founded lex-decr
+ lex-wellfounded tr wf (xs , δ) = lex-wellfounded' wf xs δ
+  where
+   lex-wellfounded' : is-well-founded R
+                    → (xs : List X) (δ : is-decreasing xs)
+                    → is-accessible lex-decr (xs , δ)
+   lex-wellfounded' wf [] δ = []-acc-decr
+   lex-wellfounded' wf (x ∷ xs) δ =
+     lex-decr-acc tr
+                  x
+                  (wf x)
+                  xs
+                  (is-decreasing-tail δ)
+                  (lex-wellfounded' wf xs (is-decreasing-tail δ))
+                  δ
+\end{code}
 
-      ϕ : (x : X) → ((y : X) → R y x → P y) → P x
-      ϕ x IH xs δ β = transfinite-induction' lex-decr (Q x) (λ (xs , ε) → ϕ' xs ε) (xs , δ) β
-       where
-        ϕ' : (xs : List X) → (ε : is-decreasing xs)
-           → ((ys : DecreasingList) → lex-decr ys (xs , ε) → Q x ys)
-           → Q x (xs , ε)
-        ϕ' xs _ IH₂ ε' = acc (λ (ys , ε) → g ys ε)
-         where
-          g : (ys : List X) → (ε : is-decreasing ys)
-             → lex-decr (ys , ε) ((x ∷ xs) , ε')
-             → is-accessible lex-decr (ys , ε)
-          g [] ε p = []-acc-decr
-          g (y ∷ []) ε (head-lex p) = IH y p [] []-decr []-acc-decr ε
-          g (y ∷ z ∷ ys) ε (head-lex p) =
-            IH y p (z ∷ ys) (is-decreasing-tail ε)
-               (g (z ∷ ys) (is-decreasing-tail ε) (head-lex (tr z y x (is-decreasing-heads ε) p)))
-               ε
-          {-# CATCHALL #-}
-          g (.x ∷ ys) ε (tail-lex refl l) = IH₂ (ys , is-decreasing-tail ε) l ε
-
-  lex-wellfounded' : is-well-founded R
-                   → (xs : List X) (δ : is-decreasing xs)
-                   → is-accessible lex-decr (xs , δ)
-  lex-wellfounded' wf [] δ = []-acc-decr
-  lex-wellfounded' wf (x ∷ xs) δ =
-   lex-decr-acc x (wf x) xs (is-decreasing-tail δ) (lex-wellfounded' wf xs (is-decreasing-tail δ)) δ
-
-  lex-wellfounded : is-well-founded R → is-well-founded lex-decr
-  lex-wellfounded wf (xs , δ) = lex-wellfounded' wf xs δ
-{-
-  lex-wellfounded wf ([] , []-decr) = []-acc-decr
-  lex-wellfounded wf (.([ x ]) , sing-decr {x}) = acc g
-   where
-    h : is-accessible R x
-    h = wf x
-    g : (ys : DecreasingList)
-      → lex-decr ys ([ x ] , sing-decr) → is-accessible lex-decr ys
-    g (.[] , _) []-lex = []-acc-decr
-    g ((y ∷ ys) , d) (head-lex p) = lex-decr-acc y (wf y) ys {!!} {!!} {!!}
-  lex-wellfounded wf (.(_ ∷ _ ∷ _) , many-decr x dec) = {!!} -}
+\begin{code}
 
  lex-irreflexive : is-irreflexive R → is-irreflexive (lex R)
  lex-irreflexive ir (x ∷ xs) (head-lex p) = ir x p
@@ -193,10 +186,24 @@ module _ {X : 𝓤 ̇  } (R : X → X → 𝓥 ̇  ) where
    e₁ : xs ＝ ys
    e₁ = lex-extensional ir ext xs ys p₁ q₁
 
+\end{code}
+
+\begin{code}
+
 
 -- can we get away with different universes like this?
+
+⟨[𝟙+_]^_⟩ : Ordinal 𝓤 → Ordinal 𝓥 → 𝓤 ⊔ 𝓥 ̇
+⟨[𝟙+ α ]^ β ⟩ = Σ xs ꞉ List ⟨ β ×ₒ α ⟩ , is-decreasing (underlying-order α) (map pr₂ xs)
+
+exponential-order : {𝓤 𝓥 : Universe} → (α : Ordinal 𝓤) → (β : Ordinal 𝓥) → ⟨[𝟙+ α ]^ β ⟩ → ⟨[𝟙+ α ]^ β ⟩ → 𝓤 ⊔ 𝓥 ̇
+exponential-order α β (xs , _) (ys , _) = xs ≺⟨List (β ×ₒ α) ⟩ ys
+
 [𝟙+_]^_ : Ordinal 𝓤 → Ordinal 𝓥 → Ordinal (𝓤 ⊔ 𝓥)
-[𝟙+ α ]^ β = (Σ xs ꞉ List ⟨ β ×ₒ α ⟩ , is-decreasing (underlying-order α) (map pr₂ xs)) , {!!} , {!!} , {!!}
+[𝟙+ α ]^ β = ⟨[𝟙+ α ]^ β ⟩
+           , exponential-order α β
+           , {!!}
+           , {!!}
 
 
 -- prove that (1 + A) ^ X is an ordinal
