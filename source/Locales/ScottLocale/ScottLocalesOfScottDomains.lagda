@@ -27,6 +27,7 @@ open import UF.Classifiers
 open import UF.Univalence
 open import UF.Equiv hiding (_■)
 open import UF.Embeddings
+open import MLTT.Negation
 
 module Locales.ScottLocale.ScottLocalesOfScottDomains
         (pt : propositional-truncations-exist)
@@ -74,11 +75,34 @@ _⊆⊆_ {_} {_} {X} xs U = (x : X) → member x xs → x ∈ U
 
 \end{code}
 
+We define the following predicate that expresses what it means for two elements
+of a DCPO `𝓓` to be “bounded above”.
+
+\begin{code}
+
+bounded-above : (𝓓 : DCPO {𝓤 ⁺} {𝓤}) → ⟨ 𝓓 ⟩∙ → ⟨ 𝓓 ⟩∙ → Ω (𝓤 ⁺)
+bounded-above 𝓓 x y = Ǝ u ꞉ ⟨ 𝓓 ⟩∙ , (u is-glb-of (x , y)) holds
+ where
+  open Meets (λ a b → a ⊑⟨ 𝓓 ⟩ₚ b)
+
+\end{code}
+
+For the construction, we will assume the following.
+
+\begin{code}
+
+decidability-condition : (𝓓 : DCPO {𝓤 ⁺} {𝓤}) → 𝓤 ⁺  ̇
+decidability-condition 𝓓 =
+ (x y : ⟨ 𝓓 ⟩∙) → is-decidable (bounded-above 𝓓 x y holds)
+
+\end{code}
+
 \begin{code}
 
 module SpectralScottLocaleConstruction
         (𝓓    : DCPO {𝓤 ⁺} {𝓤})
         (hscb : has-specified-small-compact-basis 𝓓)
+        (dc   : decidability-condition 𝓓)
         (pe   : propext 𝓤) where
 
  open ScottLocaleConstruction 𝓓 hscb pe
