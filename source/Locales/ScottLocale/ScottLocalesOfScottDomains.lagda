@@ -275,18 +275,8 @@ We now construct the basis for this locale.
     Ⅲ = γ₁-below-γ (i ∷ (is ++ (j ∷ js)))
 
  γ-lemma₂ : (is js : List B) → (γ js ≤[ poset-of (𝒪 𝒮𝓓) ] γ (is ++ js)) holds
- γ-lemma₂ is          []       = λ _ ()
- γ-lemma₂ []       js@(_ ∷ _)  = ≤-is-reflexive (poset-of (𝒪 𝒮𝓓)) (γ js)
- γ-lemma₂ (i ∷ is)    (j ∷ js) x p = Ⅲ x foo
-  where
-   † : (γ₁ (j ∷ js) ≤[ poset-of (𝒪 𝒮𝓓) ] γ₁ (is ++ (j ∷ js))) holds
-   † y q = {!!}
-
-   Ⅰ = γ-below-γ₁ (is ++ (j ∷ js))
-   Ⅲ = γ₁-below-γ ((i ∷ is) ++ (j ∷ js))
-
-   foo : (β x ∈ₛ γ₁ ((i ∷ is) ++ (j ∷ js))) holds
-   foo = ∨[ 𝒪 𝒮𝓓 ]-right-monotone † x {!!}
+ γ-lemma₂    []        js = ≤-is-reflexive (poset-of (𝒪 𝒮𝓓)) (γ js)
+ γ-lemma₂ is@(i ∷ is′) js = λ x p → ∣_∣ (inr (γ-lemma₂ is′ js x p))
 
 \end{code}
 
