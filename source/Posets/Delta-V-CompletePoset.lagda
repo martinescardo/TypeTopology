@@ -404,7 +404,7 @@ module Retract-Lemmas (𝓤  𝓦  𝓥 : Universe) (A : Poset 𝓤 𝓦) where
     r-y-＝-𝟙 : r y ＝ (⊤ , 𝟙-is-¬¬-stable)
     r-y-＝-𝟙 = path₅ ∙ path₆
 
-  non-trivial-iff-Δ-section : x ≠ y ⇔ is-section (Δ ∘ Ω¬¬-to-Ω)
+  non-trivial-iff-Δ-section : x ≠ y ↔ is-section (Δ ∘ Ω¬¬-to-Ω)
   non-trivial-iff-Δ-section = (non-trivial-to-Δ-section , Δ-section-to-non-trivial)
 
 
@@ -511,7 +511,7 @@ This allows us to exhibit the type of propositions as a retract of a locally sma
       𝟙-＝-P : 𝟙 ＝ P holds
       𝟙-＝-P = ap pr₁ path₅
 
-  positive-iff-Δ-section : x < y ⇔ ((z : ∣ A ∣ₚ) → (y-≤-z : (y ≤ z) holds) → is-section (Δ (t z y-≤-z)))
+  positive-iff-Δ-section : x < y ↔ ((z : ∣ A ∣ₚ) → (y-≤-z : (y ≤ z) holds) → is-section (Δ (t z y-≤-z)))
   positive-iff-Δ-section = (positive-to-Δ-section , Δ-section-to-positive)
    
 \end{code}
