@@ -392,6 +392,8 @@ We now construct the basis for this locale.
          underlying-order 𝓓 s d₁
     η d₁ r₁ r₂ = q d₁ λ { (inl ⋆) → r₁ ; (inr ⋆) → r₂ }
 
+ open DefnOfScottLocale 𝓓 𝓤 pe using (_⊆ₛ_)
+
  principal-filter-reflects-joins : (c d s : ⟨ 𝓓 ⟩∙)
                                  → (κᶜ : is-compact 𝓓 c)
                                  → (κᵈ : is-compact 𝓓 d)
@@ -404,11 +406,23 @@ We now construct the basis for this locale.
  principal-filter-reflects-joins c d s κᶜ κᵈ σ =
   ≤-is-antisymmetric (poset-of (𝒪 𝒮𝓓)) Ⅰ Ⅱ
    where
-    Ⅰ : {!!} holds
-    Ⅰ = {!!}
+    open PosetReasoning (poset-of (𝒪 𝒮𝓓))
 
-    Ⅱ : {!!} holds
-    Ⅱ = {!!}
+    κₛ : is-compact 𝓓 s
+    κₛ = sup-is-compact c d s κᶜ κᵈ σ
+
+    † : (↑ˢ[ s , κₛ ] ⊆ₛ (↑ˢ[ c , κᶜ ] ∧[ 𝒪 𝒮𝓓 ] ↑ˢ[ d , κᵈ ])) holds
+    † x p = (c ⊑⟨ 𝓓 ⟩[ pr₁ σ (inl ⋆) ] s ⊑⟨ 𝓓 ⟩[ p ] x ∎⟨ 𝓓 ⟩)
+          , (d ⊑⟨ 𝓓 ⟩[ pr₁ σ (inr ⋆) ] s ⊑⟨ 𝓓 ⟩[ p ] x ∎⟨ 𝓓 ⟩)
+
+    ‡ : ((↑ˢ[ c , κᶜ ] ∧[ 𝒪 𝒮𝓓 ] ↑ˢ[ d , κᵈ ]) ⊆ₛ ↑ˢ[ s , κₛ ]) holds
+    ‡ x (p , q) = pr₂ σ x λ { (inl ⋆) → p ; (inr ⋆) → q }
+
+    Ⅰ : (↑ˢ[ s , κₛ ] ⊆ₖ (↑ˢ[ c , κᶜ ] ∧[ 𝒪 𝒮𝓓 ] ↑ˢ[ d , κᵈ ])) holds
+    Ⅰ = ⊆ₛ-implies-⊆ₖ ↑ˢ[ s , κₛ ] (↑ˢ[ c , κᶜ ] ∧[ 𝒪 𝒮𝓓 ] ↑ˢ[ d , κᵈ ]) †
+
+    Ⅱ : ((↑ˢ[ c , κᶜ ] ∧[ 𝒪 𝒮𝓓 ] ↑ˢ[ d , κᵈ ]) ⊆ₖ ↑ˢ[ s , κₛ ]) holds
+    Ⅱ = ⊆ₛ-implies-⊆ₖ (↑ˢ[ c , κᶜ ] ∧[ 𝒪 𝒮𝓓 ] ↑ˢ[ d , κᵈ ]) ↑ˢ[ s , κₛ ] ‡
 
 \end{code}
 
