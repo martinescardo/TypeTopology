@@ -27,6 +27,7 @@ open import UF.Classifiers
 open import UF.Univalence
 open import UF.Equiv hiding (_■)
 open import UF.Embeddings
+open import UF.EquivalenceExamples
 open import MLTT.Negation
 
 module Locales.ScottLocale.ScottLocalesOfScottDomains
@@ -101,6 +102,7 @@ decidability-condition 𝓓 =
 
 module SpectralScottLocaleConstruction
         (𝓓    : DCPO {𝓤 ⁺} {𝓤})
+        (hl   : has-least (underlying-order 𝓓))
         (hscb : has-specified-small-compact-basis 𝓓)
         (dc   : decidability-condition 𝓓)
         (pe   : propext 𝓤) where
@@ -306,13 +308,25 @@ We now construct the basis for this locale.
 
 \begin{code}
 
+ principal-filter-is-compact₀ : (c : ⟨ 𝓓 ⟩∙)
+                              → (κ : is-compact 𝓓 c)
+                              → is-compact-open 𝒮𝓓 ↑ˢ[ (c , κ) ] holds
+ principal-filter-is-compact₀ c κ S δ p = ∥∥-rec ∃-is-prop † q
+  where
+   q : (c ∈ₛ (⋁[ 𝒪 𝒮𝓓 ] S)) holds
+   q = ⊆ₖ-implies-⊆ₛ ↑ˢ[ (c , κ) ] (⋁[ 𝒪 𝒮𝓓 ] S) p c (reflexivity 𝓓 c)
+
+   † : Σ i ꞉ index S , (c ∈ₛ (S [ i ])) holds
+     → ∃ i ꞉ index S , (↑ˢ[ (c , κ) ] ≤[ poset-of (𝒪 𝒮𝓓) ] S [ i ]) holds
+   † (i , r) = ∣ i , ‡ ∣
+    where
+     ‡ :  (↑ˢ[ c , κ ] ≤[ poset-of (𝒪 𝒮𝓓) ] (S [ i ])) holds
+     ‡ d = upward-closure (S [ i ]) c (β d) r
+
  principal-filter-is-compact : (b : B)
                              → is-compact-open 𝒮𝓓 ↑ˢ[ (β b , ϟ b) ] holds
  principal-filter-is-compact b S δ p = ∥∥-rec ∃-is-prop † q
   where
-   p′ : (↑ˢ[ (β b , ϟ b) ] ⊆ₖ (⋁[ 𝒪 𝒮𝓓 ] S)) holds
-   p′ i r = p i r
-
    q : (β b ∈ₛ (⋁[ 𝒪 𝒮𝓓 ] S)) holds
    q = p b (reflexivity 𝓓 (β b))
 
@@ -361,11 +375,15 @@ We now construct the basis for this locale.
 
 \begin{code}
 
+ open import Locales.ScottLocale.Properties pt fe 𝓤
+ open BottomLemma 𝓓 𝕒 hl
+ open ScottLocaleProperties 𝓓 hl hscb pe
+
  ⊤-is-compact : is-compact-open 𝒮𝓓 𝟏[ 𝒪 𝒮𝓓 ] holds
- ⊤-is-compact S (ι , δ) p = {!!}
+ ⊤-is-compact = transport (λ - → is-compact-open 𝒮𝓓 - holds) ↑⊥-is-top †
   where
-   † : ((⋁[ 𝒪 𝒮𝓓 ] S) ∈ₚ {!↑ˢ[ ? ]!}) holds
-   † = {!!}
+   † : is-compact-open ScottLocale ↑ˢ[ ⊥ᴰ , ⊥κ ] holds
+   † = principal-filter-is-compact₀ ⊥ᴰ ⊥κ
 
 \end{code}
 
@@ -434,12 +452,23 @@ We now construct the basis for this locale.
     𝒹 = ∣ [] , (λ _ ()) ∣ , 𝒹↑
 
  σᴰ : spectralᴰ 𝒮𝓓
- σᴰ = basis-for-𝒮𝓓 , 𝒮𝓓-dir-basis-forᴰ , (γ-gives-compact-opens , τ , {!!})
+ σᴰ = pr₁ Σ-assoc (𝒷 , (γ-gives-compact-opens , τ , μ))
   where
-   τ : contains-top (𝒪 𝒮𝓓) basis-for-𝒮𝓓 holds
-   τ = {!!}
+   𝒷 : directed-basisᴰ (𝒪 𝒮𝓓)
+   𝒷 = basis-for-𝒮𝓓 , 𝒮𝓓-dir-basis-forᴰ
 
-  --  μ : closed-under-binary-meets (𝒪 𝒮𝓓) basis-for-𝒮𝓓 holds
-  --  μ = {!!}
+   τ : contains-top (𝒪 𝒮𝓓) basis-for-𝒮𝓓 holds
+   τ = ∥∥-rec
+        (holds-is-prop (contains-top (𝒪 𝒮𝓓) basis-for-𝒮𝓓))
+        †
+        (compact-opens-are-basic 𝒮𝓓 𝒷 𝟏[ 𝒪 𝒮𝓓 ] ⊤-is-compact)
+    where
+     † : Σ is ꞉ List B , (γ is) ＝ 𝟏[ 𝒪 𝒮𝓓 ]
+       → contains-top (𝒪 𝒮𝓓) basis-for-𝒮𝓓 holds
+     † (is , p) =
+      ∣ is , transport (λ - → is-top (𝒪 𝒮𝓓) - holds) (p ⁻¹) (𝟏-is-top (𝒪 𝒮𝓓)) ∣
+
+   μ : closed-under-binary-meets (𝒪 𝒮𝓓) basis-for-𝒮𝓓 holds
+   μ = {!!}
 
 \end{code}
