@@ -361,6 +361,16 @@ We now construct the basis for this locale.
 
 \begin{code}
 
+ ⊤-is-compact : is-compact-open 𝒮𝓓 𝟏[ 𝒪 𝒮𝓓 ] holds
+ ⊤-is-compact S (ι , δ) p = {!!}
+  where
+   † : ((⋁[ 𝒪 𝒮𝓓 ] S) ∈ₚ {!↑ˢ[ ? ]!}) holds
+   † = {!!}
+
+\end{code}
+
+\begin{code}
+
  basis-for-𝒮𝓓 : Fam 𝓤 ⟨ 𝒪 𝒮𝓓 ⟩
  basis-for-𝒮𝓓 = List B , γ
 
@@ -424,10 +434,10 @@ We now construct the basis for this locale.
     𝒹 = ∣ [] , (λ _ ()) ∣ , 𝒹↑
 
  σᴰ : spectralᴰ 𝒮𝓓
- σᴰ = basis-for-𝒮𝓓 , 𝒮𝓓-dir-basis-forᴰ , (γ-gives-compact-opens , {!!})
-  -- where
-  --  τ : contains-top (𝒪 𝒮𝓓) basis-for-𝒮𝓓 holds
-  --  τ = {!!}
+ σᴰ = basis-for-𝒮𝓓 , 𝒮𝓓-dir-basis-forᴰ , (γ-gives-compact-opens , τ , {!!})
+  where
+   τ : contains-top (𝒪 𝒮𝓓) basis-for-𝒮𝓓 holds
+   τ = {!!}
 
   --  μ : closed-under-binary-meets (𝒪 𝒮𝓓) basis-for-𝒮𝓓 holds
   --  μ = {!!}

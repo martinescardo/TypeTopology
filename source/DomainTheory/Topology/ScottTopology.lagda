@@ -112,4 +112,7 @@ I find it convenient to define the type of directed families.
    where
     open 𝒪ₛᴿ
 
+ upward-closure : (𝔘 : 𝒪ₛ) →  is-upwards-closed (λ - → - ∈ₛ 𝔘) holds
+ upward-closure = 𝒪ₛᴿ.pred-is-upwards-closed ∘ to-𝒪ₛᴿ
+
 \end{code}

@@ -201,3 +201,22 @@ module PropertiesAlgebraic (𝓓 : DCPO {𝓤} {𝓥})
         (characterization-of-scott-opens₂ U ς x)
 
 \end{code}
+
+Addition 2023-11-22.
+
+\begin{code}
+
+module BottomLemma (𝓓  : DCPO {𝓤} {𝓥})
+                   (hl : has-least (underlying-order 𝓓)) where
+
+ ⊥ᴰ : ⟨ 𝓓 ⟩
+ ⊥ᴰ = pr₁ hl
+
+ open Properties 𝓓
+
+ open DefnOfScottTopology 𝓓 𝓥
+
+ bottom-principal-filter-lemma : (𝔘 : 𝒪ₛ) → 𝔘 .pr₁ ⊆ ↑[ 𝓓 ] ⊥ᴰ
+ bottom-principal-filter-lemma 𝔘 x p = {!!}
+
+\end{code}
