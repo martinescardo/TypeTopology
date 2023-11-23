@@ -56,12 +56,7 @@ open import Locales.Compactness                              pt fe
 
 open import Locales.SmallBasis pt fe sr
 
-open Universal fe
-open Implication fe
-open Existential pt
-open Disjunction pt
-open Conjunction
-open PowersetOperations
+open AllCombinators pt fe
 
 open Locale
 
@@ -82,9 +77,13 @@ of a DCPO `𝓓` to be “bounded above”.
 \begin{code}
 
 bounded-above : (𝓓 : DCPO {𝓤 ⁺} {𝓤}) → ⟨ 𝓓 ⟩∙ → ⟨ 𝓓 ⟩∙ → Ω (𝓤 ⁺)
-bounded-above 𝓓 x y = Ǝ u ꞉ ⟨ 𝓓 ⟩∙ , (u is-glb-of (x , y)) holds
+bounded-above 𝓓 x y = ∥ upper-bound₂ (x , y) ∥Ω
  where
-  open Meets (λ a b → a ⊑⟨ 𝓓 ⟩ₚ b)
+  open Joins (λ a b → a ⊑⟨ 𝓓 ⟩ₚ b)
+
+infix 30 bounded-above
+
+syntax bounded-above 𝓓 x y = x ↑[ 𝓓 ] y
 
 \end{code}
 
@@ -100,11 +99,15 @@ decidability-condition 𝓓 =
 
 \begin{code}
 
+open import DomainTheory.BasesAndContinuity.ScottDomain pt fe 𝓤
+open DefinitionOfBoundedCompleteness
+
 module SpectralScottLocaleConstruction
         (𝓓    : DCPO {𝓤 ⁺} {𝓤})
         (hl   : has-least (underlying-order 𝓓))
         (hscb : has-specified-small-compact-basis 𝓓)
         (dc   : decidability-condition 𝓓)
+        (bc   : bounded-complete 𝓓 holds)
         (pe   : propext 𝓤) where
 
  open ScottLocaleConstruction 𝓓 hscb pe
@@ -375,6 +378,42 @@ We now construct the basis for this locale.
 
 \begin{code}
 
+ sup-is-compact : (c d s : ⟨ 𝓓 ⟩∙)
+                → (κᶜ : is-compact 𝓓 c)
+                → (κᵈ : is-compact 𝓓 d)
+                → is-sup (underlying-order 𝓓) s (binary-family 𝓤 c d [_])
+                → is-compact 𝓓 s
+ sup-is-compact c d s κᶜ κᵈ (p , q) =
+  binary-join-is-compact 𝓓 (p (inl ⋆)) (p (inr ⋆)) η κᶜ κᵈ
+   where
+    η : (d₁ : ⟨ 𝓓 ⟩∙) →
+         underlying-order 𝓓 (binary-family 𝓤 c d [ inl ⋆ ]) d₁ →
+         underlying-order 𝓓 (binary-family 𝓤 c d [ inr ⋆ ]) d₁ →
+         underlying-order 𝓓 s d₁
+    η d₁ r₁ r₂ = q d₁ λ { (inl ⋆) → r₁ ; (inr ⋆) → r₂ }
+
+ principal-filter-reflects-joins : (c d s : ⟨ 𝓓 ⟩∙)
+                                 → (κᶜ : is-compact 𝓓 c)
+                                 → (κᵈ : is-compact 𝓓 d)
+                                 → (σ : is-sup (underlying-order 𝓓) s (binary-family 𝓤 c d [_]))
+                                 →
+                                   let
+                                    κˢ = sup-is-compact c d s κᶜ κᵈ σ
+                                   in
+                                    ↑ˢ[ s , κˢ ] ＝ ↑ˢ[ c , κᶜ ] ∧[ 𝒪 𝒮𝓓 ] ↑ˢ[ d , κᵈ ]
+ principal-filter-reflects-joins c d s κᶜ κᵈ σ =
+  ≤-is-antisymmetric (poset-of (𝒪 𝒮𝓓)) Ⅰ Ⅱ
+   where
+    Ⅰ : {!!} holds
+    Ⅰ = {!!}
+
+    Ⅱ : {!!} holds
+    Ⅱ = {!!}
+
+\end{code}
+
+\begin{code}
+
  open import Locales.ScottLocale.Properties pt fe 𝓤
  open BottomLemma 𝓓 𝕒 hl
  open ScottLocaleProperties 𝓓 hl hscb pe
@@ -384,6 +423,47 @@ We now construct the basis for this locale.
   where
    † : is-compact-open ScottLocale ↑ˢ[ ⊥ᴰ , ⊥κ ] holds
    † = principal-filter-is-compact₀ ⊥ᴰ ⊥κ
+
+ γ-closure-under-∧ : (is js : List B)
+                   → ∃ ks ꞉ List B , γ₁ ks ＝ γ₁ is ∧[ 𝒪 𝒮𝓓 ] γ₁ js
+ γ-closure-under-∧    []       js       = ∣ [] , † ∣
+                                           where
+                                            † = 𝟎-left-annihilator-for-∧ (𝒪 𝒮𝓓) (γ₁ js) ⁻¹
+ γ-closure-under-∧ is@(_ ∷ _)  []       = ∣ [] , † ∣
+                                           where
+                                            † = 𝟎-right-annihilator-for-∧ (𝒪 𝒮𝓓) (γ₁ is) ⁻¹
+ γ-closure-under-∧    (i ∷ is) (j ∷ js) = ∥∥-rec ∃-is-prop † IH
+  where
+   open Meets (λ a b → a ⊑⟨ 𝓓 ⟩ₚ b)
+
+   IH : ∃ ks ꞉ List B , γ₁ ks ＝ γ₁ is ∧[ 𝒪 𝒮𝓓 ] γ₁ js
+   IH = γ-closure-under-∧ is js
+
+   † : Σ ks′ ꞉ List B , γ₁ ks′ ＝ γ₁ is ∧[ 𝒪 𝒮𝓓 ] γ₁ js
+     → ∃ ks ꞉ List B , γ₁ ks ＝ γ₁ (i ∷ is) ∧[ 𝒪 𝒮𝓓 ] γ₁ (j ∷ js)
+   † (ks′ , p) = cases †₁ †₂ (dc (β i) (β j))
+    where
+     †₁ : (β i) ↑[ 𝓓 ] (β j) holds
+        → ∃ ks ꞉ List B , γ₁ ks ＝ (γ₁ (i ∷ is)) ∧[ 𝒪 𝒮𝓓 ] (γ₁ (j ∷ js))
+     †₁ υ = ∥∥-rec {!!} ‡₁ υ
+      where
+
+       ‡₁ : (Σ u ꞉ ⟨ 𝓓 ⟩∙ , β i ⊑⟨ 𝓓 ⟩ u × β j ⊑⟨ 𝓓 ⟩ u)
+          → ∃ ks ꞉ List B , γ₁ ks ＝ γ₁ (i ∷ is) ∧[ 𝒪 𝒮𝓓 ] γ₁ (j ∷ js)
+       ‡₁ (u , q , r) = {!!}
+        where
+         ς : has-supₚ 𝓓 ⁅ β i , β j ⁆ holds
+         ς = bc ⁅ β i , β j ⁆ ∣ u , (ub₂-implies-ub-for-binary-family (underlying-orderₚ 𝓓) (β i) (β j) u (q , r)) ∣
+
+         x : ⟨ 𝓓 ⟩∙
+         x = pr₁ ς
+
+         κ : is-compact 𝓓 x
+         κ = {!!}
+
+     †₂ : ¬ (bounded-above 𝓓 (β i) (β j) holds)
+        → ∃ ks ꞉ List B , γ₁ ks ＝ (γ₁ (i ∷ is)) ∧[ 𝒪 𝒮𝓓 ] (γ₁ (j ∷ js))
+     †₂ = {!!}
 
 \end{code}
 

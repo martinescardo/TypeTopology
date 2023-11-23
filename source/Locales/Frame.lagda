@@ -549,6 +549,21 @@ syntax binary-join F x y = x ∨[ F ] y
 
 \end{code}
 
+\begin{code}
+
+ub₂-implies-ub-for-binary-family : {𝓤 𝓥 𝓦 : Universe} {A : 𝓤  ̇}
+                                 → (_≤_ : A → A → Ω 𝓥)
+                                 → let
+                                     open Joins (λ x y → x ≤ y)
+                                    in
+                                    (x y u : A)
+                                 → (u is-an-upper-bound-of₂ (x , y)) holds
+                                 → (u is-an-upper-bound-of (binary-family 𝓦 x y)) holds
+ub₂-implies-ub-for-binary-family F x y u (p , _) (inl ⋆) = p
+ub₂-implies-ub-for-binary-family F x y u (_ , q) (inr ⋆) = q
+
+\end{code}
+
 By fixing the left or right argument of `_∨_` to anything, we get a monotonic
 map.
 
