@@ -115,4 +115,11 @@ I find it convenient to define the type of directed families.
  upward-closure : (𝔘 : 𝒪ₛ) →  is-upwards-closed (λ - → - ∈ₛ 𝔘) holds
  upward-closure = 𝒪ₛᴿ.pred-is-upwards-closed ∘ to-𝒪ₛᴿ
 
+ scott-openness : (𝔘 : 𝒪ₛ) → is-scott-open (λ - → - ∈ₛ 𝔘) holds
+ scott-openness 𝔘 =
+  𝒪ₛᴿ.pred-is-upwards-closed 𝔘ᴿ , 𝒪ₛᴿ.pred-is-inaccessible-by-dir-joins 𝔘ᴿ
+   where
+    𝔘ᴿ : 𝒪ₛᴿ
+    𝔘ᴿ = to-𝒪ₛᴿ 𝔘
+
 \end{code}

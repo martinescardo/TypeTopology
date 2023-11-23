@@ -207,16 +207,21 @@ Addition 2023-11-22.
 \begin{code}
 
 module BottomLemma (𝓓  : DCPO {𝓤} {𝓥})
+                   (𝕒  : structurally-algebraic 𝓓)
                    (hl : has-least (underlying-order 𝓓)) where
 
  ⊥ᴰ : ⟨ 𝓓 ⟩
  ⊥ᴰ = pr₁ hl
 
+ ⊥ᴰ-is-least : is-least (underlying-order 𝓓) ⊥ᴰ
+ ⊥ᴰ-is-least = pr₂ hl
+
  open Properties 𝓓
 
  open DefnOfScottTopology 𝓓 𝓥
+ open PropertiesAlgebraic 𝓓 𝕒
 
- bottom-principal-filter-lemma : (𝔘 : 𝒪ₛ) → 𝔘 .pr₁ ⊆ ↑[ 𝓓 ] ⊥ᴰ
- bottom-principal-filter-lemma 𝔘 x p = {!!}
+ bottom-principal-filter-is-top : (𝔘 : 𝒪ₛ) → 𝔘 .pr₁ ⊆ ↑[ 𝓓 ] ⊥ᴰ
+ bottom-principal-filter-is-top 𝔘 x _ = ⊥ᴰ-is-least x
 
 \end{code}
