@@ -82,6 +82,13 @@ module _ {X : 𝓤 ̇  } (R : X → X → 𝓥 ̇  ) where
   sing-decr : {x : X} → is-decreasing [ x ]
   many-decr : {x y : X}{xs : List X} → R y x → is-decreasing (y ∷ xs) → is-decreasing (x ∷ y ∷ xs)
 
+ is-decreasing-propositional : ((x y : X) → is-prop (R x y))
+                             → (xs : List X) → is-prop (is-decreasing xs)
+ is-decreasing-propositional pR [] []-decr []-decr = refl
+ is-decreasing-propositional pR (x ∷ []) sing-decr sing-decr = refl
+ is-decreasing-propositional pR (x ∷ y ∷ xs) (many-decr p ps) (many-decr q qs) =
+  ap₂ many-decr (pR y x p q) (is-decreasing-propositional pR (y ∷ xs) ps qs)
+
  is-decreasing-tail : {x : X} {xs : List X} → is-decreasing (x ∷ xs) → is-decreasing xs
  is-decreasing-tail sing-decr = []-decr
  is-decreasing-tail (many-decr _ d) = d
@@ -209,6 +216,14 @@ module _ (α : Ordinal 𝓤)(β : Ordinal 𝓥) where
  ⟨[𝟙+_]^_⟩ : 𝓤 ⊔ 𝓥 ̇
  ⟨[𝟙+_]^_⟩ = Σ xs ꞉ List ⟨ β ×ₒ α ⟩ , is-decreasing (underlying-order α) (map pr₂ xs)
 
+ to-exponential-＝ : {xs ys : ⟨[𝟙+_]^_⟩} → pr₁ xs ＝ pr₁ ys → xs ＝ ys
+ to-exponential-＝ = to-subtype-＝ (λ xs → is-decreasing-propositional
+                                            (underlying-order α)
+                                            (Prop-valuedness α)
+                                            (map pr₂ xs))
+
+
+
  underlying-list : ⟨[𝟙+_]^_⟩ → List ⟨ β ×ₒ α ⟩
  underlying-list (xs , _) = xs
 
@@ -248,6 +263,46 @@ module _ (α : Ordinal 𝓤)(β : Ordinal 𝓥) where
    acc-lex-decr-to-acc-exponential xs δ (acc h) =
     acc λ (ys , ε) ys<xs → acc-lex-decr-to-acc-exponential ys ε (h (ys ,  underlying-list-decreasing (ys , ε)) ys<xs)
 
+ exponential-order-extensional : is-extensional exponential-order
+ exponential-order-extensional (xs , δ) (ys , ε) p q =
+  to-exponential-＝ (exponential-order-extensional' xs δ ys ε (λ zs ε' → p (zs , ε')) (λ zs ε' → q (zs , ε')))
+  where
+   decreasing-pr₂ : List ⟨ β ×ₒ α ⟩ → 𝓤 ̇
+   decreasing-pr₂ xs = is-decreasing (underlying-order α) (map pr₂ xs)
+   R = underlying-order (β ×ₒ α)
+
+   exponential-order-extensional' : (xs : List ⟨ β ×ₒ α ⟩)
+                                  → (δ : decreasing-pr₂ xs)
+                                  → (ys : List ⟨ β ×ₒ α ⟩)
+                                  → (ε : decreasing-pr₂ ys)
+                                  → ((zs : List ⟨ β ×ₒ α ⟩) → decreasing-pr₂ zs → lex R zs xs → lex R zs ys )
+                                  → ((zs : List ⟨ β ×ₒ α ⟩) → decreasing-pr₂ zs → lex R zs ys → lex R zs xs )
+                                  → xs ＝ ys
+   exponential-order-extensional' [] δ [] ε p q = refl
+   exponential-order-extensional' [] δ (y ∷ ys) ε p q =
+    𝟘-elim ([]-lex-bot _ [] (q [] δ []-lex))
+   exponential-order-extensional' (x ∷ xs) δ [] ε p q =
+    𝟘-elim ([]-lex-bot _ [] (p [] ε []-lex))
+   exponential-order-extensional' (x ∷ xs) δ (y ∷ ys) ε p q = ap₂ _∷_ e₀ e₁
+    where
+     p₀ : ∀ z → R z x → R z y
+     p₀ z zRx = {!!}
+     q₀ : ∀ z → R z y → R z x
+     q₀ z zRy = {!!}
+     e₀ : x ＝ y
+     e₀ = Extensionality (β ×ₒ α) x y p₀ q₀
+     p₁ : (zs : List ⟨ β ×ₒ α ⟩) → decreasing-pr₂ zs → lex R zs xs → lex R zs ys
+     p₁ zs ε' zsRxs = {!!}
+     p₂ : (zs : List ⟨ β ×ₒ α ⟩) → decreasing-pr₂ zs → lex R zs ys → lex R zs xs
+     p₂ zs ε' zsRys = {!!}
+     e₁ : xs ＝ ys
+     e₁ = exponential-order-extensional'
+                   xs (is-decreasing-tail _ δ)
+                   ys (is-decreasing-tail _ ε)
+                   p₁
+                   p₂
+
+
  exponential-order-transitive : is-transitive exponential-order
  exponential-order-transitive (xs , _) (ys , _) (zs , _) p q =
   lex-transitive (underlying-order (β ×ₒ α)) (Transitivity (β ×ₒ α)) xs ys zs p q
@@ -257,7 +312,7 @@ module _ (α : Ordinal 𝓤)(β : Ordinal 𝓥) where
            , exponential-order α β
            , exponential-order-prop-valued α β
            , exponential-order-wellfounded α β
-           , {!!}
+           , exponential-order-extensional α β
            , exponential-order-transitive α β
 
 
