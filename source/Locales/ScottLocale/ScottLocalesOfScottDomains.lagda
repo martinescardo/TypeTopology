@@ -1,12 +1,13 @@
 ---
-title:       The spectral Scott locale of a Scott domain
-author:      Ayberk Tosun
-start-date:  2023-10-25
+title:          The spectral Scott locale of a Scott domain
+author:         Ayberk Tosun
+date-started:   2023-10-25
+date-completed: 2023-11-26
 ---
 
-Ayberk Tosun.
-
-Started on: 2023-10-25.
+In this module, we prove that the Scott locale of any Scott domain is a spectral
+locale (provided that the domain in consideration is large and locally small and
+satisfies a certain decidability condition).
 
 \begin{code}[hide]
 
@@ -25,7 +26,6 @@ open import UF.Powerset-MultiUniverse
 open import UF.Size
 open import UF.Classifiers
 open import UF.Univalence
-open import UF.Equiv hiding (_■)
 open import UF.Embeddings
 open import UF.EquivalenceExamples
 open import MLTT.Negation
@@ -46,7 +46,6 @@ open import DomainTheory.BasesAndContinuity.Bases            pt fe 𝓤
 open import DomainTheory.BasesAndContinuity.Continuity       pt fe 𝓤
 open import DomainTheory.BasesAndContinuity.CompactBasis     pt fe 𝓤
 open import Locales.ScottLocale.Definition                   pt fe 𝓤
-open import Locales.ScottLocale.ScottLocalesOfAlgebraicDcpos pt fe 𝓤
 open import DomainTheory.Topology.ScottTopology              pt fe 𝓤
 open import DomainTheory.Topology.ScottTopologyProperties    pt fe 𝓤
 open import Locales.Frame                                    pt fe
@@ -63,6 +62,24 @@ open Locale
 open PropositionalTruncation pt hiding (_∨_)
 
 \end{code}
+
+The module:
+
+\begin{code}
+
+open import Locales.ScottLocale.ScottLocalesOfAlgebraicDcpos pt fe 𝓤
+
+\end{code}
+
+contains a proof that the Scott locale of any algebraic dcpo is a spectral
+locale.
+
+In this module, we extend this proof by showing that the Scott locale is
+spectral.
+
+\section{Preliminaries}
+
+The following function expresses a list being contained in a given subset.
 
 \begin{code}
 
@@ -87,7 +104,7 @@ syntax bounded-above 𝓓 x y = x ↑[ 𝓓 ] y
 
 \end{code}
 
-For the construction, we will assume the following.
+For the proof of spectrality, we will also need the following assumption
 
 \begin{code}
 
@@ -96,6 +113,10 @@ decidability-condition 𝓓 =
  (x y : ⟨ 𝓓 ⟩∙) → is-decidable (bounded-above 𝓓 x y holds)
 
 \end{code}
+
+\section{The proof}
+
+As mentioned previously, we assume a couple of things.
 
 \begin{code}
 
