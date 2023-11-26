@@ -782,17 +782,24 @@ combined as follows.
 
 \begin{code}
 
+open DefinitionOfScottDomain
+
 module SpectralScottLocaleConstruction₂
         (𝓓    : DCPO {𝓤 ⁺} {𝓤})
         (ua   : Univalence)
         (hl   : has-least (underlying-order 𝓓))
-        (hucb : has-unspecified-small-compact-basis 𝓓)
+        (sd   : is-scott-domain 𝓓 holds)
         (dc   : decidability-condition 𝓓)
-        (bc   : bounded-complete 𝓓 holds)
         (pe   : propext 𝓤) where
 
+ 𝒷₀ : has-unspecified-small-compact-basis 𝓓
+ 𝒷₀ = pr₁ sd
+
+ bc : bounded-complete 𝓓 holds
+ bc = pr₂ sd
+
  hscb : has-specified-small-compact-basis 𝓓
- hscb = specified-small-compact-basis-has-split-support ua sr 𝓓 hucb
+ hscb = specified-small-compact-basis-has-split-support ua sr 𝓓 𝒷₀
 
  pe′ : propext 𝓤
  pe′ = univalence-gives-propext (ua 𝓤)
