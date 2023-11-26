@@ -118,6 +118,13 @@ decidability-condition 𝓓 =
 
 As mentioned previously, we assume a couple of things.
 
+  1. The dcpo `𝓓` in consideration is large and locally small.
+  2. It is pointed.
+  3. It has a specified small compact basis.
+  4. It satisfies the aforementioned decidability condition.
+  5. It is bounded complete (which means it is a Scott domain when combined
+     with the algebraicity condition).
+
 \begin{code}
 
 open import DomainTheory.BasesAndContinuity.ScottDomain pt fe 𝓤
