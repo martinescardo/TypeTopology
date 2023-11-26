@@ -186,7 +186,7 @@ We define some nice notation for the prop-valued equality of the dcpo `𝓓`.
 
 \end{code}
 
-We now proceed to construct the basis for this locale.
+We now proceed to construct the intensional basis for the Scott locale.
 
 \begin{code}
 
@@ -195,8 +195,18 @@ We now proceed to construct the basis for this locale.
 
  open binary-unions-of-subsets pt
 
+\end{code}
+
+The basis is the family `(List B , 𝜸₀)`, where `𝜸₀` is the following function:
+
+\begin{code}
+
  𝜸₀ : List B → 𝓟 {𝓤} {𝓤 ⁺} ⟨ 𝓓 ⟩∙
  𝜸₀ = foldr _∪_ ∅ ∘ map (principal-filter 𝓓 ∘ β)
+
+\end{code}
+
+\begin{code}
 
  𝜸₀-is-upwards-closed : (ks : List B)
                       → is-upwards-closed (𝜸₀ ks) holds
