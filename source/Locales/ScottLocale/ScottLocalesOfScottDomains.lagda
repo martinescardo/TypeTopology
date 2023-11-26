@@ -10,7 +10,7 @@ Started on: 2023-10-25.
 
 \begin{code}[hide]
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
 
 open import MLTT.Spartan hiding (𝟚)
 open import MLTT.List hiding ([_])
@@ -307,6 +307,18 @@ We now construct the basis for this locale.
  γ-lemma₂    []        js = ≤-is-reflexive (poset-of (𝒪 𝒮𝓓)) (γ js)
  γ-lemma₂ is@(i ∷ is′) js = λ x p → ∣_∣ (inr (γ-lemma₂ is′ js x p))
 
+ γ-maps-∨-to-++ : (is js : List B) → γ₁ (is ++ js) ＝ γ₁ is ∨[ 𝒪 𝒮𝓓 ] γ₁ js
+ γ-maps-∨-to-++ []       js = 𝟎-right-unit-of-∨ (𝒪 𝒮𝓓) (γ₁ js) ⁻¹
+ γ-maps-∨-to-++ (i ∷ is) js =
+  γ₁ ((i ∷ is) ++ js)                                  ＝⟨ refl ⟩
+  ↑ˢ[ β i , ϟ i ] ∨[ 𝒪 𝒮𝓓 ] γ₁ (is ++ js)              ＝⟨ Ⅰ    ⟩
+  ↑ˢ[ β i , ϟ i ] ∨[ 𝒪 𝒮𝓓 ] (γ₁ is ∨[ 𝒪 𝒮𝓓 ] γ₁ js)    ＝⟨ Ⅱ    ⟩
+  (↑ˢ[ β i , ϟ i ] ∨[ 𝒪 𝒮𝓓 ] γ₁ is) ∨[ 𝒪 𝒮𝓓 ] γ₁ js    ＝⟨ refl ⟩
+  γ₁ (i ∷ is) ∨[ 𝒪 𝒮𝓓 ] γ₁ js                          ∎
+   where
+    Ⅰ = ap (λ - → ↑ˢ[ β i , ϟ i ] ∨[ 𝒪 𝒮𝓓 ] -) (γ-maps-∨-to-++ is js)
+    Ⅱ = ∨[ 𝒪 𝒮𝓓 ]-assoc ↑ˢ[ β i , ϟ i ] (γ₁ is) (γ₁ js) ⁻¹
+
 \end{code}
 
 \begin{code}
@@ -535,22 +547,36 @@ We now construct the basis for this locale.
  γ-closure-under-∧ : (is js : List B)
                    → ∃ ks ꞉ List B , γ₁ ks ＝ γ₁ is ∧[ 𝒪 𝒮𝓓 ] γ₁ js
  γ-closure-under-∧ []       js = ∣ [] , (𝟎-left-annihilator-for-∧ (𝒪 𝒮𝓓) (γ₁ js) ⁻¹) ∣
- γ-closure-under-∧ (i ∷ is) js = {!!}
+ γ-closure-under-∧ (i ∷ is) js = ∥∥-rec₂ ∃-is-prop † η₀ ρ₀
   where
-   ρ : ∃ ks ꞉ List B , γ₁ ks ＝ γ₁ is ∧[ 𝒪 𝒮𝓓 ] γ₁ js
-   ρ = γ-closure-under-∧ is js
+   η₀ : ∃ ks₀ ꞉ List B , γ₁ ks₀ ＝ γ₁ is ∧[ 𝒪 𝒮𝓓 ] γ₁ js
+   η₀ = γ-closure-under-∧ is js
 
-   η : ∃ ks ꞉ List B , γ₁ ks ＝ ↑ˢ[ β i , ϟ i ] ∧[ 𝒪 𝒮𝓓 ] γ₁ js
-   η = γ-closure-under-∧₁ i js
+   ρ₀ : ∃ ks₁ ꞉ List B , γ₁ ks₁ ＝ ↑ˢ[ β i , ϟ i ] ∧[ 𝒪 𝒮𝓓 ] γ₁ js
+   ρ₀ = γ-closure-under-∧₁ i js
 
-  -- where
-  --  open Meets (λ a b → a ⊑⟨ 𝓓 ⟩ₚ b)
-
-  --  η : {!!}
-  --  η = {!γ-closure-under-∧₀ i (j ∷ js)!}
-
-  --  IH : ∃ ks ꞉ List B , γ₁ ks ＝ γ₁ is ∧[ 𝒪 𝒮𝓓 ] γ₁ js
-  --  IH = γ-closure-under-∧ is js
+   † : Σ ks₀ ꞉ List B , γ₁ ks₀ ＝ γ₁ is ∧[ 𝒪 𝒮𝓓 ] γ₁ js
+     → Σ ks₁ ꞉ List B , γ₁ ks₁ ＝ ↑ˢ[ β i , ϟ i ] ∧[ 𝒪 𝒮𝓓 ] γ₁ js
+     → ∃ ks ꞉ List B , γ₁ ks ＝ γ₁ (i ∷ is) ∧[ 𝒪 𝒮𝓓 ] γ₁ js
+   † (ks₀ , p₀) (ks₁ , p₁) = ∣ (ks₀ ++ ks₁) , ‡ ∣
+    where
+     ‡ : γ₁ (ks₀ ++ ks₁) ＝ γ₁ (i ∷ is) ∧[ 𝒪 𝒮𝓓 ] γ₁ js
+     ‡ =
+      γ₁ (ks₀ ++ ks₁)                                                     ＝⟨ Ⅰ ⟩
+      γ₁ ks₀ ∨[ 𝒪 𝒮𝓓 ] γ₁ ks₁                                             ＝⟨ Ⅱ    ⟩
+      (γ₁ is ∧[ 𝒪 𝒮𝓓 ] γ₁ js) ∨[ 𝒪 𝒮𝓓 ] γ₁ ks₁                            ＝⟨ Ⅲ    ⟩
+      (γ₁ is ∧[ 𝒪 𝒮𝓓 ] γ₁ js) ∨[ 𝒪 𝒮𝓓 ] (↑ˢ[ β i , ϟ i ] ∧[ 𝒪 𝒮𝓓 ] γ₁ js) ＝⟨ Ⅳ    ⟩
+      (γ₁ is ∨[ 𝒪 𝒮𝓓 ] ↑ˢ[ β i , ϟ i ]) ∧[ 𝒪 𝒮𝓓 ] γ₁ js                   ＝⟨ Ⅴ    ⟩
+      (↑ˢ[ β i , ϟ i ] ∨[ 𝒪 𝒮𝓓 ] γ₁ is) ∧[ 𝒪 𝒮𝓓 ] γ₁ js                   ＝⟨ refl ⟩
+      γ₁ (i ∷ is) ∧[ 𝒪 𝒮𝓓 ] γ₁ js                                         ∎
+       where
+        Ⅰ = γ-maps-∨-to-++ ks₀ ks₁
+        Ⅱ = ap (λ - → - ∨[ 𝒪 𝒮𝓓 ] γ₁ ks₁) p₀
+        Ⅲ = ap (λ - → (γ₁ is ∧[ 𝒪 𝒮𝓓 ] γ₁ js) ∨[ 𝒪 𝒮𝓓 ] -) p₁
+        Ⅳ = binary-distributivity-right (𝒪 𝒮𝓓) ⁻¹
+        Ⅴ = ap
+             (λ - → - ∧[ 𝒪 𝒮𝓓 ] γ₁ js)
+             (∨[ 𝒪 𝒮𝓓 ]-is-commutative (γ₁ is) ↑ᵏ[ i ])
 
 \end{code}
 
@@ -636,6 +662,29 @@ We now construct the basis for this locale.
       ∣ is , transport (λ - → is-top (𝒪 𝒮𝓓) - holds) (p ⁻¹) (𝟏-is-top (𝒪 𝒮𝓓)) ∣
 
    μ : closed-under-binary-meets (𝒪 𝒮𝓓) basis-for-𝒮𝓓 holds
-   μ = {!!}
+   μ is js = ∥∥-rec ∃-is-prop † (γ-closure-under-∧ is js)
+    where
+     open Meets (λ x y → x ≤[ poset-of (𝒪 𝒮𝓓) ] y)
+
+     † : (Σ ks ꞉ List B , γ₁ ks ＝ γ₁ is ∧[ 𝒪 𝒮𝓓 ] γ₁ js)
+       → ∃ ks ꞉ List B , ((γ ks) is-glb-of (γ is , γ js)) holds
+     † (ks , p) =
+      ∣ ks , transport (λ - → (- is-glb-of (γ is , γ js)) holds) q ‡ ∣
+       where
+        q : γ is ∧[ 𝒪 𝒮𝓓 ] γ js ＝ γ ks
+        q = γ  is ∧[ 𝒪 𝒮𝓓 ] γ  js      ＝⟨ Ⅰ ⟩
+            γ₁ is ∧[ 𝒪 𝒮𝓓 ] γ  js      ＝⟨ Ⅱ ⟩
+            γ₁ is ∧[ 𝒪 𝒮𝓓 ] γ₁ js      ＝⟨ Ⅲ ⟩
+            γ₁ ks                      ＝⟨ Ⅳ ⟩
+            γ ks                       ∎
+             where
+              Ⅰ = ap (λ - → -     ∧[ 𝒪 𝒮𝓓 ] γ js) (γ-equal-to-γ₁ is)
+              Ⅱ = ap (λ - → γ₁ is ∧[ 𝒪 𝒮𝓓 ] -   ) (γ-equal-to-γ₁ js)
+              Ⅲ = p ⁻¹
+              Ⅳ = γ-equal-to-γ₁ ks ⁻¹
+
+        ‡ : ((γ is ∧[ 𝒪 𝒮𝓓 ] γ js) is-glb-of (γ is , γ js)) holds
+        ‡ = (∧[ 𝒪 𝒮𝓓 ]-lower₁ (γ is) (γ js) , ∧[ 𝒪 𝒮𝓓 ]-lower₂ (γ is) (γ js))
+          , λ { (l , φ , ψ) → ∧[ 𝒪 𝒮𝓓 ]-greatest (γ is) (γ js) l φ ψ }
 
 \end{code}
