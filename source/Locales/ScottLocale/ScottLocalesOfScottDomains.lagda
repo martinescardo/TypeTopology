@@ -110,8 +110,9 @@ For the proof of spectrality, we will also need the following assumption
 \begin{code}
 
 decidability-condition : (𝓓 : DCPO {𝓤 ⁺} {𝓤}) → 𝓤 ⁺  ̇
-decidability-condition 𝓓 =
- (x y : ⟨ 𝓓 ⟩∙) → is-decidable (bounded-above 𝓓 x y holds)
+decidability-condition 𝓓 = (c d : ⟨ 𝓓 ⟩∙) →
+                            is-compact 𝓓 c → is-compact 𝓓 d →
+                             is-decidable (bounded-above 𝓓 c d holds)
 
 \end{code}
 
@@ -516,7 +517,7 @@ closed under binary meets.
  𝜸-closure-under-∧₁ i []       = let
                                   † = 𝟎-right-annihilator-for-∧ (𝒪 Σ[𝓓]) ↑ᵏ[ i ]
                                  in ∣ [] , († ⁻¹) ∣
- 𝜸-closure-under-∧₁ i (j ∷ js) = cases †₁ †₂ (dc (β i) (β j))
+ 𝜸-closure-under-∧₁ i (j ∷ js) = cases †₁ †₂ (dc (β i) (β j) (ϟ i) (ϟ j))
   where
    IH : ∃ ks′ ꞉ List B , 𝜸₁ ks′ ＝ ↑ᵏ[ i ] ∧[ 𝒪 Σ[𝓓] ] 𝜸₁ js
    IH = 𝜸-closure-under-∧₁ i js
