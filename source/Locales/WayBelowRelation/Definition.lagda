@@ -7,7 +7,7 @@ will be broken down into smaller modules.
 
 \begin{code}[hide]
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import UF.PropTrunc
 open import UF.FunExt

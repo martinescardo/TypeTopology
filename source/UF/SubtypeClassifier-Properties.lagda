@@ -4,7 +4,7 @@ Properties of the type of truth values.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module UF.SubtypeClassifier-Properties where
 
@@ -18,13 +18,9 @@ open import UF.Hedberg
 open import UF.Lower-FunExt
 open import UF.Sets
 open import UF.Sets-Properties
-open import UF.SubtypeClassifier
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-
-𝟚-to-Ω : 𝟚 → Ω 𝓤
-𝟚-to-Ω ₀ = ⊥
-𝟚-to-Ω ₁ = ⊤
+open import UF.SubtypeClassifier
 
 Ω-is-set : funext 𝓤 𝓤 → propext 𝓤 → is-set (Ω 𝓤)
 Ω-is-set {𝓤} fe pe = Id-collapsibles-are-sets pc
@@ -50,7 +46,7 @@ open import UF.Subsingletons-FunExt
     c = transport id (a ⁻¹)
 
   h  : (p q : Ω 𝓤) → A p q → p ＝ q
-  h p q (u , v) = Ω-extensionality fe pe u v
+  h p q (u , v) = Ω-extensionality pe fe u v
 
   f  : (p q : Ω 𝓤) → p ＝ q → p ＝ q
   f p q e = h p q (g p q e)
@@ -79,6 +75,10 @@ equal-⊥-≃ {𝓤} pe fe p = logically-equivalent-props-are-equivalent
                          (equal-⊥-gives-fails p)
                          (fails-gives-equal-⊥ pe fe p)
 
+𝟚-to-Ω : 𝟚 → Ω 𝓤
+𝟚-to-Ω ₀ = ⊥
+𝟚-to-Ω ₁ = ⊤
+
 module _ (fe : funext 𝓤 𝓤) (pe : propext 𝓤) where
 
  𝟚-to-Ω-is-embedding : is-embedding (𝟚-to-Ω {𝓤})
@@ -100,101 +100,3 @@ module _ (fe : funext 𝓤 𝓤) (pe : propext 𝓤) where
            (＝-flip ● equal-⊤-≃ pe fe p)
 
 \end{code}
-
-Added 24th October 2023. You can discuss the following at
-https://mathstodon.xyz/deck/@MartinEscardo/111291658836418672
-
-\begin{code}
-
-open import UF.Embeddings
-open import UF.ExcludedMiddle
-
-module _ {𝓤 : Universe} (fe : Fun-Ext) (pe : propext 𝓤) where
-
- open import Various.HiggsInvolutionTheorem {𝓤} fe pe
-
- Ω-autoembedding-that-maps-⊤-to-⊥-gives-EM
-  : (Σ 𝕗 ꞉ Ω 𝓤 ↪ Ω 𝓤 , ⌊ 𝕗 ⌋ ⊤ ＝ ⊥)
-  → EM 𝓤
- Ω-autoembedding-that-maps-⊤-to-⊥-gives-EM ((f , f-is-emb) , e) = II
-  where
-   f-is-involutive : involutive f
-   f-is-involutive = higgs f (embeddings-are-lc f f-is-emb)
-
-   I : (P : 𝓤 ̇ ) → is-prop P → Σ Q ꞉ 𝓤 ̇ , (P ⇔ ¬ Q)
-   I P P-is-prop = f p holds , g , h
-    where
-     p : Ω 𝓤
-     p = (P , P-is-prop)
-
-     g : P → ¬ (f p holds)
-     g p-holds = equal-⊥-gives-fails (f p)
-                  (f p ＝⟨ ap f (holds-gives-equal-⊤ pe fe p p-holds) ⟩
-                   f ⊤ ＝⟨ e ⟩
-                   ⊥   ∎)
-
-     h : ¬ (f p holds) → P
-     h ν = equal-⊤-gives-holds p
-            (p       ＝⟨ (f-is-involutive p)⁻¹ ⟩
-             f (f p) ＝⟨ ap f (fails-gives-equal-⊥ pe fe (f p) ν) ⟩
-             f ⊥     ＝⟨ ap f (e ⁻¹) ⟩
-             f (f ⊤) ＝⟨ f-is-involutive ⊤ ⟩
-             ⊤       ∎)
-
-   II : EM 𝓤
-   II = all-props-negative-gives-EM fe I
-
- Ω-autoembedding-apart-from-id-gives-EM
-  : (Σ 𝕗 ꞉ Ω 𝓤 ↪ Ω 𝓤 , Σ p₀ ꞉ Ω 𝓤 , ⌊ 𝕗 ⌋ p₀ ≠ p₀)
-  → EM 𝓤
- Ω-autoembedding-apart-from-id-gives-EM (𝕗@(f , f-is-emb) , p₀ , ν) = VIII
-  where
-   f-is-involutive : involutive f
-   f-is-involutive = higgs f (embeddings-are-lc f f-is-emb)
-
-   I : f ⊤ ≠ ⊤
-   I e = VI
-    where
-     II : p₀ ≠ ⊤
-     II e₀ = ν (transport⁻¹ (λ - → f - ＝ -) e₀ e)
-
-     III : p₀ ＝ ⊥
-     III = different-from-⊤-gives-equal-⊥ fe pe p₀ II
-
-     IV : f ⊥ ≠ ⊥
-     IV e₁ = ν (transport⁻¹ (λ - → f - ＝ -) III e₁)
-
-     V : f ⊥ ≠ ⊤
-     V e₂ = ⊥-is-not-⊤
-             (⊥      ＝⟨ (f-is-involutive ⊥)⁻¹ ⟩
-             f (f ⊥) ＝⟨ ap f e₂ ⟩
-             f ⊤     ＝⟨ e ⟩
-             ⊤       ∎)
-
-     VI : 𝟘
-     VI = no-truth-values-other-than-⊥-or-⊤ fe pe (f ⊥ , IV , V)
-
-   VII : f ⊤ ＝ ⊥
-   VII = different-from-⊤-gives-equal-⊥ fe pe (f ⊤) I
-
-   VIII : EM 𝓤
-   VIII = Ω-autoembedding-that-maps-⊤-to-⊥-gives-EM (𝕗 , VII)
-
- Ω-automorphism-that-maps-⊤-to-⊥-gives-EM
-  : (Σ 𝕗 ꞉ Ω 𝓤 ≃ Ω 𝓤 , ⌜ 𝕗 ⌝ ⊤ ＝ ⊥)
-  → EM 𝓤
- Ω-automorphism-that-maps-⊤-to-⊥-gives-EM (𝕗 , e) =
-  Ω-autoembedding-that-maps-⊤-to-⊥-gives-EM (≃-gives-↪ 𝕗 , e)
-
- Ω-automorphism-apart-from-id-gives-EM
-  : (Σ 𝕗 ꞉ Ω 𝓤 ≃ Ω 𝓤 , Σ p₀ ꞉ Ω 𝓤 , ⌜ 𝕗 ⌝ p₀ ≠ p₀)
-  → EM 𝓤
- Ω-automorphism-apart-from-id-gives-EM (𝕗 , p₀ , ν) =
-  Ω-autoembedding-apart-from-id-gives-EM (≃-gives-↪ 𝕗 , p₀ , ν)
-
-\end{code}
-
-Notice that we can replace "Σ" by "∃" in the above propositions, to
-get the same conclusion EM 𝓤, because the type EM 𝓤 is a proposition.
-
-Notice also that the converses of the above propositions hold.

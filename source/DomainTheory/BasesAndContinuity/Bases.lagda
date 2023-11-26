@@ -23,7 +23,7 @@ continuous and algebraic dcpos are actually examples of dcpos with small
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan hiding (J)
 open import UF.FunExt

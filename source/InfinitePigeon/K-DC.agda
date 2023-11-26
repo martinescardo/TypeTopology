@@ -1,6 +1,6 @@
 -- Martin Escardo and Paulo Oliva 2011
 
-{-# OPTIONS --without-K --exact-split #-}
+{-# OPTIONS --without-K #-}
 
 module InfinitePigeon.K-DC where
 

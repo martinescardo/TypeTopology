@@ -4,7 +4,7 @@ Based in part on `ayberkt/formal-topology-in-UF`.
 
 \begin{code}[hide]
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan hiding (𝟚)
 open import MLTT.List hiding ([_])

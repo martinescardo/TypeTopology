@@ -61,7 +61,7 @@ We have:
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 open import UF.PropTrunc
@@ -1929,7 +1929,7 @@ The following just applies back-and-forth the characterization of
 \begin{code}
 
   dependent-binary-meet' : (a : A) (b : a ＝ ⊤ → A)
-                         → Σ c ꞉ A , (c ＝ ⊤ ⇔ (Σ p ꞉ a ＝ ⊤ , b p ＝ ⊤))
+                         → Σ c ꞉ A , (c ＝ ⊤ ↔ (Σ p ꞉ a ＝ ⊤ , b p ＝ ⊤))
   dependent-binary-meet' a b = f σ
    where
     b' : τ a holds → A
@@ -1939,7 +1939,7 @@ The following just applies back-and-forth the characterization of
     σ = dependent-binary-meet a b'
 
     f : (Σ c ꞉ A , (τ c holds) ＝ (Σ h ꞉ τ a holds , τ (b' h) holds))
-      → Σ c ꞉ A , ((c ＝ ⊤) ⇔ (Σ p ꞉ a ＝ ⊤ , b p ＝ ⊤))
+      → Σ c ꞉ A , ((c ＝ ⊤) ↔ (Σ p ꞉ a ＝ ⊤ , b p ＝ ⊤))
     f ( c , q) = c , g , h
      where
       g : c ＝ ⊤ → Σ p ꞉ a ＝ ⊤ , b p ＝ ⊤
@@ -1962,7 +1962,7 @@ We can replace the bi-implication by an equality:
                           → Σ c ꞉ A , ((c ＝ ⊤) ＝ (Σ p ꞉ a ＝ ⊤ , b p ＝ ⊤))
   dependent-binary-meet'' a b = f (dependent-binary-meet' a b)
    where
-    f : (Σ c ꞉ A , (c ＝ ⊤ ⇔ (Σ p ꞉ a ＝ ⊤ , b p ＝ ⊤)))
+    f : (Σ c ꞉ A , (c ＝ ⊤ ↔ (Σ p ꞉ a ＝ ⊤ , b p ＝ ⊤)))
       → Σ c ꞉ A , ((c ＝ ⊤) ＝ (Σ p ꞉ a ＝ ⊤ , b p ＝ ⊤))
     f (c , g , h) = c , ⌜ prop-univalent-≃ pe fe (c ＝ ⊤) (Σ p ꞉ a ＝ ⊤ , b p ＝ ⊤)
                            (Σ-is-prop ⟨ 𝓐 ⟩-is-set (λ p → ⟨ 𝓐 ⟩-is-set)) ⌝⁻¹
@@ -1975,7 +1975,7 @@ The non-dependent special case:
 
 \begin{code}
 
-  binary-meet : (a b : A) → Σ c ꞉ A , (c ＝ ⊤ ⇔ ((a ＝ ⊤) × (b ＝ ⊤)))
+  binary-meet : (a b : A) → Σ c ꞉ A , (c ＝ ⊤ ↔ ((a ＝ ⊤) × (b ＝ ⊤)))
 
   binary-meet a b = dependent-binary-meet' a (λ _ → b)
 
@@ -1987,7 +1987,7 @@ meets:
 \begin{code}
 
   binary-meet'-is-∧ : (a b c : A)
-                    → (c ＝ ⊤ ⇔ ((a ＝ ⊤) × (b ＝ ⊤)))
+                    → (c ＝ ⊤ ↔ ((a ＝ ⊤) × (b ＝ ⊤)))
                     → c ＝ a ∧ b
   binary-meet'-is-∧ a b c (f , g) = viii
    where

@@ -2,7 +2,7 @@ By Tom de Jong in January 2022 with later additions by Martin Escardo
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module UF.NotNotStablePropositions where
 
@@ -29,17 +29,17 @@ open import UF.SubtypeClassifier-Properties
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
-¬¬-stable-⇔ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-            → X ⇔ Y
+¬¬-stable-↔ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+            → X ↔ Y
             → ¬¬-stable X
             → ¬¬-stable Y
-¬¬-stable-⇔ (f , g) σ h = f (σ (¬¬-functor g h))
+¬¬-stable-↔ (f , g) σ h = f (σ (¬¬-functor g h))
 
 ¬¬-stable-≃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
             → X ≃ Y
             → ¬¬-stable X
             → ¬¬-stable Y
-¬¬-stable-≃ e = ¬¬-stable-⇔ (⌜ e ⌝ , ⌜ e ⌝⁻¹)
+¬¬-stable-≃ e = ¬¬-stable-↔ (⌜ e ⌝ , ⌜ e ⌝⁻¹)
 
 being-¬¬-stable-is-prop : {X : 𝓤 ̇ }
                         → funext 𝓤 𝓤

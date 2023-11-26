@@ -4,7 +4,7 @@ General terminology and notation.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Notation.General where
 
@@ -81,24 +81,24 @@ right-cancellable f = {𝓦 : Universe} {Z : 𝓦 ̇ } (g h : codomain f → Z)
                     → g ∘ f ∼ h ∘ f
                     → g ∼ h
 
-_⇔_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
-A ⇔ B = (A → B) × (B → A)
+_↔_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
+A ↔ B = (A → B) × (B → A)
 
-lr-implication : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X ⇔ Y) → (X → Y)
+lr-implication : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X ↔ Y) → (X → Y)
 lr-implication = pr₁
 
-rl-implication : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X ⇔ Y) → (Y → X)
+rl-implication : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X ↔ Y) → (Y → X)
 rl-implication = pr₂
 
-⇔-sym : {X : 𝓤' ̇ } {Y : 𝓥' ̇ } → X ⇔ Y → Y ⇔ X
-⇔-sym (f , g) = (g , f)
+↔-sym : {X : 𝓤' ̇ } {Y : 𝓥' ̇ } → X ↔ Y → Y ↔ X
+↔-sym (f , g) = (g , f)
 
-⇔-trans : {X : 𝓤' ̇ } {Y : 𝓥' ̇ } {Z : 𝓦' ̇ }
-        → X ⇔ Y → Y ⇔ Z → X ⇔ Z
-⇔-trans (f , g) (h , k) = (h ∘ f , g ∘ k)
+↔-trans : {X : 𝓤' ̇ } {Y : 𝓥' ̇ } {Z : 𝓦' ̇ }
+        → X ↔ Y → Y ↔ Z → X ↔ Z
+↔-trans (f , g) (h , k) = (h ∘ f , g ∘ k)
 
-⇔-refl : {X : 𝓤' ̇ } → X ⇔ X
-⇔-refl = (id , id)
+↔-refl : {X : 𝓤' ̇ } → X ↔ X
+↔-refl = (id , id)
 
 \end{code}
 
@@ -212,6 +212,6 @@ Fixities:
 \begin{code}
 
 infixl -1 -id
-infix -1 _⇔_
+infix -1 _↔_
 
 \end{code}

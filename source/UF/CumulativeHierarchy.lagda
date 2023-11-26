@@ -51,7 +51,7 @@ References
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import UF.FunExt
 open import UF.PropTrunc
@@ -271,7 +271,7 @@ implication.
          → ((b : B) → ∥ Σ a ꞉ A , Σ p ꞉ g b ＝ f a , IH₂ b ＝ IH₁ a ∥)
          → f ≈ g → ρ f IH₁ ＝ ρ g IH₂
       τ' f g IH₁ IH₂ hIH₁ hIH₂ (m₁ , m₂) =
-       Ω-extensionality fe pe (τ f g IH₁ IH₂ hIH₁ m₁)
+       Ω-extensionality pe fe (τ f g IH₁ IH₂ hIH₁ m₁)
                               (τ g f IH₂ IH₁ hIH₂ m₂)
 
   𝕍-prop-recursion : {𝓣 : Universe}

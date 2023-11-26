@@ -2,7 +2,7 @@ Properties of the disjoint sum _+_ of types.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module MLTT.Plus-Properties where
 

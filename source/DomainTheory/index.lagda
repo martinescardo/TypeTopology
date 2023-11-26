@@ -26,7 +26,7 @@ This accompanies the PhD thesis
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module DomainTheory.index where
 

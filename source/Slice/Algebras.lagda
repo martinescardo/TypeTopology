@@ -2,7 +2,7 @@ Martin Escardo 31 Jan 2019
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 

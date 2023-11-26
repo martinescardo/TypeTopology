@@ -10,7 +10,7 @@ library to TypeTopology.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --safe #-}
 
 open import MLTT.Spartan
 open import UF.Base
@@ -66,7 +66,7 @@ take (succ n) (p ◃∙ s) = p ◃∙ (take n s)
 \end{code}
 
 Given a path sequence, build a different one with the same end points:
-1. Choose a point in it using point-from-start 
+1. Choose a point in it using point-from-start
 2. Drop, take, and concat the resulting subsequences.
 
 In `take-drop-split` the sequence is "reconstructed" from the
@@ -99,7 +99,7 @@ The "point from end" function comes in two different forms,
 
 \begin{code}
 
-private 
+private
 
  last1 : {x y : X} (s : x ≡ y) → X
  last1 {x} [] = x
@@ -117,7 +117,7 @@ private
  split {x} [] = x , ([] , refl)
  split {x} (p ◃∙ []) = x , [] , p
  split {x} (p ◃∙ p₁ ◃∙ s) = let z , s' , q = split (p₁ ◃∙ s)
-                                   in z , (p ◃∙ s' , q) 
+                                   in z , (p ◃∙ s' , q)
 
  point-from-end : (n : ℕ) {x y : X} (s : x ≡ y) → X
  point-from-end zero {x} {y} s = y

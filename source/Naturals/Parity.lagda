@@ -1,6 +1,6 @@
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
 open import Naturals.Addition
@@ -273,5 +273,35 @@ even-transport z ez (inr oz)  = 𝟘-elim (even-not-odd z ez oz)
 odd-transport : (z : ℕ) → (oz : odd z) (p : even z ∔ odd z) → p ＝ inr oz
 odd-transport z oz (inl ez)  = 𝟘-elim (even-not-odd z ez oz)
 odd-transport z oz (inr oz') = ap inr (odd-is-prop z oz' oz)
+
+\end{code}
+
+Sometimes the following definitions and constructions are useful:
+
+\begin{code}
+
+is-even' is-odd' : ℕ → 𝓤₀ ̇
+is-even' n = Σ k ꞉ ℕ ,  double k ＝ n
+is-odd'  n = Σ k ꞉ ℕ , sdouble k ＝ n
+
+even-or-odd' : (n : ℕ) → is-even' n ∔ is-odd' n
+even-or-odd' 0        = inl (0 , refl)
+even-or-odd' (succ n) =
+ Cases (even-or-odd' n)
+  (λ ((k , e) : is-even' n)
+              → inr (k , ap succ e))
+  (λ ((k , e) : is-odd' n)
+              → inl (succ k , ap succ e))
+
+even-not-odd' : (n k : ℕ) → ¬ (double n ＝ sdouble k)
+even-not-odd' 0        k e = zero-not-positive (double k) e
+even-not-odd' (succ n) k e = even-not-odd' k n ((succ-lc e)⁻¹)
+
+not-even-and-odd' : (n : ℕ) → ¬ (is-even' n × is-odd' n)
+not-even-and-odd' n ((k , e) , (k' , e')) =
+ even-not-odd' k k'
+  (double k   ＝⟨ e ⟩
+   n          ＝⟨ e' ⁻¹ ⟩
+   sdouble k' ∎)
 
 \end{code}

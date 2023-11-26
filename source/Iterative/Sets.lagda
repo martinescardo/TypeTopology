@@ -17,7 +17,7 @@ so we assume it globally.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
+{-# OPTIONS --safe --without-K --lossy-unification #-}
 
 open import MLTT.Spartan
 open import UF.Univalence
@@ -278,7 +278,8 @@ discussion: the "material" (iterative set) one and the "structural"
 one (0-type or set). The reader should keep this distinction in mind
 for the comments and code below.
 
-The following is proved by Gylterud [4] with a different argument.
+The following uses the fact that any type with an extensional order is
+automatically a set.
 
 \begin{code}
 
@@ -331,7 +332,7 @@ isets-are-h-isolated (ssup X φ) (φ-emb , _) = 𝕄-ssup-is-h-isolated X φ φ-
 \end{code}
 
 Because a subtype of any type whatsoever consisting of h-isolated
-elements is a 0-type, we get a third proof that the type of iterative
+elements is a 0-type, we get a second proof that the type of iterative
 sets is a 0-type.
 
 \begin{code}
@@ -542,7 +543,6 @@ The following result, implementing the above idea, seems to be new.
  → (X : 𝓤 ̇ ) (ϕ : X → 𝕍) (e : is-embedding ϕ)
  → 𝕍-induction P f (𝕍-ssup X ϕ e) ＝ f X ϕ e (λ x → 𝕍-induction P f (ϕ x))
 𝕍-induction-behaviour P f = pr₂ (𝕍-Induction P f)
-
 
 𝕍-recursion : (P : 𝓥 ̇ )
             → ((X : 𝓤 ̇ ) (ϕ : X → 𝕍)

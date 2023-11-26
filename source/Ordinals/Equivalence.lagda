@@ -4,7 +4,7 @@ Equivalence of ordinals.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 open import Ordinals.Maps
@@ -326,7 +326,7 @@ Added 25th Feb 2023. Alternative definition of ordinal equivalence
 _≃ₐ_ : Ordinal 𝓤 → Ordinal 𝓥 → 𝓤 ⊔ 𝓥 ̇
 α ≃ₐ β = Σ f ꞉ (⟨ α ⟩ → ⟨ β ⟩)
              , is-equiv f
-             × ((x x' : ⟨ α ⟩) → x ≺⟨ α ⟩ x' ⇔ f x ≺⟨ β ⟩ f x')
+             × ((x x' : ⟨ α ⟩) → x ≺⟨ α ⟩ x' ↔ f x ≺⟨ β ⟩ f x')
 
 ≃ₐ-coincides-with-≃ₒ : FunExt
                      → (α : Ordinal 𝓤) (β : Ordinal 𝓥)
@@ -334,7 +334,7 @@ _≃ₐ_ : Ordinal 𝓤 → Ordinal 𝓥 → 𝓤 ⊔ 𝓥 ̇
 ≃ₐ-coincides-with-≃ₒ fe α β =
  (Σ f ꞉ (⟨ α ⟩ → ⟨ β ⟩)
       , is-equiv f
-      × ((x x' : ⟨ α ⟩) → x ≺⟨ α ⟩ x' ⇔ f x ≺⟨ β ⟩ f x')) ≃⟨ I ⟩
+      × ((x x' : ⟨ α ⟩) → x ≺⟨ α ⟩ x' ↔ f x ≺⟨ β ⟩ f x')) ≃⟨ I ⟩
 
  (Σ f ꞉ (⟨ α ⟩ → ⟨ β ⟩)
       , is-equiv f

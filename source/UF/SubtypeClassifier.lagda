@@ -5,16 +5,17 @@ notions and properties are in UF.SubtypeClassifier-Properties.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module UF.SubtypeClassifier where
 
 open import MLTT.Spartan
-open import UF.Subsingletons
+open import UF.Base
+open import UF.Equiv
 open import UF.FunExt
 open import UF.Subsingletons
+open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import UF.Base
 
 Ω : ∀ 𝓤 → 𝓤 ⁺ ̇
 Ω 𝓤 = Σ P ꞉ 𝓤 ̇ , is-prop P
@@ -68,17 +69,6 @@ holds-gives-equal-⊤ pe fe (P , i) = true-gives-equal-⊤ pe fe P i
 
 equal-⊤-gives-holds : (p : Ω 𝓤) → p ＝ ⊤ → p holds
 equal-⊤-gives-holds .⊤ refl = ⋆
-
-Ω-extensionality : funext 𝓤 𝓤
-                 → propext 𝓤
-                 → {p q : Ω 𝓤}
-                 → (p holds → q holds)
-                 → (q holds → p holds)
-                 → p ＝ q
-Ω-extensionality {𝓤} fe pe {p} {q} f g =
- to-Σ-＝
-  (pe (holds-is-prop p) (holds-is-prop q) f g ,
-   being-prop-is-prop fe _ _)
 
 equal-⊥-gives-not-equal-⊤ : (fe : Fun-Ext)
                             (pe : propext 𝓤)
@@ -167,13 +157,29 @@ equal-⊤-gives-true P hp r = f ⋆
   f : 𝟙 → P
   f = transport id s
 
+Ω-extensionality : propext 𝓤
+                 → funext 𝓤 𝓤
+                 → {p q : Ω 𝓤}
+                 → (p holds → q holds)
+                 → (q holds → p holds)
+                 → p ＝ q
+Ω-extensionality pe fe {p} {q} f g =
+ to-Ω-＝ fe (pe (holds-is-prop p) (holds-is-prop q) f g)
+
+Ω-extensionality' : propext 𝓤
+                  → funext 𝓤 𝓤
+                  → {p q : Ω 𝓤}
+                  → (p holds ≃ q holds)
+                  → p ＝ q
+Ω-extensionality' pe fe {p} {q} 𝕗 =
+ Ω-extensionality pe fe ⌜ 𝕗 ⌝ ⌜ 𝕗 ⌝⁻¹
+
 Ω-ext : propext 𝓤
       → funext 𝓤 𝓤
       → {p q : Ω 𝓤}
       → (p ＝ ⊤ → q ＝ ⊤)
       → (q ＝ ⊤ → p ＝ ⊤)
       → p ＝ q
-
 Ω-ext pe fe {P , i} {Q , j} f g = III
  where
   I : P → Q
@@ -183,7 +189,14 @@ equal-⊤-gives-true P hp r = f ⋆
   II y = equal-⊤-gives-true P i (g (true-gives-equal-⊤ pe fe Q j y))
 
   III : P , i ＝ Q , j
-  III = to-Σ-＝ (pe i j I II , being-prop-is-prop fe _ _ )
+  III = Ω-extensionality pe fe I II
+
+Ω-ext' : propext 𝓤
+       → funext 𝓤 𝓤
+       → {p q : Ω 𝓤}
+       → (p ＝ ⊤) ≃ (q ＝ ⊤)
+       → p ＝ q
+Ω-ext' pe fe 𝕗 = Ω-ext pe fe ⌜ 𝕗 ⌝ ⌜ 𝕗 ⌝⁻¹
 
 Ω-discrete-gives-EM : funext 𝓤 𝓤
                     → propext 𝓤
@@ -212,16 +225,16 @@ no-truth-values-other-than-⊥-or-⊤ : funext 𝓤 𝓤
 no-truth-values-other-than-⊥-or-⊤ fe pe ((P , i) , (f , g)) = φ u
  where
   u : ¬ P
-  u p = g l
+  u h = g l
     where
      l : (P , i) ＝ ⊤
-     l = Ω-extensionality fe pe unique-to-𝟙 (λ _ → p)
+     l = Ω-extensionality pe fe unique-to-𝟙 (λ _ → h)
 
   φ : ¬¬ P
   φ u = f l
     where
      l : (P , i) ＝ ⊥
-     l = Ω-extensionality fe pe (λ p → 𝟘-elim (u p)) unique-from-𝟘
+     l = Ω-extensionality pe fe (λ p → 𝟘-elim (u p)) unique-from-𝟘
 
 no-three-distinct-propositions : funext 𝓤 𝓤
                                → propext 𝓤

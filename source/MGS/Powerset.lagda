@@ -7,7 +7,7 @@ This is ported from the Midlands Graduate School 2019 lecture notes
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module MGS.Powerset where
 
@@ -33,18 +33,18 @@ Id-from-subsingleton : propext 𝓤 → dfunext 𝓤 𝓤
 Id-from-subsingleton {𝓤} pe fe P i = Hedberg P (λ X → h X , k X)
  where
   module _ (X : 𝓤 ̇ ) where
-   f : P ＝ X → is-subsingleton X × (P ⇔ X)
+   f : P ＝ X → is-subsingleton X × (P ↔ X)
    f p = transport is-subsingleton p i , Id→fun p , (Id→fun (p ⁻¹))
 
-   g : is-subsingleton X × (P ⇔ X) → P ＝ X
+   g : is-subsingleton X × (P ↔ X) → P ＝ X
    g (l , φ , ψ) = pe i l φ ψ
 
    h : P ＝ X → P ＝ X
    h = g ∘ f
 
-   j : is-subsingleton (is-subsingleton X × (P ⇔ X))
+   j : is-subsingleton (is-subsingleton X × (P ↔ X))
    j = ×-is-subsingleton'
-        ((λ (_ : P ⇔ X) → being-subsingleton-is-subsingleton fe) ,
+        ((λ (_ : P ↔ X) → being-subsingleton-is-subsingleton fe) ,
          (λ (l : is-subsingleton X) → ×-is-subsingleton
                                        (Π-is-subsingleton fe (λ p → l))
                                        (Π-is-subsingleton fe (λ x → i))))

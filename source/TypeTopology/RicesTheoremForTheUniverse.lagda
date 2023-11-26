@@ -62,7 +62,7 @@ that module (or in fact any axiom other than extensionality).
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import UF.FunExt
 
@@ -75,7 +75,7 @@ open import UF.EquivalenceExamples
 open import TypeTopology.TheTopologyOfTheUniverse fe
 open import CoNaturals.GenericConvergentSequence
 open import Taboos.WLPO
-open import Taboos.BasicDiscontinuity fe
+open import Taboos.BasicDiscontinuity (fe 𝓤₀ 𝓤₀)
 open import Notation.CanonicalMap
 
 \end{code}
