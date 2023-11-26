@@ -195,25 +195,25 @@ We now proceed to construct the basis for this locale.
 
  open binary-unions-of-subsets pt
 
- from-list₀ : List B → 𝓟 {𝓤} {𝓤 ⁺} ⟨ 𝓓 ⟩∙
- from-list₀ = foldr _∪_ ∅ ∘ map (principal-filter 𝓓 ∘ β)
+ 𝜸₀ : List B → 𝓟 {𝓤} {𝓤 ⁺} ⟨ 𝓓 ⟩∙
+ 𝜸₀ = foldr _∪_ ∅ ∘ map (principal-filter 𝓓 ∘ β)
 
- from-list₀-is-upwards-closed : (ks : List B)
-                              → is-upwards-closed (from-list₀ ks) holds
- from-list₀-is-upwards-closed []       x y () q
- from-list₀-is-upwards-closed (b ∷ bs) x y p  q =
-  ∥∥-rec (holds-is-prop (y ∈ₚ from-list₀ (b ∷ bs))) † p
+ 𝜸₀-is-upwards-closed : (ks : List B)
+                              → is-upwards-closed (𝜸₀ ks) holds
+ 𝜸₀-is-upwards-closed []       x y () q
+ 𝜸₀-is-upwards-closed (b ∷ bs) x y p  q =
+  ∥∥-rec (holds-is-prop (y ∈ₚ 𝜸₀ (b ∷ bs))) † p
    where
-    † : (β b ⊑⟨ 𝓓 ⟩ x) + x ∈ from-list₀ bs → from-list₀ (b ∷ bs) y holds
+    † : (β b ⊑⟨ 𝓓 ⟩ x) + x ∈ 𝜸₀ bs → 𝜸₀ (b ∷ bs) y holds
     † (inl r) = ∣ inl (principal-filter-is-upwards-closed (β b) x y r q) ∣
-    † (inr r) = ∣ inr (from-list₀-is-upwards-closed bs x y r q) ∣
+    † (inr r) = ∣ inr (𝜸₀-is-upwards-closed bs x y r q) ∣
 
- from-list₀-is-inaccessible-by-directed-joins : (ks : List B)
+ 𝜸₀-is-inaccessible-by-directed-joins : (ks : List B)
                                              → is-inaccessible-by-directed-joins
-                                                (from-list₀ ks)
+                                                (𝜸₀ ks)
                                                  holds
- from-list₀-is-inaccessible-by-directed-joins []       (S , δ) ()
- from-list₀-is-inaccessible-by-directed-joins (k ∷ ks) (S , δ) p =
+ 𝜸₀-is-inaccessible-by-directed-joins []       (S , δ) ()
+ 𝜸₀-is-inaccessible-by-directed-joins (k ∷ ks) (S , δ) p =
   ∥∥-rec ∃-is-prop † p
    where
     σ : is-scott-open (↑[ 𝓓 ] β k) holds
@@ -225,50 +225,50 @@ We now proceed to construct the basis for this locale.
     ι : is-inaccessible-by-directed-joins (↑[ 𝓓 ] β k) holds
     ι = 𝒪ₛᴿ.pred-is-inaccessible-by-dir-joins (to-𝒪ₛᴿ (↑[ 𝓓 ] (β k) , σ))
 
-    † : (β k ⊑⟨ 𝓓 ⟩ (⋁ (S , δ))) + (⋁ (S , δ)) ∈ from-list₀ ks
-      → ∃ i ꞉ index S , (S [ i ]) ∈ from-list₀ (k ∷ ks)
+    † : (β k ⊑⟨ 𝓓 ⟩ (⋁ (S , δ))) + (⋁ (S , δ)) ∈ 𝜸₀ ks
+      → ∃ i ꞉ index S , (S [ i ]) ∈ 𝜸₀ (k ∷ ks)
     † (inl q) = let
                  ‡ : Σ i ꞉ index S , (S [ i ]) ∈ ↑[ 𝓓 ] β k
-                   → ∃ i ꞉ index S , (S [ i ]) ∈ from-list₀ (k ∷ ks)
+                   → ∃ i ꞉ index S , (S [ i ]) ∈ 𝜸₀ (k ∷ ks)
                  ‡ = λ { (i , p) → ∣ i , ∣ inl p ∣ ∣ }
                 in
                  ∥∥-rec ∃-is-prop ‡ (ι (S , δ) q)
     † (inr q) = let
-                 IH : ∃ i ꞉ index S , (S [ i ]) ∈ from-list₀ ks
-                 IH = from-list₀-is-inaccessible-by-directed-joins ks (S , δ) q
+                 IH : ∃ i ꞉ index S , (S [ i ]) ∈ 𝜸₀ ks
+                 IH = 𝜸₀-is-inaccessible-by-directed-joins ks (S , δ) q
 
-                 ‡ : Σ i ꞉ index S , (S [ i ]) ∈ from-list₀ ks
-                   → ∃ i ꞉ index S , (S [ i ]) ∈ from-list₀ (k ∷ ks)
+                 ‡ : Σ i ꞉ index S , (S [ i ]) ∈ 𝜸₀ ks
+                   → ∃ i ꞉ index S , (S [ i ]) ∈ 𝜸₀ (k ∷ ks)
                  ‡ = λ { (i , r) → ∣ i , ∣ inr r ∣ ∣ }
                 in
                  ∥∥-rec ∃-is-prop ‡ IH
 
- from-list₀-gives-scott-opens : (ks : List B)
-                              → is-scott-open (from-list₀ ks) holds
- from-list₀-gives-scott-opens ks = ⦅𝟏⦆ , ⦅𝟐⦆
+ 𝜸₀-gives-scott-opens : (ks : List B)
+                              → is-scott-open (𝜸₀ ks) holds
+ 𝜸₀-gives-scott-opens ks = ⦅𝟏⦆ , ⦅𝟐⦆
   where
-   ⦅𝟏⦆ = from-list₀-is-upwards-closed ks
-   ⦅𝟐⦆ = from-list₀-is-inaccessible-by-directed-joins ks
+   ⦅𝟏⦆ = 𝜸₀-is-upwards-closed ks
+   ⦅𝟐⦆ = 𝜸₀-is-inaccessible-by-directed-joins ks
 
- from-list₀-lemma : (x : ⟨ 𝓓 ⟩∙) (ks : List B)
-                  → x ∈ from-list₀ ks → ∃ k ꞉ B , member k ks × β k ⊑⟨ 𝓓 ⟩ x
- from-list₀-lemma x []       = λ ()
- from-list₀-lemma x (k ∷ ks) p = ∥∥-rec ∃-is-prop † p
+ 𝜸₀-lemma : (x : ⟨ 𝓓 ⟩∙) (ks : List B)
+                  → x ∈ 𝜸₀ ks → ∃ k ꞉ B , member k ks × β k ⊑⟨ 𝓓 ⟩ x
+ 𝜸₀-lemma x []       = λ ()
+ 𝜸₀-lemma x (k ∷ ks) p = ∥∥-rec ∃-is-prop † p
   where
-   † : principal-filter 𝓓 (β k) x holds + x ∈ from-list₀ ks
+   † : principal-filter 𝓓 (β k) x holds + x ∈ 𝜸₀ ks
      → ∃ k₀ ꞉ B , member k₀ (k ∷ ks) × underlying-order 𝓓 (β k₀) x
    † (inl q) = ∣ k , (in-head , q) ∣
    † (inr q) = ∥∥-rec
                 ∃-is-prop
                 (λ { (k₀ , r , s) → ∣ k₀ , in-tail r , s ∣ })
-                (from-list₀-lemma x ks q)
+                (𝜸₀-lemma x ks q)
 
 \end{code}
 
 \begin{code}
 
  γ : List B → ⟨ 𝒪 Σ⦅𝓓⦆ ⟩
- γ ks = from-list₀ ks , from-list₀-gives-scott-opens ks
+ γ ks = 𝜸₀ ks , 𝜸₀-gives-scott-opens ks
 
  γ₁ : List B → ⟨ 𝒪 Σ⦅𝓓⦆ ⟩
  γ₁ []       = 𝟎[ 𝒪 Σ⦅𝓓⦆ ]
@@ -634,7 +634,7 @@ We now proceed to construct the basis for this locale.
 
     †₁ : (U is-an-upper-bound-of ⁅ γ d ∣ d ε (D , δ) ⁆) holds
     †₁ (b⃗ , r) b p =
-     ∥∥-rec (holds-is-prop (β b ∈ₚ 𝔘)) ‡₁ (from-list₀-lemma (β b) b⃗ p)
+     ∥∥-rec (holds-is-prop (β b ∈ₚ 𝔘)) ‡₁ (𝜸₀-lemma (β b) b⃗ p)
       where
        ‡₁ : Σ k ꞉ B , member k b⃗ × β k ⊑⟨ 𝓓 ⟩ β b → β b ∈ 𝔘
        ‡₁ (k , q , φ) = pred-is-upwards-closed (β k) (β b) (r k q) φ
