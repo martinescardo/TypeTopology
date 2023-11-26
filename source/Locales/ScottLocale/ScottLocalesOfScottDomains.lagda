@@ -186,8 +186,6 @@ We define some nice notation for the prop-valued equality of the dcpo `𝓓`.
 
 \end{code}
 
-We now proceed to construct the intensional basis for the Scott locale.
-
 \begin{code}
 
  open DefnOfScottTopology 𝓓 𝓤
@@ -195,7 +193,14 @@ We now proceed to construct the intensional basis for the Scott locale.
 
  open binary-unions-of-subsets pt
 
+ open BottomLemma 𝓓 𝕒 hl
+
+ ↑ᵏ[_] : B →  ⟨ 𝒪 Σ[𝓓] ⟩
+ ↑ᵏ[ i ] = ↑ˢ[ β i , ϟ i ]
+
 \end{code}
+
+We now proceed to construct the intensional basis for the Scott locale.
 
 The basis is the family `(List B , 𝜸₀)`, where `𝜸₀` is the following function:
 
@@ -278,9 +283,11 @@ The basis is the family `(List B , 𝜸₀)`, where `𝜸₀` is the following f
 
  𝜸₁ : List B → ⟨ 𝒪 Σ[𝓓] ⟩
  𝜸₁ []       = 𝟎[ 𝒪 Σ[𝓓] ]
- 𝜸₁ (k ∷ ks) = ↑ˢ[ β k , ϟ k ] ∨[ 𝒪 Σ[𝓓] ] 𝜸₁ ks
+ 𝜸₁ (k ∷ ks) = ↑ᵏ[ k ] ∨[ 𝒪 Σ[𝓓] ] 𝜸₁ ks
 
 \end{code}
+
+The function `𝜸₁` is equal to `𝜸`.
 
 \begin{code}
 
@@ -305,7 +312,7 @@ The basis is the family `(List B , 𝜸₀)`, where `𝜸₀` is the following f
    IH = 𝜸₁-below-𝜸 is
 
    † : (Σ k ꞉ 𝟚 𝓤 ,
-         (β j ∈ₛ (⁅ ↑ˢ[ (β i , ϟ i ) ] , 𝜸₁ is ⁆ [ k ])) holds)
+         (β j ∈ₛ (⁅ ↑ᵏ[ i ] , 𝜸₁ is ⁆ [ k ])) holds)
      → (β j ∈ₛ 𝜸 (i ∷ is)) holds
    † (inl ⋆ , r) = ∣ inl r        ∣
    † (inr ⋆ , r) = ∣ inr (IH j r) ∣
@@ -315,6 +322,8 @@ The basis is the family `(List B , 𝜸₀)`, where `𝜸₀` is the following f
   ≤-is-antisymmetric (poset-of (𝒪 Σ[𝓓])) (𝜸-below-𝜸₁ bs) (𝜸₁-below-𝜸 bs)
 
 \end{code}
+
+TODO: get rid of `𝜸` altogether and use `𝜸₁` as the basis function
 
 \begin{code}
 
@@ -347,16 +356,18 @@ The basis is the family `(List B , 𝜸₀)`, where `𝜸₀` is the following f
  𝜸-maps-∨-to-++ : (is js : List B) → 𝜸₁ (is ++ js) ＝ 𝜸₁ is ∨[ 𝒪 Σ[𝓓] ] 𝜸₁ js
  𝜸-maps-∨-to-++ []       js = 𝟎-right-unit-of-∨ (𝒪 Σ[𝓓]) (𝜸₁ js) ⁻¹
  𝜸-maps-∨-to-++ (i ∷ is) js =
-  𝜸₁ ((i ∷ is) ++ js)                                  ＝⟨ refl ⟩
-  ↑ˢ[ β i , ϟ i ] ∨[ 𝒪 Σ[𝓓] ] 𝜸₁ (is ++ js)              ＝⟨ Ⅰ    ⟩
-  ↑ˢ[ β i , ϟ i ] ∨[ 𝒪 Σ[𝓓] ] (𝜸₁ is ∨[ 𝒪 Σ[𝓓] ] 𝜸₁ js)    ＝⟨ Ⅱ    ⟩
-  (↑ˢ[ β i , ϟ i ] ∨[ 𝒪 Σ[𝓓] ] 𝜸₁ is) ∨[ 𝒪 Σ[𝓓] ] 𝜸₁ js    ＝⟨ refl ⟩
-  𝜸₁ (i ∷ is) ∨[ 𝒪 Σ[𝓓] ] 𝜸₁ js                          ∎
+  𝜸₁ ((i ∷ is) ++ js)                               ＝⟨ refl ⟩
+  ↑ᵏ[ i ] ∨[ 𝒪 Σ[𝓓] ] 𝜸₁ (is ++ js)                 ＝⟨ Ⅰ    ⟩
+  ↑ᵏ[ i ] ∨[ 𝒪 Σ[𝓓] ] (𝜸₁ is ∨[ 𝒪 Σ[𝓓] ] 𝜸₁ js)     ＝⟨ Ⅱ    ⟩
+  (↑ᵏ[ i ] ∨[ 𝒪 Σ[𝓓] ] 𝜸₁ is) ∨[ 𝒪 Σ[𝓓] ] 𝜸₁ js     ＝⟨ refl ⟩
+  𝜸₁ (i ∷ is) ∨[ 𝒪 Σ[𝓓] ] 𝜸₁ js                     ∎
    where
-    Ⅰ = ap (λ - → ↑ˢ[ β i , ϟ i ] ∨[ 𝒪 Σ[𝓓] ] -) (𝜸-maps-∨-to-++ is js)
-    Ⅱ = ∨[ 𝒪 Σ[𝓓] ]-assoc ↑ˢ[ β i , ϟ i ] (𝜸₁ is) (𝜸₁ js) ⁻¹
+    Ⅰ = ap (λ - → ↑ᵏ[ i ] ∨[ 𝒪 Σ[𝓓] ] -) (𝜸-maps-∨-to-++ is js)
+    Ⅱ = ∨[ 𝒪 Σ[𝓓] ]-assoc ↑ᵏ[ i ] (𝜸₁ is) (𝜸₁ js) ⁻¹
 
 \end{code}
+
+The principal filter `↑(x)` on any `x : 𝓓` is a compact Scott open.
 
 \begin{code}
 
@@ -376,36 +387,22 @@ The basis is the family `(List B , 𝜸₀)`, where `𝜸₀` is the following f
      ‡ d = upward-closure (S [ i ]) c (β d) r
 
  principal-filter-is-compact : (b : B)
-                             → is-compact-open Σ[𝓓] ↑ˢ[ (β b , ϟ b) ] holds
- principal-filter-is-compact b S δ p = ∥∥-rec ∃-is-prop † q
-  where
-   q : (β b ∈ₛ (⋁[ 𝒪 Σ[𝓓] ] S)) holds
-   q = p b (reflexivity 𝓓 (β b))
-
-   † : Σ k ꞉ index S , (β b ∈ₛ (S [ k ])) holds
-     → ∃ i ꞉ index S , ((↑ˢ[ β b , ϟ b ]) ≤[ poset-of (𝒪 Σ[𝓓]) ] (S [ i ])) holds
-   † (k , φ) = ∣ k , ‡ ∣
-    where
-     Sₖᴿ : 𝒪ₛᴿ
-     Sₖᴿ = to-𝒪ₛᴿ (S [ k ])
-
-     ‡ : (↑ˢ[ β b , ϟ b ] ≤[ poset-of (𝒪 Σ[𝓓]) ] (S [ k ])) holds
-     ‡ d r = 𝒪ₛᴿ.pred-is-upwards-closed Sₖᴿ (β b) (β d) φ r
+                             → is-compact-open Σ[𝓓] ↑ᵏ[ b ] holds
+ principal-filter-is-compact b = principal-filter-is-compact₀ (β b) (ϟ b)
 
 \end{code}
 
+For any `bs : List B`, the Scott open `𝜸₁(bs)` is compact.
+
 \begin{code}
 
- 𝜸₁-gives-compact-opens : (b⃗ : List B) → is-compact-open Σ[𝓓] (𝜸₁ b⃗) holds
+ 𝜸₁-gives-compact-opens : (bs : List B) → is-compact-open Σ[𝓓] (𝜸₁ bs) holds
  𝜸₁-gives-compact-opens []       = 𝟎-is-compact Σ[𝓓]
  𝜸₁-gives-compact-opens (b ∷ bs) = †
   where
    𝔘ᶜ : ⟨ 𝒪 Σ[𝓓] ⟩
    𝔘ᶜ = ↑[ 𝓓 ] (β b)
       , compact-implies-principal-filter-is-scott-open (β b) (basis-is-compact b)
-
-   b-compact : is-compact-open Σ[𝓓] 𝔘ᶜ holds
-   b-compact = principal-filter-is-compact b
 
    𝔘ᶜᵣ : 𝒪ₛᴿ
    𝔘ᶜᵣ = to-𝒪ₛᴿ 𝔘ᶜ
@@ -414,7 +411,12 @@ The basis is the family `(List B , 𝜸₀)`, where `𝜸₀` is the following f
    IH = 𝜸₁-gives-compact-opens bs
 
    † : is-compact-open Σ[𝓓] (𝜸₁ (b ∷ bs)) holds
-   † = compact-opens-are-closed-under-∨ Σ[𝓓] 𝔘ᶜ (𝜸₁ bs) b-compact IH
+   † = compact-opens-are-closed-under-∨
+        Σ[𝓓]
+        𝔘ᶜ
+        (𝜸₁ bs)
+        (principal-filter-is-compact b)
+        IH
 
  𝜸-gives-compact-opens : (bs : List B) → is-compact-open Σ[𝓓] (𝜸 bs) holds
  𝜸-gives-compact-opens bs =
@@ -424,6 +426,9 @@ The basis is the family `(List B , 𝜸₀)`, where `𝜸₀` is the following f
     † = 𝜸₁-gives-compact-opens bs
 
 \end{code}
+
+Given compact elements `c` and `d` of `𝓓`, if an element `s` is their sup,
+then it is compact.
 
 \begin{code}
 
@@ -435,20 +440,20 @@ The basis is the family `(List B , 𝜸₀)`, where `𝜸₀` is the following f
  sup-is-compact c d s κᶜ κᵈ (p , q) =
   binary-join-is-compact 𝓓 (p (inl ⋆)) (p (inr ⋆)) η κᶜ κᵈ
    where
-    η : (d₁ : ⟨ 𝓓 ⟩∙) →
-         underlying-order 𝓓 (binary-family 𝓤 c d [ inl ⋆ ]) d₁ →
-         underlying-order 𝓓 (binary-family 𝓤 c d [ inr ⋆ ]) d₁ →
-         underlying-order 𝓓 s d₁
+    η : (d₁ : ⟨ 𝓓 ⟩∙) → c ⊑⟨ 𝓓 ⟩ d₁ → d ⊑⟨ 𝓓 ⟩ d₁ → s ⊑⟨ 𝓓 ⟩ d₁
     η d₁ r₁ r₂ = q d₁ λ { (inl ⋆) → r₁ ; (inr ⋆) → r₂ }
 
  open DefnOfScottLocale 𝓓 𝓤 pe using (_⊆ₛ_)
 
+\end{code}
+
+\begin{code}
+
  principal-filter-reflects-joins : (c d s : ⟨ 𝓓 ⟩∙)
                                  → (κᶜ : is-compact 𝓓 c)
                                  → (κᵈ : is-compact 𝓓 d)
-                                 → (σ : is-sup (underlying-order 𝓓) s (binary-family 𝓤 c d [_]))
-                                 →
-                                   let
+                                 → (σ : is-sup (underlying-order 𝓓) s (⁅ c , d ⁆ [_]))
+                                 → let
                                     κˢ = sup-is-compact c d s κᶜ κᵈ σ
                                    in
                                     ↑ˢ[ s , κˢ ] ＝ ↑ˢ[ c , κᶜ ] ∧[ 𝒪 Σ[𝓓] ] ↑ˢ[ d , κᵈ ]
@@ -475,12 +480,11 @@ The basis is the family `(List B , 𝜸₀)`, where `𝜸₀` is the following f
 
 \end{code}
 
+The top element of the Scott locale is always compact.
+
+TODO: move to ScottLocale.Properties.
+
 \begin{code}
-
- open BottomLemma 𝓓 𝕒 hl
-
- ↑ᵏ[_] : B →  ⟨ 𝒪 Σ[𝓓] ⟩
- ↑ᵏ[ i ] = ↑ˢ[ β i , ϟ i ]
 
  ⊤-is-compact : is-compact-open Σ[𝓓] 𝟏[ 𝒪 Σ[𝓓] ] holds
  ⊤-is-compact = transport (λ - → is-compact-open Σ[𝓓] - holds) ↑⊥-is-top †
@@ -499,16 +503,23 @@ The basis is the family `(List B , 𝜸₀)`, where `𝜸₀` is the following f
     † : ((↑ˢ[ c , κᶜ ] ∧[ 𝒪 Σ[𝓓] ] ↑ˢ[ d , κᵈ ]) ⊆ₖ 𝟎[ 𝒪 Σ[𝓓] ]) holds
     † i (p₁ , p₂) = 𝟘-elim (ν ∣ β i , (λ { (inl ⋆) → p₁ ; (inr ⋆) → p₂ }) ∣)
 
+\end{code}
+
+The following is the main lemma used when showing that the image of `𝜸` is
+closed under binary meets.
+
+\begin{code}
+
  𝜸-closure-under-∧₁ : (i : B) (is : List B)
-                    → ∃ ks ꞉ List B , 𝜸₁ ks ＝ ↑ˢ[ β i , ϟ i ] ∧[ 𝒪 Σ[𝓓] ] 𝜸₁ is
- 𝜸-closure-under-∧₁ i [] = ∣ [] , (𝟎-right-annihilator-for-∧ (𝒪 Σ[𝓓]) ↑ˢ[ β i , ϟ i ] ⁻¹) ∣
+                    → ∃ ks ꞉ List B , 𝜸₁ ks ＝ ↑ᵏ[ i ] ∧[ 𝒪 Σ[𝓓] ] 𝜸₁ is
+ 𝜸-closure-under-∧₁ i [] = ∣ [] , (𝟎-right-annihilator-for-∧ (𝒪 Σ[𝓓]) ↑ᵏ[ i ] ⁻¹) ∣
  𝜸-closure-under-∧₁ i (j ∷ js) = cases †₁ †₂ (dc (β i) (β j))
   where
-   IH : ∃ ks′ ꞉ List B , 𝜸₁ ks′ ＝ ↑ˢ[ β i , ϟ i ] ∧[ 𝒪 Σ[𝓓] ] 𝜸₁ js
+   IH : ∃ ks′ ꞉ List B , 𝜸₁ ks′ ＝ ↑ᵏ[ i ] ∧[ 𝒪 Σ[𝓓] ] 𝜸₁ js
    IH = 𝜸-closure-under-∧₁ i js
 
    †₁ : (β i ↑[ 𝓓 ] β j) holds
-      → ∃ ks ꞉ List B , 𝜸₁ ks ＝ ↑ˢ[ β i , ϟ i ] ∧[ 𝒪 Σ[𝓓] ] 𝜸₁ (j ∷ js)
+      → ∃ ks ꞉ List B , 𝜸₁ ks ＝ ↑ᵏ[ i ] ∧[ 𝒪 Σ[𝓓] ] 𝜸₁ (j ∷ js)
    †₁ υ = ∥∥-rec ∃-is-prop ‡₁ ξ
     where
      open Joins (λ x y → x ⊑⟨ 𝓓 ⟩ₚ y)
@@ -529,11 +540,11 @@ The basis is the family `(List B , 𝜸₀)`, where `𝜸₀` is the following f
      ξ = small-compact-basis-contains-all-compact-elements 𝓓 β scb s κˢ
 
      ‡₁ : Σ k ꞉ B , β k ＝ s
-        → ∃ ks ꞉ List B , 𝜸₁ ks ＝ ↑ˢ[ β i , ϟ i ] ∧[ 𝒪 Σ[𝓓] ] 𝜸₁ (j ∷ js)
+        → ∃ ks ꞉ List B , 𝜸₁ ks ＝ ↑ᵏ[ i ] ∧[ 𝒪 Σ[𝓓] ] 𝜸₁ (j ∷ js)
      ‡₁ (k , p) = ∥∥-rec ∃-is-prop ※₁ IH
       where
-       ※₁ : Σ ks′ ꞉ List B , 𝜸₁ ks′ ＝ ↑ˢ[ β i , ϟ i ] ∧[ 𝒪 Σ[𝓓] ] 𝜸₁ js
-          → ∃ ks ꞉ List B , 𝜸₁ ks ＝ ↑ˢ[ β i , ϟ i ] ∧[ 𝒪 Σ[𝓓] ] 𝜸₁ (j ∷ js)
+       ※₁ : Σ ks′ ꞉ List B , 𝜸₁ ks′ ＝ ↑ᵏ[ i ] ∧[ 𝒪 Σ[𝓓] ] 𝜸₁ js
+          → ∃ ks ꞉ List B , 𝜸₁ ks ＝ ↑ᵏ[ i ] ∧[ 𝒪 Σ[𝓓] ] 𝜸₁ (j ∷ js)
        ※₁ (ks′ , q) = ∣ (k ∷ ks′) , ♣ ∣
         where
          μ : ↑ᵏ[ k ] ＝ ↑ˢ[ s , κˢ ]
@@ -542,36 +553,49 @@ The basis is the family `(List B , 𝜸₀)`, where `𝜸₀` is the following f
          ρ : ↑ᵏ[ k ] ＝ ↑ᵏ[ i ] ∧[ 𝒪 Σ[𝓓] ] ↑ᵏ[ j ]
          ρ = ↑ᵏ[ k ]      ＝⟨ μ ⟩
              ↑ˢ[ s , κˢ ] ＝⟨ (principal-filter-reflects-joins (β i) (β j) s (ϟ i) (ϟ j) (φ , ψ)) ⟩
-             ↑ˢ[ β i , ϟ i ] ∧[ 𝒪 Σ[𝓓] ] ↑ˢ[ β j , ϟ j ] ∎
+             ↑ᵏ[ i ] ∧[ 𝒪 Σ[𝓓] ] ↑ᵏ[ j ] ∎
 
          Ⅰ = ap (λ - → - ∨[ 𝒪 Σ[𝓓] ] 𝜸₁ ks′) ρ
          Ⅱ = ap (λ - → (↑ᵏ[ i ] ∧[ 𝒪 Σ[𝓓] ] ↑ᵏ[ j ]) ∨[ 𝒪 Σ[𝓓] ] -) q
          Ⅲ = binary-distributivity (𝒪 Σ[𝓓]) ↑ᵏ[ i ] ↑ᵏ[ j ] (𝜸₁ js) ⁻¹
 
-         ♣ : 𝜸₁ (k ∷ ks′) ＝ ↑ˢ[ β i , ϟ i ] ∧[ 𝒪 Σ[𝓓] ] 𝜸₁ (j ∷ js)
-         ♣ = 𝜸₁ (k ∷ ks′)                                                    ＝⟨ refl ⟩
-             ↑ᵏ[ k ] ∨[ 𝒪 Σ[𝓓] ] 𝜸₁ ks′                                        ＝⟨ Ⅰ ⟩
-             (↑ᵏ[ i ] ∧[ 𝒪 Σ[𝓓] ] ↑ᵏ[ j ]) ∨[ 𝒪 Σ[𝓓] ] 𝜸₁ ks′                    ＝⟨ Ⅱ ⟩
-             (↑ᵏ[ i ] ∧[ 𝒪 Σ[𝓓] ] ↑ᵏ[ j ]) ∨[ 𝒪 Σ[𝓓] ] (↑ᵏ[ i ] ∧[ 𝒪 Σ[𝓓] ] 𝜸₁ js) ＝⟨ Ⅲ ⟩
-             ↑ᵏ[ i ] ∧[ 𝒪 Σ[𝓓] ] (↑ᵏ[ j ] ∨[ 𝒪 Σ[𝓓] ] 𝜸₁ js)                     ＝⟨ refl ⟩
-             ↑ᵏ[ i ] ∧[ 𝒪 Σ[𝓓] ] 𝜸₁ (j ∷ js)                                   ∎
+         ♣ : 𝜸₁ (k ∷ ks′) ＝ ↑ᵏ[ i ] ∧[ 𝒪 Σ[𝓓] ] 𝜸₁ (j ∷ js)
+         ♣ =
+           𝜸₁ (k ∷ ks′)
+             ＝⟨ refl ⟩
+           ↑ᵏ[ k ] ∨[ 𝒪 Σ[𝓓] ] 𝜸₁ ks′
+             ＝⟨ Ⅰ ⟩
+           (↑ᵏ[ i ] ∧[ 𝒪 Σ[𝓓] ] ↑ᵏ[ j ]) ∨[ 𝒪 Σ[𝓓] ] 𝜸₁ ks′
+             ＝⟨ Ⅱ ⟩
+           (↑ᵏ[ i ] ∧[ 𝒪 Σ[𝓓] ] ↑ᵏ[ j ]) ∨[ 𝒪 Σ[𝓓] ] (↑ᵏ[ i ] ∧[ 𝒪 Σ[𝓓] ] 𝜸₁ js)
+             ＝⟨ Ⅲ ⟩
+           ↑ᵏ[ i ] ∧[ 𝒪 Σ[𝓓] ] (↑ᵏ[ j ] ∨[ 𝒪 Σ[𝓓] ] 𝜸₁ js)
+             ＝⟨ refl ⟩
+           ↑ᵏ[ i ] ∧[ 𝒪 Σ[𝓓] ] 𝜸₁ (j ∷ js)
+             ∎
 
    †₂ : ¬ ((β i ↑[ 𝓓 ] β j) holds)
-      → ∃ ks ꞉ List B , 𝜸₁ ks ＝ ↑ˢ[ β i , ϟ i ] ∧[ 𝒪 Σ[𝓓] ] 𝜸₁ (j ∷ js)
+      → ∃ ks ꞉ List B , 𝜸₁ ks ＝ ↑ᵏ[ i ] ∧[ 𝒪 Σ[𝓓] ] 𝜸₁ (j ∷ js)
    †₂ ν = ∥∥-rec ∃-is-prop ‡₂ IH
     where
-     ‡₂ : Σ ks′ ꞉ List B , 𝜸₁ ks′ ＝ ↑ˢ[ β i , ϟ i ] ∧[ 𝒪 Σ[𝓓] ] 𝜸₁ js
-        → ∃ ks ꞉ List B , 𝜸₁ ks ＝ ↑ˢ[ β i , ϟ i ] ∧[ 𝒪 Σ[𝓓] ] 𝜸₁ (j ∷ js)
+     ‡₂ : Σ ks′ ꞉ List B , 𝜸₁ ks′ ＝ ↑ᵏ[ i ] ∧[ 𝒪 Σ[𝓓] ] 𝜸₁ js
+        → ∃ ks ꞉ List B , 𝜸₁ ks ＝ ↑ᵏ[ i ] ∧[ 𝒪 Σ[𝓓] ] 𝜸₁ (j ∷ js)
      ‡₂ (ks′ , p) = ∣ ks′ , ρ ∣
       where
-       ρ : 𝜸₁ ks′ ＝  ↑ˢ[ β i , ϟ i ] ∧[ 𝒪 Σ[𝓓] ] (𝜸₁ (j ∷ js))
+       ρ : 𝜸₁ ks′ ＝  ↑ᵏ[ i ] ∧[ 𝒪 Σ[𝓓] ] (𝜸₁ (j ∷ js))
        ρ =
-        𝜸₁ ks′                                                          ＝⟨ p    ⟩
-        ↑ᵏ[ i ] ∧[ 𝒪 Σ[𝓓] ] 𝜸₁ js                                         ＝⟨ Ⅰ    ⟩
-        𝟎[ 𝒪 Σ[𝓓] ] ∨[ 𝒪 Σ[𝓓] ] (↑ᵏ[ i ] ∧[ 𝒪 Σ[𝓓] ] 𝜸₁ js)                   ＝⟨ Ⅱ    ⟩
-        (↑ᵏ[ i ] ∧[ 𝒪 Σ[𝓓] ] ↑ᵏ[ j ]) ∨[ 𝒪 Σ[𝓓] ] (↑ᵏ[ i ] ∧[ 𝒪 Σ[𝓓] ] 𝜸₁ js) ＝⟨ Ⅲ    ⟩
-        ↑ᵏ[ i ] ∧[ 𝒪 Σ[𝓓] ] (↑ᵏ[ j ] ∨[ 𝒪 Σ[𝓓] ] 𝜸₁ js)                     ＝⟨ refl ⟩
-        ↑ᵏ[ i ] ∧[ 𝒪 Σ[𝓓] ] 𝜸₁ (j ∷ js)                                   ∎
+        𝜸₁ ks′
+          ＝⟨ p ⟩
+        ↑ᵏ[ i ] ∧[ 𝒪 Σ[𝓓] ] 𝜸₁ js
+          ＝⟨ Ⅰ ⟩
+        𝟎[ 𝒪 Σ[𝓓] ] ∨[ 𝒪 Σ[𝓓] ] (↑ᵏ[ i ] ∧[ 𝒪 Σ[𝓓] ] 𝜸₁ js)
+          ＝⟨ Ⅱ ⟩
+        (↑ᵏ[ i ] ∧[ 𝒪 Σ[𝓓] ] ↑ᵏ[ j ]) ∨[ 𝒪 Σ[𝓓] ] (↑ᵏ[ i ] ∧[ 𝒪 Σ[𝓓] ] 𝜸₁ js)
+          ＝⟨ Ⅲ ⟩
+        ↑ᵏ[ i ] ∧[ 𝒪 Σ[𝓓] ] (↑ᵏ[ j ] ∨[ 𝒪 Σ[𝓓] ] 𝜸₁ js)
+          ＝⟨ refl ⟩
+        ↑ᵏ[ i ] ∧[ 𝒪 Σ[𝓓] ] 𝜸₁ (j ∷ js)
+          ∎
          where
           Ⅰ = 𝟎-right-unit-of-∨ (𝒪 Σ[𝓓]) (↑ᵏ[ i ] ∧[ 𝒪 Σ[𝓓] ] 𝜸₁ js) ⁻¹
           Ⅱ = ap
@@ -579,41 +603,56 @@ The basis is the family `(List B , 𝜸₀)`, where `𝜸₀` is the following f
                (not-bounded-lemma (β i) (β j) (ϟ i) (ϟ j) ν ⁻¹ )
           Ⅲ = binary-distributivity (𝒪 Σ[𝓓]) ↑ᵏ[ i ] ↑ᵏ[ j ] (𝜸₁ js) ⁻¹
 
+\end{code}
+
+\begin{code}
+
  𝜸-closure-under-∧ : (is js : List B)
                    → ∃ ks ꞉ List B , 𝜸₁ ks ＝ 𝜸₁ is ∧[ 𝒪 Σ[𝓓] ] 𝜸₁ js
- 𝜸-closure-under-∧ []       js = ∣ [] , (𝟎-left-annihilator-for-∧ (𝒪 Σ[𝓓]) (𝜸₁ js) ⁻¹) ∣
+ 𝜸-closure-under-∧ []       js = ∣ [] , † ∣
+  where
+   † = 𝟎-left-annihilator-for-∧ (𝒪 Σ[𝓓]) (𝜸₁ js) ⁻¹
  𝜸-closure-under-∧ (i ∷ is) js = ∥∥-rec₂ ∃-is-prop † η₀ ρ₀
   where
    η₀ : ∃ ks₀ ꞉ List B , 𝜸₁ ks₀ ＝ 𝜸₁ is ∧[ 𝒪 Σ[𝓓] ] 𝜸₁ js
    η₀ = 𝜸-closure-under-∧ is js
 
-   ρ₀ : ∃ ks₁ ꞉ List B , 𝜸₁ ks₁ ＝ ↑ˢ[ β i , ϟ i ] ∧[ 𝒪 Σ[𝓓] ] 𝜸₁ js
+   ρ₀ : ∃ ks₁ ꞉ List B , 𝜸₁ ks₁ ＝ ↑ᵏ[ i ] ∧[ 𝒪 Σ[𝓓] ] 𝜸₁ js
    ρ₀ = 𝜸-closure-under-∧₁ i js
 
    † : Σ ks₀ ꞉ List B , 𝜸₁ ks₀ ＝ 𝜸₁ is ∧[ 𝒪 Σ[𝓓] ] 𝜸₁ js
-     → Σ ks₁ ꞉ List B , 𝜸₁ ks₁ ＝ ↑ˢ[ β i , ϟ i ] ∧[ 𝒪 Σ[𝓓] ] 𝜸₁ js
+     → Σ ks₁ ꞉ List B , 𝜸₁ ks₁ ＝ ↑ᵏ[ i ] ∧[ 𝒪 Σ[𝓓] ] 𝜸₁ js
      → ∃ ks ꞉ List B , 𝜸₁ ks ＝ 𝜸₁ (i ∷ is) ∧[ 𝒪 Σ[𝓓] ] 𝜸₁ js
    † (ks₀ , p₀) (ks₁ , p₁) = ∣ (ks₀ ++ ks₁) , ‡ ∣
     where
      ‡ : 𝜸₁ (ks₀ ++ ks₁) ＝ 𝜸₁ (i ∷ is) ∧[ 𝒪 Σ[𝓓] ] 𝜸₁ js
      ‡ =
-      𝜸₁ (ks₀ ++ ks₁)                                                     ＝⟨ Ⅰ ⟩
-      𝜸₁ ks₀ ∨[ 𝒪 Σ[𝓓] ] 𝜸₁ ks₁                                             ＝⟨ Ⅱ    ⟩
-      (𝜸₁ is ∧[ 𝒪 Σ[𝓓] ] 𝜸₁ js) ∨[ 𝒪 Σ[𝓓] ] 𝜸₁ ks₁                            ＝⟨ Ⅲ    ⟩
-      (𝜸₁ is ∧[ 𝒪 Σ[𝓓] ] 𝜸₁ js) ∨[ 𝒪 Σ[𝓓] ] (↑ˢ[ β i , ϟ i ] ∧[ 𝒪 Σ[𝓓] ] 𝜸₁ js) ＝⟨ Ⅳ    ⟩
-      (𝜸₁ is ∨[ 𝒪 Σ[𝓓] ] ↑ˢ[ β i , ϟ i ]) ∧[ 𝒪 Σ[𝓓] ] 𝜸₁ js                   ＝⟨ Ⅴ    ⟩
-      (↑ˢ[ β i , ϟ i ] ∨[ 𝒪 Σ[𝓓] ] 𝜸₁ is) ∧[ 𝒪 Σ[𝓓] ] 𝜸₁ js                   ＝⟨ refl ⟩
-      𝜸₁ (i ∷ is) ∧[ 𝒪 Σ[𝓓] ] 𝜸₁ js                                         ∎
-       where
-        Ⅰ = 𝜸-maps-∨-to-++ ks₀ ks₁
-        Ⅱ = ap (λ - → - ∨[ 𝒪 Σ[𝓓] ] 𝜸₁ ks₁) p₀
-        Ⅲ = ap (λ - → (𝜸₁ is ∧[ 𝒪 Σ[𝓓] ] 𝜸₁ js) ∨[ 𝒪 Σ[𝓓] ] -) p₁
-        Ⅳ = binary-distributivity-right (𝒪 Σ[𝓓]) ⁻¹
-        Ⅴ = ap
-             (λ - → - ∧[ 𝒪 Σ[𝓓] ] 𝜸₁ js)
-             (∨[ 𝒪 Σ[𝓓] ]-is-commutative (𝜸₁ is) ↑ᵏ[ i ])
+      𝜸₁ (ks₀ ++ ks₁)
+       ＝⟨ Ⅰ ⟩
+      𝜸₁ ks₀ ∨[ 𝒪 Σ[𝓓] ] 𝜸₁ ks₁
+       ＝⟨ Ⅱ    ⟩
+      (𝜸₁ is ∧[ 𝒪 Σ[𝓓] ] 𝜸₁ js) ∨[ 𝒪 Σ[𝓓] ] 𝜸₁ ks₁
+       ＝⟨ Ⅲ    ⟩
+      (𝜸₁ is ∧[ 𝒪 Σ[𝓓] ] 𝜸₁ js) ∨[ 𝒪 Σ[𝓓] ] (↑ᵏ[ i ] ∧[ 𝒪 Σ[𝓓] ] 𝜸₁ js)
+       ＝⟨ Ⅳ    ⟩
+      (𝜸₁ is ∨[ 𝒪 Σ[𝓓] ] ↑ᵏ[ i ]) ∧[ 𝒪 Σ[𝓓] ] 𝜸₁ js
+       ＝⟨ Ⅴ    ⟩
+      (↑ᵏ[ i ] ∨[ 𝒪 Σ[𝓓] ] 𝜸₁ is) ∧[ 𝒪 Σ[𝓓] ] 𝜸₁ js
+       ＝⟨ refl ⟩
+      𝜸₁ (i ∷ is) ∧[ 𝒪 Σ[𝓓] ] 𝜸₁ js
+       ∎
+        where
+         Ⅰ = 𝜸-maps-∨-to-++ ks₀ ks₁
+         Ⅱ = ap (λ - → - ∨[ 𝒪 Σ[𝓓] ] 𝜸₁ ks₁) p₀
+         Ⅲ = ap (λ - → (𝜸₁ is ∧[ 𝒪 Σ[𝓓] ] 𝜸₁ js) ∨[ 𝒪 Σ[𝓓] ] -) p₁
+         Ⅳ = binary-distributivity-right (𝒪 Σ[𝓓]) ⁻¹
+         Ⅴ = ap
+              (λ - → - ∧[ 𝒪 Σ[𝓓] ] 𝜸₁ js)
+              (∨[ 𝒪 Σ[𝓓] ]-is-commutative (𝜸₁ is) ↑ᵏ[ i ])
 
 \end{code}
+
+We are now ready to package up the basis. We call it `basis-for-Σ[𝓓]`.
 
 \begin{code}
 
@@ -621,6 +660,12 @@ The basis is the family `(List B , 𝜸₀)`, where `𝜸₀` is the following f
  basis-for-Σ[𝓓] = List B , 𝜸
 
  open PropertiesAlgebraic 𝓓 𝕒
+
+\end{code}
+
+This forms a directed basis.
+
+\begin{code}
 
  Σ[𝓓]-dir-basis-forᴰ : directed-basis-forᴰ (𝒪 Σ[𝓓]) basis-for-Σ[𝓓]
  Σ[𝓓]-dir-basis-forᴰ U@(_ , so) = (D , δ) , † , 𝒹
@@ -678,6 +723,13 @@ The basis is the family `(List B , 𝜸₀)`, where `𝜸₀` is the following f
 
     𝒹 : is-directed (𝒪 Σ[𝓓]) (⁅ 𝜸 d ∣ d ε (D , δ) ⁆) holds
     𝒹 = ∣ [] , (λ _ ()) ∣ , 𝒹↑
+
+\end{code}
+
+Everything we have explained so far constitute the proof of spectrality when
+combined as follows.
+
+\begin{code}
 
  σᴰ : spectralᴰ Σ[𝓓]
  σᴰ = pr₁ Σ-assoc (𝒷 , (𝜸-gives-compact-opens , τ , μ))
