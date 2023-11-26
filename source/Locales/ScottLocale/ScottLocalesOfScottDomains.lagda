@@ -700,9 +700,9 @@ This forms a directed basis.
      where
       r : ↑ˢ[ β k , ϟ k ] ＝ 𝜸 (k ∷ [])
       r =
-       ↑ˢ[ β k , ϟ k ]                         ＝⟨ Ⅰ ⟩
-       ↑ˢ[ β k , ϟ k ] ∨[ 𝒪 Σ[𝓓] ] 𝟎[ 𝒪 Σ[𝓓] ]     ＝⟨ Ⅱ ⟩
-       𝜸 (k ∷ [])                              ∎
+       ↑ˢ[ β k , ϟ k ]                            ＝⟨ Ⅰ ⟩
+       ↑ˢ[ β k , ϟ k ] ∨[ 𝒪 Σ[𝓓] ] 𝟎[ 𝒪 Σ[𝓓] ]    ＝⟨ Ⅱ ⟩
+       𝜸 (k ∷ [])                                 ∎
         where
          Ⅰ = 𝟎-left-unit-of-∨ (𝒪 Σ[𝓓]) ↑ˢ[ β k , ϟ k ] ⁻¹
          Ⅱ = 𝜸-equal-to-𝜸₁ (k ∷ []) ⁻¹
@@ -748,7 +748,7 @@ combined as follows.
      † : Σ is ꞉ List B , (𝜸 is) ＝ 𝟏[ 𝒪 Σ[𝓓] ]
        → contains-top (𝒪 Σ[𝓓]) basis-for-Σ[𝓓] holds
      † (is , p) =
-      ∣ is , transport (λ - → is-top (𝒪 Σ[𝓓]) - holds) (p ⁻¹) (𝟏-is-top (𝒪 Σ[𝓓])) ∣
+      ∣ is , transport (_holds ∘ is-top (𝒪 Σ[𝓓])) (p ⁻¹) (𝟏-is-top (𝒪 Σ[𝓓])) ∣
 
    μ : closed-under-binary-meets (𝒪 Σ[𝓓]) basis-for-Σ[𝓓] holds
    μ is js = ∥∥-rec ∃-is-prop † (𝜸-closure-under-∧ is js)
