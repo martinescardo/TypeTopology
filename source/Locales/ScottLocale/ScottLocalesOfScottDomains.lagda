@@ -199,7 +199,7 @@ We now proceed to construct the basis for this locale.
  𝜸₀ = foldr _∪_ ∅ ∘ map (principal-filter 𝓓 ∘ β)
 
  𝜸₀-is-upwards-closed : (ks : List B)
-                              → is-upwards-closed (𝜸₀ ks) holds
+                      → is-upwards-closed (𝜸₀ ks) holds
  𝜸₀-is-upwards-closed []       x y () q
  𝜸₀-is-upwards-closed (b ∷ bs) x y p  q =
   ∥∥-rec (holds-is-prop (y ∈ₚ 𝜸₀ (b ∷ bs))) † p
@@ -267,23 +267,23 @@ We now proceed to construct the basis for this locale.
 
 \begin{code}
 
- γ : List B → ⟨ 𝒪 Σ⦅𝓓⦆ ⟩
+ γ : List B → ⟨ 𝒪 Σ[𝓓] ⟩
  γ ks = 𝜸₀ ks , 𝜸₀-gives-scott-opens ks
 
- γ₁ : List B → ⟨ 𝒪 Σ⦅𝓓⦆ ⟩
- γ₁ []       = 𝟎[ 𝒪 Σ⦅𝓓⦆ ]
- γ₁ (k ∷ ks) = ↑ˢ[ (β k , ϟ k) ] ∨[ 𝒪 Σ⦅𝓓⦆ ] γ₁ ks
+ γ₁ : List B → ⟨ 𝒪 Σ[𝓓] ⟩
+ γ₁ []       = 𝟎[ 𝒪 Σ[𝓓] ]
+ γ₁ (k ∷ ks) = ↑ˢ[ (β k , ϟ k) ] ∨[ 𝒪 Σ[𝓓] ] γ₁ ks
 
 \end{code}
 
 \begin{code}
 
- γ-below-γ₁ : (bs : List B) → (γ bs ≤[ poset-of (𝒪 Σ⦅𝓓⦆) ] γ₁ bs) holds
+ γ-below-γ₁ : (bs : List B) → (γ bs ≤[ poset-of (𝒪 Σ[𝓓]) ] γ₁ bs) holds
  γ-below-γ₁ []       _ ()
  γ-below-γ₁ (i ∷ is) j p =
   ∥∥-rec (holds-is-prop (γ₁ (i ∷ is) .pr₁ (β j))) † p
    where
-    IH : (γ is ≤[ poset-of (𝒪 Σ⦅𝓓⦆) ] γ₁ is) holds
+    IH : (γ is ≤[ poset-of (𝒪 Σ[𝓓]) ] γ₁ is) holds
     IH = γ-below-γ₁ is
 
     † : (β i ⊑⟨ 𝓓 ⟩ β j) + (β j ∈ₛ γ is) holds
@@ -291,11 +291,11 @@ We now proceed to construct the basis for this locale.
     † (inl q) = ∣ inl ⋆ , q      ∣
     † (inr q) = ∣ inr ⋆ , IH j q ∣
 
- γ₁-below-γ : (bs : List B) → (γ₁ bs ≤[ poset-of (𝒪 Σ⦅𝓓⦆) ] γ bs) holds
- γ₁-below-γ []       j p = 𝟎-is-bottom (𝒪 Σ⦅𝓓⦆) (γ []) j p
+ γ₁-below-γ : (bs : List B) → (γ₁ bs ≤[ poset-of (𝒪 Σ[𝓓]) ] γ bs) holds
+ γ₁-below-γ []       j p = 𝟎-is-bottom (𝒪 Σ[𝓓]) (γ []) j p
  γ₁-below-γ (i ∷ is) j p = ∥∥-rec (holds-is-prop (β j ∈ₛ γ (i ∷ is))) † p
   where
-   IH : (γ₁ is ≤[ poset-of (𝒪 Σ⦅𝓓⦆) ] γ is) holds
+   IH : (γ₁ is ≤[ poset-of (𝒪 Σ[𝓓]) ] γ is) holds
    IH = γ₁-below-γ is
 
    † : (Σ k ꞉ 𝟚 𝓤 ,
@@ -306,49 +306,49 @@ We now proceed to construct the basis for this locale.
 
  γ-equal-to-γ₁ : (bs : List B) → γ bs ＝ γ₁ bs
  γ-equal-to-γ₁ bs =
-  ≤-is-antisymmetric (poset-of (𝒪 Σ⦅𝓓⦆)) (γ-below-γ₁ bs) (γ₁-below-γ bs)
+  ≤-is-antisymmetric (poset-of (𝒪 Σ[𝓓])) (γ-below-γ₁ bs) (γ₁-below-γ bs)
 
 \end{code}
 
 \begin{code}
 
- γ-lemma₁ : (is js : List B) → (γ is ≤[ poset-of (𝒪 Σ⦅𝓓⦆) ] γ (is ++ js)) holds
+ γ-lemma₁ : (is js : List B) → (γ is ≤[ poset-of (𝒪 Σ[𝓓]) ] γ (is ++ js)) holds
  γ-lemma₁ []       js       = λ _ ()
  γ-lemma₁ (i ∷ is) []       = let
-                               open PosetNotation (poset-of (𝒪 Σ⦅𝓓⦆))
+                               open PosetNotation (poset-of (𝒪 Σ[𝓓]))
 
                                † : (i ∷ is) ＝ (i ∷ is) ++ []
                                † = []-right-neutral (i ∷ is)
 
                                ‡ : (γ (i ∷ is) ≤ γ (i ∷ is)) holds
-                               ‡ = ≤-is-reflexive (poset-of (𝒪 Σ⦅𝓓⦆)) (γ (i ∷ is))
+                               ‡ = ≤-is-reflexive (poset-of (𝒪 Σ[𝓓])) (γ (i ∷ is))
                               in
                                transport (λ - → (γ (i ∷ is) ≤ γ -) holds) † ‡
  γ-lemma₁ (i ∷ is) (j ∷ js) x p = Ⅲ x (Ⅱ x (Ⅰ x p))
    where
-    † : (γ₁ is ≤[ poset-of (𝒪 Σ⦅𝓓⦆) ] γ₁ (is ++ (j ∷ js))) holds
+    † : (γ₁ is ≤[ poset-of (𝒪 Σ[𝓓]) ] γ₁ (is ++ (j ∷ js))) holds
     † y q =
      γ-below-γ₁ (is ++ (j ∷ js)) y (γ-lemma₁ is (j ∷ js) y (γ₁-below-γ is y q))
 
     Ⅰ = γ-below-γ₁ (i ∷ is)
-    Ⅱ = ∨[ 𝒪 Σ⦅𝓓⦆ ]-right-monotone †
+    Ⅱ = ∨[ 𝒪 Σ[𝓓] ]-right-monotone †
     Ⅲ = γ₁-below-γ (i ∷ (is ++ (j ∷ js)))
 
- γ-lemma₂ : (is js : List B) → (γ js ≤[ poset-of (𝒪 Σ⦅𝓓⦆) ] γ (is ++ js)) holds
- γ-lemma₂    []        js = ≤-is-reflexive (poset-of (𝒪 Σ⦅𝓓⦆)) (γ js)
+ γ-lemma₂ : (is js : List B) → (γ js ≤[ poset-of (𝒪 Σ[𝓓]) ] γ (is ++ js)) holds
+ γ-lemma₂    []        js = ≤-is-reflexive (poset-of (𝒪 Σ[𝓓])) (γ js)
  γ-lemma₂ is@(i ∷ is′) js = λ x p → ∣_∣ (inr (γ-lemma₂ is′ js x p))
 
- γ-maps-∨-to-++ : (is js : List B) → γ₁ (is ++ js) ＝ γ₁ is ∨[ 𝒪 Σ⦅𝓓⦆ ] γ₁ js
- γ-maps-∨-to-++ []       js = 𝟎-right-unit-of-∨ (𝒪 Σ⦅𝓓⦆) (γ₁ js) ⁻¹
+ γ-maps-∨-to-++ : (is js : List B) → γ₁ (is ++ js) ＝ γ₁ is ∨[ 𝒪 Σ[𝓓] ] γ₁ js
+ γ-maps-∨-to-++ []       js = 𝟎-right-unit-of-∨ (𝒪 Σ[𝓓]) (γ₁ js) ⁻¹
  γ-maps-∨-to-++ (i ∷ is) js =
   γ₁ ((i ∷ is) ++ js)                                  ＝⟨ refl ⟩
-  ↑ˢ[ β i , ϟ i ] ∨[ 𝒪 Σ⦅𝓓⦆ ] γ₁ (is ++ js)              ＝⟨ Ⅰ    ⟩
-  ↑ˢ[ β i , ϟ i ] ∨[ 𝒪 Σ⦅𝓓⦆ ] (γ₁ is ∨[ 𝒪 Σ⦅𝓓⦆ ] γ₁ js)    ＝⟨ Ⅱ    ⟩
-  (↑ˢ[ β i , ϟ i ] ∨[ 𝒪 Σ⦅𝓓⦆ ] γ₁ is) ∨[ 𝒪 Σ⦅𝓓⦆ ] γ₁ js    ＝⟨ refl ⟩
-  γ₁ (i ∷ is) ∨[ 𝒪 Σ⦅𝓓⦆ ] γ₁ js                          ∎
+  ↑ˢ[ β i , ϟ i ] ∨[ 𝒪 Σ[𝓓] ] γ₁ (is ++ js)              ＝⟨ Ⅰ    ⟩
+  ↑ˢ[ β i , ϟ i ] ∨[ 𝒪 Σ[𝓓] ] (γ₁ is ∨[ 𝒪 Σ[𝓓] ] γ₁ js)    ＝⟨ Ⅱ    ⟩
+  (↑ˢ[ β i , ϟ i ] ∨[ 𝒪 Σ[𝓓] ] γ₁ is) ∨[ 𝒪 Σ[𝓓] ] γ₁ js    ＝⟨ refl ⟩
+  γ₁ (i ∷ is) ∨[ 𝒪 Σ[𝓓] ] γ₁ js                          ∎
    where
-    Ⅰ = ap (λ - → ↑ˢ[ β i , ϟ i ] ∨[ 𝒪 Σ⦅𝓓⦆ ] -) (γ-maps-∨-to-++ is js)
-    Ⅱ = ∨[ 𝒪 Σ⦅𝓓⦆ ]-assoc ↑ˢ[ β i , ϟ i ] (γ₁ is) (γ₁ js) ⁻¹
+    Ⅰ = ap (λ - → ↑ˢ[ β i , ϟ i ] ∨[ 𝒪 Σ[𝓓] ] -) (γ-maps-∨-to-++ is js)
+    Ⅱ = ∨[ 𝒪 Σ[𝓓] ]-assoc ↑ˢ[ β i , ϟ i ] (γ₁ is) (γ₁ js) ⁻¹
 
 \end{code}
 
@@ -356,65 +356,65 @@ We now proceed to construct the basis for this locale.
 
  principal-filter-is-compact₀ : (c : ⟨ 𝓓 ⟩∙)
                               → (κ : is-compact 𝓓 c)
-                              → is-compact-open Σ⦅𝓓⦆ ↑ˢ[ (c , κ) ] holds
+                              → is-compact-open Σ[𝓓] ↑ˢ[ (c , κ) ] holds
  principal-filter-is-compact₀ c κ S δ p = ∥∥-rec ∃-is-prop † q
   where
-   q : (c ∈ₛ (⋁[ 𝒪 Σ⦅𝓓⦆ ] S)) holds
-   q = ⊆ₖ-implies-⊆ₛ ↑ˢ[ (c , κ) ] (⋁[ 𝒪 Σ⦅𝓓⦆ ] S) p c (reflexivity 𝓓 c)
+   q : (c ∈ₛ (⋁[ 𝒪 Σ[𝓓] ] S)) holds
+   q = ⊆ₖ-implies-⊆ₛ ↑ˢ[ (c , κ) ] (⋁[ 𝒪 Σ[𝓓] ] S) p c (reflexivity 𝓓 c)
 
    † : Σ i ꞉ index S , (c ∈ₛ (S [ i ])) holds
-     → ∃ i ꞉ index S , (↑ˢ[ (c , κ) ] ≤[ poset-of (𝒪 Σ⦅𝓓⦆) ] S [ i ]) holds
+     → ∃ i ꞉ index S , (↑ˢ[ (c , κ) ] ≤[ poset-of (𝒪 Σ[𝓓]) ] S [ i ]) holds
    † (i , r) = ∣ i , ‡ ∣
     where
-     ‡ :  (↑ˢ[ c , κ ] ≤[ poset-of (𝒪 Σ⦅𝓓⦆) ] (S [ i ])) holds
+     ‡ :  (↑ˢ[ c , κ ] ≤[ poset-of (𝒪 Σ[𝓓]) ] (S [ i ])) holds
      ‡ d = upward-closure (S [ i ]) c (β d) r
 
  principal-filter-is-compact : (b : B)
-                             → is-compact-open Σ⦅𝓓⦆ ↑ˢ[ (β b , ϟ b) ] holds
+                             → is-compact-open Σ[𝓓] ↑ˢ[ (β b , ϟ b) ] holds
  principal-filter-is-compact b S δ p = ∥∥-rec ∃-is-prop † q
   where
-   q : (β b ∈ₛ (⋁[ 𝒪 Σ⦅𝓓⦆ ] S)) holds
+   q : (β b ∈ₛ (⋁[ 𝒪 Σ[𝓓] ] S)) holds
    q = p b (reflexivity 𝓓 (β b))
 
    † : Σ k ꞉ index S , (β b ∈ₛ (S [ k ])) holds
-     → ∃ i ꞉ index S , ((↑ˢ[ β b , ϟ b ]) ≤[ poset-of (𝒪 Σ⦅𝓓⦆) ] (S [ i ])) holds
+     → ∃ i ꞉ index S , ((↑ˢ[ β b , ϟ b ]) ≤[ poset-of (𝒪 Σ[𝓓]) ] (S [ i ])) holds
    † (k , φ) = ∣ k , ‡ ∣
     where
      Sₖᴿ : 𝒪ₛᴿ
      Sₖᴿ = to-𝒪ₛᴿ (S [ k ])
 
-     ‡ : (↑ˢ[ β b , ϟ b ] ≤[ poset-of (𝒪 Σ⦅𝓓⦆) ] (S [ k ])) holds
+     ‡ : (↑ˢ[ β b , ϟ b ] ≤[ poset-of (𝒪 Σ[𝓓]) ] (S [ k ])) holds
      ‡ d r = 𝒪ₛᴿ.pred-is-upwards-closed Sₖᴿ (β b) (β d) φ r
 
 \end{code}
 
 \begin{code}
 
- γ₁-gives-compact-opens : (b⃗ : List B) → is-compact-open Σ⦅𝓓⦆ (γ₁ b⃗) holds
- γ₁-gives-compact-opens []       = 𝟎-is-compact Σ⦅𝓓⦆
+ γ₁-gives-compact-opens : (b⃗ : List B) → is-compact-open Σ[𝓓] (γ₁ b⃗) holds
+ γ₁-gives-compact-opens []       = 𝟎-is-compact Σ[𝓓]
  γ₁-gives-compact-opens (b ∷ bs) = †
   where
-   𝔘ᶜ : ⟨ 𝒪 Σ⦅𝓓⦆ ⟩
+   𝔘ᶜ : ⟨ 𝒪 Σ[𝓓] ⟩
    𝔘ᶜ = ↑[ 𝓓 ] (β b)
       , compact-implies-principal-filter-is-scott-open (β b) (basis-is-compact b)
 
-   b-compact : is-compact-open Σ⦅𝓓⦆ 𝔘ᶜ holds
+   b-compact : is-compact-open Σ[𝓓] 𝔘ᶜ holds
    b-compact = principal-filter-is-compact b
 
    𝔘ᶜᵣ : 𝒪ₛᴿ
    𝔘ᶜᵣ = to-𝒪ₛᴿ 𝔘ᶜ
 
-   IH : is-compact-open Σ⦅𝓓⦆ (γ₁ bs) holds
+   IH : is-compact-open Σ[𝓓] (γ₁ bs) holds
    IH = γ₁-gives-compact-opens bs
 
-   † : is-compact-open Σ⦅𝓓⦆ (γ₁ (b ∷ bs)) holds
-   † = compact-opens-are-closed-under-∨ Σ⦅𝓓⦆ 𝔘ᶜ (γ₁ bs) b-compact IH
+   † : is-compact-open Σ[𝓓] (γ₁ (b ∷ bs)) holds
+   † = compact-opens-are-closed-under-∨ Σ[𝓓] 𝔘ᶜ (γ₁ bs) b-compact IH
 
- γ-gives-compact-opens : (bs : List B) → is-compact-open Σ⦅𝓓⦆ (γ bs) holds
+ γ-gives-compact-opens : (bs : List B) → is-compact-open Σ[𝓓] (γ bs) holds
  γ-gives-compact-opens bs =
-  transport (λ - → is-compact-open Σ⦅𝓓⦆ - holds) (γ-equal-to-γ₁ bs ⁻¹) †
+  transport (λ - → is-compact-open Σ[𝓓] - holds) (γ-equal-to-γ₁ bs ⁻¹) †
    where
-    † : is-compact-open Σ⦅𝓓⦆ (γ₁ bs) holds
+    † : is-compact-open Σ[𝓓] (γ₁ bs) holds
     † = γ₁-gives-compact-opens bs
 
 \end{code}
@@ -445,27 +445,27 @@ We now proceed to construct the basis for this locale.
                                    let
                                     κˢ = sup-is-compact c d s κᶜ κᵈ σ
                                    in
-                                    ↑ˢ[ s , κˢ ] ＝ ↑ˢ[ c , κᶜ ] ∧[ 𝒪 Σ⦅𝓓⦆ ] ↑ˢ[ d , κᵈ ]
+                                    ↑ˢ[ s , κˢ ] ＝ ↑ˢ[ c , κᶜ ] ∧[ 𝒪 Σ[𝓓] ] ↑ˢ[ d , κᵈ ]
  principal-filter-reflects-joins c d s κᶜ κᵈ σ =
-  ≤-is-antisymmetric (poset-of (𝒪 Σ⦅𝓓⦆)) Ⅰ Ⅱ
+  ≤-is-antisymmetric (poset-of (𝒪 Σ[𝓓])) Ⅰ Ⅱ
    where
-    open PosetReasoning (poset-of (𝒪 Σ⦅𝓓⦆))
+    open PosetReasoning (poset-of (𝒪 Σ[𝓓]))
 
     κₛ : is-compact 𝓓 s
     κₛ = sup-is-compact c d s κᶜ κᵈ σ
 
-    † : (↑ˢ[ s , κₛ ] ⊆ₛ (↑ˢ[ c , κᶜ ] ∧[ 𝒪 Σ⦅𝓓⦆ ] ↑ˢ[ d , κᵈ ])) holds
+    † : (↑ˢ[ s , κₛ ] ⊆ₛ (↑ˢ[ c , κᶜ ] ∧[ 𝒪 Σ[𝓓] ] ↑ˢ[ d , κᵈ ])) holds
     † x p = (c ⊑⟨ 𝓓 ⟩[ pr₁ σ (inl ⋆) ] s ⊑⟨ 𝓓 ⟩[ p ] x ∎⟨ 𝓓 ⟩)
           , (d ⊑⟨ 𝓓 ⟩[ pr₁ σ (inr ⋆) ] s ⊑⟨ 𝓓 ⟩[ p ] x ∎⟨ 𝓓 ⟩)
 
-    ‡ : ((↑ˢ[ c , κᶜ ] ∧[ 𝒪 Σ⦅𝓓⦆ ] ↑ˢ[ d , κᵈ ]) ⊆ₛ ↑ˢ[ s , κₛ ]) holds
+    ‡ : ((↑ˢ[ c , κᶜ ] ∧[ 𝒪 Σ[𝓓] ] ↑ˢ[ d , κᵈ ]) ⊆ₛ ↑ˢ[ s , κₛ ]) holds
     ‡ x (p , q) = pr₂ σ x λ { (inl ⋆) → p ; (inr ⋆) → q }
 
-    Ⅰ : (↑ˢ[ s , κₛ ] ⊆ₖ (↑ˢ[ c , κᶜ ] ∧[ 𝒪 Σ⦅𝓓⦆ ] ↑ˢ[ d , κᵈ ])) holds
-    Ⅰ = ⊆ₛ-implies-⊆ₖ ↑ˢ[ s , κₛ ] (↑ˢ[ c , κᶜ ] ∧[ 𝒪 Σ⦅𝓓⦆ ] ↑ˢ[ d , κᵈ ]) †
+    Ⅰ : (↑ˢ[ s , κₛ ] ⊆ₖ (↑ˢ[ c , κᶜ ] ∧[ 𝒪 Σ[𝓓] ] ↑ˢ[ d , κᵈ ])) holds
+    Ⅰ = ⊆ₛ-implies-⊆ₖ ↑ˢ[ s , κₛ ] (↑ˢ[ c , κᶜ ] ∧[ 𝒪 Σ[𝓓] ] ↑ˢ[ d , κᵈ ]) †
 
-    Ⅱ : ((↑ˢ[ c , κᶜ ] ∧[ 𝒪 Σ⦅𝓓⦆ ] ↑ˢ[ d , κᵈ ]) ⊆ₖ ↑ˢ[ s , κₛ ]) holds
-    Ⅱ = ⊆ₛ-implies-⊆ₖ (↑ˢ[ c , κᶜ ] ∧[ 𝒪 Σ⦅𝓓⦆ ] ↑ˢ[ d , κᵈ ]) ↑ˢ[ s , κₛ ] ‡
+    Ⅱ : ((↑ˢ[ c , κᶜ ] ∧[ 𝒪 Σ[𝓓] ] ↑ˢ[ d , κᵈ ]) ⊆ₖ ↑ˢ[ s , κₛ ]) holds
+    Ⅱ = ⊆ₛ-implies-⊆ₖ (↑ˢ[ c , κᶜ ] ∧[ 𝒪 Σ[𝓓] ] ↑ˢ[ d , κᵈ ]) ↑ˢ[ s , κₛ ] ‡
 
 \end{code}
 
@@ -473,11 +473,11 @@ We now proceed to construct the basis for this locale.
 
  open BottomLemma 𝓓 𝕒 hl
 
- ↑ᵏ[_] : B →  ⟨ 𝒪 Σ⦅𝓓⦆ ⟩
+ ↑ᵏ[_] : B →  ⟨ 𝒪 Σ[𝓓] ⟩
  ↑ᵏ[ i ] = ↑ˢ[ β i , ϟ i ]
 
- ⊤-is-compact : is-compact-open Σ⦅𝓓⦆ 𝟏[ 𝒪 Σ⦅𝓓⦆ ] holds
- ⊤-is-compact = transport (λ - → is-compact-open Σ⦅𝓓⦆ - holds) ↑⊥-is-top †
+ ⊤-is-compact : is-compact-open Σ[𝓓] 𝟏[ 𝒪 Σ[𝓓] ] holds
+ ⊤-is-compact = transport (λ - → is-compact-open Σ[𝓓] - holds) ↑⊥-is-top †
   where
    † : is-compact-open ScottLocale ↑ˢ[ ⊥ᴰ , ⊥κ ] holds
    † = principal-filter-is-compact₀ ⊥ᴰ ⊥κ
@@ -486,23 +486,23 @@ We now proceed to construct the basis for this locale.
                    → (κᶜ : is-compact 𝓓 c)
                    → (κᵈ : is-compact 𝓓 d)
                    → ¬ ((c ↑[ 𝓓 ] d) holds)
-                   → ↑ˢ[ c , κᶜ ] ∧[ 𝒪 Σ⦅𝓓⦆ ] ↑ˢ[ d , κᵈ ] ＝ 𝟎[ 𝒪 Σ⦅𝓓⦆ ]
+                   → ↑ˢ[ c , κᶜ ] ∧[ 𝒪 Σ[𝓓] ] ↑ˢ[ d , κᵈ ] ＝ 𝟎[ 𝒪 Σ[𝓓] ]
  not-bounded-lemma c d κᶜ κᵈ ν =
-  only-𝟎-is-below-𝟎 (𝒪 Σ⦅𝓓⦆) (↑ˢ[ c , κᶜ ] ∧[ 𝒪 Σ⦅𝓓⦆ ] ↑ˢ[ d , κᵈ ]) †
+  only-𝟎-is-below-𝟎 (𝒪 Σ[𝓓]) (↑ˢ[ c , κᶜ ] ∧[ 𝒪 Σ[𝓓] ] ↑ˢ[ d , κᵈ ]) †
    where
-    † : ((↑ˢ[ c , κᶜ ] ∧[ 𝒪 Σ⦅𝓓⦆ ] ↑ˢ[ d , κᵈ ]) ⊆ₖ 𝟎[ 𝒪 Σ⦅𝓓⦆ ]) holds
+    † : ((↑ˢ[ c , κᶜ ] ∧[ 𝒪 Σ[𝓓] ] ↑ˢ[ d , κᵈ ]) ⊆ₖ 𝟎[ 𝒪 Σ[𝓓] ]) holds
     † i (p₁ , p₂) = 𝟘-elim (ν ∣ β i , (λ { (inl ⋆) → p₁ ; (inr ⋆) → p₂ }) ∣)
 
  γ-closure-under-∧₁ : (i : B) (is : List B)
-                    → ∃ ks ꞉ List B , γ₁ ks ＝ ↑ˢ[ β i , ϟ i ] ∧[ 𝒪 Σ⦅𝓓⦆ ] γ₁ is
- γ-closure-under-∧₁ i [] = ∣ [] , (𝟎-right-annihilator-for-∧ (𝒪 Σ⦅𝓓⦆) ↑ˢ[ β i , ϟ i ] ⁻¹) ∣
+                    → ∃ ks ꞉ List B , γ₁ ks ＝ ↑ˢ[ β i , ϟ i ] ∧[ 𝒪 Σ[𝓓] ] γ₁ is
+ γ-closure-under-∧₁ i [] = ∣ [] , (𝟎-right-annihilator-for-∧ (𝒪 Σ[𝓓]) ↑ˢ[ β i , ϟ i ] ⁻¹) ∣
  γ-closure-under-∧₁ i (j ∷ js) = cases †₁ †₂ (dc (β i) (β j))
   where
-   IH : ∃ ks′ ꞉ List B , γ₁ ks′ ＝ ↑ˢ[ β i , ϟ i ] ∧[ 𝒪 Σ⦅𝓓⦆ ] γ₁ js
+   IH : ∃ ks′ ꞉ List B , γ₁ ks′ ＝ ↑ˢ[ β i , ϟ i ] ∧[ 𝒪 Σ[𝓓] ] γ₁ js
    IH = γ-closure-under-∧₁ i js
 
    †₁ : (β i ↑[ 𝓓 ] β j) holds
-      → ∃ ks ꞉ List B , γ₁ ks ＝ ↑ˢ[ β i , ϟ i ] ∧[ 𝒪 Σ⦅𝓓⦆ ] γ₁ (j ∷ js)
+      → ∃ ks ꞉ List B , γ₁ ks ＝ ↑ˢ[ β i , ϟ i ] ∧[ 𝒪 Σ[𝓓] ] γ₁ (j ∷ js)
    †₁ υ = ∥∥-rec ∃-is-prop ‡₁ ξ
     where
      open Joins (λ x y → x ⊑⟨ 𝓓 ⟩ₚ y)
@@ -523,103 +523,103 @@ We now proceed to construct the basis for this locale.
      ξ = small-compact-basis-contains-all-compact-elements 𝓓 β scb s κˢ
 
      ‡₁ : Σ k ꞉ B , β k ＝ s
-        → ∃ ks ꞉ List B , γ₁ ks ＝ ↑ˢ[ β i , ϟ i ] ∧[ 𝒪 Σ⦅𝓓⦆ ] γ₁ (j ∷ js)
+        → ∃ ks ꞉ List B , γ₁ ks ＝ ↑ˢ[ β i , ϟ i ] ∧[ 𝒪 Σ[𝓓] ] γ₁ (j ∷ js)
      ‡₁ (k , p) = ∥∥-rec ∃-is-prop ※₁ IH
       where
-       ※₁ : Σ ks′ ꞉ List B , γ₁ ks′ ＝ ↑ˢ[ β i , ϟ i ] ∧[ 𝒪 Σ⦅𝓓⦆ ] γ₁ js
-          → ∃ ks ꞉ List B , γ₁ ks ＝ ↑ˢ[ β i , ϟ i ] ∧[ 𝒪 Σ⦅𝓓⦆ ] γ₁ (j ∷ js)
+       ※₁ : Σ ks′ ꞉ List B , γ₁ ks′ ＝ ↑ˢ[ β i , ϟ i ] ∧[ 𝒪 Σ[𝓓] ] γ₁ js
+          → ∃ ks ꞉ List B , γ₁ ks ＝ ↑ˢ[ β i , ϟ i ] ∧[ 𝒪 Σ[𝓓] ] γ₁ (j ∷ js)
        ※₁ (ks′ , q) = ∣ (k ∷ ks′) , ♣ ∣
         where
          μ : ↑ᵏ[ k ] ＝ ↑ˢ[ s , κˢ ]
          μ = to-subtype-＝ (holds-is-prop ∘ is-scott-open) (ap (λ - → ↑[ 𝓓 ] -) p)
 
-         ρ : ↑ᵏ[ k ] ＝ ↑ᵏ[ i ] ∧[ 𝒪 Σ⦅𝓓⦆ ] ↑ᵏ[ j ]
+         ρ : ↑ᵏ[ k ] ＝ ↑ᵏ[ i ] ∧[ 𝒪 Σ[𝓓] ] ↑ᵏ[ j ]
          ρ = ↑ᵏ[ k ]      ＝⟨ μ ⟩
              ↑ˢ[ s , κˢ ] ＝⟨ (principal-filter-reflects-joins (β i) (β j) s (ϟ i) (ϟ j) (φ , ψ)) ⟩
-             ↑ˢ[ β i , ϟ i ] ∧[ 𝒪 Σ⦅𝓓⦆ ] ↑ˢ[ β j , ϟ j ] ∎
+             ↑ˢ[ β i , ϟ i ] ∧[ 𝒪 Σ[𝓓] ] ↑ˢ[ β j , ϟ j ] ∎
 
-         Ⅰ = ap (λ - → - ∨[ 𝒪 Σ⦅𝓓⦆ ] γ₁ ks′) ρ
-         Ⅱ = ap (λ - → (↑ᵏ[ i ] ∧[ 𝒪 Σ⦅𝓓⦆ ] ↑ᵏ[ j ]) ∨[ 𝒪 Σ⦅𝓓⦆ ] -) q
-         Ⅲ = binary-distributivity (𝒪 Σ⦅𝓓⦆) ↑ᵏ[ i ] ↑ᵏ[ j ] (γ₁ js) ⁻¹
+         Ⅰ = ap (λ - → - ∨[ 𝒪 Σ[𝓓] ] γ₁ ks′) ρ
+         Ⅱ = ap (λ - → (↑ᵏ[ i ] ∧[ 𝒪 Σ[𝓓] ] ↑ᵏ[ j ]) ∨[ 𝒪 Σ[𝓓] ] -) q
+         Ⅲ = binary-distributivity (𝒪 Σ[𝓓]) ↑ᵏ[ i ] ↑ᵏ[ j ] (γ₁ js) ⁻¹
 
-         ♣ : γ₁ (k ∷ ks′) ＝ ↑ˢ[ β i , ϟ i ] ∧[ 𝒪 Σ⦅𝓓⦆ ] γ₁ (j ∷ js)
+         ♣ : γ₁ (k ∷ ks′) ＝ ↑ˢ[ β i , ϟ i ] ∧[ 𝒪 Σ[𝓓] ] γ₁ (j ∷ js)
          ♣ = γ₁ (k ∷ ks′)                                                    ＝⟨ refl ⟩
-             ↑ᵏ[ k ] ∨[ 𝒪 Σ⦅𝓓⦆ ] γ₁ ks′                                        ＝⟨ Ⅰ ⟩
-             (↑ᵏ[ i ] ∧[ 𝒪 Σ⦅𝓓⦆ ] ↑ᵏ[ j ]) ∨[ 𝒪 Σ⦅𝓓⦆ ] γ₁ ks′                    ＝⟨ Ⅱ ⟩
-             (↑ᵏ[ i ] ∧[ 𝒪 Σ⦅𝓓⦆ ] ↑ᵏ[ j ]) ∨[ 𝒪 Σ⦅𝓓⦆ ] (↑ᵏ[ i ] ∧[ 𝒪 Σ⦅𝓓⦆ ] γ₁ js) ＝⟨ Ⅲ ⟩
-             ↑ᵏ[ i ] ∧[ 𝒪 Σ⦅𝓓⦆ ] (↑ᵏ[ j ] ∨[ 𝒪 Σ⦅𝓓⦆ ] γ₁ js)                     ＝⟨ refl ⟩
-             ↑ᵏ[ i ] ∧[ 𝒪 Σ⦅𝓓⦆ ] γ₁ (j ∷ js)                                   ∎
+             ↑ᵏ[ k ] ∨[ 𝒪 Σ[𝓓] ] γ₁ ks′                                        ＝⟨ Ⅰ ⟩
+             (↑ᵏ[ i ] ∧[ 𝒪 Σ[𝓓] ] ↑ᵏ[ j ]) ∨[ 𝒪 Σ[𝓓] ] γ₁ ks′                    ＝⟨ Ⅱ ⟩
+             (↑ᵏ[ i ] ∧[ 𝒪 Σ[𝓓] ] ↑ᵏ[ j ]) ∨[ 𝒪 Σ[𝓓] ] (↑ᵏ[ i ] ∧[ 𝒪 Σ[𝓓] ] γ₁ js) ＝⟨ Ⅲ ⟩
+             ↑ᵏ[ i ] ∧[ 𝒪 Σ[𝓓] ] (↑ᵏ[ j ] ∨[ 𝒪 Σ[𝓓] ] γ₁ js)                     ＝⟨ refl ⟩
+             ↑ᵏ[ i ] ∧[ 𝒪 Σ[𝓓] ] γ₁ (j ∷ js)                                   ∎
 
    †₂ : ¬ ((β i ↑[ 𝓓 ] β j) holds)
-      → ∃ ks ꞉ List B , γ₁ ks ＝ ↑ˢ[ β i , ϟ i ] ∧[ 𝒪 Σ⦅𝓓⦆ ] γ₁ (j ∷ js)
+      → ∃ ks ꞉ List B , γ₁ ks ＝ ↑ˢ[ β i , ϟ i ] ∧[ 𝒪 Σ[𝓓] ] γ₁ (j ∷ js)
    †₂ ν = ∥∥-rec ∃-is-prop ‡₂ IH
     where
-     ‡₂ : Σ ks′ ꞉ List B , γ₁ ks′ ＝ ↑ˢ[ β i , ϟ i ] ∧[ 𝒪 Σ⦅𝓓⦆ ] γ₁ js
-        → ∃ ks ꞉ List B , γ₁ ks ＝ ↑ˢ[ β i , ϟ i ] ∧[ 𝒪 Σ⦅𝓓⦆ ] γ₁ (j ∷ js)
+     ‡₂ : Σ ks′ ꞉ List B , γ₁ ks′ ＝ ↑ˢ[ β i , ϟ i ] ∧[ 𝒪 Σ[𝓓] ] γ₁ js
+        → ∃ ks ꞉ List B , γ₁ ks ＝ ↑ˢ[ β i , ϟ i ] ∧[ 𝒪 Σ[𝓓] ] γ₁ (j ∷ js)
      ‡₂ (ks′ , p) = ∣ ks′ , ρ ∣
       where
-       ρ : γ₁ ks′ ＝  ↑ˢ[ β i , ϟ i ] ∧[ 𝒪 Σ⦅𝓓⦆ ] (γ₁ (j ∷ js))
+       ρ : γ₁ ks′ ＝  ↑ˢ[ β i , ϟ i ] ∧[ 𝒪 Σ[𝓓] ] (γ₁ (j ∷ js))
        ρ =
         γ₁ ks′                                                          ＝⟨ p    ⟩
-        ↑ᵏ[ i ] ∧[ 𝒪 Σ⦅𝓓⦆ ] γ₁ js                                         ＝⟨ Ⅰ    ⟩
-        𝟎[ 𝒪 Σ⦅𝓓⦆ ] ∨[ 𝒪 Σ⦅𝓓⦆ ] (↑ᵏ[ i ] ∧[ 𝒪 Σ⦅𝓓⦆ ] γ₁ js)                   ＝⟨ Ⅱ    ⟩
-        (↑ᵏ[ i ] ∧[ 𝒪 Σ⦅𝓓⦆ ] ↑ᵏ[ j ]) ∨[ 𝒪 Σ⦅𝓓⦆ ] (↑ᵏ[ i ] ∧[ 𝒪 Σ⦅𝓓⦆ ] γ₁ js) ＝⟨ Ⅲ    ⟩
-        ↑ᵏ[ i ] ∧[ 𝒪 Σ⦅𝓓⦆ ] (↑ᵏ[ j ] ∨[ 𝒪 Σ⦅𝓓⦆ ] γ₁ js)                     ＝⟨ refl ⟩
-        ↑ᵏ[ i ] ∧[ 𝒪 Σ⦅𝓓⦆ ] γ₁ (j ∷ js)                                   ∎
+        ↑ᵏ[ i ] ∧[ 𝒪 Σ[𝓓] ] γ₁ js                                         ＝⟨ Ⅰ    ⟩
+        𝟎[ 𝒪 Σ[𝓓] ] ∨[ 𝒪 Σ[𝓓] ] (↑ᵏ[ i ] ∧[ 𝒪 Σ[𝓓] ] γ₁ js)                   ＝⟨ Ⅱ    ⟩
+        (↑ᵏ[ i ] ∧[ 𝒪 Σ[𝓓] ] ↑ᵏ[ j ]) ∨[ 𝒪 Σ[𝓓] ] (↑ᵏ[ i ] ∧[ 𝒪 Σ[𝓓] ] γ₁ js) ＝⟨ Ⅲ    ⟩
+        ↑ᵏ[ i ] ∧[ 𝒪 Σ[𝓓] ] (↑ᵏ[ j ] ∨[ 𝒪 Σ[𝓓] ] γ₁ js)                     ＝⟨ refl ⟩
+        ↑ᵏ[ i ] ∧[ 𝒪 Σ[𝓓] ] γ₁ (j ∷ js)                                   ∎
          where
-          Ⅰ = 𝟎-right-unit-of-∨ (𝒪 Σ⦅𝓓⦆) (↑ᵏ[ i ] ∧[ 𝒪 Σ⦅𝓓⦆ ] γ₁ js) ⁻¹
+          Ⅰ = 𝟎-right-unit-of-∨ (𝒪 Σ[𝓓]) (↑ᵏ[ i ] ∧[ 𝒪 Σ[𝓓] ] γ₁ js) ⁻¹
           Ⅱ = ap
-               (λ - → - ∨[ 𝒪 Σ⦅𝓓⦆ ] (↑ᵏ[ i ] ∧[ 𝒪 Σ⦅𝓓⦆ ] γ₁ js))
+               (λ - → - ∨[ 𝒪 Σ[𝓓] ] (↑ᵏ[ i ] ∧[ 𝒪 Σ[𝓓] ] γ₁ js))
                (not-bounded-lemma (β i) (β j) (ϟ i) (ϟ j) ν ⁻¹ )
-          Ⅲ = binary-distributivity (𝒪 Σ⦅𝓓⦆) ↑ᵏ[ i ] ↑ᵏ[ j ] (γ₁ js) ⁻¹
+          Ⅲ = binary-distributivity (𝒪 Σ[𝓓]) ↑ᵏ[ i ] ↑ᵏ[ j ] (γ₁ js) ⁻¹
 
  γ-closure-under-∧ : (is js : List B)
-                   → ∃ ks ꞉ List B , γ₁ ks ＝ γ₁ is ∧[ 𝒪 Σ⦅𝓓⦆ ] γ₁ js
- γ-closure-under-∧ []       js = ∣ [] , (𝟎-left-annihilator-for-∧ (𝒪 Σ⦅𝓓⦆) (γ₁ js) ⁻¹) ∣
+                   → ∃ ks ꞉ List B , γ₁ ks ＝ γ₁ is ∧[ 𝒪 Σ[𝓓] ] γ₁ js
+ γ-closure-under-∧ []       js = ∣ [] , (𝟎-left-annihilator-for-∧ (𝒪 Σ[𝓓]) (γ₁ js) ⁻¹) ∣
  γ-closure-under-∧ (i ∷ is) js = ∥∥-rec₂ ∃-is-prop † η₀ ρ₀
   where
-   η₀ : ∃ ks₀ ꞉ List B , γ₁ ks₀ ＝ γ₁ is ∧[ 𝒪 Σ⦅𝓓⦆ ] γ₁ js
+   η₀ : ∃ ks₀ ꞉ List B , γ₁ ks₀ ＝ γ₁ is ∧[ 𝒪 Σ[𝓓] ] γ₁ js
    η₀ = γ-closure-under-∧ is js
 
-   ρ₀ : ∃ ks₁ ꞉ List B , γ₁ ks₁ ＝ ↑ˢ[ β i , ϟ i ] ∧[ 𝒪 Σ⦅𝓓⦆ ] γ₁ js
+   ρ₀ : ∃ ks₁ ꞉ List B , γ₁ ks₁ ＝ ↑ˢ[ β i , ϟ i ] ∧[ 𝒪 Σ[𝓓] ] γ₁ js
    ρ₀ = γ-closure-under-∧₁ i js
 
-   † : Σ ks₀ ꞉ List B , γ₁ ks₀ ＝ γ₁ is ∧[ 𝒪 Σ⦅𝓓⦆ ] γ₁ js
-     → Σ ks₁ ꞉ List B , γ₁ ks₁ ＝ ↑ˢ[ β i , ϟ i ] ∧[ 𝒪 Σ⦅𝓓⦆ ] γ₁ js
-     → ∃ ks ꞉ List B , γ₁ ks ＝ γ₁ (i ∷ is) ∧[ 𝒪 Σ⦅𝓓⦆ ] γ₁ js
+   † : Σ ks₀ ꞉ List B , γ₁ ks₀ ＝ γ₁ is ∧[ 𝒪 Σ[𝓓] ] γ₁ js
+     → Σ ks₁ ꞉ List B , γ₁ ks₁ ＝ ↑ˢ[ β i , ϟ i ] ∧[ 𝒪 Σ[𝓓] ] γ₁ js
+     → ∃ ks ꞉ List B , γ₁ ks ＝ γ₁ (i ∷ is) ∧[ 𝒪 Σ[𝓓] ] γ₁ js
    † (ks₀ , p₀) (ks₁ , p₁) = ∣ (ks₀ ++ ks₁) , ‡ ∣
     where
-     ‡ : γ₁ (ks₀ ++ ks₁) ＝ γ₁ (i ∷ is) ∧[ 𝒪 Σ⦅𝓓⦆ ] γ₁ js
+     ‡ : γ₁ (ks₀ ++ ks₁) ＝ γ₁ (i ∷ is) ∧[ 𝒪 Σ[𝓓] ] γ₁ js
      ‡ =
       γ₁ (ks₀ ++ ks₁)                                                     ＝⟨ Ⅰ ⟩
-      γ₁ ks₀ ∨[ 𝒪 Σ⦅𝓓⦆ ] γ₁ ks₁                                             ＝⟨ Ⅱ    ⟩
-      (γ₁ is ∧[ 𝒪 Σ⦅𝓓⦆ ] γ₁ js) ∨[ 𝒪 Σ⦅𝓓⦆ ] γ₁ ks₁                            ＝⟨ Ⅲ    ⟩
-      (γ₁ is ∧[ 𝒪 Σ⦅𝓓⦆ ] γ₁ js) ∨[ 𝒪 Σ⦅𝓓⦆ ] (↑ˢ[ β i , ϟ i ] ∧[ 𝒪 Σ⦅𝓓⦆ ] γ₁ js) ＝⟨ Ⅳ    ⟩
-      (γ₁ is ∨[ 𝒪 Σ⦅𝓓⦆ ] ↑ˢ[ β i , ϟ i ]) ∧[ 𝒪 Σ⦅𝓓⦆ ] γ₁ js                   ＝⟨ Ⅴ    ⟩
-      (↑ˢ[ β i , ϟ i ] ∨[ 𝒪 Σ⦅𝓓⦆ ] γ₁ is) ∧[ 𝒪 Σ⦅𝓓⦆ ] γ₁ js                   ＝⟨ refl ⟩
-      γ₁ (i ∷ is) ∧[ 𝒪 Σ⦅𝓓⦆ ] γ₁ js                                         ∎
+      γ₁ ks₀ ∨[ 𝒪 Σ[𝓓] ] γ₁ ks₁                                             ＝⟨ Ⅱ    ⟩
+      (γ₁ is ∧[ 𝒪 Σ[𝓓] ] γ₁ js) ∨[ 𝒪 Σ[𝓓] ] γ₁ ks₁                            ＝⟨ Ⅲ    ⟩
+      (γ₁ is ∧[ 𝒪 Σ[𝓓] ] γ₁ js) ∨[ 𝒪 Σ[𝓓] ] (↑ˢ[ β i , ϟ i ] ∧[ 𝒪 Σ[𝓓] ] γ₁ js) ＝⟨ Ⅳ    ⟩
+      (γ₁ is ∨[ 𝒪 Σ[𝓓] ] ↑ˢ[ β i , ϟ i ]) ∧[ 𝒪 Σ[𝓓] ] γ₁ js                   ＝⟨ Ⅴ    ⟩
+      (↑ˢ[ β i , ϟ i ] ∨[ 𝒪 Σ[𝓓] ] γ₁ is) ∧[ 𝒪 Σ[𝓓] ] γ₁ js                   ＝⟨ refl ⟩
+      γ₁ (i ∷ is) ∧[ 𝒪 Σ[𝓓] ] γ₁ js                                         ∎
        where
         Ⅰ = γ-maps-∨-to-++ ks₀ ks₁
-        Ⅱ = ap (λ - → - ∨[ 𝒪 Σ⦅𝓓⦆ ] γ₁ ks₁) p₀
-        Ⅲ = ap (λ - → (γ₁ is ∧[ 𝒪 Σ⦅𝓓⦆ ] γ₁ js) ∨[ 𝒪 Σ⦅𝓓⦆ ] -) p₁
-        Ⅳ = binary-distributivity-right (𝒪 Σ⦅𝓓⦆) ⁻¹
+        Ⅱ = ap (λ - → - ∨[ 𝒪 Σ[𝓓] ] γ₁ ks₁) p₀
+        Ⅲ = ap (λ - → (γ₁ is ∧[ 𝒪 Σ[𝓓] ] γ₁ js) ∨[ 𝒪 Σ[𝓓] ] -) p₁
+        Ⅳ = binary-distributivity-right (𝒪 Σ[𝓓]) ⁻¹
         Ⅴ = ap
-             (λ - → - ∧[ 𝒪 Σ⦅𝓓⦆ ] γ₁ js)
-             (∨[ 𝒪 Σ⦅𝓓⦆ ]-is-commutative (γ₁ is) ↑ᵏ[ i ])
+             (λ - → - ∧[ 𝒪 Σ[𝓓] ] γ₁ js)
+             (∨[ 𝒪 Σ[𝓓] ]-is-commutative (γ₁ is) ↑ᵏ[ i ])
 
 \end{code}
 
 \begin{code}
 
- basis-for-Σ⦅𝓓⦆ : Fam 𝓤 ⟨ 𝒪 Σ⦅𝓓⦆ ⟩
- basis-for-Σ⦅𝓓⦆ = List B , γ
+ basis-for-Σ[𝓓] : Fam 𝓤 ⟨ 𝒪 Σ[𝓓] ⟩
+ basis-for-Σ[𝓓] = List B , γ
 
  open PropertiesAlgebraic 𝓓 𝕒
 
- Σ⦅𝓓⦆-dir-basis-forᴰ : directed-basis-forᴰ (𝒪 Σ⦅𝓓⦆) basis-for-Σ⦅𝓓⦆
- Σ⦅𝓓⦆-dir-basis-forᴰ U@(_ , so) = (D , δ) , † , 𝒹
+ Σ[𝓓]-dir-basis-forᴰ : directed-basis-forᴰ (𝒪 Σ[𝓓]) basis-for-Σ[𝓓]
+ Σ[𝓓]-dir-basis-forᴰ U@(_ , so) = (D , δ) , † , 𝒹
    where
-    open Joins (λ x y → x ≤[ poset-of (𝒪 Σ⦅𝓓⦆) ] y)
+    open Joins (λ x y → x ≤[ poset-of (𝒪 Σ[𝓓]) ] y)
 
     Uᴿ : 𝒪ₛᴿ
     Uᴿ = to-𝒪ₛᴿ U
@@ -640,21 +640,21 @@ We now proceed to construct the basis for this locale.
        ‡₁ (k , q , φ) = pred-is-upwards-closed (β k) (β b) (r k q) φ
 
     †₂ : ((U′ , _) : upper-bound ⁅ γ d ∣ d ε (D , δ) ⁆)
-       → (U ≤[ poset-of (𝒪 Σ⦅𝓓⦆) ] U′) holds
+       → (U ≤[ poset-of (𝒪 Σ[𝓓]) ] U′) holds
     †₂ (U′ , ψ) k p = ‡₂ k (reflexivity 𝓓 (β k))
      where
       r : ↑ˢ[ β k , ϟ k ] ＝ γ (k ∷ [])
       r =
        ↑ˢ[ β k , ϟ k ]                         ＝⟨ Ⅰ ⟩
-       ↑ˢ[ β k , ϟ k ] ∨[ 𝒪 Σ⦅𝓓⦆ ] 𝟎[ 𝒪 Σ⦅𝓓⦆ ]     ＝⟨ Ⅱ ⟩
+       ↑ˢ[ β k , ϟ k ] ∨[ 𝒪 Σ[𝓓] ] 𝟎[ 𝒪 Σ[𝓓] ]     ＝⟨ Ⅱ ⟩
        γ (k ∷ [])                              ∎
         where
-         Ⅰ = 𝟎-left-unit-of-∨ (𝒪 Σ⦅𝓓⦆) ↑ˢ[ β k , ϟ k ] ⁻¹
+         Ⅰ = 𝟎-left-unit-of-∨ (𝒪 Σ[𝓓]) ↑ˢ[ β k , ϟ k ] ⁻¹
          Ⅱ = γ-equal-to-γ₁ (k ∷ []) ⁻¹
 
-      ‡₂ : (↑ˢ[ β k , ϟ k ] ≤[ poset-of (𝒪 Σ⦅𝓓⦆) ] U′) holds
+      ‡₂ : (↑ˢ[ β k , ϟ k ] ≤[ poset-of (𝒪 Σ[𝓓]) ] U′) holds
       ‡₂ = transport
-            (λ - → (- ≤[ poset-of (𝒪 Σ⦅𝓓⦆) ] U′) holds)
+            (λ - → (- ≤[ poset-of (𝒪 Σ[𝓓]) ] U′) holds)
             (r ⁻¹)
             (ψ ((k ∷ []) , λ { _ in-head → p }))
 
@@ -663,57 +663,57 @@ We now proceed to construct the basis for this locale.
 
     𝒹↑ : ((is , _) (js , _) : D)
        → ∃ (ks , _) ꞉ D ,
-            (γ is ≤[ poset-of (𝒪 Σ⦅𝓓⦆) ] γ ks) holds
-          × (γ js ≤[ poset-of (𝒪 Σ⦅𝓓⦆) ] γ ks) holds
+            (γ is ≤[ poset-of (𝒪 Σ[𝓓]) ] γ ks) holds
+          × (γ js ≤[ poset-of (𝒪 Σ[𝓓]) ] γ ks) holds
     𝒹↑ (is , 𝕚) (js , 𝕛)= ∣ ((is ++ js) , ♣) , γ-lemma₁ is js , γ-lemma₂ is js ∣
      where
       ♣ : (b : B) → member b (is ++ js) → 𝔘 (β b) holds
       ♣ b q = cases (𝕚 b) (𝕛 b) (member-in-++ is js b q)
 
-    𝒹 : is-directed (𝒪 Σ⦅𝓓⦆) (⁅ γ d ∣ d ε (D , δ) ⁆) holds
+    𝒹 : is-directed (𝒪 Σ[𝓓]) (⁅ γ d ∣ d ε (D , δ) ⁆) holds
     𝒹 = ∣ [] , (λ _ ()) ∣ , 𝒹↑
 
- σᴰ : spectralᴰ Σ⦅𝓓⦆
+ σᴰ : spectralᴰ Σ[𝓓]
  σᴰ = pr₁ Σ-assoc (𝒷 , (γ-gives-compact-opens , τ , μ))
   where
-   𝒷 : directed-basisᴰ (𝒪 Σ⦅𝓓⦆)
-   𝒷 = basis-for-Σ⦅𝓓⦆ , Σ⦅𝓓⦆-dir-basis-forᴰ
+   𝒷 : directed-basisᴰ (𝒪 Σ[𝓓])
+   𝒷 = basis-for-Σ[𝓓] , Σ[𝓓]-dir-basis-forᴰ
 
-   τ : contains-top (𝒪 Σ⦅𝓓⦆) basis-for-Σ⦅𝓓⦆ holds
+   τ : contains-top (𝒪 Σ[𝓓]) basis-for-Σ[𝓓] holds
    τ = ∥∥-rec
-        (holds-is-prop (contains-top (𝒪 Σ⦅𝓓⦆) basis-for-Σ⦅𝓓⦆))
+        (holds-is-prop (contains-top (𝒪 Σ[𝓓]) basis-for-Σ[𝓓]))
         †
-        (compact-opens-are-basic Σ⦅𝓓⦆ 𝒷 𝟏[ 𝒪 Σ⦅𝓓⦆ ] ⊤-is-compact)
+        (compact-opens-are-basic Σ[𝓓] 𝒷 𝟏[ 𝒪 Σ[𝓓] ] ⊤-is-compact)
     where
-     † : Σ is ꞉ List B , (γ is) ＝ 𝟏[ 𝒪 Σ⦅𝓓⦆ ]
-       → contains-top (𝒪 Σ⦅𝓓⦆) basis-for-Σ⦅𝓓⦆ holds
+     † : Σ is ꞉ List B , (γ is) ＝ 𝟏[ 𝒪 Σ[𝓓] ]
+       → contains-top (𝒪 Σ[𝓓]) basis-for-Σ[𝓓] holds
      † (is , p) =
-      ∣ is , transport (λ - → is-top (𝒪 Σ⦅𝓓⦆) - holds) (p ⁻¹) (𝟏-is-top (𝒪 Σ⦅𝓓⦆)) ∣
+      ∣ is , transport (λ - → is-top (𝒪 Σ[𝓓]) - holds) (p ⁻¹) (𝟏-is-top (𝒪 Σ[𝓓])) ∣
 
-   μ : closed-under-binary-meets (𝒪 Σ⦅𝓓⦆) basis-for-Σ⦅𝓓⦆ holds
+   μ : closed-under-binary-meets (𝒪 Σ[𝓓]) basis-for-Σ[𝓓] holds
    μ is js = ∥∥-rec ∃-is-prop † (γ-closure-under-∧ is js)
     where
-     open Meets (λ x y → x ≤[ poset-of (𝒪 Σ⦅𝓓⦆) ] y)
+     open Meets (λ x y → x ≤[ poset-of (𝒪 Σ[𝓓]) ] y)
 
-     † : (Σ ks ꞉ List B , γ₁ ks ＝ γ₁ is ∧[ 𝒪 Σ⦅𝓓⦆ ] γ₁ js)
+     † : (Σ ks ꞉ List B , γ₁ ks ＝ γ₁ is ∧[ 𝒪 Σ[𝓓] ] γ₁ js)
        → ∃ ks ꞉ List B , ((γ ks) is-glb-of (γ is , γ js)) holds
      † (ks , p) =
       ∣ ks , transport (λ - → (- is-glb-of (γ is , γ js)) holds) q ‡ ∣
        where
-        q : γ is ∧[ 𝒪 Σ⦅𝓓⦆ ] γ js ＝ γ ks
-        q = γ  is ∧[ 𝒪 Σ⦅𝓓⦆ ] γ  js      ＝⟨ Ⅰ ⟩
-            γ₁ is ∧[ 𝒪 Σ⦅𝓓⦆ ] γ  js      ＝⟨ Ⅱ ⟩
-            γ₁ is ∧[ 𝒪 Σ⦅𝓓⦆ ] γ₁ js      ＝⟨ Ⅲ ⟩
+        q : γ is ∧[ 𝒪 Σ[𝓓] ] γ js ＝ γ ks
+        q = γ  is ∧[ 𝒪 Σ[𝓓] ] γ  js      ＝⟨ Ⅰ ⟩
+            γ₁ is ∧[ 𝒪 Σ[𝓓] ] γ  js      ＝⟨ Ⅱ ⟩
+            γ₁ is ∧[ 𝒪 Σ[𝓓] ] γ₁ js      ＝⟨ Ⅲ ⟩
             γ₁ ks                      ＝⟨ Ⅳ ⟩
             γ ks                       ∎
              where
-              Ⅰ = ap (λ - → -     ∧[ 𝒪 Σ⦅𝓓⦆ ] γ js) (γ-equal-to-γ₁ is)
-              Ⅱ = ap (λ - → γ₁ is ∧[ 𝒪 Σ⦅𝓓⦆ ] -   ) (γ-equal-to-γ₁ js)
+              Ⅰ = ap (λ - → -     ∧[ 𝒪 Σ[𝓓] ] γ js) (γ-equal-to-γ₁ is)
+              Ⅱ = ap (λ - → γ₁ is ∧[ 𝒪 Σ[𝓓] ] -   ) (γ-equal-to-γ₁ js)
               Ⅲ = p ⁻¹
               Ⅳ = γ-equal-to-γ₁ ks ⁻¹
 
-        ‡ : ((γ is ∧[ 𝒪 Σ⦅𝓓⦆ ] γ js) is-glb-of (γ is , γ js)) holds
-        ‡ = (∧[ 𝒪 Σ⦅𝓓⦆ ]-lower₁ (γ is) (γ js) , ∧[ 𝒪 Σ⦅𝓓⦆ ]-lower₂ (γ is) (γ js))
-          , λ { (l , φ , ψ) → ∧[ 𝒪 Σ⦅𝓓⦆ ]-greatest (γ is) (γ js) l φ ψ }
+        ‡ : ((γ is ∧[ 𝒪 Σ[𝓓] ] γ js) is-glb-of (γ is , γ js)) holds
+        ‡ = (∧[ 𝒪 Σ[𝓓] ]-lower₁ (γ is) (γ js) , ∧[ 𝒪 Σ[𝓓] ]-lower₂ (γ is) (γ js))
+          , λ { (l , φ , ψ) → ∧[ 𝒪 Σ[𝓓] ]-greatest (γ is) (γ js) l φ ψ }
 
 \end{code}
