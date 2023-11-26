@@ -52,6 +52,7 @@ open import Locales.Frame                                    pt fe
  hiding (∅)
 open import Locales.Compactness                              pt fe
  hiding (is-compact)
+open import Locales.Spectrality.SpectralLocale               pt fe
 
 open import Locales.SmallBasis pt fe sr
 
@@ -775,5 +776,39 @@ combined as follows.
         ‡ : ((𝜸 is ∧[ 𝒪 Σ[𝓓] ] 𝜸 js) is-glb-of (𝜸 is , 𝜸 js)) holds
         ‡ = (∧[ 𝒪 Σ[𝓓] ]-lower₁ (𝜸 is) (𝜸 js) , ∧[ 𝒪 Σ[𝓓] ]-lower₂ (𝜸 is) (𝜸 js))
           , λ { (l , φ , ψ) → ∧[ 𝒪 Σ[𝓓] ]-greatest (𝜸 is) (𝜸 js) l φ ψ }
+
+\end{code}
+
+\begin{code}
+
+module SpectralScottLocaleConstruction₂
+        (𝓓    : DCPO {𝓤 ⁺} {𝓤})
+        (ua   : Univalence)
+        (hl   : has-least (underlying-order 𝓓))
+        (hucb : has-unspecified-small-compact-basis 𝓓)
+        (dc   : decidability-condition 𝓓)
+        (bc   : bounded-complete 𝓓 holds)
+        (pe   : propext 𝓤) where
+
+ hscb : has-specified-small-compact-basis 𝓓
+ hscb = specified-small-compact-basis-has-split-support ua sr 𝓓 hucb
+
+ pe′ : propext 𝓤
+ pe′ = univalence-gives-propext (ua 𝓤)
+
+ open SpectralScottLocaleConstruction 𝓓 hl hscb dc bc pe
+
+ scott-locale-spectralᴰ : spectralᴰ Σ[𝓓]
+ scott-locale-spectralᴰ = σᴰ
+
+ scott-locale-is-spectral : is-spectral Σ[𝓓] holds
+ scott-locale-is-spectral = spectralᴰ-gives-spectrality Σ[𝓓] σᴰ
+
+ scott-locale-has-small-𝒦 : has-small-𝒦 Σ[𝓓]
+ scott-locale-has-small-𝒦 = spectralᴰ-implies-small-𝒦 Σ[𝓓] σᴰ
+
+ scott-locale-has-spectral-basis : is-spectral-with-small-basis ua Σ[𝓓] holds
+ scott-locale-has-spectral-basis =
+  scott-locale-is-spectral , scott-locale-has-small-𝒦
 
 \end{code}
