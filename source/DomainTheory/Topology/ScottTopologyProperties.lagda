@@ -27,8 +27,6 @@ open Conjunction
 open import UF.Size
 open import UF.Equiv
 
-open PowersetOperations
-
 open import UF.Powerset-MultiUniverse
 open import Slice.Family
 
@@ -97,7 +95,7 @@ We can now record this as a logical equivalence.
 \begin{code}
 
  principal-filter-scott-open-iff-compact :
-  (x : ⟨ 𝓓 ⟩) → is-scott-open (↑[ 𝓓 ] x) holds ⇔ is-compact 𝓓 x
+  (x : ⟨ 𝓓 ⟩) → is-scott-open (↑[ 𝓓 ] x) holds ↔ is-compact 𝓓 x
  principal-filter-scott-open-iff-compact x = Ⅰ , Ⅱ
   where
    Ⅰ = principal-filter-scott-open-implies-compact x
@@ -178,7 +176,7 @@ module PropertiesAlgebraic (𝓓 : DCPO {𝓤} {𝓥})
  characterization-of-scott-opens : (U : 𝓟 {𝓥} ⟨ 𝓓 ⟩)
                                  → (is-scott-open U ⇒
                                     (Ɐ x ꞉ ⟨ 𝓓 ⟩ ,
-                                      U x ↔ join-of-compact-opens U x)) holds
+                                      U x ⇔ join-of-compact-opens U x)) holds
  characterization-of-scott-opens U ς x = ⦅⇒⦆ , ⦅⇐⦆
   where
    ⦅⇒⦆ = characterization-of-scott-opens₁ U ς x
