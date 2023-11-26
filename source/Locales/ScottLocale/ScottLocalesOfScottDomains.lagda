@@ -532,32 +532,25 @@ We now construct the basis for this locale.
                (not-bounded-lemma (β i) (β j) (ϟ i) (ϟ j) ν ⁻¹ )
           Ⅲ = binary-distributivity (𝒪 𝒮𝓓) ↑ᵏ[ i ] ↑ᵏ[ j ] (γ₁ js) ⁻¹
 
- -- γ-closure-under-∧ : (is js : List B)
- --                   → ∃ ks ꞉ List B , γ₁ ks ＝ γ₁ is ∧[ 𝒪 𝒮𝓓 ] γ₁ js
- -- γ-closure-under-∧    []       js       = ∣ [] , † ∣
- --                                           where
- --                                            † = 𝟎-left-annihilator-for-∧ (𝒪 𝒮𝓓) (γ₁ js) ⁻¹
- -- γ-closure-under-∧ is@(_ ∷ _)  []       = ∣ [] , † ∣
- --                                           where
- --                                            † = 𝟎-right-annihilator-for-∧ (𝒪 𝒮𝓓) (γ₁ is) ⁻¹
- -- γ-closure-under-∧    (i ∷ is) (j ∷ js) = ∥∥-rec ∃-is-prop † IH
- --  where
- --   open Meets (λ a b → a ⊑⟨ 𝓓 ⟩ₚ b)
+ γ-closure-under-∧ : (is js : List B)
+                   → ∃ ks ꞉ List B , γ₁ ks ＝ γ₁ is ∧[ 𝒪 𝒮𝓓 ] γ₁ js
+ γ-closure-under-∧ []       js = ∣ [] , (𝟎-left-annihilator-for-∧ (𝒪 𝒮𝓓) (γ₁ js) ⁻¹) ∣
+ γ-closure-under-∧ (i ∷ is) js = {!!}
+  where
+   ρ : ∃ ks ꞉ List B , γ₁ ks ＝ γ₁ is ∧[ 𝒪 𝒮𝓓 ] γ₁ js
+   ρ = γ-closure-under-∧ is js
 
- --   IH : ∃ ks ꞉ List B , γ₁ ks ＝ γ₁ is ∧[ 𝒪 𝒮𝓓 ] γ₁ js
- --   IH = γ-closure-under-∧ is js
+   η : ∃ ks ꞉ List B , γ₁ ks ＝ ↑ˢ[ β i , ϟ i ] ∧[ 𝒪 𝒮𝓓 ] γ₁ js
+   η = γ-closure-under-∧₁ i js
 
- --   † : Σ ks′ ꞉ List B , γ₁ ks′ ＝ γ₁ is ∧[ 𝒪 𝒮𝓓 ] γ₁ js
- --     → ∃ ks ꞉ List B , γ₁ ks ＝ γ₁ (i ∷ is) ∧[ 𝒪 𝒮𝓓 ] γ₁ (j ∷ js)
- --   † (ks′ , p) = cases †₁ †₂ (dc (β i) (β j))
- --    where
- --     †₁ : (β i) ↑[ 𝓓 ] (β j) holds
- --        → ∃ ks ꞉ List B , γ₁ ks ＝ (γ₁ (i ∷ is)) ∧[ 𝒪 𝒮𝓓 ] (γ₁ (j ∷ js))
- --     †₁ υ = {!!}
+  -- where
+  --  open Meets (λ a b → a ⊑⟨ 𝓓 ⟩ₚ b)
 
- --     †₂ : ¬ ((β i ↑[ 𝓓 ] β j) holds)
- --        → ∃ ks ꞉ List B , γ₁ ks ＝ (γ₁ (i ∷ is)) ∧[ 𝒪 𝒮𝓓 ] (γ₁ (j ∷ js))
- --     †₂ = {!!}
+  --  η : {!!}
+  --  η = {!γ-closure-under-∧₀ i (j ∷ js)!}
+
+  --  IH : ∃ ks ꞉ List B , γ₁ ks ＝ γ₁ is ∧[ 𝒪 𝒮𝓓 ] γ₁ js
+  --  IH = γ-closure-under-∧ is js
 
 \end{code}
 
