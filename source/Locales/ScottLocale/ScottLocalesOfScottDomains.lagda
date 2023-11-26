@@ -254,8 +254,7 @@ The basis is the family `(List B , 𝜸₀)`, where `𝜸₀` is the following f
                 in
                  ∥∥-rec ∃-is-prop ‡ IH
 
- 𝜸₀-gives-scott-opens : (ks : List B)
-                              → is-scott-open (𝜸₀ ks) holds
+ 𝜸₀-gives-scott-opens : (ks : List B) → is-scott-open (𝜸₀ ks) holds
  𝜸₀-gives-scott-opens ks = ⦅𝟏⦆ , ⦅𝟐⦆
   where
    ⦅𝟏⦆ = 𝜸₀-is-upwards-closed ks
@@ -449,14 +448,15 @@ then it is compact.
 
 \begin{code}
 
- principal-filter-reflects-joins : (c d s : ⟨ 𝓓 ⟩∙)
-                                 → (κᶜ : is-compact 𝓓 c)
-                                 → (κᵈ : is-compact 𝓓 d)
-                                 → (σ : is-sup (underlying-order 𝓓) s (⁅ c , d ⁆ [_]))
-                                 → let
-                                    κˢ = sup-is-compact c d s κᶜ κᵈ σ
-                                   in
-                                    ↑ˢ[ s , κˢ ] ＝ ↑ˢ[ c , κᶜ ] ∧[ 𝒪 Σ[𝓓] ] ↑ˢ[ d , κᵈ ]
+ principal-filter-reflects-joins
+  : (c d s : ⟨ 𝓓 ⟩∙)
+  → (κᶜ : is-compact 𝓓 c)
+  → (κᵈ : is-compact 𝓓 d)
+  → (σ : is-sup (underlying-order 𝓓) s (⁅ c , d ⁆ [_]))
+  → let
+     κˢ = sup-is-compact c d s κᶜ κᵈ σ
+    in
+     ↑ˢ[ s , κˢ ] ＝ ↑ˢ[ c , κᶜ ] ∧[ 𝒪 Σ[𝓓] ] ↑ˢ[ d , κᵈ ]
  principal-filter-reflects-joins c d s κᶜ κᵈ σ =
   ≤-is-antisymmetric (poset-of (𝒪 Σ[𝓓])) Ⅰ Ⅱ
    where
@@ -512,7 +512,9 @@ closed under binary meets.
 
  𝜸-closure-under-∧₁ : (i : B) (is : List B)
                     → ∃ ks ꞉ List B , 𝜸₁ ks ＝ ↑ᵏ[ i ] ∧[ 𝒪 Σ[𝓓] ] 𝜸₁ is
- 𝜸-closure-under-∧₁ i [] = ∣ [] , (𝟎-right-annihilator-for-∧ (𝒪 Σ[𝓓]) ↑ᵏ[ i ] ⁻¹) ∣
+ 𝜸-closure-under-∧₁ i []       = let
+                                  † = 𝟎-right-annihilator-for-∧ (𝒪 Σ[𝓓]) ↑ᵏ[ i ]
+                                 in ∣ [] , († ⁻¹) ∣
  𝜸-closure-under-∧₁ i (j ∷ js) = cases †₁ †₂ (dc (β i) (β j))
   where
    IH : ∃ ks′ ꞉ List B , 𝜸₁ ks′ ＝ ↑ᵏ[ i ] ∧[ 𝒪 Σ[𝓓] ] 𝜸₁ js
@@ -548,12 +550,14 @@ closed under binary meets.
        ※₁ (ks′ , q) = ∣ (k ∷ ks′) , ♣ ∣
         where
          μ : ↑ᵏ[ k ] ＝ ↑ˢ[ s , κˢ ]
-         μ = to-subtype-＝ (holds-is-prop ∘ is-scott-open) (ap (λ - → ↑[ 𝓓 ] -) p)
+         μ =
+          to-subtype-＝ (holds-is-prop ∘ is-scott-open) (ap (λ - → ↑[ 𝓓 ] -) p)
+
+         ζ : ↑ˢ[ s , κˢ ] ＝ ↑ᵏ[ i ] ∧[ 𝒪 Σ[𝓓] ] ↑ᵏ[ j ]
+         ζ = principal-filter-reflects-joins (β i) (β j) s (ϟ i) (ϟ j) (φ , ψ)
 
          ρ : ↑ᵏ[ k ] ＝ ↑ᵏ[ i ] ∧[ 𝒪 Σ[𝓓] ] ↑ᵏ[ j ]
-         ρ = ↑ᵏ[ k ]      ＝⟨ μ ⟩
-             ↑ˢ[ s , κˢ ] ＝⟨ (principal-filter-reflects-joins (β i) (β j) s (ϟ i) (ϟ j) (φ , ψ)) ⟩
-             ↑ᵏ[ i ] ∧[ 𝒪 Σ[𝓓] ] ↑ᵏ[ j ] ∎
+         ρ = ↑ᵏ[ k ] ＝⟨ μ ⟩ ↑ˢ[ s , κˢ ] ＝⟨ ζ ⟩ ↑ᵏ[ i ] ∧[ 𝒪 Σ[𝓓] ] ↑ᵏ[ j ] ∎
 
          Ⅰ = ap (λ - → - ∨[ 𝒪 Σ[𝓓] ] 𝜸₁ ks′) ρ
          Ⅱ = ap (λ - → (↑ᵏ[ i ] ∧[ 𝒪 Σ[𝓓] ] ↑ᵏ[ j ]) ∨[ 𝒪 Σ[𝓓] ] -) q
@@ -574,7 +578,7 @@ closed under binary meets.
            ↑ᵏ[ i ] ∧[ 𝒪 Σ[𝓓] ] 𝜸₁ (j ∷ js)
              ∎
 
-   †₂ : ¬ ((β i ↑[ 𝓓 ] β j) holds)
+   †₂ : (β i ↑[ 𝓓 ] β j ⇒ ⊥) holds
       → ∃ ks ꞉ List B , 𝜸₁ ks ＝ ↑ᵏ[ i ] ∧[ 𝒪 Σ[𝓓] ] 𝜸₁ (j ∷ js)
    †₂ ν = ∥∥-rec ∃-is-prop ‡₂ IH
     where
@@ -713,15 +717,13 @@ This forms a directed basis.
     † = †₁ , †₂
 
     𝒹↑ : ((is , _) (js , _) : D)
-       → ∃ (ks , _) ꞉ D ,
-            (𝜸 is ≤[ poset-of (𝒪 Σ[𝓓]) ] 𝜸 ks) holds
-          × (𝜸 js ≤[ poset-of (𝒪 Σ[𝓓]) ] 𝜸 ks) holds
+       → ∃ (ks , _) ꞉ D , (𝜸 is ⊆ₖ 𝜸 ks) holds × (𝜸 js ⊆ₖ 𝜸 ks) holds
     𝒹↑ (is , 𝕚) (js , 𝕛)= ∣ ((is ++ js) , ♣) , 𝜸-lemma₁ is js , 𝜸-lemma₂ is js ∣
      where
       ♣ : (b : B) → member b (is ++ js) → 𝔘 (β b) holds
       ♣ b q = cases (𝕚 b) (𝕛 b) (member-in-++ is js b q)
 
-    𝒹 : is-directed (𝒪 Σ[𝓓]) (⁅ 𝜸 d ∣ d ε (D , δ) ⁆) holds
+    𝒹 : is-directed (𝒪 Σ[𝓓]) ⁅ 𝜸 d ∣ d ε (D , δ) ⁆ holds
     𝒹 = ∣ [] , (λ _ ()) ∣ , 𝒹↑
 
 \end{code}
@@ -732,7 +734,7 @@ combined as follows.
 \begin{code}
 
  σᴰ : spectralᴰ Σ[𝓓]
- σᴰ = pr₁ Σ-assoc (𝒷 , (𝜸-gives-compact-opens , τ , μ))
+ σᴰ = pr₁ Σ-assoc (𝒷 , 𝜸-gives-compact-opens , τ , μ)
   where
    𝒷 : directed-basisᴰ (𝒪 Σ[𝓓])
    𝒷 = basis-for-Σ[𝓓] , Σ[𝓓]-dir-basis-forᴰ
@@ -762,8 +764,8 @@ combined as follows.
         q = 𝜸  is ∧[ 𝒪 Σ[𝓓] ] 𝜸  js      ＝⟨ Ⅰ ⟩
             𝜸₁ is ∧[ 𝒪 Σ[𝓓] ] 𝜸  js      ＝⟨ Ⅱ ⟩
             𝜸₁ is ∧[ 𝒪 Σ[𝓓] ] 𝜸₁ js      ＝⟨ Ⅲ ⟩
-            𝜸₁ ks                      ＝⟨ Ⅳ ⟩
-            𝜸 ks                       ∎
+            𝜸₁ ks                        ＝⟨ Ⅳ ⟩
+            𝜸 ks                         ∎
              where
               Ⅰ = ap (λ - → -     ∧[ 𝒪 Σ[𝓓] ] 𝜸 js) (𝜸-equal-to-𝜸₁ is)
               Ⅱ = ap (λ - → 𝜸₁ is ∧[ 𝒪 Σ[𝓓] ] -   ) (𝜸-equal-to-𝜸₁ js)
