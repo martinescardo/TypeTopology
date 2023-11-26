@@ -206,7 +206,7 @@ The basis is the family `(List B , 𝜸₀)`, where `𝜸₀` is the following f
 
 \begin{code}
 
- 𝜸₀ : List B → 𝓟 {𝓤} {𝓤 ⁺} ⟨ 𝓓 ⟩∙
+ 𝜸₀ : List B → 𝓟 {𝓤} ⟨ 𝓓 ⟩∙
  𝜸₀ = foldr _∪_ ∅ ∘ map (principal-filter 𝓓 ∘ β)
 
  𝜸₀-is-upwards-closed : (ks : List B)
