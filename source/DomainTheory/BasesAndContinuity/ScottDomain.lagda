@@ -18,8 +18,6 @@ open import UF.Logic
 open import UF.PropTrunc
 open import UF.SubtypeClassifier
 open import UF.Subsingletons
--- open import UF.Subsingletons-FunExt
--- open import UF.Powerset-MultiUniverse
 
 module DomainTheory.BasesAndContinuity.ScottDomain
         (pt : propositional-truncations-exist)
