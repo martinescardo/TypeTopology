@@ -44,9 +44,9 @@ open import DomainTheory.Topology.ScottTopologyProperties    pt fe 𝓤
 open import DomainTheory.BasesAndContinuity.Continuity       pt fe 𝓤
 open import DomainTheory.BasesAndContinuity.Bases            pt fe 𝓤
 open import DomainTheory.Basics.WayBelow                     pt fe 𝓤
-open import Locales.Frame                                    pt fe
 open import Locales.ScottLocale.ScottLocalesOfAlgebraicDcpos pt fe 𝓤
 open import Locales.ScottLocale.Definition                   pt fe 𝓤
+open import Locales.Frame                                    pt fe
 
 open Locale
 
