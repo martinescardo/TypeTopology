@@ -32,25 +32,23 @@ extensionality.
 
 module Locales.ScottLocale.Properties (pt : propositional-truncations-exist)
                                       (fe : Fun-Ext)
-                                      (𝓤  : Universe)
-                                      where
-
-open import Locales.Frame                                    pt fe
-open import Locales.ScottLocale.ScottLocalesOfAlgebraicDcpos pt fe 𝓤
-open import Locales.ScottLocale.Definition                   pt fe 𝓤
-
-open Locale
+                                      (𝓤  : Universe) where
 
 open import DomainTheory.Basics.Dcpo                         pt fe 𝓤
  renaming (⟨_⟩ to ⟨_⟩∙)
  hiding   (is-directed)
 open import DomainTheory.Basics.Pointed                      pt fe 𝓤
  renaming (⊥ to ⊥d)
-open import DomainTheory.Topology.ScottTopology        pt fe 𝓤
-open import DomainTheory.Topology.ScottTopologyProperties pt fe 𝓤
-open import DomainTheory.BasesAndContinuity.Continuity pt fe 𝓤
-open import DomainTheory.BasesAndContinuity.Bases      pt fe 𝓤
-open import DomainTheory.Basics.WayBelow               pt fe 𝓤
+open import DomainTheory.Topology.ScottTopology              pt fe 𝓤
+open import DomainTheory.Topology.ScottTopologyProperties    pt fe 𝓤
+open import DomainTheory.BasesAndContinuity.Continuity       pt fe 𝓤
+open import DomainTheory.BasesAndContinuity.Bases            pt fe 𝓤
+open import DomainTheory.Basics.WayBelow                     pt fe 𝓤
+open import Locales.Frame                                    pt fe
+open import Locales.ScottLocale.ScottLocalesOfAlgebraicDcpos pt fe 𝓤
+open import Locales.ScottLocale.Definition                   pt fe 𝓤
+
+open Locale
 
 \end{code}
 
