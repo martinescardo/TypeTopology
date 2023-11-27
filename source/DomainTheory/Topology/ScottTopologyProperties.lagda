@@ -173,10 +173,9 @@ module PropertiesAlgebraic (𝓓 : DCPO {𝓤} {𝓥})
 
 \begin{code}
 
- characterization-of-scott-opens : (U : 𝓟 {𝓥} ⟨ 𝓓 ⟩)
-                                 → (is-scott-open U ⇒
-                                    (Ɐ x ꞉ ⟨ 𝓓 ⟩ ,
-                                      U x ⇔ join-of-compact-opens U x)) holds
+ characterization-of-scott-opens
+  : (U : 𝓟 {𝓥} ⟨ 𝓓 ⟩)
+  → (is-scott-open U ⇒ (Ɐ x ꞉ ⟨ 𝓓 ⟩ , U x ⇔ join-of-compact-opens U x)) holds
  characterization-of-scott-opens U ς x = ⦅⇒⦆ , ⦅⇐⦆
   where
    ⦅⇒⦆ = characterization-of-scott-opens₁ U ς x
