@@ -53,13 +53,10 @@ open import Locales.Frame                                    pt fe
 open import Locales.Compactness                              pt fe
  hiding (is-compact)
 open import Locales.Spectrality.SpectralLocale               pt fe
-
 open import Locales.SmallBasis pt fe sr
 
-open AllCombinators pt fe
-
 open Locale
-
+open AllCombinators pt fe
 open PropositionalTruncation pt hiding (_∨_)
 
 \end{code}
@@ -172,7 +169,6 @@ We denote by `(B, β)` the algebraic basis of the pointed dcpo 𝓓 in considera
  scb = small-compact-basis 𝓓 hscb
 
  open is-small-compact-basis scb
-
 
  ϟ : (b : B) → is-compact 𝓓 (β b)
  ϟ = basis-is-compact
