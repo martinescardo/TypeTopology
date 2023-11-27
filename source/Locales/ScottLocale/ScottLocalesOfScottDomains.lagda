@@ -187,11 +187,9 @@ We define some nice notation for the prop-valued equality of the dcpo `𝓓`.
 \begin{code}
 
  open DefnOfScottTopology 𝓓 𝓤
- open Properties 𝓓
-
- open binary-unions-of-subsets pt
-
  open BottomLemma 𝓓 𝕒 hl
+ open Properties 𝓓
+ open binary-unions-of-subsets pt
 
  ↑ᵏ[_] : B →  ⟨ 𝒪 Σ[𝓓] ⟩
  ↑ᵏ[ i ] = ↑ˢ[ β i , ϟ i ]
@@ -217,10 +215,9 @@ The basis is the family `(List B , 𝜸₀)`, where `𝜸₀` is the following f
     † (inl r) = ∣ inl (principal-filter-is-upwards-closed (β b) x y r q) ∣
     † (inr r) = ∣ inr (𝜸₀-is-upwards-closed bs x y r q) ∣
 
- 𝜸₀-is-inaccessible-by-directed-joins : (ks : List B)
-                                             → is-inaccessible-by-directed-joins
-                                                (𝜸₀ ks)
-                                                 holds
+ 𝜸₀-is-inaccessible-by-directed-joins :(ks : List B)
+                                      → is-inaccessible-by-directed-joins (𝜸₀ ks)
+                                         holds
  𝜸₀-is-inaccessible-by-directed-joins []       (S , δ) ()
  𝜸₀-is-inaccessible-by-directed-joins (k ∷ ks) (S , δ) p =
   ∥∥-rec ∃-is-prop † p
