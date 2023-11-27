@@ -379,7 +379,11 @@ module _ (α : Ordinal 𝓤)(β : Ordinal 𝓥) where
             (λ y → irreflexive R y (Well-foundedness (β ×ₒ α) y))
            (x ∷ x' ∷ xs) IV)
    exponential-order-extensional' (x ∷ x' ∷ xs) δ (y ∷ y' ∷ ys) ε p q =
-    ap₂ _∷_ e IH
+    ap₂ _∷_ e
+            (exponential-order-extensional'
+             (x' ∷ xs) (is-decreasing-tail (underlying-order α) δ)
+             (y' ∷ ys) (is-decreasing-tail (underlying-order α) ε)
+             (p' e) (q' e))
      where
       e : x ＝ y
       e = g II II'
@@ -399,22 +403,16 @@ module _ (α : Ordinal 𝓤)(β : Ordinal 𝓥) where
          𝟘-elim (irreflexive R x (Well-foundedness (β ×ₒ α) x) (Transitivity (β ×ₒ α) x y x r r'))
         g (head-lex _) (tail-lex eq _) = eq ⁻¹
         g (tail-lex eq _) _ = eq
-      IH : x' ∷ xs ＝ y' ∷ ys
-      IH = exponential-order-extensional'
-            (x' ∷ xs) (is-decreasing-tail (underlying-order α) δ)
-            (y' ∷ ys) (is-decreasing-tail (underlying-order α) ε)
-            (p' e) (q' e)
-       where
-        p' : (x ＝ y) → (zs : List ⟨ β ×ₒ α ⟩)
-           → decreasing-pr₂ zs
-           → lex R zs (x' ∷ xs)
-           → lex R zs (y' ∷ ys)
-        p' refl = lemma (x' ∷ xs) (y' ∷ ys) x δ ε p
-        q' : (x ＝ y) → (zs : List ⟨ β ×ₒ α ⟩)
-           → decreasing-pr₂ zs
-           → lex R zs (y' ∷ ys)
-           → lex R zs (x' ∷ xs)
-        q' refl = lemma (y' ∷ ys) (x' ∷ xs) y ε δ q
+      p' : (x ＝ y) → (zs : List ⟨ β ×ₒ α ⟩)
+         → decreasing-pr₂ zs
+         → lex R zs (x' ∷ xs)
+         → lex R zs (y' ∷ ys)
+      p' refl = lemma (x' ∷ xs) (y' ∷ ys) x δ ε p
+      q' : (x ＝ y) → (zs : List ⟨ β ×ₒ α ⟩)
+         → decreasing-pr₂ zs
+         → lex R zs (y' ∷ ys)
+         → lex R zs (x' ∷ xs)
+      q' refl = lemma (y' ∷ ys) (x' ∷ xs) y ε δ q
 
 
  exponential-order-transitive : is-transitive exponential-order
@@ -428,12 +426,5 @@ module _ (α : Ordinal 𝓤)(β : Ordinal 𝓥) where
            , exponential-order-wellfounded α β
            , exponential-order-extensional α β
            , exponential-order-transitive α β
-
-{-
-
--}
-
-
--- prove that (1 + A) ^ X is an ordinal
 
 -- End goal: prove it satisfies (0, succ, sup)-spec
