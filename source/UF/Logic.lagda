@@ -123,6 +123,11 @@ module Implication (fe : Fun-Ext) where
                         → (P ⇔ Q) holds → (Q ⇒ P) holds
  biimplication-backward P Q (_ , ψ) = ψ
 
+ infix 3 ¬ₚ_
+
+ ¬ₚ_ : Ω 𝓤 → Ω 𝓤
+ ¬ₚ_ {𝓤} P = _⇒_ P (𝟘 {𝓤} , 𝟘-is-prop)
+
 \end{code}
 
 Added by Martin Escardo 1st Nov 2023.
