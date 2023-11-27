@@ -256,7 +256,7 @@ The basis is the family `(List B , 𝜸₀)`, where `𝜸₀` is the following f
    ⦅𝟐⦆ = 𝜸₀-is-inaccessible-by-directed-joins ks
 
  𝜸₀-lemma : (x : ⟨ 𝓓 ⟩∙) (ks : List B)
-                  → x ∈ 𝜸₀ ks → ∃ k ꞉ B , member k ks × β k ⊑⟨ 𝓓 ⟩ x
+          → x ∈ 𝜸₀ ks → ∃ k ꞉ B , member k ks × β k ⊑⟨ 𝓓 ⟩ x
  𝜸₀-lemma x []       = λ ()
  𝜸₀-lemma x (k ∷ ks) p = ∥∥-rec ∃-is-prop † p
   where
