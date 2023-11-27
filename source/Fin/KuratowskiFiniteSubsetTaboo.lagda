@@ -26,6 +26,8 @@ open import UF.Logic
 open import UF.DiscreteAndSeparated
 open import UF.ImageAndSurjection pt
 open import UF.Subsingletons
+open import UF.ExcludedMiddle
+open import UF.Subsingletons-FunExt
 open import UF.SubtypeClassifier-Properties using (Ω-is-set)
 open PropositionalSubsetInclusionNotation fe
 
@@ -47,49 +49,49 @@ is-Kuratowski-finite-subsetₚ P =
 \end{code}
 
 We now define a predicate expressing the taboo we are interested in: given a
-type `X`, `subsets-of-finite-are-finite X` expresses that for every
+type `X`, `has-finite-subset-property X` expresses that for every
 Kuratowski-finite subset `F ⊆ X`, any further subset of `S ⊆ F` is also
 Kuratowski-finite.
 
 \begin{code}
 
-subsets-of-finite-sets-are-finite : (X : 𝓤  ̇) → Ω (𝓤 ⁺)
-subsets-of-finite-sets-are-finite X =
- Ɐ F ꞉ 𝓟 X ,
-  Ɐ S ꞉ 𝓟 X ,
-  (S ⊆ₚ F) ⇒ is-Kuratowski-finite-subsetₚ F ⇒ is-Kuratowski-finite-subsetₚ S
+finite-subset-property : (X : 𝓤  ̇) → Ω (𝓤 ⁺)
+finite-subset-property X =
+ Ɐ F ꞉ 𝓟 X , Ɐ S ꞉ 𝓟 X ,
+  S ⊆ₚ F ⇒ is-Kuratowski-finite-subsetₚ F ⇒ is-Kuratowski-finite-subsetₚ S
 
 \end{code}
 
 The result that we prove in this module is the following
 
 ```
-  subsets-of-finite-sets-are-finite X → ∀ x y : X , ∥ is-decidable (x ＝ y) ∥
+  finite-subset-property X → is-discrete X
 ```
 
-We now prove two easy lemmas we proceed to the proof of the main result of interest.
+We now prove two easy lemmas before we proceed to the proof of the main result
+of interest.
 
-Lemma 1.
+Lemma 1:
 
 \begin{code}
 
-having-empty-enumeration-means-empty : (X : 𝓤  ̇)
-                                     → (e : 𝟘 {𝓤₀} → X)
-                                     → is-surjection e
-                                     → ¬ X
-having-empty-enumeration-means-empty X e σ x =
- ∥∥-rec 𝟘-is-prop (λ { (() , _) }) (σ x)
+having-empty-enumeration-entails-emptiness : (X : 𝓤  ̇)
+                                           → (e : 𝟘 {𝓤₀} → X)
+                                           → is-surjection e
+                                           → ¬ X
+having-empty-enumeration-entails-emptiness X e σ x =
+ ∥∥-rec 𝟘-is-prop (𝟘-elim ∘ pr₁) (σ x)
 
 \end{code}
 
 \begin{code}
 
-having-nonempty-enumeration-entails-being-inhabited : (X : 𝓤  ̇) (n : ℕ)
+having-nonempty-enumeration-entails-inhabitedness : (X : 𝓤  ̇) (n : ℕ)
                                                     → 0 <ℕ n
                                                     → (e : Fin n → X)
                                                     → is-surjection e
                                                     → X
-having-nonempty-enumeration-entails-being-inhabited X (succ n) p e σ = e 𝟎
+having-nonempty-enumeration-entails-inhabitedness X (succ n) p e σ = e 𝟎
 
 \end{code}
 
@@ -97,13 +99,12 @@ Satisfying the finite subset property gives decidable equality.
 
 \begin{code}
 
-subsets-of-finite-subsets-being-finite-gives-decidable-equality
- : (X : 𝓤  ̇)
- → is-set X
- → subsets-of-finite-sets-are-finite X holds
- → (x y : X) → ∥ (x ＝ y) + ¬ (x ＝ y) ∥
-subsets-of-finite-subsets-being-finite-gives-decidable-equality X 𝕤 ϡ x y =
- ∥∥-rec ∥∥-is-prop † (ϡ F S ι φ)
+finite-subset-property-gives-discreteness : (X : 𝓤  ̇)
+                                          → is-set X
+                                          → finite-subset-property X holds
+                                          → is-discrete X
+finite-subset-property-gives-discreteness X 𝕤 ϡ x y =
+ ∥∥-rec (decidability-of-prop-is-prop fe 𝕤) † (ϡ F S ι φ)
   where
    F : 𝓟 X
    F z = ∥ (z ＝ x) + (z ＝ y) ∥Ω
@@ -132,17 +133,17 @@ subsets-of-finite-subsets-being-finite-gives-decidable-equality X 𝕤 ϡ x y =
      † (inl refl) = p
      † (inr refl) = p
 
-   † : Σ n ꞉ ℕ , Fin n ↠ 𝕋 S → ∥ (x ＝ y) + ¬ (x ＝ y) ∥
+   † : Σ n ꞉ ℕ , Fin n ↠ 𝕋 S → (x ＝ y) + ¬ (x ＝ y)
    † (zero   , eˢ) = let
                       ν : ¬ 𝕋 S
-                      ν = uncurry (having-empty-enumeration-means-empty (𝕋 S)) eˢ
+                      ν = uncurry (having-empty-enumeration-entails-emptiness (𝕋 S)) eˢ
                      in
-                      ∣ inr (λ p → ν (x , (∣ suc refl ∣ , p))) ∣
-   † (succ n , eˢ) = ∣ inl p ∣
+                      inr (λ p → ν (x , (∣ suc refl ∣ , p)))
+   † (succ n , eˢ) = inl p
     where
      τ : 𝕋 S
      τ = uncurry
-          (having-nonempty-enumeration-entails-being-inhabited (𝕋 S) (succ n) ⋆)
+          (having-nonempty-enumeration-entails-inhabitedness (𝕋 S) (succ n) ⋆)
           eˢ
 
      p : x ＝ y
@@ -157,20 +158,29 @@ From this result, the following corollary follows:
 
 \begin{code}
 
-lem-from-the-finite-subset-property : (𝓤 : Universe)
-                                    → propext 𝓤
-                                    → subsets-of-finite-sets-are-finite (Ω 𝓤) holds
-                                    → (P : Ω 𝓤) → ∥ P holds + (¬ₚ P) holds ∥
-lem-from-the-finite-subset-property 𝓤 pe ϡ P = ∥∥-rec ∥∥-is-prop † (ζ P ⊤)
+finite-subset-property-for-Ω-gives-EM : {𝓤 : Universe}
+                                      → propext 𝓤
+                                      → finite-subset-property (Ω 𝓤) holds
+                                      → EM 𝓤
+finite-subset-property-for-Ω-gives-EM {𝓤} pe ϡ = Ω-discrete-gives-EM fe pe †
  where
-  ζ : (P Q : Ω 𝓤) → ∥ (P ＝ Q) + ¬ (P ＝ Q) ∥
-  ζ = subsets-of-finite-subsets-being-finite-gives-decidable-equality
-       (Ω 𝓤)
-       (Ω-is-set fe pe)
-       ϡ
-
-  † : (P ＝ ⊤) + ¬ (P ＝ ⊤) → ∥ (P holds) + (¬ₚ P) holds ∥
-  † (inl p) = ∣ inl (equal-⊤-gives-holds P p) ∣
-  † (inr ν) = ∣ inr (λ p → 𝟘-elim (ν (holds-gives-equal-⊤ pe fe P p))) ∣
+  † : is-discrete (Ω 𝓤)
+  † = finite-subset-property-gives-discreteness (Ω 𝓤) (Ω-is-set fe pe) ϡ
 
 \end{code}
+
+Combining the two, we get:
+
+\begin{code}
+
+finite-subset-property-gives-EM : (𝓤 : Universe)
+                                → (pe : propext 𝓤)
+                                → ((X : 𝓤 ⁺  ̇) → finite-subset-property X holds)
+                                → EM 𝓤
+finite-subset-property-gives-EM 𝓤 pe ϡ =
+ finite-subset-property-for-Ω-gives-EM pe (ϡ (Ω 𝓤))
+
+\end{code}
+
+TODO: prove the converse direction of `is-discrete X` implies
+`finite-subset-property X`.
