@@ -106,9 +106,12 @@ finite-subset-property-gives-discreteness : (X : 𝓤  ̇)
                                           → is-set X
                                           → finite-subset-property X holds
                                           → is-discrete X
-finite-subset-property-gives-discreteness X 𝕤 ϡ x y =
+finite-subset-property-gives-discreteness {𝓤} X 𝕤 ϡ x y =
  ∥∥-rec (decidability-of-prop-is-prop fe 𝕤) † (ϡ F S ι φ)
   where
+   _＝ₚ_ : X → X → Ω 𝓤
+   _＝ₚ_ x₁ x₂ = (x₁ ＝ x₂) , 𝕤
+
    F : 𝓟 X
    F z = ∥ (z ＝ x) + (z ＝ y) ∥Ω
 
