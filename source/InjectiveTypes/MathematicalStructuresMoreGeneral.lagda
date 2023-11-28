@@ -1,9 +1,9 @@
 Martin Escardo, 16th August 2023
 
-This file improves InjectiveTypes.MathematicalStructuresMoreGeneral at
-the cost of being harder to understand, with the benefit of at the
-same time being more general and allowing shorter proofs. It relies on
-the file InjectiveTypes.Sigma.
+This file improves InjectiveTypes.MathematicalStructures at the cost
+of being harder to understand, with the benefit of at the same time
+being more general and allowing shorter proofs. It relies on the file
+InjectiveTypes.Sigma.
 
 We give a sufficient condition for types of mathematical structures,
 such as pointed types, ∞-magmas, monoids, groups, etc. to be
@@ -166,8 +166,8 @@ We introduce names for the canonical maps induced by Π- and
 \end{code}
 
 In our applications, we will apply Π-flabbiness structure, and it will
-be easier to check technical-condition-Π than technical-condition S
-universes-are-aflabby-Π
+be easier to check technical-condition-Π than (technical-condition S
+universes-are-aflabby-Π).
 
 \begin{code}
 
@@ -465,4 +465,7 @@ NB. The type Ordinal 𝓤 of well-ordered sets in 𝓤 is also injective,
 but for a different reason.
 
 TODO. The type of posets should be injective, but with a different
-proof. Maybe the proof for the type of ordinals can be adapted (check).
+proof. Maybe the proof for the type of ordinals can be adapted
+(check). What about metric spaces? Notice that both posets and metric
+spaces have structure of the form X → X → R where R is
+respectively Ω 𝓤 and ℝ.
