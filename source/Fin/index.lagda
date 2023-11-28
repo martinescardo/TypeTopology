@@ -22,7 +22,4 @@ import Fin.Type
 import Fin.UniverseInvariance
 import Fin.Variation
 
--- Added by Ayberk Tosun on 2023-11-27.
-import Fin.KuratowskiFiniteSubsetTaboo
-
 \end{code}

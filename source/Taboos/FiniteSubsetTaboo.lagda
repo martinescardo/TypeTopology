@@ -1,4 +1,5 @@
 ---
+title:        Kuratowski-finite Subset Taboo
 author:       Ayberk Tosun
 date-started: 2023-11-27
 ---
@@ -13,8 +14,8 @@ proof I ended up writing here ended up being a bit different.
 open import UF.PropTrunc
 open import UF.FunExt
 
-module Fin.KuratowskiFiniteSubsetTaboo (pt : propositional-truncations-exist)
-                                       (fe : Fun-Ext) where
+module Taboos.FiniteSubsetTaboo (pt : propositional-truncations-exist)
+                                (fe : Fun-Ext) where
 
 open import Fin.Kuratowski pt
 open import MLTT.Spartan

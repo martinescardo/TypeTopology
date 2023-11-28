@@ -12,5 +12,6 @@ import Taboos.LLPO
 import Taboos.LPO
 import Taboos.WLPO
 import Taboos.P2
+import Taboos.FiniteSubsetTaboo    -- by Ayberk Tosun
 
 \end{code}
