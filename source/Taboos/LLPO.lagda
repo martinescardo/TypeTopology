@@ -274,7 +274,7 @@ WLPO-gives-untruncated-LLPO = {!!}
 
 \end{code}
 
-We know formalate (truncated) LLPO.
+We now formalate (truncated) LLPO.
 
 \begin{code}
 
@@ -292,7 +292,7 @@ module _ (pt : propositional-truncations-exist) where
 
 \end{code}
 
-The most natural form of LLPO for what we've done above is the followd.
+The most natural form of LLPO for what we've done above is the following.
 
 \begin{code}
 
