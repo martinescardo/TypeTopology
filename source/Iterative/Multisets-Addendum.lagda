@@ -262,7 +262,7 @@ prop-indexed-sumᴹ {X} {A} i x₀ = IV
 
 \end{code}
 
-Notice that we use Σ (as well as Π) in the following definition of Πᴹ.
+Notice that we use Σᴹ (as well as Π) in the following definition of Πᴹ.
 
 \begin{code}
 

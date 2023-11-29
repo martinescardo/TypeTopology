@@ -76,8 +76,8 @@ open import UF.Retracts
 open import UF.Size
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import UF.UA-FunExt
 open import UF.SubtypeClassifier
+open import UF.UA-FunExt
 
 private
  fe : FunExt
