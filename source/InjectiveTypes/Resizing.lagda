@@ -218,13 +218,13 @@ distinct points, other than in models that validate Ω¬¬ 𝓤₀ resizing
 
 \begin{code}
 
-small₀-ainjective-types-with-two-distinct-points-gives-Ω¬¬-resizing
+small₀-ainjective-type-with-two-distinct-points-gives-Ω¬¬-resizing
  : retracts-of-small-types-are-small
  → (D : 𝓤₀ ̇ )
  → ainjective-type D 𝓤₀ 𝓤₀
  → has-two-distinct-points D
  → Ω¬¬ 𝓤₀ is 𝓤₀ small
-small₀-ainjective-types-with-two-distinct-points-gives-Ω¬¬-resizing =
+small₀-ainjective-type-with-two-distinct-points-gives-Ω¬¬-resizing =
  small-ainjective-type-with-two-distinct-points-gives-Ω¬¬-resizing
 
 \end{code}
