@@ -14,14 +14,13 @@ be eventually constant (which we don't postulate).
 open import MLTT.Spartan
 open import UF.FunExt
 
-module Taboos.BasicDiscontinuity (fe : FunExt) where
+module Taboos.BasicDiscontinuity (fe : funext₀) where
 
-
-open import MLTT.Two-Properties
-open import MLTT.Plus-Properties
 open import CoNaturals.GenericConvergentSequence
-open import Taboos.WLPO
+open import MLTT.Plus-Properties
+open import MLTT.Two-Properties
 open import Notation.CanonicalMap
+open import Taboos.WLPO
 
 basic-discontinuity : (ℕ∞ → 𝟚) → 𝓤₀ ̇
 basic-discontinuity p = ((n : ℕ) → p (ι n) ＝ ₀) × (p ∞ ＝ ₁)
@@ -50,7 +49,7 @@ basic-discontinuity-taboo p (f , r) u = 𝟚-equality-cases lemma₀ lemma₁
                                  ₁       ∎)
 
   lemma₁ : p u ＝ ₁ → (u ＝ ∞) + (u ≠ ∞)
-  lemma₁ t = inl (not-finite-is-∞ (fe 𝓤₀ 𝓤₀) (fact₃ t))
+  lemma₁ t = inl (not-finite-is-∞ fe (fact₃ t))
 
 \end{code}
 
@@ -135,7 +134,7 @@ basic-discontinuity-taboo' f (f₀ , f₁) = VI
               ι 1 ∎)
 
   II : (u : ℕ∞) → f u ≠ ι 0 → u ＝ ∞
-  II u ν = not-finite-is-∞ (fe _ _) III
+  II u ν = not-finite-is-∞ fe III
    where
     III : (n : ℕ) → u ≠ ι n
     III n refl = V IV
@@ -147,8 +146,67 @@ basic-discontinuity-taboo' f (f₀ , f₁) = VI
       V = ν
 
   VI : WLPO
-  VI u = Cases (finite-isolated (fe _ _) 0 (f u))
+  VI u = Cases (finite-isolated fe 0 (f u))
           (λ (p : ι 0 ＝ f u) → inr (I u (p ⁻¹)))
           (λ (ν : ι 0 ≠ f u) → inl (II u (≠-sym ν)))
+
+\end{code}
+
+Added 13th November 2023.
+
+\begin{code}
+
+open import Notation.Order
+
+ℕ∞-linearity-taboo : ((u v : ℕ∞) → (u ≼ v) + (v ≼ u))
+                   → WLPO
+ℕ∞-linearity-taboo δ = III
+ where
+  g : (u v : ℕ∞) → (u ≼ v) + (v ≼ u) → 𝟚
+  g u v (inl _) = ₀
+  g u v (inr _) = ₁
+
+  f : ℕ∞ → ℕ∞ → 𝟚
+  f u v = g u v (δ u v)
+
+  I₀ : (n : ℕ) → f (ι n) ∞ ＝ ₀
+  I₀ n = a (δ (ι n) ∞)
+   where
+    a : (d : (ι n ≼ ∞) + (∞ ≼ ι n)) → g (ι n) ∞ d ＝ ₀
+    a (inl _) = refl
+    a (inr ℓ) = 𝟘-elim (≼-not-≺ ∞ (ι n) ℓ (∞-≺-largest n))
+
+  I₁ : (n : ℕ) → f ∞ (ι n) ＝ ₁
+  I₁ n = b (δ ∞ (ι n))
+   where
+    b : (d : (∞ ≼ ι n) + (ι n ≼ ∞)) → g ∞ (ι n) d ＝ ₁
+    b (inl ℓ) = 𝟘-elim (≼-not-≺ ∞ (ι n) ℓ (∞-≺-largest n))
+    b (inr _) = refl
+
+  II : (b : 𝟚) → f ∞ ∞ ＝ b → WLPO
+  II ₀ e = basic-discontinuity-taboo p II₀
+   where
+    p : ℕ∞ → 𝟚
+    p x = complement (f ∞ x)
+
+    II₀ : ((n : ℕ) → p (ι n) ＝ ₀) × (p ∞ ＝ ₁)
+    II₀ = (λ n → p (ι n)                ＝⟨ refl ⟩
+                 complement (f ∞ (ι n)) ＝⟨ ap complement (I₁ n) ⟩
+                 complement ₁           ＝⟨ refl ⟩
+                 ₀                      ∎) ,
+           (p ∞                ＝⟨ refl ⟩
+            complement (f ∞ ∞) ＝⟨ ap complement e ⟩
+            complement ₀       ＝⟨ refl ⟩
+            ₁                  ∎)
+  II ₁ e = basic-discontinuity-taboo p II₁
+   where
+    p : ℕ∞ → 𝟚
+    p x = f x ∞
+
+    II₁ : ((n : ℕ) → p (ι n) ＝ ₀) × (p ∞ ＝ ₁)
+    II₁ = I₀ , e
+
+  III : WLPO
+  III = II (f ∞ ∞) refl
 
 \end{code}

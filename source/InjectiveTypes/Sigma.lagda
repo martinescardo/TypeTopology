@@ -73,8 +73,19 @@ extends  = aflabby-extension-property
 
 \end{code}
 
-We now assume that an algebraically flabbly type X is given. Recall that
-algebraic flabbiness is data rather than merely property.
+Notice that extends ϕ p f amounts to the following commutative
+triangle:
+
+           p holds ---> 𝟙
+               \       .
+                \     .
+              f  \   . extension ϕ p f
+                  \ .
+                   v
+                   X.
+
+We now assume that an algebraically flabbly type X is given. Recall
+that algebraic flabbiness is data rather than merely property.
 
 \begin{code}
 
@@ -82,6 +93,32 @@ module _ {X : 𝓤 ̇ }
          (A : X → 𝓥 ̇ )
          (ϕ : aflabby X 𝓦)
        where
+
+\end{code}
+
+We now give a sufficient condition to derive the aflabbiness
+of Σ x ꞉ X , A x from that of X.
+
+In order to extend f' as in the diagram below, first notice that it is
+of the form ⟨ f , g ⟩ with f as in the previous diagram and
+g : (h : p holds) → A (f h).
+
+
+           p holds ---> 𝟙
+               \       .
+                \     .
+ f' =: ⟨ f , g ⟩ \   .  (x , a)
+                  \ .
+                   v
+               Σ x ꞉ X , A x.
+
+Our technical condition says that the map ρ defined below has a
+section, so that we can define the extension (x , a) by
+
+ x = extension ϕ p f,
+ a = the section of ρ applied to g.
+
+\begin{code}
 
  ρ : (p : Ω 𝓦) (f : p holds → X)
    → A (extension ϕ p f) → ((h : p holds) → A (f h))
@@ -108,7 +145,7 @@ type of pointed types (which is injective) shown to be equivalent to a
 subtype of the type of inhabited types (which is "not" injective).
 
 One of the main results of this file is that if A satisfies the
-technical condition, then Σ x ꞉ X , A x is aflabb and hence
+technical condition, then Σ x ꞉ X , A x is aflabby and hence
 ainjective.
 
 \begin{code}
@@ -151,8 +188,7 @@ ainjective.
              g h                              ∎
 
  Σ-ainjective : technical-condition → ainjective-type (Σ A) 𝓦 𝓦
- Σ-ainjective = aflabby-types-are-ainjective (Σ A)
-                 ∘ Σ-is-aflabby
+ Σ-ainjective = aflabby-types-are-ainjective (Σ A) ∘ Σ-is-aflabby
 
 \end{code}
 

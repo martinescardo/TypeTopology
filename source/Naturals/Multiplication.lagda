@@ -31,6 +31,9 @@ infixl 32 _*_
 
 {-# BUILTIN NATTIMES _*_ #-}
 
+_*ᴸ_ : (x y : ℕ) → ℕ
+x *ᴸ y = y * x
+
 \end{code}
 
 Zero is the base for multiplication. On the right, this is true by
