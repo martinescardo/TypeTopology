@@ -435,7 +435,7 @@ module Inductive-Definitions {𝓤 𝓦 𝓥 : Universe} {B : 𝓥  ̇} (L : Sup
                    → ϕ-closed a b p f ∈ P b)
                   → (b : B) → (i : Ind b) → i ∈ P b
 
-  module Trun-Ind-Def (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩)) (ind-e : Inductively-Generated-Subset-Exists ϕ) where
+  module Trunc-Ind-Def (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩)) (ind-e : Inductively-Generated-Subset-Exists ϕ) where
 
    open Inductively-Generated-Subset-Exists ind-e
 
@@ -642,6 +642,21 @@ module Local-Inductive-Definitions {𝓤 𝓦 𝓥 : Universe} {B : 𝓥  ̇} (L
       open Equivalent-Families-have-same-Join L (S ϕ x) (S ϕ x) (id , id-is-equiv (S ϕ x)) (q ∘ pr₁)
       open Small-Types-have-Joins L (S ϕ x) (q ∘ pr₁) (i x)
 
+  ind-def-from-mono-map : (f : ⟨ L ⟩ → ⟨ L ⟩)
+                        → f is-monotone
+                        → 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩)
+  ind-def-from-mono-map f f-mono = pr₁ (mono-map-give-local-ind-def f f-mono)
+
+  local-from-mono-map : (f : ⟨ L ⟩ → ⟨ L ⟩)
+                      → (f-mono : f is-monotone)
+                      → (ind-def-from-mono-map f f-mono) is-local
+  local-from-mono-map f f-mono = pr₁ (pr₂ (mono-map-give-local-ind-def f f-mono))
+
+  f-＝-Γ-from-mono-map : (f : ⟨ L ⟩ → ⟨ L ⟩)
+                       → (f-mono : f is-monotone)
+                       → (x : ⟨ L ⟩) → (Γ (ind-def-from-mono-map f f-mono) (local-from-mono-map f f-mono)) x ＝ f x
+  f-＝-Γ-from-mono-map f f-mono = pr₂ (pr₂ (mono-map-give-local-ind-def f f-mono))
+
 \end{code}
 
 We now spell out a correspondence between small ϕ-closed classes and non increasing points in our lattice.
@@ -820,9 +835,9 @@ module Correspondance-small-ϕ-closed-types-non-inc-points {𝓤 𝓦 𝓥 : Uni
    module Small-𝓘nd-from-exists (ind-e : Inductively-Generated-Subset-Exists ϕ) where
 
     open Inductively-Generated-Subset-Exists ind-e
-    open Trun-Ind-Def ϕ ind-e
+    open Trunc-Ind-Def ϕ ind-e
 
-    module _ (j : (b : B) → (b ∈ 𝓘nd) is 𝓥 small) where
+    module Smallness-Assumption (j : (b : B) → (b ∈ 𝓘nd) is 𝓥 small) where
 
      small-𝓘 : (b : B) →  𝓥  ̇
      small-𝓘 b = pr₁ (j b) 
@@ -869,8 +884,8 @@ module Correspondance-small-ϕ-closed-types-non-inc-points {𝓤 𝓦 𝓥 : Uni
       where
        open Small-Types-have-Joins L (Σ b ꞉ B , b ∈ 𝓘nd) (q ∘ pr₁) total-space-𝓘-is-small
 
-     Γ-has-least-fixed-point : ((Γ ϕ i) sup-𝓘 ＝ sup-𝓘) × ((a : ⟨ L ⟩) → ((Γ ϕ i) a ＝ a) → (sup-𝓘 ≤ a) holds)
-     Γ-has-least-fixed-point = (is-antisymmetric-for L Γ-sup-≤-sup sup-≤-Γ-sup , sup-𝓘-≤)
+     Γ-has-least-fixed-point : Σ x ꞉ ⟨ L ⟩ , ((Γ ϕ i) x ＝ x) × ((a : ⟨ L ⟩) → ((Γ ϕ i) a ＝ a) → (x ≤ a) holds)
+     Γ-has-least-fixed-point = (sup-𝓘 , is-antisymmetric-for L Γ-sup-≤-sup sup-≤-Γ-sup , sup-𝓘-≤)
       where
        Γ-sup-≤-sup : ((Γ ϕ i) sup-𝓘 ≤ sup-𝓘) holds
        Γ-sup-≤-sup = is-non-inc-non-inc-points (small-ϕ-closed-subsets-to-non-inc-points
@@ -1074,10 +1089,360 @@ module Small-Presentation-of-Lattice {𝓤 𝓦 𝓥 : Universe}
   open Small-Basis-Facts h
   open PropositionalTruncation pt
 
-  _is-a-small-presentation : 𝓟 {𝓥} (B × 𝓟 {𝓥} B) → (𝓥 ⁺)  ̇
-  R is-a-small-presentation = (b : B) → (X : 𝓟 {𝓥} B) → b ≤ᴮ (⋁ ((Σ x ꞉ B , x ∈ X) , q ∘ pr₁)) ≃ ((Ǝ Y ꞉ 𝓟 {𝓥} B , Y ⊆ X × (b , Y) ∈ R) holds)
+  _is-a-small-presentation : Σ J ꞉ 𝓥  ̇ , (J → 𝓟 {𝓥} B) × 𝓟 {𝓥} (B × 𝓟 {𝓥} B) → (𝓥 ⁺)  ̇
+  (J , Y , R) is-a-small-presentation = (b : B) → (X : 𝓟 {𝓥} B) → b ≤ᴮ (⋁ ((Σ x ꞉ B , x ∈ X) , q ∘ pr₁)) ≃ ((Ǝ j ꞉ J , Y j ⊆ X × (b , Y j) ∈ R) holds)
 
   has-small-presentation : (𝓥 ⁺)  ̇
-  has-small-presentation = Σ R ꞉ 𝓟 {𝓥} (B × 𝓟 {𝓥} B) , R is-a-small-presentation
+  has-small-presentation = Σ 𝓡 ꞉ Σ J ꞉ 𝓥  ̇ , (J → 𝓟 {𝓥} B) × 𝓟 {𝓥} (B × 𝓟 {𝓥} B) , 𝓡 is-a-small-presentation
 
 \end{code}
+
+We will now define, in the context of bounded ϕ and small-presentation 𝓡, a new QIT that is (fingers crossed) equivalent to 𝓘nd.
+
+\begin{code}
+
+module Small-QIT {𝓤 𝓦 𝓥 : Universe}
+                 {B : 𝓥  ̇}
+                 (L : Sup-Lattice 𝓤 𝓦 𝓥)
+                 (q : B → ⟨ L ⟩)
+                  where
+
+ open Small-Basis L q
+ open Bounded-Inductive-Definition L q
+ open Small-Presentation-of-Lattice L q
+
+ module Small-QIT-from-Small-Basis-Facts (h : is-small-basis) where
+ 
+  open Small-Basis-Facts h
+  open Bounded-from-Small-Basis-Facts h
+  open Small-Presentation-from-Small-Basis-Facts h
+ 
+  module Small-QIT-from-Bounded-and-Small-Presentation (small-pres : has-small-presentation)
+                                                       (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩))
+                                                       (bnd : ϕ is-bounded)
+                                                        where
+
+   I₁ : 𝓥  ̇
+   I₁ = pr₁ (pr₁ small-pres)
+
+   Y : I₁ → 𝓟 {𝓥} B
+   Y = pr₁ (pr₂ (pr₁ small-pres))
+
+   R : 𝓟 {𝓥} (B × 𝓟 {𝓥} B)
+   R = pr₂ (pr₂ (pr₁ small-pres))
+
+   is-small-pres : (I₁ , Y , R) is-a-small-presentation
+   is-small-pres = pr₂ small-pres
+
+   is-small-pres-forward : (b : B) → (X : 𝓟 {𝓥} B) → b ≤ᴮ (⋁ ((Σ x ꞉ B , x ∈ X) , q ∘ pr₁)) → ((Ǝ j ꞉ I₁ , Y j ⊆ X × (b , Y j) ∈ R) holds)
+   is-small-pres-forward b X = ⌜ is-small-pres b X ⌝
+
+   is-small-pres-backward : (b : B) → (X : 𝓟 {𝓥} B) → ((Ǝ j ꞉ I₁ , Y j ⊆ X × (b , Y j) ∈ R) holds) → b ≤ᴮ (⋁ ((Σ x ꞉ B , x ∈ X) , q ∘ pr₁))
+   is-small-pres-backward b X = ⌜ is-small-pres b X ⌝⁻¹
+
+   ϕ-is-small : (a : ⟨ L ⟩) → (b : B) → ((b , a) ∈ ϕ) is 𝓥 small
+   ϕ-is-small = pr₁ bnd
+
+   small-ϕ : (b : B) → (a : ⟨ L ⟩) → 𝓥  ̇
+   small-ϕ b a = pr₁ (ϕ-is-small a b)
+
+   ϕ-is-small-≃ : (a : ⟨ L ⟩) → (b : B) → small-ϕ b a ≃ (b , a) ∈ ϕ
+   ϕ-is-small-≃ a b = pr₂ (ϕ-is-small a b)
+
+   ϕ-is-small-forward : (a : ⟨ L ⟩) → (b : B) → small-ϕ b a → (b , a) ∈ ϕ
+   ϕ-is-small-forward a b = ⌜ ϕ-is-small-≃ a b ⌝
+
+   ϕ-is-small-backward : (a : ⟨ L ⟩) → (b : B) → (b , a) ∈ ϕ → small-ϕ b a
+   ϕ-is-small-backward a b = ⌜ ϕ-is-small-≃ a b ⌝⁻¹
+
+   I₂ : 𝓥  ̇
+   I₂ = pr₁ (pr₂ bnd)
+
+   α : I₂ → 𝓥  ̇
+   α = pr₁ (pr₂ (pr₂ bnd))
+
+   cover-condition : ((a : ⟨ L ⟩)
+                   → (b : B)
+                   → (b , a) ∈ ϕ
+                   → (Ǝ i ꞉ I₂ , α i is-a-small-cover-of ↓ᴮ a) holds)
+   cover-condition = pr₂ (pr₂ (pr₂ bnd))
+
+   record Inductively-Generated-Small-Subset-Exists : 𝓤ω where
+    constructor
+     inductively-generated-small-subset
+
+    field
+     Small-Ind : B → 𝓥  ̇
+     Small-Ind-trunc : (b : B) → is-prop (Small-Ind b)
+     Small-c-cl : (i : I₁)
+                → ((b : B) → (b ∈ Y i → Small-Ind b))
+                → (b : B) → (b , Y i) ∈ R
+                → Small-Ind b
+     Small-ϕ-cl : (i : I₂)
+                → (m : α i → B)
+                → (b : B)
+                → small-ϕ b (⋁ (α i , q ∘ m))
+                → ((b' : B) → (b' ≤ᴮ (⋁ (α i , q ∘ m)) → Small-Ind b'))
+                → Small-Ind b
+     Small-Ind-Induction : (P : (b : B) → 𝓟 {𝓣} (Small-Ind b))
+                         → ((i : I₁) → (f : (x : B) → (x ∈ Y i → Small-Ind x))
+                          → ((x : B) → (y : x ∈ Y i) → f x y ∈ P x)
+                          → (b : B) → (g : (b , Y i) ∈ R)
+                          → Small-c-cl i f b g ∈ P b)
+                         → ((i : I₂)
+                          → (m : α i → B)
+                          → (b : B)
+                          → (p : small-ϕ b (⋁ (α i , q ∘ m)))
+                          → (f : (x : B) → (x ≤ᴮ (⋁ (α i , q ∘ m)) → Small-Ind x))
+                          → ((x : B) → (o : x ≤ᴮ (⋁ (α i , q ∘ m))) → f x o ∈ P x)
+                          → Small-ϕ-cl i m b p f ∈ P b)
+                         → (b : B) → (i : Small-Ind b) → i ∈ P b
+
+   module Small-Trunc-Ind-Def (ind-e : Inductively-Generated-Small-Subset-Exists) where
+
+    open Inductively-Generated-Small-Subset-Exists ind-e
+
+    Small-𝓘nd : 𝓟 {𝓥} B
+    Small-𝓘nd b = (Small-Ind b , Small-Ind-trunc b)
+
+    Small-𝓘nd-is-c-cl : (i : I₁)
+                      → Y i ⊆ Small-𝓘nd
+                      → (b : B)
+                      → (b , Y i) ∈ R
+                      → b ∈ Small-𝓘nd
+    Small-𝓘nd-is-c-cl = Small-c-cl
+
+    Small-𝓘nd-is-ϕ-cl : (i : I₂)
+                      → (m : α i → B)
+                      → (b : B)
+                      → small-ϕ b (⋁ (α i , q ∘ m))
+                      → ((b' : B) → (b' ≤ᴮ (⋁ (α i , q ∘ m)) → b' ∈ Small-𝓘nd))
+                      → b ∈ Small-𝓘nd
+    Small-𝓘nd-is-ϕ-cl = Small-ϕ-cl
+
+    Small-𝓘nd-Induction : (P : (b : B) → 𝓟 {𝓣} (b ∈ Small-𝓘nd))
+                        → ((i : I₁) → (f : Y i ⊆ Small-𝓘nd)
+                         → ((x : B) → (y : x ∈ Y i) → f x y ∈ P x)
+                         → (b : B) → (g : (b , Y i) ∈ R)
+                         → Small-c-cl i f b g ∈ P b)
+                        → ((i : I₂)
+                         → (m : α i → B)
+                         → (b : B)
+                         → (p : small-ϕ b (⋁ (α i , q ∘ m)))
+                         → (f : (x : B) → (x ≤ᴮ (⋁ (α i , q ∘ m)) → x ∈ Small-𝓘nd))
+                         → ((x : B) → (o : x ≤ᴮ (⋁ (α i , q ∘ m))) → f x o ∈ P x)
+                         → Small-ϕ-cl i m b p f ∈ P b)
+                        → (b : B) → (i : b ∈ Small-𝓘nd) → i ∈ P b
+    Small-𝓘nd-Induction = Small-Ind-Induction
+
+    Small-𝓘nd-Recursion : (P : 𝓟 {𝓣} B)
+                        → ((i : I₁)
+                         → (Y i ⊆ Small-𝓘nd)
+                         → (Y i ⊆ P)
+                         → (b : B) → (b , Y i) ∈ R
+                         → b ∈ P)
+                        → ((i : I₂)
+                         → (m : α i → B)
+                         → (b : B)
+                         → small-ϕ b (⋁ (α i , q ∘ m))
+                         → ((x : B) → (x ≤ᴮ (⋁ (α i , q ∘ m)) → x ∈ Small-𝓘nd))
+                         → ((x : B) → (x ≤ᴮ (⋁ (α i , q ∘ m)) → x ∈ P))
+                         → b ∈ P)
+                        → Small-𝓘nd ⊆ P
+    Small-𝓘nd-Recursion P = Small-𝓘nd-Induction λ b → (λ _ → P b)
+
+    Small-𝓘nd-Initial : (P : 𝓟 {𝓣} B)
+                      → ((i : I₁)
+                       → (Y i ⊆ P)
+                       → (b : B) → (b , Y i) ∈ R
+                       → b ∈ P)
+                      → ((i : I₂)
+                       → (m : α i → B)
+                       → (b : B)
+                       → small-ϕ b (⋁ (α i , q ∘ m))
+                       → ((x : B) → (x ≤ᴮ (⋁ (α i , q ∘ m)) → x ∈ P))
+                       → b ∈ P)
+                      → Small-𝓘nd ⊆ P
+    Small-𝓘nd-Initial {𝓣} P IH₁ IH₂ b b-in-Small-𝓘nd = Small-𝓘nd-Recursion P S S' b b-in-Small-𝓘nd
+     where
+      S : (i : I₁)
+        → (Y i ⊆ Small-𝓘nd)
+        → (Y i ⊆ P)
+        → (b : B) → (b , Y i) ∈ R
+        → b ∈ P
+      S i C₁ C₂ b r = IH₁ i C₂ b r
+      S' : (i : I₂)
+         → (m : α i → B)
+         → (b : B)
+         → small-ϕ b (⋁ (α i , q ∘ m))
+         → ((x : B) → (x ≤ᴮ (⋁ (α i , q ∘ m)) → x ∈ Small-𝓘nd))
+         → ((x : B) → (x ≤ᴮ (⋁ (α i , q ∘ m)) → x ∈ P))
+         → b ∈ P
+      S' i m b s f g = IH₂ i m b s g
+
+\end{code}
+
+We will now show that under the assumptions of small presentation and bounded ϕ that b ∈ Small-𝓘nd ≃ b ∈ 𝓘nd.
+
+\begin{code}
+
+module 𝓘nd-is-small {𝓤 𝓦 𝓥 : Universe}
+                    {B : 𝓥  ̇}
+                    (L : Sup-Lattice 𝓤 𝓦 𝓥)
+                    (q : B → ⟨ L ⟩)
+                     where
+
+ open Small-Basis L q
+ open Bounded-Inductive-Definition L q
+ open Small-Presentation-of-Lattice L q
+ open Inductive-Definitions L q
+ open Small-QIT L q
+
+ module 𝓘nd-is-small-from-Small-Basis-Facts (h : is-small-basis) where
+ 
+  open Small-Basis-Facts h
+  open Bounded-from-Small-Basis-Facts h
+  open Small-Presentation-from-Small-Basis-Facts h
+  open Ind-from-Small-Basis-Facts h
+  open Small-QIT-from-Small-Basis-Facts h
+ 
+  module 𝓘nd-is-small-from-Bounded-and-Small-Presentation (small-pres : has-small-presentation)
+                                                          (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩))
+                                                          (bnd : ϕ is-bounded)
+                                                           where
+
+   open Small-QIT-from-Bounded-and-Small-Presentation small-pres ϕ bnd
+
+   module 𝓘nd-is-small-QITs-exists (ind-e : Inductively-Generated-Subset-Exists ϕ)
+                                   (ind-e' : Inductively-Generated-Small-Subset-Exists)
+                                    where
+
+    open Trunc-Ind-Def ϕ ind-e
+    open Small-Trunc-Ind-Def ind-e'
+    open PropositionalTruncation pt
+
+    𝓘nd-⊆-Small-𝓘nd : 𝓘nd ⊆ Small-𝓘nd
+    𝓘nd-⊆-Small-𝓘nd = 𝓘nd-is-initial Small-𝓘nd f g
+     where
+      f : (U : 𝓟 {𝓥} B)
+        → U ⊆ Small-𝓘nd
+        → (b : B)
+        → b ≤ᴮ (⋁ ((Σ b ꞉ B , b ∈ U) , q ∘ pr₁))
+        → b ∈ Small-𝓘nd
+      f U C b o = f'' (is-small-pres-forward b U o)
+       where
+        f' : (Σ j ꞉ I₁ , Y j ⊆ U × (b , Y j) ∈ R)
+           → b ∈ Small-𝓘nd
+        f' (j , C' , r) = Small-𝓘nd-is-c-cl j (λ x → λ y → C x (C' x y)) b r
+        f'' : (Ǝ j ꞉ I₁ , Y j ⊆ U × (b , Y j) ∈ R) holds
+            → b ∈ Small-𝓘nd
+        f'' = ∥∥-rec (holds-is-prop (Small-𝓘nd b)) f'
+      g : (a : ⟨ L ⟩)
+        → (b : B)
+        → (b , a) ∈ ϕ
+        → ((b' : B) → b' ≤ᴮ a → b' ∈ Small-𝓘nd)
+        → b ∈ Small-𝓘nd
+      g a b p C = g'' (cover-condition a b p)
+       where
+        g' : Σ i ꞉ I₂ , α i is-a-small-cover-of ↓ᴮ a
+           → b ∈ Small-𝓘nd
+        g' (i , s) = Small-𝓘nd-is-ϕ-cl i
+                                       (pr₁ ∘ ⌞ s ⌟)
+                                       b
+                                       (ϕ-is-small-backward (⋁ (α i , q ∘ pr₁ ∘ ⌞ s ⌟)) b (transport (λ a' → (b , a') ∈ ϕ) (a-＝-⋁-α) p))
+                                       (λ b' → C b' ∘ (transport (λ a' → b' ≤ᴮ a') (a-＝-⋁-α ⁻¹))) 
+         where
+          open Surjection-implies-equal-joins L (↓ᴮ a) (α i) s (q ∘ pr₁) hiding (⋁_)
+          a-＝-⋁-α : a ＝ ⋁ (α i , q ∘ pr₁ ∘ ⌞ s ⌟)
+          a-＝-⋁-α = (↠-families-＝-sup a (⋁ (α i , q ∘ pr₁ ∘ ⌞ s ⌟)) (is-sup a) (is-lub-for L (α i , q ∘ pr₁ ∘ ⌞ s ⌟)))
+        g'' : (Ǝ i ꞉ I₂ , α i is-a-small-cover-of ↓ᴮ a) holds
+            → b ∈ Small-𝓘nd
+        g'' = ∥∥-rec (holds-is-prop (Small-𝓘nd b)) g'
+
+    Small-𝓘nd-⊆-𝓘nd : Small-𝓘nd ⊆ 𝓘nd
+    Small-𝓘nd-⊆-𝓘nd = Small-𝓘nd-Initial 𝓘nd f g
+     where
+      f : (i : I₁)
+        → Y i ⊆ 𝓘nd
+        → (b : B)
+        → (b , Y i) ∈ R
+        → b ∈ 𝓘nd
+      f i C b r = 𝓘nd-is-c-closed (Y i) C b (is-small-pres-backward b (Y i) ∣ (i , (λ _ → id) , r) ∣)
+      g : (i : I₂)
+        → (m : α i → B)
+        → (b : B)
+        → small-ϕ b (⋁ (α i , q ∘ m))
+        → ((x : B) → x ≤ᴮ (⋁ (α i , q ∘ m)) → x ∈ 𝓘nd)
+        → b ∈ 𝓘nd
+      g i m b s C = 𝓘nd-is-ϕ-closed (⋁ (α i , q ∘ m)) b (ϕ-is-small-forward (⋁ (α i , q ∘ m)) b s) C
+
+    𝓘nd-is-small : (b : B) → (b ∈ 𝓘nd) is 𝓥 small
+    𝓘nd-is-small b = (b ∈ Small-𝓘nd , equiv)
+     where
+      equiv : b ∈ Small-𝓘nd ≃ b ∈ 𝓘nd
+      equiv = logically-equivalent-props-are-equivalent (holds-is-prop (Small-𝓘nd b)) (holds-is-prop (𝓘nd b)) (Small-𝓘nd-⊆-𝓘nd b) (𝓘nd-⊆-Small-𝓘nd b)
+
+\end{code}
+
+As a corollary of the above result we get a Predicative version of the least fixed point theorem.
+
+\begin{code}
+
+module Least-Fixed-Point {𝓤 𝓦 𝓥 : Universe}
+                         {B : 𝓥  ̇}
+                         (L : Sup-Lattice 𝓤 𝓦 𝓥)
+                         (q : B → ⟨ L ⟩)
+                          where
+
+ open Small-Basis L q 
+ open Bounded-Inductive-Definition L q
+ open Small-Presentation-of-Lattice L q
+ open Correspondance-small-ϕ-closed-types-non-inc-points L q
+ open Inductive-Definitions L q
+ open Small-QIT L q
+ open Local-Inductive-Definitions L q
+ open Monotone-Endo-Maps L hiding (_≤_)
+ open 𝓘nd-is-small L q
+
+ module Least-Fixed-Point-from-Small-Basis-Facts (h : is-small-basis) where
+
+  open Small-Basis-Facts h
+  open Bounded-from-Small-Basis-Facts h
+  open Small-Presentation-from-Small-Basis-Facts h
+  open Correspondance-from-Small-Basis-Facts h
+  open Ind-from-Small-Basis-Facts h
+  open Small-QIT-from-Small-Basis-Facts h
+  open Local-from-Small-Basis-Facts h
+  open 𝓘nd-is-small-from-Small-Basis-Facts h
+
+  Least-Fixed-Point-Theorem : (small-pres : has-small-presentation)
+                            → (f : ⟨ L ⟩ → ⟨ L ⟩)
+                            → (f-mono : f is-monotone)
+                            → (bnd : (ind-def-from-mono-map f f-mono) is-bounded)
+                            → (ind-e : Inductively-Generated-Subset-Exists (ind-def-from-mono-map f f-mono))
+                            → (ind-e' : Small-QIT-from-Bounded-and-Small-Presentation.Inductively-Generated-Small-Subset-Exists
+                                        small-pres
+                                        (ind-def-from-mono-map f f-mono) bnd)
+                            → Σ x ꞉ ⟨ L ⟩ , (f x ＝ x) × ((a : ⟨ L ⟩) → (f a ＝ a) → (x ≤ a) holds)
+  Least-Fixed-Point-Theorem small-pres f f-mono bnd ind-e ind-e' =
+    transport (λ g → Σ x ꞉ ⟨ L ⟩ , (g x ＝ x) × ((a : ⟨ L ⟩) → (g a ＝ a) → (x ≤ a) holds)) path Γ-has-least-fixed-point
+   where
+    open Correspondance-from-Locally-Small-ϕ (ind-def-from-mono-map f f-mono) (local-from-mono-map f f-mono)
+    open Small-𝓘nd-from-exists ind-e
+    open 𝓘nd-is-small-from-Bounded-and-Small-Presentation small-pres (ind-def-from-mono-map f f-mono) bnd
+    open Small-QIT-from-Bounded-and-Small-Presentation small-pres (ind-def-from-mono-map f f-mono) bnd
+    open 𝓘nd-is-small-QITs-exists ind-e ind-e'
+    open Smallness-Assumption 𝓘nd-is-small
+    H : (x : ⟨ L ⟩) → (Γ (ind-def-from-mono-map f f-mono) (local-from-mono-map f f-mono)) x ＝ f x
+    H = f-＝-Γ-from-mono-map f f-mono
+    path : Γ (ind-def-from-mono-map f f-mono) (local-from-mono-map f f-mono) ＝ f
+    path = dfunext fe H
+
+\end{code}
+
+  module Least-Fixed-Point-from-Ind-exists (ind-e : Inductively-Generated-Subset-Exists ϕ) where
+
+   open Small-𝓘nd-from-exists ind-e
+
+Σ ϕ ꞉ 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩) , Σ i ꞉ (ϕ is-bounded) ,
+                                 ((x : ⟨ L ⟩) → (Γ ϕ ((ϕ bounded-implies-local) i)) x ＝ f x)
