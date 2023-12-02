@@ -3,13 +3,20 @@ Ian Ray 01/09/2023.
 We formalize Curi's notion of Abstract Inductive Definition (CZF) within the
 context of a Sup-Lattice L with small basis B (and q : B → L). An abstract
 inductive defintion is a subset ϕ : B × L → Prop which can be thought of as a
-'inference rule'. Fortunately, unlike CZF, induction rules are first class
-citizens in type theory. Using HoTT + HITs we can construct the least closed
-subset under an 'inductive definition' ϕ. Although, it should be noted that HITs
-are not native to the TypeTopology library we simply postulate the existence of
-the type and work with it axiomatically. This postulate is of course justified
-as the proposed HIT is quite tame. It is a very special case of a QIT, one that
-quotients every element together. We open this file by defining Sup-Lattices.
+'inference rule' or a closure condition. More precisely, a subset S is closed
+under ϕ if for all  (b , a) ∈ ϕ and ↓ᴮa ⊆ S then q(b) ∈ S. Interestingly,
+there is an intimate connection between the least-closed subsets of some
+inductive definition ϕ and the least fixed point of a monotome map related to
+ϕ is a precise way. In this file we will develop this relationship and prove
+a predicative version of the least fixed point theorem. This work follows the
+paper 'On Tarski's Fixed Point Theorem' by Giovanni Curi. Fortunately, unlike
+in the realm of set theory, induction rules are first class citizens in type
+theory. Using UF + HITs we can construct the least closed subset under an
+'inductive definition' ϕ. Although, it should be noted since HITs are not native
+to the TypeTopology library we simply postulate the existence of the type and
+work with it axiomatically. This postulate is of course justified as the
+proposed HIT is quite tame. It is a very special case of a QIT, one that
+quotients every element together. 
 
 \begin{code}
 
@@ -43,6 +50,12 @@ open import Slice.Family
 open import UF.ImageAndSurjection pt
 
 open AllCombinators pt fe
+
+\end{code}
+
+In the interest of self containment we open this file by defining a Sup-Lattice.
+
+\begin{code}
 
 module Sup-Lattice-Def (𝓤 𝓦 𝓥 : Universe) where
 
@@ -107,8 +120,8 @@ is-least-upper-bound-for L of U = pr₂ (is-lub-for L U)
 
 \end{code}
 
-We define a monotone endo-map on lattice. This is sufficient as our intent is
-fixed-points.
+We now define a monotone endo-map on lattice. This is sufficient as our intent
+is to study fixed-points.
 
 \begin{code}
 
@@ -123,7 +136,8 @@ module Monotone-Endo-Maps {𝓤 𝓦 𝓥 : Universe} (L : Sup-Lattice 𝓤 𝓦
 \end{code}
 
 We now show that when one subset contains another the join of their total
-spaces are ordered as expected. 
+spaces are ordered as expected. This result will be quite useful throughout
+this file.
 
 \begin{code}
 
@@ -226,7 +240,7 @@ module Small-Types-have-Joins {𝓤 𝓦 𝓥 𝓣 : Universe}
 
 \end{code}
 
-We also quickly show when the join of equivalents types can be identified.
+We also quickly show that the joins of equivalent types can be identified.
 This will prove useful in the coming section.
 
 \begin{code}
@@ -266,7 +280,7 @@ module Equivalent-Families-have-same-Join {𝓤 𝓦 𝓥 𝓣 𝓣' : Universe}
 
 \end{code}
 
-We prove a similar result when a surjection exists between families. 
+We can weaken the above result and simply require a surjection between families.
 
 \begin{code}
 
@@ -554,8 +568,11 @@ module Inductive-Definitions {𝓤 𝓦 𝓥 : Universe}
 
 \end{code}
 
-We now  define a monotone operator on a certain class of inductive definitions
-which we will call 'local'.  
+We now consider a restricted calss of inductive definitions which we will call
+local. Then we define an operator on local inductive definitions and prove
+that it is monotone. Finally, we show that any monotone maps corresponds to
+a monotone operator and local inductive definition. This result is essential
+to showing the least fixed point theorem.
 
 \begin{code}
 
@@ -733,9 +750,9 @@ module Local-Inductive-Definitions {𝓤 𝓦 𝓥 : Universe}
 
 \end{code}
 
-We now spell out a correspondence between small ϕ-closed classes and non
-increasing points in our lattice. This will allow for our first fixed point
-result!
+We now spell out a correspondence between small 'closed' subsets and
+deflationary points in our lattice. This will allow us to show that monotone
+operators have a least fixed point under certain smallness assumpions.
 
 \begin{code}
 
@@ -1121,7 +1138,10 @@ module Correspondance-small-ϕ-closed-types-def-points {𝓤 𝓦 𝓥 : Univers
 
 \end{code}
 
-We now define what it means for an inductive definition to be bounded.
+We now consider a boundedness restricion on inductive definitions and show
+that bounded inductive definitions are local. An inductive definition is
+bounded if there is a small indexed family of types that can be substituted
+for elements a : L in a sense to be made precise below.
 
 \begin{code}
 
@@ -1276,7 +1296,9 @@ module Bounded-Inductive-Definition {𝓤 𝓦 𝓥 : Universe}
 
 \end{code}
 
-We now define what it means for a Lattice to have a small presentation.
+We now consider a stronger restriction on Sup-Lattices. A Sup-Lattice has a
+small presentation if there is a small indexed family of subsets that can be
+substituted for arbitrary subsets in a sense to be made precise below.
 
 \begin{code}
 
@@ -1310,7 +1332,8 @@ module Small-Presentation-of-Lattice {𝓤 𝓦 𝓥 : Universe}
 \end{code}
 
 We will now define, in the context of bounded ϕ and small-presentation 𝓡, a
-new QIT that is (fingers crossed) equivalent to 𝓘nd.
+new QIT that is equivalent to 𝓘nd. Notice the bounded and small-presentation
+restrictions allow us to avoid large quantification! 
 
 \begin{code}
 
@@ -1386,6 +1409,18 @@ module Small-QIT {𝓤 𝓦 𝓥 : Universe}
                    → (b , a) ∈ ϕ
                    → (Ǝ i ꞉ I₂ , α i is-a-small-cover-of ↓ᴮ a) holds)
    cover-condition = pr₂ (pr₂ (pr₂ bnd))
+
+   data Small-Ind-Check : B → 𝓥  ̇ where
+    Small-c-cl' : (i : I₁)
+                → ((b : B) → (b ∈ Y i → Small-Ind-Check b))
+                → (b : B) → (b , Y i) ∈ R
+                → Small-Ind-Check b
+    Small-ϕ-cl' : (i : I₂)
+                → (m : α i → B)
+                → (b : B)
+                → small-ϕ b (⋁ (α i , q ∘ m))
+                → ((b' : B) → (b' ≤ᴮ (⋁ (α i , q ∘ m)) → Small-Ind-Check b'))
+                → Small-Ind-Check b
 
    record Inductively-Generated-Small-Subset-Exists : 𝓤ω where
     constructor
@@ -1516,7 +1551,8 @@ module Small-QIT {𝓤 𝓦 𝓥 : Universe}
 \end{code}
 
 We will now show that under the assumptions of small presentation and bounded
-ϕ that b ∈ Small-𝓘nd ≃ b ∈ 𝓘nd.
+ϕ that b ∈ Small-𝓘nd ≃ b ∈ 𝓘nd. We make essential use of the initiality of
+either type here.
 
 \begin{code}
 
@@ -1636,7 +1672,7 @@ module 𝓘nd-is-small {𝓤 𝓦 𝓥 : Universe}
 
 \end{code}
 
-As a corollary of the above result we get a Predicative version of the least
+As a corollary of the above result we get a predicative version of the least
 fixed point theorem.
 
 \begin{code}
