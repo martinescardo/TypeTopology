@@ -3,20 +3,20 @@ Ian Ray 01/09/2023.
 We formalize Curi's notion of Abstract Inductive Definition (CZF) within the
 context of a Sup-Lattice L with small basis B (and q : B → L). An abstract
 inductive defintion is a subset ϕ : B × L → Prop which can be thought of as a
-'inference rule' or a closure condition. More precisely, a subset S is closed
-under ϕ if for all  (b , a) ∈ ϕ and ↓ᴮa ⊆ S then q(b) ∈ S. Interestingly,
-there is an intimate connection between the least-closed subsets of some
-inductive definition ϕ and the least fixed point of a monotome map related to
-ϕ is a precise way. In this file we will develop this relationship and prove
-a predicative version of the least fixed point theorem. This work follows the
-paper 'On Tarski's Fixed Point Theorem' by Giovanni Curi. Fortunately, unlike
-in the realm of set theory, induction rules are first class citizens in type
-theory. Using UF + HITs we can construct the least closed subset under an
-'inductive definition' ϕ. Although, it should be noted since HITs are not native
-to the TypeTopology library we simply postulate the existence of the type and
-work with it axiomatically. This postulate is of course justified as the
-proposed HIT is quite tame. It is a very special case of a QIT, one that
-quotients every element together. 
+'inference rule' concluding b from a. An inductive definition induces a
+closure condition. More precisely, a subset S is closed under ϕ if for all
+b : B and a : L such that (b , a) ∈ ϕ and ↓ᴮa is 'contained' in S then b ∈ S.
+Interestingly, there is an intimate connection between the least-closed
+subsets of some inductive definition ϕ and the least fixed point of a monotome
+map related to ϕ is a precise way. In this file we will develop this
+relationship and prove a predicative version of the least fixed point theorem.
+This work follows the paper 'On Tarski's Fixed Point Theorem' by Giovanni Curi. Fortunately, unlike in the realm of set theory, induction rules are first
+class citizens in type theory. Using UF + HITs we can construct the least
+closed subset under an inductive definition ϕ. Although, it should be noted
+since HITs are not native in Agda we simply postulate the existence of the
+type and work with it axiomatically. This postulate is of course justified as
+the proposed HIT is quite tame. In fact, it is a very special case of a QIT
+family, one that quotients every element together. 
 
 \begin{code}
 
