@@ -5,11 +5,11 @@ context of a Sup-Lattice L with small basis B (and q : B → L). An abstract
 inductive defintion is a subset ϕ : B × L → Prop which can be thought of as a
 'inference rule'. Fortunately, unlike CZF, induction rules are first class
 citizens in type theory. Using HoTT + HITs we can construct the least closed
-subset under an inductive definition ϕ. Although, it should be noted that HITs
-are not native to the TypeTopology library we simply postulate the existence of the type and work with it axiomatically. This postulate is of course justified
-as the proposed HIT is quite tame. It is a very special case of a QIT, one may
-be inclined to call it a Predicate Inducitve Type (PrIT). We open this file by
-defining Sup-Lattices.
+subset under an 'inductive definition' ϕ. Although, it should be noted that HITs
+are not native to the TypeTopology library we simply postulate the existence of
+the type and work with it axiomatically. This postulate is of course justified
+as the proposed HIT is quite tame. It is a very special case of a QIT, one that
+quotients every element together. We open this file by defining Sup-Lattices.
 
 \begin{code}
 
@@ -308,7 +308,8 @@ module Surjection-implies-equal-joins {𝓤 𝓦 𝓥 𝓣 𝓣' : Universe}
 \end{code}
 
 We now define a small basis for a Sup-Lattice. This consists of a type B in a
-fixed universe and a map q from B to the carrier of the Sup-Lattice. In a sense to be made precise the pair B and q generate the Sup-Lattice. This notion will
+fixed universe and a map q from B to the carrier of the Sup-Lattice. In a sense
+to be made precise the pair B and q generate the Sup-Lattice. This notion will
 be integral in developing the rest of our theory.
 
 \begin{code}
@@ -803,7 +804,10 @@ module Correspondance-small-ϕ-closed-types-def-points {𝓤 𝓦 𝓥 : Univers
                                      → ((a : ⟨ L ⟩)
                                      → (b : B)
                                      → ((b , a) ∈ ϕ)
-                                     → ((b' : B) → (b' ≤ᴮ a → b' ∈ subset-of-small-ϕ-closed-subset X)) → b ∈ subset-of-small-ϕ-closed-subset X)
+                                     → ((b' : B)
+                                     → (b' ≤ᴮ a
+                                     → b' ∈ subset-of-small-ϕ-closed-subset X))
+                                     → b ∈ subset-of-small-ϕ-closed-subset X)
    ϕ-closed-of-small-ϕ-closed-subset (P , c-clsd , ϕ-clsd) = ϕ-clsd
 
    _is-non-inc : (a : ⟨ L ⟩) → 𝓦  ̇
@@ -1671,7 +1675,8 @@ module Least-Fixed-Point {𝓤 𝓦 𝓥 : Universe}
                                       is-bounded)
                             → (ind-e : Inductively-Generated-Subset-Exists
                                         (ind-def-from-mono-map f f-mono))
-                            → (ind-e' : Small-QIT-from-Bounded-and-Small-Presentation.Inductively-Generated-Small-Subset-Exists
+                            → (ind-e' :
+   Small-QIT-from-Bounded-and-Small-Presentation.Inductively-Generated-Small-Subset-Exists
                                         small-pres
                                         (ind-def-from-mono-map f f-mono) bnd)
                             → Σ x ꞉ ⟨ L ⟩ ,
