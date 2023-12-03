@@ -1707,41 +1707,31 @@ module Least-Fixed-Point {𝓤 𝓦 𝓥 : Universe}
   Least-Fixed-Point-Theorem : (small-pres : has-small-presentation)
                             → (f : ⟨ L ⟩ → ⟨ L ⟩)
                             → (f-mono : f is-monotone)
-                            → (bnd : (ind-def-from-mono-map f f-mono)
-                                      is-bounded)
-                            → (ind-e : Inductively-Generated-Subset-Exists
-                                        (ind-def-from-mono-map f f-mono))
+                            → (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩))
+                            → (bnd : ϕ is-bounded)
+                            → ((x : ⟨ L ⟩)
+                             → (Γ ϕ ((ϕ bounded-implies-local) bnd)) x ＝ f x)
+                            → (ind-e : Inductively-Generated-Subset-Exists ϕ)
                             → (ind-e' :
    Small-QIT-from-Bounded-and-Small-Presentation.Inductively-Generated-Small-Subset-Exists
-                                        small-pres
-                                        (ind-def-from-mono-map f f-mono) bnd)
+                                        small-pres ϕ bnd)
                             → Σ x ꞉ ⟨ L ⟩ ,
                                (f x ＝ x) × ((a : ⟨ L ⟩)
                                           → (f a ＝ a)
                                           → (x ≤ a) holds)
-  Least-Fixed-Point-Theorem small-pres f f-mono bnd ind-e ind-e' =
+  Least-Fixed-Point-Theorem small-pres f f-mono ϕ bnd H ind-e ind-e' =
     transport (λ g → Σ x ꞉ ⟨ L ⟩ , (g x ＝ x) × ((a : ⟨ L ⟩)
                                               → (g a ＝ a)
                                               → (x ≤ a) holds))
               path Γ-has-least-fixed-point
    where
-    open Correspondance-from-Locally-Small-ϕ (ind-def-from-mono-map f f-mono)
-                                             (local-from-mono-map f f-mono)
+    open Correspondance-from-Locally-Small-ϕ ϕ ((ϕ bounded-implies-local) bnd)
     open Small-𝓘nd-from-exists ind-e
-    open 𝓘nd-is-small-from-Bounded-and-Small-Presentation
-          small-pres
-          (ind-def-from-mono-map f f-mono)
-          bnd
-    open Small-QIT-from-Bounded-and-Small-Presentation small-pres
-          (ind-def-from-mono-map f f-mono)
-          bnd
+    open 𝓘nd-is-small-from-Bounded-and-Small-Presentation small-pres ϕ bnd
+    open Small-QIT-from-Bounded-and-Small-Presentation small-pres ϕ bnd
     open 𝓘nd-is-small-QITs-exists ind-e ind-e'
     open Smallness-Assumption 𝓘nd-is-small
-    H : (x : ⟨ L ⟩)
-      → (Γ (ind-def-from-mono-map f f-mono) (local-from-mono-map f f-mono)) x
-      ＝ f x
-    H = f-＝-Γ-from-mono-map f f-mono
-    path : Γ (ind-def-from-mono-map f f-mono) (local-from-mono-map f f-mono)
+    path : Γ ϕ ((ϕ bounded-implies-local) bnd)
          ＝ f
     path = dfunext fe H
 
