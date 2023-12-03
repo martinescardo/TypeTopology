@@ -10,17 +10,20 @@ open import UF.Subsingletons
 
 module Locales.Sierpinski
         (𝓤  : Universe)
-        (pe : propext 𝓤)
+        (pe : Prop-Ext)
         (pt : propositional-truncations-exist)
         (fe : Fun-Ext) where
 
 open import Locales.Frame pt fe hiding (𝟚)
-open import DomainTheory.Lifting.LiftingSet pt fe
+open import DomainTheory.Lifting.LiftingSet pt fe 𝓤 pe
+open import DomainTheory.Lifting.LiftingSetAlgebraic pt pe fe 𝓤
+open import DomainTheory.Basics.Dcpo    pt fe 𝓤 hiding (⟨_⟩)
 open import DomainTheory.Basics.Pointed pt fe 𝓤
 open import Slice.Family
 
 open import UF.SubtypeClassifier
 open import UF.Subsingletons-Properties
+open import DomainTheory.Basics.Miscelanea pt fe 𝓤
 
 \end{code}
 
@@ -28,8 +31,17 @@ We first define the Sierpinski domain.
 
 \begin{code}
 
-𝕊-dcpo : DCPO⊥
-𝕊-dcpo = 𝓛-DCPO⊥ 𝓤 pe (props-are-sets {X = 𝟙 {𝓤 ⁺}} 𝟙-is-prop)
+𝕊-dcpo⁺ : DCPO {𝓤 ⁺} {𝓤 ⁺}
+𝕊-dcpo⁺ = 𝓛-DCPO (props-are-sets {X = 𝟙 {𝓤 ⁺}} 𝟙-is-prop)
+
+𝕊-is-locally-small : {!!}
+𝕊-is-locally-small = {!!}
+
+-- 𝕊-dcpo⊥ : DCPO⊥
+-- 𝕊-dcpo⊥ = 𝕊-dcpo , †
+--  where
+--   † : has-least (underlying-order 𝕊-dcpo)
+--   † = (𝟘 , 𝟘-elim , 𝟘-is-prop) , λ _ → unique-from-𝟘
 
 \end{code}
 
@@ -38,9 +50,10 @@ domain.
 
 \begin{code}
 
+{--
 open import Locales.ScottLocale.Definition pt fe 𝓤
 
-open DefnOfScottLocale (𝕊-dcpo ⁻) 𝓤 pe
+open DefnOfScottLocale 𝕊-dcpo 𝓤 pe
 open Locale
 open import Lifting.Lifting (𝓤 ⁺)
 
@@ -49,5 +62,6 @@ open import Lifting.Lifting (𝓤 ⁺)
 
 ⊤𝕊 : ⟨ 𝒪 𝕊 ⟩
 ⊤𝕊 = ⊤ₛ
+--}
 
 \end{code}
