@@ -11,8 +11,8 @@ proof I ended up writing here ended up being a bit different.
 
 {-# OPTIONS --safe --without-K #-}
 
-open import UF.PropTrunc
 open import UF.FunExt
+open import UF.PropTrunc
 
 module Taboos.FiniteSubsetTaboo (pt : propositional-truncations-exist)
                                 (fe : Fun-Ext) where
