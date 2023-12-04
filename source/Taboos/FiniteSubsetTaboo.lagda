@@ -52,7 +52,7 @@ is-Kuratowski-finite-subsetₚ P =
 \end{code}
 
 We now define a predicate expressing the taboo we are interested in: given a
-type `X`, `has-finite-subset-property X` expresses that for every
+type `X`, `Kuratowski-finiteness-is-hereditary X` expresses that for every
 Kuratowski-finite subset `F ⊆ X`, any further subset of `S ⊆ F` is also
 Kuratowski-finite.
 
@@ -69,7 +69,7 @@ Kuratowski-finiteness-is-hereditary X =
 The result that we prove in this module is the following
 
 ```
-  finite-subset-property X → is-discrete X
+  Kuratowski-finiteness-is-hereditary X → is-discrete X
 ```
 
 We now prove two easy lemmas before we proceed to the proof of the main result
@@ -86,6 +86,8 @@ having-empty-enumeration-entails-emptiness X e σ x =
 
 \end{code}
 
+Lemma 2:
+
 \begin{code}
 
 having-nonempty-enumeration-entails-inhabitedness :
@@ -94,16 +96,16 @@ having-nonempty-enumeration-entails-inhabitedness X (succ n) p e σ = e 𝟎
 
 \end{code}
 
-Satisfying the finite subset property gives decidable equality.
+Every type `X` for which Kuratowski-finiteness is hereditary is discrete.
 
 \begin{code}
 
-finite-subset-property-gives-discreteness
- : (X : 𝓤  ̇)
+hereditary-Kuratowski-finiteness-gives-discreteness :
+   (X : 𝓤  ̇)
  → is-set X
  → Kuratowski-finiteness-is-hereditary X holds
  → is-discrete X
-finite-subset-property-gives-discreteness {𝓤} X 𝕤 ϡ x y =
+hereditary-Kuratowski-finiteness-gives-discreteness {𝓤} X 𝕤 ϡ x y =
  ∥∥-rec (decidability-of-prop-is-prop fe 𝕤) † (ϡ F S ι φ)
   where
    _＝ₚ_ : X → X → Ω 𝓤
@@ -121,7 +123,7 @@ finite-subset-property-gives-discreteness {𝓤} X 𝕤 ϡ x y =
     where
      † : (z ＝ x) + (z ＝ y) → ∃ i ꞉ Fin 2 , e i ＝ (z , p)
      † (inl refl) = ∣ 𝟎 , to-subtype-＝ (holds-is-prop ∘ F) refl ∣
-     † (inr refl) = ∣ 𝟏 , to-subtype-＝ (holds-is-prop ∘ F) refl  ∣
+     † (inr refl) = ∣ 𝟏 , to-subtype-＝ (holds-is-prop ∘ F) refl ∣
 
    φ : is-Kuratowski-finite-subset F
    φ = ∣ 2 , e , σ ∣
@@ -156,20 +158,22 @@ finite-subset-property-gives-discreteness {𝓤} X 𝕤 ϡ x y =
 
 From this result, the following corollary follows:
 
-    if every subset of a Kuratowski-finite subset of `Ω` is finite, then
-    the law of excluded middle holds.
+    if every Kuratowski-finiteness is hereditary for `Ω`, then the law of
+    excluded middle holds.
 
 \begin{code}
 
-finite-subset-property-for-Ω-gives-EM :
+hereditary-Kuratowski-finiteness-for-Ω-gives-EM :
    {𝓤 : Universe}
  → propext 𝓤
  → Kuratowski-finiteness-is-hereditary (Ω 𝓤) holds
  → EM 𝓤
-finite-subset-property-for-Ω-gives-EM {𝓤} pe ϡ = Ω-discrete-gives-EM fe pe †
- where
+hereditary-Kuratowski-finiteness-for-Ω-gives-EM {𝓤} pe ϡ =
+ let
   † : is-discrete (Ω 𝓤)
-  † = finite-subset-property-gives-discreteness (Ω 𝓤) (Ω-is-set fe pe) ϡ
+  † = hereditary-Kuratowski-finiteness-gives-discreteness (Ω 𝓤) (Ω-is-set fe pe) ϡ
+ in
+  Ω-discrete-gives-EM fe pe †
 
 \end{code}
 
@@ -183,7 +187,7 @@ finite-subset-property-gives-EM :
  → ((X : 𝓤 ⁺  ̇) → Kuratowski-finiteness-is-hereditary X holds)
  → EM 𝓤
 finite-subset-property-gives-EM 𝓤 pe ϡ =
- finite-subset-property-for-Ω-gives-EM pe (ϡ (Ω 𝓤))
+ hereditary-Kuratowski-finiteness-for-Ω-gives-EM pe (ϡ (Ω 𝓤))
 
 \end{code}
 
