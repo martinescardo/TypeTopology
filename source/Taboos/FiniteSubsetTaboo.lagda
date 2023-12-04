@@ -4,7 +4,7 @@ author:       Ayberk Tosun
 date-started: 2023-11-27
 ---
 
-Based on proof that I learned from Martín Escardó on 2023-11-21, though the
+Based on a proof that I learned from Martín Escardó on 2023-11-21, though the
 proof I ended up writing here ended up being a bit different.
 
 \begin{code}
