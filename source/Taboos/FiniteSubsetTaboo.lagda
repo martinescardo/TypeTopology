@@ -156,7 +156,7 @@ hereditary-Kuratowski-finiteness-gives-discreteness {𝓤} X 𝕤 ϡ x y =
 
 \end{code}
 
-From this result, the following corollary follows:
+From this result, the following corollary follows
 
     if Kuratowski-finiteness is hereditary for `Ω`, then the law of excluded
     middle holds.
