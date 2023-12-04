@@ -58,8 +58,7 @@ Kuratowski-finite.
 
 \begin{code}
 
-Kuratowski-finiteness-is-hereditary :
- (X : 𝓤  ̇) → Ω (𝓤 ⁺)
+Kuratowski-finiteness-is-hereditary : 𝓤  ̇ → Ω (𝓤 ⁺)
 Kuratowski-finiteness-is-hereditary X =
  Ɐ F ꞉ 𝓟 X , Ɐ S ꞉ 𝓟 X ,
   S ⊆ₚ F ⇒ is-Kuratowski-finite-subsetₚ F ⇒ is-Kuratowski-finite-subsetₚ S
@@ -72,8 +71,8 @@ The result that we prove in this module is the following
   Kuratowski-finiteness-is-hereditary X → is-discrete X
 ```
 
-We now prove two easy lemmas before we proceed to the proof of the main result
-of interest.
+We now prove two easy lemmas before we proceed to the proof of the result of
+interest.
 
 Lemma 1:
 
@@ -96,7 +95,8 @@ having-nonempty-enumeration-entails-inhabitedness X (succ n) p e σ = e 𝟎
 
 \end{code}
 
-Every type `X` for which Kuratowski-finiteness is hereditary is discrete.
+Now, the main result: every type `X` for which Kuratowski-finiteness is
+hereditary is discrete.
 
 \begin{code}
 
@@ -158,8 +158,8 @@ hereditary-Kuratowski-finiteness-gives-discreteness {𝓤} X 𝕤 ϡ x y =
 
 From this result, the following corollary follows:
 
-    if every Kuratowski-finiteness is hereditary for `Ω`, then the law of
-    excluded middle holds.
+    if Kuratowski-finiteness is hereditary for `Ω`, then the law of excluded
+    middle holds.
 
 \begin{code}
 
