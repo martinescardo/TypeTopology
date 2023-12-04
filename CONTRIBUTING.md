@@ -64,8 +64,8 @@ document, we provide a list of conventions and practices that we expect
   Agda mode. To get the former, you have to type `\:4`
 - Avoid `with` clauses when defining functions.
 - In the index files, whose purposes are to import modules in subdirectories,
-  make sure to alphabetically sort the `import` lines. This is preferable in all
-  modules but it is a rule only for index files.
+  make sure to _alphabetically sort_ the `import` lines. This is preferable in
+  all modules but it is a rule only for index files.
 
 [1]: https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Universes.html
 [2]: https://www.cs.bham.ac.uk/~mhe/TypeTopology/DomainTheory.Basics.Dcpo.html
