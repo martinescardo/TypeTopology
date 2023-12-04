@@ -58,8 +58,9 @@ Kuratowski-finite.
 
 \begin{code}
 
-finite-subset-property : (X : 𝓤  ̇) → Ω (𝓤 ⁺)
-finite-subset-property X =
+Kuratowski-finiteness-is-hereditary :
+ (X : 𝓤  ̇) → Ω (𝓤 ⁺)
+Kuratowski-finiteness-is-hereditary X =
  Ɐ F ꞉ 𝓟 X , Ɐ S ꞉ 𝓟 X ,
   S ⊆ₚ F ⇒ is-Kuratowski-finite-subsetₚ F ⇒ is-Kuratowski-finite-subsetₚ S
 
@@ -78,10 +79,8 @@ Lemma 1:
 
 \begin{code}
 
-having-empty-enumeration-entails-emptiness : (X : 𝓤  ̇)
-                                           → (e : 𝟘 {𝓤₀} → X)
-                                           → is-surjection e
-                                           → ¬ X
+having-empty-enumeration-entails-emptiness :
+ (X : 𝓤  ̇) → (e : 𝟘 {𝓤₀} → X) → is-surjection e → ¬ X
 having-empty-enumeration-entails-emptiness X e σ x =
  ∥∥-rec 𝟘-is-prop (𝟘-elim ∘ pr₁) (σ x)
 
@@ -89,11 +88,8 @@ having-empty-enumeration-entails-emptiness X e σ x =
 
 \begin{code}
 
-having-nonempty-enumeration-entails-inhabitedness : (X : 𝓤  ̇) (n : ℕ)
-                                                    → 0 <ℕ n
-                                                    → (e : Fin n → X)
-                                                    → is-surjection e
-                                                    → X
+having-nonempty-enumeration-entails-inhabitedness :
+ (X : 𝓤  ̇) (n : ℕ) → 0 <ℕ n → (e : Fin n → X) → is-surjection e → X
 having-nonempty-enumeration-entails-inhabitedness X (succ n) p e σ = e 𝟎
 
 \end{code}
@@ -102,10 +98,11 @@ Satisfying the finite subset property gives decidable equality.
 
 \begin{code}
 
-finite-subset-property-gives-discreteness : (X : 𝓤  ̇)
-                                          → is-set X
-                                          → finite-subset-property X holds
-                                          → is-discrete X
+finite-subset-property-gives-discreteness
+ : (X : 𝓤  ̇)
+ → is-set X
+ → Kuratowski-finiteness-is-hereditary X holds
+ → is-discrete X
 finite-subset-property-gives-discreteness {𝓤} X 𝕤 ϡ x y =
  ∥∥-rec (decidability-of-prop-is-prop fe 𝕤) † (ϡ F S ι φ)
   where
@@ -164,10 +161,11 @@ From this result, the following corollary follows:
 
 \begin{code}
 
-finite-subset-property-for-Ω-gives-EM : {𝓤 : Universe}
-                                      → propext 𝓤
-                                      → finite-subset-property (Ω 𝓤) holds
-                                      → EM 𝓤
+finite-subset-property-for-Ω-gives-EM :
+   {𝓤 : Universe}
+ → propext 𝓤
+ → Kuratowski-finiteness-is-hereditary (Ω 𝓤) holds
+ → EM 𝓤
 finite-subset-property-for-Ω-gives-EM {𝓤} pe ϡ = Ω-discrete-gives-EM fe pe †
  where
   † : is-discrete (Ω 𝓤)
@@ -179,10 +177,11 @@ Combining the two, we get:
 
 \begin{code}
 
-finite-subset-property-gives-EM : (𝓤 : Universe)
-                                → (pe : propext 𝓤)
-                                → ((X : 𝓤 ⁺  ̇) → finite-subset-property X holds)
-                                → EM 𝓤
+finite-subset-property-gives-EM :
+   (𝓤 : Universe)
+ → (pe : propext 𝓤)
+ → ((X : 𝓤 ⁺  ̇) → Kuratowski-finiteness-is-hereditary X holds)
+ → EM 𝓤
 finite-subset-property-gives-EM 𝓤 pe ϡ =
  finite-subset-property-for-Ω-gives-EM pe (ϡ (Ω 𝓤))
 
