@@ -22,6 +22,7 @@ open import Fin.Type
 open import MLTT.Negation
 open import MLTT.Spartan
 open import Naturals.Order
+open import Notation.Order
 open import UF.DiscreteAndSeparated
 open import UF.ExcludedMiddle
 open import UF.ImageAndSurjection pt
@@ -90,7 +91,7 @@ Lemma 2:
 \begin{code}
 
 having-nonempty-enumeration-entails-inhabitedness :
- (X : 𝓤  ̇) (n : ℕ) → 0 <ℕ n → (e : Fin n → X) → is-surjection e → X
+ (X : 𝓤  ̇) (n : ℕ) → 0 < n → (e : Fin n → X) → is-surjection e → X
 having-nonempty-enumeration-entails-inhabitedness X (succ n) p e σ = e 𝟎
 
 \end{code}
