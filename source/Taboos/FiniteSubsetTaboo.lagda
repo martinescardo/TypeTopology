@@ -72,8 +72,7 @@ The result that we prove in this module is the following
   Kuratowski-finiteness-is-hereditary X → is-discrete X
 ```
 
-We now prove two easy lemmas before we proceed to the proof of the result of
-interest.
+We now prove two easy lemmas before we proceed to the proof of this result.
 
 Lemma 1:
 
@@ -157,7 +156,7 @@ hereditary-Kuratowski-finiteness-gives-discreteness {𝓤} X 𝕤 ϡ x y =
 
 \end{code}
 
-From this result, the following corollary follows
+This result gives the following corollary:
 
     if Kuratowski-finiteness is hereditary for `Ω`, then the law of excluded
     middle holds.
