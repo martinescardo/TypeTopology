@@ -18,25 +18,24 @@ module Taboos.FiniteSubsetTaboo (pt : propositional-truncations-exist)
                                 (fe : Fun-Ext) where
 
 open import Fin.Kuratowski pt
-open import MLTT.Spartan
-open import MLTT.Negation
-open import Naturals.Order
-open import UF.Sets
 open import Fin.Type
+open import MLTT.Negation
+open import MLTT.Spartan
+open import Naturals.Order
+open import UF.DiscreteAndSeparated
+open import UF.ExcludedMiddle
+open import UF.ImageAndSurjection pt
+open import UF.Logic
 open import UF.Powerset
 open import UF.Powerset-Fin pt
-open import UF.SubtypeClassifier
-open import UF.Logic
-open import UF.DiscreteAndSeparated
-open import UF.ImageAndSurjection pt
+open import UF.Sets
 open import UF.Subsingletons
-open import UF.ExcludedMiddle
 open import UF.Subsingletons-FunExt
+open import UF.SubtypeClassifier
 open import UF.SubtypeClassifier-Properties using (Ω-is-set)
-open PropositionalSubsetInclusionNotation fe
 
 open AllCombinators pt fe
-
+open PropositionalSubsetInclusionNotation fe
 open PropositionalTruncation pt
 
 \end{code}
