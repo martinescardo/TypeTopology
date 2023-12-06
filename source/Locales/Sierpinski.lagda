@@ -19,10 +19,13 @@ open import DomainTheory.Lifting.LiftingSet pt fe 𝓤 pe
 open import DomainTheory.Lifting.LiftingSetAlgebraic pt pe fe 𝓤
 open import DomainTheory.Basics.Dcpo    pt fe 𝓤 hiding (⟨_⟩)
 open import DomainTheory.Basics.Pointed pt fe 𝓤
+open import DomainTheory.BasesAndContinuity.Continuity pt fe 𝓤
+open import DomainTheory.BasesAndContinuity.Bases pt fe 𝓤
 open import Slice.Family
 
 open import UF.SubtypeClassifier
 open import UF.Subsingletons-Properties
+open import UF.DiscreteAndSeparated
 open import DomainTheory.Basics.Miscelanea pt fe 𝓤
 
 \end{code}
@@ -31,11 +34,18 @@ We first define the Sierpinski domain.
 
 \begin{code}
 
-𝕊-dcpo⁺ : DCPO {𝓤 ⁺} {𝓤 ⁺}
-𝕊-dcpo⁺ = 𝓛-DCPO (props-are-sets {X = 𝟙 {𝓤 ⁺}} 𝟙-is-prop)
+𝕊𝓓⁺ : DCPO {𝓤 ⁺ } {𝓤 ⁺}
+𝕊𝓓⁺ = 𝓛-DCPO {X = 𝟙 {𝓤}} 𝟙-is-set
 
-𝕊-is-locally-small : {!!}
-𝕊-is-locally-small = {!!}
+𝕊-is-locally-small : is-locally-small 𝕊𝓓⁺
+𝕊-is-locally-small = 𝓛-is-locally-small {X = 𝟙 {𝓤}} 𝟙-is-set
+
+𝕊𝓓⁺-has-specified-small-compact-basis : has-specified-small-compact-basis 𝕊𝓓⁺
+𝕊𝓓⁺-has-specified-small-compact-basis =
+ 𝓛-has-specified-small-compact-basis 𝟙-is-set
+
+𝕊𝓓⁺-is-algebraic : is-algebraic-dcpo (𝓛-DCPO {X = 𝟙 {𝓤}} 𝟙-is-set)
+𝕊𝓓⁺-is-algebraic = 𝓛-is-algebraic-dcpo 𝟙-is-set
 
 -- 𝕊-dcpo⊥ : DCPO⊥
 -- 𝕊-dcpo⊥ = 𝕊-dcpo , †
