@@ -21,5 +21,6 @@ import Fin.Topology
 import Fin.Type
 import Fin.UniverseInvariance
 import Fin.Variation
+import Fin.KuratowskiAlternative
 
 \end{code}
