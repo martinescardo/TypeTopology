@@ -428,3 +428,87 @@ module _ (α : Ordinal 𝓤)(β : Ordinal 𝓥) where
            , exponential-order-transitive α β
 
 -- End goal: prove it satisfies (0, succ, sup)-spec
+
+exp-0-spec' : (α : Ordinal 𝓤) → ([𝟙+ α ]^ (𝟘ₒ {𝓥})) ≃ₒ 𝟙ₒ {𝓤 ⊔ 𝓥}
+exp-0-spec' α = f , f-monotone , qinvs-are-equivs f f-qinv , g-monotone
+ where
+  f : ⟨ [𝟙+ α ]^ 𝟘ₒ ⟩ → 𝟙
+  f _ = ⋆
+  f-monotone : is-order-preserving ([𝟙+ α ]^ 𝟘ₒ) 𝟙ₒ (λ _ → ⋆)
+  f-monotone ([] , δ) ([] , ε) u =
+    𝟘-elim
+     (irreflexive
+      (exponential-order α 𝟘ₒ)
+      ([] , δ)
+      (exponential-order-wellfounded α 𝟘ₒ _) u)
+  g : 𝟙 → ⟨ [𝟙+ α ]^ 𝟘ₒ ⟩
+  g _ = [] , []-decr
+  g-monotone : is-order-preserving 𝟙ₒ ([𝟙+ α ]^ 𝟘ₒ) g
+  g-monotone ⋆ ⋆ u = 𝟘-elim u
+  f-qinv : qinv f
+  f-qinv = g , p , q
+   where
+    p : (λ x → [] , []-decr) ∼ id
+    p ([] , δ) = to-exponential-＝ α 𝟘ₒ refl
+    q : (λ x → ⋆) ∼ id
+    q ⋆ = refl
+
+exp-0-spec : (α : Ordinal 𝓤) → [𝟙+ α ]^ (𝟘ₒ {𝓥}) ＝ 𝟙ₒ
+exp-0-spec {𝓤} {𝓥} α = eqtoidₒ (ua (𝓤 ⊔ 𝓥)) fe' ([𝟙+ α ]^ 𝟘ₒ) 𝟙ₒ (exp-0-spec' α)
+
+{- We should the more general statement that
+
+     ([𝟙+ α ]^ (β +ₒ γ)) ≃ₒ (([𝟙+ α ]^ β) ×ₒ ([𝟙+ α]^ γ)
+
+   and
+
+     ([𝟙+ α]^ 𝟙ₒ) ＝ 𝟙ₒ +ₒ α
+-}
+
+exp-succ-spec' : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
+               → ([𝟙+ α ]^ (β +ₒ 𝟙ₒ)) ≃ₒ (([𝟙+ α ]^ β) ×ₒ (𝟙ₒ +ₒ α))
+exp-succ-spec' α β = f , f-monotone , qinvs-are-equivs f f-qinv , g-monotone
+ where
+  f : ⟨ [𝟙+ α ]^ (β +ₒ 𝟙ₒ) ⟩ → ⟨ ([𝟙+ α ]^ β) ×ₒ (𝟙ₒ +ₒ α) ⟩
+  f ([] , δ) = (([] , δ) , inl ⋆)
+  f ((inl b , a ∷ xs) , δ) = (((b , a) ∷ xs') , δ') , (inl ⋆)
+   where
+    xs' : {!!}
+    xs' = {!!}
+    δ' : {!!}
+    δ' = {!!}
+  f ((inr ⋆ , a ∷ xs) , δ) = (xs' , δ') , inr a
+   where
+    xs' : {!!}
+    xs' = {!!}
+    δ' : {!!}
+    δ' = {!!}
+  f-monotone : is-order-preserving ([𝟙+ α ]^ (β +ₒ 𝟙ₒ)) (([𝟙+ α ]^ β) ×ₒ (𝟙ₒ +ₒ α)) f
+  f-monotone = {!!}
+  g : ⟨ ([𝟙+ α ]^ β) ×ₒ (𝟙ₒ +ₒ α) ⟩ → ⟨ [𝟙+ α ]^ (β +ₒ 𝟙ₒ) ⟩
+  g (([] , δ) , inl ⋆) = [] , []-decr
+  g ((((b , a) ∷ xs) , δ) , inl ⋆) = (inl b , a ∷ xs') , δ'
+   where
+    xs' : {!!}
+    xs' = {!!}
+    δ' : {!!}
+    δ' = {!!}
+  g (l , inr a) = ((inr ⋆) , a ∷ xs') , δ'
+   where
+    xs' : {!!}
+    xs' = {!!}
+    δ' : {!!}
+    δ' = {!!}
+  g-monotone : is-order-preserving (([𝟙+ α ]^ β) ×ₒ (𝟙ₒ +ₒ α)) ([𝟙+ α ]^ (β +ₒ 𝟙ₒ)) g
+  g-monotone = {!!}
+  f-qinv : qinv f
+  f-qinv = g , p , q
+   where
+    p : {!!}
+    p = {!!}
+    q : {!!}
+    q = {!!}
+
+exp-succ-spec : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
+              → ([𝟙+ α ]^ (β +ₒ 𝟙ₒ)) ＝ (([𝟙+ α ]^ β) ×ₒ (𝟙ₒ +ₒ α))
+exp-succ-spec = {!!}
