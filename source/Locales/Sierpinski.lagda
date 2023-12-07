@@ -14,19 +14,18 @@ module Locales.Sierpinski
         (pt : propositional-truncations-exist)
         (fe : Fun-Ext) where
 
-open import Locales.Frame pt fe hiding (𝟚)
+open import DomainTheory.BasesAndContinuity.Bases pt fe 𝓤
+open import DomainTheory.BasesAndContinuity.Continuity pt fe 𝓤
+open import DomainTheory.Basics.Dcpo    pt fe 𝓤 renaming (⟨_⟩ to ⟨_⟩∙)
+open import DomainTheory.Basics.Miscelanea pt fe 𝓤
+open import DomainTheory.Basics.Pointed pt fe 𝓤
 open import DomainTheory.Lifting.LiftingSet pt fe 𝓤 pe
 open import DomainTheory.Lifting.LiftingSetAlgebraic pt pe fe 𝓤
-open import DomainTheory.Basics.Dcpo    pt fe 𝓤 hiding (⟨_⟩)
-open import DomainTheory.Basics.Pointed pt fe 𝓤
-open import DomainTheory.BasesAndContinuity.Continuity pt fe 𝓤
-open import DomainTheory.BasesAndContinuity.Bases pt fe 𝓤
+open import Locales.Frame pt fe hiding (𝟚)
 open import Slice.Family
-
-open import UF.SubtypeClassifier
-open import UF.Subsingletons-Properties
 open import UF.DiscreteAndSeparated
-open import DomainTheory.Basics.Miscelanea pt fe 𝓤
+open import UF.Subsingletons-Properties
+open import UF.SubtypeClassifier
 
 \end{code}
 
@@ -60,8 +59,22 @@ domain.
 
 \begin{code}
 
-{--
 open import Locales.ScottLocale.Definition pt fe 𝓤
+open import Locales.ScottLocale.ScottLocalesOfAlgebraicDcpos pt fe 𝓤
+
+hscb : has-specified-small-compact-basis 𝕊𝓓
+hscb = (𝟙 {𝓤} + 𝟙 {𝓤}) , e , σ
+ where
+  e : 𝟙 + 𝟙 → ⟨ 𝕊𝓓 ⟩∙
+  e (inl ⋆) = {!!}
+  e (inr x) = {!!}
+
+  σ : is-small-compact-basis 𝕊𝓓 e
+  σ = {!!}
+
+-- open ScottLocaleConstruction 𝕊𝓓
+
+{--
 
 open DefnOfScottLocale 𝕊-dcpo 𝓤 pe
 open Locale
