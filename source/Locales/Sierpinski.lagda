@@ -47,11 +47,11 @@ We first define the Sierpinski domain.
 𝕊𝓓⁺-is-algebraic : is-algebraic-dcpo (𝓛-DCPO {X = 𝟙 {𝓤}} 𝟙-is-set)
 𝕊𝓓⁺-is-algebraic = 𝓛-is-algebraic-dcpo 𝟙-is-set
 
--- 𝕊-dcpo⊥ : DCPO⊥
--- 𝕊-dcpo⊥ = 𝕊-dcpo , †
---  where
---   † : has-least (underlying-order 𝕊-dcpo)
---   † = (𝟘 , 𝟘-elim , 𝟘-is-prop) , λ _ → unique-from-𝟘
+𝕊𝓓 : DCPO {𝓤 ⁺} {𝓤}
+𝕊𝓓 = 𝓛-DCPO⁻ {X = 𝟙 {𝓤}} 𝟙-is-set
+
+𝕊𝓓⊥ : DCPO⊥ {𝓤 ⁺} {𝓤}
+𝕊𝓓⊥ = 𝕊𝓓 , ((𝟘 , (λ ()) , 𝟘-is-prop) , λ _ → (λ ()) , λ ())
 
 \end{code}
 
