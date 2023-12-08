@@ -459,25 +459,194 @@ exp-0-spec' α = f , f-monotone , qinvs-are-equivs f f-qinv , g-monotone
 exp-0-spec : (α : Ordinal 𝓤) → [𝟙+ α ]^ (𝟘ₒ {𝓥}) ＝ 𝟙ₒ
 exp-0-spec {𝓤} {𝓥} α = eqtoidₒ (ua (𝓤 ⊔ 𝓥)) fe' ([𝟙+ α ]^ 𝟘ₒ) 𝟙ₒ (exp-0-spec' α)
 
-{- We should the more general statement that
-
-     ([𝟙+ α ]^ (β +ₒ γ)) ≃ₒ (([𝟙+ α ]^ β) ×ₒ ([𝟙+ α]^ γ)
-
-   and
-
-     ([𝟙+ α]^ 𝟙ₒ) ＝ 𝟙ₒ +ₒ α
--}
-
 exp-+-distributes' : (α : Ordinal 𝓤) (β γ : Ordinal 𝓥)
                    → ([𝟙+ α ]^ (β +ₒ γ)) ≃ₒ (([𝟙+ α ]^ β) ×ₒ ([𝟙+ α ]^ γ))
-exp-+-distributes' = {!!}
+exp-+-distributes' α β γ = f , f-monotone , qinvs-are-equivs f f-qinv , g-monotone
+ where
+
+  f₀₀ : (xs : List ⟨ α ×ₒ (β +ₒ γ) ⟩) → List ⟨ α ×ₒ β ⟩
+  f₀₀ [] = []
+  f₀₀ ((a , inl b) ∷ xs) = (a , b) ∷ f₀₀ xs
+  f₀₀ ((a , inr c) ∷ xs) = f₀₀ xs
+
+  f₁₀ : (xs : List ⟨ α ×ₒ (β +ₒ γ) ⟩) → List ⟨ α ×ₒ γ ⟩
+  f₁₀ [] = []
+  f₁₀ ((a , inl b) ∷ xs) = f₁₀ xs
+  f₁₀ ((a , inr c) ∷ xs) = (a , c) ∷ f₁₀ xs
+
+  f₀₁ : (xs : List ⟨ α ×ₒ (β +ₒ γ) ⟩) → (δ : is-decreasing-pr₂ α (β +ₒ γ) xs) → is-decreasing-pr₂ α β (f₀₀ xs)
+  f₀₁ [] δ = []-decr
+  f₀₁ ((a , inl b) ∷ []) δ = sing-decr
+  f₀₁ ((a , inl b) ∷ (a' , inl b') ∷ xs) (many-decr p δ) = many-decr p (f₀₁ ((a' , inl b') ∷ xs) δ)
+  f₀₁ ((a , inl b) ∷ (a' , inr c) ∷ xs) (many-decr p δ) = 𝟘-elim p
+  f₀₁ ((a , inr c) ∷ []) δ = []-decr
+  f₀₁ ((a , inr c) ∷ (a' , inl b') ∷ xs) (many-decr ⋆ δ) = f₀₁ ((a' , inl b') ∷ xs) δ
+  f₀₁ ((a , inr c) ∷ (a' , inr c') ∷ xs) (many-decr p δ) = f₀₁ xs (is-decreasing-tail (underlying-order (β +ₒ γ)) δ)
+
+  no-swapping-lemma : (xs : List ⟨ α ×ₒ (β +ₒ γ) ⟩) → (a : ⟨ α ⟩) → (b : ⟨ β ⟩)
+                    → (δ : is-decreasing-pr₂ α (β +ₒ γ) ((a , inl b) ∷ xs))
+                    → f₁₀ ((a , inl b) ∷ xs) ＝ []
+  no-swapping-lemma [] a b δ = refl
+  no-swapping-lemma ((a' , inl b') ∷ xs) a b (many-decr p δ) = no-swapping-lemma xs a b' δ
+  no-swapping-lemma ((a' , inr c) ∷ xs) a b (many-decr p δ) = 𝟘-elim p
+
+  f₁₁ : (xs : List ⟨ α ×ₒ (β +ₒ γ) ⟩) → (δ : is-decreasing-pr₂ α (β +ₒ γ) xs) → is-decreasing-pr₂ α γ (f₁₀ xs)
+  f₁₁ [] δ = []-decr
+  f₁₁ ((a , inl b) ∷ []) δ = []-decr
+  f₁₁ ((a , inl b) ∷ (a' , inl b') ∷ xs) (many-decr p δ) = f₁₁ xs (is-decreasing-tail (underlying-order (β +ₒ γ)) δ)
+  f₁₁ ((a , inl b) ∷ (a' , inr c) ∷ xs) (many-decr p δ) = 𝟘-elim p
+  f₁₁ ((a , inr c) ∷ []) δ = sing-decr
+  f₁₁ ((a , inr c) ∷ (a' , inl b) ∷ xs) (many-decr ⋆ δ) =
+   transport⁻¹ (λ z → is-decreasing-pr₂ α γ ((a , c) ∷ z)) (no-swapping-lemma xs a b δ) sing-decr
+  f₁₁ ((a , inr c) ∷ (a' , inr c') ∷ xs) (many-decr p δ) = many-decr p (f₁₁ ((a' , inr c') ∷ xs) δ)
+
+  f₀ : ⟨ [𝟙+ α ]^ (β +ₒ γ) ⟩ → ⟨ [𝟙+ α ]^ β ⟩
+  f₀ (xs , δ) = (f₀₀ xs) , (f₀₁ xs δ)
+
+  f₁ : ⟨ [𝟙+ α ]^ (β +ₒ γ) ⟩ → ⟨ [𝟙+ α ]^ γ ⟩
+  f₁ (xs , δ) = (f₁₀ xs) , (f₁₁ xs δ)
+
+  f : ⟨ [𝟙+ α ]^ (β +ₒ γ) ⟩ → ⟨ ([𝟙+ α ]^ β) ×ₒ ([𝟙+ α ]^ γ) ⟩
+  f (xs , δ) = (f₀ (xs , δ) , f₁ (xs , δ))
+
+
+  f-monotone : is-order-preserving ([𝟙+ α ]^ (β +ₒ γ)) (([𝟙+ α ]^ β) ×ₒ ([𝟙+ α ]^ γ)) f
+  f-monotone ([] , δ) (((a , inl b) ∷ ys) , ε) []-lex = inr (to-exponential-＝ α γ (no-swapping-lemma ys a b ε ⁻¹) , []-lex)
+  f-monotone ([] , δ) (((a , inr c) ∷ ys) , ε) []-lex = inl []-lex
+  f-monotone (((a , inl b) ∷ xs) , δ) (((a' , inl b') ∷ ys) , ε) (head-lex (inl p)) =
+   inr (to-exponential-＝ α γ (no-swapping-lemma xs a b δ ∙ no-swapping-lemma ys a' b' ε ⁻¹) , head-lex (inl p))
+  f-monotone (((a , inl b) ∷ xs) , δ) (((a' , inl b') ∷ ys) , ε) (head-lex (inr (refl , p))) =
+   inr (to-exponential-＝ α γ (no-swapping-lemma xs a b δ ∙ no-swapping-lemma ys a' b ε ⁻¹) , (head-lex (inr (refl , p))))
+  f-monotone (((a , inl b) ∷ xs) , δ) (((a , inl b) ∷ ys) , ε) (tail-lex refl ps) =
+    h (f-monotone (xs , is-decreasing-tail (underlying-order (β +ₒ γ)) δ) (ys , is-decreasing-tail (underlying-order (β +ₒ γ)) ε) ps)
+   where
+    h : underlying-order (([𝟙+ α ]^ β) ×ₒ ([𝟙+ α ]^ γ)) (f (xs , is-decreasing-tail _ δ)) (f (ys , is-decreasing-tail _ ε))
+      → underlying-order (([𝟙+ α ]^ β) ×ₒ ([𝟙+ α ]^ γ)) (f (((a , inl b) ∷ xs) , δ)) (f (((a , inl b) ∷ ys) , ε))
+    h (inl p) = 𝟘-elim (irrefl ([𝟙+ α ]^ γ)
+                               ([] , []-decr)
+                               (transport₂ (exponential-order α γ)
+                                           {x = f₁₀ xs , f₁₁ xs (is-decreasing-tail (underlying-order (β +ₒ γ)) δ)}
+                                           {x' = [] , []-decr}
+                                           {y = f₁₀ ys , f₁₁ ys (is-decreasing-tail (underlying-order (β +ₒ γ)) ε)}
+                                           {y' = [] , []-decr}
+                                           (to-exponential-＝ α γ (no-swapping-lemma xs a b δ))
+                                           (to-exponential-＝ α γ (no-swapping-lemma ys a b ε)) p))
+    h (inr (r , p)) = inr ((to-exponential-＝ α γ (ap pr₁ r)) , tail-lex refl p)
+  f-monotone (((a , inr c) ∷ xs) , δ) (((a' , inr c') ∷ ys) , ε) (head-lex (inl p)) = inl (head-lex (inl p))
+  f-monotone (((a , inr c) ∷ xs) , δ) (((a' , inr c) ∷ ys) , ε) (head-lex (inr (refl , p))) = inl (head-lex (inr (refl , p)))
+  f-monotone (((a , inr c) ∷ xs) , δ) (((a , inr c) ∷ ys) , ε) (tail-lex refl ps) =
+   h (f-monotone (xs , is-decreasing-tail (underlying-order (β +ₒ γ)) δ) (ys , is-decreasing-tail (underlying-order (β +ₒ γ)) ε) ps)
+   where
+    h : underlying-order (([𝟙+ α ]^ β) ×ₒ ([𝟙+ α ]^ γ)) (f (xs , is-decreasing-tail _ δ)) (f (ys , is-decreasing-tail _ ε))
+      → underlying-order (([𝟙+ α ]^ β) ×ₒ ([𝟙+ α ]^ γ)) (f (((a , inr c) ∷ xs) , δ)) (f (((a , inr c) ∷ ys) , ε))
+    h (inl p) = inl (tail-lex refl p)
+    h (inr (r , p)) = inr (to-exponential-＝ α γ (ap ((a , c) ∷_) (ap pr₁ r)) , p)
+  f-monotone (((a , inl b) ∷ xs) , δ) (((a' , inr c') ∷ ys) , ε) (head-lex (inl ⋆)) =
+   inl (transport⁻¹ (λ z → lex (underlying-order (α ×ₒ γ)) z ((a' , c') ∷ _)) (no-swapping-lemma xs a b δ) []-lex)
+  f-monotone (((a , inl b) ∷ xs) , δ) (((a' , inr c') ∷ ys) , ε) (tail-lex p ps) = 𝟘-elim (+disjoint (ap pr₂ p))
+  f-monotone (((a , inr c) ∷ xs) , δ) (((a' , inl b') ∷ ys) , ε) (head-lex (inr (r , p))) = 𝟘-elim (+disjoint (r ⁻¹))
+  f-monotone (((a , inr c) ∷ xs) , δ) (((a' , inl b') ∷ ys) , ε) (tail-lex p ps) = 𝟘-elim (+disjoint (ap pr₂ p ⁻¹))
+
+  g₀ : (bs : List ⟨ α ×ₒ β ⟩) → (cs : List ⟨ α ×ₒ γ ⟩) → List ⟨ α ×ₒ (β +ₒ γ) ⟩
+  g₀ bs ((a , c) ∷ cs) = (a , inr c) ∷ g₀ bs cs
+  g₀ ((a , b) ∷ bs) [] = (a , inl b) ∷ g₀ bs []
+  g₀ [] [] = []
+
+  g₁ : (bs : List ⟨ α ×ₒ β ⟩) → is-decreasing-pr₂ α β bs
+     → (cs : List ⟨ α ×ₒ γ ⟩) → is-decreasing-pr₂ α γ cs
+     → is-decreasing-pr₂ α (β +ₒ γ) (g₀ bs cs)
+  g₁ [] δ (a , c ∷ []) ε = sing-decr
+  g₁ ((a , b) ∷ bs) δ ((a' , c) ∷ []) ε = many-decr ⋆ (g₁ ((a , b) ∷ bs) δ [] []-decr)
+  g₁ bs δ ((a , c) ∷ (a' , c') ∷ cs) ε =
+   many-decr (is-decreasing-heads (underlying-order γ) ε)
+             (g₁ bs δ ((a' , c') ∷ cs) (is-decreasing-tail (underlying-order γ) ε))
+  g₁ [] δ [] ε = []-decr
+  g₁ (x ∷ []) δ [] ε = sing-decr
+  g₁ ((a , b) ∷ (a' , b') ∷ bs) δ [] ε =
+   many-decr (is-decreasing-heads (underlying-order β) δ)
+             (g₁ ((a' , b') ∷ bs) (is-decreasing-tail (underlying-order β) δ) [] ε)
+
+  g : ⟨ ([𝟙+ α ]^ β) ×ₒ ([𝟙+ α ]^ γ) ⟩ → ⟨ [𝟙+ α ]^ (β +ₒ γ) ⟩
+  g ((bs , δ) , (cs , ε)) = g₀ bs cs , g₁ bs δ cs ε
+
+  g₀-monotone : (bs : List ⟨ α ×ₒ β ⟩) → (δ : is-decreasing-pr₂ α β bs)
+              → (cs : List ⟨ α ×ₒ γ ⟩) → (ε : is-decreasing-pr₂ α γ cs)
+              → (bs' : List ⟨ α ×ₒ β ⟩) → (δ' : is-decreasing-pr₂ α β bs')
+              → (cs' : List ⟨ α ×ₒ γ ⟩) → (ε' : is-decreasing-pr₂ α γ cs')
+              → lex (underlying-order (α ×ₒ γ)) cs cs' + (((cs , ε) ＝ (cs' , ε')) × lex (underlying-order (α ×ₒ β)) bs bs')
+              → g₀ bs cs ≺⟨List (α ×ₒ (β +ₒ γ)) ⟩ g₀ bs' cs'
+  g₀-monotone [] δ [] ε [] δ' [] ε' (inl p) = 𝟘-elim (irrefl ([𝟙+ α ]^ γ) ([] , []-decr) p)
+  g₀-monotone [] δ [] ε [] δ' [] ε' (inr (r , p)) = 𝟘-elim (irrefl ([𝟙+ α ]^ β) ([] , []-decr) p)
+  g₀-monotone [] δ [] ε ((a' , b') ∷ bs') δ' [] ε' p = []-lex
+  g₀-monotone [] δ [] ε bs' δ' ((a' , c') ∷ cs') ε' p = []-lex
+  g₀-monotone [] δ (a , c ∷ cs) ε [] δ' [] ε' (inr (r , p)) = 𝟘-elim (irrefl ([𝟙+ α ]^ β) ([] , []-decr) p)
+  g₀-monotone [] δ (a , c ∷ cs) ε (a' , b' ∷ bs') δ' [] ε' (inr (r , p)) = 𝟘-elim ([]-is-not-cons (a , c) cs (ap pr₁ r ⁻¹ ))
+  g₀-monotone [] δ (a , c ∷ cs) ε bs' δ' (a' , c' ∷ cs') ε' (inl (head-lex (inl p))) = head-lex (inl p)
+  g₀-monotone [] δ (a , c ∷ cs) ε bs' δ' (a' , c' ∷ cs') ε' (inl (head-lex (inr (r , p)))) = head-lex (inr ((ap inr r) , p))
+  g₀-monotone [] δ (a , c ∷ cs) ε bs' δ' (a , c ∷ cs') ε' (inl (tail-lex refl ps)) =
+   tail-lex refl (g₀-monotone [] δ cs (is-decreasing-tail (underlying-order γ) ε) bs' δ' cs' (is-decreasing-tail (underlying-order γ) ε') (inl ps))
+  g₀-monotone [] δ (a , c ∷ cs) ε bs' δ' (a , c ∷ cs) ε (inr (refl , p)) =
+   tail-lex refl (g₀-monotone [] δ cs (is-decreasing-tail (underlying-order γ) ε) bs' δ' cs (is-decreasing-tail (underlying-order γ) ε) (inr (refl , p)))
+  g₀-monotone (a , b ∷ bs) δ [] ε [] δ' [] ε' (inl p) = 𝟘-elim (irrefl ([𝟙+ α ]^  γ) ([] , []-decr) p)
+  g₀-monotone (a , b ∷ bs) δ [] ε (a' , b' ∷ bs') δ' [] ε' (inr (_ , head-lex (inl p))) = head-lex (inl p)
+  g₀-monotone (a , b ∷ bs) δ [] ε (a' , b ∷ bs') δ' [] ε' (inr (_ , head-lex (inr (refl , p)))) = head-lex (inr (refl , p))
+  g₀-monotone (a , b ∷ bs) δ [] ε (a , b ∷ bs') δ' [] ε' (inr (_ , tail-lex refl ps)) =
+   tail-lex refl (g₀-monotone bs (is-decreasing-tail (underlying-order β) δ) [] []-decr bs' (is-decreasing-tail (underlying-order β) δ') [] []-decr (inr (refl , ps)) )
+  g₀-monotone (a , b ∷ bs) δ [] ε bs' δ' ((a' , c') ∷ cs') ε' p = head-lex (inl ⋆)
+  g₀-monotone (a , b ∷ bs) δ (a' , c ∷ cs) ε [] δ' [] ε' (inl p) = 𝟘-elim ([]-lex-bot (underlying-order  (α ×ₒ γ)) ((a' , c) ∷ cs) p)
+  g₀-monotone (a , b ∷ bs) δ (a' , c ∷ cs) ε ((a'' , b') ∷ bs') δ' [] ε' (inl p) = 𝟘-elim ([]-lex-bot (underlying-order  (α ×ₒ γ)) ((a' , c) ∷ cs) p)
+  g₀-monotone (a , b ∷ bs) δ (a' , c ∷ cs) ε bs' δ' (a'' , c' ∷ cs') ε' (inl (head-lex (inl p))) = head-lex (inl p)
+  g₀-monotone (a , b ∷ bs) δ (a' , c ∷ cs) ε bs' δ' (a'' , c' ∷ cs') ε' (inl (head-lex (inr (r , p)))) = head-lex (inr ((ap inr r) , p))
+  g₀-monotone (a , b ∷ bs) δ (a' , c ∷ cs) ε bs' δ' (a' , c ∷ cs') ε' (inl (tail-lex refl ps)) =
+   tail-lex refl (g₀-monotone ((a , b) ∷ bs) δ cs (is-decreasing-tail (underlying-order γ) ε) bs' δ' cs' (is-decreasing-tail (underlying-order γ) ε') (inl ps))
+  g₀-monotone (a , b ∷ bs) δ (a' , c ∷ cs) ε bs' δ' (a' , c ∷ cs) ε (inr (refl , p)) =
+   tail-lex refl (g₀-monotone ((a , b) ∷ bs) δ cs (is-decreasing-tail (underlying-order γ) ε) bs' δ' cs (is-decreasing-tail (underlying-order γ) ε) (inr (refl , p)))
+
+  g-monotone : is-order-preserving (([𝟙+ α ]^ β) ×ₒ ([𝟙+ α ]^ γ)) ([𝟙+ α ]^ (β +ₒ γ)) g
+  g-monotone ((bs , δ) , (cs , ε)) ((bs' , δ') , (cs' , ε')) p = g₀-monotone bs δ cs ε bs' δ' cs' ε' p
+
+  f-qinv : qinv f
+  f-qinv = g , p , q
+   where
+    p₀ : (xs : List ⟨ α ×ₒ (β +ₒ γ) ⟩) → is-decreasing-pr₂ α (β +ₒ γ) xs → g₀ (f₀₀ xs) (f₁₀ xs) ＝ xs
+    p₀ [] δ = refl
+    p₀ (a , inl b ∷ []) δ = refl
+    p₀ (a , inl b ∷ xs) δ =
+     transport⁻¹ (λ z → g₀ ((a , b) ∷ f₀₀ xs) z ＝ (a , inl b) ∷ xs) (no-swapping-lemma xs a b δ) (ap ((a , inl b) ∷_) (p₀-[] xs (no-inr (map pr₂ xs) b δ)))
+     where
+      p₀-[] : (xs : List ⟨ α ×ₒ (β +ₒ γ) ⟩) → ((c : ⟨ γ ⟩) → ¬ member (inr c) (map pr₂ xs) ) → g₀ (f₀₀ xs) [] ＝ xs
+      p₀-[] [] p = refl
+      p₀-[] ((a , inl b) ∷ xs) p = ap ((a , inl b) ∷_) (p₀-[] xs (λ c q → p c (in-tail q)))
+      p₀-[] ((a , inr c) ∷ xs) p = 𝟘-elim (p c in-head)
+
+      no-inr : (xs : List ⟨ β +ₒ γ ⟩)(b : ⟨ β ⟩) → is-decreasing (underlying-order (β +ₒ γ)) (inl b ∷ xs) → (c : ⟨ γ ⟩) → ¬ member (inr c) xs
+      no-inr (inr c ∷ xs) b δ c in-head = 𝟘-elim (is-decreasing-heads (underlying-order (β +ₒ γ)) δ)
+      no-inr (inl b' ∷ xs) b δ c (in-tail p) = no-inr xs b' (is-decreasing-tail (underlying-order (β +ₒ γ)) δ) c p
+      no-inr (inr c' ∷ xs) b δ c (in-tail p) = 𝟘-elim (is-decreasing-heads (underlying-order (β +ₒ γ)) δ)
+    p₀ ((a , inr c) ∷ xs) δ = ap ((a , inr c) ∷_) (p₀ xs (is-decreasing-tail (underlying-order (β +ₒ γ)) δ))
+
+    p : (g ∘ f) ∼ id
+    p (xs , δ) = to-exponential-＝ α (β +ₒ γ) (p₀ xs δ)
+
+    q₀₀ : (bs : List ⟨ α ×ₒ β ⟩) → (cs : List ⟨ α ×ₒ γ ⟩) → f₀₀ (g₀ bs cs) ＝ bs
+    q₀₀ bs ((a , c) ∷ cs) = q₀₀ bs cs
+    q₀₀ ((a , b) ∷ bs) [] = ap ((a , b) ∷_) (q₀₀ bs [])
+    q₀₀ [] [] = refl
+
+    q₁₀ : (bs : List ⟨ α ×ₒ β ⟩) → (cs : List ⟨ α ×ₒ γ ⟩) → f₁₀ (g₀ bs cs) ＝ cs
+    q₁₀ bs ((a , c) ∷ cs) = ap ((a , c) ∷_) (q₁₀ bs cs)
+    q₁₀ ((a , b) ∷ bs) [] = q₁₀ bs []
+    q₁₀ [] [] = refl
+
+    q : (f ∘ g) ∼ id
+    q ((bs , δ) , (cs , ε)) = to-×-＝ (to-exponential-＝ α β (q₀₀ bs cs)) (to-exponential-＝ α γ (q₁₀ bs cs))
 
 exp-+-distributes : (α : Ordinal 𝓤) (β γ : Ordinal 𝓥)
                   → ([𝟙+ α ]^ (β +ₒ γ)) ＝ (([𝟙+ α ]^ β) ×ₒ ([𝟙+ α ]^ γ))
 exp-+-distributes {𝓤} {𝓥} α β γ =
  eqtoidₒ (ua (𝓤 ⊔ 𝓥)) fe' ([𝟙+ α ]^ (β +ₒ γ)) (([𝟙+ α ]^ β) ×ₒ ([𝟙+ α ]^ γ)) (exp-+-distributes' α β γ)
 
-exp-power-1' : (α : Ordinal 𝓤) → ([𝟙+ α ]^ 𝟙ₒ {𝓤}) ≃ₒ (𝟙ₒ +ₒ α)
+exp-power-1' : (α : Ordinal 𝓤) → ([𝟙+ α ]^ 𝟙ₒ {𝓥}) ≃ₒ (𝟙ₒ +ₒ α)
 exp-power-1' α = f , f-monotone , qinvs-are-equivs f f-qinv , g-monotone
  where
   f : ⟨ [𝟙+ α ]^ 𝟙ₒ {𝓤} ⟩ → ⟨ 𝟙ₒ +ₒ α ⟩
@@ -508,55 +677,15 @@ exp-power-1' α = f , f-monotone , qinvs-are-equivs f f-qinv , g-monotone
     q (inl ⋆) = refl
     q (inr a) = refl
 
-exp-power-1 : (α : Ordinal 𝓤) → ([𝟙+ α ]^ 𝟙ₒ {𝓤}) ＝ 𝟙ₒ +ₒ α
+exp-power-1 : {𝓤 : Universe} → (α : Ordinal 𝓤) → ([𝟙+ α ]^ 𝟙ₒ) ＝ 𝟙ₒ +ₒ α
 exp-power-1 {𝓤} α = eqtoidₒ (ua 𝓤) fe' ([𝟙+ α ]^ 𝟙ₒ {𝓤}) (𝟙ₒ +ₒ α) (exp-power-1' α)
 
-{-
-exp-succ-spec' : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
-               → ([𝟙+ α ]^ (β +ₒ 𝟙ₒ)) ≃ₒ (([𝟙+ α ]^ β) ×ₒ (𝟙ₒ +ₒ α))
-exp-succ-spec' α β = uncurry f , f-monotone , qinvs-are-equivs (uncurry f) f-qinv , g-monotone
- where
-  f : (xs : List ⟨ (β +ₒ 𝟙ₒ) ×ₒ α ⟩) → is-decreasing-pr₂ α (β +ₒ 𝟙ₒ) xs → ⟨ ([𝟙+ α ]^ β) ×ₒ (𝟙ₒ +ₒ α) ⟩
-  f [] δ = (([] , δ) , inl ⋆)
-  f (inl b , a ∷ xs) δ = (((b , a) ∷ xs') , δ') , (inl ⋆)
-   where
-    xs' : List ⟨ α ×ₒ β ⟩
-    xs' = pr₁ (pr₁ (f xs (is-decreasing-tail (underlying-order α) δ)))
-    δ' : is-decreasing-pr₂ α β (b , a ∷ xs')
-    δ' = {!!}
-  f (inr ⋆ , a ∷ xs) δ = (xs' , δ') , inr a
-   where
-    xs' : {!!}
-    xs' = {!!}
-    δ' : {!!}
-    δ' = {!!}
-  f-monotone : is-order-preserving ([𝟙+ α ]^ (β +ₒ 𝟙ₒ)) (([𝟙+ α ]^ β) ×ₒ (𝟙ₒ +ₒ α)) {!f!}
-  f-monotone = {!!}
-  g : ⟨ ([𝟙+ α ]^ β) ×ₒ (𝟙ₒ +ₒ α) ⟩ → ⟨ [𝟙+ α ]^ (β +ₒ 𝟙ₒ) ⟩
-  g (([] , δ) , inl ⋆) = [] , []-decr
-  g ((((b , a) ∷ xs) , δ) , inl ⋆) = (inl b , a ∷ xs') , δ'
-   where
-    xs' : {!!}
-    xs' = {!!}
-    δ' : {!!}
-    δ' = {!!}
-  g (l , inr a) = ((inr ⋆) , a ∷ xs') , δ'
-   where
-    xs' : {!!}
-    xs' = {!!}
-    δ' : {!!}
-    δ' = {!!}
-  g-monotone : is-order-preserving (([𝟙+ α ]^ β) ×ₒ (𝟙ₒ +ₒ α)) ([𝟙+ α ]^ (β +ₒ 𝟙ₒ)) g
-  g-monotone = {!!}
-  f-qinv : qinv (uncurry f)
-  f-qinv = g , p , q
-   where
-    p : {!!}
-    p = {!!}
-    q : {!!}
-    q = {!!}
-
-exp-succ-spec : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
+exp-succ-spec : (α : Ordinal 𝓤) (β : Ordinal 𝓤)
               → ([𝟙+ α ]^ (β +ₒ 𝟙ₒ)) ＝ (([𝟙+ α ]^ β) ×ₒ (𝟙ₒ +ₒ α))
-exp-succ-spec = {!!}
--}
+exp-succ-spec {𝓤} α β =
+  [𝟙+ α ]^ (β +ₒ 𝟙ₒ)
+   ＝⟨ exp-+-distributes α β 𝟙ₒ ⟩
+  ([𝟙+ α ]^ β) ×ₒ ([𝟙+ α ]^ 𝟙ₒ)
+   ＝⟨ ap (λ z → ([𝟙+ α ]^ β) ×ₒ z) (exp-power-1 α) ⟩
+  ([𝟙+ α ]^ β) ×ₒ (𝟙ₒ +ₒ α)
+   ∎
