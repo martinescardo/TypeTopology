@@ -37,13 +37,18 @@ type of finite linear orders on X.
 finite-linear-order : 𝓤 ̇ → 𝓤 ̇
 finite-linear-order X = Σ n ꞉ ℕ , X ≃ Fin n
 
+𝟙+𝟙-finite-linear-order : finite-linear-order (𝟙 {𝓤} + 𝟙 {𝓤})
+𝟙+𝟙-finite-linear-order = 2 , I
+ where
+  I : 𝟙 {𝓤} + 𝟙 {𝓤} ≃ (𝟘 {𝓤₀} + 𝟙 {𝓤₀}) + 𝟙 {𝓤₀}
+  I = +-cong 𝟘-lneutral'' one-𝟙-only
+
 \end{code}
 
 Exercise: If X ≃ Fin n, then the type finite-linear-order X has n! elements (solved
 elsewhere in TypeTopology).
 
 \begin{code}
-
 
 type-of-linear-orders-is-ℕ : Univalence → (Σ X ꞉ 𝓤 ̇ , finite-linear-order X) ≃ ℕ
 type-of-linear-orders-is-ℕ {𝓤} ua =

@@ -236,6 +236,9 @@ result.
             (Σ x ꞉ X , 𝕄-root (A x))
             (λ (x , y) → 𝕄-forest (A x) y)
 
+_+ᴹ_ : 𝕄 → 𝕄 → 𝕄
+M +ᴹ N = Σᴹ (cases (λ (_ : 𝟙 {𝓤}) → M) (λ (_ : 𝟙 {𝓤}) → N))
+
 prop-indexed-sumᴹ : {X : 𝓤 ̇ } {A : X → 𝕄}
                   → is-prop X
                   → (x₀ : X) → Σᴹ A ＝ A x₀
@@ -273,6 +276,10 @@ Notice that we use Σᴹ (as well as Π) in the following definition of Πᴹ.
 Πᴹ {X} A = ssup
             (Π x ꞉ X , 𝕄-root (A x))
             (λ g → Σᴹ (λ x → 𝕄-forest (A x) (g x)))
+
+
+_×ᴹ_ : 𝕄 → 𝕄 → 𝕄
+M ×ᴹ N = Πᴹ (cases (λ (_ : 𝟙 {𝓤}) → M) (λ (_ : 𝟙 {𝓤}) → N))
 
 prop-indexed-productᴹ : {X : 𝓤 ̇ } {A : X → 𝕄}
                       → is-prop X
@@ -349,5 +356,235 @@ decomposition-of-𝕄-gives-WEM =
  decomposition-of-ainjective-type-gives-WEM
   𝕄
   𝕄-is-ainjective
+
+\end{code}
+
+Added 9th December 2023.
+
+We discuss "hereditarily finitely linearly ordered iterative
+multisets". Notice that this is data, rather then property.
+
+\begin{code}
+
+open import Fin.Bishop
+open import Fin.Type
+
+hflo-data : 𝕄 → 𝓤 ̇
+hflo-data (ssup X φ) = finite-linear-order X
+                     × ((x : X) → hflo-data (φ x))
+
+hflo-data-gives-finite-linear-order
+ : (M : 𝕄)
+ → hflo-data M
+ → finite-linear-order (𝕄-root M)
+hflo-data-gives-finite-linear-order (ssup x φ) = pr₁
+
+𝕄-subtrees-have-hflo-data
+ : (M : 𝕄)
+ → hflo-data M
+ → (x : 𝕄-root M) → hflo-data (𝕄-forest M x)
+𝕄-subtrees-have-hflo-data (ssup x φ) = pr₂
+
+ℍ : 𝓤⁺ ̇
+ℍ = Σ M ꞉ 𝕄 , hflo-data M
+
+ℍ-underlying-mset : ℍ → 𝕄
+ℍ-underlying-mset = pr₁
+
+hflo-structure : (F : ℍ) → hflo-data (ℍ-underlying-mset F)
+hflo-structure = pr₂
+
+\end{code}
+
+Examples. We will use the superscript H to indicate elements of the
+type ℍ.
+
+\begin{code}
+
+
+𝟘ᴹ-hflo-data : hflo-data 𝟘ᴹ
+𝟘ᴹ-hflo-data = (0 , I) , (λ (x : 𝟘) → 𝟘-elim x)
+ where
+  I : 𝟘 {𝓤} ≃ 𝟘 {𝓤₀}
+  I = one-𝟘-only
+
+𝟘ᴴ : ℍ
+𝟘ᴴ = 𝟘ᴹ , 𝟘ᴹ-hflo-data
+
+𝟙ᴹ-hflo-data : hflo-data 𝟙ᴹ
+𝟙ᴹ-hflo-data = (1 , I) , (λ ⋆ → 𝟘ᴹ-hflo-data)
+ where
+  I : 𝟙 {𝓤} ≃ 𝟘 {𝓤₀} + 𝟙 {𝓤₀}
+  I = 𝟘-lneutral''
+
+𝟙ᴴ : ℍ
+𝟙ᴴ = 𝟙ᴹ , 𝟙ᴹ-hflo-data
+
+𝟚ᴹ-hflo-data : hflo-data 𝟚ᴹ
+𝟚ᴹ-hflo-data = 𝟙+𝟙-finite-linear-order , I
+ where
+  I : (x : 𝟙 + 𝟙) → hflo-data (cases (λ _ → 𝟘ᴹ) (λ _ → 𝟙ᴹ) x)
+  I (inl _) = 𝟘ᴹ-hflo-data
+  I (inr _) = 𝟙ᴹ-hflo-data
+
+𝟚ᴴ : ℍ
+𝟚ᴴ = 𝟚ᴹ , 𝟚ᴹ-hflo-data
+
+open import Fin.ArithmeticViaEquivalence
+
+Σᴹ-hflo-data : {X : 𝓤 ̇ }
+               (A : X → 𝕄)
+             → finite-linear-order X
+             → ((x : X) → hflo-data (A x))
+             → hflo-data (Σᴹ A)
+Σᴹ-hflo-data {X} A (n , f) A-hflo = (∑ a , h) , ψ
+ where
+  u : (x : X) → Σ m ꞉ ℕ , 𝕄-root (A x) ≃ Fin m
+  u x = hflo-data-gives-finite-linear-order (A x) (A-hflo x)
+
+  a : Fin n → ℕ
+  a i = pr₁ (u (⌜ f ⌝⁻¹ i))
+
+  b : (i : Fin n) → 𝕄-root (A (⌜ f ⌝⁻¹ i)) ≃ Fin (a i)
+  b i = pr₂ (u (⌜ f ⌝⁻¹ i))
+
+  h = (Σ x ꞉ X , 𝕄-root (A x))               ≃⟨ h₀ ⟩
+      (Σ i ꞉ Fin n , 𝕄-root (A (⌜ f ⌝⁻¹ i))) ≃⟨ h₁ ⟩
+      (Σ i ꞉ Fin n , Fin (a i))              ≃⟨ h₂ ⟩
+      Fin (∑ a)                              ■
+       where
+        h₀ = ≃-sym (Σ-change-of-variable-≃ (λ x → 𝕄-root (A x)) (≃-sym f))
+        h₁ = Σ-cong b
+        h₂ = ≃-sym (∑-property a)
+
+  ψ : ((x , y) : Σ x ꞉ X , 𝕄-root (A x)) → hflo-data (𝕄-forest (A x) y)
+  ψ (x , y) = 𝕄-subtrees-have-hflo-data (A x) (A-hflo x) y
+
+Πᴹ-hflo-data : {X : 𝓤 ̇ }
+               (A : X → 𝕄)
+             → finite-linear-order X
+             → ((x : X) → hflo-data (A x))
+             → hflo-data (Πᴹ A)
+Πᴹ-hflo-data {X} A (n , f) A-hflo = (∏ fe a , h) , ψ
+ where
+  u : (x : X) → Σ m ꞉ ℕ , 𝕄-root (A x) ≃ Fin m
+  u x = hflo-data-gives-finite-linear-order (A x) (A-hflo x)
+
+  a : Fin n → ℕ
+  a i = pr₁ (u (⌜ f ⌝⁻¹ i))
+
+  b : (i : Fin n) → 𝕄-root (A (⌜ f ⌝⁻¹ i)) ≃ Fin (a i)
+  b i = pr₂ (u (⌜ f ⌝⁻¹ i))
+
+  h = (Π x ꞉ X , 𝕄-root (A x))               ≃⟨ h₀ ⟩
+      (Π i ꞉ Fin n , 𝕄-root (A (⌜ f ⌝⁻¹ i))) ≃⟨ h₁ ⟩
+      (Π i ꞉ Fin n , Fin (a i))              ≃⟨ h₂ ⟩
+      Fin (∏ fe a)                              ■
+       where
+        h₀ = ≃-sym (Π-change-of-variable-≃ fe' (λ x → 𝕄-root (A x)) (≃-sym f))
+        h₁ = Π-cong fe fe b
+        h₂ = ≃-sym (∏-property fe a)
+
+  v : (x : X) (y : 𝕄-root (A x)) → hflo-data (𝕄-forest (A x) y)
+  v x = 𝕄-subtrees-have-hflo-data (A x) (A-hflo x)
+
+  ψ : (g : Π x ꞉ X , 𝕄-root (A x)) → hflo-data (Σᴹ (λ x → 𝕄-forest (A x) (g x)))
+  ψ g = Σᴹ-hflo-data (λ x → 𝕄-forest (A x) (g x)) (n , f) (λ x → v x (g x))
+
++ᴹ-hflo-data : (M N : 𝕄)
+             → hflo-data M
+             → hflo-data N
+             → hflo-data (M +ᴹ N)
++ᴹ-hflo-data M N i j =
+ Σᴹ-hflo-data (cases (λ (_ : 𝟙 {𝓤}) → M) (λ (_ : 𝟙 {𝓤}) → N))
+  𝟙+𝟙-finite-linear-order
+  (dep-cases (λ _ → i) (λ _ → j))
+
+×ᴹ-hflo-data : (M N : 𝕄)
+             → hflo-data M
+             → hflo-data N
+             → hflo-data (M ×ᴹ N)
+×ᴹ-hflo-data M N i j =
+ Πᴹ-hflo-data (cases (λ (_ : 𝟙 {𝓤}) → M) (λ (_ : 𝟙 {𝓤}) → N))
+  𝟙+𝟙-finite-linear-order
+  (dep-cases (λ _ → i) (λ _ → j))
+
+_+ᴴ_ _×ᴴ_ : ℍ → ℍ → ℍ
+(M , h) +ᴴ (N , k) = M +ᴹ N , +ᴹ-hflo-data M N h k
+(M , h) ×ᴴ (N , k) = M ×ᴹ N , ×ᴹ-hflo-data M N h k
+
+\end{code}
+
+TODO. Define Σᴴ and Πᴴ. (Boilerplate.)
+
+We now develop a representation of elements of ℍ for the sake of being
+able to exhibit examples explicitly. Notice that this is like LISP's
+type of S-expressions but without atoms.
+
+\begin{code}
+
+data 𝔽 : 𝓤₀ ̇ where
+ [] : 𝔽
+ _∷_ : 𝔽 → 𝔽 → 𝔽
+
+infixr 3 _∷_
+
+to-𝔽 : ℍ → 𝔽
+to-𝔽 = uncurry g
+ where
+  g : (M : 𝕄) → hflo-data M → 𝔽
+  g (ssup X φ) ((n , f) , ψ) = h n (IH ∘ ⌜ f ⌝⁻¹)
+   where
+    IH : X → 𝔽
+    IH x = g (φ x) (ψ x)
+
+    h : (n : ℕ) → (Fin n → 𝔽) → 𝔽
+    h 0        f = []
+    h (succ n) f = f 𝟎 ∷ h n (f ∘ suc)
+
+\end{code}
+
+TODO. This function is an equivalence.
+
+The length function counts the number of elements, including
+repetitions. For multisets that are sets, it gives its
+cardinality. The size function gives a kind of hereditary cardinality.
+
+\begin{code}
+
+open import Naturals.Addition renaming (_+_ to _∔_)
+
+𝔽-length : 𝔽 → ℕ
+𝔽-length [] = 0
+𝔽-length (F ∷ G) = succ (𝔽-length G)
+
+𝔽-size : 𝔽 → ℕ
+𝔽-size [] = 0
+𝔽-size (F ∷ G) = succ (𝔽-size F ∔ 𝔽-size G)
+
+\end{code}
+
+Examples.
+
+\begin{code}
+
+private
+ t : ℍ → 𝔽 × ℕ × ℕ
+ t H = to-𝔽 H , 𝔽-length (to-𝔽 H) , 𝔽-size (to-𝔽 H)
+
+ 𝟘ᴴ-explicitly : t 𝟘ᴴ ＝ [] , 0 , 0
+ 𝟘ᴴ-explicitly = refl
+
+ 𝟙ᴴ-explicitly : t 𝟙ᴴ ＝ ([] ∷ []) , 1 , 1
+ 𝟙ᴴ-explicitly = refl
+
+ 𝟚ᴴ-explicitly : t 𝟚ᴴ ＝ (([] ∷ []) ∷ [] ∷ []) , 2 , 3
+ 𝟚ᴴ-explicitly = refl
+
+ 𝟚ᴴ×𝟚ᴴ-explicitly : t (𝟚ᴴ ×ᴴ 𝟚ᴴ)
+                 ＝ (([] ∷ [] ∷ []) ∷ ([] ∷ []) ∷ ([] ∷ []) ∷ [] ∷ []) ,
+                    4 ,
+                    8
+ 𝟚ᴴ×𝟚ᴴ-explicitly = refl
 
 \end{code}
