@@ -401,7 +401,6 @@ type ℍ.
 
 \begin{code}
 
-
 𝟘ᴹ-hflo-data : hflo-data 𝟘ᴹ
 𝟘ᴹ-hflo-data = (0 , I) , (λ (x : 𝟘) → 𝟘-elim x)
  where
@@ -421,11 +420,8 @@ type ℍ.
 𝟙ᴴ = 𝟙ᴹ , 𝟙ᴹ-hflo-data
 
 𝟚ᴹ-hflo-data : hflo-data 𝟚ᴹ
-𝟚ᴹ-hflo-data = 𝟙+𝟙-finite-linear-order , I
- where
-  I : (x : 𝟙 + 𝟙) → hflo-data (cases (λ _ → 𝟘ᴹ) (λ _ → 𝟙ᴹ) x)
-  I (inl _) = 𝟘ᴹ-hflo-data
-  I (inr _) = 𝟙ᴹ-hflo-data
+𝟚ᴹ-hflo-data = 𝟙+𝟙-finite-linear-order ,
+               dep-cases (λ _ → 𝟘ᴹ-hflo-data) (λ _ → 𝟙ᴹ-hflo-data)
 
 𝟚ᴴ : ℍ
 𝟚ᴴ = 𝟚ᴹ , 𝟚ᴹ-hflo-data
@@ -495,19 +491,19 @@ open import Fin.ArithmeticViaEquivalence
              → hflo-data M
              → hflo-data N
              → hflo-data (M +ᴹ N)
-+ᴹ-hflo-data M N i j =
++ᴹ-hflo-data M N h k =
  Σᴹ-hflo-data (cases (λ (_ : 𝟙 {𝓤}) → M) (λ (_ : 𝟙 {𝓤}) → N))
   𝟙+𝟙-finite-linear-order
-  (dep-cases (λ _ → i) (λ _ → j))
+  (dep-cases (λ _ → h) (λ _ → k))
 
 ×ᴹ-hflo-data : (M N : 𝕄)
              → hflo-data M
              → hflo-data N
              → hflo-data (M ×ᴹ N)
-×ᴹ-hflo-data M N i j =
+×ᴹ-hflo-data M N h k =
  Πᴹ-hflo-data (cases (λ (_ : 𝟙 {𝓤}) → M) (λ (_ : 𝟙 {𝓤}) → N))
   𝟙+𝟙-finite-linear-order
-  (dep-cases (λ _ → i) (λ _ → j))
+  (dep-cases (λ _ → h) (λ _ → k))
 
 _+ᴴ_ _×ᴴ_ : ℍ → ℍ → ℍ
 (M , h) +ᴴ (N , k) = M +ᴹ N , +ᴹ-hflo-data M N h k
@@ -523,22 +519,22 @@ type of S-expressions but without atoms.
 
 \begin{code}
 
-data 𝔽 : 𝓤₀ ̇ where
- [] : 𝔽
- _∷_ : 𝔽 → 𝔽 → 𝔽
+data 𝕊 : 𝓤₀ ̇ where
+ [] : 𝕊
+ _∷_ : 𝕊 → 𝕊 → 𝕊
 
 infixr 3 _∷_
 
-to-𝔽 : ℍ → 𝔽
-to-𝔽 = uncurry g
+to-𝕊 : ℍ → 𝕊
+to-𝕊 = uncurry g
  where
-  g : (M : 𝕄) → hflo-data M → 𝔽
+  g : (M : 𝕄) → hflo-data M → 𝕊
   g (ssup X φ) ((n , f) , ψ) = h n (IH ∘ ⌜ f ⌝⁻¹)
    where
-    IH : X → 𝔽
+    IH : X → 𝕊
     IH x = g (φ x) (ψ x)
 
-    h : (n : ℕ) → (Fin n → 𝔽) → 𝔽
+    h : (n : ℕ) → (Fin n → 𝕊) → 𝕊
     h 0        f = []
     h (succ n) f = f 𝟎 ∷ h n (f ∘ suc)
 
@@ -554,13 +550,13 @@ cardinality. The size function gives a kind of hereditary cardinality.
 
 open import Naturals.Addition renaming (_+_ to _∔_)
 
-𝔽-length : 𝔽 → ℕ
-𝔽-length [] = 0
-𝔽-length (F ∷ G) = succ (𝔽-length G)
+𝕊-length : 𝕊 → ℕ
+𝕊-length [] = 0
+𝕊-length (F ∷ G) = succ (𝕊-length G)
 
-𝔽-size : 𝔽 → ℕ
-𝔽-size [] = 0
-𝔽-size (F ∷ G) = succ (𝔽-size F ∔ 𝔽-size G)
+𝕊-size : 𝕊 → ℕ
+𝕊-size [] = 0
+𝕊-size (F ∷ G) = succ (𝕊-size F ∔ 𝕊-size G)
 
 \end{code}
 
@@ -569,8 +565,8 @@ Examples.
 \begin{code}
 
 private
- t : ℍ → 𝔽 × ℕ × ℕ
- t H = to-𝔽 H , 𝔽-length (to-𝔽 H) , 𝔽-size (to-𝔽 H)
+ t : ℍ → 𝕊 × ℕ × ℕ
+ t H = to-𝕊 H , 𝕊-length (to-𝕊 H) , 𝕊-size (to-𝕊 H)
 
  𝟘ᴴ-explicitly : t 𝟘ᴴ ＝ [] , 0 , 0
  𝟘ᴴ-explicitly = refl
