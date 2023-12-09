@@ -525,22 +525,68 @@ data 𝕊 : 𝓤₀ ̇ where
 
 infixr 3 _∷_
 
-to-𝕊 : ℍ → 𝕊
-to-𝕊 = uncurry g
+to-𝕊' : (M : 𝕄) → hflo-data M → 𝕊
+to-𝕊' (ssup X φ) ((n , f) , ψ) = h n (IH ∘ ⌜ f ⌝⁻¹)
  where
-  g : (M : 𝕄) → hflo-data M → 𝕊
-  g (ssup X φ) ((n , f) , ψ) = h n (IH ∘ ⌜ f ⌝⁻¹)
-   where
-    IH : X → 𝕊
-    IH x = g (φ x) (ψ x)
+  IH : X → 𝕊
+  IH x = to-𝕊' (φ x) (ψ x)
 
-    h : (n : ℕ) → (Fin n → 𝕊) → 𝕊
-    h 0        f = []
-    h (succ n) f = f 𝟎 ∷ h n (f ∘ suc)
+  h : (n : ℕ) → (Fin n → 𝕊) → 𝕊
+  h 0        f = []
+  h (succ n) f = f 𝟎 ∷ h n (f ∘ suc)
+
+to-𝕊 : ℍ → 𝕊
+to-𝕊 = uncurry to-𝕊'
+
+_::_ : ℍ → ℍ → ℍ
+H :: (ssup X φ , (n , f) , ψ) =
+ ssup (X + 𝟙) φ' , (succ n , f') , ψ'
+ where
+  φ' : X + 𝟙 → 𝕄
+  φ' = cases φ (λ _ → ℍ-underlying-mset H)
+
+  f' : X + 𝟙 ≃ Fin (succ n)
+  f' = +-cong f (≃-refl 𝟙)
+
+  ψ' : (y : X + 𝟙) → hflo-data (φ' y)
+  ψ' = dep-cases ψ (λ _ → hflo-structure H)
+
+from-𝕊 : 𝕊 → ℍ
+from-𝕊 []      = 𝟘ᴴ
+from-𝕊 (s ∷ t) = from-𝕊 s :: from-𝕊 t
+
+to-𝕊-base : to-𝕊 𝟘ᴴ ＝ []
+to-𝕊-base = refl
+
+to-𝕊-step : (H K : ℍ) → to-𝕊 (H :: K) ＝ to-𝕊 H ∷ to-𝕊 K
+to-𝕊-step H (ssup X φ , (n , f) , ψ) = refl
+
+ε-𝕊 : to-𝕊 ∘ from-𝕊 ∼ id
+ε-𝕊 []      = to-𝕊-base
+ε-𝕊 (s ∷ t) =
+ (to-𝕊 ∘ from-𝕊) (s ∷ t)           ＝⟨ refl ⟩
+ to-𝕊 (from-𝕊 s :: from-𝕊 t)       ＝⟨ to-𝕊-step (from-𝕊 s) (from-𝕊 t) ⟩
+ to-𝕊 (from-𝕊 s) ∷ to-𝕊 (from-𝕊 t) ＝⟨ ap₂ _∷_ (ε-𝕊 s) (ε-𝕊 t) ⟩
+ s ∷ t                              ∎
+
+from-𝕊-base : from-𝕊 [] ＝ 𝟘ᴴ
+from-𝕊-base = refl
+
+from-𝕊-step : (s t : 𝕊) → from-𝕊 (s ∷ t) ＝ from-𝕊 s :: from-𝕊 t
+from-𝕊-step s t = refl
+
+{- TODO. Easy. I have to pause now.
+
+η-𝕊 : from-𝕊 ∘ to-𝕊 ∼ id
+η-𝕊 (ssup X φ , (zero , f) , ψ) = {!!}
+η-𝕊 (ssup X φ , (succ n , f) , ψ) = {!!}
+
+to-𝕊-is-equiv : is-equiv to-𝕊
+to-𝕊-is-equiv = qinvs-are-equivs to-𝕊
+                 (from-𝕊 , η-𝕊 , ε-𝕊)
+-}
 
 \end{code}
-
-TODO. This function is an equivalence.
 
 The length function counts the number of elements, including
 repetitions. For multisets that are sets, it gives its
@@ -552,11 +598,20 @@ open import Naturals.Addition renaming (_+_ to _∔_)
 
 𝕊-length : 𝕊 → ℕ
 𝕊-length [] = 0
-𝕊-length (F ∷ G) = succ (𝕊-length G)
+𝕊-length (_ ∷ t) = succ (𝕊-length t)
 
 𝕊-size : 𝕊 → ℕ
 𝕊-size [] = 0
-𝕊-size (F ∷ G) = succ (𝕊-size F ∔ 𝕊-size G)
+𝕊-size (s ∷ t) = succ (𝕊-size s ∔ 𝕊-size t)
+
+{- TODO. Just for the sake of illustration.
+
+ℍ-length : ℍ → ℕ
+ℍ-length = {!!}
+
+ℍ-size : ℍ → ℕ
+ℍ-size = {!!}
+-}
 
 \end{code}
 

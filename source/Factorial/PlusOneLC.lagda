@@ -106,7 +106,7 @@ X ∖ a = Σ x ꞉ X , x ≠ a
 
 open import UF.FunExt
 
-module old (fe : FunExt) where
+module _ (fe : FunExt) where
 
  open import UF.Base
  open import UF.Subsingletons-FunExt
@@ -128,7 +128,9 @@ module old (fe : FunExt) where
    ε : g ∘ f ∼ id
    ε x = refl
 
- remove-points : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) → qinv f → (a : X) → X ∖ a ≃ Y ∖ (f a)
+ remove-points : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+               → qinv f
+               → (a : X) → X ∖ a ≃ Y ∖ (f a)
  remove-points {𝓤} {𝓥} {X} {Y} f (g , ε , η) a = qinveq f' (g' , ε' , η')
   where
    f' : X ∖ a → Y ∖ (f a)
@@ -143,7 +145,9 @@ module old (fe : FunExt) where
    η' : f' ∘ g' ∼ id
    η' (y , _) = to-Σ-＝ (η y , negations-are-props (fe 𝓥 𝓤₀) _ _)
 
- add-one-and-remove-isolated-point : {Y : 𝓥 ̇ } (z : Y + 𝟙) → is-isolated z → ((Y + 𝟙) ∖ z) ≃ Y
+ add-one-and-remove-isolated-point : {Y : 𝓥 ̇ } (z : Y + 𝟙)
+                                   → is-isolated z
+                                   → ((Y + 𝟙) ∖ z) ≃ Y
  add-one-and-remove-isolated-point {𝓥} {Y} (inl b) i = qinveq f (g , ε , η)
   where
    f : (Y + 𝟙) ∖ (inl b) → Y
