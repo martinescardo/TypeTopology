@@ -154,13 +154,13 @@ module subsets-order-joins {𝓤 𝓦 𝓥 : Universe}
 
  joins-preserve-containment : {P : 𝓟 {𝓥} A} {Q : 𝓟 {𝓥} A}
                             → (C : P ⊆ Q)
-                            → ((⋁ ((Σ a ꞉ A , a ∈ P) , m ∘ pr₁))
-                            ≤ (⋁ ((Σ a ꞉ A , a ∈ Q ) , m ∘ pr₁))) holds
+                            → ((⋁ (𝕋 P , m ∘ 𝕋-to-carrier P))
+                             ≤ (⋁ (𝕋 Q , m ∘ 𝕋-to-carrier Q))) holds
  joins-preserve-containment {P} {Q} C =
-   (is-least-upper-bound-for L of ((Σ a ꞉ A , a ∈ P ) , m ∘ pr₁))
-    (⋁ ((Σ a ꞉ A , a ∈ Q ) , m ∘ pr₁) ,
+   (is-least-upper-bound-for L of (𝕋 P , m ∘ 𝕋-to-carrier P))
+    (⋁ (𝕋 Q , m ∘ 𝕋-to-carrier Q) ,
     λ (b , b-in-P)
-      → (is-an-upper-bound-for L of ((Σ a ꞉ A , a ∈ Q ) , m ∘ pr₁))
+      → (is-an-upper-bound-for L of (𝕋 Q , m ∘ 𝕋-to-carrier Q))
     (b , C b b-in-P))
 
 \end{code}
@@ -368,11 +368,11 @@ module small-basis {𝓤 𝓦 𝓥 : Universe}
                          → (x ≤ u') holds
   is-least-upper-bound-↓ x = pr₂ (is-sup x)
 
-  _≤ᴮ_ : (b : B) (x : ⟨ L ⟩) → 𝓥  ̇
-  b ≤ᴮ x = pr₁ (≤-is-small x b)
+  _≤ᴮ_ : (b : B) → (x : ⟨ L ⟩) → 𝓥  ̇
+  b ≤ᴮ x = (resized ((q b ≤ x) holds)) (≤-is-small x b)
 
   _≤ᴮ_-≃-_≤_ : {b : B} {x : ⟨ L ⟩} → (b ≤ᴮ x) ≃ ((q b) ≤ x) holds
-  _≤ᴮ_-≃-_≤_ {b} {x} = pr₂ (≤-is-small x b)
+  _≤ᴮ_-≃-_≤_ {b} {x} = (resizing-condition) (≤-is-small x b)
 
   _≤ᴮ_-to-_≤_ : {b : B} {x : ⟨ L ⟩} → (b ≤ᴮ x) → ((q b) ≤ x) holds
   _≤ᴮ_-to-_≤_ = ⌜ _≤ᴮ_-≃-_≤_ ⌝
@@ -478,7 +478,7 @@ module inductive-definitions {𝓤 𝓦 𝓥 : Universe}
     Ind-trunc : (b : B) → is-prop (Ind b)
     c-closed : (U : 𝓟 {𝓥} B)
              → ((b : B) → (b ∈ U → Ind b))
-             → (b : B) → b ≤ᴮ (⋁ ((Σ b ꞉ B , b ∈ U) , q ∘ pr₁))
+             → (b : B) → b ≤ᴮ (⋁ (𝕋 U , q ∘ 𝕋-to-carrier U))
              → Ind b
     ϕ-closed : (a : ⟨ L ⟩)
              → (b : B)
@@ -489,7 +489,7 @@ module inductive-definitions {𝓤 𝓦 𝓥 : Universe}
                   → ((U : 𝓟 {𝓥} B) → (f : (x : B) → (x ∈ U → Ind x))
                    → ((x : B) → (u : x ∈ U) → f x u ∈ P x)
                    → (b : B)
-                   → (g : (b ≤ᴮ (⋁ ((Σ x ꞉ B , U x holds) , q ∘ pr₁))))
+                   → (g : (b ≤ᴮ (⋁ (𝕋 U , q ∘ 𝕋-to-carrier U))))
                    → c-closed U f b g ∈ P b)
                   → ((a : ⟨ L ⟩)
                    → (b : B)
@@ -510,7 +510,7 @@ module inductive-definitions {𝓤 𝓦 𝓥 : Universe}
 
    𝓘nd-is-c-closed : (U : 𝓟 {𝓥} B)
                    → (U ⊆ 𝓘nd)
-                   → (b : B) → b ≤ᴮ (⋁ ((Σ b ꞉ B , b ∈ U) , q ∘ pr₁))
+                   → (b : B) → b ≤ᴮ (⋁ (𝕋 U , q ∘ 𝕋-to-carrier U))
                    → b ∈ 𝓘nd
    𝓘nd-is-c-closed = c-closed
 
@@ -524,7 +524,7 @@ module inductive-definitions {𝓤 𝓦 𝓥 : Universe}
    𝓘nd-induction : (P : (b : B) → 𝓟 {𝓣} (b ∈ 𝓘nd))
                  → ((U : 𝓟 {𝓥} B) → (f : U ⊆ 𝓘nd)
                   → ((x : B) → (u : x ∈ U) → f x u ∈ P x)
-                  → (b : B) → (g : (b ≤ᴮ (⋁ ((Σ x ꞉ B , x ∈ U) , q ∘ pr₁))))
+                  → (b : B) → (g : (b ≤ᴮ (⋁ (𝕋 U , q ∘ 𝕋-to-carrier U))))
                   → c-closed U f b g ∈ P b)
                  → ((a : ⟨ L ⟩)
                   → (b : B)
@@ -539,7 +539,7 @@ module inductive-definitions {𝓤 𝓦 𝓥 : Universe}
                  → ((U : 𝓟 {𝓥} B)
                   → (U ⊆ 𝓘nd)
                   → (U ⊆ P)
-                  → (b : B) → (b ≤ᴮ (⋁ ((Σ b ꞉ B , b ∈ U) , q ∘ pr₁)))
+                  → (b : B) → (b ≤ᴮ (⋁ (𝕋 U , q ∘ 𝕋-to-carrier U)))
                   → b ∈ P)
                  → ((a : ⟨ L ⟩)
                   → (b : B)
@@ -553,7 +553,7 @@ module inductive-definitions {𝓤 𝓦 𝓥 : Universe}
    𝓘nd-is-initial : (P : 𝓟 {𝓣} B)
                   → ((U : 𝓟 {𝓥} B)
                    → (U ⊆ P)
-                   → ((b : B) → (b ≤ᴮ (⋁ ((Σ b ꞉ B , b ∈ U) , q ∘ pr₁)))
+                   → ((b : B) → (b ≤ᴮ (⋁ (𝕋 U , q ∘ 𝕋-to-carrier U)))
                    → b ∈ P))
                   → ((a : ⟨ L ⟩)
                    → (b : B)
@@ -565,7 +565,7 @@ module inductive-definitions {𝓤 𝓦 𝓥 : Universe}
      R : (U : 𝓟 {𝓥} B)
        → U ⊆ 𝓘nd
        → U ⊆ P
-       → (x : B) → x ≤ᴮ (⋁ ((Σ b ꞉ B , b ∈ U) , q ∘ pr₁))
+       → (x : B) → x ≤ᴮ (⋁ (𝕋 U , q ∘ 𝕋-to-carrier U))
        →  x ∈ P
      R U C₁ C₂ x o = IH₁ U C₂ x o
      S : (a : ⟨ L ⟩)
@@ -605,6 +605,9 @@ module local-inductive-definitions {𝓤 𝓦 𝓥 : Universe}
   S : (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩)) → (a : ⟨ L ⟩) → 𝓤 ⊔ 𝓦 ⊔ 𝓥  ̇
   S ϕ a = Σ b ꞉ B , (Ǝ a' ꞉ ⟨ L ⟩ , (b , a') ∈ ϕ × (a' ≤ a) holds) holds
 
+  S-to-base : (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩)) → (a : ⟨ L ⟩) → S ϕ a → B
+  S-to-base ϕ a = pr₁
+
   S-monotone-ish : (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩))
                  → (x y : ⟨ L ⟩)
                  → (x ≤ y) holds
@@ -626,15 +629,15 @@ module local-inductive-definitions {𝓤 𝓦 𝓥 : Universe}
   S-has-sup-implies-monotone : (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩))
                              → (x y s s' : ⟨ L ⟩)
                              → (x ≤ y) holds
-                             → (s is-lub-of (S ϕ x , q ∘ pr₁)) holds
-                             → (s' is-lub-of (S ϕ y , q ∘ pr₁)) holds
+                             → (s is-lub-of (S ϕ x , q ∘ S-to-base ϕ x)) holds
+                             → (s' is-lub-of (S ϕ y , q ∘ S-to-base ϕ y)) holds
                              → (s ≤ s') holds
   S-has-sup-implies-monotone ϕ x y s s' o
                              (is-upbnd , is-least-upbnd)
                              (is-upbnd' , is-least-upbnd') =
      is-least-upbnd ((s' , f))
    where
-    f : (s' is-an-upper-bound-of (S ϕ x , q ∘ pr₁)) holds
+    f : (s' is-an-upper-bound-of (S ϕ x , q ∘ S-to-base ϕ x)) holds
     f (b , e) = is-upbnd' (S-monotone-ish ϕ x y o ((b , e)))
         
   _is-local : (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩)) → 𝓤 ⊔ 𝓦 ⊔ (𝓥 ⁺)  ̇
@@ -670,14 +673,14 @@ module local-inductive-definitions {𝓤 𝓦 𝓥 : Universe}
    Γ-is-monotone x y o = S-has-sup-implies-monotone ϕ x y (Γ x) (Γ y) o
                                                     Γ-x-is-sup Γ-y-is-sup
     where
-     Γ-x-is-sup : (Γ x is-lub-of (S ϕ x , q ∘ pr₁)) holds
+     Γ-x-is-sup : (Γ x is-lub-of (S ϕ x , q ∘ S-to-base ϕ x)) holds
      Γ-x-is-sup = is-lub-of-both
       where
-       open small-types-have-joins L (S ϕ x) (q ∘ pr₁) (i x)       
-     Γ-y-is-sup : (Γ y is-lub-of (S ϕ y , q ∘ pr₁)) holds
+       open small-types-have-joins L (S ϕ x) (q ∘ S-to-base ϕ x) (i x)       
+     Γ-y-is-sup : (Γ y is-lub-of (S ϕ y , q ∘ S-to-base ϕ y)) holds
      Γ-y-is-sup = is-lub-of-both
       where
-       open small-types-have-joins L (S ϕ y) (q ∘ pr₁) (i y)
+       open small-types-have-joins L (S ϕ y) (q ∘ S-to-base ϕ y) (i y)
 
   open monotone-endomaps L hiding (_≤_)
 
@@ -698,7 +701,7 @@ module local-inductive-definitions {𝓤 𝓦 𝓥 : Universe}
      where
       equiv-2 : (z : B)
               → (z ≤ᴮ f a) ≃ (Ǝ a' ꞉ ⟨ L ⟩ ,
-                (z , a') ∈ ϕ × (a' ≤ a) holds) holds
+                             (z , a') ∈ ϕ × (a' ≤ a) holds) holds
       equiv-2 z = ⌜ prop-≃-≃-⇔ fe _≤ᴮ_-is-prop-valued ∥∥-is-prop ⌝⁻¹
                   (map-1 , map-2)
        where
@@ -715,10 +718,10 @@ module local-inductive-definitions {𝓤 𝓦 𝓥 : Universe}
                                               (f-mono a' a r))
     i : ϕ is-local 
     i a = (small-↓ᴮ (f a) , equiv-1 a)
-    G : (x : ⟨ L ⟩) → (f x is-lub-of (S ϕ x , q ∘ pr₁)) holds 
+    G : (x : ⟨ L ⟩) → (f x is-lub-of (S ϕ x , q ∘ S-to-base ϕ x)) holds 
     G x = (f-is-upbnd , f-is-least)
      where
-      f-is-upbnd : (f x is-an-upper-bound-of (S ϕ x , q ∘ pr₁)) holds
+      f-is-upbnd : (f x is-an-upper-bound-of (S ϕ x , q ∘ S-to-base ϕ x)) holds
       f-is-upbnd (b , e) = map-4 e
        where
         map-4 : (Ǝ a' ꞉ ⟨ L ⟩ , (b , a') ∈ ϕ × (a' ≤ x) holds) holds
@@ -730,7 +733,8 @@ module local-inductive-definitions {𝓤 𝓦 𝓥 : Universe}
           map-5 (a' , o , r) = is-transitive-for L (q b) (f a') (f x)
                                 (_≤ᴮ_-to-_≤_ (⌜ ≃-Lift 𝓤 (b ≤ᴮ f a') ⌝⁻¹ o))
                                 (f-mono a' x r)
-      f-is-least : ((u , _) : upper-bound (S ϕ x , q ∘ pr₁)) → (f x ≤ u) holds
+      f-is-least : ((u , _) : upper-bound (S ϕ x , q ∘ S-to-base ϕ x))
+                 → (f x ≤ u) holds
       f-is-least (u , is-upbnd) = (is-least-upper-boundᴮ (f x))
                                   (u , λ z → is-upbnd (⌜ equiv-1 x ⌝ z))
     H : (x : ⟨ L ⟩) → (Γ ϕ i) x ＝ f x
@@ -738,8 +742,8 @@ module local-inductive-definitions {𝓤 𝓦 𝓥 : Universe}
      where
       open equivalent-families-have-same-join L (S ϕ x) (S ϕ x)
                                               (id , id-is-equiv (S ϕ x))
-                                              (q ∘ pr₁)
-      open small-types-have-joins L (S ϕ x) (q ∘ pr₁) (i x)
+                                              (q ∘ S-to-base ϕ x)
+      open small-types-have-joins L (S ϕ x) (q ∘ S-to-base ϕ x) (i x)
 
   ind-def-from-mono-map : (f : ⟨ L ⟩ → ⟨ L ⟩)
                         → f is-monotone
@@ -793,12 +797,13 @@ module correspondance-small-ϕ-closed-types-def-points {𝓤 𝓦 𝓥 : Univers
    P is-small-ϕ-closed-subset = ((U : 𝓟 {𝓥} B)
                                → (U ⊆ P)
                                → ((b : B)
-                               → (b ≤ᴮ (⋁ ((Σ b ꞉ B , b ∈ U) , q ∘ pr₁)))
-                               →  b ∈ P))
+                               → b ≤ᴮ (⋁ (𝕋 U , q ∘ 𝕋-to-carrier U))
+                               → b ∈ P))
                               × ((a : ⟨ L ⟩)
                                → (b : B)
-                               → ((b , a) ∈ ϕ)
-                               → ((b' : B) → (b' ≤ᴮ a → b' ∈ P)) → b ∈ P)
+                               → (b , a) ∈ ϕ
+                               → ((b' : B) → (b' ≤ᴮ a → b' ∈ P))
+                               → b ∈ P)
 
    is-small-ϕ-closed-subset-is-predicate : (P : 𝓟 {𝓥} B)
                                          → is-prop (P is-small-ϕ-closed-subset)
@@ -822,10 +827,10 @@ module correspondance-small-ϕ-closed-types-def-points {𝓤 𝓦 𝓥 : Univers
 
    c-closed-of-small-ϕ-closed-subset : (X : small-ϕ-closed-subsets)
                                      → ((U : 𝓟 {𝓥} B)
-                                     → (U ⊆ subset-of-small-ϕ-closed-subset X)
+                                     → U ⊆ subset-of-small-ϕ-closed-subset X
                                      → ((b : B)
-                                     → (b ≤ᴮ (⋁ ((Σ b ꞉ B , b ∈ U) , q ∘ pr₁)))
-                                     →  b ∈ subset-of-small-ϕ-closed-subset X))
+                                     → b ≤ᴮ (⋁ (𝕋 U , q ∘ 𝕋-to-carrier U))
+                                     → b ∈ subset-of-small-ϕ-closed-subset X))
    c-closed-of-small-ϕ-closed-subset (P , c-clsd , ϕ-clsd) = c-clsd
 
    ϕ-closed-of-small-ϕ-closed-subset : (X : small-ϕ-closed-subsets)
@@ -860,21 +865,24 @@ module correspondance-small-ϕ-closed-types-def-points {𝓤 𝓦 𝓥 : Univers
      (sup-P , is-non-inc)
     where
      sup-P : ⟨ L ⟩
-     sup-P = ⋁ ((Σ b ꞉ B , b ∈ P) , q ∘ pr₁)
+     sup-P = ⋁ (𝕋 P , q ∘ 𝕋-to-carrier P)
      open subsets-order-joins L B q hiding (⋁_ ; _≤_)
      is-non-inc : sup-P is-non-inc
      is-non-inc = Γ-is-least-upper-bound (sup-P , is-upper-bound)
       where
-       open small-types-have-joins L (S ϕ sup-P) (q ∘ pr₁) (i sup-P)
+       open small-types-have-joins L (S ϕ sup-P)
+                                   (q ∘ S-to-base ϕ sup-P) (i sup-P)
                                    hiding (⋁_ ; _≤_)
-       Γ-is-sup : ((Γ ϕ i) sup-P is-lub-of (S ϕ sup-P , q ∘ pr₁)) holds
+       Γ-is-sup : ((Γ ϕ i) sup-P is-lub-of (S ϕ sup-P , q ∘ S-to-base ϕ sup-P))
+                  holds
        Γ-is-sup = is-lub-of-both
-       Γ-is-least-upper-bound : ((u , _) : upper-bound (S ϕ sup-P , q ∘ pr₁))
+       Γ-is-least-upper-bound :
+         ((u , _) : upper-bound (S ϕ sup-P , q ∘ S-to-base ϕ sup-P))
                               → ((Γ ϕ i) sup-P ≤ u) holds
        Γ-is-least-upper-bound = pr₂ Γ-is-sup
        b-in-P-to-b-≤-sup-P : (b : B) → b ∈ P → (q(b) ≤ sup-P) holds
        b-in-P-to-b-≤-sup-P b b-in-P =
-         (is-an-upper-bound-for L of ((Σ b ꞉ B , b ∈ P) , q ∘ pr₁)) (b , b-in-P)
+         (is-an-upper-bound-for L of (𝕋 P , q ∘ 𝕋-to-carrier P)) (b , b-in-P)
        un-trunc-map : (b : B)
                     → Σ a ꞉ ⟨ L ⟩ , (b , a) ∈ ϕ × (a ≤ sup-P) holds
                     → (q(b) ≤ sup-P) holds
@@ -899,19 +907,19 @@ module correspondance-small-ϕ-closed-types-def-points {𝓤 𝓦 𝓥 : Univers
      Q : (x : ⟨ L ⟩) → 𝓟 {𝓥} B
      Q x b = (b ≤ᴮ x , _≤ᴮ_-is-prop-valued)
      sup-Q_ : (x : ⟨ L ⟩) → ⟨ L ⟩
-     sup-Q x = ⋁ ((Σ b ꞉ B , b ∈ Q x) , q ∘ pr₁)
+     sup-Q x = ⋁ (𝕋 (Q x) , q ∘ 𝕋-to-carrier (Q x))
      _＝-sup-Q : (x : ⟨ L ⟩) → x ＝ sup-Q x
      x ＝-sup-Q = is-sup'ᴮ x
      open subsets-order-joins L B q hiding (_≤_ ; ⋁_)
      c-closed : (U : 𝓟 {𝓥} B)
               → (U ⊆ Q a)
-              → ((b : B) → (b ≤ᴮ (⋁ ((Σ b ꞉ B , b ∈ U) , q ∘ pr₁))) →  b ∈ Q a)
+              → ((b : B) → (b ≤ᴮ (⋁ (𝕋 U , q ∘ 𝕋-to-carrier U))) →  b ∈ Q a)
      c-closed U C b o = _≤_-to-_≤ᴮ_ (is-transitive-for L (q b)
-                                    (⋁ ((Σ b ꞉ B , b ∈ U) , q ∘ pr₁))
+                                    (⋁ (𝕋 U , q ∘ 𝕋-to-carrier U))
                                     a
                                     (_≤ᴮ_-to-_≤_ o)
-                                    (transport (λ z → ((⋁ ((Σ b ꞉ B , b ∈ U) ,
-                                      q ∘ pr₁)) ≤ z) holds)
+                                    (transport (λ z → ((⋁ (𝕋 U ,
+                                      q ∘ 𝕋-to-carrier U)) ≤ z) holds)
                                                (a ＝-sup-Q ⁻¹)
                                                (joins-preserve-containment {U}
                                                                      {Q a} C)))
@@ -921,12 +929,12 @@ module correspondance-small-ϕ-closed-types-def-points {𝓤 𝓦 𝓥 : Univers
               → ((b' : B) → (b' ≤ᴮ a' → b' ∈ Q a)) → b ∈ Q a
      ϕ-closed a' b p f = trunc-map b ∣ (a' , p , a'-≤-a) ∣
       where
-       open small-types-have-joins L (S ϕ a) (q ∘ pr₁) (i a)
+       open small-types-have-joins L (S ϕ a) (q ∘ S-to-base ϕ a) (i a)
                                    hiding (⋁_ ; _≤_)
-       Γ-is-sup : ((Γ ϕ i) a is-lub-of (S ϕ a , q ∘ pr₁)) holds
+       Γ-is-sup : ((Γ ϕ i) a is-lub-of (S ϕ a , q ∘ S-to-base ϕ a)) holds
        Γ-is-sup = is-lub-of-both
        Γ-an-upper-bound :
-         ((Γ ϕ i) a is-an-upper-bound-of (S ϕ a , q ∘ pr₁)) holds
+         ((Γ ϕ i) a is-an-upper-bound-of (S ϕ a , q ∘ S-to-base ϕ a)) holds
        Γ-an-upper-bound = pr₁ Γ-is-sup
        trunc-map : (x : B)
                  → (Ǝ a'' ꞉ ⟨ L ⟩ , (x , a'') ∈ ϕ × (a'' ≤ a) holds) holds
@@ -971,10 +979,10 @@ module correspondance-small-ϕ-closed-types-def-points {𝓤 𝓦 𝓥 : Univers
                                P'-to-P P-to-P')
           where
            P'-to-P : x ≤ᴮ sup-P → x ∈ P
-           P'-to-P = c-closed P (λ z → id) x
+           P'-to-P = c-closed P (λ _ → id) x
            P-to-P' : x ∈ P → x ≤ᴮ sup-P
            P-to-P' r = _≤_-to-_≤ᴮ_ ((is-an-upper-bound-for L of
-                                    ((Σ b ꞉ B , b ∈ P) , q ∘ pr₁)) (x , r))
+                                    (𝕋 P , q ∘ 𝕋-to-carrier P)) (x , r))
      G : small-ϕ-closed-subsets-to-non-inc-points
        ∘ non-inc-points-to-small-ϕ-closed-subsets ∼ id
      G (a , is-non-inc) = to-subtype-＝ is-non-inc-is-predicate sup-P-＝-a
@@ -999,55 +1007,54 @@ module correspondance-small-ϕ-closed-types-def-points {𝓤 𝓦 𝓥 : Univers
 
     module smallness-assumption (j : (b : B) → (b ∈ 𝓘nd) is 𝓥 small) where
 
-     small-𝓘 : (b : B) →  𝓥  ̇
-     small-𝓘 b = pr₁ (j b) 
+     𝓘' : (b : B) →  𝓥  ̇
+     𝓘' b = (resized (b ∈ 𝓘nd)) (j b) 
 
-     small-𝓘-≃-𝓘nd : (b : B) → small-𝓘 b ≃ b ∈ 𝓘nd 
-     small-𝓘-≃-𝓘nd b = pr₂ (j b)
+     𝓘'-≃-𝓘nd : (b : B) → 𝓘' b ≃ b ∈ 𝓘nd 
+     𝓘'-≃-𝓘nd b = resizing-condition (j b)
 
-     small-𝓘-to-𝓘nd : (b : B) → small-𝓘 b → b ∈ 𝓘nd
-     small-𝓘-to-𝓘nd b = ⌜ small-𝓘-≃-𝓘nd b ⌝
+     𝓘'-to-𝓘nd : (b : B) → 𝓘' b → b ∈ 𝓘nd
+     𝓘'-to-𝓘nd b = ⌜ 𝓘'-≃-𝓘nd b ⌝
 
-     𝓘nd-to-small-𝓘 : (b : B) → b ∈ 𝓘nd → small-𝓘 b
-     𝓘nd-to-small-𝓘 b = ⌜ small-𝓘-≃-𝓘nd b ⌝⁻¹
+     𝓘nd-to-𝓘' : (b : B) → b ∈ 𝓘nd → 𝓘' b
+     𝓘nd-to-𝓘' b = ⌜ 𝓘'-≃-𝓘nd b ⌝⁻¹
 
-     small-𝓘-is-prop-valued : {b : B} → is-prop (small-𝓘 b)
-     small-𝓘-is-prop-valued {b} = equiv-to-prop (small-𝓘-≃-𝓘nd b) (Ind-trunc b)
+     𝓘'-is-prop-valued : {b : B} → is-prop (𝓘' b)
+     𝓘'-is-prop-valued {b} = equiv-to-prop (𝓘'-≃-𝓘nd b) (Ind-trunc b)
 
-     𝓘-is-small-subset : 𝓟 {𝓥} B
-     𝓘-is-small-subset = λ b → (small-𝓘 b , small-𝓘-is-prop-valued)
+     𝓘'-subset : 𝓟 {𝓥} B
+     𝓘'-subset = λ b → (𝓘' b , 𝓘'-is-prop-valued)
 
-     small-𝓘-is-c-closed : (U : 𝓟 {𝓥} B)
-                         → U ⊆ 𝓘-is-small-subset
-                         → (b : B) → b ≤ᴮ (⋁ ((Σ b ꞉ B , b ∈ U) , q ∘ pr₁))
-                         → b ∈ 𝓘-is-small-subset
-     small-𝓘-is-c-closed U C b o =
-       𝓘nd-to-small-𝓘 b (𝓘nd-is-c-closed U (λ x → small-𝓘-to-𝓘nd x ∘ C x) b o)
+     𝓘'-is-c-closed : (U : 𝓟 {𝓥} B)
+                    → U ⊆ 𝓘'-subset
+                    → (b : B) → b ≤ᴮ (⋁ (𝕋 U , q ∘ 𝕋-to-carrier U))
+                    → b ∈ 𝓘'-subset
+     𝓘'-is-c-closed U C b o =
+       𝓘nd-to-𝓘' b (𝓘nd-is-c-closed U (λ x → 𝓘'-to-𝓘nd x ∘ C x) b o)
       
-     small-𝓘-is-ϕ-closed : (a : ⟨ L ⟩)
-                         → (b : B)
-                         → (b , a) ∈ ϕ
-                         → ((b' : B) → b' ≤ᴮ a → b' ∈ 𝓘-is-small-subset)
-                         → b ∈ 𝓘-is-small-subset
-     small-𝓘-is-ϕ-closed a b p f =
-       𝓘nd-to-small-𝓘 b (𝓘nd-is-ϕ-closed a b p
-                         (λ b' → small-𝓘-to-𝓘nd b' ∘ f b'))
+     𝓘'-is-ϕ-closed : (a : ⟨ L ⟩)
+                    → (b : B)
+                    → (b , a) ∈ ϕ
+                    → ((b' : B) → b' ≤ᴮ a → b' ∈ 𝓘'-subset)
+                    → b ∈ 𝓘'-subset
+     𝓘'-is-ϕ-closed a b p f =
+       𝓘nd-to-𝓘' b (𝓘nd-is-ϕ-closed a b p
+                   (λ b' → 𝓘'-to-𝓘nd b' ∘ f b'))
 
-     total-space-𝓘-is-small : (Σ b ꞉ B , b ∈ 𝓘nd) is 𝓥 small
-     total-space-𝓘-is-small = ((Σ b ꞉ B , small-𝓘 b) ,
-                               Σ-cong λ b → small-𝓘-≃-𝓘nd b)
+     total-space-𝓘-is-small : (𝕋 𝓘nd) is 𝓥 small
+     total-space-𝓘-is-small = (𝕋 𝓘'-subset , Σ-cong λ b → 𝓘'-≃-𝓘nd b)
    
-     e : (Σ b ꞉ B , small-𝓘 b) ≃ (Σ b ꞉ B , b ∈ 𝓘nd)
+     e : 𝕋 𝓘'-subset ≃ 𝕋 𝓘nd
      e = pr₂ total-space-𝓘-is-small
 
      sup-𝓘 : ⟨ L ⟩
-     sup-𝓘 = ⋁ ((Σ b ꞉ B , small-𝓘 b) , q ∘ pr₁ ∘ ⌜ e ⌝)
+     sup-𝓘 = ⋁ (𝕋 𝓘'-subset , q ∘ 𝕋-to-carrier 𝓘nd ∘ ⌜ e ⌝)
 
-     sup-𝓘-is-lub : (sup-𝓘 is-lub-of ((Σ b ꞉ B , b ∈ 𝓘nd) , q ∘ pr₁)) holds
+     sup-𝓘-is-lub : (sup-𝓘 is-lub-of (𝕋 𝓘nd , q ∘ 𝕋-to-carrier 𝓘nd)) holds
      sup-𝓘-is-lub = is-lub-of-both
       where
-       open small-types-have-joins L (Σ b ꞉ B , b ∈ 𝓘nd)
-                                   (q ∘ pr₁) total-space-𝓘-is-small
+       open small-types-have-joins L (𝕋 𝓘nd) (q ∘ 𝕋-to-carrier 𝓘nd)
+                                   total-space-𝓘-is-small
 
      Γ-has-least-fixed-point : Σ x ꞉ ⟨ L ⟩ ,
                                 ((Γ ϕ i) x ＝ x) × ((a : ⟨ L ⟩)
@@ -1059,8 +1066,7 @@ module correspondance-small-ϕ-closed-types-def-points {𝓤 𝓦 𝓥 : Univers
        Γ-sup-≤-sup : ((Γ ϕ i) sup-𝓘 ≤ sup-𝓘) holds
        Γ-sup-≤-sup = is-non-inc-non-inc-points
                       (small-ϕ-closed-subsets-to-non-inc-points
-                      (𝓘-is-small-subset , small-𝓘-is-c-closed ,
-                       small-𝓘-is-ϕ-closed))
+                      (𝓘'-subset , 𝓘'-is-c-closed , 𝓘'-is-ϕ-closed))
        sup-≤-Γ-sup : (sup-𝓘 ≤ (Γ ϕ i) sup-𝓘) holds
        sup-≤-Γ-sup = transport (λ z → (sup-𝓘 ≤ z) holds)
                                sup-Q-＝-Γ-sup sup-𝓘-≤-sup-Q
@@ -1075,8 +1081,8 @@ module correspondance-small-ϕ-closed-types-def-points {𝓤 𝓦 𝓥 : Univers
          Q-is-c-closed : (U : 𝓟 {𝓥} B)
                        → (U ⊆ Q-Γ-sup)
                        → ((b : B)
-                       → (b ≤ᴮ (⋁ ((Σ b ꞉ B , b ∈ U) , q ∘ pr₁)))
-                       →  b ∈ Q-Γ-sup)
+                       → b ≤ᴮ (⋁ (𝕋 U , q ∘ 𝕋-to-carrier U))
+                       → b ∈ Q-Γ-sup)
          Q-is-c-closed =
            c-closed-of-small-ϕ-closed-subset
             (non-inc-points-to-small-ϕ-closed-subsets
@@ -1092,14 +1098,14 @@ module correspondance-small-ϕ-closed-types-def-points {𝓤 𝓦 𝓥 : Univers
                            ((Γ ϕ i) sup-𝓘 , Γ-Γ-sup-≤-Γ-sup))
          𝓘nd-⊆-Q-Γ-sup : 𝓘nd ⊆ Q-Γ-sup
          𝓘nd-⊆-Q-Γ-sup = 𝓘nd-is-initial Q-Γ-sup Q-is-c-closed Q-is-ϕ-closed
-         𝓘-is-small-subset-⊆-Q-Γ-sup : 𝓘-is-small-subset ⊆ Q-Γ-sup
+         𝓘-is-small-subset-⊆-Q-Γ-sup : 𝓘'-subset ⊆ Q-Γ-sup
          𝓘-is-small-subset-⊆-Q-Γ-sup =
-           λ z → 𝓘nd-⊆-Q-Γ-sup z ∘ small-𝓘-to-𝓘nd z
+           λ z → 𝓘nd-⊆-Q-Γ-sup z ∘ 𝓘'-to-𝓘nd z
          sup-Q : ⟨ L ⟩
-         sup-Q = ⋁ ((Σ b ꞉ B , b ∈ Q-Γ-sup) , q ∘ pr₁)
+         sup-Q = ⋁ (𝕋 Q-Γ-sup , q ∘ 𝕋-to-carrier Q-Γ-sup)
          sup-𝓘-≤-sup-Q : (sup-𝓘 ≤ sup-Q) holds
          sup-𝓘-≤-sup-Q =
-           joins-preserve-containment {𝓘-is-small-subset}
+           joins-preserve-containment {𝓘'-subset}
                                       {Q-Γ-sup}
                                       𝓘-is-small-subset-⊆-Q-Γ-sup
          sup-Q-＝-Γ-sup : sup-Q ＝ (Γ ϕ i) sup-𝓘
@@ -1119,8 +1125,8 @@ module correspondance-small-ϕ-closed-types-def-points {𝓤 𝓦 𝓥 : Univers
          P-is-c-closed : (U : 𝓟 {𝓥} B)
                        → (U ⊆ P-a)
                        → ((b : B)
-                       → (b ≤ᴮ (⋁ ((Σ b ꞉ B , b ∈ U) , q ∘ pr₁)))
-                       →  b ∈ P-a)
+                       → b ≤ᴮ (⋁ (𝕋 U , q ∘ 𝕋-to-carrier U))
+                       → b ∈ P-a)
          P-is-c-closed = c-closed-of-small-ϕ-closed-subset
                           (non-inc-points-to-small-ϕ-closed-subsets
                            (a , Γ-a-≤-a))
@@ -1135,15 +1141,15 @@ module correspondance-small-ϕ-closed-types-def-points {𝓤 𝓦 𝓥 : Univers
                            (a , Γ-a-≤-a))
          𝓘nd-⊆-P-a : 𝓘nd ⊆ P-a
          𝓘nd-⊆-P-a = 𝓘nd-is-initial P-a P-is-c-closed P-is-ϕ-closed
-         𝓘-is-small-subset-⊆-P-a : 𝓘-is-small-subset ⊆ P-a
-         𝓘-is-small-subset-⊆-P-a = λ z → 𝓘nd-⊆-P-a z ∘ small-𝓘-to-𝓘nd z
+         𝓘'-subset-⊆-P-a : 𝓘'-subset ⊆ P-a
+         𝓘'-subset-⊆-P-a = λ z → 𝓘nd-⊆-P-a z ∘ 𝓘'-to-𝓘nd z
          sup-P : ⟨ L ⟩
-         sup-P = ⋁ ((Σ b ꞉ B , b ∈ P-a) , q ∘ pr₁)
+         sup-P = ⋁ (𝕋 P-a , q ∘ 𝕋-to-carrier P-a)
          sup-𝓘-≤-sup-P : (sup-𝓘 ≤ sup-P) holds
          sup-𝓘-≤-sup-P = joins-preserve-containment
-                          {𝓘-is-small-subset}
+                          {𝓘'-subset}
                           {P-a}
-                          𝓘-is-small-subset-⊆-P-a
+                          𝓘'-subset-⊆-P-a
          sup-P-＝-a : sup-P ＝ a
          sup-P-＝-a = is-sup'ᴮ a ⁻¹
 
@@ -1211,7 +1217,7 @@ module bounded-inductive-definition {𝓤 𝓦 𝓥 : Universe}
                          → ϕ is-bounded
                          → ϕ is-local
   (ϕ bounded-implies-local) (ϕ-small , ϕ-has-bound) a =
-    smallness-closed-under-≃ small-type-is-small small-type-≃-S
+    smallness-closed-under-≃ S₀-is-small S₀-≃-S
    where
     I : 𝓥  ̇
     I = bound-index {ϕ} ϕ-has-bound
@@ -1222,43 +1228,44 @@ module bounded-inductive-definition {𝓤 𝓦 𝓥 : Universe}
         → (b , a) ∈ ϕ
         → (Ǝ i ꞉ I , (α i is-a-small-cover-of ↓ᴮ a)) holds
     cov = covering-condition {ϕ} ϕ-has-bound
-    small-type : 𝓤 ⊔ 𝓦 ⊔ 𝓥  ̇
-    small-type = Σ b ꞉ B , ((Ǝ i ꞉ I , ((Ǝ m ꞉ (α i → ↓ᴮ a) ,
-                  ((b , (⋁ (α i , q ∘ pr₁ ∘ m))) ∈ ϕ)) holds)) holds)
-    small-type-is-small : small-type is 𝓥 small
-    small-type-is-small =
+    S₀ : 𝓤 ⊔ 𝓦 ⊔ 𝓥  ̇
+    S₀ = Σ b ꞉ B , (Ǝ i ꞉ I , (Ǝ m ꞉ (α i → ↓ᴮ a) ,
+                   (b , ⋁ (α i , ↓ᴮ-inclusion a ∘ m)) ∈ ϕ) holds) holds
+    S₀-is-small : S₀ is 𝓥 small
+    S₀-is-small =
      Σ-is-small (B , ≃-refl B)
                 (λ b → ∥∥-is-small pt (Σ-is-small (I , ≃-refl I)
                        λ i → ∥∥-is-small pt
                              (Σ-is-small (Π-is-small (fe') (α i , ≃-refl (α i))
                              λ _ → ↓ᴮ-is-small)
-                                   λ m → ϕ-small (⋁ (α i , q ∘ pr₁ ∘ m)) b)))
+                             λ m → ϕ-small (⋁ (α i , ↓ᴮ-inclusion a ∘ m)) b)))
 
-    small-type-to-S : small-type → S ϕ a
-    small-type-to-S (b , e) = (b , map₄ e)
+    S₀-to-S : S₀ → S ϕ a
+    S₀-to-S (b , e) = (b , map₄ e)
      where
       map₁ : (i : I)
-           → (Σ m ꞉ (α i → ↓ᴮ a) , ((b , (⋁ (α i , q ∘ pr₁ ∘ m))) ∈ ϕ))
+           → (Σ m ꞉ (α i → ↓ᴮ a) , (b , (⋁ (α i , ↓ᴮ-inclusion a ∘ m))) ∈ ϕ)
            → (Ǝ a' ꞉ ⟨ L ⟩ , (b , a') ∈ ϕ × (a' ≤ a) holds) holds
       map₁ i (m , p) =
-        ∣ (⋁ (α i , q ∘ pr₁ ∘ m) , p ,
-          (is-least-upper-bound-for L of (α i , q ∘ pr₁ ∘ m))
+        ∣ (⋁ (α i , ↓ᴮ-inclusion a ∘ m) , p ,
+          (is-least-upper-bound-for L of (α i , ↓ᴮ-inclusion a ∘ m))
                                          (a , λ z → is-upper-bound-↓ a (m z))) ∣
       map₂ : (i : I)
-           → ((Ǝ m ꞉ (α i → ↓ᴮ a) , ((b , (⋁ (α i , q ∘ pr₁ ∘ m))) ∈ ϕ)) holds)
+           → (Ǝ m ꞉ (α i → ↓ᴮ a) ,
+             (b , (⋁ (α i , ↓ᴮ-inclusion a ∘ m))) ∈ ϕ) holds
            → (Ǝ a' ꞉ ⟨ L ⟩ , (b , a') ∈ ϕ × (a' ≤ a) holds) holds
       map₂ i = ∥∥-rec ∥∥-is-prop (map₁ i)
-      map₃ : Σ i ꞉ I , ((Ǝ m ꞉ (α i → ↓ᴮ a) ,
-              ((b , (⋁ (α i , q ∘ pr₁ ∘ m))) ∈ ϕ)) holds)
+      map₃ : Σ i ꞉ I , (Ǝ m ꞉ (α i → ↓ᴮ a) ,
+              (b , (⋁ (α i , ↓ᴮ-inclusion a ∘ m))) ∈ ϕ) holds
            → (Ǝ a' ꞉ ⟨ L ⟩ , (b , a') ∈ ϕ × (a' ≤ a) holds) holds
       map₃ = uncurry map₂
-      map₄ : (Ǝ i ꞉ I , ((Ǝ m ꞉ (α i → ↓ᴮ a) ,
-              ((b , (⋁ (α i , q ∘ pr₁ ∘ m))) ∈ ϕ)) holds)) holds
+      map₄ : (Ǝ i ꞉ I , (Ǝ m ꞉ (α i → ↓ᴮ a) ,
+              (b , ⋁ (α i , ↓ᴮ-inclusion a ∘ m)) ∈ ϕ) holds) holds
            → (Ǝ a' ꞉ ⟨ L ⟩ , (b , a') ∈ ϕ × (a' ≤ a) holds) holds
       map₄ = ∥∥-rec ∥∥-is-prop map₃
 
-    S-to-small-type : S ϕ a → small-type
-    S-to-small-type (b , e) = (b , map₄ e)
+    S-to-S₀ : S ϕ a → S₀
+    S-to-S₀ (b , e) = (b , map₄ e)
      where
       ι : (a' : ⟨ L ⟩) → (a' ≤ a) holds → ↓ᴮ a' → ↓ᴮ a
       ι a' o (x , r) = (x , is-transitive-for L (q x) a' a r o)
@@ -1266,46 +1273,46 @@ module bounded-inductive-definition {𝓤 𝓦 𝓥 : Universe}
            →  (b , a') ∈ ϕ
            → (a' ≤ a) holds
            → (Σ i ꞉ I , (α i is-a-small-cover-of ↓ᴮ a'))
-           → (Ǝ i ꞉ I , ((Ǝ m ꞉ (α i → ↓ᴮ a) ,
-               ((b , (⋁ (α i , q ∘ pr₁ ∘ m))) ∈ ϕ)) holds)) holds
+           → (Ǝ i ꞉ I , (Ǝ m ꞉ (α i → ↓ᴮ a) ,
+               (b , ⋁ (α i , ↓ᴮ-inclusion a ∘ m)) ∈ ϕ) holds) holds
       map₁ a' p o (i , α-covers) = ∣ (i , ∣ (m , p') ∣) ∣
        where
         open surjection-implies-equal-joins L (↓ᴮ a') (α i)
                                               α-covers (q ∘ pr₁)
                                                hiding (⋁_ ; _≤_)
         m : α i → ↓ᴮ a
-        m = ι a' o ∘ ⌞  α-covers ⌟
-        path : a' ＝ ⋁ (α i , q ∘ pr₁ ∘ m)
-        path = ↠-families-＝-sup a' (⋁ (α i , q ∘ pr₁ ∘ m)) (is-sup a')
-                                 (is-lub-for L (α i , q ∘ pr₁ ∘ m))
-        p' : (b , (⋁ (α i , q ∘ pr₁ ∘ m))) ∈ ϕ
+        m = ι a' o ∘ ⌞ α-covers ⌟
+        path : a' ＝ ⋁ (α i , ↓ᴮ-inclusion a ∘ m)
+        path = ↠-families-＝-sup a' (⋁ (α i , ↓ᴮ-inclusion a ∘ m)) (is-sup a')
+                                 (is-lub-for L (α i , ↓ᴮ-inclusion a ∘ m))
+        p' : (b , ⋁ (α i , ↓ᴮ-inclusion a ∘ m)) ∈ ϕ
         p' = transport (λ z → (b , z) ∈ ϕ) path p
       map₂ : (a' : ⟨ L ⟩)
            → (b , a') ∈ ϕ
            → (a' ≤ a) holds
            → (Ǝ i ꞉ I , (α i is-a-small-cover-of ↓ᴮ a')) holds
-           → (Ǝ i ꞉ I , ((Ǝ m ꞉ (α i → ↓ᴮ a) ,
-              ((b , (⋁ (α i , q ∘ pr₁ ∘ m))) ∈ ϕ)) holds)) holds
+           → (Ǝ i ꞉ I , (Ǝ m ꞉ (α i → ↓ᴮ a) ,
+              (b , (⋁ (α i , ↓ᴮ-inclusion a ∘ m))) ∈ ϕ) holds) holds
       map₂ a' p o = ∥∥-rec ∥∥-is-prop (map₁ a' p o)
       map₃ : Σ a' ꞉ ⟨ L ⟩ , (b , a') ∈ ϕ × (a' ≤ a) holds
-           → (Ǝ i ꞉ I , ((Ǝ m ꞉ (α i → ↓ᴮ a) ,
-              ((b , (⋁ (α i , q ∘ pr₁ ∘ m))) ∈ ϕ)) holds)) holds
+           → (Ǝ i ꞉ I , (Ǝ m ꞉ (α i → ↓ᴮ a) ,
+              (b , ⋁ (α i , ↓ᴮ-inclusion a ∘ m)) ∈ ϕ) holds) holds
       map₃ (a' , p , o) = map₂ a' p o (cov a' b p)
       map₄ : (Ǝ a' ꞉ ⟨ L ⟩ , (b , a') ∈ ϕ × (a' ≤ a) holds) holds
-           → (Ǝ i ꞉ I , ((Ǝ m ꞉ (α i → ↓ᴮ a) ,
-              ((b , (⋁ (α i , q ∘ pr₁ ∘ m))) ∈ ϕ)) holds)) holds
+           → (Ǝ i ꞉ I , (Ǝ m ꞉ (α i → ↓ᴮ a) ,
+              (b , ⋁ (α i , ↓ᴮ-inclusion a ∘ m)) ∈ ϕ) holds) holds
       map₄ = ∥∥-rec ∥∥-is-prop map₃
 
-    small-type-≃-S : small-type ≃ S ϕ a
-    small-type-≃-S =
-      (small-type-to-S , qinvs-are-equivs small-type-to-S is-qinv)
+    S₀-≃-S : S₀ ≃ S ϕ a
+    S₀-≃-S =
+      (S₀-to-S , qinvs-are-equivs S₀-to-S is-qinv)
      where
-      H : S-to-small-type ∘ small-type-to-S ∼ id
+      H : S-to-S₀ ∘ S₀-to-S ∼ id
       H (b , e) = to-subtype-＝ (λ _ → ∥∥-is-prop) refl
-      G : small-type-to-S ∘ S-to-small-type ∼ id
+      G : S₀-to-S ∘ S-to-S₀ ∼ id
       G (b , e) = to-subtype-＝ (λ _ → ∥∥-is-prop) refl
-      is-qinv : qinv small-type-to-S
-      is-qinv = (S-to-small-type , H , G)
+      is-qinv : qinv S₀-to-S
+      is-qinv = (S-to-S₀ , H , G)
 
 \end{code}
 
@@ -1333,7 +1340,7 @@ module small-presentation-of-lattice {𝓤 𝓦 𝓥 : Universe}
                            → (𝓥 ⁺)  ̇
   (J , Y , R) is-a-small-presentation = (b : B)
                                       → (X : 𝓟 {𝓥} B)
-                                      → b ≤ᴮ (⋁ ((Σ x ꞉ B , x ∈ X) , q ∘ pr₁))
+                                      → b ≤ᴮ (⋁ (𝕋 X , q ∘ 𝕋-to-carrier X))
                                       ≃ ((Ǝ j ꞉ J , Y j ⊆ X × (b , Y j) ∈ R)
                                          holds)
 
@@ -1386,14 +1393,14 @@ module small-QIT {𝓤 𝓦 𝓥 : Universe}
 
    is-small-pres-forward : (b : B)
                          → (X : 𝓟 {𝓥} B)
-                         → b ≤ᴮ (⋁ ((Σ x ꞉ B , x ∈ X) , q ∘ pr₁))
+                         → b ≤ᴮ (⋁ (𝕋 X , q ∘ 𝕋-to-carrier X))
                          → ((Ǝ j ꞉ I₁ , Y j ⊆ X × (b , Y j) ∈ R) holds)
    is-small-pres-forward b X = ⌜ is-small-pres b X ⌝
 
    is-small-pres-backward : (b : B)
                           → (X : 𝓟 {𝓥} B)
                           → ((Ǝ j ꞉ I₁ , Y j ⊆ X × (b , Y j) ∈ R) holds)
-                          → b ≤ᴮ (⋁ ((Σ x ꞉ B , x ∈ X) , q ∘ pr₁))
+                          → b ≤ᴮ (⋁ (𝕋 X , q ∘ 𝕋-to-carrier X))
    is-small-pres-backward b X = ⌜ is-small-pres b X ⌝⁻¹
 
    ϕ-is-small : (a : ⟨ L ⟩) → (b : B) → ((b , a) ∈ ϕ) is 𝓥 small
@@ -1615,7 +1622,7 @@ module 𝓘nd-is-small {𝓤 𝓦 𝓥 : Universe}
       f : (U : 𝓟 {𝓥} B)
         → U ⊆ Small-𝓘nd
         → (b : B)
-        → b ≤ᴮ (⋁ ((Σ b ꞉ B , b ∈ U) , q ∘ pr₁))
+        → b ≤ᴮ (⋁ (𝕋 U , q ∘ 𝕋-to-carrier U))
         → b ∈ Small-𝓘nd
       f U C b o = f'' (is-small-pres-forward b U o)
        where
@@ -1636,20 +1643,20 @@ module 𝓘nd-is-small {𝓤 𝓦 𝓥 : Universe}
            → b ∈ Small-𝓘nd
         g' (i , s) =
          Small-𝓘nd-is-ϕ-cl i (pr₁ ∘ ⌞ s ⌟) b
-                           (ϕ-is-small-backward (⋁ (α i , q ∘ pr₁ ∘ ⌞ s ⌟))
-                                                b
-                                                (transport (λ a' → (b , a') ∈ ϕ)
-                                                           (a-＝-⋁-α) p))
-                                                (λ b' → C b'
-                                                  ∘ (transport (λ a'
-                                                    → b' ≤ᴮ a') (a-＝-⋁-α ⁻¹))) 
+                         (ϕ-is-small-backward (⋁ (α i , ↓ᴮ-inclusion a ∘ ⌞ s ⌟))
+                                              b
+                                              (transport (λ a' → (b , a') ∈ ϕ)
+                                                         (a-＝-⋁-α) p))
+                                              (λ b' → C b'
+                                                ∘ (transport (λ a'
+                                                  → b' ≤ᴮ a') (a-＝-⋁-α ⁻¹))) 
          where
           open surjection-implies-equal-joins L (↓ᴮ a) (α i)
-                                              s (q ∘ pr₁) hiding (⋁_)
-          a-＝-⋁-α : a ＝ ⋁ (α i , q ∘ pr₁ ∘ ⌞ s ⌟)
+                                              s (↓ᴮ-inclusion a) hiding (⋁_)
+          a-＝-⋁-α : a ＝ ⋁ (α i , ↓ᴮ-inclusion a ∘ ⌞ s ⌟)
           a-＝-⋁-α =
-            ↠-families-＝-sup a (⋁ (α i , q ∘ pr₁ ∘ ⌞ s ⌟)) (is-sup a)
-                              (is-lub-for L (α i , q ∘ pr₁ ∘ ⌞ s ⌟))
+            ↠-families-＝-sup a (⋁ (α i , ↓ᴮ-inclusion a ∘ ⌞ s ⌟)) (is-sup a)
+                              (is-lub-for L (α i , ↓ᴮ-inclusion a ∘ ⌞ s ⌟))
         g'' : (Ǝ i ꞉ I₂ , α i is-a-small-cover-of ↓ᴮ a) holds
             → b ∈ Small-𝓘nd
         g'' = ∥∥-rec (holds-is-prop (Small-𝓘nd b)) g'
