@@ -391,7 +391,7 @@ hflo-data-gives-finite-linear-order (ssup x φ) = pr₁
 ℍ-underlying-mset : ℍ → 𝕄
 ℍ-underlying-mset = pr₁
 
-hflo-structure : (F : ℍ) → hflo-data (ℍ-underlying-mset F)
+hflo-structure : (H : ℍ) → hflo-data (ℍ-underlying-mset H)
 hflo-structure = pr₂
 
 \end{code}
@@ -589,7 +589,7 @@ to-𝕊-is-equiv = qinvs-are-equivs to-𝕊
 \end{code}
 
 The length function counts the number of elements, including
-repetitions. For multisets that are sets, it gives its
+repetitions. For multisets that are sets, it gives their
 cardinality. The size function gives a kind of hereditary cardinality.
 
 \begin{code}
