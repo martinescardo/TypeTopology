@@ -538,7 +538,7 @@ _+ᴴ_ _×ᴴ_ : ℍ → ℍ → ℍ
 TODO. Define Σᴴ and Πᴴ. (Boilerplate.)
 
 We now develop a representation of elements of ℍ for the sake of being
-able to exhibit examples explicitly.
+able to exhibit examples explicitly and visually.
 
 \begin{code}
 
