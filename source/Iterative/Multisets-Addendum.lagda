@@ -538,105 +538,29 @@ _+ᴴ_ _×ᴴ_ : ℍ → ℍ → ℍ
 TODO. Define Σᴴ and Πᴴ. (Boilerplate.)
 
 We now develop a representation of elements of ℍ for the sake of being
-able to exhibit examples explicitly. Notice that this is like LISP's
-type of S-expressions but without atoms.
+able to exhibit examples explicitly.
 
 \begin{code}
 
-data 𝕊 : 𝓤₀ ̇ where
- []  : 𝕊
- _∷_ : 𝕊 → 𝕊 → 𝕊
+data _^_ (X : 𝓥 ̇ ) : ℕ → 𝓥 ̇ where
+ ·   : X ^ 0
+ _,_ : {n : ℕ} → X → X ^ n → X ^ (succ n)
 
-infixr 3 _∷_
-
-branch : (n : ℕ) → (Fin n → 𝕊) → 𝕊
-branch 0        f = []
-branch (succ n) f = f 𝟎 ∷ branch n (f ∘ suc)
-
-to-𝕊' : (M : 𝕄) → hflo-data M → 𝕊
-to-𝕊' (ssup X φ) ((n , f) , ψ) = branch n (IH ∘ ⌜ f ⌝⁻¹)
- where
-  IH : X → 𝕊
-  IH x = to-𝕊' (φ x) (ψ x)
+data 𝕊 : 𝓤 ̇ where
+ [_] : {n : ℕ} → 𝕊 ^ n → 𝕊
 
 to-𝕊 : ℍ → 𝕊
-to-𝕊 = uncurry to-𝕊'
-
-_::_ : ℍ → ℍ → ℍ
-H :: (ssup X φ , (n , f) , ψ) =
- ssup (X + 𝟙) φ' , (succ n , f') , ψ'
+to-𝕊 = uncurry g
  where
-  φ' : X + 𝟙 → 𝕄
-  φ' = cases φ (λ _ → ℍ-underlying-mset H)
+  h : (n : ℕ) → (Fin n → 𝕊) → 𝕊 ^ n
+  h 0        f = ·
+  h (succ n) f = f 𝟎 , h n (f ∘ suc)
 
-  f' : X + 𝟙 ≃ Fin (succ n)
-  f' = +-cong f (≃-refl 𝟙)
-
-  ψ' : (y : X + 𝟙) → hflo-data (φ' y)
-  ψ' = dep-cases ψ (λ _ → hflo-structure H)
-
-from-𝕊 : 𝕊 → ℍ
-from-𝕊 []      = 𝟘ᴴ
-from-𝕊 (s ∷ t) = from-𝕊 s :: from-𝕊 t
-
-to-𝕊-base : to-𝕊 𝟘ᴴ ＝ []
-to-𝕊-base = refl
-
-to-𝕊-step : (H K : ℍ) → to-𝕊 (H :: K) ＝ to-𝕊 H ∷ to-𝕊 K
-to-𝕊-step H (ssup X φ , (n , f) , ψ) = refl
-
-ε-𝕊 : to-𝕊 ∘ from-𝕊 ∼ id
-ε-𝕊 []      = to-𝕊-base
-ε-𝕊 (s ∷ t) =
- (to-𝕊 ∘ from-𝕊) (s ∷ t)           ＝⟨ refl ⟩
- to-𝕊 (from-𝕊 s :: from-𝕊 t)       ＝⟨ to-𝕊-step (from-𝕊 s) (from-𝕊 t) ⟩
- to-𝕊 (from-𝕊 s) ∷ to-𝕊 (from-𝕊 t) ＝⟨ ap₂ _∷_ (ε-𝕊 s) (ε-𝕊 t) ⟩
- s ∷ t                              ∎
-
-from-𝕊-base : from-𝕊 [] ＝ 𝟘ᴴ
-from-𝕊-base = refl
-
-from-𝕊-step : (s t : 𝕊) → from-𝕊 (s ∷ t) ＝ from-𝕊 s :: from-𝕊 t
-from-𝕊-step s t = refl
-
-{-
-η-𝕊 : from-𝕊 ∘ to-𝕊 ∼ id
-η-𝕊 (ssup X φ , (0      , f) , ψ) = 𝟘ᴴ-equality _ ⌜ f ⌝
-η-𝕊 (ssup X φ , (succ n , f) , ψ) = {!!}
- where
-  IH : {!!}
-  IH = {!!}
-
-to-𝕊-is-equiv : is-equiv to-𝕊
-to-𝕊-is-equiv = qinvs-are-equivs to-𝕊
-                 (from-𝕊 , η-𝕊 , ε-𝕊)
--}
-\end{code}
-
-The length function counts the number of elements, including
-repetitions. For multisets that are sets, it gives their
-cardinality. The size function gives a kind of hereditary cardinality.
-
-\begin{code}
-
-open import Naturals.Addition renaming (_+_ to _∔_)
-
-𝕊-length : 𝕊 → ℕ
-𝕊-length [] = 0
-𝕊-length (_ ∷ t) = succ (𝕊-length t)
-
-𝕊-size : 𝕊 → ℕ
-𝕊-size [] = 0
-𝕊-size (s ∷ t) = succ (𝕊-size s ∔ 𝕊-size t)
-
-{- TODO. Just for the sake of illustration.
-
-ℍ-length : ℍ → ℕ
-ℍ-length = {!!}
-
-ℍ-size : ℍ → ℕ
-ℍ-size = {!!}
--}
+  g : (M : 𝕄) → hflo-data M → 𝕊
+  g (ssup X φ) ((n , f) , ψ) = [ h n (IH ∘ ⌜ f ⌝⁻¹) ]
+   where
+    IH : X → 𝕊
+    IH x = g (φ x) (ψ x)
 
 \end{code}
 
@@ -644,71 +568,33 @@ Examples.
 
 \begin{code}
 
-private
- t : ℍ → 𝕊 × ℕ × ℕ
- t H = S , 𝕊-length S , 𝕊-size S
-  where
-   S = to-𝕊 H
+𝟛ᴴ : ℍ
+𝟛ᴴ = 𝟚ᴴ +ᴴ 𝟙ᴴ
 
- 𝟘ᴴ-explicitly : t 𝟘ᴴ ＝ [] , 0 , 0
- 𝟘ᴴ-explicitly = refl
+𝟘ˢ 𝟙ˢ 𝟚ˢ 𝟛ˢ : 𝕊
+𝟘ˢ = to-𝕊 𝟘ᴴ
+𝟙ˢ = to-𝕊 𝟙ᴴ
+𝟚ˢ = to-𝕊 𝟚ᴴ
+𝟛ˢ = to-𝕊 𝟛ᴴ
 
- 𝟙ᴴ-explicitly : t 𝟙ᴴ ＝ ([] ∷ []) , 1 , 1
- 𝟙ᴴ-explicitly = refl
+𝟘ᴴ-explicitly : 𝟘ˢ ＝ [ · ]
+𝟘ᴴ-explicitly = refl
 
- 𝟚ᴴ-explicitly : t 𝟚ᴴ ＝ (([] ∷ []) ∷ [] ∷ []) , 2 , 3
- 𝟚ᴴ-explicitly = refl
+𝟙ᴴ-explicitly : 𝟙ˢ ＝ [ 𝟘ˢ , · ]
+𝟙ᴴ-explicitly = refl
 
- 𝟚ᴴ×𝟚ᴴ-explicitly : t (𝟚ᴴ ×ᴴ 𝟚ᴴ)
-                 ＝ (([] ∷ [] ∷ []) ∷ ([] ∷ []) ∷ ([] ∷ []) ∷ [] ∷ []) ,
-                    4 ,
-                    8
- 𝟚ᴴ×𝟚ᴴ-explicitly = refl
+𝟚ᴴ-explicitly : to-𝕊 𝟚ᴴ ＝ [ 𝟙ˢ , 𝟘ˢ , · ]
+𝟚ᴴ-explicitly = refl
 
- 𝟛ᴴ : ℍ
- 𝟛ᴴ = 𝟚ᴴ +ᴴ 𝟙ᴴ
+𝟚ᴴ×𝟚ᴴ-explicitly : to-𝕊 (𝟚ᴴ ×ᴴ 𝟚ᴴ) ＝ [ [ 𝟘ˢ , 𝟘ˢ , · ] , 𝟙ˢ , 𝟙ˢ , 𝟘ˢ , · ]
+𝟚ᴴ×𝟚ᴴ-explicitly = refl
 
- 𝟛ᴴ-explicitly : t 𝟛ᴴ ＝ (([] ∷ []) ∷ [] ∷ [] ∷ []) , 3 , 4
- 𝟛ᴴ-explicitly = refl
+𝟛ᴴ-explicitly : 𝟛ˢ ＝ [ 𝟙ˢ , 𝟘ˢ , 𝟘ˢ , · ]
+𝟛ᴴ-explicitly = refl
 
- 𝟛ᴴ×𝟛ᴴ-explicitly
-  : t (𝟛ᴴ ×ᴴ 𝟛ᴴ)
-  ＝ (([] ∷ [] ∷ []) ∷
-     ([] ∷ []) ∷
-     ([] ∷ []) ∷
-     ([] ∷ []) ∷ [] ∷ [] ∷ ([] ∷ []) ∷ [] ∷ [] ∷ []) ,
-    9 , 15
- 𝟛ᴴ×𝟛ᴴ-explicitly = refl
+𝟛ᴴ×𝟛ᴴ-explicitly
+ : to-𝕊 (𝟛ᴴ ×ᴴ 𝟛ᴴ) ＝ [ [ 𝟘ˢ , 𝟘ˢ , · ] , 𝟙ˢ , 𝟙ˢ , 𝟙ˢ , 𝟘ˢ , 𝟘ˢ , 𝟙ˢ , 𝟘ˢ , 𝟘ˢ , · ]
 
- another-example
-  : t ((𝟛ᴴ +ᴴ 𝟚ᴴ) ×ᴴ (𝟛ᴴ +ᴴ 𝟛ᴴ))
-  ＝ (([] ∷ [] ∷ []) ∷
-     ([] ∷ []) ∷
-     ([] ∷ []) ∷
-     ([] ∷ [] ∷ []) ∷
-     ([] ∷ []) ∷
-     ([] ∷ []) ∷
-     ([] ∷ []) ∷
-     [] ∷
-     [] ∷
-     ([] ∷ []) ∷
-     [] ∷
-     [] ∷
-     ([] ∷ []) ∷
-     [] ∷
-     [] ∷
-     ([] ∷ []) ∷
-     [] ∷
-     [] ∷
-     ([] ∷ [] ∷ []) ∷
-     ([] ∷ []) ∷
-     ([] ∷ []) ∷
-     ([] ∷ [] ∷ []) ∷
-     ([] ∷ []) ∷
-     ([] ∷ []) ∷ ([] ∷ []) ∷ [] ∷ [] ∷ ([] ∷ []) ∷ [] ∷ [] ∷ [])
-    , 30 , 52
- another-example = refl
+𝟛ᴴ×𝟛ᴴ-explicitly = refl
 
 \end{code}
-
-TODO. Indent the above examples to reflect their tree structure.
