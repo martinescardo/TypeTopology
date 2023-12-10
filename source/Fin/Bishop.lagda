@@ -46,8 +46,11 @@ finite-linear-order X = Σ n ꞉ ℕ , X ≃ Fin n
   II : 𝟙 {𝓤} + 𝟙 {𝓤} ≃ Fin 2
   II = I
 
-  observation : ⌜ II ⌝ (inl ⋆) ＝ 𝟏
-  observation = refl
+  observation₀ : ⌜ II ⌝ (inl ⋆) ＝ 𝟏
+  observation₀ = refl
+
+  observation₁ : ⌜ II ⌝ (inr ⋆) ＝ 𝟎
+  observation₁ = refl
 
 \end{code}
 
