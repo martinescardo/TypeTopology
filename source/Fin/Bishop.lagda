@@ -37,8 +37,15 @@ type of finite linear orders on X.
 finite-linear-order : 𝓤 ̇ → 𝓤 ̇
 finite-linear-order X = Σ n ꞉ ℕ , X ≃ Fin n
 
+\end{code}
+
+There are two ways of making 𝟙 + 𝟙 into a linear order. We choose the
+following one.
+
+\begin{code}
+
 𝟙+𝟙-finite-linear-order : finite-linear-order (𝟙 {𝓤} + 𝟙 {𝓤})
-𝟙+𝟙-finite-linear-order {𝓤} = 2 , II
+𝟙+𝟙-finite-linear-order {𝓤} = 2 , III
  where
   I : 𝟙 {𝓤} + 𝟙 {𝓤} ≃ (𝟘 {𝓤₀} + 𝟙 {𝓤₀}) + 𝟙 {𝓤₀}
   I = +-cong 𝟘-lneutral'' one-𝟙-only
@@ -46,10 +53,13 @@ finite-linear-order X = Σ n ꞉ ℕ , X ≃ Fin n
   II : 𝟙 {𝓤} + 𝟙 {𝓤} ≃ Fin 2
   II = I
 
-  observation₀ : ⌜ II ⌝ (inl ⋆) ＝ 𝟏
+  III : 𝟙 {𝓤} + 𝟙 {𝓤} ≃ Fin 2
+  III = +comm ● II
+
+  observation₀ : ⌜ III ⌝ (inl ⋆) ＝ 𝟎
   observation₀ = refl
 
-  observation₁ : ⌜ II ⌝ (inr ⋆) ＝ 𝟎
+  observation₁ : ⌜ III ⌝ (inr ⋆) ＝ 𝟏
   observation₁ = refl
 
 \end{code}
