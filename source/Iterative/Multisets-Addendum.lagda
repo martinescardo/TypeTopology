@@ -8,9 +8,9 @@ Some constructions with iterative multisets.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K #-}
+{-# OPTIONS --safe --without-K --lossy-unification #-}
 
-open import MLTT.Spartan
+open import MLTT.Spartan hiding (_^_)
 open import UF.Sets-Properties
 open import UF.Univalence
 open import UF.Universes
@@ -410,6 +410,30 @@ type ℍ.
 𝟘ᴴ : ℍ
 𝟘ᴴ = 𝟘ᴹ , 𝟘ᴹ-hflo-data
 
+open import UF.Equiv-FunExt
+
+𝟘ᴴ-equality : (H : ℍ)
+            → is-empty (𝕄-root (ℍ-underlying-mset H))
+            → 𝟘ᴴ ＝ H
+𝟘ᴴ-equality (ssup X φ , (0 , f) , ψ) e =
+ to-Σ-＝
+  ((to-𝕄-＝
+     (eqtoid (ua 𝓤) 𝟘 X (≃-sym (f ● one-𝟘-only)) ,
+      dfunext fe (λ (x : 𝟘) → 𝟘-elim x))) ,
+    I)
+ where
+  I : {d : hflo-data (ssup X φ)} → d ＝ (zero , f) , ψ
+  I {(zero , f') , ψ'} =
+    to-Σ-＝
+     (to-Σ-＝
+       (refl ,
+        to-subtype-＝
+         (being-equiv-is-prop fe')
+         (dfunext fe (λ x → 𝟘-elim (⌜ f ⌝ x)))) ,
+      dfunext fe (λ x → 𝟘-elim (⌜ f ⌝ x)))
+  I {(succ n' , f') , ψ'} = 𝟘-elim (e (⌜ f' ⌝⁻¹ 𝟎))
+𝟘ᴴ-equality (ssup X φ , (succ n , f) , ψ) e = 𝟘-elim (e (⌜ f ⌝⁻¹ 𝟎))
+
 𝟙ᴹ-hflo-data : hflo-data 𝟙ᴹ
 𝟙ᴹ-hflo-data = (1 , I) , (λ ⋆ → 𝟘ᴹ-hflo-data)
  where
@@ -520,20 +544,20 @@ type of S-expressions but without atoms.
 \begin{code}
 
 data 𝕊 : 𝓤₀ ̇ where
- [] : 𝕊
+ []  : 𝕊
  _∷_ : 𝕊 → 𝕊 → 𝕊
 
 infixr 3 _∷_
 
+branch : (n : ℕ) → (Fin n → 𝕊) → 𝕊
+branch 0        f = []
+branch (succ n) f = f 𝟎 ∷ branch n (f ∘ suc)
+
 to-𝕊' : (M : 𝕄) → hflo-data M → 𝕊
-to-𝕊' (ssup X φ) ((n , f) , ψ) = h n (IH ∘ ⌜ f ⌝⁻¹)
+to-𝕊' (ssup X φ) ((n , f) , ψ) = branch n (IH ∘ ⌜ f ⌝⁻¹)
  where
   IH : X → 𝕊
   IH x = to-𝕊' (φ x) (ψ x)
-
-  h : (n : ℕ) → (Fin n → 𝕊) → 𝕊
-  h 0        f = []
-  h (succ n) f = f 𝟎 ∷ h n (f ∘ suc)
 
 to-𝕊 : ℍ → 𝕊
 to-𝕊 = uncurry to-𝕊'
@@ -575,17 +599,18 @@ from-𝕊-base = refl
 from-𝕊-step : (s t : 𝕊) → from-𝕊 (s ∷ t) ＝ from-𝕊 s :: from-𝕊 t
 from-𝕊-step s t = refl
 
-{- TODO. Easy. I have to pause now.
-
+{-
 η-𝕊 : from-𝕊 ∘ to-𝕊 ∼ id
-η-𝕊 (ssup X φ , (zero , f) , ψ) = {!!}
+η-𝕊 (ssup X φ , (0      , f) , ψ) = 𝟘ᴴ-equality _ ⌜ f ⌝
 η-𝕊 (ssup X φ , (succ n , f) , ψ) = {!!}
+ where
+  IH : {!!}
+  IH = {!!}
 
 to-𝕊-is-equiv : is-equiv to-𝕊
 to-𝕊-is-equiv = qinvs-are-equivs to-𝕊
                  (from-𝕊 , η-𝕊 , ε-𝕊)
 -}
-
 \end{code}
 
 The length function counts the number of elements, including
