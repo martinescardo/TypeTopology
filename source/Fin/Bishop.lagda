@@ -38,10 +38,16 @@ finite-linear-order : 𝓤 ̇ → 𝓤 ̇
 finite-linear-order X = Σ n ꞉ ℕ , X ≃ Fin n
 
 𝟙+𝟙-finite-linear-order : finite-linear-order (𝟙 {𝓤} + 𝟙 {𝓤})
-𝟙+𝟙-finite-linear-order = 2 , I
+𝟙+𝟙-finite-linear-order {𝓤} = 2 , II
  where
   I : 𝟙 {𝓤} + 𝟙 {𝓤} ≃ (𝟘 {𝓤₀} + 𝟙 {𝓤₀}) + 𝟙 {𝓤₀}
   I = +-cong 𝟘-lneutral'' one-𝟙-only
+
+  II : 𝟙 {𝓤} + 𝟙 {𝓤} ≃ Fin 2
+  II = I
+
+  observation : ⌜ II ⌝ (inl ⋆) ＝ 𝟏
+  observation = refl
 
 \end{code}
 
