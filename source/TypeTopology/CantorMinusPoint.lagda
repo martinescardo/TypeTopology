@@ -220,9 +220,9 @@ Cantor-minus-𝟏-≃ = qinveq f (g , gf , fg)
 
 \end{code}
 
-And this is what we wanted to show. Notice that how the
-prop-valuedness of the apartness relation is crucial for the proof
-that this construction works.
+And this is what we wanted to show. Notice how the prop-valuedness of
+the apartness relation is crucial for the proof that this construction
+works.
 
 As discussed above, it doesn't matter which point we remove, because
 the Cantor space is homogenous, in the sence that for any two points α
