@@ -215,7 +215,7 @@ Cantor-minus-𝟏-≃ = qinveq f (g , gf , fg)
   g (n , β) = ϕ n β , n , ϕ-property-δ β n , ϕ-property-μ β n
 
   gf : g ∘ f ∼ id
-  gf (α , a) = to-subtype-＝ (λ a → ♯-is-prop-valued a 𝟏) (ϕψ α a)
+  gf (α , a) = to-subtype-＝ (λ α → ♯-is-prop-valued α 𝟏) (ϕψ α a)
 
   fg : f ∘ g ∼ id
   fg (n , β) = to-Σ-＝ (refl , ψϕ n β)
