@@ -444,7 +444,7 @@ open import UF.Equiv-FunExt
 𝟙ᴴ = 𝟙ᴹ , 𝟙ᴹ-hflo-data
 
 𝟚ᴹ-hflo-data : hflo-data 𝟚ᴹ
-𝟚ᴹ-hflo-data = 𝟙+𝟙-finite-linear-order ,
+𝟚ᴹ-hflo-data = 𝟙+𝟙-natural-finite-linear-order ,
                dep-cases (λ _ → 𝟘ᴹ-hflo-data) (λ _ → 𝟙ᴹ-hflo-data)
 
 𝟚ᴴ : ℍ
@@ -517,7 +517,7 @@ open import Fin.ArithmeticViaEquivalence
              → hflo-data (M +ᴹ N)
 +ᴹ-hflo-data M N h k =
  Σᴹ-hflo-data (cases (λ (_ : 𝟙 {𝓤}) → M) (λ (_ : 𝟙 {𝓤}) → N))
-  𝟙+𝟙-finite-linear-order
+  𝟙+𝟙-natural-finite-linear-order
   (dep-cases (λ _ → h) (λ _ → k))
 
 ×ᴹ-hflo-data : (M N : 𝕄)
@@ -526,7 +526,7 @@ open import Fin.ArithmeticViaEquivalence
              → hflo-data (M ×ᴹ N)
 ×ᴹ-hflo-data M N h k =
  Πᴹ-hflo-data (cases (λ (_ : 𝟙 {𝓤}) → M) (λ (_ : 𝟙 {𝓤}) → N))
-  𝟙+𝟙-finite-linear-order
+  𝟙+𝟙-natural-finite-linear-order
   (dep-cases (λ _ → h) (λ _ → k))
 
 _+ᴴ_ _×ᴴ_ : ℍ → ℍ → ℍ
@@ -590,7 +590,6 @@ Examples.
 
 𝟙ᴴ+𝟘ᴴ-explicitly : to-𝕊 (𝟙ᴴ +ᴴ 𝟘ᴴ) ＝ 𝟙ˢ
 𝟙ᴴ+𝟘ᴴ-explicitly = refl
-
 
 𝟙ᴴ+𝟙ᴴ-explicitly : to-𝕊 (𝟙ᴴ +ᴴ 𝟙ᴴ) ＝ [ 𝟘ˢ , 𝟘ˢ , · ]
 𝟙ᴴ+𝟙ᴴ-explicitly = refl

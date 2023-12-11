@@ -44,23 +44,20 @@ following one.
 
 \begin{code}
 
-𝟙+𝟙-finite-linear-order : finite-linear-order (𝟙 {𝓤} + 𝟙 {𝓤})
-𝟙+𝟙-finite-linear-order {𝓤} = 2 , III
+𝟙+𝟙-natural-finite-linear-order : finite-linear-order (𝟙 {𝓤} + 𝟙 {𝓤})
+𝟙+𝟙-natural-finite-linear-order {𝓤} = 2 , g
  where
-  I : 𝟙 {𝓤} + 𝟙 {𝓤} ≃ (𝟘 {𝓤₀} + 𝟙 {𝓤₀}) + 𝟙 {𝓤₀}
-  I = +-cong 𝟘-lneutral'' one-𝟙-only
+  f : 𝟙 {𝓤} + 𝟙 {𝓤} ≃ (𝟘 {𝓤₀} + 𝟙 {𝓤₀}) + 𝟙 {𝓤₀}
+  f = +-cong 𝟘-lneutral'' one-𝟙-only
 
-  II : 𝟙 {𝓤} + 𝟙 {𝓤} ≃ Fin 2
-  II = I
+  f' : 𝟙 {𝓤} + 𝟙 {𝓤} ≃ Fin 2
+  f' = f
 
-  III : 𝟙 {𝓤} + 𝟙 {𝓤} ≃ Fin 2
-  III = +comm ● II
+  g : 𝟙 {𝓤} + 𝟙 {𝓤} ≃ Fin 2
+  g = +comm ● f'
 
-  observation₀ : ⌜ III ⌝ (inl ⋆) ＝ 𝟎
-  observation₀ = refl
-
-  observation₁ : ⌜ III ⌝ (inr ⋆) ＝ 𝟏
-  observation₁ = refl
+  observation : (⌜ g ⌝ (inl ⋆) ＝ 𝟎) × (⌜ g ⌝ (inr ⋆) ＝ 𝟏)
+  observation = refl , refl
 
 \end{code}
 
