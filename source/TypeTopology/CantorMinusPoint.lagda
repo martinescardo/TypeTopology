@@ -58,8 +58,8 @@ The constantly ₁ sequence:
 
 \end{code}
 
-We now define its canonical apartness relation _♯_. Two sequences are
-apart if they differ at some index.
+We now define the canonical apartness relation _♯_ for points of the
+Cantor type. Two sequences are apart if they differ at some index.
 
 To make apartness into a proposition, which is crucial for our
 purposes, we consider the minimal index at which they differ. This
