@@ -47,6 +47,8 @@ Cantor = ℕ → 𝟚
 
 \end{code}
 
+We let α and β range over the type Cantor.
+
 We now define its canonical apartness relation _♯_. Two sequences are
 apart if they differ at some index.
 
