@@ -18,7 +18,7 @@ point, rather than all points *different* from this point.
 
 {-# OPTIONS --safe --without-K #-}
 
-open import MLTT.Spartan renaming (_+_ to _∔_)
+open import MLTT.Spartan
 open import MLTT.Two-Properties
 open import Naturals.Order
 open import Notation.Order
