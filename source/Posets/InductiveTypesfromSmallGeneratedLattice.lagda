@@ -117,8 +117,8 @@ is-least-upper-bound-for L of U = pr₂ (is-lub-for L U)
 
 \end{code}
 
-We now define monotone endomaps on sup-lattice. This is sufficient for our work
-as we are studying fixed points.
+We now define monotone endomaps on a sup-lattice. This is sufficient for our
+work as we are studying fixed points.
 
 \begin{code}
 
@@ -194,7 +194,7 @@ module small-types-have-joins {𝓤 𝓦 𝓥 𝓣 : Universe}
  T'-to-T = ⌜ T'-≃-T ⌝
 
  T'-to-T-is-equiv : is-equiv T'-to-T
- T'-to-T-is-equiv = pr₂ T'-≃-T
+ T'-to-T-is-equiv = ⌜ T'-≃-T ⌝-is-equiv
 
  T-to-T' : T → T'
  T-to-T' =  ⌜ T'-≃-T ⌝⁻¹
@@ -272,7 +272,7 @@ module equivalent-families-have-same-join {𝓤 𝓦 𝓥 𝓣 𝓣' : Universe}
                            (＝₁ t) (is-upbnd' (⌜ e ⌝⁻¹ t)))
     where
      ＝₁ : (t : T) → m (⌜ e ⌝ (⌜ e ⌝⁻¹ t)) ＝ m t
-     ＝₁ t = ap m (naive-inverses-are-sections ⌜ e ⌝ (pr₂ e) t)
+     ＝₁ t = ap m (naive-inverses-are-sections ⌜ e ⌝ (⌜ e ⌝-is-equiv) t)
    s'-≤-s : (s' ≤ s) holds
    s'-≤-s = is-least-upbnd' (s , λ t' → is-upbnd (⌜ e ⌝ t'))
 
@@ -343,8 +343,11 @@ module small-basis {𝓤 𝓦 𝓥 : Universe}
  ↓ᴮ : ⟨ L ⟩ → 𝓦 ⊔ 𝓥  ̇
  ↓ᴮ x = Σ b ꞉ B , (q b ≤ x) holds
 
+ ↓ᴮ-to-base : (x : ⟨ L ⟩) → ↓ᴮ x → B
+ ↓ᴮ-to-base x = pr₁
+
  ↓ᴮ-inclusion : (x : ⟨ L ⟩) → ↓ᴮ x → ⟨ L ⟩
- ↓ᴮ-inclusion x = q ∘ pr₁
+ ↓ᴮ-inclusion x = q ∘ ↓ᴮ-to-base x
 
  is-small-basis : 𝓤 ⊔ 𝓦 ⊔ 𝓥 ⁺  ̇
  is-small-basis = (x : ⟨ L ⟩)
@@ -356,17 +359,17 @@ module small-basis {𝓤 𝓦 𝓥 : Universe}
   ≤-is-small : (x : ⟨ L ⟩) (b : B) → ((q b ≤ x) holds) is 𝓥 small
   ≤-is-small x b = pr₁ (h x) b
 
-  is-sup : (x : ⟨ L ⟩) → (x is-lub-of (↓ᴮ x , ↓ᴮ-inclusion x)) holds
-  is-sup x = pr₂ (h x)
+  is-sup-↓ : (x : ⟨ L ⟩) → (x is-lub-of (↓ᴮ x , ↓ᴮ-inclusion x)) holds
+  is-sup-↓ x = pr₂ (h x)
 
   is-upper-bound-↓ : (x : ⟨ L ⟩)
                    → (x is-an-upper-bound-of (↓ᴮ x , ↓ᴮ-inclusion x)) holds
-  is-upper-bound-↓ x = pr₁ (is-sup x)
+  is-upper-bound-↓ x = pr₁ (is-sup-↓ x)
 
   is-least-upper-bound-↓ : (x : ⟨ L ⟩)
                          → ((u' , _) : upper-bound (↓ᴮ x , ↓ᴮ-inclusion x))
                          → (x ≤ u') holds
-  is-least-upper-bound-↓ x = pr₂ (is-sup x)
+  is-least-upper-bound-↓ x = pr₂ (is-sup-↓ x)
 
   _≤ᴮ_ : (b : B) → (x : ⟨ L ⟩) → 𝓥  ̇
   b ≤ᴮ x = (resized ((q b ≤ x) holds)) (≤-is-small x b)
@@ -407,7 +410,7 @@ module small-basis {𝓤 𝓦 𝓥 : Universe}
   is-sup'ᴮ x = ≃-families-＝-sup
                x
                (⋁ (small-↓ᴮ x , small-↓ᴮ-inclusion x))
-               (is-sup x)
+               (is-sup-↓ x)
                (is-lub-for L ((small-↓ᴮ x , small-↓ᴮ-inclusion x)))
    where
     open equivalent-families-have-same-join L (↓ᴮ x)
@@ -753,7 +756,8 @@ module local-inductive-definitions {𝓤 𝓦 𝓥 : Universe}
   local-from-mono-map : (f : ⟨ L ⟩ → ⟨ L ⟩)
                       → (f-mono : f is-monotone)
                       → (ind-def-from-mono-map f f-mono) is-local
-  local-from-mono-map f f-mono = pr₁ (pr₂ (mono-map-give-local-ind-def f f-mono))
+  local-from-mono-map f f-mono =
+    pr₁ (pr₂ (mono-map-give-local-ind-def f f-mono))
 
   f-＝-Γ-from-mono-map : (f : ⟨ L ⟩ → ⟨ L ⟩)
                        → (f-mono : f is-monotone)
@@ -1283,7 +1287,7 @@ module bounded-inductive-definition {𝓤 𝓦 𝓥 : Universe}
         m : α i → ↓ᴮ a
         m = ι a' o ∘ ⌞ α-covers ⌟
         path : a' ＝ ⋁ (α i , ↓ᴮ-inclusion a ∘ m)
-        path = ↠-families-＝-sup a' (⋁ (α i , ↓ᴮ-inclusion a ∘ m)) (is-sup a')
+        path = ↠-families-＝-sup a' (⋁ (α i , ↓ᴮ-inclusion a ∘ m)) (is-sup-↓ a')
                                  (is-lub-for L (α i , ↓ᴮ-inclusion a ∘ m))
         p' : (b , ⋁ (α i , ↓ᴮ-inclusion a ∘ m)) ∈ ϕ
         p' = transport (λ z → (b , z) ∈ ϕ) path p
@@ -1642,7 +1646,7 @@ module 𝓘nd-is-small {𝓤 𝓦 𝓥 : Universe}
         g' : Σ i ꞉ I₂ , α i is-a-small-cover-of ↓ᴮ a
            → b ∈ Small-𝓘nd
         g' (i , s) =
-         Small-𝓘nd-is-ϕ-cl i (pr₁ ∘ ⌞ s ⌟) b
+         Small-𝓘nd-is-ϕ-cl i (↓ᴮ-to-base a ∘ ⌞ s ⌟) b
                          (ϕ-is-small-backward (⋁ (α i , ↓ᴮ-inclusion a ∘ ⌞ s ⌟))
                                               b
                                               (transport (λ a' → (b , a') ∈ ϕ)
@@ -1655,7 +1659,7 @@ module 𝓘nd-is-small {𝓤 𝓦 𝓥 : Universe}
                                               s (↓ᴮ-inclusion a) hiding (⋁_)
           a-＝-⋁-α : a ＝ ⋁ (α i , ↓ᴮ-inclusion a ∘ ⌞ s ⌟)
           a-＝-⋁-α =
-            ↠-families-＝-sup a (⋁ (α i , ↓ᴮ-inclusion a ∘ ⌞ s ⌟)) (is-sup a)
+            ↠-families-＝-sup a (⋁ (α i , ↓ᴮ-inclusion a ∘ ⌞ s ⌟)) (is-sup-↓ a)
                               (is-lub-for L (α i , ↓ᴮ-inclusion a ∘ ⌞ s ⌟))
         g'' : (Ǝ i ꞉ I₂ , α i is-a-small-cover-of ↓ᴮ a) holds
             → b ∈ Small-𝓘nd
