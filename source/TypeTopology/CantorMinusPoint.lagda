@@ -49,6 +49,15 @@ Cantor = ℕ → 𝟚
 
 We let α,β,γ range over the Cantor type.
 
+The constantly ₁ sequence:
+
+\begin{code}
+
+𝟏 : Cantor
+𝟏 = (i ↦ ₁)
+
+\end{code}
+
 We now define its canonical apartness relation _♯_. Two sequences are
 apart if they differ at some index.
 
@@ -91,15 +100,6 @@ As claimed above, the apartness relation is proposition-valued.
 
   III : (n , δ , μ) ＝[ α ♯ β ] (n' , δ' , μ')
   III = to-subtype-＝ I II
-
-\end{code}
-
-The constantly ₁ sequence.
-
-\begin{code}
-
-𝟏 : Cantor
-𝟏 = (i ↦ ₁)
 
 \end{code}
 
@@ -152,7 +152,7 @@ We will need the following two properties of the map ϕ.
 
 \end{code}
 
-The function ψ is defined so that ψ n α removes n+1 terms from the
+The function ψ is defined so that ψ n α removes n + 1 terms from the
 beginning of the sequence α.
 
 \begin{code}
