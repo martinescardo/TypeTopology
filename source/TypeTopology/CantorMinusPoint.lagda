@@ -5,7 +5,7 @@ We implement the isomorphism described at https://math.stackexchange.com/a/48609
 Namely that the Cantor space (ℕ → 𝟚) with a removed point is
 isomorphic to the product ℕ × (ℕ → 𝟚).
 
-Because the Cantor space is homogenous, meaning that for every two
+Because the Cantor space is homogeneous, meaning that for every two
 points α and β there is an automorphism that maps α to β, it suffices
 to consider a particular point of the Cantor space, as in the above
 link, which is what we also do here.
@@ -227,8 +227,9 @@ the apartness relation is crucial for the proof that this construction
 works.
 
 As discussed above, it doesn't matter which point we remove, because
-the Cantor space is homogenous, in the sense that for any two points α
-and β there is an automorphism (in fact, an involution) that maps α to β.
+the Cantor space is homogeneous, in the sense that for any two points
+α and β there is an automorphism (in fact, an involution) that maps α
+to β.
 
 \begin{code}
 
@@ -261,8 +262,8 @@ module _ (α β : Cantor) where
  Cantor-swap-≃ = Cantor-swap ,
                  involutions-are-equivs Cantor-swap Cantor-swap-involutive
 
-Cantor-homogenous : (α β : Cantor) → Σ f ꞉ Cantor ≃ Cantor , (⌜ f ⌝ α ＝ β)
-Cantor-homogenous α β = Cantor-swap-≃ α β , Cantor-swap-swaps α β
+Cantor-homogeneous : (α β : Cantor) → Σ f ꞉ Cantor ≃ Cantor , (⌜ f ⌝ α ＝ β)
+Cantor-homogeneous α β = Cantor-swap-≃ α β , Cantor-swap-swaps α β
 
 \end{code}
 
