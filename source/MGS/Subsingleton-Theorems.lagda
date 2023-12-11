@@ -50,7 +50,7 @@ being-equiv-is-subsingleton fe fe' f = Π-is-subsingleton fe
 
 subsingletons-are-retracts-of-logically-equivalent-types : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                                                          → is-subsingleton X
-                                                         → (X ⇔ Y)
+                                                         → (X ↔ Y)
                                                          → X ◁ Y
 
 subsingletons-are-retracts-of-logically-equivalent-types i (f , g) = g , f , η

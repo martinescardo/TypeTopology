@@ -48,7 +48,7 @@ pointed-subsingletons-are-singletons : (X : 𝓤 ̇ )
 pointed-subsingletons-are-singletons X x s = (x , s x)
 
 singleton-iff-pointed-and-subsingleton : {X : 𝓤 ̇ }
-                                       → is-singleton X ⇔ (X × is-subsingleton X)
+                                       → is-singleton X ↔ (X × is-subsingleton X)
 
 singleton-iff-pointed-and-subsingleton {𝓤} {X} = (a , b)
  where

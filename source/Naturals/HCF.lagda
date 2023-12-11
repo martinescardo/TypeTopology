@@ -130,7 +130,7 @@ With an eye towards implement Euclid's algorithm to compute the
 highest common factor, we now prove two lemmas; each direction of the
 following proof:
 
-If x ＝ q * y + r, then is-hcf h x y ⇔ is-hcf y r.
+If x ＝ q * y + r, then is-hcf h x y ↔ is-hcf y r.
 
 For Euclid's algorithm, we only need the right-to-left implication,
 but both are proved for completeness.

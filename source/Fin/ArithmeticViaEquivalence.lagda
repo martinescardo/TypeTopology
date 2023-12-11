@@ -147,14 +147,14 @@ open import MLTT.Spartan hiding (_^_)
 
 module Fin.ArithmeticViaEquivalence where
 
-open import UF.Subsingletons
-open import UF.Equiv
-open import UF.EquivalenceExamples
-open import Fin.Type
+open import Fin.Bishop
 open import Fin.Properties
 open import Fin.Topology
+open import Fin.Type
+open import UF.Equiv
+open import UF.EquivalenceExamples
 open import UF.PropTrunc
-open import Fin.Bishop
+open import UF.Subsingletons
 
 \end{code}
 
@@ -494,15 +494,15 @@ spartan MLTT are Π and Σ.
 
 open import UF.PropIndexedPiSigma
 
-Σconstruction : (n : ℕ) (a : Fin n → ℕ)
+Σ-construction : (n : ℕ) (a : Fin n → ℕ)
               → Σ k ꞉ ℕ , Fin k ≃ (Σ i ꞉ Fin n , Fin (a i))
-Σconstruction 0 a = 0 , (Fin 0                    ≃⟨ ≃-refl _ ⟩
+Σ-construction 0 a = 0 , (Fin 0                    ≃⟨ ≃-refl _ ⟩
                          𝟘                        ≃⟨ ≃-sym (prop-indexed-sum-zero id) ⟩
                          (Σ i ꞉ 𝟘 , Fin (a i)) ■)
-Σconstruction (succ n) a = g
+Σ-construction (succ n) a = g
  where
   IH : Σ k ꞉ ℕ , Fin k ≃ (Σ i ꞉ Fin n , Fin (a (suc i)))
-  IH = Σconstruction n (λ i → a (suc i))
+  IH = Σ-construction n (λ i → a (suc i))
   k : ℕ
   k = pr₁ IH
   φ : Fin k ≃ (Σ i ꞉ Fin n , Fin (a (suc i)))
@@ -528,7 +528,10 @@ The numerical sum:
 \begin{code}
 
 ∑ : {n : ℕ} → (Fin n → ℕ) → ℕ
-∑ {n} a = pr₁ (Σconstruction n a)
+∑ {n} a = pr₁ (Σ-construction n a)
+
+∑-property : {n : ℕ} (a : Fin n → ℕ) → Fin (∑ a) ≃ (Σ i ꞉ Fin n , Fin (a i))
+∑-property {n} a = pr₂ (Σ-construction n a)
 
 \end{code}
 
@@ -552,9 +555,9 @@ For Π we need function extensionality:
 
 module _ (fe : funext 𝓤₀ 𝓤₀) where
 
- Πconstruction : (n : ℕ) (a : Fin n → ℕ)
-               → Σ k ꞉ ℕ , Fin k ≃ (Π i ꞉ Fin n , Fin (a i))
- Πconstruction 0 a = 1 , (Fin 1                     ≃⟨ i ⟩
+ Π-construction : (n : ℕ) (a : Fin n → ℕ)
+                → Σ k ꞉ ℕ , Fin k ≃ (Π i ꞉ Fin n , Fin (a i))
+ Π-construction 0 a = 1 , (Fin 1                     ≃⟨ i ⟩
                           𝟘 + 𝟙                     ≃⟨ ii ⟩
                           𝟙                         ≃⟨ iii ⟩
                           (Π i ꞉ 𝟘 , Fin (a i))     ≃⟨ iv ⟩
@@ -565,10 +568,10 @@ module _ (fe : funext 𝓤₀ 𝓤₀) where
    iii = ≃-sym (prop-indexed-product-one fe id)
    iv  = ≃-refl _
 
- Πconstruction (succ n) a = g
+ Π-construction (succ n) a = g
   where
    IH : Σ k ꞉ ℕ , Fin k ≃ (Π i ꞉ Fin n , Fin (a (suc i)))
-   IH = Πconstruction n (λ i → a (suc i))
+   IH = Π-construction n (λ i → a (suc i))
    k : ℕ
    k = pr₁ IH
    φ : Fin k ≃ (Π i ꞉ Fin n , Fin (a (suc i)))
@@ -588,7 +591,10 @@ module _ (fe : funext 𝓤₀ 𝓤₀) where
    g = a 𝟎 ×' k , φ'
 
  ∏ : {n : ℕ} → (Fin n → ℕ) → ℕ
- ∏ {n} a = pr₁ (Πconstruction n a)
+ ∏ {n} a = pr₁ (Π-construction n a)
+
+ ∏-property : {n : ℕ} (a : Fin n → ℕ) → Fin (∏ a) ≃ (Π i ꞉ Fin n , Fin (a i))
+ ∏-property {n} a = pr₂ (Π-construction n a)
 
  ∏-base : (a : Fin 0 → ℕ)
         → ∏ a ＝ 1

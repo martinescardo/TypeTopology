@@ -4,7 +4,7 @@ Properties of the type of truth values.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --lossy-unification #-}
+{-# OPTIONS --safe --without-K #-}
 
 module UF.SubtypeClassifier-Properties where
 
@@ -46,7 +46,7 @@ open import UF.SubtypeClassifier
     c = transport id (a ⁻¹)
 
   h  : (p q : Ω 𝓤) → A p q → p ＝ q
-  h p q (u , v) = Ω-extensionality fe pe u v
+  h p q (u , v) = Ω-extensionality pe fe u v
 
   f  : (p q : Ω 𝓤) → p ＝ q → p ＝ q
   f p q e = h p q (g p q e)

@@ -368,7 +368,7 @@ Another formulation is that we have the following logical equivalence:
 \begin{code}
 
  specified-unspecified-equivalence :
-  has-specified-small-compact-basis 𝓓 ⇔ has-unspecified-small-compact-basis 𝓓
+  has-specified-small-compact-basis 𝓓 ↔ has-unspecified-small-compact-basis 𝓓
  specified-unspecified-equivalence =
     ∣_∣
   , specified-small-compact-basis-has-split-support

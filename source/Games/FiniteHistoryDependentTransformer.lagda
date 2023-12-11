@@ -433,7 +433,9 @@ main-theorem ext-const G εt = T-selection-strategy-lemma ext-const εt (ϕt G) 
 
 \end{code}
 
-Partial, possibly empty, paths in 𝑻's, and related notions.
+Alternative, non-inductive definition of T-optimality. We don't have
+any use for it, but it is useful for comparison with the classical
+notion. Partial, possibly empty, paths in 𝑻's, and related notions.
 
 \begin{code}
 
@@ -471,7 +473,7 @@ sub-T-Strategy {X ∷ Xf} (σ :: σf) (inr (x :: xs)) = sub-T-Strategy {Xf x} (�
 
 is-in-T-equilibrium' : (G : Game) → T-Strategy (Xt G) → Type
 is-in-T-equilibrium' (game []       q ⟨⟩)       ⟨⟩ = 𝟙
-is-in-T-equilibrium' (game (X ∷ Xf) q (ϕ :: _)) σt  = is-in-T-equilibrium q ϕ σt
+is-in-T-equilibrium' (game (X ∷ Xf) q (ϕ :: _)) σt = is-in-T-equilibrium q ϕ σt
 
 is-T-optimal₂ : (G : Game) (σ : T-Strategy (Xt G)) → Type
 is-T-optimal₂ G σ =
@@ -479,7 +481,7 @@ is-T-optimal₂ G σ =
 
 T-sgpe-equiv : (G : Game) (σ : T-Strategy (Xt G))
              → is-T-optimal  G σ
-             ⇔ is-T-optimal₂ G σ
+             ↔ is-T-optimal₂ G σ
 T-sgpe-equiv (game Xt q ϕt) σ = I ϕt q σ , II ϕt q σ
  where
   I : {Xt : 𝑻} (ϕt : 𝓚 Xt) (q : Path Xt → R) (σ : T-Strategy Xt)
@@ -499,7 +501,7 @@ T-sgpe-equiv (game Xt q ϕt) σ = I ϕt q σ , II ϕt q σ
 
 {-
 T-sgpe-equiv : (G : Game) (σ : T-Strategy (Xt G))
-             → is-T-optimal G σ ⇔ is-T-optimal₂ G σ
+             → is-T-optimal G σ ↔ is-T-optimal₂ G σ
 T-sgpe-equiv (game Xt q ϕt) σ = I ϕt q σ , II ϕt q σ
 
 is-in-subgame-perfect-equilibrium : (G : Game) → 𝓙𝓣 (Xt G) → Type

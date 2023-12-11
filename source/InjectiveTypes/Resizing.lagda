@@ -76,8 +76,8 @@ open import UF.Retracts
 open import UF.Size
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import UF.UA-FunExt
 open import UF.SubtypeClassifier
+open import UF.UA-FunExt
 
 private
  fe : FunExt
@@ -131,13 +131,13 @@ retracts-of-small-types-are-small =
  → X is 𝓦 small
  → Y is 𝓦 small
 
-small-ainjective-types-with-two-distinct-points-gives-Ω¬¬-resizing
+small-ainjective-type-with-two-distinct-points-gives-Ω¬¬-resizing
  : retracts-of-small-types-are-small
  → (D : 𝓤 ̇ )
  → ainjective-type D (𝓤 ⊔ 𝓥) 𝓦
  → has-two-distinct-points D
  → Ω¬¬ 𝓤 is 𝓤 small
-small-ainjective-types-with-two-distinct-points-gives-Ω¬¬-resizing
+small-ainjective-type-with-two-distinct-points-gives-Ω¬¬-resizing
  {𝓤} {𝓥} {𝓦} small-retracts D D-ainj ((x₀ , x₁) , distinct) = II I
  where
   f : 𝟚 → D
@@ -218,14 +218,14 @@ distinct points, other than in models that validate Ω¬¬ 𝓤₀ resizing
 
 \begin{code}
 
-small₀-ainjective-types-with-two-distinct-points-gives-Ω¬¬-resizing
+small₀-ainjective-type-with-two-distinct-points-gives-Ω¬¬-resizing
  : retracts-of-small-types-are-small
  → (D : 𝓤₀ ̇ )
  → ainjective-type D 𝓤₀ 𝓤₀
  → has-two-distinct-points D
  → Ω¬¬ 𝓤₀ is 𝓤₀ small
-small₀-ainjective-types-with-two-distinct-points-gives-Ω¬¬-resizing =
- small-ainjective-types-with-two-distinct-points-gives-Ω¬¬-resizing
+small₀-ainjective-type-with-two-distinct-points-gives-Ω¬¬-resizing =
+ small-ainjective-type-with-two-distinct-points-gives-Ω¬¬-resizing
 
 \end{code}
 
@@ -241,7 +241,7 @@ small₁-ainjective-types-with-two-distinct-points-gives-Ω¬¬-resizing
  → has-two-distinct-points D
  → Ω¬¬ 𝓤₀ is 𝓤₀ small
 small₁-ainjective-types-with-two-distinct-points-gives-Ω¬¬-resizing =
- small-ainjective-types-with-two-distinct-points-gives-Ω¬¬-resizing
+ small-ainjective-type-with-two-distinct-points-gives-Ω¬¬-resizing
 
 \end{code}
 
@@ -295,7 +295,7 @@ module Ω¬¬-resizing-examples
  𝓤-example : ainjective-type (𝓤 ̇ ) (𝓤 ⁺ ⊔ 𝓥) 𝓦
            → Ω¬¬ (𝓤 ⁺) is 𝓤 ⁺ small
  𝓤-example {𝓤} {𝓥} {𝓦} ainj =
-  small-ainjective-types-with-two-distinct-points-gives-Ω¬¬-resizing {𝓤 ⁺} {𝓥} {𝓦}
+  small-ainjective-type-with-two-distinct-points-gives-Ω¬¬-resizing {𝓤 ⁺} {𝓥} {𝓦}
    small-retracts
    (𝓤 ̇ )
    ainj
@@ -315,7 +315,7 @@ module Ω¬¬-resizing-examples
  Ω-example : ainjective-type (Ω 𝓤) (𝓤 ⁺) 𝓦
            → Ω¬¬ (𝓤 ⁺) is 𝓤 ⁺ small
  Ω-example {𝓤} {𝓦} ainj =
-  small-ainjective-types-with-two-distinct-points-gives-Ω¬¬-resizing {𝓤 ⁺} {𝓤} {𝓦}
+  small-ainjective-type-with-two-distinct-points-gives-Ω¬¬-resizing {𝓤 ⁺} {𝓤} {𝓦}
    small-retracts
    (Ω 𝓤)
    ainj
@@ -329,7 +329,7 @@ module Ω¬¬-resizing-examples
  Ω¬¬-example : ainjective-type (Ω¬¬ 𝓤) (𝓤 ⁺) 𝓦
              → Ω¬¬ (𝓤 ⁺) is 𝓤 ⁺ small
  Ω¬¬-example {𝓤} {𝓦} ainj =
-  small-ainjective-types-with-two-distinct-points-gives-Ω¬¬-resizing {𝓤 ⁺} {𝓤} {𝓦}
+  small-ainjective-type-with-two-distinct-points-gives-Ω¬¬-resizing {𝓤 ⁺} {𝓤} {𝓦}
    small-retracts
    (Ω¬¬ 𝓤)
    ainj
@@ -341,7 +341,7 @@ module Ω¬¬-resizing-examples
  Ordinal-example : ainjective-type (Ordinal 𝓤) (𝓤 ⁺) 𝓦
                  → Ω¬¬ (𝓤 ⁺) is 𝓤 ⁺ small
  Ordinal-example {𝓤} {𝓦} ainj =
-  small-ainjective-types-with-two-distinct-points-gives-Ω¬¬-resizing {𝓤 ⁺} {𝓤} {𝓦}
+  small-ainjective-type-with-two-distinct-points-gives-Ω¬¬-resizing {𝓤 ⁺} {𝓤} {𝓦}
    small-retracts
    (Ordinal 𝓤)
    ainj
@@ -353,7 +353,7 @@ module Ω¬¬-resizing-examples
  Multiset-example : ainjective-type (𝕄 𝓤) (𝓤 ⁺) 𝓦
                   → Ω¬¬ (𝓤 ⁺) is 𝓤 ⁺ small
  Multiset-example {𝓤} {𝓦} ainj =
-  small-ainjective-types-with-two-distinct-points-gives-Ω¬¬-resizing {𝓤 ⁺} {𝓤} {𝓦}
+  small-ainjective-type-with-two-distinct-points-gives-Ω¬¬-resizing {𝓤 ⁺} {𝓤} {𝓦}
    small-retracts
    (𝕄 𝓤)
    ainj
@@ -365,7 +365,7 @@ module Ω¬¬-resizing-examples
  Iterative-set-example : ainjective-type (𝕍 𝓤) (𝓤 ⁺) 𝓦
                        → Ω¬¬ (𝓤 ⁺) is 𝓤 ⁺ small
  Iterative-set-example {𝓤} {𝓦} ainj =
-  small-ainjective-types-with-two-distinct-points-gives-Ω¬¬-resizing {𝓤 ⁺} {𝓤} {𝓦}
+  small-ainjective-type-with-two-distinct-points-gives-Ω¬¬-resizing {𝓤 ⁺} {𝓤} {𝓦}
    small-retracts
    (𝕍 𝓤)
    ainj

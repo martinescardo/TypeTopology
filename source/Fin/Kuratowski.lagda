@@ -682,7 +682,7 @@ equivalent):
 select-equiv-with-𝟚-theorem : FunExt
                             → {X : 𝓤 ̇ }
                             → (∥ X ≃ 𝟚 ∥ → X ≃ 𝟚)
-                            ⇔ (∥ X ≃ 𝟚 ∥ → X)
+                            ↔ (∥ X ≃ 𝟚 ∥ → X)
 select-equiv-with-𝟚-theorem fe {X} = α , β
  where
   α : (∥ X ≃ 𝟚 ∥ → X ≃ 𝟚) → ∥ X ≃ 𝟚 ∥ → X

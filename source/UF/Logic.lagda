@@ -39,19 +39,30 @@ Added by Martin Escardo 1st Nov 2023.
 
 \begin{code}
 
+ ∧-intro' : (p q : Ω 𝓤) → p holds → q holds → (p ∧ q) holds
+ ∧-intro' p q a b = (a , b)
+
+ ∧-elim-L' : (p q : Ω 𝓤) → (p ∧ q) holds → p holds
+ ∧-elim-L' p q = pr₁
+
+ ∧-elim-R' : (p q : Ω 𝓤) → (p ∧ q) holds → q holds
+ ∧-elim-R' p q = pr₂
+
  module _ (pe : propext 𝓤) (fe : funext 𝓤 𝓤) where
 
-  ∧-intro : {p q : Ω 𝓤} → p ＝ ⊤ → q ＝ ⊤ → p ∧ q ＝ ⊤
-  ∧-intro {p} {q} a b = holds-gives-equal-⊤ pe fe (p ∧ q)
-                         (equal-⊤-gives-holds p a , equal-⊤-gives-holds q b)
+  ∧-intro : (p q : Ω 𝓤) → p ＝ ⊤ → q ＝ ⊤ → p ∧ q ＝ ⊤
+  ∧-intro p q a b = holds-gives-equal-⊤ pe fe (p ∧ q)
+                     (∧-intro' p q
+                       (equal-⊤-gives-holds p a)
+                       (equal-⊤-gives-holds q b))
 
   ∧-elim-L : (p q : Ω 𝓤) → p ∧ q ＝ ⊤ → p ＝ ⊤
   ∧-elim-L p q c = holds-gives-equal-⊤ pe fe p
-                    (pr₁ (equal-⊤-gives-holds (p ∧ q) c))
+                    (∧-elim-L' p q (equal-⊤-gives-holds (p ∧ q) c))
 
   ∧-elim-R : (p q : Ω 𝓤) → p ∧ q ＝ ⊤ → q ＝ ⊤
   ∧-elim-R p q c = holds-gives-equal-⊤ pe fe q
-                    (pr₂ (equal-⊤-gives-holds (p ∧ q) c))
+                    (∧-elim-R' p q (equal-⊤-gives-holds (p ∧ q) c))
 
 \end{code}
 
@@ -99,18 +110,23 @@ module Implication (fe : Fun-Ext) where
 
  open Conjunction
 
- _↔_ : Ω 𝓤 → Ω 𝓥 → Ω (𝓤 ⊔ 𝓥)
- P ↔ Q = (P ⇒ Q) ∧ (Q ⇒ P)
+ _⇔_ : Ω 𝓤 → Ω 𝓥 → Ω (𝓤 ⊔ 𝓥)
+ P ⇔ Q = (P ⇒ Q) ∧ (Q ⇒ P)
 
- infixr 3 _↔_
+ infixr 3 _⇔_
 
  biimplication-forward : (P : Ω 𝓤) (Q : Ω 𝓥)
-                       → (P ↔ Q) holds → (P ⇒ Q) holds
+                       → (P ⇔ Q) holds → (P ⇒ Q) holds
  biimplication-forward P Q (φ , _) = φ
 
  biimplication-backward : (P : Ω 𝓤) (Q : Ω 𝓥)
-                        → (P ↔ Q) holds → (Q ⇒ P) holds
+                        → (P ⇔ Q) holds → (Q ⇒ P) holds
  biimplication-backward P Q (_ , ψ) = ψ
+
+ infix 3 ¬ₚ_
+
+ ¬ₚ_ : Ω 𝓤 → Ω 𝓤
+ ¬ₚ_ {𝓤} P = _⇒_ P (𝟘 {𝓤} , 𝟘-is-prop)
 
 \end{code}
 
@@ -118,45 +134,53 @@ Added by Martin Escardo 1st Nov 2023.
 
 \begin{code}
 
+ ⇔-gives-⇒ = biimplication-forward
+ ⇔-gives-⇐ = biimplication-backward
+
  module _ (pe : propext 𝓤) where
 
-  ↔-swap : (p q : Ω 𝓤) → (p ↔ q) holds → (q ↔ p) holds
-  ↔-swap p q (h , k) = (k , h)
+  ⊤-⇔-neutral : (p : Ω 𝓤) → (p ⇔ ⊤) ＝ p
+  ⊤-⇔-neutral p =
+   Ω-extensionality pe fe
+   (λ (h : (p ⇔ ⊤ {𝓤}) holds) → ⇔-gives-⇐ p ⊤ h ⊤-holds)
+   (λ (h : p holds) → (λ _ → ⊤-holds) , (λ _ → h))
 
-  ↔-swap' : (p q : Ω 𝓤) → (p ↔ q) ＝ ⊤ → (q ↔ p) ＝ ⊤
-  ↔-swap' p q e = holds-gives-equal-⊤ pe fe (q ↔ p)
-                   (↔-swap p q (equal-⊤-gives-holds (p ↔ q) e))
+  ⇔-swap : (p q : Ω 𝓤) → (p ⇔ q) holds → (q ⇔ p) holds
+  ⇔-swap p q (h , k) = (k , h)
 
-  ↔-sym : (p q : Ω 𝓤) → (p ↔ q) ＝ (q ↔ p)
-  ↔-sym p q = Ω-ext pe fe (↔-swap' p q) (↔-swap' q p)
+  ⇔-swap' : (p q : Ω 𝓤) → (p ⇔ q) ＝ ⊤ → (q ⇔ p) ＝ ⊤
+  ⇔-swap' p q e = holds-gives-equal-⊤ pe fe (q ⇔ p)
+                   (⇔-swap p q (equal-⊤-gives-holds (p ⇔ q) e))
 
-  ↔-refl : (p : Ω 𝓤) → (p ↔ p) ＝ ⊤
-  ↔-refl p = holds-gives-equal-⊤ pe fe
-              (p ↔ p)
+  ⇔-sym : (p q : Ω 𝓤) → (p ⇔ q) ＝ (q ⇔ p)
+  ⇔-sym p q = Ω-ext pe fe (⇔-swap' p q) (⇔-swap' q p)
+
+  ⊤-⇔-neutral' : (p : Ω 𝓤) → (⊤ ⇔ p) ＝ p
+  ⊤-⇔-neutral' p = (⊤ ⇔ p ＝⟨ ⇔-sym ⊤ p ⟩
+                    p ⇔ ⊤ ＝⟨ ⊤-⇔-neutral p ⟩
+                    p     ∎)
+
+  ⇔-refl : (p : Ω 𝓤) → (p ⇔ p) ＝ ⊤
+  ⇔-refl p = holds-gives-equal-⊤ pe fe
+              (p ⇔ p)
               (id , id)
 
-  ＝-gives-↔  : (p q : Ω 𝓤) →  p ＝ q → (p ↔ q) ＝ ⊤
-  ＝-gives-↔ p p refl = ↔-refl p
+  ＝-gives-⇔  : (p q : Ω 𝓤) →  p ＝ q → (p ⇔ q) ＝ ⊤
+  ＝-gives-⇔ p p refl = ⇔-refl p
 
-  ↔-gives-＝ : (p q : Ω 𝓤) → (p ↔ q) ＝ ⊤ → p ＝ q
-  ↔-gives-＝ p q e = Ω-ext pe fe f g
+  ⇔-gives-＝ : (p q : Ω 𝓤) → (p ⇔ q) ＝ ⊤ → p ＝ q
+  ⇔-gives-＝ p q e = Ω-extensionality pe fe f g
    where
-    f : p ＝ ⊤ → q ＝ ⊤
-    f a = holds-gives-equal-⊤ pe fe q
-          (equal-⊤-gives-holds (p ⇒ q)
-            (∧-elim-L pe fe (p ⇒ q) (q ⇒ p) e)
-            (equal-⊤-gives-holds p a))
+    f : p holds → q holds
+    f = ⇔-gives-⇒ p q (equal-⊤-gives-holds (p ⇔ q) e)
 
-    g : q ＝ ⊤ → p ＝ ⊤
-    g a = holds-gives-equal-⊤ pe fe p
-          (equal-⊤-gives-holds (q ⇒ p)
-            (∧-elim-R pe fe (p ⇒ q) (q ⇒ p) e)
-            (equal-⊤-gives-holds q a))
+    g : q holds → p holds
+    g = ⇔-gives-⇐ p q (equal-⊤-gives-holds (p ⇔ q) e)
 
-  ↔-equiv-to-＝ : (p q : Ω 𝓤) → ((p ↔ q) ＝ ⊤) ≃ (p ＝ q)
-  ↔-equiv-to-＝ p q = qinveq
-                       (↔-gives-＝ p q)
-                       (＝-gives-↔ p q ,
+  ⇔-equiv-to-＝ : (p q : Ω 𝓤) → ((p ⇔ q) ＝ ⊤) ≃ (p ＝ q)
+  ⇔-equiv-to-＝ p q = qinveq
+                       (⇔-gives-＝ p q)
+                       (＝-gives-⇔ p q ,
                        (λ _ → Ω-is-set fe pe _ _) ,
                        (λ _ → Ω-is-set fe pe _ _))
 

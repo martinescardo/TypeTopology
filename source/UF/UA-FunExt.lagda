@@ -112,8 +112,8 @@ open import UF.Subsingletons-FunExt
                       → (q holds → p holds)
                       → p ＝ q
 Ω-ext-from-univalence {𝓤} ua {p} {q} = Ω-extensionality
-                                        (univalence-gives-funext ua)
                                         (univalence-gives-propext ua)
+                                        (univalence-gives-funext ua)
 \end{code}
 
 April 2020. How much function extensionality do we get from

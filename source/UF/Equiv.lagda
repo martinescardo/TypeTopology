@@ -570,7 +570,7 @@ equiv-can-assume-pointed-codomain f φ y = φ y y
 maps-to-𝟘-are-equivs : {X : 𝓤 ̇ } (f : ¬ X) → is-vv-equiv f
 maps-to-𝟘-are-equivs f = equiv-can-assume-pointed-codomain f 𝟘-elim
 
-negations-are-equiv-to-𝟘 : {X : 𝓤 ̇ } → is-empty X ⇔ X ≃ 𝟘
+negations-are-equiv-to-𝟘 : {X : 𝓤 ̇ } → is-empty X ↔ X ≃ 𝟘
 negations-are-equiv-to-𝟘 =
  (λ f → f , vv-equivs-are-equivs f (maps-to-𝟘-are-equivs f)), pr₁
 
@@ -583,7 +583,7 @@ And similarly, with similar a observation:
 
 \begin{code}
 
-singletons-are-equiv-to-𝟙 : {X : 𝓤 ̇ } → is-singleton X ⇔ X ≃ 𝟙 {𝓥}
+singletons-are-equiv-to-𝟙 : {X : 𝓤 ̇ } → is-singleton X ↔ X ≃ 𝟙 {𝓥}
 singletons-are-equiv-to-𝟙 {𝓤} {𝓥} {X} = forth , back
  where
   forth : is-singleton X → X ≃ 𝟙

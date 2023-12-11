@@ -17,6 +17,7 @@ import Groups.Image           -- by [3]
 import Groups.Kernel          -- by [3]
 import Groups.Opposite        -- by [3]
 import Groups.Quotient        -- by [3]
+import Groups.Symmetric       -- by [1]
 import Groups.Torsors         -- by [3]
 import Groups.Triv            -- by [3]
 

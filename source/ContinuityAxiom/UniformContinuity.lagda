@@ -151,7 +151,7 @@ Moreover, the above types are logically equivalent.
 
 \begin{code}
 
-Theorem : CH-UC ⇔ UC
+Theorem : CH-UC ↔ UC
 Theorem = (λ ch-uc f → ΣA→∥ΣA∥ (A-≤-is-decidable f) (ch-uc f)) ,
           (λ uc f  → ∥ΣA∥→ΣA (uc f))
 
