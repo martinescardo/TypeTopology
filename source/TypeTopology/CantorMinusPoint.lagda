@@ -189,9 +189,9 @@ sense.
     → α n ≠ ₁
     → ((i : ℕ) → α i ≠ ₁ → n ≤ i)
     → ϕ n (ψ n α) ∼ α
-  h α 0        δ μ zero     = (different-from-₁-equal-₀ δ)⁻¹
+  h α 0        δ μ 0        = (different-from-₁-equal-₀ δ)⁻¹
   h α 0        δ μ (succ i) = refl
-  h α (succ n) δ μ zero     = (♯-agreement α 𝟏 (succ n , δ , μ) 0 (zero-least n))⁻¹
+  h α (succ n) δ μ 0        = (♯-agreement α 𝟏 (succ n , δ , μ) 0 (zero-least n))⁻¹
   h α (succ n) δ μ (succ i) = h (α ∘ succ) n δ (μ ∘ succ) i
 
 \end{code}
