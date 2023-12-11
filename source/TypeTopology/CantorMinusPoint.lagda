@@ -157,8 +157,8 @@ beginning of the sequence α.
 \begin{code}
 
 ψ : ℕ → Cantor → Cantor
-ψ 0        α i = α (succ i)
-ψ (succ n) α i = ψ n (α ∘ succ) i
+ψ 0        α = α ∘ succ
+ψ (succ n) α = ψ n (α ∘ succ)
 
 \end{code}
 
