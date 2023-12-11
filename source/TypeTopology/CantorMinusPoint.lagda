@@ -227,7 +227,7 @@ the apartness relation is crucial for the proof that this construction
 works.
 
 As discussed above, it doesn't matter which point we remove, because
-the Cantor space is homogenous, in the sence that for any two points α
+the Cantor space is homogenous, in the sense that for any two points α
 and β there is an isomorphism (in fact, an involution) that maps
 α to β.
 
