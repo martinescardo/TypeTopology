@@ -81,6 +81,8 @@ implement this here. But this is not needed for our purposes.
 We use δ to range over the type α n ≠ β n, and μ to range over the
 minimality condition (i : ℕ) → α i ≠ β i → n ≤ i, for α, β and n
 suitably specialized according to the situation we are considering.
+We also use the letter "a" to range over the apartness type α ♯ β.
+
 
 As claimed above, the apartness relation is proposition-valued.
 
