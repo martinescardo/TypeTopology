@@ -47,7 +47,7 @@ Cantor = ℕ → 𝟚
 
 \end{code}
 
-We let α and β range over the type Cantor.
+We let α,β,γ range over the Cantor type.
 
 We now define its canonical apartness relation _♯_. Two sequences are
 apart if they differ at some index.
@@ -185,7 +185,7 @@ sense.
 ϕψ : (α : Cantor)
      ((n , δ , μ) : α ♯ 𝟏)
      → ϕ n (ψ n α) ＝ α
-ϕψ α' (n' , δ' , μ') = dfunext fe (h α' n' δ' μ')
+ϕψ α (n , δ , μ) = dfunext fe (h α n δ μ)
  where
   h : (α : Cantor) (n : ℕ)
     → α n ≠ ₁
