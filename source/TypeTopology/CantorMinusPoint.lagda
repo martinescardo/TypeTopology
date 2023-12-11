@@ -83,7 +83,6 @@ minimality condition (i : ℕ) → α i ≠ β i → n ≤ i, for α, β and n
 suitably specialized according to the situation we are considering.
 We also use the letter "a" to range over the apartness type α ♯ β.
 
-
 As claimed above, the apartness relation is proposition-valued.
 
 \begin{code}
@@ -229,8 +228,7 @@ works.
 
 As discussed above, it doesn't matter which point we remove, because
 the Cantor space is homogenous, in the sense that for any two points α
-and β there is an isomorphism (in fact, an involution) that maps
-α to β.
+and β there is an automorphism (in fact, an involution) that maps α to β.
 
 \begin{code}
 
