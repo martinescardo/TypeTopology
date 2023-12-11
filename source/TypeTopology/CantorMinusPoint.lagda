@@ -162,7 +162,7 @@ beginning of the sequence α.
 
 \end{code}
 
-The function ψ is a left inverse of ϕ.
+The function ψ n is a left inverse of the function ϕ n.
 
 \begin{code}
 
