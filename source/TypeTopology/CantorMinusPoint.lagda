@@ -142,8 +142,8 @@ We will need the following two properties of the map ϕ.
 \begin{code}
 
 ϕ-property-δ : (β : Cantor) (i : ℕ) → ϕ i β i ≠ ₁
-ϕ-property-δ β 0        e = zero-is-not-one e
-ϕ-property-δ β (succ i) e = ϕ-property-δ β i e
+ϕ-property-δ β 0        = zero-is-not-one
+ϕ-property-δ β (succ i) = ϕ-property-δ β i
 
 ϕ-property-μ : (β : Cantor) (n i : ℕ) → ϕ n β i ≠ ₁ → n ≤ i
 ϕ-property-μ β 0        i        ν = zero-least i
