@@ -14,19 +14,19 @@ searchable, which amounts to Theorem-3·6 of the paper
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 open import UF.FunExt
 
 module TypeTopology.GenericConvergentSequenceCompactness (fe : funext 𝓤₀ 𝓤₀) where
 
-open import MLTT.Two-Properties
-open import UF.DiscreteAndSeparated
-open import UF.PropTrunc
 open import CoNaturals.GenericConvergentSequence
+open import MLTT.Two-Properties
 open import Notation.CanonicalMap
 open import TypeTopology.CompactTypes
+open import UF.DiscreteAndSeparated
+open import UF.PropTrunc
 
 \end{code}
 

@@ -7,7 +7,7 @@ universe 𝓤 and we show that 𝟚 ≃ Ωᵈ 𝓤 (for any universe 𝓤).
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module NotionsOfDecidability.DecidableClassifier where
 
@@ -23,20 +23,20 @@ open import NotionsOfDecidability.Complemented
 
 boolean-value' : {A : 𝓤 ̇ }
                → is-decidable A
-               → Σ b ꞉ 𝟚 , (b ＝ ₀ ⇔ ¬ A)
-                         × (b ＝ ₁ ⇔   A)
+               → Σ b ꞉ 𝟚 , (b ＝ ₀ ↔ ¬ A)
+                         × (b ＝ ₁ ↔   A)
 boolean-value' {𝓤} {A} (inl a ) = (₁ , ϕ , ψ)
  where
-  ϕ : ₁ ＝ ₀ ⇔ ¬ A
+  ϕ : ₁ ＝ ₀ ↔ ¬ A
   ϕ = (λ p → 𝟘-elim (one-is-not-zero p))
     , (λ na → 𝟘-elim (na a))
-  ψ : ₁ ＝ ₁ ⇔ A
+  ψ : ₁ ＝ ₁ ↔ A
   ψ = (λ _ → a) , (λ _ → refl)
 boolean-value' {𝓤} {A} (inr na) = ₀ , ϕ , ψ
  where
-  ϕ : ₀ ＝ ₀ ⇔ ¬ A
+  ϕ : ₀ ＝ ₀ ↔ ¬ A
   ϕ = (λ _ → na) , (λ _ → refl)
-  ψ : ₀ ＝ ₁ ⇔ A
+  ψ : ₀ ＝ ₁ ↔ A
   ψ = (λ p → 𝟘-elim (zero-is-not-one p))
     , (λ a → 𝟘-elim (na a))
 
@@ -84,8 +84,8 @@ module _
    ε : f ∘ g ∼ id
    ε P = 𝟚-equality-cases ε₀ ε₁
     where
-     lemma : (g P ＝ ₀ ⇔ ¬ ⟨ P ⟩)
-           × (g P ＝ ₁ ⇔   ⟨ P ⟩)
+     lemma : (g P ＝ ₀ ↔ ¬ ⟨ P ⟩)
+           × (g P ＝ ₁ ↔   ⟨ P ⟩)
      lemma = pr₂ (boolean-value' (pr₂ P))
      ε₀ : g P ＝ ₀
         → (f ∘ g) P ＝ P
@@ -136,14 +136,14 @@ module _
    (A : X → Ω 𝓣)
    (δ : is-complemented-subset A)
    (x : X)
-   → ((⌜ 𝟚-classifies-decidable-subsets ⌝⁻¹ (A , δ) x ＝ ₀) ⇔ ¬ (x ∈ A))
-   × ((⌜ 𝟚-classifies-decidable-subsets ⌝⁻¹ (A , δ) x ＝ ₁) ⇔   (x ∈ A))
+   → ((⌜ 𝟚-classifies-decidable-subsets ⌝⁻¹ (A , δ) x ＝ ₀) ↔ ¬ (x ∈ A))
+   × ((⌜ 𝟚-classifies-decidable-subsets ⌝⁻¹ (A , δ) x ＝ ₁) ↔   (x ∈ A))
  𝟚-classifies-decidable-subsets-values {X} A δ x = γ
   where
    χ : (Σ A ꞉ (X → Ω 𝓣) , is-complemented-subset A) → (X → 𝟚)
    χ = ⌜ 𝟚-classifies-decidable-subsets ⌝⁻¹
-   γ : (χ (A , δ) x ＝ ₀ ⇔ ¬ (x ∈ A))
-     × (χ (A , δ) x ＝ ₁ ⇔   (x ∈ A))
+   γ : (χ (A , δ) x ＝ ₀ ↔ ¬ (x ∈ A))
+     × (χ (A , δ) x ＝ ₁ ↔   (x ∈ A))
    γ = pr₂ (boolean-value' (δ x))
 
 \end{code}
@@ -152,18 +152,18 @@ Added by Tom de Jong, November 2021.
 
 \begin{code}
 
-decidable-⇔ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-            → X ⇔ Y
+decidable-↔ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+            → X ↔ Y
             → is-decidable X
             → is-decidable Y
-decidable-⇔ {𝓤} {𝓥} {X} {Y} (f , g) (inl  x) = inl (f x)
-decidable-⇔ {𝓤} {𝓥} {X} {Y} (f , g) (inr nx) = inr (nx ∘ g)
+decidable-↔ {𝓤} {𝓥} {X} {Y} (f , g) (inl  x) = inl (f x)
+decidable-↔ {𝓤} {𝓥} {X} {Y} (f , g) (inr nx) = inr (nx ∘ g)
 
 decidable-cong : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                → X ≃ Y
                → is-decidable X
                → is-decidable Y
-decidable-cong e = decidable-⇔ (⌜ e ⌝ , ⌜ e ⌝⁻¹)
+decidable-cong e = decidable-↔ (⌜ e ⌝ , ⌜ e ⌝⁻¹)
 
 \end{code}
 

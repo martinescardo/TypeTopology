@@ -20,7 +20,7 @@ did with σ-sup-lattices. Perhaps it would be better to define a
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import UF.FunExt
 

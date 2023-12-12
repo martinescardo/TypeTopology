@@ -10,7 +10,7 @@ ordinal, (4) the type of ordinals is locally small.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import UF.Univalence
 
@@ -770,7 +770,7 @@ non-empty-classically-has-minimal-element {𝓤} α n = iv
 
 NB-minimal : (α : Ordinal 𝓤) (a : ⟨ α ⟩)
            →  ((x : ⟨ α ⟩) → a ≾⟨ α ⟩ x)
-           ⇔  ((x : ⟨ α ⟩) → a ≼⟨ α ⟩ x)
+           ↔  ((x : ⟨ α ⟩) → a ≼⟨ α ⟩ x)
 NB-minimal α a = f , g
  where
   f : ((x : ⟨ α ⟩) → a ≾⟨ α ⟩ x) → ((x : ⟨ α ⟩) → a ≼⟨ α ⟩ x)

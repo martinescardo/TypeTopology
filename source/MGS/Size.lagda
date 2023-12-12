@@ -5,7 +5,7 @@ This is ported from the Midlands Graduate School 2019 lecture notes
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module MGS.Size where
 
@@ -245,19 +245,19 @@ module powerset-union-existence
 
  existence-of-unions : (𝓤 : Universe) → 𝓤 ⁺⁺ ̇
  existence-of-unions 𝓤 =
-  (X : 𝓤 ̇ ) (𝓐 : 𝓟𝓟 X) → Σ B ꞉ 𝓟 X , ((x : X) → (x ∈ B) ⇔ (∃ A ꞉ 𝓟 X , (A ∈ 𝓐) × (x ∈ A)))
+  (X : 𝓤 ̇ ) (𝓐 : 𝓟𝓟 X) → Σ B ꞉ 𝓟 X , ((x : X) → (x ∈ B) ↔ (∃ A ꞉ 𝓟 X , (A ∈ 𝓐) × (x ∈ A)))
 
  existence-of-unions₁ : (𝓤 :  Universe) → _ ̇
  existence-of-unions₁ 𝓤 =
   (X : 𝓤 ̇ )
   (𝓐 : (X → Ω _) → Ω _)
-     → Σ B ꞉ (X → Ω _) , ((x : X) → (x ∈ B) ⇔ (∃ A ꞉ (X → Ω _) , (A ∈ 𝓐) × (x ∈ A)))
+     → Σ B ꞉ (X → Ω _) , ((x : X) → (x ∈ B) ↔ (∃ A ꞉ (X → Ω _) , (A ∈ 𝓐) × (x ∈ A)))
 
  existence-of-unions₂ : (𝓤 :  Universe) → 𝓤 ⁺⁺ ̇
  existence-of-unions₂ 𝓤 =
   (X : 𝓤 ̇ )
   (𝓐 : (X → Ω 𝓤) → Ω (𝓤 ⁺))
-     → Σ B ꞉ (X → Ω 𝓤) , ((x : X) → (x ∈ B) ⇔ (∃ A ꞉ (X → Ω 𝓤) , (A ∈ 𝓐) × (x ∈ A)))
+     → Σ B ꞉ (X → Ω 𝓤) , ((x : X) → (x ∈ B) ↔ (∃ A ꞉ (X → Ω 𝓤) , (A ∈ 𝓐) × (x ∈ A)))
 
  existence-of-unions-agreement : existence-of-unions 𝓤 ＝ existence-of-unions₂ 𝓤
  existence-of-unions-agreement = refl _
@@ -285,7 +285,7 @@ module powerset-union-existence
     B : 𝓟 𝟙ᵤ
     B = pr₁ (α 𝟙ᵤ 𝓐)
 
-    φ : (x : 𝟙ᵤ) → (x ∈ B) ⇔ (∃ A ꞉ 𝓟 𝟙ᵤ , (A ∈ 𝓐) × (x ∈ A))
+    φ : (x : 𝟙ᵤ) → (x ∈ B) ↔ (∃ A ꞉ 𝓟 𝟙ᵤ , (A ∈ 𝓐) × (x ∈ A))
     φ = pr₂ (α 𝟙ᵤ 𝓐)
 
     Q : 𝓤 ̇
@@ -350,14 +350,14 @@ module basic-powerset-development
   ⋃ 𝓐 = pr₁ (PR-gives-existence-of-unions ρ _ 𝓐)
 
   ⋃-property : {X : 𝓤 ̇ } (𝓐 : 𝓟𝓟 X)
-             → (x : X) → (x ∈ ⋃ 𝓐) ⇔ (∃ A ꞉ 𝓟 X , (A ∈ 𝓐) × (x ∈ A))
+             → (x : X) → (x ∈ ⋃ 𝓐) ↔ (∃ A ꞉ 𝓟 X , (A ∈ 𝓐) × (x ∈ A))
 
   ⋃-property 𝓐 = pr₂ (PR-gives-existence-of-unions ρ _ 𝓐)
 
   intersections-exist :
     (X : 𝓤 ̇ )
     (𝓐 : 𝓟𝓟 X)
-       → Σ B ꞉ 𝓟 X , ((x : X) → (x ∈ B) ⇔ ((A : 𝓟 X) → A ∈ 𝓐 → x ∈ A))
+       → Σ B ꞉ 𝓟 X , ((x : X) → (x ∈ B) ↔ ((A : 𝓟 X) → A ∈ 𝓐 → x ∈ A))
 
   intersections-exist {𝓤} X 𝓐 = B , (λ x → lr x , rl x)
    where
@@ -382,7 +382,7 @@ module basic-powerset-development
   ⋂ {𝓤} {X} 𝓐 = pr₁ (intersections-exist X 𝓐)
 
   ⋂-property : {X : 𝓤 ̇ } (𝓐 : 𝓟𝓟 X)
-             → (x : X) → (x ∈ ⋂ 𝓐) ⇔ ((A : 𝓟 X) → A ∈ 𝓐 → x ∈ A)
+             → (x : X) → (x ∈ ⋂ 𝓐) ↔ ((A : 𝓟 X) → A ∈ 𝓐 → x ∈ A)
 
   ⋂-property {𝓤} {X} 𝓐 = pr₂ (intersections-exist X 𝓐)
 
@@ -408,12 +408,12 @@ module basic-powerset-development
                     (∈-is-subsingleton B x)
 
   ∪-property : {X : 𝓤 ̇ } (A B : 𝓟 X)
-             → (x : X) → x ∈ (A ∪ B) ⇔ (x ∈ A) ∨ (x ∈ B)
+             → (x : X) → x ∈ (A ∪ B) ↔ (x ∈ A) ∨ (x ∈ B)
 
   ∪-property {𝓤} {X} A B x = id , id
 
   ∩-property : {X : 𝓤 ̇ } (A B : 𝓟 X)
-             → (x : X) → x ∈ (A ∩ B) ⇔ (x ∈ A) × (x ∈ B)
+             → (x : X) → x ∈ (A ∩ B) ↔ (x ∈ A) × (x ∈ B)
 
   ∩-property {𝓤} {X} A B x = id , id
 

@@ -2,7 +2,7 @@ Tom de Jong, 1 and 4 April 2022.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Ordinals.Taboos where
 
@@ -145,7 +145,7 @@ module discrete-trichotomous-taboo-construction
  𝟚≺-ordinal i h = 𝟚 , _≺_ , ≺-is-prop-valued i   , ≺-is-well-founded
                           , ≺-is-extensional h , ≺-is-transitive
 
- ≺-trichotomous-characterization : is-trichotomous-order _≺_ ⇔ P
+ ≺-trichotomous-characterization : is-trichotomous-order _≺_ ↔ P
  ≺-trichotomous-characterization = ⦅⇒⦆ , ⦅⇐⦆
   where
    ⦅⇐⦆ : P → is-trichotomous-order _≺_
@@ -328,7 +328,7 @@ e : ⟨ sup α ⟩ → Ordinal 𝓤 and ⟨ sup α ⟩ is discrete by assumption
   fact-III e = fact-I (≃ₒ-to-fun⁻¹ (α ₀ ↓ inr ⋆) (α ₁ ↓ inr ⋆) e (inl ⋆ , ⋆))
 
   decidability-if-sup-of-α-discrete : is-discrete ⟨ sup α ⟩ → is-decidable P
-  decidability-if-sup-of-α-discrete δ = decidable-⇔ (fact-III , fact-II) dec
+  decidability-if-sup-of-α-discrete δ = decidable-↔ (fact-III , fact-II) dec
    where
     r : image (sum-to-ordinals α) → Ordinal 𝓤
     r = restriction (sum-to-ordinals α)

@@ -5,12 +5,11 @@ Some constructions with iterative multisets.
  * The universe is a retract of the type 𝕄 of iterative multisets.
  * 𝕄 is algebraically injective.
 
-
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
-open import MLTT.Spartan
+open import MLTT.Spartan hiding (_^_)
 open import UF.Sets-Properties
 open import UF.Univalence
 open import UF.Universes
@@ -79,6 +78,9 @@ observation.
 
 𝟘ᴹ-is-not-𝟙ᴹ : 𝟘ᴹ ≠ 𝟙ᴹ
 𝟘ᴹ-is-not-𝟙ᴹ p = 𝟘-is-not-𝟙 (ap 𝕄-root p)
+
+𝟚ᴹ : 𝕄
+𝟚ᴹ = ssup (𝟙 {𝓤} + 𝟙 {𝓤}) (cases (λ _ → 𝟘ᴹ) (λ _ → 𝟙ᴹ))
 
 universe-to-𝕄 : 𝓤 ̇ → 𝕄
 universe-to-𝕄 X = ssup X (λ x → 𝟘ᴹ)
@@ -154,7 +156,8 @@ submultiset-≃ M P = pr₂ (𝕄-separation M P)
 \end{code}
 
 The type of multisets is large, in the sense that it doesn' have a
-small copy.
+small copy. This is proved using Russell's Paradox technique, using
+separation as defined above.
 
 \begin{code}
 
@@ -232,6 +235,9 @@ result.
             (Σ x ꞉ X , 𝕄-root (A x))
             (λ (x , y) → 𝕄-forest (A x) y)
 
+_+ᴹ_ : 𝕄 → 𝕄 → 𝕄
+M +ᴹ N = Σᴹ (cases (λ (_ : 𝟙 {𝓤}) → M) (λ (_ : 𝟙 {𝓤}) → N))
+
 prop-indexed-sumᴹ : {X : 𝓤 ̇ } {A : X → 𝕄}
                   → is-prop X
                   → (x₀ : X) → Σᴹ A ＝ A x₀
@@ -259,8 +265,57 @@ prop-indexed-sumᴹ {X} {A} i x₀ = IV
        ssup (𝕄-root (A x₀)) (𝕄-forest (A x₀)) ＝⟨ 𝕄-η (A x₀) ⟩
        A x₀                                    ∎
 
-𝕄-is-ainjective : ainjective-type 𝕄 𝓤 𝓤
-𝕄-is-ainjective {X} {Y} j j-emb f = f\j , f\j-ext
+\end{code}
+
+Notice that we use Σᴹ (as well as Π) in the following definition of Πᴹ.
+
+\begin{code}
+
+Πᴹ : {X : 𝓤 ̇ } → (X → 𝕄) → 𝕄
+Πᴹ {X} A = ssup
+            (Π x ꞉ X , 𝕄-root (A x))
+            (λ g → Σᴹ (λ x → 𝕄-forest (A x) (g x)))
+
+
+_×ᴹ_ : 𝕄 → 𝕄 → 𝕄
+M ×ᴹ N = Πᴹ (cases (λ (_ : 𝟙 {𝓤}) → M) (λ (_ : 𝟙 {𝓤}) → N))
+
+prop-indexed-productᴹ : {X : 𝓤 ̇ } {A : X → 𝕄}
+                      → is-prop X
+                      → (x₀ : X) → Πᴹ A ＝ A x₀
+prop-indexed-productᴹ {X} {A} i x₀ = IV
+ where
+  𝕗 = (Π x ꞉ X , 𝕄-root (A x)) ≃⟨ prop-indexed-product fe i x₀ ⟩
+      𝕄-root (A x₀)            ■
+
+  remark : ⌜ 𝕗 ⌝ ＝ λ g → g x₀
+  remark = refl
+
+  I : (g : (x : X) → 𝕄-root (A x))
+      (x : X) (p : x ＝ x₀)
+    → 𝕄-forest (A x) (g x) ＝ 𝕄-forest (A x₀) (g x₀)
+  I g x refl = refl
+
+  II : (g : (x : X) → 𝕄-root (A x))
+     → Σᴹ (λ x → 𝕄-forest (A x) (g x)) ＝ 𝕄-forest (A x₀) (⌜ 𝕗 ⌝ g)
+  II g = Σᴹ (λ x → 𝕄-forest (A x) (g x))   ＝⟨ II₀ ⟩
+         Σᴹ (λ x → 𝕄-forest (A x₀) (g x₀)) ＝⟨ II₁ ⟩
+         𝕄-forest (A x₀) (g x₀)            ＝⟨ refl ⟩
+         𝕄-forest (A x₀) (⌜ 𝕗 ⌝ g)         ∎
+          where
+           II₀ = ap Σᴹ (dfunext fe (λ x → I g x (i x x₀)))
+           II₁ = prop-indexed-sumᴹ {X} {λ x → 𝕄-forest (A x₀) (g x₀)} i x₀
+
+  III : Πᴹ A ≃ᴹ ssup (𝕄-root (A x₀)) (𝕄-forest (A x₀))
+  III = 𝕗 , λ g → idtoeqᴹ _ _ (II g)
+
+  IV : Πᴹ A ＝ A x₀
+  IV = Πᴹ A                                   ＝⟨ ⌜ 𝕄-＝-≃ ua _ _ ⌝⁻¹ III ⟩
+       ssup (𝕄-root (A x₀)) (𝕄-forest (A x₀)) ＝⟨ 𝕄-η (A x₀) ⟩
+       A x₀                                   ∎
+
+𝕄-is-ainjective-Σ : ainjective-type 𝕄 𝓤 𝓤
+𝕄-is-ainjective-Σ {X} {Y} j j-emb f = f\j , f\j-ext
  where
   A : (y : Y) → fiber j y → 𝕄
   A y (x , _) = f x
@@ -269,7 +324,24 @@ prop-indexed-sumᴹ {X} {A} i x₀ = IV
   f\j y = Σᴹ (A y)
 
   f\j-ext : f\j ∘ j ∼ f
-  f\j-ext x = prop-indexed-sumᴹ {fiber j (j x)} {A (j x)} (j-emb (j x)) (x , refl)
+  f\j-ext x = prop-indexed-sumᴹ
+               {fiber j (j x)} {A (j x)} (j-emb (j x)) (x , refl)
+
+𝕄-is-ainjective-Π : ainjective-type 𝕄 𝓤 𝓤
+𝕄-is-ainjective-Π {X} {Y} j j-emb f = f/j , f/j-ext
+ where
+  A : (y : Y) → fiber j y → 𝕄
+  A y (x , _) = f x
+
+  f/j : Y → 𝕄
+  f/j y = Πᴹ (A y)
+
+  f/j-ext : f/j ∘ j ∼ f
+  f/j-ext x = prop-indexed-productᴹ
+               {fiber j (j x)} {A (j x)} (j-emb (j x)) (x , refl)
+
+𝕄-is-ainjective : ainjective-type 𝕄 𝓤 𝓤
+𝕄-is-ainjective = 𝕄-is-ainjective-Σ
 
 \end{code}
 

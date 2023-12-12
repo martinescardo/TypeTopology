@@ -5,7 +5,7 @@ TypeTopology. This will grow as the need arises.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module MGS.TypeTopology-Interface where
 

@@ -2,7 +2,7 @@ Tom de Jong
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module PCF.Combinatory.index where
 

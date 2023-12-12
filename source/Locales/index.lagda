@@ -2,7 +2,7 @@ Ayberk Tosun.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Locales.index where
 

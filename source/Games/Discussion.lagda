@@ -20,7 +20,7 @@ We also briefly discuss Conway's games.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import UF.PropTrunc
 open import UF.Univalence

@@ -95,7 +95,7 @@ All this dualizes with Π replaced by Σ and right replaced by left.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split  #-}
+{-# OPTIONS --safe --without-K  #-}
 
 open import UF.FunExt
 
@@ -1356,7 +1356,7 @@ ainjective-characterization : is-univalent 𝓤
                             → propositional-resizing (𝓤 ⁺) 𝓤
                             → (D : 𝓤 ̇ )
                             → ainjective-type D 𝓤 𝓤
-                              ⇔ (Σ X ꞉ 𝓤 ̇ , retract D of (X → 𝓤 ̇ ))
+                              ↔ (Σ X ꞉ 𝓤 ̇ , retract D of (X → 𝓤 ̇ ))
 ainjective-characterization {𝓤} ua R D = a , b
  where
   a : ainjective-type D 𝓤 𝓤 → Σ X ꞉ 𝓤 ̇ , retract D of (X → 𝓤 ̇ )
@@ -1453,7 +1453,7 @@ monad:
                                          → propositional-resizing (𝓤 ⁺) 𝓤
                                          → (D : 𝓤 ̇ )
                                          → ainjective-type D 𝓤 𝓤
-                                           ⇔ (Σ X ꞉ 𝓤 ̇ , retract D of (𝓛 X))
+                                           ↔ (Σ X ꞉ 𝓤 ̇ , retract D of (𝓛 X))
  ainjectives-in-terms-of-free-𝓛-algebras ua fe R D = a , b
   where
    a : ainjective-type D 𝓤 𝓤 → Σ X ꞉ 𝓤 ̇ , retract D of (𝓛 X)
@@ -1596,7 +1596,7 @@ injectivity.
                                       → propositional-resizing (𝓤 ⁺) 𝓤
                                       → (D : 𝓤  ̇ )
                                       → injective-type D 𝓤 (𝓤 ⁺)
-                                        ⇔ ∥ ainjective-type D 𝓤 (𝓤 ⁺) ∥
+                                        ↔ ∥ ainjective-type D 𝓤 (𝓤 ⁺) ∥
  injectivity-in-terms-of-ainjectivity' {𝓤} ua R D = a , b
   where
    a : injective-type D 𝓤 (𝓤 ⁺) → ∥ ainjective-type D 𝓤 (𝓤 ⁺) ∥
@@ -1609,11 +1609,11 @@ injectivity.
 
 What we really would like to have for D : 𝓤 is
 
-  injective-type D 𝓤 𝓤 ⇔ ∥ ainjective-type D 𝓤 𝓤 ∥,
+  injective-type D 𝓤 𝓤 ↔ ∥ ainjective-type D 𝓤 𝓤 ∥,
 
 and, perhaps, more generally, also
 
-  injective-type D 𝓥 𝓦 ⇔ ∥ ainjective-type D 𝓤 𝓦 ∥.
+  injective-type D 𝓥 𝓦 ↔ ∥ ainjective-type D 𝓤 𝓦 ∥.
 
 This is now answered 8th Feb (see below).
 
@@ -1621,7 +1621,7 @@ Added 7th Feb 2019. (Preliminary answer.)
 
 However, with Ω₀-resizing, for a ⋆set⋆ D : 𝓤 we do have
 
-  injective-type D 𝓤 𝓤 ⇔ ∥ ainjective-type D 𝓤 𝓤 ∥,
+  injective-type D 𝓤 𝓤 ↔ ∥ ainjective-type D 𝓤 𝓤 ∥,
 
 The reason is that the embedding Id : D → (D → 𝓤) factors through
 (D → Ω₀).
@@ -1632,7 +1632,7 @@ The reason is that the embedding Id : D → (D → 𝓤) factors through
                                           → PropExt
                                           → (D  : 𝓤 ̇ ) (i  : is-set D)
                                           → injective-type D 𝓤 𝓤
-                                            ⇔ ∥ ainjective-type D 𝓤 𝓤 ∥
+                                            ↔ ∥ ainjective-type D 𝓤 𝓤 ∥
  set-injectivity-in-terms-of-ainjectivity {𝓤} (Ω₀ , e₀) pe D i =
   γ , ∥ainjective∥-gives-injective D
   where
@@ -1677,7 +1677,7 @@ Added 8th Feb. Solves a problem formulated above.
                                       → is-univalent 𝓤
                                       → (D  : 𝓤 ̇ )
                                       → injective-type D 𝓤 𝓤
-                                        ⇔ ∥ ainjective-type D 𝓤 𝓤 ∥
+                                        ↔ ∥ ainjective-type D 𝓤 𝓤 ∥
  injectivity-in-terms-of-ainjectivity {𝓤} ω₀ ua D =
   γ , ∥ainjective∥-gives-injective D
   where

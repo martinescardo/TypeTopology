@@ -8,7 +8,7 @@ generalization.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module UF.Classifiers-Old where
 

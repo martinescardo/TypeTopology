@@ -8,7 +8,7 @@ There is also a proof in Egbert Rijke's book (to appear).
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import Fin.Bishop
 open import Fin.Type

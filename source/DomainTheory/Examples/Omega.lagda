@@ -8,7 +8,7 @@ characterize the compact elements of Ω 𝓤 as the decidable propositions.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 
@@ -189,7 +189,7 @@ propositions.
 
 \begin{code}
 
-compact-iff-decidable : (P : Ω 𝓤) → is-compact Ω-DCPO P ⇔ is-decidable (P holds)
+compact-iff-decidable : (P : Ω 𝓤) → is-compact Ω-DCPO P ↔ is-decidable (P holds)
 compact-iff-decidable P = ⦅⇒⦆ , ⦅⇐⦆
  where
   ⦅⇒⦆ : is-compact Ω-DCPO P → is-decidable (P holds)

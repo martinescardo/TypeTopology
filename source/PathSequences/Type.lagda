@@ -10,7 +10,7 @@ library to TypeTopology.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --safe #-}
 
 module PathSequences.Type where
 
@@ -92,7 +92,7 @@ of identity types is normalized. See the module PathSequences.Concat
 ≡-to-＝ [] = refl
 ≡-to-＝ (p ◃∙ s) = p ∙ ≡-to-＝ s
 
-infix 30 ≡-to-＝ 
+infix 30 ≡-to-＝
 syntax ≡-to-＝ s = [ s ↓]
 
 \end{code}
@@ -118,7 +118,7 @@ PathSequences.Concat.
 \begin{code}
 
 _≡⟨_⟩_ : {X : 𝓤 ̇ } (x : X) {y z : X} → x ＝ y → y ≡ z → x ≡ z
-_ ≡⟨ p ⟩ s = p ◃∙ s 
+_ ≡⟨ p ⟩ s = p ◃∙ s
 
 _≡⟨⟩_ : {X : 𝓤 ̇ } (x : X) {y : X} → x ≡ y → x ≡ y
 x ≡⟨⟩ s = s
