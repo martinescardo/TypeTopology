@@ -705,7 +705,7 @@ module local-inductive-definitions {𝓤 𝓦 𝓥 : Universe}
       equiv-2 : (z : B)
               → (z ≤ᴮ f a) ≃ (Ǝ a' ꞉ ⟨ L ⟩ ,
                              (z , a') ∈ ϕ × (a' ≤ a) holds) holds
-      equiv-2 z = ⌜ prop-≃-≃-⇔ fe _≤ᴮ_-is-prop-valued ∥∥-is-prop ⌝⁻¹
+      equiv-2 z = ⌜ prop-≃-≃-↔ fe _≤ᴮ_-is-prop-valued ∥∥-is-prop ⌝⁻¹
                   (map-1 , map-2)
        where
         map-1 : z ≤ᴮ f a → (Ǝ a' ꞉ ⟨ L ⟩ , (z , a') ∈ ϕ × (a' ≤ a) holds) holds
