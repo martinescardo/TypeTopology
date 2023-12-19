@@ -24,6 +24,7 @@ open import Naturals.Order
 open import Notation.Order
 open import UF.DiscreteAndSeparated hiding (_♯_)
 open import UF.Base
+open import UF.DiscreteAndSeparated hiding (_♯_)
 open import UF.Equiv
 open import UF.FunExt
 open import UF.Subsingletons
@@ -124,16 +125,44 @@ If two sequences α and β are apart, they agree before the apartness index n.
 
 \end{code}
 
+Cons, head, tail.
+
+\begin{code}
+
+_∷_ : 𝟚 → Cantor → Cantor
+(x ∷ α) 0        = x
+(x ∷ α) (succ n) = α n
+
+head : Cantor → 𝟚
+head α = α 0
+
+tail : Cantor → Cantor
+tail α = α ∘ succ
+
+tail-cons : (x : 𝟚) (α : Cantor) → tail (x ∷ α) ∼ α
+tail-cons x α i = refl
+
+cons-head-tail : (α : Cantor) → head α ∷ tail α ∼ α
+cons-head-tail α 0        = refl
+cons-head-tail α (succ n) = refl
+
+cons-∼ : {x : 𝟚} {α β : Cantor} → α ∼ β → x ∷ α ∼ x ∷ β
+cons-∼ h 0        = refl
+cons-∼ h (succ i) = h i
+
+∼-cons : {x y : 𝟚} {α : Cantor} → x ＝ y → x ∷ α ∼ y ∷ α
+∼-cons refl = ∼-refl
+
+\end{code}
+
 The function ϕ is defined so that ϕ n β is the binary sequence of
 n-many ones followed by a zero and then β.
 
 \begin{code}
 
 ϕ : ℕ → Cantor → Cantor
-ϕ 0        β 0        = ₀
-ϕ 0        β (succ i) = β i
-ϕ (succ n) β 0        = ₁
-ϕ (succ n) β (succ i) = ϕ n β i
+ϕ 0        β = ₀ ∷ β
+ϕ (succ n) β = ₁ ∷ ϕ n β
 
 \end{code}
 
@@ -158,8 +187,8 @@ beginning of the sequence α.
 \begin{code}
 
 ψ : ℕ → Cantor → Cantor
-ψ 0        α = α ∘ succ
-ψ (succ n) α = ψ n (α ∘ succ)
+ψ 0        α = tail α
+ψ (succ n) α = ψ n (tail α)
 
 \end{code}
 
@@ -171,9 +200,8 @@ The function ψ n is a left inverse of the function ϕ n.
 ψϕ n α = dfunext fe (h n α)
  where
   h : (n : ℕ) (α : Cantor) → ψ n (ϕ n α) ∼ α
-  h 0        α i        = refl
-  h (succ n) α 0        = h n α 0
-  h (succ n) α (succ i) = h n α (succ i)
+  h 0        = tail-cons ₀
+  h (succ n) = h n
 
 \end{code}
 
@@ -185,16 +213,25 @@ sense.
 ϕψ : (α : Cantor)
      ((n , δ , μ) : α ♯ 𝟏)
    → ϕ n (ψ n α) ＝ α
-ϕψ α (n , δ , μ) = dfunext fe (h α n δ μ)
+ϕψ α (n , δ , μ) = dfunext fe (h n α δ μ)
  where
-  h : (α : Cantor) (n : ℕ)
+  h : (n : ℕ) (α : Cantor)
     → α n ≠ ₁
     → ((i : ℕ) → α i ≠ ₁ → n ≤ i)
     → ϕ n (ψ n α) ∼ α
-  h α 0        δ μ 0        = (different-from-₁-equal-₀ δ)⁻¹
-  h α 0        δ μ (succ i) = refl
-  h α (succ n) δ μ 0        = (♯-agreement α 𝟏 (succ n , δ , μ) 0 (zero-least n))⁻¹
-  h α (succ n) δ μ (succ i) = h (α ∘ succ) n δ (μ ∘ succ) i
+  h 0 α δ _ =
+   ϕ 0 (ψ 0 α)     ∼⟨ ∼-refl ⟩
+   ₀ ∷ tail α      ∼⟨ ∼-ap (_∷ tail α) ((different-from-₁-equal-₀ δ)⁻¹) ⟩
+   head α ∷ tail α ∼⟨ cons-head-tail α ⟩
+   α               ∼∎
+  h (succ n) α δ μ =
+    ϕ (succ n) (ψ (succ n) α) ∼⟨ ∼-refl ⟩
+    ₁ ∷ ϕ n (ψ n (tail α))    ∼⟨ cons-∼ (h n (tail α) δ (μ ∘ succ)) ⟩
+    ₁ ∷ tail α                ∼⟨ h₁ ⟩
+    head α ∷ tail α           ∼⟨ cons-head-tail α ⟩
+    α                         ∼∎
+     where
+      h₁ = ∼-cons ((♯-agreement α 𝟏 (succ n , δ , μ) 0 (zero-least n))⁻¹)
 
 \end{code}
 

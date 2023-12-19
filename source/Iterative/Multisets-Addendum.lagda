@@ -276,9 +276,38 @@ Notice that we use Σᴹ (as well as Π) in the following definition of Πᴹ.
             (Π x ꞉ X , 𝕄-root (A x))
             (λ g → Σᴹ (λ x → 𝕄-forest (A x) (g x)))
 
-
 _×ᴹ_ : 𝕄 → 𝕄 → 𝕄
 M ×ᴹ N = Πᴹ (cases (λ (_ : 𝟙 {𝓤}) → M) (λ (_ : 𝟙 {𝓤}) → N))
+
+\end{code}
+
+Question. Is there a function Πᴹ of the above type that satisfies the
+following equation? It seems that this possible for finite X. We guess
+there isn't such a function for general X, including X = ℕ.
+
+\begin{code}
+
+Question =
+   {X : 𝓤 ̇ }
+ → Σ Πᴹ ꞉ ((X → 𝕄) → 𝕄)
+        , ((A : X → 𝕄) → Πᴹ A ＝ ssup
+                                  (Π x ꞉ X , 𝕄-root (A x))
+                                  (λ g → Πᴹ (λ x → 𝕄-forest (A x) (g x))))
+\end{code}
+
+Here is the answer for X = 𝟚, up to equivalence:
+
+\begin{code}
+
+_×ᴹ'_ : 𝕄 → 𝕄 → 𝕄
+(ssup X φ) ×ᴹ' (ssup Y γ) = ssup (X × Y) (λ (x , y) → (φ x) ×ᴹ' (γ y))
+
+\end{code}
+
+Our main reason to consider Σᴹ and Πᴹ is to establish, into different
+ways, the algebraic injectivity of the type of iterative multisets.
+
+\begin{code}
 
 prop-indexed-productᴹ : {X : 𝓤 ̇ } {A : X → 𝕄}
                       → is-prop X
