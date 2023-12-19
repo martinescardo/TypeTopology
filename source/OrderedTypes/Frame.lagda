@@ -16,7 +16,7 @@ open import MLTT.Spartan
 open import UF.FunExt
 open import UF.Subsingletons
 
-module Posets.Frame (fe : Fun-Ext) where
+module OrderedTypes.Frame (fe : Fun-Ext) where
 
 open import UF.Equiv hiding (_≅_)
 open import UF.SIP

@@ -34,7 +34,7 @@ open import UF.Subsingletons-FunExt
 open import UF.SubtypeClassifier hiding (⊥)
 open import UF.SubtypeClassifier-Properties
 open import UF.Sets
-open import Posets.Poset fe
+open import OrderedTypes.Poset fe
 
 open import DomainTheory.Basics.Dcpo pt fe 𝓤
 open import DomainTheory.Basics.Miscelanea pt fe 𝓤

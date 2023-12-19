@@ -16,7 +16,7 @@ open import UF.Sets-Properties
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
-module Posets.Poset
+module OrderedTypes.Poset
         (fe : Fun-Ext)
        where
 

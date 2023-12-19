@@ -22,7 +22,7 @@ open import MLTT.Spartan
 open import MLTT.Two-Properties
 open import Naturals.Order
 open import Notation.Order
-open import TypeTopology.DiscreteAndSeparated hiding (_♯_)
+open import UF.DiscreteAndSeparated hiding (_♯_)
 open import UF.Base
 open import UF.Equiv
 open import UF.FunExt
