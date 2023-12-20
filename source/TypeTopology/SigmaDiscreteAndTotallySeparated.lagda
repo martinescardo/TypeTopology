@@ -224,8 +224,6 @@ following useful special case.
 \begin{code}
 
 open import Notation.CanonicalMap hiding ([_])
-open import TypeTopology.TotallySeparated
-open import UF.DiscreteAndSeparated
 
 Σ-indexed-by-ℕ∞-is-totally-separated-if-family-at-∞-is-prop
   : funext 𝓤₀ 𝓤₀
