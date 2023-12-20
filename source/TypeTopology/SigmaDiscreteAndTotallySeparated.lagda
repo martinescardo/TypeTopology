@@ -181,7 +181,9 @@ module _ (fe : FunExt) where
           (λ u → Π-is-totally-separated fe₀ (λ _ → 𝟚-is-totally-separated)))
 \end{code}
 
-Remark. ¬ WLPO is equivalent to a continuity principle that is compatible with constructive mathematics and with MLTT. Therefore its negatation is not provable. See
+Remark. ¬ WLPO is equivalent to a continuity principle that is
+compatible with constructive mathematics and with MLTT. Therefore its
+negatation is not provable. See
 
   Constructive decidability of classical continuity.
   Mathematical Structures in Computer Science
@@ -212,5 +214,96 @@ Even compact totally separated types fail to be closed under Σ:
                (prop-tychonoff fe (ℕ∞-is-set fe₀) (λ _ → 𝟚-is-compact∙)))
        (ℕ∞-is-totally-separated fe₀)
           (λ u → Π-is-totally-separated fe₀ (λ _ → 𝟚-is-totally-separated)))
+
+\end{code}
+
+Added 20th December 2023. Sums are not closed under total
+separatedness in general, as discussed above, but we have the
+following useful special case.
+
+\begin{code}
+
+open import Notation.CanonicalMap hiding ([_])
+open import TypeTopology.TotallySeparated
+open import UF.DiscreteAndSeparated
+
+Σ-indexed-by-ℕ∞-is-totally-separated-if-family-at-∞-is-prop
+  : funext 𝓤₀ 𝓤₀
+  → (A : ℕ∞ → 𝓥 ̇ )
+  → ((u : ℕ∞) → is-totally-separated (A u))
+  → is-prop (A ∞)
+  → is-totally-separated (Σ A)
+Σ-indexed-by-ℕ∞-is-totally-separated-if-family-at-∞-is-prop
+ fe₀ A τ i {u , a} {v , b} ϕ = IV
+ where
+  have-ϕ : (p : Σ A → 𝟚) → p (u , a) ＝ p (v , b)
+  have-ϕ = ϕ
+
+  ϕ₁ : (q : ℕ∞ → 𝟚) → q u ＝ q v
+  ϕ₁ q = ϕ (λ (w , _) → q w)
+
+  I : u ＝ v
+  I = ℕ∞-is-totally-separated fe₀ ϕ₁
+
+  a' : A v
+  a' = transport A I a
+
+  a-fact : (u , a) ＝[ Σ A ] (v , a')
+  a-fact = to-Σ-＝ (I , refl)
+
+  II : (r : A v → 𝟚) → r a' ＝ r b
+  II r = II₃
+   where
+    II₀ : (n : ℕ) → v ＝ ι n → r a' ＝ r b
+    II₀ n refl = e
+     where
+      p' : ((w , c) : Σ A) → is-decidable (ι n ＝ w) → 𝟚
+      p' (w , c) (inl e) = r (transport⁻¹ A e c)
+      p' (w , c) (inr ν) = ₀ -- Anything works here.
+
+      p'-property : ((w , c) : Σ A) (d d' : is-decidable (ι n ＝ w))
+                  → p' (w , c) d ＝ p' (w , c) d'
+      p'-property (w , c) (inl e) (inl e')  = ap (λ - → r (transport⁻¹ A - c))
+                                                 (ℕ∞-is-set fe₀ e e')
+      p'-property (w , c) (inl e) (inr ν')  = 𝟘-elim (ν' e)
+      p'-property (w , c) (inr ν) (inl e')  = 𝟘-elim (ν e')
+      p'-property (w , c) (inr ν) (inr ν')  = refl
+
+      p : Σ A → 𝟚
+      p (w , c) = p' (w , c) (finite-isolated fe₀ n w)
+
+      e = r a'                   ＝⟨ refl ⟩
+          p' (v , a') (inl refl) ＝⟨ e₀ ⟩
+          p (v , a')             ＝⟨ e₁ ⟩
+          p (u , a)              ＝⟨ e₂ ⟩
+          p (v , b)              ＝⟨ e₃ ⟩
+          p' (v , b) (inl refl)  ＝⟨ refl ⟩
+          r b                    ∎
+           where
+            e₀ = p'-property (v , a') (inl refl) (finite-isolated fe₀ n v)
+            e₁ = ap p (a-fact ⁻¹)
+            e₂ = ϕ p
+            e₃ = (p'-property (v , b) (inl refl) (finite-isolated fe₀ n v))⁻¹
+
+    II₁ : v ＝ ∞ → r a' ＝ r b
+    II₁ refl = ap r (i a' b)
+
+    II₂ : ¬ (r a' ≠ r b)
+    II₂ ν = II∞ (not-finite-is-∞ fe₀ IIₙ)
+     where
+      IIₙ : (n : ℕ) → v ≠ ι n
+      IIₙ n = contrapositive (II₀ n) ν
+
+      II∞ : v ≠ ∞
+      II∞ = contrapositive II₁ ν
+
+    II₃ : r a' ＝ r b
+    II₃ = 𝟚-is-¬¬-separated (r a') (r b) II₂
+
+  III : a' ＝ b
+  III = τ v II
+
+  IV : (u , a) ＝[ Σ A ] (v , b)
+  IV = to-Σ-＝ (I , III)
 
 \end{code}

@@ -56,6 +56,31 @@ private
  remark₁ : (X : 𝓤 ̇ ) → D X ＝ Σ¹ λ (_ : ℕ) → X
  remark₁ X = refl
 
+\end{code}
+
+Added 20th December 2023.
+
+\begin{code}
+
+ηD : {X : 𝓤 ̇ } → X → D X
+ηD x = (Zero , λ _ → x)
+
+δD : {X : 𝓤 ̇ } → D X → D X
+δD (u , f) = (Succ u , f ∘ is-finite-down u)
+
+open import TypeTopology.TotallySeparated
+
+D-is-totally-separated : (X : 𝓤 ̇ )
+                       → is-totally-separated X
+                       → is-totally-separated (D X)
+D-is-totally-separated X τ = Σ¹-is-totally-separated (λ _ → X) (λ _ → τ)
+
+\end{code}
+
+End of 20th December 2023 addition.
+
+\begin{code}
+
 Cantor : 𝓤₀ ̇
 Cantor = ℕ → 𝟚
 
