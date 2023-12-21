@@ -334,7 +334,7 @@ subtype-is-totally-separated
 \end{code}
 
 The following is a consequence of the above, but it is just as easy to
-prove it directly. Notice that requiring that f is left-cancellable is
+prove it directly. Notice that requiring f to be left-cancellable is
 equivalent to requiring it to be an embedding, because totally
 separated types are sets and left-cancellable maps into sets are
 embeddings.
