@@ -232,7 +232,7 @@ open import Notation.CanonicalMap hiding ([_])
   → is-prop (A ∞)
   → is-totally-separated (Σ A)
 Σ-indexed-by-ℕ∞-is-totally-separated-if-family-at-∞-is-prop
- fe₀ A τ i {u , a} {v , b} ϕ = IV
+ fe₀ A A-is-ts A∞-is-prop {u , a} {v , b} ϕ = IV
  where
   have-ϕ : (p : Σ A → 𝟚) → p (u , a) ＝ p (v , b)
   have-ϕ = ϕ
@@ -284,7 +284,7 @@ open import Notation.CanonicalMap hiding ([_])
             e₃ = (p'-property (v , b) (inl refl) (finite-isolated fe₀ n v))⁻¹
 
     II₁ : v ＝ ∞ → r a' ＝ r b
-    II₁ refl = ap r (i a' b)
+    II₁ refl = ap r (A∞-is-prop a' b)
 
     II₂ : ¬ (r a' ≠ r b)
     II₂ ν = II∞ (not-finite-is-∞ fe₀ IIₙ)
@@ -299,9 +299,77 @@ open import Notation.CanonicalMap hiding ([_])
     II₃ = 𝟚-is-¬¬-separated (r a') (r b) II₂
 
   III : a' ＝ b
-  III = τ v II
+  III = A-is-ts v II
 
   IV : (u , a) ＝[ Σ A ] (v , b)
   IV = to-Σ-＝ (I , III)
+
+\end{code}
+
+Added 21st December 2023. A modification of the above proof gives the
+following.
+
+\begin{code}
+
+subtype-is-totally-separated
+  : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
+  → is-totally-separated X
+  → ((x : X) → is-prop (A x))
+  → is-totally-separated (Σ A)
+subtype-is-totally-separated
+ {𝓤} {𝓥} {X} A X-is-ts A-is-prop-valued {x , a} {y , b} ϕ = II
+ where
+  have-ϕ : (p : Σ A → 𝟚) → p (x , a) ＝ p (y , b)
+  have-ϕ = ϕ
+
+  ϕ₁ : (q : X → 𝟚) → q x ＝ q y
+  ϕ₁ q = ϕ (λ (w , _) → q w)
+
+  I : x ＝ y
+  I = X-is-ts ϕ₁
+
+  II : (x , a) ＝[ Σ A ] (y , b)
+  II = to-Σ-＝ (I , A-is-prop-valued y (transport A I a) b)
+
+\end{code}
+
+The following is a consequence of the above, but it is just as easy to
+prove it directly. Notice that requiring that f is left-cancellable is
+equivalent to requiring it to be an embedding, because totally
+separated types are sets and left-cancellable maps into sets are
+embeddings.
+
+\begin{code}
+
+open import UF.Embeddings
+
+subtype-is-totally-separated''
+  : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+    (f : X → Y)
+  → is-totally-separated Y
+  → left-cancellable f
+  → is-totally-separated X
+subtype-is-totally-separated'' {𝓤} {𝓥} {X} {Y} f Y-is-ts f-lc {x} {x'} ϕ = II
+ where
+  have-ϕ : (p : X → 𝟚) → p x ＝ p x'
+  have-ϕ = ϕ
+
+  ϕ₁ : (q : Y → 𝟚) → q (f x) ＝ q (f x')
+  ϕ₁ q = ϕ (q ∘ f)
+
+  I : f x ＝ f x'
+  I = Y-is-ts ϕ₁
+
+  II : x ＝ x'
+  II = f-lc I
+
+subtype-is-totally-separated'
+  : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+    (f : X → Y)
+  → is-totally-separated Y
+  → is-embedding f
+  → is-totally-separated X
+subtype-is-totally-separated' f Y-is-ts f-is-emb =
+ subtype-is-totally-separated'' f Y-is-ts (embeddings-are-lc f f-is-emb)
 
 \end{code}

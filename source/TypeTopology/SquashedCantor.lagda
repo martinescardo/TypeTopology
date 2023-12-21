@@ -94,7 +94,7 @@ Cantor space with domain of definition "is-finite u".
 
 Exercises left to the reader (they are not needed so far):
 
-  (1) Cantor[ under n ] ≃ Cantor,
+  (1) Cantor[ ι n ] ≃ Cantor,
 
   (2) Cantor[ ∞ ] ≃ 𝟙.
 
