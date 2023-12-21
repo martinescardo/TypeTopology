@@ -309,6 +309,8 @@ open import Notation.CanonicalMap hiding ([_])
 Added 21st December 2023. A modification of the above proof gives the
 following.
 
+\begin{code}
+
 open import UF.Embeddings
 
 subtype-is-totally-separated''
