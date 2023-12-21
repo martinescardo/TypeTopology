@@ -309,38 +309,6 @@ open import Notation.CanonicalMap hiding ([_])
 Added 21st December 2023. A modification of the above proof gives the
 following.
 
-\begin{code}
-
-subtype-is-totally-separated
-  : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
-  → is-totally-separated X
-  → ((x : X) → is-prop (A x))
-  → is-totally-separated (Σ A)
-subtype-is-totally-separated
- {𝓤} {𝓥} {X} A X-is-ts A-is-prop-valued {x , a} {y , b} ϕ = II
- where
-  have-ϕ : (p : Σ A → 𝟚) → p (x , a) ＝ p (y , b)
-  have-ϕ = ϕ
-
-  ϕ₁ : (q : X → 𝟚) → q x ＝ q y
-  ϕ₁ q = ϕ (λ (w , _) → q w)
-
-  I : x ＝ y
-  I = X-is-ts ϕ₁
-
-  II : (x , a) ＝[ Σ A ] (y , b)
-  II = to-Σ-＝ (I , A-is-prop-valued y (transport A I a) b)
-
-\end{code}
-
-The following is a consequence of the above, but it is just as easy to
-prove it directly. Notice that requiring f to be left-cancellable is
-equivalent to requiring it to be an embedding, because totally
-separated types are sets and left-cancellable maps into sets are
-embeddings.
-
-\begin{code}
-
 open import UF.Embeddings
 
 subtype-is-totally-separated''
@@ -371,5 +339,13 @@ subtype-is-totally-separated'
   → is-totally-separated X
 subtype-is-totally-separated' f Y-is-ts f-is-emb =
  subtype-is-totally-separated'' f Y-is-ts (embeddings-are-lc f f-is-emb)
+
+subtype-is-totally-separated
+  : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
+  → is-totally-separated X
+  → ((x : X) → is-prop (A x))
+  → is-totally-separated (Σ A)
+subtype-is-totally-separated A X-is-ts A-is-prop-valued =
+ subtype-is-totally-separated'' pr₁ X-is-ts (pr₁-lc (λ {x} → A-is-prop-valued x))
 
 \end{code}
