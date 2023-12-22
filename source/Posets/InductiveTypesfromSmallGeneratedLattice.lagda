@@ -1,6 +1,6 @@
 Ian Ray 01/09/2023.
 
-We formalize Curi's notion of Abstract Inductive Definition (CZF) within the
+We formalize Curi's notion of abstract inductive definition (CZF) within the
 context of a sup-lattice L with small basis B (and q : B → L). An abstract
 inductive defintion is a subset ϕ : B × L → Prop which can be thought of as a
 'inference rule' concluding b from a. An inductive definition induces a
@@ -13,8 +13,8 @@ relationship and prove a predicative version of the least fixed point theorem.
 This work follows the paper 'On Tarski's Fixed Point Theorem' by Giovanni Curi.
 Fortunately, unlike in the realm of set theory, induction rules are first
 class citizens in type theory. Using UF + HITs we can construct the least
-closed subset, under an inductive definition ϕ, as a special Quotient Inductive
-Type (QIT). 
+closed subset, under an inductive definition ϕ, as a special quotient inductive
+type (QIT). 
 
 \begin{code}
 
@@ -219,8 +219,8 @@ module small-types-have-joins {𝓤 𝓦 𝓥 𝓣 : Universe}
 
  open Joins _≤_
 
- is-lub-of-both : (s is-lub-of (T , m)) holds
- is-lub-of-both = (s-upper-bound , s-least-upper-bound)
+ sup-of-small-fam-is-lub : (s is-lub-of (T , m)) holds
+ sup-of-small-fam-is-lub = (s-upper-bound , s-least-upper-bound)
   where
    s-upper-bound : (s is-an-upper-bound-of (T , m)) holds
    s-upper-bound t = t-≤-s
@@ -259,11 +259,11 @@ module equivalent-families-have-same-join {𝓤 𝓦 𝓥 𝓣 𝓣' : Universe}
 
  open Joins _≤_
 
- ≃-families-＝-sup : (s s' : ⟨ L ⟩)
-                   → (s is-lub-of (T , m)) holds
-                   → (s' is-lub-of (T' , m ∘ ⌜ e ⌝ )) holds
-                   → s ＝ s'
- ≃-families-＝-sup s s' (is-upbnd , is-least-upbnd)
+ reindexing-along-equiv-＝-sup : (s s' : ⟨ L ⟩)
+                               → (s is-lub-of (T , m)) holds
+                               → (s' is-lub-of (T' , m ∘ ⌜ e ⌝ )) holds
+                               → s ＝ s'
+ reindexing-along-equiv-＝-sup s s' (is-upbnd , is-least-upbnd)
                         (is-upbnd' , is-least-upbnd') =
    is-antisymmetric-for L s-≤-s' s'-≤-s
   where
@@ -299,11 +299,11 @@ module surjection-implies-equal-joins {𝓤 𝓦 𝓥 𝓣 𝓣' : Universe}
  open Joins _≤_
  open PropositionalTruncation pt
 
- ↠-families-＝-sup : (s s' : ⟨ L ⟩)
-                   → (s is-lub-of (T , m)) holds
-                   → (s' is-lub-of (T' , m ∘ ⌞ e ⌟)) holds
-                   → s ＝ s'
- ↠-families-＝-sup s s' (is-upbnd , is-least-upbnd)
+ reindexing-along-surj-＝-sup : (s s' : ⟨ L ⟩)
+                              → (s is-lub-of (T , m)) holds
+                              → (s' is-lub-of (T' , m ∘ ⌞ e ⌟)) holds
+                              → s ＝ s'
+ reindexing-along-surj-＝-sup s s' (is-upbnd , is-least-upbnd)
                         (is-upbnd' , is-least-upbnd') =
    is-antisymmetric-for L s-≤-s' s'-≤-s
   where
@@ -407,7 +407,7 @@ module small-basis {𝓤 𝓦 𝓥 : Universe}
   ↓ᴮ-is-small {x} = (small-↓ᴮ x , small-↓ᴮ-≃-↓ᴮ {x})
 
   is-sup'ᴮ : (x : ⟨ L ⟩) → x ＝ ⋁ (small-↓ᴮ x , small-↓ᴮ-inclusion x)
-  is-sup'ᴮ x = ≃-families-＝-sup
+  is-sup'ᴮ x = reindexing-along-equiv-＝-sup
                x
                (⋁ (small-↓ᴮ x , small-↓ᴮ-inclusion x))
                (is-sup-↓ x)
@@ -611,12 +611,12 @@ module local-inductive-definitions {𝓤 𝓦 𝓥 : Universe}
   S-to-base : (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩)) → (a : ⟨ L ⟩) → S ϕ a → B
   S-to-base ϕ a = pr₁
 
-  S-monotone-ish : (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩))
-                 → (x y : ⟨ L ⟩)
-                 → (x ≤ y) holds
-                 → S ϕ x
-                 → S ϕ y
-  S-monotone-ish ϕ x y o = f
+  S-monotonicity-lemma : (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩))
+                       → (x y : ⟨ L ⟩)
+                       → (x ≤ y) holds
+                       → S ϕ x
+                       → S ϕ y
+  S-monotonicity-lemma ϕ x y o = f
    where
     f : S ϕ x → S ϕ y
     f (b , c) = (b , g c)
@@ -641,7 +641,7 @@ module local-inductive-definitions {𝓤 𝓦 𝓥 : Universe}
      is-least-upbnd ((s' , f))
    where
     f : (s' is-an-upper-bound-of (S ϕ x , q ∘ S-to-base ϕ x)) holds
-    f (b , e) = is-upbnd' (S-monotone-ish ϕ x y o ((b , e)))
+    f (b , e) = is-upbnd' (S-monotonicity-lemma ϕ x y o ((b , e)))
         
   _is-local : (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩)) → 𝓤 ⊔ 𝓦 ⊔ (𝓥 ⁺)  ̇
   ϕ is-local = (a : ⟨ L ⟩) → S ϕ a is 𝓥 small
@@ -665,7 +665,7 @@ module local-inductive-definitions {𝓤 𝓦 𝓥 : Universe}
                    → S' x
                    → S' y
    S'-monotone-ish x y o =
-     S-to-S' y ∘ S-monotone-ish ϕ x y o ∘ S'-to-S x
+     S-to-S' y ∘ S-monotonicity-lemma ϕ x y o ∘ S'-to-S x
 
    Γ : ⟨ L ⟩ → ⟨ L ⟩
    Γ a = ⋁ (S' a , q ∘ pr₁ ∘ S'-to-S a)
@@ -677,11 +677,11 @@ module local-inductive-definitions {𝓤 𝓦 𝓥 : Universe}
                                                     Γ-x-is-sup Γ-y-is-sup
     where
      Γ-x-is-sup : (Γ x is-lub-of (S ϕ x , q ∘ S-to-base ϕ x)) holds
-     Γ-x-is-sup = is-lub-of-both
+     Γ-x-is-sup = sup-of-small-fam-is-lub
       where
        open small-types-have-joins L (S ϕ x) (q ∘ S-to-base ϕ x) (i x)       
      Γ-y-is-sup : (Γ y is-lub-of (S ϕ y , q ∘ S-to-base ϕ y)) holds
-     Γ-y-is-sup = is-lub-of-both
+     Γ-y-is-sup = sup-of-small-fam-is-lub
       where
        open small-types-have-joins L (S ϕ y) (q ∘ S-to-base ϕ y) (i y)
 
@@ -741,7 +741,10 @@ module local-inductive-definitions {𝓤 𝓦 𝓥 : Universe}
       f-is-least (u , is-upbnd) = (is-least-upper-boundᴮ (f x))
                                   (u , λ z → is-upbnd (⌜ equiv-1 x ⌝ z))
     H : (x : ⟨ L ⟩) → (Γ ϕ i) x ＝ f x
-    H x = ≃-families-＝-sup ((Γ ϕ i) x) (f x) is-lub-of-both (G x)
+    H x = reindexing-along-equiv-＝-sup ((Γ ϕ i) x)
+                                        (f x)
+                                        sup-of-small-fam-is-lub
+                                        (G x)
      where
       open equivalent-families-have-same-join L (S ϕ x) (S ϕ x)
                                               (id , id-is-equiv (S ϕ x))
@@ -879,7 +882,7 @@ module correspondance-small-ϕ-closed-types-def-points {𝓤 𝓦 𝓥 : Univers
                                    hiding (⋁_ ; _≤_)
        Γ-is-sup : ((Γ ϕ i) sup-P is-lub-of (S ϕ sup-P , q ∘ S-to-base ϕ sup-P))
                   holds
-       Γ-is-sup = is-lub-of-both
+       Γ-is-sup = sup-of-small-fam-is-lub
        Γ-is-least-upper-bound :
          ((u , _) : upper-bound (S ϕ sup-P , q ∘ S-to-base ϕ sup-P))
                               → ((Γ ϕ i) sup-P ≤ u) holds
@@ -936,7 +939,7 @@ module correspondance-small-ϕ-closed-types-def-points {𝓤 𝓦 𝓥 : Univers
        open small-types-have-joins L (S ϕ a) (q ∘ S-to-base ϕ a) (i a)
                                    hiding (⋁_ ; _≤_)
        Γ-is-sup : ((Γ ϕ i) a is-lub-of (S ϕ a , q ∘ S-to-base ϕ a)) holds
-       Γ-is-sup = is-lub-of-both
+       Γ-is-sup = sup-of-small-fam-is-lub
        Γ-an-upper-bound :
          ((Γ ϕ i) a is-an-upper-bound-of (S ϕ a , q ∘ S-to-base ϕ a)) holds
        Γ-an-upper-bound = pr₁ Γ-is-sup
@@ -1055,7 +1058,7 @@ module correspondance-small-ϕ-closed-types-def-points {𝓤 𝓦 𝓥 : Univers
      sup-𝓘 = ⋁ (𝕋 𝓘'-subset , q ∘ 𝕋-to-carrier 𝓘nd ∘ ⌜ e ⌝)
 
      sup-𝓘-is-lub : (sup-𝓘 is-lub-of (𝕋 𝓘nd , q ∘ 𝕋-to-carrier 𝓘nd)) holds
-     sup-𝓘-is-lub = is-lub-of-both
+     sup-𝓘-is-lub = sup-of-small-fam-is-lub
       where
        open small-types-have-joins L (𝕋 𝓘nd) (q ∘ 𝕋-to-carrier 𝓘nd)
                                    total-space-𝓘-is-small
@@ -1287,7 +1290,9 @@ module bounded-inductive-definition {𝓤 𝓦 𝓥 : Universe}
         m : α i → ↓ᴮ a
         m = ι a' o ∘ ⌞ α-covers ⌟
         path : a' ＝ ⋁ (α i , ↓ᴮ-inclusion a ∘ m)
-        path = ↠-families-＝-sup a' (⋁ (α i , ↓ᴮ-inclusion a ∘ m)) (is-sup-↓ a')
+        path = reindexing-along-surj-＝-sup a'
+                                           (⋁ (α i , ↓ᴮ-inclusion a ∘ m))
+                                           (is-sup-↓ a')
                                  (is-lub-for L (α i , ↓ᴮ-inclusion a ∘ m))
         p' : (b , ⋁ (α i , ↓ᴮ-inclusion a ∘ m)) ∈ ϕ
         p' = transport (λ z → (b , z) ∈ ϕ) path p
@@ -1659,7 +1664,9 @@ module 𝓘nd-is-small {𝓤 𝓦 𝓥 : Universe}
                                               s (↓ᴮ-inclusion a) hiding (⋁_)
           a-＝-⋁-α : a ＝ ⋁ (α i , ↓ᴮ-inclusion a ∘ ⌞ s ⌟)
           a-＝-⋁-α =
-            ↠-families-＝-sup a (⋁ (α i , ↓ᴮ-inclusion a ∘ ⌞ s ⌟)) (is-sup-↓ a)
+            reindexing-along-surj-＝-sup a
+                                         (⋁ (α i , ↓ᴮ-inclusion a ∘ ⌞ s ⌟))
+                                         (is-sup-↓ a)
                               (is-lub-for L (α i , ↓ᴮ-inclusion a ∘ ⌞ s ⌟))
         g'' : (Ǝ i ꞉ I₂ , α i is-a-small-cover-of ↓ᴮ a) holds
             → b ∈ Small-𝓘nd
