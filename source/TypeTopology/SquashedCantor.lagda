@@ -242,14 +242,14 @@ Tail α (n , r) k = α (k ∔ succ n)
 
 Tail₀ : (α : Cantor) (i : is-finite (Head (₀ ∶∶ α)))
       → Tail (₀ ∶∶ α) i ＝ α
-Tail₀ α (zero   , r) = refl
+Tail₀ α (0      , r) = refl
 Tail₀ α (succ n , r) = 𝟘-elim (Succ-not-Zero (Succ (ι n)     ＝⟨ r ⟩
                                               Head (₀ ∶∶ α)  ＝⟨ Head₀ (₀ ∶∶ α) refl ⟩
                                               Zero           ∎))
 
 Tail₁ : (α : Cantor) (i : is-finite (Head (₁ ∶∶ α)))
       → Tail (₁ ∶∶ α) i ＝ α ∘ (λ k → k ∔ size i)
-Tail₁ α (zero   , r) = 𝟘-elim (Zero-not-Succ (Zero          ＝⟨ r ⟩
+Tail₁ α (0      , r) = 𝟘-elim (Zero-not-Succ (Zero          ＝⟨ r ⟩
                                               Head (₁ ∶∶ α) ＝⟨ Head₁ (₁ ∶∶ α) refl ⟩
                                               Succ (Head α) ∎))
 Tail₁ α (succ n , r) = refl
@@ -349,7 +349,7 @@ tail-Κ-Succ u φ =
 Κ₁ u φ = dfunext fe₀ h
  where
   h : (i : ℕ) → Κ (Succ u , φ) i ＝ (₁ ∶∶ Κ (u , φ ∘ is-finite-up u)) i
-  h zero     = head-Κ-Succ u φ
+  h 0        = head-Κ-Succ u φ
   h (succ i) = ap (λ - → - i) (tail-Κ-Succ u φ)
 
 \end{code}
@@ -392,7 +392,7 @@ Cons (ι n , φ) we get the sequence φ (ι-is-finite n):
 
 tail-Cons-ι : (n : ℕ) (φ : Cantor[ ι n ])
             → Cons (ι n , φ) ∘ (λ k → k ∔ succ n) ＝ φ (ℕ-to-ℕ∞-is-finite n)
-tail-Cons-ι zero φ     = ap tail (Cons₀ φ)
+tail-Cons-ι 0    φ     = ap tail (Cons₀ φ)
 tail-Cons-ι (succ n) φ = γ
  where
   IH : Cons (ι n , φ ∘ is-finite-up (ι n)) ∘ (λ k → k ∔ succ n)
@@ -425,7 +425,7 @@ Head-Cons = λ u φ → ap (λ - → - φ) (γ u)
  where
   Head-Cons-finite : (n : ℕ) (φ : Cantor[ ι n ])
                    → Head (Cons (ι n , φ)) ＝ ι n
-  Head-Cons-finite zero φ = Head₀ (Cons (Zero , φ)) (ap head (Cons₀ φ))
+  Head-Cons-finite 0        φ = Head₀ (Cons (Zero , φ)) (ap head (Cons₀ φ))
   Head-Cons-finite (succ n) φ =
     Head (Cons (Succ (ι n) , φ))                      ＝⟨ I ⟩
     Succ (Head (tail (Cons (Succ (ι n) , φ))))        ＝⟨ II ⟩
@@ -472,7 +472,7 @@ Head-finite u φ = transport-finite (Head-Cons u φ)
 \end{code}
 
 Notice that the lemma γ in the following theorem is not defined by
-induction, but simply by cases zero and succ n for the finiteness
+induction, but simply by cases 0 and succ n for the finiteness
 witness:
 
 \begin{code}
@@ -483,11 +483,11 @@ Tail-Cons u φ = dfunext fe₀ (γ u φ)
  where
    γ : (u : ℕ∞) (φ : Cantor[ u ]) (i : is-finite (Head (Cons (u , φ))))
     → Tail (Cons (u , φ)) i ＝ (φ ∘ Head-finite u φ) i
-   γ u φ (zero , r) = δ
+   γ u φ (0 , r) = δ
     where
      p = u                   ＝⟨ (Head-Cons u φ)⁻¹ ⟩
          Head (Cons (u , φ)) ＝⟨ r ⁻¹ ⟩
-         ι zero              ∎
+         ι 0                 ∎
 
      t : is-finite Zero → is-finite u
      t = transport-finite⁻¹ p
@@ -505,9 +505,9 @@ Tail-Cons u φ = dfunext fe₀ (γ u φ)
          Tail (Cons (Zero , φ ∘ t)) j       ＝⟨ II ⟩
          Tail (₀ ∶∶ φ (t Zero-is-finite)) k ＝⟨ III ⟩
          φ (t Zero-is-finite)               ＝⟨ IV ⟩
-         φ (Head-finite u φ (zero , r))     ∎
+         φ (Head-finite u φ (0 , r))        ∎
       where
-       I   = ap-Tail (zero , r) q
+       I   = ap-Tail (0 , r) q
        II  = ap-Tail j (Cons₀ (φ ∘ t))
        III = Tail₀ (φ (t Zero-is-finite)) k
        IV  = ap φ (being-finite-is-prop fe₀ u _ _)
@@ -667,39 +667,18 @@ BinaryNaturals (which is not needed for the moment).
 
 End for the moment. 20 July 2018.
 
-TODO. The corecursion principle for D, which is not needed for the
-moment (but has the above as a corollary by Lambek's Lemma):
+TODO.
 
 \begin{code}
-{-
-D-corec : {X : 𝓤 ̇ } (h : X → ℕ∞) (t : (x : X) → is-finite (h x) → X)
-        → Σ f ꞉ (X → Cantor)
-        , Σ p ꞉ Head ∘ f ∼ h
-        , ((x : X) (i : is-finite (Head (f x)) → Tail (f x) i ＝ f (t x (transport-finite (p x) i))))
-D-corec {𝓤} {X} h t = ?
--}
 
-\end{code}
-
-TODO. This follows from D-corec, but may be useful to prove it:
-
-\begin{code}
 {-
 Cons-Snoc : (α : Cantor) → Cons (Snoc α) ＝ α
-Cons-Snoc α = dfunext fe₀ γ
+Cons-Snoc α = dfunext fe₀ (λ i → γ i α)
  where
-  f : Cantor → Cantor
-  f α = Cons (Head α , Tail α)
-  fh : (α : Cantor) → head (f α) ＝ head α
-  fh α = {!!}
-  ft : (α : Cantor) → tail (f α) ＝ f (tail α)
-  ft α = {!!}
-  fid : f ＝ id
-  fid = seq-at-most-one head tail f id (fh , ft) ((λ α → refl) , (λ α → refl))
-  γ : (i : ℕ) → Cons (Head α , Tail α) i ＝ α i
-  γ zero = 𝟚-equality-cases a b
+  γ : (i : ℕ) (α : Cantor) → Cons (Head α , Tail α) i ＝ α i
+  γ 0 α = 𝟚-equality-cases a b
    where
-    a : head α ＝ ₀ → Cons (Head α , Tail α) zero ＝ α zero
+    a : head α ＝ ₀ → Cons (Head α , Tail α) 0 ＝ α 0
     a r = ap head (p ∙ q) ∙ r ⁻¹
      where
       s : Head α ＝ Zero
@@ -709,7 +688,7 @@ Cons-Snoc α = dfunext fe₀ γ
       q : Cons (Zero , Tail α ∘ transport-finite⁻¹ s)
         ＝ ₀ ∶∶  Tail α (transport-finite⁻¹ s Zero-is-finite)
       q = Cons₀ (Tail α ∘ transport-finite⁻¹ s)
-    b : head α ＝ ₁ → Cons (Head α , Tail α) zero ＝ α zero
+    b : head α ＝ ₁ → Cons (Head α , Tail α) 0 ＝ α 0
     b r = ap head (p ∙ q) ∙ r ⁻¹
      where
       s : Head α ＝ Succ (Head (tail α))
@@ -721,11 +700,17 @@ Cons-Snoc α = dfunext fe₀ γ
        ＝ (₁ ∶∶  Cons ((Head (tail α)) , (Tail α ∘ transport-finite⁻¹ s ∘ is-finite-up (Head (tail α)))))
       q = Cons₁ (Head (tail α)) (Tail α ∘ transport-finite⁻¹ s)
 
-  γ (succ i) = g
+  γ (succ i) α = g
    where
     IH : Cons (Head α , Tail α) i ＝ α i
-    IH = γ i
+    IH = γ i (α)
     g : Cons (Head α , Tail α) (succ i) ＝ α (succ i)
-    g = {!!}
+    g = Cons (Head α , Tail α) (succ i) ＝⟨ {!!} ⟩
+        {!!} ＝⟨ {!!} ⟩
+        {!!} ＝⟨ {!!} ⟩
+        {!!} ＝⟨ {!!} ⟩
+        {!!} ＝⟨ {!!} ⟩
+        α (succ i) ∎
 -}
+
 \end{code}

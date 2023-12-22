@@ -224,51 +224,58 @@ module _ {X : 𝓤 ̇ }
 
 \begin{code}
 
-  Π-extension-right-Kan : (g : Y → 𝓣 ̇ ) → (g ≾ f/j) ≃  (g ∘ j ≾ f)
-  Π-extension-right-Kan {𝓣} g = qinveq (ψ g) (φ g , φψ' g , ψφ' g)
+  Π-extension-right-Kan : (g : Y → 𝓣 ̇ ) → (g ≾ f/j) ≃ (g ∘ j ≾ f)
+  Π-extension-right-Kan {𝓣} g = qinveq ψ (φ , φψ' , ψφ')
    where
-    φ : (g : Y → 𝓣 ̇ ) → g ∘ j ≾ f → g ≾ f/j
-    φ g η y C (x , p) = η x (transport⁻¹ g p C)
+    φ : g ∘ j ≾ f → g ≾ f/j
+    φ η .(j x) C (x , refl) = η x C
 
-    ψ : (g : Y → 𝓣 ̇ ) → g ≾ f/j → g ∘ j ≾ f
-    ψ g θ x C = θ (j x) C (x , refl)
+    ψ : g ≾ f/j → g ∘ j ≾ f
+    ψ θ x C = θ (j x) C (x , refl)
 
-    ψφ : (g : Y → 𝓣 ̇ ) (η : g ∘ j ≾ f) (x : X) (C : g (j x)) → ψ g (φ g η) x C ＝ η x C
-    ψφ g η x C = refl
+    ψφ : (η : g ∘ j ≾ f) (x : X) (C : g (j x))
+       → ψ (φ η) x C ＝ η x C
+    ψφ η x C = refl
 
-    ψφ' : (g : Y → 𝓣 ̇ ) (η : g ∘ j ≾ f) → ψ g (φ g η) ＝ η
-    ψφ' g η = dfunext (fe 𝓤 (𝓦 ⊔ 𝓣)) (λ x → dfunext (fe 𝓣 𝓦) (ψφ g η x))
+    ψφ' : (η : g ∘ j ≾ f) → ψ (φ η) ＝ η
+    ψφ' η = dfunext (fe 𝓤 (𝓦 ⊔ 𝓣)) (λ x → dfunext (fe 𝓣 𝓦) (ψφ η x))
 
-    φψ : (g : Y → 𝓣 ̇ ) (θ : g ≾ f/j) (y : Y) (C : g y) (w : fiber j y) → φ g (ψ g θ) y C w ＝ θ y C w
-    φψ g θ y C (x , refl) = refl
+    φψ : (θ : g ≾ f/j) (y : Y) (C : g y) (w : fiber j y)
+       → φ (ψ θ) y C w ＝ θ y C w
+    φψ θ y C (x , refl) = refl
 
-    φψ' : (g : Y → 𝓣 ̇ ) (θ : g ≾ f/j) → φ g (ψ g θ) ＝ θ
-    φψ' g θ = dfunext (fe 𝓥 (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣)) (λ y → dfunext (fe 𝓣 (𝓤 ⊔ 𝓥 ⊔ 𝓦)) (λ C → dfunext (fe (𝓤 ⊔ 𝓥) 𝓦) (φψ g θ y C)))
+    φψ' : (θ : g ≾ f/j) → φ (ψ θ) ＝ θ
+    φψ' θ = dfunext (fe 𝓥 (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣)) (λ y →
+            dfunext (fe 𝓣 (𝓤 ⊔ 𝓥 ⊔ 𝓦)) (λ C →
+            dfunext (fe (𝓤 ⊔ 𝓥) 𝓦) (φψ θ y C)))
 
   Σ-extension-left-Kan : (g : Y → 𝓣 ̇ ) → (f∖j ≾ g) ≃ (f ≾ g ∘ j)
   Σ-extension-left-Kan {𝓣} g = e
    where
-    φ : (g : Y → 𝓣 ̇ ) → f ≾ g ∘ j → f∖j ≾ g
-    φ g η y ((x , p) , C) = transport g p (η x C)
+    φ : f ≾ g ∘ j → f∖j ≾ g
+    φ η .(j x) ((x , refl) , C) = η x C
 
-    ψ : (g : Y → 𝓣 ̇ ) → f∖j ≾ g → f ≾ g ∘ j
-    ψ g θ x B = θ (j x) ((x , refl) , B)
+    ψ : f∖j ≾ g → f ≾ g ∘ j
+    ψ θ x B = θ (j x) ((x , refl) , B)
 
-    φψ : (g : Y → 𝓣 ̇ ) (θ : f∖j ≾ g) (y : Y) (B : f∖j y) → φ g (ψ g θ) y B ＝ θ y B
-    φψ g θ y ((x , refl) , B) = refl
+    φψ : (θ : f∖j ≾ g) (y : Y) (B : f∖j y)
+       → φ (ψ θ) y B ＝ θ y B
+    φψ θ y ((x , refl) , B) = refl
 
-    ψφ : (g : Y → 𝓣 ̇ ) (η : f ≾ g ∘ j) (x : X) (B : f x) → ψ g (φ g η) x B ＝ η x B
-    ψφ g η x B = refl
+    ψφ : (η : f ≾ g ∘ j) (x : X) (B : f x)
+       → ψ (φ η) x B ＝ η x B
+    ψφ η x B = refl
 
     e : f∖j ≾ g ≃ f ≾ g ∘ j
-    e = ψ g , (φ g , λ η → dfunext (fe 𝓤 (𝓦 ⊔ 𝓣)) (λ x → dfunext (fe 𝓦 𝓣) (λ B → ψφ g η x B)))
-            , (φ g , λ θ → dfunext (fe 𝓥 (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣)) (λ y → dfunext (fe (𝓤 ⊔ 𝓥 ⊔ 𝓦) 𝓣) (λ C → φψ g θ y C)))
-
+    e = ψ , (φ , λ η → dfunext (fe 𝓤 (𝓦 ⊔ 𝓣)) (λ x →
+                       dfunext (fe 𝓦 𝓣) (λ B → ψφ η x B)))
+          , (φ , λ θ → dfunext (fe 𝓥 (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣)) (λ y →
+                       dfunext (fe (𝓤 ⊔ 𝓥 ⊔ 𝓦) 𝓣) (λ C → φψ θ y C)))
 \end{code}
 
   Conjectural conjecture: the type
 
-    Σ (f' : Y → 𝓤), Π (g : Y → 𝓤), g ≾ f' ≃ g∘j ≾ f
+    Σ (f' : Y → 𝓤), Π (g : Y → 𝓤), g ≾ f' ≃ g ∘ j ≾ f
 
   should be contractible assuming univalence. Similarly for left Kan
   extensions as discussed below.

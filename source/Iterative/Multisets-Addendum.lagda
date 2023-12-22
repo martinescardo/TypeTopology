@@ -343,18 +343,23 @@ prop-indexed-productᴹ {X} {A} i x₀ = IV
        ssup (𝕄-root (A x₀)) (𝕄-forest (A x₀)) ＝⟨ 𝕄-η (A x₀) ⟩
        A x₀                                   ∎
 
+_∖ᴹ_ : {X Y : 𝓤 ̇ } → (X → 𝕄) → (X → Y) → (Y → 𝕄)
+(f ∖ᴹ j) y = Σᴹ (λ ((x , _) : fiber j y) → f x)
+
+∖ᴹ-is-extension : {X Y : 𝓤 ̇ } (f : X → 𝕄) (j : X → Y)
+               → is-embedding j
+               → f ∖ᴹ j ∘ j ∼ f
+∖ᴹ-is-extension f j j-emb x = prop-indexed-sumᴹ
+                              {fiber j (j x)} {f ∘ pr₁} (j-emb (j x)) (x , refl)
+
 𝕄-is-ainjective-Σ : ainjective-type 𝕄 𝓤 𝓤
-𝕄-is-ainjective-Σ {X} {Y} j j-emb f = f\j , f\j-ext
- where
-  A : (y : Y) → fiber j y → 𝕄
-  A y (x , _) = f x
+𝕄-is-ainjective-Σ {X} {Y} j j-emb f = (f ∖ᴹ j) , ∖ᴹ-is-extension f j j-emb
 
-  f\j : Y → 𝕄
-  f\j y = Σᴹ (A y)
+\end{code}
 
-  f\j-ext : f\j ∘ j ∼ f
-  f\j-ext x = prop-indexed-sumᴹ
-               {fiber j (j x)} {A (j x)} (j-emb (j x)) (x , refl)
+TODO. Split the following as above.
+
+\begin{code}
 
 𝕄-is-ainjective-Π : ainjective-type 𝕄 𝓤 𝓤
 𝕄-is-ainjective-Π {X} {Y} j j-emb f = f/j , f/j-ext

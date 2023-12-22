@@ -413,7 +413,7 @@ not-finite-is-∞ fe {u} f = ℕ∞-to-ℕ→𝟚-lc fe (dfunext fe lemma)
 ι𝟙-dense fe (u , f) = g (not-finite-is-∞ fe h)
  where
   g : ¬ (u ＝ ∞)
-  g p = f ((inr ⋆) , (p ⁻¹))
+  g p = f (inr ⋆ , (p ⁻¹))
 
   h : (n : ℕ) → ¬ (u ＝ ι n)
   h n p = f (inl n , (p ⁻¹))
