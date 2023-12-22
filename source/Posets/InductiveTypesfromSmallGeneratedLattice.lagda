@@ -14,7 +14,16 @@ This work follows the paper 'On Tarski's Fixed Point Theorem' by Giovanni Curi.
 Fortunately, unlike in the realm of set theory, induction rules are first
 class citizens in type theory. Using UF + HITs we can construct the least
 closed subset, under an inductive definition ϕ, as a special quotient inductive
-type (QIT). 
+type (QIT).
+
+Main Result:
+Given a 𝓥-sup-lattice L with a 𝓥-presentation and a monotone
+endomap f : L → L. If there exists a bounded abstract inductive definition
+ϕ such that f ＝ Γ ϕ, then f has a least fixed point.
+
+Reference:
+Giovanni Curi. "On Tarski's fixed point theorem". In: Proc. Amer. Math. Soc
+143 (2015), pp. 4439-4455. URL: https://arxiv.org/abs/1301.2793
 
 \begin{code}
 
