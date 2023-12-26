@@ -150,11 +150,9 @@ max-questionᵤᵀ =
 
 \begin{code}
 
-main-lemma : (t : 〈〉 ⊢ (baire ⇒ ι))
-           → (α : ℕ → 𝟚)
-           → ⟦ max-questionᵤᵀ · ⌜dialogue-tree⌝ t ⟧₀
-             ＝ max-questionᵤ (prune (dialogue-tree t))
-main-lemma = {!!}
+main-lemma : (t : 〈〉 ⊢ baire ⇒ ι) → ⟦ max-questionᵤᵀ · ⌜dialogue-tree⌝ t ⟧₀
+                                    ＝ max-questionᵤ (prune (dialogue-tree t))
+main-lemma t = {!!}
 
 \end{code}
 
@@ -205,6 +203,24 @@ modulusᵤᵀ t = Succ' · (max-questionᵤᵀ · ⌜dialogue-tree⌝ t)
 
 \begin{code}
 
+another-lemma : (f : Baire → ℕ)
+              → (α : Baire) (bv : is-boolean-point α)
+              → (β : ℕ → 𝟚)
+              → to-cantor (α , bv) ＝ β
+              → f α ＝ C-restriction f β
+another-lemma f α bv β p =
+ f α ＝⟨ {!!} ⟩ {!!} ＝⟨ {!!} ⟩ {!!} ∎
+
+kinda-important-lemma : (f : Baire → ℕ) (α : Baire) (bv : is-boolean-point α)
+                      → f α ＝ C-restriction f (to-cantor (α , bv))
+kinda-important-lemma f α bv =
+ f α                                  ＝⟨ {!!} ⟩
+ C-restriction f (to-cantor (α , bv)) ∎
+
+\end{code}
+
+\begin{code}
+
 internal-uni-mod-correct : (t : 〈〉 ⊢ (baire ⇒ ι)) (α β : 〈〉 ⊢ baire)
                          → is-boolean-valuedᵀ α
                          → is-boolean-valuedᵀ β
@@ -236,8 +252,11 @@ internal-uni-mod-correct t α β ψ₁ ψ₂ ϑ = †
   mᵘ₀ : ℕ
   mᵘ₀ = pr₁ c₀
 
+  rts : ⟦ max-questionᵤᵀ · ⌜dialogue-tree⌝ t ⟧₀ ＝ maximumᵤ mᵘ
+  rts = {!!}
+
   foo : ⟦ modulusᵤᵀ t ⟧₀ ＝ mᵘ₀
-  foo = ap succ {!!}
+  foo = ap succ rts
 
   α′ : Cantor₀
   α′ = ⟦ α ⟧₀ , boolean-valuedᵀ-lemma α ψ₁
@@ -245,8 +264,8 @@ internal-uni-mod-correct t α β ψ₁ ψ₂ ϑ = †
   β′ : Cantor₀
   β′ = ⟦ β ⟧₀ , boolean-valuedᵀ-lemma β ψ₂
 
-  θ : ⟦ α ⟧₀ ＝⟦ mᵘ ⟧ ⟦ β ⟧₀
-  θ = {!!}
+  -- θ : ⟦ α ⟧₀ ＝⟦ mᵘ ⟧ ⟦ β ⟧₀
+  -- θ = {!!}
 
   γ : to-cantor α′ ＝⟦ mᵘ ⟧ to-cantor β′
   γ = {!!}
@@ -254,8 +273,14 @@ internal-uni-mod-correct t α β ψ₁ ψ₂ ϑ = †
   ‡ : f₀ (to-cantor α′) ＝ f₀ (to-cantor β′)
   ‡ = pr₂ c (to-cantor α′) (to-cantor β′) γ
 
+  Ⅰ = kinda-important-lemma f ⟦ α ⟧₀ (boolean-valuedᵀ-lemma α ψ₁)
+  Ⅱ = kinda-important-lemma f ⟦ β ⟧₀ (boolean-valuedᵀ-lemma β ψ₂) ⁻¹
+
   † : f ⟦ α ⟧₀ ＝ f ⟦ β ⟧₀
-  † = {!f ⟦ α ⟧₀!} ＝⟨ {!!} ⟩ {!!} ∎
+  † = f ⟦ α ⟧₀              ＝⟨ Ⅰ ⟩
+      f₀ (to-cantor α′)     ＝⟨ ‡ ⟩
+      f₀ (to-cantor β′)     ＝⟨ Ⅱ ⟩
+      f ⟦ β ⟧₀              ∎
 
 -- One can prove a theorem saying max-question-in-boolean-paths is the same
 -- thing as max-question followed by a pruning.
