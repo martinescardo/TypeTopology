@@ -7,6 +7,8 @@ Started on 2023-10-07.
 \begin{code}
 
 open import UF.FunExt
+open import UF.Equiv
+open import UF.Retracts
 
 module EffectfulForcing.Internal.InternalModUniCont (fe : Fun-Ext) where
 
@@ -19,9 +21,10 @@ open import EffectfulForcing.Internal.SystemT
 open import EffectfulForcing.MFPSAndVariations.Combinators
 open import EffectfulForcing.MFPSAndVariations.Dialogue
  using (eloquent; D; dialogue; eloquent-functions-are-continuous;
+        eloquent-functions-are-UC; restriction-is-eloquent;
         dialogue-continuity; generic; B; C)
 open import EffectfulForcing.MFPSAndVariations.Continuity
- using (is-continuous; _＝⟪_⟫_; C-restriction)
+ using (is-continuous; _＝⟪_⟫_; C-restriction; Cantor; Baire; is-uniformly-continuous; _＝⟦_⟧_; BT)
 open import EffectfulForcing.MFPSAndVariations.ContinuityProperties fe
 open import EffectfulForcing.Internal.Correctness
  using (Rnorm-generic; is-dialogue-for; extβ; Rnorm-lemma₀; Rnorm)
@@ -61,9 +64,48 @@ which we define now.
 
 \begin{code}
 
+to-numeral : ℕ → 〈〉 ⊢ ι
+to-numeral = numeral {〈〉}
+
+to-nat : 〈〉 ⊢ ι → ℕ
+to-nat t = ⟦ t ⟧₀
+
+to-nat-cancels-to-numeral : (n : ℕ) → ⟦ to-numeral n ⟧₀ ＝ n
+to-nat-cancels-to-numeral zero     = refl
+to-nat-cancels-to-numeral (succ n) = ap succ (to-nat-cancels-to-numeral n)
+
+numeral-is-section : is-section to-numeral
+numeral-is-section = to-nat , to-nat-cancels-to-numeral
+
 is-boolean-valuedᵀ : 〈〉 ⊢ baire → 𝓤₀  ̇
 is-boolean-valuedᵀ α =
  (n : 〈〉 ⊢ ι) → (⟦ α ⟧₀ ⟦ n ⟧₀ ＝ zero) + (⟦ α ⟧₀ ⟦ n ⟧₀ ＝ succ zero)
+
+boolean-valuedᵀ-lemma : (t : 〈〉 ⊢ baire)
+                      → is-boolean-valuedᵀ t
+                      → is-boolean-point ⟦ t ⟧₀
+boolean-valuedᵀ-lemma t ψ i = cases † ‡ (ψ (numeral i))
+ where
+  † : ⟦ t ⟧₀ ⟦ numeral i ⟧₀ ＝ zero → is-boolean-valued (⟦ t ⟧₀ i)
+  † p = inl q
+   where
+    Ⅰ = ap ⟦ t ⟧₀ (to-nat-cancels-to-numeral i ⁻¹)
+    Ⅱ = p
+
+    q = ⟦ t ⟧₀ i              ＝⟨ Ⅰ    ⟩
+        ⟦ t ⟧₀ ⟦ numeral i ⟧₀ ＝⟨ Ⅱ    ⟩
+        0                     ∎
+
+  ‡ : ⟦ t ⟧₀ ⟦ numeral i ⟧₀ ＝ 1 → is-boolean-valued (⟦ t ⟧₀ i)
+  ‡ p = inr q
+   where
+    Ⅰ = ap ⟦ t ⟧₀ (to-nat-cancels-to-numeral i ⁻¹)
+    Ⅱ = p
+
+    q : ⟦ t ⟧₀ i ＝ 1
+    q = ⟦ t ⟧₀ i              ＝⟨ Ⅰ ⟩
+        ⟦ t ⟧₀ ⟦ numeral i ⟧₀ ＝⟨ Ⅱ ⟩
+        1                     ∎
 
 \end{code}
 
@@ -163,23 +205,47 @@ internal-uni-mod-correct t α β ψ₁ ψ₂ ϑ = †
   f : (ℕ → ℕ) → ℕ
   f = ⟦ t ⟧₀
 
-  f₀ : (ℕ → 𝟚) → ℕ
+  f₀ : Cantor → ℕ
   f₀ = C-restriction f
 
-  c₀ : is-uniformly-continuous₀ f₀
-  c₀ = {!!}
+  ε : eloquent ⟦ t ⟧₀
+  ε = eloquence-theorem ⟦ t ⟧₀ (t , refl)
 
-  mᵤ : ℕ
-  mᵤ = pr₁ c₀
+  ε₀ : eloquent f₀
+  ε₀ = restriction-is-eloquent f ε
+
+  c : is-uniformly-continuous f₀
+  c = eloquent-functions-are-UC f₀ ε₀
+
+  mᵘ : BT ℕ
+  mᵘ = pr₁ c
+
+  c₀ : is-uniformly-continuous₀ f₀
+  c₀ = uni-continuity-implies-uni-continuity₀ f₀ c
+
+  mᵘ₀ : ℕ
+  mᵘ₀ = pr₁ c₀
+
+  foo : ⟦ modulusᵤᵀ t ⟧₀ ＝ mᵘ₀
+  foo = ap succ {!!}
 
   α′ : Cantor₀
-  α′ = ⟦ α ⟧₀ , {!!}
+  α′ = ⟦ α ⟧₀ , boolean-valuedᵀ-lemma α ψ₁
 
-  β′ : {!!}
-  β′ = {!!}
+  β′ : Cantor₀
+  β′ = ⟦ β ⟧₀ , boolean-valuedᵀ-lemma β ψ₂
+
+  θ : ⟦ α ⟧₀ ＝⟦ mᵘ ⟧ ⟦ β ⟧₀
+  θ = {!!}
+
+  γ : to-cantor α′ ＝⟦ mᵘ ⟧ to-cantor β′
+  γ = {!!}
+
+  ‡ : f₀ (to-cantor α′) ＝ f₀ (to-cantor β′)
+  ‡ = pr₂ c (to-cantor α′) (to-cantor β′) γ
 
   † : f ⟦ α ⟧₀ ＝ f ⟦ β ⟧₀
-  † = {!!} -- pr₂ (c₀ ⟦ α ⟧₀) ⟦ β ⟧₀ {!!}
+  † = {!f ⟦ α ⟧₀!} ＝⟨ {!!} ⟩ {!!} ∎
 
 -- One can prove a theorem saying max-question-in-boolean-paths is the same
 -- thing as max-question followed by a pruning.
