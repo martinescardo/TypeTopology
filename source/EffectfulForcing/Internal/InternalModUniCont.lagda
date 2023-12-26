@@ -22,7 +22,7 @@ open import EffectfulForcing.MFPSAndVariations.Combinators
 open import EffectfulForcing.MFPSAndVariations.Dialogue
  using (eloquent; D; dialogue; eloquent-functions-are-continuous;
         eloquent-functions-are-UC; restriction-is-eloquent;
-        dialogue-continuity; generic; B; C)
+        dialogue-continuity; generic; B; C; prune)
 open import EffectfulForcing.MFPSAndVariations.Continuity
  using (is-continuous; _＝⟪_⟫_; C-restriction; Cantor; Baire; is-uniformly-continuous; _＝⟦_⟧_; BT)
 open import EffectfulForcing.MFPSAndVariations.ContinuityProperties fe
@@ -145,6 +145,16 @@ max-questionᵤ⋆ d = d (λ _ → 0) (λ g x → max x (max (g ₀) (g ₁)))
 max-questionᵤᵀ : {Γ : Cxt} → Γ ⊢ (⌜B⌝ ι ι) ⇒ ι
 max-questionᵤᵀ =
  ƛ (ν₀ · (ƛ Zero) · ƛ (ƛ (maxᵀ · ν₀ · (maxᵀ · (ν₁ · numeral 0) · (ν₁ · numeral 1)))))
+
+\end{code}
+
+\begin{code}
+
+main-lemma : (t : 〈〉 ⊢ (baire ⇒ ι))
+           → (α : ℕ → 𝟚)
+           → ⟦ max-questionᵤᵀ · ⌜dialogue-tree⌝ t ⟧₀
+             ＝ max-questionᵤ (prune (dialogue-tree t))
+main-lemma = {!!}
 
 \end{code}
 
