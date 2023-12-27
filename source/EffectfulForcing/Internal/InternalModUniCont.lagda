@@ -139,8 +139,8 @@ max-questionᵤ (D.β φ n) = max n (max n₁ n₂)
 
 \begin{code}
 
-max-questionᵤ⋆ : D⋆ ℕ 𝟚 ℕ ℕ → ℕ
-max-questionᵤ⋆ d = d (λ _ → 0) (λ g x → max x (max (g ₀) (g ₁)))
+max-questionᵤ⋆ : D⋆ ℕ ℕ ℕ ℕ → ℕ
+max-questionᵤ⋆ d = d (λ _ → 0) (λ g x → max x (max (g 0) (g 1)))
 
 max-questionᵤᵀ : {Γ : Cxt} → Γ ⊢ (⌜B⌝ ι ι) ⇒ ι
 max-questionᵤᵀ =
@@ -148,24 +148,17 @@ max-questionᵤᵀ =
 
 \end{code}
 
-\begin{code}
-
-main-lemma : (t : 〈〉 ⊢ baire ⇒ ι) → ⟦ max-questionᵤᵀ · ⌜dialogue-tree⌝ t ⟧₀
-                                    ＝ max-questionᵤ (prune (dialogue-tree t))
-main-lemma t = {!!}
-
-final-step : (t :  〈〉 ⊢ baire ⇒ ι)
-           → max-questionᵤ (prune (dialogue-tree t)) ＝ maximumᵤ {!!}
-final-step = {!!}
-
-\end{code}
 
 \begin{code}
 
+dialogue-tree-is-boolean : {!!}
+dialogue-tree-is-boolean = {!!}
+
+{-
 max-questionᵤ⋆-agreement : (d : C ℕ)
                          → max-questionᵤ d ＝ max-questionᵤ⋆ (church-encode d)
 max-questionᵤ⋆-agreement (D.η n)   = refl
-max-questionᵤ⋆-agreement (D.β φ n) = †
+max-questionᵤ⋆-agreement (D.β φ n) = ?
  where
   ch-encode = church-encode
 
@@ -185,6 +178,27 @@ max-questionᵤ⋆-agreement (D.β φ n) = †
 
   † : max-questionᵤ (D.β φ n) ＝ max-questionᵤ⋆ (church-encode (D.β φ n))
   † = ap (max n) ‡
+-}
+
+\end{code}
+
+\begin{code}
+
+main-lemma : (t : 〈〉 ⊢ baire ⇒ ι)
+           → ⟦ max-questionᵤᵀ · ⌜dialogue-tree⌝ t ⟧₀
+             ＝ max-questionᵤ (prune (dialogue-tree t))
+main-lemma t =
+  ⟦ max-questionᵤᵀ · ⌜dialogue-tree⌝ t ⟧₀           ＝⟨ refl ⟩
+  ⟦ max-questionᵤᵀ ⟧₀ ⟦ ⌜dialogue-tree⌝ t ⟧₀        ＝⟨ Ⅰ    ⟩
+  max-questionᵤ⋆ (church-encode (dialogue-tree t )) ＝⟨ Ⅱ    ⟩
+  max-questionᵤ (prune (dialogue-tree t))           ∎
+   where
+    Ⅰ = {!!}
+    Ⅱ = {!!}
+
+final-step : (t :  〈〉 ⊢ baire ⇒ ι)
+           → max-questionᵤ (prune (dialogue-tree t)) ＝ maximumᵤ {!!}
+final-step = {!!}
 
 \end{code}
 
@@ -281,7 +295,7 @@ internal-uni-mod-correct t αᵀ βᵀ ψ₁ ψ₂ ϑ = †
 
   rts : ⟦ max-questionᵤᵀ · ⌜dialogue-tree⌝ t ⟧₀ ＝ maximumᵤ bt
   rts = ⟦ max-questionᵤᵀ · ⌜dialogue-tree⌝ t ⟧₀   ＝⟨ main-lemma t ⟩
-        max-questionᵤ (prune (dialogue-tree t))   ＝⟨ {!!} ⟩
+        max-questionᵤ (prune (dialogue-tree t))   ＝⟨ final-step t ⟩
         maximumᵤ bt                               ∎
 
   q : ⟦ modulusᵤᵀ t ⟧₀ ＝ succ (maximumᵤ bt)
