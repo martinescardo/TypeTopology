@@ -154,6 +154,10 @@ main-lemma : (t : 〈〉 ⊢ baire ⇒ ι) → ⟦ max-questionᵤᵀ · ⌜dial
                                     ＝ max-questionᵤ (prune (dialogue-tree t))
 main-lemma t = {!!}
 
+final-step : (t :  〈〉 ⊢ baire ⇒ ι)
+           → max-questionᵤ (prune (dialogue-tree t)) ＝ maximumᵤ {!!}
+final-step = {!!}
+
 \end{code}
 
 \begin{code}
@@ -203,19 +207,29 @@ modulusᵤᵀ t = Succ' · (max-questionᵤᵀ · ⌜dialogue-tree⌝ t)
 
 \begin{code}
 
-another-lemma : (f : Baire → ℕ)
-              → (α : Baire) (bv : is-boolean-point α)
-              → (β : ℕ → 𝟚)
-              → to-cantor (α , bv) ＝ β
-              → f α ＝ C-restriction f β
-another-lemma f α bv β p =
- f α ＝⟨ {!!} ⟩ {!!} ＝⟨ {!!} ⟩ {!!} ∎
+-- another-lemma : (f : Baire → ℕ)
+--               → (α : Baire) (bv : is-boolean-point α)
+--               → (β : ℕ → 𝟚)
+--               → to-cantor (α , bv) ＝ β
+--               → f α ＝ C-restriction f β
+-- another-lemma f α bv β p =
+--  f α ＝⟨ {!!} ⟩ {!!} ＝⟨ {!!} ⟩ {!!} ∎
 
-kinda-important-lemma : (f : Baire → ℕ) (α : Baire) (bv : is-boolean-point α)
-                      → f α ＝ C-restriction f (to-cantor (α , bv))
-kinda-important-lemma f α bv =
- f α                                  ＝⟨ {!!} ⟩
- C-restriction f (to-cantor (α , bv)) ∎
+agreement-with-restriction : (f : Baire → ℕ) (α : Baire) (bv : is-boolean-point α)
+                           → f α ＝ C-restriction f (to-cantor (α , bv))
+agreement-with-restriction f α bv =
+  f α                                   ＝⟨ refl ⟩
+  f′ (α , bv)                           ＝⟨ † ⟩
+  f′ (to-cantor₀ (to-cantor (α , bv)))  ＝⟨ refl ⟩
+  f₀ (to-cantor (α , bv))               ∎
+   where
+    f₀ : Cantor → ℕ
+    f₀ = C-restriction f
+
+    f′ : Cantor₀ → ℕ
+    f′ = f ∘ pr₁
+
+    † = ap f′ (to-cantor₀-cancels-to-cantor (α , bv) ⁻¹)
 
 \end{code}
 
@@ -226,16 +240,23 @@ internal-uni-mod-correct : (t : 〈〉 ⊢ (baire ⇒ ι)) (α β : 〈〉 ⊢ b
                          → is-boolean-valuedᵀ β
                          → ⟦ α ⟧₀ ＝⦅ ⟦ modulusᵤᵀ t ⟧₀ ⦆ ⟦ β ⟧₀
                          → ⟦ t · α ⟧₀ ＝ ⟦ t · β ⟧₀
-internal-uni-mod-correct t α β ψ₁ ψ₂ ϑ = †
+internal-uni-mod-correct t αᵀ βᵀ ψ₁ ψ₂ ϑ = †
  where
   f : Baire → ℕ
   f = ⟦ t ⟧₀
 
+  α : Baire
+  α = ⟦ αᵀ ⟧₀
+
+  β : Baire
+  β = ⟦ βᵀ ⟧₀
+
+
   α′ : Cantor₀
-  α′ = ⟦ α ⟧₀ , boolean-valuedᵀ-lemma α ψ₁
+  α′ = α , boolean-valuedᵀ-lemma αᵀ ψ₁
 
   β′ : Cantor₀
-  β′ = ⟦ β ⟧₀ , boolean-valuedᵀ-lemma β ψ₂
+  β′ = β , boolean-valuedᵀ-lemma βᵀ ψ₂
 
   f₀ : Cantor → ℕ
   f₀ = C-restriction f
@@ -249,54 +270,65 @@ internal-uni-mod-correct t α β ψ₁ ψ₂ ϑ = †
   c : is-uniformly-continuous f₀
   c = eloquent-functions-are-UC f₀ ε₀
 
-  mᵘ : BT ℕ
-  mᵘ = pr₁ c
+  bt : BT ℕ
+  bt = pr₁ c
 
   c₀ : is-uniformly-continuous₀ f₀
   c₀ = uni-continuity-implies-uni-continuity₀ f₀ c
 
   mᵘ₀ : ℕ
-  mᵘ₀ = pr₁ c₀
+  mᵘ₀ = succ (maximumᵤ bt)
 
-  rts : ⟦ max-questionᵤᵀ · ⌜dialogue-tree⌝ t ⟧₀ ＝ maximumᵤ mᵘ
-  rts = {!!}
+  rts : ⟦ max-questionᵤᵀ · ⌜dialogue-tree⌝ t ⟧₀ ＝ maximumᵤ bt
+  rts = ⟦ max-questionᵤᵀ · ⌜dialogue-tree⌝ t ⟧₀   ＝⟨ main-lemma t ⟩
+        max-questionᵤ (prune (dialogue-tree t))   ＝⟨ {!!} ⟩
+        maximumᵤ bt                               ∎
 
-  q : ⟦ modulusᵤᵀ t ⟧₀ ＝ mᵘ₀
+  q : ⟦ modulusᵤᵀ t ⟧₀ ＝ succ (maximumᵤ bt)
   q = ap succ rts
 
-  q′ : {!⟦ modulusᵤᵀ t ⟧₀ ＝ mᵘ₀!}
-  q′ = {!!}
+  ϑⁿ : α ＝⦅ ⟦ modulusᵤᵀ t ⟧₀ ⦆ β
+  ϑⁿ = ϑ
 
+  θ₂ : α ＝⦅ succ (maximumᵤ bt) ⦆ β
+  θ₂ = transport (λ - → α ＝⦅ - ⦆ β) q ϑ
 
-  -- θ : ⟦ α ⟧₀ ＝⟦ mᵘ ⟧ ⟦ β ⟧₀
-  -- θ = {!!}
+  θ₁ : α ＝⦅ succ (maximum (sequentialize bt)) ⦆ β
+  θ₁ = transport
+        (λ - → α ＝⦅ - ⦆ β)
+        (ap succ (maximumᵤ′-equivalent-to-maximumᵤ bt))
+        θ₂
 
-  θ : to-cantor α′ ＝⦅ ⟦ modulusᵤᵀ t ⟧₀ ⦆ to-cantor β′
-  θ = transport
-       (λ - → - ＝⦅ ⟦ modulusᵤᵀ t ⟧₀ ⦆ to-cantor β′)
-       (to-cantor-cancels-to-cantor₀ (to-cantor α′))
-       {!!}
+  η : α ＝⟪ sequentialize bt ⟫ β
+  η = ＝⦅⦆-implies-＝⟪⟫-for-suitable-modulus α β (sequentialize bt) θ₁
 
-  γ′ : to-cantor α′ ＝⦅ mᵘ₀ ⦆ to-cantor β′
-  γ′ = transport (λ - → to-cantor α′ ＝⦅ - ⦆ to-cantor β′) q θ
+  δ′ : α ＝⟪ sequentialize bt ⟫₀ β
+  δ′ = ＝⟪⟫-implies-＝⟪⟫₀ α β (sequentialize bt) η
 
-  quux : mᵘ₀ ＝ succ (maximumᵤ mᵘ)
-  quux = refl
+  δ : α ＝⟦ bt ⟧ β
+  δ = ＝⟪⟫₀-implies-＝⟦⟧ α β bt δ′
 
-  γ : to-cantor α′ ＝⟦ mᵘ ⟧ to-cantor β′
-  γ = {!!}
+  γ : to-cantor α′ ＝⟦ bt ⟧ to-cantor β′
+  γ = to-cantor-＝⟦⟧
+       α
+       β
+       (boolean-valuedᵀ-lemma αᵀ ψ₁)
+       (boolean-valuedᵀ-lemma βᵀ ψ₂)
+       bt
+       δ
+
 
   ‡ : f₀ (to-cantor α′) ＝ f₀ (to-cantor β′)
   ‡ = pr₂ c (to-cantor α′) (to-cantor β′) γ
 
-  Ⅰ = kinda-important-lemma f ⟦ α ⟧₀ (boolean-valuedᵀ-lemma α ψ₁)
-  Ⅱ = kinda-important-lemma f ⟦ β ⟧₀ (boolean-valuedᵀ-lemma β ψ₂) ⁻¹
+  Ⅰ = agreement-with-restriction f α (boolean-valuedᵀ-lemma αᵀ ψ₁)
+  Ⅱ = agreement-with-restriction f β (boolean-valuedᵀ-lemma βᵀ ψ₂) ⁻¹
 
-  † : f ⟦ α ⟧₀ ＝ f ⟦ β ⟧₀
-  † = f ⟦ α ⟧₀              ＝⟨ Ⅰ ⟩
-      f₀ (to-cantor α′)     ＝⟨ ‡ ⟩
-      f₀ (to-cantor β′)     ＝⟨ Ⅱ ⟩
-      f ⟦ β ⟧₀              ∎
+  † : f α ＝ f β
+  † = f α               ＝⟨ Ⅰ ⟩
+      f₀ (to-cantor α′) ＝⟨ ‡ ⟩
+      f₀ (to-cantor β′) ＝⟨ Ⅱ ⟩
+      f β               ∎
 
 -- One can prove a theorem saying max-question-in-boolean-paths is the same
 -- thing as max-question followed by a pruning.

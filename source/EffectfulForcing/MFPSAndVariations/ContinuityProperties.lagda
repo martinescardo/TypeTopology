@@ -50,7 +50,7 @@ _＝⦅_⦆_ : {X : 𝓤₀  ̇} → (ℕ → X) → ℕ → (ℕ → X) → �
 
 \begin{code}
 
-agreement→ : (α α′ : Baire) (n : ℕ)
+agreement→ : {X : 𝓤₀  ̇} (α α′ : ℕ → X) (n : ℕ)
            → α ＝⦅ n ⦆ α′
            → (i : ℕ) → (i <ℕ n) → α i ＝ α′ i
 agreement→ α α′ zero     p         zero     ()
@@ -150,7 +150,8 @@ version and vice versa.
 ＝⟪⟫₀-implies-＝⟪⟫ α α′ (i ∷ is) t =
  (t i in-head) ∷ (＝⟪⟫₀-implies-＝⟪⟫ α α′ is (＝⟪⟫₀-cons α α′ i is t))
 
-＝⟪⟫-implies-＝⟪⟫₀ : (α β : Baire) (s : List ℕ) → α ＝⟪ s ⟫ β → α ＝⟪ s ⟫₀ β
+＝⟪⟫-implies-＝⟪⟫₀ : {X : 𝓤₀  ̇} (α β : ℕ → X) (s : List ℕ)
+                   → α ＝⟪ s ⟫ β → α ＝⟪ s ⟫₀ β
 ＝⟪⟫-implies-＝⟪⟫₀ α α′ []       []       i ()
 ＝⟪⟫-implies-＝⟪⟫₀ α α′ (i ∷ is) (p ∷ ps) i in-head     = p
 ＝⟪⟫-implies-＝⟪⟫₀ α α′ (_ ∷ is) (p ∷ ps) j (in-tail q) =
@@ -185,9 +186,9 @@ member-implies-below-max (n ∷ ns) m (in-tail p) =
  ≤-trans m _ _ (member-implies-below-max ns m p) (max-≤-upper-bound' (maximum ns) n)
 
 
-＝⦅⦆-implies-＝⟪⟫-for-suitable-modulus : (α α′ : Baire) (s : List ℕ)
-       → α ＝⦅ succ (maximum s) ⦆ α′
-       → α ＝⟪ s ⟫ α′
+＝⦅⦆-implies-＝⟪⟫-for-suitable-modulus : {X : 𝓤₀  ̇} (α α′ : ℕ → X) (s : List ℕ)
+                                       → α ＝⦅ succ (maximum s) ⦆ α′
+                                       → α ＝⟪ s ⟫ α′
 ＝⦅⦆-implies-＝⟪⟫-for-suitable-modulus α α′ s t = ＝⟪⟫₀-implies-＝⟪⟫ α α′ s †
  where
   m : ℕ
@@ -646,7 +647,7 @@ is-uniformly-continuous₀ f =
 
 \begin{code}
 
-＝⟪⟫₀-implies-＝⟦⟧ : (α₁ α₂ : Baire) (t : BT ℕ)
+＝⟪⟫₀-implies-＝⟦⟧ : {X : 𝓤₀  ̇} (α₁ α₂ : ℕ → X) (t : BT ℕ)
                    → α₁ ＝⟪ sequentialize t ⟫₀ α₂ → α₁ ＝⟦ t ⟧ α₂
 ＝⟪⟫₀-implies-＝⟦⟧ α₁ α₂ []      p = []
 ＝⟪⟫₀-implies-＝⟦⟧ α₁ α₂ (x ∷ φ) p = p x in-head ∷ †
