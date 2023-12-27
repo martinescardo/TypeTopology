@@ -19,10 +19,12 @@ open import MLTT.Spartan
 open import MLTT.Athenian
 open import MLTT.Two-Properties
 open import Naturals.Order
-open import Naturals.Properties using (zero-not-positive)
+open import Naturals.Properties using (zero-not-positive; succ-no-fp)
 open import UF.Retracts
 open import UF.Embeddings
+open import UF.Equiv
 open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
 open import MGS.hlevels using (ℕ-is-set)
 
 \end{code}
@@ -307,8 +309,8 @@ embedding-𝟚-ℕ-gives-boolean ₀ = inl refl
 embedding-𝟚-ℕ-gives-boolean ₁ = inr refl
 
 to-bool : (n : ℕ) → is-boolean-valued n → 𝟚
-to-bool 0 (inl refl) = ₀
-to-bool 1 (inr refl) = ₁
+to-bool _ (inl p) = ₀
+to-bool _ (inr q) = ₁
 
 \end{code}
 
@@ -319,6 +321,26 @@ a subset of {`₀`, `₁`}.
 
 is-boolean-point : Baire → 𝓤₀  ̇
 is-boolean-point α = (n : ℕ) → is-boolean-valued (α n)
+
+θ-lemma : (α : Baire) (i : ℕ) → is-prop (is-boolean-valued (α i))
+θ-lemma α i    (inl p) (inl q) = ap inl (ℕ-is-set (α i) 0 p q)
+θ-lemma α i    (inl p) (inr q) = 𝟘-elim (succ-no-fp 0 ※)
+                                  where
+                                   ※ : 0 ＝ 1
+                                   ※ = 0 ＝⟨ p ⁻¹ ⟩ α i ＝⟨ q ⟩ 1 ∎
+θ-lemma α i (inr p) (inl q)    = 𝟘-elim (succ-no-fp 0 ※)
+                                  where
+                                   ※ : 0 ＝ 1
+                                   ※ = 0 ＝⟨ q ⁻¹ ⟩ α i ＝⟨ p ⟩ 1 ∎
+θ-lemma α i (inr p) (inr q) = ap inr (ℕ-is-set (α i) 1 p q)
+
+being-boolean-point-is-prop : (α : Baire) → is-prop (is-boolean-point α)
+being-boolean-point-is-prop α = Π-is-prop fe (θ-lemma α)
+
+boolean-point-lemma : (α : Baire) (bv : is-boolean-point α) (i : ℕ)
+                    → (p : α i ＝ 0)
+                    → bv i ＝ inl p
+boolean-point-lemma α bv i p = θ-lemma α i (bv i) (inl p)
 
 \end{code}
 
@@ -456,6 +478,59 @@ point-of-lemma α = λ _ → refl
   γ ₀ = ＝⟦⟧-cantor₀-equivalence α β (φ ₀) (ψ ₀)
   γ ₁ = ＝⟦⟧-cantor₀-equivalence α β (φ ₁) (ψ ₁)
 
+to-bool-lemma₁ : (α : Baire) (bv : is-boolean-point α) (i : ℕ)
+              → α i ＝ 0 → to-bool (α i) (bv i) ＝ ₀
+to-bool-lemma₁ α bv i p = ap (to-bool (α i)) †
+  where
+   † : bv i ＝ inl p
+   † = θ-lemma α i (bv i) (inl p)
+
+to-bool-lemma₂ : (α : Baire) (bv : is-boolean-point α) (i : ℕ)
+               → α i ＝ 1 → to-bool (α i) (bv i) ＝ ₁
+to-bool-lemma₂ α bv i p = ap (to-bool (α i)) †
+  where
+   † : bv i ＝ inr p
+   † = θ-lemma α i (bv i) (inr p)
+
+to-cantor₀-cancels-to-cantor : to-cantor₀ ∘ to-cantor ∼ id
+to-cantor₀-cancels-to-cantor (α , bv) = to-subtype-＝ being-boolean-point-is-prop †
+  where
+   ‡₁ : (i : ℕ) → α i ＝ 0 → embedding-C-B (to-cantor (α , bv)) i ＝ α i
+   ‡₁ i p = embedding-𝟚-ℕ (to-bool (α i) (bv i)) ＝⟨ Ⅰ ⟩
+            0                                    ＝⟨ p ⁻¹ ⟩
+            α i                                  ∎
+             where
+              Ⅰ = ap embedding-𝟚-ℕ (to-bool-lemma₁ α bv i p)
+
+   ‡₂ : (i : ℕ) → α i ＝ 1 → embedding-C-B (to-cantor (α , bv)) i ＝ α i
+   ‡₂ i p = embedding-C-B (to-cantor (α , bv)) i ＝⟨ refl ⟩
+            embedding-𝟚-ℕ (to-bool (α i) (bv i)) ＝⟨ Ⅰ ⟩
+            embedding-𝟚-ℕ ₁                      ＝⟨ refl ⟩
+            1                                    ＝⟨ p ⁻¹ ⟩
+            α i                                  ∎
+             where
+              Ⅰ = ap embedding-𝟚-ℕ (to-bool-lemma₂ α bv i p)
+
+   ‡ : embedding-C-B (to-cantor (α , bv)) ∼ α
+   ‡ i = embedding-C-B (to-cantor (α , bv)) i ＝⟨ refl ⟩
+         embedding-𝟚-ℕ (to-bool (α i) (bv i)) ＝⟨ Ⅰ    ⟩
+         α i                                  ∎
+          where
+           Ⅰ : embedding-𝟚-ℕ (to-bool (α i) (bv i)) ＝ α i
+           Ⅰ = cases (‡₁ i) (‡₂ i) (bv i)
+
+
+   † : embedding-C-B (to-cantor (α , bv)) ＝ α
+   † = dfunext fe ‡
+
+cantor-equiv-cantor₀ : Cantor ≃ Cantor₀
+cantor-equiv-cantor₀ = to-cantor₀ , ((to-cantor , φ) , to-cantor , ψ)
+ where
+  φ : to-cantor₀ ∘ to-cantor ∼ id
+  φ = to-cantor₀-cancels-to-cantor
+
+  ψ : to-cantor ∘ to-cantor₀ ∼ id
+  ψ = to-cantor-cancels-to-cantor₀
 
 \end{code}
 
