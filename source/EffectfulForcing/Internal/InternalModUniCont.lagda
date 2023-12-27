@@ -228,8 +228,14 @@ internal-uni-mod-correct : (t : 〈〉 ⊢ (baire ⇒ ι)) (α β : 〈〉 ⊢ b
                          → ⟦ t · α ⟧₀ ＝ ⟦ t · β ⟧₀
 internal-uni-mod-correct t α β ψ₁ ψ₂ ϑ = †
  where
-  f : (ℕ → ℕ) → ℕ
+  f : Baire → ℕ
   f = ⟦ t ⟧₀
+
+  α′ : Cantor₀
+  α′ = ⟦ α ⟧₀ , boolean-valuedᵀ-lemma α ψ₁
+
+  β′ : Cantor₀
+  β′ = ⟦ β ⟧₀ , boolean-valuedᵀ-lemma β ψ₂
 
   f₀ : Cantor → ℕ
   f₀ = C-restriction f
@@ -255,17 +261,27 @@ internal-uni-mod-correct t α β ψ₁ ψ₂ ϑ = †
   rts : ⟦ max-questionᵤᵀ · ⌜dialogue-tree⌝ t ⟧₀ ＝ maximumᵤ mᵘ
   rts = {!!}
 
-  foo : ⟦ modulusᵤᵀ t ⟧₀ ＝ mᵘ₀
-  foo = ap succ rts
+  q : ⟦ modulusᵤᵀ t ⟧₀ ＝ mᵘ₀
+  q = ap succ rts
 
-  α′ : Cantor₀
-  α′ = ⟦ α ⟧₀ , boolean-valuedᵀ-lemma α ψ₁
+  q′ : {!⟦ modulusᵤᵀ t ⟧₀ ＝ mᵘ₀!}
+  q′ = {!!}
 
-  β′ : Cantor₀
-  β′ = ⟦ β ⟧₀ , boolean-valuedᵀ-lemma β ψ₂
 
   -- θ : ⟦ α ⟧₀ ＝⟦ mᵘ ⟧ ⟦ β ⟧₀
   -- θ = {!!}
+
+  θ : to-cantor α′ ＝⦅ ⟦ modulusᵤᵀ t ⟧₀ ⦆ to-cantor β′
+  θ = transport
+       (λ - → - ＝⦅ ⟦ modulusᵤᵀ t ⟧₀ ⦆ to-cantor β′)
+       (to-cantor-cancels-to-cantor₀ (to-cantor α′))
+       {!!}
+
+  γ′ : to-cantor α′ ＝⦅ mᵘ₀ ⦆ to-cantor β′
+  γ′ = transport (λ - → to-cantor α′ ＝⦅ - ⦆ to-cantor β′) q θ
+
+  quux : mᵘ₀ ＝ succ (maximumᵤ mᵘ)
+  quux = refl
 
   γ : to-cantor α′ ＝⟦ mᵘ ⟧ to-cantor β′
   γ = {!!}
