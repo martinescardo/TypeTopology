@@ -24,7 +24,7 @@ open import EffectfulForcing.MFPSAndVariations.Dialogue
         eloquent-functions-are-UC; restriction-is-eloquent;
         dialogue-continuity; generic; B; C; prune)
 open import EffectfulForcing.MFPSAndVariations.Continuity
- using (is-continuous; _＝⟪_⟫_; C-restriction; Cantor; Baire; is-uniformly-continuous; _＝⟦_⟧_; BT)
+ using (is-continuous; _＝⟪_⟫_; C-restriction; Cantor; Baire; is-uniformly-continuous; _＝⟦_⟧_; BT; embedding-𝟚-ℕ)
 open import EffectfulForcing.MFPSAndVariations.ContinuityProperties fe
 open import EffectfulForcing.Internal.Correctness
  using (Rnorm-generic; is-dialogue-for; extβ; Rnorm-lemma₀; Rnorm)
@@ -151,34 +151,35 @@ max-questionᵤᵀ =
 
 \begin{code}
 
-dialogue-tree-is-boolean : {!!}
-dialogue-tree-is-boolean = {!!}
-
-{-
-max-questionᵤ⋆-agreement : (d : C ℕ)
-                         → max-questionᵤ d ＝ max-questionᵤ⋆ (church-encode d)
+max-questionᵤ⋆-agreement : (d : B ℕ)
+                         → max-questionᵤ (prune d)
+                           ＝ max-questionᵤ⋆ (church-encode d)
 max-questionᵤ⋆-agreement (D.η n)   = refl
-max-questionᵤ⋆-agreement (D.β φ n) = ?
+max-questionᵤ⋆-agreement (D.β φ n) = †
  where
-  ch-encode = church-encode
+  encode = church-encode
 
-  IH₀ : max-questionᵤ (φ ₀) ＝ max-questionᵤ⋆ (church-encode (φ ₀))
-  IH₀ = max-questionᵤ⋆-agreement (φ ₀)
+  IH₀ : max-questionᵤ (prune (φ 0)) ＝ max-questionᵤ⋆ (encode (φ 0))
+  IH₀ = max-questionᵤ⋆-agreement (φ 0)
 
-  IH₁ : max-questionᵤ (φ ₁) ＝ max-questionᵤ⋆ (church-encode (φ ₁))
-  IH₁ = max-questionᵤ⋆-agreement (φ ₁)
+  IH₁ : max-questionᵤ (prune (φ 1)) ＝ max-questionᵤ⋆ (encode (φ 1))
+  IH₁ = max-questionᵤ⋆-agreement (φ 1)
 
-  Ⅰ = ap (λ - → max - (max-questionᵤ (φ ₁))) IH₀
-  Ⅱ = ap (λ - → max (max-questionᵤ⋆ (church-encode (φ ₀))) -) IH₁
-
-  ‡ =
-   max (max-questionᵤ (φ ₀)) (max-questionᵤ (φ ₁))                           ＝⟨ Ⅰ ⟩
-   max (max-questionᵤ⋆ (ch-encode (φ ₀))) (max-questionᵤ (φ ₁))              ＝⟨ Ⅱ ⟩
-   max (max-questionᵤ⋆ (ch-encode (φ ₀))) (max-questionᵤ⋆ (ch-encode (φ ₁))) ∎
-
-  † : max-questionᵤ (D.β φ n) ＝ max-questionᵤ⋆ (church-encode (D.β φ n))
-  † = ap (max n) ‡
--}
+  † : max-questionᵤ (prune (D.β φ n)) ＝ max-questionᵤ⋆ (encode (D.β φ n))
+  † =
+   max-questionᵤ (D.β ((λ j → prune (φ (embedding-𝟚-ℕ j)))) n)
+    ＝⟨ refl ⟩
+   max n (max (max-questionᵤ (prune (φ 0))) (max-questionᵤ (prune (φ 1))))
+    ＝⟨ Ⅰ ⟩
+   max n (max (max-questionᵤ⋆ (encode (φ 0))) (max-questionᵤ (prune (φ 1))))
+    ＝⟨ Ⅱ ⟩
+   max n (max (max-questionᵤ⋆ (encode (φ 0))) (max-questionᵤ⋆ (encode (φ 1))))
+    ＝⟨ refl ⟩
+   max-questionᵤ⋆ (encode (D.β φ n))
+    ∎
+    where
+     Ⅰ = ap (λ - → max n (max - (max-questionᵤ (prune (φ 1)))))          IH₀
+     Ⅱ = ap (λ - → max n (max (max-questionᵤ⋆ (church-encode (φ 0))) -)) IH₁
 
 \end{code}
 
@@ -194,7 +195,7 @@ main-lemma t =
   max-questionᵤ (prune (dialogue-tree t))           ∎
    where
     Ⅰ = {!!}
-    Ⅱ = {!!}
+    Ⅱ = max-questionᵤ⋆-agreement (dialogue-tree t) ⁻¹
 
 final-step : (t :  〈〉 ⊢ baire ⇒ ι)
            → max-questionᵤ (prune (dialogue-tree t)) ＝ maximumᵤ {!!}
