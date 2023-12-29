@@ -7,33 +7,28 @@ Started on 2023-10-07.
 \begin{code}
 
 open import UF.FunExt
-open import UF.Equiv
+open import UF.Equiv hiding (⌜_⌝)
 open import UF.Retracts
 
 module EffectfulForcing.Internal.InternalModUniCont (fe : Fun-Ext) where
 
-open import MLTT.Spartan hiding (rec; _^_)
-open import MLTT.List
-open import Naturals.Order using (max)
-open import EffectfulForcing.Internal.Internal
-open import EffectfulForcing.MFPSAndVariations.Church
-open import EffectfulForcing.Internal.SystemT
-open import EffectfulForcing.MFPSAndVariations.Combinators
-open import EffectfulForcing.MFPSAndVariations.Dialogue
- using (eloquent; D; dialogue; eloquent-functions-are-continuous;
-        eloquent-functions-are-UC; restriction-is-eloquent;
-        dialogue-continuity; generic; B; C; prune)
-open import EffectfulForcing.MFPSAndVariations.Continuity
- using (is-continuous; _＝⟪_⟫_; C-restriction; Cantor; Baire; is-uniformly-continuous; _＝⟦_⟧_; BT; embedding-𝟚-ℕ)
-open import EffectfulForcing.MFPSAndVariations.ContinuityProperties fe
 open import EffectfulForcing.Internal.Correctness
- using (Rnorm-generic; is-dialogue-for; extβ; Rnorm-lemma₀; Rnorm)
+ using (Rnorm; Rnorm-generic; Rnorm-lemma₀; extβ; is-dialogue-for)
 open import EffectfulForcing.Internal.External
- using (eloquence-theorem; dialogue-tree; ⟪⟫; B⟦_⟧; B⟦_⟧₀)
+ using (B⟦_⟧; B⟦_⟧₀; dialogue-tree; eloquence-theorem; ⟪⟫)
+open import EffectfulForcing.Internal.Internal
+open import EffectfulForcing.Internal.InternalModCont fe using (maxᵀ; maxᵀ-correct)
 open import EffectfulForcing.Internal.Subst
-open import EffectfulForcing.MFPSAndVariations.SystemT
- using (type; ι; _⇒_;〖_〗)
-open import EffectfulForcing.Internal.InternalModCont fe using (maxᵀ)
+open import EffectfulForcing.Internal.SystemT
+open import EffectfulForcing.MFPSAndVariations.Church
+open import EffectfulForcing.MFPSAndVariations.Combinators
+open import EffectfulForcing.MFPSAndVariations.Continuity using (is-continuous; _＝⟪_⟫_; C-restriction; Cantor; Baire; is-uniformly-continuous; _＝⟦_⟧_; BT; embedding-𝟚-ℕ)
+open import EffectfulForcing.MFPSAndVariations.ContinuityProperties fe
+open import EffectfulForcing.MFPSAndVariations.Dialogue using (eloquent; D; dialogue; eloquent-functions-are-continuous; eloquent-functions-are-UC; restriction-is-eloquent; dialogue-UC; dialogue-continuity; generic; B; C; prune)
+open import EffectfulForcing.MFPSAndVariations.SystemT using (type; ι; _⇒_;〖_〗)
+open import MLTT.List
+open import MLTT.Spartan hiding (rec; _^_)
+open import Naturals.Order using (max)
 
 \end{code}
 
@@ -181,6 +176,14 @@ max-questionᵤ⋆-agreement (D.β φ n) = †
      Ⅰ = ap (λ - → max n (max - (max-questionᵤ (prune (φ 1)))))          IH₀
      Ⅱ = ap (λ - → max n (max (max-questionᵤ⋆ (church-encode (φ 0))) -)) IH₁
 
+max-questionᵀ-agreement : (d : 〈〉 ⊢ ⌜D⋆⌝ ι ι ι ι)
+                        → ⟦ max-questionᵤᵀ · d ⟧₀ ＝ max-questionᵤ⋆ ⟦ d ⟧₀
+max-questionᵀ-agreement d =
+ ⟦ max-questionᵤᵀ · d ⟧₀                               ＝⟨ refl ⟩
+ ⟦ d ⟧₀ (λ _ → 0) (λ g x → ⟦ maxᵀ ⟧ {!!} x (max {!g 0!} {!!}))   ＝⟨ {!!} ⟩
+ ⟦ d ⟧₀ (λ _ → 0) (λ g x → max x (max (g 0) (g 1)))    ＝⟨ refl ⟩
+ max-questionᵤ⋆ ⟦ d ⟧₀                                 ∎
+
 \end{code}
 
 \begin{code}
@@ -191,15 +194,49 @@ main-lemma : (t : 〈〉 ⊢ baire ⇒ ι)
 main-lemma t =
   ⟦ max-questionᵤᵀ · ⌜dialogue-tree⌝ t ⟧₀           ＝⟨ refl ⟩
   ⟦ max-questionᵤᵀ ⟧₀ ⟦ ⌜dialogue-tree⌝ t ⟧₀        ＝⟨ Ⅰ    ⟩
-  max-questionᵤ⋆ (church-encode (dialogue-tree t )) ＝⟨ Ⅱ    ⟩
+  max-questionᵤ⋆ ⟦ ⌜dialogue-tree⌝ t ⟧₀             ＝⟨ Ⅱ    ⟩
+  max-questionᵤ⋆ (church-encode (dialogue-tree t )) ＝⟨ Ⅲ    ⟩
   max-questionᵤ (prune (dialogue-tree t))           ∎
    where
-    Ⅰ = {!!}
-    Ⅱ = max-questionᵤ⋆-agreement (dialogue-tree t) ⁻¹
+    † : Rnorm (B⟦ t ⟧₀ generic) (⌜ t ⌝ · ⌜generic⌝)
+    † = Rnorm-lemma₀ t generic ⌜generic⌝ Rnorm-generic
 
-final-step : (t :  〈〉 ⊢ baire ⇒ ι)
-           → max-questionᵤ (prune (dialogue-tree t)) ＝ maximumᵤ {!!}
-final-step = {!!}
+    ext : extβ (λ g x → max x (max (g 0) (g 1)))
+    ext f g m n p φ =
+     max m (max (f 0) (f 1))   ＝⟨ १ ⟩
+     max m (max (g 0) (f 1))   ＝⟨ २ ⟩
+     max m (max (g 0) (g 1))   ＝⟨ ३ ⟩
+     max n (max (g 0) (g 1))   ∎
+      where
+       १ = ap (λ - → max m (max - (f 1))) (φ 0)
+       २ = ap (λ - → max m (max (g 0) -)) (φ 1)
+       ३ = ap (λ - → max - (max (g 0) (g 1))) p
+
+    Ⅰ = max-questionᵀ-agreement (⌜dialogue-tree⌝ t)
+    Ⅱ = † ι (λ _ → 0) (λ g x → max x (max (g 0) (g 1))) (λ _ → refl) ext
+    Ⅲ = max-questionᵤ⋆-agreement (dialogue-tree t) ⁻¹
+
+mod-of : B ℕ → BT ℕ
+mod-of d = pr₁ (dialogue-UC (prune d))
+
+final-step : (d : B ℕ) → max-questionᵤ (prune d) ＝ maximumᵤ (mod-of d)
+final-step (D.η n)   = refl
+final-step (D.β φ n) =
+ max-questionᵤ (prune (D.β φ n))                                           ＝⟨ refl ⟩
+ max-questionᵤ (D.β (λ j → prune (φ (embedding-𝟚-ℕ j))) n)                 ＝⟨ refl ⟩
+ max n (max (max-questionᵤ (prune (φ 0))) (max-questionᵤ ((prune (φ 1))))) ＝⟨ Ⅰ    ⟩
+ max n (max (maximumᵤ (mod-of (φ 0))) (max-questionᵤ ((prune (φ 1)))))     ＝⟨ Ⅱ    ⟩
+ max n (max (maximumᵤ (mod-of (φ 0))) (maximumᵤ (mod-of (φ 1))))           ＝⟨ refl ⟩
+ maximumᵤ (mod-of (D.β φ n))                                               ∎
+  where
+   Ⅰ = ap (λ - → max n (max - (max-questionᵤ (prune (φ 1))))) (final-step (φ 0))
+   Ⅱ = ap (λ - → max n (max (maximumᵤ (mod-of (φ 0))) -)) (final-step (φ 1))
+
+{-
+ max-questionᵤ (prune (dialogue-tree t)) ＝⟨ {!dialogue-tree t!} ⟩
+ {!!}                                    ＝⟨ {!!} ⟩
+ maximumᵤ (mod-of t)                     ∎
+-}
 
 \end{code}
 
@@ -266,7 +303,6 @@ internal-uni-mod-correct t αᵀ βᵀ ψ₁ ψ₂ ϑ = †
   β : Baire
   β = ⟦ βᵀ ⟧₀
 
-
   α′ : Cantor₀
   α′ = α , boolean-valuedᵀ-lemma αᵀ ψ₁
 
@@ -286,7 +322,7 @@ internal-uni-mod-correct t αᵀ βᵀ ψ₁ ψ₂ ϑ = †
   c = eloquent-functions-are-UC f₀ ε₀
 
   bt : BT ℕ
-  bt = pr₁ c
+  bt = mod-of (dialogue-tree t)
 
   c₀ : is-uniformly-continuous₀ f₀
   c₀ = uni-continuity-implies-uni-continuity₀ f₀ c
@@ -296,7 +332,7 @@ internal-uni-mod-correct t αᵀ βᵀ ψ₁ ψ₂ ϑ = †
 
   rts : ⟦ max-questionᵤᵀ · ⌜dialogue-tree⌝ t ⟧₀ ＝ maximumᵤ bt
   rts = ⟦ max-questionᵤᵀ · ⌜dialogue-tree⌝ t ⟧₀   ＝⟨ main-lemma t ⟩
-        max-questionᵤ (prune (dialogue-tree t))   ＝⟨ final-step t ⟩
+        max-questionᵤ (prune (dialogue-tree t))   ＝⟨ final-step (dialogue-tree t) ⟩
         maximumᵤ bt                               ∎
 
   q : ⟦ modulusᵤᵀ t ⟧₀ ＝ succ (maximumᵤ bt)
