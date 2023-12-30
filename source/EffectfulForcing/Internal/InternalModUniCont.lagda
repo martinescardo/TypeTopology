@@ -3,8 +3,11 @@ Ayberk Tosun.
 Continuation of the development in `InternalModCont`.
 
 Started on 2023-10-07.
+Finished on 2023-12-30.
 
 \begin{code}
+
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import UF.FunExt
 open import UF.Equiv hiding (⌜_⌝)
