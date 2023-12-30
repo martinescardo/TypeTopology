@@ -179,10 +179,22 @@ max-questionᵤ⋆-agreement (D.β φ n) = †
 max-questionᵀ-agreement : (d : 〈〉 ⊢ ⌜D⋆⌝ ι ι ι ι)
                         → ⟦ max-questionᵤᵀ · d ⟧₀ ＝ max-questionᵤ⋆ ⟦ d ⟧₀
 max-questionᵀ-agreement d =
- ⟦ max-questionᵤᵀ · d ⟧₀                               ＝⟨ refl ⟩
- ⟦ d ⟧₀ (λ _ → 0) (λ g x → ⟦ maxᵀ ⟧ {!!} x (max {!g 0!} {!!}))   ＝⟨ {!!} ⟩
- ⟦ d ⟧₀ (λ _ → 0) (λ g x → max x (max (g 0) (g 1)))    ＝⟨ refl ⟩
- max-questionᵤ⋆ ⟦ d ⟧₀                                 ∎
+ ⟦ max-questionᵤᵀ · d ⟧₀                                        ＝⟨ refl  ⟩
+ ⟦ d ⟧₀ (λ _ → 0) (λ g x → ⟦ maxᵀ ⟧₀ x (⟦ maxᵀ ⟧₀ (g 0) (g 1))) ＝⟨ Ⅰ     ⟩
+ ⟦ d ⟧₀ (λ _ → 0) (λ g x → max x (⟦ maxᵀ ⟧₀ (g 0) (g 1)))       ＝⟨ Ⅱ     ⟩
+ ⟦ d ⟧₀ (λ _ → 0) (λ g x → max x (max (g 0) (g 1)))             ＝⟨ refl  ⟩
+ max-questionᵤ⋆ ⟦ d ⟧₀                                          ∎
+  where
+   † : (g : ℕ → ℕ) (n : ℕ)
+     → ⟦ maxᵀ ⟧₀ n (⟦ maxᵀ ⟧₀ (g 0) (g 1)) ＝ max n (⟦ maxᵀ ⟧₀ (g 0) (g 1))
+   † g n = maxᵀ-correct n (⟦ maxᵀ ⟧₀ (g 0) (g 1))
+
+   ‡ : (g : ℕ → ℕ) (n : ℕ)
+     → max n (⟦ maxᵀ ⟧₀ (g 0) (g 1)) ＝ max n (max (g 0) (g 1))
+   ‡ g n = ap (max n) (maxᵀ-correct (g 0) (g 1))
+
+   Ⅰ = ap (⟦ d ⟧₀ (λ _ → 0)) (dfunext fe λ g → dfunext fe λ n → † g n)
+   Ⅱ = ap (⟦ d ⟧₀ (λ _ → 0)) (dfunext fe λ g → dfunext fe λ n → ‡ g n)
 
 \end{code}
 
