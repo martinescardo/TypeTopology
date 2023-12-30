@@ -4,7 +4,7 @@ Properties of function extensionality.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module UF.FunExt-Properties where
 

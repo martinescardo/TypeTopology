@@ -4,7 +4,7 @@ This file needs reorganization and clean-up.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module UF.Base where
 
@@ -322,6 +322,13 @@ left-inverse {𝓤} {X} {x} {y} refl = refl
 
 right-inverse : {X : 𝓤 ̇ } {x y : X} (p : x ＝ y) → refl ＝ p ∙ p ⁻¹
 right-inverse {𝓤} {X} {x} {y} refl = refl
+
+cancel-right
+ : {X : 𝓤 ̇ } {x y z : X}
+ → (p : x ＝ y) (q : x ＝ y) (r : y ＝ z)
+ → p ∙ r ＝ q ∙ r
+ → p ＝ q
+cancel-right refl refl refl refl = refl
 
 cancel-left : {X : 𝓤 ̇ } {x y z : X} {p : x ＝ y} {q r : y ＝ z}
             → p ∙ q ＝ p ∙ r

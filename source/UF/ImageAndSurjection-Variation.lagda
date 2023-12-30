@@ -7,7 +7,7 @@ For more comments and explanations, see the original files.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 
@@ -116,7 +116,7 @@ module ImageAndSurjection (pt : propositional-truncations-exist) where
                      (being-in-the-image-is-prop _ f)
 
  vv-equiv-iff-embedding-and-surjection  :  {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                                        → is-vv-equiv f ⇔ is-embedding f × is-surjection f
+                                        → is-vv-equiv f ↔ is-embedding f × is-surjection f
  vv-equiv-iff-embedding-and-surjection f = g , h
   where
    g : is-vv-equiv f → is-embedding f × is-surjection f

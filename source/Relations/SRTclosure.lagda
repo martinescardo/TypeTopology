@@ -14,7 +14,7 @@ Martin Escardo, 3 February 2021.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan hiding (_^_)
 
@@ -296,7 +296,7 @@ is-equiv-rel-transport : {X : 𝓤 ̇ }
                          (A : X → X → 𝓥 ̇ )
                          (B : X → X → 𝓦 ̇ )
                        → is-prop-valued-rel B
-                       → ((x y : X) → A x y ⇔ B x y)
+                       → ((x y : X) → A x y ↔ B x y)
                        → is-equiv-rel A
                        → is-equiv-rel B
 is-equiv-rel-transport {X} A B p' e (p , r , s , t) = (p' , r' , s' , t')

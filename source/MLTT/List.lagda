@@ -6,7 +6,7 @@ Athenian in this respect.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K #-} -- --exact-split
+{-# OPTIONS --safe --without-K --no-exact-split #-}
 
 module MLTT.List where
 

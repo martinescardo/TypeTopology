@@ -14,7 +14,7 @@ There are three submodules:
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module UF.SIP where
 
@@ -115,7 +115,7 @@ module sip where
   canonical-map-charac s t p = (yoneda-lemma s (λ t → ι (X , s) (X , t) (≃-refl X)) (canonical-map ι ρ s) t p)⁻¹
 
   when-canonical-map-is-equiv : ((s t : S X) → is-equiv (canonical-map ι ρ s t))
-                              ⇔ ((s : S X) → ∃! t ꞉ S X , ι (X , s) (X , t) (≃-refl X))
+                              ↔ ((s : S X) → ∃! t ꞉ S X , ι (X , s) (X , t) (≃-refl X))
   when-canonical-map-is-equiv = (λ e s → Yoneda-Theorem-back  s (τ s) (e s)) ,
                                 (λ φ s → Yoneda-Theorem-forth s (τ s) (φ s))
    where

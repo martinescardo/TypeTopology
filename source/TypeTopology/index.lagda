@@ -2,11 +2,12 @@ Martin Escardo
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module TypeTopology.index where
 
 import TypeTopology.ADecidableQuantificationOverTheNaturals
+import TypeTopology.CantorMinusPoint
 import TypeTopology.CantorSearch
 import TypeTopology.UniformSearch -- by Ayberk Tosun
 import TypeTopology.CompactTypes

@@ -17,7 +17,7 @@ and
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module TypeTopology.DisconnectedTypes where
 

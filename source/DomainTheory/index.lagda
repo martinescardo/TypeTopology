@@ -13,7 +13,11 @@ This accompanies the PhD thesis
   Domain Theory in Constructive and Predicative Univalent Foundations
   Tom de Jong
   School of Computer Science, University of Birmingham
+  https://etheses.bham.ac.uk/id/eprint/13401/
+
+  Updated versions:
   https://arxiv.org/abs/2301.12405
+  https://tdejong.com/writings/phd-thesis.pdf
 
   Submitted: 30 September 2022
   Defended:  20 December  2022
@@ -22,7 +26,7 @@ This accompanies the PhD thesis
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module DomainTheory.index where
 
@@ -50,19 +54,25 @@ import DomainTheory.Basics.WayBelow        -- (7)
 {- BasesAndContinuity
 
 1. The theory of small (compact) bases
-2. The theory of continuous/algebraic dcpos
-3. A discussion on possible definitions of continuous dcpo
-4. The Ind-completion is used to discuss the notion of (structurally/pseudo-)
+2. With univalence and set replacement, the type of small compact bases has
+   split support (j.w.w. Ayberk Tosun; added 4 & 5 October 2023)
+3. The theory of continuous/algebraic dcpos
+4. A discussion on possible definitions of continuous dcpo
+5. Continuous/algebraic dcpos in an impredicative setting (Simcha van Collem;
+   added October 2023)
+6. The Ind-completion is used to discuss the notion of (structurally/pseudo-)
    continuous dcpos
-5. Using step functions we show that sup-complete dcpos with small compact bases
-   are closed under exponentials
+7. Using step functions we show that sup-complete dcpos with small compact
+   bases are closed under exponentials
 -}
 
-import DomainTheory.BasesAndContinuity.Bases                -- (1)
-import DomainTheory.BasesAndContinuity.Continuity           -- (2)
-import DomainTheory.BasesAndContinuity.ContinuityDiscussion -- (3)
-import DomainTheory.BasesAndContinuity.IndCompletion        -- (4)
-import DomainTheory.BasesAndContinuity.StepFunctions        -- (5)
+import DomainTheory.BasesAndContinuity.Bases                   -- (1)
+import DomainTheory.BasesAndContinuity.CompactBasis            -- (2)
+import DomainTheory.BasesAndContinuity.Continuity              -- (3)
+import DomainTheory.BasesAndContinuity.ContinuityDiscussion    -- (4)
+import DomainTheory.BasesAndContinuity.ContinuityImpredicative -- (5)
+import DomainTheory.BasesAndContinuity.IndCompletion           -- (6)
+import DomainTheory.BasesAndContinuity.StepFunctions           -- (7)
 
 {- Bilimits
 

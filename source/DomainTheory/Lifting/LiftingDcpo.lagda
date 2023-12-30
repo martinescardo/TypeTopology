@@ -9,7 +9,7 @@ least element to X when viewed as a discretely-ordered dcpo.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan hiding (J)
 
@@ -38,7 +38,7 @@ open import Lifting.Miscelanea-PropExt-FunExt 𝓥 pe fe
                                              renaming ( ⊑'-to-⊑ to ⊑'-to-⊑''
                                                       ; ⊑-to-⊑' to ⊑''-to-⊑')
 
-open import Posets.Poset fe
+open import OrderedTypes.Poset fe
 open import DomainTheory.Basics.Dcpo pt fe 𝓥
 open import DomainTheory.Basics.Miscelanea pt fe 𝓥
 open import DomainTheory.Basics.Pointed pt fe 𝓥

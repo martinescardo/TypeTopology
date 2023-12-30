@@ -5,7 +5,7 @@ TODO: Comment
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 
@@ -22,7 +22,7 @@ open import Fin.Type
 open import Fin.Kuratowski pt
 
 open import MLTT.List
-open import Posets.JoinSemiLattices
+open import OrderedTypes.JoinSemiLattices
 
 open import UF.Base
 open import UF.Equiv

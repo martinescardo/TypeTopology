@@ -6,7 +6,7 @@ standard properties of multiplication.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
 
@@ -30,6 +30,9 @@ x * succ y = x + x * y
 infixl 32 _*_
 
 {-# BUILTIN NATTIMES _*_ #-}
+
+_*ᴸ_ : (x y : ℕ) → ℕ
+x *ᴸ y = y * x
 
 \end{code}
 

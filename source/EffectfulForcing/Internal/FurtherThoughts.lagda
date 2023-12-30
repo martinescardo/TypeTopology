@@ -2,7 +2,7 @@ Martin Escardo, Vincent Rahli, Bruno da Rocha Paiva, Ayberk Tosun 20 May 2023
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module EffectfulForcing.Internal.FurtherThoughts where
 
@@ -131,7 +131,7 @@ R⋆-main-lemma-ι t α =
 
 -- Is that even provable? (we don't need it, but we want to explore this)
 RnormAs : {σ : type} (d : B〖 σ 〗) (t : {A : type} → T₀ (B-type〖 σ 〗 A)) (α : Baire)
-         → Rnorm d t ⇔ (Σ x ꞉ 〖 σ 〗 , ((R α x d) × (R⋆ α x t)))
+         → Rnorm d t ↔ (Σ x ꞉ 〖 σ 〗 , ((R α x d) × (R⋆ α x t)))
 RnormAs {ι} d t α = c1 , c2
  where
   c0 : is-dialogue-for d t → dialogue d α ＝ dialogue⋆ ⟦ t ⟧₀ α

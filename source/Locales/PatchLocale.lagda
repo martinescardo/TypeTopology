@@ -4,7 +4,7 @@ Based on `ayberkt/formal-topology-in-UF`.
 
 \begin{code}[hide]
 
-{-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
+{-# OPTIONS --safe --without-K --lossy-unification #-}
 
 open import MLTT.List hiding ([_])
 open import MLTT.Pi
@@ -967,7 +967,7 @@ module SmallPatchConstruction (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ X
     iv  = scott-continuous-join-eq (𝒪 X) (𝒪 X) k ζₖ ⁅ ℬ [ i ] ∣ i ε 𝒥 ⁆ δ ⁻¹
     v   = ap k (covers (𝒪 X) ℬ ℬ-is-basis U) ⁻¹
 
- ≼-iff-≼ᵏ : (𝒿 𝓀 : Perfect-Nucleus-on-X) → (𝒿 ≼ 𝓀 ↔ 𝒿 ≼ᵏ 𝓀) holds
+ ≼-iff-≼ᵏ : (𝒿 𝓀 : Perfect-Nucleus-on-X) → (𝒿 ≼ 𝓀 ⇔ 𝒿 ≼ᵏ 𝓀) holds
  ≼-iff-≼ᵏ 𝒿 𝓀 = ≼-implies-≼ᵏ 𝒿 𝓀 , ≼ᵏ-implies-≼ 𝒿 𝓀
 
  ≼ᵏ-is-reflexive : is-reflexive _≼ᵏ_ holds

@@ -9,7 +9,7 @@ In particular, (η ∘ f) ♯ is pointwise equal to 𝓛̇ f.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 open import UF.FunExt

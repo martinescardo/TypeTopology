@@ -2,7 +2,7 @@ Martin Escardo
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module UF.PropTrunc where
 
@@ -56,7 +56,7 @@ module PropositionalTruncation (pt : propositional-truncations-exist) where
  is-singleton'-is-prop fe = Σ-is-prop (being-prop-is-prop fe) (λ _ → ∥∥-is-prop)
 
  the-singletons-are-the-inhabited-propositions : {X : 𝓤 ̇ }
-                                               → is-singleton X ⇔ is-prop X × ∥ X ∥
+                                               → is-singleton X ↔ is-prop X × ∥ X ∥
  the-singletons-are-the-inhabited-propositions {𝓤} {X} = f , g
   where
    f : is-singleton X → is-prop X × ∥ X ∥

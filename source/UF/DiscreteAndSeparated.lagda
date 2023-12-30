@@ -5,7 +5,7 @@ Martin Escardo 2011.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module UF.DiscreteAndSeparated where
 
@@ -456,7 +456,7 @@ m ＝[ℕ] n = (χ＝ m n) ＝ ₁
 
 infix  30 _＝[ℕ]_
 
-＝-agrees-with-＝[ℕ] : (m n : ℕ) → m ＝ n ⇔ m ＝[ℕ] n
+＝-agrees-with-＝[ℕ] : (m n : ℕ) → m ＝ n ↔ m ＝[ℕ] n
 ＝-agrees-with-＝[ℕ] m n = (λ r → different-from-₀-equal-₁ (λ s → pr₁ (χ＝-spec m n) s r)) , pr₂ (χ＝-spec m n)
 
 ≠-indicator :  (m : ℕ) → Σ p ꞉ (ℕ → 𝟚) , ((n : ℕ) → (p n ＝ ₀ → m ＝ n) × (p n ＝ ₁ → m ≠ n))
@@ -473,7 +473,7 @@ m ≠[ℕ] n = (χ≠ m n) ＝ ₁
 
 infix  30 _≠[ℕ]_
 
-≠[ℕ]-agrees-with-≠ : (m n : ℕ) → m ≠[ℕ] n ⇔ m ≠ n
+≠[ℕ]-agrees-with-≠ : (m n : ℕ) → m ≠[ℕ] n ↔ m ≠ n
 ≠[ℕ]-agrees-with-≠ m n = pr₂ (χ≠-spec m n) , (λ d → different-from-₀-equal-₁ (contrapositive (pr₁ (χ≠-spec m n)) d))
 
 \end{code}

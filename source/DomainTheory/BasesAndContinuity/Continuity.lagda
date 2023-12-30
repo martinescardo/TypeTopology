@@ -10,7 +10,7 @@ continuous is preserved by taking continuous retracts.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan hiding (J)
 open import UF.FunExt
@@ -95,6 +95,17 @@ record structurally-algebraic (𝓓 : DCPO {𝓤} {𝓣}) : 𝓥 ⁺ ⊔ 𝓤 �
                             → is-compact 𝓓 (compact-family x i)
   compact-family-∐-＝ : (x : ⟨ 𝓓 ⟩) → ∐ 𝓓 (compact-family-is-directed x) ＝ x
 
+ compact-family-is-upperbound : (x : ⟨ 𝓓 ⟩)
+                              → is-upperbound (underlying-order 𝓓)
+                                              x (compact-family x)
+ compact-family-is-upperbound x i =
+  compact-family x i                 ⊑⟨ 𝓓 ⟩[ ⦅1⦆ ]
+  ∐ 𝓓 (compact-family-is-directed x) ⊑⟨ 𝓓 ⟩[ ⦅2⦆ ]
+  x                                  ∎⟨ 𝓓 ⟩
+   where
+    ⦅1⦆ = ∐-is-upperbound 𝓓 (compact-family-is-directed x) i
+    ⦅2⦆ = ＝-to-⊑ 𝓓 (compact-family-∐-＝ x)
+
 is-algebraic-dcpo : (𝓓 : DCPO {𝓤} {𝓣}) → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
 is-algebraic-dcpo 𝓓 = ∥ structurally-algebraic 𝓓 ∥
 
@@ -112,14 +123,8 @@ structurally-continuous-if-structurally-algebraic 𝓓 sa =
   where
    open structurally-algebraic sa
    γ : (x : ⟨ 𝓓 ⟩) → is-way-upperbound 𝓓 x (compact-family x)
-   γ x i = ≪-⊑-to-≪ 𝓓 (compact-family-is-compact x i) l
-    where
-     l = compact-family x i                 ⊑⟨ 𝓓 ⟩[ ⦅1⦆ ]
-         ∐ 𝓓 (compact-family-is-directed x) ⊑⟨ 𝓓 ⟩[ ⦅2⦆ ]
-         x                                  ∎⟨ 𝓓 ⟩
-      where
-       ⦅1⦆ = ∐-is-upperbound 𝓓 (compact-family-is-directed x) i
-       ⦅2⦆ = ＝-to-⊑ 𝓓 (compact-family-∐-＝ x)
+   γ x i = ≪-⊑-to-≪ 𝓓 (compact-family-is-compact x i)
+                      (compact-family-is-upperbound x i)
 
 is-continuous-dcpo-if-algebraic-dcpo : (𝓓 : DCPO {𝓤} {𝓣})
                                      → is-algebraic-dcpo 𝓓
@@ -431,19 +436,20 @@ module _
 
  open import UF.Size hiding (is-small ; is-locally-small)
 
- ≪-is-small-valued : is-locally-small 𝓓
-                   → (x y : ⟨ 𝓓 ⟩) → is-small (x ≪⟨ 𝓓 ⟩ y)
- ≪-is-small-valued ls x y = ∥∥-rec p (λ C → ≪-is-small-valued-str 𝓓 C ls x y) c
-  where
-   p : is-prop (is-small (x ≪⟨ 𝓓 ⟩ y))
-   p = prop-being-small-is-prop (λ _ → pe) (λ _ _ → fe)
-        (x ≪⟨ 𝓓 ⟩ y) (≪-is-prop-valued 𝓓)
+ abstract -- for performance
+  ≪-is-small-valued : is-locally-small 𝓓
+                    → (x y : ⟨ 𝓓 ⟩) → is-small (x ≪⟨ 𝓓 ⟩ y)
+  ≪-is-small-valued ls x y = ∥∥-rec p (λ C → ≪-is-small-valued-str 𝓓 C ls x y) c
+   where
+    p : is-prop (is-small (x ≪⟨ 𝓓 ⟩ y))
+    p = prop-being-small-is-prop (λ _ → pe) (λ _ _ → fe)
+         (x ≪⟨ 𝓓 ⟩ y) (≪-is-prop-valued 𝓓)
 
- ≪-is-small-valued-converse : ((x y : ⟨ 𝓓 ⟩) → is-small (x ≪⟨ 𝓓 ⟩ y))
-                            → is-locally-small 𝓓
- ≪-is-small-valued-converse ws =
-  ∥∥-rec (being-locally-small-is-prop 𝓓 (λ _ → pe))
-   (λ C → ≪-is-small-valued-str-converse 𝓓 C ws) c
+  ≪-is-small-valued-converse : ((x y : ⟨ 𝓓 ⟩) → is-small (x ≪⟨ 𝓓 ⟩ y))
+                             → is-locally-small 𝓓
+  ≪-is-small-valued-converse ws =
+   ∥∥-rec (being-locally-small-is-prop 𝓓 (λ _ → pe))
+    (λ C → ≪-is-small-valued-str-converse 𝓓 C ws) c
 
 \end{code}
 

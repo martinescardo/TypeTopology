@@ -23,7 +23,7 @@ continuous and algebraic dcpos are actually examples of dcpos with small
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan hiding (J)
 open import UF.FunExt
@@ -483,6 +483,13 @@ module _
  has-specified-small-compact-basis =
   Σ B ꞉ 𝓥 ̇ , Σ β ꞉ (B → ⟨ 𝓓 ⟩) , is-small-compact-basis 𝓓 β
 
+ index-of-compact-basis : has-specified-small-compact-basis → 𝓥  ̇
+ index-of-compact-basis (B , _) = B
+
+ family-of-basic-opens : (𝒷 : has-specified-small-compact-basis)
+                       → index-of-compact-basis 𝒷 → ⟨ 𝓓 ⟩
+ family-of-basic-opens (_ , β , _) = β
+
  has-unspecified-small-compact-basis : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
  has-unspecified-small-compact-basis = ∥ has-specified-small-compact-basis ∥
 
@@ -505,6 +512,12 @@ module _
   → is-algebraic-dcpo 𝓓
  is-algebraic-dcpo-if-unspecified-small-compact-basis =
   ∥∥-functor structurally-algebraic-if-specified-small-compact-basis
+
+\end{code}
+
+We can improve on the above in the presence of univalence and set replacement,
+in which case we can derive structural-algebraicity from an unspecified small
+compact basis. This is explained and formalised in CompactBasis.
 
 \end{code}
 

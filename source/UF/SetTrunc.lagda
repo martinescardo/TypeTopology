@@ -2,7 +2,7 @@ Jon Sterling, 25 March 2023
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module UF.SetTrunc where
 

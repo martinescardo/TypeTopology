@@ -6,7 +6,7 @@ standard interpretation ⟦ t ⟧ of t (defined in the file System T).
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module EffectfulForcing.Internal.index where
 

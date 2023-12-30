@@ -4,7 +4,7 @@ The definition is given in UF.Base. Here we prove things about them.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module UF.LeftCancellable where
 

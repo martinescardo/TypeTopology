@@ -61,7 +61,7 @@ We have:
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 open import UF.PropTrunc
@@ -86,9 +86,9 @@ module NotionsOfDecidability.QuasiDecidable
 
 open import UF.Size
 
-import Posets.Frame
-import Posets.sigma-frame
-import Posets.sigma-sup-lattice
+import OrderedTypes.Frame
+import OrderedTypes.sigma-frame
+import OrderedTypes.sigma-sup-lattice
 
 \end{code}
 
@@ -158,7 +158,7 @@ record initial-σ-frame-exists (𝓣 : Universe) : 𝓤ω where
  constructor
   initial-σ-frame
 
- open Posets.sigma-frame fe
+ open OrderedTypes.sigma-frame fe
  field
   𝓐 : σ-Frame 𝓣
   𝓐-is-initial : {𝓤 : Universe} (𝓑 : σ-Frame 𝓤) → ∃! f ꞉ (⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩), is-σ-frame-hom 𝓐 𝓑 f
@@ -173,7 +173,7 @@ record free-σ-SupLat-on-one-generator-exists (𝓣 𝓚 : Universe) : 𝓤ω wh
  constructor
   free-σ-SupLat-on-one-generator
 
- open Posets.sigma-sup-lattice fe
+ open OrderedTypes.sigma-sup-lattice fe
 
  field
   𝓐 : σ-SupLat 𝓣 𝓚
@@ -628,7 +628,7 @@ propositions:
 
 \begin{code}
 
- open import Posets.sigma-sup-lattice fe
+ open import OrderedTypes.sigma-sup-lattice fe
 
  QD : σ-SupLat (𝓣 ⁺ ⊔ 𝓚) 𝓣
  QD = 𝓠 ,
@@ -1010,7 +1010,7 @@ quasidecidable propositions to the above hypothetical development.
 
 \begin{code}
 
- open Posets.sigma-sup-lattice fe
+ open OrderedTypes.sigma-sup-lattice fe
 
  free-σ-suplat-on-one-generator-exists :
 
@@ -1061,7 +1061,7 @@ free σ-sup-lattice on one generator ⊤.
 
 module hypothetical-free-σ-SupLat-on-one-generator where
 
- open import Posets.sigma-sup-lattice fe
+ open import OrderedTypes.sigma-sup-lattice fe
 
  module assumption
         {𝓣 𝓚 : Universe}
@@ -1424,7 +1424,7 @@ We now show that the initial σ-suplat is also the initial σ-frame. The
 following renaming is annoying.
 
 \begin{code}
-  open Posets.sigma-frame fe
+  open OrderedTypes.sigma-frame fe
         hiding (order)
         renaming
          (⟨_⟩ to ⟨_⟩' ;
@@ -1533,10 +1533,10 @@ We now regard the type of propositions as a σ-sup-lattice:
 \begin{code}
 
   Ω-qua-σ-Frame : σ-Frame (𝓣 ⁺)
-  Ω-qua-σ-Frame = Posets.sigma-frame.Ω-qua-σ-frame fe pe pt
+  Ω-qua-σ-Frame = OrderedTypes.sigma-frame.Ω-qua-σ-frame fe pe pt
 
   Ω-qua-σ-SupLat : σ-SupLat (𝓣 ⁺) (𝓣 ⁺)
-  Ω-qua-σ-SupLat = Posets.sigma-frame.Ω-qua-σ-suplat fe pe pt
+  Ω-qua-σ-SupLat = OrderedTypes.sigma-frame.Ω-qua-σ-suplat fe pe pt
 
   private
    ⊥'   = ⊥⟨ Ω-qua-σ-SupLat ⟩
@@ -1742,7 +1742,7 @@ a set:
   τ-order-lc a b l = iv
    where
     i : τ a holds → τ b holds
-    i = Posets.Frame.from-≤Ω fe pe pt {𝓣} {τ a} {τ b} l
+    i = OrderedTypes.Frame.from-≤Ω fe pe pt {𝓣} {τ a} {τ b} l
 
     ii : τ a ＝ ⊤' → τ b ＝ ⊤'
     ii p = holds-gives-equal-⊤ pe fe (τ b) (i (equal-⊤-gives-holds (τ a) p))
@@ -1929,7 +1929,7 @@ The following just applies back-and-forth the characterization of
 \begin{code}
 
   dependent-binary-meet' : (a : A) (b : a ＝ ⊤ → A)
-                         → Σ c ꞉ A , (c ＝ ⊤ ⇔ (Σ p ꞉ a ＝ ⊤ , b p ＝ ⊤))
+                         → Σ c ꞉ A , (c ＝ ⊤ ↔ (Σ p ꞉ a ＝ ⊤ , b p ＝ ⊤))
   dependent-binary-meet' a b = f σ
    where
     b' : τ a holds → A
@@ -1939,7 +1939,7 @@ The following just applies back-and-forth the characterization of
     σ = dependent-binary-meet a b'
 
     f : (Σ c ꞉ A , (τ c holds) ＝ (Σ h ꞉ τ a holds , τ (b' h) holds))
-      → Σ c ꞉ A , ((c ＝ ⊤) ⇔ (Σ p ꞉ a ＝ ⊤ , b p ＝ ⊤))
+      → Σ c ꞉ A , ((c ＝ ⊤) ↔ (Σ p ꞉ a ＝ ⊤ , b p ＝ ⊤))
     f ( c , q) = c , g , h
      where
       g : c ＝ ⊤ → Σ p ꞉ a ＝ ⊤ , b p ＝ ⊤
@@ -1962,7 +1962,7 @@ We can replace the bi-implication by an equality:
                           → Σ c ꞉ A , ((c ＝ ⊤) ＝ (Σ p ꞉ a ＝ ⊤ , b p ＝ ⊤))
   dependent-binary-meet'' a b = f (dependent-binary-meet' a b)
    where
-    f : (Σ c ꞉ A , (c ＝ ⊤ ⇔ (Σ p ꞉ a ＝ ⊤ , b p ＝ ⊤)))
+    f : (Σ c ꞉ A , (c ＝ ⊤ ↔ (Σ p ꞉ a ＝ ⊤ , b p ＝ ⊤)))
       → Σ c ꞉ A , ((c ＝ ⊤) ＝ (Σ p ꞉ a ＝ ⊤ , b p ＝ ⊤))
     f (c , g , h) = c , ⌜ prop-univalent-≃ pe fe (c ＝ ⊤) (Σ p ꞉ a ＝ ⊤ , b p ＝ ⊤)
                            (Σ-is-prop ⟨ 𝓐 ⟩-is-set (λ p → ⟨ 𝓐 ⟩-is-set)) ⌝⁻¹
@@ -1975,7 +1975,7 @@ The non-dependent special case:
 
 \begin{code}
 
-  binary-meet : (a b : A) → Σ c ꞉ A , (c ＝ ⊤ ⇔ ((a ＝ ⊤) × (b ＝ ⊤)))
+  binary-meet : (a b : A) → Σ c ꞉ A , (c ＝ ⊤ ↔ ((a ＝ ⊤) × (b ＝ ⊤)))
 
   binary-meet a b = dependent-binary-meet' a (λ _ → b)
 
@@ -1987,7 +1987,7 @@ meets:
 \begin{code}
 
   binary-meet'-is-∧ : (a b c : A)
-                    → (c ＝ ⊤ ⇔ ((a ＝ ⊤) × (b ＝ ⊤)))
+                    → (c ＝ ⊤ ↔ ((a ＝ ⊤) × (b ＝ ⊤)))
                     → c ＝ a ∧ b
   binary-meet'-is-∧ a b c (f , g) = viii
    where

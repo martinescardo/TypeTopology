@@ -2,7 +2,7 @@ Negation (and emptiness).
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module MLTT.Negation where
 
@@ -14,8 +14,8 @@ open import MLTT.Plus
 open import MLTT.Sigma
 
 private
- _⇔_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
- A ⇔ B = (A → B) × (B → A)
+ _↔_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
+ A ↔ B = (A → B) × (B → A)
 
 ¬_ : 𝓤 ̇ → 𝓤 ̇
 ¬ A = A → 𝟘 {𝓤₀}
@@ -146,10 +146,10 @@ double-negation-of-implication← = Double-negation-of-implication←
 double-negation-of-implication→ : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → ¬ (¬¬ A × ¬ B) → ¬¬ (A → B)
 double-negation-of-implication→ f g = Double-negation-of-implication→ (𝟘 {𝓤₀}) 𝟘-elim f g
 
-not-equivalent-to-own-negation' : {A : 𝓤 ̇ } {R : 𝓥 ̇ } → (A ⇔ (A → R)) → R
+not-equivalent-to-own-negation' : {A : 𝓤 ̇ } {R : 𝓥 ̇ } → (A ↔ (A → R)) → R
 not-equivalent-to-own-negation' (f , g) = f (g (λ a → f a a)) (g (λ a → f a a))
 
-not-equivalent-to-own-negation : {A : 𝓤 ̇ } → ¬ (A ⇔ ¬ A)
+not-equivalent-to-own-negation : {A : 𝓤 ̇ } → ¬ (A ↔ ¬ A)
 not-equivalent-to-own-negation = not-equivalent-to-own-negation'
 
 not-Σ-implies-Π-not : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }

@@ -5,7 +5,7 @@ earlier 2018 module Quotient.Large by Martin Escardo.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Quotient.Type where
 
@@ -333,7 +333,7 @@ binary and ternary versions of quotient induction.
                 (λ x y → /-induction ≋ (p (η/ ≋ x) (η/ ≋ y)) (h x y))
 
  quotients-equivalent : (X : 𝓤 ̇ ) (R : EqRel {𝓤} {𝓥} X) (R' : EqRel {𝓤} {𝓦} X)
-                      → ({x y : X} → x ≈[ R ] y ⇔ x ≈[ R' ] y)
+                      → ({x y : X} → x ≈[ R ] y ↔ x ≈[ R' ] y)
                       → (X / R) ≃ (X / R')
  quotients-equivalent X (_≈_  , ≈p ,  ≈r  , ≈s  , ≈t )
                         (_≈'_ , ≈p' , ≈r' , ≈s' , ≈t') ε = γ
@@ -376,7 +376,7 @@ We now define the existence of small and large quotients:
 \begin{code}
 
 set-quotients-exist large-set-quotients-exist : 𝓤ω
-set-quotients-exist       = general-set-quotients-exist id
+set-quotients-exist       = general-set-quotients-exist (λ 𝓤 → 𝓤)
 large-set-quotients-exist = general-set-quotients-exist (_⁺)
 
 \end{code}
