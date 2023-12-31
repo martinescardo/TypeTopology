@@ -14,20 +14,19 @@ open import UF.FunExt
 module EffectfulForcing.MFPSAndVariations.ContinuityProperties (fe : Fun-Ext) where
 
 open import EffectfulForcing.MFPSAndVariations.Continuity
-
-open import MLTT.Spartan
+open import MGS.hlevels using (ℕ-is-set)
 open import MLTT.Athenian
+open import MLTT.Spartan
 open import MLTT.Two-Properties
 open import Naturals.Order
-open import Naturals.Properties using (zero-not-positive; succ-no-fp)
-open import UF.Retracts
+open import Naturals.Properties using (succ-no-fp; zero-not-positive)
 open import UF.Embeddings
 open import UF.Equiv
 open import UF.Logic
-open import UF.SubtypeClassifier
+open import UF.Retracts
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import MGS.hlevels using (ℕ-is-set)
+open import UF.SubtypeClassifier
 
 open Implication fe
 
