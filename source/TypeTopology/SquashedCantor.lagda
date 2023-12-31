@@ -562,7 +562,7 @@ Tail-Cons u φ = dfunext fe₀ (γ u φ)
        VI  = ap φ (being-finite-is-prop fe₀ u _ _)
 
 Tail-Cons' : (u : ℕ∞) (φ : Cantor[ u ])
-          → transport-Cantor (Head-Cons u φ) (Tail (Cons (u , φ))) ＝ φ
+           → transport-Cantor (Head-Cons u φ) (Tail (Cons (u , φ))) ＝ φ
 Tail-Cons' u φ = transport-Cantor (Head-Cons u φ) (Tail (Cons (u , φ))) ＝⟨ I ⟩
                  transport-Cantor (Head-Cons u φ) (φ ∘ Head-finite u φ) ＝⟨ II ⟩
                  φ                                                      ∎
@@ -667,10 +667,9 @@ BinaryNaturals (which is not needed for the moment).
 
 End for the moment. 20 July 2018.
 
-TODO.
+TODO. Complete the following.
 
 \begin{code}
-
 {-
 Cons-Snoc : (α : Cantor) → Cons (Snoc α) ＝ α
 Cons-Snoc α = dfunext fe₀ (λ i → γ i α)
