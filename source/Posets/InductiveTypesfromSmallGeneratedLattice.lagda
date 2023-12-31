@@ -455,11 +455,14 @@ to use record types to package the contents of this HIT. See below:
   record inductively-generated-subset-exists
 
 Notice that the QIT has two constructors which representing the closure
-conditions we wish to impose on subsets. The c-cl constructor says:
+conditions we wish to impose on subsets. The c-closure condition says:
 for any subset contained in the least closed subset, elements in the downset of
-its join are in the least closed subset as well. The ϕ-cl constructor says:
+its join are in the least closed subset as well. That is, Y is c-closed if
+  for any U ⊆ Y we have ↓ᴮ (⋁ U) ⊆ Y.
+The ϕ-cl constructor says:
 if for any a : L and b : B with (b , a) ∈ ϕ and ↓ᴮ a 'contained' in the least
-closed subset then b is in the least closed subset.
+closed subset then b is in the least closed subset. That is, Y is ϕ-closed if
+  for any a : L and b : B we have ↓ᴮ a ⊆ Y ⇒ b ∈ Y.
 
 We also derive the initiality of the least closed subset from the postulated
 induction principle. Initiality is closely related to the 'least' part of
