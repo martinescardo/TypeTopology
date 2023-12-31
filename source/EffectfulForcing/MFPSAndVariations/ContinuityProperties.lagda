@@ -23,9 +23,13 @@ open import Naturals.Properties using (zero-not-positive; succ-no-fp)
 open import UF.Retracts
 open import UF.Embeddings
 open import UF.Equiv
+open import UF.Logic
+open import UF.SubtypeClassifier
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import MGS.hlevels using (ℕ-is-set)
+
+open Implication fe
 
 \end{code}
 
@@ -133,7 +137,7 @@ homomorphism from semigroup `(List ℕ, _++_)` into semigroup `(𝓤₀, _×_)`.
 
 ＝⟪⟫-respects-list-concatenation
  : {X : 𝓤₀  ̇} (α₁ α₂ : ℕ → X) (ms ns : List ℕ)
- → α₁ ＝⟪ ms ++ ns ⟫₀ α₂ ⇔ (α₁ ＝⟪ ms ⟫₀ α₂) × (α₁ ＝⟪ ns ⟫₀ α₂)
+ → α₁ ＝⟪ ms ++ ns ⟫₀ α₂ ↔ (α₁ ＝⟪ ms ⟫₀ α₂) × (α₁ ＝⟪ ns ⟫₀ α₂)
 ＝⟪⟫-respects-list-concatenation α₁ α₂ ms ns = ＝⟪⟫-++-lemma₁ α₁ α₂ ms ns
                                              , ＝⟪⟫-++-lemma₂ α₁ α₂ ms ns
 
@@ -277,7 +281,7 @@ Finally, we record the logical equivalence as a fact in itself.
 \begin{code}
 
 continuity₀-iff-continuity : (f : Baire → ℕ)
-                           → is-continuous₀ f ⇔ is-continuous f
+                           → is-continuous₀ f ↔ is-continuous f
 continuity₀-iff-continuity f = † , ‡
  where
   † = continuity₀-implies-continuity f
@@ -834,7 +838,7 @@ uni-continuity₀-implies-uni-continuity f ζ = rangeᵤ m , †
 
 uni-continuity-equivalent-to-uni-continuity : (f : Cantor → ℕ)
                                             → is-uniformly-continuous₀ f
-                                              ⇔ is-uniformly-continuous f
+                                              ↔ is-uniformly-continuous f
 uni-continuity-equivalent-to-uni-continuity f = ⦅⇒⦆ , ⦅⇐⦆
  where
   ⦅⇒⦆ = uni-continuity₀-implies-uni-continuity f
