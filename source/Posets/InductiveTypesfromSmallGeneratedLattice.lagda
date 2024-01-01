@@ -1,7 +1,7 @@
 Ian Ray 01/09/2023.
 
-We formalize Curi's notion of abstract inductive definition (CZF) within the
-context of a sup-lattice L with small basis B (and q : B → L). An abstract
+We formalize Curi's notion of abstract inductive definition (in CZF) within
+the context of a sup-lattice L with small basis B (and q : B → L). An abstract
 inductive defintion is a subset ϕ : B × L → Prop which can be thought of as a
 'inference rule' concluding b from a. An inductive definition induces a
 closure condition. For example, a subset S is closed under ϕ if for all
@@ -128,8 +128,8 @@ is-least-upper-bound-for L of U = pr₂ (is-lub-for L U)
 
 \end{code}
 
-We now define monotone endomaps on a sup-lattice. This is sufficient for our
-work as we are studying fixed points.
+We now define monotone endomaps on a sup-lattice. This notion is not too
+restrictive as our interest is with fixed points.
 
 \begin{code}
 
@@ -176,8 +176,8 @@ module subsets-order-joins {𝓤 𝓦 𝓥 : Universe}
 \end{code}
 
 We now show if a type is small and has a map to the carrier then it has a join.
-This seems like strict requirement but as we will see it occurs often when
-considering a lattice with a basis (to be defined). 
+This requirement may seem strict but as we will see it is often satisfied by
+a lattice with a basis. 
 
 \begin{code}
 
@@ -248,7 +248,7 @@ module small-types-have-joins {𝓤 𝓦 𝓥 𝓣 : Universe}
 
 \end{code}
 
-We now show that the joins of equivalent types can be identified. 
+We now show that reindexing across an equivalence does not change the join.
 
 \begin{code}
 
@@ -287,7 +287,7 @@ module equivalent-families-have-same-join {𝓤 𝓦 𝓥 𝓣 𝓣' : Universe}
 
 \end{code}
 
-We can weaken the above result to a surjection between families.
+We can weaken the above result to a surjection.
 
 \begin{code}
 
@@ -464,6 +464,10 @@ if for any a : L and b : B with (b , a) ∈ ϕ and ↓ᴮ a 'contained' in the l
 closed subset then b is in the least closed subset. That is, Y is ϕ-closed if
   for any a : L and b : B we have ↓ᴮ a ⊆ Y ⇒ b ∈ Y.
 
+Note: It is worth noting that we don't encode the downsets as subsets in type
+theory (rather they are total spaces) so for that reason we won't encode the
+closure conditions exactly as above.
+
 We also derive the initiality of the least closed subset from the postulated
 induction principle. Initiality is closely related to the 'least' part of
 our least fixed point theorem.
@@ -594,11 +598,16 @@ module inductive-definitions {𝓤 𝓦 𝓥 : Universe}
 \end{code}
 
 We now consider a restricted class of inductive definitions which we will call
-local. Then we define an operator parameterized by local inductive definitions
+local. A local inductive definition ϕ is one such that a certain type
+
+  Σ b ꞉ B , (Ǝ a' ꞉ ⟨ L ⟩ , (b , a') ∈ ϕ × (a' ≤ a)
+
+is small.
+
+We then define an operator parameterized by local inductive definitions
 and prove that it is monotone. Finally, we show that any monotone endo map on
 the sup-lattice corresponds to a monotone operator and local inductive
-definition. This result plays an essential role in showing the least fixed
-point theorem.
+definition.
 
 \begin{code}
 
@@ -1338,9 +1347,12 @@ module bounded-inductive-definition {𝓤 𝓦 𝓥 : Universe}
 
 \end{code}
 
-We now consider a stronger restriction on sup-lattices. A sup-lattice has a
-small presentation if there is a small indexed family of subsets that can be
-substituted for arbitrary subsets in a sense to be made precise below.
+We now consider a restriction on sup-lattices stronger than having a basis.
+We want lattices to have a small presentation, so to speak.
+
+A sup-lattice has a small presentation if there is a small indexed family of
+subsets that can be substituted for arbitrary subsets in a sense to be made
+precise below.
 
 \begin{code}
 
