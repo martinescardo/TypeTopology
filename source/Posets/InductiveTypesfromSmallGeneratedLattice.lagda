@@ -4,26 +4,28 @@ We formalize Curi's notion of abstract inductive definition (CZF) within the
 context of a sup-lattice L with small basis B (and q : B → L). An abstract
 inductive defintion is a subset ϕ : B × L → Prop which can be thought of as a
 'inference rule' concluding b from a. An inductive definition induces a
-closure condition. More precisely, a subset S is closed under ϕ if for all
+closure condition. For example, a subset S is closed under ϕ if for all
 b : B and a : L such that (b , a) ∈ ϕ and ↓ᴮa is 'contained' in S then b ∈ S.
 Interestingly, there is an intimate connection between the least-closed
-subsets of some inductive definition ϕ and the least fixed point of a monotome
-map related to ϕ in a precise way. In this file we will develop this
-relationship and prove a predicative version of the least fixed point theorem.
-This work follows the paper 'On Tarski's Fixed Point Theorem' by Giovanni Curi.
-Fortunately, unlike in the realm of set theory, induction rules are first
-class citizens in type theory. Using UF + HITs we can construct the least
-closed subset, under an inductive definition ϕ, as a special quotient inductive
-type (QIT).
+subsets of some inductive definition ϕ and the least fixed point of a monotone
+map related to ϕ. But constructing these least-closed subsets in traditional
+foundations is somewhat grueling. Fortunately, unlike in the realm of set
+theory, inductive constructions are first class in a type theoretic setting.
+Using UF + HITs we can construct the least closed subset, under an inductive
+definition ϕ, as a special quotient inductive type (QIT). In this file we will
+develop this relationship and prove a predicative version of the least fixed
+point theorem. This work follows the paper 'On Tarski's Fixed Point Theorem'
+by Giovanni Curi:
 
-Main Result:
+Giovanni Curi. "On Tarski's fixed point theorem". In: Proc. Amer. Math. Soc
+143 (2015), pp. 4439-4455. URL: https://arxiv.org/abs/1301.2793
+
+We now state the main result for reference, although much of the context is
+missing:
+
 Given a 𝓥-sup-lattice L with a 𝓥-presentation and a monotone
 endomap f : L → L. If there exists a bounded abstract inductive definition
 ϕ such that f ＝ Γ ϕ, then f has a least fixed point.
-
-Reference:
-Giovanni Curi. "On Tarski's fixed point theorem". In: Proc. Amer. Math. Soc
-143 (2015), pp. 4439-4455. URL: https://arxiv.org/abs/1301.2793
 
 \begin{code}
 
@@ -61,7 +63,7 @@ open AllCombinators pt fe
 \end{code}
 
 In the interest of self containment we open this file by defining a sup-lattice
-as well as some boiler plater.
+as well as some boiler plater which will prove useful.
 
 \begin{code}
 
@@ -142,8 +144,7 @@ module monotone-endomaps {𝓤 𝓦 𝓥 : Universe} (L : Sup-Lattice 𝓤 𝓦 
 \end{code}
 
 We now show that when one subset contains another the join of their total
-spaces are ordered as expected. This result will be quite useful throughout
-this file.
+spaces are ordered as expected. 
 
 \begin{code}
 
@@ -176,7 +177,7 @@ module subsets-order-joins {𝓤 𝓦 𝓥 : Universe}
 
 We now show if a type is small and has a map to the carrier then it has a join.
 This seems like strict requirement but as we will see it occurs often when
-considering a lattice with a basis. 
+considering a lattice with a basis (to be defined). 
 
 \begin{code}
 
@@ -247,8 +248,7 @@ module small-types-have-joins {𝓤 𝓦 𝓥 𝓣 : Universe}
 
 \end{code}
 
-We now show that the joins of equivalent types can be identified. This will
-prove useful in the coming section.
+We now show that the joins of equivalent types can be identified. 
 
 \begin{code}
 
@@ -287,7 +287,7 @@ module equivalent-families-have-same-join {𝓤 𝓦 𝓥 𝓣 𝓣' : Universe}
 
 \end{code}
 
-We can weaken the above result and simply require a surjection between families.
+We can weaken the above result to a surjection between families.
 
 \begin{code}
 
@@ -328,10 +328,10 @@ module surjection-implies-equal-joins {𝓤 𝓦 𝓥 𝓣 𝓣' : Universe}
 
 \end{code}
 
-We now define a small basis for a sup-lattice. This consists of a type B in a
-fixed universe and a map q from B to the carrier of the sup-lattice. In a sense
-to be made precise the pair B and q generate the sup-lattice. This notion will
-be integral in the development of the rest of our theory.
+We now define a small basis for a sup-lattice as well as some boiler plate.
+This consists of a type B and a map q : B → L. In a sense to be made precise
+the pair B and q generate the sup-lattice. This notion is crucial for the
+development of predicative order theory.
 
 \begin{code}
 
@@ -785,8 +785,9 @@ module local-inductive-definitions {𝓤 𝓦 𝓥 : Universe}
 \end{code}
 
 We now spell out a correspondence between small 'closed' subsets and
-deflationary points in our suo lattice. This will allow us to show that
-monotone operators have a least fixed point under certain smallness assumpions.
+deflationary points in our sup lattice. This will allow us to show that
+monotone operators have a least fixed point under certain smallness
+assumpions.
 
 \begin{code}
 
@@ -1373,8 +1374,9 @@ module small-presentation-of-lattice {𝓤 𝓦 𝓥 : Universe}
 \end{code}
 
 We will now define, in the context of bounded ϕ and small-presentation 𝓡, a
-new QIT that is equivalent to 𝓘nd. Notice the bounded and small-presentation
-restrictions allow us to avoid large quantification! 
+new QIT that is equivalent to 𝓘nd. Our constructors should be familiar but
+notice the bounded and small-presentation assumptions allow us to avoid large
+quantification! 
 
 \begin{code}
 
@@ -1592,8 +1594,11 @@ module small-QIT {𝓤 𝓦 𝓥 : Universe}
 \end{code}
 
 We will now show that under the assumptions of small presentation and bounded
-ϕ that b ∈ Small-𝓘nd ≃ b ∈ 𝓘nd. We make essential use of the initiality of
-either type here.
+ϕ that
+
+  b ∈ Small-𝓘nd ≃ b ∈ 𝓘nd.
+  
+We make essential use of the initiality of both types here.
 
 This will allow us to satisfy the smallness conditions and salvage a least
 fixed point theorem.
@@ -1723,6 +1728,11 @@ fixed point theorem. Notice that we are assuming our lattice is
 small-presented and that we have a bounded ϕ that corresponds to our
 monotone map. This is the most general statement that can be made but we are
 actively exploring other, cleaner, formulations.
+
+Least fixed point theorem:
+Given a 𝓥-sup-lattice L with a 𝓥-presentation and a monotone
+endomap f : L → L. If there exists a bounded abstract inductive definition
+ϕ such that f ＝ Γ ϕ, then f has a least fixed point.
 
 \begin{code}
 
