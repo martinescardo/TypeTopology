@@ -31,9 +31,9 @@ open import EffectfulForcing.MFPSAndVariations.Continuity
         is-uniformly-continuous; _＝⟦_⟧_; BT; embedding-𝟚-ℕ)
 open import EffectfulForcing.MFPSAndVariations.ContinuityProperties fe
 open import EffectfulForcing.MFPSAndVariations.Dialogue
- using (eloquent; D; dialogue; eloquent-functions-are-continuous;
-        eloquent-functions-are-UC; restriction-is-eloquent; dialogue-UC;
-        dialogue-continuity; generic; B; C; prune)
+ using (B; C; D; dialogue-continuity; dialogue; eloquent-functions-are-UC;
+        eloquent-functions-are-continuous; eloquent; generic; prune;
+        restriction-is-eloquent; dialogue-UC)
 open import EffectfulForcing.MFPSAndVariations.SystemT
  using (type; ι; _⇒_;〖_〗)
 open import MLTT.List
@@ -57,16 +57,16 @@ baire = ι ⇒ ι
 \end{code}
 
 In module `InternalModCont`, we defined a System T operation that computes
-moduli of continuity of maps on the Baire space. In this module, we develop the
-same operation for maps on the Cantor space -- but this time it computes moduli
-of _uniform_ continuity.
+moduli of continuity of maps from Baire space into ℕ. In this module, we develop
+the same operation for maps on the Cantor space -- but this time it computes
+the modulus of _uniform_ continuity.
 
 To define the Cantor space, it's tempting to augment System T with the type of
 Booleans. However, we refrain from doing that here as to avoid repeating all our
-proofs on System T. Instead, we adopt the approach of working with `baire` under
-the implicit assumption that its range is `{0, 1}`. We define all operations on
-the `baire` type under this assumption, and prove that the modulus of uniform
-continuity operation satisfies its specification.
+proofs on System T. Instead, we adopt the approach of working with the `baire`
+type under the implicit assumption that its range is `{0, 1}`. We define all
+operations on the `baire` type under this assumption, and prove that the modulus
+of uniform continuity operation satisfies its specification.
 
 \section{Preliminaries}
 
@@ -108,7 +108,7 @@ space.
 
 is-boolean-pointᵀ : 〈〉 ⊢ baire → 𝓤₀  ̇
 is-boolean-pointᵀ α =
- (n : 〈〉 ⊢ ι) → (⟦ α ⟧₀ ⟦ n ⟧₀ ＝ zero) + (⟦ α ⟧₀ ⟦ n ⟧₀ ＝ succ zero)
+ (n : 〈〉 ⊢ ι) → (⟦ α ⟧₀ ⟦ n ⟧₀ ＝ 0) + (⟦ α ⟧₀ ⟦ n ⟧₀ ＝ 1)
 
 \end{code}
 
@@ -122,10 +122,11 @@ boolean-valuedᵀ-lemma : (t : 〈〉 ⊢ baire)
                       → is-boolean-point ⟦ t ⟧₀
 boolean-valuedᵀ-lemma t ψ i = cases † ‡ (ψ (numeral i))
  where
+  Ⅰ = ap ⟦ t ⟧₀ (to-nat-cancels-to-numeral i ⁻¹)
+
   † : ⟦ t ⟧₀ ⟦ numeral i ⟧₀ ＝ zero → is-boolean-valued (⟦ t ⟧₀ i)
   † p = inl q
    where
-    Ⅰ = ap ⟦ t ⟧₀ (to-nat-cancels-to-numeral i ⁻¹)
     Ⅱ = p
 
     q = ⟦ t ⟧₀ i ＝⟨ Ⅰ ⟩ ⟦ t ⟧₀ ⟦ numeral i ⟧₀ ＝⟨ Ⅱ ⟩ 0 ∎
@@ -133,7 +134,6 @@ boolean-valuedᵀ-lemma t ψ i = cases † ‡ (ψ (numeral i))
   ‡ : ⟦ t ⟧₀ ⟦ numeral i ⟧₀ ＝ 1 → is-boolean-valued (⟦ t ⟧₀ i)
   ‡ p = inr q
    where
-    Ⅰ = ap ⟦ t ⟧₀ (to-nat-cancels-to-numeral i ⁻¹)
     Ⅱ = p
 
     q : ⟦ t ⟧₀ i ＝ 1
@@ -163,10 +163,6 @@ max-boolean-question (D.β φ n) = max n (max n₁ n₂)
   n₂ : ℕ
   n₂ = max-boolean-question (φ ₁)
 
-\end{code}
-
-\begin{code}
-
 max-boolean-question⋆ : D⋆ ℕ ℕ ℕ ℕ → ℕ
 max-boolean-question⋆ d = d (λ _ → 0) (λ g x → max x (max (g 0) (g 1)))
 
@@ -180,7 +176,7 @@ max-boolean-questionᵀ =
 
 \end{code}
 
-We now prove two lemmas on the agreement of `max-boolean-question`,
+We now prove two capturing the agreement of `max-boolean-question`,
 `max-boolean-question⋆`, and `max-boolean-questionᵀ`.
 
 \begin{code}
@@ -278,10 +274,10 @@ main-lemma t =
 \end{code}
 
 We know by `dialogue-UC` that the computation encoded by a dialogue tree is
-uniformly continuous. We define the following `mod-of` function that denotes the
-operation taking the modulus of uniform continuity of such a computation encoded
-by a dialogue tree. It assumes that the dialogue tree in consideration is
-binary, and accordingly, first prunes the tree.
+uniformly continuous. We denote by `mod-of` the operation of taking the modulus
+of uniform continuity of such a computation encoded by a dialogue tree. It
+assumes that the dialogue tree in consideration is binary, and accordingly,
+first prunes the tree.
 
 \begin{code}
 
@@ -320,7 +316,7 @@ max-boolean-question-is-maximum-mod-of (D.β φ n) =
 \end{code}
 
 We now proceed to define the analogue of `modulus` from `InternalModCont`,
-following the same conventions.
+following the same notational conventions.
 
 \begin{code}
 
@@ -371,96 +367,89 @@ Finally, we state and prove our main result:
 
 \begin{code}
 
-internal-uni-mod-correct : (t : 〈〉 ⊢ (baire ⇒ ι)) (αᵀ βᵀ : 〈〉 ⊢ baire)
+internal-uni-mod-correct : (t : 〈〉 ⊢ baire ⇒ ι) (αᵀ βᵀ : 〈〉 ⊢ baire)
                          → is-boolean-pointᵀ αᵀ
                          → is-boolean-pointᵀ βᵀ
                          → ⟦ αᵀ ⟧₀ ＝⦅ ⟦ modulusᵤᵀ t ⟧₀ ⦆ ⟦ βᵀ ⟧₀
                          → ⟦ t · αᵀ ⟧₀ ＝ ⟦ t · βᵀ ⟧₀
-internal-uni-mod-correct t αᵀ βᵀ ψ₁ ψ₂ ϑ = †
- where
-  f : Baire → ℕ
-  f = ⟦ t ⟧₀
+internal-uni-mod-correct t αᵀ βᵀ ψ₁ ψ₂ φ =
+ f α ＝⟨ Ⅰ ⟩ f₀ (to-cantor α₀) ＝⟨ Ⅱ ⟩ f₀ (to-cantor β₀) ＝⟨ Ⅲ ⟩ f β ∎
+  where
+   f : Baire → ℕ
+   f = ⟦ t ⟧₀
 
-  α : Baire
-  α = ⟦ αᵀ ⟧₀
+   α : Baire
+   α = ⟦ αᵀ ⟧₀
 
-  β : Baire
-  β = ⟦ βᵀ ⟧₀
+   β : Baire
+   β = ⟦ βᵀ ⟧₀
 
-  α₀ : Cantor₀
-  α₀ = α , boolean-valuedᵀ-lemma αᵀ ψ₁
+   α₀ : Cantor₀
+   α₀ = α , boolean-valuedᵀ-lemma αᵀ ψ₁
 
-  β₀ : Cantor₀
-  β₀ = β , boolean-valuedᵀ-lemma βᵀ ψ₂
+   β₀ : Cantor₀
+   β₀ = β , boolean-valuedᵀ-lemma βᵀ ψ₂
 
-  f₀ : Cantor → ℕ
-  f₀ = C-restriction f
+   f₀ : Cantor → ℕ
+   f₀ = C-restriction f
 
-  ε : eloquent ⟦ t ⟧₀
-  ε = eloquence-theorem ⟦ t ⟧₀ (t , refl)
+   ε : eloquent f
+   ε = eloquence-theorem ⟦ t ⟧₀ (t , refl)
 
-  ε₀ : eloquent f₀
-  ε₀ = restriction-is-eloquent f ε
+   ε₀ : eloquent f₀
+   ε₀ = restriction-is-eloquent f ε
 
-  c : is-uniformly-continuous f₀
-  c = eloquent-functions-are-UC f₀ ε₀
+   c : is-uniformly-continuous f₀
+   c = eloquent-functions-are-UC f₀ ε₀
 
-  bt : BT ℕ
-  bt = mod-of (dialogue-tree t)
+   bt : BT ℕ
+   bt = mod-of (dialogue-tree t)
 
-  c₀ : is-uniformly-continuous₀ f₀
-  c₀ = uni-continuity-implies-uni-continuity₀ f₀ c
+   c₀ : is-uniformly-continuous₀ f₀
+   c₀ = uni-continuity-implies-uni-continuity₀ f₀ c
 
-  mᵘ₀ : ℕ
-  mᵘ₀ = succ (maximumᵤ bt)
+   mᵘ₀ : ℕ
+   mᵘ₀ = succ (maximumᵤ bt)
 
-  rts : ⟦ max-boolean-questionᵀ · ⌜dialogue-tree⌝ t ⟧₀
-        ＝ maximumᵤ bt
-  rts = ⟦ max-boolean-questionᵀ · ⌜dialogue-tree⌝ t ⟧₀   ＝⟨ Ⅰ ⟩
-        max-boolean-question (prune (dialogue-tree t))   ＝⟨ Ⅱ ⟩
-        maximumᵤ bt                                      ∎
-         where
-          Ⅰ = main-lemma t
-          Ⅱ = max-boolean-question-is-maximum-mod-of (dialogue-tree t)
+   ξ : ⟦ max-boolean-questionᵀ · ⌜dialogue-tree⌝ t ⟧₀ ＝ maximumᵤ bt
+   ξ = ⟦ max-boolean-questionᵀ · ⌜dialogue-tree⌝ t ⟧₀   ＝⟨ Ⅰ ⟩
+       max-boolean-question (prune (dialogue-tree t))   ＝⟨ Ⅱ ⟩
+       maximumᵤ bt                                      ∎
+        where
+         Ⅰ = main-lemma t
+         Ⅱ = max-boolean-question-is-maximum-mod-of (dialogue-tree t)
 
-  q : ⟦ modulusᵤᵀ t ⟧₀ ＝ succ (maximumᵤ bt)
-  q = ap succ rts
+   q : ⟦ modulusᵤᵀ t ⟧₀ ＝ succ (maximumᵤ bt)
+   q = ap succ ξ
 
-  ϑⁿ : α ＝⦅ ⟦ modulusᵤᵀ t ⟧₀ ⦆ β
-  ϑⁿ = ϑ
+   ψ : α ＝⦅ succ (maximumᵤ bt) ⦆ β
+   ψ = transport (λ - → α ＝⦅ - ⦆ β) q φ
 
-  θ₂ : α ＝⦅ succ (maximumᵤ bt) ⦆ β
-  θ₂ = transport (λ - → α ＝⦅ - ⦆ β) q ϑ
-
-  θ₁ : α ＝⦅ succ (maximum (sequentialize bt)) ⦆ β
-  θ₁ = transport
+   ρ : α ＝⦅ succ (maximum (sequentialize bt)) ⦆ β
+   ρ = transport
         (λ - → α ＝⦅ - ⦆ β)
         (ap succ (maximumᵤ′-equivalent-to-maximumᵤ bt))
-        θ₂
+        ψ
 
-  η : α ＝⟪ sequentialize bt ⟫ β
-  η = ＝⦅⦆-implies-＝⟪⟫ α β (sequentialize bt) θ₁
+   η : α ＝⟪ sequentialize bt ⟫ β
+   η = ＝⦅⦆-implies-＝⟪⟫ α β (sequentialize bt) ρ
 
-  δ′ : α ＝⟪ sequentialize bt ⟫₀ β
-  δ′ = ＝⟪⟫-implies-＝⟪⟫₀ α β (sequentialize bt) η
+   ζ : α ＝⟪ sequentialize bt ⟫₀ β
+   ζ = ＝⟪⟫-implies-＝⟪⟫₀ α β (sequentialize bt) η
 
-  δ : α ＝⟦ bt ⟧ β
-  δ = ＝⟪⟫₀-implies-＝⟦⟧ α β bt δ′
+   δ : α ＝⟦ bt ⟧ β
+   δ = ＝⟪⟫₀-implies-＝⟦⟧ α β bt ζ
 
-  γ : to-cantor α₀ ＝⟦ bt ⟧ to-cantor β₀
-  γ = to-cantor-＝⟦⟧
-       (boolean-valuedᵀ-lemma αᵀ ψ₁)
-       (boolean-valuedᵀ-lemma βᵀ ψ₂)
-       bt
-       δ
+   γ : to-cantor α₀ ＝⟦ bt ⟧ to-cantor β₀
+   γ = to-cantor-＝⟦⟧
+        (boolean-valuedᵀ-lemma αᵀ ψ₁)
+        (boolean-valuedᵀ-lemma βᵀ ψ₂)
+        bt
+        δ
 
-  ‡ : f₀ (to-cantor α₀) ＝ f₀ (to-cantor β₀)
-  ‡ = pr₂ c (to-cantor α₀) (to-cantor β₀) γ
+   Ⅱ = pr₂ c (to-cantor α₀) (to-cantor β₀) γ
 
-  Ⅰ = agreement-with-restriction f α (boolean-valuedᵀ-lemma αᵀ ψ₁)
-  Ⅱ = agreement-with-restriction f β (boolean-valuedᵀ-lemma βᵀ ψ₂) ⁻¹
-
-  † : f α ＝ f β
-  † = f α ＝⟨ Ⅰ ⟩ f₀ (to-cantor α₀) ＝⟨ ‡ ⟩ f₀ (to-cantor β₀) ＝⟨ Ⅱ ⟩ f β ∎
+   Ⅰ = agreement-with-restriction f α (boolean-valuedᵀ-lemma αᵀ ψ₁)
+   Ⅲ = agreement-with-restriction f β (boolean-valuedᵀ-lemma βᵀ ψ₂) ⁻¹
 
 \end{code}
