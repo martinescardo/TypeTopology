@@ -387,11 +387,11 @@ internal-uni-mod-correct t αᵀ βᵀ ψ₁ ψ₂ ϑ = †
   β : Baire
   β = ⟦ βᵀ ⟧₀
 
-  α′ : Cantor₀
-  α′ = α , boolean-valuedᵀ-lemma αᵀ ψ₁
+  α₀ : Cantor₀
+  α₀ = α , boolean-valuedᵀ-lemma αᵀ ψ₁
 
-  β′ : Cantor₀
-  β′ = β , boolean-valuedᵀ-lemma βᵀ ψ₂
+  β₀ : Cantor₀
+  β₀ = β , boolean-valuedᵀ-lemma βᵀ ψ₂
 
   f₀ : Cantor → ℕ
   f₀ = C-restriction f
@@ -448,25 +448,20 @@ internal-uni-mod-correct t αᵀ βᵀ ψ₁ ψ₂ ϑ = †
   δ : α ＝⟦ bt ⟧ β
   δ = ＝⟪⟫₀-implies-＝⟦⟧ α β bt δ′
 
-  γ : to-cantor α′ ＝⟦ bt ⟧ to-cantor β′
+  γ : to-cantor α₀ ＝⟦ bt ⟧ to-cantor β₀
   γ = to-cantor-＝⟦⟧
-       α
-       β
        (boolean-valuedᵀ-lemma αᵀ ψ₁)
        (boolean-valuedᵀ-lemma βᵀ ψ₂)
        bt
        δ
 
-  ‡ : f₀ (to-cantor α′) ＝ f₀ (to-cantor β′)
-  ‡ = pr₂ c (to-cantor α′) (to-cantor β′) γ
+  ‡ : f₀ (to-cantor α₀) ＝ f₀ (to-cantor β₀)
+  ‡ = pr₂ c (to-cantor α₀) (to-cantor β₀) γ
 
   Ⅰ = agreement-with-restriction f α (boolean-valuedᵀ-lemma αᵀ ψ₁)
   Ⅱ = agreement-with-restriction f β (boolean-valuedᵀ-lemma βᵀ ψ₂) ⁻¹
 
   † : f α ＝ f β
-  † = f α               ＝⟨ Ⅰ ⟩
-      f₀ (to-cantor α′) ＝⟨ ‡ ⟩
-      f₀ (to-cantor β′) ＝⟨ Ⅱ ⟩
-      f β               ∎
+  † = f α ＝⟨ Ⅰ ⟩ f₀ (to-cantor α₀) ＝⟨ ‡ ⟩ f₀ (to-cantor β₀) ＝⟨ Ⅱ ⟩ f β ∎
 
 \end{code}
