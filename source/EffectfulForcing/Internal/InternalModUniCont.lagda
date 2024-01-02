@@ -20,15 +20,22 @@ open import EffectfulForcing.Internal.Correctness
 open import EffectfulForcing.Internal.External
  using (B⟦_⟧; B⟦_⟧₀; dialogue-tree; eloquence-theorem; ⟪⟫)
 open import EffectfulForcing.Internal.Internal
-open import EffectfulForcing.Internal.InternalModCont fe using (maxᵀ; maxᵀ-correct)
+open import EffectfulForcing.Internal.InternalModCont fe
+ using (maxᵀ; maxᵀ-correct)
 open import EffectfulForcing.Internal.Subst
 open import EffectfulForcing.Internal.SystemT
 open import EffectfulForcing.MFPSAndVariations.Church
 open import EffectfulForcing.MFPSAndVariations.Combinators
-open import EffectfulForcing.MFPSAndVariations.Continuity using (is-continuous; _＝⟪_⟫_; C-restriction; Cantor; Baire; is-uniformly-continuous; _＝⟦_⟧_; BT; embedding-𝟚-ℕ)
+open import EffectfulForcing.MFPSAndVariations.Continuity
+ using (is-continuous; _＝⟪_⟫_; C-restriction; Cantor; Baire;
+        is-uniformly-continuous; _＝⟦_⟧_; BT; embedding-𝟚-ℕ)
 open import EffectfulForcing.MFPSAndVariations.ContinuityProperties fe
-open import EffectfulForcing.MFPSAndVariations.Dialogue using (eloquent; D; dialogue; eloquent-functions-are-continuous; eloquent-functions-are-UC; restriction-is-eloquent; dialogue-UC; dialogue-continuity; generic; B; C; prune)
-open import EffectfulForcing.MFPSAndVariations.SystemT using (type; ι; _⇒_;〖_〗)
+open import EffectfulForcing.MFPSAndVariations.Dialogue
+ using (eloquent; D; dialogue; eloquent-functions-are-continuous;
+        eloquent-functions-are-UC; restriction-is-eloquent; dialogue-UC;
+        dialogue-continuity; generic; B; C; prune)
+open import EffectfulForcing.MFPSAndVariations.SystemT
+ using (type; ι; _⇒_;〖_〗)
 open import MLTT.List
 open import MLTT.Spartan hiding (rec; _^_)
 open import Naturals.Order using (max)
