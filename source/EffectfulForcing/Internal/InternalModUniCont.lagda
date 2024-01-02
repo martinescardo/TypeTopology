@@ -1,6 +1,6 @@
 Ayberk Tosun.
 
-Continuation of the development in `InternalModCont`.
+Continuation of the development in `InternalModCont` towards uniform continuity.
 
 Started on 2023-10-07.
 Finished on 2023-12-30.
@@ -56,16 +56,26 @@ baire = ι ⇒ ι
 
 \end{code}
 
-When we restrict to the Cantor space, we can define an operation that gives us a
-_uniform_ modulus of continuity. In this section, we prove this fact.
+In module `InternalModCont`, we defined a System T operation that computes
+moduli of continuity of maps on the Baire space. In this module, we develop the
+same operation for maps on the Cantor space -- but this time it computes moduli
+of _uniform_ continuity.
 
 To define the Cantor space, it's tempting to augment System T with the type of
 Booleans. However, we refrain from doing that here as to avoid repeating all our
 proofs on System T. Instead, we adopt the approach of working with `baire` under
 the implicit assumption that its range is `{0, 1}`. We define all operations on
-baire under this assumption, and prove that modulus of uniform continuity
-operation satisfies its specification, under the assumption of being Boolean,
-which we define now.
+the `baire` type under this assumption, and prove that the modulus of uniform
+continuity operation satisfies its specification.
+
+\section{Preliminaries}
+
+We define the functions `to-numeral` and `to-nat`.
+
+  * The function `to-numeral` gives the System T representation of a natural
+    number.
+  * The function `to-nat` gives the natural number represented by a System T
+    numeral.
 
 \begin{code}
 
@@ -75,19 +85,40 @@ to-numeral = numeral {〈〉}
 to-nat : 〈〉 ⊢ ι → ℕ
 to-nat t = ⟦ t ⟧₀
 
-to-nat-cancels-to-numeral : (n : ℕ) → ⟦ to-numeral n ⟧₀ ＝ n
+\end{code}
+
+The function `to-nat` is a retraction of `to-numeral`.
+
+\begin{code}
+
+to-nat-cancels-to-numeral : to-nat ∘ to-numeral ∼ id
 to-nat-cancels-to-numeral zero     = refl
 to-nat-cancels-to-numeral (succ n) = ap succ (to-nat-cancels-to-numeral n)
 
 numeral-is-section : is-section to-numeral
 numeral-is-section = to-nat , to-nat-cancels-to-numeral
 
-is-boolean-valuedᵀ : 〈〉 ⊢ baire → 𝓤₀  ̇
-is-boolean-valuedᵀ α =
+\end{code}
+
+In module `ContinuityProperties`, we defined the notion of a Boolean point. We
+now define the same notion for System T representations of points of the Baire
+space.
+
+\begin{code}
+
+is-boolean-pointᵀ : 〈〉 ⊢ baire → 𝓤₀  ̇
+is-boolean-pointᵀ α =
  (n : 〈〉 ⊢ ι) → (⟦ α ⟧₀ ⟦ n ⟧₀ ＝ zero) + (⟦ α ⟧₀ ⟦ n ⟧₀ ＝ succ zero)
 
+\end{code}
+
+If a System T term `t` satisfies `is-boolean-pointᵀ`, then its interpretation `⟦
+t ⟧` obviously satisfies `is-boolean-point`.
+
+\begin{code}
+
 boolean-valuedᵀ-lemma : (t : 〈〉 ⊢ baire)
-                      → is-boolean-valuedᵀ t
+                      → is-boolean-pointᵀ t
                       → is-boolean-point ⟦ t ⟧₀
 boolean-valuedᵀ-lemma t ψ i = cases † ‡ (ψ (numeral i))
  where
@@ -97,9 +128,7 @@ boolean-valuedᵀ-lemma t ψ i = cases † ‡ (ψ (numeral i))
     Ⅰ = ap ⟦ t ⟧₀ (to-nat-cancels-to-numeral i ⁻¹)
     Ⅱ = p
 
-    q = ⟦ t ⟧₀ i              ＝⟨ Ⅰ    ⟩
-        ⟦ t ⟧₀ ⟦ numeral i ⟧₀ ＝⟨ Ⅱ    ⟩
-        0                     ∎
+    q = ⟦ t ⟧₀ i ＝⟨ Ⅰ ⟩ ⟦ t ⟧₀ ⟦ numeral i ⟧₀ ＝⟨ Ⅱ ⟩ 0 ∎
 
   ‡ : ⟦ t ⟧₀ ⟦ numeral i ⟧₀ ＝ 1 → is-boolean-valued (⟦ t ⟧₀ i)
   ‡ p = inr q
@@ -108,92 +137,95 @@ boolean-valuedᵀ-lemma t ψ i = cases † ‡ (ψ (numeral i))
     Ⅱ = p
 
     q : ⟦ t ⟧₀ i ＝ 1
-    q = ⟦ t ⟧₀ i              ＝⟨ Ⅰ ⟩
-        ⟦ t ⟧₀ ⟦ numeral i ⟧₀ ＝⟨ Ⅱ ⟩
-        1                     ∎
+    q = ⟦ t ⟧₀ i ＝⟨ Ⅰ ⟩ ⟦ t ⟧₀ ⟦ numeral i ⟧₀ ＝⟨ Ⅱ ⟩ 1 ∎
 
 \end{code}
 
 Following the conventions of the `InternalModCont` module, we define three
 versions of the same operation.
 
-  1. `max-questionᵤ`, that works on the external inductive type encoding of
-     dialogue trees in Agda,
-  2. `max-questionᵤ⋆`, that works on the external Church encoding of dialogue
-     trees in Agda, and
-  3. `max-questionᵤᵀ`, that is a System T function working on the Church
+  1. `max-boolean-question`, that works on the external inductive type encoding
+     of dialogue trees in Agda,
+  2. `max-boolean-question⋆`, that works on the external Church encoding of
+     dialogue trees in Agda, and
+  3. `max-boolean-questionᵀ`, that is a System T function working on the Church
      encoding of dialogue trees in System T.
 
 \begin{code}
 
--- TODO
--- Should be called max-question-0-1.
--- or max-boolean-question.
--- or max-question-in-boolean-paths
-max-questionᵤ : C ℕ → ℕ
-max-questionᵤ (D.η n)   = 0
-max-questionᵤ (D.β φ n) = max n (max n₁ n₂)
+max-boolean-question : C ℕ → ℕ
+max-boolean-question (D.η n)   = 0
+max-boolean-question (D.β φ n) = max n (max n₁ n₂)
  where
   n₁ : ℕ
-  n₁ = max-questionᵤ (φ ₀)
+  n₁ = max-boolean-question (φ ₀)
 
   n₂ : ℕ
-  n₂ = max-questionᵤ (φ ₁)
+  n₂ = max-boolean-question (φ ₁)
 
 \end{code}
 
 \begin{code}
 
-max-questionᵤ⋆ : D⋆ ℕ ℕ ℕ ℕ → ℕ
-max-questionᵤ⋆ d = d (λ _ → 0) (λ g x → max x (max (g 0) (g 1)))
+max-boolean-question⋆ : D⋆ ℕ ℕ ℕ ℕ → ℕ
+max-boolean-question⋆ d = d (λ _ → 0) (λ g x → max x (max (g 0) (g 1)))
 
-max-questionᵤᵀ : {Γ : Cxt} → Γ ⊢ (⌜B⌝ ι ι) ⇒ ι
-max-questionᵤᵀ =
- ƛ (ν₀ · (ƛ Zero) · ƛ (ƛ (maxᵀ · ν₀ · (maxᵀ · (ν₁ · numeral 0) · (ν₁ · numeral 1)))))
+max-boolean-questionᵀ : {Γ : Cxt} → Γ ⊢ (⌜B⌝ ι ι) ⇒ ι
+max-boolean-questionᵀ =
+ ƛ
+  (ν₀
+   · (ƛ Zero)
+   · ƛ (ƛ (maxᵀ · ν₀ · (maxᵀ · (ν₁ · numeral 0)
+                             · (ν₁ · numeral 1)))))
 
 \end{code}
 
+We now prove the agreement of `max-boolean-question` with
+`max-boolean-question⋆`.
 
 \begin{code}
 
-max-questionᵤ⋆-agreement : (d : B ℕ)
-                         → max-questionᵤ (prune d)
-                           ＝ max-questionᵤ⋆ (church-encode d)
-max-questionᵤ⋆-agreement (D.η n)   = refl
-max-questionᵤ⋆-agreement (D.β φ n) = †
+max-boolean-question⋆-agreement : (d : B ℕ)
+                                → max-boolean-question (prune d)
+                                  ＝ max-boolean-question⋆ (church-encode d)
+max-boolean-question⋆-agreement (D.η n)   = refl
+max-boolean-question⋆-agreement (D.β φ n) = †
  where
   encode = church-encode
 
-  IH₀ : max-questionᵤ (prune (φ 0)) ＝ max-questionᵤ⋆ (encode (φ 0))
-  IH₀ = max-questionᵤ⋆-agreement (φ 0)
+  IH₀ : max-boolean-question (prune (φ 0))
+        ＝ max-boolean-question⋆ (encode (φ 0))
+  IH₀ = max-boolean-question⋆-agreement (φ 0)
 
-  IH₁ : max-questionᵤ (prune (φ 1)) ＝ max-questionᵤ⋆ (encode (φ 1))
-  IH₁ = max-questionᵤ⋆-agreement (φ 1)
+  IH₁ : max-boolean-question (prune (φ 1))
+        ＝ max-boolean-question⋆ (encode (φ 1))
+  IH₁ = max-boolean-question⋆-agreement (φ 1)
 
-  † : max-questionᵤ (prune (D.β φ n)) ＝ max-questionᵤ⋆ (encode (D.β φ n))
+  n₀  = max-boolean-question (prune (φ 0))
+  n₁  = max-boolean-question (prune (φ 1))
+  n₀⋆ = max-boolean-question⋆ (encode (φ 0))
+  n₁⋆ = max-boolean-question⋆ (encode (φ 1))
+
+  Ⅰ = ap (λ - → max n (max - (max-boolean-question (prune (φ 1)))))          IH₀
+  Ⅱ = ap (λ - → max n (max (max-boolean-question⋆ (church-encode (φ 0))) -)) IH₁
+
+  † : max-boolean-question (prune (D.β φ n))
+      ＝ max-boolean-question⋆ (encode (D.β φ n))
   † =
-   max-questionᵤ (D.β ((λ j → prune (φ (embedding-𝟚-ℕ j)))) n)
-    ＝⟨ refl ⟩
-   max n (max (max-questionᵤ (prune (φ 0))) (max-questionᵤ (prune (φ 1))))
-    ＝⟨ Ⅰ ⟩
-   max n (max (max-questionᵤ⋆ (encode (φ 0))) (max-questionᵤ (prune (φ 1))))
-    ＝⟨ Ⅱ ⟩
-   max n (max (max-questionᵤ⋆ (encode (φ 0))) (max-questionᵤ⋆ (encode (φ 1))))
-    ＝⟨ refl ⟩
-   max-questionᵤ⋆ (encode (D.β φ n))
-    ∎
-    where
-     Ⅰ = ap (λ - → max n (max - (max-questionᵤ (prune (φ 1)))))          IH₀
-     Ⅱ = ap (λ - → max n (max (max-questionᵤ⋆ (church-encode (φ 0))) -)) IH₁
+   max-boolean-question (D.β ((λ j → prune (φ (embedding-𝟚-ℕ j)))) n) ＝⟨ refl ⟩
+   max n (max n₀ n₁)                                                  ＝⟨ Ⅰ    ⟩
+   max n (max n₀⋆ n₁)                                                 ＝⟨ Ⅱ    ⟩
+   max n (max n₀⋆ n₁⋆)                                                ＝⟨ refl ⟩
+   max-boolean-question⋆ (encode (D.β φ n))                           ∎
 
 max-questionᵀ-agreement : (d : 〈〉 ⊢ ⌜D⋆⌝ ι ι ι ι)
-                        → ⟦ max-questionᵤᵀ · d ⟧₀ ＝ max-questionᵤ⋆ ⟦ d ⟧₀
+                        → ⟦ max-boolean-questionᵀ · d ⟧₀ ＝ max-boolean-question⋆ ⟦ d ⟧₀
 max-questionᵀ-agreement d =
- ⟦ max-questionᵤᵀ · d ⟧₀                                        ＝⟨ refl  ⟩
+ ⟦ max-boolean-questionᵀ · d ⟧₀                                        ＝⟨ refl  ⟩
  ⟦ d ⟧₀ (λ _ → 0) (λ g x → ⟦ maxᵀ ⟧₀ x (⟦ maxᵀ ⟧₀ (g 0) (g 1))) ＝⟨ Ⅰ     ⟩
  ⟦ d ⟧₀ (λ _ → 0) (λ g x → max x (⟦ maxᵀ ⟧₀ (g 0) (g 1)))       ＝⟨ Ⅱ     ⟩
  ⟦ d ⟧₀ (λ _ → 0) (λ g x → max x (max (g 0) (g 1)))             ＝⟨ refl  ⟩
- max-questionᵤ⋆ ⟦ d ⟧₀                                          ∎
+ max-boolean-question⋆ ⟦ d ⟧₀                                          ∎
   where
    † : (g : ℕ → ℕ) (n : ℕ)
      → ⟦ maxᵀ ⟧₀ n (⟦ maxᵀ ⟧₀ (g 0) (g 1)) ＝ max n (⟦ maxᵀ ⟧₀ (g 0) (g 1))
@@ -211,14 +243,14 @@ max-questionᵀ-agreement d =
 \begin{code}
 
 main-lemma : (t : 〈〉 ⊢ baire ⇒ ι)
-           → ⟦ max-questionᵤᵀ · ⌜dialogue-tree⌝ t ⟧₀
-             ＝ max-questionᵤ (prune (dialogue-tree t))
+           → ⟦ max-boolean-questionᵀ · ⌜dialogue-tree⌝ t ⟧₀
+             ＝ max-boolean-question (prune (dialogue-tree t))
 main-lemma t =
-  ⟦ max-questionᵤᵀ · ⌜dialogue-tree⌝ t ⟧₀           ＝⟨ refl ⟩
-  ⟦ max-questionᵤᵀ ⟧₀ ⟦ ⌜dialogue-tree⌝ t ⟧₀        ＝⟨ Ⅰ    ⟩
-  max-questionᵤ⋆ ⟦ ⌜dialogue-tree⌝ t ⟧₀             ＝⟨ Ⅱ    ⟩
-  max-questionᵤ⋆ (church-encode (dialogue-tree t )) ＝⟨ Ⅲ    ⟩
-  max-questionᵤ (prune (dialogue-tree t))           ∎
+  ⟦ max-boolean-questionᵀ · ⌜dialogue-tree⌝ t ⟧₀           ＝⟨ refl ⟩
+  ⟦ max-boolean-questionᵀ ⟧₀ ⟦ ⌜dialogue-tree⌝ t ⟧₀        ＝⟨ Ⅰ    ⟩
+  max-boolean-question⋆ ⟦ ⌜dialogue-tree⌝ t ⟧₀             ＝⟨ Ⅱ    ⟩
+  max-boolean-question⋆ (church-encode (dialogue-tree t )) ＝⟨ Ⅲ    ⟩
+  max-boolean-question (prune (dialogue-tree t))           ∎
    where
     † : Rnorm (B⟦ t ⟧₀ generic) (⌜ t ⌝ · ⌜generic⌝)
     † = Rnorm-lemma₀ t generic ⌜generic⌝ Rnorm-generic
@@ -236,26 +268,26 @@ main-lemma t =
 
     Ⅰ = max-questionᵀ-agreement (⌜dialogue-tree⌝ t)
     Ⅱ = † ι (λ _ → 0) (λ g x → max x (max (g 0) (g 1))) (λ _ → refl) ext
-    Ⅲ = max-questionᵤ⋆-agreement (dialogue-tree t) ⁻¹
+    Ⅲ = max-boolean-question⋆-agreement (dialogue-tree t) ⁻¹
 
 mod-of : B ℕ → BT ℕ
 mod-of d = pr₁ (dialogue-UC (prune d))
 
-final-step : (d : B ℕ) → max-questionᵤ (prune d) ＝ maximumᵤ (mod-of d)
+final-step : (d : B ℕ) → max-boolean-question (prune d) ＝ maximumᵤ (mod-of d)
 final-step (D.η n)   = refl
 final-step (D.β φ n) =
- max-questionᵤ (prune (D.β φ n))                                           ＝⟨ refl ⟩
- max-questionᵤ (D.β (λ j → prune (φ (embedding-𝟚-ℕ j))) n)                 ＝⟨ refl ⟩
- max n (max (max-questionᵤ (prune (φ 0))) (max-questionᵤ ((prune (φ 1))))) ＝⟨ Ⅰ    ⟩
- max n (max (maximumᵤ (mod-of (φ 0))) (max-questionᵤ ((prune (φ 1)))))     ＝⟨ Ⅱ    ⟩
+ max-boolean-question (prune (D.β φ n))                                           ＝⟨ refl ⟩
+ max-boolean-question (D.β (λ j → prune (φ (embedding-𝟚-ℕ j))) n)                 ＝⟨ refl ⟩
+ max n (max (max-boolean-question (prune (φ 0))) (max-boolean-question ((prune (φ 1))))) ＝⟨ Ⅰ    ⟩
+ max n (max (maximumᵤ (mod-of (φ 0))) (max-boolean-question ((prune (φ 1)))))     ＝⟨ Ⅱ    ⟩
  max n (max (maximumᵤ (mod-of (φ 0))) (maximumᵤ (mod-of (φ 1))))           ＝⟨ refl ⟩
  maximumᵤ (mod-of (D.β φ n))                                               ∎
   where
-   Ⅰ = ap (λ - → max n (max - (max-questionᵤ (prune (φ 1))))) (final-step (φ 0))
+   Ⅰ = ap (λ - → max n (max - (max-boolean-question (prune (φ 1))))) (final-step (φ 0))
    Ⅱ = ap (λ - → max n (max (maximumᵤ (mod-of (φ 0))) -)) (final-step (φ 1))
 
 {-
- max-questionᵤ (prune (dialogue-tree t)) ＝⟨ {!dialogue-tree t!} ⟩
+ max-boolean-question (prune (dialogue-tree t)) ＝⟨ {!dialogue-tree t!} ⟩
  {!!}                                    ＝⟨ {!!} ⟩
  maximumᵤ (mod-of t)                     ∎
 -}
@@ -268,14 +300,14 @@ same conventions.
 \begin{code}
 
 modulusᵤ : C ℕ → ℕ
-modulusᵤ = succ ∘ max-questionᵤ
+modulusᵤ = succ ∘ max-boolean-question
 
 \end{code}
 
 \begin{code}
 
 modulusᵤᵀ : {Γ : Cxt} →  Γ ⊢ baire ⇒ ι → B-context【 Γ 】 ι ⊢ ι
-modulusᵤᵀ t = Succ' · (max-questionᵤᵀ · ⌜dialogue-tree⌝ t)
+modulusᵤᵀ t = Succ' · (max-boolean-questionᵀ · ⌜dialogue-tree⌝ t)
 
 \end{code}
 
@@ -310,8 +342,8 @@ agreement-with-restriction f α bv =
 \begin{code}
 
 internal-uni-mod-correct : (t : 〈〉 ⊢ (baire ⇒ ι)) (α β : 〈〉 ⊢ baire)
-                         → is-boolean-valuedᵀ α
-                         → is-boolean-valuedᵀ β
+                         → is-boolean-pointᵀ α
+                         → is-boolean-pointᵀ β
                          → ⟦ α ⟧₀ ＝⦅ ⟦ modulusᵤᵀ t ⟧₀ ⦆ ⟦ β ⟧₀
                          → ⟦ t · α ⟧₀ ＝ ⟦ t · β ⟧₀
 internal-uni-mod-correct t αᵀ βᵀ ψ₁ ψ₂ ϑ = †
@@ -352,9 +384,9 @@ internal-uni-mod-correct t αᵀ βᵀ ψ₁ ψ₂ ϑ = †
   mᵘ₀ : ℕ
   mᵘ₀ = succ (maximumᵤ bt)
 
-  rts : ⟦ max-questionᵤᵀ · ⌜dialogue-tree⌝ t ⟧₀ ＝ maximumᵤ bt
-  rts = ⟦ max-questionᵤᵀ · ⌜dialogue-tree⌝ t ⟧₀   ＝⟨ main-lemma t ⟩
-        max-questionᵤ (prune (dialogue-tree t))   ＝⟨ final-step (dialogue-tree t) ⟩
+  rts : ⟦ max-boolean-questionᵀ · ⌜dialogue-tree⌝ t ⟧₀ ＝ maximumᵤ bt
+  rts = ⟦ max-boolean-questionᵀ · ⌜dialogue-tree⌝ t ⟧₀   ＝⟨ main-lemma t ⟩
+        max-boolean-question (prune (dialogue-tree t))   ＝⟨ final-step (dialogue-tree t) ⟩
         maximumᵤ bt                               ∎
 
   q : ⟦ modulusᵤᵀ t ⟧₀ ＝ succ (maximumᵤ bt)
