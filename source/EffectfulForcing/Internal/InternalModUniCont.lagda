@@ -180,8 +180,8 @@ max-boolean-questionᵀ =
 
 \end{code}
 
-We now prove the agreement of `max-boolean-question` with
-`max-boolean-question⋆`.
+We now prove two lemmas on the agreement of `max-boolean-question`,
+`max-boolean-question⋆`, and `max-boolean-questionᵀ`.
 
 \begin{code}
 
@@ -213,19 +213,20 @@ max-boolean-question⋆-agreement (D.β φ n) = †
       ＝ max-boolean-question⋆ (encode (D.β φ n))
   † =
    max-boolean-question (D.β ((λ j → prune (φ (embedding-𝟚-ℕ j)))) n) ＝⟨ refl ⟩
-   max n (max n₀ n₁)                                                  ＝⟨ Ⅰ    ⟩
+   max n (max n₀  n₁)                                                 ＝⟨ Ⅰ    ⟩
    max n (max n₀⋆ n₁)                                                 ＝⟨ Ⅱ    ⟩
    max n (max n₀⋆ n₁⋆)                                                ＝⟨ refl ⟩
    max-boolean-question⋆ (encode (D.β φ n))                           ∎
 
-max-questionᵀ-agreement : (d : 〈〉 ⊢ ⌜D⋆⌝ ι ι ι ι)
-                        → ⟦ max-boolean-questionᵀ · d ⟧₀ ＝ max-boolean-question⋆ ⟦ d ⟧₀
-max-questionᵀ-agreement d =
- ⟦ max-boolean-questionᵀ · d ⟧₀                                        ＝⟨ refl  ⟩
- ⟦ d ⟧₀ (λ _ → 0) (λ g x → ⟦ maxᵀ ⟧₀ x (⟦ maxᵀ ⟧₀ (g 0) (g 1))) ＝⟨ Ⅰ     ⟩
- ⟦ d ⟧₀ (λ _ → 0) (λ g x → max x (⟦ maxᵀ ⟧₀ (g 0) (g 1)))       ＝⟨ Ⅱ     ⟩
- ⟦ d ⟧₀ (λ _ → 0) (λ g x → max x (max (g 0) (g 1)))             ＝⟨ refl  ⟩
- max-boolean-question⋆ ⟦ d ⟧₀                                          ∎
+max-boolean-questionᵀ-agreement : (d : 〈〉 ⊢ ⌜D⋆⌝ ι ι ι ι)
+                                → ⟦ max-boolean-questionᵀ · d ⟧₀
+                                  ＝ max-boolean-question⋆ ⟦ d ⟧₀
+max-boolean-questionᵀ-agreement d =
+ ⟦ max-boolean-questionᵀ · d ⟧₀                                  ＝⟨ refl  ⟩
+ ⟦ d ⟧₀ (λ _ → 0) (λ g x → ⟦ maxᵀ ⟧₀ x (⟦ maxᵀ ⟧₀ (g 0) (g 1)))  ＝⟨ Ⅰ     ⟩
+ ⟦ d ⟧₀ (λ _ → 0) (λ g x → max x (⟦ maxᵀ ⟧₀ (g 0) (g 1)))        ＝⟨ Ⅱ     ⟩
+ ⟦ d ⟧₀ (λ _ → 0) (λ g x → max x (max (g 0) (g 1)))              ＝⟨ refl  ⟩
+ max-boolean-question⋆ ⟦ d ⟧₀                                    ∎
   where
    † : (g : ℕ → ℕ) (n : ℕ)
      → ⟦ maxᵀ ⟧₀ n (⟦ maxᵀ ⟧₀ (g 0) (g 1)) ＝ max n (⟦ maxᵀ ⟧₀ (g 0) (g 1))
@@ -240,62 +241,86 @@ max-questionᵀ-agreement d =
 
 \end{code}
 
+The following is an analogue of `main-lemma` from the `InternalModCont` module.
+As the name suggests, it is quite an important lemma for the main result of this
+module.
+
 \begin{code}
 
 main-lemma : (t : 〈〉 ⊢ baire ⇒ ι)
            → ⟦ max-boolean-questionᵀ · ⌜dialogue-tree⌝ t ⟧₀
              ＝ max-boolean-question (prune (dialogue-tree t))
 main-lemma t =
-  ⟦ max-boolean-questionᵀ · ⌜dialogue-tree⌝ t ⟧₀           ＝⟨ refl ⟩
-  ⟦ max-boolean-questionᵀ ⟧₀ ⟦ ⌜dialogue-tree⌝ t ⟧₀        ＝⟨ Ⅰ    ⟩
-  max-boolean-question⋆ ⟦ ⌜dialogue-tree⌝ t ⟧₀             ＝⟨ Ⅱ    ⟩
-  max-boolean-question⋆ (church-encode (dialogue-tree t )) ＝⟨ Ⅲ    ⟩
-  max-boolean-question (prune (dialogue-tree t))           ∎
-   where
-    † : Rnorm (B⟦ t ⟧₀ generic) (⌜ t ⌝ · ⌜generic⌝)
-    † = Rnorm-lemma₀ t generic ⌜generic⌝ Rnorm-generic
+ ⟦ max-boolean-questionᵀ · ⌜dialogue-tree⌝ t ⟧₀             ＝⟨ refl ⟩
+ ⟦ max-boolean-questionᵀ ⟧₀ ⟦ ⌜dialogue-tree⌝ t ⟧₀          ＝⟨ Ⅰ    ⟩
+ max-boolean-question⋆ ⟦ ⌜dialogue-tree⌝ t ⟧₀               ＝⟨ Ⅱ    ⟩
+ max-boolean-question⋆ (church-encode (dialogue-tree t ))   ＝⟨ Ⅲ    ⟩
+ max-boolean-question (prune (dialogue-tree t))             ∎
+  where
+   † : Rnorm (B⟦ t ⟧₀ generic) (⌜ t ⌝ · ⌜generic⌝)
+   † = Rnorm-lemma₀ t generic ⌜generic⌝ Rnorm-generic
 
-    ext : extβ (λ g x → max x (max (g 0) (g 1)))
-    ext f g m n p φ =
-     max m (max (f 0) (f 1))   ＝⟨ १ ⟩
-     max m (max (g 0) (f 1))   ＝⟨ २ ⟩
-     max m (max (g 0) (g 1))   ＝⟨ ३ ⟩
-     max n (max (g 0) (g 1))   ∎
-      where
-       १ = ap (λ - → max m (max - (f 1))) (φ 0)
-       २ = ap (λ - → max m (max (g 0) -)) (φ 1)
-       ३ = ap (λ - → max - (max (g 0) (g 1))) p
+   ext : extβ (λ g x → max x (max (g 0) (g 1)))
+   ext f g m n p φ =
+    max m (max (f 0) (f 1))   ＝⟨ १ ⟩
+    max m (max (g 0) (f 1))   ＝⟨ २ ⟩
+    max m (max (g 0) (g 1))   ＝⟨ ३ ⟩
+    max n (max (g 0) (g 1))   ∎
+     where
+      १ = ap (λ - → max m (max - (f 1))) (φ 0)
+      २ = ap (λ - → max m (max (g 0) -)) (φ 1)
+      ३ = ap (λ - → max - (max (g 0) (g 1))) p
 
-    Ⅰ = max-questionᵀ-agreement (⌜dialogue-tree⌝ t)
-    Ⅱ = † ι (λ _ → 0) (λ g x → max x (max (g 0) (g 1))) (λ _ → refl) ext
-    Ⅲ = max-boolean-question⋆-agreement (dialogue-tree t) ⁻¹
+   Ⅰ = max-boolean-questionᵀ-agreement (⌜dialogue-tree⌝ t)
+   Ⅱ = † ι (λ _ → 0) (λ g x → max x (max (g 0) (g 1))) (λ _ → refl) ext
+   Ⅲ = max-boolean-question⋆-agreement (dialogue-tree t) ⁻¹
+
+\end{code}
+
+We know by `dialogue-UC` that the computation encoded by a dialogue tree is
+uniformly continuous. We define the following `mod-of` function that denotes the
+operation taking the modulus of uniform continuity of such a computation encoded
+by a dialogue tree. It assumes that the dialogue tree in consideration is
+binary, and accordingly, first prunes the tree.
+
+\begin{code}
 
 mod-of : B ℕ → BT ℕ
 mod-of d = pr₁ (dialogue-UC (prune d))
 
-final-step : (d : B ℕ) → max-boolean-question (prune d) ＝ maximumᵤ (mod-of d)
-final-step (D.η n)   = refl
-final-step (D.β φ n) =
- max-boolean-question (prune (D.β φ n))                                           ＝⟨ refl ⟩
- max-boolean-question (D.β (λ j → prune (φ (embedding-𝟚-ℕ j))) n)                 ＝⟨ refl ⟩
- max n (max (max-boolean-question (prune (φ 0))) (max-boolean-question ((prune (φ 1))))) ＝⟨ Ⅰ    ⟩
- max n (max (maximumᵤ (mod-of (φ 0))) (max-boolean-question ((prune (φ 1)))))     ＝⟨ Ⅱ    ⟩
- max n (max (maximumᵤ (mod-of (φ 0))) (maximumᵤ (mod-of (φ 1))))           ＝⟨ refl ⟩
- maximumᵤ (mod-of (D.β φ n))                                               ∎
-  where
-   Ⅰ = ap (λ - → max n (max - (max-boolean-question (prune (φ 1))))) (final-step (φ 0))
-   Ⅱ = ap (λ - → max n (max (maximumᵤ (mod-of (φ 0))) -)) (final-step (φ 1))
+\end{code}
 
-{-
- max-boolean-question (prune (dialogue-tree t)) ＝⟨ {!dialogue-tree t!} ⟩
- {!!}                                    ＝⟨ {!!} ⟩
- maximumᵤ (mod-of t)                     ∎
--}
+We also prove a lemma showing that `max-boolean-question ∘ prune` is the same
+thing as `maximumᵤ ∘ mod-of`.
+
+\begin{code}
+
+max-boolean-question-is-maximum-mod-of : (d : B ℕ)
+                                        → max-boolean-question (prune d)
+                                          ＝ maximumᵤ (mod-of d)
+max-boolean-question-is-maximum-mod-of (D.η n)   = refl
+max-boolean-question-is-maximum-mod-of (D.β φ n) =
+ max-boolean-question (prune (D.β φ n))                            ＝⟨ refl ⟩
+ max-boolean-question (D.β (λ j → prune (φ (embedding-𝟚-ℕ j))) n)  ＝⟨ refl ⟩
+ max n (max n₀ n₁)                                                 ＝⟨ Ⅰ    ⟩
+ max n (max (maximumᵤ (mod-of (φ 0))) n₁)                          ＝⟨ Ⅱ    ⟩
+ max n (max (maximumᵤ (mod-of (φ 0))) (maximumᵤ (mod-of (φ 1))))   ＝⟨ refl ⟩
+ maximumᵤ (mod-of (D.β φ n))                                       ∎
+  where
+   Ⅰ   = ap
+          (λ - → max n (max - (max-boolean-question (prune (φ 1)))))
+          (max-boolean-question-is-maximum-mod-of (φ 0))
+   Ⅱ   = ap
+          (max n ∘ max (maximumᵤ (mod-of (φ 0))))
+          (max-boolean-question-is-maximum-mod-of (φ 1))
+
+   n₀  = max-boolean-question (prune (φ 0))
+   n₁  = max-boolean-question (prune (φ 1))
 
 \end{code}
 
-We now define the analogue of `modulus` from `InternalModCont`, following the
-same conventions.
+We now proceed to define the analogue of `modulus` from `InternalModCont`,
+following the same conventions.
 
 \begin{code}
 
@@ -304,6 +329,8 @@ modulusᵤ = succ ∘ max-boolean-question
 
 \end{code}
 
+The internalized version of `modulusᵤ` is denoted by `modulusᵤᵀ`.
+
 \begin{code}
 
 modulusᵤᵀ : {Γ : Cxt} →  Γ ⊢ baire ⇒ ι → B-context【 Γ 】 ι ⊢ ι
@@ -311,41 +338,44 @@ modulusᵤᵀ t = Succ' · (max-boolean-questionᵀ · ⌜dialogue-tree⌝ t)
 
 \end{code}
 
+We also need to write down the completely obvious fact that a function `f :
+Baire → ℕ` agrees with the restriction of `f` to Cantor, when considering
+Boolean points.
+
 \begin{code}
 
--- another-lemma : (f : Baire → ℕ)
---               → (α : Baire) (bv : is-boolean-point α)
---               → (β : ℕ → 𝟚)
---               → to-cantor (α , bv) ＝ β
---               → f α ＝ C-restriction f β
--- another-lemma f α bv β p =
---  f α ＝⟨ {!!} ⟩ {!!} ＝⟨ {!!} ⟩ {!!} ∎
-
-agreement-with-restriction : (f : Baire → ℕ) (α : Baire) (bv : is-boolean-point α)
+agreement-with-restriction : (f : Baire → ℕ) (α : Baire)
+                           → (bv : is-boolean-point α)
                            → f α ＝ C-restriction f (to-cantor (α , bv))
 agreement-with-restriction f α bv =
-  f α                                   ＝⟨ refl ⟩
-  f′ (α , bv)                           ＝⟨ † ⟩
-  f′ (to-cantor₀ (to-cantor (α , bv)))  ＝⟨ refl ⟩
-  f₀ (to-cantor (α , bv))               ∎
-   where
-    f₀ : Cantor → ℕ
-    f₀ = C-restriction f
+ f α                                   ＝⟨ refl ⟩
+ f′ (α , bv)                           ＝⟨ †    ⟩
+ f′ (to-cantor₀ (to-cantor (α , bv)))  ＝⟨ refl ⟩
+ f₀ (to-cantor (α , bv))               ∎
+  where
+   f₀ : Cantor → ℕ
+   f₀ = C-restriction f
 
-    f′ : Cantor₀ → ℕ
-    f′ = f ∘ pr₁
+   f′ : Cantor₀ → ℕ
+   f′ = f ∘ pr₁
 
-    † = ap f′ (to-cantor₀-cancels-to-cantor (α , bv) ⁻¹)
+   † = ap f′ (to-cantor₀-cancels-to-cantor (α , bv) ⁻¹)
 
 \end{code}
 
+Finally, we state and prove our main result:
+
+  given any Boolean `t : baire ⇒ ι`, and given any two Boolean points `αᵀ, βᵀ :
+  baire`, if `⟦ αᵀ ⟧` is equal to `⟦ βᵀ ⟧` up to `modulusᵤᵀ t`, then `⟦ t · αᵀ
+  ⟧` is equal to `⟦ t · βᵀ ⟧`.
+
 \begin{code}
 
-internal-uni-mod-correct : (t : 〈〉 ⊢ (baire ⇒ ι)) (α β : 〈〉 ⊢ baire)
-                         → is-boolean-pointᵀ α
-                         → is-boolean-pointᵀ β
-                         → ⟦ α ⟧₀ ＝⦅ ⟦ modulusᵤᵀ t ⟧₀ ⦆ ⟦ β ⟧₀
-                         → ⟦ t · α ⟧₀ ＝ ⟦ t · β ⟧₀
+internal-uni-mod-correct : (t : 〈〉 ⊢ (baire ⇒ ι)) (αᵀ βᵀ : 〈〉 ⊢ baire)
+                         → is-boolean-pointᵀ αᵀ
+                         → is-boolean-pointᵀ βᵀ
+                         → ⟦ αᵀ ⟧₀ ＝⦅ ⟦ modulusᵤᵀ t ⟧₀ ⦆ ⟦ βᵀ ⟧₀
+                         → ⟦ t · αᵀ ⟧₀ ＝ ⟦ t · βᵀ ⟧₀
 internal-uni-mod-correct t αᵀ βᵀ ψ₁ ψ₂ ϑ = †
  where
   f : Baire → ℕ
@@ -384,10 +414,15 @@ internal-uni-mod-correct t αᵀ βᵀ ψ₁ ψ₂ ϑ = †
   mᵘ₀ : ℕ
   mᵘ₀ = succ (maximumᵤ bt)
 
-  rts : ⟦ max-boolean-questionᵀ · ⌜dialogue-tree⌝ t ⟧₀ ＝ maximumᵤ bt
-  rts = ⟦ max-boolean-questionᵀ · ⌜dialogue-tree⌝ t ⟧₀   ＝⟨ main-lemma t ⟩
-        max-boolean-question (prune (dialogue-tree t))   ＝⟨ final-step (dialogue-tree t) ⟩
-        maximumᵤ bt                               ∎
+
+  rts : ⟦ max-boolean-questionᵀ · ⌜dialogue-tree⌝ t ⟧₀
+        ＝ maximumᵤ bt
+  rts = ⟦ max-boolean-questionᵀ · ⌜dialogue-tree⌝ t ⟧₀   ＝⟨ Ⅰ ⟩
+        max-boolean-question (prune (dialogue-tree t))   ＝⟨ Ⅱ ⟩
+        maximumᵤ bt                                      ∎
+         where
+          Ⅰ = main-lemma t
+          Ⅱ = max-boolean-question-is-maximum-mod-of (dialogue-tree t)
 
   q : ⟦ modulusᵤᵀ t ⟧₀ ＝ succ (maximumᵤ bt)
   q = ap succ rts
@@ -422,7 +457,6 @@ internal-uni-mod-correct t αᵀ βᵀ ψ₁ ψ₂ ϑ = †
        bt
        δ
 
-
   ‡ : f₀ (to-cantor α′) ＝ f₀ (to-cantor β′)
   ‡ = pr₂ c (to-cantor α′) (to-cantor β′) γ
 
@@ -434,8 +468,5 @@ internal-uni-mod-correct t αᵀ βᵀ ψ₁ ψ₂ ϑ = †
       f₀ (to-cantor α′) ＝⟨ ‡ ⟩
       f₀ (to-cantor β′) ＝⟨ Ⅱ ⟩
       f β               ∎
-
--- One can prove a theorem saying max-question-in-boolean-paths is the same
--- thing as max-question followed by a pruning.
 
 \end{code}
