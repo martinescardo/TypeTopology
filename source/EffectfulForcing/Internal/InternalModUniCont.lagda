@@ -414,7 +414,6 @@ internal-uni-mod-correct t αᵀ βᵀ ψ₁ ψ₂ ϑ = †
   mᵘ₀ : ℕ
   mᵘ₀ = succ (maximumᵤ bt)
 
-
   rts : ⟦ max-boolean-questionᵀ · ⌜dialogue-tree⌝ t ⟧₀
         ＝ maximumᵤ bt
   rts = ⟦ max-boolean-questionᵀ · ⌜dialogue-tree⌝ t ⟧₀   ＝⟨ Ⅰ ⟩
