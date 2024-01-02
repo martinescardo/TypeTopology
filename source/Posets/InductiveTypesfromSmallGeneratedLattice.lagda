@@ -20,6 +20,8 @@ by Giovanni Curi:
 Giovanni Curi. "On Tarski's fixed point theorem". In: Proc. Amer. Math. Soc
 143 (2015), pp. 4439-4455. URL: https://arxiv.org/abs/1301.2793
 
+For a type theoretic write up see URL: https://arxiv.org/abs/2401.00841
+
 We now state the main result for reference, although much of the context is
 missing:
 
@@ -598,7 +600,7 @@ module inductive-definitions {𝓤 𝓦 𝓥 : Universe}
 \end{code}
 
 We now consider a restricted class of inductive definitions which we will call
-local. A local inductive definition ϕ is one such that a certain type
+local. A local inductive definition ϕ is one such that the type
 
   Σ b ꞉ B , (Ǝ a' ꞉ ⟨ L ⟩ , (b , a') ∈ ϕ × (a' ≤ a)
 
@@ -1612,8 +1614,8 @@ We will now show that under the assumptions of small presentation and bounded
   
 We make essential use of the initiality of both types here.
 
-This will allow us to satisfy the smallness conditions and salvage a least
-fixed point theorem.
+This will allow us to satisfy the smallness conditions needed to salvage the
+least fixed point theorem.
 
 \begin{code}
 
