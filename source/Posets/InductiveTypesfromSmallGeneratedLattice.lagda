@@ -1777,34 +1777,40 @@ module least-fixed-point {𝓤 𝓦 𝓥 : Universe}
   open local-from-small-basis-facts h
   open 𝓘nd-is-small-from-small-basis-facts h
 
-  Least-Fixed-Point-Theorem : (small-pres : has-small-presentation)
-                            → (f : ⟨ L ⟩ → ⟨ L ⟩)
-                            → (f-mono : f is-monotone)
-                            → (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩))
-                            → (bnd : ϕ is-bounded)
-                            → ((x : ⟨ L ⟩)
-                             → (Γ ϕ ((ϕ bounded-implies-local) bnd)) x ＝ f x)
-                            → (ind-e : inductively-generated-subset-exists ϕ)
-                            → (ind-e' :
-   small-QIT-from-bounded-and-small-presentation.inductively-generated-small-subset-exists
-                                        small-pres ϕ bnd)
-                            → Σ x ꞉ ⟨ L ⟩ , (f x ＝ x) × ((a : ⟨ L ⟩)
-                                                       → (f a ＝ a)
-                                                       → (x ≤ a) holds)
-  Least-Fixed-Point-Theorem small-pres f f-mono ϕ bnd H ind-e ind-e' =
+  module QITs-exists-for-all-ϕ (ind-e : (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩))
+                                      → inductively-generated-subset-exists ϕ)
+                               (ind'-e : (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩))
+                                       → (bnd : ϕ is-bounded)
+                                       → (small-pres : has-small-presentation)
+                                       →
+    small-QIT-from-bounded-and-small-presentation.inductively-generated-small-subset-exists
+    small-pres ϕ bnd)
+                                 where
+
+   Least-Fixed-Point-Theorem' : (small-pres : has-small-presentation)
+                              → (f : ⟨ L ⟩ → ⟨ L ⟩)
+                              → (f-mono : f is-monotone)
+                              → Σ ϕ ꞉ 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩) ,
+                                Σ bnd ꞉ ϕ is-bounded ,
+                                ((x : ⟨ L ⟩)
+                               → (Γ ϕ ((ϕ bounded-implies-local) bnd)) x ＝ f x)
+                              → Σ p ꞉ ⟨ L ⟩ , (f p ＝ p) × ((a : ⟨ L ⟩)
+                                                         → (f a ＝ a)
+                                                         → (p ≤ a) holds)
+   Least-Fixed-Point-Theorem' small-pres f f-mono (ϕ , bnd , H) =
     transport (λ g → Σ x ꞉ ⟨ L ⟩ , (g x ＝ x) × ((a : ⟨ L ⟩)
                                               → (g a ＝ a)
                                               → (x ≤ a) holds))
               path Γ-has-least-fixed-point
-   where
-    open correspondance-from-locally-small-ϕ ϕ ((ϕ bounded-implies-local) bnd)
-    open small-𝓘nd-from-exists ind-e
-    open 𝓘nd-is-small-from-bounded-and-small-presentation small-pres ϕ bnd
-    open small-QIT-from-bounded-and-small-presentation small-pres ϕ bnd
-    open 𝓘nd-is-small-QITs-exists ind-e ind-e'
-    open smallness-assumption 𝓘nd-is-small
-    path : Γ ϕ ((ϕ bounded-implies-local) bnd) ＝ f
-    path = dfunext fe H
+    where
+     open correspondance-from-locally-small-ϕ ϕ ((ϕ bounded-implies-local) bnd)
+     open small-𝓘nd-from-exists (ind-e ϕ)
+     open 𝓘nd-is-small-from-bounded-and-small-presentation small-pres ϕ bnd
+     open small-QIT-from-bounded-and-small-presentation small-pres ϕ bnd
+     open 𝓘nd-is-small-QITs-exists (ind-e ϕ) (ind'-e ϕ bnd small-pres)
+     open smallness-assumption 𝓘nd-is-small
+     path : Γ ϕ ((ϕ bounded-implies-local) bnd) ＝ f
+     path = dfunext fe H
 
 \end{code}
 
