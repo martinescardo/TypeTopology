@@ -1,7 +1,8 @@
 Ayberk Tosun.
 
 Formulations of some alternative definitions of the notion of continuity from
-`MFPSAndVariations.Continuity` and proofs of their equivalences.
+`MFPSAndVariations.Continuity` and proofs of their equivalences with the
+original definitions.
 
 First equivalence, for continuity, proved on 2023-06-13.
 
@@ -32,10 +33,10 @@ open Implication fe
 
 \end{code}
 
-We first formulate the `α ＝⦅ n ⦆ β` relation that expresses that two sequences
-`α`, `β` of natural numbers are equal up to (not inclusive) some bound `n`.
-These have been adapted from the `CantorSearch` module authored by Martín
-Escardó (including the proofs `agreement→` and `agreement←`).
+We first formulate the `α ＝⦅ n ⦆ β` relation expressing that two sequences `α`,
+`β` of natural numbers are equal up to (not inclusive) some bound `n`. These
+have been adapted from the `CantorSearch` module authored by Martín Escardó
+(including the proofs `agreement→` and `agreement←`).
 
 \begin{code}
 
@@ -50,6 +51,8 @@ _＝⦅_⦆_ : {X : 𝓤₀  ̇} → (ℕ → X) → ℕ → (ℕ → X) → �
 α ＝⦅ succ n ⦆ β = (hd α ＝ hd β) × tl α ＝⦅ n ⦆ tl β
 
 \end{code}
+
+A small lemma characterizing this relation.
 
 \begin{code}
 
@@ -88,6 +91,16 @@ is-continuous₀ f =
 
 \end{code}
 
+We also define the following operation `modulus-at₀` that projects out the
+modulus of continuity computed by a proof of `is-continuous₀`:
+
+\begin{code}
+
+modulus-at₀ : (f : Baire → ℕ) → is-continuous₀ f → Baire → ℕ
+modulus-at₀ f c α = pr₁ (c α)
+
+\end{code}
+
 We now formulate an alternative non-inductive version of the `_＝⟪_⟫_` relation
 that we call `_＝⟪_⟫₀_` and prove its logical equivalence with `_＝⟪_⟫_`. The
 motivation for the non-inductive formulation is to use it as an intermediate
@@ -111,16 +124,15 @@ equality up to `is`. We record this fact as `＝⟪⟫₀-cons`.
 
 \end{code}
 
-
 We now generalize this fact. Equality up to `ms ++ ns` entails both equality up
 to `ms` and up to `ns`. In other words, `α₁ ＝⟪_⟫₀ α₂` is a semigroup
 homomorphism from semigroup `(List ℕ, _++_)` into semigroup `(𝓤₀, _×_)`.
 
 \begin{code}
 
-＝⟪⟫-++-lemma₁
- : {X : 𝓤₀  ̇} → (α₁ α₂ : ℕ → X) (ms ns : List ℕ)
- → α₁ ＝⟪ ms ++ ns ⟫₀ α₂ → (α₁ ＝⟪ ms ⟫₀ α₂) × (α₁ ＝⟪ ns ⟫₀ α₂)
+＝⟪⟫-++-lemma₁ : {X : 𝓤₀  ̇} (α₁ α₂ : ℕ → X) (ms ns : List ℕ)
+               → α₁ ＝⟪ ms ++ ns ⟫₀ α₂
+               → (α₁ ＝⟪ ms ⟫₀ α₂) × (α₁ ＝⟪ ns ⟫₀ α₂)
 ＝⟪⟫-++-lemma₁ α₁ α₂ ms ns p = † , ‡
  where
   † : α₁ ＝⟪ ms ⟫₀ α₂
@@ -129,36 +141,39 @@ homomorphism from semigroup `(List ℕ, _++_)` into semigroup `(𝓤₀, _×_)`.
   ‡ : α₁ ＝⟪ ns ⟫₀ α₂
   ‡ n q = p n (left-concatenation-preserves-membership n ns ms q)
 
-＝⟪⟫-++-lemma₂
- : {X : 𝓤₀  ̇} (α₁ α₂ : ℕ → X) (ms ns : List ℕ)
- → (α₁ ＝⟪ ms ⟫₀ α₂) × (α₁ ＝⟪ ns ⟫₀ α₂) → α₁ ＝⟪ ms ++ ns ⟫₀ α₂
-＝⟪⟫-++-lemma₂ α₁ α₂ ms ns (p , q) i r = cases (p i) (q i) (++-membership₁ i ms ns r)
+＝⟪⟫-++-lemma₂ : {X : 𝓤₀  ̇} (α₁ α₂ : ℕ → X) (ms ns : List ℕ)
+               → (α₁ ＝⟪ ms ⟫₀ α₂) × (α₁ ＝⟪ ns ⟫₀ α₂)
+               → α₁ ＝⟪ ms ++ ns ⟫₀ α₂
+＝⟪⟫-++-lemma₂ α₁ α₂ ms ns (p , q) i r =
+ cases (p i) (q i) (++-membership₁ i ms ns r)
 
-＝⟪⟫-respects-list-concatenation
- : {X : 𝓤₀  ̇} (α₁ α₂ : ℕ → X) (ms ns : List ℕ)
- → α₁ ＝⟪ ms ++ ns ⟫₀ α₂ ↔ (α₁ ＝⟪ ms ⟫₀ α₂) × (α₁ ＝⟪ ns ⟫₀ α₂)
-＝⟪⟫-respects-list-concatenation α₁ α₂ ms ns = ＝⟪⟫-++-lemma₁ α₁ α₂ ms ns
-                                             , ＝⟪⟫-++-lemma₂ α₁ α₂ ms ns
+＝⟪⟫-respects-list-concatenation : {X : 𝓤₀  ̇} (α₁ α₂ : ℕ → X) (ms ns : List ℕ)
+                                 → α₁ ＝⟪ ms ++ ns ⟫₀ α₂
+                                 ↔ (α₁ ＝⟪ ms ⟫₀ α₂) × (α₁ ＝⟪ ns ⟫₀ α₂)
+＝⟪⟫-respects-list-concatenation α₁ α₂ ms ns =
+ ＝⟪⟫-++-lemma₁ α₁ α₂ ms ns , ＝⟪⟫-++-lemma₂ α₁ α₂ ms ns
 
 \end{code}
 
-The alternative version of `_＝⟪_⟫_` that we defined implies the original
-version and vice versa.
+We now record the fact that the alternative version of `_＝⟪_⟫_` is logically
+equivalent to the original version.
 
 \begin{code}
 
 ＝⟪⟫₀-implies-＝⟪⟫ : {X : 𝓤₀  ̇} (α α′ : ℕ → X) (s : List ℕ)
                    → α ＝⟪ s ⟫₀ α′ → α ＝⟪ s ⟫  α′
 ＝⟪⟫₀-implies-＝⟪⟫ α α′ []       t = []
-＝⟪⟫₀-implies-＝⟪⟫ α α′ (i ∷ is) t =
- (t i in-head) ∷ (＝⟪⟫₀-implies-＝⟪⟫ α α′ is (＝⟪⟫₀-cons α α′ i is t))
+＝⟪⟫₀-implies-＝⟪⟫ α α′ (i ∷ is) t = t i in-head ∷ IH
+ where
+  IH = ＝⟪⟫₀-implies-＝⟪⟫ α α′ is (＝⟪⟫₀-cons α α′ i is t)
 
 ＝⟪⟫-implies-＝⟪⟫₀ : {X : 𝓤₀  ̇} (α β : ℕ → X) (s : List ℕ)
                    → α ＝⟪ s ⟫ β → α ＝⟪ s ⟫₀ β
 ＝⟪⟫-implies-＝⟪⟫₀ α α′ []       []       i ()
 ＝⟪⟫-implies-＝⟪⟫₀ α α′ (i ∷ is) (p ∷ ps) i in-head     = p
-＝⟪⟫-implies-＝⟪⟫₀ α α′ (_ ∷ is) (p ∷ ps) j (in-tail q) =
- ＝⟪⟫-implies-＝⟪⟫₀ α α′ is ps j q
+＝⟪⟫-implies-＝⟪⟫₀ α α′ (_ ∷ is) (p ∷ ps) j (in-tail q) = IH
+ where
+  IH = ＝⟪⟫-implies-＝⟪⟫₀ α α′ is ps j q
 
 \end{code}
 
@@ -179,27 +194,28 @@ section, and the converse direction in the section after that.
 \section{`is-continuous` implies `is-continuous₀`}
 
 The fact that `is-continuous` implies `is-continuous₀` is the easy direction of
-the proof. We need only two minor lemmas to conclude this.
+the equivalence in consideration. We need only two minor lemmas to conclude
+this.
 
 \begin{code}
 
 member-implies-below-max : (s : List ℕ) (i : ℕ) → member i s → i ≤ℕ maximum s
 member-implies-below-max (m ∷ ns) m in-head     = max-≤-upper-bound m (maximum ns)
 member-implies-below-max (n ∷ ns) m (in-tail p) =
- ≤-trans m _ _ (member-implies-below-max ns m p) (max-≤-upper-bound' (maximum ns) n)
+ ≤-trans m _ _ IH (max-≤-upper-bound' (maximum ns) n)
+  where
+   IH =(member-implies-below-max ns m p)
 
-
-＝⦅⦆-implies-＝⟪⟫-for-suitable-modulus : {X : 𝓤₀  ̇} (α α′ : ℕ → X) (s : List ℕ)
-                                       → α ＝⦅ succ (maximum s) ⦆ α′
-                                       → α ＝⟪ s ⟫ α′
-＝⦅⦆-implies-＝⟪⟫-for-suitable-modulus α α′ s t = ＝⟪⟫₀-implies-＝⟪⟫ α α′ s †
+＝⦅⦆-implies-＝⟪⟫ : {X : 𝓤₀  ̇} (α α′ : ℕ → X) (s : List ℕ)
+                  → α ＝⦅ succ (maximum s) ⦆ α′
+                  → α ＝⟪ s ⟫ α′
+＝⦅⦆-implies-＝⟪⟫ α α′ s t = ＝⟪⟫₀-implies-＝⟪⟫ α α′ s †
  where
   m : ℕ
   m = succ (maximum s)
 
   † : α ＝⟪ s ⟫₀ α′
   † i p = agreement→ α α′ m t i (member-implies-below-max s i p)
-
 
 continuity-implies-continuity₀ : (f : Baire → ℕ)
                                → is-continuous f → is-continuous₀ f
@@ -212,7 +228,7 @@ continuity-implies-continuity₀ f c = †
     m = succ (maximum s)
 
     γ : (α′ : Baire) → α ＝⦅ m ⦆ α′ → f α ＝ f α′
-    γ α′ p = pr₂ (c α) α′ (＝⦅⦆-implies-＝⟪⟫-for-suitable-modulus α α′ s p)
+    γ α′ p = pr₂ (c α) α′ (＝⦅⦆-implies-＝⟪⟫ α α′ s p)
 
 \end{code}
 
@@ -220,8 +236,8 @@ continuity-implies-continuity₀ f c = †
 
 We now address the converse direction which is harder.
 
-We first define the `range` function such that `range n` is the list `[0..n]`
-ad prove its completeness.
+We first define a `range` function such that `range n` is the list `[0..n]` and
+prove its completeness.
 
 \begin{code}
 
@@ -268,7 +284,7 @@ continuity₀-implies-continuity : (f : Baire → ℕ)
                                → is-continuous₀ f → is-continuous f
 continuity₀-implies-continuity f c α = range m , γ
  where
-  m = pr₁ (c α)
+  m = modulus-at₀ f c α
 
   γ : (α′ : Baire) → α ＝⟪ range m ⟫ α′ → f α ＝ f α′
   γ α′ p = pr₂ (c α) α′ (＝⟪⟫-range-implies-＝⦅⦆ α α′ m p)
@@ -288,20 +304,10 @@ continuity₀-iff-continuity f = † , ‡
 
 \end{code}
 
-We also define the following operation `modulus-at₀` that projects out the
-modulus of continuity computed by a proof of `is-continuous₀`:
-
-\begin{code}
-
-modulus-at₀ : (f : Baire → ℕ) → is-continuous₀ f → Baire → ℕ
-modulus-at₀ f c α = pr₁ (c α)
-
-\end{code}
-
 \section{Uniform continuity}
 
-We start by defining the notion of being Boolean-valued: a point `α : Baire` of
-the Baire space is called Boolean if its range is a subset of `{0, 1}`.
+We start by defining the notion of being “Boolean-valued”: a point `α : Baire`
+of the Baire space is called Boolean if its range is a subset of `{0, 1}`.
 
 \begin{code}
 
@@ -312,39 +318,48 @@ embedding-𝟚-ℕ-gives-boolean : (b : 𝟚) → is-boolean-valued (embedding-�
 embedding-𝟚-ℕ-gives-boolean ₀ = inl refl
 embedding-𝟚-ℕ-gives-boolean ₁ = inr refl
 
+\end{code}
+
+The following is the inverse of `embedding-𝟚-ℕ`: it takes us back to `𝟚` from a
+Boolean-valued natural number.
+
+\begin{code}
+
 to-bool : (n : ℕ) → is-boolean-valued n → 𝟚
 to-bool _ (inl p) = ₀
 to-bool _ (inr q) = ₁
 
 \end{code}
 
-A point `α : Baire` of the Baire space is called Boolean-valued if its range is
-a subset of {`₀`, `₁`}.
+A point `α : Baire` of the Baire space is called a _Boolean point_ if its range
+is a subset of {`₀`, `₁`}.
 
 \begin{code}
 
 is-boolean-point : Baire → 𝓤₀  ̇
 is-boolean-point α = (n : ℕ) → is-boolean-valued (α n)
 
-θ-lemma : (α : Baire) (i : ℕ) → is-prop (is-boolean-valued (α i))
-θ-lemma α i    (inl p) (inl q) = ap inl (ℕ-is-set (α i) 0 p q)
-θ-lemma α i    (inl p) (inr q) = 𝟘-elim (succ-no-fp 0 ※)
-                                  where
-                                   ※ : 0 ＝ 1
-                                   ※ = 0 ＝⟨ p ⁻¹ ⟩ α i ＝⟨ q ⟩ 1 ∎
-θ-lemma α i (inr p) (inl q)    = 𝟘-elim (succ-no-fp 0 ※)
-                                  where
-                                   ※ : 0 ＝ 1
-                                   ※ = 0 ＝⟨ q ⁻¹ ⟩ α i ＝⟨ p ⟩ 1 ∎
-θ-lemma α i (inr p) (inr q) = ap inr (ℕ-is-set (α i) 1 p q)
+\end{code}
+
+Being Boolean-valued is a proposition, from which it follows that being
+a Boolean point is also a proposition.
+
+\begin{code}
+
+being-boolean-is-prop : (α : Baire) (i : ℕ) → is-prop (is-boolean-valued (α i))
+being-boolean-is-prop α i (inl p) (inl q) = ap inl (ℕ-is-set (α i) 0 p q)
+being-boolean-is-prop α i (inr p) (inr q) = ap inr (ℕ-is-set (α i) 1 p q)
+being-boolean-is-prop α i (inl p) (inr q) = 𝟘-elim (succ-no-fp 0 ※)
+                                             where
+                                              ※ : 0 ＝ 1
+                                              ※ = 0 ＝⟨ p ⁻¹ ⟩ α i ＝⟨ q ⟩ 1 ∎
+being-boolean-is-prop α i (inr p) (inl q) = 𝟘-elim (succ-no-fp 0 ※)
+                                             where
+                                              ※ : 0 ＝ 1
+                                              ※ = 0 ＝⟨ q ⁻¹ ⟩ α i ＝⟨ p ⟩ 1 ∎
 
 being-boolean-point-is-prop : (α : Baire) → is-prop (is-boolean-point α)
-being-boolean-point-is-prop α = Π-is-prop fe (θ-lemma α)
-
-boolean-point-lemma : (α : Baire) (bv : is-boolean-point α) (i : ℕ)
-                    → (p : α i ＝ 0)
-                    → bv i ＝ inl p
-boolean-point-lemma α bv i p = θ-lemma α i (bv i) (inl p)
+being-boolean-point-is-prop α = Π-is-prop fe (being-boolean-is-prop α)
 
 \end{code}
 
@@ -361,7 +376,7 @@ point-of (α , _) = α
 
 \end{code}
 
-which is clearly equivalent to the previous definition.
+This is clearly equivalent to the usual definition.
 
 \begin{code}
 
@@ -370,7 +385,7 @@ to-baire-gives-boolean-point α = embedding-𝟚-ℕ-gives-boolean ∘ α
 
 \end{code}
 
-We can prove the equivalence between `Cantor` and `Cantor₀`.
+We now prove the equivalence between `Cantor` and `Cantor₀`.
 
 \begin{code}
 
@@ -435,18 +450,25 @@ embedding-𝟚-ℕ-is-embedding m (b , p) (c , q) = to-subtype-＝ † ♢
   ♢ : b ＝ c
   ♢ = cases ξ ζ (𝟚-possibilities b)
 
+\end{code}
+
+The map `to-cantor₀` is a section whose retraction is the map `to-cantor`
+
+\begin{code}
+
 to-cantor-cancels-to-cantor₀ : (α : Cantor) → to-cantor (to-cantor₀ α) ＝ α
 to-cantor-cancels-to-cantor₀ α = dfunext fe †
  where
-  † : (n : ℕ) → to-bool (embedding-𝟚-ℕ (α n)) (to-baire-gives-boolean-point α n) ＝ α n
+  † : (n : ℕ)
+    → to-bool (embedding-𝟚-ℕ (α n)) (to-baire-gives-boolean-point α n) ＝ α n
   † n = cases †₁ †₂ (to-baire-gives-boolean-point α n)
    where
     †₁ : embedding-𝟚-ℕ (α n) ＝ 0
        → to-bool (embedding-𝟚-ℕ (α n)) (to-baire-gives-boolean-point α n) ＝ α n
     †₁ p =
      to-bool (embedding-𝟚-ℕ (α n)) (embedding-𝟚-ℕ-gives-boolean (α n)) ＝⟨ Ⅰ ⟩
-     to-bool 0 (inl refl)                                            ＝⟨ Ⅱ ⟩
-     α n                                                             ∎
+     to-bool 0 (inl refl)                                              ＝⟨ Ⅱ ⟩
+     α n                                                               ∎
       where
        Ⅰ = ap
             (λ - → to-bool (embedding-𝟚-ℕ -) (embedding-𝟚-ℕ-gives-boolean -))
@@ -457,8 +479,8 @@ to-cantor-cancels-to-cantor₀ α = dfunext fe †
        → to-bool (embedding-𝟚-ℕ (α n)) (to-baire-gives-boolean-point α n) ＝ α n
     †₂ p =
      to-bool (embedding-𝟚-ℕ (α n)) (embedding-𝟚-ℕ-gives-boolean (α n)) ＝⟨ Ⅰ ⟩
-     to-bool 1 (inr refl)                                            ＝⟨ Ⅱ ⟩
-     α n                                                             ∎
+     to-bool 1 (inr refl)                                              ＝⟨ Ⅱ ⟩
+     α n                                                               ∎
       where
        Ⅰ = ap
             (λ - → to-bool (embedding-𝟚-ℕ -) (embedding-𝟚-ℕ-gives-boolean -))
@@ -469,32 +491,19 @@ point-of-lemma : (α : Cantor)
                → point-of (to-cantor₀ α) ∼ embedding-𝟚-ℕ ∘ α
 point-of-lemma α = λ _ → refl
 
-＝⟦⟧-cantor₀-equivalence : (α β : Cantor) (t : BT ℕ)
-                         → α ＝⟦ t ⟧ β
-                         → point-of (to-cantor₀ α) ＝⟦ t ⟧ point-of (to-cantor₀ β)
-＝⟦⟧-cantor₀-equivalence α β []      _       = []
-＝⟦⟧-cantor₀-equivalence α β (n ∷ φ) (p ∷ ψ) = † ∷ γ
- where
-  † : embedding-𝟚-ℕ (α n) ＝ embedding-𝟚-ℕ (β n)
-  † = ap embedding-𝟚-ℕ p
-
-  γ : (i : 𝟚) → point-of (to-cantor₀ α) ＝⟦ φ i ⟧ point-of (to-cantor₀ β)
-  γ ₀ = ＝⟦⟧-cantor₀-equivalence α β (φ ₀) (ψ ₀)
-  γ ₁ = ＝⟦⟧-cantor₀-equivalence α β (φ ₁) (ψ ₁)
-
 to-bool-lemma₁ : (α : Baire) (bv : is-boolean-point α) (i : ℕ)
               → α i ＝ 0 → to-bool (α i) (bv i) ＝ ₀
 to-bool-lemma₁ α bv i p = ap (to-bool (α i)) †
   where
    † : bv i ＝ inl p
-   † = θ-lemma α i (bv i) (inl p)
+   † = being-boolean-is-prop α i (bv i) (inl p)
 
 to-bool-lemma₂ : (α : Baire) (bv : is-boolean-point α) (i : ℕ)
                → α i ＝ 1 → to-bool (α i) (bv i) ＝ ₁
 to-bool-lemma₂ α bv i p = ap (to-bool (α i)) †
   where
    † : bv i ＝ inr p
-   † = θ-lemma α i (bv i) (inr p)
+   † = being-boolean-is-prop α i (bv i) (inr p)
 
 to-cantor₀-cancels-to-cantor : to-cantor₀ ∘ to-cantor ∼ id
 to-cantor₀-cancels-to-cantor (α , bv) = to-subtype-＝ being-boolean-point-is-prop †
@@ -528,7 +537,7 @@ to-cantor₀-cancels-to-cantor (α , bv) = to-subtype-＝ being-boolean-point-is
    † = dfunext fe ‡
 
 cantor-equiv-cantor₀ : Cantor ≃ Cantor₀
-cantor-equiv-cantor₀ = to-cantor₀ , ((to-cantor , φ) , to-cantor , ψ)
+cantor-equiv-cantor₀ = to-cantor₀ , (to-cantor , φ) , to-cantor , ψ
  where
   φ : to-cantor₀ ∘ to-cantor ∼ id
   φ = to-cantor₀-cancels-to-cantor
@@ -538,18 +547,43 @@ cantor-equiv-cantor₀ = to-cantor₀ , ((to-cantor , φ) , to-cantor , ψ)
 
 \end{code}
 
+Now, we start working towards showing the equivalence of the alternative notion
+of uniform continuity with the original one. We define the following function
+`sequentialize` that flattens a binary tree into a list.
+
 \begin{code}
 
 sequentialize : {X : 𝓤₀  ̇} → BT X → List X
 sequentialize []      = []
 sequentialize (x ∷ φ) = x ∷ sequentialize (φ ₀) ++ sequentialize (φ ₁)
 
+\end{code}
+
+Recall the `maximum` operation that we used in the proof of
+`continuity₀-iff-continuity`. We now define an analogue of this operation for
+uniform continuity, on binary trees instead of lists.
+
+\begin{code}
+
 maximumᵤ : BT ℕ → ℕ
 maximumᵤ []      = 0
 maximumᵤ (n ∷ φ) = max n (max (maximumᵤ (φ ₀)) (maximumᵤ (φ ₁)))
 
+\end{code}
+
+Alternatively, this operation could also be defined as:
+
+\begin{code}
+
 maximumᵤ′ : BT ℕ → ℕ
 maximumᵤ′ = maximum ∘ sequentialize
+
+\end{code}
+
+We now prove a lemma that we need about `maximum`: it map `ms ++ ns` to the
+binary maximum of the maxima of `ms` and `ns`.
+
+\begin{code}
 
 maximum-maps-++-to-max-of-maximum
  : (ms ns : List ℕ)
@@ -568,6 +602,12 @@ maximum-maps-++-to-max-of-maximum (m ∷ ms) ns = †
       max m (max (maximum ms) (maximum ns))   ＝⟨ Ⅱ ⟩
       max (max m (maximum ms)) (maximum ns)   ∎
 
+\end{code}
+
+It is an easy corollary of this that `maximumᵤ′` and `maximumᵤ` are equal.
+
+\begin{code}
+
 maximumᵤ′-equivalent-to-maximumᵤ : (t : BT ℕ) → maximumᵤ t ＝ maximumᵤ′ t
 maximumᵤ′-equivalent-to-maximumᵤ []      = refl
 maximumᵤ′-equivalent-to-maximumᵤ (n ∷ φ) = †
@@ -582,7 +622,7 @@ maximumᵤ′-equivalent-to-maximumᵤ (n ∷ φ) = †
        (sequentialize (φ ₁)) ⁻¹
 
   ‡ : max (maximumᵤ (φ ₀)) (maximumᵤ (φ ₁))
-    ＝ maximum (sequentialize (φ ₀) ++ sequentialize (φ ₁))
+      ＝ maximum (sequentialize (φ ₀) ++ sequentialize (φ ₁))
   ‡ =
    max (maximumᵤ (φ ₀)) (maximumᵤ (φ ₁))                               ＝⟨ Ⅰ    ⟩
    max (maximumᵤ′ (φ ₀)) (maximumᵤ (φ ₁))                              ＝⟨ Ⅱ    ⟩
@@ -591,51 +631,37 @@ maximumᵤ′-equivalent-to-maximumᵤ (n ∷ φ) = †
    maximum (sequentialize (φ ₀) ++ sequentialize (φ ₁))                ∎
 
   † : max n (max (maximumᵤ (φ ₀)) (maximumᵤ (φ ₁)))
-    ＝ max n (maximum (sequentialize (φ ₀) ++ sequentialize (φ ₁)))
+      ＝ max n (maximum (sequentialize (φ ₀) ++ sequentialize (φ ₁)))
   † = ap (max n) ‡
 
 \end{code}
+
+We define the following function `to-cantor₀-map`, that extends `to-cantor₀`
+from points of the Cantor space to maps `Cantor → ℕ`, and prove some small
+lemmas about it.
 
 \begin{code}
 
 to-cantor₀-map : (Cantor → ℕ) → Cantor₀ → ℕ
 to-cantor₀-map f = f ∘ to-cantor
 
-to-cantor₀-map-equality : (f g :  Cantor → ℕ)
-                        → f ∼ g → to-cantor₀-map f ∼ to-cantor₀-map g
-to-cantor₀-map-equality f g ε = ε ∘ to-cantor
-
-to-cantor₀-map-lemma : (f : Cantor → ℕ)
-                     → (α β : Cantor)
+to-cantor₀-map-lemma : (f : Cantor → ℕ) (α β : Cantor)
+                     → let f₀ = to-cantor₀-map f in
+                       f₀ (to-cantor₀ α) ＝ f₀ (to-cantor₀ β)
                      → f α ＝ f β
-                     → to-cantor₀-map f (to-cantor₀ α)
-                       ＝ to-cantor₀-map f (to-cantor₀ β)
-to-cantor₀-map-lemma f α β p =
- to-cantor₀-map f (to-cantor₀ α) ＝⟨ refl ⟩
- f (to-cantor (to-cantor₀ α))    ＝⟨ Ⅰ    ⟩
- f α                             ＝⟨ Ⅱ    ⟩
- f β                             ＝⟨ Ⅲ    ⟩
- f (to-cantor (to-cantor₀ β))    ＝⟨ refl ⟩
- to-cantor₀-map f (to-cantor₀ β) ∎
-  where
-   Ⅰ = ap f (to-cantor-cancels-to-cantor₀ α)
-   Ⅱ = p
-   Ⅲ = ap f (to-cantor-cancels-to-cantor₀ β) ⁻¹
-
-to-cantor₀-map-lemma′ : (f : Cantor → ℕ)
-                      → (α β : Cantor)
-                      → to-cantor₀-map f (to-cantor₀ α) ＝ to-cantor₀-map f (to-cantor₀ β)
-                      → f α ＝ f β
-to-cantor₀-map-lemma′ f α β p = f α                          ＝⟨ Ⅰ ⟩
-                                f (to-cantor (to-cantor₀ α)) ＝⟨ Ⅱ ⟩
-                                f (to-cantor (to-cantor₀ β)) ＝⟨ Ⅲ ⟩
-                                f β                          ∎
- where
-  Ⅰ = ap f (to-cantor-cancels-to-cantor₀ α ⁻¹ )
-  Ⅱ = p
-  Ⅲ = ap f (to-cantor-cancels-to-cantor₀ β)
+to-cantor₀-map-lemma f α β p = f α                          ＝⟨ Ⅰ ⟩
+                               f (to-cantor (to-cantor₀ α)) ＝⟨ Ⅱ ⟩
+                               f (to-cantor (to-cantor₀ β)) ＝⟨ Ⅲ ⟩
+                               f β                          ∎
+                                where
+                                 Ⅰ = ap f (to-cantor-cancels-to-cantor₀ α ⁻¹ )
+                                 Ⅱ = p
+                                 Ⅲ = ap f (to-cantor-cancels-to-cantor₀ β)
 
 \end{code}
+
+We now define the alternative notion of uniform continuity, analogous to
+`is-continuous₀`.
 
 \begin{code}
 
@@ -646,7 +672,13 @@ is-uniformly-continuous₀ f =
    f₀ : Cantor₀ → ℕ
    f₀ = to-cantor₀-map f
 
+modulus-atᵘ₀ : (f : Cantor → ℕ) → is-uniformly-continuous₀ f → ℕ
+modulus-atᵘ₀ f (m , _) = m
+
 \end{code}
+
+The equality-up-to relation `_＝⟪_⟫₀_` that we have defined above, implies the
+`_＝⟦_⟧_` relation that uses binary trees.
 
 \begin{code}
 
@@ -668,6 +700,12 @@ is-uniformly-continuous₀ f =
   † ₀ = ＝⟪⟫₀-implies-＝⟦⟧ α₁ α₂ (φ ₀) ς₀
   † ₁ = ＝⟪⟫₀-implies-＝⟦⟧ α₁ α₂ (φ ₁) ς₁
 
+\end{code}
+
+Conversely, the `_＝⟦_⟧_` relation implies the `_＝⟪_⟫₀` relation.
+
+\begin{code}
+
 ＝⟦⟧-implies-＝⟪⟫₀ : (α β : Baire) (t : BT ℕ)
                    → α ＝⟦ t ⟧ β → α ＝⟪ sequentialize t ⟫₀ β
 ＝⟦⟧-implies-＝⟪⟫₀ _ _ []      _       _ ()
@@ -686,8 +724,11 @@ is-uniformly-continuous₀ f =
   † : α ＝⟪ ms ++ ns ⟫₀ β
   † = ＝⟪⟫-++-lemma₂ α β ms ns (IH₁ , IH₂)
 
-to-bool-congruence : (m : ℕ)
-                   → (n : ℕ)
+\end{code}
+
+\begin{code}
+
+to-bool-congruence : (m n : ℕ)
                    → (𝒷₁ : is-boolean-valued m)
                    → (𝒷₂ : is-boolean-valued n)
                    → m ＝ n
@@ -699,11 +740,15 @@ to-bool-congruence (succ (succ _)) (succ (succ _)) (inl ())   (inr _)    _
 to-bool-congruence (succ (succ _)) (succ (succ _)) (inr ())   (inl _)    _
 to-bool-congruence (succ (succ _)) (succ (succ _)) (inr ())   (inr _)    _
 
+\end{code}
+
+\begin{code}
+
 to-cantor-＝⟦⟧ : (α₁ α₂ : Baire)
-              (ϑ₁ : is-boolean-point α₁) (ϑ₂ : is-boolean-point α₂)
-              (t : BT ℕ)
-            → α₁ ＝⟦ t ⟧ α₂
-            → to-cantor (α₁ , ϑ₁) ＝⟦ t ⟧ to-cantor (α₂ , ϑ₂)
+                 (ϑ₁ : is-boolean-point α₁) (ϑ₂ : is-boolean-point α₂)
+                 (t : BT ℕ)
+               → α₁ ＝⟦ t ⟧ α₂
+               → to-cantor (α₁ , ϑ₁) ＝⟦ t ⟧ to-cantor (α₂ , ϑ₂)
 to-cantor-＝⟦⟧ α₁ α₂ ϑ₁ ϑ₂ []       _      = []
 to-cantor-＝⟦⟧ α₁ α₂ ϑ₁ ϑ₂ (n ∷ φ) (p ∷ ψ) = β ∷ γ
  where
@@ -714,51 +759,58 @@ to-cantor-＝⟦⟧ α₁ α₂ ϑ₁ ϑ₂ (n ∷ φ) (p ∷ ψ) = β ∷ γ
   γ ₀ = to-cantor-＝⟦⟧ α₁ α₂ ϑ₁ ϑ₂ (φ ₀) (ψ ₀)
   γ ₁ = to-cantor-＝⟦⟧ α₁ α₂ ϑ₁ ϑ₂ (φ ₁) (ψ ₁)
 
+\end{code}
+
+At this point, we are ready to prove one direction of the equivalence we are
+interested in: `is-uniformly-continuous` implies `is-uniformly-continuous₀`.
+
+\begin{code}
+
 uni-continuity-implies-uni-continuity₀ : (f : Cantor → ℕ)
                                        → is-uniformly-continuous  f
                                        → is-uniformly-continuous₀ f
-uni-continuity-implies-uni-continuity₀ f 𝔠 = †
- where
-  t : BT ℕ
-  t = pr₁ 𝔠
+uni-continuity-implies-uni-continuity₀ f 𝔠 =
+ n , λ (α₁ , ϑ₁) (α₂ , ϑ₂) → † α₁ α₂ ϑ₁ ϑ₂
+  where
+   t : BT ℕ
+   t = pr₁ 𝔠
 
-  n : ℕ
-  n = succ (maximumᵤ (pr₁ 𝔠))
+   n : ℕ
+   n = succ (maximumᵤ (pr₁ 𝔠))
 
-  f₀ : Cantor₀ → ℕ
-  f₀ = to-cantor₀-map f
+   f₀ : Cantor₀ → ℕ
+   f₀ = to-cantor₀-map f
 
-  ‡ : (α₁ α₂ : Baire) (ϑ₁ : is-boolean-point α₁) (ϑ₂ : is-boolean-point α₂)
-    → α₁ ＝⦅ n ⦆ α₂ → f₀ (α₁ , ϑ₁) ＝ f₀ (α₂ , ϑ₂)
-  ‡ α₁ α₂ ϑ₁ ϑ₂ (p , q) = pr₂ 𝔠 (to-cantor (α₁ , ϑ₁)) (to-cantor (α₂ , ϑ₂)) Ͱ
-   where
-    ϝ : tl α₁ ＝⦅ maximumᵤ′ t ⦆ (tl α₂)
-    ϝ = transport
-         (λ - → tl α₁ ＝⦅ - ⦆ tl α₂)
-         (maximumᵤ′-equivalent-to-maximumᵤ t)
-         q
+   † : (α₁ α₂ : Baire) (ϑ₁ : is-boolean-point α₁) (ϑ₂ : is-boolean-point α₂)
+     → α₁ ＝⦅ n ⦆ α₂ → f₀ (α₁ , ϑ₁) ＝ f₀ (α₂ , ϑ₂)
+   † α₁ α₂ ϑ₁ ϑ₂ (p , q) = pr₂ 𝔠 (to-cantor (α₁ , ϑ₁)) (to-cantor (α₂ , ϑ₂)) η
+    where
+     ϝ : tl α₁ ＝⦅ maximumᵤ′ t ⦆ (tl α₂)
+     ϝ = transport
+          (λ - → tl α₁ ＝⦅ - ⦆ tl α₂)
+          (maximumᵤ′-equivalent-to-maximumᵤ t)
+          q
 
-    ϟ : α₁ ＝⦅ succ (maximum (sequentialize t)) ⦆ α₂
-    ϟ = p , ϝ
+     χ : α₁ ＝⦅ succ (maximum (sequentialize t)) ⦆ α₂
+     χ = p , ϝ
 
-    ϡ : α₁ ＝⟪ sequentialize t ⟫ α₂
-    ϡ = ＝⦅⦆-implies-＝⟪⟫-for-suitable-modulus α₁ α₂ (sequentialize t) ϟ
+     υ : α₁ ＝⟪ sequentialize t ⟫ α₂
+     υ = ＝⦅⦆-implies-＝⟪⟫ α₁ α₂ (sequentialize t) χ
 
-    ϸ : α₁ ＝⟪ sequentialize t ⟫₀ α₂
-    ϸ = ＝⟪⟫-implies-＝⟪⟫₀ α₁ α₂ (sequentialize t) ϡ
+     ξ : α₁ ＝⟪ sequentialize t ⟫₀ α₂
+     ξ = ＝⟪⟫-implies-＝⟪⟫₀ α₁ α₂ (sequentialize t) υ
 
-    ϻ : α₁ ＝⟦ t ⟧ α₂
-    ϻ = ＝⟪⟫₀-implies-＝⟦⟧ α₁ α₂ t ϸ
+     ζ : α₁ ＝⟦ t ⟧ α₂
+     ζ = ＝⟪⟫₀-implies-＝⟦⟧ α₁ α₂ t ξ
 
-    Ͱ : to-cantor (α₁ , ϑ₁) ＝⟦ t ⟧ to-cantor (α₂ , ϑ₂)
-    Ͱ = to-cantor-＝⟦⟧ α₁ α₂ ϑ₁ ϑ₂ t ϻ
-
-  † : is-uniformly-continuous₀ f
-  † = n , (λ (α₁ , ϑ₁) (α₂ , ϑ₂) → ‡ α₁ α₂ ϑ₁ ϑ₂)
+     η : to-cantor (α₁ , ϑ₁) ＝⟦ t ⟧ to-cantor (α₂ , ϑ₂)
+     η = to-cantor-＝⟦⟧ α₁ α₂ ϑ₁ ϑ₂ t ζ
 
 \end{code}
 
-To prove the converse direction, we define analogue of the range function.
+To prove the converse direction, we define an analogue of the range function
+for binary trees that we call `rangeᵤ`. We also prove some small lemmas about
+this function.
 
 \begin{code}
 
@@ -790,6 +842,12 @@ rangeᵤ (succ n) = succ n ∷ λ { ₀ → [] ; ₁ → rangeᵤ n }
   φ = ＝⟪⟫-range-implies-＝⦅⦆ α β m
   ψ = ＝⟦⟧-up-to-rangeᵤ-m-implies-＝⟪⟫-up-to-range-m α β m
 
+\end{code}
+
+We prove one final small lemma about the `embedding-C-B` function.
+
+\begin{code}
+
 ＝⟦⟧-boolean-lemma : (α β : Cantor) (m : ℕ)
                    → α ＝⟦ rangeᵤ m ⟧ β
                    → embedding-C-B α ＝⟦ rangeᵤ m ⟧ embedding-C-B β
@@ -797,24 +855,31 @@ rangeᵤ (succ n) = succ n ∷ λ { ₀ → [] ; ₁ → rangeᵤ n }
 ＝⟦⟧-boolean-lemma α β (succ m) (p ∷ φ) =
  ap embedding-𝟚-ℕ p ∷ λ { ₀ → [] ; ₁ → ＝⟦⟧-boolean-lemma α β m (φ ₁) }
 
+\end{code}
+
+We can now easily write down the proof that `is-uniformly-continuous` implies
+`is-uniformly-continuous₀`.
+
+\begin{code}
+
 uni-continuity₀-implies-uni-continuity : (f : Cantor → ℕ)
                                        → is-uniformly-continuous₀ f
                                        → is-uniformly-continuous f
 uni-continuity₀-implies-uni-continuity f ζ = rangeᵤ m , †
  where
   m : ℕ
-  m = pr₁ ζ
+  m = modulus-atᵘ₀ f ζ
 
   f₀ : Cantor₀ → ℕ
   f₀ = to-cantor₀-map f
 
   ‡ : (α β : Baire) (𝒷₁ : is-boolean-point α) (𝒷₂ : is-boolean-point β)
     → α ＝⟦ rangeᵤ m ⟧ β → f₀ (α , 𝒷₁) ＝ f₀ (β , 𝒷₂)
-  ‡ α β 𝒷₁ 𝒷₂ ϑ =
-   pr₂ ζ (α , 𝒷₁) (β , 𝒷₂) (＝⟦⟧-up-to-range-m-implies-＝⦅⦆-up-to-m α β m ϑ)
+  ‡ α β 𝒷₁ 𝒷₂ =
+   pr₂ ζ (α , 𝒷₁) (β , 𝒷₂) ∘ ＝⟦⟧-up-to-range-m-implies-＝⦅⦆-up-to-m α β m
 
   † : (α β : Cantor) → α ＝⟦ rangeᵤ m ⟧ β → f α ＝ f β
-  † α β p = to-cantor₀-map-lemma′ f α β (‡ α′ β′ 𝒷₁ 𝒷₂ p′)
+  † α β p = to-cantor₀-map-lemma f α β (‡ α′ β′ 𝒷₁ 𝒷₂ p′)
    where
     α′ : Baire
     α′ = embedding-C-B α
@@ -832,6 +897,8 @@ uni-continuity₀-implies-uni-continuity f ζ = rangeᵤ m , †
     p′ = ＝⟦⟧-boolean-lemma α β m p
 
 \end{code}
+
+We finish by recording the equivalence of interest as a fact in itself.
 
 \begin{code}
 

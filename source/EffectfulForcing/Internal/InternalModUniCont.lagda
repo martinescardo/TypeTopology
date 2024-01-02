@@ -373,7 +373,7 @@ internal-uni-mod-correct t αᵀ βᵀ ψ₁ ψ₂ ϑ = †
         θ₂
 
   η : α ＝⟪ sequentialize bt ⟫ β
-  η = ＝⦅⦆-implies-＝⟪⟫-for-suitable-modulus α β (sequentialize bt) θ₁
+  η = ＝⦅⦆-implies-＝⟪⟫ α β (sequentialize bt) θ₁
 
   δ′ : α ＝⟪ sequentialize bt ⟫₀ β
   δ′ = ＝⟪⟫-implies-＝⟪⟫₀ α β (sequentialize bt) η
