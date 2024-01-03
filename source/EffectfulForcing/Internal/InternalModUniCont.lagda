@@ -331,8 +331,8 @@ modulusᵤᵀ t = Succ' · (max-boolean-questionᵀ · ⌜dialogue-tree⌝ t)
 
 \end{code}
 
-We also need to write down the completely obvious fact that a function `f :
-Baire → ℕ` agrees with the restriction of `f` to Cantor, when considering
+We also need to write down the completely obvious fact that a function
+`f : Baire → ℕ` agrees with the restriction of `f` to Cantor, when considering
 Boolean points.
 
 \begin{code}
