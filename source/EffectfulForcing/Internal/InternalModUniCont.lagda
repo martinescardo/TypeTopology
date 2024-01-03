@@ -122,22 +122,19 @@ boolean-valuedᵀ-lemma : (t : 〈〉 ⊢ baire)
                       → is-boolean-point ⟦ t ⟧₀
 boolean-valuedᵀ-lemma t ψ i = cases † ‡ (ψ (numeral i))
  where
-  Ⅰ = ap ⟦ t ⟧₀ (to-nat-cancels-to-numeral i ⁻¹)
+  ※ = ap ⟦ t ⟧₀ (to-nat-cancels-to-numeral i ⁻¹)
 
   † : ⟦ t ⟧₀ ⟦ numeral i ⟧₀ ＝ zero → is-boolean-valued (⟦ t ⟧₀ i)
   † p = inl q
    where
-    Ⅱ = p
-
-    q = ⟦ t ⟧₀ i ＝⟨ Ⅰ ⟩ ⟦ t ⟧₀ ⟦ numeral i ⟧₀ ＝⟨ Ⅱ ⟩ 0 ∎
+    q : ⟦ t ⟧₀ i ＝ 0
+    q = ⟦ t ⟧₀ i ＝⟨ ※ ⟩ ⟦ t ⟧₀ ⟦ numeral i ⟧₀ ＝⟨ p ⟩ 0 ∎
 
   ‡ : ⟦ t ⟧₀ ⟦ numeral i ⟧₀ ＝ 1 → is-boolean-valued (⟦ t ⟧₀ i)
   ‡ p = inr q
    where
-    Ⅱ = p
-
     q : ⟦ t ⟧₀ i ＝ 1
-    q = ⟦ t ⟧₀ i ＝⟨ Ⅰ ⟩ ⟦ t ⟧₀ ⟦ numeral i ⟧₀ ＝⟨ Ⅱ ⟩ 1 ∎
+    q = ⟦ t ⟧₀ i ＝⟨ ※ ⟩ ⟦ t ⟧₀ ⟦ numeral i ⟧₀ ＝⟨ p ⟩ 1 ∎
 
 \end{code}
 
