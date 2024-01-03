@@ -1907,11 +1907,12 @@ We can now state the least fixed point theorem in it fully truncated form.
 \end{code}
 
 We begin exploring conditions on monotone endomaps that guarentee they
-correspond to some bounded ϕ. 
+correspond to some bounded ϕ. We tentatively call this notion density. A
+monotone map is dense if
 
 \begin{code}
 
-module Density-of-monotone-maps {𝓤 𝓦 𝓥 : Universe}
+module density-of-monotone-maps {𝓤 𝓦 𝓥 : Universe}
                                 {B : 𝓥  ̇}
                                 (L : Sup-Lattice 𝓤 𝓦 𝓥)
                                 (q : B → ⟨ L ⟩)
@@ -1919,26 +1920,16 @@ module Density-of-monotone-maps {𝓤 𝓦 𝓥 : Universe}
 
  open small-basis L q
  open bounded-inductive-definition L q
- open small-presentation-of-lattice L q
- open correspondance-small-ϕ-closed-types-def-points L q
- open inductive-definitions L q
- open small-QIT L q
  open local-inductive-definitions L q
  open monotone-endomaps L hiding (_≤_)
- open 𝓘nd-is-small L q
  open has-least-fixed-point-def L hiding (_≤_)
  open propositional-truncations-exist pt
 
- module Density-from-small-basis-facts (h : is-small-basis) where
+ module density-from-small-basis-facts (h : is-small-basis) where
 
   open small-basis-facts h
   open bounded-from-small-basis-facts h
-  open small-presentation-from-small-basis-facts h
-  open correspondance-from-small-basis-facts h
-  open ind-from-small-basis-facts h
-  open small-QIT-from-small-basis-facts h
   open local-from-small-basis-facts h
-  open 𝓘nd-is-small-from-small-basis-facts h
 
   _is-dense : (f : ⟨ L ⟩ → ⟨ L ⟩) → 𝓤 ⊔ 𝓥  ̇
   f is-dense = (b : B)
@@ -1946,7 +1937,7 @@ module Density-of-monotone-maps {𝓤 𝓦 𝓥 : Universe}
              → b ≤ᴮ f a
              → (Ǝ x ꞉ B , b ≤ᴮ f (q x) × (x ≤ᴮ a)) holds
 
-  module Locally-small-assumption (l-small : ⟨ L ⟩ is-locally 𝓥 small) where
+  module locally-small-assumption (l-small : ⟨ L ⟩ is-locally 𝓥 small) where
 
    _＝ˢ_ : ⟨ L ⟩ → ⟨ L ⟩ → 𝓥 ̇
    x ＝ˢ y = resized (x ＝ y) (l-small x y)
@@ -1984,7 +1975,24 @@ module Density-of-monotone-maps {𝓤 𝓦 𝓥 : Universe}
                      → (b : B)
                      → (b , a) ∈ ϕ
                      → (Ǝ x ꞉ B , small-↓ᴮ (q x) ↠ ↓ᴮ a) holds
-       covering-cond a b ∈-ϕ = {!!}
+       covering-cond a b = map₃ ∘ map₂ ∘ map₁ 
+        where
+         map₁ : Lift 𝓤 ((Ǝ x ꞉ B , b ≤ᴮ f (q x) × q x ＝ˢ a) holds)
+              → (Ǝ x ꞉ B , b ≤ᴮ f (q x) × q x ＝ˢ a) holds
+         map₁ = ⌜ Lift-≃ 𝓤 ((Ǝ x ꞉ B , b ≤ᴮ f (q x) × q x ＝ˢ a) holds) ⌝
+         map₂ : (Ǝ x ꞉ B , b ≤ᴮ f (q x) × q x ＝ˢ a) holds
+              → (Ǝ x ꞉ B , small-↓ᴮ (q x) ≃ ↓ᴮ a) holds
+         map₂ =
+           ∥∥-rec (holds-is-prop (Ǝ x ꞉ B , small-↓ᴮ (q x) ≃ ↓ᴮ a))
+                  (λ (x , o , eq)
+                   → ∣ (x , transport (λ z → small-↓ᴮ (q x) ≃ ↓ᴮ z)
+                                      (＝ˢ-to-＝ (q x) a eq)
+                                      small-↓ᴮ-≃-↓ᴮ) ∣)
+         map₃ : (Ǝ x ꞉ B , small-↓ᴮ (q x) ≃ ↓ᴮ a) holds
+              → (Ǝ x ꞉ B , small-↓ᴮ (q x) ↠ ↓ᴮ a) holds
+         map₃ = ∥∥-rec (holds-is-prop (Ǝ x ꞉ B , small-↓ᴮ (q x) ↠ ↓ᴮ a))
+                       (λ (x , f , f-is-equiv)
+                        → ∣ (x , f , equivs-are-surjections f-is-equiv) ∣)
      H : (a : ⟨ L ⟩) → Γ ϕ ((ϕ bounded-implies-local) bnd) a ＝ f a
      H a = reindexing-along-equiv-＝-sup (Γ ϕ ((ϕ bounded-implies-local) bnd) a)
                                          (f a)
@@ -2129,4 +2137,71 @@ module Density-of-monotone-maps {𝓤 𝓦 𝓥 : Universe}
                                                equiv
                                                (q ∘ (S-to-base ϕ a))
                                                 
+\end{code}
+
+We use the notion of density to state another version of the least fixed point
+theorem.
+
+\begin{code}
+
+module least-fixed-point-from-density {𝓤 𝓦 𝓥 : Universe}
+                                      {B : 𝓥  ̇}
+                                      (L : Sup-Lattice 𝓤 𝓦 𝓥)
+                                      (q : B → ⟨ L ⟩)
+                                       where
+
+ open small-basis L q 
+ open bounded-inductive-definition L q
+ open small-presentation-of-lattice L q
+ open correspondance-small-ϕ-closed-types-def-points L q
+ open inductive-definitions L q
+ open small-QIT L q
+ open local-inductive-definitions L q
+ open monotone-endomaps L hiding (_≤_)
+ open 𝓘nd-is-small L q
+ open has-least-fixed-point-def L hiding (_≤_)
+ open propositional-truncations-exist pt
+ open least-fixed-point L q
+ open density-of-monotone-maps L q
+
+ module lfp-from-density-from-small-basis-facts (h : is-small-basis) where
+
+  open small-basis-facts h
+  open bounded-from-small-basis-facts h
+  open small-presentation-from-small-basis-facts h
+  open correspondance-from-small-basis-facts h
+  open ind-from-small-basis-facts h
+  open small-QIT-from-small-basis-facts h
+  open local-from-small-basis-facts h
+  open 𝓘nd-is-small-from-small-basis-facts h
+  open least-fixed-point-from-small-basis-facts h
+  open density-from-small-basis-facts h
+
+  module QITs-exists-density (ind-e : (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩))
+                                    → inductively-generated-subset-exists ϕ)
+                             (ind'-e : (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩))
+                                     → (bnd : ϕ is-bounded)
+                                     → (small-pres : has-small-presentation)
+                                     →
+    small-QIT-from-bounded-and-small-presentation.inductively-generated-small-subset-exists
+    small-pres ϕ bnd)
+                              where
+
+   open QITs-exists-for-all-ϕ ind-e ind'-e
+
+   Least-Fixed-Point-Theorem-from-Density : has-small-presentation
+                                          → ⟨ L ⟩ is-locally 𝓥 small
+                                          → (f : ⟨ L ⟩ → ⟨ L ⟩)
+                                          → f is-monotone
+                                          → f is-dense
+                                          → f has-least-fixed-point
+   Least-Fixed-Point-Theorem-from-Density small-pres l-small f f-mono f-dense =
+     Untruncated-Least-Fixed-Point-Theorem
+       small-pres
+       f
+       f-mono
+       (dense-implies f is-bounded f-mono {!f-dense!})
+    where
+     open locally-small-assumption l-small
+
 \end{code}
