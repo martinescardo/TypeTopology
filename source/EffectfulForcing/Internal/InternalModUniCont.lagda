@@ -61,7 +61,7 @@ moduli of continuity of maps from Baire space into ℕ. In this module, we devel
 the same operation for maps on the Cantor space -- but this time it computes
 the modulus of _uniform_ continuity.
 
-To define the Cantor space, it's tempting to augment System T with the type of
+To define the Cantor type, it's tempting to augment System T with the type of
 Booleans. However, we refrain from doing that here as to avoid repeating all our
 proofs on System T. Instead, we adopt the approach of working with the `baire`
 type under the implicit assumption that its range is `{0, 1}`. We define all
