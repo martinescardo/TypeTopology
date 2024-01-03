@@ -295,9 +295,9 @@ Finally, we record the logical equivalence as a fact in itself.
 
 \begin{code}
 
-continuity₀-iff-continuity : (f : Baire → ℕ)
+continuous₀-iff-continuous : (f : Baire → ℕ)
                            → is-continuous₀ f ↔ is-continuous f
-continuity₀-iff-continuity f = † , ‡
+continuous₀-iff-continuous f = † , ‡
  where
   † = continuity₀-implies-continuity f
   ‡ = continuity-implies-continuity₀ f
@@ -560,7 +560,7 @@ sequentialize (x ∷ φ) = x ∷ sequentialize (φ ₀) ++ sequentialize (φ ₁
 \end{code}
 
 Recall the `maximum` operation that we used in the proof of
-`continuity₀-iff-continuity`. We now define an analogue of this operation for
+`continuous₀-iff-continuous`. We now define an analogue of this operation for
 uniform continuity, on binary trees instead of lists.
 
 \begin{code}
