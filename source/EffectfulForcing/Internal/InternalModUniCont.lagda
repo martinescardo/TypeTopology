@@ -112,8 +112,8 @@ is-boolean-pointᵀ α =
 
 \end{code}
 
-If a System T term `t` satisfies `is-boolean-pointᵀ`, then its interpretation `⟦
-t ⟧` obviously satisfies `is-boolean-point`.
+If a System T term `t` satisfies `is-boolean-pointᵀ`, then its interpretation
+`⟦ t ⟧` obviously satisfies `is-boolean-point`.
 
 \begin{code}
 
