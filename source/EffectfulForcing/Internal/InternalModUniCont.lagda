@@ -235,8 +235,6 @@ max-boolean-questionᵀ-agreement d =
 \end{code}
 
 The following is an analogue of `main-lemma` from the `InternalModCont` module.
-As the name suggests, it is quite an important lemma for the main result of this
-module.
 
 \begin{code}
 
