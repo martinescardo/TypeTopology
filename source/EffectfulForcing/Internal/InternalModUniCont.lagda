@@ -268,7 +268,7 @@ main-lemma t =
 
 \end{code}
 
-We know by `dialogue-UC` that the computation encoded by a dialogue tree is
+We know by `dialogue-UC` that the function encoded by a dialogue tree is
 uniformly continuous. We denote by `mod-of` the operation of taking the modulus
 of uniform continuity of such a computation encoded by a dialogue tree. It
 assumes that the dialogue tree in consideration is binary, and accordingly,
