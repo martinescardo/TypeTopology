@@ -173,7 +173,7 @@ max-boolean-questionᵀ =
 
 \end{code}
 
-We now prove two capturing the agreement of `max-boolean-question`,
+We now prove two lemmas capturing the agreement of `max-boolean-question`,
 `max-boolean-question⋆`, and `max-boolean-questionᵀ`.
 
 \begin{code}
