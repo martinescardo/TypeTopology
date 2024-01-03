@@ -1908,7 +1908,9 @@ We can now state the least fixed point theorem in it fully truncated form.
 
 We begin exploring conditions on monotone endomaps that guarentee they
 correspond to some bounded ϕ. We tentatively call this notion density. A
-monotone map is dense if
+monotone map f on a 𝓥-generated sup-lattice is dense if
+
+  b ≤ᴮ f a → Ǝ x ꞉ B , b ≤ᴮ f (q x) × x ≤ᴮ a
 
 \begin{code}
 
@@ -1935,7 +1937,7 @@ module density-of-monotone-maps {𝓤 𝓦 𝓥 : Universe}
   f is-dense = (b : B)
              → (a : ⟨ L ⟩)
              → b ≤ᴮ f a
-             → (Ǝ x ꞉ B , b ≤ᴮ f (q x) × (x ≤ᴮ a)) holds
+             → (Ǝ x ꞉ B , b ≤ᴮ f (q x) × x ≤ᴮ a) holds
 
   module locally-small-assumption (l-small : ⟨ L ⟩ is-locally 𝓥 small) where
 
@@ -2200,7 +2202,7 @@ module least-fixed-point-from-density {𝓤 𝓦 𝓥 : Universe}
        small-pres
        f
        f-mono
-       (dense-implies f is-bounded f-mono {!f-dense!})
+       (dense-implies f is-bounded f-mono f-dense)
     where
      open locally-small-assumption l-small
 
