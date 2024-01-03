@@ -808,9 +808,9 @@ uni-continuity-implies-uni-continuity₀ f 𝔠 =
 
 \end{code}
 
-To prove the converse direction, we define an analogue of the range function
-for binary trees that we call `rangeᵤ`. We also prove some small lemmas about
-this function.
+To prove the converse, we define an analogue of the range function for binary
+trees that we call `rangeᵤ`. We also prove some small lemmas about this
+function.
 
 \begin{code}
 
