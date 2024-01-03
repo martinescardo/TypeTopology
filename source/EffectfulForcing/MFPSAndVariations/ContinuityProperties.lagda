@@ -844,7 +844,7 @@ rangeᵤ (succ n) = succ n ∷ λ { ₀ → [] ; ₁ → rangeᵤ n }
 
 \end{code}
 
-We prove one final small lemma about the `embedding-C-B` function.
+We prove one final lemma about the `embedding-C-B` function.
 
 \begin{code}
 
