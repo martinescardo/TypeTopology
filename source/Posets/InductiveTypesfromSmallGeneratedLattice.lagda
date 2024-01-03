@@ -38,10 +38,12 @@ open import UF.Equiv
 open import UF.Equiv-FunExt
 open import UF.EquivalenceExamples
 open import UF.FunExt
+open import UF.Hedberg
 open import UF.Logic
 open import UF.Powerset-MultiUniverse
 open import UF.PropTrunc
 open import UF.Retracts
+open import UF.Sets
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.SubtypeClassifier
@@ -128,6 +130,14 @@ is-least-upper-bound-for_of_ : (L : Sup-Lattice 𝓤 𝓦 𝓥)
                              → (order-of L (join-for L U) u') holds
 is-least-upper-bound-for L of U = pr₂ (is-lub-for L U)
 
+carrier-of_is-set : (L : Sup-Lattice 𝓤 𝓦 𝓥) → is-set ⟨ L ⟩
+carrier-of L is-set =
+  type-with-prop-valued-refl-antisym-rel-is-set
+   (λ x → λ y → order-of L x y holds)
+   (λ x → λ y → holds-is-prop (order-of L x y))
+   (λ x → is-reflexive-for L x)
+   (λ x → λ y → is-antisymmetric-for L)
+
 \end{code}
 
 We now define monotone endomaps on a sup-lattice. This notion is not too
@@ -142,6 +152,39 @@ module monotone-endomaps {𝓤 𝓦 𝓥 : Universe} (L : Sup-Lattice 𝓤 𝓦 
 
  _is-monotone : (f : ⟨ L ⟩ → ⟨ L ⟩) → 𝓤 ⊔ 𝓦  ̇
  f is-monotone = (x y : ⟨ L ⟩) → (x ≤ y) holds → (f x ≤ f y) holds
+
+\end{code}
+
+We now give the define what it means to be a least fixed point.
+
+\begin{code}
+
+module has-least-fixed-point-def {𝓤 𝓦 𝓥 : Universe}
+                                 (L : Sup-Lattice 𝓤 𝓦 𝓥)
+                                  where
+
+ _≤_ : ⟨ L ⟩ → ⟨ L ⟩ → Ω 𝓦
+ _≤_ = order-of L
+
+ _has-least-fixed-point : (f : ⟨ L ⟩ → ⟨ L ⟩) → 𝓤 ⊔ 𝓦  ̇
+ f has-least-fixed-point =  Σ p ꞉ ⟨ L ⟩ , (f p ＝ p) × ((a : ⟨ L ⟩)
+                                                      → (f a ＝ a)
+                                                      → (p ≤ a) holds)
+
+ _has-least-fixed-point-is-prop : (f : ⟨ L ⟩ → ⟨ L ⟩)
+                                → is-prop (f has-least-fixed-point) 
+ (f has-least-fixed-point-is-prop) (p₁ , fp₁ , l₁) (p₂ , fp₂ , l₂) =
+   to-subtype-＝ 2nd-comp-is-prop p₁-＝-p₂
+  where
+   2nd-comp-is-prop : (x : ⟨ L ⟩)
+                    → is-prop ((f x ＝ x) × ((a : ⟨ L ⟩)
+                                           → f a ＝ a
+                                           → (x ≤ a) holds))
+   2nd-comp-is-prop x =
+     ×-is-prop (carrier-of L is-set)
+               (Π-is-prop fe (λ y → Π-is-prop fe (λ _ → holds-is-prop (x ≤ y))))
+   p₁-＝-p₂ : p₁ ＝ p₂
+   p₁-＝-p₂ = is-antisymmetric-for L (l₁ p₂ fp₂) (l₂ p₁ fp₁)
 
 \end{code}
 
@@ -812,6 +855,7 @@ module correspondance-small-ϕ-closed-types-def-points {𝓤 𝓦 𝓥 : Univers
  open Joins _≤_
  open inductive-definitions L q
  open local-inductive-definitions L q
+ open has-least-fixed-point-def L hiding (_≤_)
 
  module correspondance-from-small-basis-facts (h : is-small-basis) where
 
@@ -1087,10 +1131,7 @@ module correspondance-small-ϕ-closed-types-def-points {𝓤 𝓦 𝓥 : Univers
        open small-types-have-joins L (𝕋 𝓘nd) (q ∘ 𝕋-to-carrier 𝓘nd)
                                    total-space-𝓘-is-small
 
-     Γ-has-least-fixed-point : Σ x ꞉ ⟨ L ⟩ ,
-                                ((Γ ϕ i) x ＝ x) × ((a : ⟨ L ⟩)
-                                                 → ((Γ ϕ i) a ＝ a)
-                                                 → (x ≤ a) holds)
+     Γ-has-least-fixed-point : (Γ ϕ i) has-least-fixed-point
      Γ-has-least-fixed-point =
        (sup-𝓘 , is-antisymmetric-for L Γ-sup-≤-sup sup-≤-Γ-sup , sup-𝓘-≤)
       where
@@ -1765,6 +1806,8 @@ module least-fixed-point {𝓤 𝓦 𝓥 : Universe}
  open local-inductive-definitions L q
  open monotone-endomaps L hiding (_≤_)
  open 𝓘nd-is-small L q
+ open has-least-fixed-point-def L hiding (_≤_)
+ open propositional-truncations-exist pt
 
  module least-fixed-point-from-small-basis-facts (h : is-small-basis) where
 
@@ -1787,17 +1830,22 @@ module least-fixed-point {𝓤 𝓦 𝓥 : Universe}
     small-pres ϕ bnd)
                                  where
 
-   Least-Fixed-Point-Theorem' : (small-pres : has-small-presentation)
-                              → (f : ⟨ L ⟩ → ⟨ L ⟩)
-                              → (f-mono : f is-monotone)
-                              → Σ ϕ ꞉ 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩) ,
-                                Σ bnd ꞉ ϕ is-bounded ,
-                                ((x : ⟨ L ⟩)
-                               → (Γ ϕ ((ϕ bounded-implies-local) bnd)) x ＝ f x)
-                              → Σ p ꞉ ⟨ L ⟩ , (f p ＝ p) × ((a : ⟨ L ⟩)
-                                                         → (f a ＝ a)
-                                                         → (p ≤ a) holds)
-   Least-Fixed-Point-Theorem' small-pres f f-mono (ϕ , bnd , H) =
+\end{code}
+
+We first present the untruncated least fixed point theorem.
+
+\begin{code}
+
+   Untruncated-Least-Fixed-Point-Theorem :
+      (small-pres : has-small-presentation)
+    → (f : ⟨ L ⟩ → ⟨ L ⟩)
+    → (f-mono : f is-monotone)
+    → Σ ϕ ꞉ 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩) ,
+      Σ bnd ꞉ ϕ is-bounded ,
+        ((x : ⟨ L ⟩)
+       → (Γ ϕ ((ϕ bounded-implies-local) bnd)) x ＝ f x)
+    → f has-least-fixed-point
+   Untruncated-Least-Fixed-Point-Theorem small-pres f f-mono (ϕ , bnd , H) =
     transport (λ g → Σ x ꞉ ⟨ L ⟩ , (g x ＝ x) × ((a : ⟨ L ⟩)
                                               → (g a ＝ a)
                                               → (x ≤ a) holds))
@@ -1814,4 +1862,271 @@ module least-fixed-point {𝓤 𝓦 𝓥 : Universe}
 
 \end{code}
 
+The next *slightly awkward* theorem is going to provide us an intermediate
+step toward the fully untruncated least fixed point theorem.
 
+\begin{code}
+
+   Half-Truncated-Least-Fixed-Point-Theorem :
+      (small-pres : has-small-presentation)
+    → (f : ⟨ L ⟩ → ⟨ L ⟩)
+    → (f-mono : f is-monotone)
+    → (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩)) 
+    → (Ǝ bnd ꞉ ϕ is-bounded ,
+       ((x : ⟨ L ⟩)
+      → (Γ ϕ ((ϕ bounded-implies-local) bnd)) x ＝ f x)) holds
+    → f has-least-fixed-point
+   Half-Truncated-Least-Fixed-Point-Theorem small-pres f f-mono ϕ =
+     ∥∥-rec (f has-least-fixed-point-is-prop)
+            (λ (bnd , H) → Untruncated-Least-Fixed-Point-Theorem small-pres
+                                                                 f
+                                                                 f-mono
+                                                                 (ϕ , bnd , H))
+
+\end{code}
+
+We can now state the least fixed point theorem in it fully truncated form.
+
+\begin{code}
+
+   Least-Fixed-Point-Theorem : (small-pres : has-small-presentation)
+                             → (f : ⟨ L ⟩ → ⟨ L ⟩)
+                             → (f-mono : f is-monotone)
+                             → (Ǝ ϕ ꞉ 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩) ,
+                               (Ǝ bnd ꞉ ϕ is-bounded ,
+                               ((x : ⟨ L ⟩)
+                              → (Γ ϕ ((ϕ bounded-implies-local) bnd)) x ＝ f x))
+                                  holds) holds
+                             → f has-least-fixed-point
+   Least-Fixed-Point-Theorem small-pres f f-mono =
+     ∥∥-rec (f has-least-fixed-point-is-prop)
+            (uncurry (Half-Truncated-Least-Fixed-Point-Theorem small-pres
+                                                               f
+                                                               f-mono))
+
+\end{code}
+
+We begin exploring conditions on monotone endomaps that guarentee they
+correspond to some bounded ϕ. 
+
+\begin{code}
+
+module Density-of-monotone-maps {𝓤 𝓦 𝓥 : Universe}
+                                {B : 𝓥  ̇}
+                                (L : Sup-Lattice 𝓤 𝓦 𝓥)
+                                (q : B → ⟨ L ⟩)
+                                 where
+
+ open small-basis L q
+ open bounded-inductive-definition L q
+ open small-presentation-of-lattice L q
+ open correspondance-small-ϕ-closed-types-def-points L q
+ open inductive-definitions L q
+ open small-QIT L q
+ open local-inductive-definitions L q
+ open monotone-endomaps L hiding (_≤_)
+ open 𝓘nd-is-small L q
+ open has-least-fixed-point-def L hiding (_≤_)
+ open propositional-truncations-exist pt
+
+ module Density-from-small-basis-facts (h : is-small-basis) where
+
+  open small-basis-facts h
+  open bounded-from-small-basis-facts h
+  open small-presentation-from-small-basis-facts h
+  open correspondance-from-small-basis-facts h
+  open ind-from-small-basis-facts h
+  open small-QIT-from-small-basis-facts h
+  open local-from-small-basis-facts h
+  open 𝓘nd-is-small-from-small-basis-facts h
+
+  _is-dense : (f : ⟨ L ⟩ → ⟨ L ⟩) → 𝓤 ⊔ 𝓥  ̇
+  f is-dense = (b : B)
+             → (a : ⟨ L ⟩)
+             → b ≤ᴮ f a
+             → (Ǝ x ꞉ B , b ≤ᴮ f (q x) × (x ≤ᴮ a)) holds
+
+  module Locally-small-assumption (l-small : ⟨ L ⟩ is-locally 𝓥 small) where
+
+   _＝ˢ_ : ⟨ L ⟩ → ⟨ L ⟩ → 𝓥 ̇
+   x ＝ˢ y = resized (x ＝ y) (l-small x y)
+
+   ＝ˢ-≃-＝ : (x y : ⟨ L ⟩) → (x ＝ˢ y) ≃ (x ＝ y)
+   ＝ˢ-≃-＝ x y = resizing-condition (l-small x y)
+
+   ＝ˢ-to-＝ : (x y : ⟨ L ⟩) → (x ＝ˢ y) → (x ＝ y)
+   ＝ˢ-to-＝ x y = ⌜ ＝ˢ-≃-＝ x y ⌝
+
+   ＝-to-＝ˢ : (x y : ⟨ L ⟩) → (x ＝ y) → (x ＝ˢ y)
+   ＝-to-＝ˢ x y = ⌜ ＝ˢ-≃-＝ x y ⌝⁻¹
+
+   dense-implies_is-bounded : (f : ⟨ L ⟩ → ⟨ L ⟩)
+                            → f is-monotone
+                            → f is-dense
+                            → Σ ϕ ꞉ 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩) ,
+                              Σ bnd ꞉ ϕ is-bounded ,
+                               ((a : ⟨ L ⟩)
+                              → (Γ ϕ ((ϕ bounded-implies-local) bnd)) a ＝ f a)
+   dense-implies f is-bounded f-is-mono f-is-dense = (ϕ , bnd , H)
+    where
+     ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩)
+     ϕ (b , a') =
+       (Lift 𝓤 ((Ǝ x ꞉ B , b ≤ᴮ f (q x) × q x ＝ˢ a') holds)
+       , equiv-to-prop (Lift-≃ 𝓤 ((Ǝ x ꞉ B , b ≤ᴮ f (q x) × q x ＝ˢ a') holds))
+                       (holds-is-prop (Ǝ x ꞉ B , b ≤ᴮ f (q x) × q x ＝ˢ a')))
+     bnd : ϕ is-bounded
+     bnd = (ϕ-small , (B , (λ z → small-↓ᴮ (q z)) , covering-cond))
+      where
+       ϕ-small : (a : ⟨ L ⟩) → (b : B) → (ϕ (b , a) holds) is 𝓥 small
+       ϕ-small a b = ((Ǝ x ꞉ B , b ≤ᴮ f (q x) × q x ＝ˢ a) holds
+                     , ≃-Lift 𝓤 ((Ǝ x ꞉ B , b ≤ᴮ f (q x) × q x ＝ˢ a) holds))
+       covering-cond : (a : ⟨ L ⟩)
+                     → (b : B)
+                     → (b , a) ∈ ϕ
+                     → (Ǝ x ꞉ B , small-↓ᴮ (q x) ↠ ↓ᴮ a) holds
+       covering-cond a b ∈-ϕ = {!!}
+     H : (a : ⟨ L ⟩) → Γ ϕ ((ϕ bounded-implies-local) bnd) a ＝ f a
+     H a = reindexing-along-equiv-＝-sup (Γ ϕ ((ϕ bounded-implies-local) bnd) a)
+                                         (f a)
+                                         sup-of-small-fam-is-lub
+                                         (is-supᴮ (f a))
+      where
+       map : (b : B)
+           → b ≤ᴮ f a
+           → (Ǝ a' ꞉ ⟨ L ⟩ ,
+              Lift 𝓤 ((Ǝ x ꞉ B , b ≤ᴮ f (q x) × q x ＝ˢ a') holds)
+              × (a' ≤ a) holds) holds
+       map b = map₄ b ∘ (map₂ b ∘ f-is-dense b a)
+        where
+         map₁ : (b : B)
+              → Σ x ꞉ B , b ≤ᴮ f (q x) × x ≤ᴮ a
+              → (Ǝ a' ꞉ ⟨ L ⟩ ,
+                (Ǝ x ꞉ B , b ≤ᴮ f (q x) × q x ＝ˢ a') holds
+                × (a' ≤ a) holds) holds
+         map₁ b (x , o , o') =
+          ∣ (q x , ∣ (x , o , ＝-to-＝ˢ (q x) (q x) refl) ∣ , _≤ᴮ_-to-_≤_ o') ∣
+         map₂ : (b : B)
+              → (Ǝ x ꞉ B , b ≤ᴮ f (q x) × x ≤ᴮ a) holds
+              → (Ǝ a' ꞉ ⟨ L ⟩ ,
+                (Ǝ x ꞉ B , b ≤ᴮ f (q x) × q x ＝ˢ a') holds
+                × (a' ≤ a) holds) holds
+         map₂ b = 
+           ∥∥-rec (holds-is-prop (Ǝ a' ꞉ ⟨ L ⟩ ,
+                                 (Ǝ x ꞉ B , b ≤ᴮ f (q x) × q x ＝ˢ a') holds
+                                 × (a' ≤ a) holds))
+                  (map₁ b)
+         map₃ : (b : B)
+              → Σ a' ꞉ ⟨ L ⟩ ,
+                (Ǝ x ꞉ B , b ≤ᴮ f (q x) × q x ＝ˢ a') holds
+                 × (a' ≤ a) holds
+              → (Ǝ a' ꞉ ⟨ L ⟩ ,
+                Lift 𝓤 ((Ǝ x ꞉ B , b ≤ᴮ f (q x) × q x ＝ˢ a') holds)
+                × (a' ≤ a) holds) holds
+         map₃ b (a' , ex , o) =
+           ∣ (a'
+             , ⌜ ≃-Lift 𝓤 ((Ǝ x ꞉ B , b ≤ᴮ f (q x) × q x ＝ˢ a') holds) ⌝ ex
+             , o) ∣ 
+         map₄ : (b : B)
+              → (Ǝ a' ꞉ ⟨ L ⟩ ,
+                (Ǝ x ꞉ B , b ≤ᴮ f (q x) × q x ＝ˢ a') holds
+                × (a' ≤ a) holds) holds
+              → (Ǝ a' ꞉ ⟨ L ⟩ ,
+                Lift 𝓤 ((Ǝ x ꞉ B , b ≤ᴮ f (q x) × q x ＝ˢ a') holds)
+                × (a' ≤ a) holds) holds
+         map₄ b = ∥∥-rec (holds-is-prop (Ǝ a' ꞉ ⟨ L ⟩ ,
+                           Lift 𝓤 ((Ǝ x ꞉ B , b ≤ᴮ f (q x) × q x ＝ˢ a') holds)
+                           × (a' ≤ a) holds))
+                         (map₃ b)
+       map' : (b : B)
+            → (Ǝ a' ꞉ ⟨ L ⟩ ,
+               Lift 𝓤 ((Ǝ x ꞉ B , b ≤ᴮ f (q x) × q x ＝ˢ a') holds)
+               × (a' ≤ a) holds) holds
+            → b ≤ᴮ f a
+       map' b = map₆ b ∘ map₂ b
+        where
+         map₁ : (b : B)
+              → Σ a' ꞉ ⟨ L ⟩ ,
+                Lift 𝓤 ((Ǝ x ꞉ B , b ≤ᴮ f (q x) × q x ＝ˢ a') holds)
+                × (a' ≤ a) holds
+              → (Ǝ a' ꞉ ⟨ L ⟩ ,
+                (Ǝ x ꞉ B , b ≤ᴮ f (q x) × q x ＝ˢ a') holds
+                × (a' ≤ a) holds) holds
+         map₁ b (a' , lex , o) =
+           ∣ (a'
+             , ⌜ Lift-≃ 𝓤 ((Ǝ x ꞉ B , b ≤ᴮ f (q x) × q x ＝ˢ a') holds) ⌝ lex
+             , o) ∣ 
+         map₂ : (b : B)
+              → (Ǝ a' ꞉ ⟨ L ⟩ ,
+                Lift 𝓤 ((Ǝ x ꞉ B , b ≤ᴮ f (q x) × q x ＝ˢ a') holds)
+                × (a' ≤ a) holds) holds
+              → (Ǝ a' ꞉ ⟨ L ⟩ ,
+                (Ǝ x ꞉ B , b ≤ᴮ f (q x) × q x ＝ˢ a') holds
+                × (a' ≤ a) holds) holds
+         map₂ b = 
+           ∥∥-rec (holds-is-prop (Ǝ a' ꞉ ⟨ L ⟩ ,
+                                 (Ǝ x ꞉ B , b ≤ᴮ f (q x) × q x ＝ˢ a') holds
+                                 × (a' ≤ a) holds))
+                  (map₁ b)
+         map₃ : (b : B)
+              → (a' : ⟨ L ⟩)
+              → (a' ≤ a) holds
+              → Σ x ꞉ B , b ≤ᴮ f (q x) × q x ＝ˢ a'
+              → b ≤ᴮ f a
+         map₃ b a' o (x , r , eq) =
+           _≤_-to-_≤ᴮ_ (is-transitive-for L
+                                          (q b)
+                                          (f a')
+                                          (f a)
+                                          (transport (λ z → (q b ≤ f z) holds)
+                                                     (＝ˢ-to-＝ (q x)
+                                                                a'
+                                                                eq)
+                                                     (_≤ᴮ_-to-_≤_ r))
+                                          (f-is-mono a' a o))
+         map₄ : (b : B)
+              → (a' : ⟨ L ⟩)
+              → (a' ≤ a) holds
+              → (Ǝ x ꞉ B , b ≤ᴮ f (q x) × q x ＝ˢ a') holds
+              → b ≤ᴮ f a
+         map₄ b a' o =
+           ∥∥-rec (holds-is-prop (b ≤ᴮ f a , _≤ᴮ_-is-prop-valued)) (map₃ b a' o)
+         map₅ : (b : B)
+              → Σ a' ꞉ ⟨ L ⟩ ,
+                (Ǝ x ꞉ B , b ≤ᴮ f (q x) × q x ＝ˢ a') holds
+                × (a' ≤ a) holds
+              → b ≤ᴮ f a
+         map₅ b = uncurry (λ a' → uncurry (λ ex → λ o → map₄ b a' o ex))
+         map₆ : (b : B)
+              → (Ǝ a' ꞉ ⟨ L ⟩ ,
+                (Ǝ x ꞉ B , b ≤ᴮ f (q x) × q x ＝ˢ a') holds
+                × (a' ≤ a) holds) holds
+              → b ≤ᴮ f a
+         map₆ b =
+           ∥∥-rec (holds-is-prop (b ≤ᴮ f a , _≤ᴮ_-is-prop-valued)) (map₅ b) 
+       equiv : (small-↓ᴮ (f a)) ≃ (S ϕ a)
+       equiv = Σ-cong equiv-props
+        where
+         equiv-props : (b : B)
+                     → b ≤ᴮ f a
+                     ≃ ((Ǝ a' ꞉ ⟨ L ⟩ ,
+                       Lift 𝓤 ((Ǝ x ꞉ B , b ≤ᴮ f (q x) × q x ＝ˢ a') holds)
+                       × (a' ≤ a) holds) holds)
+         equiv-props b =
+           logically-equivalent-props-are-equivalent
+             _≤ᴮ_-is-prop-valued
+             (holds-is-prop (Ǝ a' ꞉ ⟨ L ⟩ ,
+                            Lift 𝓤 ((Ǝ x ꞉ B , b ≤ᴮ f (q x) × q x ＝ˢ a') holds)
+                            × (a' ≤ a) holds))
+             (map b)
+             (map' b)
+       open small-types-have-joins L
+                                   (S ϕ a)
+                                   (q ∘ (S-to-base ϕ a))
+                                   ((ϕ bounded-implies-local) bnd a)
+       open equivalent-families-have-same-join L
+                                               (S ϕ a)
+                                               (small-↓ᴮ (f a))
+                                               equiv
+                                               (q ∘ (S-to-base ϕ a))
+                                                
+\end{code}
