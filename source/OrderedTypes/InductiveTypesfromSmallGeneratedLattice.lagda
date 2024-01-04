@@ -51,7 +51,7 @@ open import UF.Size
 open import UF.SmallnessProperties
 open import UF.UniverseEmbedding
 
-module Posets.InductiveTypesfromSmallGeneratedLattice
+module OrderedTypes.InductiveTypesfromSmallGeneratedLattice
        (pt : propositional-truncations-exist)
        (fe : Fun-Ext)
        (fe' : FunExt)
