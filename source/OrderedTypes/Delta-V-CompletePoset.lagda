@@ -28,14 +28,14 @@ open import UF.Sets
 open import UF.ExcludedMiddle
 open import Slice.Family
 
-module Posets.Delta-V-CompletePoset
+module OrderedTypes.Delta-V-CompletePoset
  (pt : propositional-truncations-exist)
  (fe : Fun-Ext)
  (pe : Prop-Ext)
   where
 
 open import Locales.Frame pt fe hiding (𝟚)
-open import Posets.TwoElementPoset pt fe
+open import OrderedTypes.TwoElementPoset pt fe
 open AllCombinators pt fe
 
 module δ-complete-poset {𝓤 𝓦 : Universe} (𝓥 : Universe) (A : Poset 𝓤 𝓦) where
