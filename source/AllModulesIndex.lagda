@@ -9,7 +9,7 @@
    Martin Escardo and collaborators, 2010--2023--∞
    Continuously evolving.
 
-   https://github.com/martinescardo/TypeTopology
+   https://githubn.com/martinescardo/TypeTopology
 
 \begin{code}
 

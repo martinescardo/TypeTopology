@@ -363,7 +363,8 @@ not-finite-is-∞ fe {u} f = ℕ∞-to-ℕ→𝟚-lc fe (dfunext fe lemma)
   lemma 0        = different-from-₀-equal-₁ (λ r → f 0 (is-Zero-equal-Zero fe r))
   lemma (succ n) = different-from-₀-equal-₁ (λ r → f (n ∔ 1) (Succ-criterion fe (lemma n) r))
 
-ℕ∞-ddensity : funext₀ → {Y : ℕ∞ → 𝓤 ̇ }
+ℕ∞-ddensity : funext₀
+            → {Y : ℕ∞ → 𝓤 ̇ }
             → ({u : ℕ∞} → is-¬¬-separated (Y u))
             → {f g : Π Y}
             → ((n : ℕ) → f (ι n) ＝ g (ι n))
@@ -412,7 +413,7 @@ not-finite-is-∞ fe {u} f = ℕ∞-to-ℕ→𝟚-lc fe (dfunext fe lemma)
 ι𝟙-dense fe (u , f) = g (not-finite-is-∞ fe h)
  where
   g : ¬ (u ＝ ∞)
-  g p = f ((inr ⋆) , (p ⁻¹))
+  g p = f (inr ⋆ , (p ⁻¹))
 
   h : (n : ℕ) → ¬ (u ＝ ι n)
   h n p = f (inl n , (p ⁻¹))

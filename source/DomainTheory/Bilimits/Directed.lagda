@@ -58,7 +58,7 @@ open import UF.ImageAndSurjection pt
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
-open import Posets.Poset fe
+open import OrderedTypes.Poset fe
 
 open import DomainTheory.Basics.Dcpo pt fe 𝓥
 open import DomainTheory.Basics.Exponential pt fe 𝓥

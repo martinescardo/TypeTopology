@@ -24,7 +24,7 @@ did with σ-sup-lattices. Perhaps it would be better to define a
 
 open import UF.FunExt
 
-module Posets.sigma-frame (fe : Fun-Ext) where
+module OrderedTypes.sigma-frame (fe : Fun-Ext) where
 
 open import MLTT.Spartan
 open import UF.Equiv hiding (_≅_)
@@ -299,9 +299,9 @@ id-is-σ-frame-hom 𝓐 = refl , (λ a b → refl) , refl , (λ 𝕒 → refl)
              g (⋁⟨ 𝓑 ⟩ (λ n → f (𝕒 n))) ＝⟨ s₁ (λ n → f (𝕒 n)) ⟩
              ⋁⟨ 𝓒 ⟩ (λ n → g (f (𝕒 n))) ∎
 
-import Posets.sigma-sup-lattice
+import OrderedTypes.sigma-sup-lattice
 
-private σ-SupLat = Posets.sigma-sup-lattice.σ-SupLat fe
+private σ-SupLat = OrderedTypes.sigma-sup-lattice.σ-SupLat fe
 
 σ-frames-are-σ-suplats : σ-Frame 𝓤 → σ-SupLat 𝓤 𝓤
 σ-frames-are-σ-suplats 𝓑  = ⟨ 𝓑 ⟩ ,
@@ -315,7 +315,7 @@ private σ-SupLat = Posets.sigma-sup-lattice.σ-SupLat fe
                             ⟨ 𝓑 ⟩-⋁-is-ub ,
                             ⟨ 𝓑 ⟩-⋁-is-lb-of-ubs
 
-open import Posets.Frame fe
+open import OrderedTypes.Frame fe
 
 frames-are-sigma-frames : Frame 𝓤 𝓤₀ → σ-Frame 𝓤
 frames-are-sigma-frames (X , (⊤ , _∧_ , ⋁) , i , ii , iii , iv , v , vi , vii , viii) =

@@ -9,7 +9,7 @@ the least element and binary joins.
 
 {-# OPTIONS --safe --without-K #-}
 
-module Posets.JoinSemiLattices where
+module OrderedTypes.JoinSemiLattices where
 
 open import MLTT.Spartan
 open import Fin.Type

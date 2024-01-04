@@ -17,7 +17,7 @@ open import UF.SubtypeClassifier-Properties
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
-module Posets.FreeSupLattice
+module OrderedTypes.FreeSupLattice
         (pt : propositional-truncations-exist)
        where
 
