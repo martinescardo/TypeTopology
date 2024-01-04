@@ -279,6 +279,12 @@ An application of Π-cong is the following:
    η (inl x) = refl
    η (inr y) = refl
 
+one-𝟘-only : 𝟘 {𝓤} ≃ 𝟘 {𝓥}
+one-𝟘-only = qinveq 𝟘-elim (𝟘-elim , 𝟘-induction , 𝟘-induction)
+
+one-𝟙-only : {𝓤 𝓥 : Universe} → 𝟙 {𝓤} ≃ 𝟙 {𝓥}
+one-𝟙-only = qinveq unique-to-𝟙 (unique-to-𝟙 , (λ ⋆ → refl) , (λ ⋆ → refl))
+
 𝟘-rneutral : {X : 𝓤 ̇ } → X ≃ X + 𝟘 {𝓥}
 𝟘-rneutral {𝓤} {𝓥} {X} = qinveq f (g , η , ε)
  where
@@ -297,18 +303,21 @@ An application of Π-cong is the following:
    η x = refl
 
 𝟘-rneutral' : {X : 𝓤 ̇ } → X + 𝟘 {𝓥} ≃ X
-𝟘-rneutral' {𝓤} {𝓥} = ≃-sym (𝟘-rneutral {𝓤} {𝓥})
+𝟘-rneutral' = ≃-sym 𝟘-rneutral
 
 𝟘-lneutral : {X : 𝓤 ̇ } → 𝟘 {𝓥} + X ≃ X
 𝟘-lneutral {𝓤} {𝓥} {X} = (𝟘 + X) ≃⟨ +comm ⟩
                          (X + 𝟘) ≃⟨ 𝟘-rneutral' {𝓤} {𝓥} ⟩
                          X       ■
 
-one-𝟘-only : 𝟘 {𝓤} ≃ 𝟘 {𝓥}
-one-𝟘-only = qinveq 𝟘-elim (𝟘-elim , 𝟘-induction , 𝟘-induction)
+𝟘-lneutral' : {X : 𝓤 ̇ } → X ≃ 𝟘 {𝓥} + X
+𝟘-lneutral' = ≃-sym 𝟘-lneutral
 
-one-𝟙-only : (𝓤 𝓥 : Universe) → 𝟙 {𝓤} ≃ 𝟙 {𝓥}
-one-𝟙-only _ _ = qinveq unique-to-𝟙 (unique-to-𝟙 , (λ ⋆ → refl) , (λ ⋆ → refl))
+𝟘-lneutral'' : 𝟙 {𝓤} ≃ 𝟘 {𝓥} + 𝟙 {𝓦}
+𝟘-lneutral'' {𝓤} {𝓥} {𝓦} =
+ 𝟙 {𝓤}           ≃⟨ one-𝟙-only ⟩
+ 𝟙 {𝓦}           ≃⟨ 𝟘-lneutral' ⟩
+ (𝟘 {𝓥} + 𝟙 {𝓦}) ■
 
 +assoc : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
        → (X + Y) + Z ≃ X + (Y + Z)

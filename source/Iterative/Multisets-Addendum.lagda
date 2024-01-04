@@ -5,12 +5,11 @@ Some constructions with iterative multisets.
  * The universe is a retract of the type 𝕄 of iterative multisets.
  * 𝕄 is algebraically injective.
 
-
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}
 
-open import MLTT.Spartan
+open import MLTT.Spartan hiding (_^_)
 open import UF.Sets-Properties
 open import UF.Univalence
 open import UF.Universes
@@ -79,6 +78,9 @@ observation.
 
 𝟘ᴹ-is-not-𝟙ᴹ : 𝟘ᴹ ≠ 𝟙ᴹ
 𝟘ᴹ-is-not-𝟙ᴹ p = 𝟘-is-not-𝟙 (ap 𝕄-root p)
+
+𝟚ᴹ : 𝕄
+𝟚ᴹ = ssup (𝟙 {𝓤} + 𝟙 {𝓤}) (cases (λ _ → 𝟘ᴹ) (λ _ → 𝟙ᴹ))
 
 universe-to-𝕄 : 𝓤 ̇ → 𝕄
 universe-to-𝕄 X = ssup X (λ x → 𝟘ᴹ)
@@ -233,6 +235,9 @@ result.
             (Σ x ꞉ X , 𝕄-root (A x))
             (λ (x , y) → 𝕄-forest (A x) y)
 
+_+ᴹ_ : 𝕄 → 𝕄 → 𝕄
+M +ᴹ N = Σᴹ (cases (λ (_ : 𝟙 {𝓤}) → M) (λ (_ : 𝟙 {𝓤}) → N))
+
 prop-indexed-sumᴹ : {X : 𝓤 ̇ } {A : X → 𝕄}
                   → is-prop X
                   → (x₀ : X) → Σᴹ A ＝ A x₀
@@ -271,6 +276,39 @@ Notice that we use Σᴹ (as well as Π) in the following definition of Πᴹ.
             (Π x ꞉ X , 𝕄-root (A x))
             (λ g → Σᴹ (λ x → 𝕄-forest (A x) (g x)))
 
+_×ᴹ_ : 𝕄 → 𝕄 → 𝕄
+M ×ᴹ N = Πᴹ (cases (λ (_ : 𝟙 {𝓤}) → M) (λ (_ : 𝟙 {𝓤}) → N))
+
+\end{code}
+
+Question. Is there a function Πᴹ of the above type that satisfies the
+following equation? It seems that this possible for finite X. We guess
+there isn't such a function for general X, including X = ℕ.
+
+\begin{code}
+
+Question =
+   {X : 𝓤 ̇ }
+ → Σ Πᴹ ꞉ ((X → 𝕄) → 𝕄)
+        , ((A : X → 𝕄) → Πᴹ A ＝ ssup
+                                  (Π x ꞉ X , 𝕄-root (A x))
+                                  (λ g → Πᴹ (λ x → 𝕄-forest (A x) (g x))))
+\end{code}
+
+Here is the answer for X = 𝟚, up to equivalence:
+
+\begin{code}
+
+_×ᴹ'_ : 𝕄 → 𝕄 → 𝕄
+(ssup X φ) ×ᴹ' (ssup Y γ) = ssup (X × Y) (λ (x , y) → (φ x) ×ᴹ' (γ y))
+
+\end{code}
+
+Our main reason to consider Σᴹ and Πᴹ is to establish, into different
+ways, the algebraic injectivity of the type of iterative multisets.
+
+\begin{code}
+
 prop-indexed-productᴹ : {X : 𝓤 ̇ } {A : X → 𝕄}
                       → is-prop X
                       → (x₀ : X) → Πᴹ A ＝ A x₀
@@ -305,18 +343,23 @@ prop-indexed-productᴹ {X} {A} i x₀ = IV
        ssup (𝕄-root (A x₀)) (𝕄-forest (A x₀)) ＝⟨ 𝕄-η (A x₀) ⟩
        A x₀                                   ∎
 
+_∖ᴹ_ : {X Y : 𝓤 ̇ } → (X → 𝕄) → (X → Y) → (Y → 𝕄)
+(f ∖ᴹ j) y = Σᴹ (λ ((x , _) : fiber j y) → f x)
+
+∖ᴹ-is-extension : {X Y : 𝓤 ̇ } (f : X → 𝕄) (j : X → Y)
+               → is-embedding j
+               → f ∖ᴹ j ∘ j ∼ f
+∖ᴹ-is-extension f j j-emb x = prop-indexed-sumᴹ
+                              {fiber j (j x)} {f ∘ pr₁} (j-emb (j x)) (x , refl)
+
 𝕄-is-ainjective-Σ : ainjective-type 𝕄 𝓤 𝓤
-𝕄-is-ainjective-Σ {X} {Y} j j-emb f = f\j , f\j-ext
- where
-  A : (y : Y) → fiber j y → 𝕄
-  A y (x , _) = f x
+𝕄-is-ainjective-Σ {X} {Y} j j-emb f = (f ∖ᴹ j) , ∖ᴹ-is-extension f j j-emb
 
-  f\j : Y → 𝕄
-  f\j y = Σᴹ (A y)
+\end{code}
 
-  f\j-ext : f\j ∘ j ∼ f
-  f\j-ext x = prop-indexed-sumᴹ
-               {fiber j (j x)} {A (j x)} (j-emb (j x)) (x , refl)
+TODO. Split the following as above.
+
+\begin{code}
 
 𝕄-is-ainjective-Π : ainjective-type 𝕄 𝓤 𝓤
 𝕄-is-ainjective-Π {X} {Y} j j-emb f = f/j , f/j-ext

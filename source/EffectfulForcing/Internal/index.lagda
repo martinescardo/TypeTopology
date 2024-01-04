@@ -16,7 +16,8 @@ import EffectfulForcing.Internal.Subst
 import EffectfulForcing.Internal.External
 import EffectfulForcing.Internal.Correctness
 import EffectfulForcing.Internal.FurtherThoughts
-import EffectfulForcing.Internal.InternalModCont
+import EffectfulForcing.Internal.InternalModCont    -- by Ayberk Tosun
+import EffectfulForcing.Internal.InternalModUniCont -- by Ayberk Tosun
 
 \end{code}
 
@@ -35,3 +36,6 @@ import EffectfulForcing.Internal.InternalModCont
 
  5. The file `InternalModCont` contains the proof of correctness of the internal
     modulus of continuity operator.
+
+ 6. The file `InternalModUniCont` contains the proof of correctness of the
+    internal modulus of _uniform_ continuity operator.

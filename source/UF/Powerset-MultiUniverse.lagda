@@ -185,6 +185,12 @@ complement fe A = λ x → (x ∉ A) , (∉-is-prop fe A x)
           → {X : 𝓤 ̇ } (A B : 𝓟 X) → is-prop (A ⊆ B)
 ⊆-is-prop fe = ⊆-is-prop' fe fe
 
+module PropositionalSubsetInclusionNotation (fe : Fun-Ext) where
+
+ _⊆ₚ_ _⊇ₚ_ : {X : 𝓤  ̇} → 𝓟 {𝓤} X → 𝓟 {𝓤} X → Ω 𝓤
+ A ⊆ₚ B = (A ⊆ B) , ⊆-is-prop fe A B
+ A ⊇ₚ B = (A ⊇ B) , ⊆-is-prop fe B A
+
 ∅-is-least' : {X : 𝓤 ̇ } (A : 𝓟 {𝓥} X) → ∅ {𝓤} {𝓥} ⊆ A
 ∅-is-least' _ x = 𝟘-induction
 

@@ -11,7 +11,7 @@ open import MLTT.Spartan
 open import UF.FunExt
 open import UF.Subsingletons
 
-module Posets.sigma-sup-lattice (fe : Fun-Ext) where
+module OrderedTypes.sigma-sup-lattice (fe : Fun-Ext) where
 
 open import UF.Base
 open import UF.Equiv hiding (_≅_)
