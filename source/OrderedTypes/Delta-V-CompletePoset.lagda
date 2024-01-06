@@ -1,10 +1,11 @@
 Ian Ray, 25 July 2023.
 
-Formalizing the auxilary notion of a delta-V-complete poset which is sufficient
-for the main theorems of Section 6.2 from Tom de Jong's thesis
-  https://arxiv.org/abs/2301.12405
-  https://tdejong.com/writings/phd-thesis.pdf
-involving impredicativity (resizing axioms) in order theory.
+Formalizing the auxilary notion of a delta-V-complete poset and the main
+theorems of Section 6.2 from Tom de Jong's thesis involving impredicativity
+(in the form of resizing principles) in order theory.
+
+Link to Tom's thesis
+URL: https://arxiv.org/abs/2301.12405
 
 \begin{code}
 
@@ -81,34 +82,34 @@ module δ-complete-poset {𝓤 𝓦 : Universe} (𝓥 : Universe) (A : Poset �
                  → ((sup-of-δ i x y o P) ≤ u) holds
   has-lub-cond-δ = pr₂ is-sup-of-δ
 
-  lower-＝-sup-δ : ¬ (P holds) → x ＝ sup-of-δ i x y o P
-  lower-＝-sup-δ not-P = ≤-is-antisymmetric A x-≤-sup sup-≤-x
+  lower-is-sup-δ : ¬ (P holds) → x ＝ sup-of-δ i x y o P
+  lower-is-sup-δ not-P = ≤-is-antisymmetric A x-below-sup sup-below-x
    where
-    x-≤-sup : (x ≤ sup-of-δ i x y o P) holds
-    x-≤-sup = is-ub-of-δ (inl ⋆)
+    x-below-sup : (x ≤ sup-of-δ i x y o P) holds
+    x-below-sup = is-ub-of-δ (inl ⋆) 
 
     x-is-ub : (x is-an-upper-bound-of (δ-fam x y P)) holds
     x-is-ub (inl ⋆) = ≤-is-reflexive A x
     x-is-ub (inr in-P) = 𝟘-induction (not-P in-P)
 
-    sup-≤-x : (sup-of-δ i x y o P ≤ x) holds
-    sup-≤-x = has-lub-cond-δ (x , x-is-ub)
+    sup-below-x : (sup-of-δ i x y o P ≤ x) holds
+    sup-below-x = has-lub-cond-δ (x , x-is-ub)
 
-  upper-＝-sup-δ : P holds → y ＝ sup-of-δ i x y o P
-  upper-＝-sup-δ in-P = ≤-is-antisymmetric A y-≤-sup sup-≤-y
+  upper-is-sup-δ : P holds → y ＝ sup-of-δ i x y o P
+  upper-is-sup-δ in-P = ≤-is-antisymmetric A y-below-sup sup-below-y
    where
-    y-≤-sup : (y ≤ sup-of-δ i x y o P) holds
-    y-≤-sup = is-ub-of-δ (inr in-P)
+    y-below-sup : (y ≤ sup-of-δ i x y o P) holds
+    y-below-sup = is-ub-of-δ (inr in-P)
 
     y-is-ub : (y is-an-upper-bound-of (δ-fam x y P)) holds
     y-is-ub (inl ⋆) = o
     y-is-ub (inr in-P) = ≤-is-reflexive A y
 
-    sup-≤-y : (sup-of-δ i x y o P ≤ y) holds
-    sup-≤-y = has-lub-cond-δ (y , y-is-ub)
+    sup-below-y : (sup-of-δ i x y o P ≤ y) holds
+    sup-below-y = has-lub-cond-δ (y , y-is-ub)
    
-  sup-δ-≤-upper : (sup-of-δ i x y o P ≤ y) holds
-  sup-δ-≤-upper = has-lub-cond-δ (y , y-is-ub)
+  sup-δ-below-upper : (sup-of-δ i x y o P ≤ y) holds
+  sup-δ-below-upper = has-lub-cond-δ (y , y-is-ub)
    where
     y-is-ub : (y is-an-upper-bound-of (δ-fam x y P)) holds
     y-is-ub (inl ⋆) = o
@@ -116,9 +117,9 @@ module δ-complete-poset {𝓤 𝓦 : Universe} (𝓥 : Universe) (A : Poset �
 
 \end{code}
 
-Future work: I would be nice to show that classically every poset is δ_𝓥
-complete and to provide the critical examples of δ_𝓥 complete posets (𝓥-sup
-lattices, etc.) We should also show that is-δ-complete is a subsingleton.
+TODO: It would be nice to show that classically every poset is δ_𝓥 complete.
+Also we should provide the critical examples of δ_𝓥 complete posets
+(𝓥-sup lattices, etc.) We should also show that is-δ-complete is a subsingleton.
 
 We now define the type of δ_𝓥 complete posets.
 
@@ -155,8 +156,8 @@ module non-trivial-posets {𝓤  𝓦 : Universe} (A : Poset 𝓤 𝓦) where
  ordering : (i : is-non-trivial-poset) → (lower i ≤[ A ] upper i) holds
  ordering i = pr₁ (pr₂ (pr₂ i))
 
- nequal : (i : is-non-trivial-poset) → lower i ≠ upper i
- nequal i = pr₂ (pr₂ (pr₂ i))
+ not-equal : (i : is-non-trivial-poset) → lower i ≠ upper i
+ not-equal i = pr₂ (pr₂ (pr₂ i))
 
  module _ (𝓥 : Universe) (i : is-non-trivial-poset) where
 
@@ -165,16 +166,17 @@ module non-trivial-posets {𝓤  𝓦 : Universe} (A : Poset 𝓤 𝓦) where
   private
    x = lower i
    y = upper i
-   x-≤-y = ordering i
-   x-≠-y = nequal i 
+   x-below-y = ordering i
+   x-not-equal-y = not-equal i 
 
   WEM-lemma : (P : Ω 𝓥)
             → ((x is-lub-of (δ-fam x y P)) holds → ¬ (P holds))
             × ((y is-lub-of (δ-fam x y P)) holds → ¬ ¬ (P holds)) 
   pr₁ (WEM-lemma P) (x-is-ub , _) in-P =
-    x-≠-y (≤-is-antisymmetric A (x-≤-y) (x-is-ub (inr in-P)))
+    x-not-equal-y (≤-is-antisymmetric A (x-below-y) (x-is-ub (inr in-P)))
   pr₂ (WEM-lemma P) (_ , y-has-lub-cond) not-P =
-    x-≠-y (≤-is-antisymmetric A (x-≤-y) (y-has-lub-cond (x , x-is-ub)))
+    x-not-equal-y (≤-is-antisymmetric A (x-below-y)
+                                      (y-has-lub-cond (x , x-is-ub)))
    where
     x-is-ub : (x is-an-upper-bound-of (δ-fam x y P)) holds
     x-is-ub (inl ✯) = ≤-is-reflexive A x
@@ -189,29 +191,29 @@ We now show that the two element poset is δ complete only if WEM holds.
 2-is-non-trivial : non-trivial-posets.is-non-trivial-poset 2-Poset
 2-is-non-trivial = (₀ , ₁ , ⋆ , zero-is-not-one)
 
-2-is-δ-complete-WEM : {𝓥 : Universe}
-                    → δ-complete-poset.is-δ-complete {𝓤₀} {𝓤₀} 𝓥 2-Poset
-                    → WEM 𝓥
-2-is-δ-complete-WEM {𝓥} i P P-is-prop = wem
+2-is-δ-complete-gives-WEM : {𝓥 : Universe}
+                          → δ-complete-poset.is-δ-complete {𝓤₀} {𝓤₀} 𝓥 2-Poset
+                          → WEM 𝓥
+2-is-δ-complete-gives-WEM {𝓥} i P P-is-prop = wem
  where
   open Joins (rel-syntax 2-Poset)
   open δ-complete-poset 𝓥 2-Poset
   open non-trivial-posets 2-Poset  
 
-  sup-2-exists : Σ s ꞉ ∣ 2-Poset ∣ₚ ,
-                 (s is-lub-of (δ-fam ₀ ₁ (P , P-is-prop))) holds
-  sup-2-exists = i ₀ ₁ ⋆ (P , P-is-prop)
+  sup-from-δ-completeness : Σ s ꞉ ∣ 2-Poset ∣ₚ ,
+                          (s is-lub-of (δ-fam ₀ ₁ (P , P-is-prop))) holds
+  sup-from-δ-completeness = i ₀ ₁ ⋆ (P , P-is-prop)
 
-  sup-2-exists-gives-wem : Σ s ꞉ ∣ 2-Poset ∣ₚ ,
+  sup-gives-wem : Σ s ꞉ ∣ 2-Poset ∣ₚ ,
                            (s is-lub-of (δ-fam ₀ ₁ (P , P-is-prop))) holds
                          → ¬ P + ¬ (¬ P)
-  sup-2-exists-gives-wem (₀ , sup) =
+  sup-gives-wem (₀ , sup) =
     inl (pr₁ (WEM-lemma 𝓥 2-is-non-trivial (P , P-is-prop)) sup)
-  sup-2-exists-gives-wem (₁ , sup) =
+  sup-gives-wem (₁ , sup) =
     inr (pr₂ (WEM-lemma 𝓥 2-is-non-trivial (P , P-is-prop)) sup)
 
   wem : ¬ P + ¬ (¬ P)
-  wem = sup-2-exists-gives-wem sup-2-exists
+  wem = sup-gives-wem sup-from-δ-completeness
 
 \end{code}
 
@@ -237,37 +239,42 @@ module Positive-Posets (𝓤  𝓦  𝓥 : Universe) (A : Poset 𝓤 𝓦) where
           → (z is-lub-of (δ-fam x z P)) holds
           → P holds)
 
-  order-< : {x y : ∣ A ∣ₚ} → x < y → (x ≤ y) holds
-  order-< c = pr₁ c
+  order-from-strictly-below : {x y : ∣ A ∣ₚ} → x < y → (x ≤ y) holds
+  order-from-strictly-below c = pr₁ c
 
-  sup-condition : {x y : ∣ A ∣ₚ}
-                → x < y
-                → ((z : ∣ A ∣ₚ)
-                 → (y ≤ z) holds
-                 → (P : Ω 𝓥)
-                 → (z is-lub-of (δ-fam x z P)) holds
-                 → P holds)
-  sup-condition c = pr₂ c
+  sup-condition-from-strictly-below : {x y : ∣ A ∣ₚ}
+                                    → x < y
+                                    → ((z : ∣ A ∣ₚ)
+                                     → (y ≤ z) holds
+                                     → (P : Ω 𝓥)
+                                     → (z is-lub-of (δ-fam x z P)) holds
+                                     → P holds)
+  sup-condition-from-strictly-below x-strictly-below-y =
+     pr₂ x-strictly-below-y
 
   strictly-below-implies-non-trivial : (x y : ∣ A ∣ₚ)
                                      → is-δ-complete
                                      → (x < y)
                                      → (x ≤ y) holds × (x ≠ y)
-  pr₁ (strictly-below-implies-non-trivial x y i c) = order-< c
-  pr₂ (strictly-below-implies-non-trivial x y i c) p =
-   𝟘-induction (sup-condition c y (≤-is-reflexive A y)
-               ⊥
-               (y-is-ub , y-has-lub-cond))
+  pr₁ (strictly-below-implies-non-trivial x y i x-strictly-below-y) =
+     order-from-strictly-below x-strictly-below-y
+  pr₂ (strictly-below-implies-non-trivial x y i x-strictly-below-y) p =
+     𝟘-elim (sup-condition-from-strictly-below x-strictly-below-y y
+                                               (≤-is-reflexive A y) ⊥
+                                               (y-is-ub , y-has-lub-cond))
     where
      y-is-ub : (y is-an-upper-bound-of (δ-fam x y ⊥)) holds
-     y-is-ub (inl ⋆) = order-< c
+     y-is-ub (inl ⋆) = order-from-strictly-below x-strictly-below-y
 
-     y-has-lub-cond : (u : upper-bound (δ-fam x y ⊥)) → (y ≤ (pr₁ u)) holds
-     y-has-lub-cond u = y ＝⟨ p ⁻¹ ⟩ₚ pr₂ u (inl ⋆)
+     y-has-lub-cond : ((u , _) : upper-bound (δ-fam x y ⊥)) → (y ≤ u) holds
+     y-has-lub-cond (u , is-upbnd) = y ＝⟨ p ⁻¹ ⟩ₚ is-upbnd (inl ⋆)
 
 \end{code}
 
-We could show that if the converse holds then so does EM in 𝓥.
+TODO: We could show that if the converse holds then so does EM in 𝓥.
+This is because in particular, for x,y : Ω 𝓥
+
+  if x ≤ y and x ≠ y implies x < y then EM holds in 𝓥
 
 \begin{code}
 
@@ -275,19 +282,25 @@ We could show that if the converse holds then so does EM in 𝓥.
            → (x y z : ∣ A ∣ₚ)
            → (x ≤ y) holds × y < z
            → x < z 
-  ≤-<-to-< i x y z (x-≤-y , y-<-z) =
-    (≤-is-transitive A x y z x-≤-y (order-< y-<-z) , sup-cond-P)
+  ≤-<-to-< i x y z (x-below-y , y-strictly-below-z) =
+    (≤-is-transitive A x y z x-below-y
+                     (order-from-strictly-below y-strictly-below-z)
+     , sup-cond-P)
    where
     sup-cond-P : (w : ∣ A ∣ₚ)
                → (z ≤ w) holds
                → (P : Ω 𝓥)
                → (w is-lub-of (δ-fam x w P)) holds
                → P holds
-    sup-cond-P w z-≤-w P (w-is-ubₓ , w-has-lub-condₓ) =
-      sup-condition y-<-z w z-≤-w P (w-is-ub , w-has-lub-cond)
+    sup-cond-P w z-below-w P (w-is-ubₓ , w-has-lub-condₓ) =
+      sup-condition-from-strictly-below y-strictly-below-z w z-below-w P
+                                        (w-is-ub , w-has-lub-cond)
      where
       w-is-ub : (w is-an-upper-bound-of (δ-fam y w P)) holds
-      w-is-ub (inl ⋆) = ≤-is-transitive A y z w (order-< y-<-z) z-≤-w
+      w-is-ub (inl ⋆) = ≤-is-transitive A y z w
+                                        (order-from-strictly-below
+                                          y-strictly-below-z)
+                                        z-below-w
       w-is-ub (inr p) = ≤-is-reflexive A w
 
       w-has-lub-cond : ((u , u-is-ub) : (upper-bound (δ-fam y w P)))
@@ -295,31 +308,38 @@ We could show that if the converse holds then so does EM in 𝓥.
       w-has-lub-cond (u , u-is-ub) = w-has-lub-condₓ (u , u-is-ubₓ)
        where
         u-is-ubₓ : (u is-an-upper-bound-of (δ-fam x w P)) holds
-        u-is-ubₓ (inl ⋆) = ≤-is-transitive A x y u (x-≤-y) (u-is-ub (inl ⋆))
+        u-is-ubₓ (inl ⋆) = ≤-is-transitive A x y u (x-below-y) (u-is-ub (inl ⋆))
         u-is-ubₓ (inr p) = u-is-ub (inr p)
 
   <-≤-to-< : (i : is-δ-complete)
            → (x y z : ∣ A ∣ₚ)
            → x < y × (y ≤ z) holds
            → x < z
-  <-≤-to-< i x y z (x-<-y , y-≤-z) =
-   (≤-is-transitive A x y z (order-< x-<-y) y-≤-z , sup-cond-P)
+  <-≤-to-< i x y z (x-strictly-below-y , y-below-z) =
+   (≤-is-transitive A x y z
+                    (order-from-strictly-below x-strictly-below-y) y-below-z
+    , sup-cond-P)
     where
      sup-cond-P : (w : ∣ A ∣ₚ)
                 → (z ≤ w) holds
                 → (P : Ω 𝓥)
                 → (w is-lub-of (δ-fam x w P)) holds
                 → P holds
-     sup-cond-P w z-≤-w P w-is-lub =
-       sup-condition x-<-y w (≤-is-transitive A y z w y-≤-z z-≤-w) P w-is-lub
+     sup-cond-P w z-below-w P w-is-lub =
+       sup-condition-from-strictly-below x-strictly-below-y w
+                                         (≤-is-transitive A y z w
+                                                          y-below-z
+                                                          z-below-w)
+                                         P w-is-lub
 
   is-positive-poset : 𝓤 ⊔ 𝓦 ⊔ (𝓥 ⁺) ̇ 
   is-positive-poset = Σ x ꞉ ∣ A ∣ₚ , (Σ y ꞉ ∣ A ∣ₚ , x < y)
 
 \end{code}
 
-Next we will formalize the first retract lemma. The result will allows use to exhibit the type of not-not stable propositions
-as a retract of a locally small non-trivial δ-complete poset. We start by defining local smallness.
+Next we will formalize the first retract lemma. The result will allows use to
+exhibit the type of not-not stable propositions as a retract of a locally small
+non-trivial δ-complete poset. We start by defining local smallness.
 
 \begin{code}
 
@@ -359,50 +379,51 @@ module Retract-Lemmas (𝓤  𝓦  𝓥 : Universe) (A : Poset 𝓤 𝓦) where
 
  module def-Δ (i : is-δ-complete)
               {x y : ∣ A ∣ₚ}
-              (x-≤-y : (x ≤ y) holds)
+              (x-below-y : (x ≤ y) holds)
                where
 
   Δ : Ω 𝓥 → ∣ A ∣ₚ
-  Δ P = sup-of-δ i x y x-≤-y P
+  Δ P = sup-of-δ i x y x-below-y P
 
  module retract-lemma₁ (l : is-locally-small-order)
                        (i : is-δ-complete)
                        (x y : ∣ A ∣ₚ)
-                       (x-≤-y : (x ≤ y) holds)
+                       (x-below-y : (x ≤ y) holds)
                         where
 
   open local-smallness l
-  open def-Δ i x-≤-y
+  open def-Δ i x-below-y
 
   non-trivial-to-Δ-section : x ≠ y → is-section (Δ ∘ Ω¬¬-to-Ω)
-  non-trivial-to-Δ-section x-≠-y = (r , H)
+  non-trivial-to-Δ-section x-not-equal-y = (r , H)
    where
     r : ∣ A ∣ₚ → Ω¬¬ 𝓥
     r z = ((¬ (z ≤ⱽ x) , negations-are-props fe) , ¬-is-¬¬-stable)
 
     f : ((P , P-¬¬-stable) : Ω¬¬ 𝓥) → ¬ (Δ P ≤ⱽ x) → P holds
-    f (P , P-¬¬-stable) not-Δ-≤-x = P-¬¬-stable not-not-P
+    f (P , P-¬¬-stable) not-Δ-leq-x = P-¬¬-stable not-not-P
      where
       not-not-P : ¬¬ (P holds)
-      not-not-P not-P = not-Δ-≤-x (≤-to-≤ⱽ (Δ P)
+      not-not-P not-P = not-Δ-leq-x (≤-to-≤ⱽ (Δ P)
                                   x
                                   (transport (λ z → (z ≤ x) holds)
-                                             x-＝-Δ
+                                             x-is-Δ
                                              (≤-is-reflexive A x)))
        where
-        x-＝-Δ : x ＝ Δ P
-        x-＝-Δ = lower-＝-sup-δ i x y x-≤-y P not-P
+        x-is-Δ : x ＝ Δ P
+        x-is-Δ = lower-is-sup-δ i x y x-below-y P not-P
 
     g : ((P , P-¬¬-stable) : Ω¬¬ 𝓥) → P holds → ¬ (Δ P ≤ⱽ x)
-    g (P , P-¬¬-stable) in-P Δ-≤-x = x-≠-y (≤-is-antisymmetric A x-≤-y y-≤-x)
+    g (P , P-¬¬-stable) in-P Δ-below-x =
+      x-not-equal-y (≤-is-antisymmetric A x-below-y y-below-x)
      where
-      y-＝-Δ : y ＝ Δ P
-      y-＝-Δ = upper-＝-sup-δ i x y x-≤-y P in-P
+      y-is-Δ : y ＝ Δ P
+      y-is-Δ = upper-is-sup-δ i x y x-below-y P in-P
 
-      y-≤-x : (y ≤ x) holds
-      y-≤-x = transport (λ z → (z ≤ x) holds)
-                        (y-＝-Δ ⁻¹)
-                        (≤ⱽ-to-≤ (Δ P) x Δ-≤-x)
+      y-below-x : (y ≤ x) holds
+      y-below-x = transport (λ z → (z ≤ x) holds)
+                          (y-is-Δ ⁻¹)
+                          (≤ⱽ-to-≤ (Δ P) x Δ-below-x)
 
     H : r ∘ Δ ∘ Ω¬¬-to-Ω ∼ id
     H (P , P-¬¬-stable) =
@@ -414,11 +435,11 @@ module Retract-Lemmas (𝓤  𝓦  𝓥 : Universe) (A : Poset 𝓤 𝓦) where
                                        (g (P , P-¬¬-stable))))
 
   Δ-section-to-non-trivial : is-section (Δ ∘ Ω¬¬-to-Ω) → x ≠ y
-  Δ-section-to-non-trivial (r , H) x-＝-y =
-    𝟘-is-not-𝟙 (ap (pr₁ ∘ pr₁) (r-x-＝-𝟘 ⁻¹ ∙ ap r x-＝-y ∙ r-y-＝-𝟙))
+  Δ-section-to-non-trivial (r , H) x-is-y =
+    𝟘-is-not-𝟙 (ap (pr₁ ∘ pr₁) (r-x-is-𝟘 ⁻¹ ∙ ap r x-is-y ∙ r-y-is-𝟙))
    where
     path₁ : x ＝ Δ ⊥
-    path₁ = lower-＝-sup-δ i x y x-≤-y ⊥ ⊥-doesnt-hold
+    path₁ = lower-is-sup-δ i x y x-below-y ⊥ ⊥-doesnt-hold
 
     path₂ : r x ＝ r (Δ ⊥)
     path₂ = ap r path₁
@@ -426,11 +447,11 @@ module Retract-Lemmas (𝓤  𝓦  𝓥 : Universe) (A : Poset 𝓤 𝓦) where
     path₃ : r (Δ ⊥) ＝ (⊥ , 𝟘-is-¬¬-stable)
     path₃ = H (⊥ , 𝟘-is-¬¬-stable)
 
-    r-x-＝-𝟘 : r x ＝ (⊥ , 𝟘-is-¬¬-stable)
-    r-x-＝-𝟘 = path₂ ∙ path₃
+    r-x-is-𝟘 : r x ＝ (⊥ , 𝟘-is-¬¬-stable)
+    r-x-is-𝟘 = path₂ ∙ path₃
 
     path₄ : y ＝ Δ ⊤
-    path₄ = upper-＝-sup-δ i x y x-≤-y ⊤ ⊤-holds
+    path₄ = upper-is-sup-δ i x y x-below-y ⊤ ⊤-holds
 
     path₅ : r y ＝ r (Δ ⊤)
     path₅ = ap r path₄
@@ -438,8 +459,8 @@ module Retract-Lemmas (𝓤  𝓦  𝓥 : Universe) (A : Poset 𝓤 𝓦) where
     path₆ : r (Δ ⊤) ＝ (⊤ , 𝟙-is-¬¬-stable)
     path₆ = H (⊤ , 𝟙-is-¬¬-stable)
 
-    r-y-＝-𝟙 : r y ＝ (⊤ , 𝟙-is-¬¬-stable)
-    r-y-＝-𝟙 = path₅ ∙ path₆
+    r-y-is-𝟙 : r y ＝ (⊤ , 𝟙-is-¬¬-stable)
+    r-y-is-𝟙 = path₅ ∙ path₆
 
   non-trivial-iff-Δ-section : x ≠ y ↔ is-section (Δ ∘ Ω¬¬-to-Ω)
   non-trivial-iff-Δ-section =
@@ -457,7 +478,7 @@ propositions as a retract of a locally small positive δ-complete poset.
  module retract-lemma₂ (l : is-locally-small-order)
                        (i : is-δ-complete)
                        (x y : ∣ A ∣ₚ)
-                       (x-≤-y : (x ≤ y) holds)
+                       (x-below-y : (x ≤ y) holds)
                         where
 
   open positive-posets i
@@ -466,107 +487,108 @@ propositions as a retract of a locally small positive δ-complete poset.
 
   private
    t : (z : ∣ A ∣ₚ) → (y ≤ z) holds → (x ≤ z) holds
-   t z y-≤-z = ≤-is-transitive A x y z x-≤-y y-≤-z
+   t z y-below-z = ≤-is-transitive A x y z x-below-y y-below-z
 
   positive-to-Δ-section : x < y → (z : ∣ A ∣ₚ)
-                        → (y-≤-z : (y ≤ z) holds)
-                        → is-section (Δ (t z y-≤-z))
-  positive-to-Δ-section x-<-y z y-≤-z = (r , H)
+                        → (y-below-z : (y ≤ z) holds)
+                        → is-section (Δ (t z y-below-z))
+  positive-to-Δ-section x-strictly-below-y z y-below-z = (r , H)
    where
     r : ∣ A ∣ₚ → Ω 𝓥
     r w = (z ≤ⱽ w , ≤ⱽ-is-prop z w)
 
-    f : (P : Ω 𝓥) → z ≤ⱽ Δ (t z y-≤-z) P → P holds
-    f P z-≤ⱽ-Δ =
-      sup-condition x-<-z
-                    z
-                    (≤-is-reflexive A z)
-                    P
-                    (transport (λ v → (v is-lub-of (δ-fam x z P)) holds)
-                               (z-＝-Δ ⁻¹)
-                               (is-sup-of-δ i x z (t z y-≤-z) P))
+    f : (P : Ω 𝓥) → z ≤ⱽ Δ (t z y-below-z) P → P holds
+    f P z-belowⱽ-Δ =
+      sup-condition-from-strictly-below
+        x-below-z z
+        (≤-is-reflexive A z) P
+        (transport (λ v → (v is-lub-of (δ-fam x z P)) holds)
+                          (z-is-Δ ⁻¹)
+                          (is-sup-of-δ i x z (t z y-below-z) P))
      where
-      z-≤-Δ : (z ≤ Δ (t z y-≤-z) P) holds
-      z-≤-Δ = ≤ⱽ-to-≤ z (Δ (t z y-≤-z) P) z-≤ⱽ-Δ
+      z-below-Δ : (z ≤ Δ (t z y-below-z) P) holds
+      z-below-Δ = ≤ⱽ-to-≤ z (Δ (t z y-below-z) P) z-belowⱽ-Δ
 
-      Δ-≤-z : (Δ (t z y-≤-z) P ≤ z) holds
-      Δ-≤-z = sup-δ-≤-upper i x z (t z y-≤-z) P
+      Δ-below-z : (Δ (t z y-below-z) P ≤ z) holds
+      Δ-below-z = sup-δ-below-upper i x z (t z y-below-z) P
 
-      z-＝-Δ : z ＝ Δ (t z y-≤-z) P
-      z-＝-Δ = ≤-is-antisymmetric A z-≤-Δ Δ-≤-z
+      z-is-Δ : z ＝ Δ (t z y-below-z) P
+      z-is-Δ = ≤-is-antisymmetric A z-below-Δ Δ-below-z
 
-      x-<-z : x < z
-      x-<-z = <-≤-to-< i x y z (x-<-y , y-≤-z)
+      x-below-z : x < z
+      x-below-z = <-≤-to-< i x y z (x-strictly-below-y , y-below-z)
 
-    g : (P : Ω 𝓥) → P holds → z ≤ⱽ Δ (t z y-≤-z) P
-    g P in-P = ≤-to-≤ⱽ z (Δ (t z y-≤-z) P) z-≤-Δ
+    g : (P : Ω 𝓥) → P holds → z ≤ⱽ Δ (t z y-below-z) P
+    g P in-P = ≤-to-≤ⱽ z (Δ (t z y-below-z) P) z-below-Δ
      where
-      z-＝-Δ : z ＝ Δ (t z y-≤-z) P
-      z-＝-Δ = upper-＝-sup-δ i x z (t z y-≤-z) P in-P
+      z-is-Δ : z ＝ Δ (t z y-below-z) P
+      z-is-Δ = upper-is-sup-δ i x z (t z y-below-z) P in-P
 
-      z-≤-Δ : (z ≤ Δ (t z y-≤-z) P) holds
-      z-≤-Δ = transport (λ v → (z ≤ v) holds) z-＝-Δ (≤-is-reflexive A z)
+      z-below-Δ : (z ≤ Δ (t z y-below-z) P) holds
+      z-below-Δ = transport (λ v → (z ≤ v) holds) z-is-Δ (≤-is-reflexive A z)
 
-    H : r ∘ (Δ (≤-is-transitive A x y z x-≤-y y-≤-z)) ∼ id
+    H : r ∘ (Δ (≤-is-transitive A x y z x-below-y y-below-z)) ∼ id
     H P = to-subtype-＝ (λ _ → being-prop-is-prop fe)
-                                      (pe (≤ⱽ-is-prop z (Δ (t z y-≤-z) P))
+                                      (pe (≤ⱽ-is-prop z (Δ (t z y-below-z) P))
                                           (holds-is-prop P)
                                           (f P)
                                           (g P))
  
   Δ-section-to-positive : ((z : ∣ A ∣ₚ)
-                        → (y-≤-z : (y ≤ z) holds)
-                        → is-section (Δ (t z y-≤-z)))
+                        → (y-below-z : (y ≤ z) holds)
+                        → is-section (Δ (t z y-below-z)))
                         → x < y
-  Δ-section-to-positive G = (x-≤-y , sup-condition-Δ)
+  Δ-section-to-positive G = (x-below-y , sup-condition-Δ)
    where
     r : (z : ∣ A ∣ₚ) → (y ≤ z) holds → (∣ A ∣ₚ → Ω 𝓥)
-    r z y-≤-z = pr₁ (G z y-≤-z)
+    r z y-below-z = pr₁ (G z y-below-z)
 
     H : (z : ∣ A ∣ₚ)
-      → (y-≤-z : (y ≤ z) holds)
-      → (r z y-≤-z) ∘ (Δ (t z y-≤-z)) ∼ id
-    H z y-≤-z = pr₂ (G z y-≤-z)
+      → (y-below-z : (y ≤ z) holds)
+      → (r z y-below-z) ∘ (Δ (t z y-below-z)) ∼ id
+    H z y-below-z = pr₂ (G z y-below-z)
 
     sup-condition-Δ : (z : ∣ A ∣ₚ)
                     → (y ≤ z) holds
                     → (P : Ω 𝓥)
                     → (z is-lub-of (δ-fam x z P)) holds
                     → P holds
-    sup-condition-Δ z y-≤-z P (z-is-ub-Δ , z-has-lub-cond-Δ) =
-      idtofun 𝟙 (P holds) 𝟙-＝-P ⋆
+    sup-condition-Δ z y-below-z P (z-is-ub-Δ , z-has-lub-cond-Δ) =
+      idtofun 𝟙 (P holds) 𝟙-is-P ⋆
      where
-      z-≤-Δ : (z ≤ Δ (t z y-≤-z) P) holds
-      z-≤-Δ =
-        z-has-lub-cond-Δ (Δ (t z y-≤-z) P , is-ub-of-δ i x z (t z y-≤-z) P)
+      z-below-Δ : (z ≤ Δ (t z y-below-z) P) holds
+      z-below-Δ =
+        z-has-lub-cond-Δ (Δ (t z y-below-z) P
+                         , is-ub-of-δ i x z (t z y-below-z) P)
 
-      Δ-≤-z : (Δ (t z y-≤-z) P ≤ z) holds
-      Δ-≤-z = sup-δ-≤-upper i x z (t z y-≤-z) P
+      Δ-below-z : (Δ (t z y-below-z) P ≤ z) holds
+      Δ-below-z = sup-δ-below-upper i x z (t z y-below-z) P
 
-      z-＝-Δ : z ＝ Δ (t z y-≤-z) P
-      z-＝-Δ = ≤-is-antisymmetric A z-≤-Δ Δ-≤-z
+      z-is-Δ : z ＝ Δ (t z y-below-z) P
+      z-is-Δ = ≤-is-antisymmetric A z-below-Δ Δ-below-z
 
-      path₁ : ⊤ ＝ (r z y-≤-z) (Δ (t z y-≤-z) ⊤)
-      path₁ = (H z y-≤-z ⊤) ⁻¹
+      path₁ : ⊤ ＝ (r z y-below-z) (Δ (t z y-below-z) ⊤)
+      path₁ = (H z y-below-z ⊤) ⁻¹
 
-      path₂ : (r z y-≤-z) (Δ (t z y-≤-z) ⊤) ＝ (r z y-≤-z) z
-      path₂ = ap (r z y-≤-z) ((upper-＝-sup-δ i x z (t z y-≤-z) ⊤ ⊤-holds) ⁻¹)
+      path₂ : (r z y-below-z) (Δ (t z y-below-z) ⊤) ＝ (r z y-below-z) z
+      path₂ = ap (r z y-below-z)
+                 ((upper-is-sup-δ i x z (t z y-below-z) ⊤ ⊤-holds) ⁻¹)
 
-      path₃ : (r z y-≤-z) z ＝ (r z y-≤-z) (Δ (t z y-≤-z) P)
-      path₃ = ap (r z y-≤-z) z-＝-Δ
+      path₃ : (r z y-below-z) z ＝ (r z y-below-z) (Δ (t z y-below-z) P)
+      path₃ = ap (r z y-below-z) z-is-Δ
 
-      path₄ : (r z y-≤-z) (Δ (t z y-≤-z) P) ＝ P
-      path₄ = H z y-≤-z P
+      path₄ : (r z y-below-z) (Δ (t z y-below-z) P) ＝ P
+      path₄ = H z y-below-z P
 
       path₅ : ⊤ ＝ P
       path₅ = path₁ ∙ path₂ ∙ path₃ ∙ path₄
 
-      𝟙-＝-P : 𝟙 ＝ P holds
-      𝟙-＝-P = ap pr₁ path₅
+      𝟙-is-P : 𝟙 ＝ P holds
+      𝟙-is-P = ap pr₁ path₅
 
   positive-iff-Δ-section : x < y ↔ ((z : ∣ A ∣ₚ)
-                                   → (y-≤-z : (y ≤ z) holds)
-                                   → is-section (Δ (t z y-≤-z)))
+                                   → (y-below-z : (y ≤ z) holds)
+                                   → is-section (Δ (t z y-below-z)))
   positive-iff-Δ-section = (positive-to-Δ-section , Δ-section-to-positive)
    
 \end{code}
@@ -617,9 +639,7 @@ module Ω-δ-complete-positive-Poset (𝓥 : Universe) where
             (λ P → λ Q → (P ⊑ Q , ⊑-is-prop-valued P Q)) ,
             (⊑-is-reflexive , ⊑-is-transitive) , ⊑-is-antisymmetric)
 
- open Local-Smallness (𝓥 ⁺)
-                      𝓥
-                      𝓥
+ open Local-Smallness (𝓥 ⁺) 𝓥 𝓥
                       Ω-Poset
                       (λ P → λ Q → (P ⊑ Q , ⊑-is-prop-valued P Q))
 
@@ -628,9 +648,9 @@ module Ω-δ-complete-positive-Poset (𝓥 : Universe) where
 
  open δ-complete-poset 𝓥 Ω-Poset
 
- Ω-δ-complete : is-δ-complete
- Ω-δ-complete Q R Q-⊑-R P = ((Ǝ i ꞉ (𝟙 + P holds) , (δ Q R P i holds)) ,
-                             (is-upbnd , has-sup-cond))
+ Ω-is-δ-complete : is-δ-complete
+ Ω-is-δ-complete Q R Q-⊑-R P = ((Ǝ i ꞉ (𝟙 + P holds) , (δ Q R P i holds)) ,
+                                (is-upbnd , has-sup-cond))
   where
    open Joins (λ Q → λ R → (Q ⊑ R , ⊑-is-prop-valued Q R))
    open propositional-truncations-exist pt
@@ -647,10 +667,10 @@ module Ω-δ-complete-positive-Poset (𝓥 : Universe) where
      f (i , e) = U-is-upbnd i e
 
  open Positive-Posets (𝓥 ⁺) 𝓥 𝓥 Ω-Poset
- open positive-posets Ω-δ-complete
+ open positive-posets Ω-is-δ-complete
 
- Ω-positive : is-positive-poset
- Ω-positive = (⊥ , ⊤ , (𝟘-elim , f))
+ Ω-is-positive : is-positive-poset
+ Ω-is-positive = (⊥ , ⊤ , (𝟘-elim , f))
   where
    open Joins (λ Q → λ R → (Q ⊑ R , ⊑-is-prop-valued Q R))
    f : (Q : Ω 𝓥)
@@ -689,9 +709,7 @@ module Ω¬¬-δ-complete-non-trivial-Poset (𝓥 : Universe) where
               (λ P → λ Q → (P ⊑ Q , ⊑-is-prop-valued P Q)) ,
               (⊑-is-reflexive , ⊑-is-transitive) , ⊑-is-antisymmetric)
 
- open Local-Smallness (𝓥 ⁺)
-                      𝓥
-                      𝓥
+ open Local-Smallness (𝓥 ⁺) 𝓥 𝓥
                       Ω¬¬-Poset
                       (λ P → λ Q → (P ⊑ Q , ⊑-is-prop-valued P Q))
 
@@ -700,8 +718,8 @@ module Ω¬¬-δ-complete-non-trivial-Poset (𝓥 : Universe) where
 
  open δ-complete-poset 𝓥 Ω¬¬-Poset
 
- Ω¬¬-δ-complete : is-δ-complete
- Ω¬¬-δ-complete Q R Q-⊑-R P =
+ Ω¬¬-is-δ-complete : is-δ-complete
+ Ω¬¬-is-δ-complete Q R Q-⊑-R P =
    (((¬¬ (((Ǝ i ꞉ (𝟙 + P holds) , (δ Q R P i) holds') holds)) ,
     negations-are-props fe) ,
     ¬-is-¬¬-stable) ,
@@ -719,7 +737,7 @@ module Ω¬¬-δ-complete-non-trivial-Poset (𝓥 : Universe) where
    is-upbnd i δ-i not-exists = not-exists ∣ (i , δ-i) ∣
 
    has-lub-cond : ((U , _) : upper-bound (δ-fam Q R P)) → E ⊑ U
-   has-lub-cond (U , U-is-upbnd) = E-⊑-U
+   has-lub-cond (U , U-is-upbnd) = E-to-U
     where
      untrunc-map : Σ i ꞉ (𝟙 + (P holds)) , δ Q R P i holds' → U holds'
      untrunc-map (i , δ-i) = U-is-upbnd i δ-i
@@ -729,8 +747,8 @@ module Ω¬¬-δ-complete-non-trivial-Poset (𝓥 : Universe) where
      g = double-contrapositive f
      h : ¬¬ (U holds') → U holds'
      h = holds'-is-¬¬-stable U
-     E-⊑-U : E ⊑ U
-     E-⊑-U = h ∘ g
+     E-to-U : E ⊑ U
+     E-to-U = h ∘ g
 
  open non-trivial-posets Ω¬¬-Poset
 
@@ -759,24 +777,26 @@ module Predicative-Taboos (𝓤 𝓦 𝓥 : Universe) (A : Poset 𝓤 𝓦) wher
   → is-non-trivial-poset
   → small-δ-complete-poset.poset-is-small δ-complete
   → Ω¬¬-Resizing 𝓥 𝓥
- small-non-trivial-poset-implies-¬¬resizing δ-complete (x , y , x-≤-y , x-≠-y) (locally-small , carrier-small) =
+ small-non-trivial-poset-implies-¬¬resizing
+   δ-complete (x , y , x-below-y , x-not-equal-y)
+              (locally-small , carrier-small) =
   embedded-retract-is-small Δ-Retract Δ-Embedding carrier-small
   where
-   open retract-lemma₁ locally-small δ-complete x y x-≤-y
+   open retract-lemma₁ locally-small δ-complete x y x-below-y
    open def-Δ δ-complete
 
    r : ∣ A ∣ₚ → Ω¬¬ 𝓥
-   r = pr₁ (non-trivial-to-Δ-section x-≠-y)
+   r = pr₁ (non-trivial-to-Δ-section x-not-equal-y)
 
-   H : r ∘ Δ x-≤-y ∘ Ω¬¬-to-Ω ∼ id
-   H = pr₂ (non-trivial-to-Δ-section x-≠-y)
+   H : r ∘ Δ x-below-y ∘ Ω¬¬-to-Ω ∼ id
+   H = pr₂ (non-trivial-to-Δ-section x-not-equal-y)
 
    Δ-Retract : retract Ω¬¬ 𝓥 of ∣ A ∣ₚ
-   Δ-Retract = (r , Δ x-≤-y ∘ Ω¬¬-to-Ω , H)
+   Δ-Retract = (r , Δ x-below-y ∘ Ω¬¬-to-Ω , H)
 
    Δ-Embedding : is-embedding (section Δ-Retract)
    Δ-Embedding =
-     sections-into-sets-are-embeddings (Δ x-≤-y ∘ Ω¬¬-to-Ω)
+     sections-into-sets-are-embeddings (Δ x-below-y ∘ Ω¬¬-to-Ω)
                                        (r , H)
                                        carrier-of-[ A ]-is-set
  
@@ -786,29 +806,30 @@ module Predicative-Taboos (𝓤 𝓦 𝓥 : Universe) (A : Poset 𝓤 𝓦) wher
   → small-δ-complete-poset.poset-is-small δ-complete
   → Ω-Resizing 𝓥 𝓥
  small-positive-poset-implies-resizing δ-complete
-                                       (x , y , x-≤-y , sup-condition)
+                                       (x , y , x-below-y , sup-condition)
                                        (locally-small , carrier-small) =
   embedded-retract-is-small Δ-Retract Δ-Embedding carrier-small
   where
-   open retract-lemma₂ locally-small δ-complete x y x-≤-y
+   open retract-lemma₂ locally-small δ-complete x y x-below-y
    open def-Δ δ-complete
 
    r : ∣ A ∣ₚ → Ω 𝓥
-   r = pr₁ (positive-to-Δ-section (x-≤-y , sup-condition)
+   r = pr₁ (positive-to-Δ-section (x-below-y , sup-condition)
                                   y
                                   (≤-is-reflexive A y))
 
-   H : r ∘ Δ (≤-is-transitive A x y y x-≤-y (≤-is-reflexive A y)) ∼ id
-   H = pr₂ (positive-to-Δ-section (x-≤-y , sup-condition)
+   H : r ∘ Δ (≤-is-transitive A x y y x-below-y (≤-is-reflexive A y)) ∼ id
+   H = pr₂ (positive-to-Δ-section (x-below-y , sup-condition)
                                   y
                                   (≤-is-reflexive A y))
 
    Δ-Retract : retract Ω 𝓥 of ∣ A ∣ₚ
-   Δ-Retract = (r , Δ (≤-is-transitive A x y y x-≤-y (≤-is-reflexive A y)) , H)
+   Δ-Retract =
+     (r , Δ (≤-is-transitive A x y y x-below-y (≤-is-reflexive A y)) , H)
 
    Δ-Embedding : is-embedding (section Δ-Retract)
    Δ-Embedding = sections-into-sets-are-embeddings
-                 (Δ (≤-is-transitive A x y y x-≤-y (≤-is-reflexive A y)))
+                 (Δ (≤-is-transitive A x y y x-below-y (≤-is-reflexive A y)))
                  (r , H)
                  carrier-of-[ A ]-is-set
 
@@ -820,14 +841,14 @@ module Resizing-Implications (𝓥 : Universe) where
   open δ-complete-poset 𝓥 Ω¬¬-Poset
   open non-trivial-posets Ω¬¬-Poset
   open Small-δ-complete-poset (𝓥 ⁺) 𝓥 𝓥 Ω¬¬-Poset
-  open small-δ-complete-poset Ω¬¬-δ-complete
+  open small-δ-complete-poset Ω¬¬-is-δ-complete
 
   ¬¬resizing-implies-small-non-trivial-poset :
     Ω¬¬-Resizing 𝓥 𝓥
    → Σ P ꞉ Poset (𝓥 ⁺) 𝓥 , is-δ-complete × is-non-trivial-poset × poset-is-small
   ¬¬resizing-implies-small-non-trivial-poset resize =
     (Ω¬¬-Poset ,
-     Ω¬¬-δ-complete ,
+     Ω¬¬-is-δ-complete ,
      Ω¬¬-is-non-trivial ,
      ⊑-is-locally-small ,
      resize)
@@ -837,17 +858,17 @@ module Resizing-Implications (𝓥 : Universe) where
   open Ω-δ-complete-positive-Poset 𝓥
   open δ-complete-poset 𝓥 Ω-Poset
   open Positive-Posets (𝓥 ⁺) 𝓥 𝓥 Ω-Poset
-  open positive-posets Ω-δ-complete
+  open positive-posets Ω-is-δ-complete
   open Small-δ-complete-poset (𝓥 ⁺) 𝓥 𝓥 Ω-Poset
-  open small-δ-complete-poset Ω-δ-complete
+  open small-δ-complete-poset Ω-is-δ-complete
 
   resizing-implies-small-positive-poset :
     Ω-Resizing 𝓥 𝓥
    → Σ P ꞉ Poset (𝓥 ⁺) 𝓥 , is-δ-complete × is-positive-poset × poset-is-small
   resizing-implies-small-positive-poset resize =
     (Ω-Poset ,
-     Ω-δ-complete ,
-     Ω-positive ,
+     Ω-is-δ-complete ,
+     Ω-is-positive ,
      ⊑-is-locally-small ,
      resize)
 
