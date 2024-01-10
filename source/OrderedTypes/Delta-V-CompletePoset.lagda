@@ -256,25 +256,34 @@ module Positive-Posets (𝓤  𝓦  𝓥 : Universe) (A : Poset 𝓤 𝓦) where
                                      → is-δ-complete
                                      → (x < y)
                                      → (x ≤ y) holds × (x ≠ y)
-  pr₁ (strictly-below-implies-non-trivial x y i x-strictly-below-y) =
-     order-from-strictly-below x-strictly-below-y
-  pr₂ (strictly-below-implies-non-trivial x y i x-strictly-below-y) p =
-     𝟘-elim (sup-condition-from-strictly-below x-strictly-below-y y
-                                               (≤-is-reflexive A y) ⊥
-                                               (y-is-ub , y-has-lub-cond))
-    where
-     y-is-ub : (y is-an-upper-bound-of (δ-fam x y ⊥)) holds
-     y-is-ub (inl ⋆) = order-from-strictly-below x-strictly-below-y
+  strictly-below-implies-non-trivial x y i x-strictly-below-y =
+    (x-below-y , x-not-equal-y)
+   where
+    x-below-y : (x ≤ y) holds
+    x-below-y = order-from-strictly-below x-strictly-below-y
 
-     y-has-lub-cond : ((u , _) : upper-bound (δ-fam x y ⊥)) → (y ≤ u) holds
-     y-has-lub-cond (u , is-upbnd) = y ＝⟨ p ⁻¹ ⟩ₚ is-upbnd (inl ⋆)
+    x-not-equal-y : x ≠ y
+    x-not-equal-y p =
+      𝟘-elim (sup-condition-from-strictly-below x-strictly-below-y y
+                                                (≤-is-reflexive A y) ⊥
+                                                (y-is-ub , y-has-lub-cond))
+
+      where
+       y-is-ub : (y is-an-upper-bound-of (δ-fam x y ⊥)) holds
+       y-is-ub (inl ⋆) = order-from-strictly-below x-strictly-below-y
+
+       y-has-lub-cond : ((u , _) : upper-bound (δ-fam x y ⊥)) → (y ≤ u) holds
+       y-has-lub-cond (u , is-upbnd) = y ＝⟨ p ⁻¹ ⟩ₚ is-upbnd (inl ⋆)
 
 \end{code}
 
 TODO: We could show that if the converse holds then so does EM in 𝓥.
 This is because in particular, for x,y : Ω 𝓥
 
-  if x ≤ y and x ≠ y implies x < y then EM holds in 𝓥
+  if x ≤ y and x ≠ y implies x < y then by taking x = ⊥ and y = P
+  we can show DNE (¬¬ P → P) holds
+
+it is well established that DNE is equivalent to EM.
 
 \begin{code}
 
@@ -337,7 +346,7 @@ This is because in particular, for x,y : Ω 𝓥
 
 \end{code}
 
-Next we will formalize the first retract lemma. The result will allows use to
+Next we will formalize the first retract lemma. The result will allows us to
 exhibit the type of not-not stable propositions as a retract of a locally small
 non-trivial δ-complete poset. We start by defining local smallness.
 
@@ -435,37 +444,28 @@ module Retract-Lemmas (𝓤  𝓦  𝓥 : Universe) (A : Poset 𝓤 𝓦) where
                                        (g (P , P-¬¬-stable))))
 
   Δ-section-to-non-trivial : is-section (Δ ∘ Ω¬¬-to-Ω) → x ≠ y
-  Δ-section-to-non-trivial (r , H) x-is-y =
-    𝟘-is-not-𝟙 (ap (pr₁ ∘ pr₁) (r-x-is-𝟘 ⁻¹ ∙ ap r x-is-y ∙ r-y-is-𝟙))
+  Δ-section-to-non-trivial (r , H) x-is-y = 𝟘-is-not-𝟙 𝟘-is-𝟙
    where
-    path₁ : x ＝ Δ ⊥
-    path₁ = lower-is-sup-δ i x y x-below-y ⊥ ⊥-doesnt-hold
+    x-is-Δ-⊥ : x ＝ Δ ⊥
+    x-is-Δ-⊥ = lower-is-sup-δ i x y x-below-y ⊥ ⊥-doesnt-hold
 
-    path₂ : r x ＝ r (Δ ⊥)
-    path₂ = ap r path₁
+    y-is-Δ-⊤ : y ＝ Δ ⊤
+    y-is-Δ-⊤ = upper-is-sup-δ i x y x-below-y ⊤ ⊤-holds
 
-    path₃ : r (Δ ⊥) ＝ (⊥ , 𝟘-is-¬¬-stable)
-    path₃ = H (⊥ , 𝟘-is-¬¬-stable)
+    ⊥-is-⊤ : (⊥ , 𝟘-is-¬¬-stable) ＝ (⊤ , 𝟙-is-¬¬-stable)
+    ⊥-is-⊤ = (⊥ , 𝟘-is-¬¬-stable) ＝⟨ H (⊥ , 𝟘-is-¬¬-stable) ⁻¹ ⟩
+             r (Δ ⊥)              ＝⟨ ap r x-is-Δ-⊥ ⁻¹ ⟩
+             r x                  ＝⟨ ap r x-is-y ⟩
+             r y                  ＝⟨ ap r y-is-Δ-⊤ ⟩
+             r (Δ ⊤)              ＝⟨ H (⊤ , 𝟙-is-¬¬-stable) ⟩
+             (⊤ , 𝟙-is-¬¬-stable) ∎
 
-    r-x-is-𝟘 : r x ＝ (⊥ , 𝟘-is-¬¬-stable)
-    r-x-is-𝟘 = path₂ ∙ path₃
-
-    path₄ : y ＝ Δ ⊤
-    path₄ = upper-is-sup-δ i x y x-below-y ⊤ ⊤-holds
-
-    path₅ : r y ＝ r (Δ ⊤)
-    path₅ = ap r path₄
-
-    path₆ : r (Δ ⊤) ＝ (⊤ , 𝟙-is-¬¬-stable)
-    path₆ = H (⊤ , 𝟙-is-¬¬-stable)
-
-    r-y-is-𝟙 : r y ＝ (⊤ , 𝟙-is-¬¬-stable)
-    r-y-is-𝟙 = path₅ ∙ path₆
+    𝟘-is-𝟙 : 𝟘 ＝ 𝟙
+    𝟘-is-𝟙 = ap (_holds ∘ Ω¬¬-to-Ω) ⊥-is-⊤
 
   non-trivial-iff-Δ-section : x ≠ y ↔ is-section (Δ ∘ Ω¬¬-to-Ω)
   non-trivial-iff-Δ-section =
     (non-trivial-to-Δ-section , Δ-section-to-non-trivial)
-
 
 \end{code}
 
@@ -564,27 +564,23 @@ propositions as a retract of a locally small positive δ-complete poset.
       Δ-below-z : (Δ (t z y-below-z) P ≤ z) holds
       Δ-below-z = sup-δ-below-upper i x z (t z y-below-z) P
 
-      z-is-Δ : z ＝ Δ (t z y-below-z) P
-      z-is-Δ = ≤-is-antisymmetric A z-below-Δ Δ-below-z
+      z-is-Δ-P : z ＝ Δ (t z y-below-z) P
+      z-is-Δ-P = ≤-is-antisymmetric A z-below-Δ Δ-below-z
 
-      path₁ : ⊤ ＝ (r z y-below-z) (Δ (t z y-below-z) ⊤)
-      path₁ = (H z y-below-z ⊤) ⁻¹
+      Δ-⊤-is-z : Δ (t z y-below-z) ⊤ ＝ z
+      Δ-⊤-is-z = (upper-is-sup-δ i x z (t z y-below-z) ⊤ ⊤-holds) ⁻¹
 
-      path₂ : (r z y-below-z) (Δ (t z y-below-z) ⊤) ＝ (r z y-below-z) z
-      path₂ = ap (r z y-below-z)
-                 ((upper-is-sup-δ i x z (t z y-below-z) ⊤ ⊤-holds) ⁻¹)
-
-      path₃ : (r z y-below-z) z ＝ (r z y-below-z) (Δ (t z y-below-z) P)
-      path₃ = ap (r z y-below-z) z-is-Δ
-
-      path₄ : (r z y-below-z) (Δ (t z y-below-z) P) ＝ P
-      path₄ = H z y-below-z P
-
-      path₅ : ⊤ ＝ P
-      path₅ = path₁ ∙ path₂ ∙ path₃ ∙ path₄
+      ⊤-is-P : ⊤ ＝ P
+      ⊤-is-P = ⊤                                     ＝⟨ (H z y-below-z ⊤) ⁻¹ ⟩
+               (r z y-below-z) (Δ (t z y-below-z) ⊤) ＝⟨ ap (r z y-below-z)
+                                                            Δ-⊤-is-z ⟩
+               (r z y-below-z) z                     ＝⟨ ap (r z y-below-z)
+                                                            z-is-Δ-P ⟩
+               (r z y-below-z) (Δ (t z y-below-z) P) ＝⟨ H z y-below-z P ⟩
+               P                                     ∎
 
       𝟙-is-P : 𝟙 ＝ P holds
-      𝟙-is-P = ap pr₁ path₅
+      𝟙-is-P = ap _holds ⊤-is-P
 
   positive-iff-Δ-section : x < y ↔ ((z : ∣ A ∣ₚ)
                                    → (y-below-z : (y ≤ z) holds)
