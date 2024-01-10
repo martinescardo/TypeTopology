@@ -556,16 +556,16 @@ propositions as a retract of a locally small positive δ-complete poset.
     sup-condition-Δ z y-below-z P (z-is-ub-Δ , z-has-lub-cond-Δ) =
       idtofun 𝟙 (P holds) 𝟙-is-P ⋆
      where
-      z-below-Δ : (z ≤ Δ (t z y-below-z) P) holds
-      z-below-Δ =
+      z-below-Δ-P : (z ≤ Δ (t z y-below-z) P) holds
+      z-below-Δ-P =
         z-has-lub-cond-Δ (Δ (t z y-below-z) P
                          , is-ub-of-δ i x z (t z y-below-z) P)
 
-      Δ-below-z : (Δ (t z y-below-z) P ≤ z) holds
-      Δ-below-z = sup-δ-below-upper i x z (t z y-below-z) P
+      Δ-P-below-z : (Δ (t z y-below-z) P ≤ z) holds
+      Δ-P-below-z = sup-δ-below-upper i x z (t z y-below-z) P
 
       z-is-Δ-P : z ＝ Δ (t z y-below-z) P
-      z-is-Δ-P = ≤-is-antisymmetric A z-below-Δ Δ-below-z
+      z-is-Δ-P = ≤-is-antisymmetric A z-below-Δ-P Δ-P-below-z
 
       Δ-⊤-is-z : Δ (t z y-below-z) ⊤ ＝ z
       Δ-⊤-is-z = (upper-is-sup-δ i x z (t z y-below-z) ⊤ ⊤-holds) ⁻¹
