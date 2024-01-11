@@ -1,6 +1,6 @@
 Ian Ray, 25 July 2023.
 
-Formalizing the auxilary notion of a delta-V-complete poset and the main
+Formalizing the auxilary notion of a delta-complete poset and the main
 theorems of Section 6.2 from Tom de Jong's thesis involving impredicativity
 (in the form of resizing principles) in order theory.
 
@@ -171,16 +171,28 @@ module non-trivial-posets {𝓤  𝓦 : Universe} (A : Poset 𝓤 𝓦) where
 
   WEM-lemma : (P : Ω 𝓥)
             → ((x is-lub-of (δ-fam x y P)) holds → ¬ (P holds))
-            × ((y is-lub-of (δ-fam x y P)) holds → ¬ ¬ (P holds)) 
-  pr₁ (WEM-lemma P) (x-is-ub , _) in-P =
-    x-not-equal-y (≤-is-antisymmetric A (x-below-y) (x-is-ub (inr in-P)))
-  pr₂ (WEM-lemma P) (_ , y-has-lub-cond) not-P =
-    x-not-equal-y (≤-is-antisymmetric A (x-below-y)
-                                      (y-has-lub-cond (x , x-is-ub)))
+            × ((y is-lub-of (δ-fam x y P)) holds → ¬ ¬ (P holds))
+  WEM-lemma P = (x-is-lub-to-not-P , y-is-lub-to-not-not-P)
    where
-    x-is-ub : (x is-an-upper-bound-of (δ-fam x y P)) holds
-    x-is-ub (inl ✯) = ≤-is-reflexive A x
-    x-is-ub (inr in-P) = 𝟘-induction (not-P in-P)
+    x-is-lub-to-not-P : (x is-lub-of (δ-fam x y P)) holds → ¬ (P holds)
+    x-is-lub-to-not-P (x-is-ub , _) in-P =
+      x-not-equal-y (≤-is-antisymmetric A (x-below-y) (x-is-ub (inr in-P)))
+    y-is-lub-to-not-not-P : (y is-lub-of (δ-fam x y P)) holds → ¬ ¬ (P holds)
+    y-is-lub-to-not-not-P (_ , y-has-lub-cond) not-P =
+      x-not-equal-y (≤-is-antisymmetric A (x-below-y)
+                                        (y-has-lub-cond (x , x-is-ub)))
+     where
+      x-is-ub : (x is-an-upper-bound-of (δ-fam x y P)) holds
+      x-is-ub (inl ✯) = ≤-is-reflexive A x
+      x-is-ub (inr in-P) = 𝟘-induction (not-P in-P)
+
+  x-is-lub-gives-not-P : (P : Ω 𝓥)
+                       → (x is-lub-of (δ-fam x y P)) holds → ¬ (P holds)
+  x-is-lub-gives-not-P P = pr₁ (WEM-lemma P)
+
+  y-is-lub-gives-not-not-P : (P : Ω 𝓥)
+                           → (y is-lub-of (δ-fam x y P)) holds → ¬ ¬ (P holds)
+  y-is-lub-gives-not-not-P P = pr₂ (WEM-lemma P)
     
 \end{code}
 
@@ -208,9 +220,9 @@ We now show that the two element poset is δ complete only if WEM holds.
                            (s is-lub-of (δ-fam ₀ ₁ (P , P-is-prop))) holds
                          → ¬ P + ¬ (¬ P)
   sup-gives-wem (₀ , sup) =
-    inl (pr₁ (WEM-lemma 𝓥 2-is-non-trivial (P , P-is-prop)) sup)
+    inl (x-is-lub-gives-not-P 𝓥 2-is-non-trivial (P , P-is-prop) sup)
   sup-gives-wem (₁ , sup) =
-    inr (pr₂ (WEM-lemma 𝓥 2-is-non-trivial (P , P-is-prop)) sup)
+    inr (y-is-lub-gives-not-not-P 𝓥 2-is-non-trivial (P , P-is-prop) {!sup!})
 
   wem : ¬ P + ¬ (¬ P)
   wem = sup-gives-wem sup-from-δ-completeness
@@ -346,7 +358,7 @@ it is well established that DNE is equivalent to EM.
 
 \end{code}
 
-Next we will formalize the first retract lemma. The result will allows us to
+Next we will formalize the first retract lemma. The result will allow us to
 exhibit the type of not-not stable propositions as a retract of a locally small
 non-trivial δ-complete poset. We start by defining local smallness.
 
