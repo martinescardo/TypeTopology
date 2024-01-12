@@ -471,6 +471,9 @@ is-finite u = Σ n ꞉ ℕ , ι n ＝ u
 size : {u : ℕ∞} → is-finite u → ℕ
 size (n , r) = n
 
+size-property : {u : ℕ∞} (φ : is-finite u) → ι (size φ) ＝ u
+size-property (n , r) = r
+
 being-finite-is-prop : funext₀ → (u : ℕ∞) → is-prop (is-finite u)
 being-finite-is-prop = ℕ-to-ℕ∞-is-embedding
 
