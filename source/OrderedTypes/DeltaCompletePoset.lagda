@@ -1,4 +1,4 @@
-Ian Ray, 25 July 2023.
+Ian Ray, 25 July 2023 updated on 11 January 2024.
 
 Formalizing the auxilary notion of a delta-complete poset and the main
 theorems of Section 6.2 from Tom de Jong's thesis involving impredicativity
@@ -29,7 +29,7 @@ open import UF.Sets
 open import UF.ExcludedMiddle
 open import Slice.Family
 
-module OrderedTypes.Delta-V-CompletePoset
+module OrderedTypes.DeltaCompletePoset
  (pt : propositional-truncations-exist)
  (fe : Fun-Ext)
  (pe : Prop-Ext)
@@ -222,7 +222,7 @@ We now show that the two element poset is δ complete only if WEM holds.
   sup-gives-wem (₀ , sup) =
     inl (x-is-lub-gives-not-P 𝓥 2-is-non-trivial (P , P-is-prop) sup)
   sup-gives-wem (₁ , sup) =
-    inr (y-is-lub-gives-not-not-P 𝓥 2-is-non-trivial (P , P-is-prop) {!sup!})
+    inr (y-is-lub-gives-not-not-P 𝓥 2-is-non-trivial (P , P-is-prop) sup)
 
   wem : ¬ P + ¬ (¬ P)
   wem = sup-gives-wem sup-from-δ-completeness

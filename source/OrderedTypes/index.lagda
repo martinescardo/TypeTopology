@@ -4,6 +4,7 @@
 
 module OrderedTypes.index where
 
+import OrderedTypes.DeltaCompletePoset              -- by Ian Ray
 import OrderedTypes.Frame                           -- by Martin Escardo
 import OrderedTypes.FreeJoinSemiLattice             -- by Tom de Jong
 import OrderedTypes.FreeSupLattice                  -- by Tom de Jong

@@ -1,4 +1,4 @@
-Ian Ray, 9 August 2023
+Ian Ray, 9 August 2023 updated 11 January 2024.
 
 Constructing the two element poset.
 
