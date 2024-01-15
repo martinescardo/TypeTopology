@@ -45,7 +45,7 @@ given n, and prove that it indeed gives a putative root.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Various.RootsOfBooleanFunctions where
 
@@ -258,7 +258,7 @@ Hence we can check whether f has a root by checking whether f (ε f) ＝ ₀.
 \begin{code}
 
 root-existence-criterion : {n : ℕ}  (f : 𝟚 ^ n → 𝟚)
-                         → has-root f ⇔ is-root (ε f) f
+                         → has-root f ↔ is-root (ε f) f
 root-existence-criterion {n} f = (I , II)
  where
   I : has-root f → f (ε f) ＝ ₀

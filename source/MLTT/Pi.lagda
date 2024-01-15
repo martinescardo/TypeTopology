@@ -4,7 +4,7 @@ Built-in, with the notation (x : X) → A x for Π A.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module MLTT.Pi where
 

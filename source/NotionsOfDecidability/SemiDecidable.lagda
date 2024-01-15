@@ -60,7 +60,7 @@ References
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 
@@ -157,8 +157,8 @@ semidecidability-structure-≃ {𝓤} {𝓣} {X} =
                     𝟚-is-set (holds-is-prop (A n))
                     (lr-implication (pr₂ lemma)) (rl-implication (pr₂ lemma))
       where
-       lemma : ((⌜ χ ⌝ (A , δ) n ＝ ₀) ⇔ ¬ (n ∈ A))
-             × ((⌜ χ ⌝ (A , δ) n ＝ ₁) ⇔   (n ∈ A))
+       lemma : ((⌜ χ ⌝ (A , δ) n ＝ ₀) ↔ ¬ (n ∈ A))
+             × ((⌜ χ ⌝ (A , δ) n ＝ ₁) ↔   (n ∈ A))
        lemma = 𝟚-classifies-decidable-subsets-values fe fe pe A δ n
 
 is-semidecidable-≃ : {𝓣 : Universe} {X : 𝓤 ̇ }
@@ -417,7 +417,7 @@ instance
 Ωᵈᵉᶜ-to-Ωˢᵈ-left-cancellable : left-cancellable (canonical-map (Ωᵈᵉᶜ 𝓤) (Ωˢᵈ 𝓤))
 Ωᵈᵉᶜ-to-Ωˢᵈ-left-cancellable {𝓤} {(X , _)} {(Y , _)} e =
  to-subtype-＝ (λ (P , i) → decidability-of-prop-is-prop fe i)
-              (Ω-extensionality fe pe
+              (Ω-extensionality pe fe
                (idtofun (X holds) (Y holds) (ap pr₁ e))
                (idtofun (Y holds) (X holds) (ap pr₁ (e ⁻¹))))
 
@@ -1044,7 +1044,7 @@ EKC-implies-semidecidable-closed-under-Σ {𝓤} {𝓥} ekc =
                                     (lr-implication (lemma n m)))))
               where
                lemma : (n m : ℕ)
-                     → χ (φ⁺ , φ-is-complemented) (n , m) ＝ ₁ ⇔ (n , m) ∈ φ⁺
+                     → χ (φ⁺ , φ-is-complemented) (n , m) ＝ ₁ ↔ (n , m) ∈ φ⁺
                lemma n m = pr₂ (𝟚-classifies-decidable-subsets-values fe fe pe
                                  φ⁺ φ-is-complemented (n , m))
              I  = logically-equivalent-props-are-equivalent j ∥∥-is-prop f g

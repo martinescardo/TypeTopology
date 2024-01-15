@@ -28,7 +28,7 @@ References
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import UF.FunExt
 open import UF.PropTrunc
@@ -115,7 +115,7 @@ module 𝕍-is-locally-small
                         → g' ≈ g
                         → ＝⁻-aux₁ g' ＝ ＝⁻-aux₁ g
    ＝⁻-aux₁-respects-≈' {B'} {B} g' g e =
-    Ω-extensionality fe pe
+    Ω-extensionality pe fe
      (＝⁻-aux₁-respects-≈ g' g e)
      (＝⁻-aux₁-respects-≈ g g' (≈-sym e))
 
@@ -177,7 +177,7 @@ module 𝕍-is-locally-small
            ＝⁻-aux₁ g r₂ h         ＝⟨ (＝⁻-aux₂-behaviour g r₂ h) ⁻¹ ⟩
            ＝⁻-aux₂ g r₂ (𝕍-set h) ∎
       where
-       e = Ω-extensionality fe pe
+       e = Ω-extensionality pe fe
             (＝⁻-aux₂-respects-≈ f g r₁ r₂ IH₁ IH₂ h)
             (＝⁻-aux₂-respects-≈ g f r₂ r₁ IH₂ IH₁ h)
 

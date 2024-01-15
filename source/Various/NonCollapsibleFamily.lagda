@@ -2,7 +2,7 @@ Martin Escardo, 1st April 2013
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Various.NonCollapsibleFamily where
 

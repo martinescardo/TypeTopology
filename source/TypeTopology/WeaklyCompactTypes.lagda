@@ -5,7 +5,7 @@ the module CompactTypes for the strong notion.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 
@@ -389,7 +389,7 @@ compact, then X is discrete if it is totally separated. This is a new
 result as far as I know. I didn't know it before 12th January 2018.
 
 The following proof works as follows. For any given x,y:X, define
-q:(X→𝟚)→𝟚 such that q(p)=1 ⇔ p(x) = p(y), which is possible because 𝟚
+q:(X→𝟚)→𝟚 such that q(p)=1 ↔ p(x) = p(y), which is possible because 𝟚
 has decidable equality (it is discrete). By the Π-compactness of X→𝟚,
 the condition (p:X→𝟚) → q(p)=1 is decidable, which amounts to saying
 that (p:X→𝟚) → p (x)=p (y) is decidable. But because X is totally
@@ -978,10 +978,10 @@ is Κ with Y=𝟚, for simplicity, rather than in full generality:
 \begin{code}
 
 Κ⊣ : {X : 𝓤 ̇ } → ((X → 𝟚) → 𝟚) → 𝓤 ̇
-Κ⊣ A = (n : 𝟚) (p : _ → 𝟚) → Κ n ≤̇ p ⇔ n ≤ A p
+Κ⊣ A = (n : 𝟚) (p : _ → 𝟚) → Κ n ≤̇ p ↔ n ≤ A p
 
 _⊣Κ : {X : 𝓤 ̇ } → ((X → 𝟚) → 𝟚) → 𝓤 ̇
-E ⊣Κ = (n : 𝟚) (p : _ → 𝟚) → E p ≤ n ⇔ p ≤̇ Κ n
+E ⊣Κ = (n : 𝟚) (p : _ → 𝟚) → E p ≤ n ↔ p ≤̇ Κ n
 
 \end{code}
 
@@ -994,10 +994,10 @@ Right adjoints to Κ are characterized as follows:
 \begin{code}
 
 Κ⊣-charac : {X : 𝓤 ̇ } → (A : (X → 𝟚) → 𝟚)
-          → Κ⊣ A ⇔ ((p : X → 𝟚) → A p ＝ ₁ ⇔ p ＝ (λ x → ₁))
+          → Κ⊣ A ↔ ((p : X → 𝟚) → A p ＝ ₁ ↔ p ＝ (λ x → ₁))
 Κ⊣-charac {𝓤} {X} A = f , g
  where
-  f : Κ⊣ A → (p : X → 𝟚) → A p ＝ ₁ ⇔ p ＝ (λ x → ₁)
+  f : Κ⊣ A → (p : X → 𝟚) → A p ＝ ₁ ↔ p ＝ (λ x → ₁)
   f φ p = f₀ , f₁
    where
     f₀ : A p ＝ ₁ → p ＝ (λ x → ₁)
@@ -1022,7 +1022,7 @@ Right adjoints to Κ are characterized as follows:
       l₁ = l₂
       l₀ : ₁ ≤ A p
       l₀ = pr₁ (φ ₁ p) l₁
-  g : ((p : X → 𝟚) → A p ＝ ₁ ⇔ p ＝ (λ x → ₁)) → Κ⊣ A
+  g : ((p : X → 𝟚) → A p ＝ ₁ ↔ p ＝ (λ x → ₁)) → Κ⊣ A
   g γ n p = (g₀ n refl , g₁ n refl)
    where
     g₀ : ∀ m → m ＝ n → Κ m ≤̇ p → m ≤ A p
@@ -1052,7 +1052,7 @@ the dominance 𝟚.
 \begin{code}
 
 Π-compact-iff-Κ-has-right-adjoint : {X : 𝓤 ̇ }
-                                  → is-Π-compact X ⇔ (Σ A ꞉ ((X → 𝟚) → 𝟚), Κ⊣ A)
+                                  → is-Π-compact X ↔ (Σ A ꞉ ((X → 𝟚) → 𝟚), Κ⊣ A)
 Π-compact-iff-Κ-has-right-adjoint {𝓤} {X} = (f , g)
  where
   f : is-Π-compact X → Σ A ꞉ ((X → 𝟚) → 𝟚), Κ⊣ A
@@ -1062,20 +1062,20 @@ the dominance 𝟚.
     c' = Π-compact-types-are-Π-compact' c
 
     l₀ : (p : X → 𝟚)
-       → is-decidable (p ＝ (λ x → ₁)) → Σ n ꞉ 𝟚 , (n ＝ ₁ ⇔ p ＝ (λ x → ₁))
+       → is-decidable (p ＝ (λ x → ₁)) → Σ n ꞉ 𝟚 , (n ＝ ₁ ↔ p ＝ (λ x → ₁))
     l₀ p (inl r) = (₁ , ((λ _ → r) , λ _ → refl))
     l₀ p (inr u) = (₀ , ((λ s → 𝟘-elim (zero-is-not-one s)) , λ r → 𝟘-elim (u r)))
 
     A : (X → 𝟚) → 𝟚
     A p = pr₁ (l₀ p (c' p))
 
-    l₁ : (p : X → 𝟚) → A p ＝ ₁ ⇔ p ＝ (λ x → ₁)
+    l₁ : (p : X → 𝟚) → A p ＝ ₁ ↔ p ＝ (λ x → ₁)
     l₁ p = pr₂ (l₀ p (c' p))
 
   g : ((Σ A ꞉ ((X → 𝟚) → 𝟚), Κ⊣ A)) → is-Π-compact X
   g (A , φ) = Π-compact'-types-are-Π-compact c'
    where
-    l₁ : (p : X → 𝟚) → A p ＝ ₁ ⇔ p ＝ (λ x → ₁)
+    l₁ : (p : X → 𝟚) → A p ＝ ₁ ↔ p ＝ (λ x → ₁)
     l₁ = pr₁ (Κ⊣-charac A) φ
 
     l₀ : (p : X → 𝟚) → is-decidable (A p ＝ ₁) → is-decidable (p ＝ (λ x → ₁))
@@ -1119,7 +1119,7 @@ and hence so is the type (X → 𝟚) with the pointwise operations.
   f : Κ⊣ A → E ⊣Κ
   f φ = γ
    where
-     γ : (n : 𝟚) (p : X → 𝟚) → (E p ≤ n) ⇔ (p ≤̇ Κ n)
+     γ : (n : 𝟚) (p : X → 𝟚) → (E p ≤ n) ↔ (p ≤̇ Κ n)
      γ n p = (γ₀ , γ₁ )
       where
        γ₀ : E p ≤ n → p ≤̇ Κ n
@@ -1155,7 +1155,7 @@ and hence so is the type (X → 𝟚) with the pointwise operations.
   g : E ⊣Κ → Κ⊣ A
   g γ = φ
    where
-     φ : (n : 𝟚) (p : X → 𝟚) → Κ n ≤̇ p ⇔ n ≤ A p
+     φ : (n : 𝟚) (p : X → 𝟚) → Κ n ≤̇ p ↔ n ≤ A p
      φ n p = (φ₀ , φ₁ )
       where
        φ₀ : Κ n ≤̇ p → n ≤ A p
@@ -1189,7 +1189,7 @@ We have the following corollaries:
 \begin{code}
 
 Π-compact-iff-𝟚-overt : {X : 𝓤 ̇ }
-                      → (Σ A ꞉ ((X → 𝟚) → 𝟚), Κ⊣ A) ⇔ (Σ E ꞉ ((X → 𝟚) → 𝟚), E ⊣Κ)
+                      → (Σ A ꞉ ((X → 𝟚) → 𝟚), Κ⊣ A) ↔ (Σ E ꞉ ((X → 𝟚) → 𝟚), E ⊣Κ)
 Π-compact-iff-𝟚-overt {𝓤} {X} = (f , g)
  where
   f : (Σ A ꞉ ((X → 𝟚) → 𝟚), Κ⊣ A) → (Σ E ꞉ ((X → 𝟚) → 𝟚), E ⊣Κ)
@@ -1206,7 +1206,7 @@ is 𝟚-overt:
 \begin{code}
 
 Π-compact-iff-Κ-has-left-adjoint : {X : 𝓤 ̇ }
-                                 → is-Π-compact X ⇔ (Σ E ꞉ ((X → 𝟚) → 𝟚), E ⊣Κ)
+                                 → is-Π-compact X ↔ (Σ E ꞉ ((X → 𝟚) → 𝟚), E ⊣Κ)
 Π-compact-iff-Κ-has-left-adjoint {𝓤} {X} = (f , g)
  where
   f : is-Π-compact X → (Σ E ꞉ ((X → 𝟚) → 𝟚), E ⊣Κ)
@@ -1219,7 +1219,7 @@ is 𝟚-overt:
 
 TODO. We get as a corollary that
 
-      E ⊣Κ ⇔ ((p : X → 𝟚) → E p ＝ ₀ ⇔ p ＝ (λ x → ₀)).
+      E ⊣Κ ↔ ((p : X → 𝟚) → E p ＝ ₀ ↔ p ＝ (λ x → ₀)).
 
 TODO. Find the appropriate place in this file to remark that decidable
 propositions are closed under Π-compact/overt meets and joins. And

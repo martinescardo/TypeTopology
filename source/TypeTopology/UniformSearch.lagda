@@ -11,7 +11,7 @@ uniformly continuous predicates. In this module, we generalise this to types
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 open import UF.Base

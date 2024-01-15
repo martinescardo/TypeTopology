@@ -1,4 +1,4 @@
-<Martin Escardo 2012.
+Martin Escardo 2012.
 
 See my JSL paper "Infinite sets that satisfy the principle of
 omniscience" for a discussion of the type ℕ∞ defined here.
@@ -10,7 +10,7 @@ lemmas. More additions after that date.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module CoNaturals.GenericConvergentSequence where
 
@@ -34,13 +34,10 @@ open import UF.SubtypeClassifier
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
-funext₀ : 𝓤₁ ̇
-funext₀ = funext 𝓤₀ 𝓤₀
-
 \end{code}
 
 Definition (The generic convergent sequence).  We use u,v,x to range
-over ℕ∞ and α,β to range over (ℕ → 𝟚):
+over ℕ∞ and α,β,γ to range over (ℕ → 𝟚):
 
 \begin{code}
 
@@ -68,12 +65,15 @@ force-decreasing β 0        = β 0
 force-decreasing β (succ i) = min𝟚 (β (i ∔ 1)) (force-decreasing β i)
 
 force-decreasing-is-decreasing : (β : ℕ → 𝟚) → is-decreasing (force-decreasing β)
-force-decreasing-is-decreasing β zero     = Lemma[minab≤₂b]
-force-decreasing-is-decreasing β (succ i) = Lemma[minab≤₂b] {β (i ∔ 2)}
-                                                            {force-decreasing β (i ∔ 1)}
+force-decreasing-is-decreasing β 0        = Lemma[minab≤₂b]
+force-decreasing-is-decreasing β (succ i) = Lemma[minab≤₂b]
+                                             {β (i ∔ 2)}
+                                             {force-decreasing β (i ∔ 1)}
 
-force-decreasing-unchanged : (α : ℕ → 𝟚) → is-decreasing α → force-decreasing α ∼ α
-force-decreasing-unchanged α d zero     = refl
+force-decreasing-unchanged : (α : ℕ → 𝟚)
+                           → is-decreasing α
+                           → force-decreasing α ∼ α
+force-decreasing-unchanged α d 0        = refl
 force-decreasing-unchanged α d (succ i) = g
   where
     IH : force-decreasing α i ＝ α i
@@ -95,20 +95,22 @@ force-decreasing-unchanged α d (succ i) = g
 ℕ→𝟚-to-ℕ∞ β = force-decreasing β , force-decreasing-is-decreasing β
 
 ℕ→𝟚-to-ℕ∞-is-retraction : funext₀ → (x : ℕ∞) → ℕ→𝟚-to-ℕ∞ (ι x) ＝ x
-ℕ→𝟚-to-ℕ∞-is-retraction fe (α , d) = to-Σ-＝ (dfunext fe (force-decreasing-unchanged α d) ,
-                                             being-decreasing-is-prop fe α _ _)
+ℕ→𝟚-to-ℕ∞-is-retraction fe (α , d) =
+ to-Σ-＝
+  (dfunext fe (force-decreasing-unchanged α d) ,
+   being-decreasing-is-prop fe α _ _)
 
 ℕ∞-retract-of-Cantor : funext₀ → retract ℕ∞ of (ℕ → 𝟚)
 ℕ∞-retract-of-Cantor fe = ℕ→𝟚-to-ℕ∞ , ι , ℕ→𝟚-to-ℕ∞-is-retraction fe
 
 force-decreasing-is-smaller : (β : ℕ → 𝟚) (i : ℕ) → force-decreasing β i ≤ β i
-force-decreasing-is-smaller β zero     = ≤₂-refl
+force-decreasing-is-smaller β 0        = ≤₂-refl
 force-decreasing-is-smaller β (succ i) = Lemma[minab≤₂a]
 
 force-decreasing-is-not-much-smaller : (β : ℕ → 𝟚) (n : ℕ)
                                      → force-decreasing β n ＝ ₀
                                      → Σ m ꞉ ℕ , β m ＝ ₀
-force-decreasing-is-not-much-smaller β zero  p    = zero , p
+force-decreasing-is-not-much-smaller β 0  p       = 0 , p
 force-decreasing-is-not-much-smaller β (succ n) p = f c
   where
     A = Σ m ꞉ ℕ , β m ＝ ₀
@@ -143,14 +145,14 @@ open import TypeTopology.TotallySeparated
 Zero : ℕ∞
 Zero = (λ i → ₀) , (λ i → ≤₂-refl {₀})
 
-Succ : ℕ∞ → ℕ∞
-Succ (α , d) = (α' , d')
- where
-  α' : ℕ → 𝟚
-  α' 0       = ₁
-  α'(succ n) = α n
+cons : 𝟚 → (ℕ → 𝟚) → (ℕ → 𝟚)
+cons b α 0        = b
+cons b α (succ n) = α n
 
-  d' : is-decreasing α'
+Succ : ℕ∞ → ℕ∞
+Succ (α , d) = (cons ₁ α , d')
+ where
+  d' : is-decreasing (cons ₁ α)
   d' 0        = ₁-top
   d' (succ i) = d i
 
@@ -340,7 +342,8 @@ Succ-criterion fe {u} {n} r s = ℕ∞-to-ℕ→𝟚-lc fe claim
      where
       lemma₀ : (i : ℕ) → u ⊑ i ∔ 1
       lemma₀ 0        = s
-      lemma₀ (succ i) = [a＝₁→b＝₁]-gives-[b＝₀→a＝₀] (≤₂-criterion-converse (pr₂ u (i ∔ 1))) (lemma₀ i)
+      lemma₀ (succ i) = [a＝₁→b＝₁]-gives-[b＝₀→a＝₀]
+                         (≤₂-criterion-converse (pr₂ u (i ∔ 1))) (lemma₀ i)
   lemma u (succ n) r s 0 = lemma₁ (n ∔ 1) r
      where
       lemma₁ : (n : ℕ) → n ⊏ u → is-positive u
@@ -363,7 +366,8 @@ not-finite-is-∞ fe {u} f = ℕ∞-to-ℕ→𝟚-lc fe (dfunext fe lemma)
   lemma 0        = different-from-₀-equal-₁ (λ r → f 0 (is-Zero-equal-Zero fe r))
   lemma (succ n) = different-from-₀-equal-₁ (λ r → f (n ∔ 1) (Succ-criterion fe (lemma n) r))
 
-ℕ∞-ddensity : funext₀ → {Y : ℕ∞ → 𝓤 ̇ }
+ℕ∞-ddensity : funext₀
+            → {Y : ℕ∞ → 𝓤 ̇ }
             → ({u : ℕ∞} → is-¬¬-separated (Y u))
             → {f g : Π Y}
             → ((n : ℕ) → f (ι n) ＝ g (ι n))
@@ -412,7 +416,7 @@ not-finite-is-∞ fe {u} f = ℕ∞-to-ℕ→𝟚-lc fe (dfunext fe lemma)
 ι𝟙-dense fe (u , f) = g (not-finite-is-∞ fe h)
  where
   g : ¬ (u ＝ ∞)
-  g p = f ((inr ⋆) , (p ⁻¹))
+  g p = f (inr ⋆ , (p ⁻¹))
 
   h : (n : ℕ) → ¬ (u ＝ ι n)
   h n p = f (inl n , (p ⁻¹))
@@ -467,6 +471,9 @@ is-finite u = Σ n ꞉ ℕ , ι n ＝ u
 size : {u : ℕ∞} → is-finite u → ℕ
 size (n , r) = n
 
+size-property : {u : ℕ∞} (φ : is-finite u) → ι (size φ) ＝ u
+size-property (n , r) = r
+
 being-finite-is-prop : funext₀ → (u : ℕ∞) → is-prop (is-finite u)
 being-finite-is-prop = ℕ-to-ℕ∞-is-embedding
 
@@ -474,7 +481,7 @@ being-finite-is-prop = ℕ-to-ℕ∞-is-embedding
 ℕ-to-ℕ∞-is-finite n = (n , refl)
 
 Zero-is-finite : is-finite Zero
-Zero-is-finite = ℕ-to-ℕ∞-is-finite zero
+Zero-is-finite = ℕ-to-ℕ∞-is-finite 0
 
 Zero-is-finite' : funext₀ → (u : ℕ∞) → is-Zero u → is-finite u
 Zero-is-finite' fe u z = transport⁻¹
@@ -483,7 +490,7 @@ Zero-is-finite' fe u z = transport⁻¹
                            Zero-is-finite
 
 is-finite-down : (u : ℕ∞) → is-finite (Succ u) → is-finite u
-is-finite-down u (zero , r)   = 𝟘-elim (Zero-not-Succ r)
+is-finite-down u (0 , r)      = 𝟘-elim (Zero-not-Succ r)
 is-finite-down u (succ n , r) = n , Succ-lc r
 
 is-finite-up : (u : ℕ∞) → is-finite u → is-finite (Succ u)
@@ -531,14 +538,14 @@ Succ-not-≼-Zero : (u : ℕ∞) → ¬ (Succ u ≼ Zero)
 Succ-not-≼-Zero u l = zero-is-not-one (l zero refl)
 
 Succ-monotone : (u v : ℕ∞) → u ≼ v → Succ u ≼ Succ v
-Succ-monotone u v l zero p = p
+Succ-monotone u v l 0        p = p
 Succ-monotone u v l (succ n) p = l n p
 
 Succ-loc : (u v : ℕ∞) → Succ u ≼ Succ v → u ≼ v
 Succ-loc u v l n = l (n ∔ 1)
 
 above-Succ-is-positive : (u v : ℕ∞) → Succ u ≼ v → is-positive v
-above-Succ-is-positive u v l = l zero refl
+above-Succ-is-positive u v l = l 0 refl
 
 ≼-unfold-Succ : funext₀ → (u v : ℕ∞) → Succ u ≼ v → Succ u ≼ Succ (Pred v)
 ≼-unfold-Succ fe u v l = transport (λ - → Succ u ≼ -)
@@ -627,15 +634,15 @@ finite-≺-Succ a (n , p) = transport (_≺ Succ a) p
 open import Naturals.Order
 
 <-gives-⊏ : (m n : ℕ) → m < n →  m ⊏ ι n
-<-gives-⊏ zero     zero     l = 𝟘-elim l
-<-gives-⊏ zero     (succ n) l = refl
-<-gives-⊏ (succ m) zero     l = 𝟘-elim l
+<-gives-⊏ 0        0        l = 𝟘-elim l
+<-gives-⊏ 0        (succ n) l = refl
+<-gives-⊏ (succ m) 0        l = 𝟘-elim l
 <-gives-⊏ (succ m) (succ n) l = <-gives-⊏ m n l
 
 ⊏-gives-< : (m n : ℕ) →  m ⊏ ι n → m < n
-⊏-gives-< zero     zero     l = 𝟘-elim (zero-is-not-one l)
-⊏-gives-< zero     (succ n) l = zero-least n
-⊏-gives-< (succ m) zero     l = 𝟘-elim (zero-is-not-one l)
+⊏-gives-< 0        0        l = 𝟘-elim (zero-is-not-one l)
+⊏-gives-< 0        (succ n) l = zero-least n
+⊏-gives-< (succ m) 0        l = 𝟘-elim (zero-is-not-one l)
 ⊏-gives-< (succ m) (succ n) l = ⊏-gives-< m n l
 
 ⊏-back : (u : ℕ∞) (n : ℕ) → n ∔ 1 ⊏ u → n ⊏ u
@@ -733,7 +740,7 @@ proved above, that ≺ is well founded:
                  ≺-trans
 
 ℕ-to-ℕ∞-lemma : funext₀ → (u : ℕ∞) (n : ℕ) → u ⊑ n → Σ m ꞉ ℕ , (m ≤ n) × (u ＝ ι m)
-ℕ-to-ℕ∞-lemma fe u zero p     = zero , ≤-refl zero , is-Zero-equal-Zero fe p
+ℕ-to-ℕ∞-lemma fe u 0        p = 0 , ≤-refl 0 , is-Zero-equal-Zero fe p
 ℕ-to-ℕ∞-lemma fe u (succ n) p = g (𝟚-is-discrete (ι u n) ₀)
  where
   IH : u ⊑ n → Σ m ꞉ ℕ , (m ≤ n) × (u ＝ ι m)
@@ -901,7 +908,7 @@ Characterization of ⊏.
           → (n : ℕ) (u : ℕ∞)
           → n ⊏ u
           → Σ v ꞉ ℕ∞ , u ＝ (Succ ^ (n ∔ 1)) v
-⊏-charac→ fe₀ zero u l = Pred u , (positive-equal-Succ fe₀ l)
+⊏-charac→ fe₀ 0        u l = Pred u , (positive-equal-Succ fe₀ l)
 ⊏-charac→ fe₀ (succ n) u l = γ
  where
   IH : Σ v ꞉ ℕ∞ , Pred u ＝ (Succ ^ (n ∔ 1)) v
@@ -920,7 +927,7 @@ Characterization of ⊏.
 
 ⊏-charac← : funext₀ → (n : ℕ) (u : ℕ∞)
            → (Σ v ꞉ ℕ∞ , u ＝ (Succ ^ (n ∔ 1)) v) → n ⊏ u
-⊏-charac← fe₀ zero u (v , refl) = refl
+⊏-charac← fe₀ 0        u (v , refl) = refl
 ⊏-charac← fe₀ (succ n) u (v , refl) = γ
  where
   IH : n ⊏ Pred u
@@ -957,141 +964,257 @@ bounded-is-finite fe n u le = case ℕ-to-ℕ∞-lemma fe u n le of
 finite-trichotomous : funext₀
                     → (n : ℕ) (u : ℕ∞)
                     → (ι n ≺ u) + (ι n ＝ u) + (u ≺ ι n)
-finite-trichotomous fe 0        u = 𝟚-equality-cases
-                                     (λ (l : is-Zero u) → inr (inl ((is-Zero-equal-Zero fe l)⁻¹)))
-                                     (λ (m : is-positive u) → inl (⊏-gives-≺ 0 u m))
-finite-trichotomous fe (succ n) u = 𝟚-equality-cases
-                                     (λ (l : u ⊑ succ n) →
-                                           𝟚-equality-cases
-                                            (λ (a : u ⊑ n) → inr (inr (⊑-succ-gives-≺ fe n u a)))
-                                            (λ (b : n ⊏ u) → inr (inl ((Succ-criterion fe b l)⁻¹))))
-                                     (λ (m : succ n ⊏ u) → inl (⊏-gives-≺ (succ n) u m))
+finite-trichotomous fe 0 u =
+ 𝟚-equality-cases
+  (λ (l : is-Zero u) → inr (inl ((is-Zero-equal-Zero fe l)⁻¹)))
+  (λ (m : is-positive u)
+        → inl (⊏-gives-≺ 0 u m))
+finite-trichotomous fe (succ n) u =
+ 𝟚-equality-cases
+  (λ (l : u ⊑ succ n) →
+        𝟚-equality-cases
+         (λ (a : u ⊑ n) → inr (inr (⊑-succ-gives-≺ fe n u a)))
+         (λ (b : n ⊏ u) → inr (inl ((Succ-criterion fe b l)⁻¹))))
+  (λ (m : succ n ⊏ u) → inl (⊏-gives-≺ (succ n) u m))
+
 \end{code}
 
+TODO. Move the following to a sepatate file.
 
-Added 14th January 2022.
+Added 14th January 2022, with various additions in November 2023.
 
-We now develop an automorphism ϕ with inverse γ of the Cantor
-type ℕ → 𝟚 which induces an equivalent copy of ℕ∞.
+We now develop an automorphism of the Cantor type ℕ → 𝟚 which
+induces an equivalent copy of ℕ∞.
 
-The functions ϕ and γ restrict to an equivalence between ℕ∞ and the
-subtype
+The function ϕ restricts to an equivalence between ℕ∞ and the subtype
 
-     Σ β ꞉ (ℕ → 𝟚) , is-prop (Σ n ꞉ ℕ , β n ＝ ₁)
+     Σ α ꞉ (ℕ → 𝟚) , is-prop (Σ n ꞉ ℕ , α n ＝ ₁)
 
 of the Cantor type (the sequences with at most one ₁).
 
-Notice that the condition on β can be expressed as "is-prop (fiber β ₁)".
+Notice that the condition on α can be expressed as "is-prop (fiber α ₁)".
 
 \begin{code}
+
+T-cantor : (ℕ → 𝟚) → 𝓤₀ ̇
+T-cantor α = Σ n ꞉ ℕ , α n ＝ ₁
+
+private
+ T : (ℕ → 𝟚) → 𝓤₀ ̇
+ T = T-cantor
 
 has-at-most-one-₁ : (ℕ → 𝟚) → 𝓤₀ ̇
-has-at-most-one-₁ β = is-prop (Σ n ꞉ ℕ , β n ＝ ₁)
+has-at-most-one-₁ α = is-prop (T α)
+
+has-at-most-one-₁-is-prop : funext₀ → (α : ℕ → 𝟚) → is-prop (has-at-most-one-₁ α)
+has-at-most-one-₁-is-prop fe α = being-prop-is-prop fe
+
+to-T-＝ : {α : ℕ → 𝟚}
+          {n n' : ℕ}
+        → n ＝ n'
+        → {e : α n ＝ ₁} {e' : α n' ＝ ₁}
+        → (n , e) ＝[ T α ] (n' , e')
+to-T-＝ p = to-subtype-＝ (λ - → 𝟚-is-set) p
+
+from-T-＝ : {α : ℕ → 𝟚}
+          {n n' : ℕ}
+        → {e : α n ＝ ₁} {e' : α n' ＝ ₁}
+        → (n , e) ＝[ T α ] (n' , e')
+        → n ＝ n'
+from-T-＝ p = ap pr₁ p
+
+index-uniqueness : (α : ℕ → 𝟚)
+                 → is-prop (T α)
+                 → {n n' : ℕ} → α n ＝ ₁ → α n' ＝ ₁ → n ＝ n'
+index-uniqueness α i {n} {n'} e e' = from-T-＝ (i (n , e) (n' , e'))
+
+index-uniqueness-converse : (α : ℕ → 𝟚)
+                          → ({n n' : ℕ} → α n ＝ ₁ → α n' ＝ ₁ → n ＝ n')
+                          → is-prop (T α)
+index-uniqueness-converse α ϕ (n , e) (n' , e') = to-T-＝ (ϕ e e')
 
 \end{code}
 
-We define this in a submodule because the names ϕ and γ are likely to
-be used in other files that import this one, so that name clashes are
-avoided.
+The following is the isomorphic copy of ℕ∞ alluded above.
 
 \begin{code}
 
-module an-automorphism-and-an-equivalence where
+ℕ∞' : 𝓤₀ ̇
+ℕ∞' = Σ α ꞉ (ℕ → 𝟚) , has-at-most-one-₁ α
 
- ϕ γ : (ℕ → 𝟚) → (ℕ → 𝟚)
+ℕ∞'-to-ℕ→𝟚 : ℕ∞' → (ℕ → 𝟚)
+ℕ∞'-to-ℕ→𝟚 = pr₁
 
- ϕ α 0        = complement (α 0)
- ϕ α (succ n) = α n ⊕ α (n ∔ 1)
+private
+ instance
+  canonical-map-ℕ∞'-ℕ→𝟚 : Canonical-Map ℕ∞' (ℕ → 𝟚)
+  ι {{canonical-map-ℕ∞'-ℕ→𝟚}} = ℕ∞'-to-ℕ→𝟚
 
- γ β 0        = complement (β 0)
- γ β (succ n) = γ β n ⊕ β (n ∔ 1)
+ℕ∞'-to-ℕ→𝟚-prop : (u : ℕ∞') → is-prop (T (ℕ∞'-to-ℕ→𝟚 u))
+ℕ∞'-to-ℕ→𝟚-prop = pr₂
 
- η-cantor : (β : ℕ → 𝟚) → ϕ (γ β) ∼ β
- η-cantor β 0        = complement-involutive (β 0)
- η-cantor β (succ n) = ⊕-involutive {γ β n} {β (n ∔ 1)}
+Zero' : ℕ∞'
+Zero' = α , h
+ where
+  α : ℕ → 𝟚
+  α 0        = ₁
+  α (succ n) = ₀
 
- ε-cantor : (α : ℕ → 𝟚) → γ (ϕ α) ∼ α
- ε-cantor α 0        = complement-involutive (α 0)
- ε-cantor α (succ n) = γ (ϕ α) (n ∔ 1)             ＝⟨ refl ⟩
-                       γ (ϕ α) n ⊕ α n ⊕ α (n ∔ 1) ＝⟨ I ⟩
-                       α n ⊕ α n ⊕ α (n ∔ 1)       ＝⟨ II ⟩
-                       α (n ∔ 1)                   ∎
-  where
-   I  = ap (_⊕ α n ⊕ α (succ n)) (ε-cantor α n)
-   II = ⊕-involutive {α n} {α (n ∔ 1)}
+  i : is-prop (T α)
+  i (0 , e) (0 , e') = to-T-＝ refl
+
+  h : has-at-most-one-₁ α
+  h (n , e) (n' , e') = to-subtype-＝ (λ - → 𝟚-is-set) (index-uniqueness α i e e')
+
+Succ' : ℕ∞' → ℕ∞'
+Succ' (α , h) = cons ₀ α , h'
+ where
+  h' : has-at-most-one-₁ (cons ₀ α)
+  h' (succ n , e) (succ n' , e') = to-T-＝ (ap succ (index-uniqueness α h e e'))
+
+ℕ-to-ℕ∞' : ℕ → ℕ∞'
+ℕ-to-ℕ∞' 0        = Zero'
+ℕ-to-ℕ∞' (succ n) = Succ' (ℕ-to-ℕ∞' n)
+
+private
+ instance
+  Canonical-Map-ℕ-ℕ∞' : Canonical-Map ℕ ℕ∞'
+  ι {{Canonical-Map-ℕ-ℕ∞'}} = ℕ-to-ℕ∞'
+
+is-finite' : ℕ∞' → 𝓤₀ ̇
+is-finite' u = T (ℕ∞'-to-ℕ→𝟚 u)
+
+Zero'-is-finite : is-finite' Zero'
+Zero'-is-finite = 0 , refl
+
+finiteness'-preservation : (u : ℕ∞')
+                          → is-finite' u
+                          → is-finite' (Succ' u)
+finiteness'-preservation _ (n , e) = succ n , e
+
+ℕ-to-ℕ∞'-is-finite' : (n : ℕ) → is-finite' (ι n)
+ℕ-to-ℕ∞'-is-finite' 0        = Zero'-is-finite
+ℕ-to-ℕ∞'-is-finite' (succ n) = finiteness'-preservation (ι n)
+                                (ℕ-to-ℕ∞'-is-finite' n)
+
+∞' : ℕ∞'
+∞' = (λ _ → ₀) , (λ (n , e) (n' , e') → 𝟘-elim (zero-is-not-one e))
+
+∞'-is-not-finite : ¬ is-finite' ∞'
+∞'-is-not-finite (n , e) = zero-is-not-one e
 
 \end{code}
 
-Now we discuss the restrictions of ϕ and γ mentioned above. Notice
+To show that ℕ∞' gives an equivalent copy of ℕ∞, we consider a
+particular equivalence (ℕ → 𝟚) ≃ (ℕ → 𝟚).
+
+\begin{code}
+
+ϕ-cantor γ-cantor : (ℕ → 𝟚) → (ℕ → 𝟚)
+
+ϕ-cantor α n = cons ₁ α n ⊕ α n
+
+γ-cantor β 0        = complement (β 0)
+γ-cantor β (succ n) = γ-cantor β n ⊕ β (n ∔ 1)
+
+private
+ ϕ γ : (ℕ → 𝟚) → (ℕ → 𝟚)
+ ϕ = ϕ-cantor
+ γ = γ-cantor
+
+η-cantor : (β : ℕ → 𝟚) → ϕ (γ β) ∼ β
+η-cantor β 0        = complement-involutive (β 0)
+η-cantor β (succ n) = ⊕-involutive {γ β n} {β (n ∔ 1)}
+
+ε-cantor : (α : ℕ → 𝟚) → γ (ϕ α) ∼ α
+ε-cantor α 0        = complement-involutive (α 0)
+ε-cantor α (succ n) = γ (ϕ α) (n ∔ 1)             ＝⟨ refl ⟩
+                      γ (ϕ α) n ⊕ α n ⊕ α (n ∔ 1) ＝⟨ I ⟩
+                      α n ⊕ α n ⊕ α (n ∔ 1)       ＝⟨ II ⟩
+                      α (n ∔ 1)                   ∎
+ where
+  I  = ap (_⊕ α n ⊕ α (succ n)) (ε-cantor α n)
+  II = ⊕-involutive {α n} {α (n ∔ 1)}
+
+private
+ η : (β : ℕ → 𝟚) → ϕ (γ β) ∼ β
+ ε : (α : ℕ → 𝟚) → γ (ϕ α) ∼ α
+
+ η = η-cantor
+ ε = ε-cantor
+
+\end{code}
+
+We now discuss the restrictions of ϕ and γ mentioned above. Notice
 that the following is by four cases without induction.
 
 \begin{code}
 
- ϕ-property : funext₀
-            → (α : ℕ → 𝟚)
-            → is-decreasing α
-            → has-at-most-one-₁ (ϕ α)
- ϕ-property fe α δ (0 , p) (0 , q)      = to-subtype-＝ (λ _ → 𝟚-is-set) refl
- ϕ-property fe α δ (0 , p) (succ m , q) = 𝟘-elim (Zero-not-Succ (II ⁻¹ ∙ IV))
-  where
-   u : ℕ∞
-   u = (α , δ)
+ϕ-property : funext₀
+           → (α : ℕ → 𝟚)
+           → is-decreasing α
+           → has-at-most-one-₁ (ϕ α)
+ϕ-property fe α δ (0 , p) (0 ,      q) = to-subtype-＝ (λ _ → 𝟚-is-set) refl
+ϕ-property fe α δ (0 , p) (succ m , q) = 𝟘-elim (Zero-not-Succ (II ⁻¹ ∙ IV))
+ where
+  u : ℕ∞
+  u = (α , δ)
 
-   I = α 0                           ＝⟨ (complement-involutive (α 0))⁻¹ ⟩
-       complement (complement (α 0)) ＝⟨ ap complement p ⟩
-       complement ₁                  ＝⟨ refl ⟩
-       ₀                             ∎
+  I = α 0                           ＝⟨ (complement-involutive (α 0))⁻¹ ⟩
+      complement (complement (α 0)) ＝⟨ ap complement p ⟩
+      complement ₁                  ＝⟨ refl ⟩
+      ₀                             ∎
 
-   II : u ＝ Zero
-   II = is-Zero-equal-Zero fe I
+  II : u ＝ Zero
+  II = is-Zero-equal-Zero fe I
 
-   III : (α m ＝ ₁) × (α (m ∔ 1) ＝ ₀)
-   III = ⊕-property₁ {α m} {α (m ∔ 1)} (δ m) q
+  III : (α m ＝ ₁) × (α (m ∔ 1) ＝ ₀)
+  III = ⊕-property₁ {α m} {α (m ∔ 1)} (δ m) q
 
-   IV : u ＝ Succ (ι m)
-   IV = uncurry (Succ-criterion fe) III
+  IV : u ＝ Succ (ι m)
+  IV = uncurry (Succ-criterion fe) III
 
- ϕ-property fe α δ (succ n , p) (0 , q)= 𝟘-elim (Zero-not-Succ (II ⁻¹ ∙ IV))
-  where
-   u : ℕ∞
-   u = (α , δ)
+ϕ-property fe α δ (succ n , p) (0 , q)= 𝟘-elim (Zero-not-Succ (II ⁻¹ ∙ IV))
+ where
+  u : ℕ∞
+  u = (α , δ)
 
-   I = α 0                           ＝⟨ (complement-involutive (α 0))⁻¹ ⟩
-       complement (complement (α 0)) ＝⟨ ap complement q ⟩
-       complement ₁                  ＝⟨ refl ⟩
-       ₀                             ∎
+  I = α 0                           ＝⟨ (complement-involutive (α 0))⁻¹ ⟩
+      complement (complement (α 0)) ＝⟨ ap complement q ⟩
+      complement ₁                  ＝⟨ refl ⟩
+      ₀                             ∎
 
-   II : u ＝ Zero
-   II = is-Zero-equal-Zero fe I
+  II : u ＝ Zero
+  II = is-Zero-equal-Zero fe I
 
-   III : (α n ＝ ₁) × (α (n ∔ 1) ＝ ₀)
-   III = ⊕-property₁ {α n} {α (n ∔ 1)} (δ n) p
+  III : (α n ＝ ₁) × (α (n ∔ 1) ＝ ₀)
+  III = ⊕-property₁ {α n} {α (n ∔ 1)} (δ n) p
 
-   IV : u ＝ Succ (ι n)
-   IV = uncurry (Succ-criterion fe) III
+  IV : u ＝ Succ (ι n)
+  IV = uncurry (Succ-criterion fe) III
 
- ϕ-property fe α δ (succ n , p) (succ m , q) = VI
-  where
-   u : ℕ∞
-   u = (α , δ)
+ϕ-property fe α δ (succ n , p) (succ m , q) = VI
+ where
+  u : ℕ∞
+  u = (α , δ)
 
-   I : (α n ＝ ₁) × (α (n ∔ 1) ＝ ₀)
-   I = ⊕-property₁ (δ n) p
+  I : (α n ＝ ₁) × (α (n ∔ 1) ＝ ₀)
+  I = ⊕-property₁ (δ n) p
 
-   II : (α m ＝ ₁) × (α (m ∔ 1) ＝ ₀)
-   II = ⊕-property₁ (δ m) q
+  II : (α m ＝ ₁) × (α (m ∔ 1) ＝ ₀)
+  II = ⊕-property₁ (δ m) q
 
-   III : u ＝ Succ (ι n)
-   III = uncurry (Succ-criterion fe) I
+  III : u ＝ Succ (ι n)
+  III = uncurry (Succ-criterion fe) I
 
-   IV : u ＝ Succ (ι m)
-   IV = uncurry (Succ-criterion fe) II
+  IV : u ＝ Succ (ι m)
+  IV = uncurry (Succ-criterion fe) II
 
-   V : n ∔ 1 ＝ m ∔ 1
-   V = ℕ-to-ℕ∞-lc (III ⁻¹ ∙ IV)
+  V : n ∔ 1 ＝ m ∔ 1
+  V = ℕ-to-ℕ∞-lc (III ⁻¹ ∙ IV)
 
-   VI : (n ∔ 1 , p) ＝ (m ∔ 1 , q)
-   VI = to-subtype-＝ (λ _ → 𝟚-is-set) V
+  VI : (n ∔ 1 , p) ＝ (m ∔ 1 , q)
+  VI = to-subtype-＝ (λ _ → 𝟚-is-set) V
 
 \end{code}
 
@@ -1100,13 +1223,13 @@ the definition of γ:
 
 \begin{code}
 
- γ-case₀ : {β : ℕ → 𝟚} {n : ℕ}
-         → β (n ∔ 1) ＝ ₀ → γ β (n ∔ 1) ＝ γ β n
- γ-case₀ = ⊕-₀-right-neutral'
+γ-case₀ : {β : ℕ → 𝟚} {n : ℕ}
+        → β (n ∔ 1) ＝ ₀ → γ β (n ∔ 1) ＝ γ β n
+γ-case₀ = ⊕-₀-right-neutral'
 
- γ-case₁ : {β : ℕ → 𝟚} {n : ℕ}
-         → β (n ∔ 1) ＝ ₁ → γ β (n ∔ 1) ＝ complement (γ β n)
- γ-case₁ = ⊕-left-complement
+γ-case₁ : {β : ℕ → 𝟚} {n : ℕ}
+        → β (n ∔ 1) ＝ ₁ → γ β (n ∔ 1) ＝ complement (γ β n)
+γ-case₁ = ⊕-left-complement
 
 \end{code}
 
@@ -1115,21 +1238,21 @@ one ₁.
 
 \begin{code}
 
- at-most-one-₁-Lemma₀ : (β : ℕ → 𝟚)
-                      → has-at-most-one-₁ β
-                      → {m n : ℕ} → (β m ＝ ₁) × (β n ＝ ₁) → m ＝ n
- at-most-one-₁-Lemma₀ β π {m} {n} (p , q) = ap pr₁ (π (m , p) (n , q))
+at-most-one-₁-Lemma₀ : (β : ℕ → 𝟚)
+                     → has-at-most-one-₁ β
+                     → {m n : ℕ} → (β m ＝ ₁) × (β n ＝ ₁) → m ＝ n
+at-most-one-₁-Lemma₀ β π {m} {n} (p , q) = ap pr₁ (π (m , p) (n , q))
 
- at-most-one-₁-Lemma₁ : (β : ℕ → 𝟚)
-                      → has-at-most-one-₁ β
-                      → {m n : ℕ} → m ≠ n → β m ＝ ₁ → β n ＝ ₀
- at-most-one-₁-Lemma₁ β π {m} {n} ν p = w
-  where
-   I : β n ≠ ₁
-   I q = ν (at-most-one-₁-Lemma₀ β π (p , q))
+at-most-one-₁-Lemma₁ : (β : ℕ → 𝟚)
+                     → has-at-most-one-₁ β
+                     → {m n : ℕ} → m ≠ n → β m ＝ ₁ → β n ＝ ₀
+at-most-one-₁-Lemma₁ β π {m} {n} ν p = w
+ where
+  I : β n ≠ ₁
+  I q = ν (at-most-one-₁-Lemma₀ β π (p , q))
 
-   w : β n ＝ ₀
-   w = different-from-₁-equal-₀ I
+  w : β n ＝ ₀
+  w = different-from-₁-equal-₀ I
 
 \end{code}
 
@@ -1139,34 +1262,34 @@ a suitable induction hypothesis.
 
 \begin{code}
 
- γ-lemma : (β : ℕ → 𝟚)
-         → has-at-most-one-₁ β
-         → (n : ℕ) → β (n ∔ 1) ＝ ₁ → (k : ℕ) → k ≤ n → γ β k ＝ ₁
- γ-lemma β π n p zero l = w
-  where
-   w : complement (β 0) ＝ ₁
-   w = complement-intro₀ (at-most-one-₁-Lemma₁ β π (positive-not-zero n) p)
+γ-lemma : (β : ℕ → 𝟚)
+        → has-at-most-one-₁ β
+        → (n : ℕ) → β (n ∔ 1) ＝ ₁ → (k : ℕ) → k ≤ n → γ β k ＝ ₁
+γ-lemma β π n p 0 l = w
+ where
+  w : complement (β 0) ＝ ₁
+  w = complement-intro₀ (at-most-one-₁-Lemma₁ β π (positive-not-zero n) p)
 
- γ-lemma β π 0 p (succ k) ()
- γ-lemma β π (succ n) p (succ k) l = w
-  where
-   IH : γ β k ＝ ₁
-   IH = γ-lemma β π (n ∔ 1) p k (≤-trans k n (n ∔ 1) l (≤-succ n))
+γ-lemma β π 0 p (succ k) ()
+γ-lemma β π (succ n) p (succ k) l = w
+ where
+  IH : γ β k ＝ ₁
+  IH = γ-lemma β π (n ∔ 1) p k (≤-trans k n (n ∔ 1) l (≤-succ n))
 
-   I : n ∔ 2 ≠ succ k
-   I m = not-less-than-itself n r
-    where
-     q : n ∔ 1 ＝ k
-     q = succ-lc m
+  I : n ∔ 2 ≠ succ k
+  I m = not-less-than-itself n r
+   where
+    q : n ∔ 1 ＝ k
+    q = succ-lc m
 
-     r : n ∔ 1 ≤ n
-     r = transport⁻¹ (_≤ n) q l
+    r : n ∔ 1 ≤ n
+    r = transport⁻¹ (_≤ n) q l
 
-   II : β (succ k) ＝ ₀
-   II = at-most-one-₁-Lemma₁ β π I p
+  II : β (succ k) ＝ ₀
+  II = at-most-one-₁-Lemma₁ β π I p
 
-   w : γ β k ⊕ β (succ k) ＝ ₁
-   w =  ⊕-intro₁₀ IH II
+  w : γ β k ⊕ β (succ k) ＝ ₁
+  w =  ⊕-intro₁₀ IH II
 
 \end{code}
 
@@ -1175,22 +1298,40 @@ sequence if it is given a sequence with at most one ₁:
 
 \begin{code}
 
- γ-property : (β : ℕ → 𝟚)
-            → has-at-most-one-₁ β
-            → is-decreasing (γ β)
- γ-property β π n = IV
-  where
-   I : β (n ∔ 1) ＝ ₁ → γ β n ＝ ₁
-   I p = γ-lemma β π n p n (≤-refl n)
+γ-property : (β : ℕ → 𝟚)
+           → has-at-most-one-₁ β
+           → is-decreasing (γ β)
+γ-property β π n = IV
+ where
+  I : β (n ∔ 1) ＝ ₁ → γ β n ＝ ₁
+  I p = γ-lemma β π n p n (≤-refl n)
 
-   II : β (n ∔ 1) ≤ γ β n
-   II = ≤₂-criterion I
+  II : β (n ∔ 1) ≤ γ β n
+  II = ≤₂-criterion I
 
-   III : γ β n ⊕ β (n ∔ 1) ≤ γ β n
-   III = ≤₂-add-left (γ β n) (β (n ∔ 1)) II
+  III : γ β n ⊕ β (n ∔ 1) ≤ γ β n
+  III = ≤₂-add-left (γ β n) (β (n ∔ 1)) II
 
-   IV : γ β (n ∔ 1) ≤ γ β n
-   IV = III
+  IV : γ β (n ∔ 1) ≤ γ β n
+  IV = III
+
+module _ (fe : funext₀) where
+
+ ℕ∞-to-ℕ∞' : ℕ∞ → ℕ∞'
+ ℕ∞-to-ℕ∞' (α , δ) = ϕ α , ϕ-property fe α δ
+
+ ℕ∞'-to-ℕ∞ : ℕ∞' → ℕ∞
+ ℕ∞'-to-ℕ∞ (β , π) = γ β , γ-property β π
+
+ ℕ∞-η : ℕ∞'-to-ℕ∞ ∘ ℕ∞-to-ℕ∞' ∼ id
+ ℕ∞-η (α , δ) = to-subtype-＝
+                 (being-decreasing-is-prop fe)
+                 (dfunext fe (ε α))
+
+ ℕ∞-ε : ℕ∞-to-ℕ∞' ∘ ℕ∞'-to-ℕ∞ ∼ id
+ ℕ∞-ε (β , π) = to-subtype-＝
+                 (λ β → being-prop-is-prop fe)
+                 (dfunext fe (η β))
 
 \end{code}
 
@@ -1198,33 +1339,42 @@ And with this we get the promised equivalence.
 
 \begin{code}
 
- ℕ∞-charac : funext₀ → ℕ∞ ≃ (Σ β ꞉ (ℕ → 𝟚), has-at-most-one-₁ β)
- ℕ∞-charac fe = qinveq f (g , η , ε)
+ ℕ∞-to-ℕ∞'-≃ : ℕ∞ ≃ ℕ∞'
+ ℕ∞-to-ℕ∞'-≃ = qinveq ℕ∞-to-ℕ∞' (ℕ∞'-to-ℕ∞ , ℕ∞-η , ℕ∞-ε)
+
+ private
+  trivial-fact : (i : ℕ) → ϕ (ℕ∞-to-ℕ→𝟚 ∞) i ＝ ₀
+  trivial-fact 0        = refl
+  trivial-fact (succ i) = refl
+
+ Zero-preservation : ℕ∞-to-ℕ∞' Zero ＝ Zero'
+ Zero-preservation = to-subtype-＝ (has-at-most-one-₁-is-prop fe) (dfunext fe I)
   where
-   A = Σ β ꞉ (ℕ → 𝟚), is-prop (fiber β ₁)
+   I : ϕ (ι Zero) ∼ ι Zero'
+   I 0        = refl
+   I (succ i) = trivial-fact 0
 
-   f : ℕ∞ → A
-   f (α , δ) = ϕ α , ϕ-property fe α δ
+ Succ-preservation : (u : ℕ∞) → ℕ∞-to-ℕ∞' (Succ u) ＝ Succ' (ℕ∞-to-ℕ∞' u)
+ Succ-preservation u@(α , d) = to-subtype-＝ (has-at-most-one-₁-is-prop fe) II
+  where
+   I : ϕ (ℕ∞-to-ℕ→𝟚 (Succ u)) ∼ cons ₀ (ι (ℕ∞-to-ℕ∞' u))
+   I 0        = refl
+   I (succ _) = refl
 
-   g : A → ℕ∞
-   g (β , π) = γ β , γ-property β π
+   II : ϕ (ℕ∞-to-ℕ→𝟚 (Succ u)) ＝ cons ₀ (ι (ℕ∞-to-ℕ∞' u))
+   II = dfunext fe I
 
-   η : g ∘ f ∼ id
-   η (α , δ) = to-subtype-＝
-                 (being-decreasing-is-prop fe)
-                 (dfunext fe (ε-cantor α))
+ ∞-preservation : ℕ∞-to-ℕ∞' ∞ ＝ ∞'
+ ∞-preservation = to-subtype-＝ (has-at-most-one-₁-is-prop fe)
+                   (dfunext fe trivial-fact)
 
-   ε : f ∘ g ∼ id
-   ε (β , π) = to-subtype-＝
-                 (λ β → being-prop-is-prop fe)
-                 (dfunext fe (η-cantor β))
-\end{code}
-
-We export the above outside the module:
-
-\begin{code}
-
-ℕ∞-charac : funext₀ → ℕ∞ ≃ (Σ β ꞉ (ℕ → 𝟚), has-at-most-one-₁ β)
-ℕ∞-charac = an-automorphism-and-an-equivalence.ℕ∞-charac
+ finite-preservation : (n : ℕ) → ℕ∞-to-ℕ∞' (ℕ-to-ℕ∞ n) ＝ ℕ-to-ℕ∞' n
+ finite-preservation 0        = Zero-preservation
+ finite-preservation (succ n) =
+  ℕ∞-to-ℕ∞' (ℕ-to-ℕ∞ (succ n)) ＝⟨ refl ⟩
+  ℕ∞-to-ℕ∞' (Succ (ℕ-to-ℕ∞ n)) ＝⟨ Succ-preservation (ℕ-to-ℕ∞ n) ⟩
+  Succ' (ℕ∞-to-ℕ∞' (ι n))      ＝⟨ ap Succ' (finite-preservation n) ⟩
+  Succ' (ℕ-to-ℕ∞' n)           ＝⟨ refl ⟩
+  ℕ-to-ℕ∞' (succ n)            ∎
 
 \end{code}

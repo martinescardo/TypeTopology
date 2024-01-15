@@ -5,7 +5,7 @@ with full, selfcontained Agda code.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module EffectfulForcing.MFPSAndVariations.MFPS-XXIX where
 

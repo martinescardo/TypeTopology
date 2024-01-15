@@ -5,7 +5,7 @@ be done with univalence when the types live in different universes.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 open import UF.FunExt
@@ -116,7 +116,7 @@ Then our objective will be to prove the following:
 
 \begin{code}
 
-    transport-well-order : is-well-order _<_ ⇔ is-well-order _≺_
+    transport-well-order : is-well-order _<_ ↔ is-well-order _≺_
 
 \end{code}
 
@@ -321,7 +321,7 @@ module order-transfer-lemma₃
      where
       open order-transfer-lemma₂ X _≺_ _<_ (λ x y → ≃-sym (𝕗 x y))
 
-    transport-well-order : is-well-order _<_ ⇔ is-well-order _≺_
+    transport-well-order : is-well-order _<_ ↔ is-well-order _≺_
     transport-well-order = well-order→ , well-order←
 
     transport-well-order-≃ : (is-well-order _<_) ≃ (is-well-order _≺_)

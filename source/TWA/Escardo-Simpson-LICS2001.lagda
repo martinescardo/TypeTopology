@@ -13,7 +13,7 @@ https://www.cs.bham.ac.uk/~mhe/.talks/map2011/
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import UF.FunExt
 

@@ -4,7 +4,7 @@ We specialize the work of Directed.lagda to ℕ-indexed diagrams.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 open import UF.PropTrunc

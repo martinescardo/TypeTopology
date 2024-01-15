@@ -2,7 +2,7 @@ Martin Escardo 6th December 2018.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 open import UF.Univalence

@@ -162,7 +162,7 @@ module AdjointFunctorTheorem (X : Locale 𝓤' 𝓥 𝓥)
 \begin{code}
 
  aft : (𝒻 : 𝒪Yₚ ─m→ 𝒪Xₚ)
-     → has-right-adjoint 𝒻 ⇔ is-join-preserving (𝒪 Y) (𝒪 X) (𝒻 .pr₁) holds
+     → has-right-adjoint 𝒻 ↔ is-join-preserving (𝒪 Y) (𝒪 X) (𝒻 .pr₁) holds
  aft 𝒻 = aft-forward 𝒻 , aft-backward 𝒻
 
  right-adjoint-of : (X ─c→ Y) → 𝒪Xₚ ─m→ 𝒪Yₚ

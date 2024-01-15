@@ -5,7 +5,7 @@ This is ported from the Midlands Graduate School 2019 lecture notes
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module MGS.SIP where
 
@@ -117,7 +117,7 @@ module sip where
                             (canonical-map ι ρ s)
 
   when-canonical-map-is-equiv : ((s t : S X) → is-equiv (canonical-map ι ρ s t))
-                              ⇔ ((s : S X) → ∃! t ꞉ S X , ι (X , s) (X , t) (id-≃ X))
+                              ↔ ((s : S X) → ∃! t ꞉ S X , ι (X , s) (X , t) (id-≃ X))
 
   when-canonical-map-is-equiv = (λ e s → fiberwise-equiv-universal (A s) s (τ s) (e s)) ,
                                 (λ φ s → universal-fiberwise-equiv (A s) (φ s) s (τ s))
@@ -931,14 +931,14 @@ module subgroup
 
   subgroup-equality : (S T : Subgroups)
                     → (S ＝ T)
-                    ≃ ((x : ⟨ G ⟩) → (x ∈ ⟪ S ⟫) ⇔ (x ∈ ⟪ T ⟫))
+                    ≃ ((x : ⟨ G ⟩) → (x ∈ ⟪ S ⟫) ↔ (x ∈ ⟪ T ⟫))
 
   subgroup-equality S T = γ
    where
-    f : S ＝ T → (x : ⟨ G ⟩) → x ∈ ⟪ S ⟫ ⇔ x ∈ ⟪ T ⟫
+    f : S ＝ T → (x : ⟨ G ⟩) → x ∈ ⟪ S ⟫ ↔ x ∈ ⟪ T ⟫
     f p x = transport (λ - → x ∈ ⟪ - ⟫) p , transport (λ - → x ∈ ⟪ - ⟫) (p ⁻¹)
 
-    h : ((x : ⟨ G ⟩) → x ∈ ⟪ S ⟫ ⇔ x ∈ ⟪ T ⟫) → ⟪ S ⟫ ＝ ⟪ T ⟫
+    h : ((x : ⟨ G ⟩) → x ∈ ⟪ S ⟫ ↔ x ∈ ⟪ T ⟫) → ⟪ S ⟫ ＝ ⟪ T ⟫
     h φ = subset-extensionality' ua α β
      where
       α : ⟪ S ⟫ ⊆ ⟪ T ⟫
@@ -947,10 +947,10 @@ module subgroup
       β : ⟪ T ⟫ ⊆ ⟪ S ⟫
       β x = rl-implication (φ x)
 
-    g : ((x : ⟨ G ⟩) → x ∈ ⟪ S ⟫ ⇔ x ∈ ⟪ T ⟫) → S ＝ T
+    g : ((x : ⟨ G ⟩) → x ∈ ⟪ S ⟫ ↔ x ∈ ⟪ T ⟫) → S ＝ T
     g = inverse (ap-⟪⟫ S T) (ap-⟪⟫-is-equiv S T) ∘ h
 
-    γ : (S ＝ T) ≃ ((x : ⟨ G ⟩) → x ∈ ⟪ S ⟫ ⇔ x ∈ ⟪ T ⟫)
+    γ : (S ＝ T) ≃ ((x : ⟨ G ⟩) → x ∈ ⟪ S ⟫ ↔ x ∈ ⟪ T ⟫)
     γ = logically-equivalent-subsingletons-are-equivalent _ _
           (subgroups-form-a-set S T)
           (Π-is-subsingleton dfe

@@ -15,7 +15,7 @@ propositions, or subsingletons, as in HoTT/UF.)
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module UF.UniverseEmbedding where
 

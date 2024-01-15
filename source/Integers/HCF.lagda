@@ -9,7 +9,7 @@ highest common factor, and proves the required property.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan hiding (_+_)
 

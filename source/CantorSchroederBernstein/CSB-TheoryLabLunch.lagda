@@ -160,7 +160,7 @@ The Pradic-Brown argument rendered in HoTT/UF
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module CantorSchroederBernstein.CSB-TheoryLabLunch where
 

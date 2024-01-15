@@ -7,7 +7,7 @@ original 2015 version was for the combinatory version of system T.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module EffectfulForcing.Internal.External where
 

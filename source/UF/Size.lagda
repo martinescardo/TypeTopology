@@ -25,7 +25,7 @@ which seems to be a new result.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module UF.Size where
 
@@ -80,8 +80,8 @@ Obsolete notation used in some publications:
 \begin{code}
 
 private
-  _has-size_ : 𝓤 ̇ → (𝓥 : Universe) → 𝓥 ⁺  ⊔ 𝓤 ̇
-  X has-size 𝓥 = X is 𝓥 small
+ _has-size_ : 𝓤 ̇ → (𝓥 : Universe) → 𝓥 ⁺  ⊔ 𝓤 ̇
+ X has-size 𝓥 = X is 𝓥 small
 
 \end{code}
 
@@ -96,6 +96,7 @@ propositional-resizing 𝓤 𝓥 = (P : 𝓤 ̇ ) → is-prop P → P is 𝓥 sm
 
 Propositional-Resizing : 𝓤ω
 Propositional-Resizing = {𝓤 𝓥 : Universe} → propositional-resizing 𝓤 𝓥
+
 \end{code}
 
 Propositional resizing from a universe to a higher universe just
@@ -295,14 +296,14 @@ universe (i.e. in all universes except the first).
   ψ (P , i) = resize ρ P i , resize-is-prop ρ P i
 
   φψ : (p : Ω 𝓤) → φ (ψ p) ＝ p
-  φψ (P , i) = Ω-extensionality (fe 𝓤 𝓤) (pe 𝓤)
+  φψ (P , i) = Ω-extensionality (pe 𝓤) (fe 𝓤 𝓤)
                (from-resize ρ P i ∘
                 from-resize ρ (resize ρ P i) (resize-is-prop ρ P i))
                (to-resize ρ (resize ρ P i) (resize-is-prop ρ P i) ∘
                 to-resize ρ P i)
 
   ψφ : (q : Ω 𝓥) → ψ (φ q) ＝ q
-  ψφ (Q , j) = Ω-extensionality (fe 𝓥 𝓥) (pe 𝓥)
+  ψφ (Q , j) = Ω-extensionality (pe 𝓥) (fe 𝓥 𝓥)
                (from-resize ρ Q j ∘
                 from-resize ρ (resize ρ Q j) (resize-is-prop ρ Q j))
                (to-resize ρ (resize ρ Q j) (resize-is-prop ρ Q j) ∘
@@ -660,7 +661,7 @@ deJong-resizing-implies-propositional-resizing : (ua : Univalence)
                                                → deJong-resizing 𝓤 𝓥
                                                → propositional-resizing 𝓤 𝓥
 deJong-resizing-implies-propositional-resizing ua 𝓤 𝓥 r P i =
-  being-small-is-idempotent ua 𝓤 𝓥 P i (r P)
+ being-small-is-idempotent ua 𝓤 𝓥 P i (r P)
 
 being-small-is-idempotent-converse : (ua : Univalence) (𝓤 𝓥 : Universe) (Y : 𝓤 ̇ )
                                    → Y is 𝓥 small
@@ -675,19 +676,19 @@ being-small-is-idempotent-≃ : (ua : Univalence) (𝓤 𝓥 : Universe) (Y : �
                             → ((Y is 𝓥 small) is 𝓥 small) ≃ (Y is 𝓥 small)
 being-small-is-idempotent-≃ ua 𝓤 𝓥 Y i =
  logically-equivalent-props-are-equivalent
-   (being-small-is-prop ua (Y is 𝓥 small) 𝓥)
-   (being-small-is-prop ua Y 𝓥)
-   (being-small-is-idempotent ua 𝓤 𝓥 Y i)
-   (being-small-is-idempotent-converse ua 𝓤 𝓥 Y)
+  (being-small-is-prop ua (Y is 𝓥 small) 𝓥)
+  (being-small-is-prop ua Y 𝓥)
+  (being-small-is-idempotent ua 𝓤 𝓥 Y i)
+  (being-small-is-idempotent-converse ua 𝓤 𝓥 Y)
 
 being-small-is-idempotent-＝ : (ua : Univalence) (𝓤 𝓥 : Universe) (Y : 𝓤 ̇ )
                             → is-prop Y
                             → ((Y is 𝓥 small) is 𝓥 small) ＝ (Y is 𝓥 small)
 being-small-is-idempotent-＝ ua 𝓤 𝓥 Y i =
-  eqtoid (ua (𝓤 ⊔ 𝓥 ⁺))
-    ((Y is 𝓥 small) is 𝓥 small)
-    (Y is 𝓥 small)
-    (being-small-is-idempotent-≃ ua 𝓤 𝓥 Y i)
+ eqtoid (ua (𝓤 ⊔ 𝓥 ⁺))
+  ((Y is 𝓥 small) is 𝓥 small)
+  (Y is 𝓥 small)
+  (being-small-is-idempotent-≃ ua 𝓤 𝓥 Y i)
 
 \end{code}
 

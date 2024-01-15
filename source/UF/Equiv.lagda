@@ -4,7 +4,7 @@ Notion of equivalence and its basic properties.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module UF.Equiv where
 
@@ -62,12 +62,16 @@ id-is-equiv X = (id , λ x → refl) , (id , λ x → refl)
 ≃-refl : (X : 𝓤 ̇ ) → X ≃ X
 ≃-refl X = id , id-is-equiv X
 
+𝕚𝕕 : {X : 𝓤 ̇ } → X ≃ X
+𝕚𝕕 = ≃-refl _
+
 ∘-is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {f : X → Y} {f' : Y → Z}
            → is-equiv f
            → is-equiv f'
            → is-equiv (f' ∘ f)
-∘-is-equiv {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {f} {f'} ((g , fg) , (h , hf)) ((g' , fg') , (h' , hf')) =
- (g ∘ g' , fg'') , (h ∘ h' , hf'')
+∘-is-equiv {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {f} {f'}
+           ((g , fg) , (h , hf))
+           ((g' , fg') , (h' , hf')) = (g ∘ g' , fg'') , (h ∘ h' , hf'')
  where
   fg'' : (z : Z) → f' (f (g (g' z))) ＝ z
   fg'' z =  ap f' (fg (g' z)) ∙ fg' z
@@ -310,14 +314,16 @@ pt-pf-equiv x = f , ((g , fg) , (g , gf))
   gf : g ∘ f ∼ id
   gf (y , p) = ap (λ - → y , -) (⁻¹-involutive p)
 
-singleton-types'-are-singletons : {X : 𝓤 ̇ } (x : X) → is-singleton (singleton-type' x)
+singleton-types'-are-singletons : {X : 𝓤 ̇ } (x : X)
+                                → is-singleton (singleton-type' x)
 singleton-types'-are-singletons x = retract-of-singleton
                                      (pr₁ (pt-pf-equiv x) ,
                                      (pr₁ (pr₂ ((pt-pf-equiv x)))))
                                      (singleton-types-are-singletons x)
 
 singleton-types'-are-props : {X : 𝓤 ̇ } (x : X) → is-prop (singleton-type' x)
-singleton-types'-are-props x = singletons-are-props (singleton-types'-are-singletons x)
+singleton-types'-are-props x =
+ singletons-are-props (singleton-types'-are-singletons x)
 
 \end{code}
 
@@ -328,6 +334,10 @@ Equivalence of transports.
 transports-are-equivs : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {x y : X} (p : x ＝ y)
                       → is-equiv (transport A p)
 transports-are-equivs refl = id-is-equiv _
+
+transport-≃ : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) {x y : X} (p : x ＝ y)
+            → A x ≃ A y
+transport-≃ A p = transport A p , transports-are-equivs p
 
 back-transports-are-equivs : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {x y : X} (p : x ＝ y)
                            → is-equiv (transport⁻¹ A p)
@@ -520,7 +530,8 @@ haes-are-vv-equivs {𝓤} {𝓥} {X} f (g , η , ε , τ) y =
           II   = ap (λ - → ap f - ∙ ap f (η x) ∙ p) (ap-sym g p)
           III  = ap (λ - → ap f (ap g (p ⁻¹)) ∙ - ∙ p) (τ x)
           IV   = ap (λ - → - ∙ ε (f x) ∙ p) (ap-ap g f (p ⁻¹))
-          V    = ap (λ - → - ∙ p) (homotopies-are-natural (f ∘ g) id ε {y} {f x} {p ⁻¹})⁻¹
+          V    = ap (λ - → - ∙ p)
+                    (homotopies-are-natural (f ∘ g) id ε {y} {f x} {p ⁻¹})⁻¹
           VI   = ap (λ - → ε y ∙ - ∙ p) (ap-id-is-id (p ⁻¹))
           VII  = ∙assoc (ε y) (p ⁻¹) p
           VIII = ap (λ - → ε y ∙ -) (trans-sym p)
@@ -559,7 +570,7 @@ equiv-can-assume-pointed-codomain f φ y = φ y y
 maps-to-𝟘-are-equivs : {X : 𝓤 ̇ } (f : ¬ X) → is-vv-equiv f
 maps-to-𝟘-are-equivs f = equiv-can-assume-pointed-codomain f 𝟘-elim
 
-negations-are-equiv-to-𝟘 : {X : 𝓤 ̇ } → is-empty X ⇔ X ≃ 𝟘
+negations-are-equiv-to-𝟘 : {X : 𝓤 ̇ } → is-empty X ↔ X ≃ 𝟘
 negations-are-equiv-to-𝟘 =
  (λ f → f , vv-equivs-are-equivs f (maps-to-𝟘-are-equivs f)), pr₁
 
@@ -572,11 +583,12 @@ And similarly, with similar a observation:
 
 \begin{code}
 
-singletons-are-equiv-to-𝟙 : {X : 𝓤 ̇ } → is-singleton X ⇔ X ≃ 𝟙 {𝓥}
+singletons-are-equiv-to-𝟙 : {X : 𝓤 ̇ } → is-singleton X ↔ X ≃ 𝟙 {𝓥}
 singletons-are-equiv-to-𝟙 {𝓤} {𝓥} {X} = forth , back
  where
   forth : is-singleton X → X ≃ 𝟙
-  forth (x₀ , φ) = unique-to-𝟙 , (((λ _ → x₀) , (λ x → (𝟙-all-⋆ x)⁻¹)) , ((λ _ → x₀) , φ))
+  forth (x₀ , φ) = unique-to-𝟙 ,
+                   (((λ _ → x₀) , (λ x → (𝟙-all-⋆ x)⁻¹)) , ((λ _ → x₀) , φ))
 
   back : X ≃ 𝟙 → is-singleton X
   back (f , (s , fs) , (r , rf)) = retract-of-singleton (r , f , rf) 𝟙-is-singleton
@@ -588,9 +600,11 @@ have:
 
 \begin{code}
 
-from-identifications-in-fibers : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                                 (y : Y) (x x' : X) (p : f x ＝ y) (p' : f x' ＝ y)
-                               → (x , p) ＝ (x' , p') → Σ γ ꞉ x ＝ x' , ap f γ ∙ p' ＝ p
+from-identifications-in-fibers
+ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+   (y : Y) (x x' : X) (p : f x ＝ y) (p' : f x' ＝ y)
+ → (x , p) ＝ (x' , p')
+ → Σ γ ꞉ x ＝ x' , ap f γ ∙ p' ＝ p
 from-identifications-in-fibers f .(f x) x x refl refl refl = refl , refl
 
 η-pif : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
@@ -808,6 +822,47 @@ Added by Tom de Jong, November 2021.
 
 \end{code}
 
+Added by Martin Escardo 2nd November 2023.
+
+\begin{code}
+
+involutions-are-equivs : {X : 𝓤 ̇ }
+                       → (f : X → X)
+                       → involutive f
+                       → is-equiv f
+involutions-are-equivs f f-involutive =
+ qinvs-are-equivs f (f , f-involutive , f-involutive)
+
+involution-swap : {X : 𝓤 ̇ } (f : X → X)
+                → involutive f
+                → {x y : X}
+                → f x ＝ y
+                → f y ＝ x
+involution-swap f f-involutive {x} {y} e =
+ f y     ＝⟨ ap f (e ⁻¹) ⟩
+ f (f x) ＝⟨ f-involutive x ⟩
+ x       ∎
+
+open import UF.Sets
+
+involution-swap-≃ : {X : 𝓤 ̇ } (f : X → X)
+                  → involutive f
+                  → is-set X
+                  → {x y : X}
+                  → (f x ＝ y) ≃ (f y ＝ x)
+involution-swap-≃ f f-involutive X-is-set {x} {y} =
+ qinveq (involution-swap f f-involutive {x} {y})
+        (involution-swap f f-involutive {y} {x},
+         I y x ,
+         I x y)
+ where
+  I : ∀ a b →  involution-swap f f-involutive {a} {b}
+            ∘ (involution-swap f f-involutive {b} {a})
+            ∼ id
+  I a b e = X-is-set _ _
+
+\end{code}
+
 Associativities and precedences.
 
 \begin{code}
@@ -818,4 +873,5 @@ infix  1 _■
 infixr 0 _≃⟨_⟩_
 infixl 2 _●_
 infix  1 ⌜_⌝
+
 \end{code}

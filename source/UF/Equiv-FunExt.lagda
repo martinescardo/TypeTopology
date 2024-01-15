@@ -5,7 +5,7 @@ extensionality as the equivalence of happly for suitable parameters.)
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module UF.Equiv-FunExt where
 
@@ -213,6 +213,15 @@ being-equiv-is-prop'' fe = being-equiv-is-prop' fe fe fe fe
 
   q : transport is-equiv p d ＝ e
   q = being-equiv-is-prop' fe₀ f₁ f₂ fe₀ (h ∘ g ∘ f) _ _
+
+to-≃-＝ : {X : 𝓤 ̇ } {Y : 𝓥 ̇}
+        → Fun-Ext
+        → {f g : X → Y} {i : is-equiv f} {j : is-equiv g}
+        → f ∼ g
+        → (f , i) ＝[ X ≃ Y ] (g , j)
+to-≃-＝ fe h = to-subtype-＝
+               (being-equiv-is-prop' fe fe fe fe)
+                        (dfunext fe h)
 
 ≃-assoc : FunExt
         → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {T : 𝓣 ̇ }
@@ -443,16 +452,16 @@ prop-univalent-≃' pe fe X P i = (P ＝ X) ≃⟨ ＝-flip ⟩
                                 (P ≃ X)  ■
 \end{code}
 
-Added 24th Feb 2023
+Added 24th Feb 2023.
 
 \begin{code}
 
-prop-≃-≃-⇔ : Fun-Ext
+prop-≃-≃-↔ : Fun-Ext
            → {P : 𝓤 ̇ } {Q : 𝓥 ̇ }
            → is-prop P
            → is-prop Q
-           → (P ≃ Q) ≃ (P ⇔ Q)
-prop-≃-≃-⇔ fe i j = qinveq (λ f → ⌜ f ⌝ ,  ⌜ f ⌝⁻¹)
+           → (P ≃ Q) ≃ (P ↔ Q)
+prop-≃-≃-↔ fe i j = qinveq (λ f → ⌜ f ⌝ ,  ⌜ f ⌝⁻¹)
                      ((λ (g , h) → qinveq g
                                     (h ,
                                     (λ p → i (h (g p)) p) ,
@@ -462,13 +471,32 @@ prop-≃-≃-⇔ fe i j = qinveq (λ f → ⌜ f ⌝ ,  ⌜ f ⌝⁻¹)
                                refl) ,
                       (λ _ → refl))
 
-prop-＝-≃-⇔ : Prop-Ext
+prop-＝-≃-↔ : Prop-Ext
             → Fun-Ext
             → {P Q : 𝓤 ̇ }
             → is-prop P
             → is-prop Q
-            → (P ＝ Q) ≃ (P ⇔ Q)
-prop-＝-≃-⇔ pe fe i j = prop-univalent-≃ pe fe _ _ j
-                      ● prop-≃-≃-⇔ fe i j
+            → (P ＝ Q) ≃ (P ↔ Q)
+prop-＝-≃-↔ pe fe i j = prop-univalent-≃ pe fe _ _ j
+                      ● prop-≃-≃-↔ fe i j
+
+\end{code}
+
+Added 3rd November 2023.
+
+\begin{code}
+
+open import UF.Subsingletons-Properties
+open import UF.Sets
+open import UF.Sets-Properties
+
+≃-is-set : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+         → Fun-Ext
+         → is-set X
+         → is-set (X ≃ Y)
+≃-is-set {𝓤} {𝓥} {X} {Y} fe X-is-set {𝕗} {𝕘} =
+ Σ-is-set
+  (Π-is-set fe (λ _ → equiv-to-set (≃-sym 𝕗) X-is-set))
+  (λ _ → props-are-sets (being-equiv-is-prop (λ _ _ → fe) _))
 
 \end{code}

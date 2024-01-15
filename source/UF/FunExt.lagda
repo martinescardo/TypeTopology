@@ -6,7 +6,7 @@ is used explicitly as a hypothesis each time it is needed.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module UF.FunExt where
 
@@ -32,6 +32,9 @@ DN-funext 𝓤 𝓥 = {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {f g : Π A} → f ∼
 
 funext : ∀ 𝓤 𝓥 → 𝓤 ⁺ ⊔ 𝓥 ⁺ ̇
 funext 𝓤 𝓥 = {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (f g : Π A) → is-equiv (happly' f g)
+
+funext₀ : 𝓤₁ ̇
+funext₀ = funext 𝓤₀ 𝓤₀
 
 FunExt : 𝓤ω
 FunExt = (𝓤 𝓥 : Universe) → funext 𝓤 𝓥

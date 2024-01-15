@@ -6,7 +6,7 @@ are embedded in the reals.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
 
@@ -41,10 +41,10 @@ inhabited-right : (R : 𝓟 ℚ) → 𝓤₀ ̇
 inhabited-right R = (∃ q ꞉ ℚ , q ∈ R)
 
 rounded-left : (L : 𝓟 ℚ) → 𝓤₀ ̇
-rounded-left L = (x : ℚ) → (x ∈ L ⇔ (∃ p ꞉ ℚ , (x < p) × p ∈ L))
+rounded-left L = (x : ℚ) → (x ∈ L ↔ (∃ p ꞉ ℚ , (x < p) × p ∈ L))
 
 rounded-right : (R : 𝓟 ℚ) → 𝓤₀ ̇
-rounded-right R = (x : ℚ) → x ∈ R ⇔ (∃ q ꞉ ℚ , (q < x) × q ∈ R)
+rounded-right R = (x : ℚ) → x ∈ R ↔ (∃ q ꞉ ℚ , (q < x) × q ∈ R)
 
 disjoint : (L R : 𝓟 ℚ) → 𝓤₀ ̇
 disjoint L R = (p q : ℚ) → p ∈ L × q ∈ R → p < q
@@ -105,13 +105,13 @@ rounded-right-c R r x y l xR = pr₂ (r y) ∣ x , (l , xR) ∣
 rounded-left-is-prop : (L : 𝓟 ℚ) → is-prop (rounded-left L)
 rounded-left-is-prop L = Π-is-prop fe δ
  where
-  δ : (x : ℚ) → is-prop (x ∈ L ⇔ (∃ p ꞉ ℚ , (x < p) × p ∈ L))
+  δ : (x : ℚ) → is-prop (x ∈ L ↔ (∃ p ꞉ ℚ , (x < p) × p ∈ L))
   δ x = ×-is-prop (Π-is-prop fe (λ _ → ∃-is-prop)) (Π-is-prop fe (λ _ → ∈-is-prop L x))
 
 rounded-right-is-prop : (R : 𝓟 ℚ) → is-prop (rounded-right R)
 rounded-right-is-prop R = Π-is-prop fe δ
  where
-  δ : (x : ℚ) → is-prop (x ∈ R ⇔ (∃ q ꞉ ℚ , (q < x) × q ∈ R))
+  δ : (x : ℚ) → is-prop (x ∈ R ↔ (∃ q ꞉ ℚ , (q < x) × q ∈ R))
   δ x = ×-is-prop (Π-is-prop fe (λ _ → ∃-is-prop)) (Π-is-prop fe (λ _ → ∈-is-prop R x))
 
 disjoint-is-prop : (L R : 𝓟 ℚ) → is-prop (disjoint L R)
@@ -227,7 +227,7 @@ embedding-ℚ-to-ℝ x = (L , R) , inhabited-left'
   inhabited-right' : ∃ q ꞉ ℚ , x < q
   inhabited-right' = ∣ ℚ-no-max-element x ∣
 
-  rounded-left' :  (p : ℚ) → (p ∈ L ⇔ (∃ p' ꞉ ℚ , p < p' < x))
+  rounded-left' :  (p : ℚ) → (p ∈ L ↔ (∃ p' ꞉ ℚ , p < p' < x))
   rounded-left' p = α , β
    where
     α : p < x →  (∃ p' ꞉ ℚ , p < p' < x)
@@ -239,7 +239,7 @@ embedding-ℚ-to-ℝ x = (L , R) , inhabited-left'
       δ : Σ p' ꞉ ℚ , p < p' < x → p < x
       δ (p' , a , b) = ℚ<-trans p p' x a b
 
-  rounded-right' : (q : ℚ) → q > x ⇔ (∃ q' ꞉ ℚ , (q' < q) × q' > x)
+  rounded-right' : (q : ℚ) → q > x ↔ (∃ q' ꞉ ℚ , (q' < q) × q' > x)
   rounded-right' q = α , β
    where
     α : q > x → ∃ q' ꞉ ℚ , (q' < q) × q' > x

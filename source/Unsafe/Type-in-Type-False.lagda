@@ -18,7 +18,7 @@ Blechschmidt. See also the module LawvereFPT.
 
 \begin{code}
 
-{-# OPTIONS --without-K --type-in-type --exact-split #-}
+{-# OPTIONS --without-K --type-in-type #-}
 
 module Unsafe.Type-in-Type-False where
 

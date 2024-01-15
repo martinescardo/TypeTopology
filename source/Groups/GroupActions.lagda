@@ -18,7 +18,7 @@ Torsors are in their own file Torsos.lagda
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import Groups.Type renaming (_≅_ to _≣_)
 open import MLTT.Spartan

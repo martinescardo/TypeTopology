@@ -2,7 +2,7 @@ Martin Escardo and Paulo Oliva, 19th March 2023.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split #-}
+{-# OPTIONS --without-K #-}
 
 module Games.Main where
 

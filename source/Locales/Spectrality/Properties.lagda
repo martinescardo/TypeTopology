@@ -2,7 +2,7 @@ Ayberk Tosun, 13 September 2023
 
 \begin{code}[hide]
 
-{-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
+{-# OPTIONS --safe --without-K --lossy-unification #-}
 
 open import MLTT.Spartan
 open import UF.Base

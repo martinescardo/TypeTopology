@@ -21,7 +21,7 @@ This is vestigial. The proof that group-axioms is prop is in Groups.Type
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Groups.Type-Supplement where
 

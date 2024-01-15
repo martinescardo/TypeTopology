@@ -12,7 +12,7 @@ completion, see below for details.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
+{-# OPTIONS --safe --without-K --lossy-unification #-}
 -- The flag --lossy-unification roughly reduces the timechecking
 -- time by 50%.
 
@@ -127,7 +127,7 @@ module _
  below-single-step-function-criterion : (d : ⟨ 𝓓 ⟩) (e : ⟪ 𝓔 ⟫) (κ : is-compact 𝓓 d)
                                         (f : DCPO[ 𝓓 , 𝓔 ⁻ ])
                                       → ⦅ d ⇒ e ⦆[ κ ] ⊑⟨ 𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻) ⟩ f
-                                      ⇔ e ⊑⟪ 𝓔 ⟫ [ 𝓓 , 𝓔 ⁻ ]⟨ f ⟩ d
+                                      ↔ e ⊑⟪ 𝓔 ⟫ [ 𝓓 , 𝓔 ⁻ ]⟨ f ⟩ d
  below-single-step-function-criterion d e κ f = ⦅1⦆ , ⦅2⦆
   where
    ⦅1⦆ : ⦅ d ⇒ e ⦆[ κ ] ⊑⟨ 𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻) ⟩ f

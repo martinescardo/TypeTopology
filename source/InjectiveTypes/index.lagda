@@ -10,7 +10,7 @@ explanation of the published paper.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module InjectiveTypes.index where
 

@@ -9,7 +9,7 @@ Refactored December 2021.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 open import UF.FunExt
@@ -26,7 +26,7 @@ open PropositionalTruncation pt
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
-open import Posets.Poset fe
+open import OrderedTypes.Poset fe
 open import DomainTheory.Basics.Dcpo pt fe 𝓥
 open import DomainTheory.Basics.Exponential pt fe 𝓥
 open import DomainTheory.Basics.Miscelanea pt fe 𝓥

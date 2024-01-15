@@ -10,7 +10,7 @@ The theorem says that, for any p : ℕ∞ → 𝟚, the proposition
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 open import UF.FunExt

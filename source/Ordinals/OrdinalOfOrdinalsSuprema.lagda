@@ -26,7 +26,7 @@ notably doesn't use set quotients.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
+{-# OPTIONS --safe --without-K --lossy-unification #-}
 
 
 open import Quotient.Type
@@ -309,7 +309,7 @@ induced order on Σα.
   ≺-congruence : {p q p' q' : Σα} → p ≈ p' → q ≈ q'
                → (p ≺[Ω] q) ＝ (p' ≺[Ω] q')
   ≺-congruence {(i , x)} {(j , y)} {(i' , x')} {(j' , y')} e₁ e₂ =
-   Ω-extensionality fe' pe' ⦅1⦆ ⦅2⦆
+   Ω-extensionality pe' fe' ⦅1⦆ ⦅2⦆
     where
      ⦅1⦆ : (α i ↓ x) ⊲ (α j ↓ y) → (α i' ↓ x') ⊲ (α j' ↓ y')
      ⦅1⦆ l = transport₂ _⊲_ e₁ e₂ l
@@ -532,7 +532,7 @@ Next, we resize α/ using:
    ≈⁻p : is-prop-valued _≈⁻_
    ≈⁻p (i , x) (j , y) = ≃ₒ-is-prop-valued fe' (α i ↓ x) (α j ↓ y)
 
- ≋-≃-≋⁻ : {p q : Σα} → p ≈[ ≋ ] q ⇔ p ≈[ ≋⁻ ] q
+ ≋-≃-≋⁻ : {p q : Σα} → p ≈[ ≋ ] q ↔ p ≈[ ≋⁻ ] q
  ≋-≃-≋⁻ {(i , x)} {(j , y)} = (idtoeqₒ (α i ↓ x) (α j ↓ y))
                             , (eqtoidₒ (ua 𝓤) fe' (α i ↓ x) (α j ↓ y))
 

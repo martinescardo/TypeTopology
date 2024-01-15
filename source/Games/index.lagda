@@ -5,7 +5,7 @@ Refactored and slightly improved October 2022, and then again in April
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Games.index where
 
@@ -15,6 +15,7 @@ open import Games.FiniteHistoryDependent  -- Theory of finite history dependent 
 open import Games.FiniteHistoryDependentTransformer -- With additional monad for irrational players.
 open import Games.J                       -- Selection monad.
 open import Games.K                       -- Continuation (or quantifier) monad.
+open import Games.JK                      -- Relationship between the two mondas.
 open import Games.Monad                   -- (Automatically strong, wild) monads on types.
 open import Games.Reader
 open import Games.TicTacToe0

@@ -2,7 +2,7 @@ Martin Escardo
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Lifting.index where
 

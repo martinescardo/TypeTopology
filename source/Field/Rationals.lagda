@@ -4,7 +4,7 @@ In this file I prove that the rationals are an ordered field.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
 

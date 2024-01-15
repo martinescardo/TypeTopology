@@ -35,7 +35,7 @@ need more work, which is explained below.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K #-}
+{-# OPTIONS --safe --without-K --no-exact-split --lossy-unification #-}
 
 module Groups.Free where
 
@@ -1878,7 +1878,7 @@ for that purpose.
  _∥≏∥_ : FA → FA → 𝓤 ̇
  s ∥≏∥ t = ∥ s ≏ t ∥
 
- ∾-is-logically-equivalent-to-∥≏∥ : (s t : FA) → s ∾ t ⇔ s ∥≏∥ t
+ ∾-is-logically-equivalent-to-∥≏∥ : (s t : FA) → s ∾ t ↔ s ∥≏∥ t
  ∾-is-logically-equivalent-to-∥≏∥ s t = ∥∥-functor (∿-gives-≏ s t) ,
                                        ∥∥-functor (≏-gives-∿ s t)
 \end{code}
@@ -1947,7 +1947,7 @@ We conclude with a routine applications of the above development.
 \begin{code}
 
  small-free-group : Σ 𝓕' ꞉ Group 𝓤⁺ , 𝓕' ≅ 𝓕
- small-free-group = resized-group 𝓕 resized-free-group-carrier
+ small-free-group = group-copy 𝓕 resized-free-group-carrier
 
  𝓕⁻ : Group 𝓤⁺
  𝓕⁻ = pr₁ small-free-group

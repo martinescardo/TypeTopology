@@ -7,7 +7,7 @@ July 1, 2021
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 
 open import Groups.Type

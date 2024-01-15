@@ -5,7 +5,7 @@ existence.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Fin.Choice where
 

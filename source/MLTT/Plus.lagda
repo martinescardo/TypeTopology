@@ -2,7 +2,7 @@ The disjoint sum X + Y of two types X and Y.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module MLTT.Plus where
 

@@ -7,7 +7,7 @@ this file. All the results of this file are in Håkon Gylterud [3].
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 

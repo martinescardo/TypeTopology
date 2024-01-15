@@ -11,7 +11,7 @@ axiom and the K axiom.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module UF.PreUnivalence where
 

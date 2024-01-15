@@ -5,7 +5,7 @@ Examples of type trees.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Games.Examples where
 

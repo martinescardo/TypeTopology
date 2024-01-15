@@ -38,7 +38,7 @@ ln -s Ordinals.Notions.html Ordinal-Notions.html
 ln -s Ordinals.OrdinalOfOrdinals.html OrdinalOfOrdinals.html
 ln -s Ordinals.WellOrderTransport.html OrdinalsWellOrderTransport.html
 ln -s Ordinals.index.html Ordinals.html
-ln -s Redirection.Types2019.html Types2019.html
+ln -s Various.Types2019.html Types2019.html
 ln -s Slice.Slice.html Slice.html
 ln -s TypeTopology.ADecidableQuantificationOverTheNaturals.html ADecidableQuantificationOverTheNaturals.html
 ln -s TypeTopology.DiscreteAndSeparated.html DiscreteAndSeparated.html
@@ -48,6 +48,7 @@ ln -s UF.Size.html UF-Size.html
 ln -s UF.UniverseEmbedding.html UniverseEmbedding.html
 ln -s UF.Yoneda.html UF-Yoneda.html
 ln -s UF.index.html UF.html
+ln -s UF.HiggsInvolutionTheorem.html Various.HiggsInvolutionTheorem.html
 ln -s Various.Dedekind.html Dedekind.html
 ln -s Various.HiggsInvolutionTheorem.html HiggsInvolutionTheorem.html
 ln -s Various.LawvereFPT.html LawvereFPT.html

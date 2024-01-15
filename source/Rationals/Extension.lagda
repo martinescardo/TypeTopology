@@ -7,7 +7,7 @@ another rational valued function on the rationals.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
+{-# OPTIONS --safe --without-K --lossy-unification #-}
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
 
@@ -46,24 +46,24 @@ bijection?
 \begin{code}
 
 bijection-preserves-monotone : (f g : ℚ → ℚ) → 𝓤₀ ̇
-bijection-preserves-monotone f g = ((p q : ℚ) → (p < q) ⇔ (f p < f q))
+bijection-preserves-monotone f g = ((p q : ℚ) → (p < q) ↔ (f p < f q))
                                  → ((r : ℚ) → (g (f r) ＝ r) × (f (g r) ＝ r))
-                                 → ((p q : ℚ) → (p < q) ⇔ (g p < g q))
+                                 → ((p q : ℚ) → (p < q) ↔ (g p < g q))
 
 bijective-preserves-monotone' : (f g : ℚ → ℚ) → 𝓤₀ ̇
-bijective-preserves-monotone' f g = ((p q : ℚ) → p < q ⇔ f p > f q)
+bijective-preserves-monotone' f g = ((p q : ℚ) → p < q ↔ f p > f q)
                                   → ((r : ℚ) → (g (f r) ＝ r) × (f (g r) ＝ r))
-                                  → ((p q : ℚ) → p < q ⇔ g p > g q)
+                                  → ((p q : ℚ) → p < q ↔ g p > g q)
 
 bijective-and-monotonic : (f : ℚ → ℚ)
                         → (g : ℚ → ℚ)
                         → bijection-preserves-monotone f g
 bijective-and-monotonic f g f-preserves-order f-g-bijection = γ
  where
-  γ : (p q : ℚ) → (p < q) ⇔ (g p < g q)
+  γ : (p q : ℚ) → (p < q) ↔ (g p < g q)
   γ p q = ltr , rtl
    where
-    apply-order-preversation : (g p < g q) ⇔ (f (g p) < f (g q))
+    apply-order-preversation : (g p < g q) ↔ (f (g p) < f (g q))
     apply-order-preversation = f-preserves-order (g p) (g q)
 
     ltr : p < q → g p < g q
@@ -81,10 +81,10 @@ bijective-and-monotonic f g f-preserves-order f-g-bijection = γ
 bijective-and-monotonic' : (f g : ℚ → ℚ) → bijective-preserves-monotone' f g
 bijective-and-monotonic' f g f-preserves-order f-g-bijection = γ
  where
-  γ : (p q : ℚ) → p < q ⇔ g p > g q
+  γ : (p q : ℚ) → p < q ↔ g p > g q
   γ p q = ltr , rtl
    where
-    apply-order-preservation : g q < g p ⇔ f (g q) > f (g p)
+    apply-order-preservation : g q < g p ↔ f (g q) > f (g p)
     apply-order-preservation = f-preserves-order (g q) (g p)
 
     ltr : p < q → g p > g q
@@ -123,7 +123,7 @@ The following f→f̂ extends functions, and the is followed by diagram commutes
 \begin{code}
 
 f→f̂ : (f g : ℚ → ℚ)
-  → ((p q : ℚ) → (p < q) ⇔ (f p < f q))
+  → ((p q : ℚ) → (p < q) ↔ (f p < f q))
   → ((r : ℚ) → (g (f r) ＝ r) × (f (g r) ＝ r))
   → ℝ → ℝ
 f→f̂ f g f-order-preserving f-g-bijective
@@ -177,7 +177,7 @@ f→f̂ f g f-order-preserving f-g-bijective
       i : Σ p ꞉ ℚ , k < p × p ∈ left → k ∈ left
       i (p , (l , p-L)) = iv ∣ (g p) , iii , p-L ∣
        where
-        ii : (k < p) ⇔ (g k < g p)
+        ii : (k < p) ↔ (g k < g p)
         ii = bijective-and-monotonic f g f-order-preserving f-g-bijective k p
         iii : g k < g p
         iii = (pr₁ ii) l
@@ -205,7 +205,7 @@ f→f̂ f g f-order-preserving f-g-bijective
       i : Σ q ꞉ ℚ , q < k × q ∈ right → k ∈ right
       i (q , (l , q-R)) = iv ∣ (g q) , (iii , q-R) ∣
        where
-        ii : (q < k) ⇔ (g q < g k)
+        ii : (q < k) ↔ (g q < g k)
         ii = bijective-and-monotonic f g f-order-preserving f-g-bijective q k
         iii : g q < g k
         iii = (pr₁ ii) l
@@ -215,7 +215,7 @@ f→f̂ f g f-order-preserving f-g-bijective
   disjoint' : disjoint left right
   disjoint' p q l = (pr₂ I) II
    where
-    I : (p < q) ⇔ (g p < g q)
+    I : (p < q) ↔ (g p < g q)
     I = bijective-and-monotonic f g f-order-preserving f-g-bijective p q
     II : g p < g q
     II = disjoint-x (g p) (g q) l
@@ -223,7 +223,7 @@ f→f̂ f g f-order-preserving f-g-bijective
   located' : located left right
   located' p q l = III
    where
-    I : (p < q) ⇔ (g p < g q)
+    I : (p < q) ↔ (g p < g q)
     I = bijective-and-monotonic f g f-order-preserving f-g-bijective p q
     II : p < q → g p < g q
     II = pr₁ I
@@ -231,7 +231,7 @@ f→f̂ f g f-order-preserving f-g-bijective
     III = located-x (g p) (g q) (II l)
 
 diagram-commutes : (f g : ℚ → ℚ)
-                 → (f-order-preserving : ((p q : ℚ) → (p < q) ⇔ (f p < f q)))
+                 → (f-order-preserving : ((p q : ℚ) → (p < q) ↔ (f p < f q)))
                  → (f-g-bijective : ((r : ℚ) → (g (f r) ＝ r) × (f (g r) ＝ r)))
                  → (q : ℚ)
                  → (f→f̂ f g f-order-preserving f-g-bijective ∘ ι) q ＝ (ι ∘ f) q
@@ -281,7 +281,7 @@ the function which adds 1 to a rational.
 ℚ-pred : ℚ → ℚ
 ℚ-pred q = q - 1ℚ
 
-<-ℚ-succ : (p q : ℚ) → (p < q) ⇔ (ℚ-succ p < ℚ-succ q)
+<-ℚ-succ : (p q : ℚ) → (p < q) ↔ (ℚ-succ p < ℚ-succ q)
 <-ℚ-succ p q = i , ii
  where
   i : p < q → ℚ-succ p < ℚ-succ q
@@ -338,17 +338,17 @@ test x = transport (ι x <_) (ℚ-succ-behaviour-preserved x ⁻¹)
              (ℚ-succ-preserves-order x))
 
 bijection-preserves-monotone-multi : (f g : ℚ → ℚ → ℚ) → 𝓤₀ ̇
-bijection-preserves-monotone-multi f g = ((p q r : ℚ) → (p < q) ⇔ (f p r < f q r))
+bijection-preserves-monotone-multi f g = ((p q r : ℚ) → (p < q) ↔ (f p r < f q r))
                                        → ((p q : ℚ) → (g (f p q) q ＝ p) × (f (g p q) q ＝ p))
-                                       → ((p q r : ℚ) → (p < q) ⇔ (g p r < g q r))
+                                       → ((p q r : ℚ) → (p < q) ↔ (g p r < g q r))
 
 bijection-preserves-monotone-multi-proof : (f g : ℚ → ℚ → ℚ) → bijection-preserves-monotone-multi f g
 bijection-preserves-monotone-multi-proof f g f-preserves-order f-g-bijection = γ
  where
-  γ : (p q r : ℚ) → (p < q) ⇔ (g p r < g q r)
+  γ : (p q r : ℚ) → (p < q) ↔ (g p r < g q r)
   γ p q r = ltr , rtl
    where
-    apply-order-preversation :  (g p r < g q r) ⇔ (f (g p r) r < f (g q r) r)
+    apply-order-preversation :  (g p r < g q r) ↔ (f (g p r) r < f (g q r) r)
     apply-order-preversation = f-preserves-order (g p r) (g q r) r
 
     ltr : p < q → g p r < g q r

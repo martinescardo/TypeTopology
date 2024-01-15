@@ -17,7 +17,7 @@ A full report in pdf is available in the above link.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module PCF.Lambda.index where
 

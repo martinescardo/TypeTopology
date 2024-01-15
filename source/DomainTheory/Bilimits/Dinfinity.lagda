@@ -8,7 +8,7 @@ The construction of D∞ is based on Scott's "Continuous lattices"
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
+{-# OPTIONS --safe --without-K --lossy-unification #-}
 
 \end{code}
 

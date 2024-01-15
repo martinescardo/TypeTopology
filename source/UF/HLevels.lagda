@@ -6,7 +6,7 @@ convention here is that propositions are at level zero (apologies).
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 open import UF.Univalence

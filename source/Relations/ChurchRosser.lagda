@@ -6,7 +6,7 @@ without higher-inductive types other than propositional truncation.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 

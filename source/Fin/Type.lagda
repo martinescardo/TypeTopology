@@ -2,7 +2,7 @@ Martin Escardo, 2014.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Fin.Type where
 

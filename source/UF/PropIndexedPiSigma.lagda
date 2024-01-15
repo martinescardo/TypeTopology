@@ -2,7 +2,7 @@ Martin Escardo, 27 April 2014
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module UF.PropIndexedPiSigma where
 

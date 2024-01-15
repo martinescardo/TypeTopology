@@ -9,7 +9,7 @@ interchange laws are weak.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module UF.SemistrictIdentity where
 

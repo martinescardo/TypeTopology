@@ -7,7 +7,7 @@ https://lmcs.episciences.org/2027
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module UF.Section-Embedding where
 

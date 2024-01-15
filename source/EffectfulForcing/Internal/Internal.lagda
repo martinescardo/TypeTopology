@@ -8,7 +8,7 @@ trees, with Church encoding, to functions of type (ι → ι) → ι.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --without-K --safe --no-sized-types --no-guardedness --auto-inline #-}
 
 module EffectfulForcing.Internal.Internal where
 

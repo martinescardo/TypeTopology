@@ -7,7 +7,7 @@ This is ported from the Midlands Graduate School 2019 lecture notes
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module MGS.Equivalence-Induction where
 

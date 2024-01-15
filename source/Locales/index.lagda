@@ -2,7 +2,7 @@ Ayberk Tosun.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Locales.index where
 
@@ -50,7 +50,10 @@ import Locales.Regular                           -- (20)
 
 import Locales.ScottContinuity                   -- (21)
 
-import Locales.ScottLocale                       -- (22)
+import Locales.ScottLocale.Definition            -- (22)
+
+-- TODO: naming and numbering to be improved.
+import Locales.ScottLocale.ScottLocalesOfAlgebraicDcpos -- (22.5)
 
 import Locales.Sierpinski                        -- (23)
 

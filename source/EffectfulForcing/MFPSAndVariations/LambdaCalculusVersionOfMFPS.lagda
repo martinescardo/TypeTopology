@@ -8,7 +8,7 @@ combinator for system T.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module EffectfulForcing.MFPSAndVariations.LambdaCalculusVersionOfMFPS where
 

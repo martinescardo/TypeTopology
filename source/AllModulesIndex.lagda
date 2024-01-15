@@ -9,15 +9,14 @@
    Martin Escardo and collaborators, 2010--2023--∞
    Continuously evolving.
 
-   https://github.com/martinescardo/TypeTopology
+   https://githubn.com/martinescardo/TypeTopology
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split #-}
+{-# OPTIONS --without-K #-}
 
 import index                -- Of --safe modules.
 import Unsafe.index         -- Of unsafe modules.
-import Redirection.index    -- For backward compatibility.
 import InfinitePigeon.index -- Disables termination check for bar recursion.
 
 \end{code}

@@ -4,7 +4,7 @@ Based on `ayberkt/formal-topology-in-UF`.
 
 \begin{code}[hide]
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 open import UF.Base

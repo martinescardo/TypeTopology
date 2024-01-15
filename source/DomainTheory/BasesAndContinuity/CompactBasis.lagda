@@ -35,7 +35,7 @@ subset) consisting of compact elements fits in to our framework.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 open import UF.FunExt
@@ -368,7 +368,7 @@ Another formulation is that we have the following logical equivalence:
 \begin{code}
 
  specified-unspecified-equivalence :
-  has-specified-small-compact-basis 𝓓 ⇔ has-unspecified-small-compact-basis 𝓓
+  has-specified-small-compact-basis 𝓓 ↔ has-unspecified-small-compact-basis 𝓓
  specified-unspecified-equivalence =
     ∣_∣
   , specified-small-compact-basis-has-split-support

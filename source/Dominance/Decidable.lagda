@@ -2,7 +2,7 @@ Martin Escardo, January 2018, May 2020
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Dominance.Decidable where
 

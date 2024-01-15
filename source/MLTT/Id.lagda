@@ -2,7 +2,7 @@ Identity type.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module MLTT.Id where
 
@@ -55,14 +55,24 @@ ap f p = transport (λ - → f (lhs p) ＝ f -) p refl
 transport⁻¹ : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) {x y : X} → x ＝ y → A y → A x
 transport⁻¹ B p = transport B (p ⁻¹)
 
-_∼_ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } → ((x : X) → A x) → ((x : X) → A x) → 𝓤 ⊔ 𝓥 ̇
-f ∼ g = ∀ x → f x ＝ g x
+module _ {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } where
 
-∼-sym : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
-        {f g : (x : X) → A x}
-      → f ∼ g
-      → g ∼ f
-∼-sym h x = (h x)⁻¹
+ infix  4 _∼_
+
+ _∼_ :  Π A → Π A → 𝓤 ⊔ 𝓥 ̇
+ f ∼ g = ∀ x → f x ＝ g x
+
+ ∼-refl : {f : Π A} → f ∼ f
+ ∼-refl x = refl
+
+ ∼-trans : {f g h : Π A} → f ∼ g → g ∼ h → f ∼ h
+ ∼-trans h k x = h x ∙ k x
+
+ ∼-sym : {f g : Π A} → f ∼ g → g ∼ f
+ ∼-sym h x = (h x)⁻¹
+
+ ∼-ap : {E : 𝓦 ̇ } (F : E → Π A) {e e' : E} → e ＝ e' → F e ∼ F e'
+ ∼-ap F p x = ap (λ - → F - x) p
 
 \end{code}
 
@@ -91,6 +101,18 @@ _ ＝⟨ p ⟩ q = p ∙ q
 _∎ : {X : 𝓤 ̇ } (x : X) → x ＝ x
 _∎ _ = refl
 
+
+module _ {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } where
+
+ _∼⟨_⟩_ : (f : Π A) {g h : Π A} → f ∼ g → g ∼ h → f ∼ h
+ _ ∼⟨ p ⟩ q = ∼-trans p q
+
+ _∼∎ : (f : Π A) → f ∼ f
+ _∼∎ _ = ∼-refl
+
+ infix  1 _∼∎
+ infixr 0 _∼⟨_⟩_
+
 \end{code}
 
 Fixities:
@@ -101,6 +123,5 @@ infix  3  _⁻¹
 infix  1 _∎
 infixr 0 _＝⟨_⟩_
 infixl 2 _∙_
-infix  4 _∼_
 
 \end{code}

@@ -4,7 +4,7 @@ Conversion of dialogue trees to Brouwer trees.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module EffectfulForcing.MFPSAndVariations.Dialogue-to-Brouwer where
 

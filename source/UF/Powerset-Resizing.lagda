@@ -4,7 +4,7 @@ Powersets under resizing. More things are available at MGS.Size.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import UF.FunExt
 open import UF.Size
@@ -44,7 +44,7 @@ open PropositionalTruncation pt
 closure-under-unions : {X : 𝓤 ̇ } (𝓐 : (X → Ω 𝓥) → Ω 𝓦)
                      → Σ B ꞉ (X → Ω 𝓥)
                            , ((x : X) → (x ∈ B)
-                                      ⇔ (∃ A ꞉ (X → Ω 𝓥) , (A ∈ 𝓐) × (x ∈ A)))
+                                      ↔ (∃ A ꞉ (X → Ω 𝓥) , (A ∈ 𝓐) × (x ∈ A)))
 closure-under-unions {𝓤} {𝓥} {𝓦} {X} 𝓐 = B , (λ x → lr x , rl x)
  where
   β : X → 𝓤 ⊔ (𝓥 ⁺) ⊔ 𝓦 ̇
@@ -78,7 +78,7 @@ to-⋃ 𝓐 x = rl-implication (pr₂ (closure-under-unions 𝓐) x)
 closure-under-intersections : {X : 𝓤 ̇ } (𝓐 : (X → Ω 𝓥) → Ω 𝓦)
                             → Σ B ꞉ (X → Ω 𝓥)
                                   , ((x : X) → x ∈ B
-                                             ⇔ ((A : X → Ω 𝓥) → A ∈ 𝓐 → x ∈ A))
+                                             ↔ ((A : X → Ω 𝓥) → A ∈ 𝓐 → x ∈ A))
 closure-under-intersections {𝓤} {𝓥} {𝓦} {X} 𝓐 = B , (λ x → lr x , rl x)
  where
   β : X → 𝓤 ⊔ (𝓥 ⁺) ⊔ 𝓦 ̇

@@ -4,7 +4,7 @@ This file needs reorganization and clean-up.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module UF.Base where
 
@@ -110,15 +110,14 @@ transport-× A B refl = refl
 
 transportd : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : (x : X) → A x → 𝓦 ̇ )
              {x : X}  (a : A x) {y : X} (p : x ＝ y)
-           → B x a → B y (transport A p a)
-
+           → B x a
+           → B y (transport A p a)
 transportd A B a refl = id
 
 transport-Σ : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : (x : X) → A x → 𝓦 ̇ )
               {x : X} (y : X) (p : x ＝ y) (a : A x) {b : B x a}
-            → transport (λ x → Σ y ꞉ A x , B x y) p (a , b)
+            → transport (λ - → Σ a ꞉ A - , B - a) p (a , b)
             ＝ transport A p a , transportd A B a p b
-
 transport-Σ A B {x} x refl a = refl
 
 transport-∙ : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
@@ -322,6 +321,13 @@ left-inverse {𝓤} {X} {x} {y} refl = refl
 
 right-inverse : {X : 𝓤 ̇ } {x y : X} (p : x ＝ y) → refl ＝ p ∙ p ⁻¹
 right-inverse {𝓤} {X} {x} {y} refl = refl
+
+cancel-right
+ : {X : 𝓤 ̇ } {x y z : X}
+ → (p : x ＝ y) (q : x ＝ y) (r : y ＝ z)
+ → p ∙ r ＝ q ∙ r
+ → p ＝ q
+cancel-right refl refl refl refl = refl
 
 cancel-left : {X : 𝓤 ̇ } {x y z : X} {p : x ＝ y} {q r : y ＝ z}
             → p ∙ q ＝ p ∙ r

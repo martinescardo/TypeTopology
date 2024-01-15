@@ -4,7 +4,7 @@ Earlier version: 18 September 2020
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import Circle.Integers
 

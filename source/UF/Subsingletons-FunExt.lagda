@@ -11,7 +11,7 @@ About (sub)singletons using function extensionality.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module UF.Subsingletons-FunExt where
 
@@ -63,13 +63,13 @@ being-prop-is-prop {𝓤} {X} fe f g = c₁
   c₁ : f ＝ g
   c₁  = dfunext fe c₀
 
-⇔-is-prop : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+↔-is-prop : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
           → funext 𝓤 𝓥
           → funext 𝓥 𝓤
           → is-prop X
           → is-prop Y
-          → is-prop (X ⇔ Y)
-⇔-is-prop fe fe' X-is-prop Y-is-prop = ×-is-prop
+          → is-prop (X ↔ Y)
+↔-is-prop fe fe' X-is-prop Y-is-prop = ×-is-prop
                                        (Π-is-prop fe  (λ _ → Y-is-prop))
                                        (Π-is-prop fe' (λ _ → X-is-prop))
 
@@ -87,15 +87,15 @@ identifications-with-props-are-props : propext 𝓤
                                      → (X : 𝓤 ̇ ) → is-prop (X ＝ P)
 identifications-with-props-are-props {𝓤} pe fe P i = γ
  where
-  f : (X : 𝓤 ̇ ) → X ＝ P → is-prop X × (X ⇔ P)
+  f : (X : 𝓤 ̇ ) → X ＝ P → is-prop X × (X ↔ P)
   f X refl = i , (id , id)
 
-  g : (X : 𝓤 ̇ ) → is-prop X × (X ⇔ P) → X ＝ P
+  g : (X : 𝓤 ̇ ) → is-prop X × (X ↔ P) → X ＝ P
   g X (l , φ , γ) = pe l i φ γ
 
-  j : (X : 𝓤 ̇ ) → is-prop (is-prop X × (X ⇔ P))
+  j : (X : 𝓤 ̇ ) → is-prop (is-prop X × (X ↔ P))
   j X = ×-prop-criterion ( (λ _ → being-prop-is-prop fe)
-                         , (λ l → ⇔-is-prop fe fe l i))
+                         , (λ l → ↔-is-prop fe fe l i))
 
   k : (X : 𝓤 ̇ ) → wconstant (g X ∘ f X)
   k X p q = ap (g X) (j X (f X p) (f X q))

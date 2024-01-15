@@ -5,7 +5,7 @@ history dependent game.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Games.TicTacToe0 where
 

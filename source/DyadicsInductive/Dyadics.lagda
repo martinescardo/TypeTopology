@@ -6,7 +6,7 @@ Dyadic rationals (https://en.wikipedia.org/wiki/Dyadic_rational)
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module DyadicsInductive.Dyadics where
 

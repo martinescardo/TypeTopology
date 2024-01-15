@@ -3,7 +3,7 @@ Jonathan Sterling, June 2023
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import Dominance.Definition
 open import MLTT.Spartan
@@ -78,7 +78,7 @@ module
 
   _≅_ : L X → L X → 𝓣 ⊔ 𝓥 ̇
   (P , u , dP) ≅ (Q , v , dQ) =
-   Σ f ꞉ P ⇔ Q , u ∼ v ∘ pr₁ f
+   Σ f ꞉ P ↔ Q , u ∼ v ∘ pr₁ f
 
   ≅-refl : (u : L X) → u ≅ u
   ≅-refl u = (id , id) , λ _ → refl
@@ -163,7 +163,7 @@ module
   kleisli-law₀ u =
    L-ext 𝓣𝓥-fe (α , λ _ → refl)
    where
-    α : u ↓ × 𝟙 ⇔ u ↓
+    α : u ↓ × 𝟙 ↔ u ↓
     α = pr₁ , (_, ⋆)
 
  module _ {𝓥 𝓦} {X : 𝓥 ̇} {Y : 𝓦 ̇} (𝓣𝓦-fe : funext 𝓣 𝓦) where
@@ -171,7 +171,7 @@ module
   kleisli-law₁ f u =
    L-ext 𝓣𝓦-fe (α , λ _ → refl)
    where
-    α : 𝟙 × f u ↓ ⇔ f u ↓
+    α : 𝟙 × f u ↓ ↔ f u ↓
     α = pr₂ , (⋆ ,_)
 
  module _ {𝓥 𝓦 𝓧} {X : 𝓥 ̇} {Y : 𝓦 ̇} {Z : 𝓧 ̇} (𝓣𝓧-fe : funext 𝓣 𝓧) where
@@ -179,7 +179,7 @@ module
   kleisli-law₂ f g x =
    L-ext 𝓣𝓧-fe (α , λ _ → refl)
    where
-    α : (((g ♯) ∘ f) ♯) x ↓ ⇔ ((g ♯) ∘ (f ♯)) x ↓
+    α : (((g ♯) ∘ f) ♯) x ↓ ↔ ((g ♯) ∘ (f ♯)) x ↓
     pr₁ α (p , q , r) = (p , q) , r
     pr₂ α ((p , q) , r) = p , q , r
 

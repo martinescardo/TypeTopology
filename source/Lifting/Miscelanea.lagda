@@ -4,7 +4,7 @@ A few basic lemmas for working with partial elements of a type.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 

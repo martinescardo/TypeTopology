@@ -3,7 +3,7 @@ Ayberk Tosun, 13 September 2023
 
 \begin{code}[hide]
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import UF.PropTrunc
 open import UF.FunExt

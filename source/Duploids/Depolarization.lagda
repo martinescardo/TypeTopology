@@ -10,7 +10,7 @@ a depolarized deductive system is the same thing as a precategory.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import UF.FunExt
 

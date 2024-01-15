@@ -4,7 +4,7 @@ In collaboration with Marc Bezem, Thierry Coquand, Peter Dybjer.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module UF.SmallnessProperties where
 

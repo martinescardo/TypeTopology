@@ -10,7 +10,7 @@ continuous is preserved by taking continuous retracts.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan hiding (J)
 open import UF.FunExt
@@ -436,19 +436,20 @@ module _
 
  open import UF.Size hiding (is-small ; is-locally-small)
 
- ≪-is-small-valued : is-locally-small 𝓓
-                   → (x y : ⟨ 𝓓 ⟩) → is-small (x ≪⟨ 𝓓 ⟩ y)
- ≪-is-small-valued ls x y = ∥∥-rec p (λ C → ≪-is-small-valued-str 𝓓 C ls x y) c
-  where
-   p : is-prop (is-small (x ≪⟨ 𝓓 ⟩ y))
-   p = prop-being-small-is-prop (λ _ → pe) (λ _ _ → fe)
-        (x ≪⟨ 𝓓 ⟩ y) (≪-is-prop-valued 𝓓)
+ abstract -- for performance
+  ≪-is-small-valued : is-locally-small 𝓓
+                    → (x y : ⟨ 𝓓 ⟩) → is-small (x ≪⟨ 𝓓 ⟩ y)
+  ≪-is-small-valued ls x y = ∥∥-rec p (λ C → ≪-is-small-valued-str 𝓓 C ls x y) c
+   where
+    p : is-prop (is-small (x ≪⟨ 𝓓 ⟩ y))
+    p = prop-being-small-is-prop (λ _ → pe) (λ _ _ → fe)
+         (x ≪⟨ 𝓓 ⟩ y) (≪-is-prop-valued 𝓓)
 
- ≪-is-small-valued-converse : ((x y : ⟨ 𝓓 ⟩) → is-small (x ≪⟨ 𝓓 ⟩ y))
-                            → is-locally-small 𝓓
- ≪-is-small-valued-converse ws =
-  ∥∥-rec (being-locally-small-is-prop 𝓓 (λ _ → pe))
-   (λ C → ≪-is-small-valued-str-converse 𝓓 C ws) c
+  ≪-is-small-valued-converse : ((x y : ⟨ 𝓓 ⟩) → is-small (x ≪⟨ 𝓓 ⟩ y))
+                             → is-locally-small 𝓓
+  ≪-is-small-valued-converse ws =
+   ∥∥-rec (being-locally-small-is-prop 𝓓 (λ _ → pe))
+    (λ C → ≪-is-small-valued-str-converse 𝓓 C ws) c
 
 \end{code}
 

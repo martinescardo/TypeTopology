@@ -1,6 +1,6 @@
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split #-}
+{-# OPTIONS --without-K #-}
 
 module Unsafe.index where
 

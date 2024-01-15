@@ -4,7 +4,7 @@ Type-class for notation for underlying types of ordered sets.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Notation.UnderlyingType where
 

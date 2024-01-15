@@ -15,7 +15,7 @@
 -- countable choice via the mbr and the bbc functionals. All of the
 -- three of them fundamentally require the option --no-termination-check.
 
-{-# OPTIONS --without-K --exact-split #-}
+{-# OPTIONS --without-K #-}
 
 module InfinitePigeon.index where
 

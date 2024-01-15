@@ -31,7 +31,7 @@ correctness. (But we don't prove efficiency theorems.)
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K #-} -- --exact-split
+{-# OPTIONS --safe --without-K --no-exact-split #-}
 
 open import MLTT.Spartan hiding (J)
 open import MLTT.Fin

@@ -2,7 +2,7 @@ One-element type properties.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module MLTT.Unit-Properties where
 

@@ -5,7 +5,7 @@ but directly using T.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module EffectfulForcing.InternalWithoutOracle where
 

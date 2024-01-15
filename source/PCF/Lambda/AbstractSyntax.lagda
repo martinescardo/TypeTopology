@@ -4,7 +4,7 @@ We define PCF types and terms, substitution as in PLFA, and the big step semanti
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import UF.PropTrunc
 

@@ -6,7 +6,7 @@ a different universe. This is useful for characterizing things like small
 reflective subuniverses, which arise when studying impredicativity.
 
 \begin{code}
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Coslice.Type where
 

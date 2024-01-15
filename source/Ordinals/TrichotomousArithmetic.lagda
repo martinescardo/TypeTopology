@@ -4,7 +4,7 @@ Arithmetic for trichotomous ordinals.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import UF.FunExt
 

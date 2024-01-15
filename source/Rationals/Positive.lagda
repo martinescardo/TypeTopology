@@ -3,7 +3,7 @@ Andrew Sneap
 This file defines positive rationals, which are useful for metric spaces.
 
 \begin{code}
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
 open import Notation.Order

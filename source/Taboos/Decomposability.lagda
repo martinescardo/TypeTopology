@@ -17,7 +17,7 @@ Further additions 3rd August 2023.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import UF.Univalence
 
@@ -343,7 +343,7 @@ decomposition-of-ordinals-type-gives-WEM : decomposition (Ordinal 𝓤) → WEM 
 decomposition-of-ordinals-type-gives-WEM d =
  decomposition-of-type-with-Ω-paths-gives-WEM d type-of-ordinals-has-Ω-paths
 
-Ordinal-decomposition-iff-WEM : decomposition (Ordinal 𝓤) ⇔ WEM 𝓤
+Ordinal-decomposition-iff-WEM : decomposition (Ordinal 𝓤) ↔ WEM 𝓤
 Ordinal-decomposition-iff-WEM = decomposition-of-ordinals-type-gives-WEM ,
                                 WEM-gives-decomposition-of-ordinals-type
 
@@ -367,7 +367,7 @@ module _ (pt : propositional-truncations-exist) where
  decomposable : 𝓤 ̇ → 𝓤 ̇
  decomposable X = ∥ decomposition X ∥
 
- Ordinal-decomposable-iff-WEM : decomposable (Ordinal 𝓤) ⇔ WEM 𝓤
+ Ordinal-decomposable-iff-WEM : decomposable (Ordinal 𝓤) ↔ WEM 𝓤
  Ordinal-decomposable-iff-WEM =
   ∥∥-rec (WEM-is-prop fe) decomposition-of-ordinals-type-gives-WEM ,
   (λ wem → ∣ WEM-gives-decomposition-of-ordinals-type wem ∣)

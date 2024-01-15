@@ -7,7 +7,7 @@ This is ported from the Midlands Graduate School 2019 lecture notes
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module MGS.MLTT where
 
@@ -315,16 +315,16 @@ contrapositive f v a = v (f a)
 tno : (A : 𝓤 ̇ ) → ¬¬¬ A → ¬ A
 tno A = contrapositive (dni A)
 
-_⇔_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
-X ⇔ Y = (X → Y) × (Y → X)
+_↔_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
+X ↔ Y = (X → Y) × (Y → X)
 
-lr-implication : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X ⇔ Y) → (X → Y)
+lr-implication : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X ↔ Y) → (X → Y)
 lr-implication = pr₁
 
-rl-implication : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X ⇔ Y) → (Y → X)
+rl-implication : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X ↔ Y) → (Y → X)
 rl-implication = pr₂
 
-absurdity³-is-absurdity : {A : 𝓤 ̇ } → ¬¬¬ A ⇔ ¬ A
+absurdity³-is-absurdity : {A : 𝓤 ̇ } → ¬¬¬ A ↔ ¬ A
 absurdity³-is-absurdity {𝓤} {A} = firstly , secondly
  where
   firstly : ¬¬¬ A → ¬ A
@@ -670,7 +670,7 @@ infixr 30 _×_
 infix   0 _∼_
 infixl 70 _∘_
 infix   0 Id
-infix  10 _⇔_
+infix  10 _↔_
 infixl 30 _∙_
 infixr  0 _＝⟨_⟩_
 infix   1 _∎

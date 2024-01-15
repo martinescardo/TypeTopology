@@ -7,7 +7,7 @@ This is ported from the Midlands Graduate School 2019 lecture notes
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module MGS.Subsingleton-Theorems where
 
@@ -50,7 +50,7 @@ being-equiv-is-subsingleton fe fe' f = Π-is-subsingleton fe
 
 subsingletons-are-retracts-of-logically-equivalent-types : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                                                          → is-subsingleton X
-                                                         → (X ⇔ Y)
+                                                         → (X ↔ Y)
                                                          → X ◁ Y
 
 subsingletons-are-retracts-of-logically-equivalent-types i (f , g) = g , f , η

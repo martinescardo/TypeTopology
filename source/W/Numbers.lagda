@@ -8,7 +8,7 @@ https://mathstodon.xyz/@MartinEscardo/110753930251021051
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan hiding (_^_)
 
@@ -284,7 +284,7 @@ by 𝓕𝓲𝓷 : 𝓝 → 𝓥.
     where
      II  = +-cong (≃-refl 𝟙) 𝟙-lneutral
      III = +-cong (≃-refl 𝟙) IH
-     IV  = +-cong (≃-refl _) (one-𝟙-only 𝓥 𝓤₀)
+     IV  = +-cong (≃-refl _) one-𝟙-only
 
 \end{code}
 

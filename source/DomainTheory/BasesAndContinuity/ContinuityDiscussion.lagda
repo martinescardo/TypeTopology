@@ -36,7 +36,7 @@ pseudocontinuity.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan hiding (J)
 open import UF.FunExt
@@ -277,7 +277,7 @@ module _
  open Ind-completion-poset-reflection pe 𝓓
 
  ⊑-∐-map/-lemma : {x : ⟨ 𝓓 ⟩} {σ : Ind}
-               → (x ⊑⟨ 𝓓 ⟩ ∐-map σ) ⇔ (x ⊑⟨ 𝓓 ⟩ ∐-map/ (η σ))
+               → (x ⊑⟨ 𝓓 ⟩ ∐-map σ) ↔ (x ⊑⟨ 𝓓 ⟩ ∐-map/ (η σ))
  ⊑-∐-map/-lemma {x} {σ} = transport (λ - → x ⊑⟨ 𝓓 ⟩ -) ((∐-map/-triangle σ) ⁻¹)
                        , transport (λ - → x ⊑⟨ 𝓓 ⟩ -) (∐-map/-triangle σ)
 
@@ -296,7 +296,7 @@ module _
     κ-gives-approximating-family (I , α , α-wb-x , (δ , ∐α-is-x)) =
      ∐α-is-x , α-wb-x
 
-    ladj : (σ : str-cont) (τ : Ind) → (κ σ ≲ τ) ⇔ (x ⊑⟨ 𝓓 ⟩ ∐-map τ)
+    ladj : (σ : str-cont) (τ : Ind) → (κ σ ≲ τ) ↔ (x ⊑⟨ 𝓓 ⟩ ∐-map τ)
     ladj σ τ = left-adjunct-to-if-approximates
                 (κ σ) x (κ-gives-approximating-family σ) τ
 
@@ -323,23 +323,23 @@ module _
     where
      open construction x
      adj-condition-is-prop : (τ' : Ind/≈)
-                           → is-prop ((L x ≤ τ') ⇔ (x ⊑⟨ 𝓓 ⟩ ∐-map/ τ'))
+                           → is-prop ((L x ≤ τ') ↔ (x ⊑⟨ 𝓓 ⟩ ∐-map/ τ'))
      adj-condition-is-prop τ' =
       (×-is-prop (Π-is-prop fe (λ _ → prop-valuedness 𝓓 x (∐-map/ τ')))
                  (Π-is-prop fe (λ _ → ≤-is-prop-valued (L x) τ')))
-     lemma : (σ : str-cont) (τ' : Ind/≈) → ((L x ≤ τ') ⇔ (x ⊑⟨ 𝓓 ⟩ ∐-map/ τ'))
+     lemma : (σ : str-cont) (τ' : Ind/≈) → ((L x ≤ τ') ↔ (x ⊑⟨ 𝓓 ⟩ ∐-map/ τ'))
      lemma σ = /-induction ≋ adj-condition-is-prop L-is-ladj'
       where
        L-is-ladj' : (τ : Ind)
-                  → (L x ≤ η τ) ⇔ (x ⊑⟨ 𝓓 ⟩ ∐-map/ (η τ))
-       L-is-ladj' τ = ⇔-trans ⦅1⦆ ⦅2⦆
+                  → (L x ≤ η τ) ↔ (x ⊑⟨ 𝓓 ⟩ ∐-map/ (η τ))
+       L-is-ladj' τ = ↔-trans ⦅1⦆ ⦅2⦆
         where
-         ⦅2⦆ : (κ σ ≲ τ) ⇔ (x ⊑⟨ 𝓓 ⟩ ∐-map/ (η τ))
-         ⦅2⦆ = ⇔-trans (ladj σ τ) (⊑-∐-map/-lemma)
-         ⦅1⦆ : (L x ≤ η τ) ⇔ (κ σ ≲ τ)
-         ⦅1⦆ = ⇔-trans s (⇔-sym η-⇔-order)
+         ⦅2⦆ : (κ σ ≲ τ) ↔ (x ⊑⟨ 𝓓 ⟩ ∐-map/ (η τ))
+         ⦅2⦆ = ↔-trans (ladj σ τ) (⊑-∐-map/-lemma)
+         ⦅1⦆ : (L x ≤ η τ) ↔ (κ σ ≲ τ)
+         ⦅1⦆ = ↔-trans s (↔-sym η-↔-order)
           where
-           s : (L x ≤ η τ) ⇔ (η (κ σ) ≤ η τ)
+           s : (L x ≤ η τ) ↔ (η (κ σ) ≤ η τ)
            s = transport (_≤ η τ) e , transport (_≤ η τ) (e ⁻¹)
             where
              e : L x ＝ η (κ σ)
@@ -358,11 +358,11 @@ module _
                                           × (Σ δ ꞉ is-Directed 𝓓 α , ∐ 𝓓 δ ＝ x)
     lemma (σ@(I , α , δ) , e) = I , α , pr₂ approx , (δ , pr₁ approx)
      where
-      ladj : (τ : Ind) → (σ ≲ τ) ⇔ (x ⊑⟨ 𝓓 ⟩ ∐-map τ)
-      ladj τ = ⇔-trans (⇔-trans η-⇔-order ladj') (⇔-sym ⊑-∐-map/-lemma)
+      ladj : (τ : Ind) → (σ ≲ τ) ↔ (x ⊑⟨ 𝓓 ⟩ ∐-map τ)
+      ladj τ = ↔-trans (↔-trans η-↔-order ladj') (↔-sym ⊑-∐-map/-lemma)
        where
-        ladj' : (η σ ≤ η τ) ⇔ x ⊑⟨ 𝓓 ⟩ ∐-map/ (η τ)
-        ladj' = transport (λ - → (- ≤ η τ) ⇔ x ⊑⟨ 𝓓 ⟩ ∐-map/ (η τ)) (e ⁻¹)
+        ladj' : (η σ ≤ η τ) ↔ x ⊑⟨ 𝓓 ⟩ ∐-map/ (η τ)
+        ladj' = transport (λ - → (- ≤ η τ) ↔ x ⊑⟨ 𝓓 ⟩ ∐-map/ (η τ)) (e ⁻¹)
                  (L-is-left-adjoint x (η τ))
       approx : (∐ 𝓓 δ ＝ x) × is-way-upperbound 𝓓 x α
       approx = approximates-if-left-adjunct-to σ x ladj

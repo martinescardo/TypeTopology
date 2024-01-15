@@ -13,7 +13,7 @@ first m positions.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module ContinuityAxiom.UniformContinuity where
 
@@ -151,7 +151,7 @@ Moreover, the above types are logically equivalent.
 
 \begin{code}
 
-Theorem : CH-UC ⇔ UC
+Theorem : CH-UC ↔ UC
 Theorem = (λ ch-uc f → ΣA→∥ΣA∥ (A-≤-is-decidable f) (ch-uc f)) ,
           (λ uc f  → ∥ΣA∥→ΣA (uc f))
 

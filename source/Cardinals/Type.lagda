@@ -2,7 +2,7 @@ Jon Sterling, 25th March 2023.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 open import UF.SetTrunc

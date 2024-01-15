@@ -13,7 +13,7 @@ terms of Hydra(n).
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Various.Hydra where
 

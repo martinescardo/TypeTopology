@@ -4,7 +4,7 @@ Modified from SIP-Examples. Only the examples we need are included for the momen
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module UF.PreSIP-Examples where
 
@@ -98,7 +98,7 @@ module relational-space
  _≅₂_ : M → M → 𝓤 ⊔ 𝓥 ̇
  (X , R , _) ≅₂ (Y , S , _) = Σ f ꞉ (X → Y)
                                   , is-equiv f
-                                  × ((x x' : X) → R x x' ⇔ S (f x) (f x'))
+                                  × ((x x' : X) → R x x' ↔ S (f x) (f x'))
 
  ≅₁-coincides-with-≅₂ : Fun-Ext
                       → Prop-Ext
@@ -109,7 +109,7 @@ module relational-space
            (≃-refl (is-equiv f))
            (Π-cong' fe (λ x →
             Π-cong' fe (λ x' →
-             prop-＝-≃-⇔ pe fe
+             prop-＝-≃-↔ pe fe
               (rel-is-prop-valued a)
               (rel-is-prop-valued b)))))
 
@@ -142,19 +142,19 @@ the equivalence:
             id-is-embedding
             (NatΠ-is-embedding
               (λ x → ∀ x' → R x x' ＝ S (f x) (f x'))
-              (λ x → ∀ x' → R x x' ⇔ S (f x) (f x'))
+              (λ x → ∀ x' → R x x' ↔ S (f x) (f x'))
               (λ x (ψ : (x' : X) → R x x' ＝ S (f x) (f x')) → NatΠ (g f x) ψ)
               fe
               (λ x → NatΠ-is-embedding
                       (λ x' → R x x' ＝ S (f x) (f x'))
-                      (λ x' → R x x' ⇔ S (f x) (f x'))
+                      (λ x' → R x x' ↔ S (f x) (f x'))
                       (g f x)
                       fe
                       (g-is-embedding f x)))))
   where
    g : (f : X → Y) (x x' : X)
      → R x x' ＝ S (f x) (f x')
-     → R x x' ⇔ S (f x) (f x')
+     → R x x' ↔ S (f x) (f x')
    g f x x' p = Idtofun p , Idtofun (p ⁻¹)
 
    g-is-embedding : (f : X → Y) (x x' : X)

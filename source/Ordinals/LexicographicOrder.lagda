@@ -3,7 +3,7 @@ Martin Escardo, 20-21 December 2012.
 If X and Y come with orders, both denoted by ≤, then the lexicographic
 order on X × Y is defined by
 
-  (x , y) ≤ (x' , y') ⇔ x ≤ x' ∧ (x ＝ x' → y ≤ y').
+  (x , y) ≤ (x' , y') ↔ x ≤ x' ∧ (x ＝ x' → y ≤ y').
 
 More generally, we can consider the lexicographic product of two
 binary relations R on X and S on Y, which is a relation on X × Y, or
@@ -11,7 +11,7 @@ even on (Σ x ꞉ X , Y x) if Y and S depend on X.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Ordinals.LexicographicOrder where
 
@@ -31,7 +31,7 @@ Added 14th June 2018, from 2013 in another development.
 
 However, for a strict order, it makes sense to define
 
-  (x , y) < (x' , y') ⇔ x < x' ∨ (x ＝ x' ∧ y < y').
+  (x , y) < (x' , y') ↔ x < x' ∨ (x ＝ x' ∧ y < y').
 
 \begin{code}
 
@@ -48,9 +48,9 @@ Usually in such a context, a ≤ b is defined to be ¬ (b < a).
 The negation of the strict lexicographic product is, then,
 
  ¬ (x < x') ∧ ¬ (x ＝ x' ∧ y < y') by de Morgan,
-⇔ x ≤ x' ∧ ¬ (x ＝ x' ∧ y < y')    by definition of ≤,
-⇔ x' ≤ x ∧ ((x ＝ x' → ¬ (y < y')) by (un)currying,
-⇔ x' ≤ x ∧ ((x ＝ x' → y' ≤ y)     by definition of ≤.
+↔ x ≤ x' ∧ ¬ (x ＝ x' ∧ y < y')    by definition of ≤,
+↔ x' ≤ x ∧ ((x ＝ x' → ¬ (y < y')) by (un)currying,
+↔ x' ≤ x ∧ ((x ＝ x' → y' ≤ y)     by definition of ≤.
 
 What this means is that the non-strict lexigraphic product of the
 induced non-strict order is induced by the strict lexicographic

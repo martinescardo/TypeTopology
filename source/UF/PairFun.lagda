@@ -5,7 +5,7 @@ the resulting function.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module UF.PairFun where
 

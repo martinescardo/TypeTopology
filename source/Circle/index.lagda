@@ -6,7 +6,7 @@ and Shulman (doi:10.1016/j.jpaa.2021.106687).
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Circle.index where
 

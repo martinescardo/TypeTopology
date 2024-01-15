@@ -31,7 +31,7 @@ implies choice.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 
@@ -62,7 +62,7 @@ module _
  extensionality-for-minimal-elements = (x y : X)
                                      → ((a : X) → ¬ (a ≺ x))
                                      → ((a : X) → ¬ (a ≺ y))
-                                     → ((a : X) → a ≺ x ⇔ a ≺ y) → x ＝ y
+                                     → ((a : X) → a ≺ x ↔ a ≺ y) → x ＝ y
 
 \end{code}
 
@@ -96,7 +96,7 @@ explicit.
  at-most-one-minimal-elt-if-extensionality-for-minimal-elts
   ext (x , x-min) (y , y-min) = goal
    where
-    claim : (a : X) → (a ≺ x) ⇔ (a ≺ y)
+    claim : (a : X) → (a ≺ x) ↔ (a ≺ y)
     claim a = (I , II)
      where
       I : a ≺ x → a ≺ y
@@ -493,7 +493,7 @@ module ClassicalWellOrder
 
 Assuming excluded middle (for 𝓤 ⊔ 𝓣), we show
 
- _≺_ is a classical well-order ⇔ _≺_ is an inductive well-order.
+ _≺_ is a classical well-order ↔ _≺_ is an inductive well-order.
 
 A remark on well-order-gives-minimal (see below) is in order.
   It may seem that it repeats nonempty-has-minimal in OrdinalNotions.lagda, but

@@ -4,7 +4,7 @@ Fin n is an ordinal
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Ordinals.Fin where
 
@@ -29,7 +29,7 @@ import Naturals.Order as ℕ
          → is-accessible {X = ℕ} _<_ (⟦ i ⟧)
          → is-accessible {X = Fin n} _<_ i
   recurs (acc rec₁) = acc (λ j r → recurs (rec₁ ⟦ j ⟧ r))
-  
+
 <-is-extensional : (n : ℕ) → is-extensional {X = Fin n} _<_
 <-is-extensional (succ n) 𝟎 𝟎 i≼j j≼i = refl
 <-is-extensional (succ n) 𝟎 (suc x) i≼j j≼i = 𝟘-elim (j≼i 𝟎 ⋆)
