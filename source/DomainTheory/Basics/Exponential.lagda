@@ -33,7 +33,7 @@ open import DomainTheory.Basics.Miscelanea pt fe 𝓥
 open import DomainTheory.Basics.Pointed pt fe 𝓥
 open import DomainTheory.Basics.SupComplete pt fe 𝓥
 
-open import Posets.Poset fe
+open import OrderedTypes.Poset fe
 
 module _ (𝓓 : DCPO {𝓤} {𝓣})
          (𝓔 : DCPO {𝓤'} {𝓣'})

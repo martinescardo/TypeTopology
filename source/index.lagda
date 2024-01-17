@@ -155,7 +155,7 @@ import NotionsOfDecidability.index
 import Ordinals.index
 import PathSequences.index
 import PCF.index
-import Posets.index
+import OrderedTypes.index
 import Quotient.index
 import Relations.index
 import Rationals.index

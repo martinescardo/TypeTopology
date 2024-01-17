@@ -25,7 +25,7 @@ open import DomainTheory.Basics.Products pt fe
 open import DomainTheory.Lifting.LiftingSet pt fe 𝓤₀ pe
 open import PCF.Lambda.AbstractSyntax pt
 open import PCF.Lambda.ScottModelOfTypes pt fe pe
-open import Posets.Poset fe
+open import OrderedTypes.Poset fe
 open import UF.Sets
 open import UF.Subsingletons-Properties
 

@@ -17,8 +17,8 @@ open import UF.DiscreteAndSeparated
 open import UF.Subsingletons
 
 _≤ℕ_ : ℕ → ℕ → 𝓤₀ ̇
-zero ≤ℕ n        = 𝟙
-succ m ≤ℕ zero   = 𝟘
+0    ≤ℕ n        = 𝟙
+succ m ≤ℕ 0      = 𝟘
 succ m ≤ℕ succ n = m ≤ℕ n
 
 instance
@@ -26,44 +26,44 @@ instance
  _≤_ {{Order-ℕ-ℕ}} = _≤ℕ_
 
 ≤-is-prop-valued : (m n : ℕ) → is-prop (m ≤ n)
-≤-is-prop-valued zero     n        = 𝟙-is-prop
-≤-is-prop-valued (succ m) zero     = 𝟘-is-prop
+≤-is-prop-valued 0        n        = 𝟙-is-prop
+≤-is-prop-valued (succ m) 0        = 𝟘-is-prop
 ≤-is-prop-valued (succ m) (succ n) = ≤-is-prop-valued m n
 
 open import UF.Base
 
 right-addition-is-embedding : (m n : ℕ) → is-prop (Σ k ꞉ ℕ , k +' m ＝ n)
-right-addition-is-embedding zero n (n , refl) (n , refl) = refl
-right-addition-is-embedding (succ m) zero (k , p) (k' , p') =
+right-addition-is-embedding 0        n        (n , refl) (n , refl) = refl
+right-addition-is-embedding (succ m) 0        (k , p)    (k' , p')  =
   𝟘-elim (positive-not-zero (k +' m) p)
-right-addition-is-embedding (succ m) (succ n) (k , p) (k' , p') =
+right-addition-is-embedding (succ m) (succ n) (k , p)    (k' , p') =
  to-Σ-＝ (ap pr₁ IH , ℕ-is-set _ _)
  where
   IH : k , succ-lc p ＝ k' , succ-lc p'
   IH = right-addition-is-embedding m n (k , succ-lc p) (k' , succ-lc p')
 
 subtraction : (m n : ℕ) → m ≤ n → Σ k ꞉ ℕ , k +' m ＝ n
-subtraction zero n l = n , refl
-subtraction (succ m) zero l = 𝟘-elim l
+subtraction 0        n        l = n , refl
+subtraction (succ m) 0        l = 𝟘-elim l
 subtraction (succ m) (succ n) l = pr₁ IH , ap succ (pr₂ IH)
  where
   IH : Σ k ꞉ ℕ , k +' m ＝ n
   IH = subtraction m n l
 
 cosubtraction : (m n : ℕ) → (Σ k ꞉ ℕ , k +' m ＝ n) → m ≤ n
-cosubtraction zero n (.n , refl) = ⋆
-cosubtraction (succ m) zero (k , p) = positive-not-zero (k +' m) p
+cosubtraction 0        n                (.n , refl) = ⋆
+cosubtraction (succ m) 0                (k , p) = positive-not-zero (k +' m) p
 cosubtraction (succ m) (succ .(k +' m)) (k , refl) =
  cosubtraction m (k +' m) (k , refl)
 
-zero-least : (n : ℕ) → zero ≤ n
+zero-least : (n : ℕ) → 0 ≤ n
 zero-least n = ⋆
 
-zero-least' : (n : ℕ) → ¬ (succ n ≤ zero)
+zero-least' : (n : ℕ) → ¬ (succ n ≤ 0)
 zero-least' n l = l
 
-zero-least'' : (n : ℕ) → n ≤ zero → n ＝ zero
-zero-least'' zero l = refl
+zero-least'' : (n : ℕ) → n ≤ 0 → n ＝ 0
+zero-least'' 0 l = refl
 
 succ-monotone : (m n : ℕ) → m ≤ n → succ m ≤ succ n
 succ-monotone m n l = l
@@ -84,45 +84,45 @@ https://github.com/agda/agda/issues/6815
 \begin{code}
 
 ≤-induction : (P : (m n : ℕ) (l : m ≤ n) → 𝓤 ̇ )
-            → ((n : ℕ) → P zero n (zero-least n))
+            → ((n : ℕ) → P 0 n (zero-least n))
             → ((m n : ℕ) (l : m ≤ n)
                     → P m n l
                     → P (succ m) (succ n) (succ-monotone m n l))
             → (m n : ℕ) (l : m ≤ n) → P m n l
-≤-induction P b f zero n ⋆            = b n
-≤-induction P b f (succ m) zero l     = 𝟘-elim l
+≤-induction P b f 0    n ⋆            = b n
+≤-induction P b f (succ m) 0    l     = 𝟘-elim l
 ≤-induction P b f (succ m) (succ n) l = f m n l (≤-induction P b f m n l)
 
 succ≤＝ : (m n : ℕ) → (succ m ≤ succ n) ＝ (m ≤ n)
 succ≤＝ m n = refl
 
 ≤-refl : (n : ℕ) → n ≤ n
-≤-refl zero     = ⋆
+≤-refl 0        = ⋆
 ≤-refl (succ n) = ≤-refl n
 
 ≤-trans : (l m n : ℕ) → l ≤ m → m ≤ n → l ≤ n
-≤-trans zero m n p q = ⋆
-≤-trans (succ l) zero n p q = 𝟘-elim p
-≤-trans (succ l) (succ m) zero p q = 𝟘-elim q
+≤-trans 0    m n p q = ⋆
+≤-trans (succ l) 0    n p q = 𝟘-elim p
+≤-trans (succ l) (succ m) 0    p q = 𝟘-elim q
 ≤-trans (succ l) (succ m) (succ n) p q = ≤-trans l m n p q
 
 ≤-anti : (m n : ℕ) → m ≤ n → n ≤ m → m ＝ n
-≤-anti zero zero p q = refl
-≤-anti zero (succ n) p q = 𝟘-elim q
-≤-anti (succ m) zero p q = 𝟘-elim p
+≤-anti 0    0    p q = refl
+≤-anti 0    (succ n) p q = 𝟘-elim q
+≤-anti (succ m) 0    p q = 𝟘-elim p
 ≤-anti (succ m) (succ n) p q = ap succ (≤-anti m n p q)
 
 ≤-succ : (n : ℕ) → n ≤ succ n
-≤-succ zero     = ⋆
+≤-succ 0        = ⋆
 ≤-succ (succ n) = ≤-succ n
 
-unique-least : (n : ℕ) → n ≤ zero → n ＝ zero
-unique-least zero l = refl
+unique-least : (n : ℕ) → n ≤ 0 → n ＝ 0
+unique-least 0    l = refl
 unique-least (succ n) l = 𝟘-elim l
 
 ≤-split : (m n : ℕ) → m ≤ succ n → (m ≤ n) + (m ＝ succ n)
-≤-split zero n l = inl l
-≤-split (succ m) zero l = inr (ap succ (unique-least m l))
+≤-split 0    n l = inl l
+≤-split (succ m) 0    l = inr (ap succ (unique-least m l))
 ≤-split (succ m) (succ n) l = cases inl (inr ∘ (ap succ)) (≤-split m n l)
 
 ≤-join : (m n : ℕ) → (m ≤ n) + (m ＝ succ n) → m ≤ succ n
@@ -133,7 +133,7 @@ unique-least (succ n) l = 𝟘-elim l
 ≤-down m n l u = cases id (λ p → 𝟘-elim (u p)) (≤-split m n l)
 
 ≤-+ : (m n : ℕ) → (m ≤ m +' n)
-≤-+ m zero     = ≤-refl m
+≤-+ m 0        = ≤-refl m
 ≤-+ m (succ n) = ≤-join m (m +' n) (inl IH)
  where
   IH : m ≤ m +' n
@@ -156,12 +156,12 @@ instance
 <-succ = ≤-refl
 
 not-less-than-itself : (n : ℕ) → ¬ (n < n)
-not-less-than-itself zero l = l
+not-less-than-itself 0    l = l
 not-less-than-itself (succ n) l = not-less-than-itself n l
 
 not-less-bigger-or-equal : (m n : ℕ) → ¬ (n < m) → n ≥ m
-not-less-bigger-or-equal zero n u = zero-least n
-not-less-bigger-or-equal (succ m) zero = ¬¬-intro (zero-least m)
+not-less-bigger-or-equal 0    n u = zero-least n
+not-less-bigger-or-equal (succ m) 0    = ¬¬-intro (zero-least m)
 not-less-bigger-or-equal (succ m) (succ n) = not-less-bigger-or-equal m n
 
 bigger-or-equal-not-less : (m n : ℕ) → n ≥ m → ¬ (n < m)
@@ -202,13 +202,13 @@ Added 20th June 2018:
 <-trans l m n u v = ≤-trans (succ l) m n u (<-coarser-than-≤ m n v)
 
 <-split : (m n : ℕ) → m < succ n → (m < n) + (m ＝ n)
-<-split m zero     l = inr (unique-least m l)
+<-split m 0        l = inr (unique-least m l)
 <-split m (succ n) l = ≤-split m n l
 
 regress : (P : ℕ → 𝓤 ̇ )
         → ((n : ℕ) → P (succ n) → P n)
         → (n m : ℕ) → m ≤ n → P n → P m
-regress P ρ zero m l p = transport⁻¹ P (unique-least m l) p
+regress P ρ 0    m l p = transport⁻¹ P (unique-least m l) p
 regress P ρ (succ n) m l p = cases (λ (l' : m ≤ n) → IH m l' (ρ n p))
                                    (λ (r : m ＝ succ n) → transport⁻¹ P r p)
                                    (≤-split m n l)
@@ -217,7 +217,7 @@ regress P ρ (succ n) m l p = cases (λ (l' : m ≤ n) → IH m l' (ρ n p))
   IH = regress P ρ n
 
 <-is-well-founded : (m : ℕ) → is-accessible _<_ m
-<-is-well-founded zero     = acc (λ y l → unique-from-𝟘 l)
+<-is-well-founded 0        = acc (λ y l → unique-from-𝟘 l)
 <-is-well-founded (succ m) = acc (τ (<-is-well-founded m))
  where
   τ : is-accessible _<_ m → (n : ℕ) → n < succ m → is-accessible _<_ n
@@ -231,9 +231,9 @@ course-of-values-induction : (P : ℕ → 𝓤 ̇ )
 course-of-values-induction = transfinite-induction _<_ <-is-well-founded
 
 <-is-extensional : is-extensional _<_
-<-is-extensional zero     zero     f g = refl
-<-is-extensional zero     (succ n) f g = unique-from-𝟘 (g zero (zero-least n))
-<-is-extensional (succ m) (zero)   f g = unique-from-𝟘 (f zero (zero-least m))
+<-is-extensional 0        0        f g = refl
+<-is-extensional 0        (succ n) f g = unique-from-𝟘 (g 0    (zero-least n))
+<-is-extensional (succ m) (0   )   f g = unique-from-𝟘 (f 0    (zero-least m))
 <-is-extensional (succ m) (succ n) f g = ap succ (≤-anti m n γ₁ γ₂)
  where
   γ₁ : m ≤ℕ n
@@ -252,9 +252,9 @@ Induction on z, then x, then y:
 \begin{code}
 
 ℕ-cotransitive : cotransitive _<_
-ℕ-cotransitive zero     y        zero     l = inr l
-ℕ-cotransitive (succ x) y        zero     l = inr (≤-trans 1 (succ(succ x)) y ⋆ l)
-ℕ-cotransitive zero     (succ y) (succ z) l = inl (zero-least y)
+ℕ-cotransitive 0        y        0        l = inr l
+ℕ-cotransitive (succ x) y        0        l = inr (≤-trans 1 (succ(succ x)) y ⋆ l)
+ℕ-cotransitive 0        (succ y) (succ z) l = inl (zero-least y)
 ℕ-cotransitive (succ x) (succ y) (succ z) l = γ IH
  where
   IH : (x < z) + (z < y)
@@ -273,8 +273,8 @@ open import NotionsOfDecidability.Decidable
 open import NotionsOfDecidability.Complemented
 
 ≤-decidable : (m n : ℕ ) → is-decidable (m ≤ n)
-≤-decidable zero     n        = inl (zero-least n)
-≤-decidable (succ m) zero     = inr (zero-least' m)
+≤-decidable 0        n        = inl (zero-least n)
+≤-decidable (succ m) 0        = inr (zero-least' m)
 ≤-decidable (succ m) (succ n) = ≤-decidable m n
 
 <-decidable : (m n : ℕ ) → is-decidable (m < n)
@@ -356,54 +356,54 @@ least-from-given A δ (k , a) = γ
 open import Naturals.Addition renaming (_+_ to _∔_)
 
 max : ℕ → ℕ → ℕ
-max zero     n        = n
-max (succ m) zero     = succ m
+max 0        n        = n
+max (succ m) 0        = succ m
 max (succ m) (succ n) = succ (max m n)
 
 max-idemp : (x : ℕ) → max x x ＝ x
-max-idemp zero     = refl
+max-idemp 0        = refl
 max-idemp (succ x) = ap succ (max-idemp x)
 
 max-comm : (m n : ℕ) → max m n ＝ max n m
-max-comm zero     zero     = refl
-max-comm zero     (succ n) = refl
-max-comm (succ m) zero     = refl
+max-comm 0        0        = refl
+max-comm 0        (succ n) = refl
+max-comm (succ m) 0        = refl
 max-comm (succ m) (succ n) = ap succ (max-comm m n)
 
 max-assoc : (x y z : ℕ) → max (max x y) z ＝ max x (max y z)
-max-assoc zero     y        z        = refl
-max-assoc (succ x) zero     z        = refl
-max-assoc (succ x) (succ y) zero     = refl
+max-assoc 0        y        z        = refl
+max-assoc (succ x) 0        z        = refl
+max-assoc (succ x) (succ y) 0        = refl
 max-assoc (succ x) (succ y) (succ z) = ap succ (max-assoc x y z)
 
 max-ord→ : (x y : ℕ) → x ≤ y → max x y ＝ y
-max-ord→ zero     y        le = refl
-max-ord→ (succ x) zero     le = 𝟘-elim le
+max-ord→ 0        y        le = refl
+max-ord→ (succ x) 0        le = 𝟘-elim le
 max-ord→ (succ x) (succ y) le = ap succ (max-ord→ x y le)
 
 max-ord← : (x y : ℕ) → max x y ＝ y → x ≤ y
-max-ord← zero     y        p = ⋆
-max-ord← (succ x) zero     p = 𝟘-elim (positive-not-zero x p)
+max-ord← 0        y        p = ⋆
+max-ord← (succ x) 0        p = 𝟘-elim (positive-not-zero x p)
 max-ord← (succ x) (succ y) p = max-ord← x y (succ-lc p)
 
 max-≤-upper-bound : (m n : ℕ) → m ≤ max m n
-max-≤-upper-bound zero     n        = ⋆
-max-≤-upper-bound (succ m) zero     = ≤-refl m
+max-≤-upper-bound 0        n        = ⋆
+max-≤-upper-bound (succ m) 0        = ≤-refl m
 max-≤-upper-bound (succ m) (succ n) = max-≤-upper-bound m n
 
 max-≤-upper-bound' : (m n : ℕ) → m ≤ max n m
-max-≤-upper-bound' zero n = ⋆
-max-≤-upper-bound' (succ m) zero = ≤-refl m
+max-≤-upper-bound' 0    n = ⋆
+max-≤-upper-bound' (succ m) 0    = ≤-refl m
 max-≤-upper-bound' (succ m) (succ n) = max-≤-upper-bound' m n
 
 minus : (m n : ℕ) → n ≤ m → ℕ
-minus zero     n        le = zero
-minus (succ m) zero     ⋆  = succ m
+minus 0        n        le = 0
+minus (succ m) 0        ⋆  = succ m
 minus (succ m) (succ n) le = minus m n le
 
 minus-property : (m n : ℕ) (le : n ≤ m) → minus m n le ∔ n ＝ m
-minus-property zero     zero     ⋆  = refl
-minus-property (succ m) zero     ⋆  = refl
+minus-property 0        0        ⋆  = refl
+minus-property (succ m) 0        ⋆  = refl
 minus-property (succ m) (succ n) le = ap succ (minus-property m n le)
 
 max-minus-property : (m n : ℕ)
@@ -417,9 +417,9 @@ Tom de Jong, 5 November 2021.
 \begin{code}
 
 <-trichotomous : (n m : ℕ) → (n < m) + (n ＝ m) + (m < n)
-<-trichotomous zero     zero     = inr (inl refl)
-<-trichotomous zero     (succ m) = inl ⋆
-<-trichotomous (succ n) zero     = inr (inr ⋆)
+<-trichotomous 0        0        = inr (inl refl)
+<-trichotomous 0        (succ m) = inl ⋆
+<-trichotomous (succ n) 0        = inr (inr ⋆)
 <-trichotomous (succ n) (succ m) = γ IH
  where
   γ : (n < m) + (n ＝ m) + (m < n)
@@ -525,9 +525,9 @@ less-than-not-equal x y r p = less-not-bigger-or-equal x y r γ
   γ : y ≤ℕ x
   γ = equal-gives-less-than-or-equal y x (p ⁻¹)
 
-less-than-one-is-zero : (x : ℕ) → x < 1 → x ＝ 0
-less-than-one-is-zero 0        l = refl
-less-than-one-is-zero (succ x) l = 𝟘-elim l
+less-than-one-is-0 : (x : ℕ) → x < 1 → x ＝ 0
+less-than-one-is-0 0        l = refl
+less-than-one-is-0 (succ x) l = 𝟘-elim l
 
 not-less-or-equal-is-bigger : (x y : ℕ) → ¬ (x ≤ y) → y < x
 not-less-or-equal-is-bigger 0        y        l = l (zero-least y)
@@ -536,8 +536,8 @@ not-less-or-equal-is-bigger (succ x) (succ y) l
  = not-less-or-equal-is-bigger x y l
 
 ≤-dichotomous : (x y : ℕ) → (x ≤ y) + (y ≤ x)
-≤-dichotomous zero     y        = inl ⋆
-≤-dichotomous (succ x) zero     = inr ⋆
+≤-dichotomous 0        y        = inl ⋆
+≤-dichotomous (succ x) 0        = inr ⋆
 ≤-dichotomous (succ x) (succ y) = ≤-dichotomous x y
 
 ≥-dichotomy : (x y : ℕ) → (x ≥ y) + (x ≤ y)
@@ -817,23 +817,23 @@ Slight refactoring on 12 October 2023
 \begin{code}
 
 ≤-diff : (x y : ℕ) → ∣ x - y ∣ ≤ x +' y
-≤-diff x zero = ≤-refl x
-≤-diff zero (succ y) = ≤-+' zero y
+≤-diff x        0        = ≤-refl x
+≤-diff 0        (succ y) = ≤-+' 0    y
 ≤-diff (succ x) (succ y) = γ
  where
   Γ : (x +' y) ≤ℕ (succ x +' y)
   Γ = ≤-trans (x +' y) (succ (x +' y)) (succ x +' y)
-        (≤-succ (x +' y))
-        (equal-gives-less-than-or-equal (succ (x +' y)) (succ x +' y)
-                        (succ-left x y ⁻¹))
+       (≤-succ (x +' y))
+       (equal-gives-less-than-or-equal (succ (x +' y)) (succ x +' y)
+         (succ-left x y ⁻¹))
 
   γ : ∣ x - y ∣ ≤ℕ succ (succ x +' y)
   γ = ≤-trans₂ ∣ x - y ∣ (x +' y) (succ x +' y) (succ (succ x +' y))
        (≤-diff x y) Γ (≤-succ (succ x +' y))
 
 ≤-diff-minus : (x y : ℕ) → x ≤ y +' ∣ y - x ∣
-≤-diff-minus zero y = ⋆
-≤-diff-minus (succ x) zero = ≤-+' zero x
+≤-diff-minus 0    y = ⋆
+≤-diff-minus (succ x) 0    = ≤-+' 0    x
 ≤-diff-minus (succ x) (succ y) = γ
  where
   Γ : x ≤ℕ (y +' ∣ y - x ∣)
@@ -841,33 +841,33 @@ Slight refactoring on 12 October 2023
 
   γ : succ x ≤ℕ (succ y +' ∣ y - x ∣)
   γ = ≤-trans (succ x) (succ (y +' ∣ y - x ∣)) (succ y +' ∣ y - x ∣)
-         (succ-monotone x (y +' ∣ y - x ∣) Γ)
-         (equal-gives-less-than-or-equal
-          (succ (y +' ∣ y - x ∣)) (succ y +' ∣ y - x ∣)
-          (succ-left y ∣ y - x ∣ ⁻¹))
+       (succ-monotone x (y +' ∣ y - x ∣) Γ)
+       (equal-gives-less-than-or-equal
+        (succ (y +' ∣ y - x ∣)) (succ y +' ∣ y - x ∣)
+        (succ-left y ∣ y - x ∣ ⁻¹))
 
 ≤-diff-plus : (x y : ℕ) → x ≤ℕ (∣ x - y ∣ +' y)
-≤-diff-plus zero y = ⋆
-≤-diff-plus (succ x) zero = ≤-refl x
+≤-diff-plus 0        y        = ⋆
+≤-diff-plus (succ x) 0        = ≤-refl x
 ≤-diff-plus (succ x) (succ y) = ≤-diff-plus x y
 
 triangle-inequality : (x y z : ℕ) → ∣ x - z ∣ ≤ ∣ x - y ∣ +' ∣ y - z ∣
-triangle-inequality zero y z =
- ≤-trans₂ ∣ zero - z ∣ z (y +' ∣ y - z ∣) (∣ zero - y ∣ +' ∣ y - z ∣) Γ α γ
+triangle-inequality 0    y z =
+ ≤-trans₂ ∣ 0 - z ∣ z (y +' ∣ y - z ∣) (∣ 0 - y ∣ +' ∣ y - z ∣) Γ α γ
   where
-   Γ : ∣ zero - z ∣ ≤ℕ z
-   Γ = equal-gives-less-than-or-equal ∣ zero - z ∣ z (minus-nothing z)
+   Γ : ∣ 0 - z ∣ ≤ℕ z
+   Γ = equal-gives-less-than-or-equal ∣ 0 - z ∣ z (minus-nothing z)
 
    α : z ≤ℕ (y +' ∣ y - z ∣)
    α = ≤-diff-minus z y
 
-   β : y ≤ℕ ∣ zero - y ∣
-   β = equal-gives-less-than-or-equal y ∣ zero - y ∣ (minus-nothing y ⁻¹)
+   β : y ≤ℕ ∣ 0 - y ∣
+   β = equal-gives-less-than-or-equal y ∣ 0 - y ∣ (minus-nothing y ⁻¹)
 
-   γ : (y +' ∣ y - z ∣) ≤ℕ (∣ zero - y ∣ +' ∣ y - z ∣)
-   γ = ≤-adding y ∣ zero - y ∣ ∣ y - z ∣ ∣ y - z ∣ β (≤-refl ∣ y - z ∣)
-triangle-inequality (succ x) zero zero = ≤-refl x
-triangle-inequality (succ x) zero (succ z) =
+   γ : (y +' ∣ y - z ∣) ≤ℕ (∣ 0 - y ∣ +' ∣ y - z ∣)
+   γ = ≤-adding y ∣ 0 - y ∣ ∣ y - z ∣ ∣ y - z ∣ β (≤-refl ∣ y - z ∣)
+triangle-inequality (succ x) 0    0        = ≤-refl x
+triangle-inequality (succ x) 0    (succ z) =
  ≤-trans₂ ∣ x - z ∣ (x +' z) (succ (x +' z)) (succ (succ x +' z))
       (≤-diff x z)
       (≤-succ (x +' z))
@@ -876,7 +876,7 @@ triangle-inequality (succ x) zero (succ z) =
    α : succ (x +' z) ≤ℕ (succ x +' z)
    α = equal-gives-less-than-or-equal (succ (x +' z)) (succ x +' z)
         (succ-left x z ⁻¹)
-triangle-inequality (succ x) (succ y) zero = ≤-diff-plus x y
+triangle-inequality (succ x) (succ y) 0        = ≤-diff-plus x y
 triangle-inequality (succ x) (succ y) (succ z) = triangle-inequality x y z
 
 \end{code}
@@ -904,5 +904,5 @@ triangle-inequality-bound' a b l = triangle-inequality-bound a b γ
 
   γ : succ (a +' b) ≤ ∣ a - b ∣
   γ = ≤-trans₂ (succ (a +' b)) (succ a +' b) (succ (succ a +' b)) ∣ a - b ∣
-               Γ (≤-succ (succ a +' b) ) l
+       Γ (≤-succ (succ a +' b) ) l
 \end{code}

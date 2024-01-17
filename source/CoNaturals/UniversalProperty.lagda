@@ -264,7 +264,7 @@ coalgebra homomorphisms in more detail.
 
 \begin{code}
 
-coalg-morphism-Zero : {X : 𝓤 ̇ } (κ : X →  𝟙 + X) (h : X → ℕ∞)
+coalg-morphism-Zero : {X : 𝓤 ̇ } (κ : X → 𝟙 + X) (h : X → ℕ∞)
                     → is-homomorphism κ h
                     → (x : X) (s : 𝟙) → κ x ＝ inl s → h x ＝ Zero
 coalg-morphism-Zero p h a x ⋆ κ = h x               ＝⟨ SUCC-PRED ⁻¹ ⟩
@@ -276,12 +276,12 @@ coalg-morphism-Zero p h a x ⋆ κ = h x               ＝⟨ SUCC-PRED ⁻¹ �
       𝟙+ h (p x) ＝⟨ ap (𝟙+ h) κ ⟩
       inl ⋆      ∎
 
-Coalg-morphism-Zero : {X : 𝓤 ̇ } (κ : X →  𝟙 + X)
+Coalg-morphism-Zero : {X : 𝓤 ̇ } (κ : X → 𝟙 + X)
                     → (x : X) (s : 𝟙) → κ x ＝ inl s → ℕ∞-corec κ x ＝ Zero
 Coalg-morphism-Zero κ = coalg-morphism-Zero κ (ℕ∞-corec κ) (ℕ∞-corec-homomorphism κ)
 
 coalg-morphism-Succ : {X : 𝓤 ̇ }
-                      (κ : X →  𝟙 + X) (h : X → ℕ∞)
+                      (κ : X → 𝟙 + X) (h : X → ℕ∞)
                     → is-homomorphism κ h
                     → (x x' : X) → κ x ＝ inr x' → h x ＝ Succ (h x')
 coalg-morphism-Succ κ h a x x' q = h x               ＝⟨ SUCC-PRED ⁻¹ ⟩
@@ -293,7 +293,7 @@ coalg-morphism-Succ κ h a x x' q = h x               ＝⟨ SUCC-PRED ⁻¹ ⟩
       𝟙+ h (κ x) ＝⟨ ap (𝟙+ h) q ⟩
       inr (h x') ∎
 
-Coalg-morphism-Succ : {X : 𝓤 ̇ } (κ : X →  𝟙 + X)
+Coalg-morphism-Succ : {X : 𝓤 ̇ } (κ : X → 𝟙 + X)
                     → (x x' : X) → κ x ＝ inr x' → ℕ∞-corec κ x ＝ Succ (ℕ∞-corec κ x')
 Coalg-morphism-Succ κ = coalg-morphism-Succ κ (ℕ∞-corec κ) (ℕ∞-corec-homomorphism κ)
 
@@ -305,7 +305,7 @@ bisimulation:
 \begin{code}
 
 coalg-morphism-positivity : {X : 𝓤 ̇ }
-                            (κ : X →  𝟙 + X) (f g : X → ℕ∞)
+                            (κ : X → 𝟙 + X) (f g : X → ℕ∞)
                           → is-homomorphism κ f
                           → is-homomorphism κ g
                           → (x : X) → positivity(f x) ＝ positivity(g x)
@@ -322,7 +322,7 @@ coalg-morphism-positivity {𝓤} {X} κ f g a b x = equality-cases (κ x) l₀ l
             positivity (g x)         ∎
 
 coalg-morphism-Pred : {X : 𝓤 ̇ }
-                      (κ : X →  𝟙 + X) (f g : X → ℕ∞)
+                      (κ : X → 𝟙 + X) (f g : X → ℕ∞)
                     → is-homomorphism κ f
                     → is-homomorphism κ g
                     → (x : X) (u v : ℕ∞)

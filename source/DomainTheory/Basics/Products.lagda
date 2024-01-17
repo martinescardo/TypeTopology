@@ -15,7 +15,7 @@ module DomainTheory.Basics.Products
 
 open PropositionalTruncation pt
 
-open import Posets.Poset fe
+open import OrderedTypes.Poset fe
 open import UF.Base
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt

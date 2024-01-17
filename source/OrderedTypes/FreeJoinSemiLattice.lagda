@@ -12,7 +12,7 @@ subsets of X.
 
 open import UF.PropTrunc
 
-module Posets.FreeJoinSemiLattice
+module OrderedTypes.FreeJoinSemiLattice
         (pt : propositional-truncations-exist)
        where
 
@@ -20,7 +20,7 @@ open import Fin.ArithmeticViaEquivalence
 open import Fin.Kuratowski pt
 open import Fin.Type
 open import MLTT.Spartan
-open import Posets.JoinSemiLattices
+open import OrderedTypes.JoinSemiLattices
 open import UF.Base
 open import UF.Equiv
 open import UF.FunExt

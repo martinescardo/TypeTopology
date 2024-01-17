@@ -5,10 +5,9 @@ Some constructions with iterative multisets.
  * The universe is a retract of the type 𝕄 of iterative multisets.
  * 𝕄 is algebraically injective.
 
-
 \begin{code}
 
-{-# OPTIONS --safe --without-K --lossy-unification #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan hiding (_^_)
 open import UF.Sets-Properties
@@ -277,9 +276,38 @@ Notice that we use Σᴹ (as well as Π) in the following definition of Πᴹ.
             (Π x ꞉ X , 𝕄-root (A x))
             (λ g → Σᴹ (λ x → 𝕄-forest (A x) (g x)))
 
-
 _×ᴹ_ : 𝕄 → 𝕄 → 𝕄
 M ×ᴹ N = Πᴹ (cases (λ (_ : 𝟙 {𝓤}) → M) (λ (_ : 𝟙 {𝓤}) → N))
+
+\end{code}
+
+Question. Is there a function Πᴹ of the above type that satisfies the
+following equation? It seems that this possible for finite X. We guess
+there isn't such a function for general X, including X = ℕ.
+
+\begin{code}
+
+Question =
+   {X : 𝓤 ̇ }
+ → Σ Πᴹ ꞉ ((X → 𝕄) → 𝕄)
+        , ((A : X → 𝕄) → Πᴹ A ＝ ssup
+                                  (Π x ꞉ X , 𝕄-root (A x))
+                                  (λ g → Πᴹ (λ x → 𝕄-forest (A x) (g x))))
+\end{code}
+
+Here is the answer for X = 𝟚, up to equivalence:
+
+\begin{code}
+
+_×ᴹ'_ : 𝕄 → 𝕄 → 𝕄
+(ssup X φ) ×ᴹ' (ssup Y γ) = ssup (X × Y) (λ (x , y) → (φ x) ×ᴹ' (γ y))
+
+\end{code}
+
+Our main reason to consider Σᴹ and Πᴹ is to establish, into different
+ways, the algebraic injectivity of the type of iterative multisets.
+
+\begin{code}
 
 prop-indexed-productᴹ : {X : 𝓤 ̇ } {A : X → 𝕄}
                       → is-prop X
@@ -315,18 +343,23 @@ prop-indexed-productᴹ {X} {A} i x₀ = IV
        ssup (𝕄-root (A x₀)) (𝕄-forest (A x₀)) ＝⟨ 𝕄-η (A x₀) ⟩
        A x₀                                   ∎
 
+_∖ᴹ_ : {X Y : 𝓤 ̇ } → (X → 𝕄) → (X → Y) → (Y → 𝕄)
+(f ∖ᴹ j) y = Σᴹ (λ ((x , _) : fiber j y) → f x)
+
+∖ᴹ-is-extension : {X Y : 𝓤 ̇ } (f : X → 𝕄) (j : X → Y)
+               → is-embedding j
+               → f ∖ᴹ j ∘ j ∼ f
+∖ᴹ-is-extension f j j-emb x = prop-indexed-sumᴹ
+                              {fiber j (j x)} {f ∘ pr₁} (j-emb (j x)) (x , refl)
+
 𝕄-is-ainjective-Σ : ainjective-type 𝕄 𝓤 𝓤
-𝕄-is-ainjective-Σ {X} {Y} j j-emb f = f\j , f\j-ext
- where
-  A : (y : Y) → fiber j y → 𝕄
-  A y (x , _) = f x
+𝕄-is-ainjective-Σ {X} {Y} j j-emb f = (f ∖ᴹ j) , ∖ᴹ-is-extension f j j-emb
 
-  f\j : Y → 𝕄
-  f\j y = Σᴹ (A y)
+\end{code}
 
-  f\j-ext : f\j ∘ j ∼ f
-  f\j-ext x = prop-indexed-sumᴹ
-               {fiber j (j x)} {A (j x)} (j-emb (j x)) (x , refl)
+TODO. Split the following as above.
+
+\begin{code}
 
 𝕄-is-ainjective-Π : ainjective-type 𝕄 𝓤 𝓤
 𝕄-is-ainjective-Π {X} {Y} j j-emb f = f/j , f/j-ext
@@ -356,249 +389,5 @@ decomposition-of-𝕄-gives-WEM =
  decomposition-of-ainjective-type-gives-WEM
   𝕄
   𝕄-is-ainjective
-
-\end{code}
-
-Added 9th December 2023.
-
-We discuss "hereditarily finitely linearly ordered iterative
-multisets". Notice that this is data, rather then property.
-
-\begin{code}
-
-open import Fin.Bishop
-open import Fin.Type
-
-hflo-data : 𝕄 → 𝓤 ̇
-hflo-data (ssup X φ) = finite-linear-order X
-                     × ((x : X) → hflo-data (φ x))
-
-hflo-data-gives-finite-linear-order
- : (M : 𝕄)
- → hflo-data M
- → finite-linear-order (𝕄-root M)
-hflo-data-gives-finite-linear-order (ssup x φ) = pr₁
-
-𝕄-subtrees-have-hflo-data
- : (M : 𝕄)
- → hflo-data M
- → (x : 𝕄-root M) → hflo-data (𝕄-forest M x)
-𝕄-subtrees-have-hflo-data (ssup x φ) = pr₂
-
-ℍ : 𝓤⁺ ̇
-ℍ = Σ M ꞉ 𝕄 , hflo-data M
-
-ℍ-underlying-mset : ℍ → 𝕄
-ℍ-underlying-mset = pr₁
-
-hflo-structure : (H : ℍ) → hflo-data (ℍ-underlying-mset H)
-hflo-structure = pr₂
-
-\end{code}
-
-Examples. We will use the superscript H to indicate elements of the
-type ℍ.
-
-\begin{code}
-
-𝟘ᴹ-hflo-data : hflo-data 𝟘ᴹ
-𝟘ᴹ-hflo-data = (0 , f) , (λ (x : 𝟘) → 𝟘-elim x)
- where
-  f : 𝟘 {𝓤} ≃ 𝟘 {𝓤₀}
-  f = one-𝟘-only
-
-𝟘ᴴ : ℍ
-𝟘ᴴ = 𝟘ᴹ , 𝟘ᴹ-hflo-data
-
-open import UF.Equiv-FunExt
-
-𝟘ᴴ-equality : (H : ℍ)
-            → is-empty (𝕄-root (ℍ-underlying-mset H))
-            → 𝟘ᴴ ＝ H
-𝟘ᴴ-equality (ssup X φ , (0 , f) , ψ) e =
- to-Σ-＝
-  ((to-𝕄-＝
-     (eqtoid (ua 𝓤) 𝟘 X (≃-sym (f ● one-𝟘-only)) ,
-      dfunext fe (λ (x : 𝟘) → 𝟘-elim x))) ,
-    I)
- where
-  I : {d : hflo-data (ssup X φ)} → d ＝ (zero , f) , ψ
-  I {(zero , f') , ψ'} =
-    to-Σ-＝
-     (to-Σ-＝
-       (refl ,
-        to-subtype-＝
-         (being-equiv-is-prop fe')
-         (dfunext fe (λ x → 𝟘-elim (⌜ f ⌝ x)))) ,
-      dfunext fe (λ x → 𝟘-elim (⌜ f ⌝ x)))
-  I {(succ n' , f') , ψ'} = 𝟘-elim (e (⌜ f' ⌝⁻¹ 𝟎))
-𝟘ᴴ-equality (ssup X φ , (succ n , f) , ψ) e = 𝟘-elim (e (⌜ f ⌝⁻¹ 𝟎))
-
-𝟙ᴹ-hflo-data : hflo-data 𝟙ᴹ
-𝟙ᴹ-hflo-data = (1 , f) , (λ ⋆ → 𝟘ᴹ-hflo-data)
- where
-  f : 𝟙 {𝓤} ≃ 𝟘 {𝓤₀} + 𝟙 {𝓤₀}
-  f = 𝟘-lneutral''
-
-𝟙ᴴ : ℍ
-𝟙ᴴ = 𝟙ᴹ , 𝟙ᴹ-hflo-data
-
-𝟚ᴹ-hflo-data : hflo-data 𝟚ᴹ
-𝟚ᴹ-hflo-data = 𝟙+𝟙-natural-finite-linear-order ,
-               dep-cases (λ _ → 𝟘ᴹ-hflo-data) (λ _ → 𝟙ᴹ-hflo-data)
-
-𝟚ᴴ : ℍ
-𝟚ᴴ = 𝟚ᴹ , 𝟚ᴹ-hflo-data
-
-open import Fin.ArithmeticViaEquivalence
-
-Σᴹ-hflo-data : {X : 𝓤 ̇ }
-               (A : X → 𝕄)
-             → finite-linear-order X
-             → ((x : X) → hflo-data (A x))
-             → hflo-data (Σᴹ A)
-Σᴹ-hflo-data {X} A (n , f) A-hflo = (∑ a , h) , ψ
- where
-  u : (x : X) → Σ m ꞉ ℕ , 𝕄-root (A x) ≃ Fin m
-  u x = hflo-data-gives-finite-linear-order (A x) (A-hflo x)
-
-  a : Fin n → ℕ
-  a i = pr₁ (u (⌜ f ⌝⁻¹ i))
-
-  b : (i : Fin n) → 𝕄-root (A (⌜ f ⌝⁻¹ i)) ≃ Fin (a i)
-  b i = pr₂ (u (⌜ f ⌝⁻¹ i))
-
-  h = (Σ x ꞉ X , 𝕄-root (A x))               ≃⟨ h₀ ⟩
-      (Σ i ꞉ Fin n , 𝕄-root (A (⌜ f ⌝⁻¹ i))) ≃⟨ h₁ ⟩
-      (Σ i ꞉ Fin n , Fin (a i))              ≃⟨ h₂ ⟩
-      Fin (∑ a)                              ■
-       where
-        h₀ = ≃-sym (Σ-change-of-variable-≃ (λ x → 𝕄-root (A x)) (≃-sym f))
-        h₁ = Σ-cong b
-        h₂ = ≃-sym (∑-property a)
-
-  ψ : ((x , y) : Σ x ꞉ X , 𝕄-root (A x)) → hflo-data (𝕄-forest (A x) y)
-  ψ (x , y) = 𝕄-subtrees-have-hflo-data (A x) (A-hflo x) y
-
-Πᴹ-hflo-data : {X : 𝓤 ̇ }
-               (A : X → 𝕄)
-             → finite-linear-order X
-             → ((x : X) → hflo-data (A x))
-             → hflo-data (Πᴹ A)
-Πᴹ-hflo-data {X} A (n , f) A-hflo = (∏ fe a , h) , ψ
- where
-  u : (x : X) → Σ m ꞉ ℕ , 𝕄-root (A x) ≃ Fin m
-  u x = hflo-data-gives-finite-linear-order (A x) (A-hflo x)
-
-  a : Fin n → ℕ
-  a i = pr₁ (u (⌜ f ⌝⁻¹ i))
-
-  b : (i : Fin n) → 𝕄-root (A (⌜ f ⌝⁻¹ i)) ≃ Fin (a i)
-  b i = pr₂ (u (⌜ f ⌝⁻¹ i))
-
-  h = (Π x ꞉ X , 𝕄-root (A x))               ≃⟨ h₀ ⟩
-      (Π i ꞉ Fin n , 𝕄-root (A (⌜ f ⌝⁻¹ i))) ≃⟨ h₁ ⟩
-      (Π i ꞉ Fin n , Fin (a i))              ≃⟨ h₂ ⟩
-      Fin (∏ fe a)                              ■
-       where
-        h₀ = ≃-sym (Π-change-of-variable-≃ fe' (λ x → 𝕄-root (A x)) (≃-sym f))
-        h₁ = Π-cong fe fe b
-        h₂ = ≃-sym (∏-property fe a)
-
-  v : (x : X) (y : 𝕄-root (A x)) → hflo-data (𝕄-forest (A x) y)
-  v x = 𝕄-subtrees-have-hflo-data (A x) (A-hflo x)
-
-  ψ : (g : Π x ꞉ X , 𝕄-root (A x)) → hflo-data (Σᴹ (λ x → 𝕄-forest (A x) (g x)))
-  ψ g = Σᴹ-hflo-data (λ x → 𝕄-forest (A x) (g x)) (n , f) (λ x → v x (g x))
-
-+ᴹ-hflo-data : (M N : 𝕄)
-             → hflo-data M
-             → hflo-data N
-             → hflo-data (M +ᴹ N)
-+ᴹ-hflo-data M N h k =
- Σᴹ-hflo-data (cases (λ _ → M) (λ _ → N))
-  𝟙+𝟙-natural-finite-linear-order
-  (dep-cases (λ _ → h) (λ _ → k))
-
-×ᴹ-hflo-data : (M N : 𝕄)
-             → hflo-data M
-             → hflo-data N
-             → hflo-data (M ×ᴹ N)
-×ᴹ-hflo-data M N h k =
- Πᴹ-hflo-data (cases (λ _ → M) (λ _ → N))
-  𝟙+𝟙-natural-finite-linear-order
-  (dep-cases (λ _ → h) (λ _ → k))
-
-_+ᴴ_ _×ᴴ_ : ℍ → ℍ → ℍ
-(M , h) +ᴴ (N , k) = M +ᴹ N , +ᴹ-hflo-data M N h k
-(M , h) ×ᴴ (N , k) = M ×ᴹ N , ×ᴹ-hflo-data M N h k
-
-\end{code}
-
-TODO. Define Σᴴ and Πᴴ. (Boilerplate.)
-
-We now develop a representation of elements of ℍ for the sake of being
-able to exhibit examples explicitly and visually.
-
-\begin{code}
-
-data _^_ (X : 𝓥 ̇ ) : ℕ → 𝓥 ̇ where
- ·   : X ^ 0
- _,_ : {n : ℕ} → X → X ^ n → X ^ (succ n)
-
-data 𝕊 : 𝓤 ̇ where
- [_] : {n : ℕ} → 𝕊 ^ n → 𝕊
-
-to-𝕊 : ℍ → 𝕊
-to-𝕊 = uncurry g
- where
-  h : (n : ℕ) → (Fin n → 𝕊) → 𝕊 ^ n
-  h 0        f = ·
-  h (succ n) f = f 𝟎 , h n (f ∘ suc)
-
-  g : (M : 𝕄) → hflo-data M → 𝕊
-  g (ssup X φ) ((n , f) , ψ) = [ h n (IH ∘ ⌜ f ⌝⁻¹) ]
-   where
-    IH : X → 𝕊
-    IH x = g (φ x) (ψ x)
-
-\end{code}
-
-Examples.
-
-\begin{code}
-
-private
- s = to-𝕊
-
-𝟛ᴴ 𝟛ᴴ' : ℍ
-𝟛ᴴ  = 𝟙ᴴ +ᴴ 𝟚ᴴ
-𝟛ᴴ' = 𝟚ᴴ +ᴴ 𝟙ᴴ
-
-𝟘ˢ 𝟙ˢ 𝟚ˢ 𝟛ˢ 𝟛ˢ' : 𝕊
-𝟘ˢ  = s 𝟘ᴴ
-𝟙ˢ  = s 𝟙ᴴ
-𝟚ˢ  = s 𝟚ᴴ
-𝟛ˢ  = s 𝟛ᴴ
-𝟛ˢ' = s 𝟛ᴴ'
-
-examplesˢ
- : ( 𝟘ˢ  ＝ [ · ]                                           )
- × ( 𝟙ˢ  ＝ [ 𝟘ˢ , · ]                                      )
- × ( 𝟚ˢ  ＝ [ 𝟘ˢ , 𝟙ˢ , · ]                                 )
- × ( 𝟛ˢ  ＝ [ 𝟘ˢ , 𝟙ˢ , 𝟘ˢ , · ]                            )
- × ( 𝟛ˢ' ＝ [ 𝟘ˢ , 𝟘ˢ , 𝟙ˢ , · ]                            )
- × ( s (𝟚ᴴ ×ᴴ 𝟚ᴴ) ＝ [ 𝟘ˢ , 𝟙ˢ , 𝟙ˢ , [ 𝟘ˢ , 𝟘ˢ , · ] , · ] )
- × ( s (𝟘ᴴ +ᴴ 𝟙ᴴ) ＝ 𝟙ˢ                                     )
- × ( s (𝟙ᴴ +ᴴ 𝟘ᴴ) ＝ 𝟙ˢ                                     )
- × ( s (𝟙ᴴ +ᴴ 𝟙ᴴ) ＝ [ 𝟘ˢ , 𝟘ˢ , · ]                        )
- × ( s (𝟛ᴴ ×ᴴ 𝟛ᴴ) ＝ [ 𝟘ˢ , 𝟙ˢ , 𝟘ˢ , 𝟙ˢ ,
-                      [ 𝟘ˢ , 𝟘ˢ , · ] ,
-                      𝟙ˢ , 𝟘ˢ , 𝟙ˢ , 𝟘ˢ , · ]               )
- × ( s (𝟛ᴴ' ×ᴴ 𝟛ᴴ') ＝ [ 𝟘ˢ , 𝟘ˢ , 𝟙ˢ , 𝟘ˢ ,
-                         𝟘ˢ , 𝟙ˢ , 𝟙ˢ , 𝟙ˢ ,
-                         [ 𝟘ˢ , 𝟘ˢ , · ] , · ]             )
-examplesˢ = refl , refl , refl , refl , refl ,
-            refl , refl , refl , refl , refl , refl
 
 \end{code}
