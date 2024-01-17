@@ -14,8 +14,20 @@ open import MLTT.Spartan hiding (𝟚)
 open import UF.Embeddings
 open import UF.Size
 open import UF.SubtypeClassifier
+open import UF.KrausLemma
+
+open split-support-and-collapsibility pt
 
 open Locale
+
+\end{code}
+
+\begin{code}
+
+defn∶split-support : 𝓤  ̇ → 𝓤  ̇
+defn∶split-support = has-split-support
+
+\end{code}
 
 \end{code}
 
