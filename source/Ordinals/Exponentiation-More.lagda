@@ -98,6 +98,10 @@ module _ (pt : propositional-truncations-exist)
    ι : (ζ : I → Ordinal 𝓤) → {i : I} → ⟨ ζ i ⟩ → ⟨ sup ζ ⟩
    ι ζ {i} = pr₁ (sup-is-upper-bound ζ i)
 
+   ι-simulation : (ζ : I → Ordinal 𝓤) → {i : I}
+                → is-simulation (ζ i) (sup ζ ) (ι ζ)
+   ι-simulation ζ {i} = pr₂ (sup-is-upper-bound ζ i)
+
    ι-is-surjective : (ζ : I → Ordinal 𝓤) (s : ⟨ sup ζ ⟩)
                    → ∃ i ꞉ I , Σ x ꞉ ⟨ ζ i ⟩ , ι ζ {i} x ＝ s
    ι-is-surjective = {!!}
@@ -105,7 +109,12 @@ module _ (pt : propositional-truncations-exist)
    ι-is-surjective⁺ : (ζ : I → Ordinal 𝓤) (s : ⟨ sup ζ ⟩) (i : I) (x : ⟨ ζ i ⟩)
                     → s ≺⟨ sup ζ ⟩ ι ζ x
                     → Σ y ꞉ ⟨ ζ i ⟩ , ι ζ {i} y ＝ s
-   ι-is-surjective⁺ = {!!}
+   ι-is-surjective⁺ ζ s i x p =
+    h (simulations-are-initial-segments (ζ i) (sup ζ) (ι ζ) (ι-simulation ζ) x s p)
+    where
+     h : Σ y ꞉ ⟨ ζ i ⟩ , y ≺⟨ ζ i ⟩ x × (ι ζ y ＝ s)
+       → Σ y ꞉ ⟨ ζ i ⟩ , ι ζ {i} y ＝ s
+     h (y , (_ , q)) = y , q
 
    module _ (i : I) where
     f₁ : List (⟨ α ×ₒ β i ⟩) → List (⟨ α ×ₒ sup β ⟩)
