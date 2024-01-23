@@ -74,6 +74,8 @@ module _ (pt : propositional-truncations-exist)
          (sr : Set-Replacement pt)
        where
 
+ open PropositionalTruncation pt
+
  open import Ordinals.OrdinalOfOrdinalsSuprema ua
  open suprema pt sr
 
@@ -93,12 +95,22 @@ module _ (pt : propositional-truncations-exist)
    γ : I → Ordinal 𝓤
    γ i = [𝟙+ α ]^ (β i)
 
-  exp-sup-is-upper-bound : (i : I) → γ i ⊴ ([𝟙+ α ]^ (sup β))
-  exp-sup-is-upper-bound i = f , {!!}
-   where
+   ι : (ζ : I → Ordinal 𝓤) → {i : I} → ⟨ ζ i ⟩ → ⟨ sup ζ ⟩
+   ι ζ {i} = pr₁ (sup-is-upper-bound ζ i)
+
+   ι-is-surjective : (ζ : I → Ordinal 𝓤) (s : ⟨ sup ζ ⟩)
+                   → ∃ i ꞉ I , Σ x ꞉ ⟨ ζ i ⟩ , ι ζ {i} x ＝ s
+   ι-is-surjective = {!!}
+
+   ι-is-surjective⁺ : (ζ : I → Ordinal 𝓤) (s : ⟨ sup ζ ⟩) (i : I) (x : ⟨ ζ i ⟩)
+                    → s ≺⟨ sup ζ ⟩ ι ζ x
+                    → Σ y ꞉ ⟨ ζ i ⟩ , ι ζ {i} y ＝ s
+   ι-is-surjective⁺ = {!!}
+
+   module _ (i : I) where
     f₁ : List (⟨ α ×ₒ β i ⟩) → List (⟨ α ×ₒ sup β ⟩)
     f₁ [] = []
-    f₁ (a , b ∷ l) = a , pr₁ (sup-is-upper-bound β i) b ∷ f₁ l
+    f₁ (a , b ∷ l) = a , ι β b ∷ f₁ l
     f₂ : (l : List (⟨ α ×ₒ β i ⟩))
        → is-decreasing-pr₂ α (β i) l
        → is-decreasing-pr₂ α (sup β) (f₁ l)
@@ -106,34 +118,53 @@ module _ (pt : propositional-truncations-exist)
     f₂ (a , b ∷ []) δ = sing-decr
     f₂ (a , b ∷ a' , b' ∷ l) (many-decr p δ) =
       many-decr (simulations-are-order-preserving (β i) (sup β)
-                  (pr₁ (sup-is-upper-bound β i))
+                  (ι β)
                   (pr₂ (sup-is-upper-bound β i)) b' b p)
                 (f₂ (a' , b' ∷ l) δ)
     f : ⟨ γ i ⟩ → ⟨ [𝟙+ α ]^ (sup β) ⟩
     f (l , δ) = f₁ l , f₂ l δ
+
+   f₁-surj-lemma : (a : ⟨ α ⟩) (i : I) (b : ⟨ β i ⟩) (l : List (⟨ α ×ₒ sup β ⟩))
+                 → is-decreasing-pr₂ α (sup β) (a , ι β b ∷ l)
+                 → Σ l' ꞉ List (⟨ α ×ₒ β i ⟩) , (a , ι β b ∷ l) ＝ f₁ i l'
+   f₁-surj-lemma a i b [] δ = (a , b ∷ []) , refl
+   f₁-surj-lemma a i b ((a' , s) ∷ l) δ = (a , b ∷ l') , ap (a , ι β b ∷_) (ap (λ - → a' , - ∷ l) ((pr₂ lem) ⁻¹) ∙ pr₂ IH)
+    where
+     lem : Σ b' ꞉ ⟨ β i ⟩ , ι β b' ＝ s
+     lem = ι-is-surjective⁺ β s i b (is-decreasing-heads (underlying-order (sup β)) δ)
+     b' : ⟨ β i ⟩
+     b' = pr₁ lem
+     IH : Σ l' ꞉ List (⟨ α ×ₒ β i ⟩) , (a' , ι β b' ∷ l) ＝ f₁ i l'
+     IH = f₁-surj-lemma a' i b' l (transport⁻¹ (λ - → is-decreasing-pr₂ α (sup β) (a' , - ∷ l)) (pr₂ lem) (is-decreasing-tail (underlying-order (sup β)) δ))
+     l' = pr₁ IH
+
+   f₁-surj : (l : List (⟨ α ×ₒ sup β ⟩))
+           → is-decreasing-pr₂ α (sup β) l
+           → ∃ i ꞉ I , Σ l' ꞉ List (⟨ α ×ₒ β i ⟩) , l ＝ f₁ i l'
+   f₁-surj [] δ = ∣ i₀ , [] , refl ∣
+   f₁-surj (a , s ∷ l) δ = ∥∥-functor h (ι-is-surjective β s)
+    where
+     h : (Σ i ꞉ I , Σ b ꞉ ⟨ β i ⟩ , ι β b ＝ s)
+       → Σ i ꞉ I , Σ l' ꞉ List (⟨ α ×ₒ β i ⟩) , (a , s ∷ l) ＝ f₁ i l'
+     h (i , b , refl) = i , (f₁-surj-lemma a i b l δ)
+
+
+--  exp-sup-is-upper-bound : (i : I) → γ i ⊴ ([𝟙+ α ]^ (sup β))
+--  exp-sup-is-upper-bound i = f i , {!!} , {!!}
 
   -- Possible strategy
   -- for every i : I, x : [𝟙+ α]^ (β i),
   -- [𝟙+ α]^ (sup β) ↓ (f x) =ₒ [𝟙+ α ]^ (β i) ↓ x
   -- ??
 
-  private
-   ι : (ζ : I → Ordinal 𝓤) → {i : I} → ⟨ ζ i ⟩ → ⟨ sup ζ ⟩
-   ι ζ {i} = pr₁ (sup-is-upper-bound ζ i)
 
+{-
   exp-sup-lemma : (i : I) (a : ⟨ α ⟩) (b : ⟨ β i ⟩) (l : List (⟨ α ×ₒ sup β ⟩))
                 → is-decreasing-pr₂ α (sup β) (a , ι β b ∷ l)
                 → ⟨ sup γ ⟩
   exp-sup-lemma i a b [] δ = ι γ {i} ([] , []-decr)
   exp-sup-lemma i a b (a' , s ∷ l) (many-decr p δ) = {!!}
 
-  -- LEMMA:
-  {-
-
-    For every l : List (⟨ α ×ₒ sup β ⟩, and is-decreasing-pr₂ l,
-    there exists i : I and l' : List (⟨ α ×ₒ β i ⟩) such that
-
-      l = f₁ l'
-  -}
+-}
 
 \end{code}
