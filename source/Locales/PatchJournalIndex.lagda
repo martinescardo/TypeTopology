@@ -15,6 +15,8 @@ open import UF.Embeddings
 open import UF.Size
 open import UF.SubtypeClassifier
 open import UF.KrausLemma
+open import UF.Univalence
+open import UF.Subsingletons
 
 open split-support-and-collapsibility pt
 
@@ -22,21 +24,12 @@ open Locale
 
 \end{code}
 
-\begin{code}
-
-defn∶split-support : 𝓤  ̇ → 𝓤  ̇
-defn∶split-support = has-split-support
-
-\end{code}
-
-\end{code}
-
 𝓥-small type.
 
 \begin{code}
 
-defn∶vsmall : (𝓥 : Universe) → 𝓤  ̇ → 𝓤 ⊔ 𝓥 ⁺  ̇
-defn∶vsmall 𝓥 A = A is 𝓥 small
+definition-1 : (𝓥 : Universe) → 𝓤  ̇ → 𝓤 ⊔ 𝓥 ⁺  ̇
+definition-1 𝓥 A = A is 𝓥 small
 
 \end{code}
 
@@ -44,21 +37,23 @@ Being small is a proposition.
 
 \begin{code}
 
--- prop∶being-small-is-prop
+proposition-2 : (ua : Univalence) (X : 𝓤  ̇) (𝓥 : Universe)
+              → is-prop (X is 𝓥 small)
+proposition-2 = being-small-is-prop
 
 \end{code}
 
 \begin{code}
 
-defn∶local-resizing : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥) ⁺  ̇
-defn∶local-resizing 𝓤 𝓥 = propositional-resizing 𝓤 𝓥
+definition-3 : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥) ⁺  ̇
+definition-3 𝓤 𝓥 = propositional-resizing 𝓤 𝓥
 
 \end{code}
 
 \begin{code}
 
-defn∶global-resizing : 𝓤ω
-defn∶global-resizing = Propositional-Resizing
+definition-3-global : 𝓤ω
+definition-3-global = Propositional-Resizing
 
 \end{code}
 
@@ -66,8 +61,8 @@ defn∶global-resizing = Propositional-Resizing
 
 open import Slice.Family
 
-defn∶family : (𝓦 : Universe) → 𝓤  ̇ → 𝓤 ⊔ 𝓦 ⁺  ̇
-defn∶family = Fam
+definition-4 : (𝓦 : Universe) → 𝓤  ̇ → 𝓤 ⊔ 𝓦 ⁺  ̇
+definition-4 = Fam
 
 \end{code}
 
