@@ -13,7 +13,7 @@ unspecified continuous/algebraic structure, as we are proving a proposition.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan hiding (J)
 open import UF.FunExt

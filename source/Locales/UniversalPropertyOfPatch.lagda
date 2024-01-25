@@ -6,7 +6,7 @@ Completed on the 2nd of June 2023.
 
 \begin{code}[hide]
 
-{-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
+{-# OPTIONS --safe --without-K --lossy-unification #-}
 
 open import MLTT.List hiding ([_])
 open import MLTT.Spartan hiding (𝟚)

@@ -65,29 +65,30 @@ The first is a utility only used in the latter reasoning items.
 
 \begin{code}
 
- private
-   infixr 10 _＝↓⟨_&_&_&_⟩_
-   _＝↓⟨_&_&_&_⟩_ : {q : x ＝ y}
-                 → (s : x ≡ y)
-                 → (n : ℕ) (m : ℕ)
-                 → (t : point-from-start n s ≡ point-from-start m (drop n s))
-                 → take m (drop n s) ＝↓ t
-                 → [ take n s ∙≡ t ∙≡ drop m (drop n s) ↓] ＝ q
-                 → [ s ↓] ＝ q
-   _＝↓⟨_&_&_&_⟩_ {q} s n m t p p' =
-     [ s ↓]                                                            ＝⟨ ＝ₛ-out (take-drop-split n s) ⟩
-     [ take n s ↓] ∙ [ drop n s ↓]                                     ＝⟨  i ⟩
-     [ take n s ↓] ∙ ([ take m (drop n s) ↓] ∙ [ drop m (drop n s) ↓]) ＝⟨ ii ⟩
-     [ take n s ↓] ∙ ([ t ↓] ∙ [ drop m (drop n s) ↓])                 ＝⟨ iii ⟩
-     [ take n s ↓] ∙ [ t ∙≡ drop m (drop n s) ↓]                       ＝⟨ iv ⟩
-     [ take n s ∙≡ t ∙≡ drop m (drop n s) ↓]                           ＝⟨ p' ⟩
-     q ∎
-       where
-         i   = ap ([ take n s ↓] ∙_) (＝ₛ-out (take-drop-split m (drop n s)))
-         ii  = ap (λ v → [ take n s ↓] ∙ (v ∙ [ drop m (drop n s) ↓])) p
-         iii = ap ([ take n s ↓] ∙_) ([↓]-hom t (drop m (drop n s)))
-         iv   = [↓]-hom (take n s) (t ∙≡ drop m (drop n s))
-
+ opaque
+  private
+   infixr 10 _＝↓＝⟨_&_&_&_⟩_
+   _＝↓＝⟨_&_&_&_⟩_ : {q : x ＝ y}
+                  → (s : x ≡ y)
+                  → (n : ℕ) (m : ℕ)
+                  → (t : point-from-start n s ≡ point-from-start m (drop n s))
+                  → take m (drop n s) ＝↓ t
+                  → [ take n s ∙≡ t ∙≡ drop m (drop n s) ↓] ＝ q
+                  → [ s ↓] ＝ q
+   _＝↓＝⟨_&_&_&_⟩_ {q} s n m t p p' =
+                 [ s ↓]
+                   ＝⟨ ＝ₛ-out (take-drop-split n s) ⟩
+                 [ take n s ↓] ∙ [ drop n s ↓]
+                   ＝⟨ ap ([ take n s ↓] ∙_) (＝ₛ-out (take-drop-split m (drop n s))) ⟩
+                 [ take n s ↓] ∙ ([ take m (drop n s) ↓] ∙ [ drop m (drop n s) ↓])
+                   ＝⟨ ap (λ v → [ take n s ↓] ∙ (v ∙ [ drop m (drop n s) ↓])) p ⟩
+                 [ take n s ↓] ∙ ([ t ↓] ∙ [ drop m (drop n s) ↓])
+                   ＝⟨ ap ([ take n s ↓] ∙_) ([↓]-hom t (drop m (drop n s))) ⟩
+                 [ take n s ↓] ∙ [ t ∙≡ drop m (drop n s) ↓]
+                   ＝⟨ [↓]-hom (take n s) (t ∙≡ drop m (drop n s)) ⟩
+                 [ take n s ∙≡ t ∙≡ drop m (drop n s) ↓]
+                   ＝⟨ p' ⟩
+                 q ∎
 \end{code}
 
 The following makes definitional equalities visible, for example:
@@ -146,18 +147,18 @@ The following makes definitional equalities visible, for example:
 
  then we write
 
- p ◃∙ (q ∙ r) ⁻¹ ◃∙ s ◃∎     ＝ₛ⟨ α ⟩
+ p ◃∙ (q ∙ r) ⁻¹ ◃∙ s ◃∎     ＝ₛ⟨ 1 & 1 & α ⟩
  p ◃∙ r ⁻¹ ◃∙ q ⁻¹ ◃∙ s ◃∎   ∎ₛ
 
 \begin{code}
 
  _＝ₛ⟨_&_&_⟩_ : (s : x ≡ y) {u : x ≡ y}
-               (m n : ℕ)
-               {r : point-from-start m s ≡ point-from-start n (drop m s)}
+             → (m n : ℕ)
+             → {r : point-from-start m s ≡ point-from-start n (drop m s)}
              → take n (drop m s) ＝ₛ r
              → take m s ∙≡ r ∙≡ drop n (drop m s) ＝ₛ u
              → s ＝ₛ u
- _＝ₛ⟨_&_&_⟩_ s m n {r} p q = ＝ₛ-in (s ＝↓⟨ m & n & r & ＝ₛ-out p ⟩ ＝ₛ-out q)
+ _＝ₛ⟨_&_&_⟩_ s m n {r} p q = ＝ₛ-in (s ＝↓＝⟨ m & n & r & ＝ₛ-out p ⟩ ＝ₛ-out q)
 
 \end{code}
 
@@ -208,7 +209,7 @@ The following makes definitional equalities visible, for example:
              → [ take n (drop m s) ↓] ＝ r
              → take m s ∙≡ r ◃∙ drop n (drop m s) ＝ₛ u
              → s ＝ₛ u
- _＝↓⟨_&_&_⟩_ s {u} m n {r} p q = s ＝ₛ⟨ m &  n &  ＝ₛ-in p ⟩ q
+ _＝↓⟨_&_&_⟩_ s m n {r} p q = s ＝ₛ⟨ m &  n &  ＝ₛ-in {t = r ◃∎} p ⟩ q
 
 \end{code}
 
@@ -217,7 +218,7 @@ The following makes definitional equalities visible, for example:
 \begin{code}
   
  _∎ₛ : (s : x ≡ y) → s ＝ₛ s
- _ ∎ₛ = ＝ₛ-in refl
+ _∎ₛ _ = ＝ₛ-in refl
 
 \end{code}
 

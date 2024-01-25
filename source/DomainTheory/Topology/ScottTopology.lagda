@@ -2,7 +2,7 @@ Ayberk Tosun, 14 June 2023.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 open import UF.FunExt
@@ -16,7 +16,7 @@ module DomainTheory.Topology.ScottTopology
 
 open PropositionalTruncation pt
 
-open import Posets.Poset fe
+open import OrderedTypes.Poset fe
 open import Slice.Family
 open import UF.ImageAndSurjection pt
 open import UF.Logic

@@ -4,7 +4,7 @@ Substitution on System T terms, along with related results.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module EffectfulForcing.Internal.Subst where
 

@@ -7,7 +7,7 @@ indication of termination.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split #-}
+{-# OPTIONS --without-K #-}
 
 open import UF.FunExt
 

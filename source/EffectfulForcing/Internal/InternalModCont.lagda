@@ -7,7 +7,7 @@ operator.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import UF.FunExt
 
@@ -24,8 +24,8 @@ open import EffectfulForcing.MFPSAndVariations.Dialogue
  using (eloquent; D; dialogue; eloquent-functions-are-continuous;
         dialogue-continuity; generic)
 open import EffectfulForcing.MFPSAndVariations.Continuity
- using (is-continuous; is-continuous₀; continuity-implies-continuity₀;
-        _＝⦅_⦆_; _＝⟪_⟫_; modulus-at₀; maximum)
+ using (is-continuous; _＝⟪_⟫_)
+open import EffectfulForcing.MFPSAndVariations.ContinuityProperties fe
 open import EffectfulForcing.Internal.Correctness
  using (Rnorm-generic; is-dialogue-for; Rnorm-lemma₀; Rnorm;
         dialogue-tree-agreement)
@@ -86,10 +86,6 @@ ifzᵀ-correct (succ m) n₁ n₂ = refl
 The predecessor operator.
 
 \begin{code}
-
-pred : ℕ → ℕ
-pred zero     = zero
-pred (succ n) = n
 
 predᵀ : {Γ : Cxt} → Γ ⊢ ι ⇒ ι
 predᵀ = Rec' {σ = ι} · (ƛ (ƛ ν₁)) · Zero
@@ -214,8 +210,8 @@ modulus₀ : (d : D ℕ ℕ ℕ) → (ℕ → ℕ) → ℕ
 modulus₀ d α = succ (max-question₀ d α)
 
 modulusᵀ : {Γ : Cxt}
-                   → Γ ⊢ baire ⇒ ι
-                   → B-context【 Γ 】 ι ⊢ (ι ⇒ ι) ⇒ ι
+         → Γ ⊢ baire ⇒ ι
+         → B-context【 Γ 】 ι ⊢ (ι ⇒ ι) ⇒ ι
 modulusᵀ t = comp · Succ' · (max-questionᵀ · ⌜dialogue-tree⌝ t)
 
 \end{code}

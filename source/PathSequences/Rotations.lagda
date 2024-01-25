@@ -11,7 +11,7 @@ Rotating path sequences.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --safe #-}
 
 open import MLTT.Spartan
 open import UF.Base
@@ -45,7 +45,7 @@ pre-rotate-in : {x y z : X} {q : y ≡ z} {p : x ＝ y} {r : x ≡ z}
               → q ＝ₛ (p ⁻¹) ◃∙ r
 pre-rotate-in {q = q} {refl} {r} e = q         ＝ₛ⟨ ＝ₛ-in ([↓]-hom [] q  ⁻¹) ⟩
                                      refl ◃∙ q ＝ₛ⟨ e ⟩
-                                     r         ＝ₛ⟨ ＝ₛ-in ([↓]-hom [] r ⁻¹) ⟩ 
+                                     r         ＝ₛ⟨ ＝ₛ-in ([↓]-hom [] r ⁻¹) ⟩
                                      refl ◃∙ r  ∎ₛ
 
 
@@ -110,17 +110,17 @@ post-rotate-in e = post-rotate'-in (e ⁻¹ₛ) ⁻¹ₛ
 post-rotate-out : {x y z : X} {p : x ≡ y} {q : y ＝ z} {r : x ≡ z}
                 → p ＝ₛ r ∙▹ (q ⁻¹)
                 → p ∙▹ q ＝ₛ r
-post-rotate-out {p = p} {q} {r} e = 
- (p ∙▹ q)         
+post-rotate-out {p = p} {q} {r} e =
+ (p ∙▹ q)
   ＝ₛ⟨ ＝ₛ-in (ap (λ v → ≡-to-＝ (p ∙▹ v)) (⁻¹-involutive q ⁻¹)) ⟩
- p ∙▹ ((q ⁻¹) ⁻¹) ＝ₛ⟨ post-rotate'-in e ⟩ 
+ p ∙▹ ((q ⁻¹) ⁻¹) ＝ₛ⟨ post-rotate'-in e ⟩
  r                ∎ₛ
 
 
 post-rotate'-seq-in : {x y z : X} {r : x ≡ z} {q : y ≡ z} {p : x ≡ y}
                     → r ＝ₛ p ∙≡ q
                     → r ∙≡ (seq⁻¹ q) ＝ₛ p
-post-rotate'-seq-in {r = r} {[]} {p} e = 
+post-rotate'-seq-in {r = r} {[]} {p} e =
  r ∙≡ [] ＝ₛ⟨ []-∙≡-right-neutral-＝ₛ r ⟩
  r       ＝ₛ⟨ e ⟩
  p ∙≡ [] ＝ₛ⟨ []-∙≡-right-neutral-＝ₛ p ⟩
@@ -133,7 +133,7 @@ post-rotate'-seq-in {r = r} {q ◃∙ s} {p} e =
    i = ap ≡-to-＝ (∙≡-assoc r (seq⁻¹ s) ((q ⁻¹) ◃∎) ⁻¹)
    e'' : r ＝ₛ ((p ∙▹ q) ∙≡ s)
    e'' = r               ＝ₛ⟨ e ⟩
-         (p ∙≡ q ◃∙ s)   ＝ₛ⟨ ＝ₛ-in (ap ≡-to-＝ (∙≡-assoc p (q ◃∎) s ⁻¹)) ⟩ 
+         (p ∙≡ q ◃∙ s)   ＝ₛ⟨ ＝ₛ-in (ap ≡-to-＝ (∙≡-assoc p (q ◃∎) s ⁻¹)) ⟩
          ((p ∙▹ q) ∙≡ s) ∎ₛ
    e' : (r ∙≡ seq⁻¹ s) ＝ₛ (p ∙▹ q)
    e' = post-rotate'-seq-in {r = r} {s} {p ∙▹ q} e''
@@ -160,4 +160,3 @@ post-rotate-seq-out : {x y z : X} {p : x ≡ y} {q : y ≡ z} {r : x ≡ z}
                     → p ∙≡ q ＝ₛ r
 post-rotate-seq-out e = post-rotate'-seq-out (e ⁻¹ₛ) ⁻¹ₛ
 \end{code}
-

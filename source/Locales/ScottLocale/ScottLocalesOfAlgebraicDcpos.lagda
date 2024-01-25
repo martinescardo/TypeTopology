@@ -14,7 +14,7 @@ module and the one in `ScottLocale.Definition`
 
 \begin{code}[hide]
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 open import Slice.Family
@@ -150,7 +150,7 @@ the basic opens. The order `_⊆ₛ_` is the large version.
  ⊆ₛ-implies-⊆ₖ : (𝔘 𝔙 : 𝒪ₛ) → (𝔘 ⊆ₛ 𝔙 ⇒ 𝔘 ⊆ₖ 𝔙) holds
  ⊆ₛ-implies-⊆ₖ 𝔘 𝔙 p = p ∘ (ℬ [_])
 
- ⊆ₛ-iff-⊆ₖ : (𝔘 𝔙 : 𝒪ₛ) → (𝔘 ⊆ₛ 𝔙 ↔ 𝔘 ⊆ₖ 𝔙) holds
+ ⊆ₛ-iff-⊆ₖ : (𝔘 𝔙 : 𝒪ₛ) → (𝔘 ⊆ₛ 𝔙 ⇔ 𝔘 ⊆ₖ 𝔙) holds
  ⊆ₛ-iff-⊆ₖ 𝔘 𝔙 = ⊆ₛ-implies-⊆ₖ 𝔘 𝔙 , ⊆ₖ-implies-⊆ₛ 𝔘 𝔙
 
  ⊆ₖ-is-reflexive : is-reflexive _⊆ₖ_ holds

@@ -8,11 +8,11 @@ subsets of X.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import UF.PropTrunc
 
-module Posets.FreeJoinSemiLattice
+module OrderedTypes.FreeJoinSemiLattice
         (pt : propositional-truncations-exist)
        where
 
@@ -20,7 +20,7 @@ open import Fin.ArithmeticViaEquivalence
 open import Fin.Kuratowski pt
 open import Fin.Type
 open import MLTT.Spartan
-open import Posets.JoinSemiLattices
+open import OrderedTypes.JoinSemiLattices
 open import UF.Base
 open import UF.Equiv
 open import UF.FunExt
@@ -470,3 +470,41 @@ module _
            τ = total-fiber-is-domain (etofun e)
 
 \end{code}
+
+TODO. In Chapter 9 of Johnstone's "Topos Theory" it is shown that X is
+Kuratowski finite if and only if 𝓚 X is Kuratowski finite. A proof sketch in
+HoTT/UF is as follows.
+
+(1) 𝓚 X is Kuratowski finite implies X is Kuratowski finite
+
+    Suppose that we have a surjection
+      e : Fin N ↠ 𝓚 X.
+    By finite choice, we have for each 0 ≤ i < N, a natural number nᵢ with a
+    surjection
+      fᵢ : Fin nᵢ ↠ 𝕋 eᵢ.
+    Now consider
+      f : (Σ i ꞉ I , Fin nᵢ) → X
+          (i , k)            ↦ pr₁ (fᵢ k)
+    This is a surjection, because for x : X, there exists 0 ≤ i < N with
+    eᵢ = [ x ] and hence, f (i , 0) = fᵢ 0 = x.
+    Finally, we observe that
+      (Σ i ꞉ I , Fin nᵢ) ≃ Fin (sum_{0 ≤ i < N} nᵢ).
+
+(2) X is Kuratowski finite implies 𝓚 X is Kuratowski finite
+
+    Suppose that we have surjection
+      e : Fin n ↠ X.
+    We construct a surjection
+      f : Fin 2ⁿ ↠ 𝓚 X
+      f (b₁ , ... , bₙ) := finite join of eᵢ for each bit bᵢ that equals 1.
+
+    To see that this is indeed a surjection, we use the induction principle of
+    𝓚 X:
+    - the empty set is mapped to by the sequence of n 0-bits.
+    - for a singleton { x }, the element x is hit by eᵢ for some 0 ≤ i < n, so
+      that { x } = f (b₁ , ... , bₙ) with bᵢ = 1 and all other bⱼ = 0.
+    - given subsets A,B : 𝓚 X that are in the image of f, we obtain
+      sequences 𝕓 and 𝕓' such that f 𝕓 = A and f 𝕓' = B so that the union A ∪ B
+      is obtained as f (𝕓 ∨ 𝕓') where ∨ denotes pointwise disjunction.
+
+    NB: It should be useful to use the formalized fact that Fin 2ⁿ ≃ Fin n → 𝟚.

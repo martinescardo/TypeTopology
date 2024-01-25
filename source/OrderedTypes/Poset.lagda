@@ -6,7 +6,7 @@ This used to be part of DomainTheory.Basics.Dcpo.lagda.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 open import UF.FunExt
@@ -16,7 +16,7 @@ open import UF.Sets-Properties
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
-module Posets.Poset
+module OrderedTypes.Poset
         (fe : Fun-Ext)
        where
 

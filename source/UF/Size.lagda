@@ -25,7 +25,7 @@ which seems to be a new result.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module UF.Size where
 
@@ -296,14 +296,14 @@ universe (i.e. in all universes except the first).
   ψ (P , i) = resize ρ P i , resize-is-prop ρ P i
 
   φψ : (p : Ω 𝓤) → φ (ψ p) ＝ p
-  φψ (P , i) = Ω-extensionality (fe 𝓤 𝓤) (pe 𝓤)
+  φψ (P , i) = Ω-extensionality (pe 𝓤) (fe 𝓤 𝓤)
                (from-resize ρ P i ∘
                 from-resize ρ (resize ρ P i) (resize-is-prop ρ P i))
                (to-resize ρ (resize ρ P i) (resize-is-prop ρ P i) ∘
                 to-resize ρ P i)
 
   ψφ : (q : Ω 𝓥) → ψ (φ q) ＝ q
-  ψφ (Q , j) = Ω-extensionality (fe 𝓥 𝓥) (pe 𝓥)
+  ψφ (Q , j) = Ω-extensionality (pe 𝓥) (fe 𝓥 𝓥)
                (from-resize ρ Q j ∘
                 from-resize ρ (resize ρ Q j) (resize-is-prop ρ Q j))
                (to-resize ρ (resize ρ Q j) (resize-is-prop ρ Q j) ∘

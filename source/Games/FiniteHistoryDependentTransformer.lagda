@@ -8,7 +8,8 @@ presentable way).
 This generalizes (but also uses) the file Games.FiniteHistoryDependent
 with a monad parameter 𝓣. When 𝓣 is the identity monad 𝕀𝕕, the
 original development is obtained. We apply the selection-monad
-transformer 𝕁-transf to 𝓣. See [1] for background.
+transformer 𝕁-transf to 𝓣. Notice, however, that the definition of
+game is the same. See [1] for background.
 
 The main examples of 𝓣 we have in mind are the powerset monad (for the
 Herbrand Functional Interpretation [2]), probability distribution
@@ -16,17 +17,18 @@ monads (for mixed strategies) and the reader monad (for alpha-beta
 pruning in the file Games.alpha-beta).
 
 [1] M. Escardo and P. Oliva.
-    Higher-order Games with Dependent Types
-    https://doi.org/10.48550/arXiv.2212.07735
-    To appear in TCS.
+    Higher-order Games with Dependent Types (2023)
+    https://doi.org/10.1016/j.tcs.2023.114111
+    Available in TypeTopology at Games.FiniteHistoryDependent.
 
 [2] M. Escardo and P. Oliva.
-    The Herbrand functional interpretation of the double negation shift.
+    The Herbrand functional interpretation of the double negation shift (2017)
     https://doi.org/10.1017/jsl.2017.8
+    (Not available in TypeTopology at the time of writing (October 2023).)
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import Games.TypeTrees
 open import Games.Monad
@@ -59,14 +61,14 @@ open JT-definitions 𝕋 R 𝓐 fe
 
 \end{code}
 
-The type of trees with JT structure.
+The types of trees with JT and KT structure.
 
 \begin{code}
 
-𝓙𝓣 :  𝑻 → Type
+𝓙𝓣 : 𝑻 → Type
 𝓙𝓣 = structure JT
 
-𝓚𝓣 :  𝑻 → Type
+𝓚𝓣 : 𝑻 → Type
 𝓚𝓣 = structure KT
 
 sequenceᴶᵀ : {Xt : 𝑻} → 𝓙𝓣 Xt → JT (Path Xt)
@@ -78,37 +80,22 @@ T-Strategy = structure T
 T-strategic-path : {Xt : 𝑻} → T-Strategy Xt → T (Path Xt)
 T-strategic-path = path-sequence 𝕋
 
-\end{code}
+is-in-T-equilibrium : {X : Type} {Xf : X → 𝑻}
+                      (q : (Σ x ꞉ X , Path (Xf x)) → R)
+                      (ϕ : K X)
+                    → T-Strategy (X ∷ Xf)
+                    → Type
+is-in-T-equilibrium {X} {Xf} q ϕ σt@(σ :: σf)  =
+ α-extᵀ q (T-strategic-path σt) ＝ ϕ (λ x → α-curryᵀ q x (T-strategic-path (σf x)))
 
-We now generalize the notion of perfect equilibrium from [1]. The
-case 𝕋 = 𝕀𝕕, the identity monad, specializes to the original
-definition in [1].
+is-in-T-sgpe : {Xt : 𝑻} → 𝓚 Xt → (Path Xt → R) → T-Strategy Xt → Type
+is-in-T-sgpe {[]}     ⟨⟩        q ⟨⟩           = 𝟙
+is-in-T-sgpe {X ∷ Xf} (ϕ :: ϕf) q σt@(σ :: σf) =
+    is-in-T-equilibrium q ϕ σt
+  × ((x : X) → is-in-T-sgpe {Xf x} (ϕf x) (subpred q x) (σf x))
 
-\begin{code}
-
-is-T-pe' : {X : Type} {Xf : X → 𝑻}
-           (q : (Σ x ꞉ X , Path (Xf x)) → R)
-           (ϕ : K X)
-         → T-Strategy (X ∷ Xf) → Type
-is-T-pe' {X} {Xf} q ϕ σt@(σ :: σf)  =
-
- α-extᵀ q (T-strategic-path σt)
- ＝ ϕ (λ x → α-curryᵀ q x (T-strategic-path (σf x)))
-
-is-in-T-equilibrium : (G : Game) → T-Strategy (Xt G) → Type
-is-in-T-equilibrium (game []       q ⟨⟩)       ⟨⟩ = 𝟙
-is-in-T-equilibrium (game (X ∷ Xf) q (ϕ :: _)) σt  = is-T-pe' q ϕ σt
-
-is-T-sgpe : {Xt : 𝑻} → 𝓚 Xt → (Path Xt → R) → T-Strategy Xt → Type
-is-T-sgpe {[]}     ⟨⟩        q ⟨⟩           = 𝟙
-is-T-sgpe {X ∷ Xf} (ϕ :: ϕf) q σt@(σ :: σf) =
-
-      is-T-pe' q ϕ σt
-    ×
-      ((x : X) → is-T-sgpe {Xf x} (ϕf x) (subpred q x) (σf x))
-
-is-in-T-subgame-perfect-equilibrium : (G : Game) → T-Strategy (Xt G) → Type
-is-in-T-subgame-perfect-equilibrium (game Xt q ϕt) = is-T-sgpe {Xt} ϕt q
+is-T-optimal : (G : Game) → T-Strategy (Xt G) → Type
+is-T-optimal (game Xt q ϕt) = is-in-T-sgpe {Xt} ϕt q
 
 \end{code}
 
@@ -119,23 +106,22 @@ in perfect subgame equilibrium.
 \begin{code}
 
 T-sgpe-lemma : (Xt : 𝑻) (ϕt : 𝓚 Xt) (q : Path Xt → R) (σt : T-Strategy Xt)
-             → is-T-sgpe ϕt q σt
-             → sequenceᴷ ϕt q ＝ α-extᵀ q (T-strategic-path σt)
+             → is-in-T-sgpe ϕt q σt
+             → α-extᵀ q (T-strategic-path σt) ＝ sequenceᴷ ϕt q
 T-sgpe-lemma [] ⟨⟩ q ⟨⟩ ⟨⟩ =
-  sequenceᴷ ⟨⟩ q                  ＝⟨ refl ⟩
-  q ⟨⟩                            ＝⟨ (α-unitᵀ (q ⟨⟩))⁻¹ ⟩
-  α (ηᵀ (q ⟨⟩))                   ＝⟨ ap α ((unitᵀ (ηᵀ ∘ q) ⟨⟩)⁻¹) ⟩
-  α (extᵀ (ηᵀ ∘ q) (ηᵀ ⟨⟩))       ＝⟨ refl ⟩
-  α-extᵀ q (T-strategic-path ⟨⟩)  ∎
-
+  α-extᵀ q (T-strategic-path ⟨⟩) ＝⟨ refl ⟩
+  α (extᵀ (ηᵀ ∘ q) (ηᵀ ⟨⟩))      ＝⟨ ap α (unitᵀ (ηᵀ ∘ q) ⟨⟩) ⟩
+  α (ηᵀ (q ⟨⟩))                  ＝⟨ α-unitᵀ (q ⟨⟩) ⟩
+  q ⟨⟩                           ＝⟨ refl ⟩
+  sequenceᴷ ⟨⟩ q                 ∎
 T-sgpe-lemma (X ∷ Xf) (ϕ :: ϕt) q (σ :: σf) (h :: t) =
- sequenceᴷ (ϕ :: ϕt) q                            ＝⟨ refl ⟩
- ϕ (λ x → sequenceᴷ (ϕt x) (subpred q x))         ＝⟨ ap ϕ (fext IH) ⟩
- ϕ (λ x → α-curryᵀ q x (T-strategic-path (σf x))) ＝⟨ h ⁻¹ ⟩
- α-extᵀ q (T-strategic-path (σ :: σf))            ∎
+ α-extᵀ q (T-strategic-path (σ :: σf))            ＝⟨ h ⟩
+ ϕ (λ x → α-curryᵀ q x (T-strategic-path (σf x))) ＝⟨ ap ϕ (fext IH) ⟩
+ ϕ (λ x → sequenceᴷ (ϕt x) (subpred q x))         ＝⟨ refl ⟩
+ sequenceᴷ (ϕ :: ϕt) q                            ∎
   where
-   IH : (x : X) → sequenceᴷ (ϕt x) (subpred q x)
-                ＝ α-curryᵀ q x (T-strategic-path (σf x))
+   IH : (x : X) → α-curryᵀ q x (T-strategic-path (σf x))
+                ＝ sequenceᴷ (ϕt x) (subpred q x)
    IH x = T-sgpe-lemma (Xf x) (ϕt x) (subpred q x) (σf x) (t x)
 
 \end{code}
@@ -145,9 +131,9 @@ This can be reformulated as follows in terms of the type of games:
 \begin{code}
 
 T-optimality-theorem : (G : Game) (σt : T-Strategy (Xt G))
-                     → is-in-T-subgame-perfect-equilibrium G σt
-                     → optimal-outcome G
-                     ＝ α-extᵀ (q G) (T-strategic-path σt)
+                     → is-T-optimal G σt
+                     → α-extᵀ (q G) (T-strategic-path σt)
+                     ＝ optimal-outcome G
 T-optimality-theorem (game Xt q ϕt) = T-sgpe-lemma Xt ϕt q
 
 \end{code}
@@ -357,7 +343,7 @@ _Attainsᵀ_ {X ∷ Xf} (ε :: εf) (ϕ :: ϕf) = (ε α-attainsᵀ ϕ)
 T-selection-strategy-lemma : ext-const 𝕋
                            → {Xt : 𝑻} (εt : 𝓙𝓣 Xt) (ϕt : 𝓚 Xt) (q : Path Xt → R)
                            → εt Attainsᵀ ϕt
-                           → is-T-sgpe ϕt q (T-selection-strategy εt q)
+                           → is-in-T-sgpe ϕt q (T-selection-strategy εt q)
 T-selection-strategy-lemma ext-const {[]}     ⟨⟩           ⟨⟩           q ⟨⟩           = ⟨⟩
 T-selection-strategy-lemma ext-const {X ∷ Xf} εt@(ε :: εf) ϕt@(ϕ :: ϕf) q at@(a :: af) = γ
  where
@@ -429,25 +415,27 @@ T-selection-strategy-lemma ext-const {X ∷ Xf} εt@(ε :: εf) ϕt@(ϕ :: ϕf) 
          II₃ = ap α (assocᵀ (ηᵀ ∘ q) (λ x → mapᵀ (λ y → x , y) (T-strategic-path (σf x))) σ)
 
   γ' : (α-extᵀ q t ＝ ϕ (α ∘ p))
-     × (((x : X) → is-T-sgpe {Xf x} (ϕf x) (subpred q x) (σf x)))
+     × (((x : X) → is-in-T-sgpe {Xf x} (ϕf x) (subpred q x) (σf x)))
   γ' = (α-extᵀ q t ＝⟨ II ⁻¹ ⟩
        α (extᵀ p (ε p)) ＝⟨ a p ⟩
        ϕ (α ∘ p) ∎) ,
        (λ x → T-selection-strategy-lemma ext-const (εf x) (ϕf x) (subpred q x) (af x))
 
-  γ : is-T-sgpe (ϕ :: ϕf) q (T-selection-strategy (ε :: εf) q)
+  γ : is-in-T-sgpe (ϕ :: ϕf) q (T-selection-strategy (ε :: εf) q)
   γ = γ'
 
 main-theorem : ext-const 𝕋
              → (G : Game)
                (εt : 𝓙𝓣 (Xt G))
              → εt Attainsᵀ (ϕt G)
-             → is-in-T-subgame-perfect-equilibrium G (T-selection-strategy εt (q G))
+             → is-T-optimal G (T-selection-strategy εt (q G))
 main-theorem ext-const G εt = T-selection-strategy-lemma ext-const εt (ϕt G) (q G)
 
 \end{code}
 
-Partial, possibly empty, paths in 𝑻's, and related notions.
+Alternative, non-inductive definition of T-optimality. We don't have
+any use for it, but it is useful for comparison with the classical
+notion. Partial, possibly empty, paths in 𝑻's, and related notions.
 
 \begin{code}
 
@@ -483,28 +471,28 @@ sub-T-Strategy {[]}     ⟨⟩        ⟨⟩              = ⟨⟩
 sub-T-Strategy {X ∷ Xf} (σ :: σf) (inl ⟨⟩)        = σ :: σf
 sub-T-Strategy {X ∷ Xf} (σ :: σf) (inr (x :: xs)) = sub-T-Strategy {Xf x} (σf x) xs
 
-is-in-head-equilibrium : (G : Game) → 𝓙𝓣 (Xt G) → Type
-is-in-head-equilibrium (game [] q ϕt) εs = 𝟙
-is-in-head-equilibrium G@(game (X ∷ Xf) q (ϕ :: ϕf)) εt@(ε :: εf) =
- is-T-pe' q ϕ (T-selection-strategy εt q)
+is-in-T-equilibrium' : (G : Game) → T-Strategy (Xt G) → Type
+is-in-T-equilibrium' (game []       q ⟨⟩)       ⟨⟩ = 𝟙
+is-in-T-equilibrium' (game (X ∷ Xf) q (ϕ :: _)) σt = is-in-T-equilibrium q ϕ σt
 
-
-is-in-T-subgame-perfect-equilibrium₂ : (G : Game) (σ : T-Strategy (Xt G)) → Type
-is-in-T-subgame-perfect-equilibrium₂ G σ = (xs : pPath (Xt G)) → is-in-T-equilibrium (subgame G xs) (sub-T-Strategy σ xs)
+is-T-optimal₂ : (G : Game) (σ : T-Strategy (Xt G)) → Type
+is-T-optimal₂ G σ =
+ (xs : pPath (Xt G)) → is-in-T-equilibrium' (subgame G xs) (sub-T-Strategy σ xs)
 
 T-sgpe-equiv : (G : Game) (σ : T-Strategy (Xt G))
-             → is-in-T-subgame-perfect-equilibrium G σ ⇔ is-in-T-subgame-perfect-equilibrium₂ G σ
+             → is-T-optimal  G σ
+             ↔ is-T-optimal₂ G σ
 T-sgpe-equiv (game Xt q ϕt) σ = I ϕt q σ , II ϕt q σ
  where
   I : {Xt : 𝑻} (ϕt : 𝓚 Xt) (q : Path Xt → R) (σ : T-Strategy Xt)
-    → is-in-T-subgame-perfect-equilibrium (game Xt q ϕt) σ → is-in-T-subgame-perfect-equilibrium₂ (game Xt q ϕt) σ
+    → is-T-optimal (game Xt q ϕt) σ → is-T-optimal₂ (game Xt q ϕt) σ
   I {[]}     ⟨⟩        q ⟨⟩        ⟨⟩        ⟨⟩              = ⟨⟩
   I {X ∷ Xf} (ϕ :: ϕf) q (σ :: σf) (i :: _)  (inl ⟨⟩)        = i
   I {X ∷ Xf} (ϕ :: ϕf) q (σ :: σf) (_ :: is) (inr (x :: xs)) =
     I {Xf x} (ϕf x) (subpred q x) (σf x) (is x) xs
 
   II : {Xt : 𝑻} (ϕt : 𝓚 Xt) (q : Path Xt → R) (σ : T-Strategy Xt)
-    → is-in-T-subgame-perfect-equilibrium₂ (game Xt q ϕt) σ → is-in-T-subgame-perfect-equilibrium (game Xt q ϕt) σ
+    → is-T-optimal₂ (game Xt q ϕt) σ → is-T-optimal (game Xt q ϕt) σ
   II {[]}     ⟨⟩        q ⟨⟩        j = ⟨⟩
   II {X ∷ Xf} (ϕ :: ϕf) q (σ :: σf) j =
      j (inl ⟨⟩) ,
@@ -513,7 +501,7 @@ T-sgpe-equiv (game Xt q ϕt) σ = I ϕt q σ , II ϕt q σ
 
 {-
 T-sgpe-equiv : (G : Game) (σ : T-Strategy (Xt G))
-             → is-in-T-subgame-perfect-equilibrium G σ ⇔ is-in-T-subgame-perfect-equilibrium₂ G σ
+             → is-T-optimal G σ ↔ is-T-optimal₂ G σ
 T-sgpe-equiv (game Xt q ϕt) σ = I ϕt q σ , II ϕt q σ
 
 is-in-subgame-perfect-equilibrium : (G : Game) → 𝓙𝓣 (Xt G) → Type

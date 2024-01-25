@@ -11,7 +11,7 @@ principle that every subsingleton type is inhabited or empty.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module UF.ExcludedMiddle where
 
@@ -97,6 +97,20 @@ DNE-gives-EM : funext 𝓤 𝓤₀ → DNE 𝓤 → EM 𝓤
 DNE-gives-EM fe dne P isp = dne (P + ¬ P)
                              (decidability-of-prop-is-prop fe isp)
                              fake-¬¬-EM
+
+all-props-negative-gives-DNE : funext 𝓤 𝓤₀
+                            → ((P : 𝓤 ̇ ) → is-prop P → Σ Q ꞉ 𝓤 ̇ , (P ↔ ¬ Q))
+                            → DNE 𝓤
+all-props-negative-gives-DNE {𝓤} fe ϕ P P-is-prop = I (ϕ P P-is-prop)
+ where
+  I : (Σ Q ꞉ 𝓤 ̇ , (P ↔ ¬ Q)) → ¬¬ P → P
+  I (Q , f , g) ν = g (three-negations-imply-one (double-contrapositive f ν))
+
+all-props-negative-gives-EM : funext 𝓤 𝓤₀
+                            → ((P : 𝓤 ̇ ) → is-prop P → Σ Q ꞉ 𝓤 ̇ , (P ↔ ¬ Q))
+                            → EM 𝓤
+all-props-negative-gives-EM {𝓤} fe ϕ = DNE-gives-EM fe
+                                        (all-props-negative-gives-DNE fe ϕ)
 
 fe-and-em-give-propositional-truncations : FunExt
                                          → Excluded-Middle
@@ -364,6 +378,3 @@ Global-Choice'-gives-Global-Choice gc X = gc (X + ¬ X)
 \end{code}
 
 Global choice contradicts univalence.
-
-TODO. Show that weak excluded middle is equivalent to De Morgan's Law.
-https://ncatlab.org/nlab/show/De+Morgan+duality

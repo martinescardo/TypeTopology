@@ -11,7 +11,7 @@ We assume functional extensionality at level 𝓤.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import Groups.Type renaming (_≅_ to _≣_)
 open import MLTT.Spartan

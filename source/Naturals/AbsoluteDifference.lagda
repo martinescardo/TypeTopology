@@ -10,7 +10,7 @@ Expanded and refactored on 12 October 2023
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Naturals.AbsoluteDifference where
 

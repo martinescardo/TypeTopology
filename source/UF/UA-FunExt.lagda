@@ -11,7 +11,7 @@ depend on univalence.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module UF.UA-FunExt where
 
@@ -112,8 +112,8 @@ open import UF.Subsingletons-FunExt
                       → (q holds → p holds)
                       → p ＝ q
 Ω-ext-from-univalence {𝓤} ua {p} {q} = Ω-extensionality
-                                        (univalence-gives-funext ua)
                                         (univalence-gives-propext ua)
+                                        (univalence-gives-funext ua)
 \end{code}
 
 April 2020. How much function extensionality do we get from

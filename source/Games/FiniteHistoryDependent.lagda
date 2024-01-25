@@ -35,7 +35,7 @@ We assume a given type R of outcomes for games as a module parameter.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K #-} -- --exact-split
+{-# OPTIONS --safe --without-K #-} --
 
 open import MLTT.Spartan hiding (J)
 
@@ -193,11 +193,19 @@ is convenient to define this notion by induction on the game tree Xt:
 
 \begin{code}
 
-is-sgpe : {Xt : 𝑻} → 𝓚 Xt → (Path Xt → R) → Strategy Xt → Type
-is-sgpe {[]}     ⟨⟩        q ⟨⟩         = 𝟙
-is-sgpe {X ∷ Xf} (ϕ :: ϕf) q (x₀ :: σf) =
-   (subpred q x₀ (strategic-path (σf x₀)) ＝ ϕ (λ x → subpred q x (strategic-path (σf x))))
- × ((x : X) → is-sgpe {Xf x} (ϕf x) (subpred q x) (σf x))
+is-in-equilibrium : {X : Type} {Xf : X → 𝑻}
+                    (q : (Σ x ꞉ X , Path (Xf x)) → R)
+                    (ϕ : K X)
+                  → Strategy (X ∷ Xf)
+                  → Type
+is-in-equilibrium {X} {Xf} q ϕ σt@(x₀ :: σf)  =
+ subpred q x₀ (strategic-path (σf x₀)) ＝ ϕ (λ x → subpred q x (strategic-path (σf x)))
+
+is-in-sgpe : {Xt : 𝑻} → 𝓚 Xt → (Path Xt → R) → Strategy Xt → Type
+is-in-sgpe {[]}     ⟨⟩        q ⟨⟩            = 𝟙
+is-in-sgpe {X ∷ Xf} (ϕ :: ϕf) q σt@(x₀ :: σf) =
+   is-in-equilibrium q ϕ σt
+ × ((x : X) → is-in-sgpe {Xf x} (ϕf x) (subpred q x) (σf x))
 
 \end{code}
 
@@ -229,7 +237,7 @@ is in subgame perfect equilibrium.
 \begin{code}
 
 is-optimal : (G : Game) (σ : Strategy (Xt G)) → Type
-is-optimal (game Xt ϕt q) σ = is-sgpe {Xt} q ϕt σ
+is-optimal (game Xt ϕt q) σ = is-in-sgpe {Xt} q ϕt σ
 
 \end{code}
 
@@ -243,12 +251,12 @@ The following is Theorem 3.1 of reference [1].
 
 sgpe-lemma : Fun-Ext
            → (Xt : 𝑻) (ϕt : 𝓚 Xt) (q : Path Xt → R) (σ : Strategy Xt)
-           → is-sgpe ϕt q σ
+           → is-in-sgpe ϕt q σ
            → q (strategic-path σ) ＝ sequenceᴷ ϕt q
 sgpe-lemma fe []       ⟨⟩        q ⟨⟩        ⟨⟩       = refl
 sgpe-lemma fe (X ∷ Xf) (ϕ :: ϕt) q (a :: σf) (h :: t) = γ
  where
-  observation-t : type-of t ＝ ((x : X) → is-sgpe (ϕt x) (subpred q x) (σf x))
+  observation-t : type-of t ＝ ((x : X) → is-in-sgpe (ϕt x) (subpred q x) (σf x))
   observation-t = refl
 
   IH : (x : X) → subpred q x (strategic-path (σf x)) ＝ sequenceᴷ (ϕt x) (subpred q x)
@@ -422,7 +430,7 @@ main-lemma {X ∷ Xf} εt@(ε :: εf) q =
 
 selection-strategy-lemma : Fun-Ext
                          → {Xt : 𝑻} (εt : 𝓙 Xt) (q : Path Xt → R)
-                         → is-sgpe (Overline εt) q (selection-strategy εt q)
+                         → is-in-sgpe (Overline εt) q (selection-strategy εt q)
 selection-strategy-lemma fe {[]}     ⟨⟩           q = ⟨⟩
 selection-strategy-lemma fe {X ∷ Xf} εt@(ε :: εf) q = γ
  where
@@ -446,13 +454,13 @@ selection-strategy-lemma fe {X ∷ Xf} εt@(ε :: εf) q = γ
    where
     IV = ap (λ - → subpred q - (strategic-path (σf -))) II
 
-  IH : (x : X) → is-sgpe
+  IH : (x : X) → is-in-sgpe
                    (Overline (εf x))
                    (subpred q x)
                    (selection-strategy (εf x) (subpred q x))
   IH x = selection-strategy-lemma fe (εf x) (subpred q x)
 
-  γ : is-sgpe (Overline εt) q (x₀ :: σf)
+  γ : is-in-sgpe (Overline εt) q (x₀ :: σf)
   γ = (III ⁻¹) :: IH
 
 \end{code}
@@ -466,17 +474,17 @@ selection-strategy-theorem : Fun-Ext
                            → {Xt : 𝑻} (εt : 𝓙 Xt)
                              (ϕt : 𝓚 Xt) (q : Path Xt → R)
                            → εt Attains ϕt
-                           → is-sgpe ϕt q (selection-strategy εt q)
+                           → is-in-sgpe ϕt q (selection-strategy εt q)
 selection-strategy-theorem fe εt ϕt q a = III
  where
   I : Overline εt ＝ ϕt
   I = observation fe εt ϕt a
 
-  II : is-sgpe (Overline εt) q (selection-strategy εt q)
+  II : is-in-sgpe (Overline εt) q (selection-strategy εt q)
   II = selection-strategy-lemma fe εt q
 
-  III : is-sgpe ϕt q (selection-strategy εt q)
-  III = transport (λ - → is-sgpe - q (selection-strategy εt q)) I II
+  III : is-in-sgpe ϕt q (selection-strategy εt q)
+  III = transport (λ - → is-in-sgpe - q (selection-strategy εt q)) I II
 
 
 Selection-Strategy-Theorem : Fun-Ext

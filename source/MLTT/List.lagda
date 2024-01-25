@@ -6,7 +6,7 @@ Athenian in this respect.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K #-} -- --exact-split
+{-# OPTIONS --safe --without-K --no-exact-split #-}
 
 module MLTT.List where
 
@@ -91,6 +91,11 @@ member-map f x' (_ ∷ xs) (in-tail m) = in-tail (member-map f x' xs m)
 member' : {X : Type} → X → List X → Type
 member' y []       = 𝟘
 member' y (x ∷ xs) = (x ＝ y) + member y xs
+
+\end{code}
+
+
+\begin{code}
 
 member'-map : {X Y : Type} (f : X → Y) (x : X) (xs : List X)
             → member' x xs
@@ -293,5 +298,37 @@ Remove first occurrence:
          → member x xs
          → Vector' X n
  delete' {n} x (xs , p) m = remove x xs , remove-length x xs m n p
+
+\end{code}
+
+Added by Ayberk Tosun on 2023-10-16.
+
+\begin{code}
+
+right-concatenation-preserves-membership : {X : Type} (x : X) (xs ys : List X)
+                                         → member x xs → member x (xs ++ ys)
+right-concatenation-preserves-membership x xs@(x′ ∷ _)   ys in-head = in-head
+right-concatenation-preserves-membership x xs@(x′ ∷ xs′) ys (in-tail p) =
+ in-tail (right-concatenation-preserves-membership x xs′ ys p)
+
+left-concatenation-preserves-membership : {X : Type} (x : X) (xs ys : List X)
+                                      → member x xs → member x (ys ++ xs)
+left-concatenation-preserves-membership x xs []       p = p
+left-concatenation-preserves-membership x xs (y ∷ ys) p = †
+ where
+  † : member x (y ∷ (ys ++ xs))
+  † = in-tail (left-concatenation-preserves-membership x xs ys p)
+
+++-membership₁ : {X : Type} (x : X) (xs ys : List X)
+               → member x (xs ++ ys) → member x xs + member x ys
+++-membership₁ x []       zs p           = inr p
+++-membership₁ x (x ∷ ys) zs in-head     = inl in-head
+++-membership₁ x (y ∷ ys) zs (in-tail p) = cases † ‡ (++-membership₁ x ys zs p)
+ where
+  † : member x ys → member x (y ∷ ys) + member x zs
+  † p = inl (in-tail p)
+
+  ‡ : member x zs → member x (y ∷ ys) + member x zs
+  ‡ = inr
 
 \end{code}

@@ -7,7 +7,7 @@ TODO. Organaze this module better, following the organization of TicTacToe0.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K #-} -- --exact-split
+{-# OPTIONS --safe --without-K #-} --
 
 
 

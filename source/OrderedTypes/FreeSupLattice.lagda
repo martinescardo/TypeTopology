@@ -4,7 +4,7 @@ We construct the free 𝓥-sup-lattice on a set X : 𝓥 as the (𝓥-)powerset 
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 
@@ -17,7 +17,7 @@ open import UF.SubtypeClassifier-Properties
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
-module Posets.FreeSupLattice
+module OrderedTypes.FreeSupLattice
         (pt : propositional-truncations-exist)
        where
 

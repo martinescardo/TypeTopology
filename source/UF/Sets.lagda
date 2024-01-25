@@ -4,7 +4,7 @@ Sets (0-types).
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module UF.Sets where
 

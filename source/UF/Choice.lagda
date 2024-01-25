@@ -31,7 +31,7 @@ choice where X is a proposition (see https://arxiv.org/abs/1610.03346).
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 open import UF.DiscreteAndSeparated

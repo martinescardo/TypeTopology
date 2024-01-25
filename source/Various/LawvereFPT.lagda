@@ -19,7 +19,7 @@ See also the file Various.CantorTheoremForEmbeddings by Jon Sterling.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Various.LawvereFPT where
 

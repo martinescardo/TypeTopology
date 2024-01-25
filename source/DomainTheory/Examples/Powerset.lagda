@@ -10,7 +10,7 @@ finite subsets.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 
@@ -37,7 +37,7 @@ open import UF.Subsingletons-FunExt
 open import UF.SubtypeClassifier
 open import UF.SubtypeClassifier-Properties
 
-open import Posets.Poset fe
+open import OrderedTypes.Poset fe
 
 open binary-unions-of-subsets pt
 open canonical-map-from-lists-to-subsets X-is-set

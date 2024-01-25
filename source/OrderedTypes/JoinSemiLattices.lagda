@@ -7,9 +7,9 @@ the least element and binary joins.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
-module Posets.JoinSemiLattices where
+module OrderedTypes.JoinSemiLattices where
 
 open import MLTT.Spartan
 open import Fin.Type

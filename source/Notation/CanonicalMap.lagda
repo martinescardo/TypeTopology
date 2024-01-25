@@ -5,7 +5,7 @@ that a canonical map is something we decide to call a canonical map.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Notation.CanonicalMap where
 

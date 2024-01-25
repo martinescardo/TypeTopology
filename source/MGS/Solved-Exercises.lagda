@@ -7,7 +7,7 @@ This is ported from the Midlands Graduate School 2019 lecture notes
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module MGS.Solved-Exercises where
 
@@ -152,7 +152,7 @@ maps-of-singletons-are-equivs : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
 logically-equivalent-subsingletons-are-equivalent : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )
                                                   → is-subsingleton X
                                                   → is-subsingleton Y
-                                                  → X ⇔ Y
+                                                  → X ↔ Y
                                                   → X ≃ Y
 
 singletons-are-equivalent : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )
@@ -483,7 +483,7 @@ maps-of-singletons-are-equivs = sol
 logically-equivalent-subsingletons-are-equivalent = sol
  where
   sol : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )
-      → is-subsingleton X → is-subsingleton Y → X ⇔ Y → X ≃ Y
+      → is-subsingleton X → is-subsingleton Y → X ↔ Y → X ≃ Y
   sol  X Y i j (f , g) = invertibility-gives-≃ f
                           (g ,
                            (λ x → i (g (f x)) x) ,

@@ -12,7 +12,7 @@ range over such trees.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 module Games.TypeTrees where
 

@@ -8,7 +8,7 @@ Further properties and developments are in the file IdealCompletion-Properties.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan hiding (J)
 
@@ -25,7 +25,7 @@ module DomainTheory.IdealCompletion.IdealCompletion
        where
 
 open import DomainTheory.Basics.Dcpo pt fe 𝓥
-open import Posets.Poset fe
+open import OrderedTypes.Poset fe
 open import UF.Powerset
 open import UF.Sets
 open import UF.Sets-Properties
