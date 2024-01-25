@@ -207,9 +207,7 @@ modulus d α = succ (max-question d α)
 modulus₀ : (d : D ℕ ℕ ℕ) → (ℕ → ℕ) → ℕ
 modulus₀ d α = succ (max-question₀ d α)
 
-modulusᵀ : {Γ : Cxt}
-         → Γ ⊢ baire ⇒ ι
-         → B-context【 Γ 】 ι ⊢ (ι ⇒ ι) ⇒ ι
+modulusᵀ : 〈〉 ⊢ baire ⇒ ι → 〈〉 ⊢ (ι ⇒ ι) ⇒ ι
 modulusᵀ t = comp · Succ' · (max-questionᵀ · ⌜dialogue-tree⌝ t)
 
 \end{code}
