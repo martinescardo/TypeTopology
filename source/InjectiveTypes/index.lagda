@@ -71,6 +71,7 @@ import Iterative.Ordinals
 import InjectiveTypes.MathematicalStructures
 import InjectiveTypes.Sigma
 import InjectiveTypes.MathematicalStructuresMoreGeneral
+import InjectiveTypes.PointedDcpos
 
 \end{code}
 
