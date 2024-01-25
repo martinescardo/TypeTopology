@@ -184,28 +184,14 @@ max-question⋆-agreement (D.β φ n) α = †
 
 -- Re-factored to avoid using function extensionality together with Bruno Paiva.
 max-questionᵀ-agreement-with-max-question⋆ : ⟦ max-questionᵀ ⟧₀ ≡ max-question⋆
-max-questionᵀ-agreement-with-max-question⋆ {d} {d′} q {α} {β} eq  =
- ⟦ maxᵀ ⟧₀ 0 (d (λ _ → 0) (⟦ ƛ (ƛ (maxᵀ · ν₀ · (ν₁ · (ν₂ · ν₀)))) ⟧ (⟨⟩ ‚ d ‚ α))) ＝⟨ refl ⟩
- d (λ _ → 0) (⟦ ƛ (ƛ (maxᵀ · ν₀ · (ν₁ · (ν₂ · ν₀)))) ⟧ (⟨⟩ ‚ d ‚ α))               ＝⟨ † ⟩
- d′ (λ _ → 0) (λ g x → max x (g (β x)))                                            ＝⟨ refl ⟩
- max-question⋆ d′ β               ∎
-  where
-   foo : (f g : ℕ → ℕ)
-       → (k : f ≡ g) (a b : ℕ)
-       → a ＝ b
-       → ⟦ maxᵀ ⟧₀ a (f (α a)) ＝ max b (g (β b))
-   foo f g φ a a refl =
-    transport (λ - → ⟦ maxᵀ ⟧₀ a - ＝ max a (g (β a))) (bar ⁻¹) (maxᵀ-correct a (g (β a)))
-    -- ⟦ maxᵀ ⟧₀ a (f (α a)) ＝⟨ {!!} ⟩
-    -- max a (g (β a))       ∎
-     where
-      bar : f (α a) ＝ g (β a)
-      bar = φ (eq refl)
-
-   † :  d (λ _ → 0) (⟦ ƛ (ƛ (maxᵀ · ν₀ · (ν₁ · (ν₂ · ν₀)))) ⟧ (⟨⟩ ‚ d ‚ α))
-     ＝ d′ (λ _ → 0) (λ g x → max x (g (β x)))
-   † = q (λ _ → refl) λ {x₁ = f} {x₂ = g} k {a} {b} l → foo f g k a b l
-
+max-questionᵀ-agreement-with-max-question⋆ q {α} {β} eq = q (λ _ → refl) ‡
+ where
+  ‡ : {f g : ℕ → ℕ}
+    → (k : f ≡ g) {i j : ℕ} → i ＝ j → ⟦ maxᵀ ⟧₀ i (f (α i)) ＝ max j (g (β j))
+  ‡ {f} {g} φ {i} {_} refl = transport
+                              (λ - → ⟦ maxᵀ ⟧₀ i - ＝ max i (g (β i)))
+                              (φ (eq refl) ⁻¹)
+                              (maxᵀ-correct i (g (β i)))
 
 \end{code}
 
