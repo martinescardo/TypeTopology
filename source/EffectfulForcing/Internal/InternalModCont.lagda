@@ -28,7 +28,7 @@ open import EffectfulForcing.MFPSAndVariations.Continuity
 open import EffectfulForcing.MFPSAndVariations.ContinuityProperties fe
 open import EffectfulForcing.Internal.Correctness
  using (Rnorm-generic; is-dialogue-for; Rnorm-lemma₀; Rnorm;
-        dialogue-tree-agreement)
+        dialogue-tree-agreement; ⌜dialogue⌝)
 open import EffectfulForcing.Internal.External
  using (eloquence-theorem; dialogue-tree; ⟪⟫; B⟦_⟧; B⟦_⟧₀)
 open import EffectfulForcing.Internal.Subst
@@ -190,8 +190,21 @@ max-questionᵀ-agreement-with-max-question⋆ {d} {d′} q {α} {β} eq  =
  d′ (λ _ → 0) (λ g x → max x (g (β x)))                                            ＝⟨ refl ⟩
  max-question⋆ d′ β               ∎
   where
-   † : {!!}
-   † = q (λ _ → refl) {!!}
+   foo : (f g : ℕ → ℕ)
+       → (k : f ≡ g) (a b : ℕ)
+       → a ＝ b
+       → ⟦ maxᵀ ⟧₀ a (f (α a)) ＝ max b (g (β b))
+   foo f g φ a a refl =
+    transport (λ - → ⟦ maxᵀ ⟧₀ a - ＝ max a (g (β a))) (bar ⁻¹) (maxᵀ-correct a (g (β a)))
+    -- ⟦ maxᵀ ⟧₀ a (f (α a)) ＝⟨ {!!} ⟩
+    -- max a (g (β a))       ∎
+     where
+      bar : f (α a) ＝ g (β a)
+      bar = φ (eq refl)
+
+   † :  d (λ _ → 0) (⟦ ƛ (ƛ (maxᵀ · ν₀ · (ν₁ · (ν₂ · ν₀)))) ⟧ (⟨⟩ ‚ d ‚ α))
+     ＝ d′ (λ _ → 0) (λ g x → max x (g (β x)))
+   † = q (λ _ → refl) λ {x₁ = f} {x₂ = g} k {a} {b} l → foo f g k a b l
 
 
 \end{code}
@@ -279,15 +292,15 @@ file as it might be useful in the future.
 
 \begin{code}
 
-church-encode-to-D-rec : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {A : 𝓣  ̇}
-                     → (d : D X Y Z)
-                     → (η′ : Z → A)
-                     → (β′ : (Y → A) → X → A)
-                     → church-encode d η′ β′ ＝ D-rec η′ β′ d
-church-encode-to-D-rec (D.η _)   η′ β′ = refl
-church-encode-to-D-rec {Y = Y} (D.β φ x) η′ β′ = ap (λ - → β′ - x) {!!} -- (dfunext fe †)
- where
-  † : (y : Y) → church-encode (φ y) η′ β′ ＝ D-rec η′ β′ (φ y)
-  † y = church-encode-to-D-rec (φ y) η′ β′
+-- church-encode-to-D-rec : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {A : 𝓣  ̇}
+--                      → (d : D X Y Z)
+--                      → (η′ : Z → A)
+--                      → (β′ : (Y → A) → X → A)
+--                      → church-encode d η′ β′ ＝ D-rec η′ β′ d
+-- church-encode-to-D-rec (D.η _)   η′ β′ = refl
+-- church-encode-to-D-rec {Y = Y} (D.β φ x) η′ β′ = ap (λ - → β′ - x) {!!} -- (dfunext fe †)
+--  where
+--   † : (y : Y) → church-encode (φ y) η′ β′ ＝ D-rec η′ β′ (φ y)
+--   † y = church-encode-to-D-rec (φ y) η′ β′
 
 \end{code}
