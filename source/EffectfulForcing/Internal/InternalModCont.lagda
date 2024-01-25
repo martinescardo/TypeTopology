@@ -207,8 +207,8 @@ modulus d α = succ (max-question d α)
 modulus₀ : (d : D ℕ ℕ ℕ) → (ℕ → ℕ) → ℕ
 modulus₀ d α = succ (max-question₀ d α)
 
-modulusᵀ : 〈〉 ⊢ baire ⇒ ι → 〈〉 ⊢ (ι ⇒ ι) ⇒ ι
-modulusᵀ t = comp · Succ' · (max-questionᵀ · ⌜dialogue-tree⌝ t)
+modulusᵀ : 〈〉 ⊢ ⌜B⌝ ι ι ⇒ (ι ⇒ ι) ⇒ ι
+modulusᵀ = ƛ (comp · Succ' · (max-questionᵀ · ν₀))
 
 \end{code}
 
@@ -244,7 +244,7 @@ main-lemma t α =
    Ⅳ = max-question₀-agreement (dialogue-tree t) α
 
 internal-mod-cont-correct : (t : 〈〉 ⊢ (baire ⇒ ι)) (α β : 〈〉 ⊢ baire)
-                          → ⟦ α ⟧₀ ＝⦅ ⟦ modulusᵀ t · α ⟧₀ ⦆ ⟦ β ⟧₀
+                          → ⟦ α ⟧₀ ＝⦅ ⟦ modulusᵀ · (⌜dialogue-tree⌝ t) · α ⟧₀ ⦆ ⟦ β ⟧₀
                           → ⟦ t · α ⟧₀ ＝ ⟦ t ·  β ⟧₀
 internal-mod-cont-correct t α β p = †
  where
@@ -260,7 +260,7 @@ internal-mod-cont-correct t α β p = †
   m₀ : ℕ
   m₀ = succ (max-question₀ (dialogue-tree t) ⟦ α ⟧₀)
 
-  q : ⟦ modulusᵀ t · α ⟧₀ ＝ m₀
+  q : ⟦ modulusᵀ · (⌜dialogue-tree⌝ t) · α ⟧₀ ＝ m₀
   q = ap succ (main-lemma t ⟦ α ⟧₀)
 
   ‡ : ⟦ α ⟧₀ ＝⦅ m₀ ⦆ ⟦ β ⟧₀
