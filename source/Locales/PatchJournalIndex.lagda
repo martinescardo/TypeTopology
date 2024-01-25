@@ -112,3 +112,11 @@ defn∶spectral-locale : Locale 𝓤 𝓥 𝓦 → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 �
 defn∶spectral-locale = is-spectral
 
 \end{code}
+
+\begin{code}
+
+lemma-29 : (X : Locale (𝓤 ⁺) 𝓤 𝓤)
+         → {!!}
+lemma-29 = {!!}
+
+\end{code}
