@@ -11,7 +11,7 @@ operator.
 
 open import UF.FunExt
 
-module EffectfulForcing.Internal.InternalModCont where
+module EffectfulForcing.Internal.InternalModCont (fe : Fun-Ext) where
 
 open import MLTT.Spartan hiding (rec; _^_)
 open import MLTT.List
@@ -185,10 +185,13 @@ max-question⋆-agreement (D.β φ n) α = †
 -- Re-factored to avoid using function extensionality together with Bruno Paiva.
 max-questionᵀ-agreement-with-max-question⋆ : ⟦ max-questionᵀ ⟧₀ ≡ max-question⋆
 max-questionᵀ-agreement-with-max-question⋆ {d} {d′} q {α} {β} eq  =
- ⟦ maxᵀ ⟧₀ 0 (d (λ _ → 0) (⟦ ƛ (ƛ (maxᵀ · ν₀ · (ν₁ · (ν₂ · ν₀)))) ⟧ (⟨⟩ ‚ d ‚ α)))    ＝⟨ refl ⟩
- d (λ _ → 0) (⟦ ƛ (ƛ (maxᵀ · ν₀ · (ν₁ · (ν₂ · ν₀)))) ⟧ (⟨⟩ ‚ d ‚ α))    ＝⟨ {!!} ⟩
- d′ (λ _ → 0) (λ g x → max x (g (β x)))                    ＝⟨ refl ⟩
+ ⟦ maxᵀ ⟧₀ 0 (d (λ _ → 0) (⟦ ƛ (ƛ (maxᵀ · ν₀ · (ν₁ · (ν₂ · ν₀)))) ⟧ (⟨⟩ ‚ d ‚ α))) ＝⟨ refl ⟩
+ d (λ _ → 0) (⟦ ƛ (ƛ (maxᵀ · ν₀ · (ν₁ · (ν₂ · ν₀)))) ⟧ (⟨⟩ ‚ d ‚ α))               ＝⟨ † ⟩
+ d′ (λ _ → 0) (λ g x → max x (g (β x)))                                            ＝⟨ refl ⟩
  max-question⋆ d′ β               ∎
+  where
+   † : {!!}
+   † = q (λ _ → refl) {!!}
 
 
 \end{code}
