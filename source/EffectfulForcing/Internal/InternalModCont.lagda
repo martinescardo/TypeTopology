@@ -211,7 +211,7 @@ modulus⋆ : D⋆ ℕ ℕ ℕ ℕ → (ℕ → ℕ) → ℕ
 modulus⋆ d α = succ (max-question⋆ d α)
 
 modulusᵀ : 〈〉 ⊢ ⌜B⌝ ι ι ⇒ (ι ⇒ ι) ⇒ ι
-modulusᵀ = ƛ (comp · Succ' · (max-questionᵀ · ν₀))
+modulusᵀ = ƛ (ƛ (Succ' · (max-questionᵀ · ν₁ · ν₀)))
 
 \end{code}
 
