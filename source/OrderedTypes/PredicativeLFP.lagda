@@ -68,6 +68,30 @@ open PropositionalTruncation pt
 
 \end{code}
 
+We commence this file by defining what it means for a function to have a
+least fixed point.
+
+begin{code}
+
+module _ {𝓤 𝓦 𝓥 : Universe} (L : Sup-Lattice 𝓤 𝓦 𝓥) where
+
+ has-least-fixed-point : (f : ⟨ L ⟩ → ⟨ L ⟩) → 𝓤 ⊔ 𝓦  ̇
+ has-least-fixed-point f =  Σ p ꞉ ⟨ L ⟩ , (f p ＝ p) × ((a : ⟨ L ⟩)
+                                                      → (f a ＝ a)
+                                                      → (p ≤⟨ L ⟩ a) holds)
+
+ has-least-fixed-point-is-prop : (f : ⟨ L ⟩ → ⟨ L ⟩)
+                                → is-prop (has-least-fixed-point f) 
+ has-least-fixed-point-is-prop f (p₁ , fp₁ , l₁) (p₂ , fp₂ , l₂) =
+   to-subtype-＝
+     (λ x → ×-is-prop
+             (sethood-of L)
+             (Π-is-prop fe (λ y → Π-is-prop
+                                   fe (λ _ → holds-is-prop (x ≤⟨ L ⟩ y)))))
+     (antisymmetry-of L (l₁ p₂ fp₂) (l₂ p₁ fp₁))
+
+end{code}
+
 In the interest of self containment we open this file by defining a sup-lattice
 as well as some boiler plater which will prove useful.
 
@@ -267,69 +291,24 @@ module _ {𝓤 𝓦 𝓥 𝓣 : Universe}
    s-least-upper-bound (u , is-upbnd-T) = s-below-u
     where
      s-below-u : (s ≤⟨ L ⟩ u) holds
-     s-below-u = pr₂ (join-is-lub-of L (T' , T'-inclusion))
-                     ((u , λ i → is-upbnd-T (T'-to-T i)))
+     s-below-u = join-is-least-upper-bound-of
+                   L (T' , T'-inclusion) (u , λ i → is-upbnd-T (T'-to-T i))
 
 \end{code}
 
-We now show that reindexing across an equivalence does not change the join.
+We now show that reindexing families along a surjection preserves the supremum.
 
 \begin{code}
 
-module equivalent-families-have-same-join {𝓤 𝓦 𝓥 𝓣 𝓣' : Universe}
-                                          (L : Sup-Lattice 𝓤 𝓦 𝓥)
-                                          {T : 𝓣  ̇}
-                                          {T' : 𝓣'  ̇}
-                                          (e : T' ≃ T)
-                                          (m : T → ⟨ L ⟩)
-                                          where
+module _ {𝓤 𝓦 𝓥 𝓣 𝓣' : Universe}
+         (L : Sup-Lattice 𝓤 𝓦 𝓥)
+         {T : 𝓣  ̇}
+         {T' : 𝓣'  ̇}
+         (e : T' ↠ T)
+         (m : T → ⟨ L ⟩)
+          where
 
- _≤_ : ⟨ L ⟩ → ⟨ L ⟩ → Ω 𝓦
- _≤_ = order-of L
-
- ⋁_ : Fam 𝓥 ⟨ L ⟩ → ⟨ L ⟩
- ⋁_ = join-of L
-
- open Joins _≤_
-
- reindexing-along-equiv-＝-sup : (s s' : ⟨ L ⟩)
-                               → (s is-lub-of (T , m)) holds
-                               → (s' is-lub-of (T' , m ∘ ⌜ e ⌝ )) holds
-                               → s ＝ s'
- reindexing-along-equiv-＝-sup s s' (is-upbnd , is-least-upbnd)
-                        (is-upbnd' , is-least-upbnd') =
-   antisymmetry-of L s-≤-s' s'-≤-s
-  where
-   s-≤-s' : (s ≤ s') holds
-   s-≤-s' = is-least-upbnd (s' , λ t → transport (λ z → (z ≤ s') holds)
-                           (H t) (is-upbnd' (⌜ e ⌝⁻¹ t)))
-    where
-     H : (t : T) → m (⌜ e ⌝ (⌜ e ⌝⁻¹ t)) ＝ m t
-     H t = ap m (naive-inverses-are-sections ⌜ e ⌝ (⌜ e ⌝-is-equiv) t)
-   s'-≤-s : (s' ≤ s) holds
-   s'-≤-s = is-least-upbnd' (s , λ t' → is-upbnd (⌜ e ⌝ t'))
-
-\end{code}
-
-We can weaken the above result to a surjection.
-
-\begin{code}
-
-module surjection-implies-equal-joins {𝓤 𝓦 𝓥 𝓣 𝓣' : Universe}
-                                      (L : Sup-Lattice 𝓤 𝓦 𝓥)
-                                      {T : 𝓣  ̇}
-                                      {T' : 𝓣'  ̇}
-                                      (e : T' ↠ T)
-                                      (m : T → ⟨ L ⟩)
-                                      where
-
- _≤_ : ⟨ L ⟩ → ⟨ L ⟩ → Ω 𝓦
- _≤_ = order-of L
-
- ⋁_ : Fam 𝓥 ⟨ L ⟩ → ⟨ L ⟩
- ⋁_ = join-of L
-
- open Joins _≤_
+ open Joins (order-of L)
 
  reindexing-along-surj-＝-sup : (s s' : ⟨ L ⟩)
                               → (s is-lub-of (T , m)) holds
@@ -337,24 +316,51 @@ module surjection-implies-equal-joins {𝓤 𝓦 𝓥 𝓣 𝓣' : Universe}
                               → s ＝ s'
  reindexing-along-surj-＝-sup s s' (is-upbnd , is-least-upbnd)
                         (is-upbnd' , is-least-upbnd') =
-   antisymmetry-of L s-≤-s' s'-≤-s
+   antisymmetry-of L s-below-s' s'-below-s
   where
-   s-≤-s' : (s ≤ s') holds
-   s-≤-s' = is-least-upbnd (s' , λ t → map₂ t (⌞⌟-is-surjection e t))
+   s-below-s' : (s ≤⟨ L ⟩ s') holds
+   s-below-s' = is-least-upbnd (s' , λ t → map₂ t (⌞⌟-is-surjection e t))
     where
-     map₁ : (t : T) → Σ t' ꞉ T' , ⌞ e ⌟ t' ＝ t → (m t ≤ s') holds
-     map₁ t (t' , path) = transport (λ z → (m z ≤ s') holds) path (is-upbnd' t')
-     map₂ : (t : T) → (Ǝ t' ꞉ T' , ⌞ e ⌟ t' ＝ t) holds → (m t ≤ s') holds
-     map₂ t = ∥∥-rec (holds-is-prop (m t ≤ s')) (map₁ t)
-   s'-≤-s : (s' ≤ s) holds
-   s'-≤-s = is-least-upbnd' (s , λ t' → is-upbnd (⌞ e ⌟ t'))
+     map₁ : (t : T) → Σ t' ꞉ T' , ⌞ e ⌟ t' ＝ t → (m t ≤⟨ L ⟩ s') holds
+     map₁ t (t' , path) =
+       transport (λ z → (m z ≤⟨ L ⟩ s') holds) path (is-upbnd' t')
+     map₂ : (t : T) → (Ǝ t' ꞉ T' , ⌞ e ⌟ t' ＝ t) holds → (m t ≤⟨ L ⟩ s') holds
+     map₂ t = ∥∥-rec (holds-is-prop (m t ≤⟨ L ⟩ s')) (map₁ t)
+   s'-below-s : (s' ≤⟨ L ⟩ s) holds
+   s'-below-s = is-least-upbnd' (s , λ t' → is-upbnd (⌞ e ⌟ t'))
 
 \end{code}
 
-We now define a small basis for a sup-lattice as well as some boiler plate.
-This consists of a type B and a map q : B → L. In a sense to be made precise
-the pair B and q generate the sup-lattice. This notion is crucial for the
-development of predicative order theory.
+We can also show that reindexing along an equivalence preserves the supremum.
+This follows from the previous result as any equivalence can be demoted to a
+surjection.
+
+\begin{code}
+
+module _ {𝓤 𝓦 𝓥 𝓣 𝓣' : Universe}
+         (L : Sup-Lattice 𝓤 𝓦 𝓥)
+         {T : 𝓣  ̇}
+         {T' : 𝓣'  ̇}
+         (e : T' ≃ T)
+         (m : T → ⟨ L ⟩)
+          where
+
+ open Joins (order-of L)
+
+ reindexing-along-equiv-＝-sup : (s s' : ⟨ L ⟩)
+                               → (s is-lub-of (T , m)) holds
+                               → (s' is-lub-of (T' , m ∘ ⌜ e ⌝ )) holds
+                               → s ＝ s'
+ reindexing-along-equiv-＝-sup =
+   reindexing-along-surj-＝-sup
+     L (⌜ e ⌝ , equivs-are-surjections ⌜ e ⌝-is-equiv) m
+
+\end{code}
+
+We now define the notion of a small basis for a sup-lattice as well as some
+boiler plate. This consists of a type B and a map q : B → L. In a sense to be
+made precise we say the pair B and q generate the sup-lattice. This notion
+is crucial for the development of predicative order theory.
 
 \begin{code}
 
@@ -440,13 +446,9 @@ module small-basis {𝓤 𝓦 𝓥 : Universe}
 
   is-sup'ᴮ : (x : ⟨ L ⟩) → x ＝ ⋁ (small-↓ᴮ x , small-↓ᴮ-inclusion x)
   is-sup'ᴮ x = reindexing-along-equiv-＝-sup
-               x
-               (⋁ (small-↓ᴮ x , small-↓ᴮ-inclusion x))
-               (is-sup-↓ x)
-               (join-is-lub-of L ((small-↓ᴮ x , small-↓ᴮ-inclusion x)))
-   where
-    open equivalent-families-have-same-join L small-↓ᴮ-≃-↓ᴮ (↓ᴮ-inclusion x)
-                                            hiding (⋁_)
+                 L small-↓ᴮ-≃-↓ᴮ (↓ᴮ-inclusion x)
+                 x (⋁ (small-↓ᴮ x , small-↓ᴮ-inclusion x)) (is-sup-↓ x)
+                 (join-is-lub-of L ((small-↓ᴮ x , small-↓ᴮ-inclusion x)))
 
   is-supᴮ : (x : ⟨ L ⟩)
           → (x is-lub-of (small-↓ᴮ x , small-↓ᴮ-inclusion x)) holds
@@ -773,14 +775,11 @@ module local-inductive-definitions {𝓤 𝓦 𝓥 : Universe}
       f-is-least (u , is-upbnd) = (is-least-upper-boundᴮ (f x))
                                   (u , λ z → is-upbnd (⌜ equiv-1 x ⌝ z))
     H : (x : ⟨ L ⟩) → (Γ ϕ i) x ＝ f x
-    H x = reindexing-along-equiv-＝-sup ((Γ ϕ i) x)
-                                        (f x)
-                                        (sup-of-small-fam-is-lub
-                                          L (β ∘ S-to-base ϕ x) (i x))
-                                        (G x)
-     where
-      open equivalent-families-have-same-join L (id , id-is-equiv (S ϕ x))
-                                              (β ∘ S-to-base ϕ x)
+    H x = reindexing-along-equiv-＝-sup
+            L (id , id-is-equiv (S ϕ x)) (β ∘ S-to-base ϕ x)
+            ((Γ ϕ i) x) (f x)
+            (sup-of-small-fam-is-lub  L (β ∘ S-to-base ϕ x) (i x))
+            (G x)
 
   ind-def-from-mono-map : (f : ⟨ L ⟩ → ⟨ L ⟩)
                         → is-monotone L f
@@ -1299,15 +1298,13 @@ module bounded-inductive-definition {𝓤 𝓦 𝓥 : Universe}
                (b , ⋁ (α i , ↓ᴮ-inclusion a ∘ m)) ∈ ϕ) holds) holds
       map₁ a' p o (i , α-covers) = ∣ (i , ∣ (m , p') ∣) ∣
        where
-        open surjection-implies-equal-joins L α-covers (β ∘ pr₁)
-                                            hiding (⋁_ ; _≤_)
         m : α i → ↓ᴮ a
         m = ι a' o ∘ ⌞ α-covers ⌟
         path : a' ＝ ⋁ (α i , ↓ᴮ-inclusion a ∘ m)
-        path = reindexing-along-surj-＝-sup a'
-                                           (⋁ (α i , ↓ᴮ-inclusion a ∘ m))
-                                           (is-sup-↓ a')
-                                 (join-is-lub-of L (α i , ↓ᴮ-inclusion a ∘ m))
+        path = reindexing-along-surj-＝-sup
+                 L α-covers (β ∘ pr₁) 
+                 a' (⋁ (α i , ↓ᴮ-inclusion a ∘ m)) (is-sup-↓ a')
+                 (join-is-lub-of L (α i , ↓ᴮ-inclusion a ∘ m))
         p' : (b , ⋁ (α i , ↓ᴮ-inclusion a ∘ m)) ∈ ϕ
         p' = transport (λ z → (b , z) ∈ ϕ) path p
       map₂ : (a' : ⟨ L ⟩)
@@ -1680,11 +1677,10 @@ module 𝓘nd-is-small {𝓤 𝓦 𝓥 : Universe}
                                                 ∘ (transport (λ a'
                                                   → b' ≤ᴮ a') (a-＝-⋁-α ⁻¹))) 
          where
-          open surjection-implies-equal-joins L s (↓ᴮ-inclusion a)
-                                              hiding (⋁_)
           a-＝-⋁-α : a ＝ ⋁ (α i , ↓ᴮ-inclusion a ∘ ⌞ s ⌟)
           a-＝-⋁-α =
             reindexing-along-surj-＝-sup
+              L s (↓ᴮ-inclusion a)
               a (⋁ (α i , ↓ᴮ-inclusion a ∘ ⌞ s ⌟)) (is-sup-↓ a)
               (join-is-lub-of L (α i , ↓ᴮ-inclusion a ∘ ⌞ s ⌟))
         g'' : (Ǝ i ꞉ I₂ , α i is-a-small-cover-of ↓ᴮ a) holds
@@ -1937,12 +1933,12 @@ module density-of-monotone-maps {𝓤 𝓦 𝓥 : Universe}
                        (λ (x , f , f-is-equiv)
                         → ∣ (x , f , equivs-are-surjections f-is-equiv) ∣)
      H : (a : ⟨ L ⟩) → Γ ϕ ((ϕ bounded-implies-local) bnd) a ＝ f a
-     H a = reindexing-along-equiv-＝-sup (Γ ϕ ((ϕ bounded-implies-local) bnd) a)
-                                         (f a)
-                                         (sup-of-small-fam-is-lub
-                                           L (β ∘ S-to-base ϕ a)
-                                           ((ϕ bounded-implies-local) bnd a))
-                                         (is-supᴮ (f a))
+     H a = reindexing-along-equiv-＝-sup
+             L equiv (β ∘ (S-to-base ϕ a))
+             (Γ ϕ ((ϕ bounded-implies-local) bnd) a) (f a)
+             (sup-of-small-fam-is-lub L (β ∘ S-to-base ϕ a)
+                                      ((ϕ bounded-implies-local) bnd a))
+             (is-supᴮ (f a))
       where
        map : (b : B)
            → b ≤ᴮ f a
@@ -2072,7 +2068,6 @@ module density-of-monotone-maps {𝓤 𝓦 𝓥 : Universe}
                             × (a' ≤ a) holds))
              (map b)
              (map' b)
-       open equivalent-families-have-same-join L equiv (β ∘ (S-to-base ϕ a))
                                                 
 \end{code}
 
