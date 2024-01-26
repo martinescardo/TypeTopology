@@ -207,6 +207,9 @@ modulus d α = succ (max-question d α)
 modulus₀ : (d : D ℕ ℕ ℕ) → (ℕ → ℕ) → ℕ
 modulus₀ d α = succ (max-question₀ d α)
 
+modulus⋆ : D⋆ ℕ ℕ ℕ ℕ → (ℕ → ℕ) → ℕ
+modulus⋆ d α = succ (max-question⋆ d α)
+
 modulusᵀ : 〈〉 ⊢ ⌜B⌝ ι ι ⇒ (ι ⇒ ι) ⇒ ι
 modulusᵀ = ƛ (comp · Succ' · (max-questionᵀ · ν₀))
 
