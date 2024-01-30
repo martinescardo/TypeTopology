@@ -70,7 +70,7 @@ open PropositionalTruncation pt
 
 \end{code}
 
-We commence this file by defining what it means for a monotone endomap to have
+We commence by defining what it means for a monotone endomap to have
 a least fixed point.
 
 \begin{code}
@@ -94,13 +94,16 @@ module _ {𝓤 𝓦 𝓥 : Universe} (L : Sup-Lattice 𝓤 𝓦 𝓥) where
 
 \end{code}
 
-We construct the least closed subset of an inductive definition as a QIT.
-Since HITs are not native in Agda we will instead assume the existence of such
-a type as well as its induction principle. Technically speaking we are going
-to use record types to package the contents of this HIT. See below:
+We construct the least closed subset of an inductive definition as a QIT family.
+Since QITs (and more generally HITs) are not native in Agda we will instead
+assume the existence of such a type as well as its induction principle.
+Technically speaking we are going to use record types to package the contents
+of this QIT family. Notice all constructors are 'strictly positive' with
+respect to the type we are constructing. 
+See below:
   record inductively-generated-subset-exists
 
-Notice that the QIT has two constructors which representing the closure
+Notice that the QIT family has two constructors which represent the closure
 conditions we wish to impose on subsets. The c-closure condition says:
 for any subset contained in the least closed subset, elements in the downset of
 its join are in the least closed subset as well. That is, Y is c-closed if
@@ -110,9 +113,10 @@ if for any a : L and b : B with (b , a) ∈ ϕ and ↓ᴮ a 'contained' in the l
 closed subset then b is in the least closed subset. That is, Y is ϕ-closed if
   for any a : L and b : B we have ↓ᴮ a ⊆ Y ⇒ b ∈ Y.
 
-Note: It is worth noting that we don't encode the downsets as subsets in type
+It is worth noting that we don't encode the downsets as subsets in type
 theory (rather they are total spaces) so for that reason we won't encode the
-closure conditions exactly as above.
+closure conditions exactly as above (maybe add some notation to allow for
+more familiar form).
 
 We also derive the initiality of the least closed subset from the postulated
 induction principle. Initiality is closely related to the 'least' part of
@@ -252,8 +256,8 @@ is small.
 
 We then define an operator parameterized by local inductive definitions
 and prove that it is monotone. Finally, we show that any monotone endo map on
-the sup-lattice corresponds to a monotone operator and local inductive
-definition.
+a Sup Lattice corresponds to a monotone operator and corresponding local
+inductive definition.
 
 \begin{code}
 
@@ -280,19 +284,17 @@ module local-inductive-definitions {𝓤 𝓦 𝓥 : Universe}
   S-monotonicity-lemma : (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩))
                        → (x y : ⟨ L ⟩)
                        → (x ≤ y) holds
-                       → S ϕ x → S ϕ y
-  S-monotonicity-lemma ϕ x y o = I
-   where
-    I : S ϕ x → S ϕ y
-    I (b , c) = (b , II c)
-     where
-      II : (Ǝ a' ꞉ ⟨ L ⟩ , ((b , a') ∈ ϕ) × ((a' ≤ x) holds)) holds
-         → (Ǝ a' ꞉ ⟨ L ⟩ , ((b , a') ∈ ϕ) × ((a' ≤ y) holds)) holds
-      II = ∥∥-functor III
-       where
-        III : Σ a' ꞉ ⟨ L ⟩ , ((b , a') ∈ ϕ) × ((a' ≤ x) holds)
-            → Σ a' ꞉ ⟨ L ⟩ , ((b , a') ∈ ϕ) × ((a' ≤ y) holds)
-        III (a' , p , r) = (a' , p , transitivity-of L a' x y r o)
+                       → S ϕ x
+                       → S ϕ y
+  S-monotonicity-lemma ϕ x y o (b , c) = (b , inclusion c)
+    where
+     inclusion : (Ǝ a' ꞉ ⟨ L ⟩ , ((b , a') ∈ ϕ) × ((a' ≤ x) holds)) holds
+               → (Ǝ a' ꞉ ⟨ L ⟩ , ((b , a') ∈ ϕ) × ((a' ≤ y) holds)) holds
+     inclusion = ∥∥-functor untrunc-inclusion
+      where
+       untrunc-inclusion : Σ a' ꞉ ⟨ L ⟩ , ((b , a') ∈ ϕ) × ((a' ≤ x) holds)
+                         → Σ a' ꞉ ⟨ L ⟩ , ((b , a') ∈ ϕ) × ((a' ≤ y) holds)
+       untrunc-inclusion (a' , p , r) = (a' , p , transitivity-of L a' x y r o)
 
   S-has-sup-implies-monotone : (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩))
                              → (x y s s' : ⟨ L ⟩)
@@ -302,10 +304,10 @@ module local-inductive-definitions {𝓤 𝓦 𝓥 : Universe}
                              → (s ≤ s') holds
   S-has-sup-implies-monotone
     ϕ x y s s' o (is-upbnd , is-least-upbnd) (is-upbnd' , is-least-upbnd') =
-     is-least-upbnd (s' , I)
+     is-least-upbnd (s' , s'-is-upbnd)
    where
-    I : (s' is-an-upper-bound-of (S ϕ x , β ∘ S-to-base ϕ x)) holds
-    I (b , e) = is-upbnd' (S-monotonicity-lemma ϕ x y o ((b , e)))
+    s'-is-upbnd : (s' is-an-upper-bound-of (S ϕ x , β ∘ S-to-base ϕ x)) holds
+    s'-is-upbnd (b , e) = is-upbnd' (S-monotonicity-lemma ϕ x y o ((b , e)))
         
   _is-local : (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩)) → 𝓤 ⊔ 𝓦 ⊔ (𝓥 ⁺)  ̇
   ϕ is-local = (a : ⟨ L ⟩) → S ϕ a is 𝓥 small
@@ -337,12 +339,12 @@ module local-inductive-definitions {𝓤 𝓦 𝓥 : Universe}
 
    Γ-is-monotone : is-monotone L Γ
    Γ-is-monotone x y o =
-     S-has-sup-implies-monotone ϕ x y (Γ x) (Γ y) o I II
+     S-has-sup-implies-monotone ϕ x y (Γ x) (Γ y) o Γx-is-lub Γy-is-lub
     where
-     I : (Γ x is-lub-of (S ϕ x , β ∘ S-to-base ϕ x)) holds
-     I = sup-of-small-fam-is-lub L (β ∘ S-to-base ϕ x) (i x)      
-     II : (Γ y is-lub-of (S ϕ y , β ∘ S-to-base ϕ y)) holds
-     II = sup-of-small-fam-is-lub L (β ∘ S-to-base ϕ y) (i y)
+     Γx-is-lub : (Γ x is-lub-of (S ϕ x , β ∘ S-to-base ϕ x)) holds
+     Γx-is-lub = sup-of-small-fam-is-lub L (β ∘ S-to-base ϕ x) (i x)      
+     Γy-is-lub : (Γ y is-lub-of (S ϕ y , β ∘ S-to-base ϕ y)) holds
+     Γy-is-lub = sup-of-small-fam-is-lub L (β ∘ S-to-base ϕ y) (i y)
 
   mono-map-give-local-ind-def : (f : ⟨ L ⟩ → ⟨ L ⟩)
                               → is-monotone L f
@@ -354,50 +356,54 @@ module local-inductive-definitions {𝓤 𝓦 𝓥 : Universe}
     ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩)
     ϕ (b , a) = (Lift 𝓤 (b ≤ᴮ f a) ,
                  equiv-to-prop (Lift-≃ 𝓤 (b ≤ᴮ f a)) _≤ᴮ_-is-prop-valued )
-    I : (a : ⟨ L ⟩) → small-↓ᴮ (f a) ≃ S ϕ a
-    I a = Σ-cong' (λ z → z ≤ᴮ f a)
-                        ((λ z → (Ǝ a' ꞉ ⟨ L ⟩ ,
-                         (z , a') ∈ ϕ × (a' ≤ a) holds) holds)) II
+    ↓ᴮf-equiv-S-tot : (a : ⟨ L ⟩) → small-↓ᴮ (f a) ≃ S ϕ a
+    ↓ᴮf-equiv-S-tot a = Σ-cong' (λ z → z ≤ᴮ f a)
+                                ((λ z → (Ǝ a' ꞉ ⟨ L ⟩ ,
+                                 (z , a') ∈ ϕ
+                                 × (a' ≤ a) holds) holds)) ↓ᴮf-equiv-S
      where
-      II : (z : B)
-         → (z ≤ᴮ f a) ≃ (Ǝ a' ꞉ ⟨ L ⟩ ,
-                             (z , a') ∈ ϕ × (a' ≤ a) holds) holds
-      II z = ⌜ prop-≃-≃-↔ fe _≤ᴮ_-is-prop-valued ∥∥-is-prop ⌝⁻¹
-                  (III , IV)
+      ↓ᴮf-equiv-S : (z : B)
+                   → (z ≤ᴮ f a)
+                   ≃ (Ǝ a' ꞉ ⟨ L ⟩ , (z , a') ∈ ϕ × (a' ≤ a) holds) holds
+      ↓ᴮf-equiv-S z =
+        ⌜ prop-≃-≃-↔ fe _≤ᴮ_-is-prop-valued ∥∥-is-prop ⌝⁻¹ (↓ᴮf-to-S , S-to-↓ᴮf)
        where
-        III : z ≤ᴮ f a → (Ǝ a' ꞉ ⟨ L ⟩ , (z , a') ∈ ϕ × (a' ≤ a) holds) holds
-        III o = ∣ (a , ⌜ ≃-Lift 𝓤 (z ≤ᴮ f a) ⌝ o , reflexivity-of L a) ∣
-        IV : (Ǝ a' ꞉ ⟨ L ⟩ , (z , a') ∈ ϕ × (a' ≤ a) holds) holds → z ≤ᴮ f a
-        IV = ∥∥-rec _≤ᴮ_-is-prop-valued V
+        ↓ᴮf-to-S : z ≤ᴮ f a
+                 → (Ǝ a' ꞉ ⟨ L ⟩ , (z , a') ∈ ϕ × (a' ≤ a) holds) holds
+        ↓ᴮf-to-S o = ∣ (a , ⌜ ≃-Lift 𝓤 (z ≤ᴮ f a) ⌝ o , reflexivity-of L a) ∣
+        S-to-↓ᴮf : (Ǝ a' ꞉ ⟨ L ⟩ , (z , a') ∈ ϕ × (a' ≤ a) holds) holds
+                 → z ≤ᴮ f a
+        S-to-↓ᴮf = ∥∥-rec _≤ᴮ_-is-prop-valued S-to-↓ᴮf'
          where
-          V : Σ a' ꞉ ⟨ L ⟩ , (z , a') ∈ ϕ × (a' ≤ a) holds → z ≤ᴮ f a
-          V (a' , o , r) =
+          S-to-↓ᴮf' : Σ a' ꞉ ⟨ L ⟩ , (z , a') ∈ ϕ × (a' ≤ a) holds → z ≤ᴮ f a
+          S-to-↓ᴮf' (a' , o , r) =
              _≤_-to-_≤ᴮ_ (transitivity-of L (β z) (f a') (f a)
                                           (_≤ᴮ_-to-_≤_
                                             (⌜ ≃-Lift 𝓤 (z ≤ᴮ f a') ⌝⁻¹ o))
                                           (f-mono a' a r))
     i : ϕ is-local 
-    i a = (small-↓ᴮ (f a) , I a)
+    i a = (small-↓ᴮ (f a) , ↓ᴮf-equiv-S-tot a)
     G : (x : ⟨ L ⟩) → (f x is-lub-of (S ϕ x , β ∘ S-to-base ϕ x)) holds 
-    G x = (III , VI)
+    G x = (fx-is-upbnd , VI)
      where
-      III : (f x is-an-upper-bound-of (S ϕ x , β ∘ S-to-base ϕ x)) holds
-      III (b , e) = IV e
+      fx-is-upbnd : (f x is-an-upper-bound-of (S ϕ x , β ∘ S-to-base ϕ x)) holds
+      fx-is-upbnd (b , e) = S-to-fx-upbnd e
        where
-        IV : (Ǝ a' ꞉ ⟨ L ⟩ , (b , a') ∈ ϕ × (a' ≤ x) holds) holds
-           → (β b ≤ f x) holds
-        IV = ∥∥-rec (holds-is-prop (β b ≤ f x)) V
+        S-to-fx-upbnd : (Ǝ a' ꞉ ⟨ L ⟩ , (b , a') ∈ ϕ × (a' ≤ x) holds) holds
+                      → (β b ≤ f x) holds
+        S-to-fx-upbnd = ∥∥-rec (holds-is-prop (β b ≤ f x)) S-to-fx-upbnd'
          where
-          V : Σ a' ꞉ ⟨ L ⟩ , (b , a') ∈ ϕ × (a' ≤ x) holds
-                → (β b ≤ f x) holds
-          V (a' , o , r) = transitivity-of
-                             L (β b) (f a') (f x)
-                             (_≤ᴮ_-to-_≤_ (⌜ ≃-Lift 𝓤 (b ≤ᴮ f a') ⌝⁻¹ o))
-                             (f-mono a' x r)
+          S-to-fx-upbnd' : Σ a' ꞉ ⟨ L ⟩ , (b , a') ∈ ϕ × (a' ≤ x) holds
+                         → (β b ≤ f x) holds
+          S-to-fx-upbnd' (a' , o , r) =
+            transitivity-of
+               L (β b) (f a') (f x)
+               (_≤ᴮ_-to-_≤_ (⌜ ≃-Lift 𝓤 (b ≤ᴮ f a') ⌝⁻¹ o))
+               (f-mono a' x r)
       VI : ((u , _) : upper-bound (S ϕ x , β ∘ S-to-base ϕ x))
          → (f x ≤ u) holds
       VI (u , is-upbnd) = (is-least-upper-boundᴮ (f x))
-                                  (u , λ z → is-upbnd (⌜ I x ⌝ z))
+                            (u , λ z → is-upbnd (⌜ ↓ᴮf-equiv-S-tot x ⌝ z))
     H : (x : ⟨ L ⟩) → (Γ ϕ i) x ＝ f x
     H x = reindexing-along-equiv-＝-sup
             L (id , id-is-equiv (S ϕ x)) (β ∘ S-to-base ϕ x)
