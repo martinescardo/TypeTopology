@@ -98,9 +98,25 @@ module _ (pt : propositional-truncations-exist)
    ι : (ζ : I → Ordinal 𝓤) → {i : I} → ⟨ ζ i ⟩ → ⟨ sup ζ ⟩
    ι ζ {i} = pr₁ (sup-is-upper-bound ζ i)
 
-   ι-simulation : (ζ : I → Ordinal 𝓤) → {i : I}
-                → is-simulation (ζ i) (sup ζ ) (ι ζ)
-   ι-simulation ζ {i} = pr₂ (sup-is-upper-bound ζ i)
+   ι-is-simulation : (ζ : I → Ordinal 𝓤) → {i : I}
+                   → is-simulation (ζ i) (sup ζ ) (ι ζ)
+   ι-is-simulation ζ {i} = pr₂ (sup-is-upper-bound ζ i)
+
+   ι-is-order-preserving : (ζ : I → Ordinal 𝓤) {i : I}
+                         → is-order-preserving (ζ i) (sup ζ) (ι ζ)
+   ι-is-order-preserving ζ {i} = simulations-are-order-preserving (ζ i) (sup ζ) (ι ζ) (ι-is-simulation ζ)
+
+   ι-is-order-reflecting : (ζ : I → Ordinal 𝓤) {i : I}
+                         → is-order-reflecting (ζ i) (sup ζ) (ι ζ)
+   ι-is-order-reflecting ζ {i} = simulations-are-order-reflecting (ζ i) (sup ζ) (ι ζ) (ι-is-simulation ζ)
+
+   ι-is-lc : (ζ : I → Ordinal 𝓤) {i : I}
+           → left-cancellable (ι ζ)
+   ι-is-lc ζ {i} = simulations-are-lc (ζ i) (sup ζ) (ι ζ) (ι-is-simulation ζ)
+
+   ι-is-initial-segment : (ζ : I → Ordinal 𝓤) → {i : I}
+                        → is-initial-segment (ζ i) (sup ζ ) (ι ζ)
+   ι-is-initial-segment ζ {i} = simulations-are-initial-segments (ζ i) (sup ζ) (ι ζ) (ι-is-simulation ζ)
 
    ι-is-surjective : (ζ : I → Ordinal 𝓤) (s : ⟨ sup ζ ⟩)
                    → ∃ i ꞉ I , Σ x ꞉ ⟨ ζ i ⟩ , ι ζ {i} x ＝ s
@@ -110,7 +126,7 @@ module _ (pt : propositional-truncations-exist)
                     → s ≺⟨ sup ζ ⟩ ι ζ x
                     → Σ y ꞉ ⟨ ζ i ⟩ , ι ζ {i} y ＝ s
    ι-is-surjective⁺ ζ s i x p =
-    h (simulations-are-initial-segments (ζ i) (sup ζ) (ι ζ) (ι-simulation ζ) x s p)
+    h (simulations-are-initial-segments (ζ i) (sup ζ) (ι ζ) (ι-is-simulation ζ) x s p)
     where
      h : Σ y ꞉ ⟨ ζ i ⟩ , y ≺⟨ ζ i ⟩ x × (ι ζ y ＝ s)
        → Σ y ꞉ ⟨ ζ i ⟩ , ι ζ {i} y ＝ s
@@ -157,6 +173,80 @@ module _ (pt : propositional-truncations-exist)
        → Σ i ꞉ I , Σ l' ꞉ List (⟨ α ×ₒ β i ⟩) , (a , s ∷ l) ＝ f₁ i l'
      h (i , b , refl) = i , (f₁-surj-lemma a i b l δ)
 
+   f-is-order-preserving : (i : I) → is-order-preserving (γ i) ([𝟙+ α ]^ (sup β)) (f i)
+   f-is-order-preserving i ([] , δ) (_ , ε) []-lex = []-lex
+   f-is-order-preserving i ((a , b ∷ l) , δ) ((a' , b' ∷ l') , ε) (head-lex (inl m)) = head-lex (inl (ι-is-order-preserving β b b' m))
+   f-is-order-preserving i ((a , b ∷ l) , δ) ((a' , b' ∷ l') , ε) (head-lex (inr (refl , m))) = head-lex (inr (refl , m))
+   f-is-order-preserving i ((_ ∷ l) , δ) ((_ ∷ l') , ε) (tail-lex refl m) =
+     tail-lex refl (f-is-order-preserving i (l , is-decreasing-tail (underlying-order (β i)) δ) (l' , is-decreasing-tail (underlying-order (β i)) ε) m)
+
+   f-is-order-reflecting : (i : I) → is-order-reflecting (γ i) ([𝟙+ α ]^ (sup β)) (f i)
+   f-is-order-reflecting i ([] , δ) ((a , b ∷ l) , ε) []-lex = []-lex
+   f-is-order-reflecting i ((a , b ∷ l) , δ) ((a' , b' ∷ l') , ε) (head-lex (inl m)) = head-lex (inl (ι-is-order-reflecting β b b' m))
+   f-is-order-reflecting i ((a , b ∷ l) , δ) ((a' , b' ∷ l') , ε) (head-lex (inr (e , m))) = head-lex (inr (ι-is-lc β e , m))
+   f-is-order-reflecting i ((a , b ∷ l) , δ) ((a' , b' ∷ l') , ε) (tail-lex e m) =
+    tail-lex (to-×-＝ (ap pr₁ e) (ι-is-lc β (ap pr₂ e)))
+    (f-is-order-reflecting i (l , is-decreasing-tail (underlying-order (β i)) δ) (l' , is-decreasing-tail (underlying-order (β i)) ε) m)
+
+   -- We factor out:
+   partial-invertibility-lemma : (i : I) -- (a : ⟨ α ⟩) (b : ⟨ β i ⟩)
+                               → (l : List (⟨ α ×ₒ β i ⟩))
+                               → is-decreasing-pr₂ α (sup β) (f₁ i l) -- (f₁ i (a , b ∷ l))
+                               → is-decreasing-pr₂ α (β i) l -- (a , b ∷ l)                               
+   partial-invertibility-lemma = {!!}
+
+   -- TODO: Prove this general simulation criterion and factor it out
+   f-is-partially-invertible : (i : I) → (x : ⟨ γ i ⟩) (y : ⟨ [𝟙+ α ]^ (sup β) ⟩)
+                             → y ≺⟨ [𝟙+ α ]^ (sup β) ⟩ f i x
+                             → Σ x' ꞉ ⟨ γ i ⟩ , f i x' ＝ y
+   f-is-partially-invertible i ((a , b ∷ l) , δ) ([] , []-decr) []-lex = ([] , []-decr) , refl
+   f-is-partially-invertible i ((a , b ∷ l) , δ) ((a' , b' ∷ l') , ε) (head-lex (inl m)) =
+    ((a' , b'' ∷ l'') , partial-invertibility-lemma i (a' , b'' ∷ l'') {!!}) , {!!}
+     where
+      {-
+        b'' > pr₂ (head l'')
+        b' > pr₂ (head l')
+        b > pr₂ (head l)
+
+        b' = ι b''
+        pr₂ (head l') = ι c
+
+        ι b'' > ι c, so b'' > c
+
+        ι (pr₂ (head l'')) =  pr₂ (head l') = c
+
+        want: b'' > pr₂ (head l'')
+        We know: ι b'' > ι c = ι (pr₂ (head l'')) and now use order-reflecting
+      -}     
+      IH : Σ l'' ꞉ ⟨ γ i ⟩ , (f i l'' ＝ l' , _)
+      IH = f-is-partially-invertible i ((a , b ∷ l) , δ) (l' , is-decreasing-tail (underlying-order (sup β)) ε) {!!}
+      l'' = pr₁ (pr₁ IH)
+      sim : Σ b'' ꞉ ⟨ β i ⟩ , b'' ≺⟨ β i ⟩ b
+                            × (ι β b'' ＝ b')
+      sim = ι-is-initial-segment β b b' m
+      b'' = pr₁ sim    
+   f-is-partially-invertible i ((a , b ∷ l) , δ) ((a' , b' ∷ l') , ε) (head-lex (inr m)) = {!!}
+   f-is-partially-invertible i ((a , b ∷ l) , δ) ((a' , b' ∷ l') , ε) (tail-lex x m) = {!!}
+
+{-
+   f-is-initial-segment : (i : I) → is-initial-segment (γ i) ([𝟙+ α ]^ (sup β)) (f i)
+   f-is-initial-segment i ((a , b ∷ l) , δ) ([] , []-decr) []-lex = ([] , []-decr) , ([]-lex , refl)
+   f-is-initial-segment i ((a , b ∷ l) , δ) ((a' , b' ∷ l') , ε) (head-lex (inl m)) =
+    ((a' , b'' ∷ l'') , {!!}) ,
+    (head-lex (inl (pr₁ (pr₂ sim))) ,
+    to-exponential-＝ α (sup β) (ap₂ (λ x y → a' , x ∷ y) (pr₂ (pr₂ sim)) (ap pr₁ (pr₂ (pr₂ IH)))))
+     where
+      IH : Σ l'' ꞉ ⟨ γ i ⟩ , l'' ≺⟨ γ i ⟩ ((a , b ∷ l) , δ)
+                           × (f i l'' ＝ l' , _)
+      IH = f-is-initial-segment i ((a , b ∷ l) , δ) (l' , {!!}) {!!}
+      l'' = pr₁ (pr₁ IH)
+      sim : Σ b'' ꞉ ⟨ β i ⟩ , b'' ≺⟨ β i ⟩ b
+                            × (ι β b'' ＝ b')
+      sim = ι-is-initial-segment β b b' m
+      b'' = pr₁ sim
+   f-is-initial-segment i ((a , b ∷ l) , δ) ((a' , b' ∷ l') , ε) (head-lex (inr m)) = {!!}
+   f-is-initial-segment i ((a , b ∷ l) , δ) (.(_ ∷ _) , ε) (tail-lex x l'-below-fl) = {!!}
+-}
 
 --  exp-sup-is-upper-bound : (i : I) → γ i ⊴ ([𝟙+ α ]^ (sup β))
 --  exp-sup-is-upper-bound i = f i , {!!} , {!!}
