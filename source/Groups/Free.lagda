@@ -582,7 +582,7 @@ a general setting.
 \begin{code}
 
  open import Relations.SRTclosure public
- open import Relations.ChurchRosser {𝓤} {𝓤} _▷_ public
+ open import Relations.ChurchRosser _▷_ public
 
 \end{code}
 
