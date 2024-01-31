@@ -384,7 +384,7 @@ module local-inductive-definitions {𝓤 𝓦 𝓥 : Universe}
     i : ϕ is-local 
     i a = (small-↓ᴮ (f a) , ↓ᴮf-equiv-S-tot a)
     G : (x : ⟨ L ⟩) → (f x is-lub-of (S ϕ x , β ∘ S-to-base ϕ x)) holds 
-    G x = (fx-is-upbnd , VI)
+    G x = (fx-is-upbnd , fx-is-least-upbnd)
      where
       fx-is-upbnd : (f x is-an-upper-bound-of (S ϕ x , β ∘ S-to-base ϕ x)) holds
       fx-is-upbnd (b , e) = S-to-fx-upbnd e
@@ -400,10 +400,11 @@ module local-inductive-definitions {𝓤 𝓦 𝓥 : Universe}
                L (β b) (f a') (f x)
                (_≤ᴮ_-to-_≤_ (⌜ ≃-Lift 𝓤 (b ≤ᴮ f a') ⌝⁻¹ o))
                (f-mono a' x r)
-      VI : ((u , _) : upper-bound (S ϕ x , β ∘ S-to-base ϕ x))
-         → (f x ≤ u) holds
-      VI (u , is-upbnd) = (is-least-upper-boundᴮ (f x))
-                            (u , λ z → is-upbnd (⌜ ↓ᴮf-equiv-S-tot x ⌝ z))
+      fx-is-least-upbnd : ((u , _) : upper-bound (S ϕ x , β ∘ S-to-base ϕ x))
+                        → (f x ≤ u) holds
+      fx-is-least-upbnd (u , is-upbnd) =
+        (is-least-upper-boundᴮ (f x))
+            (u , λ z → is-upbnd (⌜ ↓ᴮf-equiv-S-tot x ⌝ z))
     H : (x : ⟨ L ⟩) → (Γ ϕ i) x ＝ f x
     H x = reindexing-along-equiv-＝-sup
             L (id , id-is-equiv (S ϕ x)) (β ∘ S-to-base ϕ x)
@@ -884,54 +885,43 @@ module bounded-inductive-definition {𝓤 𝓦 𝓥 : Universe}
         → (Ǝ i ꞉ I , (α i is-a-small-cover-of ↓ᴮ a)) holds
     cov = covering-condition {ϕ} ϕ-has-bound
     S₀ : 𝓤 ⊔ 𝓦 ⊔ 𝓥  ̇
-    S₀ = Σ b ꞉ B , (Ǝ i ꞉ I , (Ǝ m ꞉ (α i → ↓ᴮ a) ,
-                   (b , ⋁ (α i , ↓ᴮ-inclusion a ∘ m)) ∈ ϕ) holds) holds
+    S₀ = Σ b ꞉ B , (Ǝ i ꞉ I , (Σ m ꞉ (α i → ↓ᴮ a) ,
+                   (b , ⋁ (α i , ↓ᴮ-inclusion a ∘ m)) ∈ ϕ)) holds
     S₀-is-small : S₀ is 𝓥 small
     S₀-is-small =
-     Σ-is-small (B , ≃-refl B)
-                (λ b → ∥∥-is-small pt (Σ-is-small (I , ≃-refl I)
-                       λ i → ∥∥-is-small pt
-                             (Σ-is-small (Π-is-small (fe') (α i , ≃-refl (α i))
-                             λ _ → ↓ᴮ-is-small)
-                             λ m → ϕ-small (⋁ (α i , ↓ᴮ-inclusion a ∘ m)) b)))
+      Σ-is-small
+        (B , ≃-refl B)
+        (λ b → ∥∥-is-small pt
+                (Σ-is-small (I , ≃-refl I)
+                 (λ i → Σ-is-small
+                  (Π-is-small fe' (α i , ≃-refl (α i))
+                   (λ _ → ↓ᴮ-is-small))
+                  (λ m → ϕ-small (⋁ (α i , ↓ᴮ-inclusion a ∘ m)) b))))
 
     S₀-to-S : S₀ → S ϕ a
-    S₀-to-S (b , e) = (b , V e)
+    S₀-to-S (b , e) = (b , ∥∥-functor u e)
      where
-      II : (i : I)
-           → (Σ m ꞉ (α i → ↓ᴮ a) , (b , (⋁ (α i , ↓ᴮ-inclusion a ∘ m))) ∈ ϕ)
-           → (Ǝ a' ꞉ ⟨ L ⟩ , (b , a') ∈ ϕ × (a' ≤ a) holds) holds
-      II i (m , p) =
-        ∣ (⋁ (α i , ↓ᴮ-inclusion a ∘ m) , p ,
-          (join-is-least-upper-bound-of L (α i , ↓ᴮ-inclusion a ∘ m))
-                                        (a , λ z → is-upper-bound-↓ a (m z))) ∣
-      III : (i : I)
-           → (Ǝ m ꞉ (α i → ↓ᴮ a) ,
-             (b , (⋁ (α i , ↓ᴮ-inclusion a ∘ m))) ∈ ϕ) holds
-           → (Ǝ a' ꞉ ⟨ L ⟩ , (b , a') ∈ ϕ × (a' ≤ a) holds) holds
-      III i = ∥∥-rec ∥∥-is-prop (II i)
-      IV : Σ i ꞉ I , (Ǝ m ꞉ (α i → ↓ᴮ a) ,
-              (b , (⋁ (α i , ↓ᴮ-inclusion a ∘ m))) ∈ ϕ) holds
-           → (Ǝ a' ꞉ ⟨ L ⟩ , (b , a') ∈ ϕ × (a' ≤ a) holds) holds
-      IV = uncurry III
-      V : (Ǝ i ꞉ I , (Ǝ m ꞉ (α i → ↓ᴮ a) ,
-              (b , ⋁ (α i , ↓ᴮ-inclusion a ∘ m)) ∈ ϕ) holds) holds
-           → (Ǝ a' ꞉ ⟨ L ⟩ , (b , a') ∈ ϕ × (a' ≤ a) holds) holds
-      V = ∥∥-rec ∥∥-is-prop IV
+      u : Σ i ꞉ I , Σ m ꞉ (α i → ↓ᴮ a) ,
+            (b , (⋁ (α i , ↓ᴮ-inclusion a ∘ m))) ∈ ϕ
+        → Σ a' ꞉ ⟨ L ⟩ , (b , a') ∈ ϕ × (a' ≤ a) holds
+      u (i , m , p) =
+       (⋁ (α i , ↓ᴮ-inclusion a ∘ m) , p ,
+        join-is-least-upper-bound-of L (α i , ↓ᴮ-inclusion a ∘ m)
+                                     (a , λ z → is-upper-bound-↓ a (m z)))
 
     S-to-S₀ : S ϕ a → S₀
-    S-to-S₀ (b , e) = (b , V e)
+    S-to-S₀ (b , e) = (b , t e)
      where
-      inclusion : (a' : ⟨ L ⟩) → (a' ≤ a) holds → ↓ᴮ a' → ↓ᴮ a
-      inclusion a' o (x , r) = (x , transitivity-of L (β x) a' a r o)
-      II : (a' : ⟨ L ⟩)
-        →  (b , a') ∈ ϕ
+      g : (a' : ⟨ L ⟩)
+        → (b , a') ∈ ϕ
         → (a' ≤ a) holds
-        → (Σ i ꞉ I , (α i is-a-small-cover-of ↓ᴮ a'))
-        → (Ǝ i ꞉ I , (Ǝ m ꞉ (α i → ↓ᴮ a) ,
-            (b , ⋁ (α i , ↓ᴮ-inclusion a ∘ m)) ∈ ϕ) holds) holds
-      II a' p o (i , α-covers) = ∣ (i , ∣ (m , in-ϕ) ∣) ∣
+        → Σ i ꞉ I , (α i is-a-small-cover-of ↓ᴮ a')
+        → Σ i ꞉ I , (Σ m ꞉ (α i → ↓ᴮ a) ,
+            (b , ⋁ (α i , ↓ᴮ-inclusion a ∘ m)) ∈ ϕ)
+      g a' p o (i , α-covers) = (i , m , in-ϕ) 
        where
+        inclusion : (a' : ⟨ L ⟩) → (a' ≤ a) holds → ↓ᴮ a' → ↓ᴮ a
+        inclusion a' o (x , r) = (x , transitivity-of L (β x) a' a r o)
         m : α i → ↓ᴮ a
         m = inclusion a' o ∘ ⌞ α-covers ⌟
         path : a' ＝ ⋁ (α i , ↓ᴮ-inclusion a ∘ m)
@@ -941,21 +931,21 @@ module bounded-inductive-definition {𝓤 𝓦 𝓥 : Universe}
                  (join-is-lub-of L (α i , ↓ᴮ-inclusion a ∘ m))
         in-ϕ : (b , ⋁ (α i , ↓ᴮ-inclusion a ∘ m)) ∈ ϕ
         in-ϕ = transport (λ z → (b , z) ∈ ϕ) path p
-      III : (a' : ⟨ L ⟩)
-          → (b , a') ∈ ϕ
-          → (a' ≤ a) holds
-          → (Ǝ i ꞉ I , (α i is-a-small-cover-of ↓ᴮ a')) holds
-          → (Ǝ i ꞉ I , (Ǝ m ꞉ (α i → ↓ᴮ a) ,
-            (b , (⋁ (α i , ↓ᴮ-inclusion a ∘ m))) ∈ ϕ) holds) holds
-      III a' p o = ∥∥-rec ∥∥-is-prop (II a' p o)
-      IV : Σ a' ꞉ ⟨ L ⟩ , (b , a') ∈ ϕ × (a' ≤ a) holds
-         → (Ǝ i ꞉ I , (Ǝ m ꞉ (α i → ↓ᴮ a) ,
-            (b , ⋁ (α i , ↓ᴮ-inclusion a ∘ m)) ∈ ϕ) holds) holds
-      IV (a' , p , o) = III a' p o (cov a' b p)
-      V : (Ǝ a' ꞉ ⟨ L ⟩ , (b , a') ∈ ϕ × (a' ≤ a) holds) holds
-        → (Ǝ i ꞉ I , (Ǝ m ꞉ (α i → ↓ᴮ a) ,
-           (b , ⋁ (α i , ↓ᴮ-inclusion a ∘ m)) ∈ ϕ) holds) holds
-      V = ∥∥-rec ∥∥-is-prop IV
+      trunc-g : (a' : ⟨ L ⟩)
+              → (b , a') ∈ ϕ
+              → (a' ≤ a) holds
+              → (Ǝ i ꞉ I , (α i is-a-small-cover-of ↓ᴮ a')) holds
+              → (Ǝ i ꞉ I , (Σ m ꞉ (α i → ↓ᴮ a) ,
+                   (b , ⋁ (α i , ↓ᴮ-inclusion a ∘ m)) ∈ ϕ)) holds
+      trunc-g a' p o = ∥∥-functor (g a' p o)
+      cur-trunc-g : Σ a' ꞉ ⟨ L ⟩ , (b , a') ∈ ϕ × (a' ≤ a) holds
+                  → (Ǝ i ꞉ I , Σ m ꞉ (α i → ↓ᴮ a) ,
+                       (b , ⋁ (α i , ↓ᴮ-inclusion a ∘ m)) ∈ ϕ) holds
+      cur-trunc-g (a' , p , o) = trunc-g a' p o (cov a' b p)
+      t : (Ǝ a' ꞉ ⟨ L ⟩ , (b , a') ∈ ϕ × (a' ≤ a) holds) holds
+        → (Ǝ i ꞉ I , Σ m ꞉ (α i → ↓ᴮ a) ,
+            (b , ⋁ (α i , ↓ᴮ-inclusion a ∘ m)) ∈ ϕ) holds
+      t = ∥∥-rec ∥∥-is-prop cur-trunc-g
 
     S₀-equiv-S : S₀ ≃ S ϕ a
     S₀-equiv-S =
@@ -1344,14 +1334,14 @@ module 𝓘nd-is-small {𝓤 𝓦 𝓥 : Universe}
                         (ϕ-is-small-forward (⋁ (α i , β ∘ m)) b s) C
 
     𝓘nd-is-small : (b : B) → (b ∈ 𝓘nd) is 𝓥 small
-    𝓘nd-is-small b = (b ∈ Small-𝓘nd , equiv)
+    𝓘nd-is-small b = (b ∈ Small-𝓘nd , small-𝓘nd-equiv-𝓘nd)
      where
-      equiv : b ∈ Small-𝓘nd ≃ b ∈ 𝓘nd
-      equiv = logically-equivalent-props-are-equivalent
-               (holds-is-prop (Small-𝓘nd b))
-               (holds-is-prop (𝓘nd b))
-               (Small-𝓘nd-⊆-𝓘nd b)
-               (𝓘nd-⊆-Small-𝓘nd b)
+      small-𝓘nd-equiv-𝓘nd : b ∈ Small-𝓘nd ≃ b ∈ 𝓘nd
+      small-𝓘nd-equiv-𝓘nd = logically-equivalent-props-are-equivalent
+                              (holds-is-prop (Small-𝓘nd b))
+                              (holds-is-prop (𝓘nd b))
+                              (Small-𝓘nd-⊆-𝓘nd b)
+                              (𝓘nd-⊆-Small-𝓘nd b)
 
 \end{code}
 
@@ -1507,8 +1497,8 @@ module density-of-monotone-maps {𝓤 𝓦 𝓥 : Universe}
   open bounded-from-small-basis-facts h
   open local-from-small-basis-facts h
 
-  is-dense : (f : ⟨ L ⟩ → ⟨ L ⟩) → 𝓤 ⊔ 𝓥  ̇
-  is-dense f = (b : B)
+  is-dense' : (f : ⟨ L ⟩ → ⟨ L ⟩) → 𝓤 ⊔ 𝓥  ̇
+  is-dense' f = (b : B)
              → (a : ⟨ L ⟩)
              → b ≤ᴮ f a
              → (Ǝ x ꞉ B , b ≤ᴮ f (β x) × x ≤ᴮ a) holds
@@ -1522,22 +1512,26 @@ module density-of-monotone-maps {𝓤 𝓦 𝓥 : Universe}
                           → b ≤ᴮ f a
                           → (Ǝ i ꞉ I , b ≤ᴮ f (γ i) × (γ i ≤ a) holds) holds
 
-  is-dense' : (f : ⟨ L ⟩ → ⟨ L ⟩) → 𝓤 ⊔ 𝓦 ⊔ (𝓥 ⁺)  ̇
-  is-dense' f = Σ I ꞉ 𝓥  ̇ , Σ γ ꞉ (I → ⟨ L ⟩) , density-condition f I γ
+  is-dense : (f : ⟨ L ⟩ → ⟨ L ⟩) → 𝓤 ⊔ 𝓦 ⊔ (𝓥 ⁺)  ̇
+  is-dense f = Σ I ꞉ 𝓥  ̇ , Σ γ ꞉ (I → ⟨ L ⟩) , density-condition f I γ
 
-  module locally-small-assumption (l-small : ⟨ L ⟩ is-locally 𝓥 small) where
+  module _ (l-small : ⟨ L ⟩ is-locally 𝓥 small) where
 
-   _＝ˢ_ : ⟨ L ⟩ → ⟨ L ⟩ → 𝓥 ̇
-   x ＝ˢ y = resized (x ＝ y) (l-small x y)
+   private 
+    _＝ˢ_ : ⟨ L ⟩ → ⟨ L ⟩ → 𝓥 ̇
+    x ＝ˢ y = resized (x ＝ y) (l-small x y)
 
-   ＝ˢ-equiv-＝ : (x y : ⟨ L ⟩) → (x ＝ˢ y) ≃ (x ＝ y)
-   ＝ˢ-equiv-＝ x y = resizing-condition (l-small x y)
+    ＝ˢ-equiv-＝ : {x y : ⟨ L ⟩} → (x ＝ˢ y) ≃ (x ＝ y)
+    ＝ˢ-equiv-＝ {x} {y} = resizing-condition (l-small x y)
 
-   ＝ˢ-to-＝ : (x y : ⟨ L ⟩) → (x ＝ˢ y) → (x ＝ y)
-   ＝ˢ-to-＝ x y = ⌜ ＝ˢ-equiv-＝ x y ⌝
+    ＝ˢ-to-＝ : {x y : ⟨ L ⟩} → (x ＝ˢ y) → (x ＝ y)
+    ＝ˢ-to-＝ = ⌜ ＝ˢ-equiv-＝ ⌝
+ 
+    ＝-to-＝ˢ : {x y : ⟨ L ⟩} → (x ＝ y) → (x ＝ˢ y)
+    ＝-to-＝ˢ = ⌜ ＝ˢ-equiv-＝ ⌝⁻¹
 
-   ＝-to-＝ˢ : (x y : ⟨ L ⟩) → (x ＝ y) → (x ＝ˢ y)
-   ＝-to-＝ˢ x y = ⌜ ＝ˢ-equiv-＝ x y ⌝⁻¹
+    ＝ˢ-refl : {x : ⟨ L ⟩} → x ＝ˢ x
+    ＝ˢ-refl = ＝-to-＝ˢ refl
 
    dense-implies-bounded : (f : ⟨ L ⟩ → ⟨ L ⟩)
                          → is-monotone L f
@@ -1545,188 +1539,119 @@ module density-of-monotone-maps {𝓤 𝓦 𝓥 : Universe}
                          → Σ ϕ ꞉ 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩) ,
                            Σ bnd ꞉ ϕ is-bounded ,
                             ((a : ⟨ L ⟩)
-                           → (Γ ϕ ((ϕ bounded-implies-local) bnd)) a ＝ f a)
-   dense-implies-bounded f f-is-mono f-is-dense = (ϕ , bnd , H)
+                             → (Γ ϕ ((ϕ bounded-implies-local) bnd)) a ＝ f a)
+   dense-implies-bounded f f-mono (I , γ , f-dense) = (ϕ , bnd , H)
     where
      ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩)
      ϕ (b , a') =
-       (Lift 𝓤 ((Ǝ x ꞉ B , b ≤ᴮ f (β x) × β x ＝ˢ a') holds)
-       , equiv-to-prop (Lift-≃ 𝓤 ((Ǝ x ꞉ B , b ≤ᴮ f (β x) × β x ＝ˢ a') holds))
-                       (holds-is-prop (Ǝ x ꞉ B , b ≤ᴮ f (β x) × β x ＝ˢ a')))
+       (Lift 𝓤 ((Ǝ i ꞉ I , b ≤ᴮ f (γ i) × γ i ＝ˢ a') holds)
+       , equiv-to-prop (Lift-≃ 𝓤 ((Ǝ i ꞉ I , b ≤ᴮ f (γ i) × γ i ＝ˢ a') holds))
+                       (holds-is-prop (Ǝ i ꞉ I , b ≤ᴮ f (γ i) × γ i ＝ˢ a')))
      bnd : ϕ is-bounded
-     bnd = (ϕ-small , (B , (λ z → small-↓ᴮ (β z)) , covering-cond))
+     bnd = (ϕ-small , (I , (λ z → small-↓ᴮ (γ z)) , covering-cond))
       where
        ϕ-small : (a : ⟨ L ⟩) → (b : B) → (ϕ (b , a) holds) is 𝓥 small
-       ϕ-small a b = ((Ǝ x ꞉ B , b ≤ᴮ f (β x) × β x ＝ˢ a) holds
-                     , ≃-Lift 𝓤 ((Ǝ x ꞉ B , b ≤ᴮ f (β x) × β x ＝ˢ a) holds))
+       ϕ-small a b = ((Ǝ i ꞉ I , b ≤ᴮ f (γ i) × γ i ＝ˢ a) holds
+                     , ≃-Lift 𝓤 ((Ǝ i ꞉ I , b ≤ᴮ f (γ i) × γ i ＝ˢ a) holds))
        covering-cond : (a : ⟨ L ⟩)
                      → (b : B)
                      → (b , a) ∈ ϕ
-                     → (Ǝ x ꞉ B , small-↓ᴮ (β x) ↠ ↓ᴮ a) holds
-       covering-cond a b = map₃ ∘ map₂ ∘ map₁ 
+                     → (Ǝ i ꞉ I , small-↓ᴮ (γ i) ↠ ↓ᴮ a) holds
+       covering-cond a b = demote-equiv-to-surj ∘ transport-lemma ∘ unlift-ϕ
         where
-         map₁ : Lift 𝓤 ((Ǝ x ꞉ B , b ≤ᴮ f (β x) × β x ＝ˢ a) holds)
-              → (Ǝ x ꞉ B , b ≤ᴮ f (β x) × β x ＝ˢ a) holds
-         map₁ = ⌜ Lift-≃ 𝓤 ((Ǝ x ꞉ B , b ≤ᴮ f (β x) × β x ＝ˢ a) holds) ⌝
-         map₂ : (Ǝ x ꞉ B , b ≤ᴮ f (β x) × β x ＝ˢ a) holds
-              → (Ǝ x ꞉ B , small-↓ᴮ (β x) ≃ ↓ᴮ a) holds
-         map₂ =
-           ∥∥-rec (holds-is-prop (Ǝ x ꞉ B , small-↓ᴮ (β x) ≃ ↓ᴮ a))
-                  (λ (x , o , eq)
-                   → ∣ (x , transport (λ z → small-↓ᴮ (β x) ≃ ↓ᴮ z)
-                                      (＝ˢ-to-＝ (β x) a eq)
+         unlift-ϕ : (b , a) ∈ ϕ → (Ǝ i ꞉ I , b ≤ᴮ f (γ i) × γ i ＝ˢ a) holds
+         unlift-ϕ = ⌜ Lift-≃ 𝓤 ((Ǝ i ꞉ I , b ≤ᴮ f (γ i) × γ i ＝ˢ a) holds) ⌝
+         transport-lemma : (Ǝ i ꞉ I , b ≤ᴮ f (γ i) × γ i ＝ˢ a) holds
+                         → (Ǝ i ꞉ I , small-↓ᴮ (γ i) ≃ ↓ᴮ a) holds
+         transport-lemma =
+           ∥∥-rec (holds-is-prop (Ǝ i ꞉ I , small-↓ᴮ (γ i) ≃ ↓ᴮ a))
+                  (λ (i , o , eq)
+                   → ∣ (i , transport (λ z → small-↓ᴮ (γ i) ≃ ↓ᴮ z)
+                                      (＝ˢ-to-＝ eq)
                                       small-↓ᴮ-≃-↓ᴮ) ∣)
-         map₃ : (Ǝ x ꞉ B , small-↓ᴮ (β x) ≃ ↓ᴮ a) holds
-              → (Ǝ x ꞉ B , small-↓ᴮ (β x) ↠ ↓ᴮ a) holds
-         map₃ = ∥∥-rec (holds-is-prop (Ǝ x ꞉ B , small-↓ᴮ (β x) ↠ ↓ᴮ a))
-                       (λ (x , f , f-is-equiv)
-                        → ∣ (x , f , equivs-are-surjections f-is-equiv) ∣)
+         demote-equiv-to-surj : (Ǝ i ꞉ I , small-↓ᴮ (γ i) ≃ ↓ᴮ a) holds
+                              → (Ǝ i ꞉ I , small-↓ᴮ (γ i) ↠ ↓ᴮ a) holds
+         demote-equiv-to-surj =
+           ∥∥-rec (holds-is-prop (Ǝ i ꞉ I , small-↓ᴮ (γ i) ↠ ↓ᴮ a))
+                  (λ (i , f , f-is-equiv)
+                   → ∣ (i , f , equivs-are-surjections f-is-equiv) ∣)
+
      H : (a : ⟨ L ⟩) → Γ ϕ ((ϕ bounded-implies-local) bnd) a ＝ f a
      H a = reindexing-along-equiv-＝-sup
-             L equiv (β ∘ (S-to-base ϕ a))
+             L ↓ᴮ-fa-equiv-S (β ∘ (S-to-base ϕ a))
              (Γ ϕ ((ϕ bounded-implies-local) bnd) a) (f a)
              (sup-of-small-fam-is-lub L (β ∘ S-to-base ϕ a)
                                       ((ϕ bounded-implies-local) bnd a))
              (is-supᴮ (f a))
       where
-       map : (b : B)
-           → b ≤ᴮ f a
-           → (Ǝ a' ꞉ ⟨ L ⟩ ,
-              Lift 𝓤 ((Ǝ x ꞉ B , b ≤ᴮ f (β x) × β x ＝ˢ a') holds)
-              × (a' ≤ a) holds) holds
-       map b = map₄ b ∘ (map₂ b ∘ f-is-dense b a)
+       ↓ᴮ-fa-equiv-S : (small-↓ᴮ (f a)) ≃ (S ϕ a)
+       ↓ᴮ-fa-equiv-S = Σ-cong ↓ᴮ-fa-equiv-S'
         where
-         map₁ : (b : B)
-              → Σ x ꞉ B , b ≤ᴮ f (β x) × x ≤ᴮ a
-              → (Ǝ a' ꞉ ⟨ L ⟩ ,
-                (Ǝ x ꞉ B , b ≤ᴮ f (β x) × β x ＝ˢ a') holds
-                × (a' ≤ a) holds) holds
-         map₁ b (x , o , o') =
-          ∣ (β x , ∣ (x , o , ＝-to-＝ˢ (β x) (β x) refl) ∣ , _≤ᴮ_-to-_≤_ o') ∣
-         map₂ : (b : B)
-              → (Ǝ x ꞉ B , b ≤ᴮ f (β x) × x ≤ᴮ a) holds
-              → (Ǝ a' ꞉ ⟨ L ⟩ ,
-                (Ǝ x ꞉ B , b ≤ᴮ f (β x) × β x ＝ˢ a') holds
-                × (a' ≤ a) holds) holds
-         map₂ b = 
-           ∥∥-rec (holds-is-prop (Ǝ a' ꞉ ⟨ L ⟩ ,
-                                 (Ǝ x ꞉ B , b ≤ᴮ f (β x) × β x ＝ˢ a') holds
-                                 × (a' ≤ a) holds))
-                  (map₁ b)
-         map₃ : (b : B)
-              → Σ a' ꞉ ⟨ L ⟩ ,
-                (Ǝ x ꞉ B , b ≤ᴮ f (β x) × β x ＝ˢ a') holds
-                 × (a' ≤ a) holds
-              → (Ǝ a' ꞉ ⟨ L ⟩ ,
-                Lift 𝓤 ((Ǝ x ꞉ B , b ≤ᴮ f (β x) × β x ＝ˢ a') holds)
-                × (a' ≤ a) holds) holds
-         map₃ b (a' , ex , o) =
-           ∣ (a'
-             , ⌜ ≃-Lift 𝓤 ((Ǝ x ꞉ B , b ≤ᴮ f (β x) × β x ＝ˢ a') holds) ⌝ ex
-             , o) ∣ 
-         map₄ : (b : B)
-              → (Ǝ a' ꞉ ⟨ L ⟩ ,
-                (Ǝ x ꞉ B , b ≤ᴮ f (β x) × β x ＝ˢ a') holds
-                × (a' ≤ a) holds) holds
-              → (Ǝ a' ꞉ ⟨ L ⟩ ,
-                Lift 𝓤 ((Ǝ x ꞉ B , b ≤ᴮ f (β x) × β x ＝ˢ a') holds)
-                × (a' ≤ a) holds) holds
-         map₄ b = ∥∥-rec (holds-is-prop (Ǝ a' ꞉ ⟨ L ⟩ ,
-                           Lift 𝓤 ((Ǝ x ꞉ B , b ≤ᴮ f (β x) × β x ＝ˢ a') holds)
-                           × (a' ≤ a) holds))
-                         (map₃ b)
-       map' : (b : B)
-            → (Ǝ a' ꞉ ⟨ L ⟩ ,
-               Lift 𝓤 ((Ǝ x ꞉ B , b ≤ᴮ f (β x) × β x ＝ˢ a') holds)
-               × (a' ≤ a) holds) holds
-            → b ≤ᴮ f a
-       map' b = map₆ b ∘ map₂ b
-        where
-         map₁ : (b : B)
-              → Σ a' ꞉ ⟨ L ⟩ ,
-                Lift 𝓤 ((Ǝ x ꞉ B , b ≤ᴮ f (β x) × β x ＝ˢ a') holds)
-                × (a' ≤ a) holds
-              → (Ǝ a' ꞉ ⟨ L ⟩ ,
-                (Ǝ x ꞉ B , b ≤ᴮ f (β x) × β x ＝ˢ a') holds
-                × (a' ≤ a) holds) holds
-         map₁ b (a' , lex , o) =
-           ∣ (a'
-             , ⌜ Lift-≃ 𝓤 ((Ǝ x ꞉ B , b ≤ᴮ f (β x) × β x ＝ˢ a') holds) ⌝ lex
-             , o) ∣ 
-         map₂ : (b : B)
-              → (Ǝ a' ꞉ ⟨ L ⟩ ,
-                Lift 𝓤 ((Ǝ x ꞉ B , b ≤ᴮ f (β x) × β x ＝ˢ a') holds)
-                × (a' ≤ a) holds) holds
-              → (Ǝ a' ꞉ ⟨ L ⟩ ,
-                (Ǝ x ꞉ B , b ≤ᴮ f (β x) × β x ＝ˢ a') holds
-                × (a' ≤ a) holds) holds
-         map₂ b = 
-           ∥∥-rec (holds-is-prop (Ǝ a' ꞉ ⟨ L ⟩ ,
-                                 (Ǝ x ꞉ B , b ≤ᴮ f (β x) × β x ＝ˢ a') holds
-                                 × (a' ≤ a) holds))
-                  (map₁ b)
-         map₃ : (b : B)
-              → (a' : ⟨ L ⟩)
-              → (a' ≤ a) holds
-              → Σ x ꞉ B , b ≤ᴮ f (β x) × β x ＝ˢ a'
-              → b ≤ᴮ f a
-         map₃ b a' o (x , r , eq) =
-           _≤_-to-_≤ᴮ_ (transitivity-of L
-                                        (β b)
-                                        (f a')
-                                        (f a)
-                                        (transport (λ z → (β b ≤ f z) holds)
-                                                   (＝ˢ-to-＝ (β x)
-                                                              a'
-                                                              eq)
-                                                   (_≤ᴮ_-to-_≤_ r))
-                                        (f-is-mono a' a o))
-         map₄ : (b : B)
-              → (a' : ⟨ L ⟩)
-              → (a' ≤ a) holds
-              → (Ǝ x ꞉ B , b ≤ᴮ f (β x) × β x ＝ˢ a') holds
-              → b ≤ᴮ f a
-         map₄ b a' o =
-           ∥∥-rec (holds-is-prop (b ≤ᴮ f a , _≤ᴮ_-is-prop-valued)) (map₃ b a' o)
-         map₅ : (b : B)
-              → Σ a' ꞉ ⟨ L ⟩ ,
-                (Ǝ x ꞉ B , b ≤ᴮ f (β x) × β x ＝ˢ a') holds
-                × (a' ≤ a) holds
-              → b ≤ᴮ f a
-         map₅ b = uncurry (λ a' → uncurry (λ ex → λ o → map₄ b a' o ex))
-         map₆ : (b : B)
-              → (Ǝ a' ꞉ ⟨ L ⟩ ,
-                (Ǝ x ꞉ B , b ≤ᴮ f (β x) × β x ＝ˢ a') holds
-                × (a' ≤ a) holds) holds
-              → b ≤ᴮ f a
-         map₆ b =
-           ∥∥-rec (holds-is-prop (b ≤ᴮ f a , _≤ᴮ_-is-prop-valued)) (map₅ b) 
-       equiv : (small-↓ᴮ (f a)) ≃ (S ϕ a)
-       equiv = Σ-cong equiv-props
-        where
-         equiv-props : (b : B)
-                     → b ≤ᴮ f a
-                     ≃ ((Ǝ a' ꞉ ⟨ L ⟩ ,
-                       Lift 𝓤 ((Ǝ x ꞉ B , b ≤ᴮ f (β x) × β x ＝ˢ a') holds)
-                       × (a' ≤ a) holds) holds)
-         equiv-props b =
+         ↓ᴮ-fa-equiv-S' : (b : B)
+                        → b ≤ᴮ f a
+                        ≃ (Ǝ a' ꞉ ⟨ L ⟩ ,
+                           Lift 𝓤 ((Ǝ i ꞉ I , b ≤ᴮ f (γ i) × γ i ＝ˢ a') holds)
+                           × (a' ≤ a) holds) holds
+         ↓ᴮ-fa-equiv-S' b =
            logically-equivalent-props-are-equivalent
              _≤ᴮ_-is-prop-valued
              (holds-is-prop (Ǝ a' ꞉ ⟨ L ⟩ ,
-                            Lift 𝓤 ((Ǝ x ꞉ B , b ≤ᴮ f (β x) × β x ＝ˢ a') holds)
+                            Lift 𝓤 ((Ǝ i ꞉ I , b ≤ᴮ f (γ i) × γ i ＝ˢ a') holds)
                             × (a' ≤ a) holds))
-             (map b)
-             (map' b)
+             (↓ᴮ-fa-to-S' b)
+             (S-to-↓ᴮ-fa' b)
+            where
+             ↓ᴮ-fa-to-S' : (b : B)
+                         → b ≤ᴮ f a
+                         → (Ǝ a' ꞉ ⟨ L ⟩ , (b , a') ∈ ϕ × (a' ≤ a) holds) holds
+             ↓ᴮ-fa-to-S' b = ∥∥-functor g ∘ ∥∥-functor u ∘ f-dense b a
+              where
+               u : Σ i ꞉ I , b ≤ᴮ f (γ i) × (γ i ≤ a) holds
+                 → Σ a' ꞉ ⟨ L ⟩ ,
+                   (Ǝ i ꞉ I , b ≤ᴮ f (γ i) × γ i ＝ˢ a') holds × (a' ≤ a) holds
+               u (i , o , r) = (γ i , ∣ (i , o , ＝ˢ-refl) ∣ , r)
+               g : Σ a' ꞉ ⟨ L ⟩ ,
+                   (Ǝ i ꞉ I , b ≤ᴮ f (γ i) × γ i ＝ˢ a') holds × (a' ≤ a) holds
+                 → Σ a' ꞉ ⟨ L ⟩ , (b , a') ∈ ϕ × (a' ≤ a) holds
+               g (a' , e , r) =
+                 (a' ,
+                  ⌜ ≃-Lift 𝓤 ((Ǝ i ꞉ I , b ≤ᴮ f (γ i) × γ i ＝ˢ a') holds) ⌝ e ,
+                  r)
 
-   dense'-implies-bounded : (f : ⟨ L ⟩ → ⟨ L ⟩)
-                          → is-monotone L f
-                          → is-dense' f
-                          → Σ ϕ ꞉ 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩) ,
-                            Σ bnd ꞉ ϕ is-bounded ,
-                             ((a : ⟨ L ⟩)
-                             → (Γ ϕ ((ϕ bounded-implies-local) bnd)) a ＝ f a)
-   dense'-implies-bounded f f-mono (I , γ , f-dense) = {!!}
-                                                
+             S-to-↓ᴮ-fa' : (b : B)
+                         → (Ǝ a' ꞉ ⟨ L ⟩ ,
+                            (b , a') ∈ ϕ × (a' ≤ a) holds) holds
+                         → b ≤ᴮ f a
+             S-to-↓ᴮ-fa' b = ∥∥-rec _≤ᴮ_-is-prop-valued u ∘ ∥∥-functor g
+              where
+               II : (a' : ⟨ L ⟩)
+                  → Σ i ꞉ I , b ≤ᴮ f (γ i) × γ i ＝ˢ a'
+                  → (a' ≤ a) holds
+                  → b ≤ᴮ f a
+               II a' (i , r , path) o =
+                 _≤_-to-_≤ᴮ_ (transitivity-of L (β b) (f a') (f a)
+                                              (transport (λ z → (β b ≤ z) holds)
+                                                         (ap f (＝ˢ-to-＝ path))
+                                                         (_≤ᴮ_-to-_≤_ r))
+                                              (f-mono a' a o))
+               III : (a' : ⟨ L ⟩)
+                     → (Ǝ i ꞉ I , b ≤ᴮ f (γ i) × γ i ＝ˢ a') holds
+                     → (a' ≤ a) holds
+                     → b ≤ᴮ f a
+               III a' = ∥∥-rec (Π-is-prop fe (λ _ → _≤ᴮ_-is-prop-valued))
+                               (II a')
+               u : Σ a' ꞉ ⟨ L ⟩ ,
+                   (Ǝ i ꞉ I , b ≤ᴮ f (γ i) × γ i ＝ˢ a') holds × (a' ≤ a) holds
+                 → b ≤ᴮ f a
+               u = uncurry (λ a' → uncurry (III a'))
+               g : Σ a' ꞉ ⟨ L ⟩ , (b , a') ∈ ϕ × (a' ≤ a) holds
+                 → Σ a' ꞉ ⟨ L ⟩ ,
+                   (Ǝ i ꞉ I , b ≤ᴮ f (γ i) × γ i ＝ˢ a') holds × (a' ≤ a) holds
+               g (a' , e , r) =
+                 (a' ,
+                  ⌜ Lift-≃ 𝓤 ((Ǝ i ꞉ I , b ≤ᴮ f (γ i) × γ i ＝ˢ a') holds) ⌝ e ,
+                  r)
+                                                     
 \end{code}
 
 We use the notion of density to state another version of the least fixed point
@@ -1783,13 +1708,11 @@ module least-fixed-point-from-density {𝓤 𝓦 𝓥 : Universe}
                                           → is-monotone L f
                                           → is-dense f
                                           → has-least-fixed-point L f
-   Least-Fixed-Point-Theorem-from-Density small-pres l-small f f-mono f-dense =
+   Least-Fixed-Point-Theorem-from-Density
+       small-pres l-small f f-mono f-dense =
      Untruncated-Least-Fixed-Point-Theorem
-       small-pres
-       f
-       f-mono
-       (dense-implies-bounded f f-mono f-dense)
-    where
-     open locally-small-assumption l-small
+       small-pres f f-mono
+       (dense-implies-bounded l-small f f-mono f-dense)
+
 
 \end{code}
