@@ -70,6 +70,35 @@ open import Ordinals.Exponentiation ua
 
 -}
 
+order-reflecting-and-partial-inverse-is-initial-segment : (α β : Ordinal 𝓤)
+                                                       (f : ⟨ α ⟩ → ⟨ β ⟩)
+                                                     → is-order-reflecting α β f
+                                                     → ((a : ⟨ α ⟩)(b : ⟨ β ⟩) → b ≺⟨ β ⟩ f a → Σ a' ꞉ ⟨ α ⟩ , f a' ＝ b)
+                                                     → is-initial-segment α β f
+order-reflecting-and-partial-inverse-is-initial-segment α β f p i a b m = a' , p' , q'
+  where
+    q : Σ a' ꞉ ⟨ α ⟩ , f a' ＝ b
+    q = i a b m
+    a' : ⟨ α ⟩
+    a' = pr₁ q
+    q' : f a' ＝ b
+    q' = pr₂ q
+
+    m' : f a' ≺⟨ β ⟩ f a
+    m' = transport⁻¹ (λ - → - ≺⟨ β ⟩ f a) q' m
+    p' : a' ≺⟨ α ⟩ a
+    p' = p a' a m'
+
+{-
+lc-initial-segments-are-order-reflecting α β f i c x y l = m
+ where
+  a : Σ x' ꞉ ⟨ α ⟩ , (x' ≺⟨ α ⟩ y) × (f x' ＝ f x)
+  a = i y (f x) l
+
+  m : x ≺⟨ α ⟩ y
+  m = transport (λ - → - ≺⟨ α ⟩ y) (c (pr₂ (pr₂ a))) (pr₁ (pr₂ a))
+-}
+
 module _ (pt : propositional-truncations-exist)
          (sr : Set-Replacement pt)
        where
@@ -192,64 +221,50 @@ module _ (pt : propositional-truncations-exist)
    partial-invertibility-lemma : (i : I) -- (a : ⟨ α ⟩) (b : ⟨ β i ⟩)
                                → (l : List (⟨ α ×ₒ β i ⟩))
                                → is-decreasing-pr₂ α (sup β) (f₁ i l) -- (f₁ i (a , b ∷ l))
-                               → is-decreasing-pr₂ α (β i) l -- (a , b ∷ l)                               
-   partial-invertibility-lemma = {!!}
+                               → is-decreasing-pr₂ α (β i) l -- (a , b ∷ l)
+   partial-invertibility-lemma i [] ds = []-decr
+   partial-invertibility-lemma i ((a , b) ∷ []) ds = sing-decr
+   partial-invertibility-lemma i ((a , b) ∷ (a' , b') ∷ l) (many-decr m ds) =
+     many-decr (ι-is-order-reflecting β b' b m) (partial-invertibility-lemma i ((a' , b') ∷ l) ds)
 
-   -- TODO: Prove this general simulation criterion and factor it out
-   f-is-partially-invertible : (i : I) → (x : ⟨ γ i ⟩) (y : ⟨ [𝟙+ α ]^ (sup β) ⟩)
-                             → y ≺⟨ [𝟙+ α ]^ (sup β) ⟩ f i x
-                             → Σ x' ꞉ ⟨ γ i ⟩ , f i x' ＝ y
-   f-is-partially-invertible i ((a , b ∷ l) , δ) ([] , []-decr) []-lex = ([] , []-decr) , refl
-   f-is-partially-invertible i ((a , b ∷ l) , δ) ((a' , b' ∷ l') , ε) (head-lex (inl m)) =
-    ((a' , b'' ∷ l'') , partial-invertibility-lemma i (a' , b'' ∷ l'') {!!}) , {!!}
+   f-is-partially-invertible : (i : I)
+                             → (xs : List ⟨ α ×ₒ β i ⟩) → (δ : is-decreasing-pr₂ α (β i) xs)
+                             → (ys : List ⟨ α ×ₒ sup β ⟩) → (ε : is-decreasing-pr₂ α (sup β) ys)
+                             → (ys , ε) ≺⟨ [𝟙+ α ]^ (sup β) ⟩ f i (xs , δ)
+                             → Σ xs' ꞉ ⟨ γ i ⟩ , f i xs' ＝ (ys , ε)
+   f-is-partially-invertible i xs δ [] []-decr p = ([] , []-decr) , refl
+   f-is-partially-invertible i ((a , b) ∷ xs) δ ((a' , b') ∷ []) ε (head-lex (inl m)) = ((a' , pr₁ ι-sim ∷ []) , sing-decr) , (to-exponential-＝ α (sup β) (ap (λ - → (a' , -) ∷ []) (pr₂ (pr₂ ι-sim))))
      where
-      {-
-        b'' > pr₂ (head l'')
-        b' > pr₂ (head l')
-        b > pr₂ (head l)
+       ι-sim = ι-is-initial-segment β b b' m
+   f-is-partially-invertible i ((a , b) ∷ xs) δ ((a' , b') ∷ (a₁ , b₁) ∷ ys) (many-decr p ε) (head-lex (inl m)) =
+     let IH = f-is-partially-invertible i ((a , b) ∷ xs) δ ((a₁ , b₁) ∷ ys) ε (head-lex (inl (Transitivity (sup β) _ _ _ p m)))
+         xs' = pr₁ (pr₁ IH)
+         ι-sim = ι-is-initial-segment β b b' m
+         b₀ = pr₁ ι-sim
+         p₀ = transport⁻¹ (λ - → b₁ ≺⟨ sup β ⟩ -) (pr₂ (pr₂ ι-sim)) p
+     in ((a' , b₀ ∷ xs') , partial-invertibility-lemma i ((a' , b₀) ∷ xs') (transport⁻¹ (λ - → is-decreasing-pr₂ α (sup β) ((a' , ι β b₀) ∷ -)) (ap pr₁ (pr₂ IH)) (many-decr p₀ ε)))
+       , (to-exponential-＝ α (sup β) (ap₂ (λ x y → (a' , x) ∷ y) (pr₂ (pr₂ ι-sim)) (ap pr₁ (pr₂ IH))))
+   f-is-partially-invertible i ((a , b) ∷ xs) δ ((a' , .(ι β b)) ∷ []) ε (head-lex (inr (refl , m))) = ((a' , b ∷ []) , sing-decr) , (to-exponential-＝ α (sup β) refl)
+   f-is-partially-invertible i ((a , b) ∷ xs) δ ((a' , .(ι β b)) ∷ (a₁ , b₁) ∷ ys) (many-decr p ε) (head-lex (inr (refl , m))) =
+     let IH = f-is-partially-invertible i ((a , b) ∷ xs) δ ((a₁ , b₁) ∷ ys) ε (head-lex (inl p))
+         xs' = pr₁ (pr₁ IH)
+     in (((a' , b) ∷ xs') , partial-invertibility-lemma i ((a' , b) ∷ xs')
+                                                          (transport⁻¹ (λ - → is-decreasing-pr₂ α (sup β) ((a' , ι β b) ∷ -)) (ap pr₁ (pr₂ IH)) (many-decr p ε)))
+        , to-exponential-＝ α (sup β) (ap ((a' , ι β b) ∷_) (ap pr₁ (pr₂ IH)))
+   f-is-partially-invertible i ((a , b) ∷ xs) δ (.(a , ι β b) ∷ ys) ε (tail-lex refl p) =
+     let IH = f-is-partially-invertible i xs (is-decreasing-tail (underlying-order (β i)) δ) ys (is-decreasing-tail (underlying-order (sup β)) ε) p
+     in (((a , b) ∷ pr₁ (pr₁ IH)) , partial-invertibility-lemma i ((a , b) ∷ pr₁ (pr₁ IH))
+                                                                  (transport⁻¹ (λ - → is-decreasing-pr₂ α (sup β) ((a , ι β b) ∷ -)) (ap pr₁ (pr₂ IH)) ε))
+       , to-exponential-＝ α (sup β) (ap ((a , ι β b) ∷_) (ap pr₁ (pr₂ IH)))
 
-        b' = ι b''
-        pr₂ (head l') = ι c
-
-        ι b'' > ι c, so b'' > c
-
-        ι (pr₂ (head l'')) =  pr₂ (head l') = c
-
-        want: b'' > pr₂ (head l'')
-        We know: ι b'' > ι c = ι (pr₂ (head l'')) and now use order-reflecting
-      -}     
-      IH : Σ l'' ꞉ ⟨ γ i ⟩ , (f i l'' ＝ l' , _)
-      IH = f-is-partially-invertible i ((a , b ∷ l) , δ) (l' , is-decreasing-tail (underlying-order (sup β)) ε) {!!}
-      l'' = pr₁ (pr₁ IH)
-      sim : Σ b'' ꞉ ⟨ β i ⟩ , b'' ≺⟨ β i ⟩ b
-                            × (ι β b'' ＝ b')
-      sim = ι-is-initial-segment β b b' m
-      b'' = pr₁ sim    
-   f-is-partially-invertible i ((a , b ∷ l) , δ) ((a' , b' ∷ l') , ε) (head-lex (inr m)) = {!!}
-   f-is-partially-invertible i ((a , b ∷ l) , δ) ((a' , b' ∷ l') , ε) (tail-lex x m) = {!!}
-
-{-
    f-is-initial-segment : (i : I) → is-initial-segment (γ i) ([𝟙+ α ]^ (sup β)) (f i)
-   f-is-initial-segment i ((a , b ∷ l) , δ) ([] , []-decr) []-lex = ([] , []-decr) , ([]-lex , refl)
-   f-is-initial-segment i ((a , b ∷ l) , δ) ((a' , b' ∷ l') , ε) (head-lex (inl m)) =
-    ((a' , b'' ∷ l'') , {!!}) ,
-    (head-lex (inl (pr₁ (pr₂ sim))) ,
-    to-exponential-＝ α (sup β) (ap₂ (λ x y → a' , x ∷ y) (pr₂ (pr₂ sim)) (ap pr₁ (pr₂ (pr₂ IH)))))
+   f-is-initial-segment i = order-reflecting-and-partial-inverse-is-initial-segment (γ i) ([𝟙+ α ]^ (sup β)) (f i) (f-is-order-reflecting i) g
      where
-      IH : Σ l'' ꞉ ⟨ γ i ⟩ , l'' ≺⟨ γ i ⟩ ((a , b ∷ l) , δ)
-                           × (f i l'' ＝ l' , _)
-      IH = f-is-initial-segment i ((a , b ∷ l) , δ) (l' , {!!}) {!!}
-      l'' = pr₁ (pr₁ IH)
-      sim : Σ b'' ꞉ ⟨ β i ⟩ , b'' ≺⟨ β i ⟩ b
-                            × (ι β b'' ＝ b')
-      sim = ι-is-initial-segment β b b' m
-      b'' = pr₁ sim
-   f-is-initial-segment i ((a , b ∷ l) , δ) ((a' , b' ∷ l') , ε) (head-lex (inr m)) = {!!}
-   f-is-initial-segment i ((a , b ∷ l) , δ) (.(_ ∷ _) , ε) (tail-lex x l'-below-fl) = {!!}
--}
+       g : (xs : ⟨ γ i ⟩) → (ys : ⟨ [𝟙+ α ]^ (sup β) ⟩) → ys ≺⟨ [𝟙+ α ]^ (sup β) ⟩ f i xs → Σ xs' ꞉ ⟨ γ i ⟩ , f i xs' ＝ ys
+       g (xs , δ) (ys , ε) = f-is-partially-invertible i xs δ ys ε
 
---  exp-sup-is-upper-bound : (i : I) → γ i ⊴ ([𝟙+ α ]^ (sup β))
---  exp-sup-is-upper-bound i = f i , {!!} , {!!}
+  exp-sup-is-upper-bound : (i : I) → γ i ⊴ ([𝟙+ α ]^ (sup β))
+  exp-sup-is-upper-bound i = f i , f-is-initial-segment i , f-is-order-preserving i
 
   -- Possible strategy
   -- for every i : I, x : [𝟙+ α]^ (β i),
