@@ -20,12 +20,12 @@ Fixed Point Theorem' by Giovanni Curi:
 Giovanni Curi. "On Tarski's fixed point theorem". In: Proc. Amer. Math. Soc
 143 (2015), pp. 4439-4455. DOI: http://doi.org/10.1090/proc/12569
 
-For a write up of the current formalization in a type theoretic setting see
+For a write up of the presentt formalization in a type theoretic setting see
 https://arxiv.org/abs/2401.00841
 
-We now state the main result for reference, although much of the context needs
-to be developed:
+The content of the present formalization works towards the following result.
 
+Predicative Least Fixed Point Theorem:
 Given a 𝓥-sup-lattice L with a 𝓥-presentation and a monotone
 endomap f : L → L. If there exists a bounded abstract inductive definition
 ϕ such that f ＝ Γ ϕ, then f has a least fixed point.
@@ -98,10 +98,11 @@ We construct the least closed subset of an inductive definition as a QIT family.
 Since QITs (and more generally HITs) are not native in Agda we will instead
 assume the existence of such a type as well as its induction principle.
 Technically speaking we are going to use record types to package the contents
-of this QIT family. Notice all constructors are 'strictly positive' with
-respect to the type we are constructing. 
-See below:
-  record inductively-generated-subset-exists
+of this QIT family.
+
+Notice all constructors are 'strictly positive' and the path constructors are
+'natural' (see Chapter 6 Section 13 of the HoTT book
+https://homotopytypetheory.org/book/).
 
 Notice that the QIT family has two constructors which represent the closure
 conditions we wish to impose on subsets. The c-closure condition says:
@@ -136,6 +137,13 @@ module inductive-definitions {𝓤 𝓦 𝓥 : Universe}
  module ind-from-small-basis-facts (h : is-small-basis) where
 
   open small-basis-facts h
+
+\end{code}
+
+The following record type should be interpreted as supplying the assumption
+that the QIT family exists with the apropriate induction principle.
+
+\begin{code}
 
   record inductively-generated-subset-exists (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩)): 𝓤ω
    where
@@ -173,6 +181,14 @@ module inductive-definitions {𝓤 𝓦 𝓥 : Universe}
                         where
 
    open inductively-generated-subset-exists ind-e
+
+\end{code}
+
+We will now combine the postulated data above to form the least closed subset
+of B under some inductive definition ϕ. We will then derived the initiality
+of this subset from the above induction principle. 
+
+\begin{code}
 
    𝓘nd : 𝓟 {𝓤 ⊔ 𝓥 ⁺} B
    𝓘nd b = (Ind b , Ind-trunc b)
@@ -256,7 +272,7 @@ is small.
 
 We then define an operator parameterized by local inductive definitions
 and prove that it is monotone. Finally, we show that any monotone endo map on
-a Sup Lattice corresponds to a monotone operator and corresponding local
+a sup lattice determines a monotone operator and corresponding local
 inductive definition.
 
 \begin{code}
@@ -337,6 +353,12 @@ module local-inductive-definitions {𝓤 𝓦 𝓥 : Universe}
    Γ : ⟨ L ⟩ → ⟨ L ⟩
    Γ a = ⋁ (S' a , β ∘ pr₁ ∘ S'-to-S a)
 
+\end{code}
+
+We show that Γ is monotone.
+
+\begin{code}
+
    Γ-is-monotone : is-monotone L Γ
    Γ-is-monotone x y o =
      S-has-sup-implies-monotone ϕ x y (Γ x) (Γ y) o Γx-is-lub Γy-is-lub
@@ -345,6 +367,12 @@ module local-inductive-definitions {𝓤 𝓦 𝓥 : Universe}
      Γx-is-lub = sup-of-small-fam-is-lub L (β ∘ S-to-base ϕ x) (i x)      
      Γy-is-lub : (Γ y is-lub-of (S ϕ y , β ∘ S-to-base ϕ y)) holds
      Γy-is-lub = sup-of-small-fam-is-lub L (β ∘ S-to-base ϕ y) (i y)
+
+\end{code}
+
+We now show that every monotone map determines and local inductive definition.
+
+\begin{code}
 
   mono-map-give-local-ind-def : (f : ⟨ L ⟩ → ⟨ L ⟩)
                               → is-monotone L f
@@ -433,7 +461,7 @@ module local-inductive-definitions {𝓤 𝓦 𝓥 : Universe}
 
 \end{code}
 
-We now spell out a correspondence between small 'closed' subsets and
+We now spell out the correspondence between small 'closed' subsets and
 deflationary points in our sup lattice. This will allow us to show that
 monotone operators have a least fixed point under certain smallness
 assumpions.
@@ -663,6 +691,14 @@ module correspondance-small-ϕ-closed-types-def-points {𝓤 𝓦 𝓥 : Univers
      is-qinv : qinv small-ϕ-closed-subsets-to-non-inc-points
      is-qinv = (non-inc-points-to-small-ϕ-closed-subsets , H , G)
 
+\end{code}
+
+Using the previously displayed correspondance we can show that, under certain
+smallness assumptions on the least closed subset 𝓘nd ϕ, the monotone operator
+Γ ϕ has a least fixed point.
+
+\begin{code}
+
    module small-𝓘nd-from-exists (ind-e : inductively-generated-subset-exists ϕ)
                                  where
 
@@ -812,6 +848,11 @@ module correspondance-small-ϕ-closed-types-def-points {𝓤 𝓦 𝓥 : Univers
 
 \end{code}
 
+The remainder of this formalization is essentially a search for 
+resritctions we may impose on sup lattices and inductive definitions to
+acheive the neccesary smallness assumptions on 𝓘nd which will guarentee least
+fixed points.
+
 We now consider a boundedness restricion on inductive definitions and show
 that bounded inductive definitions are local.
 
@@ -960,8 +1001,8 @@ module bounded-inductive-definition {𝓤 𝓦 𝓥 : Universe}
 
 \end{code}
 
-We now consider a restriction on sup-lattices stronger than having a basis.
-We want lattices to have a small presentation, so to speak.
+We now consider a presentation restriction on sup-lattices stronger than
+having a basis.
 
 A sup-lattice has a small presentation if there is a small indexed family of
 subsets that can be substituted for arbitrary subsets in a sense to be made
@@ -999,9 +1040,9 @@ module small-presentation-of-lattice {𝓤 𝓦 𝓥 : Universe}
 \end{code}
 
 We will now define, in the context of bounded ϕ and small-presentation 𝓡, a
-new QIT that is equivalent to 𝓘nd. Our constructors should be familiar but
-notice the bounded and small-presentation assumptions allow us to avoid large
-quantification! 
+new QIT family that is equivalent to 𝓘nd. Our constructors should be familiar
+but notice the bounded and small-presentation assumptions allow us to avoid
+large quantification! 
 
 \begin{code}
 
@@ -1078,6 +1119,13 @@ module small-QIT {𝓤 𝓦 𝓥 : Universe}
                    → (Ǝ i ꞉ I₂ , α i is-a-small-cover-of ↓ᴮ a) holds)
    cover-condition = pr₂ (pr₂ (pr₂ bnd))
 
+\end{code}
+
+The following serves as evidence that the desired QIT family at least has
+sound point constructors.
+
+\begin{code}
+
    data Small-Ind-Check : B → 𝓥  ̇ where
     Small-c-cl' : (i : I₁)
                 → ((b : B) → (b ∈ Y i → Small-Ind-Check b))
@@ -1089,6 +1137,13 @@ module small-QIT {𝓤 𝓦 𝓥 : Universe}
                 → small-ϕ b (⋁ (α i , β ∘ m))
                 → ((b' : B) → (b' ≤ᴮ (⋁ (α i , β ∘ m)) → Small-Ind-Check b'))
                 → Small-Ind-Check b
+
+\end{code}
+
+Again, we use records to assert the existence of another QIT family with
+apropriate induction principle.
+
+\begin{code}
 
    record inductively-generated-small-subset-exists : 𝓤ω where
     constructor
@@ -1267,31 +1322,31 @@ module 𝓘nd-is-small {𝓤 𝓦 𝓥 : Universe}
     open small-trunc-ind-def ind-e'
 
     𝓘nd-⊆-Small-𝓘nd : 𝓘nd ⊆ Small-𝓘nd
-    𝓘nd-⊆-Small-𝓘nd = 𝓘nd-is-initial Small-𝓘nd f g
+    𝓘nd-⊆-Small-𝓘nd = 𝓘nd-is-initial Small-𝓘nd is-c-cl is-ϕ-cl
      where
-      f : (U : 𝓟 {𝓥} B)
-        → U ⊆ Small-𝓘nd
-        → (b : B)
-        → b ≤ᴮ (⋁ (𝕋 U , β ∘ 𝕋-to-carrier U))
-        → b ∈ Small-𝓘nd
-      f U C b o = f'' (is-small-pres-forward b U o)
+      is-c-cl : (U : 𝓟 {𝓥} B)
+              → U ⊆ Small-𝓘nd
+              → (b : B)
+              → b ≤ᴮ (⋁ (𝕋 U , β ∘ 𝕋-to-carrier U))
+              → b ∈ Small-𝓘nd
+      is-c-cl U C b o = trunc-u (is-small-pres-forward b U o)
        where
-        f' : (Σ j ꞉ I₁ , Y j ⊆ U × (b , Y j) ∈ R)
-           → b ∈ Small-𝓘nd
-        f' (j , C' , r) = Small-𝓘nd-is-c-cl j (λ x → λ y → C x (C' x y)) b r
-        f'' : (Ǝ j ꞉ I₁ , Y j ⊆ U × (b , Y j) ∈ R) holds
-            → b ∈ Small-𝓘nd
-        f'' = ∥∥-rec (holds-is-prop (Small-𝓘nd b)) f'
-      g : (a : ⟨ L ⟩)
-        → (b : B)
-        → (b , a) ∈ ϕ
-        → ((b' : B) → b' ≤ᴮ a → b' ∈ Small-𝓘nd)
-        → b ∈ Small-𝓘nd
-      g a b p C = g'' (cover-condition a b p)
+        u : (Σ j ꞉ I₁ , Y j ⊆ U × (b , Y j) ∈ R)
+          → b ∈ Small-𝓘nd
+        u (j , C' , r) = Small-𝓘nd-is-c-cl j (λ x → λ y → C x (C' x y)) b r
+        trunc-u : (Ǝ j ꞉ I₁ , Y j ⊆ U × (b , Y j) ∈ R) holds
+                → b ∈ Small-𝓘nd
+        trunc-u = ∥∥-rec (holds-is-prop (Small-𝓘nd b)) u
+      is-ϕ-cl : (a : ⟨ L ⟩)
+              → (b : B)
+              → (b , a) ∈ ϕ
+              → ((b' : B) → b' ≤ᴮ a → b' ∈ Small-𝓘nd)
+              → b ∈ Small-𝓘nd
+      is-ϕ-cl a b p C = trunc-u (cover-condition a b p)
        where
-        g' : Σ i ꞉ I₂ , α i is-a-small-cover-of ↓ᴮ a
+        u : Σ i ꞉ I₂ , α i is-a-small-cover-of ↓ᴮ a
            → b ∈ Small-𝓘nd
-        g' (i , s) =
+        u (i , s) =
          Small-𝓘nd-is-ϕ-cl i (↓ᴮ-to-base a ∘ ⌞ s ⌟) b
                          (ϕ-is-small-backward (⋁ (α i , ↓ᴮ-inclusion a ∘ ⌞ s ⌟))
                                               b
@@ -1307,29 +1362,29 @@ module 𝓘nd-is-small {𝓤 𝓦 𝓥 : Universe}
               L s (↓ᴮ-inclusion a)
               a (⋁ (α i , ↓ᴮ-inclusion a ∘ ⌞ s ⌟)) (is-sup-↓ a)
               (join-is-lub-of L (α i , ↓ᴮ-inclusion a ∘ ⌞ s ⌟))
-        g'' : (Ǝ i ꞉ I₂ , α i is-a-small-cover-of ↓ᴮ a) holds
-            → b ∈ Small-𝓘nd
-        g'' = ∥∥-rec (holds-is-prop (Small-𝓘nd b)) g'
+        trunc-u : (Ǝ i ꞉ I₂ , α i is-a-small-cover-of ↓ᴮ a) holds
+                → b ∈ Small-𝓘nd
+        trunc-u = ∥∥-rec (holds-is-prop (Small-𝓘nd b)) u
 
     Small-𝓘nd-⊆-𝓘nd : Small-𝓘nd ⊆ 𝓘nd
-    Small-𝓘nd-⊆-𝓘nd = Small-𝓘nd-Initial 𝓘nd f g
+    Small-𝓘nd-⊆-𝓘nd = Small-𝓘nd-Initial 𝓘nd is-small-c-cl is-small-ϕ-cl
      where
-      f : (i : I₁)
-        → Y i ⊆ 𝓘nd
-        → (b : B)
-        → (b , Y i) ∈ R
-        → b ∈ 𝓘nd
-      f i C b r =
+      is-small-c-cl : (i : I₁)
+                    → Y i ⊆ 𝓘nd
+                    → (b : B)
+                    → (b , Y i) ∈ R
+                    → b ∈ 𝓘nd
+      is-small-c-cl i C b r =
         𝓘nd-is-c-closed (Y i) C b
                         (is-small-pres-backward b (Y i)
                                                 ∣ (i , (λ _ → id) , r) ∣)
-      g : (i : I₂)
-        → (m : α i → B)
-        → (b : B)
-        → small-ϕ b (⋁ (α i , β ∘ m))
-        → ((x : B) → x ≤ᴮ (⋁ (α i , β ∘ m)) → x ∈ 𝓘nd)
-        → b ∈ 𝓘nd
-      g i m b s C =
+      is-small-ϕ-cl : (i : I₂)
+                    → (m : α i → B)
+                    → (b : B)
+                    → small-ϕ b (⋁ (α i , β ∘ m))
+                    → ((x : B) → x ≤ᴮ (⋁ (α i , β ∘ m)) → x ∈ 𝓘nd)
+                    → b ∈ 𝓘nd
+      is-small-ϕ-cl i m b s C =
         𝓘nd-is-ϕ-closed (⋁ (α i , β ∘ m)) b
                         (ϕ-is-small-forward (⋁ (α i , β ∘ m)) b s) C
 
@@ -1349,7 +1404,8 @@ As a corollary of the above result we get a predicative version of the least
 fixed point theorem. Notice that we are assuming our lattice is
 small-presented and that we have a bounded ϕ that corresponds to our
 monotone map. This is the most general statement that can be made but we are
-actively exploring other, cleaner, formulations.
+actively exploring other, cleaner, formulations. In particular see the below
+notion of density which makes no mention of a particular inductive definition.
 
 Least fixed point theorem:
 Given a 𝓥-sup-lattice L with a 𝓥-presentation and a monotone
@@ -1426,7 +1482,7 @@ We first present the untruncated least fixed point theorem.
 
 \end{code}
 
-We can now state the least fixed point theorem in its fully truncated form.
+We can now state the (truncated) least fixed point theorem. 
 
 \begin{code}
 
@@ -1447,12 +1503,12 @@ We can now state the least fixed point theorem in its fully truncated form.
 
 We begin exploring conditions on monotone endomaps that guarentee they
 correspond to some bounded inductive definition. We tentatively call this
-notion density.
+notion 'density'.
 
 A monotone map f, on a 𝓥-generated sup-lattice L, is dense if there is a family
 γ : I → L, I : 𝓥, such that for all b : B and a : L we have
 
-  b ≤ᴮ f a → Ǝ v ꞉ I , b ≤ᴮ f (γ v) × v ≤ᴮ a
+  b ≤ᴮ f a → (Ǝ v ꞉ I , b ≤ᴮ f (γ v) × v ≤ᴮ a)
 
 \begin{code}
 
@@ -1592,26 +1648,26 @@ module density-of-monotone-maps {𝓤 𝓦 𝓥 : Universe}
                          → b ≤ᴮ f a
              S-to-↓ᴮ-fa' b = ∥∥-rec _≤ᴮ_-is-prop-valued u ∘ ∥∥-functor g
               where
-               II : (a' : ⟨ L ⟩)
+               u' : (a' : ⟨ L ⟩)
                   → Σ i ꞉ I , b ≤ᴮ f (γ i) × γ i ＝ˢ a'
                   → (a' ≤ a) holds
                   → b ≤ᴮ f a
-               II a' (i , r , path) o =
+               u' a' (i , r , path) o =
                  _≤_-to-_≤ᴮ_ (transitivity-of L (β b) (f a') (f a)
                                               (transport (λ z → (β b ≤ z) holds)
                                                          (ap f (＝ˢ-to-＝ path))
                                                          (_≤ᴮ_-to-_≤_ r))
                                               (f-mono a' a o))
-               III : (a' : ⟨ L ⟩)
-                     → (Ǝ i ꞉ I , b ≤ᴮ f (γ i) × γ i ＝ˢ a') holds
-                     → (a' ≤ a) holds
-                     → b ≤ᴮ f a
-               III a' = ∥∥-rec (Π-is-prop fe (λ _ → _≤ᴮ_-is-prop-valued))
-                               (II a')
+               trunc-u' : (a' : ⟨ L ⟩)
+                        → (Ǝ i ꞉ I , b ≤ᴮ f (γ i) × γ i ＝ˢ a') holds
+                        → (a' ≤ a) holds
+                        → b ≤ᴮ f a
+               trunc-u' a' = ∥∥-rec (Π-is-prop fe (λ _ → _≤ᴮ_-is-prop-valued))
+                               (u' a')
                u : Σ a' ꞉ ⟨ L ⟩ ,
                    (Ǝ i ꞉ I , b ≤ᴮ f (γ i) × γ i ＝ˢ a') holds × (a' ≤ a) holds
                  → b ≤ᴮ f a
-               u = uncurry (λ a' → uncurry (III a'))
+               u = uncurry (λ a' → uncurry (trunc-u' a'))
                g : Σ a' ꞉ ⟨ L ⟩ , (b , a') ∈ ϕ × (a' ≤ a) holds
                  → Σ a' ꞉ ⟨ L ⟩ ,
                    (Ǝ i ꞉ I , b ≤ᴮ f (γ i) × γ i ＝ˢ a') holds × (a' ≤ a) holds
@@ -1681,6 +1737,5 @@ module least-fixed-point-from-density {𝓤 𝓦 𝓥 : Universe}
      Untruncated-Least-Fixed-Point-Theorem
        small-pres f f-mono
        (dense-implies-bounded l-small f f-mono f-dense)
-
 
 \end{code}
