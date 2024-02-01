@@ -29,8 +29,6 @@ open import UF.UniverseEmbedding
 module OrderedTypes.SupLattice
        (pt : propositional-truncations-exist)
        (fe : Fun-Ext)
-       (fe' : FunExt)
-       (pe : Prop-Ext)
         where
 
 open import Locales.Frame pt fe hiding (⟨_⟩ ; join-of)

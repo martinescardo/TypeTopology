@@ -62,8 +62,8 @@ module OrderedTypes.PredicativeLFP
 open import Locales.Frame pt fe hiding (⟨_⟩ ; join-of)
 open import Slice.Family
 open import UF.ImageAndSurjection pt
-open import OrderedTypes.SupLattice pt fe fe' pe
-open import OrderedTypes.SupLattice-SmallBasis pt fe fe' pe
+open import OrderedTypes.SupLattice pt fe 
+open import OrderedTypes.SupLattice-SmallBasis pt fe
 
 open AllCombinators pt fe
 open PropositionalTruncation pt

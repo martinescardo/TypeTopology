@@ -25,14 +25,12 @@ open import UF.UniverseEmbedding
 module OrderedTypes.SupLattice-SmallBasis
        (pt : propositional-truncations-exist)
        (fe : Fun-Ext)
-       (fe' : FunExt)
-       (pe : Prop-Ext)
         where
 
 open import Locales.Frame pt fe hiding (⟨_⟩ ; join-of)
 open import Slice.Family
 open import UF.ImageAndSurjection pt
-open import OrderedTypes.SupLattice pt fe fe' pe
+open import OrderedTypes.SupLattice pt fe
 
 open AllCombinators pt fe
 open PropositionalTruncation pt
