@@ -37,7 +37,7 @@ open import UF.Subsingletons-FunExt
 \end{code}
 
 Definition (The generic convergent sequence).  We use u,v,x to range
-over ℕ∞ and α,β to range over (ℕ → 𝟚):
+over ℕ∞ and α,β,γ to range over (ℕ → 𝟚):
 
 \begin{code}
 
@@ -66,10 +66,13 @@ force-decreasing β (succ i) = min𝟚 (β (i ∔ 1)) (force-decreasing β i)
 
 force-decreasing-is-decreasing : (β : ℕ → 𝟚) → is-decreasing (force-decreasing β)
 force-decreasing-is-decreasing β 0        = Lemma[minab≤₂b]
-force-decreasing-is-decreasing β (succ i) = Lemma[minab≤₂b] {β (i ∔ 2)}
-                                                            {force-decreasing β (i ∔ 1)}
+force-decreasing-is-decreasing β (succ i) = Lemma[minab≤₂b]
+                                             {β (i ∔ 2)}
+                                             {force-decreasing β (i ∔ 1)}
 
-force-decreasing-unchanged : (α : ℕ → 𝟚) → is-decreasing α → force-decreasing α ∼ α
+force-decreasing-unchanged : (α : ℕ → 𝟚)
+                           → is-decreasing α
+                           → force-decreasing α ∼ α
 force-decreasing-unchanged α d 0        = refl
 force-decreasing-unchanged α d (succ i) = g
   where
@@ -467,6 +470,9 @@ is-finite u = Σ n ꞉ ℕ , ι n ＝ u
 
 size : {u : ℕ∞} → is-finite u → ℕ
 size (n , r) = n
+
+size-property : {u : ℕ∞} (φ : is-finite u) → ι (size φ) ＝ u
+size-property (n , r) = r
 
 being-finite-is-prop : funext₀ → (u : ℕ∞) → is-prop (is-finite u)
 being-finite-is-prop = ℕ-to-ℕ∞-is-embedding
