@@ -89,15 +89,6 @@ order-reflecting-and-partial-inverse-is-initial-segment α β f p i a b m = a' ,
     p' : a' ≺⟨ α ⟩ a
     p' = p a' a m'
 
-{-
-lc-initial-segments-are-order-reflecting α β f i c x y l = m
- where
-  a : Σ x' ꞉ ⟨ α ⟩ , (x' ≺⟨ α ⟩ y) × (f x' ＝ f x)
-  a = i y (f x) l
-
-  m : x ≺⟨ α ⟩ y
-  m = transport (λ - → - ≺⟨ α ⟩ y) (c (pr₂ (pr₂ a))) (pr₁ (pr₂ a))
--}
 
 module _ (pt : propositional-truncations-exist)
          (sr : Set-Replacement pt)
