@@ -54,7 +54,7 @@ _++_ : {X : 𝓤 ̇ } → List X → List X → List X
 []      ++ t = t
 (x ∷ s) ++ t = x ∷ (s ++ t)
 
-infixr 4 _++_
+infixr 2 _++_
 
 []-right-neutral : {X : 𝓤 ̇ } (s : List X) → s ＝ s ++ []
 []-right-neutral []      = refl

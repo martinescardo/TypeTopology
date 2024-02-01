@@ -338,4 +338,15 @@ preserves-subsingleton-sups-if-continuous-and-strict 𝓓 𝓔 f con str α ρ =
              → ∐ˢˢ 𝓓 α ρ ＝ ∐ˢˢ 𝓓 β ρ
 ∐ˢˢ-family-＝ 𝓓 ρ refl = refl
 
+∐ˢˢ-＝-if-domain-holds : (𝓓 : DCPO⊥ {𝓤} {𝓣}) {I : 𝓥 ̇ }
+                         {α : I → ⟪ 𝓓 ⟫} (ρ : is-prop I)
+                       → (i : I) → ∐ˢˢ 𝓓 α ρ ＝ α i
+∐ˢˢ-＝-if-domain-holds 𝓓 {I} {α} ρ i =
+ antisymmetry (𝓓 ⁻) (∐ˢˢ 𝓓 α ρ) (α i)
+  (∐ˢˢ-is-lowerbound-of-upperbounds 𝓓 α ρ (α i) l)
+  (∐ˢˢ-is-upperbound 𝓓 α ρ i)
+   where
+    l : (j : I) → α j ⊑⟪ 𝓓 ⟫ α i
+    l j = transport (λ - → α - ⊑⟪ 𝓓 ⟫ α i) (ρ i j) (reflexivity (𝓓 ⁻) (α i))
+
 \end{code}

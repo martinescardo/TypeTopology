@@ -112,7 +112,7 @@ following construction is performed in the module SquashedCantor.
 ×-retract-of-Cantor τ υ ε δ =  retracts-compose a b
  where
   a : retract (Cantor × Cantor) of Cantor
-  a = pair-seq-retract fe₀
+  a = pair-seq-retract
 
   b : retract ⟨ τ ⟩ × ⟨ υ ⟩ of (Cantor × Cantor)
   b = ×-retract ε δ
