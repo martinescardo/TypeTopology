@@ -1472,12 +1472,6 @@ module density-of-monotone-maps {𝓤 𝓦 𝓥 : Universe}
   open bounded-from-small-basis-facts h
   open local-from-small-basis-facts h
 
-  is-dense' : (f : ⟨ L ⟩ → ⟨ L ⟩) → 𝓤 ⊔ 𝓥  ̇
-  is-dense' f = (b : B)
-             → (a : ⟨ L ⟩)
-             → b ≤ᴮ f a
-             → (Ǝ x ꞉ B , b ≤ᴮ f (β x) × x ≤ᴮ a) holds
-
   density-condition : (f : ⟨ L ⟩ → ⟨ L ⟩)
                     → (I : 𝓥  ̇)
                     → (γ : I → ⟨ L ⟩)
