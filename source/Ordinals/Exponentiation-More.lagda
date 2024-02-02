@@ -89,7 +89,6 @@ order-reflecting-and-partial-inverse-is-initial-segment α β f p i a b m = a' ,
     p' : a' ≺⟨ α ⟩ a
     p' = p a' a m'
 
-
 module _ (pt : propositional-truncations-exist)
          (sr : Set-Replacement pt)
        where
@@ -98,6 +97,52 @@ module _ (pt : propositional-truncations-exist)
 
  open import Ordinals.OrdinalOfOrdinalsSuprema ua
  open suprema pt sr
+
+ open import UF.ImageAndSurjection pt
+
+ surjective-simulation-gives-equality : (α β : Ordinal 𝓤)
+                                      → (f : ⟨ α ⟩ → ⟨ β ⟩)
+                                      → is-simulation α β f
+                                      → is-surjection f
+                                      → α ＝ β
+ surjective-simulation-gives-equality α β f sim surj = ⊴-antisym α β (f , sim) (h₀ , h₀-sim)
+   where
+     prp : (b : ⟨ β ⟩) → is-prop (Σ a ꞉ ⟨ α ⟩ , (f a ＝ b))
+     prp b (a , p) (a' , p') = to-subtype-＝ (λ a → underlying-type-is-set fe β)
+                                            (simulations-are-lc α β f sim (p ∙ p' ⁻¹))
+
+     h : (b : ⟨ β ⟩) → Σ a ꞉ ⟨ α ⟩ , (f a ＝ b)
+     h b = ∥∥-rec (prp b) id (surj b)
+
+     h₀ : ⟨ β ⟩ → ⟨ α ⟩
+     h₀ b = pr₁ (h b)
+
+     h₀-retract-of-f : (b : ⟨ β ⟩) → f (h₀ b) ＝ b
+     h₀-retract-of-f b = pr₂ (h b)
+
+     h₀-is-initial-segment : is-initial-segment β α h₀
+     h₀-is-initial-segment b a p = f a , p'' , q
+       where
+        p' : f a ≺⟨ β ⟩ (f (h₀ b))
+        p' = simulations-are-order-preserving α β f sim a (h₀ b) p
+
+        p'' : f a ≺⟨ β ⟩ b
+        p'' = transport (λ - → f a ≺⟨ β ⟩ -) (h₀-retract-of-f b) p'
+
+        q : h₀ (f a) ＝ a
+        q = simulations-are-lc α β f sim (h₀-retract-of-f (f a))
+
+     h₀-is-order-preserving : is-order-preserving β α h₀
+     h₀-is-order-preserving b b' p = p''
+       where
+         p' : f (h₀ b) ≺⟨ β ⟩ f (h₀ b')
+         p' = transport₂⁻¹ (underlying-order β) (h₀-retract-of-f b) (h₀-retract-of-f b') p
+
+         p'' : h₀ b  ≺⟨ α ⟩ (h₀ b')
+         p'' = simulations-are-order-reflecting α β f sim (h₀ b) (h₀ b') p'
+
+     h₀-sim : is-simulation β α h₀
+     h₀-sim = h₀-is-initial-segment , h₀-is-order-preserving
 
  module _ {I : 𝓤 ̇  }
           (i₀ : I)
@@ -256,6 +301,20 @@ module _ (pt : propositional-truncations-exist)
 
   exp-sup-is-upper-bound : (i : I) → γ i ⊴ ([𝟙+ α ]^ (sup β))
   exp-sup-is-upper-bound i = f i , f-is-initial-segment i , f-is-order-preserving i
+
+  exp-sup-simulation : sup (λ i → ([𝟙+ α ]^ (β i))) ⊴ ([𝟙+ α ]^ (sup β))
+  exp-sup-simulation = sup-is-lower-bound-of-upper-bounds (λ i → ([𝟙+ α ]^ (β i))) ([𝟙+ α ]^ (sup β)) exp-sup-is-upper-bound
+
+  exp-sup-simulation-surjective : is-surjection (pr₁ exp-sup-simulation)
+  exp-sup-simulation-surjective (ys , δ) = {!!}
+
+  sup-spec : sup (λ i → ([𝟙+ α ]^ (β i))) ＝ ([𝟙+ α ]^ (sup β))
+  sup-spec = surjective-simulation-gives-equality
+               (sup (λ i → ([𝟙+ α ]^ (β i))))
+               ([𝟙+ α ]^ (sup β))
+               (pr₁ exp-sup-simulation)
+               (pr₂ exp-sup-simulation)
+               exp-sup-simulation-surjective
 
   -- Possible strategy
   -- for every i : I, x : [𝟙+ α]^ (β i),
