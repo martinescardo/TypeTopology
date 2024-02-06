@@ -1055,10 +1055,51 @@ module suprema
    sup-is-upper-bound : (i : I) → α i ⊴ sup
    sup-is-upper-bound = pr₁ (sup-is-least-upper-bound)
 
+   private
+    q : (i : I) → ⟨ α i ⟩ → ⟨ sup ⟩
+    q i = pr₁ (sup-is-upper-bound i)
+
+    q-surj : (y : ⟨ sup ⟩) → ∃ i ꞉ I , Σ x ꞉ ⟨ α i ⟩ , q i x ＝ y
+    q-surj = α⁻-is-upper-bound-surjectivity sr
+
+   -- TODO: Notation for underlying map of simulations
+   sup-is-upper-bound-jointly-surjective :
+    (y : ⟨ sup ⟩) → ∃ i ꞉ I , Σ x ꞉ ⟨ α i ⟩ , pr₁ (sup-is-upper-bound i) x ＝ y
+   sup-is-upper-bound-jointly-surjective = q-surj
+
    sup-is-lower-bound-of-upper-bounds : (β : Ordinal 𝓤)
                                       → ((i : I) → α i ⊴ β)
                                       → sup ⊴ β
    sup-is-lower-bound-of-upper-bounds = pr₂ (sup-is-least-upper-bound)
+
+{-
+   sup-is-lower-bound-of-upper-bounds-lemma :
+    (β : Ordinal 𝓤) (f : (i : I) → α i ⊴ β)
+    (i : I) (x : ⟨ α i ⟩)
+    → pr₁ (sup-is-lower-bound-of-upper-bounds β f) (q i x) ＝ pr₁ (f i) x
+   sup-is-lower-bound-of-upper-bounds-lemma β f i x =
+    {!!}
+-}
+
+
+
+\end{code}
+
+TODO: Clean up
+
+\begin{code}
+
+{-
+   surjectivity-lemma : (β : Ordinal 𝓤) (f : (i : I) → α i ⊴ β)
+                      → ((y : ⟨ β ⟩) → ∃ i ꞉ I , Σ x ꞉ ⟨ α i ⟩ , pr₁ (f i) x ＝ y)
+                      → is-surjection (pr₁ (sup-is-lower-bound-of-upper-bounds β f))
+   surjectivity-lemma β f s y =
+    ∥∥-functor (λ (i , x , p) → (q i x) , (sup-is-lower-bound-of-upper-bounds-lemma β f i x ∙ p)) (s y)
+-}
+
+\end{code}
+
+\begin{code}
 
    sup-is-image-of-sum-to-ordinals : ⟨ sup ⟩ ≃ image sum-to-ordinals
    sup-is-image-of-sum-to-ordinals =

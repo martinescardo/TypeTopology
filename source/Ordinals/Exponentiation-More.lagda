@@ -185,7 +185,7 @@ module _ (pt : propositional-truncations-exist)
 
    ι-is-surjective : (ζ : I → Ordinal 𝓤) (s : ⟨ sup ζ ⟩)
                    → ∃ i ꞉ I , Σ x ꞉ ⟨ ζ i ⟩ , ι ζ {i} x ＝ s
-   ι-is-surjective = {!!}
+   ι-is-surjective = sup-is-upper-bound-jointly-surjective
 
    ι-is-surjective⁺ : (ζ : I → Ordinal 𝓤) (s : ⟨ sup ζ ⟩) (i : I) (x : ⟨ ζ i ⟩)
                     → s ≺⟨ sup ζ ⟩ ι ζ x
@@ -216,27 +216,57 @@ module _ (pt : propositional-truncations-exist)
 
    f₁-surj-lemma : (a : ⟨ α ⟩) (i : I) (b : ⟨ β i ⟩) (l : List (⟨ α ×ₒ sup β ⟩))
                  → is-decreasing-pr₂ α (sup β) (a , ι β b ∷ l)
-                 → Σ l' ꞉ List (⟨ α ×ₒ β i ⟩) , (a , ι β b ∷ l) ＝ f₁ i l'
-   f₁-surj-lemma a i b [] δ = (a , b ∷ []) , refl
-   f₁-surj-lemma a i b ((a' , s) ∷ l) δ = (a , b ∷ l') , ap (a , ι β b ∷_) (ap (λ - → a' , - ∷ l) ((pr₂ lem) ⁻¹) ∙ pr₂ IH)
-    where
-     lem : Σ b' ꞉ ⟨ β i ⟩ , ι β b' ＝ s
-     lem = ι-is-surjective⁺ β s i b (is-decreasing-heads (underlying-order (sup β)) δ)
-     b' : ⟨ β i ⟩
-     b' = pr₁ lem
-     IH : Σ l' ꞉ List (⟨ α ×ₒ β i ⟩) , (a' , ι β b' ∷ l) ＝ f₁ i l'
-     IH = f₁-surj-lemma a' i b' l (transport⁻¹ (λ - → is-decreasing-pr₂ α (sup β) (a' , - ∷ l)) (pr₂ lem) (is-decreasing-tail (underlying-order (sup β)) δ))
-     l' = pr₁ IH
+                 → Σ l' ꞉ List (⟨ α ×ₒ β i ⟩) , is-decreasing-pr₂ α (β i) (a , b ∷ l')
+                                              × ((a , ι β b ∷ l) ＝ f₁ i (a , b ∷ l'))
+   f₁-surj-lemma a i b [] δ = [] , sing-decr , refl
+   f₁-surj-lemma a i b ((a' , s) ∷ l) δ =
+    (a' , b' ∷ l') ,
+    many-decr order-lem₃ δ' ,
+    ap (a , ι β b ∷_) (ap (λ - → a' , - ∷ l) ((pr₂ lem) ⁻¹) ∙ pr₂ (pr₂ IH))
+     where
+      lem : Σ b' ꞉ ⟨ β i ⟩ , ι β b' ＝ s
+      lem = ι-is-surjective⁺ β s i b (is-decreasing-heads (underlying-order (sup β)) δ)
+      b' : ⟨ β i ⟩
+      b' = pr₁ lem
+      order-lem₁ : s ≺⟨ sup β ⟩ ι β b
+      order-lem₁ = is-decreasing-heads (underlying-order (sup β)) δ
+      order-lem₂ : ι β b' ≺⟨ sup β ⟩ ι β b
+      order-lem₂ = transport⁻¹ (λ - → underlying-order (sup β) - (ι β b)) (pr₂ lem) order-lem₁
+      order-lem₃ : b' ≺⟨ β i ⟩ b
+      order-lem₃ = ι-is-order-reflecting β b' b order-lem₂
+      IH : Σ l' ꞉ List (⟨ α ×ₒ β i ⟩) , is-decreasing-pr₂ α (β i) (a' , b' ∷ l')
+                                      × ((a' , ι β b' ∷ l) ＝ f₁ i (a' , b' ∷ l'))
+      IH = f₁-surj-lemma a' i b' l
+            (transport⁻¹ (λ - → is-decreasing-pr₂ α (sup β) (a' , - ∷ l)) (pr₂ lem)
+              (is-decreasing-tail (underlying-order (sup β)) δ))
+      l' : List (⟨ α ×ₒ β i ⟩)
+      l' = pr₁ IH
+      δ' : is-decreasing-pr₂ α (β i) (a' , b' ∷ l')
+      δ' = pr₁ (pr₂ IH)
 
    f₁-surj : (l : List (⟨ α ×ₒ sup β ⟩))
            → is-decreasing-pr₂ α (sup β) l
-           → ∃ i ꞉ I , Σ l' ꞉ List (⟨ α ×ₒ β i ⟩) , l ＝ f₁ i l'
-   f₁-surj [] δ = ∣ i₀ , [] , refl ∣
+           → ∃ i ꞉ I , Σ l' ꞉ List (⟨ α ×ₒ β i ⟩) , is-decreasing-pr₂ α (β i) l'
+                                                  × (l ＝ f₁ i l')
+   f₁-surj [] δ = ∣ i₀ , [] , []-decr , refl ∣
    f₁-surj (a , s ∷ l) δ = ∥∥-functor h (ι-is-surjective β s)
     where
      h : (Σ i ꞉ I , Σ b ꞉ ⟨ β i ⟩ , ι β b ＝ s)
-       → Σ i ꞉ I , Σ l' ꞉ List (⟨ α ×ₒ β i ⟩) , (a , s ∷ l) ＝ f₁ i l'
-     h (i , b , refl) = i , (f₁-surj-lemma a i b l δ)
+       → Σ i ꞉ I , Σ l' ꞉ List (⟨ α ×ₒ β i ⟩) , is-decreasing-pr₂ α (β i) l'
+                                              × ((a , s ∷ l) ＝ f₁ i l')
+     h (i , b , refl) = i , (a , b ∷ pr₁ lem) , (pr₁ (pr₂ lem) , pr₂ (pr₂ lem))
+      where
+       lem : Σ l' ꞉ List ⟨ α ×ₒ β i ⟩ , is-decreasing-pr₂ α (β i) (a , b ∷ l')
+                                      × (a , ι β b ∷ l ＝ f₁ i (a , b ∷ l'))
+       lem = f₁-surj-lemma a i b l δ
+
+   f-surj : (y : ⟨ [𝟙+ α ]^ (sup β) ⟩) → ∃ i ꞉ I , Σ x ꞉ ⟨ γ i ⟩ , f i x ＝ y
+   f-surj (l , δ) = ∥∥-functor h (f₁-surj l δ)
+    where
+     h : (Σ i ꞉ I , Σ l' ꞉ List (⟨ α ×ₒ β i ⟩) , is-decreasing-pr₂ α (β i) l'
+                                               × (l ＝ f₁ i l'))
+       → Σ i ꞉ I , Σ x ꞉ ⟨ γ i ⟩ , (f i x ＝ l , δ)
+     h (i , l' , δ , refl) = i , (l' , δ) , to-exponential-＝ α (sup β) refl
 
    f-is-order-preserving : (i : I) → is-order-preserving (γ i) ([𝟙+ α ]^ (sup β)) (f i)
    f-is-order-preserving i ([] , δ) (_ , ε) []-lex = []-lex
@@ -315,20 +345,5 @@ module _ (pt : propositional-truncations-exist)
                (pr₁ exp-sup-simulation)
                (pr₂ exp-sup-simulation)
                exp-sup-simulation-surjective
-
-  -- Possible strategy
-  -- for every i : I, x : [𝟙+ α]^ (β i),
-  -- [𝟙+ α]^ (sup β) ↓ (f x) =ₒ [𝟙+ α ]^ (β i) ↓ x
-  -- ??
-
-
-{-
-  exp-sup-lemma : (i : I) (a : ⟨ α ⟩) (b : ⟨ β i ⟩) (l : List (⟨ α ×ₒ sup β ⟩))
-                → is-decreasing-pr₂ α (sup β) (a , ι β b ∷ l)
-                → ⟨ sup γ ⟩
-  exp-sup-lemma i a b [] δ = ι γ {i} ([] , []-decr)
-  exp-sup-lemma i a b (a' , s ∷ l) (many-decr p δ) = {!!}
-
--}
 
 \end{code}
