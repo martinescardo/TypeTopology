@@ -884,6 +884,12 @@ which can be shown to be a simulation by proving related properties of f̃.
     e : f̅ ((β ↓ y) , t) ＝ y
     e = pr₂ (pr₂ proof-of-claim)
 
+  -- TODO: Clean up
+  blah : (i : I) (x : ⟨ α i ⟩) → f̅ (pr₁ (α⁺-is-upper-bound i) x) ＝ pr₁ (β-is-upper-bound i) x
+  blah i x = f̅ (pr₁ (α⁺-is-upper-bound i) x) ＝⟨ (f̅-key-property (α i ↓ x) (i , (x , refl)) ∣ i , x , refl ∣) ⁻¹ ⟩
+             f̃ (α i ↓ x) _ ＝⟨ refl ⟩
+             f i x ∎
+
  α⁺-is-lower-bound-of-upper-bounds : (β : Ordinal 𝓤)
                                    → ((i : I) → α i ⊴ β)
                                    → α⁺-Ord ⊴ β
@@ -891,6 +897,13 @@ which can be shown to be a simulation by proving related properties of f̃.
                                                  , f̅-is-order-preserving
   where
    open lower-bound-of-upper-bounds-proof β β-is-ub
+
+ -- TODO: Clean up
+ α⁺-is-lower-bound-of-upper-bounds-behaviour :
+    (β : Ordinal 𝓤) (f : (i : I) → α i ⊴ β)
+    (i : I) (x : ⟨ α i ⟩)
+  → pr₁ (α⁺-is-lower-bound-of-upper-bounds β f) (pr₁ (α⁺-is-upper-bound i) x) ＝ pr₁ (f i) x
+ α⁺-is-lower-bound-of-upper-bounds-behaviour β f i x = lower-bound-of-upper-bounds-proof.blah β f i x
 
 \end{code}
 
@@ -986,6 +999,26 @@ the supremum of α are given by initial segments of some αᵢ.
    ⊴-trans α⁻-Ord α⁺-Ord β (≃ₒ-to-⊴ α⁻-Ord α⁺-Ord α⁻-≃ₒ-α⁺)
                            (α⁺-is-lower-bound-of-upper-bounds β β-is-ub)
 
+  -- TODO: Clean up
+  α⁻-is-lower-bound-of-upper-bounds-behaviour :
+     (β : Ordinal 𝓤) (f : (i : I) → α i ⊴ β)
+     (i : I) (x : ⟨ α i ⟩)
+   → pr₁ (α⁻-is-lower-bound-of-upper-bounds β f) (pr₁ (α⁻-is-upper-bound i) x) ＝ pr₁ (f i) x
+  α⁻-is-lower-bound-of-upper-bounds-behaviour β f i x =
+   pr₁ (α⁻-is-lower-bound-of-upper-bounds β f)
+    (pr₁ (α⁻-is-upper-bound i) x) ＝⟨ refl ⟩
+   pr₁ (α⁺-is-lower-bound-of-upper-bounds β f) (ϕ (pr₁ (α⁻-is-upper-bound i) x)) ＝⟨ refl ⟩
+   pr₁ (α⁺-is-lower-bound-of-upper-bounds β f) (ϕ (ψ (pr₁ (α⁺-is-upper-bound i) x))) ＝⟨ e ⟩
+   pr₁ (α⁺-is-lower-bound-of-upper-bounds β f)
+    (pr₁ (α⁺-is-upper-bound i) x) ＝⟨ α⁺-is-lower-bound-of-upper-bounds-behaviour β f i x ⟩
+   pr₁ (f i) x ∎
+    where
+     ϕ = ≃ₒ-to-fun _ _ α⁻-≃ₒ-α⁺
+     ψ = ≃ₒ-to-fun _ _ α⁺-≃ₒ-α⁻
+     e = ap (pr₁ (α⁺-is-lower-bound-of-upper-bounds β f))
+            (inverses-are-sections (≃ₒ-to-fun _ _ α⁻-≃ₒ-α⁺) (≃ₒ-to-fun-is-equiv _ _ α⁻-≃ₒ-α⁺)
+              (pr₁ (α⁺-is-upper-bound i) x))
+
 \end{code}
 
 Finally, the desired result follows (under the assumption of Set Replacement).
@@ -1072,16 +1105,12 @@ module suprema
                                       → sup ⊴ β
    sup-is-lower-bound-of-upper-bounds = pr₂ (sup-is-least-upper-bound)
 
-{-
    sup-is-lower-bound-of-upper-bounds-lemma :
     (β : Ordinal 𝓤) (f : (i : I) → α i ⊴ β)
     (i : I) (x : ⟨ α i ⟩)
     → pr₁ (sup-is-lower-bound-of-upper-bounds β f) (q i x) ＝ pr₁ (f i) x
-   sup-is-lower-bound-of-upper-bounds-lemma β f i x =
-    {!!}
--}
-
-
+   sup-is-lower-bound-of-upper-bounds-lemma =
+    α⁻-is-lower-bound-of-upper-bounds-behaviour sr
 
 \end{code}
 
@@ -1089,13 +1118,11 @@ TODO: Clean up
 
 \begin{code}
 
-{-
    surjectivity-lemma : (β : Ordinal 𝓤) (f : (i : I) → α i ⊴ β)
                       → ((y : ⟨ β ⟩) → ∃ i ꞉ I , Σ x ꞉ ⟨ α i ⟩ , pr₁ (f i) x ＝ y)
                       → is-surjection (pr₁ (sup-is-lower-bound-of-upper-bounds β f))
    surjectivity-lemma β f s y =
     ∥∥-functor (λ (i , x , p) → (q i x) , (sup-is-lower-bound-of-upper-bounds-lemma β f i x ∙ p)) (s y)
--}
 
 \end{code}
 

@@ -336,7 +336,7 @@ module _ (pt : propositional-truncations-exist)
   exp-sup-simulation = sup-is-lower-bound-of-upper-bounds (λ i → ([𝟙+ α ]^ (β i))) ([𝟙+ α ]^ (sup β)) exp-sup-is-upper-bound
 
   exp-sup-simulation-surjective : is-surjection (pr₁ exp-sup-simulation)
-  exp-sup-simulation-surjective (ys , δ) = {!!}
+  exp-sup-simulation-surjective = surjectivity-lemma γ ([𝟙+ α ]^ (sup β)) exp-sup-is-upper-bound f-surj
 
   sup-spec : sup (λ i → ([𝟙+ α ]^ (β i))) ＝ ([𝟙+ α ]^ (sup β))
   sup-spec = surjective-simulation-gives-equality
