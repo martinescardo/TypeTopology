@@ -23,6 +23,7 @@ import UF.FunExt-from-Naive-FunExt
 import UF.Groupoids
 import UF.HiggsInvolutionTheorem
 import UF.HLevels
+import UF.H-Levels                          -- by [2]
 import UF.Hedberg
 import UF.HedbergApplications
 import UF.HiddenSwap
