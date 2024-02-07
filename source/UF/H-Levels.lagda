@@ -47,8 +47,7 @@ hlevel-relation-is-prop {𝓤} (succ n) X =
 
 \end{code}
 
-Some of the next results, left-inv and base, SHOULD be somewhere but I can't
-find them...
+H-Levels are cummulative.
 
 \begin{code}
 
@@ -89,7 +88,7 @@ hlevel-closed-under-retracts (succ n) X Y (r , s , H) Y-h-level x x' =
   G : (p : x ＝ x') → H x ⁻¹ ∙ ap r (ap s p) ∙ H x' ＝ p
   G refl = left-inverse (H x)
   retr : retract x ＝ x' of (s x ＝ s x')
-  retr = (t , ap s , {!G!})
+  retr = (t , ap s , G)
 
 hlevel-closed-under-equiv : (n : ℕ)
                           → (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )
