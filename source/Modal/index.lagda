@@ -14,6 +14,7 @@ module Modal.index where
 
 import Modal.Subuniverse
 import Modal.ReflectiveSubuniverse
+import Modal.SigmaClosedReflectiveSubuniverse
 import Modal.Homotopy
 
 \end{code}
