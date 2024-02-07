@@ -35,7 +35,6 @@ singleton-closed-under-retract X Y (r , s , H) (c , C) = (r c , C')
   Σ-centrality : is-central (Σ A) (c , center (h c))
   Σ-centrality (x , a) = ⌜ Σ-＝-≃ ⌝⁻¹ (C x , p)
    where
-    p : transport A (C x) (center (h c)) ＝ a
     p = transport A (C x) (center (h c)) ＝⟨ centrality (h x)
                                                 (transport A (C x)
                                                      (center (h c))) ⁻¹ ⟩
