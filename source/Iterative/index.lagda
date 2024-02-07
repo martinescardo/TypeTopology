@@ -22,6 +22,7 @@ import Iterative.Multisets
 import Iterative.Sets
 import Iterative.Ordinals
 import Iterative.Multisets-Addendum
+import Iterative.Multisets-HFLO
 import Iterative.Sets-Addendum
 import Iterative.Ordinals-Addendum
 

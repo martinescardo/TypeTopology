@@ -41,13 +41,16 @@ double-𝓛-charac : (X : 𝓤 ̇ )
 double-𝓛-charac X = Σ-cong (λ P → ×-cong (γ X P) (≃-refl (is-prop P)))
  where
   γ : (X : 𝓤 ̇ ) (P : 𝓣 ̇ )
-    → (P → 𝓛 X) ≃ (Σ Q ꞉ (P → 𝓣 ̇ ), ((p : P) → Q p → X) × ((p : P) → is-prop (Q p)))
-  γ X P = (P → Σ Q ꞉ 𝓣 ̇ , (Q → X) × is-prop Q)                                 ≃⟨ I ⟩
-          (Σ Q ꞉ (P → 𝓣 ̇ ), ((p : P) → ((Q p → X) × is-prop (Q p))))           ≃⟨ II ⟩
-          (Σ Q ꞉ (P → 𝓣 ̇ ), ((p : P) → Q p → X) × ((p : P) → is-prop (Q p)))   ■
-           where
-            I  = ΠΣ-distr-≃
-            II = Σ-cong (λ Q → →×)
+    → (P → 𝓛 X)
+    ≃ (Σ Q ꞉ (P → 𝓣 ̇ ), ((p : P) → Q p → X) × ((p : P) → is-prop (Q p)))
+  γ X P =
+   (P → Σ Q ꞉ 𝓣 ̇ , (Q → X) × is-prop Q)                                 ≃⟨ I ⟩
+   (Σ Q ꞉ (P → 𝓣 ̇ ), ((p : P) → ((Q p → X) × is-prop (Q p))))           ≃⟨ II ⟩
+   (Σ Q ꞉ (P → 𝓣 ̇ ), ((p : P) → Q p → X) × ((p : P) → is-prop (Q p)))   ■
+    where
+     I  = ΠΣ-distr-≃
+     II = Σ-cong (λ Q → →×)
+
 \end{code}
 
 The usual definition of algebra of a monad and construction of free
@@ -90,10 +93,11 @@ following two laws:
 𝓛-alg-Law₀ {𝓤} {X} ∐ = (x : X) → ∐ 𝟙-is-prop (λ (p : 𝟙) → x) ＝ x
 
 𝓛-alg-Law₁ : {X : 𝓤 ̇ } → joinop X → 𝓣 ⁺ ⊔ 𝓤 ̇
-𝓛-alg-Law₁ {𝓤} {X} ∐ = (P : 𝓣 ̇ ) (Q : P → 𝓣 ̇ )
-                        (i : is-prop P) (j : (p : P) → is-prop (Q p))
-                        (f : Σ Q → X)
-                      → ∐ (Σ-is-prop i j) f ＝ ∐ i (λ p → ∐ (j p) (λ q → f (p , q)))
+𝓛-alg-Law₁ {𝓤} {X} ∐ =
+   (P : 𝓣 ̇ ) (Q : P → 𝓣 ̇ )
+   (i : is-prop P) (j : (p : P) → is-prop (Q p))
+   (f : Σ Q → X)
+ → ∐ (Σ-is-prop i j) f ＝ ∐ i (λ p → ∐ (j p) (λ q → f (p , q)))
 
 \end{code}
 
@@ -170,14 +174,16 @@ We name the other two projections of 𝓛-alg:
 
 \begin{code}
 
-𝓛-alg-const : {X : 𝓤 ̇ } (A : 𝓛-alg X) → (x : X) → ∐ A 𝟙-is-prop (λ (p : 𝟙) → x) ＝ x
+𝓛-alg-const : {X : 𝓤 ̇ } (A : 𝓛-alg X) (x : X)
+            → ∐ A 𝟙-is-prop (λ (p : 𝟙) → x) ＝ x
 𝓛-alg-const (∐ , κ , ι) = κ
 
 𝓛-alg-iterated : {X : 𝓤 ̇ } (A : 𝓛-alg X)
                  (P : 𝓣 ̇ ) (Q : P → 𝓣 ̇ )
                  (i : is-prop P) (j : (p : P) → is-prop (Q p))
                  (f : Σ Q → X)
-               → ∐ A (Σ-is-prop i j) f ＝ ∐ A i (λ p → ∐ A (j p) (λ q → f (p , q)))
+               → ∐ A (Σ-is-prop i j) f
+               ＝ ∐ A i (λ p → ∐ A (j p) (λ q → f (p , q)))
 𝓛-alg-iterated (∐ , κ , ι) = ι
 
 \end{code}
@@ -221,10 +227,10 @@ type injectivity purposes).
 
 𝓛-alg-Law₀' : {X : 𝓤 ̇ } → joinop X → 𝓣 ⁺ ⊔ 𝓤 ̇
 𝓛-alg-Law₀' {𝓤} {X} ∐ = (P : 𝓣 ̇ )
-                        (i : is-prop P)
-                        (f : P → X)
-                        (p : P)
-                      → ∐ i f ＝ f p
+                         (i : is-prop P)
+                         (f : P → X)
+                         (p : P)
+                       → ∐ i f ＝ f p
 
 𝓛-alg-Law₀-gives₀' : propext 𝓣
                    → funext 𝓣 𝓣
@@ -263,11 +269,9 @@ equivalent to 𝓛-alg-Law₁:
 
 𝓛-alg-Law₁' : {X : 𝓤 ̇ } → joinop X → 𝓣 ⁺ ⊔ 𝓤 ̇
 𝓛-alg-Law₁' {𝓤} {X} ∐ = (P Q : 𝓣 ̇ )
-                        (i : is-prop P)
-                        (j : is-prop Q)
-                        (f : P × Q → X)
-                           → ∐ (×-is-prop i j) f
-                           ＝ ∐ i (λ p → ∐ j (λ q → f (p , q)))
+                         (i : is-prop P) (j : is-prop Q)
+                         (f : P × Q → X)
+                       → ∐ (×-is-prop i j) f ＝ ∐ i (λ p → ∐ j (λ q → f (p , q)))
 
 \end{code}
 

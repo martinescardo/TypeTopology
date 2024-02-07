@@ -68,6 +68,26 @@ X n is compact then so is its squashed sum Σ¹ X.
                    ℕ∞-compact∙
 \end{code}
 
+Added 20th December 2023.
+
+\begin{code}
+
+open import TypeTopology.TotallySeparated
+
+Σ¹-is-totally-separated : (X : ℕ → 𝓤 ̇ )
+                        → ((n : ℕ) → is-totally-separated (X n))
+                        → is-totally-separated (Σ¹ X)
+Σ¹-is-totally-separated {𝓤} X τ =
+ Σ-indexed-by-ℕ∞-is-totally-separated-if-family-at-∞-is-prop
+  fe₀
+  (X / ι)
+  (/-is-totally-separated fe ι X τ)
+  (λ g f → dfunext (fe 𝓤₀ 𝓤) (λ (φ : is-finite ∞) → 𝟘-elim (is-infinite-∞ φ)))
+
+\end{code}
+
+End of addition.
+
 Added 26 July 2018 (implementing ideas of several years ago).
 
 We now develop a discrete (but not compact) version Σ₁ X of Σ¹ X
@@ -323,7 +343,7 @@ We don't need this for the moment:
 \begin{code}
 
 ι𝟙-over-extension : {X : ℕ → 𝓤 ̇ } (u : ℕ∞)
-                      → ((X / over) / ι𝟙) u ≃ (X / ι) u
+                  → ((X / over) / ι𝟙) u ≃ (X / ι) u
 ι𝟙-over-extension = iterated-extension over ι𝟙
 
 \end{code}

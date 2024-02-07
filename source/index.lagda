@@ -4,7 +4,7 @@
    -------------------------------------------------------------
 
    Martin Escardo and collaborators,
-   2010--2023--∞, continuously evolving.
+   2010--2024--∞, continuously evolving.
    https://www.cs.bham.ac.uk/~mhe/
    https://github.com/martinescardo/TypeTopology
 
@@ -155,7 +155,7 @@ import NotionsOfDecidability.index
 import Ordinals.index
 import PathSequences.index
 import PCF.index
-import Posets.index
+import OrderedTypes.index
 import Quotient.index
 import Relations.index
 import Rationals.index

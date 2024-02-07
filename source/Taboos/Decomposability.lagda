@@ -502,7 +502,7 @@ and to that of the type of ordinals, and more examples like these.
 
 \begin{code}
 
-ainjective-types-have-Ω-Paths : {𝓤 𝓥 𝓦 : Universe} (D : 𝓤 ̇ )
+ainjective-types-have-Ω-Paths : (D : 𝓤 ̇ )
                               → ainjective-type D 𝓥 𝓦
                               → has-Ω-paths 𝓥 D
 ainjective-types-have-Ω-Paths {𝓤} {𝓥} {𝓦} D D-ainj x₀ x₁ = II I
@@ -512,12 +512,12 @@ ainjective-types-have-Ω-Paths {𝓤} {𝓥} {𝓦} D D-ainj x₀ x₁ = II I
   f ₁ = x₁
 
   I : Σ g ꞉ (Ω 𝓥 → D) , g ∘ 𝟚-to-Ω ∼ f
-  I = ainjectivity-over-small-maps {𝓤} {𝓤₀} {𝓥 ⁺} {𝓥} {𝓥} {𝓦}
+  I = ainjectivity-over-small-maps {𝓤₀} {𝓥 ⁺} {𝓤} {𝓥} {𝓥} {𝓦}
        D
        D-ainj
        𝟚-to-Ω
        (𝟚-to-Ω-is-embedding fe' pe)
-       (𝟚-to-Ω-is-small-map fe' pe)
+       (𝟚-to-Ω-is-small-map {𝓥} fe' pe)
        f
 
   II : type-of I → Ω-Path 𝓥 x₀ x₁

@@ -24,8 +24,8 @@ open import EffectfulForcing.MFPSAndVariations.Dialogue
  using (eloquent; D; dialogue; eloquent-functions-are-continuous;
         dialogue-continuity; generic)
 open import EffectfulForcing.MFPSAndVariations.Continuity
- using (is-continuous; is-continuous₀; continuity-implies-continuity₀;
-        _＝⦅_⦆_; _＝⟪_⟫_; modulus-at₀; maximum)
+ using (is-continuous; _＝⟪_⟫_)
+open import EffectfulForcing.MFPSAndVariations.ContinuityProperties fe
 open import EffectfulForcing.Internal.Correctness
  using (Rnorm-generic; is-dialogue-for; extβ; Rnorm-lemma₀; Rnorm)
 open import EffectfulForcing.Internal.External
@@ -84,10 +84,6 @@ ifzᵀ-correct (succ m) n₁ n₂ = refl
 The predecessor operator.
 
 \begin{code}
-
-pred : ℕ → ℕ
-pred zero     = zero
-pred (succ n) = n
 
 predᵀ : {Γ : Cxt} → Γ ⊢ ι ⇒ ι
 predᵀ = Rec' {σ = ι} · (ƛ (ƛ ν₁)) · Zero
@@ -211,10 +207,11 @@ modulus d α = succ (max-question d α)
 modulus₀ : (d : D ℕ ℕ ℕ) → (ℕ → ℕ) → ℕ
 modulus₀ d α = succ (max-question₀ d α)
 
-modulusᵀ : {Γ : Cxt}
-                   → Γ ⊢ baire ⇒ ι
-                   → B-context【 Γ 】 ι ⊢ (ι ⇒ ι) ⇒ ι
-modulusᵀ t = comp · Succ' · (max-questionᵀ · ⌜dialogue-tree⌝ t)
+modulus⋆ : D⋆ ℕ ℕ ℕ ℕ → (ℕ → ℕ) → ℕ
+modulus⋆ d α = succ (max-question⋆ d α)
+
+modulusᵀ : 〈〉 ⊢ ⌜B⌝ ι ι ⇒ (ι ⇒ ι) ⇒ ι
+modulusᵀ = ƛ (ƛ (Succ' · (max-questionᵀ · ν₁ · ν₀)))
 
 \end{code}
 
@@ -250,7 +247,7 @@ main-lemma t α =
    Ⅳ = max-question₀-agreement (dialogue-tree t) α
 
 internal-mod-cont-correct : (t : 〈〉 ⊢ (baire ⇒ ι)) (α β : 〈〉 ⊢ baire)
-                          → ⟦ α ⟧₀ ＝⦅ ⟦ modulusᵀ t · α ⟧₀ ⦆ ⟦ β ⟧₀
+                          → ⟦ α ⟧₀ ＝⦅ ⟦ modulusᵀ · (⌜dialogue-tree⌝ t) · α ⟧₀ ⦆ ⟦ β ⟧₀
                           → ⟦ t · α ⟧₀ ＝ ⟦ t ·  β ⟧₀
 internal-mod-cont-correct t α β p = †
  where
@@ -266,7 +263,7 @@ internal-mod-cont-correct t α β p = †
   m₀ : ℕ
   m₀ = succ (max-question₀ (dialogue-tree t) ⟦ α ⟧₀)
 
-  q : ⟦ modulusᵀ t · α ⟧₀ ＝ m₀
+  q : ⟦ modulusᵀ · (⌜dialogue-tree⌝ t) · α ⟧₀ ＝ m₀
   q = ap succ (main-lemma t ⟦ α ⟧₀)
 
   ‡ : ⟦ α ⟧₀ ＝⦅ m₀ ⦆ ⟦ β ⟧₀

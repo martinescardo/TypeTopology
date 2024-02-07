@@ -709,6 +709,12 @@ truncated-spectralᴰ-implies-spectral ua X p =
    † : spectralᴰ X → is-spectral X holds
    † = pr₁ ∘ spectralᴰ-implies-ssb ua X
 
+\end{code}
+
+The split support result:
+
+\begin{code}
+
 truncated-spectralᴰ-implies-spectralᴰ : (ua : Univalence) (X : Locale 𝓤 𝓥 𝓥)
                                       → ∥ spectralᴰ X ∥ → spectralᴰ X
 truncated-spectralᴰ-implies-spectralᴰ {𝓤} {𝓥} ua X p =

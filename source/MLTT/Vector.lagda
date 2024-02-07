@@ -1,6 +1,6 @@
 \begin{code}
 
-{-# OPTIONS --safe --without-K #-} --
+{-# OPTIONS --safe --without-K #-}
 
 module MLTT.Vector where
 
@@ -9,7 +9,7 @@ open import MLTT.Fin
 open import MLTT.Bool
 
 data Vector (A : 𝓤 ̇ ) : ℕ → 𝓤 ̇ where
- []   : Vector A 0
+ []  : Vector A 0
  _∷_ : {n : ℕ} → A → Vector A n → Vector A (succ n)
 
 head : {A : 𝓤 ̇ } {n : ℕ} → Vector A (succ n) → A

@@ -24,5 +24,6 @@ import PathSequences.Reasoning
 import PathSequences.Ap
 import PathSequences.Inversion
 import PathSequences.Rotations
+import PathSequences.Cancel
 
 \end{code}

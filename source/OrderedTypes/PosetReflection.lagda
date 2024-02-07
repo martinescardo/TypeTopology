@@ -14,7 +14,7 @@ open import UF.Sets
 open import UF.Subsingletons
 open import UF.SubtypeClassifier
 
-module Posets.PosetReflection
+module OrderedTypes.PosetReflection
         (pt : propositional-truncations-exist)
         (fe : Fun-Ext)
         (pe : Prop-Ext)

@@ -33,23 +33,9 @@ private
 
 \end{code}
 
-The definition of LLPO uses _∨_ rather than _+_. We show that LLPO
-defined with _+_ implies WLPO, although it is known that LLPO defined with
-_∨_ doesn't (there are counter-models).
-
-LLPO says that for every binary sequence with at most one , either
-even terms or the odd terms are all 0. It is known that WLPO (it is
-decidable whether a given binary sequence is constantly 0) implies
-LLPO.
-
-We can implement this disjunction with "+" or "∨", and we discuss
-both here.
-
-With "∨", it is known that LLPO doesn't imply WLPO (there are
-counter-models).
-
-The main result in this file is that LLPO defined with "+" implies
-WLPO. This seems to be a new result.
+The definition of LLPO uses _∨_ rather than _+_. But show that with
+_+_, LLPO implies WLPO, but it is known that LLPO with _∨_ doesn't
+(there are counter-models).
 
 \begin{code}
 
@@ -61,7 +47,7 @@ untruncated-LLPO = (α : ℕ → 𝟚)
 
 \end{code}
 
-The following version is equivalent, which shows that (untruncated)
+The following version, is equivalent, which shows that (untruncated)
 LLPO is an instance of De Morgan Law.
 
 \begin{code}
@@ -310,18 +296,11 @@ The most natural form of LLPO for what we've done above is the following.
 
 \begin{code}
 
- ℕ∞-LLPO : 𝓤₀ ̇
- ℕ∞-LLPO = (u v : ℕ∞) → ¬ (is-finite u × is-finite v) → (u ＝ ∞) ∨ (v ＝ ∞)
+ ℕ-∞-LLPO : 𝓤₀ ̇
+ ℕ-∞-LLPO = (u v : ℕ∞) → ¬ (is-finite u × is-finite v) → (u ＝ ∞) ∨ (v ＝ ∞)
 
 \end{code}
 
-TODO. (Easy, given what we've proved.) Show that ℕ∞-LLPO and LLPO are
-logically equivalent (and hence equivalent).
-
-TODO. Give a better version of untruncated-LLPO-gives-WLPO using
-this. The proof won't be different. It will just be a factorization
-through the proof of the previous TODO.
-
-LLPO doesn't imply WLPO (there are published refereces - find and
+LLPO doesn't imply WLPO (there are published refereced - find and
 include them here). One example seems to Johnstone's topological
 topos, but this is unpublished as far as I know.

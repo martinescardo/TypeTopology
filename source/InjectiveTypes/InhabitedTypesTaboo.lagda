@@ -7,21 +7,19 @@ As explained in InjectiveTypes.CounterExamples:
 
 ────────────────────────────────────────────────────────────────────────────────
 
-We already know that if excluded middle holds then all pointed types
-are algebraically injective, and that the converse also holds.
+We already know that if excluded middle holds then all pointed types are
+algebraically injective, and that the converse also holds.
 
-So we can't really give an example of any type which is not
-algebraicxally injective, other than the empty type. The best we can
-hope for is to derive a constructive taboo, rather than a
-contradiction, from the assumption that a type of interest would be
-injective.
+So we can't really give an example of any type which is not algebraicxally
+injective, other than the empty type. The best we can hope for is to derive a
+constructive taboo, rather than a contradiction, from the assumption that a type
+of interest would be injective.
 
-Most types one encounters in practice are "not" injective in the above
-sense. We can also say "not all types are injective in general". We
-can also say "not all types are injective in general", as there are
-some ∞-toposes which do satisfy excluded middle, as well as some
-∞-toposes which don't, and we intend TypeTopology to apply to all
-∞-toposes, except when special assumptions are made.
+Most types one encounters in practice are "not" injective in the above sense. We
+can also say "not all types are injective in general", as there are some
+∞-toposes which do satisfy excluded middle, as well as some ∞-toposes which
+don't, and we intend TypeTopology to apply to all ∞-toposes, except when special
+assumptions are made.
 
 ────────────────────────────────────────────────────────────────────────────────
 

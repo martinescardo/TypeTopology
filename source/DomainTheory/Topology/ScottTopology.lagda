@@ -16,7 +16,7 @@ module DomainTheory.Topology.ScottTopology
 
 open PropositionalTruncation pt
 
-open import Posets.Poset fe
+open import OrderedTypes.Poset fe
 open import Slice.Family
 open import UF.ImageAndSurjection pt
 open import UF.Logic

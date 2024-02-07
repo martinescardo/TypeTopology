@@ -181,7 +181,9 @@ module _ (fe : FunExt) where
           (λ u → Π-is-totally-separated fe₀ (λ _ → 𝟚-is-totally-separated)))
 \end{code}
 
-Remark. ¬ WLPO is equivalent to a continuity principle that is compatible with constructive mathematics and with MLTT. Therefore its negatation is not provable. See
+Remark. ¬ WLPO is equivalent to a continuity principle that is
+compatible with constructive mathematics and with MLTT. Therefore its
+negatation is not provable. See
 
   Constructive decidability of classical continuity.
   Mathematical Structures in Computer Science
@@ -212,5 +214,140 @@ Even compact totally separated types fail to be closed under Σ:
                (prop-tychonoff fe (ℕ∞-is-set fe₀) (λ _ → 𝟚-is-compact∙)))
        (ℕ∞-is-totally-separated fe₀)
           (λ u → Π-is-totally-separated fe₀ (λ _ → 𝟚-is-totally-separated)))
+
+\end{code}
+
+Added 20th December 2023. Sums are not closed under total
+separatedness in general, as discussed above, but we have the
+following useful special case.
+
+\begin{code}
+
+open import Notation.CanonicalMap hiding ([_])
+
+Σ-indexed-by-ℕ∞-is-totally-separated-if-family-at-∞-is-prop
+  : funext 𝓤₀ 𝓤₀
+  → (A : ℕ∞ → 𝓥 ̇ )
+  → ((u : ℕ∞) → is-totally-separated (A u))
+  → is-prop (A ∞)
+  → is-totally-separated (Σ A)
+Σ-indexed-by-ℕ∞-is-totally-separated-if-family-at-∞-is-prop
+ fe₀ A A-is-ts A∞-is-prop {u , a} {v , b} ϕ = IV
+ where
+  have-ϕ : (p : Σ A → 𝟚) → p (u , a) ＝ p (v , b)
+  have-ϕ = ϕ
+
+  ϕ₁ : (q : ℕ∞ → 𝟚) → q u ＝ q v
+  ϕ₁ q = ϕ (λ (w , _) → q w)
+
+  I : u ＝ v
+  I = ℕ∞-is-totally-separated fe₀ ϕ₁
+
+  a' : A v
+  a' = transport A I a
+
+  a-fact : (u , a) ＝[ Σ A ] (v , a')
+  a-fact = to-Σ-＝ (I , refl)
+
+  II : (r : A v → 𝟚) → r a' ＝ r b
+  II r = II₃
+   where
+    II₀ : (n : ℕ) → v ＝ ι n → r a' ＝ r b
+    II₀ n refl = e
+     where
+      p' : ((w , c) : Σ A) → is-decidable (ι n ＝ w) → 𝟚
+      p' (w , c) (inl e) = r (transport⁻¹ A e c)
+      p' (w , c) (inr ν) = ₀ -- Anything works here.
+
+      p'-property : ((w , c) : Σ A) (d d' : is-decidable (ι n ＝ w))
+                  → p' (w , c) d ＝ p' (w , c) d'
+      p'-property (w , c) (inl e) (inl e')  = ap (λ - → r (transport⁻¹ A - c))
+                                                 (ℕ∞-is-set fe₀ e e')
+      p'-property (w , c) (inl e) (inr ν')  = 𝟘-elim (ν' e)
+      p'-property (w , c) (inr ν) (inl e')  = 𝟘-elim (ν e')
+      p'-property (w , c) (inr ν) (inr ν')  = refl
+
+      p : Σ A → 𝟚
+      p (w , c) = p' (w , c) (finite-isolated fe₀ n w)
+
+      e = r a'                   ＝⟨ refl ⟩
+          p' (v , a') (inl refl) ＝⟨ e₀ ⟩
+          p (v , a')             ＝⟨ e₁ ⟩
+          p (u , a)              ＝⟨ e₂ ⟩
+          p (v , b)              ＝⟨ e₃ ⟩
+          p' (v , b) (inl refl)  ＝⟨ refl ⟩
+          r b                    ∎
+           where
+            e₀ = p'-property (v , a') (inl refl) (finite-isolated fe₀ n v)
+            e₁ = ap p (a-fact ⁻¹)
+            e₂ = ϕ p
+            e₃ = (p'-property (v , b) (inl refl) (finite-isolated fe₀ n v))⁻¹
+
+    II₁ : v ＝ ∞ → r a' ＝ r b
+    II₁ refl = ap r (A∞-is-prop a' b)
+
+    II₂ : ¬ (r a' ≠ r b)
+    II₂ ν = II∞ (not-finite-is-∞ fe₀ IIₙ)
+     where
+      IIₙ : (n : ℕ) → v ≠ ι n
+      IIₙ n = contrapositive (II₀ n) ν
+
+      II∞ : v ≠ ∞
+      II∞ = contrapositive II₁ ν
+
+    II₃ : r a' ＝ r b
+    II₃ = 𝟚-is-¬¬-separated (r a') (r b) II₂
+
+  III : a' ＝ b
+  III = A-is-ts v II
+
+  IV : (u , a) ＝[ Σ A ] (v , b)
+  IV = to-Σ-＝ (I , III)
+
+\end{code}
+
+Added 21st December 2023. A modification of the above proof gives the
+following.
+
+\begin{code}
+
+open import UF.Embeddings
+
+subtype-is-totally-separated''
+  : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+    (f : X → Y)
+  → is-totally-separated Y
+  → left-cancellable f
+  → is-totally-separated X
+subtype-is-totally-separated'' {𝓤} {𝓥} {X} {Y} f Y-is-ts f-lc {x} {x'} ϕ = II
+ where
+  have-ϕ : (p : X → 𝟚) → p x ＝ p x'
+  have-ϕ = ϕ
+
+  ϕ₁ : (q : Y → 𝟚) → q (f x) ＝ q (f x')
+  ϕ₁ q = ϕ (q ∘ f)
+
+  I : f x ＝ f x'
+  I = Y-is-ts ϕ₁
+
+  II : x ＝ x'
+  II = f-lc I
+
+subtype-is-totally-separated'
+  : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+    (f : X → Y)
+  → is-totally-separated Y
+  → is-embedding f
+  → is-totally-separated X
+subtype-is-totally-separated' f Y-is-ts f-is-emb =
+ subtype-is-totally-separated'' f Y-is-ts (embeddings-are-lc f f-is-emb)
+
+subtype-is-totally-separated
+  : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
+  → is-totally-separated X
+  → ((x : X) → is-prop (A x))
+  → is-totally-separated (Σ A)
+subtype-is-totally-separated A X-is-ts A-is-prop-valued =
+ subtype-is-totally-separated'' pr₁ X-is-ts (pr₁-lc (λ {x} → A-is-prop-valued x))
 
 \end{code}

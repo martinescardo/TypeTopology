@@ -45,7 +45,7 @@ open import DomainTheory.Basics.Dcpo pt fe 𝓣
 open import DomainTheory.Basics.Miscelanea pt fe 𝓣
 open import DomainTheory.Basics.Pointed pt fe 𝓣
 
-open import Posets.Poset fe
+open import OrderedTypes.Poset fe
 
 \end{code}
 
