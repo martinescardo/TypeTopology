@@ -56,6 +56,12 @@ We first define the Sierpinski domain.
 𝕊𝓓 : DCPO {𝓤 ⁺} {𝓤}
 𝕊𝓓 = 𝓛-DCPO⁻ {X = 𝟙 {𝓤}} 𝟙-is-set
 
+⊑-implies-⊑⁺ : (x y : ⟨ 𝕊𝓓 ⟩∙) → x ⊑⟨ 𝕊𝓓 ⟩ y → x ⊑⟨ 𝕊𝓓⁺ ⟩ y
+⊑-implies-⊑⁺ x y p q = ⊑-to-⊑' p q
+
+⊑⁺-implies-⊑ : (x y : ⟨ 𝕊𝓓 ⟩∙) → x ⊑⟨ 𝕊𝓓⁺ ⟩ y → x ⊑⟨ 𝕊𝓓 ⟩ y
+⊑⁺-implies-⊑ x y p = (λ q → transport is-defined (p q) q) , λ _ → refl
+
 𝕊𝓓⊥ : DCPO⊥ {𝓤 ⁺} {𝓤}
 𝕊𝓓⊥ = 𝕊𝓓 , ((𝟘 , (λ ()) , 𝟘-is-prop) , λ _ → (λ ()) , λ ())
 
@@ -68,13 +74,14 @@ We first define the Sierpinski domain.
   open is-locally-small 𝕊-is-locally-small
 
   δ : {!!}
-  δ = {!!}
+  δ = pr₁ δ⁻ , {!!}
 
   p : η ⋆ ⊑⟨ 𝕊𝓓⁺ ⟩ (∐ (𝓛-DCPO 𝟙-is-set) δ)
-  p = ⊑-to-⊑' ((λ x → {!!}) , λ x → {!!})
+  p = ⊑-to-⊑' (pr₁ p⁻ , λ _ → refl)
 
-  † : {!!}
-  † = {!!}
+  † : Σ i ꞉ I , underlying-order (𝓛-DCPO 𝟙-is-set) (η ⋆) (α i)
+    → ∃ i ꞉ I , η ⋆ ⊑⟨ 𝕊𝓓 ⟩ (α i)
+  † (i , q) = ∣ i , ⊑⁺-implies-⊑ (η ⋆) (α i) q ∣
 
 \end{code}
 
@@ -95,7 +102,7 @@ hscb = (𝟙 {𝓤} + 𝟙 {𝓤}) , β , σ
 
   β-is-compact : (b : 𝟙 + 𝟙) → is-compact 𝕊𝓓 (β b)
   β-is-compact (inl ⋆) = ⊥-is-compact 𝕊𝓓⊥
-  β-is-compact (inr ⋆) = {!!}
+  β-is-compact (inr ⋆) = 𝕊𝓓-is-compact
 
   β-is-upward-directed : (x : ⟨ 𝕊𝓓 ⟩∙)
                        → is-semidirected (underlying-order 𝕊𝓓) (↓-inclusion 𝕊𝓓 β x)
@@ -111,12 +118,16 @@ hscb = (𝟙 {𝓤} + 𝟙 {𝓤}) , β , σ
                                                 in
                                                  ∣ (inr ⋆ , p₁) , r₁ , 𝟙-is-top (β z) ∣
 
+  covering : (x : ⟨ 𝕊𝓓 ⟩∙)
+           → is-sup (underlying-order 𝕊𝓓) x (↓-inclusion 𝕊𝓓 β x)
+  covering x = {!!}
+
   σ : is-small-compact-basis 𝕊𝓓 β
   σ = record
        { basis-is-compact = β-is-compact
        ; ⊑ᴮ-is-small = λ x b → (β b ⊑⟨ 𝕊𝓓 ⟩ x) , ≃-refl (β b ⊑⟨ 𝕊𝓓 ⟩ x)
        ; ↓ᴮ-is-directed = λ x → ∣ (inl ⋆) , ⊥-is-least 𝕊𝓓⊥ x ∣ , β-is-upward-directed x
-       ; ↓ᴮ-is-sup = {!!}
+       ; ↓ᴮ-is-sup = covering
        }
 
 -- open ScottLocaleConstruction 𝕊𝓓
