@@ -49,16 +49,17 @@ https://doi.org/10.23638/LMCS-16(1:2)2020
 open import MLTT.Spartan
 open import MLTT.Two-Properties
 
-open import UF.Base
-open import UF.Univalence
-open import UF.UA-FunExt
-open import UF.UniverseEmbedding
-open import UF.Equiv
-
-open import Modal.Subuniverse
 import Modal.SigmaClosedReflectiveSubuniverse
+open import Modal.Subuniverse
 
 open import TypeTopology.CompactTypes
+
+open import UF.Base
+open import UF.Equiv
+open import UF.UA-FunExt
+open import UF.Univalence
+open import UF.UniverseEmbedding
+
 \end{code}
 
 Throughout we are going to assume that we are given a reflective
