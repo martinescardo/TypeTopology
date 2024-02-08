@@ -47,7 +47,7 @@ prop-inf-tychonoff {𝓤} {𝓥} {𝓦} {X} {Y} X-is-prop _≺_ ε p =
   q : (x : X) → Y x → 𝟚
   q x y = p (f⁻¹ x y)
 
-  I : (x : X) → Σ y ꞉ Y x , conditional-root _≼_ (q x) y × roots-infimum _≼_ (q x) y
+  I : (x : X) → Σ y ꞉ Y x , is-conditional-root _≼_ (q x) y × is-roots-infimum _≼_ (q x) y
   I x = ε x (q x)
 
   φ₀ : Π Y
@@ -62,7 +62,7 @@ prop-inf-tychonoff {𝓤} {𝓥} {𝓦} {X} {Y} X-is-prop _≺_ ε p =
   α : (x : X) → (y : Y x) → q x y ＝ ₀ → φ₀ x ≼ y
   α x = pr₁ (pr₂ (pr₂ (I x)))
 
-  β : (x : X) → (l : Y x) → root-lower-bound _≼_ (q x) l → l ≼ φ₀ x
+  β : (x : X) → (l : Y x) → is-roots-lower-bound _≼_ (q x) l → l ≼ φ₀ x
   β x = pr₂ (pr₂ (pr₂ (I x)))
 
   φ₀-is-conditional-root-assuming-X : X → (Σ φ ꞉ Π Y , p φ ＝ ₀) → p φ₀ ＝ ₀
@@ -98,7 +98,7 @@ prop-inf-tychonoff {𝓤} {𝓥} {𝓦} {X} {Y} X-is-prop _≺_ ε p =
     γ : p (f⁻¹ x (φ x)) ＝ ₀
     γ = ap p (inverses-are-retractions' (𝕗 x) φ) ∙ r
 
-  b : (l : Π Y) → root-lower-bound _≤_ p l → l ≤ φ₀
+  b : (l : Π Y) → is-roots-lower-bound _≤_ p l → l ≤ φ₀
   b l u (x , m) = β x (l x) γ m
    where
     γ : (y : Y x) → p (f⁻¹ x y) ＝ ₀ → l x ≼ y
