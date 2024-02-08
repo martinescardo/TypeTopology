@@ -45,6 +45,7 @@ modality, and the weaker notion of reflective subuniverse suffices.
 https://doi.org/10.23638/LMCS-16(1:2)2020
 
 \begin{code}
+
 {-# OPTIONS --safe --without-K #-}
 open import MLTT.Spartan
 open import MLTT.Two-Properties
@@ -68,12 +69,14 @@ Modal.ReflectiveSubuniverse. In particular, we write ○ for the
 modality corresponding to the reflective subuniverse.
 
 \begin{code}
+
 module TypeTopology.AbsolutenessOfCompactness
  (P : subuniverse 𝓤 𝓥)
  (P-is-reflective : subuniverse-is-reflective P)
  where
 
 open import Modal.ReflectiveSubuniverse P P-is-reflective
+
 \end{code}
 
 We now give some statements related to compactness. We first consider
@@ -88,12 +91,14 @@ Unwinding all this, gives the following internal definition of
 compactness for the reflective subuniverse.
 
 \begin{code}
+
 is-internal-compact∙ : 𝓤 ̇ → 𝓤 ̇
 is-internal-compact∙ A =
  (F : A → ○ (Lift _ 𝟚))
  → Σ a₀ ꞉ A , (F a₀ ＝ η _ (lift 𝓤 ₁)
  → (a : A)
  → F a ＝ η _ (lift 𝓤 ₁))
+
 \end{code}
 
 It turns out that in addition to internal compactness, it's also
@@ -110,15 +115,18 @@ statement that A is compact. We will be able to show ○ (is-compact∙ A)
 internal compact.
 
 \begin{code}
+
 is-weak-internal-compact∙ : 𝓤 ̇ → 𝓤 ̇
 is-weak-internal-compact∙ A =
  (F : A → 𝟚)
    → Σ a₀ ꞉ A , (F a₀ ＝ ₁ → (a : A) → η _ (lift 𝓤 (F a)) ＝ η _ (lift 𝓤 ₁))
+
 \end{code}
 
 We check that weak internal compactness actually is weaker.
 
 \begin{code}
+
 internal-compact-implies-weak-internal-compact
  : (A : 𝓤 ̇ )
  → is-internal-compact∙ A
@@ -136,12 +144,14 @@ internal-compact-implies-weak-internal-compact A c F =
    : Σ a₀ ꞉ A , (F' a₀ ＝ η _ (lift 𝓤 ₁) → (a : A) → F' a ＝ η _ (lift 𝓤 ₁))
 
   weak-internal-instance = c F'
+
 \end{code}
 
 Note that we defined weak internal compactness so that it is also
 implied by compactness.
 
 \begin{code}
+
 compact-implies-weak-internal-compact
  : (A : 𝓤 ̇ )
  → is-compact∙ A
@@ -159,6 +169,7 @@ Although it looks a bit different, this is the argument that most
 closely follows the original theorem prop-tychonoff.
 
 \begin{code}
+
 weak-internal-compact-implies-compact
  : (A : 𝓤 ̇ )
  → (A-modal : is-modal A)
@@ -166,17 +177,20 @@ weak-internal-compact-implies-compact
  → is-compact∙ A
 weak-internal-compact-implies-compact A A-modal c F = a₀ , a₀-works
  where
+
 \end{code}
 
 Constructing a candidate universal witness is very easy. We just use
 the same one given by weak internal compactness.
 
 \begin{code}
+
   internal-compactness-instance :
    Σ a₀ ꞉ A , (F a₀ ＝ ₁ → (a : A) → η _ (lift 𝓤 (F a)) ＝ η _ (lift 𝓤 ₁))
   internal-compactness-instance = c F
 
   a₀ = pr₁ internal-compactness-instance
+
 \end{code}
 
 To show that the candidate universal witness actually works, we need
@@ -195,6 +209,7 @@ and 1 to a₀. Since A is modal, this map must factor through ○ 𝟚, and
 so we can apply ap to our path to get the required path a = a₀.
 
 \begin{code}
+
   lemma
    : (F a₀ ＝ ₁)
    → (a : A)
@@ -223,6 +238,7 @@ so we can apply ap to our path to get the required path a = a₀.
 
   a₀-works : F a₀ ＝ ₁ → (a : A) → F a ＝ ₁
   a₀-works p a = 𝟚-equality-cases (λ q → ap F (lemma p a q) ∙ p) id
+
 \end{code}
 
 As a corollary we can combine the main theorem with our proposition
@@ -232,6 +248,7 @@ subuniverse, then it is compact externally. That is, compactness is
 upwards absolute for reflective subuniverses.
 
 \begin{code}
+
 internal-compact-implies-compact
  : (A : 𝓤 ̇ )
  → (A-modal : is-modal A)
@@ -242,6 +259,7 @@ internal-compact-implies-compact A A-modal c =
   _
   A-modal
   (internal-compact-implies-weak-internal-compact _ c)
+
 \end{code}
 
 The remaining theorems in this module all require a couple of extra
@@ -249,10 +267,12 @@ assumptions: the universe needs to be univalent, and the subuniverse
 needs to be Σ-closed, making it an actual modality.
 
 \begin{code}
+
 module WithUnivalenceAndSigmaClosedness
  (ua : is-univalent 𝓤)
  (P-is-sigma-closed : subuniverse-is-sigma-closed P)
  where
+
 \end{code}
 
 We import some theorems about Σ-closed reflective subuniverses, and
@@ -260,12 +280,14 @@ recall proofs of the two ways that we will use univalence: function
 extensionality and repleteness of the subuniverse.
 
 \begin{code}
+
  module S =
   Modal.SigmaClosedReflectiveSubuniverse
    P P-is-reflective P-is-sigma-closed
 
  fe = univalence-gives-funext ua
  repleteness = univalence-implies-subuniverse-is-replete ua P
+
 \end{code}
 
 The next two lemmas get quite technical. In both cases the ideas are
@@ -276,6 +298,7 @@ several lemmas using function extensionality and repleteness of P.
 
 We first show that if A is weak internal compact, then so is ○ A.
 \begin{code}
+
  ○-preserves-wi-compact
   : (A : 𝓤 ̇ )
   → is-weak-internal-compact∙ A
@@ -308,6 +331,7 @@ We first show that if A is weak internal compact, then so is ○ A.
        _
        (○-is-modal _))
      (pr₂ compactness-instance p)
+
 \end{code}
 
 In the second technical lemma we strengthen the above result. We
@@ -315,6 +339,7 @@ derive the same conclusion as before, but we weaken the assumption by
 putting it inside the modality.
 
 \begin{code}
+
  ○-compact-implies-weak-internal-compact
   : (A : 𝓤 ̇ )
   → ○ (is-weak-internal-compact∙ A)
@@ -371,6 +396,7 @@ putting it inside the modality.
            repleteness
            _ _ _
            (○-is-modal _)))
+
 \end{code}
 
 Finally, we can use the lemmas together with the main theorem to get a
@@ -387,6 +413,7 @@ proposition the functor X → - is a modality, and so can derive
 is-compact∙ (X → A) from X → is-compact∙ A.
 
 \begin{code}
+
  modalities-preserve-compact
   : (A : 𝓤 ̇  )
   → ○ (is-compact∙ A)
@@ -401,4 +428,5 @@ is-compact∙ (X → A) from X → is-compact∙ A.
      (○-is-modal _)
      (λ c' → η _ (compact-implies-weak-internal-compact _ c'))
      c))
+
 \end{code}
