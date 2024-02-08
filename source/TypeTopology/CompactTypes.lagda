@@ -556,9 +556,10 @@ retract-is-compact∙ (_ , φ) = retractions-preserve-compactness φ
               → is-compact∙ X₀
               → is-compact∙ X₁
               → is-compact∙ (X₀ + X₁)
-+-is-compact∙ {𝓤} {X₀} {X₁} ε₀ ε₁ = retract-is-compact∙
-                                   (retract-of-gives-retract-Of +-retract-of-+')
-                                   (+'-is-compact∙ ε₀ ε₁)
++-is-compact∙ {𝓤} {X₀} {X₁} ε₀ ε₁ =
+ retract-is-compact∙
+  (retract-of-gives-retract-Of +-retract-of-+')
+  (+'-is-compact∙ ε₀ ε₁)
 
 𝟙+𝟙-is-compact∙ : is-compact∙ (𝟙 {𝓤} + 𝟙 {𝓥})
 𝟙+𝟙-is-compact∙ = retract-is-compact∙ (f , r) 𝟚-is-compact∙
@@ -798,7 +799,7 @@ is-Π-Compact {𝓤} X {𝓥} = (A : X → 𝓥 ̇ ) → is-complemented A → i
 
   γ : is-decidable (Σ B) → is-decidable (Σ A)
   γ (inl (x , (y , a))) = inl ((x , y) , a)
-  γ (inr u)             = inr (λ {((x , y) , a) → u (x , (y , a))})
+  γ (inr u)             = inr (λ ((x , y) , a) → u (x , (y , a)))
 
 \end{code}
 
@@ -890,9 +891,10 @@ module CompactTypesPT (pt : propositional-truncations-exist) where
 
 
  ∃-Compactness-is-prop : Fun-Ext → {X : 𝓤 ̇ } → is-prop (is-∃-Compact X {𝓥})
- ∃-Compactness-is-prop {𝓤} {𝓥} fe {X} = Π₂-is-prop fe
-                                          (λ A δ → decidability-of-prop-is-prop fe
-                                                    ∥∥-is-prop)
+ ∃-Compactness-is-prop {𝓤} {𝓥} fe {X} =
+  Π₂-is-prop fe
+   (λ A δ → decidability-of-prop-is-prop fe
+             ∃-is-prop)
 
 
  ∃-Compactness-gives-Markov : {X : 𝓤 ̇ }
@@ -903,9 +905,11 @@ module CompactTypesPT (pt : propositional-truncations-exist) where
                             → ∃ A
  ∃-Compactness-gives-Markov {𝓤} {𝓥} {X} c A δ = ¬¬-elim (c A δ)
 
- ∥Compact∥-gives-∃-Compact : Fun-Ext → {X : 𝓤 ̇ } → ∥ is-Compact X {𝓥} ∥ → is-∃-Compact X {𝓥}
+ ∥Compact∥-gives-∃-Compact : Fun-Ext
+                           → {X : 𝓤 ̇ }
+                           → ∥ is-Compact X {𝓥} ∥ → is-∃-Compact X {𝓥}
  ∥Compact∥-gives-∃-Compact fe = ∥∥-rec (∃-Compactness-is-prop fe)
-                                     Compactness-gives-∃-Compactness
+                                      Compactness-gives-∃-Compactness
 
  ∃-Compact-propositions-are-decidable : {P : 𝓤 ̇ }
                                       → is-prop P

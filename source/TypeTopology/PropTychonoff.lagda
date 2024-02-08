@@ -42,11 +42,7 @@ open import MLTT.Spartan
 
 open import UF.FunExt
 
-module TypeTopology.PropTychonoff (fe' : FunExt) where
-
-private
- fe : Fun-Ext
- fe {𝓤} {𝓥} = fe' 𝓤 𝓥
+module TypeTopology.PropTychonoff (fe : FunExt) where
 
 open import MLTT.Two-Properties
 open import TypeTopology.CompactTypes
@@ -69,7 +65,7 @@ prop-tychonoff {𝓤} {𝓥} {X} {Y} X-is-prop ε p = γ
   have-p = p
 
   𝕗 : (x : X) → Π Y ≃ Y x
-  𝕗 = prop-indexed-product fe X-is-prop
+  𝕗 = prop-indexed-product (fe 𝓤 𝓥) X-is-prop
 
 \end{code}
 
@@ -184,7 +180,7 @@ We get the same conclusion if X is empty:
   φ₀-is-universal-witness-assuming-X-empty
    : (X → 𝟘) → p φ₀ ＝ ₁ → (φ : Π Y) → p φ ＝ ₁
   φ₀-is-universal-witness-assuming-X-empty u r φ =
-   p φ  ＝⟨ ap p (dfunext fe (λ x → unique-from-𝟘 (u x))) ⟩
+   p φ  ＝⟨ ap p (dfunext (fe 𝓤 𝓥) (λ x → unique-from-𝟘 (u x))) ⟩
    p φ₀ ＝⟨ r ⟩
    ₁    ∎
 
