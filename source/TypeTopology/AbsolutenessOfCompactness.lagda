@@ -45,7 +45,7 @@ modality, and the weaker notion of reflective subuniverse suffices.
 https://doi.org/10.23638/LMCS-16(1:2)2020
 
 \begin{code}
-{-# OPTIONS --safe --without-K --exact-split --auto-inline #-}
+{-# OPTIONS --safe --without-K #-}
 open import MLTT.Spartan
 open import MLTT.Two-Properties
 
