@@ -216,11 +216,11 @@ so we can apply ap to our path to get the required path a = a₀.
    → (F a ＝ ₀)
    → (a ＝ a₀)
   lemma p a q =
-   a ＝⟨ by-construction ⟩
-   t (lift _ ₀) ＝⟨ ○-rec-compute _ _ _ _ _ ⁻¹ ⟩
+   a                   ＝⟨ by-construction ⟩
+   t (lift _ ₀)        ＝⟨ ○-rec-compute _ _ _ _ _ ⁻¹ ⟩
    t' (η _ (lift _ ₀)) ＝⟨ ap t' modal-zero-is-modal-one ⟩
    t' (η _ (lift _ ₁)) ＝⟨ ○-rec-compute _ _ _ _ _ ⟩
-   t (lift _ ₁) ＝⟨ by-construction ⟩
+   t (lift _ ₁)        ＝⟨ by-construction ⟩
    a₀ ∎
 
    where
