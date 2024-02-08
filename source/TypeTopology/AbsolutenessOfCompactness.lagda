@@ -122,18 +122,18 @@ internal-compact-implies-weak-internal-compact
  : (A : 𝓤 ̇ )
  → is-internal-compact∙ A
  → is-weak-internal-compact∙ A
- 
+
 internal-compact-implies-weak-internal-compact A c F =
  (pr₁ weak-internal-instance) ,
  (λ p → pr₂ weak-internal-instance (ap (η _ ∘ lift _) p))
- 
+
  where
   F' : A → ○ (Lift _ 𝟚)
   F' = η _ ∘ (lift _) ∘ F
 
   weak-internal-instance
    : Σ a₀ ꞉ A , (F' a₀ ＝ η _ (lift 𝓤 ₁) → (a : A) → F' a ＝ η _ (lift 𝓤 ₁))
-   
+
   weak-internal-instance = c F'
 \end{code}
 
@@ -329,47 +329,47 @@ putting it inside the modality.
     c)
 
   where
-  modified-wic-instance : 𝓤 ̇
-  modified-wic-instance =
-   Σ α₀ ꞉ ○ A ,
-   (lift 𝓤 (F α₀) ＝ lift 𝓤 ₁ →
-    (α : ○ A) → η _ (lift 𝓤 (F α)) ＝ η _ (lift 𝓤 ₁))
+   modified-wic-instance : 𝓤 ̇
+   modified-wic-instance =
+    Σ α₀ ꞉ ○ A ,
+    (lift 𝓤 (F α₀) ＝ lift 𝓤 ₁ →
+     (α : ○ A) → η _ (lift 𝓤 (F α)) ＝ η _ (lift 𝓤 ₁))
 
-  demodify-wic-instance
-   : modified-wic-instance
-   → Σ α₀ ꞉ ○ A ,
-   (F α₀ ＝ ₁ → (α : ○ A) → η _ (lift 𝓤 (F α)) ＝ η _ (lift 𝓤 ₁))
-  demodify-wic-instance (α₀ , f) = α₀ , (λ p α → f (ap (lift _) p) α)
+   demodify-wic-instance
+    : modified-wic-instance
+    → Σ α₀ ꞉ ○ A ,
+    (F α₀ ＝ ₁ → (α : ○ A) → η _ (lift 𝓤 (F α)) ＝ η _ (lift 𝓤 ₁))
+   demodify-wic-instance (α₀ , f) = α₀ , (λ p α → f (ap (lift _) p) α)
 
-  modify-wic-instance
-   : Σ α₀ ꞉ ○ A ,
-   (F α₀ ＝ ₁ → (α : ○ A) → η _ (lift 𝓤 (F α)) ＝ η _ (lift 𝓤 ₁))
-   → modified-wic-instance
-  modify-wic-instance (α₀ , f) =
-   α₀ , (λ p α → f (equivs-are-lc _ lift-is-equiv p) α)
+   modify-wic-instance
+    : Σ α₀ ꞉ ○ A ,
+    (F α₀ ＝ ₁ → (α : ○ A) → η _ (lift 𝓤 (F α)) ＝ η _ (lift 𝓤 ₁))
+    → modified-wic-instance
+   modify-wic-instance (α₀ , f) =
+    α₀ , (λ p α → f (equivs-are-lc _ lift-is-equiv p) α)
 
-  modified-wic-is-modal : is-modal modified-wic-instance
-  modified-wic-is-modal =
-   P-is-sigma-closed
-    _ _
-    (○-is-modal A)
-    (λ _ →
-     products-of-modal-types-are-modal
-      fe
-      repleteness
-      _
-      _
-      λ _ →
-       products-of-modal-types-are-modal
-        fe
-        repleteness
-        _ _
-        (λ _ →
-         id-types-of-modal-types-are-modal
-          fe
-          repleteness
-          _ _ _
-          (○-is-modal _)))
+   modified-wic-is-modal : is-modal modified-wic-instance
+   modified-wic-is-modal =
+    P-is-sigma-closed
+     _ _
+     (○-is-modal A)
+     (λ _ →
+      products-of-modal-types-are-modal
+       fe
+       repleteness
+       _
+       _
+       λ _ →
+        products-of-modal-types-are-modal
+         fe
+         repleteness
+         _ _
+         (λ _ →
+           id-types-of-modal-types-are-modal
+           fe
+           repleteness
+           _ _ _
+           (○-is-modal _)))
 \end{code}
 
 Finally, we can use the lemmas together with the main theorem to get a
