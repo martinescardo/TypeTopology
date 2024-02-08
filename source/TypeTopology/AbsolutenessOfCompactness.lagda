@@ -291,7 +291,7 @@ extensionality and repleteness of the subuniverse.
 \end{code}
 
 The next two lemmas get quite technical. In both cases the ideas are
-simple, but we require constructing terms by by ○-induction or
+simple, but we require constructing terms by ○-induction or
 recursion. This requires proving that certain types are ○-modal, which
 requires some care with universe levels, as well as the application of
 several lemmas using function extensionality and repleteness of P.
