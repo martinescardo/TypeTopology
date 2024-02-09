@@ -54,20 +54,20 @@ H-Levels are cumulative.
 
 \begin{code}
 
-hlevel-is-cumulative : (n : ℕ) (X : 𝓤 ̇)
-                     → (X is-of-hlevel n)
-                     → (X is-of-hlevel succ n)
-hlevel-is-cumulative zero X h-level = base h-level
+hlevels-are-upper-closed : (n : ℕ) (X : 𝓤 ̇)
+                         → (X is-of-hlevel n)
+                         → (X is-of-hlevel succ n)
+hlevels-are-upper-closed zero X h-level = base h-level
  where
   base : is-contr X → (x x' : X) → is-contr (x ＝ x')
   base (c , C) x x' = (((C x)⁻¹ ∙ C x') , D)
    where
     D : is-central (x ＝ x') (C x ⁻¹ ∙ C x')
     D refl = left-inverse (C x)
-hlevel-is-cumulative (succ n) X h-level = step
+hlevels-are-upper-closed (succ n) X h-level = step
  where
   step : (x x' : X) (p q : x ＝ x') → (p ＝ q) is-of-hlevel n
-  step x x' p q = hlevel-is-cumulative n (x ＝ x') (h-level x x') p q
+  step x x' p q = hlevels-are-upper-closed n (x ＝ x') (h-level x x') p q
 
 \end{code}
 
@@ -163,21 +163,42 @@ The subuniverse of types of hlevel n is defined as follows.
 
 \end{code}
 
-From Univalence we can show that (ℍ n) is of level (n + 1), for all n : ℕ.
-
-The next lemma should probably be added as it is the equivalent definition
-of is-prop.
+Being of hlevel one is equivalent to being a proposition.
+We will quickly demonstrate this fact. 
 
 \begin{code}
 
-lemma : {X : 𝓤 ̇} → ((x x' : X) → is-contr (x ＝ x')) → is-prop X
-lemma f x x' = center (f x x')
+is-prop' : (X : 𝓤 ̇) → 𝓤  ̇
+is-prop' X = X is-of-hlevel (succ zero)
 
-ℍ-is-next-level : (n : ℕ)
-                → (𝓤 : Universe)
-                → is-univalent 𝓤
-                → (ℍ n 𝓤) is-of-hlevel (succ n)
-ℍ-is-next-level zero 𝓤 ua = C
+being-prop'-is-prop : (X : 𝓤 ̇) → is-prop (is-prop' X)
+being-prop'-is-prop X = hlevel-relation-is-prop (succ zero) X
+
+is-prop-implies-is-prop' : {X : 𝓤 ̇} → is-prop X → is-prop' X
+is-prop-implies-is-prop' X-is-prop x x' =
+  pointed-props-are-singletons (X-is-prop x x') (props-are-sets X-is-prop)
+
+is-prop'-implies-is-prop : {X : 𝓤 ̇} → is-prop' X → is-prop X
+is-prop'-implies-is-prop X-is-prop' x x' = center (X-is-prop' x x')
+
+is-prop-equiv-is-prop' : {𝓤 : Universe} {X :  𝓤 ̇} → is-prop X ≃ is-prop' X
+is-prop-equiv-is-prop' {𝓤} {X} =
+  logically-equivalent-props-are-equivalent (being-prop-is-prop (fe 𝓤 𝓤))
+                                            (being-prop'-is-prop X)
+                                            is-prop-implies-is-prop'
+                                            is-prop'-implies-is-prop
+
+\end{code}
+
+From Univalence we can show that (ℍ n) is of level (n + 1), for all n : ℕ.
+
+\begin{code}
+
+ℍ-is-of-next-hlevel : (n : ℕ)
+                    → (𝓤 : Universe)
+                    → is-univalent 𝓤
+                    → (ℍ n 𝓤) is-of-hlevel (succ n)
+ℍ-is-of-next-hlevel zero 𝓤 ua = C
  where
   C : (X X' : ℍ zero 𝓤) → is-contr (X ＝ X')
   C (X , X-is-contr) (X' , X'-is-contr) =
@@ -190,10 +211,11 @@ lemma f x x' = center (f x x')
         (X ＝ X')                                ≃⟨ univalence-≃ ua X X' ⟩
         (X ≃ X')                                 ■
     P : is-prop (X ≃ X')
-    P = ≃-is-prop fe (lemma (hlevel-is-cumulative zero X' X'-is-contr))
+    P = ≃-is-prop fe (is-prop'-implies-is-prop
+                        (hlevels-are-upper-closed zero X' X'-is-contr))
     C' : is-contr (X ≃ X')
     C' = pointed-props-are-singletons (singleton-≃ X-is-contr X'-is-contr) P
-ℍ-is-next-level (succ n) 𝓤 ua (X , l) (X' , l') =
+ℍ-is-of-next-hlevel (succ n) 𝓤 ua (X , l) (X' , l') =
   hlevel-closed-under-equiv (succ n) ((X , l) ＝ (X' , l')) (X ≃ X') e
       (hlevel-closed-under-embedding (succ n) ⋆ (X ≃ X') (X → X') e'
                                      (hlevel-closed-under-Π (succ n) X
