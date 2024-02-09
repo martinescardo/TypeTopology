@@ -62,11 +62,11 @@ We now introduce some abbreviations.
 
 \begin{code}
 
-extension : {X : 𝓦 ̇}
-          → aflabby X 𝓤 → (p : Ω 𝓤) → (p holds → X) → X
+extension : {X : 𝓤 ̇}
+          → aflabby X 𝓦 → (p : Ω 𝓦) → (p holds → X) → X
 extension = aflabby-extension
 
-extends : {X : 𝓦 ̇} (ϕ : aflabby X 𝓤) (p : Ω 𝓤)
+extends : {X : 𝓤 ̇} (ϕ : aflabby X 𝓦) (p : Ω 𝓦)
           (f : p holds → X) (h : p holds)
         → extension ϕ p f ＝ f h
 extends  = aflabby-extension-property
@@ -122,7 +122,7 @@ section, so that we can define the extension (x , a) by
 
  ρ : (p : Ω 𝓦) (f : p holds → X)
    → A (extension ϕ p f) → ((h : p holds) → A (f h))
- ρ p f s h = transport A (extends ϕ p f h) s
+ ρ p f a h = transport A (extends ϕ p f h) a
 
 \end{code}
 
@@ -192,7 +192,7 @@ ainjective.
 
 \end{code}
 
-Sometimes we want to prove that Σ x : A₁ x × A₂ x is
+Sometimes we want to prove that Σ x : X , A₁ x × A₂ x is
 aflabby/ainjective when we already know that A₁ and A₂ satisfy the
 technical conditions, and the following lemma can be used for that
 purpose.
@@ -280,7 +280,7 @@ technical-condition-with-axioms
      → (α : (h : p holds) → A (f h))
      → ((h : p holds) → B (f h) (α h))
      → B (extension ϕ p f) (section-of (ρ A ϕ p f) (ρ-has-section p f) α))
- → technical-condition (λ X → Σ s ꞉ A X , B X s) ϕ
+ → technical-condition (λ x → Σ a ꞉ A x , B x a) ϕ
 technical-condition-with-axioms
  {𝓤} {𝓥} {𝓦} {X}
  ϕ
@@ -291,7 +291,7 @@ technical-condition-with-axioms
  B-is-closed-under-extension = ρₐ-has-section
   where
    Aₐ : X → 𝓥 ⊔ 𝓦 ̇
-   Aₐ x = Σ s ꞉ A x , B x s
+   Aₐ x = Σ a ꞉ A x , B x a
 
    module _ (p : Ω 𝓥)
             (f : p holds → X)
