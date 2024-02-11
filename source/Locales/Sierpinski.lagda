@@ -30,7 +30,10 @@ open import Slice.Family
 open import UF.DiscreteAndSeparated
 open import UF.Equiv
 open import UF.Subsingletons-Properties
+open import UF.Subsingletons-FunExt
 open import UF.SubtypeClassifier
+
+open Locale
 
 open PropositionalTruncation pt
 
@@ -127,16 +130,22 @@ hscb = (𝟙 {𝓤} + 𝟙 {𝓤}) , β , σ
                                                  ∣ (inr ⋆ , p₁) , r₁ , 𝟙-is-top (β z) ∣
 
   covering : (x : ⟨ 𝕊𝓓 ⟩∙) → is-sup (underlying-order 𝕊𝓓) x (↓-inclusion 𝕊𝓓 β x)
-  covering x = pr₂ , ‡
+  covering 𝒫@(P , f , h) = pr₂ , †
    where
-    ‡ : is-lowerbound-of-upperbounds (underlying-order 𝕊𝓓) x (↓-inclusion 𝕊𝓓 β x)
-    ‡ (Q , p) υ = ⊑⁺-implies-⊑ _ _ (pr₂ (κ⁺-sup 𝟙-is-set x) (Q , p) ♠)
+    † : is-lowerbound-of-upperbounds (underlying-order 𝕊𝓓) (P , f , h) (↓-inclusion 𝕊𝓓 β (P , f , h))
+    † 𝒫′@(P′ , f′ , h′) υ = ‡
      where
-      ♠′ : is-upperbound (underlying-order 𝕊𝓓⁺) (Q , p) (↓-inclusion 𝕊𝓓 β x)
-      ♠′ (j , q) = ⊑-implies-⊑⁺ (↓-inclusion 𝕊𝓓 β x (j , q)) (Q , p) (υ (j , q))
+      ♠ : P → 𝒫 ⊑⟨ 𝕊𝓓 ⟩ 𝒫′
+      ♠ p = transport (λ - → - ⊑⟨ 𝕊𝓓 ⟩ 𝒫′) eq (υ (inr ⋆ , q))
+       where
+        q : β (inr ⋆) ⊑⟨ 𝕊𝓓 ⟩ 𝒫
+        q = (λ _ → p) , λ _ → 𝟙-is-prop ⋆ (f p)
 
-      ♠ : is-upperbound (underlying-order 𝕊𝓓⁺) (Q , p) (κ⁺ 𝟙-is-set x)
-      ♠ (j , q) = ⊑-implies-⊑⁺ (κ⁺ 𝟙-is-set x (j , q)) (Q , p) (υ ({!j!} , {!!}))
+        eq : β (inr ⋆) ＝ 𝒫
+        eq = antisymmetry 𝕊𝓓 (β (inr ⋆)) 𝒫 q (𝟙-is-top 𝒫)
+
+      ‡ : underlying-order 𝕊𝓓 (P , f , h) 𝒫′
+      ‡ = (λ p → pr₁ (♠ p) p) , λ p → 𝟙-is-prop ⋆ (f p)
 
   σ : is-small-compact-basis 𝕊𝓓 β
   σ = record
@@ -146,19 +155,29 @@ hscb = (𝟙 {𝓤} + 𝟙 {𝓤}) , β , σ
        ; ↓ᴮ-is-sup = covering
        }
 
--- open ScottLocaleConstruction 𝕊𝓓
+open ScottLocaleConstruction 𝕊𝓓 hscb pe
 
-{--
-
-open DefnOfScottLocale 𝕊-dcpo 𝓤 pe
-open Locale
-open import Lifting.Lifting (𝓤 ⁺)
-
-𝕊 : Locale (𝓤 ⁺) (𝓤 ⁺) 𝓤
+𝕊 : Locale (𝓤 ⁺) 𝓤 𝓤
 𝕊 = ScottLocale
+
+open DefnOfScottLocale 𝕊𝓓 𝓤 pe
+
+\end{code}
+
+The only nontrivial open of the Sierpiński space.
+
+\begin{code}
 
 ⊤𝕊 : ⟨ 𝒪 𝕊 ⟩
 ⊤𝕊 = ⊤ₛ
---}
+
+\end{code}
+
+The false truth value in the Sierpiński space.
+
+\begin{code}
+
+⊥𝕊 : ⟨ 𝒪 𝕊 ⟩
+⊥𝕊 = 𝟎[ 𝒪 𝕊 ]
 
 \end{code}
