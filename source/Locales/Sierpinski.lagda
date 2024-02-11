@@ -26,6 +26,7 @@ open import Lifting.Lifting 𝓤
 open import Lifting.Miscelanea-PropExt-FunExt 𝓤 pe fe
 open import Lifting.UnivalentPrecategory 𝓤 (𝟙 {𝓤})
 open import Locales.Frame pt fe hiding (𝟚; is-directed)
+open import Locales.InitialFrame pt fe
 open import Slice.Family
 open import UF.DiscreteAndSeparated
 open import UF.Equiv
@@ -58,6 +59,9 @@ We first define the Sierpinski domain.
 
 𝕊𝓓 : DCPO {𝓤 ⁺} {𝓤}
 𝕊𝓓 = 𝓛-DCPO⁻ {X = 𝟙 {𝓤}} 𝟙-is-set
+
+prop-of : ⟨ 𝕊𝓓 ⟩∙ → Ω 𝓤
+prop-of (P , _ , h) = P , h
 
 ⊑-implies-⊑⁺ : (x y : ⟨ 𝕊𝓓 ⟩∙) → x ⊑⟨ 𝕊𝓓 ⟩ y → x ⊑⟨ 𝕊𝓓⁺ ⟩ y
 ⊑-implies-⊑⁺ x y p q = ⊑-to-⊑' p q
@@ -164,7 +168,7 @@ open DefnOfScottLocale 𝕊𝓓 𝓤 pe
 
 \end{code}
 
-The only nontrivial open of the Sierpiński space.
+The true truth value in the Sierpiński space -- the only nontrivial open.
 
 \begin{code}
 
@@ -173,11 +177,30 @@ The only nontrivial open of the Sierpiński space.
 
 \end{code}
 
-The false truth value in the Sierpiński space.
+We now show that `𝕊𝓓` is a Scott domain.
 
 \begin{code}
 
-⊥𝕊 : ⟨ 𝒪 𝕊 ⟩
-⊥𝕊 = 𝟎[ 𝒪 𝕊 ]
+open import DomainTheory.BasesAndContinuity.ScottDomain pt fe 𝓤
+
+open DefinitionOfBoundedCompleteness
+
+𝕊𝓓-bounded-complete : bounded-complete 𝕊𝓓 holds
+𝕊𝓓-bounded-complete S _ = sup , φ
+ where
+  S₀ : Fam 𝓤 (Ω 𝓤)
+  S₀ = ⁅ prop-of P ∣ P ε S ⁆
+
+  sup₀ : Ω 𝓤
+  sup₀ = ⋁[ (𝟎-𝔽𝕣𝕞 pe) ] S₀
+
+  sup : ⟨ 𝕊𝓓 ⟩∙
+  sup = sup₀ holds , (λ _ → ⋆) , ∃-is-prop
+
+  υ : is-upperbound (underlying-order 𝕊𝓓) sup (S [_])
+  υ i = {!⋁[ (𝟎-𝔽𝕣𝕞 pe)  ]-upper S₀ ?!}
+
+  φ : is-sup (underlying-order 𝕊𝓓) sup (pr₂ S)
+  φ = υ , {!!}
 
 \end{code}
