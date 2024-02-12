@@ -54,10 +54,12 @@ open Locale
 
 \begin{code}
 
-module ScottLocaleProperties (𝓓 : DCPO {𝓤 ⁺} {𝓤})
-                             (hl : has-least (underlying-order 𝓓))
-                             (hscb : has-specified-small-compact-basis 𝓓)
-                             (pe   : propext 𝓤)                            where
+module ScottLocaleProperties
+        (𝓓    : DCPO {𝓤 ⁺} {𝓤})
+        (hl   : has-least (underlying-order 𝓓))
+        (hscb : has-specified-small-compact-basis 𝓓)
+        (pe   : propext 𝓤)
+       where
 
  open ScottLocaleConstruction 𝓓 hscb pe
 
