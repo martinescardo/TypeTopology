@@ -380,7 +380,7 @@ patch-of-𝕊 = Patch-𝕊
 
 \end{code}
 
-The universal property of Patch specializes to the following.
+The universal property of Patch then specializes to the following.
 
 \begin{code}
 
