@@ -74,13 +74,13 @@ which is locally small and also algebraic:
 \end{code}
 
 Unfortunately, we do not have the required machinery for making a locally small
-copy of a DCPO from an extrinsic proof that it is locally small. In hindsight,
+copy of a dcpo from an extrinsic proof that it is locally small. In hindsight,
 it would have been easier for me to work with such extrinsic proofs of local
 smallness, but I didn't do this and right now, I don't have the time to migrate
 my formalization to this style.
 
 Therefore, I defined the function `𝓛-DCPO⁻` which directly gives the locally
-small copy of the DCPO in consideration. Instead of working with `𝕊𝓓⁺`, I work
+small copy of the dcpo in consideration. Instead of working with `𝕊𝓓⁺`, I work
 with `𝕊𝓓` instead to circumvent this problem.
 
 \begin{code}
@@ -90,7 +90,7 @@ with `𝕊𝓓` instead to circumvent this problem.
 
 \end{code}
 
-These two DCPOs are of course order-isomorphic.
+These two dcpos are of course order-isomorphic.
 
 \begin{code}
 
@@ -112,7 +112,7 @@ made into a pointed dcpo:
 
 \end{code}
 
-The proposition `𝟙` is a top element of this DCPO.
+The proposition `𝟙` is a top element of this dcpo.
 
 \begin{code}
 
