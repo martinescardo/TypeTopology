@@ -1,6 +1,12 @@
+---
+title:          The Sierpiński locale and its patch
+author:         Ayberk Tosun
+date-completed: 2024-02-12
+---
+
 \begin{code}
 
-{-# OPTIONS --safe --without-K #-}
+{-# OPTIONS --safe --without-K --lossy-unification #-}
 
 open import UF.FunExt
 open import UF.Logic
@@ -31,6 +37,8 @@ open import Locales.Frame pt fe hiding (𝟚; is-directed)
 open import Locales.InitialFrame pt fe
 open import Locales.SmallBasis pt fe sr
 open import Locales.Spectrality.SpectralLocale pt fe
+open import Locales.Spectrality.SpectralMap pt fe
+open import Locales.Stone pt fe sr
 open import Slice.Family
 open import UF.DiscreteAndSeparated
 open import UF.Equiv
@@ -44,28 +52,47 @@ open PropositionalTruncation pt
 
 \end{code}
 
-We first define the Sierpinski domain.
+We first define the Sierpinski domain
 
 \begin{code}
 
 𝕊𝓓⁺ : DCPO {𝓤 ⁺ } {𝓤 ⁺}
 𝕊𝓓⁺ = 𝓛-DCPO {X = 𝟙 {𝓤}} 𝟙-is-set
 
+\end{code}
+
+which is locally small and also algebraic:
+
+\begin{code}
+
 𝕊-is-locally-small : is-locally-small 𝕊𝓓⁺
 𝕊-is-locally-small = 𝓛-is-locally-small {X = 𝟙 {𝓤}} 𝟙-is-set
-
-𝕊𝓓⁺-has-specified-small-compact-basis : has-specified-small-compact-basis 𝕊𝓓⁺
-𝕊𝓓⁺-has-specified-small-compact-basis =
- 𝓛-has-specified-small-compact-basis 𝟙-is-set
 
 𝕊𝓓⁺-is-algebraic : is-algebraic-dcpo (𝓛-DCPO {X = 𝟙 {𝓤}} 𝟙-is-set)
 𝕊𝓓⁺-is-algebraic = 𝓛-is-algebraic-dcpo 𝟙-is-set
 
+\end{code}
+
+Unfortunately, we do not have the required machinery for making a locally small
+copy of a DCPO from an extrinsic proof that it is locally small. In hindsight,
+it would have been easier for me to work with such extrinsic proofs of local
+smallness, but I didn't do this and right now, I don't have the time to migrate
+my formalization to this style.
+
+Therefore, I defined the function `𝓛-DCPO⁻` which directly gives the locally
+small copy of the DCPO in consideration. Instead of working with `𝕊𝓓⁺`, I work
+with `𝕊𝓓` instead to circumvent this problem.
+
+\begin{code}
+
 𝕊𝓓 : DCPO {𝓤 ⁺} {𝓤}
 𝕊𝓓 = 𝓛-DCPO⁻ {X = 𝟙 {𝓤}} 𝟙-is-set
 
-prop-of : ⟨ 𝕊𝓓 ⟩∙ → Ω 𝓤
-prop-of (P , _ , h) = P , h
+\end{code}
+
+These two DCPOs are of course order-isomorphic.
+
+\begin{code}
 
 ⊑-implies-⊑⁺ : (x y : ⟨ 𝕊𝓓 ⟩∙) → x ⊑⟨ 𝕊𝓓 ⟩ y → x ⊑⟨ 𝕊𝓓⁺ ⟩ y
 ⊑-implies-⊑⁺ x y p q = ⊑-to-⊑' p q
@@ -73,11 +100,30 @@ prop-of (P , _ , h) = P , h
 ⊑⁺-implies-⊑ : (x y : ⟨ 𝕊𝓓 ⟩∙) → x ⊑⟨ 𝕊𝓓⁺ ⟩ y → x ⊑⟨ 𝕊𝓓 ⟩ y
 ⊑⁺-implies-⊑ x y p = (λ q → transport is-defined (p q) q) , λ _ → refl
 
+\end{code}
+
+The proposition `𝟘` is the bottom element of this dcpo, meaning it can be
+made into a pointed dcpo:
+
+\begin{code}
+
 𝕊𝓓⊥ : DCPO⊥ {𝓤 ⁺} {𝓤}
 𝕊𝓓⊥ = 𝕊𝓓 , (𝟘 , (λ ()) , 𝟘-is-prop) , λ _ → (λ ()) , λ ()
 
+\end{code}
+
+The proposition `𝟙` is a top element of this DCPO.
+
+\begin{code}
+
 𝟙-is-top : (x : ⟨ 𝕊𝓓 ⟩∙) → x ⊑⟨ 𝕊𝓓 ⟩ η ⋆
 𝟙-is-top (P , q) = (λ _ → ⋆) , λ _ → refl
+
+\end{code}
+
+Furthermore, the dcpo `𝕊𝓓` is compact.
+
+\begin{code}
 
 𝕊𝓓-is-compact : is-compact 𝕊𝓓 (η ⋆)
 𝕊𝓓-is-compact I α (∣i∣ , up⁻) p⁻ =
@@ -104,8 +150,51 @@ prop-of (P , _ , h) = P , h
 
 \end{code}
 
-We then define the Sierpinski locale as the Scott locale of the Sierpinski
-domain.
+We define a function for mapping inhabitants of the Sierpiński dcpo to the type
+of propositions:
+
+\begin{code}
+
+to-Ω : ⟨ 𝕊𝓓 ⟩∙ → Ω 𝓤
+to-Ω (P , _ , h) = P , h
+
+\end{code}
+
+Conversely, we define a function mapping every proposition `P : Ω 𝓤` to the
+carrier set of the Sierpiński dcpo.
+
+\begin{code}
+
+to-𝕊𝓓 : Ω 𝓤 →  ⟨ 𝕊𝓓 ⟩∙
+to-𝕊𝓓 (P , h) = P , (λ _ → ⋆) , h
+
+\end{code}
+
+It is obvious that these form an equivalence.
+
+\begin{code}
+
+Ω-equivalent-to-𝕊 : Ω 𝓤 ≃ ⟨ 𝕊𝓓 ⟩∙
+Ω-equivalent-to-𝕊 = to-𝕊𝓓 , ((to-Ω , †) , (to-Ω , ‡))
+ where
+  ψ : {A : 𝓤  ̇} → is-prop (A → 𝟙)
+  ψ = Π-is-prop fe (λ _ → 𝟙-is-prop)
+
+  ϑ : {A : 𝓤  ̇} → is-prop (is-prop A)
+  ϑ = being-prop-is-prop fe
+
+  † : (to-𝕊𝓓 ∘ to-Ω) ∼ id
+  † (P , f , h) = to-subtype-＝ (λ _ → ×-is-prop ψ ϑ) refl
+
+  ‡ : to-Ω ∘ to-𝕊𝓓 ∼ id
+  ‡ (P , h) = to-subtype-＝ (λ _ → ϑ) refl
+
+\end{code}
+
+We now proceed to the definition of the Sierpiński locale.
+
+First, we show that `𝕊𝓓` has a specified small compact basis.
+
 
 \begin{code}
 
@@ -163,25 +252,33 @@ hscb = (𝟙 {𝓤} + 𝟙 {𝓤}) , β , σ
        ; ↓ᴮ-is-sup = covering
        }
 
+\end{code}
+
+Using this compact basis, we define the Sierpiński locale as the Scott locale of
+`𝕊𝓓`.
+
+\begin{code}
+
 open ScottLocaleConstruction 𝕊𝓓 hscb pe
 
 𝕊 : Locale (𝓤 ⁺) 𝓤 𝓤
 𝕊 = ScottLocale
 
-open DefnOfScottLocale 𝕊𝓓 𝓤 pe
-
 \end{code}
 
-The true truth value in the Sierpiński space -- the only nontrivial open.
+The true truth value in the Sierpiński space i.e. its only nontrivial open.
 
 \begin{code}
+
+open DefnOfScottLocale 𝕊𝓓 𝓤 pe
 
 ⊤𝕊 : ⟨ 𝒪 𝕊 ⟩
 ⊤𝕊 = ⊤ₛ
 
 \end{code}
 
-We now show that `𝕊𝓓` is a Scott domain.
+We now show that `𝕊𝓓` is a Scott domain. We have already shown that it is an
+algebraic lattice, so it remains to show that it is bounded complete.
 
 \begin{code}
 
@@ -191,11 +288,11 @@ open DefinitionOfBoundedCompleteness
 
 ⊑₀-implies-⊑ : (x y : ⟨ 𝕊𝓓 ⟩∙)
              → x ⊑⟨ 𝕊𝓓 ⟩ y
-             → (prop-of x ≤[ poset-of (𝟎-𝔽𝕣𝕞 pe) ] prop-of y) holds
+             → (to-Ω x ≤[ poset-of (𝟎-𝔽𝕣𝕞 pe) ] to-Ω y) holds
 ⊑₀-implies-⊑ _ _ (g , q) p = g p
 
 ⊑-implies-⊑₀ : (x y : ⟨ 𝕊𝓓 ⟩∙)
-             → (prop-of x ≤[ poset-of (𝟎-𝔽𝕣𝕞 pe) ] prop-of y) holds
+             → (to-Ω x ≤[ poset-of (𝟎-𝔽𝕣𝕞 pe) ] to-Ω y) holds
              → x ⊑⟨ 𝕊𝓓 ⟩ y
 ⊑-implies-⊑₀ (P , f , h) (P′ , f′ , h′) p = p , (λ _ → 𝟙-is-prop ⋆ ⋆)
 
@@ -203,7 +300,7 @@ open DefinitionOfBoundedCompleteness
 𝕊𝓓-bounded-complete S _ = sup , φ
  where
   S₀ : Fam 𝓤 (Ω 𝓤)
-  S₀ = ⁅ prop-of P ∣ P ε S ⁆
+  S₀ = ⁅ to-Ω P ∣ P ε S ⁆
 
   sup₀ : Ω 𝓤
   sup₀ = ⋁[ (𝟎-𝔽𝕣𝕞 pe) ] S₀
@@ -228,19 +325,19 @@ open DefinitionOfBoundedCompleteness
 
 \end{code}
 
+Finally, we show that `𝕊𝓓` trivially satisfies the decidability condition that
+we assume in the proof that Scott locales of Scott domains are spectral.
+
 \begin{code}
 
 open import Locales.ScottLocale.ScottLocalesOfScottDomains pt fe sr 𝓤
-
-to-𝕊𝓓 : Ω 𝓤 →  ⟨ 𝕊𝓓 ⟩∙
-to-𝕊𝓓 (P , h) = P , ((λ _ → ⋆) , h)
 
 𝕊𝓓-satisfies-dc : decidability-condition 𝕊𝓓
 𝕊𝓓-satisfies-dc 𝒫₀@(P₀ , h₀ , f₀) 𝒫₁@(P₁ , h₁ , f₁) κc κd =
  inl ∣ up , ‡ ∣
   where
    up : ⟨ 𝕊𝓓 ⟩∙
-   up = to-𝕊𝓓 (prop-of 𝒫₀ ∨[ 𝟎-𝔽𝕣𝕞 pe ] prop-of 𝒫₁)
+   up = to-𝕊𝓓 (to-Ω 𝒫₀ ∨[ 𝟎-𝔽𝕣𝕞 pe ] to-Ω 𝒫₁)
 
    open Joins {A = ⟨ 𝕊𝓓 ⟩∙} (λ x y → (x ⊑⟨ 𝕊𝓓 ⟩ y) , prop-valuedness 𝕊𝓓 x y)
 
@@ -250,6 +347,8 @@ to-𝕊𝓓 (P , h) = P , ((λ _ → ⋆) , h)
 
 \end{code}
 
+From all these, we obtain the fact that `𝕊` is a spectral locale.
+
 \begin{code}
 
 𝕊𝓓-has-least : has-least (underlying-order 𝕊𝓓)
@@ -257,17 +356,46 @@ to-𝕊𝓓 (P , h) = P , ((λ _ → ⋆) , h)
 
 open SpectralScottLocaleConstruction 𝕊𝓓 𝕊𝓓-has-least hscb 𝕊𝓓-satisfies-dc 𝕊𝓓-bounded-complete pe
 
-𝕊𝓓-is-spectralᴰ : spectralᴰ 𝕊
-𝕊𝓓-is-spectralᴰ = σᴰ
+𝕊-is-spectralᴰ : spectralᴰ 𝕊
+𝕊-is-spectralᴰ = σᴰ
 
 open import Locales.PatchLocale pt fe sr
 
-𝕊𝓓-is-spectral : is-spectral 𝕊 holds
-𝕊𝓓-is-spectral = spectralᴰ-gives-spectrality 𝕊 σᴰ
+𝕊-is-spectral : is-spectral 𝕊 holds
+𝕊-is-spectral = spectralᴰ-gives-spectrality 𝕊 σᴰ
 
-open SmallPatchConstruction 𝕊 𝕊𝓓-is-spectralᴰ renaming (SmallPatch to Patch-𝕊)
+𝕊-has-small-𝒦 : has-small-𝒦 𝕊
+𝕊-has-small-𝒦 = spectralᴰ-implies-small-𝒦 𝕊 σᴰ
+
+open SmallPatchConstruction 𝕊 𝕊-is-spectralᴰ renaming (SmallPatch to Patch-𝕊)
+
+\end{code}
+
+We conclude by constructing the patch of Sierpiński.
+
+\begin{code}
 
 patch-of-𝕊 : Locale (𝓤 ⁺) 𝓤 𝓤
 patch-of-𝕊 = Patch-𝕊
+
+\end{code}
+
+The universal property of Patch specializes to the following.
+
+\begin{code}
+
+open import Locales.UniversalPropertyOfPatch pt fe sr
+
+open import Locales.PatchProperties pt fe sr
+
+open ClosedNucleus 𝕊 𝕊-is-spectral
+
+ump-for-patch-of-𝕊 : (X : Locale (𝓤 ⁺) 𝓤 𝓤)
+                   → is-stone X holds
+                   → (𝒻@(f , _) : X ─c→ 𝕊)
+                   → is-spectral-map 𝕊 X 𝒻 holds
+                   → ∃! 𝒻⁻@(f⁻ , _) ꞉ X ─c→ Patch-𝕊 ,
+                      ((U : ⟨ 𝒪 𝕊 ⟩) → f U ＝ f⁻ ‘ U ’)
+ump-for-patch-of-𝕊 = ump-of-patch 𝕊 𝕊-is-spectral 𝕊-has-small-𝒦
 
 \end{code}
