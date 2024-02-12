@@ -58,7 +58,9 @@ import Locales.ScottLocale.ScottLocalesOfAlgebraicDcpos -- (22.5)
 -- TODO: naming and numbering to be improved.
 import Locales.ScottLocale.ScottLocalesOfScottDomains -- (22.5 + ϵ)
 
-import Locales.Sierpinski                        -- (23)
+import Locales.Sierpinski.Definition
+import Locales.Sierpinski.Properties
+import Locales.Sierpinski.Patch
 
 import Locales.SmallBasis                        -- (24)
 
