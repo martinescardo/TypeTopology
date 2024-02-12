@@ -7,12 +7,14 @@ open import UF.Logic
 open import MLTT.Spartan hiding (𝟚)
 open import UF.PropTrunc
 open import UF.Subsingletons
+open import UF.Size hiding (is-locally-small)
 
 module Locales.Sierpinski
         (𝓤  : Universe)
         (pe : Prop-Ext)
         (pt : propositional-truncations-exist)
-        (fe : Fun-Ext) where
+        (fe : Fun-Ext)
+        (sr : Set-Replacement pt) where
 
 open import DomainTheory.BasesAndContinuity.Bases pt fe 𝓤
 open import DomainTheory.BasesAndContinuity.Continuity pt fe 𝓤
@@ -27,6 +29,8 @@ open import Lifting.Miscelanea-PropExt-FunExt 𝓤 pe fe
 open import Lifting.UnivalentPrecategory 𝓤 (𝟙 {𝓤})
 open import Locales.Frame pt fe hiding (𝟚; is-directed)
 open import Locales.InitialFrame pt fe
+open import Locales.SmallBasis pt fe sr
+open import Locales.Spectrality.SpectralLocale pt fe
 open import Slice.Family
 open import UF.DiscreteAndSeparated
 open import UF.Equiv
@@ -185,6 +189,16 @@ open import DomainTheory.BasesAndContinuity.ScottDomain pt fe 𝓤
 
 open DefinitionOfBoundedCompleteness
 
+⊑₀-implies-⊑ : (x y : ⟨ 𝕊𝓓 ⟩∙)
+             → x ⊑⟨ 𝕊𝓓 ⟩ y
+             → (prop-of x ≤[ poset-of (𝟎-𝔽𝕣𝕞 pe) ] prop-of y) holds
+⊑₀-implies-⊑ _ _ (g , q) p = g p
+
+⊑-implies-⊑₀ : (x y : ⟨ 𝕊𝓓 ⟩∙)
+             → (prop-of x ≤[ poset-of (𝟎-𝔽𝕣𝕞 pe) ] prop-of y) holds
+             → x ⊑⟨ 𝕊𝓓 ⟩ y
+⊑-implies-⊑₀ (P , f , h) (P′ , f′ , h′) p = p , (λ _ → 𝟙-is-prop ⋆ ⋆)
+
 𝕊𝓓-bounded-complete : bounded-complete 𝕊𝓓 holds
 𝕊𝓓-bounded-complete S _ = sup , φ
  where
@@ -198,9 +212,62 @@ open DefinitionOfBoundedCompleteness
   sup = sup₀ holds , (λ _ → ⋆) , ∃-is-prop
 
   υ : is-upperbound (underlying-order 𝕊𝓓) sup (S [_])
-  υ i = {!⋁[ (𝟎-𝔽𝕣𝕞 pe)  ]-upper S₀ ?!}
+  υ i = † , ‡
+   where
+    † : is-defined (S [ i ]) → is-defined sup
+    † p = ∣ i , p ∣
 
-  φ : is-sup (underlying-order 𝕊𝓓) sup (pr₂ S)
-  φ = υ , {!!}
+    ‡ : value (S [ i ]) ∼ (λ x₁ → value sup († x₁))
+    ‡ _ = 𝟙-is-prop ⋆ ⋆
+
+  ϑ : is-lowerbound-of-upperbounds (underlying-order 𝕊𝓓) sup (S [_])
+  ϑ (P , f , h) q = ⊑-implies-⊑₀ sup (P , f , h) (⋁[ 𝟎-𝔽𝕣𝕞 pe ]-least S₀ ((P , h) , (λ i → pr₁ (q i))))
+
+  φ : is-sup (underlying-order 𝕊𝓓) sup (S [_])
+  φ = υ , ϑ
+
+\end{code}
+
+\begin{code}
+
+open import Locales.ScottLocale.ScottLocalesOfScottDomains pt fe sr 𝓤
+
+to-𝕊𝓓 : Ω 𝓤 →  ⟨ 𝕊𝓓 ⟩∙
+to-𝕊𝓓 (P , h) = P , ((λ _ → ⋆) , h)
+
+𝕊𝓓-satisfies-dc : decidability-condition 𝕊𝓓
+𝕊𝓓-satisfies-dc 𝒫₀@(P₀ , h₀ , f₀) 𝒫₁@(P₁ , h₁ , f₁) κc κd =
+ inl ∣ up , ‡ ∣
+  where
+   up : ⟨ 𝕊𝓓 ⟩∙
+   up = to-𝕊𝓓 (prop-of 𝒫₀ ∨[ 𝟎-𝔽𝕣𝕞 pe ] prop-of 𝒫₁)
+
+   open Joins {A = ⟨ 𝕊𝓓 ⟩∙} (λ x y → (x ⊑⟨ 𝕊𝓓 ⟩ y) , prop-valuedness 𝕊𝓓 x y)
+
+   ‡ : (up is-an-upper-bound-of (binary-family 𝓤 𝒫₀ 𝒫₁)) holds
+   ‡ (inl ⋆) = (λ p → ∣ inl ⋆ , p ∣) , λ _ → 𝟙-is-prop ⋆ ⋆
+   ‡ (inr ⋆) = (λ p → ∣ inr ⋆ , p ∣) , λ _ → 𝟙-is-prop ⋆ ⋆
+
+\end{code}
+
+\begin{code}
+
+𝕊𝓓-has-least : has-least (underlying-order 𝕊𝓓)
+𝕊𝓓-has-least = (⊥∙ 𝕊𝓓⊥) , ⊥-is-least 𝕊𝓓⊥
+
+open SpectralScottLocaleConstruction 𝕊𝓓 𝕊𝓓-has-least hscb 𝕊𝓓-satisfies-dc 𝕊𝓓-bounded-complete pe
+
+𝕊𝓓-is-spectralᴰ : spectralᴰ 𝕊
+𝕊𝓓-is-spectralᴰ = σᴰ
+
+open import Locales.PatchLocale pt fe sr
+
+𝕊𝓓-is-spectral : is-spectral 𝕊 holds
+𝕊𝓓-is-spectral = spectralᴰ-gives-spectrality 𝕊 σᴰ
+
+open SmallPatchConstruction 𝕊 𝕊𝓓-is-spectralᴰ renaming (SmallPatch to Patch-𝕊)
+
+patch-of-𝕊 : Locale (𝓤 ⁺) 𝓤 𝓤
+patch-of-𝕊 = Patch-𝕊
 
 \end{code}
