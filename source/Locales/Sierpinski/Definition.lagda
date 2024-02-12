@@ -1,5 +1,5 @@
 ---
-title:          The Sierpiński locale and its patch
+title:          The Sierpiński locale
 author:         Ayberk Tosun
 date-completed: 2024-02-12
 ---
@@ -15,7 +15,7 @@ open import UF.PropTrunc
 open import UF.Subsingletons
 open import UF.Size hiding (is-locally-small)
 
-module Locales.Sierpinski
+module Locales.Sierpinski.Definition
         (𝓤  : Universe)
         (pe : Prop-Ext)
         (pt : propositional-truncations-exist)
@@ -195,7 +195,6 @@ We now proceed to the definition of the Sierpiński locale.
 
 First, we show that `𝕊𝓓` has a specified small compact basis.
 
-
 \begin{code}
 
 open import Locales.ScottLocale.Definition pt fe 𝓤
@@ -274,128 +273,5 @@ open DefnOfScottLocale 𝕊𝓓 𝓤 pe
 
 ⊤𝕊 : ⟨ 𝒪 𝕊 ⟩
 ⊤𝕊 = ⊤ₛ
-
-\end{code}
-
-We now show that `𝕊𝓓` is a Scott domain. We have already shown that it is an
-algebraic lattice, so it remains to show that it is bounded complete.
-
-\begin{code}
-
-open import DomainTheory.BasesAndContinuity.ScottDomain pt fe 𝓤
-
-open DefinitionOfBoundedCompleteness
-
-⊑₀-implies-⊑ : (x y : ⟨ 𝕊𝓓 ⟩∙)
-             → x ⊑⟨ 𝕊𝓓 ⟩ y
-             → (to-Ω x ≤[ poset-of (𝟎-𝔽𝕣𝕞 pe) ] to-Ω y) holds
-⊑₀-implies-⊑ _ _ (g , q) p = g p
-
-⊑-implies-⊑₀ : (x y : ⟨ 𝕊𝓓 ⟩∙)
-             → (to-Ω x ≤[ poset-of (𝟎-𝔽𝕣𝕞 pe) ] to-Ω y) holds
-             → x ⊑⟨ 𝕊𝓓 ⟩ y
-⊑-implies-⊑₀ (P , f , h) (P′ , f′ , h′) p = p , (λ _ → 𝟙-is-prop ⋆ ⋆)
-
-𝕊𝓓-bounded-complete : bounded-complete 𝕊𝓓 holds
-𝕊𝓓-bounded-complete S _ = sup , φ
- where
-  S₀ : Fam 𝓤 (Ω 𝓤)
-  S₀ = ⁅ to-Ω P ∣ P ε S ⁆
-
-  sup₀ : Ω 𝓤
-  sup₀ = ⋁[ (𝟎-𝔽𝕣𝕞 pe) ] S₀
-
-  sup : ⟨ 𝕊𝓓 ⟩∙
-  sup = sup₀ holds , (λ _ → ⋆) , ∃-is-prop
-
-  υ : is-upperbound (underlying-order 𝕊𝓓) sup (S [_])
-  υ i = † , ‡
-   where
-    † : is-defined (S [ i ]) → is-defined sup
-    † p = ∣ i , p ∣
-
-    ‡ : value (S [ i ]) ∼ (λ x₁ → value sup († x₁))
-    ‡ _ = 𝟙-is-prop ⋆ ⋆
-
-  ϑ : is-lowerbound-of-upperbounds (underlying-order 𝕊𝓓) sup (S [_])
-  ϑ (P , f , h) q = ⊑-implies-⊑₀ sup (P , f , h) (⋁[ 𝟎-𝔽𝕣𝕞 pe ]-least S₀ ((P , h) , (λ i → pr₁ (q i))))
-
-  φ : is-sup (underlying-order 𝕊𝓓) sup (S [_])
-  φ = υ , ϑ
-
-\end{code}
-
-Finally, we show that `𝕊𝓓` trivially satisfies the decidability condition that
-we assume in the proof that Scott locales of Scott domains are spectral.
-
-\begin{code}
-
-open import Locales.ScottLocale.ScottLocalesOfScottDomains pt fe sr 𝓤
-
-𝕊𝓓-satisfies-dc : decidability-condition 𝕊𝓓
-𝕊𝓓-satisfies-dc 𝒫₀@(P₀ , h₀ , f₀) 𝒫₁@(P₁ , h₁ , f₁) κc κd =
- inl ∣ up , ‡ ∣
-  where
-   up : ⟨ 𝕊𝓓 ⟩∙
-   up = to-𝕊𝓓 (to-Ω 𝒫₀ ∨[ 𝟎-𝔽𝕣𝕞 pe ] to-Ω 𝒫₁)
-
-   open Joins {A = ⟨ 𝕊𝓓 ⟩∙} (λ x y → (x ⊑⟨ 𝕊𝓓 ⟩ y) , prop-valuedness 𝕊𝓓 x y)
-
-   ‡ : (up is-an-upper-bound-of (binary-family 𝓤 𝒫₀ 𝒫₁)) holds
-   ‡ (inl ⋆) = (λ p → ∣ inl ⋆ , p ∣) , λ _ → 𝟙-is-prop ⋆ ⋆
-   ‡ (inr ⋆) = (λ p → ∣ inr ⋆ , p ∣) , λ _ → 𝟙-is-prop ⋆ ⋆
-
-\end{code}
-
-From all these, we obtain the fact that `𝕊` is a spectral locale.
-
-\begin{code}
-
-𝕊𝓓-has-least : has-least (underlying-order 𝕊𝓓)
-𝕊𝓓-has-least = (⊥∙ 𝕊𝓓⊥) , ⊥-is-least 𝕊𝓓⊥
-
-open SpectralScottLocaleConstruction 𝕊𝓓 𝕊𝓓-has-least hscb 𝕊𝓓-satisfies-dc 𝕊𝓓-bounded-complete pe
-
-𝕊-is-spectralᴰ : spectralᴰ 𝕊
-𝕊-is-spectralᴰ = σᴰ
-
-open import Locales.PatchLocale pt fe sr
-
-𝕊-is-spectral : is-spectral 𝕊 holds
-𝕊-is-spectral = spectralᴰ-gives-spectrality 𝕊 σᴰ
-
-𝕊-has-small-𝒦 : has-small-𝒦 𝕊
-𝕊-has-small-𝒦 = spectralᴰ-implies-small-𝒦 𝕊 σᴰ
-
-open SmallPatchConstruction 𝕊 𝕊-is-spectralᴰ renaming (SmallPatch to Patch-𝕊)
-
-\end{code}
-
-We conclude by constructing the patch of Sierpiński.
-
-\begin{code}
-
-patch-of-𝕊 : Locale (𝓤 ⁺) 𝓤 𝓤
-patch-of-𝕊 = Patch-𝕊
-
-\end{code}
-
-The universal property of Patch then specializes to the following.
-
-\begin{code}
-
-open import Locales.UniversalPropertyOfPatch pt fe sr
-
-open import Locales.PatchProperties pt fe sr
-
-open ClosedNucleus 𝕊 𝕊-is-spectral
-
-ump-for-patch-of-𝕊 : (X : Locale (𝓤 ⁺) 𝓤 𝓤)
-                   → is-stone X holds
-                   → (𝒻@(f , _) : X ─c→ 𝕊)
-                   → is-spectral-map 𝕊 X 𝒻 holds
-                   → ∃! 𝒻⁻@(f⁻ , _) ꞉ X ─c→ Patch-𝕊 ,
-                      ((U : ⟨ 𝒪 𝕊 ⟩) → f U ＝ f⁻ ‘ U ’)
-ump-for-patch-of-𝕊 = ump-of-patch 𝕊 𝕊-is-spectral 𝕊-has-small-𝒦
 
 \end{code}
