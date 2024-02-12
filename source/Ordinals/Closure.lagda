@@ -465,7 +465,7 @@ Overᵒ-is-order-reflecting τ υ f p (inr *) x y ((n , q) , l) = 𝟘-elim (+di
   g : (x : 𝟙) → p x ＝ ₀ → ⋆ ≾⟨ 𝟙ᵒ ⟩ x
   g ⋆ r a = 𝟘-elim a
 
-  h : (x : 𝟙) → root-lower-bound (λ x y → x ≾⟨ 𝟙ᵒ ⟩ y) p x → x ≾⟨ 𝟙ᵒ ⟩ ⋆
+  h : (x : 𝟙) → is-roots-lower-bound (λ x y → x ≾⟨ 𝟙ᵒ ⟩ y) p x → x ≾⟨ 𝟙ᵒ ⟩ ⋆
   h ⋆ φ a = 𝟘-elim a
 
 𝟚ᵒ-has-infs-of-complemented-subsets : has-infs-of-complemented-subsets 𝟚ᵒ
@@ -474,7 +474,7 @@ Overᵒ-is-order-reflecting τ υ f p (inr *) x y ((n , q) , l) = 𝟘-elim (+di
   _≤_ : 𝟙 + 𝟙 → 𝟙 + 𝟙 → 𝓤₀ ̇
   x ≤ y = x ≾⟨ 𝟚ᵒ ⟩ y
 
-  φ : (r : p (inl ⋆) ＝ ₀) → Σ x ꞉ 𝟙 + 𝟙 , conditional-root _≤_ p x × roots-infimum _≤_ p x
+  φ : (r : p (inl ⋆) ＝ ₀) → Σ x ꞉ 𝟙 + 𝟙 , is-conditional-root _≤_ p x × is-roots-infimum _≤_ p x
   φ r = inl ⋆ , f , g , h
    where
     f : (Σ x ꞉ 𝟙 + 𝟙 , p x ＝ ₀) → p (inl ⋆) ＝ ₀
@@ -485,11 +485,11 @@ Overᵒ-is-order-reflecting τ υ f p (inr *) x y ((n , q) , l) = 𝟘-elim (+di
     g (inl ⋆) s l = 𝟘-elim l
     g (inr ⋆) s l = 𝟘-elim l
 
-    h : (x : 𝟙 + 𝟙) → root-lower-bound _≤_ p x → x ≤ inl ⋆
+    h : (x : 𝟙 + 𝟙) → is-roots-lower-bound _≤_ p x → x ≤ inl ⋆
     h (inl ⋆) φ l = 𝟘-elim l
     h (inr ⋆) φ ⋆ = φ (inl ⋆) r ⋆
 
-  γ : (r : p (inl ⋆) ＝ ₁) → Σ x ꞉ 𝟙 + 𝟙 , conditional-root _≤_ p x × roots-infimum _≤_ p x
+  γ : (r : p (inl ⋆) ＝ ₁) → Σ x ꞉ 𝟙 + 𝟙 , is-conditional-root _≤_ p x × is-roots-infimum _≤_ p x
   γ r = inr ⋆ , f , g , h
    where
     f : (Σ x ꞉ 𝟙 + 𝟙 , p x ＝ ₀) → p (inr ⋆) ＝ ₀
@@ -500,7 +500,7 @@ Overᵒ-is-order-reflecting τ υ f p (inr *) x y ((n , q) , l) = 𝟘-elim (+di
     g (inl ⋆) s l = 𝟘-elim (zero-is-not-one (s ⁻¹ ∙ r))
     g (inr ⋆) s l = 𝟘-elim l
 
-    h : (x : 𝟙 + 𝟙) → root-lower-bound _≤_ p x → x ≤ inr ⋆
+    h : (x : 𝟙 + 𝟙) → is-roots-lower-bound _≤_ p x → x ≤ inr ⋆
     h (inl ⋆) φ a = 𝟘-elim a
     h (inr ⋆) φ a = 𝟘-elim a
 
