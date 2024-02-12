@@ -8,6 +8,7 @@ https://doi.org/10.23638/LMCS-16(1:2)2020
 
 
 \begin{code}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 
@@ -20,6 +21,7 @@ open import UF.FunExt
 open import UF.Subsingletons
 
 module Modal.Open
+
 \end{code}
 
 Function extensionality is required for even some quite basic results
