@@ -74,6 +74,16 @@ module ScottLocaleProperties
 
  open DefnOfScottLocale 𝓓 𝓤 pe using (_⊆ₛ_)
 
+\end{code}
+
+Recall that `↑ˢ[ x , p ]` denotes the principal filter on a compact element `x`,
+(where `p` is the proof that `x` is compact).
+
+Below, we prove that `↑ˢ[ x , p ] = 𝟏` where `𝟏` is the top Scott open of the
+Scott locale on `𝓓`.
+
+\begin{code}
+
  ↑⊥-is-below-𝟏 : (𝟏[ 𝒪 Σ⦅𝓓⦆ ] ⊆ₛ ↑ˢ[ ⊥ᴰ , ⊥κ ]) holds
  ↑⊥-is-below-𝟏 = bottom-principal-filter-is-top 𝟏[ 𝒪 Σ⦅𝓓⦆ ]
 
