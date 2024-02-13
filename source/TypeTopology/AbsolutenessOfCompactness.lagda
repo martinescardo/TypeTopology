@@ -13,12 +13,18 @@ For another example, let ∇ be the modality of double negation sheaves
 is boolean. It follows that ∇ (is-compact∙ A) holds for all types A,
 and so we can deduce that ∇ A is always compact.
 
-TODO: add double negation sheaves to the library
-
 We can also see as a special case that truncation preserves
 compactness, although it seems unlikely there are any good examples of
 compact higher types where it isn't already clear that the
 0-truncation is compact.
+
+Closed modalities are also a promising application, since they are
+related to Friedman's A-translation in proof theory.
+
+TODO: So far we have implemented open modalities and used them to
+derive a new proof of propositional Tychonoff (in
+TypeTopology.AbsolutenessOfCompactnessExample). We leave it for future
+work to implement and look for applications of the other examples above.
 
 We note that the results hold for all modalities with no further
 conditions and in particular the modality is not required to be lex,
