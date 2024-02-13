@@ -32,8 +32,8 @@ module AbsolutenessOfCompactnessExample
 We are given a proposition P as a parameter and function
 extensionality. We use this in a sequence of module imports.
 
-First of all, we give P to the open modality module to get results
-about the open modality on P.
+First of all, we give P to the open modality module, as well as
+function extensionality to get results about the open modality on P.
 
 \begin{code}
 
@@ -99,7 +99,7 @@ prop-tychonoff2
  → is-compact∙ (Π A)
 prop-tychonoff2 A A-compact = ΠA-compact
  where
- 
+
 \end{code}
 
 We are given a family of types A : P → 𝓤 ̇  and we aim to apply the
@@ -109,7 +109,7 @@ there are two things to check. Firstly, we have to show that P implies
 above, which shows that P → Π A is compact. We then need to deduce
 from this that in fact Π A is compact.
 
-The first step, of showing that P implies Π A compact is copied
+The first step, of showing that P implies Π A compact, is copied
 straight from the original propositional Tychonoff proof. Namely, if P
 is true, as witnessed by an inhabitant z, then Π A is equivalent to A
 z, and so is compact.
@@ -177,5 +177,5 @@ allows us to complete the proof of the theorem.
    compact∙-types-are-closed-under-equiv
     (≃-sym ((open-unit (Π A)) , ΠA-modal))
     P→ΠA-compact
-  
+
 \end{code}

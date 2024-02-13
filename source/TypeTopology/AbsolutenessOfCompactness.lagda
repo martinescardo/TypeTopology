@@ -400,13 +400,11 @@ result which is closer to the statement of prop-tychonoff. This says ○
 "preserves compactness" in the sense that if ○ (A is compact), then
 (○ A) is compact.
 
-We note that the arguments in prop-tychonoff show that we can think of
-the family of types Y : X → 𝓥 ̇  without loss of generality as a
-constant family. Aside from that and the assumption here of
-univalence, we can view the remainder of theorem prop-tychonoff as a
-special case of the one below. To see this, note that when X is a
-proposition the functor X → - is a modality, and so can derive
-is-compact∙ (X → A) from X → is-compact∙ A.
+In order to derive prop-tychonoff from this statement we will need a
+few extra arguments. This will be covered in a separate module,
+AbsolutenessOfCompactnessExample, which works specifically with open
+modalities, as opposed to this module that applies to modalities in
+general.
 
 \begin{code}
 
