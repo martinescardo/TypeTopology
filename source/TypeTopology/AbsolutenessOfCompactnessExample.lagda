@@ -21,7 +21,7 @@ open import UF.FunExt
 open import UF.PropIndexedPiSigma
 open import UF.Subsingletons
 
-module AbsolutenessOfCompactnessExample
+module TypeTopology.AbsolutenessOfCompactnessExample
  (fe : funext 𝓤 𝓤)
  (P : 𝓤 ̇ )
  (P-is-prop : is-prop P)
