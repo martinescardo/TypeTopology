@@ -1,7 +1,8 @@
 Andrew Swan, started 13th February 2024
 
 We demonstrate the upwards absoluteness of compactness, by using it to
-give an alternative proof of the propositional Tychonoff theorem.
+give an alternative proof of the propositional Tychonoff theorem (as
+proved in the module TypeTopology.PropTychonoff).
 
 \begin{code}
 
@@ -93,11 +94,11 @@ show how to derive it from the non-dependent version.
 
 \begin{code}
 
-prop-tychonoff2
+prop-tychonoff₂
  : (A : P → 𝓤 ̇ )
  → ((z : P) → is-compact∙ (A z))
  → is-compact∙ (Π A)
-prop-tychonoff2 A A-compact = ΠA-compact
+prop-tychonoff₂ A A-compact = ΠA-compact
  where
 
 \end{code}
