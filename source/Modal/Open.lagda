@@ -130,3 +130,20 @@ open-is-sigma-closed A B A-modal B-modal =
     (λ a → (open-unit (B a)) , (B-modal a))
 
 \end{code}
+
+We add a useful lemma for the absoluteness of compactness: if P is a
+true proposition then the open modality is trivial, in the sense that
+all types are modal.
+
+\begin{code}
+
+P-true-implies-all-modal
+ : (z : P) → (A : 𝓤 ̇ ) → is-open-modal A
+P-true-implies-all-modal z A =
+ qinvs-are-equivs
+  (open-unit A)
+  ((λ f → f z) ,
+   ((λ a → refl) ,
+   (λ f → dfunext fe (λ z' → ap f (P-is-prop z z')))))
+
+\end{code}
