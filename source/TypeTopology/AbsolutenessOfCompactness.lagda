@@ -57,7 +57,7 @@ open import TypeTopology.CompactTypes
 
 open import UF.Base
 open import UF.Equiv
-open import UF.UA-FunExt
+open import UF.FunExt
 open import UF.Univalence
 open import UF.UniverseEmbedding
 
@@ -263,30 +263,26 @@ internal-compact-implies-compact A A-modal c =
 \end{code}
 
 The remaining theorems in this module all require a couple of extra
-assumptions: the universe needs to be univalent, and the subuniverse
-needs to be Σ-closed, making it an actual modality.
+assumptions: function extensionality, and the subuniverse
+needs to be Σ-closed, making it an actual modality, and replete.
 
 \begin{code}
 
-module WithUnivalenceAndSigmaClosedness
- (ua : is-univalent 𝓤)
+module WithFunExtAndRepleteSigmaClosed
+ (fe : funext 𝓤 𝓤)
  (P-is-sigma-closed : subuniverse-is-sigma-closed P)
+ (repleteness : subuniverse-is-replete P)
  where
 
 \end{code}
 
-We import some theorems about Σ-closed reflective subuniverses, and
-recall proofs of the two ways that we will use univalence: function
-extensionality and repleteness of the subuniverse.
+We import some theorems about Σ-closed reflective subuniverses.
 
 \begin{code}
 
  module S =
   Modal.SigmaClosedReflectiveSubuniverse
    P P-is-reflective P-is-sigma-closed
-
- fe = univalence-gives-funext ua
- repleteness = univalence-implies-subuniverse-is-replete ua P
 
 \end{code}
 
