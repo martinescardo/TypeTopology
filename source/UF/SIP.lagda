@@ -240,7 +240,7 @@ module sip-join where
       iii = to-×-＝ (inverses-are-sections (f x₀ x₁) (i x₀ x₁) a)
                    (inverses-are-sections (g y₀ y₁) (j y₀ y₁) b)
 
-   γ : (z : {!!}) → is-equiv (r z)
+   γ : (z : X × Y) → is-equiv (r z)
    γ = nats-with-sections-are-equivs (x₀ , y₀) r (λ z → (s z , η z))
 
  variable
