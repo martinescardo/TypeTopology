@@ -193,22 +193,22 @@ module Σ-identity-with-axioms where
 
  open Σ-identity
 
- module _ {X : 𝓤 ̇ } {S : X → 𝓥 ̇ } where
+ module _ {X : 𝓤 ̇ }
+          {S : X → 𝓥 ̇ }
+          (axioms : (x : X) → S x → 𝓦 ̇ )
+        where
 
-  [_] : {axioms : (x : X) → S x → 𝓦 ̇ }
-      → (Σ x ꞉ X , Σ s ꞉ S x , axioms x s) → Σ S
+  [_] : (Σ x ꞉ X , Σ s ꞉ S x , axioms x s) → Σ S
   [ x , s , _ ] = (x , s)
 
-  ⟪_⟫ : {axioms : (x : X) → S x → 𝓦 ̇ }
-      → (Σ x ꞉ X , Σ s ꞉ S x , axioms x s) → X
+  ⟪_⟫ : (Σ x ꞉ X , Σ s ꞉ S x , axioms x s) → X
   ⟪ X , _ , _ ⟫ = X
 
-  module _ (axioms : (x : X) → S x → 𝓦 ̇ ) where
+  module _ (axioms-are-prop : (x : X) (s : S x) → is-prop (axioms x s)) where
 
-   add-axioms : ((x : X) (s : S x) → is-prop (axioms x s))
-              → SNI S 𝓣
+   add-axioms : SNI S 𝓣
               → SNI (λ x → Σ s ꞉ S x , axioms x s) 𝓣
-   add-axioms {𝓣} axioms-are-prop (ι , ρ , θ) = ι' , ρ' , θ'
+   add-axioms {𝓣} (ι , ρ , θ) = ι' , ρ' , θ'
     where
      S' : X → 𝓥 ⊔ 𝓦  ̇
      S' x = Σ s ꞉ S x , axioms x s
@@ -249,11 +249,9 @@ equality.
 \begin{code}
 
    characterization-of-＝-with-axioms : (δ : SNI S 𝓣)
-                                      → ((x : X) (s : S x) → is-prop (axioms x s))
                                       → (σ τ : Σ x ꞉ X , Σ s ꞉ S x , axioms x s)
                                       → (σ ＝ τ) ≃ ([ σ ] ≃[ δ ] [ τ ])
-   characterization-of-＝-with-axioms σ i =
-    characterization-of-＝ (add-axioms i σ)
+   characterization-of-＝-with-axioms δ = characterization-of-＝ (add-axioms δ)
 
 \end{code}
 
@@ -270,11 +268,9 @@ module Σ-identity-join where
      (g : (y₀ y₁ : Y) → y₀ ＝ y₁ → τ y₀ y₁)
    → ((x₀ x₁ : X) → is-equiv (f x₀ x₁))
    → ((y₀ y₁ : Y) → is-equiv (g y₀ y₁))
-
-   → ((x₀ , y₀) (x₁ , y₁) : X × Y) →
-   is-equiv (λ (p : (x₀ , y₀) ＝ (x₁ , y₁)) → f x₀ x₁ (ap pr₁ p) ,
-                                              g y₀ y₁ (ap pr₂ p))
-
+   → ((x₀ , y₀) (x₁ , y₁) : X × Y)
+          → is-equiv (λ (p : (x₀ , y₀) ＝ (x₁ , y₁)) → f x₀ x₁ (ap pr₁ p) ,
+                                                       g y₀ y₁ (ap pr₂ p))
  technical-lemma {𝓤} {𝓥} {𝓦} {𝓣} {X} {σ} {Y} {τ} f g i j (x₀ , y₀) = γ
   where
    module _ ((x₁ , y₁) : X × Y) where
