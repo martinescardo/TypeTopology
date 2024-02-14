@@ -28,7 +28,6 @@ open import UF.Embeddings
 open import UF.Yoneda
 open import UF.Retracts
 
-
 module sip where
 
  ⟨_⟩ : {S : 𝓤 ̇ → 𝓥 ̇ } → Σ S → 𝓤 ̇
@@ -116,11 +115,10 @@ module sip where
 
   when-canonical-map-is-equiv : ((s t : S X) → is-equiv (canonical-map ι ρ s t))
                               ↔ ((s : S X) → ∃! t ꞉ S X , ι (X , s) (X , t) (≃-refl X))
-  when-canonical-map-is-equiv = (λ e s → Yoneda-Theorem-back  s (τ s) (e s)) ,
-                                (λ φ s → Yoneda-Theorem-forth s (τ s) (φ s))
+  when-canonical-map-is-equiv = (λ e s → Yoneda-Theorem-back  s (c s) (e s)) ,
+                                (λ φ s → Yoneda-Theorem-forth s (c s) (φ s))
    where
-    A = λ s t → ι (X , s) (X , t) (≃-refl X)
-    τ = canonical-map ι ρ
+    c = canonical-map ι ρ
 
   canonical-map-equiv-criterion : ((s t : S X)
                                 → (s ＝ t) ≃ ι (X , s) (X , t) (≃-refl X))

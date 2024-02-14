@@ -66,32 +66,32 @@ structured points with the same underlying point:
 
 \end{code}
 
-The type of Σ-identity systems, ranged over by δ = (ι , ρ , θ).
+The type of Sigma notions of identity, ranged over by δ = (ι , ρ , θ).
 
 \begin{code}
 
- Σ-Id-system : {X : 𝓤 ̇ } → (X → 𝓥 ̇ ) → (𝓦 : Universe) → 𝓤 ⊔ 𝓥 ⊔ (𝓦 ⁺) ̇
- Σ-Id-system {𝓤} {𝓥} {X} S 𝓦 =
+ SNI : {X : 𝓤 ̇ } → (X → 𝓥 ̇ ) → (𝓦 : Universe) → 𝓤 ⊔ 𝓥 ⊔ (𝓦 ⁺) ̇
+ SNI {𝓤} {𝓥} {X} S 𝓦 =
     Σ ι ꞉ ((σ τ : Σ S) → (⟨ σ ⟩ ＝ ⟨ τ ⟩ → 𝓦 ̇ ))
   , Σ ρ ꞉ ((σ : Σ S) → ι σ σ refl)
   , ({x : X} (s t : S x) → is-equiv (canonical-map ι ρ s t))
 
  module _ {X : 𝓤 ̇ } {S : X → 𝓥 ̇ } where
 
-  structure-preserving : Σ-Id-system S 𝓦
+  structure-preserving : SNI S 𝓦
                        → (σ τ : Σ S) → ⟨ σ ⟩ ＝ ⟨ τ ⟩ → 𝓦 ̇
   structure-preserving (ι , ρ , θ) = ι
 
-  _≃[_]_ : Σ S → Σ-Id-system S 𝓦 → Σ S → 𝓤 ⊔ 𝓦 ̇
+  _≃[_]_ : Σ S → SNI S 𝓦 → Σ S → 𝓤 ⊔ 𝓦 ̇
   σ ≃[ δ ] τ = Σ p ꞉ (⟨ σ ⟩ ＝ ⟨ τ ⟩) , structure-preserving δ σ τ p
 
-  ＝-to-≃[] : (δ : Σ-Id-system S 𝓦)
+  ＝-to-≃[] : (δ : SNI S 𝓦)
               (σ τ : Σ S)
             → (σ ＝ τ) → (σ ≃[ δ ] τ)
   ＝-to-≃[] (_ , ρ , _) σ σ refl = refl , ρ σ
 
   structure-preservation-lemma :
-     (δ : Σ-Id-system S 𝓦)
+     (δ : SNI S 𝓦)
      (σ τ : Σ S) (p : ⟨ σ ⟩ ＝ ⟨ τ ⟩)
    → (transport S p (structure σ) ＝ structure τ) ≃ structure-preserving δ σ τ p
   structure-preservation-lemma (ι , ρ , θ) (x , s) (x , t) (refl {x}) = γ
@@ -99,7 +99,7 @@ The type of Σ-identity systems, ranged over by δ = (ι , ρ , θ).
     γ : (s ＝ t) ≃ ι (x , s) (x , t) refl
     γ = (canonical-map ι ρ s t , θ s t)
 
-  module _ (δ : Σ-Id-system S 𝓦) where
+  module _ (δ : SNI S 𝓦) where
 
    characterization-of-＝ : (σ τ : Σ S) → (σ ＝ τ) ≃ (σ ≃[ δ ] τ)
    characterization-of-＝ σ τ =
@@ -135,11 +135,10 @@ The type of Σ-identity systems, ranged over by δ = (ι , ρ , θ).
 
    when-canonical-map-is-equiv : ((s t : S x) → is-equiv (canonical-map ι ρ s t))
                                ↔ ((s : S x) → ∃! t ꞉ S x , ι (x , s) (x , t) refl)
-   when-canonical-map-is-equiv = (λ e s → Yoneda-Theorem-back  s (τ s) (e s)) ,
-                                 (λ φ s → Yoneda-Theorem-forth s (τ s) (φ s))
+   when-canonical-map-is-equiv = (λ e s → Yoneda-Theorem-back  s (c s) (e s)) ,
+                                 (λ φ s → Yoneda-Theorem-forth s (c s) (φ s))
     where
-     σ = λ s t → ι (x , s) (x , t) refl
-     τ = canonical-map ι ρ
+     c = canonical-map ι ρ
 
 \end{code}
 
@@ -163,15 +162,15 @@ The canonical map is an equivalence if and only if we have some equivalence.
 
 \end{code}
 
-TODO. The type Σ-Id-system X 𝓥 should be contractible, with the
+TODO. The type SNI X 𝓥 should be contractible, with the
 following center of contraction, using univalence. Notice that we are
 currently not using univalence (or even function or propositional
 extensionality) in this file.
 
 \begin{code}
 
- canonical-Σ-Id-system : {X : 𝓤 ̇ } (S : X → 𝓥 ̇ ) → Σ-Id-system S 𝓥
- canonical-Σ-Id-system {𝓤} {𝓥} {X} S = ι , ρ , canonical-map-is-equiv
+ canonical-SNI : {X : 𝓤 ̇ } (S : X → 𝓥 ̇ ) → SNI S 𝓥
+ canonical-SNI {𝓤} {𝓥} {X} S = ι , ρ , canonical-map-is-equiv
   where
    ι : (σ τ : Σ S) → (⟨ σ ⟩ ＝ ⟨ τ ⟩ → 𝓥 ̇ )
    ι (x , s) (y , t) p = transport S p s ＝ t
@@ -207,8 +206,8 @@ module Σ-identity-with-axioms where
   module _ (axioms : (x : X) → S x → 𝓦 ̇ ) where
 
    add-axioms : ((x : X) (s : S x) → is-prop (axioms x s))
-              → Σ-Id-system S 𝓣
-              → Σ-Id-system (λ x → Σ s ꞉ S x , axioms x s) 𝓣
+              → SNI S 𝓣
+              → SNI (λ x → Σ s ꞉ S x , axioms x s) 𝓣
    add-axioms {𝓣} axioms-are-prop (ι , ρ , θ) = ι' , ρ' , θ'
     where
      S' : X → 𝓥 ⊔ 𝓦  ̇
@@ -249,7 +248,7 @@ equality.
 
 \begin{code}
 
-   characterization-of-＝-with-axioms : (δ : Σ-Id-system S 𝓣)
+   characterization-of-＝-with-axioms : (δ : SNI S 𝓣)
                                       → ((x : X) (s : S x) → is-prop (axioms x s))
                                       → (σ τ : Σ x ꞉ X , Σ s ꞉ S x , axioms x s)
                                       → (σ ＝ τ) ≃ ([ σ ] ≃[ δ ] [ τ ])
@@ -325,9 +324,9 @@ module Σ-identity-join where
   [_]₁ : (Σ x ꞉ X , S₀ x × S₁ x) → Σ S₁
   [ x , s₀ , s₁ ]₁ = (x , s₁)
 
-  join : Σ-Id-system S₀ 𝓦₀
-       → Σ-Id-system S₁ 𝓦₁
-       → Σ-Id-system (λ x → S₀ x × S₁ x) (𝓦₀ ⊔ 𝓦₁)
+  join : SNI S₀ 𝓦₀
+       → SNI S₁ 𝓦₁
+       → SNI (λ x → S₀ x × S₁ x) (𝓦₀ ⊔ 𝓦₁)
   join {𝓦₀} {𝓦₁} (ι₀ , ρ₀ , θ₀) (ι₁ , ρ₁ , θ₁) = ι , ρ , θ
    where
     S : X → 𝓥₀ ⊔ 𝓥₁ ̇
@@ -361,16 +360,16 @@ module Σ-identity-join where
       γ = equiv-closed-under-∼ _ _ i e
 
   _≃⟦_,_⟧_ : (Σ x ꞉ X , S₀ x × S₁ x)
-           → Σ-Id-system S₀ 𝓦₀
-           → Σ-Id-system S₁ 𝓦₁
+           → SNI S₀ 𝓦₀
+           → SNI S₁ 𝓦₁
            → (Σ x ꞉ X , S₀ x × S₁ x)
            → 𝓤 ⊔ 𝓦₀ ⊔ 𝓦₁ ̇
   σ ≃⟦ δ₀ , δ₁ ⟧ τ = Σ p ꞉ (⟪ σ ⟫ ＝ ⟪ τ ⟫)
                              , structure-preserving δ₀ [ σ ]₀ [ τ ]₀ p
                              × structure-preserving δ₁ [ σ ]₁ [ τ ]₁ p
 
-  characterization-of-join-＝ : (δ₀ : Σ-Id-system S₀ 𝓦₀)
-                                (δ₁ : Σ-Id-system S₁ 𝓦₁)
+  characterization-of-join-＝ : (δ₀ : SNI S₀ 𝓦₀)
+                                (δ₁ : SNI S₁ 𝓦₁)
                                 (σ τ : Σ x ꞉ X , S₀ x × S₁ x)
                               → (σ ＝ τ) ≃ (σ ≃⟦ δ₀ , δ₁ ⟧ τ)
   characterization-of-join-＝ δ₀ δ₁ = characterization-of-＝ (join δ₀ δ₁)
