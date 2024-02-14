@@ -20,13 +20,13 @@ module UF.SIP where
 
 open import MLTT.Spartan
 open import UF.Base
-open import UF.Equiv hiding (_≅_)
-open import UF.Univalence
-open import UF.EquivalenceExamples
-open import UF.Subsingletons
 open import UF.Embeddings
-open import UF.Yoneda
+open import UF.Equiv
+open import UF.EquivalenceExamples
 open import UF.Retracts
+open import UF.Subsingletons
+open import UF.Univalence
+open import UF.Yoneda
 
 module sip where
 
