@@ -5,20 +5,31 @@ TypeTopology.PropTychonoff, based on the observation that for
 propositions P, the functor sending A to P → A is a
 modality. Modalities of this form are an important special case and
 they have a name; they are *open modalities* (Example 1.7 in
-[1]). However, we will show a version of the theorem is not only true
+[2]). However, we will show a version of the theorem is not only true
 for open modalities, but for all modalities.
 
 For another example, let ∇ be the modality of double negation sheaves
-(Example 3.41 of [1]). The internal logic in this reflective universe
+(Example 3.41 of [2]). The internal logic in this reflective universe
 is boolean. It follows that ∇ (is-compact∙ A) holds for all types A,
 and so we can deduce that ∇ A is always compact.
-
-TODO: add double negation sheaves to the library
 
 We can also see as a special case that truncation preserves
 compactness, although it seems unlikely there are any good examples of
 compact higher types where it isn't already clear that the
 0-truncation is compact.
+
+Closed modalities are also a promising application, since they are
+related to Friedman's A-translation in proof theory.
+
+TODO: So far we have implemented open modalities and used them to
+derive a new proof of propositional Tychonoff (in
+TypeTopology.AbsolutenessOfCompactnessExample). We leave it for future
+work to implement and look for applications of the other examples above.
+
+We note that the results hold for all modalities with no further
+conditions and in particular the modality is not required to be lex,
+or to preserve 𝟘. For the main theorem, we don't even need a full
+modality, and the weaker notion of reflective subuniverse suffices.
 
 When formulated in terms of modalities, the result is best thought of
 as an "absoluteness result." When working in models of some theory, a
@@ -32,17 +43,46 @@ theory. We will show that compactness is an upwards absolute
 notion. That is, if a type inside the reflective subuniverse is
 compact with respect to the internal logic of the subuniverse then it
 is compact viewed outside the subuniverse as just a type. The converse
-does not quite hold, so potentially there could be compact types where
-the internal statement of compactness is not true, and we don't get
-full absoluteness.
+does not quite hold, so there can be compact types where the internal
+statement of compactness is not true, and we don't get full
+absoluteness.
 
-We note that the result holds for all modalities with no further
-conditions and in particular the modality is not required to be lex,
-or to preserve 𝟘. For the main theorem, we don't even need a full
-modality, and the weaker notion of reflective subuniverse suffices.
+We sketch out an example from realizabilty to illustrate how downwards
+absoluteness can fail. We recall from section 17 of [1] that each
+Turing degree can be viewed as a local operator in the effective
+topos, and from section 3.3 of [2] we recall that local operators can
+be viewed as modalities via sheafification. We will use that fact that
+for such modalities, the unit maps A → ○ A are ¬¬-connected (or
+equivalently that the corresponding subtoposes all contain the
+subtopos of sets).
 
-[1] Rijke, Shulman, Spitters, Modalities in homotopy type theory,
+Furthermore, we recall from section 3.3 of [3] that the object R of
+real numbers is isomorphic to the computable real numbers and that
+every function R → R is continuous. The latter implies that every
+function R → 2 is constant, and so vacuously R is compact in the
+effective topos.
+
+Let ○ be the modality corresponding to the halting set, as described
+above. Since the unit map R → ○ R is ¬¬-connected, it is also true
+that every map ○ R → 2 is constant: the composition of any such map
+with the unit map, R → ○ R is constant, but every element of ○ R does
+not not belong to R, and 2 is ¬¬-separated, so the restriction to ○ R
+must also be constant. However, the halting set allows us to construct
+new functions R → ○ 2, and thereby functions ○ R → ○ 2: we can use the
+halting set to decide whether or not two computable real numbers are
+equal, and so extend any function ○ N → ○ 2 to ○ R, mapping everything
+outside ○ N to 0. However, ○ N is not compact in the reflective
+subuniverse, by the same argument as for the effective topos, so ○ R
+is not compact either.
+
+
+[1] Hyland, The effective topos,
+https://doi.org/10.1016/S0049-237X(09)70129-6
+
+[2] Rijke, Shulman, Spitters, Modalities in homotopy type theory,
 https://doi.org/10.23638/LMCS-16(1:2)2020
+
+[3] Van Oosten, Realizability: An introduction to its categorical side
 
 \begin{code}
 
@@ -57,7 +97,7 @@ open import TypeTopology.CompactTypes
 
 open import UF.Base
 open import UF.Equiv
-open import UF.UA-FunExt
+open import UF.FunExt
 open import UF.Univalence
 open import UF.UniverseEmbedding
 
@@ -263,30 +303,26 @@ internal-compact-implies-compact A A-modal c =
 \end{code}
 
 The remaining theorems in this module all require a couple of extra
-assumptions: the universe needs to be univalent, and the subuniverse
-needs to be Σ-closed, making it an actual modality.
+assumptions: function extensionality, and the subuniverse
+needs to be Σ-closed, making it an actual modality, and replete.
 
 \begin{code}
 
-module WithUnivalenceAndSigmaClosedness
- (ua : is-univalent 𝓤)
+module WithFunExtAndRepleteSigmaClosed
+ (fe : funext 𝓤 𝓤)
  (P-is-sigma-closed : subuniverse-is-sigma-closed P)
+ (repleteness : subuniverse-is-replete P)
  where
 
 \end{code}
 
-We import some theorems about Σ-closed reflective subuniverses, and
-recall proofs of the two ways that we will use univalence: function
-extensionality and repleteness of the subuniverse.
+We import some theorems about Σ-closed reflective subuniverses.
 
 \begin{code}
 
  module S =
   Modal.SigmaClosedReflectiveSubuniverse
    P P-is-reflective P-is-sigma-closed
-
- fe = univalence-gives-funext ua
- repleteness = univalence-implies-subuniverse-is-replete ua P
 
 \end{code}
 
@@ -404,13 +440,11 @@ result which is closer to the statement of prop-tychonoff. This says ○
 "preserves compactness" in the sense that if ○ (A is compact), then
 (○ A) is compact.
 
-We note that the arguments in prop-tychonoff show that we can think of
-the family of types Y : X → 𝓥 ̇  without loss of generality as a
-constant family. Aside from that and the assumption here of
-univalence, we can view the remainder of theorem prop-tychonoff as a
-special case of the one below. To see this, note that when X is a
-proposition the functor X → - is a modality, and so can derive
-is-compact∙ (X → A) from X → is-compact∙ A.
+In order to derive prop-tychonoff from this statement we will need a
+few extra arguments. This will be covered in a separate module,
+AbsolutenessOfCompactnessExample, which works specifically with open
+modalities, as opposed to this module that applies to modalities in
+general.
 
 \begin{code}
 
