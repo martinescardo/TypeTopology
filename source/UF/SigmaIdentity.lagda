@@ -35,13 +35,13 @@ open import UF.Retracts
 
 module Σ-identity where
 
- module _ {X : 𝓤 ̇ } {S : X → 𝓥 ̇ } where
-
 \end{code}
 
 Underlying point and structure of a structured point.
 
 \begin{code}
+
+ module _ {X : 𝓤 ̇ } {S : X → 𝓥 ̇ } where
 
   ⟨_⟩ : Σ S → X
   ⟨_⟩ = pr₁
