@@ -124,18 +124,20 @@ The type of Sigma notions of identity, ranged over by δ = (ι , ρ , θ).
            {x : X}
          where
 
-   canonical-map-charac : (s t : S x) (p : s ＝ t)
-                        → canonical-map ι ρ s t p
-                        ＝ transport (λ - → ι (x , s) (x , -) refl) p (ρ (x , s))
-   canonical-map-charac s t p =
-    (yoneda-lemma s (λ t → ι (x , s) (x , t) refl) (canonical-map ι ρ s) t p)⁻¹
+   private
+    c = canonical-map ι ρ
 
-   when-canonical-map-is-equiv : ((s t : S x) → is-equiv (canonical-map ι ρ s t))
+   canonical-map-charac :
+      (s t : S x)
+      (p : s ＝ t)
+    → c s t p ＝ transport (λ - → ι (x , s) (x , -) refl) p (ρ (x , s))
+   canonical-map-charac s t p =
+    (yoneda-lemma s (λ t → ι (x , s) (x , t) refl) (c s) t p)⁻¹
+
+   when-canonical-map-is-equiv : ((s t : S x) → is-equiv (c s t))
                                ↔ ((s : S x) → ∃! t ꞉ S x , ι (x , s) (x , t) refl)
    when-canonical-map-is-equiv = (λ e s → Yoneda-Theorem-back  s (c s) (e s)) ,
                                  (λ φ s → Yoneda-Theorem-forth s (c s) (φ s))
-    where
-     c = canonical-map ι ρ
 
 \end{code}
 
@@ -145,17 +147,23 @@ The canonical map is an equivalence if and only if we have some equivalence.
 
    canonical-map-equiv-criterion :
      ((s t : S x) → (s ＝ t) ≃ ι (x , s) (x , t) refl)
-    → (s t : S x) → is-equiv (canonical-map ι ρ s t)
+    → (s t : S x) → is-equiv (c s t)
    canonical-map-equiv-criterion φ s = fiberwise-equiv-criterion'
                                         (λ t → ι (x , s) (x , t) refl)
-                                        s (φ s) (canonical-map ι ρ s)
+                                        s (φ s) (c s)
+
+\end{code}
+
+But a retraction suffices for the canonical map to be an equivalence.
+
+\begin{code}
 
    canonical-map-equiv-criterion' :
      ((s t : S x) → ι (x , s) (x , t) refl ◁ (s ＝ t))
-    → (s t : S x) → is-equiv (canonical-map ι ρ s t)
+    → (s t : S x) → is-equiv (c s t)
    canonical-map-equiv-criterion' φ s = fiberwise-equiv-criterion
                                          (λ t → ι (x , s) (x , t) refl)
-                                         s (φ s) (canonical-map ι ρ s)
+                                         s (φ s) (c s)
 \end{code}
 
 TODO. The type SNI X 𝓥 should be contractible, with the
