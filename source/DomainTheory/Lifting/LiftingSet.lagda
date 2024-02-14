@@ -171,6 +171,54 @@ module _ {𝓤 : Universe}
 
 \end{code}
 
+Minor addition by Ayberk Tosun.
+
+\begin{code}
+
+ open import Lifting.UnivalentPrecategory 𝓣 X
+ open PosetAxioms
+
+ 𝓛-DCPO⁻ : DCPO {𝓣 ⁺ ⊔ 𝓤} {𝓣 ⊔ 𝓤}
+ 𝓛-DCPO⁻ = 𝓛 X , _⊑_ , †
+  where
+   γ : {x y : 𝓛 X} → (x ⊑ y) ≃ (x ⊑' y)
+   γ {x} {y} = logically-equivalent-props-are-equivalent
+                (⊑-prop-valued fe fe s x y)
+                (⊑'-prop-valued s)
+                ⊑-to-⊑' ⊑'-to-⊑
+
+   p : is-prop-valued _⊑_
+   p = ⊑-prop-valued fe fe s
+
+   a : is-antisymmetric _⊑_
+   a l m p q = ⊑'-is-antisymmetric (⊑-to-⊑' p) (⊑-to-⊑' q)
+
+   δ : is-directed-complete _⊑_
+   δ I ι (i , υ)  = lifting-sup ι δ′ , σ
+    where
+     δ′ : is-directed _⊑'_ ι
+     δ′ = i
+        , λ j k →
+           ∥∥-rec
+            ∃-is-prop
+            (λ { (i , p , q) → ∣ i , ⊑-to-⊑' p , ⊑-to-⊑' q ∣ })
+            (υ j k)
+
+     σ₁ : (j : I) → ι j ⊑ lifting-sup ι δ′
+     σ₁ j = ⊑'-to-⊑ (lifting-sup-is-upperbound ι δ′ j)
+
+     σ₂ : is-lowerbound-of-upperbounds _⊑_ (lifting-sup ι δ′) ι
+     σ₂ j φ = ⊑'-to-⊑
+               (lifting-sup-is-lowerbound-of-upperbounds δ′ j λ k → ⊑-to-⊑' (φ k))
+
+     σ : is-sup _⊑_ (lifting-sup ι δ′) ι
+     σ = σ₁ , σ₂
+
+   † : dcpo-axioms _⊑_
+   † = (lifting-of-set-is-set s , p , 𝓛-id , 𝓛-comp , a) , δ
+
+\end{code}
+
 Now that we have the lifting as a dcpo, we prove that the lifting functor and
 Kleisli extension yield continuous maps.
 
