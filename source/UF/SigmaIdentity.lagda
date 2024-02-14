@@ -21,10 +21,9 @@ Conventions.
 
 {-# OPTIONS --safe --without-K #-}
 
-open import MLTT.Spartan
-
 module UF.SigmaIdentity where
 
+open import MLTT.Spartan
 open import UF.Base
 open import UF.Embeddings
 open import UF.Equiv
