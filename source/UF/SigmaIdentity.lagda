@@ -26,7 +26,7 @@ open import MLTT.Spartan
 module UF.SigmaIdentity where
 
 open import UF.Base
-open import UF.Equiv hiding (_≅_)
+open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.Subsingletons
 open import UF.Embeddings
