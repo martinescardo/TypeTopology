@@ -37,7 +37,6 @@ open import DomainTheory.Basics.Dcpo                   pt fe 𝓥
 open import DomainTheory.BasesAndContinuity.Continuity pt fe 𝓥
 open import DomainTheory.Basics.WayBelow               pt fe 𝓥
 
-
 \end{code}
 
 \begin{code}
