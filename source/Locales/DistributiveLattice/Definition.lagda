@@ -76,4 +76,7 @@ record DistributiveLatticeᵣ (𝓤 𝓥 : Universe) : 𝓤 ⁺ ⊔ 𝓥 ⁺  ̇
 
 \begin{code}
 
+∣_∣ᵈ : DistributiveLatticeᵣ 𝓤 𝓥 → 𝓤  ̇
+∣_∣ᵈ L = let open DistributiveLatticeᵣ L in ∣ P ∣ₚ
+
 \end{code}
