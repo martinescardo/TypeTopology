@@ -6,6 +6,8 @@ start-date:  2024-02-14
 
 \begin{code}
 
+{-# OPTIONS --safe --without-K #-}
+
 open import UF.PropTrunc
 open import UF.FunExt
 open import UF.Subsingletons
