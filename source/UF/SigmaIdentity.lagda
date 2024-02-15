@@ -21,17 +21,16 @@ Conventions.
 
 {-# OPTIONS --safe --without-K #-}
 
-open import MLTT.Spartan
-
 module UF.SigmaIdentity where
 
+open import MLTT.Spartan
 open import UF.Base
-open import UF.Equiv hiding (_≅_)
-open import UF.EquivalenceExamples
-open import UF.Subsingletons
 open import UF.Embeddings
-open import UF.Yoneda
+open import UF.Equiv
+open import UF.EquivalenceExamples
 open import UF.Retracts
+open import UF.Subsingletons
+open import UF.Yoneda
 
 module Σ-identity where
 
@@ -85,11 +84,6 @@ The type of Sigma notions of identity, ranged over by δ = (ι , ρ , θ).
   _≃[_]_ : Σ S → SNI S 𝓦 → Σ S → 𝓤 ⊔ 𝓦 ̇
   σ ≃[ δ ] τ = Σ p ꞉ (⟨ σ ⟩ ＝ ⟨ τ ⟩) , structure-preserving δ σ τ p
 
-  ＝-to-≃[] : (δ : SNI S 𝓦)
-              (σ τ : Σ S)
-            → (σ ＝ τ) → (σ ≃[ δ ] τ)
-  ＝-to-≃[] (_ , ρ , _) σ σ refl = refl , ρ σ
-
   structure-preservation-lemma :
      (δ : SNI S 𝓦)
      (σ τ : Σ S) (p : ⟨ σ ⟩ ＝ ⟨ τ ⟩)
@@ -99,46 +93,50 @@ The type of Sigma notions of identity, ranged over by δ = (ι , ρ , θ).
     γ : (s ＝ t) ≃ ι (x , s) (x , t) refl
     γ = (canonical-map ι ρ s t , θ s t)
 
-  module _ (δ : SNI S 𝓦) where
+  module _ (δ@(ι , ρ , θ) : SNI S 𝓦) where
 
    characterization-of-＝ : (σ τ : Σ S) → (σ ＝ τ) ≃ (σ ≃[ δ ] τ)
    characterization-of-＝ σ τ =
-      (σ ＝ τ)                                                            ≃⟨ i ⟩
-      (Σ p ꞉ ⟨ σ ⟩ ＝ ⟨ τ ⟩ , transport S p (structure σ) ＝ structure τ) ≃⟨ ii ⟩
-      (Σ p ꞉ ⟨ σ ⟩ ＝ ⟨ τ ⟩ , structure-preserving δ σ τ p)               ≃⟨ ≃-refl _ ⟩
-      (σ ≃[ δ ] τ)                                                        ■
+    (σ ＝ τ)                                                            ≃⟨ i ⟩
+    (Σ p ꞉ ⟨ σ ⟩ ＝ ⟨ τ ⟩ , transport S p (structure σ) ＝ structure τ) ≃⟨ ii ⟩
+    (Σ p ꞉ ⟨ σ ⟩ ＝ ⟨ τ ⟩ , structure-preserving δ σ τ p)               ≃⟨ iii ⟩
+    (σ ≃[ δ ] τ)                                                        ■
     where
      i   = Σ-＝-≃
      ii  = Σ-cong (structure-preservation-lemma δ σ τ)
+     iii = ≃-refl _
 
-   ＝-to-≃[]-is-equiv : (σ τ : Σ S) → is-equiv (＝-to-≃[] δ σ τ)
-   ＝-to-≃[]-is-equiv σ τ = γ
-    where
-     h : (σ τ : Σ S) → ＝-to-≃[] δ σ τ ∼ ⌜ characterization-of-＝ σ τ ⌝
-     h σ σ refl = refl
+   ＝-to-≃[] : (σ τ : Σ S) → (σ ＝ τ) → (σ ≃[ δ ] τ)
+   ＝-to-≃[] σ σ refl = refl , ρ σ
 
-     γ : is-equiv (＝-to-≃[] δ σ τ)
-     γ = equiv-closed-under-∼ _ _
-          (⌜⌝-is-equiv (characterization-of-＝ σ τ))
-          (h σ τ)
+   characterization-of-characterization-of-＝ :
+    (σ τ : Σ S) → ⌜ characterization-of-＝ σ τ ⌝ ∼ ＝-to-≃[] σ τ
+   characterization-of-characterization-of-＝ σ σ refl = refl
+
+   ＝-to-≃[]-is-equiv : (σ τ : Σ S) → is-equiv (＝-to-≃[] σ τ)
+   ＝-to-≃[]-is-equiv σ τ = equiv-closed-under-∼'
+                             (⌜⌝-is-equiv (characterization-of-＝ σ τ))
+                             (characterization-of-characterization-of-＝ σ τ)
 
   module _ (ι : (σ τ : Σ S) → ⟨ σ ⟩ ＝ ⟨ τ ⟩ → 𝓦 ̇ )
            (ρ : (σ : Σ S) → ι σ σ refl)
            {x : X}
          where
 
-   canonical-map-charac : (s t : S x) (p : s ＝ t)
-                        → canonical-map ι ρ s t p
-                        ＝ transport (λ - → ι (x , s) (x , -) refl) p (ρ (x , s))
-   canonical-map-charac s t p =
-    (yoneda-lemma s (λ t → ι (x , s) (x , t) refl) (canonical-map ι ρ s) t p)⁻¹
+   private
+    c = canonical-map ι ρ
 
-   when-canonical-map-is-equiv : ((s t : S x) → is-equiv (canonical-map ι ρ s t))
+   canonical-map-charac :
+      (s t : S x)
+      (p : s ＝ t)
+    → c s t p ＝ transport (λ - → ι (x , s) (x , -) refl) p (ρ (x , s))
+   canonical-map-charac s t p =
+    (yoneda-lemma s (λ t → ι (x , s) (x , t) refl) (c s) t p)⁻¹
+
+   when-canonical-map-is-equiv : ((s t : S x) → is-equiv (c s t))
                                ↔ ((s : S x) → ∃! t ꞉ S x , ι (x , s) (x , t) refl)
    when-canonical-map-is-equiv = (λ e s → Yoneda-Theorem-back  s (c s) (e s)) ,
                                  (λ φ s → Yoneda-Theorem-forth s (c s) (φ s))
-    where
-     c = canonical-map ι ρ
 
 \end{code}
 
@@ -146,20 +144,25 @@ The canonical map is an equivalence if and only if we have some equivalence.
 
 \begin{code}
 
-   canonical-map-equiv-criterion : ((s t : S x)
-                                 → (s ＝ t) ≃ ι (x , s) (x , t) refl)
-                                 → (s t : S x) → is-equiv (canonical-map ι ρ s t)
+   canonical-map-equiv-criterion :
+     ((s t : S x) → (s ＝ t) ≃ ι (x , s) (x , t) refl)
+    → (s t : S x) → is-equiv (c s t)
    canonical-map-equiv-criterion φ s = fiberwise-equiv-criterion'
                                         (λ t → ι (x , s) (x , t) refl)
-                                        s (φ s) (canonical-map ι ρ s)
+                                        s (φ s) (c s)
 
-   canonical-map-equiv-criterion' : ((s t : S x)
-                                  → ι (x , s) (x , t) refl ◁ (s ＝ t))
-                                  → (s t : S x) → is-equiv (canonical-map ι ρ s t)
+\end{code}
+
+But a retraction suffices for the canonical map to be an equivalence.
+
+\begin{code}
+
+   canonical-map-equiv-criterion' :
+     ((s t : S x) → ι (x , s) (x , t) refl ◁ (s ＝ t))
+    → (s t : S x) → is-equiv (c s t)
    canonical-map-equiv-criterion' φ s = fiberwise-equiv-criterion
                                          (λ t → ι (x , s) (x , t) refl)
-                                         s (φ s) (canonical-map ι ρ s)
-
+                                         s (φ s) (c s)
 \end{code}
 
 TODO. The type SNI X 𝓥 should be contractible, with the
@@ -274,42 +277,45 @@ module Σ-identity-join where
  technical-lemma {𝓤} {𝓥} {𝓦} {𝓣} {X} {σ} {Y} {τ} f g i j (x₀ , y₀) = γ
   where
    module _ ((x₁ , y₁) : X × Y) where
-     r : (x₀ , y₀) ＝ (x₁ , y₁) → σ x₀ x₁ × τ y₀ y₁
-     r p = f x₀ x₁ (ap pr₁ p) , g y₀ y₁ (ap pr₂ p)
+    r : (x₀ , y₀) ＝ (x₁ , y₁) → σ x₀ x₁ × τ y₀ y₁
+    r p = f x₀ x₁ (ap pr₁ p) , g y₀ y₁ (ap pr₂ p)
 
-     f' : (a : σ x₀ x₁) → x₀ ＝ x₁
-     f' = inverse (f x₀ x₁) (i x₀ x₁)
+    f' : (a : σ x₀ x₁) → x₀ ＝ x₁
+    f' = inverse (f x₀ x₁) (i x₀ x₁)
 
-     g' : (b : τ y₀ y₁) → y₀ ＝ y₁
-     g' = inverse (g y₀ y₁) (j y₀ y₁)
+    g' : (b : τ y₀ y₁) → y₀ ＝ y₁
+    g' = inverse (g y₀ y₁) (j y₀ y₁)
 
-     s : σ x₀ x₁ × τ y₀ y₁ → (x₀ , y₀) ＝ (x₁ , y₁)
-     s (a , b) = to-×-＝ (f' a) (g' b)
+    s : σ x₀ x₁ × τ y₀ y₁ → (x₀ , y₀) ＝ (x₁ , y₁)
+    s (a , b) = to-×-＝ (f' a) (g' b)
 
-     η : (c : σ x₀ x₁ × τ y₀ y₁) → r (s c) ＝ c
-     η (a , b) =
-       r (s (a , b))                               ＝⟨ refl ⟩
-       r (to-×-＝  (f' a) (g' b))                  ＝⟨ refl ⟩
-       (f x₀ x₁ (ap pr₁ (to-×-＝ (f' a) (g' b))) ,
-        g y₀ y₁ (ap pr₂ (to-×-＝ (f' a) (g' b))))  ＝⟨ ii ⟩
-       (f x₀ x₁ (f' a) , g y₀ y₁ (g' b))           ＝⟨ iii ⟩
-       a , b                                       ∎
-      where
-       ii  = ap₂ (λ p q → f x₀ x₁ p , g y₀ y₁ q)
-                 (ap-pr₁-to-×-＝ (f' a) (g' b))
-                 (ap-pr₂-to-×-＝ (f' a) (g' b))
-       iii = to-×-＝ (inverses-are-sections (f x₀ x₁) (i x₀ x₁) a)
-                    (inverses-are-sections (g y₀ y₁) (j y₀ y₁) b)
+    η : (c : σ x₀ x₁ × τ y₀ y₁) → r (s c) ＝ c
+    η (a , b) =
+      r (s (a , b))                               ＝⟨ refl ⟩
+      r (to-×-＝  (f' a) (g' b))                  ＝⟨ refl ⟩
+      (f x₀ x₁ (ap pr₁ (to-×-＝ (f' a) (g' b))) ,
+       g y₀ y₁ (ap pr₂ (to-×-＝ (f' a) (g' b))))  ＝⟨ ii ⟩
+      (f x₀ x₁ (f' a) , g y₀ y₁ (g' b))           ＝⟨ iii ⟩
+      a , b                                       ∎
+     where
+      ii  = ap₂ (λ p q → f x₀ x₁ p , g y₀ y₁ q)
+                (ap-pr₁-to-×-＝ (f' a) (g' b))
+                (ap-pr₂-to-×-＝ (f' a) (g' b))
+      iii = to-×-＝ (inverses-are-sections (f x₀ x₁) (i x₀ x₁) a)
+                   (inverses-are-sections (g y₀ y₁) (j y₀ y₁) b)
 
-   γ : ∀ z₁ → is-equiv (r z₁)
-   γ = nats-with-sections-are-equivs (x₀ , y₀) r λ z₁ → (s z₁ , η z₁)
+   γ : (z : X × Y) → is-equiv (r z)
+   γ = nats-with-sections-are-equivs (x₀ , y₀) r (λ z → (s z , η z))
 
  variable
   𝓥₀ 𝓥₁ 𝓦₀ 𝓦₁ : Universe
 
  open Σ-identity
 
- module _ {X : 𝓤 ̇ } {S₀ : X → 𝓥₀ ̇ } {S₁ : X → 𝓥₁ ̇ } where
+ module _ {X : 𝓤 ̇ }
+          {S₀ : X → 𝓥₀ ̇ }
+          {S₁ : X → 𝓥₁ ̇ }
+        where
 
   ⟪_⟫ : (Σ x ꞉ X , S₀ x × S₁ x) → X
   ⟪ x , s₀ , s₁ ⟫ = x
@@ -335,10 +341,10 @@ module Σ-identity-join where
     ρ σ = (ρ₀ [ σ ]₀ , ρ₁ [ σ ]₁)
 
     θ : {x : X} (s t : S x) → is-equiv (canonical-map ι ρ s t)
-    θ {x} (s₀ , s₁) (t₀ , t₁) = γ
+    θ {x} s@(s₀ , s₁) t@(t₀ , t₁) = γ
      where
       c : (p : s₀ , s₁ ＝ t₀ , t₁) → ι₀ (x , s₀) (x , t₀) refl
-                                  × ι₁ (x , s₁) (x , t₁) refl
+                                   × ι₁ (x , s₁) (x , t₁) refl
 
       c p = (canonical-map ι₀ ρ₀ s₀ t₀ (ap pr₁ p) ,
              canonical-map ι₁ ρ₁ s₁ t₁ (ap pr₂ p))
@@ -347,12 +353,12 @@ module Σ-identity-join where
       i = technical-lemma
            (canonical-map ι₀ ρ₀)
            (canonical-map ι₁ ρ₁)
-           θ₀ θ₁ (s₀ , s₁) (t₀ , t₁)
+           θ₀ θ₁ s t
 
-      e : canonical-map ι ρ (s₀ , s₁) (t₀ , t₁) ∼ c
-      e (refl {s₀ , s₁}) = 𝓻𝓮𝒻𝓵 (ρ₀ (x , s₀) , ρ₁ (x , s₁))
+      e : canonical-map ι ρ s t ∼ c
+      e (refl {s}) = 𝓻𝓮𝒻𝓵 (ρ₀ (x , s₀) , ρ₁ (x , s₁))
 
-      γ : is-equiv (canonical-map ι ρ (s₀ , s₁) (t₀ , t₁))
+      γ : is-equiv (canonical-map ι ρ s t)
       γ = equiv-closed-under-∼ _ _ i e
 
   _≃⟦_,_⟧_ : (Σ x ꞉ X , S₀ x × S₁ x)
@@ -361,8 +367,8 @@ module Σ-identity-join where
            → (Σ x ꞉ X , S₀ x × S₁ x)
            → 𝓤 ⊔ 𝓦₀ ⊔ 𝓦₁ ̇
   σ ≃⟦ δ₀ , δ₁ ⟧ τ = Σ p ꞉ (⟪ σ ⟫ ＝ ⟪ τ ⟫)
-                             , structure-preserving δ₀ [ σ ]₀ [ τ ]₀ p
-                             × structure-preserving δ₁ [ σ ]₁ [ τ ]₁ p
+                         , structure-preserving δ₀ [ σ ]₀ [ τ ]₀ p
+                         × structure-preserving δ₁ [ σ ]₁ [ τ ]₁ p
 
   characterization-of-join-＝ : (δ₀ : SNI S₀ 𝓦₀)
                                 (δ₁ : SNI S₁ 𝓦₁)
