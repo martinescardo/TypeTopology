@@ -18,7 +18,7 @@ module Locales.DistributiveLattice.Ideal
         (pe : Prop-Ext)
        where
 
-open import Locales.DistributiveLattice.Definition pt fe
+open import Locales.DistributiveLattice.Definition fe pt
 open import Locales.Frame pt fe
 open import UF.Powerset-MultiUniverse
 open import MLTT.Spartan
