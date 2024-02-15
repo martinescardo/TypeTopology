@@ -80,3 +80,6 @@ record DistributiveLatticeᵣ (𝓤 𝓥 : Universe) : 𝓤 ⁺ ⊔ 𝓥 ⁺  ̇
 ∣_∣ᵈ L = let open DistributiveLatticeᵣ L in ∣ P ∣ₚ
 
 \end{code}
+
+In the future, equivalent definitions of the notion of distributive lattice
+will be added to this module.
