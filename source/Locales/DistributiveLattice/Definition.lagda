@@ -8,27 +8,22 @@ start-date:  2024-02-14
 
 {-# OPTIONS --safe --without-K #-}
 
-open import UF.PropTrunc
 open import UF.FunExt
+open import UF.PropTrunc
 
 module Locales.DistributiveLattice.Definition
-        (pt : propositional-truncations-exist)
         (fe : Fun-Ext)
+        (pt : propositional-truncations-exist)
        where
 
 open import Locales.Frame pt fe
 open import MLTT.Spartan
 open import UF.Base
-open import UF.SubtypeClassifier
 open import UF.Logic
+open import UF.Powerset-MultiUniverse
+open import UF.SubtypeClassifier
 
 open Implication fe
-
-\end{code}
-
-\begin{code}
-
-open import UF.Powerset-MultiUniverse
 
 \end{code}
 
