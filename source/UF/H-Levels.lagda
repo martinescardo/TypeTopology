@@ -252,8 +252,10 @@ record H-level-truncations-exist : 𝓤ω where
 \end{code}
 
 We now define the notion of k-connectedness for types and functions with respect
-to H-levels. We will then see that connectedness as defined is a special case:
-Set connectedness or 2-connectedness.
+to H-levels. We will then see that connectedness as defined elsewhere is a
+special case:
+Connectedness typically means set connectedness. In terms of H-level it will
+mean 2-connectedness.
 
 \begin{code}
 
