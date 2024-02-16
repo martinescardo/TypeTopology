@@ -92,6 +92,10 @@ is-monotone : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
             → (⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩) → 𝓤 ⊔ 𝓣 ⊔ 𝓣' ̇
 is-monotone 𝓓 𝓔 f = (x y : ⟨ 𝓓 ⟩) → x ⊑⟨ 𝓓 ⟩ y → f x ⊑⟨ 𝓔 ⟩ f y
 
+is-inflationary : (𝓓 : DCPO {𝓤} {𝓣})
+                → (⟨ 𝓓 ⟩ → ⟨ 𝓓 ⟩) → 𝓤 ⊔ 𝓣 ̇
+is-inflationary 𝓓 f = (x : ⟨ 𝓓 ⟩) → x ⊑⟨ 𝓓 ⟩ f x
+
 \end{code}
 
 Lemmas for establishing Scott continuity of maps between dcpos.
@@ -241,6 +245,9 @@ constant-functions-are-continuous 𝓓 𝓔 {e} I α δ = u , v
 id-is-monotone : (𝓓 : DCPO {𝓤} {𝓣}) → is-monotone 𝓓 𝓓 id
 id-is-monotone 𝓓 x y l = l
 
+id-is-inflationary : (𝓓 : DCPO {𝓤} {𝓣}) → is-inflationary 𝓓 id
+id-is-inflationary = reflexivity
+
 id-is-continuous : (𝓓 : DCPO {𝓤} {𝓣}) → is-continuous 𝓓 𝓓 id
 id-is-continuous 𝓓 = continuity-criterion 𝓓 𝓓 id (id-is-monotone 𝓓) γ
  where
@@ -255,6 +262,13 @@ id-is-continuous 𝓓 = continuity-criterion 𝓓 𝓓 id (id-is-monotone 𝓓) 
                 → is-monotone 𝓔 𝓔' g
                 → is-monotone 𝓓 𝓔' (g ∘ f)
 ∘-is-monotone 𝓓 𝓔 𝓔' f g mf mg x y l = mg (f x) (f y) (mf x y l)
+
+∘-is-inflationary : (𝓓 : DCPO {𝓤} {𝓣})
+                  (f g : ⟨ 𝓓 ⟩ → ⟨ 𝓓 ⟩)
+                → is-inflationary 𝓓 f
+                → is-inflationary 𝓓 g
+                → is-inflationary 𝓓 (g ∘ f)
+∘-is-inflationary 𝓓 f g if ig x = transitivity 𝓓 x (f x) (g (f x)) (if x) (ig (f x))
 
 ∘-is-continuous : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'}) (𝓔' : DCPO {𝓦} {𝓦'})
                   (f : ⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩) (g : ⟨ 𝓔 ⟩ → ⟨ 𝓔' ⟩)
