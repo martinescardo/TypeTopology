@@ -7,8 +7,6 @@ Chirstensen (see https://browse.arxiv.org/abs/2109.06670).
 
 {-# OPTIONS --safe --without-K #-}
 
-module UF.SizeAndTruncation where
-
 open import MLTT.Spartan
 open import UF.Base
 open import UF.Embeddings
@@ -36,11 +34,11 @@ open import UF.UniverseEmbedding
 open import Naturals.Order
 open import Naturals.Properties
 
-module _ (fe : FunExt) (fe' : Fun-Ext) where
+module UF.SizeAndTruncation (fe : FunExt) (fe' : Fun-Ext) where
 
  open import UF.H-Levels fe fe'
 
- module _ (𝓥 : Universe) (te : H-level-truncations-exist) where
+ module _ (te : H-level-truncations-exist) (𝓥 : Universe) where
 
 \end{code}
 
@@ -49,7 +47,7 @@ We begin by giving some definitions that Dan uses in his paper. We will use
 
 \begin{code}
 
-  _is_locally-small : (X : 𝓤 ̇) → (n : ℕ) → {!!} ̇
+  _is_locally-small : (X : 𝓤 ̇) → (n : ℕ) → 𝓤 ⊔ (𝓥 ⁺) ̇
   X is zero locally-small = X is 𝓥 small
   X is (succ n) locally-small = (x x' : X) → (x ＝ x') is n locally-small
 
@@ -59,7 +57,7 @@ We will now begin proving some of the results of the paper. We will attempt to
 avoid any unnecesay use of propositional resizing. Theorem numbers will be
 provided for easy reference.
 
-WARNING: Be aware that our notions are 'off by two' which results from our
+WARNING: Be aware that our definitions are 'off by two' which results from our
 choice of H-levels.
 
 Proposition 2.2.
@@ -74,9 +72,9 @@ Proposition 2.2.
            → 1 ≤ℕ n
            → map f is (pred n) connected
            → A is 𝓥 small
-           → X is (succ n) locally-small
+           → X is (pred n) locally-small
            → X is 𝓥 small
-  Prop-2-2 = {!!}
+  Prop-2-2 f (succ n) n-above-1 f-is-con A-small X-is-loc-small = ?
 
 \end{code}
 
