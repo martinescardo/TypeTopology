@@ -48,6 +48,9 @@ hlevel-relation-is-prop {𝓤} (succ n) X =
   Π₂-is-prop fe'
              (λ x x' → hlevel-relation-is-prop n (x ＝ x'))
 
+map_is-of-hlevel_ : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (f : X → Y) → ℕ → 𝓤 ⊔ 𝓥 ̇
+map f is-of-hlevel n = (y : codomain f) → (fiber f y) is-of-hlevel n
+
 \end{code}
 
 H-Levels are cumulative.

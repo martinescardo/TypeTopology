@@ -31,6 +31,7 @@ open import UF.Subsingletons-FunExt
 open import UF.UA-FunExt
 open import UF.Univalence
 open import UF.UniverseEmbedding
+open import Naturals.Addition
 open import Naturals.Order
 open import Naturals.Properties
 
@@ -67,14 +68,102 @@ Proposition 2.2.
   open H-level-truncations-exist te
   open k-connectedness te
 
-  Prop-2-2 : {A : 𝓤 ̇} {X : 𝓦 ̇} (f : A → X)
+  Join-Construction-Result : {𝓤 𝓦 : Universe} {A : 𝓤 ̇} {X : 𝓦 ̇}
+                           → (𝓥 ⁺) ⊔ 𝓤 ⊔ 𝓦 ̇
+  Join-Construction-Result {𝓤} {𝓦} {A} {X} = (f : A → X)
+                                           → A is 𝓥 small
+                                           → X is 1 locally-small
+                                           → map f is 1 connected
+                                           → X is 𝓥 small
+
+  Prop-2-2 : {𝓤 𝓦 : Universe} {A : 𝓤 ̇} {X : 𝓦 ̇}
+           → (f : A → X)
            → (n : ℕ)
            → map f is n connected
            → A is 𝓥 small
            → X is n locally-small
+           → Join-Construction-Result {𝓤} {𝓦} {A} {X}
            → X is 𝓥 small
-  Prop-2-2 f zero f-is-con A-small X-is-loc-small = {!X-is-loc-small!}
-  Prop-2-2 f (succ n) f-is-con A-small X-is-loc-small = {!!}
+  Prop-2-2 f zero f-is-con A-small X-is-loc-small j = X-is-loc-small
+  Prop-2-2 f (succ n) f-is-con A-small X-is-loc-small j =
+    j f A-small {!!} {!!}
 
 \end{code}
+
+The inductive step follows from a result in Egbert's "The Join
+Construction". Unfortunately, these results have yet to be implemented in the
+TypeTopology library. For now we maintain that the above result follows from
+Egbert's result.
+
+TODO: Show connectedness is downward cummulative and that X is locally small.
+
+Lemma 2.3.
+
+\begin{code}
+
+  Lemma-2-3 : {X : 𝓤 ̇} (n : ℕ)
+            → X is-of-hlevel (succ n)
+            → X is n locally-small
+  Lemma-2-3 n X-hlevel = {!!}
+
+\end{code}
+
+Lemma 2.4.
+
+\begin{code}
+
+  Lemma-2-4 : {X : 𝓤 ̇} {Y : 𝓦 ̇}
+            → (f : X → Y)
+            → (n : ℕ)
+            → map f is-of-hlevel (succ n)
+            → Y is n locally-small
+            → X is n locally-small
+  Lemma-2-4 = {!!}
+
+\end{code}
+
+Lemma 2.5.
+
+\begin{code}
+
+  Lemma-2-5 : {X : 𝓤 ̇} {Y : 𝓦 ̇}
+            → (f : X → Y)
+            → (n : ℕ)
+            → map f is-of-hlevel (succ n)
+            → Y is n locally-small
+            → X is n connected
+            → X is 𝓥 small
+  Lemma-2-5 = {!!}
+
+\end{code}
+
+Theorem 2.6.
+
+\begin{code}
+
+  Theorem-2-6 : {X : 𝓤 ̇} {Y : 𝓦 ̇}
+              → (n : ℕ)
+              → (X is 𝓥 small)
+              ↔ (X is n locally-small) × ((∣∣ X ∣∣ (succ n)) is 𝓥 small) 
+  Theorem-2-6 = {!!}
+
+\end{code}
+
+Corollary 2.7.
+
+\begin{code}
+
+  Corollary-2-7 : {X : 𝓤 ̇} {Y : 𝓦 ̇}
+                → (f : X → Y)
+                → (n : ℕ)
+                → map f is-of-hlevel (succ n)
+                → Y is n locally-small
+                → (∣∣ X ∣∣ (succ n)) is 𝓥 small
+                → X is 𝓥 small
+  Corollary-2-7 = {!!}
+
+\end{code}
+
+TODO: Proposition 2.8. requires the concept of Homotopy Groups.
+
 
