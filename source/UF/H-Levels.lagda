@@ -234,3 +234,37 @@ From Univalence we can show that (ℍ n) is of level (n + 1), for all n : ℕ.
    e' = (pr₁ , pr₁-is-embedding (λ f → being-equiv-is-prop fe f))
 
 \end{code}
+
+We now define the notion of a k-truncation using record types.
+
+\begin{code}
+
+record H-level-truncations-exist : 𝓤ω where
+ field
+  ∣∣_∣∣_ : {𝓤 : Universe} → 𝓤 ̇ → ℕ → 𝓤 ̇
+  ∣∣∣∣-is-prop : {𝓤 : Universe} {X : 𝓤 ̇ } {n : ℕ} → is-prop (∣∣ X ∣∣ n)
+  ∣_∣_ :  {𝓤 : Universe} {X : 𝓤 ̇ } → X → (n : ℕ) → ∣∣ X ∣∣ n
+  ∣∣∣∣-rec : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {n : ℕ}
+           → Y is-of-hlevel n → (X → Y) → ∣∣ X ∣∣ n → Y
+ infix 0 ∣∣_∣∣_
+ infix 0 ∣_∣_
+
+\end{code}
+
+We now add the notion of k-connectedness of type and functions with respect to
+H-levels. We will then see that connectedness as defined elsewhere in the
+library is a special case
+
+\begin{code}
+
+module k-connectedness (te : H-level-truncations-exist) where
+
+ open H-level-truncations-exist te
+
+ _is_connected : 𝓤 ̇ → ℕ → 𝓤 ̇
+ X is k connected = is-contr (∣∣ X ∣∣ k)
+
+ map_is_connected : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (f : X → Y) → ℕ → 𝓤 ⊔ 𝓥 ̇
+ map f is k connected = (y : codomain f) → (fiber f y) is k connected
+
+\end{code}
