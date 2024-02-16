@@ -69,12 +69,12 @@ Proposition 2.2.
 
   Prop-2-2 : {A : 𝓤 ̇} {X : 𝓦 ̇} (f : A → X)
            → (n : ℕ)
-           → 1 ≤ℕ n
-           → map f is (pred n) connected
+           → map f is n connected
            → A is 𝓥 small
-           → X is (pred n) locally-small
+           → X is n locally-small
            → X is 𝓥 small
-  Prop-2-2 f (succ n) n-above-1 f-is-con A-small X-is-loc-small = ?
+  Prop-2-2 f zero f-is-con A-small X-is-loc-small = {!X-is-loc-small!}
+  Prop-2-2 f (succ n) f-is-con A-small X-is-loc-small = {!!}
 
 \end{code}
 
