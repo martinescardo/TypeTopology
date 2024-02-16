@@ -249,6 +249,13 @@ id-is-continuous 𝓓 = continuity-criterion 𝓓 𝓓 id (id-is-monotone 𝓓) 
   γ I α δ = ＝-to-⊑ 𝓓 (∐-independent-of-directedness-witness 𝓓
              δ (image-is-directed 𝓓 𝓓 (λ x y l → l) δ))
 
+∘-is-monotone : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'}) (𝓔' : DCPO {𝓦} {𝓦'})
+                  (f : ⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩) (g : ⟨ 𝓔 ⟩ → ⟨ 𝓔' ⟩)
+                → is-monotone 𝓓 𝓔 f
+                → is-monotone 𝓔 𝓔' g
+                → is-monotone 𝓓 𝓔' (g ∘ f)
+∘-is-monotone 𝓓 𝓔 𝓔' f g mf mg x y l = mg (f x) (f y) (mf x y l)
+
 ∘-is-continuous : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'}) (𝓔' : DCPO {𝓦} {𝓦'})
                   (f : ⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩) (g : ⟨ 𝓔 ⟩ → ⟨ 𝓔' ⟩)
                 → is-continuous 𝓓 𝓔 f
@@ -261,7 +268,7 @@ id-is-continuous 𝓓 = continuity-criterion 𝓓 𝓓 id (id-is-monotone 𝓓) 
   mg : is-monotone 𝓔 𝓔' g
   mg = monotone-if-continuous 𝓔 𝓔' (g , cg)
   m : is-monotone 𝓓 𝓔' (g ∘ f)
-  m x y l = mg (f x) (f y) (mf x y l)
+  m = ∘-is-monotone 𝓓 𝓔 𝓔' f g mf mg
   ψ : (I : 𝓥 ̇ )(α : I → ⟨ 𝓓 ⟩) (δ : is-Directed 𝓓 α)
     → g (f (∐ 𝓓 δ)) ⊑⟨ 𝓔' ⟩ ∐ 𝓔' (image-is-directed 𝓓 𝓔' m δ)
   ψ I α δ = g (f (∐ 𝓓 δ)) ⊑⟨ 𝓔' ⟩[ l₁ ]

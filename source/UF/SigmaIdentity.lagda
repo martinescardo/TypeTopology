@@ -177,8 +177,10 @@ extensionality) in this file.
   where
    ι : (σ τ : Σ S) → (⟨ σ ⟩ ＝ ⟨ τ ⟩ → 𝓥 ̇ )
    ι (x , s) (y , t) p = transport S p s ＝ t
+
    ρ : (σ : Σ S) → ι σ σ refl
    ρ (x , s) = refl
+
    canonical-map-is-equiv : {x : X} (s t : S x) → is-equiv (canonical-map ι ρ s t)
    canonical-map-is-equiv {x} s t = (canonical-map⁻¹ , η) ,
                                     (canonical-map⁻¹ , ε)
