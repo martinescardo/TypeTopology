@@ -237,6 +237,12 @@ module step₂
  taylors-condition : D → 𝓤 ̇
  taylors-condition x = (x ⊑ f x) × ((u : D) → f u ⊑ u → x ⊑ u)
 
+ taylors-condition₁ : (x : D) → taylors-condition x → x ⊑ f x
+ taylors-condition₁ x = pr₁
+
+ taylors-condition₂ : (x : D) → taylors-condition x → (u : D) → f u ⊑ u → x ⊑ u
+ taylors-condition₂ x = pr₂
+
  tc-is-closed-under-directed-sups
   : {A : 𝓤 ̇ }
     (α : A → D)
@@ -293,8 +299,8 @@ We now build a dcpo 𝓔 to be able to apply step₁. It is simply the
 subdcpo E of 𝓓 and the rest of the argument is essentially the
 original one by Pataraia.
 
-TODO. Develop the construction of subdcpos in full generality else
-where in the domain theory modules.
+TODO. Develop the construction of subdcpos in full generality
+elsewhere in the domain theory modules.
 
 \begin{code}
 
@@ -308,16 +314,15 @@ where in the domain theory modules.
       (λ (x , _) (y , _) l m → to-subtype-＝
                                 tc-is-prop-valued
                                 (antisymmetry 𝓓 x y l m))) ,
-     (λ I α δ@(inh , s) → (∐ 𝓓 {I} {ι ∘ α} δ ,
-                           tc-is-closed-under-directed-sups (ι ∘ α) δ (τ ∘ α) ) ,
-                          (∐-is-upperbound 𝓓 δ) ,
-                           (λ t → ∐-is-lowerbound-of-upperbounds 𝓓 δ (ι t)))
-
+     (λ I α δ → (∐ 𝓓 {I} {ι ∘ α} δ ,
+                 tc-is-closed-under-directed-sups (ι ∘ α) δ (τ ∘ α)) ,
+                ∐-is-upperbound 𝓓 δ ,
+                (λ t → ∐-is-lowerbound-of-upperbounds 𝓓 δ (ι t)))
  ⊥𝓔 : E
  ⊥𝓔 =  ⊥ , ⊥-is-least (f ⊥) , (λ (u : D) _ → ⊥-is-least u)
 
  ⊥𝓔-is-least : is-least _≤_ ⊥𝓔
- ⊥𝓔-is-least (x , c₁ , c₂) = ⊥-is-least x
+ ⊥𝓔-is-least = ⊥-is-least ∘ ι
 
 \end{code}
 
@@ -329,16 +334,15 @@ function 𝓯 : E → E.
  𝓯 : E → E
  𝓯 (x , c₁ , c₂) = f x ,
                    fm x (f x) c₁ ,
-                   (λ u (l : f u ⊑ u) →
-                       f x ⊑⟨ 𝓓 ⟩[ fm x u (c₂ u l) ]
-                       f u ⊑⟨ 𝓓 ⟩[ l ]
-                       u   ∎⟨ 𝓓 ⟩)
+                   (λ u (l : f u ⊑ u) → f x ⊑⟨ 𝓓 ⟩[ fm x u (c₂ u l) ]
+                                        f u ⊑⟨ 𝓓 ⟩[ l ]
+                                        u   ∎⟨ 𝓓 ⟩)
 
  𝓯-is-inflationary : (t : E) → t ≤ 𝓯 t
  𝓯-is-inflationary (x , c₁ , c₂) = c₁
 
  𝓯-is-monotone : (s t : E) → s ≤ t → 𝓯 s ≤ 𝓯 t
- 𝓯-is-monotone (x , c₁ , c₂) (y , d₁ , d₂) = fm x y
+ 𝓯-is-monotone s t = fm (ι s) (ι t)
 
  open step₁ 𝓔
 
@@ -358,7 +362,7 @@ function 𝓯 : E → E.
  x₀-is-fp = ap ι t₀-is-fp
 
  x₀-is-lpfp : (x : D) → f x ⊑ x → x₀ ⊑ x
- x₀-is-lpfp = pr₂ (pr₂ t₀)
+ x₀-is-lpfp = taylors-condition₂ x₀ (τ t₀)
 
  x₀-is-lfp : (x : D) → f x ＝ x → x₀ ⊑ x
  x₀-is-lfp x p = x₀-is-lpfp x l
