@@ -9,39 +9,41 @@ topos logic.  A version of his proof is published in [2] by the
 author, with Pataraia's permission.
 
 The proof has two steps, the first of which is directly predicative
-and coded in the module step₁.
+and coded in the module step₁ below.
 
-The second step is impredicative, because it consideres the
+The second step is impredicative, because it considers the
 intersection of all subsets of the dcpo that contain the least
 element, are closed under the monotone map, and are closed under
-suprema. This is impredicative in the sense that it requires
+directed suprema. This is impredicative in the sense that it requires
 propositional resizing axioms so that we can form this intersection.
 
 We instead consider a direct, explicit, predicative construction of
 this subset, due to Paul Taylor [3], in our second step, coded in the
-module step₂.
+module step₂ below.
 
 This version of the theorem would probably deserve to be called the
-Pataraia-Taylor theorem, not only because the proof involves a new
-ingredient, but also because it holds in a more general predicative
-setting (here MLTT with function extensionality and existence of
-propositional truncations). Therefore we decided to name this module
-PataraiaTaylor.
+Pataraia-Taylor fixed-point theorem, not only because the proof
+involves a new ingredient, but also because it holds in a more general
+predicative setting (here MLTT with function extensionality and
+existence of propositional truncations). Therefore we decided to name
+this module PataraiaTaylor.
 
 There is a catch, though. In a predicative setting, there is no
 non-trivial dcpo to apply the theorem [4]. More precisely, dcpos are
 parametrized by three universes (𝓤,𝓥,𝓦) where the carrier lives in 𝓤,
-the truth values of the order relation live in 𝓥, the index types for
-directed families live in 𝓦. In practice, for example for the Scott
-model of PCF, or Scott's D∞, the parameter is of the form (𝓤⁺,𝓤,𝓤),
-and we refer to such dcpos as "large, locally small, small complete",
-and if the parameter is (𝓤,𝓤,𝓤), we could refer to the dcpo as "small
-and small complete".  The Pataraia-Taylor theorem presented here
-applies to small, small complete dcpos, and the trouble is that there
-are no non-trivial examples of such dcpos in our predicative world
-[4].  The only way to produce small, small complete dcpos to apply the
-theorem is to assume propositional resizing axioms (which e.g. the
-UniMath project [5] does).
+the truth values of the order relation live in 𝓥, and the index types
+for directed families live in 𝓦. In practice, for instance for the
+Scott model of PCF, or Scott's D∞-model of the untyped
+lambda-calculus, the parameter is of the form (𝓤⁺,𝓤,𝓤), and we refer
+to such dcpos as "large, locally small, small directed-complete", and
+if the parameter is (𝓤,𝓤,𝓤), we could refer to the dcpo as "small and
+small directed-complete".  The Pataraia-Taylor fixed point theorem
+presented here applies to small, small directed-complete dcpos, and
+the trouble is that there are no non-trivial examples of such dcpos in
+our predicative world [4].  The only way to produce nontrivial small,
+small directed-complete dcpos to apply the theorem is to assume
+propositional resizing axioms (which e.g. the UniMath project [5]
+does).
 
 
 [1] Ditto Pataraia. A constructive proof of Tarski’s fixed-point
@@ -116,7 +118,8 @@ module step₁ (𝓔 : DCPO {𝓤} {𝓤}) where
 
 \end{code}
 
-The pointed type MI of monotone inflationary endo maps of E. Notice that E is allowed to be empty.
+The pointed type MI of monotone inflationary endo maps of E. Notice
+that E is allowed to be empty.
 
 \begin{code}
 
@@ -134,8 +137,8 @@ directed family Γ x : MI → E, and we define γ x to be the supremum of
 this family.
 
 Notice that it is as this point that we assume that our dcpo is small
-and small complete, because MI lives in the universe 𝓤, which is also
-where the carrier of 𝓔 lives.
+and small complete, because the index set MI lives in the universe 𝓤,
+which is also where the carrier E of 𝓔 lives.
 
 \begin{code}
 
@@ -211,7 +214,6 @@ monotone inflationary map f : E → E.
              g x     ⊑⟨ 𝓔 ⟩[ fi (g x) ]
              f (g x) ⊑⟨ 𝓔 ⟩[ fm (g x) (γ x) (γ-is-largest-mi-map 𝕘 x) ]
              f (γ x) ∎⟨ 𝓔 ⟩)
-
 \end{code}
 
 The second part of Pataraia's proof considers the intersection of all
@@ -244,8 +246,7 @@ module step₂
  taylors-condition₂ x = pr₂
 
  tc-is-closed-under-directed-sups
-  : {A : 𝓤 ̇ }
-    (α : A → D)
+  : {A : 𝓤 ̇ } (α : A → D)
   → (δ : is-Directed 𝓓 α)
   → ((a : A) → taylors-condition (α a))
   → taylors-condition (∐ 𝓓 δ)
@@ -286,13 +287,6 @@ module step₂
  tc-is-prop-valued x =  ×-is-prop
                          (prop-valuedness 𝓓 _ _)
                          (Π₂-is-prop fe λ _ _ → prop-valuedness 𝓓 _ _)
-
- E-is-set : is-set E
- E-is-set = subsets-of-sets-are-sets D
-             taylors-condition
-             (sethood 𝓓)
-             (tc-is-prop-valued _)
-
 \end{code}
 
 We now build a dcpo 𝓔 to be able to apply step₁. It is simply the
@@ -307,7 +301,10 @@ elsewhere in the domain theory modules.
  𝓔 : DCPO
  𝓔 = E ,
      _≤_ ,
-     (E-is-set ,
+     (subsets-of-sets-are-sets D
+             taylors-condition
+             (sethood 𝓓)
+             (tc-is-prop-valued _) ,
       (λ _ _ → prop-valuedness 𝓓 _ _) ,
       (λ _ → reflexivity 𝓓 _) ,
       (λ (x , _) (y , _) (z , _) → transitivity 𝓓 x y z) ,
