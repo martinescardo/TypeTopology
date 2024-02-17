@@ -430,4 +430,4 @@ NB. We could have formulated and proved this as
 
 and then conclude that actually f x ＝ x by Lambek's Lemma. But we
 already know that the initial algebra is a fixed point, and so there
-is not point in doing this.
+is no point in doing this.
