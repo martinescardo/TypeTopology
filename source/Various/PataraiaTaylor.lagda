@@ -120,7 +120,7 @@ module step₁ (𝓔 : DCPO {𝓤} {𝓤}) where
 
 \end{code}
 
-We now define the pointed type MI of monotone inflationary endo maps
+We now define the pointed type MI of monotone inflationary endomaps
 of E. Notice that E is allowed to be empty.
 
 \begin{code}
@@ -138,7 +138,7 @@ function γ : E → E with suitable properties. For each x : E we get a
 directed family Γ x : MI → E, and we define γ x to be the supremum of
 this family.
 
-Notice that it is as this point that we assume that our dcpo is small
+Notice that it is at this point that we assume that our dcpo is small
 and small complete, because the index set MI lives in the universe 𝓤,
 which is also where the carrier E of 𝓔 lives.
 
@@ -211,11 +211,8 @@ monotone inflationary map f : E → E.
        x
 
    II : γ x ⊑ f (γ x)
-   II = ∐-is-lowerbound-of-upperbounds 𝓔 (Γ-is-directed x) (f (γ x))
-         (λ 𝕘@(g , gm , gi)  →
-             g x     ⊑⟨ 𝓔 ⟩[ fi (g x) ]
-             f (g x) ⊑⟨ 𝓔 ⟩[ fm (g x) (γ x) (γ-is-largest-mi-map 𝕘 x) ]
-             f (γ x) ∎⟨ 𝓔 ⟩)
+   II = fi (γ x)
+
 \end{code}
 
 The second part of Pataraia's proof considers the intersection of all
@@ -370,10 +367,7 @@ So now we can apply the development of step₁.
  x₀-is-lpfp = taylors-condition₂ x₀ (τ t₀)
 
  x₀-is-lfp : (x : D) → f x ＝ x → x₀ ⊑ x
- x₀-is-lfp x p = x₀-is-lpfp x l
-  where
-   l : f x ⊑ x
-   l = transport (f x ⊑_) p (reflexivity 𝓓 (f x))
+ x₀-is-lfp x p = x₀-is-lpfp x (＝-to-⊑ 𝓓 p)
 
 \end{code}
 
