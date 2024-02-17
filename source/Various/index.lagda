@@ -13,6 +13,7 @@ import Various.Hydra
 import Various.LawvereFPT
 import Various.Lumsdaine
 import Various.NonCollapsibleFamily
+import Various.PataraiaTaylor
 import Various.RootsOfBooleanFunctions
 import Various.Types2019
 import Various.UnivalenceFromScratch
