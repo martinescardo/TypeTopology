@@ -46,7 +46,6 @@ small directed-complete dcpos to apply the theorem is to assume
 propositional resizing axioms (which e.g. the UniMath project [5]
 does).
 
-
 [1] Ditto Pataraia. A constructive proof of Tarski’s fixed-point
     theorem for dcpo’s. Presented at the 65th Peripatetic Seminar on
     Sheaves and Logic, Aarhus, Denmark, November 1997.
@@ -73,7 +72,6 @@ does).
 {-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
-
 open import UF.FunExt
 open import UF.PropTrunc
 
@@ -94,7 +92,13 @@ open import UF.Sets-Properties
 
 \end{code}
 
-We prove the following.
+We prove the following theorem, which says that every monotone endomap
+of a dcpo with a least element has a least fixed point. As discussed
+above, dcpos required three universes to be fully specified. For the
+formulation of the theorem, we need the three universes to be the
+same, namely 𝓤. (Notice that we mention 𝓤 only twice in the statement
+of the theorem. This is because when we opened the domain theory
+modules above, we already passed the universe 𝓤 once as a parameter.)
 
 \begin{code}
 
@@ -108,7 +112,7 @@ Theorem : (𝓓 : DCPO {𝓤} {𝓤})
 \end{code}
 
 We prove this at the very end of the file. We first need to prove a
-number of lemmas.
+number of lemmas, in two modules, step₁ and step₂.
 
 \begin{code}
 
@@ -120,8 +124,9 @@ module step₁ (𝓔 : DCPO {𝓤} {𝓤}) where
 
 \end{code}
 
-We now define the pointed type MI of monotone inflationary endomaps
-of E. Notice that E is allowed to be empty.
+We now define the pointed type MI of monotone inflationary endomaps of
+the underlying set E of the dcpo 𝓔. Notice that E is allowed to be
+empty.
 
 \begin{code}
 
@@ -138,7 +143,7 @@ function γ : E → E with suitable properties. For each x : E we get a
 directed family Γ x : MI → E, and we define γ x to be the supremum of
 this family.
 
-Notice that it is at this point that we assume that our dcpo is small
+Notice that it is at this point that we need that our dcpo is small
 and small complete, because the index set MI lives in the universe 𝓤,
 which is also where the carrier E of 𝓔 lives.
 
@@ -217,7 +222,7 @@ monotone inflationary map f : E → E.
 
 The second part of Pataraia's proof considers the intersection of all
 subsets of 𝓓 that contain ⊥, are closed under f, and are closed under
-suprema. This is impredicative in the sense that it requires
+directed suprema. This is impredicative in the sense that it requires
 propositional resizing axioms to compute the intersection. We instead
 consider the subset of 𝓓 consisting of the elements that satisfy
 Taylor's condition below, which is defined predicatively.
@@ -249,27 +254,27 @@ module step₂
   → (δ : is-Directed 𝓓 α)
   → ((a : A) → taylors-condition (α a))
   → taylors-condition (∐ 𝓓 δ)
- tc-is-closed-under-directed-sups {A} α δ tc-preservation = I , II
+ tc-is-closed-under-directed-sups {A} α δ tc-preservation = II , III
   where
    tc-preservation₁ : (a : A) → α a ⊑ f (α a)
-   tc-preservation₁ a = pr₁ (tc-preservation a)
+   tc-preservation₁ a = taylors-condition₁ (α a) (tc-preservation a)
 
    tc-preservation₂ : (a : A) (u : D) → f u ⊑ u → α a ⊑ u
-   tc-preservation₂ a = pr₂ (tc-preservation a)
+   tc-preservation₂ a = taylors-condition₂ (α a) (tc-preservation a)
 
-   I' : (a : A) → α a ⊑ f (∐ 𝓓 δ)
-   I' a = α a        ⊑⟨ 𝓓 ⟩[ tc-preservation₁ a ]
-          f (α a)    ⊑⟨ 𝓓 ⟩[ fm (α a) (∐ 𝓓 δ) (∐-is-upperbound 𝓓 δ a) ]
-          f (∐ 𝓓 δ) ∎⟨ 𝓓 ⟩
+   I : (a : A) → α a ⊑ f (∐ 𝓓 δ)
+   I a = α a        ⊑⟨ 𝓓 ⟩[ tc-preservation₁ a ]
+         f (α a)    ⊑⟨ 𝓓 ⟩[ fm (α a) (∐ 𝓓 δ) (∐-is-upperbound 𝓓 δ a) ]
+         f (∐ 𝓓 δ) ∎⟨ 𝓓 ⟩
 
-   I : ∐ 𝓓 δ ⊑ f (∐ 𝓓 δ)
-   I = ∐-is-lowerbound-of-upperbounds 𝓓 δ (f (∐ 𝓓 δ)) I'
+   II : ∐ 𝓓 δ ⊑ f (∐ 𝓓 δ)
+   II = ∐-is-lowerbound-of-upperbounds 𝓓 δ (f (∐ 𝓓 δ)) I
 
-   II : (u : D) → f u ⊑ u → ∐ 𝓓 δ ⊑ u
-   II u l = ∐-is-lowerbound-of-upperbounds 𝓓 δ u II'
+   III : (u : D) → f u ⊑ u → ∐ 𝓓 δ ⊑ u
+   III u l = ∐-is-lowerbound-of-upperbounds 𝓓 δ u IV
     where
-     II' : (a : A) → α a ⊑ u
-     II' a = tc-preservation₂ a u l
+     IV : (a : A) → α a ⊑ u
+     IV a = tc-preservation₂ a u l
 
  E = Σ x ꞉ D , taylors-condition x
 
@@ -289,8 +294,7 @@ module step₂
 \end{code}
 
 We now build a dcpo 𝓔 to be able to apply step₁. It is simply the
-subdcpo 𝓔 of 𝓓 and the rest of the argument is essentially the
-original one by Pataraia.
+subdcpo 𝓔 of 𝓓 induced by E.
 
 TODO. Develop the construction of subdcpos in full generality
 elsewhere in the domain theory modules.
@@ -321,6 +325,9 @@ elsewhere in the domain theory modules.
  ⊥𝓔-is-least = ⊥-is-least ∘ ι
 
 \end{code}
+
+Now the rest of the argument is essentially the original one by
+Pataraia.
 
 The monotone function f : D → D restricts to a monotone inflationary
 function 𝓯 : E → E.
@@ -410,4 +417,6 @@ NB. We could have formulated and proved this version as
        , (f x ⊑⟨ 𝓓 ⟩ x)
        × ((y : ⟨ 𝓓 ⟩) → f y ⊑⟨ 𝓓 ⟩ y → x ⊑⟨ 𝓓 ⟩ y)
 
-and then conclude that actually f x ＝ x by Lambek's Lemma.
+and then conclude that actually f x ＝ x by Lambek's Lemma. But we
+already know that the initial algebra is a fixed point, and so there
+is not point in doing this.
