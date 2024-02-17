@@ -1,12 +1,13 @@
 Martin Escardo, 16 Feb 2023
 
-We present a predicative version of Pataraia's fixed point theorem
+We implement a predicative version of Pataraia's fixed point theorem
 that every monotone endomap of a dcpo with a least element has a least
-fixed point. I benefitted from discussions with Tom de Jong.
+fixed point. We benefitted from discussions with Tom de Jong.
 
 Pataraia [1] was the first to give a constructive proof of this in
 topos logic.  A version of his proof is published in [2] by the
-author, with Pataraia's permission.
+author, with Pataraia's permission. Pataraia himself didn't publish
+the result.
 
 The proof has two steps, the first of which is directly predicative
 and coded in the module step₁ below.
@@ -17,9 +18,9 @@ element, are closed under the monotone map, and are closed under
 directed suprema. This is impredicative in the sense that it requires
 propositional resizing axioms so that we can form this intersection.
 
-We instead consider a direct, explicit, predicative construction of
-this subset, due to Paul Taylor [3], in our second step, coded in the
-module step₂ below.
+We instead consider a direct, explicit, elegant, predicative
+construction of this subset, due to Paul Taylor [3], in our second
+step, coded in the module step₂ below.
 
 This version of the theorem would probably deserve to be called the
 Pataraia-Taylor fixed-point theorem, not only because the proof
@@ -40,7 +41,7 @@ if the parameter is (𝓤,𝓤,𝓤), we could refer to the dcpo as "small and
 small directed-complete".  The Pataraia-Taylor fixed point theorem
 presented here applies to small, small directed-complete dcpos, and
 the trouble is that there are no non-trivial examples of such dcpos in
-our predicative world [4].  The only way to produce nontrivial small,
+our predicative world [4]. The only way to produce nontrivial small,
 small directed-complete dcpos to apply the theorem is to assume
 propositional resizing axioms (which e.g. the UniMath project [5]
 does).
@@ -59,6 +60,7 @@ does).
 
 [4] Tom de Jong. Domain theory in constructive and predicative
     univalent foundations.
+    PhD thesis at the University of Birmingham, UK, 2023.
     https://arxiv.org/abs/2301.12405
 
 [5] Vladimir Voevodky, Benedikt Ahrens, Dan Grayson and others.
@@ -118,8 +120,8 @@ module step₁ (𝓔 : DCPO {𝓤} {𝓤}) where
 
 \end{code}
 
-The pointed type MI of monotone inflationary endo maps of E. Notice
-that E is allowed to be empty.
+We now define the pointed type MI of monotone inflationary endo maps
+of E. Notice that E is allowed to be empty.
 
 \begin{code}
 
@@ -290,7 +292,7 @@ module step₂
 \end{code}
 
 We now build a dcpo 𝓔 to be able to apply step₁. It is simply the
-subdcpo E of 𝓓 and the rest of the argument is essentially the
+subdcpo 𝓔 of 𝓓 and the rest of the argument is essentially the
 original one by Pataraia.
 
 TODO. Develop the construction of subdcpos in full generality
@@ -404,7 +406,7 @@ initial-algebras 𝓓 hb f fm = x₀ , x₀-is-fp , x₀-is-lpfp
 
 \end{code}
 
-NB. We could have formulated this version as
+NB. We could have formulated and proved this version as
 
   (𝓓 : DCPO {𝓤} {𝓤})
  → has-bottom 𝓓
@@ -414,4 +416,4 @@ NB. We could have formulated this version as
        , (f x ⊑⟨ 𝓓 ⟩ x)
        × ((y : ⟨ 𝓓 ⟩) → f y ⊑⟨ 𝓓 ⟩ y → x ⊑⟨ 𝓓 ⟩ y)
 
-and then conclude that actually f x = x by Lambek's Lemma.
+and then conclude that actually f x ＝ x by Lambek's Lemma.
