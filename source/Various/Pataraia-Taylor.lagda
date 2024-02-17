@@ -27,7 +27,7 @@ Pataraia-Taylor fixed-point theorem, not only because the proof
 involves a new ingredient, but also because it holds in a more general
 predicative setting (here MLTT with function extensionality and
 existence of propositional truncations). Therefore we decided to name
-this module PataraiaTaylor.
+this module Pataraia-Taylor.
 
 There is a catch, though. In a predicative setting, there is no
 non-trivial dcpo to apply the theorem [4]. More precisely, dcpos are
