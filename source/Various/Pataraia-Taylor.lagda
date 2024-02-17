@@ -369,8 +369,20 @@ So now we can apply the development of step₁.
  x₀-is-fp : f x₀ ＝ x₀
  x₀-is-fp = ap ι t₀-is-fp
 
+\end{code}
+
+x₀ is the least pre-fixed point.
+
+\begin{code}
+
  x₀-is-lpfp : (x : D) → f x ⊑ x → x₀ ⊑ x
  x₀-is-lpfp = taylors-condition₂ x₀ (τ t₀)
+
+\end{code}
+
+And so it is the least fixed point.
+
+\begin{code}
 
  x₀-is-lfp : (x : D) → f x ＝ x → x₀ ⊑ x
  x₀-is-lfp x p = x₀-is-lpfp x (＝-to-⊑ 𝓓 p)
