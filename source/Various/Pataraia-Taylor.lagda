@@ -77,7 +77,7 @@ open import MLTT.Spartan
 open import UF.FunExt
 open import UF.PropTrunc
 
-module Various.PataraiaTaylor
+module Various.Pataraia-Taylor
         (pt : propositional-truncations-exist)
         (fe : Fun-Ext)
         (𝓤 : Universe)
