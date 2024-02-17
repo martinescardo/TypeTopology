@@ -249,8 +249,7 @@ module step₂
  taylors-condition₂ x = pr₂
 
  tc-is-closed-under-directed-sups
-  : {A : 𝓤 ̇ } (α : A → D)
-  → (δ : is-Directed 𝓓 α)
+  : {A : 𝓤 ̇ } (α : A → D) (δ : is-Directed 𝓓 α)
   → ((a : A) → taylors-condition (α a))
   → taylors-condition (∐ 𝓓 δ)
  tc-is-closed-under-directed-sups {A} α δ tc-preservation = II , III
@@ -389,7 +388,7 @@ And so it is the least fixed point.
 
 \end{code}
 
-Putting the above together, the proof of the theorem is concluded.
+This concludes the proof of the theorem.
 
 \begin{code}
 
@@ -399,7 +398,7 @@ Theorem 𝓓 hb f fm = x₀ , x₀-is-fp , x₀-is-lfp
 
 \end{code}
 
-The theorem can be strengthened as follows, which says that any
+This theorem can be strengthened as follows, which says that any
 endofunctor f has an initial algebra, when the dcpo is viewed as a
 category.
 
@@ -418,7 +417,7 @@ initial-algebras 𝓓 hb f fm = x₀ , x₀-is-fp , x₀-is-lpfp
 
 \end{code}
 
-NB. We could have formulated and proved this as
+NB. We could have formulated and proved this more categorically as
 
   (𝓓 : DCPO {𝓤} {𝓤})
  → has-bottom 𝓓
