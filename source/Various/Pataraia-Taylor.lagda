@@ -93,7 +93,7 @@ open import UF.Sets-Properties
 
 We prove the following theorem, which says that every monotone endomap
 of a dcpo with a least element has a least fixed point. As discussed
-above, dcpos required three universes to be fully specified. For the
+above, dcpos require three universes to be fully specified. For the
 formulation of the theorem, we need the three universes to be the
 same, namely 𝓤. (Notice that we mention 𝓤 only twice in the statement
 of the theorem. This is because when we opened the domain theory
