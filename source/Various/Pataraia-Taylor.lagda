@@ -5,9 +5,9 @@ that every monotone endomap of a dcpo with a least element has a least
 fixed point. We benefitted from discussions with Tom de Jong.
 
 Pataraia [1] was the first to give a constructive proof of this in
-topos logic.  A version of his proof is published in [2] by the
-author, with Pataraia's permission. Pataraia himself didn't publish
-the result.
+topos logic. A version of his proof is published in [2] by the author,
+with Pataraia's permission. Pataraia himself didn't publish the
+result.
 
 The proof has two steps, the first of which is directly predicative
 and coded in the module step₁ below.
@@ -41,10 +41,9 @@ if the parameter is (𝓤,𝓤,𝓤), we could refer to the dcpo as "small and
 small directed-complete".  The Pataraia-Taylor fixed point theorem
 presented here applies to small, small directed-complete dcpos, and
 the trouble is that there are no non-trivial examples of such dcpos in
-our predicative world [4]. The only way to produce nontrivial small,
-small directed-complete dcpos to apply the theorem is to assume
-propositional resizing axioms (which e.g. the UniMath project [5]
-does).
+our predicative world [4]. The only way to produce nontrivial such
+dcpos to apply the theorem is to assume propositional resizing axioms
+(which e.g. the UniMath project [5] does).
 
 [1] Ditto Pataraia. A constructive proof of Tarski’s fixed-point
     theorem for dcpo’s. Presented at the 65th Peripatetic Seminar on
@@ -111,7 +110,7 @@ Theorem : (𝓓 : DCPO {𝓤} {𝓤})
               × ((y : ⟨ 𝓓 ⟩) → f y ＝ y → x ⊑⟨ 𝓓 ⟩ y)
 \end{code}
 
-We prove this at the very end of the file. We first need to prove a
+We prove this at the very end of this file. We first need to prove a
 number of lemmas, in two modules, step₁ and step₂.
 
 \begin{code}
@@ -407,7 +406,7 @@ initial-algebras 𝓓 hb f fm = x₀ , x₀-is-fp , x₀-is-lpfp
 
 \end{code}
 
-NB. We could have formulated and proved this version as
+NB. We could have formulated and proved this as
 
   (𝓓 : DCPO {𝓤} {𝓤})
  → has-bottom 𝓓
