@@ -302,9 +302,9 @@ elsewhere in the domain theory modules.
  𝓔 = E ,
      _≤_ ,
      (subsets-of-sets-are-sets D
-             taylors-condition
-             (sethood 𝓓)
-             (tc-is-prop-valued _) ,
+       taylors-condition
+       (sethood 𝓓)
+       (tc-is-prop-valued _) ,
       (λ _ _ → prop-valuedness 𝓓 _ _) ,
       (λ _ → reflexivity 𝓓 _) ,
       (λ (x , _) (y , _) (z , _) → transitivity 𝓓 x y z) ,
