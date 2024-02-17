@@ -22,7 +22,7 @@ We instead consider a direct, explicit, elegant, predicative
 construction of this subset, due to Paul Taylor [3], in our second
 step, coded in the module step₂ below.
 
-This version of the theorem would probably deserve to be called the
+This version of the theorem probably deserves to be called the
 Pataraia-Taylor fixed-point theorem, not only because the proof
 involves a new ingredient, but also because it holds in a more general
 predicative setting (here MLTT with function extensionality and
