@@ -2,7 +2,7 @@ Martin Escardo, 16 Feb 2023
 
 We present a predicative version of Pataraia's fixed point theorem
 that every monotone endomap of a dcpo with a least element has a least
-fixed point. I benefitted from discussions by Tom de Jong.
+fixed point. I benefitted from discussions with Tom de Jong.
 
 Pataraia [1] was the first to give a constructive proof of this in
 topos logic.  A version of his proof is published in [2] by the
