@@ -335,11 +335,17 @@ function 𝓯 : E → E.
                                         f u ⊑⟨ 𝓓 ⟩[ l ]
                                         u   ∎⟨ 𝓓 ⟩)
 
+ 𝓯-is-monotone : (s t : E) → s ≤ t → 𝓯 s ≤ 𝓯 t
+ 𝓯-is-monotone s t = fm (ι s) (ι t)
+
  𝓯-is-inflationary : (t : E) → t ≤ 𝓯 t
  𝓯-is-inflationary (x , c₁ , c₂) = c₁
 
- 𝓯-is-monotone : (s t : E) → s ≤ t → 𝓯 s ≤ 𝓯 t
- 𝓯-is-monotone s t = fm (ι s) (ι t)
+\end{code}
+
+So now we can apply the development of step₁.
+
+\begin{code}
 
  open step₁ 𝓔
 
