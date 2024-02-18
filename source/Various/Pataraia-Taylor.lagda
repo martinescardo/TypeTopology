@@ -45,7 +45,7 @@ our predicative world [4]. The only way to produce nontrivial such
 dcpos to apply the theorem is to assume propositional resizing axioms
 (which e.g. the UniMath project [5] does).
 
-[1] Ditto Pataraia. A constructive proof of Tarski’s fixed-point
+[1] Dito Pataraia. A constructive proof of Tarski’s fixed-point
     theorem for dcpo’s. Presented at the 65th Peripatetic Seminar on
     Sheaves and Logic, Aarhus, Denmark, November 1997.
 
@@ -292,7 +292,7 @@ module step₂
 \end{code}
 
 We now build a dcpo 𝓔 to be able to apply step₁. It is simply the
-subdcpo 𝓔 of 𝓓 induced by E.
+subdcpo 𝓓 induced by the subset E.
 
 TODO. Develop the construction of subdcpos in full generality
 elsewhere in the domain theory modules.
