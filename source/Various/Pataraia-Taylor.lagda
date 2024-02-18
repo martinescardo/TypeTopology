@@ -187,7 +187,7 @@ inflationary endomaps of E.
 \end{code}
 
 From this it is easy to conclude that γ is the largest monotone
-inflationary map.
+inflationary map for any x : E.
 
 \begin{code}
 
@@ -220,11 +220,12 @@ monotone inflationary map f : E → E.
 \end{code}
 
 The second part of Pataraia's proof considers the intersection of all
-subsets of 𝓓 that contain ⊥, are closed under f, and are closed under
-directed suprema. This is impredicative in the sense that it requires
-propositional resizing axioms to compute the intersection. We instead
-consider the subset of 𝓓 consisting of the elements that satisfy
-Taylor's condition below, which is defined predicatively.
+subsets of 𝓓 that have ⊥ as a member, are closed under f, and are
+closed under directed suprema. This is impredicative in the sense that
+it requires propositional resizing axioms to compute the
+intersection. We instead consider the subset of 𝓓 consisting of the
+elements that satisfy Taylor's condition below (TC), which is defined
+predicatively.
 
 \begin{code}
 
@@ -239,24 +240,23 @@ module step₂
   D   = ⟨ 𝓓 ⟩
   _⊑_ = underlying-order 𝓓
 
- Taylor's-Condition : D → 𝓤 ̇
- Taylor's-Condition x = (x ⊑ f x) × ((u : D) → f u ⊑ u → x ⊑ u)
+ TC : D → 𝓤 ̇
+ TC x = (x ⊑ f x) × ((u : D) → f u ⊑ u → x ⊑ u)
 
- Taylor's-Condition₁ : (x : D) → Taylor's-Condition x → x ⊑ f x
- Taylor's-Condition₁ x = pr₁
+ TC₁ : (x : D) → TC x → x ⊑ f x
+ TC₁ x = pr₁
 
- Taylor's-Condition₂ : (x : D) → Taylor's-Condition x → (u : D) → f u ⊑ u → x ⊑ u
- Taylor's-Condition₂ x = pr₂
+ TC₂ : (x : D) → TC x → (u : D) → f u ⊑ u → x ⊑ u
+ TC₂ x = pr₂
 
- TC-is-closed-under-directed-sups
-  : is-closed-under-directed-sups 𝓓 Taylor's-Condition
+ TC-is-closed-under-directed-sups : is-closed-under-directed-sups 𝓓 TC
  TC-is-closed-under-directed-sups {A} α δ TC-preservation = II , III
   where
    TC-preservation₁ : (a : A) → α a ⊑ f (α a)
-   TC-preservation₁ a = Taylor's-Condition₁ (α a) (TC-preservation a)
+   TC-preservation₁ a = TC₁ (α a) (TC-preservation a)
 
    TC-preservation₂ : (a : A) (u : D) → f u ⊑ u → α a ⊑ u
-   TC-preservation₂ a = Taylor's-Condition₂ (α a) (TC-preservation a)
+   TC-preservation₂ a = TC₂ (α a) (TC-preservation a)
 
    I : (a : A) → α a ⊑ f (∐ 𝓓 δ)
    I a = α a        ⊑⟨ 𝓓 ⟩[ TC-preservation₁ a ]
@@ -272,18 +272,18 @@ module step₂
      IV : (a : A) → α a ⊑ u
      IV a = TC-preservation₂ a u l
 
- E = Σ x ꞉ D , Taylor's-Condition x
+ E = Σ x ꞉ D , TC x
 
  ι : E → D
- ι = pr₁
+ ι (x , c) = x
 
- τ : (t : E) → Taylor's-Condition (ι t)
- τ = pr₂
+ τ : (t : E) → TC (ι t)
+ τ (x , c) = c
 
  _≤_ : E → E → 𝓤 ̇
  (x , _) ≤ (y , _) = x ⊑ y
 
- TC-is-prop-valued : (x : D) → is-prop (Taylor's-Condition x)
+ TC-is-prop-valued : (x : D) → is-prop (TC x)
  TC-is-prop-valued x =  ×-is-prop
                          (prop-valuedness 𝓓 _ _)
                          (Π₂-is-prop fe λ _ _ → prop-valuedness 𝓓 _ _)
@@ -295,10 +295,7 @@ subdcpo 𝓓 induced by the subset E.
 \begin{code}
 
  𝓔 : DCPO
- 𝓔 = subdcpo 𝓓
-      Taylor's-Condition
-      TC-is-prop-valued
-      TC-is-closed-under-directed-sups
+ 𝓔 = subdcpo 𝓓 TC TC-is-prop-valued TC-is-closed-under-directed-sups
 
  ⊥𝓔 : E
  ⊥𝓔 =  ⊥ , ⊥-is-least (f ⊥) , (λ (u : D) _ → ⊥-is-least u)
@@ -359,7 +356,7 @@ x₀ is the least pre-fixed point.
 \begin{code}
 
  x₀-is-lpfp : (x : D) → f x ⊑ x → x₀ ⊑ x
- x₀-is-lpfp = Taylor's-Condition₂ x₀ (τ t₀)
+ x₀-is-lpfp = TC₂ x₀ (τ t₀)
 
 \end{code}
 
@@ -412,5 +409,5 @@ NB. We could have formulated and proved this more categorically as
        × ((y : ⟨ 𝓓 ⟩) → f y ⊑⟨ 𝓓 ⟩ y → x ⊑⟨ 𝓓 ⟩ y)
 
 and then conclude that actually f x ＝ x by Lambek's Lemma. But we
-already know that the initial algebra is a fixed point, and so there
-is no point in doing this.
+already know that the initial algebra is a fixed point in our case,
+and so there is no point in doing this.
