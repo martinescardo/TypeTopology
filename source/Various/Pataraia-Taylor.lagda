@@ -250,7 +250,7 @@ module step₂
  TC₂ x = pr₂
 
  TC-is-closed-under-directed-sups : is-closed-under-directed-sups 𝓓 TC
- TC-is-closed-under-directed-sups {A} α δ TC-preservation = II , III
+ TC-is-closed-under-directed-sups {A} α δ TC-preservation = c₁ , c₂
   where
    TC-preservation₁ : (a : A) → α a ⊑ f (α a)
    TC-preservation₁ a = TC₁ (α a) (TC-preservation a)
@@ -263,25 +263,14 @@ module step₂
          f (α a)    ⊑⟨ 𝓓 ⟩[ fm (α a) (∐ 𝓓 δ) (∐-is-upperbound 𝓓 δ a) ]
          f (∐ 𝓓 δ) ∎⟨ 𝓓 ⟩
 
-   II : ∐ 𝓓 δ ⊑ f (∐ 𝓓 δ)
-   II = ∐-is-lowerbound-of-upperbounds 𝓓 δ (f (∐ 𝓓 δ)) I
+   c₁ : ∐ 𝓓 δ ⊑ f (∐ 𝓓 δ)
+   c₁ = ∐-is-lowerbound-of-upperbounds 𝓓 δ (f (∐ 𝓓 δ)) I
 
-   III : (u : D) → f u ⊑ u → ∐ 𝓓 δ ⊑ u
-   III u l = ∐-is-lowerbound-of-upperbounds 𝓓 δ u IV
+   c₂ : (u : D) → f u ⊑ u → ∐ 𝓓 δ ⊑ u
+   c₂ u l = ∐-is-lowerbound-of-upperbounds 𝓓 δ u II
     where
-     IV : (a : A) → α a ⊑ u
-     IV a = TC-preservation₂ a u l
-
- E = Σ x ꞉ D , TC x
-
- ι : E → D
- ι (x , c) = x
-
- τ : (t : E) → TC (ι t)
- τ (x , c) = c
-
- _≤_ : E → E → 𝓤 ̇
- (x , _) ≤ (y , _) = x ⊑ y
+     II : (a : A) → α a ⊑ u
+     II a = TC-preservation₂ a u l
 
  TC-is-prop-valued : (x : D) → is-prop (TC x)
  TC-is-prop-valued x =  ×-is-prop
@@ -289,13 +278,31 @@ module step₂
                          (Π₂-is-prop fe λ _ _ → prop-valuedness 𝓓 _ _)
 \end{code}
 
-We now build a dcpo 𝓔 to be able to apply step₁. It is simply the
-subdcpo 𝓓 induced by the subset E.
+We now apply step₁ to the subdcpo 𝓔 of 𝓓 consisting of the elements
+that satisfy Taylor's condition.
 
 \begin{code}
 
  𝓔 : DCPO
  𝓔 = subdcpo 𝓓 TC TC-is-prop-valued TC-is-closed-under-directed-sups
+
+ private
+  E = ⟨ 𝓔 ⟩
+  _≤_ : E → E → 𝓤 ̇
+  s ≤ t = s ⊑⟨ 𝓔 ⟩ t
+
+  NB-E : E ＝ (Σ x ꞉ D , TC x)
+  NB-E = by-definition
+
+  NB-≤ : (x x' : D) (c : TC x) (c' : TC x')
+       → ((x , c) ≤ (x' , c')) ＝ (x ⊑ x')
+  NB-≤ x x' c c' = by-definition
+
+ ι : E → D
+ ι (x , c) = x
+
+ τ : (t : E) → TC (ι t)
+ τ (x , c) = c
 
  ⊥𝓔 : E
  ⊥𝓔 =  ⊥ , ⊥-is-least (f ⊥) , (λ (u : D) _ → ⊥-is-least u)
@@ -321,7 +328,7 @@ function 𝓯 : E → E.
                                         u   ∎⟨ 𝓓 ⟩)
 
  𝓯-is-monotone : (s t : E) → s ≤ t → 𝓯 s ≤ 𝓯 t
- 𝓯-is-monotone s t = fm (ι s) (ι t)
+ 𝓯-is-monotone (x , _) (y , _) = fm x y
 
  𝓯-is-inflationary : (t : E) → t ≤ 𝓯 t
  𝓯-is-inflationary (x , c₁ , c₂) = c₁

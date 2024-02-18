@@ -701,24 +701,32 @@ is-closed-under-directed-sups {𝓤} {𝓣} 𝓓 P =
 
 open import UF.Sets-Properties
 
-subdcpo : (𝓓 : DCPO {𝓤} {𝓣})
-          (P : ⟨ 𝓓 ⟩ → 𝓦 ̇)
-        → ((x : ⟨ 𝓓 ⟩) → is-prop (P x))
-        → is-closed-under-directed-sups 𝓓 P
-        → DCPO {𝓤 ⊔ 𝓦} {𝓣}
-subdcpo 𝓓 P P-is-prop-valued P-is-closed-under-directed-sups =
- (Σ x ꞉ ⟨ 𝓓 ⟩ , P x) ,
- (λ (x , _) (y , _) → x ⊑⟨ 𝓓 ⟩ y) ,
- (subsets-of-sets-are-sets ⟨ 𝓓 ⟩ P (sethood 𝓓) (P-is-prop-valued _) ,
-  (λ _ _ → prop-valuedness 𝓓 _ _) ,
-  (λ _ → reflexivity 𝓓 _) ,
-  (λ (x , _) (y , _) (z , _) → transitivity 𝓓 x y z) ,
-  (λ (x , _) (y , _) l m → to-subtype-＝
-                            P-is-prop-valued
-                            (antisymmetry 𝓓 x y l m))) ,
- (λ I α δ → (∐ 𝓓 {I} {pr₁ ∘ α} δ ,
-             P-is-closed-under-directed-sups (pr₁ ∘ α) δ (pr₂ ∘ α)) ,
-            ∐-is-upperbound 𝓓 δ ,
-            (λ (x , _) → ∐-is-lowerbound-of-upperbounds 𝓓 δ x))
+module _ (𝓓 : DCPO {𝓤} {𝓣})
+         (P : ⟨ 𝓓 ⟩ → 𝓦 ̇)
+         (P-is-prop-valued : (x : ⟨ 𝓓 ⟩) → is-prop (P x))
+         (P-is-closed-under-directed-sups : is-closed-under-directed-sups 𝓓 P)
+       where
+
+ subdcpo : DCPO {𝓤 ⊔ 𝓦} {𝓣}
+ subdcpo =
+  (Σ x ꞉ ⟨ 𝓓 ⟩ , P x) ,
+  (λ (x , _) (y , _) → x ⊑⟨ 𝓓 ⟩ y) ,
+  (subsets-of-sets-are-sets ⟨ 𝓓 ⟩ P (sethood 𝓓) (P-is-prop-valued _) ,
+   (λ _ _ → prop-valuedness 𝓓 _ _) ,
+   (λ _ → reflexivity 𝓓 _) ,
+   (λ (x , _) (y , _) (z , _) → transitivity 𝓓 x y z) ,
+   (λ (x , _) (y , _) l m → to-subtype-＝
+                             P-is-prop-valued
+                             (antisymmetry 𝓓 x y l m))) ,
+  (λ I α δ → (∐ 𝓓 {I} {pr₁ ∘ α} δ ,
+              P-is-closed-under-directed-sups (pr₁ ∘ α) δ (pr₂ ∘ α)) ,
+             ∐-is-upperbound 𝓓 δ ,
+             (λ (x , _) → ∐-is-lowerbound-of-upperbounds 𝓓 δ x))
+
+ subdcpo-inclusion : ⟨ subdcpo ⟩ → ⟨ 𝓓 ⟩
+ subdcpo-inclusion = pr₁
+
+ subdcpo-satisfies-property : (σ : ⟨ subdcpo ⟩) → P (subdcpo-inclusion σ)
+ subdcpo-satisfies-property = pr₂
 
 \end{code}
