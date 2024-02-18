@@ -282,8 +282,9 @@ module step₂
 
 \end{code}
 
-We now apply step₁ to the subdcpo 𝓔 of 𝓓 consisting of the elements
-that satisfy Taylor's condition.
+Now the rest of step₂ is essentially the original one by Pataraia. We
+apply step₁ to the subdcpo 𝓔 of 𝓓 consisting of the elements that
+satisfy Taylor's condition.
 
 \begin{code}
 
@@ -312,8 +313,6 @@ that satisfy Taylor's condition.
  ⊥𝓔 =  ⊥ , ⊥-is-least (f ⊥) , (λ (u : D) _ → ⊥-is-least u)
 
 \end{code}
-
-Now the rest of step₂ is essentially the original one by Pataraia.
 
 The monotone function f : D → D restricts to a monotone inflationary
 function 𝓯 : E → E.
