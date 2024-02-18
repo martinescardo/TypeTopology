@@ -158,7 +158,7 @@ which is also where the carrier E of 𝓔 lives.
    h = g ∘ f
 
    𝕙 : MI
-   𝕙 = (g ∘ f , ∘-is-monotone 𝓔 𝓔 𝓔 f g fm gm , ∘-is-inflationary 𝓔 f g fi gi)
+   𝕙 = (h , ∘-is-monotone 𝓔 𝓔 𝓔 f g fm gm , ∘-is-inflationary 𝓔 f g fi gi)
 
    f-le-h : f x ⊑ h x
    f-le-h = gi (f x)
@@ -187,16 +187,16 @@ inflationary endomaps of E.
 
 \end{code}
 
-From this it is easy to conclude that γ is the largest monotone
+From this it is easy to conclude that γ is the greatest monotone
 inflationary map for any x : E.
 
 \begin{code}
 
- γ-is-largest-mi-map : ((f , fm , fi) : MI) (x : E) → f x ⊑ γ x
- γ-is-largest-mi-map 𝕗 x = ∐-is-upperbound 𝓔 (Γ-is-directed x) 𝕗
+ γ-is-greatest-mi-map : ((f , fm , fi) : MI) (x : E) → f x ⊑ γ x
+ γ-is-greatest-mi-map 𝕗 x = ∐-is-upperbound 𝓔 (Γ-is-directed x) 𝕗
 
  γ-is-inflationary : is-inflationary 𝓔 γ
- γ-is-inflationary = γ-is-largest-mi-map 𝕚𝕕
+ γ-is-inflationary = γ-is-greatest-mi-map 𝕚𝕕
 
 \end{code}
 
@@ -209,7 +209,7 @@ monotone inflationary map f : E → E.
  γ-is-fixed-point (f , fm , fi) x = antisymmetry 𝓔 _ _ I II
   where
    I : f (γ x) ⊑ γ x
-   I = γ-is-largest-mi-map
+   I = γ-is-greatest-mi-map
         (f ∘ γ ,
          ∘-is-monotone 𝓔 𝓔 𝓔 γ f γ-is-monotone fm ,
          ∘-is-inflationary 𝓔 γ f γ-is-inflationary fi)
@@ -220,12 +220,14 @@ monotone inflationary map f : E → E.
 
 \end{code}
 
+This concludes the first step of Pataraia's proof.
+
 The second part of Pataraia's proof considers the intersection of all
 subsets of 𝓓 that have ⊥ as a member, are closed under f, and are
 closed under directed suprema. This is impredicative in the sense that
 it requires propositional resizing axioms to compute the
 intersection. We instead consider the subset of 𝓓 consisting of the
-elements that satisfy Taylor's condition below (TC), which is defined
+elements that satisfy Taylor's condition (TC) below, which is defined
 predicatively.
 
 \begin{code}
@@ -309,13 +311,9 @@ that satisfy Taylor's condition.
  ⊥𝓔 : E
  ⊥𝓔 =  ⊥ , ⊥-is-least (f ⊥) , (λ (u : D) _ → ⊥-is-least u)
 
- ⊥𝓔-is-least : is-least _≤_ ⊥𝓔
- ⊥𝓔-is-least = ⊥-is-least ∘ ι
-
 \end{code}
 
-Now the rest of the argument is essentially the original one by
-Pataraia.
+Now the rest of step₂ is essentially the original one by Pataraia.
 
 The monotone function f : D → D restricts to a monotone inflationary
 function 𝓯 : E → E.
@@ -394,14 +392,14 @@ category.
 
 \begin{code}
 
-initial-algebras : (𝓓 : DCPO {𝓤} {𝓤})
-                 → has-bottom 𝓓
-                 → (f : ⟨ 𝓓 ⟩ → ⟨ 𝓓 ⟩)
-                 → is-monotone 𝓓 𝓓 f
-                 → Σ x ꞉ ⟨ 𝓓 ⟩
-                       , (f x ＝ x)
-                       × ((y : ⟨ 𝓓 ⟩) → f y ⊑⟨ 𝓓 ⟩ y → x ⊑⟨ 𝓓 ⟩ y)
-initial-algebras 𝓓 hb f fm = x₀ , x₀-is-fp , x₀-is-lpfp
+initial-algebra : (𝓓 : DCPO {𝓤} {𝓤})
+                → has-bottom 𝓓
+                → (f : ⟨ 𝓓 ⟩ → ⟨ 𝓓 ⟩)
+                → is-monotone 𝓓 𝓓 f
+                → Σ x ꞉ ⟨ 𝓓 ⟩
+                      , (f x ＝ x)
+                      × ((y : ⟨ 𝓓 ⟩) → f y ⊑⟨ 𝓓 ⟩ y → x ⊑⟨ 𝓓 ⟩ y)
+initial-algebra 𝓓 hb f fm = x₀ , x₀-is-fp , x₀-is-lpfp
  where
   open step₂ 𝓓 hb f fm
 
