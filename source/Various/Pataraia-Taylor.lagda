@@ -249,6 +249,11 @@ module step₂
  TC₂ : (x : D) → TC x → (u : D) → f u ⊑ u → x ⊑ u
  TC₂ x = pr₂
 
+ TC-is-prop-valued : (x : D) → is-prop (TC x)
+ TC-is-prop-valued x =  ×-is-prop
+                         (prop-valuedness 𝓓 _ _)
+                         (Π₂-is-prop fe λ _ _ → prop-valuedness 𝓓 _ _)
+
  TC-is-closed-under-directed-sups : is-closed-under-directed-sups 𝓓 TC
  TC-is-closed-under-directed-sups {A} α δ TC-preservation = c₁ , c₂
   where
@@ -272,10 +277,6 @@ module step₂
      II : (a : A) → α a ⊑ u
      II a = TC-preservation₂ a u l
 
- TC-is-prop-valued : (x : D) → is-prop (TC x)
- TC-is-prop-valued x =  ×-is-prop
-                         (prop-valuedness 𝓓 _ _)
-                         (Π₂-is-prop fe λ _ _ → prop-valuedness 𝓓 _ _)
 \end{code}
 
 We now apply step₁ to the subdcpo 𝓔 of 𝓓 consisting of the elements
