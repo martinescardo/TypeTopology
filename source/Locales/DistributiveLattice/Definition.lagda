@@ -56,11 +56,32 @@ record DistributiveLattice (𝓤 : Universe) : 𝓤 ⁺  ̇ where
   ∨-idempotent  : (x     : X) → x ∨ x ＝ x
   ∨-absorptive  : (x y   : X) → x ∨ (x ∧ y) ＝ x
 
- distributivityᵈ : (x y z : X) → x ∧ (y ∨ z) ＝ (x ∧ y) ∨ (x ∧ z)
- distributivityᵈ x y z = {!?!}
+  distributivityᵈ : (x y z : X) → x ∧ (y ∨ z) ＝ (x ∧ y) ∨ (x ∧ z)
 
  _≤_ : X → X → Ω 𝓤
  x ≤ y = (x ∧ y ＝ x) , X-is-set
+
+ distributivityᵈ₁ : (x y z : X) → (y ∨ z) ∧ x ＝ (y ∧ x) ∨ (z ∧ x)
+ distributivityᵈ₁ x y z = (y ∨ z) ∧ x         ＝⟨ Ⅰ ⟩
+                          x ∧ (y ∨ z)         ＝⟨ Ⅱ ⟩
+                          (x ∧ y) ∨ (x ∧ z)   ＝⟨ Ⅲ ⟩
+                          (y ∧ x) ∨ (x ∧ z)   ＝⟨ Ⅳ ⟩
+                          (y ∧ x) ∨ (z ∧ x)   ∎
+                           where
+                            Ⅰ = ∧-commutative (y ∨ z) x
+                            Ⅱ = distributivityᵈ x y z
+                            Ⅲ = ap (_∨ (x ∧ z)) (∧-commutative x y)
+                            Ⅳ = ap ((y ∧ x) ∨_) (∧-commutative x z)
+
+ distributivity-op : (x y z : X) → x ∨ (y ∧ z) ＝ (x ∨ y) ∧ (x ∨ z)
+ distributivity-op x y z = x ∨ (y ∧ z)                      ＝⟨ Ⅰ ⟩
+                           x ∨ ((z ∧ y) ∨ (z ∧ x))          ＝⟨ Ⅱ ⟩
+                           ((x ∨ y) ∧ z) ∨ ((x ∨ y) ∧ z)    ＝⟨ Ⅲ ⟩
+                           (x ∨ y) ∧ (x ∨ z)                ∎
+                            where
+                             Ⅰ = {!!}
+                             Ⅱ = {!!}
+                             Ⅲ = {!!}
 
  ∧-absorptive₁ : (x y : X) → x ∧ (y ∨ x) ＝ x
  ∧-absorptive₁ x y = x ∧ (y ∨ x) ＝⟨ ap (x ∧_) (∨-commutative y x) ⟩
@@ -78,7 +99,12 @@ record DistributiveLattice (𝓤 : Universe) : 𝓤 ⁺  ̇ where
                      x           ∎
 
  ∨-absorptive₂ : (x y : X) → (y ∧ x) ∨ x ＝ x
- ∨-absorptive₂ x y = {!!}
+ ∨-absorptive₂ x y = (y ∧ x) ∨ x ＝⟨ Ⅰ ⟩
+                     (x ∧ y) ∨ x ＝⟨ Ⅱ ⟩
+                     x           ∎
+                      where
+                       Ⅰ = ap (_∨ x) (∧-commutative y x)
+                       Ⅱ = ∨-absorptive₁ x y
 
 \end{code}
 
@@ -205,23 +231,21 @@ module _ (L : DistributiveLattice 𝓤) where
    p₂′ = orderᵈ-implies-orderᵈ-∨ L p₂
 
    † : orderᵈ L z (x ∧ y) holds
-   † = z ∧ (x ∧ y)               ＝⟨ Ⅰ ⟩
-       z ∧ ((z ∨ x) ∧ y)         ＝⟨ Ⅱ ⟩
-       (z ∧ (z ∨ x)) ∨ (z ∧ y)   ＝⟨ {!!} ⟩
-       z                         ∎
+   † = z ∧ (x ∧ y)                   ＝⟨ Ⅰ ⟩
+       z ∧ ((z ∨ x) ∧ y)             ＝⟨ Ⅱ ⟩
+       z ∧ ((z ∧ y) ∨ (x ∧ y))       ＝⟨ Ⅲ ⟩
+       (z ∧ (z ∧ y)) ∨ (z ∧ (x ∧ y)) ＝⟨ {!!} ⟩
+       z ∨ (z ∧ y)                   ＝⟨ Ⅳ ⟩
+       z                             ∎
         where
          Ⅰ = ap (λ - → z ∧ (- ∧ y)) (p₁′ ⁻¹)
-         Ⅱ = {!distributivityᵈ!}
+         Ⅱ = ap (z ∧_) (distributivityᵈ₁ y z x)
+         Ⅲ = distributivityᵈ z (z ∧ y) (x ∧ y)
+         -- Ⅲ = ap (_∨ (z ∧ y)) (∧-absorptive z x)
+         Ⅳ = ∨-absorptive z y
 
  ∧-is-glb : (x y : ∣ L ∣ᵈ) → ((x ∧ y) is-glb-of (x , y)) holds
  ∧-is-glb x y = (∧-is-a-lower-bound₁ x y , ∧-is-a-lower-bound₂ x y)
-              , {!!}
-
-\end{code}
-
-\begin{code}
-
-∨-is-lub : {!!}
-∨-is-lub = {!!}
+              , λ (z , p) → ∧-is-greatest x y z p
 
 \end{code}
