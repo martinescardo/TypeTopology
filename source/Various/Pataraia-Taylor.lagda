@@ -165,7 +165,7 @@ which is also where the carrier E of 𝓔 lives.
    g-le-h : g x ⊑ h x
    g-le-h = gm x (f x) (fi x)
 
- Γ-is-directed : (x : E) → is-directed _⊑_ (Γ x)
+ Γ-is-directed : (x : E) → is-Directed 𝓔 (Γ x)
  Γ-is-directed x = ∣ 𝕚𝕕 ∣ , Γ-is-semidirected x
 
  γ : E → E
@@ -239,29 +239,27 @@ module step₂
   D   = ⟨ 𝓓 ⟩
   _⊑_ = underlying-order 𝓓
 
- taylors-condition : D → 𝓤 ̇
- taylors-condition x = (x ⊑ f x) × ((u : D) → f u ⊑ u → x ⊑ u)
+ Taylor's-Condition : D → 𝓤 ̇
+ Taylor's-Condition x = (x ⊑ f x) × ((u : D) → f u ⊑ u → x ⊑ u)
 
- taylors-condition₁ : (x : D) → taylors-condition x → x ⊑ f x
- taylors-condition₁ x = pr₁
+ Taylor's-Condition₁ : (x : D) → Taylor's-Condition x → x ⊑ f x
+ Taylor's-Condition₁ x = pr₁
 
- taylors-condition₂ : (x : D) → taylors-condition x → (u : D) → f u ⊑ u → x ⊑ u
- taylors-condition₂ x = pr₂
+ Taylor's-Condition₂ : (x : D) → Taylor's-Condition x → (u : D) → f u ⊑ u → x ⊑ u
+ Taylor's-Condition₂ x = pr₂
 
- tc-is-closed-under-directed-sups
-  : {A : 𝓤 ̇ } (α : A → D) (δ : is-Directed 𝓓 α)
-  → ((a : A) → taylors-condition (α a))
-  → taylors-condition (∐ 𝓓 δ)
- tc-is-closed-under-directed-sups {A} α δ tc-preservation = II , III
+ TC-is-closed-under-directed-sups
+  : is-closed-under-directed-sups 𝓓 Taylor's-Condition
+ TC-is-closed-under-directed-sups {A} α δ TC-preservation = II , III
   where
-   tc-preservation₁ : (a : A) → α a ⊑ f (α a)
-   tc-preservation₁ a = taylors-condition₁ (α a) (tc-preservation a)
+   TC-preservation₁ : (a : A) → α a ⊑ f (α a)
+   TC-preservation₁ a = Taylor's-Condition₁ (α a) (TC-preservation a)
 
-   tc-preservation₂ : (a : A) (u : D) → f u ⊑ u → α a ⊑ u
-   tc-preservation₂ a = taylors-condition₂ (α a) (tc-preservation a)
+   TC-preservation₂ : (a : A) (u : D) → f u ⊑ u → α a ⊑ u
+   TC-preservation₂ a = Taylor's-Condition₂ (α a) (TC-preservation a)
 
    I : (a : A) → α a ⊑ f (∐ 𝓓 δ)
-   I a = α a        ⊑⟨ 𝓓 ⟩[ tc-preservation₁ a ]
+   I a = α a        ⊑⟨ 𝓓 ⟩[ TC-preservation₁ a ]
          f (α a)    ⊑⟨ 𝓓 ⟩[ fm (α a) (∐ 𝓓 δ) (∐-is-upperbound 𝓓 δ a) ]
          f (∐ 𝓓 δ) ∎⟨ 𝓓 ⟩
 
@@ -272,21 +270,21 @@ module step₂
    III u l = ∐-is-lowerbound-of-upperbounds 𝓓 δ u IV
     where
      IV : (a : A) → α a ⊑ u
-     IV a = tc-preservation₂ a u l
+     IV a = TC-preservation₂ a u l
 
- E = Σ x ꞉ D , taylors-condition x
+ E = Σ x ꞉ D , Taylor's-Condition x
 
  ι : E → D
  ι = pr₁
 
- τ : (t : E) → taylors-condition (ι t)
+ τ : (t : E) → Taylor's-Condition (ι t)
  τ = pr₂
 
  _≤_ : E → E → 𝓤 ̇
  (x , _) ≤ (y , _) = x ⊑ y
 
- tc-is-prop-valued : (x : D) → is-prop (taylors-condition x)
- tc-is-prop-valued x =  ×-is-prop
+ TC-is-prop-valued : (x : D) → is-prop (Taylor's-Condition x)
+ TC-is-prop-valued x =  ×-is-prop
                          (prop-valuedness 𝓓 _ _)
                          (Π₂-is-prop fe λ _ _ → prop-valuedness 𝓓 _ _)
 \end{code}
@@ -294,28 +292,14 @@ module step₂
 We now build a dcpo 𝓔 to be able to apply step₁. It is simply the
 subdcpo 𝓓 induced by the subset E.
 
-TODO. Develop the construction of subdcpos in full generality
-elsewhere in the domain theory modules.
-
 \begin{code}
 
  𝓔 : DCPO
- 𝓔 = E ,
-     _≤_ ,
-     (subsets-of-sets-are-sets D
-       taylors-condition
-       (sethood 𝓓)
-       (tc-is-prop-valued _) ,
-      (λ _ _ → prop-valuedness 𝓓 _ _) ,
-      (λ _ → reflexivity 𝓓 _) ,
-      (λ (x , _) (y , _) (z , _) → transitivity 𝓓 x y z) ,
-      (λ (x , _) (y , _) l m → to-subtype-＝
-                                tc-is-prop-valued
-                                (antisymmetry 𝓓 x y l m))) ,
-     (λ I α δ → (∐ 𝓓 {I} {ι ∘ α} δ ,
-                 tc-is-closed-under-directed-sups (ι ∘ α) δ (τ ∘ α)) ,
-                ∐-is-upperbound 𝓓 δ ,
-                (λ t → ∐-is-lowerbound-of-upperbounds 𝓓 δ (ι t)))
+ 𝓔 = subdcpo 𝓓
+      Taylor's-Condition
+      TC-is-prop-valued
+      TC-is-closed-under-directed-sups
+
  ⊥𝓔 : E
  ⊥𝓔 =  ⊥ , ⊥-is-least (f ⊥) , (λ (u : D) _ → ⊥-is-least u)
 
@@ -375,7 +359,7 @@ x₀ is the least pre-fixed point.
 \begin{code}
 
  x₀-is-lpfp : (x : D) → f x ⊑ x → x₀ ⊑ x
- x₀-is-lpfp = taylors-condition₂ x₀ (τ t₀)
+ x₀-is-lpfp = Taylor's-Condition₂ x₀ (τ t₀)
 
 \end{code}
 

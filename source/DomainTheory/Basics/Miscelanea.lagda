@@ -687,3 +687,38 @@ module _
        ⦅2⦆ = y-is-ub (⌜ ρ ⌝ i)
 
 \end{code}
+
+Added 18th Feb 2024 by Martin Escardo. Subdcpo induced by a subset /
+property.
+
+\begin{code}
+
+is-closed-under-directed-sups : (𝓓 : DCPO {𝓤} {𝓣}) → (⟨ 𝓓 ⟩ → 𝓦 ̇) → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ⊔ 𝓦 ̇
+is-closed-under-directed-sups {𝓤} {𝓣} 𝓓 P =
+    {I : 𝓥 ̇ } (α : I → ⟨ 𝓓 ⟩) (δ : is-Directed 𝓓 α)
+  → ((i : I) → P (α i))
+  → P (∐ 𝓓 δ)
+
+open import UF.Sets-Properties
+
+subdcpo : (𝓓 : DCPO {𝓤} {𝓣})
+          (P : ⟨ 𝓓 ⟩ → 𝓦 ̇)
+        → ((x : ⟨ 𝓓 ⟩) → is-prop (P x))
+        → is-closed-under-directed-sups 𝓓 P
+        → DCPO {𝓤 ⊔ 𝓦} {𝓣}
+subdcpo 𝓓 P P-is-prop-valued P-is-closed-under-directed-sups =
+ (Σ x ꞉ ⟨ 𝓓 ⟩ , P x) ,
+ (λ (x , _) (y , _) → x ⊑⟨ 𝓓 ⟩ y) ,
+ (subsets-of-sets-are-sets ⟨ 𝓓 ⟩ P (sethood 𝓓) (P-is-prop-valued _) ,
+  (λ _ _ → prop-valuedness 𝓓 _ _) ,
+  (λ _ → reflexivity 𝓓 _) ,
+  (λ (x , _) (y , _) (z , _) → transitivity 𝓓 x y z) ,
+  (λ (x , _) (y , _) l m → to-subtype-＝
+                            P-is-prop-valued
+                            (antisymmetry 𝓓 x y l m))) ,
+ (λ I α δ → (∐ 𝓓 {I} {pr₁ ∘ α} δ ,
+             P-is-closed-under-directed-sups (pr₁ ∘ α) δ (pr₂ ∘ α)) ,
+            ∐-is-upperbound 𝓓 δ ,
+            (λ (x , _) → ∐-is-lowerbound-of-upperbounds 𝓓 δ x))
+
+\end{code}
