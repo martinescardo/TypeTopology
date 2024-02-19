@@ -280,6 +280,9 @@ module step₂
      II : (a : A) → α a ⊑ u
      II a = TC-preservation₂ a u l
 
+ TC-is-closed-under-⊥ : TC ⊥
+ TC-is-closed-under-⊥ = ⊥-is-least (f ⊥) , (λ (u : D) _ → ⊥-is-least u)
+
 \end{code}
 
 Now the rest of step₂ is essentially the original one by Pataraia. We
@@ -310,7 +313,7 @@ satisfy Taylor's condition.
  τ (x , c) = c
 
  ⊥𝓔 : E
- ⊥𝓔 =  ⊥ , ⊥-is-least (f ⊥) , (λ (u : D) _ → ⊥-is-least u)
+ ⊥𝓔 =  ⊥ , TC-is-closed-under-⊥
 
 \end{code}
 
@@ -417,3 +420,110 @@ NB. We could have formulated and proved this more categorically as
 and then conclude that actually f x ＝ x by Lambek's Lemma. But we
 already know that the initial algebra is a fixed point in our case,
 and so there is no point in doing this.
+
+\begin{code}
+
+module Pataraia-induction
+        (𝓓 : DCPO {𝓤} {𝓤})
+        ((⊥ , ⊥-is-least) : has-bottom 𝓓)
+        (f : ⟨ 𝓓 ⟩ → ⟨ 𝓓 ⟩)
+        (fm : is-monotone 𝓓 𝓓 f)
+        (P : ⟨ 𝓓 ⟩ → 𝓤 ̇  )
+        (P-is-prop-valued : (x : ⟨ 𝓓 ⟩) → is-prop (P x))
+        (P-holds-at-⊥ : P ⊥)
+        (P-is-closed-under-directed-sups : is-closed-under-directed-sups 𝓓 P)
+        (P-is-closed-under-f : (x : ⟨ 𝓓 ⟩) → P x → P (f x))
+       where
+
+ private
+  D = ⟨ 𝓓 ⟩
+  _⊑_ = underlying-order 𝓓
+
+ open step₂ 𝓓 (⊥ , ⊥-is-least) f fm
+  using (TC ;
+         TC-is-prop-valued ;
+         TC-is-closed-under-directed-sups ;
+         TC-is-closed-under-⊥ ;
+         TC₂)
+  renaming (𝓯 to 𝓯')
+
+ TC∩P : D → 𝓤 ̇
+ TC∩P x = TC x × P x
+
+ TC∩P-⊆-TC : (x : ⟨ 𝓓 ⟩) → TC∩P x → TC x
+ TC∩P-⊆-TC x = pr₁
+
+ TC∩P-⊆-P : (x : ⟨ 𝓓 ⟩) → TC∩P x → P x
+ TC∩P-⊆-P x = pr₂
+
+ TC∩P-is-prop-valued : (x : D) → is-prop (TC∩P x)
+ TC∩P-is-prop-valued x = ×-is-prop
+                          (TC-is-prop-valued x)
+                          (P-is-prop-valued x)
+
+ TC∩P-is-closed-under-directed-sups : is-closed-under-directed-sups 𝓓 TC∩P
+ TC∩P-is-closed-under-directed-sups {A} α δ TC∩P-preservation = c₁ , c₂
+  where
+   c₁ : TC (∐ 𝓓 δ)
+   c₁ = TC-is-closed-under-directed-sups α δ
+         (λ a → TC∩P-⊆-TC (α a) (TC∩P-preservation a))
+   c₂ : P (∐ 𝓓 δ)
+   c₂ = P-is-closed-under-directed-sups α δ
+         (λ a → TC∩P-⊆-P (α a) (TC∩P-preservation a))
+
+ 𝓔 : DCPO
+ 𝓔 = subdcpo 𝓓 TC∩P TC∩P-is-prop-valued TC∩P-is-closed-under-directed-sups
+
+ private
+  E = ⟨ 𝓔 ⟩
+  _≤_ : E → E → 𝓤 ̇
+  s ≤ t = s ⊑⟨ 𝓔 ⟩ t
+
+ ι : E → D
+ ι (x , c) = x
+
+ τ : (t : E) → TC (ι t)
+ τ (x , c) = TC∩P-⊆-TC (ι (x , c)) c
+
+ ⊥𝓔 : E
+ ⊥𝓔 = ⊥ , (TC-is-closed-under-⊥ , P-holds-at-⊥)
+
+ 𝓯 : E → E
+ 𝓯 (x , tc , cₚ) = f x , pr₂ (𝓯' (x , tc)) , P-is-closed-under-f x cₚ
+
+ 𝓯-is-monotone : (s t : E) → s ≤ t → 𝓯 s ≤ 𝓯 t
+ 𝓯-is-monotone (x , _) (y , _) = fm x y
+
+ 𝓯-is-inflationary : (t : E) → t ≤ 𝓯 t
+ 𝓯-is-inflationary (x , (c₁ , c₂) , _) = c₁
+
+ open step₁ 𝓔
+
+ 𝕗 : MI
+ 𝕗 = (𝓯 , 𝓯-is-monotone , 𝓯-is-inflationary)
+
+ t₀ : E
+ t₀ = γ ⊥𝓔
+
+ t₀-is-fp : 𝓯 t₀ ＝ t₀
+ t₀-is-fp = γ-is-fixed-point 𝕗 ⊥𝓔
+
+ x₀ : D
+ x₀ = ι t₀
+
+ x₀-is-fp : f x₀ ＝ x₀
+ x₀-is-fp = ap ι t₀-is-fp
+
+ x₀-is-lpfp : (x : D) → f x ⊑ x → x₀ ⊑ x
+ x₀-is-lpfp = TC₂ x₀ (τ t₀)
+
+ x₀-is-lfp : (x : D) → f x ＝ x → x₀ ⊑ x
+ x₀-is-lfp x p = x₀-is-lpfp x (＝-to-⊑ 𝓓 p)
+
+ x₀-satisfies-P : P x₀
+ x₀-satisfies-P = TC∩P-⊆-P (pr₁ t₀) (pr₂ t₀)
+
+\end{code}
+
+Note: we can recover the above construction by taking P to be the trivial
+predicate.
