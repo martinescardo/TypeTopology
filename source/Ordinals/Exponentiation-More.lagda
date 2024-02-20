@@ -37,7 +37,7 @@ private
  pe = Univalence-gives-PropExt ua
 
 open import MLTT.Plus-Properties
-open import MLTT.Spartan
+open import MLTT.Spartan hiding (cases ; Cases)
 open import MLTT.Sigma
 -- open import Notation.CanonicalMap
 open import Ordinals.Arithmetic fe
@@ -54,40 +54,9 @@ open import Ordinals.Underlying
 open import MLTT.List
 open import Ordinals.Exponentiation ua
 
-{-
+\end{code}
 
-(1 + α)^(⋁ᵢ βᵢ)
-
-= Σ l : List (α × ⋁ᵢ βᵢ) , decreasing-pr2 l
-= Σ l : List (⋁ᵢ (α × βᵢ)) , ...
-?= ⋁ᵢ (Σ l : List (α × βᵢ) , decreasing-pr2 l)
-= ⋁ᵢ (1 + α)^β
-
-
-(1) Try for general families
-(1.5) Try for monotone families
-(2) Try for (x ↦ α ↓ x) for α an ordinal
-
--}
-
-order-reflecting-and-partial-inverse-is-initial-segment : (α β : Ordinal 𝓤)
-                                                       (f : ⟨ α ⟩ → ⟨ β ⟩)
-                                                     → is-order-reflecting α β f
-                                                     → ((a : ⟨ α ⟩)(b : ⟨ β ⟩) → b ≺⟨ β ⟩ f a → Σ a' ꞉ ⟨ α ⟩ , f a' ＝ b)
-                                                     → is-initial-segment α β f
-order-reflecting-and-partial-inverse-is-initial-segment α β f p i a b m = a' , p' , q'
-  where
-    q : Σ a' ꞉ ⟨ α ⟩ , f a' ＝ b
-    q = i a b m
-    a' : ⟨ α ⟩
-    a' = pr₁ q
-    q' : f a' ＝ b
-    q' = pr₂ q
-
-    m' : f a' ≺⟨ β ⟩ f a
-    m' = transport⁻¹ (λ - → - ≺⟨ β ⟩ f a) q' m
-    p' : a' ≺⟨ α ⟩ a
-    p' = p a' a m'
+\begin{code}
 
 module _ (pt : propositional-truncations-exist)
          (sr : Set-Replacement pt)
@@ -100,250 +69,104 @@ module _ (pt : propositional-truncations-exist)
 
  open import UF.ImageAndSurjection pt
 
- surjective-simulation-gives-equality : (α β : Ordinal 𝓤)
-                                      → (f : ⟨ α ⟩ → ⟨ β ⟩)
-                                      → is-simulation α β f
-                                      → is-surjection f
-                                      → α ＝ β
- surjective-simulation-gives-equality α β f sim surj = ⊴-antisym α β (f , sim) (h₀ , h₀-sim)
-   where
-     prp : (b : ⟨ β ⟩) → is-prop (Σ a ꞉ ⟨ α ⟩ , (f a ＝ b))
-     prp b (a , p) (a' , p') = to-subtype-＝ (λ a → underlying-type-is-set fe β)
-                                            (simulations-are-lc α β f sim (p ∙ p' ⁻¹))
+ is-continuous : (Ordinal 𝓤 → Ordinal 𝓤) → 𝓤 ⁺ ̇
+ is-continuous {𝓤} F = {I : 𝓤 ̇  } (γ : I → Ordinal 𝓤) → F (sup γ) ＝ sup (F ∘ γ)
 
-     h : (b : ⟨ β ⟩) → Σ a ꞉ ⟨ α ⟩ , (f a ＝ b)
-     h b = ∥∥-rec (prp b) id (surj b)
-
-     h₀ : ⟨ β ⟩ → ⟨ α ⟩
-     h₀ b = pr₁ (h b)
-
-     h₀-retract-of-f : (b : ⟨ β ⟩) → f (h₀ b) ＝ b
-     h₀-retract-of-f b = pr₂ (h b)
-
-     h₀-is-initial-segment : is-initial-segment β α h₀
-     h₀-is-initial-segment b a p = f a , p'' , q
-       where
-        p' : f a ≺⟨ β ⟩ (f (h₀ b))
-        p' = simulations-are-order-preserving α β f sim a (h₀ b) p
-
-        p'' : f a ≺⟨ β ⟩ b
-        p'' = transport (λ - → f a ≺⟨ β ⟩ -) (h₀-retract-of-f b) p'
-
-        q : h₀ (f a) ＝ a
-        q = simulations-are-lc α β f sim (h₀-retract-of-f (f a))
-
-     h₀-is-order-preserving : is-order-preserving β α h₀
-     h₀-is-order-preserving b b' p = p''
-       where
-         p' : f (h₀ b) ≺⟨ β ⟩ f (h₀ b')
-         p' = transport₂⁻¹ (underlying-order β) (h₀-retract-of-f b) (h₀-retract-of-f b') p
-
-         p'' : h₀ b  ≺⟨ α ⟩ (h₀ b')
-         p'' = simulations-are-order-reflecting α β f sim (h₀ b) (h₀ b') p'
-
-     h₀-sim : is-simulation β α h₀
-     h₀-sim = h₀-is-initial-segment , h₀-is-order-preserving
-
- module _ {I : 𝓤 ̇  }
-          (i₀ : I)
-          (β : I → Ordinal 𝓤)
-          (α : Ordinal 𝓤)
+ is-monotone-if-continuous : (F : Ordinal 𝓤 → Ordinal 𝓤)
+                           → is-continuous F
+                           → is-monotone (OO 𝓤) (OO 𝓤) F
+ is-monotone-if-continuous {𝓤} F F-cont α β α-less-than-β = conclusion
   where
+   γ : 𝟙{𝓤} + 𝟙{𝓤} → Ordinal 𝓤
+   γ (inl _) = α
+   γ (inr _) = β
+   eq : F (sup γ) ＝ sup (F ∘ γ)
+   eq = F-cont γ
+   β-is-upper-bound : (i : 𝟙 + 𝟙) → γ i ⊴ β
+   β-is-upper-bound (inl _) = ≼-gives-⊴ α β α-less-than-β
+   β-is-upper-bound (inr _) = ⊴-refl β
+   I : sup γ ＝ β
+   I = ⊴-antisym (sup γ) β (sup-is-lower-bound-of-upper-bounds γ β β-is-upper-bound) (sup-is-upper-bound γ (inr ⋆))
+   ineq : F α ⊴ sup (F ∘ γ)
+   ineq = sup-is-upper-bound (F ∘ γ) (inl ⋆)
+   conclusion : F α ≼ F β
+   conclusion = ⊴-gives-≼ (F α) (F β) (transport (F α ⊴_) (eq ⁻¹ ∙ ap F I) ineq)
 
-  {-
-  f : ⟨ [𝟙+ α ]^ (sup β) ⟩ → ⟨ sup (λ i → [𝟙+ α ]^ (β i)) ⟩
-  f ([] , δ) = sum-to-sup (λ i → [𝟙+ α ]^ β i) (i₀ , ([] , []-decr))
-  f ((a , x ∷ l) , δ) = {!!}
-  -}
+ module _
+         (exp : Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤)
+        where
 
-  private
-   γ : I → Ordinal 𝓤
-   γ i = [𝟙+ α ]^ (β i)
+  full-sup-spec : 𝓤 ⁺ ̇
+  full-sup-spec = (α : Ordinal 𝓤) → is-continuous (exp α)
 
-   ι : (ζ : I → Ordinal 𝓤) → {i : I} → ⟨ ζ i ⟩ → ⟨ sup ζ ⟩
-   ι ζ {i} = pr₁ (sup-is-upper-bound ζ i)
+  full-succ-spec : 𝓤 ⁺ ̇
+  full-succ-spec = (α : Ordinal 𝓤) (β : Ordinal 𝓤) → exp α (β +ₒ 𝟙ₒ) ＝ exp α β ×ₒ α
 
-   ι-is-simulation : (ζ : I → Ordinal 𝓤) → {i : I}
-                   → is-simulation (ζ i) (sup ζ ) (ι ζ)
-   ι-is-simulation ζ {i} = pr₂ (sup-is-upper-bound ζ i)
+  full-zero-spec : 𝓤 ⁺ ̇
+  full-zero-spec = (α : Ordinal 𝓤) → exp α 𝟘ₒ ＝ 𝟙ₒ
 
-   ι-is-order-preserving : (ζ : I → Ordinal 𝓤) {i : I}
-                         → is-order-preserving (ζ i) (sup ζ) (ι ζ)
-   ι-is-order-preserving ζ {i} = simulations-are-order-preserving (ζ i) (sup ζ) (ι ζ) (ι-is-simulation ζ)
+  full-spec : 𝓤 ⁺ ̇
+  full-spec = full-zero-spec × full-succ-spec × full-sup-spec
 
-   ι-is-order-reflecting : (ζ : I → Ordinal 𝓤) {i : I}
-                         → is-order-reflecting (ζ i) (sup ζ) (ι ζ)
-   ι-is-order-reflecting ζ {i} = simulations-are-order-reflecting (ζ i) (sup ζ) (ι ζ) (ι-is-simulation ζ)
+  exp-is-monotone-gives-EM : full-zero-spec
+                           → full-succ-spec
+                           → ((α : Ordinal 𝓤) → is-monotone (OO 𝓤) (OO 𝓤) (exp α))
+                           → EM 𝓤
+  exp-is-monotone-gives-EM spec₀ specₛ mon P P-is-prop = P-is-decidable
+   where
+    α : Ordinal 𝓤
+    α = prop-ordinal (P + ¬ P) (decidability-of-prop-is-prop fe' P-is-prop)
+    ineq : exp α 𝟘ₒ ⊴ exp α 𝟙ₒ
+    ineq = ≼-gives-⊴ (exp α 𝟘ₒ) (exp α 𝟙ₒ) (mon α 𝟘ₒ 𝟙ₒ (𝟘ₒ-least 𝟙ₒ))
+    eq₁ : exp α 𝟘ₒ ＝ 𝟙ₒ
+    eq₁ = spec₀ α
+    eq₂ : exp α 𝟙ₒ ＝ α
+    eq₂ = exp α 𝟙ₒ ＝⟨ ap (exp α) ((𝟘ₒ-left-neutral 𝟙ₒ) ⁻¹) ⟩
+          exp α (𝟘ₒ +ₒ 𝟙ₒ) ＝⟨ specₛ α 𝟘ₒ ⟩
+          (exp α 𝟘ₒ ×ₒ α) ＝⟨ ap (_×ₒ α) eq₁ ⟩
+          𝟙ₒ ×ₒ α ＝⟨ 𝟙ₒ-left-neutral-×ₒ α ⟩
+          α ∎
+    ineq' : 𝟙ₒ ⊴ α
+    ineq' = transport₂ _⊴_ eq₁ eq₂ ineq
+    P-is-decidable : P + ¬ P
+    P-is-decidable = pr₁ ineq' ⋆
 
-   ι-is-lc : (ζ : I → Ordinal 𝓤) {i : I}
-           → left-cancellable (ι ζ)
-   ι-is-lc ζ {i} = simulations-are-lc (ζ i) (sup ζ) (ι ζ) (ι-is-simulation ζ)
+  exp-full-spec-gives-EM : full-spec → EM 𝓤
+  exp-full-spec-gives-EM (spec₀ , specₛ , specₗ) =
+   exp-is-monotone-gives-EM spec₀ specₛ
+    (λ α → is-monotone-if-continuous (exp α) (specₗ α))
 
-   ι-is-initial-segment : (ζ : I → Ordinal 𝓤) → {i : I}
-                        → is-initial-segment (ζ i) (sup ζ ) (ι ζ)
-   ι-is-initial-segment ζ {i} = simulations-are-initial-segments (ζ i) (sup ζ) (ι ζ) (ι-is-simulation ζ)
+\end{code}
 
-   ι-is-surjective : (ζ : I → Ordinal 𝓤) (s : ⟨ sup ζ ⟩)
-                   → ∃ i ꞉ I , Σ x ꞉ ⟨ ζ i ⟩ , ι ζ {i} x ＝ s
-   ι-is-surjective = sup-is-upper-bound-jointly-surjective
+And conversely...
 
-   ι-is-surjective⁺ : (ζ : I → Ordinal 𝓤) (s : ⟨ sup ζ ⟩) (i : I) (x : ⟨ ζ i ⟩)
-                    → s ≺⟨ sup ζ ⟩ ι ζ x
-                    → Σ y ꞉ ⟨ ζ i ⟩ , ι ζ {i} y ＝ s
-   ι-is-surjective⁺ ζ s i x p =
-    h (simulations-are-initial-segments (ζ i) (sup ζ) (ι ζ) (ι-is-simulation ζ) x s p)
-    where
-     h : Σ y ꞉ ⟨ ζ i ⟩ , y ≺⟨ ζ i ⟩ x × (ι ζ y ＝ s)
-       → Σ y ꞉ ⟨ ζ i ⟩ , ι ζ {i} y ＝ s
-     h (y , (_ , q)) = y , q
+\begin{code}
 
-   module _ (i : I) where
-    f₁ : List (⟨ α ×ₒ β i ⟩) → List (⟨ α ×ₒ sup β ⟩)
-    f₁ [] = []
-    f₁ (a , b ∷ l) = a , ι β b ∷ f₁ l
-    f₂ : (l : List (⟨ α ×ₒ β i ⟩))
-       → is-decreasing-pr₂ α (β i) l
-       → is-decreasing-pr₂ α (sup β) (f₁ l)
-    f₂ [] δ = []-decr
-    f₂ (a , b ∷ []) δ = sing-decr
-    f₂ (a , b ∷ a' , b' ∷ l) (many-decr p δ) =
-      many-decr (simulations-are-order-preserving (β i) (sup β)
-                  (ι β)
-                  (pr₂ (sup-is-upper-bound β i)) b' b p)
-                (f₂ (a' , b' ∷ l) δ)
-    f : ⟨ γ i ⟩ → ⟨ [𝟙+ α ]^ (sup β) ⟩
-    f (l , δ) = f₁ l , f₂ l δ
 
-   f₁-surj-lemma : (a : ⟨ α ⟩) (i : I) (b : ⟨ β i ⟩) (l : List (⟨ α ×ₒ sup β ⟩))
-                 → is-decreasing-pr₂ α (sup β) (a , ι β b ∷ l)
-                 → Σ l' ꞉ List (⟨ α ×ₒ β i ⟩) , is-decreasing-pr₂ α (β i) (a , b ∷ l')
-                                              × ((a , ι β b ∷ l) ＝ f₁ i (a , b ∷ l'))
-   f₁-surj-lemma a i b [] δ = [] , sing-decr , refl
-   f₁-surj-lemma a i b ((a' , s) ∷ l) δ =
-    (a' , b' ∷ l') ,
-    many-decr order-lem₃ δ' ,
-    ap (a , ι β b ∷_) (ap (λ - → a' , - ∷ l) ((pr₂ lem) ⁻¹) ∙ pr₂ (pr₂ IH))
-     where
-      lem : Σ b' ꞉ ⟨ β i ⟩ , ι β b' ＝ s
-      lem = ι-is-surjective⁺ β s i b (is-decreasing-heads (underlying-order (sup β)) δ)
-      b' : ⟨ β i ⟩
-      b' = pr₁ lem
-      order-lem₁ : s ≺⟨ sup β ⟩ ι β b
-      order-lem₁ = is-decreasing-heads (underlying-order (sup β)) δ
-      order-lem₂ : ι β b' ≺⟨ sup β ⟩ ι β b
-      order-lem₂ = transport⁻¹ (λ - → underlying-order (sup β) - (ι β b)) (pr₂ lem) order-lem₁
-      order-lem₃ : b' ≺⟨ β i ⟩ b
-      order-lem₃ = ι-is-order-reflecting β b' b order-lem₂
-      IH : Σ l' ꞉ List (⟨ α ×ₒ β i ⟩) , is-decreasing-pr₂ α (β i) (a' , b' ∷ l')
-                                      × ((a' , ι β b' ∷ l) ＝ f₁ i (a' , b' ∷ l'))
-      IH = f₁-surj-lemma a' i b' l
-            (transport⁻¹ (λ - → is-decreasing-pr₂ α (sup β) (a' , - ∷ l)) (pr₂ lem)
-              (is-decreasing-tail (underlying-order (sup β)) δ))
-      l' : List (⟨ α ×ₒ β i ⟩)
-      l' = pr₁ IH
-      δ' : is-decreasing-pr₂ α (β i) (a' , b' ∷ l')
-      δ' = pr₁ (pr₂ IH)
+ -- TODO: Reduce to EM 𝓤
 
-   f₁-surj : (l : List (⟨ α ×ₒ sup β ⟩))
-           → is-decreasing-pr₂ α (sup β) l
-           → ∃ i ꞉ I , Σ l' ꞉ List (⟨ α ×ₒ β i ⟩) , is-decreasing-pr₂ α (β i) l'
-                                                  × (l ＝ f₁ i l')
-   f₁-surj [] δ = ∣ i₀ , [] , []-decr , refl ∣
-   f₁-surj (a , s ∷ l) δ = ∥∥-functor h (ι-is-surjective β s)
-    where
-     h : (Σ i ꞉ I , Σ b ꞉ ⟨ β i ⟩ , ι β b ＝ s)
-       → Σ i ꞉ I , Σ l' ꞉ List (⟨ α ×ₒ β i ⟩) , is-decreasing-pr₂ α (β i) l'
-                                              × ((a , s ∷ l) ＝ f₁ i l')
-     h (i , b , refl) = i , (a , b ∷ pr₁ lem) , (pr₁ (pr₂ lem) , pr₂ (pr₂ lem))
-      where
-       lem : Σ l' ꞉ List ⟨ α ×ₒ β i ⟩ , is-decreasing-pr₂ α (β i) (a , b ∷ l')
-                                      × (a , ι β b ∷ l ＝ f₁ i (a , b ∷ l'))
-       lem = f₁-surj-lemma a i b l δ
+ private
+  case : (α : Ordinal 𝓤) → 𝓤 ⁺ ̇
+  case {𝓤} α = (Σ α' ꞉ Ordinal 𝓤 , α ＝ 𝟙ₒ +ₒ α')
 
-   f-surj : (y : ⟨ [𝟙+ α ]^ (sup β) ⟩) → ∃ i ꞉ I , Σ x ꞉ ⟨ γ i ⟩ , f i x ＝ y
-   f-surj (l , δ) = ∥∥-functor h (f₁-surj l δ)
-    where
-     h : (Σ i ꞉ I , Σ l' ꞉ List (⟨ α ×ₒ β i ⟩) , is-decreasing-pr₂ α (β i) l'
-                                               × (l ＝ f₁ i l'))
-       → Σ i ꞉ I , Σ x ꞉ ⟨ γ i ⟩ , (f i x ＝ l , δ)
-     h (i , l' , δ , refl) = i , (l' , δ) , to-exponential-＝ α (sup β) refl
+  case-is-prop : (α : Ordinal 𝓤) → is-prop (case α)
+  case-is-prop α = {!!}
 
-   f-is-order-preserving : (i : I) → is-order-preserving (γ i) ([𝟙+ α ]^ (sup β)) (f i)
-   f-is-order-preserving i ([] , δ) (_ , ε) []-lex = []-lex
-   f-is-order-preserving i ((a , b ∷ l) , δ) ((a' , b' ∷ l') , ε) (head-lex (inl m)) = head-lex (inl (ι-is-order-preserving β b b' m))
-   f-is-order-preserving i ((a , b ∷ l) , δ) ((a' , b' ∷ l') , ε) (head-lex (inr (refl , m))) = head-lex (inr (refl , m))
-   f-is-order-preserving i ((_ ∷ l) , δ) ((_ ∷ l') , ε) (tail-lex refl m) =
-     tail-lex refl (f-is-order-preserving i (l , is-decreasing-tail (underlying-order (β i)) δ) (l' , is-decreasing-tail (underlying-order (β i)) ε) m)
+  cases : (α : Ordinal 𝓤) → 𝓤 ⁺ ̇
+  cases α = case α + (α ＝ 𝟘ₒ)
 
-   f-is-order-reflecting : (i : I) → is-order-reflecting (γ i) ([𝟙+ α ]^ (sup β)) (f i)
-   f-is-order-reflecting i ([] , δ) ((a , b ∷ l) , ε) []-lex = []-lex
-   f-is-order-reflecting i ((a , b ∷ l) , δ) ((a' , b' ∷ l') , ε) (head-lex (inl m)) = head-lex (inl (ι-is-order-reflecting β b b' m))
-   f-is-order-reflecting i ((a , b ∷ l) , δ) ((a' , b' ∷ l') , ε) (head-lex (inr (e , m))) = head-lex (inr (ι-is-lc β e , m))
-   f-is-order-reflecting i ((a , b ∷ l) , δ) ((a' , b' ∷ l') , ε) (tail-lex e m) =
-    tail-lex (to-×-＝ (ap pr₁ e) (ι-is-lc β (ap pr₂ e)))
-    (f-is-order-reflecting i (l , is-decreasing-tail (underlying-order (β i)) δ) (l' , is-decreasing-tail (underlying-order (β i)) ε) m)
+  Cases : 𝓤 ⁺ ̇
+  Cases {𝓤} = (α : Ordinal 𝓤) → cases α
 
-   -- We factor out:
-   partial-invertibility-lemma : (i : I) -- (a : ⟨ α ⟩) (b : ⟨ β i ⟩)
-                               → (l : List (⟨ α ×ₒ β i ⟩))
-                               → is-decreasing-pr₂ α (sup β) (f₁ i l) -- (f₁ i (a , b ∷ l))
-                               → is-decreasing-pr₂ α (β i) l -- (a , b ∷ l)
-   partial-invertibility-lemma i [] ds = []-decr
-   partial-invertibility-lemma i ((a , b) ∷ []) ds = sing-decr
-   partial-invertibility-lemma i ((a , b) ∷ (a' , b') ∷ l) (many-decr m ds) =
-     many-decr (ι-is-order-reflecting β b' b m) (partial-invertibility-lemma i ((a' , b') ∷ l) ds)
-
-   f-is-partially-invertible : (i : I)
-                             → (xs : List ⟨ α ×ₒ β i ⟩) → (δ : is-decreasing-pr₂ α (β i) xs)
-                             → (ys : List ⟨ α ×ₒ sup β ⟩) → (ε : is-decreasing-pr₂ α (sup β) ys)
-                             → (ys , ε) ≺⟨ [𝟙+ α ]^ (sup β) ⟩ f i (xs , δ)
-                             → Σ xs' ꞉ ⟨ γ i ⟩ , f i xs' ＝ (ys , ε)
-   f-is-partially-invertible i xs δ [] []-decr p = ([] , []-decr) , refl
-   f-is-partially-invertible i ((a , b) ∷ xs) δ ((a' , b') ∷ []) ε (head-lex (inl m)) = ((a' , pr₁ ι-sim ∷ []) , sing-decr) , (to-exponential-＝ α (sup β) (ap (λ - → (a' , -) ∷ []) (pr₂ (pr₂ ι-sim))))
-     where
-       ι-sim = ι-is-initial-segment β b b' m
-   f-is-partially-invertible i ((a , b) ∷ xs) δ ((a' , b') ∷ (a₁ , b₁) ∷ ys) (many-decr p ε) (head-lex (inl m)) =
-     let IH = f-is-partially-invertible i ((a , b) ∷ xs) δ ((a₁ , b₁) ∷ ys) ε (head-lex (inl (Transitivity (sup β) _ _ _ p m)))
-         xs' = pr₁ (pr₁ IH)
-         ι-sim = ι-is-initial-segment β b b' m
-         b₀ = pr₁ ι-sim
-         p₀ = transport⁻¹ (λ - → b₁ ≺⟨ sup β ⟩ -) (pr₂ (pr₂ ι-sim)) p
-     in ((a' , b₀ ∷ xs') , partial-invertibility-lemma i ((a' , b₀) ∷ xs') (transport⁻¹ (λ - → is-decreasing-pr₂ α (sup β) ((a' , ι β b₀) ∷ -)) (ap pr₁ (pr₂ IH)) (many-decr p₀ ε)))
-       , (to-exponential-＝ α (sup β) (ap₂ (λ x y → (a' , x) ∷ y) (pr₂ (pr₂ ι-sim)) (ap pr₁ (pr₂ IH))))
-   f-is-partially-invertible i ((a , b) ∷ xs) δ ((a' , .(ι β b)) ∷ []) ε (head-lex (inr (refl , m))) = ((a' , b ∷ []) , sing-decr) , (to-exponential-＝ α (sup β) refl)
-   f-is-partially-invertible i ((a , b) ∷ xs) δ ((a' , .(ι β b)) ∷ (a₁ , b₁) ∷ ys) (many-decr p ε) (head-lex (inr (refl , m))) =
-     let IH = f-is-partially-invertible i ((a , b) ∷ xs) δ ((a₁ , b₁) ∷ ys) ε (head-lex (inl p))
-         xs' = pr₁ (pr₁ IH)
-     in (((a' , b) ∷ xs') , partial-invertibility-lemma i ((a' , b) ∷ xs')
-                                                          (transport⁻¹ (λ - → is-decreasing-pr₂ α (sup β) ((a' , ι β b) ∷ -)) (ap pr₁ (pr₂ IH)) (many-decr p ε)))
-        , to-exponential-＝ α (sup β) (ap ((a' , ι β b) ∷_) (ap pr₁ (pr₂ IH)))
-   f-is-partially-invertible i ((a , b) ∷ xs) δ (.(a , ι β b) ∷ ys) ε (tail-lex refl p) =
-     let IH = f-is-partially-invertible i xs (is-decreasing-tail (underlying-order (β i)) δ) ys (is-decreasing-tail (underlying-order (sup β)) ε) p
-     in (((a , b) ∷ pr₁ (pr₁ IH)) , partial-invertibility-lemma i ((a , b) ∷ pr₁ (pr₁ IH))
-                                                                  (transport⁻¹ (λ - → is-decreasing-pr₂ α (sup β) ((a , ι β b) ∷ -)) (ap pr₁ (pr₂ IH)) ε))
-       , to-exponential-＝ α (sup β) (ap ((a , ι β b) ∷_) (ap pr₁ (pr₂ IH)))
-
-   f-is-initial-segment : (i : I) → is-initial-segment (γ i) ([𝟙+ α ]^ (sup β)) (f i)
-   f-is-initial-segment i = order-reflecting-and-partial-inverse-is-initial-segment (γ i) ([𝟙+ α ]^ (sup β)) (f i) (f-is-order-reflecting i) g
-     where
-       g : (xs : ⟨ γ i ⟩) → (ys : ⟨ [𝟙+ α ]^ (sup β) ⟩) → ys ≺⟨ [𝟙+ α ]^ (sup β) ⟩ f i xs → Σ xs' ꞉ ⟨ γ i ⟩ , f i xs' ＝ ys
-       g (xs , δ) (ys , ε) = f-is-partially-invertible i xs δ ys ε
-
-  exp-sup-is-upper-bound : (i : I) → γ i ⊴ ([𝟙+ α ]^ (sup β))
-  exp-sup-is-upper-bound i = f i , f-is-initial-segment i , f-is-order-preserving i
-
-  exp-sup-simulation : sup (λ i → ([𝟙+ α ]^ (β i))) ⊴ ([𝟙+ α ]^ (sup β))
-  exp-sup-simulation = sup-is-lower-bound-of-upper-bounds (λ i → ([𝟙+ α ]^ (β i))) ([𝟙+ α ]^ (sup β)) exp-sup-is-upper-bound
-
-  exp-sup-simulation-surjective : is-surjection (pr₁ exp-sup-simulation)
-  exp-sup-simulation-surjective = surjectivity-lemma γ ([𝟙+ α ]^ (sup β)) exp-sup-is-upper-bound f-surj
-
-  sup-spec : sup (λ i → ([𝟙+ α ]^ (β i))) ＝ ([𝟙+ α ]^ (sup β))
-  sup-spec = surjective-simulation-gives-equality
-               (sup (λ i → ([𝟙+ α ]^ (β i))))
-               ([𝟙+ α ]^ (sup β))
-               (pr₁ exp-sup-simulation)
-               (pr₂ exp-sup-simulation)
-               exp-sup-simulation-surjective
+ Cases-gives-full-spec : Cases → Σ exp ꞉ (Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) , full-spec exp
+ Cases-gives-full-spec {𝓤} cs = {!!}
+  where
+   exp-aux : (α : Ordinal 𝓤)
+           → cases α
+           → Ordinal 𝓤 → Ordinal 𝓤
+   exp-aux α (inl (α' , _)) β = [𝟙+ α' ]^ β
+   exp-aux α (inr _) β = prop-ordinal (β ≃ₒ 𝟘ₒ{𝓤}) (≃ₒ-is-prop-valued fe' β 𝟘ₒ)
+   exp : Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤
+   exp α = exp-aux α (cs α)
 
 \end{code}
