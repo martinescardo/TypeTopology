@@ -55,18 +55,20 @@ map f is-of-hlevel n = (y : codomain f) → (fiber f y) is-of-hlevel n
 
 H-Levels are cumulative.
 
+TODO: Move the following contractibility lemma to a more apropriate location.
+
 \begin{code}
+
+contr-lemma : {X : 𝓤 ̇} → is-contr X → (x x' : X) → is-contr (x ＝ x')
+contr-lemma (c , C) x x' = (((C x)⁻¹ ∙ C x') , D)
+ where
+  D : is-central (x ＝ x') (C x ⁻¹ ∙ C x')
+  D refl = left-inverse (C x)
 
 hlevels-are-upper-closed : (n : ℕ) (X : 𝓤 ̇)
                          → (X is-of-hlevel n)
                          → (X is-of-hlevel succ n)
-hlevels-are-upper-closed zero X h-level = base h-level
- where
-  base : is-contr X → (x x' : X) → is-contr (x ＝ x')
-  base (c , C) x x' = (((C x)⁻¹ ∙ C x') , D)
-   where
-    D : is-central (x ＝ x') (C x ⁻¹ ∙ C x')
-    D refl = left-inverse (C x)
+hlevels-are-upper-closed zero X h-level = contr-lemma h-level
 hlevels-are-upper-closed (succ n) X h-level = step
  where
   step : (x x' : X) (p q : x ＝ x') → (p ＝ q) is-of-hlevel n
@@ -248,8 +250,11 @@ record H-level-truncations-exist : 𝓤ω where
   ∣∣∣∣-is-hlevel : {𝓤 : Universe} {X : 𝓤 ̇ } {n : ℕ}
                  → (∣∣ X ∣∣ n) is-of-hlevel n
   ∣_∣_ :  {𝓤 : Universe} {X : 𝓤 ̇ } → X → (n : ℕ) → ∣∣ X ∣∣ n
-  ∣∣∣∣-rec : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {n : ℕ}
-           → Y is-of-hlevel n → (X → Y) → ∣∣ X ∣∣ n → Y
+  ∣∣∣∣-induction : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } {n : ℕ}
+                 → (P : ∣∣ X ∣∣ n → 𝓥 ̇ )
+                 → ((s : ∣∣ X ∣∣ n) → (P s) is-of-hlevel n)
+                 → ((x : X) → P (∣ x ∣ n))
+                 → (s : ∣∣ X ∣∣ n) → P s
  infix 0 ∣∣_∣∣_
  infix 0 ∣_∣_
 
@@ -257,16 +262,23 @@ module truncation-properties (te : H-level-truncations-exist) where
 
  open H-level-truncations-exist te
 
- ∣∣∣∣-induction : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } {n : ℕ} {P : ∣∣ X ∣∣ n → 𝓥 ̇ }
-                → ((s : ∣∣ X ∣∣ n) → (P s) is-of-hlevel n)
-                → ((x : X) → P (∣ x ∣ n))
-                → (s : ∣∣ X ∣∣ n) → P s
- ∣∣∣∣-induction {𝓤} {𝓥} {X} {n} {P} H-lev f' s = ϕ s
-  where
-   ϕ' : X → P s
-   ϕ' x = {!!}
-   ϕ : ∣∣ X ∣∣ n → P s
-   ϕ = ∣∣∣∣-rec (H-lev s) ϕ'
+ ∣∣∣∣-rec : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {n : ℕ}
+          → Y is-of-hlevel n → (X → Y) → ∣∣ X ∣∣ n → Y
+ ∣∣∣∣-rec {𝓤} {𝓥} {X} {Y} {n} H-lev f' s =
+   ∣∣∣∣-induction (λ _ → Y) (λ _ → H-lev) f' s
+
+ zero-hlevel-is-contr : {X : 𝓤 ̇ } → is-contr (∣∣ X ∣∣ zero)
+ zero-hlevel-is-contr = ∣∣∣∣-is-hlevel
+
+ one-hlevel-is-prop : {X : 𝓤 ̇ } → is-prop (∣∣ X ∣∣ succ zero)
+ one-hlevel-is-prop = is-prop'-implies-is-prop ∣∣∣∣-is-hlevel
+
+ id-types-are-same-hlevel : {X : 𝓤 ̇ } (n : ℕ)
+                          → X is-of-hlevel n
+                          → (x x' : X) → (x ＝ x') is-of-hlevel n
+ id-types-are-same-hlevel zero X-hlev x x' = contr-lemma X-hlev x x'
+ id-types-are-same-hlevel (succ n) X-hlev x x' =
+   hlevels-are-upper-closed n (x ＝ x') (X-hlev x x')
 
  canonical-pred-map : (X : 𝓤 ̇) (n : ℕ)
                     → ∣∣ X ∣∣ succ n → ∣∣ X ∣∣ n
@@ -279,7 +291,22 @@ module truncation-properties (te : H-level-truncations-exist) where
                                → (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )
                                → X ≃ Y
                                → (∣∣ X ∣∣ n) ≃ (∣∣ Y ∣∣ n)
- truncation-closed-under-equiv n X Y e = {!!}
+ truncation-closed-under-equiv n X Y e = (f , (b , G) , (b , H))
+  where
+   f : ∣∣ X ∣∣ n → ∣∣ Y ∣∣ n
+   f = ∣∣∣∣-rec ∣∣∣∣-is-hlevel (λ x → ∣ (⌜ e ⌝ x) ∣ n)
+   b : ∣∣ Y ∣∣ n → ∣∣ X ∣∣ n
+   b = ∣∣∣∣-rec ∣∣∣∣-is-hlevel (λ y → ∣ (⌜ e ⌝⁻¹ y) ∣ n)
+   H : b ∘ f ∼ id
+   H = ∣∣∣∣-induction (λ s → b (f s) ＝ s)
+                      (λ s → id-types-are-same-hlevel n ∣∣∣∣-is-hlevel
+                                                      (b (f s)) s)
+                      {!!}
+   G : f ∘ b ∼ id
+   G = ∣∣∣∣-induction (λ s → f (b s) ＝ s)
+                      (λ s → id-types-are-same-hlevel n ∣∣∣∣-is-hlevel
+                                                      (f (b s)) s)
+                      {!!}
 
  hlevel-equiv-succ : (X : 𝓤 ̇) (n : ℕ)
                    → (∣∣ X ∣∣ n) ≃ (∣∣ (∣∣ X ∣∣ succ n) ∣∣ n)
@@ -315,17 +342,17 @@ module k-connectedness (te : H-level-truncations-exist) where
  connectedness-closed-under-equiv k X Y e Y-con =
    equiv-to-singleton (truncation-closed-under-equiv k X Y e) Y-con
 
- contractible-types-are-connected : {𝓤 𝓥 : Universe}
+ contractible-types-are-connected : {𝓤 : Universe}
                                   → (X : 𝓤 ̇ )
                                   → is-contr X
                                   → (n : ℕ)
                                   → X is n connected
- contractible-types-are-connected = {!!}
-
- lower-closed-lemma : (X : 𝓤 ̇) (k : ℕ)
-                    → X is (succ k) connected
-                    → (∣∣ X ∣∣ k) is (succ k) connected
- lower-closed-lemma = {!!}
+ contractible-types-are-connected X (c , C) n = ((∣ c ∣ n) , C')
+  where
+   C' : (s : ∣∣ X ∣∣ n) → (∣ c ∣ n) ＝ s
+   C' = ∣∣∣∣-induction (λ s → (∣ c ∣ n) ＝ s)
+                       (id-types-are-same-hlevel n ∣∣∣∣-is-hlevel (∣ c ∣ n))
+                       (λ x → ap (λ x → ∣ x ∣ n) (C x))
 
  connectedness-is-lower-closed : (X : 𝓤 ̇) (k : ℕ)
                                → X is (succ k) connected
@@ -333,7 +360,6 @@ module k-connectedness (te : H-level-truncations-exist) where
  connectedness-is-lower-closed X k X-succ-con =
    equiv-to-singleton (hlevel-equiv-succ X k)
                       (contractible-types-are-connected (∣∣ X ∣∣ succ k)
-                                                        X-succ-con {!k!})
+                                                        X-succ-con k)
 
 \end{code}
-
