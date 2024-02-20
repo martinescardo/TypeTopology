@@ -24,6 +24,10 @@ import Locales.Compactness                       -- (7)
 
 import Locales.Complements                       -- (8)
 
+-- Distributive lattices
+import Locales.DistributiveLattice.Definition
+import Locales.DistributiveLattice.Ideal
+
 import Locales.Frame                             -- (9)
 
 import Locales.GaloisConnection                  -- (10)
