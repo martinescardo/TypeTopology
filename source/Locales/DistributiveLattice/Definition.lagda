@@ -125,23 +125,29 @@ record DistributiveLattice (𝓤 : Universe) : 𝓤 ⁺  ̇ where
  distributivity-op x y z =
   x ∨ (y ∧ z)                      ＝⟨ Ⅰ ⟩
   x ∨ ((z ∧ y) ∨ (z ∧ x))          ＝⟨ Ⅱ ⟩
-  ((x ∨ y) ∧ z) ∨ ((x ∨ y) ∧ z)    ＝⟨ Ⅲ ⟩
+  (x ∨ z) ∧ (y ∨ x)                ＝⟨ Ⅲ ⟩
+  (y ∨ x) ∧ (x ∨ z)                ＝⟨ Ⅳ ⟩
   (x ∨ y) ∧ (x ∨ z)                ∎
    where
-    p = ap (_∨ (y ∧ z)) (∨-absorptive₃ x z ⁻¹)
-    q = ap ((x ∨ (z ∧ x)) ∨_) (∧-commutative y z)
-    r = ∨-associative x (z ∧ x) (z ∧ y) ⁻¹
-    s = ap (x ∨_) (∨-commutative (z ∧ x) (z ∧ y))
+    𝒶 = ap (_∨ (y ∧ z)) (∨-absorptive₃ x z ⁻¹)
+    𝒷 = ap ((x ∨ (z ∧ x)) ∨_) (∧-commutative y z)
+    𝒸 = ∨-associative x (z ∧ x) (z ∧ y) ⁻¹
+    𝒹 = ap (x ∨_) (∨-commutative (z ∧ x) (z ∧ y))
+    ℯ = ap (x ∨_) (distributivityᵈ z y x ⁻¹)
+    𝒻 = ap (_∨ (z ∧ (y ∨ x))) (∧-absorptive₁ x y ⁻¹)
+    ℊ = distributivityᵈ₁ (y ∨ x) x z ⁻¹
 
-    Ⅰ = x ∨ (y ∧ z)               ＝⟨ p ⟩
-        (x ∨ (z ∧ x)) ∨ (y ∧ z)   ＝⟨ q ⟩
-        (x ∨ (z ∧ x)) ∨ (z ∧ y)   ＝⟨ r ⟩
-        x ∨ ((z ∧ x) ∨ (z ∧ y))   ＝⟨ s ⟩
-        x ∨ ((z ∧ y) ∨ (z ∧ x))   ∎
-    Ⅱ = x ∨ ((z ∧ y) ∨ (z ∧ x))       ＝⟨ {!!} ⟩
-        x ∨ (z ∧ (y ∨ x))             ＝⟨ {!!} ⟩
-        ((x ∨ y) ∧ z) ∨ ((x ∨ y) ∧ z) ∎
-    Ⅲ = {!!}
+    Ⅰ = x ∨ (y ∧ z)                   ＝⟨ 𝒶 ⟩
+        (x ∨ (z ∧ x)) ∨ (y ∧ z)       ＝⟨ 𝒷 ⟩
+        (x ∨ (z ∧ x)) ∨ (z ∧ y)       ＝⟨ 𝒸 ⟩
+        x ∨ ((z ∧ x) ∨ (z ∧ y))       ＝⟨ 𝒹 ⟩
+        x ∨ ((z ∧ y) ∨ (z ∧ x))       ∎
+    Ⅱ = x ∨ ((z ∧ y) ∨ (z ∧ x))       ＝⟨ ℯ ⟩
+        x ∨ (z ∧ (y ∨ x))             ＝⟨ 𝒻 ⟩
+        (x ∧ (y ∨ x)) ∨ (z ∧ (y ∨ x)) ＝⟨ ℊ ⟩
+        (x ∨ z) ∧ (y ∨ x)             ∎
+    Ⅲ = ∧-commutative (x ∨ z) (y ∨ x)
+    Ⅳ = ap (_∧ (x ∨ z)) (∨-commutative y x)
 
 \end{code}
 
@@ -257,21 +263,24 @@ module _ (L : DistributiveLattice 𝓤) where
    p₂′ = orderᵈ-implies-orderᵈ-∨ L p₂
 
    † : orderᵈ L z (x ∧ y) holds
-   † = z ∧ (x ∧ y)                   ＝⟨ Ⅰ ⟩
-       z ∧ ((z ∨ x) ∧ y)             ＝⟨ Ⅱ ⟩
-       z ∧ ((z ∧ y) ∨ (x ∧ y))       ＝⟨ Ⅲ ⟩
-       (z ∧ (z ∧ y)) ∨ (z ∧ (x ∧ y)) ＝⟨ {!!} ⟩
-       z ∨ (z ∧ y)                   ＝⟨ Ⅳ ⟩
-       z                             ∎
+   † = z ∧ (x ∧ y)    ＝⟨ Ⅰ ⟩
+       (z ∧ x) ∧ y    ＝⟨ Ⅱ ⟩
+       z ∧ y          ＝⟨ Ⅲ ⟩
+       z              ∎
         where
-         Ⅰ = ap (λ - → z ∧ (- ∧ y)) (p₁′ ⁻¹)
-         Ⅱ = ap (z ∧_) (distributivityᵈ₁ y z x)
-         Ⅲ = distributivityᵈ z (z ∧ y) (x ∧ y)
-         -- Ⅲ = ap (_∨ (z ∧ y)) (∧-absorptive z x)
-         Ⅳ = ∨-absorptive z y
+         Ⅰ = ∧-associative z x y
+         Ⅱ = ap (_∧ y) p₁
+         Ⅲ = p₂
 
  ∧-is-glb : (x y : ∣ L ∣ᵈ) → ((x ∧ y) is-glb-of (x , y)) holds
  ∧-is-glb x y = (∧-is-a-lower-bound₁ x y , ∧-is-a-lower-bound₂ x y)
               , λ (z , p) → ∧-is-greatest x y z p
+
+\end{code}
+
+\begin{code}
+
+ ∨-is-lub : {!!}
+ ∨-is-lub = {!!}
 
 \end{code}
