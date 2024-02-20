@@ -251,26 +251,18 @@ module _ (L : DistributiveLattice 𝓤) where
 
  open DistributiveLattice L
  open Meets (orderᵈ L)
+ open Joins (orderᵈ L)
 
  ∧-is-greatest : (x y z : ∣ L ∣ᵈ)
                → (z is-a-lower-bound-of (x , y) ⇒ z ≤ (x ∧ y)) holds
- ∧-is-greatest x y z (p₁ , p₂) = †
-  where
-   p₁′ : z ∨ x ＝ x
-   p₁′ = orderᵈ-implies-orderᵈ-∨ L p₁
-
-   p₂′ : z ∨ y ＝ y
-   p₂′ = orderᵈ-implies-orderᵈ-∨ L p₂
-
-   † : orderᵈ L z (x ∧ y) holds
-   † = z ∧ (x ∧ y)    ＝⟨ Ⅰ ⟩
-       (z ∧ x) ∧ y    ＝⟨ Ⅱ ⟩
-       z ∧ y          ＝⟨ Ⅲ ⟩
-       z              ∎
-        where
-         Ⅰ = ∧-associative z x y
-         Ⅱ = ap (_∧ y) p₁
-         Ⅲ = p₂
+ ∧-is-greatest x y z (p₁ , p₂) = z ∧ (x ∧ y)    ＝⟨ Ⅰ ⟩
+                                 (z ∧ x) ∧ y    ＝⟨ Ⅱ ⟩
+                                 z ∧ y          ＝⟨ Ⅲ ⟩
+                                 z              ∎
+                                  where
+                                   Ⅰ = ∧-associative z x y
+                                   Ⅱ = ap (_∧ y) p₁
+                                   Ⅲ = p₂
 
  ∧-is-glb : (x y : ∣ L ∣ᵈ) → ((x ∧ y) is-glb-of (x , y)) holds
  ∧-is-glb x y = (∧-is-a-lower-bound₁ x y , ∧-is-a-lower-bound₂ x y)
@@ -280,7 +272,33 @@ module _ (L : DistributiveLattice 𝓤) where
 
 \begin{code}
 
- ∨-is-lub : {!!}
- ∨-is-lub = {!!}
+ ∨-is-an-upper-bound₁ : (x y : ∣ L ∣ᵈ) → (x ≤ (x ∨ y)) holds
+ ∨-is-an-upper-bound₁ = ∧-absorptive
+
+ ∨-is-an-upper-bound₂ : (x y : ∣ L ∣ᵈ) → (y ≤ (x ∨ y)) holds
+ ∨-is-an-upper-bound₂ x y = ∧-absorptive₁ y x
+
+ ∨-is-least : (x y z : ∣ L ∣ᵈ) → (z is-an-upper-bound-of₂ (x , y) ⇒ (x ∨ y) ≤ z) holds
+ ∨-is-least x y z (p₁ , p₂) = orderᵈ-∨-implies-orderᵈ L †
+   where
+    q₂ : y ∨ z ＝ z
+    q₂ = orderᵈ-implies-orderᵈ-∨ L p₂
+
+    q₁ : x ∨ z ＝ z
+    q₁ = orderᵈ-implies-orderᵈ-∨ L p₁
+
+    Ⅰ = ∨-associative x y z ⁻¹
+    Ⅱ = ap (x ∨_) q₂
+    Ⅲ = q₁
+
+    † : (x ∨ y) ∨ z ＝ z
+    † = (x ∨ y) ∨ z   ＝⟨ Ⅰ ⟩
+        x ∨ (y ∨ z)   ＝⟨ Ⅱ ⟩
+        x ∨ z         ＝⟨ Ⅲ ⟩
+        z ∎
+
+ ∨-is-lub : (x y : ∣ L ∣ᵈ) → ((x ∨ y) is-lub-of₂ (x , y)) holds
+ ∨-is-lub x y = (∨-is-an-upper-bound₁ x y , ∨-is-an-upper-bound₂ x y)
+              , λ (z , p) → ∨-is-least x y z p
 
 \end{code}
