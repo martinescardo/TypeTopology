@@ -74,6 +74,13 @@ hlevels-are-upper-closed (succ n) X h-level = step
   step : (x x' : X) (p q : x ＝ x') → (p ＝ q) is-of-hlevel n
   step x x' p q = hlevels-are-upper-closed n (x ＝ x') (h-level x x') p q
 
+id-types-are-same-hlevel : {X : 𝓤 ̇ } (n : ℕ)
+                         → X is-of-hlevel n
+                         → (x x' : X) → (x ＝ x') is-of-hlevel n
+id-types-are-same-hlevel zero X-hlev x x' = contr-lemma X-hlev x x'
+id-types-are-same-hlevel (succ n) X-hlev x x' =
+  hlevels-are-upper-closed n (x ＝ x') (X-hlev x x')
+
 \end{code}
 
 We will now give some closure results about H-levels.
@@ -255,6 +262,12 @@ record H-level-truncations-exist : 𝓤ω where
                  → ((s : ∣∣ X ∣∣ n) → (P s) is-of-hlevel n)
                  → ((x : X) → P (∣ x ∣ n))
                  → (s : ∣∣ X ∣∣ n) → P s
+  ∣∣∣∣-comp-ind : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } {n : ℕ}
+                → (P : ∣∣ X ∣∣ n → 𝓥 ̇ )
+                → (h-lev : (s : ∣∣ X ∣∣ n) → (P s) is-of-hlevel n)
+                → (f : (x : X) → P (∣ x ∣ n))
+                → (x : X)
+                → ∣∣∣∣-induction P h-lev f (∣ x ∣ n) ＝ f x
  infix 0 ∣∣_∣∣_
  infix 0 ∣_∣_
 
@@ -264,21 +277,31 @@ module truncation-properties (te : H-level-truncations-exist) where
 
  ∣∣∣∣-rec : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {n : ℕ}
           → Y is-of-hlevel n → (X → Y) → ∣∣ X ∣∣ n → Y
- ∣∣∣∣-rec {𝓤} {𝓥} {X} {Y} {n} H-lev f' s =
-   ∣∣∣∣-induction (λ _ → Y) (λ _ → H-lev) f' s
+ ∣∣∣∣-rec {𝓤} {𝓥} {X} {Y} {n} H-lev f s =
+   ∣∣∣∣-induction (λ _ → Y) (λ _ → H-lev) f s
+
+ ∣∣∣∣-uniqueness : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {n : ℕ}
+                 → Y is-of-hlevel n
+                 → (f g : ∣∣ X ∣∣ n → Y)
+                 → ((x : X) → f (∣ x ∣ n) ＝ g (∣ x ∣ n))
+                 → (s : ∣∣ X ∣∣ n) → f s ＝ g s
+ ∣∣∣∣-uniqueness {𝓤} {𝓥} {X} {Y} {n} Y-h-lev f g H =
+   ∣∣∣∣-induction (λ s → f s ＝ g s)
+                  (λ s → id-types-are-same-hlevel n Y-h-lev (f s) (g s)) H
+
+ ∣∣∣∣-comp-rec : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {n : ℕ}
+               → (Y-h-lev : Y is-of-hlevel n)
+               → (f : (X → Y))
+               → (x : X)
+               → ∣∣∣∣-rec Y-h-lev f (∣ x ∣ n) ＝ f x
+ ∣∣∣∣-comp-rec {𝓤} {𝓥} {X} {Y} {n} Y-h-lev f x =
+   ∣∣∣∣-comp-ind (λ _ → Y) (λ _ → Y-h-lev) f x 
 
  zero-hlevel-is-contr : {X : 𝓤 ̇ } → is-contr (∣∣ X ∣∣ zero)
  zero-hlevel-is-contr = ∣∣∣∣-is-hlevel
 
  one-hlevel-is-prop : {X : 𝓤 ̇ } → is-prop (∣∣ X ∣∣ succ zero)
  one-hlevel-is-prop = is-prop'-implies-is-prop ∣∣∣∣-is-hlevel
-
- id-types-are-same-hlevel : {X : 𝓤 ̇ } (n : ℕ)
-                          → X is-of-hlevel n
-                          → (x x' : X) → (x ＝ x') is-of-hlevel n
- id-types-are-same-hlevel zero X-hlev x x' = contr-lemma X-hlev x x'
- id-types-are-same-hlevel (succ n) X-hlev x x' =
-   hlevels-are-upper-closed n (x ＝ x') (X-hlev x x')
 
  canonical-pred-map : (X : 𝓤 ̇) (n : ℕ)
                     → ∣∣ X ∣∣ succ n → ∣∣ X ∣∣ n
@@ -301,16 +324,35 @@ module truncation-properties (te : H-level-truncations-exist) where
    H = ∣∣∣∣-induction (λ s → b (f s) ＝ s)
                       (λ s → id-types-are-same-hlevel n ∣∣∣∣-is-hlevel
                                                       (b (f s)) s)
-                      {!!}
+                      H'
+    where
+     H' : (x : X) → b (f (∣ x ∣ n)) ＝ (∣ x ∣ n)
+     H' x = b (f (∣ x ∣ n))           ＝⟨ ap b (∣∣∣∣-comp-rec ∣∣∣∣-is-hlevel
+                                               (λ x → ∣ (⌜ e ⌝ x) ∣ n) x) ⟩
+            b (∣ ⌜ e ⌝ x ∣ n)         ＝⟨ ∣∣∣∣-comp-rec ∣∣∣∣-is-hlevel
+                                               (λ y → ∣ (⌜ e ⌝⁻¹ y) ∣ n)
+                                               (⌜ e ⌝ x) ⟩
+            (∣ ⌜ e ⌝⁻¹ (⌜ e ⌝ x) ∣ n) ＝⟨ ap (λ x → ∣ x ∣ n)
+                                             (inverses-are-retractions' e x) ⟩
+            (∣ x ∣ n)                 ∎ 
    G : f ∘ b ∼ id
    G = ∣∣∣∣-induction (λ s → f (b s) ＝ s)
                       (λ s → id-types-are-same-hlevel n ∣∣∣∣-is-hlevel
                                                       (f (b s)) s)
-                      {!!}
+                      G'
+    where
+     G' : (y : Y) → f (b (∣ y ∣ n)) ＝ (∣ y ∣ n)
+     G' y = f (b (∣ y ∣ n))           ＝⟨ ap f (∣∣∣∣-comp-rec ∣∣∣∣-is-hlevel
+                                               (λ y → ∣ (⌜ e ⌝⁻¹ y) ∣ n) y) ⟩
+            f (∣ (⌜ e ⌝⁻¹ y) ∣ n)     ＝⟨ ∣∣∣∣-comp-rec ∣∣∣∣-is-hlevel
+                                            (λ x → ∣ ⌜ e ⌝ x ∣ n) (⌜ e ⌝⁻¹ y) ⟩
+            (∣ ⌜ e ⌝ (⌜ e ⌝⁻¹ y) ∣ n) ＝⟨ ap (λ y → ∣ y ∣ n)
+                                            (inverses-are-sections' e y) ⟩
+            (∣ y ∣ n)                 ∎ 
 
- hlevel-equiv-succ : (X : 𝓤 ̇) (n : ℕ)
-                   → (∣∣ X ∣∣ n) ≃ (∣∣ (∣∣ X ∣∣ succ n) ∣∣ n)
- hlevel-equiv-succ X n = {!!}
+ succesive-truncations-equiv : (X : 𝓤 ̇) (n : ℕ)
+                             → (∣∣ X ∣∣ n) ≃ (∣∣ (∣∣ X ∣∣ succ n) ∣∣ n)
+ succesive-truncations-equiv X n = {!!}
 
 \end{code}
 
@@ -358,7 +400,7 @@ module k-connectedness (te : H-level-truncations-exist) where
                                → X is (succ k) connected
                                → X is k connected
  connectedness-is-lower-closed X k X-succ-con =
-   equiv-to-singleton (hlevel-equiv-succ X k)
+   equiv-to-singleton (succesive-truncations-equiv X k)
                       (contractible-types-are-connected (∣∣ X ∣∣ succ k)
                                                         X-succ-con k)
 
