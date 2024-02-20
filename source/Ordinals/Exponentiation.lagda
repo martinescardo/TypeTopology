@@ -989,4 +989,7 @@ module _ (pt : propositional-truncations-exist)
                (pr₂ exp-sup-simulation)
                exp-sup-simulation-surjective
 
+ exp-sup-spec : (α : Ordinal 𝓤) {I : 𝓤 ̇  } → ∥ I ∥ → (β : I → Ordinal 𝓤) → sup (λ i → ([𝟙+ α ]^ (β i))) ＝ ([𝟙+ α ]^ (sup β))
+ exp-sup-spec α i β = ∥∥-rec (the-type-of-ordinals-is-a-set (ua _) fe') (λ i₀ → sup-spec i₀ β α) i
+
 \end{code}
