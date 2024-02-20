@@ -303,11 +303,21 @@ module truncation-properties (te : H-level-truncations-exist) where
  one-hlevel-is-prop : {X : 𝓤 ̇ } → is-prop (∣∣ X ∣∣ succ zero)
  one-hlevel-is-prop = is-prop'-implies-is-prop ∣∣∣∣-is-hlevel
 
- canonical-pred-map : (X : 𝓤 ̇) (n : ℕ)
+ two-hlevel-is-set : {X : 𝓤 ̇ } → is-set (∣∣ X ∣∣ succ (succ zero))
+ two-hlevel-is-set {𝓤} {X} {x} {y} =
+   is-prop'-implies-is-prop (∣∣∣∣-is-hlevel x y)
+
+ canonical-pred-map : {X : 𝓤 ̇} {n : ℕ}
                     → ∣∣ X ∣∣ succ n → ∣∣ X ∣∣ n
- canonical-pred-map X n x =
+ canonical-pred-map {𝓤} {X} {n} x =
         ∣∣∣∣-rec (hlevels-are-upper-closed n (∣∣ X ∣∣ n) ∣∣∣∣-is-hlevel)
                  (λ x → ∣ x ∣ n) x
+
+ canonical-pred-map-comp : {X : 𝓤 ̇} {n : ℕ} (x : X)
+                         → canonical-pred-map (∣ x ∣ succ n) ＝ (∣ x ∣ n)
+ canonical-pred-map-comp {𝓤} {X} {n} x =
+   ∣∣∣∣-comp-rec (hlevels-are-upper-closed n (∣∣ X ∣∣ n) ∣∣∣∣-is-hlevel)
+                 (λ _ → ∣ _ ∣ n) x
 
  truncation-closed-under-equiv : {𝓤 𝓥 : Universe}
                                → (n : ℕ)
@@ -352,7 +362,49 @@ module truncation-properties (te : H-level-truncations-exist) where
 
  succesive-truncations-equiv : (X : 𝓤 ̇) (n : ℕ)
                              → (∣∣ X ∣∣ n) ≃ (∣∣ (∣∣ X ∣∣ succ n) ∣∣ n)
- succesive-truncations-equiv X n = {!!}
+ succesive-truncations-equiv X n = (f , (b , G) , (b , H))
+  where
+   f : (∣∣ X ∣∣ n) → (∣∣ (∣∣ X ∣∣ succ n) ∣∣ n)
+   f = ∣∣∣∣-rec ∣∣∣∣-is-hlevel (λ x → ∣ ∣ x ∣ succ n ∣ n)
+   b : (∣∣ (∣∣ X ∣∣ succ n) ∣∣ n) → (∣∣ X ∣∣ n)
+   b = ∣∣∣∣-rec ∣∣∣∣-is-hlevel (canonical-pred-map)
+   G : f ∘ b ∼ id
+   G = ∣∣∣∣-induction (λ s → f ( b s) ＝ s)
+                      (λ s → id-types-are-same-hlevel n ∣∣∣∣-is-hlevel
+                                                      (f (b s)) s)
+                      (∣∣∣∣-induction (λ t → f (b (∣ t ∣ n)) ＝ (∣ t ∣ n))
+                                      (λ t → id-types-are-same-hlevel n
+                                              (id-types-are-same-hlevel n
+                                               ∣∣∣∣-is-hlevel (f (b (∣ t ∣ n)))
+                                                               ((∣ t ∣ n))))
+                                      G')
+    where
+     G' : (x : X) → f (b (∣ ∣ x ∣ succ n ∣ n)) ＝ (∣ ∣ x ∣ succ n ∣ n)
+     G' x = f (b (∣ ∣ x ∣ succ n ∣ n))            ＝⟨ ap f (∣∣∣∣-comp-rec
+                                                         ∣∣∣∣-is-hlevel
+                                                         canonical-pred-map
+                                                         (∣ x ∣ succ n)) ⟩
+            f (canonical-pred-map (∣ x ∣ succ n)) ＝⟨ ap f
+                                                   (canonical-pred-map-comp x) ⟩
+            f (∣ x ∣ n)                           ＝⟨ ∣∣∣∣-comp-rec
+                                                      ∣∣∣∣-is-hlevel
+                                                      (λ x → ∣ ∣ x ∣ succ n ∣ n)
+                                                      x ⟩
+            (∣ ∣ x ∣ succ n ∣ n)                  ∎
+   H : b ∘ f ∼ id
+   H = ∣∣∣∣-induction (λ s → b (f s) ＝ s)
+                      (λ s → id-types-are-same-hlevel n ∣∣∣∣-is-hlevel
+                                                      (b (f s)) s)
+                      H'
+    where
+     H' : (x : X) → b (f (∣ x ∣ n)) ＝ (∣ x ∣ n)
+     H' x = b (f (∣ x ∣ n))             ＝⟨ ap b (∣∣∣∣-comp-rec ∣∣∣∣-is-hlevel
+                                              (λ x → ∣ ∣ x ∣ succ n ∣ n) x) ⟩
+            b (∣ ∣ x ∣ succ n ∣ n)      ＝⟨ ∣∣∣∣-comp-rec ∣∣∣∣-is-hlevel
+                                            canonical-pred-map (∣ x ∣ succ n) ⟩
+            canonical-pred-map (∣ x ∣ succ n) ＝⟨ canonical-pred-map-comp x ⟩
+            (∣ x ∣ n)                         ∎
+   
 
 \end{code}
 
