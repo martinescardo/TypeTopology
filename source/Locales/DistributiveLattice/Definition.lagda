@@ -28,8 +28,7 @@ open Implication fe
 
 \end{code}
 
-In the future, equivalent definitions of the notion of distributive lattice
-will be added to this module.
+We give the equational definition from Stone Spaces.
 
 \begin{code}
 
@@ -58,28 +57,11 @@ record DistributiveLattice (𝓤 : Universe) : 𝓤 ⁺  ̇ where
 
   distributivityᵈ : (x y z : X) → x ∧ (y ∨ z) ＝ (x ∧ y) ∨ (x ∧ z)
 
- _≤_ : X → X → Ω 𝓤
- x ≤ y = (x ∧ y ＝ x) , X-is-set
+\end{code}
 
- ∧-is-a-lower-bound₁ : (x y : X) → ((x ∧ y) ≤ x) holds
- ∧-is-a-lower-bound₁ x y = (x ∧ y) ∧ x   ＝⟨ Ⅰ ⟩
-                           (y ∧ x) ∧ x   ＝⟨ Ⅱ ⟩
-                           y ∧ (x ∧ x)   ＝⟨ Ⅲ ⟩
-                           y ∧ x         ＝⟨ Ⅳ ⟩
-                           x ∧ y          ∎
-                            where
-                             Ⅰ = ap (_∧ x) (∧-commutative x y)
-                             Ⅱ = ∧-associative y x x ⁻¹
-                             Ⅲ = ap (y ∧_) (∧-idempotent x)
-                             Ⅳ = ∧-commutative y x
+Some easy lemmas that we prove directly inside the record definition.
 
- ∧-is-a-lower-bound₂ : (x y : X) → ((x ∧ y) ≤ y) holds
- ∧-is-a-lower-bound₂ x y = (x ∧ y) ∧ y ＝⟨ Ⅰ ⟩
-                           x ∧ (y ∧ y) ＝⟨ Ⅱ ⟩
-                           x ∧ y ∎
-                            where
-                             Ⅰ = ∧-associative x y y ⁻¹
-                             Ⅱ = ap (x ∧_) (∧-idempotent y)
+\begin{code}
 
  distributivityᵈ₁ : (x y z : X) → (y ∨ z) ∧ x ＝ (y ∧ x) ∨ (z ∧ x)
  distributivityᵈ₁ x y z = (y ∨ z) ∧ x         ＝⟨ Ⅰ ⟩
@@ -98,38 +80,57 @@ record DistributiveLattice (𝓤 : Universe) : 𝓤 ⁺  ̇ where
                      x ∧ (x ∨ y) ＝⟨ ∧-absorptive x y              ⟩
                      x           ∎
 
- ∧-absorptive₃ : (x y : X) → (y ∨ x) ∧ x ＝ x
- ∧-absorptive₃ x y = (y ∨ x) ∧ x ＝⟨ ∧-commutative (y ∨ x) x ⟩
-                     x ∧ (y ∨ x) ＝⟨ ∧-absorptive₁ x y ⟩
-                     x           ∎
+ ∨-absorptive₁ : (x y : X) → x ∨ (y ∧ x) ＝ x
+ ∨-absorptive₁ x y = x ∨ (y ∧ x) ＝⟨ ap (x ∨_) (∧-commutative y x) ⟩
+                     x ∨ (x ∧ y) ＝⟨ ∨-absorptive x y              ⟩
+                     x ∎
 
- ∨-absorptive₁ : (x y : X) → (x ∧ y) ∨ x ＝ x
- ∨-absorptive₁ x y = (x ∧ y) ∨ x ＝⟨ ∨-commutative (x ∧ y) x ⟩
+ ∨-absorptive₂ : (x y : X) → (x ∧ y) ∨ x ＝ x
+ ∨-absorptive₂ x y = (x ∧ y) ∨ x ＝⟨ ∨-commutative (x ∧ y) x ⟩
                      x ∨ (x ∧ y) ＝⟨ ∨-absorptive x y        ⟩
                      x           ∎
 
- ∨-absorptive₂ : (x y : X) → (y ∧ x) ∨ x ＝ x
- ∨-absorptive₂ x y = (y ∧ x) ∨ x ＝⟨ Ⅰ ⟩
+ ∧-absorptive₃ : (x y : X) → (y ∨ x) ∧ x ＝ x
+ ∧-absorptive₃ x y = (y ∨ x) ∧ x ＝⟨ ∧-commutative (y ∨ x) x ⟩
+                     x ∧ (y ∨ x) ＝⟨ ∧-absorptive₁ x y       ⟩
+                     x           ∎
+
+ ∨-absorptive₃ : (x y : X) → (y ∧ x) ∨ x ＝ x
+ ∨-absorptive₃ x y = (y ∧ x) ∨ x ＝⟨ Ⅰ ⟩
                      (x ∧ y) ∨ x ＝⟨ Ⅱ ⟩
                      x           ∎
                       where
                        Ⅰ = ap (_∨ x) (∧-commutative y x)
-                       Ⅱ = ∨-absorptive₁ x y
+                       Ⅱ = ∨-absorptive₂ x y
 
- ∨-absorptive₃ : (x y : X) → x ∨ (y ∧ x) ＝ x
- ∨-absorptive₃ x y = x ∨ (y ∧ x)   ＝⟨ ∨-commutative x (y ∧ x) ⟩
-                     (y ∧ x) ∨ x   ＝⟨ ∨-absorptive₂ x y       ⟩
-                     x             ∎
+\end{code}
 
- distributivity-op : (x y z : X) → x ∨ (y ∧ z) ＝ (x ∨ y) ∧ (x ∨ z)
+Projection for the carrier set.
+
+\begin{code}
+
+∣_∣ᵈ : DistributiveLattice 𝓤 → 𝓤  ̇
+∣_∣ᵈ L = let open DistributiveLattice L in X
+
+\end{code}
+
+The dual of the distributivity law.
+
+\begin{code}
+
+module _ (L : DistributiveLattice 𝓤) where
+
+ open DistributiveLattice L
+
+ distributivity-op : (x y z : ∣ L ∣ᵈ) → x ∨ (y ∧ z) ＝ (x ∨ y) ∧ (x ∨ z)
  distributivity-op x y z =
-  x ∨ (y ∧ z)                      ＝⟨ Ⅰ ⟩
-  x ∨ ((z ∧ y) ∨ (z ∧ x))          ＝⟨ Ⅱ ⟩
-  (x ∨ z) ∧ (y ∨ x)                ＝⟨ Ⅲ ⟩
-  (y ∨ x) ∧ (x ∨ z)                ＝⟨ Ⅳ ⟩
-  (x ∨ y) ∧ (x ∨ z)                ∎
+  x ∨ (y ∧ z)              ＝⟨ Ⅰ ⟩
+  x ∨ ((z ∧ y) ∨ (z ∧ x))  ＝⟨ Ⅱ ⟩
+  (x ∨ z) ∧ (y ∨ x)        ＝⟨ Ⅲ ⟩
+  (y ∨ x) ∧ (x ∨ z)        ＝⟨ Ⅳ ⟩
+  (x ∨ y) ∧ (x ∨ z)        ∎
    where
-    𝒶 = ap (_∨ (y ∧ z)) (∨-absorptive₃ x z ⁻¹)
+    𝒶 = ap (_∨ (y ∧ z)) (∨-absorptive₁ x z ⁻¹)
     𝒷 = ap ((x ∨ (z ∧ x)) ∨_) (∧-commutative y z)
     𝒸 = ∨-associative x (z ∧ x) (z ∧ y) ⁻¹
     𝒹 = ap (x ∨_) (∨-commutative (z ∧ x) (z ∧ y))
@@ -151,29 +152,29 @@ record DistributiveLattice (𝓤 : Universe) : 𝓤 ⁺  ̇ where
 
 \end{code}
 
-\begin{code}
-
-∣_∣ᵈ : DistributiveLattice 𝓤 → 𝓤  ̇
-∣_∣ᵈ L = let open DistributiveLattice L in X
-
-\end{code}
+Definition of the order as `x ≤ y := x ∧ y = x`.
 
 \begin{code}
 
-orderᵈ : (L : DistributiveLattice 𝓤)
-       → ∣ L ∣ᵈ → ∣ L ∣ᵈ → Ω 𝓤
-orderᵈ L x y = (x ∧ y ＝ x) , X-is-set
+orderᵈ-∧ : (L : DistributiveLattice 𝓤) → ∣ L ∣ᵈ → ∣ L ∣ᵈ → Ω 𝓤
+orderᵈ-∧ L x y = (x ∧ y ＝ x) , X-is-set
  where
   open DistributiveLattice L
 
-syntax orderᵈ L x y = x ≤ᵈ[ L ] y
+\end{code}
 
-≤ᵈ-is-reflexive : (L : DistributiveLattice 𝓤) → is-reflexive (orderᵈ L) holds
+We take this as our primary order.
+
+\begin{code}
+
+syntax orderᵈ-∧ L x y = x ≤ᵈ[ L ] y
+
+≤ᵈ-is-reflexive : (L : DistributiveLattice 𝓤) → is-reflexive (orderᵈ-∧ L) holds
 ≤ᵈ-is-reflexive L = ∧-idempotent
  where
   open DistributiveLattice L
 
-≤ᵈ-is-transitive : (L : DistributiveLattice 𝓤) → is-transitive (orderᵈ L) holds
+≤ᵈ-is-transitive : (L : DistributiveLattice 𝓤) → is-transitive (orderᵈ-∧ L) holds
 ≤ᵈ-is-transitive L x y z p q =
  x ∧ z         ＝⟨ Ⅰ ⟩
  (x ∧ y) ∧ z   ＝⟨ Ⅱ ⟩
@@ -188,7 +189,7 @@ syntax orderᵈ L x y = x ≤ᵈ[ L ] y
    Ⅲ = ap (x ∧_) q
    Ⅳ = p
 
-≤ᵈ-is-antisymmetric : (L : DistributiveLattice 𝓤) → is-antisymmetric (orderᵈ L)
+≤ᵈ-is-antisymmetric : (L : DistributiveLattice 𝓤) → is-antisymmetric (orderᵈ-∧ L)
 ≤ᵈ-is-antisymmetric L {x} {y} p q =
  x      ＝⟨ Ⅰ ⟩
  x ∧ y  ＝⟨ Ⅱ ⟩
@@ -201,13 +202,21 @@ syntax orderᵈ L x y = x ≤ᵈ[ L ] y
    Ⅱ = ∧-commutative x y
    Ⅲ = q
 
+\end{code}
+
+It is also useful to have the alternative definition `x ≤ y := x ∨ y ＝ y`.
+
+\begin{code}
+
 orderᵈ-∨ : (L : DistributiveLattice 𝓤) → ∣ L ∣ᵈ → ∣ L ∣ᵈ → Ω 𝓤
 orderᵈ-∨ L x y = (x ∨ y ＝ y) , X-is-set
  where
   open DistributiveLattice L
 
+syntax orderᵈ-∨ L x y = x ≤ᵈ[ L ]₀ y
+
 orderᵈ-∨-implies-orderᵈ : (L : DistributiveLattice 𝓤) {x y : ∣ L ∣ᵈ}
-                        → (orderᵈ-∨ L x y ⇒ orderᵈ L x y) holds
+                        → (x ≤ᵈ[ L ]₀ y ⇒ x ≤ᵈ[ L ] y) holds
 orderᵈ-∨-implies-orderᵈ L {x} {y} p =
  x ∧ y ＝⟨ Ⅰ ⟩ x ∧ (x ∨ y) ＝⟨ Ⅱ ⟩ x ∎
   where
@@ -217,7 +226,7 @@ orderᵈ-∨-implies-orderᵈ L {x} {y} p =
    Ⅱ = ∧-absorptive x y
 
 orderᵈ-implies-orderᵈ-∨ : (L : DistributiveLattice 𝓤) {x y : ∣ L ∣ᵈ}
-                        → (orderᵈ L x y ⇒ orderᵈ-∨ L x y) holds
+                        → (x ≤ᵈ[ L ] y ⇒ x ≤ᵈ[ L ]₀ y) holds
 orderᵈ-implies-orderᵈ-∨ L {x} {y} p =
  x ∨ y       ＝⟨ Ⅰ                ⟩
  y ∨ x       ＝⟨ Ⅱ                ⟩
@@ -233,11 +242,13 @@ orderᵈ-implies-orderᵈ-∨ L {x} {y} p =
 
 \end{code}
 
+We package everything up into a poset.
+
 \begin{code}
 
 poset-ofᵈ : DistributiveLattice 𝓤 → Poset 𝓤 𝓤
 poset-ofᵈ L = ∣ L ∣ᵈ
-            , orderᵈ L
+            , orderᵈ-∧ L
             , (≤ᵈ-is-reflexive L , ≤ᵈ-is-transitive L)
             , ≤ᵈ-is-antisymmetric L
  where
@@ -245,16 +256,41 @@ poset-ofᵈ L = ∣ L ∣ᵈ
 
 \end{code}
 
+Finally, we show that the operations `_∧_` and `_∨_` are indeed meets and
+join operations.
+
 \begin{code}
 
 module _ (L : DistributiveLattice 𝓤) where
 
  open DistributiveLattice L
- open Meets (orderᵈ L)
- open Joins (orderᵈ L)
+ open Meets (orderᵈ-∧ L)
+ open Joins (orderᵈ-∧ L)
+
+ ∧-is-a-lower-bound₂ : (x y : X) → ((x ∧ y) ≤ᵈ[ L ] y) holds
+ ∧-is-a-lower-bound₂ x y = (x ∧ y) ∧ y ＝⟨ Ⅰ ⟩
+                           x ∧ (y ∧ y) ＝⟨ Ⅱ ⟩
+                           x ∧ y ∎
+                            where
+                             Ⅰ = ∧-associative x y y ⁻¹
+                             Ⅱ = ap (x ∧_) (∧-idempotent y)
+
+
+ ∧-is-a-lower-bound₁ : (x y : X) → ((x ∧ y) ≤ᵈ[ L ] x) holds
+ ∧-is-a-lower-bound₁ x y = (x ∧ y) ∧ x   ＝⟨ Ⅰ ⟩
+                           (y ∧ x) ∧ x   ＝⟨ Ⅱ ⟩
+                           y ∧ (x ∧ x)   ＝⟨ Ⅲ ⟩
+                           y ∧ x         ＝⟨ Ⅳ ⟩
+                           x ∧ y          ∎
+                            where
+                             Ⅰ = ap (_∧ x) (∧-commutative x y)
+                             Ⅱ = ∧-associative y x x ⁻¹
+                             Ⅲ = ap (y ∧_) (∧-idempotent x)
+                             Ⅳ = ∧-commutative y x
+
 
  ∧-is-greatest : (x y z : ∣ L ∣ᵈ)
-               → (z is-a-lower-bound-of (x , y) ⇒ z ≤ (x ∧ y)) holds
+               → (z is-a-lower-bound-of (x , y) ⇒ z ≤ᵈ[ L ] (x ∧ y)) holds
  ∧-is-greatest x y z (p₁ , p₂) = z ∧ (x ∧ y)    ＝⟨ Ⅰ ⟩
                                  (z ∧ x) ∧ y    ＝⟨ Ⅱ ⟩
                                  z ∧ y          ＝⟨ Ⅲ ⟩
@@ -272,13 +308,13 @@ module _ (L : DistributiveLattice 𝓤) where
 
 \begin{code}
 
- ∨-is-an-upper-bound₁ : (x y : ∣ L ∣ᵈ) → (x ≤ (x ∨ y)) holds
+ ∨-is-an-upper-bound₁ : (x y : ∣ L ∣ᵈ) → (x ≤ᵈ[ L ] (x ∨ y)) holds
  ∨-is-an-upper-bound₁ = ∧-absorptive
 
- ∨-is-an-upper-bound₂ : (x y : ∣ L ∣ᵈ) → (y ≤ (x ∨ y)) holds
+ ∨-is-an-upper-bound₂ : (x y : ∣ L ∣ᵈ) → (y ≤ᵈ[ L ] (x ∨ y)) holds
  ∨-is-an-upper-bound₂ x y = ∧-absorptive₁ y x
 
- ∨-is-least : (x y z : ∣ L ∣ᵈ) → (z is-an-upper-bound-of₂ (x , y) ⇒ (x ∨ y) ≤ z) holds
+ ∨-is-least : (x y z : ∣ L ∣ᵈ) → (z is-an-upper-bound-of₂ (x , y) ⇒ (x ∨ y) ≤ᵈ[ L ] z) holds
  ∨-is-least x y z (p₁ , p₂) = orderᵈ-∨-implies-orderᵈ L †
    where
     q₂ : y ∨ z ＝ z
