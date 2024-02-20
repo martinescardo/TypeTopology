@@ -61,6 +61,26 @@ record DistributiveLattice (𝓤 : Universe) : 𝓤 ⁺  ̇ where
  _≤_ : X → X → Ω 𝓤
  x ≤ y = (x ∧ y ＝ x) , X-is-set
 
+ ∧-is-a-lower-bound₁ : (x y : X) → ((x ∧ y) ≤ x) holds
+ ∧-is-a-lower-bound₁ x y = (x ∧ y) ∧ x   ＝⟨ Ⅰ ⟩
+                           (y ∧ x) ∧ x   ＝⟨ Ⅱ ⟩
+                           y ∧ (x ∧ x)   ＝⟨ Ⅲ ⟩
+                           y ∧ x         ＝⟨ Ⅳ ⟩
+                           x ∧ y          ∎
+                            where
+                             Ⅰ = ap (_∧ x) (∧-commutative x y)
+                             Ⅱ = ∧-associative y x x ⁻¹
+                             Ⅲ = ap (y ∧_) (∧-idempotent x)
+                             Ⅳ = ∧-commutative y x
+
+ ∧-is-a-lower-bound₂ : (x y : X) → ((x ∧ y) ≤ y) holds
+ ∧-is-a-lower-bound₂ x y = (x ∧ y) ∧ y ＝⟨ Ⅰ ⟩
+                           x ∧ (y ∧ y) ＝⟨ Ⅱ ⟩
+                           x ∧ y ∎
+                            where
+                             Ⅰ = ∧-associative x y y ⁻¹
+                             Ⅱ = ap (x ∧_) (∧-idempotent y)
+
  distributivityᵈ₁ : (x y z : X) → (y ∨ z) ∧ x ＝ (y ∧ x) ∨ (z ∧ x)
  distributivityᵈ₁ x y z = (y ∨ z) ∧ x         ＝⟨ Ⅰ ⟩
                           x ∧ (y ∨ z)         ＝⟨ Ⅱ ⟩
@@ -72,16 +92,6 @@ record DistributiveLattice (𝓤 : Universe) : 𝓤 ⁺  ̇ where
                             Ⅱ = distributivityᵈ x y z
                             Ⅲ = ap (_∨ (x ∧ z)) (∧-commutative x y)
                             Ⅳ = ap ((y ∧ x) ∨_) (∧-commutative x z)
-
- distributivity-op : (x y z : X) → x ∨ (y ∧ z) ＝ (x ∨ y) ∧ (x ∨ z)
- distributivity-op x y z = x ∨ (y ∧ z)                      ＝⟨ Ⅰ ⟩
-                           x ∨ ((z ∧ y) ∨ (z ∧ x))          ＝⟨ Ⅱ ⟩
-                           ((x ∨ y) ∧ z) ∨ ((x ∨ y) ∧ z)    ＝⟨ Ⅲ ⟩
-                           (x ∨ y) ∧ (x ∨ z)                ∎
-                            where
-                             Ⅰ = {!!}
-                             Ⅱ = {!!}
-                             Ⅲ = {!!}
 
  ∧-absorptive₁ : (x y : X) → x ∧ (y ∨ x) ＝ x
  ∧-absorptive₁ x y = x ∧ (y ∨ x) ＝⟨ ap (x ∧_) (∨-commutative y x) ⟩
@@ -105,6 +115,33 @@ record DistributiveLattice (𝓤 : Universe) : 𝓤 ⁺  ̇ where
                       where
                        Ⅰ = ap (_∨ x) (∧-commutative y x)
                        Ⅱ = ∨-absorptive₁ x y
+
+ ∨-absorptive₃ : (x y : X) → x ∨ (y ∧ x) ＝ x
+ ∨-absorptive₃ x y = x ∨ (y ∧ x)   ＝⟨ ∨-commutative x (y ∧ x) ⟩
+                     (y ∧ x) ∨ x   ＝⟨ ∨-absorptive₂ x y       ⟩
+                     x             ∎
+
+ distributivity-op : (x y z : X) → x ∨ (y ∧ z) ＝ (x ∨ y) ∧ (x ∨ z)
+ distributivity-op x y z =
+  x ∨ (y ∧ z)                      ＝⟨ Ⅰ ⟩
+  x ∨ ((z ∧ y) ∨ (z ∧ x))          ＝⟨ Ⅱ ⟩
+  ((x ∨ y) ∧ z) ∨ ((x ∨ y) ∧ z)    ＝⟨ Ⅲ ⟩
+  (x ∨ y) ∧ (x ∨ z)                ∎
+   where
+    p = ap (_∨ (y ∧ z)) (∨-absorptive₃ x z ⁻¹)
+    q = ap ((x ∨ (z ∧ x)) ∨_) (∧-commutative y z)
+    r = ∨-associative x (z ∧ x) (z ∧ y) ⁻¹
+    s = ap (x ∨_) (∨-commutative (z ∧ x) (z ∧ y))
+
+    Ⅰ = x ∨ (y ∧ z)               ＝⟨ p ⟩
+        (x ∨ (z ∧ x)) ∨ (y ∧ z)   ＝⟨ q ⟩
+        (x ∨ (z ∧ x)) ∨ (z ∧ y)   ＝⟨ r ⟩
+        x ∨ ((z ∧ x) ∨ (z ∧ y))   ＝⟨ s ⟩
+        x ∨ ((z ∧ y) ∨ (z ∧ x))   ∎
+    Ⅱ = x ∨ ((z ∧ y) ∨ (z ∧ x))       ＝⟨ {!!} ⟩
+        x ∨ (z ∧ (y ∨ x))             ＝⟨ {!!} ⟩
+        ((x ∨ y) ∧ z) ∨ ((x ∨ y) ∧ z) ∎
+    Ⅲ = {!!}
 
 \end{code}
 
@@ -208,17 +245,6 @@ module _ (L : DistributiveLattice 𝓤) where
 
  open DistributiveLattice L
  open Meets (orderᵈ L)
-
- ∧-is-a-lower-bound₁ : (x y : ∣ L ∣ᵈ) → ((x ∧ y) ≤ᵈ[ L ] x) holds
- ∧-is-a-lower-bound₁ x y = orderᵈ-∨-implies-orderᵈ L †
-  where
-   † : orderᵈ-∨ L (x ∧ y) x holds
-   † = (x ∧ y) ∨ x   ＝⟨ ∨-commutative (x ∧ y) x ⟩
-       x ∨ (x ∧ y)   ＝⟨ ∨-absorptive x y        ⟩
-       x             ∎
-
- ∧-is-a-lower-bound₂ : (x y : ∣ L ∣ᵈ) → ((x ∧ y) ≤ᵈ[ L ] y) holds
- ∧-is-a-lower-bound₂ x y = orderᵈ-∨-implies-orderᵈ L (∨-absorptive₂ y x)
 
  ∧-is-greatest : (x y z : ∣ L ∣ᵈ)
                → (z is-a-lower-bound-of (x , y) ⇒ z ≤ (x ∧ y)) holds
