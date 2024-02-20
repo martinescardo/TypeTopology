@@ -396,7 +396,7 @@ And conversely...
    exp-spec : full-spec exp
    exp-spec = (λ α → spec₀-aux α (cs α)) , (λ α → specₛ-aux α (cs α)) , (λ α → specₗ-aux α (cs α))
    -}
-   
+
    specₗ-aux-nonzero : (α : Ordinal 𝓤) → (cs : cases α) → ¬ (α ＝ 𝟘ₒ) → {I : 𝓤 ̇ } → ∥ I ∥ → (γ : I → Ordinal 𝓤)
                      →  exp-aux α cs (sup γ) ＝ sup (λ i → exp-aux α cs (γ i))
    specₗ-aux-nonzero α (inl (α' , refl)) α-not-zero i γ = exp-sup-spec pt sr α' i γ ⁻¹
@@ -413,5 +413,10 @@ And conversely...
    exp-spec' : full-spec' exp
    exp-spec' = (λ α → spec₀-aux α (cs α)) , (λ α → specₛ-aux α (cs α)) , (λ α → specₗ-aux-nonzero α (cs α) , specₗ-aux-zero α (cs α))
 
+ EM-gives-full-spec : EM 𝓤 → Σ exp ꞉ (Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) , full-spec' exp
+ EM-gives-full-spec em = Cases-gives-full-spec (EM-gives-Cases em)
+
+ full-spec-gives-Cases : Σ exp ꞉ (Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) , full-spec' exp → Cases {𝓤}
+ full-spec-gives-Cases {𝓤} (exp , exp-spec) = EM-gives-Cases (exp-full-spec'-gives-EM exp exp-spec)
 
 \end{code}
