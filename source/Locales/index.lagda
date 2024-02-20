@@ -26,7 +26,6 @@ import Locales.Complements                       -- (8)
 
 -- Distributive lattices
 import Locales.DistributiveLattice.Definition
-import Locales.DistributiveLattice.Ideal
 
 import Locales.Frame                             -- (9)
 
