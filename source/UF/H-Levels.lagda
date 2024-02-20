@@ -245,26 +245,60 @@ We now define the notion of a k-truncation using record types.
 record H-level-truncations-exist : 𝓤ω where
  field
   ∣∣_∣∣_ : {𝓤 : Universe} → 𝓤 ̇ → ℕ → 𝓤 ̇
-  ∣∣∣∣-is-prop : {𝓤 : Universe} {X : 𝓤 ̇ } {n : ℕ} → is-prop (∣∣ X ∣∣ n)
+  ∣∣∣∣-is-hlevel : {𝓤 : Universe} {X : 𝓤 ̇ } {n : ℕ}
+                 → (∣∣ X ∣∣ n) is-of-hlevel n
   ∣_∣_ :  {𝓤 : Universe} {X : 𝓤 ̇ } → X → (n : ℕ) → ∣∣ X ∣∣ n
   ∣∣∣∣-rec : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {n : ℕ}
            → Y is-of-hlevel n → (X → Y) → ∣∣ X ∣∣ n → Y
  infix 0 ∣∣_∣∣_
  infix 0 ∣_∣_
 
+module truncation-properties (te : H-level-truncations-exist) where
+
+ open H-level-truncations-exist te
+
+ ∣∣∣∣-induction : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } {n : ℕ} {P : ∣∣ X ∣∣ n → 𝓥 ̇ }
+                → ((s : ∣∣ X ∣∣ n) → (P s) is-of-hlevel n)
+                → ((x : X) → P (∣ x ∣ n))
+                → (s : ∣∣ X ∣∣ n) → P s
+ ∣∣∣∣-induction {𝓤} {𝓥} {X} {n} {P} H-lev f' s = ϕ s
+  where
+   ϕ' : X → P s
+   ϕ' x = {!!}
+   ϕ : ∣∣ X ∣∣ n → P s
+   ϕ = ∣∣∣∣-rec (H-lev s) ϕ'
+
+ canonical-pred-map : (X : 𝓤 ̇) (n : ℕ)
+                    → ∣∣ X ∣∣ succ n → ∣∣ X ∣∣ n
+ canonical-pred-map X n x =
+        ∣∣∣∣-rec (hlevels-are-upper-closed n (∣∣ X ∣∣ n) ∣∣∣∣-is-hlevel)
+                 (λ x → ∣ x ∣ n) x
+
+ truncation-closed-under-equiv : {𝓤 𝓥 : Universe}
+                               → (n : ℕ)
+                               → (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )
+                               → X ≃ Y
+                               → (∣∣ X ∣∣ n) ≃ (∣∣ Y ∣∣ n)
+ truncation-closed-under-equiv n X Y e = {!!}
+
+ hlevel-equiv-succ : (X : 𝓤 ̇) (n : ℕ)
+                   → (∣∣ X ∣∣ n) ≃ (∣∣ (∣∣ X ∣∣ succ n) ∣∣ n)
+ hlevel-equiv-succ X n = {!!}
+
 \end{code}
 
 We now define the notion of k-connectedness for types and functions with respect
 to H-levels. We will then see that connectedness as defined elsewhere is a
 special case:
-Connectedness typically means set connectedness. In terms of H-level it will
-mean 2-connectedness.
+Connectedness typically means set connectedness. In terms of H-levels defined
+here it will mean 2-connectedness.
 
 \begin{code}
 
 module k-connectedness (te : H-level-truncations-exist) where
 
  open H-level-truncations-exist te
+ open truncation-properties te
 
  _is_connected : 𝓤 ̇ → ℕ → 𝓤 ̇
  X is k connected = is-contr (∣∣ X ∣∣ k)
@@ -272,4 +306,34 @@ module k-connectedness (te : H-level-truncations-exist) where
  map_is_connected : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (f : X → Y) → ℕ → 𝓤 ⊔ 𝓥 ̇
  map f is k connected = (y : codomain f) → (fiber f y) is k connected
 
+ connectedness-closed-under-equiv : {𝓤 𝓥 : Universe}
+                                  → (k : ℕ)
+                                  → (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )
+                                  → X ≃ Y
+                                  → Y is k connected
+                                  → X is k connected
+ connectedness-closed-under-equiv k X Y e Y-con =
+   equiv-to-singleton (truncation-closed-under-equiv k X Y e) Y-con
+
+ contractible-types-are-connected : {𝓤 𝓥 : Universe}
+                                  → (X : 𝓤 ̇ )
+                                  → is-contr X
+                                  → (n : ℕ)
+                                  → X is n connected
+ contractible-types-are-connected = {!!}
+
+ lower-closed-lemma : (X : 𝓤 ̇) (k : ℕ)
+                    → X is (succ k) connected
+                    → (∣∣ X ∣∣ k) is (succ k) connected
+ lower-closed-lemma = {!!}
+
+ connectedness-is-lower-closed : (X : 𝓤 ̇) (k : ℕ)
+                               → X is (succ k) connected
+                               → X is k connected
+ connectedness-is-lower-closed X k X-succ-con =
+   equiv-to-singleton (hlevel-equiv-succ X k)
+                      (contractible-types-are-connected (∣∣ X ∣∣ succ k)
+                                                        X-succ-con {!k!})
+
 \end{code}
+
