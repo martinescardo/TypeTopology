@@ -105,7 +105,7 @@ Some easy lemmas that we prove directly inside the record definition.
 
 \end{code}
 
-Projection for the carrier set.
+Notation for the carrier set.
 
 \begin{code}
 
