@@ -33,6 +33,7 @@ open import UF.Subsingletons-FunExt
 open import UF.Subsingletons-Properties
 open import UF.Univalence
 open import UF.UA-FunExt
+open import Naturals.Addition renaming (_+_ to _+'_)
 open import Naturals.Order
 
 module UF.H-Levels (fe : FunExt) (fe' : Fun-Ext) where
@@ -448,12 +449,39 @@ module k-connectedness (te : H-level-truncations-exist) where
                        (id-types-are-same-hlevel n ∣∣∣∣-is-hlevel (∣ c ∣ n))
                        (λ x → ap (λ x → ∣ x ∣ n) (C x))
 
- connectedness-is-lower-closed : (X : 𝓤 ̇) (k : ℕ)
+ connectedness-is-lower-closed : {X : 𝓤 ̇} {k : ℕ}
                                → X is (succ k) connected
                                → X is k connected
- connectedness-is-lower-closed X k X-succ-con =
+ connectedness-is-lower-closed {𝓤} {X} {k} X-succ-con =
    equiv-to-singleton (succesive-truncations-equiv X k)
                       (contractible-types-are-connected (∣∣ X ∣∣ succ k)
                                                         X-succ-con k)
+
+ connectedness-extends-to-zero : {X : 𝓤 ̇} (k : ℕ)
+                               → X is k connected
+                               → X is zero connected
+ connectedness-extends-to-zero zero X-con = X-con
+ connectedness-extends-to-zero (succ k) X-con =
+   connectedness-extends-to-zero k (connectedness-is-lower-closed X-con)
+
+ connectedness-step-down : {X : 𝓤 ̇} (k l : ℕ)
+                         → X is (l +' k) connected
+                         → X is l connected
+ connectedness-step-down zero l X-con = X-con
+ connectedness-step-down (succ k) l X-con =
+   connectedness-step-down k l (connectedness-is-lower-closed X-con)
+
+ connectedness-extends-below : {X : 𝓤 ̇} (k l : ℕ)
+                             → (l ≤ℕ k)
+                             → X is k connected
+                             → X is l connected
+ connectedness-extends-below {𝓤} {X} k l o X-con =
+   connectedness-step-down m l (transport (λ z → X is z connected) p X-con)
+  where
+   m : ℕ
+   m = pr₁ (subtraction l k o)
+   p = k        ＝⟨ pr₂ (subtraction l k o) ⁻¹ ⟩
+       m +' l   ＝⟨ addition-commutativity m l ⟩
+       l +' m   ∎
 
 \end{code}
