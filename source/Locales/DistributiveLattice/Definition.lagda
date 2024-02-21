@@ -267,6 +267,9 @@ module _ (L : DistributiveLattice 𝓤) where
  open Meets (orderᵈ-∧ L)
  open Joins (orderᵈ-∧ L)
 
+ 𝟏ᵈ-is-top : (x : X) → (x ≤ᵈ[ L ] 𝟏) holds
+ 𝟏ᵈ-is-top = ∧-unit
+
  ∧-is-a-lower-bound₂ : (x y : X) → ((x ∧ y) ≤ᵈ[ L ] y) holds
  ∧-is-a-lower-bound₂ x y = (x ∧ y) ∧ y ＝⟨ Ⅰ ⟩
                            x ∧ (y ∧ y) ＝⟨ Ⅱ ⟩
