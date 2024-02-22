@@ -64,7 +64,7 @@ import DomainTheory.Basics.WayBelow        -- (7)
    continuous dcpos
 7. Using step functions we show that sup-complete dcpos with small compact
    bases are closed under exponentials
-8. Definition of the notion of a Scott domain
+8. Definition of the notion of a Scott domain (by Ayberk Tosun)
 -}
 
 import DomainTheory.BasesAndContinuity.Bases                   -- (1)
