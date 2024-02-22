@@ -173,6 +173,14 @@ module _ {𝓤 : Universe}
 
 Minor addition by Ayberk Tosun.
 
+The lifting of a set as a dcpo as defined above has an order that is essentially
+locally small. It is sometimes convenient, however, to repackage the lifting
+dcpo with the equivalent order that has small values.
+
+The development where this function is used can be updated as to work on a dcpo
+with an external proof of local smallness as to obviate the need for this
+repackaging. This is a refactoring to consider in the future.
+
 \begin{code}
 
  open import Lifting.UnivalentPrecategory 𝓣 X
