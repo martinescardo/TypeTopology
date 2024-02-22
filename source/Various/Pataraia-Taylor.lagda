@@ -447,6 +447,8 @@ module _
 
 \end{code}
 
+Added 22 February 2024.
+
 It follows directly from Pataraia's original proof [2] that if P is a property
 that holds for ⊥, is closed under directed suprema, and is closed under f, then
 P holds for the least fixed point of f. We refer to this as the fixed-point
