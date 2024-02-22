@@ -40,6 +40,7 @@ open import Naturals.Order
 
 module UF.H-Levels (fe : FunExt)
                    (fe' : Fun-Ext)
+                   (pt : propositional-truncations-exist)
                     where
 
 _is-of-hlevel_ : 𝓤 ̇ → ℕ → 𝓤 ̇
@@ -260,38 +261,38 @@ TODO: Show 1 truncation and propositional truncation are equivalent.
 
 record H-level-truncations-exist : 𝓤ω where
  field
-  ∣∣_∣∣_ : {𝓤 : Universe} → 𝓤 ̇ → ℕ → 𝓤 ̇
+  ∣∣_∣∣⌞_⌟ : {𝓤 : Universe} → 𝓤 ̇ → ℕ → 𝓤 ̇
   ∣∣∣∣-is-hlevel : {𝓤 : Universe} {X : 𝓤 ̇ } {n : ℕ}
-                 → (∣∣ X ∣∣ n) is-of-hlevel n
-  ∣_∣_ :  {𝓤 : Universe} {X : 𝓤 ̇ } → X → (n : ℕ) → ∣∣ X ∣∣ n
+                 → (∣∣ X ∣∣⌞ n ⌟) is-of-hlevel n
+  ∣_∣⌞_⌟ :  {𝓤 : Universe} {X : 𝓤 ̇ } → X → (n : ℕ) → ∣∣ X ∣∣⌞ n ⌟ 
   ∣∣∣∣-induction : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } {n : ℕ}
-                 → (P : ∣∣ X ∣∣ n → 𝓥 ̇ )
-                 → ((s : ∣∣ X ∣∣ n) → (P s) is-of-hlevel n)
-                 → ((x : X) → P (∣ x ∣ n))
-                 → (s : ∣∣ X ∣∣ n) → P s
+                 → (P : ∣∣ X ∣∣⌞ n ⌟ → 𝓥 ̇ )
+                 → ((s : ∣∣ X ∣∣⌞ n ⌟) → (P s) is-of-hlevel n)
+                 → ((x : X) → P (∣ x ∣⌞ n ⌟))
+                 → (s : ∣∣ X ∣∣⌞ n ⌟) → P s
   ∣∣∣∣-comp-ind : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } {n : ℕ}
-                → (P : ∣∣ X ∣∣ n → 𝓥 ̇ )
-                → (h-lev : (s : ∣∣ X ∣∣ n) → (P s) is-of-hlevel n)
-                → (f : (x : X) → P (∣ x ∣ n))
+                → (P : ∣∣ X ∣∣⌞ n ⌟ → 𝓥 ̇ )
+                → (h-lev : (s : ∣∣ X ∣∣⌞ n ⌟) → (P s) is-of-hlevel n)
+                → (f : (x : X) → P (∣ x ∣⌞ n ⌟))
                 → (x : X)
-                → ∣∣∣∣-induction P h-lev f (∣ x ∣ n) ＝ f x
- infix 0 ∣∣_∣∣_
- infix 0 ∣_∣_
+                → ∣∣∣∣-induction P h-lev f (∣ x ∣⌞ n ⌟) ＝ f x
+ infix 0 ∣∣_∣∣⌞_⌟
+ infix 0 ∣_∣⌞_⌟
 
 module truncation-properties (te : H-level-truncations-exist) where
 
  open H-level-truncations-exist te
 
  ∣∣∣∣-rec : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {n : ℕ}
-          → Y is-of-hlevel n → (X → Y) → ∣∣ X ∣∣ n → Y
+          → Y is-of-hlevel n → (X → Y) → ∣∣ X ∣∣⌞ n ⌟ → Y
  ∣∣∣∣-rec {𝓤} {𝓥} {X} {Y} {n} H-lev f s =
    ∣∣∣∣-induction (λ _ → Y) (λ _ → H-lev) f s
 
  ∣∣∣∣-uniqueness : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {n : ℕ}
                  → Y is-of-hlevel n
-                 → (f g : ∣∣ X ∣∣ n → Y)
-                 → ((x : X) → f (∣ x ∣ n) ＝ g (∣ x ∣ n))
-                 → (s : ∣∣ X ∣∣ n) → f s ＝ g s
+                 → (f g : ∣∣ X ∣∣⌞ n ⌟ → Y)
+                 → ((x : X) → f (∣ x ∣⌞ n ⌟) ＝ g (∣ x ∣⌞ n ⌟))
+                 → (s : ∣∣ X ∣∣⌞ n ⌟) → f s ＝ g s
  ∣∣∣∣-uniqueness {𝓤} {𝓥} {X} {Y} {n} Y-h-lev f g H =
    ∣∣∣∣-induction (λ s → f s ＝ g s)
                   (λ s → id-types-are-same-hlevel n Y-h-lev (f s) (g s)) H
@@ -300,117 +301,118 @@ module truncation-properties (te : H-level-truncations-exist) where
                → (Y-h-lev : Y is-of-hlevel n)
                → (f : (X → Y))
                → (x : X)
-               → ∣∣∣∣-rec Y-h-lev f (∣ x ∣ n) ＝ f x
+               → ∣∣∣∣-rec Y-h-lev f (∣ x ∣⌞ n ⌟) ＝ f x
  ∣∣∣∣-comp-rec {𝓤} {𝓥} {X} {Y} {n} Y-h-lev f x =
    ∣∣∣∣-comp-ind (λ _ → Y) (λ _ → Y-h-lev) f x 
 
- zero-hlevel-is-contr : {X : 𝓤 ̇ } → is-contr (∣∣ X ∣∣ zero)
+ zero-hlevel-is-contr : {X : 𝓤 ̇ } → is-contr (∣∣ X ∣∣⌞ zero ⌟)
  zero-hlevel-is-contr = ∣∣∣∣-is-hlevel
 
- one-hlevel-is-prop : {X : 𝓤 ̇ } → is-prop (∣∣ X ∣∣ succ zero)
+ one-hlevel-is-prop : {X : 𝓤 ̇ } → is-prop (∣∣ X ∣∣⌞ succ zero ⌟)
  one-hlevel-is-prop = is-prop'-implies-is-prop ∣∣∣∣-is-hlevel
 
- two-hlevel-is-set : {X : 𝓤 ̇ } → is-set (∣∣ X ∣∣ succ (succ zero))
+ two-hlevel-is-set : {X : 𝓤 ̇ } → is-set (∣∣ X ∣∣⌞ succ (succ zero) ⌟)
  two-hlevel-is-set {𝓤} {X} {x} {y} =
    is-prop'-implies-is-prop (∣∣∣∣-is-hlevel x y)
 
  canonical-pred-map : {X : 𝓤 ̇} {n : ℕ}
-                    → ∣∣ X ∣∣ succ n → ∣∣ X ∣∣ n
+                    → ∣∣ X ∣∣⌞ succ n ⌟ → ∣∣ X ∣∣⌞ n ⌟
  canonical-pred-map {𝓤} {X} {n} x =
-        ∣∣∣∣-rec (hlevels-are-upper-closed n (∣∣ X ∣∣ n) ∣∣∣∣-is-hlevel)
-                 (λ x → ∣ x ∣ n) x
+        ∣∣∣∣-rec (hlevels-are-upper-closed n (∣∣ X ∣∣⌞ n ⌟) ∣∣∣∣-is-hlevel)
+                 (λ x → ∣ x ∣⌞ n ⌟) x
 
  canonical-pred-map-comp : {X : 𝓤 ̇} {n : ℕ} (x : X)
-                         → canonical-pred-map (∣ x ∣ succ n) ＝ (∣ x ∣ n)
+                         → canonical-pred-map (∣ x ∣⌞ succ n ⌟) ＝ (∣ x ∣⌞ n ⌟)
  canonical-pred-map-comp {𝓤} {X} {n} x =
-   ∣∣∣∣-comp-rec (hlevels-are-upper-closed n (∣∣ X ∣∣ n) ∣∣∣∣-is-hlevel)
-                 (λ _ → ∣ _ ∣ n) x
+   ∣∣∣∣-comp-rec (hlevels-are-upper-closed n (∣∣ X ∣∣⌞ n ⌟) ∣∣∣∣-is-hlevel)
+                 (λ _ → ∣ _ ∣⌞ n ⌟) x
 
  truncation-closed-under-equiv : {𝓤 𝓥 : Universe}
                                → (n : ℕ)
                                → (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )
                                → X ≃ Y
-                               → (∣∣ X ∣∣ n) ≃ (∣∣ Y ∣∣ n)
+                               → (∣∣ X ∣∣⌞ n ⌟) ≃ (∣∣ Y ∣∣⌞ n ⌟)
  truncation-closed-under-equiv n X Y e = (f , (b , G) , (b , H))
   where
-   f : ∣∣ X ∣∣ n → ∣∣ Y ∣∣ n
-   f = ∣∣∣∣-rec ∣∣∣∣-is-hlevel (λ x → ∣ (⌜ e ⌝ x) ∣ n)
-   b : ∣∣ Y ∣∣ n → ∣∣ X ∣∣ n
-   b = ∣∣∣∣-rec ∣∣∣∣-is-hlevel (λ y → ∣ (⌜ e ⌝⁻¹ y) ∣ n)
+   f : ∣∣ X ∣∣⌞ n ⌟ → ∣∣ Y ∣∣⌞ n ⌟
+   f = ∣∣∣∣-rec ∣∣∣∣-is-hlevel (λ x → ∣ (⌜ e ⌝ x) ∣⌞ n ⌟)
+   b : ∣∣ Y ∣∣⌞ n ⌟ → ∣∣ X ∣∣⌞ n ⌟
+   b = ∣∣∣∣-rec ∣∣∣∣-is-hlevel (λ y → ∣ (⌜ e ⌝⁻¹ y) ∣⌞ n ⌟)
    H : b ∘ f ∼ id
    H = ∣∣∣∣-induction (λ s → b (f s) ＝ s)
                       (λ s → id-types-are-same-hlevel n ∣∣∣∣-is-hlevel
                                                       (b (f s)) s)
                       H'
     where
-     H' : (x : X) → b (f (∣ x ∣ n)) ＝ (∣ x ∣ n)
-     H' x = b (f (∣ x ∣ n))           ＝⟨ ap b (∣∣∣∣-comp-rec ∣∣∣∣-is-hlevel
-                                               (λ x → ∣ (⌜ e ⌝ x) ∣ n) x) ⟩
-            b (∣ ⌜ e ⌝ x ∣ n)         ＝⟨ ∣∣∣∣-comp-rec ∣∣∣∣-is-hlevel
-                                               (λ y → ∣ (⌜ e ⌝⁻¹ y) ∣ n)
-                                               (⌜ e ⌝ x) ⟩
-            (∣ ⌜ e ⌝⁻¹ (⌜ e ⌝ x) ∣ n) ＝⟨ ap (λ x → ∣ x ∣ n)
+     H' : (x : X) → b (f (∣ x ∣⌞ n ⌟)) ＝ (∣ x ∣⌞ n ⌟)
+     H' x = b (f (∣ x ∣⌞ n ⌟))         ＝⟨ ap b (∣∣∣∣-comp-rec ∣∣∣∣-is-hlevel
+                                                (λ x → ∣ (⌜ e ⌝ x) ∣⌞ n ⌟) x) ⟩
+            b (∣ ⌜ e ⌝ x ∣⌞ n ⌟)       ＝⟨ ∣∣∣∣-comp-rec ∣∣∣∣-is-hlevel
+                                                (λ y → ∣ (⌜ e ⌝⁻¹ y) ∣⌞ n ⌟)
+                                                (⌜ e ⌝ x) ⟩
+            (∣ ⌜ e ⌝⁻¹ (⌜ e ⌝ x) ∣⌞ n ⌟) ＝⟨ ap (λ x → ∣ x ∣⌞ n ⌟)
                                              (inverses-are-retractions' e x) ⟩
-            (∣ x ∣ n)                 ∎ 
+            (∣ x ∣⌞ n ⌟)                ∎ 
    G : f ∘ b ∼ id
    G = ∣∣∣∣-induction (λ s → f (b s) ＝ s)
                       (λ s → id-types-are-same-hlevel n ∣∣∣∣-is-hlevel
                                                       (f (b s)) s)
                       G'
     where
-     G' : (y : Y) → f (b (∣ y ∣ n)) ＝ (∣ y ∣ n)
-     G' y = f (b (∣ y ∣ n))           ＝⟨ ap f (∣∣∣∣-comp-rec ∣∣∣∣-is-hlevel
-                                               (λ y → ∣ (⌜ e ⌝⁻¹ y) ∣ n) y) ⟩
-            f (∣ (⌜ e ⌝⁻¹ y) ∣ n)     ＝⟨ ∣∣∣∣-comp-rec ∣∣∣∣-is-hlevel
-                                            (λ x → ∣ ⌜ e ⌝ x ∣ n) (⌜ e ⌝⁻¹ y) ⟩
-            (∣ ⌜ e ⌝ (⌜ e ⌝⁻¹ y) ∣ n) ＝⟨ ap (λ y → ∣ y ∣ n)
-                                            (inverses-are-sections' e y) ⟩
-            (∣ y ∣ n)                 ∎ 
+     G' : (y : Y) → f (b (∣ y ∣⌞ n ⌟)) ＝ (∣ y ∣⌞ n ⌟)
+     G' y = f (b (∣ y ∣⌞ n ⌟))         ＝⟨ ap f (∣∣∣∣-comp-rec ∣∣∣∣-is-hlevel
+                                               (λ y → ∣ (⌜ e ⌝⁻¹ y) ∣⌞ n ⌟) y) ⟩
+            f (∣ (⌜ e ⌝⁻¹ y) ∣⌞ n ⌟)   ＝⟨ ∣∣∣∣-comp-rec ∣∣∣∣-is-hlevel
+                                          (λ x → ∣ ⌜ e ⌝ x ∣⌞ n ⌟) (⌜ e ⌝⁻¹ y) ⟩
+            (∣ ⌜ e ⌝ (⌜ e ⌝⁻¹ y) ∣⌞ n ⌟) ＝⟨ ap (λ y → ∣ y ∣⌞ n ⌟)
+                                                (inverses-are-sections' e y) ⟩
+            (∣ y ∣⌞ n ⌟)               ∎ 
 
  succesive-truncations-equiv : (X : 𝓤 ̇) (n : ℕ)
-                             → (∣∣ X ∣∣ n) ≃ (∣∣ (∣∣ X ∣∣ succ n) ∣∣ n)
+                             → (∣∣ X ∣∣⌞ n ⌟) ≃ (∣∣ (∣∣ X ∣∣⌞ succ n ⌟) ∣∣⌞ n ⌟)
  succesive-truncations-equiv X n = (f , (b , G) , (b , H))
   where
-   f : (∣∣ X ∣∣ n) → (∣∣ (∣∣ X ∣∣ succ n) ∣∣ n)
-   f = ∣∣∣∣-rec ∣∣∣∣-is-hlevel (λ x → ∣ ∣ x ∣ succ n ∣ n)
-   b : (∣∣ (∣∣ X ∣∣ succ n) ∣∣ n) → (∣∣ X ∣∣ n)
+   f : (∣∣ X ∣∣⌞ n ⌟) → (∣∣ (∣∣ X ∣∣⌞ succ n ⌟) ∣∣⌞ n ⌟)
+   f = ∣∣∣∣-rec ∣∣∣∣-is-hlevel (λ x → ∣ ∣ x ∣⌞ succ n ⌟ ∣⌞ n ⌟)
+   b : (∣∣ (∣∣ X ∣∣⌞ succ n ⌟) ∣∣⌞ n ⌟) → (∣∣ X ∣∣⌞ n ⌟)
    b = ∣∣∣∣-rec ∣∣∣∣-is-hlevel (canonical-pred-map)
    G : f ∘ b ∼ id
    G = ∣∣∣∣-induction (λ s → f ( b s) ＝ s)
                       (λ s → id-types-are-same-hlevel n ∣∣∣∣-is-hlevel
                                                       (f (b s)) s)
-                      (∣∣∣∣-induction (λ t → f (b (∣ t ∣ n)) ＝ (∣ t ∣ n))
+                      (∣∣∣∣-induction (λ t → f (b (∣ t ∣⌞ n ⌟)) ＝ (∣ t ∣⌞ n ⌟))
                                       (λ t → id-types-are-same-hlevel n
-                                              (id-types-are-same-hlevel n
-                                               ∣∣∣∣-is-hlevel (f (b (∣ t ∣ n)))
-                                                               ((∣ t ∣ n))))
+                                             (id-types-are-same-hlevel n
+                                             ∣∣∣∣-is-hlevel (f (b (∣ t ∣⌞ n ⌟)))
+                                                               ((∣ t ∣⌞ n ⌟))))
                                       G')
     where
-     G' : (x : X) → f (b (∣ ∣ x ∣ succ n ∣ n)) ＝ (∣ ∣ x ∣ succ n ∣ n)
-     G' x = f (b (∣ ∣ x ∣ succ n ∣ n))            ＝⟨ ap f (∣∣∣∣-comp-rec
+     G' : (x : X)
+        → f (b (∣ ∣ x ∣⌞ succ n ⌟ ∣⌞ n ⌟)) ＝ (∣ ∣ x ∣⌞ succ n ⌟ ∣⌞ n ⌟)
+     G' x = f (b (∣ ∣ x ∣⌞ succ n ⌟ ∣⌞ n ⌟))     ＝⟨ ap f (∣∣∣∣-comp-rec
                                                          ∣∣∣∣-is-hlevel
                                                          canonical-pred-map
-                                                         (∣ x ∣ succ n)) ⟩
-            f (canonical-pred-map (∣ x ∣ succ n)) ＝⟨ ap f
+                                                         (∣ x ∣⌞ succ n ⌟)) ⟩
+            f (canonical-pred-map (∣ x ∣⌞ succ n ⌟)) ＝⟨ ap f
                                                    (canonical-pred-map-comp x) ⟩
-            f (∣ x ∣ n)                           ＝⟨ ∣∣∣∣-comp-rec
-                                                      ∣∣∣∣-is-hlevel
-                                                      (λ x → ∣ ∣ x ∣ succ n ∣ n)
-                                                      x ⟩
-            (∣ ∣ x ∣ succ n ∣ n)                  ∎
+            f (∣ x ∣⌞ n ⌟)             ＝⟨ ∣∣∣∣-comp-rec
+                                           ∣∣∣∣-is-hlevel
+                                           (λ x → ∣ ∣ x ∣⌞ succ n ⌟ ∣⌞ n ⌟)
+                                            x ⟩
+            (∣ ∣ x ∣⌞ succ n ⌟ ∣⌞ n ⌟)   ∎
    H : b ∘ f ∼ id
    H = ∣∣∣∣-induction (λ s → b (f s) ＝ s)
                       (λ s → id-types-are-same-hlevel n ∣∣∣∣-is-hlevel
                                                       (b (f s)) s)
                       H'
     where
-     H' : (x : X) → b (f (∣ x ∣ n)) ＝ (∣ x ∣ n)
-     H' x = b (f (∣ x ∣ n))             ＝⟨ ap b (∣∣∣∣-comp-rec ∣∣∣∣-is-hlevel
-                                              (λ x → ∣ ∣ x ∣ succ n ∣ n) x) ⟩
-            b (∣ ∣ x ∣ succ n ∣ n)      ＝⟨ ∣∣∣∣-comp-rec ∣∣∣∣-is-hlevel
-                                            canonical-pred-map (∣ x ∣ succ n) ⟩
-            canonical-pred-map (∣ x ∣ succ n) ＝⟨ canonical-pred-map-comp x ⟩
-            (∣ x ∣ n)                         ∎
+     H' : (x : X) → b (f (∣ x ∣⌞ n ⌟)) ＝ (∣ x ∣⌞ n ⌟)
+     H' x = b (f (∣ x ∣⌞ n ⌟))       ＝⟨ ap b (∣∣∣∣-comp-rec ∣∣∣∣-is-hlevel
+                                           (λ x → ∣ ∣ x ∣⌞ succ n ⌟ ∣⌞ n ⌟) x) ⟩
+            b (∣ ∣ x ∣⌞ succ n ⌟ ∣⌞ n ⌟) ＝⟨ ∣∣∣∣-comp-rec ∣∣∣∣-is-hlevel
+                                          canonical-pred-map (∣ x ∣⌞ succ n ⌟) ⟩
+            canonical-pred-map (∣ x ∣⌞ succ n ⌟) ＝⟨ canonical-pred-map-comp x ⟩
+            (∣ x ∣⌞ n ⌟)                    ∎
    
 
 \end{code}
@@ -429,21 +431,21 @@ module k-connectedness (te : H-level-truncations-exist) where
  open truncation-properties te
 
  _is_connected : 𝓤 ̇ → ℕ → 𝓤 ̇
- X is k connected = is-contr (∣∣ X ∣∣ k)
+ X is k connected = is-contr (∣∣ X ∣∣⌞ k ⌟)
 
  map_is_connected : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (f : X → Y) → ℕ → 𝓤 ⊔ 𝓥 ̇
  map f is k connected = (y : codomain f) → (fiber f y) is k connected
 
-\end{code}
-
-TODO:
+ open PropositionalTruncation pt
 
  1-connected-map-is-surj : {X : 𝓤 ̇} {Y : 𝓥 ̇} {f : X → Y}
                          → map f is 1 connected
                          → is-surjection pt f
- 1-connected-map-is-surj f-is-1-connected y = {!!}
-
-\begin{code}
+ 1-connected-map-is-surj {𝓤} {𝓥} {X} {Y} {f} f-1-con y =
+   g y (center (f-1-con {!y!}))
+  where
+   g : (y : Y) → ∣∣ fiber f y ∣∣⌞ 1 ⌟ → (pt ∈image y) f
+   g y = ∣∣∣∣-rec (is-prop-implies-is-prop' ∃-is-prop) λ (x , e) → ∣ (x , e) ∣
 
  connectedness-closed-under-equiv : {𝓤 𝓥 : Universe}
                                   → (k : ℕ)
@@ -459,19 +461,19 @@ TODO:
                                   → is-contr X
                                   → (n : ℕ)
                                   → X is n connected
- contractible-types-are-connected X (c , C) n = ((∣ c ∣ n) , C')
+ contractible-types-are-connected X (c , C) n = ((∣ c ∣⌞ n ⌟) , C')
   where
-   C' : (s : ∣∣ X ∣∣ n) → (∣ c ∣ n) ＝ s
-   C' = ∣∣∣∣-induction (λ s → (∣ c ∣ n) ＝ s)
-                       (id-types-are-same-hlevel n ∣∣∣∣-is-hlevel (∣ c ∣ n))
-                       (λ x → ap (λ x → ∣ x ∣ n) (C x))
+   C' : (s : ∣∣ X ∣∣⌞ n ⌟) → (∣ c ∣⌞ n ⌟) ＝ s
+   C' = ∣∣∣∣-induction (λ s → (∣ c ∣⌞ n ⌟) ＝ s)
+                       (id-types-are-same-hlevel n ∣∣∣∣-is-hlevel (∣ c ∣⌞ n ⌟))
+                       (λ x → ap (λ x → ∣ x ∣⌞ n ⌟) (C x))
 
  connectedness-is-lower-closed : {X : 𝓤 ̇} {k : ℕ}
                                → X is (succ k) connected
                                → X is k connected
  connectedness-is-lower-closed {𝓤} {X} {k} X-succ-con =
    equiv-to-singleton (succesive-truncations-equiv X k)
-                      (contractible-types-are-connected (∣∣ X ∣∣ succ k)
+                      (contractible-types-are-connected (∣∣ X ∣∣⌞ succ k ⌟)
                                                         X-succ-con k)
 
  connectedness-extends-to-zero : {X : 𝓤 ̇} (k : ℕ)
