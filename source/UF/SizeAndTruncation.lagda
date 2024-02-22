@@ -85,8 +85,13 @@ Proposition 2.2.
            → Join-Construction-Result {𝓤} {𝓦} {A} {X}
            → X is 𝓥 small
   Prop-2-2 f zero f-is-con A-small X-is-loc-small j = X-is-loc-small
-  Prop-2-2 f (succ n) f-is-con A-small X-is-loc-small j =
-    j f A-small {!!} {!!}
+  Prop-2-2 {𝓤} {𝓦} {A} {X} f (succ n) f-is-con A-small X-is-loc-small j =
+    j f A-small id-is-small f-1-con
+   where
+    f-1-con : map f is 1 connected
+    f-1-con y = connectedness-extends-below (succ n) 1 ⋆ (f-is-con y)
+    id-is-small : (x x' : X) → (x ＝ x') is 𝓥 small
+    id-is-small x x' = {!!}
 
 \end{code}
 
