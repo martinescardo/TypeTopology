@@ -159,7 +159,7 @@ which is also where the carrier E of 𝓔 lives.
  Γ : E → MI → E
  Γ x (f , _) = f x
 
- Γ-is-semidirected : (x : E) → is-semidirected _⊑_ (Γ x)
+ Γ-is-semidirected : (x : E) → is-Semidirected 𝓔 (Γ x)
  Γ-is-semidirected x 𝕗@(f , fm , fi) 𝕘@(g , gm , gi) = ∣ 𝕙 , f-le-h , g-le-h ∣
   where
    h = g ∘ f
