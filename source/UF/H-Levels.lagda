@@ -25,7 +25,6 @@ open import UF.EquivalenceExamples
 open import UF.Equiv-FunExt
 open import UF.FunExt
 open import UF.IdentitySystems
-open import UF.ImageAndSurjection
 open import UF.PropTrunc 
 open import UF.Retracts
 open import UF.Sets
@@ -42,6 +41,8 @@ module UF.H-Levels (fe : FunExt)
                    (fe' : Fun-Ext)
                    (pt : propositional-truncations-exist)
                     where
+
+open import UF.ImageAndSurjection pt
 
 _is-of-hlevel_ : 𝓤 ̇ → ℕ → 𝓤 ̇
 X is-of-hlevel zero = is-contr X
@@ -440,11 +441,11 @@ module k-connectedness (te : H-level-truncations-exist) where
 
  1-connected-map-is-surj : {X : 𝓤 ̇} {Y : 𝓥 ̇} {f : X → Y}
                          → map f is 1 connected
-                         → is-surjection pt f
+                         → is-surjection f
  1-connected-map-is-surj {𝓤} {𝓥} {X} {Y} {f} f-1-con y =
-   g y (center (f-1-con {!y!}))
+   g y (center (f-1-con y))
   where
-   g : (y : Y) → ∣∣ fiber f y ∣∣⌞ 1 ⌟ → (pt ∈image y) f
+   g : (y : Y) → ∣∣ fiber f y ∣∣⌞ 1 ⌟ → y ∈image f
    g y = ∣∣∣∣-rec (is-prop-implies-is-prop' ∃-is-prop) λ (x , e) → ∣ (x , e) ∣
 
  connectedness-closed-under-equiv : {𝓤 𝓥 : Universe}

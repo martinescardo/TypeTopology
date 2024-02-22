@@ -35,9 +35,13 @@ open import Naturals.Addition
 open import Naturals.Order
 open import Naturals.Properties
 
-module UF.SizeAndTruncation (fe : FunExt) (fe' : Fun-Ext) where
+module UF.SizeAndTruncation (fe : FunExt)
+                            (fe' : Fun-Ext)
+                            (pt : propositional-truncations-exist)
+                             where
 
- open import UF.H-Levels fe fe'
+ open import UF.H-Levels fe fe' pt
+ open import UF.ImageAndSurjection pt
 
  module _ (te : H-level-truncations-exist) (𝓥 : Universe) where
 
@@ -86,12 +90,12 @@ Proposition 2.2.
            → X is 𝓥 small
   Prop-2-2 f zero f-is-con A-small X-is-loc-small j = X-is-loc-small
   Prop-2-2 {𝓤} {𝓦} {A} {X} f (succ n) f-is-con A-small X-is-loc-small j =
-    j f A-small id-is-small f-1-con
+    j f A-small (id-is-small (1-connected-map-is-surj f-1-con)) f-1-con
    where
     f-1-con : map f is 1 connected
     f-1-con y = connectedness-extends-below (succ n) 1 ⋆ (f-is-con y)
-    id-is-small : (x x' : X) → (x ＝ x') is 𝓥 small
-    id-is-small x x' = {!!}
+    id-is-small : is-surjection f → (x x' : X) → (x ＝ x') is 𝓥 small
+    id-is-small f-is-surj x x' = {!!}
 
 \end{code}
 
@@ -149,7 +153,7 @@ Theorem 2.6.
   Theorem-2-6 : {X : 𝓤 ̇} {Y : 𝓦 ̇}
               → (n : ℕ)
               → (X is 𝓥 small)
-              ↔ (X is n locally-small) × ((∣∣ X ∣∣ (succ n)) is 𝓥 small) 
+              ↔ (X is n locally-small) × ((∣∣ X ∣∣⌞ (succ n) ⌟) is 𝓥 small) 
   Theorem-2-6 = {!!}
 
 \end{code}
@@ -163,7 +167,7 @@ Corollary 2.7.
                 → (n : ℕ)
                 → map f is-of-hlevel (succ n)
                 → Y is n locally-small
-                → (∣∣ X ∣∣ (succ n)) is 𝓥 small
+                → (∣∣ X ∣∣⌞ (succ n) ⌟) is 𝓥 small
                 → X is 𝓥 small
   Corollary-2-7 = {!!}
 
