@@ -1,6 +1,8 @@
 Tom de Jong, 4 June 2019
 Updated 23 December 2021
 Updated 12 and 14 June 2022
+Updated 30 October 2023 (by Ayberk Tosun)
+Updated 6 November 2023 (by Ayberk Tosun)
 
 Index for the formalization of domain theory, briefly describing the contents of
 each directory, ordered almost¹ alphabetically by directory name.
@@ -64,6 +66,7 @@ import DomainTheory.Basics.WayBelow        -- (7)
    continuous dcpos
 7. Using step functions we show that sup-complete dcpos with small compact
    bases are closed under exponentials
+8. Definition of the notion of a Scott domain (by Ayberk Tosun)
 -}
 
 import DomainTheory.BasesAndContinuity.Bases                   -- (1)
@@ -73,6 +76,7 @@ import DomainTheory.BasesAndContinuity.ContinuityDiscussion    -- (4)
 import DomainTheory.BasesAndContinuity.ContinuityImpredicative -- (5)
 import DomainTheory.BasesAndContinuity.IndCompletion           -- (6)
 import DomainTheory.BasesAndContinuity.StepFunctions           -- (7)
+import DomainTheory.BasesAndContinuity.ScottDomain             -- (8)
 
 {- Bilimits
 
@@ -137,10 +141,12 @@ import DomainTheory.ScottModelOfPCF.ScottModelOfPCF -- (2)
 {- Topology (by Ayberk Tosun)
 
 0. The definition of the Scott topology of a dcpo
+1. Some properties of the Scott topology of a dcpo
 
 -}
 
-import DomainTheory.Topology.ScottTopology          -- (0)
+import DomainTheory.Topology.ScottTopology           -- (0)
+import DomainTheory.Topology.ScottTopologyProperties -- (1)
 
 \end{code}
 
