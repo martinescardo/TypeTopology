@@ -216,7 +216,9 @@ Tosun.
    https://doi.org/10.1016/j.tcs.2023.114111
 
 1. Igor Arrieta, Martín H. Escardó and Ayberk Tosun. *The Patch Topology in
-   Univalent Foundations*. ArXiv preprint. Available online 5 February 2024.
+   Univalent Foundations*.
+
+   ArXiv preprint. Available online 5 February 2024.
 
    https://arxiv.org/abs/2402.03134
 
