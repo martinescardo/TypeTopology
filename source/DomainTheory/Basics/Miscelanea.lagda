@@ -92,6 +92,10 @@ is-monotone : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
             → (⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩) → 𝓤 ⊔ 𝓣 ⊔ 𝓣' ̇
 is-monotone 𝓓 𝓔 f = (x y : ⟨ 𝓓 ⟩) → x ⊑⟨ 𝓓 ⟩ y → f x ⊑⟨ 𝓔 ⟩ f y
 
+is-inflationary : (𝓓 : DCPO {𝓤} {𝓣})
+                → (⟨ 𝓓 ⟩ → ⟨ 𝓓 ⟩) → 𝓤 ⊔ 𝓣 ̇
+is-inflationary 𝓓 f = (x : ⟨ 𝓓 ⟩) → x ⊑⟨ 𝓓 ⟩ f x
+
 \end{code}
 
 Lemmas for establishing Scott continuity of maps between dcpos.
@@ -241,6 +245,9 @@ constant-functions-are-continuous 𝓓 𝓔 {e} I α δ = u , v
 id-is-monotone : (𝓓 : DCPO {𝓤} {𝓣}) → is-monotone 𝓓 𝓓 id
 id-is-monotone 𝓓 x y l = l
 
+id-is-inflationary : (𝓓 : DCPO {𝓤} {𝓣}) → is-inflationary 𝓓 id
+id-is-inflationary = reflexivity
+
 id-is-continuous : (𝓓 : DCPO {𝓤} {𝓣}) → is-continuous 𝓓 𝓓 id
 id-is-continuous 𝓓 = continuity-criterion 𝓓 𝓓 id (id-is-monotone 𝓓) γ
  where
@@ -248,6 +255,20 @@ id-is-continuous 𝓓 = continuity-criterion 𝓓 𝓓 id (id-is-monotone 𝓓) 
     → ∐ 𝓓 δ ⊑⟨ 𝓓 ⟩ ∐ 𝓓 (image-is-directed 𝓓 𝓓 (λ x y l → l) δ)
   γ I α δ = ＝-to-⊑ 𝓓 (∐-independent-of-directedness-witness 𝓓
              δ (image-is-directed 𝓓 𝓓 (λ x y l → l) δ))
+
+∘-is-monotone : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'}) (𝓔' : DCPO {𝓦} {𝓦'})
+                  (f : ⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩) (g : ⟨ 𝓔 ⟩ → ⟨ 𝓔' ⟩)
+                → is-monotone 𝓓 𝓔 f
+                → is-monotone 𝓔 𝓔' g
+                → is-monotone 𝓓 𝓔' (g ∘ f)
+∘-is-monotone 𝓓 𝓔 𝓔' f g mf mg x y l = mg (f x) (f y) (mf x y l)
+
+∘-is-inflationary : (𝓓 : DCPO {𝓤} {𝓣})
+                  (f g : ⟨ 𝓓 ⟩ → ⟨ 𝓓 ⟩)
+                → is-inflationary 𝓓 f
+                → is-inflationary 𝓓 g
+                → is-inflationary 𝓓 (g ∘ f)
+∘-is-inflationary 𝓓 f g if ig x = transitivity 𝓓 x (f x) (g (f x)) (if x) (ig (f x))
 
 ∘-is-continuous : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'}) (𝓔' : DCPO {𝓦} {𝓦'})
                   (f : ⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩) (g : ⟨ 𝓔 ⟩ → ⟨ 𝓔' ⟩)
@@ -261,7 +282,7 @@ id-is-continuous 𝓓 = continuity-criterion 𝓓 𝓓 id (id-is-monotone 𝓓) 
   mg : is-monotone 𝓔 𝓔' g
   mg = monotone-if-continuous 𝓔 𝓔' (g , cg)
   m : is-monotone 𝓓 𝓔' (g ∘ f)
-  m x y l = mg (f x) (f y) (mf x y l)
+  m = ∘-is-monotone 𝓓 𝓔 𝓔' f g mf mg
   ψ : (I : 𝓥 ̇ )(α : I → ⟨ 𝓓 ⟩) (δ : is-Directed 𝓓 α)
     → g (f (∐ 𝓓 δ)) ⊑⟨ 𝓔' ⟩ ∐ 𝓔' (image-is-directed 𝓓 𝓔' m δ)
   ψ I α δ = g (f (∐ 𝓓 δ)) ⊑⟨ 𝓔' ⟩[ l₁ ]
@@ -664,5 +685,48 @@ module _
        ⦅1⦆ = ＝-to-⊒ 𝓓
              (ap α (inverses-are-retractions ⌜ ρ ⌝ (⌜⌝-is-equiv ρ) i))
        ⦅2⦆ = y-is-ub (⌜ ρ ⌝ i)
+
+\end{code}
+
+Added 18th Feb 2024 by Martin Escardo. Subdcpo induced by a subset /
+property.
+
+\begin{code}
+
+is-closed-under-directed-sups : (𝓓 : DCPO {𝓤} {𝓣}) → (⟨ 𝓓 ⟩ → 𝓦 ̇) → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ⊔ 𝓦 ̇
+is-closed-under-directed-sups {𝓤} {𝓣} 𝓓 P =
+    {I : 𝓥 ̇ } (α : I → ⟨ 𝓓 ⟩) (δ : is-Directed 𝓓 α)
+  → ((i : I) → P (α i))
+  → P (∐ 𝓓 δ)
+
+open import UF.Sets-Properties
+
+module _ (𝓓 : DCPO {𝓤} {𝓣})
+         (P : ⟨ 𝓓 ⟩ → 𝓦 ̇)
+         (P-is-prop-valued : (x : ⟨ 𝓓 ⟩) → is-prop (P x))
+         (P-is-closed-under-directed-sups : is-closed-under-directed-sups 𝓓 P)
+       where
+
+ subdcpo : DCPO {𝓤 ⊔ 𝓦} {𝓣}
+ subdcpo =
+  (Σ x ꞉ ⟨ 𝓓 ⟩ , P x) ,
+  (λ (x , _) (y , _) → x ⊑⟨ 𝓓 ⟩ y) ,
+  (subsets-of-sets-are-sets ⟨ 𝓓 ⟩ P (sethood 𝓓) (P-is-prop-valued _) ,
+   (λ _ _ → prop-valuedness 𝓓 _ _) ,
+   (λ _ → reflexivity 𝓓 _) ,
+   (λ (x , _) (y , _) (z , _) → transitivity 𝓓 x y z) ,
+   (λ (x , _) (y , _) l m → to-subtype-＝
+                             P-is-prop-valued
+                             (antisymmetry 𝓓 x y l m))) ,
+  (λ I α δ → (∐ 𝓓 {I} {pr₁ ∘ α} δ ,
+              P-is-closed-under-directed-sups (pr₁ ∘ α) δ (pr₂ ∘ α)) ,
+             ∐-is-upperbound 𝓓 δ ,
+             (λ (x , _) → ∐-is-lowerbound-of-upperbounds 𝓓 δ x))
+
+ subdcpo-inclusion : ⟨ subdcpo ⟩ → ⟨ 𝓓 ⟩
+ subdcpo-inclusion = pr₁
+
+ subdcpo-satisfies-property : (σ : ⟨ subdcpo ⟩) → P (subdcpo-inclusion σ)
+ subdcpo-satisfies-property = pr₂
 
 \end{code}

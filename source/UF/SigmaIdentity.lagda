@@ -86,7 +86,8 @@ The type of Sigma notions of identity, ranged over by δ = (ι , ρ , θ).
 
   structure-preservation-lemma :
      (δ : SNI S 𝓦)
-     (σ τ : Σ S) (p : ⟨ σ ⟩ ＝ ⟨ τ ⟩)
+     (σ τ : Σ S)
+     (p : ⟨ σ ⟩ ＝ ⟨ τ ⟩)
    → (transport S p (structure σ) ＝ structure τ) ≃ structure-preserving δ σ τ p
   structure-preservation-lemma (ι , ρ , θ) (x , s) (x , t) (refl {x}) = γ
    where
@@ -137,10 +138,10 @@ The type of Sigma notions of identity, ranged over by δ = (ι , ρ , θ).
                                ↔ ((s : S x) → ∃! t ꞉ S x , ι (x , s) (x , t) refl)
    when-canonical-map-is-equiv = (λ e s → Yoneda-Theorem-back  s (c s) (e s)) ,
                                  (λ φ s → Yoneda-Theorem-forth s (c s) (φ s))
-
 \end{code}
 
-The canonical map is an equivalence if and only if we have some equivalence.
+The canonical map is an equivalence if (and only) if we have some
+equivalence.
 
 \begin{code}
 
@@ -150,7 +151,6 @@ The canonical map is an equivalence if and only if we have some equivalence.
    canonical-map-equiv-criterion φ s = fiberwise-equiv-criterion'
                                         (λ t → ι (x , s) (x , t) refl)
                                         s (φ s) (c s)
-
 \end{code}
 
 But a retraction suffices for the canonical map to be an equivalence.
@@ -177,8 +177,10 @@ extensionality) in this file.
   where
    ι : (σ τ : Σ S) → (⟨ σ ⟩ ＝ ⟨ τ ⟩ → 𝓥 ̇ )
    ι (x , s) (y , t) p = transport S p s ＝ t
+
    ρ : (σ : Σ S) → ι σ σ refl
    ρ (x , s) = refl
+
    canonical-map-is-equiv : {x : X} (s t : S x) → is-equiv (canonical-map ι ρ s t)
    canonical-map-is-equiv {x} s t = (canonical-map⁻¹ , η) ,
                                     (canonical-map⁻¹ , ε)
