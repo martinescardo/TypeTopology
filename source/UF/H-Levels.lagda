@@ -25,6 +25,8 @@ open import UF.EquivalenceExamples
 open import UF.Equiv-FunExt
 open import UF.FunExt
 open import UF.IdentitySystems
+open import UF.ImageAndSurjection
+open import UF.PropTrunc
 open import UF.Retracts
 open import UF.Sets
 open import UF.Singleton-Properties
@@ -36,7 +38,10 @@ open import UF.UA-FunExt
 open import Naturals.Addition renaming (_+_ to _+'_)
 open import Naturals.Order
 
-module UF.H-Levels (fe : FunExt) (fe' : Fun-Ext) where
+module UF.H-Levels (fe : FunExt)
+                   (fe' : Fun-Ext)
+                   (pt : propositional-truncations-exist)
+                    where
 
 _is-of-hlevel_ : 𝓤 ̇ → ℕ → 𝓤 ̇
 X is-of-hlevel zero = is-contr X
@@ -250,6 +255,8 @@ From Univalence we can show that (ℍ n) is of level (n + 1), for all n : ℕ.
 
 We now define the notion of a k-truncation using record types.
 
+TODO: Show 1 truncation and propositional truncation are equivalent.
+
 \begin{code}
 
 record H-level-truncations-exist : 𝓤ω where
@@ -427,6 +434,11 @@ module k-connectedness (te : H-level-truncations-exist) where
 
  map_is_connected : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (f : X → Y) → ℕ → 𝓤 ⊔ 𝓥 ̇
  map f is k connected = (y : codomain f) → (fiber f y) is k connected
+
+ 1-connected-map-is-surj : {X : 𝓤 ̇} {Y : 𝓥 ̇} {f : X → Y}
+                         → map f is 1 connected
+                         → is-surjection pt f
+ 1-connected-map-is-surj f-is-1-connected y = {!!}
 
  connectedness-closed-under-equiv : {𝓤 𝓥 : Universe}
                                   → (k : ℕ)
