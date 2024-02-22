@@ -23,6 +23,8 @@ open import Locales.DistributiveLattice.Ideal pt fe pe
 open import Locales.Frame pt fe
 open import UF.Powerset-MultiUniverse
 open import MLTT.Spartan
+open import MLTT.Fin hiding (𝟏)
+open import MLTT.List hiding ([_])
 open import UF.Base
 open import UF.SubtypeClassifier
 open import UF.Logic
@@ -40,7 +42,7 @@ open PropositionalTruncation pt hiding (_∨_)
 
 module DefnOfFrameOfIdeal (L : DistributiveLattice 𝓤) where
 
- open DistributiveLattice L
+ open DistributiveLattice L renaming (X-is-set to σ)
 
  _⊆ᵢ_ : Ideal L → Ideal L → Ω (𝓤)
  ℐ₁ ⊆ᵢ ℐ₂ = Ɐ x ꞉ ∣ L ∣ᵈ , x ∈ₚ I₁ ⇒ x ∈ₚ I₂
@@ -123,37 +125,52 @@ The top ideal.
 
  open IdealNotation L
 
+ open binary-unions-of-subsets pt
+
+ _∨ᵢ_ : Ideal L → Ideal L → Ideal L
+ ℐ₁ ∨ᵢ ℐ₂ =
+  record
+   { I                    = λ z → Ǝ x ꞉ ∣ L ∣ᵈ , ∃ y ꞉ ∣ L ∣ᵈ , z ＝ x ∨ y
+   ; I-is-downward-closed = {!!}
+   ; I-is-closed-under-∨  = {!!}
+   }
+    where
+     open Ideal ℐ₁ renaming (I to I₁;
+                             I-is-downward-closed to I-is-downward-closed₁)
+     open Ideal ℐ₂ renaming (I to I₂;
+                             I-is-downward-closed to I-is-downward-closed₂)
+
  ⋁ᵢ_ : Fam 𝓤 (Ideal L) → Ideal L
  ⋁ᵢ S =
   record
    { I                    = ⋃S
-   ; I-is-downward-closed = †
-   ; I-is-closed-under-∨  = ‡
+   ; I-is-downward-closed = {!!}
+   ; I-is-closed-under-∨  = {!!}
    }
    where
     ⋃S : ∣ L ∣ᵈ → Ω 𝓤
-    ⋃S = λ x →  Ǝ i ꞉ index S , x ∈ⁱ (S [ i ])
+    ⋃S = λ x →  Ǝ is ꞉ List (index S) , ∃ k ꞉ Fin (length is) , {!x ∈ᵢ (S [ k ])!}
 
-    † : is-downward-closed L ⋃S holds
-    † x y p = ∥∥-rec (holds-is-prop (⋃S x)) γ
-     where
-      γ : Σ i ꞉ (index S) , y ∈ⁱ (S [ i ]) → ⋃S x holds
-      γ (i , q) = ∣ i , Sᵢ-is-downward-closed x y p q ∣
-       where
-        open Ideal (S [ i ]) using () renaming (I-is-downward-closed to Sᵢ-is-downward-closed)
+    -- † : is-downward-closed L ⋃S holds
+    -- † x y p = ∥∥-rec (holds-is-prop (⋃S x)) γ
+    --  where
+    --   γ : Σ i ꞉ (index S) , y ∈ⁱ (S [ i ]) → ⋃S x holds
+    --   γ (i , q) = ∣ i , Sᵢ-is-downward-closed x y p q ∣
+    --    where
+    --     open Ideal (S [ i ]) using () renaming (I-is-downward-closed to Sᵢ-is-downward-closed)
 
-    foo : ∣ L ∣ᵈ ＝ X
-    foo = refl
+    -- foo : ∣ L ∣ᵈ ＝ X
+    -- foo = refl
 
-    ‡ : is-closed-under-binary-joins L ⋃S holds
-    ‡ x y p q = ∥∥-rec (holds-is-prop ((x ∨ y) ∈ₚ ⋃S)) γ β
-     where
-      β : (x ∧ y) ∈ ⋃S
-      β = † (x ∧ y) x (∧-is-a-lower-bound₁ L x y) p
+    -- ‡ : is-closed-under-binary-joins L ⋃S holds
+    -- ‡ x y p q = ∥∥-rec (holds-is-prop ((x ∨ y) ∈ₚ ⋃S)) γ β
+    --  where
+    --   β : (x ∧ y) ∈ ⋃S
+    --   β = † (x ∧ y) x (∧-is-a-lower-bound₁ L x y) p
 
-      γ : (Σ i ꞉ index S , (x ∧ y) ∈ⁱ (S [ i ])) → ⋃S (x ∨ y) holds
-      γ (i , r) = {!!}
-       where
-       open Ideal (S [ i ]) using () renaming (I-is-downward-closed to Sᵢ-is-downward-closed)
+    --   γ : (Σ i ꞉ index S , (x ∧ y) ∈ⁱ (S [ i ])) → ⋃S (x ∨ y) holds
+    --   γ (i , r) = {!!}
+    --    where
+    --    open Ideal (S [ i ]) using () renaming (I-is-downward-closed to Sᵢ-is-downward-closed)
 
 \end{code}
