@@ -118,8 +118,8 @@ Theorem : (𝓓 : DCPO {𝓤} {𝓤})
               × ((y : ⟨ 𝓓 ⟩) → f y ＝ y → x ⊑⟨ 𝓓 ⟩ y)
 \end{code}
 
-We prove this at the very end of this file. We first need to prove a
-number of lemmas, in two modules, step₁ and step₂.
+Before proving this theorem, we first need to prove a number of
+lemmas, in two modules, step₁ and step₂.
 
 \begin{code}
 
