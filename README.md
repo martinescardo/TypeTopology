@@ -180,6 +180,15 @@ Tosun.
 
    https://doi.org/10.4230/LIPIcs.FSCD.2021.8
 
+1. Tom de Jong. *Domain Theory in Constructive and Predicative Univalent
+   Foundations*. PhD thesis. School of Computer Science, University of
+   Birmingham, UK. Submitted: 30 September 2022; accepted: 1 February 2023.
+
+   https://etheses.bham.ac.uk/id/eprint/13401/ \
+   Updated versions: \
+   https://arxiv.org/abs/2301.12405 \
+   https://tdejong.com/writings/phd-thesis.pdf
+
 1. Ayberk Tosun and Martín H. Escardó. *Patch Locale of a Spectral
    Locale in Univalent Type Theory.* [Electronic Notes in Theoretical
    Informatics and Computer Science](https://entics.episciences.org/),
