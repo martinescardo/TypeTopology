@@ -431,8 +431,6 @@ and then conclude that actually f x ＝ x by Lambek's Lemma. But we
 already know that the initial algebra is a fixed point in our case,
 and so there is no point in doing this.
 
-\end{code}
-
 For later reference we repackage the theorem as follows:
 
 \begin{code}
