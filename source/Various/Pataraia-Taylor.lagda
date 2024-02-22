@@ -1,9 +1,8 @@
-Martin Escardo, 16 Feb 2023
+Martin Escardo, Tom de Jong, 16 & 22 Feb 2023
 
 We implement a predicative version of Pataraia's fixed point theorem
 that every monotone endomap of a dcpo (directed complete poset) with a
-least element has a least fixed point. We benefitted from discussions
-with Tom de Jong.
+least element has a least fixed point.
 
 Pataraia [1] was the first to give a constructive proof of this in
 topos logic. A version of his proof is published in [2] by the author,
@@ -39,7 +38,7 @@ Scott model of PCF, or Scott's D∞-model of the untyped
 lambda-calculus, the parameter is of the form (𝓤⁺,𝓤,𝓤), and we refer
 to such dcpos as "large, locally small, small directed-complete", and
 if the parameter is (𝓤,𝓤,𝓤), we could refer to the dcpo as "small and
-small directed-complete".  The Pataraia-Taylor fixed point theorem
+small directed-complete". The Pataraia-Taylor fixed point theorem
 presented here applies to small, small directed-complete dcpos, and
 the trouble is that there are no non-trivial examples of such dcpos in
 our predicative world [4]. The only way to produce nontrivial such
@@ -280,8 +279,8 @@ module step₂
      II : (a : A) → α a ⊑ u
      II a = TC-preservation₂ a u l
 
- TC-is-closed-under-⊥ : TC ⊥
- TC-is-closed-under-⊥ = ⊥-is-least (f ⊥) , (λ (u : D) _ → ⊥-is-least u)
+ TC-holds-at-⊥ : TC ⊥
+ TC-holds-at-⊥ = ⊥-is-least (f ⊥) , (λ (u : D) _ → ⊥-is-least u)
 
 \end{code}
 
@@ -313,7 +312,7 @@ satisfy Taylor's condition.
  τ (x , c) = c
 
  ⊥𝓔 : E
- ⊥𝓔 =  ⊥ , TC-is-closed-under-⊥
+ ⊥𝓔 =  ⊥ , TC-holds-at-⊥
 
 \end{code}
 
@@ -328,6 +327,9 @@ function 𝓯 : E → E.
                    (λ u (l : f u ⊑ u) → f x ⊑⟨ 𝓓 ⟩[ fm x u (c₂ u l) ]
                                         f u ⊑⟨ 𝓓 ⟩[ l ]
                                         u   ∎⟨ 𝓓 ⟩)
+
+ TC-𝓯 : (s : E) → TC (f (ι s))
+ TC-𝓯 s = pr₂ (𝓯 s)
 
  𝓯-is-monotone : (s t : E) → s ≤ t → 𝓯 s ≤ 𝓯 t
  𝓯-is-monotone (x , _) (y , _) = fm x y
@@ -421,109 +423,170 @@ and then conclude that actually f x ＝ x by Lambek's Lemma. But we
 already know that the initial algebra is a fixed point in our case,
 and so there is no point in doing this.
 
+\end{code}
+
+For later reference we repackage the theorem as follows:
+
 \begin{code}
 
-module Pataraia-induction
+module _
         (𝓓 : DCPO {𝓤} {𝓤})
         ((⊥ , ⊥-is-least) : has-bottom 𝓓)
         (f : ⟨ 𝓓 ⟩ → ⟨ 𝓓 ⟩)
         (fm : is-monotone 𝓓 𝓓 f)
-        (P : ⟨ 𝓓 ⟩ → 𝓤 ̇  )
-        (P-is-prop-valued : (x : ⟨ 𝓓 ⟩) → is-prop (P x))
-        (P-holds-at-⊥ : P ⊥)
-        (P-is-closed-under-directed-sups : is-closed-under-directed-sups 𝓓 P)
-        (P-is-closed-under-f : (x : ⟨ 𝓓 ⟩) → P x → P (f x))
        where
 
- private
-  D = ⟨ 𝓓 ⟩
-  _⊑_ = underlying-order 𝓓
+ lfp : ⟨ 𝓓 ⟩
+ lfp = pr₁ (Theorem 𝓓 (⊥ , ⊥-is-least) f fm)
 
- open step₂ 𝓓 (⊥ , ⊥-is-least) f fm
-  using (TC ;
-         TC-is-prop-valued ;
-         TC-is-closed-under-directed-sups ;
-         TC-is-closed-under-⊥ ;
-         TC₂)
-  renaming (𝓯 to 𝓯')
+ lfp-is-fixed-point : f lfp ＝ lfp
+ lfp-is-fixed-point = pr₁ (pr₂ (Theorem 𝓓 (⊥ , ⊥-is-least) f fm))
 
- TC∩P : D → 𝓤 ̇
- TC∩P x = TC x × P x
-
- TC∩P-⊆-TC : (x : ⟨ 𝓓 ⟩) → TC∩P x → TC x
- TC∩P-⊆-TC x = pr₁
-
- TC∩P-⊆-P : (x : ⟨ 𝓓 ⟩) → TC∩P x → P x
- TC∩P-⊆-P x = pr₂
-
- TC∩P-is-prop-valued : (x : D) → is-prop (TC∩P x)
- TC∩P-is-prop-valued x = ×-is-prop
-                          (TC-is-prop-valued x)
-                          (P-is-prop-valued x)
-
- TC∩P-is-closed-under-directed-sups : is-closed-under-directed-sups 𝓓 TC∩P
- TC∩P-is-closed-under-directed-sups {A} α δ TC∩P-preservation = c₁ , c₂
-  where
-   c₁ : TC (∐ 𝓓 δ)
-   c₁ = TC-is-closed-under-directed-sups α δ
-         (λ a → TC∩P-⊆-TC (α a) (TC∩P-preservation a))
-   c₂ : P (∐ 𝓓 δ)
-   c₂ = P-is-closed-under-directed-sups α δ
-         (λ a → TC∩P-⊆-P (α a) (TC∩P-preservation a))
-
- 𝓔 : DCPO
- 𝓔 = subdcpo 𝓓 TC∩P TC∩P-is-prop-valued TC∩P-is-closed-under-directed-sups
-
- private
-  E = ⟨ 𝓔 ⟩
-  _≤_ : E → E → 𝓤 ̇
-  s ≤ t = s ⊑⟨ 𝓔 ⟩ t
-
- ι : E → D
- ι (x , c) = x
-
- τ : (t : E) → TC (ι t)
- τ (x , c) = TC∩P-⊆-TC (ι (x , c)) c
-
- ⊥𝓔 : E
- ⊥𝓔 = ⊥ , (TC-is-closed-under-⊥ , P-holds-at-⊥)
-
- 𝓯 : E → E
- 𝓯 (x , tc , cₚ) = f x , pr₂ (𝓯' (x , tc)) , P-is-closed-under-f x cₚ
-
- 𝓯-is-monotone : (s t : E) → s ≤ t → 𝓯 s ≤ 𝓯 t
- 𝓯-is-monotone (x , _) (y , _) = fm x y
-
- 𝓯-is-inflationary : (t : E) → t ≤ 𝓯 t
- 𝓯-is-inflationary (x , (c₁ , c₂) , _) = c₁
-
- open step₁ 𝓔
-
- 𝕗 : MI
- 𝕗 = (𝓯 , 𝓯-is-monotone , 𝓯-is-inflationary)
-
- t₀ : E
- t₀ = γ ⊥𝓔
-
- t₀-is-fp : 𝓯 t₀ ＝ t₀
- t₀-is-fp = γ-is-fixed-point 𝕗 ⊥𝓔
-
- x₀ : D
- x₀ = ι t₀
-
- x₀-is-fp : f x₀ ＝ x₀
- x₀-is-fp = ap ι t₀-is-fp
-
- x₀-is-lpfp : (x : D) → f x ⊑ x → x₀ ⊑ x
- x₀-is-lpfp = TC₂ x₀ (τ t₀)
-
- x₀-is-lfp : (x : D) → f x ＝ x → x₀ ⊑ x
- x₀-is-lfp x p = x₀-is-lpfp x (＝-to-⊑ 𝓓 p)
-
- x₀-satisfies-P : P x₀
- x₀-satisfies-P = TC∩P-⊆-P (pr₁ t₀) (pr₂ t₀)
+ lfp-is-least : (y : ⟨ 𝓓 ⟩) → f y ＝ y → lfp ⊑⟨ 𝓓 ⟩ y
+ lfp-is-least = pr₂ (pr₂ (Theorem 𝓓 (⊥ , ⊥-is-least) f fm))
 
 \end{code}
 
-Note: we can recover the above construction by taking P to be the trivial
-predicate.
+It follows directly from Pataraia's original proof [2] that if P is a property
+that holds for ⊥, is closed under directed suprema, and is closed under f, then
+P holds for the least fixed point of f. We refer to this as the fixed-point
+induction principle. Although this principle doesn't follow directly from the
+above argument, we can prove it as follows, using step₂ again.
+
+\begin{code}
+
+ lfp-induction :
+    (P : ⟨ 𝓓 ⟩ → 𝓤 ̇  )
+  → ((x : ⟨ 𝓓 ⟩) → is-prop (P x))
+  → P ⊥
+  → is-closed-under-directed-sups 𝓓 P
+  → ((x : ⟨ 𝓓 ⟩) → P x → P (f x))
+  → P lfp
+
+ module fixed-point-induction
+         (P : ⟨ 𝓓 ⟩ → 𝓤 ̇  )
+         (P-is-prop-valued : (x : ⟨ 𝓓 ⟩) → is-prop (P x))
+         (P-holds-at-⊥ : P ⊥)
+         (P-is-closed-under-directed-sups : is-closed-under-directed-sups 𝓓 P)
+         (P-is-closed-under-f : (x : ⟨ 𝓓 ⟩) → P x → P (f x))
+        where
+
+  private
+   D = ⟨ 𝓓 ⟩
+   _⊑_ = underlying-order 𝓓
+
+  open step₂ 𝓓 (⊥ , ⊥-is-least) f fm
+   using (TC ;
+          TC₂ ;
+          TC-𝓯 ;
+          TC-is-prop-valued ;
+          TC-is-closed-under-directed-sups ;
+          TC-holds-at-⊥)
+   renaming (𝓯 to 𝓯')
+
+  TC' : D → 𝓤 ̇
+  TC' x = TC x × P x
+
+  TC'-⊆-TC : (x : ⟨ 𝓓 ⟩) → TC' x → TC x
+  TC'-⊆-TC x = pr₁
+
+  TC'-⊆-P : (x : ⟨ 𝓓 ⟩) → TC' x → P x
+  TC'-⊆-P x = pr₂
+
+  TC'-is-prop-valued : (x : D) → is-prop (TC' x)
+  TC'-is-prop-valued x = ×-is-prop
+                          (TC-is-prop-valued x)
+                          (P-is-prop-valued x)
+
+  TC'-is-closed-under-directed-sups : is-closed-under-directed-sups 𝓓 TC'
+  TC'-is-closed-under-directed-sups α δ TC'-preservation = c₁ , c₂
+   where
+    c₁ : TC (∐ 𝓓 δ)
+    c₁ = TC-is-closed-under-directed-sups α δ
+          (λ a → TC'-⊆-TC (α a) (TC'-preservation a))
+
+    c₂ : P (∐ 𝓓 δ)
+    c₂ = P-is-closed-under-directed-sups α δ
+          (λ a → TC'-⊆-P (α a) (TC'-preservation a))
+
+  𝓔 : DCPO
+  𝓔 = subdcpo 𝓓 TC' TC'-is-prop-valued TC'-is-closed-under-directed-sups
+
+  private
+   E = ⟨ 𝓔 ⟩
+   _≤_ : E → E → 𝓤 ̇
+   s ≤ t = s ⊑⟨ 𝓔 ⟩ t
+
+  ι : E → D
+  ι (x , c) = x
+
+  τ' : (t : E) → TC' (ι t)
+  τ' (x , c) = c
+
+  τ : (t : E) → TC (ι t)
+  τ t = TC'-⊆-TC (ι t) (τ' t)
+
+  ⊥𝓔 : E
+  ⊥𝓔 = ⊥ , TC-holds-at-⊥ , P-holds-at-⊥
+
+  𝓯 : E → E
+  𝓯 (x , tc , p) = f x , TC-𝓯 (x , tc) , P-is-closed-under-f x p
+
+  𝓯-is-monotone : (s t : E) → s ≤ t → 𝓯 s ≤ 𝓯 t
+  𝓯-is-monotone (x , _) (y , _) = fm x y
+
+  𝓯-is-inflationary : (t : E) → t ≤ 𝓯 t
+  𝓯-is-inflationary (x , (c₁ , c₂) , _) = c₁
+
+  open step₁ 𝓔
+
+  𝕗 : MI
+  𝕗 = (𝓯 , 𝓯-is-monotone , 𝓯-is-inflationary)
+
+  t₀ : E
+  t₀ = γ ⊥𝓔
+
+  t₀-is-fp : 𝓯 t₀ ＝ t₀
+  t₀-is-fp = γ-is-fixed-point 𝕗 ⊥𝓔
+
+  x₀ : D
+  x₀ = ι t₀
+
+  x₀-is-fp : f x₀ ＝ x₀
+  x₀-is-fp = ap ι t₀-is-fp
+
+  x₀-is-lpfp : (x : D) → f x ⊑ x → x₀ ⊑ x
+  x₀-is-lpfp = TC₂ x₀ (τ t₀)
+
+  x₀-is-lfp : (x : D) → f x ＝ x → x₀ ⊑ x
+  x₀-is-lfp x p = x₀-is-lpfp x (＝-to-⊑ 𝓓 p)
+
+  x₀-satisfies-P : P x₀
+  x₀-satisfies-P = TC'-⊆-P (ι t₀) (τ' t₀)
+
+\end{code}
+
+Now we are ready to prove the least fixed point induction theorem.
+
+\begin{code}
+
+ lfp-induction
+  P
+  P-is-prop-valued
+  P-holds-at-⊥
+  P-is-closed-under-directed-sups
+  P-is-closed-under-f = transport P e x₀-satisfies-P
+   where
+    open fixed-point-induction
+          P
+          P-is-prop-valued
+          P-holds-at-⊥
+          P-is-closed-under-directed-sups
+          P-is-closed-under-f
+    e : x₀ ＝ lfp
+    e = antisymmetry 𝓓
+         x₀ lfp
+         (x₀-is-lfp lfp lfp-is-fixed-point)
+         (lfp-is-least x₀ x₀-is-fp)
+
+\end{code}
