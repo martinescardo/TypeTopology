@@ -4,9 +4,12 @@ Martin Escardo.
 
 {-# OPTIONS --safe --without-K #-}
 
+open import UF.FunExt
 open import UF.PropTrunc
 
-module UF.ImageAndSurjection (pt : propositional-truncations-exist) where
+module UF.ImageAndSurjection (pt : propositional-truncations-exist)
+                             (fe : FunExt)
+                              where
 
 open import MLTT.Spartan
 open import UF.Base
@@ -59,6 +62,11 @@ restrictions-are-embeddings f = pr₁-is-embedding (λ y → ∥∥-is-prop)
 
 is-surjection : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 is-surjection f = ∀ y → y ∈image f
+
+being-surjection-is-prop : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f : X → Y}
+                         → is-prop (is-surjection f)
+being-surjection-is-prop {𝓤} {𝓥} {X} {Y} {f} =
+  Π-is-prop (fe 𝓥 (𝓤 ⊔ 𝓥)) λ y → being-in-the-image-is-prop y {!f!}
 
 corestrictions-are-surjections : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                                → is-surjection (corestriction f)
