@@ -336,14 +336,14 @@ function 𝓯 : E → E.
                                         f u ⊑⟨ 𝓓 ⟩[ l ]
                                         u   ∎⟨ 𝓓 ⟩)
 
- TC-𝓯 : (s : E) → TC (f (ι s))
- TC-𝓯 s = pr₂ (𝓯 s)
-
  𝓯-is-monotone : (s t : E) → s ≤ t → 𝓯 s ≤ 𝓯 t
  𝓯-is-monotone (x , _) (y , _) = fm x y
 
  𝓯-is-inflationary : (t : E) → t ≤ 𝓯 t
  𝓯-is-inflationary (x , c₁ , c₂) = c₁
+
+ TC-𝓯 : (s : E) → TC (f (ι s))
+ TC-𝓯 s = pr₂ (𝓯 s)
 
 \end{code}
 
