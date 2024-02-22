@@ -226,6 +226,9 @@ z = transitivity 𝓓 a c d z' w
  syntax reflexivity 𝓓 x = x ∎⟨ 𝓓 ⟩
  infix 1 reflexivity
 
+ has-bottom : DCPO → 𝓤 ⊔ 𝓣 ̇
+ has-bottom 𝓓 = has-least (underlying-order 𝓓)
+
 \end{code}
 
 Next, we introduce ∐-notation for the supremum of a directed family in a dcpo.

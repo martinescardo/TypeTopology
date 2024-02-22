@@ -120,6 +120,15 @@ compactness and pointedness, and hence the notation "compact∙":
 is-compact∙ : 𝓤 ̇ → 𝓤 ̇
 is-compact∙ X = (p : X → 𝟚) → Σ x₀ ꞉ X , (p x₀ ＝ ₁ → (x : X) → p x ＝ ₁)
 
+universal-witness : {X : 𝓤 ̇ } → is-compact∙ X → (X → 𝟚) → X
+universal-witness ε p = pr₁ (ε p)
+
+witness-universality : {X : 𝓤 ̇ }
+                       (ε : is-compact∙ X)
+                       (p : X → 𝟚)
+                     → p (universal-witness ε p) ＝ ₁ → (x : X) → p x ＝ ₁
+witness-universality ε p = pr₂ (ε p)
+
 \end{code}
 
 Terminology: we call x₀ the universal witness.
@@ -138,19 +147,16 @@ compact∙-types-are-compact : {X : 𝓤 ̇ } → is-compact∙ X → is-compact
 compact∙-types-are-compact {𝓤} {X} ε p = 𝟚-equality-cases case₀ case₁
  where
   x₀ : X
-  x₀ = pr₁ (ε p)
-
-  lemma : p x₀ ＝ ₁ → (x : X) → p x ＝ ₁
-  lemma = pr₂ (ε p)
+  x₀ = universal-witness ε p
 
   case₀ : p x₀ ＝ ₀ → (Σ x ꞉ X , p x ＝ ₀) + ((x : X) → p x ＝ ₁)
   case₀ r = inl (x₀ , r)
 
   case₁ : p x₀ ＝ ₁ → (Σ x ꞉ X , p x ＝ ₀) + ((x : X) → p x ＝ ₁)
-  case₁ r = inr (lemma r)
+  case₁ r = inr (witness-universality ε p r)
 
 compact∙-types-are-pointed : {X : 𝓤 ̇ } → is-compact∙ X → X
-compact∙-types-are-pointed ε = pr₁ (ε (λ x → ₀))
+compact∙-types-are-pointed ε = universal-witness ε (λ x → ₀)
 
 \end{code}
 
@@ -252,10 +258,11 @@ putative-root : {X : 𝓤 ̇ }
 putative-root {𝓤} {X} ε p = x₀ , lemma₀ , lemma₁
  where
   x₀ : X
-  x₀ = pr₁ (ε p)
+  x₀ = universal-witness ε p
 
   lemma : ¬ ((x : X) → p x ＝ ₁) → p x₀ ＝ ₀
-  lemma = different-from-₁-equal-₀ ∘ contrapositive (pr₂ (ε p))
+  lemma = different-from-₁-equal-₀
+        ∘ contrapositive (witness-universality ε p)
 
   lemma₀ : p has-a-root → x₀ is-a-root-of p
   lemma₀ (x , r) = lemma claim
@@ -280,22 +287,17 @@ is-compact∙' : 𝓤 ̇ → 𝓤 ̇
 is-compact∙' X = Σ ε ꞉ ((X → 𝟚) → X) , X has-selection ε
 
 compact∙-types-are-compact∙' : {X : 𝓤 ̇ } → is-compact∙ X → is-compact∙' X
-compact∙-types-are-compact∙' {𝓤} {X} ε' = ε , lemma
- where
-  ε : (X → 𝟚) → X
-  ε p = pr₁ (ε' p)
-
-  lemma : (p : X → 𝟚) → p (ε p) ＝ ₁ → (x : X) → p x ＝ ₁
-  lemma p = pr₂ (ε' p)
+compact∙-types-are-compact∙' {𝓤} {X} ε' = universal-witness ε' ,
+                                          witness-universality ε'
 
 compact∙'-types-are-compact∙ : {X : 𝓤 ̇ } → is-compact∙' X → is-compact∙ X
-compact∙'-types-are-compact∙ {𝓤} {X} ε p = x₀ , lemma
+compact∙'-types-are-compact∙ {𝓤} {X} ε p = x₀ , universality
  where
   x₀ : X
   x₀ = pr₁ ε p
 
-  lemma : p x₀ ＝ ₁ → (x : X) → p x ＝ ₁
-  lemma u β = pr₂ ε p u β
+  universality : p x₀ ＝ ₁ → (x : X) → p x ＝ ₁
+  universality u β = pr₂ ε p u β
 
 \end{code}
 
@@ -340,9 +342,10 @@ apart-or-equal fe {X} {Y} φ d f g = lemma₂ lemma₁
   lemma₁ : (Σ x ꞉ X , p x ＝ ₀) + (Π x ꞉ X , p x ＝ ₁)
   lemma₁ = φ p
 
-  lemma₂ : (Σ x ꞉ X , p x ＝ ₀) + (Π x ꞉ X , p x ＝ ₁) → (f ♯ g) + (f ＝ g)
+  lemma₂ : (Σ x ꞉ X , p x ＝ ₀) + (Π x ꞉ X , p x ＝ ₁)
+         → (f ♯ g) + (f ＝ g)
   lemma₂ (inl (x , r)) = inl (x , (pr₁ (pr₂ lemma₀ x) r))
-  lemma₂ (inr h) = inr (dfunext fe (λ x → pr₂ (pr₂ lemma₀ x) (h x)))
+  lemma₂ (inr h)       = inr (dfunext fe (λ x → pr₂ (pr₂ lemma₀ x) (h x)))
 
 discrete-to-power-compact-is-discrete : funext 𝓤 𝓥
                                       → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
@@ -523,13 +526,10 @@ retractions-preserve-compactness {i} {j} {X} {Y} {f} f-retract ε q = y₀ , h
    p x = q (f x)
 
    x₀ : X
-   x₀ = pr₁ (ε p)
+   x₀ = universal-witness ε p
 
    y₀ : Y
    y₀ = f x₀
-
-   lemma : p x₀ ＝ ₁ → (x : X) → p x ＝ ₁
-   lemma = pr₂ (ε p)
 
    h : q y₀ ＝ ₁ → (a : Y) → q a ＝ ₁
    h r a = fact₁ ⁻¹ ∙ fact₀
@@ -541,7 +541,7 @@ retractions-preserve-compactness {i} {j} {X} {Y} {f} f-retract ε q = y₀ , h
      x = pr₁ fact
 
      fact₀ : q (f x) ＝ ₁
-     fact₀ = lemma r x
+     fact₀ = witness-universality ε p r x
 
      fact₁ : q (f x) ＝ q a
      fact₁ = ap q (pr₂ fact)
@@ -556,9 +556,10 @@ retract-is-compact∙ (_ , φ) = retractions-preserve-compactness φ
               → is-compact∙ X₀
               → is-compact∙ X₁
               → is-compact∙ (X₀ + X₁)
-+-is-compact∙ {𝓤} {X₀} {X₁} ε₀ ε₁ = retract-is-compact∙
-                                   (retract-of-gives-retract-Of +-retract-of-+')
-                                   (+'-is-compact∙ ε₀ ε₁)
++-is-compact∙ {𝓤} {X₀} {X₁} ε₀ ε₁ =
+ retract-is-compact∙
+  (retract-of-gives-retract-Of +-retract-of-+')
+  (+'-is-compact∙ ε₀ ε₁)
 
 𝟙+𝟙-is-compact∙ : is-compact∙ (𝟙 {𝓤} + 𝟙 {𝓥})
 𝟙+𝟙-is-compact∙ = retract-is-compact∙ (f , r) 𝟚-is-compact∙
@@ -597,10 +598,10 @@ module _ (pt : propositional-truncations-exist) where
    p = q ∘ f
 
    x₀ : X
-   x₀ = pr₁ (ε p)
+   x₀ = universal-witness ε p
 
    g : q (f x₀) ＝ ₁ → (x : X) → q (f x) ＝ ₁
-   g = pr₂ (ε p)
+   g = witness-universality ε p
 
    y₀ : Y
    y₀ = f x₀
@@ -609,7 +610,7 @@ module _ (pt : propositional-truncations-exist) where
    isp y = 𝟚-is-set
 
    h : q y₀ ＝ ₁ → (y : Y) → q y ＝ ₁
-   h r = surjection-induction f i (λ y → q y ＝ ₁) isp (g r)
+   h r = surjection-induction f i (λ - → q - ＝ ₁) isp (g r)
 
  image-is-compact∙ : {X Y : 𝓤₀ ̇ } (f : X → Y)
                    → is-compact∙ X
@@ -727,10 +728,9 @@ Compact-types-are-compact {𝓤} {X} C p = iv
   iv : (Σ x ꞉ X , p x ＝ ₀) + (Π x ꞉ X , p x ＝ ₁)
   iv = iii (i ii)
 
-Compact-resize-up : {X : 𝓤 ̇ } → is-Compact X {𝓤₀} → is-Compact X {𝓥}
-Compact-resize-up C = compact-types-are-Compact
+Compact-resize-up₀ : {X : 𝓤 ̇ } → is-Compact X {𝓤₀} → is-Compact X {𝓥}
+Compact-resize-up₀ C = compact-types-are-Compact
                        (Compact-types-are-compact C)
-
 \end{code}
 
 TODO. Prove the converse of the previous observation, using the fact
@@ -799,7 +799,7 @@ is-Π-Compact {𝓤} X {𝓥} = (A : X → 𝓥 ̇ ) → is-complemented A → i
 
   γ : is-decidable (Σ B) → is-decidable (Σ A)
   γ (inl (x , (y , a))) = inl ((x , y) , a)
-  γ (inr u)             = inr (λ {((x , y) , a) → u (x , (y , a))})
+  γ (inr u)             = inr (λ ((x , y) , a) → u (x , (y , a)))
 
 \end{code}
 
@@ -891,9 +891,10 @@ module CompactTypesPT (pt : propositional-truncations-exist) where
 
 
  ∃-Compactness-is-prop : Fun-Ext → {X : 𝓤 ̇ } → is-prop (is-∃-Compact X {𝓥})
- ∃-Compactness-is-prop {𝓤} {𝓥} fe {X} = Π₂-is-prop fe
-                                          (λ A δ → decidability-of-prop-is-prop fe
-                                                    ∥∥-is-prop)
+ ∃-Compactness-is-prop {𝓤} {𝓥} fe {X} =
+  Π₂-is-prop fe
+   (λ A δ → decidability-of-prop-is-prop fe
+             ∃-is-prop)
 
 
  ∃-Compactness-gives-Markov : {X : 𝓤 ̇ }
@@ -904,9 +905,11 @@ module CompactTypesPT (pt : propositional-truncations-exist) where
                             → ∃ A
  ∃-Compactness-gives-Markov {𝓤} {𝓥} {X} c A δ = ¬¬-elim (c A δ)
 
- ∥Compact∥-gives-∃-Compact : Fun-Ext → {X : 𝓤 ̇ } → ∥ is-Compact X {𝓥} ∥ → is-∃-Compact X {𝓥}
+ ∥Compact∥-gives-∃-Compact : Fun-Ext
+                           → {X : 𝓤 ̇ }
+                           → ∥ is-Compact X {𝓥} ∥ → is-∃-Compact X {𝓥}
  ∥Compact∥-gives-∃-Compact fe = ∥∥-rec (∃-Compactness-is-prop fe)
-                                     Compactness-gives-∃-Compactness
+                                      Compactness-gives-∃-Compactness
 
  ∃-Compact-propositions-are-decidable : {P : 𝓤 ̇ }
                                       → is-prop P
@@ -1028,18 +1031,18 @@ Compact-types-are-decidable X c = γ
   γ : is-decidable X
   γ = f a
 
-discrete-to-power-Compact-is-discrete : funext 𝓤 𝓥
-                                      → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+discrete-to-power-Compact-is-discrete' : funext 𝓤 𝓥
+                                      → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
                                       → is-Π-Compact X
-                                      → is-discrete Y
-                                      → is-discrete (X → Y)
-discrete-to-power-Compact-is-discrete {𝓤} {𝓥} fe {X} {Y} c d f g = γ
+                                      → ((x : X) → is-discrete (Y x))
+                                      → is-discrete (Π Y)
+discrete-to-power-Compact-is-discrete' {𝓤} {𝓥} fe {X} {Y} c d f g = γ
  where
   A : X → 𝓥 ̇
   A x = f x ＝ g x
 
   a : (x : X) → is-decidable (A x)
-  a x = d (f x) (g x)
+  a x = d x (f x) (g x)
 
   b : is-decidable (Π A)
   b = c A a
@@ -1050,6 +1053,14 @@ discrete-to-power-Compact-is-discrete {𝓤} {𝓥} fe {X} {Y} c d f g = γ
 
   γ : is-decidable (f ＝ g)
   γ = φ b
+
+discrete-to-power-Compact-is-discrete : funext 𝓤 𝓥
+                                      → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                                      → is-Π-Compact X
+                                      → is-discrete Y
+                                      → is-discrete (X → Y)
+discrete-to-power-Compact-is-discrete {𝓤} {𝓥} fe {X} {Y} c d =
+ discrete-to-power-Compact-is-discrete' fe c (λ _ → d)
 
 open import TypeTopology.TotallySeparated
 

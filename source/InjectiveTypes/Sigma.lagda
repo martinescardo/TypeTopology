@@ -62,11 +62,11 @@ We now introduce some abbreviations.
 
 \begin{code}
 
-extension : {X : 𝓦 ̇}
-          → aflabby X 𝓤 → (p : Ω 𝓤) → (p holds → X) → X
+extension : {X : 𝓤 ̇}
+          → aflabby X 𝓦 → (p : Ω 𝓦) → (p holds → X) → X
 extension = aflabby-extension
 
-extends : {X : 𝓦 ̇} (ϕ : aflabby X 𝓤) (p : Ω 𝓤)
+extends : {X : 𝓤 ̇} (ϕ : aflabby X 𝓦) (p : Ω 𝓦)
           (f : p holds → X) (h : p holds)
         → extension ϕ p f ＝ f h
 extends  = aflabby-extension-property
@@ -122,7 +122,7 @@ section, so that we can define the extension (x , a) by
 
  ρ : (p : Ω 𝓦) (f : p holds → X)
    → A (extension ϕ p f) → ((h : p holds) → A (f h))
- ρ p f s h = transport A (extends ϕ p f h) s
+ ρ p f a h = transport A (extends ϕ p f h) a
 
 \end{code}
 
@@ -192,7 +192,66 @@ ainjective.
 
 \end{code}
 
-Sometimes we want to prove that Σ x : A₁ x × A₂ x is
+If the type family A is a predicate, i.e. a family of propositions, then the
+technical condition simplies to just having a map in the reverse direction of
+ρ p f with the requirement that it's a section following automatically.
+
+\begin{code}
+
+ simplified-technical-condition : 𝓤 ⊔ 𝓥 ⊔ (𝓦 ⁺)  ̇
+ simplified-technical-condition = (p : Ω 𝓦)
+                                  (f : p holds → X)
+                                → ((h : p holds) → A (f h)) → A (extension ϕ p f)
+
+ technical-condition-gives-simplified-technical-condition :
+    technical-condition
+  → simplified-technical-condition
+ technical-condition-gives-simplified-technical-condition c p f =
+  section-of (ρ p f) (c p f)
+
+ simplified-technical-condition-gives-technical-condition :
+    ((x : X) → is-prop (A x))
+  → simplified-technical-condition
+  → technical-condition
+ simplified-technical-condition-gives-technical-condition
+  A-is-prop-valued c p f = I , II
+   where
+    I : ((h : p holds) → A (f h)) → A (extension ϕ p f)
+    I = c p f
+    II : ρ p f ∘ c p f ∼ id
+    II g = dfunext fe'
+                   (λ h → A-is-prop-valued (f h) ((ρ p f ∘ c p f) g h) (g h))
+
+ Σ-predicate-is-aflabby : ((x : X) → is-prop (A x))
+                        → simplified-technical-condition
+                        → aflabby (Σ A) 𝓦
+ Σ-predicate-is-aflabby A-is-prop-valued c =
+  Σ-is-aflabby
+   (simplified-technical-condition-gives-technical-condition A-is-prop-valued c)
+
+simplified-technical-condition-with-axioms :
+   {X : 𝓤 ̇  } (A : X → 𝓥 ̇  ) (ϕ : aflabby X 𝓣)
+   (A-technical-condition : technical-condition A ϕ)
+   (B : Σ A → 𝓦 ̇  )
+   (B-is-prop-valued : (σ : Σ A) → is-prop (B σ))
+   (B-simplified-technical-condition :
+    simplified-technical-condition B (Σ-is-aflabby A ϕ A-technical-condition))
+ → technical-condition B (Σ-is-aflabby A ϕ A-technical-condition)
+simplified-technical-condition-with-axioms
+ A ϕ
+ A-technical-condition
+ B
+ B-is-prop-valued
+ B-simplified-technical-condition =
+  simplified-technical-condition-gives-technical-condition
+   B
+   (Σ-is-aflabby A ϕ A-technical-condition)
+   B-is-prop-valued
+   B-simplified-technical-condition
+
+\end{code}
+
+Sometimes we want to prove that Σ x : X , A₁ x × A₂ x is
 aflabby/ainjective when we already know that A₁ and A₂ satisfy the
 technical conditions, and the following lemma can be used for that
 purpose.
@@ -276,11 +335,11 @@ technical-condition-with-axioms
    (B-is-prop-valued : (x : X) (a : A x) → is-prop (B x a))
    (B-is-closed-under-extension
      : (p : Ω 𝓥 )
-       (f : p holds → X )
+       (f : p holds → X)
      → (α : (h : p holds) → A (f h))
      → ((h : p holds) → B (f h) (α h))
      → B (extension ϕ p f) (section-of (ρ A ϕ p f) (ρ-has-section p f) α))
- → technical-condition (λ X → Σ s ꞉ A X , B X s) ϕ
+ → technical-condition (λ x → Σ a ꞉ A x , B x a) ϕ
 technical-condition-with-axioms
  {𝓤} {𝓥} {𝓦} {X}
  ϕ
@@ -291,7 +350,7 @@ technical-condition-with-axioms
  B-is-closed-under-extension = ρₐ-has-section
   where
    Aₐ : X → 𝓥 ⊔ 𝓦 ̇
-   Aₐ x = Σ s ꞉ A x , B x s
+   Aₐ x = Σ a ꞉ A x , B x a
 
    module _ (p : Ω 𝓥)
             (f : p holds → X)

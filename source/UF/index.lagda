@@ -21,11 +21,12 @@ import UF.FunExt
 import UF.FunExt-Properties
 import UF.FunExt-from-Naive-FunExt
 import UF.Groupoids
-import UF.HiggsInvolutionTheorem
+import UF.H-Levels                          -- by [2]
 import UF.HLevels
 import UF.Hedberg
 import UF.HedbergApplications
 import UF.HiddenSwap
+import UF.HiggsInvolutionTheorem
 import UF.IdEmbedding
 import UF.IdentitySystems
 import UF.ImageAndSurjection
@@ -38,8 +39,8 @@ import UF.Lower-FunExt
 import UF.NotNotStablePropositions
 import UF.PairFun
 import UF.Powerset
-import UF.Powerset-MultiUniverse
 import UF.Powerset-Fin
+import UF.Powerset-MultiUniverse
 import UF.Powerset-Resizing
 import UF.PreSIP
 import UF.PreSIP-Examples
@@ -56,14 +57,16 @@ import UF.SemistrictIdentity
 import UF.SetTrunc
 import UF.Sets
 import UF.Sets-Properties
+import UF.SigmaIdentity
+import UF.Singleton-Properties       -- by [2]
 import UF.Size
 import UF.SmallnessProperties
 import UF.StructureIdentityPrinciple -- Obsolete but keep. Use UF.SIP instead
-import UF.SubtypeClassifier
-import UF.SubtypeClassifier-Properties
 import UF.Subsingletons
 import UF.Subsingletons-FunExt
 import UF.Subsingletons-Properties
+import UF.SubtypeClassifier
+import UF.SubtypeClassifier-Properties
 import UF.UA-FunExt
 import UF.Univalence
 import UF.UniverseEmbedding
@@ -73,3 +76,4 @@ import UF.Yoneda
 \end{code}
 
 [1] de Jong, Kraus, Nordvall Forsberg and Xu.
+[2] Ray
