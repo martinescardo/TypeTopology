@@ -112,6 +112,8 @@ Notation for the principal Scott open.
 
 \end{code}
 
+We now prove some properties of the Scott topology on a dcpo that is algebraic.
+
 \begin{code}
 
 module PropertiesAlgebraic (𝓓 : DCPO {𝓤} {𝓥})
@@ -168,10 +170,6 @@ module PropertiesAlgebraic (𝓓 : DCPO {𝓤} {𝓥})
       → x ∈ₚ U holds
     † (c , _ , q , r) = υ c x q r
 
-\end{code}
-
-\begin{code}
-
  characterization-of-scott-opens
   : (U : 𝓟 {𝓥} ⟨ 𝓓 ⟩)
   → (is-scott-open U ⇒ (Ɐ x ꞉ ⟨ 𝓓 ⟩ , U x ⇔ join-of-compact-opens U x)) holds
@@ -179,10 +177,6 @@ module PropertiesAlgebraic (𝓓 : DCPO {𝓤} {𝓥})
   where
    ⦅⇒⦆ = characterization-of-scott-opens₁ U ς x
    ⦅⇐⦆ = characterization-of-scott-opens₂ U ς x
-
-\end{code}
-
-\begin{code}
 
  resize-join-of-compact-opens : (U : 𝓟 {𝓥} ⟨ 𝓓 ⟩) (x : ⟨ 𝓓 ⟩)
                               → is-scott-open U holds
@@ -199,6 +193,10 @@ module PropertiesAlgebraic (𝓓 : DCPO {𝓤} {𝓥})
 \end{code}
 
 Addition 2023-11-22.
+
+The principal filter on the bottom element is the top open of the Scott locale.
+We write this down in a different submodule as it requires the additional
+assumption of a bottom element in the algebraic dcpo in consideration.
 
 \begin{code}
 
