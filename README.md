@@ -215,6 +215,10 @@ Tosun.
 
    https://doi.org/10.1016/j.tcs.2023.114111
 
+1. Todd Waugh Ambridge. *Exact Real Search: Formalised Optimisation and Regression in Constructive Univalent Mathematics.* January 2024. University of Birmingham. PhD thesis.
+
+   https://doi.org/10.48550/arXiv.2401.09270
+
 1. Igor Arrieta, Martín H. Escardó and Ayberk Tosun. *The Patch Topology in
    Univalent Foundations*.
 
