@@ -5,12 +5,13 @@ that every monotone endomap of a dcpo (directed complete poset) with a
 least element has a least fixed point.
 
 Pataraia [1] was the first to give a constructive proof of this in
-topos logic. A version of his proof is published in [2] by the author,
+topos logic. A version of his proof is published in [2] by Escardo,
 with Pataraia's permission. Pataraia himself didn't publish the
-result.
+result. An earlier, less general, theorem was proved by Coquand [6]
+for *bounded complete* dcpos.
 
-The proof has two steps, the first of which is directly predicative
-and coded in the module step₁ below.
+Pataraia's proof has two steps, the first of which is directly
+predicative and coded in the module step₁ below.
 
 The second step is impredicative, because it considers the
 intersection of all subsets of the dcpo that contain the least
@@ -54,7 +55,10 @@ dcpos to apply the theorem is to assume propositional resizing axioms
     https://doi.org/10.1023/A:1023555514029
 
 [3] Paul Taylor. Two recent talks at Birmingham.
-    Slides and papers available at https://paultaylor.eu/ordinals/
+    Slides and papers available at
+    https://paultaylor.eu/ordinals/
+    https://web.archive.org/web/20240222103315/https://paultaylor.eu/ordinals/
+    (22 Feb 2024 snapshot)
 
 [4] Tom de Jong. Domain theory in constructive and predicative
     univalent foundations.
@@ -65,6 +69,10 @@ dcpos to apply the theorem is to assume propositional resizing axioms
     Unimath --- a computer-checked library of univalent mathematics.
     https://unimath.github.io/UniMath/
     https://doi.org/10.5281/zenodo.8427604
+
+[6] Thierry Coquand. A topos theoretic fix point theorem.
+    Unpublished manuscript, June 1995.
+    https://web.archive.org/web/20110822085930/https://www.cse.chalmers.se/~coquand/fix.pdf
 
 \begin{code}
 
