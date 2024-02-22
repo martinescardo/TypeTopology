@@ -486,12 +486,12 @@ module _
  index-of-compact-basis : has-specified-small-compact-basis → 𝓥  ̇
  index-of-compact-basis (B , _) = B
 
- family-of-basic-opens : (𝒷 : has-specified-small-compact-basis)
-                       → index-of-compact-basis 𝒷 → ⟨ 𝓓 ⟩
- family-of-basic-opens (_ , β , _) = β
+ family-of-compact-elements : (𝒷 : has-specified-small-compact-basis)
+                            → index-of-compact-basis 𝒷 → ⟨ 𝓓 ⟩
+ family-of-compact-elements (_ , β , _) = β
 
  small-compact-basis : (𝒷 : has-specified-small-compact-basis)
-                     → is-small-compact-basis 𝓓 (family-of-basic-opens 𝒷)
+                     → is-small-compact-basis 𝓓 (family-of-compact-elements 𝒷)
  small-compact-basis (_ , _ , scb) = scb
 
  has-unspecified-small-compact-basis : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
