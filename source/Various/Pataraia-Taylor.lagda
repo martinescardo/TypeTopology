@@ -5,12 +5,13 @@ that every monotone endomap of a dcpo (directed complete poset) with a
 least element has a least fixed point.
 
 Pataraia [1] was the first to give a constructive proof of this in
-topos logic. A version of his proof is published in [2] by the author,
+topos logic. A version of his proof is published in [2] by Escardo,
 with Pataraia's permission. Pataraia himself didn't publish the
-result.
+result. An earlier, less general, theorem was proved by Coquand [6]
+for *bounded complete* dcpos.
 
-The proof has two steps, the first of which is directly predicative
-and coded in the module step₁ below.
+Pataraia's proof has two steps, the first of which is directly
+predicative and coded in the module step₁ below.
 
 The second step is impredicative, because it considers the
 intersection of all subsets of the dcpo that contain the least
@@ -54,7 +55,10 @@ dcpos to apply the theorem is to assume propositional resizing axioms
     https://doi.org/10.1023/A:1023555514029
 
 [3] Paul Taylor. Two recent talks at Birmingham.
-    Slides and papers available at https://paultaylor.eu/ordinals/
+    Slides and papers available at
+    https://paultaylor.eu/ordinals/
+    https://web.archive.org/web/20240222103315/https://paultaylor.eu/ordinals/
+    (22 Feb 2024 snapshot)
 
 [4] Tom de Jong. Domain theory in constructive and predicative
     univalent foundations.
@@ -65,6 +69,10 @@ dcpos to apply the theorem is to assume propositional resizing axioms
     Unimath --- a computer-checked library of univalent mathematics.
     https://unimath.github.io/UniMath/
     https://doi.org/10.5281/zenodo.8427604
+
+[6] Thierry Coquand. A topos theoretic fix point theorem.
+    Unpublished manuscript, June 1995.
+    https://web.archive.org/web/20110822085930/https://www.cse.chalmers.se/~coquand/fix.pdf
 
 \begin{code}
 
@@ -84,10 +92,10 @@ open PropositionalTruncation pt
 
 open import DomainTheory.Basics.Dcpo pt fe 𝓤
 open import DomainTheory.Basics.Miscelanea pt fe 𝓤
-open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
 open import UF.Sets
 open import UF.Sets-Properties
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
 
 \end{code}
 
@@ -110,8 +118,8 @@ Theorem : (𝓓 : DCPO {𝓤} {𝓤})
               × ((y : ⟨ 𝓓 ⟩) → f y ＝ y → x ⊑⟨ 𝓓 ⟩ y)
 \end{code}
 
-We prove this at the very end of this file. We first need to prove a
-number of lemmas, in two modules, step₁ and step₂.
+Before proving this theorem, we first need to prove a number of
+lemmas, in two modules, step₁ and step₂.
 
 \begin{code}
 
@@ -151,7 +159,7 @@ which is also where the carrier E of 𝓔 lives.
  Γ : E → MI → E
  Γ x (f , _) = f x
 
- Γ-is-semidirected : (x : E) → is-semidirected _⊑_ (Γ x)
+ Γ-is-semidirected : (x : E) → is-Semidirected 𝓔 (Γ x)
  Γ-is-semidirected x 𝕗@(f , fm , fi) 𝕘@(g , gm , gi) = ∣ 𝕙 , f-le-h , g-le-h ∣
   where
    h = g ∘ f
@@ -328,14 +336,14 @@ function 𝓯 : E → E.
                                         f u ⊑⟨ 𝓓 ⟩[ l ]
                                         u   ∎⟨ 𝓓 ⟩)
 
- TC-𝓯 : (s : E) → TC (f (ι s))
- TC-𝓯 s = pr₂ (𝓯 s)
-
  𝓯-is-monotone : (s t : E) → s ≤ t → 𝓯 s ≤ 𝓯 t
  𝓯-is-monotone (x , _) (y , _) = fm x y
 
  𝓯-is-inflationary : (t : E) → t ≤ 𝓯 t
  𝓯-is-inflationary (x , c₁ , c₂) = c₁
+
+ TC-𝓯 : (s : E) → TC (f (ι s))
+ TC-𝓯 s = pr₂ (𝓯 s)
 
 \end{code}
 
@@ -422,8 +430,6 @@ NB. We could have formulated and proved this more categorically as
 and then conclude that actually f x ＝ x by Lambek's Lemma. But we
 already know that the initial algebra is a fixed point in our case,
 and so there is no point in doing this.
-
-\end{code}
 
 For later reference we repackage the theorem as follows:
 
