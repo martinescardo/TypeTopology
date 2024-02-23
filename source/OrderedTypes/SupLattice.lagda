@@ -126,23 +126,24 @@ as a special case.
 
 \begin{code}
 
-module _ {𝓤 𝓦 𝓥 : Universe} where
+module _ {𝓥 : Universe} where
 
- is-monotone : {L M : Sup-Lattice 𝓤 𝓦 𝓥} (f : ⟨ L ⟩ → ⟨ M ⟩) → 𝓤 ⊔ 𝓦  ̇
- is-monotone {L} {M} f = (x y : ⟨ L ⟩)
-                       → (x ≤⟨ L ⟩ y) holds
-                       → (f x ≤⟨ M ⟩ f y) holds
+ is-monotone : {𝓤 𝓤' 𝓦 𝓦' : Universe}
+               {L : Sup-Lattice 𝓤 𝓦 𝓥} {M : Sup-Lattice 𝓤' 𝓦' 𝓥}
+             → (f : ⟨ L ⟩ → ⟨ M ⟩) → 𝓤 ⊔ 𝓦 ⊔ 𝓦'  ̇
+ is-monotone {𝓤} {𝓤'} {𝓦} {𝓦'} {L} {M} f = (x y : ⟨ L ⟩)
+                                         → (x ≤⟨ L ⟩ y) holds
+                                         → (f x ≤⟨ M ⟩ f y) holds
 
- is-monotone-endomap : {L : Sup-Lattice 𝓤 𝓦 𝓥} (f : ⟨ L ⟩ → ⟨ L ⟩) → 𝓤 ⊔ 𝓦  ̇
- is-monotone-endomap {L} f = is-monotone {L} {L} f
+ is-monotone-endomap : {𝓤 𝓦 : Universe} {L : Sup-Lattice 𝓤 𝓦 𝓥}
+                     → (f : ⟨ L ⟩ → ⟨ L ⟩) → 𝓤 ⊔ 𝓦  ̇
+ is-monotone-endomap {𝓤} {𝓦} {L} f = is-monotone {𝓤} {𝓤} {𝓦} {𝓦} {L} {L} f
 
 \end{code}
 
-We will often be taking the join of (total spaces) of subsets. It will be more
-conveinient to have some short hand for a subset and the corresponding family
-that consists of its total space and inclusion map.
+Let's introduce some notation for joins of subsets.
 
-\begin{code}
+begin{code}
 
 module _
         {𝓤 𝓦 𝓥 : Universe}
@@ -151,10 +152,9 @@ module _
         (m : A → ⟨ L ⟩)
        where
 
- subset-to-family : 𝓟 {𝓥} A → Fam 𝓥 ⟨ L ⟩
- subset-to-family S = (𝕋 S , m ∘ 𝕋-to-carrier S)
+ syntax ⋁⟨ L ⟩ subset-to-family m S = ⋁ₛ⟨ L ⟩ m S   
 
-\end{code}
+end{code}
 
 We now show that when one subset contains another the join of their total
 spaces are ordered as expected. 
@@ -172,13 +172,13 @@ module _
 
  joins-preserve-containment : {P : 𝓟 {𝓥} A} {Q : 𝓟 {𝓥} A}
                             → P ⊆ Q
-                            → ((⋁⟨ L ⟩ subset-to-family L m P)
-                             ≤⟨ L ⟩ (⋁⟨ L ⟩ subset-to-family L m Q)) holds
+                            → ((⋁⟨ L ⟩ subset-to-family m P)
+                             ≤⟨ L ⟩ (⋁⟨ L ⟩ subset-to-family m Q)) holds
  joins-preserve-containment {P} {Q} C =
-   (join-is-least-upper-bound-of L (subset-to-family L m P))
-    (⋁⟨ L ⟩ subset-to-family L m Q ,
+   (join-is-least-upper-bound-of L (subset-to-family m P))
+    (⋁⟨ L ⟩ subset-to-family m Q ,
     (λ (b , b-in-P)
-      → (join-is-upper-bound-of L (subset-to-family L m Q))
+      → (join-is-upper-bound-of L (subset-to-family m Q))
         (b , C b b-in-P)))
 
 \end{code}
