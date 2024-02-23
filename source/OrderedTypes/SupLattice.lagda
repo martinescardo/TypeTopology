@@ -126,18 +126,19 @@ as a special case.
 
 \begin{code}
 
-module _ {𝓥 : Universe} where
+module _ where
 
- is-monotone : {𝓤 𝓤' 𝓦 𝓦' : Universe}
-               {L : Sup-Lattice 𝓤 𝓦 𝓥} {M : Sup-Lattice 𝓤' 𝓦' 𝓥}
+ is-monotone : {𝓤 𝓤' 𝓦 𝓦' 𝓥 𝓥' : Universe}
+               {L : Sup-Lattice 𝓤 𝓦 𝓥} {M : Sup-Lattice 𝓤' 𝓦' 𝓥'}
              → (f : ⟨ L ⟩ → ⟨ M ⟩) → 𝓤 ⊔ 𝓦 ⊔ 𝓦'  ̇
- is-monotone {𝓤} {𝓤'} {𝓦} {𝓦'} {L} {M} f = (x y : ⟨ L ⟩)
-                                         → (x ≤⟨ L ⟩ y) holds
-                                         → (f x ≤⟨ M ⟩ f y) holds
+ is-monotone {𝓤} {𝓤'} {𝓦} {𝓦'} {𝓥} {𝓥'} {L} {M} f = (x y : ⟨ L ⟩)
+                                                  → (x ≤⟨ L ⟩ y) holds
+                                                  → (f x ≤⟨ M ⟩ f y) holds
 
- is-monotone-endomap : {𝓤 𝓦 : Universe} {L : Sup-Lattice 𝓤 𝓦 𝓥}
+ is-monotone-endomap : {𝓤 𝓦 𝓥 : Universe} {L : Sup-Lattice 𝓤 𝓦 𝓥}
                      → (f : ⟨ L ⟩ → ⟨ L ⟩) → 𝓤 ⊔ 𝓦  ̇
- is-monotone-endomap {𝓤} {𝓦} {L} f = is-monotone {𝓤} {𝓤} {𝓦} {𝓦} {L} {L} f
+ is-monotone-endomap {𝓤} {𝓦} {𝓥} {L} f =
+   is-monotone {𝓤} {𝓤} {𝓦} {𝓦} {𝓥} {𝓥} {L} {L} f
 
 \end{code}
 
