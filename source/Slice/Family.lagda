@@ -87,20 +87,13 @@ module _
  subset-to-family : 𝓟 {𝓥} A → Fam 𝓥 B
  subset-to-family S = (𝕋 S , m ∘ 𝕋-to-carrier S)
 
+ syntax subset-to-family m S = 【 m , S 】   
+
+module _ {B : 𝓤 ̇} where 
+
  subset-to-family' : 𝓟 {𝓤} B → Fam 𝓤 B
- subset-to-family' S = (𝕋 S , 𝕋-to-carrier S)
+ subset-to-family' S = subset-to-family id S
  
 
 \end{code}
 
-IDEA:
-
-module _
-        {𝓤 𝓦 𝓥 : Universe}
-        (L : Sup-Lattice 𝓤 𝓦 𝓥)
-        {A : 𝓥  ̇}
-        (m : A → ⟨ L ⟩)
-       where
-
- subset-to-family : 𝓟 {𝓥} A → Fam 𝓥 ⟨ L ⟩
- subset-to-family S = (𝕋 S , m ∘ 𝕋-to-carrier S)

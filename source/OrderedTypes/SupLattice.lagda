@@ -151,9 +151,10 @@ module _
         (L : Sup-Lattice 𝓤 𝓦 𝓥)
         {A : 𝓥  ̇}
         (m : A → ⟨ L ⟩)
+        (S : 𝓟 {𝓥} A)
        where
 
- syntax ⋁⟨ L ⟩ subset-to-family m S = ⋁ₛ⟨ L ⟩ m S   
+ syntax ⋁⟨ L ⟩ subset-to-family m P = ⋁⟨ (L , m , S) ⟩    
 
 end{code}
 
@@ -173,13 +174,13 @@ module _
 
  joins-preserve-containment : {P : 𝓟 {𝓥} A} {Q : 𝓟 {𝓥} A}
                             → P ⊆ Q
-                            → ((⋁⟨ L ⟩ subset-to-family m P)
-                             ≤⟨ L ⟩ (⋁⟨ L ⟩ subset-to-family m Q)) holds
+                            → ((⋁⟨ L ⟩ 【 m , P 】)
+                             ≤⟨ L ⟩ (⋁⟨ L ⟩ 【 m , Q 】)) holds
  joins-preserve-containment {P} {Q} C =
-   (join-is-least-upper-bound-of L (subset-to-family m P))
-    (⋁⟨ L ⟩ subset-to-family m Q ,
+   (join-is-least-upper-bound-of L 【 m , P 】)
+    (⋁⟨ L ⟩ 【 m , Q 】 ,
     (λ (b , b-in-P)
-      → (join-is-upper-bound-of L (subset-to-family m Q))
+      → (join-is-upper-bound-of L 【 m , Q 】)
         (b , C b b-in-P)))
 
 \end{code}
