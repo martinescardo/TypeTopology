@@ -13,7 +13,10 @@ will be broken down into smaller modules.
 {-# OPTIONS --safe --without-K #-}
 
 open import UF.Base
+open import UF.Sets
 open import UF.Subsingletons
+open import UF.Subsingletons-Properties
+open import UF.Subsingletons-FunExt
 open import UF.PropTrunc
 open import UF.FunExt
 open import MLTT.Spartan
@@ -26,6 +29,7 @@ open import Locales.Frame     pt fe
 open import Locales.WayBelowRelation.Definition  pt fe
 open import UF.Logic
 open import Slice.Family
+open import UF.Sets-Properties
 
 open PropositionalTruncation pt
 open Existential pt
@@ -59,6 +63,20 @@ We also define the type `𝒦 X` expressing the type of compact opens of a local
 
 𝒦 : Locale 𝓤 𝓥 𝓦 → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺  ̇
 𝒦 X = Σ U ꞉ ⟨ 𝒪 X ⟩ , is-compact-open X U holds
+
+𝒦-is-set : (X : Locale 𝓤 𝓥 𝓦) → is-set (𝒦 X)
+𝒦-is-set X {(K₁ , κ₁)} {(K₂ , κ₂)} =
+ Σ-is-set
+  carrier-of-[ poset-of (𝒪 X) ]-is-set
+  (λ U → props-are-sets (holds-is-prop (is-compact-open X U)))
+
+𝒦-equality : (X : Locale 𝓤 𝓥 𝓦) {K₁ K₂ : ⟨ 𝒪 X ⟩}
+           → (κ₁ : is-compact-open X K₁ holds)
+           → (κ₂ : is-compact-open X K₂ holds)
+           → K₁ ＝ K₂
+           → (K₁ , κ₁) ＝ (K₂ , κ₂)
+𝒦-equality X κ₁ κ₂ p =
+ to-subtype-＝ (λ _ → holds-is-prop (is-compact-open X _)) p
 
 \end{code}
 
