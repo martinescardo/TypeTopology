@@ -142,22 +142,6 @@ module _ where
 
 \end{code}
 
-Let's introduce some notation for joins of subsets.
-
-begin{code}
-
-module _
-        {𝓤 𝓦 𝓥 : Universe}
-        (L : Sup-Lattice 𝓤 𝓦 𝓥)
-        {A : 𝓥  ̇}
-        (m : A → ⟨ L ⟩)
-        (S : 𝓟 {𝓥} A)
-       where
-
- syntax ⋁⟨ L ⟩ subset-to-family m P = ⋁⟨ (L , m , S) ⟩    
-
-end{code}
-
 We now show that when one subset contains another the join of their total
 spaces are ordered as expected. 
 
