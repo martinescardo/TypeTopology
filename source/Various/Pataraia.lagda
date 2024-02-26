@@ -1,8 +1,8 @@
 Martin Escardo, 26 Feb 2023
 
 We implement Pataraia's result that every monotone endomap of a dcpo
-(directed complete poset) with a least element has a least fixed
-point. This is implemented as Corollary-2·1 below.
+(directed complete poset) with a least element has a least fixed point
+in topos logic. This is implemented as Corollary-2·1 below.
 
 Pataraia [1] was the first to give a constructive proof of this in
 topos logic. A version of his proof is published in [2] by Escardo,
