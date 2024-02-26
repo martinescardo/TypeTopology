@@ -364,12 +364,15 @@ module corollary₂·₁
  𝓓-has-bottom : has-bottom 𝓓
  𝓓-has-bottom = (⊥ , ⊥-is-least (f ⊥)) , (λ (x , _) → ⊥-is-least x)
 
- open theorem₂·₂ ρ 𝓓 𝓓-has-bottom 𝟙 (λ _ → 𝓯) (λ _ → 𝓯-is-monotone) (λ _ → 𝓯-is-inflationary)
+ open theorem₂·₂ ρ 𝓓 𝓓-has-bottom 𝟙
+       (λ _ → 𝓯)
+       (λ _ → 𝓯-is-monotone)
+       (λ _ → 𝓯-is-inflationary)
 
  ι : ⟨ 𝓓 ⟩ → ⟨ 𝓒 ⟩
  ι (x , le) = x
 
- τ : (t : ⟨ 𝓓 ⟩) → t ⊑⟨ 𝓓 ⟩ 𝓯 t
+ τ : (d : ⟨ 𝓓 ⟩) → d ⊑⟨ 𝓓 ⟩ 𝓯 d
  τ (x , le) = le
 
  c₀ : ⟨ 𝓒 ⟩
