@@ -31,7 +31,7 @@ can form this intersection.
 
 We instead consider a direct, explicit, elegant, predicative
 construction of this subset, due to Paul Taylor [3], in our second
-step, coded in the module `taylor` below.
+step, coded in the module `Taylor` below.
 
 This version of the theorem probably deserves to be called the
 Pataraia-Taylor fixed-point theorem, not only because the proof
