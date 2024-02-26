@@ -12,7 +12,7 @@ module Games.index where
 open import Games.Constructor             -- For simplifying the construction of games.
 open import Games.Examples                -- Miscelaneous small examples.
 open import Games.FiniteHistoryDependent  -- Theory of finite history dependent games.
-open import Games.FiniteHistoryDependentTransformer -- With additional monad for irrational players.
+open import Games.Transformer -- With additional monad for irrational players.
 open import Games.J                       -- Selection monad.
 open import Games.K                       -- Continuation (or quantifier) monad.
 open import Games.JK                      -- Relationship between the two mondas.
