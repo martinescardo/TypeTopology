@@ -28,15 +28,17 @@ Various.Pataraia-Taylor.
 
 We prove the following from [2].
 
-  Lemma 2·1.     The set of all inflationary maps on any dcpo has a
-                 common fixed point.
+  Lemma 2·1.     The set of all monotone inflationary maps on any dcpo
+                 has a common fixed point.
 
-  Theorem 2·2.   Any set F of inflationary maps on a dcpo 𝓓 with a
-                 least element ⊥ has a least common fixed point.
+  Theorem 2·2.   Any set F of monotone inflationary maps on a dcpo 𝓓
+                 with a least element ⊥ has a least common fixed
+                 point.
 
                  Moreover, any subset of D which has ⊥ as a member, is
-                 closed under f, and is closed under directed suprema
-                 has the least common fixed point as a member.
+                 closed under every f in F, and is closed under
+                 directed suprema has the least common fixed point as
+                 a member.
 
   Corollary 2·1. Any monotone endomap of a dcpo with ⊥ has a least
                  fixed point.
