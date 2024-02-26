@@ -73,8 +73,8 @@ resize-family S (A₀ , s , e) = A₀ , (λ x → S [ s x ])
 
 \end{code}
 
-We will now add mechanisms for turning subsets into families for increased
-readability.
+For increased readability we will now add mechanisms for turning subsets into
+families.
 
 \begin{code}
 

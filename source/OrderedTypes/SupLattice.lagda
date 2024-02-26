@@ -27,9 +27,9 @@ open import UF.SmallnessProperties
 open import UF.UniverseEmbedding
 
 module OrderedTypes.SupLattice
-       (pt : propositional-truncations-exist)
-       (fe : Fun-Ext)
-        where
+        (pt : propositional-truncations-exist)
+        (fe : Fun-Ext)
+       where
 
 open import Locales.Frame pt fe hiding (⟨_⟩ ; join-of)
 open import Slice.Family
@@ -129,16 +129,18 @@ as a special case.
 module _ where
 
  is-monotone : {𝓤 𝓤' 𝓦 𝓦' 𝓥 𝓥' : Universe}
-               {L : Sup-Lattice 𝓤 𝓦 𝓥} {M : Sup-Lattice 𝓤' 𝓦' 𝓥'}
-             → (f : ⟨ L ⟩ → ⟨ M ⟩) → 𝓤 ⊔ 𝓦 ⊔ 𝓦'  ̇
- is-monotone {𝓤} {𝓤'} {𝓦} {𝓦'} {𝓥} {𝓥'} {L} {M} f = (x y : ⟨ L ⟩)
-                                                  → (x ≤⟨ L ⟩ y) holds
-                                                  → (f x ≤⟨ M ⟩ f y) holds
+             → (L : Sup-Lattice 𝓤 𝓦 𝓥) (M : Sup-Lattice 𝓤' 𝓦' 𝓥')
+             → (f : ⟨ L ⟩ → ⟨ M ⟩)
+             → 𝓤 ⊔ 𝓦 ⊔ 𝓦'  ̇
+ is-monotone L M f = (x y : ⟨ L ⟩)
+                   → (x ≤⟨ L ⟩ y) holds
+                   → (f x ≤⟨ M ⟩ f y) holds
 
- is-monotone-endomap : {𝓤 𝓦 𝓥 : Universe} {L : Sup-Lattice 𝓤 𝓦 𝓥}
-                     → (f : ⟨ L ⟩ → ⟨ L ⟩) → 𝓤 ⊔ 𝓦  ̇
- is-monotone-endomap {𝓤} {𝓦} {𝓥} {L} f =
-   is-monotone {𝓤} {𝓤} {𝓦} {𝓦} {𝓥} {𝓥} {L} {L} f
+ is-monotone-endomap : {𝓤 𝓦 𝓥 : Universe}
+                     → (L : Sup-Lattice 𝓤 𝓦 𝓥)
+                     → (f : ⟨ L ⟩ → ⟨ L ⟩)
+                     → 𝓤 ⊔ 𝓦  ̇
+ is-monotone-endomap L f = is-monotone L L f
 
 \end{code}
 
@@ -161,11 +163,10 @@ module _
                             → ((⋁⟨ L ⟩ 【 m , P 】)
                              ≤⟨ L ⟩ (⋁⟨ L ⟩ 【 m , Q 】)) holds
  joins-preserve-containment {P} {Q} C =
-   (join-is-least-upper-bound-of L 【 m , P 】)
-    (⋁⟨ L ⟩ 【 m , Q 】 ,
-    (λ (b , b-in-P)
-      → (join-is-upper-bound-of L 【 m , Q 】)
-        (b , C b b-in-P)))
+  (join-is-least-upper-bound-of L 【 m , P 】)
+   (⋁⟨ L ⟩ 【 m , Q 】 ,
+    (λ (b , b-in-P) → (join-is-upper-bound-of L 【 m , Q 】)
+                      (b , C b b-in-P)))
 
 \end{code}
 
@@ -255,7 +256,7 @@ module _
                               → (s' is-lub-of (T' , m ∘ ⌞ e ⌟)) holds
                               → s ＝ s'
  reindexing-along-surj-＝-sup
-   s s' (is-upbnd , is-least-upbnd) (is-upbnd' , is-least-upbnd') =
+  s s' (is-upbnd , is-least-upbnd) (is-upbnd' , is-least-upbnd') =
    antisymmetry-of L I IV
   where
    I : (s ≤⟨ L ⟩ s') holds
@@ -297,7 +298,7 @@ module _
                                → (s' is-lub-of (T' , m ∘ ⌜ e ⌝ )) holds
                                → s ＝ s'
  reindexing-along-equiv-＝-sup =
-   reindexing-along-surj-＝-sup
-     L (⌜ e ⌝ , equivs-are-surjections ⌜ e ⌝-is-equiv) m
+  reindexing-along-surj-＝-sup
+   L (⌜ e ⌝ , equivs-are-surjections ⌜ e ⌝-is-equiv) m
 
 \end{code}
