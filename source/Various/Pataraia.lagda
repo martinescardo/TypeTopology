@@ -45,9 +45,9 @@ We prove the following from [2].
                  fixed point.
 
 Notice that Corollary 2.1 doesn't generalize from single monotone maps
-to sets of monotone maps, as exemplified by any poset with one minimal
-and two maximal elements and by the two constant endomaps that fix
-each of these two maximal elements.
+to sets of monotone maps, as exemplified by any poset with a least
+element and two maximal elements and by the two constant endomaps that
+fix each of these two maximal elements.
 
 I am not sure why the publisher gave the number 2.1 to the corollary
 that follows Theorem 2.2.
@@ -302,7 +302,7 @@ So now we can apply the development of lemma₂·₁.
 
 \end{code}
 
-d₀ is the least pre-fixed point.
+d₀ is the least common pre-fixed point of the family f.
 
 \begin{code}
 
