@@ -73,7 +73,7 @@ one-sided-approx x y f = M-prop₂ ws y γ where
         ＝ m (append-one (y (succ i) ⊕ z) ((first- (succ i)) y))
     δ'' y z 0 = refl
     δ'' y z (succ i) = ap (y 0 ⊕_) (δ'' (y ∘ succ) z i)
-    
+
 _++'_ : {n : ℕ} {X : 𝓤 ̇ } → Vec X n → (ℕ → X) → (ℕ → X)
 _++'_ {n} {X} v α = Vec-to-Seq n α v
 
@@ -117,8 +117,8 @@ M-append-++-＝ x y n = M-append-＝ (λ i → x i ⊕ y i) n
 append-++-= : (x y : ℕ → 𝕀) (w : 𝕀) (n : ℕ)
         → ((append-one w ((first- n) x)) ++' y)
         ＝ (((first- n) x) ++' (w ∷ y))
-append-++-= x y w 0 = dfunext (fe 𝓤₀ 𝓤) (induction refl λ _ _ → refl)
-append-++-= x y w (succ n) = dfunext (fe 𝓤₀ 𝓤) (induction refl
+append-++-= x y w 0 = dfunext (fe 𝓤₀ 𝓤) (ℕ-induction refl λ _ _ → refl)
+append-++-= x y w (succ n) = dfunext (fe 𝓤₀ 𝓤) (ℕ-induction refl
                            (λ k _ → happly (append-++-= (tail x) y w n) k))
 
 tail-_ : {X : 𝓤 ̇ } → ℕ → (ℕ → X) → (ℕ → X)
@@ -212,8 +212,8 @@ n-approx'→n-approx x y f (succ n) = f n
 
 fg-n-approx' : {X : 𝓥 ̇ } → (f g : X → ℕ → 𝕀) → ℕ → 𝓤 ⊔ 𝓥 ̇
 fg-n-approx' f g n
- = (∀ x → n-approx' (f x) (g x) n) 
- → (∀ x → n-approx' (f x) (g x) (succ n)) 
+ = (∀ x → n-approx' (f x) (g x) n)
+ → (∀ x → n-approx' (f x) (g x) (succ n))
 
 fg-approx-holds : {X : 𝓥 ̇ } (f g : X → ℕ → 𝕀)
                 → Π (fg-n-approx' f g)
@@ -239,7 +239,7 @@ cancellation-holds a b c f = M-idem a ⁻¹ ∙ γ ∙ M-idem b
      ((a ⊕ a) ⊕ (b ⊕ wb)) ＝⟨ ⊕-tran a a b wb ⟩
      ((a ⊕ b) ⊕ (a ⊕ wb)) ＝⟨ ap (λ - → (a ⊕ b) ⊕ (a ⊕ -)) (IH₂ ⁻¹) ⟩
      ((a ⊕ b) ⊕ (a ⊕ wa)) ＝⟨ ap ((a ⊕ b) ⊕_) (n-approx-c (succ i)) ⟩
-     ((a ⊕ b) ⊕ (b ⊕ wb)) ＝⟨ ap (_⊕ (b ⊕ wb)) (⊕-comm a b) ⟩ 
+     ((a ⊕ b) ⊕ (b ⊕ wb)) ＝⟨ ap (_⊕ (b ⊕ wb)) (⊕-comm a b) ⟩
      ((b ⊕ a) ⊕ (b ⊕ wb)) ＝⟨ ⊕-tran b a b wb ⟩
      ((b ⊕ b) ⊕ (a ⊕ wb)) ＝⟨ ap (λ - → (b ⊕ b) ⊕ (a ⊕ -)) (IH₂ ⁻¹) ⟩
      ((b ⊕ b) ⊕ (a ⊕ wa)) ＝⟨ ap ((b ⊕ b) ⊕_) (n-approx-c (succ i)) ⟩

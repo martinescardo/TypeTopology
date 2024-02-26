@@ -24,7 +24,7 @@ zero-right-neutral : (n : ℕ) → n + 0 ＝ n
 zero-right-neutral n = refl
 
 zero-left-neutral : (n : ℕ) → 0 + n ＝ n
-zero-left-neutral = induction base step
+zero-left-neutral = ℕ-induction base step
   where
    base : 0 + 0 ＝ 0
    base = refl
@@ -35,7 +35,7 @@ zero-left-neutral = induction base step
                succ n       ∎
 
 addition-associativity : (l n m : ℕ) → (l + n) + m ＝ l + (n + m)
-addition-associativity l n = induction base step
+addition-associativity l n = ℕ-induction base step
   where
    base : (l + n) + 0 ＝ l + (n + 0)
    base = (l + n) + 0  ＝⟨ refl ⟩
@@ -51,7 +51,7 @@ addition-associativity l n = induction base step
                l + (n + succ m)   ∎
 
 addition-commutativity : (n m : ℕ) → n + m ＝ m + n
-addition-commutativity n = induction base step
+addition-commutativity n = ℕ-induction base step
   where
    base : n + 0 ＝ 0 + n
    base = n + 0 ＝⟨ zero-right-neutral n ⟩
@@ -67,7 +67,7 @@ addition-commutativity n = induction base step
                succ m + n   ∎
      where
       lemma₀ : (k : ℕ) → succ k ＝ 1 + k
-      lemma₀ = induction base₀ step₀
+      lemma₀ = ℕ-induction base₀ step₀
         where
          base₀ : succ 0 ＝ 1 + 0
          base₀ = refl
@@ -98,7 +98,7 @@ succ-right : (x y : ℕ) → x + succ y ＝ succ (x + y)
 succ-right x y = refl
 
 succ-left : (x y : ℕ) → succ x + y ＝ succ (x + y)
-succ-left x = induction base step
+succ-left x = ℕ-induction base step
  where
   base : succ x + 0 ＝ succ (x + 0)
   base = succ x + 0   ＝⟨ refl         ⟩
@@ -114,7 +114,7 @@ succ-left x = induction base step
               succ (x + succ k)   ∎
 
 addition-left-cancellable : (x y z : ℕ) → z + x ＝ z + y → x ＝ y
-addition-left-cancellable x y = induction base step
+addition-left-cancellable x y = ℕ-induction base step
  where
   base : 0 + x ＝ 0 + y → x ＝ y
   base h = x      ＝⟨ zero-left-neutral x ⁻¹ ⟩
