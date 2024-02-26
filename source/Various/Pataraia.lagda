@@ -35,7 +35,7 @@ We prove the following from [2].
                  with a least element ⊥ has a least common fixed
                  point.
 
-                 Moreover, any subset of D which has ⊥ as a member, is
+                 Moreover, any subset of D that has ⊥ as a member, is
                  closed under every f in F, and is closed under
                  directed suprema has the least common fixed point as
                  a member.
