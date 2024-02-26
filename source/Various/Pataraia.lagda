@@ -379,8 +379,8 @@ module corollary₂·₁
  c₀-is-fp = ap ι (d₀-is-fp ⋆)
 
  c₀-is-lfp : (c : ⟨ 𝓒 ⟩) → f c ＝ c → c₀ ⊑⟨ 𝓒 ⟩ c
- c₀-is-lfp y e = d₀-is-lfp
-                  (y , ＝-to-⊑ 𝓒 (e ⁻¹))
+ c₀-is-lfp c e = d₀-is-lfp
+                  (c , ＝-to-⊑ 𝓒 (e ⁻¹))
                   (λ _ → to-subtype-＝ (λ x → prop-valuedness 𝓒 x (f x)) e)
 \end{code}
 
