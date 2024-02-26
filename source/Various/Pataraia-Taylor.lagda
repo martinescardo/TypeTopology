@@ -15,8 +15,8 @@ with Pataraia's permission. Pataraia himself didn't publish the
 result. An earlier, less general, theorem was proved by Coquand [6]
 for *bounded complete* dcpos, with an easier proof.
 
-The module Various.Pataraia for an implementation of the impredicative
-proof given [2].
+See the module Various.Pataraia for an implementation of the
+impredicative proof given [2].
 
 Pataraia's proof has two steps, the first of which is directly
 predicative and coded in the module lemma₂·₁ in the file
