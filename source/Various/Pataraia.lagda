@@ -186,7 +186,7 @@ monotone inflationary map f : E → E.
 
 \end{code}
 
-This concludes the proof of Lemma 2·1. We now prove Theorem₂·₂.
+This concludes the proof of Lemma 2·1. We now prove Theorem 2·2.
 
 \begin{code}
 
@@ -362,7 +362,7 @@ module corollary₂·₁
  𝓯-is-inflationary (x , c) = c
 
  𝓓-has-bottom : has-bottom 𝓓
- 𝓓-has-bottom = (⊥ , (⊥-is-least (f ⊥))) , (λ (x , _) → ⊥-is-least x)
+ 𝓓-has-bottom = (⊥ , ⊥-is-least (f ⊥)) , (λ (x , _) → ⊥-is-least x)
 
  open theorem₂·₂ ρ 𝓓 𝓓-has-bottom 𝟙 (λ _ → 𝓯) (λ _ → 𝓯-is-monotone) (λ _ → 𝓯-is-inflationary)
 
