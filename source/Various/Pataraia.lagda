@@ -24,7 +24,8 @@ Various.Pataraia-Taylor.
 
 [3] Thierry Coquand. A topos theoretic fix point theorem.
     Unpublished manuscript, June 1995.
-    https://web.archive.org/web/20110822085930/https://www.cse.chalmers.se/~coquand/fix.pdf
+    https://web.archive.org/web/20110822085930/
+    https://www.cse.chalmers.se/~coquand/fix.pdf
 
 We prove the following from [2].
 
