@@ -380,8 +380,8 @@ module corollary₂·₁
 
  c₀-is-lfp : (c : ⟨ 𝓒 ⟩) → f c ＝ c → c₀ ⊑⟨ 𝓒 ⟩ c
  c₀-is-lfp y e = d₀-is-lfp
-                 (y , ＝-to-⊑ 𝓒 (e ⁻¹))
-                 (λ _ → to-subtype-＝ (λ x → prop-valuedness 𝓒 x (f x)) e)
+                  (y , ＝-to-⊑ 𝓒 (e ⁻¹))
+                  (λ _ → to-subtype-＝ (λ x → prop-valuedness 𝓒 x (f x)) e)
 \end{code}
 
 This concludes the proof of Corollary 2·1, which we repackage as
