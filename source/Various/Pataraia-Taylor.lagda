@@ -8,7 +8,10 @@ Pataraia [1] was the first to give a constructive proof of this in
 topos logic. A version of his proof is published in [2] by Escardo,
 with Pataraia's permission. Pataraia himself didn't publish the
 result. An earlier, less general, theorem was proved by Coquand [6]
-for *bounded complete* dcpos.
+for *bounded complete* dcpos, with an easier proof.
+
+See the module Various.Taylor for an implementation of the
+impredicative proof given [2].
 
 Pataraia's proof has two steps, the first of which is directly
 predicative and coded in the module step₁ below.
@@ -27,8 +30,7 @@ This version of the theorem probably deserves to be called the
 Pataraia-Taylor fixed-point theorem, not only because the proof
 involves a new ingredient, but also because it holds in a more general
 predicative setting (here MLTT with function extensionality and
-existence of propositional truncations). Therefore we decided to name
-this module Pataraia-Taylor.
+existence of propositional truncations).
 
 There is a catch, though. In a predicative setting, there is no
 non-trivial dcpo to apply the theorem [4]. More precisely, dcpos are
