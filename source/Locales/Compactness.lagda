@@ -110,6 +110,9 @@ starts with a large and locally small locale, the resulting family would live in
   † : index S → ∃ i ꞉ index S , (𝟎[ 𝒪 X ] ≤[ poset-of (𝒪 X) ] S [ i ]) holds
   † i = ∣ i , 𝟎-is-bottom (𝒪 X) (S [ i ]) ∣
 
+𝟎ₖ[_] : (X : Locale 𝓤 𝓥 𝓦) → 𝒦 X
+𝟎ₖ[_] X = 𝟎[ 𝒪 X ] , 𝟎-is-compact X
+
 \end{code}
 
 The binary join of two compact opens is compact.
