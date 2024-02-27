@@ -7,7 +7,7 @@ date-completed: 2024-02-27
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --lossy-unification #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.List hiding ([_])
 open import MLTT.Pi
@@ -103,11 +103,11 @@ We now construct the distributive lattice of compact opens.
 
 \end{code}
 
-The compact opens obviously satisfy all the distributive lattices, since every
-frame is also a distributive lattice. Because the type `𝒦 X` of compact opens
-packages up the opens of the frame together with their proofs of compactness
-though, we need to lift these proofs from `𝒪 X` to `𝒦 X`. We take care of this
-bureaucracy below.
+The compact opens obviously satisfy all the distributive lattice laws, since
+every frame is a distributive lattice. Because the opens in consideration are
+packaged up with their proofs of compactness though, we need to lift these laws
+to the subtype consisting of compact opens. We take care of this bureaucracy
+below.
 
 \begin{code}
 
@@ -226,7 +226,8 @@ bureaucracy below.
 
 \end{code}
 
-The lattice `𝒦⦅X⦆` is a small distributive lattice.
+The lattice `𝒦⦅X⦆` is a small distributive lattice because we assumed the type
+of compact opens to be small.
 
 \begin{code}
 
