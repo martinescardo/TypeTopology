@@ -276,7 +276,7 @@ inflationary functions 𝓯ᵢ : E → E.
 
 \end{code}
 
-So now we can apply the development of lemma₂·₁.
+So now we can apply lemma₂·₁.
 
 \begin{code}
 
@@ -335,7 +335,8 @@ And so it is the least common fixed point.
 
 \end{code}
 
-This concludes the proof of Theorem 2·2.
+This concludes the proof of Theorem 2·2, which has the following
+corollary.
 
 \begin{code}
 
@@ -411,3 +412,6 @@ Pataraia ρ 𝓒 hb f fm = c₀ , c₀-is-fp , c₀-is-lfp
   open corollary₂·₁ ρ 𝓒 hb f fm
 
 \end{code}
+
+See the module Various.Pataraia-Taylor for a proof that doesn't assume
+propositional resizing.
