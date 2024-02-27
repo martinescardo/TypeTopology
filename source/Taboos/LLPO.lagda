@@ -263,6 +263,8 @@ untruncated-LLPO-gives-WLPO fe llpo = wlpo
 
 \end{code}
 
+Added 27th Feb 2024. This solves a previous TODO.
+
 And the converse also holds with a simpler proof, and so there isn't
 any difference between WLPO and untruncated LLPO.
 
@@ -290,6 +292,8 @@ WLPO-gives-untruncated-LLPO wlpo α Tα-is-prop =
                                                        p
                                                        d))))))))
 \end{code}
+
+End of 27th Feb 2024 addition.
 
 We now formulate (truncated) LLPO.
 
