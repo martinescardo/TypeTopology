@@ -30,8 +30,8 @@ the sense that it requires propositional resizing axioms so that we
 can form this intersection.
 
 We instead consider a direct, explicit, elegant, predicative
-construction of this subset, due to Paul Taylor [3], in our second
-step, coded in the module `Taylor` below.
+construction of this subset, due to Paul Taylor [3], in our
+alternative second step here, coded in the module `Taylor` below.
 
 This version of the theorem probably deserves to be called the
 Pataraia-Taylor fixed-point theorem, not only because the proof
@@ -257,8 +257,7 @@ function 𝓯 : E → E.
 
 \end{code}
 
-So now we can apply the development of lemma₂·₁ in the module
-Various.Pataraia.
+So now we can apply lemma₂·₁ proved in Various.Pataraia.
 
 \begin{code}
 
@@ -366,11 +365,12 @@ module _
 
 Added 22 February 2024.
 
-It follows directly from Pataraia's original proof [2] that if P is a property
-that holds for ⊥, is closed under directed suprema, and is closed under f, then
-P holds for the least fixed point of f. We refer to this as the fixed-point
-induction principle. Although this principle doesn't follow directly from the
-above argument, we can prove it as follows, using Taylor again.
+It follows directly from Pataraia's original proof [2] that if P is a
+property that holds for ⊥, is closed under directed suprema, and is
+closed under f, then P holds for the least fixed point of f. We refer
+to this as the fixed-point induction principle. Although this
+principle doesn't follow directly from the above argument, we can
+prove it as follows, using the above module Taylor again.
 
 \begin{code}
 
