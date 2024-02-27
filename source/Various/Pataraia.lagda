@@ -186,7 +186,8 @@ monotone inflationary map f : E → E.
 
 \end{code}
 
-This concludes the proof of Lemma 2·1. We now prove Theorem 2·2.
+This concludes the proof of Lemma 2·1, which we use to
+prove Theorem 2·2.
 
 \begin{code}
 
@@ -322,7 +323,9 @@ d₀ is the least common pre-fixed point of the family f.
    S-in-C =
     (λ α δ α-in-E → ∐-is-lowerbound-of-upperbounds 𝓓 δ x α-in-E) ,
     ⊥-is-least x ,
-    (λ i d d-in-E → transitivity 𝓓 (f i d) (f i x) x (fm i d x d-in-E) (le i))
+    (λ i d d-in-E → f i d ⊑⟨ 𝓓 ⟩[ fm i d x d-in-E ]
+                    f i x ⊑⟨ 𝓓 ⟩[ le i ]
+                    x     ∎⟨ 𝓓 ⟩)
 
 \end{code}
 
