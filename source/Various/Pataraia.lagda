@@ -321,9 +321,9 @@ d₀ is the least common pre-fixed point of the family f.
 
    S-in-C : S ∈ C
    S-in-C =
-    (λ α δ α-in-E → ∐-is-lowerbound-of-upperbounds 𝓓 δ x α-in-E) ,
+    (λ α δ α-in-S → ∐-is-lowerbound-of-upperbounds 𝓓 δ x α-in-S) ,
     ⊥-is-least x ,
-    (λ i d d-in-E → f i d ⊑⟨ 𝓓 ⟩[ fm i d x d-in-E ]
+    (λ i d d-in-S → f i d ⊑⟨ 𝓓 ⟩[ fm i d x d-in-S ]
                     f i x ⊑⟨ 𝓓 ⟩[ le i ]
                     x     ∎⟨ 𝓓 ⟩)
 
