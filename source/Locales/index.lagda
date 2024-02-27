@@ -85,6 +85,8 @@ import Locales.UniversalPropertyOfPatch          -- (34)
 
 import Locales.Spectrality.BasisDirectification  -- (35)
 
+import Locales.Spectrality.LatticeOfCompactOpens
+
 import Locales.Point.Definition                  -- (36)
 
 import Locales.Point.Properties                  -- (37)
