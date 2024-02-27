@@ -294,6 +294,12 @@ So now we can apply the development of lemma₂·₁.
  d₀ : D
  d₀ = ι e₀
 
+\end{code}
+
+d₀ is a common fixed point of the family f.
+
+\begin{code}
+
  d₀-is-fp : (i : I) → f i d₀ ＝ d₀
  d₀-is-fp i = ap ι (e₀-is-fp i)
 
@@ -320,7 +326,7 @@ d₀ is the least common pre-fixed point of the family f.
 
 \end{code}
 
-And so it is the least fixed point.
+And so it is the least common fixed point.
 
 \begin{code}
 
