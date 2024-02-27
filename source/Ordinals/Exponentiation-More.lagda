@@ -58,6 +58,33 @@ open import Ordinals.WellOrderingTaboo
 
 \end{code}
 
+
+Given an ordinal α and a type family P, subtype of elements satisfying
+P inherits an order from α.  This order also inherits wellfoundedness
+and transitivity from the order on α, but not necessarily
+extensionality constructively (see Ordinals.ShulmanTaboo).
+
+\begin{code}
+subtype-order : (α : Ordinal 𝓤) → (P : ⟨ α ⟩ → 𝓥 ̇ ) → Σ x ꞉ ⟨ α ⟩ , P x → Σ x ꞉ ⟨ α ⟩ , P x → 𝓤 ̇
+subtype-order α P (x , _) (y , _) = x ≺⟨ α ⟩ y
+
+subtype-order-propositional : (α : Ordinal 𝓤) → (P : ⟨ α ⟩ → 𝓥 ̇ ) → is-prop-valued (subtype-order α P)
+subtype-order-propositional α P (x , _) (y , _) = Prop-valuedness α x y
+
+subtype-order-wellfounded : (α : Ordinal 𝓤) → (P : ⟨ α ⟩ → 𝓥 ̇ ) → is-well-founded (subtype-order α P)
+subtype-order-wellfounded α P (a , p) = subtype-order-accessible (a , p) (Well-foundedness α a)
+ where
+  subtype-order-accessible : (z : Σ x ꞉ ⟨ α ⟩ , P x)
+                           → is-accessible (underlying-order α) (pr₁ z) → is-accessible (subtype-order α P) z
+  subtype-order-accessible (x , p) (acc step) = acc (λ y q → subtype-order-accessible y (step (pr₁ y) q))
+
+subtype-order-transitive : (α : Ordinal 𝓤) → (P : ⟨ α ⟩ → 𝓥 ̇ ) → is-transitive (subtype-order α P)
+subtype-order-transitive α P (x , _) (y , _) (z , _) = Transitivity α x y z
+
+\end{code}
+
+
+
 \begin{code}
 
 prop-ordinal-＝ : (P Q : 𝓤 ̇ ) → (pp : is-prop P) → (pq : is-prop Q)
@@ -258,10 +285,13 @@ And conversely...
        ⟨α'⟩ = Σ x ꞉ ⟨ α ⟩ , a₀ ≺⟨ α ⟩ x
 
        _<'_ : ⟨α'⟩ → ⟨α'⟩ → _
-       (x , _) <' (y , _) = x ≺⟨ α ⟩ y
+       _<'_ = subtype-order α (λ - → a₀ ≺⟨ α ⟩ -)
 
-       <'-wellfounded : (a : ⟨α'⟩) → is-accessible (underlying-order α) (pr₁ a) → is-accessible _<'_ a
-       <'-wellfounded a (acc step) = acc (λ y p → <'-wellfounded y (step (pr₁ y) p) )
+       <'-propvalued : is-prop-valued _<'_
+       <'-propvalued = subtype-order-propositional α (λ - → a₀ ≺⟨ α ⟩ -)
+
+       <'-wellfounded : is-well-founded _<'_
+       <'-wellfounded = subtype-order-wellfounded α (λ - → a₀ ≺⟨ α ⟩ -)
 
        <-trichotomy  : is-trichotomous-order (underlying-order α)
        <-trichotomy = trichotomy (underlying-order α) fe' em (is-well-ordered α)
@@ -284,14 +314,10 @@ And conversely...
 
 
        <'-transitive : is-transitive _<'_
-       <'-transitive (x , _) (y , _) (z , _) = Transitivity α x y z
+       <'-transitive = subtype-order-transitive α (λ - → a₀ ≺⟨ α ⟩ -)
 
        α' : Ordinal _
-       α' = ⟨α'⟩ , _<'_
-          , (λ (x , _) (y , _) → Prop-valuedness α x y)
-          , (λ x → <'-wellfounded x (Well-foundedness α (pr₁ x)))
-          , <'-extensional
-          , <'-transitive
+       α' = ⟨α'⟩ , _<'_ , <'-propvalued , <'-wellfounded , <'-extensional , <'-transitive
 
        f' : (x : ⟨ α ⟩) → in-trichotomy (underlying-order α) x a₀ → 𝟙 + ⟨ α' ⟩
        f' x (inl q) = 𝟘-elim (a₀-least x q)
@@ -431,14 +457,18 @@ And conversely...
  trimmed-ordinal' : (α : Ordinal 𝓤) (x₀ : ⟨ α ⟩)
                   → ((x : ⟨ α ⟩) → in-trichotomy (underlying-order α) x₀ x)
                   → Ordinal 𝓤
- trimmed-ordinal' {𝓤} α x₀ τ = α' , _≺'_ , ({!!} , {!!})
+ trimmed-ordinal' {𝓤} α x₀ τ = α' , _≺'_
+                                  , subtype-order-propositional α (λ - → x₀ ≺⟨ α ⟩ -)
+                                  , subtype-order-wellfounded α (λ - → x₀ ≺⟨ α ⟩ -)
+                                  , ≺'-extensional
+                                  , subtype-order-transitive α (λ - → x₀ ≺⟨ α ⟩ -)
   where
    α' : 𝓤 ̇
    α' = Σ x ꞉ ⟨ α ⟩ , x₀ ≺⟨ α ⟩ x
    _≺'_ : α' → α' → 𝓤 ̇
-   (x , _) ≺' (y , _) = x ≺⟨ α ⟩ y
-   ext : is-extensional _≺'_
-   ext (x , l) (y , k) u v =
+   _≺'_ = subtype-order α (λ - → x₀ ≺⟨ α ⟩ -)
+   ≺'-extensional : is-extensional _≺'_
+   ≺'-extensional (x , l) (y , k) u v =
     to-subtype-＝ (Prop-valuedness α x₀) (Extensionality α x y (λ z → u' z (τ z)) (λ z → v' z (τ z)))
      where
       u' : (z : ⟨ α ⟩)
@@ -469,8 +499,8 @@ And conversely...
    τ x (inl e) = inr (inl e)
    τ x (inr ne) = inl (x₀-least x (≠-sym ne))
 
- exp-form : (α β : Ordinal 𝓤) → Σ γ ꞉ Ordinal 𝓤 , [𝟙+ α ]^ β ＝ 𝟙ₒ +ₒ γ
- exp-form {𝓤} α β = {!!}
+ exp-has-least-element : (α β : Ordinal 𝓤) → Σ γ ꞉ Ordinal 𝓤 , [𝟙+ α ]^ β ＝ 𝟙ₒ +ₒ γ
+ exp-has-least-element {𝓤} α β = γ , eqtoidₒ (ua _) fe' ([𝟙+ α ]^ β) (𝟙ₒ +ₒ γ) (f , f-equiv)
   where
    γ : Ordinal 𝓤
    γ = trimmed-ordinal' ([𝟙+ α ]^ β) ([] , []-decr) τ
@@ -479,8 +509,35 @@ And conversely...
        → in-trichotomy (underlying-order ([𝟙+ α ]^ β)) ([] , []-decr) x
      τ ([] , δ) = inr (inl (to-exponential-＝ α β refl))
      τ ((x ∷ l) , δ) = inl []-lex
-   ⟨γ⟩ : 𝓤 ̇
-   ⟨γ⟩ = Σ l ꞉ ⟨[𝟙+ α ]^ β ⟩ , pr₁ l ≠ []
+
+   f : ⟨ [𝟙+ α ]^ β ⟩ → ⟨ 𝟙ₒ +ₒ γ ⟩
+   f ([] , δ) = inl ⋆
+   f y@((x ∷ xs) , δ) = inr (y , []-lex)
+
+   g : ⟨ 𝟙ₒ +ₒ γ ⟩ → ⟨ [𝟙+ α ]^ β ⟩
+   g (inl _) = ([] , []-decr)
+   g (inr (y , p)) = y
+
+   f-order-preserving : is-order-preserving ([𝟙+ α ]^ β) (𝟙ₒ +ₒ γ) f
+   f-order-preserving ([] , δ) ((x ∷ xs) , ε) p = ⋆
+   f-order-preserving ((x ∷ xs) , δ) ((y ∷ ys) , ε) p = p
+
+   g-order-preserving : is-order-preserving (𝟙ₒ +ₒ γ) ([𝟙+ α ]^ β) g
+   g-order-preserving (inl ⋆) (inr (((x ∷ xs) , δ) , q)) _ = []-lex
+   g-order-preserving (inr (((x ∷ xs) , δ) , q)) (inr (((y ∷ ys) , ε) , q')) p = p
+
+   f-equiv : is-order-equiv ([𝟙+ α ]^ β) (𝟙ₒ +ₒ γ) f
+   f-equiv = f-order-preserving , (qinvs-are-equivs f (g , η , ϵ)) , g-order-preserving
+    where
+     η : (x : ⟨ [𝟙+ α ]^ β ⟩) → g (f x) ＝ x
+     η ([] , []-decr) = refl
+     η ((x ∷ xs) , δ) = refl
+
+     ϵ : (x : ⟨ 𝟙ₒ +ₒ γ ⟩) → f (g x) ＝ x
+     ϵ (inl ⋆) = refl
+     ϵ (inr (((x ∷ xs) , δ) , []-lex)) = refl
+
+
 
 \end{code}
 
