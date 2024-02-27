@@ -420,3 +420,71 @@ And conversely...
  full-spec-gives-Cases {𝓤} (exp , exp-spec) = EM-gives-Cases (exp-full-spec'-gives-EM exp exp-spec)
 
 \end{code}
+
+\begin{code}
+
+ monotone-in-exponent : (α : Ordinal 𝓤)
+                      → is-monotone (OO 𝓤) (OO 𝓤) [𝟙+ α ]^_
+ monotone-in-exponent α =
+  is-monotone-if-continuous ([𝟙+ α ]^_) (λ i γ → (exp-sup-spec pt sr α i γ) ⁻¹)
+
+ trimmed-ordinal' : (α : Ordinal 𝓤) (x₀ : ⟨ α ⟩)
+                  → ((x : ⟨ α ⟩) → in-trichotomy (underlying-order α) x₀ x)
+                  → Ordinal 𝓤
+ trimmed-ordinal' {𝓤} α x₀ τ = α' , _≺'_ , ({!!} , {!!})
+  where
+   α' : 𝓤 ̇
+   α' = Σ x ꞉ ⟨ α ⟩ , x₀ ≺⟨ α ⟩ x
+   _≺'_ : α' → α' → 𝓤 ̇
+   (x , _) ≺' (y , _) = x ≺⟨ α ⟩ y
+   ext : is-extensional _≺'_
+   ext (x , l) (y , k) u v =
+    to-subtype-＝ (Prop-valuedness α x₀) (Extensionality α x y (λ z → u' z (τ z)) (λ z → v' z (τ z)))
+     where
+      u' : (z : ⟨ α ⟩)
+         → in-trichotomy (underlying-order α) x₀ z
+         → z ≺⟨ α ⟩ x
+         → z ≺⟨ α ⟩ y
+      u' z (inl x₀-below-z) m = u (z , x₀-below-z) m
+      u' z (inr (inl refl)) m = k
+      u' z (inr (inr z-below-x₀)) m = Transitivity α z x₀ y z-below-x₀ k
+      v' : (z : ⟨ α ⟩)
+         → in-trichotomy (underlying-order α) x₀ z
+         → z ≺⟨ α ⟩ y
+         → z ≺⟨ α ⟩ x
+      v' z (inl x₀-below-z) m = v (z , x₀-below-z) m
+      v' z (inr (inl refl)) m = l
+      v' z (inr (inr z-below-x₀)) m = Transitivity α z x₀ x z-below-x₀ l
+
+ open import UF.DiscreteAndSeparated
+ trimmed-ordinal : (α : Ordinal 𝓤) (x₀ : ⟨ α ⟩)
+                 → is-isolated x₀
+                 → ((x : ⟨ α ⟩) → x ≠ x₀ → x₀ ≺⟨ α ⟩ x)
+                 → Ordinal 𝓤
+ trimmed-ordinal α x₀ δ x₀-least = trimmed-ordinal' α x₀ (λ x → τ x (δ x))
+  where
+   τ : (x : ⟨ α ⟩)
+     → is-decidable (x₀ ＝ x)
+     → in-trichotomy (underlying-order α) x₀ x
+   τ x (inl e) = inr (inl e)
+   τ x (inr ne) = inl (x₀-least x (≠-sym ne))
+
+ exp-form : (α β : Ordinal 𝓤) → Σ γ ꞉ Ordinal 𝓤 , [𝟙+ α ]^ β ＝ 𝟙ₒ +ₒ γ
+ exp-form {𝓤} α β = {!!}
+  where
+   γ : Ordinal 𝓤
+   γ = trimmed-ordinal' ([𝟙+ α ]^ β) ([] , []-decr) τ
+    where
+     τ : (x : ⟨ [𝟙+ α ]^ β ⟩)
+       → in-trichotomy (underlying-order ([𝟙+ α ]^ β)) ([] , []-decr) x
+     τ ([] , δ) = inr (inl (to-exponential-＝ α β refl))
+     τ ((x ∷ l) , δ) = inl []-lex
+   ⟨γ⟩ : 𝓤 ̇
+   ⟨γ⟩ = Σ l ꞉ ⟨[𝟙+ α ]^ β ⟩ , pr₁ l ≠ []
+
+\end{code}
+
+Wikipedia:
+* γ > 1 => γ^(-) is order preserving
+* α^(β + γ) = α^β × α^γ              [ exp-+-distributes ]
+* α^(β × γ) = (α^β)^γ
