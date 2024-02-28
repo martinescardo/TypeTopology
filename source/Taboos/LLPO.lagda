@@ -242,15 +242,11 @@ untruncated-ℕ∞-LLPO-gives-WLPO fe llpo = wlpo
   f-∞-agreement : f₀ ∞ ＝ f₁ ∞
   f-∞-agreement = refl
 
-  ϕ₀-property : (u : ℕ∞) (d : D u ∞)
-              → is-finite u
-              → ϕ u ∞ d ＝ ₁
+  ϕ₀-property : (u : ℕ∞) (d : D u ∞) → is-finite u → ϕ u ∞ d ＝ ₁
   ϕ₀-property .∞ (inl refl) ∞-is-finite = 𝟘-elim (is-infinite-∞ ∞-is-finite)
   ϕ₀-property u  (inr _)    _           = refl
 
-  ϕ₁-property : (u : ℕ∞) (d : D ∞ u)
-              → is-finite u
-              → ϕ ∞ u d ＝ ₀
+  ϕ₁-property : (u : ℕ∞) (d : D ∞ u) → is-finite u → ϕ ∞ u d ＝ ₀
   ϕ₁-property u  (inl _)    _           = refl
   ϕ₁-property .∞ (inr refl) ∞-is-finite = 𝟘-elim (is-infinite-∞ ∞-is-finite)
 
@@ -263,17 +259,17 @@ untruncated-ℕ∞-LLPO-gives-WLPO fe llpo = wlpo
   wlpo₀ : f₀ ∞ ＝ ₀ → WLPO
   wlpo₀ e = wlpo
    where
-    𝕗₀ : ℕ∞ → 𝟚
-    𝕗₀ = complement ∘ f₀
+    g₀ : ℕ∞ → 𝟚
+    g₀ = complement ∘ f₀
 
-    b₀ : (n : ℕ) → 𝕗₀ (ι n) ＝ ₀
+    b₀ : (n : ℕ) → g₀ (ι n) ＝ ₀
     b₀ n = ap complement (f₀-property (ι n) (ℕ-to-ℕ∞-is-finite n))
 
-    b₁ : 𝕗₀ ∞ ＝ ₁
+    b₁ : g₀ ∞ ＝ ₁
     b₁ = ap complement e
 
     wlpo : WLPO
-    wlpo = basic-discontinuity-taboo fe 𝕗₀ (b₀ , b₁)
+    wlpo = basic-discontinuity-taboo fe g₀ (b₀ , b₁)
 
   wlpo₁ : f₁ ∞ ＝ ₁ → WLPO
   wlpo₁ b₁ = wlpo
@@ -301,10 +297,8 @@ untruncated-ℕ∞-LLPO-gives-WLPO fe llpo = wlpo
 
 \end{code}
 
-Added 27th Feb 2024. This solves a previous TODO.
-
-And the converse also holds with a simpler proof, and so there isn't
-any difference between WLPO and untruncated LLPO.
+Added 27th Feb 2024. The converse also holds with a simpler proof, and
+so there isn't any difference between WLPO and untruncated LLPO.
 
 \begin{code}
 
