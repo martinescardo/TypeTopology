@@ -232,22 +232,15 @@ untruncated-ℕ∞-LLPO-gives-WLPO fe llpo = wlpo
   l₁ : (u : ℕ∞) → D ∞ u
   l₁ u = llpo ∞ u (λ (∞-is-finite , _) → is-infinite-∞ ∞-is-finite)
 
-  NB : l₁ ∞ ＝ l₀ ∞
-  NB = refl
+  l-∞-agreement : l₀ ∞ ＝ l₁ ∞
+  l-∞-agreement = refl
 
   f₀ f₁ : ℕ∞ → 𝟚
   f₀ u = ϕ u ∞ (l₀ u)
   f₁ u = ϕ ∞ u (l₁ u)
 
-  f-property : ¬ ((f₀ ∞ ＝ ₁) × (f₁ ∞ ＝ ₀))
-  f-property (e₀ , e₁) =
-   zero-is-not-one
-    (₀            ＝⟨ e₁ ⁻¹ ⟩
-     f₁ ∞         ＝⟨ refl ⟩
-     ϕ ∞ ∞ (l₁ ∞) ＝⟨ refl ⟩
-     ϕ ∞ ∞ (l₀ ∞) ＝⟨ refl ⟩
-     f₀ ∞         ＝⟨ e₀ ⟩
-     ₁            ∎ )
+  f-∞-agreement : f₀ ∞ ＝ f₁ ∞
+  f-∞-agreement = refl
 
   ϕ₀-property : (u : ℕ∞) (d : D u ∞)
               → is-finite u
@@ -293,11 +286,18 @@ untruncated-ℕ∞-LLPO-gives-WLPO fe llpo = wlpo
 
   wlpo : WLPO
   wlpo = Cases (𝟚-possibilities (f₀ ∞))
-          (λ (e₀ : f₀ ∞ ＝ ₀) → wlpo₀ e₀)
-          (λ (e₀ : f₀ ∞ ＝ ₁)
-                 → Cases (𝟚-possibilities (f₁ ∞))
-                    (λ (e₁ : f₁ ∞ ＝ ₀) → 𝟘-elim (f-property (e₀ , e₁)))
-                    (λ (e₁ : f₁ ∞ ＝ ₁) → wlpo₁ e₁))
+          (λ (a : f₀ ∞ ＝ ₀)
+                → wlpo₀ a)
+          (λ (b : f₀ ∞ ＝ ₁)
+                → Cases (𝟚-possibilities (f₁ ∞))
+                   (λ (c : f₁ ∞ ＝ ₀)
+                         → 𝟘-elim (zero-is-not-one
+                                    (₀    ＝⟨ c ⁻¹ ⟩
+                                     f₁ ∞ ＝⟨ f-∞-agreement ⟩
+                                     f₀ ∞ ＝⟨ b ⟩
+                                     ₁    ∎)))
+                   (λ (d : f₁ ∞ ＝ ₁)
+                         → wlpo₁ d))
 
 \end{code}
 
