@@ -275,6 +275,9 @@ module _ (L : DistributiveLattice 𝓤) where
  𝟏ᵈ-is-top : (x : X) → (x ≤ᵈ[ L ] 𝟏) holds
  𝟏ᵈ-is-top = ∧-unit
 
+ 𝟎ᵈ-is-bottom : (x : X) → (𝟎 ≤ᵈ[ L ] x) holds
+ 𝟎ᵈ-is-bottom x = orderᵈ-∨-implies-orderᵈ L (∨-unit₁ x)
+
  ∧-is-a-lower-bound₂ : (x y : X) → ((x ∧ y) ≤ᵈ[ L ] y) holds
  ∧-is-a-lower-bound₂ x y = (x ∧ y) ∧ y ＝⟨ Ⅰ ⟩
                            x ∧ (y ∧ y) ＝⟨ Ⅱ ⟩
