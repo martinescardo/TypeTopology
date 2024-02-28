@@ -34,7 +34,7 @@ x * negsucc (succ y) = (- x) + (x * negsucc y)
 infixl 32 _*_
 
 pos-multiplication-equiv-to-ℕ : (x y : ℕ) → pos x * pos y ＝ pos (x ℕ* y)
-pos-multiplication-equiv-to-ℕ x = induction base step
+pos-multiplication-equiv-to-ℕ x = ℕ-induction base step
   where
     base : pos x * pos 0 ＝ pos (x ℕ* 0)
     base = refl
@@ -109,7 +109,7 @@ lengthy. Distributivity of addition relies on commutativity and associativity
 
 distributivity-mult-ℤ₀ : (x y : ℤ) (z : ℕ)
                             → (x + y) * pos z ＝ x * pos z + y * pos z
-distributivity-mult-ℤ₀ x y = induction base step
+distributivity-mult-ℤ₀ x y = ℕ-induction base step
  where
   base : (x + y) * pos 0 ＝ x * pos 0 + y * pos 0
   base = refl
@@ -138,7 +138,7 @@ distributivity-mult-ℤ₀ x y = induction base step
 
 distributivity-mult-ℤ₁ : (x y : ℤ) → (z : ℕ)
                        → (x + y) * negsucc z ＝ x * negsucc z + y * negsucc z
-distributivity-mult-ℤ₁ x y = induction base step
+distributivity-mult-ℤ₁ x y = ℕ-induction base step
  where
   base : (x + y) * negsucc 0 ＝ x * negsucc 0 + y * negsucc 0
   base = (x + y) * negsucc 0           ＝⟨ refl                  ⟩
@@ -235,7 +235,7 @@ mult-negation = ℤ-induction base step₁ step₂
       ii = ap (pos (succ 0) +_) IH
 
 ℤ*-comm₀ : (x : ℤ) → (y : ℕ) → x * pos y ＝ pos y * x
-ℤ*-comm₀ x = induction base step
+ℤ*-comm₀ x = ℕ-induction base step
  where
   base : x * pos 0 ＝ pos 0 * x
   base = x * pos 0 ＝⟨ ℤ-zero-left-base x ⁻¹ ⟩
@@ -256,7 +256,7 @@ mult-negation = ℤ-induction base step₁ step₂
     iv  = ap (_* x) (ℤ+-comm (pos 1) (pos k))
 
 ℤ*-comm₁ : (x : ℤ) → (y : ℕ) → x * negsucc y ＝ negsucc y * x
-ℤ*-comm₁ x = induction base step
+ℤ*-comm₁ x = ℕ-induction base step
  where
   base : x * negsucc 0 ＝ negsucc 0 * x
   base = mult-negation x
@@ -292,7 +292,7 @@ distributivity-mult-over-ℤ' x y z = γ
 
 
 negation-dist-over-mult₀ : (x : ℤ) → (y : ℕ) → x * (- pos y) ＝ - x * pos y
-negation-dist-over-mult₀ x = induction base step
+negation-dist-over-mult₀ x = ℕ-induction base step
   where
     base : x * (- pos 0) ＝ - (x * pos 0)
     base = refl
@@ -310,7 +310,7 @@ negation-dist-over-mult₀ x = induction base step
 
 negation-dist-over-mult₁ : (x : ℤ) → (y : ℕ)
                          → x * (- negsucc y) ＝ - x * negsucc y
-negation-dist-over-mult₁ x = induction base step
+negation-dist-over-mult₁ x = ℕ-induction base step
  where
   base : x * (- negsucc 0) ＝ - x * negsucc 0
   base = minus-minus-is-plus x ⁻¹
@@ -353,7 +353,7 @@ minus-times-minus-is-positive x y = γ
       x * y         ∎
 
 ℤ*-assoc₀ : (x y : ℤ) → (z : ℕ ) → x * (y * pos z) ＝ x * y * pos z
-ℤ*-assoc₀ x y = induction base step
+ℤ*-assoc₀ x y = ℕ-induction base step
   where
     base : x * (y * pos 0) ＝ x * y * pos 0
     base = refl
@@ -369,7 +369,7 @@ minus-times-minus-is-positive x y = γ
       ii = ap ((x * y) +_) IH
 
 ℤ*-assoc₁ : (x y : ℤ) → (z : ℕ) → x * (y * negsucc z) ＝ x * y * negsucc z
-ℤ*-assoc₁ x y = induction base step
+ℤ*-assoc₁ x y = ℕ-induction base step
  where
   base : x * (y * negsucc 0) ＝ x * y * negsucc 0
   base = negation-dist-over-mult x y
@@ -445,7 +445,7 @@ negatives-equal x y e = I
       y       ∎
 
 ppnnp-lemma : (a b : ℕ) → Σ c ꞉ ℕ , negsucc a + negsucc b ＝ negsucc c
-ppnnp-lemma a = induction base step
+ppnnp-lemma a = ℕ-induction base step
  where
   base : Σ c ꞉ ℕ , negsucc a + negsucc 0 ＝ negsucc c
   base = succ a , refl

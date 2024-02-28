@@ -471,7 +471,7 @@ trich-locate x y = (x < y) ∔ (x ＝ y) ∔ (y < x)
   I = ℤ<-adding' a b c l
 
 pmpo-lemma : (a b : ℤ) → (n : ℕ) → a < b →  a * pos (succ n) < b * pos (succ n)
-pmpo-lemma a b = induction base step
+pmpo-lemma a b = ℕ-induction base step
  where
   base : a < b
        → a * pos 1 < b * pos 1
@@ -523,7 +523,7 @@ positive-multiplication-preserves-order' a b c p l = I (ℤ≤-split a b l)
   γ = ℤ-bigger-or-equal-not-less (pos 0) (negsucc c) p I
 
 nmco-lemma : (a b : ℤ) → (c : ℕ) → a < b → b * (negsucc c) < a * (negsucc c)
-nmco-lemma a b = induction base step
+nmco-lemma a b = ℕ-induction base step
  where
   base : a < b → b * negsucc 0 < a * negsucc 0
   base (k , γ) = k , I
@@ -671,7 +671,7 @@ non-zero-multiplication (negsucc x)    y xnz ynz e = ynz γ
   γ = ℤ-mult-left-cancellable y (pos 0) (negsucc x) id e
 
 orcl : (a b : ℤ) → (n : ℕ) → a * (pos (succ n)) ≤ b * (pos (succ n)) → a ≤ b
-orcl a b = induction base step
+orcl a b = ℕ-induction base step
  where
   base : a * pos 1 ≤ b * pos 1 → a ≤ b
   base = id

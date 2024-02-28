@@ -39,7 +39,7 @@ open import UF.Base
 open import UF.FunExt
 open import UF.Equiv
 
-module Games.FiniteHistoryDependentTransformer
+module Games.Transformer
         (fe : Fun-Ext)
         (𝕋  : Monad)
         (R  : Type)

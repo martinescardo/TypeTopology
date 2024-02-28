@@ -344,6 +344,12 @@ Lemma[b≠c→b⊕c＝₁] = different-from-₀-equal-₁ ∘ (contrapositive Le
 Lemma[b⊕c＝₁→b≠c] : {b c : 𝟚} → b ⊕ c ＝ ₁ → b ≠ c
 Lemma[b⊕c＝₁→b≠c] = (contrapositive Lemma[b＝c→b⊕c＝₀]) ∘ equal-₁-different-from-₀
 
+complement₁ : {a : 𝟚} → complement a ＝ ₁ → a ＝ ₀
+complement₁ {₀} refl = refl
+
+complement₀ : {a : 𝟚} → complement a ＝ ₀ → a ＝ ₁
+complement₀ {₁} refl = refl
+
 complement-left : {b c : 𝟚} → complement b ≤ c → complement c ≤ b
 complement-left {₀} {₁} l = ⋆
 complement-left {₁} {₀} l = ⋆

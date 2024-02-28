@@ -1,34 +1,43 @@
-Martin Escardo, 16 Feb 2023
+Martin Escardo, Tom de Jong, 16 & 22 Feb 2023
 
-We implement a predicative version of Pataraia's fixed point theorem
-that every monotone endomap of a dcpo (directed complete poset) with a
-least element has a least fixed point. We benefitted from discussions
-with Tom de Jong.
+In this module Various.Pataraia-Taylor we implement a predicative
+version of Pataraia's fixed point theorem:
+
+  Every monotone endomap of a dcpo (directed complete poset) with a
+  least element has a least fixed point.
+
+The original impredicative version is implemented in the module
+Various.Pataraia.
 
 Pataraia [1] was the first to give a constructive proof of this in
-topos logic. A version of his proof is published in [2] by the author,
+topos logic. A version of his proof is published in [2] by Escardo,
 with Pataraia's permission. Pataraia himself didn't publish the
-result.
+result. An earlier, less general, theorem was proved by Coquand [6]
+for *bounded complete* dcpos, with an easier proof.
 
-The proof has two steps, the first of which is directly predicative
-and coded in the module step₁ below.
+See the module Various.Pataraia for an implementation of the
+impredicative proof given [2].
 
-The second step is impredicative, because it considers the
-intersection of all subsets of the dcpo that contain the least
-element, are closed under the monotone map, and are closed under
-directed suprema. This is impredicative in the sense that it requires
-propositional resizing axioms so that we can form this intersection.
+Pataraia's proof has two steps, the first of which is directly
+predicative and coded in the module lemma₂·₁ in the file
+Various.Pataraia.
+
+The second step (theorem-₂·₂ in the file Various.Pataraia) is
+impredicative, because it considers the intersection of all subsets of
+the dcpo that contain the least element, are closed under the monotone
+map, and are closed under directed suprema. This is impredicative in
+the sense that it requires propositional resizing axioms so that we
+can form this intersection.
 
 We instead consider a direct, explicit, elegant, predicative
-construction of this subset, due to Paul Taylor [3], in our second
-step, coded in the module step₂ below.
+construction of this subset, due to Paul Taylor [3], in our
+alternative second step here, coded in the module `Taylor` below.
 
 This version of the theorem probably deserves to be called the
 Pataraia-Taylor fixed-point theorem, not only because the proof
 involves a new ingredient, but also because it holds in a more general
 predicative setting (here MLTT with function extensionality and
-existence of propositional truncations). Therefore we decided to name
-this module Pataraia-Taylor.
+existence of propositional truncations).
 
 There is a catch, though. In a predicative setting, there is no
 non-trivial dcpo to apply the theorem [4]. More precisely, dcpos are
@@ -39,7 +48,7 @@ Scott model of PCF, or Scott's D∞-model of the untyped
 lambda-calculus, the parameter is of the form (𝓤⁺,𝓤,𝓤), and we refer
 to such dcpos as "large, locally small, small directed-complete", and
 if the parameter is (𝓤,𝓤,𝓤), we could refer to the dcpo as "small and
-small directed-complete".  The Pataraia-Taylor fixed point theorem
+small directed-complete". The Pataraia-Taylor fixed point theorem
 presented here applies to small, small directed-complete dcpos, and
 the trouble is that there are no non-trivial examples of such dcpos in
 our predicative world [4]. The only way to produce nontrivial such
@@ -55,7 +64,10 @@ dcpos to apply the theorem is to assume propositional resizing axioms
     https://doi.org/10.1023/A:1023555514029
 
 [3] Paul Taylor. Two recent talks at Birmingham.
-    Slides and papers available at https://paultaylor.eu/ordinals/
+    Slides and papers available at
+    https://paultaylor.eu/ordinals/
+    https://web.archive.org/web/20240222103315/https://paultaylor.eu/ordinals/
+    (22 Feb 2024 snapshot)
 
 [4] Tom de Jong. Domain theory in constructive and predicative
     univalent foundations.
@@ -67,6 +79,10 @@ dcpos to apply the theorem is to assume propositional resizing axioms
     https://unimath.github.io/UniMath/
     https://doi.org/10.5281/zenodo.8427604
 
+[6] Thierry Coquand. A topos theoretic fix point theorem.
+    Unpublished manuscript, June 1995.
+    https://web.archive.org/web/20110822085930/https://www.cse.chalmers.se/~coquand/fix.pdf
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}
@@ -74,6 +90,13 @@ dcpos to apply the theorem is to assume propositional resizing axioms
 open import MLTT.Spartan
 open import UF.FunExt
 open import UF.PropTrunc
+
+\end{code}
+
+We assume that propositional truncations exist, that function
+extensionality holds, and work in a fixed universe 𝓤.
+
+\begin{code}
 
 module Various.Pataraia-Taylor
         (pt : propositional-truncations-exist)
@@ -85,10 +108,11 @@ open PropositionalTruncation pt
 
 open import DomainTheory.Basics.Dcpo pt fe 𝓤
 open import DomainTheory.Basics.Miscelanea pt fe 𝓤
-open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
 open import UF.Sets
 open import UF.Sets-Properties
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
+open import Various.Pataraia pt fe 𝓤
 
 \end{code}
 
@@ -111,128 +135,21 @@ Theorem : (𝓓 : DCPO {𝓤} {𝓤})
               × ((y : ⟨ 𝓓 ⟩) → f y ＝ y → x ⊑⟨ 𝓓 ⟩ y)
 \end{code}
 
-We prove this at the very end of this file. We first need to prove a
-number of lemmas, in two modules, step₁ and step₂.
+Before proving this theorem, we first need to prove a number of
+lemmas, in two modules, lemma₂·₁ in Various.Pataraia, and `taylor`
+here.
+
+The second part of Pataraia's proof (theorem₂·₂ of the module
+Various.Pataraia) considers the intersection of all subsets of 𝓓 that
+have ⊥ as a member, are closed under f, and are closed under directed
+suprema. This is impredicative in the sense that it requires
+propositional resizing axioms to compute the intersection. We instead
+consider the subset of 𝓓 consisting of the elements that satisfy
+Taylor's condition (TC) below, which is defined predicatively.
 
 \begin{code}
 
-module step₁ (𝓔 : DCPO {𝓤} {𝓤}) where
-
- private
-  E   = ⟨ 𝓔 ⟩
-  _⊑_ = underlying-order 𝓔
-
-\end{code}
-
-We now define the pointed type MI of monotone inflationary endomaps of
-the underlying set E of the dcpo 𝓔. Notice that E is allowed to be
-empty.
-
-\begin{code}
-
- MI : 𝓤 ̇
- MI = Σ f ꞉ (E → E) , is-monotone 𝓔 𝓔 f × is-inflationary 𝓔 f
-
- 𝕚𝕕 : MI
- 𝕚𝕕 = id , id-is-monotone 𝓔 , id-is-inflationary 𝓔
-
-\end{code}
-
-We use the following auxiliary function Γ : E → MI → E to define a
-function γ : E → E with suitable properties. For each x : E we get a
-directed family Γ x : MI → E, and we define γ x to be the supremum of
-this family.
-
-Notice that it is at this point that we need that our dcpo is small
-and small complete, because the index set MI lives in the universe 𝓤,
-which is also where the carrier E of 𝓔 lives.
-
-\begin{code}
-
- Γ : E → MI → E
- Γ x (f , _) = f x
-
- Γ-is-semidirected : (x : E) → is-semidirected _⊑_ (Γ x)
- Γ-is-semidirected x 𝕗@(f , fm , fi) 𝕘@(g , gm , gi) = ∣ 𝕙 , f-le-h , g-le-h ∣
-  where
-   h = g ∘ f
-
-   𝕙 : MI
-   𝕙 = (h , ∘-is-monotone 𝓔 𝓔 𝓔 f g fm gm , ∘-is-inflationary 𝓔 f g fi gi)
-
-   f-le-h : f x ⊑ h x
-   f-le-h = gi (f x)
-
-   g-le-h : g x ⊑ h x
-   g-le-h = gm x (f x) (fi x)
-
- Γ-is-directed : (x : E) → is-Directed 𝓔 (Γ x)
- Γ-is-directed x = ∣ 𝕚𝕕 ∣ , Γ-is-semidirected x
-
- γ : E → E
- γ x = ∐ 𝓔 (Γ-is-directed x)
-
-\end{code}
-
-So the function γ is the pointwise supremum of the monotone
-inflationary endomaps of E.
-
-\begin{code}
-
- γ-is-monotone : is-monotone 𝓔 𝓔 γ
- γ-is-monotone x y l = ∐-is-monotone 𝓔 (Γ-is-directed x) (Γ-is-directed y) l'
-  where
-   l' : (𝕗 : MI) → Γ x 𝕗 ⊑ Γ y 𝕗
-   l' (f , fm , fi) = fm x y l
-
-\end{code}
-
-From this it is easy to conclude that γ is the greatest monotone
-inflationary map for any x : E.
-
-\begin{code}
-
- γ-is-greatest-mi-map : ((f , fm , fi) : MI) (x : E) → f x ⊑ γ x
- γ-is-greatest-mi-map 𝕗 x = ∐-is-upperbound 𝓔 (Γ-is-directed x) 𝕗
-
- γ-is-inflationary : is-inflationary 𝓔 γ
- γ-is-inflationary = γ-is-greatest-mi-map 𝕚𝕕
-
-\end{code}
-
-And, in turn, from this we conclude that γ x is a fixed point of any
-monotone inflationary map f : E → E.
-
-\begin{code}
-
- γ-is-fixed-point : ((f , fm , fi) : MI) (x : E) → f (γ x) ＝ γ x
- γ-is-fixed-point (f , fm , fi) x = antisymmetry 𝓔 _ _ I II
-  where
-   I : f (γ x) ⊑ γ x
-   I = γ-is-greatest-mi-map
-        (f ∘ γ ,
-         ∘-is-monotone 𝓔 𝓔 𝓔 γ f γ-is-monotone fm ,
-         ∘-is-inflationary 𝓔 γ f γ-is-inflationary fi)
-       x
-
-   II : γ x ⊑ f (γ x)
-   II = fi (γ x)
-
-\end{code}
-
-This concludes the first step of Pataraia's proof.
-
-The second part of Pataraia's proof considers the intersection of all
-subsets of 𝓓 that have ⊥ as a member, are closed under f, and are
-closed under directed suprema. This is impredicative in the sense that
-it requires propositional resizing axioms to compute the
-intersection. We instead consider the subset of 𝓓 consisting of the
-elements that satisfy Taylor's condition (TC) below, which is defined
-predicatively.
-
-\begin{code}
-
-module step₂
+module Taylor
         (𝓓 : DCPO {𝓤} {𝓤})
         ((⊥ , ⊥-is-least) : has-bottom 𝓓)
         (f : ⟨ 𝓓 ⟩ → ⟨ 𝓓 ⟩)
@@ -280,11 +197,14 @@ module step₂
      II : (a : A) → α a ⊑ u
      II a = TC-preservation₂ a u l
 
+ TC-holds-at-⊥ : TC ⊥
+ TC-holds-at-⊥ = ⊥-is-least (f ⊥) , (λ (u : D) _ → ⊥-is-least u)
+
 \end{code}
 
-Now the rest of step₂ is essentially the original one by Pataraia. We
-apply step₁ to the subdcpo 𝓔 of 𝓓 consisting of the elements that
-satisfy Taylor's condition.
+Now the rest of Taylor is essentially the original one by Pataraia. We
+apply lemma₂·₁ of the module Various.Pataraia to the subdcpo 𝓔 of 𝓓
+consisting of the elements that satisfy Taylor's condition.
 
 \begin{code}
 
@@ -310,7 +230,7 @@ satisfy Taylor's condition.
  τ (x , c) = c
 
  ⊥𝓔 : E
- ⊥𝓔 =  ⊥ , ⊥-is-least (f ⊥) , (λ (u : D) _ → ⊥-is-least u)
+ ⊥𝓔 =  ⊥ , TC-holds-at-⊥
 
 \end{code}
 
@@ -332,13 +252,16 @@ function 𝓯 : E → E.
  𝓯-is-inflationary : (t : E) → t ≤ 𝓯 t
  𝓯-is-inflationary (x , c₁ , c₂) = c₁
 
+ TC-𝓯 : (s : E) → TC (f (ι s))
+ TC-𝓯 s = pr₂ (𝓯 s)
+
 \end{code}
 
-So now we can apply the development of step₁.
+So now we can apply lemma₂·₁ proved in Various.Pataraia.
 
 \begin{code}
 
- open step₁ 𝓔
+ open lemma₂·₁ 𝓔
 
  𝕗 : MI
  𝕗 = (𝓯 , 𝓯-is-monotone , 𝓯-is-inflationary)
@@ -381,7 +304,7 @@ This concludes the proof of the theorem.
 
 Theorem 𝓓 hb f fm = x₀ , x₀-is-fp , x₀-is-lfp
  where
-  open step₂ 𝓓 hb f fm
+  open Taylor 𝓓 hb f fm
 
 \end{code}
 
@@ -400,7 +323,7 @@ initial-algebra : (𝓓 : DCPO {𝓤} {𝓤})
                       × ((y : ⟨ 𝓓 ⟩) → f y ⊑⟨ 𝓓 ⟩ y → x ⊑⟨ 𝓓 ⟩ y)
 initial-algebra 𝓓 hb f fm = x₀ , x₀-is-fp , x₀-is-lpfp
  where
-  open step₂ 𝓓 hb f fm
+  open Taylor 𝓓 hb f fm
 
 \end{code}
 
@@ -417,3 +340,172 @@ NB. We could have formulated and proved this more categorically as
 and then conclude that actually f x ＝ x by Lambek's Lemma. But we
 already know that the initial algebra is a fixed point in our case,
 and so there is no point in doing this.
+
+For later reference we repackage the theorem as follows:
+
+\begin{code}
+
+module _
+        (𝓓 : DCPO {𝓤} {𝓤})
+        ((⊥ , ⊥-is-least) : has-bottom 𝓓)
+        (f : ⟨ 𝓓 ⟩ → ⟨ 𝓓 ⟩)
+        (fm : is-monotone 𝓓 𝓓 f)
+       where
+
+ lfp : ⟨ 𝓓 ⟩
+ lfp = pr₁ (Theorem 𝓓 (⊥ , ⊥-is-least) f fm)
+
+ lfp-is-fixed-point : f lfp ＝ lfp
+ lfp-is-fixed-point = pr₁ (pr₂ (Theorem 𝓓 (⊥ , ⊥-is-least) f fm))
+
+ lfp-is-least : (y : ⟨ 𝓓 ⟩) → f y ＝ y → lfp ⊑⟨ 𝓓 ⟩ y
+ lfp-is-least = pr₂ (pr₂ (Theorem 𝓓 (⊥ , ⊥-is-least) f fm))
+
+\end{code}
+
+Added 22 February 2024.
+
+It follows directly from Pataraia's original proof [2] that if P is a
+property that holds for ⊥, is closed under directed suprema, and is
+closed under f, then P holds for the least fixed point of f. We refer
+to this as the fixed-point induction principle. Although this
+principle doesn't follow directly from the above argument, we can
+prove it as follows, using the above module Taylor again.
+
+\begin{code}
+
+ lfp-induction :
+    (P : ⟨ 𝓓 ⟩ → 𝓤 ̇  )
+  → ((x : ⟨ 𝓓 ⟩) → is-prop (P x))
+  → P ⊥
+  → is-closed-under-directed-sups 𝓓 P
+  → ((x : ⟨ 𝓓 ⟩) → P x → P (f x))
+  → P lfp
+
+ module fixed-point-induction
+         (P : ⟨ 𝓓 ⟩ → 𝓤 ̇  )
+         (P-is-prop-valued : (x : ⟨ 𝓓 ⟩) → is-prop (P x))
+         (P-holds-at-⊥ : P ⊥)
+         (P-is-closed-under-directed-sups : is-closed-under-directed-sups 𝓓 P)
+         (P-is-closed-under-f : (x : ⟨ 𝓓 ⟩) → P x → P (f x))
+        where
+
+  private
+   D = ⟨ 𝓓 ⟩
+   _⊑_ = underlying-order 𝓓
+
+  open Taylor 𝓓 (⊥ , ⊥-is-least) f fm
+   using (TC ;
+          TC₂ ;
+          TC-𝓯 ;
+          TC-is-prop-valued ;
+          TC-is-closed-under-directed-sups ;
+          TC-holds-at-⊥)
+   renaming (𝓯 to 𝓯')
+
+  TC' : D → 𝓤 ̇
+  TC' x = TC x × P x
+
+  TC'-⊆-TC : (x : ⟨ 𝓓 ⟩) → TC' x → TC x
+  TC'-⊆-TC x = pr₁
+
+  TC'-⊆-P : (x : ⟨ 𝓓 ⟩) → TC' x → P x
+  TC'-⊆-P x = pr₂
+
+  TC'-is-prop-valued : (x : D) → is-prop (TC' x)
+  TC'-is-prop-valued x = ×-is-prop
+                          (TC-is-prop-valued x)
+                          (P-is-prop-valued x)
+
+  TC'-is-closed-under-directed-sups : is-closed-under-directed-sups 𝓓 TC'
+  TC'-is-closed-under-directed-sups α δ TC'-preservation = c₁ , c₂
+   where
+    c₁ : TC (∐ 𝓓 δ)
+    c₁ = TC-is-closed-under-directed-sups α δ
+          (λ a → TC'-⊆-TC (α a) (TC'-preservation a))
+
+    c₂ : P (∐ 𝓓 δ)
+    c₂ = P-is-closed-under-directed-sups α δ
+          (λ a → TC'-⊆-P (α a) (TC'-preservation a))
+
+  𝓔 : DCPO
+  𝓔 = subdcpo 𝓓 TC' TC'-is-prop-valued TC'-is-closed-under-directed-sups
+
+  private
+   E = ⟨ 𝓔 ⟩
+   _≤_ : E → E → 𝓤 ̇
+   s ≤ t = s ⊑⟨ 𝓔 ⟩ t
+
+  ι : E → D
+  ι (x , c) = x
+
+  τ' : (t : E) → TC' (ι t)
+  τ' (x , c) = c
+
+  τ : (t : E) → TC (ι t)
+  τ t = TC'-⊆-TC (ι t) (τ' t)
+
+  ⊥𝓔 : E
+  ⊥𝓔 = ⊥ , TC-holds-at-⊥ , P-holds-at-⊥
+
+  𝓯 : E → E
+  𝓯 (x , tc , p) = f x , TC-𝓯 (x , tc) , P-is-closed-under-f x p
+
+  𝓯-is-monotone : (s t : E) → s ≤ t → 𝓯 s ≤ 𝓯 t
+  𝓯-is-monotone (x , _) (y , _) = fm x y
+
+  𝓯-is-inflationary : (t : E) → t ≤ 𝓯 t
+  𝓯-is-inflationary (x , (c₁ , c₂) , _) = c₁
+
+  open lemma₂·₁ 𝓔
+
+  𝕗 : MI
+  𝕗 = (𝓯 , 𝓯-is-monotone , 𝓯-is-inflationary)
+
+  t₀ : E
+  t₀ = γ ⊥𝓔
+
+  t₀-is-fp : 𝓯 t₀ ＝ t₀
+  t₀-is-fp = γ-is-fixed-point 𝕗 ⊥𝓔
+
+  x₀ : D
+  x₀ = ι t₀
+
+  x₀-is-fp : f x₀ ＝ x₀
+  x₀-is-fp = ap ι t₀-is-fp
+
+  x₀-is-lpfp : (x : D) → f x ⊑ x → x₀ ⊑ x
+  x₀-is-lpfp = TC₂ x₀ (τ t₀)
+
+  x₀-is-lfp : (x : D) → f x ＝ x → x₀ ⊑ x
+  x₀-is-lfp x p = x₀-is-lpfp x (＝-to-⊑ 𝓓 p)
+
+  x₀-satisfies-P : P x₀
+  x₀-satisfies-P = TC'-⊆-P (ι t₀) (τ' t₀)
+
+\end{code}
+
+Now we are ready to prove the least fixed point induction theorem.
+
+\begin{code}
+
+ lfp-induction
+  P
+  P-is-prop-valued
+  P-holds-at-⊥
+  P-is-closed-under-directed-sups
+  P-is-closed-under-f = transport P e x₀-satisfies-P
+   where
+    open fixed-point-induction
+          P
+          P-is-prop-valued
+          P-holds-at-⊥
+          P-is-closed-under-directed-sups
+          P-is-closed-under-f
+    e : x₀ ＝ lfp
+    e = antisymmetry 𝓓
+         x₀ lfp
+         (x₀-is-lfp lfp lfp-is-fixed-point)
+         (lfp-is-least x₀ x₀-is-fp)
+
+\end{code}

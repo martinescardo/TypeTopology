@@ -33,7 +33,7 @@ private
 
 \end{code}
 
-The definition of LLPO uses _∨_ rather than _+_. But show that with
+The definition of LLPO uses _∨_ rather than _+_. We show that with
 _+_, LLPO implies WLPO, but it is known that LLPO with _∨_ doesn't
 (there are counter-models).
 
@@ -47,7 +47,7 @@ untruncated-LLPO = (α : ℕ → 𝟚)
 
 \end{code}
 
-The following version, is equivalent, which shows that (untruncated)
+The following version, is equivalent, which shows that untruncated
 LLPO is an instance of De Morgan Law.
 
 \begin{code}
@@ -263,18 +263,39 @@ untruncated-LLPO-gives-WLPO fe llpo = wlpo
 
 \end{code}
 
-TODO. (Easy, but perhaps laborious.) Show the following.
+Added 27th Feb 2024. This solves a previous TODO.
+
+And the converse also holds with a simpler proof, and so there isn't
+any difference between WLPO and untruncated LLPO.
 
 \begin{code}
 
-{-
 WLPO-gives-untruncated-LLPO : WLPO-traditional → untruncated-LLPO
-WLPO-gives-untruncated-LLPO = {!!}
--}
-
+WLPO-gives-untruncated-LLPO wlpo α Tα-is-prop =
+ Cases (wlpo (complement ∘ α ∘ double))
+  (λ (a : (n : ℕ) → complement (α (double n)) ＝ ₁)
+        → inl (λ n → complement₁ (a n)))
+  (λ (b : ¬ ((n : ℕ) → complement (α (double n)) ＝ ₁))
+        → inr (λ n → 𝟚-equality-cases
+                      (λ (c : α (sdouble n) ＝ ₀)
+                            → c)
+                      (λ (d : α (sdouble n) ＝ ₁)
+                            → 𝟘-elim
+                               (b (λ m → ap
+                                          complement
+                                          (different-from-₁-equal-₀
+                                            (λ (p : α (double m) ＝ ₁)
+                                                  → double-is-not-sdouble
+                                                     (index-uniqueness
+                                                       α
+                                                       Tα-is-prop
+                                                       p
+                                                       d))))))))
 \end{code}
 
-We now formalate (truncated) LLPO.
+End of 27th Feb 2024 addition.
+
+We now formulate (truncated) LLPO.
 
 \begin{code}
 
@@ -294,10 +315,12 @@ module _ (pt : propositional-truncations-exist) where
 
 The most natural form of LLPO for what we've done above is the following.
 
+TODO. Prove that this is equivalent to LLPO.
+
 \begin{code}
 
- ℕ-∞-LLPO : 𝓤₀ ̇
- ℕ-∞-LLPO = (u v : ℕ∞) → ¬ (is-finite u × is-finite v) → (u ＝ ∞) ∨ (v ＝ ∞)
+ ℕ∞-LLPO : 𝓤₀ ̇
+ ℕ∞-LLPO = (u v : ℕ∞) → ¬ (is-finite u × is-finite v) → (u ＝ ∞) ∨ (v ＝ ∞)
 
 \end{code}
 

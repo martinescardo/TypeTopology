@@ -693,7 +693,9 @@ property.
 
 \begin{code}
 
-is-closed-under-directed-sups : (𝓓 : DCPO {𝓤} {𝓣}) → (⟨ 𝓓 ⟩ → 𝓦 ̇) → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ⊔ 𝓦 ̇
+is-closed-under-directed-sups : (𝓓 : DCPO {𝓤} {𝓣})
+                              → (⟨ 𝓓 ⟩ → 𝓦 ̇)
+                              → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ⊔ 𝓦 ̇
 is-closed-under-directed-sups {𝓤} {𝓣} 𝓓 P =
     {I : 𝓥 ̇ } (α : I → ⟨ 𝓓 ⟩) (δ : is-Directed 𝓓 α)
   → ((i : I) → P (α i))
@@ -701,7 +703,8 @@ is-closed-under-directed-sups {𝓤} {𝓣} 𝓓 P =
 
 open import UF.Sets-Properties
 
-module _ (𝓓 : DCPO {𝓤} {𝓣})
+module _
+         (𝓓 : DCPO {𝓤} {𝓣})
          (P : ⟨ 𝓓 ⟩ → 𝓦 ̇)
          (P-is-prop-valued : (x : ⟨ 𝓓 ⟩) → is-prop (P x))
          (P-is-closed-under-directed-sups : is-closed-under-directed-sups 𝓓 P)
@@ -728,5 +731,26 @@ module _ (𝓓 : DCPO {𝓤} {𝓣})
 
  subdcpo-satisfies-property : (σ : ⟨ subdcpo ⟩) → P (subdcpo-inclusion σ)
  subdcpo-satisfies-property = pr₂
+
+open import UF.SubtypeClassifier
+
+is-closed-under-directed-supsₚ : (𝓓 : DCPO {𝓤} {𝓣})
+                               → (⟨ 𝓓 ⟩ → Ω 𝓦)
+                               → Ω (𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ⊔ 𝓦)
+is-closed-under-directed-supsₚ {𝓤} {𝓣} 𝓓 P =
+ is-closed-under-directed-sups 𝓓 (λ x → P x holds) ,
+ Π-is-prop' fe (λ I → Π₃-is-prop fe (λ α δ c → holds-is-prop (P (∐ 𝓓 δ))))
+
+module _
+        (𝓓 : DCPO {𝓤} {𝓣})
+        (P : ⟨ 𝓓 ⟩ → Ω 𝓦)
+        (P-is-closed-under-directed-supsₚ : is-closed-under-directed-supsₚ 𝓓 P holds)
+       where
+
+ subdcpoₚ : DCPO {𝓤 ⊔ 𝓦} {𝓣}
+ subdcpoₚ = subdcpo 𝓓
+            (λ x → P x holds)
+            (λ x → holds-is-prop (P x))
+            P-is-closed-under-directed-supsₚ
 
 \end{code}

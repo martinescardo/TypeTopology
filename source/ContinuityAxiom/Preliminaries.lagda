@@ -84,7 +84,7 @@ CoV-induction {P} step n = step n (claim n)
   qstep n qn m (≤-succ r) = step m (λ k u → qn k (≤-trans u r))
 
   claim : ∀ n → Q n
-  claim = induction qbase qstep
+  claim = ℕ-induction qbase qstep
 
 \end{code}
 
