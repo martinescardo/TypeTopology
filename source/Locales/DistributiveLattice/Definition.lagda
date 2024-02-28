@@ -75,6 +75,11 @@ Some easy lemmas that we prove directly inside the record definition.
                             Ⅲ = ap (_∨ (x ∧ z)) (∧-commutative x y)
                             Ⅳ = ap ((y ∧ x) ∨_) (∧-commutative x z)
 
+ ∨-unit₁ : (x : X) → 𝟎 ∨ x ＝ x
+ ∨-unit₁ x = 𝟎 ∨ x   ＝⟨ ∨-commutative 𝟎 x ⟩
+             x ∨ 𝟎   ＝⟨ ∨-unit x          ⟩
+             x       ∎
+
  ∧-absorptive₁ : (x y : X) → x ∧ (y ∨ x) ＝ x
  ∧-absorptive₁ x y = x ∧ (y ∨ x) ＝⟨ ap (x ∧_) (∨-commutative y x) ⟩
                      x ∧ (x ∨ y) ＝⟨ ∧-absorptive x y              ⟩
