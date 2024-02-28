@@ -70,13 +70,12 @@ We also define the type `𝒦 X` expressing the type of compact opens of a local
   carrier-of-[ poset-of (𝒪 X) ]-is-set
   (λ U → props-are-sets (holds-is-prop (is-compact-open X U)))
 
-𝒦-equality : (X : Locale 𝓤 𝓥 𝓦) {K₁ K₂ : ⟨ 𝒪 X ⟩}
-           → (κ₁ : is-compact-open X K₁ holds)
-           → (κ₂ : is-compact-open X K₂ holds)
-           → K₁ ＝ K₂
-           → (K₁ , κ₁) ＝ (K₂ , κ₂)
-𝒦-equality X κ₁ κ₂ p =
- to-subtype-＝ (λ _ → holds-is-prop (is-compact-open X _)) p
+to-𝒦-＝ : (X : Locale 𝓤 𝓥 𝓦) {K₁ K₂ : ⟨ 𝒪 X ⟩}
+        → (κ₁ : is-compact-open X K₁ holds)
+        → (κ₂ : is-compact-open X K₂ holds)
+        → K₁ ＝ K₂
+        → (K₁ , κ₁) ＝ (K₂ , κ₂)
+to-𝒦-＝ X κ₁ κ₂ = to-subtype-＝ (holds-is-prop ∘ is-compact-open X)
 
 \end{code}
 
