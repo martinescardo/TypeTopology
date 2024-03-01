@@ -427,7 +427,7 @@ Finally, we prove the distributivity law.
 
 \end{code}
 
-We are now ready to package everything up into the frame of ideals.
+We are now ready to package everything up as a frame.
 
 \begin{code}
 
