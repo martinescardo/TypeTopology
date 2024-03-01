@@ -278,6 +278,10 @@ module _ (L : DistributiveLattice 𝓤) where
  𝟎ᵈ-is-bottom : (x : X) → (𝟎 ≤ᵈ[ L ] x) holds
  𝟎ᵈ-is-bottom x = orderᵈ-∨-implies-orderᵈ L (∨-unit₁ x)
 
+ only-𝟎-is-below-𝟎ᵈ : (x : X) → (x ≤ᵈ[ L ] 𝟎) holds → x ＝ 𝟎
+ only-𝟎-is-below-𝟎ᵈ x p =
+  ≤-is-antisymmetric (poset-ofᵈ L) p (𝟎ᵈ-is-bottom x)
+
  ∧-is-a-lower-bound₂ : (x y : X) → ((x ∧ y) ≤ᵈ[ L ] y) holds
  ∧-is-a-lower-bound₂ x y = (x ∧ y) ∧ y ＝⟨ Ⅰ ⟩
                            x ∧ (y ∧ y) ＝⟨ Ⅱ ⟩
