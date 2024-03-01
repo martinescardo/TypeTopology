@@ -182,15 +182,6 @@ Below are some easy lemmas about the covering relation.
    IH : Σ i ꞉ index S , x′ ∈ᵢ (S [ i ]) holds
    IH = covering-lemma S xs (covering-cons S p) x′ r
 
-\end{code}
-
-\begin{code}
-
- ⋃ᵢ_ : Fam 𝓤 (Ideal L) → 𝓟 {𝓤} ∣ L ∣ᵈ
- ⋃ᵢ_ S = λ z → Ǝ xs ꞉ List ∣ L ∣ᵈ , (xs ◁ S) × (z ＝ join-listᵈ L xs)
-
- infix 41 ⋃ᵢ_
-
  covering-++ : (S : Fam 𝓤 (Ideal L)) (xs ys : List ∣ L ∣ᵈ)
              → xs ◁ S → ys ◁ S → (xs ++ ys) ◁ S
  covering-++ S [] []         p q         = q
@@ -216,19 +207,60 @@ Below are some easy lemmas about the covering relation.
     † = ∨-is-an-upper-bound₂ L x (join-listᵈ L xs)
 
     q : (x ∈ᵢ I) holds
-    q = I-is-downward-closed x (join-listᵈ L (x ∷ xs)) (∨-is-an-upper-bound₁ L x (join-listᵈ L xs)) p
+    q = I-is-downward-closed
+         x
+         (join-listᵈ L (x ∷ xs))
+         (∨-is-an-upper-bound₁ L x (join-listᵈ L xs)) p
 
     p′ : (join-listᵈ L xs ∈ᵢ I) holds
     p′ = I-is-downward-closed (join-listᵈ L xs) (join-listᵈ L (x ∷ xs)) † p
 
+ covering-∧ : (S : Fam 𝓤 (Ideal L)) (x : ∣ L ∣ᵈ) (xs : List ∣ L ∣ᵈ)
+            → xs ◁ S
+            → map (x ∧_) xs ◁ S
+ covering-∧ S x [] q = q
+ covering-∧ S y (x ∷ xs) ((i , r) , c) = (i , †) , covering-∧ S y xs c
+  where
+   open Ideal (S [ i ]) renaming (I to I₁; I-is-downward-closed to Sᵢ-is-downward-closed)
+
+   † : (y ∧ x) ∈ᵢ (S [ i ]) holds
+   † = Sᵢ-is-downward-closed (y ∧ x) x (∧-is-a-lower-bound₂ L y x) r
+
+\end{code}
+
+We are now ready to define the join. Given a family `( Iⱼ )_{j : J}` of ideals,
+their union is given by the family:
+
+    { (⋁ F) ∣ F ⊆ (⋃_{j : J} I_j), F finite }.
+
+We capture finiteness using lists instead (which amounts to Kuratowski
+finiteness).
+
+We start by defining a preliminary version of the join operation that gives the
+underlying subset of the ideal. We then proceed to prove that this forms an
+ideal.
+
+\begin{code}
+
+ ⋁⁰ᵢ_ : Fam 𝓤 (Ideal L) → 𝓟 {𝓤} ∣ L ∣ᵈ
+ ⋁⁰ᵢ_ S = λ y → Ǝ xs ꞉ List ∣ L ∣ᵈ , xs ◁ S × (y ＝ join-listᵈ L xs)
+
+ infix 41 ⋁⁰ᵢ_
+
+\end{code}
+
+It is easy to see that this gives subsets that are closed under binary joins.
+
+\begin{code}
+
  ideal-join-is-closed-under-∨ : (I : Fam 𝓤 (Ideal L))
-                              → is-closed-under-binary-joins L (⋃ᵢ I) holds
+                              → is-closed-under-binary-joins L (⋁⁰ᵢ I) holds
  ideal-join-is-closed-under-∨ S x y μ₁ μ₂ =
-  ∥∥-rec₂ (holds-is-prop ((x ∨ y) ∈ₚ ⋃ᵢ S)) † μ₁ μ₂
+  ∥∥-rec₂ (holds-is-prop ((x ∨ y) ∈ₚ ⋁⁰ᵢ S)) † μ₁ μ₂
    where
     † : Σ xs ꞉ List X , xs ◁ S × (x ＝ join-listᵈ L xs)
       → Σ ys ꞉ List X , ys ◁ S × (y ＝ join-listᵈ L ys)
-      → (x ∨ y) ∈ (⋃ᵢ S)
+      → (x ∨ y) ∈ (⋁⁰ᵢ S)
     † (xs , c₁ , p₁) (ys , c₂ , p₂) = ∣ (xs ++ ys) , c , p ∣
      where
       c : (xs ++ ys) ◁ S
@@ -242,26 +274,21 @@ Below are some easy lemmas about the covering relation.
            where
             Ⅰ = ap (_∨ y) p₁
             Ⅱ = ap (join-listᵈ L xs ∨_) p₂
-            Ⅲ = join-list-maps-∨-to-++ xs ys
+            Ⅲ = join-list-maps-∨-to-++ L xs ys
 
- covering-∧ : (S : Fam 𝓤 (Ideal L)) (x : ∣ L ∣ᵈ) (xs : List ∣ L ∣ᵈ)
-            → xs ◁ S
-            → map (x ∧_) xs ◁ S
- covering-∧ S x [] q = q
- covering-∧ S y (x ∷ xs) ((i , r) , c) = (i , †) , covering-∧ S y xs c
-  where
-   open Ideal (S [ i ]) renaming (I to I₁; I-is-downward-closed to Sᵢ-is-downward-closed)
+\end{code}
 
-   † : (y ∧ x) ∈ᵢ (S [ i ]) holds
-   † = Sᵢ-is-downward-closed (y ∧ x) x (∧-is-a-lower-bound₂ L y x) r
+The operation `⋁⁰ᵢ_` gives subsets that are downward closed.
+
+\begin{code}
 
  ideal-join-is-downward-closed : (S : Fam 𝓤 (Ideal L))
-                               → is-downward-closed L (⋃ᵢ S) holds
- ideal-join-is-downward-closed S x y q = ∥∥-rec (holds-is-prop (x ∈ₚ ⋃ᵢ S)) †
+                               → is-downward-closed L (⋁⁰ᵢ S) holds
+ ideal-join-is-downward-closed S x y q = ∥∥-rec (holds-is-prop (x ∈ₚ ⋁⁰ᵢ S)) †
   where
    open PosetReasoning (poset-ofᵈ L)
 
-   † : Σ ys ꞉ List X , ys ◁ S × (y ＝ join-listᵈ L ys) → x ∈ (⋃ᵢ S)
+   † : Σ ys ꞉ List X , ys ◁ S × (y ＝ join-listᵈ L ys) → x ∈ (⋁⁰ᵢ S)
    † (ys , c , p) = ∣ map (x ∧_) ys , c′ , r ∣
     where
      c′ : map (x ∧_) ys ◁ S
@@ -277,9 +304,15 @@ Below are some easy lemmas about the covering relation.
          x ∧ join-listᵈ L ys          ＝⟨ Ⅱ    ⟩
          join-listᵈ L (map (x ∧_) ys) ∎
 
+\end{code}
+
+We package the proofs up into the following join operation `⋁ᵢ_`.
+
+\begin{code}
+
  ⋁ᵢ_ : Fam 𝓤 (Ideal L) → Ideal L
  ⋁ᵢ S = record
-         { I                    = ⋃ᵢ S
+         { I                    = ⋁⁰ᵢ S
          ; I-is-inhabited       = ∣ 𝟎 , ∣ [] , (⋆ , refl) ∣ ∣
          ; I-is-downward-closed = ideal-join-is-downward-closed S
          ; I-is-closed-under-∨  = ideal-join-is-closed-under-∨ S
@@ -287,18 +320,24 @@ Below are some easy lemmas about the covering relation.
 
 \end{code}
 
+It is obvious that this gives contains all the ideals in the family.
+
 \begin{code}
 
  ⋁ᵢ-is-an-upper-bound : (S : Fam 𝓤 (Ideal L))
                       → (i : index S) → (S [ i ]) ⊆ᵢ (⋁ᵢ S) holds
  ⋁ᵢ-is-an-upper-bound S i x p = ∣ (x ∷ []) , † , (∨-unit x ⁻¹) ∣
   where
-   open Ideal (S [ i ]) renaming (I-is-downward-closed to Sᵢ-is-downward-closed)
+   open Ideal (S [ i ]) renaming (I-is-downward-closed
+                                   to Sᵢ-is-downward-closed)
 
    † : (x ∷ []) ◁ S
    † = (i , p) , ⋆
 
 \end{code}
+
+The fact that it is a least upper bound is not as trivial, and uses
+the `covering-lemma` we gave above.
 
 \begin{code}
 
@@ -327,6 +366,8 @@ Below are some easy lemmas about the covering relation.
        ν = pr₂ θ
 
 \end{code}
+
+Finally, we prove the distributivity law.
 
 \begin{code}
 
@@ -386,6 +427,8 @@ Below are some easy lemmas about the covering relation.
 
 \end{code}
 
+We are now ready to package everything up into the frame of ideals.
+
 \begin{code}
 
  frame-of-ideals : Frame (𝓤 ⁺) 𝓤 𝓤
@@ -400,8 +443,9 @@ Below are some easy lemmas about the covering relation.
 
 \end{code}
 
-The frame of ideals, when viewed as a space, is the defining frame of the “space
-of spectra” of the distributive lattice `L`.
+This frame, when viewed as a space, is the defining frame of the “space of
+spectra” of the distributive lattice `L`. For us, this space is a locale which
+we will refer to as the locale of spectra.
 
 \begin{code}
 
