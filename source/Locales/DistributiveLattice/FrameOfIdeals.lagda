@@ -91,12 +91,13 @@ The binary meets of two ideals `I₁` and `I₂` is just the set intersection
  ℐ₁ ∧ᵢ ℐ₂ =
   record
    { I                    = I₁ ∩ I₂
+   ; I-is-inhabited       = ∣ 𝟎 , I₁-contains-𝟎 , I₂-contains-𝟎 ∣
    ; I-is-downward-closed = †
    ; I-is-closed-under-∨  = ‡
    }
   where
-   open Ideal ℐ₁ renaming (I to I₁)
-   open Ideal ℐ₂ renaming (I to I₂)
+   open Ideal ℐ₁ renaming (I to I₁; I-contains-𝟎 to I₁-contains-𝟎)
+   open Ideal ℐ₂ renaming (I to I₂; I-contains-𝟎 to I₂-contains-𝟎)
 
    † : is-downward-closed L (I₁ ∩ I₂) holds
    † x y p (q₁ , q₂) = Ideal.I-is-downward-closed ℐ₁ x y p q₁
@@ -138,6 +139,22 @@ We now define the covering relation.
 
  syntax covering-syntax S xs = xs ◁ S
 
+ covering-cons : (S : Fam 𝓤 (Ideal L)) {x : ∣ L ∣ᵈ} {xs : List ∣ L ∣ᵈ}
+               → (x ∷ xs) ◁ S
+               → xs ◁ S
+ covering-cons S (_ , c) = c
+
+ covering-lemma : (S : Fam 𝓤 (Ideal L)) (xs : List ∣ L ∣ᵈ)
+                → xs ◁ S
+                → (x : ∣ L ∣ᵈ)
+                → member x xs → Σ i ꞉ index S , (x ∈ᵢ (S [ i ])) holds
+ covering-lemma S []       p x ()
+ covering-lemma S (x ∷ xs) ((i , r) , q) x in-head = i , r
+ covering-lemma S (x ∷ xs) p x′ (in-tail r) = IH
+  where
+   IH : Σ i ꞉ index S , (x′ ∈ᵢ (S [ i ])) holds
+   IH = covering-lemma S xs (covering-cons S p) x′ r
+
 \end{code}
 
 \begin{code}
@@ -162,12 +179,12 @@ We now define the covering relation.
 
  covering-++ : (S : Fam 𝓤 (Ideal L)) (xs ys : List ∣ L ∣ᵈ)
              → covering-syntax S xs → ys ◁ S → (xs ++ ys) ◁ S
- covering-++ S [] [] p q                           = ⋆
- covering-++ S [] (x ∷ ys) p q                     = q
- covering-++ S xs@(_ ∷ _)       []  p q            = transport
-                                                      (λ - → - ◁ S)
-                                                      ([]-right-neutral xs)
-                                                      p
+ covering-++ S [] []         p q         = q
+ covering-++ S [] ys@(_ ∷ _) p q         = q
+ covering-++ S xs@(_ ∷ _)     []  p q    = transport
+                                            (λ - → - ◁ S)
+                                            ([]-right-neutral xs)
+                                            p
  covering-++ S (x ∷ xs) (y ∷ ys)  ((i , r) , p₂) q =
   (i , r) , (covering-++ S xs (y ∷ ys) p₂ q)
 
@@ -197,14 +214,13 @@ We now define the covering relation.
  covering-∧ : (S : Fam 𝓤 (Ideal L)) (x : ∣ L ∣ᵈ) (xs : List ∣ L ∣ᵈ)
             → xs ◁ S
             → map (x ∧_) xs ◁ S
- covering-∧ S x [] ⋆ = ⋆
+ covering-∧ S x [] q = q
  covering-∧ S y (x ∷ xs) ((i , r) , c) = (i , †) , covering-∧ S y xs c
   where
    open Ideal (S [ i ]) renaming (I to I₁; I-is-downward-closed to Sᵢ-is-downward-closed)
 
    † : ((y ∧ x) ∈ᵢ (S [ i ])) holds
    † = Sᵢ-is-downward-closed (y ∧ x) x (∧-is-a-lower-bound₂ L y x) r
-
 
  ideal-join-is-downward-closed : (S : Fam 𝓤 (Ideal L))
                                → is-downward-closed L (⋃ᵢ S) holds
@@ -231,8 +247,50 @@ We now define the covering relation.
  ⋁ᵢ_ : Fam 𝓤 (Ideal L) → Ideal L
  ⋁ᵢ S = record
          { I                    = ⋃ᵢ S
+         ; I-is-inhabited       = ∣ 𝟎 , ∣ [] , (⋆ , refl) ∣ ∣
          ; I-is-downward-closed = ideal-join-is-downward-closed S
          ; I-is-closed-under-∨  = ideal-join-is-closed-under-∨ S
          }
+
+\end{code}
+
+\begin{code}
+
+ ⋁ᵢ-is-an-upper-bound : (S : Fam 𝓤 (Ideal L))
+                      → (i : index S) → ((S [ i ]) ⊆ᵢ (⋁ᵢ S)) holds
+ ⋁ᵢ-is-an-upper-bound S i x p = ∣ (x ∷ []) , † , (∨-unit x ⁻¹) ∣
+  where
+   open Ideal (S [ i ]) renaming (I-is-downward-closed to Sᵢ-is-downward-closed)
+
+   † : (x ∷ []) ◁ S
+   † = (i , p) , ⋆
+
+\end{code}
+
+\begin{code}
+
+ open Joins _⊆ᵢ_
+
+ ⋁ᵢ-is-least : (S  : Fam 𝓤 (Ideal L))
+             → (Iᵤ : Ideal L)
+             → (Iᵤ is-an-upper-bound-of S ⇒ (⋁ᵢ S) ⊆ᵢ Iᵤ) holds
+ ⋁ᵢ-is-least S Iᵤ υ x = ∥∥-rec (holds-is-prop (x ∈ᵢ Iᵤ)) †
+  where
+   † : Σ xs ꞉ List X , xs ◁ S × (x ＝ join-listᵈ L xs) → (x ∈ᵢ Iᵤ) holds
+   † (xs , c , r) = transport
+                     (λ - → (- ∈ᵢ Iᵤ) holds)
+                     (r ⁻¹)
+                     (ideals-are-closed-under-finite-joins L Iᵤ xs φ)
+    where
+     φ : (k : type-from-list xs) → (pr₁ k ∈ᵢ Iᵤ) holds
+     φ (x , μ) = υ iₓ x ν
+      where
+       θ : Σ i ꞉ index S , (x ∈ᵢ (S [ i ])) holds
+       θ = covering-lemma S xs c x μ
+
+       iₓ = pr₁ θ
+
+       ν : (x ∈ᵢ (S [ iₓ ])) holds
+       ν = pr₂ θ
 
 \end{code}
