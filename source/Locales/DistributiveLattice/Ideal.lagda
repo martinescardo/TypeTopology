@@ -75,6 +75,8 @@ module IdealNotation (L : DistributiveLattice 𝓤)  where
  _∈ᵢ_ : ∣ L ∣ᵈ → Ideal L → Ω 𝓤
  x ∈ᵢ ℐ = Ideal.I ℐ x
 
+ infix 30 _∈ᵢ_
+
  _∈ⁱ_ : ∣ L ∣ᵈ → Ideal L → 𝓤 ̇
  x ∈ⁱ ℐ = (x ∈ᵢ ℐ) holds
 
