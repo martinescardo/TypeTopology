@@ -64,6 +64,12 @@ record Ideal (L : DistributiveLattice 𝓤) : 𝓤 ⁺  ̇ where
   I-is-downward-closed : is-downward-closed L I holds
   I-is-closed-under-∨  : is-closed-under-binary-joins L I holds
 
+ I-contains-𝟎 : (𝟎 ∈ₚ I) holds
+ I-contains-𝟎 = ∥∥-rec (holds-is-prop (𝟎 ∈ₚ I)) † I-is-inhabited
+  where
+   † : Σ x ꞉ X , (x ∈ₚ I) holds → 𝟎 ∈ I
+   † (x , p) = I-is-downward-closed 𝟎 x (𝟎ᵈ-is-bottom L x) p
+
 module IdealNotation (L : DistributiveLattice 𝓤)  where
 
  _∈ᵢ_ : ∣ L ∣ᵈ → Ideal L → Ω 𝓤
