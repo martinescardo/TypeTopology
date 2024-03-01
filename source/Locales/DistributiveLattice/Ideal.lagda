@@ -20,6 +20,7 @@ module Locales.DistributiveLattice.Ideal
        where
 
 open import Locales.DistributiveLattice.Definition fe pt
+open import Locales.DistributiveLattice.Properties fe pt
 open import Locales.Frame pt fe
 open import UF.Powerset-MultiUniverse
 open import MLTT.Spartan
