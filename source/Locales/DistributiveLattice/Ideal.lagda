@@ -131,15 +131,23 @@ Closed under finite joins.
 
 \begin{code}
 
-module IdealClosureUnderFiniteJoins (L : DistributiveLattice 𝓤) (I : Ideal L) where
+module _ (L : DistributiveLattice 𝓤) (I : Ideal L) where
 
  open IdealNotation L
+ open Ideal I hiding (I)
 
- -- ideals-are-closed-under-finite-joins : (xs : List ∣ L ∣ᵈ)
- --                                      → (((x , _) : type-from-list xs) → (x ∈ᵢ I) holds)
- --                                      → (join-listᵈ L xs ∈ᵢ I) holds
- -- ideals-are-closed-under-finite-joins [] φ = {!!}
- -- ideals-are-closed-under-finite-joins (x ∷ xs) φ = {!!}
+ ideals-are-closed-under-finite-joins : (xs : List ∣ L ∣ᵈ)
+                                      → (((x , _) : type-from-list xs) → (x ∈ᵢ I) holds)
+                                      → (join-listᵈ L xs ∈ᵢ I) holds
+ ideals-are-closed-under-finite-joins []       φ = I-contains-𝟎
+ ideals-are-closed-under-finite-joins (x ∷ xs) φ =
+  I-is-closed-under-∨ x (join-listᵈ L xs) (φ (x , in-head)) IH
+   where
+    † : (k : type-from-list xs) → (pr₁ k ∈ᵢ I) holds
+    † (k , r) = φ (k , in-tail r)
+
+    IH : (join-listᵈ L xs ∈ᵢ I) holds
+    IH = ideals-are-closed-under-finite-joins xs †
 
 \end{code}
 
