@@ -5,8 +5,8 @@ date-started:   2024-02-21
 date-completed: 2024-03-01
 --------------------------------------------------------------------------------
 
-We define the locale of spectral over a distributive lattice `L`. The defining
-frame of this locale is the frame of ideals over `L`.
+We define the locale of spectra over a distributive lattice `L`, the defining
+frame of which is the frame of ideals over `L`.
 
 \begin{code}
 
@@ -40,7 +40,7 @@ open PropositionalTruncation pt hiding (_∨_)
 
 \end{code}
 
-We work with a fixed distributive lattice `L`.
+We work with a fixed distributive lattice `L` in this module.
 
 \begin{code}
 
@@ -62,28 +62,29 @@ We denote by `_⊆ᵢ_` the inclusion ordering between two ideals.
 
  infix 30 _⊆ᵢ_
 
- ⊆ᵢ-is-reflexive : (I : Ideal L) → (I ⊆ᵢ I) holds
+ ⊆ᵢ-is-reflexive : (I : Ideal L) → I ⊆ᵢ I holds
  ⊆ᵢ-is-reflexive _ _ = id
 
  ⊆ᵢ-is-transitive : (I₁ I₂ I₃ : Ideal L) → (I₁ ⊆ᵢ I₂ ⇒ I₂ ⊆ᵢ I₃ ⇒ I₁ ⊆ᵢ I₃) holds
  ⊆ᵢ-is-transitive I₁ I₂ I₃ p q x r = q x (p x r)
 
- ⊆ᵢ-is-antisymmetric : {I₁ I₂ : Ideal L} → (I₁ ⊆ᵢ I₂) holds → (I₂ ⊆ᵢ I₁) holds → I₁ ＝ I₂
+ ⊆ᵢ-is-antisymmetric : {I₁ I₂ : Ideal L}
+                     → I₁ ⊆ᵢ I₂ holds → I₂ ⊆ᵢ I₁ holds → I₁ ＝ I₂
  ⊆ᵢ-is-antisymmetric {I₁} {I₂} = ideal-extensionality L I₁ I₂
 
  ⊆ᵢ-is-partial-order : is-partial-order (Ideal L) _⊆ᵢ_
  ⊆ᵢ-is-partial-order = (⊆ᵢ-is-reflexive , ⊆ᵢ-is-transitive) , ⊆ᵢ-is-antisymmetric
 
  poset-of-ideals : Poset (𝓤 ⁺) 𝓤
- poset-of-ideals = (Ideal L)
+ poset-of-ideals = Ideal L
                  , _⊆ᵢ_
                  , (⊆ᵢ-is-reflexive  , ⊆ᵢ-is-transitive)
                  , ⊆ᵢ-is-antisymmetric
 
 \end{code}
 
-We denote by `𝟏ᵢ` the top ideal, which is the principal ideal over the top
-element `𝟏` of the lattice `L`.
+We denote by `𝟏ᵢ` the top ideal, which is the principal ideal on the top element
+of the lattice `L`.
 
 \begin{code}
 
@@ -110,17 +111,17 @@ The binary meets of two ideals `I₁` and `I₂` is just the set intersection
    ; I-is-downward-closed = †
    ; I-is-closed-under-∨  = ‡
    }
-  where
-   open Ideal ℐ₁ renaming (I to I₁; I-contains-𝟎 to I₁-contains-𝟎)
-   open Ideal ℐ₂ renaming (I to I₂; I-contains-𝟎 to I₂-contains-𝟎)
+   where
+    open Ideal ℐ₁ renaming (I to I₁; I-contains-𝟎 to I₁-contains-𝟎)
+    open Ideal ℐ₂ renaming (I to I₂; I-contains-𝟎 to I₂-contains-𝟎)
 
-   † : is-downward-closed L (I₁ ∩ I₂) holds
-   † x y p (q₁ , q₂) = Ideal.I-is-downward-closed ℐ₁ x y p q₁
-                     , Ideal.I-is-downward-closed ℐ₂ x y p q₂
+    † : is-downward-closed L (I₁ ∩ I₂) holds
+    † x y p (q₁ , q₂) = Ideal.I-is-downward-closed ℐ₁ x y p q₁
+                      , Ideal.I-is-downward-closed ℐ₂ x y p q₂
 
-   ‡ : is-closed-under-binary-joins L (I₁ ∩ I₂) holds
-   ‡ x y (p₁ , p₂) (q₁ , q₂) = Ideal.I-is-closed-under-∨ ℐ₁ x y p₁ q₁
-                             , Ideal.I-is-closed-under-∨ ℐ₂ x y p₂ q₂
+    ‡ : is-closed-under-binary-joins L (I₁ ∩ I₂) holds
+    ‡ x y (p₁ , p₂) (q₁ , q₂) = Ideal.I-is-closed-under-∨ ℐ₁ x y p₁ q₁
+                              , Ideal.I-is-closed-under-∨ ℐ₂ x y p₂ q₂
 
  infix 32 _∧ᵢ_
 
@@ -139,11 +140,11 @@ The binary meets of two ideals `I₁` and `I₂` is just the set intersection
 
 \end{code}
 
-We now begin to do some preparation for the construction of the join. We first
-define the covering relation `xs ◁ ( Iⱼ )_{j : J}` which expresses that a list
-`xs` of elements of the lattice `L` are contained in the union of ideals `⋃_{j :
-J} I_j`. Conceptually, this says: for every `x` in `xs`, there is an ideal `Iⱼ`
-in the family such that `x ∈ Iⱼ`.
+We now begin to do some preparation for the construction of small joins of
+ideals. We first define the covering relation `xs ◁ ( Iⱼ )_{j : J}` which
+expresses that a list `xs` of elements of the lattice `L` is contained in the
+union of ideals `⋃_{j : J} I_j`. Intuitively, this just says: for every `x` in
+`xs`, there is an ideal `Iⱼ` with `x ∈ Iⱼ`.
 
 \begin{code}
 
@@ -162,66 +163,64 @@ in the family such that `x ∈ Iⱼ`.
 
 \end{code}
 
-Below are some easy lemmas about the covering relation.
+Below are some simple lemmas about the covering relation.
 
 \begin{code}
 
  covering-cons : (S : Fam 𝓤 (Ideal L)) {x : ∣ L ∣ᵈ} {xs : List ∣ L ∣ᵈ}
-               → (x ∷ xs) ◁ S
-               → xs ◁ S
+               → (x ∷ xs) ◁ S → xs ◁ S
  covering-cons S (_ , c) = c
 
  covering-lemma : (S : Fam 𝓤 (Ideal L)) (xs : List ∣ L ∣ᵈ)
                 → xs ◁ S
-                → (x : ∣ L ∣ᵈ)
-                → member x xs → Σ i ꞉ index S , (x ∈ᵢ (S [ i ])) holds
- covering-lemma S []       p x ()
- covering-lemma S (x ∷ xs) ((i , r) , q) x in-head = i , r
- covering-lemma S (x ∷ xs) p x′ (in-tail r) = IH
+                → (x : ∣ L ∣ᵈ) → member x xs → Σ i ꞉ index S , x ∈ⁱ (S [ i ])
+ covering-lemma S []       p             x  ()
+ covering-lemma S (x ∷ xs) ((i , r) , q) x  in-head     = i , r
+ covering-lemma S (x ∷ xs) p             x′ (in-tail r) = IH
   where
    IH : Σ i ꞉ index S , x′ ∈ᵢ (S [ i ]) holds
    IH = covering-lemma S xs (covering-cons S p) x′ r
 
  covering-++ : (S : Fam 𝓤 (Ideal L)) (xs ys : List ∣ L ∣ᵈ)
              → xs ◁ S → ys ◁ S → (xs ++ ys) ◁ S
- covering-++ S [] []         p q         = q
- covering-++ S [] ys@(_ ∷ _) p q         = q
- covering-++ S xs@(_ ∷ _)     []  p q    = transport
-                                            (λ - → - ◁ S)
-                                            ([]-right-neutral xs)
-                                            p
- covering-++ S (x ∷ xs) (y ∷ ys)  ((i , r) , p₂) q =
-  (i , r) , (covering-++ S xs (y ∷ ys) p₂ q)
+ covering-++ S    []       []         _ q             = q
+ covering-++ S    []       ys@(_ ∷ _) _ q             = q
+ covering-++ S xs@(_ ∷ _)  []         p q             = transport
+                                                         (λ - → - ◁ S)
+                                                         ([]-right-neutral xs)
+                                                         p
+ covering-++ S    (x ∷ xs) (y ∷ ys)  ((i , r) , p₂) q =
+  (i , r) , covering-++ S xs (y ∷ ys) p₂ q
 
  covering-intersection : (S : Fam 𝓤 (Ideal L)) (I : Ideal L) (xs : List ∣ L ∣ᵈ)
-                       → (join-listᵈ L xs ∈ᵢ I) holds
+                       → join-listᵈ L xs ∈ⁱ I
                        → xs ◁ S
                        → xs ◁ ⁅ I ∧ᵢ (S [ i ]) ∣ i ∶ index S ⁆
- covering-intersection S I [] p c = ⋆
+ covering-intersection S I []       _ _             = ⋆
  covering-intersection S I (x ∷ xs) p ((i , r) , c) =
-  (i , (q , r)) , covering-intersection S I xs p′ c
+  (i , q , r) , covering-intersection S I xs p′ c
    where
     open Ideal I using (I-is-downward-closed)
 
     † : (join-listᵈ L xs ≤ᵈ[ L ] join-listᵈ L (x ∷ xs)) holds
     † = ∨-is-an-upper-bound₂ L x (join-listᵈ L xs)
 
-    q : (x ∈ᵢ I) holds
+    q : x ∈ⁱ I
     q = I-is-downward-closed
          x
          (join-listᵈ L (x ∷ xs))
          (∨-is-an-upper-bound₁ L x (join-listᵈ L xs)) p
 
-    p′ : (join-listᵈ L xs ∈ᵢ I) holds
+    p′ : join-listᵈ L xs ∈ⁱ I
     p′ = I-is-downward-closed (join-listᵈ L xs) (join-listᵈ L (x ∷ xs)) † p
 
  covering-∧ : (S : Fam 𝓤 (Ideal L)) (x : ∣ L ∣ᵈ) (xs : List ∣ L ∣ᵈ)
-            → xs ◁ S
-            → map (x ∧_) xs ◁ S
- covering-∧ S x [] q = q
+            → xs ◁ S → map (x ∧_) xs ◁ S
+ covering-∧ S x []       q             = q
  covering-∧ S y (x ∷ xs) ((i , r) , c) = (i , †) , covering-∧ S y xs c
   where
-   open Ideal (S [ i ]) renaming (I to I₁; I-is-downward-closed to Sᵢ-is-downward-closed)
+   open Ideal (S [ i ]) renaming (I to I₁;
+                                  I-is-downward-closed to Sᵢ-is-downward-closed)
 
    † : (y ∧ x) ∈ᵢ (S [ i ]) holds
    † = Sᵢ-is-downward-closed (y ∧ x) x (∧-is-a-lower-bound₂ L y x) r
@@ -249,7 +248,8 @@ ideal.
 
 \end{code}
 
-It is easy to see that this gives subsets that are closed under binary joins.
+It is easy to see that this operation gives subsets that are closed under binary
+joins.
 
 \begin{code}
 
@@ -336,8 +336,8 @@ It is obvious that this gives contains all the ideals in the family.
 
 \end{code}
 
-The fact that it is a least upper bound is not as trivial, and uses
-the `covering-lemma` we gave above.
+The fact that it is a least upper bound is not as trivial and uses the
+`covering-lemma` we gave above.
 
 \begin{code}
 
@@ -449,9 +449,10 @@ We are now ready to package everything up as a frame.
 
 \end{code}
 
-This frame, when viewed as a space, is the defining frame of the “space of
-spectra” of the distributive lattice `L`. For us, this space is a locale which
-we will refer to as the locale of spectra.
+This is the frame of opens of the “space of spectra” of the distributive lattice
+`L`. Because we work with locales as our notion of space, we just take the
+locale that this frame defines as the locale of spectral over the distributive
+lattice `L`.
 
 \begin{code}
 
