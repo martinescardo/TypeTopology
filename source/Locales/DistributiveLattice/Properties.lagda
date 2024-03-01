@@ -60,6 +60,20 @@ module _ (L : DistributiveLattice 𝓤) where
  join-listᵈ []       = 𝟎
  join-listᵈ (x ∷ xs) = x ∨ join-listᵈ xs
 
+ join-list-maps-∨-to-++ : (xs ys : List ∣ L ∣ᵈ)
+                        → join-listᵈ xs ∨ join-listᵈ ys ＝ join-listᵈ (xs ++ ys)
+ join-list-maps-∨-to-++ []        ys = ∨-unit₁ (join-listᵈ ys)
+ join-list-maps-∨-to-++ (x₀ ∷ xs) ys =
+  join-listᵈ (x₀ ∷ xs) ∨ join-listᵈ ys   ＝⟨ refl ⟩
+  (x₀ ∨ join-listᵈ xs) ∨ join-listᵈ ys   ＝⟨ Ⅰ    ⟩
+  x₀ ∨ (join-listᵈ xs ∨ join-listᵈ ys)   ＝⟨ Ⅱ    ⟩
+  x₀ ∨ (join-listᵈ (xs ++ ys))           ＝⟨ refl ⟩
+  join-listᵈ (x₀ ∷ xs ++ ys)             ∎
+   where
+    Ⅰ = ∨-associative x₀ (join-listᵈ xs) (join-listᵈ ys) ⁻¹
+    Ⅱ = ap (x₀ ∨_) (join-list-maps-∨-to-++ xs ys)
+
+
  finite-distributivity : (xs : List ∣ L ∣ᵈ) (y : ∣ L ∣ᵈ)
                        → y ∧ join-listᵈ xs ＝ join-listᵈ (map (y ∧_) xs)
  finite-distributivity []       y = ∧-annihilator y

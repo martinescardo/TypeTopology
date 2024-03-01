@@ -191,19 +191,6 @@ Below are some easy lemmas about the covering relation.
 
  infix 41 ⋃ᵢ_
 
- join-list-maps-∨-to-++ : (xs ys : List ∣ L ∣ᵈ)
-                        → join-listᵈ L xs ∨ join-listᵈ L ys ＝ join-listᵈ L (xs ++ ys)
- join-list-maps-∨-to-++ []        ys = ∨-unit₁ (join-listᵈ L ys)
- join-list-maps-∨-to-++ (x₀ ∷ xs) ys =
-  join-listᵈ L (x₀ ∷ xs) ∨ join-listᵈ L ys     ＝⟨ refl ⟩
-  (x₀ ∨ join-listᵈ L xs) ∨ join-listᵈ L ys     ＝⟨ Ⅰ    ⟩
-  x₀ ∨ (join-listᵈ L xs ∨ join-listᵈ L ys)     ＝⟨ Ⅱ    ⟩
-  x₀ ∨ (join-listᵈ L (xs ++ ys))               ＝⟨ refl ⟩
-  join-listᵈ L (x₀ ∷ xs ++ ys)                 ∎
-   where
-    Ⅰ = ∨-associative x₀ (join-listᵈ L xs) (join-listᵈ L ys) ⁻¹
-    Ⅱ = ap (x₀ ∨_) (join-list-maps-∨-to-++ xs ys)
-
  covering-++ : (S : Fam 𝓤 (Ideal L)) (xs ys : List ∣ L ∣ᵈ)
              → xs ◁ S → ys ◁ S → (xs ++ ys) ◁ S
  covering-++ S [] []         p q         = q
