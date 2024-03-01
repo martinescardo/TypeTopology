@@ -24,6 +24,9 @@ import Locales.Compactness                       -- (7)
 
 import Locales.Complements                       -- (8)
 
+-- Distributive lattices
+import Locales.DistributiveLattice.Definition
+
 import Locales.Frame                             -- (9)
 
 import Locales.GaloisConnection                  -- (10)
@@ -81,6 +84,8 @@ import Locales.WayBelowRelation.Properties       -- (33)
 import Locales.UniversalPropertyOfPatch          -- (34)
 
 import Locales.Spectrality.BasisDirectification  -- (35)
+
+import Locales.Spectrality.LatticeOfCompactOpens
 
 import Locales.Point.Definition                  -- (36)
 

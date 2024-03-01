@@ -53,7 +53,7 @@ in inductive proofs.
 \begin{code}
 
 distributivity-pos-addition : (x y : ℕ) → pos x + pos y ＝ pos (x ℕ+ y)
-distributivity-pos-addition x = induction base step
+distributivity-pos-addition x = ℕ-induction base step
  where
   base : (pos x + pos 0) ＝ pos (x ℕ+ 0)
   base = refl
@@ -243,7 +243,7 @@ also used repeatedly in this development of integers.
 \begin{code}
 
 negation-dist₀ : (x : ℤ) (y : ℕ) → (- x) + (- pos y) ＝ - (x + pos y)
-negation-dist₀ x = induction base step
+negation-dist₀ x = ℕ-induction base step
  where
   base : (- x) + (- pos 0) ＝ - (x + pos 0)
   base = refl
@@ -258,7 +258,7 @@ negation-dist₀ x = induction base step
               - (x + pos (succ k))         ∎
 
 negation-dist₁ : (x : ℤ) → (y : ℕ) → (- x) + (- (negsucc y)) ＝ - (x + negsucc y)
-negation-dist₁ x = induction base step
+negation-dist₁ x = ℕ-induction base step
  where
   base : ((- x) + (- negsucc 0)) ＝ (- (x + negsucc 0))
   base = succℤtominuspredℤ x
@@ -282,7 +282,7 @@ The strategy above is used to prove that x - x ＝ (- x) + x ＝ 0 for all integ
 \begin{code}
 
 ℤ-sum-of-inverse-is-zero₀ : (x : ℕ) → pos x + (- pos x) ＝ pos 0
-ℤ-sum-of-inverse-is-zero₀ = induction base step
+ℤ-sum-of-inverse-is-zero₀ = ℕ-induction base step
  where
   base : pos 0 + (- pos 0) ＝ pos 0
   base = refl
@@ -298,7 +298,7 @@ The strategy above is used to prove that x - x ＝ (- x) + x ＝ 0 for all integ
     i = ℤ-left-pred (pos (succ (succ k))) (negsucc k) ⁻¹
 
 ℤ-sum-of-inverse-is-zero₁ : (x : ℕ) → negsucc x - negsucc x ＝ pos 0
-ℤ-sum-of-inverse-is-zero₁ = induction base step
+ℤ-sum-of-inverse-is-zero₁ = ℕ-induction base step
  where
   base : (negsucc 0 + (- negsucc 0)) ＝ pos 0
   base = refl

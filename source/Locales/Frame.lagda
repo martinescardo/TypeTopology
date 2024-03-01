@@ -215,6 +215,17 @@ module Meets {A : 𝓤 ̇ } (_≤_ : A → A → Ω 𝓥) where
  l is-glb-of (x , y) = l is-a-lower-bound-of (x , y)
                      ∧ (Ɐ (l′ , _) ꞉ lower-bound (x , y) , (l′ ≤ l))
 
+ glb-is-an-upper-bound₁ : {x y z : A} → (z is-glb-of (x , y) ⇒ z ≤ x) holds
+ glb-is-an-upper-bound₁ ((p₁ , _) , _) = p₁
+
+ glb-is-an-upper-bound₂ : {x y z : A} → (z is-glb-of (x , y) ⇒ z ≤ y) holds
+ glb-is-an-upper-bound₂ ((_ , p₂) , _) = p₂
+
+ glb-is-greatest : {x y z w : A}
+                 → (z is-glb-of (x , y)) holds
+                 → (w is-a-lower-bound-of (x , y) ⇒ w ≤ z) holds
+ glb-is-greatest {_} {_} {_} {w} (_ , q) υ = q (w , υ)
+
 \end{code}
 
 \section{Joins}
@@ -222,6 +233,9 @@ module Meets {A : 𝓤 ̇ } (_≤_ : A → A → Ω 𝓥) where
 \begin{code}
 
 module Joins {A : 𝓤 ̇ } (_≤_ : A → A → Ω 𝓥) where
+
+ is-least : A → Ω (𝓤 ⊔ 𝓥)
+ is-least x = Ɐ y ꞉ A , x ≤ y
 
  _is-an-upper-bound-of_ : A → Fam 𝓦 A → Ω (𝓥 ⊔ 𝓦)
  u is-an-upper-bound-of U = Ɐ i ꞉ index U , (U [ i ]) ≤ u
@@ -242,6 +256,17 @@ module Joins {A : 𝓤 ̇ } (_≤_ : A → A → Ω 𝓥) where
  _is-lub-of₂_ : A → A × A → Ω (𝓤 ⊔ 𝓥)
  u is-lub-of₂ (v , w) = (u is-an-upper-bound-of₂ (v , w))
                       ∧ (Ɐ (u′ , _) ꞉ upper-bound₂ (v , w) , (u ≤ u′))
+
+ lub₂-is-an-upper-bound₁ : {x y z : A} → (z is-lub-of₂ (x , y) ⇒ x ≤ z) holds
+ lub₂-is-an-upper-bound₁ ((p₁ , _) , _) = p₁
+
+ lub₂-is-an-upper-bound₂ : {x y z : A} → (z is-lub-of₂ (x , y) ⇒ y ≤ z) holds
+ lub₂-is-an-upper-bound₂ ((_ , p₂) , _) = p₂
+
+ lub₂-is-least : {x y z w : A}
+               → (z is-lub-of₂ (x , y)) holds
+               → (w is-an-upper-bound-of₂ (x , y) ⇒ z ≤ w) holds
+ lub₂-is-least {_} {_} {_} {w} (_ , q) υ = q (w , υ)
 
 module JoinNotation {A : 𝓤 ̇ } (⋁_ : Fam 𝓦 A → A) where
 

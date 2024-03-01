@@ -1003,6 +1003,15 @@ private
  T : (ℕ → 𝟚) → 𝓤₀ ̇
  T = T-cantor
 
+ ¬T : (ℕ → 𝟚) → 𝓤₀ ̇
+ ¬T α = (n : ℕ) → α n ＝ ₀
+
+not-T-gives-¬T : {α : ℕ → 𝟚} → ¬ (T α) → ¬T α
+not-T-gives-¬T {α} ϕ n = different-from-₁-equal-₀ (λ (e : α n ＝ ₁) → ϕ (n , e))
+
+¬T-gives-not-T : {α : ℕ → 𝟚} → ¬T α → ¬ (T α)
+¬T-gives-not-T {α} ψ (n , e) = zero-is-not-one ((ψ n)⁻¹ ∙ e)
+
 has-at-most-one-₁ : (ℕ → 𝟚) → 𝓤₀ ̇
 has-at-most-one-₁ α = is-prop (T α)
 
@@ -1050,8 +1059,15 @@ private
   canonical-map-ℕ∞'-ℕ→𝟚 : Canonical-Map ℕ∞' (ℕ → 𝟚)
   ι {{canonical-map-ℕ∞'-ℕ→𝟚}} = ℕ∞'-to-ℕ→𝟚
 
-ℕ∞'-to-ℕ→𝟚-prop : (u : ℕ∞') → is-prop (T (ℕ∞'-to-ℕ→𝟚 u))
-ℕ∞'-to-ℕ→𝟚-prop = pr₂
+ℕ∞'-to-ℕ→𝟚-at-most-one-₁ : (u : ℕ∞') → is-prop (T (ℕ∞'-to-ℕ→𝟚 u))
+ℕ∞'-to-ℕ→𝟚-at-most-one-₁ = pr₂
+
+ℕ∞'-to-ℕ→𝟚-lc : funext₀ → left-cancellable ℕ∞'-to-ℕ→𝟚
+ℕ∞'-to-ℕ→𝟚-lc fe = pr₁-lc (being-prop-is-prop fe)
+
+ℕ∞'-index-uniqueness : (u : ℕ∞')
+                     → {n n' : ℕ} → ι u n ＝ ₁ → ι u n' ＝ ₁ → n ＝ n'
+ℕ∞'-index-uniqueness (α , i) = index-uniqueness α i
 
 Zero' : ℕ∞'
 Zero' = α , h
@@ -1087,18 +1103,32 @@ is-finite' u = T (ℕ∞'-to-ℕ→𝟚 u)
 Zero'-is-finite : is-finite' Zero'
 Zero'-is-finite = 0 , refl
 
-finiteness'-preservation : (u : ℕ∞')
-                          → is-finite' u
-                          → is-finite' (Succ' u)
-finiteness'-preservation _ (n , e) = succ n , e
+is-finite'-up : (u : ℕ∞')
+              → is-finite' u
+              → is-finite' (Succ' u)
+is-finite'-up _ (n , e) = succ n , e
+
+is-finite'-down : (u : ℕ∞')
+                → is-finite' (Succ' u)
+                → is-finite' u
+is-finite'-down _ (succ n , e) = n , e
 
 ℕ-to-ℕ∞'-is-finite' : (n : ℕ) → is-finite' (ι n)
 ℕ-to-ℕ∞'-is-finite' 0        = Zero'-is-finite
-ℕ-to-ℕ∞'-is-finite' (succ n) = finiteness'-preservation (ι n)
+ℕ-to-ℕ∞'-is-finite' (succ n) = is-finite'-up (ι n)
                                 (ℕ-to-ℕ∞'-is-finite' n)
 
 ∞' : ℕ∞'
 ∞' = (λ _ → ₀) , (λ (n , e) (n' , e') → 𝟘-elim (zero-is-not-one e))
+
+not-finite'-is-∞' : funext₀ → (u : ℕ∞') → ¬ is-finite' u → u ＝ ∞'
+not-finite'-is-∞' fe u ν = ℕ∞'-to-ℕ→𝟚-lc fe
+                            (dfunext fe
+                              (λ i → different-from-₁-equal-₀
+                                      (λ (e : ℕ∞'-to-ℕ→𝟚 u i ＝ ₁) → ν (i , e))))
+
+not-T-is-∞' : funext₀ → (u : ℕ∞') → ¬ T (ι u) → u ＝ ∞'
+not-T-is-∞' fe u ν = ℕ∞'-to-ℕ→𝟚-lc fe (dfunext fe (not-T-gives-¬T ν))
 
 ∞'-is-not-finite : ¬ is-finite' ∞'
 ∞'-is-not-finite (n , e) = zero-is-not-one e
@@ -1368,13 +1398,107 @@ And with this we get the promised equivalence.
  ∞-preservation = to-subtype-＝ (has-at-most-one-₁-is-prop fe)
                    (dfunext fe trivial-fact)
 
- finite-preservation : (n : ℕ) → ℕ∞-to-ℕ∞' (ℕ-to-ℕ∞ n) ＝ ℕ-to-ℕ∞' n
+ ∞-gives-∞' : (u : ℕ∞') → ℕ∞'-to-ℕ∞ u ＝ ∞ → u ＝ ∞'
+ ∞-gives-∞' u e =
+  u                       ＝⟨ II₀ ⟩
+  ℕ∞-to-ℕ∞' (ℕ∞'-to-ℕ∞ u) ＝⟨ II₁ ⟩
+  ℕ∞-to-ℕ∞' ∞             ＝⟨ II₂ ⟩
+  ∞'                      ∎
+  where
+   II₀ = (inverses-are-sections' ℕ∞-to-ℕ∞'-≃ u)⁻¹
+   II₁ = ap ℕ∞-to-ℕ∞' e
+   II₂ = ∞-preservation
+
+ ∞'-gives-∞ : (u : ℕ∞) → ℕ∞-to-ℕ∞' u ＝ ∞' → u ＝ ∞
+ ∞'-gives-∞ u e =
+  u                       ＝⟨ (inverses-are-retractions' ℕ∞-to-ℕ∞'-≃ u)⁻¹ ⟩
+  ℕ∞'-to-ℕ∞ (ℕ∞-to-ℕ∞' u) ＝⟨ ap ℕ∞'-to-ℕ∞ e ⟩
+  ℕ∞'-to-ℕ∞ ∞'            ＝⟨ ap ℕ∞'-to-ℕ∞ (∞-preservation ⁻¹) ⟩
+  ℕ∞'-to-ℕ∞ (ℕ∞-to-ℕ∞' ∞) ＝⟨ inverses-are-retractions' ℕ∞-to-ℕ∞'-≃ ∞ ⟩
+  ∞                       ∎
+
+ finite-preservation : (n : ℕ) → ℕ∞-to-ℕ∞' (ι n) ＝ ι n
  finite-preservation 0        = Zero-preservation
  finite-preservation (succ n) =
-  ℕ∞-to-ℕ∞' (ℕ-to-ℕ∞ (succ n)) ＝⟨ refl ⟩
-  ℕ∞-to-ℕ∞' (Succ (ℕ-to-ℕ∞ n)) ＝⟨ Succ-preservation (ℕ-to-ℕ∞ n) ⟩
-  Succ' (ℕ∞-to-ℕ∞' (ι n))      ＝⟨ ap Succ' (finite-preservation n) ⟩
-  Succ' (ℕ-to-ℕ∞' n)           ＝⟨ refl ⟩
-  ℕ-to-ℕ∞' (succ n)            ∎
+  ℕ∞-to-ℕ∞' (ι (succ n))  ＝⟨ refl ⟩
+  ℕ∞-to-ℕ∞' (Succ (ι n))  ＝⟨ Succ-preservation (ι n) ⟩
+  Succ' (ℕ∞-to-ℕ∞' (ι n)) ＝⟨ ap Succ' (finite-preservation n) ⟩
+  Succ' (ι n)             ＝⟨ refl ⟩
+  ι (succ n)              ∎
+
+ finite-gives-finite' : (u : ℕ∞') → is-finite (ℕ∞'-to-ℕ∞ u) → is-finite' u
+ finite-gives-finite' u (n , e) = III
+  where
+   I : is-finite' (ι n)
+   I = ℕ-to-ℕ∞'-is-finite' n
+
+   II = ι n                     ＝⟨ (finite-preservation n)⁻¹ ⟩
+        ℕ∞-to-ℕ∞' (ι n)         ＝⟨ ap ℕ∞-to-ℕ∞' e ⟩
+        ℕ∞-to-ℕ∞' (ℕ∞'-to-ℕ∞ u) ＝⟨ inverses-are-sections' ℕ∞-to-ℕ∞'-≃ u ⟩
+        u                       ∎
+
+   III : is-finite' u
+   III = transport is-finite' II I
+
+ finite'-preservation : (n : ℕ) → ℕ∞'-to-ℕ∞ (ι n) ＝ ι n
+ finite'-preservation n =
+  ℕ∞'-to-ℕ∞ (ι n)             ＝⟨ I ⟩
+  ℕ∞'-to-ℕ∞ (ℕ∞-to-ℕ∞' (ι n)) ＝⟨ II ⟩
+  ι n                         ∎
+   where
+    I  = (ap ℕ∞'-to-ℕ∞ (finite-preservation n))⁻¹
+    II = inverses-are-retractions' ℕ∞-to-ℕ∞'-≃ (ι n)
+
+ ℕ-to-ℕ∞'-diagonal : (n : ℕ) → ℕ∞'-to-ℕ→𝟚 (ι n) n ＝ ₁
+ ℕ-to-ℕ∞'-diagonal 0        = refl
+ ℕ-to-ℕ∞'-diagonal (succ n) = ℕ-to-ℕ∞'-diagonal n
+
+ diagonal-lemma : (n : ℕ) (u : ℕ∞') → ℕ∞'-to-ℕ→𝟚 u n ＝ ₁ → u ＝ ι n
+ diagonal-lemma n u p = ℕ∞'-to-ℕ→𝟚-lc fe (dfunext fe f)
+  where
+   I : ℕ∞'-to-ℕ→𝟚 u n ＝ ℕ∞'-to-ℕ→𝟚 (ι n) n
+   I = ℕ∞'-to-ℕ→𝟚 u n     ＝⟨ p ⟩
+       ₁                  ＝⟨ (ℕ-to-ℕ∞'-diagonal n)⁻¹ ⟩
+       ℕ∞'-to-ℕ→𝟚 (ι n) n ∎
+
+   II : (i : ℕ) → n ≠ i → ℕ∞'-to-ℕ→𝟚 u i ＝ ℕ∞'-to-ℕ→𝟚 (ι n) i
+   II i ν =
+    ℕ∞'-to-ℕ→𝟚 u i      ＝⟨ II₀ ⟩
+    ₀                   ＝⟨ II₁ ⁻¹ ⟩
+    ℕ∞'-to-ℕ→𝟚 (ι n) i  ∎
+     where
+      II₀ = different-from-₁-equal-₀
+             (λ (e : ℕ∞'-to-ℕ→𝟚 u i ＝ ₁)
+                   → ν (ℕ∞'-index-uniqueness u p e))
+
+      II₁ = different-from-₁-equal-₀
+             (λ (e : ℕ∞'-to-ℕ→𝟚 (ι n) i ＝ ₁)
+                   → ν (ℕ∞'-index-uniqueness (ι n) (ℕ-to-ℕ∞'-diagonal n) e))
+
+   f : (i : ℕ) → ℕ∞'-to-ℕ→𝟚 u i ＝ ℕ∞'-to-ℕ→𝟚 (ι n) i
+   f i = Cases (ℕ-is-discrete n i)
+          (λ (q : n ＝ i) → transport (λ - → ℕ∞'-to-ℕ→𝟚 u - ＝ ℕ∞'-to-ℕ→𝟚 (ι n) -) q I)
+          (λ (ν : n ≠ i) → II i ν)
+
+ finite'-is-natural : (u : ℕ∞') → is-finite' u → Σ n ꞉ ℕ , u ＝ ι n
+ finite'-is-natural u (n , p) = (n , diagonal-lemma n u p)
+
+ finite'-gives-finite : (u : ℕ∞) → is-finite' (ℕ∞-to-ℕ∞' u) → is-finite u
+ finite'-gives-finite u (n , e) = III
+  where
+   I : is-finite (ι n)
+   I = ℕ-to-ℕ∞-is-finite n
+
+   II = ι n                     ＝⟨ II₀ ⟩
+        ℕ∞'-to-ℕ∞ (ι n)         ＝⟨ II₁ ⟩
+        ℕ∞'-to-ℕ∞ (ℕ∞-to-ℕ∞' u) ＝⟨ II₂ ⟩
+        u                       ∎
+         where
+          II₀ = (finite'-preservation n)⁻¹
+          II₁ = ap ℕ∞'-to-ℕ∞ ((diagonal-lemma n (ℕ∞-to-ℕ∞' u) e)⁻¹)
+          II₂ = inverses-are-retractions' ℕ∞-to-ℕ∞'-≃ u
+
+   III : is-finite u
+   III = transport is-finite II I
 
 \end{code}
