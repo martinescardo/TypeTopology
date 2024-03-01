@@ -1,7 +1,8 @@
 ---
-title:       Ideals of distributive lattices
-author:      Ayberk Tosun
-start-date:  2024-02-21
+title:          Ideals of distributive lattices
+author:         Ayberk Tosun
+date-started:   2024-02-21
+date-completed: 2024-03-01
 ---
 
 \begin{code}
