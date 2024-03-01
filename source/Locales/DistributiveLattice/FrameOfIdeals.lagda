@@ -354,7 +354,7 @@ the `covering-lemma` we gave above.
                      (r ⁻¹)
                      (ideals-are-closed-under-finite-joins L Iᵤ xs φ)
     where
-     φ : (k : type-from-list xs) → (pr₁ k ∈ᵢ Iᵤ) holds
+     φ : ((x , _) : type-from-list xs) → x ∈ᵢ Iᵤ holds
      φ (x , μ) = υ iₓ x ν
       where
        θ : Σ i ꞉ index S , x ∈ᵢ (S [ i ]) holds
@@ -376,15 +376,15 @@ Finally, we prove the distributivity law.
  distributivityᵢ I S = ⊆ᵢ-is-antisymmetric † ‡
   where
    † : I ∧ᵢ (⋁ᵢ S) ⊆ᵢ (⋁ᵢ ⁅ I ∧ᵢ (S [ i ]) ∣ i ∶ index S ⁆) holds
-   † x (r₁ , r₂) =
-    ∥∥-rec (holds-is-prop (x ∈ᵢ (⋁ᵢ ⁅ I ∧ᵢ (S [ i ]) ∣ i ∶ index S ⁆))) γ r₂
+   † x (μ₁ , μ₂) =
+    ∥∥-rec (holds-is-prop (x ∈ᵢ (⋁ᵢ ⁅ I ∧ᵢ (S [ i ]) ∣ i ∶ index S ⁆))) γ μ₂
      where
       γ : Σ xs ꞉ List X , xs ◁ S × (x ＝ join-listᵈ L xs)
-       → (x ∈ᵢ (⋁ᵢ ⁅ I ∧ᵢ (S [ i ]) ∣ i ∶ index S ⁆)) holds
+       → x ∈ᵢ (⋁ᵢ ⁅ I ∧ᵢ (S [ i ]) ∣ i ∶ index S ⁆) holds
       γ (xs , c , r) = ∣ xs , c′ , r ∣
        where
         μ : join-listᵈ L xs ∈ᵢ I holds
-        μ = transport (λ - → - ∈ᵢ I holds) r r₁
+        μ = transport (λ - → - ∈ᵢ I holds) r μ₁
 
         c′ : xs ◁ ⁅ I ∧ᵢ (S [ i ]) ∣ i ∶ index S ⁆
         c′ = covering-intersection S I xs μ c
@@ -394,36 +394,42 @@ Finally, we prove the distributivity law.
     where
      open PosetReasoning (poset-ofᵈ L)
 
-     γ : Σ xs ꞉ List X , xs ◁ (compr-syntax (index S) (λ i → I ∧ᵢ (S [ i ]))) × (x ＝ join-listᵈ L xs)
-       → x ∈ᵢ (I ∧ᵢ (⋁ᵢ S)) holds
-     γ (xs , c , r) = β , ζ
+     γ : Σ xs ꞉ List X ,
+          xs ◁ ⁅ I ∧ᵢ (S [ i ]) ∣ i ∶ index S ⁆ × (x ＝ join-listᵈ L xs)
+       → x ∈ᵢ I ∧ᵢ (⋁ᵢ S) holds
+     γ (xs , c , r) = μ₁ , μ₂
       where
-       ϵ : ((x , μ) : type-from-list xs) → (x ∈ᵢ I) holds
-       ϵ (x , μ) = pr₁ (pr₂ (covering-lemma ⁅ I ∧ᵢ (S [ i ]) ∣ i ∶ index S ⁆ xs c x μ))
+       ϟ : (x : ∣ L ∣ᵈ)
+         → member x xs
+         → Σ i ꞉ index S , x ∈ᵢ I ∧ᵢ (S [ i ]) holds
+       ϟ x μ = covering-lemma ⁅ I ∧ᵢ (S [ i ]) ∣ i ∶ index S ⁆ xs c x μ
 
-       δ : join-listᵈ L xs ∈ᵢ I holds
+       ϵ : ((x , μ) : type-from-list xs) → x ∈ⁱ I
+       ϵ (x , μ) = pr₁ (pr₂ (ϟ x μ))
+
+       δ : join-listᵈ L xs ∈ⁱ I
        δ = ideals-are-closed-under-finite-joins L I xs ϵ
 
-       β : x ∈ᵢ I holds
-       β = transport (λ - → (- ∈ᵢ I) holds) (r ⁻¹) δ
+       μ₁ : x ∈ᵢ I holds
+       μ₁ = transport (λ - → (- ∈ᵢ I) holds) (r ⁻¹) δ
 
        ι : ((x , μ) : type-from-list xs) → x ∈ᵢ (⋁ᵢ S) holds
-       ι (x , μ) = ⋁ᵢ-is-an-upper-bound S iₓ x bar
+       ι (x , μ) = ⋁ᵢ-is-an-upper-bound S iₓ x μ′
         where
-         foo : Σ i ꞉ index S , x ∈ᵢ I ∧ᵢ (S [ i ]) holds
-         foo = covering-lemma ⁅ I ∧ᵢ (S [ i ]) ∣ i ∶ index S ⁆ xs c x μ
+         ν : Σ i ꞉ index S , x ∈ⁱ I ∧ᵢ (S [ i ])
+         ν = ϟ x μ
 
          iₓ : index S
-         iₓ = pr₁ foo
+         iₓ = pr₁ ν
 
-         bar : x ∈ᵢ (S [ iₓ ]) holds
-         bar = pr₂ (pr₂ foo)
+         μ′ : x ∈ⁱ (S [ iₓ ])
+         μ′ = pr₂ (pr₂ ν)
 
-       θ : join-listᵈ L xs ∈ᵢ (⋁ᵢ S) holds
+       θ : join-listᵈ L xs ∈ⁱ (⋁ᵢ S)
        θ = ideals-are-closed-under-finite-joins L (⋁ᵢ S) xs ι
 
-       ζ : x ∈ᵢ (⋁ᵢ S) holds
-       ζ = transport (λ - → (- ∈ᵢ (⋁ᵢ S)) holds) (r ⁻¹) θ
+       μ₂ : x ∈ᵢ (⋁ᵢ S) holds
+       μ₂ = transport (λ - → - ∈ᵢ (⋁ᵢ S) holds) (r ⁻¹) θ
 
 \end{code}
 
