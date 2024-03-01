@@ -51,6 +51,8 @@ module DefnOfFrameOfIdeal (L : DistributiveLattice 𝓤) where
    open Ideal ℐ₁ renaming (I to I₁)
    open Ideal ℐ₂ renaming (I to I₂)
 
+ infix 30 _⊆ᵢ_
+
  ⊆ᵢ-is-reflexive : (I : Ideal L) → (I ⊆ᵢ I) holds
  ⊆ᵢ-is-reflexive _ _ = id
 
@@ -110,6 +112,8 @@ The binary meets of two ideals `I₁` and `I₂` is just the set intersection
    ‡ x y (p₁ , p₂) (q₁ , q₂) = Ideal.I-is-closed-under-∨ ℐ₁ x y p₁ q₁
                              , Ideal.I-is-closed-under-∨ ℐ₂ x y p₂ q₂
 
+ infix 32 _∧ᵢ_
+
  open Meets _⊆ᵢ_
 
  ∧ᵢ-is-lower : (I₁ I₂ : Ideal L)
@@ -155,7 +159,7 @@ We now define the covering relation.
  covering-lemma S (x ∷ xs) ((i , r) , q) x in-head = i , r
  covering-lemma S (x ∷ xs) p x′ (in-tail r) = IH
   where
-   IH : Σ i ꞉ index S , (x′ ∈ᵢ (S [ i ])) holds
+   IH : Σ i ꞉ index S , x′ ∈ᵢ (S [ i ]) holds
    IH = covering-lemma S xs (covering-cons S p) x′ r
 
 \end{code}
@@ -181,7 +185,7 @@ We now define the covering relation.
     Ⅱ = ap (x₀ ∨_) (join-list-maps-∨-to-++ xs ys)
 
  covering-++ : (S : Fam 𝓤 (Ideal L)) (xs ys : List ∣ L ∣ᵈ)
-             → covering-syntax S xs → ys ◁ S → (xs ++ ys) ◁ S
+             → xs ◁ S → ys ◁ S → (xs ++ ys) ◁ S
  covering-++ S [] []         p q         = q
  covering-++ S [] ys@(_ ∷ _) p q         = q
  covering-++ S xs@(_ ∷ _)     []  p q    = transport
@@ -190,6 +194,25 @@ We now define the covering relation.
                                             p
  covering-++ S (x ∷ xs) (y ∷ ys)  ((i , r) , p₂) q =
   (i , r) , (covering-++ S xs (y ∷ ys) p₂ q)
+
+ covering-intersection : (S : Fam 𝓤 (Ideal L)) (I : Ideal L) (xs : List ∣ L ∣ᵈ)
+                       → (join-listᵈ L xs ∈ᵢ I) holds
+                       → xs ◁ S
+                       → xs ◁ ⁅ I ∧ᵢ (S [ i ]) ∣ i ∶ index S ⁆
+ covering-intersection S I [] p c = ⋆
+ covering-intersection S I (x ∷ xs) p ((i , r) , c) =
+  (i , (q , r)) , covering-intersection S I xs p′ c
+   where
+    open Ideal I using (I-is-downward-closed)
+
+    † : (join-listᵈ L xs ≤ᵈ[ L ] join-listᵈ L (x ∷ xs)) holds
+    † = ∨-is-an-upper-bound₂ L x (join-listᵈ L xs)
+
+    q : (x ∈ᵢ I) holds
+    q = I-is-downward-closed x (join-listᵈ L (x ∷ xs)) (∨-is-an-upper-bound₁ L x (join-listᵈ L xs)) p
+
+    p′ : (join-listᵈ L xs ∈ᵢ I) holds
+    p′ = I-is-downward-closed (join-listᵈ L xs) (join-listᵈ L (x ∷ xs)) † p
 
  ideal-join-is-closed-under-∨ : (I : Fam 𝓤 (Ideal L))
                               → is-closed-under-binary-joins L (⋃ᵢ I) holds
@@ -222,7 +245,7 @@ We now define the covering relation.
   where
    open Ideal (S [ i ]) renaming (I to I₁; I-is-downward-closed to Sᵢ-is-downward-closed)
 
-   † : ((y ∧ x) ∈ᵢ (S [ i ])) holds
+   † : (y ∧ x) ∈ᵢ (S [ i ]) holds
    † = Sᵢ-is-downward-closed (y ∧ x) x (∧-is-a-lower-bound₂ L y x) r
 
  ideal-join-is-downward-closed : (S : Fam 𝓤 (Ideal L))
@@ -260,7 +283,7 @@ We now define the covering relation.
 \begin{code}
 
  ⋁ᵢ-is-an-upper-bound : (S : Fam 𝓤 (Ideal L))
-                      → (i : index S) → ((S [ i ]) ⊆ᵢ (⋁ᵢ S)) holds
+                      → (i : index S) → (S [ i ]) ⊆ᵢ (⋁ᵢ S) holds
  ⋁ᵢ-is-an-upper-bound S i x p = ∣ (x ∷ []) , † , (∨-unit x ⁻¹) ∣
   where
    open Ideal (S [ i ]) renaming (I-is-downward-closed to Sᵢ-is-downward-closed)
@@ -279,16 +302,16 @@ We now define the covering relation.
              → (Iᵤ is-an-upper-bound-of S ⇒ (⋁ᵢ S) ⊆ᵢ Iᵤ) holds
  ⋁ᵢ-is-least S Iᵤ υ x = ∥∥-rec (holds-is-prop (x ∈ᵢ Iᵤ)) †
   where
-   † : Σ xs ꞉ List X , xs ◁ S × (x ＝ join-listᵈ L xs) → (x ∈ᵢ Iᵤ) holds
+   † : Σ xs ꞉ List X , xs ◁ S × (x ＝ join-listᵈ L xs) → x ∈ᵢ Iᵤ holds
    † (xs , c , r) = transport
-                     (λ - → (- ∈ᵢ Iᵤ) holds)
+                     (λ - → - ∈ᵢ Iᵤ holds)
                      (r ⁻¹)
                      (ideals-are-closed-under-finite-joins L Iᵤ xs φ)
     where
      φ : (k : type-from-list xs) → (pr₁ k ∈ᵢ Iᵤ) holds
      φ (x , μ) = υ iₓ x ν
       where
-       θ : Σ i ꞉ index S , (x ∈ᵢ (S [ i ])) holds
+       θ : Σ i ꞉ index S , x ∈ᵢ (S [ i ]) holds
        θ = covering-lemma S xs c x μ
 
        iₓ = pr₁ θ
@@ -304,16 +327,55 @@ We now define the covering relation.
                  → I ∧ᵢ (⋁ᵢ S) ＝ ⋁ᵢ ⁅ I ∧ᵢ (S [ i ]) ∣ i ∶ index S ⁆
  distributivityᵢ I S = ⊆ᵢ-is-antisymmetric † ‡
   where
-   † : ((I ∧ᵢ (⋁ᵢ S)) ⊆ᵢ (⋁ᵢ ⁅ I ∧ᵢ (S [ i ]) ∣ i ∶ index S ⁆)) holds
+   † : I ∧ᵢ (⋁ᵢ S) ⊆ᵢ (⋁ᵢ ⁅ I ∧ᵢ (S [ i ]) ∣ i ∶ index S ⁆) holds
    † x (r₁ , r₂) =
     ∥∥-rec (holds-is-prop (x ∈ᵢ (⋁ᵢ ⁅ I ∧ᵢ (S [ i ]) ∣ i ∶ index S ⁆))) γ r₂
      where
-      γ : Σ xs ꞉ List X , (xs ◁ S) × (x ＝ join-listᵈ L xs)
-       → {!!}
-      γ = {!!}
+      γ : Σ xs ꞉ List X , xs ◁ S × (x ＝ join-listᵈ L xs)
+       → (x ∈ᵢ (⋁ᵢ ⁅ I ∧ᵢ (S [ i ]) ∣ i ∶ index S ⁆)) holds
+      γ (xs , c , r) = ∣ xs , c′ , r ∣
+       where
+        μ : join-listᵈ L xs ∈ᵢ I holds
+        μ = transport (λ - → - ∈ᵢ I holds) r r₁
 
-   ‡ : {!!}
-   ‡ = {!!}
+        c′ : xs ◁ ⁅ I ∧ᵢ (S [ i ]) ∣ i ∶ index S ⁆
+        c′ = covering-intersection S I xs μ c
+
+   ‡ : (⋁ᵢ ⁅ I ∧ᵢ (S [ i ]) ∣ i ∶ index S ⁆) ⊆ᵢ (I ∧ᵢ (⋁ᵢ S)) holds
+   ‡ x p = ∥∥-rec (holds-is-prop (x ∈ᵢ (I ∧ᵢ (⋁ᵢ S)))) γ p
+    where
+     open PosetReasoning (poset-ofᵈ L)
+
+     γ : Σ xs ꞉ List X , xs ◁ (compr-syntax (index S) (λ i → I ∧ᵢ (S [ i ]))) × (x ＝ join-listᵈ L xs)
+       → x ∈ᵢ (I ∧ᵢ (⋁ᵢ S)) holds
+     γ (xs , c , r) = β , ζ
+      where
+       ϵ : ((x , μ) : type-from-list xs) → (x ∈ᵢ I) holds
+       ϵ (x , μ) = pr₁ (pr₂ (covering-lemma ⁅ I ∧ᵢ (S [ i ]) ∣ i ∶ index S ⁆ xs c x μ))
+
+       δ : join-listᵈ L xs ∈ᵢ I holds
+       δ = ideals-are-closed-under-finite-joins L I xs ϵ
+
+       β : x ∈ᵢ I holds
+       β = transport (λ - → (- ∈ᵢ I) holds) (r ⁻¹) δ
+
+       ι : ((x , μ) : type-from-list xs) → x ∈ᵢ (⋁ᵢ S) holds
+       ι (x , μ) = ⋁ᵢ-is-an-upper-bound S iₓ x bar
+        where
+         foo : Σ i ꞉ index S , x ∈ᵢ I ∧ᵢ (S [ i ]) holds
+         foo = covering-lemma ⁅ I ∧ᵢ (S [ i ]) ∣ i ∶ index S ⁆ xs c x μ
+
+         iₓ : index S
+         iₓ = pr₁ foo
+
+         bar : x ∈ᵢ (S [ iₓ ]) holds
+         bar = pr₂ (pr₂ foo)
+
+       θ : join-listᵈ L xs ∈ᵢ (⋁ᵢ S) holds
+       θ = ideals-are-closed-under-finite-joins L (⋁ᵢ S) xs ι
+
+       ζ : x ∈ᵢ (⋁ᵢ S) holds
+       ζ = transport (λ - → (- ∈ᵢ (⋁ᵢ S)) holds) (r ⁻¹) θ
 
 \end{code}
 
@@ -327,6 +389,18 @@ We now define the covering relation.
   , 𝟏ᵢ-is-top
   , (λ (I₁ , I₂) → ∧ᵢ-is-lower I₁ I₂ , λ (I₃ , lb) → ∧ᵢ-is-greatest I₁ I₂ I₃ lb)
   , (λ S → ⋁ᵢ-is-an-upper-bound S , λ (I , ub) → ⋁ᵢ-is-least S I ub)
-  , {!!}
+  , λ { (I , S) → distributivityᵢ I S }
+
+\end{code}
+
+The frame of ideals, when viewed as a space, is the defining frame of the “space
+of spectra” of the distributive lattice `L`.
+
+\begin{code}
+
+ locale-of-spectra : Locale (𝓤 ⁺) 𝓤 𝓤
+ locale-of-spectra = record
+                      { ⟨_⟩ₗ         = Ideal L
+                      ; frame-str-of = pr₂ frame-of-ideals }
 
 \end{code}
