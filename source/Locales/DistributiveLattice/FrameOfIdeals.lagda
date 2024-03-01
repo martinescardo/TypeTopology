@@ -57,14 +57,17 @@ module DefnOfFrameOfIdeal (L : DistributiveLattice 𝓤) where
  ⊆ᵢ-is-transitive : (I₁ I₂ I₃ : Ideal L) → (I₁ ⊆ᵢ I₂ ⇒ I₂ ⊆ᵢ I₃ ⇒ I₁ ⊆ᵢ I₃) holds
  ⊆ᵢ-is-transitive I₁ I₂ I₃ p q x r = q x (p x r)
 
- ⊆ᵢ-is-antisymmetric : (I₁ I₂ : Ideal L) → (I₁ ⊆ᵢ I₂) holds → (I₂ ⊆ᵢ I₁) holds → I₁ ＝ I₂
- ⊆ᵢ-is-antisymmetric = ideal-extensionality L
+ ⊆ᵢ-is-antisymmetric : {I₁ I₂ : Ideal L} → (I₁ ⊆ᵢ I₂) holds → (I₂ ⊆ᵢ I₁) holds → I₁ ＝ I₂
+ ⊆ᵢ-is-antisymmetric {I₁} {I₂} = ideal-extensionality L I₁ I₂
+
+ ⊆ᵢ-is-partial-order : is-partial-order (Ideal L) _⊆ᵢ_
+ ⊆ᵢ-is-partial-order = (⊆ᵢ-is-reflexive , ⊆ᵢ-is-transitive) , ⊆ᵢ-is-antisymmetric
 
  poset-of-ideals : Poset (𝓤 ⁺) 𝓤
  poset-of-ideals = (Ideal L)
                  , _⊆ᵢ_
                  , (⊆ᵢ-is-reflexive  , ⊆ᵢ-is-transitive)
-                 , ⊆ᵢ-is-antisymmetric _ _
+                 , ⊆ᵢ-is-antisymmetric
 
 \end{code}
 
@@ -292,5 +295,38 @@ We now define the covering relation.
 
        ν : (x ∈ᵢ (S [ iₓ ])) holds
        ν = pr₂ θ
+
+\end{code}
+
+\begin{code}
+
+ distributivityᵢ : (I : Ideal L) (S : Fam 𝓤 (Ideal L))
+                 → I ∧ᵢ (⋁ᵢ S) ＝ ⋁ᵢ ⁅ I ∧ᵢ (S [ i ]) ∣ i ∶ index S ⁆
+ distributivityᵢ I S = ⊆ᵢ-is-antisymmetric † ‡
+  where
+   † : ((I ∧ᵢ (⋁ᵢ S)) ⊆ᵢ (⋁ᵢ ⁅ I ∧ᵢ (S [ i ]) ∣ i ∶ index S ⁆)) holds
+   † x (r₁ , r₂) =
+    ∥∥-rec (holds-is-prop (x ∈ᵢ (⋁ᵢ ⁅ I ∧ᵢ (S [ i ]) ∣ i ∶ index S ⁆))) γ r₂
+     where
+      γ : Σ xs ꞉ List X , (xs ◁ S) × (x ＝ join-listᵈ L xs)
+       → {!!}
+      γ = {!!}
+
+   ‡ : {!!}
+   ‡ = {!!}
+
+\end{code}
+
+\begin{code}
+
+ frame-of-ideals : Frame (𝓤 ⁺) 𝓤 𝓤
+ frame-of-ideals =
+   Ideal L
+  , (_⊆ᵢ_ , 𝟏ᵢ , _∧ᵢ_ , ⋁ᵢ_)
+  , ⊆ᵢ-is-partial-order
+  , 𝟏ᵢ-is-top
+  , (λ (I₁ , I₂) → ∧ᵢ-is-lower I₁ I₂ , λ (I₃ , lb) → ∧ᵢ-is-greatest I₁ I₂ I₃ lb)
+  , (λ S → ⋁ᵢ-is-an-upper-bound S , λ (I , ub) → ⋁ᵢ-is-least S I ub)
+  , {!!}
 
 \end{code}
