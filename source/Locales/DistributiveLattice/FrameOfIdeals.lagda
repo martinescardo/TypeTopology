@@ -20,22 +20,19 @@ module Locales.DistributiveLattice.FrameOfIdeals
        where
 
 open import Locales.DistributiveLattice.Definition fe pt
-open import Locales.DistributiveLattice.Properties fe pt
 open import Locales.DistributiveLattice.Ideal pt fe pe
+open import Locales.DistributiveLattice.Properties fe pt
 open import Locales.Frame pt fe
-open import UF.Powerset-MultiUniverse
-open import MLTT.Spartan
 open import MLTT.Fin hiding (𝟎; 𝟏)
 open import MLTT.List hiding ([_])
-open import UF.Base
-open import UF.SubtypeClassifier
-open import UF.Logic
+open import MLTT.Spartan
 open import Slice.Family
+open import UF.Logic
+open import UF.Powerset-MultiUniverse
+open import UF.SubtypeClassifier
 
 open AllCombinators pt fe renaming (_∧_ to _∧ₚ_; _∨_ to _∨ₚ_)
-
 open PropositionalSubsetInclusionNotation fe
-
 open PropositionalTruncation pt hiding (_∨_)
 
 \end{code}
