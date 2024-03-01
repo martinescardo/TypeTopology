@@ -1,9 +1,9 @@
----
-title:          Ideals of distributive lattices
+--------------------------------------------------------------------------------
+title:          Locale of spectra of a distributive lattice
 author:         Ayberk Tosun
 date-started:   2024-02-21
 date-completed: 2024-03-01
----
+--------------------------------------------------------------------------------
 
 We define the locale of spectral over a distributive lattice `L`. The defining
 frame of this locale is the frame of ideals over `L`.
@@ -16,7 +16,7 @@ open import UF.PropTrunc
 open import UF.FunExt
 open import UF.Subsingletons
 
-module Locales.DistributiveLattice.FrameOfIdeals
+module Locales.DistributiveLattice.LocaleOfSpectra
         (fe : Fun-Ext)
         (pe : Prop-Ext)
         (pt : propositional-truncations-exist)
