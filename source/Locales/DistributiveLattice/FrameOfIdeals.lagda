@@ -5,6 +5,9 @@ date-started:   2024-02-21
 date-completed: 2024-03-01
 ---
 
+We define the locale of spectral over a distributive lattice `L`. The defining
+frame of this locale is the frame of ideals over `L`.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}
@@ -37,11 +40,19 @@ open PropositionalTruncation pt hiding (_∨_)
 
 \end{code}
 
+We work with a fixed distributive lattice `L`.
+
 \begin{code}
 
 module DefnOfFrameOfIdeal (L : DistributiveLattice 𝓤) where
 
  open DistributiveLattice L renaming (X-is-set to σ)
+
+\end{code}
+
+We denote by `_⊆ᵢ_` the inclusion ordering between two ideals.
+
+\begin{code}
 
  _⊆ᵢ_ : Ideal L → Ideal L → Ω (𝓤)
  ℐ₁ ⊆ᵢ ℐ₂ = Ɐ x ꞉ ∣ L ∣ᵈ , x ∈ₚ I₁ ⇒ x ∈ₚ I₂
@@ -71,7 +82,8 @@ module DefnOfFrameOfIdeal (L : DistributiveLattice 𝓤) where
 
 \end{code}
 
-The top ideal.
+We denote by `𝟏ᵢ` the top ideal, which is the principal ideal over the top
+element `𝟏` of the lattice `L`.
 
 \begin{code}
 
@@ -86,7 +98,7 @@ The top ideal.
 \end{code}
 
 The binary meets of two ideals `I₁` and `I₂` is just the set intersection
-`I₁ ∩ I₂`.
+`I₁ ∩ I₂`. We denote this by `I₁ ∧ᵢ I₂`.
 
 \begin{code}
 
@@ -127,7 +139,11 @@ The binary meets of two ideals `I₁` and `I₂` is just the set intersection
 
 \end{code}
 
-We now define the covering relation.
+We now begin to do some preparation for the construction of the join. We first
+define the covering relation `xs ◁ ( Iⱼ )_{j : J}` which expresses that a list
+`xs` of elements of the lattice `L` are contained in the union of ideals `⋃_{j :
+J} I_j`. Conceptually, this says: for every `x` in `xs`, there is an ideal `Iⱼ`
+in the family such that `x ∈ Iⱼ`.
 
 \begin{code}
 
@@ -140,9 +156,15 @@ We now define the covering relation.
  covering-syntax : (S : Fam 𝓤 (Ideal L)) → List ∣ L ∣ᵈ → 𝓤  ̇
  covering-syntax S []       = 𝟙
  covering-syntax S (x ∷ xs) =
-  (Σ i ꞉ index S , (x ∈ᵢ (S [ i ])) holds) × covering-syntax S xs
+  (Σ i ꞉ index S , x ∈ᵢ (S [ i ]) holds) × covering-syntax S xs
 
  syntax covering-syntax S xs = xs ◁ S
+
+\end{code}
+
+Below are some easy lemmas about the covering relation.
+
+\begin{code}
 
  covering-cons : (S : Fam 𝓤 (Ideal L)) {x : ∣ L ∣ᵈ} {xs : List ∣ L ∣ᵈ}
                → (x ∷ xs) ◁ S
