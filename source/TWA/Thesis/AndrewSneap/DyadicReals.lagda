@@ -1,5 +1,7 @@
-```agda
-{-# OPTIONS --exact-split --without-K --safe  #-}
+Andrew Sneap, April 2023
+
+\begin{code}
+{-# OPTIONS --without-K --safe  #-}
 
 open import MLTT.Spartan
 open import Notation.CanonicalMap
@@ -22,7 +24,7 @@ module TWA.Thesis.AndrewSneap.DyadicReals
  open PropositionalTruncation pt
  open Dyadics dy
  open import UF.Subsingletons-FunExt
-```
+\end{code}
 
 This file defines Dedekind reals using Dyadic Rationals.
 
@@ -39,7 +41,7 @@ implement Dedekind reals using dyadic rationals.
 The definition of the reals follows, by first defining the four properties that
 a real satisfies.
 
-```agda
+\begin{code}
  inhabited-left : (L : 𝓟 ℤ[1/2]) → 𝓤₀ ̇
  inhabited-left L = ∃ p ꞉ ℤ[1/2] , p ∈ L
 
@@ -68,12 +70,12 @@ a real satisfies.
 
  ℝ-d : 𝓤₁  ̇
  ℝ-d = Σ (L , R) ꞉ 𝓟 ℤ[1/2] × 𝓟 ℤ[1/2] , isCut L R
-```
+\end{code}
 
 Now we can introduce notation to obtain specific cuts, or refer to a rational
 inhabiting a cut. This is useful for readability purposes.
 
-```agda
+\begin{code}
  lower-cut-of : ℝ-d → 𝓟 ℤ[1/2]
  lower-cut-of ((L , R) , _) = L
 
@@ -134,7 +136,7 @@ inhabiting a cut. This is useful for readability purposes.
 
   Strict-Order-ℝ-d-ℤ[1/2] : Strict-Order ℝ-d ℤ[1/2]
   _<_ {{Strict-Order-ℝ-d-ℤ[1/2]}} = λ y q → in-upper-cut q y
-```
+\end{code}
 
 We now define negation and addition from the operations on dyadic rationals.
 
@@ -159,7 +161,7 @@ We now define negation and addition from the operations on dyadic rationals.
 
 Order and equality:
 
-```agda
+\begin{code}
  _ℝ-d≤_ : ℝ-d → ℝ-d → 𝓤₀  ̇
  _ℝ-d≤_ x y = (r : ℤ[1/2])
          → r ∈ lower-cut-of x
@@ -185,7 +187,7 @@ Order and equality:
   = to-subtype-＝ (λ (L , R) → isCut-is-prop L R)
        (ap (_, Rx) (subset-extensionality (pe _) (fe _ _) f g)
       ∙ ap (Ly ,_) (subset-extensionality (pe _) (fe _ _) h i))
-```
+\end{code}
 
 From dyadic:
 

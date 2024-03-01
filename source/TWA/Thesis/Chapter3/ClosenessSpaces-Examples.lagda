@@ -1,9 +1,9 @@
-[⇐ Index](../html/TWA.Thesis.index.html)
+Todd Waugh Ambridge, January 2024
 
 # Examples of closeness spaces
 
-```agda
-{-# OPTIONS --without-K --exact-split --safe #-}
+\begin{code}
+{-# OPTIONS --without-K --safe #-}
 
 open import MLTT.Spartan
 open import CoNaturals.GenericConvergentSequence
@@ -32,11 +32,11 @@ open import TWA.Thesis.Chapter2.Vectors
 open import TWA.Thesis.Chapter2.Finite
 open import TWA.Thesis.Chapter3.ClosenessSpaces fe
 open import TWA.Closeness fe hiding (is-ultra; is-closeness)
-```
+\end{code}
 
 ## Trivial closeness spaces
 
-```
+\begin{code}
 𝟘-clospace : is-closeness-space (𝟘 {𝓤})
 𝟘-clospace = (λ ()) , ((λ ()) , (λ ()) , ((λ ()) , (λ ())))
 
@@ -47,11 +47,11 @@ open import TWA.Closeness fe hiding (is-ultra; is-closeness)
  , (λ _         → refl)
  , (λ _ _       → refl)
  , (λ _ _ _ _ _ → refl)  
-```
+\end{code}
 
 ## Discrete closeness spaces
 
-```
+\begin{code}
 discrete-clofun'' : {X : 𝓤 ̇ } (x y : X)
                   → is-decidable (x ＝ y)
                   → ℕ∞
@@ -155,11 +155,11 @@ discrete-closeness-succ-implies-equal d x y n Csnxy
     → x ＝ y
   γ (inl e) _ = e
   γ (inr f) cxyₙ=₁ = 𝟘-elim (zero-is-not-one cxyₙ=₁)
-```
+\end{code}
 
 ## Disjoint union of closeness spaces
 
-```
+\begin{code}
 +-clofun' : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥)
           → (⟨ X ⟩ + ⟨ Y ⟩ → ⟨ X ⟩ + ⟨ Y ⟩ → ℕ∞)
 +-clofun' X Y (inl x₁) (inl x₂) = c⟨ X ⟩ x₁ x₂
@@ -255,11 +255,11 @@ discrete-closeness-succ-implies-equal d x y n Csnxy
           → (ε : ℕ) → C (+-ClosenessSpace X Y) ε (inl x₁) (inl x₂)
           → C X ε x₁ x₂
 +-C-left  X Y x₁ x₂ ε Cxy n = Cxy n
-```
+\end{code}
 
 ## Binary product of closeness spaces
 
-```
+\begin{code}
 ×-clofun' : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥)
           → (⟨ X ⟩ × ⟨ Y ⟩ → ⟨ X ⟩ × ⟨ Y ⟩ → ℕ∞)
 ×-clofun' X Y (x₁ , y₁) (x₂ , y₂)
@@ -398,11 +398,11 @@ minℕ∞-abcdef a b c d e f mab≼e mcd≼f n minabcd＝₁
   Y' = pr₁ (ty ε)
   X'-is-ε-net = pr₂ (tx ε)
   Y'-is-ε-net = pr₂ (ty ε)
-```
+\end{code}
 
 ## Vector closeness spaces
 
-```
+\begin{code}
 vec-ClosenessSpace : (n : ℕ) (X : Fin n → ClosenessSpace 𝓤)
                    → ClosenessSpace 𝓤
 
@@ -452,11 +452,11 @@ Vec-totally-bounded : (X : ClosenessSpace 𝓤) (n : ℕ)
                     → totally-bounded X 𝓥
                     → totally-bounded (Vec-ClosenessSpace X n) 𝓥
 Vec-totally-bounded X n t = vec-totally-bounded n (λ _ → X) (λ _ → t)
-```
+\end{code}
 
 ## Least closeness pseudocloseness space
 
-```
+\begin{code}
 Least-clofun : (X : 𝓤 ̇ ) (Y : ClosenessSpace 𝓥)
                  → {n : ℕ}
                  → Vec X n
@@ -514,11 +514,11 @@ close-to-close X Y Z f {succ n} v@(y :: ys) ϕʸ g ε = δ , γ
          (C-mono X δ δ₁ (max-≤-upper-bound δ₁ δ₂) x₁ x₂ Cx₁x₂) n z)
        (pr₂ IH x₁ x₂
          (C-mono X δ δ₂ (max-≤-upper-bound' δ₂ δ₁) x₁ x₂ Cx₁x₂) n z)
-```
+\end{code}
 
 ## Subtype closeness spaces
 
-```
+\begin{code}
 ↪-clospace : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X ↪ Y)
            → is-closeness-space Y
            → is-closeness-space X
@@ -583,11 +583,11 @@ close-to-close X Y Z f {succ n} v@(y :: ys) ϕʸ g ε = δ , γ
                   → totally-bounded (≃-ClosenessSpace Y e) 𝓥'
 ≃-totally-bounded Y e t ε
  = pr₁ (t ε) , ≃-preserves-nets Y e ε (pr₁ (t ε)) (pr₂ (t ε))
-```
+\end{code}
 
 ## Discrete sequence closeness spaces
 
-```
+\begin{code}
 decidable-𝟚 : {X : 𝓤 ̇ } → is-decidable X → 𝟚
 decidable-𝟚 (inl _) = ₁
 decidable-𝟚 (inr _) = ₀
@@ -812,11 +812,11 @@ C-to-∼ⁿ d = C-to-∼ⁿ' (λ _ → d)
                     → totally-bounded (ℕ→D-ClosenessSpace d) 𝓤
 ℕ→F-totally-bounded {𝓤} {F} d f x₀
  = ΠF-totally-bounded (λ _ → d) (λ _ → f) (λ _ → x₀)
-```
+\end{code}
 
 ## Infinitary product of closeness spaces
 
-```
+\begin{code}
 Π-clofun' : (T : ℕ → ClosenessSpace 𝓤)
           → Π (⟨_⟩ ∘ T) → Π (⟨_⟩ ∘ T) → (ℕ → 𝟚)
 Π-clofun' T x y zero = pr₁ (c⟨ T 0 ⟩ (x 0) (y 0)) 0
@@ -1077,11 +1077,11 @@ Lemma[min𝟚abcd＝₁→min𝟚bd＝₁] ₁ ₁ ₁ ₁ e = refl
      (C-refl (T 0) (succ ε) (α 0))
      (C-refl (Π-ClosenessSpace (T ∘ succ)) ε (α ∘ succ))
      (succ n)
-```
+\end{code}
 
 ## Specific examples of closeness spaces
 
-```
+\begin{code}
 𝟚ᴺ-ClosenessSpace : ClosenessSpace 𝓤₀
 𝟚ᴺ-ClosenessSpace = ℕ→D-ClosenessSpace 𝟚-is-discrete
 
@@ -1102,6 +1102,4 @@ open import TWA.Thesis.Chapter5.SignedDigit
 𝟛ᴺ×𝟛ᴺ-ClosenessSpace : ClosenessSpace 𝓤₀
 𝟛ᴺ×𝟛ᴺ-ClosenessSpace
  = ×-ClosenessSpace 𝟛ᴺ-ClosenessSpace 𝟛ᴺ-ClosenessSpace
-```
-
-[⇐ Index](../html/TWA.Thesis.index.html)
+\end{code}

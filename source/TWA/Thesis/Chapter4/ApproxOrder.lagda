@@ -1,9 +1,9 @@
-[⇐ Index](../html/TWA.Thesis.index.html)
+Todd Waugh Ambridge, January 2024
 
 # Orders
 
-```agda
-{-# OPTIONS --without-K --exact-split --safe #-}
+\begin{code}
+{-# OPTIONS --without-K --safe #-}
 
 open import MLTT.Spartan
 open import UF.FunExt
@@ -18,11 +18,11 @@ open import Naturals.Order
 module TWA.Thesis.Chapter4.ApproxOrder (fe : FunExt) where
 
 open import TWA.Thesis.Chapter3.ClosenessSpaces fe
-```
+\end{code}
 
 ## Traditional orders
 
-```
+\end{code}
 is-preorder : {X : 𝓤  ̇ } → (X → X → 𝓦  ̇ ) → 𝓤 ⊔ 𝓦  ̇ 
 is-preorder _≤_ = reflexive _≤_
                 × transitive _≤_
@@ -58,11 +58,11 @@ discrete-reflexive-antisym-linear-order-is-decidable
     (λ x≠y → Cases (l x y) inl
                (inr ∘ (λ y≤x x≤y → x≠y (a x y x≤y y≤x))))
 
-```
+\end{code}
 
 ## Approximate orders
 
-```
+\end{code}
 is-approx-order : (X : ClosenessSpace 𝓤)
                 → (_≤ⁿ_ : ⟨ X ⟩ → ⟨ X ⟩ → ℕ → 𝓦'  ̇ )
                 → 𝓤 ⊔ 𝓦'  ̇
@@ -183,11 +183,11 @@ module ApproxOrder-Relates (pt : propositional-truncations-exist) where
  approx-order-relates X _≤ⁿ_ _ _≤_ _
   = _≤ⁿ_ relates-to→ _≤_
   × _≤ⁿ_ relates-to← _≤_
-```
+\end{code}
 
 ## Predicates from approximate orders
 
-```
+\end{code}
 approx-order-ucontinuous-l
  : (X : ClosenessSpace 𝓤)
  → {_≤ⁿ_ : ⟨ X ⟩ → ⟨ X ⟩ → ℕ → 𝓦'  ̇ }
@@ -262,6 +262,4 @@ approx-order-f-uc-predicate-r X Y f ϕ _≤ⁿ_ a ϵ y
  , p-ucontinuous-comp X Y f ϕ
      (λ x → (y ≤ⁿ x) ϵ , ≤ⁿ-prop Y a ϵ y x)
      (approx-order-ucontinuous-r Y a ϵ y)
-```
-
-[⇐ Index](../html/TWA.Thesis.index.html)
+\end{code}

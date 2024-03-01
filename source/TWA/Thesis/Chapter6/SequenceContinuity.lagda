@@ -1,9 +1,9 @@
-[⇐ Index](../html/TWA.Thesis.index.html)
+Todd Waugh Ambridge, January 2024
 
 # Uniform continuity of sequence functions
 
-```agda
-{-# OPTIONS --without-K --exact-split --safe #-}
+\begin{code}
+{-# OPTIONS --without-K --safe #-}
 
 open import MLTT.Spartan
 open import CoNaturals.GenericConvergentSequence
@@ -429,6 +429,4 @@ seq-f-ucontinuousᴺ-↔-closeness
 seq-f-ucontinuousᴺ-↔-closeness {𝓤} {𝓥} {X} {Y} dˣ dʸ f
  = seq-f-ucontinuousᴺ-to-closeness dˣ dʸ f
  , closeness-to-seq-f-ucontinuousᴺ dˣ dʸ f
-```
-
-[⇐ Index](../html/TWA.Thesis.index.html)
+\end{code}

@@ -1,9 +1,9 @@
-[⇐ Index](../html/TWA.Thesis.index.html)
+Todd Waugh Ambridge, January 2024
 
 # Sequences
 
-```agda
-{-# OPTIONS --without-K --exact-split --safe #-}
+\begin{code}
+{-# OPTIONS --without-K --safe #-}
 
 open import MLTT.Spartan
 open import Notation.Order
@@ -81,6 +81,4 @@ bounded-decidable-Σ {𝓤} {X} d (succ n)
  → ((n : ℕ) → is-discrete (X n))
  → (α β : Π X) → (n : ℕ) → is-decidable ((α ∼ⁿ β) n)
 ∼ⁿ-decidable ds α β = bounded-decidable-Π (λ n → ds n (α n) (β n))
-```
-
-[⇐ Index](../html/TWA.Thesis.index.html)
+\end{code}

@@ -1,9 +1,9 @@
-[⇐ Index](../html/TWA.Thesis.index.html)
+Todd Waugh Ambridge, January 2024
 
 # Vectors
 
-```agda
-{-# OPTIONS --without-K --exact-split --safe #-}
+\begin{code}
+{-# OPTIONS --without-K --safe #-}
 
 open import MLTT.Spartan
 open import MLTT.SpartanList hiding ([_])
@@ -42,6 +42,4 @@ Seq-to-Vec-∼ : (n : ℕ) {X : ℕ → 𝓤 ̇ }
 Seq-to-Vec-∼ (succ n) α β 0 i<n = refl
 Seq-to-Vec-∼ (succ n) α β (succ i) i<n
  = Seq-to-Vec-∼ n α (β ∘ succ) i i<n
-```
-
-[⇐ Index](../html/TWA.Thesis.index.html)
+\end{code}

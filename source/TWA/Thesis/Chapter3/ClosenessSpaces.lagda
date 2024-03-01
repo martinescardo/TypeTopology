@@ -1,9 +1,9 @@
-[⇐ Index](../html/TWA.Thesis.index.html)
+Todd Waugh Ambridge, January 2024
 
 # Closeness spaces
 
-```agda
-{-# OPTIONS --without-K --exact-split --safe #-}
+\begin{code}
+{-# OPTIONS --without-K --safe #-}
 
 open import MLTT.Spartan
 open import Notation.Order
@@ -45,11 +45,11 @@ positive-below-n (succ i) (succ n) snᵢ=1 = positive-below-n i n snᵢ=1
      (λ  vₙ=1 → inl (λ i snᵢ=1 → is-decreasing' v n i
                                    (positive-below-n i n snᵢ=1) vₙ=1))
      (λ ¬vₙ=1 → inr (λ sn≼v → ¬vₙ=1 (sn≼v n (ℕ-to-ℕ∞-diagonal₁ n))))
-```
+\end{code}
 
 ## (Pseudo)closeness spaces
 
-```
+\begin{code}
 is-ultra is-closeness : {X : 𝓤 ̇ } → (X → X → ℕ∞) → 𝓤 ̇
 is-ultra {𝓤} {X} c = (x y z : X) → min (c x y) (c y z) ≼ c x z
 is-closeness c
@@ -108,11 +108,11 @@ s⟨ (X , c , e , i , s , u) ⟩ = s
 u⟨_⟩ : (X : ClosenessSpace 𝓤)
      → is-ultra c⟨ X ⟩
 u⟨ (X , c , e , i , s , u) ⟩ = u
-```
+\end{code}
 
 ## Closeness relations
 
-```
+\begin{code}
 c'⟨_⟩ : (X : PseudoClosenessSpace 𝓤) → ⟪ X ⟫ → ⟪ X ⟫ → ℕ∞
 c'⟨ (X , c , _) ⟩ = c
 
@@ -216,11 +216,11 @@ C-id : (X : ClosenessSpace 𝓤)
      → x ＝ y
      → C X n x y
 C-id X n x x refl = C-refl X n x
-```
+\end{code}
 
 ## Continuity definitions
 
-```
+\begin{code}
 f-continuous'
  : (X : PseudoClosenessSpace 𝓤) (Y : PseudoClosenessSpace 𝓥)
  → (f : ⟪ X ⟫ → ⟪ Y ⟫)
@@ -272,11 +272,11 @@ p-ucontinuous-with-mod X p δ = p-ucontinuous'-with-mod (ι X) p δ
 p-ucontinuous : (X : ClosenessSpace 𝓤) → (p : ⟨ X ⟩ → Ω 𝓦) → 𝓤 ⊔ 𝓦  ̇ 
 p-ucontinuous X p 
  = Σ δ ꞉ ℕ , p-ucontinuous-with-mod X p δ
-```
+\end{code}
 
 ## Continuity lemmas
 
-```
+\begin{code}
 id-ucontinuous : (X : ClosenessSpace 𝓤) → f-ucontinuous X X id
 id-ucontinuous X ϵ = ϵ , λ _ _ → id
 
@@ -334,11 +334,11 @@ C-ucontinuous-r X ϵ y = ϵ , γ
  where
   γ : (x₁ x₂ : ⟨ X ⟩) → C X ϵ x₁ x₂ → C X ϵ y x₁ → C X ϵ y x₂
   γ x₁ x₂ Cx₁x₂ Cyx₁ = C-trans X ϵ y x₁ x₂ Cyx₁ Cx₁x₂
-```
+\end{code}
 
 ## Predicates from closeness relations
 
-```
+\begin{code}
 decidable-predicate : (𝓦 : Universe) → 𝓤 ̇ → 𝓤 ⊔ 𝓦 ⁺  ̇
 decidable-predicate 𝓦 X
  = Σ p ꞉ (X → Ω 𝓦) , is-complemented (λ x → (p x) holds)
@@ -348,7 +348,6 @@ decidable-uc-predicate
 decidable-uc-predicate 𝓦 X
  = Σ (p , d) ꞉ decidable-predicate 𝓦 ⟨ X ⟩ , p-ucontinuous X p
 
--- LINK
 C-decidable-uc-predicate-l : (X : ClosenessSpace 𝓤)
                            → (ϵ : ℕ) (y : ⟨ X ⟩)
                            → decidable-uc-predicate 𝓤₀ X
@@ -390,11 +389,11 @@ C-f-decidable-uc-predicate-r X Y f ϕ ϵ y
  , p-ucontinuous-comp X Y f ϕ
      (λ x → CΩ Y ϵ y x)
      (C-ucontinuous-r Y ϵ y)
-```
+\end{code}
 
 ## Totally bounded
 
-```
+\begin{code}
 _is_net-of_ : (X' : 𝓤'  ̇ ) → ℕ → ClosenessSpace 𝓤 → 𝓤 ⊔ 𝓤'  ̇
 X' is ϵ net-of X
  = (Σ g ꞉ (  X'  → ⟨ X ⟩)
@@ -410,6 +409,4 @@ pointed-has-a-0-net X x
 
 totally-bounded : ClosenessSpace 𝓤 → (𝓤' : Universe) → 𝓤 ⊔ (𝓤' ⁺)  ̇ 
 totally-bounded X 𝓤' = (ϵ : ℕ) → Σ X' ꞉ 𝓤' ̇ , X' is ϵ net-of X
-```
-
-[⇐ Index](../html/TWA.Thesis.index.html)
+\end{code}

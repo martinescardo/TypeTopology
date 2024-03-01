@@ -1,9 +1,9 @@
-[⇐ Index](../html/TWA.Thesis.index.html)
+Todd Waugh Ambridge, January 2024
 
 # Uniform continuity of signed-digit operations
 
-```agda
-{-# OPTIONS --without-K --exact-split --safe #-}
+\begin{code}
+{-# OPTIONS --without-K --safe #-}
 
 open import MLTT.Spartan
 
@@ -25,11 +25,11 @@ open import TWA.Thesis.Chapter3.ClosenessSpaces fe
 open import TWA.Thesis.Chapter3.ClosenessSpaces-Examples fe
 open import TWA.Thesis.Chapter3.SearchableTypes fe
 open import TWA.Thesis.Chapter6.SequenceContinuity fe
-```
+\end{code}
 
 ## Negation
 
-```
+\end{code}
 neg-ucontinuous' : seq-f-ucontinuous¹ neg
 neg-ucontinuous' = map-ucontinuous' flip
 
@@ -39,11 +39,11 @@ neg-ucontinuous
  = seq-f-ucontinuous¹-to-closeness
      𝟛-is-discrete 𝟛-is-discrete
      neg neg-ucontinuous'
-```
+\end{code}
 
 ## Binary midpoint
 
-```
+\end{code}
 div2-ucontinuous' : seq-f-ucontinuous¹ div2
 div2-ucontinuous' zero = 0 , λ α β _ k ()
 div2-ucontinuous' (succ ε) = succ (succ ε) , γ ε where
@@ -90,11 +90,11 @@ mid-r-ucontinuous x
      𝟛-is-discrete 𝟛-is-discrete
      (λ y → mid x y)
      (seq-f-ucontinuous²-right mid mid-ucontinuous' x)
-```
+\end{code}
 
 ## Infinitary midpoint
 
-```
+\end{code}
 bigMid'-ucontinuous' : seq-f-ucontinuousᴺ bigMid'
 bigMid'-ucontinuous' ε = dδ ε , d≤δ ε , γ ε where
   d : ℕ → ℕ
@@ -173,11 +173,11 @@ bigMid-ucontinuous' ε = dδ , d≤δ , ϕ where
    = pr₂ (div4-ucontinuous' ε)
        (bigMid' αs) (bigMid' βs)
        (pr₂ (pr₂ γ) αs βs αs∼ⁿβs)
-```
+\end{code}
 
 ## Multiplication
 
-```
+\end{code}
 mul-ucontinuous' : seq-f-ucontinuous² mul
 mul-ucontinuous' ε = δ ε , γ ε where
   δ : ℕ → ℕ × ℕ
@@ -217,6 +217,4 @@ mul-b-ucontinuous
      𝟛-is-discrete 𝟛-is-discrete
      (λ x → mul x x)
      (seq-f-ucontinuous²-both mul mul-ucontinuous')
-```
-
-[⇐ Index](../html/TWA.Thesis.index.html)
+\end{code}

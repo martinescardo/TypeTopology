@@ -2,7 +2,7 @@
 
 # Main
 
-```agda
+\begin{code}
 {-# OPTIONS --without-K --exact-split #-}
 
 open import UF.FunExt
@@ -48,22 +48,22 @@ show𝟛ᴺ×𝟛ᴺ-prefix (x , y) n
 show𝟚ᴺ×𝟚ᴺ-prefix : 𝟚ᴺ × 𝟚ᴺ → ℕ → String
 show𝟚ᴺ×𝟚ᴺ-prefix (x , y) n
  = show𝟚ᴺ-prefix x n +++ " ;\n" +++ show𝟚ᴺ-prefix y n
-```
+\end{code}
 
 Open the Example module here from SignedDigitExamples.lagda.md
 
-```
+\end{code}
 open Regression-Example2
-```
+\end{code}
 
 Write the particular example run here, i.e. one of:
  * search-test-tb / search-test / search-test-tb' / serach-test'
  * opt-test / opt-test'
  * reg𝓞 / regΨ𝓞 / opt𝓞 / optΨ𝓞
 
-```
+\end{code}
 test = reg𝓞
-```
+\end{code}
 
 Write the correct printer here, i.e. one of:
  * show𝟛ᴺ-prefix
@@ -71,19 +71,19 @@ Write the correct printer here, i.e. one of:
  * show𝟛ᴺ×𝟛ᴺ-prefix
  * show𝟚ᴺ×𝟚ᴺ-prefix
 
-```
+\end{code}
 print = show𝟚ᴺ×𝟚ᴺ-prefix
-```
+\end{code}
 
 Write the requested precision here, i.e. a natural number.
 
-```
+\end{code}
 prec = 5
-```
+\end{code}
 
-```
+\end{code}
 main : IO Unit
 main = putStrLn (print (test 5) 30)
-```
+\end{code}
 
 [⇐ Index](../html/TWA.Thesis.index.html)

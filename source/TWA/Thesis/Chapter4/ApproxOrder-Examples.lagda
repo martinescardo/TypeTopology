@@ -1,10 +1,10 @@
-[⇐ Index](../html/TWA.Thesis.index.html)
+Todd Waugh Ambridge, January 2024
 
 # Examples of approximate orders
 
-```agda
+\begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --safe #-}
 
 open import MLTT.Spartan
 open import UF.FunExt
@@ -37,11 +37,11 @@ open import TWA.Thesis.Chapter3.ClosenessSpaces fe
 open import TWA.Thesis.Chapter3.ClosenessSpaces-Examples fe
 open import TWA.Thesis.Chapter3.SearchableTypes fe
 open import TWA.Thesis.Chapter4.ApproxOrder fe
-```
+\end{code}
 
 ## Subtype orders
 
-```
+\end{code}
 inclusion-order
  : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (f : X → Y) (_≤_ : Y → Y → 𝓦 ̇) → X → X → 𝓦 ̇
 inclusion-order f _≤_ x₁ x₂ = f x₁ ≤ f x₂
@@ -171,11 +171,11 @@ module ΣOrder-Relates (pt : propositional-truncations-exist) where
  Σ-approx-order-relates X P p _≤ⁿ_ a _≤_ i (rel→ , rel←)
   = (λ (x , _) (y , _) → rel→ x y)
   , (λ (x , _) (y , _) → rel← x y)
-```
+\end{code}
 
 ## Finite orders
 
-```
+\end{code}
 _≤Fin_ : {n : ℕ} → Fin n → Fin n → 𝓤₀  ̇
 _≤Fin_ {succ n} 𝟎 y = 𝟙
 _≤Fin_ {succ n} (suc x) 𝟎 = 𝟘
@@ -245,11 +245,11 @@ finite-order-is-linear-order (n , (g , i))
  = embedding-order-is-linear-order
      g (equivs-are-embeddings g i)
      _≤Fin_ ≤Fin-is-linear-order
-```
+\end{code}
 
 ## Discrete-sequence orders
 
-```
+\end{code}
 discrete-lexicorder : {D : 𝓤 ̇ }
                     → is-discrete D
                     → (_≤_ : D → D → 𝓥 ̇ )
@@ -527,11 +527,11 @@ module LexicographicOrder-Relates
  discrete-approx-lexicorder-relates ds i _≤_ _
   = discrete-approx-lexicorder-relates→ ds i _≤_
   , discrete-approx-lexicorder-relates← ds i _≤_
-```
+\end{code}
 
 ## Specific example orders
 
-```
+\end{code}
 ℕ→𝟚-lexicorder : (ℕ → 𝟚) → (ℕ → 𝟚) → 𝓤₀ ̇
 ℕ→𝟚-lexicorder
  = discrete-lexicorder 𝟚-is-discrete (finite-order 𝟚-is-finite)
@@ -573,6 +573,4 @@ module LexicographicOrder-Relates
      is-decreasing (being-decreasing-is-prop (fe _ _))
      ℕ→𝟚-approx-lexicorder
      ℕ→𝟚-approx-lexicorder-is-approx-order
-```
-
-[⇐ Index](../html/TWA.Thesis.index.html)
+\end{code}

@@ -1,9 +1,9 @@
-[⇐ Index](../html/TWA.Thesis.index.html)
+Todd Waugh Ambridge, January 2024
 
 # Finite types
 
-```agda
-{-# OPTIONS --without-K --exact-split --safe #-}
+\begin{code}
+{-# OPTIONS --without-K --safe #-}
 
 open import MLTT.Spartan
 open import UF.DiscreteAndSeparated
@@ -87,6 +87,4 @@ vec-is-finite (succ ϵ) f
 
 pointed : 𝓤 ̇ → 𝓤 ̇
 pointed X = X
-```
-
-[⇐ Index](../html/TWA.Thesis.index.html)
+\end{code}

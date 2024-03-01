@@ -1,9 +1,9 @@
-[⇐ Index](../html/TWA.Thesis.index.html)
+Todd Waugh Ambridge, January 2024
 
 # Verification of signed-digit operations
 
-```agda
-{-# OPTIONS --without-K --exact-split --safe #-}
+\begin{code}
+{-# OPTIONS --without-K --safe #-}
 
 open import MLTT.Spartan
 open import UF.FunExt
@@ -21,11 +21,11 @@ module TWA.Thesis.Chapter5.SignedDigitIntervalObject
 
 open import TWA.Thesis.Chapter5.IntervalObjectApproximation fe io
 open basic-interval-object-development fe io hiding (−1 ; O ; +1)
-```
+\end{code}
 
 ## Representation map
 
-```
+\end{code}
 ⟨_⟩ : 𝟛 → 𝕀
 ⟨ −1 ⟩ = u
 ⟨  O ⟩ = u ⊕ v
@@ -74,11 +74,11 @@ map-realiser² : (f : 𝟛 → 𝟛ᴺ → 𝟛ᴺ) (f' : 𝕀 → 𝕀 → 𝕀
               ＝ M (λ n → f' ⟨ α n ⟩ ⟪ β ⟫)
 map-realiser² f f' f→ f⊕ α β
  = ap M (dfunext (fe 𝓤₀ 𝓦) (λ i → f→ (α i) β))
-```
+\end{code}
 
 ## Negation
 
-```
+\end{code}
 flip-realiser : flip pw-realises¹ −_
 flip-realiser −1 = −1-inverse
 flip-realiser  O =  O-inverse
@@ -87,11 +87,11 @@ flip-realiser +1 = +1-inverse
 neg-realiser : neg realises¹ −_
 neg-realiser
  = map-realiser flip −_ flip-realiser −-is-⊕-homomorphism
-```
+\end{code}
 
 ## Binary midpoint
 
-```
+\end{code}
 half : 𝟝 → 𝕀
 half −2 = u
 half −1 = u /2
@@ -172,11 +172,11 @@ half-add-realiser α β = ap M (dfunext (fe 𝓤₀ 𝓦) (λ i → γ (α i) (�
 mid-realiser : mid realises² _⊕_
 mid-realiser α β = div2-realiser (add2 α β)
                  ∙ half-add-realiser α β
-```
+\end{code}
 
 ## Infinitary midpoint
 
-```
+\end{code}
 quarter : 𝟡 → 𝕀
 quarter −4 = u
 quarter −3 = u ⊕ (u ⊕ (u ⊕ v))
@@ -630,11 +630,11 @@ M-realiser : bigMid realisesᴺ M
 M-realiser δs = fg-approx-holds (map ⟪_⟫) (map quarter ∘ bigMid')
                   bigMid'-approx δs
                   ∙ quarter-realiser (bigMid' δs) ⁻¹
-```
+\end{code}
 
 ## Multiplication
 
-```
+\end{code}
 digitMul-realiser : digitMul realises' _*_
 digitMul-realiser −1 α
  = neg-realiser α ⁻¹ ∙ *-gives-negation-r ⟪ α ⟫ ⁻¹
@@ -650,6 +650,4 @@ mul-realiser α β = M-realiser (zipWith digitMul α (λ _ → β)) ⁻¹
                  ∙ ⊕-homs-are-M-homs (_* ⟪ β ⟫)
                      (*-is-⊕-homomorphism-r ⟪ β ⟫)
                      (map ⟨_⟩ α) ⁻¹
-```
-
-[⇐ Index](../html/TWA.Thesis.index.html)
+\end{code}

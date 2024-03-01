@@ -1,7 +1,7 @@
-[⇐ Index](../html/TWA.Thesis.index.html)
+Todd Waugh Ambridge, January 2024
 
-```agda
-{-# OPTIONS --without-K --exact-split --safe #-}
+\begin{code}
+{-# OPTIONS --without-K --safe #-}
 
 open import MLTT.Spartan
 open import NotionsOfDecidability.Complemented
@@ -26,11 +26,11 @@ open import TWA.Thesis.Chapter6.SequenceContinuity fe
 open import TWA.Thesis.Chapter6.SignedDigitContinuity fe
 open import TWA.Thesis.Chapter6.SignedDigitSearch fe pe
 open import TWA.Thesis.Chapter6.SignedDigitOrder fe
-```
+\end{code}
 
 ## Representations we will use
 
-```
+\end{code}
 -1𝟚ᴺ -1/2𝟚ᴺ O𝟚ᴺ 1/4𝟚ᴺ 1/3𝟚ᴺ 1/2𝟚ᴺ 1𝟚ᴺ : 𝟚ᴺ
 -1𝟚ᴺ   = repeat ₀
 -1/2𝟚ᴺ = ₀ ∷ (₀ ∷ repeat ₁)
@@ -54,11 +54,11 @@ O𝟛ᴺ    = O𝟚ᴺ    ↑
 _/2 _/4 : 𝟛ᴺ → 𝟛ᴺ
 x /2 = mid x (repeat O)
 x /4 = (x /2) /2 /2
-```
+\end{code}
 
 ## Search examples
 
-```
+\end{code}
 module Search-Example1 where
 
  predicate : ℕ → decidable-uc-predicate 𝓤₀ 𝟛ᴺ-ClosenessSpace
@@ -123,11 +123,11 @@ module Search-Example3 where
 
  search-test' : ℕ → 𝟚ᴺ × 𝟚ᴺ
  search-test'    ϵ = pr₁ (𝟚ᴺ×𝟚ᴺ-csearchable (⤊-pred (predicate ϵ)))
-```
+\end{code}
 
 ## Optimisation examples
 
-```
+\end{code}
 module Optimisation-Example1 where
 
  opt-test : ℕ → 𝟛ᴺ
@@ -162,11 +162,11 @@ module Optimisation-Example2 where
            𝟛-is-discrete 𝟛-is-discrete
            (λ x → mul x x)
            (seq-f-ucontinuous²-both mul mul-ucontinuous'))) ϵ)
-```
+\end{code}
 
 ## Regression examples
 
-```
+\end{code}
 module Regression-Example
  (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥)
  (g : ⟨ Y ⟩ → ⟨ X ⟩)
@@ -384,6 +384,4 @@ module Regression-Example2-SearchDistortionFree where
 
  regressed-function : ℕ → (𝟛ᴺ → 𝟛ᴺ)
  regressed-function = M ∘ regressed-parameter
-```
-
-[⇐ Index](../html/TWA.Thesis.index.html)
+\end{code}
