@@ -1,7 +1,7 @@
 --------------------------------------------------------------------------------
-title:       Properties of ideals
-author:      Ayberk Tosun
-start-date:  2024-03-02
+title:        Properties of ideals
+author:       Ayberk Tosun
+date-started: 2024-03-02
 --------------------------------------------------------------------------------
 
 \begin{code}
