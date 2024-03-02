@@ -26,6 +26,10 @@ import Locales.Complements                       -- (8)
 
 -- Distributive lattices
 import Locales.DistributiveLattice.Definition
+import Locales.DistributiveLattice.Homomorphism
+import Locales.DistributiveLattice.Ideal
+import Locales.DistributiveLattice.LocaleOfSpectra
+import Locales.DistributiveLattice.Properties
 
 import Locales.Frame                             -- (9)
 
