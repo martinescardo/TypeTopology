@@ -5,8 +5,9 @@ date-started:   2024-03-02
 --------------------------------------------------------------------------------
 
 Many constructions and theorems related to directed families have been developed
-in various modules despite involving only posets. This is a new module in which
-I will be collecting these things that concern only directed families.
+in the `Locales.Frame` module, even though they concern only the underlying
+order of the lattice. This is a new module in which I will be collecting these
+things that concern only directed families.
 
 \begin{code}
 
@@ -26,15 +27,12 @@ module Locales.DirectedFamily
        where
 
 open import Locales.Frame pt fe hiding (is-directed)
-open import MLTT.Fin hiding (𝟎; 𝟏)
-open import MLTT.List hiding ([_])
 open import Slice.Family
-open import UF.Logic
-open import UF.Powerset-MultiUniverse
 open import UF.Equiv
+open import UF.Logic
 
-open PropositionalTruncation pt
 open AllCombinators pt fe
+open PropositionalTruncation pt
 
 \end{code}
 
@@ -48,6 +46,8 @@ infix 7 _⊑_
 _⊑_ = _≤_
 
 \end{code}
+
+Definition of directedness.
 
 \begin{code}
 
