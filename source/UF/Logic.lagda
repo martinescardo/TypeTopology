@@ -232,11 +232,15 @@ module Existential (pt : propositional-truncations-exist) where
  ∃[]-syntax : {I : 𝓤 ̇ } → (I → 𝓥 ̇ )→ Ω (𝓤 ⊔ 𝓥)
  ∃[]-syntax {I = I} P = ∃[꞉]-syntax I P
 
+ ∃ₚ[꞉]-syntax : (I : 𝓤 ̇ )→ (I → Ω 𝓥)→ Ω (𝓤 ⊔ 𝓥)
+ ∃ₚ[꞉]-syntax I A = Ǝ i ꞉ I , A i holds
+
  infixr -1 ∃[꞉]-syntax
  infixr -1 ∃[]-syntax
 
  syntax ∃[꞉]-syntax I (λ i → e) = Ǝ i ꞉ I , e
  syntax ∃[]-syntax    (λ i → e) = Ǝ i , e
+ syntax ∃ₚ[꞉]-syntax I (λ i → e) = Ǝₚ i ꞉ I , e
 
 \end{code}
 
