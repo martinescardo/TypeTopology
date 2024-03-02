@@ -7,7 +7,7 @@ date-completed: 2024-02-27
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K #-}
+{-# OPTIONS --safe --without-K --lossy-unification #-}
 
 open import MLTT.List hiding ([_])
 open import MLTT.Pi
@@ -39,6 +39,7 @@ fe {𝓤} {𝓥} = univalence-gives-funext' 𝓤 𝓥 (ua 𝓤) (ua (𝓤 ⊔ �
 open import Locales.Frame pt fe
 open import Locales.Compactness pt fe
 open import Locales.Spectrality.SpectralLocale pt fe
+open import Locales.Spectrality.SpectralMap pt fe
 open import Locales.DistributiveLattice.Definition fe pt
 open import Locales.SmallBasis pt fe sr
 
@@ -53,8 +54,8 @@ type of compact opens.
 
 \begin{code}
 
-module _ (X  : Locale (𝓤 ⁺) 𝓤 𝓤)
-         (σ₀ : is-spectral-with-small-basis ua X holds) where
+module 𝒦-Lattice (X  : Locale (𝓤 ⁺) 𝓤 𝓤)
+                 (σ₀ : is-spectral-with-small-basis ua X holds) where
 
 \end{code}
 
@@ -233,5 +234,46 @@ of compact opens to be small.
 
  𝒦⦅X⦆-is-small : is-small ∣ 𝒦⦅X⦆ ∣ᵈ
  𝒦⦅X⦆-is-small = smallness-of-𝒦 ua X σ₀
+
+\end{code}
+
+\section{Spectral maps to lattice homomorphisms}
+
+Any spectral map `f : X → Y` of spectral locales gives a lattice homomorphism
+`𝒦(Y) → 𝒦(X)`. We now prove this fact.
+
+\begin{code}
+
+module FunctorialAction
+        (X  : Locale (𝓤 ⁺) 𝓤 𝓤)
+        (Y  : Locale (𝓤 ⁺) 𝓤 𝓤)
+        (σ₁ : is-spectral-with-small-basis ua X holds)
+        (σ₂ : is-spectral-with-small-basis ua Y holds)
+        (f  : X ─c→ Y)
+        (𝕤  : is-spectral-map Y X f holds)
+       where
+
+ open ContinuousMapNotation X Y
+ open 𝒦-Lattice X σ₁ renaming (𝟏ₖ to 𝟏ₖ-X; 𝟏-is-compact to 𝟏-X-is-compact)
+ open 𝒦-Lattice Y σ₂ renaming (𝟏ₖ to 𝟏ₖ-Y; 𝒦⦅X⦆ to 𝒦⦅Y⦆; 𝟏-is-compact to 𝟏-Y-is-compact)
+
+ 𝒦-map : ∣ 𝒦⦅Y⦆ ∣ᵈ → ∣ 𝒦⦅X⦆ ∣ᵈ
+ 𝒦-map (K , κ) = f ⋆∙ K , 𝕤 K κ
+
+ 𝒦-map-preserves-𝟎 : 𝒦-map 𝟎ₖ[ Y  ] ＝ 𝟎ₖ[ X ]
+ 𝒦-map-preserves-𝟎 =
+  to-𝒦-＝
+   X
+   (𝕤 𝟎[ 𝒪 Y ] (𝟎-is-compact Y))
+   (𝟎-is-compact X)
+   (frame-homomorphisms-preserve-bottom (𝒪 Y) (𝒪 X) f)
+
+ 𝒦-map-preserves-𝟏 : 𝒦-map 𝟏ₖ-Y ＝ 𝟏ₖ-X
+ 𝒦-map-preserves-𝟏 =
+  to-𝒦-＝
+   X
+   (𝕤 𝟏[ 𝒪 Y ] 𝟏-Y-is-compact)
+   𝟏-X-is-compact
+   (frame-homomorphisms-preserve-top (𝒪 Y) (𝒪 X) f)
 
 \end{code}
