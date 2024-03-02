@@ -6,8 +6,8 @@ date-started:   2024-03-02
 
 Many constructions and theorems related to directed families have been developed
 in the `Locales.Frame` module, even though they concern only the underlying
-order of the lattice. This is a new module in which I will be collecting these
-things that concern only directed families.
+order of frames. This is a new module in which I will be collecting such proofs
+and constructions that involve only the order of a given frame.
 
 \begin{code}
 
