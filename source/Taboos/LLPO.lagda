@@ -26,10 +26,17 @@ private
  T : (ℕ → 𝟚) → 𝓤₀ ̇
  T α = Σ n ꞉ ℕ , α n ＝ ₁
 
+ ¬T : (ℕ → 𝟚) → 𝓤₀ ̇
+ ¬T α = (n : ℕ) → α n ＝ ₀
+
 private
  instance
   Canonical-Map-ℕ-ℕ∞' : Canonical-Map ℕ ℕ∞'
   ι {{Canonical-Map-ℕ-ℕ∞'}} = ℕ-to-ℕ∞'
+
+ instance
+  canonical-map-ℕ∞'-ℕ→𝟚 : Canonical-Map ℕ∞' (ℕ → 𝟚)
+  ι {{canonical-map-ℕ∞'-ℕ→𝟚}} = ℕ∞'-to-ℕ→𝟚
 
 \end{code}
 
@@ -47,8 +54,8 @@ untruncated-LLPO = (α : ℕ → 𝟚)
 
 \end{code}
 
-The following version, is equivalent, which shows that untruncated
-LLPO is an instance of De Morgan Law.
+The following version is logically equivalent, which shows that
+untruncated LLPO is an instance of De Morgan Law.
 
 \begin{code}
 
@@ -58,17 +65,8 @@ untruncated-LLPO' = (β γ : ℕ → 𝟚)
                   → is-prop (T γ)
                   → ¬ (T β × T γ) → ¬ T β + ¬ T γ
 
-¬T : (ℕ → 𝟚) → 𝓤₀ ̇
-¬T α = (n : ℕ) → α n ＝ ₀
-
-not-T-gives-¬T : {α : ℕ → 𝟚} → ¬ (T α) → ¬T α
-not-T-gives-¬T {α} ϕ n = different-from-₁-equal-₀ (λ (e : α n ＝ ₁) → ϕ (n , e))
-
-¬T-gives-not-T : {α : ℕ → 𝟚} → ¬T α → ¬ (T α)
-¬T-gives-not-T {α} ψ (n , e) = zero-is-not-one ((ψ n)⁻¹ ∙ e)
-
-unprime : untruncated-LLPO' → untruncated-LLPO
-unprime llpo' α h = III
+untrucated-LLPO'-gives-untruncated-LLPO : untruncated-LLPO' → untruncated-LLPO
+untrucated-LLPO'-gives-untruncated-LLPO llpo' α h = III
  where
   β γ : ℕ → 𝟚
   β n = α ( double n)
@@ -89,8 +87,8 @@ unprime llpo' α h = III
   III : ((n : ℕ) → α (double n) ＝ ₀) + ((n : ℕ) → α (sdouble n) ＝ ₀)
   III = +functor not-T-gives-¬T not-T-gives-¬T II
 
-prime : untruncated-LLPO → untruncated-LLPO'
-prime llpo β γ i j ν = III
+untrucated-LLPO-gives-untruncated-LLPO' : untruncated-LLPO → untruncated-LLPO'
+untrucated-LLPO-gives-untruncated-LLPO' llpo β γ i j ν = III
  where
   f : (n : ℕ) → is-even' n + is-odd' n → 𝟚
   f n (inl (k , _)) = β k
@@ -141,132 +139,182 @@ prime llpo β γ i j ν = III
 
 \end{code}
 
-The following result seems to be new (and I announced it years ago in
-the constructivenews mailing list).
+Two more equivalent formulations of LLPO.
 
 \begin{code}
 
-untruncated-LLPO-gives-WLPO : funext₀ → untruncated-LLPO' → WLPO
-untruncated-LLPO-gives-WLPO fe llpo = wlpo
+untruncated-ℕ∞-LLPO : 𝓤₀ ̇
+untruncated-ℕ∞-LLPO = (u v : ℕ∞) → ¬ (is-finite u × is-finite v) → (u ＝ ∞) + (v ＝ ∞)
+
+untruncated-ℕ∞'-LLPO : 𝓤₀ ̇
+untruncated-ℕ∞'-LLPO = (u v : ℕ∞') → ¬ (is-finite' u × is-finite' v) → (u ＝ ∞') + (v ＝ ∞')
+
+untruncated-LLPO'-gives-untruncated-ℕ∞'-LLPO : funext₀
+                                             → untruncated-LLPO'
+                                             → untruncated-ℕ∞'-LLPO
+untruncated-LLPO'-gives-untruncated-ℕ∞'-LLPO fe llpo u v μ = II I
  where
-  ϕ : (u v : ℕ∞') → ¬ is-finite' u + ¬ is-finite' v → 𝟚
-  ϕ u v (inl l) = ₀
-  ϕ u v (inr r) = ₁
+  I : ¬ T (ι u) + ¬ T (ι v)
+  I = llpo (ι u) (ι v) (ℕ∞'-to-ℕ→𝟚-at-most-one-₁ u) (ℕ∞'-to-ℕ→𝟚-at-most-one-₁ v) μ
 
-  l₀ : (u : ℕ∞') → ¬ is-finite' u + ¬ is-finite' ∞'
-  l₀ u = llpo (ℕ∞'-to-ℕ→𝟚 u)      (ℕ∞'-to-ℕ→𝟚 ∞')
-              (ℕ∞'-to-ℕ→𝟚-prop u) (ℕ∞'-to-ℕ→𝟚-prop ∞')
-              (λ (_ , (_ , e)) → zero-is-not-one e)
+  II : type-of I → (u ＝ ∞') + (v ＝ ∞')
+  II (inl a) = inl (not-T-is-∞' fe u a)
+  II (inr b) = inr (not-T-is-∞' fe v b)
 
-  l₁ : (u : ℕ∞') → ¬ is-finite' ∞' + ¬ is-finite' u
-  l₁ u = llpo (ℕ∞'-to-ℕ→𝟚 ∞')      (ℕ∞'-to-ℕ→𝟚 u)
-              (ℕ∞'-to-ℕ→𝟚-prop ∞') (ℕ∞'-to-ℕ→𝟚-prop u)
-              (λ ((_ , e) , _) → zero-is-not-one e)
+untruncated-ℕ∞'-LLPO-gives-untruncated-LLPO' : funext₀
+                                             → untruncated-ℕ∞'-LLPO
+                                             → untruncated-LLPO'
+untruncated-ℕ∞'-LLPO-gives-untruncated-LLPO' fe llpo α β a b μ = II I
+ where
+  I : ((α , a) ＝ ∞') + ((β , b) ＝ ∞')
+  I = llpo (α , a) (β , b) (λ (ϕ , γ) → μ (ϕ , γ))
 
-  l-property : l₁ ∞' ＝ l₀ ∞'
-  l-property = ap (llpo (ℕ∞'-to-ℕ→𝟚 ∞')      (ℕ∞'-to-ℕ→𝟚 ∞')
-                  (ℕ∞'-to-ℕ→𝟚-prop ∞') (ℕ∞'-to-ℕ→𝟚-prop ∞'))
-                  (dfunext fe (λ (((_ , e) , _) : T (λ _ → ₀) × T (λ _ → ₀))
-                                                → 𝟘-elim (zero-is-not-one e)))
-  f₀ f₁ : ℕ∞' → 𝟚
-  f₀ u = ϕ u  ∞' (l₀ u)
-  f₁ u = ϕ ∞' u  (l₁ u)
+  II : type-of I → ¬ T α + ¬ T β
+  II (inl e) = inl (¬T-gives-not-T (λ n → ap (λ - → pr₁ - n) e))
+  II (inr e) = inr (¬T-gives-not-T (λ n → ap (λ - → pr₁ - n) e))
 
-  f-property : ¬ ((f₀ ∞' ＝ ₁) × (f₁ ∞' ＝ ₀))
-  f-property (e₀ , e₁) =
-   zero-is-not-one
-    (₀               ＝⟨ e₁ ⁻¹ ⟩
-     f₁ ∞'           ＝⟨ refl ⟩
-     ϕ ∞' ∞' (l₁ ∞') ＝⟨ ap (ϕ ∞' ∞') l-property ⟩
-     ϕ ∞' ∞' (l₀ ∞') ＝⟨ refl ⟩
-     f₀ ∞'           ＝⟨ e₀ ⟩
-     ₁               ∎ )
+untruncated-ℕ∞-LLPO-gives-untruncated-ℕ∞'-LLPO : funext₀
+                                               → untruncated-ℕ∞-LLPO
+                                               → untruncated-ℕ∞'-LLPO
+untruncated-ℕ∞-LLPO-gives-untruncated-ℕ∞'-LLPO fe llpo u v μ = II I
+ where
+  I : (ℕ∞'-to-ℕ∞ fe u ＝ ∞) + (ℕ∞'-to-ℕ∞ fe v ＝ ∞)
+  I = llpo
+        (ℕ∞'-to-ℕ∞ fe u)
+        (ℕ∞'-to-ℕ∞ fe v)
+        (λ (a , b) → μ (finite-gives-finite' fe u a ,
+                        finite-gives-finite' fe v b))
 
-  ϕ₀-property : (u : ℕ∞') (d : ¬ is-finite' u + ¬ is-finite' ∞')
-              → is-finite' u
-              → ϕ u ∞' d ＝ ₁
-  ϕ₀-property u (inl l) h = 𝟘-elim (l h)
-  ϕ₀-property u (inr _) h = refl
+  II : type-of I → (u ＝ ∞') + (v ＝ ∞')
+  II (inl d) = inl (∞-gives-∞' fe u d)
+  II (inr e) = inr (∞-gives-∞' fe v e)
 
-  ϕ₁-property : (u : ℕ∞') (d : ¬ is-finite' ∞' + ¬ is-finite' u)
-              → is-finite' u
-              → ϕ ∞' u d ＝ ₀
-  ϕ₁-property u (inl _) h = refl
-  ϕ₁-property u (inr r) h = 𝟘-elim (r h)
+untruncated-ℕ∞'-LLPO-gives-untruncated-ℕ∞-LLPO : funext₀
+                                               → untruncated-ℕ∞'-LLPO
+                                               → untruncated-ℕ∞-LLPO
+untruncated-ℕ∞'-LLPO-gives-untruncated-ℕ∞-LLPO fe llpo u v μ = II I
+ where
+  I : (ℕ∞-to-ℕ∞' fe u ＝ ∞') + (ℕ∞-to-ℕ∞' fe v ＝ ∞')
+  I = llpo
+        (ℕ∞-to-ℕ∞' fe u)
+        (ℕ∞-to-ℕ∞' fe v)
+        (λ (a , b) → μ (finite'-gives-finite fe u a ,
+                        finite'-gives-finite fe v b))
 
-  f₀-property : (u : ℕ∞') → is-finite' u → f₀ u ＝ ₁
-  f₀-property u = ϕ₀-property u (l₀ u)
+  II : type-of I → (u ＝ ∞) + (v ＝ ∞)
+  II (inl d) = inl (∞'-gives-∞ fe u d)
+  II (inr e) = inr (∞'-gives-∞ fe v e)
 
-  f₁-property : (u : ℕ∞') → is-finite' u → f₁ u ＝ ₀
-  f₁-property u = ϕ₁-property u (l₁ u)
+untruncated-ℕ∞-LLPO-gives-untruncated-LPO : funext₀
+                                          → untruncated-ℕ∞-LLPO
+                                          → untruncated-LLPO
+untruncated-ℕ∞-LLPO-gives-untruncated-LPO fe unllpo =
+ untrucated-LLPO'-gives-untruncated-LLPO
+  (untruncated-ℕ∞'-LLPO-gives-untruncated-LLPO' fe
+    (untruncated-ℕ∞-LLPO-gives-untruncated-ℕ∞'-LLPO fe unllpo))
 
-  wlpo₀ : f₀ ∞' ＝ ₀ → WLPO
-  wlpo₀ e = wlpo
-   where
-    𝕗₀ : ℕ∞ → 𝟚
-    𝕗₀ = complement ∘ f₀ ∘ ⌜ ℕ∞-to-ℕ∞'-≃ fe ⌝
-
-    b₀ : (n : ℕ) → 𝕗₀ (ι n) ＝ ₀
-    b₀ n = 𝕗₀ (ι n)                                   ＝⟨ refl ⟩
-           complement (f₀ (⌜ ℕ∞-to-ℕ∞'-≃ fe ⌝ (ι n))) ＝⟨ I ⟩
-           complement (f₀ (ι n))                      ＝⟨ II ⟩
-           complement ₁                               ＝⟨ refl ⟩
-           ₀                                          ∎
-            where
-             I  = ap (complement ∘ f₀) (finite-preservation fe n)
-             II = ap complement (f₀-property (ι n) (ℕ-to-ℕ∞'-is-finite' n))
-
-
-    b₁ : 𝕗₀ ∞ ＝ ₁
-    b₁ = 𝕗₀ ∞                                   ＝⟨ refl ⟩
-         complement (f₀ (⌜ ℕ∞-to-ℕ∞'-≃ fe ⌝ ∞)) ＝⟨ I ⟩
-         complement (f₀ ∞')                     ＝⟨ II ⟩
-         complement ₀                           ＝⟨ refl ⟩
-         ₁                                      ∎
-          where
-           I  = ap (complement ∘ f₀) (∞-preservation fe)
-           II = ap complement e
-
-    wlpo : WLPO
-    wlpo = basic-discontinuity-taboo fe 𝕗₀ (b₀ , b₁)
-
-  wlpo₁ : f₁ ∞' ＝ ₁ → WLPO
-  wlpo₁ e = wlpo
-   where
-    𝕗₁ : ℕ∞ → 𝟚
-    𝕗₁ = f₁ ∘ ⌜ ℕ∞-to-ℕ∞'-≃ fe ⌝
-
-    b₀ : (n : ℕ) → 𝕗₁ (ι n) ＝ ₀
-    b₀ n = 𝕗₁ (ι n)                      ＝⟨ refl ⟩
-           f₁ (⌜ ℕ∞-to-ℕ∞'-≃ fe ⌝ (ι n)) ＝⟨ ap f₁ (finite-preservation fe n) ⟩
-           f₁ (ι n)                      ＝⟨ I ⟩
-           ₀                             ∎
-            where
-             I = f₁-property (ι n) (ℕ-to-ℕ∞'-is-finite' n)
-
-    b₁ : 𝕗₁ ∞ ＝ ₁
-    b₁ = 𝕗₁ ∞                      ＝⟨ refl ⟩
-         f₁ (⌜ ℕ∞-to-ℕ∞'-≃ fe ⌝ ∞) ＝⟨ ap f₁ (∞-preservation fe) ⟩
-         f₁ ∞'                     ＝⟨ e ⟩
-         ₁                         ∎
-
-    wlpo : WLPO
-    wlpo = basic-discontinuity-taboo fe 𝕗₁ (b₀ , b₁)
-
-  wlpo : WLPO
-  wlpo = Cases (𝟚-possibilities (f₀ ∞'))
-          (λ (e₀ : f₀ ∞' ＝ ₀) → wlpo₀ e₀)
-          (λ (e₀ : f₀ ∞' ＝ ₁)
-                 → Cases (𝟚-possibilities (f₁ ∞'))
-                    (λ (e₁ : f₁ ∞' ＝ ₀) → 𝟘-elim (f-property (e₀ , e₁)))
-                    (λ (e₁ : f₁ ∞' ＝ ₁) → wlpo₁ e₁))
+untruncated-LLPO-gives-untruncated-ℕ∞-LPO : funext₀
+                                          → untruncated-LLPO
+                                          → untruncated-ℕ∞-LLPO
+untruncated-LLPO-gives-untruncated-ℕ∞-LPO fe ullpo =
+ untruncated-ℕ∞'-LLPO-gives-untruncated-ℕ∞-LLPO fe
+  (untruncated-LLPO'-gives-untruncated-ℕ∞'-LLPO fe
+   (untrucated-LLPO-gives-untruncated-LLPO' ullpo))
 
 \end{code}
 
-Added 27th Feb 2024. This solves a previous TODO.
+The following result seems to be new (and I announced it years ago in
+the constructivenews mailing list). The idea is to construct a
+non-continuous function using untruncated LLPO, and then derive WLPO
+from this. This proof was written here 15th November 2023, simplified
+28th February 2024, for which we included the above ℕ∞-versions of
+LLPO and their equivalences.
 
-And the converse also holds with a simpler proof, and so there isn't
-any difference between WLPO and untruncated LLPO.
+\begin{code}
+
+untruncated-ℕ∞-LLPO-gives-WLPO : funext₀ → untruncated-ℕ∞-LLPO → WLPO
+untruncated-ℕ∞-LLPO-gives-WLPO fe llpo = wlpo
+ where
+  D : ℕ∞ → ℕ∞ → 𝓤₀ ̇
+  D u v = (u ＝ ∞) + (v ＝ ∞)
+
+  ϕ : (u v : ℕ∞) → D u v → 𝟚
+  ϕ u v (inl _) = ₀
+  ϕ u v (inr _) = ₁
+
+  l₀ : (u : ℕ∞) → D u ∞
+  l₀ u = llpo u ∞ (λ (_ , ∞-is-finite) → is-infinite-∞ ∞-is-finite)
+
+  l₁ : (u : ℕ∞) → D ∞ u
+  l₁ u = llpo ∞ u (λ (∞-is-finite , _) → is-infinite-∞ ∞-is-finite)
+
+  l-∞-agreement : l₀ ∞ ＝ l₁ ∞
+  l-∞-agreement = refl
+
+  f₀ f₁ : ℕ∞ → 𝟚
+  f₀ u = ϕ u ∞ (l₀ u)
+  f₁ u = ϕ ∞ u (l₁ u)
+
+  f-∞-agreement : f₀ ∞ ＝ f₁ ∞
+  f-∞-agreement = refl
+
+  ϕ₀-property : (u : ℕ∞) (d : D u ∞) → is-finite u → ϕ u ∞ d ＝ ₁
+  ϕ₀-property .∞ (inl refl) ∞-is-finite = 𝟘-elim (is-infinite-∞ ∞-is-finite)
+  ϕ₀-property u  (inr _)    _           = refl
+
+  ϕ₁-property : (u : ℕ∞) (d : D ∞ u) → is-finite u → ϕ ∞ u d ＝ ₀
+  ϕ₁-property u  (inl _)    _           = refl
+  ϕ₁-property .∞ (inr refl) ∞-is-finite = 𝟘-elim (is-infinite-∞ ∞-is-finite)
+
+  f₀-property : (u : ℕ∞) → is-finite u → f₀ u ＝ ₁
+  f₀-property u = ϕ₀-property u (l₀ u)
+
+  f₁-property : (u : ℕ∞) → is-finite u → f₁ u ＝ ₀
+  f₁-property u = ϕ₁-property u (l₁ u)
+
+  wlpo₀ : f₀ ∞ ＝ ₀ → WLPO
+  wlpo₀ e = wlpo
+   where
+    g₀ : ℕ∞ → 𝟚
+    g₀ = complement ∘ f₀
+
+    b₀ : (n : ℕ) → g₀ (ι n) ＝ ₀
+    b₀ n = ap complement (f₀-property (ι n) (ℕ-to-ℕ∞-is-finite n))
+
+    b₁ : g₀ ∞ ＝ ₁
+    b₁ = ap complement e
+
+    wlpo : WLPO
+    wlpo = basic-discontinuity-taboo fe g₀ (b₀ , b₁)
+
+  wlpo₁ : f₁ ∞ ＝ ₁ → WLPO
+  wlpo₁ b₁ = wlpo
+   where
+    b₀ : (n : ℕ) → f₁ (ι n) ＝ ₀
+    b₀ n = f₁-property (ι n) (ℕ-to-ℕ∞-is-finite n)
+
+    wlpo : WLPO
+    wlpo = basic-discontinuity-taboo fe f₁ (b₀ , b₁)
+
+  wlpo : WLPO
+  wlpo = Cases (𝟚-possibilities (f₀ ∞))
+          (λ (a : f₀ ∞ ＝ ₀)
+                → wlpo₀ a)
+          (λ (b : f₀ ∞ ＝ ₁)
+                → Cases (𝟚-possibilities (f₁ ∞))
+                   (λ (c : f₁ ∞ ＝ ₀)
+                         → 𝟘-elim (zero-is-not-one
+                                    (₀    ＝⟨ c ⁻¹ ⟩
+                                     f₁ ∞ ＝⟨ f-∞-agreement ⟩
+                                     f₀ ∞ ＝⟨ b ⟩
+                                     ₁    ∎)))
+                   (λ (d : f₁ ∞ ＝ ₁)
+                         → wlpo₁ d))
+
+\end{code}
+
+Added 27th Feb 2024. The converse also holds with a simpler proof, and
+so there isn't any difference between WLPO and untruncated LLPO.
 
 \begin{code}
 
@@ -308,22 +356,25 @@ module _ (pt : propositional-truncations-exist) where
       → is-prop (Σ n ꞉ ℕ , α n ＝ ₁)
       → ((n : ℕ) → α (double n) ＝ ₀) ∨ ((n : ℕ) → α (sdouble n) ＝ ₀)
 
+ LLPO' : 𝓤₀ ̇
+ LLPO' = (β γ : ℕ → 𝟚)
+       → is-prop (T β)
+       → is-prop (T γ)
+       → ¬ (T β × T γ) → ¬ T β + ¬ T γ
+
+ ℕ∞-LLPO : 𝓤₀ ̇
+ ℕ∞-LLPO = (u v : ℕ∞) → ¬ (is-finite u × is-finite v) → (u ＝ ∞) + (v ＝ ∞)
+
+ ℕ∞'-LLPO : 𝓤₀ ̇
+ ℕ∞'-LLPO = (u v : ℕ∞') → ¬ (is-finite' u × is-finite' v) → (u ＝ ∞') + (v ＝ ∞')
+
  untruncated-LLPO-gives-LLPO : untruncated-LLPO → LLPO
  untruncated-LLPO-gives-LLPO ullpo α i = ∣ ullpo α i ∣
 
 \end{code}
 
-The most natural form of LLPO for what we've done above is the following.
+TODO. Show that ℕ∞-LLPO and LLPO are equivalent.
 
-TODO. Prove that this is equivalent to LLPO.
-
-\begin{code}
-
- ℕ∞-LLPO : 𝓤₀ ̇
- ℕ∞-LLPO = (u v : ℕ∞) → ¬ (is-finite u × is-finite v) → (u ＝ ∞) ∨ (v ＝ ∞)
-
-\end{code}
-
-LLPO doesn't imply WLPO (there are published refereced - find and
+LLPO doesn't imply WLPO (there are published refereces - find and
 include them here). One example seems to Johnstone's topological
 topos, but this is unpublished as far as I know.

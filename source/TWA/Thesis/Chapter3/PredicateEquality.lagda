@@ -1,9 +1,9 @@
-[⇐ Index](../html/TWA.Thesis.index.html)
+Todd Waugh Ambridge, January 2024
 
 # Equality of uniformly continuous predicates
 
-```agda
-{-# OPTIONS --without-K --exact-split --safe #-}
+\begin{code}
+{-# OPTIONS --without-K --safe #-}
 
 open import MLTT.Spartan
 open import UF.FunExt
@@ -98,6 +98,4 @@ decidable-uc-predicate-with-mod-＝
  = to-subtype-＝ (λ p → uc-continuous-is-prop X (pr₁ p) δ)
      (to-subtype-＝ (λ p → complemented-is-prop p)
        (predicate-＝ p₁ p₂ f))
-```
-
-[⇐ Index](../html/TWA.Thesis.index.html)
+\end{code}

@@ -1,9 +1,9 @@
-[⇐ Index](../html/TWA.Thesis.index.html)
+Todd Waugh Ambridge, January 2024
 
 # Interval object finite approximations
 
-```agda
-{-# OPTIONS --without-K --exact-split --safe #-}
+\begin{code}
+{-# OPTIONS --without-K --safe #-}
 
 open import MLTT.Spartan
 open import UF.FunExt
@@ -252,6 +252,4 @@ cancellation-holds a b c f = M-idem a ⁻¹ ∙ γ ∙ M-idem b
     IH₂ = n-approx-c i
   γ : M (λ _ → a) ＝ M (λ _ → b)
   γ = approx-holds (λ _ → a) (λ _ → b) (λ i → (c , c) :: n-approx-c i)
-```
-
-[⇐ Index](../html/TWA.Thesis.index.html)
+\end{code}

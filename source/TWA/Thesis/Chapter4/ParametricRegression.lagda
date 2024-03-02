@@ -1,9 +1,9 @@
-[⇐ Index](../html/TWA.Thesis.index.html)
+Todd Waugh Ambridge, January 2024
 
 # Parametric Regression
 
-```agda
-{-# OPTIONS --without-K --exact-split --safe #-}
+\begin{code}
+{-# OPTIONS --without-K --safe #-}
 
 open import UF.FunExt
 open import UF.Subsingletons
@@ -33,11 +33,11 @@ open import TWA.Thesis.Chapter4.ApproxOrder-Examples fe
 open import TWA.Thesis.Chapter4.GlobalOptimisation fe
 
 open import TWA.Closeness fe hiding (is-ultra;is-closeness)
-```
+\end{code}
 
 ## Regression as maximisation
 
-```
+\end{code}
 invert-rel : {X : 𝓤 ̇ } → (X → X → 𝓥 ̇ ) → (X → X → 𝓥 ̇ )
 invert-rel R x y = R y x
 
@@ -232,6 +232,4 @@ perfect-convergence
 perfect-convergence X Y S ε M ϕᴹ k
  = s-imperfect-convergence X Y S ε M ϕᴹ id k (C'-refl Y ε 𝓞)
  where 𝓞 = M k
-```
-
-[⇐ Index](../html/TWA.Thesis.index.html)
+\end{code}

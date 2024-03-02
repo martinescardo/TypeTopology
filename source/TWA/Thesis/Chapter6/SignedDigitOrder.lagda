@@ -1,9 +1,9 @@
-[⇐ Index](../html/TWA.Thesis.index.html)
+Todd Waugh Ambridge, January 2024
 
 # Real-order preserving order on ternary signed-digit encodings
 
-```agda
-{-# OPTIONS --without-K --exact-split --safe #-}
+\begin{code}
+{-# OPTIONS --without-K --safe #-}
 
 open import MLTT.Spartan
 open import Naturals.Order
@@ -25,11 +25,11 @@ module TWA.Thesis.Chapter6.SignedDigitOrder
 open import TWA.Thesis.Chapter3.ClosenessSpaces fe
 open import TWA.Thesis.Chapter3.ClosenessSpaces-Examples fe
 open import TWA.Thesis.Chapter4.ApproxOrder fe
-```
+\end{code}
 
 ## Integer approx (originally defined in BoehmVerification)
 
-```
+\end{code}
 𝟛-to-down : (a : 𝟛) → (ℤ → ℤ)
 𝟛-to-down −1 = downLeft
 𝟛-to-down  O = downMid
@@ -52,11 +52,11 @@ ternary-to-ℤ²' b α k n = integer-approx α n , n
 
 ternary-to-ℤ² : 𝟛ᴺ → (ℕ → ℤ × ℕ)
 ternary-to-ℤ² α = ternary-to-ℤ²' (α 0) (α ∘ succ) (negsucc 0)
-```
+\end{code}
 
 ## Real preserving preorder
 
-```
+\end{code}
 
 module RealPresOrder (pt : propositional-truncations-exist) where
 
@@ -92,11 +92,11 @@ module RealPresOrder (pt : propositional-truncations-exist) where
        m≤ i nm≤i = ≤-trans m (max n m) i (max-≤-upper-bound' m n) nm≤i
    p : is-prop-valued _≤𝟛ᴺ_
    p x y = ∃-is-prop
-```
+\end{code}
 
 ## Real-preserving approximate order
 
-```
+\end{code}
 _≤ⁿ𝟛ᴺ_ : 𝟛ᴺ → 𝟛ᴺ → ℕ → 𝓤₀ ̇
 (x ≤ⁿ𝟛ᴺ y) n = integer-approx x n ≤ integer-approx y n
 
@@ -154,6 +154,4 @@ module RealPresOrder-Relates
                  _≤ⁿ𝟛ᴺ_ ≤ⁿ𝟛ᴺ-is-approx-order
                  _≤𝟛ᴺ_ ≤𝟛ᴺ-is-preorder
  ≤ⁿ𝟛ᴺ-relates = ≤ⁿ𝟛ᴺ-relates→ , ≤ⁿ𝟛ᴺ-relates←
-```
-
-[⇐ Index](../html/TWA.Thesis.index.html)
+\end{code}

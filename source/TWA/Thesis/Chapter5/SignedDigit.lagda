@@ -1,9 +1,9 @@
-[⇐ Index](../html/TWA.Thesis.index.html)
+Todd Waugh Ambridge, January 2024
 
 # Ternary signed-digit encodings
 
-```agda
-{-# OPTIONS --without-K --exact-split --safe #-}
+\begin{code}
+{-# OPTIONS --without-K --safe #-}
 
 open import MLTT.Spartan
 open import UF.DiscreteAndSeparated
@@ -17,11 +17,11 @@ open import TWA.Thesis.Chapter2.Finite
 open import TWA.Thesis.Chapter2.Sequences
 
 module TWA.Thesis.Chapter5.SignedDigit where
-```
+\end{code}
 
 ## Definition
 
-```
+\begin{code}
 data 𝟛 : 𝓤₀ ̇ where
   −1 O +1 : 𝟛
 
@@ -53,11 +53,11 @@ data 𝟛 : 𝓤₀ ̇ where
 
 𝟛ᴺ : 𝓤₀ ̇ 
 𝟛ᴺ = ℕ → 𝟛
-```
+\end{code}
 
 ## Negation
 
-```
+\begin{code}
 flip : 𝟛 → 𝟛
 flip −1 = +1
 flip  O =  O
@@ -65,11 +65,11 @@ flip +1 = −1
 
 neg : 𝟛ᴺ → 𝟛ᴺ
 neg = map flip
-```
+\end{code}
 
 ## Binary midpoint
 
-```
+\begin{code}
 data 𝟝 : 𝓤₀ ̇ where
   −2 −1 O +1 +2 : 𝟝
 
@@ -116,11 +116,11 @@ div2 α (succ n) = div2 (b ∷ x) n
 
 mid : 𝟛ᴺ → 𝟛ᴺ → 𝟛ᴺ
 mid α β = div2 (add2 α β)
-```
+\end{code}
 
 ## Infinitary midpoint
 
-```
+\begin{code}
 data 𝟡 : 𝓤₀ ̇ where
   −4 −3 −2 −1 O +1 +2 +3 +4 : 𝟡
 
@@ -232,11 +232,11 @@ bigMid' zs (succ n) = bigMid' (mid (tail (tail x)) (tail y) ∷ tail (tail zs)) 
 
 bigMid : (ℕ → 𝟛ᴺ) → 𝟛ᴺ
 bigMid = div4 ∘ bigMid'
-```
+\end{code}
 
 ## Multiplication
 
-```
+\begin{code}
 _*𝟛_ : 𝟛 → 𝟛 → 𝟛
 (−1 *𝟛 x) = flip x
 ( O *𝟛 x) = O
@@ -247,6 +247,4 @@ digitMul a = map (a *𝟛_)
 
 mul : 𝟛ᴺ → 𝟛ᴺ → 𝟛ᴺ
 mul x y = bigMid (zipWith digitMul x (repeat y))
-```
-
-[⇐ Index](../html/TWA.Thesis.index.html)
+\end{code}
