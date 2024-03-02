@@ -26,7 +26,6 @@ open import Locales.DistributiveLattice.Definition fe pt
 open import Locales.DistributiveLattice.Ideal pt fe pe
 open import Locales.DistributiveLattice.Properties fe pt
 open import Locales.Frame pt fe hiding (is-directed)
-open import Locales.Poset pt fe
 open import MLTT.Fin hiding (𝟎; 𝟏)
 open import MLTT.List hiding ([_])
 open import MLTT.Spartan
@@ -234,18 +233,19 @@ subcover.
 \begin{code}
 
  open Locale
+ open import Locales.DirectedFamily pt fe _⊆ᵢ_
+
 
  finite-subcover : (S : Fam 𝓤 (Ideal L)) (xs : List ∣ L ∣ᵈ)
-                 → is-directed poset-of-ideals S holds
+                 → is-directed S holds
                  → xs ◁ S
                  → ∃ i ꞉ index S , join-listᵈ L xs ∈ᵢ (S [ i ]) holds
- finite-subcover S [] δ c =
-  ∥∥-rec ∃-is-prop γ (directed-implies-inhabited poset-of-ideals S δ)
-   where
-    γ : index S → ∃ i ꞉ index S , join-listᵈ L [] ∈ⁱ (S [ i ])
-    γ i = ∣ i , Sᵢ-contains-𝟎 ∣
-     where
-      open Ideal (S [ i ]) renaming (I-contains-𝟎 to Sᵢ-contains-𝟎)
+ finite-subcover S [] δ c = ∥∥-rec ∃-is-prop γ (directed-implies-inhabited S δ)
+  where
+   γ : index S → ∃ i ꞉ index S , join-listᵈ L [] ∈ⁱ (S [ i ])
+   γ i = ∣ i , Sᵢ-contains-𝟎 ∣
+    where
+     open Ideal (S [ i ]) renaming (I-contains-𝟎 to Sᵢ-contains-𝟎)
  finite-subcover S (x ∷ xs) δ ((i , μ) , c) = ∥∥-rec ∃-is-prop † IH
   where
    IH : ∃ i ꞉ index S , join-listᵈ L xs ∈ᵢ (S [ i ]) holds
