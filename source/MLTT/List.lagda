@@ -109,8 +109,8 @@ listed X = Σ xs ꞉ List X , ((x : X) → member x xs)
 listed⁺ : Type → Type
 listed⁺ X = X × listed X
 
-type-from-list : {X : Type} → List X → Type
-type-from-list {X} xs = Σ x ꞉ X , member x xs
+type-from-list : {X : 𝓤  ̇} → List X → 𝓤  ̇
+type-from-list {X = X} xs = Σ x ꞉ X , member x xs
 
 type-from-list-is-listed : {X : Type} (xs : List X)
                          → listed (type-from-list xs)

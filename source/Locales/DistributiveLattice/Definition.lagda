@@ -75,6 +75,11 @@ Some easy lemmas that we prove directly inside the record definition.
                             Ⅲ = ap (_∨ (x ∧ z)) (∧-commutative x y)
                             Ⅳ = ap ((y ∧ x) ∨_) (∧-commutative x z)
 
+ ∨-unit₁ : (x : X) → 𝟎 ∨ x ＝ x
+ ∨-unit₁ x = 𝟎 ∨ x   ＝⟨ ∨-commutative 𝟎 x ⟩
+             x ∨ 𝟎   ＝⟨ ∨-unit x          ⟩
+             x       ∎
+
  ∧-absorptive₁ : (x y : X) → x ∧ (y ∨ x) ＝ x
  ∧-absorptive₁ x y = x ∧ (y ∨ x) ＝⟨ ap (x ∧_) (∨-commutative y x) ⟩
                      x ∧ (x ∨ y) ＝⟨ ∧-absorptive x y              ⟩
@@ -266,6 +271,16 @@ module _ (L : DistributiveLattice 𝓤) where
  open DistributiveLattice L
  open Meets (orderᵈ-∧ L)
  open Joins (orderᵈ-∧ L)
+
+ 𝟏ᵈ-is-top : (x : X) → (x ≤ᵈ[ L ] 𝟏) holds
+ 𝟏ᵈ-is-top = ∧-unit
+
+ 𝟎ᵈ-is-bottom : (x : X) → (𝟎 ≤ᵈ[ L ] x) holds
+ 𝟎ᵈ-is-bottom x = orderᵈ-∨-implies-orderᵈ L (∨-unit₁ x)
+
+ only-𝟎-is-below-𝟎ᵈ : (x : X) → (x ≤ᵈ[ L ] 𝟎) holds → x ＝ 𝟎
+ only-𝟎-is-below-𝟎ᵈ x p =
+  ≤-is-antisymmetric (poset-ofᵈ L) p (𝟎ᵈ-is-bottom x)
 
  ∧-is-a-lower-bound₂ : (x y : X) → ((x ∧ y) ≤ᵈ[ L ] y) holds
  ∧-is-a-lower-bound₂ x y = (x ∧ y) ∧ y ＝⟨ Ⅰ ⟩
