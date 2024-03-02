@@ -1,9 +1,9 @@
-[⇐ Index](../html/TWA.Thesis.index.html)
+Todd Waugh Ambridge, January 2024
 
 # Formalisation of the Escardo-Simpson interval object
 
-```agda
-{-# OPTIONS --without-K --exact-split --safe #-}
+\begin{code}
+{-# OPTIONS --without-K --safe #-}
 
 open import UF.FunExt
 open import MLTT.Spartan
@@ -14,11 +14,11 @@ open import UF.Sets
 module TWA.Thesis.Chapter5.IntervalObject (fe : FunExt) where
 
 open import Naturals.Sequence fe
-```
+\end{code}
 
 ## Midpoint algebras
 
-```
+\begin{code}
 associative' idempotent transpositional : {X : 𝓤 ̇ } → (X → X → X) → 𝓤 ̇
 associative'     _∙_
  = ∀ a b c   → a ∙ (b ∙ c)       ＝ (a ∙ b) ∙ c
@@ -42,11 +42,11 @@ Midpoint-algebra 𝓤
 
 cancellative : {X : 𝓤 ̇ } → (X → X → X) → 𝓤 ̇
 cancellative  _∙_ = ∀ a b c → a ∙ c ＝ b ∙ c → a ＝ b
-```
+\end{code}
 
 ## Iteration property
 
-```
+\begin{code}
 iterative : {A : 𝓤 ̇ } → (A → A → A) → 𝓤 ̇
 iterative {𝓤} {A} _⊕_
  = Σ M ꞉ ((ℕ → A) → A) , ((a : ℕ → A) → M a ＝ a 0 ⊕ M (tail a))
@@ -72,11 +72,11 @@ iterative-uniqueness : {A : 𝓤 ̇ } → (_⊕_ : A → A → A)
                      → pr₁ F ＝ pr₁ M
 iterative-uniqueness {𝓤} _⊕_ F M
  = dfunext (fe 𝓤 𝓤) (iterative-uniqueness· _⊕_ F M)
-```
+\end{code}
 
 ## Convex bodies
 
-```
+\begin{code}
 convex-body-axioms : (A : 𝓤 ̇ ) → (A → A → A) → 𝓤 ̇
 convex-body-axioms {𝓤} A _⊕_ = (midpoint-algebra-axioms A _⊕_)
                              × (cancellative _⊕_)
@@ -88,11 +88,11 @@ Convex-body 𝓤
 
 ⟨_⟩ : Convex-body 𝓤 → 𝓤 ̇
 ⟨ A , _ ⟩ = A
-```
+\end{code}
 
 ## Midpoint homomorphisms
 
-```
+\begin{code}
 midpoint-operation : (𝓐 : Convex-body 𝓤) → ⟨ 𝓐 ⟩ → ⟨ 𝓐 ⟩ → ⟨ 𝓐 ⟩
 midpoint-operation (A , _⊕_ , _) = _⊕_
 
@@ -133,11 +133,11 @@ id-is-⊕-homomorphism 𝓐 x y = refl
   = (h₂ ∘ h₁) (x ⊕⟨ 𝓐 ⟩ y)                       ＝⟨ ap h₂ (i₁ x y) ⟩
          h₂  ((h₁ x) ⊕⟨ 𝓑 ⟩ (h₁ y))             ＝⟨ i₂ (h₁ x) (h₁ y) ⟩
              ((h₂ ∘ h₁) x) ⊕⟨ 𝓒 ⟩ ((h₂ ∘ h₁) y) ∎
-```
+\end{code}
 
 ## Interval objects
 
-```
+\begin{code}
 is-interval-object
  : (𝓘 : Convex-body 𝓤) (𝓥 : Universe) → ⟨ 𝓘 ⟩ → ⟨ 𝓘 ⟩ → 𝓤 ⊔ 𝓥 ⁺ ̇
 is-interval-object 𝓘 𝓥 u v 
@@ -176,11 +176,11 @@ module basic-interval-object-development {𝓤 : Universe}
 
  𝓘 : Convex-body 𝓤
  𝓘 = 𝕀 , _⊕_ , mpaa , ⊕-canc , ia
-```
+\end{code}
 
 ## Affine map
 
-```
+\begin{code}
  affine : 𝕀 → 𝕀 → 𝕀 → 𝕀
  affine x y = ∃!-witness (universal-property 𝓘 x y)
 
@@ -221,11 +221,11 @@ module basic-interval-object-development {𝓤 : Universe}
  affine-constant : (a : 𝕀) (x : 𝕀) → affine a a x ＝ a
  affine-constant a
   = affine-uniqueness· (λ _ → a) a a refl refl (λ _ _ → ⊕-idem a ⁻¹)
-```
+\end{code}
 
 ## M properties
 
-```
+\begin{code}
  M : (ℕ → 𝕀) → 𝕀
  M = pr₁ ia
 
@@ -330,22 +330,22 @@ module basic-interval-object-development {𝓤 : Universe}
               → affine x y (M z) ＝ M (λ n → affine x y (z n))
  affine-M-hom x y z
   = ⊕-homs-are-M-homs (affine x y) (affine-is-⊕-homomorphism x y) z
-```
+\end{code}
 
 ## Representing [-1,1]
 
-```
+\begin{code}
  −1 +1 : 𝕀
  −1 = u
  +1 = v
 
  O : 𝕀
  O  = −1 ⊕ +1
-```
+\end{code}
 
 ## Negation
 
-```
+\begin{code}
  −_ : 𝕀 → 𝕀
  −_ = affine +1 −1
 
@@ -406,11 +406,11 @@ module basic-interval-object-development {𝓤 : Universe}
                           (−-is-⊕-homomorphism x y)
                      ∙ ⊕-tran x y (− x) (− y))
               x
-```
+\end{code}
 
 ## Multiplication
 
-```
+\begin{code}
  _*_ : 𝕀 → 𝕀 → 𝕀
  x * y = affine (− x) x y
 
@@ -510,15 +510,13 @@ module basic-interval-object-development {𝓤 : Universe}
            x * (y * a) ⊕ x * (y * b) ∎
    γ : (λ z → (x * y) * z) ∼ (λ z → x * (y * z))
    γ = affine-uniqueness· (λ z → x * (y * z)) (− (x * y)) (x * y) l r i
-```
+\end{code}
 
 ## Halving
 
-```
+\begin{code}
  _/2 : 𝕀 → 𝕀
  _/2 = _⊕ O
  +1/2 = +1 /2
  −1/2 = −1 /2
-```
-
-[⇐ Index](../html/TWA.Thesis.index.html)
+\end{code}

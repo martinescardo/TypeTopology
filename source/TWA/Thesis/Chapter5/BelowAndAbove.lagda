@@ -1,9 +1,9 @@
-[⇐ Index](../html/TWA.Thesis.index.html)
+Todd Waugh Ambridge, January 2024
 
 # Structural properties of ternary Boehm encodings
 
-```agda
-{-# OPTIONS --exact-split --without-K --safe #-}
+\begin{code}
+{-# OPTIONS --without-K --safe #-}
 
 open import Integers.Addition renaming (_+_ to _ℤ+_)
 open import Notation.Order
@@ -15,20 +15,20 @@ open import Naturals.Addition renaming (_+_ to _ℕ+_)
 open import TWA.Thesis.Chapter5.Integers
 
 module TWA.Thesis.Chapter5.BelowAndAbove where
-```
+\end{code}
 
 ## downLeft, downMid and downRight
 
-```agda
+\begin{code}
 downLeft downMid downRight : ℤ → ℤ
 downLeft  a = a ℤ+ a
 downMid   a = succℤ (downLeft a)
 downRight a = succℤ (downMid  a)
-```
+\end{code}
 
 ## downLeft and downRight properties
 
-```agda
+\begin{code}
 pred-downMid : (a : ℤ) → predℤ (downMid a) ＝ downLeft a
 pred-downMid a = predsuccℤ _
 
@@ -139,11 +139,11 @@ downRight＝downLeft : (a : ℤ) → downRight a ＝ downLeft (succℤ a)
 downRight＝downLeft a
  = ap succℤ (ℤ-left-succ a a ⁻¹ ∙ ℤ+-comm (succℤ a) a)
  ∙ ℤ-left-succ a (succℤ a) ⁻¹
-```
+\end{code}
 
 ## below and below'
 
-```agda
+\begin{code}
 _below_ : ℤ → ℤ → 𝓤₀ ̇ 
 a below b = downLeft b ≤ a ≤ downRight b
 
@@ -205,21 +205,21 @@ below-implies-below' a b
    k＝2 = pos-lc (ℤ+-lc (pos k) (pos 2) (downLeft b) (η ∙ ζ ⁻¹))
    k≠2 : k ≠ 2
    k≠2 = λ ()
-```
+\end{code}
 
 ## upLeft and upRight
 
-```agda
+\begin{code}
 upRight : ℤ → ℤ
 upRight x = sign x (num x /2)
 
 upLeft : ℤ → ℤ
 upLeft x = upRight (predℤ x)
-```
+\end{code}
 
 ## upLeft and upRight properties
 
-```agda
+\begin{code}
 upRight-suc : (a : ℤ) → upRight (succℤ (succℤ a)) ＝ succℤ (upRight a)
 upRight-suc (pos zero) = refl
 upRight-suc (pos (succ zero)) = refl
@@ -315,11 +315,11 @@ upLeft-<< a b (n , refl)
  = upRight-<< (predℤ a) b
      (n , (ap (_+pos n) (succpredℤ _) ∙ predsuccℤ _ ⁻¹
          ∙ ap predℤ (ℤ-left-succ-pos a n ⁻¹)))
-```
+\end{code}
 
 ## above and above'
 
-```agda
+\begin{code}
 _above_ : ℤ → ℤ → 𝓤₀ ̇ 
 b above a = upLeft a ≤ℤ b ≤ℤ upRight a
 
@@ -387,11 +387,11 @@ above-implies-above' a b (l≤a , a≤r)
                              (transport (_≤ℤ a) e l<a))))
        inr)
      (inl ∘ _⁻¹)
-```
+\end{code}
 
 ## Relationship between below and above
 
-```agda
+\begin{code}
 upRight-downLeft-pos : (b : ℕ) → pos b ＝ upRight (downLeft (pos b))
 upRight-downLeft-pos 0 = refl
 upRight-downLeft-pos (succ b)
@@ -576,6 +576,4 @@ above-downMid a
 above-downRight : (a : ℤ) → a above (downRight a)
 above-downRight a
  = below-implies-above (downRight a) a (downRight-below a)
-```
-
-[⇐ Index](../html/TWA.Thesis.index.html)
+\end{code}

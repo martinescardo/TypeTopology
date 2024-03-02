@@ -1,9 +1,9 @@
-[⇐ Index](../html/TWA.Thesis.index.html)
+Todd Waugh Ambridge, January 2024
 
 # Examples of uniformly continuous searchable closeness spaces
 
-```agda
-{-# OPTIONS --without-K --exact-split --safe #-}
+\begin{code}
+{-# OPTIONS --without-K --safe #-}
 
 open import MLTT.Spartan
 open import UF.FunExt
@@ -25,11 +25,11 @@ open import TWA.Thesis.Chapter3.ClosenessSpaces fe
  hiding (decidable-predicate;decidable-uc-predicate)
 open import TWA.Thesis.Chapter3.ClosenessSpaces-Examples fe
 open import TWA.Thesis.Chapter3.PredicateEquality fe pe
-```
+\end{code}
 
 ## Finite uniformly continuously searchable spaces
 
-```
+\end{code}
 finite-csearchable
  : (X : ClosenessSpace 𝓤)
  → (f : finite-linear-order ⟨ X ⟩)
@@ -37,11 +37,11 @@ finite-csearchable
  → csearchable 𝓦 X
 finite-csearchable X f x
  = searchable→csearchable X (finite-searchable f x)
-```
+\end{code}
 
 ## Disjoint union of uniformly continuously searchable spaces
 
-```
+\end{code}
 +-csearchable : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥)
               → csearchable 𝓦 X
               → csearchable 𝓦 Y
@@ -70,11 +70,11 @@ finite-csearchable X f x
   γ (inl  px₀) _ = px₀
   γ (inr ¬px₀) (inl x , px) = 𝟘-elim (¬px₀ (γx (x , px)))
   γ (inr ¬px₀) (inr y , py) = γy (y , py)
-```
+\end{code}
 
 ## Binary product of uniformly continuously searchable spaces
 
-```
+\end{code}
 ×-pred-left : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥)
             → decidable-uc-predicate 𝓦 (×-ClosenessSpace X Y)
             → ⟨ Y ⟩ → decidable-uc-predicate 𝓦 X
@@ -136,11 +136,11 @@ finite-csearchable X f x
   xy₀ = x₀ , y₀ x₀
   γ : (Σ xy ꞉ ⟨ X ⟩ × ⟨ Y ⟩ , (p xy holds)) → p xy₀ holds
   γ ((x , y) , pxy) = γx (x , γy x (y , pxy))
-```
+\end{code}
 
 ## Equivalent uniformly continuously searchable spaces
 
-```
+\end{code}
 ≃-csearchable : {X : 𝓤 ̇} (Y : ClosenessSpace 𝓥)
               → (e : X ≃ ⟨ Y ⟩)
               → csearchable 𝓦 Y
@@ -168,11 +168,11 @@ finite-csearchable X f x
    = pr₂ (S ((p , d) , δ , ϕ))
        (f x , transport (λ - → p' - holds)
          (μ x ⁻¹ ∙ (ap h (η (f x) ⁻¹) ∙ μ (g (f x)))) phx)
-```
+\end{code}
 
 ## Finite-sequence uniformly continuously searchable spaces
 
-```
+\end{code}
 tail-predicate
  : {X : ℕ → 𝓤 ̇ }
  → (f : (n : ℕ) → finite-linear-order (X n))
@@ -271,11 +271,11 @@ discrete-finite-seq-csearchable
  → csearchable 𝓦 (ℕ→D-ClosenessSpace ds)
 discrete-finite-seq-csearchable x₀ f ds
  = dep-discrete-finite-seq-csearchable (λ _ → x₀) (λ _ → f) (λ _ → ds) 
-```
+\end{code}
 
 ## Tychonoff theorem
 
-```
+\end{code}
 tail-predicate-tych
  : (T : ℕ → ClosenessSpace 𝓤)
  → (δ : ℕ)
@@ -380,7 +380,4 @@ tychonoff : (T : ℕ → ClosenessSpace 𝓤)
           → ((n : ℕ) → csearchable 𝓦 (T n))
           → csearchable 𝓦 (Π-ClosenessSpace T)
 tychonoff T S ((p , d) , δ , ϕ) = tychonoff' T S δ ((p , d) , ϕ)
-```
-
-[⇐ Index](../html/TWA.Thesis.index.html)
-
+\end{code}

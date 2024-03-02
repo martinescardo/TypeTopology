@@ -1,9 +1,9 @@
-[⇐ Index](../html/TWA.Thesis.index.html)
+Todd Waugh Ambridge, January 2024
 
 # Ternary Boehm encodings of real numbers
 
-```agda
-{-# OPTIONS --exact-split --without-K --safe #-}
+\begin{code}
+{-# OPTIONS --without-K --safe #-}
 
 open import Integers.Addition renaming (_+_ to _ℤ+_;  _-_ to _ℤ-_)
 open import Integers.Negation renaming (-_ to ℤ-_ )
@@ -41,11 +41,11 @@ open Dyadics dy
 open import TWA.Thesis.AndrewSneap.DyadicReals pe pt fe dy
 open import TWA.Thesis.Chapter3.ClosenessSpaces fe hiding (⟨_⟩ ; ι)
 open import TWA.Thesis.Chapter3.ClosenessSpaces-Examples fe
-```
+\end{code}
 
 ## Structural operations and properties
 
-```
+\end{code}
 downLeft downMid downRight : ℤ → ℤ
 downLeft  k = (k ℤ+ k)
 downMid   k = (k ℤ+ k) +pos 1
@@ -107,11 +107,11 @@ nested-implies-fully-nested
  : (ζ : ℤ → ℤ[1/2]ᴵ) → nested ζ → fully-nested ζ
 nested-implies-fully-nested ζ ρ n m (k , refl)
  = nested-implies-fully-nested' ζ ρ k n
-```
+\end{code}
 
 ## Verification of the structure of ternary Boehm encodings
 
-```
+\end{code}
 -- By Andrew Sneap
 ⦅_⦆ : (χ : ℤ → ℤ[1/2]ᴵ) → nested χ → positioned χ → ℝ-d
 ⦅_⦆ χ τ π = (L , R)
@@ -475,11 +475,11 @@ ternary-normalised≃𝕋
   χ' = pr₁ γ 
   τ  = pr₁ (pr₂ γ)
   π  = pr₂ (pr₂ γ)
-```
+\end{code}
 
 ## Representing compact intervals
 
-``` 
+\end{code} 
 CompactInterval : ℤ × ℤ → 𝓤₀ ̇
 CompactInterval (k , δ) = Σ (x , _) ꞉ 𝕋 , x(δ) ＝ k
 
@@ -799,6 +799,4 @@ CompactInterval3-cantor (k , i)
     γ : CI3-to-𝟚ᴺ (k , i) α' ∼ α
     γ 0 = down-𝟚-eq (α 0) k (𝟚-to-down-is-below (α 0) k)
     γ (succ n) = down-𝟚-eq (α (succ n)) _ _
-```
-
-[⇐ Index](../html/TWA.Thesis.index.html)
+\end{code}

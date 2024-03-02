@@ -1,9 +1,9 @@
-[⇐ Index](../html/TWA.Thesis.index.html)
+Todd Waugh Ambridge, January 2024
 
 # Ternary signed-digit encodings' suitability for search, optimisation and regression
 
-```agda
-{-# OPTIONS --without-K --exact-split --safe #-}
+\begin{code}
+{-# OPTIONS --without-K --safe #-}
 
 open import MLTT.Spartan
 open import UF.DiscreteAndSeparated
@@ -28,11 +28,11 @@ open import TWA.Thesis.Chapter4.GlobalOptimisation fe
 open import TWA.Thesis.Chapter5.SignedDigit
 open import TWA.Thesis.Chapter6.SequenceContinuity fe
 open import TWA.Thesis.Chapter6.SignedDigitOrder fe
-```
+\end{code}
 
 ## Totally bounded
 
-```
+\end{code}
 𝟛ᴺ-totally-bounded : totally-bounded 𝟛ᴺ-ClosenessSpace 𝓤₀
 𝟛ᴺ-totally-bounded = ℕ→F-totally-bounded 𝟛-is-discrete 𝟛-is-finite O
 
@@ -41,11 +41,11 @@ open import TWA.Thesis.Chapter6.SignedDigitOrder fe
  = ×-totally-bounded
      𝟛ᴺ-ClosenessSpace 𝟛ᴺ-ClosenessSpace
      𝟛ᴺ-totally-bounded 𝟛ᴺ-totally-bounded
-```
+\end{code}
 
 ## Global optimisation
 
-```
+\end{code}
 𝟛ᴺ→𝟛ᴺ-global-opt : (f : 𝟛ᴺ → 𝟛ᴺ)
                  → f-ucontinuous 𝟛ᴺ-ClosenessSpace 𝟛ᴺ-ClosenessSpace f
                  → (ϵ : ℕ)
@@ -57,11 +57,11 @@ open import TWA.Thesis.Chapter6.SignedDigitOrder fe
      ≤ⁿ𝟛ᴺ-is-approx-order
      ϵ f ϕ
      𝟛ᴺ-totally-bounded
-```
+\end{code}
 
 ## Uniformly continuously searchable
 
-```
+\end{code}
 𝟛ᴺ-csearchable-tb 𝟛ᴺ-csearchable
  : {𝓦 : Universe} → csearchable 𝓦 𝟛ᴺ-ClosenessSpace
 𝟛ᴺ-csearchable-tb
@@ -78,11 +78,11 @@ open import TWA.Thesis.Chapter6.SignedDigitOrder fe
 𝟛ᴺ×𝟛ᴺ-csearchable
  = ×-csearchable 𝟛ᴺ-ClosenessSpace 𝟛ᴺ-ClosenessSpace
      𝟛ᴺ-csearchable 𝟛ᴺ-csearchable
-```
+\end{code}
 
 ## Cantor space search and optimisation
 
-```
+\end{code}
 ≤₂-is-preorder : is-preorder _≤₂_
 ≤₂-is-preorder
  = (λ _ → ≤₂-refl) , ≤₂-trans , λ _ _ → ≤₂-is-prop-valued
@@ -162,11 +162,11 @@ open import TWA.Thesis.Chapter6.SignedDigitOrder fe
 𝟚ᴺ×𝟚ᴺ-csearchable
  = ×-csearchable 𝟚ᴺ-ClosenessSpace 𝟚ᴺ-ClosenessSpace
      𝟚ᴺ-csearchable 𝟚ᴺ-csearchable
-```
+\end{code}
 
 ## Conversion from Cantor sequence to ternary signed-digit encoding
 
-```
+\end{code}
 
 𝟚→𝟛 : 𝟚 → 𝟛
 𝟚→𝟛 ₀ = −1
@@ -217,6 +217,4 @@ _⤊ (α , β) = α ↑ , β ↑
  = (p ∘ _⤊ , d ∘ _⤊)
  , p-ucontinuous-comp 𝟚ᴺ×𝟚ᴺ-ClosenessSpace 𝟛ᴺ×𝟛ᴺ-ClosenessSpace
      _⤊ ⤊-ucontinuous p ϕ
-```
-
-[⇐ Index](../html/TWA.Thesis.index.html)
+\end{code}

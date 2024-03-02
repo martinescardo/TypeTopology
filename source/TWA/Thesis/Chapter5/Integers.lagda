@@ -1,9 +1,9 @@
-[⇐ Index](../html/TWA.Thesis.index.html)
+Todd Waugh Ambridge, January 2024
 
 # Additional integer properties
 
-```
-{-# OPTIONS --without-K --exact-split --safe #-}
+\begin{code}
+{-# OPTIONS --without-K --safe #-}
             
 open import Integers.Addition renaming (_+_ to _+ℤ_ ; _-_ to _ℤ-_)
 open import Integers.Multiplication renaming (_*_ to _ℤ*_)
@@ -19,21 +19,21 @@ open import UF.Base
 open import UF.Subsingletons
 
 module TWA.Thesis.Chapter5.Integers where
-```
+\end{code}
 
 ## ℤ-elimination
 
-```agda
+\begin{code}
 ℤ-elim : (P : ℤ → 𝓤 ̇ )
        → ((n : ℕ) → P (pos n)) → ((n : ℕ) → P (negsucc n))
        → Π P
 ℤ-elim P Pp Pn (pos     n) = Pp n
 ℤ-elim P Pp Pn (negsucc n) = Pn n
-```
+\end{code}
 
 ## Monotone and rec properties
 
-```agda
+\begin{code}
 succ-to-monotone' : (P : ℤ → ℤ → 𝓤 ̇ )
                   → ((a : ℤ) → P a a)
                   → ((a b c : ℤ) → P a b → P b c → P a c)
@@ -70,11 +70,11 @@ rec-f-＝ : {X : 𝓤 ̇ } → (f : X → X) (x : X) (n : ℕ)
         → rec (f x) f n ＝ rec x f (succ n) 
 rec-f-＝ f x zero = refl
 rec-f-＝ f x (succ n) = ap f (rec-f-＝ f x n)
-```
+\end{code}
 
 ## Sign and num for integers
 
-```agda
+\begin{code}
 sign : ℤ → (ℕ → ℤ)
 sign (pos     _) = pos
 sign (negsucc _) = negsucc
@@ -82,11 +82,11 @@ sign (negsucc _) = negsucc
 num : ℤ → ℕ
 num  (pos     n) = n
 num  (negsucc n) = n
-```
+\end{code}
 
 ## Natural number functions definitions and properties
 
-```agda
+\begin{code}
 _/2 : ℕ → ℕ
 0 /2 = 0
 1 /2 = 0
@@ -153,11 +153,11 @@ div-by-two' (succ k)
    succ (succ (k +ℕ k)) /2   ＝⟨ refl ⟩
    succ ((k +ℕ k) /2)        ＝⟨ ap succ (div-by-two' k) ⟩
    succ k                    ∎
-```
+\end{code}
 
 ## Integer order definitions and properties
 
-```
+\begin{code}
 ℤ≤-decidable : (n m : ℤ) → (n ≤ m) + ¬ (n ≤ m)
 ℤ≤-decidable n m
  = Cases (ℤ-trichotomous m n)
@@ -298,11 +298,11 @@ x ≤ℤ y ≤ℤ z = (x ≤ℤ y) × (y ≤ℤ z)
 ≥-lemma : (a b c : ℤ) → a ＝ b → (p : a ≥ c) → (q : b ≥ c)
         → pr₁ p ＝ pr₁ q
 ≥-lemma a a c refl (n , refl) (m , γ) = pos-lc (ℤ+-lc _ _ _ (γ ⁻¹))
-```
+\end{code}
 
 ## Parity definitions and properties
 
-```agda
+\begin{code}
 odd even : ℤ → 𝓤₀ ̇
 odd (pos                   0) = 𝟘
 odd (pos                   1) = 𝟙
@@ -467,6 +467,4 @@ div-by-two (negsucc x)
    ℤ- pos ((succ x +ℕ succ x) /2)
      ＝⟨ ap (λ z → ℤ- pos z) (div-by-two' (succ x)) ⟩
    negsucc x ∎
-```
-
-[⇐ Index](../html/TWA.Thesis.index.html)
+\end{code}

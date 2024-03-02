@@ -1,9 +1,9 @@
-[⇐ Index](../html/TWA.Thesis.index.html)
+Todd Waugh Ambridge, January 2024
 
 # Global optimisation
 
-```agda
-{-# OPTIONS --without-K --exact-split --safe #-}
+\begin{code}
+{-# OPTIONS --without-K --safe #-}
 
 open import MLTT.Spartan
 open import UF.FunExt
@@ -16,11 +16,11 @@ module TWA.Thesis.Chapter4.GlobalOptimisation (fe : FunExt) where
 
 open import TWA.Thesis.Chapter3.ClosenessSpaces fe
 open import TWA.Thesis.Chapter4.ApproxOrder fe
-```
+\end{code}
 
 ## Absolute global optimisation
 
-```
+\end{code}
 is-global-minimal : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (_≤_ : Y → Y → 𝓦 ̇ )
                   → (X → Y) → X → 𝓤 ⊔ 𝓦  ̇
 is-global-minimal {𝓤} {𝓥} {𝓦'} {X} _≤_ f x₀ = (x : X) → f x₀ ≤ f x
@@ -71,11 +71,11 @@ finite-global-minimal x (n , e@(g , _ , (h , μ))) _≤_ l f
  x₀ = pr₁ γ
  γ₀ : is-global-minimal _≤_ (f ∘ h) x₀
  γ₀ = pr₂ γ
-```
+\end{code}
 
 ## Approximate global optimisation
 
-```
+\end{code}
 is_global-minimal : ℕ → {𝓤 𝓥 : Universe}
                   → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                   → (_≤ⁿ_ : Y → Y → ℕ → 𝓦 ̇ )
@@ -98,11 +98,11 @@ F-ϵ-global-minimal : {X : 𝓤 ̇ } (Y : ClosenessSpace 𝓥)
                    → (has ϵ global-minimal) _≤ⁿ_ f
 F-ϵ-global-minimal Y x l _≤ⁿ_ a ϵ
  = finite-global-minimal x l (λ x y → (x ≤ⁿ y) ϵ) (≤ⁿ-all-linear Y a ϵ)
-```
+\end{code}
 
 ## Global optimisation theorem
 
-```
+\end{code}
 cover-continuity-lemma
  : (X : ClosenessSpace 𝓤) {X' : 𝓤' ̇ } (Y : ClosenessSpace 𝓥)
  → (_≤ⁿ_ : ⟨ Y ⟩ → ⟨ Y ⟩ → ℕ → 𝓦'  ̇ )
@@ -157,6 +157,4 @@ global-opt {𝓤} {𝓥} {𝓦'} {𝓤'} X Y x₁ _≤ⁿ_ a ϵ f ϕ t
   x'₀ = pr₁ first
   m  : is ϵ global-minimal _≤ⁿ_ (f ∘ g) x'₀
   m  = pr₂ first
-```
-
-[⇐ Index](../html/TWA.Thesis.index.html)
+\end{code}

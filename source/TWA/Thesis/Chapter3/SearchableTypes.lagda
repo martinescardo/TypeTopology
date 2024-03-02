@@ -1,9 +1,9 @@
-[⇐ Index](../html/TWA.Thesis.index.html)
+Todd Waugh Ambridge, January 2024
 
 # Uniformly continuously searchable closeness spaces
 
-```agda
-{-# OPTIONS --without-K --exact-split --safe #-}
+\begin{code}
+{-# OPTIONS --without-K --safe #-}
 
 open import MLTT.Spartan
 open import UF.FunExt
@@ -22,11 +22,11 @@ open import TWA.Thesis.Chapter3.ClosenessSpaces fe
  hiding (decidable-predicate;decidable-uc-predicate)
 open import TWA.Thesis.Chapter3.ClosenessSpaces-Examples fe
  using (decidable-𝟚; decidable-𝟚₁; 𝟚-decidable₁)
-```
+\end{code}
 
 ## Searchable types
 
-```
+\begin{code}
 decidable-predicate : (𝓦 : Universe) → 𝓤 ̇ → 𝓤 ⊔ 𝓦 ⁺  ̇
 decidable-predicate 𝓦 X
  = Σ p ꞉ (X → Ω 𝓦) , is-complemented (λ x → (p x) holds)
@@ -152,11 +152,11 @@ finite-searchable (succ n , e) x
   xy₀ = x₀ , y₀ x₀
   γ : Σ (x , y) ꞉ X × Y , p (x , y) holds → p (x₀ , y₀ x₀) holds
   γ ((x , y) , pxy) = γx (x , (γy x (y , pxy)))
-```
+\end{code}
 
 ## Cantor searchability is LPO
 
-```
+\begin{code}
 LPO : 𝓤₀  ̇
 LPO = (α : ℕ → 𝟚) → ((n : ℕ) → α n ＝ ₀) + (Σ n ꞉ ℕ , α n ＝ ₁)
 
@@ -197,11 +197,11 @@ LPO-implies-ℕ-searchability {𝓦} f (p , d)
      (λ α∼₀ → 0 , λ (n , pn) → (𝟘-elim ∘ zero-is-not-one)
                                  (α∼₀ n ⁻¹ ∙ decidable-𝟚₁ (d n) pn))
      λ (i , αᵢ=₀) → i , λ _ → 𝟚-decidable₁ (d i) αᵢ=₀
-```
+\end{code}
 
 ## Uniformly continuously searchable closeness spaces
 
-```
+\begin{code}
 decidable-uc-predicate-with-mod
  : (𝓦 : Universe) → ClosenessSpace 𝓤 → ℕ → 𝓤 ⊔ 𝓦 ⁺  ̇
 decidable-uc-predicate-with-mod 𝓦 X δ
@@ -285,6 +285,4 @@ totally-bounded-csearchable {𝓤} {𝓤'} {𝓦} X x t ((p , d) , δ , ϕ)
   x₀  = g x'₀
   γ : (Σ x ꞉ ⟨ X ⟩ , p x holds) → p x₀ holds
   γ (x , px) = γ' (h x , (ϕ x (g (h x)) (η x) px))
-```
-
-[⇐ Index](../html/TWA.Thesis.index.html)
+\end{code}

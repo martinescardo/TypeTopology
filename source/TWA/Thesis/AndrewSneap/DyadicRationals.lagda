@@ -1,5 +1,7 @@
-```agda
-{-# OPTIONS --exact-split --without-K --safe #-}
+Andrew Sneap, April 2023
+
+\begin{code}
+{-# OPTIONS --without-K --safe #-}
             
 open import Integers.Addition renaming (_+_ to _+ℤ_ ; _-_ to _ℤ-_)
 open import Integers.Multiplication renaming (_*_ to _ℤ*_)
@@ -21,13 +23,13 @@ open import UF.DiscreteAndSeparated
 open import TWA.Thesis.Chapter5.Integers
 
 module TWA.Thesis.AndrewSneap.DyadicRationals where
-```
+\end{code}
 
 This file defines dyadic rationals as a record, along with many widely
 accepted operations, relations and results on dyadic rationals. They
 are denoted ℤ[1/2].
 
-```agda
+\begin{code}
 ℤ[1/2] : 𝓤₀ ̇
 ℤ[1/2] = Σ (z , n) ꞉ ℤ × ℕ , (n ＝ 0) + ((n ≠ 0) × odd z)
 
@@ -303,5 +305,5 @@ record Dyadics : 𝓤₁ ̇ where
 
  normalise-≤2 : (l r p : ℤ) → l ≤ r → normalise (l , p) ≤ normalise (r , p)
  normalise-≤2 l r p (j , refl) = normalise-≤ j (l , p)
-```
+\end{code}
 
