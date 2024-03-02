@@ -15,7 +15,7 @@ open import UF.PropTrunc
 open import UF.FunExt
 open import UF.Subsingletons
 
-module Locales.DistributiveLattice.LocaleOfSpectral-Properties
+module Locales.DistributiveLattice.LocaleOfSpectra-Properties
         (fe : Fun-Ext)
         (pe : Prop-Ext)
         (pt : propositional-truncations-exist)
