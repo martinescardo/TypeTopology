@@ -136,7 +136,6 @@ module _
   ⋁_ = join-of L
 
  open Joins _≤_
-
  open is-small-basis h
 
 \end{code}
@@ -471,7 +470,7 @@ assumpions.
 
 \begin{code}
 
-module correspondance-closed-subsets-deflationary-points
+module _
         {𝓤 𝓦 𝓥 : Universe}
         {B : 𝓥  ̇}
         (L : Sup-Lattice 𝓤 𝓦 𝓥)
@@ -867,7 +866,7 @@ precise below.
 
 \begin{code}
 
-module bounded-inductive-definition
+module bounded-inductive-definitions
         {𝓤 𝓦 𝓥 : Universe}
         {B : 𝓥  ̇}
         (L : Sup-Lattice 𝓤 𝓦 𝓥)
@@ -1014,7 +1013,7 @@ precise below.
 
 \begin{code}
 
-module small-presentation-of-lattice
+module small-presentation-of-lattice 
         {𝓤 𝓦 𝓥 : Universe}
         {B : 𝓥  ̇}
         (L : Sup-Lattice 𝓤 𝓦 𝓥)
@@ -1052,7 +1051,7 @@ large quantification!
 
 \begin{code}
 
-module small-QIT
+module _
         {𝓤 𝓦 𝓥 : Universe}
         {B : 𝓥  ̇}
         (L : Sup-Lattice 𝓤 𝓦 𝓥)
@@ -1064,7 +1063,7 @@ module small-QIT
   _≤_ = order-of L
   ⋁_ = join-of L
 
- open bounded-inductive-definition L β h
+ open bounded-inductive-definitions L β h
  open small-presentation-of-lattice L β h
  open is-small-basis h
  
@@ -1291,7 +1290,7 @@ least fixed point theorem.
 
 \begin{code}
 
-module 𝓘nd-is-small
+module _
         {𝓤 𝓦 𝓥 : Universe}
         {B : 𝓥  ̇}
         (L : Sup-Lattice 𝓤 𝓦 𝓥)
@@ -1303,9 +1302,8 @@ module 𝓘nd-is-small
   _≤_ = order-of L
   ⋁_ = join-of L
 
- open bounded-inductive-definition L β h
+ open bounded-inductive-definitions L β h
  open small-presentation-of-lattice L β h
- open small-QIT L β h
  open is-small-basis h
  
  module 𝓘nd-is-small-from-bounded-and-small-presentation
@@ -1314,7 +1312,7 @@ module 𝓘nd-is-small
          (bnd : is-bounded ϕ)
         where
 
-  open small-QIT-from-bounded-and-small-presentation small-pres ϕ bnd
+  open small-QIT-from-bounded-and-small-presentation L β h small-pres ϕ bnd
 
   module 𝓘nd-is-small-QITs-exists
           (ind-e : inductively-generated-subset-exists L β h ϕ)
@@ -1410,7 +1408,7 @@ endomap f : L → L. If there exists a bounded abstract inductive definition
 
 \begin{code}
 
-module least-fixed-point
+module _
         {𝓤 𝓦 𝓥 : Universe}
         {B : 𝓥  ̇}
         (L : Sup-Lattice 𝓤 𝓦 𝓥)
@@ -1423,11 +1421,8 @@ module least-fixed-point
   ⋁_ = join-of L
  
  open local-inductive-definitions L β h
- open correspondance-closed-subsets-deflationary-points L β h
- open bounded-inductive-definition L β h
+ open bounded-inductive-definitions L β h
  open small-presentation-of-lattice L β h
- open small-QIT L β h
- open 𝓘nd-is-small L β h
 
  module QITs-exists-for-all-ϕ
          (ind-e : (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩))
@@ -1435,7 +1430,7 @@ module least-fixed-point
          (ind'-e : (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩))
                  → (bnd : is-bounded ϕ)
                  → (small-pres : has-small-presentation)
-                 → small-QIT-from-bounded-and-small-presentation.inductively-generated-small-subset-exists small-pres ϕ bnd)
+                 → small-QIT-from-bounded-and-small-presentation.inductively-generated-small-subset-exists L β h small-pres ϕ bnd)
         where
 
 \end{code}
@@ -1460,10 +1455,11 @@ We first present the untruncated least fixed point theorem.
                                              → (x ≤ a) holds))
              path Γ-has-least-fixed-point
    where
-    open correspondance-from-locally-small-ϕ ϕ (bounded-implies-local ϕ bnd)
+    open correspondance-from-locally-small-ϕ L β h ϕ
+                                             (bounded-implies-local ϕ bnd)
     open small-𝓘nd-from-exists (ind-e ϕ)
-    open 𝓘nd-is-small-from-bounded-and-small-presentation small-pres ϕ bnd
-    open small-QIT-from-bounded-and-small-presentation small-pres ϕ bnd
+    open 𝓘nd-is-small-from-bounded-and-small-presentation L β h small-pres ϕ bnd
+    open small-QIT-from-bounded-and-small-presentation L β h small-pres ϕ bnd
     open 𝓘nd-is-small-QITs-exists (ind-e ϕ) (ind'-e ϕ bnd small-pres)
     open smallness-assumption 𝓘nd-is-small
     path : Γ ϕ (bounded-implies-local ϕ bnd) ＝ f
@@ -1501,7 +1497,7 @@ A monotone map f, on a 𝓥-generated sup-lattice L, is dense if there is a fami
 
 \begin{code}
 
-module density-of-monotone-maps
+module _
         {𝓤 𝓦 𝓥 : Universe}
         {B : 𝓥  ̇}
         (L : Sup-Lattice 𝓤 𝓦 𝓥)
@@ -1514,7 +1510,7 @@ module density-of-monotone-maps
   ⋁_ = join-of L
 
  open local-inductive-definitions L β h
- open bounded-inductive-definition L β h
+ open bounded-inductive-definitions L β h
  open is-small-basis h
 
  density-condition : (f : ⟨ L ⟩ → ⟨ L ⟩)
@@ -1670,7 +1666,7 @@ theorem.
 
 \begin{code}
 
-module least-fixed-point-from-density
+module _
         {𝓤 𝓦 𝓥 : Universe}
         {B : 𝓥  ̇}
         (L : Sup-Lattice 𝓤 𝓦 𝓥)
@@ -1679,12 +1675,8 @@ module least-fixed-point-from-density
        where
 
  open propositional-truncations-exist pt
- open bounded-inductive-definition L β h
+ open bounded-inductive-definitions L β h
  open small-presentation-of-lattice L β h
- open small-QIT L β h
- open 𝓘nd-is-small L β h
- open least-fixed-point L β h
- open density-of-monotone-maps L β h
 
  module QITs-exists-density
          (ind-e : (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩))
@@ -1692,21 +1684,21 @@ module least-fixed-point-from-density
          (ind'-e : (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩))
                  → (bnd : is-bounded ϕ)
                  → (small-pres : has-small-presentation)
-                 → small-QIT-from-bounded-and-small-presentation.inductively-generated-small-subset-exists small-pres ϕ bnd)
+                 → small-QIT-from-bounded-and-small-presentation.inductively-generated-small-subset-exists L β h small-pres ϕ bnd)
         where
 
-  open QITs-exists-for-all-ϕ ind-e ind'-e
+  open QITs-exists-for-all-ϕ L β h ind-e ind'-e
 
   Least-Fixed-Point-Theorem-from-Density : has-small-presentation
                                          → ⟨ L ⟩ is-locally 𝓥 small
                                          → (f : ⟨ L ⟩ → ⟨ L ⟩)
                                          → is-monotone-endomap L f
-                                         → is-dense f
+                                         → is-dense L β h f
                                          → has-least-fixed-point L f
   Least-Fixed-Point-Theorem-from-Density
    small-pres l-small f f-mono f-dense =
     Untruncated-Least-Fixed-Point-Theorem
      small-pres f f-mono
-      (dense-implies-bounded l-small f f-mono f-dense)
+      (dense-implies-bounded L β h l-small f f-mono f-dense)
 
 \end{code}
