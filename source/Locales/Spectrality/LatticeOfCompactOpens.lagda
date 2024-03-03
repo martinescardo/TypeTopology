@@ -256,6 +256,8 @@ module FunctorialAction
  open ContinuousMapNotation X Y
  open 𝒦-Lattice X σ₁ renaming (𝟏ₖ to 𝟏ₖ-X; 𝟏-is-compact to 𝟏-X-is-compact)
  open 𝒦-Lattice Y σ₂ renaming (𝟏ₖ to 𝟏ₖ-Y; 𝒦⦅X⦆ to 𝒦⦅Y⦆; 𝟏-is-compact to 𝟏-Y-is-compact)
+ open OperationsOnCompactOpens X (pr₁ σ₁) renaming (_∨ₖ_ to _∨₂_)
+ open OperationsOnCompactOpens Y (pr₁ σ₂) renaming (_∨ₖ_ to _∨₁_)
 
  𝒦-map : ∣ 𝒦⦅Y⦆ ∣ᵈ → ∣ 𝒦⦅X⦆ ∣ᵈ
  𝒦-map (K , κ) = f ⋆∙ K , 𝕤 K κ
@@ -275,5 +277,18 @@ module FunctorialAction
    (𝕤 𝟏[ 𝒪 Y ] 𝟏-Y-is-compact)
    𝟏-X-is-compact
    (frame-homomorphisms-preserve-top (𝒪 Y) (𝒪 X) f)
+
+ 𝒦-map-preserves-∨ : (K₁ K₂ : 𝒦 Y) → 𝒦-map (K₁ ∨₁ K₂) ＝ 𝒦-map K₁ ∨₂ 𝒦-map K₂
+ 𝒦-map-preserves-∨ 𝔎₁@(K₁ , κ₁) 𝔎₂@(K₂ , κ₂) =
+  to-𝒦-＝ X (𝕤 (K₁ ∨[ 𝒪 Y ] K₂) κ) κ′ †
+   where
+    κ : is-compact-open Y (K₁ ∨[ 𝒪 Y ] K₂) holds
+    κ = compact-opens-are-closed-under-∨ Y K₁ K₂ κ₁ κ₂
+
+    κ′ : is-compact-open X (f ⋆∙ K₁ ∨[ 𝒪 X ] f ⋆∙ K₂) holds
+    κ′ = compact-opens-are-closed-under-∨ X (f ⋆∙ K₁) (f ⋆∙ K₂) (𝕤 K₁ κ₁) (𝕤 K₂ κ₂)
+
+    † : f ⋆∙ (K₁ ∨[ 𝒪 Y ] K₂) ＝ f ⋆∙ K₁ ∨[ 𝒪 X ] f ⋆∙ K₂
+    † = frame-homomorphisms-preserve-binary-joins (𝒪 Y) (𝒪 X) f K₁ K₂
 
 \end{code}
