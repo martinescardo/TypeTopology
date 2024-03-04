@@ -10,7 +10,7 @@ Ported from `ayberkt/formal-topology-in-UF`.
 
 {-# OPTIONS --safe --without-K #-}
 
-open import MLTT.Spartan hiding (𝟚)
+open import MLTT.Spartan hiding (𝟚; ₀; ₁)
 open import UF.Base
 open import UF.FunExt
 open import UF.PropTrunc
@@ -463,6 +463,9 @@ syntax join-of F U = ⋁[ F ] U
 
 𝟚 : (𝓤 : Universe) → 𝓤 ̇
 𝟚 𝓤 = 𝟙 {𝓤} + 𝟙 {𝓤}
+
+pattern ₀ = inl ⋆
+pattern ₁ = inr ⋆
 
 and₂ : {𝓤 : Universe} → 𝟚 𝓤 → 𝟚 𝓤 → 𝟚 𝓤
 and₂ (inl ⋆) _ = inl ⋆
