@@ -42,6 +42,8 @@ is-spectral-map Y X (f , _) =
 
 \end{code}
 
+Added on 2024-03-04.
+
 \begin{code}
 
 Spectral-Map : (X : Locale 𝓤 𝓥 𝓥) (Y : Locale 𝓤' 𝓥 𝓥) → (𝓤 ⊔ 𝓤' ⊔ 𝓥 ⁺) ̇
