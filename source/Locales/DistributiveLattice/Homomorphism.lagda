@@ -101,3 +101,11 @@ record Homomorphismᵈᵣ (L₁ L₂ : DistributiveLattice 𝓤)  : 𝓤  ̇ whe
  h-preserves-∨ = pr₂ (pr₂ (pr₂ h-is-homomorphism))
 
 \end{code}
+
+Added on 2024-03-04.
+
+\begin{code}
+
+syntax Homomorphismᵈᵣ L₁ L₂ = L₁ ─d→ L₂
+
+\end{code}
