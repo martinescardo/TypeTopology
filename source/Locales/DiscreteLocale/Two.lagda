@@ -23,7 +23,7 @@ module Locales.DiscreteLocale.Two
 
 open import Locales.DistributiveLattice.Definition fe pt
 open import Locales.DiscreteLocale.Definition fe pe pt
-open import Locales.Frame pt fe 
+open import Locales.Frame pt fe
 open import MLTT.Spartan hiding (𝟚)
 open import Slice.Family
 open import UF.Logic
