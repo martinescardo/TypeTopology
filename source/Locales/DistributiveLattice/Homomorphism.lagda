@@ -83,7 +83,7 @@ is-homomorphismᵈ L₁ L₂ h =  preserves-𝟏 L₁ L₂ h
 
 \begin{code}
 
-record homomorphismᵈᵣ (L₁ L₂ : DistributiveLattice 𝓤)  : 𝓤  ̇ where
+record Homomorphismᵈᵣ (L₁ L₂ : DistributiveLattice 𝓤)  : 𝓤  ̇ where
  field
   h                 : ∣ L₁ ∣ᵈ → ∣ L₂ ∣ᵈ
   h-is-homomorphism : is-homomorphismᵈ L₁ L₂ h holds
@@ -99,5 +99,13 @@ record homomorphismᵈᵣ (L₁ L₂ : DistributiveLattice 𝓤)  : 𝓤  ̇ whe
 
  h-preserves-∨ : preserves-∨ L₁ L₂ h holds
  h-preserves-∨ = pr₂ (pr₂ (pr₂ h-is-homomorphism))
+
+\end{code}
+
+Added on 2024-03-04.
+
+\begin{code}
+
+syntax Homomorphismᵈᵣ L₁ L₂ = L₁ ─d→ L₂
 
 \end{code}
