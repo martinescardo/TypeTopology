@@ -97,4 +97,6 @@ import Locales.Point.Properties                  -- (37)
 
 import Locales.DiscreteLocale.Definition
 
+import Locales.DiscreteLocale.Two
+
 \end{code}
