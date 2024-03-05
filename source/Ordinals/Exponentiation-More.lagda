@@ -143,6 +143,35 @@ exp-has-least-element {𝓤} α β = γ , eqtoidₒ (ua _) fe' ([𝟙+ α ]^ β)
      ϵ (inl ⋆) = refl
      ϵ (inr (((x ∷ xs) , δ) , []-lex)) = refl
 
+flatten-× : {A B C : 𝓤 ̇  } → List (List (A × B) × C) → List (A × (B × C))
+flatten-× [] = []
+flatten-× ((l , c) ∷ ls) = (map (λ (a , b) → a , (b , c)) l) ++ flatten-× ls
+
+exp-×-distributes : (α β γ : Ordinal 𝓤)
+                  → [𝟙+ α ]^ (β ×ₒ γ) ＝ [𝟙+ (pr₁ (exp-has-least-element α β)) ]^ γ
+exp-×-distributes α β γ = {!!}
+ where
+  γ' = pr₁ (exp-has-least-element α β)
+  g : ⟨ [𝟙+ γ' ]^ γ ⟩ → ⟨ [𝟙+ α ]^ (β ×ₒ γ) ⟩
+  g ([] , _) = [] , []-decr
+  g ((((((a , b) ∷ l) , δ) , ne) , c ∷ l') , δ') = ((a , b , c) ∷ pr₁ IH) , {!!}
+   where
+    IH : ⟨ [𝟙+ α ]^ (β ×ₒ γ) ⟩
+    IH = g (l' , is-decreasing-tail (underlying-order γ) δ')
+    IH' : {!!}
+    IH' = g ({!!} , {!!})
+
+  f : ⟨ [𝟙+ α ]^ (β ×ₒ γ) ⟩ → ⟨ [𝟙+ γ' ]^ γ ⟩
+  f ([] , _) = [] , []-decr
+  f (((a , (b , c)) ∷ l) , δ) = (((([ (a , b) ] , sing-decr) , []-lex) , c) ∷ pr₁ IH) ,
+                                {!!}
+   where
+    IH : ⟨ [𝟙+ γ' ]^ γ ⟩
+    IH = f (l , is-decreasing-tail (underlying-order (β ×ₒ γ)) δ)
+    IH₁ : List ⟨ γ' ×ₒ γ ⟩
+    IH₁ = pr₁ IH
+    IH₂ : is-decreasing-pr₂ γ' γ (pr₁ IH)
+    IH₂ = pr₂ IH
 
 \end{code}
 
