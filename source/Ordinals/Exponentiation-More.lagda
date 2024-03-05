@@ -143,10 +143,49 @@ exp-has-least-element {𝓤} α β = γ , eqtoidₒ (ua _) fe' ([𝟙+ α ]^ β)
      ϵ (inl ⋆) = refl
      ϵ (inr (((x ∷ xs) , δ) , []-lex)) = refl
 
-flatten-× : {A B C : 𝓤 ̇  } → List (List (A × B) × C) → List (A × (B × C))
+flatten-× : {A B C : 𝓤 ̇  } → List ({-Nonempty-}List (A × B) × C) → List (A × (B × C))
 flatten-× [] = []
-flatten-× ((l , c) ∷ ls) = (map (λ (a , b) → a , (b , c)) l) ++ flatten-× ls
+flatten-× ((l , c) ∷ ls) = (map (λ (a , b) → (a , (b , c))) l) ++ flatten-× ls
 
+addToFirst : {X Y : 𝓤 ̇  } → X → List ((List X) × Y) → List ((List X) × Y)
+addToFirst x [] = []
+addToFirst x ((xs , y) ∷ l) = ((x ∷ xs) , y) ∷ l
+
+flatten-×⁻¹ : {α β γ : Ordinal 𝓤 } → (xs : List (⟨ α ×ₒ (β ×ₒ γ) ⟩)) → is-decreasing-pr₂ α (β ×ₒ γ) xs → List ({-Nonempty-}List (⟨ α ⟩ × ⟨ β ⟩ ) × ⟨ γ ⟩)
+flatten-×⁻¹ [] _ = []
+flatten-×⁻¹ ((a , (b , c)) ∷ []) _ = [ [ a , b ] , c ]
+flatten-×⁻¹ {α = α} {β} {γ} ((a , (b , c)) ∷ (a' , (b' , c')) ∷ xs) (many-decr (inl p) δ) = ([ a , b ] , c) ∷ flatten-×⁻¹ {α = α} {β} {γ} ((a' , (b' , c')) ∷ xs) δ
+flatten-×⁻¹ {α = α} {β} {γ} ((a , (b , c)) ∷ (a' , (b' , c)) ∷ xs) (many-decr (inr (refl , q)) δ) = addToFirst (a , b) (flatten-×⁻¹ {α = α} {β} {γ} ((a' , (b' , c)) ∷ xs) δ)
+
+flatten-×-retraction : {α β γ : Ordinal 𝓤 } → (xs : List (⟨ α ×ₒ (β ×ₒ γ) ⟩)) → (xs-decr : is-decreasing-pr₂ α (β ×ₒ γ) xs)
+      → flatten-× (flatten-×⁻¹ {α = α} {β} {γ} xs xs-decr) ＝ xs
+flatten-×-retraction [] xs-decr = refl
+flatten-×-retraction ((a , (b , c)) ∷ []) xs-decr = refl
+flatten-×-retraction ((a , (b , c)) ∷ (a' , (b' , c')) ∷ xs) (many-decr (inl p) δ)= ap ( a , b , c ∷_) (flatten-×-retraction ((a' , (b' , c')) ∷ xs) δ)
+flatten-×-retraction (a , b , c ∷ a' , b' , c ∷ xs) (many-decr (inr (refl , q)) δ) = {!!}
+
+
+{-
+-- We need to restrict to the subtype of non-empty "inner" lists, as the following counterexample shows (and the actual problem suggests):
+
+counterexampleList : List (List (ℕ × ℕ) × ℕ)
+counterexampleList = [ [] , 17 ]
+
+res : List (List (ℕ × ℕ) × ℕ)
+res = flatten-×⁻¹ {α = ω} {ω} {ω} (flatten-× counterexampleList) []-decr
+-}
+
+{-
+test : List (⟨ ω ×ₒ (ω ×ₒ ω) ⟩)
+test = (1 , (2 , 3)) ∷ (6 , (1 , 3)) ∷ (42 , (17 , 2)) ∷ (100 , (16 , 1)) ∷ []
+
+test-decr : is-decreasing-pr₂ ω (ω ×ₒ ω) test
+test-decr = many-decr (inr (refl , ⋆))
+              (many-decr (inl ⋆) (many-decr (inl ⋆) sing-decr))
+-}
+
+
+{-
 exp-×-distributes : (α β γ : Ordinal 𝓤)
                   → [𝟙+ α ]^ (β ×ₒ γ) ＝ [𝟙+ (pr₁ (exp-has-least-element α β)) ]^ γ
 exp-×-distributes α β γ = {!!}
@@ -172,7 +211,7 @@ exp-×-distributes α β γ = {!!}
     IH₁ = pr₁ IH
     IH₂ : is-decreasing-pr₂ γ' γ (pr₁ IH)
     IH₂ = pr₂ IH
-
+-}
 \end{code}
 
 Wikipedia:
