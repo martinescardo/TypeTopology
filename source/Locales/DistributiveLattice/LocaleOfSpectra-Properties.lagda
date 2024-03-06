@@ -1,5 +1,5 @@
 --------------------------------------------------------------------------------
-title:          Locale of spectral is a spectral locale
+title:          Properties of the locale of spectra
 author:         Ayberk Tosun
 date-started:   2024-03-01
 --------------------------------------------------------------------------------
