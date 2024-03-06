@@ -82,13 +82,13 @@ data member {X : 𝓤 ̇ } : X → List X → 𝓤 ̇  where
  in-head : {x : X}   {xs : List X} → member x (x ∷ xs)
  in-tail : {x y : X} {xs : List X} → member x xs → member x (y ∷ xs)
 
-member-map : {X Y : Type} (f : X → Y) (x : X) (xs : List X)
+member-map : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (x : X) (xs : List X)
            → member x xs
            → member (f x) (map f xs)
 member-map f x' (_ ∷ _)  in-head     = in-head
 member-map f x' (_ ∷ xs) (in-tail m) = in-tail (member-map f x' xs m)
 
-member' : {X : Type} → X → List X → Type
+member' : {X : 𝓤 ̇ } → X → List X → 𝓤 ̇
 member' y []       = 𝟘
 member' y (x ∷ xs) = (x ＝ y) + member y xs
 
@@ -97,28 +97,28 @@ member' y (x ∷ xs) = (x ＝ y) + member y xs
 
 \begin{code}
 
-member'-map : {X Y : Type} (f : X → Y) (x : X) (xs : List X)
+member'-map : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (x : X) (xs : List X)
             → member' x xs
             → member' (f x) (map f xs)
 member'-map f x' (x ∷ xs) (inl p) = inl (ap f p)
 member'-map f x' (x ∷ xs) (inr m) = inr (member-map f x' xs m)
 
-listed : Type → Type
+listed : 𝓤 ̇  → 𝓤 ̇
 listed X = Σ xs ꞉ List X , ((x : X) → member x xs)
 
-listed⁺ : Type → Type
+listed⁺ : 𝓤 ̇  → 𝓤 ̇
 listed⁺ X = X × listed X
 
 type-from-list : {X : 𝓤  ̇} → List X → 𝓤  ̇
 type-from-list {X = X} xs = Σ x ꞉ X , member x xs
 
-type-from-list-is-listed : {X : Type} (xs : List X)
+type-from-list-is-listed : {X : 𝓤 ̇ } (xs : List X)
                          → listed (type-from-list xs)
-type-from-list-is-listed {X} [] = [] , g
+type-from-list-is-listed {𝓤} {X} [] = [] , g
  where
   g : (σ : type-from-list []) → member σ []
   g (x , ())
-type-from-list-is-listed {X} (x ∷ xs) = g
+type-from-list-is-listed {𝓤} {X} (x ∷ xs) = g
  where
   h : (x : X) → type-from-list (x ∷ xs)
   h x = x , in-head
@@ -305,13 +305,13 @@ Added by Ayberk Tosun on 2023-10-16.
 
 \begin{code}
 
-right-concatenation-preserves-membership : {X : Type} (x : X) (xs ys : List X)
+right-concatenation-preserves-membership : {X : 𝓤 ̇ } (x : X) (xs ys : List X)
                                          → member x xs → member x (xs ++ ys)
 right-concatenation-preserves-membership x xs@(x′ ∷ _)   ys in-head = in-head
 right-concatenation-preserves-membership x xs@(x′ ∷ xs′) ys (in-tail p) =
  in-tail (right-concatenation-preserves-membership x xs′ ys p)
 
-left-concatenation-preserves-membership : {X : Type} (x : X) (xs ys : List X)
+left-concatenation-preserves-membership : {X : 𝓤 ̇ } (x : X) (xs ys : List X)
                                       → member x xs → member x (ys ++ xs)
 left-concatenation-preserves-membership x xs []       p = p
 left-concatenation-preserves-membership x xs (y ∷ ys) p = †
@@ -319,7 +319,7 @@ left-concatenation-preserves-membership x xs (y ∷ ys) p = †
   † : member x (y ∷ (ys ++ xs))
   † = in-tail (left-concatenation-preserves-membership x xs ys p)
 
-++-membership₁ : {X : Type} (x : X) (xs ys : List X)
+++-membership₁ : {X : 𝓤 ̇ } (x : X) (xs ys : List X)
                → member x (xs ++ ys) → member x xs + member x ys
 ++-membership₁ x []       zs p           = inr p
 ++-membership₁ x (x ∷ ys) zs in-head     = inl in-head

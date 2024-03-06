@@ -21,7 +21,7 @@ record Monad : Type₁ where
   functor : Type → Type
   η       : {X : Type} → X → functor X
   ext     : {X Y : Type} → (X → functor Y) → functor X → functor Y
-  ext-η   : {X : Set} → ext (η {X}) ∼ 𝑖𝑑 (functor X)
+  ext-η   : {X : Type} → ext (η {X}) ∼ 𝑖𝑑 (functor X)
   unit    : {X Y : Type} (f : X → functor Y) (x : X) → ext f (η x) ＝ f x
   assoc   : {X Y Z : Type} (g : Y → functor Z) (f : X → functor Y) (t : functor X)
           → ext (λ x → ext g (f x)) t ＝ ext g (ext f t)
