@@ -35,7 +35,7 @@ module OrderedTypes.DeltaCompletePoset
  (pe : Prop-Ext)
   where
 
-open import Locales.Frame pt fe hiding (𝟚)
+open import Locales.Frame pt fe hiding (𝟚; ₀; ₁)
 open import OrderedTypes.TwoElementPoset pt fe
 open AllCombinators pt fe
 
