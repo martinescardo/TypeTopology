@@ -16,7 +16,7 @@
 {-# OPTIONS --without-K --no-level-universe #-}
 
 import index                    -- Of --safe modules using --level-universe.
-import GamesExperimental.index  -- With --safe but --nolevel-universe.
+import GamesExperimental.index  -- With --safe but --no-level-universe.
 import Unsafe.index             -- Of unsafe modules.
 import InfinitePigeon.index     -- Disables termination check for bar recursion.
 
