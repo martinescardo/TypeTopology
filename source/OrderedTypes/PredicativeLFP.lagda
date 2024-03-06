@@ -138,6 +138,21 @@ module _
  open Joins _≤_
  open is-small-basis h
 
+ c-closure : {𝓣 : Universe} (S : 𝓟 {𝓣} B) → (𝓥 ⁺) ⊔ 𝓣  ̇
+ c-closure S = (U : 𝓟 {𝓥} B)
+             → U ⊆ S
+             → (b : B) → b ≤ᴮ (⋁ 【 β , U 】)
+             → b ∈ S
+
+ _closure : (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩))
+          → {𝓣 : Universe} (S : 𝓟 {𝓣} B) 
+          → 𝓤 ⊔ 𝓥 ⊔ 𝓣  ̇
+ (ϕ closure) S = (a : ⟨ L ⟩)
+               → (b : B)
+               → (b , a) ∈ ϕ
+               → ((b' : B) → (b' ≤ᴮ a → b' ∈ S))
+               → b ∈ S
+
 \end{code}
 
 The following record type should be interpreted as supplying the assumption
@@ -153,17 +168,11 @@ that the QIT family exists with the apropriate induction principle.
   field
    Ind : B → 𝓤 ⊔ 𝓥 ⁺  ̇
    Ind-trunc : (b : B) → is-prop (Ind b)
-   c-closed : (U : 𝓟 {𝓥} B)
-            → ((b : B) → (b ∈ U → Ind b))
-            → (b : B) → b ≤ᴮ (⋁ 【 β , U 】)
-            → Ind b
-   ϕ-closed : (a : ⟨ L ⟩)
-            → (b : B)
-            → (b , a) ∈ ϕ
-            → ((b' : B) → (b' ≤ᴮ a → Ind b'))
-            → Ind b
+   c-closed : c-closure (λ b → (Ind b , Ind-trunc b))
+   ϕ-closed : (ϕ closure) (λ b → (Ind b , Ind-trunc b))
    Ind-induction : (P : (b : B) → 𝓟 {𝓣} (Ind b))
-                 → ((U : 𝓟 {𝓥} B) → (f : (x : B) → (x ∈ U → Ind x))
+                 → ((U : 𝓟 {𝓥} B)
+                  → (f : (x : B) → (x ∈ U → Ind x))
                   → ((x : B) → (u : x ∈ U) → f x u ∈ P x)
                   → (b : B)
                   → (g : (b ≤ᴮ (⋁ 【 β , U 】)))
@@ -194,17 +203,10 @@ of this subset from the above induction principle.
   𝓘nd : 𝓟 {𝓤 ⊔ 𝓥 ⁺} B
   𝓘nd b = (Ind b , Ind-trunc b)
 
-  𝓘nd-is-c-closed : (U : 𝓟 {𝓥} B)
-                  → (U ⊆ 𝓘nd)
-                  → (b : B) → b ≤ᴮ (⋁ 【 β , U 】)
-                  → b ∈ 𝓘nd
+  𝓘nd-is-c-closed : c-closure 𝓘nd
   𝓘nd-is-c-closed = c-closed
 
-  𝓘nd-is-ϕ-closed : (a : ⟨ L ⟩)
-                  → (b : B)
-                  → (b , a) ∈ ϕ
-                  → ((b' : B) → (b' ≤ᴮ a → b' ∈ 𝓘nd))
-                  → b ∈ 𝓘nd
+  𝓘nd-is-ϕ-closed : (ϕ closure) 𝓘nd
   𝓘nd-is-ϕ-closed = ϕ-closed
 
   𝓘nd-induction : (P : (b : B) → 𝓟 {𝓣} (b ∈ 𝓘nd))
@@ -273,7 +275,7 @@ is small.
 
 We then define an operator parameterized by local inductive definitions
 and prove that it is monotone. Finally, we show that any monotone endo map on
-a sup lattice determines a monotone operator and corresponding local
+a sup-lattice determines a monotone operator and corresponding local
 inductive definition.
 
 \begin{code}
@@ -376,12 +378,12 @@ We now show that every monotone map determines and local inductive definition.
 
 \begin{code}
 
- mono-map-give-local-ind-def : (f : ⟨ L ⟩ → ⟨ L ⟩)
-                             → is-monotone-endomap L f
-                             → Σ ϕ ꞉ 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩) ,
-                               Σ i ꞉ (is-local ϕ) ,
-                               ((x : ⟨ L ⟩) → (Γ ϕ i) x ＝ f x)
- mono-map-give-local-ind-def f f-mono = (ϕ , i , H)
+ monotone-map-give-local-ind-def : (f : ⟨ L ⟩ → ⟨ L ⟩)
+                                 → is-monotone-endomap L f
+                                 → Σ ϕ ꞉ 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩) ,
+                                   Σ i ꞉ (is-local ϕ) ,
+                                    ((x : ⟨ L ⟩) → (Γ ϕ i) x ＝ f x)
+ monotone-map-give-local-ind-def f f-mono = (ϕ , i , H)
   where
    ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩)
    ϕ (b , a) =
@@ -441,30 +443,31 @@ We now show that every monotone map determines and local inductive definition.
      ((Γ ϕ i) x) (f x) (sup-of-small-fam-is-lub  L (β ∘ S-to-base ϕ x) (i x))
      (G x)
 
- ind-def-from-mono-map : (f : ⟨ L ⟩ → ⟨ L ⟩)
-                       → is-monotone-endomap L f
-                       → 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩)
- ind-def-from-mono-map f f-mono = pr₁ (mono-map-give-local-ind-def f f-mono)
+ ind-def-from-monotone-map : (f : ⟨ L ⟩ → ⟨ L ⟩)
+                           → is-monotone-endomap L f
+                           → 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩)
+ ind-def-from-monotone-map f f-mono =
+  pr₁ (monotone-map-give-local-ind-def f f-mono)
 
- local-from-mono-map : (f : ⟨ L ⟩ → ⟨ L ⟩)
-                     → (f-mono : is-monotone-endomap L f)
-                     → is-local (ind-def-from-mono-map f f-mono)
- local-from-mono-map f f-mono =
-   pr₁ (pr₂ (mono-map-give-local-ind-def f f-mono))
+ local-from-monotone-map : (f : ⟨ L ⟩ → ⟨ L ⟩)
+                         → (f-mono : is-monotone-endomap L f)
+                         → is-local (ind-def-from-monotone-map f f-mono)
+ local-from-monotone-map f f-mono =
+  pr₁ (pr₂ (monotone-map-give-local-ind-def f f-mono))
 
  f-＝-Γ-from-mono-map : (f : ⟨ L ⟩ → ⟨ L ⟩)
                       → (f-mono : is-monotone-endomap L f)
                       → (x : ⟨ L ⟩)
-                      → (Γ (ind-def-from-mono-map f f-mono)
-                           (local-from-mono-map f f-mono)) x
+                      → (Γ (ind-def-from-monotone-map f f-mono)
+                           (local-from-monotone-map f f-mono)) x
                       ＝ f x
  f-＝-Γ-from-mono-map f f-mono =
-   pr₂ (pr₂ (mono-map-give-local-ind-def f f-mono))
+   pr₂ (pr₂ (monotone-map-give-local-ind-def f f-mono))
 
 \end{code}
 
 We now spell out the correspondence between small 'closed' subsets and
-deflationary points in our sup lattice. This will allow us to show that
+deflationary points in our sup-lattice. This will allow us to show that
 monotone operators have a least fixed point under certain smallness
 assumpions.
 
@@ -506,16 +509,8 @@ module _
   is-small-ϕ-closed-subset-is-predicate : (P : 𝓟 {𝓥} B)
                                         → is-prop (is-small-ϕ-closed-subset P)
   is-small-ϕ-closed-subset-is-predicate P =
-    ×-is-prop (Π-is-prop fe λ U
-               → Π-is-prop fe (λ C
-                → Π-is-prop fe (λ b
-                 → Π-is-prop fe (λ f
-                  → holds-is-prop (P b)))))
-              (Π-is-prop fe (λ a
-               → Π-is-prop fe (λ b
-                → Π-is-prop fe (λ p
-                 → Π-is-prop fe (λ f
-                  → holds-is-prop (P b))))))
+    ×-is-prop (Π₄-is-prop fe (λ _ _ b _ → holds-is-prop (P b)))
+              (Π₄-is-prop fe (λ _ b _ _ → holds-is-prop (P b)))
 
   small-ϕ-closed-subsets : 𝓤 ⊔ (𝓥 ⁺)  ̇
   small-ϕ-closed-subsets =  Σ P ꞉ 𝓟 {𝓥} B , is-small-ϕ-closed-subset P
@@ -748,19 +743,12 @@ smallness assumptions on the least closed subset 𝓘nd ϕ, the monotone operato
      sup-𝓘 : ⟨ L ⟩
      sup-𝓘 = ⋁ (𝕋 𝓘'-subset , β ∘ 𝕋-to-carrier 𝓘nd ∘ ⌜ e ⌝)
 
-     sup-𝓘-is-lub : (sup-𝓘 is-lub-of (𝕋 𝓘nd , β ∘ 𝕋-to-carrier 𝓘nd)) holds
+     sup-𝓘-is-lub : (sup-𝓘 is-lub-of 【 β , 𝓘nd 】) holds
      sup-𝓘-is-lub = sup-of-small-fam-is-lub L (β ∘ 𝕋-to-carrier 𝓘nd)
-                                             total-space-𝓘-is-small
+                                            total-space-𝓘-is-small
 
-\end{code}
-
-Note for Tom: I need to explore generalizing my notation since 𝓘nd isn't in 𝓥.
-
-\begin{code}
-
-    Γ-has-least-fixed-point : has-least-fixed-point L (Γ ϕ i)
-    Γ-has-least-fixed-point =
-      (sup-𝓘 , antisymmetry-of L Γ-sup-below-sup sup-below-Γ-sup , sup-𝓘-below)
+    sup-𝓘-is-fixed-point : (Γ ϕ i) sup-𝓘 ＝ sup-𝓘
+    sup-𝓘-is-fixed-point = antisymmetry-of L Γ-sup-below-sup sup-below-Γ-sup
      where
       Γ-sup-below-sup : ((Γ ϕ i) sup-𝓘 ≤ sup-𝓘) holds
       Γ-sup-below-sup = is-non-inc-non-inc-points
@@ -809,6 +797,54 @@ Note for Tom: I need to explore generalizing my notation since 𝓘nd isn't in �
                                     𝓘-is-small-subset-contained-Q-Γ-sup
         sup-Q-is-Γ-sup : sup-Q ＝ (Γ ϕ i) sup-𝓘
         sup-Q-is-Γ-sup = is-supᴮ' ((Γ ϕ i) sup-𝓘) ⁻¹
+
+    sup-𝓘-is-least-fixed-point : (a : ⟨ L ⟩)
+                               → (Γ ϕ i) a ＝ a
+                               → (sup-𝓘 ≤⟨ L ⟩ a) holds
+    sup-𝓘-is-least-fixed-point a p = transport (λ - → (sup-𝓘 ≤ -) holds)
+                                               sup-P-is-a
+                                               sup-𝓘-below-sup-P
+     where
+      Γa-below-a : ((Γ ϕ i) a ≤ a) holds
+      Γa-below-a = transport (λ - → ((Γ ϕ i) a ≤ -) holds)
+                             p (reflexivity-of L ((Γ ϕ i) a))
+      P-a : 𝓟 {𝓥} B
+      P-a = subset-of-small-ϕ-closed-subset
+             (non-inc-points-to-small-ϕ-closed-subsets (a , Γa-below-a))
+      P-is-c-closed : (U : 𝓟 {𝓥} B)
+                    → (U ⊆ P-a)
+                    → ((b : B)
+                    → b ≤ᴮ (⋁ 【 β , U 】)
+                    → b ∈ P-a)
+      P-is-c-closed = c-closed-of-small-ϕ-closed-subset
+                       (non-inc-points-to-small-ϕ-closed-subsets
+                        (a , Γa-below-a))
+      P-is-ϕ-closed : (a' : ⟨ L ⟩)
+                    → (b : B)
+                    → ((b , a') ∈ ϕ)
+                    → ((b' : B)
+                    → (b' ≤ᴮ a' → b' ∈ P-a))
+                    → b ∈ P-a
+      P-is-ϕ-closed = ϕ-closed-of-small-ϕ-closed-subset
+                       (non-inc-points-to-small-ϕ-closed-subsets
+                        (a , Γa-below-a))
+      𝓘nd-contained-P-a : 𝓘nd ⊆ P-a
+      𝓘nd-contained-P-a = 𝓘nd-is-initial P-a P-is-c-closed P-is-ϕ-closed
+      𝓘'-subset-contained-P-a : 𝓘'-subset ⊆ P-a
+      𝓘'-subset-contained-P-a = λ z → 𝓘nd-contained-P-a z ∘ 𝓘'-to-𝓘nd z
+      sup-P : ⟨ L ⟩
+      sup-P = ⋁ 【 β , P-a 】
+      sup-𝓘-below-sup-P : (sup-𝓘 ≤ sup-P) holds
+      sup-𝓘-below-sup-P =
+       joins-preserve-containment L β {𝓘'-subset} {P-a}
+                                  𝓘'-subset-contained-P-a
+      sup-P-is-a : sup-P ＝ a
+      sup-P-is-a = is-supᴮ' a ⁻¹
+
+    Γ-has-least-fixed-point : has-least-fixed-point L (Γ ϕ i)
+    Γ-has-least-fixed-point =
+      (sup-𝓘 , sup-𝓘-is-fixed-point , sup-𝓘-is-least-fixed-point)
+     where
       sup-𝓘-below : (a : ⟨ L ⟩) → ((Γ ϕ i) a ＝ a) → (sup-𝓘 ≤ a) holds
       sup-𝓘-below a p = transport (λ - → (sup-𝓘 ≤ -) holds)
                                   sup-P-is-a
@@ -852,10 +888,9 @@ Note for Tom: I need to explore generalizing my notation since 𝓘nd isn't in �
 
 \end{code}
 
-The remainder of this formalization is essentially a search for 
-resritctions we may impose on sup lattices and inductive definitions to
-acheive the neccesary smallness assumptions on 𝓘nd which will guarentee least
-fixed points.
+The remainder of this formalization is essentially a search for resrictions
+we may impose on sup-lattices and inductive definitions to achieve the
+neccesary smallness assumptions on 𝓘nd which will guarentee least fixed points.
 
 We now consider a boundedness restricion on inductive definitions and show
 that bounded inductive definitions are local.
@@ -1395,7 +1430,7 @@ module _
 \end{code}
 
 As a corollary of the above result we get a predicative version of the least
-fixed point theorem. Notice that we are assuming our lattice is
+fixed point theorem. Notice that we are assuming our sup-lattice is
 small-presented and that we have a bounded ϕ that corresponds to our
 monotone map. This is the most general statement that can be made but we are
 actively exploring other, cleaner, formulations. In particular see the below
@@ -1423,6 +1458,7 @@ module _
  open local-inductive-definitions L β h
  open bounded-inductive-definitions L β h
  open small-presentation-of-lattice L β h
+ open small-QIT-from-bounded-and-small-presentation L β h 
 
  module QITs-exists-for-all-ϕ
          (ind-e : (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩))
@@ -1430,7 +1466,7 @@ module _
          (ind'-e : (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩))
                  → (bnd : is-bounded ϕ)
                  → (small-pres : has-small-presentation)
-                 → small-QIT-from-bounded-and-small-presentation.inductively-generated-small-subset-exists L β h small-pres ϕ bnd)
+                 → inductively-generated-small-subset-exists small-pres ϕ bnd)
         where
 
 \end{code}
@@ -1486,7 +1522,7 @@ We can now state the (truncated) least fixed point theorem.
 
 \end{code}
 
-We begin exploring conditions on monotone endomaps that guarentee they
+We now explore conditions on monotone endomaps that guarantee they
 correspond to some bounded inductive definition. We tentatively call this
 notion 'density'.
 
@@ -1677,6 +1713,7 @@ module _
  open propositional-truncations-exist pt
  open bounded-inductive-definitions L β h
  open small-presentation-of-lattice L β h
+ open small-QIT-from-bounded-and-small-presentation L β h
 
  module QITs-exists-density
          (ind-e : (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩))
@@ -1684,7 +1721,7 @@ module _
          (ind'-e : (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩))
                  → (bnd : is-bounded ϕ)
                  → (small-pres : has-small-presentation)
-                 → small-QIT-from-bounded-and-small-presentation.inductively-generated-small-subset-exists L β h small-pres ϕ bnd)
+                 → inductively-generated-small-subset-exists small-pres ϕ bnd)
         where
 
   open QITs-exists-for-all-ϕ L β h ind-e ind'-e
