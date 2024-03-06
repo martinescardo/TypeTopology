@@ -34,7 +34,7 @@ open import Locales.Spectrality.SpectralLocale pt fe
 open import Locales.Spectrality.SpectralMap pt fe
 open import Locales.Sierpinski 𝓤 pe pt fe
 open import Locales.Stone pt fe sr
-open import Locales.PatchProperties pt fe sr
+-- open import Locales.PatchProperties pt fe sr
 open import Locales.Compactness pt fe
 open import Slice.Family
 open import UF.DiscreteAndSeparated hiding (𝟚-is-set)
