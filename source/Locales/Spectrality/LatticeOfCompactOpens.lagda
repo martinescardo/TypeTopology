@@ -7,7 +7,7 @@ date-completed: 2024-02-27
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K #-}
+{-# OPTIONS --safe --without-K --lossy-unification #-}
 
 open import MLTT.List hiding ([_])
 open import MLTT.Pi
@@ -33,13 +33,16 @@ module Locales.Spectrality.LatticeOfCompactOpens
         (sr : Set-Replacement pt)
        where
 
-fe : Fun-Ext
-fe {𝓤} {𝓥} = univalence-gives-funext' 𝓤 𝓥 (ua 𝓤) (ua (𝓤 ⊔ 𝓥))
+private
+ fe : Fun-Ext
+ fe {𝓤} {𝓥} = univalence-gives-funext' 𝓤 𝓥 (ua 𝓤) (ua (𝓤 ⊔ 𝓥))
 
 open import Locales.Frame pt fe
 open import Locales.Compactness pt fe
 open import Locales.Spectrality.SpectralLocale pt fe
+open import Locales.Spectrality.SpectralMap pt fe
 open import Locales.DistributiveLattice.Definition fe pt
+open import Locales.DistributiveLattice.Homomorphism fe pt
 open import Locales.SmallBasis pt fe sr
 
 open AllCombinators pt fe
@@ -53,8 +56,8 @@ type of compact opens.
 
 \begin{code}
 
-module _ (X  : Locale (𝓤 ⁺) 𝓤 𝓤)
-         (σ₀ : is-spectral-with-small-basis ua X holds) where
+module 𝒦-Lattice (X  : Locale (𝓤 ⁺) 𝓤 𝓤)
+                 (σ₀ : is-spectral-with-small-basis ua X holds) where
 
 \end{code}
 
