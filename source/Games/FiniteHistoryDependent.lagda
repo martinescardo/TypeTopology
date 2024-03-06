@@ -135,7 +135,7 @@ Definition 4 of [1]:
 
 \begin{code}
 
-Strategy : 𝑻 -> Type
+Strategy : 𝑻 → Type
 Strategy = structure id
 
 remark-Strategy : {X : Type} {Xf : X → 𝑻}

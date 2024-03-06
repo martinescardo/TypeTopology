@@ -74,7 +74,7 @@ The types of trees with JT and KT structure.
 sequenceᴶᵀ : {Xt : 𝑻} → 𝓙𝓣 Xt → JT (Path Xt)
 sequenceᴶᵀ = path-sequence 𝕁𝕋
 
-T-Strategy : 𝑻 -> Type
+T-Strategy : 𝑻 → Type
 T-Strategy = structure T
 
 T-strategic-path : {Xt : 𝑻} → T-Strategy Xt → T (Path Xt)
