@@ -25,7 +25,7 @@ module Locales.DistributiveLattice.LocaleOfSpectra
 open import Locales.DistributiveLattice.Definition fe pt
 open import Locales.DistributiveLattice.Ideal pt fe pe
 open import Locales.DistributiveLattice.Properties fe pt
-open import Locales.Frame pt fe
+open import Locales.Frame pt fe hiding (is-directed)
 open import MLTT.Fin hiding (𝟎; 𝟏)
 open import MLTT.List hiding ([_])
 open import MLTT.Spartan
@@ -224,6 +224,43 @@ Below are some simple lemmas about the covering relation.
 
    † : (y ∧ x) ∈ᵢ (S [ i ]) holds
    † = Sᵢ-is-downward-closed (y ∧ x) x (∧-is-a-lower-bound₂ L y x) r
+
+\end{code}
+
+The lemma below captures the fact that covers of lists always have a finite
+subcover.
+
+\begin{code}
+
+ open Locale
+ open import Locales.DirectedFamily pt fe _⊆ᵢ_
+
+
+ finite-subcover : (S : Fam 𝓤 (Ideal L)) (xs : List ∣ L ∣ᵈ)
+                 → is-directed S holds
+                 → xs ◁ S
+                 → ∃ i ꞉ index S , join-listᵈ L xs ∈ᵢ (S [ i ]) holds
+ finite-subcover S [] δ c = ∥∥-rec ∃-is-prop γ (directed-implies-inhabited S δ)
+  where
+   γ : index S → ∃ i ꞉ index S , join-listᵈ L [] ∈ⁱ (S [ i ])
+   γ i = ∣ i , Sᵢ-contains-𝟎 ∣
+    where
+     open Ideal (S [ i ]) renaming (I-contains-𝟎 to Sᵢ-contains-𝟎)
+ finite-subcover S (x ∷ xs) δ ((i , μ) , c) = ∥∥-rec ∃-is-prop † IH
+  where
+   IH : ∃ i ꞉ index S , join-listᵈ L xs ∈ᵢ (S [ i ]) holds
+   IH = finite-subcover S xs δ c
+
+   † : Σ i ꞉ index S , join-listᵈ L xs ∈ⁱ (S [ i ])
+     → ∃ k ꞉ index S , join-listᵈ L (x ∷ xs) ∈ⁱ (S [ k ])
+   † (j , p) = ∥∥-rec ∃-is-prop ‡ (pr₂ δ i j)
+    where
+     ‡ : Σ k ꞉ index S , ((S [ i ]) ⊆ᵢ (S [ k ]) ∧ₚ (S [ j ]) ⊆ᵢ (S [ k ])) holds
+       → ∃ k ꞉ index S , join-listᵈ L (x ∷ xs) ∈ⁱ (S [ k ])
+     ‡ (k , μ₁ , μ₂) =
+      ∣ k , Sᵢ-is-closed-under-∨ x (join-listᵈ L xs ) (μ₁ x μ) (μ₂ (join-listᵈ L xs) p) ∣
+       where
+        open Ideal (S [ k ]) renaming (I-is-closed-under-∨ to Sᵢ-is-closed-under-∨)
 
 \end{code}
 
