@@ -197,12 +197,16 @@ that the QIT family exists with the apropriate induction principle.
   field
    Ind : B → 𝓤 ⊔ 𝓥 ⁺  ̇
    Ind-trunc : (b : B) → is-prop (Ind b)
-   c-closed : c-closure (λ - → (Ind - , Ind-trunc -))
-   ϕ-closed : (ϕ closure) (λ - → (Ind - , Ind-trunc -))
-   Ind-induction : (P : (b : B) → 𝓟 {𝓣} (Ind b))
-                 → dep-c-closure (λ - → (Ind - , Ind-trunc -)) P c-closed
-                 → dep ϕ closure (λ - → (Ind - , Ind-trunc -)) P ϕ-closed
-                 → (b : B) → (i : Ind b) → i ∈ P b
+  private
+   𝓘 : 𝓟 {𝓤 ⊔ 𝓥 ⁺} B
+   𝓘 b = (Ind b , Ind-trunc b)
+  field
+   c-closed : c-closure 𝓘
+   ϕ-closed : (ϕ closure) 𝓘
+   Ind-induction : (P : (b : B) → 𝓟 {𝓣} (b ∈ 𝓘))
+                 → dep-c-closure 𝓘 P c-closed
+                 → dep ϕ closure 𝓘 P ϕ-closed
+                 → (b : B) → (i : b ∈ 𝓘) → i ∈ P b
 
  module trunc-ind-def
          (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩))
@@ -238,7 +242,7 @@ of this subset from the above induction principle.
                 → dep-c-closure 𝓘nd (λ b → (λ _ → P b)) c-closed
                 → dep ϕ closure 𝓘nd (λ b → (λ _ → P b)) ϕ-closed
                 → 𝓘nd ⊆ P
-  𝓘nd-recursion P = 𝓘nd-induction λ b → (λ _ → P b)
+  𝓘nd-recursion P = 𝓘nd-induction (λ b → (λ _ → P b))
 
   𝓘nd-is-initial : (P : 𝓟 {𝓣} B)
                  → c-closure P
@@ -285,22 +289,23 @@ module local-inductive-definitions
 \end{code}
 
 We now define an auxilary subset which we will use to define the upcoming
-monotone operator.
+monotone operator. This subset is in some sense a generalized downset that
+depends on ϕ.
 
 \begin{code}
 
- S : (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩)) → (a : ⟨ L ⟩) → 𝓤 ⊔ 𝓦 ⊔ 𝓥  ̇
- S ϕ a = Σ b ꞉ B , (Ǝ a' ꞉ ⟨ L ⟩ , (b , a') ∈ ϕ × (a' ≤ a) holds) holds
+ _↓_ : (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩)) → (a : ⟨ L ⟩) → 𝓤 ⊔ 𝓦 ⊔ 𝓥  ̇
+ ϕ ↓ a = Σ b ꞉ B , (Ǝ a' ꞉ ⟨ L ⟩ , (b , a') ∈ ϕ × (a' ≤ a) holds) holds
 
- S-to-base : (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩)) → (a : ⟨ L ⟩) → S ϕ a → B
- S-to-base ϕ a = pr₁
+ ↓-to-base : (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩)) → (a : ⟨ L ⟩) → ϕ ↓ a → B
+ ↓-to-base ϕ a = pr₁
 
- S-monotonicity-lemma : (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩))
-                      → (x y : ⟨ L ⟩)
-                      → (x ≤ y) holds
-                      → S ϕ x
-                      → S ϕ y
- S-monotonicity-lemma ϕ x y o (b , c) = (b , inclusion c)
+ ↓-monotonicity-lemma : (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩))
+                                → (x y : ⟨ L ⟩)
+                                → (x ≤ y) holds
+                                → ϕ ↓ x
+                                → ϕ ↓ y
+ ↓-monotonicity-lemma ϕ x y o (b , c) = (b , inclusion c)
   where
    inclusion : (Ǝ a' ꞉ ⟨ L ⟩ , ((b , a') ∈ ϕ) × ((a' ≤ x) holds)) holds
              → (Ǝ a' ꞉ ⟨ L ⟩ , ((b , a') ∈ ϕ) × ((a' ≤ y) holds)) holds
@@ -310,46 +315,46 @@ monotone operator.
                        → Σ a' ꞉ ⟨ L ⟩ , ((b , a') ∈ ϕ) × ((a' ≤ y) holds)
      untrunc-inclusion (a' , p , r) = (a' , p , transitivity-of L a' x y r o)
 
- S-has-sup-implies-monotone : (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩))
+ ↓-has-sup-implies-monotone : (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩))
                             → (x y s s' : ⟨ L ⟩)
                             → (x ≤ y) holds
-                            → (s is-lub-of (S ϕ x , β ∘ S-to-base ϕ x)) holds
-                            → (s' is-lub-of (S ϕ y , β ∘ S-to-base ϕ y)) holds
+                            → (s is-lub-of (ϕ ↓ x , β ∘ ↓-to-base ϕ x)) holds
+                            → (s' is-lub-of (ϕ ↓ y , β ∘ ↓-to-base ϕ y)) holds
                             → (s ≤ s') holds
- S-has-sup-implies-monotone
+ ↓-has-sup-implies-monotone
   ϕ x y s s' o (is-upbnd , is-least-upbnd) (is-upbnd' , is-least-upbnd') =
    is-least-upbnd (s' , s'-is-upbnd)
   where
-   s'-is-upbnd : (s' is-an-upper-bound-of (S ϕ x , β ∘ S-to-base ϕ x)) holds
-   s'-is-upbnd (b , e) = is-upbnd' (S-monotonicity-lemma ϕ x y o ((b , e)))
+   s'-is-upbnd : (s' is-an-upper-bound-of (ϕ ↓ x , β ∘ ↓-to-base ϕ x)) holds
+   s'-is-upbnd (b , e) = is-upbnd' (↓-monotonicity-lemma ϕ x y o ((b , e)))
         
  is-local : (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩)) → 𝓤 ⊔ 𝓦 ⊔ (𝓥 ⁺)  ̇
- is-local ϕ = (a : ⟨ L ⟩) → S ϕ a is 𝓥 small
+ is-local ϕ = (a : ⟨ L ⟩) → (ϕ ↓ a) is 𝓥 small
 
  module _ (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩)) (i : is-local ϕ) where
 
   private
    S' : (a : ⟨ L ⟩) → 𝓥  ̇
-   S' a = resized (S ϕ a) (i a)
+   S' a = resized (ϕ ↓ a) (i a)
 
-   S'-equiv-S : (a : ⟨ L ⟩) → S' a ≃ S ϕ a
-   S'-equiv-S a  = resizing-condition (i a)
+   S'-equiv-↓ : (a : ⟨ L ⟩) → S' a ≃ ϕ ↓ a
+   S'-equiv-↓ a  = resizing-condition (i a)
 
-   S'-to-S : (a : ⟨ L ⟩) → S' a → S ϕ a
-   S'-to-S a = ⌜ S'-equiv-S a ⌝
+   S'-to-↓ : (a : ⟨ L ⟩) → S' a → ϕ ↓ a
+   S'-to-↓ a = ⌜ S'-equiv-↓ a ⌝
 
-   S-to-S' : (a : ⟨ L ⟩) → S ϕ a → S' a 
-   S-to-S' a = ⌜ S'-equiv-S a ⌝⁻¹
+   ↓-to-S' : (a : ⟨ L ⟩) → ϕ ↓ a → S' a 
+   ↓-to-S' a = ⌜ S'-equiv-↓ a ⌝⁻¹
 
    S'-monotone-ish : (x y : ⟨ L ⟩)
                    → (x ≤ y) holds
                    → S' x
                    → S' y
    S'-monotone-ish x y o =
-    S-to-S' y ∘ S-monotonicity-lemma ϕ x y o ∘ S'-to-S x
+    ↓-to-S' y ∘ ↓-monotonicity-lemma ϕ x y o ∘ S'-to-↓ x
 
   Γ : ⟨ L ⟩ → ⟨ L ⟩
-  Γ a = ⋁ (S' a , β ∘ pr₁ ∘ S'-to-S a)
+  Γ a = ⋁ (S' a , β ∘ pr₁ ∘ S'-to-↓ a)
 
 \end{code}
 
@@ -359,12 +364,12 @@ We show that Γ is monotone.
 
   Γ-is-monotone : is-monotone-endomap L Γ
   Γ-is-monotone x y o =
-   S-has-sup-implies-monotone ϕ x y (Γ x) (Γ y) o Γx-is-lub Γy-is-lub
+   ↓-has-sup-implies-monotone ϕ x y (Γ x) (Γ y) o Γx-is-lub Γy-is-lub
    where
-    Γx-is-lub : (Γ x is-lub-of (S ϕ x , β ∘ S-to-base ϕ x)) holds
-    Γx-is-lub = sup-of-small-fam-is-lub L (β ∘ S-to-base ϕ x) (i x)      
-    Γy-is-lub : (Γ y is-lub-of (S ϕ y , β ∘ S-to-base ϕ y)) holds
-    Γy-is-lub = sup-of-small-fam-is-lub L (β ∘ S-to-base ϕ y) (i y)
+    Γx-is-lub : (Γ x is-lub-of (ϕ ↓ x , β ∘ ↓-to-base ϕ x)) holds
+    Γx-is-lub = sup-of-small-fam-is-lub L (β ∘ ↓-to-base ϕ x) (i x)      
+    Γy-is-lub : (Γ y is-lub-of (ϕ ↓ y , β ∘ ↓-to-base ϕ y)) holds
+    Γy-is-lub = sup-of-small-fam-is-lub L (β ∘ ↓-to-base ϕ y) (i y)
 
 \end{code}
 
@@ -382,59 +387,59 @@ We now show that every monotone map determines and local inductive definition.
    ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩)
    ϕ (b , a) =
     (Lift 𝓤 (b ≤ᴮ f a) , equiv-to-prop (Lift-≃ 𝓤 (b ≤ᴮ f a)) ≤ᴮ-is-prop-valued)
-   ↓ᴮf-equiv-S-tot : (a : ⟨ L ⟩) → small-↓ᴮ (f a) ≃ S ϕ a
-   ↓ᴮf-equiv-S-tot a =
+   ↓ᴮf-equiv-↓-tot : (a : ⟨ L ⟩) → small-↓ᴮ (f a) ≃ ϕ ↓ a
+   ↓ᴮf-equiv-↓-tot a =
     Σ-cong' (λ z → z ≤ᴮ f a)
             ((λ z → (Ǝ a' ꞉ ⟨ L ⟩ , (z , a') ∈ ϕ × (a' ≤ a) holds) holds))
-            ↓ᴮf-equiv-S
+            ↓ᴮf-equiv-↓
     where
-     ↓ᴮf-equiv-S : (z : B)
+     ↓ᴮf-equiv-↓ : (z : B)
                  → (z ≤ᴮ f a)
                  ≃ (Ǝ a' ꞉ ⟨ L ⟩ , (z , a') ∈ ϕ × (a' ≤ a) holds) holds
-     ↓ᴮf-equiv-S z =
-      ⌜ prop-≃-≃-↔ fe ≤ᴮ-is-prop-valued ∥∥-is-prop ⌝⁻¹ (↓ᴮf-to-S , S-to-↓ᴮf)
+     ↓ᴮf-equiv-↓ z =
+      ⌜ prop-≃-≃-↔ fe ≤ᴮ-is-prop-valued ∥∥-is-prop ⌝⁻¹ (↓ᴮf-to-↓ , ↓-to-↓ᴮf)
       where
-       ↓ᴮf-to-S : z ≤ᴮ f a
+       ↓ᴮf-to-↓ : z ≤ᴮ f a
                 → (Ǝ a' ꞉ ⟨ L ⟩ , (z , a') ∈ ϕ × (a' ≤ a) holds) holds
-       ↓ᴮf-to-S o = ∣ (a , ⌜ ≃-Lift 𝓤 (z ≤ᴮ f a) ⌝ o , reflexivity-of L a) ∣
-       S-to-↓ᴮf : (Ǝ a' ꞉ ⟨ L ⟩ , (z , a') ∈ ϕ × (a' ≤ a) holds) holds
+       ↓ᴮf-to-↓ o = ∣ (a , ⌜ ≃-Lift 𝓤 (z ≤ᴮ f a) ⌝ o , reflexivity-of L a) ∣
+       ↓-to-↓ᴮf : (Ǝ a' ꞉ ⟨ L ⟩ , (z , a') ∈ ϕ × (a' ≤ a) holds) holds
                 → z ≤ᴮ f a
-       S-to-↓ᴮf = ∥∥-rec ≤ᴮ-is-prop-valued S-to-↓ᴮf'
+       ↓-to-↓ᴮf = ∥∥-rec ≤ᴮ-is-prop-valued ↓-to-↓ᴮf'
         where
-         S-to-↓ᴮf' : Σ a' ꞉ ⟨ L ⟩ , (z , a') ∈ ϕ × (a' ≤ a) holds → z ≤ᴮ f a
-         S-to-↓ᴮf' (a' , o , r) =
+         ↓-to-↓ᴮf' : Σ a' ꞉ ⟨ L ⟩ , (z , a') ∈ ϕ × (a' ≤ a) holds → z ≤ᴮ f a
+         ↓-to-↓ᴮf' (a' , o , r) =
           ≤-to-≤ᴮ (transitivity-of L (β z) (f a') (f a)
                                    (≤ᴮ-to-≤
                                    (⌜ ≃-Lift 𝓤 (z ≤ᴮ f a') ⌝⁻¹ o))
                                    (f-mono a' a r))
    i : is-local ϕ
-   i a = (small-↓ᴮ (f a) , ↓ᴮf-equiv-S-tot a)
-   G : (x : ⟨ L ⟩) → (f x is-lub-of (S ϕ x , β ∘ S-to-base ϕ x)) holds 
+   i a = (small-↓ᴮ (f a) , ↓ᴮf-equiv-↓-tot a)
+   G : (x : ⟨ L ⟩) → (f x is-lub-of (ϕ ↓ x , β ∘ ↓-to-base ϕ x)) holds 
    G x = (fx-is-upbnd , fx-is-least-upbnd)
     where
-     fx-is-upbnd : (f x is-an-upper-bound-of (S ϕ x , β ∘ S-to-base ϕ x)) holds
-     fx-is-upbnd (b , e) = S-to-fx-upbnd e
+     fx-is-upbnd : (f x is-an-upper-bound-of (ϕ ↓ x , β ∘ ↓-to-base ϕ x)) holds
+     fx-is-upbnd (b , e) = ↓-to-fx-upbnd e
       where
-       S-to-fx-upbnd : (Ǝ a' ꞉ ⟨ L ⟩ , (b , a') ∈ ϕ × (a' ≤ x) holds) holds
+       ↓-to-fx-upbnd : (Ǝ a' ꞉ ⟨ L ⟩ , (b , a') ∈ ϕ × (a' ≤ x) holds) holds
                      → (β b ≤ f x) holds
-       S-to-fx-upbnd = ∥∥-rec (holds-is-prop (β b ≤ f x)) S-to-fx-upbnd'
+       ↓-to-fx-upbnd = ∥∥-rec (holds-is-prop (β b ≤ f x)) ↓-to-fx-upbnd'
         where
-         S-to-fx-upbnd' : Σ a' ꞉ ⟨ L ⟩ , (b , a') ∈ ϕ × (a' ≤ x) holds
+         ↓-to-fx-upbnd' : Σ a' ꞉ ⟨ L ⟩ , (b , a') ∈ ϕ × (a' ≤ x) holds
                         → (β b ≤ f x) holds
-         S-to-fx-upbnd' (a' , o , r) =
+         ↓-to-fx-upbnd' (a' , o , r) =
           transitivity-of L (β b) (f a') (f x)
                           (≤ᴮ-to-≤ (⌜ ≃-Lift 𝓤 (b ≤ᴮ f a') ⌝⁻¹ o))
                           (f-mono a' x r)
-     fx-is-least-upbnd : ((u , _) : upper-bound (S ϕ x , β ∘ S-to-base ϕ x))
+     fx-is-least-upbnd : ((u , _) : upper-bound (ϕ ↓ x , β ∘ ↓-to-base ϕ x))
                        → (f x ≤ u) holds
      fx-is-least-upbnd (u , is-upbnd) =
       (is-least-upper-boundᴮ (f x))
-       (u , λ z → is-upbnd (⌜ ↓ᴮf-equiv-S-tot x ⌝ z))
+       (u , λ z → is-upbnd (⌜ ↓ᴮf-equiv-↓-tot x ⌝ z))
    H : (x : ⟨ L ⟩) → (Γ ϕ i) x ＝ f x
    H x =
     reindexing-along-equiv-＝-sup
-     L (id , id-is-equiv (S ϕ x)) (β ∘ S-to-base ϕ x)
-     ((Γ ϕ i) x) (f x) (sup-of-small-fam-is-lub  L (β ∘ S-to-base ϕ x) (i x))
+     L (id , id-is-equiv (ϕ ↓ x)) (β ∘ ↓-to-base ϕ x)
+     ((Γ ϕ i) x) (f x) (sup-of-small-fam-is-lub  L (β ∘ ↓-to-base ϕ x) (i x))
      (G x)
 
  ind-def-from-monotone-map : (f : ⟨ L ⟩ → ⟨ L ⟩)
@@ -557,12 +562,12 @@ module _
     sup-is-non-inc = lub-condition (sup-of-P , is-upper-bound)
      where
       sup-is-lub :
-       ((Γ ϕ i) sup-of-P is-lub-of (S ϕ sup-of-P , β ∘ S-to-base ϕ sup-of-P))
+       ((Γ ϕ i) sup-of-P is-lub-of (ϕ ↓ sup-of-P , β ∘ ↓-to-base ϕ sup-of-P))
         holds
       sup-is-lub =
-       sup-of-small-fam-is-lub L (β ∘ S-to-base ϕ sup-of-P) (i sup-of-P)
+       sup-of-small-fam-is-lub L (β ∘ ↓-to-base ϕ sup-of-P) (i sup-of-P)
       lub-condition :
-       ((u , _) : upper-bound (S ϕ sup-of-P , β ∘ S-to-base ϕ sup-of-P))
+       ((u , _) : upper-bound (ϕ ↓ sup-of-P , β ∘ ↓-to-base ϕ sup-of-P))
        → ((Γ ϕ i) sup-of-P ≤ u) holds
       lub-condition = pr₂ sup-is-lub
       b-in-P-to-b-below-sup : (b : B) → b ∈ P → (β b ≤ sup-of-P) holds
@@ -580,7 +585,7 @@ module _
           b'-below-sup-P : b' ≤ᴮ sup-of-P
           b'-below-sup-P =
            ≤-to-≤ᴮ (transitivity-of L (β b') a sup-of-P (≤ᴮ-to-≤ r) o)
-      is-upper-bound : ((b , e) : S ϕ sup-of-P) → (β b ≤ sup-of-P) holds
+      is-upper-bound : ((b , e) : ϕ ↓ sup-of-P) → (β b ≤ sup-of-P) holds
       is-upper-bound (b , e) =
        ∥∥-rec (holds-is-prop (β b ≤ sup-of-P)) (un-trunc-map b) e
 
@@ -610,10 +615,10 @@ module _
              → ((b' : B) → (b' ≤ᴮ a' → b' ∈ Q a)) → b ∈ Q a
     ϕ-closed a' b p f = trunc-map b ∣ (a' , p , a'-below-a) ∣
      where
-      Γ-is-sup : ((Γ ϕ i) a is-lub-of (S ϕ a , β ∘ S-to-base ϕ a)) holds
-      Γ-is-sup = sup-of-small-fam-is-lub L (β ∘ S-to-base ϕ a) (i a)
+      Γ-is-sup : ((Γ ϕ i) a is-lub-of (ϕ ↓ a , β ∘ ↓-to-base ϕ a)) holds
+      Γ-is-sup = sup-of-small-fam-is-lub L (β ∘ ↓-to-base ϕ a) (i a)
       Γ-an-upper-bound :
-       ((Γ ϕ i) a is-an-upper-bound-of (S ϕ a , β ∘ S-to-base ϕ a)) holds
+       ((Γ ϕ i) a is-an-upper-bound-of (ϕ ↓ a , β ∘ ↓-to-base ϕ a)) holds
       Γ-an-upper-bound = pr₁ Γ-is-sup
       trunc-map : (x : B)
                 → (Ǝ a'' ꞉ ⟨ L ⟩ , (x , a'') ∈ ϕ × (a'' ≤ a) holds) holds
@@ -947,7 +952,7 @@ module bounded-inductive-definitions
                        → is-bounded ϕ
                        → is-local ϕ
  bounded-implies-local ϕ (ϕ-small , ϕ-has-bound) a =
-  smallness-closed-under-≃ S₀-is-small S₀-equiv-S
+  smallness-closed-under-≃ S₀-is-small S₀-equiv-↓
   where
    I : 𝓥  ̇
    I = bound-index {ϕ} ϕ-has-bound
@@ -972,8 +977,8 @@ module bounded-inductive-definitions
                 (λ _ → ↓ᴮ-is-small))
                (λ m → ϕ-small (⋁ (α i , ↓ᴮ-inclusion L β a ∘ m)) b))))
 
-   S₀-to-S : S₀ → S ϕ a
-   S₀-to-S (b , e) = (b , ∥∥-functor u e)
+   S₀-to-↓ : S₀ → ϕ ↓ a
+   S₀-to-↓ (b , e) = (b , ∥∥-functor u e)
     where
      u : Σ i ꞉ I , Σ m ꞉ (α i → ↓ᴮ L β a) ,
          (b , (⋁ (α i , ↓ᴮ-inclusion L β a ∘ m))) ∈ ϕ
@@ -983,8 +988,8 @@ module bounded-inductive-definitions
        join-is-least-upper-bound-of L (α i , ↓ᴮ-inclusion L β a ∘ m)
                                     (a , λ z → is-upper-bound-↓ a (m z)))
 
-   S-to-S₀ : S ϕ a → S₀
-   S-to-S₀ (b , e) = (b , t e)
+   ↓-to-S₀ : ϕ ↓ a → S₀
+   ↓-to-S₀ (b , e) = (b , t e)
     where
      g : (a' : ⟨ L ⟩)
        → (b , a') ∈ ϕ
@@ -1021,15 +1026,15 @@ module bounded-inductive-definitions
            (b , ⋁ (α i , ↓ᴮ-inclusion L β a ∘ m)) ∈ ϕ) holds
      t = ∥∥-rec ∥∥-is-prop cur-trunc-g
 
-   S₀-equiv-S : S₀ ≃ S ϕ a
-   S₀-equiv-S = (S₀-to-S , qinvs-are-equivs S₀-to-S is-qinv)
+   S₀-equiv-↓ : S₀ ≃ ϕ ↓ a
+   S₀-equiv-↓ = (S₀-to-↓ , qinvs-are-equivs S₀-to-↓ is-qinv)
     where
-     H : S-to-S₀ ∘ S₀-to-S ∼ id
+     H : ↓-to-S₀ ∘ S₀-to-↓ ∼ id
      H (b , e) = to-subtype-＝ (λ _ → ∥∥-is-prop) refl
-     G : S₀-to-S ∘ S-to-S₀ ∼ id
+     G : S₀-to-↓ ∘ ↓-to-S₀ ∼ id
      G (b , e) = to-subtype-＝ (λ _ → ∥∥-is-prop) refl
-     is-qinv : qinv S₀-to-S
-     is-qinv = (S-to-S₀ , H , G)
+     is-qinv : qinv S₀-to-↓
+     is-qinv = (↓-to-S₀ , H , G)
 
 \end{code}
 
@@ -1175,9 +1180,47 @@ sound point constructors.
 \end{code}
 
 Again, we use records to assert the existence of another QIT family with
-apropriate induction principle. First we introduce some names as before.
+apropriate induction principle. As before we will first we introduce some
+names for the (dependent) closure properties.
 
 \begin{code}
+
+  Small-c-closure : {𝓣 : Universe} (S : 𝓟 {𝓣} B) → 𝓥 ⊔ 𝓣  ̇
+  Small-c-closure S = (i : I₁)
+                    → ((b : B) → (b ∈ Y i → b ∈ S))
+                    → (b : B) → (b , Y i) ∈ R
+                    → b ∈ S
+
+  Small-dep-c-closure : {𝓣 𝓣' : Universe} (S : 𝓟 {𝓣} B)
+                      → (P : (b : B) → 𝓟 {𝓣'} (b ∈ S))
+                      → (c : Small-c-closure S)
+                      → 𝓥 ⊔ 𝓣 ⊔ 𝓣'  ̇
+  Small-dep-c-closure S P c = ((i : I₁) → (f : (x : B) → (x ∈ Y i → x ∈ S))
+                            → ((x : B) → (y : x ∈ Y i) → f x y ∈ P x)
+                            → (b : B) → (g : (b , Y i) ∈ R)
+                            → c i f b g ∈ P b)
+
+  Small-ϕ-closure : {𝓣 : Universe} (S : 𝓟 {𝓣} B) → 𝓥 ⊔ 𝓣  ̇
+  Small-ϕ-closure S = (i : I₂)
+                    → (m : α i → B)
+                    → (b : B)
+                    → small-ϕ b (⋁ (α i , β ∘ m))
+                    → ((b' : B) → (b' ≤ᴮ (⋁ (α i , β ∘ m)) → b' ∈ S))
+                    → b ∈ S
+
+  Small-dep-ϕ-closure : {𝓣 𝓣' : Universe} (S : 𝓟 {𝓣} B)
+                      → (P : (b : B) → 𝓟 {𝓣'} (b ∈ S))
+                      → (q : Small-ϕ-closure S)
+                      → 𝓥 ⊔ 𝓣 ⊔ 𝓣'  ̇
+  Small-dep-ϕ-closure S P q = ((i : I₂)
+                            → (m : α i → B)
+                            → (b : B)
+                            → (p : small-ϕ b (⋁ (α i , β ∘ m)))
+                            → (f : (x : B) → (x ≤ᴮ (⋁ (α i , β ∘ m)) → x ∈ S))
+                            → ((x : B)
+                              → (o : x ≤ᴮ (⋁ (α i , β ∘ m)))
+                              → f x o ∈ P x)
+                            → q i m b p f ∈ P b)
 
   record inductively-generated-small-subset-exists : 𝓤ω where
    constructor
@@ -1186,33 +1229,16 @@ apropriate induction principle. First we introduce some names as before.
    field
     Small-Ind : B → 𝓥  ̇
     Small-Ind-trunc : (b : B) → is-prop (Small-Ind b)
-    Small-c-cl : (i : I₁)
-               → ((b : B) → (b ∈ Y i → Small-Ind b))
-               → (b : B) → (b , Y i) ∈ R
-               → Small-Ind b
-    Small-ϕ-cl : (i : I₂)
-               → (m : α i → B)
-               → (b : B)
-               → small-ϕ b (⋁ (α i , β ∘ m))
-               → ((b' : B) → (b' ≤ᴮ (⋁ (α i , β ∘ m)) → Small-Ind b'))
-               → Small-Ind b
-    Small-Ind-Induction : (P : (b : B) → 𝓟 {𝓣} (Small-Ind b))
-                        → ((i : I₁) → (f : (x : B) → (x ∈ Y i → Small-Ind x))
-                         → ((x : B) → (y : x ∈ Y i) → f x y ∈ P x)
-                         → (b : B) → (g : (b , Y i) ∈ R)
-                         → Small-c-cl i f b g ∈ P b)
-                        → ((i : I₂)
-                         → (m : α i → B)
-                         → (b : B)
-                         → (p : small-ϕ b (⋁ (α i , β ∘ m)))
-                         → (f : (x : B)
-                         → (x ≤ᴮ (⋁ (α i , β ∘ m))
-                         → Small-Ind x))
-                         → ((x : B)
-                         → (o : x ≤ᴮ (⋁ (α i , β ∘ m)))
-                         → f x o ∈ P x)
-                         → Small-ϕ-cl i m b p f ∈ P b)
-                        → (b : B) → (i : Small-Ind b) → i ∈ P b
+   private
+    Small-𝓘 : 𝓟 {𝓥} B
+    Small-𝓘 b = (Small-Ind b , Small-Ind-trunc b)
+   field
+    Small-c-cl : Small-c-closure Small-𝓘
+    Small-ϕ-cl : Small-ϕ-closure Small-𝓘
+    Small-Ind-Induction : (P : (b : B) → 𝓟 {𝓣} (b ∈ Small-𝓘))
+                        → Small-dep-c-closure Small-𝓘 P Small-c-cl
+                        → Small-dep-ϕ-closure Small-𝓘 P Small-ϕ-cl
+                        → (b : B) → (i : b ∈ Small-𝓘) → i ∈ P b
 
   module small-trunc-ind-def
           (ind-e : inductively-generated-small-subset-exists)
@@ -1223,86 +1249,36 @@ apropriate induction principle. First we introduce some names as before.
    Small-𝓘nd : 𝓟 {𝓥} B
    Small-𝓘nd b = (Small-Ind b , Small-Ind-trunc b)
 
-   Small-𝓘nd-is-c-cl : (i : I₁)
-                     → Y i ⊆ Small-𝓘nd
-                     → (b : B)
-                     → (b , Y i) ∈ R
-                     → b ∈ Small-𝓘nd
+   Small-𝓘nd-is-c-cl : Small-c-closure Small-𝓘nd
    Small-𝓘nd-is-c-cl = Small-c-cl
 
-   Small-𝓘nd-is-ϕ-cl : (i : I₂)
-                     → (m : α i → B)
-                     → (b : B)
-                     → small-ϕ b (⋁ (α i , β ∘ m))
-                     → ((b' : B)
-                     → (b' ≤ᴮ (⋁ (α i , β ∘ m))
-                     → b' ∈ Small-𝓘nd))
-                     → b ∈ Small-𝓘nd
+   Small-𝓘nd-is-ϕ-cl : Small-ϕ-closure Small-𝓘nd
    Small-𝓘nd-is-ϕ-cl = Small-ϕ-cl
 
    Small-𝓘nd-Induction : (P : (b : B) → 𝓟 {𝓣} (b ∈ Small-𝓘nd))
-                       → ((i : I₁) → (f : Y i ⊆ Small-𝓘nd)
-                        → ((x : B) → (y : x ∈ Y i) → f x y ∈ P x)
-                        → (b : B) → (g : (b , Y i) ∈ R)
-                        → Small-c-cl i f b g ∈ P b)
-                       → ((i : I₂)
-                        → (m : α i → B)
-                        → (b : B)
-                        → (p : small-ϕ b (⋁ (α i , β ∘ m)))
-                        → (f : (x : B)
-                        → (x ≤ᴮ (⋁ (α i , β ∘ m))
-                        → x ∈ Small-𝓘nd))
-                        → ((x : B)
-                        → (o : x ≤ᴮ (⋁ (α i , β ∘ m)))
-                        → f x o ∈ P x)
-                        → Small-ϕ-cl i m b p f ∈ P b)
+                       → Small-dep-c-closure Small-𝓘nd P Small-c-cl
+                       → Small-dep-ϕ-closure Small-𝓘nd P Small-ϕ-cl
                        → (b : B) → (i : b ∈ Small-𝓘nd) → i ∈ P b
    Small-𝓘nd-Induction = Small-Ind-Induction
 
    Small-𝓘nd-Recursion : (P : 𝓟 {𝓣} B)
-                       → ((i : I₁)
-                        → (Y i ⊆ Small-𝓘nd)
-                        → (Y i ⊆ P)
-                        → (b : B) → (b , Y i) ∈ R
-                        → b ∈ P)
-                       → ((i : I₂)
-                        → (m : α i → B)
-                        → (b : B)
-                        → small-ϕ b (⋁ (α i , β ∘ m))
-                        → ((x : B) → (x ≤ᴮ (⋁ (α i , β ∘ m)) → x ∈ Small-𝓘nd))
-                        → ((x : B) → (x ≤ᴮ (⋁ (α i , β ∘ m)) → x ∈ P))
-                        → b ∈ P)
+                       → Small-dep-c-closure Small-𝓘nd (λ b → (λ _ → P b))
+                                             Small-c-cl
+                       → Small-dep-ϕ-closure Small-𝓘nd (λ b → (λ _ → P b))
+                                             Small-ϕ-cl
                        → Small-𝓘nd ⊆ P
-   Small-𝓘nd-Recursion P = Small-𝓘nd-Induction λ b → (λ _ → P b)
+   Small-𝓘nd-Recursion P = Small-𝓘nd-Induction (λ b → (λ _ → P b)) 
 
    Small-𝓘nd-Initial : (P : 𝓟 {𝓣} B)
-                     → ((i : I₁)
-                      → (Y i ⊆ P)
-                      → (b : B) → (b , Y i) ∈ R
-                      → b ∈ P)
-                     → ((i : I₂)
-                      → (m : α i → B)
-                      → (b : B)
-                      → small-ϕ b (⋁ (α i , β ∘ m))
-                      → ((x : B) → (x ≤ᴮ (⋁ (α i , β ∘ m)) → x ∈ P))
-                      → b ∈ P)
+                     → Small-c-closure P
+                     → Small-ϕ-closure P
                      → Small-𝓘nd ⊆ P
    Small-𝓘nd-Initial {𝓣} P IH₁ IH₂ b b-in-Small-𝓘nd =
     Small-𝓘nd-Recursion P R' S' b b-in-Small-𝓘nd
     where
-     R' : (i : I₁)
-        → (Y i ⊆ Small-𝓘nd)
-        → (Y i ⊆ P)
-        → (b : B) → (b , Y i) ∈ R
-        → b ∈ P
+     R' : Small-dep-c-closure Small-𝓘nd (λ b → (λ _ → P b)) Small-c-cl
      R' i C₁ C₂ b r = IH₁ i C₂ b r
-     S' : (i : I₂)
-        → (m : α i → B)
-        → (b : B)
-        → small-ϕ b (⋁ (α i , β ∘ m))
-        → ((x : B) → (x ≤ᴮ (⋁ (α i , β ∘ m)) → x ∈ Small-𝓘nd))
-        → ((x : B) → (x ≤ᴮ (⋁ (α i , β ∘ m)) → x ∈ P))
-        → b ∈ P
+     S' : Small-dep-ϕ-closure Small-𝓘nd (λ b → (λ _ → P b)) Small-ϕ-cl
      S' i m b s f g = IH₂ i m b s g
 
 \end{code}
@@ -1617,14 +1593,14 @@ module _
 
     H : (a : ⟨ L ⟩) → Γ ϕ (bounded-implies-local ϕ bnd) a ＝ f a
     H a = reindexing-along-equiv-＝-sup
-           L ↓ᴮ-fa-equiv-S (β ∘ (S-to-base ϕ a))
+           L ↓ᴮ-fa-equiv-↓ (β ∘ (↓-to-base ϕ a))
            (Γ ϕ (bounded-implies-local ϕ bnd) a) (f a)
-           (sup-of-small-fam-is-lub L (β ∘ S-to-base ϕ a)
+           (sup-of-small-fam-is-lub L (β ∘ ↓-to-base ϕ a)
                                     (bounded-implies-local ϕ bnd a))
            (is-supᴮ (f a))
      where
-      ↓ᴮ-fa-equiv-S : (small-↓ᴮ (f a)) ≃ (S ϕ a)
-      ↓ᴮ-fa-equiv-S = Σ-cong ↓ᴮ-fa-equiv-S'
+      ↓ᴮ-fa-equiv-↓ : (small-↓ᴮ (f a)) ≃ (ϕ ↓ a)
+      ↓ᴮ-fa-equiv-↓ = Σ-cong ↓ᴮ-fa-equiv-S'
        where
         ↓ᴮ-fa-equiv-S' : (b : B)
                        → b ≤ᴮ f a
