@@ -143,27 +143,42 @@ exp-has-least-element {𝓤} α β = γ , eqtoidₒ (ua _) fe' ([𝟙+ α ]^ β)
      ϵ (inl ⋆) = refl
      ϵ (inr (((x ∷ xs) , δ) , []-lex)) = refl
 
-flatten-× : {A B C : 𝓤 ̇  } → List ({-Nonempty-}List (A × B) × C) → List (A × (B × C))
+
+NonEmpty : {A :  𝓤 ̇ } → List A →  𝓤 ̇
+NonEmpty [] = 𝟘
+NonEmpty (x ∷ xs) = 𝟙
+
+List⁺ : (X : 𝓤 ̇ ) → 𝓤 ̇
+List⁺ X = Σ xs ꞉ List X , NonEmpty xs
+
+[_]⁺ : {X : 𝓤 ̇ } → X → List⁺ X
+[ x ]⁺ = ([ x ] , ⋆)
+
+flatten-× : {A B C : 𝓤 ̇  } → List (List⁺ (A × B) × C) → List (A × (B × C))
 flatten-× [] = []
-flatten-× ((l , c) ∷ ls) = (map (λ (a , b) → (a , (b , c))) l) ++ flatten-× ls
+flatten-× (((l , _) , c) ∷ ls) = (map (λ (a , b) → (a , (b , c))) l) ++ flatten-× ls
 
-addToFirst : {X Y : 𝓤 ̇  } → X → List ((List X) × Y) → List ((List X) × Y)
+addToFirst : {X Y : 𝓤 ̇  } → X → List ((List⁺ X) × Y) → List ((List⁺ X) × Y)
 addToFirst x [] = []
-addToFirst x ((xs , y) ∷ l) = ((x ∷ xs) , y) ∷ l
+addToFirst x (((xs , _) , y) ∷ l) = (((x ∷ xs) , ⋆) , y) ∷ l
 
-flatten-×⁻¹ : {α β γ : Ordinal 𝓤 } → (xs : List (⟨ α ×ₒ (β ×ₒ γ) ⟩)) → is-decreasing-pr₂ α (β ×ₒ γ) xs → List ({-Nonempty-}List (⟨ α ⟩ × ⟨ β ⟩ ) × ⟨ γ ⟩)
-flatten-×⁻¹ [] _ = []
-flatten-×⁻¹ ((a , (b , c)) ∷ []) _ = [ [ a , b ] , c ]
-flatten-×⁻¹ {α = α} {β} {γ} ((a , (b , c)) ∷ (a' , (b' , c')) ∷ xs) (many-decr (inl p) δ) = ([ a , b ] , c) ∷ flatten-×⁻¹ {α = α} {β} {γ} ((a' , (b' , c')) ∷ xs) δ
-flatten-×⁻¹ {α = α} {β} {γ} ((a , (b , c)) ∷ (a' , (b' , c)) ∷ xs) (many-decr (inr (refl , q)) δ) = addToFirst (a , b) (flatten-×⁻¹ {α = α} {β} {γ} ((a' , (b' , c)) ∷ xs) δ)
+flatten-×⁻¹ : (α β γ : Ordinal 𝓤 ) → (xs : List (⟨ α ×ₒ (β ×ₒ γ) ⟩)) → is-decreasing-pr₂ α (β ×ₒ γ) xs → List (List⁺ (⟨ α ⟩ × ⟨ β ⟩ ) × ⟨ γ ⟩)
+flatten-×⁻¹ α β γ [] _ = []
+flatten-×⁻¹ α β γ ((a , (b , c)) ∷ []) _ = [ [ a , b ]⁺ , c ]
+flatten-×⁻¹ α β γ ((a , (b , c)) ∷ (a' , (b' , c')) ∷ xs) (many-decr (inl p) δ) = ([ a , b ]⁺ , c) ∷ flatten-×⁻¹ α β γ ((a' , (b' , c')) ∷ xs) δ
+flatten-×⁻¹ α β γ ((a , (b , c)) ∷ (a' , (b' , c)) ∷ xs) (many-decr (inr (refl , q)) δ) = addToFirst (a , b) (flatten-×⁻¹ α β γ ((a' , (b' , c)) ∷ xs) δ)
 
 flatten-×-retraction : {α β γ : Ordinal 𝓤 } → (xs : List (⟨ α ×ₒ (β ×ₒ γ) ⟩)) → (xs-decr : is-decreasing-pr₂ α (β ×ₒ γ) xs)
-      → flatten-× (flatten-×⁻¹ {α = α} {β} {γ} xs xs-decr) ＝ xs
+      → flatten-× (flatten-×⁻¹ α β γ xs xs-decr) ＝ xs
 flatten-×-retraction [] xs-decr = refl
 flatten-×-retraction ((a , (b , c)) ∷ []) xs-decr = refl
 flatten-×-retraction ((a , (b , c)) ∷ (a' , (b' , c')) ∷ xs) (many-decr (inl p) δ)= ap ( a , b , c ∷_) (flatten-×-retraction ((a' , (b' , c')) ∷ xs) δ)
-flatten-×-retraction (a , b , c ∷ a' , b' , c ∷ xs) (many-decr (inr (refl , q)) δ) = {!!}
-
+flatten-×-retraction {α = α} {β} {γ} ((a , (b , c)) ∷ (a' , (b' , c)) ∷ xs) (many-decr (inr (refl , q)) δ) = helper-lemma α β γ (flatten-×⁻¹ α β γ (a' , (b' , c) ∷ xs) δ) (flatten-×-retraction {α = α} {β} {γ} (a' , b' , c ∷ xs) δ)
+ where
+ helper-lemma : (α β γ : Ordinal 𝓤) {a : ⟨ α ⟩}{b : ⟨ β ⟩} {c : ⟨ γ ⟩} {a' : ⟨ α ⟩}{b' : ⟨ β ⟩}{xs : List ( ⟨ α ×ₒ (β ×ₒ γ) ⟩)}
+              → (w : List (List⁺ (⟨ α ⟩ × ⟨ β ⟩ ) × ⟨ γ ⟩)) → flatten-× w ＝ a' , b' , c ∷ xs
+              → flatten-× (addToFirst (a , b) w) ＝ a , b , c ∷ a' , b' , c ∷ xs
+ helper-lemma α β γ {a} {b} ((((a₀ , b₀) ∷ xs₀) , ne) , c₀ ∷ ys) IH = ap₂ (λ x y → a , b , x ∷ y) (ap (λ z → pr₂ (pr₂ z)) (equal-heads IH)) IH
 
 {-
 -- We need to restrict to the subtype of non-empty "inner" lists, as the following counterexample shows (and the actual problem suggests):
