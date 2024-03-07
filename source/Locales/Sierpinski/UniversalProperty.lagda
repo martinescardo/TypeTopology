@@ -71,42 +71,124 @@ true = true₀ , †
   † : is-scott-open true₀ holds
   † = υ , ι
 
+main-lemma : (U : ⟨ 𝒪 𝕊 ⟩) → (⊥ₛ ∈ₛ U ⇒ ⊤ₛ ∈ₛ U) holds
+main-lemma U p = upward-closure U ⊥ₛ ⊤ₛ p λ ()
+ where
+  open 𝒪ₛᴿ
+
 universal-property-of-sierpinski : (X : Locale (𝓤 ⁺) 𝓤 𝓤)
                                  → (U : ⟨ 𝒪 X ⟩)
                                  → ∃! (f , _) ꞉ (𝒪 𝕊 ─f→ 𝒪 X) , U ＝ f true
-universal-property-of-sierpinski X U = ((f , α , β , {!!}) , {!!}) , {!!}
+universal-property-of-sierpinski X U = ((f , tp , {!!} , {!!}) , equality) , {!!}
  where
   open PosetReasoning (poset-of (𝒪 X))
 
-  fam : (V : ⟨ 𝒪 𝕊 ⟩) → (⊤ₛ ∈ₛ V) holds + (⊥ₛ ∈ₛ V) holds → ⟨ 𝒪 X ⟩
-  fam V (inl _) = 𝟏[ 𝒪 X ]
-  fam V (inr _) = U
+  I : (V : ⟨ 𝒪 𝕊 ⟩) → 𝓤  ̇
+  I V = (⊤ₛ ∈ₛ V) holds + (⊥ₛ ∈ₛ V) holds
+
+  α : (V : ⟨ 𝒪 𝕊 ⟩) → (⊤ₛ ∈ₛ V) holds + (⊥ₛ ∈ₛ V) holds → ⟨ 𝒪 X ⟩
+  α V (inl _) = U
+  α V (inr _) = 𝟏[ 𝒪 X ]
 
   f : ⟨ 𝒪 𝕊 ⟩ → ⟨ 𝒪 X ⟩
-  f V = ⋁[ 𝒪 X ] (_ , fam V)
-
-  -- f (⋁ S) ＝ ⋁ ⁅ f P ∣ P ε S ⁆
-  -- f (⋁ ⁅ ↑c ∣ c ε S, c ∈ Ω ⁆) ＝ ⋁ ⁅ f(↑c) ∣ c ε S, c ∈ Ω ⁆
-  -- f true ∨ f false
-  -- f 1 = 1
-  -- f (x ∧ y) ＝ f x ∧ f y
+  f V = ⋁[ 𝒪 X ] (I V , α V)
 
   fₘ : is-monotonic (poset-of (𝒪 𝕊)) (poset-of (𝒪 X)) f holds
-  fₘ (V₁ , V₂) p = ⋁[ 𝒪 X ]-least (_ , fam V₁) ({!!} , {!!})
+  fₘ (V₁ , V₂) p = ⋁[ 𝒪 X ]-least (I V₁ , α V₁) (f V₂ , †)
+   where
+    open Joins (λ x y → x ≤[ poset-of (𝒪 X) ] y)
 
-  α : f 𝟏[ 𝒪 𝕊 ] ＝ 𝟏[ 𝒪 X ]
-  α = only-𝟏-is-above-𝟏 (𝒪 X) (f 𝟏[ 𝒪 𝕊 ]) †
+    † : (f V₂ is-an-upper-bound-of (I V₁ , α V₁)) holds
+    † (inl μ) = U ≤⟨ ⋁[ 𝒪 X ]-upper (I V₂ , α V₂) (inl (p ⊤ₛ μ)) ⟩ f V₂ ■
+    † (inr μ) = 𝟏[ 𝒪 X ] ≤⟨ ⋁[ 𝒪 X ]-upper (I V₂ , α V₂) (inr (p ⊥ₛ μ)) ⟩ f V₂ ■
+
+  tp : f 𝟏[ 𝒪 𝕊 ] ＝ 𝟏[ 𝒪 X ]
+  tp = only-𝟏-is-above-𝟏 (𝒪 X) (f 𝟏[ 𝒪 𝕊 ]) †
    where
     † : (𝟏[ 𝒪 X ] ≤[ poset-of (𝒪 X) ] f 𝟏[ 𝒪 𝕊 ]) holds
-    † = ⋁[ 𝒪 X ]-upper (_ , fam 𝟏[ 𝒪 𝕊 ]) (inl ⋆)
+    † = ⋁[ 𝒪 X ]-upper ((I 𝟏[ 𝒪 𝕊 ]) , (α 𝟏[ 𝒪 𝕊 ])) (inr ⋆)
 
-  β : (U V : ⟨ 𝒪 𝕊 ⟩) → f (U ∧[ 𝒪 𝕊 ] V) ＝ f U ∧[ 𝒪 X ] f V
-  β U V = ≤-is-antisymmetric (poset-of (𝒪 X)) † ‡
+  mp : (U V : ⟨ 𝒪 𝕊 ⟩) → f (U ∧[ 𝒪 𝕊 ] V) ＝ f U ∧[ 𝒪 X ] f V
+  mp V₁ V₂ = ≤-is-antisymmetric (poset-of (𝒪 X)) † ‡
    where
-    † : rel-syntax (poset-of (𝒪 X)) (f (U ∧[ 𝒪 𝕊 ] V)) ((f U) ∧[ 𝒪 X ] (f V)) holds
-    † = ∧[ 𝒪 X ]-greatest (f U) (f V) (f (U ∧[ 𝒪 𝕊 ] V)) {!!} {!!}
+    † : (f (V₁ ∧[ 𝒪 𝕊 ] V₂) ≤[ poset-of (𝒪 X) ] (f V₁ ∧[ 𝒪 X ] f V₂)) holds
+    † = ∧[ 𝒪 X ]-greatest (f V₁) (f V₂) (f (V₁ ∧[ 𝒪 𝕊 ] V₂)) (fₘ ((V₁ ∧[ 𝒪 𝕊 ] V₂) , V₁) (∧[ 𝒪 𝕊 ]-lower₁ V₁ V₂)) ((fₘ ((V₁ ∧[ 𝒪 𝕊 ] V₂) , V₂) (∧[ 𝒪 𝕊 ]-lower₂ V₁ V₂)))
 
-    ‡ : {!!}
-    ‡ = {!!}
+    goal : ((i , j) : I V₁ × I V₂)
+         → ((α V₁ i ∧[ 𝒪 X ] α V₂ j) ≤[ poset-of (𝒪 X) ] (⋁[ 𝒪 X ] ⁅ α (V₁ ∧[ 𝒪 𝕊 ] V₂) i ∣ i ∶ I (V₁ ∧[ 𝒪 𝕊 ] V₂) ⁆)) holds
+    goal (inl q₁ , inl q₂) = α V₁ (inl q₁) ∧[ 𝒪 X ] α V₂ (inl q₂)                       ＝⟨ refl ⟩ₚ
+                             U ∧[ 𝒪 X ] U                                               ＝⟨ ∧[ 𝒪 X ]-is-idempotent U ⁻¹ ⟩ₚ
+                             U                                                          ＝⟨ refl ⟩ₚ
+                             α (V₁ ∧[ 𝒪 𝕊 ] V₂) (inl q)                                 ≤⟨ ⋁[ 𝒪 X ]-upper ⁅ α (V₁ ∧[ 𝒪 𝕊 ] V₂) i ∣ i ∶ I (V₁ ∧[ 𝒪 𝕊 ] V₂) ⁆ (inl q) ⟩
+                             ⋁[ 𝒪 X ] ⁅ α (V₁ ∧[ 𝒪 𝕊 ] V₂) i ∣ i ∶ I (V₁ ∧[ 𝒪 𝕊 ] V₂) ⁆ ■
+                              where
+                               q : (⊤ₛ ∈ₛ (V₁ ∧[ 𝒪 𝕊 ] V₂)) holds
+                               q = q₁ , q₂
+    goal (inl q₁ , inr p₂) = α V₁ (inl q₁) ∧[ 𝒪 X ] α V₂ (inr p₂) ＝⟨ refl ⟩ₚ
+                             U ∧[ 𝒪 X ] 𝟏[ 𝒪 X ]                  ＝⟨ 𝟏-right-unit-of-∧ (𝒪 X) U  ⟩ₚ
+                             U                                   ≤⟨ ⋁[ 𝒪 X ]-upper ⁅ α (V₁ ∧[ 𝒪 𝕊 ] V₂) i ∣ i ∶ I (V₁ ∧[ 𝒪 𝕊 ] V₂) ⁆ (inl p) ⟩
+                             ⋁[ 𝒪 X ] ⁅ α (V₁ ∧[ 𝒪 𝕊 ] V₂) i ∣ i ∶ I (V₁ ∧[ 𝒪 𝕊 ] V₂) ⁆ ■
+                              where
+                               p : (⊤ₛ ∈ₛ (V₁ ∧[ 𝒪 𝕊 ] V₂)) holds
+                               p = q₁ , main-lemma V₂ p₂
+    goal (inr p₁ , inl q₂) = {!!}
+    goal (inr p₁ , inr p₂) = α V₁ (inr p₁) ∧[ 𝒪 X ] α V₂ (inr p₂)                       ＝⟨ refl ⟩ₚ
+                             𝟏[ 𝒪 X ] ∧[ 𝒪 X ] 𝟏[ 𝒪 X ]                                 ＝⟨ ∧[ 𝒪 X ]-is-idempotent 𝟏[ 𝒪 X ] ⁻¹  ⟩ₚ
+                             𝟏[ 𝒪 X ]                                                   ≤⟨ ⋁[ 𝒪 X ]-upper ⁅ α (V₁ ∧[ 𝒪 𝕊 ] V₂) i ∣ i ∶ I (V₁ ∧[ 𝒪 𝕊 ] V₂) ⁆ (inr p) ⟩
+                             ⋁[ 𝒪 X ] ⁅ α (V₁ ∧[ 𝒪 𝕊 ] V₂) i ∣ i ∶ I (V₁ ∧[ 𝒪 𝕊 ] V₂) ⁆ ■
+                              where
+                               p : (⊥ₛ ∈ₛ (V₁ ∧[ 𝒪 𝕊 ] V₂)) holds
+                               p = p₁ , p₂
+  --   goal (inl p₁ , inl p₂) = α V₁ (inl p₁) ∧[ 𝒪 X ] α V₂ (inl p₂)                       ＝⟨ refl ⟩ₚ
+  --                            𝟏[ 𝒪 X ] ∧[ 𝒪 X ] 𝟏[ 𝒪 X ]                                 ＝⟨ ∧[ 𝒪 X ]-is-idempotent 𝟏[ 𝒪 X ] ⁻¹  ⟩ₚ
+  --                            𝟏[ 𝒪 X ]                                                   ≤⟨ ⋁[ 𝒪 X ]-upper ⁅ α (V₁ ∧[ 𝒪 𝕊 ] V₂) i ∣ i ∶ I (V₁ ∧[ 𝒪 𝕊 ] V₂) ⁆ (inl p) ⟩
+  --                            ⋁[ 𝒪 X ] ⁅ α (V₁ ∧[ 𝒪 𝕊 ] V₂) i ∣ i ∶ I (V₁ ∧[ 𝒪 𝕊 ] V₂) ⁆ ■
+  --                             where
+  --                              p : (⊤ₛ ∈ₛ (V₁ ∧[ 𝒪 𝕊 ] V₂)) holds
+  --                              p = p₁ , p₂
+  --   goal (inl p₁ , inr q₂) = α V₁ (inl p₁) ∧[ 𝒪 X ] α V₂ (inr q₂)                       ＝⟨ refl ⟩ₚ
+  --                            𝟏[ 𝒪 X ] ∧[ 𝒪 X ] U                                        ≤⟨ 𝟏-is-top (𝒪 X) (𝟏[ 𝒪 X ] ∧[ 𝒪 X ] U) ⟩
+  --                            𝟏[ 𝒪 X ]                                                   ≤⟨ ⋁[ 𝒪 X ]-upper ⁅ α (V₁ ∧[ 𝒪 𝕊 ] V₂) i ∣ i ∶ I (V₁ ∧[ 𝒪 𝕊 ] V₂) ⁆ (inl p) ⟩
+  --                            ⋁[ 𝒪 X ] ⁅ α (V₁ ∧[ 𝒪 𝕊 ] V₂) i ∣ i ∶ I (V₁ ∧[ 𝒪 𝕊 ] V₂) ⁆ ■
+  --                             where
+  --                              p : (⊤ₛ ∈ₛ (V₁ ∧[ 𝒪 𝕊 ] V₂)) holds
+  --                              p = p₁ , main-lemma V₂ q₂
+  --   goal (inr q₁ , inl p₂) = α V₁ (inr q₁) ∧[ 𝒪 X ] α V₂ (inl p₂) ＝⟨ refl ⟩ₚ
+  --                            U ∧[ 𝒪 X ] 𝟏[ 𝒪 X ]                  ≤⟨ 𝟏-is-top (𝒪 X) (U ∧[ 𝒪 X ] 𝟏[ 𝒪 X ]) ⟩
+  --                            𝟏[ 𝒪 X ]                             ≤⟨ ⋁[ 𝒪 X ]-upper ⁅ α (V₁ ∧[ 𝒪 𝕊 ] V₂) i ∣ i ∶ I (V₁ ∧[ 𝒪 𝕊 ] V₂) ⁆ (inl p) ⟩
+  --                            ⋁[ 𝒪 X ] ⁅ α (V₁ ∧[ 𝒪 𝕊 ] V₂) i ∣ i ∶ I (V₁ ∧[ 𝒪 𝕊 ] V₂) ⁆ ■
+  --                             where
+  --                              p : (⊤ₛ ∈ₛ (V₁ ∧[ 𝒪 𝕊 ] V₂)) holds
+  --                              p = (main-lemma V₁ q₁) , p₂
+  --   goal (inr q₁ , inr q₂) = α V₁ (inr q₁) ∧[ 𝒪 X ] α V₂ (inr q₂)                       ＝⟨ refl ⟩ₚ
+  --                            U ∧[ 𝒪 X ] U                                               ＝⟨ ∧[ 𝒪 X ]-is-idempotent U ⁻¹ ⟩ₚ
+  --                            U                                                          ＝⟨ refl ⟩ₚ
+  --                            α (V₁ ∧[ 𝒪 𝕊 ] V₂) (inr q)                                 ≤⟨ ⋁[ 𝒪 X ]-upper ⁅ α (V₁ ∧[ 𝒪 𝕊 ] V₂) i ∣ i ∶ I (V₁ ∧[ 𝒪 𝕊 ] V₂) ⁆ (inr q) ⟩
+  --                            ⋁[ 𝒪 X ] ⁅ α (V₁ ∧[ 𝒪 𝕊 ] V₂) i ∣ i ∶ I (V₁ ∧[ 𝒪 𝕊 ] V₂) ⁆ ■
+  --                             where
+  --                              q : (⊥ₛ ∈ₛ (V₁ ∧[ 𝒪 𝕊 ] V₂)) holds
+  --                              q = q₁ , q₂
+
+    ‡ : ((f V₁ ∧[ 𝒪 X ] f V₂) ≤[ poset-of (𝒪 X) ] f (V₁ ∧[ 𝒪 𝕊 ] V₂)) holds
+    ‡ = f V₁ ∧[ 𝒪 X ] f V₂                               ＝⟨ refl ⟩ₚ
+        f V₁ ∧[ 𝒪 X ] (⋁[ 𝒪 X ] (I V₂ , α V₂))           ＝⟨ distributivity+ (𝒪 X) (I V₁ , α V₁) (I V₂ , α V₂) ⟩ₚ
+        ⋁[ 𝒪 X ] ⁅ α V₁ i₁ ∧[ 𝒪 X ] α V₂ i₂ ∣ (i₁ , i₂) ∶ I V₁ × I V₂ ⁆ ≤⟨ ⋁[ 𝒪 X ]-least (⁅ α V₁ i₁ ∧[ 𝒪 X ] α V₂ i₂ ∣ (i₁ , i₂) ∶ I V₁ × I V₂ ⁆) ((⋁[ 𝒪 X ] ⁅ α (V₁ ∧[ 𝒪 𝕊 ] V₂) i ∣ i ∶ I (V₁ ∧[ 𝒪 𝕊 ] V₂) ⁆) , goal)  ⟩
+        ⋁[ 𝒪 X ] ⁅ α (V₁ ∧[ 𝒪 𝕊 ] V₂) i ∣ i ∶ I (V₁ ∧[ 𝒪 𝕊 ] V₂) ⁆ ＝⟨ refl ⟩ₚ
+        f (V₁ ∧[ 𝒪 𝕊 ] V₂) ■
+
+  jp : {!!}
+  jp = {!!}
+
+  equality₁ : (U ≤[ poset-of (𝒪 X) ] f true) holds
+  equality₁ = U ≤⟨ ⋁[ 𝒪 X ]-upper _ (inl ⋆) ⟩ f true ■
+
+  equality₂ : (f true ≤[ poset-of (𝒪 X) ] U) holds
+  equality₂ = f true ≤⟨ ⋁[ 𝒪 X ]-least (compr-syntax (I true) (λ i → α true i)) (U , †) ⟩ U ■
+   where
+    † : (rel-syntax (poset-of (𝒪 X)) Joins.is-an-upper-bound-of U) (I true , α true) holds
+    † (inl ⋆) = ≤-is-reflexive (poset-of (𝒪 X)) U
+
+  equality : U ＝ f true
+  equality = ≤-is-antisymmetric (poset-of (𝒪 X)) equality₁ equality₂
 
 \end{code}
