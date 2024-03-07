@@ -85,6 +85,15 @@ is-clopen F U = is-clopen₀ F U , is-clopen₀-is-prop F U
 
 \end{code}
 
+The type of clopens of a locale `X`.
+
+\begin{code}
+
+𝒞 : Locale 𝓤 𝓥 𝓦 → 𝓤  ̇
+𝒞 X = Σ C ꞉ ⟨ 𝒪 X ⟩ , is-clopen (𝒪 X) C holds
+
+\end{code}
+
 \begin{code}
 
 𝟏-is-clopen : (L : Frame 𝓤 𝓥 𝓦) → is-clopen L 𝟏[ L ] holds
