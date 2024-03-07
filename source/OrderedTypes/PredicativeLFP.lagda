@@ -138,11 +138,28 @@ module _
  open Joins _≤_
  open is-small-basis h
 
+\end{code}
+
+We start by giving names to the (dependent) closure conditions.
+
+\begin{code}
+
  c-closure : {𝓣 : Universe} (S : 𝓟 {𝓣} B) → (𝓥 ⁺) ⊔ 𝓣  ̇
  c-closure S = (U : 𝓟 {𝓥} B)
              → U ⊆ S
              → (b : B) → b ≤ᴮ (⋁ 【 β , U 】)
              → b ∈ S
+
+ dep-c-closure : {𝓣 𝓣' : Universe} (S : 𝓟 {𝓣} B)
+               → (P : (b : B) → 𝓟 {𝓣'} (b ∈ S))
+               → (c : c-closure S)
+               → (𝓥 ⁺) ⊔ 𝓣 ⊔ 𝓣'  ̇
+ dep-c-closure S P c = (U : 𝓟 {𝓥} B)
+                     → (f : (x : B) → (x ∈ U → x ∈ S))
+                     → ((x : B) → (u : x ∈ U) → f x u ∈ P x)
+                     → (b : B)
+                     → (g : (b ≤ᴮ (⋁ 【 β , U 】)))
+                     → c U f b g ∈ P b
 
  _closure : (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩))
           → {𝓣 : Universe} (S : 𝓟 {𝓣} B) 
@@ -152,6 +169,18 @@ module _
                → (b , a) ∈ ϕ
                → ((b' : B) → (b' ≤ᴮ a → b' ∈ S))
                → b ∈ S
+
+ dep_closure : {𝓣 𝓣' : Universe} (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩))
+             → (S : 𝓟 {𝓣} B)
+             → (P : (b : B) → 𝓟 {𝓣'} (b ∈ S))
+             → (q : (ϕ closure) S)
+             → 𝓤 ⊔ 𝓥 ⊔ 𝓣 ⊔ 𝓣'  ̇
+ dep ϕ closure S P q = ((a : ⟨ L ⟩)
+                     → (b : B)
+                     → (p : (b , a) ∈ ϕ)
+                     → (f : (x : B) → (x ≤ᴮ a → x ∈ S))
+                     → ((x : B) → (o : x ≤ᴮ a) → f x o ∈ P x)
+                     → q a b p f ∈ P b)
 
 \end{code}
 
@@ -168,21 +197,11 @@ that the QIT family exists with the apropriate induction principle.
   field
    Ind : B → 𝓤 ⊔ 𝓥 ⁺  ̇
    Ind-trunc : (b : B) → is-prop (Ind b)
-   c-closed : c-closure (λ b → (Ind b , Ind-trunc b))
-   ϕ-closed : (ϕ closure) (λ b → (Ind b , Ind-trunc b))
+   c-closed : c-closure (λ - → (Ind - , Ind-trunc -))
+   ϕ-closed : (ϕ closure) (λ - → (Ind - , Ind-trunc -))
    Ind-induction : (P : (b : B) → 𝓟 {𝓣} (Ind b))
-                 → ((U : 𝓟 {𝓥} B)
-                  → (f : (x : B) → (x ∈ U → Ind x))
-                  → ((x : B) → (u : x ∈ U) → f x u ∈ P x)
-                  → (b : B)
-                  → (g : (b ≤ᴮ (⋁ 【 β , U 】)))
-                  → c-closed U f b g ∈ P b)
-                 → ((a : ⟨ L ⟩)
-                  → (b : B)
-                  → (p : (b , a) ∈ ϕ)
-                  → (f : (x : B) → (x ≤ᴮ a → Ind x))
-                  → ((x : B) → (o : x ≤ᴮ a) → f x o ∈ P x)
-                  → ϕ-closed a b p f ∈ P b)
+                 → dep-c-closure (λ - → (Ind - , Ind-trunc -)) P c-closed
+                 → dep ϕ closure (λ - → (Ind - , Ind-trunc -)) P ϕ-closed
                  → (b : B) → (i : Ind b) → i ∈ P b
 
  module trunc-ind-def
@@ -210,58 +229,26 @@ of this subset from the above induction principle.
   𝓘nd-is-ϕ-closed = ϕ-closed
 
   𝓘nd-induction : (P : (b : B) → 𝓟 {𝓣} (b ∈ 𝓘nd))
-                → ((U : 𝓟 {𝓥} B) → (f : U ⊆ 𝓘nd)
-                 → ((x : B) → (u : x ∈ U) → f x u ∈ P x)
-                 → (b : B) → (g : (b ≤ᴮ (⋁ 【 β , U 】)))
-                 → c-closed U f b g ∈ P b)
-                → ((a : ⟨ L ⟩)
-                 → (b : B)
-                 → (p : (b , a) ∈ ϕ)
-                 → (f : (x : B) → (x ≤ᴮ a → x ∈ 𝓘nd))
-                 → ((x : B) → (o : x ≤ᴮ a) → f x o ∈ P x)
-                 → ϕ-closed a b p f ∈ P b)
+                → dep-c-closure 𝓘nd P c-closed
+                → dep ϕ closure 𝓘nd P ϕ-closed
                 → (b : B) → (i : b ∈ 𝓘nd) → i ∈ P b
   𝓘nd-induction = Ind-induction
 
   𝓘nd-recursion : (P : 𝓟 {𝓣} B)
-                → ((U : 𝓟 {𝓥} B)
-                 → (U ⊆ 𝓘nd)
-                 → (U ⊆ P)
-                 → (b : B) → (b ≤ᴮ (⋁ 【 β , U 】))
-                 → b ∈ P)
-                → ((a : ⟨ L ⟩)
-                 → (b : B)
-                 → (b , a) ∈ ϕ
-                 → ((x : B) → (x ≤ᴮ a → x ∈ 𝓘nd))
-                 → ((x : B) → (x ≤ᴮ a → x ∈ P))
-                 → b ∈ P)
+                → dep-c-closure 𝓘nd (λ b → (λ _ → P b)) c-closed
+                → dep ϕ closure 𝓘nd (λ b → (λ _ → P b)) ϕ-closed
                 → 𝓘nd ⊆ P
   𝓘nd-recursion P = 𝓘nd-induction λ b → (λ _ → P b)
 
   𝓘nd-is-initial : (P : 𝓟 {𝓣} B)
-                 → ((U : 𝓟 {𝓥} B)
-                  → (U ⊆ P)
-                  → ((b : B) → (b ≤ᴮ (⋁ 【 β , U 】))
-                  → b ∈ P))
-                 → ((a : ⟨ L ⟩)
-                  → (b : B)
-                  → (b , a) ∈ ϕ
-                  → ((b' : B) → (b' ≤ᴮ a → b' ∈ P)) → b ∈ P)
+                 → c-closure P
+                 → (ϕ closure) P
                  → 𝓘nd ⊆ P
   𝓘nd-is-initial {𝓣} P IH₁ IH₂ b b-in-𝓘nd = 𝓘nd-recursion P R S b b-in-𝓘nd
    where
-    R : (U : 𝓟 {𝓥} B)
-      → U ⊆ 𝓘nd
-      → U ⊆ P
-      → (x : B) → x ≤ᴮ (⋁ 【 β , U 】)
-      →  x ∈ P
+    R : dep-c-closure 𝓘nd (λ b → (λ _ → P b)) c-closed
     R U C₁ C₂ x o = IH₁ U C₂ x o
-    S : (a : ⟨ L ⟩)
-      → (x : B)
-      → (x , a) ∈ ϕ
-      → ((z : B) → z ≤ᴮ a → z ∈ 𝓘nd)
-      → ((z : B) → z ≤ᴮ a → z ∈ P)
-      → x ∈ P
+    S : dep ϕ closure 𝓘nd (λ b → (λ _ → P b)) ϕ-closed
     S a x p f g = IH₂ a x p g
 
 \end{code}
@@ -294,6 +281,13 @@ module local-inductive-definitions
 
  open Joins _≤_ 
  open is-small-basis h
+
+\end{code}
+
+We now define an auxilary subset which we will use to define the upcoming
+monotone operator.
+
+\begin{code}
 
  S : (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩)) → (a : ⟨ L ⟩) → 𝓤 ⊔ 𝓦 ⊔ 𝓥  ̇
  S ϕ a = Σ b ꞉ B , (Ǝ a' ꞉ ⟨ L ⟩ , (b , a') ∈ ϕ × (a' ≤ a) holds) holds
@@ -455,13 +449,13 @@ We now show that every monotone map determines and local inductive definition.
  local-from-monotone-map f f-mono =
   pr₁ (pr₂ (monotone-map-give-local-ind-def f f-mono))
 
- f-＝-Γ-from-mono-map : (f : ⟨ L ⟩ → ⟨ L ⟩)
-                      → (f-mono : is-monotone-endomap L f)
-                      → (x : ⟨ L ⟩)
-                      → (Γ (ind-def-from-monotone-map f f-mono)
-                           (local-from-monotone-map f f-mono)) x
-                      ＝ f x
- f-＝-Γ-from-mono-map f f-mono =
+ local-ind-def-is-section-of-Γ : (f : ⟨ L ⟩ → ⟨ L ⟩)
+                               → (f-mono : is-monotone-endomap L f)
+                               → (x : ⟨ L ⟩)
+                               → (Γ (ind-def-from-monotone-map f f-mono)
+                                    (local-from-monotone-map f f-mono)) x
+                               ＝ f x
+ local-ind-def-is-section-of-Γ f f-mono =
    pr₂ (pr₂ (monotone-map-give-local-ind-def f f-mono))
 
 \end{code}
@@ -1181,7 +1175,7 @@ sound point constructors.
 \end{code}
 
 Again, we use records to assert the existence of another QIT family with
-apropriate induction principle.
+apropriate induction principle. First we introduce some names as before.
 
 \begin{code}
 
