@@ -71,6 +71,20 @@ true = true₀ , †
   † : is-scott-open true₀ holds
   † = υ , ι
 
+singleton₀ : (P : Ω 𝓤) → P holds → ⟪ 𝕊-dcpo ⟫ → Ω 𝓤
+singleton₀ P p (Q , f , φ) = P ⇔ (Q , φ)
+
+singleton-is-true : ((P , f , φ) : ⟪ 𝕊-dcpo ⟫) → (p : (P , φ) holds) → true₀ ＝ singleton₀ (P , φ) p
+singleton-is-true (P , f , φ) p = dfunext fe λ (Q , g , ψ) → to-subtype-＝ (λ _ → being-prop-is-prop fe) (pe ψ {!!} {!!} {!!})
+
+contains-bottom-implies-is-top : (𝔘 : ⟨ 𝒪 𝕊 ⟩) → (⊥ₛ ∈ₛ 𝔘) holds → 𝔘 ＝ 𝟏[ 𝒪 𝕊 ]
+contains-bottom-implies-is-top 𝔘 p = only-𝟏-is-above-𝟏 (𝒪 𝕊) 𝔘 †
+ where
+  open 𝒪ₛᴿ
+
+  † : (𝟏[ 𝒪 𝕊 ] ≤[ poset-of (𝒪 𝕊) ] 𝔘) holds
+  † x ⋆ = upward-closure 𝔘 ⊥ₛ x p λ ()
+
 main-lemma : (U : ⟨ 𝒪 𝕊 ⟩) → (⊥ₛ ∈ₛ U ⇒ ⊤ₛ ∈ₛ U) holds
 main-lemma U p = upward-closure U ⊥ₛ ⊤ₛ p λ ()
  where
@@ -79,7 +93,7 @@ main-lemma U p = upward-closure U ⊥ₛ ⊤ₛ p λ ()
 universal-property-of-sierpinski : (X : Locale (𝓤 ⁺) 𝓤 𝓤)
                                  → (U : ⟨ 𝒪 X ⟩)
                                  → ∃! (f , _) ꞉ (𝒪 𝕊 ─f→ 𝒪 X) , U ＝ f true
-universal-property-of-sierpinski X U = ((f , tp , mp , jp) , equality) , {!!}
+universal-property-of-sierpinski X U = ((f , {!!} , {!!} , {!!}) , {!!}) , {!!}
  where
   open PosetReasoning (poset-of (𝒪 X))
 
@@ -92,6 +106,8 @@ universal-property-of-sierpinski X U = ((f , tp , mp , jp) , equality) , {!!}
 
   f : ⟨ 𝒪 𝕊 ⟩ → ⟨ 𝒪 X ⟩
   f V = ⋁[ 𝒪 X ] (I V , α V)
+
+{--
 
   fₘ : is-monotonic (poset-of (𝒪 𝕊)) (poset-of (𝒪 X)) f holds
   fₘ (V₁ , V₂) p = ⋁[ 𝒪 X ]-least (I V₁ , α V₁) (f V₂ , †)
@@ -179,6 +195,9 @@ universal-property-of-sierpinski X U = ((f , tp , mp , jp) , equality) , {!!}
   jp : {!!}
   jp = {!!}
 
+  𝒻 : 𝒪 𝕊 ─f→ 𝒪 X
+  𝒻 = (f , tp , mp , jp)
+
   equality₁ : (U ≤[ poset-of (𝒪 X) ] f true) holds
   equality₁ = U ≤⟨ ⋁[ 𝒪 X ]-upper _ (inl ⋆) ⟩ f true ■
 
@@ -190,5 +209,16 @@ universal-property-of-sierpinski X U = ((f , tp , mp , jp) , equality) , {!!}
 
   equality : U ＝ f true
   equality = ≤-is-antisymmetric (poset-of (𝒪 X)) equality₁ equality₂
+
+  uniqueness : is-central (Σ (f , _) ꞉ (𝒪 𝕊 ─f→ 𝒪 X) , U ＝ f true) ((f , tp , mp , jp) , equality)
+  uniqueness (ℊ@(g , tpg , mpg , jpg) , eq′) =
+   to-subtype-＝
+    (λ h → carrier-of-[ poset-of (𝒪 X) ]-is-set)
+    (continuous-map-equality (𝒪 𝕊) (𝒪 X) 𝒻 ℊ goal)
+     where
+      goal : (V : ⟨ 𝒪 𝕊 ⟩) → f V ＝ g V
+      goal V = {!!}
+
+--}
 
 \end{code}
