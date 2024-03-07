@@ -79,7 +79,7 @@ main-lemma U p = upward-closure U ⊥ₛ ⊤ₛ p λ ()
 universal-property-of-sierpinski : (X : Locale (𝓤 ⁺) 𝓤 𝓤)
                                  → (U : ⟨ 𝒪 X ⟩)
                                  → ∃! (f , _) ꞉ (𝒪 𝕊 ─f→ 𝒪 X) , U ＝ f true
-universal-property-of-sierpinski X U = ((f , tp , {!!} , {!!}) , equality) , {!!}
+universal-property-of-sierpinski X U = ((f , tp , mp , jp) , equality) , {!!}
  where
   open PosetReasoning (poset-of (𝒪 X))
 
