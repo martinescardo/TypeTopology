@@ -687,6 +687,16 @@ is-spectral-with-small-basis {𝓤} {𝓥} ua X =
 
 \begin{code}
 
+ssb-implies-spectral : (ua : Univalence) (X : Locale 𝓤 𝓥 𝓥)
+                     → is-spectral-with-small-basis ua X holds
+                     → is-spectral X holds
+ssb-implies-spectral ua X (σ , _) = σ
+
+smallness-of-𝒦 : (ua : Univalence) (X : Locale 𝓤 𝓥 𝓥)
+               → is-spectral-with-small-basis ua X holds
+               → 𝒦 X is 𝓥 small
+smallness-of-𝒦 ua X (_ , s) = s
+
 ssb-implies-spectralᴰ : (ua : Univalence) (X : Locale 𝓤 𝓥 𝓥)
                       → is-spectral-with-small-basis ua X holds
                       → spectralᴰ X

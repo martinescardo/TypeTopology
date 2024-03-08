@@ -21,7 +21,7 @@ module OrderedTypes.TwoElementPoset
  (fe : Fun-Ext)
  where
 
-open import Locales.Frame pt fe hiding (𝟚)
+open import Locales.Frame pt fe hiding (𝟚; ₀; ₁)
 
 2-Poset : Poset 𝓤₀ 𝓤₀
 2-Poset = (𝟚 , 2-ord , 2-ord-is-partial-order)

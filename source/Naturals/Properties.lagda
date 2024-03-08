@@ -45,6 +45,13 @@ double (succ n) = succ (succ (double n))
 sdouble : ℕ → ℕ
 sdouble = succ ∘ double
 
+double-is-not-sdouble : {m n : ℕ} → double m ≠ sdouble n
+double-is-not-sdouble {0}      {0}      = zero-not-positive 0
+double-is-not-sdouble {0}      {succ n} = zero-not-positive
+                                           (succ (succ (double n)))
+double-is-not-sdouble {succ m} {succ n} = λ p → double-is-not-sdouble
+                                                 (succ-lc (succ-lc p))
+
 double-lc : {m n : ℕ} → double m ＝ double n → m ＝ n
 double-lc {0}      {0}      p = refl
 double-lc {succ m} {succ n} p = ap succ IH

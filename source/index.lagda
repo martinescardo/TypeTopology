@@ -8,7 +8,7 @@
    https://www.cs.bham.ac.uk/~mhe/
    https://github.com/martinescardo/TypeTopology
 
-   Tested with Agda 2.6.4
+   Tested with Agda 2.6.4.1
 
    * Our main use of this development is as a personal blackboard or
      notepad for our research and that of collaborators. In
@@ -56,7 +56,7 @@
      (https://www.cs.bham.ac.uk/~mhe/TypeTopology/AllModulesIndex.html)
 
    * In our last count, on 22nd February 2024, this development has
-     678 files and 193k lines of code, including comments and blank
+     687 files and 195k lines of code, including comments and blank
      lines. But we don't update the count frequently.
 
 Philosophy of the repository

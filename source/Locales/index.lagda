@@ -26,6 +26,10 @@ import Locales.Complements                       -- (8)
 
 -- Distributive lattices
 import Locales.DistributiveLattice.Definition
+import Locales.DistributiveLattice.Homomorphism
+import Locales.DistributiveLattice.Ideal
+import Locales.DistributiveLattice.LocaleOfSpectra
+import Locales.DistributiveLattice.Properties
 
 import Locales.Frame                             -- (9)
 
@@ -85,8 +89,16 @@ import Locales.UniversalPropertyOfPatch          -- (34)
 
 import Locales.Spectrality.BasisDirectification  -- (35)
 
+import Locales.Spectrality.LatticeOfCompactOpens
+import Locales.Spectrality.SpectralMapToLatticeHomomorphism
+
 import Locales.Point.Definition                  -- (36)
 
 import Locales.Point.Properties                  -- (37)
+
+import Locales.DiscreteLocale.Definition
+
+import Locales.DiscreteLocale.Two
+import Locales.DiscreteLocale.Two-Properties
 
 \end{code}

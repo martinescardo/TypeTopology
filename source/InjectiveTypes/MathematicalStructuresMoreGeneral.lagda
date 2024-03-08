@@ -97,20 +97,20 @@ InjectiveTypes.Sigma specialized to our situation.
 
  module _ (ϕ : aflabby (𝓤 ̇ ) 𝓤) where
 
-  aflabbiness-of-type-of-structured-types : technical-condition S ϕ
+  aflabbiness-of-type-of-structured-types : compatibility-condition S ϕ
                                           → aflabby (Σ S) 𝓤
   aflabbiness-of-type-of-structured-types = Σ-is-aflabby S ϕ
 
 
-  ainjectivity-of-type-of-structures : technical-condition S ϕ
-                                       → ainjective-type (Σ S) 𝓤 𝓤
+  ainjectivity-of-type-of-structures : compatibility-condition S ϕ
+                                     → ainjective-type (Σ S) 𝓤 𝓤
   ainjectivity-of-type-of-structures = aflabby-types-are-ainjective (Σ S)
                                        ∘ aflabbiness-of-type-of-structured-types
 
 \end{code}
 
 The main additional work in this file on top of InjectiveTypes.Sigma
-is to make it easier to work with the technical condition for the
+is to make it easier to work with the compatibility condition for the
 purpose of injectivity of types of mathematical structures.
 
 We work with hypothetical T and T-refl with the following types.
@@ -125,7 +125,7 @@ We work with hypothetical T and T-refl with the following types.
 
 The point is that any such T can be equivalently expressed as a
 transport and hence we may apply the above theorem, but it may be
-easier to check the technical condition using T rather than transport
+easier to check the compatibility condition using T rather than transport
 (see examples below).
 
 \begin{code}
@@ -166,18 +166,18 @@ We introduce names for the canonical maps induced by Π- and
 \end{code}
 
 In our applications, we will apply Π-flabbiness structure, and it will
-be easier to check technical-condition-Π than (technical-condition S
-universes-are-aflabby-Π).
+be easier to check compatibility-condition-Π than
+(compatibility-condition S universes-are-aflabby-Π).
 
 \begin{code}
 
-  technical-condition-Π : 𝓤 ⁺ ⊔ 𝓥 ̇
-  technical-condition-Π = (p : Ω 𝓤)
-                          (A : p holds → 𝓤 ̇)
-                        → has-section (ρΠ p A)
+  compatibility-condition-Π : 𝓤 ⁺ ⊔ 𝓥 ̇
+  compatibility-condition-Π = (p : Ω 𝓤)
+                              (A : p holds → 𝓤 ̇)
+                            → has-section (ρΠ p A)
 
-  Π-lemma : technical-condition-Π
-          → technical-condition S universes-are-aflabby-Π
+  Π-lemma : compatibility-condition-Π
+          → compatibility-condition S universes-are-aflabby-Π
   Π-lemma t p A = II
    where
     π : (p : Ω 𝓤) (A : p holds → 𝓤 ̇) (h : p holds) → Π A ≃ A h
@@ -202,8 +202,8 @@ enough" for the purposes of e.g. Monoid-Π-condition.
 
 \begin{code}
 
-  Π-lemma' : technical-condition-Π
-           → technical-condition S universes-are-aflabby-Π
+  Π-lemma' : compatibility-condition-Π
+           → compatibility-condition S universes-are-aflabby-Π
   Π-lemma' t p A = transport has-section I II
    where
     I : ρΠ p A ＝ ρ S universes-are-aflabby-Π p A
@@ -215,13 +215,13 @@ enough" for the purposes of e.g. Monoid-Π-condition.
     II : has-section (ρΠ p A)
     II = t p A
 
-  technical-condition-Σ : 𝓤 ⁺ ⊔ 𝓥 ̇
-  technical-condition-Σ = (p : Ω 𝓤)
-                          (A : p holds → 𝓤 ̇)
-                        → has-section (ρΣ p A)
+  compatibility-condition-Σ : 𝓤 ⁺ ⊔ 𝓥 ̇
+  compatibility-condition-Σ = (p : Ω 𝓤)
+                              (A : p holds → 𝓤 ̇)
+                            → has-section (ρΣ p A)
 
-  Σ-lemma : technical-condition-Σ
-          → technical-condition S universes-are-aflabby-Σ
+  Σ-lemma : compatibility-condition-Σ
+          → compatibility-condition S universes-are-aflabby-Σ
   Σ-lemma t p A = transport has-section I II
    where
     I : ρΣ p A ＝ ρ S universes-are-aflabby-Σ p A
@@ -251,7 +251,7 @@ Pointed-type 𝓤 = Σ X ꞉ 𝓤 ̇ , X
 Pointed : 𝓤 ̇ → 𝓤 ̇
 Pointed X = X
 
-Pointed-Π-condition : technical-condition
+Pointed-Π-condition : compatibility-condition
                        (Pointed {𝓤})
                         universes-are-aflabby-Π
 Pointed-Π-condition {𝓤} = Π-lemma Pointed T T-refl c
@@ -262,7 +262,7 @@ Pointed-Π-condition {𝓤} = Π-lemma Pointed T T-refl c
   T-refl : {X : 𝓤 ̇ } → T (≃-refl X) ∼ id
   T-refl x = refl
 
-  c : technical-condition-Π (λ X → X) T T-refl
+  c : compatibility-condition-Π (λ X → X) T T-refl
   c p A = equivs-have-sections id (id-is-equiv (Π A))
 
 ainjectivity-of-type-of-pointed-types : ainjective-type (Pointed-type 𝓤) 𝓤 𝓤
@@ -286,7 +286,7 @@ guess what T should be.
 ∞-Magma-structure : 𝓤 ̇ → 𝓤 ̇
 ∞-Magma-structure = λ X → X → X → X
 
-∞-Magma-structure-Π-condition : technical-condition
+∞-Magma-structure-Π-condition : compatibility-condition
                                  (∞-Magma-structure {𝓤})
                                  universes-are-aflabby-Π
 ∞-Magma-structure-Π-condition {𝓤} =
@@ -366,11 +366,11 @@ open monoid
 ∞-Magma∙-structure : 𝓤 ̇ → 𝓤 ̇
 ∞-Magma∙-structure = monoid-structure
 
-∞-Magma∙-structure-Π-condition : technical-condition
+∞-Magma∙-structure-Π-condition : compatibility-condition
                                   (∞-Magma∙-structure {𝓤})
                                   universes-are-aflabby-Π
 ∞-Magma∙-structure-Π-condition =
- technical-condition-×
+ compatibility-condition-×
   universes-are-aflabby-Π
   ∞-Magma-structure-Π-condition
   Pointed-Π-condition
@@ -389,11 +389,11 @@ the monoid axioms are closed under Π.
 
 \begin{code}
 
-Monoid-Π-condition : technical-condition {𝓤 ⁺}
+Monoid-Π-condition : compatibility-condition {𝓤 ⁺}
                       (λ X → Σ s ꞉ monoid-structure X , monoid-axioms X s)
                       universes-are-aflabby-Π
 Monoid-Π-condition {𝓤} =
- technical-condition-with-axioms
+ compatibility-condition-with-axioms
   universes-are-aflabby-Π
   monoid-structure
   ∞-Magma∙-structure-Π-condition

@@ -41,3 +41,23 @@ is-spectral-map Y X (f , _) =
  Ɐ K ꞉ ⟨ 𝒪 Y ⟩ , is-compact-open Y K  ⇒ is-compact-open X (f K)
 
 \end{code}
+
+Added on 2024-03-04.
+
+\begin{code}
+
+Spectral-Map : (X : Locale 𝓤 𝓥 𝓥) (Y : Locale 𝓤' 𝓥 𝓥) → (𝓤 ⊔ 𝓤' ⊔ 𝓥 ⁺) ̇
+Spectral-Map X Y = Σ f ꞉ X ─c→ Y , is-spectral-map Y X f holds
+
+continuous-map-of : (X : Locale 𝓤 𝓥 𝓥) (Y : Locale 𝓤' 𝓥 𝓥)
+                  → Spectral-Map X Y → X ─c→ Y
+continuous-map-of X Y (f , _) = f
+
+spectrality-of-spectral-map : (X : Locale 𝓤 𝓥 𝓥) (Y : Locale 𝓤' 𝓥 𝓥)
+                            → (fₛ : Spectral-Map X Y)
+                            → is-spectral-map Y X (continuous-map-of X Y fₛ) holds
+spectrality-of-spectral-map X Y (_ , 𝕤) = 𝕤
+
+syntax Spectral-Map X Y = X ─s→ Y
+
+\end{code}
