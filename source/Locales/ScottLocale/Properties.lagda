@@ -1,7 +1,7 @@
 ---
-title:       Properties of the Scott locale
-author:      Ayberk Tosun
-start-date:  2023-11-23
+title:        Properties of the Scott locale
+author:       Ayberk Tosun
+date-started: 2023-11-23
 ---
 
 \begin{code}[hide]
