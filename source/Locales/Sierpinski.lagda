@@ -56,7 +56,7 @@ open import Lifting.Lifting (𝓤 ⁺)
 ⊤𝕊 : ⟨ 𝒪 𝕊 ⟩
 ⊤𝕊 = ⊤ₛ
 
-𝕊-is-algebraic : is-algebraic-dcpo 𝕊-dcpo⁻
-𝕊-is-algebraic = 𝓛-is-algebraic-dcpo 𝓤 (props-are-sets {X = 𝟙 {𝓤}} 𝟙-is-prop)
+𝕊𝓓-is-algebraic : is-algebraic-dcpo 𝕊-dcpo⁻
+𝕊𝓓-is-algebraic = 𝓛-is-algebraic-dcpo 𝓤 (props-are-sets {X = 𝟙 {𝓤}} 𝟙-is-prop)
 
 \end{code}
