@@ -30,7 +30,8 @@ open import DomainTheory.Basics.Pointed pt fe 𝓤 renaming (⊥ to ⊥∙)
 open import DomainTheory.Basics.WayBelow pt fe 𝓤
 open import DomainTheory.Lifting.LiftingSet pt fe 𝓤 pe
 open import DomainTheory.Lifting.LiftingSetAlgebraic pt pe fe 𝓤
-open import Lifting.Lifting 𝓤
+open import DomainTheory.Topology.ScottTopology pt fe 𝓤
+open import Lifting.Lifting 𝓤 hiding (⊥)
 open import Lifting.Miscelanea-PropExt-FunExt 𝓤 pe fe
 open import Lifting.UnivalentPrecategory 𝓤 (𝟙 {𝓤})
 open import Locales.Frame pt fe hiding (𝟚; is-directed)
@@ -42,8 +43,8 @@ open import Locales.Stone pt fe sr
 open import Slice.Family
 open import UF.DiscreteAndSeparated
 open import UF.Equiv
-open import UF.Subsingletons-Properties
 open import UF.Subsingletons-FunExt
+open import UF.Subsingletons-Properties
 open import UF.SubtypeClassifier
 
 open Locale
@@ -191,6 +192,18 @@ It is obvious that these form an equivalence.
 
 \end{code}
 
+For convenience we define abbreviation for the copies of `⊤` and `⊥` in `𝕊𝓓`.
+
+\begin{code}
+
+⊤ₛ : ⟨ 𝕊𝓓 ⟩∙
+⊤ₛ = to-𝕊𝓓 ⊤
+
+⊥ₛ : ⟨ 𝕊𝓓 ⟩∙
+⊥ₛ = to-𝕊𝓓 ⊥
+
+\end{code}
+
 We now proceed to the definition of the Sierpiński locale.
 
 First, we show that `𝕊𝓓` has a specified small compact basis.
@@ -251,6 +264,10 @@ hscb = (𝟙 {𝓤} + 𝟙 {𝓤}) , β , σ
        ; ↓ᴮ-is-sup = covering
        }
 
+𝕊𝓓-is-structurally-algebraic : structurally-algebraic 𝕊𝓓
+𝕊𝓓-is-structurally-algebraic =
+ structurally-algebraic-if-specified-small-compact-basis 𝕊𝓓 hscb
+
 \end{code}
 
 Using this compact basis, we define the Sierpiński locale as the Scott locale of
@@ -265,13 +282,57 @@ open ScottLocaleConstruction 𝕊𝓓 hscb pe
 
 \end{code}
 
-The true truth value in the Sierpiński space i.e. its only nontrivial open.
+Added on 2024-03-08.
+
+There are three important opens of the Sierpiński locale.
+
+```
+    ⊤ₛ
+    |
+   {⊤}
+    |
+    ⊥ₛ
+```
+
+The top and bottom one are just `⊤ₛ ` and `⊥ₛ`. We now define the singleton open
+lying in the middle. We call this Scott open `truth`.
+
+We first define the subset of `⟨ 𝕊𝓓 ⟩` underlying this map, which is in fact
+just the identity map since given a proposition `P`, `P ＝ ⊤` iff `P` holds.
 
 \begin{code}
 
 open DefnOfScottLocale 𝕊𝓓 𝓤 pe
 
-⊤𝕊 : ⟨ 𝒪 𝕊 ⟩
-⊤𝕊 = ⊤ₛ
+truth₀ : ⟨ 𝕊𝓓 ⟩∙ → Ω 𝓤
+truth₀ (P , _ , i) = (P , i)
+
+\end{code}
+
+We now package this subset up with the proof that it is Scott open.
+
+\begin{code}
+
+open DefnOfScottTopology 𝕊𝓓 𝓤
+
+truth₀-is-upward-closed : is-upwards-closed truth₀ holds
+truth₀-is-upward-closed U V u (φ , _) = φ u
+
+truthᵣ : 𝒪ₛᴿ
+truthᵣ =
+ record
+  { pred                              = truth₀
+  ; pred-is-upwards-closed            = υ
+  ; pred-is-inaccessible-by-dir-joins = ι
+  }
+  where
+   υ : is-upwards-closed truth₀ holds
+   υ U V u (φ , _) = φ u
+
+   ι : is-inaccessible-by-directed-joins truth₀ holds
+   ι U μ = μ
+
+truth : ⟨ 𝒪 𝕊 ⟩
+truth = from-𝒪ₛᴿ truthᵣ
 
 \end{code}
