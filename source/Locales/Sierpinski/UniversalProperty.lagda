@@ -22,6 +22,7 @@ module Locales.Sierpinski.UniversalProperty
 
 open import DomainTheory.Basics.Pointed pt fe 𝓤
 open import DomainTheory.Topology.ScottTopology pt fe 𝓤
+open import DomainTheory.Topology.ScottTopologyProperties pt fe
 open import Locales.DistributiveLattice.Definition fe pt
 open import Locales.DistributiveLattice.Ideal pt fe pe
 open import Locales.DistributiveLattice.Properties fe pt
@@ -71,11 +72,11 @@ true = true₀ , †
   † : is-scott-open true₀ holds
   † = υ , ι
 
-singleton₀ : (P : Ω 𝓤) → P holds → ⟪ 𝕊-dcpo ⟫ → Ω 𝓤
-singleton₀ P p (Q , f , φ) = P ⇔ (Q , φ)
-
-singleton-is-true : ((P , f , φ) : ⟪ 𝕊-dcpo ⟫) → (p : (P , φ) holds) → true₀ ＝ singleton₀ (P , φ) p
-singleton-is-true (P , f , φ) p = dfunext fe λ (Q , g , ψ) → to-subtype-＝ (λ _ → being-prop-is-prop fe) (pe ψ {!!} {!!} {!!})
+holds-gives-equal-⊤ₛ : (P : ⟪ 𝕊-dcpo ⟫) → true₀ P holds → P ＝ ⊤ₛ
+holds-gives-equal-⊤ₛ (P , f , φ) p =
+ to-subtype-＝
+  (λ Q → ×-is-prop (Π-is-prop fe (λ _ → 𝟙-is-prop)) (being-prop-is-prop fe))
+  (holds-gives-equal-𝟙 pe P φ p)
 
 contains-bottom-implies-is-top : (𝔘 : ⟨ 𝒪 𝕊 ⟩) → (⊥ₛ ∈ₛ 𝔘) holds → 𝔘 ＝ 𝟏[ 𝒪 𝕊 ]
 contains-bottom-implies-is-top 𝔘 p = only-𝟏-is-above-𝟏 (𝒪 𝕊) 𝔘 †
@@ -90,10 +91,12 @@ main-lemma U p = upward-closure U ⊥ₛ ⊤ₛ p λ ()
  where
   open 𝒪ₛᴿ
 
+open PropertiesAlgebraic 𝓤
+
 universal-property-of-sierpinski : (X : Locale (𝓤 ⁺) 𝓤 𝓤)
                                  → (U : ⟨ 𝒪 X ⟩)
                                  → ∃! (f , _) ꞉ (𝒪 𝕊 ─f→ 𝒪 X) , U ＝ f true
-universal-property-of-sierpinski X U = ((f , {!!} , {!!} , {!!}) , {!!}) , {!!}
+universal-property-of-sierpinski X U = ((f , tp , mp , jp) , equality) , uniqueness
  where
   open PosetReasoning (poset-of (𝒪 X))
 
@@ -106,8 +109,6 @@ universal-property-of-sierpinski X U = ((f , {!!} , {!!} , {!!}) , {!!}) , {!!}
 
   f : ⟨ 𝒪 𝕊 ⟩ → ⟨ 𝒪 X ⟩
   f V = ⋁[ 𝒪 X ] (I V , α V)
-
-{--
 
   fₘ : is-monotonic (poset-of (𝒪 𝕊)) (poset-of (𝒪 X)) f holds
   fₘ (V₁ , V₂) p = ⋁[ 𝒪 X ]-least (I V₁ , α V₁) (f V₂ , †)
@@ -217,8 +218,19 @@ universal-property-of-sierpinski X U = ((f , {!!} , {!!} , {!!}) , {!!}) , {!!}
     (continuous-map-equality (𝒪 𝕊) (𝒪 X) 𝒻 ℊ goal)
      where
       goal : (V : ⟨ 𝒪 𝕊 ⟩) → f V ＝ g V
-      goal V = {!!}
+      goal V = ≤-is-antisymmetric (poset-of (𝒪 X)) goal₁ goal₂
+       where
+        subgoal₁ : (i : I V) → (α V i ≤[ poset-of (𝒪 X) ] g V) holds
+        subgoal₁ (inl p) = α V (inl p) ＝⟨ refl ⟩ₚ U ＝⟨ eq′  ⟩ₚ g true ≤⟨ frame-morphisms-are-monotonic (𝒪 𝕊) (𝒪 X) g (tpg , mpg , jpg) (true , V) subgoal₂  ⟩ g V ■
+         where
+          subgoal₂ : (true ≤[ poset-of (𝒪 𝕊) ] V) holds
+          subgoal₂ P μ = transport (λ - → (- ∈ₛ V) holds) (holds-gives-equal-⊤ₛ P μ ⁻¹) p
+        subgoal₁ (inr p) = α V (inr p) ＝⟨ refl ⟩ₚ 𝟏[ 𝒪 X ] ＝⟨ tpg ⁻¹ ⟩ₚ g 𝟏[ 𝒪 𝕊 ] ＝⟨ ap g (contains-bottom-implies-is-top V p ⁻¹) ⟩ₚ g V ■
 
---}
+        goal₁ : (f V ≤[ poset-of (𝒪 X) ] g V) holds
+        goal₁ = ⋁[ 𝒪 X ]-least (I V , α V) ((g V) , subgoal₁)
+
+        goal₂ : (g V ≤[ poset-of (𝒪 X) ] f V) holds
+        goal₂ = {!characterization-of-scott-opens  !}
 
 \end{code}
