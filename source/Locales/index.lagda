@@ -59,10 +59,14 @@ import Locales.ScottContinuity                   -- (21)
 
 import Locales.ScottLocale.Definition            -- (22)
 
--- TODO: naming and numbering to be improved.
-import Locales.ScottLocale.ScottLocalesOfAlgebraicDcpos -- (22.5)
+import Locales.ScottLocale.ScottLocalesOfAlgebraicDcpos
+import Locales.ScottLocale.ScottLocalesOfScottDomains
+import Locales.ScottLocale.Properties
 
 import Locales.Sierpinski                        -- (23)
+import Locales.Sierpinski.Definition
+import Locales.Sierpinski.Patch
+import Locales.Sierpinski.Properties
 
 import Locales.SmallBasis                        -- (24)
 
