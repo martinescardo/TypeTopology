@@ -61,7 +61,6 @@ import Locales.ScottLocale.Definition            -- (22)
 
 import Locales.ScottLocale.ScottLocalesOfAlgebraicDcpos
 import Locales.ScottLocale.ScottLocalesOfScottDomains
-import Locales.ScottLocale.ScottLocalesOfScottDomains
 import Locales.ScottLocale.Properties
 
 import Locales.Sierpinski                        -- (23)
