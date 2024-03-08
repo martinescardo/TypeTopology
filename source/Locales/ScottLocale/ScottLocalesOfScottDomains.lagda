@@ -45,6 +45,7 @@ open import DomainTheory.Basics.WayBelow                     pt fe 𝓤
 open import DomainTheory.BasesAndContinuity.Bases            pt fe 𝓤
 open import DomainTheory.BasesAndContinuity.Continuity       pt fe 𝓤
 open import DomainTheory.BasesAndContinuity.CompactBasis     pt fe 𝓤
+open import DomainTheory.BasesAndContinuity.ScottDomain      pt fe 𝓤
 open import Locales.ScottLocale.Definition                   pt fe 𝓤
 open import DomainTheory.Topology.ScottTopology              pt fe 𝓤
 open import DomainTheory.Topology.ScottTopologyProperties    pt fe 𝓤
@@ -102,7 +103,8 @@ syntax bounded-above 𝓓 x y = x ↑[ 𝓓 ] y
 
 \end{code}
 
-For the proof of spectrality, we will also need the following assumption
+For the proof of spectrality, we will also need the following decidability
+assumption.
 
 \begin{code}
 
@@ -126,7 +128,6 @@ As mentioned previously, we assume a couple of things.
 
 \begin{code}
 
-open import DomainTheory.BasesAndContinuity.ScottDomain pt fe 𝓤
 open DefinitionOfBoundedCompleteness
 
 module SpectralScottLocaleConstruction
