@@ -1,4 +1,4 @@
-Martin Escardo, Paulo Oliva, 2023
+Martin Escardo, Paulo Oliva, March 2024
 
 (Strong, wild) universe-polymorphic monads on types.
 
@@ -8,7 +8,8 @@ universe 𝓤⁺, we take ℓ 𝓤 = 𝓤⁺, but for the list monad we take
 ℓ 𝓤 = 𝓤. For the J and K monads with answer type R : 𝓦,
 we have ℓ 𝓤 = 𝓤 ⊔ 𝓦.
 
-It is the use of ℓ that requires the flagg --no-level-universe.
+It is the use of ℓ below that requires the flag --no-level-universe.
+Perhaps we will instead make ℓ into a parameter to avoid that.
 
 \begin{code}
 
