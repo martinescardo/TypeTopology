@@ -217,8 +217,8 @@ hscb : has-specified-small-compact-basis 𝕊𝓓
 hscb = (𝟙 {𝓤} + 𝟙 {𝓤}) , β , σ
  where
   β : 𝟙 + 𝟙 → ⟨ 𝕊𝓓 ⟩∙
-  β (inl ⋆) = ⊥∙ (𝓛-DCPO⊥ 𝟙-is-set)
-  β (inr ⋆) = 𝟙 {𝓤} , (λ { ⋆ → ⋆ }) , 𝟙-is-prop
+  β (inl ⋆) = ⊥ₛ
+  β (inr ⋆) = ⊤ₛ
 
   β-is-compact : (b : 𝟙 + 𝟙) → is-compact 𝕊𝓓 (β b)
   β-is-compact (inl ⋆) = ⊥-is-compact 𝕊𝓓⊥
