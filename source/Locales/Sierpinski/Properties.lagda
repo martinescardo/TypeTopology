@@ -10,7 +10,7 @@ date-completed: 2024-02-12
 
 open import UF.FunExt
 open import UF.Logic
-open import MLTT.Spartan hiding (𝟚)
+open import MLTT.Spartan hiding (𝟚; ₀; ₁)
 open import UF.PropTrunc
 open import UF.Subsingletons
 open import UF.Size
@@ -34,18 +34,22 @@ open import DomainTheory.Lifting.LiftingSetAlgebraic pt pe fe 𝓤
 open import Lifting.Lifting 𝓤
 open import Lifting.Miscelanea-PropExt-FunExt 𝓤 pe fe
 open import Lifting.UnivalentPrecategory 𝓤 (𝟙 {𝓤})
-open import Locales.Frame pt fe hiding (𝟚; is-directed)
+open import Locales.Frame pt fe hiding (is-directed)
 open import Locales.InitialFrame pt fe
-open import Locales.SmallBasis pt fe sr
 open import Locales.Sierpinski.Definition 𝓤 pe pt fe sr
+open import Locales.SmallBasis pt fe sr
 open import Locales.Spectrality.SpectralLocale pt fe
 open import Locales.Spectrality.SpectralMap pt fe
+open import Locales.ScottLocale.Definition pt fe 𝓤
+open import Locales.ScottLocale.Properties pt fe 𝓤
+open import Locales.ScottLocale.ScottLocalesOfAlgebraicDcpos pt fe 𝓤
 open import Locales.Stone pt fe sr
+open import MLTT.List hiding ([_])
 open import Slice.Family
 open import UF.DiscreteAndSeparated
 open import UF.Equiv
-open import UF.Subsingletons-Properties
 open import UF.Subsingletons-FunExt
+open import UF.Subsingletons-Properties
 open import UF.SubtypeClassifier
 
 open Locale
@@ -132,6 +136,104 @@ From all these, we obtain the fact that `𝕊` is a spectral locale.
 𝕊𝓓-has-least = (⊥∙ 𝕊𝓓⊥) , ⊥-is-least 𝕊𝓓⊥
 
 open SpectralScottLocaleConstruction 𝕊𝓓 𝕊𝓓-has-least hscb 𝕊𝓓-satisfies-dc 𝕊𝓓-bounded-complete pe
+open ScottLocaleConstruction 𝕊𝓓 hscb pe
+open ScottLocaleProperties 𝕊𝓓 𝕊𝓓-has-least hscb pe
+open DefnOfScottLocale 𝕊𝓓 𝓤 pe using (𝒪ₛ-equality; _⊆ₛ_)
+
+ℬ𝕊 : Fam 𝓤 ⟨ 𝒪 𝕊 ⟩
+ℬ𝕊 = List (𝟚 𝓤) , 𝜸
+
+principal-filter-on-₁-is-truth : ↑ᵏ[ ₁ ] ＝ truth
+principal-filter-on-₁-is-truth = ≤-is-antisymmetric (poset-of (𝒪 𝕊)) † ‡
+ where
+  †₀ : (↑ᵏ[ ₁ ] ⊆ₛ truth) holds
+  †₀ (P , f , φ) (p , _) = p ⋆
+
+  † : (↑ᵏ[ ₁ ] ⊆ₖ truth) holds
+  † = ⊆ₛ-implies-⊆ₖ ↑ᵏ[ ₁ ] truth †₀
+
+  ‡₀ : (truth ⊆ₛ ↑ᵏ[ ₁ ]) holds
+  ‡₀ (P , f , φ) p = (λ x → p) , λ { _ → 𝟙-is-prop ⋆ ⋆ }
+
+  ‡ : (truth ⊆ₖ ↑ᵏ[ ₁ ]) holds
+  ‡ = ⊆ₛ-implies-⊆ₖ truth ↑ᵏ[ ₁ ] ‡₀
+
+basis-trichotomy : (bs : List (𝟚 𝓤))
+                 → (𝜸 bs ＝ 𝟏[ 𝒪 𝕊 ]) + (𝜸 bs ＝ truth) + (𝜸 bs ＝ 𝟎[ 𝒪 𝕊 ])
+basis-trichotomy []       = inr (inr p)
+                             where
+                              p : 𝜸 [] ＝ 𝟎[ 𝒪 𝕊 ]
+                              p = 𝜸 []     ＝⟨ 𝜸-equal-to-𝜸₁ [] ⟩
+                                  𝜸₁ []    ＝⟨ refl             ⟩
+                                  𝟎[ 𝒪 𝕊 ] ∎
+basis-trichotomy (₀ ∷ bs) = inl p
+                             where
+                              Ⅱ = ap (λ - → - ∨[ 𝒪 𝕊 ] 𝜸₁ bs) ↑⊥-is-top
+
+                              p : 𝜸 (₀ ∷ bs) ＝ 𝟏[ 𝒪 𝕊 ]
+                              p = 𝜸 (₀ ∷ bs)               ＝⟨ 𝜸-equal-to-𝜸₁ (₀ ∷ bs) ⟩
+                                  𝜸₁ (₀ ∷ bs)              ＝⟨ refl ⟩
+                                  ↑ᵏ[ ₀ ] ∨[ 𝒪 𝕊 ] 𝜸₁ bs  ＝⟨ Ⅱ ⟩
+                                  𝟏[ 𝒪 𝕊 ] ∨[ 𝒪 𝕊 ] 𝜸₁ bs  ＝⟨ 𝟏-left-annihilator-for-∨ (𝒪 𝕊) (𝜸₁ bs) ⟩
+                                  𝟏[ 𝒪 𝕊 ]                 ∎
+basis-trichotomy (₁ ∷ bs) = cases₃ case₁ case₂ case₃ IH
+ where
+  IH : (𝜸 bs ＝ 𝟏[ 𝒪 𝕊 ]) + (𝜸 bs ＝ truth) + (𝜸 bs ＝ 𝟎[ 𝒪 𝕊 ])
+  IH = basis-trichotomy bs
+
+  case₁ : 𝜸 bs ＝ 𝟏[ 𝒪 𝕊 ]
+        → (𝜸 (₁ ∷ bs) ＝ 𝟏[ 𝒪 𝕊 ]) + (𝜸 (₁ ∷ bs) ＝ truth) + (𝜸 (₁ ∷ bs) ＝ 𝟎[ 𝒪 𝕊 ])
+  case₁ q = inl r
+   where
+    Ⅱ = ap
+         (λ - → ↑ᵏ[ ₁ ] ∨[ 𝒪 𝕊 ] -)
+         (𝜸₁ bs ＝⟨ 𝜸-equal-to-𝜸₁ bs ⁻¹ ⟩ 𝜸 bs ＝⟨ q ⟩ 𝟏[ 𝒪 𝕊 ] ∎ )
+    Ⅲ = 𝟏-right-annihilator-for-∨ (𝒪 𝕊) ↑ᵏ[ ₁ ]
+
+    r : 𝜸 (₁ ∷ bs) ＝ 𝟏[ 𝒪 𝕊 ]
+    r = 𝜸 (₁ ∷ bs)                ＝⟨ 𝜸-equal-to-𝜸₁ (₁ ∷ bs) ⟩
+        𝜸₁ (₁ ∷ bs)               ＝⟨ refl ⟩
+        ↑ᵏ[ ₁ ] ∨[ 𝒪 𝕊 ] 𝜸₁ bs    ＝⟨ Ⅱ ⟩
+        ↑ᵏ[ ₁ ] ∨[ 𝒪 𝕊 ] 𝟏[ 𝒪 𝕊 ] ＝⟨ Ⅲ ⟩
+        𝟏[ 𝒪 𝕊 ]                  ∎
+
+  case₂ : 𝜸 bs ＝ truth
+        → (𝜸 (₁ ∷ bs) ＝ 𝟏[ 𝒪 𝕊 ]) + (𝜸 (₁ ∷ bs) ＝ truth) + (𝜸 (₁ ∷ bs) ＝ 𝟎[ 𝒪 𝕊 ])
+  case₂ q = inr (inl r)
+   where
+    Ⅱ = ap (λ - → - ∨[ 𝒪 𝕊 ] 𝜸₁ bs) principal-filter-on-₁-is-truth
+    Ⅲ = ap (λ - → truth ∨[ 𝒪 𝕊 ] -) (𝜸-equal-to-𝜸₁ bs ⁻¹)
+    Ⅳ = ap (λ - → truth ∨[ 𝒪 𝕊 ] -) q
+    Ⅴ = ∨[ 𝒪 𝕊 ]-is-idempotent truth ⁻¹
+
+    r : 𝜸 (₁ ∷ bs) ＝ truth
+    r = 𝜸 (₁ ∷ bs)               ＝⟨ 𝜸-equal-to-𝜸₁ (₁ ∷ bs) ⟩
+        𝜸₁ (₁ ∷ bs)              ＝⟨ refl                   ⟩
+        ↑ᵏ[ ₁ ] ∨[ 𝒪 𝕊 ] 𝜸₁ bs   ＝⟨ Ⅱ                      ⟩
+        truth ∨[ 𝒪 𝕊 ] 𝜸₁ bs     ＝⟨ Ⅲ                      ⟩
+        truth ∨[ 𝒪 𝕊 ] 𝜸 bs      ＝⟨ Ⅳ                      ⟩
+        truth ∨[ 𝒪 𝕊 ] truth     ＝⟨ Ⅴ                      ⟩
+        truth                    ∎
+
+  case₃ : 𝜸 bs ＝ 𝟎[ 𝒪 𝕊 ]
+        → (𝜸 (₁ ∷ bs) ＝ 𝟏[ 𝒪 𝕊 ]) + (𝜸 (₁ ∷ bs) ＝ truth) + (𝜸 (₁ ∷ bs) ＝ 𝟎[ 𝒪 𝕊 ])
+  case₃ q = inr (inl r)
+   where
+    Ⅰ = 𝜸-equal-to-𝜸₁ (₁ ∷ bs)
+    Ⅱ = ap
+         (λ - → ↑ᵏ[ ₁ ] ∨[ 𝒪 𝕊 ] -)
+         (𝜸₁ bs ＝⟨ 𝜸-equal-to-𝜸₁ bs ⁻¹ ⟩ 𝜸 bs ＝⟨ q ⟩ 𝟎[ 𝒪 𝕊 ] ∎)
+    Ⅲ = 𝟎-left-unit-of-∨ (𝒪 𝕊) ↑ᵏ[ ₁ ]
+    Ⅳ = principal-filter-on-₁-is-truth
+
+    r : 𝜸 (₁ ∷ bs) ＝ truth
+    r = 𝜸 (₁ ∷ bs)                ＝⟨ Ⅰ     ⟩
+        𝜸₁ (₁ ∷ bs)               ＝⟨ refl  ⟩
+        ↑ᵏ[ ₁ ] ∨[ 𝒪 𝕊 ] 𝜸₁ bs    ＝⟨ Ⅱ     ⟩
+        ↑ᵏ[ ₁ ] ∨[ 𝒪 𝕊 ] 𝟎[ 𝒪 𝕊 ] ＝⟨ Ⅲ     ⟩
+        ↑ᵏ[ ₁ ]                   ＝⟨ Ⅳ     ⟩
+        truth                     ∎
+
 
 𝕊-is-spectralᴰ : spectralᴰ 𝕊
 𝕊-is-spectralᴰ = σᴰ
