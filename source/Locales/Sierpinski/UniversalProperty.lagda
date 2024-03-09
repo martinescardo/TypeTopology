@@ -95,13 +95,20 @@ contains-⊤ₛ-implies-above-truth 𝔘 μₜ = ⊆ₛ-implies-⊆ₖ truth �
   † : (truth ⊆ₛ 𝔘) holds
   † P μₚ = transport (λ - → (- ∈ₛ 𝔘) holds) (holds-gives-equal-⊤ₛ P μₚ ⁻¹) μₜ
 
+above-truth-implies-contains-⊤ₛ : (𝔘 : ⟨ 𝒪 𝕊 ⟩)
+                                → (truth ≤[ poset-of (𝒪 𝕊) ] 𝔘) holds
+                                → (⊤ₛ ∈ₛ 𝔘) holds
+above-truth-implies-contains-⊤ₛ 𝔘 p = ⊆ₖ-implies-⊆ₛ truth 𝔘 p ⊤ₛ ⋆
+
 open PropertiesAlgebraic 𝓤 𝕊𝓓 𝕊𝓓-is-structurally-algebraic
+
+
 
 universal-property-of-sierpinski : (X : Locale (𝓤 ⁺) 𝓤 𝓤)
                                  → (U : ⟨ 𝒪 X ⟩)
                                  → ∃! (f , _) ꞉ (𝒪 𝕊 ─f→ 𝒪 X) , U ＝ f truth
 universal-property-of-sierpinski X U =
- ((h , {!!}) , †) , ‡
+ ((h , φ , (ψ , ϑ)) , †) , ‡
   where
    open PosetNotation (poset-of (𝒪 X))
    open PosetReasoning (poset-of (𝒪 X))
@@ -176,15 +183,74 @@ universal-property-of-sierpinski X U =
                         Ⅱ = ap g (contains-bottom-implies-is-top 𝔙 p ⁻¹)
 
        γ₂ : (𝔙 : ⟨ 𝒪 𝕊 ⟩) → (g 𝔙 ≤ h 𝔙) holds
-       γ₂ 𝔙 = g 𝔙                      ≤⟨ {!!} ⟩
-              g (⋁[ 𝒪 𝕊 ] 𝔖)           ＝⟨ {!!} ⟩ₚ
+       γ₂ 𝔙 = g 𝔙                      ＝⟨ ap g cov ⟩ₚ
+              g (⋁[ 𝒪 𝕊 ] 𝔖)           ＝⟨ Ⅱ ⟩ₚ
               ⋁[ 𝒪 X ] ⁅ g 𝔅 ∣ 𝔅 ε 𝔖 ⁆ ≤⟨ focus ⟩
               h 𝔙                      ■
         where
+         open Joins _⊆ₛ_ renaming (_is-an-upper-bound-of_ to _is-an-upper-bound-ofₛ_)
+
          𝔖 = covering-familyₛ 𝕊 𝕊-is-spectralᴰ 𝔙
 
+         Ⅱ = ⋁[ 𝒪 X ]-unique ⁅ g 𝔅 ∣ 𝔅 ε 𝔖 ⁆ (g (⋁[ 𝒪 𝕊 ] 𝔖)) (ϑ₀ 𝔖)
+
+         cov : 𝔙 ＝ ⋁[ 𝒪 𝕊 ] 𝔖
+         cov = ⋁[ 𝒪 𝕊 ]-unique 𝔖 𝔙 (basisₛ-covers-do-cover 𝕊 𝕊-is-spectralᴰ 𝔙)
+
+         cov₀ : (𝔙 is-an-upper-bound-ofₛ 𝔖) holds
+         cov₀ bs = ⊆ₖ-implies-⊆ₛ (𝔖 [ bs ]) 𝔙 (pr₁ (basisₛ-covers-do-cover 𝕊 𝕊-is-spectralᴰ 𝔙) bs)
+
          final : (i : index 𝔖) → (g (𝔖 [ i ]) ≤ h 𝔙) holds
-         final = {!a!}
+         final (bs , b) = cases₃ case₁ case₂ case₃ (basis-trichotomy bs)
+          where
+           open PosetReasoning poset-of-scott-opensₛ
+            renaming (_≤⟨_⟩_ to _≤⟨_⟩ₛ_;
+                      _■ to _■ₛ;
+                      _＝⟨_⟩ₚ_ to _＝⟨_⟩ₛ_)
+
+           case₁ : ℬ𝕊 [ bs ] ＝ 𝟏[ 𝒪 𝕊 ]
+                 → (g (𝔖 [ bs , b ]) ≤ h 𝔙) holds
+           case₁ q = transport (λ - → (g (𝔖 [ bs , b ]) ≤ h -) holds)
+                      r
+                      (g (ℬ𝕊 [ bs ]) ≤⟨ 𝟏-is-top (𝒪 X) (g (ℬ𝕊 [ bs ])) ⟩
+                      𝟏[ 𝒪 X ]       ＝⟨ φ ⁻¹ ⟩ₚ h 𝟏[ 𝒪 𝕊 ] ■)
+            where
+             χ : (𝟏[ 𝒪 𝕊 ] ⊆ₛ (ℬ𝕊 [ bs ])) holds
+             χ = reflexivity+ poset-of-scott-opensₛ (q ⁻¹)
+
+             r : 𝟏[ 𝒪 𝕊 ] ＝ 𝔙
+             r = ⊆ₛ-is-antisymmetric
+                  (λ x p → cov₀ (bs , b) x (χ x p))
+                  (⊤ₛ-is-top 𝔙)
+
+           case₂ : ℬ𝕊 [ bs ] ＝ truth
+                 → (g (𝔖 [ bs , b ]) ≤ h 𝔙) holds
+           case₂ p = g (𝔖 [ bs , b ]) ＝⟨ refl ⟩ₚ
+                     g (ℬ𝕊 [ bs ])    ＝⟨ क ⟩ₚ
+                     g truth          ＝⟨ ख ⟩ₚ
+                     U                ≤⟨ ग ⟩
+                     h 𝔙              ■
+            where
+             p₀ : (truth ⊆ₛ (ℬ𝕊 [ bs ])) holds
+             p₀ = reflexivity+ poset-of-scott-opensₛ (p ⁻¹)
+
+             ζ : (truth ⊆ₛ 𝔙) holds
+             ζ P μ = cov₀ (bs , b) P (p₀ P μ)
+
+             χ : (⊤ₛ ∈ₛ 𝔙) holds
+             χ = above-truth-implies-contains-⊤ₛ 𝔙 (⊆ₛ-implies-⊆ₖ truth 𝔙 ζ)
+
+             क = ap g p
+             ख = †₀ ⁻¹
+             ग = ⋁[ 𝒪 X ]-upper (openₓ 𝔙) (inl χ)
+
+           case₃ : ℬ𝕊 [ bs ] ＝ 𝟎[ 𝒪 𝕊 ]
+                 → (g (𝔖 [ bs , b ]) ≤ h 𝔙) holds
+           case₃ q = g (𝔖 [ bs , b ]) ＝⟨ refl   ⟩ₚ
+                     g (ℬ𝕊 [ bs ])    ＝⟨ ap g q ⟩ₚ
+                     g 𝟎[ 𝒪 𝕊 ]       ＝⟨ frame-homomorphisms-preserve-bottom (𝒪 𝕊) (𝒪 X) ℊ ⟩ₚ
+                     𝟎[ 𝒪 X ]         ≤⟨ 𝟎-is-bottom (𝒪 X) (h 𝔙) ⟩
+                     h 𝔙              ■
 
          focus : ((⋁[ 𝒪 X ] ⁅ g 𝔅 ∣ 𝔅 ε 𝔖 ⁆) ≤ h 𝔙) holds
          focus = ⋁[ 𝒪 X ]-least ⁅ g 𝔅 ∣ 𝔅 ε 𝔖 ⁆ (h 𝔙 , final)
