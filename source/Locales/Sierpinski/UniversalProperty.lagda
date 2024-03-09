@@ -127,6 +127,16 @@ universal-property-of-sierpinski X U =
    h : ⟨ 𝒪 𝕊 ⟩ → ⟨ 𝒪 X ⟩
    h V = ⋁[ 𝒪 X ] openₓ V
 
+   fₘ : is-monotonic (poset-of (𝒪 𝕊)) (poset-of (𝒪 X)) h holds
+   fₘ (V₁ , V₂) p = ⋁[ 𝒪 X ]-least (I V₁ , α V₁) (h V₂ , †)
+    where
+     p′ : (V₁ ⊆ₛ V₂) holds
+     p′ = ⊆ₖ-implies-⊆ₛ V₁ V₂ p
+
+     † : (h V₂ is-an-upper-bound-of (I V₁ , α V₁)) holds
+     † (inl μ) = U ≤⟨ ⋁[ 𝒪 X ]-upper (I V₂ , α V₂) (inl (p′ ⊤ₛ μ)) ⟩ h V₂ ■
+     † (inr μ) = 𝟏[ 𝒪 X ] ≤⟨ ⋁[ 𝒪 X ]-upper (I V₂ , α V₂) (inr (p′ ⊥ₛ μ)) ⟩ h V₂ ■
+
    φ : h 𝟏[ 𝒪 𝕊 ] ＝ 𝟏[ 𝒪 X ]
    φ = only-𝟏-is-above-𝟏 (𝒪 X) (h 𝟏[ 𝒪 𝕊 ]) γ
     where
@@ -156,7 +166,6 @@ universal-property-of-sierpinski X U =
     where
      γ : (U is-an-upper-bound-of (openₓ truth)) holds
      γ (inl ⋆) = ≤-is-reflexive (poset-of (𝒪 X)) U
-
 
    † : U ＝ h truth
    † = ≤-is-antisymmetric (poset-of (𝒪 X)) †₁ †₂
