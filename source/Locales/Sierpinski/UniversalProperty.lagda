@@ -2,6 +2,7 @@
 title:          Universal property of the Sierpiński locale
 author:         Ayberk Tosun
 date-started:   2024-03-06
+date-completed: 2024-03-09
 --------------------------------------------------------------------------------
 
 \begin{code}
