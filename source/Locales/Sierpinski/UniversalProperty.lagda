@@ -127,8 +127,8 @@ universal-property-of-sierpinski X U =
    h : ⟨ 𝒪 𝕊 ⟩ → ⟨ 𝒪 X ⟩
    h V = ⋁[ 𝒪 X ] openₓ V
 
-   fₘ : is-monotonic (poset-of (𝒪 𝕊)) (poset-of (𝒪 X)) h holds
-   fₘ (V₁ , V₂) p = ⋁[ 𝒪 X ]-least (I V₁ , α V₁) (h V₂ , †)
+   𝓂 : is-monotonic (poset-of (𝒪 𝕊)) (poset-of (𝒪 X)) h holds
+   𝓂 (V₁ , V₂) p = ⋁[ 𝒪 X ]-least (I V₁ , α V₁) (h V₂ , †)
     where
      p′ : (V₁ ⊆ₛ V₂) holds
      p′ = ⊆ₖ-implies-⊆ₛ V₁ V₂ p
@@ -151,8 +151,8 @@ universal-property-of-sierpinski X U =
            (h 𝔙)
            (h 𝔚)
            (h (𝔙 ∧[ 𝒪 𝕊 ] 𝔚))
-           (fₘ ((𝔙 ∧[ 𝒪 𝕊 ] 𝔚) , _) (∧[ 𝒪 𝕊 ]-lower₁ 𝔙 𝔚))
-           ((fₘ ((𝔙 ∧[ 𝒪 𝕊 ] 𝔚) , 𝔚) (∧[ 𝒪 𝕊 ]-lower₂ 𝔙 𝔚)))
+           (𝓂 ((𝔙 ∧[ 𝒪 𝕊 ] 𝔚) , _) (∧[ 𝒪 𝕊 ]-lower₁ 𝔙 𝔚))
+           ((𝓂 ((𝔙 ∧[ 𝒪 𝕊 ] 𝔚) , 𝔚) (∧[ 𝒪 𝕊 ]-lower₂ 𝔙 𝔚)))
 
      υ : (h (𝔙 ∧[ 𝒪 𝕊 ] 𝔚)
            is-an-upper-bound-of
@@ -213,12 +213,6 @@ universal-property-of-sierpinski X U =
         Ⅱ = distributivity+ (𝒪 X) (I 𝔙 , α 𝔙) (I 𝔚  , α 𝔚)
         Ⅲ = ⋁[ 𝒪 X ]-least _ (_ , υ)
 
-   ϑ : {!!}
-   ϑ = {!!}
-
-   𝒽 : 𝒪 𝕊 ─f→ 𝒪 X
-   𝒽 = h , φ , ψ , ϑ
-
    †₁ : (U ≤ h truth) holds
    †₁ = U ≤⟨ ⋁[ 𝒪 X ]-upper _ (inl ⋆) ⟩ h truth ■
 
@@ -231,14 +225,54 @@ universal-property-of-sierpinski X U =
    † : U ＝ h truth
    † = ≤-is-antisymmetric (poset-of (𝒪 X)) †₁ †₂
 
+   ϑ : (𝔖 : Fam 𝓤 ⟨ 𝒪 𝕊 ⟩) → (h (⋁[ 𝒪 𝕊 ] 𝔖) is-lub-of ⁅ h 𝔘 ∣ 𝔘 ε 𝔖 ⁆) holds
+   ϑ 𝔖 = ϑ₁ , λ { (V , υ) → ϑ₂ V υ }
+    where
+     ϑ₁ : (h (⋁[ 𝒪 𝕊 ] 𝔖) is-an-upper-bound-of ⁅ h 𝔘 ∣ 𝔘 ε 𝔖 ⁆) holds
+     ϑ₁ i = 𝓂 (𝔖 [ i ] , ⋁[ 𝒪 𝕊 ] 𝔖) (⋁[ 𝒪 𝕊 ]-upper 𝔖 i)
+
+     ϑ₂ : (W : ⟨ 𝒪 X ⟩)
+        → (W is-an-upper-bound-of ⁅ h 𝔘 ∣ 𝔘 ε 𝔖 ⁆) holds
+        → (h (⋁[ 𝒪 𝕊 ] 𝔖) ≤ W) holds
+     ϑ₂ W υ = ⋁[ 𝒪 X ]-least (openₓ (⋁[ 𝒪 𝕊 ] 𝔖)) (W , γ)
+      where
+       γ : (W is-an-upper-bound-of (openₓ (⋁[ 𝒪 𝕊 ] 𝔖))) holds
+       γ (inl μ) = ∥∥-rec (holds-is-prop (_ ≤ _)) ♣ μ
+        where
+         ♣ : (Σ k ꞉ index 𝔖 , (⊤ₛ ∈ₛ (𝔖 [ k ])) holds) → (U ≤ W) holds
+         ♣ (k , μₖ) = U           ＝⟨ Ⅰ ⟩ₚ
+                      h truth     ≤⟨ Ⅱ ⟩
+                      h (𝔖 [ k ]) ≤⟨ Ⅲ ⟩
+                      W           ■
+                       where
+                        Ⅰ = †
+                        Ⅱ = 𝓂 _ (contains-⊤ₛ-implies-above-truth (𝔖 [ k ]) μₖ)
+                        Ⅲ = υ k
+       γ (inr μ) = ∥∥-rec (holds-is-prop (_ ≤ _)) ♥ μ
+        where
+         ♥ : (Σ k ꞉ index 𝔖 , (⊥ₛ ∈ₛ (𝔖 [ k ])) holds) → (𝟏[ 𝒪 X ] ≤ W) holds
+         ♥ (k , μₖ) =
+          𝟏[ 𝒪 X ]    ＝⟨ Ⅰ ⟩ₚ
+          h 𝟏[ 𝒪 𝕊 ]  ＝⟨ Ⅱ ⟩ₚ
+          h (𝔖 [ k ]) ≤⟨ Ⅲ  ⟩
+          W           ■
+           where
+            Ⅰ = φ ⁻¹
+            Ⅱ = ap h (contains-bottom-implies-is-top (𝔖 [ k ]) μₖ) ⁻¹
+            Ⅲ = υ k
+
+   𝒽 : 𝒪 𝕊 ─f→ 𝒪 X
+   𝒽 = h , φ , ψ , ϑ
+
+
    ‡ : is-central (Σ (f , _) ꞉ (𝒪 𝕊 ─f→ 𝒪 X) , U ＝ f truth) (𝒽 , †)
    ‡ (ℊ@(g , φ₀ , ψ₀ , ϑ₀) , †₀) =
     to-subtype-＝
      (λ h → carrier-of-[ poset-of (𝒪 X) ]-is-set)
      (continuous-map-equality (𝒪 𝕊) (𝒪 X) 𝒽 ℊ γ)
       where
-       𝓂 : is-monotonic (poset-of (𝒪 𝕊)) (poset-of (𝒪 X)) g holds
-       𝓂 = frame-morphisms-are-monotonic (𝒪 𝕊) (𝒪 X) g (φ₀ , ψ₀ , ϑ₀)
+       𝓂′ : is-monotonic (poset-of (𝒪 𝕊)) (poset-of (𝒪 X)) g holds
+       𝓂′ = frame-morphisms-are-monotonic (𝒪 𝕊) (𝒪 X) g (φ₀ , ψ₀ , ϑ₀)
 
        γ₁ : (𝔙 : ⟨ 𝒪 𝕊 ⟩) → (h 𝔙 ≤ g 𝔙) holds
        γ₁ 𝔙 = ⋁[ 𝒪 X ]-least (openₓ 𝔙) (g 𝔙 , β₁)
@@ -246,7 +280,7 @@ universal-property-of-sierpinski X U =
          β₁ : (g 𝔙 is-an-upper-bound-of openₓ 𝔙) holds
          β₁ (inl p) = U ＝⟨ †₀ ⟩ₚ g truth ≤⟨ Ⅱ ⟩ g 𝔙 ■
                        where
-                        Ⅱ = 𝓂 (truth , 𝔙) (contains-⊤ₛ-implies-above-truth 𝔙 p)
+                        Ⅱ = 𝓂′ (truth , 𝔙) (contains-⊤ₛ-implies-above-truth 𝔙 p)
          β₁ (inr p) = 𝟏[ 𝒪 X ] ＝⟨ Ⅰ ⟩ₚ g 𝟏[ 𝒪 𝕊 ] ＝⟨ Ⅱ ⟩ₚ g 𝔙 ■
                        where
                         Ⅰ = φ₀ ⁻¹
