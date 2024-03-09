@@ -175,6 +175,10 @@ the basic opens. The order `_⊆ₛ_` is the large version.
  ⊆ₖ-is-partial-order : is-partial-order 𝒪ₛ _⊆ₖ_
  ⊆ₖ-is-partial-order = (⊆ₖ-is-reflexive , ⊆ₖ-is-transitive) , ⊆ₖ-is-antisymmetric
 
+ poset-of-scott-opensₛ : Poset (𝓤 ⁺) (𝓤 ⁺)
+ poset-of-scott-opensₛ =
+  𝒪ₛ , _⊆ₛ_ , (⊆ₛ-is-reflexive , ⊆ₛ-is-transitive) , ⊆ₛ-is-antisymmetric
+
 \end{code}
 
 The top open.
