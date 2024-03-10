@@ -5,6 +5,13 @@ date-started:   2024-03-06
 date-completed: 2024-03-09
 --------------------------------------------------------------------------------
 
+In this module, we
+
+  1. define the universal property of Sierpiński which amounts to the fact that
+     it is the free frame on one generator; and
+  2. we prove that the Scott locale of the Sierpiński dcpo satisfies this
+     universal property.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K --lossy-unification #-}
@@ -27,7 +34,6 @@ open import DomainTheory.Basics.Dcpo pt fe 𝓤 renaming (⟨_⟩ to ⟨_⟩∙)
 open import DomainTheory.Basics.Pointed pt fe 𝓤
 open import DomainTheory.Topology.ScottTopology pt fe 𝓤
 open import DomainTheory.Topology.ScottTopologyProperties pt fe
-open import Lifting.Miscelanea-PropExt-FunExt 𝓤 pe fe
 open import Locales.DistributiveLattice.Definition fe pt
 open import Locales.DistributiveLattice.Ideal pt fe pe
 open import Locales.DistributiveLattice.Properties fe pt
@@ -42,14 +48,12 @@ open import MLTT.Fin hiding (𝟎; 𝟏)
 open import MLTT.List hiding ([_])
 open import Slice.Family
 open import UF.Logic
-open import UF.Powerset-MultiUniverse
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.SubtypeClassifier
 
 open AllCombinators pt fe renaming (_∧_ to _∧ₚ_; _∨_ to _∨ₚ_)
 open Locale
-open PropositionalSubsetInclusionNotation fe
 open PropositionalTruncation pt hiding (_∨_)
 
 \end{code}
@@ -61,6 +65,9 @@ property of the Sierpiński locale if
 
     for any locale X, any open U : 𝒪(X), there exists a continuous map f : X → S
     unique with the property that f(truth) = U.
+
+In other words, this says that the Sierpiński locale is the locale whose
+defining frame is the free frame on one generator.
 
 \begin{code}
 
@@ -89,7 +96,6 @@ holds-gives-equal-⊤ₛ (P , f , φ) p =
  to-subtype-＝
   (λ Q → ×-is-prop (Π-is-prop fe (λ _ → 𝟙-is-prop)) (being-prop-is-prop fe))
   (holds-gives-equal-𝟙 pe P φ p)
-
 
 contains-bottom-implies-is-top : (𝔘 : ⟨ 𝒪 𝕊 ⟩) → (⊥ₛ ∈ₛ 𝔘) holds → 𝔘 ＝ 𝟏[ 𝒪 𝕊 ]
 contains-bottom-implies-is-top 𝔘 p = only-𝟏-is-above-𝟏 (𝒪 𝕊) 𝔘 †
