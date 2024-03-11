@@ -6,7 +6,7 @@ Compile with
 
 from TypeTopology/source/Games
 
-To run, change to TypeTopology/souce and do
+To run, change to TypeTopology/source and do
 
  $ ./Main
 
