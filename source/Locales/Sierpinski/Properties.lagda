@@ -129,7 +129,8 @@ open import Locales.ScottLocale.ScottLocalesOfScottDomains pt fe sr 𝓤
 
 \end{code}
 
-From all these, we obtain the fact that `𝕊` is a spectral locale.
+From all these, we obtain the fact that `𝕊` is a spectral locale, which we call
+`𝕊-is-spectral` below.
 
 \begin{code}
 
