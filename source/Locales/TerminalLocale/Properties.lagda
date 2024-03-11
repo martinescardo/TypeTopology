@@ -25,7 +25,7 @@ open import UF.FunExt
 open import UF.PropTrunc
 open import UF.Size
 
-module Locales.TerminalLocale.TerminalLocale-Properties
+module Locales.TerminalLocale.Properties
         (pt : propositional-truncations-exist)
         (fe : Fun-Ext)
         (sr : Set-Replacement pt)
