@@ -23,8 +23,8 @@ module Locales.DiscreteLocale.Two
 
 open import Locales.DistributiveLattice.Definition fe pt
 open import Locales.DiscreteLocale.Definition fe pe pt
-open import Locales.Frame pt fe
-open import MLTT.Spartan hiding (𝟚)
+open import Locales.Frame pt fe hiding (∅)
+open import MLTT.Spartan hiding (𝟚; ₀; ₁)
 open import Slice.Family
 open import UF.Logic
 open import UF.Sets
@@ -47,5 +47,40 @@ module _ (𝓤 : Universe) where
 
  𝟚-loc : Locale (𝓤 ⁺) 𝓤 𝓤
  𝟚-loc = discrete-locale (𝟚 𝓤) 𝟚-is-set
+
+\end{code}
+
+The locale `𝟚` looks like this
+
+````````````````````````````````````````````````````````````````````````````````
+      {⊤, ⊥}
+       /  \
+      /    \
+     /      \
+   {⊤}      {⊥}
+    \       /
+     \     /
+      \   /
+       \ /
+        ∅
+````````````````````````````````````````````````````````````````````````````````
+
+We write down these four opens below.
+
+\begin{code}
+
+empty₂ : {𝓤 : Universe} → 𝓟 (𝟚 𝓤)
+empty₂ = ∅
+
+full₂ : {𝓤 : Universe} → 𝓟 (𝟚 𝓤)
+full₂ = full
+
+true₂ : {𝓤 : Universe} → 𝓟 (𝟚 𝓤)
+true₂ ₀ = ⊥
+true₂ ₁ = ⊤
+
+false₂ : {𝓤 : Universe} → 𝓟 (𝟚 𝓤)
+false₂ ₀ = ⊤
+false₂ ₁ = ⊥
 
 \end{code}
