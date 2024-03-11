@@ -67,7 +67,22 @@ module _ (S : Locale (𝓤 ⁺) 𝓤 𝓤)
 
 \begin{code}
 
- 𝔠₀ : 𝟚-loc 𝓤 ─c→ S
- 𝔠₀ = pr₁ (center (ump (𝟚-loc 𝓤) true₂))
+ 𝔠 : 𝟚-loc 𝓤 ─c→ S
+ 𝔠 = pr₁ (center (ump (𝟚-loc 𝓤) true₂))
+
+ 𝔠₀ : ⟨ 𝒪 S ⟩ → ⟨ 𝒪 (𝟚-loc 𝓤) ⟩
+ 𝔠₀ = pr₁ 𝔠
+
+\end{code}
+
+\begin{code}
+
+ has-ump-of-patch-𝕊 : (X : Locale (𝓤 ⁺) 𝓤 𝓤)
+                    → is-stone X holds
+                    → (𝒻@(f , _) : X ─c→ S)
+                    → is-spectral-map S X 𝒻 holds
+                    → ∃! (f⁻ , _) ꞉ X ─c→ 𝟚-loc 𝓤 ,
+                       ((U : ⟨ 𝒪 S ⟩) → f U ＝ f⁻ (𝔠₀ U))
+ has-ump-of-patch-𝕊 = {!!}
 
 \end{code}
