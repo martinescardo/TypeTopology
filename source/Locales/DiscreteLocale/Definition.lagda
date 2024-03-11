@@ -45,7 +45,7 @@ module DefnOfDiscreteLocale (X : 𝓤  ̇) (σ : is-set X) where
 
 \end{code}
 
-We start by writing down the poset of of subsets of `X`.
+We start by writing down the poset of subsets of `X`.
 
 \begin{code}
 
