@@ -31,18 +31,19 @@ open import DomainTheory.Basics.Pointed pt fe 𝓤 renaming (⊥ to ⊥∙)
 open import DomainTheory.Basics.WayBelow pt fe 𝓤
 open import DomainTheory.Lifting.LiftingSet pt fe 𝓤 pe
 open import DomainTheory.Lifting.LiftingSetAlgebraic pt pe fe 𝓤
+open import DomainTheory.Topology.ScottTopology pt fe 𝓤
 open import Lifting.Lifting 𝓤
 open import Lifting.Miscelanea-PropExt-FunExt 𝓤 pe fe
 open import Lifting.UnivalentPrecategory 𝓤 (𝟙 {𝓤})
 open import Locales.Frame pt fe hiding (is-directed)
 open import Locales.InitialFrame pt fe
+open import Locales.ScottLocale.Definition pt fe 𝓤
+open import Locales.ScottLocale.Properties pt fe 𝓤
+open import Locales.ScottLocale.ScottLocalesOfAlgebraicDcpos pt fe 𝓤
 open import Locales.Sierpinski.Definition 𝓤 pe pt fe sr
 open import Locales.SmallBasis pt fe sr
 open import Locales.Spectrality.SpectralLocale pt fe
 open import Locales.Spectrality.SpectralMap pt fe
-open import Locales.ScottLocale.Definition pt fe 𝓤
-open import Locales.ScottLocale.Properties pt fe 𝓤
-open import Locales.ScottLocale.ScottLocalesOfAlgebraicDcpos pt fe 𝓤
 open import Locales.Stone pt fe sr
 open import MLTT.List hiding ([_])
 open import Slice.Family
