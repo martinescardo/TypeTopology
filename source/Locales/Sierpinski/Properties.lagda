@@ -248,3 +248,19 @@ open import Locales.PatchLocale pt fe sr
 𝕊-has-small-𝒦 = spectralᴰ-implies-small-𝒦 𝕊 σᴰ
 
 \end{code}
+
+Added on 2024-03-11.
+
+\begin{code}
+
+open DefnOfScottTopology 𝕊𝓓 𝓤
+
+contains-⊥ₛ-implies-contains-⊤ₛ : (𝔘 : ⟨ 𝒪 𝕊 ⟩) → (⊥ₛ ∈ₛ 𝔘 ⇒ ⊤ₛ ∈ₛ 𝔘) holds
+contains-⊥ₛ-implies-contains-⊤ₛ 𝔘 μ = transport (λ - → (⊤ₛ ∈ₛ -) holds) (q ⁻¹) ⋆
+ where
+  open 𝒪ₛᴿ
+
+  q : 𝔘 ＝ 𝟏[ 𝒪 𝕊 ]
+  q = contains-bottom-implies-is-𝟏 𝔘 μ
+
+\end{code}
