@@ -53,8 +53,8 @@ open import UF.Subsingletons-FunExt
 open import UF.Subsingletons-Properties
 open import UF.SubtypeClassifier
 
+open AllCombinators pt fe
 open Locale
-
 open PropositionalTruncation pt
 
 \end{code}
