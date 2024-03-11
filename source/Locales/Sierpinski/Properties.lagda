@@ -159,6 +159,27 @@ principal-filter-on-₁-is-truth = ≤-is-antisymmetric (poset-of (𝒪 𝕊)) �
   ‡ : (truth ⊆ₖ ↑ᵏ[ ₁ ]) holds
   ‡ = ⊆ₛ-implies-⊆ₖ truth ↑ᵏ[ ₁ ] ‡₀
 
+𝕊-is-spectralᴰ : spectralᴰ 𝕊
+𝕊-is-spectralᴰ = σᴰ
+
+open import Locales.PatchLocale pt fe sr
+
+𝕊-is-spectral : is-spectral 𝕊 holds
+𝕊-is-spectral = spectralᴰ-gives-spectrality 𝕊 σᴰ
+
+𝕊-has-small-𝒦 : has-small-𝒦 𝕊
+𝕊-has-small-𝒦 = spectralᴰ-implies-small-𝒦 𝕊 σᴰ
+
+\end{code}
+
+Added on 2024-03-09.
+
+A basic open of the Sierpiński locale is either `𝟏`, `truth`, or `𝟎`. In fact,
+because the basic open coincide with the compact opens in spectral locales, a
+corollary of this is that these three elements form a basis for Sierpiński.
+
+\begin{code}
+
 basis-trichotomy : (bs : List (𝟚 𝓤))
                  → (𝜸 bs ＝ 𝟏[ 𝒪 𝕊 ]) + (𝜸 bs ＝ truth) + (𝜸 bs ＝ 𝟎[ 𝒪 𝕊 ])
 basis-trichotomy []       = inr (inr p)
@@ -236,17 +257,6 @@ basis-trichotomy (₁ ∷ bs) = cases₃ case₁ case₂ case₃ IH
         ↑ᵏ[ ₁ ] ∨[ 𝒪 𝕊 ] 𝟎[ 𝒪 𝕊 ] ＝⟨ Ⅲ     ⟩
         ↑ᵏ[ ₁ ]                   ＝⟨ Ⅳ     ⟩
         truth                     ∎
-
-𝕊-is-spectralᴰ : spectralᴰ 𝕊
-𝕊-is-spectralᴰ = σᴰ
-
-open import Locales.PatchLocale pt fe sr
-
-𝕊-is-spectral : is-spectral 𝕊 holds
-𝕊-is-spectral = spectralᴰ-gives-spectrality 𝕊 σᴰ
-
-𝕊-has-small-𝒦 : has-small-𝒦 𝕊
-𝕊-has-small-𝒦 = spectralᴰ-implies-small-𝒦 𝕊 σᴰ
 
 \end{code}
 
