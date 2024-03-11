@@ -222,6 +222,8 @@ module BottomLemma (𝓓  : DCPO {𝓤} {𝓥})
 
 Added on 2024-03-09.
 
+If a Scott open contains `⊥` then it contains everything by upward closure.
+
 \begin{code}
 
  contains-bottom-implies-is-top : (𝔘 : 𝒪ₛ) → (⊥ᴰ ∈ₛ 𝔘) holds
