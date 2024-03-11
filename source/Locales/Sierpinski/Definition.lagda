@@ -192,7 +192,6 @@ It is obvious that these form an equivalence.
 
 \end{code}
 
-<<<<<<< HEAD
 For convenience we define abbreviation for the copies of `⊤` and `⊥` in `𝕊𝓓`.
 
 \begin{code}
@@ -205,8 +204,6 @@ For convenience we define abbreviation for the copies of `⊤` and `⊥` in `�
 
 \end{code}
 
-=======
->>>>>>> master
 We now proceed to the definition of the Sierpiński locale.
 
 First, we show that `𝕊𝓓` has a specified small compact basis.
