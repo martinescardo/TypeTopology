@@ -102,7 +102,10 @@ Every compact open of the initial frame is a decidable proposition.
                          → is-compact-open (𝟏Loc pe) P holds
                          → is-decidable (P holds)
  compact-implies-boolean P κ =
-  ∥∥-rec (decidability-of-prop-is-prop fe (holds-is-prop P)) γ (compact-opens-are-boolean P κ)
+  ∥∥-rec
+   (decidability-of-prop-is-prop fe (holds-is-prop P))
+   γ
+   (compact-opens-are-boolean P κ)
    where
     γ : Σ b ꞉ 𝟚 𝓤 , P ＝ ℬ𝟎 [ b ] → is-decidable (P holds)
     γ (inl p , q) = inr (equal-⊥-gives-fails P q)
@@ -159,8 +162,8 @@ Every decidable proposition of `Ω` is a compact open of the initial frame.
 \begin{code}
 
  decidable-implies-compact : (P : Ω 𝓤)
-                        → is-decidable (P holds)
-                        → is-compact-open (𝟏Loc pe) P holds
+                           → is-decidable (P holds)
+                           → is-compact-open (𝟏Loc pe) P holds
  decidable-implies-compact P (inl p) = transport
                                         (λ - → is-compact-open (𝟏Loc pe) - holds)
                                         (holds-gives-equal-⊤ pe fe P p ⁻¹)
@@ -181,8 +184,8 @@ Every clopen of the terminal locale is a compact open.
 \begin{code}
 
  clopen-implies-compact : (P : Ω 𝓤)
-                        → is-clopen (𝒪 (𝟏Loc pe)) P holds
-                        → is-compact-open (𝟏Loc pe) P holds
+                        → (is-clopen (𝒪 (𝟏Loc pe)) P ⇒ is-compact-open (𝟏Loc pe) P)
+                           holds
  clopen-implies-compact P 𝔠 =
   clopens-are-compact-in-compact-locales (𝟏Loc pe) (𝟎Frm-is-compact 𝓤 pe) P 𝔠
 
