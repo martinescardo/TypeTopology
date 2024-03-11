@@ -1,8 +1,14 @@
----
+--------------------------------------------------------------------------------
 title:          The Sierpiński locale
 author:         Ayberk Tosun
 date-completed: 2024-02-12
----
+dates-updated:  [2024-03-09]
+--------------------------------------------------------------------------------
+
+This module contains the definition of the Sierpiński locale as the Scott locale
+of the Sierpiński the dcpo.
+
+In the future, other constructions of the Sierpiński locale might be added here.
 
 \begin{code}
 
@@ -30,7 +36,8 @@ open import DomainTheory.Basics.Pointed pt fe 𝓤 renaming (⊥ to ⊥∙)
 open import DomainTheory.Basics.WayBelow pt fe 𝓤
 open import DomainTheory.Lifting.LiftingSet pt fe 𝓤 pe
 open import DomainTheory.Lifting.LiftingSetAlgebraic pt pe fe 𝓤
-open import Lifting.Lifting 𝓤
+open import DomainTheory.Topology.ScottTopology pt fe 𝓤
+open import Lifting.Lifting 𝓤 hiding (⊥)
 open import Lifting.Miscelanea-PropExt-FunExt 𝓤 pe fe
 open import Lifting.UnivalentPrecategory 𝓤 (𝟙 {𝓤})
 open import Locales.Frame pt fe hiding (𝟚; is-directed)
@@ -42,17 +49,16 @@ open import Locales.Stone pt fe sr
 open import Slice.Family
 open import UF.DiscreteAndSeparated
 open import UF.Equiv
-open import UF.Subsingletons-Properties
 open import UF.Subsingletons-FunExt
+open import UF.Subsingletons-Properties
 open import UF.SubtypeClassifier
 
 open Locale
-
 open PropositionalTruncation pt
 
 \end{code}
 
-We first define the Sierpinski domain
+We first define the Sierpinski dcpo
 
 \begin{code}
 
@@ -75,9 +81,9 @@ which is locally small and also algebraic:
 
 Unfortunately, we do not have the required machinery for making a locally small
 copy of a dcpo from an extrinsic proof that it is locally small. In hindsight,
-it would have been easier for me to work with such extrinsic proofs of local
-smallness, but I didn't do this and right now, I don't have the time to migrate
-my formalization to this style.
+it would have been easier to work with such extrinsic proofs of local smallness,
+but I didn't do this and right now, I don't have the time to migrate my
+formalization to this style.
 
 Therefore, I defined the function `𝓛-DCPO⁻` which directly gives the locally
 small copy of the dcpo in consideration. Instead of working with `𝕊𝓓⁺`, I work
@@ -112,7 +118,7 @@ made into a pointed dcpo:
 
 \end{code}
 
-The proposition `𝟙` is a top element of this dcpo.
+The proposition `𝟙` is the top element of this dcpo.
 
 \begin{code}
 
@@ -191,6 +197,18 @@ It is obvious that these form an equivalence.
 
 \end{code}
 
+For convenience we define abbreviations for the copies of `⊤` and `⊥` in `𝕊𝓓`.
+
+\begin{code}
+
+⊤ₛ : ⟨ 𝕊𝓓 ⟩∙
+⊤ₛ = to-𝕊𝓓 ⊤
+
+⊥ₛ : ⟨ 𝕊𝓓 ⟩∙
+⊥ₛ = to-𝕊𝓓 ⊥
+
+\end{code}
+
 We now proceed to the definition of the Sierpiński locale.
 
 First, we show that `𝕊𝓓` has a specified small compact basis.
@@ -204,8 +222,8 @@ hscb : has-specified-small-compact-basis 𝕊𝓓
 hscb = (𝟙 {𝓤} + 𝟙 {𝓤}) , β , σ
  where
   β : 𝟙 + 𝟙 → ⟨ 𝕊𝓓 ⟩∙
-  β (inl ⋆) = ⊥∙ (𝓛-DCPO⊥ 𝟙-is-set)
-  β (inr ⋆) = 𝟙 {𝓤} , (λ { ⋆ → ⋆ }) , 𝟙-is-prop
+  β (inl ⋆) = ⊥ₛ
+  β (inr ⋆) = ⊤ₛ
 
   β-is-compact : (b : 𝟙 + 𝟙) → is-compact 𝕊𝓓 (β b)
   β-is-compact (inl ⋆) = ⊥-is-compact 𝕊𝓓⊥
@@ -251,6 +269,10 @@ hscb = (𝟙 {𝓤} + 𝟙 {𝓤}) , β , σ
        ; ↓ᴮ-is-sup = covering
        }
 
+𝕊𝓓-is-structurally-algebraic : structurally-algebraic 𝕊𝓓
+𝕊𝓓-is-structurally-algebraic =
+ structurally-algebraic-if-specified-small-compact-basis 𝕊𝓓 hscb
+
 \end{code}
 
 Using this compact basis, we define the Sierpiński locale as the Scott locale of
@@ -265,13 +287,57 @@ open ScottLocaleConstruction 𝕊𝓓 hscb pe
 
 \end{code}
 
-The true truth value in the Sierpiński space i.e. its only nontrivial open.
+Added on 2024-03-08.
+
+There are three important opens of the Sierpiński locale.
+
+````````````````````````````````````````````````````````````````````````````````
+    Ω
+    |
+   {⊤ₛ}
+    |
+    ∅
+````````````````````````````````````````````````````````````````````````````````
+
+The top and bottom one are the full subset and the empty subset of `Ω`. We now
+define the singleton open lying in the middle. We call this Scott open `truth`.
+
+We first define the subset `⟨ 𝕊𝓓 ⟩ → Ω` underlying this map, which is in fact
+just the identity map since given a proposition `P`, `P ＝ ⊤` iff `P` holds.
 
 \begin{code}
 
 open DefnOfScottLocale 𝕊𝓓 𝓤 pe
 
-⊤𝕊 : ⟨ 𝒪 𝕊 ⟩
-⊤𝕊 = ⊤ₛ
+truth₀ : ⟨ 𝕊𝓓 ⟩∙ → Ω 𝓤
+truth₀ (P , _ , i) = (P , i)
+
+\end{code}
+
+We now package this subset up with the proof that it is Scott open.
+
+\begin{code}
+
+open DefnOfScottTopology 𝕊𝓓 𝓤
+
+truth₀-is-upward-closed : is-upwards-closed truth₀ holds
+truth₀-is-upward-closed U V u (φ , _) = φ u
+
+truthᵣ : 𝒪ₛᴿ
+truthᵣ =
+ record
+  { pred                              = truth₀
+  ; pred-is-upwards-closed            = υ
+  ; pred-is-inaccessible-by-dir-joins = ι
+  }
+  where
+   υ : is-upwards-closed truth₀ holds
+   υ U V u (φ , _) = φ u
+
+   ι : is-inaccessible-by-directed-joins truth₀ holds
+   ι U μ = μ
+
+truth : ⟨ 𝒪 𝕊 ⟩
+truth = from-𝒪ₛᴿ truthᵣ
 
 \end{code}

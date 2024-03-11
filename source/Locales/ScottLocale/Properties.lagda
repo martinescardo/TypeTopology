@@ -92,4 +92,17 @@ Scott locale on `𝓓`.
    † : (𝟏[ 𝒪 Σ⦅𝓓⦆ ] ≤[ poset-of (𝒪 Σ⦅𝓓⦆) ] ↑ˢ[ ⊥ᴰ , ⊥κ ]) holds
    † = ⊆ₛ-implies-⊆ₖ 𝟏[ 𝒪 Σ⦅𝓓⦆ ] ↑ˢ[ ⊥ᴰ , ⊥κ ] ↑⊥-is-below-𝟏
 
+ open DefnOfScottTopology 𝓓 𝓤
+
+ contains-bottom-implies-is-𝟏 : (𝔘 : ⟨ 𝒪 Σ⦅𝓓⦆ ⟩)
+                              → (⊥ᴰ ∈ₛ 𝔘) holds
+                              → 𝔘 ＝ 𝟏[ 𝒪 Σ⦅𝓓⦆ ]
+ contains-bottom-implies-is-𝟏 𝔘 μ = only-𝟏-is-above-𝟏 (𝒪 Σ⦅𝓓⦆) 𝔘 †
+  where
+   † : (𝟏[ 𝒪 ScottLocale ] ⊆ₖ 𝔘) holds
+   † = ⊆ₛ-implies-⊆ₖ
+        𝟏[ 𝒪 ScottLocale ]
+        𝔘
+        (λ { x ⋆ → contains-bottom-implies-is-top 𝔘 μ x })
+
 \end{code}

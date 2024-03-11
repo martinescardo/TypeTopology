@@ -100,6 +100,8 @@ import Locales.Point.Definition                  -- (36)
 
 import Locales.Point.Properties                  -- (37)
 
+import Locales.TerminalLocale.Properties
+
 import Locales.DiscreteLocale.Definition
 
 import Locales.DiscreteLocale.Two

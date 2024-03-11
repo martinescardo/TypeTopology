@@ -423,6 +423,13 @@ cover-indexₛ : (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ X)
                 ⟨ 𝒪 X ⟩ → Fam 𝓦 (index ℬ)
 cover-indexₛ X σᴰ U = pr₁ (basisₛ-is-basis X σᴰ U)
 
+covering-familyₛ : (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ X)
+                 → let
+                    ℬ = basisₛ X σᴰ
+                   in
+                    ⟨ 𝒪 X ⟩ → Fam 𝓦 ⟨ 𝒪 X ⟩
+covering-familyₛ X σᴰ U = ⁅ basisₛ X σᴰ [ j ] ∣ j ε cover-indexₛ X σᴰ U ⁆
+
 basisₛ-covers-are-directed : (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ X) (U : ⟨ 𝒪 X ⟩)
                            → let
                               ℬ = basisₛ X σᴰ
