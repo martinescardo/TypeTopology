@@ -368,9 +368,9 @@ Finally, we show that `𝒽` is determined uniquely by this property.
           case₂ : ℬ𝕊 [ bs ] ＝ truth
                 → (g (𝔖 [ bs , b ]) ≤ h 𝔙) holds
           case₂ p = g (𝔖 [ bs , b ]) ＝⟨ refl ⟩ₚ
-                    g (ℬ𝕊 [ bs ])    ＝⟨ क ⟩ₚ
-                    g truth          ＝⟨ ख ⟩ₚ
-                    U                ≤⟨ ग ⟩
+                    g (ℬ𝕊 [ bs ])    ＝⟨ Ⅰ ⟩ₚ
+                    g truth          ＝⟨ Ⅱ ⟩ₚ
+                    U                ≤⟨  Ⅲ ⟩
                     h 𝔙              ■
            where
             p₀ : (truth ⊆ₛ (ℬ𝕊 [ bs ])) holds
@@ -382,12 +382,11 @@ Finally, we show that `𝒽` is determined uniquely by this property.
             χ : (⊤ₛ ∈ₛ 𝔙) holds
             χ = above-truth-implies-contains-⊤ₛ 𝔙 (⊆ₛ-implies-⊆ₖ truth 𝔙 ζ)
 
-            क = ap g p
-            ख = †₀ ⁻¹
-            ग = ⋁[ 𝒪 X ]-upper (ℱₓ 𝔙) (inl χ)
+            Ⅰ = ap g p
+            Ⅱ = †₀ ⁻¹
+            Ⅲ = ⋁[ 𝒪 X ]-upper (ℱₓ 𝔙) (inl χ)
 
-          case₃ : ℬ𝕊 [ bs ] ＝ 𝟎[ 𝒪 𝕊 ]
-                → (g (𝔖 [ bs , b ]) ≤ h 𝔙) holds
+          case₃ : ℬ𝕊 [ bs ] ＝ 𝟎[ 𝒪 𝕊 ] → (g (𝔖 [ bs , b ]) ≤ h 𝔙) holds
           case₃ q = g (𝔖 [ bs , b ]) ＝⟨ refl   ⟩ₚ
                     g (ℬ𝕊 [ bs ])    ＝⟨ Ⅰ ⟩ₚ
                     g 𝟎[ 𝒪 𝕊 ]       ＝⟨ Ⅱ ⟩ₚ
