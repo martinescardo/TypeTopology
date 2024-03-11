@@ -39,6 +39,7 @@ open import Locales.DistributiveLattice.Ideal pt fe pe
 open import Locales.DistributiveLattice.Properties fe pt
 open import Locales.Frame pt fe hiding (is-directed)
 open import Locales.ScottLocale.Definition pt fe 𝓤
+open import Locales.ScottLocale.Properties pt fe 𝓤
 open import Locales.ScottLocale.ScottLocalesOfAlgebraicDcpos pt fe 𝓤
 open import Locales.ScottLocale.ScottLocalesOfScottDomains pt fe sr 𝓤
 open import Locales.Sierpinski.Definition 𝓤 pe pt fe sr
@@ -53,8 +54,13 @@ open import UF.Subsingletons-FunExt
 open import UF.SubtypeClassifier
 
 open AllCombinators pt fe renaming (_∧_ to _∧ₚ_; _∨_ to _∨ₚ_)
+open DefnOfScottLocale 𝕊𝓓 𝓤 pe hiding (⊤ₛ)
+open DefnOfScottTopology 𝕊𝓓 𝓤
 open Locale
+open PropertiesAlgebraic 𝓤 𝕊𝓓 𝕊𝓓-is-structurally-algebraic
 open PropositionalTruncation pt hiding (_∨_)
+open ScottLocaleConstruction 𝕊𝓓 hscb pe
+
 
 \end{code}
 
@@ -82,37 +88,6 @@ has-the-universal-property-of-sierpinski S truth =
 \end{code}
 
 \section{The Scott locale of the Sierpiński dcpo has this universal property}
-
-Recall that the Scott open `truth` is just the singleton Scott open `{ ⊤ }`.
-
-\begin{code}
-
-open DefnOfScottTopology 𝕊𝓓 𝓤
-open DefnOfScottLocale 𝕊𝓓 𝓤 pe hiding (⊤ₛ)
-open ScottLocaleConstruction 𝕊𝓓 hscb pe
-
-holds-gives-equal-⊤ₛ : (P : ⟨ 𝕊𝓓 ⟩∙) → (P ∈ₛ truth) holds → P ＝ ⊤ₛ
-holds-gives-equal-⊤ₛ (P , f , φ) p =
- to-subtype-＝
-  (λ Q → ×-is-prop (Π-is-prop fe (λ _ → 𝟙-is-prop)) (being-prop-is-prop fe))
-  (holds-gives-equal-𝟙 pe P φ p)
-
-contains-⊤ₛ-implies-above-truth : (𝔘 : ⟨ 𝒪 𝕊 ⟩)
-                                → (⊤ₛ ∈ₛ 𝔘) holds
-                                → (truth ≤[ poset-of (𝒪 𝕊) ] 𝔘) holds
-contains-⊤ₛ-implies-above-truth 𝔘 μₜ = ⊆ₛ-implies-⊆ₖ truth 𝔘 †
- where
-  † : (truth ⊆ₛ 𝔘) holds
-  † P μₚ = transport (λ - → (- ∈ₛ 𝔘) holds) (holds-gives-equal-⊤ₛ P μₚ ⁻¹) μₜ
-
-above-truth-implies-contains-⊤ₛ : (𝔘 : ⟨ 𝒪 𝕊 ⟩)
-                                → (truth ≤[ poset-of (𝒪 𝕊) ] 𝔘) holds
-                                → (⊤ₛ ∈ₛ 𝔘) holds
-above-truth-implies-contains-⊤ₛ 𝔘 p = ⊆ₖ-implies-⊆ₛ truth 𝔘 p ⊤ₛ ⋆
-
-open PropertiesAlgebraic 𝓤 𝕊𝓓 𝕊𝓓-is-structurally-algebraic
-
-\end{code}
 
 We denote by `𝒽` the defining frame homomorphism of the continuous map required
 for the universal property.
@@ -208,7 +183,7 @@ We now prove that it preserves the top element and the binary meets.
      ⋁[ 𝒪 X ] ⁅ α (𝔙 ∧[ 𝒪 𝕊 ] 𝔚) i ∣ i ∶ I (𝔙 ∧[ 𝒪 𝕊 ] 𝔚) ⁆ ■
       where
        p : (⊤ₛ ∈ₛ (𝔙 ∧[ 𝒪 𝕊 ] 𝔚)) holds
-       p = q₁ , {!!}
+       p = q₁ , contains-⊥ₛ-implies-contains-⊤ₛ 𝔚 p₂
 
        Ⅰ = 𝟏-right-unit-of-∧ (𝒪 X) U
        Ⅱ = ⋁[ 𝒪 X ]-upper ⁅ α (𝔙 ∧[ 𝒪 𝕊 ] 𝔚) i ∣ i ∶ I (𝔙 ∧[ 𝒪 𝕊 ] 𝔚) ⁆ (inl p)
@@ -219,7 +194,7 @@ We now prove that it preserves the top element and the binary meets.
      ⋁[ 𝒪 X ] ⁅ α (𝔙 ∧[ 𝒪 𝕊 ] 𝔚) i ∣ i ∶ I (𝔙 ∧[ 𝒪 𝕊 ] 𝔚) ⁆ ■
       where
        p : (⊤ₛ ∈ₛ (𝔙 ∧[ 𝒪 𝕊 ] 𝔚)) holds
-       p = {!!}
+       p = contains-⊥ₛ-implies-contains-⊤ₛ 𝔙 q₁ , p₂
 
        Ⅰ = 𝟏-left-unit-of-∧ (𝒪 X) U
        Ⅱ = ⋁[ 𝒪 X ]-upper ⁅ α (𝔙 ∧[ 𝒪 𝕊 ] 𝔚) i ∣ i ∶ I (𝔙 ∧[ 𝒪 𝕊 ] 𝔚) ⁆ (inl p)
@@ -270,6 +245,8 @@ We now proceed to prove that it preserves the joins.
 
 \begin{code}
 
+  open ScottLocaleProperties 𝕊𝓓 𝕊𝓓-has-least hscb pe
+
   ϑ : (𝔖 : Fam 𝓤 ⟨ 𝒪 𝕊 ⟩) → (h (⋁[ 𝒪 𝕊 ] 𝔖) is-lub-of ⁅ h 𝔘 ∣ 𝔘 ε 𝔖 ⁆) holds
   ϑ 𝔖 = ϑ₁ , λ { (V , υ) → ϑ₂ V υ }
    where
@@ -303,7 +280,7 @@ We now proceed to prove that it preserves the joins.
          W           ■
           where
            Ⅰ = φ ⁻¹
-           Ⅱ = ap h {!!} ⁻¹
+           Ⅱ = ap h (contains-bottom-implies-is-𝟏 (𝔖 [ k ]) μₖ) ⁻¹
            Ⅲ = υ k
 
 \end{code}
@@ -341,7 +318,7 @@ Finally, we show that `𝒽` is determined uniquely by this property.
         β₁ (inr p) = 𝟏[ 𝒪 X ] ＝⟨ Ⅰ ⟩ₚ g 𝟏[ 𝒪 𝕊 ] ＝⟨ Ⅱ ⟩ₚ g 𝔙 ■
                       where
                        Ⅰ = φ₀ ⁻¹
-                       Ⅱ = ap g {!!}
+                       Ⅱ = ap g (contains-bottom-implies-is-𝟏 𝔙 p ⁻¹)
 
       γ₂ : (𝔙 : ⟨ 𝒪 𝕊 ⟩) → (g 𝔙 ≤ h 𝔙) holds
       γ₂ 𝔙 = g 𝔙                      ＝⟨ ap g cov ⟩ₚ

@@ -263,4 +263,23 @@ contains-⊥ₛ-implies-contains-⊤ₛ 𝔘 μ = transport (λ - → (⊤ₛ �
   q : 𝔘 ＝ 𝟏[ 𝒪 𝕊 ]
   q = contains-bottom-implies-is-𝟏 𝔘 μ
 
+holds-gives-equal-⊤ₛ : (P : ⟨ 𝕊𝓓 ⟩∙) → (P ∈ₛ truth) holds → P ＝ ⊤ₛ
+holds-gives-equal-⊤ₛ (P , f , φ) p =
+ to-subtype-＝
+  (λ Q → ×-is-prop (Π-is-prop fe (λ _ → 𝟙-is-prop)) (being-prop-is-prop fe))
+  (holds-gives-equal-𝟙 pe P φ p)
+
+contains-⊤ₛ-implies-above-truth : (𝔘 : ⟨ 𝒪 𝕊 ⟩)
+                                → (⊤ₛ ∈ₛ 𝔘) holds
+                                → (truth ≤[ poset-of (𝒪 𝕊) ] 𝔘) holds
+contains-⊤ₛ-implies-above-truth 𝔘 μₜ = ⊆ₛ-implies-⊆ₖ truth 𝔘 †
+ where
+  † : (truth ⊆ₛ 𝔘) holds
+  † P μₚ = transport (λ - → (- ∈ₛ 𝔘) holds) (holds-gives-equal-⊤ₛ P μₚ ⁻¹) μₜ
+
+above-truth-implies-contains-⊤ₛ : (𝔘 : ⟨ 𝒪 𝕊 ⟩)
+                                → (truth ≤[ poset-of (𝒪 𝕊) ] 𝔘) holds
+                                → (⊤ₛ ∈ₛ 𝔘) holds
+above-truth-implies-contains-⊤ₛ 𝔘 p = ⊆ₖ-implies-⊆ₛ truth 𝔘 p ⊤ₛ ⋆
+
 \end{code}
