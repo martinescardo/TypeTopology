@@ -136,8 +136,8 @@ From all these, we obtain the fact that `𝕊` is a spectral locale.
 𝕊𝓓-has-least : has-least (underlying-order 𝕊𝓓)
 𝕊𝓓-has-least = (⊥∙ 𝕊𝓓⊥) , ⊥-is-least 𝕊𝓓⊥
 
-open SpectralScottLocaleConstruction 𝕊𝓓 𝕊𝓓-has-least hscb 𝕊𝓓-satisfies-dc 𝕊𝓓-bounded-complete pe
 open ScottLocaleConstruction 𝕊𝓓 hscb pe
+open SpectralScottLocaleConstruction 𝕊𝓓 𝕊𝓓-has-least hscb 𝕊𝓓-satisfies-dc 𝕊𝓓-bounded-complete pe
 open ScottLocaleProperties 𝕊𝓓 𝕊𝓓-has-least hscb pe
 open DefnOfScottLocale 𝕊𝓓 𝓤 pe using (𝒪ₛ-equality; _⊆ₛ_)
 
@@ -234,7 +234,6 @@ basis-trichotomy (₁ ∷ bs) = cases₃ case₁ case₂ case₃ IH
         ↑ᵏ[ ₁ ] ∨[ 𝒪 𝕊 ] 𝟎[ 𝒪 𝕊 ] ＝⟨ Ⅲ     ⟩
         ↑ᵏ[ ₁ ]                   ＝⟨ Ⅳ     ⟩
         truth                     ∎
-
 
 𝕊-is-spectralᴰ : spectralᴰ 𝕊
 𝕊-is-spectralᴰ = σᴰ

@@ -192,6 +192,7 @@ It is obvious that these form an equivalence.
 
 \end{code}
 
+<<<<<<< HEAD
 For convenience we define abbreviation for the copies of `⊤` and `⊥` in `𝕊𝓓`.
 
 \begin{code}
@@ -204,6 +205,8 @@ For convenience we define abbreviation for the copies of `⊤` and `⊥` in `�
 
 \end{code}
 
+=======
+>>>>>>> master
 We now proceed to the definition of the Sierpiński locale.
 
 First, we show that `𝕊𝓓` has a specified small compact basis.
@@ -282,6 +285,7 @@ open ScottLocaleConstruction 𝕊𝓓 hscb pe
 
 \end{code}
 
+<<<<<<< HEAD
 Added on 2024-03-08.
 
 There are three important opens of the Sierpiński locale.
@@ -299,6 +303,9 @@ lying in the middle. We call this Scott open `truth`.
 
 We first define the subset of `⟨ 𝕊𝓓 ⟩` underlying this map, which is in fact
 just the identity map since given a proposition `P`, `P ＝ ⊤` iff `P` holds.
+=======
+The true truth value in the Sierpiński space i.e. its only nontrivial open.
+>>>>>>> master
 
 \begin{code}
 

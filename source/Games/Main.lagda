@@ -1,5 +1,17 @@
 Martin Escardo and Paulo Oliva, 19th March 2023.
 
+Compile with
+
+ $ Agda --compile --ghc-flag=-O2 Main.lagda
+
+from TypeTopology/source/Games
+
+To run, change to TypeTopology/source and do
+
+ $ ./Main
+
+The Haskell code is generated in TypeTopology/source/MAlonzo.
+
 \begin{code}
 
 {-# OPTIONS --without-K #-}
@@ -38,6 +50,9 @@ main₁ = putStrLn (showListℕ (test† fe))
 main₂ : IO Unit
 main₂ = putStrLn (showListℕ testo)
 
-main = main₂
+main₃ : IO Unit
+main₃ = putStrLn (showℕ test)
+
+main = main₁
 
 \end{code}
