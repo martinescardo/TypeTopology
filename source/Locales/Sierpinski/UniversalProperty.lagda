@@ -12,6 +12,8 @@ In this module, we
   2. we prove that the Scott locale of the Sierpiński dcpo satisfies this
      universal property.
 
+This the implementation of a proof sketch communicated to me by Martín Escardó.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K --lossy-unification #-}
