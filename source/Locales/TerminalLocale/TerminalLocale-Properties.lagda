@@ -48,10 +48,6 @@ module _ (pe : propext 𝓤) where
 
  open Spectrality-of-𝟎 𝓤 pe
 
- finite-join : List (𝟚 𝓤) → 𝟚 𝓤
- finite-join []       = ₀
- finite-join (b ∷ bs) = or₂ b (finite-join bs)
-
  compact-opens-are-clopen : (P : Ω 𝓤)
                           → is-compact-open (𝟏Loc pe) P holds
                           → (Ǝ K ꞉ 𝟚 𝓤 , P ＝ ℬ𝟎 [ K ]) holds
