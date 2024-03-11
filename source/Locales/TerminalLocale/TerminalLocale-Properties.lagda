@@ -86,11 +86,11 @@ Every compact open of the initial frame is either `⊤` or `⊥`.
 
     γ : (Σ bs ꞉ List (P holds) , (P ⇒ 𝒮↑ P [ bs ]) holds)
       → (Ǝ K ꞉ 𝟚 𝓤 , P ＝ ℬ𝟎 [ K ]) holds
-    γ ([]       , φ) = ∣ inl ⋆ , to-subtype-＝ (λ _ → being-prop-is-prop fe) (pe (holds-is-prop P) 𝟘-is-prop † λ ()) ∣
+    γ ([]       , φ) = ∣ inl ⋆ , fails-gives-equal-⊥ pe fe P †  ∣
                         where
-                         † : (P ⇒ ⊥) holds
-                         † p = 𝟎-is-bottom (𝟎-𝔽𝕣𝕞 pe) ⊥ (φ p)
-    γ ((p ∷ ps) , φ) = ∣ inr ⋆ , to-subtype-＝ (λ _ → being-prop-is-prop fe) ((pe (holds-is-prop P) 𝟙-is-prop (λ _ → ⋆) λ ⋆ → p)) ∣
+                         † : ¬ (P holds)
+                         † = 𝟘-elim ∘ (𝟎-is-bottom (𝒪 (𝟏Loc pe)) ⊥) ∘ φ
+    γ ((p ∷ _) , φ) = ∣ inr ⋆ ,  holds-gives-equal-⊤ pe fe P p ∣
 
 \end{code}
 
