@@ -67,6 +67,7 @@ import Locales.Sierpinski                        -- (23)
 import Locales.Sierpinski.Definition
 import Locales.Sierpinski.Patch
 import Locales.Sierpinski.Properties
+import Locales.Sierpinski.UniversalProperty
 
 import Locales.SmallBasis                        -- (24)
 
