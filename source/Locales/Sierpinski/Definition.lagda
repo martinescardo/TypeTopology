@@ -5,6 +5,11 @@ date-completed: 2024-02-12
 dates-updated:  [2024-03-09]
 --------------------------------------------------------------------------------
 
+This module contains the definition of the Sierpiński locale as the Scott locale
+of the Sierpiński the dcpo.
+
+In the future, other constructions of the Sierpiński locale might be added here.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K --lossy-unification #-}
@@ -49,7 +54,6 @@ open import UF.Subsingletons-Properties
 open import UF.SubtypeClassifier
 
 open Locale
-
 open PropositionalTruncation pt
 
 \end{code}
@@ -77,9 +81,9 @@ which is locally small and also algebraic:
 
 Unfortunately, we do not have the required machinery for making a locally small
 copy of a dcpo from an extrinsic proof that it is locally small. In hindsight,
-it would have been easier for me to work with such extrinsic proofs of local
-smallness, but I didn't do this and right now, I don't have the time to migrate
-my formalization to this style.
+it would have been easier to work with such extrinsic proofs of local smallness,
+but I didn't do this and right now, I don't have the time to migrate my
+formalization to this style.
 
 Therefore, I defined the function `𝓛-DCPO⁻` which directly gives the locally
 small copy of the dcpo in consideration. Instead of working with `𝕊𝓓⁺`, I work
@@ -114,7 +118,7 @@ made into a pointed dcpo:
 
 \end{code}
 
-The proposition `𝟙` is a top element of this dcpo.
+The proposition `𝟙` is the top element of this dcpo.
 
 \begin{code}
 
@@ -298,10 +302,8 @@ There are three important opens of the Sierpiński locale.
 The top and bottom one are the full subset and the empty subset of `Ω`. We now
 define the singleton open lying in the middle. We call this Scott open `truth`.
 
-We first define the subset of `⟨ 𝕊𝓓 ⟩` underlying this map, which is in fact
+We first define the subset `⟨ 𝕊𝓓 ⟩ → Ω` underlying this map, which is in fact
 just the identity map since given a proposition `P`, `P ＝ ⊤` iff `P` holds.
-
-The true truth value in the Sierpiński space i.e. its only nontrivial open.
 
 \begin{code}
 
