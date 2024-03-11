@@ -289,6 +289,15 @@ contains-⊤ₛ-implies-above-truth 𝔘 μₜ = ⊆ₛ-implies-⊆ₖ truth �
   † : (truth ⊆ₛ 𝔘) holds
   † P μₚ = transport (λ - → (- ∈ₛ 𝔘) holds) (holds-gives-equal-⊤ₛ P μₚ ⁻¹) μₜ
 
+\end{code}
+
+Added on 2024-03-11.
+
+If a Scott open `𝔘` is above truth, then it obviously contains the true
+proposition `⊤ₛ`.
+
+\begin{code}
+
 above-truth-implies-contains-⊤ₛ : (𝔘 : ⟨ 𝒪 𝕊 ⟩)
                                 → (truth ≤[ poset-of (𝒪 𝕊) ] 𝔘) holds
                                 → (⊤ₛ ∈ₛ 𝔘) holds
