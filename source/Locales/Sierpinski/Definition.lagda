@@ -1,8 +1,9 @@
----
+--------------------------------------------------------------------------------
 title:          The Sierpiński locale
 author:         Ayberk Tosun
 date-completed: 2024-02-12
----
+dates-updated:  [2024-03-09]
+--------------------------------------------------------------------------------
 
 \begin{code}
 
@@ -53,7 +54,7 @@ open PropositionalTruncation pt
 
 \end{code}
 
-We first define the Sierpinski domain
+We first define the Sierpinski dcpo
 
 \begin{code}
 
@@ -192,7 +193,7 @@ It is obvious that these form an equivalence.
 
 \end{code}
 
-For convenience we define abbreviation for the copies of `⊤` and `⊥` in `𝕊𝓓`.
+For convenience we define abbreviations for the copies of `⊤` and `⊥` in `𝕊𝓓`.
 
 \begin{code}
 
@@ -282,27 +283,25 @@ open ScottLocaleConstruction 𝕊𝓓 hscb pe
 
 \end{code}
 
-<<<<<<< HEAD
 Added on 2024-03-08.
 
 There are three important opens of the Sierpiński locale.
 
-```
-    ⊤ₛ
+````````````````````````````````````````````````````````````````````````````````
+    Ω
     |
-   {⊤}
+   {⊤ₛ}
     |
-    ⊥ₛ
-```
+    ∅
+````````````````````````````````````````````````````````````````````````````````
 
-The top and bottom one are just `⊤ₛ ` and `⊥ₛ`. We now define the singleton open
-lying in the middle. We call this Scott open `truth`.
+The top and bottom one are the full subset and the empty subset of `Ω`. We now
+define the singleton open lying in the middle. We call this Scott open `truth`.
 
 We first define the subset of `⟨ 𝕊𝓓 ⟩` underlying this map, which is in fact
 just the identity map since given a proposition `P`, `P ＝ ⊤` iff `P` holds.
-=======
+
 The true truth value in the Sierpiński space i.e. its only nontrivial open.
->>>>>>> master
 
 \begin{code}
 
