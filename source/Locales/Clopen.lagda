@@ -78,6 +78,8 @@ is-clopen₀-is-prop F U (W₁ , p₁ , q₁) (W₂ , p₂ , q₂) = to-subtype-
 
 \end{code}
 
+The definition of the notion of clopen.
+
 \begin{code}
 
 is-clopen : (F : Frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → Ω 𝓤
@@ -93,6 +95,8 @@ The type of clopens of a locale `X`.
 𝒞 X = Σ C ꞉ ⟨ 𝒪 X ⟩ , is-clopen (𝒪 X) C holds
 
 \end{code}
+
+The top element `𝟏` is always a clopen.
 
 \begin{code}
 
