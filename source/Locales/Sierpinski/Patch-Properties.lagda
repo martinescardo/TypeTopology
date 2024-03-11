@@ -10,7 +10,7 @@ date-started: 2024-03-11
 
 open import UF.FunExt
 open import UF.Logic
-open import MLTT.Spartan hiding (𝟚)
+open import MLTT.Spartan hiding (𝟚; ₀; ₁)
 open import UF.PropTrunc
 open import UF.Subsingletons
 open import UF.Size
@@ -83,6 +83,12 @@ module _ (S : Locale (𝓤 ⁺) 𝓤 𝓤)
                     → is-spectral-map S X 𝒻 holds
                     → ∃! (f⁻ , _) ꞉ X ─c→ 𝟚-loc 𝓤 ,
                        ((U : ⟨ 𝒪 S ⟩) → f U ＝ f⁻ (𝔠₀ U))
- has-ump-of-patch-𝕊 = {!!}
+ has-ump-of-patch-𝕊 X σ 𝒻@(f , _) 𝕤 = (f⁻ , {!!}) , {!!}
+  where
+   f⁻₀ : ⟨ 𝒪 (𝟚-loc 𝓤) ⟩ → ⟨ 𝒪 X ⟩
+   f⁻₀ P = ⋁[ 𝒪 X ] {!⁅ ⁆!}
+
+   f⁻ : X ─c→ 𝟚-loc 𝓤
+   f⁻ = {!!}
 
 \end{code}
