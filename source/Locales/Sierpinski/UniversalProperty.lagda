@@ -97,25 +97,6 @@ holds-gives-equal-⊤ₛ (P , f , φ) p =
   (λ Q → ×-is-prop (Π-is-prop fe (λ _ → 𝟙-is-prop)) (being-prop-is-prop fe))
   (holds-gives-equal-𝟙 pe P φ p)
 
-contains-bottom-implies-is-top : (𝔘 : ⟨ 𝒪 𝕊 ⟩) → (⊥ₛ ∈ₛ 𝔘) holds → 𝔘 ＝ 𝟏[ 𝒪 𝕊 ]
-contains-bottom-implies-is-top 𝔘 p = only-𝟏-is-above-𝟏 (𝒪 𝕊) 𝔘 †
- where
-  open 𝒪ₛᴿ
-
-  ‡ : (𝟏[ 𝒪 𝕊 ] ⊆ₛ 𝔘) holds
-  ‡ x ⋆ = upward-closure 𝔘 ⊥ₛ x p (⊥-is-least 𝕊𝓓⊥ x)
-
-  † : (𝟏[ 𝒪 𝕊 ] ≤[ poset-of (𝒪 𝕊) ] 𝔘) holds
-  † = ⊆ₛ-implies-⊆ₖ 𝟏[ 𝒪 𝕊 ] 𝔘 ‡
-
-main-lemma : (𝔘 : ⟨ 𝒪 𝕊 ⟩) → (⊥ₛ ∈ₛ 𝔘 ⇒ ⊤ₛ ∈ₛ 𝔘) holds
-main-lemma 𝔘 p = transport (λ - → (⊤ₛ ∈ₛ -) holds) (q ⁻¹) ⋆
- where
-  open 𝒪ₛᴿ
-
-  q : 𝔘 ＝ 𝟏[ 𝒪 𝕊 ]
-  q = contains-bottom-implies-is-top 𝔘 p
-
 contains-⊤ₛ-implies-above-truth : (𝔘 : ⟨ 𝒪 𝕊 ⟩)
                                 → (⊤ₛ ∈ₛ 𝔘) holds
                                 → (truth ≤[ poset-of (𝒪 𝕊) ] 𝔘) holds
@@ -227,7 +208,7 @@ We now prove that it preserves the top element and the binary meets.
      ⋁[ 𝒪 X ] ⁅ α (𝔙 ∧[ 𝒪 𝕊 ] 𝔚) i ∣ i ∶ I (𝔙 ∧[ 𝒪 𝕊 ] 𝔚) ⁆ ■
       where
        p : (⊤ₛ ∈ₛ (𝔙 ∧[ 𝒪 𝕊 ] 𝔚)) holds
-       p = q₁ , main-lemma 𝔚 p₂
+       p = q₁ , {!!}
 
        Ⅰ = 𝟏-right-unit-of-∧ (𝒪 X) U
        Ⅱ = ⋁[ 𝒪 X ]-upper ⁅ α (𝔙 ∧[ 𝒪 𝕊 ] 𝔚) i ∣ i ∶ I (𝔙 ∧[ 𝒪 𝕊 ] 𝔚) ⁆ (inl p)
@@ -238,7 +219,7 @@ We now prove that it preserves the top element and the binary meets.
      ⋁[ 𝒪 X ] ⁅ α (𝔙 ∧[ 𝒪 𝕊 ] 𝔚) i ∣ i ∶ I (𝔙 ∧[ 𝒪 𝕊 ] 𝔚) ⁆ ■
       where
        p : (⊤ₛ ∈ₛ (𝔙 ∧[ 𝒪 𝕊 ] 𝔚)) holds
-       p = main-lemma 𝔙 q₁ , p₂
+       p = {!!}
 
        Ⅰ = 𝟏-left-unit-of-∧ (𝒪 X) U
        Ⅱ = ⋁[ 𝒪 X ]-upper ⁅ α (𝔙 ∧[ 𝒪 𝕊 ] 𝔚) i ∣ i ∶ I (𝔙 ∧[ 𝒪 𝕊 ] 𝔚) ⁆ (inl p)
@@ -322,7 +303,7 @@ We now proceed to prove that it preserves the joins.
          W           ■
           where
            Ⅰ = φ ⁻¹
-           Ⅱ = ap h (contains-bottom-implies-is-top (𝔖 [ k ]) μₖ) ⁻¹
+           Ⅱ = ap h {!!} ⁻¹
            Ⅲ = υ k
 
 \end{code}
@@ -360,7 +341,7 @@ Finally, we show that `𝒽` is determined uniquely by this property.
         β₁ (inr p) = 𝟏[ 𝒪 X ] ＝⟨ Ⅰ ⟩ₚ g 𝟏[ 𝒪 𝕊 ] ＝⟨ Ⅱ ⟩ₚ g 𝔙 ■
                       where
                        Ⅰ = φ₀ ⁻¹
-                       Ⅱ = ap g (contains-bottom-implies-is-top 𝔙 p ⁻¹)
+                       Ⅱ = ap g {!!}
 
       γ₂ : (𝔙 : ⟨ 𝒪 𝕊 ⟩) → (g 𝔙 ≤ h 𝔙) holds
       γ₂ 𝔙 = g 𝔙                      ＝⟨ ap g cov ⟩ₚ
