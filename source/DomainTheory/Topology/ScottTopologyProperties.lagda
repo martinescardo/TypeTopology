@@ -218,6 +218,12 @@ module BottomLemma (𝓓  : DCPO {𝓤} {𝓥})
  bottom-principal-filter-is-top : (𝔘 : 𝒪ₛ) → 𝔘 .pr₁ ⊆ ↑[ 𝓓 ] ⊥ᴰ
  bottom-principal-filter-is-top 𝔘 x _ = ⊥ᴰ-is-least x
 
+\end{code}
+
+Added on 2024-03-09.
+
+\begin{code}
+
  contains-bottom-implies-is-top : (𝔘 : 𝒪ₛ) → (⊥ᴰ ∈ₛ 𝔘) holds
                                 → (x : ⟨ 𝓓 ⟩) → (x ∈ₛ 𝔘) holds
  contains-bottom-implies-is-top 𝔘 μ x = upward-closure 𝔘 ⊥ᴰ x μ (⊥ᴰ-is-least x)
