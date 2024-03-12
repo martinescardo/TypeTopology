@@ -1,9 +1,11 @@
-Ayberk Tosun.
+--------------------------------------------------------------------------------
+author:         Ayberk Tosun
+date-started:   2023-10-07
+date-completed: 2023-12-30
+dates-updated:  [2024-03-12]
+--------------------------------------------------------------------------------
 
 Continuation of the development in `InternalModCont` towards uniform continuity.
-
-Started on 2023-10-07.
-Finished on 2023-12-30.
 
 \begin{code}
 
