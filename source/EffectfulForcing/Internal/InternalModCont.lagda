@@ -277,6 +277,10 @@ While I was working on the proof, I wrote down the following fact, which turned
 out not to be necessary for the proof. However, I am not taking it out of this
 file as it might be useful in the future.
 
+Update: the fact has now been commented out, because it was something
+non-essential that required function extensionality and I have not removed the
+use of function extensionality from it yet.
+
 \begin{code}
 
 -- church-encode-to-D-rec : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {A : 𝓣  ̇}
