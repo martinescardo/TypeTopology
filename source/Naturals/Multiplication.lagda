@@ -53,7 +53,7 @@ zero-right-base : (x : ℕ) → x * 0 ＝ 0
 zero-right-base x = refl
 
 zero-left-base : (x : ℕ) → 0 * x ＝ 0
-zero-left-base = induction refl step
+zero-left-base = ℕ-induction refl step
  where
   step : (x : ℕ)
        → 0 * x     ＝ 0
@@ -74,7 +74,7 @@ mult-right-id : (x : ℕ) → x * 1 ＝ x
 mult-right-id x = refl
 
 mult-left-id : (x : ℕ) → 1 * x ＝ x
-mult-left-id = induction base step
+mult-left-id = ℕ-induction base step
  where
   base : 1 * 0 ＝ 0
   base = refl
@@ -152,7 +152,7 @@ proof is clear by observing the chain of equations.
 \begin{code}
 
 distributivity-mult-over-addition : (x y z : ℕ) → x * (y + z) ＝ x * y + x * z
-distributivity-mult-over-addition x y = induction refl step
+distributivity-mult-over-addition x y = ℕ-induction refl step
  where
   step : (k : ℕ)
        → x * (y + k)      ＝ x * y + x * k
@@ -203,7 +203,7 @@ mult-associativity x y (succ z)
    x * (y * succ z)    ∎
 
 pos-mult-is-succ : (x y : ℕ) → Σ z ꞉ ℕ , succ z ＝ succ x * succ y
-pos-mult-is-succ x = induction base step
+pos-mult-is-succ x = ℕ-induction base step
  where
   base : Σ z ꞉ ℕ , succ z ＝ succ x * 1
   base = x , refl

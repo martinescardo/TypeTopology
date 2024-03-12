@@ -423,6 +423,13 @@ cover-indexₛ : (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ X)
                 ⟨ 𝒪 X ⟩ → Fam 𝓦 (index ℬ)
 cover-indexₛ X σᴰ U = pr₁ (basisₛ-is-basis X σᴰ U)
 
+covering-familyₛ : (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ X)
+                 → let
+                    ℬ = basisₛ X σᴰ
+                   in
+                    ⟨ 𝒪 X ⟩ → Fam 𝓦 ⟨ 𝒪 X ⟩
+covering-familyₛ X σᴰ U = ⁅ basisₛ X σᴰ [ j ] ∣ j ε cover-indexₛ X σᴰ U ⁆
+
 basisₛ-covers-are-directed : (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ X) (U : ⟨ 𝒪 X ⟩)
                            → let
                               ℬ = basisₛ X σᴰ
@@ -686,6 +693,16 @@ is-spectral-with-small-basis {𝓤} {𝓥} ua X =
 \end{code}
 
 \begin{code}
+
+ssb-implies-spectral : (ua : Univalence) (X : Locale 𝓤 𝓥 𝓥)
+                     → is-spectral-with-small-basis ua X holds
+                     → is-spectral X holds
+ssb-implies-spectral ua X (σ , _) = σ
+
+smallness-of-𝒦 : (ua : Univalence) (X : Locale 𝓤 𝓥 𝓥)
+               → is-spectral-with-small-basis ua X holds
+               → 𝒦 X is 𝓥 small
+smallness-of-𝒦 ua X (_ , s) = s
 
 ssb-implies-spectralᴰ : (ua : Univalence) (X : Locale 𝓤 𝓥 𝓥)
                       → is-spectral-with-small-basis ua X holds

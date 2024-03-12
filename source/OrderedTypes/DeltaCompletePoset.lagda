@@ -35,7 +35,7 @@ module OrderedTypes.DeltaCompletePoset
  (pe : Prop-Ext)
   where
 
-open import Locales.Frame pt fe hiding (𝟚)
+open import Locales.Frame pt fe hiding (𝟚; ₀; ₁)
 open import OrderedTypes.TwoElementPoset pt fe
 open AllCombinators pt fe
 
@@ -780,12 +780,12 @@ module Predicative-Taboos (𝓤 𝓦 𝓥 : Universe) (A : Poset 𝓤 𝓦) wher
  open Small-δ-complete-poset 𝓤 𝓦 𝓥 A
  open Retract-Lemmas 𝓤 𝓦 𝓥 A
 
- small-non-trivial-poset-implies-¬¬resizing :
+ small-non-trivial-δ-complete-poset-implies-¬¬resizing :
    (δ-complete : is-δ-complete)
   → is-non-trivial-poset
   → small-δ-complete-poset.poset-is-small δ-complete
   → Ω¬¬-Resizing 𝓥 𝓥
- small-non-trivial-poset-implies-¬¬resizing
+ small-non-trivial-δ-complete-poset-implies-¬¬resizing
    δ-complete (x , y , x-below-y , x-not-equal-y)
               (locally-small , carrier-small) =
   embedded-retract-is-small Δ-Retract Δ-Embedding carrier-small
@@ -808,14 +808,15 @@ module Predicative-Taboos (𝓤 𝓦 𝓥 : Universe) (A : Poset 𝓤 𝓦) wher
                                        (r , H)
                                        carrier-of-[ A ]-is-set
  
- small-positive-poset-implies-resizing :
+ small-positive-δ-complete-poset-implies-resizing :
    (δ-complete : is-δ-complete)
   → is-positive-poset δ-complete
   → small-δ-complete-poset.poset-is-small δ-complete
   → Ω-Resizing 𝓥 𝓥
- small-positive-poset-implies-resizing δ-complete
-                                       (x , y , x-below-y , sup-condition)
-                                       (locally-small , carrier-small) =
+ small-positive-δ-complete-poset-implies-resizing
+   δ-complete
+   (x , y , x-below-y , sup-condition)
+   (locally-small , carrier-small) =
   embedded-retract-is-small Δ-Retract Δ-Embedding carrier-small
   where
    open retract-lemma₂ locally-small δ-complete x y x-below-y
@@ -851,10 +852,10 @@ module Resizing-Implications (𝓥 : Universe) where
   open Small-δ-complete-poset (𝓥 ⁺) 𝓥 𝓥 Ω¬¬-Poset
   open small-δ-complete-poset Ω¬¬-is-δ-complete
 
-  ¬¬resizing-implies-small-non-trivial-poset :
+  ¬¬resizing-implies-small-non-trivial-δ-complete-poset :
     Ω¬¬-Resizing 𝓥 𝓥
    → Σ P ꞉ Poset (𝓥 ⁺) 𝓥 , is-δ-complete × is-non-trivial-poset × poset-is-small
-  ¬¬resizing-implies-small-non-trivial-poset resize =
+  ¬¬resizing-implies-small-non-trivial-δ-complete-poset resize =
     (Ω¬¬-Poset ,
      Ω¬¬-is-δ-complete ,
      Ω¬¬-is-non-trivial ,
@@ -870,10 +871,10 @@ module Resizing-Implications (𝓥 : Universe) where
   open Small-δ-complete-poset (𝓥 ⁺) 𝓥 𝓥 Ω-Poset
   open small-δ-complete-poset Ω-is-δ-complete
 
-  resizing-implies-small-positive-poset :
+  resizing-implies-small-positive-δ-complete-poset :
     Ω-Resizing 𝓥 𝓥
    → Σ P ꞉ Poset (𝓥 ⁺) 𝓥 , is-δ-complete × is-positive-poset × poset-is-small
-  resizing-implies-small-positive-poset resize =
+  resizing-implies-small-positive-δ-complete-poset resize =
     (Ω-Poset ,
      Ω-is-δ-complete ,
      Ω-is-positive ,

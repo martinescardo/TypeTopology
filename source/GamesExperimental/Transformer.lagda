@@ -5,7 +5,7 @@ moment the proofs are in "blackboard" style (improvised proofs that
 work) rather than "article" style (proofs written in a more
 presentable way).
 
-This generalizes (but also uses) the file Games.FiniteHistoryDependent
+This generalizes (but also uses) the file GamesExperimental.FiniteHistoryDependent
 with a monad parameter 𝓣. When 𝓣 is the identity monad 𝕀𝕕, the
 original development is obtained. We apply the selection-monad
 transformer 𝕁-transf to 𝓣. Notice, however, that the definition of
@@ -14,12 +14,12 @@ game is the same. See [1] for background.
 The main examples of 𝓣 we have in mind are the powerset monad (for the
 Herbrand Functional Interpretation [2]), probability distribution
 monads (for mixed strategies) and the reader monad (for alpha-beta
-pruning in the file Games.alpha-beta).
+pruning in the file GamesExperimental.alpha-beta).
 
 [1] M. Escardo and P. Oliva.
     Higher-order Games with Dependent Types (2023)
     https://doi.org/10.1016/j.tcs.2023.114111
-    Available in TypeTopology at Games.FiniteHistoryDependent.
+    Available in TypeTopology at GamesExperimental.FiniteHistoryDependent.
 
 [2] M. Escardo and P. Oliva.
     The Herbrand functional interpretation of the double negation shift (2017)
@@ -28,31 +28,30 @@ pruning in the file Games.alpha-beta).
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K #-}
+{-# OPTIONS --safe --without-K --no-level-universe #-}
 
-open import Games.TypeTrees
-open import Games.Monad
-open import Games.J
-open import Games.K
+open import GamesExperimental.Monad
+open import GamesExperimental.J
+open import GamesExperimental.K
 open import MLTT.Spartan hiding (J)
 open import UF.Base
 open import UF.FunExt
 open import UF.Equiv
 
-module Games.FiniteHistoryDependentTransformer
+module GamesExperimental.Transformer
         (fe : Fun-Ext)
-        (𝕋  : Monad)
-        (R  : Type)
-        (𝓐  : Algebra 𝕋 R)
+        (𝕋 : Monad)
+        {𝓤 𝓦₀ : Universe}
+        (R : 𝓦₀ ̇ )
+        (𝓐 : Algebra 𝕋 R)
  where
 
-open import Games.FiniteHistoryDependent R
+open import GamesExperimental.TypeTrees {𝓤}
+
+open import GamesExperimental.FiniteHistoryDependent {𝓤} {𝓦₀} R
      using (𝓚 ; Game ; game ; sequenceᴷ ; optimal-outcome)
 
 open Game
-
-fext : DN-funext 𝓤₀ 𝓤₀
-fext = dfunext fe
 
 open K-definitions R
 open T-definitions 𝕋
@@ -65,36 +64,37 @@ The types of trees with JT and KT structure.
 
 \begin{code}
 
-𝓙𝓣 : 𝑻 → Type
+𝓙𝓣 : 𝑻 → ℓ 𝕋 𝓦₀ ⊔ ℓ 𝕋 𝓤 ⊔ 𝓤  ̇
 𝓙𝓣 = structure JT
 
-𝓚𝓣 : 𝑻 → Type
+𝓚𝓣 : 𝑻 → ℓ 𝕋 𝓦₀ ⊔ 𝓦₀ ⊔ 𝓤  ̇
 𝓚𝓣 = structure KT
 
 sequenceᴶᵀ : {Xt : 𝑻} → 𝓙𝓣 Xt → JT (Path Xt)
 sequenceᴶᵀ = path-sequence 𝕁𝕋
 
-T-Strategy : 𝑻 -> Type
+T-Strategy : 𝑻 → ℓ 𝕋 𝓤 ⊔ 𝓤  ̇
 T-Strategy = structure T
 
 T-strategic-path : {Xt : 𝑻} → T-Strategy Xt → T (Path Xt)
 T-strategic-path = path-sequence 𝕋
 
-is-in-T-equilibrium : {X : Type} {Xf : X → 𝑻}
+
+is-in-T-equilibrium : {X : 𝓤 ̇ } {Xf : X → 𝑻}
                       (q : (Σ x ꞉ X , Path (Xf x)) → R)
                       (ϕ : K X)
                     → T-Strategy (X ∷ Xf)
-                    → Type
+                    → 𝓦₀ ̇
 is-in-T-equilibrium {X} {Xf} q ϕ σt@(σ :: σf)  =
- α-extᵀ q (T-strategic-path σt) ＝ ϕ (λ x → α-curryᵀ q x (T-strategic-path (σf x)))
+ α-extᵀ q (T-strategic-path σt) ＝ ϕ (λ (x : X) → α-curryᵀ q x (T-strategic-path (σf x)))
 
-is-in-T-sgpe : {Xt : 𝑻} → 𝓚 Xt → (Path Xt → R) → T-Strategy Xt → Type
+is-in-T-sgpe : {Xt : 𝑻} → 𝓚 Xt → (Path Xt → R) → T-Strategy Xt → 𝓤 ⊔ 𝓦₀ ̇
 is-in-T-sgpe {[]}     ⟨⟩        q ⟨⟩           = 𝟙
 is-in-T-sgpe {X ∷ Xf} (ϕ :: ϕf) q σt@(σ :: σf) =
     is-in-T-equilibrium q ϕ σt
   × ((x : X) → is-in-T-sgpe {Xf x} (ϕf x) (subpred q x) (σf x))
 
-is-T-optimal : (G : Game) → T-Strategy (Xt G) → Type
+is-T-optimal : (G : Game) → T-Strategy (Xt G) → 𝓦₀ ⊔ 𝓤  ̇
 is-T-optimal (game Xt q ϕt) = is-in-T-sgpe {Xt} ϕt q
 
 \end{code}
@@ -116,7 +116,7 @@ T-sgpe-lemma [] ⟨⟩ q ⟨⟩ ⟨⟩ =
   sequenceᴷ ⟨⟩ q                 ∎
 T-sgpe-lemma (X ∷ Xf) (ϕ :: ϕt) q (σ :: σf) (h :: t) =
  α-extᵀ q (T-strategic-path (σ :: σf))            ＝⟨ h ⟩
- ϕ (λ x → α-curryᵀ q x (T-strategic-path (σf x))) ＝⟨ ap ϕ (fext IH) ⟩
+ ϕ (λ x → α-curryᵀ q x (T-strategic-path (σf x))) ＝⟨ ap ϕ (dfunext fe IH) ⟩
  ϕ (λ x → sequenceᴷ (ϕt x) (subpred q x))         ＝⟨ refl ⟩
  sequenceᴷ (ϕ :: ϕt) q                            ∎
   where
@@ -143,8 +143,8 @@ We now show how to use selection functions to compute a sgpe strategy.
 \begin{code}
 
 T-selection-strategy : {Xt : 𝑻} → 𝓙𝓣 Xt → (Path Xt → R) → T-Strategy Xt
-T-selection-strategy {[]}     ⟨⟩           q = ⟨⟩
-T-selection-strategy {X ∷ Xf} εt@(ε :: εf) q = σ :: σf
+T-selection-strategy{[]}     ⟨⟩           q = ⟨⟩
+T-selection-strategy{X ∷ Xf} εt@(ε :: εf) q = σ :: σf
  where
   t : T (Path (X ∷ Xf))
   t = sequenceᴶᵀ εt (ηᵀ ∘ q)
@@ -153,22 +153,22 @@ T-selection-strategy {X ∷ Xf} εt@(ε :: εf) q = σ :: σf
   σ = mapᵀ path-head t
 
   σf : (x : X) → T-Strategy (Xf x)
-  σf x = T-selection-strategy {Xf x} (εf x) (subpred q x)
+  σf x = T-selection-strategy{Xf x} (εf x) (subpred q x)
 
 \end{code}
 
 For the next technical lemma, we need the monad T to satisfy the
-condition extᵀ-const defined in Games.Monads, which says that the
+condition extᵀ-const defined in GamesExperimental.Monads, which says that the
 Kleisli extension of a constant function is itself constant. Ohad
 Kammar pointed out to us that this condition is equivalent to the
-monad being affine. A proof is included in the module Games.Monad.
+monad being affine. A proof is included in the module GamesExperimental.Monad.
 
 TODO. Explain the intuition of the condition extᵀ-const and
 equivalents.
 
 \begin{code}
 
-mapᵀ-path-head-lemma : {X : Type} {Xf : X → 𝑻}
+mapᵀ-path-head-lemma : {X : 𝓤 ̇ } {Xf : X → 𝑻}
                        (a : T X) (b : (x : X) → T (Path (Xf x)))
                      → ext-const 𝕋
                      → mapᵀ path-head (a ⊗ᵀ b) ＝ a
@@ -202,9 +202,9 @@ mapᵀ-path-head-lemma {X} {Xf} a b ext-const =
   II x xs = unitᵀ g (x :: xs)
 
   ⦅1⦆ = (assocᵀ g (λ x → extᵀ (f x) (b x)) a)⁻¹
-  ⦅2⦆ = ap (λ - → extᵀ - a) (fext I)
-  ⦅3⦆ = ap (λ - →  extᵀ (λ x → extᵀ (- x) (b x)) a) (fext (λ x → fext (II x)))
-  ⦅4⦆ = ap (λ - → extᵀ - a) (fext (λ x → ext-const (ηᵀ x) (b x)))
+  ⦅2⦆ = ap (λ - → extᵀ - a) (dfunext fe I)
+  ⦅3⦆ = ap (λ - →  extᵀ (λ x → extᵀ (- x) (b x)) a) (dfunext fe (λ x → dfunext fe (II x)))
+  ⦅4⦆ = ap (λ - → extᵀ - a) (dfunext fe (λ x → ext-const (ηᵀ x) (b x)))
 
 \end{code}
 
@@ -214,8 +214,9 @@ above.
 
 \begin{code}
 
-module _ {X  : Type}
-         {Y  : X → Type}
+module _ {X  : 𝓤 ̇ }
+         {𝓥 : Universe}
+         {Y  : X → 𝓥  ̇ }
          (ε  : JT X)
          (δ  : (x : X) → JT (Y x))
  where
@@ -241,9 +242,9 @@ module _ {X  : Type}
       Θ x r = extᵀ (λ y → ηᵀ (x , y)) (ν r x)
 
       I : (λ x → extᴶᵀ (λ y _ → ηᵀ (x , y)) (δ x)) ＝ Θ
-      I = fext (λ x →
-          fext (λ r → ap (λ - → extᵀ (λ y → ηᵀ (x , y)) (δ x (λ y → - (x , y))))
-                         (fext (unitᵀ r))))
+      I = dfunext fe (λ x →
+          dfunext fe (λ r → ap (λ - → extᵀ (λ y → ηᵀ (x , y)) (δ x (λ y → - (x , y))))
+                         (dfunext fe (unitᵀ r))))
 
       ⦅1⦆ = ap (λ - → extᴶᵀ - ε q) I
 
@@ -253,11 +254,11 @@ module _ {X  : Type}
              extᵀ (λ y → ((extᵀ q) ∘ ηᵀ) (x , y))           ＝⟨ ⦅ii⦆ ⟩
              extᵀ (λ y → q (x , y))                         ∎
        where
-        ⦅i⦆  = fext (λ x' → (assocᵀ q (λ y → ηᵀ (x , y)) x')⁻¹)
-        ⦅ii⦆ = ap extᵀ (fext (λ y → unitᵀ q (x , y)))
+        ⦅i⦆  = dfunext fe (λ x' → (assocᵀ q (λ y → ηᵀ (x , y)) x')⁻¹)
+        ⦅ii⦆ = ap extᵀ (dfunext fe (λ y → unitᵀ q (x , y)))
 
       III : ε (λ x → extᵀ q (extᵀ (λ y → ηᵀ (x , y)) (ν q x))) ＝ τ q
-      III = ap ε (fext (λ x → ap (λ - → - (ν q x)) (II x)))
+      III = ap ε (dfunext fe (λ x → ap (λ - → - (ν q x)) (II x)))
 
       ⦅2⦆ = ap (extᵀ (λ x → Θ x q)) III
 
@@ -307,7 +308,7 @@ T-main-lemma ext-const {X ∷ Xf} εt@(ε :: εf) q = γ
    where
     ⦅1⦆ = (mapᵀ-path-head-lemma (ε (λ x → extᵀ (q' x) (c x))) c ext-const)⁻¹
     ⦅2⦆ = ap (λ - → mapᵀ path-head (ε (λ x → extᵀ (q' x) (- x)) ⊗ᵀ -))
-            (fext (λ x → (IH x)⁻¹))
+            (dfunext fe (λ x → (IH x)⁻¹))
     ⦅3⦆ = (ap (mapᵀ path-head) (⊗ᴶᵀ-in-terms-of-⊗ᵀ ε δ (ηᵀ ∘ q)))⁻¹
 
   γ : sequenceᴶᵀ (ε :: εf) (ηᵀ ∘ q)
@@ -322,7 +323,7 @@ T-main-lemma ext-const {X ∷ Xf} εt@(ε :: εf) q = γ
       T-strategic-path (T-selection-strategy (ε :: εf) q) ∎
    where
     ⦅1⦆ = ⊗ᴶᵀ-in-terms-of-⊗ᵀ ε δ (ηᵀ ∘ q)
-    ⦅2⦆ = ap (λ - → ε (λ x → extᵀ (q' x) (- x)) ⊗ᵀ -) (fext IH)
+    ⦅2⦆ = ap (λ - → ε (λ x → extᵀ (q' x) (- x)) ⊗ᵀ -) (dfunext fe IH)
     ⦅3⦆ = ap (_⊗ᵀ c) I
 
 \end{code}
@@ -333,10 +334,10 @@ Is α-Overlineᵀ useful?
 
 α-Overlineᵀ : {Xt : 𝑻} → 𝓙𝓣 Xt → 𝓚𝓣 Xt
 α-Overlineᵀ {[]}     ⟨⟩        = ⟨⟩
-α-Overlineᵀ {X ∷ Xf} (ε :: εf) = α-overlineᵀ ε :: λ x → α-Overlineᵀ {Xf x} (εf x)
+α-Overlineᵀ {X ∷ Xf} (ε :: εf) = α-overlineᵀ ε :: λ x → α-Overlineᵀ  {Xf x} (εf x)
 
-_Attainsᵀ_ : {Xt : 𝑻} → 𝓙𝓣 Xt → 𝓚 Xt → Type
-_Attainsᵀ_ {[]}     ⟨⟩        ⟨⟩        = 𝟙
+_Attainsᵀ_ : {Xt : 𝑻} → 𝓙𝓣 Xt → 𝓚 Xt → ℓ 𝕋 𝓦₀ ⊔ 𝓤 ⊔ 𝓦₀  ̇
+_Attainsᵀ_  {[]}     ⟨⟩        ⟨⟩       = 𝟙
 _Attainsᵀ_ {X ∷ Xf} (ε :: εf) (ϕ :: ϕf) = (ε α-attainsᵀ ϕ)
                                         × ((x : X) → (εf x) Attainsᵀ (ϕf x))
 
@@ -390,7 +391,7 @@ T-selection-strategy-lemma ext-const {X ∷ Xf} εt@(ε :: εf) ϕt@(ϕ :: ϕf) 
 
          III₀ = ap (λ - → ε (λ x → mapᵀ (subpred q x) (- x))) (dfunext fe (λ x → (T-main-lemma ext-const (εf x) (subpred q x))⁻¹))
          III₁ = (mapᵀ-path-head-lemma τ ν ext-const)⁻¹
-         III₂ = ap (mapᵀ path-head) ((⊗ᴶᵀ-in-terms-of-⊗ᵀ {X} {λ x → Path (Xf x)} ε (λ x → sequenceᴶᵀ (εf x)) (ηᵀ ∘ q)) ⁻¹)
+         III₂ = ap (mapᵀ path-head) ((⊗ᴶᵀ-in-terms-of-⊗ᵀ {X} {𝓤} {λ x → Path (Xf x)} ε (λ x → sequenceᴶᵀ (εf x)) (ηᵀ ∘ q)) ⁻¹)
 
   II : α (extᵀ p (ε p)) ＝ α-extᵀ q t
   II = α (extᵀ p (ε p)) ＝⟨ II₀ ⟩
@@ -439,9 +440,9 @@ notion. Partial, possibly empty, paths in 𝑻's, and related notions.
 
 \begin{code}
 
-pPath : 𝑻 → Type
+pPath : 𝑻 → 𝓤  ̇
 pPath []       = 𝟙
-pPath (X ∷ Xf) = 𝟙 + (Σ x ꞉ X , pPath (Xf x))
+pPath (X ∷ Xf) = 𝟙 {𝓤} + (Σ x ꞉ X , pPath (Xf x))
 
 sub𝑻 : (Xt : 𝑻) → pPath Xt → 𝑻
 sub𝑻 []       ⟨⟩              = []
@@ -471,11 +472,11 @@ sub-T-Strategy {[]}     ⟨⟩        ⟨⟩              = ⟨⟩
 sub-T-Strategy {X ∷ Xf} (σ :: σf) (inl ⟨⟩)        = σ :: σf
 sub-T-Strategy {X ∷ Xf} (σ :: σf) (inr (x :: xs)) = sub-T-Strategy {Xf x} (σf x) xs
 
-is-in-T-equilibrium' : (G : Game) → T-Strategy (Xt G) → Type
+is-in-T-equilibrium' : (G : Game) → T-Strategy (Xt G) → 𝓦₀  ̇
 is-in-T-equilibrium' (game []       q ⟨⟩)       ⟨⟩ = 𝟙
 is-in-T-equilibrium' (game (X ∷ Xf) q (ϕ :: _)) σt = is-in-T-equilibrium q ϕ σt
 
-is-T-optimal₂ : (G : Game) (σ : T-Strategy (Xt G)) → Type
+is-T-optimal₂ : (G : Game) (σ : T-Strategy (Xt G)) → 𝓤 ⊔ 𝓦₀  ̇
 is-T-optimal₂ G σ =
  (xs : pPath (Xt G)) → is-in-T-equilibrium' (subgame G xs) (sub-T-Strategy σ xs)
 
@@ -498,13 +499,12 @@ T-sgpe-equiv (game Xt q ϕt) σ = I ϕt q σ , II ϕt q σ
      j (inl ⟨⟩) ,
      (λ x → II {Xf x} (ϕf x) (subpred q x) (σf x) (λ xs → j (inr (x :: xs))))
 
-
 {-
 T-sgpe-equiv : (G : Game) (σ : T-Strategy (Xt G))
              → is-T-optimal G σ ↔ is-T-optimal₂ G σ
 T-sgpe-equiv (game Xt q ϕt) σ = I ϕt q σ , II ϕt q σ
 
-is-in-subgame-perfect-equilibrium : (G : Game) → 𝓙𝓣 (Xt G) → Type
+is-in-subgame-perfect-equilibrium : (G : Game) → 𝓙𝓣 (Xt G) → ?  ̇
 is-in-subgame-perfect-equilibrium G εt =
 
  (xs : pPath (Xt G)) → is-in-head-equilibrium (subgame G xs) (sub𝓙𝓣 εt xs)

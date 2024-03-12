@@ -5,9 +5,12 @@ compact. But the assumption that a proposition-indexed product of
 compact sets is compact gives weak excluded middle (negative
 propositions are decidable).
 
-The definition of compactness (or exhaustive searchability) is
+The definition of compactness-pointedness (or exhaustive
+searchability) is
 
-    compact∙ A = (p : A → 𝟚) → Σ a₀ ꞉ A , p a₀ ＝ ₁ → (a : A) → p a ＝ ₁
+ compact∙ X = (p : X → 𝟚) → Σ x₀ ꞉ X , p x₀ ＝ ₁ → (x : X) → p x ＝ ₁
+
+We refer to such an x₀ as a universal witness.
 
 With excluded middle for propositions, the above claim is not
 surprising, because
@@ -18,7 +21,7 @@ surprising, because
 and excluded middle for a proposition X amounts to X = 𝟘 or X = 𝟙, so
 that
 
-    Y^X is compact if Y is compact and X is a proposition.
+    Y^X is compact∙ if Y is compact∙ and X is a proposition.
 
 The point is that
 
@@ -26,16 +29,10 @@ The point is that
 
     (2) This also holds for dependent products:
 
-        Π x : X , Y x is compact if X is a proposition and Y x is
-        compact for every x : X.
+        Π x : X , Y x is compact∙ if X is a proposition and Y x is
+        compact∙ for every x : X.
 
         (This product is also written (x : X) → Y x or Π Y in Agda.)
-
-Our Agda proof below can be written rather concisely by expanding the
-definitions. We deliberately don't do that, so that we have a rigorous
-informal proof side-by-side with the formal proof. We proceed in a
-series of trivial steps, hopefully in the most natural way (although
-we had a convoluted path to this supposedly natural way).
 
 \begin{code}
 
@@ -55,39 +52,20 @@ open import UF.EquivalenceExamples
 open import UF.PropIndexedPiSigma
 open import UF.Subsingletons
 
-\end{code}
-
-A crucial lemma is
-
-    prop-indexed-product : is-prop X → (a : X) → Π Y ≅ Y a
-
-This is proved in the module Prop-indexed-product. Although it has a
-subtle proof, it should be intuitively clear, as X has at most one
-element by hypothesis, and if the element is a:X then the product Π Y
-should be isomorphic to its only factor Y a.
-
-With this observation, the following proof should be self-contained,
-if we recall again the definition of compact set from the module
-CompacTypes:
-
-    compact∙ A = (p : A → 𝟚) → Σ a₀ ꞉ A , p a₀ ＝ ₁ → (a : A) → p a ＝ ₁
-
-Recall also that such an a₀ is called a universal witness for the predicate p.
-
-\begin{code}
-
 prop-tychonoff : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
                → is-prop X
                → ((x : X) → is-compact∙ (Y x))
                → is-compact∙ (Π Y)
 prop-tychonoff {𝓤} {𝓥} {X} {Y} X-is-prop ε p = γ
  where
-  have : (type-of ε ＝ ((x : X) → is-compact∙(Y x)))
-       × (type-of p ＝ (Π Y → 𝟚))
-  have = refl , refl
+  have-ε : (x : X) → is-compact∙ (Y x)
+  have-ε = ε
 
-  hip : (x : X) → Π Y ≃ Y x
-  hip = prop-indexed-product (fe 𝓤 𝓥) X-is-prop
+  have-p : Π Y → 𝟚
+  have-p = p
+
+  𝕗 : (x : X) → Π Y ≃ Y x
+  𝕗 = prop-indexed-product (fe 𝓤 𝓥) X-is-prop
 
 \end{code}
 
@@ -96,48 +74,43 @@ The essence of the first part of the proof is this:
 \begin{code}
 
   crude : X → is-compact∙ (Π Y)
-  crude x = compact∙-types-are-closed-under-equiv(≃-sym(hip x)) (ε x)
+  crude x = compact∙-types-are-closed-under-equiv (≃-sym (𝕗 x)) (ε x)
 
 \end{code}
 
 But this is very crude for our purposes (or so it seems).  So we
-instead proceed as follows.
-
-The following is what we get from prop-indexed-product, abstractly:
+instead proceed as follows. We first introduct some abbreviations.
 
 \begin{code}
 
   f : (x : X) → Π Y → Y x
-  f x = pr₁ (hip x)
+  f x = ⌜ 𝕗 x ⌝
 
-  hrf : (x : X) → Σ r ꞉ (Y x → Π Y), r ∘ f x ∼ id
-  hrf x = pr₂ (pr₂ (hip x))
+  f-explicitly : (x : X) (φ : Π Y) → f x φ ＝ φ x
+  f-explicitly x φ = refl
 
-  h : (x : X) → Y x → Π Y
-  h x = pr₁ (hrf x)
-
-  hf : (x : X) (φ : Π Y) → h x (f x φ) ＝ φ
-  hf x = pr₂ (hrf x)
+  f⁻¹ : (x : X) → Y x → Π Y
+  f⁻¹ x = ⌜ 𝕗 x ⌝⁻¹
 
 \end{code}
 
 We define a predicate q x : Y x → 𝟚, for each x : X, from the
-predicate p : Π Y → 𝟚 via (part of) the above equivalence:
+predicate p : Π Y → 𝟚 via the above equivalence:
 
 \begin{code}
 
   q : (x : X) → Y x → 𝟚
-  q x y = p (h x y)
+  q x y = p (f⁻¹ x y)
 
 \end{code}
 
 We argue that the following is a universal witness for the
-searchability of the type Π Y wrt the predicate p:
+searchability of the type Π Y w.r.t. the predicate p:
 
 \begin{code}
 
   φ₀ : Π Y
-  φ₀ x = pr₁ (ε x (q x))
+  φ₀ x = universal-witness (ε x) (q x)
 
 \end{code}
 
@@ -145,8 +118,8 @@ By hypothesis, it satisfies:
 
 \begin{code}
 
-  φ₀-spec : (x : X) → q x (φ₀ x) ＝ ₁ → (y : Y x) → q x y ＝ ₁
-  φ₀-spec x = pr₂ (ε x (q x))
+  φ₀-universality : (x : X) → q x (φ₀ x) ＝ ₁ → (y : Y x) → q x y ＝ ₁
+  φ₀-universality x = witness-universality (ε x) (q x)
 
 \end{code}
 
@@ -154,46 +127,45 @@ By expanding the definitions, this amounts to:
 
 \begin{code}
 
-  φ₀-spec₀ : (x : X) → p (h x (φ₀ x)) ＝ ₁ → (y : Y x) → p (h x y) ＝ ₁
-  φ₀-spec₀ = φ₀-spec
+  φ₀-universality₀ : (x : X) → p (f⁻¹ x (φ₀ x)) ＝ ₁ → (y : Y x) → p (f⁻¹ x y) ＝ ₁
+  φ₀-universality₀ = φ₀-universality
 
 \end{code}
 
-By the definition of f in prop-indexed-product (namely f x φ = φ x):
+Because f x φ = φ x, the above amounts to the following:
 
 \begin{code}
 
-  φ₀-spec₁ : (x : X) → p (h x (f x φ₀)) ＝ ₁ → (y : Y x) → p (h x y) ＝ ₁
-  φ₀-spec₁ = φ₀-spec₀
+  φ₀-universality₁ : (x : X) → p (f⁻¹ x (f x φ₀)) ＝ ₁ → (y : Y x) → p (f⁻¹ x y) ＝ ₁
+  φ₀-universality₁ = φ₀-universality₀
 
 \end{code}
 
-(So we can't abstract away the construction of prop-indexed-product.)
-
-In particular, with y = f x φ, we get:
+In particular, choosing y = f x φ, we get:
 
 \begin{code}
 
-  φ₀-spec₁-particular-case : (x : X)
-                           → p (h x (f x φ₀)) ＝ ₁
-                           → (φ : Π Y) → p (h x (f x φ)) ＝ ₁
-  φ₀-spec₁-particular-case x r φ = φ₀-spec₁ x r (f x φ)
+  φ₀-universality₁-particular-case : (x : X)
+                                   → p (f⁻¹ x (f x φ₀)) ＝ ₁
+                                   → (φ : Π Y) → p (f⁻¹ x (f x φ)) ＝ ₁
+  φ₀-universality₁-particular-case x r φ = φ₀-universality₁ x r (f x φ)
 
 \end{code}
 
-Using the fact that g x (f x φ) = φ for any x:X, we get:
+This in turn gives
 
 \begin{code}
 
-  φ₀-is-universal-witness-assuming-X : X → p φ₀ ＝ ₁ → (φ : Π Y) → p φ ＝ ₁
+  φ₀-is-universal-witness-assuming-X
+   : X → p φ₀ ＝ ₁ → (φ : Π Y) → p φ ＝ ₁
   φ₀-is-universal-witness-assuming-X x r φ =
-     p φ             ＝⟨ ap p ((hf x φ)⁻¹) ⟩
-     p (h x (f x φ)) ＝⟨ φ₀-spec₁-particular-case x s φ ⟩
-     ₁               ∎
+   p φ               ＝⟨ ap p ((inverses-are-retractions' (𝕗 x) φ)⁻¹) ⟩
+   p (f⁻¹ x (f x φ)) ＝⟨ φ₀-universality₁-particular-case x s φ ⟩
+   ₁                 ∎
    where
-    s = p (h x (f x φ₀)) ＝⟨ ap p (hf x φ₀) ⟩
-        p φ₀             ＝⟨ r ⟩
-        ₁                ∎
+    s = p (f⁻¹ x (f x φ₀)) ＝⟨ ap p (inverses-are-retractions' (𝕗 x) φ₀) ⟩
+        p φ₀               ＝⟨ r ⟩
+        ₁                  ∎
 
 \end{code}
 
@@ -205,14 +177,12 @@ We get the same conclusion if X is empty:
 
 \begin{code}
 
-  φ₀-is-universal-witness-assuming-X→𝟘 : (X → 𝟘) → p φ₀ ＝ ₁ → (φ : Π Y) → p φ ＝ ₁
-  φ₀-is-universal-witness-assuming-X→𝟘 u r φ = p φ  ＝⟨ ap p claim ⟩
-                                               p φ₀ ＝⟨ r ⟩
-                                               ₁    ∎
-
-   where
-    claim : φ ＝ φ₀
-    claim = dfunext (fe 𝓤 𝓥) (λ x → unique-from-𝟘 (u x))
+  φ₀-is-universal-witness-assuming-X-empty
+   : (X → 𝟘) → p φ₀ ＝ ₁ → (φ : Π Y) → p φ ＝ ₁
+  φ₀-is-universal-witness-assuming-X-empty u r φ =
+   p φ  ＝⟨ ap p (dfunext (fe 𝓤 𝓥) (λ x → unique-from-𝟘 (u x))) ⟩
+   p φ₀ ＝⟨ r ⟩
+   ₁    ∎
 
 \end{code}
 
@@ -224,6 +194,7 @@ needed.
 We shuffle the arguments of φ₀-is-universal-witness-assuming-X:
 
 \begin{code}
+
   claim₀ : p φ₀ ＝ ₁ → (φ : Π Y) → X → p φ ＝ ₁
   claim₀ r φ x = φ₀-is-universal-witness-assuming-X x r φ
 
@@ -236,18 +207,18 @@ not ₁:
 \begin{code}
 
   Claim₁ : p φ₀ ＝ ₁ → (φ : Π Y) → p φ ＝ ₀ → (X → 𝟘)
-  Claim₁ r φ = contrapositive(claim₀ r φ) ∘ equal-₀-different-from-₁
+  Claim₁ r φ = contrapositive (claim₀ r φ) ∘ equal-₀-different-from-₁
 
 \end{code}
 
 This concludes the first part of the argument.
 
-We now shuffle the arguments of φ₀-is-universal-witness-assuming-X→𝟘:
+We now shuffle the arguments of φ₀-is-universal-witness-assuming-X-empty:
 
 \begin{code}
 
   Claim₂ : p φ₀ ＝ ₁ → (φ : Π Y) → (X → 𝟘) → p φ ＝ ₁
-  Claim₂ r φ u = φ₀-is-universal-witness-assuming-X→𝟘 u r φ
+  Claim₂ r φ u = φ₀-is-universal-witness-assuming-X-empty u r φ
 
 \end{code}
 

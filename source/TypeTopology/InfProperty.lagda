@@ -10,25 +10,25 @@ open import TypeTopology.CompactTypes
 
 module TypeTopology.InfProperty {𝓤 𝓥} {X : 𝓤 ̇ } (_≤_ : X → X → 𝓥 ̇ ) where
 
-conditional-root : (X → 𝟚) → X → 𝓤 ̇
-conditional-root p x₀ = (Σ x ꞉ X , p x ＝ ₀) → p x₀ ＝ ₀
+is-conditional-root : (X → 𝟚) → X → 𝓤 ̇
+is-conditional-root p x₀ = (Σ x ꞉ X , p x ＝ ₀) → p x₀ ＝ ₀
 
-root-lower-bound : (X → 𝟚) → X → 𝓤 ⊔ 𝓥 ̇
-root-lower-bound p l = (x : X) → p x ＝ ₀ → l ≤ x
+is-roots-lower-bound : (X → 𝟚) → X → 𝓤 ⊔ 𝓥 ̇
+is-roots-lower-bound p l = (x : X) → p x ＝ ₀ → l ≤ x
 
-upper-bound-of-root-lower-bounds : (X → 𝟚) → X → 𝓤 ⊔ 𝓥 ̇
-upper-bound-of-root-lower-bounds p u = (l : X) → root-lower-bound p l → l ≤ u
+is-upper-bound-of-lower-bounds : (X → 𝟚) → X → 𝓤 ⊔ 𝓥 ̇
+is-upper-bound-of-lower-bounds p u = (l : X) → is-roots-lower-bound p l → l ≤ u
 
-roots-infimum : (X → 𝟚) → X → 𝓤 ⊔ 𝓥 ̇
-roots-infimum p x = root-lower-bound p x × upper-bound-of-root-lower-bounds p x
+is-roots-infimum : (X → 𝟚) → X → 𝓤 ⊔ 𝓥 ̇
+is-roots-infimum p x = is-roots-lower-bound p x × is-upper-bound-of-lower-bounds p x
 
 has-inf : 𝓤 ⊔ 𝓥 ̇
-has-inf = (p : X → 𝟚) → Σ x ꞉ X , conditional-root p x × roots-infimum p x
+has-inf = (p : X → 𝟚) → Σ x ꞉ X , is-conditional-root p x × is-roots-infimum p x
 
 has-inf-gives-compact∙ : has-inf → is-compact∙ X
 has-inf-gives-compact∙ h p = f (h p)
  where
-  f : (Σ x₀ ꞉ X , conditional-root p x₀ × roots-infimum p x₀)
+  f : (Σ x₀ ꞉ X , is-conditional-root p x₀ × is-roots-infimum p x₀)
     → (Σ x₀ ꞉ X , (p x₀ ＝ ₁ → (x : X) → p x ＝ ₁))
   f (x₀ , g , _) = (x₀ , k)
    where
