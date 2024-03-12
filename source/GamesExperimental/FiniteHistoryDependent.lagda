@@ -77,7 +77,7 @@ quantifiers over X.
 
 \begin{code}
 
-𝓚 : 𝑻 → 𝓤 ⊔ 𝓦₀  ̇
+𝓚 : 𝑻 → 𝓤 ⊔ 𝓦₀ ̇
 𝓚 = structure K
 
 remark-𝓚 : {X : 𝓤 ̇ } {Xf : X → 𝑻}
@@ -200,7 +200,7 @@ is-in-equilibrium : {X : 𝓤 ̇ } {Xf : X → 𝑻}
                     (q : (Σ x ꞉ X , Path (Xf x)) → R)
                     (ϕ : K X)
                   → Strategy (X ∷ Xf)
-                  → 𝓦₀  ̇
+                  → 𝓦₀ ̇
 is-in-equilibrium {X} {Xf} q ϕ σt@(x₀ :: σf)  =
  subpred q x₀ (strategic-path (σf x₀)) ＝ ϕ (λ x → subpred q x (strategic-path (σf x)))
 

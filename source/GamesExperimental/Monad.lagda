@@ -25,13 +25,15 @@ record Monad : 𝓤ω where
  constructor
   monad
  field
-  ℓ : Universe → Universe
-  functor : 𝓤  ̇ → ℓ 𝓤  ̇
-  η       : {X : 𝓤  ̇ } → X → functor X
-  ext     : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → functor Y) → functor X → functor Y
-  ext-η   : {X : 𝓤 ̇ } → ext (η {𝓤} {X}) ∼ 𝑖𝑑 (functor X)
-  unit    : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → functor Y) (x : X) → ext f (η x) ＝ f x
-  assoc   : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (g : Y → functor Z) (f : X → functor Y) (t : functor X)
+  ℓ       : Universe → Universe
+  functor : {𝓤 : Universe} → 𝓤 ̇ → ℓ 𝓤 ̇
+  η       : {𝓤 : Universe} {X : 𝓤 ̇ } → X → functor X
+  ext     : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → functor Y) → functor X → functor Y
+  ext-η   : {𝓤 : Universe} {X : 𝓤 ̇ } → ext (η {𝓤} {X}) ∼ 𝑖𝑑 (functor X)
+  unit    : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → functor Y) (x : X) → ext f (η x) ＝ f x
+  assoc   : {𝓤 𝓥 𝓦 : Universe}
+            {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+            (g : Y → functor Z) (f : X → functor Y) (t : functor X)
           → ext (λ x → ext g (f x)) t ＝ ext g (ext f t)
 
  map : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → functor X → functor Y
@@ -48,7 +50,7 @@ record Monad : 𝓤ω where
 
 open Monad public
 
-tensor : (𝕋 : Monad) → {X : 𝓤  ̇ } {Y : X → 𝓥  ̇ }
+tensor : (𝕋 : Monad) → {X : 𝓤 ̇ } {Y : X → 𝓥  ̇ }
        → functor 𝕋 X
        → ((x : X) → functor 𝕋 (Y x))
        → functor 𝕋 (Σ x ꞉ X , Y x)
@@ -81,8 +83,8 @@ If we want to call a monad T, then we can use the following module:
 
 module T-definitions (𝕋 : Monad) where
 
- T : 𝓤 ̇ → ℓ 𝕋 𝓤  ̇
- T = functor 𝕋
+ T : 𝓤 ̇ → ℓ 𝕋 𝓤 ̇
+ T {𝓤} = functor 𝕋
 
  ηᵀ : {X : 𝓤 ̇ } → X → T X
  ηᵀ = η 𝕋
@@ -90,7 +92,7 @@ module T-definitions (𝕋 : Monad) where
  extᵀ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → T Y) → T X → T Y
  extᵀ = ext 𝕋
 
- extᵀ-η : {X : 𝓤  ̇ } → extᵀ (ηᵀ {𝓤} {X}) ∼ 𝑖𝑑 (T X)
+ extᵀ-η : {X : 𝓤 ̇ } → extᵀ (ηᵀ {𝓤} {X}) ∼ 𝑖𝑑 (T X)
  extᵀ-η = ext-η 𝕋
 
  unitᵀ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → T Y) → extᵀ f ∘ ηᵀ ∼ f
@@ -104,7 +106,7 @@ module T-definitions (𝕋 : Monad) where
  mapᵀ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → T X → T Y
  mapᵀ = map 𝕋
 
- μᵀ : {X : 𝓤  ̇ } → T (T X) → T X
+ μᵀ : {X : 𝓤 ̇ } → T (T X) → T X
  μᵀ = μ 𝕋
 
  _⊗ᵀ_ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
@@ -144,7 +146,7 @@ module _ (𝕋 : Monad) where
 
  open T-definitions 𝕋
 
- is-affine : (𝓤 : Universe) → ℓ 𝕋 𝓤 ⊔ 𝓤  ̇
+ is-affine : (𝓤 : Universe) → ℓ 𝕋 𝓤 ⊔ 𝓤 ̇
  is-affine 𝓤 = is-equiv (ηᵀ {𝓤} {𝟙})
 
  ext-const' : 𝓤 ̇ → 𝓤ω
@@ -254,10 +256,10 @@ module α-definitions
  α-assocᵀ : α ∘ extᵀ (ηᵀ ∘ α) ∼ α ∘ extᵀ id
  α-assocᵀ = assoc 𝓐
 
- α-extᵀ : {A : 𝓤  ̇ } → (A → R) → T A → R
+ α-extᵀ : {A : 𝓤 ̇ } → (A → R) → T A → R
  α-extᵀ q = α ∘ mapᵀ q
 
- α-curryᵀ : {X : 𝓤  ̇ } {Y : X → 𝓥 ̇ }
+ α-curryᵀ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
           → ((Σ x ꞉ X , Y x) → R)
           → (x : X) → T (Y x) → R
  α-curryᵀ q x = α-extᵀ (curry q x)

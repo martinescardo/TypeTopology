@@ -25,7 +25,7 @@ open import UF.Univalence
 open import UF.UA-FunExt
 open import UF.StructureIdentityPrinciple
 
-open import Lifting.Lifting 𝓣
+open import Lifting.Construction 𝓣
 
 _⋍_ : 𝓛 X → 𝓛 X → 𝓣 ⊔ 𝓤 ̇
 l ⋍ m = Σ e ꞉ is-defined l ≃ is-defined m , value l ＝ value m ∘ ⌜ e ⌝

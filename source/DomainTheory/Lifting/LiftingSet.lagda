@@ -36,7 +36,7 @@ open import UF.Subsingletons-Properties
 
 open PropositionalTruncation pt
 
-open import Lifting.Lifting 𝓣 hiding (⊥)
+open import Lifting.Construction 𝓣 hiding (⊥)
 open import Lifting.Miscelanea 𝓣
 open import Lifting.Miscelanea-PropExt-FunExt 𝓣 pe fe
 open import Lifting.Monad 𝓣

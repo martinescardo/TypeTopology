@@ -1556,7 +1556,7 @@ the lifting monad in conjunction with resizing.
 
 \begin{code}
 
-import Lifting.Lifting
+import Lifting.Construction
 open import Lifting.Algebras
 import Lifting.EmbeddingViaSIP
 

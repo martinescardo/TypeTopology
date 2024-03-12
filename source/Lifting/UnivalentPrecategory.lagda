@@ -20,7 +20,7 @@ module Lifting.UnivalentPrecategory
        where
 
 open import Lifting.IdentityViaSIP 𝓣
-open import Lifting.Lifting 𝓣
+open import Lifting.Construction 𝓣
 open import UF.Base
 open import UF.Embeddings
 open import UF.Equiv

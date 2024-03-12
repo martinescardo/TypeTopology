@@ -31,7 +31,7 @@ open import DomainTheory.Basics.Pointed pt fe 𝓤 renaming (⊥ to ⊥∙)
 open import DomainTheory.Basics.WayBelow pt fe 𝓤
 open import DomainTheory.Lifting.LiftingSet pt fe 𝓤 pe
 open import DomainTheory.Lifting.LiftingSetAlgebraic pt pe fe 𝓤
-open import Lifting.Lifting 𝓤
+open import Lifting.Construction 𝓤
 open import Lifting.Miscelanea-PropExt-FunExt 𝓤 pe fe
 open import Lifting.UnivalentPrecategory 𝓤 (𝟙 {𝓤})
 open import Locales.Frame pt fe hiding (𝟚; is-directed)

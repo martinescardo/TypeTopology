@@ -27,7 +27,7 @@ open import UF.FunExt
 open import UF.Univalence
 open import UF.UA-FunExt
 
-open import Lifting.Lifting 𝓣
+open import Lifting.Construction 𝓣
 open import Lifting.IdentityViaSIP 𝓣
 
 \end{code}

@@ -1392,7 +1392,7 @@ Added 23rd January 2019:
 
 module ainjectivity-of-Lifting (𝓤 : Universe) where
 
- open import Lifting.Lifting 𝓤 public
+ open import Lifting.Construction 𝓤 public
  open import Lifting.Algebras 𝓤
  open import Lifting.EmbeddingViaSIP 𝓤 public
 

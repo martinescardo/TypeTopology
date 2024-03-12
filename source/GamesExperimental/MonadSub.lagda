@@ -20,29 +20,29 @@ open import UF.Equiv
 open import UF.FunExt
 
 module GamesExperimental.MonadSub
-        (suitable : {𝓤 : Universe} → 𝓤 ̇ → 𝓤 ̇ )
-        (𝟙-is-suitable : {𝓤 : Universe} → suitable (𝟙 {𝓤}))
-        (Σ-is-suitable
+        (S : {𝓤 : Universe} → 𝓤 ̇ → 𝓤 ̇ )
+        (𝟙-is-S : {𝓤 : Universe} → S (𝟙 {𝓤}))
+        (Σ-is-S
            : {𝓤 𝓥 : Universe}
-             (𝓧 : Σ X ꞉ 𝓤 ̇ , suitable X)
-             (𝓨 : pr₁ 𝓧 → Σ Y ꞉ 𝓥 ̇ , suitable Y)
-           → suitable (Σ x ꞉ pr₁ 𝓧 , pr₁ (𝓨 x)))
+             (𝓧 : Σ X ꞉ 𝓤 ̇ , S X)
+             (𝓨 : pr₁ 𝓧 → Σ Y ꞉ 𝓥 ̇ , S Y)
+           → S (Σ x ꞉ pr₁ 𝓧 , pr₁ (𝓨 x)))
        where
 
 𝕊 : (𝓤 : Universe) → 𝓤 ⁺ ̇
-𝕊 𝓤 = Σ X ꞉ 𝓤 ̇ , suitable X
+𝕊 𝓤 = Σ X ꞉ 𝓤 ̇ , S X
 
 ⟨_⟩ : {𝓤 : Universe} → 𝕊 𝓤 → 𝓤 ̇
 ⟨ X , s ⟩ = X
 
-structure : {𝓤 : Universe} → (𝓧 : 𝕊 𝓤) → suitable ⟨ 𝓧 ⟩
+structure : {𝓤 : Universe} → (𝓧 : 𝕊 𝓤) → S ⟨ 𝓧 ⟩
 structure (X , s) = s
 
 𝟙ₛ : {𝓤 : Universe} → 𝕊 𝓤
-𝟙ₛ = 𝟙 , 𝟙-is-suitable
+𝟙ₛ = 𝟙 , 𝟙-is-S
 
 Sigmaₛ : {𝓤 𝓥 : Universe} (𝓧 : 𝕊 𝓤) (𝓨 : ⟨ 𝓧 ⟩ → 𝕊 𝓥) → 𝕊 (𝓤 ⊔ 𝓥)
-Sigmaₛ {𝓤} {𝓥} 𝓧 𝓨 = (Σ x ꞉ ⟨ 𝓧 ⟩ , ⟨ 𝓨 x ⟩) , Σ-is-suitable 𝓧 𝓨
+Sigmaₛ {𝓤} {𝓥} 𝓧 𝓨 = (Σ x ꞉ ⟨ 𝓧 ⟩ , ⟨ 𝓨 x ⟩) , Σ-is-S 𝓧 𝓨
 
 syntax Sigmaₛ 𝓧 (λ x → 𝓨) = Σₛ x ꞉ 𝓧 , 𝓨
 
