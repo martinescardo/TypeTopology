@@ -97,10 +97,14 @@ We have the following two corollaries.
 \begin{code}
 
 flat-finite' : (x : ℕ∞) (n : ℕ) → flat x ＝ η n → x ＝ ι n
-flat-finite' x n e = flat-lc (e ∙ (flat-finite n)⁻¹)
+flat-finite' x n e = flat-lc (flat x     ＝⟨ e ⟩
+                              η n        ＝⟨ (flat-finite n)⁻¹ ⟩
+                              flat (ι n) ∎)
 
 flat-∞' : (x : ℕ∞) → flat x ＝ ⊥ → x ＝ ∞
-flat-∞' x e = flat-lc (e ∙ flat-∞ ⁻¹)
+flat-∞' x e = flat-lc (flat x ＝⟨ e ⟩
+                       ⊥      ＝⟨ flat-∞ ⁻¹ ⟩
+                       flat ∞ ∎)
 
 \end{code}
 
@@ -113,8 +117,15 @@ flat-image-has-empty-complement : ¬ (Σ l ꞉ 𝓛 ℕ , ((x : ℕ∞) → flat
 flat-image-has-empty-complement (l , f) =
  η-image fe₀ fe₀ pe
    (l ,
-   (λ (e : l ＝ ⊥) → f ∞ (flat-∞ ∙ e ⁻¹)) ,
-   (λ n (e : l ＝ η n) → f (ι n) (flat-finite n ∙ e ⁻¹)))
+   (λ (e : l ＝ ⊥)
+         → f ∞ (flat ∞ ＝⟨ flat-∞ ⟩
+                ⊥      ＝⟨ e ⁻¹ ⟩
+                l      ∎)) ,
+   (λ n (e : l ＝ η n)
+         → f (ι n)
+              (flat (ι n) ＝⟨ flat-finite n ⟩
+               η n        ＝⟨ e ⁻¹ ⟩
+               l          ∎)))
 
 \end{code}
 
@@ -148,8 +159,10 @@ module _ (pt : propositional-truncations-exist) where
      IV : (ι 0 ＝ x) + (ι 0 ≠ x) → P + ¬ P
      IV (inl d) = inl (⌜ C ⌝⁻¹ ⋆)
       where
-       A : y ＝ η 0
-       A = e ⁻¹ ∙ ap flat (d ⁻¹) ∙ flat-finite 0
+       A = y          ＝⟨ e ⁻¹ ⟩
+           flat x     ＝⟨ ap flat (d ⁻¹) ⟩
+           flat (ι 0) ＝⟨ flat-finite 0 ⟩
+           η 0        ∎
 
        B : y ⋍· η 0
        B = Id-to-⋍· _ _ A
@@ -168,8 +181,9 @@ module _ (pt : propositional-truncations-exist) where
        C : ¬ (y ＝ η 0)
        C d = ν (C₁ ⁻¹)
         where
-         C₀ : flat x ＝ η 0
-         C₀ = e ∙ d
+         C₀ = flat x ＝⟨ e ⟩
+              y      ＝⟨ d ⟩
+              η 0    ∎
 
          C₁ : x ＝ ι 0
          C₁ = flat-finite' x 0 C₀
