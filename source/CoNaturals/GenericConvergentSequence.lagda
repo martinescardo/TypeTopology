@@ -380,7 +380,9 @@ Added 13th March 2024.
 ℕ∞-equality-criterion fe₀ x y f g = ℕ∞-is-¬¬-separated fe₀ x y ν
  where
   ν : ¬ (x ≠ y)
-  ν d = d (III ∙ IV ⁻¹)
+  ν d = d (x ＝⟨ III ⟩
+           ∞ ＝⟨ IV ⁻¹ ⟩
+           {!y!} ∎)
    where
     I : (n : ℕ) → x ≠ ι n
     I n e = d (x  ＝⟨ e  ⟩
