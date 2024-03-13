@@ -8,6 +8,7 @@ module CoNaturals.index where
 
 import CoNaturals.Arithmetic
 import CoNaturals.Exercise                    -- with Chuangjie Xu
+import CoNaturals.Flatten
 import CoNaturals.GenericConvergentSequence
 import CoNaturals.UniversalProperty
 

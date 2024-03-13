@@ -64,6 +64,9 @@ value-⋍· : (l m : 𝓛 X) (𝕗 : l ⋍· m)
          → value l ∼ (λ x → value m (⌜ is-defined-⋍· l m 𝕗 ⌝ x))
 value-⋍· l m = pr₂
 
+Id-to-⋍· : (l m : 𝓛 X) → (l ＝ m) → (l ⋍· m)
+Id-to-⋍· l m refl = (≃-refl (is-defined l)) , (λ x → refl)
+
 𝓛-Id· : is-univalent 𝓣
       → funext 𝓣 𝓤
       → (l m : 𝓛 X) → (l ＝ m) ≃ (l ⋍· m)

@@ -705,3 +705,31 @@ Id-via-lifting : funext 𝓣 𝓣
 Id-via-lifting fe fe' = η-＝-gives-⊑ , η-＝-gives-⊑-is-equiv fe fe'
 
 \end{code}
+
+Added 13th March 2024.
+
+\begin{code}
+
+η-image : funext 𝓣 𝓣
+        → funext 𝓣 𝓤
+        → propext 𝓣
+        → {X : 𝓤 ̇ }
+        → ¬ (Σ l ꞉ 𝓛 X , (l ≠ ⊥) × ((x : X) → l ≠ η x))
+η-image fe fe' pe ((P , φ , P-is-prop) , ν , f) =
+ no-props-other-than-𝟘-or-𝟙 pe (P , P-is-prop , g , h)
+ where
+  g : ¬ (P ＝ 𝟘)
+  g e = ν (to-Σ-＝
+            (e ,
+             to-subtype-＝
+              (λ _ → being-prop-is-prop fe)
+              (dfunext fe' (λ x → 𝟘-elim x))))
+
+  h : ¬ (P ＝ 𝟙)
+  h refl = f (φ ⋆)
+             (to-Σ-＝
+               (refl ,
+                to-subtype-＝
+                 (λ _ → being-prop-is-prop fe)
+                 (dfunext fe' (λ ⋆ → refl))))
+\end{code}

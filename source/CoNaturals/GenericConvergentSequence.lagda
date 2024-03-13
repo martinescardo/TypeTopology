@@ -366,6 +366,44 @@ not-finite-is-∞ fe {u} f = ℕ∞-to-ℕ→𝟚-lc fe (dfunext fe lemma)
   lemma 0        = different-from-₀-equal-₁ (λ r → f 0 (is-Zero-equal-Zero fe r))
   lemma (succ n) = different-from-₀-equal-₁ (λ r → f (n ∔ 1) (Succ-criterion fe (lemma n) r))
 
+\end{code}
+
+Added 13th March 2024.
+
+\begin{code}
+
+ℕ∞-equality-criterion : funext₀
+                      → (x y : ℕ∞)
+                      → ((n : ℕ) → ι n ＝ x → ι n ＝ y)
+                      → ((n : ℕ) → ι n ＝ y → ι n ＝ x)
+                      → x ＝ y
+ℕ∞-equality-criterion fe₀ x y f g = ℕ∞-is-¬¬-separated fe₀ x y ν
+ where
+  ν : ¬ (x ≠ y)
+  ν d = d (III ∙ IV ⁻¹)
+   where
+    I : (n : ℕ) → x ≠ ι n
+    I n e = d (x  ＝⟨ e  ⟩
+              ι n ＝⟨ f n (e ⁻¹) ⟩
+              y   ∎)
+
+    II : (n : ℕ) → y ≠ ι n
+    II n e = d (x   ＝⟨ (g n (e ⁻¹))⁻¹ ⟩
+                ι n ＝⟨ e ⁻¹ ⟩
+                y   ∎)
+
+    III : x ＝ ∞
+    III = not-finite-is-∞ fe₀ I
+
+    IV : y ＝ ∞
+    IV = not-finite-is-∞ fe₀ II
+
+\end{code}
+
+End of 13th March 2024 addition. Back to the ancient past.
+
+\begin{code}
+
 ℕ∞-ddensity : funext₀
             → {Y : ℕ∞ → 𝓤 ̇ }
             → ({u : ℕ∞} → is-¬¬-separated (Y u))
@@ -508,6 +546,9 @@ is-finite-up' fe u i = 𝟚-equality-cases
 
 is-infinite-∞ : ¬ is-finite ∞
 is-infinite-∞ (n , r) = 𝟘-elim (∞-is-not-finite n (r ⁻¹))
+
+not-finite-is-∞' : funext₀ → {u : ℕ∞} → ¬ is-finite u → u ＝ ∞
+not-finite-is-∞' fe {u} ν = not-finite-is-∞ fe (λ n e → ν (n , (e ⁻¹)))
 
 \end{code}
 
@@ -710,8 +751,8 @@ finite-accessible = course-of-values-induction (λ n → is-accessible _≺_ (ι
 
 \end{code}
 
-The following is not needed anymore, as we have the stronger fact,
-proved above, that ≺ is well founded:
+The following two functions are not needed anymore, as we have the
+stronger fact, proved above, that ≺ is well founded:
 
 \begin{code}
 
