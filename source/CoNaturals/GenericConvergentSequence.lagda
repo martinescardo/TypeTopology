@@ -382,7 +382,7 @@ Added 13th March 2024.
   ν : ¬ (x ≠ y)
   ν d = d (x ＝⟨ III ⟩
            ∞ ＝⟨ IV ⁻¹ ⟩
-           {!y!} ∎)
+           y ∎)
    where
     I : (n : ℕ) → x ≠ ι n
     I n e = d (x  ＝⟨ e  ⟩
