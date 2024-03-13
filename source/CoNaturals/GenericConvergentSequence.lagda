@@ -377,12 +377,10 @@ Added 13th March 2024.
                       → ((n : ℕ) → ι n ＝ x → ι n ＝ y)
                       → ((n : ℕ) → ι n ＝ y → ι n ＝ x)
                       → x ＝ y
-ℕ∞-equality-criterion fe₀ x y f g = IV
+ℕ∞-equality-criterion fe₀ x y f g = VII
  where
-  ν : ¬ (x ≠ y)
-  ν d = d (x ＝⟨ IV ⟩
-           ∞ ＝⟨ V ⁻¹ ⟩
-           y ∎)
+  I : ¬ (x ≠ y)
+  I d = VI
    where
     II : (n : ℕ) → x ≠ ι n
     II n e = d (x  ＝⟨ e  ⟩
@@ -400,8 +398,13 @@ Added 13th March 2024.
     V : y ＝ ∞
     V = not-finite-is-∞ fe₀ III
 
-  IV : x ＝ y
-  IV = ℕ∞-is-¬¬-separated fe₀ x y ν
+    VI : 𝟘
+    VI = d (x ＝⟨ IV ⟩
+            ∞ ＝⟨ V ⁻¹ ⟩
+            y ∎)
+
+  VII : x ＝ y
+  VII = ℕ∞-is-¬¬-separated fe₀ x y I
 
 \end{code}
 
