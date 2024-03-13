@@ -188,8 +188,8 @@ module _ (pt : propositional-truncations-exist) where
          C₁ : x ＝ ι 0
          C₁ = flat-finite' x 0 C₀
 
- EM-flat-is-surjection-gives : EM 𝓤₀ → is-surjection flat
- EM-flat-is-surjection-gives em y@(P , φ , P-is-prop) =
+ EM-gives-flat-is-surjection : EM 𝓤₀ → is-surjection flat
+ EM-gives-flat-is-surjection em y@(P , φ , P-is-prop) =
    ∣ I (em P P-is-prop) ∣
   where
    I : P + ¬ P → Σ x ꞉ ℕ∞ , flat x ＝ y
