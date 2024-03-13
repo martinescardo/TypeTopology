@@ -203,7 +203,7 @@ module _ (pt : propositional-truncations-exist) where
      II = (λ _ → p) , (λ (n , e) → ℕ-to-ℕ∞-lc e)
 
      III : flat (ι (φ p)) ＝ y
-     III = ⊑-anti-lemma pe fe₀ fe₀ II (λ _ → φ p , refl)
+     III = ⊑-anti-lemma pe fe₀ fe₀ II (λ _ → ℕ-to-ℕ∞-is-finite (φ p))
 
    I (inr ν) = ∞ , III
     where
