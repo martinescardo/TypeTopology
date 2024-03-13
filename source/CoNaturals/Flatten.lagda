@@ -51,7 +51,8 @@ flat-finite n = II
   I = unique-to-𝟙 , (λ (n , p) → ℕ-to-ℕ∞-lc p)
 
   II : flat (ι n) ＝ η n
-  II = ⊑-anti-lemma pe fe₀ fe₀ I (λ _ → n , refl)
+  II = ⊑-anti-lemma pe fe₀ fe₀ I
+        (λ (_ : is-defined (η n)) → ℕ-to-ℕ∞-is-finite n)
 
 flat-∞ : flat ∞ ＝ ⊥
 flat-∞ = II
@@ -60,7 +61,7 @@ flat-∞ = II
   I = is-infinite-∞ , (λ is-finite-∞ → 𝟘-elim (is-infinite-∞ is-finite-∞))
 
   II : flat ∞ ＝ ⊥
-  II = ⊑-anti-lemma pe fe₀ fe₀ I 𝟘-elim
+  II = ⊑-anti pe fe₀ fe₀ (I , ⊥-least (flat ∞))
 
 \end{code}
 
