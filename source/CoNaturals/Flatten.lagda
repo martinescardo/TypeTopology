@@ -70,12 +70,10 @@ It is left-cancellable and hence and embedding.
 \begin{code}
 
 flat-lc : left-cancellable flat
-flat-lc {x} {y} e = ℕ∞-equality-criterion fe₀ x y
-                     (h x y (Id-to-⋍· _ _ e))
-                     (h y x (Id-to-⋍· _ _ (e ⁻¹)))
+flat-lc {x} {y} e = II
  where
-  h : (x y : ℕ∞) → flat x ⋍· flat y → (n : ℕ) → ι n ＝ x → ι n ＝ y
-  h x y a n e =
+  I : (x y : ℕ∞) → flat x ⋍· flat y → (n : ℕ) → ι n ＝ x → ι n ＝ y
+  I x y a n e =
    ι n                      ＝⟨ ap ι (g (n , e)) ⟩
    ι (size (⌜ f ⌝ (n , e))) ＝⟨ size-property (⌜ f ⌝ (n , e)) ⟩
    y                        ∎
@@ -85,6 +83,11 @@ flat-lc {x} {y} e = ℕ∞-equality-criterion fe₀ x y
 
     g : (φ : is-finite x) → size φ ＝ size (⌜ f ⌝ φ)
     g = value-⋍· (flat x) (flat y) a
+
+  II : x ＝ y
+  II = ℕ∞-equality-criterion fe₀ x y
+        (I x y (Id-to-⋍· _ _ e))
+        (I y x (Id-to-⋍· _ _ (e ⁻¹)))
 
 flat-is-embedding : is-embedding flat
 flat-is-embedding =
