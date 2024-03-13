@@ -94,62 +94,84 @@ Added on 2024-03-13.
  open PrincipalIdeals L
  open Joins _⊆ᵢ_
 
- family-of-principal-ideals : (I : Ideal L) → Fam 𝓤 (Ideal L)
- family-of-principal-ideals I =
-  ⁅ principal-ideal u ∣ (u , _) ∶ (Σ u ꞉ ∣ L ∣ᵈ , u ∈ⁱ I) ⁆
+\end{code}
 
- original-is-an-upper-bound-of-principal-ideals-within
-  : (I : Ideal L)
-  → (I is-an-upper-bound-of (family-of-principal-ideals I)) holds
- original-is-an-upper-bound-of-principal-ideals-within I (u , μᵢ) x μ =
-  I-is-downward-closed x u μ μᵢ
+Every ideal `I` is the join of its principal ideals. We call this join the
+_factorization of `I` into its join of principal ideals_, and we denote function
+implementing this `factorization`.
+
+\begin{code}
+
+ factorization : Ideal L → Ideal L
+ factorization I = ⋁[ 𝒪 spec-L ] principal-ideals-of I
+
+\end{code}
+
+\begin{code}
+
+ ideal-equal-to-factorization : (I : Ideal L) → I ＝ factorization I
+ ideal-equal-to-factorization I =
+  ⋁[ 𝒪 spec-L ]-unique (principal-ideals-of I) I († , ‡)
    where
-    open Ideal I using (I-is-downward-closed)
+    † : (I is-an-upper-bound-of (principal-ideals-of I)) holds
+    † = ideal-is-an-upper-bound-of-its-principal-ideals I
 
- decomposition₀ : Ideal L → Ideal L
- decomposition₀ I = ⋁[ 𝒪 spec-L ] family-of-principal-ideals I
+    ‡ : ((Iᵤ , _) : upper-bound (principal-ideals-of I)) → I ⊆ᵢ Iᵤ holds
+    ‡ (Iᵤ , υ) =
+     ideal-is-lowerbound-of-upperbounds-of-its-principal-ideals I Iᵤ υ
+
+\end{code}
+
+We also define an alternative version of `factorization` that closes the family
+of principal ideals of the given ideal under all finite joins, hence
+directifying it.
+
+\begin{code}
+
+ principal-ideals-of↑ : Ideal L → Fam 𝓤 (Ideal L)
+ principal-ideals-of↑ I = directify (𝒪 spec-L) (principal-ideals-of I)
+
+ factorization↑ : Ideal L → Ideal L
+ factorization↑ I = ⋁[ 𝒪 spec-L ] principal-ideals-of↑ I
+
+\end{code}
+
+These two definitions of `factorization` are equal.
+
+\begin{code}
+
+ factorization-equal-to-factorization↑ : (I : Ideal L)
+                                       → factorization I ＝ factorization↑ I
+ factorization-equal-to-factorization↑ I =
+  directify-preserves-joins (𝒪 spec-L) (principal-ideals-of I)
+
+\end{code}
+
+\begin{code}
+
+ ideal-equal-to-factorization↑ : (I : Ideal L) → I ＝ factorization↑ I
+ ideal-equal-to-factorization↑ I = I                ＝⟨ Ⅰ ⟩
+                                   factorization I  ＝⟨ Ⅱ ⟩
+                                   factorization↑ I ∎
+                                    where
+                                     Ⅰ = ideal-equal-to-factorization I
+                                     Ⅱ = factorization-equal-to-factorization↑ I
+
+\end{code}
+
+\begin{code}
 
  an-important-lemma : (I : Ideal L) (xs : List ∣ L ∣ᵈ)
-                    → xs ◁ family-of-principal-ideals I
+                    → xs ◁ principal-ideals-of I
                     → join-listᵈ L xs ∈ⁱ I
  an-important-lemma I xs c = ideals-are-closed-under-finite-joins L I xs γ
   where
    γ : ((x , _) : type-from-list xs) → x ∈ⁱ I
-   γ (x , p) = original-is-an-upper-bound-of-principal-ideals-within I (pr₁ β) x (pr₂ β)
+   γ (x , p) = ideal-is-an-upper-bound-of-its-principal-ideals I (pr₁ β) x (pr₂ β)
     where
-     β : Σ i ꞉ (index (family-of-principal-ideals I))
-             , x ∈ⁱ (family-of-principal-ideals I [ i ])
-     β = covering-lemma (family-of-principal-ideals I) xs c x p
-
- decomposition-implies-original : (I : Ideal L) {x : ∣ L ∣ᵈ}
-                                → (x ∈ᵢ decomposition₀ I ⇒ x ∈ᵢ I) holds
- decomposition-implies-original I {x} μ = ∥∥-rec (holds-is-prop (x ∈ᵢ I)) † μ
-  where
-   open Ideal I using (I-is-downward-closed; I-is-closed-under-∨; I-contains-𝟎)
-
-   † : (Σ xs ꞉ List ∣ L ∣ᵈ ,
-         xs ◁ family-of-principal-ideals I  × (x ＝ join-listᵈ L xs))
-     → x ∈ⁱ I
-   † (xs , c , q) = transport (λ - → - ∈ⁱ I) (q ⁻¹) (an-important-lemma I xs c)
-
- original-implies-decomposition : (I : Ideal L) {x : ∣ L ∣ᵈ}
-                                → (x ∈ᵢ I ⇒ x ∈ᵢ decomposition₀ I) holds
- original-implies-decomposition I {x} μ =
-  ⋁[ 𝒪 spec-L ]-upper
-   (family-of-principal-ideals I)
-   (x , μ)
-   x
-   (≤-is-reflexive (poset-ofᵈ L) x)
-
- ideal-equal-to-decomposition : (I : Ideal L) → I ＝ decomposition₀ I
- ideal-equal-to-decomposition I =
-  ideal-extensionality L I (decomposition₀ I) † ‡
-   where
-    † : (I ⊆ᵢ decomposition₀ I) holds
-    † _ = original-implies-decomposition I
-
-    ‡ : (decomposition₀ I ⊆ᵢ I) holds
-    ‡ _ = decomposition-implies-original I
+     β : Σ i ꞉ (index (principal-ideals-of I))
+             , x ∈ⁱ (principal-ideals-of I [ i ])
+     β = covering-lemma (principal-ideals-of I) xs c x p
 
  finite-join-of-ideals : List ∣ L ∣ᵈ → Ideal L
  finite-join-of-ideals []       = 𝟎[ 𝒪 spec-L ]
@@ -159,13 +181,43 @@ Added on 2024-03-13.
  finite-decomposition : (I : Ideal L)
                       → is-compact-open spec-L I holds
                       → ∃ xs ꞉ List ∣ L ∣ᵈ , I ＝ finite-join-of-ideals xs
- finite-decomposition I κ = {!!}
-  where
-   c : I ＝ decomposition₀ I
-   c = ideal-equal-to-decomposition I
+ finite-decomposition I κ =
+  ∥∥-rec ∃-is-prop γ (κ (principal-ideals-of↑ I) δ c₀)
+   where
+    Ⅰ = ideal-equal-to-factorization I
+    Ⅱ = directify-preserves-joins (𝒪 spec-L) (principal-ideals-of I)
 
-   c₀ : (I ⊆ᵢ decomposition₀ I) holds
-   c₀ = {!!}
+    c₀ : I ⊆ᵢ (⋁[ 𝒪 spec-L ] principal-ideals-of↑ I) holds
+    c₀ = reflexivity+ (poset-of (𝒪 spec-L)) (ideal-equal-to-factorization↑ I)
+
+    δ : is-directed (𝒪 spec-L) (principal-ideals-of↑ I) holds
+    δ = directify-is-directed (𝒪 spec-L) (principal-ideals-of I)
+
+    γ : Σ i ꞉ (index (principal-ideals-of↑ I))
+            , I ⊆ᵢ (principal-ideals-of↑ I [ i ]) holds
+      → ∃ xs ꞉ List ∣ L ∣ᵈ , I ＝ finite-join-of-ideals xs
+    γ (ps , p) = ∣ xs , q ∣
+     where
+      xs : List ∣ L ∣ᵈ
+      xs = map pr₁ ps
+
+      † : finite-join-of-ideals xs ⊆ᵢ I holds
+      † x μ = {!!}
+
+      foo : principal-ideals-of↑ I [ ps ] ＝ directify (𝒪 spec-L) (principal-ideals-of I) [ ps ]
+      foo = refl
+
+      bar : directify (𝒪 spec-L) (principal-ideals-of I) [ ps ]
+            ＝ {!!}
+      bar = {!!}
+
+      ‡ : I ⊆ᵢ finite-join-of-ideals xs holds
+      ‡ x μ = {!!}
+
+      q : I ＝ finite-join-of-ideals xs
+      q = ⊆ᵢ-is-antisymmetric ‡ †
+
+{--
 
 \end{code}
 
@@ -179,5 +231,7 @@ The compact opens of the locale of spectra are closed under binary meets.
  --  where
  --   κ : is-compact-open spec-L (K₁ ∧[ 𝒪 spec-L ] K₂) holds
  --   κ S δ φ = {!∥∥-rec ? ? ?!}
+
+--}
 
 \end{code}
