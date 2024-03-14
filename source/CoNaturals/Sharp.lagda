@@ -35,7 +35,7 @@ We introduce the following standard notation, and write ι : ℕ → ℕ⊥ for
 the canonical inclusion of the natural numbers into the flat domain ℕ⊥
 of natural numbers. Notice that we also write ι : ℕ → ℕ∞ for the
 canonical inclusion of the natural numbers into the generic convergent
-sequence, in the module that defines it.
+sequence, introduced in the module that defines ℕ∞.
 
 \begin{code}
 
@@ -79,7 +79,7 @@ sharp-∞ = II
 
 \end{code}
 
-It is left-cancellable and hence and embedding.
+The map sharp is left-cancellable and hence and embedding.
 
 \begin{code}
 
@@ -116,13 +116,13 @@ We have the following two corollaries.
 
 sharp-finite' : (x : ℕ∞) (n : ℕ) → sharp x ＝ ι n → x ＝ ι n
 sharp-finite' x n e = sharp-lc (sharp x     ＝⟨ e ⟩
-                              ι n        ＝⟨ (sharp-finite n)⁻¹ ⟩
-                              sharp (ι n) ∎)
+                                ι n         ＝⟨ (sharp-finite n)⁻¹ ⟩
+                                sharp (ι n) ∎)
 
 sharp-∞' : (x : ℕ∞) → sharp x ＝ ⊥ → x ＝ ∞
 sharp-∞' x e = sharp-lc (sharp x ＝⟨ e ⟩
-                       ⊥      ＝⟨ sharp-∞ ⁻¹ ⟩
-                       sharp ∞ ∎)
+                         ⊥       ＝⟨ sharp-∞ ⁻¹ ⟩
+                         sharp ∞ ∎)
 
 \end{code}
 
@@ -137,13 +137,13 @@ sharp-image-has-empty-complement (l , f) =
    (l ,
    (λ (e : l ＝ ⊥)
          → f ∞ (sharp ∞ ＝⟨ sharp-∞ ⟩
-                ⊥      ＝⟨ e ⁻¹ ⟩
-                l      ∎)) ,
+                ⊥       ＝⟨ e ⁻¹ ⟩
+                l       ∎)) ,
    (λ n (e : l ＝ ι n)
          → f (ι n)
-              (sharp (ι n) ＝⟨ sharp-finite n ⟩
-               ι n        ＝⟨ e ⁻¹ ⟩
-               l          ∎)))
+             (sharp (ι n) ＝⟨ sharp-finite n ⟩
+              ι n         ＝⟨ e ⁻¹ ⟩
+              l           ∎)))
 
 \end{code}
 
@@ -177,10 +177,10 @@ module _ (pt : propositional-truncations-exist) where
      IV : (ι 0 ＝ x) + (ι 0 ≠ x) → P + ¬ P
      IV (inl d) = inl (⌜ C ⌝⁻¹ ⋆)
       where
-       A = y          ＝⟨ e ⁻¹ ⟩
+       A = y           ＝⟨ e ⁻¹ ⟩
            sharp x     ＝⟨ ap sharp (d ⁻¹) ⟩
            sharp (ι 0) ＝⟨ sharp-finite 0 ⟩
-           ι 0        ∎
+           ι 0         ∎
 
        B : y ⋍· ι 0
        B = Id-to-⋍· _ _ A
@@ -200,8 +200,8 @@ module _ (pt : propositional-truncations-exist) where
        C d = ν (C₁ ⁻¹)
         where
          C₀ = sharp x ＝⟨ e ⟩
-              y      ＝⟨ d ⟩
-              ι 0    ∎
+              y       ＝⟨ d ⟩
+              ι 0     ∎
 
          C₁ : x ＝ ι 0
          C₁ = sharp-finite' x 0 C₀
