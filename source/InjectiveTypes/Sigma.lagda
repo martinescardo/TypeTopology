@@ -302,14 +302,13 @@ Sometimes we want to show that types of the form
 
   Σ x ꞉ X , Σ a ꞉ A x , B x a
 
-is aflabby/ainjective, where the family B happens to be proposition
-valued and the type Σ x : X , Σ a ꞉ A x is already known to be
-aflabby/ainjective. (See the discussion below for the case that B is
-not necessarily proposition valued.) This can often be done directly
-using the simplified compatibility condition if we consider types of
-the equivalent form
+is aflabby/ainjective, where the family B happens to be proposition valued and
+the type Σ x : X , A x is already known to be aflabby/ainjective. (See the
+discussion below for the case that B is not necessarily proposition valued.)
+This can often be done directly using the simplified compatibility condition if
+we consider types of the equivalent form
 
-  Σ σ ꞉ (Σ x : X , Σ a ꞉ A x) , C σ
+  Σ σ ꞉ (Σ x : X , A x) , C σ
 
 again with C proposition valued.
 
