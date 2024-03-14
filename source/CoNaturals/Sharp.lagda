@@ -29,30 +29,34 @@ open import UF.FunExt
 open import UF.PropTrunc
 open import UF.Subsingletons-FunExt
 
-ℕ⊥ = 𝓛 ℕ
-
 \end{code}
 
 We define sharp : ℕ∞ → ℕ⊥ so that
 
- * sharp (ι n) ＝ η n and
+ * sharp (ι n) ＝ ι n and
 
  * sharp ∞ ＝ ⊥.
 
 \begin{code}
 
+ℕ⊥ = 𝓛 ℕ
+
+instance
+ canonical-map-ℕ-ℕ⊥ : Canonical-Map ℕ ℕ⊥
+ ι {{canonical-map-ℕ-ℕ⊥}} = η
+
 sharp : ℕ∞ → ℕ⊥
 sharp x = is-finite x , size , being-finite-is-prop fe₀ x
 
-sharp-finite : (n : ℕ) → sharp (ι n) ＝ η n
+sharp-finite : (n : ℕ) → sharp (ι n) ＝ ι n
 sharp-finite n = II
  where
-  I : sharp (ι n) ⊑ η n
+  I : sharp (ι n) ⊑ ι n
   I = unique-to-𝟙 , (λ (n , p) → ℕ-to-ℕ∞-lc p)
 
-  II : sharp (ι n) ＝ η n
+  II : sharp (ι n) ＝ ι n
   II = ⊑-anti-lemma pe fe₀ fe₀ I
-        (λ (_ : is-defined (η n)) → ℕ-to-ℕ∞-is-finite n)
+        (λ (_ : is-defined (ι n)) → ℕ-to-ℕ∞-is-finite n)
 
 sharp-∞ : sharp ∞ ＝ ⊥
 sharp-∞ = II
@@ -100,9 +104,9 @@ We have the following two corollaries.
 
 \begin{code}
 
-sharp-finite' : (x : ℕ∞) (n : ℕ) → sharp x ＝ η n → x ＝ ι n
+sharp-finite' : (x : ℕ∞) (n : ℕ) → sharp x ＝ ι n → x ＝ ι n
 sharp-finite' x n e = sharp-lc (sharp x     ＝⟨ e ⟩
-                              η n        ＝⟨ (sharp-finite n)⁻¹ ⟩
+                              ι n        ＝⟨ (sharp-finite n)⁻¹ ⟩
                               sharp (ι n) ∎)
 
 sharp-∞' : (x : ℕ∞) → sharp x ＝ ⊥ → x ＝ ∞
@@ -125,10 +129,10 @@ sharp-image-has-empty-complement (l , f) =
          → f ∞ (sharp ∞ ＝⟨ sharp-∞ ⟩
                 ⊥      ＝⟨ e ⁻¹ ⟩
                 l      ∎)) ,
-   (λ n (e : l ＝ η n)
+   (λ n (e : l ＝ ι n)
          → f (ι n)
               (sharp (ι n) ＝⟨ sharp-finite n ⟩
-               η n        ＝⟨ e ⁻¹ ⟩
+               ι n        ＝⟨ e ⁻¹ ⟩
                l          ∎)))
 
 \end{code}
@@ -166,28 +170,28 @@ module _ (pt : propositional-truncations-exist) where
        A = y          ＝⟨ e ⁻¹ ⟩
            sharp x     ＝⟨ ap sharp (d ⁻¹) ⟩
            sharp (ι 0) ＝⟨ sharp-finite 0 ⟩
-           η 0        ∎
+           ι 0        ∎
 
-       B : y ⋍· η 0
+       B : y ⋍· ι 0
        B = Id-to-⋍· _ _ A
 
        C : P ≃ 𝟙
-       C = is-defined-⋍· y (η 0) B
+       C = is-defined-⋍· y (ι 0) B
 
      IV (inr ν) = inr (contrapositive B C)
       where
-       A : y ⊑ η 0
+       A : y ⊑ ι 0
        A = unique-to-𝟙 , (λ (p : P) → refl)
 
-       B : P → y ＝ η 0
+       B : P → y ＝ ι 0
        B p = ⊑-anti-lemma pe fe₀ fe₀ A (λ _ → p)
 
-       C : ¬ (y ＝ η 0)
+       C : ¬ (y ＝ ι 0)
        C d = ν (C₁ ⁻¹)
         where
          C₀ = sharp x ＝⟨ e ⟩
               y      ＝⟨ d ⟩
-              η 0    ∎
+              ι 0    ∎
 
          C₁ : x ＝ ι 0
          C₁ = sharp-finite' x 0 C₀
