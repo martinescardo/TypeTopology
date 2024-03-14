@@ -31,11 +31,11 @@ open import UF.Subsingletons-FunExt
 
 \end{code}
 
-We define sharp : ℕ∞ → ℕ⊥ so that
-
- * sharp (ι n) ＝ ι n and
-
- * sharp ∞ ＝ ⊥.
+We introduce the following standard notation, and write ι : ℕ → ℕ⊥ for
+the canonical inclusion of the natural numbers into the flat domain ℕ⊥
+of natural numbers. Notice that we also write ι : ℕ → ℕ∞ for the
+canonical inclusion of the natural numbers into the generic convergent
+sequence, in the module that defines it.
 
 \begin{code}
 
@@ -44,6 +44,16 @@ We define sharp : ℕ∞ → ℕ⊥ so that
 instance
  canonical-map-ℕ-ℕ⊥ : Canonical-Map ℕ ℕ⊥
  ι {{canonical-map-ℕ-ℕ⊥}} = η
+
+\end{code}
+
+We define sharp : ℕ∞ → ℕ⊥ so that
+
+ * sharp (ι n) ＝ ι n and
+
+ * sharp ∞ ＝ ⊥.
+
+\begin{code}
 
 sharp : ℕ∞ → ℕ⊥
 sharp x = is-finite x , size , being-finite-is-prop fe₀ x
