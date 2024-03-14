@@ -366,10 +366,10 @@ compatibility-condition-with-axioms
  ρ-has-section
  B
  B-is-prop-valued
- B-is-closed-under-extension = ρₐ-has-section
+ B-is-closed-under-extension = ρ'-has-section
   where
-   Aₐ : X → 𝓥 ⊔ 𝓦 ̇
-   Aₐ x = Σ a ꞉ A x , B x a
+   A' : X → 𝓥 ⊔ 𝓦 ̇
+   A' x = Σ a ꞉ A x , B x a
 
    module _ (p : Ω 𝓥)
             (f : p holds → X)
@@ -378,26 +378,26 @@ compatibility-condition-with-axioms
     σ : ((h : p holds) → A (f h)) → A (extension ϕ p f)
     σ = section-of (ρ A ϕ p f) (ρ-has-section p f)
 
-    ρₐ : Aₐ (extension ϕ p f) → ((h : p holds) → Aₐ (f h))
-    ρₐ = ρ Aₐ ϕ p f
+    ρ' : A' (extension ϕ p f) → ((h : p holds) → A' (f h))
+    ρ' = ρ A' ϕ p f
 
-    σₐ : ((h : p holds) → Aₐ (f h)) → Aₐ (extension ϕ p f)
-    σₐ α = σ (λ h → pr₁ (α h)) ,
+    σ' : ((h : p holds) → A' (f h)) → A' (extension ϕ p f)
+    σ' α = σ (λ h → pr₁ (α h)) ,
              B-is-closed-under-extension p f
              (λ h → pr₁ (α h))
              (λ h → pr₂ (α h))
 
-    ρσₐ : ρₐ ∘ σₐ ∼ id
-    ρσₐ α = dfunext fe' I
+    ρσ' : ρ' ∘ σ' ∼ id
+    ρσ' α = dfunext fe' I
      where
       α₁ = λ h → pr₁ (α h)
       α₂ = λ h → pr₂ (α h)
 
-      I : ρₐ (σₐ α) ∼ α
+      I : ρ' (σ' α) ∼ α
       I h =
-       ρₐ (σₐ α) h                    ＝⟨ refl ⟩
-       ρₐ (σ α₁ , _) h                ＝⟨ refl ⟩
-       transport Aₐ (e h) (σ α₁ , _)  ＝⟨ II ⟩
+       ρ' (σ' α) h                    ＝⟨ refl ⟩
+       ρ' (σ α₁ , _) h                ＝⟨ refl ⟩
+       transport A' (e h) (σ α₁ , _)  ＝⟨ II ⟩
        (transport A (e h) (σ α₁) , _) ＝⟨ refl ⟩
        (ρ A ϕ p f (σ α₁) h , _)       ＝⟨ III ⟩
        (α₁ h , α₂ h)                  ＝⟨ refl ⟩
@@ -412,8 +412,8 @@ compatibility-condition-with-axioms
                 (ap (λ - → - h)
                     (section-equation (ρ A ϕ p f) (ρ-has-section p f) α₁))
 
-    ρₐ-has-section : has-section ρₐ
-    ρₐ-has-section = σₐ , ρσₐ
+    ρ'-has-section : has-section ρ'
+    ρ'-has-section = σ' , ρσ'
 
 \end{code}
 
