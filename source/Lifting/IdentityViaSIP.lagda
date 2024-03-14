@@ -73,4 +73,9 @@ Id-to-⋍· l m refl = (≃-refl (is-defined l)) , (λ x → refl)
 𝓛-Id· ua fe l m = (𝓛-Id ua l m)
                 ● (Σ-cong (λ e → ≃-funext fe (value l) (value m ∘ ⌜ e ⌝)))
 
+⋍·-gives-＝ : is-univalent 𝓣
+           → funext 𝓣 𝓤
+           → {l m : 𝓛 X} → (l ⋍· m) → l ＝ m
+⋍·-gives-＝ ua fe = ⌜ 𝓛-Id· ua fe _ _ ⌝⁻¹
+
 \end{code}

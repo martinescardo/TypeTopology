@@ -666,8 +666,16 @@ We have yet another equivalence, using the above techniques:
 
 \begin{code}
 
-η-maximal : (x : X) (l : 𝓛 X) → η x ⊑ l → l ⊑ η x
-η-maximal x (P , ψ , i) (f , δ) = (λ p → ⋆) , (λ p → ap ψ (i p (f ⋆)) ∙ (δ ⋆)⁻¹)
+η-maximal' : (x : X) (l : 𝓛 X) → η x ⊑ l → l ⊑ η x
+η-maximal' x (P , ψ , i) (f , δ) = (λ p → ⋆) , (λ p → ap ψ (i p (f ⋆)) ∙ (δ ⋆)⁻¹)
+
+η-maximal : propext 𝓣
+          → funext 𝓣 𝓣
+          → funext 𝓣 𝓤
+          → (x : X) (l : 𝓛 X)
+          → η x ⊑ l
+          → η x ＝ l
+η-maximal pe fe fe' x l a = ⊑-anti pe fe fe' (a , η-maximal' x l a)
 
 ⊥-least : (l : 𝓛 X) → ⊥ ⊑ l
 ⊥-least l = unique-from-𝟘 , λ z → unique-from-𝟘 z

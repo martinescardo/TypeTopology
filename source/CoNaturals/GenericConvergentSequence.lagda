@@ -1147,7 +1147,16 @@ private
   ι {{Canonical-Map-ℕ-ℕ∞'}} = ℕ-to-ℕ∞'
 
 is-finite' : ℕ∞' → 𝓤₀ ̇
-is-finite' u = T (ℕ∞'-to-ℕ→𝟚 u)
+is-finite' u@(α , a) = T α
+
+being-finite'-is-prop : funext₀ → (u : ℕ∞') → is-prop (is-finite' u)
+being-finite'-is-prop fe₀ u@(α , a) = a
+
+size' : {u : ℕ∞'} → is-finite' u → ℕ
+size' (n , e) = n
+
+size'-property : {u : ℕ∞'} (φ : is-finite' u) → ℕ∞'-to-ℕ→𝟚 u (size' {u} φ) ＝ ₁
+size'-property (n , e) = e
 
 Zero'-is-finite : is-finite' Zero'
 Zero'-is-finite = 0 , refl
@@ -1325,13 +1334,13 @@ at-most-one-₁-Lemma₀ β π {m} {n} (p , q) = ap pr₁ (π (m , p) (n , q))
 at-most-one-₁-Lemma₁ : (β : ℕ → 𝟚)
                      → has-at-most-one-₁ β
                      → {m n : ℕ} → m ≠ n → β m ＝ ₁ → β n ＝ ₀
-at-most-one-₁-Lemma₁ β π {m} {n} ν p = w
+at-most-one-₁-Lemma₁ β π {m} {n} ν p = II
  where
   I : β n ≠ ₁
   I q = ν (at-most-one-₁-Lemma₀ β π (p , q))
 
-  w : β n ＝ ₀
-  w = different-from-₁-equal-₀ I
+  II : β n ＝ ₀
+  II = different-from-₁-equal-₀ I
 
 \end{code}
 
@@ -1529,6 +1538,15 @@ And with this we get the promised equivalence.
           (λ (q : n ＝ i) → transport (λ - → ℕ∞'-to-ℕ→𝟚 u - ＝ ℕ∞'-to-ℕ→𝟚 (ι n) -) q I)
           (λ (ν : n ≠ i) → II i ν)
 
+ size'-property' : {u : ℕ∞'} (φ : is-finite' u) → ι (size' {u} φ) ＝ u
+ size'-property' {u} φ = II ⁻¹
+  where
+   I : ℕ∞'-to-ℕ→𝟚 u (size' {u} φ) ＝ ₁
+   I = size'-property {u} φ
+
+   II : u ＝ ι (size' {u} φ)
+   II = diagonal-lemma (size' {u} φ) u I
+
  finite'-is-natural : (u : ℕ∞') → is-finite' u → Σ n ꞉ ℕ , u ＝ ι n
  finite'-is-natural u (n , p) = (n , diagonal-lemma n u p)
 
@@ -1549,5 +1567,46 @@ And with this we get the promised equivalence.
 
    III : is-finite u
    III = transport is-finite II I
+
+ finite'-isolated : (n : ℕ) → is-isolated (ℕ-to-ℕ∞' n)
+ finite'-isolated n u = I (finite-isolated fe n (ℕ∞'-to-ℕ∞ u))
+  where
+   I : is-decidable (ι n ＝ ℕ∞'-to-ℕ∞ u) → is-decidable (ι n ＝ u)
+   I (inl e) = inl (ι n                     ＝⟨ (finite-preservation n)⁻¹ ⟩
+                    ℕ∞-to-ℕ∞' (ι n)         ＝⟨ ap ℕ∞-to-ℕ∞' e ⟩
+                    ℕ∞-to-ℕ∞' (ℕ∞'-to-ℕ∞ u) ＝⟨ ℕ∞-ε u ⟩
+                    u                       ∎)
+   I (inr ν) = inr (λ (e : ι n ＝ u)
+                         → ν (ι n             ＝⟨ (finite'-preservation n)⁻¹ ⟩
+                              ℕ∞'-to-ℕ∞ (ι n) ＝⟨ ap ℕ∞'-to-ℕ∞ e ⟩
+                              ℕ∞'-to-ℕ∞ u     ∎))
+
+ ℕ∞'-equality-criterion : (x y : ℕ∞')
+                        → ((n : ℕ) → ι n ＝ x → ι n ＝ y)
+                        → ((n : ℕ) → ι n ＝ y → ι n ＝ x)
+                        → x ＝ y
+ ℕ∞'-equality-criterion x y f g = ℕ∞'-to-ℕ→𝟚-lc fe V
+  where
+   I : (n : ℕ) (x y : ℕ∞')
+     → (ι n ＝ x → ι n ＝ y)
+     → ℕ∞'-to-ℕ→𝟚 x n ≤₂ ℕ∞'-to-ℕ→𝟚 y n
+   I n x y h = ≤₂-criterion a
+    where
+     a : ℕ∞'-to-ℕ→𝟚 x n ＝ ₁ → ℕ∞'-to-ℕ→𝟚 y n ＝ ₁
+     a e = ℕ∞'-to-ℕ→𝟚 y n     ＝⟨ (ap (λ - → - n) IV)⁻¹ ⟩
+           ℕ∞'-to-ℕ→𝟚 (ι n) n ＝⟨ ℕ-to-ℕ∞'-diagonal n ⟩
+           ₁                  ∎
+      where
+       II : ι n ＝ x
+       II = (diagonal-lemma n x e)⁻¹
+
+       III : ι n ＝ y
+       III = h II
+
+       IV : ℕ∞'-to-ℕ→𝟚 (ι n) ＝ ℕ∞'-to-ℕ→𝟚 y
+       IV = ap ℕ∞'-to-ℕ→𝟚 III
+
+   V : ℕ∞'-to-ℕ→𝟚 x ＝ ℕ∞'-to-ℕ→𝟚 y
+   V = dfunext fe (λ n → ≤₂-anti (I n x y (f n)) (I n y x (g n)))
 
 \end{code}

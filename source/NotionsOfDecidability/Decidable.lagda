@@ -150,19 +150,30 @@ propositions have binary truth values, irrespective of whether they
 have BHK-style witnesses. And this is precisely the role of the
 principle of excluded middle in classical mathematics.  The following
 requires choice, which holds in BHK-style constructive mathematics:
-s
+
 \begin{code}
 
-indicator : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X → 𝓦 ̇ }
-          → ((x : X) → A x + B x)
-          → Σ p ꞉ (X → 𝟚) , ((x : X) → (p x ＝ ₀ → A x)
-                                     × (p x ＝ ₁ → B x))
-indicator {𝓤} {𝓥} {𝓦} {X} {A} {B} h = (λ x → pr₁(lemma₁ x)) , (λ x → pr₂(lemma₁ x))
- where
-  lemma₀ : (x : X) → (A x + B x) → Σ b ꞉ 𝟚 , (b ＝ ₀ → A x) × (b ＝ ₁ → B x)
-  lemma₀ x = which-of
+module _ {X : 𝓤 ̇ } {A₀ : X → 𝓥 ̇ } {A₁ : X → 𝓦 ̇ }
+         (h : (x : X) → A₀ x + A₁ x)
+       where
 
-  lemma₁ : (x : X) → Σ b ꞉ 𝟚 , (b ＝ ₀ → A x) × (b ＝ ₁ → B x)
-  lemma₁ = λ x → lemma₀ x (h x)
+ indicator : Σ p ꞉ (X → 𝟚) , ((x : X) → (p x ＝ ₀ → A₀ x)
+                                      × (p x ＝ ₁ → A₁ x))
+ indicator = (λ x → pr₁(lemma₁ x)) , (λ x → pr₂(lemma₁ x))
+  where
+   lemma₀ : (x : X) → (A₀ x + A₁ x) → Σ b ꞉ 𝟚 , (b ＝ ₀ → A₀ x) × (b ＝ ₁ → A₁ x)
+   lemma₀ x = which-of
+
+   lemma₁ : (x : X) → Σ b ꞉ 𝟚 , (b ＝ ₀ → A₀ x) × (b ＝ ₁ → A₁ x)
+   lemma₁ x = lemma₀ x (h x)
+
+ indicator-map : X → 𝟚
+ indicator-map = pr₁ indicator
+
+ indicator₀ : (x : X) → indicator-map x ＝ ₀ → A₀ x
+ indicator₀ x = pr₁ (pr₂ indicator x)
+
+ indicator₁ : (x : X) → indicator-map x ＝ ₁ → A₁ x
+ indicator₁ x = pr₂ (pr₂ indicator x)
 
 \end{code}
