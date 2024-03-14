@@ -1,4 +1,4 @@
-Martin Escardo 12-13 March 2024.
+Martin Escardo 12-14 March 2024.
 
 We construct an embedding of ℕ∞ into ℕ⊥, the lifting on ℕ, or the
 flat domain of natural numbers, and prove various properties of it.
