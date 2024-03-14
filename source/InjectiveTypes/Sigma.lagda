@@ -328,7 +328,7 @@ private
 
 One practical example of this situation takes place when the type X is
 a universe, the family A is the structure of pointed ∞-magmas, and C
-gives the monoid axioms. So we we first show that pointed ∞-magmas are
+gives the monoid axioms. So we first show that pointed ∞-magmas are
 aflabby, then, using the above, we conclude that so is the subtype of
 monoids, provided we also show that the monoid axioms satisfy the
 simplified compatibility condition.
