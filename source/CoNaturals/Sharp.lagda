@@ -1,6 +1,6 @@
 Martin Escardo 12-13 March 2024.
 
-We construct an embedding of ℕ∞ into 𝓛 ℕ, the lifting on ℕ, or the
+We construct an embedding of ℕ∞ into ℕ⊥, the lifting on ℕ, or the
 flat domain of natural numbers, and prove various properties of it.
 
 \begin{code}
@@ -11,7 +11,7 @@ open import MLTT.Spartan
 open import UF.FunExt
 open import UF.Subsingletons
 
-module CoNaturals.Flatten
+module CoNaturals.Sharp
         (fe₀ : funext 𝓤₀ 𝓤₀)
         (pe : Prop-Ext)
        where
@@ -29,39 +29,39 @@ open import UF.FunExt
 open import UF.PropTrunc
 open import UF.Subsingletons-FunExt
 
-\end{code}
-
-We refer to the following as the flatting map, but write flat for short.
-
-\begin{code}
-
-flat : ℕ∞ → 𝓛 ℕ
-flat x = is-finite x , size , being-finite-is-prop fe₀ x
+ℕ⊥ = 𝓛 ℕ
 
 \end{code}
 
-This map satisfies flat (ι n) ＝ η n and flat ∞ ＝ ⊥.
+We define sharp : ℕ∞ → ℕ⊥ so that
+
+ * sharp (ι n) ＝ η n and
+
+ * sharp ∞ ＝ ⊥.
 
 \begin{code}
 
-flat-finite : (n : ℕ) → flat (ι n) ＝ η n
-flat-finite n = II
+sharp : ℕ∞ → ℕ⊥
+sharp x = is-finite x , size , being-finite-is-prop fe₀ x
+
+sharp-finite : (n : ℕ) → sharp (ι n) ＝ η n
+sharp-finite n = II
  where
-  I : flat (ι n) ⊑ η n
+  I : sharp (ι n) ⊑ η n
   I = unique-to-𝟙 , (λ (n , p) → ℕ-to-ℕ∞-lc p)
 
-  II : flat (ι n) ＝ η n
+  II : sharp (ι n) ＝ η n
   II = ⊑-anti-lemma pe fe₀ fe₀ I
         (λ (_ : is-defined (η n)) → ℕ-to-ℕ∞-is-finite n)
 
-flat-∞ : flat ∞ ＝ ⊥
-flat-∞ = II
+sharp-∞ : sharp ∞ ＝ ⊥
+sharp-∞ = II
  where
-  I : flat ∞ ⊑ ⊥
+  I : sharp ∞ ⊑ ⊥
   I = is-infinite-∞ , (λ is-finite-∞ → 𝟘-elim (is-infinite-∞ is-finite-∞))
 
-  II : flat ∞ ＝ ⊥
-  II = ⊑-anti pe fe₀ fe₀ (I , ⊥-least (flat ∞))
+  II : sharp ∞ ＝ ⊥
+  II = ⊑-anti pe fe₀ fe₀ (I , ⊥-least (sharp ∞))
 
 \end{code}
 
@@ -69,29 +69,29 @@ It is left-cancellable and hence and embedding.
 
 \begin{code}
 
-flat-lc : left-cancellable flat
-flat-lc {x} {y} e = II
+sharp-lc : left-cancellable sharp
+sharp-lc {x} {y} e = II
  where
-  I : (x y : ℕ∞) → flat x ⋍· flat y → (n : ℕ) → ι n ＝ x → ι n ＝ y
+  I : (x y : ℕ∞) → sharp x ⋍· sharp y → (n : ℕ) → ι n ＝ x → ι n ＝ y
   I x y a n e =
    ι n                      ＝⟨ ap ι (g (n , e)) ⟩
    ι (size (⌜ f ⌝ (n , e))) ＝⟨ size-property (⌜ f ⌝ (n , e)) ⟩
    y                        ∎
    where
     f : is-finite x ≃ is-finite y
-    f = is-defined-⋍· (flat x) (flat y) a
+    f = is-defined-⋍· (sharp x) (sharp y) a
 
     g : (φ : is-finite x) → size φ ＝ size (⌜ f ⌝ φ)
-    g = value-⋍· (flat x) (flat y) a
+    g = value-⋍· (sharp x) (sharp y) a
 
   II : x ＝ y
   II = ℕ∞-equality-criterion fe₀ x y
         (I x y (Id-to-⋍· _ _ e))
         (I y x (Id-to-⋍· _ _ (e ⁻¹)))
 
-flat-is-embedding : is-embedding flat
-flat-is-embedding =
- lc-maps-into-sets-are-embeddings flat flat-lc
+sharp-is-embedding : is-embedding sharp
+sharp-is-embedding =
+ lc-maps-into-sets-are-embeddings sharp sharp-lc
   (lifting-of-set-is-set fe₀ fe₀ pe ℕ ℕ-is-set)
 
 \end{code}
@@ -100,15 +100,15 @@ We have the following two corollaries.
 
 \begin{code}
 
-flat-finite' : (x : ℕ∞) (n : ℕ) → flat x ＝ η n → x ＝ ι n
-flat-finite' x n e = flat-lc (flat x     ＝⟨ e ⟩
-                              η n        ＝⟨ (flat-finite n)⁻¹ ⟩
-                              flat (ι n) ∎)
+sharp-finite' : (x : ℕ∞) (n : ℕ) → sharp x ＝ η n → x ＝ ι n
+sharp-finite' x n e = sharp-lc (sharp x     ＝⟨ e ⟩
+                              η n        ＝⟨ (sharp-finite n)⁻¹ ⟩
+                              sharp (ι n) ∎)
 
-flat-∞' : (x : ℕ∞) → flat x ＝ ⊥ → x ＝ ∞
-flat-∞' x e = flat-lc (flat x ＝⟨ e ⟩
-                       ⊥      ＝⟨ flat-∞ ⁻¹ ⟩
-                       flat ∞ ∎)
+sharp-∞' : (x : ℕ∞) → sharp x ＝ ⊥ → x ＝ ∞
+sharp-∞' x e = sharp-lc (sharp x ＝⟨ e ⟩
+                       ⊥      ＝⟨ sharp-∞ ⁻¹ ⟩
+                       sharp ∞ ∎)
 
 \end{code}
 
@@ -117,17 +117,17 @@ sense.
 
 \begin{code}
 
-flat-image-has-empty-complement : ¬ (Σ l ꞉ 𝓛 ℕ , ((x : ℕ∞) → flat x ≠ l))
-flat-image-has-empty-complement (l , f) =
+sharp-image-has-empty-complement : ¬ (Σ l ꞉ ℕ⊥ , ((x : ℕ∞) → sharp x ≠ l))
+sharp-image-has-empty-complement (l , f) =
  η-image fe₀ fe₀ pe
    (l ,
    (λ (e : l ＝ ⊥)
-         → f ∞ (flat ∞ ＝⟨ flat-∞ ⟩
+         → f ∞ (sharp ∞ ＝⟨ sharp-∞ ⟩
                 ⊥      ＝⟨ e ⁻¹ ⟩
                 l      ∎)) ,
    (λ n (e : l ＝ η n)
          → f (ι n)
-              (flat (ι n) ＝⟨ flat-finite n ⟩
+              (sharp (ι n) ＝⟨ sharp-finite n ⟩
                η n        ＝⟨ e ⁻¹ ⟩
                l          ∎)))
 
@@ -144,17 +144,17 @@ module _ (pt : propositional-truncations-exist) where
  open import UF.ImageAndSurjection pt
  open import UF.ExcludedMiddle
 
- flat-is-surjection-gives-EM : is-surjection flat → EM 𝓤₀
- flat-is-surjection-gives-EM flat-is-surjection P P-is-prop =
+ sharp-is-surjection-gives-EM : is-surjection sharp → EM 𝓤₀
+ sharp-is-surjection-gives-EM sharp-is-surjection P P-is-prop =
   ∥∥-rec (decidability-of-prop-is-prop fe₀ P-is-prop) II I
   where
-   y : 𝓛 ℕ
+   y : ℕ⊥
    y = P , (λ _ → 0) , P-is-prop
 
-   I : ∃ x ꞉ ℕ∞ , flat x ＝ y
-   I = flat-is-surjection y
+   I : ∃ x ꞉ ℕ∞ , sharp x ＝ y
+   I = sharp-is-surjection y
 
-   II : (Σ x ꞉ ℕ∞ , flat x ＝ y) → P + ¬ P
+   II : (Σ x ꞉ ℕ∞ , sharp x ＝ y) → P + ¬ P
    II (x , e) = IV III
     where
      III : (ι 0 ＝ x) + (ι 0 ≠ x)
@@ -164,8 +164,8 @@ module _ (pt : propositional-truncations-exist) where
      IV (inl d) = inl (⌜ C ⌝⁻¹ ⋆)
       where
        A = y          ＝⟨ e ⁻¹ ⟩
-           flat x     ＝⟨ ap flat (d ⁻¹) ⟩
-           flat (ι 0) ＝⟨ flat-finite 0 ⟩
+           sharp x     ＝⟨ ap sharp (d ⁻¹) ⟩
+           sharp (ι 0) ＝⟨ sharp-finite 0 ⟩
            η 0        ∎
 
        B : y ⋍· η 0
@@ -185,32 +185,41 @@ module _ (pt : propositional-truncations-exist) where
        C : ¬ (y ＝ η 0)
        C d = ν (C₁ ⁻¹)
         where
-         C₀ = flat x ＝⟨ e ⟩
+         C₀ = sharp x ＝⟨ e ⟩
               y      ＝⟨ d ⟩
               η 0    ∎
 
          C₁ : x ＝ ι 0
-         C₁ = flat-finite' x 0 C₀
+         C₁ = sharp-finite' x 0 C₀
 
- EM-gives-flat-is-surjection : EM 𝓤₀ → is-surjection flat
- EM-gives-flat-is-surjection em y@(P , φ , P-is-prop) =
+ EM-gives-sharp-is-surjection : EM 𝓤₀ → is-surjection sharp
+ EM-gives-sharp-is-surjection em y@(P , φ , P-is-prop) =
    ∣ I (em P P-is-prop) ∣
   where
-   I : P + ¬ P → Σ x ꞉ ℕ∞ , flat x ＝ y
+   I : P + ¬ P → Σ x ꞉ ℕ∞ , sharp x ＝ y
    I (inl p) = ι (φ p) , III
     where
-     II : flat (ι (φ p)) ⊑ y
+     II : sharp (ι (φ p)) ⊑ y
      II = (λ _ → p) , (λ (n , e) → ℕ-to-ℕ∞-lc e)
 
-     III : flat (ι (φ p)) ＝ y
+     III : sharp (ι (φ p)) ＝ y
      III = ⊑-anti-lemma pe fe₀ fe₀ II (λ _ → ℕ-to-ℕ∞-is-finite (φ p))
 
    I (inr ν) = ∞ , III
     where
-     II : flat ∞ ⊑ y
-     II = transport (_⊑ y) (flat-∞ ⁻¹) (⊥-least y)
+     II : sharp ∞ ⊑ y
+     II = transport (_⊑ y) (sharp-∞ ⁻¹) (⊥-least y)
 
-     III : flat ∞ ＝ y
+     III : sharp ∞ ＝ y
      III = ⊑-anti-lemma pe fe₀ fe₀ II λ (p : P) → 𝟘-elim (ν p)
 
 \end{code}
+
+In progress. The image of sharp consists precisely of the sharp
+elements of ℕ⊥ in the sense of [1].
+
+[1] Tom de Jong. Apartness, sharp elements, and the Scott topology of
+    domains.
+    Mathematical Structures in Computer Science , Volume 33 , Issue 7,
+    August 2023 , pp. 573 - 604.
+    https://doi.org/10.1017/S0960129523000282
