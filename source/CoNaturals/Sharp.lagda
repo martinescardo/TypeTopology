@@ -157,8 +157,6 @@ sharp-∞' x e = sharp-lc (sharp x ＝⟨ e ⟩
                          sharp ∞ ∎)
 \end{code}
 
-The map sharp is left-cancellable and hence an embedding.
-
 But the embedding is a surjection (and hence an equivalence) if and
 only if excluded middle holds.
 
