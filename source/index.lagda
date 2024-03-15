@@ -56,7 +56,7 @@
      (https://www.cs.bham.ac.uk/~mhe/TypeTopology/AllModulesIndex.html)
 
    * In our last count, on 22nd February 2024, this development has
-     687 files and 195k lines of code, including comments and blank
+     722 files and 204k lines of code, including comments and blank
      lines. But we don't update the count frequently.
 
 Philosophy of the repository
