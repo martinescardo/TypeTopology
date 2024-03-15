@@ -242,4 +242,12 @@ module _ (fe : funext₀) where
    V : ℕ∞'-to-ℕ→𝟚 x ＝ ℕ∞'-to-ℕ→𝟚 y
    V = dfunext fe (λ n → ≤₂-anti (I n x y (f n)) (I n y x (g n)))
 
+
+ open import TypeTopology.TotallySeparated
+
+ ℕ∞'-is-totally-separated : is-totally-separated ℕ∞'
+ ℕ∞'-is-totally-separated = equiv-to-totally-separated
+                             ℕ∞-to-ℕ∞'-≃
+                             (ℕ∞-is-totally-separated fe)
+
 \end{code}

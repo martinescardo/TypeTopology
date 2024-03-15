@@ -281,7 +281,8 @@ is-Zero-equal-Zero fe {u} base = ℕ∞-to-ℕ→𝟚-lc fe (dfunext fe lemma)
  where
   lemma : (i : ℕ) → ι u i ＝ ι Zero i
   lemma 0        = base
-  lemma (succ i) = [a＝₁→b＝₁]-gives-[b＝₀→a＝₀] (≤₂-criterion-converse (pr₂ u i)) (lemma i)
+  lemma (succ i) = [a＝₁→b＝₁]-gives-[b＝₀→a＝₀]
+                    (≤₂-criterion-converse (pr₂ u i)) (lemma i)
 
 same-positivity : funext₀ → (u v : ℕ∞)
                 → (u ＝ Zero → v ＝ Zero)
@@ -329,7 +330,11 @@ is-Succ u = Σ w ꞉ ℕ∞ , u ＝ Succ w
 Zero+Succ : funext₀ → (u : ℕ∞) → (u ＝ Zero) + is-Succ u
 Zero+Succ fe₀ u = Cases (Zero-or-Succ fe₀ u) inl (λ p → inr (Pred u , p))
 
-Succ-criterion : funext₀ → {u : ℕ∞} {n : ℕ} → n ⊏ u → u ⊑ succ n → u ＝ Succ (ι n)
+Succ-criterion : funext₀
+               → {u : ℕ∞} {n : ℕ}
+               → n ⊏ u
+               → u ⊑ succ n
+               → u ＝ Succ (ι n)
 Succ-criterion fe {u} {n} r s = ℕ∞-to-ℕ→𝟚-lc fe claim
  where
   lemma : (u : ℕ∞) (n : ℕ) → n ⊏ u → u ⊑ succ n
@@ -360,8 +365,10 @@ not-finite-is-∞ : funext₀ → {u : ℕ∞} → ((n : ℕ) → u ≠ ι n) �
 not-finite-is-∞ fe {u} f = ℕ∞-to-ℕ→𝟚-lc fe (dfunext fe lemma)
  where
   lemma : (n : ℕ) → n ⊏ u
-  lemma 0        = different-from-₀-equal-₁ (λ r → f 0 (is-Zero-equal-Zero fe r))
-  lemma (succ n) = different-from-₀-equal-₁ (λ r → f (succ n) (Succ-criterion fe (lemma n) r))
+  lemma 0        = different-from-₀-equal-₁
+                    (λ r → f 0 (is-Zero-equal-Zero fe r))
+  lemma (succ n) = different-from-₀-equal-₁
+                    (λ r → f (succ n) (Succ-criterion fe (lemma n) r))
 
 \end{code}
 
@@ -419,7 +426,9 @@ End of 13th March 2024 addition. Back to the ancient past.
 ℕ∞-ddensity fe {Y} s {f} {g} h h∞ u = s (f u) (g u) c
  where
   a : f u ≠ g u → (n : ℕ) → u ≠ ι n
-  a t n = contrapositive (λ (r : u ＝ ι n) → transport⁻¹ (λ - → f - ＝ g -) r (h n)) t
+  a t n = contrapositive
+           (λ (r : u ＝ ι n) → transport⁻¹ (λ - → f - ＝ g -) r (h n))
+           t
 
   b : f u ≠ g u → u ≠ ∞
   b = contrapositive (λ (r : u ＝ ∞) → transport⁻¹ (λ - → f - ＝ g -) r h∞)
@@ -447,7 +456,8 @@ End of 13th March 2024 addition. Back to the ancient past.
 ι𝟙 = cases {𝓤₀} {𝓤₀} ι (λ _ → ∞)
 
 ι𝟙-is-embedding : funext₀ → is-embedding ι𝟙
-ι𝟙-is-embedding fe = disjoint-cases-embedding ι (λ _ → ∞) (ℕ-to-ℕ∞-is-embedding fe) g d
+ι𝟙-is-embedding fe =
+  disjoint-cases-embedding ι (λ _ → ∞) (ℕ-to-ℕ∞-is-embedding fe) g d
  where
   g : is-embedding (λ _ → ∞)
   g x (* , p) (⋆ , q) = ap (λ - → ⋆ , -) (ℕ∞-is-set fe p q)
@@ -600,7 +610,8 @@ above-Succ-is-positive u v l = l 0 refl
 
 ≼-unfold : funext₀ → (u v : ℕ∞)
          → u ≼ v
-         → (u ＝ Zero) + (Σ w ꞉ ℕ∞ , Σ t ꞉ ℕ∞ , (u ＝ Succ w) × (v ＝ Succ t) × (w ≼ t))
+         → (u ＝ Zero)
+         + (Σ w ꞉ ℕ∞ , Σ t ꞉ ℕ∞ , (u ＝ Succ w) × (v ＝ Succ t) × (w ≼ t))
 ≼-unfold fe u v l = φ (Zero+Succ fe u) (Zero+Succ fe v)
  where
   φ : (u ＝ Zero) + is-Succ u → (v ＝ Zero) + is-Succ v → _
@@ -609,7 +620,8 @@ above-Succ-is-positive u v l = l 0 refl
   φ (inr (w , refl)) (inr (t , refl)) = inr (w , t , refl , refl , Succ-loc w t l)
 
 ≼-fold : (u v : ℕ∞)
-       → ((u ＝ Zero) + (Σ w ꞉ ℕ∞ , Σ t ꞉ ℕ∞ , (u ＝ Succ w) × (v ＝ Succ t) × (w ≼ t)))
+       → ((u ＝ Zero)
+       + (Σ w ꞉ ℕ∞ , Σ t ꞉ ℕ∞ , (u ＝ Succ w) × (v ＝ Succ t) × (w ≼ t)))
        → u ≼ v
 ≼-fold Zero      v         (inl refl)                      = Zero-smallest v
 ≼-fold .(Succ w) .(Succ t) (inr (w , t , refl , refl , l)) = Succ-monotone w t l
@@ -647,12 +659,16 @@ instance
 ∞-top u (n , r , l) = ∞-is-not-finite n r
 
 below-isolated : funext₀ → (u v : ℕ∞) → u ≺ v → is-isolated u
-below-isolated fe u v (n , r , l) = transport⁻¹ is-isolated r (finite-isolated fe n)
+below-isolated fe u v (n , r , l) = transport⁻¹
+                                     is-isolated
+                                     r
+                                     (finite-isolated fe n)
 
 ≺-prop-valued : funext₀ → (u v : ℕ∞) → is-prop (u ≺ v)
-≺-prop-valued fe u v (n , r , a) (m , s , b) = to-Σ-＝ (ℕ-to-ℕ∞-lc (r ⁻¹ ∙ s) ,
-                                                       to-Σ-＝ (ℕ∞-is-set fe _ _ ,
-                                                               𝟚-is-set _ _))
+≺-prop-valued fe u v (n , r , a) (m , s , b) =
+ to-Σ-＝ (ℕ-to-ℕ∞-lc (r ⁻¹ ∙ s) ,
+          to-Σ-＝ (ℕ∞-is-set fe _ _ ,
+                  𝟚-is-set _ _))
 
 ⊏-gives-≺ : (n : ℕ) (u : ℕ∞) → n ⊏ u → ι n ≺ u
 ⊏-gives-≺ n u a = n , refl , a
@@ -781,7 +797,11 @@ stronger fact, proved above, that ≺ is well founded:
                  ≺-extensional fe ,
                  ≺-trans
 
-ℕ-to-ℕ∞-lemma : funext₀ → (u : ℕ∞) (n : ℕ) → u ⊑ n → Σ m ꞉ ℕ , (m ≤ n) × (u ＝ ι m)
+ℕ-to-ℕ∞-lemma : funext₀
+              → (u : ℕ∞)
+                (n : ℕ)
+              → u ⊑ n
+              → Σ m ꞉ ℕ , (m ≤ n) × (u ＝ ι m)
 ℕ-to-ℕ∞-lemma fe u 0        p = 0 , ≤-refl 0 , is-Zero-equal-Zero fe p
 ℕ-to-ℕ∞-lemma fe u (succ n) p = g (𝟚-is-discrete (ι u n) ₀)
  where
@@ -964,15 +984,18 @@ Characterization of ⊏.
   v = pr₁ IH
 
   p : u ＝ (Succ ^ (succ (succ n))) v
-  p = u                           ＝⟨ positive-equal-Succ fe₀ (⊏-positive (succ n) u l) ⟩
-      Succ (Pred u)               ＝⟨ ap Succ (pr₂ IH) ⟩
+  p = u                           ＝⟨ I ⟩
+      Succ (Pred u)               ＝⟨ II ⟩
       (Succ ^ (succ (succ n))) v  ∎
+       where
+        I  = positive-equal-Succ fe₀ (⊏-positive (succ n) u l)
+        II = ap Succ (pr₂ IH)
 
   γ : Σ v ꞉ ℕ∞ , u ＝ (Succ ^ (succ (succ n))) v
   γ = v , p
 
 ⊏-charac← : funext₀ → (n : ℕ) (u : ℕ∞)
-           → (Σ v ꞉ ℕ∞ , u ＝ (Succ ^ (succ n)) v) → n ⊏ u
+          → (Σ v ꞉ ℕ∞ , u ＝ (Succ ^ (succ n)) v) → n ⊏ u
 ⊏-charac← fe₀ 0        u (v , refl) = refl
 ⊏-charac← fe₀ (succ n) u (v , refl) = γ
  where
@@ -1017,10 +1040,11 @@ finite-trichotomous fe 0 u =
         → inl (⊏-gives-≺ 0 u m))
 finite-trichotomous fe (succ n) u =
  𝟚-equality-cases
-  (λ (l : u ⊑ succ n) →
-        𝟚-equality-cases
-         (λ (a : u ⊑ n) → inr (inr (⊑-succ-gives-≺ fe n u a)))
-         (λ (b : n ⊏ u) → inr (inl ((Succ-criterion fe b l)⁻¹))))
-  (λ (m : succ n ⊏ u) → inl (⊏-gives-≺ (succ n) u m))
+  (λ (l : u ⊑ succ n)
+        → 𝟚-equality-cases
+           (λ (a : u ⊑ n) → inr (inr (⊑-succ-gives-≺ fe n u a)))
+           (λ (b : n ⊏ u) → inr (inl ((Succ-criterion fe b l)⁻¹))))
+  (λ (m : succ n ⊏ u)
+        → inl (⊏-gives-≺ (succ n) u m))
 
 \end{code}
