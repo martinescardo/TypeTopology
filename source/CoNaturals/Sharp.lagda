@@ -157,6 +157,20 @@ sharp-∞' x e = sharp-lc (sharp x ＝⟨ e ⟩
                          sharp ∞ ∎)
 \end{code}
 
+The image of the embedding has empty complement, in the following
+sense.
+
+\begin{code}
+
+sharp-image-has-empty-complement : ¬ (Σ l ꞉ 𝓛 ℕ , ((x : ℕ∞) → sharp x ≠ l))
+sharp-image-has-empty-complement (l , f) =
+ η-image fe fe pe
+   (l ,
+   (λ (e : l ＝ ⊥) → f ∞ (sharp-∞ ∙ e ⁻¹)) ,
+   (λ n (e : l ＝ η n) → f (ι n) (sharp-finite n ∙ e ⁻¹)))
+
+\end{code}
+
 But the embedding is a surjection (and hence an equivalence) if and
 only if excluded middle holds.
 
