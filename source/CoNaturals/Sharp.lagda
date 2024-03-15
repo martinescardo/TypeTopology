@@ -292,7 +292,7 @@ sharp-is-sharp x n = I (finite-isolated fe n x)
                    x                  ∎)
 
 only-sharp-is-sharp : (y : ℕ⊥) → is-sharp y → Σ x ꞉ ℕ∞ , sharp x ＝ y
-only-sharp-is-sharp y@(P , φ , P-is-prop) y-is-sharp = γ
+only-sharp-is-sharp y@(P , φ , P-is-prop) y-is-sharp = V
  where
   y-is-sharp' : (n : ℕ) → ¬ (ι n ⊑ y) + (ι n ⊑ y)
   y-is-sharp' n = +-commutative (y-is-sharp n)
@@ -345,8 +345,8 @@ only-sharp-is-sharp y@(P , φ , P-is-prop) y-is-sharp = γ
   IV : sharp x ＝ y
   IV = ⊑-anti-lemma pe fe fe II III
 
-  γ : Σ x ꞉ ℕ∞ , sharp x ＝ y
-  γ = x , IV
+  V : Σ x ꞉ ℕ∞ , sharp x ＝ y
+  V = x , IV
 
 theorem : ℕ∞ ≃ (Σ y ꞉ ℕ⊥ , is-sharp y)
 theorem = r , r-is-equiv
