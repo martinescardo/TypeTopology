@@ -740,4 +740,12 @@ Added 13th March 2024.
                 to-subtype-＝
                  (λ _ → being-prop-is-prop fe)
                  (dfunext fe' (λ ⋆ → refl))))
+
+η-bounded : (y : 𝓛 X) (x x' : X) → η x ⊑ y → η x' ⊑ y → x ＝ x'
+η-bounded y@(P , φ , P-is-prop) x x' (p , e) (p' , e') =
+ x        ＝⟨ e ⋆ ⟩
+ φ (p  ⋆) ＝⟨ ap φ (P-is-prop (p ⋆) (p' ⋆)) ⟩
+ φ (p' ⋆) ＝⟨ (e' ⋆)⁻¹ ⟩
+ x'       ∎
+
 \end{code}

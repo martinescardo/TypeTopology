@@ -294,12 +294,6 @@ sharp-is-sharp x n = I (finite-isolated fe n x)
 only-sharp-is-sharp : (y : ℕ⊥) → is-sharp y → Σ x ꞉ ℕ∞ , sharp x ＝ y
 only-sharp-is-sharp y@(P , φ , P-is-prop) y-is-sharp = γ
  where
-  I : (n n' : ℕ) → ι n ⊑ y → ι n' ⊑ y → n ＝ n'
-  I n n' (p , e) (p' , e') = n        ＝⟨ e ⋆ ⟩
-                             φ (p  ⋆) ＝⟨ ap φ (P-is-prop (p ⋆) (p' ⋆)) ⟩
-                             φ (p' ⋆) ＝⟨ (e' ⋆)⁻¹ ⟩
-                             n'       ∎
-
   y-is-sharp' : (n : ℕ) → ¬ (ι n ⊑ y) + (ι n ⊑ y)
   y-is-sharp' n = +-commutative (y-is-sharp n)
 
@@ -313,7 +307,7 @@ only-sharp-is-sharp y@(P , φ , P-is-prop) y-is-sharp = γ
   α-property₁ = indicator₁ y-is-sharp'
 
   α-property : (n n' : ℕ) → α n ＝ ₁ → α n' ＝ ₁ → n ＝ n'
-  α-property n n' e e' = I n n' (α-property₁ n e) (α-property₁ n' e')
+  α-property n n' e e' = η-bounded y n n' (α-property₁ n e) (α-property₁ n' e')
 
   a : has-at-most-one-₁ α
   a (n , e) (n' , e') = to-T-＝ (α-property n n' e e')
