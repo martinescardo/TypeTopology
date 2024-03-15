@@ -312,9 +312,6 @@ only-sharp-is-sharp y@(P , φ , P-is-prop) y-is-sharp = γ
   α-property₁ : (n : ℕ) → α n ＝ ₁ → ι n ⊑ y
   α-property₁ = indicator₁ y-is-sharp'
 
-  α-property₁' : (n : ℕ) → α n ＝ ₁ → ι n ＝ y
-  α-property₁' n α = η-maximal pe fe fe n y (α-property₁ n α)
-
   α-property : (n n' : ℕ) → α n ＝ ₁ → α n' ＝ ₁ → n ＝ n'
   α-property n n' e e' = I n n' (α-property₁ n e) (α-property₁ n' e')
 
