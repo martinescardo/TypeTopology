@@ -85,6 +85,26 @@ instance
 sharp : ℕ∞ → ℕ⊥
 sharp x = is-finite x , size {x} , being-finite-is-prop fe x
 
+sharp-finite : (n : ℕ) → sharp (ι n) ＝ ι n
+sharp-finite n = II
+ where
+  I : sharp (ι n) ⊑ ι n
+  I = (λ _ → ⋆) ,
+      (λ (n' , e) → ℕ-to-ℕ∞-lc fe ((diagonal-lemma fe n' (ι n) e)⁻¹))
+
+  II : sharp (ι n) ＝ ι n
+  II = ⊑-anti-lemma pe fe fe I
+        (λ _ → n , (ℕ-to-ℕ∞-diagonal fe n))
+
+sharp-∞ : sharp ∞ ＝ ⊥
+sharp-∞ = II
+ where
+  I : sharp ∞ ⊑ ⊥
+  I = is-infinite-∞ , (λ is-finite-∞ → 𝟘-elim (is-infinite-∞ is-finite-∞))
+
+  II : sharp ∞ ＝ ⊥
+  II = ⊑-anti pe fe fe (I , ⊥-least (sharp ∞))
+
 sharp-lc : left-cancellable sharp
 sharp-lc {x} {y} e = II
  where
@@ -120,26 +140,6 @@ sharp-is-embedding =
 We have the following two corollaries.
 
 \begin{code}
-
-sharp-finite : (n : ℕ) → sharp (ι n) ＝ ι n
-sharp-finite n = II
- where
-  I : sharp (ι n) ⊑ ι n
-  I = (λ _ → ⋆) ,
-      (λ (n' , e) → ℕ-to-ℕ∞-lc fe ((diagonal-lemma fe n' (ι n) e)⁻¹))
-
-  II : sharp (ι n) ＝ ι n
-  II = ⊑-anti-lemma pe fe fe I
-        (λ _ → n , (ℕ-to-ℕ∞-diagonal fe n))
-
-sharp-∞ : sharp ∞ ＝ ⊥
-sharp-∞ = II
- where
-  I : sharp ∞ ⊑ ⊥
-  I = is-infinite-∞ , (λ is-finite-∞ → 𝟘-elim (is-infinite-∞ is-finite-∞))
-
-  II : sharp ∞ ＝ ⊥
-  II = ⊑-anti pe fe fe (I , ⊥-least (sharp ∞))
 
 sharp-finite' : (x : ℕ∞) (n : ℕ) → sharp x ＝ ι n → x ＝ ι n
 sharp-finite' x n e = sharp-lc (sharp x     ＝⟨ e ⟩
