@@ -795,10 +795,16 @@ module SpectralScottLocaleConstruction₂
  hscb : has-specified-small-compact-basis 𝓓
  hscb = specified-small-compact-basis-has-split-support ua sr 𝓓 𝒷₀
 
+ 𝕒 : structurally-algebraic 𝓓
+ 𝕒 = structurally-algebraic-if-specified-small-compact-basis 𝓓 hscb
+
  pe′ : propext 𝓤
  pe′ = univalence-gives-propext (ua 𝓤)
 
  open SpectralScottLocaleConstruction 𝓓 hl hscb dc bc pe
+
+ σ⦅𝓓⦆ : Locale (𝓤 ⁺) 𝓤 𝓤
+ σ⦅𝓓⦆ = Σ[𝓓]
 
  scott-locale-spectralᴰ : spectralᴰ Σ[𝓓]
  scott-locale-spectralᴰ = σᴰ
