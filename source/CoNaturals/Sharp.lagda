@@ -308,6 +308,8 @@ should have worked with only ℕ∞' in this file.
 
 \begin{code}
 
+open import CoNaturals.GenericConvergentSequence2
+
 instance
  Canonical-Map-ℕ-ℕ∞' : Canonical-Map ℕ ℕ∞'
  ι {{Canonical-Map-ℕ-ℕ∞'}} = ℕ-to-ℕ∞'

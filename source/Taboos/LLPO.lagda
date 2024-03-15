@@ -9,6 +9,7 @@ Lesser Limited Principle of Omniscience.
 module Taboos.LLPO where
 
 open import CoNaturals.GenericConvergentSequence
+open import CoNaturals.GenericConvergentSequence2
 open import MLTT.Plus-Properties
 open import MLTT.Spartan
 open import MLTT.Two-Properties
