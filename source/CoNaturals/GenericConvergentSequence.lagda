@@ -262,7 +262,8 @@ u ≣ n = u ＝ ι n
 ℕ-to-ℕ∞-lc {succ m} {succ n} r = ap succ (ℕ-to-ℕ∞-lc {m} {n} (Succ-lc r))
 
 ℕ-to-ℕ∞-is-embedding : funext₀ → is-embedding ℕ-to-ℕ∞
-ℕ-to-ℕ∞-is-embedding fe = lc-maps-into-sets-are-embeddings ℕ-to-ℕ∞ ℕ-to-ℕ∞-lc (ℕ∞-is-set fe)
+ℕ-to-ℕ∞-is-embedding fe =
+ lc-maps-into-sets-are-embeddings ℕ-to-ℕ∞ ℕ-to-ℕ∞-lc (ℕ∞-is-set fe)
 
 embedding-ℕ-to-ℕ∞ : funext₀ → ℕ ↪ ℕ∞
 embedding-ℕ-to-ℕ∞ fe = ℕ-to-ℕ∞ , ℕ-to-ℕ∞-is-embedding fe
@@ -1188,8 +1189,8 @@ not-finite'-is-∞' fe u ν = ℕ∞'-to-ℕ→𝟚-lc fe
 not-T-is-∞' : funext₀ → (u : ℕ∞') → ¬ T (ι u) → u ＝ ∞'
 not-T-is-∞' fe u ν = ℕ∞'-to-ℕ→𝟚-lc fe (dfunext fe (not-T-gives-¬T ν))
 
-∞'-is-not-finite : ¬ is-finite' ∞'
-∞'-is-not-finite (n , e) = zero-is-not-one e
+is-infinite-∞' : ¬ is-finite' ∞'
+is-infinite-∞' (n , e) = zero-is-not-one e
 
 \end{code}
 
@@ -1507,6 +1508,14 @@ And with this we get the promised equivalence.
     I  = (ap ℕ∞'-to-ℕ∞ (finite-preservation n))⁻¹
     II = inverses-are-retractions' ℕ∞-to-ℕ∞'-≃ (ι n)
 
+ ℕ-to-ℕ∞'-lc : left-cancellable ℕ-to-ℕ∞'
+ ℕ-to-ℕ∞'-lc {n} {n'} e =
+  ℕ-to-ℕ∞-lc (
+   ι n              ＝⟨ (finite'-preservation n)⁻¹ ⟩
+   ℕ∞'-to-ℕ∞ (ι n)  ＝⟨ ap ℕ∞'-to-ℕ∞ e ⟩
+   ℕ∞'-to-ℕ∞ (ι n') ＝⟨ finite'-preservation n' ⟩
+   ι n'             ∎)
+
  ℕ-to-ℕ∞'-diagonal : (n : ℕ) → ℕ∞'-to-ℕ→𝟚 (ι n) n ＝ ₁
  ℕ-to-ℕ∞'-diagonal 0        = refl
  ℕ-to-ℕ∞'-diagonal (succ n) = ℕ-to-ℕ∞'-diagonal n
@@ -1535,8 +1544,10 @@ And with this we get the promised equivalence.
 
    f : (i : ℕ) → ℕ∞'-to-ℕ→𝟚 u i ＝ ℕ∞'-to-ℕ→𝟚 (ι n) i
    f i = Cases (ℕ-is-discrete n i)
-          (λ (q : n ＝ i) → transport (λ - → ℕ∞'-to-ℕ→𝟚 u - ＝ ℕ∞'-to-ℕ→𝟚 (ι n) -) q I)
-          (λ (ν : n ≠ i) → II i ν)
+          (λ (q : n ＝ i)
+                → transport (λ - → ℕ∞'-to-ℕ→𝟚 u - ＝ ℕ∞'-to-ℕ→𝟚 (ι n) -) q I)
+          (λ (ν : n ≠ i)
+                → II i ν)
 
  size'-property' : {u : ℕ∞'} (φ : is-finite' u) → ι (size' {u} φ) ＝ u
  size'-property' {u} φ = II ⁻¹
