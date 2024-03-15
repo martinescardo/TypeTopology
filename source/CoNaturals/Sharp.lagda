@@ -446,3 +446,9 @@ corollary : ℕ∞ ≃ (Σ l ꞉ ℕ⊥ , is-sharp l)
 corollary = ℕ∞-to-ℕ∞'-≃ fe₀ ● theorem
 
 \end{code}
+
+Other ways to distinguish ℕ∞ and ℕ⊥:
+
+ * ℕ∞ is totally separated.
+
+ * ℕ⊥ is injective and hence indecomposable.
