@@ -105,6 +105,12 @@ sharp-∞ = II
   II : sharp ∞ ＝ ⊥
   II = ⊑-anti pe fe fe (I , ⊥-least (sharp ∞))
 
+\end{code}
+
+The map sharp is left-cancellable and hence an embedding.
+
+\begin{code}
+
 sharp-lc : left-cancellable sharp
 sharp-lc {x} {y} e = II
  where
@@ -131,9 +137,8 @@ sharp-lc {x} {y} e = II
         (I y x (Id-to-⋍· _ _ (e ⁻¹)))
 
 sharp-is-embedding : is-embedding sharp
-sharp-is-embedding =
- lc-maps-into-sets-are-embeddings sharp sharp-lc
-  (lifting-of-set-is-set fe fe pe ℕ ℕ-is-set)
+sharp-is-embedding = lc-maps-into-sets-are-embeddings sharp sharp-lc
+                      (lifting-of-set-is-set fe fe pe ℕ ℕ-is-set)
 
 \end{code}
 
@@ -154,8 +159,8 @@ sharp-∞' x e = sharp-lc (sharp x ＝⟨ e ⟩
 
 The map sharp is left-cancellable and hence an embedding.
 
-But the embedding is a surjection if and only if excluded middle
-holds.
+But the embedding is a surjection (and hence an equivalence) if and
+only if excluded middle holds.
 
 \begin{code}
 
@@ -314,7 +319,7 @@ only-sharp-is-sharp y@(P , φ , P-is-prop) y-is-sharp = γ
   α-property n n' e e' = I n n' (α-property₁ n e) (α-property₁ n' e')
 
   a : has-at-most-one-₁ α
-  a (n , e) (n' , e') = to-subtype-＝ (λ _ → 𝟚-is-set) (α-property n n' e e')
+  a (n , e) (n' , e') = to-T-＝ (α-property n n' e e')
 
   x : ℕ∞
   x = α , a
