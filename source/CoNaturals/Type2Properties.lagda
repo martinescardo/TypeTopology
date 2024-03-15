@@ -20,7 +20,7 @@ Notice that the condition on α can be expressed as "is-prop (fiber α ₁)".
 module CoNaturals.Type2Properties where
 
 open import CoNaturals.Type
-open import CoNaturals.Type2
+open import CoNaturals.GenericConvergentSequence2
 open import CoNaturals.Equivalence
 open import MLTT.Spartan
 open import MLTT.Two-Properties

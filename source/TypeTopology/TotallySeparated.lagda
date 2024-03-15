@@ -228,6 +228,12 @@ retract-of-totally-separated (r , s , rs) τ {y} {y'} α = section-lc s (r , rs)
   h : s y ＝ s y'
   h = τ (λ p → α (p ∘ s))
 
+equiv-to-totally-separated : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                           → X ≃ Y
+                           → is-totally-separated X
+                           → is-totally-separated Y
+equiv-to-totally-separated 𝕗 = retract-of-totally-separated (≃-gives-▷ 𝕗)
+
 \end{code}
 
 Recall that a type is called ¬¬-separated if the doubly negated equality

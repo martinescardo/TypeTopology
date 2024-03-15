@@ -19,7 +19,9 @@ open import MLTT.Two-Properties
 open import Naturals.Order hiding (max)
 open import Notation.CanonicalMap
 open import Notation.Order
+open import Ordinals.Notions
 open import TypeTopology.Density
+open import TypeTopology.TotallySeparated
 open import UF.Base
 open import UF.DiscreteAndSeparated
 open import UF.Embeddings
@@ -129,8 +131,6 @@ Cantor-is-¬¬-separated fe = Π-is-¬¬-separated fe (λ _ → 𝟚-is-¬¬-sep
 
 ℕ∞-is-set : funext₀ → is-set ℕ∞
 ℕ∞-is-set fe = ¬¬-separated-types-are-sets fe (ℕ∞-is-¬¬-separated fe)
-
-open import TypeTopology.TotallySeparated
 
 ℕ∞-is-totally-separated : funext₀ → is-totally-separated ℕ∞
 ℕ∞-is-totally-separated fe = retract-of-totally-separated
@@ -677,8 +677,6 @@ finite-≺-Succ a (n , p) = transport (_≺ Succ a) p
 ≺-Succ : (a b : ℕ∞) → a ≺ b → Succ a ≺ Succ b
 ≺-Succ a b (n , p , q) = succ n , ap Succ p , q
 
-open import Naturals.Order
-
 <-gives-⊏ : (m n : ℕ) → m < n →  m ⊏ ι n
 <-gives-⊏ 0        0        l = 𝟘-elim l
 <-gives-⊏ 0        (succ n) l = refl
@@ -702,8 +700,6 @@ open import Naturals.Order
 
 ⊏-trans : (m n : ℕ) (u : ℕ∞) → m ⊏ ι n → n ⊏ u → m ⊏ u
 ⊏-trans m n u a = ⊏-trans' m n u (⊏-gives-< m n a)
-
-open import Ordinals.Notions
 
 ≺-trans : is-transitive _≺_
 ≺-trans u v w (m , r , a) (n , s , b) = m , r , c

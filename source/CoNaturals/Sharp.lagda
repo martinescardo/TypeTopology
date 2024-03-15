@@ -15,6 +15,10 @@ where y is called sharp if η n ⊑ y is decidable for every n ꞉ ℕ [1].
     August 2023 , pp. 573 - 604.
     https://doi.org/10.1017/S0960129523000282
 
+There are two equivalent copies of ℕ∞ in this development. We use the
+one defined in CoNaturals.GenericConvergentSequence2 imported via the
+module CoNaturals.Type2.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}
@@ -24,11 +28,11 @@ open import UF.FunExt
 open import UF.Subsingletons
 
 module CoNaturals.Sharp
-        (fe₀ : funext 𝓤₀ 𝓤₀)
-        (pe : Prop-Ext)
+        (fe : funext 𝓤₀ 𝓤₀)
+        (pe : propext 𝓤₀)
        where
 
-open import CoNaturals.BothTypes
+open import CoNaturals.Type2
 open import Lifting.Construction 𝓤₀
 open import Lifting.IdentityViaSIP 𝓤₀ {𝓤₀} {ℕ}
 open import Lifting.Set 𝓤₀
@@ -44,15 +48,13 @@ open import UF.FunExt
 open import UF.PropTrunc
 open import UF.Subsingletons-FunExt
 
-open ℕ∞-equivalence fe₀
-
 \end{code}
 
 We introduce the following standard notation, and write ι : ℕ → ℕ⊥ for
 the canonical inclusion of the natural numbers into the flat domain ℕ⊥
 of natural numbers. Notice that we also write ι : ℕ → ℕ∞ for the
-canonical inclusion of the natural numbers into the generic convergent
-sequence, introduced in the module that defines ℕ∞.
+canonical inclusion of the natural numbers into the conatural numbers,
+introduced in the module that defines ℕ∞.
 
 \begin{code}
 
@@ -76,18 +78,59 @@ so that
 
 \begin{code}
 
+instance
+ Canonical-Map-ℕ-ℕ∞ : Canonical-Map ℕ ℕ∞
+ ι {{Canonical-Map-ℕ-ℕ∞}} = ℕ-to-ℕ∞
+
 sharp : ℕ∞ → ℕ⊥
-sharp x = is-finite x , size , being-finite-is-prop fe₀ x
+sharp x = is-finite x , size {x} , being-finite-is-prop fe x
+
+sharp-lc : left-cancellable sharp
+sharp-lc {x} {y} e = II
+ where
+  I : (x y : ℕ∞) → sharp x ⋍· sharp y → (n : ℕ) → ι n ＝ x → ι n ＝ y
+  I x y a n e =
+   ι n                     ＝⟨ ap ι (g φ) ⟩
+   ι (size {y} (⌜ f ⌝ φ))  ＝⟨ size-property fe (⌜ f ⌝ φ) ⟩
+   y                       ∎
+   where
+    φ : is-finite x
+    φ = n , (ℕ∞-to-ℕ→𝟚 x n     ＝⟨ ap (λ - → ℕ∞-to-ℕ→𝟚 - n) (e ⁻¹) ⟩
+             ℕ∞-to-ℕ→𝟚 (ι n) n ＝⟨ ℕ-to-ℕ∞-diagonal fe n ⟩
+             ₁                 ∎)
+
+    f : is-finite x ≃ is-finite y
+    f = is-defined-⋍· (sharp x) (sharp y) a
+
+    g : (φ : is-finite x) → size {x} φ ＝ size {y} (⌜ f ⌝ φ)
+    g = value-⋍· (sharp x) (sharp y) a
+
+  II : x ＝ y
+  II = ℕ∞-equality-criterion fe x y
+        (I x y (Id-to-⋍· _ _ e))
+        (I y x (Id-to-⋍· _ _ (e ⁻¹)))
+
+sharp-is-embedding : is-embedding sharp
+sharp-is-embedding =
+ lc-maps-into-sets-are-embeddings sharp sharp-lc
+  (lifting-of-set-is-set fe fe pe ℕ ℕ-is-set)
+
+\end{code}
+
+We have the following two corollaries.
+
+\begin{code}
 
 sharp-finite : (n : ℕ) → sharp (ι n) ＝ ι n
 sharp-finite n = II
  where
   I : sharp (ι n) ⊑ ι n
-  I = unique-to-𝟙 , (λ (n , p) → ℕ-to-ℕ∞-lc p)
+  I = (λ _ → ⋆) ,
+      (λ (n' , e) → ℕ-to-ℕ∞-lc fe ((diagonal-lemma fe n' (ι n) e)⁻¹))
 
   II : sharp (ι n) ＝ ι n
-  II = ⊑-anti-lemma pe fe₀ fe₀ I
-        (λ (_ : is-defined (ι n)) → ℕ-to-ℕ∞-is-finite n)
+  II = ⊑-anti-lemma pe fe fe I
+        (λ _ → n , (ℕ-to-ℕ∞-diagonal fe n))
 
 sharp-∞ : sharp ∞ ＝ ⊥
 sharp-∞ = II
@@ -96,44 +139,7 @@ sharp-∞ = II
   I = is-infinite-∞ , (λ is-finite-∞ → 𝟘-elim (is-infinite-∞ is-finite-∞))
 
   II : sharp ∞ ＝ ⊥
-  II = ⊑-anti pe fe₀ fe₀ (I , ⊥-least (sharp ∞))
-
-\end{code}
-
-The map sharp is left-cancellable and hence an embedding.
-
-\begin{code}
-
-sharp-lc : left-cancellable sharp
-sharp-lc {x} {x'} e = II
- where
-  I : (x x' : ℕ∞) → sharp x ⋍· sharp x' → (n : ℕ) → ι n ＝ x → ι n ＝ x'
-  I x x' a n e =
-   ι n                      ＝⟨ ap ι (g (n , e)) ⟩
-   ι (size (⌜ f ⌝ (n , e))) ＝⟨ size-property (⌜ f ⌝ (n , e)) ⟩
-   x'                        ∎
-   where
-    f : is-finite x ≃ is-finite x'
-    f = is-defined-⋍· (sharp x) (sharp x') a
-
-    g : (φ : is-finite x) → size φ ＝ size (⌜ f ⌝ φ)
-    g = value-⋍· (sharp x) (sharp x') a
-
-  II : x ＝ x'
-  II = ℕ∞-equality-criterion fe₀ x x'
-        (I x  x' (Id-to-⋍· _ _ e))
-        (I x' x  (Id-to-⋍· _ _ (e ⁻¹)))
-
-sharp-is-embedding : is-embedding sharp
-sharp-is-embedding =
- lc-maps-into-sets-are-embeddings sharp sharp-lc
-  (lifting-of-set-is-set fe₀ fe₀ pe ℕ ℕ-is-set)
-
-\end{code}
-
-We have the following two corollaries.
-
-\begin{code}
+  II = ⊑-anti pe fe fe (I , ⊥-least (sharp ∞))
 
 sharp-finite' : (x : ℕ∞) (n : ℕ) → sharp x ＝ ι n → x ＝ ι n
 sharp-finite' x n e = sharp-lc (sharp x     ＝⟨ e ⟩
@@ -144,29 +150,9 @@ sharp-∞' : (x : ℕ∞) → sharp x ＝ ⊥ → x ＝ ∞
 sharp-∞' x e = sharp-lc (sharp x ＝⟨ e ⟩
                          ⊥       ＝⟨ sharp-∞ ⁻¹ ⟩
                          sharp ∞ ∎)
-
 \end{code}
 
-The image of the embedding has empty complement, in the following
-sense.
-
-\begin{code}
-
-sharp-image-has-empty-complement : ¬ (Σ y ꞉ ℕ⊥ , ((x : ℕ∞) → sharp x ≠ y))
-sharp-image-has-empty-complement (y , f) =
- η-image fe₀ fe₀ pe
-   (y ,
-   (λ (e : y ＝ ⊥)
-         → f ∞ (sharp ∞ ＝⟨ sharp-∞ ⟩
-                ⊥       ＝⟨ e ⁻¹ ⟩
-                y       ∎)) ,
-   (λ n (e : y ＝ ι n)
-         → f (ι n)
-             (sharp (ι n) ＝⟨ sharp-finite n ⟩
-              ι n         ＝⟨ e ⁻¹ ⟩
-              y           ∎)))
-
-\end{code}
+The map sharp is left-cancellable and hence an embedding.
 
 But the embedding is a surjection if and only if excluded middle
 holds.
@@ -181,7 +167,7 @@ module _ (pt : propositional-truncations-exist) where
 
  sharp-is-surjection-gives-EM : is-surjection sharp → EM 𝓤₀
  sharp-is-surjection-gives-EM sharp-is-surjection P P-is-prop =
-  ∥∥-rec (decidability-of-prop-is-prop fe₀ P-is-prop) II I
+  ∥∥-rec (decidability-of-prop-is-prop fe P-is-prop) II I
   where
    y : ℕ⊥
    y = P , (λ _ → 0) , P-is-prop
@@ -193,7 +179,7 @@ module _ (pt : propositional-truncations-exist) where
    II (x , e) = IV III
     where
      III : (ι 0 ＝ x) + (ι 0 ≠ x)
-     III = finite-isolated fe₀ 0 x
+     III = finite-isolated fe 0 x
 
      IV : (ι 0 ＝ x) + (ι 0 ≠ x) → P + ¬ P
      IV (inl d) = inl (⌜ C ⌝⁻¹ ⋆)
@@ -215,7 +201,7 @@ module _ (pt : propositional-truncations-exist) where
        A = unique-to-𝟙 , (λ (p : P) → refl)
 
        B : P → y ＝ ι 0
-       B p = ⊑-anti-lemma pe fe₀ fe₀ A (λ _ → p)
+       B p = ⊑-anti-lemma pe fe fe A (λ _ → p)
 
        C : ¬ (y ＝ ι 0)
        C d = ν (C₁ ⁻¹)
@@ -235,10 +221,11 @@ module _ (pt : propositional-truncations-exist) where
    I (inl p) = ι (φ p) , III
     where
      II : sharp (ι (φ p)) ⊑ y
-     II = (λ _ → p) , (λ (n , e) → ℕ-to-ℕ∞-lc e)
+     II = (λ _ → p) ,
+          (λ (n , e) → ℕ-to-ℕ∞-lc fe ((diagonal-lemma fe n (ι (φ p)) e)⁻¹))
 
      III : sharp (ι (φ p)) ＝ y
-     III = ⊑-anti-lemma pe fe₀ fe₀ II (λ _ → ℕ-to-ℕ∞-is-finite (φ p))
+     III = ⊑-anti-lemma pe fe fe II (λ _ → ℕ-to-ℕ∞-is-finite (φ p))
 
    I (inr ν) = ∞ , III
     where
@@ -246,15 +233,17 @@ module _ (pt : propositional-truncations-exist) where
      II = transport (_⊑ y) (sharp-∞ ⁻¹) (⊥-least y)
 
      III : sharp ∞ ＝ y
-     III = ⊑-anti-lemma pe fe₀ fe₀ II λ (p : P) → 𝟘-elim (ν p)
+     III = ⊑-anti-lemma pe fe fe II λ (p : P) → 𝟘-elim (ν p)
 
  EM-gives-sharp-is-surjection : EM 𝓤₀ → is-surjection sharp
  EM-gives-sharp-is-surjection em y = ∣ EM-gives-sharp-is-retraction em y ∣
 
+ EM-gives-sharp-is-equiv : EM 𝓤₀ → is-equiv sharp
+ EM-gives-sharp-is-equiv em = lc-split-surjections-are-equivs
+                               sharp
+                               sharp-lc
+                               (EM-gives-sharp-is-retraction em)
 \end{code}
-
-TODO. Actually notice that EM implies that the map sharp is an
-equivalence.
 
 Added 14th March 2024.
 
@@ -281,94 +270,24 @@ is-sharp : ℕ⊥ → 𝓤₀ ̇
 is-sharp y = (n : ℕ) → is-decidable (ι n ⊑ y)
 
 being-sharp-is-prop : (y : ℕ⊥) → is-prop (is-sharp y)
-being-sharp-is-prop l = Π-is-prop fe₀
-                         (λ n → decidability-of-prop-is-prop fe₀
-                                 (⊑-prop-valued fe₀ fe₀ ℕ-is-set (ι n) l))
+being-sharp-is-prop l = Π-is-prop fe
+                         (λ n → decidability-of-prop-is-prop fe
+                                 (⊑-prop-valued fe fe ℕ-is-set (ι n) l))
 
 sharp-is-sharp : (x : ℕ∞) → is-sharp (sharp x)
-sharp-is-sharp x n = I (finite-isolated fe₀ n x)
+sharp-is-sharp x n = I (finite-isolated fe n x)
  where
   I : is-decidable (ι n ＝ x) → is-decidable (ι n ⊑ sharp x)
-  I (inl e) = inl ((λ (_ : is-defined (ι n)) → n , e) , (λ (_ : 𝟙) → refl))
-  I (inr ν) = inr (λ ((a , b) : η n ⊑ sharp x)
-                              → ν (ι n            ＝⟨ ap ι (b ⋆) ⟩
-                                   ι (size (a ⋆)) ＝⟨ size-property (a ⋆) ⟩
-                                   x              ∎))
-\end{code}
-
-Now we need to show that
-
-  (y : ℕ⊥) → is-sharp y → Σ x ꞉ ℕ∞ , sharp x ＝ y.
-
-However, this turns out to be rather laborious to do directly, and so
-we instead work with the isomorphic copy ℕ∞' of ℕ∞ consisting of the
-binary sequences that have at most one 1.
-
-We will repeat part of the above development for this isomorphic copy,
-where the constructions and proofs look very similar. Perhaps we
-should have worked with only ℕ∞' in this file.
-
-\begin{code}
-
-open import CoNaturals.Type2
-
-instance
- Canonical-Map-ℕ-ℕ∞' : Canonical-Map ℕ ℕ∞'
- ι {{Canonical-Map-ℕ-ℕ∞'}} = ℕ-to-ℕ∞'
-
-sharp' : ℕ∞' → ℕ⊥
-sharp' x = is-finite' x , size' {x} , being-finite'-is-prop fe₀ x
-
-sharp'-lc : left-cancellable sharp'
-sharp'-lc {x} {y} e = II
- where
-  I : (x y : ℕ∞') → sharp' x ⋍· sharp' y → (n : ℕ) → ι n ＝ x → ι n ＝ y
-  I x y a n e =
-   ι n                     ＝⟨ ap ι (g φ) ⟩
-   ι (size' {y} (⌜ f ⌝ φ)) ＝⟨ size'-property' fe₀ (⌜ f ⌝ φ) ⟩
-   y                       ∎
-   where
-    φ : is-finite' x
-    φ = n , (ℕ∞'-to-ℕ→𝟚 x n     ＝⟨ ap (λ - → ℕ∞'-to-ℕ→𝟚 - n) (e ⁻¹) ⟩
-             ℕ∞'-to-ℕ→𝟚 (ι n) n ＝⟨ ℕ-to-ℕ∞'-diagonal fe₀ n ⟩
-             ₁                  ∎)
-
-    f : is-finite' x ≃ is-finite' y
-    f = is-defined-⋍· (sharp' x) (sharp' y) a
-
-    g : (φ : is-finite' x) → size' {x} φ ＝ size' {y} (⌜ f ⌝ φ)
-    g = value-⋍· (sharp' x) (sharp' y) a
-
-  II : x ＝ y
-  II = ℕ∞'-equality-criterion fe₀ x y
-        (I x y (Id-to-⋍· _ _ e))
-        (I y x (Id-to-⋍· _ _ (e ⁻¹)))
-
-sharp'-is-embedding : is-embedding sharp'
-sharp'-is-embedding =
- lc-maps-into-sets-are-embeddings sharp' sharp'-lc
-  (lifting-of-set-is-set fe₀ fe₀ pe ℕ ℕ-is-set)
-
-sharp'-is-sharp : (x : ℕ∞') → is-sharp (sharp' x)
-sharp'-is-sharp x n = I (finite'-isolated fe₀ n x)
- where
-  I : is-decidable (ι n ＝ x) → is-decidable (ι n ⊑ sharp' x)
-  I (inl refl) = inl ((λ ⋆ → n , ℕ-to-ℕ∞'-diagonal fe₀ n) , (λ ⋆ → refl))
+  I (inl refl) = inl ((λ ⋆ → n , ℕ-to-ℕ∞-diagonal fe n) , (λ ⋆ → refl))
   I (inr ν) = inr f
    where
-    f : ¬ (ι n ⊑ sharp' x)
-    f (a , b) = ν (ι n                 ＝⟨ ap ι (b ⋆) ⟩
-                   ι (size' {x} (a ⋆)) ＝⟨ size'-property' fe₀ (a ⋆) ⟩
-                   x                   ∎)
+    f : ¬ (ι n ⊑ sharp x)
+    f (a , b) = ν (ι n                ＝⟨ ap ι (b ⋆) ⟩
+                   ι (size {x} (a ⋆)) ＝⟨ size-property fe (a ⋆) ⟩
+                   x                  ∎)
 
-\end{code}
-
-After the above repetition, we come to something new.
-
-\begin{code}
-
-only-sharp'-is-sharp : (y : ℕ⊥) → is-sharp y → Σ x ꞉ ℕ∞' , sharp' x ＝ y
-only-sharp'-is-sharp y@(P , φ , P-is-prop) y-is-sharp = γ
+only-sharp-is-sharp : (y : ℕ⊥) → is-sharp y → Σ x ꞉ ℕ∞ , sharp x ＝ y
+only-sharp-is-sharp y@(P , φ , P-is-prop) y-is-sharp = γ
  where
   I : (n n' : ℕ) → ι n ⊑ y → ι n' ⊑ y → n ＝ n'
   I n n' (p , e) (p' , e') = n        ＝⟨ e ⋆ ⟩
@@ -389,7 +308,7 @@ only-sharp'-is-sharp y@(P , φ , P-is-prop) y-is-sharp = γ
   α-property₁ = indicator₁ y-is-sharp'
 
   α-property₁' : (n : ℕ) → α n ＝ ₁ → ι n ＝ y
-  α-property₁' n α = η-maximal pe fe₀ fe₀ n y (α-property₁ n α)
+  α-property₁' n α = η-maximal pe fe fe n y (α-property₁ n α)
 
   α-property : (n n' : ℕ) → α n ＝ ₁ → α n' ＝ ₁ → n ＝ n'
   α-property n n' e e' = I n n' (α-property₁ n e) (α-property₁ n' e')
@@ -397,10 +316,10 @@ only-sharp'-is-sharp y@(P , φ , P-is-prop) y-is-sharp = γ
   a : has-at-most-one-₁ α
   a (n , e) (n' , e') = to-subtype-＝ (λ _ → 𝟚-is-set) (α-property n n' e e')
 
-  x : ℕ∞'
+  x : ℕ∞
   x = α , a
 
-  II : sharp' x ⊑ y
+  II : sharp x ⊑ y
   II = II₀ , II₁
    where
     II₀ : (Σ n ꞉ ℕ , α n ＝ ₁) → P
@@ -427,37 +346,34 @@ only-sharp'-is-sharp y@(P , φ , P-is-prop) y-is-sharp = γ
     III₁ : α (φ p) ＝ ₀ → ¬ (ι (φ p) ⊑ y)
     III₁ = α-property₀ (φ p)
 
-  IV : sharp' x ＝ y
-  IV = ⊑-anti-lemma pe fe₀ fe₀ II III
+  IV : sharp x ＝ y
+  IV = ⊑-anti-lemma pe fe fe II III
 
-  γ : Σ x ꞉ ℕ∞' , sharp' x ＝ y
+  γ : Σ x ꞉ ℕ∞ , sharp x ＝ y
   γ = x , IV
 
-theorem : ℕ∞' ≃ (Σ y ꞉ ℕ⊥ , is-sharp y)
+theorem : ℕ∞ ≃ (Σ y ꞉ ℕ⊥ , is-sharp y)
 theorem = r , r-is-equiv
  where
-  r : ℕ∞' → (Σ y ꞉ ℕ⊥ , is-sharp y)
-  r x = sharp' x , sharp'-is-sharp x
+  r : ℕ∞ → (Σ y ꞉ ℕ⊥ , is-sharp y)
+  r x = sharp x , sharp-is-sharp x
 
   r-is-embedding : is-embedding r
   r-is-embedding = factor-is-embedding r pr₁
-                    sharp'-is-embedding
+                    sharp-is-embedding
                     (pr₁-is-embedding being-sharp-is-prop)
 
-  s : (Σ y ꞉ ℕ⊥ , is-sharp y) → ℕ∞'
-  s (y , y-is-sharp) = pr₁ (only-sharp'-is-sharp y y-is-sharp)
+  s : (Σ y ꞉ ℕ⊥ , is-sharp y) → ℕ∞
+  s (y , y-is-sharp) = pr₁ (only-sharp-is-sharp y y-is-sharp)
 
-  h : (σ@(y , _) : Σ y ꞉ ℕ⊥ , is-sharp y) → sharp' (s σ) ＝ y
-  h (y , y-is-sharp) = pr₂ (only-sharp'-is-sharp y y-is-sharp)
+  h : (σ@(y , _) : Σ y ꞉ ℕ⊥ , is-sharp y) → sharp (s σ) ＝ y
+  h (y , y-is-sharp) = pr₂ (only-sharp-is-sharp y y-is-sharp)
 
   rs : r ∘ s ∼ id
   rs σ = to-subtype-＝ being-sharp-is-prop (h σ)
 
   r-is-equiv : is-equiv r
   r-is-equiv = embeddings-with-sections-are-equivs r r-is-embedding (s , rs)
-
-corollary : ℕ∞ ≃ (Σ y ꞉ ℕ⊥ , is-sharp y)
-corollary = ℕ∞-to-ℕ∞'-≃ ● theorem
 
 \end{code}
 
@@ -468,40 +384,3 @@ Other ways to distinguish ℕ∞ and ℕ⊥:
  * ℕ⊥ is injective and hence indecomposable.
 
 This is already proved in other modules.
-
-For the sake of completeness, we repeat further things done above with
-ℕ∞' replacing ℕ∞.
-
-\begin{code}
-
-sharp'-finite : (n : ℕ) → sharp' (ι n) ＝ ι n
-sharp'-finite n = II
- where
-  I : sharp' (ι n) ⊑ ι n
-  I = (λ _ → ⋆) ,
-      (λ (n' , e) → ℕ-to-ℕ∞'-lc fe₀ ((diagonal-lemma fe₀ n' (ι n) e)⁻¹))
-
-  II : sharp' (ι n) ＝ ι n
-  II = ⊑-anti-lemma pe fe₀ fe₀ I
-        (λ _ → n , (ℕ-to-ℕ∞'-diagonal fe₀ n))
-
-sharp'-∞' : sharp' ∞' ＝ ⊥
-sharp'-∞' = II
- where
-  I : sharp' ∞' ⊑ ⊥
-  I = is-infinite-∞' , (λ is-finite-∞' → 𝟘-elim (is-infinite-∞' is-finite-∞'))
-
-  II : sharp' ∞' ＝ ⊥
-  II = ⊑-anti pe fe₀ fe₀ (I , ⊥-least (sharp' ∞'))
-
-sharp'-finite'' : (x : ℕ∞') (n : ℕ) → sharp' x ＝ ι n → x ＝ ι n
-sharp'-finite'' x n e = sharp'-lc (sharp' x     ＝⟨ e ⟩
-                                   ι n          ＝⟨ (sharp'-finite n)⁻¹ ⟩
-                                   sharp' (ι n) ∎)
-
-sharp'-∞'' : (x : ℕ∞') → sharp' x ＝ ⊥ → x ＝ ∞'
-sharp'-∞'' x e = sharp'-lc (sharp' x  ＝⟨ e ⟩
-                            ⊥         ＝⟨ sharp'-∞' ⁻¹ ⟩
-                            sharp' ∞' ∎)
-
-\end{code}

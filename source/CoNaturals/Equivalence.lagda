@@ -9,7 +9,7 @@ We show that the two types representing the natural numbers are equivalence.
 module CoNaturals.Equivalence where
 
 open import CoNaturals.Type
-open import CoNaturals.Type2
+open import CoNaturals.GenericConvergentSequence2
 open import MLTT.Spartan
 open import MLTT.Two-Properties
 open import Naturals.Order hiding (max)

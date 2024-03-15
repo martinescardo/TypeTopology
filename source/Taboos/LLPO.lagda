@@ -8,8 +8,7 @@ Lesser Limited Principle of Omniscience.
 
 module Taboos.LLPO where
 
-open import CoNaturals.Type
-open import CoNaturals.Type2
+open import CoNaturals.BothTypes
 open import CoNaturals.Equivalence
 open import CoNaturals.Type2Properties
 open import MLTT.Plus-Properties
