@@ -9,6 +9,7 @@ import Naturals.Addition
 import Naturals.Binary
 import Naturals.Division
 import Naturals.Exponentiation
+import Naturals.IdOrder
 import Naturals.HCF
 import Naturals.Multiplication
 import Naturals.Order
