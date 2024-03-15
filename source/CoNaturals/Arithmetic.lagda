@@ -33,7 +33,7 @@ private
  fe₀ = fe 𝓤₀ 𝓤₀
 
 open import MLTT.Two-Properties
-open import CoNaturals.GenericConvergentSequence renaming (min to min')
+open import CoNaturals.Type renaming (min to min')
 open import CoNaturals.UniversalProperty fe
 open import Notation.Order
 open import Notation.CanonicalMap

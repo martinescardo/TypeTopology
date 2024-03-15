@@ -28,7 +28,7 @@ module CoNaturals.Sharp
         (pe : Prop-Ext)
        where
 
-open import CoNaturals.GenericConvergentSequence
+open import CoNaturals.BothTypes
 open import Lifting.Construction 𝓤₀
 open import Lifting.IdentityViaSIP 𝓤₀ {𝓤₀} {ℕ}
 open import Lifting.Set 𝓤₀
@@ -43,6 +43,8 @@ open import UF.Equiv
 open import UF.FunExt
 open import UF.PropTrunc
 open import UF.Subsingletons-FunExt
+
+open ℕ∞-equivalence fe₀
 
 \end{code}
 
@@ -308,7 +310,7 @@ should have worked with only ℕ∞' in this file.
 
 \begin{code}
 
-open import CoNaturals.GenericConvergentSequence2
+open import CoNaturals.Type2
 
 instance
  Canonical-Map-ℕ-ℕ∞' : Canonical-Map ℕ ℕ∞'
@@ -455,7 +457,7 @@ theorem = r , r-is-equiv
   r-is-equiv = embeddings-with-sections-are-equivs r r-is-embedding (s , rs)
 
 corollary : ℕ∞ ≃ (Σ y ꞉ ℕ⊥ , is-sharp y)
-corollary = ℕ∞-to-ℕ∞'-≃ fe₀ ● theorem
+corollary = ℕ∞-to-ℕ∞'-≃ ● theorem
 
 \end{code}
 

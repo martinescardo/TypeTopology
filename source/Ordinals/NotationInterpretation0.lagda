@@ -34,7 +34,7 @@ private
 
 open PropositionalTruncation pt
 
-open import CoNaturals.GenericConvergentSequence
+open import CoNaturals.Type
 open import MLTT.Plus-Properties
 open import MLTT.Spartan
 open import Notation.CanonicalMap

@@ -21,7 +21,7 @@ open import UF.FunExt
 
 module TypeTopology.GenericConvergentSequenceCompactness (fe : funext 𝓤₀ 𝓤₀) where
 
-open import CoNaturals.GenericConvergentSequence
+open import CoNaturals.Type
 open import MLTT.Two-Properties
 open import Notation.CanonicalMap
 open import TypeTopology.CompactTypes

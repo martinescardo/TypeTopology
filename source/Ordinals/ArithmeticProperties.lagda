@@ -946,8 +946,8 @@ also is not a successor ordinal unless LPO holds:
 
 \begin{code}
 
+ open import CoNaturals.Type
  open import Notation.CanonicalMap
- open import CoNaturals.GenericConvergentSequence
  open import Notation.Order
  open import Naturals.Order
 

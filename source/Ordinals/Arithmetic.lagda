@@ -12,7 +12,7 @@ module Ordinals.Arithmetic
         (fe : FunExt)
        where
 
-open import CoNaturals.GenericConvergentSequence
+open import CoNaturals.Type
 open import MLTT.Spartan
 open import Naturals.Order
 open import Ordinals.Notions

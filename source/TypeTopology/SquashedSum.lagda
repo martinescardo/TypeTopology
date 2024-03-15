@@ -17,7 +17,7 @@ private
  fe₀ : funext 𝓤₀ 𝓤₀
  fe₀ = fe 𝓤₀ 𝓤₀
 
-open import CoNaturals.GenericConvergentSequence
+open import CoNaturals.Type
 open import InjectiveTypes.Blackboard fe
 open import MLTT.Plus-Properties
 open import MLTT.Two-Properties

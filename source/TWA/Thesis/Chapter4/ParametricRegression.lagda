@@ -13,7 +13,7 @@ open import MLTT.Spartan
 open import Notation.Order
 open import Naturals.Order
 open import NotionsOfDecidability.Complemented
-open import CoNaturals.GenericConvergentSequence
+open import CoNaturals.Type
   renaming (ℕ-to-ℕ∞ to _↑
          ; Zero-smallest to zero-minimal
          ; ∞-largest to ∞-maximal)
@@ -42,7 +42,7 @@ invert-rel : {X : 𝓤 ̇ } → (X → X → 𝓥 ̇ ) → (X → X → 𝓥 ̇ 
 invert-rel R x y = R y x
 
 invert-rel' : {X : 𝓤 ̇ } → (X → X → ℕ → 𝓥 ̇ ) → (X → X → ℕ → 𝓥 ̇ )
-invert-rel' R x y = R y x 
+invert-rel' R x y = R y x
 
 invert-preorder-is-preorder : {X : 𝓤 ̇ } → (_≤_ : X → X → 𝓥 ̇ )
                             → is-preorder _≤_
@@ -78,14 +78,14 @@ invert-approx-order-is-approx-order X _≤ⁿ_ a'@(_ , d' , c') = l , d , c
 is_global-maximal : ℕ → {𝓤 𝓥 : Universe}
                   → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                   → (_≤ⁿ_ : Y → Y → ℕ → 𝓦 ̇ )
-                  → (f : X → Y) → X → 𝓦 ⊔ 𝓤  ̇ 
+                  → (f : X → Y) → X → 𝓦 ⊔ 𝓤  ̇
 (is ϵ global-maximal) {𝓤} {𝓥} {X} _≤ⁿ_ f x₀
  = is ϵ global-minimal (invert-rel' _≤ⁿ_) f x₀
 
 has_global-maximal : ℕ → {𝓤 𝓥 : Universe} {X : 𝓤 ̇ }
                    → {Y : 𝓥 ̇ }
                    → (_≤ⁿ_ : Y → Y → ℕ → 𝓦 ̇ )
-                   → (f : X → Y) → (𝓦 ⊔ 𝓤) ̇ 
+                   → (f : X → Y) → (𝓦 ⊔ 𝓤) ̇
 (has ϵ global-maximal) {𝓤} {𝓥} {𝓦} {X} _≤ⁿ_ f
  = Σ ((is ϵ global-maximal) {𝓤} {𝓥} {𝓦} {X} _≤ⁿ_ f)
 
@@ -136,15 +136,15 @@ oracle-closeness' (_ , c , _ , c-sym , c-ult) 𝓞 ϵ y₁ y₂ Cϵy₁y₂ n n�
          (c𝓞y₂＝₀ ⁻¹
          ∙ c-ult 𝓞 y₁ y₂ n
            (Lemma[a＝₁→b＝₁→min𝟚ab＝₁] c𝓞y₁＝₁
-             (Cϵy₁y₂ n (<-gives-⊏ n ϵ n<ϵ))))) 
+             (Cϵy₁y₂ n (<-gives-⊏ n ϵ n<ϵ)))))
     C𝓞-eq n n<ϵ (inr c𝓞y₁＝₁) (inr c𝓞y₂＝₁) = c𝓞y₁＝₁ ∙ c𝓞y₂＝₁ ⁻¹
-  
+
 oracle-closeness : (Y : PseudoClosenessSpace 𝓥)
              → (𝓞 : ⟪ Y ⟫)
              → let c = pr₁ (pr₂ Y) in
                f-ucontinuous' Y (ι ℕ∞-ClosenessSpace) (c 𝓞)
 oracle-closeness Y 𝓞 ϵ = ϵ , oracle-closeness' Y 𝓞 ϵ
-    
+
 optimisation-convergence
        : (X : ClosenessSpace 𝓤) (Y : PseudoClosenessSpace 𝓥)
        → ⟨ X ⟩ → totally-bounded X 𝓤'
@@ -200,7 +200,7 @@ s-imperfect-convergence X Y S ε M ϕᴹ Ψ k Cε𝓞Ψ𝓞
  = C'-trans Y ε 𝓞 Ψ𝓞 ω Cε𝓞Ψ𝓞
      (pr₂ (S ((p , d) , ϕ)) (k , C'-sym Y ε 𝓞 Ψ𝓞 Cε𝓞Ψ𝓞))
  where
-  𝓞 = M k 
+  𝓞 = M k
   Ψ𝓞 = Ψ 𝓞
   reg = p-regressor X Y S ε
   ω = M (reg M ϕᴹ Ψ𝓞)

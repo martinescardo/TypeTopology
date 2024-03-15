@@ -6,7 +6,7 @@ Todd Waugh Ambridge, January 2024
 {-# OPTIONS --without-K --safe #-}
 
 open import MLTT.Spartan
-open import CoNaturals.GenericConvergentSequence
+open import CoNaturals.Type
  renaming (ℕ-to-ℕ∞ to _↑) hiding (max)
 open import Notation.Order
 open import Naturals.Order
@@ -38,7 +38,7 @@ seq-f-ucontinuous² {𝓤} {𝓥} {𝓦} {X} {Y} f
    ((x₁ x₂ : (ℕ → X)) (y₁ y₂ : (ℕ → Y))
  → (x₁ ∼ⁿ x₂) δˣ → (y₁ ∼ⁿ y₂) δʸ → (f x₁ y₁ ∼ⁿ f x₂ y₂) ϵ)
 
-map-ucontinuous' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } 
+map-ucontinuous' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                  → (f : X → Y) → seq-f-ucontinuous¹ (map f)
 map-ucontinuous' f ε = ε , λ α β α∼ⁿβ k k<ε → ap f (α∼ⁿβ k k<ε)
 
@@ -108,7 +108,7 @@ seq-f-ucontinuous²-comp
        (pr₂ (ϕᵍ (pr₂ (pr₁ (ϕᶠ ϵ)))) y₁ y₂ z z
        y₁∼y₂
        (λ _ _ → refl))
- 
+
 seq-f-ucontinuous¹²-comp
  : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {W : 𝓣 ̇ }
  → (f : (ℕ → Z) → (ℕ → W))
@@ -196,7 +196,7 @@ seq-f-ucontinuous²-to-closeness
                                    (ℕ→D-ClosenessSpace dʸ))
                  (ℕ→D-ClosenessSpace dᶻ) (uncurry f)
 seq-f-ucontinuous²-to-closeness dˣ dʸ dᶻ f ϕ ε
- = δ 
+ = δ
  , λ (α₁ , α₂) (β₁ , β₂) Cαβ
  → ∼ⁿ-to-C dᶻ (f α₁ α₂) (f β₁ β₂) ε
      (pr₂ (ϕ ε) α₁ β₁ α₂ β₂
@@ -313,7 +313,7 @@ pred-mono zero (succ m) n≤m = ⋆
 pred-mono (succ n) (succ m) n≤m = n≤m
 
 nid : (n i d : ℕ) → n < i → (pred ^ i) d ≤ (pred ^ n) d
-nid zero (succ i) d n<i = predⁱ-≤ (succ i) d 
+nid zero (succ i) d n<i = predⁱ-≤ (succ i) d
 nid (succ n) (succ i) d n<i
  = pred-mono ((pred ^ i) d) ((pred ^ n) d) (nid n i d n<i)
 
@@ -353,7 +353,7 @@ nid (succ n) (succ i) d n<i
   γ j = transport (α (succ j) ∼ⁿ β (succ j))
          (pred^si-sn-is-pred^i-n j n)
          (f (succ j))
-  
+
 ΠC-to-∼ⁿ : {X : ℕ → 𝓤 ̇ }
          → (d : (n : ℕ) → is-discrete (X n))
          → (α β : (ℕ → Π X)) (n : ℕ)
@@ -395,7 +395,7 @@ seq-f-ucontinuousᴺ-to-closeness {𝓤} {𝓥} {X} {Y} dˣ dʸ f ϕ ε
            (<-≤-trans n d δ n<d d≤δ)))
  where
   d δ : ℕ
-  d = pr₁ (pr₁ (ϕ ε)) 
+  d = pr₁ (pr₁ (ϕ ε))
   δ = pr₂ (pr₁ (ϕ ε))
   d≤δ : d ≤ δ
   d≤δ = pr₁ (pr₂ (ϕ ε))

@@ -7,16 +7,16 @@ Todd Waugh Ambridge, January 2024
 
 open import MLTT.Spartan
 
-open import UF.FunExt 
+open import UF.FunExt
 open import Notation.Order
 open import Naturals.Order
 open import UF.DiscreteAndSeparated
-open import CoNaturals.GenericConvergentSequence
+open import CoNaturals.Type
  hiding (max)
  renaming (ℕ-to-ℕ∞ to _↑)
 
 open import TWA.Thesis.Chapter2.Sequences
-open import TWA.Thesis.Chapter2.Vectors 
+open import TWA.Thesis.Chapter2.Vectors
 open import TWA.Thesis.Chapter5.SignedDigit
 
 module TWA.Thesis.Chapter6.SignedDigitContinuity (fe : FunExt) where
@@ -59,7 +59,7 @@ div2-ucontinuous' (succ ε) = succ (succ ε) , γ ε where
     α∼ⁿβ' 0 ⋆ = ap (λ - → pr₂ (div2-aux - (α 1))) (α∼ⁿβ 0 ⋆)
              ∙ ap (λ - → pr₂ (div2-aux (β 0) -)) (α∼ⁿβ 1 ⋆)
     α∼ⁿβ' (succ j) = α∼ⁿβ (succ (succ j))
-    
+
 mid-ucontinuous' : seq-f-ucontinuous² mid
 mid-ucontinuous' = seq-f-ucontinuous¹²-comp div2 add2
                    div2-ucontinuous' (zipWith-ucontinuous' _+𝟛_)
@@ -118,7 +118,7 @@ bigMid'-ucontinuous' ε = dδ ε , d≤δ ε , γ ε where
   pr₁δs< (succ n) = ≤-refl n
   γ : (ε : ℕ) → (x₁ x₂ : (ℕ → 𝟛ᴺ))
     → ((n : ℕ) → n < d ε → (x₁ n ∼ⁿ x₂ n) (δ ε))
-    → (bigMid' x₁ ∼ⁿ bigMid' x₂) ε 
+    → (bigMid' x₁ ∼ⁿ bigMid' x₂) ε
   γ (succ ε) αs βs αs∼ⁿβs zero k<ε
    = ap (λ - → (- +𝟛 -) +𝟝 (αs 0 1 +𝟛 αs 1 0)) (αs∼ⁿβs 0 ⋆ 0 ⋆)
    ∙ ap (λ - → (βs 0 0 +𝟛 βs 0 0) +𝟝 (- +𝟛 αs 1 0)) (αs∼ⁿβs 0 ⋆ 1 ⋆)
@@ -126,14 +126,14 @@ bigMid'-ucontinuous' ε = dδ ε , d≤δ ε , γ ε where
   γ (succ (succ ε)) αs βs αs∼ⁿβs (succ k)
    = γ (succ ε) αs' βs' αs∼ⁿβs' k
    where
-    αs' = mid (tail (tail (αs 0))) (tail (αs 1)) ∷ tail (tail αs) 
+    αs' = mid (tail (tail (αs 0))) (tail (αs 1)) ∷ tail (tail αs)
     βs' = mid (tail (tail (βs 0))) (tail (βs 1)) ∷ tail (tail βs)
     αs∼ⁿβs' : (n : ℕ) → n < d (succ ε)
             → (αs' n ∼ⁿ βs' n) (δ (succ ε))
     αs∼ⁿβs' zero n<d i i<d
      = pr₂ (mid-ucontinuous' (δ (succ ε)))
        (tail (tail (αs 0))) (tail (tail (βs 0)))
-       (tail       (αs 1) ) (tail       (βs 1) ) 
+       (tail       (αs 1) ) (tail       (βs 1) )
        (λ i → αs∼ⁿβs zero ⋆ (succ (succ i)))
        (λ i i≤δϵ → αs∼ⁿβs 1 ⋆ (succ i)
          (≤-trans i _ _ i≤δϵ (≤-succ (δ ε)))) i i<d
@@ -142,12 +142,12 @@ bigMid'-ucontinuous' ε = dδ ε , d≤δ ε , γ ε where
          (≤-trans i (succ (succ (δ ε)))
                     (succ (succ (succ (succ (succ (δ ε))))))
            i≤δϵ (≤-+ (δ ε) 3))
-           
+
 div4-ucontinuous' : seq-f-ucontinuous¹ div4
 div4-ucontinuous' zero = 0 , λ α β _ k ()
 div4-ucontinuous' (succ ε) = succ (succ ε) , γ ε where
   γ : (ε : ℕ) → (α β : ℕ → 𝟡) → (α ∼ⁿ β) (succ (succ ε))
-    →  (div4 α ∼ⁿ div4 β) (succ ε) 
+    →  (div4 α ∼ⁿ div4 β) (succ ε)
   γ ε α β α∼ⁿβ 0 ⋆ = ap (λ - → pr₁ (div4-aux - (α 1))) (α∼ⁿβ 0 ⋆)
                   ∙ ap (λ - → pr₁ (div4-aux (β 0) -)) (α∼ⁿβ 1 ⋆)
   γ (succ ε) α β α∼ⁿβ (succ k) = γ ε α' β' α∼ⁿβ' k
@@ -157,7 +157,7 @@ div4-ucontinuous' (succ ε) = succ (succ ε) , γ ε where
     α∼ⁿβ' : (α' ∼ⁿ β') (succ (succ ε))
     α∼ⁿβ' 0 ⋆ = ap (λ - → pr₂ (div4-aux - (α 1))) (α∼ⁿβ 0 ⋆)
              ∙ ap (λ - → pr₂ (div4-aux (β 0) -)) (α∼ⁿβ 1 ⋆)
-    α∼ⁿβ' (succ j) = α∼ⁿβ (succ (succ j))  
+    α∼ⁿβ' (succ j) = α∼ⁿβ (succ (succ j))
 
 bigMid-ucontinuous' : seq-f-ucontinuousᴺ bigMid
 bigMid-ucontinuous' ε = dδ , d≤δ , ϕ where
@@ -168,7 +168,7 @@ bigMid-ucontinuous' ε = dδ , d≤δ , ϕ where
   d≤δ = pr₁ (pr₂ γ)
   ϕ : (x₁ x₂ : ℕ → 𝟛ᴺ)
     → ((n : ℕ) → n < pr₁ dδ → ((x₁ n) ∼ⁿ (x₂ n)) (pr₂ dδ))
-    → (bigMid x₁ ∼ⁿ bigMid x₂) ε 
+    → (bigMid x₁ ∼ⁿ bigMid x₂) ε
   ϕ αs βs αs∼ⁿβs
    = pr₂ (div4-ucontinuous' ε)
        (bigMid' αs) (bigMid' βs)
@@ -191,7 +191,7 @@ mul-ucontinuous' ε = δ ε , γ ε where
        (zipWith digitMul α₂ (λ _ → β₂))
        (λ n n<d k k<δ → ap (_*𝟛 β₁ k) (α∼ n n<d)
                       ∙ ap (α₂ n *𝟛_) (β∼ k k<δ))
-                      
+
 mul-ucontinuous
  : f-ucontinuous
      (×-ClosenessSpace 𝟛ᴺ-ClosenessSpace 𝟛ᴺ-ClosenessSpace)

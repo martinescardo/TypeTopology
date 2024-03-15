@@ -299,7 +299,7 @@ injectivity to define a non-continuous function.
 
 \begin{code}
 
-open import CoNaturals.GenericConvergentSequence
+open import CoNaturals.Type
 open import Taboos.BasicDiscontinuity (fe 𝓤₀ 𝓤₀)
 open import Taboos.WLPO
 open import Notation.CanonicalMap

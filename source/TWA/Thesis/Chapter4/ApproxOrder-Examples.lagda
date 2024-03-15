@@ -16,7 +16,7 @@ open import UF.Subsingletons-FunExt
 open import UF.Sets
 open import Quotient.Type using (is-prop-valued;is-equiv-relation)
 open import UF.Embeddings
-open import CoNaturals.GenericConvergentSequence
+open import CoNaturals.Type
   renaming (ℕ-to-ℕ∞ to _↑
          ; Zero-smallest to zero-minimal
          ; ∞-largest to ∞-maximal)
@@ -99,7 +99,7 @@ embedding-order-is-linear-order {𝓤} {𝓥} {𝓦} {X} {Y}
 inclusion-approx-order
  : {X : 𝓤 ̇ } {Y : ClosenessSpace 𝓥} (f : X → ⟨ Y ⟩)
  → (_≤ⁿ_ : ⟨ Y ⟩ → ⟨ Y ⟩ → ℕ → 𝓦  ̇)
- → X → X → ℕ → 𝓦  ̇ 
+ → X → X → ℕ → 𝓦  ̇
 inclusion-approx-order f _≤ⁿ_ x y = f x ≤ⁿ f y
 
 Σ-order : {X : 𝓤 ̇ } (P : X → 𝓥 ̇ ) (_≤_ : X → X → 𝓦  ̇)
@@ -120,7 +120,7 @@ inclusion-approx-order f _≤ⁿ_ x y = f x ≤ⁿ f y
   p (x , _) (y , _) = p' x y
 
 Σ-approx-order : {X : 𝓤 ̇ } → (P : X → 𝓥 ̇ ) → (_≤ⁿ_ : X → X → ℕ → 𝓦  ̇)
-               → Σ P → Σ P → ℕ → 𝓦  ̇ 
+               → Σ P → Σ P → ℕ → 𝓦  ̇
 Σ-approx-order P _≤ⁿ_ (x , _) (y , _) = x ≤ⁿ y
 
 Σ-approx-order-is-approx-order
@@ -219,7 +219,7 @@ _≤Fin_ {succ n} (suc x) (suc y) = x ≤Fin y
  , pr₂ ≤Fin-is-linear-preorder
 
 finite-order : {F : 𝓤 ̇ } → finite-linear-order F → F → F → 𝓤₀  ̇
-finite-order (n , (g , _)) = inclusion-order g _≤Fin_ 
+finite-order (n , (g , _)) = inclusion-order g _≤Fin_
 
 finite-order-is-partial-order
  : {F : 𝓤 ̇ }
@@ -254,7 +254,7 @@ discrete-lexicorder : {D : 𝓤 ̇ }
                     → is-discrete D
                     → (_≤_ : D → D → 𝓥 ̇ )
                     → (α β : ℕ → D)
-                    → 𝓤 ⊔ 𝓥  ̇ 
+                    → 𝓤 ⊔ 𝓥  ̇
 discrete-lexicorder f _≤_ α β
  = (n : ℕ) → (α ∼ⁿ β) n → α n ≤ β n
 
@@ -266,7 +266,7 @@ discrete-lexicorder-is-preorder
 discrete-lexicorder-is-preorder d _≤_ ((r' , t' , p') , a') = r , t , p
  where
  r : reflexive (discrete-lexicorder d _≤_)
- r x n _ = r' (x n) 
+ r x n _ = r' (x n)
  t : transitive (discrete-lexicorder d _≤_)
  t x y z x≤y y≤z 0 x∼ⁿz
   = t' (x 0) (y 0) (z 0) (x≤y 0 (λ _ ())) (y≤z 0 (λ _ ()))
@@ -330,7 +330,7 @@ linear-finite-lexicorder-implies-linear-ℕ∞-order
     u∼ⁿv (succ n) uₙ=₁ i i<sn
      = ⊏-trans' i (succ n) u i<sn uₙ=₁
      ∙ ⊏-trans'' v n i i<sn (γ u v u≤v n (⊏-back u n uₙ=₁)) ⁻¹
-     
+
 linear-finite-lexicorder-implies-WLPO
  : {F : 𝓤 ̇ } (f@(n , _) : finite-linear-order F)
  → n > 1
@@ -389,7 +389,7 @@ discrete-approx-lexicorder-is-approx-order
        → x (succ j) ≤ y (succ j)
     γ₁ j j<n tx∼ʲty = x≤y (succ j) j<n ζ
      where
-      ζ : (x ∼ⁿ y) (succ j) 
+      ζ : (x ∼ⁿ y) (succ j)
       ζ 0 k<sj = e
       ζ (succ k) k<sj = tx∼ʲty k k<sj
     γ₂ : (j : ℕ) → j < n → (tail y ∼ⁿ tail z) j → y (succ j) ≤ z (succ j)
@@ -490,7 +490,7 @@ discrete-approx-lexicorder-is-approx-order
     → discrete-approx-lexicorder ds _≤_ x y ϵ
   c ϵ x y Cϵxy i i<ϵ x∼ⁱy
    = transport (x i ≤_) (C-to-∼ⁿ ds x y ϵ Cϵxy i i<ϵ) (r' (x i))
-  
+
 module LexicographicOrder-Relates
  (pt : propositional-truncations-exist) where
 
@@ -503,7 +503,7 @@ module LexicographicOrder-Relates
   → (discrete-approx-lexicorder ds _≤_)
     relates-to→
     (discrete-lexicorder ds _≤_)
- discrete-approx-lexicorder-relates→ 
+ discrete-approx-lexicorder-relates→
   ds i _≤_ x y Πx≤ⁿy n = Πx≤ⁿy (succ n) n (<-succ n)
 
  discrete-approx-lexicorder-relates←
@@ -544,13 +544,13 @@ module LexicographicOrder-Relates
  = discrete-lexicorder-is-preorder
      𝟚-is-discrete (finite-order 𝟚-is-finite)
      (finite-order-is-partial-order 𝟚-is-finite)
-     
+
 ℕ∞-lexicorder-is-preorder : is-preorder ℕ∞-lexicorder
 ℕ∞-lexicorder-is-preorder
  = Σ-order-is-preorder is-decreasing
      ℕ→𝟚-lexicorder ℕ→𝟚-lexicorder-is-preorder
 
-ℕ→𝟚-approx-lexicorder : (ℕ → 𝟚) → (ℕ → 𝟚) → ℕ → 𝓤₀ ̇ 
+ℕ→𝟚-approx-lexicorder : (ℕ → 𝟚) → (ℕ → 𝟚) → ℕ → 𝓤₀ ̇
 ℕ→𝟚-approx-lexicorder
  = discrete-approx-lexicorder
      𝟚-is-discrete (finite-order 𝟚-is-finite)
