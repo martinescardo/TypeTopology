@@ -17,6 +17,7 @@ open import UF.FunExt
 module Taboos.BasicDiscontinuity (fe : funext₀) where
 
 open import CoNaturals.Type
+
 open import MLTT.Plus-Properties
 open import MLTT.Two-Properties
 open import Notation.CanonicalMap
