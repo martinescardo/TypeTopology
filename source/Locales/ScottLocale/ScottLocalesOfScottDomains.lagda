@@ -444,6 +444,14 @@ then it is compact.
 
 \begin{code}
 
+ principal-filter-is-antitone : (b c : ⟨ 𝓓 ⟩∙)
+                              → b ⊑⟨ 𝓓 ⟩ c
+                              → (κᵇ : is-compact 𝓓 b)
+                              → (κᶜ : is-compact 𝓓 c)
+                              → (↑ˢ[ c , κᶜ ] ≤[ poset-of (𝒪 Σ[𝓓]) ] ↑ˢ[ b , κᵇ ]) holds
+ principal-filter-is-antitone b c p κᵇ κᶜ x =
+  upward-closure ↑ˢ[ b , κᵇ ] c (β x) p
+
  principal-filter-reflects-joins
   : (c d s : ⟨ 𝓓 ⟩∙)
   → (κᶜ : is-compact 𝓓 c)

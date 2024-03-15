@@ -19,10 +19,11 @@ module Locales.LawsonPoint.DirectednessExperiment
 open import DomainTheory.BasesAndContinuity.Bases pt fe 𝓤
 open import DomainTheory.BasesAndContinuity.ScottDomain      pt fe 𝓤
 open import DomainTheory.Basics.Dcpo pt fe 𝓤 renaming (⟨_⟩ to ⟨_⟩∙)
-open import DomainTheory.Basics.WayBelow pt fe 𝓤
 open import DomainTheory.Basics.Pointed pt fe 𝓤
+open import DomainTheory.Basics.WayBelow pt fe 𝓤
 open import DomainTheory.Topology.ScottTopology pt fe 𝓤
 open import DomainTheory.Topology.ScottTopologyProperties pt fe 𝓤
+open import Locales.Compactness pt fe hiding (is-compact)
 open import Locales.DistributiveLattice.Definition fe pt
 open import Locales.DistributiveLattice.Ideal pt fe pe hiding (is-inhabited)
 open import Locales.DistributiveLattice.Properties fe pt
@@ -92,11 +93,14 @@ module Experiment
 
  open BottomLemma 𝓓 𝕒 hl
 
- κ : (i : index B𝓓) → is-compact 𝓓 (B𝓓 [ i ])
- κ i = basis-is-compact i
+ ϟ : (i : index B𝓓) → is-compact 𝓓 (B𝓓 [ i ])
+ ϟ i = basis-is-compact i
+
+ βₖ : (i : index B𝓓) → Σ c ꞉ ⟨ 𝓓 ⟩∙ , is-compact 𝓓 c
+ βₖ i = B𝓓 [ i ] , basis-is-compact i
 
  compact-opens-of : Point → Fam 𝓤 ⟨ 𝓓 ⟩∙
- compact-opens-of ℱ = ⁅ B𝓓 [ c ] ∣ (c , _) ∶ Σ i ꞉ index B𝓓 , ↑ˢ[ (B𝓓 [ i ] , κ i) ] ∈ₚ F holds ⁆
+ compact-opens-of ℱ = ⁅ B𝓓 [ c ] ∣ (c , _) ∶ Σ i ꞉ index B𝓓 , ↑ˢ[ (B𝓓 [ i ] , ϟ i) ] ∈ₚ F holds ⁆
   where
    F : ⟨ 𝒪 σ⦅𝓓⦆ ⟩ → Ω 𝓤
    F = pr₁ ℱ
@@ -110,35 +114,79 @@ module Experiment
  family-of-compact-opens-is-inhabited : (ℱ@(F , _) : Point)
                                       → is-inhabited
                                          (underlying-order 𝓓)
-                                         (Σ i ꞉ index B𝓓 , ↑ˢ[ (B𝓓 [ i ] , κ i) ] ∈ₚ F holds)
+                                         (Σ i ꞉ index B𝓓 , ↑ˢ[ βₖ i ] ∈ₚ F holds)
  family-of-compact-opens-is-inhabited ℱ = ∥∥-rec ∃-is-prop † γ
    where
     F : ⟨ 𝒪 σ⦅𝓓⦆ ⟩ → Ω 𝓤
     F = pr₁ ℱ
 
-    foo : F 𝟏[ 𝒪 σ⦅𝓓⦆ ] ＝ ⊤
-    foo = frame-homomorphisms-preserve-top (𝒪 σ⦅𝓓⦆) (𝒪 𝟏L) ℱ
+    Ⅲ : F 𝟏[ 𝒪 σ⦅𝓓⦆ ] ＝ ⊤
+    Ⅲ = frame-homomorphisms-preserve-top (𝒪 σ⦅𝓓⦆) (𝒪 𝟏L) ℱ
 
     ζ : 𝟏[ 𝒪 σ⦅𝓓⦆ ] ∈ F
-    ζ = equal-⊤-gives-holds (F 𝟏[ 𝒪 σ⦅𝓓⦆ ]) foo
+    ζ = equal-⊤-gives-holds (F 𝟏[ 𝒪 σ⦅𝓓⦆ ]) Ⅲ
 
-    † : Σ i ꞉ index B𝓓 , B𝓓 [ i ] ＝ ⊥ᴰ → ∃ i ꞉ index B𝓓 , ↑ˢ[ (B𝓓 [ i ] , κ i) ] ∈ₚ F holds
-    † (i , p) = ∣ i , equal-⊤-gives-holds (F ↑ˢ[ (B𝓓 [ i ] , κ i) ]) ※ ∣
+    † : Σ i ꞉ index B𝓓 , B𝓓 [ i ] ＝ ⊥ᴰ → ∃ i ꞉ index B𝓓 , ↑ˢ[ βₖ i ] ∈ₚ F holds
+    † (i , p) = ∣ i , equal-⊤-gives-holds (F ↑ˢ[ βₖ i ]) ※ ∣
      where
-      ※ : F ↑ˢ[ B𝓓 [ i ] , κ i ] ＝ ⊤
-      ※ = F ↑ˢ[ B𝓓 [ i ] , κ i ]   ＝⟨ ap F (to-subtype-＝ (holds-is-prop ∘ is-scott-open) (ap (principal-filter 𝓓) p)) ⟩
-          F ↑ˢ[ ⊥ᴰ , ⊥κ ]          ＝⟨ ap F ↑⊥-is-top ⟩
-          F 𝟏[ 𝒪 σ⦅𝓓⦆ ]            ＝⟨ foo  ⟩
-          ⊤                        ∎
+      Ⅰ = ap F (to-subtype-＝ (holds-is-prop ∘ is-scott-open) (ap (principal-filter 𝓓) p))
+      Ⅱ = ap F ↑⊥-is-top
+
+      ※ : F ↑ˢ[ βₖ i ] ＝ ⊤
+      ※ = F ↑ˢ[ βₖ i ]    ＝⟨ Ⅰ ⟩
+          F ↑ˢ[ ⊥ᴰ , ⊥κ ] ＝⟨ Ⅱ ⟩
+          F 𝟏[ 𝒪 σ⦅𝓓⦆ ]   ＝⟨ Ⅲ ⟩
+          ⊤               ∎
 
     γ : ∃ i ꞉ index B𝓓 , B𝓓 [ i ] ＝ ⊥ᴰ
     γ = small-compact-basis-contains-all-compact-elements 𝓓 (B𝓓 [_]) scb ⊥ᴰ ⊥κ
+
+ closed-under-binary-upperbounds : (ℱ : Point)
+                                 → is-semidirected (underlying-order 𝓓) (compact-opens-of ℱ [_])
+ closed-under-binary-upperbounds ℱ (i , κᵢ) (j , κⱼ) =
+  cases †₁ †₂ (dc (B𝓓 [ i ]) (B𝓓 [ j ]) (basis-is-compact i) (basis-is-compact j))
+   where
+    b = B𝓓 [ i ]
+    c = B𝓓 [ j ]
+
+    †₁ : bounded-above 𝓓 (B𝓓 [ i ]) (B𝓓 [ j ]) holds
+       → ∃ k ꞉ index (compact-opens-of ℱ)
+             , (compact-opens-of ℱ [ i , κᵢ ]) ⊑⟨ 𝓓 ⟩ (compact-opens-of ℱ [ k ])
+             × (compact-opens-of ℱ [ j , κⱼ ]) ⊑⟨ 𝓓 ⟩ (compact-opens-of ℱ [ k ])
+    †₁ υ = {!!}
+     where
+      𝓈 : has-sup (underlying-order 𝓓) (binary-family 𝓤 b c [_])
+      𝓈 = bc (binary-family 𝓤 b c) υ
+
+      d : ⟨ 𝓓 ⟩∙
+      d = pr₁ 𝓈
+
+      p : b ⊑⟨ 𝓓 ⟩ d
+      p = pr₁ (pr₂ 𝓈) (inl ⋆)
+
+      q : c ⊑⟨ 𝓓 ⟩ d
+      q = pr₁ (pr₂ 𝓈) (inr ⋆)
+
+      γ : is-compact 𝓓 d
+      γ = binary-join-is-compact
+           𝓓
+           p
+           q (λ d a b → pr₂ (pr₂ 𝓈) d {!!}) (basis-is-compact i) (basis-is-compact j)
+
+    †₂ : ¬ ((B𝓓 [ i ]) ↑[ 𝓓 ] (B𝓓 [ j ]) holds)
+       → ∃ k ꞉ index (compact-opens-of ℱ)
+             , (compact-opens-of ℱ [ i , κᵢ ]) ⊑⟨ 𝓓 ⟩ (compact-opens-of ℱ [ k ])
+             × (compact-opens-of ℱ [ j , κⱼ ]) ⊑⟨ 𝓓 ⟩ (compact-opens-of ℱ [ k ])
+    †₂ ν = {!!}
+     where
+      β : {!!}
+      β = {!!}
 
  family-of-compact-opens-is-directed : (ℱ : Point)
                                      → is-directed
                                         (underlying-order 𝓓)
                                         (compact-opens-of ℱ [_])
  family-of-compact-opens-is-directed ℱ = family-of-compact-opens-is-inhabited ℱ
-                                       , {!!}
+                                       , closed-under-binary-upperbounds ℱ
 
 \end{code}
