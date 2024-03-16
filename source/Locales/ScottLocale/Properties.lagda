@@ -1,7 +1,8 @@
 ---
-title:        Properties of the Scott locale
-author:       Ayberk Tosun
-date-started: 2023-11-23
+title:         Properties of the Scott locale
+author:        Ayberk Tosun
+date-started:  2023-11-23
+dates-updated: [2024-03-16]
 ---
 
 \begin{code}[hide]
@@ -44,10 +45,29 @@ open import DomainTheory.Basics.WayBelow                     pt fe 𝓤
 open import DomainTheory.Topology.ScottTopology              pt fe 𝓤
 open import DomainTheory.Topology.ScottTopologyProperties    pt fe 𝓤
 open import Locales.Frame                                    pt fe
+open import Locales.Compactness                              pt fe
+ hiding (is-compact)
 open import Locales.ScottLocale.Definition                   pt fe 𝓤
 open import Locales.ScottLocale.ScottLocalesOfAlgebraicDcpos pt fe 𝓤
 
 open Locale
+open PropositionalTruncation pt
+open AllCombinators pt fe
+
+\end{code}
+
+Moved from the `ScottLocalesOfScottDomains` module to here on 2024-03-16.
+
+\begin{code}
+
+bounded-above : (𝓓 : DCPO {𝓤 ⁺} {𝓤}) → ⟨ 𝓓 ⟩∙ → ⟨ 𝓓 ⟩∙ → Ω (𝓤 ⁺)
+bounded-above 𝓓 x y = ∥ upper-bound (binary-family 𝓤 x y) ∥Ω
+ where
+  open Joins (λ a b → a ⊑⟨ 𝓓 ⟩ₚ b)
+
+infix 30 bounded-above
+
+syntax bounded-above 𝓓 x y = x ↑[ 𝓓 ] y
 
 \end{code}
 
@@ -61,6 +81,13 @@ module ScottLocaleProperties
        where
 
  open ScottLocaleConstruction 𝓓 hscb pe
+
+ private
+  B : 𝓤  ̇
+  B = index-of-compact-basis 𝓓 hscb
+
+  β : B → ⟨ 𝓓 ⟩∙
+  β i = family-of-compact-elements 𝓓 hscb i
 
  open Properties  𝓓
  open BottomLemma 𝓓 𝕒 hl
@@ -104,5 +131,62 @@ Scott locale on `𝓓`.
         𝟏[ 𝒪 ScottLocale ]
         𝔘
         (λ { x ⋆ → contains-bottom-implies-is-top 𝔘 μ x })
+
+\end{code}
+
+Moved from the `ScottLocalesOfScottDomains` module to here on 2024-03-16.
+
+The principal filter `↑(x)` on any `x : 𝓓` is a compact Scott open.
+
+\begin{code}
+
+ principal-filter-is-compact₀ : (c : ⟨ 𝓓 ⟩∙)
+                              → (κ : is-compact 𝓓 c)
+                              → is-compact-open Σ⦅𝓓⦆ ↑ˢ[ (c , κ) ] holds
+ principal-filter-is-compact₀ c κ S δ p = ∥∥-rec ∃-is-prop † q
+  where
+   q : (c ∈ₛ (⋁[ 𝒪 Σ⦅𝓓⦆ ] S)) holds
+   q = ⊆ₖ-implies-⊆ₛ ↑ˢ[ (c , κ) ] (⋁[ 𝒪 Σ⦅𝓓⦆ ] S) p c (reflexivity 𝓓 c)
+
+   † : Σ i ꞉ index S , (c ∈ₛ (S [ i ])) holds
+     → ∃ i ꞉ index S , (↑ˢ[ (c , κ) ] ≤[ poset-of (𝒪 Σ⦅𝓓⦆) ] S [ i ]) holds
+   † (i , r) = ∣ i , ‡ ∣
+    where
+     ‡ :  (↑ˢ[ c , κ ] ≤[ poset-of (𝒪 Σ⦅𝓓⦆) ] (S [ i ])) holds
+     ‡ d = upward-closure (S [ i ]) c (β d) r
+
+\end{code}
+
+Moved from the `ScottLocalesOfScottDomains` module to here on 2024-03-16.
+
+The Scott locale is always compact.
+
+\begin{code}
+
+ ⊤-is-compact : is-compact-open Σ⦅𝓓⦆ 𝟏[ 𝒪 Σ⦅𝓓⦆ ] holds
+ ⊤-is-compact = transport (λ - → is-compact-open Σ⦅𝓓⦆ - holds) ↑⊥-is-top †
+  where
+   † : is-compact-open ScottLocale ↑ˢ[ ⊥ᴰ , ⊥κ ] holds
+   † = principal-filter-is-compact₀ ⊥ᴰ ⊥κ
+
+\end{code}
+
+Moved from the `ScottLocalesOfScottDomains` module to here on 2024-03-16.
+
+If two compact elements `c` and `d` do not have an upper bound, then the meet
+of their principal filters is the empty Scott open.
+
+\begin{code}
+
+ not-bounded-lemma : (c d : ⟨ 𝓓 ⟩∙)
+                   → (κᶜ : is-compact 𝓓 c)
+                   → (κᵈ : is-compact 𝓓 d)
+                   → ¬ ((c ↑[ 𝓓 ] d) holds)
+                   → ↑ˢ[ c , κᶜ ] ∧[ 𝒪 Σ⦅𝓓⦆ ] ↑ˢ[ d , κᵈ ] ＝ 𝟎[ 𝒪 Σ⦅𝓓⦆ ]
+ not-bounded-lemma c d κᶜ κᵈ ν =
+  only-𝟎-is-below-𝟎 (𝒪 Σ⦅𝓓⦆) (↑ˢ[ c , κᶜ ] ∧[ 𝒪 Σ⦅𝓓⦆ ] ↑ˢ[ d , κᵈ ]) †
+   where
+    † : ((↑ˢ[ c , κᶜ ] ∧[ 𝒪 Σ⦅𝓓⦆ ] ↑ˢ[ d , κᵈ ]) ⊆ₖ 𝟎[ 𝒪 Σ⦅𝓓⦆ ]) holds
+    † i (p₁ , p₂) = 𝟘-elim (ν ∣ β i , (λ { (inl ⋆) → p₁ ; (inr ⋆) → p₂ }) ∣)
 
 \end{code}
