@@ -42,7 +42,7 @@ open import UF.Logic
 open import UF.Powerset
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import UF.SubtypeClassifier
+open import UF.SubtypeClassifier renaming (⊥ to ⊥ₚ)
 open import UF.Univalence
 
 open AllCombinators pt fe renaming (_∧_ to _∧ₚ_; _∨_ to _∨ₚ_)
@@ -93,14 +93,11 @@ module Experiment
 
  open BottomLemma 𝓓 𝕒 hl
 
- ϟ : (i : index B𝓓) → is-compact 𝓓 (B𝓓 [ i ])
- ϟ i = basis-is-compact i
-
  βₖ : (i : index B𝓓) → Σ c ꞉ ⟨ 𝓓 ⟩∙ , is-compact 𝓓 c
  βₖ i = B𝓓 [ i ] , basis-is-compact i
 
  compact-opens-of : Point → Fam 𝓤 ⟨ 𝓓 ⟩∙
- compact-opens-of ℱ = ⁅ B𝓓 [ c ] ∣ (c , _) ∶ Σ i ꞉ index B𝓓 , ↑ˢ[ (B𝓓 [ i ] , ϟ i) ] ∈ₚ F holds ⁆
+ compact-opens-of ℱ = ⁅ B𝓓 [ c ] ∣ (c , _) ∶ Σ i ꞉ index B𝓓 , ↑ˢ[ βₖ i ] ∈ₚ F holds ⁆
   where
    F : ⟨ 𝒪 σ⦅𝓓⦆ ⟩ → Ω 𝓤
    F = pr₁ ℱ
@@ -146,8 +143,12 @@ module Experiment
  closed-under-binary-upperbounds ℱ (i , κᵢ) (j , κⱼ) =
   cases †₁ †₂ (dc (B𝓓 [ i ]) (B𝓓 [ j ]) (basis-is-compact i) (basis-is-compact j))
    where
-    b = B𝓓 [ i ]
-    c = B𝓓 [ j ]
+    F = pr₁ ℱ
+
+    b  = B𝓓 [ i ]
+    κᵇ = basis-is-compact i
+    c  = B𝓓 [ j ]
+    κᶜ = basis-is-compact j
 
     †₁ : bounded-above 𝓓 (B𝓓 [ i ]) (B𝓓 [ j ]) holds
        → ∃ k ꞉ index (compact-opens-of ℱ)
@@ -173,14 +174,41 @@ module Experiment
            p
            q (λ d a b → pr₂ (pr₂ 𝓈) d {!!}) (basis-is-compact i) (basis-is-compact j)
 
+    μₘ : (↑ˢ[ b , κᵇ ] ∧[ 𝒪 Σ⦅𝓓⦆ ] ↑ˢ[ c , κᶜ ]) ∈ F
+    μₘ = equal-⊤-gives-holds (F (↑ˢ[ b , κᵇ ] ∧[ 𝒪 Σ⦅𝓓⦆ ] ↑ˢ[ c , κᶜ ])) †
+     where
+      Ⅰ = frame-homomorphisms-preserve-meets
+           (𝒪 Σ⦅𝓓⦆)
+           (𝟎-𝔽𝕣𝕞 pe)
+           ℱ
+           ↑ˢ[ b , κᵇ ]
+           ↑ˢ[ c , κᶜ ]
+
+      Ⅱ = holds-gives-equal-⊤ pe fe (F ↑ˢ[ b , κᵇ ] ∧ₚ F ↑ˢ[ c , κᶜ ]) (κᵢ , κⱼ)
+
+      † : F (↑ˢ[ b , κᵇ ] ∧[ 𝒪 Σ⦅𝓓⦆ ] ↑ˢ[ c , κᶜ ]) ＝ ⊤
+      † = F (↑ˢ[ b , κᵇ ] ∧[ 𝒪 Σ⦅𝓓⦆ ] ↑ˢ[ c , κᶜ ]) ＝⟨ Ⅰ ⟩
+          F ↑ˢ[ b , κᵇ ] ∧ₚ F ↑ˢ[ c , κᶜ ]          ＝⟨ Ⅱ ⟩
+          ⊤                                         ∎
+
     †₂ : ¬ ((B𝓓 [ i ]) ↑[ 𝓓 ] (B𝓓 [ j ]) holds)
        → ∃ k ꞉ index (compact-opens-of ℱ)
              , (compact-opens-of ℱ [ i , κᵢ ]) ⊑⟨ 𝓓 ⟩ (compact-opens-of ℱ [ k ])
              × (compact-opens-of ℱ [ j , κⱼ ]) ⊑⟨ 𝓓 ⟩ (compact-opens-of ℱ [ k ])
     †₂ ν = {!!}
      where
-      β : {!!}
-      β = {!!}
+      β : ↑ˢ[ b , κᵇ ] ∧[ 𝒪 Σ⦅𝓓⦆ ] ↑ˢ[ c , κᶜ ] ＝ 𝟎[ 𝒪 Σ⦅𝓓⦆ ]
+      β = not-bounded-lemma b c κᵇ κᶜ ν
+
+      Ⅰ = {!frame-homomorpisms-!}
+      Ⅱ = {!!}
+      Ⅲ = {!!}
+
+      ϟ : ⊥ₚ ＝ ⊤
+      ϟ = ⊥ₚ                                          ＝⟨ Ⅰ ⟩
+          F 𝟎[ 𝒪 Σ⦅𝓓⦆ ]                               ＝⟨ Ⅱ ⟩
+          F (↑ˢ[ b , κᵇ ] ∧[ 𝒪 Σ⦅𝓓⦆ ] ↑ˢ[ c , κᶜ ])   ＝⟨ Ⅲ ⟩
+          ⊤                                           ∎
 
  family-of-compact-opens-is-directed : (ℱ : Point)
                                      → is-directed
