@@ -33,6 +33,7 @@ open import Locales.ScottLocale.Definition pt fe 𝓤
 open import Locales.ScottLocale.Properties pt fe 𝓤
 open import Locales.ScottLocale.ScottLocalesOfAlgebraicDcpos pt fe 𝓤
 open import Locales.ScottLocale.ScottLocalesOfScottDomains pt fe sr 𝓤
+open import Locales.TerminalLocale.Properties pt fe sr
 open import Locales.SmallBasis pt fe sr
 open import Locales.Spectrality.SpectralMap pt fe
 open import MLTT.Fin hiding (𝟎; 𝟏)
@@ -78,6 +79,7 @@ module Experiment
         (dc   : decidability-condition 𝓓) where
 
  open SpectralScottLocaleConstruction₂ 𝓓 ua hl sd dc pe
+ open SpectralScottLocaleConstruction 𝓓 hl hscb dc bc pe hiding (scb; β; ϟ)
  open DefnOfScottTopology 𝓓 𝓤
  open Properties 𝓓
 
@@ -139,7 +141,9 @@ module Experiment
     γ = small-compact-basis-contains-all-compact-elements 𝓓 (B𝓓 [_]) scb ⊥ᴰ ⊥κ
 
  closed-under-binary-upperbounds : (ℱ : Point)
-                                 → is-semidirected (underlying-order 𝓓) (compact-opens-of ℱ [_])
+                                 → is-semidirected
+                                    (underlying-order 𝓓)
+                                    (compact-opens-of ℱ [_])
  closed-under-binary-upperbounds ℱ (i , κᵢ) (j , κⱼ) =
   cases †₁ †₂ (dc (B𝓓 [ i ]) (B𝓓 [ j ]) (basis-is-compact i) (basis-is-compact j))
    where
@@ -154,7 +158,7 @@ module Experiment
        → ∃ k ꞉ index (compact-opens-of ℱ)
              , (compact-opens-of ℱ [ i , κᵢ ]) ⊑⟨ 𝓓 ⟩ (compact-opens-of ℱ [ k ])
              × (compact-opens-of ℱ [ j , κⱼ ]) ⊑⟨ 𝓓 ⟩ (compact-opens-of ℱ [ k ])
-    †₁ υ = {!!}
+    †₁ υ = ∥∥-rec ∃-is-prop †₂ 𝒷ᵈ
      where
       𝓈 : has-sup (underlying-order 𝓓) (binary-family 𝓤 b c [_])
       𝓈 = bc (binary-family 𝓤 b c) υ
@@ -168,11 +172,17 @@ module Experiment
       q : c ⊑⟨ 𝓓 ⟩ d
       q = pr₁ (pr₂ 𝓈) (inr ⋆)
 
-      γ : is-compact 𝓓 d
-      γ = binary-join-is-compact
-           𝓓
-           p
-           q (λ d a b → pr₂ (pr₂ 𝓈) d {!!}) (basis-is-compact i) (basis-is-compact j)
+      κᵈ : is-compact 𝓓 d
+      κᵈ = sup-is-compact b c d κᵇ κᶜ (pr₂ 𝓈)
+
+      𝒷ᵈ : (d ∈imageₚ (B𝓓 [_])) holds
+      𝒷ᵈ = small-compact-basis-contains-all-compact-elements 𝓓 (B𝓓 [_]) scb d κᵈ
+
+      †₂ : Σ k ꞉ index B𝓓 , B𝓓 [ k ] ＝ d
+         → ∃ (λ k →
+                 (compact-opens-of ℱ [ i , κᵢ ]) ⊑⟨ 𝓓 ⟩ (compact-opens-of ℱ [ k ])
+               × (compact-opens-of ℱ [ j , κⱼ ]) ⊑⟨ 𝓓 ⟩ (compact-opens-of ℱ [ k ]))
+      †₂ = {!!}
 
     μₘ : (↑ˢ[ b , κᵇ ] ∧[ 𝒪 Σ⦅𝓓⦆ ] ↑ˢ[ c , κᶜ ]) ∈ F
     μₘ = equal-⊤-gives-holds (F (↑ˢ[ b , κᵇ ] ∧[ 𝒪 Σ⦅𝓓⦆ ] ↑ˢ[ c , κᶜ ])) †
@@ -195,19 +205,21 @@ module Experiment
        → ∃ k ꞉ index (compact-opens-of ℱ)
              , (compact-opens-of ℱ [ i , κᵢ ]) ⊑⟨ 𝓓 ⟩ (compact-opens-of ℱ [ k ])
              × (compact-opens-of ℱ [ j , κⱼ ]) ⊑⟨ 𝓓 ⟩ (compact-opens-of ℱ [ k ])
-    †₂ ν = {!!}
+    †₂ ν = 𝟘-elim (⊥-is-not-⊤ ϟ)
      where
       β : ↑ˢ[ b , κᵇ ] ∧[ 𝒪 Σ⦅𝓓⦆ ] ↑ˢ[ c , κᶜ ] ＝ 𝟎[ 𝒪 Σ⦅𝓓⦆ ]
       β = not-bounded-lemma b c κᵇ κᶜ ν
 
-      Ⅰ = {!frame-homomorpisms-!}
-      Ⅱ = {!!}
-      Ⅲ = {!!}
+      Ⅰ = 𝟎-is-⊥ pe
+      Ⅱ = frame-homomorphisms-preserve-bottom (𝒪 Σ⦅𝓓⦆) (𝟎-𝔽𝕣𝕞 pe) ℱ ⁻¹
+      Ⅲ = ap F (β ⁻¹)
+      Ⅳ = holds-gives-equal-⊤ pe fe (F (↑ˢ[ b , κᵇ ] ∧[ 𝒪 Σ⦅𝓓⦆ ] ↑ˢ[ c , κᶜ ])) μₘ
 
       ϟ : ⊥ₚ ＝ ⊤
       ϟ = ⊥ₚ                                          ＝⟨ Ⅰ ⟩
-          F 𝟎[ 𝒪 Σ⦅𝓓⦆ ]                               ＝⟨ Ⅱ ⟩
-          F (↑ˢ[ b , κᵇ ] ∧[ 𝒪 Σ⦅𝓓⦆ ] ↑ˢ[ c , κᶜ ])   ＝⟨ Ⅲ ⟩
+          𝟎[ (𝟎-𝔽𝕣𝕞 pe) ]                             ＝⟨ Ⅱ ⟩
+          F 𝟎[ 𝒪 Σ⦅𝓓⦆ ]                               ＝⟨ Ⅲ ⟩
+          F (↑ˢ[ b , κᵇ ] ∧[ 𝒪 Σ⦅𝓓⦆ ] ↑ˢ[ c , κᶜ ])   ＝⟨ Ⅳ ⟩
           ⊤                                           ∎
 
  family-of-compact-opens-is-directed : (ℱ : Point)
