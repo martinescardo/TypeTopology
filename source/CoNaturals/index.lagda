@@ -8,7 +8,7 @@ module CoNaturals.index where
 
 import CoNaturals.Type                        -- The type of conatural numbers.
 import CoNaturals.UniversalProperty
-import CoNaturals.Type2                       -- An iequivalent copy.
+import CoNaturals.Type2                       -- An equivalent copy.
 import CoNaturals.Equivalence
 import CoNaturals.Type2Properties
 import CoNaturals.BothTypes

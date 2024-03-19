@@ -1,16 +1,6 @@
 Martin Escardo, 14th January 2022.
 
-
-We develop an automorphism of the Cantor type ℕ → 𝟚 which
-induces an equivalent copy ℕ∞' of ℕ∞.
-
-The function ϕ restricts to an equivalence between ℕ∞ and the subtype
-
-     Σ α ꞉ (ℕ → 𝟚) , is-prop (Σ n ꞉ ℕ , α n ＝ ₁)
-
-of the Cantor type (the sequences with at most one ₁).
-
-Notice that the condition on α can be expressed as "is-prop (fiber α ₁)".
+An isomorphic copy of ℕ∞. The isomorphism is proved in CoNaturals.Equivalence.
 
 \begin{code}
 

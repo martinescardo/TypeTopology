@@ -1,6 +1,18 @@
 Martin Escardo, November 2023.
 
-We show that the two types representing the natural numbers are equivalence.
+We show that the two types ℕ∞ and ℕ∞' of conatural numbers are
+equivalent.
+
+For that purpose, we develop an automorphism ϕ of the Cantor type ℕ →
+𝟚 which induces an equivalent copy ℕ∞' of ℕ∞.
+
+The function ϕ restricts to an equivalence between ℕ∞ and the subtype
+
+     ℕ∞ := Σ α ꞉ (ℕ → 𝟚) , is-prop (Σ n ꞉ ℕ , α n ＝ ₁)
+
+of the Cantor type (of binary sequences with at most one ₁).
+
+Notice that the condition on α can be expressed as "is-prop (fiber α ₁)".
 
 \begin{code}
 

@@ -9,5 +9,4 @@ open import CoNaturals.GenericConvergentSequence2 public
 open import CoNaturals.Equivalence public
 open import CoNaturals.Type2Properties public
 
-
 \end{code}

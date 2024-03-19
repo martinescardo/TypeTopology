@@ -49,8 +49,9 @@ syntax Sigmaₛ 𝓧 (λ x → 𝓨) = Σₛ x ꞉ 𝓧 , 𝓨
 infixr -1 Sigmaₛ
 
 record Monad : 𝓤ω where
- constructor
+{- constructor
   monad
+-}
  field
   ℓ       : Universe → Universe
   functor : {𝓤 : Universe} → 𝕊 𝓤 → 𝕊 (ℓ 𝓤)
@@ -183,6 +184,9 @@ module _ (𝕋 : Monad) where
  ext-const' : 𝕊 𝓤 → 𝓤ω
  ext-const' 𝓧 = {𝓥 : Universe} {𝓨 : 𝕊 𝓥} (u : ⟨ T 𝓨 ⟩)
               → extᵀ (λ (x : ⟨ 𝓧 ⟩) → u) ∼ λ (t : ⟨ T 𝓧 ⟩) → u
+              where
+               I : {𝓥 : Universe} {𝓨 : 𝕊 𝓥} (u : ⟨ T 𝓨 ⟩) → ⟨ functor 𝕋 𝓧 ⟩ → ⟨ functor 𝕋 𝓨 ⟩
+               I u = extᵀ (λ (x : ⟨ 𝓧 ⟩) → u)
 
  ext-const : 𝓤ω
  ext-const = {𝓤 : Universe} {𝓧 : 𝕊 𝓤} → ext-const' 𝓧
