@@ -151,13 +151,81 @@ NonEmpty (x ∷ xs) = 𝟙
 List⁺ : (X : 𝓤 ̇ ) → 𝓤 ̇
 List⁺ X = Σ xs ꞉ List X , NonEmpty xs
 
+_⁻ : {X : 𝓤 ̇  } → List⁺ X → List X
+_⁻ = pr₁
+
 [_]⁺ : {X : 𝓤 ̇ } → X → List⁺ X
 [ x ]⁺ = ([ x ] , ⋆)
 
 flatten-× : {A B C : 𝓤 ̇  } → List (List⁺ (A × B) × C) → List (A × (B × C))
 flatten-× [] = []
-flatten-× (((l , _) , c) ∷ ls) = (map (λ (a , b) → (a , (b , c))) l) ++ flatten-× ls
+flatten-× (((l , _) , c) ∷ ls) = (map (λ { (a , b) → (a , (b , c)) }) l) ++ flatten-× ls
 
+map-preserves-decreasing : (α β : Ordinal 𝓤) (f : ⟨ α ⟩ → ⟨ β ⟩) (l : List ⟨ α ⟩)
+                         → is-order-preserving α β f
+                         → is-decreasing (underlying-order α) l
+                         → is-decreasing (underlying-order β) (map f l)
+map-preserves-decreasing α β f [] m δ = []-decr
+map-preserves-decreasing α β f (a ∷ []) m sing-decr = sing-decr
+map-preserves-decreasing α β f (a ∷ (a' ∷ l)) m (many-decr p δ) =
+ many-decr (m a' a p) (map-preserves-decreasing α β f (a' ∷ l) m δ)
+
+map-map : {A : 𝓤 ̇  } {B : 𝓥 ̇  } {C : 𝓦 ̇  }
+          (f : A → B) (g : B → C) (l : List A)
+        → map g (map f l) ＝ map (g ∘ f) l
+map-map f g [] = refl
+map-map f g (a ∷ l) = ap (g (f a) ∷_) (map-map f g l)
+
+flatten-×-decreasing-lemma-1 : {𝓤 : Universe} (α β γ : Ordinal 𝓤)
+                               (c : ⟨ γ ⟩) (l : List (⟨ α ×ₒ β ⟩))
+                             → is-decreasing-pr₂ α β l
+                             → is-decreasing-pr₂ α (β ×ₒ γ)
+                                (map (λ (a , b) → (a , (b , c))) l)
+flatten-×-decreasing-lemma-1 α β γ c l δ =
+ transport (is-decreasing (underlying-order (β ×ₒ γ))) e ε
+  where
+   e = map (_, c) (map pr₂ l)                    ＝⟨ I ⟩
+       map ((_, c) ∘ pr₂) l                      ＝⟨ II ⟩
+       map pr₂ (map (λ (a , b) → a , (b , c)) l) ∎
+    where
+     I  = map-map pr₂ (_, c) l
+     II = (map-map (λ (a , b) → a , (b , c)) pr₂ l) ⁻¹
+   ε : is-decreasing (underlying-order (β ×ₒ γ)) (map (_, c) (map pr₂ l))
+   ε = map-preserves-decreasing β (β ×ₒ γ) (_, c) (map pr₂ l) m δ
+    where
+     m : is-order-preserving β (β ×ₒ γ) (_, c)
+     m b b' p = inr (refl , p)
+
+++-decreasing-lemma : (α β : Ordinal 𝓤) (l k : List ⟨ α ×ₒ β ⟩)
+                      (x : ⟨ α ⟩) (y : ⟨ β ⟩)
+                    → is-decreasing-pr₂ α β l
+                    → is-decreasing-pr₂ α β ((x , y) ∷ k)
+                    → ((z : ⟨ α ×ₒ β ⟩) → member z l → y ≺⟨ β ⟩ pr₂ z)
+                    → is-decreasing-pr₂ α β (l ++ ((x , y) ∷ k))
+++-decreasing-lemma α β [] k x y δ ε H = ε
+++-decreasing-lemma α β (x₁ ∷ l) k x y δ ε H = {!!}
+
+{-
+flatten-×-decreasing : {A : 𝓤 ̇  } (β γ : Ordinal 𝓤) (ls : List (List⁺ (A × ⟨ β ⟩) × ⟨ γ ⟩))
+                     → is-decreasing (underlying-order γ) (map pr₂ ls)
+                     → ((l : List⁺ (A × ⟨ β ⟩)) → member l (map pr₁ ls) → is-decreasing (underlying-order β) (map pr₂ (l ⁻)))
+                     → is-decreasing (underlying-order (β ×ₒ γ)) (map pr₂ (flatten-× ls))
+flatten-×-decreasing {𝓤} {A} β γ [] δ ε = []-decr
+flatten-×-decreasing {𝓤} {A} β γ ((((a , b) ∷ l) , _) , c ∷ []) δ ε = {!ε!}
+ where
+  foo : is-decreasing (underlying-order (β ×ₒ γ))
+        (b , c ∷ map pr₂ (map (λ { (a' , b') → a' , (b' , c) }) l))
+  foo = {!!}
+  foo' : (x : A) (y : ⟨ β ⟩) (z : ⟨ γ ⟩) (k : List (A × ⟨ β ⟩))
+       → is-decreasing (underlying-order β) (map pr₂ ((x , y) ∷ k))
+       → is-decreasing (underlying-order (β ×ₒ γ))
+          (y , z ∷ map (λ { (a' , b') → (b' , z) }) k)
+  foo' x y z [] _ = sing-decr
+  foo' x y z (a' , b' ∷ k) (many-decr p δ) = many-decr (inr (refl , p)) (foo' a' b' z k δ)
+flatten-×-decreasing {𝓤} {A} β γ (l ∷ x ∷ ls) δ ε = {!!}
+
+-}
+{-
 addToFirst : {X Y : 𝓤 ̇  } → X → List ((List⁺ X) × Y) → List ((List⁺ X) × Y)
 addToFirst x [] = []
 addToFirst x (((xs , _) , y) ∷ l) = (((x ∷ xs) , ⋆) , y) ∷ l
@@ -179,6 +247,7 @@ flatten-×-retraction {α = α} {β} {γ} ((a , (b , c)) ∷ (a' , (b' , c)) ∷
               → (w : List (List⁺ (⟨ α ⟩ × ⟨ β ⟩ ) × ⟨ γ ⟩)) → flatten-× w ＝ a' , b' , c ∷ xs
               → flatten-× (addToFirst (a , b) w) ＝ a , b , c ∷ a' , b' , c ∷ xs
  helper-lemma α β γ {a} {b} ((((a₀ , b₀) ∷ xs₀) , ne) , c₀ ∷ ys) IH = ap₂ (λ x y → a , b , x ∷ y) (ap (λ z → pr₂ (pr₂ z)) (equal-heads IH)) IH
+-}
 
 {-
 -- We need to restrict to the subtype of non-empty "inner" lists, as the following counterexample shows (and the actual problem suggests):
