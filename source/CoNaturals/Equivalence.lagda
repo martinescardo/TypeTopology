@@ -3,10 +3,8 @@ Martin Escardo, November 2023.
 We show that the two types ℕ∞ and ℕ∞' of conatural numbers are
 equivalent.
 
-For that purpose, we develop an automorphism ϕ of the Cantor type ℕ →
-𝟚 which induces an equivalent copy ℕ∞' of ℕ∞.
-
-The function ϕ restricts to an equivalence between ℕ∞ and the subtype
+For that purpose, we develop an automorphism of the Cantor type ℕ → 𝟚
+that restricts restricts to an equivalence between ℕ∞ and the subtype
 
      ℕ∞ := Σ α ꞉ (ℕ → 𝟚) , is-prop (Σ n ꞉ ℕ , α n ＝ ₁)
 
