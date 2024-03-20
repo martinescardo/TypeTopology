@@ -64,6 +64,10 @@ instance
  canonical-map-ℕ-ℕ⊥ : Canonical-Map ℕ ℕ⊥
  ι {{canonical-map-ℕ-ℕ⊥}} = η
 
+instance
+ Canonical-Map-ℕ-ℕ∞ : Canonical-Map ℕ ℕ∞
+ ι {{Canonical-Map-ℕ-ℕ∞}} = ℕ-to-ℕ∞
+
 \end{code}
 
 We define a map
@@ -77,10 +81,6 @@ so that
  * sharp ∞ ＝ ⊥.
 
 \begin{code}
-
-instance
- Canonical-Map-ℕ-ℕ∞ : Canonical-Map ℕ ℕ∞
- ι {{Canonical-Map-ℕ-ℕ∞}} = ℕ-to-ℕ∞
 
 sharp : ℕ∞ → ℕ⊥
 sharp x = is-finite x , size {x} , being-finite-is-prop fe x
