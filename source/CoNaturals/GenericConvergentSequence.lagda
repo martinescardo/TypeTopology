@@ -14,6 +14,7 @@ lemmas. More additions after that date.
 
 module CoNaturals.GenericConvergentSequence where
 
+open import CoNaturals.Cantor
 open import MLTT.Spartan
 open import MLTT.Two-Properties
 open import Naturals.Order hiding (max)
@@ -120,9 +121,6 @@ force-decreasing-is-not-much-smaller β (succ n) p = f c
     f (inl q) = succ n , q
     f (inr r) = force-decreasing-is-not-much-smaller β n r
 
-Cantor-is-¬¬-separated : funext₀ → is-¬¬-separated (ℕ → 𝟚)
-Cantor-is-¬¬-separated fe = Π-is-¬¬-separated fe (λ _ → 𝟚-is-¬¬-separated)
-
 ℕ∞-is-¬¬-separated : funext₀ → is-¬¬-separated ℕ∞
 ℕ∞-is-¬¬-separated fe = subtype-is-¬¬-separated
                          pr₁
@@ -140,10 +138,6 @@ Cantor-is-¬¬-separated fe = Π-is-¬¬-separated fe (λ _ → 𝟚-is-¬¬-sep
 
 Zero : ℕ∞
 Zero = (λ i → ₀) , (λ i → ≤₂-refl {₀})
-
-cons : 𝟚 → (ℕ → 𝟚) → (ℕ → 𝟚)
-cons b α 0        = b
-cons b α (succ n) = α n
 
 Succ : ℕ∞ → ℕ∞
 Succ (α , d) = (cons ₁ α , d')

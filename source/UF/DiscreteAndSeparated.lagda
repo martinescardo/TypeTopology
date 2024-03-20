@@ -197,6 +197,9 @@ subtype-is-¬¬-separated : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (m : X → Y)
                                      → is-¬¬-separated X
 subtype-is-¬¬-separated {𝓤} {𝓥} {X} m i s x x' e = i (s (m x) (m x') (¬¬-functor (ap m) e))
 
+Cantor-is-¬¬-separated : funext₀ → is-¬¬-separated (ℕ → 𝟚)
+Cantor-is-¬¬-separated fe = Π-is-¬¬-separated fe (λ _ → 𝟚-is-¬¬-separated)
+
 \end{code}
 
 The following is an apartness relation when Y is ¬¬-separated, but we

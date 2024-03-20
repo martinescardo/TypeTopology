@@ -6,6 +6,7 @@ Martin Escardo, November 2023.
 
 module CoNaturals.Type2Properties where
 
+open import CoNaturals.Cantor
 open import CoNaturals.Type
 open import CoNaturals.GenericConvergentSequence2
 open import CoNaturals.Equivalence

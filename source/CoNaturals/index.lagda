@@ -14,8 +14,9 @@ import CoNaturals.Type2Properties
 import CoNaturals.BothTypes
 import CoNaturals.Arithmetic
 import CoNaturals.Exercise                    -- With Chuangjie Xu.
-import CoNaturals.GenericConvergentSequence
-import CoNaturals.GenericConvergentSequence2
+import CoNaturals.Cantor
+import CoNaturals.GenericConvergentSequence   -- Avoid to import directly.
+import CoNaturals.GenericConvergentSequence2  -- Avoid to import directly.
 import CoNaturals.Sharp
 
 \end{code}

@@ -1,6 +1,7 @@
 Martin Escardo, 14th January 2022.
 
-An isomorphic copy of ℕ∞. The isomorphism is proved in CoNaturals.Equivalence.
+An isomorphic copy of ℕ∞ defined in CoNaturals.GenericConvergentSequence.
+The isomorphism is proved in CoNaturals.Equivalence.
 
 \begin{code}
 
@@ -8,16 +9,14 @@ An isomorphic copy of ℕ∞. The isomorphism is proved in CoNaturals.Equivalenc
 
 module CoNaturals.GenericConvergentSequence2 where
 
-open import CoNaturals.Type
+open import CoNaturals.Cantor
 open import MLTT.Spartan
 open import MLTT.Two-Properties
 open import Naturals.Order hiding (max)
 open import Naturals.Properties
 open import Notation.CanonicalMap
 open import Notation.Order
-open import UF.Base
 open import UF.DiscreteAndSeparated
-open import UF.Equiv
 open import UF.FunExt
 open import UF.NotNotStablePropositions
 open import UF.Sets
