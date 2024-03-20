@@ -5,7 +5,7 @@ TEMPORARILY SPLIT UP TO SPEED UP TYPECHECKING
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --no-exact-split  #-}
+{-# OPTIONS --safe --without-K --no-exact-split  --lossy-unification #-}
 
 open import UF.Univalence
 open import UF.DiscreteAndSeparated
@@ -203,7 +203,20 @@ flatten-×-decreasing-lemma-1 α β γ c l δ =
                     → ((z : ⟨ α ×ₒ β ⟩) → member z l → y ≺⟨ β ⟩ pr₂ z)
                     → is-decreasing-pr₂ α β (l ++ ((x , y) ∷ k))
 ++-decreasing-lemma α β [] k x y δ ε H = ε
-++-decreasing-lemma α β (x₁ ∷ l) k x y δ ε H = {!!}
+++-decreasing-lemma α β (a , b ∷ []) k x y δ ε H =
+  many-decr (H (a , b) in-head) (++-decreasing-lemma α β [] k x y []-decr ε (λ x ()))
+++-decreasing-lemma α β (a , b ∷ (a' , b') ∷ l) k x y (many-decr p δ) ε H =
+  many-decr p (++-decreasing-lemma α β ((a' , b') ∷ l) k x y δ ε (λ z q → H z (in-tail q)))
+
+flatten-×-decreasing : (α β γ : Ordinal 𝓤) (ls : List (List⁺ (⟨ α ⟩ × ⟨ β ⟩) × ⟨ γ ⟩))
+                     → is-decreasing (underlying-order γ) (map pr₂ ls)
+                     → ((l : List⁺ (⟨ α ⟩ × ⟨ β ⟩)) → member l (map pr₁ ls) → is-decreasing (underlying-order β) (map pr₂ (l ⁻)))
+                     → is-decreasing (underlying-order (β ×ₒ γ)) (map pr₂ (flatten-× ls))
+flatten-×-decreasing {𝓤} α β γ [] δ ε = []-decr
+flatten-×-decreasing {𝓤} α β γ (((((a , b) ∷ l) , _) , c) ∷ []) δ ε =
+ transport (λ - → is-decreasing (underlying-order (β ×ₒ γ)) (map pr₂ -)) ([]-right-neutral _) (flatten-×-decreasing-lemma-1 α β γ c ((a , b ) ∷ l) (ε _ in-head))
+flatten-×-decreasing {𝓤} α β γ (((((a , b) ∷ l) , _) , c) ∷ ((((a' , b') ∷ l') , _) , c') ∷ ls) δ ε =
+ {!++-decreasing-lemma α (β ×ₒ γ) {!!} (flatten-× ls) a' (b' , c') {!!} {!!} {!!}!}
 
 {-
 flatten-×-decreasing : {A : 𝓤 ̇  } (β γ : Ordinal 𝓤) (ls : List (List⁺ (A × ⟨ β ⟩) × ⟨ γ ⟩))
