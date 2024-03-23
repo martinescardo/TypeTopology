@@ -8,20 +8,20 @@ trees, with Church encoding, to functions of type (ι → ι) → ι.
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --without-K --safe #-}
 
 module EffectfulForcing.Internal.Internal where
 
-open import MLTT.Spartan hiding (rec ; _^_) renaming (⋆ to 〈〉)
+open import MLTT.Spartan
+             hiding (rec ; _^_)
+             renaming (⋆ to 〈〉)
 open import EffectfulForcing.MFPSAndVariations.Combinators
 open import EffectfulForcing.MFPSAndVariations.Dialogue
-open import EffectfulForcing.MFPSAndVariations.SystemT using (type ; ι ; _⇒_ ; 〖_〗)
-open import EffectfulForcing.MFPSAndVariations.Church hiding (B⋆【_】 ; ⟪⟫⋆ ; _‚‚⋆_ ; B⋆⟦_⟧ ; dialogue-tree⋆)
+open import EffectfulForcing.MFPSAndVariations.SystemT
+             using (type ; ι ; _⇒_ ; 〖_〗)
+open import EffectfulForcing.MFPSAndVariations.Church
+             hiding (B⋆【_】 ; ⟪⟫⋆ ; _‚‚⋆_ ; B⋆⟦_⟧ ; dialogue-tree⋆)
 open import EffectfulForcing.Internal.SystemT
-
-\end{code}
-
-\begin{code}
 
 B⋆【_】 : (Γ : Cxt) (A : Type) → Type
 B⋆【 Γ 】 A = {σ : type} (i : ∈Cxt σ Γ) → B⋆〖 σ 〗 A
