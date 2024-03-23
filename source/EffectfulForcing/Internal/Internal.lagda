@@ -106,7 +106,9 @@ B-functor-meaning = refl
 
 -- λη.λβ.t (λs.f (λg.η(g s)) β) β
 ⌜app⌝ : {A : type} {σ τ : type} {Γ : Cxt}
-       (f : T Γ (⌜B⌝ (σ ⇒ τ) A)) (t : T Γ (⌜B⌝ σ A)) → T Γ (⌜B⌝ τ A)
+        (f : T Γ (⌜B⌝ (σ ⇒ τ) A))
+        (t : T Γ (⌜B⌝ σ A))
+      → T Γ (⌜B⌝ τ A)
 ⌜app⌝ {A} {σ} {τ} {Γ} f t = ⌜star⌝ · f · t
 
 B-type〖_〗 : type → type → type

@@ -41,7 +41,7 @@ all possible instantiations.
 \begin{code}
 
 is-dialogue-for : B ℕ → ({A : type} → T₀ (B-type〖 ι 〗 A)) → Type
-is-dialogue-for d t = {A : type} → ⟦ t ⟧₀ ≡[ B-type〖 ι 〗 A ] church-encode d
+is-dialogue-for d t = {A : type} → ⟦ t ⟧₀ ≡[ ⌜B⌝ ι A ] church-encode d
 
 \end{code}
 
@@ -53,8 +53,10 @@ of `Rnorm` to contexts.
 
 Rnorm : {σ : type} (d : B〖 σ 〗) (t : {A : type} → T₀ (B-type〖 σ 〗 A)) → Type
 Rnorm {ι}     d t = is-dialogue-for d t
-Rnorm {σ ⇒ τ} d t = (u : B〖 σ 〗) (u' : {A : type} → T₀ (B-type〖 σ 〗 A))
-                  → Rnorm u u' → Rnorm (d u) (t · u')
+Rnorm {σ ⇒ τ} d t = (u : B〖 σ 〗) (u' : {A : type}
+                  → T₀ (B-type〖 σ 〗 A))
+                  → Rnorm u u'
+                  → Rnorm (d u) (t · u')
 
 \end{code}
 
