@@ -45,8 +45,9 @@ is-dialogue-for d t = {A : type} → ⟦ t ⟧₀ ≡[ B-type〖 ι 〗 A ] chur
 
 \end{code}
 
-The logical relation Rnorm is defined hereditary extension of `is-dialogue-for`
-and `Rnorms` is defined as the pointwise extension of `Rnorm` to contexts.
+The logical relation Rnorm is defined as the hereditary extension of
+`is-dialogue-for`, and `Rnorms` is defined as the pointwise extension
+of `Rnorm` to contexts.
 
 \begin{code}
 
@@ -55,7 +56,12 @@ Rnorm {ι}     d t = is-dialogue-for d t
 Rnorm {σ ⇒ τ} d t = (u : B〖 σ 〗) (u' : {A : type} → T₀ (B-type〖 σ 〗 A))
                   → Rnorm u u' → Rnorm (d u) (t · u')
 
--- TODO move this into Subst?
+\end{code}
+
+TODO. Move this into Subst?
+
+\begin{code}
+
 IB【_】 : Cxt → type → Type
 IB【 Γ 】 A = Sub₀ (B-context【 Γ 】 A)
 
@@ -74,9 +80,9 @@ equality.
 \begin{code}
 
 Rnorm-respects-≡ : {σ : type} {d : B〖 σ 〗} {t u : {A : type} → T₀ (B-type〖 σ 〗 A)}
-                   → ({A : type} → ⟦ t ⟧₀ ≡[ (B-type〖 σ 〗 A) ] ⟦ u ⟧₀)
-                   → Rnorm d t
-                   → Rnorm d u
+                 → ({A : type} → ⟦ t ⟧₀ ≡[ (B-type〖 σ 〗 A) ] ⟦ u ⟧₀)
+                 → Rnorm d t
+                 → Rnorm d u
 Rnorm-respects-≡ {ι} {d} {t} {u} t≡u Rnorm-d-t {A} =
  ⟦ u ⟧₀          ≡⟨ ≡-symm {⌜B⌝ ι A} t≡u ⟩
  ⟦ t ⟧₀          ≡＝⟨ Rnorm-d-t {A} ⟩
@@ -90,9 +96,10 @@ We prove the fundamental theorem of the `Rnorm` logical relation in
 `Rnorm-lemma`, which relates the inductive dialogue tree translation and the
 Church-encoded dialogue tree translation for all System T terms.
 
+TODO. This should be moved to the definition of numeral?
+
 \begin{code}
 
--- TODO this should be moved to the definition of numeral?
 ⟦numeral⟧ : {Γ : Cxt} (γ : 【 Γ 】) (n : ℕ) → ⟦ numeral n ⟧ γ ≡ n
 ⟦numeral⟧ γ  zero    = refl
 ⟦numeral⟧ γ (succ n) = ap succ (⟦numeral⟧ γ n)
@@ -109,7 +116,7 @@ Rnorm-η-implies-≡ : {n₁ : ℕ} {n₂ : T₀ ι}
 Rnorm-η-implies-≡ {n₁} {n₂} Rnorm-ns =
  ⟦ numeral n₁ ⟧₀ ≡⟨ ⟦numeral⟧₀ n₁ ⟩
  n₁              ≡⟨ ≡-symm (Rnorm-ns η₁≡η₁ β₁≡β₁) ⟩
- ⟦ n₂ ⟧₀ ∎
+ ⟦ n₂ ⟧₀         ∎
  where
   η₁ : ℕ → ℕ
   η₁ n = n
@@ -123,7 +130,12 @@ Rnorm-η-implies-≡ {n₁} {n₂} Rnorm-ns =
   β₁≡β₁ : β₁ ≡ β₁
   β₁≡β₁ ϕ₁≡ϕ₂ n₁≡n₂ = refl
 
--- TODO give this a better name and move it probably
+\end{code}
+
+TODO. Give this a better name and move it probably.
+
+\begin{code}
+
 η-type : type → type
 η-type A = ι ⇒ A
 
@@ -137,9 +149,10 @@ The System T term `Rec` is interpreted by the dialogue tree semantics using
 `Kleisli-extension` and `⌜Kleisli-extension⌝` will preserve functions related
 by `Rnorm`.
 
+TODO. Could probably generalise to extensionally equal dialogue trees d.
+
 \begin{code}
 
--- TODO could probably generalise to extensionally equal dialogue trees d
 church-encode-kleisli-extension : {A : type} (d : B ℕ)
                                 → (f₁ : ℕ → B ℕ) (f₂ : {A : type} → T₀ (ι ⇒ ⌜B⌝ ι A))
                                 → ((i : ℕ) → Rnorm (f₁ i) (f₂ · numeral i))
@@ -161,7 +174,12 @@ church-encode-kleisli-extension {A} (β ϕ n) f₁ f₂ f₁≡f₂ {η₁} {η�
   ϕ₁≡ϕ₂ : ϕ₁ ≡ ϕ₂
   ϕ₁≡ϕ₂ {i} {.i} refl = church-encode-kleisli-extension (ϕ i) f₁ f₂ f₁≡f₂ η₁≡η₂ β₁≡β₂
 
--- TODO maybe move this?
+\end{code}
+
+TODO. Maybe move this?
+
+\begin{code}
+
 ⟦⌜Kleisli-extension⌝⟧ : {X A σ : type} {Γ Δ : Cxt} (xs : 【 Γ 】) (ys : 【 Δ 】)
                       → ⟦ ⌜Kleisli-extension⌝ {X} {A} {σ} ⟧ xs
                         ≡ ⟦ ⌜Kleisli-extension⌝ {X} {A} {σ} ⟧ ys
@@ -195,7 +213,13 @@ Rnorm-kleisli-lemma {ι} f₁ f₂ Rnorm-fs n₁ n₂ Rnorm-ns {A} =
 Rnorm-kleisli-lemma {σ ⇒ τ} f₁ f₂ Rnorm-fs n₁ n₂ Rnorm-ns u₁ u₂ Rnorm-us =
  Rnorm-respects-≡ I IH
  where
-  -- We perform some computation steps using the semantics.
+
+\end{code}
+
+We perform some computation steps using the semantics.
+
+\begin{code}
+
   I : {A : type}
     → ⟦ ⌜Kleisli-extension⌝ · ƛ (weaken₀ f₂ · ν₀ · weaken₀ u₂) · n₂ ⟧₀
       ≡[ B-type〖 τ 〗 A ] ⟦ ƛ (ƛ (ƛ (⌜Kleisli-extension⌝ · ƛ (ν₃ · ν₀ · ν₁) · ν₁))) · f₂ · n₂ · u₂ ⟧₀
@@ -208,16 +232,26 @@ Rnorm-kleisli-lemma {σ ⇒ τ} f₁ f₂ Rnorm-fs n₁ n₂ Rnorm-ns u₁ u₂ 
        ≡[ B-type〖 τ 〗 A ] ⟦ f₂ · numeral x · u₂ ⟧₀
   II x = ⟦weaken₀⟧ f₂ (⟨⟩ ‚ ⟦ numeral x ⟧ ⟨⟩) refl (⟦weaken₀⟧ u₂ (⟨⟩ ‚ ⟦ numeral x ⟧₀))
 
-  -- In the recursive case, Kleisli-extension calls Kleisli-extension at
-  -- the codomain type with the following new fs'.
+\end{code}
+
+In the recursive case, Kleisli-extension calls Kleisli-extension at
+the codomain type with the following new fs'.
+
+\begin{code}
+
   f₁' : ℕ → B〖 τ 〗
   f₁' x = f₁ x u₁
 
   f₂' : {A : type} → T₀ (ι ⇒ B-type〖 τ 〗 A)
   f₂' = ƛ (weaken₀ f₂ · ν₀ · weaken₀ u₂)
 
-  -- Crucially, these fs' are still related by Rnorm, so we can use them to get
-  -- the inductive hypothesis IH.
+\end{code}
+
+Crucially, these fs' are still related by Rnorm, so we can use them to
+get the inductive hypothesis IH.
+
+\begin{code}
+
   Rnorm-fs' : (x : ℕ) → Rnorm (f₁' x) (f₂' · numeral x)
   Rnorm-fs' x = Rnorm-respects-≡ (≡-symm (II x)) (Rnorm-fs x u₁ u₂ Rnorm-us)
 
@@ -225,8 +259,13 @@ Rnorm-kleisli-lemma {σ ⇒ τ} f₁ f₂ Rnorm-fs n₁ n₂ Rnorm-ns u₁ u₂ 
   IH = Rnorm-kleisli-lemma f₁' f₂' Rnorm-fs' n₁ n₂ Rnorm-ns
 
 
--- TODO this should be derivable from Rnorm-kleisli-lemma or
--- church-encode-kleisli-extension
+\end{code}
+
+TODO. this should be derivable from Rnorm-kleisli-lemma or
+church-encode-kleisli-extension.
+
+\begin{code}
+
 church-encode-is-natural : {g₁ g₂ :  ℕ → ℕ} (d : B ℕ)
                          → g₁ ≡ g₂
                          → {A : type}
@@ -245,7 +284,12 @@ church-encode-is-natural {g₁} {g₂} (β ϕ n) g₁≡g₂ {A} {η₁} {η₂}
   ϕ₁≡ϕ₂ : ϕ₁ ≡ ϕ₂
   ϕ₁≡ϕ₂ {i} {.i} refl = church-encode-is-natural (ϕ i) g₁≡g₂ η₁≡η₂ β₁≡β₂
 
--- TODO consider moving the compute lemmas to somewhere else?
+\end{code}
+
+TODO. Consider moving the compute lemmas to somewhere else?
+
+\begin{code}
+
 compute-Rec-Zero : {A σ : type} {Γ : Cxt}
                    (a : T (Γ ,, ι) (ι ⇒ B-type〖 σ ⇒ σ 〗 A))
                    (b : T Γ (B-type〖 σ 〗 A))
@@ -266,13 +310,14 @@ compute-Rec-Zero {A} {σ} {Γ} a b s =
  ⟦ close b s ⟧₀
   ∎
 
-compute-Rec-Succ : {A σ : type} {Γ : Cxt}
-                       (a : T Γ (B-type〖 ι ⇒ σ ⇒ σ 〗 A))
-                       (b : T Γ (B-type〖 σ 〗 A))
-                       (n : T₀ ι)
-                       (s : Sub₀ Γ)
-                     → ⟦ close (ƛ (Rec (ƛ (weaken, ι (weaken, ι a) · (⌜η⌝ · ν₀))) (weaken, ι b) ν₀)) s · Succ n ⟧₀
-                     ≡ ⟦ close a s · (⌜η⌝ · n) · Rec (ƛ (weaken, ι (close a s) · (⌜η⌝ · ν₀))) (close b s) n ⟧₀
+compute-Rec-Succ
+  : {A σ : type} {Γ : Cxt}
+    (a : T Γ (B-type〖 ι ⇒ σ ⇒ σ 〗 A))
+    (b : T Γ (B-type〖 σ 〗 A))
+    (n : T₀ ι)
+    (s : Sub₀ Γ)
+  → ⟦ close (ƛ (Rec (ƛ (weaken, ι (weaken, ι a) · (⌜η⌝ · ν₀))) (weaken, ι b) ν₀)) s · Succ n ⟧₀
+  ≡ ⟦ close a s · (⌜η⌝ · n) · Rec (ƛ (weaken, ι (close a s) · (⌜η⌝ · ν₀))) (close b s) n ⟧₀
 compute-Rec-Succ {A} {σ} {Γ} a b n s =
  ⟦ close (ƛ (Rec (ƛ (weaken, ι (weaken, ι a) · (⌜η⌝ · ν₀))) (weaken, ι b) ν₀)) s · Succ n ⟧₀
   ＝≡⟨ refl ⟩
@@ -385,14 +430,20 @@ compute-Rec-Succ {A} {σ} {Γ} a b n s =
      ≡ rec ⟦ ƛ (weaken, ι (close a s) · (⌜η⌝ · ν₀)) ⟧₀ ⟦ close b s ⟧₀ ⟦ n ⟧₀
   e2 = rec≡rec e7 e3 (≡-refl₀ n)
 
--- as opposed to compute-Rec-Succ, this one does not "reduce" as much
-compute-Rec-Succ2 : {A σ : type} {Γ : Cxt}
-                        (a : T Γ (B-type〖 ι ⇒ σ ⇒ σ 〗 A))
-                        (b : T Γ (B-type〖 σ 〗 A))
-                        (n : T₀ ι)
-                        (s : Sub₀ Γ)
-                      → ⟦ close (ƛ (Rec (ƛ (weaken, ι (weaken, ι a) · (⌜η⌝ · ν₀))) (weaken, ι b) ν₀)) s  · n ⟧₀
-                        ≡ ⟦ Rec (ƛ (weaken, ι (close a s) · (⌜η⌝ · ν₀))) (close b s) n ⟧₀
+\end{code}
+
+As opposed to compute-Rec-Succ, this one does not "reduce" as much.
+
+\begin{code}
+
+compute-Rec-Succ2
+ : {A σ : type} {Γ : Cxt}
+   (a : T Γ (B-type〖 ι ⇒ σ ⇒ σ 〗 A))
+   (b : T Γ (B-type〖 σ 〗 A))
+   (n : T₀ ι)
+   (s : Sub₀ Γ)
+ → ⟦ close (ƛ (Rec (ƛ (weaken, ι (weaken, ι a) · (⌜η⌝ · ν₀))) (weaken, ι b) ν₀)) s  · n ⟧₀
+   ≡ ⟦ Rec (ƛ (weaken, ι (close a s) · (⌜η⌝ · ν₀))) (close b s) n ⟧₀
 compute-Rec-Succ2 {A} {σ} {Γ} a b n s =
  rec (λ y → ⟦ close (weaken, ι (weaken, ι a)) (Subƛ (Subƛ s)) ⟧ (⟨⟩ ‚ ⟦ n ⟧₀ ‚ y) (η⋆ y))
      (⟦ close (weaken, ι b) (Subƛ s) ⟧ (⟨⟩ ‚ ⟦ n ⟧₀))
@@ -542,11 +593,21 @@ compute-Rec-Succ2 {A} {σ} {Γ} a b n s =
    · close ⌜ c ⌝ s ⟧₀
   ∎
 
--- TODO maybe move this too
+\end{code}
+
+TODO. Maybe move this too.
+
+\begin{code}
+
 Rnorm-Zero : Rnorm zero' ⌜zero⌝
 Rnorm-Zero {A} η₁≡η₂ β₁≡β₂ = η₁≡η₂ refl
 
--- TODO move the following functions probably
+\end{code}
+
+TODO. Move the following functions probably.
+
+\begin{code}
+
 succ≡succ : succ ≡ succ
 succ≡succ = ap succ
 
@@ -567,12 +628,7 @@ Rnorm-lemma γ₁ γ₂ (Succ t) Rnorm-γs =
  B⋆-functor succ (church-encode (B⟦ t ⟧ γ₁)) ≡＝⟨ II ⟩
  church-encode (B-functor succ (B⟦ t ⟧ γ₁))  ∎
  where
-  I : B⋆-functor succ ⟦ close ⌜ t ⌝ γ₂ ⟧₀
-       ≡ B⋆-functor succ (church-encode (B⟦ t ⟧ γ₁))
-  I = B⋆-functor≡B⋆-functor succ≡succ (Rnorm-lemma γ₁ γ₂ t Rnorm-γs)
-
-  II : B⋆-functor succ (church-encode (B⟦ t ⟧ γ₁))
-        ≡ church-encode (B-functor succ (B⟦ t ⟧ γ₁))
+  I  = B⋆-functor≡B⋆-functor succ≡succ (Rnorm-lemma γ₁ γ₂ t Rnorm-γs)
   II = church-encode-is-natural (B⟦ t ⟧ γ₁) succ≡succ
 
 Rnorm-lemma {Γ} {σ} γ₁ γ₂ (Rec t u v) Rnorm-γs =
@@ -619,8 +675,14 @@ Rnorm-lemma γ₁ γ₂ (ν i) Rnorm-γs = Rnorm-γs i
 
 Rnorm-lemma γ₁ γ₂ (ƛ t) Rnorm-γs u₁ u₂ Rnorm-us = Rnorm-respects-≡ I IH
  where
-  -- Using the semantics, we reduce application of a lambda to the appropriate
-  -- substitution, at which point we can use the inductive hypothesis.
+
+\end{code}
+
+Using the semantics, we reduce application of a lambda to the appropriate
+substitution, at which point we can use the inductive hypothesis.
+
+\begin{code}
+
   I : {A : type} → ⟦ close ⌜ t ⌝ (Sub,, γ₂ u₂) ⟧₀ ≡[ B-type〖 _ 〗 A ] ⟦ ƛ (close ⌜ t ⌝ (Subƛ γ₂)) · u₂ ⟧₀
   I {A} =
    ⟦ close ⌜ t ⌝ (Sub,, γ₂ u₂) ⟧₀
@@ -667,18 +729,24 @@ Rnorm-lemma₀ : {σ : type} (t : T₀ σ) → Rnorm B⟦ t ⟧₀ ⌜ t ⌝
 Rnorm-lemma₀ {σ} t =
  Rnorm-respects-≡ (⟦closeν⟧ ⌜ t ⌝ _ (λ ())) (Rnorm-lemma ⟪⟫ ν t (λ ()))
 
--- TODO do we want to keep this? It seems a bit pointless to have this as a lemma
+\end{code}
+
+TODO. Do we want to keep this? It seems a bit pointless to have this as a lemma.
+
+\begin{code}
+
 Rnorm-lemmaι : (t : T₀ ι)
              → dialogue⋆ ⟦ ⌜ t ⌝ ⟧₀ ≡ dialogue⋆ (church-encode B⟦ t ⟧₀)
 Rnorm-lemmaι t = dialogue⋆≡dialogue⋆ (Rnorm-lemma₀ t)
 
 \end{code}
 
-Having proved the fundamental theorem of the Rnorm logical relation, we
-can derive as a corollary the correctness of `⌜dialogue-tree⌝` as building
-an internal dialogue tree for a System T term of type `(ι ⇒ ι) ⇒ ι`. This is
-done by reducing to the correctness of the external `dialogue-tree` function,
-shown correct by `dialogue-tree-correct`.
+Having proved the fundamental theorem of the Rnorm logical relation,
+we can derive as a corollary the correctness of `⌜dialogue-tree⌝` as
+building an internal dialogue tree for a System T term of type `
+(ι ⇒ ι) ⇒ ι`. This is done by reducing to the correctness of the
+external `dialogue-tree` function, shown correct by
+`dialogue-tree-correct`.
 
 \begin{code}
 
@@ -703,19 +771,28 @@ dialogue-tree-agreement t = Rnorm-lemma₀ t generic ⌜generic⌝ Rnorm-generic
  dialogue⋆ (church-encode (dialogue-tree t)) α ≡⟨ dialogue⋆≡dialogue⋆ I α≡α ⟩
  dialogue⋆ ⟦ ⌜dialogue-tree⌝ t ⟧₀ α            ∎
  where
-  I : church-encode (dialogue-tree t) ≡ ⟦ ⌜dialogue-tree⌝ t ⟧₀
   I = ≡-symm {⌜B⌝ ι ((ι ⇒ ι) ⇒ ι)} (dialogue-tree-agreement t)
 
   α≡α : α ≡ α
   α≡α = ap α
 
--- TODO should this be moved
+\end{code}
+
+TODO. Should this be moved.
+
+\begin{code}
+
 ⌜dialogue⌝ : {Γ : Cxt}
            → T (B-context【 Γ 】 ((ι ⇒ ι) ⇒ ι)) (⌜B⌝ ι ((ι ⇒ ι) ⇒ ι))
            → T (B-context【 Γ 】 ((ι ⇒ ι) ⇒ ι)) ((ι ⇒ ι) ⇒ ι)
 ⌜dialogue⌝ {Γ} t = t · ƛ (ƛ ν₁) · ƛ (ƛ (ƛ (ν₂ · (ν₀ · ν₁) · ν₀)))
 
--- Same as ⌜dialogue-tree⌝-correct but using an internal dialogue function
+\end{code}
+
+Same as ⌜dialogue-tree⌝-correct but using an internal dialogue function.
+
+\begin{code}
+
 ⌜dialogue-tree⌝-correct' : (t : T₀ ((ι ⇒ ι) ⇒ ι))
                            (α : Baire)
                          → ⟦ t ⟧₀ α ＝ ⟦ ⌜dialogue⌝ (⌜dialogue-tree⌝ t) ⟧₀ α
