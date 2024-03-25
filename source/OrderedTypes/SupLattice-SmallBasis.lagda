@@ -62,11 +62,12 @@ module _
         (β : B → ⟨ L ⟩)
        where
 
- _≤_ : ⟨ L ⟩ → ⟨ L ⟩ → Ω 𝓦
- _≤_ = order-of L
+ private
+  _≤_ : ⟨ L ⟩ → ⟨ L ⟩ → Ω 𝓦
+  _≤_ = order-of L
 
- ⋁_ : Fam 𝓥 ⟨ L ⟩ → ⟨ L ⟩
- ⋁_ = join-of L
+  ⋁_ : Fam 𝓥 ⟨ L ⟩ → ⟨ L ⟩
+  ⋁_ = join-of L
 
  open Joins _≤_
 
@@ -83,29 +84,24 @@ module _
 
 It is worth mentioning the ↓ᴮ-inclusion need not be an injection as β is not.
 
+Now we define is-small-basis as a record type and proceed to write some
+boiler plate that will allow us to use a small basis with greater efficiency.
+
 \begin{code}
 
- is-small-basis : 𝓤 ⊔ 𝓦 ⊔ 𝓥 ⁺  ̇
- is-small-basis = (x : ⟨ L ⟩)
-                → ((b : B) → ((β b ≤ x) holds) is 𝓥 small)
-                × ((x is-lub-of (↓ᴮ x , ↓ᴮ-inclusion x)) holds)
-
- module _ (h : is-small-basis) where
-
-  ≤-is-small : (x : ⟨ L ⟩) (b : B) → ((β b ≤ x) holds) is 𝓥 small
-  ≤-is-small x b = pr₁ (h x) b
-
-  is-sup-↓ : (x : ⟨ L ⟩) → (x is-lub-of (↓ᴮ x , ↓ᴮ-inclusion x)) holds
-  is-sup-↓ x = pr₂ (h x)
+ record is-small-basis : 𝓤 ⊔ 𝓦 ⊔ 𝓥 ⁺  ̇ where
+  field
+   ≤-is-small : (x : ⟨ L ⟩) (b : B) → ((β b ≤ x) holds) is 𝓥 small
+   ↓-is-sup : (x : ⟨ L ⟩) → (x is-lub-of (↓ᴮ x , ↓ᴮ-inclusion x)) holds
 
   is-upper-bound-↓ : (x : ⟨ L ⟩)
                    → (x is-an-upper-bound-of (↓ᴮ x , ↓ᴮ-inclusion x)) holds
-  is-upper-bound-↓ x = pr₁ (is-sup-↓ x)
+  is-upper-bound-↓ x = pr₁ (↓-is-sup x)
 
   is-least-upper-bound-↓ : (x : ⟨ L ⟩)
                          → ((u' , _) : upper-bound (↓ᴮ x , ↓ᴮ-inclusion x))
                          → (x ≤ u') holds
-  is-least-upper-bound-↓ x = pr₂ (is-sup-↓ x)
+  is-least-upper-bound-↓ x = pr₂ (↓-is-sup x)
 
   _≤ᴮ_ : (b : B) → (x : ⟨ L ⟩) → 𝓥  ̇
   b ≤ᴮ x = (resized ((β b ≤ x) holds)) (≤-is-small x b)
@@ -122,7 +118,7 @@ It is worth mentioning the ↓ᴮ-inclusion need not be an injection as β is no
   ≤ᴮ-is-prop-valued : {b : B} {x : ⟨ L ⟩} → is-prop (b ≤ᴮ x)
   ≤ᴮ-is-prop-valued {b} {x} =
    equiv-to-prop ≤ᴮ-≃-≤ (holds-is-prop ((β b) ≤ x))
-
+   
   small-↓ᴮ : ⟨ L ⟩ → 𝓥  ̇
   small-↓ᴮ x = Σ b ꞉ B , b ≤ᴮ x
 
@@ -138,7 +134,7 @@ It is worth mentioning the ↓ᴮ-inclusion need not be an injection as β is no
   is-supᴮ' : (x : ⟨ L ⟩) → x ＝ ⋁ (small-↓ᴮ x , small-↓ᴮ-inclusion x)
   is-supᴮ' x = reindexing-along-equiv-＝-sup
                 L small-↓ᴮ-≃-↓ᴮ (↓ᴮ-inclusion x)
-                x (⋁ (small-↓ᴮ x , small-↓ᴮ-inclusion x)) (is-sup-↓ x)
+                x (⋁ (small-↓ᴮ x , small-↓ᴮ-inclusion x)) (↓-is-sup x)
                 (join-is-lub-of L (small-↓ᴮ x , small-↓ᴮ-inclusion x))
 
   is-supᴮ : (x : ⟨ L ⟩)
@@ -160,3 +156,4 @@ It is worth mentioning the ↓ᴮ-inclusion need not be an injection as β is no
   is-least-upper-boundᴮ x = pr₂ (is-supᴮ x)
 
 \end{code}
+
