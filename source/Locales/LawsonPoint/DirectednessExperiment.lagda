@@ -180,8 +180,8 @@ module Experiment
 
       †₂ : Σ k ꞉ index B𝓓 , B𝓓 [ k ] ＝ d
          → ∃ (λ k →
-                 (compact-opens-of ℱ [ i , κᵢ ]) ⊑⟨ 𝓓 ⟩ (compact-opens-of ℱ [ k ])
-               × (compact-opens-of ℱ [ j , κⱼ ]) ⊑⟨ 𝓓 ⟩ (compact-opens-of ℱ [ k ]))
+                 ((compact-opens-of ℱ [ i , κᵢ ]) ⊑⟨ 𝓓 ⟩ (B𝓓 [ pr₁ k ]))
+               × ((compact-opens-of ℱ [ j , κⱼ ]) ⊑⟨ 𝓓 ⟩ (B𝓓 [ pr₁ k ])))
       †₂ = {!!}
 
     μₘ : (↑ˢ[ b , κᵇ ] ∧[ 𝒪 Σ⦅𝓓⦆ ] ↑ˢ[ c , κᶜ ]) ∈ F
