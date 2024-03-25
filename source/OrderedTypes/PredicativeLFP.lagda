@@ -116,8 +116,8 @@ It is worth noting that we don't encode the downsets as subsets in type
 theory (rather they are total spaces) so for that reason we won't encode the
 closure conditions exactly as above.
 
-TODO: Add syntax so the closure conditions match the naive description given
-above.
+TODO: Add syntax so the closure conditions more closely align with the naive
+description given above.
 
 We also derive the initiality of the least closed subset from the postulated
 induction principle. Initiality is closely related to the 'least' part of
@@ -164,7 +164,9 @@ We give names to the closure conditions.
 \end{code}
 
 The following record type should be interpreted as supplying the assumption
-that the QIT family exists with the apropriate induction principle.
+that the QIT family exists with the apropriate 'initiality' principle
+(initiality is considerably weaker than an induction/recursion principle that
+one may expect).
 
 \begin{code}
 
@@ -197,8 +199,8 @@ that the QIT family exists with the apropriate induction principle.
 \end{code}
 
 We will now combine the postulated data above to form the least closed subset
-of B under some inductive definition ϕ. We will then derived the initiality
-of this subset from the above induction principle. 
+of B under some inductive definition ϕ and restate the closure properties and
+initiality in terms of it.
 
 \begin{code}
 
@@ -250,9 +252,9 @@ module local-inductive-definitions
 
 \end{code}
 
-We now define an auxilary subset which we will use to define the upcoming
-monotone operator. This subset is in some sense a generalized downset that
-depends on ϕ.
+We now define an auxilary subset/total space which we will use to define the
+upcoming monotone operator. This subset is in some sense a generalized downset
+that depends on ϕ.
 
 \begin{code}
 
@@ -1130,8 +1132,8 @@ module _
 
 \end{code}
 
-The following serves as evidence that the desired QIT family at least has
-sound point constructors.
+The following serves as evidence that the desired QIT family is small (and
+atleast has strictly positive point constructors).
 
 \begin{code}
 
@@ -1150,8 +1152,8 @@ sound point constructors.
 \end{code}
 
 Again, we use records to assert the existence of another QIT family with
-apropriate induction principle. As before we will first we introduce some
-names for the (dependent) closure properties.
+apropriate 'intiality' principle. As before we will first introduce some
+names for the closure properties.
 
 \begin{code}
 
@@ -1592,7 +1594,8 @@ module _
                                                      
 \end{code}
 
-We use the notion of density to state another version of the least fixed point
+We use the notion of density, along with the reasonable assumption that our
+lattice is locally small, to state another version of the least fixed point
 theorem.
 
 \begin{code}
