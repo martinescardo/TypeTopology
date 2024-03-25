@@ -110,12 +110,14 @@ its join are in the least closed subset as well. That is, Y is c-closed if
 The ϕ-cl constructor says:
 if for any a : L and b : B with (b , a) ∈ ϕ and ↓ᴮ a 'contained' in the least
 closed subset then b is in the least closed subset. That is, Y is ϕ-closed if
-  for any a : L and b : B we have ↓ᴮ a ⊆ Y ⇒ b ∈ Y.
+  for any a : L and b : B we have (b , a) ∈ ϕ ∧ ↓ᴮ a ⊆ Y ⇒ b ∈ Y.
 
 It is worth noting that we don't encode the downsets as subsets in type
 theory (rather they are total spaces) so for that reason we won't encode the
-closure conditions exactly as above (maybe add some notation to allow for
-more familiar form).
+closure conditions exactly as above.
+
+TODO: Add syntax so the closure conditions match the naive description given
+above.
 
 We also derive the initiality of the least closed subset from the postulated
 induction principle. Initiality is closely related to the 'least' part of
@@ -140,7 +142,7 @@ module _
 
 \end{code}
 
-We start by giving names to the (dependent) closure conditions.
+We give names to the closure conditions.
 
 \begin{code}
 
@@ -150,17 +152,6 @@ We start by giving names to the (dependent) closure conditions.
              → (b : B) → b ≤ᴮ (⋁ 【 β , U 】)
              → b ∈ S
 
- dep-c-closure : {𝓣 𝓣' : Universe} (S : 𝓟 {𝓣} B)
-               → (P : (b : B) → 𝓟 {𝓣'} (b ∈ S))
-               → (c : c-closure S)
-               → (𝓥 ⁺) ⊔ 𝓣 ⊔ 𝓣'  ̇
- dep-c-closure S P c = (U : 𝓟 {𝓥} B)
-                     → (f : (x : B) → (x ∈ U → x ∈ S))
-                     → ((x : B) → (u : x ∈ U) → f x u ∈ P x)
-                     → (b : B)
-                     → (g : (b ≤ᴮ (⋁ 【 β , U 】)))
-                     → c U f b g ∈ P b
-
  _closure : (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩))
           → {𝓣 : Universe} (S : 𝓟 {𝓣} B) 
           → 𝓤 ⊔ 𝓥 ⊔ 𝓣  ̇
@@ -169,18 +160,6 @@ We start by giving names to the (dependent) closure conditions.
                → (b , a) ∈ ϕ
                → ((b' : B) → (b' ≤ᴮ a → b' ∈ S))
                → b ∈ S
-
- dep_closure : {𝓣 𝓣' : Universe} (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩))
-             → (S : 𝓟 {𝓣} B)
-             → (P : (b : B) → 𝓟 {𝓣'} (b ∈ S))
-             → (q : (ϕ closure) S)
-             → 𝓤 ⊔ 𝓥 ⊔ 𝓣 ⊔ 𝓣'  ̇
- dep ϕ closure S P q = ((a : ⟨ L ⟩)
-                     → (b : B)
-                     → (p : (b , a) ∈ ϕ)
-                     → (f : (x : B) → (x ≤ᴮ a → x ∈ S))
-                     → ((x : B) → (o : x ≤ᴮ a) → f x o ∈ P x)
-                     → q a b p f ∈ P b)
 
 \end{code}
 
@@ -203,10 +182,10 @@ that the QIT family exists with the apropriate induction principle.
   field
    c-closed : c-closure 𝓘
    ϕ-closed : (ϕ closure) 𝓘
-   Ind-induction : (P : (b : B) → 𝓟 {𝓣} (b ∈ 𝓘))
-                 → dep-c-closure 𝓘 P c-closed
-                 → dep ϕ closure 𝓘 P ϕ-closed
-                 → (b : B) → (i : b ∈ 𝓘) → i ∈ P b
+   Ind-initial : (P : 𝓟 {𝓣} B)
+               → c-closure P
+               → (ϕ closure) P
+               → 𝓘 ⊆ P
 
  module trunc-ind-def
          (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩))
@@ -232,28 +211,11 @@ of this subset from the above induction principle.
   𝓘nd-is-ϕ-closed : (ϕ closure) 𝓘nd
   𝓘nd-is-ϕ-closed = ϕ-closed
 
-  𝓘nd-induction : (P : (b : B) → 𝓟 {𝓣} (b ∈ 𝓘nd))
-                → dep-c-closure 𝓘nd P c-closed
-                → dep ϕ closure 𝓘nd P ϕ-closed
-                → (b : B) → (i : b ∈ 𝓘nd) → i ∈ P b
-  𝓘nd-induction = Ind-induction
-
-  𝓘nd-recursion : (P : 𝓟 {𝓣} B)
-                → dep-c-closure 𝓘nd (λ b → (λ _ → P b)) c-closed
-                → dep ϕ closure 𝓘nd (λ b → (λ _ → P b)) ϕ-closed
-                → 𝓘nd ⊆ P
-  𝓘nd-recursion P = 𝓘nd-induction (λ b → (λ _ → P b))
-
   𝓘nd-is-initial : (P : 𝓟 {𝓣} B)
                  → c-closure P
                  → (ϕ closure) P
                  → 𝓘nd ⊆ P
-  𝓘nd-is-initial {𝓣} P IH₁ IH₂ b b-in-𝓘nd = 𝓘nd-recursion P R S b b-in-𝓘nd
-   where
-    R : dep-c-closure 𝓘nd (λ b → (λ _ → P b)) c-closed
-    R U C₁ C₂ x o = IH₁ U C₂ x o
-    S : dep ϕ closure 𝓘nd (λ b → (λ _ → P b)) ϕ-closed
-    S a x p f g = IH₂ a x p g
+  𝓘nd-is-initial = Ind-initial
 
 \end{code}
 
@@ -301,10 +263,10 @@ depends on ϕ.
  ↓-to-base ϕ a = pr₁
 
  ↓-monotonicity-lemma : (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩))
-                                → (x y : ⟨ L ⟩)
-                                → (x ≤ y) holds
-                                → ϕ ↓ x
-                                → ϕ ↓ y
+                      → (x y : ⟨ L ⟩)
+                      → (x ≤ y) holds
+                      → ϕ ↓ x
+                      → ϕ ↓ y
  ↓-monotonicity-lemma ϕ x y o (b , c) = (b , inclusion c)
   where
    inclusion : (Ǝ a' ꞉ ⟨ L ⟩ , ((b , a') ∈ ϕ) × ((a' ≤ x) holds)) holds
@@ -493,73 +455,81 @@ module _
          (i : is-local ϕ)
         where
 
-  is-small-ϕ-closed-subset : (P : 𝓟 {𝓥} B) → 𝓤 ⊔ (𝓥 ⁺)  ̇
-  is-small-ϕ-closed-subset P = ((U : 𝓟 {𝓥} B)
-                              → (U ⊆ P)
-                              → ((b : B)
-                              → b ≤ᴮ (⋁ 【 β , U 】)
-                              → b ∈ P))
-                             × ((a : ⟨ L ⟩)
-                              → (b : B)
-                              → (b , a) ∈ ϕ
-                              → ((b' : B) → (b' ≤ᴮ a → b' ∈ P))
-                              → b ∈ P)
+\end{code}
 
-  is-small-ϕ-closed-subset-is-predicate : (P : 𝓟 {𝓥} B)
-                                        → is-prop (is-small-ϕ-closed-subset P)
-  is-small-ϕ-closed-subset-is-predicate P =
+Next we give a name to the type of subsets of size 𝓥 (small) that are c-closed
+and ϕ-closed (recall, that closure was initially defined for subsets with
+respect to an arbitrary universe parameter 𝓣.)
+
+\begin{code}
+
+  is-small-closed-subset : (P : 𝓟 {𝓥} B) → 𝓤 ⊔ (𝓥 ⁺)  ̇
+  is-small-closed-subset P = ((U : 𝓟 {𝓥} B)
+                            → (U ⊆ P)
+                            → ((b : B)
+                            → b ≤ᴮ (⋁ 【 β , U 】)
+                            → b ∈ P))
+                           × ((a : ⟨ L ⟩)
+                            → (b : B)
+                            → (b , a) ∈ ϕ
+                            → ((b' : B) → (b' ≤ᴮ a → b' ∈ P))
+                            → b ∈ P)
+
+  is-small-closed-subset-is-predicate : (P : 𝓟 {𝓥} B)
+                                      → is-prop (is-small-closed-subset P)
+  is-small-closed-subset-is-predicate P =
     ×-is-prop (Π₄-is-prop fe (λ _ _ b _ → holds-is-prop (P b)))
               (Π₄-is-prop fe (λ _ b _ _ → holds-is-prop (P b)))
 
-  small-ϕ-closed-subsets : 𝓤 ⊔ (𝓥 ⁺)  ̇
-  small-ϕ-closed-subsets =  Σ P ꞉ 𝓟 {𝓥} B , is-small-ϕ-closed-subset P
+  small-closed-subsets : 𝓤 ⊔ (𝓥 ⁺)  ̇
+  small-closed-subsets = Σ P ꞉ 𝓟 {𝓥} B , is-small-closed-subset P
 
-  subset-of-small-ϕ-closed-subset : small-ϕ-closed-subsets → 𝓟 {𝓥} B
-  subset-of-small-ϕ-closed-subset (P , c-clsd , ϕ-clsd) = P
+  subset-of-small-closed-subset : small-closed-subsets → 𝓟 {𝓥} B
+  subset-of-small-closed-subset (P , c-clsd , ϕ-clsd) = P
 
-  c-closed-of-small-ϕ-closed-subset : (X : small-ϕ-closed-subsets)
-                                    → ((U : 𝓟 {𝓥} B)
-                                    → U ⊆ subset-of-small-ϕ-closed-subset X
-                                    → ((b : B)
-                                    → b ≤ᴮ (⋁ 【 β , U 】)
-                                    → b ∈ subset-of-small-ϕ-closed-subset X))
-  c-closed-of-small-ϕ-closed-subset (P , c-clsd , ϕ-clsd) = c-clsd
+  c-closed-of-small-closed-subset : (X : small-closed-subsets)
+                                  → ((U : 𝓟 {𝓥} B)
+                                  → U ⊆ subset-of-small-closed-subset X
+                                  → ((b : B)
+                                  → b ≤ᴮ (⋁ 【 β , U 】)
+                                  → b ∈ subset-of-small-closed-subset X))
+  c-closed-of-small-closed-subset (P , c-clsd , ϕ-clsd) = c-clsd
 
-  ϕ-closed-of-small-ϕ-closed-subset : (X : small-ϕ-closed-subsets)
-                                    → ((a : ⟨ L ⟩)
-                                    → (b : B)
-                                    → ((b , a) ∈ ϕ)
-                                    → ((b' : B)
-                                    → (b' ≤ᴮ a
-                                    → b' ∈ subset-of-small-ϕ-closed-subset X))
-                                    → b ∈ subset-of-small-ϕ-closed-subset X)
-  ϕ-closed-of-small-ϕ-closed-subset (P , c-clsd , ϕ-clsd) = ϕ-clsd
+  ϕ-closed-of-small-closed-subset : (X : small-closed-subsets)
+                                  → ((a : ⟨ L ⟩)
+                                  → (b : B)
+                                  → ((b , a) ∈ ϕ)
+                                  → ((b' : B)
+                                  → (b' ≤ᴮ a
+                                  → b' ∈ subset-of-small-closed-subset X))
+                                  → b ∈ subset-of-small-closed-subset X)
+  ϕ-closed-of-small-closed-subset (P , c-clsd , ϕ-clsd) = ϕ-clsd
 
-  is-non-inc : (a : ⟨ L ⟩) → 𝓦  ̇
-  is-non-inc a = ((Γ ϕ i) a ≤ a) holds
+  is-deflationary : (a : ⟨ L ⟩) → 𝓦  ̇
+  is-deflationary a = ((Γ ϕ i) a ≤ a) holds
 
-  is-non-inc-is-predicate : (a : ⟨ L ⟩) → is-prop(is-non-inc a)
-  is-non-inc-is-predicate a = holds-is-prop ((Γ ϕ i) a ≤ a)
+  is-deflationary-is-predicate : (a : ⟨ L ⟩) → is-prop(is-deflationary a)
+  is-deflationary-is-predicate a = holds-is-prop ((Γ ϕ i) a ≤ a)
 
-  non-inc-points : 𝓤 ⊔ 𝓦  ̇
-  non-inc-points = Σ a ꞉ ⟨ L ⟩ , (is-non-inc a)
+  deflationary-points : 𝓤 ⊔ 𝓦  ̇
+  deflationary-points = Σ a ꞉ ⟨ L ⟩ , (is-deflationary a)
 
-  point-non-inc-points : non-inc-points → ⟨ L ⟩
-  point-non-inc-points (a , non-inc) = a
+  point-def-points : deflationary-points → ⟨ L ⟩
+  point-def-points (a , _) = a
 
-  is-non-inc-non-inc-points : (X : non-inc-points)
-                            → is-non-inc (point-non-inc-points X)
-  is-non-inc-non-inc-points (a , non-inc) = non-inc
+  is-deflationary-def-points : (X : deflationary-points)
+                             → is-deflationary (point-def-points X)
+  is-deflationary-def-points (_ , dp) = dp
 
-  small-ϕ-closed-subsets-to-non-inc-points : small-ϕ-closed-subsets
-                                           → non-inc-points
-  small-ϕ-closed-subsets-to-non-inc-points (P , c-closed , ϕ-closed) =
-   (sup-of-P , sup-is-non-inc)
+  small-closed-subsets-to-def-points : small-closed-subsets
+                                     → deflationary-points
+  small-closed-subsets-to-def-points (P , c-closed , ϕ-closed) =
+   (sup-of-P , sup-is-def)
    where
     sup-of-P : ⟨ L ⟩
     sup-of-P = ⋁ 【 β , P 】
-    sup-is-non-inc : is-non-inc sup-of-P
-    sup-is-non-inc = lub-condition (sup-of-P , is-upper-bound)
+    sup-is-def : is-deflationary sup-of-P
+    sup-is-def = lub-condition (sup-of-P , is-upper-bound)
      where
       sup-is-lub :
        ((Γ ϕ i) sup-of-P is-lub-of (ϕ ↓ sup-of-P , β ∘ ↓-to-base ϕ sup-of-P))
@@ -589,9 +559,9 @@ module _
       is-upper-bound (b , e) =
        ∥∥-rec (holds-is-prop (β b ≤ sup-of-P)) (un-trunc-map b) e
 
-  non-inc-points-to-small-ϕ-closed-subsets : non-inc-points
-                                           → small-ϕ-closed-subsets
-  non-inc-points-to-small-ϕ-closed-subsets (a , is-non-inc) =
+  def-points-to-small-closed-subsets : deflationary-points
+                                     → small-closed-subsets
+  def-points-to-small-closed-subsets (a , is-def) =
    (Q a , c-closed , ϕ-closed)
    where
     Q : (x : ⟨ L ⟩) → 𝓟 {𝓥} B
@@ -625,7 +595,7 @@ module _
                 → x ≤ᴮ a
       trunc-map x e = ≤-to-≤ᴮ (transitivity-of L (β x) ((Γ ϕ i) a) a
                                                (Γ-an-upper-bound (x , e))
-                                               (is-non-inc))
+                                               (is-def))
       a'-below-a : (a' ≤ a) holds
       a'-below-a =
        transport (λ - → (- ≤ a) holds) (a' is-sup-Q ⁻¹)
@@ -633,25 +603,25 @@ module _
                             (a is-sup-Q ⁻¹)
                             (joins-preserve-containment L β {Q a'} {Q a} f))
 
-  small-ϕ-closed-subsets-≃-non-inc-points :
-    small-ϕ-closed-subsets ≃ non-inc-points
-  small-ϕ-closed-subsets-≃-non-inc-points =
-   (small-ϕ-closed-subsets-to-non-inc-points ,
-    qinvs-are-equivs small-ϕ-closed-subsets-to-non-inc-points is-qinv)
+  small-closed-subsets-≃-def-points :
+    small-closed-subsets ≃ deflationary-points
+  small-closed-subsets-≃-def-points =
+   (small-closed-subsets-to-def-points ,
+    qinvs-are-equivs small-closed-subsets-to-def-points is-qinv)
    where
-    H : non-inc-points-to-small-ϕ-closed-subsets
-      ∘ small-ϕ-closed-subsets-to-non-inc-points ∼ id
+    H : def-points-to-small-closed-subsets
+      ∘ small-closed-subsets-to-def-points ∼ id
     H (P , c-closed , ϕ-closed) =
-     to-subtype-＝ is-small-ϕ-closed-subset-is-predicate P'-is-P
+     to-subtype-＝ is-small-closed-subset-is-predicate P'-is-P
      where
       sup-P : ⟨ L ⟩
-      sup-P = point-non-inc-points
-              (small-ϕ-closed-subsets-to-non-inc-points
+      sup-P = point-def-points
+              (small-closed-subsets-to-def-points
                (P , c-closed , ϕ-closed))
       P' : 𝓟 {𝓥} B
-      P' = subset-of-small-ϕ-closed-subset
-            (non-inc-points-to-small-ϕ-closed-subsets
-             (small-ϕ-closed-subsets-to-non-inc-points
+      P' = subset-of-small-closed-subset
+            (def-points-to-small-closed-subsets
+             (small-closed-subsets-to-def-points
               (P , c-closed , ϕ-closed)))
       P'-is-P : P' ＝ P
       P'-is-P = dfunext fe P'-htpy-P 
@@ -666,21 +636,21 @@ module _
           P-to-P' : x ∈ P → x ≤ᴮ sup-P
           P-to-P' r =
            ≤-to-≤ᴮ ((join-is-upper-bound-of L 【 β , P 】) (x , r))
-    G : small-ϕ-closed-subsets-to-non-inc-points
-      ∘ non-inc-points-to-small-ϕ-closed-subsets ∼ id
-    G (a , is-non-inc) = to-subtype-＝ is-non-inc-is-predicate sup-P-is-a
+    G : small-closed-subsets-to-def-points
+      ∘ def-points-to-small-closed-subsets ∼ id
+    G (a , is-def) = to-subtype-＝ is-deflationary-is-predicate sup-P-is-a
      where
       P : 𝓟 {𝓥} B
-      P = subset-of-small-ϕ-closed-subset
-           (non-inc-points-to-small-ϕ-closed-subsets (a , is-non-inc))
+      P = subset-of-small-closed-subset
+           (def-points-to-small-closed-subsets (a , is-def))
       sup-P : ⟨ L ⟩
-      sup-P = point-non-inc-points
-               (small-ϕ-closed-subsets-to-non-inc-points
-                (non-inc-points-to-small-ϕ-closed-subsets (a , is-non-inc)))
+      sup-P = point-def-points
+               (small-closed-subsets-to-def-points
+                (def-points-to-small-closed-subsets (a , is-def)))
       sup-P-is-a : sup-P ＝ a
       sup-P-is-a = is-supᴮ' a ⁻¹
-    is-qinv : qinv small-ϕ-closed-subsets-to-non-inc-points
-    is-qinv = (non-inc-points-to-small-ϕ-closed-subsets , H , G)
+    is-qinv : qinv small-closed-subsets-to-def-points
+    is-qinv = (def-points-to-small-closed-subsets , H , G)
 
 \end{code}
 
@@ -750,8 +720,8 @@ smallness assumptions on the least closed subset 𝓘nd ϕ, the monotone operato
     sup-𝓘-is-fixed-point = antisymmetry-of L Γ-sup-below-sup sup-below-Γ-sup
      where
       Γ-sup-below-sup : ((Γ ϕ i) sup-𝓘 ≤ sup-𝓘) holds
-      Γ-sup-below-sup = is-non-inc-non-inc-points
-                        (small-ϕ-closed-subsets-to-non-inc-points
+      Γ-sup-below-sup = is-deflationary-def-points
+                        (small-closed-subsets-to-def-points
                         (𝓘'-subset , 𝓘'-is-c-closed , 𝓘'-is-ϕ-closed))
       sup-below-Γ-sup : (sup-𝓘 ≤ (Γ ϕ i) sup-𝓘) holds
       sup-below-Γ-sup = transport (λ - → (sup-𝓘 ≤ -) holds)
@@ -761,8 +731,8 @@ smallness assumptions on the least closed subset 𝓘nd ϕ, the monotone operato
         Γ-Γ-sup-below-Γ-sup =
          Γ-is-monotone ϕ i ((Γ ϕ i) sup-𝓘) sup-𝓘 Γ-sup-below-sup
         Q-Γ-sup : 𝓟 {𝓥} B
-        Q-Γ-sup = subset-of-small-ϕ-closed-subset
-                   (non-inc-points-to-small-ϕ-closed-subsets
+        Q-Γ-sup = subset-of-small-closed-subset
+                   (def-points-to-small-closed-subsets
                     ((Γ ϕ i) sup-𝓘 , Γ-Γ-sup-below-Γ-sup))
         Q-is-c-closed : (U : 𝓟 {𝓥} B)
                       → (U ⊆ Q-Γ-sup)
@@ -770,8 +740,8 @@ smallness assumptions on the least closed subset 𝓘nd ϕ, the monotone operato
                       → b ≤ᴮ (⋁ 【 β , U 】)
                       → b ∈ Q-Γ-sup)
         Q-is-c-closed =
-         c-closed-of-small-ϕ-closed-subset
-          (non-inc-points-to-small-ϕ-closed-subsets
+         c-closed-of-small-closed-subset
+          (def-points-to-small-closed-subsets
            ((Γ ϕ i) sup-𝓘 , Γ-Γ-sup-below-Γ-sup))
         Q-is-ϕ-closed : (a' : ⟨ L ⟩)
                       → (b : B)
@@ -779,8 +749,8 @@ smallness assumptions on the least closed subset 𝓘nd ϕ, the monotone operato
                       → ((b' : B)
                       → (b' ≤ᴮ a' → b' ∈ Q-Γ-sup))
                       → b ∈ Q-Γ-sup
-        Q-is-ϕ-closed = ϕ-closed-of-small-ϕ-closed-subset
-                         (non-inc-points-to-small-ϕ-closed-subsets
+        Q-is-ϕ-closed = ϕ-closed-of-small-closed-subset
+                         (def-points-to-small-closed-subsets
                           ((Γ ϕ i) sup-𝓘 , Γ-Γ-sup-below-Γ-sup))
         𝓘nd-contained-Q-Γ-sup : 𝓘nd ⊆ Q-Γ-sup
         𝓘nd-contained-Q-Γ-sup =
@@ -808,15 +778,15 @@ smallness assumptions on the least closed subset 𝓘nd ϕ, the monotone operato
       Γa-below-a = transport (λ - → ((Γ ϕ i) a ≤ -) holds)
                              p (reflexivity-of L ((Γ ϕ i) a))
       P-a : 𝓟 {𝓥} B
-      P-a = subset-of-small-ϕ-closed-subset
-             (non-inc-points-to-small-ϕ-closed-subsets (a , Γa-below-a))
+      P-a = subset-of-small-closed-subset
+             (def-points-to-small-closed-subsets (a , Γa-below-a))
       P-is-c-closed : (U : 𝓟 {𝓥} B)
                     → (U ⊆ P-a)
                     → ((b : B)
                     → b ≤ᴮ (⋁ 【 β , U 】)
                     → b ∈ P-a)
-      P-is-c-closed = c-closed-of-small-ϕ-closed-subset
-                       (non-inc-points-to-small-ϕ-closed-subsets
+      P-is-c-closed = c-closed-of-small-closed-subset
+                       (def-points-to-small-closed-subsets
                         (a , Γa-below-a))
       P-is-ϕ-closed : (a' : ⟨ L ⟩)
                     → (b : B)
@@ -824,8 +794,8 @@ smallness assumptions on the least closed subset 𝓘nd ϕ, the monotone operato
                     → ((b' : B)
                     → (b' ≤ᴮ a' → b' ∈ P-a))
                     → b ∈ P-a
-      P-is-ϕ-closed = ϕ-closed-of-small-ϕ-closed-subset
-                       (non-inc-points-to-small-ϕ-closed-subsets
+      P-is-ϕ-closed = ϕ-closed-of-small-closed-subset
+                       (def-points-to-small-closed-subsets
                         (a , Γa-below-a))
       𝓘nd-contained-P-a : 𝓘nd ⊆ P-a
       𝓘nd-contained-P-a = 𝓘nd-is-initial P-a P-is-c-closed P-is-ϕ-closed
@@ -853,15 +823,15 @@ smallness assumptions on the least closed subset 𝓘nd ϕ, the monotone operato
         Γa-below-a = transport (λ - → ((Γ ϕ i) a ≤ -) holds)
                                p (reflexivity-of L ((Γ ϕ i) a))
         P-a : 𝓟 {𝓥} B
-        P-a = subset-of-small-ϕ-closed-subset
-               (non-inc-points-to-small-ϕ-closed-subsets (a , Γa-below-a))
+        P-a = subset-of-small-closed-subset
+               (def-points-to-small-closed-subsets (a , Γa-below-a))
         P-is-c-closed : (U : 𝓟 {𝓥} B)
                       → (U ⊆ P-a)
                       → ((b : B)
                       → b ≤ᴮ (⋁ 【 β , U 】)
                       → b ∈ P-a)
-        P-is-c-closed = c-closed-of-small-ϕ-closed-subset
-                         (non-inc-points-to-small-ϕ-closed-subsets
+        P-is-c-closed = c-closed-of-small-closed-subset
+                         (def-points-to-small-closed-subsets
                           (a , Γa-below-a))
         P-is-ϕ-closed : (a' : ⟨ L ⟩)
                       → (b : B)
@@ -869,8 +839,8 @@ smallness assumptions on the least closed subset 𝓘nd ϕ, the monotone operato
                       → ((b' : B)
                       → (b' ≤ᴮ a' → b' ∈ P-a))
                       → b ∈ P-a
-        P-is-ϕ-closed = ϕ-closed-of-small-ϕ-closed-subset
-                         (non-inc-points-to-small-ϕ-closed-subsets
+        P-is-ϕ-closed = ϕ-closed-of-small-closed-subset
+                         (def-points-to-small-closed-subsets
                           (a , Γa-below-a))
         𝓘nd-contained-P-a : 𝓘nd ⊆ P-a
         𝓘nd-contained-P-a = 𝓘nd-is-initial P-a P-is-c-closed P-is-ϕ-closed
@@ -1191,15 +1161,6 @@ names for the (dependent) closure properties.
                     → (b : B) → (b , Y i) ∈ R
                     → b ∈ S
 
-  Small-dep-c-closure : {𝓣 𝓣' : Universe} (S : 𝓟 {𝓣} B)
-                      → (P : (b : B) → 𝓟 {𝓣'} (b ∈ S))
-                      → (c : Small-c-closure S)
-                      → 𝓥 ⊔ 𝓣 ⊔ 𝓣'  ̇
-  Small-dep-c-closure S P c = ((i : I₁) → (f : (x : B) → (x ∈ Y i → x ∈ S))
-                            → ((x : B) → (y : x ∈ Y i) → f x y ∈ P x)
-                            → (b : B) → (g : (b , Y i) ∈ R)
-                            → c i f b g ∈ P b)
-
   Small-ϕ-closure : {𝓣 : Universe} (S : 𝓟 {𝓣} B) → 𝓥 ⊔ 𝓣  ̇
   Small-ϕ-closure S = (i : I₂)
                     → (m : α i → B)
@@ -1207,20 +1168,6 @@ names for the (dependent) closure properties.
                     → small-ϕ b (⋁ (α i , β ∘ m))
                     → ((b' : B) → (b' ≤ᴮ (⋁ (α i , β ∘ m)) → b' ∈ S))
                     → b ∈ S
-
-  Small-dep-ϕ-closure : {𝓣 𝓣' : Universe} (S : 𝓟 {𝓣} B)
-                      → (P : (b : B) → 𝓟 {𝓣'} (b ∈ S))
-                      → (q : Small-ϕ-closure S)
-                      → 𝓥 ⊔ 𝓣 ⊔ 𝓣'  ̇
-  Small-dep-ϕ-closure S P q = ((i : I₂)
-                            → (m : α i → B)
-                            → (b : B)
-                            → (p : small-ϕ b (⋁ (α i , β ∘ m)))
-                            → (f : (x : B) → (x ≤ᴮ (⋁ (α i , β ∘ m)) → x ∈ S))
-                            → ((x : B)
-                              → (o : x ≤ᴮ (⋁ (α i , β ∘ m)))
-                              → f x o ∈ P x)
-                            → q i m b p f ∈ P b)
 
   record inductively-generated-small-subset-exists : 𝓤ω where
    constructor
@@ -1235,10 +1182,10 @@ names for the (dependent) closure properties.
    field
     Small-c-cl : Small-c-closure Small-𝓘
     Small-ϕ-cl : Small-ϕ-closure Small-𝓘
-    Small-Ind-Induction : (P : (b : B) → 𝓟 {𝓣} (b ∈ Small-𝓘))
-                        → Small-dep-c-closure Small-𝓘 P Small-c-cl
-                        → Small-dep-ϕ-closure Small-𝓘 P Small-ϕ-cl
-                        → (b : B) → (i : b ∈ Small-𝓘) → i ∈ P b
+    Small-Ind-Initial : (P : 𝓟 {𝓣} B)
+                      → Small-c-closure P
+                      → Small-ϕ-closure P
+                      → Small-𝓘 ⊆ P
 
   module small-trunc-ind-def
           (ind-e : inductively-generated-small-subset-exists)
@@ -1255,31 +1202,11 @@ names for the (dependent) closure properties.
    Small-𝓘nd-is-ϕ-cl : Small-ϕ-closure Small-𝓘nd
    Small-𝓘nd-is-ϕ-cl = Small-ϕ-cl
 
-   Small-𝓘nd-Induction : (P : (b : B) → 𝓟 {𝓣} (b ∈ Small-𝓘nd))
-                       → Small-dep-c-closure Small-𝓘nd P Small-c-cl
-                       → Small-dep-ϕ-closure Small-𝓘nd P Small-ϕ-cl
-                       → (b : B) → (i : b ∈ Small-𝓘nd) → i ∈ P b
-   Small-𝓘nd-Induction = Small-Ind-Induction
-
-   Small-𝓘nd-Recursion : (P : 𝓟 {𝓣} B)
-                       → Small-dep-c-closure Small-𝓘nd (λ b → (λ _ → P b))
-                                             Small-c-cl
-                       → Small-dep-ϕ-closure Small-𝓘nd (λ b → (λ _ → P b))
-                                             Small-ϕ-cl
-                       → Small-𝓘nd ⊆ P
-   Small-𝓘nd-Recursion P = Small-𝓘nd-Induction (λ b → (λ _ → P b)) 
-
    Small-𝓘nd-Initial : (P : 𝓟 {𝓣} B)
                      → Small-c-closure P
                      → Small-ϕ-closure P
                      → Small-𝓘nd ⊆ P
-   Small-𝓘nd-Initial {𝓣} P IH₁ IH₂ b b-in-Small-𝓘nd =
-    Small-𝓘nd-Recursion P R' S' b b-in-Small-𝓘nd
-    where
-     R' : Small-dep-c-closure Small-𝓘nd (λ b → (λ _ → P b)) Small-c-cl
-     R' i C₁ C₂ b r = IH₁ i C₂ b r
-     S' : Small-dep-ϕ-closure Small-𝓘nd (λ b → (λ _ → P b)) Small-ϕ-cl
-     S' i m b s f g = IH₂ i m b s g
+   Small-𝓘nd-Initial = Small-Ind-Initial
 
 \end{code}
 
@@ -1441,8 +1368,6 @@ module _
 
 \end{code}
 
-Note to Tom: I geniunely don't know how to break the above line cleany.
-
 We first present the untruncated least fixed point theorem.
 
 \begin{code}
@@ -1600,26 +1525,26 @@ module _
            (is-supᴮ (f a))
      where
       ↓ᴮ-fa-equiv-↓ : (small-↓ᴮ (f a)) ≃ (ϕ ↓ a)
-      ↓ᴮ-fa-equiv-↓ = Σ-cong ↓ᴮ-fa-equiv-S'
+      ↓ᴮ-fa-equiv-↓ = Σ-cong ↓ᴮ-fa-equiv
        where
-        ↓ᴮ-fa-equiv-S' : (b : B)
-                       → b ≤ᴮ f a
-                       ≃ (Ǝ a' ꞉ ⟨ L ⟩ ,
-                          Lift 𝓤 ((Ǝ i ꞉ I , b ≤ᴮ f (γ i) × γ i ＝ˢ a') holds)
-                          × (a' ≤ a) holds) holds
-        ↓ᴮ-fa-equiv-S' b =
+        ↓ᴮ-fa-equiv : (b : B)
+                    → b ≤ᴮ f a
+                      ≃ (Ǝ a' ꞉ ⟨ L ⟩ ,
+                         Lift 𝓤 ((Ǝ i ꞉ I , b ≤ᴮ f (γ i) × γ i ＝ˢ a') holds)
+                         × (a' ≤ a) holds) holds
+        ↓ᴮ-fa-equiv b =
          logically-equivalent-props-are-equivalent
           ≤ᴮ-is-prop-valued
           (holds-is-prop (Ǝ a' ꞉ ⟨ L ⟩ ,
                          Lift 𝓤 ((Ǝ i ꞉ I , b ≤ᴮ f (γ i) × γ i ＝ˢ a') holds)
                          × (a' ≤ a) holds))
-          (↓ᴮ-fa-to-S' b)
-          (S-to-↓ᴮ-fa' b)
+          (↓ᴮ-fa-to b)
+          (to-↓ᴮ-fa b)
          where
-          ↓ᴮ-fa-to-S' : (b : B)
-                      → b ≤ᴮ f a
-                      → (Ǝ a' ꞉ ⟨ L ⟩ , (b , a') ∈ ϕ × (a' ≤ a) holds) holds
-          ↓ᴮ-fa-to-S' b = ∥∥-functor g ∘ ∥∥-functor u ∘ f-dense b a
+          ↓ᴮ-fa-to : (b : B)
+                   → b ≤ᴮ f a
+                   → (Ǝ a' ꞉ ⟨ L ⟩ , (b , a') ∈ ϕ × (a' ≤ a) holds) holds
+          ↓ᴮ-fa-to b = ∥∥-functor (g ∘ u) ∘ f-dense b a
            where
             u : Σ i ꞉ I , b ≤ᴮ f (γ i) × (γ i ≤ a) holds
               → Σ a' ꞉ ⟨ L ⟩ ,
@@ -1632,11 +1557,11 @@ module _
               (a' ,
                ⌜ ≃-Lift 𝓤 ((Ǝ i ꞉ I , b ≤ᴮ f (γ i) × γ i ＝ˢ a') holds) ⌝ e , r)
 
-          S-to-↓ᴮ-fa' : (b : B)
-                      → (Ǝ a' ꞉ ⟨ L ⟩ ,
-                         (b , a') ∈ ϕ × (a' ≤ a) holds) holds
-                      → b ≤ᴮ f a
-          S-to-↓ᴮ-fa' b = ∥∥-rec ≤ᴮ-is-prop-valued u ∘ ∥∥-functor g
+          to-↓ᴮ-fa : (b : B)
+                   → (Ǝ a' ꞉ ⟨ L ⟩ ,
+                      (b , a') ∈ ϕ × (a' ≤ a) holds) holds
+                   → b ≤ᴮ f a
+          to-↓ᴮ-fa b = ∥∥-rec ≤ᴮ-is-prop-valued u ∘ ∥∥-functor g
            where
             u' : (a' : ⟨ L ⟩)
                → Σ i ꞉ I , b ≤ᴮ f (γ i) × γ i ＝ˢ a'
@@ -1702,10 +1627,8 @@ module _
                                          → is-monotone-endomap L f
                                          → is-dense L β h f
                                          → has-least-fixed-point L f
-  Least-Fixed-Point-Theorem-from-Density
-   small-pres l-small f f-mono f-dense =
-    Untruncated-Least-Fixed-Point-Theorem
-     small-pres f f-mono
-      (dense-implies-bounded L β h l-small f f-mono f-dense)
+  Least-Fixed-Point-Theorem-from-Density small-pres l-small f f-mono f-dense =
+   Untruncated-Least-Fixed-Point-Theorem small-pres f f-mono
+    (dense-implies-bounded L β h l-small f f-mono f-dense)
 
 \end{code}
