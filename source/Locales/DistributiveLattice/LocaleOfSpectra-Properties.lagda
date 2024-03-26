@@ -178,8 +178,18 @@ These two definitions of `factorization` are equal.
  finite-join-of-ideals (x ∷ xs) =
   principal-ideal x ∨[ 𝒪 spec-L ] finite-join-of-ideals xs
 
- finite-join-is-least : (xs : List ∣ L ∣ᵈ) → {!!}
- finite-join-is-least = {!!}
+ finite-join-is-least : (xs : List ∣ L ∣ᵈ) (I : Ideal L)
+                      → ((x : ∣ L ∣ᵈ) → member x xs → (↓ x ⊆ᵢ I) holds)
+                      → (finite-join-of-ideals xs ⊆ᵢ I) holds
+ finite-join-is-least []       I φ = 𝟎-is-bottom (𝒪 spec-L) I
+ finite-join-is-least (x ∷ xs) I φ =
+  ∨[ 𝒪 spec-L ]-least {↓ x} {finite-join-of-ideals xs} {I} † ‡
+   where
+    † : (↓ x ⊆ᵢ I) holds
+    † = φ x in-head
+
+    ‡ : (finite-join-of-ideals xs ⊆ᵢ I) holds
+    ‡ = finite-join-is-least xs I (λ y μ → φ y (in-tail μ))
 
  finite-decomposition : (I : Ideal L)
                       → is-compact-open spec-L I holds
@@ -193,6 +203,9 @@ These two definitions of `factorization` are equal.
     c₀ : I ⊆ᵢ (⋁[ 𝒪 spec-L ] principal-ideals-of↑ I) holds
     c₀ = reflexivity+ (poset-of (𝒪 spec-L)) (ideal-equal-to-factorization↑ I)
 
+    c₁ : (⋁[ 𝒪 spec-L ] principal-ideals-of↑ I) ⊆ᵢ I holds
+    c₁ = reflexivity+ (poset-of (𝒪 spec-L)) (ideal-equal-to-factorization↑ I ⁻¹)
+
     δ : is-directed (𝒪 spec-L) (principal-ideals-of↑ I) holds
     δ = directify-is-directed (𝒪 spec-L) (principal-ideals-of I)
 
@@ -204,8 +217,14 @@ These two definitions of `factorization` are equal.
       xs : List ∣ L ∣ᵈ
       xs = map pr₁ ps
 
+      ya-lemma : (x : ∣ L ∣ᵈ) → member x xs → (x ∈ᵢ I) holds
+      ya-lemma x μ = {!ps!}
+
+      ♣ : (x : ∣ L ∣ᵈ) → member x xs → (↓ x ⊆ᵢ I) holds
+      ♣ x μ y p = {!!}
+
       † : finite-join-of-ideals xs ⊆ᵢ I holds
-      † x μ = {!!}
+      † = finite-join-is-least xs I ♣
 
       -- foo : principal-ideals-of↑ I [ ps ] ＝ directify (𝒪 spec-L) (principal-ideals-of I) [ ps ]
       -- foo = refl
