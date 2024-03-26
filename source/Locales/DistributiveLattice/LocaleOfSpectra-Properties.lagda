@@ -178,6 +178,9 @@ These two definitions of `factorization` are equal.
  finite-join-of-ideals (x ∷ xs) =
   principal-ideal x ∨[ 𝒪 spec-L ] finite-join-of-ideals xs
 
+ finite-join-is-least : (xs : List ∣ L ∣ᵈ) → {!!}
+ finite-join-is-least = {!!}
+
  finite-decomposition : (I : Ideal L)
                       → is-compact-open spec-L I holds
                       → ∃ xs ꞉ List ∣ L ∣ᵈ , I ＝ finite-join-of-ideals xs
@@ -204,12 +207,12 @@ These two definitions of `factorization` are equal.
       † : finite-join-of-ideals xs ⊆ᵢ I holds
       † x μ = {!!}
 
-      foo : principal-ideals-of↑ I [ ps ] ＝ directify (𝒪 spec-L) (principal-ideals-of I) [ ps ]
-      foo = refl
+      -- foo : principal-ideals-of↑ I [ ps ] ＝ directify (𝒪 spec-L) (principal-ideals-of I) [ ps ]
+      -- foo = refl
 
-      bar : directify (𝒪 spec-L) (principal-ideals-of I) [ ps ]
-            ＝ {!!}
-      bar = {!!}
+      -- bar : directify (𝒪 spec-L) (principal-ideals-of I) [ ps ]
+      --       ＝ {!!}
+      -- bar = {!!}
 
       ‡ : I ⊆ᵢ finite-join-of-ideals xs holds
       ‡ x μ = {!!}
