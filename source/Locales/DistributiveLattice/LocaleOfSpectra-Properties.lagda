@@ -122,6 +122,14 @@ implementing this `factorization`.
 
 \end{code}
 
+\begin{code}
+
+ factorization-is-directed : (I : Ideal L)
+                           → is-directed (𝒪 spec-L) (principal-ideals-of I) holds
+ factorization-is-directed = principal-ideals-of-ideal-form-a-directed-family
+
+\end{code}
+
 We also define an alternative version of `factorization` that closes the family
 of principal ideals of the given ideal under all finite joins, hence
 directifying it.
