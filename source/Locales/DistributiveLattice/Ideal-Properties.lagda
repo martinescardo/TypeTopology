@@ -23,7 +23,7 @@ open import Locales.DistributiveLattice.Definition fe pt
 open import Locales.DistributiveLattice.Ideal pt fe pe
 open import Locales.DistributiveLattice.LocaleOfSpectra fe pe pt
 open import Locales.DistributiveLattice.Properties fe pt
-open import Locales.Frame pt fe
+open import Locales.Frame pt fe hiding (is-directed)
 open import MLTT.List
 open import MLTT.Spartan
 open import Slice.Family
@@ -102,5 +102,31 @@ It is in fact the _least_ upper bound of this family.
   ⇒ (I ⊆ᵢ Iᵤ)) holds
  ideal-is-lowerbound-of-upperbounds-of-its-principal-ideals I Iᵤ φ x μ =
   φ (x , μ) x (≤-is-reflexive (poset-ofᵈ L) x)
+
+\end{code}
+
+Added on 2024-03-28.
+
+\begin{code}
+
+ open import Locales.DirectedFamily pt fe _⊆ᵢ_
+
+ principal-ideals-of-ideal-form-a-directed-family
+  : (I : Ideal L)
+  → is-directed (principal-ideals-of I) holds
+ principal-ideals-of-ideal-form-a-directed-family I =
+  ∣ 𝟎 , I-contains-𝟎 ∣ , ‡
+   where
+    open Ideal I hiding (I)
+    open PosetReasoning (poset-ofᵈ L)
+
+    ‡ : is-closed-under-binary-upper-bounds (principal-ideals-of I) holds
+    ‡ (x , μ₁) (y , μ₂) = ∣ (x ∨ y , I-is-closed-under-∨ x y μ₁ μ₂) , β , γ ∣
+     where
+      β : (↓ x ⊆ᵢ ↓ (x ∨ y)) holds
+      β z p = z ≤⟨ p ⟩ x ≤⟨ ∨-is-an-upper-bound₁ L x y ⟩ (x ∨ y) ■
+
+      γ : (↓ y ⊆ᵢ ↓ (x ∨ y)) holds
+      γ z p = z ≤⟨ p ⟩ y ≤⟨ ∨-is-an-upper-bound₂ L x y ⟩ (x ∨ y) ■
 
 \end{code}
