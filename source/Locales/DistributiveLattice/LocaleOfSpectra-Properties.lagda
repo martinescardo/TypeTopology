@@ -197,6 +197,43 @@ Added on 2024-03-27
 
 \end{code}
 
+Every ideal is a join of compact ideals, because principal ideals are compact.
+
+\begin{code}
+
+ basic-covering : Ideal L → Fam 𝓤 (Ideal L)
+ basic-covering I = (Σ x ꞉ ∣ L ∣ᵈ , (x ∈ᵢ I) holds) , λ { (x , _) → ↓ x }
+
+ basic-covering-consists-of-compact-opens
+  : (I : Ideal L)
+  → consists-of-compact-opens spec-L (basic-covering I) holds
+ basic-covering-consists-of-compact-opens I (x , μ) =
+  principal-ideal-is-compact x
+
+ equal-to-basic-covering : (I : Ideal L)
+                         → I ＝ ⋁[ 𝒪 spec-L ] (basic-covering I)
+ equal-to-basic-covering I = ideal-equal-to-factorization I
+
+\end{code}
+
+\begin{code}
+
+ ideal-has-directed-cover-of-compact-opens
+  : (I : Ideal L)
+  → has-a-directed-cover-of-compact-opens spec-L I holds
+ ideal-has-directed-cover-of-compact-opens I = ∣ basic-covering I , κ , δ , eq ∣
+  where
+   κ : consists-of-compact-opens spec-L (basic-covering I) holds
+   κ = basic-covering-consists-of-compact-opens I
+
+   δ : is-directed (𝒪 spec-L) (basic-covering I) holds
+   δ = principal-ideals-of-ideal-form-a-directed-family I
+
+   eq : I ＝ ⋁[ 𝒪 spec-L ] basic-covering I
+   eq = ideal-equal-to-factorization I
+
+\end{code}
+
 Added on 2024-03-13.
 
 \begin{code}
