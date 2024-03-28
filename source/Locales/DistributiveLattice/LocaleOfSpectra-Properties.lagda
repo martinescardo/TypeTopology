@@ -159,6 +159,38 @@ These two definitions of `factorization` are equal.
 
 \end{code}
 
+Added on 2024-03-27
+
+\begin{code}
+
+ principal-ideal-is-compact : (x : ∣ L ∣ᵈ) → is-compact-open spec-L (↓ x) holds
+ principal-ideal-is-compact x S δ p = ∥∥-rec ∃-is-prop γ †
+  where
+   † : x ∈ᵢ (⋁[ 𝒪 spec-L ] S) holds
+   † = p x (≤ᵈ-is-reflexive L x)
+
+   γ : Σ xs ꞉ List X , xs ◁ S × (x ＝ join-listᵈ L xs)
+     → ∃ i  ꞉ index S , ↓ x ⊆ᵢ (S [ i ]) holds
+   γ (xs , q , r′) = ∥∥-rec ∃-is-prop ‡ foo
+    where
+     foo : ∃ i ꞉ index S , join-listᵈ L xs ∈ᵢ (S [ i ]) holds
+     foo = finite-subcover S xs δ q
+
+     ‡ : Σ i ꞉ index S , join-listᵈ L xs ∈ᵢ (S [ i ]) holds
+       → ∃ i  ꞉ index S , ↓ x ⊆ᵢ (S [ i ]) holds
+     ‡ (i , r) = ∣ i , final ∣
+      where
+       open Ideal (S [ i ]) renaming (I-is-downward-closed to Sᵢ-is-downward-closed)
+       final : (principal-ideal x ⊆ᵢ (S [ i ])) holds
+       final y φ = Sᵢ-is-downward-closed y (join-listᵈ L xs) nts r
+        where
+         nts : (y ≤ᵈ[ L ] join-listᵈ L xs) holds
+         nts = transport (λ - → (y ≤ᵈ[ L ] -) holds) r′ φ
+
+\end{code}
+
+Added on 2024-03-13.
+
 \begin{code}
 
  an-important-lemma : (I : Ideal L) (xs : List ∣ L ∣ᵈ)
