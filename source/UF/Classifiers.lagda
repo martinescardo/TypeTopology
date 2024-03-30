@@ -123,7 +123,8 @@ module classifier-single-universe (𝓤 : Universe) where
 
  classification : is-univalent 𝓤
                 → funext 𝓤 (𝓤 ⁺)
-                → (Y : 𝓤 ̇ ) → 𝓤 / Y ≃ (Y → 𝓤 ̇ )
+                → (Y : 𝓤 ̇ )
+                → 𝓤 / Y ≃ (Y → 𝓤 ̇ )
  classification ua fe Y = χ Y , universes-are-classifiers ua fe Y
 
 module special-classifier-single-universe (𝓤 : Universe) where
@@ -302,7 +303,8 @@ Definition of when the given pair of universes is a classifier,
 
  classification : is-univalent (𝓤 ⊔ 𝓥)
                 → funext 𝓤 ((𝓤 ⊔ 𝓥)⁺)
-                → (Y : 𝓤 ̇ ) → (𝓤 ⊔ 𝓥) / Y ≃ (Y → 𝓤 ⊔ 𝓥 ̇ )
+                → (Y : 𝓤 ̇ )
+                → (𝓤 ⊔ 𝓥) / Y ≃ (Y → 𝓤 ⊔ 𝓥 ̇ )
  classification ua fe Y = χ Y , universes-are-classifiers ua fe Y
 
 \end{code}

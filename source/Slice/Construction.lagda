@@ -28,29 +28,34 @@ family (I , φ) = φ
 η : {X : 𝓤 ̇ } → X → 𝓕 X
 η x = 𝟙 , (λ _ → x)
 
-SIGMA : {X : 𝓤 ̇ } → 𝓕  X → 𝓣 ̇
+SIGMA : {X : 𝓤 ̇ } → 𝓕 X → 𝓣 ̇
 SIGMA (I , φ) = I
 
-PI : {X : 𝓤 ̇ } → 𝓕  X → 𝓣 ⊔ 𝓤 ̇
+PI : {X : 𝓤 ̇ } → 𝓕 X → 𝓣 ⊔ 𝓤 ̇
 PI {𝓤} {X} (I , φ) = Σ s ꞉ (X → I) , φ ∘ s ＝ id
 
 pullback : {A : 𝓤 ̇ } {B : 𝓥 ̇ } {C : 𝓦 ̇ }
-         → (A → C) → (B → C) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
+         → (A → C)
+         → (B → C)
+         → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
 pullback f g = Σ x ꞉ domain f , Σ y ꞉ domain g , f x ＝ g y
 
 ppr₁ : {A : 𝓤 ̇ } {B : 𝓥 ̇ } {C : 𝓦 ̇ }
        {f : A → C} {g : B → C}
-     → pullback f g → A
+     → pullback f g
+     → A
 ppr₁ (x , y , p) = x
 
 ppr₂ : {A : 𝓤 ̇ } {B : 𝓥 ̇ } {C : 𝓦 ̇ }
        {f : A → C} {g : B → C}
-     → pullback f g → B
+     → pullback f g
+     → B
 ppr₂ (x , y , p) = y
 
 ppr₃ : {A : 𝓤 ̇ } {B : 𝓥 ̇ } {C : 𝓦 ̇ }
        {f : A → C} {g : B → C}
-     → (z : pullback f g) → f (ppr₁ z) ＝ g (ppr₂ z)
+     → (z : pullback f g)
+     → f (ppr₁ z) ＝ g (ppr₂ z)
 ppr₃ (x , y , p) = p
 
 to-span : {A : 𝓤 ̇ } {B : 𝓥 ̇ } {C : 𝓦 ̇ }
@@ -89,8 +94,13 @@ pbf f (Y , γ) = pullback f γ , ppr₁
 ∑ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → (𝓕 X → 𝓕 Y)
 ∑ f (A , φ) = A , f ∘ φ
 
--- Using Proposition 2.3 of
--- https://ncatlab.org/nlab/show/locally+cartesian+closed+category
+\end{code}
+
+Using Proposition 2.3 of
+https://ncatlab.org/nlab/show/locally+cartesian+closed+category
+
+\begin{code}
+
 ∏ : {X : 𝓣 ̇ } {Y : 𝓣 ̇ } → (X → Y) → (𝓕 X → 𝓕 Y)
 ∏ {X} {Y} f (E , φ) = pullback k l , ppr₁
  where
@@ -116,7 +126,8 @@ open import UF.Univalence
 
 𝓕-equiv-particular : is-univalent 𝓣
                    → funext 𝓣 (𝓣 ⁺)
-                   → (X : 𝓣 ̇ ) → 𝓕 X ≃ (X → 𝓣 ̇ )
+                   → (X : 𝓣 ̇ )
+                   → 𝓕 X ≃ (X → 𝓣 ̇ )
 𝓕-equiv-particular = classifier-single-universe.classification 𝓣
 
 open import UF.Size
@@ -142,13 +153,18 @@ open import UF.EquivalenceExamples
   φψ (A , I , (f , e)) = p
    where
     h : (x : X) → fiber (pr₁ ∘ f) x ≃ A x
-    h x = (Σ i ꞉ I , pr₁ (f i) ＝ x) ≃⟨ Σ-change-of-variable (λ (σ : Σ A) → pr₁ σ ＝ x) f e ⟩
-          (Σ σ ꞉ Σ A , pr₁ σ ＝ x)   ≃⟨ pr₁-fiber-equiv x ⟩
+    h x = (Σ i ꞉ I , pr₁ (f i) ＝ x) ≃⟨ II ⟩
+          (Σ σ ꞉ Σ A , pr₁ σ ＝ x)   ≃⟨ III ⟩
           A x                       ■
+           where
+            II  = Σ-change-of-variable (λ (σ : Σ A) → pr₁ σ ＝ x) f e
+            III = pr₁-fiber-equiv x
 
     p : fiber (pr₁ ∘ f) , I , ≃-sym (total-fiber-is-domain (pr₁ ∘ f)) ＝ A , I , f , e
-    p = to-Σ-＝ (dfunext (fe 𝓤 ((𝓣 ⊔ 𝓤) ⁺)) (λ x → eqtoid (ua (𝓣 ⊔ 𝓤)) (fiber (pr₁ ∘ f) x) (A x) (h x)) ,
+    p = to-Σ-＝ (dfunext (fe 𝓤 ((𝓣 ⊔ 𝓤)⁺))
+                  (λ x → eqtoid (ua (𝓣 ⊔ 𝓤)) (fiber (pr₁ ∘ f) x) (A x) (h x)) ,
                 being-small-is-prop ua (Σ A) 𝓣 _ (I , f , e))
+
   ψφ : (l : 𝓕 X) → ψ (φ l) ＝ l
   ψφ (I , φ) = ap (λ - → I , -) (dfunext (fe 𝓣 𝓤) (λ i → refl))
 
