@@ -1,4 +1,4 @@
-Martin Escardo, 31 March 2024.
+Martin Escardo, 1st April 2024.
 
 Three versions of the Drinker Paradox, one of which is equivalent to
 the principle of excluded middle.
