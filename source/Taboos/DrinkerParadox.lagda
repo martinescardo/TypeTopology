@@ -67,7 +67,7 @@ DP-gives-DNE {𝓤} dp P P-is-prop ν = III
   III = ∥∥-rec P-is-prop II I
 
 DP-gives-EM : DP 𝓤 → EM 𝓤
-DP-gives-EM {𝓤} dp = DNE-gives-EM fe (DP-gives-DNE dp)
+DP-gives-EM dp = DNE-gives-EM fe (DP-gives-DNE dp)
 
 \end{code}
 
