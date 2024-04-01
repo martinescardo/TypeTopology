@@ -25,8 +25,8 @@ open import UF.SubtypeClassifier
 \end{code}
 
 The so-called Drinker Paradox says that in every non-empty pub X there
-is a person x₀ such that if x₀ drinks then every customer drinks, for
-any notion of drinking.
+is a person x₀ such that if x₀ drinks then everybody drinks, for any
+notion of drinking.
 
 \begin{code}
 
@@ -70,6 +70,9 @@ DP-gives-EM : DP 𝓤 → EM 𝓤
 DP-gives-EM dp = DNE-gives-EM fe (DP-gives-DNE dp)
 
 \end{code}
+
+As indicated in the above proof, it doesn't matter whet "drinks" is
+taken to be. Any drinking predicate will do.
 
 Conversely, excluded middle gives DP.
 
@@ -130,11 +133,11 @@ These two variations are weaker than the original version.
 
 \begin{code}
 
+pointed-DP-gives-inhabited-DP : inhabited-DP 𝓤 → pointed-DP 𝓤
+pointed-DP-gives-inhabited-DP idp X x₀ = idp X ∣ x₀ ∣
+
 DP-gives-pointed-DP : DP 𝓤 → pointed-DP 𝓤
 DP-gives-pointed-DP dp X x = dp X (λ (e : X → 𝟘) → e x)
-
-DP-gives-inhabited-DP : DP 𝓤 → inhabited-DP 𝓤
-DP-gives-inhabited-DP dp X x = dp X (λ (e : X → 𝟘) → ∥∥-rec 𝟘-is-prop e x)
 
 \end{code}
 
