@@ -76,12 +76,12 @@ Conversely, excluded middle gives DP.
 \begin{code}
 
 EM-gives-DP : EM 𝓤 → DP 𝓤
-EM-gives-DP em X X-is-non-empty drinks = IV
+EM-gives-DP em X X-is-non-empty drinks = V
  where
   X-is-inhabited : ∥ X ∥
   X-is-inhabited = non-empty-is-inhabited pt em X-is-non-empty
 
-  I : (∃ x ꞉ X , ¬ (drinks x holds)) + (Π x ꞉ X , (drinks x holds))
+  I : (∃ x ꞉ X , ¬ (drinks x holds)) + ((x : X) → (drinks x holds))
   I = ∃-not+Π pt em
        (λ (x : X) → drinks x holds)
        (λ (x : X) → holds-is-prop (drinks x))
@@ -92,14 +92,17 @@ EM-gives-DP em X X-is-non-empty drinks = IV
                           (λ (x₀-is-not-sober : drinks x₀ holds)
                              → 𝟘-elim (x₀-is-sober x₀-is-not-sober))
 
-  III : type-of I → ∃ x₀ ꞉ X , (drinks x₀ holds → (x : X) → drinks x holds)
-  III (inl e) = ∥∥-functor II e
-  III (inr a) = ∥∥-functor
-                 (λ (x₀ : X) → x₀ , λ (_ : drinks x₀ holds) → a)
-                 X-is-inhabited
+  III : ((x : X) → (drinks x holds))
+      → X
+      → Σ x₀ ꞉ X , (drinks x₀ holds → (x : X) → drinks x holds)
+  III a x₀ = x₀ , λ (_ : drinks x₀ holds) → a
 
-  IV : ∃ x₀ ꞉ X , (drinks x₀ holds → (x : X) → drinks x holds)
-  IV = III I
+  IV : type-of I → ∃ x₀ ꞉ X , (drinks x₀ holds → (x : X) → drinks x holds)
+  IV (inl e) = ∥∥-functor II e
+  IV (inr a) = ∥∥-functor (III a) X-is-inhabited
+
+  V : ∃ x₀ ꞉ X , (drinks x₀ holds → (x : X) → drinks x holds)
+  V = IV I
 
 \end{code}
 
@@ -138,3 +141,8 @@ DP-gives-inhabited-DP dp X x = dp X (λ (e : X → 𝟘) → ∥∥-rec 𝟘-is-
 I don't know whether excluded middle can be proved from any of these
 two weaker variations, or, equivalently, whether each of these two
 variations imply the original.
+
+There are more variations. For example, we can consider the particular
+case where the drinking predicate is decidable, or we can replace ∃ by Σ.
+These two modifications together are indeed one of our definitions of
+compactness in TypeTopology.CompactTypes.
