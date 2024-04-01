@@ -12,7 +12,7 @@ open import MLTT.Plus-Properties using (+-commutative)
 open import MLTT.Spartan
 open import UF.Base
 open import UF.DiscreteAndSeparated
-open import UF.ExcludedMiddle
+open import UF.ClassicalLogic
 open import UF.FunExt
 open import UF.Hedberg
 open import UF.PropTrunc

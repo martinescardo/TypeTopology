@@ -165,7 +165,7 @@ is if excluded middle holds.
 
 \begin{code}
 
- open import UF.ExcludedMiddle
+ open import UF.ClassicalLogic
  open import Ordinals.SupSum ua
 
  comparison₀₃ : Excluded-Middle → (b : B) → ⟦ b ⟧₀ ⊴ [ ⟦ b ⟧₃ ]

@@ -25,7 +25,7 @@ open import UF.Choice
 open import UF.Embeddings
 open import UF.Equiv
 open import UF.EquivalenceExamples
-open import UF.ExcludedMiddle
+open import UF.ClassicalLogic
 open import UF.FunExt
 open import UF.Logic
 open import UF.Powerset

@@ -37,7 +37,7 @@ open import MLTT.Spartan
 open import UF.DiscreteAndSeparated
 open import UF.Base
 open import UF.Equiv
-open import UF.ExcludedMiddle
+open import UF.ClassicalLogic
 open import UF.FunExt
 open import UF.Hedberg
 open import UF.LeftCancellable

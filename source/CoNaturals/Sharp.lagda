@@ -180,7 +180,7 @@ module _ (pt : propositional-truncations-exist) where
 
  open PropositionalTruncation pt
  open import UF.ImageAndSurjection pt
- open import UF.ExcludedMiddle
+ open import UF.ClassicalLogic
 
  sharp-is-surjection-gives-EM : is-surjection sharp → EM 𝓤₀
  sharp-is-surjection-gives-EM sharp-is-surjection P P-is-prop =

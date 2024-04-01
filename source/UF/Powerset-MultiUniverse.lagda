@@ -155,7 +155,7 @@ module inhabited-subsets (pt : propositional-truncations-exist) where
  infix  40 _∈⁺_
  infix  40 _∉⁺_
 
- open import UF.ExcludedMiddle
+ open import UF.ClassicalLogic
 
  non-empty-subsets-are-inhabited : Excluded-Middle
                                  → {X : 𝓤 ̇ } (B : 𝓟 {𝓥} X)

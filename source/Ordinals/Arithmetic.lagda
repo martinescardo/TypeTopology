@@ -160,7 +160,7 @@ cotransitivity are implied by excluded middle.
 
 \begin{code}
 
-open import UF.ExcludedMiddle
+open import UF.ClassicalLogic
 
 module sums-assuming-EM (em : EM 𝓤) where
 

@@ -18,7 +18,7 @@ module Taboos.DrinkerParadox
 open PropositionalTruncation pt
 
 open import MLTT.Spartan
-open import UF.ExcludedMiddle
+open import UF.ClassicalLogic
 open import UF.Subsingletons
 open import UF.SubtypeClassifier
 

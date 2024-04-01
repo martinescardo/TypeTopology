@@ -14,7 +14,7 @@ open import UF.Base
 open import UF.Embeddings hiding (⌊_⌋)
 open import UF.Equiv
 open import UF.EquivalenceExamples
-open import UF.ExcludedMiddle
+open import UF.ClassicalLogic
 open import UF.FunExt
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt

@@ -75,7 +75,7 @@ Notice that weak excluded middle implies WLPO.
 
 \begin{code}
 
-open import UF.ExcludedMiddle
+open import UF.ClassicalLogic
 
 WEM-gives-WLPO : funext₀ → WEM 𝓤₀ → WLPO
 WEM-gives-WLPO fe wem u = Cases (wem (u ＝ ∞) (ℕ∞-is-set fe))

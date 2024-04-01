@@ -1,10 +1,10 @@
-n   TypeTopology
+   TypeTopology
 
    Various new theorems in
    constructive univalent mathematics
    written in Agda
 
-   Tested with Agda 2.6.4.1
+   Tested with Agda 2.6.4.3
 
    Martin Escardo and collaborators, 2010--2024--∞
    Continuously evolving.

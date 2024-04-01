@@ -271,7 +271,7 @@ already implies excluded middle:
 
 \begin{code}
 
-open import UF.ExcludedMiddle
+open import UF.ClassicalLogic
 
 Ω-separated-gives-DNE : propext 𝓤
                       → funext 𝓤 𝓤

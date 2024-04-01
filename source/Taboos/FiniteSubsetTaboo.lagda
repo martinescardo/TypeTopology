@@ -24,7 +24,7 @@ open import MLTT.Spartan
 open import Naturals.Order
 open import Notation.Order
 open import UF.DiscreteAndSeparated
-open import UF.ExcludedMiddle
+open import UF.ClassicalLogic
 open import UF.ImageAndSurjection pt
 open import UF.Logic
 open import UF.Powerset
