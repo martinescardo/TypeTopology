@@ -148,10 +148,14 @@ Two more equivalent formulations of LLPO.
 \begin{code}
 
 untruncated-ℕ∞-LLPO : 𝓤₀ ̇
-untruncated-ℕ∞-LLPO = (u v : ℕ∞) → ¬ (is-finite u × is-finite v) → (u ＝ ∞) + (v ＝ ∞)
+untruncated-ℕ∞-LLPO = (u v : ℕ∞)
+                    → ¬ (is-finite u × is-finite v)
+                    → (u ＝ ∞) + (v ＝ ∞)
 
 untruncated-ℕ∞'-LLPO : 𝓤₀ ̇
-untruncated-ℕ∞'-LLPO = (u v : ℕ∞') → ¬ (is-finite' u × is-finite' v) → (u ＝ ∞') + (v ＝ ∞')
+untruncated-ℕ∞'-LLPO = (u v : ℕ∞')
+                     → ¬ (is-finite' u × is-finite' v)
+                     → (u ＝ ∞') + (v ＝ ∞')
 
 untruncated-LLPO'-gives-untruncated-ℕ∞'-LLPO : funext₀
                                              → untruncated-LLPO'
@@ -364,20 +368,23 @@ module _ (pt : propositional-truncations-exist) where
  LLPO' = (β γ : ℕ → 𝟚)
        → is-prop (T β)
        → is-prop (T γ)
-       → ¬ (T β × T γ) → ¬ T β + ¬ T γ
+       → ¬ (T β × T γ) → ¬ T β ∨ ¬ T γ
 
  ℕ∞-LLPO : 𝓤₀ ̇
- ℕ∞-LLPO = (u v : ℕ∞) → ¬ (is-finite u × is-finite v) → (u ＝ ∞) + (v ＝ ∞)
+ ℕ∞-LLPO = (u v : ℕ∞) → ¬ (is-finite u × is-finite v) → (u ＝ ∞) ∨ (v ＝ ∞)
+
+ ℕ∞-LLPO' : 𝓤₀ ̇
+ ℕ∞-LLPO' = (u v : ℕ∞) → ¬ ((u ≠ ∞) × (v ≠ ∞)) → (u ＝ ∞) ∨ (v ＝ ∞)
 
  ℕ∞'-LLPO : 𝓤₀ ̇
- ℕ∞'-LLPO = (u v : ℕ∞') → ¬ (is-finite' u × is-finite' v) → (u ＝ ∞') + (v ＝ ∞')
+ ℕ∞'-LLPO = (u v : ℕ∞') → ¬ (is-finite' u × is-finite' v) → (u ＝ ∞') ∨ (v ＝ ∞')
 
  untruncated-LLPO-gives-LLPO : untruncated-LLPO → LLPO
  untruncated-LLPO-gives-LLPO ullpo α i = ∣ ullpo α i ∣
 
 \end{code}
 
-TODO. Show that ℕ∞-LLPO and LLPO are equivalent.
+TODO. Show that all these variants are equivalent.
 
 LLPO doesn't imply WLPO (there are published refereces - find and
 include them here). One example seems to Johnstone's topological
