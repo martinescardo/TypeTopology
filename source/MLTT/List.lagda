@@ -332,3 +332,67 @@ left-concatenation-preserves-membership x xs (y ∷ ys) p = †
   ‡ = inr
 
 \end{code}
+
+Added 2nd April 2024 by Martin Escardo and Paulo Oliva. Ingredients
+for the list monad.
+
+\begin{code}
+
+map-++ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+         (f : X → Y)
+         (xs ys : List X)
+       → map f (xs ++ ys) ＝ map f xs ++ map f ys
+map-++ f [] ys       = refl
+map-++ f (x ∷ xs) ys = ap (f x ∷_) (map-++ f xs ys)
+
+concat : {X : 𝓤 ̇ } → List (List X) → List X
+concat []         = []
+concat (xs ∷ xss) = xs ++ concat xss
+
+concat-singletons : {X : 𝓤 ̇ }
+                    (xs : List X) → concat (map [_] xs) ＝ xs
+concat-singletons []       = refl
+concat-singletons (x ∷ xs) = ap (x ∷_) (concat-singletons xs)
+
+concat-++ : {X : 𝓤 ̇ }
+            (xss yss : List (List X))
+          → concat (xss ++ yss) ＝ concat xss ++ concat yss
+concat-++ [] yss = refl
+concat-++ (xs ∷ xss) yss =
+ concat (xs ∷ xss ++ yss)         ＝⟨ refl ⟩
+ xs ++ concat (xss ++ yss)        ＝⟨ I ⟩
+ xs ++ (concat xss ++ concat yss) ＝⟨ II ⟩
+ (xs ++ concat xss) ++ concat yss ＝⟨ refl ⟩
+ concat (xs ∷ xss) ++ concat yss  ∎
+  where
+   I  = ap (xs ++_) (concat-++ xss yss)
+   II = (++-assoc xs (concat xss) (concat yss))⁻¹
+
+\end{code}
+
+The following are the Kleisli extension operation for the list monad and its associativity law.
+
+\begin{code}
+
+ext : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+    → (X → List Y) → (List X → List Y)
+ext f xs = concat (map f xs)
+
+ext-assoc : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+            (g : Y → List Z) (f : X → List Y)
+            (xs : List X)
+          → ext (λ x → ext g (f x)) xs ＝ ext g (ext f xs)
+ext-assoc g f []       = refl
+ext-assoc g f (x ∷ xs) =
+ ext (λ - → ext g (f -)) (x ∷ xs)          ＝⟨ refl ⟩
+ ext g (f x) ++ ext (λ - → ext g (f -)) xs ＝⟨ I ⟩
+ ext g (f x) ++ ext g (ext f xs)           ＝⟨ II ⟩
+ concat (map g (f x) ++ map g (ext f xs))  ＝⟨ III ⟩
+ ext g (f x ++ ext f xs)                   ＝⟨ refl ⟩
+ ext g (ext f (x ∷ xs))                    ∎
+  where
+   I   = ap (ext g (f x) ++_) (ext-assoc g f xs)
+   II  = (concat-++ (map g (f x)) (map g (ext f xs)))⁻¹
+   III = (ap concat (map-++ g (f x) (ext f xs)))⁻¹
+
+\end{code}
