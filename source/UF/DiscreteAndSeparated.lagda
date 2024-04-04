@@ -562,6 +562,9 @@ discrete-inl : {X : 𝓤 ̇ } (d : is-discrete X) (x y : X) (r : x ＝ y)
              → d x y ＝ inl r
 discrete-inl d x = isolated-inl x (d x)
 
+discrete-inl-refl : {X : 𝓤 ̇ } (d : is-discrete X) (x : X) → d x x ＝ inl refl
+discrete-inl-refl {𝓤} {X} d x = discrete-inl d x x refl
+
 discrete-inr : funext 𝓤 𝓤₀
              → {X : 𝓤 ̇ }
                (d : is-discrete X)
