@@ -83,7 +83,7 @@ https://github.com/agda/agda/issues/6815
 
 \begin{code}
 
-≤-induction : (P : (m n : ℕ) (l : m ≤ n) → 𝓤 ̇ )
+≤-induction : (P : (m n : ℕ) (l : m ≤ℕ n) → 𝓤 ̇ )
             → ((n : ℕ) → P 0 n (zero-least n))
             → ((m n : ℕ) (l : m ≤ n)
                     → P m n l
