@@ -10,7 +10,7 @@ equal, in a discrete type. This is because we want to disable K.
 We use function extensionality to show that any two proofs of negation
 of equality are themselves equal.
 
-Challenge. Re-define `remove-swap` below
+*Challenge* Re-define `remove-swap` below
 
  * without Hedberg,
 
