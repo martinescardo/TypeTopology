@@ -110,8 +110,8 @@ remove-swap x y (z ∷ zs) = h (d x z) (d y z)
    remove x (remove y (y ∷ zs)) ＝⟨ ap (remove x) (remove-same y zs) ⟩
    remove x (remove y zs)       ＝⟨ IH ⟩
    remove y (remove x zs)       ＝⟨ (remove-same y (remove x zs))⁻¹ ⟩
-   remove y (y ∷ remove x zs)   ＝⟨ ap (remove y) (remove-≠ x z zs u)⁻¹ ⟩
-   remove y (remove x (z ∷ zs)) ∎
+   remove y (y ∷ remove x zs)   ＝⟨ ap (remove y) (remove-≠ x y zs u)⁻¹ ⟩
+   remove y (remove x (y ∷ zs)) ∎
   h (inr u) (inr v) =
    remove x (remove y (z ∷ zs)) ＝⟨ ap (remove x) (remove-≠ y z zs v) ⟩
    remove x (z ∷ remove y zs)   ＝⟨ remove-≠ x z (remove y zs) u ⟩
