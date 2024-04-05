@@ -49,9 +49,10 @@ define `remove`.
 
 \begin{code}
 
-ccons : ({x} y : X) → is-decidable (x ＝ y) → List X → List X
-ccons y (inl e) ys = ys
-ccons y (inr u) ys = y ∷ ys
+abstract
+ ccons : ({x} y : X) → is-decidable (x ＝ y) → List X → List X
+ ccons y (inl e) ys = ys
+ ccons y (inr u) ys = y ∷ ys
 
 remove : X → List X → List X
 remove x []       = []
@@ -66,11 +67,12 @@ for discussion and more verbose proofs that are much clearer.)
 
 module _ (x y : X) (zs : List X) where
 
- remove-＝ : x ＝ y → remove x (y ∷ zs) ＝ remove x zs
- remove-＝ e = ap (λ - → ccons y - (remove x zs)) (discrete-inl d x y e)
+ abstract
+  remove-＝ : x ＝ y → remove x (y ∷ zs) ＝ remove x zs
+  remove-＝ e = ap (λ - → ccons y - (remove x zs)) (discrete-inl d x y e)
 
- remove-≠ : x ≠ y → remove x (y ∷ zs) ＝ y ∷ remove x zs
- remove-≠ u = ap (λ - → ccons y - (remove x zs)) (discrete-inr fe d x y u)
+  remove-≠ : x ≠ y → remove x (y ∷ zs) ＝ y ∷ remove x zs
+  remove-≠ u = ap (λ - → ccons y - (remove x zs)) (discrete-inr fe d x y u)
 
 \end{code}
 
@@ -90,7 +92,7 @@ that the helper function h plays the role of `with`.
 
 remove-swap : (x y : X) (zs : List X)
             → remove x (remove y zs) ＝ remove y (remove x zs)
-remove-swap x y [] = refl
+remove-swap x y []       = refl
 remove-swap x y (z ∷ zs) = h (d x z) (d y z)
  where
   IH : remove x (remove y zs) ＝ remove y (remove x zs)
@@ -136,24 +138,25 @@ we only use function extensionality for empty-type-valued functions!
 
 module _ (x y : X) (zs : List X) where
 
- verbose-remove-＝ : x ＝ y → remove x (y ∷ zs) ＝ remove x zs
- verbose-remove-＝ e =
-  remove x (y ∷ zs)             ＝⟨ refl ⟩
-  ccons y (d x y) (remove x zs) ＝⟨ ap (λ - → ccons y - (remove x zs)) I ⟩
-  ccons y (inl e) (remove x zs) ＝⟨ refl ⟩
-  remove x zs                   ∎
-   where
-    I : d x y ＝ inl e
-    I = discrete-inl d x y e
+ abstract
+  verbose-remove-＝ : x ＝ y → remove x (y ∷ zs) ＝ remove x zs
+  verbose-remove-＝ e =
+   remove x (y ∷ zs)             ＝⟨ refl ⟩
+   ccons y (d x y) (remove x zs) ＝⟨ ap (λ - → ccons y - (remove x zs)) I ⟩
+   ccons y (inl e) (remove x zs) ＝⟨ refl ⟩
+   remove x zs                   ∎
+    where
+     I : d x y ＝ inl e
+     I = discrete-inl d x y e
 
- verbose-remove-≠ : x ≠ y → remove x (y ∷ zs) ＝ y ∷ remove x zs
- verbose-remove-≠ u =
-  remove x (y ∷ zs)             ＝⟨ refl ⟩
-  ccons y (d x y) (remove x zs) ＝⟨ ap (λ - → ccons y - (remove x zs)) I ⟩
-  ccons y (inr u) (remove x zs) ＝⟨ refl ⟩
-  y ∷ remove x zs               ∎
-   where
-    I : d x y ＝ inr u
-    I = discrete-inr fe d x y u
+  verbose-remove-≠ : x ≠ y → remove x (y ∷ zs) ＝ y ∷ remove x zs
+  verbose-remove-≠ u =
+   remove x (y ∷ zs)             ＝⟨ refl ⟩
+   ccons y (d x y) (remove x zs) ＝⟨ ap (λ - → ccons y - (remove x zs)) I ⟩
+   ccons y (inr u) (remove x zs) ＝⟨ refl ⟩
+   y ∷ remove x zs               ∎
+    where
+     I : d x y ＝ inr u
+     I = discrete-inr fe d x y u
 
 \end{code}
