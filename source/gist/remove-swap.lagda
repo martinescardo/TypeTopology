@@ -91,33 +91,33 @@ that the helper function h plays the role of `with`.
 remove-swap : (x y : X) (zs : List X)
             → remove x (remove y zs) ＝ remove y (remove x zs)
 remove-swap x y [] = refl
-remove-swap x y (z ∷ zs) = h (d y z) (d x z)
+remove-swap x y (z ∷ zs) = h (d x z) (d y z)
  where
   IH : remove x (remove y zs) ＝ remove y (remove x zs)
   IH = remove-swap x y zs
 
-  h : is-decidable (y ＝ z)
-    → is-decidable (x ＝ z)
+  h : is-decidable (x ＝ z)
+    → is-decidable (y ＝ z)
     → remove x (remove y (z ∷ zs)) ＝ remove y (remove x (z ∷ zs))
   h (inl refl) (inl refl) = refl
   h (inl refl) (inr v) =
-   remove x (remove y (y ∷ zs)) ＝⟨ ap (remove x) (remove-same y zs) ⟩
-   remove x (remove y zs)       ＝⟨ IH ⟩
-   remove y (remove x zs)       ＝⟨ (remove-same y (remove x zs))⁻¹ ⟩
-   remove y (y ∷ remove x zs)   ＝⟨ ap (remove y) (remove-≠ x z zs v)⁻¹ ⟩
-   remove y (remove x (z ∷ zs)) ∎
-  h (inr u) (inl refl) =
-   remove x (remove y (x ∷ zs)) ＝⟨ ap (remove x) (remove-≠ y x zs u) ⟩
+   remove x (remove y (x ∷ zs)) ＝⟨ ap (remove x) (remove-≠ y x zs v) ⟩
    remove x (x ∷ remove y zs)   ＝⟨ remove-same x (remove y zs) ⟩
    remove x (remove y zs)       ＝⟨ IH ⟩
    remove y (remove x zs)       ＝⟨ ap (remove y) ((remove-same x zs)⁻¹) ⟩
    remove y (remove x (x ∷ zs)) ∎
+  h (inr u) (inl refl) =
+   remove x (remove y (y ∷ zs)) ＝⟨ ap (remove x) (remove-same y zs) ⟩
+   remove x (remove y zs)       ＝⟨ IH ⟩
+   remove y (remove x zs)       ＝⟨ (remove-same y (remove x zs))⁻¹ ⟩
+   remove y (y ∷ remove x zs)   ＝⟨ ap (remove y) (remove-≠ x z zs u)⁻¹ ⟩
+   remove y (remove x (z ∷ zs)) ∎
   h (inr u) (inr v) =
-   remove x (remove y (z ∷ zs)) ＝⟨ ap (remove x) (remove-≠ y z zs u) ⟩
-   remove x (z ∷ remove y zs)   ＝⟨ remove-≠ x z (remove y zs) v ⟩
+   remove x (remove y (z ∷ zs)) ＝⟨ ap (remove x) (remove-≠ y z zs v) ⟩
+   remove x (z ∷ remove y zs)   ＝⟨ remove-≠ x z (remove y zs) u ⟩
    z ∷ remove x (remove y zs)   ＝⟨ ap (z ∷_) IH ⟩
-   z ∷ remove y (remove x zs)   ＝⟨ (remove-≠ y z (remove x zs) u)⁻¹ ⟩
-   remove y (z ∷ remove x zs)   ＝⟨ (ap (remove y) (remove-≠ x z zs v))⁻¹ ⟩
+   z ∷ remove y (remove x zs)   ＝⟨ (remove-≠ y z (remove x zs) v)⁻¹ ⟩
+   remove y (z ∷ remove x zs)   ＝⟨ (ap (remove y) (remove-≠ x z zs u))⁻¹ ⟩
    remove y (remove x (z ∷ zs)) ∎
 
 \end{code}
