@@ -49,13 +49,13 @@ define `remove`.
 
 \begin{code}
 
-ccons : {x y : X} → is-decidable (x ＝ y) → List X → List X
-ccons {x} {y} (inl e) ys = ys
-ccons {x} {y} (inr u) ys = y ∷ ys
+ccons : ({x} y : X) → is-decidable (x ＝ y) → List X → List X
+ccons y (inl e) ys = ys
+ccons y (inr u) ys = y ∷ ys
 
 remove : X → List X → List X
 remove x []       = []
-remove x (y ∷ ys) = ccons (d x y) (remove x ys)
+remove x (y ∷ ys) = ccons y (d x y) (remove x ys)
 
 \end{code}
 
@@ -67,10 +67,10 @@ for discussion and more verbose proofs that are much clearer.)
 module _ (x y : X) (zs : List X) where
 
  remove-＝ : x ＝ y → remove x (y ∷ zs) ＝ remove x zs
- remove-＝ e = ap (λ - → ccons - (remove x zs)) (discrete-inl d x y e)
+ remove-＝ e = ap (λ - → ccons y - (remove x zs)) (discrete-inl d x y e)
 
  remove-≠ : x ≠ y → remove x (y ∷ zs) ＝ y ∷ remove x zs
- remove-≠ u = ap (λ - → ccons - (remove x zs)) (discrete-inr fe d x y u)
+ remove-≠ u = ap (λ - → ccons y - (remove x zs)) (discrete-inr fe d x y u)
 
 \end{code}
 
@@ -139,8 +139,8 @@ module _ (x y : X) (zs : List X) where
  verbose-remove-＝ : x ＝ y → remove x (y ∷ zs) ＝ remove x zs
  verbose-remove-＝ e =
   remove x (y ∷ zs)           ＝⟨ refl ⟩
-  ccons (d x y) (remove x zs) ＝⟨ ap (λ - → ccons - (remove x zs)) I ⟩
-  ccons (inl e) (remove x zs) ＝⟨ refl ⟩
+  ccons y (d x y) (remove x zs) ＝⟨ ap (λ - → ccons y - (remove x zs)) I ⟩
+  ccons y (inl e) (remove x zs) ＝⟨ refl ⟩
   remove x zs                 ∎
    where
     I : d x y ＝ inl e
@@ -148,10 +148,10 @@ module _ (x y : X) (zs : List X) where
 
  verbose-remove-≠ : x ≠ y → remove x (y ∷ zs) ＝ y ∷ remove x zs
  verbose-remove-≠ u =
-  remove x (y ∷ zs)           ＝⟨ refl ⟩
-  ccons (d x y) (remove x zs) ＝⟨ ap (λ - → ccons - (remove x zs)) I ⟩
-  ccons (inr u) (remove x zs) ＝⟨ refl ⟩
-  y ∷ remove x zs             ∎
+  remove x (y ∷ zs)             ＝⟨ refl ⟩
+  ccons y (d x y) (remove x zs) ＝⟨ ap (λ - → ccons y - (remove x zs)) I ⟩
+  ccons y (inr u) (remove x zs) ＝⟨ refl ⟩
+  y ∷ remove x zs               ∎
    where
     I : d x y ＝ inr u
     I = discrete-inr fe d x y u

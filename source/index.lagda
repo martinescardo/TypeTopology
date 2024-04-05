@@ -152,13 +152,13 @@ import Modal.index
 import Naturals.index
 import Notation.index
 import NotionsOfDecidability.index
-import Ordinals.index
-import PathSequences.index
-import PCF.index
 import OrderedTypes.index
+import Ordinals.index
+import PCF.index
+import PathSequences.index
 import Quotient.index
-import Relations.index
 import Rationals.index
+import Relations.index
 import Slice.index
 import TWA.index
 import Taboos.index
