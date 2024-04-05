@@ -44,7 +44,7 @@ open import NotionsOfDecidability.Decidable
 
 \end{code}
 
-We first define a conditional cons operation, and then we use it to
+We first define a conditional `cons` operation, and then we use it to
 define `remove`.
 
 \begin{code}
