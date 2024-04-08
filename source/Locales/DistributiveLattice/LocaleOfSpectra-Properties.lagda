@@ -2,7 +2,7 @@
 title:          Properties of the locale of spectra
 author:         Ayberk Tosun
 date-started:   2024-03-01
-dates-updated:  [2024-04-08]
+dates-updated:  [2024-03-27, 2024-04-08]
 --------------------------------------------------------------------------------
 
 We define the locale of spectra over a distributive lattice `L`, the defining
@@ -15,11 +15,13 @@ frame of which is the frame of ideals over `L`.
 open import UF.PropTrunc
 open import UF.FunExt
 open import UF.Subsingletons
+open import UF.Size
 
 module Locales.DistributiveLattice.LocaleOfSpectra-Properties
         (fe : Fun-Ext)
         (pe : Prop-Ext)
         (pt : propositional-truncations-exist)
+        (sr : Set-Replacement pt)
        where
 
 open import Locales.Compactness pt fe
@@ -29,11 +31,13 @@ open import Locales.DistributiveLattice.Ideal-Properties pt fe pe
 open import Locales.DistributiveLattice.LocaleOfSpectra fe pe pt
 open import Locales.DistributiveLattice.Properties fe pt
 open import Locales.Frame pt fe
+open import Locales.SmallBasis pt fe sr
 open import Locales.Spectrality.SpectralLocale pt fe
 open import MLTT.Fin hiding (𝟎; 𝟏)
 open import MLTT.List hiding ([_])
 open import MLTT.Spartan
 open import Slice.Family
+open import UF.Equiv hiding (_■)
 open import UF.Logic
 open import UF.Powerset-MultiUniverse
 open import UF.SubtypeClassifier
@@ -90,25 +94,17 @@ The locale of spectra of is a compact locale.
 
 Added on 2024-03-13.
 
+Every ideal `I` is the join of its principal ideals. We call this join the
+_factorization_ of `I` into its join of principal ideals_, and we denote
+function implementing this `factorization`.
+
 \begin{code}
 
  open PrincipalIdeals L
  open Joins _⊆ᵢ_
 
-\end{code}
-
-Every ideal `I` is the join of its principal ideals. We call this join the
-_factorization of `I` into its join of principal ideals_, and we denote function
-implementing this `factorization`.
-
-\begin{code}
-
  factorization : Ideal L → Ideal L
  factorization I = ⋁[ 𝒪 spec-L ] principal-ideals-of I
-
-\end{code}
-
-\begin{code}
 
  ideal-equal-to-factorization : (I : Ideal L) → I ＝ factorization I
  ideal-equal-to-factorization I =
@@ -123,6 +119,8 @@ implementing this `factorization`.
 
 \end{code}
 
+The family of principal ideals in an ideal is a directed family.
+
 \begin{code}
 
  factorization-is-directed : (I : Ideal L)
@@ -131,147 +129,68 @@ implementing this `factorization`.
 
 \end{code}
 
-We also define an alternative version of `factorization` that closes the family
-of principal ideals of the given ideal under all finite joins, hence
-directifying it.
-
-\begin{code}
-
- principal-ideals-of↑ : Ideal L → Fam 𝓤 (Ideal L)
- principal-ideals-of↑ I = directify (𝒪 spec-L) (principal-ideals-of I)
-
- factorization↑ : Ideal L → Ideal L
- factorization↑ I = ⋁[ 𝒪 spec-L ] principal-ideals-of↑ I
-
-\end{code}
-
-These two definitions of `factorization` are equal.
-
-\begin{code}
-
- factorization-equal-to-factorization↑ : (I : Ideal L)
-                                       → factorization I ＝ factorization↑ I
- factorization-equal-to-factorization↑ I =
-  directify-preserves-joins (𝒪 spec-L) (principal-ideals-of I)
-
-\end{code}
-
-\begin{code}
-
- ideal-equal-to-factorization↑ : (I : Ideal L) → I ＝ factorization↑ I
- ideal-equal-to-factorization↑ I = I                ＝⟨ Ⅰ ⟩
-                                   factorization I  ＝⟨ Ⅱ ⟩
-                                   factorization↑ I ∎
-                                    where
-                                     Ⅰ = ideal-equal-to-factorization I
-                                     Ⅱ = factorization-equal-to-factorization↑ I
-
-\end{code}
-
 Added on 2024-03-27
+
+For every `x : L`, the principal ideal `↓x` is a compact open of the locale of
+spectra.
 
 \begin{code}
 
  principal-ideal-is-compact : (x : ∣ L ∣ᵈ) → is-compact-open spec-L (↓ x) holds
- principal-ideal-is-compact x S δ p = ∥∥-rec ∃-is-prop γ †
+ principal-ideal-is-compact x S δ p = ∥∥-rec ∃-is-prop † μ
   where
-   † : x ∈ᵢ (⋁[ 𝒪 spec-L ] S) holds
-   † = p x (≤ᵈ-is-reflexive L x)
+   μ : x ∈ᵢ (⋁[ 𝒪 spec-L ] S) holds
+   μ = p x (≤ᵈ-is-reflexive L x)
 
-   γ : Σ xs ꞉ List X , xs ◁ S × (x ＝ join-listᵈ L xs)
+   † : Σ xs ꞉ List X , xs ◁ S × (x ＝ join-listᵈ L xs)
      → ∃ i  ꞉ index S , ↓ x ⊆ᵢ (S [ i ]) holds
-   γ (xs , q , r′) = ∥∥-rec ∃-is-prop ‡ foo
+   † (xs , q , r′) = ∥∥-rec ∃-is-prop ‡ β
     where
-     foo : ∃ i ꞉ index S , join-listᵈ L xs ∈ᵢ (S [ i ]) holds
-     foo = finite-subcover S xs δ q
+     β : ∃ i ꞉ index S , join-listᵈ L xs ∈ᵢ (S [ i ]) holds
+     β = finite-subcover S xs δ q
 
      ‡ : Σ i ꞉ index S , join-listᵈ L xs ∈ᵢ (S [ i ]) holds
        → ∃ i  ꞉ index S , ↓ x ⊆ᵢ (S [ i ]) holds
-     ‡ (i , r) = ∣ i , final ∣
+     ‡ (i , r) = ∣ i , γ ∣
       where
-       open Ideal (S [ i ]) renaming (I-is-downward-closed to Sᵢ-is-downward-closed)
-       final : (principal-ideal x ⊆ᵢ (S [ i ])) holds
-       final y φ = Sᵢ-is-downward-closed y (join-listᵈ L xs) nts r
+       open Ideal (S [ i ]) renaming (I-is-downward-closed
+                                      to Sᵢ-is-downward-closed)
+
+       γ : (↓ x ⊆ᵢ (S [ i ])) holds
+       γ y φ = Sᵢ-is-downward-closed y (join-listᵈ L xs) ϵ r
         where
-         nts : (y ≤ᵈ[ L ] join-listᵈ L xs) holds
-         nts = transport (λ - → (y ≤ᵈ[ L ] -) holds) r′ φ
+         ϵ : (y ≤ᵈ[ L ] join-listᵈ L xs) holds
+         ϵ = transport (λ - → (y ≤ᵈ[ L ] -) holds) r′ φ
 
 \end{code}
 
-Every ideal is a join of compact ideals, because principal ideals are compact.
+Added on 2024-03-13.
 
-\begin{code}
-
- basic-covering : Ideal L → Fam 𝓤 (Ideal L)
- basic-covering I = (Σ x ꞉ ∣ L ∣ᵈ , (x ∈ᵢ I) holds) , λ { (x , _) → ↓ x }
-
- basic-covering-consists-of-compact-opens
-  : (I : Ideal L)
-  → consists-of-compact-opens spec-L (basic-covering I) holds
- basic-covering-consists-of-compact-opens I (x , μ) =
-  principal-ideal-is-compact x
-
- equal-to-basic-covering : (I : Ideal L)
-                         → I ＝ ⋁[ 𝒪 spec-L ] (basic-covering I)
- equal-to-basic-covering I = ideal-equal-to-factorization I
-
-\end{code}
+Every ideal has a directed covering family consisting of compact opens.
 
 \begin{code}
 
  ideal-has-directed-cover-of-compact-opens
   : (I : Ideal L)
   → has-a-directed-cover-of-compact-opens spec-L I holds
- ideal-has-directed-cover-of-compact-opens I = ∣ basic-covering I , κ , δ , eq ∣
+ ideal-has-directed-cover-of-compact-opens I = ∣ principal-ideals-of I , κ , δ , eq ∣
   where
-   κ : consists-of-compact-opens spec-L (basic-covering I) holds
-   κ = basic-covering-consists-of-compact-opens I
+   κ : consists-of-compact-opens spec-L (principal-ideals-of I) holds
+   κ (x , _) =  principal-ideal-is-compact x
 
-   δ : is-directed (𝒪 spec-L) (basic-covering I) holds
+   δ : is-directed (𝒪 spec-L) (principal-ideals-of I) holds
    δ = principal-ideals-of-ideal-form-a-directed-family I
 
-   eq : I ＝ ⋁[ 𝒪 spec-L ] basic-covering I
+   eq : I ＝ ⋁[ 𝒪 spec-L ] principal-ideals-of I
    eq = ideal-equal-to-factorization I
 
 \end{code}
 
-Added on 2024-03-13.
-
-\begin{code}
-
- an-important-lemma : (I : Ideal L) (xs : List ∣ L ∣ᵈ)
-                    → xs ◁ principal-ideals-of I
-                    → join-listᵈ L xs ∈ⁱ I
- an-important-lemma I xs c = ideals-are-closed-under-finite-joins L I xs γ
-  where
-   γ : ((x , _) : type-from-list xs) → x ∈ⁱ I
-   γ (x , p) = ideal-is-an-upper-bound-of-its-principal-ideals I (pr₁ β) x (pr₂ β)
-    where
-     β : Σ i ꞉ (index (principal-ideals-of I))
-             , x ∈ⁱ (principal-ideals-of I [ i ])
-     β = covering-lemma (principal-ideals-of I) xs c x p
-
- finite-join-of-ideals : List ∣ L ∣ᵈ → Ideal L
- finite-join-of-ideals []       = 𝟎[ 𝒪 spec-L ]
- finite-join-of-ideals (x ∷ xs) =
-  principal-ideal x ∨[ 𝒪 spec-L ] finite-join-of-ideals xs
-
- finite-join-is-least : (xs : List ∣ L ∣ᵈ) (I : Ideal L)
-                      → ((x : ∣ L ∣ᵈ) → member x xs → (↓ x ⊆ᵢ I) holds)
-                      → (finite-join-of-ideals xs ⊆ᵢ I) holds
- finite-join-is-least []       I φ = 𝟎-is-bottom (𝒪 spec-L) I
- finite-join-is-least (x ∷ xs) I φ =
-  ∨[ 𝒪 spec-L ]-least {↓ x} {finite-join-of-ideals xs} {I} † ‡
-   where
-    † : (↓ x ⊆ᵢ I) holds
-    † = φ x in-head
-
-    ‡ : (finite-join-of-ideals xs ⊆ᵢ I) holds
-    ‡ = finite-join-is-least xs I (λ y μ → φ y (in-tail μ))
-
-\end{code}
-
 Added on 2024-04-08.
+
+We have already proved that every principal ideal is compact. We now prove
+the converse of this: every compact ideal is the principal ideal on some
+element `x` of the distributive lattice `L`.
 
 \begin{code}
 
@@ -309,10 +228,12 @@ Added on 2024-04-08.
 
 Added on 2024-04-08.
 
+The map `↓(-) : L → Idl(L)` preserves meets.
+
 \begin{code}
 
  principal-ideal-preserves-meets : (x y : ∣ L ∣ᵈ)
-                                 → ↓ (x ∧ y) ＝ (↓ x) ∧[ 𝒪 spec-L ] (↓ y)
+                                 → ↓ (x ∧ y) ＝ ↓ x ∧[ 𝒪 spec-L ] ↓ y
  principal-ideal-preserves-meets x y =
   ≤-is-antisymmetric (poset-of (𝒪 spec-L)) † ‡
    where
@@ -334,6 +255,8 @@ Added on 2024-04-08.
 
 Added on 2024-04-08.
 
+The compact ideals form a directed basis for the locale of spectra.
+
 \begin{code}
 
  𝒦-forms-a-directed-cover : (I : Ideal L)
@@ -348,6 +271,14 @@ Added on 2024-04-08.
 
    c : I ＝ ⋁[ 𝒪 spec-L ] principal-ideals-of I
    c = ideal-equal-to-factorization I
+
+\end{code}
+
+Added on 2024-04-08.
+
+The binary meet of two compact ideals is compact.
+
+\begin{code}
 
  compacts-of-the-locale-of-spectra-are-closed-under-∧
   : compacts-of-[ spec-L ]-are-closed-under-binary-meets holds
@@ -366,20 +297,30 @@ Added on 2024-04-08.
       † : Σ x₁ ꞉ ∣ L ∣ᵈ , K₁ ＝ ↓ x₁
         → Σ x₂ ꞉ ∣ L ∣ᵈ , K₂ ＝ ↓ x₂
         → is-compact-open spec-L (K₁ ∧[ 𝒪 spec-L ] K₂) holds
-      † (x₁ , p₁) (x₂ , p₂) = transport (λ - → is-compact-open spec-L - holds) (q ⁻¹) ‡
-       where
-        q : K₁ ∧[ 𝒪 spec-L ] K₂ ＝ ↓ (x₁ ∧ x₂)
-        q = K₁ ∧[ 𝒪 spec-L ] K₂       ＝⟨ Ⅰ ⟩
-            ↓ x₁ ∧[ 𝒪 spec-L ] K₂     ＝⟨ Ⅱ ⟩
-            ↓ x₁ ∧[ 𝒪 spec-L ] ↓ x₂   ＝⟨ Ⅲ ⟩
-            ↓ (x₁ ∧ x₂)               ∎
-             where
-              Ⅰ = ap (λ - → - ∧[ 𝒪 spec-L ] K₂) p₁
-              Ⅱ = ap (λ - → ↓ x₁ ∧[ 𝒪 spec-L ] -) p₂
-              Ⅲ = principal-ideal-preserves-meets x₁ x₂ ⁻¹
+      † (x₁ , p₁) (x₂ , p₂) =
+       transport (λ - → is-compact-open spec-L - holds) (q ⁻¹) ‡
+        where
+         q : K₁ ∧[ 𝒪 spec-L ] K₂ ＝ ↓ (x₁ ∧ x₂)
+         q = K₁ ∧[ 𝒪 spec-L ] K₂       ＝⟨ Ⅰ ⟩
+             ↓ x₁ ∧[ 𝒪 spec-L ] K₂     ＝⟨ Ⅱ ⟩
+             ↓ x₁ ∧[ 𝒪 spec-L ] ↓ x₂   ＝⟨ Ⅲ ⟩
+             ↓ (x₁ ∧ x₂)               ∎
+              where
+               Ⅰ = ap (λ - → - ∧[ 𝒪 spec-L ] K₂) p₁
+               Ⅱ = ap (λ - → ↓ x₁ ∧[ 𝒪 spec-L ] -) p₂
+               Ⅲ = principal-ideal-preserves-meets x₁ x₂ ⁻¹
 
-        ‡ : is-compact-open spec-L (↓ (x₁ ∧ x₂)) holds
-        ‡ = principal-ideal-is-compact (x₁ ∧ x₂)
+         ‡ : is-compact-open spec-L (↓ (x₁ ∧ x₂)) holds
+         ‡ = principal-ideal-is-compact (x₁ ∧ x₂)
+
+\end{code}
+
+Added on 2024-04-08.
+
+Finally, we package everything up into a proof that the locale of spectra is a
+spectral locale.
+
+\begin{code}
 
  spec-L-is-spectral : is-spectral spec-L holds
  spec-L-is-spectral = (κ , ν) , 𝒦-forms-a-directed-cover
@@ -389,5 +330,23 @@ Added on 2024-04-08.
 
    ν : compacts-of-[ spec-L ]-are-closed-under-binary-meets holds
    ν = compacts-of-the-locale-of-spectra-are-closed-under-∧
+
+\end{code}
+
+Furthermore, the type of compact ideals is small.
+
+\begin{code}
+
+ ↓ₖ_ : ∣ L ∣ᵈ → 𝒦 spec-L
+ ↓ₖ_ x = ↓ x , principal-ideal-is-compact x
+
+ r : 𝒦 spec-L → ∣ L ∣ᵈ
+ r = {!!}
+
+ compact-ideals-equivalent-to-L : ∣ L ∣ᵈ ≃ 𝒦 spec-L
+ compact-ideals-equivalent-to-L = ↓ₖ_ , (r , {!!}) , {!!}
+
+ spec-L-has-small-𝒦 : has-small-𝒦 spec-L
+ spec-L-has-small-𝒦 = ∣ L ∣ᵈ , compact-ideals-equivalent-to-L
 
 \end{code}
