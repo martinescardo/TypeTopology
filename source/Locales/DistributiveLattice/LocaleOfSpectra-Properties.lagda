@@ -306,6 +306,31 @@ Added on 2024-04-08.
 
 \end{code}
 
+Added on 2024-04-08.
+
+\begin{code}
+
+ principal-ideal-preserves-meets : (x y : ∣ L ∣ᵈ)
+                                 → ↓ (x ∧ y) ＝ (↓ x) ∧[ 𝒪 spec-L ] (↓ y)
+ principal-ideal-preserves-meets x y =
+  ≤-is-antisymmetric (poset-of (𝒪 spec-L)) † ‡
+   where
+    open PosetReasoning (poset-ofᵈ L)
+
+    † : (↓ (x ∧ y) ⊆ᵢ (↓ x ∧[ 𝒪 spec-L ] ↓ y)) holds
+    † z p = †₁ , †₂
+     where
+      †₁ : (z ≤ᵈ[ L ] x) holds
+      †₁ = z ≤⟨ p ⟩ x ∧ y ≤⟨ ∧-is-a-lower-bound₁ L x y ⟩ x ■
+
+      †₂ : (z ≤ᵈ[ L ] y) holds
+      †₂ = z ≤⟨ p ⟩ x ∧ y ≤⟨ ∧-is-a-lower-bound₂ L x y ⟩ y ■
+
+    ‡ : ((↓ x ∧[ 𝒪 spec-L ] ↓ y) ⊆ᵢ ↓ (x ∧ y)) holds
+    ‡ = ∧-is-greatest L x y
+
+\end{code}
+
 \begin{code}
 
  ℬ : Fam 𝓤 ⟨ 𝒪 spec-L ⟩
