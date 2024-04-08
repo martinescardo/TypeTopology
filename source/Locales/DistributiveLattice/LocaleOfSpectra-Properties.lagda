@@ -391,18 +391,3 @@ Added on 2024-04-08.
    ν = compacts-of-the-locale-of-spectra-are-closed-under-∧
 
 \end{code}
-
-\begin{code}
-
- ℬ : Fam 𝓤 ⟨ 𝒪 spec-L ⟩
- ℬ = ∣ L ∣ᵈ , principal-ideal
-
-\end{code}
-
-The compact opens of the locale of spectra are closed under binary meets.
-
-\begin{code}
-
--- --}
-
-\end{code}
