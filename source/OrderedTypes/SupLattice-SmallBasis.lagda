@@ -56,14 +56,14 @@ open PropositionalTruncation pt
 \begin{code}
 
 module _
-        {𝓤 𝓦 𝓥 : Universe}
+        {𝓤 𝓣 𝓥 : Universe}
         {B : 𝓥  ̇}
-        (L : Sup-Lattice 𝓤 𝓦 𝓥)
+        (L : Sup-Lattice 𝓤 𝓣 𝓥)
         (β : B → ⟨ L ⟩)
        where
 
  private
-  _≤_ : ⟨ L ⟩ → ⟨ L ⟩ → Ω 𝓦
+  _≤_ : ⟨ L ⟩ → ⟨ L ⟩ → Ω 𝓣
   _≤_ = order-of L
 
   ⋁_ : Fam 𝓥 ⟨ L ⟩ → ⟨ L ⟩
@@ -71,7 +71,7 @@ module _
 
  open Joins _≤_
 
- ↓ᴮ : ⟨ L ⟩ → 𝓦 ⊔ 𝓥  ̇
+ ↓ᴮ : ⟨ L ⟩ → 𝓣 ⊔ 𝓥  ̇
  ↓ᴮ x = Σ b ꞉ B , (β b ≤ x) holds
 
  ↓ᴮ-to-base : (x : ⟨ L ⟩) → ↓ᴮ x → B
@@ -89,7 +89,7 @@ boiler plate that will allow us to use a small basis with greater efficiency.
 
 \begin{code}
 
- record is-basis : 𝓤 ⊔ 𝓦 ⊔ 𝓥 ⁺  ̇ where
+ record is-basis : 𝓤 ⊔ 𝓣 ⊔ 𝓥 ⁺  ̇ where
   field
    ≤-is-small : (x : ⟨ L ⟩) (b : B) → ((β b ≤ x) holds) is 𝓥 small
    ↓-is-sup : (x : ⟨ L ⟩) → (x is-lub-of (↓ᴮ x , ↓ᴮ-inclusion x)) holds
