@@ -2,6 +2,7 @@
 title:          Properties of the locale of spectra
 author:         Ayberk Tosun
 date-started:   2024-03-01
+dates-updated:  [2024-04-08]
 --------------------------------------------------------------------------------
 
 We define the locale of spectra over a distributive lattice `L`, the defining
@@ -331,6 +332,66 @@ Added on 2024-04-08.
 
 \end{code}
 
+Added on 2024-04-08.
+
+\begin{code}
+
+ 𝒦-forms-a-directed-cover : (I : Ideal L)
+                          → has-a-directed-cover-of-compact-opens spec-L I holds
+ 𝒦-forms-a-directed-cover I = ∣ principal-ideals-of I , ψ , δ , c ∣
+  where
+   ψ : consists-of-compact-opens spec-L (principal-ideals-of I) holds
+   ψ (x , _) = principal-ideal-is-compact x
+
+   δ : is-directed (𝒪 spec-L) (principal-ideals-of I) holds
+   δ = factorization-is-directed I
+
+   c : I ＝ ⋁[ 𝒪 spec-L ] principal-ideals-of I
+   c = ideal-equal-to-factorization I
+
+ compacts-of-the-locale-of-spectra-are-closed-under-∧
+  : compacts-of-[ spec-L ]-are-closed-under-binary-meets holds
+ compacts-of-the-locale-of-spectra-are-closed-under-∧ K₁ K₂ κ₁ κ₂ = κ
+  where
+   ι₁ : ∃ x₁ ꞉ ∣ L ∣ᵈ , K₁ ＝ ↓ x₁
+   ι₁ = compact-ideal-is-principal K₁ κ₁
+
+   ι₂ : ∃ x₂ ꞉ ∣ L ∣ᵈ , K₂ ＝ ↓ x₂
+   ι₂ = compact-ideal-is-principal K₂ κ₂
+
+   κ : is-compact-open spec-L (K₁ ∧[ 𝒪 spec-L ] K₂) holds
+   κ =
+    ∥∥-rec₂ (holds-is-prop (is-compact-open spec-L (K₁ ∧[ 𝒪 spec-L ] K₂))) † ι₁ ι₂
+     where
+      † : Σ x₁ ꞉ ∣ L ∣ᵈ , K₁ ＝ ↓ x₁
+        → Σ x₂ ꞉ ∣ L ∣ᵈ , K₂ ＝ ↓ x₂
+        → is-compact-open spec-L (K₁ ∧[ 𝒪 spec-L ] K₂) holds
+      † (x₁ , p₁) (x₂ , p₂) = transport (λ - → is-compact-open spec-L - holds) (q ⁻¹) ‡
+       where
+        q : K₁ ∧[ 𝒪 spec-L ] K₂ ＝ ↓ (x₁ ∧ x₂)
+        q = K₁ ∧[ 𝒪 spec-L ] K₂       ＝⟨ Ⅰ ⟩
+            ↓ x₁ ∧[ 𝒪 spec-L ] K₂     ＝⟨ Ⅱ ⟩
+            ↓ x₁ ∧[ 𝒪 spec-L ] ↓ x₂   ＝⟨ Ⅲ ⟩
+            ↓ (x₁ ∧ x₂)               ∎
+             where
+              Ⅰ = ap (λ - → - ∧[ 𝒪 spec-L ] K₂) p₁
+              Ⅱ = ap (λ - → ↓ x₁ ∧[ 𝒪 spec-L ] -) p₂
+              Ⅲ = principal-ideal-preserves-meets x₁ x₂ ⁻¹
+
+        ‡ : is-compact-open spec-L (↓ (x₁ ∧ x₂)) holds
+        ‡ = principal-ideal-is-compact (x₁ ∧ x₂)
+
+ spec-L-is-spectral : is-spectral spec-L holds
+ spec-L-is-spectral = (κ , ν) , 𝒦-forms-a-directed-cover
+  where
+   κ : is-compact spec-L holds
+   κ = locale-of-spectra-is-compact
+
+   ν : compacts-of-[ spec-L ]-are-closed-under-binary-meets holds
+   ν = compacts-of-the-locale-of-spectra-are-closed-under-∧
+
+\end{code}
+
 \begin{code}
 
  ℬ : Fam 𝓤 ⟨ 𝒪 spec-L ⟩
@@ -341,13 +402,6 @@ Added on 2024-04-08.
 The compact opens of the locale of spectra are closed under binary meets.
 
 \begin{code}
-
- -- compacts-of-the-locale-of-spectra-are-closed-under-∧
- --  : compacts-of-[ spec-L ]-are-closed-under-binary-meets holds
- -- compacts-of-the-locale-of-spectra-are-closed-under-∧ K₁ K₂ κ₁ κ₂ = κ
- --  where
- --   κ : is-compact-open spec-L (K₁ ∧[ 𝒪 spec-L ] K₂) holds
- --   κ S δ φ = {!∥∥-rec ? ? ?!}
 
 -- --}
 
