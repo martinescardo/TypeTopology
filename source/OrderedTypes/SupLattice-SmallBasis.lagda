@@ -89,7 +89,7 @@ boiler plate that will allow us to use a small basis with greater efficiency.
 
 \begin{code}
 
- record is-small-basis : 𝓤 ⊔ 𝓦 ⊔ 𝓥 ⁺  ̇ where
+ record is-basis : 𝓤 ⊔ 𝓦 ⊔ 𝓥 ⁺  ̇ where
   field
    ≤-is-small : (x : ⟨ L ⟩) (b : B) → ((β b ≤ x) holds) is 𝓥 small
    ↓-is-sup : (x : ⟨ L ⟩) → (x is-lub-of (↓ᴮ x , ↓ᴮ-inclusion x)) holds
@@ -140,13 +140,13 @@ boiler plate that will allow us to use a small basis with greater efficiency.
   is-supᴮ : (x : ⟨ L ⟩)
           → (x is-lub-of (small-↓ᴮ x , small-↓ᴮ-inclusion x)) holds
   is-supᴮ x =
-    transport (λ z → (z is-lub-of (small-↓ᴮ x , small-↓ᴮ-inclusion x)) holds)
-              (is-supᴮ' x ⁻¹)
-              (join-is-lub-of L ((small-↓ᴮ x , small-↓ᴮ-inclusion x)))
+   transport (λ z → (z is-lub-of (small-↓ᴮ x , small-↓ᴮ-inclusion x)) holds)
+             (is-supᴮ' x ⁻¹)
+             (join-is-lub-of L ((small-↓ᴮ x , small-↓ᴮ-inclusion x)))
 
   is-upper-boundᴮ : (x : ⟨ L ⟩)
                   → (x is-an-upper-bound-of
-                       (small-↓ᴮ x , small-↓ᴮ-inclusion x)) holds
+                     (small-↓ᴮ x , small-↓ᴮ-inclusion x)) holds
   is-upper-boundᴮ x = pr₁ (is-supᴮ x)
 
   is-least-upper-boundᴮ : (x : ⟨ L ⟩)
@@ -154,6 +154,5 @@ boiler plate that will allow us to use a small basis with greater efficiency.
                                       (small-↓ᴮ x , small-↓ᴮ-inclusion x))
                         → (x ≤ u') holds
   is-least-upper-boundᴮ x = pr₂ (is-supᴮ x)
-
 \end{code}
 
