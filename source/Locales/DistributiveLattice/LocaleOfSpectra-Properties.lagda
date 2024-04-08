@@ -268,55 +268,48 @@ Added on 2024-03-13.
     ‡ : (finite-join-of-ideals xs ⊆ᵢ I) holds
     ‡ = finite-join-is-least xs I (λ y μ → φ y (in-tail μ))
 
- finite-decomposition : (I : Ideal L)
-                      → is-compact-open spec-L I holds
-                      → ∃ xs ꞉ List ∣ L ∣ᵈ , I ＝ finite-join-of-ideals xs
- finite-decomposition I κ =
-  ∥∥-rec ∃-is-prop γ (κ (principal-ideals-of↑ I) δ c₀)
+\end{code}
+
+Added on 2024-04-08.
+
+\begin{code}
+
+ compact-ideal-is-principal : (I : Ideal L)
+                            → is-compact-open spec-L I holds
+                            → ∃ x ꞉ ∣ L ∣ᵈ , I ＝ principal-ideal x
+ compact-ideal-is-principal I κ =
+  ∥∥-rec ∃-is-prop γ (κ (principal-ideals-of I) δ c₀)
    where
-    Ⅰ = ideal-equal-to-factorization I
-    Ⅱ = directify-preserves-joins (𝒪 spec-L) (principal-ideals-of I)
+    c : I ＝ factorization I
+    c = ideal-equal-to-factorization I
 
-    c₀ : I ⊆ᵢ (⋁[ 𝒪 spec-L ] principal-ideals-of↑ I) holds
-    c₀ = reflexivity+ (poset-of (𝒪 spec-L)) (ideal-equal-to-factorization↑ I)
+    c₀ : (I ⊆ᵢ factorization I) holds
+    c₀ = reflexivity+ (poset-of (𝒪 spec-L)) c
 
-    c₁ : (⋁[ 𝒪 spec-L ] principal-ideals-of↑ I) ⊆ᵢ I holds
-    c₁ = reflexivity+ (poset-of (𝒪 spec-L)) (ideal-equal-to-factorization↑ I ⁻¹)
+    c₁ : (factorization I ⊆ᵢ I) holds
+    c₁ = reflexivity+ (poset-of (𝒪 spec-L)) (c ⁻¹)
 
-    δ : is-directed (𝒪 spec-L) (principal-ideals-of↑ I) holds
-    δ = directify-is-directed (𝒪 spec-L) (principal-ideals-of I)
+    δ : is-directed (𝒪 spec-L) (principal-ideals-of I) holds
+    δ = factorization-is-directed I
 
-    γ : Σ i ꞉ (index (principal-ideals-of↑ I))
-            , I ⊆ᵢ (principal-ideals-of↑ I [ i ]) holds
-      → ∃ xs ꞉ List ∣ L ∣ᵈ , I ＝ finite-join-of-ideals xs
-    γ (ps , p) = ∣ xs , q ∣
+    γ : (Σ (x , _) ꞉ index (principal-ideals-of I) , (I ⊆ᵢ ↓ x) holds)
+      → ∃ x ꞉ ∣ L ∣ᵈ , I ＝ ↓ x
+    γ ((x , p) , φ) = ∣ x , ≤-is-antisymmetric (poset-of (𝒪 spec-L)) q₁ q₂ ∣
      where
-      xs : List ∣ L ∣ᵈ
-      xs = map pr₁ ps
+      open Ideal I using (I-is-downward-closed)
 
-      ya-lemma : (x : ∣ L ∣ᵈ) → member x xs → (x ∈ᵢ I) holds
-      ya-lemma x μ = {!ps!}
+      q₁ : I ⊆ᵢ principal-ideal x holds
+      q₁ = φ
 
-      ♣ : (x : ∣ L ∣ᵈ) → member x xs → (↓ x ⊆ᵢ I) holds
-      ♣ x μ y p = {!!}
+      q₂ : principal-ideal x ⊆ᵢ I holds
+      q₂ y μ = I-is-downward-closed y x μ p
 
-      † : finite-join-of-ideals xs ⊆ᵢ I holds
-      † = finite-join-is-least xs I ♣
+\end{code}
 
-      -- foo : principal-ideals-of↑ I [ ps ] ＝ directify (𝒪 spec-L) (principal-ideals-of I) [ ps ]
-      -- foo = refl
+\begin{code}
 
-      -- bar : directify (𝒪 spec-L) (principal-ideals-of I) [ ps ]
-      --       ＝ {!!}
-      -- bar = {!!}
-
-      ‡ : I ⊆ᵢ finite-join-of-ideals xs holds
-      ‡ x μ = {!!}
-
-      q : I ＝ finite-join-of-ideals xs
-      q = ⊆ᵢ-is-antisymmetric ‡ †
-
-{--
+ ℬ : Fam 𝓤 ⟨ 𝒪 spec-L ⟩
+ ℬ = ∣ L ∣ᵈ , principal-ideal
 
 \end{code}
 
@@ -331,6 +324,6 @@ The compact opens of the locale of spectra are closed under binary meets.
  --   κ : is-compact-open spec-L (K₁ ∧[ 𝒪 spec-L ] K₂) holds
  --   κ S δ φ = {!∥∥-rec ? ? ?!}
 
---}
+-- --}
 
 \end{code}
