@@ -37,9 +37,11 @@ open import MLTT.Fin hiding (𝟎; 𝟏)
 open import MLTT.List hiding ([_])
 open import MLTT.Spartan
 open import Slice.Family
-open import UF.Equiv hiding (_■)
+open import UF.Classifiers
+open import UF.Equiv renaming (_■ to _𝐐𝐄𝐃)
+open import UF.ImageAndSurjection pt
 open import UF.Logic
-open import UF.Powerset-MultiUniverse
+open import UF.Powerset-MultiUniverse hiding (𝕋)
 open import UF.SubtypeClassifier
 
 open AllCombinators pt fe renaming (_∧_ to _∧ₚ_; _∨_ to _∨ₚ_)
@@ -333,6 +335,32 @@ spectral locale.
 
 \end{code}
 
+Added on 2024-04-09.
+
+\begin{code}
+
+ ℬ-spec : Fam 𝓤 ⟨ 𝒪 spec-L ⟩
+ ℬ-spec = ∣ L ∣ᵈ , principal-ideal
+
+ open classifier-single-universe 𝓤
+
+ ℬ-spec-is-directed-basis : directed-basis-forᴰ (𝒪 spec-L) ℬ-spec
+ ℬ-spec-is-directed-basis ℐ = 𝕋 ∣ L ∣ᵈ (_∈ⁱ ℐ) , † , 𝒹
+  where
+   c : ℐ ＝ ⋁[ 𝒪 spec-L ] ⁅ ↓ x ∣ x ε 𝕋 ∣ L ∣ᵈ (_∈ⁱ ℐ) ⁆
+   c = ideal-equal-to-factorization ℐ
+
+   † : (ℐ is-lub-of ⁅ ↓ x ∣ x ε 𝕋 ∣ L ∣ᵈ (_∈ⁱ ℐ) ⁆) holds
+   † = transport
+        (λ - → (- is-lub-of ⁅ ↓ x ∣ x ε 𝕋 ∣ L ∣ᵈ (_∈ⁱ ℐ) ⁆) holds)
+        (c ⁻¹)
+        (⋁[ 𝒪 spec-L ]-upper _ , ⋁[ 𝒪 spec-L ]-least _)
+
+   𝒹 : is-directed (𝒪 spec-L) ⁅ ↓ x ∣ x ε (𝕋 ∣ L ∣ᵈ (_∈ⁱ ℐ)) ⁆ holds
+   𝒹 = factorization-is-directed ℐ
+
+\end{code}
+
 Furthermore, the type of compact ideals is small.
 
 \begin{code}
@@ -340,13 +368,49 @@ Furthermore, the type of compact ideals is small.
  ↓ₖ_ : ∣ L ∣ᵈ → 𝒦 spec-L
  ↓ₖ_ x = ↓ x , principal-ideal-is-compact x
 
- r : 𝒦 spec-L → ∣ L ∣ᵈ
- r = {!!}
+ compact-ideals-equivalent-to-L : image (ℬ-compact locale-of-spectra [_]) ≃ image principal-ideal
+ compact-ideals-equivalent-to-L =
+  basis-is-unique spec-L (ℬ-spec , ℬ-spec-is-directed-basis) principal-ideal-is-compact
 
- compact-ideals-equivalent-to-L : ∣ L ∣ᵈ ≃ 𝒦 spec-L
- compact-ideals-equivalent-to-L = ↓ₖ_ , (r , {!!}) , {!!}
+ open PosetNotation (poset-of (𝒪 spec-L))
+
+ spec-L-is-locally-small : ⟨ 𝒪 spec-L ⟩ is-locally 𝓤 small
+ spec-L-is-locally-small I J = (I ≣ J) holds , s , (r , †) , (r , ‡)
+  where
+   s : (I ≣ J) holds → I ＝ J
+   s (p₁ , p₂) = ≤-is-antisymmetric (poset-of (𝒪 spec-L)) p₁ p₂
+
+   r : I ＝ J → (I ≣ J) holds
+   r p = transport (λ - → (- ≣ J) holds) (p ⁻¹) (≣-is-reflexive poset-of-ideals J)
+
+   † : (λ x → s (r x)) ∼ id
+   † p = carrier-of-[ poset-of-ideals ]-is-set (s (r p)) p
+
+   ‡ : (λ x → r (s x)) ∼ id
+   ‡ p = holds-is-prop (I ≣ J) (r (s p)) p
+
+ image-of-↓-is-small : (image principal-ideal) is 𝓤 small
+ image-of-↓-is-small =
+  basic-is-small spec-L (ℬ-spec , ℬ-spec-is-directed-basis) spec-L-is-locally-small
+
+ image-↓⁻ : 𝓤  ̇
+ image-↓⁻ = resized (image principal-ideal) image-of-↓-is-small
+
+ image-↓-equiv-to-𝒦 : image principal-ideal ≃ 𝒦 spec-L
+ image-↓-equiv-to-𝒦 = basic-iso-to-𝒦
+                       spec-L
+                       (ℬ-spec , ℬ-spec-is-directed-basis)
+                       principal-ideal-is-compact
+
+ image-↓⁻-equiv-to-𝒦 : image-↓⁻ ≃ 𝒦 spec-L
+ image-↓⁻-equiv-to-𝒦 = image-↓⁻               ≃⟨ Ⅰ ⟩
+                       image principal-ideal  ≃⟨ Ⅱ ⟩
+                       𝒦 spec-L               𝐐𝐄𝐃
+                        where
+                         Ⅰ = resizing-condition image-of-↓-is-small
+                         Ⅱ = image-↓-equiv-to-𝒦
 
  spec-L-has-small-𝒦 : has-small-𝒦 spec-L
- spec-L-has-small-𝒦 = ∣ L ∣ᵈ , compact-ideals-equivalent-to-L
+ spec-L-has-small-𝒦 = image-↓⁻ , image-↓⁻-equiv-to-𝒦
 
 \end{code}
