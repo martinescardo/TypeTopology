@@ -11,6 +11,7 @@ import OrderedTypes.FreeSupLattice                  -- by Tom de Jong
 import OrderedTypes.JoinSemiLattices                -- by Tom de Jong
 import OrderedTypes.Poset                           -- by Tom de Jong
 import OrderedTypes.PosetReflection                 -- by Tom de Jong
+import OrderedTypes.PredicativeLFP                  -- by Ian Ray
 import OrderedTypes.sigma-frame                     -- by Martin Escardo
 import OrderedTypes.sigma-sup-lattice               -- by Martin Escardo
 import OrderedTypes.SupLattice                      -- by Ian Ray
