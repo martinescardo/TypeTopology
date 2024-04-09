@@ -383,10 +383,10 @@ Furthermore, the type of compact ideals is small.
    r : I ＝ J → (I ≣ J) holds
    r p = transport (λ - → (- ≣ J) holds) (p ⁻¹) (≣-is-reflexive poset-of-ideals J)
 
-   † : (λ x → s (r x)) ∼ id
+   † : s ∘ r ∼ id
    † p = carrier-of-[ poset-of-ideals ]-is-set (s (r p)) p
 
-   ‡ : (λ x → r (s x)) ∼ id
+   ‡ : r ∘ s ∼ id
    ‡ p = holds-is-prop (I ≣ J) (r (s p)) p
 
  image-of-↓-is-small : (image principal-ideal) is 𝓤 small
