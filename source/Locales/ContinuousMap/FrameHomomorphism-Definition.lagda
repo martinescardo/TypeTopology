@@ -21,7 +21,7 @@ module Locales.ContinuousMap.FrameHomomorphism-Definition
         (fe : Fun-Ext)
        where
 
-open import Locales.Frame pt fe hiding (preserves-binary-meets; is-a-frame-homomorphism; _─f→_; frame-homomorphisms-preserve-meets; frame-homomorphisms-preserve-top; frame-homomorphisms-preserve-all-joins)
+open import Locales.Frame pt fe
 open import Slice.Family
 open import UF.Equiv
 open import UF.Hedberg
