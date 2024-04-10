@@ -337,70 +337,95 @@ spectral locale.
 
 Added on 2024-04-09.
 
+To show that the type of compact ideals is small, we directly construct the
+intensional specified basis for `Idl(L)` given by the family `↓(-) : L → Idl(L)`.
+
 \begin{code}
 
  ℬ-spec : Fam 𝓤 ⟨ 𝒪 spec-L ⟩
  ℬ-spec = ∣ L ∣ᵈ , principal-ideal
 
- open classifier-single-universe 𝓤
+ open classifier-single-universe
 
  ℬ-spec-is-directed-basis : directed-basis-forᴰ (𝒪 spec-L) ℬ-spec
- ℬ-spec-is-directed-basis ℐ = 𝕋 ∣ L ∣ᵈ (_∈ⁱ ℐ) , † , 𝒹
+ ℬ-spec-is-directed-basis ℐ = 𝕋 𝓤 ∣ L ∣ᵈ (_∈ⁱ ℐ) , † , 𝒹
   where
-   c : ℐ ＝ ⋁[ 𝒪 spec-L ] ⁅ ↓ x ∣ x ε 𝕋 ∣ L ∣ᵈ (_∈ⁱ ℐ) ⁆
+   c : ℐ ＝ ⋁[ 𝒪 spec-L ] ⁅ ↓ x ∣ x ε 𝕋 𝓤 ∣ L ∣ᵈ (_∈ⁱ ℐ) ⁆
    c = ideal-equal-to-factorization ℐ
 
-   † : (ℐ is-lub-of ⁅ ↓ x ∣ x ε 𝕋 ∣ L ∣ᵈ (_∈ⁱ ℐ) ⁆) holds
+   † : (ℐ is-lub-of ⁅ ↓ x ∣ x ε 𝕋 𝓤 ∣ L ∣ᵈ (_∈ⁱ ℐ) ⁆) holds
    † = transport
-        (λ - → (- is-lub-of ⁅ ↓ x ∣ x ε 𝕋 ∣ L ∣ᵈ (_∈ⁱ ℐ) ⁆) holds)
+        (λ - → (- is-lub-of ⁅ ↓ x ∣ x ε 𝕋 𝓤 ∣ L ∣ᵈ (_∈ⁱ ℐ) ⁆) holds)
         (c ⁻¹)
         (⋁[ 𝒪 spec-L ]-upper _ , ⋁[ 𝒪 spec-L ]-least _)
 
-   𝒹 : is-directed (𝒪 spec-L) ⁅ ↓ x ∣ x ε (𝕋 ∣ L ∣ᵈ (_∈ⁱ ℐ)) ⁆ holds
+   𝒹 : is-directed (𝒪 spec-L) ⁅ ↓ x ∣ x ε (𝕋 𝓤 ∣ L ∣ᵈ (_∈ⁱ ℐ)) ⁆ holds
    𝒹 = factorization-is-directed ℐ
 
 \end{code}
 
-Furthermore, the type of compact ideals is small.
+We denote by `𝒦-fam` the family corresponding to the subset of compact opens.
 
 \begin{code}
 
- ↓ₖ_ : ∣ L ∣ᵈ → 𝒦 spec-L
- ↓ₖ_ x = ↓ x , principal-ideal-is-compact x
+ 𝒦-fam : Fam (𝓤 ⁺) ⟨ 𝒪 locale-of-spectra ⟩
+ 𝒦-fam = 𝕋 (𝓤 ⁺) ⟨ 𝒪 spec-L ⟩ (_holds ∘ is-compact-open spec-L)
 
- compact-ideals-equivalent-to-L : image (ℬ-compact locale-of-spectra [_]) ≃ image principal-ideal
- compact-ideals-equivalent-to-L =
-  basis-is-unique spec-L (ℬ-spec , ℬ-spec-is-directed-basis) principal-ideal-is-compact
+\end{code}
 
- open PosetNotation (poset-of (𝒪 spec-L))
+We know that the image of `↓(-) : L → Idl(L)` is equivalent to type of compact
+opens of `spec-L`.
 
- spec-L-is-locally-small : ⟨ 𝒪 spec-L ⟩ is-locally 𝓤 small
- spec-L-is-locally-small I J = (I ≣ J) holds , s , (r , †) , (r , ‡)
-  where
-   s : (I ≣ J) holds → I ＝ J
-   s (p₁ , p₂) = ≤-is-antisymmetric (poset-of (𝒪 spec-L)) p₁ p₂
-
-   r : I ＝ J → (I ≣ J) holds
-   r p = transport (λ - → (- ≣ J) holds) (p ⁻¹) (≣-is-reflexive poset-of-ideals J)
-
-   † : s ∘ r ∼ id
-   † p = carrier-of-[ poset-of-ideals ]-is-set (s (r p)) p
-
-   ‡ : r ∘ s ∼ id
-   ‡ p = holds-is-prop (I ≣ J) (r (s p)) p
-
- image-of-↓-is-small : (image principal-ideal) is 𝓤 small
- image-of-↓-is-small =
-  basic-is-small spec-L (ℬ-spec , ℬ-spec-is-directed-basis) spec-L-is-locally-small
-
- image-↓⁻ : 𝓤  ̇
- image-↓⁻ = resized (image principal-ideal) image-of-↓-is-small
+\begin{code}
 
  image-↓-equiv-to-𝒦 : image principal-ideal ≃ 𝒦 spec-L
  image-↓-equiv-to-𝒦 = basic-iso-to-𝒦
                        spec-L
                        (ℬ-spec , ℬ-spec-is-directed-basis)
                        principal-ideal-is-compact
+
+\end{code}
+
+We also know that the image of `↓(-)` is a 𝓤-small type.
+
+\begin{code}
+
+ image-of-↓-is-small : (image principal-ideal) is 𝓤 small
+ image-of-↓-is-small =
+  basic-is-small spec-L (ℬ-spec , ℬ-spec-is-directed-basis) γ
+   where
+    open PosetNotation (poset-of (𝒪 spec-L))
+
+    γ : ⟨ 𝒪 spec-L ⟩ is-locally 𝓤 small
+    γ I J = (I ≣ J) holds , s , (r , †) , (r , ‡)
+     where
+      s : (I ≣ J) holds → I ＝ J
+      s (p₁ , p₂) = ≤-is-antisymmetric (poset-of (𝒪 spec-L)) p₁ p₂
+
+      r : I ＝ J → (I ≣ J) holds
+      r p = transport (λ - → (- ≣ J) holds) (p ⁻¹) (≣-is-reflexive poset-of-ideals J)
+
+      † : s ∘ r ∼ id
+      † p = carrier-of-[ poset-of-ideals ]-is-set (s (r p)) p
+
+      ‡ : r ∘ s ∼ id
+      ‡ p = holds-is-prop (I ≣ J) (r (s p)) p
+
+\end{code}
+
+We use the superscript `(-)⁻` to denote the small copy of `image ↓(-)`
+
+\begin{code}
+
+ image-↓⁻ : 𝓤  ̇
+ image-↓⁻ = resized (image principal-ideal) image-of-↓-is-small
+
+\end{code}
+
+From the previous two equivalences, we may conclude that the type of compact
+opens of `spec-L` is equivalent to `image-↓⁻`.
+
+\begin{code}
 
  image-↓⁻-equiv-to-𝒦 : image-↓⁻ ≃ 𝒦 spec-L
  image-↓⁻-equiv-to-𝒦 = image-↓⁻               ≃⟨ Ⅰ ⟩
@@ -409,6 +434,12 @@ Furthermore, the type of compact ideals is small.
                         where
                          Ⅰ = resizing-condition image-of-↓-is-small
                          Ⅱ = image-↓-equiv-to-𝒦
+
+\end{code}
+
+This means that `𝒦(spec-L)` is 𝓤-small.
+
+\begin{code}
 
  spec-L-has-small-𝒦 : has-small-𝒦 spec-L
  spec-L-has-small-𝒦 = image-↓⁻ , image-↓⁻-equiv-to-𝒦
