@@ -2,7 +2,7 @@
 title:          Properties of the locale of spectra
 author:         Ayberk Tosun
 date-started:   2024-03-01
-dates-updated:  [2024-03-27, 2024-04-08]
+dates-updated:  [2024-03-27, 2024-04-08, 2024-04-09]
 --------------------------------------------------------------------------------
 
 We define the locale of spectra over a distributive lattice `L`, the defining
@@ -82,11 +82,11 @@ The locale of spectra of is a compact locale.
   ∥∥-rec ∃-is-prop † (p 𝟏 (𝟏ᵈ-is-top L 𝟏))
    where
     † : Σ xs ꞉ List X , xs ◁ S × (𝟏 ＝ join-listᵈ L xs)
-      → ∃ i ꞉ index S , (𝟏[ 𝒪 spec-L ] ≤[ poset-of (𝒪 spec-L) ] S [ i ]) holds
+      → ∃ i ꞉ index S , (𝟏[ 𝒪 spec-L ] ⊆ᵢ (S [ i ])) holds
     † (xs , c , r) = ∥∥-rec ∃-is-prop ‡ (finite-subcover S xs δ c)
      where
       ‡ : Σ k ꞉ index S , join-listᵈ L xs ∈ⁱ (S [ k ])
-        → ∃ i ꞉ index S , (𝟏[ 𝒪 spec-L ] ≤[ poset-of (𝒪 spec-L) ] S [ i ]) holds
+        → ∃ i ꞉ index S , (𝟏[ 𝒪 spec-L ] ⊆ᵢ (S [ i ])) holds
       ‡ (k , p) = ∣ k , contains-𝟏-implies-above-𝟏 (S [ k ]) μ ∣
        where
         μ : 𝟏 ∈ⁱ (S [ k ])
@@ -97,8 +97,8 @@ The locale of spectra of is a compact locale.
 Added on 2024-03-13.
 
 Every ideal `I` is the join of its principal ideals. We call this join the
-_factorization_ of `I` into its join of principal ideals_, and we denote
-function implementing this `factorization`.
+_factorization_ of `I` into its join of principal ideals, and we denote function
+implementing this `factorization`.
 
 \begin{code}
 
@@ -220,10 +220,10 @@ element `x` of the distributive lattice `L`.
      where
       open Ideal I using (I-is-downward-closed)
 
-      q₁ : I ⊆ᵢ principal-ideal x holds
+      q₁ : I ⊆ᵢ ↓ x holds
       q₁ = φ
 
-      q₂ : principal-ideal x ⊆ᵢ I holds
+      q₂ : ↓ x ⊆ᵢ I holds
       q₂ y μ = I-is-downward-closed y x μ p
 
 \end{code}
@@ -252,27 +252,6 @@ The map `↓(-) : L → Idl(L)` preserves meets.
 
     ‡ : ((↓ x ∧[ 𝒪 spec-L ] ↓ y) ⊆ᵢ ↓ (x ∧ y)) holds
     ‡ = ∧-is-greatest L x y
-
-\end{code}
-
-Added on 2024-04-08.
-
-The compact ideals form a directed basis for the locale of spectra.
-
-\begin{code}
-
- 𝒦-forms-a-directed-cover : (I : Ideal L)
-                          → has-a-directed-cover-of-compact-opens spec-L I holds
- 𝒦-forms-a-directed-cover I = ∣ principal-ideals-of I , ψ , δ , c ∣
-  where
-   ψ : consists-of-compact-opens spec-L (principal-ideals-of I) holds
-   ψ (x , _) = principal-ideal-is-compact x
-
-   δ : is-directed (𝒪 spec-L) (principal-ideals-of I) holds
-   δ = factorization-is-directed I
-
-   c : I ＝ ⋁[ 𝒪 spec-L ] principal-ideals-of I
-   c = ideal-equal-to-factorization I
 
 \end{code}
 
@@ -325,7 +304,7 @@ spectral locale.
 \begin{code}
 
  spec-L-is-spectral : is-spectral spec-L holds
- spec-L-is-spectral = (κ , ν) , 𝒦-forms-a-directed-cover
+ spec-L-is-spectral = (κ , ν) , ideal-has-directed-cover-of-compact-opens
   where
    κ : is-compact spec-L holds
    κ = locale-of-spectra-is-compact
@@ -335,7 +314,7 @@ spectral locale.
 
 \end{code}
 
-Added on 2024-04-09.
+Everything after this line has been added on 2024-04-09.
 
 To show that the type of compact ideals is small, we directly construct the
 intensional specified basis for `Idl(L)` given by the family `↓(-) : L → Idl(L)`.
@@ -413,7 +392,7 @@ We also know that the image of `↓(-)` is a 𝓤-small type.
 
 \end{code}
 
-We use the superscript `(-)⁻` to denote the small copy of `image ↓(-)`
+We use the superscript `(-)⁻` to denote the small copy of the type `image ↓(-)`.
 
 \begin{code}
 
@@ -422,7 +401,7 @@ We use the superscript `(-)⁻` to denote the small copy of `image ↓(-)`
 
 \end{code}
 
-From the previous two equivalences, we may conclude that the type of compact
+From the previous two equivalences, we can conclude that the type of compact
 opens of `spec-L` is equivalent to `image-↓⁻`.
 
 \begin{code}
