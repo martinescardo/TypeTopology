@@ -1,5 +1,5 @@
 --------------------------------------------------------------------------------
-title:          Continuous maps of locales
+title:          Frame homomorphisms
 author:         Ayberk Tosun
 date-started:   2024-04-10
 --------------------------------------------------------------------------------
@@ -16,7 +16,7 @@ open import UF.FunExt
 open import UF.PropTrunc
 open import MLTT.List hiding ([_])
 
-module Locales.ContinuousMap.Definition
+module Locales.ContinuousMap.FrameHomomorphism-Definition
         (pt : propositional-truncations-exist)
         (fe : Fun-Ext)
        where
