@@ -24,23 +24,25 @@ module Locales.Point.Properties (pt : propositional-truncations-exist)
                                 (pe : propext 𝓤)
                                  where
 
-open import Slice.Family
-open import UF.Powerset-MultiUniverse
-open import UF.SubtypeClassifier
-open import UF.Sets
-open import UF.Equiv
-
+open import Locales.ContinuousMap.Definition pt fe
+open import Locales.ContinuousMap.FrameHomomorphism-Definition pt fe
+open import Locales.ContinuousMap.FrameHomomorphism-Properties pt fe
 open import Locales.Frame            pt fe
-open import Locales.Point.Definition pt fe
 open import Locales.InitialFrame     pt fe
-
-open PropositionalTruncation pt
-
-open DefnOfCPF
-
-open Locale
+open import Locales.Point.Definition pt fe
+open import Slice.Family
+open import UF.Equiv
+open import UF.Powerset-MultiUniverse
+open import UF.Sets
+open import UF.SubtypeClassifier
 
 open AllCombinators pt fe
+open ContinuousMaps
+open DefnOfCPF
+open FrameHomomorphismProperties
+open FrameHomomorphisms
+open Locale
+open PropositionalTruncation pt
 
 \end{code}
 
@@ -165,7 +167,7 @@ open DefnOfCPF
     ς : is-set ⟨ 𝒪 𝟏L ⟩
     ς = carrier-of-[ poset-of (𝒪 𝟏L) ]-is-set
 
-    Ⅰ = frame-homomorphisms-preserve-all-joins (𝒪 X) (𝒪 𝟏L) 𝒻 S ⁻¹
+    Ⅰ = frame-homomorphisms-preserve-all-joins′ (𝒪 X) (𝒪 𝟏L) 𝒻 S ⁻¹
     Ⅱ = holds-gives-equal-⊤ pe fe (𝒻 ⋆∙ (⋁[ 𝒪 X ] S)) p
 
     p′ : 𝒻 ⋆∙ (⋁[ 𝒪 X ] S) ＝ ⊤
