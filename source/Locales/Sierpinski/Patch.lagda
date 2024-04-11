@@ -10,7 +10,6 @@ date-completed: 2024-02-12
 
 open import MLTT.Spartan hiding (𝟚)
 open import UF.FunExt
-open import UF.Logic
 open import UF.PropTrunc
 open import UF.Size
 open import UF.Subsingletons
@@ -48,6 +47,7 @@ open import Locales.Stone pt fe sr
 open import Slice.Family
 open import UF.DiscreteAndSeparated
 open import UF.Equiv
+open import UF.Logic
 open import UF.Subsingletons-FunExt
 open import UF.Subsingletons-Properties
 open import UF.SubtypeClassifier
