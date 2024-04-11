@@ -47,8 +47,9 @@ We denote by `σ` the proof that the carrier of frame `G` is a set.
 
 \begin{code}
 
- σ : is-set ⟨ G ⟩
- σ = carrier-of-[ poset-of G ]-is-set
+ private
+  σ : is-set ⟨ G ⟩
+  σ = carrier-of-[ poset-of G ]-is-set
 
 \end{code}
 
