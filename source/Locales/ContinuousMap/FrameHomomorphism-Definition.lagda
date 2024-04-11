@@ -123,6 +123,10 @@ We denote by `fun 𝒽` the underlying function of a frame homomorphism `𝒽`.
 
  syntax fun f x = f $ x
 
+ fun-is-a-frame-homomorphism : (h : _─f→_)
+                             → is-a-frame-homomorphism (fun h) holds
+ fun-is-a-frame-homomorphism (_ , φ) = φ
+
 \end{code}
 
 We also write down a record-based version of the same type and prove their
