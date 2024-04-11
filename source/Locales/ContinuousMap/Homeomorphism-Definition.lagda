@@ -20,6 +20,7 @@ module Locales.ContinuousMap.Homeomorphism-Definition
        where
 
 open import Locales.ContinuousMap.Definition pt fe
+open import Locales.ContinuousMap.FrameIsomorphism-Definition pt fe
 open import Locales.Frame pt fe
 open import Slice.Family
 open import UF.Equiv
@@ -31,6 +32,7 @@ open import UF.Subsingletons-FunExt
 open import UF.SubtypeClassifier
 
 open AllCombinators pt fe
+open Locale
 
 \end{code}
 
@@ -39,9 +41,9 @@ defining frames.
 
 \begin{code}
 
-Homeomorphism : (X : Locale 𝓤  𝓥  𝓦)
-              → (Y : Locale 𝓤' 𝓥' 𝓦)
-              → {!!}
-Homeomorphism X Y = {!!}
+Homeomorphism : Locale 𝓤  𝓥  𝓦 → Locale 𝓤' 𝓥' 𝓦 → 𝓤' ⊔ 𝓤 ⊔ 𝓥 ⊔ 𝓥' ⊔ 𝓦 ⁺  ̇
+Homeomorphism X Y = Isomorphismᵣ (𝒪 Y) (𝒪 X)
+ where
+  open FrameIsomorphisms
 
 \end{code}
