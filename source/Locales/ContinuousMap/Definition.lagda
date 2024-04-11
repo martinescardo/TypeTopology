@@ -101,17 +101,16 @@ We denote by `f⋆` the defining frame homomorphism of a continuous map `f`.
 
 \end{code}
 
-{--
+\begin{code}
 
-module ContinuousMapNotation (X : Locale 𝓤 𝓥 𝓦) (Y : Locale 𝓤' 𝓥' 𝓦) where
+open ContinuousMaps using (_─c→_)
+open Locale
+open FrameHomomorphisms using (is-a-frame-homomorphism)
 
- infix 9 _⋆
- infixl 9 _⋆∙_
- -- infixl 9 _⁎∙_
-
-cont-comp : (X : Locale 𝓤   𝓥   𝓦)
-          → (Y : Locale 𝓤′  𝓥′  𝓦)
-          → (Z : Locale 𝓤′′ 𝓥′′ 𝓦)
+cont-comp : {𝓤'' 𝓥'' : Universe}
+          → (X : Locale 𝓤   𝓥   𝓦)
+          → (Y : Locale 𝓤'  𝓥'  𝓦)
+          → (Z : Locale 𝓤'' 𝓥'' 𝓦)
           → (Y ─c→ Z) → (X ─c→ Y) → X ─c→ Z
 cont-comp {𝓦 = 𝓦} X Y Z ℊ@(g , α₁ , α₂ , α₃) 𝒻@(f , β₁ , β₂ , β₃) = h , †
  where
@@ -159,7 +158,5 @@ cont-comp {𝓦 = 𝓦} X Y Z ℊ@(g , α₁ , α₂ , α₃) 𝒻@(f , β₁ , 
             where
              I  = ap (λ - → 𝒻 ⋆₁∙ -) (⋁[ 𝒪 Y ]-unique ⁅ ℊ ⋆₂∙ x ∣ x ε U ⁆ _ (α₃ _))
              II = ⋁[ 𝒪 X ]-unique ⁅ h x ∣ x ε U ⁆ _ (β₃ _)
-
--- --}
 
 \end{code}
