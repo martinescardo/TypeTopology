@@ -8,12 +8,12 @@ date-completed: 2024-02-12
 
 {-# OPTIONS --safe --without-K --lossy-unification #-}
 
+open import MLTT.Spartan hiding (𝟚)
 open import UF.FunExt
 open import UF.Logic
-open import MLTT.Spartan hiding (𝟚)
 open import UF.PropTrunc
-open import UF.Subsingletons
 open import UF.Size
+open import UF.Subsingletons
 
 module Locales.Sierpinski.Patch
         (𝓤  : Universe)
@@ -34,23 +34,28 @@ open import DomainTheory.Lifting.LiftingSetAlgebraic pt pe fe 𝓤
 open import Lifting.Construction 𝓤
 open import Lifting.Miscelanea-PropExt-FunExt 𝓤 pe fe
 open import Lifting.UnivalentPrecategory 𝓤 (𝟙 {𝓤})
+open import Locales.ContinuousMap.Definition pt fe
+open import Locales.ContinuousMap.FrameHomomorphism-Definition pt fe
+open import Locales.ContinuousMap.FrameHomomorphism-Properties pt fe
 open import Locales.Frame pt fe hiding (𝟚; is-directed)
 open import Locales.InitialFrame pt fe
-open import Locales.SmallBasis pt fe sr
 open import Locales.Sierpinski.Definition 𝓤 pe pt fe sr
 open import Locales.Sierpinski.Properties 𝓤 pe pt fe sr
+open import Locales.SmallBasis pt fe sr
 open import Locales.Spectrality.SpectralLocale pt fe
 open import Locales.Spectrality.SpectralMap pt fe
 open import Locales.Stone pt fe sr
 open import Slice.Family
 open import UF.DiscreteAndSeparated
 open import UF.Equiv
-open import UF.Subsingletons-Properties
 open import UF.Subsingletons-FunExt
+open import UF.Subsingletons-Properties
 open import UF.SubtypeClassifier
 
+open ContinuousMaps
+open FrameHomomorphismProperties
+open FrameHomomorphisms
 open Locale
-
 open PropositionalTruncation pt
 
 \end{code}
@@ -81,6 +86,7 @@ open import Locales.UniversalPropertyOfPatch pt fe sr
 open import Locales.PatchProperties pt fe sr
 
 open ClosedNucleus 𝕊 𝕊-is-spectral
+open ContinuousMaps
 
 ump-for-patch-of-𝕊 : (X : Locale (𝓤 ⁺) 𝓤 𝓤)
                    → is-stone X holds
