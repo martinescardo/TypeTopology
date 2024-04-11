@@ -200,4 +200,14 @@ For convenience, we also define some direct projections on the Σ-based type.
   in
    h-preserves-joins
 
+ frame-homomorphisms-preserve-all-joins′
+  : (h : _─f→_)
+  → (S : Fam 𝓦 ⟨ F ⟩)
+  → h $ (⋁[ F ] S) ＝ ⋁[ G ] ⁅ h $ x ∣ x ε S ⁆
+ frame-homomorphisms-preserve-all-joins′ h S =
+  ⋁[ G ]-unique
+   ⁅ h $ x ∣ x ε S ⁆
+   (h $ (⋁[ F ] S))
+   (frame-homomorphisms-preserve-all-joins h S)
+
 \end{code}
