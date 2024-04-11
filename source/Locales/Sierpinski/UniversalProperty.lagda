@@ -36,6 +36,9 @@ open import DomainTheory.Basics.Dcpo pt fe 𝓤 renaming (⟨_⟩ to ⟨_⟩∙)
 open import DomainTheory.Basics.Pointed pt fe 𝓤
 open import DomainTheory.Topology.ScottTopology pt fe 𝓤
 open import DomainTheory.Topology.ScottTopologyProperties pt fe
+open import Locales.ContinuousMap.Definition pt fe
+open import Locales.ContinuousMap.FrameHomomorphism-Definition pt fe
+open import Locales.ContinuousMap.FrameHomomorphism-Properties pt fe
 open import Locales.DistributiveLattice.Definition fe pt
 open import Locales.DistributiveLattice.Ideal pt fe pe
 open import Locales.DistributiveLattice.Properties fe pt
@@ -56,8 +59,11 @@ open import UF.Subsingletons-FunExt
 open import UF.SubtypeClassifier
 
 open AllCombinators pt fe renaming (_∧_ to _∧ₚ_; _∨_ to _∨ₚ_)
+open ContinuousMaps
 open DefnOfScottLocale 𝕊𝓓 𝓤 pe hiding (⊤ₛ)
 open DefnOfScottTopology 𝕊𝓓 𝓤
+open FrameHomomorphismProperties
+open FrameHomomorphisms
 open Locale
 open PropertiesAlgebraic 𝓤 𝕊𝓓 𝕊𝓓-is-structurally-algebraic
 open PropositionalTruncation pt hiding (_∨_)
