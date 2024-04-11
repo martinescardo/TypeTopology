@@ -4,6 +4,8 @@ author:         Ayberk Tosun
 date-started:   2024-04-11
 --------------------------------------------------------------------------------
 
+Notions of frame isomorphism and their equivalences.
+
 \begin{code}[hide]
 
 {-# OPTIONS --safe --without-K #-}
@@ -40,9 +42,17 @@ open FrameHomomorphisms
 
 \end{code}
 
+We work in a module parameterized by two frames.
+
 \begin{code}
 
 module FrameIsomorphisms (F : Frame 𝓤 𝓥 𝓦) (G : Frame 𝓤' 𝓥' 𝓦) where
+
+\end{code}
+
+We start with the record-based definition of the notion of frame isomorphism.
+
+\begin{code}
 
  record Isomorphismᵣ : 𝓤 ⊔ 𝓤' ⊔ 𝓥 ⊔ 𝓥' ⊔ 𝓦 ⁺  ̇ where
   field
@@ -61,6 +71,11 @@ module FrameIsomorphisms (F : Frame 𝓤 𝓥 𝓦) (G : Frame 𝓤' 𝓥' 𝓦)
 
 \end{code}
 
+We now show the equivalence of this to a Σ-based definition.
+
+Given a frame homomorphism `F ─f→ G`, its type of homomorphic inverses is
+a proposition.
+
 \begin{code}
 
  homomorphic-inverse : (F ─f→ G) → 𝓤 ⊔ 𝓤' ⊔ 𝓥 ⊔ 𝓦 ⁺  ̇
@@ -77,28 +92,41 @@ module FrameIsomorphisms (F : Frame 𝓤 𝓥 𝓦) (G : Frame 𝓤' 𝓥' 𝓦)
             (Π-is-prop fe (λ _ → carrier-of-[ poset-of G ]-is-set))
             (Π-is-prop fe (λ _ → carrier-of-[ poset-of F ]-is-set))
 
-    foo : (y : ⟨ G ⟩) → fun F G h (fun G F r y) ＝ fun F G h (fun G F r′ y)
-    foo y = fun F G h (fun G F r y)   ＝⟨ φ y ⟩
-            y                         ＝⟨ φ′ y ⁻¹ ⟩
-            fun F G h (fun G F r′ y)  ∎
+    ϑ : (y : ⟨ G ⟩) → fun F G h (fun G F r y) ＝ fun F G h (fun G F r′ y)
+    ϑ y = fun F G h (fun G F r y)   ＝⟨ φ y     ⟩
+          y                         ＝⟨ φ′ y ⁻¹ ⟩
+          fun F G h (fun G F r′ y)  ∎
 
-    h-is-lc : left-cancellable (fun F G h)
-    h-is-lc = sections-are-lc (fun F G h) (fun G F r , ψ)
+    ξ : left-cancellable (fun F G h)
+    ξ = sections-are-lc (fun F G h) (fun G F r , ψ)
 
     ‡ : (y : ⟨ G ⟩) → fun G F r y ＝ fun G F r′ y
-    ‡ y = h-is-lc (foo y)
+    ‡ y = ξ (ϑ y)
+
+\end{code}
+
+To say that a frame homomorphism is an isomorphism is to say that its type
+of homomorphic inverses is inhabited.
+
+\begin{code}
 
  is-isomorphism : (F ─f→ G) → Ω (𝓤 ⊔ 𝓤' ⊔ 𝓥 ⊔ 𝓦 ⁺)
- is-isomorphism s = homomorphic-inverse s , †
-  where
-   † : {!!}
-   † = {!!}
+ is-isomorphism h = homomorphic-inverse h , homomorphic-inverse-is-prop h
+
+\end{code}
+
+Accordingly, we define the type of isomorphisms between frames `F` and `G`.
+
+\begin{code}
 
  Isomorphism : 𝓤 ⊔ 𝓤' ⊔ 𝓥 ⊔ 𝓥' ⊔ 𝓦 ⁺  ̇
- Isomorphism = Σ s ꞉ F ─f→ G
-             , Σ r ꞉ G ─f→ F
-             , (fun F G s ∘ fun G F r ∼ id)
-             × (fun G F r ∘ fun F G s ∼ id)
+ Isomorphism = Σ h ꞉ F ─f→ G , is-isomorphism h holds
+
+\end{code}
+
+It is immediate that `Isomorphism` and `Isomorphismᵣ` are equivalent types.
+
+\begin{code}
 
  isomorphism-to-isomorphismᵣ : Isomorphism → Isomorphismᵣ
  isomorphism-to-isomorphismᵣ (𝓈 , 𝓇 , φ , ψ) =
@@ -123,11 +151,23 @@ module FrameIsomorphisms (F : Frame 𝓤 𝓥 𝓦) (G : Frame 𝓤' 𝓥' 𝓦)
 
 \end{code}
 
+We now give an alternative definition of the same notion.
+
+The predicate `is-homomorphic` below expresses what it means for an equivalence
+between the carrier sets of `F` and `G` to be homomorphic.
+
 \begin{code}
 
  is-homomorphic : (⟨ F ⟩ ≃ ⟨ G ⟩) → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓤' ⊔ 𝓥' ⊔ 𝓦 ⁺)
  is-homomorphic e = is-a-frame-homomorphism F G ⌜ e ⌝
                   ∧ is-a-frame-homomorphism G F (inverse ⌜ e ⌝ (⌜⌝-is-equiv e))
+
+\end{code}
+
+The type of isomorphisms between `F` and `G` could alternatively be defined
+as the type of homomorphic equivalences.
+
+\begin{code}
 
  Isomorphism₀ : 𝓤 ⊔ 𝓤' ⊔ 𝓥 ⊔ 𝓥' ⊔ 𝓦 ⁺  ̇
  Isomorphism₀ = Σ e ꞉ ⟨ F ⟩ ≃ ⟨ G ⟩ , is-homomorphic e holds
@@ -155,10 +195,6 @@ These two notions of frame isomorphism are equivalent.
    ψ : is-a-frame-homomorphism G F r holds
    ψ = fun-is-a-frame-homomorphism G F backward
 
-\end{code}
-
-\begin{code}
-
  isomorphism₀-to-isomorphismᵣ : Isomorphism₀ → Isomorphismᵣ
  isomorphism₀-to-isomorphismᵣ (e , φ , ψ)  =
   record
@@ -176,53 +212,27 @@ These two notions of frame isomorphism are equivalent.
  isomorphism₀-to-isomorphism =
   isomorphismᵣ-to-isomorphism ∘ isomorphism₀-to-isomorphismᵣ
 
-\end{code}
-
-\begin{code}
-
- section-ofᵢ : Isomorphism₀ → ⟨ F ⟩ → ⟨ G ⟩
- section-ofᵢ iso = fun F G forward
-  where
-   open Isomorphismᵣ (isomorphism₀-to-isomorphismᵣ iso)
-
- retraction-ofᵢ : Isomorphism₀ → ⟨ G ⟩ → ⟨ F ⟩
- retraction-ofᵢ iso = fun G F backward
-  where
-   open Isomorphismᵣ (isomorphism₀-to-isomorphismᵣ iso)
-
- retract : Isomorphism₀ ◁ Isomorphismᵣ
- retract = r , (s , †)
-  where
-   s : Isomorphism₀ → Isomorphismᵣ
-   s = isomorphism₀-to-isomorphismᵣ
-
-   r : Isomorphismᵣ → Isomorphism₀
-   r = isomorphismᵣ-to-isomorphism₀
-
-   † : r ∘ s ∼ id
-   † iso@((f , g) , quux) = to-subtype-＝ nts (to-Σ-＝ (p , q))
-    where
-     p : section-ofᵢ (r (s iso)) ＝ f
-     p = refl
-
-     brrz : is-equiv (pr₁ (pr₁ (r (s iso))))
-     brrz = pr₂ (pr₁ (r (s iso)))
-
-     nts : (e : ⟨ F ⟩ ≃ ⟨ G ⟩) → is-prop (is-homomorphic e holds)
-     nts = holds-is-prop ∘ is-homomorphic
-
-     q : brrz ＝ g
-     q = being-equiv-is-prop (λ 𝓤 𝓥 → fe {𝓤} {𝓥}) f brrz g
-
- isomorphismᵣ-equivalent-to-isomorphism₀ : Isomorphism ≃ Isomorphism₀
- isomorphismᵣ-equivalent-to-isomorphism₀ = isomorphism-to-isomorphism₀
-                                         , (isomorphism₀-to-isomorphism , †)
-                                         , (isomorphism₀-to-isomorphism , ‡)
+ isomorphism-equivalent-to-isomorphism₀ : Isomorphism ≃ Isomorphism₀
+ isomorphism-equivalent-to-isomorphism₀ = isomorphism-to-isomorphism₀
+                                        , (isomorphism₀-to-isomorphism , †)
+                                        , (isomorphism₀-to-isomorphism , ‡)
   where
    † : isomorphism-to-isomorphism₀ ∘ isomorphism₀-to-isomorphism ∼ id
-   † x = {!!}
+   † (h , _) =
+    to-subtype-＝
+     (holds-is-prop ∘ is-homomorphic)
+     (to-subtype-＝ (being-equiv-is-prop (λ 𝓤 𝓥 → fe {𝓤} {𝓥})) refl)
 
    ‡ : isomorphism₀-to-isomorphism ∘ isomorphism-to-isomorphism₀ ∼ id
-   ‡ iso = to-subtype-＝ {!!} {!!}
+   ‡ iso = to-subtype-＝ (holds-is-prop ∘ is-isomorphism) refl
+
+ isomorphismᵣ-equivalent-to-isomorphism₀ : Isomorphismᵣ ≃ Isomorphism₀
+ isomorphismᵣ-equivalent-to-isomorphism₀ =
+  Isomorphismᵣ   ≃⟨ Ⅰ ⟩
+  Isomorphism    ≃⟨ Ⅱ ⟩
+  Isomorphism₀   ■
+   where
+    Ⅰ = ≃-sym isomorphism-equiv-to-isomorphismᵣ
+    Ⅱ = isomorphism-equivalent-to-isomorphism₀
 
 \end{code}
