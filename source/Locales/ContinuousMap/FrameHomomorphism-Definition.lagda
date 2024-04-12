@@ -4,7 +4,11 @@ author:         Ayberk Tosun
 date-started:   2024-04-10
 --------------------------------------------------------------------------------
 
-Factored out from the `Locales.Frame` module on 2024-04-10.
+Originally written as part of Ayberk Tosun's MSc thesis on 2020-02-23.
+
+Ported to TypeTopology as part of the `Locales.Frame` module on 2021-03-09.
+
+Factored out from the `Locales.Frame` module into this module on 2024-04-10.
 
 \begin{code}[hide]
 
