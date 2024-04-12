@@ -132,6 +132,9 @@ syntax poset-eq-syntax P x y = x ≣[ P ] y
                → is-reflexive (λ x y → x ≤[ P ] x) holds
 ≤-is-reflexive (_ , _ , ((r , _) , _)) = r
 
+≣-is-reflexive : (P : Poset 𝓤 𝓥) → is-reflexive (λ x y → x ≣[ P ] x) holds
+≣-is-reflexive P x = ≤-is-reflexive P x , ≤-is-reflexive P x
+
 reflexivity+ : (P : Poset 𝓤 𝓥)
              → {x y : pr₁ P} → x ＝ y → (x ≤[ P ] y) holds
 reflexivity+ P {x} {y} p =
