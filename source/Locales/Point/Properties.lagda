@@ -201,7 +201,7 @@ cpf-equiv-continuous-map-into-Ω : (X : Locale (𝓤 ⁺) 𝓤 𝓤) → Point X
 cpf-equiv-continuous-map-into-Ω X = 𝔯 X , † , ‡
  where
   sec : (𝔯 X ∘ 𝔰 X) ∼ id
-  sec 𝒻 = continuous-map-equality (𝒪 X) (𝒪 𝟏L) (𝔯 X (𝔰 X 𝒻)) 𝒻 λ _ → refl
+  sec 𝒻 = to-frame-isomorphism-＝ (𝒪 X) (𝒪 𝟏L) (𝔯 X (𝔰 X 𝒻)) 𝒻 λ _ → refl
 
   ret : (𝔰 X ∘ 𝔯 X) ∼ id
   ret 𝓍 = to-subtype-＝ (holds-is-prop ∘ is-cpf X) (dfunext fe λ _ → refl)

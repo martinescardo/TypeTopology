@@ -50,10 +50,10 @@ module FrameHomomorphismProperties (F : Frame 𝓤 𝓥 𝓦) (G : Frame 𝓤' �
 
 \begin{code}
 
- continuous-map-equality : (h₁ h₂  : F ─f→ G)
+ to-frame-isomorphism-＝ : (h₁ h₂  : F ─f→ G)
                          → ((x : ⟨ F ⟩) → h₁ .pr₁ x ＝ h₂ .pr₁ x)
                          → h₁ ＝ h₂
- continuous-map-equality h₁ h₂ ψ = to-subtype-＝ † (dfunext fe ψ)
+ to-frame-isomorphism-＝ h₁ h₂ ψ = to-subtype-＝ † (dfunext fe ψ)
   where
    † : (f : ⟨ F ⟩ → ⟨ G ⟩) → is-prop (is-a-frame-homomorphism f holds)
    † f = holds-is-prop (is-a-frame-homomorphism f)
