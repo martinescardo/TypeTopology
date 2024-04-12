@@ -241,10 +241,10 @@ Declare syntax for frame isomorphisms.
 
 \begin{code}
 
-isomorphismᵣ-syntax : Frame 𝓤 𝓥 𝓦 → Frame 𝓤' 𝓥' 𝓦 → 𝓤 ⊔ 𝓤' ⊔ 𝓥 ⊔ 𝓥' ⊔ 𝓦 ⁺  ̇
-isomorphismᵣ-syntax = FrameIsomorphisms.Isomorphismᵣ
+Isomorphismᵣ-Syntax : Frame 𝓤 𝓥 𝓦 → Frame 𝓤' 𝓥' 𝓦 → 𝓤 ⊔ 𝓤' ⊔ 𝓥 ⊔ 𝓥' ⊔ 𝓦 ⁺  ̇
+Isomorphismᵣ-Syntax = FrameIsomorphisms.Isomorphismᵣ
 
-infix 0 isomorphismᵣ-syntax
-syntax isomorphismᵣ-syntax F G = F ≅f≅ G
+infix 0 Isomorphismᵣ-Syntax
+syntax Isomorphismᵣ-Syntax F G = F ≅f≅ G
 
 \end{code}
