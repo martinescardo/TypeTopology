@@ -112,5 +112,6 @@ import Locales.ContinuousMap.FrameHomomorphism-Definition
 import Locales.ContinuousMap.FrameHomomorphism-Properties
 import Locales.ContinuousMap.Definition
 import Locales.ContinuousMap.Properties
+import Locales.ContinuousMap.Homeomorphism-Definition
 
 \end{code}
