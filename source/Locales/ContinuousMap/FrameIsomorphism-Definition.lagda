@@ -236,3 +236,15 @@ These two notions of frame isomorphism are equivalent.
     Ⅱ = isomorphism-equivalent-to-isomorphism₀
 
 \end{code}
+
+Declare syntax for frame isomorphisms.
+
+\begin{code}
+
+isomorphismᵣ-syntax : Frame 𝓤 𝓥 𝓦 → Frame 𝓤' 𝓥' 𝓦 → 𝓤 ⊔ 𝓤' ⊔ 𝓥 ⊔ 𝓥' ⊔ 𝓦 ⁺  ̇
+isomorphismᵣ-syntax = FrameIsomorphisms.Isomorphismᵣ
+
+infix 0 isomorphismᵣ-syntax
+syntax isomorphismᵣ-syntax F G = F ≅f≅ G
+
+\end{code}
