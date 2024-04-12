@@ -4,6 +4,8 @@ author:         Ayberk Tosun
 date-started:   2024-04-10
 --------------------------------------------------------------------------------
 
+Originally written as part of the `Locales.Frame` module on 2021-03-09.
+
 Factored out from the `Locales.Frame` module on 2024-04-10.
 
 \begin{code}[hide]
