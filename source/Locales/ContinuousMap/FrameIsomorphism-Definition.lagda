@@ -85,7 +85,7 @@ a proposition.
 
  homomorphic-inverse-is-prop : (h : F ─f→ G) → is-prop (homomorphic-inverse h)
  homomorphic-inverse-is-prop h (r , φ , ψ) (r′ , φ′ , ψ′) =
-  to-subtype-＝ † (to-frame-isomorphism-＝ G F r r′ ‡)
+  to-subtype-＝ † (to-frame-homomorphism-＝ G F r r′ ‡)
    where
     † : (h′ : G ─f→ F) → is-prop (fun F G h ∘ fun G F h′ ∼ id × fun G F h′ ∘ fun F G h ∼ id)
     † h′ = ×-is-prop

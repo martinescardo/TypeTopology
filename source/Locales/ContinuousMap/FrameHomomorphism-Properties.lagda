@@ -48,12 +48,15 @@ module FrameHomomorphismProperties (F : Frame 𝓤 𝓥 𝓦) (G : Frame 𝓤' �
 
 \end{code}
 
+The following lemma says that if the underlying functions of two frame
+homomorphisms are extensionally equal, then the frame homomorphisms are equal.
+
 \begin{code}
 
- to-frame-isomorphism-＝ : (h₁ h₂  : F ─f→ G)
+ to-frame-homomorphism-＝ : (h₁ h₂  : F ─f→ G)
                          → ((x : ⟨ F ⟩) → h₁ .pr₁ x ＝ h₂ .pr₁ x)
                          → h₁ ＝ h₂
- to-frame-isomorphism-＝ h₁ h₂ ψ = to-subtype-＝ † (dfunext fe ψ)
+ to-frame-homomorphism-＝ h₁ h₂ ψ = to-subtype-＝ † (dfunext fe ψ)
   where
    † : (f : ⟨ F ⟩ → ⟨ G ⟩) → is-prop (is-a-frame-homomorphism f holds)
    † f = holds-is-prop (is-a-frame-homomorphism f)

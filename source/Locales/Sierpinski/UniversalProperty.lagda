@@ -311,7 +311,7 @@ Finally, we show that `𝒽` is determined uniquely by this property.
   ‡ (ℊ@(g , φ₀ , ψ₀ , ϑ₀) , †₀) =
    to-subtype-＝
     (λ h → carrier-of-[ poset-of (𝒪 X) ]-is-set)
-    (to-frame-isomorphism-＝ (𝒪 𝕊) (𝒪 X) 𝒽 ℊ γ)
+    (to-frame-homomorphism-＝ (𝒪 𝕊) (𝒪 X) 𝒽 ℊ γ)
      where
       𝓂′ : is-monotonic (poset-of (𝒪 𝕊)) (poset-of (𝒪 X)) g holds
       𝓂′ = frame-morphisms-are-monotonic (𝒪 𝕊) (𝒪 X) g (φ₀ , ψ₀ , ϑ₀)
