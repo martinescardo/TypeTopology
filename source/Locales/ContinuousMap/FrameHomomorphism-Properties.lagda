@@ -23,8 +23,8 @@ module Locales.ContinuousMap.FrameHomomorphism-Properties
         (fe : Fun-Ext)
        where
 
-open import Locales.Frame pt fe
 open import Locales.ContinuousMap.FrameHomomorphism-Definition pt fe
+open import Locales.Frame pt fe
 open import Slice.Family
 open import UF.Hedberg
 open import UF.Logic
