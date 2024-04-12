@@ -19,6 +19,8 @@ open import Locales.GaloisConnection pt fe
 open import Slice.Family
 open import UF.Subsingletons
 open import UF.Logic
+open import Locales.ContinuousMap.Definition pt fe
+open import Locales.ContinuousMap.FrameHomomorphism-Properties pt fe
 
 open AllCombinators pt fe
 open PropositionalTruncation pt
@@ -160,6 +162,9 @@ module AdjointFunctorTheorem (X : Locale 𝓤' 𝓥 𝓥)
 \end{code}
 
 \begin{code}
+
+ open ContinuousMaps
+ open FrameHomomorphismProperties
 
  aft : (𝒻 : 𝒪Yₚ ─m→ 𝒪Xₚ)
      → has-right-adjoint 𝒻 ↔ is-join-preserving (𝒪 Y) (𝒪 X) (𝒻 .pr₁) holds

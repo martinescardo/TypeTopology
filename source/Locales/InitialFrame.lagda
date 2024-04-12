@@ -6,23 +6,25 @@ Based in part on `ayberkt/formal-topology-in-UF`.
 
 {-# OPTIONS --safe --without-K #-}
 
-open import MLTT.Spartan hiding (𝟚)
 open import MLTT.List hiding ([_])
+open import MLTT.Spartan hiding (𝟚)
 open import UF.Base
-open import UF.PropTrunc
 open import UF.FunExt
+open import UF.PropTrunc
 
 module Locales.InitialFrame
         (pt : propositional-truncations-exist)
         (fe : Fun-Ext)
        where
 
+open import Locales.ContinuousMap.FrameHomomorphism-Definition pt fe
+open import Locales.ContinuousMap.FrameHomomorphism-Properties pt fe
+open import Locales.Frame pt fe
+open import Slice.Family
+open import UF.Logic
 open import UF.Sets
 open import UF.Subsingletons
-open import UF.Logic
 open import UF.Subsingletons-FunExt
-open import Slice.Family
-open import Locales.Frame pt fe
 open import UF.SubtypeClassifier
 
 open AllCombinators pt fe
@@ -215,6 +217,9 @@ f-respects-⋁ pe A U = β , γ
 \end{code}
 
 \begin{code}
+
+open FrameHomomorphisms
+open FrameHomomorphismProperties
 
 𝒻 : {𝓦 : Universe} (pe : propext 𝓦) (F : Frame 𝓤 𝓥 𝓦)
   → (𝟎-𝔽𝕣𝕞 pe) ─f→ F
