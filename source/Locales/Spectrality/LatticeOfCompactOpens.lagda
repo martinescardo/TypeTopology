@@ -37,13 +37,14 @@ private
  fe : Fun-Ext
  fe {𝓤} {𝓥} = univalence-gives-funext' 𝓤 𝓥 (ua 𝓤) (ua (𝓤 ⊔ 𝓥))
 
-open import Locales.Frame pt fe
 open import Locales.Compactness pt fe
-open import Locales.Spectrality.SpectralLocale pt fe
-open import Locales.Spectrality.SpectralMap pt fe
 open import Locales.DistributiveLattice.Definition fe pt
 open import Locales.DistributiveLattice.Homomorphism fe pt
+open import Locales.Frame pt fe
 open import Locales.SmallBasis pt fe sr
+open import Locales.Spectrality.SpectralLocale pt fe
+open import Locales.Spectrality.SpectralMap pt fe
+open import UF.Equiv
 
 open AllCombinators pt fe
 open Locale
@@ -236,5 +237,24 @@ of compact opens to be small.
 
  𝒦⦅X⦆-is-small : is-small ∣ 𝒦⦅X⦆ ∣ᵈ
  𝒦⦅X⦆-is-small = smallness-of-𝒦 ua X σ₀
+
+\end{code}
+
+Added on 2024-04-12.
+
+\begin{code}
+
+ 𝒦⁻ : 𝓤  ̇
+ 𝒦⁻ = resized ∣ 𝒦⦅X⦆ ∣ᵈ 𝒦⦅X⦆-is-small
+
+ to-small-copy : ∣ 𝒦⦅X⦆ ∣ᵈ → 𝒦⁻
+ to-small-copy K =
+  let
+   e = resizing-condition 𝒦⦅X⦆-is-small
+  in
+   inverse ⌜ e ⌝ (⌜⌝-is-equiv e) K
+
+ to-original : 𝒦⁻ → ∣ 𝒦⦅X⦆ ∣ᵈ
+ to-original = ⌜ resizing-condition 𝒦⦅X⦆-is-small ⌝
 
 \end{code}
