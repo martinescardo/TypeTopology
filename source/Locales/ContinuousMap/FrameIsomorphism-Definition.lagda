@@ -27,6 +27,7 @@ open import UF.Equiv
 open import UF.Equiv-FunExt
 open import UF.Logic
 open import UF.Retracts
+open import UF.SIP
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.SubtypeClassifier
@@ -241,5 +242,44 @@ Isomorphismᵣ-Syntax = FrameIsomorphisms.Isomorphismᵣ
 
 infix 0 Isomorphismᵣ-Syntax
 syntax Isomorphismᵣ-Syntax F G = F ≅f≅ G
+
+\end{code}
+
+Added on 2024-04-14.
+
+The identity equivalence is trivially homomorphic.
+
+\begin{code}
+
+𝔦𝔡 : (L : Frame 𝓤 𝓥 𝓦) → ⟨ L ⟩ ≃ ⟨ L ⟩
+𝔦𝔡 L = ≃-refl sip.⟨ L ⟩
+
+𝔦𝔡-preserves-top : (L : Frame 𝓤 𝓥 𝓦) → preserves-top L L ⌜ 𝔦𝔡 L ⌝ holds
+𝔦𝔡-preserves-top L = refl
+
+𝔦𝔡-preserves-binary-meets : (L : Frame 𝓤 𝓥 𝓦)
+                          → preserves-binary-meets L L ⌜ 𝔦𝔡 L ⌝ holds
+𝔦𝔡-preserves-binary-meets _ _ _ = refl
+
+𝔦𝔡-preserves-joins : (L : Frame 𝓤 𝓥 𝓦) → preserves-joins L L ⌜ 𝔦𝔡 L ⌝ holds
+𝔦𝔡-preserves-joins L S = † , ‡
+ where
+  open Joins (λ x y → x ≤[ poset-of L ] y)
+
+  † : ((⋁[ L ] S) is-an-upper-bound-of S) holds
+  † = ⋁[ L ]-upper S
+
+  ‡ : ((u , _) : upper-bound S) → ((⋁[ L ] S) ≤[ poset-of L ] u) holds
+  ‡ = ⋁[ L ]-least S
+
+𝔦𝔡-is-frame-homomorphism : (L : Frame 𝓤 𝓥 𝓦)
+                         → is-a-frame-homomorphism L L ⌜ 𝔦𝔡 L ⌝ holds
+𝔦𝔡-is-frame-homomorphism L = 𝔦𝔡-preserves-top L
+                           , 𝔦𝔡-preserves-binary-meets L
+                           , 𝔦𝔡-preserves-joins L
+
+id-equiv-is-homomorphic : (L : Frame 𝓤 𝓥 𝓦)
+                         → FrameIsomorphisms.is-homomorphic L L (𝔦𝔡 L) holds
+id-equiv-is-homomorphic L = 𝔦𝔡-is-frame-homomorphism L , 𝔦𝔡-is-frame-homomorphism L
 
 \end{code}
