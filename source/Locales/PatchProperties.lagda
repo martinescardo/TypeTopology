@@ -6,16 +6,8 @@ Based on `ayberkt/formal-topology-in-UF`.
 
 {-# OPTIONS --safe --without-K --lossy-unification #-}
 
-open import MLTT.List hiding ([_])
-open import MLTT.Spartan hiding (𝟚)
-open import Slice.Family
-open import UF.Base
-open import UF.EquivalenceExamples
 open import UF.FunExt
 open import UF.PropTrunc
-open import UF.SubtypeClassifier
-open import UF.UA-FunExt
-open import UF.Univalence
 open import UF.Size
 
 \end{code}
@@ -25,35 +17,46 @@ open import UF.Size
 module Locales.PatchProperties
         (pt : propositional-truncations-exist)
         (fe : Fun-Ext)
-        (sr : Set-Replacement pt)
-         where
+        (sr : Set-Replacement pt) where
 
-open import UF.Subsingletons
-open import UF.Logic
-open import UF.Equiv using (_≃_; logically-equivalent-props-give-is-equiv)
-open import Locales.Frame pt fe
 open import Locales.AdjointFunctorTheoremForFrames pt fe
-
-open AllCombinators pt fe
-open PropositionalTruncation pt
+open import Locales.CharacterisationOfContinuity pt fe
+open import Locales.Clopen      pt fe sr
+open import Locales.CompactRegular pt fe using (∨-is-scott-continuous)
+open import Locales.Compactness pt fe
+open import Locales.Complements pt fe
+open import Locales.ContinuousMap.Definition pt fe
+open import Locales.ContinuousMap.FrameHomomorphism-Definition pt fe
+open import Locales.ContinuousMap.FrameHomomorphism-Properties pt fe
+open import Locales.Frame pt fe
+open import Locales.HeytingImplication pt fe
 open import Locales.Nucleus pt fe
 open import Locales.PatchLocale pt fe sr
-open import Locales.HeytingImplication pt fe
-open import Locales.Compactness pt fe
-open import Locales.CompactRegular pt fe using (∨-is-scott-continuous)
+open import Locales.PerfectMaps pt fe
+open import Locales.Regular pt fe sr
+open import Locales.SmallBasis pt fe sr
 open import Locales.Spectrality.SpectralLocale pt fe
 open import Locales.Spectrality.SpectralMap    pt fe
-open import Locales.SmallBasis pt fe sr
-open import Locales.CharacterisationOfContinuity pt fe
-open import Locales.PerfectMaps pt fe
-open import Locales.Complements pt fe
-open import Locales.Clopen      pt fe sr
-open import Locales.ZeroDimensionality pt fe sr
 open import Locales.Stone pt fe sr
 open import Locales.StoneImpliesSpectral pt fe sr
-open import Locales.Regular pt fe sr
+open import Locales.ZeroDimensionality pt fe sr
+open import MLTT.List hiding ([_])
+open import MLTT.Spartan hiding (𝟚)
+open import Slice.Family
+open import UF.Base
+open import UF.Equiv using (_≃_; logically-equivalent-props-give-is-equiv)
+open import UF.EquivalenceExamples
+open import UF.Logic
+open import UF.Subsingletons
+open import UF.SubtypeClassifier
+open import UF.Univalence
 
+open AllCombinators pt fe
+open ContinuousMaps
+open FrameHomomorphismProperties
+open FrameHomomorphisms hiding (fun-syntax; fun)
 open Locale
+open PropositionalTruncation pt
 
 \end{code}
 
