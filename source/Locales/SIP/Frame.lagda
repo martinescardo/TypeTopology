@@ -8,7 +8,7 @@ Originally proved in `ayberkt/formal-topology-in-UF`.
 
 \begin{code}[hide]
 
-{-# OPTIONS --safe --without-K #-}
+{-# OPTIONS --safe --without-K --lossy-unification #-}
 
 open import MLTT.Spartan hiding (𝟚; ₀; ₁)
 open import UF.FunExt
@@ -105,28 +105,29 @@ module SIP-For-Frames {A : 𝓤 ⁺  ̇} (str₁ str₂ : frame-structure 𝓤 �
  ⋁₂_ : Fam 𝓤 ⟨ G ⟩ → ⟨ G ⟩
  ⋁₂_ = join-of G
 
- homomorphic-identity-equivalence-gives-order-agreement
-  : is-homomorphic F G (≃-refl A) holds
-  → _≤₁_ ＝ _≤₂_
- homomorphic-identity-equivalence-gives-order-agreement h =
-  dfunext fe λ x → dfunext fe λ y → † x y
-   where
-    iso : Isomorphismᵣ F G
-    iso = isomorphism₀-to-isomorphismᵣ F G (≃-refl A , h)
+ abstract
+  homomorphic-identity-equivalence-gives-order-agreement
+   : is-homomorphic F G (≃-refl A) holds
+   → _≤₁_ ＝ _≤₂_
+  homomorphic-identity-equivalence-gives-order-agreement h =
+   dfunext fe λ x → dfunext fe λ y → † x y
+    where
+     iso : Isomorphismᵣ F G
+     iso = isomorphism₀-to-isomorphismᵣ F G (≃-refl A , h)
 
-    open Isomorphismᵣ iso
+     open Isomorphismᵣ iso
 
-    † : (x y : A) → x ≤₁ y ＝ x ≤₂ y
-    † x y = ⇔-gives-＝ pe (x ≤₁ y) (x ≤₂ y) ‡
-     where
-      ‡ : (x ≤₁ y) ⇔ (x ≤₂ y) ＝ ⊤
-      ‡ = holds-gives-equal-⊤ pe fe (x ≤₁ y ⇔ x ≤₂ y) (β , γ)
-       where
-        β : (x ≤₁ y ⇒ x ≤₂ y) holds
-        β = frame-morphisms-are-monotonic F G id s-is-homomorphism (x , y)
+     † : (x y : A) → x ≤₁ y ＝ x ≤₂ y
+     † x y = ⇔-gives-＝ pe (x ≤₁ y) (x ≤₂ y) ‡
+      where
+       ‡ : (x ≤₁ y) ⇔ (x ≤₂ y) ＝ ⊤
+       ‡ = holds-gives-equal-⊤ pe fe (x ≤₁ y ⇔ x ≤₂ y) (β , γ)
+        where
+         β : (x ≤₁ y ⇒ x ≤₂ y) holds
+         β = frame-morphisms-are-monotonic F G id s-is-homomorphism (x , y)
 
-        γ : (x ≤₂ y ⇒ x ≤₁ y) holds
-        γ = frame-morphisms-are-monotonic G F id r-is-homomorphism (x , y)
+         γ : (x ≤₂ y ⇒ x ≤₁ y) holds
+         γ = frame-morphisms-are-monotonic G F id r-is-homomorphism (x , y)
 
  structural-equality-top-lemma : is-homomorphic F G (≃-refl A) holds
                                → 𝟏[ F ] ＝ 𝟏[ G ]
@@ -158,21 +159,22 @@ module SIP-For-Frames {A : 𝓤 ⁺  ̇} (str₁ str₂ : frame-structure 𝓤 �
 
     open _─f·→_ φ using () renaming (h-preserves-meets to id-preserves-meets)
 
- homomorphic-identity-equivalence-gives-join-agreement
-  : is-homomorphic F G (≃-refl A) holds
-  → join-of F ＝ join-of G
- homomorphic-identity-equivalence-gives-join-agreement h =
-  dfunext fe λ S → frame-homomorphisms-preserve-all-joins′ F G (id , {!!}) S
-  where
-   iso : Isomorphismᵣ F G
-   iso = isomorphism₀-to-isomorphismᵣ F G (≃-refl A , h)
+ abstract
+  homomorphic-identity-equivalence-gives-join-agreement
+   : is-homomorphic F G (≃-refl A) holds
+   → join-of F ＝ join-of G
+  homomorphic-identity-equivalence-gives-join-agreement h =
+   dfunext fe (frame-homomorphisms-preserve-all-joins′ F G (id , s-is-homomorphism))
+   where
+    iso : Isomorphismᵣ F G
+    iso = isomorphism₀-to-isomorphismᵣ F G (≃-refl A , h)
 
-   open Isomorphismᵣ iso using (forward; backward)
+    open Isomorphismᵣ iso using (forward; backward; s-is-homomorphism)
 
-   φ : F ─f·→ G
-   φ = frame-homomorphism-to-frame-homomorphismᵣ F G forward
+    φ : F ─f·→ G
+    φ = frame-homomorphism-to-frame-homomorphismᵣ F G forward
 
-   open _─f·→_ φ using () renaming (h-preserves-joins to id-preserves-joins)
+    open _─f·→_ φ using () renaming (h-preserves-joins to id-preserves-joins)
 
  frame-data-agreement : is-homomorphic F G (≃-refl A) holds → frame-data-of-F ＝ frame-data-of-G
  frame-data-agreement η =
@@ -182,7 +184,7 @@ module SIP-For-Frames {A : 𝓤 ⁺  ̇} (str₁ str₂ : frame-structure 𝓤 �
    (to-Σ-＝' β)
    where
     δ : ⋁₁_ ＝ ⋁₂_
-    δ = {!!}
+    δ = homomorphic-identity-equivalence-gives-join-agreement η
 
     γ : _∧₁_ , ⋁₁_ ＝ _∧₂_ , ⋁₂_
     γ = transport
@@ -197,111 +199,37 @@ module SIP-For-Frames {A : 𝓤 ⁺  ̇} (str₁ str₂ : frame-structure 𝓤 �
          (to-Σ-＝' γ)
 
 
- structural-equality-lemma : is-homomorphic F G (≃-refl A) holds → str₁ ＝ str₂
- structural-equality-lemma =
-  to-subtype-＝ satisfying-frame-laws-is-prop ∘ frame-data-agreement
+ abstract
+  homomorphic-equivalence-gives-structural-equality
+   : is-homomorphic F G (≃-refl A) holds
+   → str₁ ＝ str₂
+  homomorphic-equivalence-gives-structural-equality =
+   to-subtype-＝ satisfying-frame-laws-is-prop ∘ frame-data-agreement
 
- -- frame-sns-data : SNS (frame-structure 𝓤 𝓤) (𝓤 ⁺)
- -- frame-sns-data = ι , ρ , θ
- --  where
- --   ι : (F′ G′ : Frame (𝓤 ⁺) 𝓤 𝓤) → sip.⟨ F′ ⟩ ≃ sip.⟨ G′ ⟩ → 𝓤 ⁺  ̇
- --   ι F′ G′ e = is-homomorphic F′ G′ e holds
+open FrameIsomorphisms
 
- --   ρ : (L : Frame (𝓤 ⁺) 𝓤 𝓤) → ι L L (≃-refl sip.⟨ L ⟩)
- --   ρ L = 𝔦𝔡-is-frame-homomorphism L , 𝔦𝔡-is-frame-homomorphism L
+frame-sns-data : SNS (frame-structure 𝓤 𝓤) (𝓤 ⁺)
+frame-sns-data = ι , ρ , θ
+ where
+  ι : (F′ G′ : Frame (𝓤 ⁺) 𝓤 𝓤) → sip.⟨ F′ ⟩ ≃ sip.⟨ G′ ⟩ → 𝓤 ⁺  ̇
+  ι F′ G′ e = is-homomorphic F′ G′ e holds
 
- --   β : {X : 𝓤 ⁺  ̇} (str₁ str₂ : frame-structure 𝓤 𝓤 X)
- --     → is-homomorphic (X , str₁) (X , str₂) (≃-refl X) holds
- --     → (λ x y → x ≤[ poset-of (X , str₁) ] y) ＝ (λ x y → x ≤[ poset-of (X , str₂) ] y)
- --   β {X = X} str₁ str₂ p = dfunext fe λ x → dfunext fe λ y → † x y
- --    where
- --     _≤₁_ : X → X → Ω 𝓤
- --     _≤₁_ = λ x y → x ≤[ poset-of (X , str₁) ] y
+  ρ : (L : Frame (𝓤 ⁺) 𝓤 𝓤) → ι L L (≃-refl sip.⟨ L ⟩)
+  ρ L = 𝔦𝔡-is-frame-homomorphism L , 𝔦𝔡-is-frame-homomorphism L
 
- --     _≤₂_ : X → X → Ω 𝓤
- --     _≤₂_ = λ x y → x ≤[ poset-of (X , str₂) ] y
+  θ : {X : 𝓤 ⁺  ̇} (str₁ str₂ : frame-structure 𝓤 𝓤 X)
+    → is-equiv (canonical-map ι ρ str₁ str₂)
+  θ {X = X} str₁ str₂ = (homomorphic-equivalence-gives-structural-equality , †)
+                      , (homomorphic-equivalence-gives-structural-equality , ‡)
+   where
+    open SIP-For-Frames str₁ str₂
 
- --     iso : Isomorphismᵣ (X , str₁) (X , str₂)
- --     iso = isomorphism₀-to-isomorphismᵣ (X , str₁) (X , str₂) (≃-refl X , p)
+    † : (h : is-homomorphic F G (≃-refl X) holds)
+      → canonical-map ι ρ str₁ str₂ (homomorphic-equivalence-gives-structural-equality h) ＝ h
+    † h = holds-is-prop (is-homomorphic F G (≃-refl X)) (canonical-map ι ρ str₁ str₂ (homomorphic-equivalence-gives-structural-equality h)) h
 
- --     open Isomorphismᵣ
-
- --     † : (x y : X) → x ≤₁ y ＝ x ≤₂ y
- --     † x y = ⇔-gives-＝
- --              pe
- --              (x ≤₁ y)
- --              (x ≤₂ y)
- --              (holds-gives-equal-⊤ pe fe ((x ≤₁ y) ⇔ (x ≤₂ y)) (♣ , ♠))
- --      where
- --       ♣ : (x ≤₁ y ⇒ x ≤₂ y) holds
- --       ♣ = frame-morphisms-are-monotonic
- --            (X , str₁)
- --            (X , str₂)
- --            id
- --            (s-is-homomorphism iso)
- --            (x , y)
-
- --       ♠ : (x ≤₂ y ⇒ x ≤₁ y) holds
- --       ♠ = frame-morphisms-are-monotonic
- --            (X , str₂)
- --            (X , str₁)
- --            id
- --            (r-is-homomorphism iso)
- --            (x , y)
-
- --   γ : {X : 𝓤 ⁺  ̇} (str₁ str₂ : frame-structure 𝓤 𝓤 X)
- --     → ι (X , str₁) (X , str₂) (≃-refl X) → 𝟏[ (X , str₁) ] ＝ 𝟏[ (X , str₂) ]
- --   γ {X} str₁ str₂ p = id-preserves-top
- --    where
- --     iso : Isomorphismᵣ (X , str₁) (X , str₂)
- --     iso = isomorphism₀-to-isomorphismᵣ (X , str₁) (X , str₂) (≃-refl X , p)
-
- --     open Isomorphismᵣ iso using (forward; backward)
-
- --     φ : (X , str₁) ─f·→ (X , str₂)
- --     φ = frame-homomorphism-to-frame-homomorphismᵣ (X , str₁) (X , str₂) forward
-
- --     open _─f·→_ φ using () renaming (h-preserves-top to id-preserves-top)
-
- --   δ : {X : 𝓤 ⁺  ̇} (str₁ str₂ : frame-structure 𝓤 𝓤 X)
- --     → ι (X , str₁) (X , str₂) (≃-refl X)
- --     → meet-of (X , str₁) ＝ meet-of (X , str₂)
- --   δ = {!!}
-
- --   ε : {X : 𝓤 ⁺  ̇} (str₁ str₂ : frame-structure 𝓤 𝓤 X)
- --     → ι (X , str₁) (X , str₂) (≃-refl X)
- --     → join-of (X , str₁) ＝ join-of (X , str₂)
- --   ε = {!!}
-
- --   foo : {X : 𝓤 ⁺  ̇} (str₁ str₂ : frame-structure 𝓤 𝓤 X)
- --       → ι (X , str₁) (X , str₂) (≃-refl X)
- --       → str₁ ＝ str₂
- --   foo str₁@((a₁ , b₁ , c₁ , d₁) , laws₁) str₂@((a₂ , b₂ , c₂ , d₂) , laws₂) p =
- --    to-subtype-＝
- --     satisfying-frame-laws-is-prop
- --     (transport
- --       (λ - → - , b₁ , c₁ , d₁ ＝ a₂ , b₂ , c₂ , d₂)
- --       (q ⁻¹)
- --       (to-Σ-＝'
- --         (transport
- --           (λ - → - , c₁ , d₁ ＝ b₂ , c₂ , d₂)
- --           (r ⁻¹)
- --           (to-Σ-＝' (transport (λ - → - , d₁ ＝ c₂ , d₂) (s ⁻¹) (to-Σ-＝' t))))))
- --     where
- --      q : a₁ ＝ a₂
- --      q = β str₁ str₂ p
-
- --      r : b₁ ＝ b₂
- --      r = γ str₁ str₂ p
-
- --      s : c₁ ＝ c₂
- --      s = δ str₁ str₂ p
-
- --      t : d₁ ＝ d₂
- --      t = ε str₁ str₂ p
-
- --   θ : {X : 𝓤 ⁺  ̇} (str₁ str₂ : frame-structure 𝓤 𝓤 X)
- --     → is-equiv (canonical-map ι ρ str₁ str₂)
- --   θ {X} str₁ str₂ = (foo str₁ str₂  , {!refl!}) , {!!} , {!!}
+    ‡ : (p : str₁ ＝ str₂)
+      → homomorphic-equivalence-gives-structural-equality (canonical-map ι ρ str₁ str₂ p) ＝ p
+    ‡ p = {!!}
 
 \end{code}

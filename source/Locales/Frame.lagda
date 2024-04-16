@@ -25,9 +25,11 @@ open import Slice.Family
 open import UF.Hedberg
 open import UF.Logic
 open import UF.Sets
-open import UF.SubtypeClassifier
+open import UF.Sets-Properties
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
+open import UF.Subsingletons-Properties
+open import UF.SubtypeClassifier
 
 open AllCombinators pt fe
 
@@ -1998,5 +2000,28 @@ join-𝟎-lemma₂ F {x} {y} p = only-𝟎-is-below-𝟎 F y †
 
   † : (y ≤[ poset-of F ] 𝟎[ F ]) holds
   † = y ≤⟨ ∨[ F ]-upper₂ x y ⟩ x ∨[ F ] y ＝⟨ p ⟩ₚ 𝟎[ F ] ■
+
+\end{code}
+
+The following proof has been added on 2024-04-16.
+
+\begin{code}
+
+order-is-set : {𝓥 : Universe} (A : 𝓤  ̇) → is-set (A → A → Ω 𝓥)
+order-is-set {𝓥} A {_≤₁_} {_≤₂_} p q = {!!}
+ where
+  _ = _∼_
+
+frame-data-is-set : (A : 𝓤  ̇) (𝓥 𝓦 : Universe) → is-set (frame-data 𝓥 𝓦 A)
+frame-data-is-set A 𝓥 𝓦 =
+ Σ-is-set {!!} (λ _≤_ → {!!})
+
+frame-structure-is-set : {𝓤 : Universe}
+                       → (A : 𝓤  ̇) (𝓥 𝓦 : Universe)
+                       → is-set (frame-structure 𝓥 𝓦 A)
+frame-structure-is-set A 𝓥 𝓦 =
+ Σ-is-set
+  (Σ-is-set {!!} λ str → Σ-is-set {!carrier-of-[ poset-of (A , str) ]-is-set!} {!!})
+  λ d → props-are-sets (satisfying-frame-laws-is-prop d)
 
 \end{code}
