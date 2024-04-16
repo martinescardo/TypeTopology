@@ -61,6 +61,12 @@ We start with the record-based definition of the notion of frame isomorphism.
   r : ⟨ G ⟩ → ⟨ F ⟩
   r = fun G F backward
 
+  s-is-homomorphism : is-a-frame-homomorphism F G s holds
+  s-is-homomorphism = fun-is-a-frame-homomorphism F G forward
+
+  r-is-homomorphism : is-a-frame-homomorphism G F r holds
+  r-is-homomorphism = fun-is-a-frame-homomorphism G F backward
+
   field
    backward-cancels-forward : r ∘ s ∼ id
    forward-cancels-backward : s ∘ r ∼ id
@@ -277,6 +283,13 @@ The identity equivalence is trivially homomorphic.
 𝔦𝔡-is-frame-homomorphism L = 𝔦𝔡-preserves-top L
                            , 𝔦𝔡-preserves-binary-meets L
                            , 𝔦𝔡-preserves-joins L
+
+𝔦𝔡ₕ : (L : Frame 𝓤 𝓥 𝓦) → L ─f·→ L
+𝔦𝔡ₕ L =
+ frame-homomorphism-to-frame-homomorphismᵣ
+  L
+  L
+  (⌜ 𝔦𝔡 L ⌝ , 𝔦𝔡-is-frame-homomorphism L)
 
 id-equiv-is-homomorphic : (L : Frame 𝓤 𝓥 𝓦)
                          → FrameIsomorphisms.is-homomorphic L L (𝔦𝔡 L) holds

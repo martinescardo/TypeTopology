@@ -326,9 +326,41 @@ satisfies-frame-laws {𝓤 = 𝓤} {𝓥} {𝓦} {A = A}  (_≤_ , 𝟏 , _⊓_ 
     ε = Ɐ (x , U) ꞉ A × Fam 𝓦 A ,
         (x ⊓ (⋁⟨ i ⟩ U [ i ]) ＝[ iss ]＝ ⋁⟨ i ⟩ x ⊓ (U [ i ]))
 
+\end{code}
+
+The proof `satisfying-frame-laws-is-prop` has been added on 2024-04-15.
+
+\begin{code}
+
+satisfying-frame-laws-is-prop : {A : 𝓤  ̇} (d : frame-data 𝓥 𝓦 A)
+                              → is-prop (satisfies-frame-laws d)
+satisfying-frame-laws-is-prop {𝓤} {𝓥} {𝓦} {A} d@(_≤_ , 𝟏 , _⊓_ , ⊔_) =
+ Σ-is-prop (being-partial-order-is-prop A _≤_) †
+  where
+   open Meets _≤_
+   open Joins _≤_
+   open JoinNotation ⊔_
+
+   β = is-top 𝟏
+   γ = Ɐ (x , y) ꞉ (A × A) , ((x ⊓ y) is-glb-of (x , y))
+   δ = Ɐ U ꞉ Fam 𝓦 A , (⊔ U) is-lub-of U
+
+   ε : is-set A → Ω (𝓤 ⊔ 𝓦 ⁺)
+   ε σ = Ɐ (x , U) ꞉ A × Fam 𝓦 A ,
+          (x ⊓ (⋁⟨ i ⟩ U [ i ]) ＝[ σ ]＝ ⋁⟨ i ⟩ x ⊓ (U [ i ]))
+
+   ‡ : (p : is-partial-order A _≤_) (σ : is-set A)
+     → is-prop ((β ∧ γ ∧ δ ∧ ε σ) holds)
+   ‡ p σ = holds-is-prop (β ∧ γ ∧ δ ∧ ε σ)
+
+   χ : is-partial-order A _≤_ → is-set A
+   χ p = carrier-of-[ (A , _≤_ , p) ]-is-set
+
+   † : (p : is-partial-order A _≤_) → is-prop ((β ∧ γ ∧ δ ∧ ε (χ p)) holds)
+   † p = ‡ p (χ p)
+
 frame-structure : (𝓥 𝓦 : Universe) → 𝓤 ̇ → 𝓤 ⊔ 𝓥 ⁺ ⊔ 𝓦 ⁺ ̇
-frame-structure 𝓥 𝓦 A =
-  Σ d ꞉ (frame-data 𝓥 𝓦 A) , satisfies-frame-laws d
+frame-structure 𝓥 𝓦 A = Σ d ꞉ frame-data 𝓥 𝓦 A , satisfies-frame-laws d
 
 \end{code}
 
