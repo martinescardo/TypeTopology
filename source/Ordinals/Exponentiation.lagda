@@ -1,29 +1,29 @@
 Tom de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg, Chuangjie Xu,
-13 November 2023.
+15 April 2023.
 
 \begin{code}
 
 {-# OPTIONS --safe --without-K --no-exact-split --lossy-unification #-}
 
 open import UF.Univalence
+open import UF.PropTrunc
+open import UF.Size
 
 module Ordinals.Exponentiation
        (ua : Univalence)
+       (pt : propositional-truncations-exist)
+       (sr : Set-Replacement pt)
        where
 
 open import UF.Base
-open import UF.Embeddings hiding (⌊_⌋)
 open import UF.Equiv
-open import UF.EquivalenceExamples
 open import UF.ExcludedMiddle
 open import UF.FunExt
 open import UF.Sets
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.UA-FunExt
-
-open import UF.PropTrunc
-open import UF.Size
+open import UF.ImageAndSurjection pt
 
 private
  fe : FunExt
@@ -38,10 +38,10 @@ private
 open import MLTT.Plus-Properties
 open import MLTT.Spartan
 open import MLTT.Sigma
--- open import Notation.CanonicalMap
+open import MLTT.List
+
 open import Ordinals.Arithmetic fe
 open import Ordinals.ArithmeticProperties ua
-open import Ordinals.ConvergentSequence ua
 open import Ordinals.Equivalence
 open import Ordinals.Maps
 open import Ordinals.Notions
@@ -49,12 +49,15 @@ open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.Type
 open import Ordinals.Underlying
 open import Ordinals.WellOrderingTaboo
+open import Ordinals.OrdinalOfOrdinalsSuprema ua
 
--- our imports
-open import MLTT.List
+open PropositionalTruncation pt
+
+open suprema pt sr
 
 \end{code}
 
+##### Things that should be moved somewhere else ######
 
 Given an ordinal α and a type family P, subtype of elements satisfying
 P inherits an order from α.  This order also inherits wellfoundedness
@@ -80,6 +83,171 @@ subtype-order-transitive α P (x , _) (y , _) (z , _) = Transitivity α x y z
 
 \end{code}
 
+\begin{code}
+
+surjective-simulation-gives-equality : (α β : Ordinal 𝓤)
+                                     → (f : ⟨ α ⟩ → ⟨ β ⟩)
+                                     → is-simulation α β f
+                                     → is-surjection f
+                                     → α ＝ β
+surjective-simulation-gives-equality α β f sim surj = ⊴-antisym α β (f , sim) (h₀ , h₀-sim)
+  where
+    prp : (b : ⟨ β ⟩) → is-prop (Σ a ꞉ ⟨ α ⟩ , (f a ＝ b))
+    prp b (a , p) (a' , p') = to-subtype-＝ (λ a → underlying-type-is-set fe β)
+                                           (simulations-are-lc α β f sim (p ∙ p' ⁻¹))
+
+    h : (b : ⟨ β ⟩) → Σ a ꞉ ⟨ α ⟩ , (f a ＝ b)
+    h b = ∥∥-rec (prp b) id (surj b)
+
+    h₀ : ⟨ β ⟩ → ⟨ α ⟩
+    h₀ b = pr₁ (h b)
+
+    h₀-retract-of-f : (b : ⟨ β ⟩) → f (h₀ b) ＝ b
+    h₀-retract-of-f b = pr₂ (h b)
+
+    h₀-is-initial-segment : is-initial-segment β α h₀
+    h₀-is-initial-segment b a p = f a , p'' , q
+      where
+       p' : f a ≺⟨ β ⟩ (f (h₀ b))
+       p' = simulations-are-order-preserving α β f sim a (h₀ b) p
+
+       p'' : f a ≺⟨ β ⟩ b
+       p'' = transport (λ - → f a ≺⟨ β ⟩ -) (h₀-retract-of-f b) p'
+
+       q : h₀ (f a) ＝ a
+       q = simulations-are-lc α β f sim (h₀-retract-of-f (f a))
+
+    h₀-is-order-preserving : is-order-preserving β α h₀
+    h₀-is-order-preserving b b' p = p''
+      where
+        p' : f (h₀ b) ≺⟨ β ⟩ f (h₀ b')
+        p' = transport₂⁻¹ (underlying-order β) (h₀-retract-of-f b) (h₀-retract-of-f b') p
+
+        p'' : h₀ b  ≺⟨ α ⟩ (h₀ b')
+        p'' = simulations-are-order-reflecting α β f sim (h₀ b) (h₀ b') p'
+
+    h₀-sim : is-simulation β α h₀
+    h₀-sim = h₀-is-initial-segment , h₀-is-order-preserving
+
+
+order-reflecting-and-partial-inverse-is-initial-segment : (α β : Ordinal 𝓤)
+                                                       (f : ⟨ α ⟩ → ⟨ β ⟩)
+                                                     → is-order-reflecting α β f
+                                                     → ((a : ⟨ α ⟩)(b : ⟨ β ⟩) → b ≺⟨ β ⟩ f a → Σ a' ꞉ ⟨ α ⟩ , f a' ＝ b)
+                                                     → is-initial-segment α β f
+order-reflecting-and-partial-inverse-is-initial-segment α β f p i a b m = a' , p' , q'
+  where
+    q : Σ a' ꞉ ⟨ α ⟩ , f a' ＝ b
+    q = i a b m
+    a' : ⟨ α ⟩
+    a' = pr₁ q
+    q' : f a' ＝ b
+    q' = pr₂ q
+
+    m' : f a' ≺⟨ β ⟩ f a
+    m' = transport⁻¹ (λ - → - ≺⟨ β ⟩ f a) q' m
+    p' : a' ≺⟨ α ⟩ a
+    p' = p a' a m'
+
+\end{code}
+
+\begin{code}
+
+prop-ordinal-＝ : (P Q : 𝓤 ̇ ) → (pp : is-prop P) → (pq : is-prop Q)
+                → P ↔ Q → prop-ordinal P pp ＝ prop-ordinal Q pq
+prop-ordinal-＝ P Q pp pq (f , g) =
+  ⊴-antisym (prop-ordinal P pp) (prop-ordinal Q pq)
+            (simulation P Q pp pq f) (simulation Q P pq pp g)
+  where
+    simulation : (P Q : 𝓤 ̇ ) → (pp : is-prop P) → (pq : is-prop Q) → (P → Q) →
+                 prop-ordinal P pp ⊴ prop-ordinal Q pq
+    simulation P Q pp pq f = f , (λ x y e → 𝟘-elim e) , (λ x y e → 𝟘-elim e)
+
+sup-preserves-prop : {I : 𝓤 ̇ } → (γ : I → 𝓤 ̇ ) → (γ-is-prop : (i : I) → is-prop (γ i))
+                   → sup (λ i → prop-ordinal (γ i) (γ-is-prop i)) ＝ prop-ordinal (∃ i ꞉ I , γ i) ∥∥-is-prop
+sup-preserves-prop {𝓤} {I = I} γ γ-is-prop = surjective-simulation-gives-equality (sup β) α
+                                               (pr₁ (sup-is-lower-bound-of-upper-bounds β α f))
+                                               (pr₂ (sup-is-lower-bound-of-upper-bounds β α f))
+                                               (surjectivity-lemma β α f f-surjective)
+ where
+   α : Ordinal 𝓤
+   α = prop-ordinal (∃ i ꞉ I , γ i) ∥∥-is-prop
+   β : I → Ordinal 𝓤
+   β i = prop-ordinal (γ i) (γ-is-prop i)
+   f : (i : I) → β i ⊴ α
+   f i = (λ b → ∣ i , b ∣) , (λ x y e → 𝟘-elim e) , (λ x y e → 𝟘-elim e)
+   f-surjective : (y : ⟨ α ⟩) → ∃ i ꞉ I , Σ b ꞉ ⟨ β i ⟩ , pr₁ (f i) b ＝ y
+   f-surjective = ∥∥-induction (λ x → ∥∥-is-prop) λ (i , b) → ∣ i , b , refl ∣
+
+
+\end{code}
+
+\begin{code}
+
+is-continuous : (Ordinal 𝓤 → Ordinal 𝓤) → 𝓤 ⁺ ̇
+is-continuous {𝓤} F = {I : 𝓤 ̇  } → ∥ I ∥ → (γ : I → Ordinal 𝓤) → F (sup γ) ＝ sup (F ∘ γ)
+
+is-monotone-if-continuous : (F : Ordinal 𝓤 → Ordinal 𝓤)
+                          → is-continuous F
+                          → is-monotone (OO 𝓤) (OO 𝓤) F
+is-monotone-if-continuous {𝓤} F F-cont α β α-less-than-β = conclusion
+ where
+  γ : 𝟙{𝓤} + 𝟙{𝓤} → Ordinal 𝓤
+  γ (inl _) = α
+  γ (inr _) = β
+  eq : F (sup γ) ＝ sup (F ∘ γ)
+  eq = F-cont ∣ inl ⋆ ∣ γ
+  β-is-upper-bound : (i : 𝟙 + 𝟙) → γ i ⊴ β
+  β-is-upper-bound (inl _) = ≼-gives-⊴ α β α-less-than-β
+  β-is-upper-bound (inr _) = ⊴-refl β
+  I : sup γ ＝ β
+  I = ⊴-antisym (sup γ) β (sup-is-lower-bound-of-upper-bounds γ β β-is-upper-bound) (sup-is-upper-bound γ (inr ⋆))
+  ineq : F α ⊴ sup (F ∘ γ)
+  ineq = sup-is-upper-bound (F ∘ γ) (inl ⋆)
+  conclusion : F α ≼ F β
+  conclusion = ⊴-gives-≼ (F α) (F β) (transport (F α ⊴_) (eq ⁻¹ ∙ ap F I) ineq)
+
+
+
+
+is-irreflexive : {X : 𝓤 ̇  } (R : X → X → 𝓥 ̇  ) → 𝓤 ⊔ 𝓥 ̇
+is-irreflexive R = ∀ x → ¬ (R x x)
+
+\end{code}
+#######################################################
+
+
+
+The specification of exponentiation.
+
+Based on the classical definition of exponentiation by cases for zero,
+successors and limits, we expect an exponentiation operation to
+satisfy the following specification (classically, this uniquely
+determines exponentiation).
+
+
+\begin{code}
+
+module _ (exp : Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) where
+
+  exponentiation-specification-zero : 𝓤 ⁺ ̇
+  exponentiation-specification-zero = (α : Ordinal 𝓤) → exp α 𝟘ₒ ＝ 𝟙ₒ
+
+  exponentiation-specification-succ : 𝓤 ⁺ ̇
+  exponentiation-specification-succ = (α : Ordinal 𝓤) (β : Ordinal 𝓤) → exp α (β +ₒ 𝟙ₒ) ＝ exp α β ×ₒ α
+
+  exponentiation-specification-sup : 𝓤 ⁺ ̇
+  exponentiation-specification-sup = (α : Ordinal 𝓤) → (¬(α ＝ 𝟘ₒ) → is-continuous (exp α))
+                                                     ×  ( (α ＝ 𝟘ₒ) → (β : Ordinal 𝓤) → ¬(β ＝ 𝟘ₒ) → exp α β ＝ 𝟘ₒ)
+
+  exponentiation-specification : 𝓤 ⁺ ̇
+  exponentiation-specification = exponentiation-specification-zero
+                               × exponentiation-specification-succ
+                               × exponentiation-specification-sup
+
+\end{code}
+
+The lexicographic order on lists.
 
 \begin{code}
 
@@ -93,8 +261,11 @@ lex-for-ordinal α = lex (underlying-order α)
 
 syntax lex-for-ordinal α xs ys = xs ≺⟨List α ⟩ ys
 
-is-irreflexive : {X : 𝓤 ̇  } (R : X → X → 𝓥 ̇  ) → 𝓤 ⊔ 𝓥 ̇
-is-irreflexive R = ∀ x → ¬ (R x x)
+\end{code}
+
+The lexicographic order preserves many properties of the order.
+
+\begin{code}
 
 module _ {X : 𝓤 ̇  } (R : X → X → 𝓥 ̇  ) where
 
@@ -109,6 +280,49 @@ module _ {X : 𝓤 ̇  } (R : X → X → 𝓥 ̇  ) where
 
  []-lex-bot : is-bot (lex R) []
  []-lex-bot xs ()
+
+ lex-irreflexive : is-irreflexive R → is-irreflexive (lex R)
+ lex-irreflexive ir (x ∷ xs) (head-lex p) = ir x p
+ lex-irreflexive ir (x ∷ xs) (tail-lex e q) = lex-irreflexive ir xs q
+
+ -- this is not helpful below
+ lex-extensional : is-irreflexive R → is-extensional R → is-extensional (lex R)
+ lex-extensional ir ext [] [] p q = refl
+ lex-extensional ir ext [] (y ∷ ys) p q = 𝟘-elim ([]-lex-bot [] (q [] []-lex))
+ lex-extensional ir ext (x ∷ xs) [] p q = 𝟘-elim ([]-lex-bot [] (p [] []-lex))
+ lex-extensional ir ext (x ∷ xs) (y ∷ ys) p q = ap₂ _∷_ e₀ e₁
+  where
+   p₀ : ∀ z → R z x → lex R (z ∷ ys) (y ∷ ys) → R z y
+   p₀ z zRx (head-lex zRy) = zRy
+   p₀ z zRx (tail-lex _ ysRys) = 𝟘-elim (lex-irreflexive ir ys ysRys)
+   q₀ : ∀ z → R z y → lex R (z ∷ xs) (x ∷ xs) → R z x
+   q₀ z zRy (head-lex zRx) = zRx
+   q₀ z zRy (tail-lex _ xsRxs) = 𝟘-elim (lex-irreflexive ir xs xsRxs)
+   e₀ : x ＝ y
+   e₀ = ext x y (λ z zRx → p₀ z zRx (p (z ∷ ys) (head-lex zRx)))
+                (λ z zRy → q₀ z zRy (q (z ∷ xs) (head-lex zRy)))
+
+   p₁ : ∀ zs → lex R zs xs → lex R (x ∷ zs) (y ∷ ys) → lex R zs ys
+   p₁ zs zsRxs (head-lex xRy) = 𝟘-elim (ir y (transport (λ z → R z y) e₀ xRy))
+   p₁ zs zsRxs (tail-lex _ zsRys) = zsRys
+   q₁ : ∀ zs → lex R zs ys → lex R (y ∷ zs) (x ∷ xs) → lex R zs xs
+   q₁ zs zsRys (head-lex yRx) = 𝟘-elim (ir y (transport (λ z → R y z) e₀ yRx))
+   q₁ zs zsRys (tail-lex _ zsRxs) = zsRxs
+   e₁ : xs ＝ ys
+   e₁ = lex-extensional ir ext xs ys (λ zs zsRxs → p₁ zs zsRxs (p (x ∷ zs) (tail-lex refl zsRxs)))
+                                     (λ zs zsRys → q₁ zs zsRys (q (y ∷ zs) (tail-lex refl zsRys)))
+
+ lex-prop-valued : is-set X → is-prop-valued R → is-irreflexive R → is-prop-valued (lex R)
+ lex-prop-valued st pr irR [] (y ∷ ys) []-lex []-lex = refl
+ lex-prop-valued st pr irR (x ∷ xs) (y ∷ ys) (head-lex p) (head-lex q) = ap head-lex (pr x y p q)
+ lex-prop-valued st pr irR (.y ∷ xs) (y ∷ ys) (head-lex p) (tail-lex refl qs) = 𝟘-elim (irR y p)
+ lex-prop-valued st pr irR (x ∷ xs) (.x ∷ ys) (tail-lex refl ps) (head-lex q) = 𝟘-elim (irR x q)
+ lex-prop-valued st pr irR (x ∷ xs) (y ∷ ys) (tail-lex e ps) (tail-lex r qs) =
+  ap₂ tail-lex (st e r) (lex-prop-valued st pr irR xs ys ps qs)
+
+\end{code}
+
+\begin{code}
 
  data is-decreasing : List X → 𝓤 ⊔ 𝓥 ̇  where
   []-decr : is-decreasing []
@@ -197,56 +411,6 @@ module _ {X : 𝓤 ̇  } (R : X → X → 𝓥 ̇  ) where
 
 \begin{code}
 
- lex-irreflexive : is-irreflexive R → is-irreflexive (lex R)
- lex-irreflexive ir (x ∷ xs) (head-lex p) = ir x p
- lex-irreflexive ir (x ∷ xs) (tail-lex e q) = lex-irreflexive ir xs q
-
- -- this is not helpful below
- lex-extensional : is-irreflexive R → is-extensional R → is-extensional (lex R)
- lex-extensional ir ext [] [] p q = refl
- lex-extensional ir ext [] (y ∷ ys) p q = 𝟘-elim ([]-lex-bot [] (q [] []-lex))
- lex-extensional ir ext (x ∷ xs) [] p q = 𝟘-elim ([]-lex-bot [] (p [] []-lex))
- lex-extensional ir ext (x ∷ xs) (y ∷ ys) p q = ap₂ _∷_ e₀ e₁
-  where
-   p₀ : ∀ z → R z x → R z y
-   p₀ z zRx with (p (z ∷ ys) (head-lex zRx))
-   p₀ z zRx | head-lex zRy = zRy
-   p₀ z zRx | tail-lex _ ysRys = 𝟘-elim (lex-irreflexive ir ys ysRys)
-   q₀ : ∀ z → R z y → R z x
-   q₀ z zRy with (q (z ∷ xs) (head-lex zRy))
-   q₀ z zRy | head-lex zRx = zRx
-   q₀ z zRy | tail-lex _ xsRxs = 𝟘-elim (lex-irreflexive ir xs xsRxs)
-   e₀ : x ＝ y
-   e₀ = ext x y p₀ q₀
-   p₁ : ∀ zs → lex R zs xs → lex R zs ys
-   p₁ zs zsRxs with (p (x ∷ zs) (tail-lex refl zsRxs))
-   p₁ zs zsRxs | head-lex xRy = 𝟘-elim (ir y (transport (λ z → R z y) e₀ xRy))
-   p₁ zs zsRxs | tail-lex _ zsRys = zsRys
-   q₁ : ∀ zs → lex R zs ys → lex R zs xs
-   q₁ zs zsRys with (q (y ∷ zs) (tail-lex refl zsRys))
-   q₁ zs zsRys | head-lex yRx = 𝟘-elim (ir y (transport (λ z → R y z) e₀ yRx))
-   q₁ zs zsRys | tail-lex _ zsRxs = zsRxs
-   e₁ : xs ＝ ys
-   e₁ = lex-extensional ir ext xs ys p₁ q₁
-
-\end{code}
-
-\begin{code}
-
- lex-prop-valued : is-set X → is-prop-valued R → is-irreflexive R → is-prop-valued (lex R)
- lex-prop-valued st pr irR [] (y ∷ ys) []-lex []-lex = refl
- lex-prop-valued st pr irR (x ∷ xs) (y ∷ ys) (head-lex p) (head-lex q) = ap head-lex (pr x y p q)
- lex-prop-valued st pr irR (.y ∷ xs) (y ∷ ys) (head-lex p) (tail-lex refl qs) = 𝟘-elim (irR y p)
- lex-prop-valued st pr irR (x ∷ xs) (.x ∷ ys) (tail-lex refl ps) (head-lex q) = 𝟘-elim (irR x q)
- lex-prop-valued st pr irR (x ∷ xs) (y ∷ ys) (tail-lex e ps) (tail-lex r qs) =
-  ap₂ tail-lex (st e r) (lex-prop-valued st pr irR xs ys ps qs)
-
-\end{code}
-
-\begin{code}
-
-
--- can we get away with different universes like this?
 module _ (α : Ordinal 𝓤)(β : Ordinal 𝓥) where
 
  is-decreasing-pr₂ : List ⟨ α ×ₒ β ⟩ → 𝓥 ̇
@@ -463,7 +627,13 @@ module _ (α : Ordinal 𝓤)(β : Ordinal 𝓥) where
            , exponential-order-extensional α β
            , exponential-order-transitive α β
 
--- End goal: prove it satisfies (0, succ, sup)-spec
+\end{code}
+
+
+We now prove that [𝟙+ α ]^ β satisfies the specification for
+exponentiation (𝟙 + α) ^ β.
+
+\begin{code}
 
 exp-0-spec' : (α : Ordinal 𝓤) → ([𝟙+ α ]^ (𝟘ₒ {𝓥})) ≃ₒ 𝟙ₒ {𝓤 ⊔ 𝓥}
 exp-0-spec' α = f , f-monotone , qinvs-are-equivs f f-qinv , g-monotone
@@ -727,107 +897,12 @@ exp-succ-spec {𝓤} α β =
 
 \begin{code}
 
-{-
 
-(1 + α)^(⋁ᵢ βᵢ)
-
-= Σ l : List (α × ⋁ᵢ βᵢ) , decreasing-pr2 l
-= Σ l : List (⋁ᵢ (α × βᵢ)) , ...
-?= ⋁ᵢ (Σ l : List (α × βᵢ) , decreasing-pr2 l)
-= ⋁ᵢ (1 + α)^β
-
-
-(1) Try for general families
-(1.5) Try for monotone families
-(2) Try for (x ↦ α ↓ x) for α an ordinal
-
--}
-
-order-reflecting-and-partial-inverse-is-initial-segment : (α β : Ordinal 𝓤)
-                                                       (f : ⟨ α ⟩ → ⟨ β ⟩)
-                                                     → is-order-reflecting α β f
-                                                     → ((a : ⟨ α ⟩)(b : ⟨ β ⟩) → b ≺⟨ β ⟩ f a → Σ a' ꞉ ⟨ α ⟩ , f a' ＝ b)
-                                                     → is-initial-segment α β f
-order-reflecting-and-partial-inverse-is-initial-segment α β f p i a b m = a' , p' , q'
-  where
-    q : Σ a' ꞉ ⟨ α ⟩ , f a' ＝ b
-    q = i a b m
-    a' : ⟨ α ⟩
-    a' = pr₁ q
-    q' : f a' ＝ b
-    q' = pr₂ q
-
-    m' : f a' ≺⟨ β ⟩ f a
-    m' = transport⁻¹ (λ - → - ≺⟨ β ⟩ f a) q' m
-    p' : a' ≺⟨ α ⟩ a
-    p' = p a' a m'
-
-module _ (pt : propositional-truncations-exist)
-         (sr : Set-Replacement pt)
-       where
-
- open PropositionalTruncation pt
-
- open import Ordinals.OrdinalOfOrdinalsSuprema ua
- open suprema pt sr
-
- open import UF.ImageAndSurjection pt
-
- surjective-simulation-gives-equality : (α β : Ordinal 𝓤)
-                                      → (f : ⟨ α ⟩ → ⟨ β ⟩)
-                                      → is-simulation α β f
-                                      → is-surjection f
-                                      → α ＝ β
- surjective-simulation-gives-equality α β f sim surj = ⊴-antisym α β (f , sim) (h₀ , h₀-sim)
-   where
-     prp : (b : ⟨ β ⟩) → is-prop (Σ a ꞉ ⟨ α ⟩ , (f a ＝ b))
-     prp b (a , p) (a' , p') = to-subtype-＝ (λ a → underlying-type-is-set fe β)
-                                            (simulations-are-lc α β f sim (p ∙ p' ⁻¹))
-
-     h : (b : ⟨ β ⟩) → Σ a ꞉ ⟨ α ⟩ , (f a ＝ b)
-     h b = ∥∥-rec (prp b) id (surj b)
-
-     h₀ : ⟨ β ⟩ → ⟨ α ⟩
-     h₀ b = pr₁ (h b)
-
-     h₀-retract-of-f : (b : ⟨ β ⟩) → f (h₀ b) ＝ b
-     h₀-retract-of-f b = pr₂ (h b)
-
-     h₀-is-initial-segment : is-initial-segment β α h₀
-     h₀-is-initial-segment b a p = f a , p'' , q
-       where
-        p' : f a ≺⟨ β ⟩ (f (h₀ b))
-        p' = simulations-are-order-preserving α β f sim a (h₀ b) p
-
-        p'' : f a ≺⟨ β ⟩ b
-        p'' = transport (λ - → f a ≺⟨ β ⟩ -) (h₀-retract-of-f b) p'
-
-        q : h₀ (f a) ＝ a
-        q = simulations-are-lc α β f sim (h₀-retract-of-f (f a))
-
-     h₀-is-order-preserving : is-order-preserving β α h₀
-     h₀-is-order-preserving b b' p = p''
-       where
-         p' : f (h₀ b) ≺⟨ β ⟩ f (h₀ b')
-         p' = transport₂⁻¹ (underlying-order β) (h₀-retract-of-f b) (h₀-retract-of-f b') p
-
-         p'' : h₀ b  ≺⟨ α ⟩ (h₀ b')
-         p'' = simulations-are-order-reflecting α β f sim (h₀ b) (h₀ b') p'
-
-     h₀-sim : is-simulation β α h₀
-     h₀-sim = h₀-is-initial-segment , h₀-is-order-preserving
-
- module _ {I : 𝓤 ̇  }
-          (i₀ : I)
-          (β : I → Ordinal 𝓤)
-          (α : Ordinal 𝓤)
-  where
-
-  {-
-  f : ⟨ [𝟙+ α ]^ (sup β) ⟩ → ⟨ sup (λ i → [𝟙+ α ]^ (β i)) ⟩
-  f ([] , δ) = sum-to-sup (λ i → [𝟙+ α ]^ β i) (i₀ , ([] , []-decr))
-  f ((a , x ∷ l) , δ) = {!!}
-  -}
+module _ {I : 𝓤 ̇  }
+         (i₀ : I)
+         (β : I → Ordinal 𝓤)
+         (α : Ordinal 𝓤)
+ where
 
   private
    γ : I → Ordinal 𝓤
@@ -1019,131 +1094,20 @@ module _ (pt : propositional-truncations-exist)
                (pr₂ exp-sup-simulation)
                exp-sup-simulation-surjective
 
- exp-sup-spec : (α : Ordinal 𝓤) {I : 𝓤 ̇  } → ∥ I ∥ → (β : I → Ordinal 𝓤) → sup (λ i → ([𝟙+ α ]^ (β i))) ＝ ([𝟙+ α ]^ (sup β))
- exp-sup-spec α i β = ∥∥-rec (the-type-of-ordinals-is-a-set (ua _) fe') (λ i₀ → sup-spec i₀ β α) i
-
-\end{code}
-
-
-\begin{code}
-
-prop-ordinal-＝ : (P Q : 𝓤 ̇ ) → (pp : is-prop P) → (pq : is-prop Q)
-                → P ↔ Q → prop-ordinal P pp ＝ prop-ordinal Q pq
-prop-ordinal-＝ P Q pp pq (f , g) =
-  ⊴-antisym (prop-ordinal P pp) (prop-ordinal Q pq)
-            (simulation P Q pp pq f) (simulation Q P pq pp g)
-  where
-    simulation : (P Q : 𝓤 ̇ ) → (pp : is-prop P) → (pq : is-prop Q) → (P → Q) →
-                 prop-ordinal P pp ⊴ prop-ordinal Q pq
-    simulation P Q pp pq f = f , (λ x y e → 𝟘-elim e) , (λ x y e → 𝟘-elim e)
+exp-sup-spec : (α : Ordinal 𝓤) {I : 𝓤 ̇  } → ∥ I ∥ → (β : I → Ordinal 𝓤) → sup (λ i → ([𝟙+ α ]^ (β i))) ＝ ([𝟙+ α ]^ (sup β))
+exp-sup-spec α i β = ∥∥-rec (the-type-of-ordinals-is-a-set (ua _) fe') (λ i₀ → sup-spec i₀ β α) i
 
 \end{code}
 
 \begin{code}
 
-module _ (pt : propositional-truncations-exist)
-         (sr : Set-Replacement pt)
-       where
+module _ (exp : Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) where
 
- open PropositionalTruncation pt
-
- open import Ordinals.OrdinalOfOrdinalsSuprema ua
- open suprema pt sr
-
- open import UF.ImageAndSurjection pt
-
- sup-preserves-prop : {I : 𝓤 ̇ } → (γ : I → 𝓤 ̇ ) → (γ-is-prop : (i : I) → is-prop (γ i))
-                    → sup (λ i → prop-ordinal (γ i) (γ-is-prop i)) ＝ prop-ordinal (∃ i ꞉ I , γ i) ∥∥-is-prop
- sup-preserves-prop {𝓤} {I = I} γ γ-is-prop = surjective-simulation-gives-equality pt sr (sup β) α
-                                                (pr₁ (sup-is-lower-bound-of-upper-bounds β α f))
-                                                (pr₂ (sup-is-lower-bound-of-upper-bounds β α f))
-                                                (surjectivity-lemma β α f f-surjective)
-   where
-     α : Ordinal 𝓤
-     α = prop-ordinal (∃ i ꞉ I , γ i) ∥∥-is-prop
-     β : I → Ordinal 𝓤
-     β i = prop-ordinal (γ i) (γ-is-prop i)
-     f : (i : I) → β i ⊴ α
-     f i = (λ b → ∣ i , b ∣) , (λ x y e → 𝟘-elim e) , (λ x y e → 𝟘-elim e)
-     f-surjective : (y : ⟨ α ⟩) → ∃ i ꞉ I , Σ b ꞉ ⟨ β i ⟩ , pr₁ (f i) b ＝ y
-     f-surjective = ∥∥-induction (λ x → ∥∥-is-prop) λ (i , b) → ∣ i , b , refl ∣
-
-
- is-continuous : (Ordinal 𝓤 → Ordinal 𝓤) → 𝓤 ⁺ ̇
- is-continuous {𝓤} F = {I : 𝓤 ̇  } → ∥ I ∥ → (γ : I → Ordinal 𝓤) → F (sup γ) ＝ sup (F ∘ γ)
-
- is-monotone-if-continuous : (F : Ordinal 𝓤 → Ordinal 𝓤)
-                           → is-continuous F
-                           → is-monotone (OO 𝓤) (OO 𝓤) F
- is-monotone-if-continuous {𝓤} F F-cont α β α-less-than-β = conclusion
-  where
-   γ : 𝟙{𝓤} + 𝟙{𝓤} → Ordinal 𝓤
-   γ (inl _) = α
-   γ (inr _) = β
-   eq : F (sup γ) ＝ sup (F ∘ γ)
-   eq = F-cont ∣ inl ⋆ ∣ γ
-   β-is-upper-bound : (i : 𝟙 + 𝟙) → γ i ⊴ β
-   β-is-upper-bound (inl _) = ≼-gives-⊴ α β α-less-than-β
-   β-is-upper-bound (inr _) = ⊴-refl β
-   I : sup γ ＝ β
-   I = ⊴-antisym (sup γ) β (sup-is-lower-bound-of-upper-bounds γ β β-is-upper-bound) (sup-is-upper-bound γ (inr ⋆))
-   ineq : F α ⊴ sup (F ∘ γ)
-   ineq = sup-is-upper-bound (F ∘ γ) (inl ⋆)
-   conclusion : F α ≼ F β
-   conclusion = ⊴-gives-≼ (F α) (F β) (transport (F α ⊴_) (eq ⁻¹ ∙ ap F I) ineq)
-
- module _
-         (exp : Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤)
-        where
-
-  full-sup-spec : 𝓤 ⁺ ̇
-  full-sup-spec = (α : Ordinal 𝓤) → is-continuous (exp α)
-
-  full-sup-spec' : 𝓤 ⁺ ̇
-  full-sup-spec' = (α : Ordinal 𝓤) → (¬(α ＝ 𝟘ₒ) → is-continuous (exp α)) × ((α ＝ 𝟘ₒ) → (β : Ordinal 𝓤) → ¬(β ＝ 𝟘ₒ) → exp α β ＝ 𝟘ₒ)
-
-
-  full-succ-spec : 𝓤 ⁺ ̇
-  full-succ-spec = (α : Ordinal 𝓤) (β : Ordinal 𝓤) → exp α (β +ₒ 𝟙ₒ) ＝ exp α β ×ₒ α
-
-  full-zero-spec : 𝓤 ⁺ ̇
-  full-zero-spec = (α : Ordinal 𝓤) → exp α 𝟘ₒ ＝ 𝟙ₒ
-
-  full-spec : 𝓤 ⁺ ̇
-  full-spec = full-zero-spec × full-succ-spec × full-sup-spec
-
-  full-spec' : 𝓤 ⁺ ̇
-  full-spec' = full-zero-spec × full-succ-spec × full-sup-spec'
-
-
-  exp-is-monotone-gives-EM : full-zero-spec
-                           → full-succ-spec
-                           → ((α : Ordinal 𝓤) → is-monotone (OO 𝓤) (OO 𝓤) (exp α))
-                           → EM 𝓤
-  exp-is-monotone-gives-EM spec₀ specₛ mon P P-is-prop = P-is-decidable
-   where
-    α : Ordinal 𝓤
-    α = prop-ordinal (P + ¬ P) (decidability-of-prop-is-prop fe' P-is-prop)
-    ineq : exp α 𝟘ₒ ⊴ exp α 𝟙ₒ
-    ineq = ≼-gives-⊴ (exp α 𝟘ₒ) (exp α 𝟙ₒ) (mon α 𝟘ₒ 𝟙ₒ (𝟘ₒ-least 𝟙ₒ))
-    eq₁ : exp α 𝟘ₒ ＝ 𝟙ₒ
-    eq₁ = spec₀ α
-    eq₂ : exp α 𝟙ₒ ＝ α
-    eq₂ = exp α 𝟙ₒ ＝⟨ ap (exp α) ((𝟘ₒ-left-neutral 𝟙ₒ) ⁻¹) ⟩
-          exp α (𝟘ₒ +ₒ 𝟙ₒ) ＝⟨ specₛ α 𝟘ₒ ⟩
-          (exp α 𝟘ₒ ×ₒ α) ＝⟨ ap (_×ₒ α) eq₁ ⟩
-          𝟙ₒ ×ₒ α ＝⟨ 𝟙ₒ-left-neutral-×ₒ α ⟩
-          α ∎
-    ineq' : 𝟙ₒ ⊴ α
-    ineq' = transport₂ _⊴_ eq₁ eq₂ ineq
-    P-is-decidable : P + ¬ P
-    P-is-decidable = pr₁ ineq' ⋆
-
-  exp-is-monotone-gives-EM' : full-zero-spec
-                           → full-succ-spec
+  exp-is-monotone-gives-EM : exponentiation-specification-zero exp
+                           → exponentiation-specification-succ exp
                            → ((α : Ordinal 𝓤) → ¬ (α ＝ 𝟘ₒ) → is-monotone (OO 𝓤) (OO 𝓤) (exp α))
                            → EM 𝓤
-  exp-is-monotone-gives-EM' spec₀ specₛ mon P P-is-prop = P-is-decidable (pr₁ ineq' ⋆ , refl)
+  exp-is-monotone-gives-EM spec₀ specₛ mon P P-is-prop = P-is-decidable (pr₁ ineq' ⋆ , refl)
    where
     α : Ordinal 𝓤
     α = prop-ordinal P P-is-prop +ₒ 𝟙ₒ
@@ -1165,16 +1129,9 @@ module _ (pt : propositional-truncations-exist)
     P-is-decidable (inl p , _) = inl p
     P-is-decidable (inr ⋆ , r) = inr (λ p → 𝟘-elim (pr₁ (pr₂ (pr₁ (pr₂ ineq') ⋆ (inl p) (transport⁻¹ (λ - → inl p ≺⟨ α ⟩ -) r ⋆ )))))
 
-
-
-  exp-full-spec-gives-EM : full-spec → EM 𝓤
+  exp-full-spec-gives-EM : exponentiation-specification exp → EM 𝓤
   exp-full-spec-gives-EM (spec₀ , specₛ , specₗ) =
    exp-is-monotone-gives-EM spec₀ specₛ
-    (λ α → is-monotone-if-continuous (exp α) (specₗ α))
-
-  exp-full-spec'-gives-EM : full-spec' → EM 𝓤
-  exp-full-spec'-gives-EM (spec₀ , specₛ , specₗ) =
-   exp-is-monotone-gives-EM' spec₀ specₛ
     (λ α α-not-zero → is-monotone-if-continuous (exp α) (pr₁ (specₗ α) α-not-zero))
 
 
@@ -1184,17 +1141,17 @@ And conversely...
 
 \begin{code}
 
- 𝟘^_ : Ordinal 𝓤 → Ordinal 𝓤
- 𝟘^_ {𝓤} β = prop-ordinal (β ≃ₒ 𝟘ₒ{𝓤}) (≃ₒ-is-prop-valued fe' β 𝟘ₒ)
+𝟘^_ : Ordinal 𝓤 → Ordinal 𝓤
+𝟘^_ {𝓤} β = prop-ordinal (β ≃ₒ 𝟘ₒ{𝓤}) (≃ₒ-is-prop-valued fe' β 𝟘ₒ)
 
- 𝟘^-zero-spec : 𝟘^ 𝟘ₒ {𝓤} ＝ 𝟙ₒ
- 𝟘^-zero-spec {𝓤} = prop-ordinal-＝ (𝟘ₒ ≃ₒ 𝟘ₒ{𝓤}) 𝟙
-                            (≃ₒ-is-prop-valued fe' 𝟘ₒ 𝟘ₒ) 𝟙-is-prop
-                            ((λ _ → ⋆) , λ _ → (≃ₒ-refl 𝟘ₒ))
+𝟘^-zero-spec : 𝟘^ 𝟘ₒ {𝓤} ＝ 𝟙ₒ
+𝟘^-zero-spec {𝓤} = prop-ordinal-＝ (𝟘ₒ ≃ₒ 𝟘ₒ{𝓤}) 𝟙
+                           (≃ₒ-is-prop-valued fe' 𝟘ₒ 𝟘ₒ) 𝟙-is-prop
+                           ((λ _ → ⋆) , λ _ → (≃ₒ-refl 𝟘ₒ))
 
- 𝟘^-succ-spec : (β : Ordinal 𝓤) → 𝟘^ (β +ₒ 𝟙ₒ) ＝ (𝟘^ β) ×ₒ 𝟘ₒ {𝓤}
- 𝟘^-succ-spec {𝓤} β = eq ∙ ×ₒ-zero-right (𝟘^ β) ⁻¹
-     where
+𝟘^-succ-spec : (β : Ordinal 𝓤) → 𝟘^ (β +ₒ 𝟙ₒ) ＝ (𝟘^ β) ×ₒ 𝟘ₒ {𝓤}
+𝟘^-succ-spec {𝓤} β = eq ∙ ×ₒ-zero-right (𝟘^ β) ⁻¹
+    where
        f : (β +ₒ 𝟙ₒ) ≃ₒ 𝟘ₒ → 𝟘
        f e = ≃ₒ-to-fun (β +ₒ 𝟙ₒ) 𝟘ₒ e (inr ⋆)
 
@@ -1203,13 +1160,13 @@ And conversely...
                     (≃ₒ-is-prop-valued fe' (β +ₒ 𝟙ₒ) 𝟘ₒ) 𝟘-is-prop
                     (f , 𝟘-elim)
 
- 𝟘^-sup-spec : (β : Ordinal 𝓤) → ¬ (β ＝ 𝟘ₒ) → (𝟘^ β) ＝ 𝟘ₒ
- 𝟘^-sup-spec β β-not-zero =
+𝟘^-sup-spec : (β : Ordinal 𝓤) → ¬ (β ＝ 𝟘ₒ) → (𝟘^ β) ＝ 𝟘ₒ
+𝟘^-sup-spec β β-not-zero =
    prop-ordinal-＝ (β ≃ₒ 𝟘ₒ) 𝟘
            (≃ₒ-is-prop-valued fe' β 𝟘ₒ) 𝟘-is-prop
            ((λ e → 𝟘-elim (β-not-zero (eqtoidₒ (ua _) fe' _ _ e))) , 𝟘-elim)
 
- private
+private
   case : (α : Ordinal 𝓤) → 𝓤 ⁺ ̇
   case {𝓤} α = (Σ α' ꞉ Ordinal 𝓤 , α ＝ 𝟙ₒ +ₒ α')
 
@@ -1343,8 +1300,8 @@ And conversely...
        eq : α ＝ 𝟙ₒ +ₒ α'
        eq = eqtoidₒ (ua _) fe' α (𝟙ₒ +ₒ α') (f , f-equiv)
 
- Has-least-or-is-zero-gives-full-spec : Has-least-or-is-zero → Σ exp ꞉ (Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) , full-spec' exp
- Has-least-or-is-zero-gives-full-spec {𝓤} cs = exp , exp-spec'
+Has-least-or-is-zero-gives-full-spec : Has-least-or-is-zero → Σ exp ꞉ (Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) , exponentiation-specification exp
+Has-least-or-is-zero-gives-full-spec {𝓤} cs = exp , exp-spec'
   where
    exp-aux : (α : Ordinal 𝓤)
            → has-least-or-is-zero α
@@ -1363,26 +1320,9 @@ And conversely...
    specₛ-aux α (inl (α' , refl)) = exp-succ-spec α'
    specₛ-aux α (inr refl) = 𝟘^-succ-spec
 
-   {-
-   specₗ-aux : (α : Ordinal 𝓤) → (cs : has-least-or-is-zero α) → {I : 𝓤 ̇ } → ∥ I ∥ → (γ : I → Ordinal 𝓤)
-             → exp-aux α cs (sup γ) ＝ sup (λ i → exp-aux α cs (γ i))
-   specₗ-aux α (inl (α' , refl)) i γ = exp-sup-spec pt sr α' i γ ⁻¹
-   specₗ-aux α (inr refl) {I} i₀ γ = eq
-     where
-       f : sup γ ≃ₒ 𝟘ₒ → ∃ i ꞉ I , γ i ≃ₒ 𝟘ₒ
-       f x = {!!}
-       g : ∃ i ꞉ I , γ i ≃ₒ 𝟘ₒ → sup γ ≃ₒ 𝟘ₒ
-       g = ∥∥-rec (≃ₒ-is-prop-valued fe' (sup γ) 𝟘ₒ) {!!}
-       eq : prop-ordinal (sup γ ≃ₒ 𝟘ₒ{𝓤}) (≃ₒ-is-prop-valued fe' (sup γ) 𝟘ₒ) ＝ sup (λ i → prop-ordinal (γ i ≃ₒ 𝟘ₒ{𝓤}) (≃ₒ-is-prop-valued fe' (γ i) 𝟘ₒ))
-       eq = prop-ordinal-＝ (sup γ ≃ₒ 𝟘ₒ{𝓤}) (∃ i ꞉ I , (γ i ≃ₒ 𝟘ₒ{𝓤})) _ _ (f , g) ∙ sup-preserves-prop (λ i → (γ i ≃ₒ 𝟘ₒ{𝓤})) (λ i → ≃ₒ-is-prop-valued fe' (γ i) 𝟘ₒ) ⁻¹
-
-   exp-spec : full-spec exp
-   exp-spec = (λ α → spec₀-aux α (cs α)) , (λ α → specₛ-aux α (cs α)) , (λ α → specₗ-aux α (cs α))
-   -}
-
    specₗ-aux-nonzero : (α : Ordinal 𝓤) → (cs : has-least-or-is-zero α) → ¬ (α ＝ 𝟘ₒ) → {I : 𝓤 ̇ } → ∥ I ∥ → (γ : I → Ordinal 𝓤)
                      →  exp-aux α cs (sup γ) ＝ sup (λ i → exp-aux α cs (γ i))
-   specₗ-aux-nonzero α (inl (α' , refl)) α-not-zero i γ = exp-sup-spec pt sr α' i γ ⁻¹
+   specₗ-aux-nonzero α (inl (α' , refl)) α-not-zero i γ = exp-sup-spec α' i γ ⁻¹
    specₗ-aux-nonzero α (inr r) α-not-zero = 𝟘-elim (α-not-zero r)
 
    specₗ-aux-zero : (α : Ordinal 𝓤) → (cs : has-least-or-is-zero α) → α ＝ 𝟘ₒ → (β : Ordinal 𝓤) → ¬ (β ＝ 𝟘ₒ)
@@ -1393,22 +1333,22 @@ And conversely...
        zero-no-element p = Idtofun ((ap ⟨_⟩ p) ⁻¹) (inl ⋆)
    specₗ-aux-zero α (inr refl) _ = 𝟘^-sup-spec
 
-   exp-spec' : full-spec' exp
+   exp-spec' : exponentiation-specification exp
    exp-spec' = (λ α → spec₀-aux α (cs α)) , (λ α → specₛ-aux α (cs α)) , (λ α → specₗ-aux-nonzero α (cs α) , specₗ-aux-zero α (cs α))
 
- EM-gives-full-spec : EM 𝓤 → Σ exp ꞉ (Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) , full-spec' exp
- EM-gives-full-spec em = Has-least-or-is-zero-gives-full-spec (EM-gives-Has-least-or-is-zero em)
+EM-gives-full-spec : EM 𝓤 → Σ exp ꞉ (Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) , exponentiation-specification exp
+EM-gives-full-spec em = Has-least-or-is-zero-gives-full-spec (EM-gives-Has-least-or-is-zero em)
 
- full-spec-gives-Has-least-or-is-zero : Σ exp ꞉ (Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) , full-spec' exp → Has-least-or-is-zero {𝓤}
- full-spec-gives-Has-least-or-is-zero {𝓤} (exp , exp-spec) = EM-gives-Has-least-or-is-zero (exp-full-spec'-gives-EM exp exp-spec)
+full-spec-gives-Has-least-or-is-zero : Σ exp ꞉ (Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) , exponentiation-specification exp → Has-least-or-is-zero {𝓤}
+full-spec-gives-Has-least-or-is-zero {𝓤} (exp , exp-spec) = EM-gives-Has-least-or-is-zero (exp-full-spec-gives-EM exp exp-spec)
 
 \end{code}
 
 \begin{code}
 
- monotone-in-exponent : (α : Ordinal 𝓤)
-                      → is-monotone (OO 𝓤) (OO 𝓤) [𝟙+ α ]^_
- monotone-in-exponent α =
-  is-monotone-if-continuous ([𝟙+ α ]^_) (λ i γ → (exp-sup-spec pt sr α i γ) ⁻¹)
+monotone-in-exponent : (α : Ordinal 𝓤)
+                     → is-monotone (OO 𝓤) (OO 𝓤) [𝟙+ α ]^_
+monotone-in-exponent α =
+ is-monotone-if-continuous ([𝟙+ α ]^_) (λ i γ → (exp-sup-spec α i γ) ⁻¹)
 
 \end{code}
