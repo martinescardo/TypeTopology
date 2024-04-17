@@ -30,6 +30,7 @@ open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.Subsingletons-Properties
 open import UF.SubtypeClassifier
+open import UF.SubtypeClassifier-Properties
 
 open AllCombinators pt fe
 
@@ -2003,18 +2004,19 @@ join-𝟎-lemma₂ F {x} {y} p = only-𝟎-is-below-𝟎 F y †
 
 \end{code}
 
-The following proof has been added on 2024-04-16.
+The proof below has been added on 2024-04-17.
 
 \begin{code}
 
-order-is-set : {𝓥 : Universe} (A : 𝓤  ̇) → is-set (A → A → Ω 𝓥)
-order-is-set {𝓥} A {_≤₁_} {_≤₂_} p q = {!!}
- where
-  _ = _∼_
+order-is-set : {𝓥 : Universe} (pe : propext 𝓥) (A : 𝓤  ̇) → is-set (A → A → Ω 𝓥)
+order-is-set {𝓥} pe A {_≤₁_} {_≤₂_} =
+ Π-is-set fe λ x → Π-is-set fe λ y → Ω-is-set fe pe
+  where
+   _ = _∼_
 
-frame-data-is-set : (A : 𝓤  ̇) (𝓥 𝓦 : Universe) → is-set (frame-data 𝓥 𝓦 A)
-frame-data-is-set A 𝓥 𝓦 =
- Σ-is-set {!!} (λ _≤_ → {!!})
+frame-data-is-set : (A : 𝓤  ̇) (𝓥 𝓦 : Universe) → propext 𝓥 → is-set (frame-data 𝓥 𝓦 A)
+frame-data-is-set A 𝓥 𝓦 pe =
+ Σ-is-set (order-is-set pe A) (λ _≤_ → {!!})
 
 frame-structure-is-set : {𝓤 : Universe}
                        → (A : 𝓤  ̇) (𝓥 𝓦 : Universe)
