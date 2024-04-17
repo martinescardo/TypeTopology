@@ -209,7 +209,7 @@ module SIP-For-Frames {A : 𝓤 ⁺  ̇} (str₁ str₂ : frame-structure 𝓤 �
 open FrameIsomorphisms
 
 frame-sns-data : SNS (frame-structure 𝓤 𝓤) (𝓤 ⁺)
-frame-sns-data = ι , ρ , θ
+frame-sns-data {𝓤} = ι , ρ , θ
  where
   ι : (F′ G′ : Frame (𝓤 ⁺) 𝓤 𝓤) → sip.⟨ F′ ⟩ ≃ sip.⟨ G′ ⟩ → 𝓤 ⁺  ̇
   ι F′ G′ e = is-homomorphic F′ G′ e holds
@@ -226,10 +226,66 @@ frame-sns-data = ι , ρ , θ
 
     † : (h : is-homomorphic F G (≃-refl X) holds)
       → canonical-map ι ρ str₁ str₂ (homomorphic-equivalence-gives-structural-equality h) ＝ h
-    † h = holds-is-prop (is-homomorphic F G (≃-refl X)) (canonical-map ι ρ str₁ str₂ (homomorphic-equivalence-gives-structural-equality h)) h
+    † h = holds-is-prop
+           (is-homomorphic F G (≃-refl X))
+           (canonical-map ι ρ str₁ str₂ (homomorphic-equivalence-gives-structural-equality h)) h
 
     ‡ : (p : str₁ ＝ str₂)
       → homomorphic-equivalence-gives-structural-equality (canonical-map ι ρ str₁ str₂ p) ＝ p
-    ‡ p = {!!}
+    ‡ p = frame-structure-is-set
+           X
+           𝓤
+           𝓤
+           pe
+           (homomorphic-equivalence-gives-structural-equality (canonical-map ι ρ str₁ str₂ p))
+           p
+
+\end{code}
+
+\begin{code}
+
+sns-equivalence-to-frame-isomorphism : (F G : Frame (𝓤 ⁺) 𝓤 𝓤)
+                                     → F ≃[ frame-sns-data ] G → F ≅f≅ G
+sns-equivalence-to-frame-isomorphism F G (f , e , φ) =
+ isomorphism₀-to-isomorphismᵣ F G ((f , e) , φ)
+
+isomorphism-to-sns-equivalence : (F G : Frame (𝓤 ⁺) 𝓤 𝓤)
+                               → F ≅f≅ G → F ≃[ frame-sns-data ] G
+isomorphism-to-sns-equivalence F G iso = ⌜ e ⌝ , ⌜⌝-is-equiv e , †
+ where
+  iso₀ : Isomorphism₀ F G
+  iso₀ = isomorphismᵣ-to-isomorphism₀ F G iso
+
+  e : ⟨ F ⟩ ≃ ⟨ G ⟩
+  e = pr₁ iso₀
+
+  † : homomorphic frame-sns-data F G e
+  † = pr₂ iso₀
+
+\end{code}
+
+\begin{code}
+
+characterization-of-frame-＝ : (F G : Frame (𝓤 ⁺) 𝓤 𝓤)
+                             → is-univalent (𝓤 ⁺)
+                             → (F ＝ G) ≃ (F ≃[ frame-sns-data ] G)
+characterization-of-frame-＝ F G ua =
+ characterization-of-＝ ua frame-sns-data F G
+
+\end{code}
+
+\begin{code}
+
+isomorphic-frames-are-equal : (F G : Frame (𝓤 ⁺) 𝓤 𝓤)
+                            → is-univalent (𝓤 ⁺)
+                            → F ≅f≅ G → F ＝ G
+isomorphic-frames-are-equal F G ua iso =
+ h (isomorphism-to-sns-equivalence F G iso)
+  where
+   e : (F ＝ G) ≃ (F ≃[ frame-sns-data ] G)
+   e = characterization-of-frame-＝ F G ua
+
+   h : F ≃[ frame-sns-data ] G → F ＝ G
+   h = inverse ⌜ e ⌝ (⌜⌝-is-equiv e)
 
 \end{code}
