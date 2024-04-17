@@ -2011,19 +2011,24 @@ The proof below has been added on 2024-04-17.
 order-is-set : {𝓥 : Universe} (pe : propext 𝓥) (A : 𝓤  ̇) → is-set (A → A → Ω 𝓥)
 order-is-set {𝓥} pe A {_≤₁_} {_≤₂_} =
  Π-is-set fe λ x → Π-is-set fe λ y → Ω-is-set fe pe
-  where
-   _ = _∼_
 
-frame-data-is-set : (A : 𝓤  ̇) (𝓥 𝓦 : Universe) → propext 𝓥 → is-set (frame-data 𝓥 𝓦 A)
-frame-data-is-set A 𝓥 𝓦 pe =
- Σ-is-set (order-is-set pe A) (λ _≤_ → {!!})
+frame-data-is-set : (A : 𝓤  ̇) (σ : is-set A) (𝓥 𝓦 : Universe) → propext 𝓥 → is-set (frame-data 𝓥 𝓦 A)
+frame-data-is-set A σ 𝓥 𝓦 pe =
+ Σ-is-set (order-is-set pe A) λ _≤_ →
+  ×-is-set
+   σ
+   (×-is-set (Π-is-set fe λ _ → Π-is-set fe λ _ → σ) (Π-is-set fe λ _ → σ))
 
 frame-structure-is-set : {𝓤 : Universe}
                        → (A : 𝓤  ̇) (𝓥 𝓦 : Universe)
+                       → propext 𝓥
                        → is-set (frame-structure 𝓥 𝓦 A)
-frame-structure-is-set A 𝓥 𝓦 =
+frame-structure-is-set A 𝓥 𝓦 pe {(d₁ , p₁)} {(d₂ , p₂)} =
  Σ-is-set
-  (Σ-is-set {!!} λ str → Σ-is-set {!carrier-of-[ poset-of (A , str) ]-is-set!} {!!})
-  λ d → props-are-sets (satisfying-frame-laws-is-prop d)
+  (frame-data-is-set A σ 𝓥 𝓦 pe)
+  (λ d → props-are-sets (satisfying-frame-laws-is-prop d))
+   where
+    σ : is-set A
+    σ = carrier-of-[ poset-of (A , (d₁ , p₁)) ]-is-set
 
 \end{code}
