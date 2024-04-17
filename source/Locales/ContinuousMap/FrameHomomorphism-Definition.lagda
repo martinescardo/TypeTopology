@@ -219,9 +219,3 @@ For convenience, we also define some direct projections on the Σ-based type.
    (frame-homomorphisms-preserve-all-joins h S)
 
 \end{code}
-
-Added on 2024-04-15.
-
-\begin{code}
-
-\end{code}
