@@ -19,7 +19,7 @@ open import UF.UA-FunExt
 open import UF.Univalence
 open import UF.Subsingletons
 
-module Locales.SIP.Frame
+module Locales.SIP.FrameSIP
         (ua : Univalence)
         (pt : propositional-truncations-exist)
         (sr : Set-Replacement pt)
