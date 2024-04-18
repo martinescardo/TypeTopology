@@ -28,6 +28,7 @@ open import UF.Equiv-FunExt
 open import UF.Logic
 open import UF.Retracts
 open import UF.SIP
+
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.SubtypeClassifier
@@ -250,6 +251,7 @@ infix 0 Isomorphismᵣ-Syntax
 syntax Isomorphismᵣ-Syntax F G = F ≅f≅ G
 
 \end{code}
+<<<<<<< HEAD
 
 Added on 2024-04-14.
 
@@ -296,3 +298,5 @@ id-equiv-is-homomorphic : (L : Frame 𝓤 𝓥 𝓦)
 id-equiv-is-homomorphic L = 𝔦𝔡-is-frame-homomorphism L , 𝔦𝔡-is-frame-homomorphism L
 
 \end{code}
+=======
+>>>>>>> master
