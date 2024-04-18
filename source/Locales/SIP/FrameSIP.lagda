@@ -5,7 +5,11 @@ date-started:   2024-04-14
 date-completed: 2024-04-17
 --------------------------------------------------------------------------------
 
-Originally proved in `ayberkt/formal-topology-in-UF`.
+Originally proved on 2020-02-03 by Ayberk Tosun (j.w.w. Thierry Coquand) in
+`ayberkt/formal-topology-in-UF` which is the Agda formalization accompanying
+Ayberk Tosun's MSc thesis.
+
+Ported to TypeTopology on 2024-04-17.
 
 \begin{code}[hide]
 
@@ -60,21 +64,31 @@ open sip hiding (⟨_⟩)
 
 \end{code}
 
+We work in a module parameterized by two frame structures.
+
 \begin{code}
 
 module SIP-For-Frames {A : 𝓤 ⁺  ̇} (str₁ str₂ : frame-structure 𝓤 𝓤 A) where
 
+ open FrameIsomorphisms
+
 \end{code}
 
-\begin{code}
+We denote by `F` and `G` the frames `(A , str₁)` and `(B , str₂)`
 
- open FrameIsomorphisms
+\begin{code}
 
  F : Frame (𝓤 ⁺) 𝓤 𝓤
  F = A , str₁
 
  G : Frame (𝓤 ⁺) 𝓤 𝓤
  G = A , str₂
+
+\end{code}
+
+We define a bunch of other abbreviations that we will use throughout this module.
+
+\begin{code}
 
  frame-data-of-F : frame-data 𝓤 𝓤 A
  frame-data-of-F = pr₁ str₁
@@ -105,6 +119,10 @@ module SIP-For-Frames {A : 𝓤 ⁺  ̇} (str₁ str₂ : frame-structure 𝓤 �
 
  ⋁₂_ : Fam 𝓤 ⟨ G ⟩ → ⟨ G ⟩
  ⋁₂_ = join-of G
+
+\end{code}
+
+\begin{code}
 
  abstract
   homomorphic-identity-equivalence-gives-order-agreement
