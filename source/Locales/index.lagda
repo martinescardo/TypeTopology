@@ -118,4 +118,6 @@ import Locales.ContinuousMap.Homeomorphism-Properties
 
 import Locales.SIP.FrameSIP
 
+import Locales.StoneDuality.ForSpectralLocales
+
 \end{code}
