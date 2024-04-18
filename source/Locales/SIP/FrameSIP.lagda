@@ -296,13 +296,12 @@ characterization-of-frame-＝ F G ua =
 \begin{code}
 
 isomorphic-frames-are-equal : (F G : Frame (𝓤 ⁺) 𝓤 𝓤)
-                            → is-univalent (𝓤 ⁺)
                             → F ≅f≅ G → F ＝ G
-isomorphic-frames-are-equal F G ua iso =
+isomorphic-frames-are-equal {𝓤} F G iso =
  h (isomorphism-to-sns-equivalence F G iso)
   where
    e : (F ＝ G) ≃ (F ≃[ frame-sns-data ] G)
-   e = characterization-of-frame-＝ F G ua
+   e = characterization-of-frame-＝ F G (ua (𝓤 ⁺))
 
    h : F ≃[ frame-sns-data ] G → F ＝ G
    h = inverse ⌜ e ⌝ (⌜⌝-is-equiv e)
