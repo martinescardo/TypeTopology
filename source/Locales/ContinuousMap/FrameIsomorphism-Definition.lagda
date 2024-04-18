@@ -167,7 +167,9 @@ between the carrier sets of `F` and `G` to be homomorphic.
 
  is-homomorphic : (⟨ F ⟩ ≃ ⟨ G ⟩) → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓤' ⊔ 𝓥' ⊔ 𝓦 ⁺)
  is-homomorphic e = is-a-frame-homomorphism F G ⌜ e ⌝
-                  ∧ is-a-frame-homomorphism G F (inverse ⌜ e ⌝ (⌜⌝-is-equiv e))
+                  ∧ is-a-frame-homomorphism G F (e⁻¹ (⌜⌝-is-equiv e))
+  where
+   e⁻¹ = inverse ⌜ e ⌝
 
 \end{code}
 
@@ -298,6 +300,7 @@ The identity equivalence is trivially homomorphic.
 
 id-equiv-is-homomorphic : (L : Frame 𝓤 𝓥 𝓦)
                          → FrameIsomorphisms.is-homomorphic L L (𝔦𝔡 L) holds
-id-equiv-is-homomorphic L = 𝔦𝔡-is-frame-homomorphism L , 𝔦𝔡-is-frame-homomorphism L
+id-equiv-is-homomorphic L =
+ 𝔦𝔡-is-frame-homomorphism L , 𝔦𝔡-is-frame-homomorphism L
 
 \end{code}
