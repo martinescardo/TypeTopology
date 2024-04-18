@@ -77,3 +77,28 @@ is-locale-of-spectra : (X : Locale (𝓤 ⁺) 𝓤 𝓤) → 𝓤 ⁺  ̇
 is-locale-of-spectra {𝓤} X = Σ L ꞉ DistributiveLattice 𝓤 , X ≅c≅ spec L
 
 \end{code}
+
+Because `spec L` is a spectral locale (with small basis), any locale `X` that is
+homeomorphic to `spec L` for some distributive lattice `L` must be spectral
+(with small basis).
+
+\begin{code}
+
+locale-of-spectra-implies-is-spectral : (X : Locale (𝓤 ⁺) 𝓤 𝓤)
+                                      → is-locale-of-spectra X
+                                      → is-spectral-with-small-basis ua X holds
+locale-of-spectra-implies-is-spectral X (L , 𝒽) =
+ transport (_holds ∘ is-spectral-with-small-basis ua) q 𝕤
+  where
+   open Spectrality sr L
+
+   p : 𝒪 (spec L) ＝ 𝒪 X
+   p = isomorphic-frames-are-equal ua pt sr (𝒪 (spec L)) (𝒪 X) 𝒽
+
+   q : spec L ＝ X
+   q = to-locale-＝ (spec L) X p
+
+   𝕤 : is-spectral-with-small-basis ua (spec L) holds
+   𝕤 = spec-L-is-spectral , spec-L-has-small-𝒦
+
+\end{code}
