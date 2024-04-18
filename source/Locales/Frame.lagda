@@ -1754,6 +1754,9 @@ record Locale (𝓤 𝓥 𝓦 : Universe) : 𝓤 ⁺ ⊔ 𝓥 ⁺ ⊔ 𝓦 ⁺ �
  𝒪 : Frame 𝓤 𝓥 𝓦
  𝒪 = ⟨_⟩ₗ , frame-str-of
 
+to-locale-＝ : (X Y : Locale 𝓤 𝓥 𝓦) → Locale.𝒪 X ＝ Locale.𝒪 Y → X ＝ Y
+to-locale-＝ X Y refl = refl
+
 \end{code}
 
 \section{Cofinality}
