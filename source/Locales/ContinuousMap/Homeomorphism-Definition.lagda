@@ -59,11 +59,3 @@ infix 0 Homeomorphism-Syntax
 syntax Homeomorphism-Syntax X Y = X ≅c≅ Y
 
 \end{code}
-
-\begin{code}
-
--- ≅c≅-transport : (X : Locale 𝓤 𝓥 𝓦) (Y : Locale 𝓤 𝓥 𝓦)
---               → (P : Locale 𝓤 𝓥 𝓦 → Ω 𝓣) → X ≅c≅ Y → P X holds → P Y holds
--- ≅c≅-transport X Y P 𝒽 p = {!!}
-
-\end{code}
