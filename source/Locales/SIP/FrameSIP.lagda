@@ -74,7 +74,7 @@ module SIP-For-Frames {A : 𝓤 ⁺  ̇} (str₁ str₂ : frame-structure 𝓤 �
 
 \end{code}
 
-We denote by `F` and `G` the frames `(A , str₁)` and `(B , str₂)`
+We denote by `F` and `G` the frames `(A , str₁)` and `(B , str₂)`.
 
 \begin{code}
 
@@ -86,7 +86,8 @@ We denote by `F` and `G` the frames `(A , str₁)` and `(B , str₂)`
 
 \end{code}
 
-We define a bunch of other abbreviations that we will use throughout this module.
+We define a bunch of other abbreviations that we will use throughout this
+module.
 
 \begin{code}
 
@@ -122,6 +123,9 @@ We define a bunch of other abbreviations that we will use throughout this module
 
 \end{code}
 
+We now prove some lemmas showing that, if the identity equivalence between frames
+`F` and `G` is homomorphic, then the frame structures must be equal.
+
 \begin{code}
 
  abstract
@@ -148,37 +152,37 @@ We define a bunch of other abbreviations that we will use throughout this module
          γ : (x ≤₂ y ⇒ x ≤₁ y) holds
          γ = frame-morphisms-are-monotonic G F id r-is-homomorphism (x , y)
 
- structural-equality-top-lemma : is-homomorphic F G (≃-refl A) holds
-                               → 𝟏[ F ] ＝ 𝟏[ G ]
- structural-equality-top-lemma η = id-preserves-top
-  where
-   iso : Isomorphismᵣ F G
-   iso = isomorphism₀-to-isomorphismᵣ F G (≃-refl A , η)
-
-   open Isomorphismᵣ iso using (forward; backward)
-
-   φ : F ─f·→ G
-   φ = frame-homomorphism-to-frame-homomorphismᵣ F G forward
-
-   open _─f·→_ φ using () renaming (h-preserves-top to id-preserves-top)
-
- homomorphic-identity-equivalence-gives-meet-agreement
-  : is-homomorphic F G (≃-refl A) holds
-  → meet-of F ＝ meet-of G
- homomorphic-identity-equivalence-gives-meet-agreement h =
-  dfunext fe λ x → dfunext fe λ y → id-preserves-meets x y
+  homomorphic-identity-equivalence-gives-top-agreement
+   : is-homomorphic F G (≃-refl A) holds
+   → 𝟏[ F ] ＝ 𝟏[ G ]
+  homomorphic-identity-equivalence-gives-top-agreement η = id-preserves-top
    where
     iso : Isomorphismᵣ F G
-    iso = isomorphism₀-to-isomorphismᵣ F G (≃-refl A , h)
+    iso = isomorphism₀-to-isomorphismᵣ F G (≃-refl A , η)
 
     open Isomorphismᵣ iso using (forward; backward)
 
     φ : F ─f·→ G
     φ = frame-homomorphism-to-frame-homomorphismᵣ F G forward
 
-    open _─f·→_ φ using () renaming (h-preserves-meets to id-preserves-meets)
+    open _─f·→_ φ using () renaming (h-preserves-top to id-preserves-top)
 
- abstract
+  homomorphic-identity-equivalence-gives-meet-agreement
+   : is-homomorphic F G (≃-refl A) holds
+   → meet-of F ＝ meet-of G
+  homomorphic-identity-equivalence-gives-meet-agreement h =
+   dfunext fe λ x → dfunext fe λ y → id-preserves-meets x y
+    where
+     iso : Isomorphismᵣ F G
+     iso = isomorphism₀-to-isomorphismᵣ F G (≃-refl A , h)
+
+     open Isomorphismᵣ iso using (forward; backward)
+
+     φ : F ─f·→ G
+     φ = frame-homomorphism-to-frame-homomorphismᵣ F G forward
+
+     open _─f·→_ φ using () renaming (h-preserves-meets to id-preserves-meets)
+
   homomorphic-identity-equivalence-gives-join-agreement
    : is-homomorphic F G (≃-refl A) holds
    → join-of F ＝ join-of G
@@ -195,8 +199,10 @@ We define a bunch of other abbreviations that we will use throughout this module
 
     open _─f·→_ φ using () renaming (h-preserves-joins to id-preserves-joins)
 
- frame-data-agreement : is-homomorphic F G (≃-refl A) holds → frame-data-of-F ＝ frame-data-of-G
- frame-data-agreement η =
+ homomorphic-identity-equivalence-gives-frame-data-agreement
+  : is-homomorphic F G (≃-refl A) holds
+  → frame-data-of-F ＝ frame-data-of-G
+ homomorphic-identity-equivalence-gives-frame-data-agreement η =
   transport
    (λ - → _≤₁_ , 𝟏₁ , _∧₁_ , ⋁₁_ ＝ - , 𝟏₂ , _∧₂_ , ⋁₂_)
    (homomorphic-identity-equivalence-gives-order-agreement η)
@@ -214,18 +220,32 @@ We define a bunch of other abbreviations that we will use throughout this module
     β : 𝟏₁ , _∧₁_ , ⋁₁_ ＝ 𝟏₂ , _∧₂_ , ⋁₂_
     β = transport
          (λ - → 𝟏₁ , _∧₁_ , ⋁₁_ ＝ - , _∧₂_ , ⋁₂_)
-         (structural-equality-top-lemma η)
+         (homomorphic-identity-equivalence-gives-top-agreement η)
          (to-Σ-＝' γ)
 
+\end{code}
+
+We use the lemmas that we proved above to conclude that the identity equivalence
+on `A` being homomorphic gives the equality of `str₁` and `str₂`.
+
+\begin{code}
 
  abstract
   homomorphic-equivalence-gives-structural-equality
    : is-homomorphic F G (≃-refl A) holds
    → str₁ ＝ str₂
   homomorphic-equivalence-gives-structural-equality =
-   to-subtype-＝ satisfying-frame-laws-is-prop ∘ frame-data-agreement
+     to-subtype-＝ satisfying-frame-laws-is-prop
+   ∘ homomorphic-identity-equivalence-gives-frame-data-agreement
 
 open FrameIsomorphisms
+
+\end{code}
+
+The fact that `frame-structure` is a standard notion of structure is then
+an easy corollary.
+
+\begin{code}
 
 frame-sns-data : SNS (frame-structure 𝓤 𝓤) (𝓤 ⁺)
 frame-sns-data {𝓤} = ι , ρ , θ
@@ -244,22 +264,49 @@ frame-sns-data {𝓤} = ι , ρ , θ
     open SIP-For-Frames str₁ str₂
 
     † : (h : is-homomorphic F G (≃-refl X) holds)
-      → canonical-map ι ρ str₁ str₂ (homomorphic-equivalence-gives-structural-equality h) ＝ h
+      → let
+         p = homomorphic-equivalence-gives-structural-equality h
+        in
+        canonical-map ι ρ str₁ str₂ p ＝ h
     † h = holds-is-prop
            (is-homomorphic F G (≃-refl X))
-           (canonical-map ι ρ str₁ str₂ (homomorphic-equivalence-gives-structural-equality h)) h
+           (canonical-map
+             ι
+             ρ
+             str₁
+             str₂
+             (homomorphic-equivalence-gives-structural-equality h))
+           h
 
     ‡ : (p : str₁ ＝ str₂)
-      → homomorphic-equivalence-gives-structural-equality (canonical-map ι ρ str₁ str₂ p) ＝ p
+      → homomorphic-equivalence-gives-structural-equality
+         (canonical-map ι ρ str₁ str₂ p)
+        ＝ p
     ‡ p = frame-structure-is-set
            X
            𝓤
            𝓤
            pe
-           (homomorphic-equivalence-gives-structural-equality (canonical-map ι ρ str₁ str₂ p))
+           (homomorphic-equivalence-gives-structural-equality
+             (canonical-map ι ρ str₁ str₂ p))
            p
 
 \end{code}
+
+Finally, we get that the identity type between frames `F` and `G` is equivalent
+to the type of equivalences between them.
+
+\begin{code}
+
+characterization-of-frame-＝ : (F G : Frame (𝓤 ⁺) 𝓤 𝓤)
+                             → (F ＝ G) ≃ (F ≃[ frame-sns-data ] G)
+characterization-of-frame-＝ {𝓤} F G =
+ characterization-of-＝ (ua (𝓤 ⁺)) frame-sns-data F G
+
+\end{code}
+
+The notion of equivalence induced by `frame-sns-data` is logically equivalent to
+the notion of isomorphism of frames from module `FrameIsomorphism-Definition`.
 
 \begin{code}
 
@@ -283,25 +330,17 @@ isomorphism-to-sns-equivalence F G iso = ⌜ e ⌝ , ⌜⌝-is-equiv e , †
 
 \end{code}
 
-\begin{code}
-
-characterization-of-frame-＝ : (F G : Frame (𝓤 ⁺) 𝓤 𝓤)
-                             → is-univalent (𝓤 ⁺)
-                             → (F ＝ G) ≃ (F ≃[ frame-sns-data ] G)
-characterization-of-frame-＝ F G ua =
- characterization-of-＝ ua frame-sns-data F G
-
-\end{code}
+Combining `isomorphism-to-sns-equivalence` with `characterization-of-frame-＝`,
+we get that two isomorphic frames are equal.
 
 \begin{code}
 
-isomorphic-frames-are-equal : (F G : Frame (𝓤 ⁺) 𝓤 𝓤)
-                            → F ≅f≅ G → F ＝ G
+isomorphic-frames-are-equal : (F G : Frame (𝓤 ⁺) 𝓤 𝓤) → F ≅f≅ G → F ＝ G
 isomorphic-frames-are-equal {𝓤} F G iso =
  h (isomorphism-to-sns-equivalence F G iso)
   where
    e : (F ＝ G) ≃ (F ≃[ frame-sns-data ] G)
-   e = characterization-of-frame-＝ F G (ua (𝓤 ⁺))
+   e = characterization-of-frame-＝ F G
 
    h : F ≃[ frame-sns-data ] G → F ＝ G
    h = inverse ⌜ e ⌝ (⌜⌝-is-equiv e)
