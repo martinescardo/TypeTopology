@@ -2,6 +2,7 @@
 title:          SIP for frames
 author:         Ayberk Tosun
 date-started:   2024-04-14
+date-completed: 2024-04-17
 --------------------------------------------------------------------------------
 
 Originally proved in `ayberkt/formal-topology-in-UF`.
