@@ -39,7 +39,7 @@ open FrameHomomorphisms
 
 \end{code}
 
-We work in a module parameterized by two frames.
+We work in a module parameterized by two frames `F` and `G`.
 
 \begin{code}
 
@@ -74,10 +74,10 @@ We start with the record-based definition of the notion of frame isomorphism.
 
 \end{code}
 
-We now show the equivalence of this to a Σ-based definition.
+We now show the equivalence of this to a record-based definition.
 
-Given a frame homomorphism `F ─f→ G`, its type of homomorphic inverses is
-a proposition.
+Given a frame homomorphism `F ─f→ G`, its type of homomorphic inverses is a
+proposition.
 
 \begin{code}
 
@@ -90,15 +90,19 @@ a proposition.
  homomorphic-inverse-is-prop h (r , φ , ψ) (r′ , φ′ , ψ′) =
   to-subtype-＝ † (to-frame-homomorphism-＝ G F r r′ ‡)
    where
-    † : (h′ : G ─f→ F) → is-prop (fun F G h ∘ fun G F h′ ∼ id × fun G F h′ ∘ fun F G h ∼ id)
+    † : (h′ : G ─f→ F)
+      → is-prop (fun F G h ∘ fun G F h′ ∼ id × fun G F h′ ∘ fun F G h ∼ id)
     † h′ = ×-is-prop
             (Π-is-prop fe (λ _ → carrier-of-[ poset-of G ]-is-set))
             (Π-is-prop fe (λ _ → carrier-of-[ poset-of F ]-is-set))
 
-    ϑ : (y : ⟨ G ⟩) → fun F G h (fun G F r y) ＝ fun F G h (fun G F r′ y)
-    ϑ y = fun F G h (fun G F r y)   ＝⟨ φ y     ⟩
-          y                         ＝⟨ φ′ y ⁻¹ ⟩
+    ϑ : fun F G h ∘ fun G F r ∼ fun F G h ∘ fun G F r′
+    ϑ y = fun F G h (fun G F r y)   ＝⟨ Ⅰ ⟩
+          y                         ＝⟨ Ⅱ ⟩
           fun F G h (fun G F r′ y)  ∎
+           where
+            Ⅰ = φ y
+            Ⅱ = φ′ y ⁻¹
 
     ξ : left-cancellable (fun F G h)
     ξ = sections-are-lc (fun F G h) (fun G F r , ψ)
