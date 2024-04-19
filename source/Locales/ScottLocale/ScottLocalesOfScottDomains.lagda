@@ -713,7 +713,7 @@ This forms a directed basis.
 
 \end{code}
 
-Everything we have explained so far constitute the proof of spectrality when
+The lemmas we have proved so far constitute the proof of spectrality when
 combined as follows.
 
 \begin{code}
