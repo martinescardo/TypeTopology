@@ -160,10 +160,10 @@ We now prove some lemmas showing that, if the identity equivalence between frame
     iso : Isomorphismᵣ F G
     iso = isomorphism₀-to-isomorphismᵣ F G (≃-refl A , η)
 
-    open Isomorphismᵣ iso using (forward; backward)
+    open Isomorphismᵣ iso using (𝓈; 𝓇)
 
     φ : F ─f·→ G
-    φ = frame-homomorphism-to-frame-homomorphismᵣ F G forward
+    φ = frame-homomorphism-to-frame-homomorphismᵣ F G 𝓈
 
     open _─f·→_ φ using () renaming (h-preserves-top to id-preserves-top)
 
@@ -176,10 +176,10 @@ We now prove some lemmas showing that, if the identity equivalence between frame
      iso : Isomorphismᵣ F G
      iso = isomorphism₀-to-isomorphismᵣ F G (≃-refl A , h)
 
-     open Isomorphismᵣ iso using (forward; backward)
+     open Isomorphismᵣ iso using (𝓈; 𝓇)
 
      φ : F ─f·→ G
-     φ = frame-homomorphism-to-frame-homomorphismᵣ F G forward
+     φ = frame-homomorphism-to-frame-homomorphismᵣ F G 𝓈
 
      open _─f·→_ φ using () renaming (h-preserves-meets to id-preserves-meets)
 
@@ -192,10 +192,10 @@ We now prove some lemmas showing that, if the identity equivalence between frame
     iso : Isomorphismᵣ F G
     iso = isomorphism₀-to-isomorphismᵣ F G (≃-refl A , h)
 
-    open Isomorphismᵣ iso using (forward; backward; s-is-homomorphism)
+    open Isomorphismᵣ iso using (𝓈; 𝓇; s-is-homomorphism)
 
     φ : F ─f·→ G
-    φ = frame-homomorphism-to-frame-homomorphismᵣ F G forward
+    φ = frame-homomorphism-to-frame-homomorphismᵣ F G 𝓈
 
     open _─f·→_ φ using () renaming (h-preserves-joins to id-preserves-joins)
 
