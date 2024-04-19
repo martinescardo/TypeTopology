@@ -184,9 +184,6 @@ We define some nice notation for the prop-valued equality of the dcpo `𝓓`.
 
 \begin{code}
 
- _＝ₚ_ : ⟨ 𝓓 ⟩∙ → ⟨ 𝓓 ⟩∙ → Ω (𝓤 ⁺)
- x ＝ₚ y = (x ＝ y) , sethood 𝓓
-
  open DefnOfScottTopology 𝓓 𝓤
  open BottomLemma 𝓓 𝕒 hl
  open Properties 𝓓
