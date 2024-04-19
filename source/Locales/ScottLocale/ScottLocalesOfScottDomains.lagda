@@ -13,22 +13,22 @@ satisfies a certain decidability condition).
 
 {-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
 
-open import MLTT.Spartan hiding (𝟚)
 open import MLTT.List hiding ([_])
+open import MLTT.Negation
+open import MLTT.Spartan hiding (𝟚)
 open import Slice.Family
-open import UF.FunExt
-open import UF.Logic
-open import UF.PropTrunc
-open import UF.SubtypeClassifier
-open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
-open import UF.Powerset-MultiUniverse
-open import UF.Size
 open import UF.Classifiers
-open import UF.Univalence
 open import UF.Embeddings
 open import UF.EquivalenceExamples
-open import MLTT.Negation
+open import UF.FunExt
+open import UF.Logic
+open import UF.Powerset-MultiUniverse
+open import UF.PropTrunc
+open import UF.Size
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
+open import UF.SubtypeClassifier
+open import UF.Univalence
 
 module Locales.ScottLocale.ScottLocalesOfScottDomains
         (pt : propositional-truncations-exist)
