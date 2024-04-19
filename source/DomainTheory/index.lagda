@@ -148,6 +148,17 @@ import DomainTheory.ScottModelOfPCF.ScottModelOfPCF -- (2)
 import DomainTheory.Topology.ScottTopology           -- (0)
 import DomainTheory.Topology.ScottTopologyProperties -- (1)
 
+{-
+  In the locale theory development, some results on the pointfree topology of
+  domains have been proved by Ayberk Tosun. Most importantly, the fact that the
+  Scott locale of a Scott domain is a spectral locale has been proved, which was
+  previously in "additional formalization targets" list at the bottom of this
+  module.
+
+  The results on the pointfree topology of domains can be found in the directory
+  `Locales/ScottLocale`.
+-}
+
 \end{code}
 
 Additional formalization targets
