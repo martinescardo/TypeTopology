@@ -4,9 +4,7 @@ author:         Ayberk Tosun
 date-started:   2024-04-18
 --------------------------------------------------------------------------------
 
-A homeomorphism of locales is the same thing as an isomorphism of their
-underlying frames. As we maintain a careful distinction between locales and
-their defining frames, however, we give a different name to this notion.
+Some properties of locale homeomorphisms.
 
 \begin{code}[hide]
 
