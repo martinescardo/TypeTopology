@@ -114,6 +114,11 @@ decidability-condition 𝓓 = (c d : ⟨ 𝓓 ⟩∙) →
 
 \end{code}
 
+This condition is trivially satisfied if the dcpo in consideration is complete
+(or equivalently, it has all binary joins) because the upper bound mentioned
+here will always exist. In many cases, the dcpos we are interested in turn out
+to be such complete lattices.
+
 \section{The proof}
 
 As mentioned previously, we assume a couple of things.
