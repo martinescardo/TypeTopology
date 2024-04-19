@@ -268,10 +268,6 @@ The basis is the family `(List B , 𝜸₀)`, where `𝜸₀` is the following f
                 (λ { (k₀ , r , s) → ∣ k₀ , in-tail r , s ∣ })
                 (𝜸₀-lemma x ks q)
 
-\end{code}
-
-\begin{code}
-
  𝜸 : List B → ⟨ 𝒪 Σ[𝓓] ⟩
  𝜸 ks = 𝜸₀ ks , 𝜸₀-gives-scott-opens ks
 
@@ -772,6 +768,13 @@ combined as follows.
           , λ { (l , φ , ψ) → ∧[ 𝒪 Σ[𝓓] ]-greatest (𝜸 is) (𝜸 js) l φ ψ }
 
 \end{code}
+
+In the module `SpectralScottLocaleConstruction` above, we worked with a
+specified basis for convenience. Because the type of bases for algebraic dcpos
+has split support, we can carry out the same construction with an unspecified
+basis. The following module is a wrapper around the previous
+`SpectralScottLocaleConstruction` module in which the spectrality proof is
+constructed with only the assumption of an unspecified basis.
 
 \begin{code}
 
