@@ -172,5 +172,3 @@ We present a succinct list of domain-theoretic formalization targets here:
 
 Item 2 should be a fun challenge for a student with an interest in
 (domain-theoretic semantics of) programming languages.
-
-If you'd like to work on Item 4, please get in touch with Ayberk Tosun.
