@@ -182,14 +182,16 @@ We define some nice notation for the prop-valued equality of the dcpo `𝓓`.
  _＝ₚ_ : ⟨ 𝓓 ⟩∙ → ⟨ 𝓓 ⟩∙ → Ω (𝓤 ⁺)
  x ＝ₚ y = (x ＝ y) , sethood 𝓓
 
-\end{code}
-
-\begin{code}
-
  open DefnOfScottTopology 𝓓 𝓤
  open BottomLemma 𝓓 𝕒 hl
  open Properties 𝓓
  open binary-unions-of-subsets pt
+
+\end{code}
+
+We also define some nice notation for the open given by a basis index.
+
+\begin{code}
 
  ↑ᵏ[_] : B →  ⟨ 𝒪 Σ[𝓓] ⟩
  ↑ᵏ[ i ] = ↑ˢ[ β i , ϟ i ]
@@ -435,10 +437,6 @@ then it is compact.
 
  open DefnOfScottLocale 𝓓 𝓤 pe using (_⊆ₛ_)
 
-\end{code}
-
-\begin{code}
-
  principal-filter-reflects-joins
   : (c d s : ⟨ 𝓓 ⟩∙)
   → (κᶜ : is-compact 𝓓 c)
@@ -597,10 +595,6 @@ closed under binary meets.
                (λ - → - ∨[ 𝒪 Σ[𝓓] ] (↑ᵏ[ i ] ∧[ 𝒪 Σ[𝓓] ] 𝜸₁ js))
                (not-bounded-lemma (β i) (β j) (ϟ i) (ϟ j) ν ⁻¹ )
           Ⅲ = binary-distributivity (𝒪 Σ[𝓓]) ↑ᵏ[ i ] ↑ᵏ[ j ] (𝜸₁ js) ⁻¹
-
-\end{code}
-
-\begin{code}
 
  𝜸-closure-under-∧ : (is js : List B)
                    → ∃ ks ꞉ List B , 𝜸₁ ks ＝ 𝜸₁ is ∧[ 𝒪 Σ[𝓓] ] 𝜸₁ js
