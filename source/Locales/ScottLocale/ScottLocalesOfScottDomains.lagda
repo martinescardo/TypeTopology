@@ -70,8 +70,7 @@ open import Locales.ScottLocale.ScottLocalesOfAlgebraicDcpos pt fe 𝓤
 
 \end{code}
 
-contains a proof that the Scott locale of any algebraic dcpo is a spectral
-locale.
+contains a proof that the Scott locale of any algebraic dcpo is a locale.
 
 In this module, we extend this proof by showing that the Scott locale is
 spectral.
