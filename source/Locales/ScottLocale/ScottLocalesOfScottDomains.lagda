@@ -207,6 +207,18 @@ The basis is the family `(List B , 𝜸₀)`, where `𝜸₀` is the following f
  𝜸₀ : List B → 𝓟 {𝓤} ⟨ 𝓓 ⟩∙
  𝜸₀ = foldr _∪_ ∅ ∘ map (principal-filter 𝓓 ∘ β)
 
+\end{code}
+
+For the reader who might be unfamiliar with it, `foldr` is a function on lists
+that takes a binary function `f : X → Y → Y` and an element `u : Y`, and "folds"
+a given a list `x[0], …, x[n-1]` into
+
+```
+f(x[0], f(x[1], … f(x[n-1], u)))
+```
+
+\begin{code}
+
  𝜸₀-is-upwards-closed : (ks : List B)
                       → is-upwards-closed (𝜸₀ ks) holds
  𝜸₀-is-upwards-closed []       x y () q
