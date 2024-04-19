@@ -78,7 +78,7 @@ module ScottLocaleProperties
 Recall that `↑ˢ[ x , p ]` denotes the principal filter on a compact element `x`,
 (where `p` is the proof that `x` is compact).
 
-Below, we prove that `↑ˢ[ x , p ] = 𝟏` where `𝟏` is the top Scott open of the
+Below, we prove that `↑ˢ[ ⊥ᵈ , p ] = 𝟏` where `𝟏` is the top Scott open of the
 Scott locale on `𝓓`.
 
 \begin{code}
