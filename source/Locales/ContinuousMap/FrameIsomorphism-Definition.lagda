@@ -2,9 +2,11 @@
 title:          Frame isomorphisms
 author:         Ayberk Tosun
 date-started:   2024-04-11
+date-completed: 2024-04-18
 --------------------------------------------------------------------------------
 
-Notions of frame isomorphism and their equivalences.
+Various formulations of the notion of frame isomorphism, and proofs of their
+equivalences.
 
 \begin{code}[hide]
 
@@ -52,28 +54,28 @@ We start with the record-based definition of the notion of frame isomorphism.
 
  record Isomorphismᵣ : 𝓤 ⊔ 𝓤' ⊔ 𝓥 ⊔ 𝓥' ⊔ 𝓦 ⁺  ̇ where
   field
-   forward  : F ─f→ G
-   backward : G ─f→ F
+   𝓈 : F ─f→ G
+   𝓇 : G ─f→ F
 
   s : ⟨ F ⟩ → ⟨ G ⟩
-  s = fun F G forward
+  s = fun F G 𝓈
 
   r : ⟨ G ⟩ → ⟨ F ⟩
-  r = fun G F backward
+  r = fun G F 𝓇
 
   s-is-homomorphism : is-a-frame-homomorphism F G s holds
-  s-is-homomorphism = fun-is-a-frame-homomorphism F G forward
+  s-is-homomorphism = fun-is-a-frame-homomorphism F G 𝓈
 
   r-is-homomorphism : is-a-frame-homomorphism G F r holds
-  r-is-homomorphism = fun-is-a-frame-homomorphism G F backward
+  r-is-homomorphism = fun-is-a-frame-homomorphism G F 𝓇
 
   field
-   backward-cancels-forward : r ∘ s ∼ id
-   forward-cancels-backward : s ∘ r ∼ id
+   𝓇-cancels-𝓈 : r ∘ s ∼ id
+   𝓈-cancels-𝓇 : s ∘ r ∼ id
 
 \end{code}
 
-We now show the equivalence of this to a record-based definition.
+We now show the equivalence of this to a Σ-based definition.
 
 Given a frame homomorphism `F ─f→ G`, its type of homomorphic inverses is a
 proposition.
@@ -121,7 +123,7 @@ of homomorphic inverses is inhabited.
 
 \end{code}
 
-Accordingly, we define the type of isomorphisms between frames `F` and `G`.
+We define the type of isomorphisms between frames `F` and `G` accordingly.
 
 \begin{code}
 
@@ -137,10 +139,10 @@ It is immediate that `Isomorphism` and `Isomorphismᵣ` are equivalent types.
  isomorphism-to-isomorphismᵣ : Isomorphism → Isomorphismᵣ
  isomorphism-to-isomorphismᵣ (𝓈 , 𝓇 , φ , ψ) =
   record
-   { forward                  = 𝓈
-   ; backward                 = 𝓇
-   ; backward-cancels-forward = ψ
-   ; forward-cancels-backward = φ
+   { 𝓈           = 𝓈
+   ; 𝓇           = 𝓇
+   ; 𝓇-cancels-𝓈 = ψ
+   ; 𝓈-cancels-𝓇 = φ
    }
 
  isomorphismᵣ-to-isomorphism : Isomorphismᵣ → Isomorphism
@@ -148,16 +150,17 @@ It is immediate that `Isomorphism` and `Isomorphismᵣ` are equivalent types.
   let
    open Isomorphismᵣ iso
   in
-   forward , backward , forward-cancels-backward , backward-cancels-forward
+   𝓈 , 𝓇 , 𝓈-cancels-𝓇 , 𝓇-cancels-𝓈
 
  isomorphism-equiv-to-isomorphismᵣ : Isomorphism ≃ Isomorphismᵣ
  isomorphism-equiv-to-isomorphismᵣ = isomorphism-to-isomorphismᵣ
                                    , (isomorphismᵣ-to-isomorphism , λ _ → refl)
-                                   , isomorphismᵣ-to-isomorphism , λ _ → refl
+                                   , (isomorphismᵣ-to-isomorphism , λ _ → refl)
 
 \end{code}
 
-We now give an alternative definition of the same notion.
+We now give an alternative definition of the same notion, which is more
+convenient to use for the SIP.
 
 The predicate `is-homomorphic` below expresses what it means for an equivalence
 between the carrier sets of `F` and `G` to be homomorphic.
@@ -192,24 +195,24 @@ These two notions of frame isomorphism are equivalent.
    open Isomorphismᵣ iso
 
    † : has-section s
-   † = r , forward-cancels-backward
+   † = r , 𝓈-cancels-𝓇
 
    ‡ : is-section s
-   ‡ = r , backward-cancels-forward
+   ‡ = r , 𝓇-cancels-𝓈
 
    φ : is-a-frame-homomorphism F G s holds
-   φ = fun-is-a-frame-homomorphism F G forward
+   φ = fun-is-a-frame-homomorphism F G 𝓈
 
    ψ : is-a-frame-homomorphism G F r holds
-   ψ = fun-is-a-frame-homomorphism G F backward
+   ψ = fun-is-a-frame-homomorphism G F 𝓇
 
  isomorphism₀-to-isomorphismᵣ : Isomorphism₀ → Isomorphismᵣ
  isomorphism₀-to-isomorphismᵣ (e , φ , ψ)  =
   record
-   { forward                  = ⌜ e ⌝ , φ
-   ; backward                 = inverse ⌜ e ⌝ (⌜⌝-is-equiv e) , ψ
-   ; backward-cancels-forward = inverses-are-retractions ⌜ e ⌝ (⌜⌝-is-equiv e)
-   ; forward-cancels-backward = inverses-are-sections ⌜ e ⌝ (⌜⌝-is-equiv e)
+   { 𝓈           = ⌜ e ⌝ , φ
+   ; 𝓇           = inverse ⌜ e ⌝ (⌜⌝-is-equiv e) , ψ
+   ; 𝓇-cancels-𝓈 = inverses-are-retractions ⌜ e ⌝ (⌜⌝-is-equiv e)
+   ; 𝓈-cancels-𝓇 = inverses-are-sections ⌜ e ⌝ (⌜⌝-is-equiv e)
    }
 
  isomorphism-to-isomorphism₀ : Isomorphism → Isomorphism₀
@@ -245,7 +248,7 @@ These two notions of frame isomorphism are equivalent.
 
 \end{code}
 
-Declare syntax for frame isomorphisms.
+Some nice syntax for frame isomorphisms.
 
 \begin{code}
 
@@ -259,12 +262,18 @@ syntax Isomorphismᵣ-Syntax F G = F ≅f≅ G
 
 Added on 2024-04-14.
 
-The identity equivalence is trivially homomorphic.
+We denote by `𝔦𝔡` the identity equivalence on the carrier set of a frame.
 
 \begin{code}
 
 𝔦𝔡 : (L : Frame 𝓤 𝓥 𝓦) → ⟨ L ⟩ ≃ ⟨ L ⟩
-𝔦𝔡 L = ≃-refl sip.⟨ L ⟩
+𝔦𝔡 L = ≃-refl ⟨ L ⟩
+
+\end{code}
+
+The proof that `𝔦𝔡` preserves the top element and meets is definitional.
+
+\begin{code}
 
 𝔦𝔡-preserves-top : (L : Frame 𝓤 𝓥 𝓦) → preserves-top L L ⌜ 𝔦𝔡 L ⌝ holds
 𝔦𝔡-preserves-top L = refl
@@ -272,6 +281,12 @@ The identity equivalence is trivially homomorphic.
 𝔦𝔡-preserves-binary-meets : (L : Frame 𝓤 𝓥 𝓦)
                           → preserves-binary-meets L L ⌜ 𝔦𝔡 L ⌝ holds
 𝔦𝔡-preserves-binary-meets _ _ _ = refl
+
+\end{code}
+
+The fact that it preserves joins is also direct.
+
+\begin{code}
 
 𝔦𝔡-preserves-joins : (L : Frame 𝓤 𝓥 𝓦) → preserves-joins L L ⌜ 𝔦𝔡 L ⌝ holds
 𝔦𝔡-preserves-joins L S = † , ‡
@@ -283,6 +298,13 @@ The identity equivalence is trivially homomorphic.
 
   ‡ : ((u , _) : upper-bound S) → ((⋁[ L ] S) ≤[ poset-of L ] u) holds
   ‡ = ⋁[ L ]-least S
+
+\end{code}
+
+We package these up together into the proof `𝔦𝔡-is-frame-homomorphism`,
+and denote this frame homomorphism by `𝔦𝔡ₕ`.
+
+\begin{code}
 
 𝔦𝔡-is-frame-homomorphism : (L : Frame 𝓤 𝓥 𝓦)
                          → is-a-frame-homomorphism L L ⌜ 𝔦𝔡 L ⌝ holds
@@ -297,9 +319,16 @@ The identity equivalence is trivially homomorphic.
   L
   (⌜ 𝔦𝔡 L ⌝ , 𝔦𝔡-is-frame-homomorphism L)
 
-id-equiv-is-homomorphic : (L : Frame 𝓤 𝓥 𝓦)
-                         → FrameIsomorphisms.is-homomorphic L L (𝔦𝔡 L) holds
-id-equiv-is-homomorphic L =
+\end{code}
+
+Finally, we record the fact that the identity equivalence is a homomorphic
+equivalence.
+
+\begin{code}
+
+𝔦𝔡-is-homomorphic : (L : Frame 𝓤 𝓥 𝓦)
+                  → FrameIsomorphisms.is-homomorphic L L (𝔦𝔡 L) holds
+𝔦𝔡-is-homomorphic L =
  𝔦𝔡-is-frame-homomorphism L , 𝔦𝔡-is-frame-homomorphism L
 
 \end{code}
