@@ -2007,7 +2007,8 @@ join-𝟎-lemma₂ F {x} {y} p = only-𝟎-is-below-𝟎 F y †
 
 \end{code}
 
-The proof below has been added on 2024-04-17.
+The proofs `order-is-set`, `frame-data-is-set`, and `frame-structure-is-set`
+below have been been added on 2024-04-17.
 
 \begin{code}
 
