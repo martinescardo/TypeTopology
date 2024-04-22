@@ -103,8 +103,6 @@ module _ (L : DistributiveLattice 𝓤)
         ; _∧_             = λ x y → s (r x ∧ r y)
         ; _∨_             = λ x y → s (r x ∨ r y)
         ; X-is-set        = equiv-to-set
-                             {X = A}
-                             {Y = ∣ L ∣ᵈ}
                              (≃-sym e)
                              carrier-of-[ poset-ofᵈ L ]-is-set
         ; ∧-associative   = ∧₀-is-associative
