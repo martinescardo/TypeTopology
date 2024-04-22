@@ -88,7 +88,12 @@ module _ (L : DistributiveLattice 𝓤)
                        Ⅱ = ap (λ - → s (- ∧ r (s y))) (r-cancels-s x ⁻¹)
 
  ∧₀-is-associative : (x y z : A) → x ∧₀ (y ∧₀ z) ＝ (x ∧₀ y) ∧₀ z
- ∧₀-is-associative x y z = {!!}
+ ∧₀-is-associative x y z =
+  x ∧₀ (y ∧₀ z)                ＝⟨ refl ⟩
+  s (r x ∧ r (s (r y ∧ r z)))  ＝⟨ {!!} ⟩
+  s (r (s (r x ∧ r y)) ∧ r z)  ＝⟨ refl ⟩
+  s (r (s (r x ∧ r y)) ∧ r z)  ＝⟨ refl ⟩
+  (x ∧₀ y) ∧₀ z                ∎
 
  L′₀ : DistributiveLattice 𝓥
  L′₀ = record
