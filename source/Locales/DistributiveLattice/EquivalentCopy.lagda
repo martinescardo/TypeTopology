@@ -165,6 +165,43 @@ module _ (L : DistributiveLattice 𝓤)
                Ⅱ = ap s (∨-unit (r x))
                Ⅲ = s-cancels-r x
 
+ ∨₀-idempotent : (x : A) → x ∨₀ x ＝ x
+ ∨₀-idempotent x =
+   s (r x ∨ r x) ＝⟨ Ⅰ ⟩
+   s (r x)       ＝⟨ Ⅱ ⟩
+   x             ∎
+    where
+     Ⅰ = ap s (∨-idempotent (r x))
+     Ⅱ = s-cancels-r x
+
+ ∨₀-absorptive : (x y : A) → x ∨₀ (x ∧₀ y) ＝ x
+ ∨₀-absorptive x y =
+  x ∨₀ (x ∧₀ y)                 ＝⟨ refl ⟩
+  s (r x ∨ r (s (r x ∧ r y)))   ＝⟨ Ⅰ    ⟩
+  s (r x ∨ (r x ∧ r y))         ＝⟨ Ⅱ    ⟩
+  s (r x)                       ＝⟨ Ⅲ    ⟩
+  x                             ∎
+   where
+    Ⅰ = ap (λ - → s (r x ∨ -)) (r-cancels-s (r x ∧ r y))
+    Ⅱ = ap s (∨-absorptive (r x) (r y))
+    Ⅲ = s-cancels-r x
+
+ distributivity₀ᵈ : (x y z : A) → x ∧₀ (y ∨₀ z) ＝ (x ∧₀ y) ∨₀ (x ∧₀ z)
+ distributivity₀ᵈ x y z =
+  x ∧₀ (y ∨₀ z)                             ＝⟨ refl ⟩
+  s (r x ∧ r (s (r y ∨ r z)))               ＝⟨ Ⅰ    ⟩
+  s (r x ∧ (r y ∨ r z))                     ＝⟨ Ⅱ    ⟩
+  s ((r x ∧ r y) ∨ (r x ∧ r z))             ＝⟨ Ⅲ    ⟩
+  s ((r x ∧ r y) ∨ r (s (r x ∧ r z)))       ＝⟨ Ⅳ    ⟩
+  s (r (s (r x ∧ r y)) ∨ r (s (r x ∧ r z))) ＝⟨ refl ⟩
+  s (r (x ∧₀ y) ∨ r (x ∧₀ z))               ＝⟨ refl ⟩
+  (x ∧₀ y) ∨₀ (x ∧₀ z)                      ∎
+   where
+    Ⅰ = ap (λ - → s (r x ∧ -)) (r-cancels-s (r y ∨ r z))
+    Ⅱ = ap s (distributivityᵈ (r x) (r y) (r z))
+    Ⅲ = ap (λ - → s ((r x ∧ r y) ∨ -)) (r-cancels-s (r x ∧ r z) ⁻¹)
+    Ⅳ = ap (λ - → s (- ∨ r (s (r x ∧ r z)))) (r-cancels-s (r x ∧ r y) ⁻¹)
+
  L′₀ : DistributiveLattice 𝓥
  L′₀ = record
         { X               = A
@@ -183,9 +220,9 @@ module _ (L : DistributiveLattice 𝓤)
         ; ∨-associative   = ∨₀-associative
         ; ∨-commutative   = ∨₀-commutative
         ; ∨-unit          = ∨₀-unit
-        ; ∨-idempotent    = {!!}
-        ; ∨-absorptive    = {!!}
-        ; distributivityᵈ = {!!}
+        ; ∨-idempotent    = ∨₀-idempotent
+        ; ∨-absorptive    = ∨₀-absorptive
+        ; distributivityᵈ = distributivity₀ᵈ
         }
 
 \end{code}
