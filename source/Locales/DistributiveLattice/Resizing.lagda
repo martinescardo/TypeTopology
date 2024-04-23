@@ -1,5 +1,5 @@
 ---
-title:          Equivalent copy of a distributive lattice
+title:          Transporting a distributive lattice along an equivalence
 author:         Ayberk Tosun
 date-started:   2024-04-22
 ---
@@ -26,7 +26,7 @@ open import UF.SubtypeClassifier
 open import UF.UA-FunExt
 open import UF.Univalence
 
-module Locales.DistributiveLattice.EquivalentCopy
+module Locales.DistributiveLattice.Resizing
         (ua : Univalence)
         (pt : propositional-truncations-exist)
         (sr : Set-Replacement pt)
