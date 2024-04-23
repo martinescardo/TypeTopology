@@ -39,19 +39,11 @@ private
 open import Locales.ContinuousMap.FrameHomomorphism-Definition pt fe
 open import Locales.ContinuousMap.FrameHomomorphism-Properties pt fe
 open import Locales.ContinuousMap.FrameIsomorphism-Definition pt fe
-open import Locales.ContinuousMap.Homeomorphism-Definition pt fe
-open import Locales.DistributiveLattice.Definition fe pt
-open import Locales.DistributiveLattice.LocaleOfSpectra fe pe pt
 open import Locales.Frame pt fe
-open import Locales.SmallBasis pt fe sr
-open import Locales.Spectrality.LatticeOfCompactOpens ua pt sr
-open import Locales.Spectrality.SpectralLocale
 open import Slice.Family
 open import UF.Base
 open import UF.Equiv
-open import UF.Equiv-FunExt
 open import UF.Logic
-open import UF.Retracts
 open import UF.SIP
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
