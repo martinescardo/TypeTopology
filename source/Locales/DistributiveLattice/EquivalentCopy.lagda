@@ -152,6 +152,19 @@ module _ (L : DistributiveLattice 𝓤)
     Ⅱ = ap s (∨-associative (r x) (r y) (r z))
     Ⅲ = ap (λ - → s (- ∨ r z)) (r-cancels-s (r x ∨ r y) ⁻¹)
 
+ ∨₀-commutative : (x y : A) → x ∨₀ y ＝ y ∨₀ x
+ ∨₀-commutative x y = ap s (∨-commutative (r x) (r y))
+
+ ∨₀-unit : (x : A) → x ∨₀ s 𝟎L ＝ x
+ ∨₀-unit x = s (r x ∨ r (s 𝟎L)) ＝⟨ Ⅰ ⟩
+             s (r x ∨ 𝟎L)       ＝⟨ Ⅱ ⟩
+             s (r x)            ＝⟨ Ⅲ ⟩
+             x                  ∎
+              where
+               Ⅰ = ap (λ - → s (r x ∨ -)) (r-cancels-s 𝟎L)
+               Ⅱ = ap s (∨-unit (r x))
+               Ⅲ = s-cancels-r x
+
  L′₀ : DistributiveLattice 𝓥
  L′₀ = record
         { X               = A
@@ -168,8 +181,8 @@ module _ (L : DistributiveLattice 𝓤)
         ; ∧-idempotent    = ∧₀-idempotent
         ; ∧-absorptive    = ∧₀-absorptive
         ; ∨-associative   = ∨₀-associative
-        ; ∨-commutative   = {!!}
-        ; ∨-unit          = {!!}
+        ; ∨-commutative   = ∨₀-commutative
+        ; ∨-unit          = ∨₀-unit
         ; ∨-idempotent    = {!!}
         ; ∨-absorptive    = {!!}
         ; distributivityᵈ = {!!}
