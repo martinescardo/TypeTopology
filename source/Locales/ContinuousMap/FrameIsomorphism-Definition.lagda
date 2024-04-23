@@ -74,7 +74,7 @@ We start with the record-based definition of the notion of frame isomorphism.
 
 \end{code}
 
-We now show the equivalence of this to a record-based definition.
+We now show the equivalence of this to a Σ-based definition.
 
 Given a frame homomorphism `F ─f→ G`, its type of homomorphic inverses is a
 proposition.
