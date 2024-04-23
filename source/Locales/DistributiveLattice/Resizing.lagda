@@ -1,27 +1,25 @@
----
+--------------------------------------------------------------------------------
 title:          Transporting a distributive lattice along an equivalence
 author:         Ayberk Tosun
 date-started:   2024-04-22
----
+--------------------------------------------------------------------------------
+
+Given a distributive lattice `L : 𝓤` and an equivalence of the carrier set `e :
+⟨ L ⟩ ≃ A` to some type `A : 𝓥`, we can transport the distributive lattice
+structure to live in universe `𝓥`.
 
 \begin{code}
 
 {-# OPTIONS --safe --without-K --lossy-unification #-}
 
 open import MLTT.List hiding ([_])
-open import MLTT.Pi
 open import MLTT.Spartan
 open import Slice.Family
 open import UF.Base
-open import UF.EquivalenceExamples
-open import UF.FunExt
 open import UF.FunExt
 open import UF.ImageAndSurjection
-open import UF.Logic
 open import UF.PropTrunc
 open import UF.Size
-open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
 open import UF.SubtypeClassifier
 open import UF.UA-FunExt
 open import UF.Univalence
@@ -44,6 +42,7 @@ open import Locales.SmallBasis pt fe sr
 open import Locales.Spectrality.SpectralLocale pt fe
 open import Locales.Spectrality.SpectralMap pt fe
 open import UF.Equiv
+open import UF.Logic
 open import UF.Sets
 open import UF.Sets-Properties
 
@@ -52,6 +51,9 @@ open Locale
 open PropositionalTruncation pt hiding (_∨_)
 
 \end{code}
+
+We work in an anonymous module parameterized by a distributive lattice `L : 𝓤`,
+a type `A : 𝓥`, and an equivalence `e : ⟨ L ⟩ ≃ A`.
 
 \begin{code}
 
@@ -73,11 +75,21 @@ module _ (L : DistributiveLattice 𝓤)
  s-cancels-r : s ∘ r ∼ id
  s-cancels-r x = pr₂ (pr₁ (pr₂ e)) x
 
+\end{code}
+
+The copy of the meet operation on type `A` is denoted `_∧₀_` and is defined
+as:
+
+\begin{code}
+
  _∧₀_ : A → A → A
  _∧₀_ = λ x y → s (r x ∧ r y)
 
- _∨₀_ : A → A → A
- _∨₀_ = λ x y → s (r x ∨ r y)
+\end{code}
+
+We can now prove that `s` and `r` map `_∧_` to `_∧₀_` and vice versa.
+
+\begin{code}
 
  r-preserves-∧ : (x y : A) → r (x ∧₀ y) ＝ r x ∧ r y
  r-preserves-∧ x y = r-cancels-s (r x ∧ r y)
@@ -89,6 +101,15 @@ module _ (L : DistributiveLattice 𝓤)
                       where
                        Ⅰ = ap (λ - → s (x ∧ -)) (r-cancels-s y) ⁻¹
                        Ⅱ = ap (λ - → s (- ∧ r (s y))) (r-cancels-s x ⁻¹)
+
+\end{code}
+
+Now, exactly the same thing for the join operation.
+
+\begin{code}
+
+ _∨₀_ : A → A → A
+ _∨₀_ = λ x y → s (r x ∨ r y)
 
  ∧₀-is-associative : (x y z : A) → x ∧₀ (y ∧₀ z) ＝ (x ∧₀ y) ∧₀ z
  ∧₀-is-associative x y z =
