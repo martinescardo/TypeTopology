@@ -114,5 +114,8 @@ import Locales.ContinuousMap.FrameHomomorphism-Properties
 import Locales.ContinuousMap.Definition
 import Locales.ContinuousMap.Properties
 import Locales.ContinuousMap.Homeomorphism-Definition
+import Locales.ContinuousMap.Homeomorphism-Properties
+
+import Locales.SIP.FrameSIP
 
 \end{code}

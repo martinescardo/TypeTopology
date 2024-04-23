@@ -25,9 +25,12 @@ open import Slice.Family
 open import UF.Hedberg
 open import UF.Logic
 open import UF.Sets
-open import UF.SubtypeClassifier
+open import UF.Sets-Properties
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
+open import UF.Subsingletons-Properties
+open import UF.SubtypeClassifier
+open import UF.SubtypeClassifier-Properties
 
 open AllCombinators pt fe
 
@@ -326,9 +329,41 @@ satisfies-frame-laws {𝓤 = 𝓤} {𝓥} {𝓦} {A = A}  (_≤_ , 𝟏 , _⊓_ 
     ε = Ɐ (x , U) ꞉ A × Fam 𝓦 A ,
         (x ⊓ (⋁⟨ i ⟩ U [ i ]) ＝[ iss ]＝ ⋁⟨ i ⟩ x ⊓ (U [ i ]))
 
+\end{code}
+
+The proof `satisfying-frame-laws-is-prop` has been added on 2024-04-15.
+
+\begin{code}
+
+satisfying-frame-laws-is-prop : {A : 𝓤  ̇} (d : frame-data 𝓥 𝓦 A)
+                              → is-prop (satisfies-frame-laws d)
+satisfying-frame-laws-is-prop {𝓤} {𝓥} {𝓦} {A} d@(_≤_ , 𝟏 , _⊓_ , ⊔_) =
+ Σ-is-prop (being-partial-order-is-prop A _≤_) †
+  where
+   open Meets _≤_
+   open Joins _≤_
+   open JoinNotation ⊔_
+
+   β = is-top 𝟏
+   γ = Ɐ (x , y) ꞉ (A × A) , ((x ⊓ y) is-glb-of (x , y))
+   δ = Ɐ U ꞉ Fam 𝓦 A , (⊔ U) is-lub-of U
+
+   ε : is-set A → Ω (𝓤 ⊔ 𝓦 ⁺)
+   ε σ = Ɐ (x , U) ꞉ A × Fam 𝓦 A ,
+          (x ⊓ (⋁⟨ i ⟩ U [ i ]) ＝[ σ ]＝ ⋁⟨ i ⟩ x ⊓ (U [ i ]))
+
+   ‡ : (p : is-partial-order A _≤_) (σ : is-set A)
+     → is-prop ((β ∧ γ ∧ δ ∧ ε σ) holds)
+   ‡ p σ = holds-is-prop (β ∧ γ ∧ δ ∧ ε σ)
+
+   χ : is-partial-order A _≤_ → is-set A
+   χ p = carrier-of-[ (A , _≤_ , p) ]-is-set
+
+   † : (p : is-partial-order A _≤_) → is-prop ((β ∧ γ ∧ δ ∧ ε (χ p)) holds)
+   † p = ‡ p (χ p)
+
 frame-structure : (𝓥 𝓦 : Universe) → 𝓤 ̇ → 𝓤 ⊔ 𝓥 ⁺ ⊔ 𝓦 ⁺ ̇
-frame-structure 𝓥 𝓦 A =
-  Σ d ꞉ (frame-data 𝓥 𝓦 A) , satisfies-frame-laws d
+frame-structure 𝓥 𝓦 A = Σ d ꞉ frame-data 𝓥 𝓦 A , satisfies-frame-laws d
 
 \end{code}
 
@@ -1719,6 +1754,9 @@ record Locale (𝓤 𝓥 𝓦 : Universe) : 𝓤 ⁺ ⊔ 𝓥 ⁺ ⊔ 𝓦 ⁺ �
  𝒪 : Frame 𝓤 𝓥 𝓦
  𝒪 = ⟨_⟩ₗ , frame-str-of
 
+to-locale-＝ : (X Y : Locale 𝓤 𝓥 𝓦) → Locale.𝒪 X ＝ Locale.𝒪 Y → X ＝ Y
+to-locale-＝ X Y refl = refl
+
 \end{code}
 
 \section{Cofinality}
@@ -1966,5 +2004,35 @@ join-𝟎-lemma₂ F {x} {y} p = only-𝟎-is-below-𝟎 F y †
 
   † : (y ≤[ poset-of F ] 𝟎[ F ]) holds
   † = y ≤⟨ ∨[ F ]-upper₂ x y ⟩ x ∨[ F ] y ＝⟨ p ⟩ₚ 𝟎[ F ] ■
+
+\end{code}
+
+The proofs `order-is-set`, `frame-data-is-set`, and `frame-structure-is-set`
+below have been been added on 2024-04-17.
+
+\begin{code}
+
+order-is-set : {𝓥 : Universe} (pe : propext 𝓥) (A : 𝓤  ̇) → is-set (A → A → Ω 𝓥)
+order-is-set {𝓥} pe A {_≤₁_} {_≤₂_} =
+ Π-is-set fe λ x → Π-is-set fe λ y → Ω-is-set fe pe
+
+frame-data-is-set : (A : 𝓤  ̇) (σ : is-set A) (𝓥 𝓦 : Universe) → propext 𝓥 → is-set (frame-data 𝓥 𝓦 A)
+frame-data-is-set A σ 𝓥 𝓦 pe =
+ Σ-is-set (order-is-set pe A) λ _≤_ →
+  ×-is-set
+   σ
+   (×-is-set (Π-is-set fe λ _ → Π-is-set fe λ _ → σ) (Π-is-set fe λ _ → σ))
+
+frame-structure-is-set : {𝓤 : Universe}
+                       → (A : 𝓤  ̇) (𝓥 𝓦 : Universe)
+                       → propext 𝓥
+                       → is-set (frame-structure 𝓥 𝓦 A)
+frame-structure-is-set A 𝓥 𝓦 pe {(d₁ , p₁)} {(d₂ , p₂)} =
+ Σ-is-set
+  (frame-data-is-set A σ 𝓥 𝓦 pe)
+  (λ d → props-are-sets (satisfying-frame-laws-is-prop d))
+   where
+    σ : is-set A
+    σ = carrier-of-[ poset-of (A , (d₁ , p₁)) ]-is-set
 
 \end{code}
