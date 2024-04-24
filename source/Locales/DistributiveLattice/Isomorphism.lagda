@@ -63,3 +63,17 @@ between distributive lattices `L₁` and `L₂`.
   r-is-homomorphism = Homomorphismᵈᵣ.h-is-homomorphism 𝓇
 
 \end{code}
+
+Pretty syntax for `Isomorphismᵈᵣ`.
+
+\begin{code}
+
+Isomorphismᵈᵣ-Syntax : DistributiveLattice 𝓤
+                     → DistributiveLattice 𝓥
+                     → (𝓤 ⊔ 𝓥) ⁺  ̇
+Isomorphismᵈᵣ-Syntax K L = DistributiveLatticeIsomorphisms.Isomorphismᵈᵣ K L
+
+infix 0 Isomorphismᵈᵣ-Syntax
+syntax Isomorphismᵈᵣ-Syntax K L = K ≅f≅ L
+
+\end{code}
