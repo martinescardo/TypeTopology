@@ -309,28 +309,42 @@ We package everything up into `copyᵈ` below.
 
 \begin{code}
 
- Lᶜ : DistributiveLattice 𝓥
- Lᶜ = record
-       { X               = Aᶜ
-       ; 𝟏               = 𝟏ᶜ
-       ; 𝟎               = 𝟎ᶜ
-       ; _∧_             = _∧ᶜ_
-       ; _∨_             = _∨ᶜ_
-       ; X-is-set        = equiv-to-set
-                            (≃-sym e)
-                            carrier-of-[ poset-ofᵈ L ]-is-set
-       ; ∧-associative   = ∧ᶜ-is-associative
-       ; ∧-commutative   = ∧ᶜ-is-commutative
-       ; ∧-unit          = ∧ᶜ-unit
-       ; ∧-idempotent    = ∧ᶜ-idempotent
-       ; ∧-absorptive    = ∧ᶜ-absorptive
-       ; ∨-associative   = ∨ᶜ-associative
-       ; ∨-commutative   = ∨ᶜ-commutative
-       ; ∨-unit          = ∨ᶜ-unit
-       ; ∨-idempotent    = ∨ᶜ-idempotent
-       ; ∨-absorptive    = ∨ᶜ-absorptive
-       ; distributivityᵈ = distributivity₀ᵈ
-       }
+ private
+  Lᶜ : DistributiveLattice 𝓥
+  Lᶜ = record
+        { X               = Aᶜ
+        ; 𝟏               = 𝟏ᶜ
+        ; 𝟎               = 𝟎ᶜ
+        ; _∧_             = _∧ᶜ_
+        ; _∨_             = _∨ᶜ_
+        ; X-is-set        = equiv-to-set
+                             (≃-sym e)
+                             carrier-of-[ poset-ofᵈ L ]-is-set
+        ; ∧-associative   = ∧ᶜ-is-associative
+        ; ∧-commutative   = ∧ᶜ-is-commutative
+        ; ∧-unit          = ∧ᶜ-unit
+        ; ∧-idempotent    = ∧ᶜ-idempotent
+        ; ∧-absorptive    = ∧ᶜ-absorptive
+        ; ∨-associative   = ∨ᶜ-associative
+        ; ∨-commutative   = ∨ᶜ-commutative
+        ; ∨-unit          = ∨ᶜ-unit
+        ; ∨-idempotent    = ∨ᶜ-idempotent
+        ; ∨-absorptive    = ∨ᶜ-absorptive
+        ; distributivityᵈ = distributivity₀ᵈ
+        }
+
+\end{code}
+
+For the reader who is wondering why we marked the above as `private`, the reason
+is that we would like to avoid referring to this lattice as `Lᶜ` outside the
+module as `L` is just a variable name that we use inside the module. We define
+the notation `⦅_⦆ᶜ` to be used from the outside as `⦅ K ⦆ᶜ`, for any
+distributive lattice `K`.
+
+\begin{code}
+
+ ⦅_⦆ᶜ : DistributiveLattice 𝓥
+ ⦅_⦆ᶜ = Lᶜ
 
 \end{code}
 
