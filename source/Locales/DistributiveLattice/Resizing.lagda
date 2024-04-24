@@ -57,16 +57,16 @@ a type `A : 𝓥`, and an equivalence `e : ⟨ L ⟩ ≃ A`.
 
 \begin{code}
 
-module _ (L : DistributiveLattice 𝓤)
-         (A : 𝓥  ̇)
-         (e : ∣ L ∣ᵈ ≃ A) where
+module _ (L  : DistributiveLattice 𝓤)
+         (A₀ : 𝓥  ̇)
+         (e  : ∣ L ∣ᵈ ≃ A₀) where
 
  open DistributiveLattice L renaming (𝟏 to 𝟏L; 𝟎 to 𝟎L)
 
- s : ∣ L ∣ᵈ → A
+ s : ∣ L ∣ᵈ → A₀
  s = ⌜ e ⌝
 
- r : A → ∣ L ∣ᵈ
+ r : A₀ → ∣ L ∣ᵈ
  r = inverse ⌜ e ⌝ (⌜⌝-is-equiv e)
 
  r-cancels-s : r ∘ s ∼ id
@@ -82,16 +82,16 @@ as:
 
 \begin{code}
 
- _∧₀_ : A → A → A
+ _∧₀_ : A₀ → A₀ → A₀
  _∧₀_ = λ x y → s (r x ∧ r y)
 
 \end{code}
 
-We can now prove that `s` and `r` map `_∧_` to `_∧₀_` and vice versa.
+We can now prove that `s` and `r` map the two meet operations onto each other.
 
 \begin{code}
 
- r-preserves-∧ : (x y : A) → r (x ∧₀ y) ＝ r x ∧ r y
+ r-preserves-∧ : (x y : A₀) → r (x ∧₀ y) ＝ r x ∧ r y
  r-preserves-∧ x y = r-cancels-s (r x ∧ r y)
 
  s-preserves-∧ : (x y : X) → s (x ∧ y) ＝ s x ∧₀ s y
@@ -104,14 +104,83 @@ We can now prove that `s` and `r` map `_∧_` to `_∧₀_` and vice versa.
 
 \end{code}
 
-Now, exactly the same thing for the join operation.
+Now, we do exactly the same thing for the join operation.
 
 \begin{code}
 
- _∨₀_ : A → A → A
+ _∨₀_ : A₀ → A₀ → A₀
  _∨₀_ = λ x y → s (r x ∨ r y)
 
- ∧₀-is-associative : (x y z : A) → x ∧₀ (y ∧₀ z) ＝ (x ∧₀ y) ∧₀ z
+ r-preserves-∨ : (x y : A₀) → r (x ∨₀ y) ＝ r x ∨ r y
+ r-preserves-∨ x y = r-cancels-s (r x ∨ r y)
+
+ s-preserves-∨ : (x y : X) → s (x ∨ y) ＝ s x ∨₀ s y
+ s-preserves-∨ x y =
+  s (x ∨ y)                ＝⟨ Ⅰ    ⟩
+  s (x ∨ r (s y))          ＝⟨ Ⅱ    ⟩
+  s (r (s x) ∨ r (s y))    ＝⟨ refl ⟩
+  s x ∨₀ s y               ∎
+   where
+    Ⅰ = ap (λ - → s (x ∨ -)) (r-cancels-s y ⁻¹)
+    Ⅱ = ap (λ - → s (- ∨ r (s y))) (r-cancels-s x ⁻¹)
+
+\end{code}
+
+The bottom element of the new lattice is just `s 𝟎`
+
+\begin{code}
+
+ 𝟎₀ : A₀
+ 𝟎₀ = s 𝟎L
+
+\end{code}
+
+The top element is `s 𝟏`.
+
+\begin{code}
+
+ 𝟏₀ : A₀
+ 𝟏₀ = s 𝟏L
+
+\end{code}
+
+We now proceed to prove that `(A₀ , 𝟎₀ , 𝟏₀ , _∧₀_ , _∨₀_)` forms a
+distributive lattice. We refer to this as the _𝓥-small copy_ of `L`.
+
+We start with the unit laws.
+
+\begin{code}
+
+ ∧₀-unit : (x : A₀) → x ∧₀ 𝟏₀ ＝ x
+ ∧₀-unit x =
+  s (r x ∧ r (s 𝟏L)) ＝⟨ Ⅰ ⟩
+  s (r x ∧ 𝟏L)       ＝⟨ Ⅱ ⟩
+  s (r x)            ＝⟨ Ⅲ ⟩
+  x                  ∎
+   where
+    Ⅰ = ap (λ - → s (r x ∧ -)) (r-cancels-s 𝟏L)
+    Ⅱ = ap s (∧-unit (r x))
+    Ⅲ = s-cancels-r x
+
+
+ ∨₀-unit : (x : A₀) → x ∨₀ 𝟎₀ ＝ x
+ ∨₀-unit x =
+  s (r x ∨ r (s 𝟎L)) ＝⟨ Ⅰ ⟩
+  s (r x ∨ 𝟎L)       ＝⟨ Ⅱ ⟩
+  s (r x)            ＝⟨ Ⅲ ⟩
+  x                  ∎
+   where
+    Ⅰ = ap (λ - → s (r x ∨ -)) (r-cancels-s 𝟎L)
+    Ⅱ = ap s (∨-unit (r x))
+    Ⅲ = s-cancels-r x
+
+\end{code}
+
+Associativity laws.
+
+\begin{code}
+
+ ∧₀-is-associative : (x y z : A₀) → x ∧₀ (y ∧₀ z) ＝ (x ∧₀ y) ∧₀ z
  ∧₀-is-associative x y z =
   x ∧₀ (y ∧₀ z)                ＝⟨ refl ⟩
   s (r x ∧ r (s (r y ∧ r z)))  ＝⟨ Ⅰ    ⟩
@@ -125,41 +194,7 @@ Now, exactly the same thing for the join operation.
     Ⅱ = ap s (∧-associative (r x) (r y) (r z))
     Ⅲ = ap (λ - → s (- ∧ r z)) (r-cancels-s (r x ∧ r y) ⁻¹)
 
- ∧₀-is-commutative : (x y : A) → x ∧₀ y ＝ y ∧₀ x
- ∧₀-is-commutative x y = ap s (∧-commutative (r x) (r y))
-
- ∧₀-unit : (x : A) → x ∧₀ s 𝟏L ＝ x
- ∧₀-unit x =
-  s (r x ∧ r (s 𝟏L)) ＝⟨ Ⅰ ⟩
-  s (r x ∧ 𝟏L)       ＝⟨ Ⅱ ⟩
-  s (r x)            ＝⟨ Ⅲ ⟩
-  x                  ∎
-   where
-    Ⅰ = ap (λ - → s (r x ∧ -)) (r-cancels-s 𝟏L)
-    Ⅱ = ap s (∧-unit (r x))
-    Ⅲ = s-cancels-r x
-
- ∧₀-idempotent : (x : A) → x ∧₀ x ＝ x
- ∧₀-idempotent x =
-  s (r x ∧ r x) ＝⟨ Ⅰ ⟩
-  s (r x)       ＝⟨ Ⅱ ⟩
-  x             ∎
-   where
-    Ⅰ = ap s (∧-idempotent (r x))
-    Ⅱ = s-cancels-r x
-
- ∧₀-absorptive : (x y : A) → x ∧₀ (x ∨₀ y) ＝ x
- ∧₀-absorptive x y =
-  s (r x ∧ r (s (r x ∨ r y)))   ＝⟨ Ⅰ ⟩
-  s (r x ∧ (r x ∨ r y))         ＝⟨ Ⅱ ⟩
-  s (r x)                       ＝⟨ Ⅲ ⟩
-  x                             ∎
-   where
-    Ⅰ = ap (λ - → s (r x ∧ -)) (r-cancels-s (r x ∨ r y))
-    Ⅱ = ap s (∧-absorptive (r x) (r y))
-    Ⅲ = s-cancels-r x
-
- ∨₀-associative : (x y z : A) → x ∨₀ (y ∨₀ z) ＝ (x ∨₀ y) ∨₀ z
+ ∨₀-associative : (x y z : A₀) → x ∨₀ (y ∨₀ z) ＝ (x ∨₀ y) ∨₀ z
  ∨₀-associative x y z =
   x ∨₀ (y ∨₀ z)                ＝⟨ refl ⟩
   s (r x ∨ r (s (r y ∨ r z)))  ＝⟨ Ⅰ    ⟩
@@ -173,20 +208,34 @@ Now, exactly the same thing for the join operation.
     Ⅱ = ap s (∨-associative (r x) (r y) (r z))
     Ⅲ = ap (λ - → s (- ∨ r z)) (r-cancels-s (r x ∨ r y) ⁻¹)
 
- ∨₀-commutative : (x y : A) → x ∨₀ y ＝ y ∨₀ x
+\end{code}
+
+Commutativity laws.
+
+\begin{code}
+
+ ∧₀-is-commutative : (x y : A₀) → x ∧₀ y ＝ y ∧₀ x
+ ∧₀-is-commutative x y = ap s (∧-commutative (r x) (r y))
+
+ ∨₀-commutative : (x y : A₀) → x ∨₀ y ＝ y ∨₀ x
  ∨₀-commutative x y = ap s (∨-commutative (r x) (r y))
 
- ∨₀-unit : (x : A) → x ∨₀ s 𝟎L ＝ x
- ∨₀-unit x = s (r x ∨ r (s 𝟎L)) ＝⟨ Ⅰ ⟩
-             s (r x ∨ 𝟎L)       ＝⟨ Ⅱ ⟩
-             s (r x)            ＝⟨ Ⅲ ⟩
-             x                  ∎
-              where
-               Ⅰ = ap (λ - → s (r x ∨ -)) (r-cancels-s 𝟎L)
-               Ⅱ = ap s (∨-unit (r x))
-               Ⅲ = s-cancels-r x
+\end{code}
 
- ∨₀-idempotent : (x : A) → x ∨₀ x ＝ x
+Idempotency laws.
+
+\begin{code}
+
+ ∧₀-idempotent : (x : A₀) → x ∧₀ x ＝ x
+ ∧₀-idempotent x =
+  s (r x ∧ r x) ＝⟨ Ⅰ ⟩
+  s (r x)       ＝⟨ Ⅱ ⟩
+  x             ∎
+   where
+    Ⅰ = ap s (∧-idempotent (r x))
+    Ⅱ = s-cancels-r x
+
+ ∨₀-idempotent : (x : A₀) → x ∨₀ x ＝ x
  ∨₀-idempotent x =
    s (r x ∨ r x) ＝⟨ Ⅰ ⟩
    s (r x)       ＝⟨ Ⅱ ⟩
@@ -195,7 +244,24 @@ Now, exactly the same thing for the join operation.
      Ⅰ = ap s (∨-idempotent (r x))
      Ⅱ = s-cancels-r x
 
- ∨₀-absorptive : (x y : A) → x ∨₀ (x ∧₀ y) ＝ x
+\end{code}
+
+Absorption laws.
+
+\begin{code}
+
+ ∧₀-absorptive : (x y : A₀) → x ∧₀ (x ∨₀ y) ＝ x
+ ∧₀-absorptive x y =
+  s (r x ∧ r (s (r x ∨ r y)))   ＝⟨ Ⅰ ⟩
+  s (r x ∧ (r x ∨ r y))         ＝⟨ Ⅱ ⟩
+  s (r x)                       ＝⟨ Ⅲ ⟩
+  x                             ∎
+   where
+    Ⅰ = ap (λ - → s (r x ∧ -)) (r-cancels-s (r x ∨ r y))
+    Ⅱ = ap s (∧-absorptive (r x) (r y))
+    Ⅲ = s-cancels-r x
+
+ ∨₀-absorptive : (x y : A₀) → x ∨₀ (x ∧₀ y) ＝ x
  ∨₀-absorptive x y =
   x ∨₀ (x ∧₀ y)                 ＝⟨ refl ⟩
   s (r x ∨ r (s (r x ∧ r y)))   ＝⟨ Ⅰ    ⟩
@@ -207,7 +273,13 @@ Now, exactly the same thing for the join operation.
     Ⅱ = ap s (∨-absorptive (r x) (r y))
     Ⅲ = s-cancels-r x
 
- distributivity₀ᵈ : (x y z : A) → x ∧₀ (y ∨₀ z) ＝ (x ∧₀ y) ∨₀ (x ∧₀ z)
+\end{code}
+
+Finally, the distributivity law.
+
+\begin{code}
+
+ distributivity₀ᵈ : (x y z : A₀) → x ∧₀ (y ∨₀ z) ＝ (x ∧₀ y) ∨₀ (x ∧₀ z)
  distributivity₀ᵈ x y z =
   x ∧₀ (y ∨₀ z)                             ＝⟨ refl ⟩
   s (r x ∧ r (s (r y ∨ r z)))               ＝⟨ Ⅰ    ⟩
@@ -223,27 +295,122 @@ Now, exactly the same thing for the join operation.
     Ⅲ = ap (λ - → s ((r x ∧ r y) ∨ -)) (r-cancels-s (r x ∧ r z) ⁻¹)
     Ⅳ = ap (λ - → s (- ∨ r (s (r x ∧ r z)))) (r-cancels-s (r x ∧ r y) ⁻¹)
 
- L′₀ : DistributiveLattice 𝓥
- L′₀ = record
-        { X               = A
-        ; 𝟏               = s 𝟏L
-        ; 𝟎               = s 𝟎L
-        ; _∧_             = λ x y → s (r x ∧ r y)
-        ; _∨_             = λ x y → s (r x ∨ r y)
-        ; X-is-set        = equiv-to-set
-                             (≃-sym e)
-                             carrier-of-[ poset-ofᵈ L ]-is-set
-        ; ∧-associative   = ∧₀-is-associative
-        ; ∧-commutative   = ∧₀-is-commutative
-        ; ∧-unit          = ∧₀-unit
-        ; ∧-idempotent    = ∧₀-idempotent
-        ; ∧-absorptive    = ∧₀-absorptive
-        ; ∨-associative   = ∨₀-associative
-        ; ∨-commutative   = ∨₀-commutative
-        ; ∨-unit          = ∨₀-unit
-        ; ∨-idempotent    = ∨₀-idempotent
-        ; ∨-absorptive    = ∨₀-absorptive
-        ; distributivityᵈ = distributivity₀ᵈ
-        }
+\end{code}
+
+We package everything up into `copyᵈ` below.
+
+\begin{code}
+
+ copyᵈ : DistributiveLattice 𝓥
+ copyᵈ = record
+          { X               = A₀
+          ; 𝟏               = 𝟏₀
+          ; 𝟎               = 𝟎₀
+          ; _∧_             = _∧₀_
+          ; _∨_             = _∨₀_
+          ; X-is-set        = equiv-to-set
+                               (≃-sym e)
+                               carrier-of-[ poset-ofᵈ L ]-is-set
+          ; ∧-associative   = ∧₀-is-associative
+          ; ∧-commutative   = ∧₀-is-commutative
+          ; ∧-unit          = ∧₀-unit
+          ; ∧-idempotent    = ∧₀-idempotent
+          ; ∧-absorptive    = ∧₀-absorptive
+          ; ∨-associative   = ∨₀-associative
+          ; ∨-commutative   = ∨₀-commutative
+          ; ∨-unit          = ∨₀-unit
+          ; ∨-idempotent    = ∨₀-idempotent
+          ; ∨-absorptive    = ∨₀-absorptive
+          ; distributivityᵈ = distributivity₀ᵈ
+          }
+
+\end{code}
+
+\begin{code}
+
+ s-preserves-𝟏 : preserves-𝟏 L copyᵈ s holds
+ s-preserves-𝟏 = refl
+
+ s-preserves-𝟎 : preserves-𝟎 L copyᵈ s holds
+ s-preserves-𝟎 = refl
+
+\end{code}
+
+We package `s` up with the proof that it is a homomorphism, and call it
+`sₕ`.
+
+\begin{code}
+
+ sₕ : L ─d→ copyᵈ
+ sₕ = record
+       { h                 = s
+       ; h-is-homomorphism = α , β , γ , δ
+       }
+      where
+       α : preserves-𝟏 L copyᵈ s holds
+       α = refl
+
+       β : preserves-∧ L copyᵈ s holds
+       β = s-preserves-∧
+
+       γ : preserves-𝟎 L copyᵈ s holds
+       γ = s-preserves-𝟎
+
+       δ : preserves-∨ L copyᵈ s holds
+       δ = s-preserves-∨
+
+\end{code}
+
+Now, we we do the same thing for `r`
+
+\begin{code}
+
+ rₕ : copyᵈ ─d→ L
+ rₕ =
+  record
+   { h                 = r
+   ; h-is-homomorphism = α , β , γ , δ
+   }
+    where
+     α : preserves-𝟏 copyᵈ L r holds
+     α = r-cancels-s 𝟏L
+
+     β : preserves-∧ copyᵈ L r holds
+     β = r-preserves-∧
+
+     γ : preserves-𝟎 copyᵈ L r holds
+     γ = r-cancels-s 𝟎L
+
+     δ : preserves-∨ copyᵈ L r holds
+     δ = r-preserves-∨
+
+\end{code}
+
+\begin{code}
+
+ s-is-homomorphism : is-homomorphismᵈ L copyᵈ s holds
+ s-is-homomorphism = Homomorphismᵈᵣ.h-is-homomorphism sₕ
+
+ r-is-homomorphism : is-homomorphismᵈ copyᵈ L r holds
+ r-is-homomorphism = Homomorphismᵈᵣ.h-is-homomorphism rₕ
+
+\end{code}
+
+Combining the fact that `s` and `r` are parts of an equivalence with the rather
+trivial proof that they are homomorphisms with respect to the 𝓥-small copy of
+`L`, we obtain that `L` is isomorphic to its 𝓥-small copy.
+
+\begin{code}
+
+ open DistributiveLatticeIsomorphisms
+
+ copy-isomorphic-to-original : L ≅d≅ copyᵈ
+ copy-isomorphic-to-original =
+  record
+   { 𝓈           = sₕ
+   ; 𝓇           = rₕ
+   ; r-cancels-s = r-cancels-s
+   ; s-cancels-r = s-cancels-r
+   }
 
 \end{code}
