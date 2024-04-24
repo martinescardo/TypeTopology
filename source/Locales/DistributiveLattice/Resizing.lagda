@@ -4,9 +4,13 @@ author:         Ayberk Tosun
 date-started:   2024-04-22
 --------------------------------------------------------------------------------
 
-Given a distributive lattice `L : 𝓤` and an equivalence of the carrier set `e :
-⟨ L ⟩ ≃ A` to some type `A : 𝓥`, we can transport the distributive lattice
-structure to live in universe `𝓥`.
+Given a distributive lattice `L : 𝓤` and an equivalence of the carrier set
+
+    `e : ⟨ L ⟩ ≃ A`
+
+to some type `A : 𝓥`, we can transport the distributive lattice `L` to
+live in universe `𝓥` by copying over the distributive lattice structure from
+`L` onto `A`. This is what we implement in this module.
 
 \begin{code}
 
