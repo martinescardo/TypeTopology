@@ -40,14 +40,10 @@ private
 
 open import Locales.Compactness pt fe
 open import Locales.DistributiveLattice.Definition fe pt
-open import Locales.DistributiveLattice.Homomorphism fe pt
 open import Locales.Frame pt fe
 open import Locales.SmallBasis pt fe sr
-open import Locales.Spectrality.SpectralLocale pt fe
-open import Locales.Spectrality.SpectralMap pt fe
 open import UF.Equiv
 open import UF.Logic
-open import UF.Sets
 open import UF.Sets-Properties
 
 open AllCombinators pt fe hiding (_∧_; _∨_)
