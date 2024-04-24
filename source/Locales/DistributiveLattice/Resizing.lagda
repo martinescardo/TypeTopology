@@ -23,7 +23,6 @@ on `Aᶜ`.
 
 {-# OPTIONS --safe --without-K --lossy-unification #-}
 
-open import MLTT.List hiding ([_])
 open import MLTT.Spartan
 open import Slice.Family
 open import UF.Base
