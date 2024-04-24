@@ -179,6 +179,13 @@ sup-preserves-prop {𝓤} {I = I} γ γ-is-prop = surjective-simulation-gives-eq
    f-surjective : (y : ⟨ α ⟩) → ∃ i ꞉ I , Σ b ꞉ ⟨ β i ⟩ , pr₁ (f i) b ＝ y
    f-surjective = ∥∥-induction (λ x → ∥∥-is-prop) λ (i , b) → ∣ i , b , refl ∣
 
+prop-ordinal-↓ : (P : 𝓤 ̇ ) → (P-is-prop : is-prop P) → (x : P) → (prop-ordinal P P-is-prop ↓ x) ＝ 𝟘ₒ
+prop-ordinal-↓ P P-is-prop x = ⊴-antisym (prop-ordinal P P-is-prop ↓ x) 𝟘ₒ
+                                         nothing-below-x
+                                         (𝟘ₒ-least-⊴ (prop-ordinal P P-is-prop ↓ x))
+ where
+  nothing-below-x : (prop-ordinal P P-is-prop ↓ x) ⊴ 𝟘ₒ
+  nothing-below-x = (λ (y , p) → 𝟘-elim p) , (λ (x , p) → 𝟘-elim p) , (λ (x , p) → 𝟘-elim p)
 
 \end{code}
 

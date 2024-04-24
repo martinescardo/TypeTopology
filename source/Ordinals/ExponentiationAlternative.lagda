@@ -166,4 +166,76 @@ exp-power-one-is-identity {𝓤} α p =
   α ∎
 
 
+curiosity : (P : 𝓤 ̇ ) → (pp : is-prop P) → exp {𝓤} 𝟚ₒ (prop-ordinal P pp) ＝ 𝟙ₒ +ₒ prop-ordinal P pp
+curiosity {𝓤} P pp = transport⁻¹ (λ - → - ＝ 𝟙ₒ +ₒ (prop-ordinal P pp))
+                                 (exp-behaviour 𝟚ₒ (prop-ordinal P pp) ∙ ap sup (dfunext fe' eq))
+                                 (⊴-antisym (sup F) (𝟙ₒ +ₒ prop-ordinal P pp)
+                                            (sup-is-lower-bound-of-upper-bounds F _ upper-bound)
+                                            (g , g-is-simulation))
+ where
+  F : 𝟙 + P → Ordinal 𝓤
+  F (inl _) = 𝟙ₒ
+  F (inr p) = 𝟚ₒ
+
+  eq : (i : 𝟙 + P) → (cases (λ _ → 𝟙ₒ) (λ b → exp 𝟚ₒ (prop-ordinal P pp ↓ b) ×ₒ 𝟚ₒ)) i ＝ F i
+  eq (inl _) = refl
+  eq (inr p) = exp 𝟚ₒ (prop-ordinal P pp ↓ p) ×ₒ 𝟚ₒ ＝⟨ ap (λ z → exp 𝟚ₒ z ×ₒ 𝟚ₒ) (prop-ordinal-↓ P pp p) ⟩
+               exp 𝟚ₒ 𝟘ₒ ×ₒ 𝟚ₒ                      ＝⟨ ap (_×ₒ 𝟚ₒ) (exp-satisfies-zero-specification 𝟚ₒ) ⟩
+               𝟙ₒ ×ₒ 𝟚ₒ                             ＝⟨ 𝟙ₒ-left-neutral-×ₒ 𝟚ₒ ⟩
+               𝟚ₒ ∎
+
+  upper-bound : (i : 𝟙 + P) → F i ⊴ (𝟙ₒ +ₒ prop-ordinal P pp)
+  upper-bound (inl _) = (λ _ → inl _) , (λ x → dep-cases (λ _ → 𝟘-elim) (λ p → 𝟘-elim)) , (λ _ _ q → 𝟘-elim q)
+  upper-bound (inr p) = cases inl (λ _ → inr p) , (λ { (inr p') (inl _) _ → (inl _) , (⋆ , refl)
+                                                     ; (inl _) (inr p') q → 𝟘-elim q
+                                                     ; (inr p') (inr p'') q → 𝟘-elim q})
+                                                , (λ { (inl _) (inr p') q → ⋆
+                                                     ; (inl _) (inl _) q → 𝟘-elim q})
+
+  f : (i : ⟨ 𝟙ₒ +ₒ prop-ordinal P pp ⟩) → ⟨ F i ⟩
+  f (inl _) = ⋆
+  f (inr p) = inr ⋆
+
+  g : (i : ⟨ 𝟙ₒ +ₒ prop-ordinal P pp ⟩) → ⟨ sup F ⟩
+  g i = pr₁ (sup-is-upper-bound F i) (f i)
+
+  g-is-initial-segment : is-initial-segment (𝟙ₒ +ₒ prop-ordinal P pp) (sup F) g
+  g-is-initial-segment (inl _) y q = inl ⋆ , pr₂ (pr₁ (pr₂ (sup-is-upper-bound F (inl _))) ⋆ y q)
+  g-is-initial-segment (inr p) y q with pr₁ (pr₂ (sup-is-upper-bound F (inr p))) (inr ⋆) y q
+  ... | inl _ , _ , refl = inl ⋆ , ⋆ , ↓-lc (sup F)
+                                            (pr₁ (sup-is-upper-bound F (inl ⋆)) ⋆)
+                                            (pr₁ (sup-is-upper-bound F (inr p)) (inl ⋆))
+                                            e
+   where
+    e = (sup F ↓ pr₁ (sup-is-upper-bound F (inl ⋆)) ⋆)
+          ＝⟨ initial-segment-of-sup-at-component F (inl ⋆) ⋆ ⟩
+        (𝟙ₒ ↓ ⋆)
+          ＝⟨ +ₒ-↓-left ⋆ ⟩
+        (𝟚ₒ ↓ inl ⋆)
+          ＝⟨ initial-segment-of-sup-at-component F (inr p) (inl ⋆) ⁻¹ ⟩
+        (sup F ↓ pr₁ (sup-is-upper-bound F (inr p)) (inl ⋆))
+          ∎
+
+  g-is-order-preserving : is-order-preserving (𝟙ₒ +ₒ prop-ordinal P pp) (sup F) g
+  g-is-order-preserving (inl _) (inr p) _ = ↓-reflects-order (sup F) (g (inl _)) (g (inr p)) q
+   where
+    eq₁ = sup F ↓ pr₁ (sup-is-upper-bound F (inl ⋆)) ⋆
+            ＝⟨ initial-segment-of-sup-at-component F (inl ⋆) ⋆ ⟩
+          𝟙ₒ ↓ ⋆
+            ＝⟨ prop-ordinal-↓ 𝟙 𝟙-is-prop ⋆ ⟩
+          𝟘ₒ
+            ∎
+    eq₂ = sup F ↓ pr₁ (sup-is-upper-bound F (inr p)) (inr ⋆)
+            ＝⟨ initial-segment-of-sup-at-component F (inr p) (inr ⋆) ⟩
+          (𝟚ₒ ↓ inr ⋆)
+            ＝⟨ +ₒ-𝟙ₒ-↓-right 𝟙ₒ ⟩
+          𝟙ₒ
+            ∎
+    q : (sup F ↓ pr₁ (sup-is-upper-bound F (inl ⋆)) ⋆) ⊲ (sup F ↓ pr₁ (sup-is-upper-bound F (inr p)) (inr ⋆))
+    q = transport₂⁻¹ _⊲_ eq₁ eq₂ (⋆ , (prop-ordinal-↓ 𝟙 𝟙-is-prop ⋆ ⁻¹))
+  g-is-order-preserving (inl _) (inl _) q = 𝟘-elim q
+
+  g-is-simulation : is-simulation (𝟙ₒ +ₒ prop-ordinal P pp) (sup F) g
+  g-is-simulation = g-is-initial-segment , g-is-order-preserving
+
 \end{code}
