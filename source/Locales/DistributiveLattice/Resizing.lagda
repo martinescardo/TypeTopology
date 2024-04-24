@@ -138,8 +138,8 @@ The bottom element of the new lattice is just `s 𝟎`
 
 \begin{code}
 
- 𝟎₀ : Aᶜ
- 𝟎₀ = s 𝟎L
+ 𝟎ᶜ : Aᶜ
+ 𝟎ᶜ = s 𝟎L
 
 \end{code}
 
@@ -152,7 +152,7 @@ The top element is `s 𝟏`.
 
 \end{code}
 
-We now proceed to prove that `(Aᶜ , 𝟎₀ , 𝟏₀ , _∧ᶜ_ , _∨ᶜ_)` forms a
+We now proceed to prove that `(Aᶜ , 𝟎ᶜ , 𝟏₀ , _∧ᶜ_ , _∨ᶜ_)` forms a
 distributive lattice. We refer to this as the _𝓥-small copy_ of `L`.
 
 We start with the unit laws.
@@ -171,7 +171,7 @@ We start with the unit laws.
     Ⅲ = s-cancels-r x
 
 
- ∨ᶜ-unit : (x : Aᶜ) → x ∨ᶜ 𝟎₀ ＝ x
+ ∨ᶜ-unit : (x : Aᶜ) → x ∨ᶜ 𝟎ᶜ ＝ x
  ∨ᶜ-unit x =
   s (r x ∨ r (s 𝟎L)) ＝⟨ Ⅰ ⟩
   s (r x ∨ 𝟎L)       ＝⟨ Ⅱ ⟩
@@ -313,7 +313,7 @@ We package everything up into `copyᵈ` below.
  copyᵈ = record
           { X               = Aᶜ
           ; 𝟏               = 𝟏₀
-          ; 𝟎               = 𝟎₀
+          ; 𝟎               = 𝟎ᶜ
           ; _∧_             = _∧ᶜ_
           ; _∨_             = _∨ᶜ_
           ; X-is-set        = equiv-to-set
