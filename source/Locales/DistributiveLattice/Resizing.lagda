@@ -147,19 +147,19 @@ The top element is `s 𝟏`.
 
 \begin{code}
 
- 𝟏₀ : Aᶜ
- 𝟏₀ = s 𝟏L
+ 𝟏ᶜ : Aᶜ
+ 𝟏ᶜ = s 𝟏L
 
 \end{code}
 
-We now proceed to prove that `(Aᶜ , 𝟎ᶜ , 𝟏₀ , _∧ᶜ_ , _∨ᶜ_)` forms a
+We now proceed to prove that `(Aᶜ , 𝟎ᶜ , 𝟏ᶜ , _∧ᶜ_ , _∨ᶜ_)` forms a
 distributive lattice. We refer to this as the _𝓥-small copy_ of `L`.
 
 We start with the unit laws.
 
 \begin{code}
 
- ∧ᶜ-unit : (x : Aᶜ) → x ∧ᶜ 𝟏₀ ＝ x
+ ∧ᶜ-unit : (x : Aᶜ) → x ∧ᶜ 𝟏ᶜ ＝ x
  ∧ᶜ-unit x =
   s (r x ∧ r (s 𝟏L)) ＝⟨ Ⅰ ⟩
   s (r x ∧ 𝟏L)       ＝⟨ Ⅱ ⟩
@@ -312,7 +312,7 @@ We package everything up into `copyᵈ` below.
  copyᵈ : DistributiveLattice 𝓥
  copyᵈ = record
           { X               = Aᶜ
-          ; 𝟏               = 𝟏₀
+          ; 𝟏               = 𝟏ᶜ
           ; 𝟎               = 𝟎ᶜ
           ; _∧_             = _∧ᶜ_
           ; _∨_             = _∨ᶜ_
