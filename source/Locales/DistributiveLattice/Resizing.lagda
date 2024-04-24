@@ -6,11 +6,18 @@ date-started:   2024-04-22
 
 Given a distributive lattice `L : 𝓤` and an equivalence of the carrier set
 
-    `e : ⟨ L ⟩ ≃ A`
+    `e : ⟨ L ⟩ ≃ Aᶜ`
 
-to some type `A : 𝓥`, we can transport the distributive lattice `L` to
+to some type `Aᶜ : 𝓥`, we can transport the distributive lattice `L` to
 live in universe `𝓥` by copying over the distributive lattice structure from
-`L` onto `A`. This is what we implement in this module.
+`L` onto `Aᶜ`.
+
+In this module, we prove this fact, and define some machinery for working with
+such copies.
+
+The superscript `(-)ᶜ` is intended to be mnemonic for "copy". We use this
+convention to distinguish all distributive lattice operations from their copies
+on `Aᶜ`.
 
 \begin{code}
 
