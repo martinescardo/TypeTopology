@@ -62,6 +62,10 @@ between distributive lattices `L₁` and `L₂`.
   r-is-homomorphism : is-homomorphismᵈ L₂ L₁ r holds
   r-is-homomorphism = Homomorphismᵈᵣ.h-is-homomorphism 𝓇
 
+  field
+   r-cancels-s : r ∘ s ∼ id
+   s-cancels-r : s ∘ r ∼ id
+
 \end{code}
 
 Pretty syntax for `Isomorphismᵈᵣ`.
