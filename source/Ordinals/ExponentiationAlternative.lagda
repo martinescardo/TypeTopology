@@ -128,239 +128,42 @@ exp-satisfies-zero-specification α = ⊴-antisym (exp α 𝟘ₒ) 𝟙ₒ II II
     III : 𝟙ₒ ⊴ exp α 𝟘ₒ
     III = exp-has-least-element α 𝟘ₒ
 
-exp-power-one-is-identity : (α : Ordinal 𝓤) → 𝟙ₒ {𝓤} ⊴ α → exp α (𝟙ₒ {𝓤}) ＝ α
-exp-power-one-is-identity α p = transport⁻¹ (λ - → - ＝ α) (exp-behaviour α 𝟙ₒ)
-                                            (⊴-antisym _ _ f g)
- where
-  I : (𝟙ₒ ↓ ⋆) ⊴ 𝟘ₒ
-  I = (λ x → 𝟘-elim (pr₂ x)) , (λ x → 𝟘-elim (pr₂ x)) , (λ x → 𝟘-elim (pr₂ x))
-
-  II : (𝟙ₒ ↓ ⋆) ＝ 𝟘ₒ
-  II = ⊴-antisym _ _ I (𝟘ₒ-least-⊴ (𝟙ₒ ↓ ⋆))
-
-  III : exp α (𝟙ₒ ↓ ⋆) ＝ 𝟙ₒ
-  III = transport⁻¹ (λ - → exp α - ＝ 𝟙ₒ) II (exp-satisfies-zero-specification α)
-
-  IV : exp α (𝟙ₒ ↓ ⋆) ×ₒ α ＝ α
-  IV = (ap (_×ₒ α) III ∙ 𝟙ₒ-left-neutral-×ₒ α)
-
-  f : sup (cases (λ _ → 𝟙ₒ) (λ b → exp α (𝟙ₒ ↓ b) ×ₒ α)) ⊴ α
-  f = (sup-is-lower-bound-of-upper-bounds (cases (λ _ → 𝟙ₒ) (λ b → exp α (𝟙ₒ ↓ b) ×ₒ α)) α k)
-    where
-     k : (i : 𝟙 + 𝟙) → cases (λ _ → 𝟙ₒ) (λ b → exp α (𝟙ₒ ↓ b) ×ₒ α) i ⊴ α
-     k (inl _) = p
-     k (inr b) = transport⁻¹ (_⊴ α) IV (⊴-refl α)
-
-  g : α ⊴ sup (cases (λ _ → 𝟙ₒ) (λ b → exp α (𝟙ₒ ↓ b) ×ₒ α))
-  g = transport (_⊴ sup (cases (λ _ → 𝟙ₒ) (λ b → exp α (𝟙ₒ ↓ b) ×ₒ α)))
-                IV
-                (sup-is-upper-bound (cases (λ _ → 𝟙ₒ) (λ b → exp α (𝟙ₒ ↓ b) ×ₒ α)) (inr ⋆))
-
-
-exp-power-two : (α : Ordinal 𝓤) → 𝟙ₒ {𝓤} ⊴ α → exp α (𝟙ₒ +ₒ 𝟙ₒ {𝓤}) ＝ α ×ₒ α
-exp-power-two {𝓤} α p = transport⁻¹ (λ - → - ＝ α ×ₒ α) (exp-behaviour α (𝟙ₒ +ₒ 𝟙ₒ) ∙ ap sup eq')
-                                (⊴-antisym _ _ (sup-is-lower-bound-of-upper-bounds F (α ×ₒ α) F-upper-bound) (sup-is-upper-bound F (inr (inr ⋆))))
-  where
-   F : 𝟙 + (𝟙 + 𝟙) → Ordinal 𝓤
-   F (inl _) = 𝟙ₒ
-   F (inr (inl _)) = α
-   F (inr (inr _)) = α ×ₒ α
-
-   p₂ : α ⊴ (α ×ₒ α)
-   p₂ = transport (_⊴ (α ×ₒ α)) (𝟙ₒ-right-neutral-×ₒ α) (×ₒ-right-monotone-⊴ α 𝟙ₒ α p)
-
-   F-upper-bound : (i : 𝟙 + (𝟙 + 𝟙)) →  F i ⊴ (α ×ₒ α)
-   F-upper-bound (inl _) = ⊴-trans _ _ _ p p₂
-   F-upper-bound (inr (inl _)) = p₂
-   F-upper-bound (inr (inr _)) = ⊴-refl (α ×ₒ α)
-
-   eq : (i : 𝟙 + (𝟙 + 𝟙)) → (cases (λ _ → 𝟙ₒ) (λ b → exp α ((𝟙ₒ +ₒ 𝟙ₒ) ↓ b) ×ₒ α)) i ＝ F i
-   eq (inl _) = refl
-   eq (inr (inl x)) = IV
-    where
-      I : ((𝟙ₒ +ₒ 𝟙ₒ) ↓ inl ⋆) ⊴ 𝟘ₒ
-      I = (λ { (inl x , p) → p ; (inr x , p) → p}) , (λ x y → 𝟘-elim y) , λ { (inl x , p) → 𝟘-elim p ; (inr x , p) → 𝟘-elim p }
-
-      II : ((𝟙ₒ +ₒ 𝟙ₒ) ↓ inl ⋆) ＝ 𝟘ₒ
-      II = ⊴-antisym _ _ I (𝟘ₒ-least-⊴ ((𝟙ₒ +ₒ 𝟙ₒ) ↓ inl ⋆))
-
-      III : exp α ((𝟙ₒ +ₒ 𝟙ₒ) ↓ inl ⋆) ＝ 𝟙ₒ
-      III = transport⁻¹ (λ - → exp α - ＝ 𝟙ₒ) II (exp-satisfies-zero-specification α)
-
-      IV : exp α ((𝟙ₒ +ₒ 𝟙ₒ) ↓ inl ⋆) ×ₒ α ＝ α
-      IV = (ap (_×ₒ α) III ∙ 𝟙ₒ-left-neutral-×ₒ α)
-   eq (inr (inr x)) = III
-     where
-      I : ((𝟙ₒ +ₒ 𝟙ₒ) ↓ inr ⋆) ＝ 𝟙ₒ
-      I = +ₒ-𝟙ₒ-↓-right 𝟙ₒ
-
-      II : exp α ((𝟙ₒ +ₒ 𝟙ₒ) ↓ inr ⋆) ＝ α
-      II = ap (exp α) I ∙ exp-power-one-is-identity α p
-
-      III : exp α ((𝟙ₒ +ₒ 𝟙ₒ) ↓ inr ⋆) ×ₒ α ＝ α ×ₒ α
-      III = ap (_×ₒ α) II
-
-   eq' : (cases (λ _ → 𝟙ₒ) (λ b → exp α ((𝟙ₒ +ₒ 𝟙ₒ) ↓ b) ×ₒ α)) ＝ F
-   eq' = dfunext fe' eq
-
-finite-ord : ℕ → Ordinal 𝓤
-finite-ord zero = 𝟘ₒ
-finite-ord (succ n) = finite-ord n +ₒ 𝟙ₒ
-
-finite-ord⁻¹ : {n : ℕ} → ⟨ finite-ord {𝓤 = 𝓤} n ⟩ → ℕ
-finite-ord⁻¹ {n = succ n} (inl x) = finite-ord⁻¹ {n = n} x
-finite-ord⁻¹ {n = succ n} (inr x) = n
-
-finite-ord⁻¹-bound : {n : ℕ} → (k : ⟨ finite-ord {𝓤 = 𝓤} n ⟩) → finite-ord⁻¹ k <ℕ n
-finite-ord⁻¹-bound {n = succ n} (inl k) = ≤-trans (finite-ord⁻¹ k) (succ (finite-ord⁻¹ k)) n (≤-succ (finite-ord⁻¹ k)) (finite-ord⁻¹-bound {n = n} k)
-finite-ord⁻¹-bound {n = succ n} (inr _) = <-succ n
-
-finite-ord-↓ : {n : ℕ} → (k : ⟨ finite-ord {𝓤} n ⟩) →  finite-ord n ↓ k ＝ finite-ord (finite-ord⁻¹ k)
-finite-ord-↓ {n = succ n} (inl k) = +ₒ-↓-left k ⁻¹ ∙ finite-ord-↓ {n = n} k
-finite-ord-↓ {n = succ n} (inr x) = +ₒ-𝟙ₒ-↓-right (finite-ord n)
-
-finite-exp : Ordinal 𝓤 → ℕ → Ordinal 𝓤
-finite-exp α zero = 𝟙ₒ
-finite-exp α (succ n) = finite-exp α n ×ₒ α
-
-finite-exp-swap : (α : Ordinal 𝓤) → (n : ℕ) → finite-exp α (succ n) ＝ α ×ₒ finite-exp α n
-finite-exp-swap α zero = (𝟙ₒ ×ₒ α) ＝⟨ 𝟙ₒ-left-neutral-×ₒ α ⟩ α ＝⟨ 𝟙ₒ-right-neutral-×ₒ α ⁻¹ ⟩ (α ×ₒ 𝟙ₒ) ∎
-finite-exp-swap α (succ n) =
-  ((finite-exp α n ×ₒ α) ×ₒ α) ＝⟨ ap (_×ₒ α) (finite-exp-swap α n) ⟩
-  ((α ×ₒ finite-exp α n) ×ₒ α) ＝⟨ ×ₒ-assoc α (finite-exp α n) α ⟩
-  ( α ×ₒ (finite-exp α n ×ₒ α)) ∎
-
-finite-exp-least-element : (α : Ordinal 𝓤) → 𝟙ₒ {𝓤} ⊴ α → (n : ℕ) → 𝟙ₒ {𝓤} ⊴ finite-exp α n
-finite-exp-least-element α p zero = ⊴-refl 𝟙ₒ
-finite-exp-least-element α p (succ n) = ⊴-trans _ _ _ p
-                                                      (transport₂ _⊴_
-                                                                  (𝟙ₒ-right-neutral-×ₒ α)
-                                                                  (finite-exp-swap α n ⁻¹)
-                                                                  (×ₒ-right-monotone-⊴ α _ _ (finite-exp-least-element α p n)))
-
-
-finite-exp-monotone : (α : Ordinal 𝓤) → 𝟙ₒ {𝓤} ⊴ α → (n : ℕ) → (k : ⟨ finite-ord {𝓤 = 𝓤} n ⟩) → finite-exp α (finite-ord⁻¹ k) ⊴ finite-exp α n
-finite-exp-monotone α p (succ n) (inl x) = ⊴-trans _ _ _ (finite-exp-monotone α p n x) (transport (_⊴ (finite-exp α n ×ₒ α)) (𝟙ₒ-right-neutral-×ₒ _) (×ₒ-right-monotone-⊴ (finite-exp α n) _ _ p))
-finite-exp-monotone α p (succ n) (inr x) = transport (_⊴ (finite-exp α n ×ₒ α)) (𝟙ₒ-right-neutral-×ₒ _) (×ₒ-right-monotone-⊴ (finite-exp α n) _ _ p)
-
-finite-exp-finite-ord⁻¹-swap : (α : Ordinal 𝓤) → (n : ℕ) → (k : ⟨ finite-ord {𝓤 = 𝓤} n ⟩) → finite-exp α (finite-ord⁻¹ {n = n} k) ×ₒ α ＝ (α ×ₒ finite-exp α (finite-ord⁻¹ {n = n} k))
-finite-exp-finite-ord⁻¹-swap α (succ n) (inl x) = finite-exp-finite-ord⁻¹-swap α n x
-finite-exp-finite-ord⁻¹-swap α (succ n) (inr x) = finite-exp-swap α n
-
-
-exp-satisfies-succ-specification-for-finite-powers : (α : Ordinal 𝓤) → 𝟙ₒ {𝓤} ⊴ α
-                                                   → (n : ℕ) → exp α (finite-ord {𝓤} n) ＝ finite-exp α n
-exp-satisfies-succ-specification-for-finite-powers {𝓤} α p = course-of-values-induction (λ n → exp α (finite-ord {𝓤} n) ＝ finite-exp α n) step
- where
-  step : (n : ℕ) → (((m : ℕ) → m <ℕ n → exp α (finite-ord {𝓤} m) ＝ finite-exp α m)) → exp α (finite-ord {𝓤} n) ＝ finite-exp α n
-  step zero ih = exp-satisfies-zero-specification α
-  step (succ n) ih = transport⁻¹ (λ - → - ＝ finite-exp α n ×ₒ α) (exp-behaviour α (finite-ord n +ₒ 𝟙ₒ) ∙ ap sup eq')
-                                 (⊴-antisym _ _ (sup-is-lower-bound-of-upper-bounds F _ upper-bound) (sup-is-upper-bound F (inr (inr ⋆))))
-   where
-    F : 𝟙 + (⟨ finite-ord n ⟩ + 𝟙) → Ordinal 𝓤
-    F (inl _) = 𝟙ₒ
-    F (inr (inl k)) = finite-exp α (finite-ord⁻¹ k) ×ₒ α
-    F (inr (inr _)) = finite-exp α n ×ₒ α
-
-    upper-bound : (i : 𝟙 + (⟨ finite-ord n ⟩ + 𝟙)) → F i ⊴ (finite-exp α n ×ₒ α)
-    upper-bound (inl _) = finite-exp-least-element {𝓤} α p (succ n)
-    upper-bound (inr (inl k)) = transport₂⁻¹ _⊴_ (finite-exp-finite-ord⁻¹-swap α n k)
-                                                 (finite-exp-swap α n)
-                                                 (×ₒ-right-monotone-⊴ α _ _ (finite-exp-monotone α p n k))
-    upper-bound (inr (inr _)) = ⊴-refl (finite-exp α n ×ₒ α)
-
-    eq : (i : 𝟙 + (⟨ finite-ord n ⟩ + 𝟙)) → (cases (λ _ → 𝟙ₒ) (λ b → exp α ((finite-ord n +ₒ 𝟙ₒ) ↓ b) ×ₒ α)) i ＝ F i
-    eq (inl _) = refl
-    eq (inr (inl k)) = ap (_×ₒ α) III
-     where
-      I : (finite-ord n +ₒ 𝟙ₒ) ↓ inl k ＝ finite-ord (finite-ord⁻¹ k)
-      I = +ₒ-↓-left k ⁻¹ ∙ finite-ord-↓ k
-
-      III : exp α ((finite-ord n +ₒ 𝟙ₒ) ↓ inl k) ＝ finite-exp α (finite-ord⁻¹ k)
-      III = ap (exp α) I ∙ ih (finite-ord⁻¹ k) (finite-ord⁻¹-bound {n = succ n} (inl k))
-    eq (inr (inr _)) = ap (λ z → exp α z ×ₒ α) (+ₒ-𝟙ₒ-↓-right (finite-ord n)) ∙ ap (_×ₒ α) (ih n (<-succ n))
-
-    eq' : (cases (λ _ → 𝟙ₒ) (λ b → exp α ((finite-ord n +ₒ 𝟙ₒ) ↓ b) ×ₒ α)) ＝ F
-    eq' = dfunext fe' eq
-
-
-
-{-
-
-   F-upper-bound : (i : 𝟙 + (𝟙 + 𝟙)) →  F i ⊴ (α ×ₒ α)
-   F-upper-bound (inl _) = ⊴-trans _ _ _ p p₂
-   F-upper-bound (inr (inl _)) = p₂
-   F-upper-bound (inr (inr _)) = ⊴-refl (α ×ₒ α)
-
-   eq : (i : 𝟙 + (𝟙 + 𝟙)) → (cases (λ _ → 𝟙ₒ) (λ b → exp α ((𝟙ₒ +ₒ 𝟙ₒ) ↓ b) ×ₒ α)) i ＝ F i
-   eq (inl _) = refl
-   eq (inr (inl x)) = IV
-    where
-      I : ((𝟙ₒ +ₒ 𝟙ₒ) ↓ inl ⋆) ⊴ 𝟘ₒ
-      I = (λ { (inl x , p) → p ; (inr x , p) → p}) , (λ x y → 𝟘-elim y) , λ { (inl x , p) → 𝟘-elim p ; (inr x , p) → 𝟘-elim p }
-
-      II : ((𝟙ₒ +ₒ 𝟙ₒ) ↓ inl ⋆) ＝ 𝟘ₒ
-      II = ⊴-antisym _ _ I (𝟘ₒ-least-⊴ ((𝟙ₒ +ₒ 𝟙ₒ) ↓ inl ⋆))
-
-      III : exp α ((𝟙ₒ +ₒ 𝟙ₒ) ↓ inl ⋆) ＝ 𝟙ₒ
-      III = transport⁻¹ (λ - → exp α - ＝ 𝟙ₒ) II (exp-satisfies-zero-specification α)
-
-      IV : exp α ((𝟙ₒ +ₒ 𝟙ₒ) ↓ inl ⋆) ×ₒ α ＝ α
-      IV = (ap (_×ₒ α) III ∙ 𝟙ₒ-left-neutral-×ₒ α)
-   eq (inr (inr x)) = III
-     where
-      I : ((𝟙ₒ +ₒ 𝟙ₒ) ↓ inr ⋆) ＝ 𝟙ₒ
-      I = +ₒ-𝟙ₒ-↓-right 𝟙ₒ
-
-      II : exp α ((𝟙ₒ +ₒ 𝟙ₒ) ↓ inr ⋆) ＝ α
-      II = ap (exp α) I ∙ exp-power-one-is-identity α p
-
-      III : exp α ((𝟙ₒ +ₒ 𝟙ₒ) ↓ inr ⋆) ×ₒ α ＝ α ×ₒ α
-      III = ap (_×ₒ α) II
-
-   eq' : (cases (λ _ → 𝟙ₒ) (λ b → exp α ((𝟙ₒ +ₒ 𝟙ₒ) ↓ b) ×ₒ α)) ＝ F
-   eq' = dfunext fe' eq
--}
-{-
 exp-satisfies-succ-specification : (α β : Ordinal 𝓤) → 𝟙ₒ {𝓤} ⊴ α
                                  → exp α (β +ₒ 𝟙ₒ) ＝ (exp α β) ×ₒ α
-exp-satisfies-succ-specification α β p = transport⁻¹ (λ - → - ＝ (exp α β) ×ₒ α) (exp-behaviour α (β +ₒ 𝟙ₒ))
-                                           (surjective-simulation-gives-equality _ (exp α β ×ₒ α) f f-is-simulation f-is-surjective)
- where
-  h : sup (cases (λ _ → 𝟙ₒ) (λ b → exp α ((β +ₒ 𝟙ₒ) ↓ b) ×ₒ α)) ⊴ ((exp α β) ×ₒ α)
-  h = (sup-is-lower-bound-of-upper-bounds (cases (λ _ → 𝟙ₒ) (λ b → exp α ((β +ₒ 𝟙ₒ) ↓ b) ×ₒ α)) ((exp α β) ×ₒ α) k)
-    where
-      k : (i : 𝟙 + pr₁ (β +ₒ 𝟙ₒ)) → cases (λ _ → 𝟙ₒ) (λ b → exp α ((β +ₒ 𝟙ₒ) ↓ b) ×ₒ α) i ⊴ (exp α β ×ₒ α)
-      k (inl _) = {!!}
-      k (inr (inl b)) = {!!}
-      k (inr (inr _)) = {!!}
+exp-satisfies-succ-specification {𝓤} α β p = transport⁻¹ (λ - → - ＝ (exp α β) ×ₒ α) (exp-behaviour α (β +ₒ 𝟙ₒ) ∙ ap sup eq')
+                                                     (⊴-antisym _ _ (sup-is-lower-bound-of-upper-bounds F _ upper-bound) (sup-is-upper-bound F (inr (inr ⋆))))
+  where
+   F : 𝟙 + (⟨ β ⟩ + 𝟙) → Ordinal 𝓤
+   F (inl _) = 𝟙ₒ
+   F (inr (inl b)) = exp α (β ↓ b) ×ₒ α
+   F (inr (inr _)) = exp α β ×ₒ α
 
-  f : ⟨ sup (cases (λ _ → 𝟙ₒ) (λ b → exp α ((β +ₒ 𝟙ₒ) ↓ b) ×ₒ α)) ⟩ →  ⟨ (exp α β) ×ₒ α ⟩
-  f = pr₁ h
+   right-add-α : exp α β ⊴ (exp α β ×ₒ α)
+   right-add-α = (transport (_⊴ (exp α β ×ₒ α)) (𝟙ₒ-right-neutral-×ₒ (exp α β)) (×ₒ-right-monotone-⊴ (exp α β) 𝟙ₒ α p))
 
-  f-is-simulation : is-simulation _ (exp α β ×ₒ α) f
-  f-is-simulation = pr₂ h
+   upper-bound : (i : 𝟙 + (⟨ β ⟩ + 𝟙)) → F i ⊴ (exp α β ×ₒ α)
+   upper-bound (inl _) = ⊴-trans 𝟙ₒ (exp α β) (exp α β ×ₒ α) (exp-has-least-element α β) right-add-α
+   upper-bound (inr (inl b)) = ⊴-trans (exp α (β ↓ b) ×ₒ α) (exp α β) (exp α β ×ₒ α)
+                                       (transport ((exp α (β ↓ b) ×ₒ α) ⊴_) (exp-behaviour α β ⁻¹) (sup-is-upper-bound (cases (λ _ → 𝟙ₒ) (λ b → exp α (β ↓ b) ×ₒ α)) (inr b)))
+                                       right-add-α
+   upper-bound (inr (inr _)) = ⊴-refl (exp α β ×ₒ α)
 
-  f-is-surjective : is-surjection f
-  f-is-surjective = {!!}
--}
-{-
+   eq : (i : 𝟙 + (⟨ β ⟩ + 𝟙)) → (cases (λ _ → 𝟙ₒ) (λ b → exp α ((β +ₒ 𝟙ₒ) ↓ b) ×ₒ α)) i ＝ F i
+   eq (inl _) = refl
+   eq (inr (inl b)) = ap (λ z → exp α z ×ₒ α) (+ₒ-↓-left b ⁻¹)
+   eq (inr (inr _)) = ap (λ z → exp α z ×ₒ α) (+ₒ-𝟙ₒ-↓-right β)
 
-
-
-(f : α ≤ α') →? α ×ₒ β ≤ α' ×ₒ β
-
-(a , b) ↦ (f a , b)
-
-Assume (a' , b') < (f a  , b). Need to find (a₀ , b₀) s t (f a₀ , b₀) = (a' , b').
+   eq' : (cases (λ _ → 𝟙ₒ) (λ b → exp α ((β +ₒ 𝟙ₒ) ↓ b) ×ₒ α)) ＝ F
+   eq' = dfunext fe' eq
 
 
+exp-power-one-is-identity : (α : Ordinal 𝓤) → 𝟙ₒ {𝓤} ⊴ α → exp α (𝟙ₒ {𝓤}) ＝ α
+exp-power-one-is-identity {𝓤} α p =
+  exp α (𝟙ₒ {𝓤})      ＝⟨ ap (exp α) (𝟘ₒ-left-neutral 𝟙ₒ ⁻¹)  ⟩
+  exp α (𝟘ₒ +ₒ 𝟙ₒ)     ＝⟨ exp-satisfies-succ-specification α 𝟘ₒ p ⟩
+  exp α (𝟘ₒ {𝓤}) ×ₒ α ＝⟨ ap (_×ₒ α) (exp-satisfies-zero-specification α) ⟩
+  𝟙ₒ ×ₒ α              ＝⟨ 𝟙ₒ-left-neutral-×ₒ α ⟩
+  α ∎
 
-Case b' < b: Take a₀ = ???, b₀ = b'.
-
-Case b' = b, a' < f a
-
-
--}
 
 \end{code}
