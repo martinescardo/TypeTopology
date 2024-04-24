@@ -66,15 +66,15 @@ a type `A : 𝓥`, and an equivalence `e : ⟨ L ⟩ ≃ A`.
 \begin{code}
 
 module _ (L  : DistributiveLattice 𝓤)
-         (A₀ : 𝓥  ̇)
-         (e  : ∣ L ∣ᵈ ≃ A₀) where
+         (Aᶜ : 𝓥  ̇)
+         (e  : ∣ L ∣ᵈ ≃ Aᶜ) where
 
  open DistributiveLattice L renaming (𝟏 to 𝟏L; 𝟎 to 𝟎L)
 
- s : ∣ L ∣ᵈ → A₀
+ s : ∣ L ∣ᵈ → Aᶜ
  s = ⌜ e ⌝
 
- r : A₀ → ∣ L ∣ᵈ
+ r : Aᶜ → ∣ L ∣ᵈ
  r = inverse ⌜ e ⌝ (⌜⌝-is-equiv e)
 
  r-cancels-s : r ∘ s ∼ id
@@ -90,7 +90,7 @@ as:
 
 \begin{code}
 
- _∧₀_ : A₀ → A₀ → A₀
+ _∧₀_ : Aᶜ → Aᶜ → Aᶜ
  _∧₀_ = λ x y → s (r x ∧ r y)
 
 \end{code}
@@ -99,7 +99,7 @@ We can now prove that `s` and `r` map the two meet operations onto each other.
 
 \begin{code}
 
- r-preserves-∧ : (x y : A₀) → r (x ∧₀ y) ＝ r x ∧ r y
+ r-preserves-∧ : (x y : Aᶜ) → r (x ∧₀ y) ＝ r x ∧ r y
  r-preserves-∧ x y = r-cancels-s (r x ∧ r y)
 
  s-preserves-∧ : (x y : X) → s (x ∧ y) ＝ s x ∧₀ s y
@@ -116,10 +116,10 @@ Now, we do exactly the same thing for the join operation.
 
 \begin{code}
 
- _∨₀_ : A₀ → A₀ → A₀
+ _∨₀_ : Aᶜ → Aᶜ → Aᶜ
  _∨₀_ = λ x y → s (r x ∨ r y)
 
- r-preserves-∨ : (x y : A₀) → r (x ∨₀ y) ＝ r x ∨ r y
+ r-preserves-∨ : (x y : Aᶜ) → r (x ∨₀ y) ＝ r x ∨ r y
  r-preserves-∨ x y = r-cancels-s (r x ∨ r y)
 
  s-preserves-∨ : (x y : X) → s (x ∨ y) ＝ s x ∨₀ s y
@@ -138,7 +138,7 @@ The bottom element of the new lattice is just `s 𝟎`
 
 \begin{code}
 
- 𝟎₀ : A₀
+ 𝟎₀ : Aᶜ
  𝟎₀ = s 𝟎L
 
 \end{code}
@@ -147,19 +147,19 @@ The top element is `s 𝟏`.
 
 \begin{code}
 
- 𝟏₀ : A₀
+ 𝟏₀ : Aᶜ
  𝟏₀ = s 𝟏L
 
 \end{code}
 
-We now proceed to prove that `(A₀ , 𝟎₀ , 𝟏₀ , _∧₀_ , _∨₀_)` forms a
+We now proceed to prove that `(Aᶜ , 𝟎₀ , 𝟏₀ , _∧₀_ , _∨₀_)` forms a
 distributive lattice. We refer to this as the _𝓥-small copy_ of `L`.
 
 We start with the unit laws.
 
 \begin{code}
 
- ∧₀-unit : (x : A₀) → x ∧₀ 𝟏₀ ＝ x
+ ∧₀-unit : (x : Aᶜ) → x ∧₀ 𝟏₀ ＝ x
  ∧₀-unit x =
   s (r x ∧ r (s 𝟏L)) ＝⟨ Ⅰ ⟩
   s (r x ∧ 𝟏L)       ＝⟨ Ⅱ ⟩
@@ -171,7 +171,7 @@ We start with the unit laws.
     Ⅲ = s-cancels-r x
 
 
- ∨₀-unit : (x : A₀) → x ∨₀ 𝟎₀ ＝ x
+ ∨₀-unit : (x : Aᶜ) → x ∨₀ 𝟎₀ ＝ x
  ∨₀-unit x =
   s (r x ∨ r (s 𝟎L)) ＝⟨ Ⅰ ⟩
   s (r x ∨ 𝟎L)       ＝⟨ Ⅱ ⟩
@@ -188,7 +188,7 @@ Associativity laws.
 
 \begin{code}
 
- ∧₀-is-associative : (x y z : A₀) → x ∧₀ (y ∧₀ z) ＝ (x ∧₀ y) ∧₀ z
+ ∧₀-is-associative : (x y z : Aᶜ) → x ∧₀ (y ∧₀ z) ＝ (x ∧₀ y) ∧₀ z
  ∧₀-is-associative x y z =
   x ∧₀ (y ∧₀ z)                ＝⟨ refl ⟩
   s (r x ∧ r (s (r y ∧ r z)))  ＝⟨ Ⅰ    ⟩
@@ -202,7 +202,7 @@ Associativity laws.
     Ⅱ = ap s (∧-associative (r x) (r y) (r z))
     Ⅲ = ap (λ - → s (- ∧ r z)) (r-cancels-s (r x ∧ r y) ⁻¹)
 
- ∨₀-associative : (x y z : A₀) → x ∨₀ (y ∨₀ z) ＝ (x ∨₀ y) ∨₀ z
+ ∨₀-associative : (x y z : Aᶜ) → x ∨₀ (y ∨₀ z) ＝ (x ∨₀ y) ∨₀ z
  ∨₀-associative x y z =
   x ∨₀ (y ∨₀ z)                ＝⟨ refl ⟩
   s (r x ∨ r (s (r y ∨ r z)))  ＝⟨ Ⅰ    ⟩
@@ -222,10 +222,10 @@ Commutativity laws.
 
 \begin{code}
 
- ∧₀-is-commutative : (x y : A₀) → x ∧₀ y ＝ y ∧₀ x
+ ∧₀-is-commutative : (x y : Aᶜ) → x ∧₀ y ＝ y ∧₀ x
  ∧₀-is-commutative x y = ap s (∧-commutative (r x) (r y))
 
- ∨₀-commutative : (x y : A₀) → x ∨₀ y ＝ y ∨₀ x
+ ∨₀-commutative : (x y : Aᶜ) → x ∨₀ y ＝ y ∨₀ x
  ∨₀-commutative x y = ap s (∨-commutative (r x) (r y))
 
 \end{code}
@@ -234,7 +234,7 @@ Idempotency laws.
 
 \begin{code}
 
- ∧₀-idempotent : (x : A₀) → x ∧₀ x ＝ x
+ ∧₀-idempotent : (x : Aᶜ) → x ∧₀ x ＝ x
  ∧₀-idempotent x =
   s (r x ∧ r x) ＝⟨ Ⅰ ⟩
   s (r x)       ＝⟨ Ⅱ ⟩
@@ -243,7 +243,7 @@ Idempotency laws.
     Ⅰ = ap s (∧-idempotent (r x))
     Ⅱ = s-cancels-r x
 
- ∨₀-idempotent : (x : A₀) → x ∨₀ x ＝ x
+ ∨₀-idempotent : (x : Aᶜ) → x ∨₀ x ＝ x
  ∨₀-idempotent x =
    s (r x ∨ r x) ＝⟨ Ⅰ ⟩
    s (r x)       ＝⟨ Ⅱ ⟩
@@ -258,7 +258,7 @@ Absorption laws.
 
 \begin{code}
 
- ∧₀-absorptive : (x y : A₀) → x ∧₀ (x ∨₀ y) ＝ x
+ ∧₀-absorptive : (x y : Aᶜ) → x ∧₀ (x ∨₀ y) ＝ x
  ∧₀-absorptive x y =
   s (r x ∧ r (s (r x ∨ r y)))   ＝⟨ Ⅰ ⟩
   s (r x ∧ (r x ∨ r y))         ＝⟨ Ⅱ ⟩
@@ -269,7 +269,7 @@ Absorption laws.
     Ⅱ = ap s (∧-absorptive (r x) (r y))
     Ⅲ = s-cancels-r x
 
- ∨₀-absorptive : (x y : A₀) → x ∨₀ (x ∧₀ y) ＝ x
+ ∨₀-absorptive : (x y : Aᶜ) → x ∨₀ (x ∧₀ y) ＝ x
  ∨₀-absorptive x y =
   x ∨₀ (x ∧₀ y)                 ＝⟨ refl ⟩
   s (r x ∨ r (s (r x ∧ r y)))   ＝⟨ Ⅰ    ⟩
@@ -287,7 +287,7 @@ Finally, the distributivity law.
 
 \begin{code}
 
- distributivity₀ᵈ : (x y z : A₀) → x ∧₀ (y ∨₀ z) ＝ (x ∧₀ y) ∨₀ (x ∧₀ z)
+ distributivity₀ᵈ : (x y z : Aᶜ) → x ∧₀ (y ∨₀ z) ＝ (x ∧₀ y) ∨₀ (x ∧₀ z)
  distributivity₀ᵈ x y z =
   x ∧₀ (y ∨₀ z)                             ＝⟨ refl ⟩
   s (r x ∧ r (s (r y ∨ r z)))               ＝⟨ Ⅰ    ⟩
@@ -311,7 +311,7 @@ We package everything up into `copyᵈ` below.
 
  copyᵈ : DistributiveLattice 𝓥
  copyᵈ = record
-          { X               = A₀
+          { X               = Aᶜ
           ; 𝟏               = 𝟏₀
           ; 𝟎               = 𝟎₀
           ; _∧_             = _∧₀_
