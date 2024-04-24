@@ -309,37 +309,37 @@ We package everything up into `copyᵈ` below.
 
 \begin{code}
 
- copyᵈ : DistributiveLattice 𝓥
- copyᵈ = record
-          { X               = Aᶜ
-          ; 𝟏               = 𝟏ᶜ
-          ; 𝟎               = 𝟎ᶜ
-          ; _∧_             = _∧ᶜ_
-          ; _∨_             = _∨ᶜ_
-          ; X-is-set        = equiv-to-set
-                               (≃-sym e)
-                               carrier-of-[ poset-ofᵈ L ]-is-set
-          ; ∧-associative   = ∧ᶜ-is-associative
-          ; ∧-commutative   = ∧ᶜ-is-commutative
-          ; ∧-unit          = ∧ᶜ-unit
-          ; ∧-idempotent    = ∧ᶜ-idempotent
-          ; ∧-absorptive    = ∧ᶜ-absorptive
-          ; ∨-associative   = ∨ᶜ-associative
-          ; ∨-commutative   = ∨ᶜ-commutative
-          ; ∨-unit          = ∨ᶜ-unit
-          ; ∨-idempotent    = ∨ᶜ-idempotent
-          ; ∨-absorptive    = ∨ᶜ-absorptive
-          ; distributivityᵈ = distributivity₀ᵈ
-          }
+ Lᶜ : DistributiveLattice 𝓥
+ Lᶜ = record
+       { X               = Aᶜ
+       ; 𝟏               = 𝟏ᶜ
+       ; 𝟎               = 𝟎ᶜ
+       ; _∧_             = _∧ᶜ_
+       ; _∨_             = _∨ᶜ_
+       ; X-is-set        = equiv-to-set
+                            (≃-sym e)
+                            carrier-of-[ poset-ofᵈ L ]-is-set
+       ; ∧-associative   = ∧ᶜ-is-associative
+       ; ∧-commutative   = ∧ᶜ-is-commutative
+       ; ∧-unit          = ∧ᶜ-unit
+       ; ∧-idempotent    = ∧ᶜ-idempotent
+       ; ∧-absorptive    = ∧ᶜ-absorptive
+       ; ∨-associative   = ∨ᶜ-associative
+       ; ∨-commutative   = ∨ᶜ-commutative
+       ; ∨-unit          = ∨ᶜ-unit
+       ; ∨-idempotent    = ∨ᶜ-idempotent
+       ; ∨-absorptive    = ∨ᶜ-absorptive
+       ; distributivityᵈ = distributivity₀ᵈ
+       }
 
 \end{code}
 
 \begin{code}
 
- s-preserves-𝟏 : preserves-𝟏 L copyᵈ s holds
+ s-preserves-𝟏 : preserves-𝟏 L Lᶜ s holds
  s-preserves-𝟏 = refl
 
- s-preserves-𝟎 : preserves-𝟎 L copyᵈ s holds
+ s-preserves-𝟎 : preserves-𝟎 L Lᶜ s holds
  s-preserves-𝟎 = refl
 
 \end{code}
@@ -349,22 +349,22 @@ We package `s` up with the proof that it is a homomorphism, and call it
 
 \begin{code}
 
- sₕ : L ─d→ copyᵈ
+ sₕ : L ─d→ Lᶜ
  sₕ = record
        { h                 = s
        ; h-is-homomorphism = α , β , γ , δ
        }
       where
-       α : preserves-𝟏 L copyᵈ s holds
+       α : preserves-𝟏 L Lᶜ s holds
        α = refl
 
-       β : preserves-∧ L copyᵈ s holds
+       β : preserves-∧ L Lᶜ s holds
        β = s-preserves-∧
 
-       γ : preserves-𝟎 L copyᵈ s holds
+       γ : preserves-𝟎 L Lᶜ s holds
        γ = s-preserves-𝟎
 
-       δ : preserves-∨ L copyᵈ s holds
+       δ : preserves-∨ L Lᶜ s holds
        δ = s-preserves-∨
 
 \end{code}
@@ -373,33 +373,33 @@ Now, we we do the same thing for `r`
 
 \begin{code}
 
- rₕ : copyᵈ ─d→ L
+ rₕ : Lᶜ ─d→ L
  rₕ =
   record
    { h                 = r
    ; h-is-homomorphism = α , β , γ , δ
    }
     where
-     α : preserves-𝟏 copyᵈ L r holds
+     α : preserves-𝟏 Lᶜ L r holds
      α = r-cancels-s 𝟏L
 
-     β : preserves-∧ copyᵈ L r holds
+     β : preserves-∧ Lᶜ L r holds
      β = r-preserves-∧
 
-     γ : preserves-𝟎 copyᵈ L r holds
+     γ : preserves-𝟎 Lᶜ L r holds
      γ = r-cancels-s 𝟎L
 
-     δ : preserves-∨ copyᵈ L r holds
+     δ : preserves-∨ Lᶜ L r holds
      δ = r-preserves-∨
 
 \end{code}
 
 \begin{code}
 
- s-is-homomorphism : is-homomorphismᵈ L copyᵈ s holds
+ s-is-homomorphism : is-homomorphismᵈ L Lᶜ s holds
  s-is-homomorphism = Homomorphismᵈᵣ.h-is-homomorphism sₕ
 
- r-is-homomorphism : is-homomorphismᵈ copyᵈ L r holds
+ r-is-homomorphism : is-homomorphismᵈ Lᶜ L r holds
  r-is-homomorphism = Homomorphismᵈᵣ.h-is-homomorphism rₕ
 
 \end{code}
@@ -412,7 +412,7 @@ trivial proof that they are homomorphisms with respect to the 𝓥-small copy of
 
  open DistributiveLatticeIsomorphisms
 
- copy-isomorphic-to-original : L ≅d≅ copyᵈ
+ copy-isomorphic-to-original : L ≅d≅ Lᶜ
  copy-isomorphic-to-original =
   record
    { 𝓈           = sₕ
