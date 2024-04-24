@@ -80,8 +80,6 @@ exp-behaviour {𝓤} {𝓥} α β = {!transfinite-recursion-on-OO-behaviour (Ord
 
 \begin{code}
 
--- exp-preserves-having-least-element
-
 sup-composition : {B : 𝓤 ̇ }{C : 𝓤 ̇ } → (f : B → C) → (F : C → Ordinal 𝓤) → sup (F ∘ f) ⊴ sup F
 sup-composition f F = sup-is-lower-bound-of-upper-bounds (F ∘ f) (sup F) (λ i → sup-is-upper-bound F (f i))
 
@@ -109,6 +107,25 @@ exp-monotone-in-exponent α β γ p = transport₂⁻¹ _⊴_ (exp-behaviour α 
     claim' : F ∘ f ＝ F'
     claim' = dfunext fe' claim
 
+exp-has-least-element : (α : Ordinal 𝓤) → (β : Ordinal 𝓥) → 𝟙ₒ {𝓤 ⊔ 𝓥} ⊴ exp α β
+exp-has-least-element {𝓤} α β = transport⁻¹ (𝟙ₒ ⊴_) (exp-behaviour α β) q
+  where
+    q : 𝟙ₒ ⊴ sup (cases (λ _ → 𝟙ₒ) (λ b → exp α (β ↓ b) ×ₒ α))
+    q = sup-is-upper-bound (cases (λ _ → 𝟙ₒ) (λ b → exp α (β ↓ b) ×ₒ α)) (inl ⋆)
+
+exp-satisfies-zero-specification : (α : Ordinal 𝓤) → exp α (𝟘ₒ {𝓥}) ＝ 𝟙ₒ
+exp-satisfies-zero-specification α = ⊴-antisym (exp α 𝟘ₒ) 𝟙ₒ II III
+  where
+    I : (i : 𝟙 + 𝟘) → cases (λ _ → 𝟙ₒ) (λ b → exp α (𝟘ₒ ↓ b) ×ₒ α) i ⊴ 𝟙ₒ
+    I (inl _) = ⊴-refl 𝟙ₒ
+
+    II : exp α 𝟘ₒ ⊴ 𝟙ₒ
+    II = transport⁻¹ (_⊴ 𝟙ₒ) (exp-behaviour α 𝟘ₒ) (sup-is-lower-bound-of-upper-bounds (cases (λ _ → 𝟙ₒ) (λ b → exp α (𝟘ₒ ↓ b) ×ₒ α)) 𝟙ₒ I)
+
+    III : 𝟙ₒ ⊴ exp α 𝟘ₒ
+    III = exp-has-least-element α 𝟘ₒ
+
+
 exp-satisfies-succ-specification : (α β : Ordinal 𝓤) → 𝟙ₒ {𝓤} ⊴ α
                                  → exp α (β +ₒ 𝟙ₒ) ＝ (exp α β) ×ₒ α
 exp-satisfies-succ-specification α β p = transport⁻¹ (λ - → - ＝ (exp α β) ×ₒ α) (exp-behaviour α (β +ₒ 𝟙ₒ))
@@ -132,6 +149,21 @@ exp-satisfies-succ-specification α β p = transport⁻¹ (λ - → - ＝ (exp �
   f-is-surjective = {!!}
 
 {-
+
+
+
+(f : α ≤ α') →? α ×ₒ β ≤ α' ×ₒ β
+
+(a , b) ↦ (f a , b)
+
+Assume (a' , b') < (f a  , b). Need to find (a₀ , b₀) s t (f a₀ , b₀) = (a' , b').
+
+
+
+Case b' < b: Take a₀ = ???, b₀ = b'.
+
+Case b' = b, a' < f a
+
 
 -}
 
