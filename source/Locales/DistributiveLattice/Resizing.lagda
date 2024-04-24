@@ -46,6 +46,8 @@ private
 
 open import Locales.Compactness pt fe
 open import Locales.DistributiveLattice.Definition fe pt
+open import Locales.DistributiveLattice.Homomorphism fe pt
+open import Locales.DistributiveLattice.Isomorphism fe pt
 open import Locales.Frame pt fe
 open import Locales.SmallBasis pt fe sr
 open import UF.Equiv
