@@ -78,6 +78,6 @@ Isomorphismᵈᵣ-Syntax : DistributiveLattice 𝓤
 Isomorphismᵈᵣ-Syntax K L = DistributiveLatticeIsomorphisms.Isomorphismᵈᵣ K L
 
 infix 0 Isomorphismᵈᵣ-Syntax
-syntax Isomorphismᵈᵣ-Syntax K L = K ≅f≅ L
+syntax Isomorphismᵈᵣ-Syntax K L = K ≅d≅ L
 
 \end{code}
