@@ -408,10 +408,6 @@ Now, we we do the same thing for `r`
      δ : preserves-∨ Lᶜ L r holds
      δ = r-preserves-∨
 
-\end{code}
-
-\begin{code}
-
  s-is-homomorphism : is-homomorphismᵈ L Lᶜ s holds
  s-is-homomorphism = Homomorphismᵈᵣ.h-is-homomorphism sₕ
 
@@ -421,8 +417,8 @@ Now, we we do the same thing for `r`
 \end{code}
 
 Combining the fact that `s` and `r` are parts of an equivalence with the rather
-trivial proof that they are homomorphisms with respect to the 𝓥-small copy of
-`L`, we obtain that `L` is isomorphic to its 𝓥-small copy.
+trivial proof that they are homomorphisms with respect to `Lᶜ`, we obtain
+the fact that `L` is isomorphic to its 𝓥-small copy.
 
 \begin{code}
 
