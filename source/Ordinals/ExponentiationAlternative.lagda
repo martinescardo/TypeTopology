@@ -238,4 +238,38 @@ curiosity {𝓤} P pp = transport⁻¹ (λ - → - ＝ 𝟙ₒ +ₒ (prop-ordina
   g-is-simulation : is-simulation (𝟙ₒ +ₒ prop-ordinal P pp) (sup F) g
   g-is-simulation = g-is-initial-segment , g-is-order-preserving
 
+exp-satisfies-sup-specification : (α : Ordinal 𝓤) → 𝟙ₒ {𝓤} ⊴ α
+                                → {I : 𝓤 ̇ } → ∥ I ∥ → (F : I → Ordinal 𝓤)
+                                → exp α (sup F) ＝ sup (λ i → exp α (F i))
+exp-satisfies-sup-specification {𝓤} α p {I} i₀ F =
+  ∥∥-rec (the-type-of-ordinals-is-a-set (ua _) fe')
+         (λ i₀ → transport⁻¹ (λ - → - ＝ sup (λ i → exp α (F i)))
+                             (exp-behaviour α (sup F))
+                             (⊴-antisym _ _ (sup-is-lower-bound-of-upper-bounds _ _ (left-to-right i₀))
+                             (sup-is-lower-bound-of-upper-bounds _ _ right-to-left)))
+         i₀
+ where
+  left-to-right : I → (x : 𝟙 + ⟨ sup F ⟩) → (cases (λ _ → 𝟙ₒ) (λ b → exp α (sup F ↓ b) ×ₒ α)) x ⊴ sup (λ i → exp α (F i))
+  left-to-right i₀ (inl _) = ⊴-trans 𝟙ₒ (exp α (F i₀)) (sup (λ i → exp α (F i))) (exp-has-least-element α (F i₀)) (sup-is-upper-bound (λ i → exp α (F i)) i₀)
+  left-to-right i₀ (inr y) = ∥∥-rec (⊴-is-prop-valued _ _) (λ (j , y' , eq) → transport⁻¹ (λ - → (exp α - ×ₒ α) ⊴ sup (λ i → exp α (F i))) eq (claim j y')) (initial-segment-of-sup-is-initial-segment-of-some-component F y)
+   where
+    claim : (j : I) → (y' : ⟨ F j ⟩) → (exp α (F j ↓ y') ×ₒ α) ⊴ sup (λ i → exp α (F i))
+    claim j y' = ⊴-trans (exp α (F j ↓ y') ×ₒ α) (exp α (F j)) (sup (λ i → exp α (F i)))
+                         (transport⁻¹ ((exp α (F j ↓ y') ×ₒ α) ⊴_) (exp-behaviour α (F j)) (sup-is-upper-bound _ (inr y')))
+                         (sup-is-upper-bound (λ i → exp α (F i)) j)
+
+  right-to-left : (i : I) → exp α (F i) ⊴ sup (cases (λ _ → 𝟙ₒ) (λ b → exp α (sup F ↓ b) ×ₒ α))
+  right-to-left i = transport⁻¹ (_⊴ sup (cases (λ _ → 𝟙ₒ) (λ b → exp α (sup F ↓ b) ×ₒ α))) (exp-behaviour α (F i)) (sup-is-lower-bound-of-upper-bounds _ _ right-to-left')
+   where
+    right-to-left' : (x : 𝟙 + ⟨ F i ⟩) → (cases (λ _ → 𝟙ₒ) (λ y → exp α (F i ↓ y) ×ₒ α)) x ⊴ sup (cases {𝓤} {X = 𝟙} (λ _ → 𝟙ₒ) (λ b → exp α (sup F ↓ b) ×ₒ α))
+    right-to-left' (inl _) = sup-is-upper-bound (cases {X = 𝟙} (λ _ → 𝟙ₒ) (λ b → exp α (sup F ↓ b) ×ₒ α)) (inl ⋆)
+    right-to-left' (inr y) = transport (_⊴ sup (cases {X = 𝟙} (λ _ → 𝟙ₒ) (λ b → exp α (sup F ↓ b) ×ₒ α))) eq (sup-is-upper-bound (cases (λ _ → 𝟙ₒ) (λ b → exp α (sup F ↓ b) ×ₒ α)) (inr y'))
+     where
+      y' : ⟨ sup F ⟩
+      y' = pr₁ (sup-is-upper-bound F i) y
+      eq : exp α (sup F ↓ y') ×ₒ α ＝ exp α (F i ↓ y) ×ₒ α
+      eq = ap (λ - → exp α - ×ₒ α) (initial-segment-of-sup-at-component F i y)
+
+
+
 \end{code}
