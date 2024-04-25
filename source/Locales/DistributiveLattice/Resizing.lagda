@@ -287,8 +287,8 @@ Finally, the distributivity law.
 
 \begin{code}
 
- distributivity₀ᵈ : (x y z : Aᶜ) → x ∧ᶜ (y ∨ᶜ z) ＝ (x ∧ᶜ y) ∨ᶜ (x ∧ᶜ z)
- distributivity₀ᵈ x y z =
+ distributivityᶜ : (x y z : Aᶜ) → x ∧ᶜ (y ∨ᶜ z) ＝ (x ∧ᶜ y) ∨ᶜ (x ∧ᶜ z)
+ distributivityᶜ x y z =
   x ∧ᶜ (y ∨ᶜ z)                             ＝⟨ refl ⟩
   s (r x ∧ r (s (r y ∨ r z)))               ＝⟨ Ⅰ    ⟩
   s (r x ∧ (r y ∨ r z))                     ＝⟨ Ⅱ    ⟩
@@ -330,7 +330,7 @@ We package everything up into `copyᵈ` below.
         ; ∨-unit          = ∨ᶜ-unit
         ; ∨-idempotent    = ∨ᶜ-idempotent
         ; ∨-absorptive    = ∨ᶜ-absorptive
-        ; distributivityᵈ = distributivity₀ᵈ
+        ; distributivityᵈ = distributivityᶜ
         }
 
 \end{code}
