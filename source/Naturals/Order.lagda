@@ -248,6 +248,12 @@ course-of-values-induction-on-value-of-function
   II : (n : ℕ) → A n
   II = course-of-values-induction A I
 
+\end{code}
+
+TODO. Also add plain induction on the values of a function.
+
+\begin{code}
+
 <-is-extensional : is-extensional _<_
 <-is-extensional 0        0        f g = refl
 <-is-extensional 0        (succ n) f g = unique-from-𝟘 (g 0    (zero-least n))
