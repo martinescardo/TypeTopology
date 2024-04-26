@@ -13,6 +13,8 @@ module MLTT.List where
 open import MLTT.Spartan
 open import MLTT.Bool
 open import Naturals.Properties
+open import Naturals.Order hiding (minus)
+open import Notation.Order
 
 data List {𝓤} (X : 𝓤 ̇ ) : 𝓤 ̇  where
  [] : List X
@@ -25,6 +27,14 @@ infixr 3 _∷_
 length : {X : 𝓤 ̇ } → List X → ℕ
 length []       = 0
 length (x ∷ xs) = succ (length xs)
+
+course-of-values-induction-on-length
+ : {X : 𝓤 ̇}
+ → (P : List X → 𝓥 ̇ )
+ → ((xs : List X) → ((ys : List X) → length ys < length xs → P ys) → P xs)
+ → (xs : List X) → P xs
+course-of-values-induction-on-length {𝓤} {𝓥} {X} =
+ course-of-values-induction-on-value-of-function length
 
 Vector' : 𝓤 ̇ → ℕ → 𝓤 ̇
 Vector' X n = (Σ xs ꞉ List X , length xs ＝ n)
