@@ -233,7 +233,7 @@ course-of-values-induction = transfinite-induction _<_ <-is-well-founded
 course-of-values-induction-on-value-of-function
  : {X : 𝓤 ̇}
    (f : X → ℕ)
- → (P : X → 𝓥 ̇ )
+   (P : X → 𝓥 ̇ )
  → ((x : X) → ((y : X) → f y < f x → P y) → P x)
  → (x : X) → P x
 course-of-values-induction-on-value-of-function
