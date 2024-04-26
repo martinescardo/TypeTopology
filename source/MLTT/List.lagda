@@ -50,7 +50,12 @@ equal-heads refl = refl
 equal-tails : {X : 𝓤 ̇ } {x y : X} {s t : List X}
             → x ∷ s ＝ y ∷ t
             → s ＝ t
-equal-tails {𝓤} {X} refl = refl
+equal-tails refl = refl
+
+equal-head-tail : {X : 𝓤 ̇ } {x : X} {s t : List X}
+                → x ∷ s ＝ t
+                → Σ y ꞉ X , Σ t' ꞉ List X , (t ＝ y ∷ t')
+equal-head-tail {𝓤} {X} {x} {s} {t} refl = x , s , refl
 
 [_] : {X : 𝓤 ̇ } → X → List X
 [ x ] = x ∷ []
