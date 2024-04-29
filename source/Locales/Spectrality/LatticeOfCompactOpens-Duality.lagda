@@ -179,7 +179,16 @@ We define some shorthand notation to simplify the proofs.
 
  η-is-closed-under-∨ : (U : ⟨ 𝒪 X ⟩)
                      → is-closed-under-binary-joins 𝒦-X⁻ (η U) holds
- η-is-closed-under-∨ U = {!!}
+ η-is-closed-under-∨ U K₁ K₂ μ₁ μ₂  = †
+  where
+   foo : (ι K₁ ≤[ poset-of (𝒪 X) ] U) holds
+   foo = μ₁
+
+   baz : ((ι K₁ ∨[ 𝒪 X ] ι K₂) ≤[ poset-of (𝒪 X) ] U) holds
+   baz = ∨[ 𝒪 X ]-least μ₁ μ₂
+
+   † : (ι (K₁ ∨⁻ K₂) ≤[ poset-of (𝒪 X) ] U) holds
+   † = ι (K₁ ∨⁻ K₂) ＝⟨ ι-preserves-∨ K₁ K₂ ⟩ₚ ι K₁ ∨[ 𝒪 X ] ι K₂ ≤⟨ baz ⟩ U ■
 
 \end{code}
 
