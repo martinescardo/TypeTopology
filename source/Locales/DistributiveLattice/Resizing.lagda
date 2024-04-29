@@ -303,29 +303,28 @@ We package everything up into `copyᵈ` below.
 
 \begin{code}
 
- private
-  Lᶜ : DistributiveLattice 𝓥
-  Lᶜ = record
-        { X               = Aᶜ
-        ; 𝟏               = 𝟏ᶜ
-        ; 𝟎               = 𝟎ᶜ
-        ; _∧_             = _∧ᶜ_
-        ; _∨_             = _∨ᶜ_
-        ; X-is-set        = equiv-to-set
-                             (≃-sym e)
-                             carrier-of-[ poset-ofᵈ L ]-is-set
-        ; ∧-associative   = ∧ᶜ-is-associative
-        ; ∧-commutative   = ∧ᶜ-is-commutative
-        ; ∧-unit          = ∧ᶜ-unit
-        ; ∧-idempotent    = ∧ᶜ-idempotent
-        ; ∧-absorptive    = ∧ᶜ-absorptive
-        ; ∨-associative   = ∨ᶜ-associative
-        ; ∨-commutative   = ∨ᶜ-commutative
-        ; ∨-unit          = ∨ᶜ-unit
-        ; ∨-idempotent    = ∨ᶜ-idempotent
-        ; ∨-absorptive    = ∨ᶜ-absorptive
-        ; distributivityᵈ = distributivityᶜ
-        }
+ Lᶜ : DistributiveLattice 𝓥
+ Lᶜ = record
+       { X               = Aᶜ
+       ; 𝟏               = 𝟏ᶜ
+       ; 𝟎               = 𝟎ᶜ
+       ; _∧_             = _∧ᶜ_
+       ; _∨_             = _∨ᶜ_
+       ; X-is-set        = equiv-to-set
+                            (≃-sym e)
+                            carrier-of-[ poset-ofᵈ L ]-is-set
+       ; ∧-associative   = ∧ᶜ-is-associative
+       ; ∧-commutative   = ∧ᶜ-is-commutative
+       ; ∧-unit          = ∧ᶜ-unit
+       ; ∧-idempotent    = ∧ᶜ-idempotent
+       ; ∧-absorptive    = ∧ᶜ-absorptive
+       ; ∨-associative   = ∨ᶜ-associative
+       ; ∨-commutative   = ∨ᶜ-commutative
+       ; ∨-unit          = ∨ᶜ-unit
+       ; ∨-idempotent    = ∨ᶜ-idempotent
+       ; ∨-absorptive    = ∨ᶜ-absorptive
+       ; distributivityᵈ = distributivityᶜ
+       }
 
 \end{code}
 
