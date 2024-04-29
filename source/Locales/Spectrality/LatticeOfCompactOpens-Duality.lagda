@@ -46,6 +46,7 @@ open import Locales.DistributiveLattice.Isomorphism fe pt
 open import Locales.DistributiveLattice.LocaleOfSpectra fe pe pt
 open import Locales.DistributiveLattice.Resizing ua pt sr
 open import Locales.Frame pt fe
+open import Locales.ContinuousMap.FrameHomomorphism-Definition pt fe
 open import Locales.SmallBasis pt fe sr
 open import Locales.Spectrality.LatticeOfCompactOpens ua pt sr
 open import Locales.Spectrality.SpectralLocale pt fe
@@ -233,7 +234,23 @@ We define some shorthand notation to simplify the proofs.
      p₂ = ι K ≤⟨ p ⟩ U ∧[ 𝒪 X ] V ≤⟨ ∧[ 𝒪 X ]-lower₂ U V ⟩ V ■
 
    ‡ : (ϕ₀ U ∧ᵢ ϕ₀ V) ⊆ᵢ ϕ₀ (U ∧[ 𝒪 X ] V) holds
-   ‡ K (p₁ , p₂) = {!!}
+   ‡ K (p₁ , p₂) = ∧[ 𝒪 X ]-greatest U V (ι K) p₁ p₂
+
+\end{code}
+
+\begin{code}
+
+ open FrameHomomorphisms
+
+ ϕ₀-preserves-⋁ : preserves-joins (𝒪 X) (𝒪 spec-𝒦-X) ϕ₀ holds
+ ϕ₀-preserves-⋁ S = υ , {!!}
+  where
+   υ : {!!}
+   υ = {!!}
+
+ ϕ-is-frame-homomorphism : is-a-frame-homomorphism (𝒪 X) (𝒪 spec-𝒦-X) ϕ₀ holds
+ ϕ-is-frame-homomorphism =
+  ϕ₀-preserves-top , ϕ₀-preserves-∧ , ϕ₀-preserves-⋁
 
 \end{code}
 
