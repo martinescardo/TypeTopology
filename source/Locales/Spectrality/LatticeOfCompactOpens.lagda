@@ -66,14 +66,15 @@ We define some shorthand notation to simplify the proofs.
 
 \begin{code}
 
- σ : is-spectral X holds
- σ = ssb-implies-spectral ua X σ₀
+ private
+  σ : is-spectral X holds
+  σ = ssb-implies-spectral ua X σ₀
 
- 𝟏-is-compact : is-compact-open X 𝟏[ 𝒪 X ] holds
- 𝟏-is-compact = spectral-locales-are-compact X σ
+  𝟏-is-compact : is-compact-open X 𝟏[ 𝒪 X ] holds
+  𝟏-is-compact = spectral-locales-are-compact X σ
 
- 𝟏ₖ : 𝒦 X
- 𝟏ₖ = 𝟏[ 𝒪 X ] , 𝟏-is-compact
+  𝟏ₖ : 𝒦 X
+  𝟏ₖ = 𝟏[ 𝒪 X ] , 𝟏-is-compact
 
 \end{code}
 
