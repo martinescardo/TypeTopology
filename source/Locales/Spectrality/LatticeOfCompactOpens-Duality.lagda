@@ -207,6 +207,13 @@ We define some shorthand notation to simplify the proofs.
 
 \begin{code}
 
+ ϕ₀-preserves-top : ϕ₀ 𝟏[ 𝒪 X ] ＝ 𝟏[ 𝒪 spec-𝒦-X ]
+ ϕ₀-preserves-top = {!!}
+
+\end{code}
+
+\begin{code}
+
  open classifier-single-universe 𝓤
 
  open IdealNotation 𝒦-X⁻
