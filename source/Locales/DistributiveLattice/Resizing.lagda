@@ -65,9 +65,9 @@ a type `A : 𝓥`, and an equivalence `e : ⟨ L ⟩ ≃ A`.
 
 \begin{code}
 
-module _ (L  : DistributiveLattice 𝓤)
-         (Aᶜ : 𝓥  ̇)
-         (e  : ∣ L ∣ᵈ ≃ Aᶜ) where
+module DistributiveLatticeResizing (L  : DistributiveLattice 𝓤)
+                                   (Aᶜ : 𝓥  ̇)
+                                   (e  : ∣ L ∣ᵈ ≃ Aᶜ) where
 
  open DistributiveLattice L renaming (𝟏 to 𝟏L; 𝟎 to 𝟎L)
 
