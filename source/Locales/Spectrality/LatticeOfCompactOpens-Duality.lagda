@@ -12,7 +12,6 @@ date-completed: 2024-02-27
 open import MLTT.List hiding ([_])
 open import MLTT.Pi
 open import MLTT.Spartan
-open import Slice.Family
 open import UF.Base
 open import UF.EquivalenceExamples
 open import UF.FunExt
@@ -51,9 +50,11 @@ open import Locales.SmallBasis pt fe sr
 open import Locales.Spectrality.LatticeOfCompactOpens ua pt sr
 open import Locales.Spectrality.SpectralLocale pt fe
 open import Locales.Spectrality.SpectralMap pt fe
+open import Slice.Family
+open import UF.Classifiers
 open import UF.Equiv hiding (_■)
-open import UF.Powerset-MultiUniverse
 open import UF.Logic
+open import UF.Powerset-MultiUniverse hiding (𝕋)
 
 open AllCombinators pt fe hiding (_∨_)
 open Locale
@@ -194,12 +195,23 @@ We define some shorthand notation to simplify the proofs.
 
 \begin{code}
 
- forward₀ : ⟨ 𝒪 X ⟩ → Ideal 𝒦-X⁻
- forward₀ U = record
-               { I                    = η U
-               ; I-is-inhabited       = ∣ 𝟎⁻ , η-contains-𝟎 U ∣
-               ; I-is-downward-closed = η-is-downward-closed U
-               ; I-is-closed-under-∨  = η-is-closed-under-∨ U
-               }
+ ϕ₀ : ⟨ 𝒪 X ⟩ → Ideal 𝒦-X⁻
+ ϕ₀ U = record
+         { I                    = η U
+         ; I-is-inhabited       = ∣ 𝟎⁻ , η-contains-𝟎 U ∣
+         ; I-is-downward-closed = η-is-downward-closed U
+         ; I-is-closed-under-∨  = η-is-closed-under-∨ U
+         }
+
+\end{code}
+
+\begin{code}
+
+ open classifier-single-universe 𝓤
+
+ open IdealNotation 𝒦-X⁻
+
+ join : Ideal 𝒦-X⁻  → ⟨ 𝒪 X ⟩
+ join ℐ = ⋁[ 𝒪 X ] ⁅ ι K ∣ K ε 𝕋 𝒦⁻ (_∈ⁱ ℐ) ⁆
 
 \end{code}
