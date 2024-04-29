@@ -114,7 +114,7 @@ We define some shorthand notation to simplify the proofs.
 
 
  open Ideal
- open DistributiveLattice 𝒦-X⁻ using () renaming (𝟎 to 𝟎⁻; _∨_ to _∨⁻_)
+ open DistributiveLattice 𝒦-X⁻ using () renaming (𝟎 to 𝟎⁻; _∨_ to _∨⁻_; _∧_ to _∧⁻_)
  open DistributiveLattice 𝒦⦅X⦆ using (𝟎; _∨_)
 
  ι-preserves-𝟎 : ι 𝟎⁻ ＝ 𝟎[ 𝒪 X ]
@@ -207,16 +207,39 @@ We define some shorthand notation to simplify the proofs.
 
 \begin{code}
 
- ϕ₀-preserves-top : ϕ₀ 𝟏[ 𝒪 X ] ＝ 𝟏[ 𝒪 spec-𝒦-X ]
- ϕ₀-preserves-top = {!!}
+ abstract
+  ϕ₀-preserves-top : ϕ₀ 𝟏[ 𝒪 X ] ＝ 𝟏[ 𝒪 spec-𝒦-X ]
+  ϕ₀-preserves-top = only-𝟏-is-above-𝟏 (𝒪 spec-𝒦-X) (ϕ₀ 𝟏[ 𝒪 X ]) †
+   where
+    † : (𝟏[ 𝒪 spec-𝒦-X ] ≤[ poset-of frame-of-ideals ] ϕ₀ 𝟏[ 𝒪 X ]) holds
+    † K _ = 𝟏-is-top (𝒪 X) (ι K)
+
+\end{code}
+
+\begin{code}
+
+ open IdealNotation 𝒦-X⁻
+
+ ϕ₀-preserves-∧ : (U V : ⟨ 𝒪 X ⟩) → ϕ₀ (U ∧[ 𝒪 X ] V) ＝ ϕ₀ U ∧ᵢ ϕ₀ V
+ ϕ₀-preserves-∧ U V = ≤-is-antisymmetric poset-of-ideals † ‡
+  where
+   † : ϕ₀ (U ∧[ 𝒪 X ] V) ⊆ᵢ (ϕ₀ U ∧ᵢ ϕ₀ V) holds
+   † K p = p₁ , p₂
+    where
+     p₁ : K ∈ⁱ ϕ₀ U
+     p₁ = ι K ≤⟨ p ⟩ U ∧[ 𝒪 X ] V ≤⟨ ∧[ 𝒪 X ]-lower₁ U V ⟩ U ■
+
+     p₂ : K ∈ⁱ ϕ₀ V
+     p₂ = ι K ≤⟨ p ⟩ U ∧[ 𝒪 X ] V ≤⟨ ∧[ 𝒪 X ]-lower₂ U V ⟩ V ■
+
+   ‡ : (ϕ₀ U ∧ᵢ ϕ₀ V) ⊆ᵢ ϕ₀ (U ∧[ 𝒪 X ] V) holds
+   ‡ K (p₁ , p₂) = {!!}
 
 \end{code}
 
 \begin{code}
 
  open classifier-single-universe 𝓤
-
- open IdealNotation 𝒦-X⁻
 
  join : Ideal 𝒦-X⁻  → ⟨ 𝒪 X ⟩
  join ℐ = ⋁[ 𝒪 X ] ⁅ ι K ∣ K ε 𝕋 𝒦⁻ (_∈ⁱ ℐ) ⁆
