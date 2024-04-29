@@ -259,3 +259,24 @@ Added on 2024-04-12.
  to-original = ⌜ resizing-condition 𝒦⦅X⦆-is-small ⌝
 
 \end{code}
+
+\begin{code}
+
+ open OperationsOnCompactOpens X σ
+
+ open DistributiveLattice hiding (X)
+
+ ιₖ-preserves-∨ : (K₁ K₂ : ∣ 𝒦⦅X⦆ ∣ᵈ) → pr₁ (K₁ ∨ₖ K₂) ＝ pr₁ K₁ ∨[ 𝒪 X ] pr₁ K₂
+ ιₖ-preserves-∨ K₁ K₂ = ≤-is-antisymmetric (poset-of (𝒪 X)) † ‡
+  where
+   † : (ιₖ (K₁ ∨ₖ K₂) ≤[ poset-of (𝒪 X) ] (ιₖ K₁ ∨[ 𝒪 X ] ιₖ K₂)) holds
+   † = ∨[ 𝒪 X ]-least
+        (∨[ 𝒪 X ]-upper₁ (ιₖ K₁) (ιₖ K₂))
+        (∨[ 𝒪 X ]-upper₂ (ιₖ K₁) (ιₖ K₂))
+
+   ‡ : ((ιₖ K₁ ∨[ 𝒪 X ] ιₖ K₂) ≤[ poset-of (𝒪 X) ] ιₖ (K₁ ∨ₖ K₂)) holds
+   ‡ = ∨[ 𝒪 X ]-least
+        (∨[ 𝒪 X ]-upper₁ (ιₖ K₁) (ιₖ K₂))
+        (∨[ 𝒪 X ]-upper₂ (ιₖ K₁) (ιₖ K₂))
+
+\end{code}
