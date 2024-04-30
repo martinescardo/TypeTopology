@@ -78,10 +78,10 @@ module _ (L  : DistributiveLattice 𝓤)
  r = inverse ⌜ e ⌝ (⌜⌝-is-equiv e)
 
  r-cancels-s : r ∘ s ∼ id
- r-cancels-s = inverses-are-retractions s (⌜⌝-is-equiv e)
+ r-cancels-s = inverses-are-retractions' e
 
  s-cancels-r : s ∘ r ∼ id
- s-cancels-r = inverses-are-sections s (⌜⌝-is-equiv e)
+ s-cancels-r = inverses-are-sections' e
 
 \end{code}
 
