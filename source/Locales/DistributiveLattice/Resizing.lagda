@@ -81,7 +81,7 @@ module _ (L  : DistributiveLattice 𝓤)
  r-cancels-s = inverses-are-retractions s (⌜⌝-is-equiv e)
 
  s-cancels-r : s ∘ r ∼ id
- s-cancels-r x = pr₂ (pr₁ (pr₂ e)) x
+ s-cancels-r = inverses-are-sections s (⌜⌝-is-equiv e)
 
 \end{code}
 
