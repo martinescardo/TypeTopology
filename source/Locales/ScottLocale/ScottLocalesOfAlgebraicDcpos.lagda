@@ -71,7 +71,7 @@ truncation of the basis in consideration.
 
 \begin{code}
 
-module ScottLocaleConstruction (𝓓    : DCPO {𝓤} {𝓥})
+module ScottLocaleConstruction (𝓓    : DCPO {𝓤 ⁺} {𝓤})
                                (hscb : has-specified-small-compact-basis 𝓓)
                                (pe   : propext 𝓤)                          where
 
@@ -175,7 +175,7 @@ the basic opens. The order `_⊆ₛ_` is the large version.
  ⊆ₖ-is-partial-order : is-partial-order 𝒪ₛ _⊆ₖ_
  ⊆ₖ-is-partial-order = (⊆ₖ-is-reflexive , ⊆ₖ-is-transitive) , ⊆ₖ-is-antisymmetric
 
- poset-of-scott-opensₛ : Poset (𝓤 ⁺ ⊔ 𝓥) 𝓤
+ poset-of-scott-opensₛ : Poset (𝓤 ⁺) (𝓤 ⁺)
  poset-of-scott-opensₛ =
   𝒪ₛ , _⊆ₛ_ , (⊆ₛ-is-reflexive , ⊆ₛ-is-transitive) , ⊆ₛ-is-antisymmetric
 
@@ -251,7 +251,7 @@ We finally define the locally small Scott locale of algebraic dcpo `𝓓`:
 
 \begin{code}
 
- ScottLocale : Locale (𝓤 ⁺ ⊔ 𝓥) 𝓤 𝓤
+ ScottLocale : Locale (𝓤 ⁺) 𝓤 𝓤
  ScottLocale = record { ⟨_⟩ₗ = 𝒪ₛ ; frame-str-of = 𝒪ₛ-frame-structure }
 
 \end{code}
