@@ -79,20 +79,14 @@ We define some shorthand notation to simplify the proofs.
 
 \begin{code}
 
- σ : is-spectral X holds
- σ = ssb-implies-spectral ua X σ₀
-
- 𝟏-is-compact : is-compact-open X 𝟏[ 𝒪 X ] holds
- 𝟏-is-compact = spectral-locales-are-compact X σ
-
- 𝟏ₖ : 𝒦 X
- 𝟏ₖ = 𝟏[ 𝒪 X ] , 𝟏-is-compact
-
 \end{code}
 
 \begin{code}
 
- open DistributiveLatticeResizing 𝒦⦅X⦆ 𝒦⁻ (≃-sym (resizing-condition 𝒦⦅X⦆-is-small)) renaming (Lᶜ to 𝒦-X⁻)
+ e : 𝒦⁻ ≃ 𝒦 X
+ e = resizing-condition 𝒦⦅X⦆-is-small
+
+ open DistributiveLatticeResizing 𝒦⦅X⦆ 𝒦⁻ (≃-sym e) renaming (Lᶜ to 𝒦-X⁻)
 
  𝒦-isomorphism : 𝒦⦅X⦆ ≅d≅ 𝒦-X⁻
  𝒦-isomorphism = copy-isomorphic-to-original
@@ -119,7 +113,7 @@ We define some shorthand notation to simplify the proofs.
  open DistributiveLattice 𝒦⦅X⦆ using (𝟎; _∨_)
 
  ι-preserves-𝟎 : ι 𝟎⁻ ＝ 𝟎[ 𝒪 X ]
- ι-preserves-𝟎 = ι 𝟎⁻ ＝⟨ refl ⟩ pr₁ (r (s 𝟎)) ＝⟨ ap pr₁ (r-cancels-s 𝟎) ⟩ 𝟎[ 𝒪 X ] ∎
+ ι-preserves-𝟎 = ι 𝟎⁻ ＝⟨ refl ⟩ pr₁ (r (s 𝟎)) ＝⟨ ap pr₁ (inverses-are-sections' e 𝟎) ⟩ 𝟎[ 𝒪 X ] ∎
 
  open PosetReasoning (poset-of (𝒪 X))
  open OperationsOnCompactOpens X σ
@@ -236,6 +230,15 @@ We define some shorthand notation to simplify the proofs.
    ‡ : (ϕ₀ U ∧ᵢ ϕ₀ V) ⊆ᵢ ϕ₀ (U ∧[ 𝒪 X ] V) holds
    ‡ K (p₁ , p₂) = ∧[ 𝒪 X ]-greatest U V (ι K) p₁ p₂
 
+ ϕ₀-is-monotone : is-monotonic (poset-of (𝒪 X)) poset-of-ideals ϕ₀ holds
+ ϕ₀-is-monotone (U , V) p = connecting-lemma₂ frame-of-ideals †
+  where
+   q : U ＝ U ∧[ 𝒪 X ] V
+   q = connecting-lemma₁ (𝒪 X) p
+
+   † : ϕ₀ U ＝ ϕ₀ U ∧ᵢ ϕ₀ V
+   † = ϕ₀ U ＝⟨ ap ϕ₀ q ⟩ ϕ₀ (U ∧[ 𝒪 X ] V) ＝⟨ ϕ₀-preserves-∧ U V ⟩ ϕ₀ U ∧ᵢ ϕ₀ V ∎
+
 \end{code}
 
 \begin{code}
@@ -243,10 +246,21 @@ We define some shorthand notation to simplify the proofs.
  open FrameHomomorphisms
 
  ϕ₀-preserves-⋁ : preserves-joins (𝒪 X) (𝒪 spec-𝒦-X) ϕ₀ holds
- ϕ₀-preserves-⋁ S = υ , {!!}
+ ϕ₀-preserves-⋁ S = υ , χ
   where
-   υ : {!!}
-   υ = {!!}
+   open Joins (λ x y → x ≤[ poset-of (𝒪 spec-𝒦-X) ] y)
+
+   υ : (ϕ₀ (⋁[ 𝒪 X ] S) is-an-upper-bound-of ⁅ ϕ₀ U ∣ U ε S ⁆) holds
+   υ i = ϕ₀-is-monotone (S [ i ] , ⋁[ 𝒪 X ] S) (⋁[ 𝒪 X ]-upper S i)
+
+   χ : ((W , _) : upper-bound ⁅ ϕ₀ U ∣ U ε S ⁆) → (ϕ₀ (⋁[ 𝒪 X ] S) ⊆ᵢ W) holds
+   χ (W , φ) U μ = {!!}
+    where
+     μ′ : U ∈ η (⋁[ 𝒪 X ] S)
+     μ′ = μ
+
+     μ′′ : (ι U ≤[ poset-of (𝒪 X) ] (⋁[ 𝒪 X ] S)) holds
+     μ′′ = μ
 
  ϕ-is-frame-homomorphism : is-a-frame-homomorphism (𝒪 X) (𝒪 spec-𝒦-X) ϕ₀ holds
  ϕ-is-frame-homomorphism =
