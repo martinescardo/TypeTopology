@@ -31,6 +31,8 @@ import Locales.DistributiveLattice.Ideal
 import Locales.DistributiveLattice.LocaleOfSpectra
 import Locales.DistributiveLattice.LocaleOfSpectra-Properties
 import Locales.DistributiveLattice.Properties
+import Locales.DistributiveLattice.Isomorphism
+import Locales.DistributiveLattice.Resizing
 
 import Locales.Frame                             -- (9)
 
