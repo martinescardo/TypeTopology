@@ -13,22 +13,22 @@ satisfies a certain decidability condition).
 
 {-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
 
-open import MLTT.Spartan hiding (𝟚)
 open import MLTT.List hiding ([_])
+open import MLTT.Negation
+open import MLTT.Spartan hiding (𝟚)
 open import Slice.Family
-open import UF.FunExt
-open import UF.Logic
-open import UF.PropTrunc
-open import UF.SubtypeClassifier
-open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
-open import UF.Powerset-MultiUniverse
-open import UF.Size
 open import UF.Classifiers
-open import UF.Univalence
 open import UF.Embeddings
 open import UF.EquivalenceExamples
-open import MLTT.Negation
+open import UF.FunExt
+open import UF.Logic
+open import UF.Powerset-MultiUniverse
+open import UF.PropTrunc
+open import UF.Size
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
+open import UF.SubtypeClassifier
+open import UF.Univalence
 
 module Locales.ScottLocale.ScottLocalesOfScottDomains
         (pt : propositional-truncations-exist)
@@ -70,8 +70,7 @@ open import Locales.ScottLocale.ScottLocalesOfAlgebraicDcpos pt fe 𝓤
 
 \end{code}
 
-contains a proof that the Scott locale of any algebraic dcpo is a spectral
-locale.
+contains a proof that the Scott locale of any algebraic dcpo is a locale.
 
 In this module, we extend this proof by showing that the Scott locale is
 spectral.
@@ -114,6 +113,11 @@ decidability-condition 𝓓 = (c d : ⟨ 𝓓 ⟩∙) →
                              is-decidable (bounded-above 𝓓 c d holds)
 
 \end{code}
+
+This condition is trivially satisfied if the dcpo in consideration is complete
+(or equivalently, it has all binary joins) because the upper bound mentioned
+here will always exist. In many cases, the dcpos we are interested in turn out
+to be such complete lattices.
 
 \section{The proof}
 
@@ -180,17 +184,16 @@ We define some nice notation for the prop-valued equality of the dcpo `𝓓`.
 
 \begin{code}
 
- _＝ₚ_ : ⟨ 𝓓 ⟩∙ → ⟨ 𝓓 ⟩∙ → Ω (𝓤 ⁺)
- x ＝ₚ y = (x ＝ y) , sethood 𝓓
-
-\end{code}
-
-\begin{code}
-
  open DefnOfScottTopology 𝓓 𝓤
  open BottomLemma 𝓓 𝕒 hl
  open Properties 𝓓
  open binary-unions-of-subsets pt
+
+\end{code}
+
+We also define some nice notation for the open given by a basis index.
+
+\begin{code}
 
  ↑ᵏ[_] : B →  ⟨ 𝒪 Σ[𝓓] ⟩
  ↑ᵏ[ i ] = ↑ˢ[ β i , ϟ i ]
@@ -205,6 +208,18 @@ The basis is the family `(List B , 𝜸₀)`, where `𝜸₀` is the following f
 
  𝜸₀ : List B → 𝓟 {𝓤} ⟨ 𝓓 ⟩∙
  𝜸₀ = foldr _∪_ ∅ ∘ map (principal-filter 𝓓 ∘ β)
+
+\end{code}
+
+For the reader who might be unfamiliar with it, `foldr` is a function on lists
+that takes a binary function `f : X → Y → Y` and an element `u : Y`, and "folds"
+a given a list `x[0], …, x[n-1]` into
+
+```
+f(x[0], f(x[1], … f(x[n-1], u)))
+```
+
+\begin{code}
 
  𝜸₀-is-upwards-closed : (ks : List B)
                       → is-upwards-closed (𝜸₀ ks) holds
@@ -268,10 +283,6 @@ The basis is the family `(List B , 𝜸₀)`, where `𝜸₀` is the following f
                 ∃-is-prop
                 (λ { (k₀ , r , s) → ∣ k₀ , in-tail r , s ∣ })
                 (𝜸₀-lemma x ks q)
-
-\end{code}
-
-\begin{code}
 
  𝜸 : List B → ⟨ 𝒪 Σ[𝓓] ⟩
  𝜸 ks = 𝜸₀ ks , 𝜸₀-gives-scott-opens ks
@@ -440,10 +451,6 @@ then it is compact.
 
  open DefnOfScottLocale 𝓓 𝓤 pe using (_⊆ₛ_)
 
-\end{code}
-
-\begin{code}
-
  principal-filter-reflects-joins
   : (c d s : ⟨ 𝓓 ⟩∙)
   → (κᶜ : is-compact 𝓓 c)
@@ -603,10 +610,6 @@ closed under binary meets.
                (not-bounded-lemma (β i) (β j) (ϟ i) (ϟ j) ν ⁻¹ )
           Ⅲ = binary-distributivity (𝒪 Σ[𝓓]) ↑ᵏ[ i ] ↑ᵏ[ j ] (𝜸₁ js) ⁻¹
 
-\end{code}
-
-\begin{code}
-
  𝜸-closure-under-∧ : (is js : List B)
                    → ∃ ks ꞉ List B , 𝜸₁ ks ＝ 𝜸₁ is ∧[ 𝒪 Σ[𝓓] ] 𝜸₁ js
  𝜸-closure-under-∧ []       js = ∣ [] , † ∣
@@ -724,7 +727,7 @@ This forms a directed basis.
 
 \end{code}
 
-Everything we have explained so far constitute the proof of spectrality when
+The lemmas we have proved so far constitute the proof of spectrality when
 combined as follows.
 
 \begin{code}
@@ -773,6 +776,13 @@ combined as follows.
           , λ { (l , φ , ψ) → ∧[ 𝒪 Σ[𝓓] ]-greatest (𝜸 is) (𝜸 js) l φ ψ }
 
 \end{code}
+
+In the module `SpectralScottLocaleConstruction` above, we worked with a
+specified basis for convenience. Because the type of bases for algebraic dcpos
+has split support, we can carry out the same construction with an unspecified
+basis. The following module is a wrapper around the previous
+`SpectralScottLocaleConstruction` module in which the spectrality proof is
+constructed with only the assumption of an unspecified basis.
 
 \begin{code}
 
