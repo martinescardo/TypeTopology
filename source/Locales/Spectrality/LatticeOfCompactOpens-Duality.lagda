@@ -143,6 +143,15 @@ We define some shorthand notation to simplify the proofs.
 
 \end{code}
 
+The map `ι` gives compact opens.
+
+\begin{code}
+
+ ι-gives-compact-opens : (K : 𝒦⁻) → is-compact-open X (ι K) holds
+ ι-gives-compact-opens K = pr₂ (r K)
+
+\end{code}
+
 \begin{code}
 
  η : ⟨ 𝒪 X ⟩ → 𝓟 𝒦⁻
