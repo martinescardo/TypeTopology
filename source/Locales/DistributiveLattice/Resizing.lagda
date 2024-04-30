@@ -359,23 +359,22 @@ We package `s` up with the proof that it is a homomorphism, and call it
 
  sₕ : L ─d→ Lᶜ
  sₕ =
-  let
-   α : preserves-𝟏 L Lᶜ s holds
-   α = refl
+  record
+   { h                 = s
+   ; h-is-homomorphism = α , β , γ , δ
+   }
+    where
+     α : preserves-𝟏 L Lᶜ s holds
+     α = refl
 
-   β : preserves-∧ L Lᶜ s holds
-   β = s-preserves-∧
+     β : preserves-∧ L Lᶜ s holds
+     β = s-preserves-∧
 
-   γ : preserves-𝟎 L Lᶜ s holds
-   γ = s-preserves-𝟎
+     γ : preserves-𝟎 L Lᶜ s holds
+     γ = s-preserves-𝟎
 
-   δ : preserves-∨ L Lᶜ s holds
-   δ = s-preserves-∨
-  in
-   record
-    { h                 = s
-    ; h-is-homomorphism = α , β , γ , δ
-    }
+     δ : preserves-∨ L Lᶜ s holds
+     δ = s-preserves-∨
 
 \end{code}
 
