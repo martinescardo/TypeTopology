@@ -77,12 +77,6 @@ module _ (L  : DistributiveLattice 𝓤)
  r : Aᶜ → ∣ L ∣ᵈ
  r = inverse ⌜ e ⌝ (⌜⌝-is-equiv e)
 
- r-cancels-s : r ∘ s ∼ id
- r-cancels-s = inverses-are-retractions' e
-
- s-cancels-r : s ∘ r ∼ id
- s-cancels-r = inverses-are-sections' e
-
 \end{code}
 
 The copy of the meet operation on type `A` is denoted `_∧ᶜ_` and is defined
@@ -100,15 +94,15 @@ We can now prove that `s` and `r` map the two meet operations onto each other.
 \begin{code}
 
  r-preserves-∧ : (x y : Aᶜ) → r (x ∧ᶜ y) ＝ r x ∧ r y
- r-preserves-∧ x y = r-cancels-s (r x ∧ r y)
+ r-preserves-∧ x y = inverses-are-retractions' e (r x ∧ r y)
 
  s-preserves-∧ : (x y : X) → s (x ∧ y) ＝ s x ∧ᶜ s y
  s-preserves-∧ x y = s (x ∧ y)             ＝⟨ Ⅰ ⟩
                      s (x ∧ r (s y))       ＝⟨ Ⅱ ⟩
                      s (r (s x) ∧ r (s y)) ∎
                       where
-                       Ⅰ = ap (λ - → s (x ∧ -)) (r-cancels-s y) ⁻¹
-                       Ⅱ = ap (λ - → s (- ∧ r (s y))) (r-cancels-s x ⁻¹)
+                       Ⅰ = ap (λ - → s (x ∧ -)) (inverses-are-retractions' e y) ⁻¹
+                       Ⅱ = ap (λ - → s (- ∧ r (s y))) (inverses-are-retractions' e x ⁻¹)
 
 \end{code}
 
@@ -120,7 +114,7 @@ Now, we do exactly the same thing for the join operation.
  _∨ᶜ_ = λ x y → s (r x ∨ r y)
 
  r-preserves-∨ : (x y : Aᶜ) → r (x ∨ᶜ y) ＝ r x ∨ r y
- r-preserves-∨ x y = r-cancels-s (r x ∨ r y)
+ r-preserves-∨ x y = inverses-are-retractions' e (r x ∨ r y)
 
  s-preserves-∨ : (x y : X) → s (x ∨ y) ＝ s x ∨ᶜ s y
  s-preserves-∨ x y =
@@ -129,8 +123,8 @@ Now, we do exactly the same thing for the join operation.
   s (r (s x) ∨ r (s y))    ＝⟨ refl ⟩
   s x ∨ᶜ s y               ∎
    where
-    Ⅰ = ap (λ - → s (x ∨ -)) (r-cancels-s y ⁻¹)
-    Ⅱ = ap (λ - → s (- ∨ r (s y))) (r-cancels-s x ⁻¹)
+    Ⅰ = ap (λ - → s (x ∨ -)) (inverses-are-retractions' e y ⁻¹)
+    Ⅱ = ap (λ - → s (- ∨ r (s y))) (inverses-are-retractions' e x ⁻¹)
 
 \end{code}
 
@@ -166,9 +160,9 @@ We start with the unit laws.
   s (r x)            ＝⟨ Ⅲ ⟩
   x                  ∎
    where
-    Ⅰ = ap (λ - → s (r x ∧ -)) (r-cancels-s 𝟏L)
+    Ⅰ = ap (λ - → s (r x ∧ -)) (inverses-are-retractions' e 𝟏L)
     Ⅱ = ap s (∧-unit (r x))
-    Ⅲ = s-cancels-r x
+    Ⅲ = inverses-are-sections' e x
 
 
  ∨ᶜ-unit : (x : Aᶜ) → x ∨ᶜ 𝟎ᶜ ＝ x
@@ -178,9 +172,9 @@ We start with the unit laws.
   s (r x)            ＝⟨ Ⅲ ⟩
   x                  ∎
    where
-    Ⅰ = ap (λ - → s (r x ∨ -)) (r-cancels-s 𝟎L)
+    Ⅰ = ap (λ - → s (r x ∨ -)) (inverses-are-retractions' e 𝟎L)
     Ⅱ = ap s (∨-unit (r x))
-    Ⅲ = s-cancels-r x
+    Ⅲ = inverses-are-sections' e x
 
 \end{code}
 
@@ -198,9 +192,9 @@ Associativity laws.
   s (r (s (r x ∧ r y)) ∧ r z)  ＝⟨ refl ⟩
   (x ∧ᶜ y) ∧ᶜ z                ∎
    where
-    Ⅰ = ap (λ - → s (r x ∧ -)) (r-cancels-s (r y ∧ r z))
+    Ⅰ = ap (λ - → s (r x ∧ -)) (inverses-are-retractions' e (r y ∧ r z))
     Ⅱ = ap s (∧-associative (r x) (r y) (r z))
-    Ⅲ = ap (λ - → s (- ∧ r z)) (r-cancels-s (r x ∧ r y) ⁻¹)
+    Ⅲ = ap (λ - → s (- ∧ r z)) (inverses-are-retractions' e (r x ∧ r y) ⁻¹)
 
  ∨ᶜ-associative : (x y z : Aᶜ) → x ∨ᶜ (y ∨ᶜ z) ＝ (x ∨ᶜ y) ∨ᶜ z
  ∨ᶜ-associative x y z =
@@ -212,9 +206,9 @@ Associativity laws.
   s (r (s (r x ∨ r y)) ∨ r z)  ＝⟨ refl ⟩
   (x ∨ᶜ y) ∨ᶜ z                ∎
    where
-    Ⅰ = ap (λ - → s (r x ∨ -)) (r-cancels-s (r y ∨ r z))
+    Ⅰ = ap (λ - → s (r x ∨ -)) (inverses-are-retractions' e (r y ∨ r z))
     Ⅱ = ap s (∨-associative (r x) (r y) (r z))
-    Ⅲ = ap (λ - → s (- ∨ r z)) (r-cancels-s (r x ∨ r y) ⁻¹)
+    Ⅲ = ap (λ - → s (- ∨ r z)) (inverses-are-retractions' e (r x ∨ r y) ⁻¹)
 
 \end{code}
 
@@ -241,7 +235,7 @@ Idempotency laws.
   x             ∎
    where
     Ⅰ = ap s (∧-idempotent (r x))
-    Ⅱ = s-cancels-r x
+    Ⅱ = inverses-are-sections' e x
 
  ∨ᶜ-idempotent : (x : Aᶜ) → x ∨ᶜ x ＝ x
  ∨ᶜ-idempotent x =
@@ -250,7 +244,7 @@ Idempotency laws.
    x             ∎
     where
      Ⅰ = ap s (∨-idempotent (r x))
-     Ⅱ = s-cancels-r x
+     Ⅱ = inverses-are-sections' e x
 
 \end{code}
 
@@ -265,9 +259,9 @@ Absorption laws.
   s (r x)                       ＝⟨ Ⅲ ⟩
   x                             ∎
    where
-    Ⅰ = ap (λ - → s (r x ∧ -)) (r-cancels-s (r x ∨ r y))
+    Ⅰ = ap (λ - → s (r x ∧ -)) (inverses-are-retractions' e (r x ∨ r y))
     Ⅱ = ap s (∧-absorptive (r x) (r y))
-    Ⅲ = s-cancels-r x
+    Ⅲ = inverses-are-sections' e x
 
  ∨ᶜ-absorptive : (x y : Aᶜ) → x ∨ᶜ (x ∧ᶜ y) ＝ x
  ∨ᶜ-absorptive x y =
@@ -277,9 +271,9 @@ Absorption laws.
   s (r x)                       ＝⟨ Ⅲ    ⟩
   x                             ∎
    where
-    Ⅰ = ap (λ - → s (r x ∨ -)) (r-cancels-s (r x ∧ r y))
+    Ⅰ = ap (λ - → s (r x ∨ -)) (inverses-are-retractions' e (r x ∧ r y))
     Ⅱ = ap s (∨-absorptive (r x) (r y))
-    Ⅲ = s-cancels-r x
+    Ⅲ = inverses-are-sections' e x
 
 \end{code}
 
@@ -298,10 +292,10 @@ Finally, the distributivity law.
   s (r (x ∧ᶜ y) ∨ r (x ∧ᶜ z))               ＝⟨ refl ⟩
   (x ∧ᶜ y) ∨ᶜ (x ∧ᶜ z)                      ∎
    where
-    Ⅰ = ap (λ - → s (r x ∧ -)) (r-cancels-s (r y ∨ r z))
+    Ⅰ = ap (λ - → s (r x ∧ -)) (inverses-are-retractions' e (r y ∨ r z))
     Ⅱ = ap s (distributivityᵈ (r x) (r y) (r z))
-    Ⅲ = ap (λ - → s ((r x ∧ r y) ∨ -)) (r-cancels-s (r x ∧ r z) ⁻¹)
-    Ⅳ = ap (λ - → s (- ∨ r (s (r x ∧ r z)))) (r-cancels-s (r x ∧ r y) ⁻¹)
+    Ⅲ = ap (λ - → s ((r x ∧ r y) ∨ -)) (inverses-are-retractions' e (r x ∧ r z) ⁻¹)
+    Ⅳ = ap (λ - → s (- ∨ r (s (r x ∧ r z)))) (inverses-are-retractions' e (r x ∧ r y) ⁻¹)
 
 \end{code}
 
@@ -397,13 +391,13 @@ Now, we we do the same thing for `r`
    }
     where
      α : preserves-𝟏 Lᶜ L r holds
-     α = r-cancels-s 𝟏L
+     α = inverses-are-retractions' e 𝟏L
 
      β : preserves-∧ Lᶜ L r holds
      β = r-preserves-∧
 
      γ : preserves-𝟎 Lᶜ L r holds
-     γ = r-cancels-s 𝟎L
+     γ = inverses-are-retractions' e 𝟎L
 
      δ : preserves-∨ Lᶜ L r holds
      δ = r-preserves-∨
@@ -429,8 +423,8 @@ the fact that `L` is isomorphic to its 𝓥-small copy.
   record
    { 𝓈           = sₕ
    ; 𝓇           = rₕ
-   ; r-cancels-s = r-cancels-s
-   ; s-cancels-r = s-cancels-r
+   ; r-cancels-s = inverses-are-retractions' e
+   ; s-cancels-r = inverses-are-sections' e
    }
 
 \end{code}
