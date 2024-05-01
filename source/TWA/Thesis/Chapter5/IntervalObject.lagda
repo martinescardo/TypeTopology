@@ -19,9 +19,7 @@ open import Naturals.Sequence fe
 ## Midpoint algebras
 
 \begin{code}
-associative' idempotent transpositional : {X : 𝓤 ̇ } → (X → X → X) → 𝓤 ̇
-associative'     _∙_
- = ∀ a b c   → a ∙ (b ∙ c)       ＝ (a ∙ b) ∙ c
+idempotent transpositional : {X : 𝓤 ̇ } → (X → X → X) → 𝓤 ̇
 idempotent       _∙_
  = ∀ a       → a ∙ a             ＝ a
 transpositional  _∙_
@@ -140,7 +138,7 @@ id-is-⊕-homomorphism 𝓐 x y = refl
 \begin{code}
 is-interval-object
  : (𝓘 : Convex-body 𝓤) (𝓥 : Universe) → ⟨ 𝓘 ⟩ → ⟨ 𝓘 ⟩ → 𝓤 ⊔ 𝓥 ⁺ ̇
-is-interval-object 𝓘 𝓥 u v 
+is-interval-object 𝓘 𝓥 u v
  = (𝓐 : Convex-body 𝓥) (a b : ⟨ 𝓐 ⟩)
  → ∃! h ꞉ (⟨ 𝓘 ⟩ → ⟨ 𝓐 ⟩)
  , (h u ＝ a) × (h v ＝ b)

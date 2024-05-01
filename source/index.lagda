@@ -129,6 +129,7 @@ import ContinuityAxiom.index
 import Coslice.index
 import CrossedModules.index
 import DedekindReals.index
+import DiscreteGraphicMonoids.index
 import DomainTheory.index
 import Dominance.index
 import Duploids.index
