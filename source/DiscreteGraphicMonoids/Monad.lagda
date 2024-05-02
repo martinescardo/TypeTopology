@@ -63,18 +63,11 @@ module _ {𝓤 𝓥 𝓦 : Universe}
    H = ext⁻ g ∘ ext⁻ f
 
    I : is-hom (List⁻-DGM X) (List⁻-DGM Z) H
-   I = I₁ , I₂
-    where
-     I₁ : H []⁻ ＝ []⁻
-     I₁ = refl
-
-     I₂ : (𝔁𝓼 𝔂𝓼 : ⟨ List⁻-DGM X ⟩) → H (𝔁𝓼 · 𝔂𝓼) ＝ H 𝔁𝓼 · H 𝔂𝓼
-     I₂ = homs-preserve-mul (List⁻-DGM X) (List⁻-DGM Z) H
-           (∘-is-hom (List⁻-DGM X) (List⁻-DGM Y) (List⁻-DGM Z)
-             (ext⁻ f)
-             (ext⁻ g)
-             (extension-is-hom (List⁻-DGM Y) f)
-             (extension-is-hom (List⁻-DGM Z) g))
+   I = ∘-is-hom (List⁻-DGM X) (List⁻-DGM Y) (List⁻-DGM Z)
+        (ext⁻ f)
+        (ext⁻ g)
+        (extension-is-hom (List⁻-DGM Y) f)
+        (extension-is-hom (List⁻-DGM Z) g)
 
    II : H ∘ η⁻ ∼ ext⁻ g ∘ f
    II = H ∘ η⁻                ∼⟨ ∼-refl ⟩
