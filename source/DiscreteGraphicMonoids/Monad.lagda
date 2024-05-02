@@ -21,8 +21,7 @@ open import DiscreteGraphicMonoids.Type
 open import MLTT.Spartan
 open import UF.DiscreteAndSeparated
 
-module _ {𝓤 𝓥 : Universe}
-         {X : 𝓤 ̇ }
+module _ {X : 𝓤 ̇ }
          {{X-is-discrete' : is-discrete' X}}
          {Y : 𝓥 ̇ }
          {{Y-is-discrete' : is-discrete' Y}}
@@ -34,8 +33,7 @@ module _ {𝓤 𝓥 : Universe}
  unit⁻ : (f : X → List⁻ Y) (x : X) → ext⁻ f (η⁻ x) ＝ f x
  unit⁻ = triangle (List⁻-DGM Y)
 
-module _ {𝓤 : Universe}
-         {X : 𝓤 ̇ }
+module _ {X : 𝓤 ̇ }
          {{X-is-discrete' : is-discrete' X}}
        where
 
@@ -46,8 +44,7 @@ module _ {𝓤 : Universe}
             (id-is-hom (List⁻-DGM X))
             (λ _ → refl)
 
-module _ {𝓤 𝓥 𝓦 : Universe}
-         {X : 𝓤 ̇ }
+module _ {X : 𝓤 ̇ }
          {{X-is-discrete' : is-discrete' X}}
          {Y : 𝓥 ̇ }
          {{Y-is-discrete' : is-discrete' Y}}
