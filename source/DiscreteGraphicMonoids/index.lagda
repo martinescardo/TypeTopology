@@ -49,7 +49,7 @@ open import DiscreteGraphicMonoids.ListsWithoutRepetitionsMore
    way.)
 
 6. The module AffineMonad shows that non-empty lists without
-   repetitions from a an affice submonad of the above.
+   repetitions form an affine submonad of the above.
 
 7. The module ListsWithoutRepetitionsMore includes additional facts
    about lists without repetitions that are not needed for our main
