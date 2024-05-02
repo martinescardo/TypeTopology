@@ -93,62 +93,62 @@ module _
  ·-charac : (xs ys : List X)
           → ρ xs ＝ xs
           → ρ ys ＝ ys
-          → ρ (xs ◦ ys) ＝ xs ◦ (ys ∖ xs)
+          → ρ (xs ◦ ys) ＝ xs ◦ (Δ xs ys)
  ·-charac xs ys a b =
-  ρ (xs ◦ ys)        ＝⟨ ρ-◦ xs ys ⟩
-  ρ xs ◦ (ρ ys ∖ xs) ＝⟨ ap₂ (λ -₁ -₂ → -₁ ◦ (-₂ ∖ xs)) a b ⟩
-  xs ◦ (ys ∖ xs)     ∎
+  ρ (xs ◦ ys)          ＝⟨ ρ-◦ xs ys ⟩
+  ρ xs ◦ (Δ xs (ρ ys)) ＝⟨ ap₂ (λ -₁ -₂ → -₁ ◦ (Δ xs -₂)) a b ⟩
+  xs ◦ (Δ xs ys)       ∎
 
- ∖-∘ : (xs ys zs : List X)
-     → zs ∖ (xs ◦ ys) ＝ (zs ∖ xs) ∖ ys
- ∖-∘ [] ys zs = refl
- ∖-∘ (x • xs) ys zs =
-  zs ∖ (x • xs ◦ ys)   ＝⟨ refl ⟩
-  δ x (zs ∖ (xs ◦ ys)) ＝⟨ ap (δ x) (∖-∘ xs ys zs) ⟩
-  δ x ((zs ∖ xs) ∖ ys) ＝⟨ δ-∖-left x (zs ∖ xs) ys ⟩
-  (δ x (zs ∖ xs) ∖ ys) ＝⟨ refl ⟩
-  (zs ∖ (x • xs)) ∖ ys ∎
+ Δ-∘ : (xs ys zs : List X)
+     → Δ (xs ◦ ys) zs ＝ Δ ys (Δ xs zs)
+ Δ-∘ [] ys zs = refl
+ Δ-∘ (x • xs) ys zs =
+  Δ (x • xs ◦ ys) zs   ＝⟨ refl ⟩
+  δ x (Δ (xs ◦ ys) zs) ＝⟨ ap (δ x) (Δ-∘ xs ys zs) ⟩
+  δ x (Δ ys (Δ xs zs)) ＝⟨ δ-Δ-left x (Δ xs zs) ys ⟩
+  Δ ys (δ x (Δ xs zs)) ＝⟨ refl ⟩
+  Δ ys (Δ (x • xs) zs) ∎
 
- δ-∖-right : (z : X) (xs ys : List X)
-           → δ z (xs ∖ ys) ＝ δ z (xs ∖ δ z ys)
- δ-∖-right z xs [] = refl
- δ-∖-right z xs (y • ys) = h (d z y)
+ δ-Δ-right : (z : X) (xs ys : List X)
+           → δ z (Δ ys xs) ＝ δ z (Δ (δ z ys) xs)
+ δ-Δ-right z xs [] = refl
+ δ-Δ-right z xs (y • ys) = h (d z y)
   where
    h : is-decidable (z ＝ y)
-     → δ z (xs ∖ (y • ys)) ＝ δ z (xs ∖ δ z (y • ys))
+     → δ z (Δ (y • ys) xs) ＝ δ z (Δ (δ z (y • ys)) xs)
    h (inl refl) =
-     δ z (xs ∖ (z • ys))     ＝⟨ refl ⟩
-     δ z (δ z (xs ∖ ys))     ＝⟨ δ-idemp z (xs ∖ ys) ⟩
-     δ z (xs ∖ ys)           ＝⟨ δ-∖-right z xs ys ⟩
-     δ z (xs ∖ δ z ys)       ＝⟨ (ap (λ - → δ z (xs ∖ -)) (δ-same z ys))⁻¹ ⟩
-     δ z (xs ∖ δ z (z • ys)) ∎
+     δ z (Δ (z • ys) xs)       ＝⟨ refl ⟩
+     δ z (δ z (Δ ys xs))       ＝⟨ δ-idemp z (Δ ys xs) ⟩
+     δ z (Δ ys xs)             ＝⟨ δ-Δ-right z xs ys ⟩
+     δ z (Δ (δ z ys) xs)       ＝⟨ (ap (λ - → δ z ( Δ - xs)) (δ-same z ys))⁻¹ ⟩
+     δ z (Δ (δ z (z • ys)) xs) ∎
 
    h (inr u) =
-    δ z (xs ∖ (y • ys))     ＝⟨ refl ⟩
-    δ z (δ y (xs ∖ ys))     ＝⟨ δ-swap z y (xs ∖ ys) ⟩
-    δ y (δ z (xs ∖ ys))     ＝⟨ ap (δ y) (δ-∖-right z xs ys) ⟩
-    δ y (δ z (xs ∖ δ z ys)) ＝⟨ δ-swap y z (xs ∖ δ z ys) ⟩
-    δ z (δ y (xs ∖ δ z ys)) ＝⟨ refl ⟩
-    δ z (xs ∖ (y • δ z ys)) ＝⟨ (ap (λ - → δ z (xs ∖ -)) (δ-≠ z y ys u))⁻¹ ⟩
-    δ z (xs ∖ δ z (y • ys)) ∎
+    δ z (Δ (y • ys) xs)       ＝⟨ refl ⟩
+    δ z (δ y (Δ ys xs))       ＝⟨ δ-swap z y (Δ ys xs) ⟩
+    δ y (δ z (Δ ys xs))       ＝⟨ ap (δ y) (δ-Δ-right z xs ys) ⟩
+    δ y (δ z (Δ (δ z ys) xs)) ＝⟨ δ-swap y z (Δ (δ z ys) xs) ⟩
+    δ z (δ y (Δ (δ z ys) xs)) ＝⟨ refl ⟩
+    δ z (Δ (y • δ z ys) xs)   ＝⟨ (ap (λ - → δ z (Δ - xs)) (δ-≠ z y ys u))⁻¹ ⟩
+    δ z (Δ (δ z (y • ys)) xs) ∎
 
- ρ-∖ : (xs ys : List X)
-    → ρ (xs ∖ ys) ＝ ρ xs ∖ ρ ys
- ρ-∖ xs [] = refl
- ρ-∖ xs (y • ys) =
-  ρ (xs ∖ (y • ys))       ＝⟨ refl ⟩
-  ρ (δ y (xs ∖ ys))       ＝⟨ (δ-ρ-swap y (xs ∖ ys))⁻¹ ⟩
-  δ y (ρ (xs ∖ ys))       ＝⟨ ap (δ y) (ρ-∖ xs ys) ⟩
-  δ y (ρ xs ∖ ρ ys)       ＝⟨ δ-∖-right y (ρ xs) (ρ ys) ⟩
-  δ y (ρ xs ∖ δ y (ρ ys)) ＝⟨ refl ⟩
-  ρ xs ∖ ρ (y • ys)       ∎
+ ρ-Δ : (xs ys : List X)
+    → ρ (Δ ys xs) ＝ Δ (ρ ys) (ρ xs)
+ ρ-Δ xs [] = refl
+ ρ-Δ xs (y • ys) =
+  ρ (Δ (y • ys) xs)           ＝⟨ refl ⟩
+  ρ (δ y (Δ ys xs))           ＝⟨ (δ-ρ-swap y (Δ ys xs))⁻¹ ⟩
+  δ y (ρ (Δ ys xs))           ＝⟨ ap (δ y) (ρ-Δ xs ys) ⟩
+  δ y (Δ (ρ ys) (ρ xs))       ＝⟨ δ-Δ-right y (ρ xs) (ρ ys) ⟩
+  δ y (Δ (δ y (ρ ys)) (ρ xs)) ＝⟨ refl ⟩
+  Δ (ρ (y • ys)) (ρ xs)       ∎
 
- δ-∖ : (z : X) (xs ys : List X)
-     → δ z (xs ∖ ys) ＝ δ z xs ∖ ys
- δ-∖  = δ-∖-left
+ δ-Δ : (z : X) (xs ys : List X)
+     → δ z (Δ ys xs) ＝ Δ ys (δ z xs)
+ δ-Δ = δ-Δ-left
 
- δ-∖-cancel : (z : X) (xs ys : List X)
-            → δ z (xs ∖ δ z ys) ＝ δ z xs ∖ ys
- δ-∖-cancel z xs ys = (δ-∖-right z xs ys)⁻¹ ∙ δ-∖-left z xs ys
+ δ-Δ-cancel : (z : X) (xs ys : List X)
+            → δ z (Δ (δ z ys) xs) ＝ Δ ys (δ z xs)
+ δ-Δ-cancel z xs ys = (δ-Δ-right z xs ys)⁻¹ ∙ δ-Δ-left z xs ys
 
 \end{code}

@@ -73,4 +73,20 @@ homs-preserve-mul : (𝓜 : DGM 𝓤) (𝓝 : DGM 𝓥)
                   → (x y : ⟨ 𝓜 ⟩) → f (x ·⟨ 𝓜 ⟩ y) ＝ f x ·⟨ 𝓝 ⟩ f y
 homs-preserve-mul _ _ _ (u , m) = m
 
+id-is-hom : (𝓜 : DGM 𝓤) → is-hom 𝓜 𝓜 id
+id-is-hom 𝓜 = (refl , (λ _ _ → refl))
+
+∘-is-hom : (𝓜₀ : DGM 𝓤) (𝓜₁ : DGM 𝓥) (𝓜₂ : DGM 𝓦)
+           (f : ⟨ 𝓜₀ ⟩ → ⟨ 𝓜₁ ⟩) (g : ⟨ 𝓜₁ ⟩ → ⟨ 𝓜₂ ⟩)
+         → is-hom 𝓜₀ 𝓜₁ f
+         → is-hom 𝓜₁ 𝓜₂ g
+         → is-hom 𝓜₀ 𝓜₂ (g ∘ f)
+∘-is-hom 𝓜₀ 𝓜₁ 𝓜₂ f g (f-unit , f-mul) (g-unit , g-mul)  =
+ ((g ∘ f) (unit 𝓜₀) ＝⟨ ap g f-unit ⟩
+  g (unit 𝓜₁)       ＝⟨ g-unit ⟩
+  unit 𝓜₂           ∎) ,
+ (λ x y → g (f (x ·⟨ 𝓜₀ ⟩ y))     ＝⟨ ap g (f-mul x y) ⟩
+          g (f x ·⟨ 𝓜₁ ⟩ f y)     ＝⟨ g-mul (f x) (f y) ⟩
+          g (f x) ·⟨ 𝓜₂ ⟩ g (f y) ∎)
+
 \end{code}

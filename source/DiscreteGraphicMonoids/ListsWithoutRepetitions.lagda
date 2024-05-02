@@ -363,6 +363,12 @@ module _
  underlying-list-has-no-reps : (xs : List⁻ X) → has-no-reps (underlying-list xs)
  underlying-list-has-no-reps = pr₂
 
+\end{code}
+
+The symbol ⊙ can be typed a "\o." or "\odot".
+
+\begin{code}
+
  _⊙_ : List X → List X → List X
  xs ⊙ ys = ρ (xs ◦ ys)
 
@@ -457,50 +463,50 @@ module _
     x • δ z xs ◦ δ z ys   ＝⟨ ap (_◦ δ z ys) ((δ-≠ z x xs u)⁻¹) ⟩
     δ z (x • xs) ◦ δ z ys ∎
 
- _∖_ : List X → List X → List X
- xs ∖ []       = xs
- xs ∖ (y • ys) = δ y (xs ∖ ys)
+ Δ : List X → List X → List X
+ Δ [] xs       = xs
+ Δ (y • ys) xs = δ y (Δ ys xs )
 
- δ-∖-left : (z : X) (xs ys : List X)
-          → δ z (xs ∖ ys) ＝ δ z xs ∖ ys
- δ-∖-left z xs [] = refl
- δ-∖-left z xs (x • ys) =
-  δ z (xs ∖ (x • ys)) ＝⟨ refl ⟩
-  δ z (δ x (xs ∖ ys)) ＝⟨ δ-swap z x (xs ∖ ys) ⟩
-  δ x (δ z (xs ∖ ys)) ＝⟨ ap (δ x) (δ-∖-left z xs ys) ⟩
-  δ x (δ z xs ∖ ys)   ＝⟨ refl ⟩
-  δ z xs ∖ (x • ys)   ∎
+ δ-Δ-left : (z : X) (xs ys : List X)
+          → δ z (Δ ys xs) ＝ Δ ys (δ z xs)
+ δ-Δ-left z xs [] = refl
+ δ-Δ-left z xs (x • ys) =
+  δ z (Δ (x • ys) xs) ＝⟨ refl ⟩
+  δ z (δ x (Δ ys xs)) ＝⟨ δ-swap z x (Δ ys xs) ⟩
+  δ x (δ z (Δ ys xs)) ＝⟨ ap (δ x) (δ-Δ-left z xs ys) ⟩
+  δ x (Δ ys (δ z xs)) ＝⟨ refl ⟩
+  Δ (x • ys) (δ z xs) ∎
 
- []-∖ : (ys : List X) → [] ∖ ys ＝ []
- []-∖ []       = refl
- []-∖ (y • ys) = ap (δ y) ([]-∖ ys)
+ []-Δ : (ys : List X) → Δ ys [] ＝ []
+ []-Δ []       = refl
+ []-Δ (y • ys) = ap (δ y) ([]-Δ ys)
 
  ρ-◦ : (xs ys : List X)
-     → ρ (xs ◦ ys) ＝ ρ xs ◦ (ρ ys ∖ xs)
+     → ρ (xs ◦ ys) ＝ ρ xs ◦ Δ xs (ρ ys)
  ρ-◦ [] ys = refl
  ρ-◦ (x • xs) ys =
-  ρ (x • xs ◦ ys)                    ＝⟨ refl ⟩
-  x • δ x (ρ (xs ◦ ys))              ＝⟨ ap (λ - → x • δ x -) (ρ-◦ xs ys) ⟩
-  x • δ x (ρ xs ◦ (ρ ys ∖ xs))       ＝⟨ ap (x •_ ) (δ-◦ x (ρ xs) (ρ ys ∖ xs)) ⟩
-  x • (δ x (ρ xs) ◦ δ x (ρ ys ∖ xs)) ＝⟨ refl ⟩
-  ρ (x • xs) ◦ (ρ ys ∖ (x • xs))     ∎
+  ρ (x • xs ◦ ys)                      ＝⟨ refl ⟩
+  x • δ x (ρ (xs ◦ ys))                ＝⟨ ap (λ - → x • δ x -) (ρ-◦ xs ys) ⟩
+  x • δ x (ρ xs ◦ Δ xs (ρ ys ))        ＝⟨ ap (x •_ ) (δ-◦ x (ρ xs) (Δ xs (ρ ys))) ⟩
+  x • (δ x (ρ xs) ◦ δ x (Δ xs (ρ ys))) ＝⟨ refl ⟩
+  ρ (x • xs) ◦ (Δ (x • xs) (ρ ys))     ∎
 
- ρ-all : (xs ys : List X) → ρ xs ∖ (xs ◦ ys) ＝ []
- ρ-all [] ys = []-∖ ys
+ ρ-all : (xs ys : List X) → Δ (xs ◦ ys) (ρ xs) ＝ []
+ ρ-all [] ys = []-Δ ys
  ρ-all (x • xs) ys =
-  ρ (x • xs) ∖ (x • xs ◦ ys)         ＝⟨ refl ⟩
-  δ x ((x • δ x (ρ xs)) ∖ (xs ◦ ys)) ＝⟨ I ⟩
-  δ x (x • δ x (ρ xs)) ∖ (xs ◦ ys)   ＝⟨ II ⟩
-  δ x (δ x (ρ xs)) ∖ (xs ◦ ys)       ＝⟨ III ⟩
-  δ x (ρ xs) ∖ (xs ◦ ys)             ＝⟨ IV ⟩
-  δ x (ρ xs ∖ (xs ◦ ys))             ＝⟨ V ⟩
+  Δ (x • xs ◦ ys) (ρ (x • xs))       ＝⟨ refl ⟩
+  δ x (Δ (xs ◦ ys) (x • δ x (ρ xs))) ＝⟨ I ⟩
+  Δ (xs ◦ ys) (δ x (x • δ x (ρ xs))) ＝⟨ II ⟩
+  Δ (xs ◦ ys) (δ x (δ x (ρ xs)))     ＝⟨ III ⟩
+  Δ (xs ◦ ys) (δ x (ρ xs))           ＝⟨ IV ⟩
+  δ x (Δ (xs ◦ ys) (ρ xs))           ＝⟨ V ⟩
   δ x []                             ＝⟨ refl ⟩
   []                                 ∎
    where
-    I   = δ-∖-left x (x • δ x (ρ xs)) (xs ◦ ys)
-    II  = ap (_∖ (xs ◦ ys)) (δ-same x (δ x (ρ xs)))
-    III = ap (_∖ (xs ◦ ys)) (δ-idemp x (ρ xs))
-    IV  = (δ-∖-left x (ρ xs) (xs ◦ ys))⁻¹
+    I   = δ-Δ-left x (x • δ x (ρ xs)) (xs ◦ ys)
+    II  = ap (Δ (xs ◦ ys)) (δ-same x (δ x (ρ xs)))
+    III = ap (Δ (xs ◦ ys)) (δ-idemp x (ρ xs))
+    IV  = (δ-Δ-left x (ρ xs) (xs ◦ ys))⁻¹
     V   = ap (δ x) (ρ-all xs ys)
 
  δ-length : (z : X) (xs : List X)

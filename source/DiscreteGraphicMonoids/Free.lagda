@@ -310,10 +310,10 @@ module _
  triangle = f⁻-triangle
 
  uniqueness : (f : X → ⟨ 𝓜 ⟩)
-              (h : List⁻ X → ⟨ 𝓜 ⟩)
-            → is-hom (List⁻-DGM X) 𝓜 h
-            → h ∘ η⁻ ∼ f
-            → h ∼ extension f
- uniqueness f h (f-unit , f-comp) = f⁻-uniqueness f h f-unit f-comp
+              (g : List⁻ X → ⟨ 𝓜 ⟩)
+            → is-hom (List⁻-DGM X) 𝓜 g
+            → g ∘ η⁻ ∼ f
+            → extension f ∼ g
+ uniqueness f g (g-unit , g-comp) h = ∼-sym (f⁻-uniqueness f g g-unit g-comp h)
 
 \end{code}

@@ -36,10 +36,10 @@ module _
  graphical⁻-lemma : (xs ys : List X)
                   → ρ ((xs ◦ ys) ◦ xs) ＝ ρ (xs ◦ ys)
  graphical⁻-lemma xs ys =
-  ρ ((xs ◦ ys) ◦ xs)               ＝⟨ ρ-◦ (xs ◦ ys) xs ⟩
-  ρ (xs ◦ ys) ◦ (ρ xs ∖ (xs ◦ ys)) ＝⟨ ap (ρ (xs ◦ ys) ◦_) (ρ-all xs ys) ⟩
-  ρ (xs ◦ ys) ◦ []                 ＝⟨ ([]-right-neutral (ρ (xs ◦ ys)))⁻¹ ⟩
-  ρ (xs ◦ ys)                      ∎
+  ρ ((xs ◦ ys) ◦ xs)                 ＝⟨ ρ-◦ (xs ◦ ys) xs ⟩
+  ρ (xs ◦ ys) ◦ (Δ (xs ◦ ys) (ρ xs)) ＝⟨ ap (ρ (xs ◦ ys) ◦_) (ρ-all xs ys) ⟩
+  ρ (xs ◦ ys) ◦ []                   ＝⟨ ([]-right-neutral (ρ (xs ◦ ys)))⁻¹ ⟩
+  ρ (xs ◦ ys)                        ∎
 
  graphical⁻ : graphical _·_
  graphical⁻ (xs , a) (ys , b) =
@@ -50,7 +50,8 @@ module _
 
 \end{code}
 
-The symbol ⊙ can be typed a "\o."
+The discrete graphic monoid of lists without repetition over a
+discrete type.
 
 \begin{code}
 
@@ -63,5 +64,13 @@ List⁻-DGM X {{d}} =
  []⁻-right-neutral ,
  ·-assoc ,
  graphical⁻
+
+\end{code}
+
+Abbreviation.
+
+\begin{code}
+
+LDGM = List⁻-DGM
 
 \end{code}
