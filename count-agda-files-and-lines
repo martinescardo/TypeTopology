@@ -1,0 +1,2 @@
+git ls-files |  wc -l
+git ls-files | grep lagda | xargs cat | wc -l
