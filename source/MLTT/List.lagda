@@ -89,7 +89,16 @@ map f (x ∷ xs) = f x ∷ map f xs
 
 _<$>_ = map
 
-empty : {𝓤 : Universe} {X : 𝓤 ̇ } → List X → Bool
+is-non-empty : {X : 𝓤 ̇ } → List X → 𝓤 ̇
+is-non-empty []       = 𝟘
+is-non-empty (x ∷ xs) = 𝟙
+
+is-non-empty-++ : {X : 𝓤 ̇ } (xs ys : List X)
+                → is-non-empty xs
+                → is-non-empty (xs ++ ys)
+is-non-empty-++ (x ∷ xs) ys ⋆ = ⋆
+
+empty : {X : 𝓤 ̇ } → List X → Bool
 empty []       = true
 empty (x ∷ xs) = false
 

@@ -20,6 +20,7 @@ open import MLTT.List
                       _++_ to _◦_ ;         -- typed as \buw
                       ++-assoc to ◦-assoc)
 open import Naturals.Order
+open import Notation.CanonicalMap
 open import Notation.Order
 open import UF.Base
 open import DiscreteGraphicMonoids.Type
@@ -105,16 +106,15 @@ Notice that f' preserves the unit my construction.
                  f x ● e     ＝⟨ ●-right-unit (f x) ⟩
                  f x         ∎
 
- underlying-list-preserves-unit : underlying-list {𝓤} {X} []⁻ ＝ []
+ underlying-list-preserves-unit : ι ([]⁻ {𝓤} {X}) ＝ []
  underlying-list-preserves-unit = refl
 
 \end{code}
 
-The function underlying-list : List⁻ X → List X doesn't preserve
-multiplication, as this would mean that ρ (xs ◦ ys) ＝ xs ◦ ys for any
-two lists with ρ xs ＝ xs and ρ ys = ys. However, it's composition f⁻
-with f' does. We need to use the graphic law, as this is not true in
-general.
+The function ι : List⁻ X → List X doesn't preserve multiplication, as
+this would mean that ρ (xs ◦ ys) ＝ xs ◦ ys for any two lists with
+ρ xs ＝ xs and ρ ys = ys. However, it's composition f⁻ with f'
+does. We need to use the graphic law, as this is not true in general.
 
 \begin{code}
 
@@ -267,30 +267,18 @@ We need the following particular case of the above lemma.
     e          ＝⟨ refl ⟩
     f⁻ ([] , a) ∎
    I (x • xs) a =
-    h ((x • xs) , a) ＝⟨ ap h II ⟩
+    h ((x • xs) , a) ＝⟨ ap h (·-lemma x xs a) ⟩
     h (η⁻ x · 𝔁𝓼)    ＝⟨ comp-h (η⁻ x) 𝔁𝓼 ⟩
     h (η⁻ x) ● h 𝔁𝓼  ＝⟨ ap₂ _●_ (triangle-h x) (I xs b) ⟩
     f x ● f⁻ 𝔁𝓼      ＝⟨ refl ⟩
     f x ● f' xs      ＝⟨ refl ⟩
     f⁻ ((x • xs) , a) ∎
      where
-      have-a : ρ (x • xs) ＝ x • xs
-      have-a = a
-
-      remark : x • δ x (ρ xs) ＝ x • xs
-      remark = a
-
       b : ρ xs ＝ xs
       b = ρ-tail x xs a
 
       𝔁𝓼 : List⁻ X
       𝔁𝓼 = xs , b
-
-      II : ((x • xs) , a) ＝ η⁻ x · 𝔁𝓼
-      II = to-List⁻-＝
-            (x • xs                      ＝⟨ ap (x •_) (equal-tails a)⁻¹ ⟩
-             x • δ x (ρ xs)              ＝⟨ refl ⟩
-             underlying-list (η⁻ x) ⊙ xs ∎)
 
 \end{code}
 

@@ -19,6 +19,7 @@ open import DiscreteGraphicMonoids.LWRDGM fe
 open import DiscreteGraphicMonoids.ListsWithoutRepetitions fe
 open import DiscreteGraphicMonoids.Type
 open import MLTT.Spartan
+open import Notation.CanonicalMap
 open import UF.DiscreteAndSeparated
 
 module _ {X : 𝓤 ̇ }
@@ -30,7 +31,7 @@ module _ {X : 𝓤 ̇ }
  ext⁻ : (X → List⁻ Y) → List⁻ X → List⁻ Y
  ext⁻ = extension (List⁻-DGM Y)
 
- unit⁻ : (f : X → List⁻ Y) (x : X) → ext⁻ f (η⁻ x) ＝ f x
+ unit⁻ : (f : X → List⁻ Y) → ext⁻ f ∘ η⁻ ∼ f
  unit⁻ = triangle (List⁻-DGM Y)
 
 module _ {X : 𝓤 ̇ }
