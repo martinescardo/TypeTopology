@@ -11,7 +11,7 @@ date-completed: 2024-02-27
 
 open import MLTT.List hiding ([_])
 open import MLTT.Pi
-open import MLTT.Spartan
+open import MLTT.Spartan hiding (J)
 open import UF.Base
 open import UF.EquivalenceExamples
 open import UF.FunExt
@@ -108,9 +108,9 @@ We define some shorthand notation to simplify the proofs.
  ι K = let (K′ , _) = r K in K′
 
 
- open Ideal
+ open Ideal hiding (I; I-is-downward-closed)
  open DistributiveLattice 𝒦-X⁻ using () renaming (𝟎 to 𝟎⁻; 𝟏 to 𝟏⁻; _∨_ to _∨⁻_; _∧_ to _∧⁻_)
- open DistributiveLattice 𝒦⦅X⦆ using (𝟎; 𝟏; _∨_)
+ open DistributiveLattice 𝒦⦅X⦆ using (𝟎; 𝟏; _∨_) renaming (_∧_ to _∧L_)
 
  ι-preserves-𝟎 : ι 𝟎⁻ ＝ 𝟎[ 𝒪 X ]
  ι-preserves-𝟎 = ap pr₁ (inverses-are-sections' e 𝟎)
@@ -131,6 +131,13 @@ We define some shorthand notation to simplify the proofs.
    where
     Ⅰ = ap pr₁ (r-preserves-∨ K₁ K₂)
     Ⅱ = ιₖ-preserves-∨ (r K₁) (r K₂)
+
+ ι-preserves-∧ : (K₁ K₂ : 𝒦⁻) → ι (K₁ ∧⁻ K₂) ＝ ι K₁ ∧[ 𝒪 X ] ι K₂
+ ι-preserves-∧ K₁ K₂ =
+  ι (K₁ ∧⁻ K₂)         ＝⟨ refl                         ⟩
+  pr₁ (r (K₁ ∧⁻ K₂))   ＝⟨ ap pr₁ (r-preserves-∧ K₁ K₂) ⟩
+  pr₁ (r K₁ ∧L r K₂)   ＝⟨ ιₖ-preserves-∧ (r K₁) (r K₂) ⟩
+  ι K₁ ∧[ 𝒪 X ] ι K₂   ∎
 
  ι-is-monotone : (K₁ K₂ : 𝒦⁻)
                → (K₁ ≤ᵈ[ 𝒦-X⁻ ] K₂ ⇒ ι K₁ ≤[ poset-of (𝒪 X) ] ι K₂) holds
@@ -344,19 +351,49 @@ Join preserves binary meets.
 
  join-preserves-binary-meets : (ℐ 𝒥 : Ideal 𝒦-X⁻)
                              → join (ℐ ∧ᵢ 𝒥) ＝ join ℐ ∧[ 𝒪 X ] join 𝒥
- join-preserves-binary-meets U V = ≤-is-antisymmetric (poset-of (𝒪 X)) † ‡
+ join-preserves-binary-meets ℐ 𝒥 =
+  join (ℐ ∧ᵢ 𝒥)                                                            ＝⟨ refl ⟩
+  ⋁[ 𝒪 X ] ⁅ ι K ∣ K ε 𝕋 𝒦⁻ (_∈ⁱ ℐ ∧ᵢ 𝒥) ⁆                                 ＝⟨ Ⅱ ⟩
+  ⋁⟨ ((i , _) , (j , _)) ∶ (_ × _) ⟩ ι i ∧[ 𝒪 X ] ι j                      ＝⟨ Ⅰ ⟩
+  (⋁[ 𝒪 X ] ⁅ ι K ∣ K ε 𝕋 𝒦⁻ I ⁆) ∧[ 𝒪 X ] (⋁[ 𝒪 X ] ⁅ ι K ∣ K ε 𝕋 𝒦⁻ J ⁆) ＝⟨ refl ⟩
+  join ℐ ∧[ 𝒪 X ] join 𝒥 ∎
   where
-   -- open PosetReasoning (poset-of (𝒪 X))
-
-   † : (join (U ∧ᵢ V) ≤[ poset-of (𝒪 X) ] (join U ∧[ 𝒪 X ] join V)) holds
-   † = {!!}
+   I = _∈ⁱ ℐ
+   J = _∈ⁱ 𝒥
 
    open JoinNotation (join-of (𝒪 X))
+   open Joins (λ x y → x ≤[ poset-of (𝒪 X) ] y)
 
-   ‡ : ((join U ∧[ 𝒪 X ] join V) ≤[ poset-of (𝒪 X) ] join (U ∧ᵢ V)) holds
-   ‡ = join U ∧[ 𝒪 X ] join V ＝⟨ refl ⟩ₚ
-       (⋁[ 𝒪 X ] ⁅ ι K ∣ K ε 𝕋 𝒦⁻ (_∈ⁱ U) ⁆) ∧[ 𝒪 X ] (⋁[ 𝒪 X ] ⁅ ι K ∣ K ε 𝕋 𝒦⁻ (_∈ⁱ V) ⁆) ＝⟨ distributivity+ (𝒪 X) ⁅ ι K ∣ K ε 𝕋 𝒦⁻ (_∈ⁱ U) ⁆ ⁅ ι K ∣ K ε 𝕋 𝒦⁻ (_∈ⁱ V) ⁆ ⟩ₚ
-       (⋁⟨ (i , j) ∶ index (𝕋 𝒦⁻ (_∈ⁱ U)) × index (𝕋 𝒦⁻ (_∈ⁱ V)) ⟩ ι (pr₁ i) ∧[ 𝒪 X ] ι (pr₁ j) ) ≤⟨ {!!} ⟩
-       {!!} ■
+
+   † : ((⋁[ 𝒪 X ] ⁅ ι K ∣ K ε 𝕋 𝒦⁻ (_∈ⁱ ℐ ∧ᵢ 𝒥) ⁆)
+         ≤[ poset-of (𝒪 X) ]
+        (⋁⟨ ((i , _) , (j , _)) ∶ index (𝕋 𝒦⁻ (_∈ⁱ ℐ)) × index (𝕋 𝒦⁻ (_∈ⁱ 𝒥)) ⟩ ι i ∧[ 𝒪 X ] ι j))
+       holds
+   † = cofinal-implies-join-covered (𝒪 X) ⁅ ι K ∣ K ε 𝕋 𝒦⁻ (_∈ⁱ ℐ ∧ᵢ 𝒥) ⁆ ⁅ ι i ∧[ 𝒪 X ] ι j ∣ ((i , _) , (j , _)) ∶ index (𝕋 𝒦⁻ (_∈ⁱ ℐ)) × index (𝕋 𝒦⁻ (_∈ⁱ 𝒥)) ⁆ †₀
+    where
+     †₀ : cofinal-in (𝒪 X) ⁅ ι K ∣ K ε 𝕋 𝒦⁻ (_∈ⁱ ℐ ∧ᵢ 𝒥) ⁆ ⁅ ι i ∧[ 𝒪 X ] ι j ∣ ((i , _) , (j , _)) ∶ index (𝕋 𝒦⁻ (_∈ⁱ ℐ)) × index (𝕋 𝒦⁻ (_∈ⁱ 𝒥)) ⁆ holds
+     †₀ (K , μ₁ , μ₂) = ∣ ((K , μ₁) , (K , μ₂)) , reflexivity+ (poset-of (𝒪 X)) (∧[ 𝒪 X ]-is-idempotent (ι K)) ∣
+
+   ‡ : ((⋁⟨ ((i , _) , (j , _)) ∶ index (𝕋 𝒦⁻ (_∈ⁱ ℐ)) × index (𝕋 𝒦⁻ (_∈ⁱ 𝒥)) ⟩ ι i ∧[ 𝒪 X ] ι j) ≤[ poset-of (𝒪 X) ] (⋁[ 𝒪 X ] ⁅ ι K ∣ K ε 𝕋 𝒦⁻ (_∈ⁱ ℐ ∧ᵢ 𝒥) ⁆)) holds
+   ‡ = cofinal-implies-join-covered
+        (𝒪 X)
+        ⁅ ι i ∧[ 𝒪 X ] ι j ∣ ((i , _) , (j , _)) ∶ index (𝕋 𝒦⁻ (_∈ⁱ ℐ)) × index (𝕋 𝒦⁻ (_∈ⁱ 𝒥)) ⁆
+        ⁅ ι K ∣ K ε 𝕋 𝒦⁻ (_∈ⁱ ℐ ∧ᵢ 𝒥) ⁆
+        ‡₀
+        where
+         ‡₀ : cofinal-in (𝒪 X) ⁅ ι i ∧[ 𝒪 X ] ι j ∣ ((i , _) , (j , _)) ∶ index (𝕋 𝒦⁻ (_∈ⁱ ℐ)) × index (𝕋 𝒦⁻ (_∈ⁱ 𝒥)) ⁆ ⁅ ι K ∣ K ε 𝕋 𝒦⁻ (_∈ⁱ ℐ ∧ᵢ 𝒥) ⁆ holds
+         ‡₀ ((K₁ , μ₁) , (K₂ , μ₂)) =
+          ∣ (K₁ ∧⁻ K₂ , (I-is-downward-closed (K₁ ∧⁻ K₂) K₁ (∧-is-a-lower-bound₁ 𝒦-X⁻ K₁ K₂) μ₁ , J-is-downward-closed (K₁ ∧⁻ K₂) K₂ (∧-is-a-lower-bound₂ 𝒦-X⁻ K₁ K₂) μ₂)) , goal ∣
+           where
+            open Ideal ℐ using (I-is-downward-closed)
+            open Ideal 𝒥 using () renaming (I-is-downward-closed to J-is-downward-closed)
+
+            goal : ((ι K₁ ∧[ 𝒪 X ] ι K₂) ≤[ poset-of (𝒪 X) ] ι (K₁ ∧⁻ K₂)) holds
+            goal = ι K₁ ∧[ 𝒪 X ] ι K₂ ＝⟨ ι-preserves-∧ K₁ K₂ ⁻¹ ⟩ₚ
+                   ι (K₁ ∧⁻ K₂)       ■
+
+
+   Ⅰ = distributivity+ (𝒪 X) ⁅ ι K ∣ K ε 𝕋 𝒦⁻ I ⁆ ⁅ ι K ∣ K ε 𝕋 𝒦⁻ J ⁆ ⁻¹
+   Ⅱ = ≤-is-antisymmetric (poset-of (𝒪 X)) † ‡
 
 \end{code}
