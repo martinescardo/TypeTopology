@@ -259,6 +259,8 @@ The map `ι` gives compact opens.
 
  open FrameHomomorphisms
 
+{--
+
  ϕ₀-preserves-∨ : (U V : ⟨ 𝒪 X ⟩)
                 → ϕ₀ (U ∨[ 𝒪 X ] V) ＝ ϕ₀ U ∨[ 𝒪 spec-𝒦-X ] ϕ₀ V
  ϕ₀-preserves-∨ U V = ≤-is-antisymmetric poset-of-ideals † ‡
@@ -274,6 +276,8 @@ The map `ι` gives compact opens.
 
      ग : ϕ₀ V ⊆ᵢ ϕ₀ (U ∨[ 𝒪 X ] V) holds
      ग = ϕ₀-is-monotone (V , binary-join (𝒪 X) U V) (∨[ 𝒪 X ]-upper₂ U V)
+
+--}
 
  ϕ₀-preserves-⋁ : preserves-joins (𝒪 X) (𝒪 spec-𝒦-X) ϕ₀ holds
  ϕ₀-preserves-⋁ S = υ , χ
