@@ -57,7 +57,11 @@ module _ {𝓤 𝓥 𝓦 : Universe}
 
  assoc⁻ : (g : Y → List⁻ Z) (f : X → List⁻ Y) (𝔁𝓼 : List⁻ X)
         → ext⁻ (λ x → ext⁻ g (f x)) 𝔁𝓼 ＝ ext⁻ g (ext⁻ f 𝔁𝓼)
- assoc⁻ g f 𝔁𝓼 = III
+ assoc⁻ g f = uniqueness (List⁻-DGM Z)
+               (λ x → ext⁻ g (f x))
+               (ext⁻ g ∘ ext⁻ f)
+               I
+               II
   where
    I : is-hom (List⁻-DGM X) (List⁻-DGM Z) (λ x → ext⁻ g (ext⁻ f x))
    I = I₁ , I₂
@@ -80,13 +84,5 @@ module _ {𝓤 𝓥 𝓦 : Universe}
               ext⁻ g (f x)                         ∎
                where
                 II₀ = λ x → ap (ext⁻ g) (triangle (List⁻-DGM Y) f x)
-
-   III : ext⁻ (λ x → ext⁻ g (f x)) 𝔁𝓼 ＝ ext⁻ g (ext⁻ f 𝔁𝓼)
-   III = uniqueness (List⁻-DGM Z)
-          (λ x → ext⁻ g (f x))
-          (ext⁻ g ∘ ext⁻ f)
-          I
-          II
-          𝔁𝓼
 
 \end{code}
