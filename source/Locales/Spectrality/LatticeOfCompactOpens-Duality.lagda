@@ -109,11 +109,14 @@ We define some shorthand notation to simplify the proofs.
 
 
  open Ideal
- open DistributiveLattice 𝒦-X⁻ using () renaming (𝟎 to 𝟎⁻; _∨_ to _∨⁻_; _∧_ to _∧⁻_)
- open DistributiveLattice 𝒦⦅X⦆ using (𝟎; _∨_)
+ open DistributiveLattice 𝒦-X⁻ using () renaming (𝟎 to 𝟎⁻; 𝟏 to 𝟏⁻; _∨_ to _∨⁻_; _∧_ to _∧⁻_)
+ open DistributiveLattice 𝒦⦅X⦆ using (𝟎; 𝟏; _∨_)
 
  ι-preserves-𝟎 : ι 𝟎⁻ ＝ 𝟎[ 𝒪 X ]
- ι-preserves-𝟎 = ι 𝟎⁻ ＝⟨ refl ⟩ pr₁ (r (s 𝟎)) ＝⟨ ap pr₁ (inverses-are-sections' e 𝟎) ⟩ 𝟎[ 𝒪 X ] ∎
+ ι-preserves-𝟎 = ap pr₁ (inverses-are-sections' e 𝟎)
+
+ ι-preserves-𝟏 : ι 𝟏⁻ ＝ 𝟏[ 𝒪 X ]
+ ι-preserves-𝟏 = ap pr₁ (inverses-are-sections' e 𝟏)
 
  open PosetReasoning (poset-of (𝒪 X))
  open OperationsOnCompactOpens X σ
@@ -302,11 +305,58 @@ The map `ι` gives compact opens.
 
 \end{code}
 
+What is the map going in the opposite direction of `ϕ`? This is simply the
+map that maps an ideal to its joins `I ↦ ⋁ I`. We denote this by `join`.
+
 \begin{code}
 
  open classifier-single-universe 𝓤
 
  join : Ideal 𝒦-X⁻  → ⟨ 𝒪 X ⟩
  join ℐ = ⋁[ 𝒪 X ] ⁅ ι K ∣ K ε 𝕋 𝒦⁻ (_∈ⁱ ℐ) ⁆
+
+\end{code}
+
+The map `join` preserves the top element.
+
+\begin{code}
+
+ join-preserves-top : join 𝟏ᵢ ＝ 𝟏[ 𝒪 X ]
+ join-preserves-top = only-𝟏-is-above-𝟏 (𝒪 X) (join 𝟏ᵢ) †
+  where
+   foo : Σ i ꞉ index (𝕋 𝒦⁻ (_∈ⁱ 𝟏ᵢ)) , ι (pr₁ i) ＝ 𝟏[ 𝒪 X ]
+   foo = (s 𝟏ₖ , 𝟏ᵈ-is-top 𝒦-X⁻ (s 𝟏ₖ)) , ι-preserves-𝟏
+
+   eq : ι (s 𝟏ₖ) ＝ 𝟏[ 𝒪 X ]
+   eq = pr₂ foo
+
+   ‡ : (ι (s 𝟏ₖ) ≤[ poset-of (𝒪 X)] (join 𝟏ᵢ)) holds
+   ‡ = ⋁[ 𝒪 X ]-upper ⁅ ι K ∣ K ε 𝕋 𝒦⁻ (_∈ⁱ 𝟏ᵢ) ⁆ (pr₁ foo)
+
+   † : (𝟏[ 𝒪 X ] ≤[ poset-of (𝒪 X) ] join 𝟏ᵢ) holds
+   † = transport (λ - → (- ≤[ poset-of (𝒪 X) ] join 𝟏ᵢ) holds) eq ‡
+
+\end{code}
+
+Join preserves binary meets.
+
+\begin{code}
+
+ join-preserves-binary-meets : (ℐ 𝒥 : Ideal 𝒦-X⁻)
+                             → join (ℐ ∧ᵢ 𝒥) ＝ join ℐ ∧[ 𝒪 X ] join 𝒥
+ join-preserves-binary-meets U V = ≤-is-antisymmetric (poset-of (𝒪 X)) † ‡
+  where
+   -- open PosetReasoning (poset-of (𝒪 X))
+
+   † : (join (U ∧ᵢ V) ≤[ poset-of (𝒪 X) ] (join U ∧[ 𝒪 X ] join V)) holds
+   † = {!!}
+
+   open JoinNotation (join-of (𝒪 X))
+
+   ‡ : ((join U ∧[ 𝒪 X ] join V) ≤[ poset-of (𝒪 X) ] join (U ∧ᵢ V)) holds
+   ‡ = join U ∧[ 𝒪 X ] join V ＝⟨ refl ⟩ₚ
+       (⋁[ 𝒪 X ] ⁅ ι K ∣ K ε 𝕋 𝒦⁻ (_∈ⁱ U) ⁆) ∧[ 𝒪 X ] (⋁[ 𝒪 X ] ⁅ ι K ∣ K ε 𝕋 𝒦⁻ (_∈ⁱ V) ⁆) ＝⟨ distributivity+ (𝒪 X) ⁅ ι K ∣ K ε 𝕋 𝒦⁻ (_∈ⁱ U) ⁆ ⁅ ι K ∣ K ε 𝕋 𝒦⁻ (_∈ⁱ V) ⁆ ⟩ₚ
+       (⋁⟨ (i , j) ∶ index (𝕋 𝒦⁻ (_∈ⁱ U)) × index (𝕋 𝒦⁻ (_∈ⁱ V)) ⟩ ι (pr₁ i) ∧[ 𝒪 X ] ι (pr₁ j) ) ≤⟨ {!!} ⟩
+       {!!} ■
 
 \end{code}
