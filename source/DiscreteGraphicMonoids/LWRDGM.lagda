@@ -1,6 +1,6 @@
 Martin Escardo and Paulo Oliva, April 2024
 
-The type of lists without repetitions over a discrete type form a
+The type of lists without repetitions over a discrete type forms a
 discrete graphic monoid. In another module, we prove that it gives the
 free discrete graphic monoid.
 
@@ -33,20 +33,14 @@ module _
   d : is-discrete X
   d = discrete'-gives-discrete d'
 
- graphical⁻-lemma : (xs ys : List X)
-                  → ρ ((xs ◦ ys) ◦ xs) ＝ ρ (xs ◦ ys)
- graphical⁻-lemma xs ys =
-  ρ ((xs ◦ ys) ◦ xs)                 ＝⟨ ρ-◦ (xs ◦ ys) xs ⟩
-  ρ (xs ◦ ys) ◦ (Δ (xs ◦ ys) (ρ xs)) ＝⟨ ap (ρ (xs ◦ ys) ◦_) (ρ-all xs ys) ⟩
-  ρ (xs ◦ ys) ◦ []                   ＝⟨ ([]-right-neutral (ρ (xs ◦ ys)))⁻¹ ⟩
-  ρ (xs ◦ ys)                        ∎
-
- graphical⁻ : graphical _·_
+ graphical⁻ : graphical (_·_ {𝓤} {X})
  graphical⁻ (xs , a) (ys , b) =
   to-List⁻-＝
-   (ρ (ρ (xs ◦ ys) ◦ xs) ＝⟨ ρ-left (xs ◦ ys) xs ⟩
-   ρ ((xs ◦ ys) ◦ xs)    ＝⟨ graphical⁻-lemma xs ys ⟩
-   ρ (xs ◦ ys)           ∎)
+   (ρ (ρ (xs ◦ ys) ◦ xs)               ＝⟨ ρ-left (xs ◦ ys) xs ⟩
+    ρ ((xs ◦ ys) ◦ xs)                 ＝⟨ ρ-◦ (xs ◦ ys) xs ⟩
+    ρ (xs ◦ ys) ◦ (Δ (xs ◦ ys) (ρ xs)) ＝⟨ ap (ρ (xs ◦ ys) ◦_) (ρ-all xs ys) ⟩
+    ρ (xs ◦ ys) ◦ []                   ＝⟨ ([]-right-neutral (ρ (xs ◦ ys)))⁻¹ ⟩
+    ρ (xs ◦ ys)                        ∎)
 
 \end{code}
 
@@ -56,7 +50,7 @@ discrete type.
 \begin{code}
 
 List⁻-DGM : (X : 𝓤 ̇) {{d : is-discrete' X}} → DGM 𝓤
-List⁻-DGM X {{d}} =
+List⁻-DGM X =
  List⁻ X  ,
  ([]⁻ , _·_) ,
  List⁻-is-discrete ,
@@ -64,13 +58,5 @@ List⁻-DGM X {{d}} =
  []⁻-right-neutral ,
  ·-assoc ,
  graphical⁻
-
-\end{code}
-
-Abbreviation.
-
-\begin{code}
-
-LDGM = List⁻-DGM
 
 \end{code}

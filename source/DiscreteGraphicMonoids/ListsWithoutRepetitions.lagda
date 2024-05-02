@@ -411,29 +411,10 @@ The symbol ⊙ can be typed a "\o." or "\odot".
  underlying-list-is-embedding : is-embedding underlying-list
  underlying-list-is-embedding = pr₁-is-embedding having-no-reps-is-prop
 
- to-List⁻-＝ : {xs ys : List⁻ X}
-            → underlying-list xs ＝ underlying-list ys
-            → xs ＝ ys
+ to-List⁻-＝ : {𝔁𝓼 𝔂𝓼 : List⁻ X}
+            → underlying-list 𝔁𝓼 ＝ underlying-list 𝔂𝓼
+            → 𝔁𝓼 ＝ 𝔂𝓼
  to-List⁻-＝ = to-subtype-＝ having-no-reps-is-prop
-
- []⁻-left-neutral : (xs : List⁻ X) → []⁻ · xs ＝ xs
- []⁻-left-neutral xs =
-  to-List⁻-＝
-   (underlying-list ([]⁻ · xs) ＝⟨ refl ⟩
-    ρ (underlying-list xs)     ＝⟨ underlying-list-has-no-reps xs ⟩
-    underlying-list xs         ∎)
-
- []⁻-right-neutral : (xs : List⁻ X) → xs · []⁻ ＝ xs
- []⁻-right-neutral xs =
-  to-List⁻-＝
-   (underlying-list (xs · []⁻)  ＝⟨ refl ⟩
-    ρ (underlying-list xs ◦ []) ＝⟨ ap ρ (([]-right-neutral (underlying-list xs))⁻¹) ⟩
-    ρ (underlying-list xs)      ＝⟨ underlying-list-has-no-reps xs ⟩
-    underlying-list xs          ∎)
-
- ·-assoc : (𝔁𝓼 𝔂𝓼 𝔃𝓼 : List⁻ X) → 𝔁𝓼 · (𝔂𝓼 · 𝔃𝓼) ＝ (𝔁𝓼 · 𝔂𝓼) · 𝔃𝓼
- ·-assoc (xs , _) (ys , _) (zs , _) =
-  to-subtype-＝ having-no-reps-is-prop (⊙-assoc xs ys zs)
 
  List⁻-is-discrete : is-discrete (List⁻ X)
  List⁻-is-discrete (xs , _) (ys , _) with List-is-discrete xs ys
@@ -445,8 +426,27 @@ The symbol ⊙ can be typed a "\o." or "\odot".
   List⁻-is-discrete' : is-discrete' (List⁻ X)
   List⁻-is-discrete' = discrete-gives-discrete' List⁻-is-discrete
 
+ []⁻-left-neutral : (𝔁𝓼 : List⁻ X) → []⁻ · 𝔁𝓼 ＝ 𝔁𝓼
+ []⁻-left-neutral 𝔁𝓼 =
+  to-List⁻-＝
+   (underlying-list ([]⁻ · 𝔁𝓼) ＝⟨ refl ⟩
+    ρ (underlying-list 𝔁𝓼)     ＝⟨ underlying-list-has-no-reps 𝔁𝓼 ⟩
+    underlying-list 𝔁𝓼         ∎)
+
+ []⁻-right-neutral : (𝔁𝓼 : List⁻ X) → 𝔁𝓼 · []⁻ ＝ 𝔁𝓼
+ []⁻-right-neutral 𝔁𝓼 =
+  to-List⁻-＝
+   (underlying-list (𝔁𝓼 · []⁻)  ＝⟨ refl ⟩
+    ρ (underlying-list 𝔁𝓼 ◦ []) ＝⟨ ap ρ (([]-right-neutral (underlying-list 𝔁𝓼))⁻¹) ⟩
+    ρ (underlying-list 𝔁𝓼)      ＝⟨ underlying-list-has-no-reps 𝔁𝓼 ⟩
+    underlying-list 𝔁𝓼          ∎)
+
+ ·-assoc : (𝔁𝓼 𝔂𝓼 𝔃𝓼 : List⁻ X) → 𝔁𝓼 · (𝔂𝓼 · 𝔃𝓼) ＝ (𝔁𝓼 · 𝔂𝓼) · 𝔃𝓼
+ ·-assoc (xs , _) (ys , _) (zs , _) =
+  to-subtype-＝ having-no-reps-is-prop (⊙-assoc xs ys zs)
+
  δ-◦ : (z : X) (xs ys : List X)
-      → δ z (xs ◦ ys) ＝ δ z xs ◦ δ z ys
+     → δ z (xs ◦ ys) ＝ δ z xs ◦ δ z ys
  δ-◦ z [] ys = refl
  δ-◦ z (x • xs) ys = h (d z x)
   where
@@ -593,7 +593,8 @@ module _
            V   = (δ-≠ (f z) (f x) (map f xs) u)⁻¹
 
  ρ-map-lemma : (xs ys : List X)
-             → ρ xs ＝ ρ ys → ρ (map f xs) ＝ ρ (map f ys)
+             → ρ xs ＝ ρ ys
+             → ρ (map f xs) ＝ ρ (map f ys)
  ρ-map-lemma = course-of-values-induction-on-length _ h
   where
    h : (xs : List X)

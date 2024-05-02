@@ -31,7 +31,6 @@ open import DiscreteGraphicMonoids.ListsWithoutRepetitionsMore
 
 \end{code}
 
-
 1. The module Type defines the type of discrete graphic monoids.
 
 2. The module ListsWithoutRepetitions investigates lists without repetitions.
