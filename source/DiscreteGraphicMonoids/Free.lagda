@@ -37,7 +37,7 @@ That is,
  1. List⁻ X is a graphic monoid.
 
  2. There is a map η⁻ : X → List⁻ X, such that for any graphic monoid
-    (M,*) and any function f : X → M, there is a unique monoid
+    M and any function f : X → M, there is a unique monoid
     homomorphism f' : List⁻ → M.
 
        η⁻

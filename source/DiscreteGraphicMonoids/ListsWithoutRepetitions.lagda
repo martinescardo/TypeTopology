@@ -39,7 +39,8 @@ module _
 \end{code}
 
 We first define a conditional `cons` operation, and then we use it to
-define the function δ that deletes an element from a list.
+define the function δ that deletes all occurences of an element from a
+list.
 
 \begin{code}
 
@@ -54,8 +55,9 @@ define the function δ that deletes an element from a list.
 
 \end{code}
 
-The following function δ' is used only during development, and, so
-far, doesn't occur in production code.
+The following function δ' is used only during development to prevent δ
+from reducing in more complicated expressions, and, so far, doesn't
+occur in production code.
 
 \begin{code}
 
@@ -110,11 +112,12 @@ this is why we put it in an abstract block.
 
 \begin{code}
 
- δ-deletes-first : (y : X) (xs : List X) → ¬ (Σ zs ꞉ List X , (δ y xs ＝ y • zs))
- δ-deletes-first y (x • xs) (zs , p) = h (d y x)
+ δ-deletion-lemma : (y : X) (xs : List X)
+                  → ¬ (Σ zs ꞉ List X , (δ y xs ＝ y • zs))
+ δ-deletion-lemma y (x • xs) (zs , p) = h (d y x)
   where
    h : ¬ is-decidable (y ＝ x)
-   h (inl refl) = δ-deletes-first y xs
+   h (inl refl) = δ-deletion-lemma y xs
                    (zs , (δ y xs       ＝⟨ (δ-same y xs)⁻¹ ⟩
                           δ y (y • xs) ＝⟨ p ⟩
                           y • zs       ∎))
@@ -191,7 +194,7 @@ one.
  ρ (x • xs) = x • δ x (ρ xs)
 
  ρ-is-non-empty : (xs : List X) → is-non-empty xs → is-non-empty (ρ xs)
- ρ-is-non-empty (x • xs) ⋆ = ⋆
+ ρ-is-non-empty (x • xs) cons-is-non-empty = cons-is-non-empty
 
 \end{code}
 
@@ -345,7 +348,7 @@ More generally, we have the following.
 
  repetition-lemma : (x : X) (xs : List X)
                   → ¬ has-no-reps (x • x • xs)
- repetition-lemma x xs p = δ-deletes-first x (x • xs) (xs , III)
+ repetition-lemma x xs p = δ-deletion-lemma x (x • xs) (xs , III)
   where
    have-p : ρ (x • x • xs) ＝ x • x • xs
    have-p = p
@@ -563,7 +566,7 @@ The symbol ⊙ can be typed a "\o." or "\odot".
 
  δ-length : (z : X) (xs : List X)
           → length (δ z xs) ≤ length xs
- δ-length z []       = ⋆
+ δ-length z []       = zero-least 0
  δ-length z (x • xs) = h (d z x)
   where
    IH : length (δ z xs) ≤ length xs

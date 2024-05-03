@@ -35,7 +35,7 @@ being-non-empty-is-prop []       = 𝟘-is-prop
 being-non-empty-is-prop (x • xs) = 𝟙-is-prop
 
 List⁻⁺ : (X : 𝓤 ̇ ) {{_ : is-discrete' X}} → 𝓤 ̇
-List⁻⁺ X = Σ 𝔁𝓼 ꞉ List⁻ X , is-non-empty (underlying-list 𝔁𝓼)
+List⁻⁺ X = Σ 𝔁𝓼 ꞉ List⁻ X , is-non-empty (ι 𝔁𝓼)
 
 module _ {X : 𝓤 ̇ }
          {{X-is-discrete' : is-discrete' X}}
@@ -131,14 +131,15 @@ affine⁻⁺ : is-equiv (η⁻⁺ {𝓤} {𝟙})
 affine⁻⁺ = qinvs-are-equivs f (g , gf , fg)
  where
    f : 𝟙 → List⁻⁺ 𝟙
-   f ⋆ = ((⋆ • []) , refl) , ⋆
+   f ⋆ = ((⋆ • []) , refl) , cons-is-non-empty
 
    g : List⁻⁺ 𝟙 → 𝟙
    g _ = ⋆
 
    fg : f ∘ g ∼ id
-   fg (((⋆ • []) , refl) , ⋆) = refl
-   fg (((⋆ • ⋆ • xs) , no-reps) , ⋆) = 𝟘-elim (repetition-lemma ⋆ xs no-reps)
+   fg (((⋆ • []) , refl) , cons-is-non-empty) = refl
+   fg (((⋆ • ⋆ • xs) , no-reps) , cons-is-non-empty) =
+    𝟘-elim (repetition-lemma ⋆ xs no-reps)
 
    gf : g ∘ f ∼ id
    gf ⋆ = refl

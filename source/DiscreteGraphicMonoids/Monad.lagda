@@ -67,7 +67,6 @@ module _ {X : 𝓤 ̇ }
         (extension-is-hom (List⁻-DGM Y) f)
         (extension-is-hom (List⁻-DGM Z) g)
 
-   II : H ∘ η⁻ ∼ ext⁻ g ∘ f
    II = H ∘ η⁻                ∼⟨ ∼-refl ⟩
         ext⁻ g ∘ ext⁻ f ∘ η⁻  ∼⟨ ∼-ap-∘ (ext⁻ g) (triangle (List⁻-DGM Y) f) ⟩
         ext⁻ g ∘ f            ∼∎
