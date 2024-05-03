@@ -105,8 +105,7 @@ We define some shorthand notation to simplify the proofs.
  spec-𝒦-X = locale-of-spectra
 
  ι : ∣ 𝒦-X⁻ ∣ᵈ → ⟨ 𝒪 X ⟩
- ι K = let (K′ , _) = r K in K′
-
+ ι K = pr₁ (r K)
 
  open Ideal hiding (I; I-is-downward-closed)
  open DistributiveLattice 𝒦-X⁻ using () renaming (𝟎 to 𝟎⁻; 𝟏 to 𝟏⁻; _∨_ to _∨⁻_; _∧_ to _∧⁻_)
@@ -150,6 +149,17 @@ We define some shorthand notation to simplify the proofs.
         where
          Ⅰ = ap ι (orderᵈ-implies-orderᵈ-∨ 𝒦-X⁻ p ⁻¹)
          Ⅱ = ι-preserves-∨ K₁ K₂
+
+ ι-is-order-embedding : (K₁ K₂ : 𝒦⁻)
+                      → (ι K₁ ≤[ poset-of (𝒪 X) ] ι K₂) holds
+                      → (K₁ ≤ᵈ[ 𝒦-X⁻ ] K₂) holds
+ ι-is-order-embedding K₁ K₂ p =
+  s (r K₁ ∧L r K₂)   ＝⟨ ap s (to-𝒦-＝ X _ (pr₂ (r K₁)) foo) ⟩
+  s (r K₁)           ＝⟨ inverses-are-retractions' e K₁ ⟩
+  K₁             ∎
+   where
+    foo : pr₁ (r K₁) ∧[ 𝒪 X ] pr₁ (r K₂) ＝ ι K₁
+    foo = connecting-lemma₁ (𝒪 X) p ⁻¹
 
 \end{code}
 
@@ -324,12 +334,9 @@ map that maps an ideal to its joins `I ↦ ⋁ I`. We denote this by `join`.
 
  𝒦-below-is-directed : (ℐ : Ideal 𝒦-X⁻)
                      → is-directed (𝒪 X) ⁅ ι K ∣ K ε 𝕋 𝒦⁻ (_∈ⁱ ℐ) ⁆ holds
- 𝒦-below-is-directed ℐ = ∣ 𝟎⁻ , I-contains-𝟎 ℐ ∣ , †
+ 𝒦-below-is-directed ℐ = {!monotone-image-on-directed-family-is-directed !}
   where
    open Ideal ℐ renaming (I-contains-𝟎 to I-contains-𝟎⁻)
-
-   † : {!!}
-   † = {!!}
 
  join : Ideal 𝒦-X⁻  → ⟨ 𝒪 X ⟩
  join ℐ = ⋁[ 𝒪 X ] (𝒦-below ℐ)
@@ -415,11 +422,19 @@ Join preserves binary meets.
  ϕ-cancels-join : (ℐ : Ideal 𝒦-X⁻) → ϕ₀ (join ℐ) ＝ ℐ
  ϕ-cancels-join ℐ = ideal-extensionality 𝒦-X⁻ (ϕ₀ (join ℐ)) ℐ † ‡
   where
+   open Ideal ℐ using (I-is-downward-closed)
+
    † : (ϕ₀ (join ℐ) ⊆ᵢ ℐ) holds
-   † K μ = ∥∥-rec (holds-is-prop (K ∈ᵢ ℐ)) {!!} (ι-gives-compact-opens K ⁅ ι K ∣ K ε 𝕋 𝒦⁻ (_∈ⁱ ℐ) ⁆ {!!} {!!})
+   † K μ = ∥∥-rec
+            (holds-is-prop (K ∈ᵢ ℐ))
+            ‡
+            (ι-gives-compact-opens K ⁅ ι K ∣ K ε 𝕋 𝒦⁻ (_∈ⁱ ℐ) ⁆ (𝒦-below-is-directed ℐ) {!!})
     where
-     μ′ : (ι K ≤[ poset-of (𝒪 X) ] join ℐ) holds
-     μ′ = μ
+     ‡ : Σ (K′ , _) ꞉ index ⁅ ι K ∣ K ε 𝕋 𝒦⁻ (_∈ⁱ ℐ) ⁆ ,
+          (ι K ≤[ poset-of (𝒪 X) ] ι K′) holds
+       → K ∈ⁱ ℐ
+     ‡ ((K′ , φ) , p) =
+      I-is-downward-closed K K′ (ι-is-order-embedding K K′ p) φ
 
    ‡ : (ℐ ⊆ᵢ ϕ₀ (join ℐ)) holds
    ‡ K μ = ⋁[ 𝒪 X ]-upper ⁅ ι K ∣ K ε 𝕋 𝒦⁻ (_∈ⁱ ℐ) ⁆ (K , μ)
