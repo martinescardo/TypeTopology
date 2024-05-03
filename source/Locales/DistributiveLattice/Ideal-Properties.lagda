@@ -28,9 +28,10 @@ open import MLTT.List
 open import MLTT.Spartan
 open import Slice.Family
 open import UF.Base
+open import UF.Classifiers
 open import UF.Equiv hiding (_■)
 open import UF.Logic
-open import UF.Powerset-MultiUniverse
+open import UF.Powerset-MultiUniverse hiding (𝕋)
 open import UF.SubtypeClassifier
 
 open AllCombinators pt fe hiding (_∨_)
@@ -128,5 +129,32 @@ Added on 2024-03-28.
 
       γ : (↓ y ⊆ᵢ ↓ (x ∨ y)) holds
       γ z p = z ≤⟨ p ⟩ y ≤⟨ ∨-is-an-upper-bound₂ L x y ⟩ (x ∨ y) ■
+
+\end{code}
+
+Added on 2024-05-03.
+
+Every ideal is directed.
+
+\begin{code}
+
+ open classifier-single-universe 𝓤
+
+ open import Locales.DirectedFamily pt fe (λ x y → x ≤ᵈ[ L ] y) using () renaming (is-directed to is-directed-L; is-closed-under-binary-upper-bounds to is-closed-under-binary-upper-bounds-L)
+
+ ideals-are-directed : (I : Ideal L)
+                     → is-directed-L (𝕋 ∣ L ∣ᵈ (_∈ⁱ I)) holds
+ ideals-are-directed I = ∣ 𝟎 , I-contains-𝟎 ∣ , †
+  where
+   open Ideal I using (I-contains-𝟎; I-is-closed-under-∨)
+
+   † : is-closed-under-binary-upper-bounds-L (𝕋 ∣ L ∣ᵈ (_∈ⁱ I)) holds
+   † (x , μ₁) (y , μ₂) = ∣ ((x ∨ y) , I-is-closed-under-∨ x y μ₁ μ₂) , ♣ , ♠ ∣
+    where
+     ♣ : (x ≤ᵈ[ L ] (x ∨ y)) holds
+     ♣ = ∨-is-an-upper-bound₁ L x y
+
+     ♠ : (y ≤ᵈ[ L ] (x ∨ y)) holds
+     ♠ = ∨-is-an-upper-bound₂ L x y
 
 \end{code}
