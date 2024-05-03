@@ -1,2 +1,2 @@
-git ls-files |  grep lagda | wc -l
-git ls-files | grep lagda | xargs cat | wc -l
+git ls-files |  grep agda | wc -l
+git ls-files | grep agda | xargs cat | wc -l
