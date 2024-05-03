@@ -319,8 +319,20 @@ map that maps an ideal to its joins `I ↦ ⋁ I`. We denote this by `join`.
 
  open classifier-single-universe 𝓤
 
+ 𝒦-below : Ideal 𝒦-X⁻ → Fam 𝓤 ⟨ 𝒪 X ⟩
+ 𝒦-below ℐ = ⁅ ι K ∣ K ε 𝕋 𝒦⁻ (_∈ⁱ ℐ) ⁆
+
+ 𝒦-below-is-directed : (ℐ : Ideal 𝒦-X⁻)
+                     → is-directed (𝒪 X) ⁅ ι K ∣ K ε 𝕋 𝒦⁻ (_∈ⁱ ℐ) ⁆ holds
+ 𝒦-below-is-directed ℐ = ∣ 𝟎⁻ , I-contains-𝟎 ℐ ∣ , †
+  where
+   open Ideal ℐ renaming (I-contains-𝟎 to I-contains-𝟎⁻)
+
+   † : {!!}
+   † = {!!}
+
  join : Ideal 𝒦-X⁻  → ⟨ 𝒪 X ⟩
- join ℐ = ⋁[ 𝒪 X ] ⁅ ι K ∣ K ε 𝕋 𝒦⁻ (_∈ⁱ ℐ) ⁆
+ join ℐ = ⋁[ 𝒪 X ] (𝒦-below ℐ)
 
 \end{code}
 
@@ -395,5 +407,21 @@ Join preserves binary meets.
 
    Ⅰ = distributivity+ (𝒪 X) ⁅ ι K ∣ K ε 𝕋 𝒦⁻ I ⁆ ⁅ ι K ∣ K ε 𝕋 𝒦⁻ J ⁆ ⁻¹
    Ⅱ = ≤-is-antisymmetric (poset-of (𝒪 X)) † ‡
+
+\end{code}
+
+\begin{code}
+
+ ϕ-cancels-join : (ℐ : Ideal 𝒦-X⁻) → ϕ₀ (join ℐ) ＝ ℐ
+ ϕ-cancels-join ℐ = ideal-extensionality 𝒦-X⁻ (ϕ₀ (join ℐ)) ℐ † ‡
+  where
+   † : (ϕ₀ (join ℐ) ⊆ᵢ ℐ) holds
+   † K μ = ∥∥-rec (holds-is-prop (K ∈ᵢ ℐ)) {!!} (ι-gives-compact-opens K ⁅ ι K ∣ K ε 𝕋 𝒦⁻ (_∈ⁱ ℐ) ⁆ {!!} {!!})
+    where
+     μ′ : (ι K ≤[ poset-of (𝒪 X) ] join ℐ) holds
+     μ′ = μ
+
+   ‡ : (ℐ ⊆ᵢ ϕ₀ (join ℐ)) holds
+   ‡ K μ = ⋁[ 𝒪 X ]-upper ⁅ ι K ∣ K ε 𝕋 𝒦⁻ (_∈ⁱ ℐ) ⁆ (K , μ)
 
 \end{code}
