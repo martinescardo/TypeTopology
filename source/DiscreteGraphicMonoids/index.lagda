@@ -22,13 +22,13 @@ We thank Jonas Frey for giving us this reference:
 
 module DiscreteGraphicMonoids.index where
 
-open import DiscreteGraphicMonoids.Type
-open import DiscreteGraphicMonoids.ListsWithoutRepetitions
-open import DiscreteGraphicMonoids.LWRDGM
-open import DiscreteGraphicMonoids.Free
-open import DiscreteGraphicMonoids.Monad
-open import DiscreteGraphicMonoids.AffineMonad
-open import DiscreteGraphicMonoids.ListsWithoutRepetitionsMore
+import DiscreteGraphicMonoids.Type
+import DiscreteGraphicMonoids.ListsWithoutRepetitions
+import DiscreteGraphicMonoids.LWRDGM
+import DiscreteGraphicMonoids.Free
+import DiscreteGraphicMonoids.Monad
+import DiscreteGraphicMonoids.AffineMonad
+import DiscreteGraphicMonoids.ListsWithoutRepetitionsMore
 
 \end{code}
 
