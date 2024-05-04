@@ -1,8 +1,7 @@
 Martin Escardo and Paulo Oliva, April 2024
 
-Lists without repetitions over a discrete types form a monad, as a
-corollary of the fact that lists without repetitions over a discrete
-type form the free discrete graphic monoid.
+Non-empty lists without repetitions over a discrete types form a
+submonad of the monad of lists without repetitions.
 
 \begin{code}
 
