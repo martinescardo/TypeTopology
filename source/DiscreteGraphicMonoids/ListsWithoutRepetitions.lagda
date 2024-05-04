@@ -112,20 +112,6 @@ this is why we put it in an abstract block.
 
 \begin{code}
 
- δ-deletion-lemma : (y : X) (xs : List X)
-                  → ¬ (Σ zs ꞉ List X , (δ y xs ＝ y • zs))
- δ-deletion-lemma y (x • xs) (zs , p) = h (d y x)
-  where
-   h : ¬ is-decidable (y ＝ x)
-   h (inl refl) = δ-deletion-lemma y xs
-                   (zs , (δ y xs       ＝⟨ (δ-same y xs)⁻¹ ⟩
-                          δ y (y • xs) ＝⟨ p ⟩
-                          y • zs       ∎))
-
-   h (inr u) = u (equal-heads (y • zs       ＝⟨ p ⁻¹ ⟩
-                               δ y (x • xs) ＝⟨ δ-≠ y x xs u ⟩
-                               x • δ y xs   ∎))
-
  δ-swap : (x y : X) (zs : List X)
         → δ x (δ y zs) ＝ δ y (δ x zs)
  δ-swap x y []       = refl
@@ -345,6 +331,28 @@ More generally, we have the following.
 
  has-no-reps : (xs : List X) → 𝓤 ̇
  has-no-reps xs = ρ xs ＝ xs
+
+\end{code}
+
+The following two technical lemmas, which are probably not very well
+named, and are used to show that the that monad of non-empty lists
+without repetitions is affine, in another module.WS
+
+\begin{code}
+
+ δ-deletion-lemma : (y : X) (xs : List X)
+                  → ¬ (Σ zs ꞉ List X , (δ y xs ＝ y • zs))
+ δ-deletion-lemma y (x • xs) (zs , p) = h (d y x)
+  where
+   h : ¬ is-decidable (y ＝ x)
+   h (inl refl) = δ-deletion-lemma y xs
+                   (zs , (δ y xs       ＝⟨ (δ-same y xs)⁻¹ ⟩
+                          δ y (y • xs) ＝⟨ p ⟩
+                          y • zs       ∎))
+
+   h (inr u) = u (equal-heads (y • zs       ＝⟨ p ⁻¹ ⟩
+                               δ y (x • xs) ＝⟨ δ-≠ y x xs u ⟩
+                               x • δ y xs   ∎))
 
  repetition-lemma : (x : X) (xs : List X)
                   → ¬ has-no-reps (x • x • xs)
