@@ -42,9 +42,11 @@ open import Locales.Compactness pt fe
 open import Locales.DistributiveLattice.Definition fe pt
 open import Locales.DistributiveLattice.Homomorphism fe pt
 open import Locales.DistributiveLattice.Ideal pt fe pe
+open import Locales.DistributiveLattice.Ideal-Properties pt fe pe
 open import Locales.DistributiveLattice.Isomorphism fe pt
 open import Locales.DistributiveLattice.LocaleOfSpectra fe pe pt
 open import Locales.DistributiveLattice.Resizing ua pt sr
+open import Locales.DirectedFamily-Poset pt fe
 open import Locales.Frame pt fe
 open import Locales.ContinuousMap.FrameHomomorphism-Definition pt fe
 open import Locales.SmallBasis pt fe sr
@@ -149,6 +151,9 @@ We define some shorthand notation to simplify the proofs.
         where
          Ⅰ = ap ι (orderᵈ-implies-orderᵈ-∨ 𝒦-X⁻ p ⁻¹)
          Ⅱ = ι-preserves-∨ K₁ K₂
+
+ ιₘ : poset-ofᵈ 𝒦-X⁻ ─m→ poset-of (𝒪 X)
+ ιₘ = ι , λ (K₁ , K₂) → ι-is-monotone K₁ K₂
 
  ι-is-order-embedding : (K₁ K₂ : 𝒦⁻)
                       → (ι K₁ ≤[ poset-of (𝒪 X) ] ι K₂) holds
@@ -328,15 +333,21 @@ map that maps an ideal to its joins `I ↦ ⋁ I`. We denote this by `join`.
 \begin{code}
 
  open classifier-single-universe 𝓤
+ open Directed-Families-On-Posets (poset-ofᵈ 𝒦-X⁻) (poset-of (𝒪 X))
+ open IdealProperties 𝒦-X⁻
 
  𝒦-below : Ideal 𝒦-X⁻ → Fam 𝓤 ⟨ 𝒪 X ⟩
  𝒦-below ℐ = ⁅ ι K ∣ K ε 𝕋 𝒦⁻ (_∈ⁱ ℐ) ⁆
 
  𝒦-below-is-directed : (ℐ : Ideal 𝒦-X⁻)
                      → is-directed (𝒪 X) ⁅ ι K ∣ K ε 𝕋 𝒦⁻ (_∈ⁱ ℐ) ⁆ holds
- 𝒦-below-is-directed ℐ = {!monotone-image-on-directed-family-is-directed !}
-  where
-   open Ideal ℐ renaming (I-contains-𝟎 to I-contains-𝟎⁻)
+ 𝒦-below-is-directed ℐ =
+  monotone-image-on-directed-set-is-directed
+   ιₘ
+   (𝕋 𝒦⁻ (_∈ⁱ ℐ))
+   (ideals-are-directed ℐ)
+    where
+     open Ideal ℐ renaming (I-contains-𝟎 to I-contains-𝟎⁻)
 
  join : Ideal 𝒦-X⁻  → ⟨ 𝒪 X ⟩
  join ℐ = ⋁[ 𝒪 X ] (𝒦-below ℐ)
@@ -428,7 +439,7 @@ Join preserves binary meets.
    † K μ = ∥∥-rec
             (holds-is-prop (K ∈ᵢ ℐ))
             ‡
-            (ι-gives-compact-opens K ⁅ ι K ∣ K ε 𝕋 𝒦⁻ (_∈ⁱ ℐ) ⁆ (𝒦-below-is-directed ℐ) {!!})
+            (ι-gives-compact-opens K ⁅ ι K ∣ K ε 𝕋 𝒦⁻ (_∈ⁱ ℐ) ⁆ (𝒦-below-is-directed ℐ) μ)
     where
      ‡ : Σ (K′ , _) ꞉ index ⁅ ι K ∣ K ε 𝕋 𝒦⁻ (_∈ⁱ ℐ) ⁆ ,
           (ι K ≤[ poset-of (𝒪 X) ] ι K′) holds
