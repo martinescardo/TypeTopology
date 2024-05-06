@@ -12,11 +12,11 @@ Factored out from the `Locales.Frame` module on 2024-04-10.
 
 {-# OPTIONS --safe --without-K #-}
 
+open import MLTT.List hiding ([_])
 open import MLTT.Spartan hiding (𝟚; ₀; ₁)
 open import UF.Base
 open import UF.FunExt
 open import UF.PropTrunc
-open import MLTT.List hiding ([_])
 
 module Locales.ContinuousMap.FrameHomomorphism-Properties
         (pt : propositional-truncations-exist)
@@ -145,5 +145,24 @@ homomorphisms are extensionally equal, then the frame homomorphisms are equal.
       q : (u is-an-upper-bound-of ⁅ h z ∣ z ε ⁅ x , y ⁆ ⁆) holds
       q (inl ⋆) = p (inl ⋆)
       q (inr ⋆) = p (inr ⋆)
+
+\end{code}
+
+Added on 2024-05-06.
+
+\begin{code}
+
+equivalences-are-order-embeddings : (P : Poset 𝓤 𝓥) (Q : Poset 𝓤' 𝓥')
+                                  → (s : ∣ P ∣ₚ → ∣ Q ∣ₚ)
+                                  → (r : ∣ Q ∣ₚ → ∣ P ∣ₚ )
+                                  → (𝓂₁ : is-monotonic P Q s holds)
+                                  → (𝓂₂ : is-monotonic Q P r holds)
+                                  → r ∘ s ∼ id
+                                  → {x y : ∣ P ∣ₚ} → (s x ≤[ Q ] s y ⇒ x ≤[ P ] y) holds
+equivalences-are-order-embeddings P Q s r 𝓂₁ 𝓂₂ φ {x} {y} p =
+ transport₂ (λ a b → rel-syntax P a b holds) (φ x) (φ y) †
+  where
+   † : (r (s x) ≤[ P ] r (s y)) holds
+   † = 𝓂₂ (s x , s y) p
 
 \end{code}

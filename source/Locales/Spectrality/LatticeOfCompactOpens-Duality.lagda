@@ -38,17 +38,23 @@ private
  pe : Prop-Ext
  pe {𝓤} = univalence-gives-propext (ua 𝓤)
 
+open import Locales.AdjointFunctorTheoremForFrames pt fe
 open import Locales.Compactness pt fe
+open import Locales.ContinuousMap.FrameHomomorphism-Definition pt fe
+open import Locales.ContinuousMap.FrameIsomorphism-Definition pt fe
+open import Locales.ContinuousMap.Homeomorphism-Definition pt fe
+open import Locales.ContinuousMap.Homeomorphism-Properties ua pt sr
+open import Locales.DirectedFamily-Poset pt fe
 open import Locales.DistributiveLattice.Definition fe pt
 open import Locales.DistributiveLattice.Homomorphism fe pt
 open import Locales.DistributiveLattice.Ideal pt fe pe
 open import Locales.DistributiveLattice.Ideal-Properties pt fe pe
 open import Locales.DistributiveLattice.Isomorphism fe pt
 open import Locales.DistributiveLattice.LocaleOfSpectra fe pe pt
+open import Locales.DistributiveLattice.LocaleOfSpectra-Properties fe pe pt
 open import Locales.DistributiveLattice.Resizing ua pt sr
-open import Locales.DirectedFamily-Poset pt fe
 open import Locales.Frame pt fe
-open import Locales.ContinuousMap.FrameHomomorphism-Definition pt fe
+open import Locales.GaloisConnection pt fe
 open import Locales.SmallBasis pt fe sr
 open import Locales.Spectrality.LatticeOfCompactOpens ua pt sr
 open import Locales.Spectrality.SpectralLocale pt fe
@@ -89,6 +95,8 @@ We define some shorthand notation to simplify the proofs.
  e = resizing-condition 𝒦⦅X⦆-is-small
 
  open DistributiveLatticeResizing 𝒦⦅X⦆ 𝒦⁻ (≃-sym e) renaming (Lᶜ to 𝒦-X⁻)
+
+ 𝒦⦅X⦆⁻ = 𝒦-X⁻
 
  𝒦-isomorphism : 𝒦⦅X⦆ ≅d≅ 𝒦-X⁻
  𝒦-isomorphism = copy-isomorphic-to-original
@@ -313,7 +321,7 @@ The map `ι` gives compact opens.
    υ i = ϕ₀-is-monotone (S [ i ] , ⋁[ 𝒪 X ] S) (⋁[ 𝒪 X ]-upper S i)
 
    χ : ((W , _) : upper-bound ⁅ ϕ₀ U ∣ U ε S ⁆) → (ϕ₀ (⋁[ 𝒪 X ] S) ⊆ᵢ W) holds
-   χ (W , φ) U μ = {!!}
+   χ (W , φ) U μ = {!q!}
     where
      μ′ : U ∈ η (⋁[ 𝒪 X ] S)
      μ′ = μ
@@ -451,3 +459,165 @@ Join preserves binary meets.
    ‡ K μ = ⋁[ 𝒪 X ]-upper ⁅ ι K ∣ K ε 𝕋 𝒦⁻ (_∈ⁱ ℐ) ⁆ (K , μ)
 
 \end{code}
+
+\begin{code}
+
+ X-spectralᴰ : spectralᴰ X
+ X-spectralᴰ = spectral-and-small-𝒦-implies-spectralᴰ X (pr₁ σ₀) (pr₂ σ₀)
+
+ basis-X : basisᴰ (𝒪 X)
+ basis-X = spectral-and-small-𝒦-gives-basis X (pr₁ σ₀) (pr₂ σ₀)
+
+ basis↑-X : directed-basisᴰ (𝒪 X)
+ basis↑-X = spectral-and-small-𝒦-gives-directed-basis X (pr₁ σ₀) (pr₂ σ₀)
+
+ ℬ↑-X : Fam 𝓤 ⟨ 𝒪 X ⟩
+ ℬ↑-X = pr₁ basis↑-X
+
+ join-cancels-ϕ : (U : ⟨ 𝒪 X ⟩) → join (ϕ₀ U) ＝ U
+ join-cancels-ϕ U = transport (λ - → join (ϕ₀ -) ＝ -) (c ⁻¹) final
+  where
+   J : Fam 𝓤 (index (basisₛ X X-spectralᴰ))
+   J = cover-indexₛ X X-spectralᴰ U
+
+   S : Fam 𝓤 ⟨ 𝒪 X ⟩
+   S = covering-familyₛ X X-spectralᴰ U
+
+   c : U ＝ ⋁[ 𝒪 X ] S
+   c = basisₛ-covers-do-cover-eq X X-spectralᴰ U
+
+   ψ : (i : index S) → (S [ i ] ≤[ poset-of (𝒪 X) ] U) holds
+   ψ = pr₁ (basisₛ-covers-do-cover X X-spectralᴰ U)
+
+   goal₁ : cofinal-in (𝒪 X) S ⁅ ι K ∣ K ε 𝕋 𝒦⁻ (_∈ⁱ (ϕ₀ U)) ⁆ holds
+   goal₁ i = ∣ (s (S [ i ] , κ) , p) , † ∣
+    where
+     open Ideal (ϕ₀ U) using (I-is-downward-closed)
+
+     κ : is-compact-open X (S [ i ]) holds
+     κ = basisₛ-consists-of-compact-opens X X-spectralᴰ (J [ i ])
+
+     p : (pr₁ (r (s (S [ i ] , κ))) ≤[ poset-of (𝒪 X) ] U) holds
+     p = pr₁ (r (s (S [ i ] , κ))) ＝⟨ ap pr₁ (inverses-are-sections' e (S [ i ] , κ)) ⟩ₚ S [ i ] ≤⟨ ψ i ⟩ U ■
+
+     † : (S [ i ] ≤[ poset-of (𝒪 X) ] pr₁ (r (s (S [ i ] , κ)))) holds
+     † = S [ i ] ＝⟨ ap pr₁ (inverses-are-sections' e (S [ i ] , κ) ⁻¹ ) ⟩ₚ pr₁ (r (s (S [ i ] , κ))) ■
+
+   goal₂ : cofinal-in (𝒪 X) ⁅ ι K ∣ K ε 𝕋 𝒦⁻ (_∈ⁱ (ϕ₀ U)) ⁆ S holds
+   goal₂ (K , p) = ∣ ((K , p) ∷ []) , † ∣
+    where
+     † : (pr₁ (r K) ≤[ poset-of (𝒪 X) ] S [ (K , p ∷ []) ]) holds
+     † = reflexivity+ (poset-of (𝒪 X)) (𝟎-left-unit-of-∨ (𝒪 X) (pr₁ (r K)) ⁻¹)
+
+   goal : ⋁[ 𝒪 X ] S ＝ ⋁[ 𝒪 X ] ⁅ ι K ∣ K ε 𝕋 𝒦⁻ (_∈ⁱ (ϕ₀ U)) ⁆
+   goal = bicofinal-implies-same-join (𝒪 X) S ((fmap-syntax (λ K → ι K)) (𝕋 𝒦⁻ (_∈ⁱ ϕ₀ U))) goal₁ goal₂
+
+   ♣ : (join (ϕ₀ (⋁[ 𝒪 X ] S)) ≤[ poset-of (𝒪 X) ] (⋁[ 𝒪 X ] ⁅ ι K ∣ K ε 𝕋 𝒦⁻ (_∈ⁱ (ϕ₀ U)) ⁆)) holds
+   ♣ = cofinal-implies-join-covered (𝒪 X) (𝒦-below (ϕ₀ (join-of (𝒪 X) S))) (fmap-syntax (λ K → ι K) (𝕋 𝒦⁻ (_∈ⁱ ϕ₀ U))) γ
+    where
+     γ : cofinal-in (𝒪 X) (𝒦-below (ϕ₀ (join-of (𝒪 X) S))) ⁅ ι K ∣ K ε 𝕋 𝒦⁻ (_∈ⁱ (ϕ₀ U)) ⁆ holds
+     γ (K , q) = ∣ (K , (transport (λ - → K ∈ⁱ ϕ₀ -) (c ⁻¹) q)) , ≤-is-reflexive (poset-of (𝒪 X)) (ι K) ∣
+
+   ♠ : ((⋁[ 𝒪 X ] ⁅ ι K ∣ K ε 𝕋 𝒦⁻ (_∈ⁱ (ϕ₀ U)) ⁆) ≤[ poset-of (𝒪 X) ] join (ϕ₀ (⋁[ 𝒪 X ] S))) holds
+   ♠ = cofinal-implies-join-covered (𝒪 X) (fmap-syntax (λ K → ι K) (𝕋 𝒦⁻ (_∈ⁱ ϕ₀ U))) (𝒦-below (ϕ₀ (join-of (𝒪 X) S))) γ
+    where
+     γ : cofinal-in (𝒪 X) ⁅ ι K ∣ K ε 𝕋 𝒦⁻ (_∈ⁱ (ϕ₀ U)) ⁆ (𝒦-below (ϕ₀ (join-of (𝒪 X) S))) holds
+     γ (K , q) = ∣ (K , transport (λ - → K ∈ⁱ ϕ₀ -) c q) , ≤-is-reflexive (poset-of (𝒪 X)) (ι K) ∣
+
+   final : join (ϕ₀ (⋁[ 𝒪 X ] S)) ＝ ⋁[ 𝒪 X ] S
+   final = join (ϕ₀ (⋁[ 𝒪 X ] S))                   ＝⟨ ≤-is-antisymmetric (poset-of (𝒪 X)) ♣ ♠ ⟩
+           ⋁[ 𝒪 X ] ⁅ ι K ∣ K ε 𝕋 𝒦⁻ (_∈ⁱ (ϕ₀ U)) ⁆ ＝⟨ goal ⁻¹ ⟩
+           ⋁[ 𝒪 X ] S ∎
+
+\end{code}
+
+\begin{code}
+
+ ϕₘ : poset-of (𝒪 X) ─m→ poset-of-ideals
+ ϕₘ = ϕ₀ , ϕ₀-is-monotone
+
+\end{code}
+
+\begin{code}
+
+ join-is-monotone : is-monotonic poset-of-ideals (poset-of (𝒪 X)) join holds
+ join-is-monotone (U , V) p = connecting-lemma₂ (𝒪 X) †
+  where
+   † : join U ＝ join U ∧[ 𝒪 X ] join V
+   † = join U ＝⟨ ap join (connecting-lemma₁ frame-of-ideals p) ⟩ join (U ∧ᵢ V) ＝⟨ join-preserves-binary-meets U V ⟩ join U ∧[ 𝒪 X ] join V ∎
+
+ joinₘ : poset-of-ideals ─m→ poset-of (𝒪 X)
+ joinₘ = join , join-is-monotone
+
+\end{code}
+
+\begin{code}
+
+ open AdjointFunctorTheorem
+
+ X-has-basis : has-basis (𝒪 X) holds
+ X-has-basis = ∣ spectralᴰ-implies-basisᴰ X X-spectralᴰ ∣
+
+ spec-𝒦-X-has-basis : has-basis (𝒪 spec-𝒦-X) holds
+ spec-𝒦-X-has-basis = ∣ {!? , directed-basis-is-basis (𝒪 spec-𝒦-X) ?!} ∣
+
+ ϕ-is-left-adjoint-of-join : let
+                              open GaloisConnectionBetween (poset-of (𝒪 X)) poset-of-ideals
+                             in
+                              (ϕₘ ⊣ joinₘ) holds
+ ϕ-is-left-adjoint-of-join =
+  an-important-lemma spec-𝒦-X X X-has-basis joinₘ ϕₘ join-cancels-ϕ ϕ-cancels-join
+
+ ϕ-is-right-adjoint-to-join : let
+                               open GaloisConnectionBetween poset-of-ideals (poset-of (𝒪 X))
+                              in
+                               (joinₘ ⊣ ϕₘ) holds
+ ϕ-is-right-adjoint-to-join =
+  an-important-lemma X spec-𝒦-X spec-𝒦-X-has-basis ϕₘ joinₘ ϕ-cancels-join join-cancels-ϕ
+
+\end{code}
+
+Recall that the type of spectral locales is defined as
+
+\begin{code}
+
+Spectral-Locale : (𝓤 : Universe) → 𝓤 ⁺ ⁺  ̇
+Spectral-Locale 𝓤 =
+ Σ X ꞉ Locale (𝓤 ⁺) 𝓤 𝓤 , is-spectral-with-small-basis ua X holds
+
+\end{code}
+
+Put this in the `LatticeOfCompactOpens-Duality` module.
+
+\begin{todo}
+
+spec-dlat-equivalence : (𝓤 : Universe) → Spectral-Locale 𝓤 ≃ DistributiveLattice 𝓤
+spec-dlat-equivalence 𝓤 = s , (r , †) , r , ‡
+ where
+  open 𝒦-Duality
+  open 𝒦-Lattice
+
+  s : Spectral-Locale 𝓤 → DistributiveLattice 𝓤
+  s (X , σ) = 𝒦⦅X⦆⁻ X σ
+
+  open DefnOfFrameOfIdeal
+
+  r : DistributiveLattice 𝓤 → Spectral-Locale 𝓤
+  r L = locale-of-spectra L , Spectrality.spec-L-is-spectral sr L , Spectrality.spec-L-has-small-𝒦 sr L
+
+  foo : (L : DistributiveLattice 𝓤) → L ≅d≅ s (r L)
+  foo = {!!}
+
+  bar : ((X , σ) : Spectral-Locale 𝓤) → spec-𝒦-X X σ ≅c≅ X
+  bar (X , σ)= record { 𝓈 = (ϕ₀ X σ) , {!!} ; 𝓇 = join X σ , {!!} ; 𝓇-cancels-𝓈 = join-cancels-ϕ X σ ; 𝓈-cancels-𝓇 = ϕ-cancels-join X σ }
+
+  † : s ∘ r ∼ id
+  † L = {!!}
+
+  ‡ : r ∘ s ∼ id
+  ‡ (X , σ) =
+   to-subtype-＝
+    (holds-is-prop ∘ is-spectral-with-small-basis ua)
+    (homeomorphic-locales-are-equal (locale-of-spectra (s (X , σ))) X (bar (X , σ)))
+
+\end{todo}

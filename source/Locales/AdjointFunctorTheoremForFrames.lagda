@@ -288,3 +288,29 @@ module AdjointFunctorTheorem (X : Locale 𝓤' 𝓥 𝓥)
    † = †₁ , †₂
 
 \end{code}
+
+Added on 2024-05-06.
+
+Order-preserving equivalences preserve joins.
+
+\begin{code}
+
+ an-important-lemma : (sₘ@(s , _) : poset-of (𝒪 X) ─m→ poset-of (𝒪 Y))
+                    → (rₘ@(r , _) : poset-of (𝒪 Y) ─m→ poset-of (𝒪 X))
+                    → s ∘ r ∼ id
+                    → r ∘ s ∼ id
+                    → (rₘ ⊣ sₘ) holds
+ an-important-lemma (s , 𝓂₁) (r , 𝓂₂) φ ψ U V = † , ‡
+  where
+   open PosetReasoning 𝒪Xₚ
+
+   † : (r U ≤[ 𝒪Xₚ ] V ⇒ U ≤[ 𝒪Yₚ ] s V) holds
+   † p = equivalences-are-order-embeddings (poset-of (𝒪 Y)) (poset-of (𝒪 X)) r s 𝓂₂ 𝓂₁ φ ※
+    where
+     ※ : (r U ≤[ 𝒪Xₚ ] r (s V)) holds
+     ※ = r U ≤⟨ p ⟩ V ＝⟨ ψ V ⁻¹ ⟩ₚ r (s V) ■
+
+   ‡ : (U ≤[ 𝒪Yₚ ] s V ⇒ r U ≤[ 𝒪Xₚ ] V) holds
+   ‡ p = r U ≤⟨ 𝓂₂ (U , _) p ⟩ r (s V) ＝⟨ ψ V ⟩ₚ V ■
+
+\end{code}
