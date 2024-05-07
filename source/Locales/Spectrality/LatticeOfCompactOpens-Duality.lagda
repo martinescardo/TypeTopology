@@ -634,6 +634,20 @@ Join preserves binary meets.
 
 \end{code}
 
+\begin{code}
+
+open DefnOfFrameOfIdeal
+
+spectral-implies-spectral·
+ : (X : Locale (𝓤 ⁺) 𝓤 𝓤)
+ → is-spectral-with-small-basis ua X holds
+ → ∃ L ꞉ DistributiveLattice 𝓤 , X ≅c≅ locale-of-spectra L
+spectral-implies-spectral· X σ = ∣ 𝒦⦅X⦆⁻ , ≅c-sym spec-𝒦-X X X-iso-to-spec-𝒦-X ∣
+ where
+  open 𝒦-Duality X σ
+
+\end{code}
+
 Recall that the type of spectral locales is defined as
 
 \begin{code}
@@ -643,38 +657,3 @@ Spectral-Locale 𝓤 =
  Σ X ꞉ Locale (𝓤 ⁺) 𝓤 𝓤 , is-spectral-with-small-basis ua X holds
 
 \end{code}
-
-Put this in the `LatticeOfCompactOpens-Duality` module.
-
-\begin{todo}
-
-spec-dlat-equivalence : (𝓤 : Universe) → Spectral-Locale 𝓤 ≃ DistributiveLattice 𝓤
-spec-dlat-equivalence 𝓤 = s , (r , †) , r , ‡
- where
-  open 𝒦-Duality
-  open 𝒦-Lattice
-
-  s : Spectral-Locale 𝓤 → DistributiveLattice 𝓤
-  s (X , σ) = 𝒦⦅X⦆⁻ X σ
-
-  open DefnOfFrameOfIdeal
-
-  r : DistributiveLattice 𝓤 → Spectral-Locale 𝓤
-  r L = locale-of-spectra L , Spectrality.spec-L-is-spectral sr L , Spectrality.spec-L-has-small-𝒦 sr L
-
-  foo : (L : DistributiveLattice 𝓤) → L ≅d≅ s (r L)
-  foo = {!!}
-
-  bar : ((X , σ) : Spectral-Locale 𝓤) → spec-𝒦-X X σ ≅c≅ X
-  bar (X , σ)= record { 𝓈 = (ϕ₀ X σ) , {!!} ; 𝓇 = join X σ , {!!} ; 𝓇-cancels-𝓈 = join-cancels-ϕ X σ ; 𝓈-cancels-𝓇 = ϕ-cancels-join X σ }
-
-  † : s ∘ r ∼ id
-  † L = {!!}
-
-  ‡ : r ∘ s ∼ id
-  ‡ (X , σ) =
-   to-subtype-＝
-    (holds-is-prop ∘ is-spectral-with-small-basis ua)
-    (homeomorphic-locales-are-equal (locale-of-spectra (s (X , σ))) X (bar (X , σ)))
-
-\end{todo}
