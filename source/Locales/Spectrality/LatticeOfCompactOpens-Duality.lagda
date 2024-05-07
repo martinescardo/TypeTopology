@@ -635,12 +635,12 @@ distributive lattice”.
 
 \begin{code}
 
-open DefnOfFrameOfIdeal
+open DefnOfFrameOfIdeal renaming (locale-of-spectra to spec)
 
 spectral-implies-spectral·
  : (X : Locale (𝓤 ⁺) 𝓤 𝓤)
  → is-spectral-with-small-basis ua X holds
- → ∃ L ꞉ DistributiveLattice 𝓤 , X ≅c≅ locale-of-spectra L
+ → ∃ L ꞉ DistributiveLattice 𝓤 , X ≅c≅ spec L
 spectral-implies-spectral· X σ = ∣ 𝒦⦅X⦆⁻ , ≅c-sym spec-𝒦X X X-iso-to-spec-𝒦X ∣
  where
   open 𝒦-Duality X σ
