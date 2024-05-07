@@ -341,6 +341,10 @@ intensional specified basis for `Idl(L)` given by the family `↓(-) : L → Idl
    𝒹 : is-directed (𝒪 spec-L) ⁅ ↓ x ∣ x ε (𝕋 𝓤 ∣ L ∣ᵈ (_∈ⁱ ℐ)) ⁆ holds
    𝒹 = factorization-is-directed ℐ
 
+ ℬ-spec-is-basis : basis-forᴰ (𝒪 spec-L) ℬ-spec
+ ℬ-spec-is-basis =
+  directed-basis-is-basis (𝒪 spec-L) ℬ-spec ℬ-spec-is-directed-basis
+
 \end{code}
 
 We denote by `𝒦-fam` the family corresponding to the subset of compact opens.
