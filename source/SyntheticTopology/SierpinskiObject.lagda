@@ -22,8 +22,10 @@ module SyntheticTopology.SierpinskiObject
 open import UF.Logic
 open import UF.ImageAndSurjection pt
 
+
 open AllCombinators pt fe
 open PropositionalTruncation pt
+
 
 \end{code}
 
@@ -109,4 +111,46 @@ object are called _affirmable.
 
 Question: are these two definitions equivalent?
 
+
+Dominance axiom and Phoa's principle : 
+
+\begin{code}
+
+ openness-is-transitive : (𝓤 ⁺) ̇ 
+ openness-is-transitive = (u : Ω 𝓤) → (is-affirmable u) holds → (p : Ω 𝓤) → (u holds → (is-affirmable p) holds) → (is-affirmable (u ∧ p) ) holds 
+
+ contains-top : (𝓤 ⁺) ̇ 
+ contains-top = is-affirmable ⊤ holds
+
+ is-dominance : (𝓤 ⁺) ̇
+ is-dominance = contains-top × openness-is-transitive
+ 
+ phoa-condition : (𝓤 ⁺) ̇ 
+ phoa-condition =  (f : Ω 𝓤 → Ω 𝓤) (u : Ω 𝓤) → (is-affirmable u) holds → f u ＝ ((Disjunction._∨_ pt (f ⊥)  u) ∧ f ⊤)
+
+\end{code}
+
+Compactness : 
+
+\begin{code}
+
+ is-compact : (X : 𝓤 ̇ ) → 𝓤 ⁺ ̇ 
+ is-compact X = (P : X → Ω 𝓤) → is-intrinsically-open′ P holds →  ((is-affirmable (Ɐ x ꞉ X , (P x))) holds )
+
+ 𝟙-is-compact : is-compact 𝟙
+ 𝟙-is-compact P p = t
+   where
+     to-star : (Ɐ x ꞉ 𝟙 ,  (P x ⇔ P ⋆)) holds -- useful ?
+     to-star = λ x → transport (λ z → (P z ⇔ P ⋆) holds ) refl  (id , id )
+
+     t : (Ɐ x ꞉ 𝟙 , (P x)) ∈image ι 
+     t = ∣ {!!} , {!!} ∣ -- What does index 𝕊 looks like ?
+
+\end{code}
+
+
+
+
 [1]: https://ncatlab.org/nlab/show/analytic+versus+synthetic
+
+
