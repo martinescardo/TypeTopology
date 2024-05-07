@@ -604,12 +604,14 @@ Furthermore, it is also the right inverse, the proof of which is given in
 
 \end{code}
 
+The set `𝒪 X` is equivalent to the type `Ideal 𝒦-X⁻`.
+
 \begin{code}
 
  open FrameIsomorphisms
 
- 𝒪X-is-equivalent-to-ideals-of-𝒦X : ⟨ 𝒪 X ⟩ ≃ Ideal 𝒦-X⁻
- 𝒪X-is-equivalent-to-ideals-of-𝒦X = ϕ , ((join , †) , (join , ‡))
+ 𝒪X-is-equivalent-to-ideals-of-𝒦⁻X : ⟨ 𝒪 X ⟩ ≃ Ideal 𝒦-X⁻
+ 𝒪X-is-equivalent-to-ideals-of-𝒦⁻X = ϕ , ((join , †) , (join , ‡))
   where
    † : (ϕ ∘ join) ∼ id
    † = ϕ-cancels-join
@@ -621,11 +623,15 @@ Furthermore, it is also the right inverse, the proof of which is given in
  X-iso-to-spec-𝒦X = isomorphism₀-to-isomorphismᵣ (𝒪 X) (𝒪 spec-𝒦X) 𝒾
   where
    𝒾 : Isomorphism₀ (𝒪 X) (𝒪 spec-𝒦X)
-   𝒾 = 𝒪X-is-equivalent-to-ideals-of-𝒦X
+   𝒾 = 𝒪X-is-equivalent-to-ideals-of-𝒦⁻X
      , ϕ-is-a-frame-homomorphism
      , join-is-a-frame-homomorphism
 
 \end{code}
+
+From all this, we can now conclude that `is-spectral-with-small-basis` implies
+the definition of spectrality that says “homeomorphic to the spectrum of a
+distributive lattice”.
 
 \begin{code}
 
@@ -638,15 +644,5 @@ spectral-implies-spectral·
 spectral-implies-spectral· X σ = ∣ 𝒦⦅X⦆⁻ , ≅c-sym spec-𝒦X X X-iso-to-spec-𝒦X ∣
  where
   open 𝒦-Duality X σ
-
-\end{code}
-
-Recall that the type of spectral locales is defined as
-
-\begin{code}
-
-Spectral-Locale : (𝓤 : Universe) → 𝓤 ⁺ ⁺  ̇
-Spectral-Locale 𝓤 =
- Σ X ꞉ Locale (𝓤 ⁺) 𝓤 𝓤 , is-spectral-with-small-basis ua X holds
 
 \end{code}
