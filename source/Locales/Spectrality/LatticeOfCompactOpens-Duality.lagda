@@ -1,9 +1,9 @@
----
+--------------------------------------------------------------------------------
 title:          Distributive lattice of compact opens
 author:         Ayberk Tosun
 date-started:   2024-02-24
 date-completed: 2024-02-27
----
+--------------------------------------------------------------------------------
 
 \begin{code}
 
@@ -51,7 +51,7 @@ open import Locales.DistributiveLattice.Ideal pt fe pe
 open import Locales.DistributiveLattice.Ideal-Properties pt fe pe
 open import Locales.DistributiveLattice.Isomorphism fe pt
 open import Locales.DistributiveLattice.LocaleOfSpectra fe pe pt
-open import Locales.DistributiveLattice.LocaleOfSpectra-Properties fe pe pt
+open import Locales.DistributiveLattice.LocaleOfSpectra-Properties fe pe pt sr
 open import Locales.DistributiveLattice.Resizing ua pt sr
 open import Locales.Frame pt fe
 open import Locales.GaloisConnection pt fe
@@ -312,27 +312,6 @@ The map `ι` gives compact opens.
 
 --}
 
- ϕ₀-preserves-⋁ : preserves-joins (𝒪 X) (𝒪 spec-𝒦-X) ϕ₀ holds
- ϕ₀-preserves-⋁ S = υ , χ
-  where
-   open Joins (λ x y → x ≤[ poset-of (𝒪 spec-𝒦-X) ] y)
-
-   υ : (ϕ₀ (⋁[ 𝒪 X ] S) is-an-upper-bound-of ⁅ ϕ₀ U ∣ U ε S ⁆) holds
-   υ i = ϕ₀-is-monotone (S [ i ] , ⋁[ 𝒪 X ] S) (⋁[ 𝒪 X ]-upper S i)
-
-   χ : ((W , _) : upper-bound ⁅ ϕ₀ U ∣ U ε S ⁆) → (ϕ₀ (⋁[ 𝒪 X ] S) ⊆ᵢ W) holds
-   χ (W , φ) U μ = {!q!}
-    where
-     μ′ : U ∈ η (⋁[ 𝒪 X ] S)
-     μ′ = μ
-
-     μ′′ : (ι U ≤[ poset-of (𝒪 X) ] (⋁[ 𝒪 X ] S)) holds
-     μ′′ = μ
-
- ϕ-is-frame-homomorphism : is-a-frame-homomorphism (𝒪 X) (𝒪 spec-𝒦-X) ϕ₀ holds
- ϕ-is-frame-homomorphism =
-  ϕ₀-preserves-top , ϕ₀-preserves-∧ , ϕ₀-preserves-⋁
-
 \end{code}
 
 What is the map going in the opposite direction of `ϕ`? This is simply the
@@ -559,7 +538,8 @@ Join preserves binary meets.
  X-has-basis = ∣ spectralᴰ-implies-basisᴰ X X-spectralᴰ ∣
 
  spec-𝒦-X-has-basis : has-basis (𝒪 spec-𝒦-X) holds
- spec-𝒦-X-has-basis = ∣ {!? , directed-basis-is-basis (𝒪 spec-𝒦-X) ?!} ∣
+ spec-𝒦-X-has-basis =
+  ∣ Spectrality.ℬ-spec 𝒦-X⁻  , Spectrality.ℬ-spec-is-basis 𝒦-X⁻ ∣
 
  ϕ-is-left-adjoint-of-join : let
                               open GaloisConnectionBetween (poset-of (𝒪 X)) poset-of-ideals
@@ -574,6 +554,83 @@ Join preserves binary meets.
                                (joinₘ ⊣ ϕₘ) holds
  ϕ-is-right-adjoint-to-join =
   an-important-lemma X spec-𝒦-X spec-𝒦-X-has-basis ϕₘ joinₘ ϕ-cancels-join join-cancels-ϕ
+
+\end{code}
+
+\begin{code}
+
+ ϕ-preserves-joins : (S : Fam 𝓤 ⟨ 𝒪 X ⟩)
+                   → ϕ₀ (⋁[ 𝒪 X ] S) ＝ ⋁ᵢ ⁅ ϕ₀ U ∣ U ε S ⁆
+ ϕ-preserves-joins =
+  aft-forward spec-𝒦-X X X-has-basis ϕₘ (joinₘ , ϕ-is-left-adjoint-of-join)
+
+\end{code}
+
+\begin{code}
+
+ join-preserves-joins : (S : Fam 𝓤 (Ideal 𝒦-X⁻))
+                      → join (⋁ᵢ S) ＝ ⋁[ 𝒪 X ] ⁅ join I ∣ I ε S ⁆
+ join-preserves-joins = aft-forward
+                         X
+                         spec-𝒦-X
+                         spec-𝒦-X-has-basis
+                         joinₘ
+                         (ϕₘ , ϕ-is-right-adjoint-to-join)
+
+\end{code}
+
+\begin{code}
+
+ ϕ-is-a-frame-homomorphism : is-a-frame-homomorphism (𝒪 X) (𝒪 spec-𝒦-X) ϕ₀ holds
+ ϕ-is-a-frame-homomorphism = ϕ₀-preserves-top , ϕ₀-preserves-∧ , †
+  where
+   open Joins (λ x y → x ≤[ poset-of (𝒪 spec-𝒦-X) ] y)
+
+   † : preserves-joins (𝒪 X) (𝒪 spec-𝒦-X) ϕ₀ holds
+   † S =
+    transport
+     (λ - → (- is-lub-of ⁅ ϕ₀ I ∣ I ε S ⁆) holds)
+     (ϕ-preserves-joins S ⁻¹)
+     (⋁[ 𝒪 spec-𝒦-X ]-upper _ , ⋁[ 𝒪 spec-𝒦-X ]-least _)
+
+\end{code}
+
+\begin{code}
+
+ join-is-a-frame-homomorphism : is-a-frame-homomorphism (𝒪 spec-𝒦-X) (𝒪 X) join holds
+ join-is-a-frame-homomorphism =
+  join-preserves-top , join-preserves-binary-meets , †
+   where
+    open Joins (λ x y → x ≤[ poset-of (𝒪 X) ] y)
+
+    † : preserves-joins (𝒪 spec-𝒦-X) (𝒪 X) join holds
+    † S = transport
+           (λ - → (- is-lub-of ⁅ join I ∣ I ε S ⁆) holds)
+           (join-preserves-joins S ⁻¹)
+           (⋁[ 𝒪 X ]-upper _ , ⋁[ 𝒪 X ]-least _)
+
+\end{code}
+
+\begin{code}
+
+ open FrameIsomorphisms
+
+ 𝒪X-is-equivalent-to-ideals-of-𝒦X : ⟨ 𝒪 X ⟩ ≃ Ideal 𝒦-X⁻
+ 𝒪X-is-equivalent-to-ideals-of-𝒦X = ϕ₀ , ((join , †) , (join , ‡))
+  where
+   † : (ϕ₀ ∘ join) ∼ id
+   † = ϕ-cancels-join
+
+   ‡ : (join ∘ ϕ₀) ∼ id
+   ‡ = join-cancels-ϕ
+
+ X-iso-to-spec-𝒦-X : spec-𝒦-X ≅c≅ X
+ X-iso-to-spec-𝒦-X = isomorphism₀-to-isomorphismᵣ (𝒪 X) (𝒪 spec-𝒦-X) 𝒾
+  where
+   𝒾 : Isomorphism₀ (𝒪 X) (𝒪 spec-𝒦-X)
+   𝒾 = 𝒪X-is-equivalent-to-ideals-of-𝒦X
+     , ϕ-is-a-frame-homomorphism
+     , join-is-a-frame-homomorphism
 
 \end{code}
 
