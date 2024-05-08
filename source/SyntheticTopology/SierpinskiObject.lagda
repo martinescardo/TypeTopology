@@ -115,29 +115,29 @@ object are called _affirmable.
 Question: are these two definitions equivalent?
 
 
-Dominance axiom and Phoa's principle : 
+Dominance axiom and Phoa's principle :
 
 \begin{code}
 
- openness-is-transitive : (𝓤 ⁺) ̇ 
- openness-is-transitive = (u : Ω 𝓤) → (is-affirmable u) holds → (p : Ω 𝓤) → (u holds → (is-affirmable p) holds) → (is-affirmable (u ∧ p) ) holds 
+ openness-is-transitive : (𝓤 ⁺) ̇
+ openness-is-transitive = (u : Ω 𝓤) → (is-affirmable u) holds → (p : Ω 𝓤) → (u holds → (is-affirmable p) holds) → (is-affirmable (u ∧ p) ) holds
 
- contains-top : (𝓤 ⁺) ̇ 
+ contains-top : (𝓤 ⁺) ̇
  contains-top = is-affirmable ⊤ holds
 
  is-synthetic-dominance : (𝓤 ⁺) ̇
  is-synthetic-dominance = contains-top × openness-is-transitive
- 
- phoa-condition : (𝓤 ⁺) ̇ 
+
+ phoa-condition : (𝓤 ⁺) ̇
  phoa-condition =  (f : Ω 𝓤 → Ω 𝓤) (u : Ω 𝓤) → (is-affirmable u) holds → f u ＝ ((Disjunction._∨_ pt (f ⊥)  u) ∧ f ⊤)
 
 \end{code}
 
-Compactness : 
+Compactness :
 
 \begin{code}
 {-
- is-compact : (X : 𝓤 ̇ ) → 𝓤 ⁺ ̇ 
+ is-compact : (X : 𝓤 ̇ ) → 𝓤 ⁺ ̇
  is-compact X = (P : X → Ω 𝓤) → is-intrinsically-open P holds →  (is-affirmable (Ɐ x ꞉ X , (P x)) holds)
 
  𝟙-is-compact : is-compact 𝟙
@@ -146,7 +146,7 @@ Compactness :
      to-star : (Ɐ x ꞉ 𝟙 ,  (P x ⇔ P ⋆)) holds -- useful ?
      to-star = λ x → transport (λ z → (P z ⇔ P ⋆) holds ) refl  (id , id )
 
-     t : (Ɐ x ꞉ 𝟙 , (P x)) ∈image ι 
+     t : (Ɐ x ꞉ 𝟙 , (P x)) ∈image ι
      t = {!!}  -- What does index 𝕊 looks like ?
 -}
 \end{code}
@@ -162,38 +162,36 @@ dom-equiv : dominant-sierpinski ≃ Dominance {𝓤 } {𝓤 ⁺}
 dom-equiv = f , pf
 
   where
-  
+
     f : dominant-sierpinski → Dominance
     f (Si , isdom) = d , d2 , d3 , d4 , d5
       where
         open Sierpinski-notations (Si)
-        
+
         d : (𝓤 ) ̇ → (𝓤 ⁺) ̇
         d X = Σ p ꞉ is-prop X ,  is-affirmable (X , p) holds
 
         d2 : D2 d
-        d2 X = Σ-is-prop {!!} λ _ → ∃-is-prop -- see "being-subingleton-is-subsingleton" lemma using fe in HoTT-UF-Agda 
-         
+        d2 X = Σ-is-prop {!!} λ _ → ∃-is-prop -- see "being-subingleton-is-subsingleton" lemma using fe in HoTT-UF-Agda
+
         d3 : D3 d
         d3 X dx = pr₁ dx
-         
+
         d4 : d 𝟙
         d4 = 𝟙-is-prop ,  (pr₁ isdom)
 
         d5' : D5' d
-        d5' P Q' dP P-to-dQ' = (×-is-prop (d3 P dP) {!!}) , {!!} 
-         
+        d5' P Q' dP P-to-dQ' = (×-is-prop (d3 P dP) {!!}) , {!!}
+
         d5 :  D5 d
         d5 = D3-and-D5'-give-D5 pe d d3 d5'
-         
+
     pf : is-equiv f
     pf = {!!}
 
-   
+
 \end{code}
 
 
 
 [1]: https://ncatlab.org/nlab/show/analytic+versus+synthetic
-
-
