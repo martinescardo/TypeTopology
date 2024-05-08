@@ -138,24 +138,82 @@ Compactness :
 
 \begin{code}
 
- is-compact : (X : 𝓤 ̇ ) → 𝓤 ⁺ ̇
- is-compact X = (P : X → Ω 𝓤) → (is-intrinsically-open P  ⇒ is-affirmable (Ɐ x ꞉ X , (P x))) holds
+ is-compact : 𝓤 ̇  → 𝓤 ⁺ ̇
+ is-compact X = (P : X → Ω 𝓤)
+                         → is-intrinsically-open P holds
+                         → is-affirmable (Ɐ x ꞉ X , (P x)) holds
 
  𝟙-is-compact : is-compact 𝟙
  𝟙-is-compact P = ∥∥-rec (holds-is-prop ( is-affirmable (Ɐ x ꞉ 𝟙 , (P x)))) †
    where
-     † :  (Σ h ꞉ (𝟙 → S) , ((x : 𝟙) → P x holds ↔ ι (h x) holds)) → is-affirmable (Ɐ x ꞉ 𝟙 , (P x)) holds
+     † :  (Σ h ꞉ (𝟙 → S) , ((x : 𝟙) → P x holds ↔ ι (h x) holds))
+             → is-affirmable (Ɐ x ꞉ 𝟙 , (P x)) holds
      † (h , φ) = ∣ h ⋆ , r  ∣
 
       where
        p : ((Ɐ x ꞉ 𝟙 , P x) ⇔ P ⋆) holds
-       p =  (λ true-for-all → true-for-all ⋆) , (λ pstar  x → pstar)
+       p =  (λ f → f ⋆) , (λ pstar  x → pstar)
 
        q : ((ι (h ⋆)) ⇔ (Ɐ x ꞉ 𝟙 , P x)) holds
        q = ↔-sym (↔-trans p (φ ⋆))
 
        r : ι (h ⋆) ＝ (Ɐ x ꞉ 𝟙 , P x)
-       r =  ⇔-gives-＝ pe (ι (h ⋆))  (Ɐ x ꞉ 𝟙 , P x) (holds-gives-equal-⊤ pe fe ((ι (h ⋆)) ⇔(Ɐ x ꞉ 𝟙 , P x)) q)
+       r =  ⇔-gives-＝ pe (ι (h ⋆))  (Ɐ x ꞉ 𝟙 , P x)
+                      (holds-gives-equal-⊤ pe fe ((ι (h ⋆)) ⇔(Ɐ x ꞉ 𝟙 , P x)) q)
+
+
+ ×-is-compact : {X Y : 𝓤 ̇ }
+                            → is-compact X
+                            → is-compact Y
+                            → is-compact ( X × Y )
+                            
+ ×-is-compact {X} {Y}  kX kY P =  ∥∥-rec (holds-is-prop ( is-affirmable (Ɐ z ꞉ (X × Y) , P z))) t
+   where
+    t : Σ h ꞉ (X × Y → S) , ((z : (X × Y)) → P z holds ↔ ι (h z) holds) →
+          is-affirmable (Ɐ z ꞉ (X × Y) ,  P z) holds
+    t (h , φ) = transport (_holds ∘ is-affirmable) (q ⁻¹) †
+
+      where
+       p : ((Ɐ z ꞉ (X × Y) , P z) ⇔ (Ɐ x ꞉ X , (Ɐ y ꞉ Y , P (x , y)))) holds
+       p = (λ Qz x' y' → Qz (x' , y') ) , λ Qxy z → Qxy (pr₁ z) (pr₂ z)
+
+       q : (Ɐ z ꞉ (X × Y) , P z) ＝ (Ɐ x ꞉ X , (Ɐ y ꞉ Y , P (x , y))) 
+       q = ⇔-gives-＝ pe  (Ɐ z ꞉ (X × Y) , P z) (Ɐ x ꞉ X , (Ɐ y ꞉ Y , P (x , y)))
+                     (holds-gives-equal-⊤ pe fe ( ((Ɐ z ꞉ (X × Y) , P z) ⇔ (Ɐ x ꞉ X , (Ɐ y ꞉ Y , P (x , y))))) p)
+
+       † : is-affirmable (Ɐ x ꞉ X , (Ɐ y ꞉ Y , P (x , y)))  holds
+       † = kX (λ x → (Ɐ y ꞉ Y , P (x , y))) {!!} -- stuck here :  we cannot extract the witness from "try x"
+
+        where
+         try : (x : X) → is-affirmable (Ɐ y ꞉ Y , P (x , y)) holds
+         try x = kY (λ y → P (x , y)) ∣ (λ y → h (x , y)) , (λ y → φ (x , y))  ∣ 
+
+\end{code}
+
+Compact : prime-version
+
+\begin{code}
+
+ is-compact' : 𝓤 ̇  → 𝓤 ⁺ ̇
+ is-compact' X = (P : X → Ω 𝓤)
+                         → is-intrinsically-open′ P holds
+                         → is-affirmable (Ɐ x ꞉ X , (P x)) holds
+
+ 𝟙-is-compact' : is-compact' 𝟙
+ 𝟙-is-compact' P iP = transport (_holds ∘ is-affirmable) (r ⁻¹) (iP ⋆)
+   where
+     p : ((Ɐ x ꞉ 𝟙 , P x) ⇔ P ⋆) holds
+     p =  (λ f → f ⋆) , (λ pstar  x → pstar)
+
+     r :  (Ɐ x ꞉ 𝟙 , P x) ＝ (P ⋆)
+     r =  ⇔-gives-＝ pe (Ɐ x ꞉ 𝟙 , P x) (P ⋆) (holds-gives-equal-⊤ pe fe ((Ɐ x ꞉ 𝟙 , P x) ⇔ P ⋆)  p)
+
+ ×-is-compact' : {X Y : 𝓤 ̇ }
+                            → is-compact' X
+                            → is-compact' Y
+                            → is-compact' ( X × Y )
+
+ ×-is-compact' {X} {Y} kX kY P iP = {!!}
 
 \end{code}
 
