@@ -701,3 +701,5 @@ spectral-implies-spectral· X σ = ∣ 𝒦-X⁻ , ≅c-sym spec-𝒦⁻X X X-is
   open 𝒦-Duality X σ
 
 \end{code}
+
+TODO: add the definition with the explicit equivalence.
