@@ -13,7 +13,7 @@ module. The proof is implemented in the function `X-is-homeomorphic-to-spec-𝒦
 {-# OPTIONS --safe --without-K --lossy-unification #-}
 
 open import MLTT.List hiding ([_])
-open import MLTT.Spartan hiding (J)
+open import MLTT.Spartan hiding (J; rhs)
 open import UF.Base
 open import UF.FunExt
 open import UF.PropTrunc
@@ -108,8 +108,8 @@ We denote by `spec-𝒦⁻X` the spectrum of `𝒦⁻X`.
 
 \end{code}
 
-The map `ι` below is the inclusion of the compact opens in the small copy `𝒦⁻X`
-into `𝒪(X)`.
+The map `ι` below is the inclusion of the compact opens into the small copy
+`𝒦⁻X` into `𝒪(X)`.
 
 \begin{code}
 
@@ -121,7 +121,7 @@ into `𝒪(X)`.
 
 \end{code}
 
-This map is quite obviously a frame homomorphism, but writin this fact down
+This map is quite obviously a frame homomorphism, but writing this fact down
 involves some bureaucracy.
 
 \begin{code}
@@ -199,7 +199,7 @@ Furthermore, we write down the fact that `ι` is an order embedding.
 
 \end{code}
 
-Using the map `ι`, we define the map `η` below. This is essentially the
+Using the map `ι`, we define the map `ϕ₀` below. This is essentially the
 principal ideal map, but goes through the small type `𝒦⁻X` of compact opens.
 
 \begin{code}
@@ -209,12 +209,12 @@ principal ideal map, but goes through the small type `𝒦⁻X` of compact opens
 
 \end{code}
 
-We now prove that this always gives an ideal.
+We now prove that this always gives ideals.
 
 \begin{code}
 
- η-contains-𝟎 : (U : ⟨ 𝒪 X ⟩) → 𝟎⁻ ∈ ϕ₀ U
- η-contains-𝟎 U =
+ ϕ₀-contains-𝟎 : (U : ⟨ 𝒪 X ⟩) → 𝟎⁻ ∈ ϕ₀ U
+ ϕ₀-contains-𝟎 U =
   ι 𝟎⁻       ＝⟨ Ⅰ ⟩ₚ
   𝟎[ 𝒪 X ]   ≤⟨ Ⅱ ⟩
   U          ■
@@ -222,8 +222,8 @@ We now prove that this always gives an ideal.
     Ⅰ = ι-preserves-𝟎
     Ⅱ = 𝟎-is-bottom (𝒪 X) U
 
- η-is-downward-closed : (U : ⟨ 𝒪 X ⟩) → is-downward-closed 𝒦-X⁻ (ϕ₀ U) holds
- η-is-downward-closed U K₁ K₂ p μ =
+ ϕ₀-is-downward-closed : (U : ⟨ 𝒪 X ⟩) → is-downward-closed 𝒦-X⁻ (ϕ₀ U) holds
+ ϕ₀-is-downward-closed U K₁ K₂ p μ =
   ιₖ (r K₁)   ≤⟨ Ⅰ ⟩
   ιₖ (r K₂)   ≤⟨ Ⅱ ⟩
   U           ■
@@ -231,9 +231,9 @@ We now prove that this always gives an ideal.
     Ⅰ = ι-is-monotone K₁ K₂ p
     Ⅱ = μ
 
- η-is-closed-under-∨ : (U : ⟨ 𝒪 X ⟩)
+ ϕ₀-is-closed-under-∨ : (U : ⟨ 𝒪 X ⟩)
                      → is-closed-under-binary-joins 𝒦-X⁻ (ϕ₀ U) holds
- η-is-closed-under-∨ U K₁ K₂ μ₁ μ₂  =
+ ϕ₀-is-closed-under-∨ U K₁ K₂ μ₁ μ₂  =
   ι (K₁ ∨⁻ K₂)        ＝⟨ Ⅰ ⟩ₚ
   ι K₁ ∨[ 𝒪 X ] ι K₂  ≤⟨ Ⅱ ⟩
   U                   ■
@@ -251,14 +251,17 @@ gives ideals.
  ϕ : ⟨ 𝒪 X ⟩ → Ideal 𝒦-X⁻
  ϕ U = record
          { I                    = ϕ₀ U
-         ; I-is-inhabited       = ∣ 𝟎⁻ , η-contains-𝟎 U ∣
-         ; I-is-downward-closed = η-is-downward-closed U
-         ; I-is-closed-under-∨  = η-is-closed-under-∨ U
+         ; I-is-inhabited       = ∣ 𝟎⁻ , ϕ₀-contains-𝟎 U ∣
+         ; I-is-downward-closed = ϕ₀-is-downward-closed U
+         ; I-is-closed-under-∨  = ϕ₀-is-closed-under-∨ U
          }
 
 \end{code}
 
-We can now show that the map `ϕ` preserves finite meets.
+We follow Johnstone’s proof from Stone Spaces (II.3.2) where he uses the symbol
+`ϕ` for this function.
+
+We now show that the map `ϕ` preserves finite meets.
 
 \begin{code}
 
@@ -304,12 +307,23 @@ We can now show that the map `ϕ` preserves finite meets.
 
 \end{code}
 
+We denote by `ϕₘ` the version of `ϕ` packaged up with the proof that is a
+monotone map.
+
+\begin{code}
+
+ ϕₘ : poset-of (𝒪 X) ─m→ poset-of-ideals
+ ϕₘ = ϕ , ϕ-is-monotone
+
+\end{code}
+
 This map also preserves joins, but because we derive this from the fact that it
 is an equivalence, we will delay its proof for a bit.
 
 We now construct the opposite direction of the equivalence formed by `ϕ`. This
-is simply the map that maps an ideal to its joins `I ↦ ⋁ I`. We denote this by
-`join`.
+is simply the map that sends an ideal to its join `I ↦ ⋁ I`. But because ideals
+are defined using powersets, we need to first use `𝕋` to switch to the family
+representation of the ideal. We denote this by `join`.
 
 \begin{code}
 
@@ -357,9 +371,9 @@ The map `join` preserves binary meets.
  join-preserves-binary-meets : (ℐ 𝒥 : Ideal 𝒦-X⁻)
                              → join (ℐ ∧ᵢ 𝒥) ＝ join ℐ ∧[ 𝒪 X ] join 𝒥
  join-preserves-binary-meets ℐ 𝒥 =
-  join (ℐ ∧ᵢ 𝒥)                                                            ＝⟨ refl ⟩
-  ⋁[ 𝒪 X ] ⁅ ι K ∣ K ε 𝕋 𝒦⁻X (_∈ⁱ ℐ ∧ᵢ 𝒥) ⁆                                 ＝⟨ Ⅱ ⟩
-  ⋁⟨ ((i , _) , (j , _)) ∶ (_ × _) ⟩ ι i ∧[ 𝒪 X ] ι j                      ＝⟨ Ⅰ ⟩
+  join (ℐ ∧ᵢ 𝒥)                                                              ＝⟨ refl ⟩
+  ⋁[ 𝒪 X ] ⁅ ι K ∣ K ε 𝕋 𝒦⁻X (_∈ⁱ ℐ ∧ᵢ 𝒥) ⁆                                  ＝⟨ Ⅱ ⟩
+  ⋁⟨ ((i , _) , (j , _)) ∶ (_ × _) ⟩ ι i ∧[ 𝒪 X ] ι j                        ＝⟨ Ⅰ ⟩
   (⋁[ 𝒪 X ] ⁅ ι K ∣ K ε 𝕋 𝒦⁻X I ⁆) ∧[ 𝒪 X ] (⋁[ 𝒪 X ] ⁅ ι K ∣ K ε 𝕋 𝒦⁻X J ⁆) ＝⟨ refl ⟩
   join ℐ ∧[ 𝒪 X ] join 𝒥 ∎
   where
@@ -372,31 +386,48 @@ The map `join` preserves binary meets.
 
    † : ((⋁[ 𝒪 X ] ⁅ ι K ∣ K ε 𝕋 𝒦⁻X (_∈ⁱ ℐ ∧ᵢ 𝒥) ⁆)
          ≤[ poset-of (𝒪 X) ]
-        (⋁⟨ ((i , _) , (j , _)) ∶ index (𝕋 𝒦⁻X (_∈ⁱ ℐ)) × index (𝕋 𝒦⁻X (_∈ⁱ 𝒥)) ⟩ ι i ∧[ 𝒪 X ] ι j))
+        (⋁⟨ ((i , _) , (j , _)) ∶ _ ⟩ ι i ∧[ 𝒪 X ] ι j))
        holds
-   † = cofinal-implies-join-covered (𝒪 X) ⁅ ι K ∣ K ε 𝕋 𝒦⁻X (_∈ⁱ ℐ ∧ᵢ 𝒥) ⁆ ⁅ ι i ∧[ 𝒪 X ] ι j ∣ ((i , _) , (j , _)) ∶ index (𝕋 𝒦⁻X (_∈ⁱ ℐ)) × index (𝕋 𝒦⁻X (_∈ⁱ 𝒥)) ⁆ †₀
+   † = cofinal-implies-join-covered (𝒪 X) _ _ †₀
     where
-     †₀ : cofinal-in (𝒪 X) ⁅ ι K ∣ K ε 𝕋 𝒦⁻X (_∈ⁱ ℐ ∧ᵢ 𝒥) ⁆ ⁅ ι i ∧[ 𝒪 X ] ι j ∣ ((i , _) , (j , _)) ∶ index (𝕋 𝒦⁻X (_∈ⁱ ℐ)) × index (𝕋 𝒦⁻X (_∈ⁱ 𝒥)) ⁆ holds
-     †₀ (K , μ₁ , μ₂) = ∣ ((K , μ₁) , (K , μ₂)) , reflexivity+ (poset-of (𝒪 X)) (∧[ 𝒪 X ]-is-idempotent (ι K)) ∣
+     †₀ : cofinal-in (𝒪 X) _ _ holds
+     †₀ (K , μ₁ , μ₂) = ∣ ((K , μ₁) , (K , μ₂)) , ※ ∣
+      where
+       ※ : (ι K ≤[ poset-of (𝒪 X) ] (ι K ∧[ 𝒪 X ] ι K)) holds
+       ※ = reflexivity+ (poset-of (𝒪 X)) (∧[ 𝒪 X ]-is-idempotent (ι K))
 
-   ‡ : ((⋁⟨ ((i , _) , (j , _)) ∶ index (𝕋 𝒦⁻X (_∈ⁱ ℐ)) × index (𝕋 𝒦⁻X (_∈ⁱ 𝒥)) ⟩ ι i ∧[ 𝒪 X ] ι j) ≤[ poset-of (𝒪 X) ] (⋁[ 𝒪 X ] ⁅ ι K ∣ K ε 𝕋 𝒦⁻X (_∈ⁱ ℐ ∧ᵢ 𝒥) ⁆)) holds
-   ‡ = cofinal-implies-join-covered
-        (𝒪 X)
-        ⁅ ι i ∧[ 𝒪 X ] ι j ∣ ((i , _) , (j , _)) ∶ index (𝕋 𝒦⁻X (_∈ⁱ ℐ)) × index (𝕋 𝒦⁻X (_∈ⁱ 𝒥)) ⁆
-        ⁅ ι K ∣ K ε 𝕋 𝒦⁻X (_∈ⁱ ℐ ∧ᵢ 𝒥) ⁆
-        ‡₀
+   ‡ : ((⋁⟨ ((i , _) , (j , _)) ∶ _ ⟩ ι i ∧[ 𝒪 X ] ι j)
+        ≤[ poset-of (𝒪 X) ]
+       (⋁[ 𝒪 X ] ⁅ ι K ∣ K ε 𝕋 𝒦⁻X (_∈ⁱ ℐ ∧ᵢ 𝒥) ⁆))
+        holds
+   ‡ = cofinal-implies-join-covered (𝒪 X) _ _ ‡₀
         where
-         ‡₀ : cofinal-in (𝒪 X) ⁅ ι i ∧[ 𝒪 X ] ι j ∣ ((i , _) , (j , _)) ∶ index (𝕋 𝒦⁻X (_∈ⁱ ℐ)) × index (𝕋 𝒦⁻X (_∈ⁱ 𝒥)) ⁆ ⁅ ι K ∣ K ε 𝕋 𝒦⁻X (_∈ⁱ ℐ ∧ᵢ 𝒥) ⁆ holds
+         ‡₀ : cofinal-in (𝒪 X) _ _ holds
          ‡₀ ((K₁ , μ₁) , (K₂ , μ₂)) =
-          ∣ (K₁ ∧⁻ K₂ , (I-is-downward-closed (K₁ ∧⁻ K₂) K₁ (∧-is-a-lower-bound₁ 𝒦-X⁻ K₁ K₂) μ₁ , J-is-downward-closed (K₁ ∧⁻ K₂) K₂ (∧-is-a-lower-bound₂ 𝒦-X⁻ K₁ K₂) μ₂)) , goal ∣
+          ∣ (K₁ ∧⁻ K₂ , γ , β) , ϑ ∣
            where
-            open Ideal ℐ using (I-is-downward-closed)
-            open Ideal 𝒥 using () renaming (I-is-downward-closed to J-is-downward-closed)
+            open Ideal ℐ
+             using () renaming (I-is-downward-closed to ℐ-is-downward-closed)
+            open Ideal 𝒥
+             using ()
+             renaming (I-is-downward-closed to 𝒥-is-downward-closed)
 
-            goal : ((ι K₁ ∧[ 𝒪 X ] ι K₂) ≤[ poset-of (𝒪 X) ] ι (K₁ ∧⁻ K₂)) holds
-            goal = ι K₁ ∧[ 𝒪 X ] ι K₂ ＝⟨ ι-preserves-∧ K₁ K₂ ⁻¹ ⟩ₚ
-                   ι (K₁ ∧⁻ K₂)       ■
+            γ : (K₁ ∧⁻ K₂) ∈ⁱ ℐ
+            γ = ℐ-is-downward-closed
+                 (K₁ ∧⁻ K₂)
+                 K₁
+                 (∧-is-a-lower-bound₁ 𝒦-X⁻ K₁ K₂) μ₁
 
+            β : (K₁ ∧⁻ K₂) ∈ⁱ 𝒥
+            β = 𝒥-is-downward-closed
+                 (K₁ ∧⁻ K₂)
+                 K₂
+                 (∧-is-a-lower-bound₂ 𝒦-X⁻ K₁ K₂)
+                 μ₂
+
+            ϑ : ((ι K₁ ∧[ 𝒪 X ] ι K₂) ≤[ poset-of (𝒪 X) ] ι (K₁ ∧⁻ K₂)) holds
+            ϑ = ι K₁ ∧[ 𝒪 X ] ι K₂ ＝⟨ ι-preserves-∧ K₁ K₂ ⁻¹ ⟩ₚ
+                ι (K₁ ∧⁻ K₂)       ■
 
    Ⅰ = distributivity+ (𝒪 X) ⁅ ι K ∣ K ε 𝕋 𝒦⁻X I ⁆ ⁅ ι K ∣ K ε 𝕋 𝒦⁻X J ⁆ ⁻¹
    Ⅱ = ≤-is-antisymmetric (poset-of (𝒪 X)) † ‡
@@ -410,7 +441,7 @@ The map `ϕ` is indeed the left inverse of the map `join` as promised.
  ϕ-cancels-join : (ℐ : Ideal 𝒦-X⁻) → ϕ (join ℐ) ＝ ℐ
  ϕ-cancels-join ℐ = ideal-extensionality 𝒦-X⁻ (ϕ (join ℐ)) ℐ † ‡
   where
-   open Ideal ℐ using (I-is-downward-closed)
+   open Ideal ℐ using () renaming (I-is-downward-closed to ℐ-is-downward-closed)
 
    † : (ϕ (join ℐ) ⊆ᵢ ℐ) holds
    † K μ = ∥∥-rec
@@ -422,15 +453,15 @@ The map `ϕ` is indeed the left inverse of the map `join` as promised.
           (ι K ≤[ poset-of (𝒪 X) ] ι K′) holds
        → K ∈ⁱ ℐ
      ‡ ((K′ , φ) , p) =
-      I-is-downward-closed K K′ (ι-is-order-embedding K K′ p) φ
+      ℐ-is-downward-closed K K′ (ι-is-order-embedding K K′ p) φ
 
    ‡ : (ℐ ⊆ᵢ ϕ (join ℐ)) holds
    ‡ K μ = ⋁[ 𝒪 X ]-upper ⁅ ι K ∣ K ε 𝕋 𝒦⁻X (_∈ⁱ ℐ) ⁆ (K , μ)
 
 \end{code}
 
-Furthermore, it is also the right inverse, the proof of which is given in
-`join-cancels-ϕ`.
+Furthermore, it is also the right inverse, the proof of which is given below and
+is called `join-cancels-ϕ`.
 
 \begin{code}
 
@@ -447,7 +478,7 @@ Furthermore, it is also the right inverse, the proof of which is given in
  ℬ↑-X = pr₁ basis↑-X
 
  join-cancels-ϕ : (U : ⟨ 𝒪 X ⟩) → join (ϕ U) ＝ U
- join-cancels-ϕ U = transport (λ - → join (ϕ -) ＝ -) (c ⁻¹) final
+ join-cancels-ϕ U = transport (λ - → join (ϕ -) ＝ -) (c ⁻¹) †
   where
    J : Fam 𝓤 (index (basisₛ X σᴰ))
    J = cover-indexₛ X σᴰ U
@@ -478,37 +509,47 @@ Furthermore, it is also the right inverse, the proof of which is given in
    goal₂ : cofinal-in (𝒪 X) ⁅ ι K ∣ K ε 𝕋 𝒦⁻X (_∈ⁱ (ϕ U)) ⁆ S holds
    goal₂ (K , p) = ∣ ((K , p) ∷ []) , † ∣
     where
-     † : (pr₁ (r K) ≤[ poset-of (𝒪 X) ] S [ (K , p ∷ []) ]) holds
-     † = reflexivity+ (poset-of (𝒪 X)) (𝟎-left-unit-of-∨ (𝒪 X) (pr₁ (r K)) ⁻¹)
+     † : (ι K ≤[ poset-of (𝒪 X) ] S [ (K , p ∷ []) ]) holds
+     † = reflexivity+ (poset-of (𝒪 X)) (𝟎-left-unit-of-∨ (𝒪 X) (ι K) ⁻¹)
 
-   goal : ⋁[ 𝒪 X ] S ＝ ⋁[ 𝒪 X ] ⁅ ι K ∣ K ε 𝕋 𝒦⁻X (_∈ⁱ (ϕ U)) ⁆
-   goal = bicofinal-implies-same-join (𝒪 X) S ((fmap-syntax (λ K → ι K)) (𝕋 𝒦⁻X (_∈ⁱ ϕ U))) goal₁ goal₂
+   Ⅱ = bicofinal-implies-same-join (𝒪 X) S _ goal₁ goal₂ ⁻¹
 
-   ♣ : (join (ϕ (⋁[ 𝒪 X ] S)) ≤[ poset-of (𝒪 X) ] (⋁[ 𝒪 X ] ⁅ ι K ∣ K ε 𝕋 𝒦⁻X (_∈ⁱ (ϕ U)) ⁆)) holds
-   ♣ = cofinal-implies-join-covered (𝒪 X) (𝒦-below (ϕ (join-of (𝒪 X) S))) (fmap-syntax (λ K → ι K) (𝕋 𝒦⁻X (_∈ⁱ ϕ U))) γ
+   ♣ : (join (ϕ (⋁[ 𝒪 X ] S))
+         ≤[ poset-of (𝒪 X) ]
+        (⋁[ 𝒪 X ] ⁅ ι K ∣ K ε 𝕋 𝒦⁻X (_∈ⁱ (ϕ U)) ⁆))
+       holds
+   ♣ = cofinal-implies-join-covered (𝒪 X) _ _ γ
     where
-     γ : cofinal-in (𝒪 X) (𝒦-below (ϕ (join-of (𝒪 X) S))) ⁅ ι K ∣ K ε 𝕋 𝒦⁻X (_∈ⁱ (ϕ U)) ⁆ holds
+     γ : cofinal-in
+          (𝒪 X)
+          (𝒦-below (ϕ (join-of (𝒪 X) S)))
+          ⁅ ι K ∣ K ε 𝕋 𝒦⁻X (_∈ⁱ (ϕ U)) ⁆ holds
      γ (K , q) = ∣ (K , (transport (λ - → K ∈ⁱ ϕ -) (c ⁻¹) q)) , ≤-is-reflexive (poset-of (𝒪 X)) (ι K) ∣
 
-   ♠ : ((⋁[ 𝒪 X ] ⁅ ι K ∣ K ε 𝕋 𝒦⁻X (_∈ⁱ (ϕ U)) ⁆) ≤[ poset-of (𝒪 X) ] join (ϕ (⋁[ 𝒪 X ] S))) holds
-   ♠ = cofinal-implies-join-covered (𝒪 X) (fmap-syntax (λ K → ι K) (𝕋 𝒦⁻X (_∈ⁱ ϕ U))) (𝒦-below (ϕ (join-of (𝒪 X) S))) γ
+   ♠ : ((⋁[ 𝒪 X ] ⁅ ι K ∣ K ε 𝕋 𝒦⁻X (_∈ⁱ (ϕ U)) ⁆)
+         ≤[ poset-of (𝒪 X) ]
+        join (ϕ (⋁[ 𝒪 X ] S)))
+       holds
+   ♠ = cofinal-implies-join-covered (𝒪 X) _ _ γ
     where
-     γ : cofinal-in (𝒪 X) ⁅ ι K ∣ K ε 𝕋 𝒦⁻X (_∈ⁱ (ϕ U)) ⁆ (𝒦-below (ϕ (join-of (𝒪 X) S))) holds
-     γ (K , q) = ∣ (K , transport (λ - → K ∈ⁱ ϕ -) c q) , ≤-is-reflexive (poset-of (𝒪 X)) (ι K) ∣
+     γ : cofinal-in
+          (𝒪 X)
+          ⁅ ι K ∣ K ε 𝕋 𝒦⁻X (_∈ⁱ (ϕ U)) ⁆
+          (𝒦-below (ϕ (⋁[ 𝒪 X ] S)))
+         holds
+     γ (K , q) =
+      ∣ (K , transport (λ - → K ∈ⁱ ϕ -) c q) , ≤-is-reflexive (poset-of (𝒪 X)) (ι K) ∣
 
-   final : join (ϕ (⋁[ 𝒪 X ] S)) ＝ ⋁[ 𝒪 X ] S
-   final = join (ϕ (⋁[ 𝒪 X ] S))                   ＝⟨ ≤-is-antisymmetric (poset-of (𝒪 X)) ♣ ♠ ⟩
-           ⋁[ 𝒪 X ] ⁅ ι K ∣ K ε 𝕋 𝒦⁻X (_∈ⁱ (ϕ U)) ⁆ ＝⟨ goal ⁻¹ ⟩
-           ⋁[ 𝒪 X ] S ∎
+   Ⅰ = ≤-is-antisymmetric (poset-of (𝒪 X)) ♣ ♠
+
+   † : join (ϕ (⋁[ 𝒪 X ] S)) ＝ ⋁[ 𝒪 X ] S
+   † = join (ϕ (⋁[ 𝒪 X ] S))                     ＝⟨ Ⅰ ⟩
+       ⋁[ 𝒪 X ] ⁅ ι K ∣ K ε 𝕋 𝒦⁻X (_∈ⁱ (ϕ U)) ⁆  ＝⟨ Ⅱ ⟩
+       ⋁[ 𝒪 X ] S ∎
 
 \end{code}
 
-\begin{code}
-
- ϕₘ : poset-of (𝒪 X) ─m→ poset-of-ideals
- ϕₘ = ϕ , ϕ-is-monotone
-
-\end{code}
+The map `join` is monotone.
 
 \begin{code}
 
@@ -522,6 +563,9 @@ Furthermore, it is also the right inverse, the proof of which is given in
  joinₘ = join , join-is-monotone
 
 \end{code}
+
+We now prove that the maps `ϕ` and `join` preserve joins using the Adjoint
+Functor Theorem.
 
 \begin{code}
 
