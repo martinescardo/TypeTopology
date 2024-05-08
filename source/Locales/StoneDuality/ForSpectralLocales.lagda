@@ -6,15 +6,15 @@ date-started:   2024-04-12
 
 \begin{code}[hide]
 
-{-# OPTIONS --safe --without-K --lossy-unification #-}
+{-# OPTIONS --safe --without-K --lossy-unification --exact-split --double-check #-}
 
 open import MLTT.Spartan hiding (𝟚; ₀; ₁)
 open import UF.FunExt
 open import UF.PropTrunc
 open import UF.Size
+open import UF.Subsingletons
 open import UF.UA-FunExt
 open import UF.Univalence
-open import UF.Subsingletons
 
 module Locales.StoneDuality.ForSpectralLocales
         (ua : Univalence)
@@ -51,7 +51,8 @@ open Locale
 
 \end{code}
 
-We denote by `spec L` the locale of spectra of a distributive lattice `L`.
+We denote by `spec L` the spectrum (the locale defined by the frame of ideals)
+of a distributive lattice `L`.
 
 \begin{code}
 
@@ -62,21 +63,26 @@ spec = locale-of-spectra
 
 \end{code}
 
-A locale `X` is said to be a _locale of spectra_ if it's homeomorphic to the
-locale of spectra of some distributive lattice `L `.
+A locale `X` is called `spectral·` if it is homeomorphic to the spectrum of some
+distributive lattice `L `.
 
 \begin{code}
 
-is-locale-of-spectra : (X : Locale (𝓤 ⁺) 𝓤 𝓤) → 𝓤 ⁺  ̇
-is-locale-of-spectra {𝓤} X = Σ L ꞉ DistributiveLattice 𝓤 , X ≅c≅ spec L
+is-spectral· : (X : Locale (𝓤 ⁺) 𝓤 𝓤) → Ω (𝓤 ⁺)
+is-spectral· {𝓤} X = Ǝ L ꞉ DistributiveLattice 𝓤 , X ≅c≅ spec L
 
 \end{code}
 
-Because `spec L` is a spectral locale (with small basis), any locale `X` that is
-homeomorphic to `spec L` for some distributive lattice `L` must be spectral
+This definition uses `∃` instead of `Σ`, because even though the distributive
+lattice of compact opens is unique, the homeomorphism involved need not be.
+
+Because `spec L` is a spectral locale (with a small basis), any locale `X` that
+is homeomorphic to `spec L` for some distributive lattice `L` must be spectral
 (with small basis).
 
 \begin{code}
+
+{--
 
 locale-of-spectra-implies-is-spectral : (X : Locale (𝓤 ⁺) 𝓤 𝓤)
                                       → is-locale-of-spectra X
@@ -94,5 +100,9 @@ locale-of-spectra-implies-is-spectral X (L , 𝒽) =
 
    𝕤 : is-spectral-with-small-basis ua (spec L) holds
    𝕤 = spec-L-is-spectral , spec-L-has-small-𝒦
+
+-- --}
+-- --}
+-- --}
 
 \end{code}
