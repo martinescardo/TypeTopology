@@ -578,32 +578,39 @@ Functor Theorem.
  spec-𝒦⁻X-has-basis =
   ∣ Spectrality.ℬ-spec 𝒦-X⁻  , Spectrality.ℬ-spec-is-basis 𝒦-X⁻ ∣
 
- ϕ-is-left-adjoint-of-join : let
-                              open GaloisConnectionBetween (poset-of (𝒪 X)) poset-of-ideals
-                             in
-                              (ϕₘ ⊣ joinₘ) holds
+ ϕ-is-left-adjoint-of-join
+  : let
+     open GaloisConnectionBetween (poset-of (𝒪 X)) poset-of-ideals
+    in
+     (ϕₘ ⊣ joinₘ) holds
  ϕ-is-left-adjoint-of-join =
-  an-important-lemma spec-𝒦⁻X X X-has-basis joinₘ ϕₘ join-cancels-ϕ ϕ-cancels-join
+  monotone-equivalences-are-adjoint
+   spec-𝒦⁻X
+   X
+   X-has-basis
+   joinₘ
+   ϕₘ
+   join-cancels-ϕ
+   ϕ-cancels-join
 
  ϕ-is-right-adjoint-to-join : let
                                open GaloisConnectionBetween poset-of-ideals (poset-of (𝒪 X))
                               in
                                (joinₘ ⊣ ϕₘ) holds
  ϕ-is-right-adjoint-to-join =
-  an-important-lemma X spec-𝒦⁻X spec-𝒦⁻X-has-basis ϕₘ joinₘ ϕ-cancels-join join-cancels-ϕ
-
-\end{code}
-
-\begin{code}
+  monotone-equivalences-are-adjoint
+   X
+   spec-𝒦⁻X
+   spec-𝒦⁻X-has-basis
+   ϕₘ
+   joinₘ
+   ϕ-cancels-join
+   join-cancels-ϕ
 
  ϕ-preserves-joins : (S : Fam 𝓤 ⟨ 𝒪 X ⟩)
                    → ϕ (⋁[ 𝒪 X ] S) ＝ ⋁ᵢ ⁅ ϕ U ∣ U ε S ⁆
  ϕ-preserves-joins =
   aft-forward spec-𝒦⁻X X X-has-basis ϕₘ (joinₘ , ϕ-is-left-adjoint-of-join)
-
-\end{code}
-
-\begin{code}
 
  join-preserves-joins : (S : Fam 𝓤 (Ideal 𝒦-X⁻))
                       → join (⋁ᵢ S) ＝ ⋁[ 𝒪 X ] ⁅ join I ∣ I ε S ⁆
@@ -616,9 +623,12 @@ Functor Theorem.
 
 \end{code}
 
+We can now package things up into the proof that `ϕ` is a frame homomorphism.
+
 \begin{code}
 
- ϕ-is-a-frame-homomorphism : is-a-frame-homomorphism (𝒪 X) (𝒪 spec-𝒦⁻X) ϕ holds
+ ϕ-is-a-frame-homomorphism
+  : is-a-frame-homomorphism (𝒪 X) (𝒪 spec-𝒦⁻X) ϕ holds
  ϕ-is-a-frame-homomorphism = ϕ-preserves-top , ϕ-preserves-∧ , †
   where
    open Joins (λ x y → x ≤[ poset-of (𝒪 spec-𝒦⁻X) ] y)
@@ -634,7 +644,8 @@ Functor Theorem.
 
 \begin{code}
 
- join-is-a-frame-homomorphism : is-a-frame-homomorphism (𝒪 spec-𝒦⁻X) (𝒪 X) join holds
+ join-is-a-frame-homomorphism
+  : is-a-frame-homomorphism (𝒪 spec-𝒦⁻X) (𝒪 X) join holds
  join-is-a-frame-homomorphism =
   join-preserves-top , join-preserves-binary-meets , †
    where
@@ -655,7 +666,7 @@ The set `𝒪 X` is equivalent to the type `Ideal 𝒦-X⁻`.
  open FrameIsomorphisms
 
  𝒪X-is-equivalent-to-ideals-of-𝒦⁻X : ⟨ 𝒪 X ⟩ ≃ Ideal 𝒦-X⁻
- 𝒪X-is-equivalent-to-ideals-of-𝒦⁻X = ϕ , ((join , †) , (join , ‡))
+ 𝒪X-is-equivalent-to-ideals-of-𝒦⁻X = ϕ , (join , †) , (join , ‡)
   where
    † : (ϕ ∘ join) ∼ id
    † = ϕ-cancels-join
