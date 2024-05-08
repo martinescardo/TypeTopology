@@ -137,25 +137,32 @@ Dominance axiom and Phoa's principle :
 Compactness :
 
 \begin{code}
-{-
+
  is-compact : (X : 𝓤 ̇ ) → 𝓤 ⁺ ̇
- is-compact X = (P : X → Ω 𝓤) → is-intrinsically-open P holds →  (is-affirmable (Ɐ x ꞉ X , (P x)) holds)
+ is-compact X = (P : X → Ω 𝓤) → (is-intrinsically-open P  ⇒ is-affirmable (Ɐ x ꞉ X , (P x))) holds
 
  𝟙-is-compact : is-compact 𝟙
- 𝟙-is-compact P h = t
+ 𝟙-is-compact P = ∥∥-rec (holds-is-prop ( is-affirmable (Ɐ x ꞉ 𝟙 , (P x)))) †
    where
-     to-star : (Ɐ x ꞉ 𝟙 ,  (P x ⇔ P ⋆)) holds -- useful ?
-     to-star = λ x → transport (λ z → (P z ⇔ P ⋆) holds ) refl  (id , id )
+     † :  (Σ h ꞉ (𝟙 → S) , ((x : 𝟙) → P x holds ↔ ι (h x) holds)) → is-affirmable (Ɐ x ꞉ 𝟙 , (P x)) holds
+     † (h , φ) = ∣ h ⋆ , r  ∣
 
-     t : (Ɐ x ꞉ 𝟙 , (P x)) ∈image ι
-     t = {!!}  -- What does index 𝕊 looks like ?
--}
+      where
+       p : ((Ɐ x ꞉ 𝟙 , P x) ⇔ P ⋆) holds
+       p =  (λ true-for-all → true-for-all ⋆) , (λ pstar  x → pstar)
+
+       q : ((ι (h ⋆)) ⇔ (Ɐ x ꞉ 𝟙 , P x)) holds
+       q = ↔-sym (↔-trans p (φ ⋆))
+
+       r : ι (h ⋆) ＝ (Ɐ x ꞉ 𝟙 , P x)
+       r =  ⇔-gives-＝ pe (ι (h ⋆))  (Ɐ x ꞉ 𝟙 , P x) (holds-gives-equal-⊤ pe fe ((ι (h ⋆)) ⇔(Ɐ x ꞉ 𝟙 , P x)) q)
+
 \end{code}
 
 Dominance ≃ Sierpinski satisfying dominance
 
 \begin{code}
-
+{-
 dominant-sierpinski : 𝓤 ⁺ ̇
 dominant-sierpinski = Σ Si ꞉ Sierpinski-Object , (Sierpinski-notations.is-synthetic-dominance Si)
 
@@ -189,7 +196,7 @@ dom-equiv = f , pf
 
     pf : is-equiv f
     pf = {!!}
-
+-}
 
 \end{code}
 
