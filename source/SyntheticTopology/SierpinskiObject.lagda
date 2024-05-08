@@ -122,11 +122,11 @@ Dominance axiom and Phoa's principle :
  openness-is-transitive : (𝓤 ⁺) ̇
  openness-is-transitive = (u : Ω 𝓤) → (is-affirmable u) holds → (p : Ω 𝓤) → (u holds → (is-affirmable p) holds) → (is-affirmable (u ∧ p) ) holds
 
- contains-top : (𝓤 ⁺) ̇
- contains-top = is-affirmable ⊤ holds
+ contains-top : Ω (𝓤 ⁺)
+ contains-top = is-affirmable ⊤
 
  is-synthetic-dominance : (𝓤 ⁺) ̇
- is-synthetic-dominance = contains-top × openness-is-transitive
+ is-synthetic-dominance = contains-top holds × openness-is-transitive
 
  phoa-condition : Ω (𝓤 ⁺)
  phoa-condition =
