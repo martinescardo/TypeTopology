@@ -2,7 +2,7 @@
 authors:      [Ayberk Tosun]
 date-started: 2024-05-02
 --------------------------------------------------------------------------------
-
+c
 \begin{code}
 
 open import MLTT.Spartan
@@ -12,6 +12,9 @@ open import UF.FunExt
 open import UF.PropTrunc
 open import UF.Classifiers
 open import UF.Subsingletons
+open import UF.Equiv
+open import Dominance.Definition
+
 
 module SyntheticTopology.SierpinskiObject
         (𝓤  : Universe)
@@ -56,7 +59,7 @@ Sierpiński object.
 
 \begin{code}
 
-module _ (𝕊 : Sierpinski-Object) where
+module Sierpinski-notations (𝕊 : Sierpinski-Object) where
 
  ι : index 𝕊 → Ω 𝓤
  ι = sierpinski-fun 𝕊
@@ -122,8 +125,8 @@ Dominance axiom and Phoa's principle :
  contains-top : (𝓤 ⁺) ̇ 
  contains-top = is-affirmable ⊤ holds
 
- is-dominance : (𝓤 ⁺) ̇
- is-dominance = contains-top × openness-is-transitive
+ is-synthetic-dominance : (𝓤 ⁺) ̇
+ is-synthetic-dominance = contains-top × openness-is-transitive
  
  phoa-condition : (𝓤 ⁺) ̇ 
  phoa-condition =  (f : Ω 𝓤 → Ω 𝓤) (u : Ω 𝓤) → (is-affirmable u) holds → f u ＝ ((Disjunction._∨_ pt (f ⊥)  u) ∧ f ⊤)
@@ -133,21 +136,61 @@ Dominance axiom and Phoa's principle :
 Compactness : 
 
 \begin{code}
-
+{-
  is-compact : (X : 𝓤 ̇ ) → 𝓤 ⁺ ̇ 
- is-compact X = (P : X → Ω 𝓤) → is-intrinsically-open′ P holds →  ((is-affirmable (Ɐ x ꞉ X , (P x))) holds )
+ is-compact X = (P : X → Ω 𝓤) → is-intrinsically-open P holds →  (is-affirmable (Ɐ x ꞉ X , (P x)) holds)
 
  𝟙-is-compact : is-compact 𝟙
- 𝟙-is-compact P p = t
+ 𝟙-is-compact P h = t
    where
      to-star : (Ɐ x ꞉ 𝟙 ,  (P x ⇔ P ⋆)) holds -- useful ?
      to-star = λ x → transport (λ z → (P z ⇔ P ⋆) holds ) refl  (id , id )
 
      t : (Ɐ x ꞉ 𝟙 , (P x)) ∈image ι 
-     t = ∣ {!!} , {!!} ∣ -- What does index 𝕊 looks like ?
-
+     t = {!!}  -- What does index 𝕊 looks like ?
+-}
 \end{code}
 
+Dominance ≃ Sierpinski satisfying dominance
+
+\begin{code}
+
+dominant-sierpinski : 𝓤 ⁺ ̇
+dominant-sierpinski = Σ Si ꞉ Sierpinski-Object , (Sierpinski-notations.is-synthetic-dominance Si)
+
+dom-equiv : dominant-sierpinski ≃ Dominance {𝓤 } {𝓤 ⁺}
+dom-equiv = f , pf
+
+  where
+  
+    f : dominant-sierpinski → Dominance
+    f (Si , isdom) = d , d2 , d3 , d4 , d5
+      where
+        open Sierpinski-notations (Si)
+        
+        d : (𝓤 ) ̇ → (𝓤 ⁺) ̇
+        d X = Σ p ꞉ is-prop X ,  is-affirmable (X , p) holds
+
+        d2 : D2 d
+        d2 X = Σ-is-prop {!!} λ _ → ∃-is-prop -- see "being-subingleton-is-subsingleton" lemma using fe in HoTT-UF-Agda 
+         
+        d3 : D3 d
+        d3 X dx = pr₁ dx
+         
+        d4 : d 𝟙
+        d4 = 𝟙-is-prop ,  (pr₁ isdom)
+
+        d5' : D5' d
+        d5' P Q' dP P-to-dQ' = (×-is-prop (d3 P dP) {!!}) , {!!} 
+         
+        d5 :  D5 d
+        d5 = D3-and-D5'-give-D5 pe d d3 d5'
+         
+    pf : is-equiv f
+    pf = {!!}
+
+   
+\end{code}
 
 
 
