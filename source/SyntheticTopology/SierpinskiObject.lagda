@@ -24,7 +24,7 @@ module SyntheticTopology.SierpinskiObject
 
 open import UF.Logic
 open import UF.ImageAndSurjection pt
-
+open import UF.Subsingletons-FunExt
 
 open AllCombinators pt fe
 open PropositionalTruncation pt
@@ -168,11 +168,11 @@ dom-equiv = f , pf
       where
         open Sierpinski-notations (Si)
 
-        d : (𝓤 ) ̇ → (𝓤 ⁺) ̇
+        d : 𝓤 ̇ → 𝓤 ⁺  ̇
         d X = Σ p ꞉ is-prop X ,  is-affirmable (X , p) holds
 
         d2 : D2 d
-        d2 X = Σ-is-prop {!!} λ _ → ∃-is-prop -- see "being-subingleton-is-subsingleton" lemma using fe in HoTT-UF-Agda
+        d2 X = Σ-is-prop (being-prop-is-prop fe) λ _ → ∃-is-prop -- see "being-subingleton-is-subsingleton" lemma using fe in HoTT-UF-Agda
 
         d3 : D3 d
         d3 X dx = pr₁ dx
