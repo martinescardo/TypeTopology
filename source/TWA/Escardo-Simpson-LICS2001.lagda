@@ -32,8 +32,7 @@ as well as a specific property about equality of streams under some arithmetic.
 
 \begin{code}
 
-associative' idempotent transpositional : {X : 𝓤 ̇ } → (X → X → X) → 𝓤 ̇
-associative'     _∙_ = ∀ a b c   → a ∙ (b ∙ c)       ＝ (a ∙ b) ∙ c
+idempotent transpositional : {X : 𝓤 ̇ } → (X → X → X) → 𝓤 ̇
 idempotent       _∙_ = ∀ a       → a ∙ a             ＝ a
 transpositional  _∙_ = ∀ a b c d → (a ∙ b) ∙ (c ∙ d) ＝ (a ∙ c) ∙ (b ∙ d)
 

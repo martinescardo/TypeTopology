@@ -13,6 +13,8 @@ module MLTT.List where
 open import MLTT.Spartan
 open import MLTT.Bool
 open import Naturals.Properties
+open import Naturals.Order hiding (minus)
+open import Notation.Order
 
 data List {𝓤} (X : 𝓤 ̇ ) : 𝓤 ̇  where
  [] : List X
@@ -25,6 +27,14 @@ infixr 3 _∷_
 length : {X : 𝓤 ̇ } → List X → ℕ
 length []       = 0
 length (x ∷ xs) = succ (length xs)
+
+course-of-values-induction-on-length
+ : {X : 𝓤 ̇}
+ → (P : List X → 𝓥 ̇ )
+ → ((xs : List X) → ((ys : List X) → length ys < length xs → P ys) → P xs)
+ → (xs : List X) → P xs
+course-of-values-induction-on-length {𝓤} {𝓥} {X} =
+ course-of-values-induction-on-value-of-function length
 
 Vector' : 𝓤 ̇ → ℕ → 𝓤 ̇
 Vector' X n = (Σ xs ꞉ List X , length xs ＝ n)
@@ -40,7 +50,12 @@ equal-heads refl = refl
 equal-tails : {X : 𝓤 ̇ } {x y : X} {s t : List X}
             → x ∷ s ＝ y ∷ t
             → s ＝ t
-equal-tails {𝓤} {X} refl = refl
+equal-tails refl = refl
+
+equal-head-tail : {X : 𝓤 ̇ } {x : X} {s t : List X}
+                → x ∷ s ＝ t
+                → Σ y ꞉ X , Σ t' ꞉ List X , (t ＝ y ∷ t')
+equal-head-tail {𝓤} {X} {x} {s} {t} refl = x , s , refl
 
 [_] : {X : 𝓤 ̇ } → X → List X
 [ x ] = x ∷ []
@@ -74,7 +89,22 @@ map f (x ∷ xs) = f x ∷ map f xs
 
 _<$>_ = map
 
-empty : {𝓤 : Universe} {X : 𝓤 ̇ } → List X → Bool
+is-non-empty : {X : 𝓤 ̇ } → List X → 𝓤 ̇
+is-non-empty []       = 𝟘
+is-non-empty (x ∷ xs) = 𝟙
+
+[]-is-empty : {X : 𝓤 ̇ } → ¬ is-non-empty ([] {𝓤} {X})
+[]-is-empty = 𝟘-elim
+
+-- cons-is-non-empty : {X : 𝓤 ̇ } {x : X} {xs : List X} → is-non-empty (x ∷ xs)
+pattern cons-is-non-empty = ⋆
+
+is-non-empty-++ : {X : 𝓤 ̇ } (xs ys : List X)
+                → is-non-empty xs
+                → is-non-empty (xs ++ ys)
+is-non-empty-++ (x ∷ xs) ys ⋆ = ⋆
+
+empty : {X : 𝓤 ̇ } → List X → Bool
 empty []       = true
 empty (x ∷ xs) = false
 
