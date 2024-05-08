@@ -291,16 +291,17 @@ module AdjointFunctorTheorem (X : Locale 𝓤' 𝓥 𝓥)
 
 Added on 2024-05-06.
 
-Order-preserving equivalences preserve joins.
+Monotone equivalences are adjoints.
 
 \begin{code}
 
- an-important-lemma : (sₘ@(s , _) : poset-of (𝒪 X) ─m→ poset-of (𝒪 Y))
-                    → (rₘ@(r , _) : poset-of (𝒪 Y) ─m→ poset-of (𝒪 X))
-                    → s ∘ r ∼ id
-                    → r ∘ s ∼ id
-                    → (rₘ ⊣ sₘ) holds
- an-important-lemma (s , 𝓂₁) (r , 𝓂₂) φ ψ U V = † , ‡
+ monotone-equivalences-are-adjoint
+  : (sₘ@(s , _) : poset-of (𝒪 X) ─m→ poset-of (𝒪 Y))
+  → (rₘ@(r , _) : poset-of (𝒪 Y) ─m→ poset-of (𝒪 X))
+  → s ∘ r ∼ id
+  → r ∘ s ∼ id
+  → (rₘ ⊣ sₘ) holds
+ monotone-equivalences-are-adjoint (s , 𝓂₁) (r , 𝓂₂) φ ψ U V = † , ‡
   where
    open PosetReasoning 𝒪Xₚ
 
