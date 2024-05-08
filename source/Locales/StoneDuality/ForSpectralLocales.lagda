@@ -10,7 +10,7 @@ locales. It currently contains some preliminary results in this direction.
 
 \begin{code}[hide]
 
-{-# OPTIONS --safe --without-K --lossy-unification --exact-split --double-check --auto-inline #-}
+{-# OPTIONS --safe --without-K --lossy-unification #-}
 
 open import MLTT.Spartan hiding (𝟚; ₀; ₁)
 open import UF.FunExt
