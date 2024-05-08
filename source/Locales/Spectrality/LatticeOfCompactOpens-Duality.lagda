@@ -6,7 +6,7 @@ date-completed: 2024-05-07
 
 Every spectral locale `X` is homeomorphic to the spectrum of its distributive
 lattice `𝒦(X)` of compact opens. We construct a proof of this fact in this
-module. The proof is implemented in the function `X-is-homeomorphic-to-spec-𝒦X`.
+module. The proof is implemented in the function `X-is-homeomorphic-to-spec-𝒦⁻X`.
 
 \begin{code}
 
@@ -103,8 +103,8 @@ We denote by `spec-𝒦⁻X` the spectrum of `𝒦⁻X`.
 
 \begin{code}
 
- spec-𝒦X : Locale (𝓤 ⁺) 𝓤 𝓤
- spec-𝒦X = DefnOfFrameOfIdeal.locale-of-spectra 𝒦-X⁻
+ spec-𝒦⁻X : Locale (𝓤 ⁺) 𝓤 𝓤
+ spec-𝒦⁻X = DefnOfFrameOfIdeal.locale-of-spectra 𝒦-X⁻
 
 \end{code}
 
@@ -263,10 +263,10 @@ We can now show that the map `ϕ` preserves finite meets.
 \begin{code}
 
  abstract
-  ϕ-preserves-top : ϕ 𝟏[ 𝒪 X ] ＝ 𝟏[ 𝒪 spec-𝒦X ]
-  ϕ-preserves-top = only-𝟏-is-above-𝟏 (𝒪 spec-𝒦X) (ϕ 𝟏[ 𝒪 X ]) †
+  ϕ-preserves-top : ϕ 𝟏[ 𝒪 X ] ＝ 𝟏[ 𝒪 spec-𝒦⁻X ]
+  ϕ-preserves-top = only-𝟏-is-above-𝟏 (𝒪 spec-𝒦⁻X) (ϕ 𝟏[ 𝒪 X ]) †
    where
-    † : (𝟏[ 𝒪 spec-𝒦X ] ⊆ᵢ ϕ 𝟏[ 𝒪 X ]) holds
+    † : (𝟏[ 𝒪 spec-𝒦⁻X ] ⊆ᵢ ϕ 𝟏[ 𝒪 X ]) holds
     † K _ = 𝟏-is-top (𝒪 X) (ι K)
 
  open IdealNotation 𝒦-X⁻
@@ -530,8 +530,8 @@ Furthermore, it is also the right inverse, the proof of which is given in
  X-has-basis : has-basis (𝒪 X) holds
  X-has-basis = ∣ spectralᴰ-implies-basisᴰ X σᴰ ∣
 
- spec-𝒦X-has-basis : has-basis (𝒪 spec-𝒦X) holds
- spec-𝒦X-has-basis =
+ spec-𝒦⁻X-has-basis : has-basis (𝒪 spec-𝒦⁻X) holds
+ spec-𝒦⁻X-has-basis =
   ∣ Spectrality.ℬ-spec 𝒦-X⁻  , Spectrality.ℬ-spec-is-basis 𝒦-X⁻ ∣
 
  ϕ-is-left-adjoint-of-join : let
@@ -539,14 +539,14 @@ Furthermore, it is also the right inverse, the proof of which is given in
                              in
                               (ϕₘ ⊣ joinₘ) holds
  ϕ-is-left-adjoint-of-join =
-  an-important-lemma spec-𝒦X X X-has-basis joinₘ ϕₘ join-cancels-ϕ ϕ-cancels-join
+  an-important-lemma spec-𝒦⁻X X X-has-basis joinₘ ϕₘ join-cancels-ϕ ϕ-cancels-join
 
  ϕ-is-right-adjoint-to-join : let
                                open GaloisConnectionBetween poset-of-ideals (poset-of (𝒪 X))
                               in
                                (joinₘ ⊣ ϕₘ) holds
  ϕ-is-right-adjoint-to-join =
-  an-important-lemma X spec-𝒦X spec-𝒦X-has-basis ϕₘ joinₘ ϕ-cancels-join join-cancels-ϕ
+  an-important-lemma X spec-𝒦⁻X spec-𝒦⁻X-has-basis ϕₘ joinₘ ϕ-cancels-join join-cancels-ϕ
 
 \end{code}
 
@@ -555,7 +555,7 @@ Furthermore, it is also the right inverse, the proof of which is given in
  ϕ-preserves-joins : (S : Fam 𝓤 ⟨ 𝒪 X ⟩)
                    → ϕ (⋁[ 𝒪 X ] S) ＝ ⋁ᵢ ⁅ ϕ U ∣ U ε S ⁆
  ϕ-preserves-joins =
-  aft-forward spec-𝒦X X X-has-basis ϕₘ (joinₘ , ϕ-is-left-adjoint-of-join)
+  aft-forward spec-𝒦⁻X X X-has-basis ϕₘ (joinₘ , ϕ-is-left-adjoint-of-join)
 
 \end{code}
 
@@ -565,8 +565,8 @@ Furthermore, it is also the right inverse, the proof of which is given in
                       → join (⋁ᵢ S) ＝ ⋁[ 𝒪 X ] ⁅ join I ∣ I ε S ⁆
  join-preserves-joins = aft-forward
                          X
-                         spec-𝒦X
-                         spec-𝒦X-has-basis
+                         spec-𝒦⁻X
+                         spec-𝒦⁻X-has-basis
                          joinₘ
                          (ϕₘ , ϕ-is-right-adjoint-to-join)
 
@@ -574,29 +574,29 @@ Furthermore, it is also the right inverse, the proof of which is given in
 
 \begin{code}
 
- ϕ-is-a-frame-homomorphism : is-a-frame-homomorphism (𝒪 X) (𝒪 spec-𝒦X) ϕ holds
+ ϕ-is-a-frame-homomorphism : is-a-frame-homomorphism (𝒪 X) (𝒪 spec-𝒦⁻X) ϕ holds
  ϕ-is-a-frame-homomorphism = ϕ-preserves-top , ϕ-preserves-∧ , †
   where
-   open Joins (λ x y → x ≤[ poset-of (𝒪 spec-𝒦X) ] y)
+   open Joins (λ x y → x ≤[ poset-of (𝒪 spec-𝒦⁻X) ] y)
 
-   † : preserves-joins (𝒪 X) (𝒪 spec-𝒦X) ϕ holds
+   † : preserves-joins (𝒪 X) (𝒪 spec-𝒦⁻X) ϕ holds
    † S =
     transport
      (λ - → (- is-lub-of ⁅ ϕ I ∣ I ε S ⁆) holds)
      (ϕ-preserves-joins S ⁻¹)
-     (⋁[ 𝒪 spec-𝒦X ]-upper _ , ⋁[ 𝒪 spec-𝒦X ]-least _)
+     (⋁[ 𝒪 spec-𝒦⁻X ]-upper _ , ⋁[ 𝒪 spec-𝒦⁻X ]-least _)
 
 \end{code}
 
 \begin{code}
 
- join-is-a-frame-homomorphism : is-a-frame-homomorphism (𝒪 spec-𝒦X) (𝒪 X) join holds
+ join-is-a-frame-homomorphism : is-a-frame-homomorphism (𝒪 spec-𝒦⁻X) (𝒪 X) join holds
  join-is-a-frame-homomorphism =
   join-preserves-top , join-preserves-binary-meets , †
    where
     open Joins (λ x y → x ≤[ poset-of (𝒪 X) ] y)
 
-    † : preserves-joins (𝒪 spec-𝒦X) (𝒪 X) join holds
+    † : preserves-joins (𝒪 spec-𝒦⁻X) (𝒪 X) join holds
     † S = transport
            (λ - → (- is-lub-of ⁅ join I ∣ I ε S ⁆) holds)
            (join-preserves-joins S ⁻¹)
@@ -619,10 +619,10 @@ The set `𝒪 X` is equivalent to the type `Ideal 𝒦-X⁻`.
    ‡ : (join ∘ ϕ) ∼ id
    ‡ = join-cancels-ϕ
 
- X-iso-to-spec-𝒦X : spec-𝒦X ≅c≅ X
- X-iso-to-spec-𝒦X = isomorphism₀-to-isomorphismᵣ (𝒪 X) (𝒪 spec-𝒦X) 𝒾
+ X-iso-to-spec-𝒦⁻X : spec-𝒦⁻X ≅c≅ X
+ X-iso-to-spec-𝒦⁻X = isomorphism₀-to-isomorphismᵣ (𝒪 X) (𝒪 spec-𝒦⁻X) 𝒾
   where
-   𝒾 : Isomorphism₀ (𝒪 X) (𝒪 spec-𝒦X)
+   𝒾 : Isomorphism₀ (𝒪 X) (𝒪 spec-𝒦⁻X)
    𝒾 = 𝒪X-is-equivalent-to-ideals-of-𝒦⁻X
      , ϕ-is-a-frame-homomorphism
      , join-is-a-frame-homomorphism
@@ -641,7 +641,7 @@ spectral-implies-spectral·
  : (X : Locale (𝓤 ⁺) 𝓤 𝓤)
  → (is-spectral-with-small-basis ua X
  ⇒ (Ǝ L ꞉ DistributiveLattice 𝓤 , X ≅c≅ spec L)) holds
-spectral-implies-spectral· X σ = ∣ 𝒦⦅X⦆⁻ , ≅c-sym spec-𝒦X X X-iso-to-spec-𝒦X ∣
+spectral-implies-spectral· X σ = ∣ 𝒦⦅X⦆⁻ , ≅c-sym spec-𝒦⁻X X X-iso-to-spec-𝒦⁻X ∣
  where
   open 𝒦-Duality X σ
 
