@@ -77,7 +77,9 @@ type of compact opens.
 module 𝒦-Duality (X  : Locale (𝓤 ⁺) 𝓤 𝓤)
                  (σ₀ : is-spectral-with-small-basis ua X holds) where
 
- open 𝒦-Lattice X σ₀ renaming (𝒦⁻ to 𝒦⁻X)
+ open 𝒦-Lattice X σ₀
+  using (𝟏ₖ; 𝒦⦅X⦆-is-small; 𝒦⦅X⦆; σ; ιₖ-preserves-∨; ιₖ-preserves-∧)
+  renaming (𝒦⁻ to 𝒦⁻X) public
 
 \end{code}
 
@@ -91,9 +93,7 @@ We denote by `e` the equivalence between `𝒦 X`, the type of compact opens of
  e : 𝒦⁻X ≃ 𝒦 X
  e = resizing-condition 𝒦⦅X⦆-is-small
 
- open DistributiveLatticeResizing 𝒦⦅X⦆ 𝒦⁻X (≃-sym e) renaming (Lᶜ to 𝒦-X⁻)
-
- 𝒦⦅X⦆⁻ = 𝒦-X⁻
+ open DistributiveLatticeResizing 𝒦⦅X⦆ 𝒦⁻X (≃-sym e) renaming (Lᶜ to 𝒦-X⁻) public
 
  open DefnOfFrameOfIdeal 𝒦-X⁻
 
@@ -641,7 +641,7 @@ spectral-implies-spectral·
  : (X : Locale (𝓤 ⁺) 𝓤 𝓤)
  → (is-spectral-with-small-basis ua X
  ⇒ (Ǝ L ꞉ DistributiveLattice 𝓤 , X ≅c≅ spec L)) holds
-spectral-implies-spectral· X σ = ∣ 𝒦⦅X⦆⁻ , ≅c-sym spec-𝒦⁻X X X-iso-to-spec-𝒦⁻X ∣
+spectral-implies-spectral· X σ = ∣ 𝒦-X⁻ , ≅c-sym spec-𝒦⁻X X X-iso-to-spec-𝒦⁻X ∣
  where
   open 𝒦-Duality X σ
 
