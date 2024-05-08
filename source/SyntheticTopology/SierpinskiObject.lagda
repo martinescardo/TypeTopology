@@ -2,7 +2,7 @@
 authors:      ["Ayberk Tosun", "Martin Trucchi"]
 date-started: 2024-05-02
 --------------------------------------------------------------------------------
-c
+
 \begin{code}
 
 open import MLTT.Spartan
