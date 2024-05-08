@@ -6,14 +6,10 @@ date-started: 2024-05-02
 \begin{code}
 
 open import MLTT.Spartan
-open import UF.Embeddings
-open import UF.SubtypeClassifier
 open import UF.FunExt
 open import UF.PropTrunc
-open import UF.Classifiers
 open import UF.Subsingletons
-open import UF.Equiv
-open import Dominance.Definition
+open import UF.SubtypeClassifier
 
 
 module SyntheticTopology.SierpinskiObject
@@ -22,8 +18,12 @@ module SyntheticTopology.SierpinskiObject
         (pe : Prop-Ext)
         (pt : propositional-truncations-exist) where
 
-open import UF.Logic
+open import Dominance.Definition
+open import UF.Classifiers
+open import UF.Embeddings
+open import UF.Equiv
 open import UF.ImageAndSurjection pt
+open import UF.Logic
 open import UF.Subsingletons-FunExt
 
 open AllCombinators pt fe
