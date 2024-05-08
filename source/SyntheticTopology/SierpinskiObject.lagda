@@ -27,7 +27,7 @@ open import UF.ImageAndSurjection pt
 open import UF.Subsingletons-FunExt
 
 open AllCombinators pt fe
-open PropositionalTruncation pt
+open PropositionalTruncation pt hiding (_∨_)
 
 
 \end{code}
@@ -128,8 +128,9 @@ Dominance axiom and Phoa's principle :
  is-synthetic-dominance : (𝓤 ⁺) ̇
  is-synthetic-dominance = contains-top × openness-is-transitive
 
- phoa-condition : (𝓤 ⁺) ̇
- phoa-condition =  (f : Ω 𝓤 → Ω 𝓤) (u : Ω 𝓤) → (is-affirmable u) holds → f u ＝ ((Disjunction._∨_ pt (f ⊥)  u) ∧ f ⊤)
+ phoa-condition : Ω (𝓤 ⁺)
+ phoa-condition =
+  Ɐ f ꞉ (Ω 𝓤 → Ω 𝓤) , Ɐ U ꞉ Ω 𝓤 , is-affirmable U ⇒ f U ⇔ (f ⊥ ∨  U) ∧ f ⊤
 
 \end{code}
 
