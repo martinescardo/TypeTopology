@@ -1,12 +1,16 @@
 --------------------------------------------------------------------------------
-title:          Stone duality for spectral locales
-author:         Ayberk Tosun
-date-started:   2024-04-12
+title:        Stone duality for spectral locales
+author:       Ayberk Tosun
+date-started: 2024-04-12
+dates-updated: [2024-05-08]
 --------------------------------------------------------------------------------
+
+This module will eventually contain the proof Stone duality for spectral
+locales. It currently contains some preliminary results in this direction.
 
 \begin{code}[hide]
 
-{-# OPTIONS --safe --without-K --lossy-unification --exact-split --double-check #-}
+{-# OPTIONS --safe --without-K --lossy-unification --exact-split --double-check --auto-inline #-}
 
 open import MLTT.Spartan hiding (𝟚; ₀; ₁)
 open import UF.FunExt
@@ -29,23 +33,23 @@ private
  pe : Prop-Ext
  pe {𝓤} = univalence-gives-propext (ua 𝓤)
 
+open import Locales.Compactness pt fe
 open import Locales.ContinuousMap.FrameHomomorphism-Definition pt fe
 open import Locales.ContinuousMap.FrameHomomorphism-Properties pt fe
 open import Locales.ContinuousMap.Homeomorphism-Definition pt fe
 open import Locales.DistributiveLattice.Definition fe pt
 open import Locales.DistributiveLattice.LocaleOfSpectra fe pe pt
 open import Locales.DistributiveLattice.LocaleOfSpectra-Properties fe pe pt
-open import Locales.Spectrality.LatticeOfCompactOpens ua pt sr
+open import Locales.DistributiveLattice.Resizing ua pt sr
 open import Locales.Frame pt fe
 open import Locales.SIP.FrameSIP
 open import Locales.SmallBasis pt fe sr
+open import Locales.Spectrality.LatticeOfCompactOpens ua pt sr
 open import Locales.Spectrality.SpectralLocale pt fe
-open import Locales.Compactness pt fe
 open import Slice.Family
 open import UF.Equiv
 open import UF.Logic
 open import UF.SubtypeClassifier
-open import Locales.DistributiveLattice.Resizing ua pt sr
 
 open AllCombinators pt fe
 open FrameHomomorphismProperties
@@ -80,11 +84,10 @@ This definition uses `∃` instead of `Σ`, because even though the distributive
 lattice of compact opens is unique, the homeomorphism involved need not be.
 
 TODO: add the definition that specifies the equivalence and is therefore
-naturally propositional.
+naturally propositional and prove the equivalence.
 
 Because `spec L` is a spectral locale (with a small basis), any locale `X` that
-is homeomorphic to `spec L` for some distributive lattice `L` must be spectral
-(with small basis).
+is homeomorphic to `spec L` for some distributive lattice `L` must be spectral.
 
 \begin{code}
 
