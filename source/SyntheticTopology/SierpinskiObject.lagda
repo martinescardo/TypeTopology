@@ -213,7 +213,18 @@ Compact : prime-version
                             → is-compact' Y
                             → is-compact' ( X × Y )
 
- ×-is-compact' {X} {Y} kX kY P iP = {!!}
+ ×-is-compact' {X} {Y} kX kY P iP = transport (_holds ∘ is-affirmable) (q ⁻¹) †
+
+   where
+    p : ((Ɐ z ꞉ (X × Y) , P z) ⇔ (Ɐ x ꞉ X , (Ɐ y ꞉ Y , P (x , y)))) holds
+    p = (λ Qz x' y' → Qz (x' , y') ) , λ Qxy z → Qxy (pr₁ z) (pr₂ z)
+
+    q : (Ɐ z ꞉ (X × Y) , P z) ＝ (Ɐ x ꞉ X , (Ɐ y ꞉ Y , P (x , y))) 
+    q = ⇔-gives-＝ pe  (Ɐ z ꞉ (X × Y) , P z) (Ɐ x ꞉ X , (Ɐ y ꞉ Y , P (x , y)))
+                    (holds-gives-equal-⊤ pe fe ( ((Ɐ z ꞉ (X × Y) , P z) ⇔ (Ɐ x ꞉ X , (Ɐ y ꞉ Y , P (x , y))))) p)
+
+    † : is-affirmable (Ɐ x ꞉ X , (Ɐ y ꞉ Y ,  P (x , y)))  holds
+    † = kX (λ x → (Ɐ y ꞉ Y , (P (x , y)))) (λ x → (kY (λ y → (P (x , y))) (λ y → iP ((x , y))))) 
 
 \end{code}
 
