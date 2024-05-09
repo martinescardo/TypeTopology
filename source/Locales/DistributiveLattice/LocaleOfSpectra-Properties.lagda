@@ -69,7 +69,7 @@ We abbreviate `locale-of-spectra` to `spec-L`.
 \begin{code}
 
  spec-L : Locale (𝓤 ⁺) 𝓤 𝓤
- spec-L = locale-of-spectra
+ spec-L = spectrum
 
 \end{code}
 
@@ -77,8 +77,8 @@ The locale of spectra of is a compact locale.
 
 \begin{code}
 
- locale-of-spectra-is-compact : is-compact spec-L holds
- locale-of-spectra-is-compact S δ p =
+ spectrum-is-compact : is-compact spec-L holds
+ spectrum-is-compact S δ p =
   ∥∥-rec ∃-is-prop † (p 𝟏 (𝟏ᵈ-is-top L 𝟏))
    where
     † : Σ xs ꞉ List X , xs ◁ S × (𝟏 ＝ join-listᵈ L xs)
@@ -307,7 +307,7 @@ spectral locale.
  spec-L-is-spectral = (κ , ν) , ideal-has-directed-cover-of-compact-opens
   where
    κ : is-compact spec-L holds
-   κ = locale-of-spectra-is-compact
+   κ = spectrum-is-compact
 
    ν : compacts-of-[ spec-L ]-are-closed-under-binary-meets holds
    ν = compacts-of-the-locale-of-spectra-are-closed-under-∧
@@ -347,7 +347,7 @@ We denote by `𝒦-fam` the family corresponding to the subset of compact opens.
 
 \begin{code}
 
- 𝒦-fam : Fam (𝓤 ⁺) ⟨ 𝒪 locale-of-spectra ⟩
+ 𝒦-fam : Fam (𝓤 ⁺) ⟨ 𝒪 spec-L ⟩
  𝒦-fam = 𝕋 (𝓤 ⁺) ⟨ 𝒪 spec-L ⟩ (_holds ∘ is-compact-open spec-L)
 
 \end{code}
