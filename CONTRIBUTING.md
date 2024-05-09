@@ -54,10 +54,9 @@ document, we provide a list of conventions and practices that we expect
   we'll continue to use `.lagda` for the sake of consistency.
 - Comments and discussions in files are encouraged. Ideally, files should follow
   a literate programming in style.
-- All modules should use the flags `--safe` and `--without-K`, and if possible,
-  `--exact-split` and `--auto-inline.` Any modules that use unsafe features
-  should be placed under the directory `Unsafe` and should be imported from
-  `Unsafe/index.lagda`.
+- All modules should use the flags `--safe` and `--without-K`. Any modules that
+  use unsafe features should be placed under the directory `Unsafe` and should
+  be imported from `Unsafe/index.lagda`.
 - For `Σ` types, we use the notation `Σ x ꞉ A , B x`. Note that the colon
   character here is `꞉` (the Unicode symbol `MODIFIER LETTER COLON`) and **not**
   `∶` (i.e. the Unicode symbol `RATIO`), which is what you get by typing `\:` in
