@@ -73,7 +73,7 @@ We abbreviate `spectrum` to `spec-L`.
 
 \end{code}
 
-The locale of spectra of is a compact locale.
+The spectrum is a compact locale.
 
 \begin{code}
 
