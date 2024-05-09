@@ -1,5 +1,5 @@
 --------------------------------------------------------------------------------
-title:          Locale of spectra of a distributive lattice
+title:          The spectrum of a distributive lattice
 author:         Ayberk Tosun
 date-started:   2024-02-21
 date-completed: 2024-03-01
