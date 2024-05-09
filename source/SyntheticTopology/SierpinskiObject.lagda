@@ -5,9 +5,13 @@ date-started: 2024-05-02
 
 \begin{code}
 
+{-# OPTIONS --safe --without-K #-}
+
 open import MLTT.Spartan
 open import UF.FunExt
 open import UF.PropTrunc
+open import UF.Sets
+open import UF.Sets-Properties
 open import UF.Subsingletons
 open import UF.SubtypeClassifier
 
@@ -162,6 +166,7 @@ Compactness :
                       (holds-gives-equal-⊤ pe fe ((ι (h ⋆)) ⇔(Ɐ x ꞉ 𝟙 , P x)) q)
 
 
+{-  Commented : annoying to have a hole while working
  ×-is-compact : {X Y : 𝓤 ̇ }
                             → is-compact X
                             → is-compact Y
@@ -182,11 +187,12 @@ Compactness :
                      (holds-gives-equal-⊤ pe fe ( ((Ɐ z ꞉ (X × Y) , P z) ⇔ (Ɐ x ꞉ X , (Ɐ y ꞉ Y , P (x , y))))) p)
 
        † : is-affirmable (Ɐ x ꞉ X , (Ɐ y ꞉ Y , P (x , y)))  holds
-       † = kX (λ x → (Ɐ y ꞉ Y , P (x , y))) {!!} -- stuck here :  we cannot extract the witness from "try x"
+       † = kX (λ x → (Ɐ y ꞉ Y , P (x , y))) {!!}  -- stuck here :  we cannot extract the witness from "try x"
 
         where
          try : (x : X) → is-affirmable (Ɐ y ꞉ Y , P (x , y)) holds
          try x = kY (λ y → P (x , y)) ∣ (λ y → h (x , y)) , (λ y → φ (x , y))  ∣ 
+-}
 
 \end{code}
 
@@ -251,24 +257,47 @@ Discrete spaces
 
 \begin{code}
 
- is-discrete : 𝓤 ̇ → 𝓤 ⁺ ̇
- is-discrete X = is-intrinsically-open′ (λ ((x , y) : X × X) → (∥ x ＝ y ∥ , ∥∥-is-prop )) holds -- Or should we directly  require X to be a set ?
-
- is-set : 𝓤 ̇ → 𝓤 ̇
- is-set X = (x y : X) → is-prop (x ＝ y)
+ is-discrete-trunc : 𝓤 ̇ → 𝓤 ⁺ ̇
+ is-discrete-trunc X = is-intrinsically-open′ (λ ((x , y) : X × X) → (∥ x ＝ y ∥ , ∥∥-is-prop )) holds -- Or should we directly  require X to be a set ? Truncation inside an → : nightmare
  
  is-discrete-set : (X : 𝓤 ̇) → is-set X → 𝓤 ⁺ ̇
- is-discrete-set X setX =  is-intrinsically-open′ (λ ((x , y) : X × X) → ((x ＝ y) , setX x y )) holds
+ is-discrete-set X setX =  is-intrinsically-open′ (λ ((x , y) : X × X) → ((x ＝ y) , setX  )) holds -- Works better for proving that compact product of discrete is discrete
 
- 𝟙-is-discrete : contains-top holds →  is-discrete 𝟙
- 𝟙-is-discrete ct  = λ (⋆ , ⋆) → ∥∥-rec (holds-is-prop (is-affirmable (∥ ⋆ ＝ ⋆ ∥ , ∥∥-is-prop ))) †  ct
+ -- In Lesnik's thesis, everything is mentionned as "sets".
+ -- But discussion right before  prop 2.8 suggests that "_＝_" should be an "open predicate", which implies that "x ＝ y" lies in Ω 𝓤 (⁺)
+
+ 𝟙-is-discrete-trunc : contains-top holds →  is-discrete-trunc 𝟙
+ 𝟙-is-discrete-trunc ct  = λ (⋆ , ⋆) → ∥∥-rec (holds-is-prop (is-affirmable (∥ ⋆ ＝ ⋆ ∥ , ∥∥-is-prop ))) † ct
    where
      † : Σ (λ x → ι x ＝ ⊤) → is-affirmable (∥ ⋆ ＝ ⋆ ∥ , ∥∥-is-prop) holds
      † (⊤⁻¹ , φ) = ∣ ⊤⁻¹ , ⇔-gives-＝ pe (ι ⊤⁻¹) (∥ ⋆ ＝ ⋆ ∥ , ∥∥-is-prop) (holds-gives-equal-⊤ pe fe ( ι ⊤⁻¹ ⇔ ∥ ⋆ ＝ ⋆ ∥ , ∥∥-is-prop)  p)  ∣
 
       where
        p : (ι ⊤⁻¹ ⇔ ∥ ⋆ ＝ ⋆ ∥ , ∥∥-is-prop) holds
-       p = (λ _ → ∣ refl  ∣ ) , λ _ → transport _holds (φ ⁻¹) ⊤-holds
+       p = (λ _ → ∣ refl  ∣ ) , λ _ → transport _holds (φ ⁻¹) ⊤-holds 
+
+
+ compact-Π-discrete-set : (K : 𝓤 ̇) → (X : K → 𝓤 ̇)
+                                                        → is-compact' K
+                                                        → (set-certificate : ((k : K) → is-set (X k)))
+                                                        → ((k : K) → is-discrete-set (X k) (set-certificate k) )
+                                                        → is-discrete-set (Π X) (Π-is-set fe set-certificate)
+                                                        
+ compact-Π-discrete-set K X kK set-certificate dX (x₁ , x₂) = transport (_holds ∘ is-affirmable) (q ⁻¹) †
+ 
+   where
+    p :  ( ( x₁ ＝ x₂ ) ↔ ((k : K) →  ( (x₁ k) ＝ (x₂ k) ) ))
+    p = ( λ x₁-equal-x₂ → transport (λ - → ((k : K) → (( x₁ k ) ＝( - k) ))) x₁-equal-x₂ (λ _ → refl)) , -- there is certainly some magic function in funext's family doing the job but I have not found it
+           (dfunext fe)
+
+-- ((x : X) → ∥ P x  ∥ ) →∥ Q ∥  knowing that ((x : X) → P x) → Q
+    
+    q :  ( (x₁ ＝ x₂) ,  Π-is-set fe set-certificate  ) ＝ ((Ɐ k ꞉ K , ( ( (x₁ k) ＝ (x₂ k) ) , set-certificate k )))
+    q = ⇔-gives-＝ pe ( ( x₁ ＝ x₂ ) , Π-is-set fe set-certificate )  ((Ɐ k ꞉ K , ( ( (x₁ k) ＝ (x₂ k) ) , set-certificate k  )))
+              (holds-gives-equal-⊤ pe fe ( ( (x₁ ＝ x₂ ),  Π-is-set fe set-certificate ) ⇔ ((Ɐ k ꞉ K , ( ( (x₁ k) ＝ (x₂ k) ) , set-certificate k  )))) p)
+    
+    † : is-affirmable ((Ɐ k ꞉ K , ( ( (x₁ k) ＝ (x₂ k) ) , set-certificate k ))) holds
+    † = kK (λ k → (x₁ k ＝ x₂ k) , set-certificate k) (λ k → dX k (x₁ k , x₂ k)) 
 
 \end{code}
 
