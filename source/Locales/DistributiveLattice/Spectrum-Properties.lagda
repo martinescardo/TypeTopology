@@ -298,8 +298,8 @@ The binary meet of two compact ideals is compact.
 
 Added on 2024-04-08.
 
-Finally, we package everything up into a proof that the locale of spectra is a
-spectral locale.
+Finally, we package everything up into a proof that the spectrum locale is
+spectral.
 
 \begin{code}
 
