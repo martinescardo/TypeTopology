@@ -5,7 +5,7 @@ date-started:   2024-02-21
 date-completed: 2024-03-01
 --------------------------------------------------------------------------------
 
-We define the locale of spectra over a distributive lattice `L`, the defining
+We define the spectrum locale over a distributive lattice `L`, the defining
 frame of which is the frame of ideals over `L`.
 
 \begin{code}
