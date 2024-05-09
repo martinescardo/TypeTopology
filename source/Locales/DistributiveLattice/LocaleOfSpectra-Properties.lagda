@@ -64,7 +64,7 @@ module Spectrality (L : DistributiveLattice 𝓤) where
 
 \end{code}
 
-We abbreviate `locale-of-spectra` to `spec-L`.
+We abbreviate `spectrum` to `spec-L`.
 
 \begin{code}
 
@@ -261,9 +261,9 @@ The binary meet of two compact ideals is compact.
 
 \begin{code}
 
- compacts-of-the-locale-of-spectra-are-closed-under-∧
+ compacts-of-the-spectrum-are-closed-under-∧
   : compacts-of-[ spec-L ]-are-closed-under-binary-meets holds
- compacts-of-the-locale-of-spectra-are-closed-under-∧ K₁ K₂ κ₁ κ₂ = κ
+ compacts-of-the-spectrum-are-closed-under-∧ K₁ K₂ κ₁ κ₂ = κ
   where
    ι₁ : ∃ x₁ ꞉ ∣ L ∣ᵈ , K₁ ＝ ↓ x₁
    ι₁ = compact-ideal-is-principal K₁ κ₁
@@ -310,7 +310,7 @@ spectral locale.
    κ = spectrum-is-compact
 
    ν : compacts-of-[ spec-L ]-are-closed-under-binary-meets holds
-   ν = compacts-of-the-locale-of-spectra-are-closed-under-∧
+   ν = compacts-of-the-spectrum-are-closed-under-∧
 
 \end{code}
 
