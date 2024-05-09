@@ -124,7 +124,8 @@ conclusion.
 \begin{code}
 
 simple-type₂-injective-gives-WEM : (X : 𝓤₀ ̇)
-                                 → simple-type₂ X → ainjective-type X 𝓤 𝓤 → WEM 𝓤
+                                 → simple-type₂ X
+                                 → ainjective-type X 𝓤 𝓤 → WEM 𝓤
 simple-type₂-injective-gives-WEM X s X-ainj =
  𝟚-ainjective-gives-WEM
   (retract-of-ainjective 𝟚 X X-ainj

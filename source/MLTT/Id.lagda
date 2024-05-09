@@ -73,6 +73,11 @@ module _ {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } where
  ∼-ap : {E : 𝓦 ̇ } (F : E → Π A) {e e' : E} → e ＝ e' → F e ∼ F e'
  ∼-ap F p x = ap (λ - → F - x) p
 
+∼-ap-∘ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+         {f g : X → Y} (h : Y → Z)
+       → f ∼ g → h ∘ f ∼ h ∘ g
+∼-ap-∘ h p x = ap h (p x)
+
 \end{code}
 
 Notations to make some proofs more readable:

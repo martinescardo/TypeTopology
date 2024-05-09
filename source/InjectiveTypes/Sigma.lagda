@@ -381,11 +381,14 @@ compatibility-condition-with-axioms
     ρ' : A' (extension ϕ p f) → ((h : p holds) → A' (f h))
     ρ' = ρ A' ϕ p f
 
+    τ : (α : (h : p holds) → A' (f h))
+      → B (extension ϕ p f) (σ (λ h → pr₁ (α h)))
+    τ α = B-is-closed-under-extension p f
+           (λ h → pr₁ (α h))
+           (λ h → pr₂ (α h))
+
     σ' : ((h : p holds) → A' (f h)) → A' (extension ϕ p f)
-    σ' α = σ (λ h → pr₁ (α h)) ,
-             B-is-closed-under-extension p f
-             (λ h → pr₁ (α h))
-             (λ h → pr₂ (α h))
+    σ' α = σ (λ h → pr₁ (α h)) , τ α
 
     ρσ' : ρ' ∘ σ' ∼ id
     ρσ' α = dfunext fe' I
@@ -395,16 +398,19 @@ compatibility-condition-with-axioms
 
       I : ρ' (σ' α) ∼ α
       I h =
-       ρ' (σ' α) h                    ＝⟨ refl ⟩
-       ρ' (σ α₁ , _) h                ＝⟨ refl ⟩
-       transport A' (e h) (σ α₁ , _)  ＝⟨ II ⟩
-       (transport A (e h) (σ α₁) , _) ＝⟨ refl ⟩
-       (ρ A ϕ p f (σ α₁) h , _)       ＝⟨ III ⟩
-       (α₁ h , α₂ h)                  ＝⟨ refl ⟩
-       α h                            ∎
+       ρ' (σ' α) h                     ＝⟨ refl ⟩
+       ρ' (σ α₁ , τ α) h               ＝⟨ refl ⟩
+       transport A' (e h) (σ α₁ , τ α) ＝⟨ II ⟩
+       (transport A (e h) (σ α₁) , τ') ＝⟨ refl ⟩
+       (ρ A ϕ p f (σ α₁) h , _)        ＝⟨ III ⟩
+       (α₁ h , α₂ h)                   ＝⟨ refl ⟩
+       α h                             ∎
         where
          e : (h : p holds) → extension ϕ p f ＝ f h
          e = extends ϕ p f
+
+         τ' : B (f h) (transport A (extends ϕ p f h) (σ α₁))
+         τ' = transportd A B (σ α₁) (e h) (τ α)
 
          II  = transport-Σ A B (f h) (e h) (σ α₁)
          III = to-subtype-＝
