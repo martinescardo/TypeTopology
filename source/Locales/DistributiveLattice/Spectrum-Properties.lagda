@@ -17,7 +17,7 @@ open import UF.FunExt
 open import UF.Subsingletons
 open import UF.Size
 
-module Locales.DistributiveLattice.LocaleOfSpectra-Properties
+module Locales.DistributiveLattice.Spectrum-Properties
         (fe : Fun-Ext)
         (pe : Prop-Ext)
         (pt : propositional-truncations-exist)
@@ -28,7 +28,7 @@ open import Locales.Compactness pt fe
 open import Locales.DistributiveLattice.Definition fe pt
 open import Locales.DistributiveLattice.Ideal pt fe pe
 open import Locales.DistributiveLattice.Ideal-Properties pt fe pe
-open import Locales.DistributiveLattice.LocaleOfSpectra fe pe pt
+open import Locales.DistributiveLattice.Spectrum fe pe pt
 open import Locales.DistributiveLattice.Properties fe pt
 open import Locales.Frame pt fe
 open import Locales.SmallBasis pt fe sr
