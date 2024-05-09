@@ -486,10 +486,10 @@ We are now ready to package everything up as a frame.
 
 \end{code}
 
-This is the frame of opens of the “space of spectra” of the distributive lattice
+This is the frame of opens of the “spectrum space” of the distributive lattice
 `L`. Because we work with locales as our notion of space, we just take the
-locale that this frame defines as the locale of spectral over the distributive
-lattice `L`.
+locale that this frame defines as the spectrum over the distributive lattice
+`L`.
 
 \begin{code}
 
