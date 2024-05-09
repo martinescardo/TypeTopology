@@ -493,9 +493,9 @@ lattice `L`.
 
 \begin{code}
 
- locale-of-spectra : Locale (𝓤 ⁺) 𝓤 𝓤
- locale-of-spectra = record
-                      { ⟨_⟩ₗ         = Ideal L
-                      ; frame-str-of = pr₂ frame-of-ideals }
+ spectrum : Locale (𝓤 ⁺) 𝓤 𝓤
+ spectrum = record
+             { ⟨_⟩ₗ         = Ideal L
+             ; frame-str-of = pr₂ frame-of-ideals }
 
 \end{code}
