@@ -21,7 +21,7 @@ module Locales.DistributiveLattice.Ideal-Properties
 
 open import Locales.DistributiveLattice.Definition fe pt
 open import Locales.DistributiveLattice.Ideal pt fe pe
-open import Locales.DistributiveLattice.LocaleOfSpectra fe pe pt
+open import Locales.DistributiveLattice.Spectrum fe pe pt
 open import Locales.DistributiveLattice.Properties fe pt
 open import Locales.Frame pt fe hiding (is-directed)
 open import MLTT.List
