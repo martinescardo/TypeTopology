@@ -247,6 +247,31 @@ Compact : prime-version
 
 \end{code}
 
+Discrete spaces
+
+\begin{code}
+
+ is-discrete : 𝓤 ̇ → 𝓤 ⁺ ̇
+ is-discrete X = is-intrinsically-open′ (λ ((x , y) : X × X) → (∥ x ＝ y ∥ , ∥∥-is-prop )) holds -- Or should we directly  require X to be a set ?
+
+ is-set : 𝓤 ̇ → 𝓤 ̇
+ is-set X = (x y : X) → is-prop (x ＝ y)
+ 
+ is-discrete-set : (X : 𝓤 ̇) → is-set X → 𝓤 ⁺ ̇
+ is-discrete-set X setX =  is-intrinsically-open′ (λ ((x , y) : X × X) → ((x ＝ y) , setX x y )) holds
+
+ 𝟙-is-discrete : contains-top holds →  is-discrete 𝟙
+ 𝟙-is-discrete ct  = λ (⋆ , ⋆) → ∥∥-rec (holds-is-prop (is-affirmable (∥ ⋆ ＝ ⋆ ∥ , ∥∥-is-prop ))) †  ct
+   where
+     † : Σ (λ x → ι x ＝ ⊤) → is-affirmable (∥ ⋆ ＝ ⋆ ∥ , ∥∥-is-prop) holds
+     † (⊤⁻¹ , φ) = ∣ ⊤⁻¹ , ⇔-gives-＝ pe (ι ⊤⁻¹) (∥ ⋆ ＝ ⋆ ∥ , ∥∥-is-prop) (holds-gives-equal-⊤ pe fe ( ι ⊤⁻¹ ⇔ ∥ ⋆ ＝ ⋆ ∥ , ∥∥-is-prop)  p)  ∣
+
+      where
+       p : (ι ⊤⁻¹ ⇔ ∥ ⋆ ＝ ⋆ ∥ , ∥∥-is-prop) holds
+       p = (λ _ → ∣ refl  ∣ ) , λ _ → transport _holds (φ ⁻¹) ⊤-holds
+
+\end{code}
+
 Dominance ≃ Sierpinski satisfying dominance
 
 \begin{code}
