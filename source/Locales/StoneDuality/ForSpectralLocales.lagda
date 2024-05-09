@@ -66,7 +66,7 @@ of a distributive lattice `L`.
 open DefnOfFrameOfIdeal
 
 spec : DistributiveLattice 𝓤 → Locale (𝓤 ⁺) 𝓤 𝓤
-spec = locale-of-spectra
+spec = spectrum
 
 \end{code}
 
