@@ -226,6 +226,25 @@ Compact : prime-version
     † : is-affirmable (Ɐ x ꞉ X , (Ɐ y ꞉ Y ,  P (x , y)))  holds
     † = kX (λ x → (Ɐ y ꞉ Y , (P (x , y)))) (λ x → (kY (λ y → (P (x , y))) (λ y → iP ((x , y))))) 
 
+ image-of-compact' : {X Y : 𝓤 ̇ }
+                                    → (f : X → Y)
+                                    → is-surjection f
+                                    → is-compact' X
+                                    → is-compact' Y
+
+ image-of-compact' {X} {Y} f surf kX P iP = transport (_holds ∘ is-affirmable) (q ⁻¹) †
+
+   where
+    p : ((Ɐ y ꞉ Y , P y) ⇔ (Ɐ x ꞉ X , P (f x))) holds
+    p = (λ pY x → pY (f x)) , (λ pX y → surjection-induction f surf (_holds ∘ P) (λ y → holds-is-prop (P y)) pX y)
+    
+    q :  (Ɐ y ꞉ Y , P y) ＝ (Ɐ x ꞉ X , P (f x))
+    q = ⇔-gives-＝ pe  (Ɐ y ꞉ Y , P y) (Ɐ x ꞉ X , P (f x))
+                    (holds-gives-equal-⊤ pe fe (( Ɐ y ꞉ Y , P y) ⇔ (Ɐ x ꞉ X , P (f x))) p)
+    
+    † : is-affirmable (Ɐ x ꞉ X , P (f x)) holds
+    † = kX (λ x → P (f x)) (λ x → iP (f x))
+
 \end{code}
 
 Dominance ≃ Sierpinski satisfying dominance
