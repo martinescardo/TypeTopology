@@ -5,13 +5,18 @@ TEMPORARILY SPLIT UP TO SPEED UP TYPECHECKING
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --no-exact-split  --lossy-unification #-}
+{-# OPTIONS --without-K --no-exact-split  --lossy-unification #-}
+{-# OPTIONS --allow-unsolved-metas #-}
 
 open import UF.Univalence
-open import UF.DiscreteAndSeparated
+open import UF.PropTrunc
+open import UF.Size
 
-module Ordinals.Exponentiation-More
+
+module Ordinals.Exponentiation.More
        (ua : Univalence)
+       (pt : propositional-truncations-exist)
+       (sr : Set-Replacement pt)
        where
 
 open import UF.Base
@@ -26,6 +31,7 @@ open import UF.Size
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.UA-FunExt
+open import UF.DiscreteAndSeparated
 
 private
  fe : FunExt
@@ -53,7 +59,7 @@ open import Ordinals.Underlying
 
 -- our imports
 open import MLTT.List
-open import Ordinals.Exponentiation ua
+open import Ordinals.Exponentiation.DecreasingList ua pt sr
 
 open import Ordinals.WellOrderingTaboo
 

@@ -3,13 +3,14 @@ Tom de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg, Chuangjie Xu,
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --no-exact-split --lossy-unification #-}
+{-# OPTIONS --without-K --no-exact-split --lossy-unification #-}
+{-# OPTIONS --allow-unsolved-metas #-}
 
 open import UF.Univalence
 open import UF.PropTrunc
 open import UF.Size
 
-module Ordinals.ExponentiationAlternative
+module Ordinals.Exponentiation.Alternative
        (ua : Univalence)
        (pt : propositional-truncations-exist)
        (sr : Set-Replacement pt)
@@ -54,7 +55,7 @@ open import Ordinals.Underlying
 open import Ordinals.WellOrderingTaboo
 open import Ordinals.OrdinalOfOrdinalsSuprema ua
 
-open import Ordinals.Exponentiation ua pt sr
+open import Ordinals.Exponentiation.DecreasingList ua pt sr
 
 open PropositionalTruncation pt
 
@@ -76,8 +77,8 @@ exp {𝓤} {𝓥} α = transfinite-recursion-on-OO
                                     (λ b → ih b ×ₒ α))) -- exp α (β ↓ b) ×ₒ α
 
 exp-behaviour : (α : Ordinal 𝓤) → (β : Ordinal 𝓥) →
-                exp α β ＝ sup {I = 𝟙 {𝓤} + ⟨ β ⟩} (cases (λ _ → 𝟙ₒ) (λ b → exp α (β ↓ b) ×ₒ α))
-exp-behaviour {𝓤} {𝓥} α β = {!transfinite-recursion-on-OO-behaviour (Ordinal (𝓤 ⊔ 𝓥)) ((λ β ih → sup {I = 𝟙 {𝓤} + ⟨ β ⟩} (cases (λ _ → 𝟙ₒ) (λ b → ih b ×ₒ α)))exp-body α) β!}
+                exp α β ＝ sup {I = 𝟙 {𝓤} + ⟨ β ⟩} (cases {X = 𝟙} (λ _ → 𝟙ₒ) (λ b → exp α (β ↓ b) ×ₒ α))
+exp-behaviour {𝓤} {𝓥} α = {!transfinite-recursion-on-OO-behaviour (Ordinal (𝓤 ⊔ 𝓥)) (λ β ih → sup {I = 𝟙 {𝓤} + ⟨ β ⟩} (cases {X = 𝟙} (λ _ → 𝟙ₒ) (λ b → ih b ×ₒ α)))!}
 
 \end{code}
 

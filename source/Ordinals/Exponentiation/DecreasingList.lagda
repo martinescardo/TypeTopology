@@ -1,5 +1,5 @@
 Tom de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg, Chuangjie Xu,
-15 April 2023.
+15 April 2024.
 
 \begin{code}
 
@@ -9,7 +9,7 @@ open import UF.Univalence
 open import UF.PropTrunc
 open import UF.Size
 
-module Ordinals.Exponentiation
+module Ordinals.Exponentiation.DecreasingList
        (ua : Univalence)
        (pt : propositional-truncations-exist)
        (sr : Set-Replacement pt)
