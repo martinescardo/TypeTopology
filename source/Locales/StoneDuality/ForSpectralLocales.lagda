@@ -38,9 +38,9 @@ open import Locales.ContinuousMap.FrameHomomorphism-Definition pt fe
 open import Locales.ContinuousMap.FrameHomomorphism-Properties pt fe
 open import Locales.ContinuousMap.Homeomorphism-Definition pt fe
 open import Locales.DistributiveLattice.Definition fe pt
-open import Locales.DistributiveLattice.LocaleOfSpectra fe pe pt
-open import Locales.DistributiveLattice.LocaleOfSpectra-Properties fe pe pt
 open import Locales.DistributiveLattice.Resizing ua pt sr
+open import Locales.DistributiveLattice.Spectrum fe pe pt
+open import Locales.DistributiveLattice.Spectrum-Properties fe pe pt
 open import Locales.Frame pt fe
 open import Locales.SIP.FrameSIP
 open import Locales.SmallBasis pt fe sr
@@ -66,7 +66,7 @@ of a distributive lattice `L`.
 open DefnOfFrameOfIdeal
 
 spec : DistributiveLattice 𝓤 → Locale (𝓤 ⁺) 𝓤 𝓤
-spec = locale-of-spectra
+spec = spectrum
 
 \end{code}
 
