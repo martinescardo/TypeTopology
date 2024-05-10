@@ -87,7 +87,7 @@ module 𝒦-Duality (X  : Locale (𝓤 ⁺) 𝓤 𝓤)
 We define some shorthand notation for convenience.
 
 We denote by `e` the equivalence between `𝒦 X`, the type of compact opens of
-`X`, and its small copy which is called `𝒦⁻X`.
+`X`, and its small copy `𝒦⁻X`.
 
 \begin{code}
 
@@ -109,8 +109,7 @@ We denote by `spec-𝒦⁻X` the spectrum of `𝒦⁻X`.
 
 \end{code}
 
-The map `ι` below is the inclusion of the compact opens into the small copy
-`𝒦⁻X` into `𝒪(X)`.
+The map `ι` below is the inclusion of `𝒦⁻X` into `𝒪(X)`.
 
 \begin{code}
 
@@ -210,7 +209,7 @@ principal ideal map, but goes through the small type `𝒦⁻X` of compact opens
 
 \end{code}
 
-We now prove that this always gives ideals.
+We now prove that this map always gives ideals.
 
 \begin{code}
 
@@ -707,3 +706,6 @@ spectral-implies-spectral· X σ =
 \end{code}
 
 TODO: add the definition with the explicit equivalence.
+
+[1] Johnstone, Peter T., Stone Spaces. Cambridge University Press, Cambridge,
+    1982
