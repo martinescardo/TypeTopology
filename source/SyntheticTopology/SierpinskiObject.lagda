@@ -28,6 +28,7 @@ open import UF.Equiv
 open import UF.ImageAndSurjection pt
 open import UF.Logic
 open import UF.Subsingletons-FunExt
+open import UF.Univalence
 
 open AllCombinators pt fe
 open PropositionalTruncation pt hiding (_∨_)
@@ -35,15 +36,22 @@ open PropositionalTruncation pt hiding (_∨_)
 \end{code}
 
 What is a Sierpiński object? In Definition 2.4 of Davorin Lesnik's thesis, it is
-defined simply as a subobject of the subobject classifier.
+defined simply as a subobject of the subobject classifier (in some topos). This
+idea goes back to Martín Escardó’s Barbados Notes.
+
+In the setting of type theory, we define it as a subtype over `Ω_{𝓤}` (for some
+universe 𝓤).
 
 \begin{code}
 
 Sierpinski-Object : 𝓤 ⁺  ̇
 Sierpinski-Object = Subtypes' 𝓤  (Ω 𝓤)
 
-Sierpinski-Object′ : 𝓤 ⁺  ̇
-Sierpinski-Object′ = Ω 𝓤 → Ω 𝓤
+\end{code}
+
+We define some notation to refer to components of a Sierpiński object.
+
+\begin{code}
 
 index : Sierpinski-Object → 𝓤  ̇
 index (I , α , _) = I
@@ -54,10 +62,8 @@ sierpinski-fun (_ , α , _) = α
 \end{code}
 
 In the module below, we assume the existence of a Sierpiński object `𝕊` and
-define some notions _synthetically_. The meaning of "synthetic" here can be
-understood through its contradiction with the analytic [1]. Instead of analyzing
-topological notions, we synthesize them: we formulate them in terms of the
-Sierpiński object.
+define some notions _synthetically_, following the work of Martín Escardó (and
+Davorin Lešnik).
 
 \begin{code}
 
@@ -81,22 +87,30 @@ object are called _affirmable.
 
 \end{code}
 
+A subset of a type is said to be intrinsically open if it is a predicate defined
+by affirmable propositions.
+
 \begin{code}
 
- is-intrinsically-open′ : {X : 𝓤  ̇} → (X → Ω 𝓤) → Ω (𝓤 ⁺)
- is-intrinsically-open′ {X} P = Ɐ x ꞉ X , is-affirmable (P x)
+ is-intrinsically-open : {X : 𝓤  ̇} → (X → Ω 𝓤) → Ω (𝓤 ⁺)
+ is-intrinsically-open {X} P = Ɐ x ꞉ X , is-affirmable (P x)
 
 \end{code}
 
+Another way to define this notion, which is equivalent assuming choice, is the
+following:
+
 \begin{code}
 
- is-intrinsically-open : {X : 𝓤  ̇} → (X → Ω 𝓤) → Ω 𝓤
- is-intrinsically-open {X} P =
+ is-intrinsically-open′ : {X : 𝓤  ̇} → (X → Ω 𝓤) → Ω 𝓤
+ is-intrinsically-open′ {X} P =
   Ǝₚ h ꞉ (X → S) , (Ɐ x ꞉ X , P x ⇔ ι (h x))
 
 \end{code}
 
-Useful lemmas , which shorten proofs (maybe move it elsewhere at some point)
+The former definition turns out to more useful in our case.
+
+Useful lemmas, which shorten proofs (maybe move it elsewhere at some point)
 
 \begin{code}
 
@@ -106,19 +120,22 @@ Useful lemmas , which shorten proofs (maybe move it elsewhere at some point)
     q : P ＝ Q
     q = ⇔-gives-＝ pe P Q (holds-gives-equal-⊤ pe fe (P ⇔ Q) P-iff-Q)
 
- ⇔-affirmable : {P Q : Ω 𝓤} → ((P ⇔ Q) holds) → (is-affirmable P holds) → (is-affirmable Q holds)
+ ⇔-affirmable : {P Q : Ω 𝓤}
+              → ((P ⇔ Q) ⇒ is-affirmable P ⇒ is-affirmable Q) holds
  ⇔-affirmable = ⇔-transport (_holds ∘ is-affirmable)
 
 \end{code}
 
+The definition `is-intrinsically-open′` is stronger than is-intrinsically-open.
+
 \begin{code}
 
  open-implies-open′ : {X : 𝓤  ̇} → (P : X → Ω 𝓤)
-                    → (is-intrinsically-open  P ⇒ is-intrinsically-open′ P) holds
- open-implies-open′ {X} P = ∥∥-rec (holds-is-prop (is-intrinsically-open′ P)) †
+                    → (is-intrinsically-open′  P ⇒ is-intrinsically-open P) holds
+ open-implies-open′ {X} P = ∥∥-rec (holds-is-prop (is-intrinsically-open P)) †
   where
    † : (Σ h ꞉ (X → S) , ((x : X) → P x holds ↔ ι (h x) holds))
-     → is-intrinsically-open′ P holds
+     → is-intrinsically-open P holds
    † (h , φ) x = ⇔-affirmable p ∣ (h x) , refl ∣
     where
      p : (ι (h x) holds) ↔ (P x holds)
@@ -126,10 +143,9 @@ Useful lemmas , which shorten proofs (maybe move it elsewhere at some point)
 
 \end{code}
 
-Question: are these two definitions equivalent?
+We are now ready to write down the Dominance Axiom and Phoa’s Principle.
 
-
-Dominance axiom and Phoa's principle :
+First, the Dominance Axiom:
 
 \begin{code}
 
@@ -142,19 +158,27 @@ Dominance axiom and Phoa's principle :
  is-synthetic-dominance : (𝓤 ⁺) ̇
  is-synthetic-dominance = contains-top holds × openness-is-transitive
 
- phoa-condition : Ω (𝓤 ⁺)
- phoa-condition =
+\end{code}
+
+Phoa’s Principle:
+
+\begin{code}
+
+ phoa’s-principle : Ω (𝓤 ⁺)
+ phoa’s-principle =
   Ɐ f ꞉ (Ω 𝓤 → Ω 𝓤) , Ɐ U ꞉ Ω 𝓤 , is-affirmable U ⇒ f U ⇔ (f ⊥ ∨  U) ∧ f ⊤
 
 \end{code}
 
-Compactness :
+\section{Compactness}
+
+Compactness:
 
 \begin{code}
 
  is-compact : 𝓤 ̇  → 𝓤 ⁺ ̇
  is-compact X = (P : X → Ω 𝓤)
-                         → is-intrinsically-open P holds
+                         → is-intrinsically-open′ P holds
                          → is-affirmable (Ɐ x ꞉ X , (P x)) holds
 
  𝟙-is-compact : is-compact 𝟙
@@ -212,7 +236,7 @@ Compact : prime-version
 
  is-compact' : 𝓤 ̇  → 𝓤 ⁺ ̇
  is-compact' X = (P : X → Ω 𝓤)
-                         → is-intrinsically-open′ P holds
+                         → is-intrinsically-open P holds
                          → is-affirmable (Ɐ x ꞉ X , (P x)) holds
 
  𝟙-is-compact' : is-compact' 𝟙
@@ -258,10 +282,10 @@ Discrete spaces
 \begin{code}
 
  is-discrete-trunc : 𝓤 ̇ → 𝓤 ⁺ ̇
- is-discrete-trunc X = is-intrinsically-open′ (λ ((x , y) : X × X) → (∥ x ＝ y ∥ , ∥∥-is-prop )) holds -- Or should we directly  require X to be a set ? Truncation inside an → : nightmare
+ is-discrete-trunc X = is-intrinsically-open (λ ((x , y) : X × X) → (∥ x ＝ y ∥ , ∥∥-is-prop )) holds -- Or should we directly  require X to be a set ? Truncation inside an → : nightmare
  
  is-discrete-set : (X : 𝓤 ̇) → is-set X → 𝓤 ⁺ ̇
- is-discrete-set X setX =  is-intrinsically-open′ (λ ((x , y) : X × X) → ((x ＝ y) , setX  )) holds -- Works better for proving that compact product of discrete is discrete
+ is-discrete-set X setX =  is-intrinsically-open (λ ((x , y) : X × X) → ((x ＝ y) , setX  )) holds -- Works better for proving that compact product of discrete is discrete
 
  -- In Lesnik's thesis, everything is mentionned as "sets".
  -- But discussion right before  prop 2.8 suggests that "_＝_" should be an "open predicate", which implies that "x ＝ y" lies in Ω 𝓤 (⁺)
@@ -302,14 +326,14 @@ Overtness :
 
  is-overt : 𝓤 ̇  → 𝓤 ⁺ ̇  
  is-overt X = (P : X → Ω 𝓤)
-                         → is-intrinsically-open′ P holds
+                         → is-intrinsically-open P holds
                          → is-affirmable (Ǝₚ x ꞉ X , (P x) ) holds
 
 -- problem with universes : can't define overtness of a subset of X :
 -- overt-subset : { (X : 𝓤 ̇ ) → (U : X → Ω 𝓤) → is-overt U } fails as U lives in 𝓤 ⁺ ̇ 
 
  overt-charac : (X : 𝓤 ̇) → is-overt X → (Y : 𝓤 ̇) → (U : X × Y → Ω 𝓤)
-                     → is-intrinsically-open′ U holds → {!!}
+                     → is-intrinsically-open U holds → {!!}
  overt-charac = {!!} --unfinished def for now
 
 \end{code}
