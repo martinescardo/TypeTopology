@@ -47,8 +47,8 @@ open import Locales.DistributiveLattice.Homomorphism fe pt
 open import Locales.DistributiveLattice.Ideal pt fe pe
 open import Locales.DistributiveLattice.Ideal-Properties pt fe pe
 open import Locales.DistributiveLattice.Isomorphism fe pt
-open import Locales.DistributiveLattice.LocaleOfSpectra fe pe pt
-open import Locales.DistributiveLattice.LocaleOfSpectra-Properties fe pe pt sr
+open import Locales.DistributiveLattice.Spectrum fe pe pt
+open import Locales.DistributiveLattice.Spectrum-Properties fe pe pt sr
 open import Locales.DistributiveLattice.Resizing ua pt sr
 open import Locales.Frame pt fe
 open import Locales.GaloisConnection pt fe
@@ -104,7 +104,7 @@ We denote by `spec-𝒦⁻X` the spectrum of `𝒦⁻X`.
 \begin{code}
 
  spec-𝒦⁻X : Locale (𝓤 ⁺) 𝓤 𝓤
- spec-𝒦⁻X = DefnOfFrameOfIdeal.locale-of-spectra 𝒦-X⁻
+ spec-𝒦⁻X = DefnOfFrameOfIdeal.spectrum 𝒦-X⁻
 
 \end{code}
 
@@ -690,7 +690,7 @@ distributive lattice”.
 
 \begin{code}
 
-open DefnOfFrameOfIdeal renaming (locale-of-spectra to spec)
+open DefnOfFrameOfIdeal renaming (spectrum to spec)
 
 spectral-implies-spectral·
  : (X : Locale (𝓤 ⁺) 𝓤 𝓤)
