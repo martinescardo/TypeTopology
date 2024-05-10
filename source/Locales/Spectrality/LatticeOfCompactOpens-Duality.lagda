@@ -624,7 +624,8 @@ Functor Theorem.
 
 \end{code}
 
-We can now package things up into the proof that `ϕ` is a frame homomorphism.
+We can now package things up into the following proof that `ϕ` is a frame
+homomorphism:
 
 \begin{code}
 
