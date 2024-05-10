@@ -172,213 +172,140 @@ Phoa’s Principle:
 
 \section{Compactness}
 
-Compactness:
+We now start to investigate some notions of compactness.
+
+A type `X` is called compact if its universal quantification on intrinsically
+open predicates is affirmable.
 
 \begin{code}
 
- is-compact : 𝓤 ̇  → 𝓤 ⁺ ̇
- is-compact X = (P : X → Ω 𝓤)
-                         → is-intrinsically-open′ P holds
-                         → is-affirmable (Ɐ x ꞉ X , (P x)) holds
-
- 𝟙-is-compact : is-compact 𝟙
- 𝟙-is-compact P = ∥∥-rec (holds-is-prop ( is-affirmable (Ɐ x ꞉ 𝟙 , (P x)))) †
-   where
-     † :  (Σ h ꞉ (𝟙 → S) , ((x : 𝟙) → P x holds ↔ ι (h x) holds))
-             → is-affirmable (Ɐ x ꞉ 𝟙 , (P x)) holds
-     † (h , φ) = ∣ h ⋆ , r  ∣
-
-      where
-       p : ((Ɐ x ꞉ 𝟙 , P x) ⇔ P ⋆) holds
-       p =  (λ f → f ⋆) , (λ pstar  x → pstar)
-
-       q : ((ι (h ⋆)) ⇔ (Ɐ x ꞉ 𝟙 , P x)) holds
-       q = ↔-sym (↔-trans p (φ ⋆))
-
-       r : ι (h ⋆) ＝ (Ɐ x ꞉ 𝟙 , P x)
-       r =  ⇔-gives-＝ pe (ι (h ⋆))  (Ɐ x ꞉ 𝟙 , P x)
-                      (holds-gives-equal-⊤ pe fe ((ι (h ⋆)) ⇔(Ɐ x ꞉ 𝟙 , P x)) q)
-
-
-{-  Commented : annoying to have a hole while working
- ×-is-compact : {X Y : 𝓤 ̇ }
-                            → is-compact X
-                            → is-compact Y
-                            → is-compact ( X × Y )
-                            
- ×-is-compact {X} {Y}  kX kY P =  ∥∥-rec (holds-is-prop ( is-affirmable (Ɐ z ꞉ (X × Y) , P z))) t
-   where
-    t : Σ h ꞉ (X × Y → S) , ((z : (X × Y)) → P z holds ↔ ι (h z) holds) →
-          is-affirmable (Ɐ z ꞉ (X × Y) ,  P z) holds
-    t (h , φ) = transport (_holds ∘ is-affirmable) (q ⁻¹) †
-
-      where
-       p : ((Ɐ z ꞉ (X × Y) , P z) ⇔ (Ɐ x ꞉ X , (Ɐ y ꞉ Y , P (x , y)))) holds
-       p = (λ Qz x' y' → Qz (x' , y') ) , λ Qxy z → Qxy (pr₁ z) (pr₂ z)
-
-       q : (Ɐ z ꞉ (X × Y) , P z) ＝ (Ɐ x ꞉ X , (Ɐ y ꞉ Y , P (x , y))) 
-       q = ⇔-gives-＝ pe  (Ɐ z ꞉ (X × Y) , P z) (Ɐ x ꞉ X , (Ɐ y ꞉ Y , P (x , y)))
-                     (holds-gives-equal-⊤ pe fe ( ((Ɐ z ꞉ (X × Y) , P z) ⇔ (Ɐ x ꞉ X , (Ɐ y ꞉ Y , P (x , y))))) p)
-
-       † : is-affirmable (Ɐ x ꞉ X , (Ɐ y ꞉ Y , P (x , y)))  holds
-       † = kX (λ x → (Ɐ y ꞉ Y , P (x , y))) {!!}  -- stuck here :  we cannot extract the witness from "try x"
-
-        where
-         try : (x : X) → is-affirmable (Ɐ y ꞉ Y , P (x , y)) holds
-         try x = kY (λ y → P (x , y)) ∣ (λ y → h (x , y)) , (λ y → φ (x , y))  ∣ 
--}
+ is-compact' : 𝓤 ̇  → Ω (𝓤 ⁺)
+ is-compact' X =
+  Ɐ P ꞉ (X → Ω 𝓤) , is-intrinsically-open P ⇒ is-affirmable (Ɐ x ꞉ X , (P x))
 
 \end{code}
 
-Compact : prime-version
+The type `𝟙` is compact i.e. the empty product is compact.
 
 \begin{code}
 
- is-compact' : 𝓤 ̇  → 𝓤 ⁺ ̇
- is-compact' X = (P : X → Ω 𝓤)
-                         → is-intrinsically-open P holds
-                         → is-affirmable (Ɐ x ꞉ X , (P x)) holds
+ 𝟙-is-compact : is-compact' 𝟙 holds
+ 𝟙-is-compact P φ = ⇔-affirmable p (φ ⋆)
+  where
+   p : (P ⋆ ⇔ (Ɐ x ꞉ 𝟙 , P x)) holds
+   p = (λ pstar  x → pstar) , (λ f → f ⋆)
 
- 𝟙-is-compact' : is-compact' 𝟙
- 𝟙-is-compact' P iP = ⇔-affirmable  p (iP ⋆)
-   where
-     p : (P ⋆ ⇔ (Ɐ x ꞉ 𝟙 , P x)) holds
-     p = (λ pstar  x → pstar) , (λ f → f ⋆)
+\end{code}
 
+Binary products of compact types are compact.
+
+\begin{code}
 
  ×-is-compact' : {X Y : 𝓤 ̇ }
-                            → is-compact' X
-                            → is-compact' Y
-                            → is-compact' ( X × Y )
+               → is-compact' X holds
+               → is-compact' Y holds
+               → is-compact'(X × Y) holds
+ ×-is-compact' {X} {Y} kX kY P iP = ⇔-affirmable p †
+  where
+   p : ((Ɐ x ꞉ X , (Ɐ y ꞉ Y , P (x , y))) ⇔ (Ɐ z ꞉ (X × Y) , P z) ) holds
+   p =  (λ Qxy z → Qxy (pr₁ z) (pr₂ z)) , (λ Qz x' y' → Qz (x' , y') )
 
- ×-is-compact' {X} {Y} kX kY P iP = ⇔-affirmable p † 
-
-   where
-    p : ((Ɐ x ꞉ X , (Ɐ y ꞉ Y , P (x , y))) ⇔ (Ɐ z ꞉ (X × Y) , P z) ) holds
-    p =  (λ Qxy z → Qxy (pr₁ z) (pr₂ z)) , (λ Qz x' y' → Qz (x' , y') )
-
-    † : is-affirmable (Ɐ x ꞉ X , (Ɐ y ꞉ Y ,  P (x , y)))  holds
-    † = kX (λ x → (Ɐ y ꞉ Y , (P (x , y)))) (λ x → (kY (λ y → (P (x , y))) (λ y → iP ((x , y))))) 
-
- image-of-compact' : {X Y : 𝓤 ̇ }
-                                    → (f : X → Y)
-                                    → is-surjection f
-                                    → is-compact' X
-                                    → is-compact' Y
-
- image-of-compact' {X} {Y} f surf kX P iP = ⇔-affirmable p † 
-
-   where
-    p : ((Ɐ x ꞉ X , P (f x)) ⇔ (Ɐ y ꞉ Y , P y)) holds
-    p = (λ pX y → surjection-induction f surf (_holds ∘ P) (λ y → holds-is-prop (P y)) pX y) , (λ pY x → pY (f x))
-    
-    † : is-affirmable (Ɐ x ꞉ X , P (f x)) holds
-    † = kX (λ x → P (f x)) (λ x → iP (f x))
+   † : is-affirmable (Ɐ x ꞉ X , (Ɐ y ꞉ Y ,  P (x , y)))  holds
+   † = kX (λ x → (Ɐ y ꞉ Y , (P (x , y)))) (λ x → (kY (λ y → (P (x , y))) (λ y → iP ((x , y)))))
 
 \end{code}
 
-Discrete spaces
+Images of compact types are compact.
+
+\begin{code}
+
+ image-of-compact' : {X Y : 𝓤 ̇ }
+                   → (f : X → Y)
+                   → is-surjection f
+                   → is-compact' X holds
+                   → is-compact' Y holds
+ image-of-compact' {X} {Y} f surf kX P iP = ⇔-affirmable p †
+  where
+   p : ((Ɐ x ꞉ X , P (f x)) ⇔ (Ɐ y ꞉ Y , P y)) holds
+   p = (λ pX y → surjection-induction f surf (_holds ∘ P) (λ y → holds-is-prop (P y)) pX y)
+     , (λ pY x → pY (f x))
+
+   † : is-affirmable (Ɐ x ꞉ X , P (f x)) holds
+   † = kX (P ∘ f) (iP ∘ f)
+
+\end{code}
+
+\section{Discrete spaces}
 
 \begin{code}
 
  is-discrete-trunc : 𝓤 ̇ → 𝓤 ⁺ ̇
- is-discrete-trunc X = is-intrinsically-open (λ ((x , y) : X × X) → (∥ x ＝ y ∥ , ∥∥-is-prop )) holds -- Or should we directly  require X to be a set ? Truncation inside an → : nightmare
- 
- is-discrete-set : (X : 𝓤 ̇) → is-set X → 𝓤 ⁺ ̇
- is-discrete-set X setX =  is-intrinsically-open (λ ((x , y) : X × X) → ((x ＝ y) , setX  )) holds -- Works better for proving that compact product of discrete is discrete
+ is-discrete-trunc X = is-intrinsically-open (λ ((x , y) : X × X) → (∥ x ＝ y ∥ , ∥∥-is-prop )) holds
 
- -- In Lesnik's thesis, everything is mentionned as "sets".
- -- But discussion right before  prop 2.8 suggests that "_＝_" should be an "open predicate", which implies that "x ＝ y" lies in Ω 𝓤 (⁺)
+\end{code}
+
+Question: in the definition above, should we directly require X to be a set?
+
+Truncation inside an → : nightmare
+
+\begin{code}
+
+ is-discrete-set : (X : 𝓤 ̇) → is-set X → 𝓤 ⁺ ̇
+ is-discrete-set X setX =
+  is-intrinsically-open
+   (λ ((x , y) : X × X) → ((x ＝ y) , setX))
+    holds
+
+\end{code}
+
+Works better for proving that compact product of discrete is discrete.
+
+In Lesnik's thesis, everything is mentionned as "sets". But discussion right
+before prop 2.8 suggests that "_＝_" should be an "open predicate", which
+implies that "x ＝ y" lies in Ω 𝓤 (⁺)
+
+\begin{code}
 
  𝟙-is-discrete-trunc : contains-top holds →  is-discrete-trunc 𝟙
- 𝟙-is-discrete-trunc ct  = λ (⋆ , ⋆) → ∥∥-rec (holds-is-prop (is-affirmable (∥ ⋆ ＝ ⋆ ∥ , ∥∥-is-prop ))) † ct
+ 𝟙-is-discrete-trunc ct =
+  λ (⋆ , ⋆) → ∥∥-rec (holds-is-prop (is-affirmable (∥ ⋆ ＝ ⋆ ∥ , ∥∥-is-prop ))) † ct
    where
-     † : Σ (λ x → ι x ＝ ⊤) → is-affirmable (∥ ⋆ ＝ ⋆ ∥ , ∥∥-is-prop) holds
-     † (⊤⁻¹ , φ) = ∣ ⊤⁻¹ , ⇔-gives-＝ pe (ι ⊤⁻¹) (∥ ⋆ ＝ ⋆ ∥ , ∥∥-is-prop) (holds-gives-equal-⊤ pe fe ( ι ⊤⁻¹ ⇔ ∥ ⋆ ＝ ⋆ ∥ , ∥∥-is-prop)  p)  ∣
+     † : Σ (λ x → ι x ＝ ⊤)
+       → is-affirmable (∥ ⋆ ＝ ⋆ ∥ , ∥∥-is-prop) holds
+     † (⊤⁻¹ , φ) =
+      ∣ ⊤⁻¹ , ⇔-gives-＝ pe (ι ⊤⁻¹) (∥ ⋆ ＝ ⋆ ∥ , ∥∥-is-prop) (holds-gives-equal-⊤ pe fe ( ι ⊤⁻¹ ⇔ ∥ ⋆ ＝ ⋆ ∥ , ∥∥-is-prop)  p)  ∣
+       where
+        p : (ι ⊤⁻¹ ⇔ ∥ ⋆ ＝ ⋆ ∥ , ∥∥-is-prop) holds
+        p = (λ _ → ∣ refl  ∣ ) , λ _ → transport _holds (φ ⁻¹) ⊤-holds
 
-      where
-       p : (ι ⊤⁻¹ ⇔ ∥ ⋆ ＝ ⋆ ∥ , ∥∥-is-prop) holds
-       p = (λ _ → ∣ refl  ∣ ) , λ _ → transport _holds (φ ⁻¹) ⊤-holds 
+\end{code}
 
+\begin{code}
 
  compact-Π-discrete-set : (K : 𝓤 ̇) → (X : K → 𝓤 ̇)
-                                                        → is-compact' K
-                                                        → (set-certificate : ((k : K) → is-set (X k)))
-                                                        → ((k : K) → is-discrete-set (X k) (set-certificate k) )
-                                                        → is-discrete-set (Π X) (Π-is-set fe set-certificate)
-                                                        
- compact-Π-discrete-set K X kK set-certificate dX (x₁ , x₂) = ⇔-affirmable p †
- 
+                        → is-compact' K holds
+                        → (set-certificate : ((k : K) → is-set (X k)))
+                        → ((k : K) → is-discrete-set (X k) (set-certificate k) )
+                        → is-discrete-set (Π X) (Π-is-set fe set-certificate)
+ compact-Π-discrete-set K X kK 𝓈 dX (x₁ , x₂) = ⇔-affirmable p †
+
    where
     p :  ((k : K) →  ( (x₁ k) ＝ (x₂ k) ) ) ↔ (x₁ ＝ x₂)
-    p = (dfunext fe)
-           ,  ( λ x₁-equal-x₂ → transport (λ - → ((k : K) → (( x₁ k ) ＝( - k) ))) x₁-equal-x₂ (λ _ → refl))
-           -- there is certainly some magic function in funext's family doing the job but I have not found it
+    p = dfunext fe
+      , (λ x₁-equal-x₂ → transport (λ - → ((k : K) → (( x₁ k ) ＝( - k) ))) x₁-equal-x₂ (λ _ → refl))
+   -- there is certainly some magic function in funext's family doing the job but I have not found it
 
-    † : is-affirmable ((Ɐ k ꞉ K , ( ( (x₁ k) ＝ (x₂ k) ) , set-certificate k ))) holds
-    † = kK (λ k → (x₁ k ＝ x₂ k) , set-certificate k) (λ k → dX k (x₁ k , x₂ k)) 
+    † : is-affirmable (Ɐ k ꞉ K , ((x₁ k ＝ x₂ k) , 𝓈 k)) holds
+    † = kK (λ k → (x₁ k ＝ x₂ k) , 𝓈 k) (λ k → dX k (x₁ k , x₂ k))
 
 \end{code}
 
-Overtness :
+Overtness:
 
 \begin{code}
 
- is-overt : 𝓤 ̇  → 𝓤 ⁺ ̇  
- is-overt X = (P : X → Ω 𝓤)
-                         → is-intrinsically-open P holds
-                         → is-affirmable (Ǝₚ x ꞉ X , (P x) ) holds
-
--- problem with universes : can't define overtness of a subset of X :
--- overt-subset : { (X : 𝓤 ̇ ) → (U : X → Ω 𝓤) → is-overt U } fails as U lives in 𝓤 ⁺ ̇ 
-
- overt-charac : (X : 𝓤 ̇) → is-overt X → (Y : 𝓤 ̇) → (U : X × Y → Ω 𝓤)
-                     → is-intrinsically-open U holds → {!!}
- overt-charac = {!!} --unfinished def for now
+ is-overt : 𝓤  ̇ → Ω (𝓤 ⁺)
+ is-overt X =
+  Ɐ P ꞉ (X → Ω 𝓤) , is-intrinsically-open P ⇒ is-affirmable (Ǝₚ x ꞉ X , P x)
 
 \end{code}
-
-Dominance ≃ Sierpinski satisfying dominance
-
-\begin{code}
-{-
-dominant-sierpinski : 𝓤 ⁺ ̇
-dominant-sierpinski = Σ Si ꞉ Sierpinski-Object , (Sierpinski-notations.is-synthetic-dominance Si)
-
-dom-equiv : dominant-sierpinski ≃ Dominance {𝓤 } {𝓤 ⁺}
-dom-equiv = f , pf
-
-  where
-
-    f : dominant-sierpinski → Dominance
-    f (Si , isdom) = d , d2 , d3 , d4 , d5
-      where
-        open Sierpinski-notations (Si)
-
-        d : 𝓤 ̇ → 𝓤 ⁺  ̇
-        d X = Σ p ꞉ is-prop X ,  is-affirmable (X , p) holds
-
-        d2 : D2 d
-        d2 X = Σ-is-prop (being-prop-is-prop fe) λ _ → ∃-is-prop -- see "being-subingleton-is-subsingleton" lemma using fe in HoTT-UF-Agda
-
-        d3 : D3 d
-        d3 X dx = pr₁ dx
-
-        d4 : d 𝟙
-        d4 = 𝟙-is-prop ,  (pr₁ isdom)
-
-        d5' : D5' d
-        d5' P Q' dP P-to-dQ' = (×-is-prop (d3 P dP) {!!}) , {!!}
-
-        d5 :  D5 d
-        d5 = D3-and-D5'-give-D5 pe d d3 d5'
-
-    pf : is-equiv f
-    pf = {!!}
--}
-
-\end{code}
-
-
-
-[1]: https://ncatlab.org/nlab/show/analytic+versus+synthetic
