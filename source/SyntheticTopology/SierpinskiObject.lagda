@@ -15,7 +15,6 @@ open import UF.Sets-Properties
 open import UF.Subsingletons
 open import UF.SubtypeClassifier
 
-
 module SyntheticTopology.SierpinskiObject
         (𝓤  : Universe)
         (fe : Fun-Ext)
@@ -32,7 +31,6 @@ open import UF.Subsingletons-FunExt
 
 open AllCombinators pt fe
 open PropositionalTruncation pt hiding (_∨_)
-
 
 \end{code}
 
