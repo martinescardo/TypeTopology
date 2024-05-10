@@ -48,9 +48,9 @@ open import Locales.DistributiveLattice.Homomorphism fe pt
 open import Locales.DistributiveLattice.Ideal pt fe pe
 open import Locales.DistributiveLattice.Ideal-Properties pt fe pe
 open import Locales.DistributiveLattice.Isomorphism fe pt
+open import Locales.DistributiveLattice.Resizing ua pt sr
 open import Locales.DistributiveLattice.Spectrum fe pe pt
 open import Locales.DistributiveLattice.Spectrum-Properties fe pe pt sr
-open import Locales.DistributiveLattice.Resizing ua pt sr
 open import Locales.Frame pt fe
 open import Locales.GaloisConnection pt fe
 open import Locales.SmallBasis pt fe sr
