@@ -6,7 +6,8 @@ date-completed: 2024-05-07
 
 Every spectral locale `X` is homeomorphic to the spectrum of its distributive
 lattice `𝒦(X)` of compact opens. We construct a proof of this fact in this
-module. The proof is implemented in the function `X-is-homeomorphic-to-spec-𝒦⁻X`.
+module. The proof is implemented in the function
+`X-is-homeomorphic-to-spec-𝒦⁻X`.
 
 \begin{code}
 
@@ -674,13 +675,14 @@ The set `𝒪 X` is equivalent to the type `Ideal 𝒦-X⁻`.
    ‡ : (join ∘ ϕ) ∼ id
    ‡ = join-cancels-ϕ
 
- X-iso-to-spec-𝒦⁻X : spec-𝒦⁻X ≅c≅ X
- X-iso-to-spec-𝒦⁻X = isomorphism₀-to-isomorphismᵣ (𝒪 X) (𝒪 spec-𝒦⁻X) 𝒾
-  where
-   𝒾 : Isomorphism₀ (𝒪 X) (𝒪 spec-𝒦⁻X)
-   𝒾 = 𝒪X-is-equivalent-to-ideals-of-𝒦⁻X
-     , ϕ-is-a-frame-homomorphism
-     , join-is-a-frame-homomorphism
+ X-is-homeomorphic-to-spec-𝒦⁻X : spec-𝒦⁻X ≅c≅ X
+ X-is-homeomorphic-to-spec-𝒦⁻X =
+  isomorphism₀-to-isomorphismᵣ (𝒪 X) (𝒪 spec-𝒦⁻X) 𝒾
+   where
+    𝒾 : Isomorphism₀ (𝒪 X) (𝒪 spec-𝒦⁻X)
+    𝒾 = 𝒪X-is-equivalent-to-ideals-of-𝒦⁻X
+      , ϕ-is-a-frame-homomorphism
+      , join-is-a-frame-homomorphism
 
 \end{code}
 
@@ -696,9 +698,10 @@ spectral-implies-spectral·
  : (X : Locale (𝓤 ⁺) 𝓤 𝓤)
  → (is-spectral-with-small-basis ua X
  ⇒ (Ǝ L ꞉ DistributiveLattice 𝓤 , X ≅c≅ spec L)) holds
-spectral-implies-spectral· X σ = ∣ 𝒦-X⁻ , ≅c-sym spec-𝒦⁻X X X-iso-to-spec-𝒦⁻X ∣
- where
-  open 𝒦-Duality X σ
+spectral-implies-spectral· X σ =
+ ∣ 𝒦-X⁻ , ≅c-sym spec-𝒦⁻X X X-is-homeomorphic-to-spec-𝒦⁻X ∣
+  where
+   open 𝒦-Duality X σ
 
 \end{code}
 
