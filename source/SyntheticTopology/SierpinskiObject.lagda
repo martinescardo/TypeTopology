@@ -288,15 +288,14 @@ implies that "x ＝ y" lies in Ω 𝓤 (⁺)
                         → ((k : K) → is-discrete-set (X k) (set-certificate k) )
                         → is-discrete-set (Π X) (Π-is-set fe set-certificate)
  compact-Π-discrete-set K X kK 𝓈 dX (x₁ , x₂) = ⇔-affirmable p †
-
-   where
-    p :  ((k : K) →  ( (x₁ k) ＝ (x₂ k) ) ) ↔ (x₁ ＝ x₂)
-    p = dfunext fe
+  where
+   p :  ((k : K) →  ( (x₁ k) ＝ (x₂ k) ) ) ↔ (x₁ ＝ x₂)
+   p = dfunext fe
       , (λ x₁-equal-x₂ → transport (λ - → ((k : K) → (( x₁ k ) ＝( - k) ))) x₁-equal-x₂ (λ _ → refl))
    -- there is certainly some magic function in funext's family doing the job but I have not found it
 
-    † : is-affirmable (Ɐ k ꞉ K , ((x₁ k ＝ x₂ k) , 𝓈 k)) holds
-    † = kK (λ k → (x₁ k ＝ x₂ k) , 𝓈 k) (λ k → dX k (x₁ k , x₂ k))
+   † : is-affirmable (Ɐ k ꞉ K , ((x₁ k ＝ x₂ k) , 𝓈 k)) holds
+   † = kK (λ k → (x₁ k ＝ x₂ k) , 𝓈 k) (λ k → dX k (x₁ k , x₂ k))
 
 \end{code}
 
