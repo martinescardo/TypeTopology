@@ -5,7 +5,7 @@ date-started: 2024-05-02
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K #-}
+{-# OPTIONS --safe --without-K --exact-split --auto-inline #-}
 
 open import MLTT.Spartan
 open import UF.FunExt
@@ -98,6 +98,21 @@ object are called _affirmable.
 
 \end{code}
 
+Useful lemmas , which shorten proofs (maybe move it elsewhere at some point)
+
+\begin{code}
+
+ ⇔-transport : {P Q : Ω 𝓤} → (𝓟 : Ω 𝓤 → 𝓤 ⁺ ̇) → ((P ⇔ Q) holds) → (𝓟 P) → (𝓟 Q)
+ ⇔-transport {P} {Q} (𝓟) P-iff-Q Prop-P = transport 𝓟 q Prop-P
+   where
+    q : P ＝ Q
+    q = ⇔-gives-＝ pe P Q (holds-gives-equal-⊤ pe fe (P ⇔ Q) P-iff-Q)
+
+ ⇔-affirmable : {P Q : Ω 𝓤} → ((P ⇔ Q) holds) → (is-affirmable P holds) → (is-affirmable Q holds)
+ ⇔-affirmable = ⇔-transport (_holds ∘ is-affirmable)
+
+\end{code}
+
 \begin{code}
 
  open-implies-open′ : {X : 𝓤  ̇} → (P : X → Ω 𝓤)
@@ -106,13 +121,10 @@ object are called _affirmable.
   where
    † : (Σ h ꞉ (X → S) , ((x : X) → P x holds ↔ ι (h x) holds))
      → is-intrinsically-open′ P holds
-   † (h , φ) x = transport (_holds ∘ is-affirmable) (q ⁻¹) ∣ (h x) , refl ∣
+   † (h , φ) x = ⇔-affirmable p ∣ (h x) , refl ∣
     where
-     p : (P x ⇔ ι (h x)) holds
-     p = φ x
-
-     q : P x ＝ ι (h x)
-     q = ⇔-gives-＝ pe (P x) (ι (h x)) (holds-gives-equal-⊤ pe fe (P x ⇔ ι (h x)) p)
+     p : (ι (h x) holds) ↔ (P x holds)
+     p = ↔-sym (φ x)
 
 \end{code}
 
@@ -206,28 +218,22 @@ Compact : prime-version
                          → is-affirmable (Ɐ x ꞉ X , (P x)) holds
 
  𝟙-is-compact' : is-compact' 𝟙
- 𝟙-is-compact' P iP = transport (_holds ∘ is-affirmable) (r ⁻¹) (iP ⋆)
+ 𝟙-is-compact' P iP = ⇔-affirmable  p (iP ⋆)
    where
-     p : ((Ɐ x ꞉ 𝟙 , P x) ⇔ P ⋆) holds
-     p =  (λ f → f ⋆) , (λ pstar  x → pstar)
+     p : (P ⋆ ⇔ (Ɐ x ꞉ 𝟙 , P x)) holds
+     p = (λ pstar  x → pstar) , (λ f → f ⋆)
 
-     r :  (Ɐ x ꞉ 𝟙 , P x) ＝ (P ⋆)
-     r =  ⇔-gives-＝ pe (Ɐ x ꞉ 𝟙 , P x) (P ⋆) (holds-gives-equal-⊤ pe fe ((Ɐ x ꞉ 𝟙 , P x) ⇔ P ⋆)  p)
 
  ×-is-compact' : {X Y : 𝓤 ̇ }
                             → is-compact' X
                             → is-compact' Y
                             → is-compact' ( X × Y )
 
- ×-is-compact' {X} {Y} kX kY P iP = transport (_holds ∘ is-affirmable) (q ⁻¹) †
+ ×-is-compact' {X} {Y} kX kY P iP = ⇔-affirmable p † 
 
    where
-    p : ((Ɐ z ꞉ (X × Y) , P z) ⇔ (Ɐ x ꞉ X , (Ɐ y ꞉ Y , P (x , y)))) holds
-    p = (λ Qz x' y' → Qz (x' , y') ) , λ Qxy z → Qxy (pr₁ z) (pr₂ z)
-
-    q : (Ɐ z ꞉ (X × Y) , P z) ＝ (Ɐ x ꞉ X , (Ɐ y ꞉ Y , P (x , y))) 
-    q = ⇔-gives-＝ pe  (Ɐ z ꞉ (X × Y) , P z) (Ɐ x ꞉ X , (Ɐ y ꞉ Y , P (x , y)))
-                    (holds-gives-equal-⊤ pe fe ( ((Ɐ z ꞉ (X × Y) , P z) ⇔ (Ɐ x ꞉ X , (Ɐ y ꞉ Y , P (x , y))))) p)
+    p : ((Ɐ x ꞉ X , (Ɐ y ꞉ Y , P (x , y))) ⇔ (Ɐ z ꞉ (X × Y) , P z) ) holds
+    p =  (λ Qxy z → Qxy (pr₁ z) (pr₂ z)) , (λ Qz x' y' → Qz (x' , y') )
 
     † : is-affirmable (Ɐ x ꞉ X , (Ɐ y ꞉ Y ,  P (x , y)))  holds
     † = kX (λ x → (Ɐ y ꞉ Y , (P (x , y)))) (λ x → (kY (λ y → (P (x , y))) (λ y → iP ((x , y))))) 
@@ -238,15 +244,11 @@ Compact : prime-version
                                     → is-compact' X
                                     → is-compact' Y
 
- image-of-compact' {X} {Y} f surf kX P iP = transport (_holds ∘ is-affirmable) (q ⁻¹) †
+ image-of-compact' {X} {Y} f surf kX P iP = ⇔-affirmable p † 
 
    where
-    p : ((Ɐ y ꞉ Y , P y) ⇔ (Ɐ x ꞉ X , P (f x))) holds
-    p = (λ pY x → pY (f x)) , (λ pX y → surjection-induction f surf (_holds ∘ P) (λ y → holds-is-prop (P y)) pX y)
-    
-    q :  (Ɐ y ꞉ Y , P y) ＝ (Ɐ x ꞉ X , P (f x))
-    q = ⇔-gives-＝ pe  (Ɐ y ꞉ Y , P y) (Ɐ x ꞉ X , P (f x))
-                    (holds-gives-equal-⊤ pe fe (( Ɐ y ꞉ Y , P y) ⇔ (Ɐ x ꞉ X , P (f x))) p)
+    p : ((Ɐ x ꞉ X , P (f x)) ⇔ (Ɐ y ꞉ Y , P y)) holds
+    p = (λ pX y → surjection-induction f surf (_holds ∘ P) (λ y → holds-is-prop (P y)) pX y) , (λ pY x → pY (f x))
     
     † : is-affirmable (Ɐ x ꞉ X , P (f x)) holds
     † = kX (λ x → P (f x)) (λ x → iP (f x))
@@ -283,21 +285,34 @@ Discrete spaces
                                                         → ((k : K) → is-discrete-set (X k) (set-certificate k) )
                                                         → is-discrete-set (Π X) (Π-is-set fe set-certificate)
                                                         
- compact-Π-discrete-set K X kK set-certificate dX (x₁ , x₂) = transport (_holds ∘ is-affirmable) (q ⁻¹) †
+ compact-Π-discrete-set K X kK set-certificate dX (x₁ , x₂) = ⇔-affirmable p †
  
    where
-    p :  ( ( x₁ ＝ x₂ ) ↔ ((k : K) →  ( (x₁ k) ＝ (x₂ k) ) ))
-    p = ( λ x₁-equal-x₂ → transport (λ - → ((k : K) → (( x₁ k ) ＝( - k) ))) x₁-equal-x₂ (λ _ → refl)) , -- there is certainly some magic function in funext's family doing the job but I have not found it
-           (dfunext fe)
+    p :  ((k : K) →  ( (x₁ k) ＝ (x₂ k) ) ) ↔ (x₁ ＝ x₂)
+    p = (dfunext fe)
+           ,  ( λ x₁-equal-x₂ → transport (λ - → ((k : K) → (( x₁ k ) ＝( - k) ))) x₁-equal-x₂ (λ _ → refl))
+           -- there is certainly some magic function in funext's family doing the job but I have not found it
 
--- ((x : X) → ∥ P x  ∥ ) →∥ Q ∥  knowing that ((x : X) → P x) → Q
-    
-    q :  ( (x₁ ＝ x₂) ,  Π-is-set fe set-certificate  ) ＝ ((Ɐ k ꞉ K , ( ( (x₁ k) ＝ (x₂ k) ) , set-certificate k )))
-    q = ⇔-gives-＝ pe ( ( x₁ ＝ x₂ ) , Π-is-set fe set-certificate )  ((Ɐ k ꞉ K , ( ( (x₁ k) ＝ (x₂ k) ) , set-certificate k  )))
-              (holds-gives-equal-⊤ pe fe ( ( (x₁ ＝ x₂ ),  Π-is-set fe set-certificate ) ⇔ ((Ɐ k ꞉ K , ( ( (x₁ k) ＝ (x₂ k) ) , set-certificate k  )))) p)
-    
     † : is-affirmable ((Ɐ k ꞉ K , ( ( (x₁ k) ＝ (x₂ k) ) , set-certificate k ))) holds
     † = kK (λ k → (x₁ k ＝ x₂ k) , set-certificate k) (λ k → dX k (x₁ k , x₂ k)) 
+
+\end{code}
+
+Overtness :
+
+\begin{code}
+
+ is-overt : 𝓤 ̇  → 𝓤 ⁺ ̇  
+ is-overt X = (P : X → Ω 𝓤)
+                         → is-intrinsically-open′ P holds
+                         → is-affirmable (Ǝₚ x ꞉ X , (P x) ) holds
+
+-- problem with universes : can't define overtness of a subset of X :
+-- overt-subset : { (X : 𝓤 ̇ ) → (U : X → Ω 𝓤) → is-overt U } fails as U lives in 𝓤 ⁺ ̇ 
+
+ overt-charac : (X : 𝓤 ̇) → is-overt X → (Y : 𝓤 ̇) → (U : X × Y → Ω 𝓤)
+                     → is-intrinsically-open′ U holds → {!!}
+ overt-charac = {!!} --unfinished def for now
 
 \end{code}
 
