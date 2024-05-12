@@ -116,16 +116,30 @@ spectral·-implies-spectral-with-small-basis {𝓤} X =
 
 \end{code}
 
-We now show the converse, which is a bit more involved.
+Added on 2024-05-12.
+
+The converse of this implication is proved in the module
+`LatticeOfCompactOpens-Duality`.
 
 \begin{code}
 
-spectral-with-small-basis-implies-spectral· : {𝓤 : Universe} (X : Locale (𝓤 ⁺) 𝓤 𝓤)
-                                            → (is-spectral-with-small-basis ua X
-                                            ⇒ is-spectral· X) holds
+spectral-with-small-basis-implies-spectral·
+ : {𝓤 : Universe} (X : Locale (𝓤 ⁺) 𝓤 𝓤)
+ → (is-spectral-with-small-basis ua X ⇒ is-spectral· X) holds
 spectral-with-small-basis-implies-spectral· X σ = spectral-implies-spectral· X σ
 
 \end{code}
 
-TODO: add the definition that specifies the equivalence and is therefore
-naturally propositional and prove the equivalence.
+We now explicitly record this logical equivalence.
+
+\begin{code}
+
+spectral-with-small-basis-iff-spectral·
+ : {𝓤 : Universe} (X : Locale (𝓤 ⁺) 𝓤 𝓤)
+ → (is-spectral-with-small-basis ua X ⇔ is-spectral· X) holds
+spectral-with-small-basis-iff-spectral· X = † , ‡
+ where
+  † = spectral-with-small-basis-implies-spectral· X
+  ‡ = spectral·-implies-spectral-with-small-basis X
+
+\end{code}
