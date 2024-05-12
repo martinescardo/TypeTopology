@@ -302,13 +302,13 @@ Monotone equivalences are adjoints.
 
 \begin{code}
 
- monotone-equivalences-are-adjoint
+ monotone-equivalences-are-adjoints
   : (sₘ@(s , _) : poset-of (𝒪 X) ─m→ poset-of (𝒪 Y))
   → (rₘ@(r , _) : poset-of (𝒪 Y) ─m→ poset-of (𝒪 X))
   → s ∘ r ∼ id
   → r ∘ s ∼ id
   → (rₘ ⊣ sₘ) holds
- monotone-equivalences-are-adjoint (s , 𝓂₁) (r , 𝓂₂) φ ψ U V = † , ‡
+ monotone-equivalences-are-adjoints (s , 𝓂₁) (r , 𝓂₂) φ ψ U V = † , ‡
   where
    open PosetReasoning 𝒪Xₚ
 
