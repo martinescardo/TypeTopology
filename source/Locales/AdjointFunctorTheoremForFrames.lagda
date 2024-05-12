@@ -1,4 +1,11 @@
-Ayberk Tosun, 1 March 2022.
+--------------------------------------------------------------------------------
+author:        Ayberk Tosun
+date-started:  2022-03-01
+dates-updated: [2024-05-06]
+--------------------------------------------------------------------------------
+
+Originally part of `ayberkt/formal-topology-in-UF`. Ported to TypeTopology on
+2022-03-01.
 
 \begin{code}
 
