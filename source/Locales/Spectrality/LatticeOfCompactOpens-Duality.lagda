@@ -690,14 +690,23 @@ From all this, we can now conclude that `is-spectral-with-small-basis` implies
 the definition of spectrality that says “homeomorphic to the spectrum of a
 distributive lattice”.
 
+We use the name `is-spectral·` for this latter notion of being homeomorphic to
+the spectrum of some distributive lattice.
+
 \begin{code}
 
 open DefnOfFrameOfIdeal renaming (spectrum to spec)
 
+is-spectral· : Locale (𝓤 ⁺) 𝓤 𝓤 → Ω (𝓤 ⁺)
+is-spectral· {𝓤} X = Ǝ L ꞉ DistributiveLattice 𝓤 , X ≅c≅ spec L
+
+\end{code}
+
+\begin{code}
+
 spectral-implies-spectral·
  : (X : Locale (𝓤 ⁺) 𝓤 𝓤)
- → (is-spectral-with-small-basis ua X
- ⇒ (Ǝ L ꞉ DistributiveLattice 𝓤 , X ≅c≅ spec L)) holds
+ → (is-spectral-with-small-basis ua X ⇒ is-spectral· X) holds
 spectral-implies-spectral· X σ =
  ∣ 𝒦-X⁻ , ≅c-sym spec-𝒦⁻X X X-is-homeomorphic-to-spec-𝒦⁻X ∣
   where
