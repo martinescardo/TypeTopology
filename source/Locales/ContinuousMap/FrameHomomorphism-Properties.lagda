@@ -2,6 +2,7 @@
 title:          Properties of frame homomorphisms
 author:         Ayberk Tosun
 date-started:   2024-04-10
+dates-updated:  [2024-05-06]
 --------------------------------------------------------------------------------
 
 Originally written as part of the `Locales.Frame` module on 2021-03-09.
