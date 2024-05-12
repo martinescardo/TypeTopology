@@ -1,7 +1,7 @@
 --------------------------------------------------------------------------------
 title:          Basics of duality for spectral locales
 author:         Ayberk Tosun
-date-completed: 2024-05-07
+date-completed: 2024-05-12
 --------------------------------------------------------------------------------
 
 Every spectral locale `X` is homeomorphic to the spectrum of its distributive
