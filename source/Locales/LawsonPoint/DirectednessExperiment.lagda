@@ -42,6 +42,7 @@ open import DomainTheory.Topology.ScottTopologyProperties pt fe 𝓤
 open import Locales.Compactness pt fe hiding (is-compact)
 open import Locales.ContinuousMap.Definition pt fe
 open import Locales.ContinuousMap.FrameHomomorphism-Definition pt fe
+open import Locales.ContinuousMap.FrameHomomorphism-Properties pt fe
 open import Locales.DistributiveLattice.Definition fe pt
 open import Locales.DistributiveLattice.Ideal pt fe pe hiding (is-inhabited)
 open import Locales.DistributiveLattice.Properties fe pt
@@ -54,8 +55,6 @@ open import Locales.ScottLocale.ScottLocalesOfScottDomains pt fe sr 𝓤
 open import Locales.SmallBasis pt fe sr
 open import Locales.Spectrality.SpectralMap pt fe
 open import Locales.TerminalLocale.Properties pt fe sr
-open import MLTT.Fin hiding (𝟎; 𝟏)
-open import MLTT.List hiding ([_])
 open import Slice.Family
 open import UF.Logic
 open import UF.Powerset
@@ -66,10 +65,13 @@ open import UF.Univalence
 
 open AllCombinators pt fe renaming (_∧_ to _∧ₚ_; _∨_ to _∨ₚ_)
 open FrameHomomorphisms
+open FrameHomomorphismProperties
 open Locale
 open PropositionalTruncation pt hiding (_∨_)
 
 \end{code}
+
+We work in a module parameterized by a large and locally small locale `X`.
 
 \begin{code}
 
@@ -77,22 +79,57 @@ module Preliminaries (X : Locale (𝓤 ⁺) 𝓤 𝓤) where
 
  open ContinuousMaps
 
+\end{code}
+
+We use the abbreviation `𝟏L` the terminal locale of the category of 𝓤-Locales.
+
+\begin{code}
+
  𝟏L : Locale (𝓤 ⁺) 𝓤 𝓤
  𝟏L = 𝟏Loc pe
 
+\end{code}
+
+This is the locale defined by the frame of opens `Ω`.
+
+\begin{code}
+
+ _ : ⟨ 𝒪 𝟏L ⟩ ＝ Ω 𝓤
+ _ = refl
+
+\end{code}
+
+By a point of locale, we mean a continuous map from `𝟏L` into `X`.
+
+\begin{code}
+
  Point : 𝓤 ⁺  ̇
  Point = 𝟏L ─c→  X
+
+\end{code}
+
+A _spectral point_ is a point that is also a spectral map i.e. a continuous map
+reflecting compact opens.
+
+\begin{code}
 
  SpecPoint : 𝓤 ⁺  ̇
  SpecPoint = Σ F ꞉ 𝟏L ─c→ X , is-spectral-map X 𝟏L F holds
 
 \end{code}
 
+We now proceed to the definition of the family mentioned in the preamble. We
+work with a dcpo `𝓓` that is assumed to have
+
+  - have a top element,
+  - be a Scott domain,
+  - satisfy the aforementioned decidability condition.
+
 \begin{code}
 
 open DefinitionOfScottDomain
 
-module Experiment
+module Construction
         (𝓓    : DCPO {𝓤 ⁺} {𝓤})
         (ua   : Univalence)
         (hl   : has-least (underlying-order 𝓓))
@@ -102,9 +139,15 @@ module Experiment
  open SpectralScottLocaleConstruction₂ 𝓓 ua hl sd dc pe
  open SpectralScottLocaleConstruction 𝓓 hl hscb dc bc pe hiding (scb; β; ϟ)
  open DefnOfScottTopology 𝓓 𝓤
- open Properties 𝓓
 
  open Preliminaries σ⦅𝓓⦆
+ open Properties 𝓓
+
+\end{code}
+
+We denote by `B𝓓` the index set of the basis of `𝓓`.
+
+\begin{code}
 
  B𝓓 : Fam 𝓤 ⟨ 𝓓 ⟩∙
  B𝓓 = index-of-compact-basis 𝓓 hscb , family-of-compact-elements 𝓓 hscb
@@ -112,99 +155,123 @@ module Experiment
  scb : is-small-compact-basis 𝓓 (family-of-compact-elements 𝓓 hscb)
  scb = small-compact-basis 𝓓 hscb
 
- open is-small-compact-basis scb
+\end{code}
 
+By `βₖ`, we denote the element denoted by an index packaged up with the proof
+that it is compact.
+
+\begin{code}
+
+ open is-small-compact-basis scb
  open BottomLemma 𝓓 𝕒 hl
 
  βₖ : (i : index B𝓓) → Σ c ꞉ ⟨ 𝓓 ⟩∙ , is-compact 𝓓 c
  βₖ i = B𝓓 [ i ] , basis-is-compact i
 
- compact-opens-of : Point → Fam 𝓤 ⟨ 𝓓 ⟩∙
- compact-opens-of ℱ =
-  ⁅ B𝓓 [ c ] ∣ (c , _) ∶ Σ i ꞉ index B𝓓 , ↑ˢ[ βₖ i ] ∈ₚ F holds ⁆
+\end{code}
+
+We now write down the family of compact opens of a point which we denote
+`𝒦-in-point`.
+
+\begin{code}
+
+ 𝒦-in-point : Point → Fam 𝓤 ⟨ 𝓓 ⟩∙
+ 𝒦-in-point ℱ =
+  ⁅ B𝓓 [ i ] ∣ (i , _) ∶ (Σ i ꞉ index B𝓓 , ↑ˢ[ βₖ i ] ∈ₚ F holds) ⁆
    where
     F : ⟨ 𝒪 σ⦅𝓓⦆ ⟩ → Ω 𝓤
     F = pr₁ ℱ
 
 \end{code}
 
+The family `𝒦-in-point` is always inhabited.
+
 \begin{code}
 
  open ScottLocaleProperties 𝓓 hl hscb pe
 
- family-of-compact-opens-is-inhabited : (ℱ@(F , _) : Point)
-                                      → is-inhabited
-                                         (underlying-order 𝓓)
-                                         (Σ i ꞉ index B𝓓 , ↑ˢ[ βₖ i ] ∈ₚ F holds)
- family-of-compact-opens-is-inhabited ℱ = ∥∥-rec ∃-is-prop † γ
-   where
-    F : ⟨ 𝒪 σ⦅𝓓⦆ ⟩ → Ω 𝓤
-    F = pr₁ ℱ
+ 𝒦-in-point-is-inhabited
+  : (ℱ@(F , _) : Point)
+  → is-inhabited (underlying-order 𝓓) (index (𝒦-in-point ℱ))
+ 𝒦-in-point-is-inhabited ℱ = ∥∥-rec ∃-is-prop † γ
+  where
+   F : ⟨ 𝒪 σ⦅𝓓⦆ ⟩ → Ω 𝓤
+   F = pr₁ ℱ
 
-    Ⅲ : F 𝟏[ 𝒪 σ⦅𝓓⦆ ] ＝ ⊤
-    Ⅲ = frame-homomorphisms-preserve-top (𝒪 σ⦅𝓓⦆) (𝒪 𝟏L) ℱ
+   Ⅲ : F 𝟏[ 𝒪 σ⦅𝓓⦆ ] ＝ ⊤
+   Ⅲ = frame-homomorphisms-preserve-top (𝒪 σ⦅𝓓⦆) (𝒪 𝟏L) ℱ
 
-    ζ : 𝟏[ 𝒪 σ⦅𝓓⦆ ] ∈ F
-    ζ = equal-⊤-gives-holds (F 𝟏[ 𝒪 σ⦅𝓓⦆ ]) Ⅲ
+   ζ : 𝟏[ 𝒪 σ⦅𝓓⦆ ] ∈ F
+   ζ = equal-⊤-gives-holds (F 𝟏[ 𝒪 σ⦅𝓓⦆ ]) Ⅲ
 
-    † : Σ i ꞉ index B𝓓 , B𝓓 [ i ] ＝ ⊥ᴰ → ∃ i ꞉ index B𝓓 , ↑ˢ[ βₖ i ] ∈ₚ F holds
-    † (i , p) = ∣ i , equal-⊤-gives-holds (F ↑ˢ[ βₖ i ]) ※ ∣
-     where
-      Ⅰ = ap F (to-subtype-＝ (holds-is-prop ∘ is-scott-open) (ap (principal-filter 𝓓) p))
-      Ⅱ = ap F ↑⊥-is-top
+   † : Σ i ꞉ index B𝓓 , B𝓓 [ i ] ＝ ⊥ᴰ → ∃ i ꞉ index B𝓓 , ↑ˢ[ βₖ i ] ∈ₚ F holds
+   † (i , p) = ∣ i , equal-⊤-gives-holds (F ↑ˢ[ βₖ i ]) ※ ∣
+    where
+     Ⅰ = ap
+          F
+          (to-subtype-＝
+            (holds-is-prop ∘ is-scott-open)
+            (ap (principal-filter 𝓓) p))
+     Ⅱ = ap F ↑⊥-is-top
 
-      ※ : F ↑ˢ[ βₖ i ] ＝ ⊤
-      ※ = F ↑ˢ[ βₖ i ]    ＝⟨ Ⅰ ⟩
-          F ↑ˢ[ ⊥ᴰ , ⊥κ ] ＝⟨ Ⅱ ⟩
-          F 𝟏[ 𝒪 σ⦅𝓓⦆ ]   ＝⟨ Ⅲ ⟩
-          ⊤               ∎
+     ※ : F ↑ˢ[ βₖ i ] ＝ ⊤
+     ※ = F ↑ˢ[ βₖ i ]    ＝⟨ Ⅰ ⟩
+         F ↑ˢ[ ⊥ᴰ , ⊥κ ] ＝⟨ Ⅱ ⟩
+         F 𝟏[ 𝒪 σ⦅𝓓⦆ ]   ＝⟨ Ⅲ ⟩
+         ⊤               ∎
 
-    γ : ∃ i ꞉ index B𝓓 , B𝓓 [ i ] ＝ ⊥ᴰ
-    γ = small-compact-basis-contains-all-compact-elements 𝓓 (B𝓓 [_]) scb ⊥ᴰ ⊥κ
+   γ : ∃ i ꞉ index B𝓓 , B𝓓 [ i ] ＝ ⊥ᴰ
+   γ = small-compact-basis-contains-all-compact-elements 𝓓 (B𝓓 [_]) scb ⊥ᴰ ⊥κ
 
- closed-under-binary-upperbounds : (ℱ : Point)
-                                 → is-semidirected
-                                    (underlying-order 𝓓)
-                                    (compact-opens-of ℱ [_])
+\end{code}
+
+The family `𝒦-in-point` is closed under binary upper bounds.
+
+\begin{code}
+
+ closed-under-binary-upperbounds
+  : (ℱ : Point)
+  → is-semidirected (underlying-order 𝓓) (𝒦-in-point ℱ [_])
  closed-under-binary-upperbounds ℱ (i , κᵢ) (j , κⱼ) =
+
+\end{code}
+
+In the proof, we use the assumption that upper boundedness of compact elements
+is decidable.
+
+\begin{code}
+
   cases †₁ †₂ (dc (B𝓓 [ i ]) (B𝓓 [ j ]) (basis-is-compact i) (basis-is-compact j))
    where
+    open DefnOfScottLocale 𝓓 𝓤 pe
+
     F = pr₁ ℱ
+
+\end{code}
+
+We denote by `b` and `c`, the elements `B𝓓 [ i ]` and `B𝓓 [ j ]` respectively.
+
+\begin{code}
 
     b  = B𝓓 [ i ]
     κᵇ = basis-is-compact i
     c  = B𝓓 [ j ]
     κᶜ = basis-is-compact j
 
-    †₁ : bounded-above 𝓓 (B𝓓 [ i ]) (B𝓓 [ j ]) holds
-       → ∃ k ꞉ index (compact-opens-of ℱ)
-             , (compact-opens-of ℱ [ i , κᵢ ]) ⊑⟨ 𝓓 ⟩ (compact-opens-of ℱ [ k ])
-             × (compact-opens-of ℱ [ j , κⱼ ]) ⊑⟨ 𝓓 ⟩ (compact-opens-of ℱ [ k ])
-    †₁ υ = ∥∥-rec ∃-is-prop †₂ 𝒷ᵈ
-     where
-      𝓈 : has-sup (underlying-order 𝓓) (binary-family 𝓤 b c [_])
-      𝓈 = bc (binary-family 𝓤 b c) υ
+\end{code}
 
-      d : ⟨ 𝓓 ⟩∙
-      d = pr₁ 𝓈
+We first record, as a lemma that we will use in both cases, that
+```
+    (↑(b) ∧ ↑(c)) ∈ F
+```
 
-      p : b ⊑⟨ 𝓓 ⟩ d
-      p = pr₁ (pr₂ 𝓈) (inl ⋆)
+This is the case because we know `F(↑(b)) ＝ ⊤` and `F(↑(c)) ＝ ⊤` meaning we
+have
+```
+  F(↑(b) ∧ ↑(c)) ＝ F(↑(b)) ∧ F(↑(c)) ＝ ⊤ ∧ ⊤ ＝ ⊤.
+```
 
-      q : c ⊑⟨ 𝓓 ⟩ d
-      q = pr₁ (pr₂ 𝓈) (inr ⋆)
-
-      κᵈ : is-compact 𝓓 d
-      κᵈ = sup-is-compact b c d κᵇ κᶜ (pr₂ 𝓈)
-
-      𝒷ᵈ : (d ∈imageₚ (B𝓓 [_])) holds
-      𝒷ᵈ = small-compact-basis-contains-all-compact-elements 𝓓 (B𝓓 [_]) scb d κᵈ
-
-      †₂ : Σ k ꞉ index B𝓓 , B𝓓 [ k ] ＝ d
-         → ∃ (λ k →
-                 ((compact-opens-of ℱ [ i , κᵢ ]) ⊑⟨ 𝓓 ⟩ (B𝓓 [ pr₁ k ]))
-               × ((compact-opens-of ℱ [ j , κⱼ ]) ⊑⟨ 𝓓 ⟩ (B𝓓 [ pr₁ k ])))
-      †₂ = {!!}
+\begin{code}
 
     μₘ : (↑ˢ[ b , κᵇ ] ∧[ 𝒪 Σ⦅𝓓⦆ ] ↑ˢ[ c , κᶜ ]) ∈ F
     μₘ = equal-⊤-gives-holds (F (↑ˢ[ b , κᵇ ] ∧[ 𝒪 Σ⦅𝓓⦆ ] ↑ˢ[ c , κᶜ ])) †
@@ -223,17 +290,110 @@ module Experiment
           F ↑ˢ[ b , κᵇ ] ∧ₚ F ↑ˢ[ c , κᶜ ]          ＝⟨ Ⅱ ⟩
           ⊤                                         ∎
 
+\end{code}
+
+We now proceed with the case analysis.
+
+Case 1: the upper bound of `b` and `c` exists.
+
+\begin{code}
+
+    †₁ : bounded-above 𝓓 (B𝓓 [ i ]) (B𝓓 [ j ]) holds
+       → ∃ k ꞉ index (𝒦-in-point ℱ)
+             , (𝒦-in-point ℱ [ i , κᵢ ]) ⊑⟨ 𝓓 ⟩ (𝒦-in-point ℱ [ k ])
+             × (𝒦-in-point ℱ [ j , κⱼ ]) ⊑⟨ 𝓓 ⟩ (𝒦-in-point ℱ [ k ])
+    †₁ υ = ∥∥-rec ∃-is-prop ‡₁ 𝒷ᵈ
+     where
+      𝓈 : has-sup (underlying-order 𝓓) (binary-family 𝓤 b c [_])
+      𝓈 = bc (binary-family 𝓤 b c) υ
+
+\end{code}
+
+Thanks to bounded completeness, the fact that an upper bound exists means that
+the least upper bound exists. We denote this by `d`.
+
+\begin{code}
+
+      d : ⟨ 𝓓 ⟩∙
+      d = pr₁ 𝓈
+
+      p : b ⊑⟨ 𝓓 ⟩ d
+      p = pr₁ (pr₂ 𝓈) (inl ⋆)
+
+      q : c ⊑⟨ 𝓓 ⟩ d
+      q = pr₁ (pr₂ 𝓈) (inr ⋆)
+
+      κᵈ : is-compact 𝓓 d
+      κᵈ = sup-is-compact b c d κᵇ κᶜ (pr₂ 𝓈)
+
+      𝒷ᵈ : (d ∈imageₚ (B𝓓 [_])) holds
+      𝒷ᵈ = small-compact-basis-contains-all-compact-elements 𝓓 (B𝓓 [_]) scb d κᵈ
+
+      ‡₁ : Σ k ꞉ index B𝓓 , B𝓓 [ k ] ＝ d
+         → ∃ (λ k →
+                 ((𝒦-in-point ℱ [ i , κᵢ ]) ⊑⟨ 𝓓 ⟩ (B𝓓 [ pr₁ k ]))
+               × ((𝒦-in-point ℱ [ j , κⱼ ]) ⊑⟨ 𝓓 ⟩ (B𝓓 [ pr₁ k ])))
+      ‡₁ (k , ψ) = ∣ (k , ※) , ♠ , ♣ ∣
+       where
+        r : ↑ˢ[ d , κᵈ ] ＝ ↑ˢ[ b , κᵇ ] ∧[ 𝒪 Σ[𝓓] ] ↑ˢ[ c , κᶜ ]
+        r = principal-filter-reflects-joins b c d κᵇ κᶜ (pr₂ 𝓈)
+
+        ♥ : ↑ˢ[ d , κᵈ ] ∈ F
+        ♥ = transport (λ - → - ∈ F) (r ⁻¹) μₘ
+
+        ※ : ↑ˢ[ βₖ k ] ∈ F
+        ※ = transport
+             (λ - → ↑ˢ[ - ] ∈ F)
+             (to-subtype-＝ (being-compact-is-prop 𝓓) (ψ ⁻¹))
+             ♥
+
+        -- Seems to be necessary for the termination of typechecking within a
+        -- reasonable time
+        abstract
+         ♠ : (B𝓓 [ i ]) ⊑⟨ 𝓓 ⟩ (B𝓓 [ k ])
+         ♠ = transport (λ - → (B𝓓 [ i ]) ⊑⟨ 𝓓 ⟩ -) (ψ ⁻¹) p
+
+         ♣ : (B𝓓 [ j ]) ⊑⟨ 𝓓 ⟩ (B𝓓 [ k ])
+         ♣ = transport (λ - → (B𝓓 [ j ]) ⊑⟨ 𝓓 ⟩ -) (ψ ⁻¹) q
+
+\end{code}
+
+Case 2: the upper bound of `B𝓓 [ i ]` and `B𝓓 [ j ]` _does not_ exist.
+
+\begin{code}
+
     †₂ : ¬ ((B𝓓 [ i ]) ↑[ 𝓓 ] (B𝓓 [ j ]) holds)
-       → ∃ k ꞉ index (compact-opens-of ℱ)
-             , (compact-opens-of ℱ [ i , κᵢ ]) ⊑⟨ 𝓓 ⟩ (compact-opens-of ℱ [ k ])
-             × (compact-opens-of ℱ [ j , κⱼ ]) ⊑⟨ 𝓓 ⟩ (compact-opens-of ℱ [ k ])
+       → ∃ k ꞉ index (𝒦-in-point ℱ)
+             , (𝒦-in-point ℱ [ i , κᵢ ]) ⊑⟨ 𝓓 ⟩ (𝒦-in-point ℱ [ k ])
+             × (𝒦-in-point ℱ [ j , κⱼ ]) ⊑⟨ 𝓓 ⟩ (𝒦-in-point ℱ [ k ])
     †₂ ν = 𝟘-elim (⊥-is-not-⊤ ϟ)
      where
+
+\end{code}
+
+In this case, we have that `↑(B𝓓 [ i ]) ∧ ↑(B𝓓 [ j ]) ＝ 𝟎`, given by
+`not-bounded-lemma`.
+
+\begin{code}
+
       β : ↑ˢ[ b , κᵇ ] ∧[ 𝒪 Σ⦅𝓓⦆ ] ↑ˢ[ c , κᶜ ] ＝ 𝟎[ 𝒪 Σ⦅𝓓⦆ ]
       β = not-bounded-lemma b c κᵇ κᶜ ν
 
+\end{code}
+
+Because the point `F` is a frame homomorphism, we have that
+
+```
+  F(↑b) ∧ F(↑c) ＝ F(↑b ∧ ↑c) ＝ F(𝟎)
+```
+
+Because we know that `F(↑b)` and `F(↑c)` hold, we know that `F(𝟎)` holds, which
+is a contradiction since `F(𝟎) ＝ ⊥`.
+
+\begin{code}
+
       Ⅰ = 𝟎-is-⊥ pe
-      Ⅱ = {! frame-homomorphisms-preserve-bottom (𝒪 Σ⦅𝓓⦆) (𝟎-𝔽𝕣𝕞 pe) ℱ ⁻¹ !}
+      Ⅱ = frame-homomorphisms-preserve-bottom (𝒪 Σ⦅𝓓⦆) (𝟎-𝔽𝕣𝕞 pe) ℱ ⁻¹
       Ⅲ = ap F (β ⁻¹)
       Ⅳ = holds-gives-equal-⊤ pe fe (F (↑ˢ[ b , κᵇ ] ∧[ 𝒪 Σ⦅𝓓⦆ ] ↑ˢ[ c , κᶜ ])) μₘ
 
@@ -244,11 +404,16 @@ module Experiment
           F (↑ˢ[ b , κᵇ ] ∧[ 𝒪 Σ⦅𝓓⦆ ] ↑ˢ[ c , κᶜ ])   ＝⟨ Ⅳ ⟩
           ⊤                                           ∎
 
- family-of-compact-opens-is-directed : (ℱ : Point)
-                                     → is-directed
-                                        (underlying-order 𝓓)
-                                        (compact-opens-of ℱ [_])
- family-of-compact-opens-is-directed ℱ = family-of-compact-opens-is-inhabited ℱ
-                                       , closed-under-binary-upperbounds ℱ
+\end{code}
+
+We now have everything required to record the proof that the family
+`𝒦-in-point ℱ` is directed.
+
+\begin{code}
+
+ 𝒦-in-point-is-directed : (ℱ : Point)
+                        → is-directed (underlying-order 𝓓) (𝒦-in-point ℱ [_])
+ 𝒦-in-point-is-directed ℱ = 𝒦-in-point-is-inhabited ℱ
+                          , closed-under-binary-upperbounds ℱ
 
 \end{code}
