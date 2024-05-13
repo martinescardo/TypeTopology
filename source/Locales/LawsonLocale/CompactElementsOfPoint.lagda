@@ -111,16 +111,6 @@ By a point of locale, we mean a continuous map from `𝟏L` into `X`.
 
 \end{code}
 
-A _spectral point_ is a point that is also a spectral map i.e. a continuous map
-reflecting compact opens.
-
-\begin{code}
-
- SpecPoint : 𝓤 ⁺  ̇
- SpecPoint = Σ F ꞉ 𝟏L ─c→ X , is-spectral-map X 𝟏L F holds
-
-\end{code}
-
 We now proceed to the definition of the family mentioned in the preamble. We
 work with a dcpo `𝓓` that is assumed to
 
