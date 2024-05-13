@@ -30,7 +30,7 @@ open import TWA.Thesis.Chapter6.SignedDigitOrder fe
 
 ## Representations we will use
 
-\end{code}
+\begin{code}
 -1𝟚ᴺ -1/2𝟚ᴺ O𝟚ᴺ 1/4𝟚ᴺ 1/3𝟚ᴺ 1/2𝟚ᴺ 1𝟚ᴺ : 𝟚ᴺ
 -1𝟚ᴺ   = repeat ₀
 -1/2𝟚ᴺ = ₀ ∷ (₀ ∷ repeat ₁)
@@ -58,7 +58,7 @@ x /4 = (x /2) /2 /2
 
 ## Search examples
 
-\end{code}
+\begin{code}
 module Search-Example1 where
 
  predicate : ℕ → decidable-uc-predicate 𝓤₀ 𝟛ᴺ-ClosenessSpace
@@ -127,7 +127,7 @@ module Search-Example3 where
 
 ## Optimisation examples
 
-\end{code}
+\begin{code}
 module Optimisation-Example1 where
 
  opt-test : ℕ → 𝟛ᴺ
@@ -166,7 +166,7 @@ module Optimisation-Example2 where
 
 ## Regression examples
 
-\end{code}
+\begin{code}
 module Regression-Example
  (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥)
  (g : ⟨ Y ⟩ → ⟨ X ⟩)
@@ -219,7 +219,7 @@ module Regression-ExampleDistortionProne
  where
 
  open Regression-Example X X id (id-ucontinuous X) tb S M (Ψ 𝓞)
-        observations ϕᴹ
+  observations ϕᴹ
           
  regΨ𝓞 optΨ𝓞 : ℕ → ⟨ X ⟩
  regΨ𝓞 = reg𝓞
@@ -236,15 +236,16 @@ module Regression-Example1a where
  observations : Vec 𝟛ᴺ 3
  observations = -1𝟛ᴺ :: (O𝟛ᴺ :: [ 1𝟛ᴺ ])
 
- ϕᴹ : (y : 𝟛ᴺ) → f-ucontinuous 𝟛ᴺ-ClosenessSpace 𝟛ᴺ-ClosenessSpace
-                   (λ x → mid (neg x) y)
+ ϕᴹ : (y : 𝟛ᴺ)
+    → f-ucontinuous 𝟛ᴺ-ClosenessSpace 𝟛ᴺ-ClosenessSpace
+       (λ x → mid (neg x) y)
  ϕᴹ y = f-ucontinuous-comp 𝟛ᴺ-ClosenessSpace 𝟛ᴺ-ClosenessSpace
-              𝟛ᴺ-ClosenessSpace neg (λ x → mid x y)
-              neg-ucontinuous
-              (seq-f-ucontinuous¹-to-closeness
-                𝟛-is-discrete 𝟛-is-discrete
-                (λ x → mid x y)
-                (seq-f-ucontinuous²-left mid mid-ucontinuous' y))
+         𝟛ᴺ-ClosenessSpace neg (λ x → mid x y)
+         neg-ucontinuous
+         (seq-f-ucontinuous¹-to-closeness
+         𝟛-is-discrete 𝟛-is-discrete
+         (λ x → mid x y)
+         (seq-f-ucontinuous²-left mid mid-ucontinuous' y))
  
  open Regression-Example
    𝟛ᴺ-ClosenessSpace 𝟚ᴺ-ClosenessSpace
@@ -272,10 +273,10 @@ module Regression-Example1b where
  ϕᴹ : (x : 𝟛ᴺ) → f-ucontinuous 𝟛ᴺ×𝟛ᴺ-ClosenessSpace 𝟛ᴺ-ClosenessSpace
                    (λ (p₁ , p₂) → mid p₁ (mid p₂ x))
  ϕᴹ x = seq-f-ucontinuous²-to-closeness
-          𝟛-is-discrete 𝟛-is-discrete 𝟛-is-discrete
-          (λ p₁ p₂ → mid p₁ (mid p₂ x))
-          (seq-f-ucontinuous²-comp mid mid
-            mid-ucontinuous' mid-ucontinuous' x)
+         𝟛-is-discrete 𝟛-is-discrete 𝟛-is-discrete
+         (λ p₁ p₂ → mid p₁ (mid p₂ x))
+         (seq-f-ucontinuous²-comp mid mid
+         mid-ucontinuous' mid-ucontinuous' x)
 
  open Regression-Example1a using (𝓞;observations;Ψ)
  
@@ -306,13 +307,13 @@ module Regression-Example2 where
 
  ϕᴹ : (y : 𝟛ᴺ)
     → f-ucontinuous
-        (×-ClosenessSpace 𝟛ᴺ-ClosenessSpace 𝟛ᴺ-ClosenessSpace)
-        𝟛ᴺ-ClosenessSpace (λ x → M x y)
+       (×-ClosenessSpace 𝟛ᴺ-ClosenessSpace 𝟛ᴺ-ClosenessSpace)
+       𝟛ᴺ-ClosenessSpace (λ x → M x y)
  ϕᴹ y = seq-f-ucontinuous²-to-closeness
-           𝟛-is-discrete 𝟛-is-discrete 𝟛-is-discrete
-           (λ α β → M (α , β) y)
-           (seq-f-ucontinuous²-comp mid mul
-             mid-ucontinuous' mul-ucontinuous' y)
+         𝟛-is-discrete 𝟛-is-discrete 𝟛-is-discrete
+         (λ α β → M (α , β) y)
+         (seq-f-ucontinuous²-comp mid mul
+           mid-ucontinuous' mul-ucontinuous' y)
 
  open Regression-Example
    𝟛ᴺ×𝟛ᴺ-ClosenessSpace 𝟚ᴺ×𝟚ᴺ-ClosenessSpace

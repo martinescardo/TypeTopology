@@ -1,5 +1,12 @@
 Todd Waugh Ambridge, January 2024
 
+M.H. Escardo and A. Simpson. A universal characterization of the
+closed Euclidean interval (extended abstract). Proceedings of the 16th
+Annual IEEE Symposium on Logic in Computer Science,
+pp.115--125. Boston, Massachusetts, June 16-19, 2001.
+
+https://doi.org/10.1109/LICS.2001.932488
+
 # Formalisation of the Escardo-Simpson interval object
 
 \begin{code}

@@ -37,7 +37,7 @@ open import TWA.Closeness fe hiding (is-ultra;is-closeness)
 
 ## Regression as maximisation
 
-\end{code}
+\begin{code}
 invert-rel : {X : 𝓤 ̇ } → (X → X → 𝓥 ̇ ) → (X → X → 𝓥 ̇ )
 invert-rel R x y = R y x
 
@@ -112,10 +112,10 @@ oracle-closeness' : (Y : PseudoClosenessSpace 𝓥)
                   → C' (ι ℕ∞-ClosenessSpace) ϵ (c 𝓞 y₁) (c 𝓞 y₂)
 oracle-closeness' (_ , c , _ , c-sym , c-ult) 𝓞 ϵ y₁ y₂ Cϵy₁y₂ n n⊏ϵ
  = decidable-𝟚₁ (∼ⁿ-decidable (λ _ → 𝟚-is-discrete) _ _ (succ n))
-       (λ k k<sn → C𝓞-eq k
-                     (<-≤-trans k (succ n) ϵ k<sn (⊏-gives-< n ϵ n⊏ϵ))
-                     (𝟚-possibilities (pr₁ (c 𝓞 y₁) k))
-                     (𝟚-possibilities (pr₁ (c 𝓞 y₂) k)))
+    (λ k k<sn
+     → C𝓞-eq k (<-≤-trans k (succ n) ϵ k<sn (⊏-gives-< n ϵ n⊏ϵ))
+        (𝟚-possibilities (pr₁ (c 𝓞 y₁) k))
+        (𝟚-possibilities (pr₁ (c 𝓞 y₂) k)))
    where
     C𝓞-eq : (n : ℕ) → n < ϵ
           → let c𝓞y₁n = pr₁ (c 𝓞 y₁) n in
@@ -126,16 +126,16 @@ oracle-closeness' (_ , c , _ , c-sym , c-ult) 𝓞 ϵ y₁ y₂ Cϵy₁y₂ n n�
     C𝓞-eq n n<ϵ (inl c𝓞y₁＝₀) (inl c𝓞y₂＝₀) = c𝓞y₁＝₀ ∙ c𝓞y₂＝₀ ⁻¹
     C𝓞-eq n n<ϵ (inl c𝓞y₁＝₀) (inr c𝓞y₂＝₁)
      = 𝟘-elim (zero-is-not-one
-         (c𝓞y₁＝₀ ⁻¹
+        (c𝓞y₁＝₀ ⁻¹
          ∙ c-ult 𝓞 y₂ y₁ n
-           (Lemma[a＝₁→b＝₁→min𝟚ab＝₁] c𝓞y₂＝₁
+            (Lemma[a＝₁→b＝₁→min𝟚ab＝₁] c𝓞y₂＝₁
              (ap (λ - → pr₁ - n) (c-sym y₂ y₁)
-             ∙ Cϵy₁y₂ n (<-gives-⊏ n ϵ n<ϵ)))))
+              ∙ Cϵy₁y₂ n (<-gives-⊏ n ϵ n<ϵ)))))
     C𝓞-eq n n<ϵ (inr c𝓞y₁＝₁) (inl c𝓞y₂＝₀)
      = 𝟘-elim (zero-is-not-one
-         (c𝓞y₂＝₀ ⁻¹
+        (c𝓞y₂＝₀ ⁻¹
          ∙ c-ult 𝓞 y₁ y₂ n
-           (Lemma[a＝₁→b＝₁→min𝟚ab＝₁] c𝓞y₁＝₁
+            (Lemma[a＝₁→b＝₁→min𝟚ab＝₁] c𝓞y₁＝₁
              (Cϵy₁y₂ n (<-gives-⊏ n ϵ n<ϵ)))))
     C𝓞-eq n n<ϵ (inr c𝓞y₁＝₁) (inr c𝓞y₂＝₁) = c𝓞y₁＝₁ ∙ c𝓞y₂＝₁ ⁻¹
 
@@ -155,9 +155,10 @@ optimisation-convergence
        → (has ϵ global-maximal) ℕ∞-approx-lexicorder (λ x → c 𝓞 (M x))
 optimisation-convergence X Y x₀ t M 𝓞 ϕᴹ
  = global-max-ℕ∞ X x₀ t (c 𝓞 ∘ M)
-     (λ ϵ → pr₁ (ϕᴹ ϵ)
-          , λ x₁ x₂ Cδᶜx₁x₂ → oracle-closeness' Y 𝓞 ϵ (M x₁) (M x₂)
-                                (pr₂ (ϕᴹ ϵ) x₁ x₂ Cδᶜx₁x₂))
+    (λ ϵ → pr₁ (ϕᴹ ϵ)
+    , λ x₁ x₂ Cδᶜx₁x₂
+      → oracle-closeness' Y 𝓞 ϵ (M x₁) (M x₂)
+         (pr₂ (ϕᴹ ϵ) x₁ x₂ Cδᶜx₁x₂))
  where
   c : ⟪ Y ⟫ → ⟪ Y ⟫ → ℕ∞
   c = pr₁ (pr₂ Y)
@@ -191,14 +192,14 @@ s-imperfect-convergence
        → (M : ⟨ X ⟩ → ⟪ Y ⟫) (ϕᴹ : f-ucontinuous' (ι X) Y M)
        → (Ψ : ⟪ Y ⟫ → ⟪ Y ⟫) (k : ⟨ X ⟩)
        → let
-           𝓞 = M k
-           Ψ𝓞 = Ψ 𝓞
-           reg = p-regressor X Y S ε
-           ω = M (reg M ϕᴹ Ψ𝓞)
+          𝓞 = M k
+          Ψ𝓞 = Ψ 𝓞
+          reg = p-regressor X Y S ε
+          ω = M (reg M ϕᴹ Ψ𝓞)
          in (C' Y ε 𝓞 Ψ𝓞) → (C' Y ε 𝓞 ω)
 s-imperfect-convergence X Y S ε M ϕᴹ Ψ k Cε𝓞Ψ𝓞
  = C'-trans Y ε 𝓞 Ψ𝓞 ω Cε𝓞Ψ𝓞
-     (pr₂ (S ((p , d) , ϕ)) (k , C'-sym Y ε 𝓞 Ψ𝓞 Cε𝓞Ψ𝓞))
+    (pr₂ (S ((p , d) , ϕ)) (k , C'-sym Y ε 𝓞 Ψ𝓞 Cε𝓞Ψ𝓞))
  where
   𝓞 = M k
   Ψ𝓞 = Ψ 𝓞
@@ -215,8 +216,7 @@ s-imperfect-convergence X Y S ε M ϕᴹ Ψ k Cε𝓞Ψ𝓞
     δ = pr₁ (ϕᴹ ε)
     γ : (x₁ x₂ : ⟨ X ⟩) → C X δ x₁ x₂ → p x₁ holds → p x₂ holds
     γ x₁ x₂ Cδx₁x₂ CεΨ𝓞Mx₂
-     = C'-trans Y ε Ψ𝓞 (M x₁) (M x₂) CεΨ𝓞Mx₂
-         (pr₂ (ϕᴹ ε) x₁ x₂ Cδx₁x₂)
+     = C'-trans Y ε Ψ𝓞 (M x₁) (M x₂) CεΨ𝓞Mx₂ (pr₂ (ϕᴹ ε) x₁ x₂ Cδx₁x₂)
 
 perfect-convergence
        : (X : ClosenessSpace 𝓤) (Y : PseudoClosenessSpace 𝓥)
@@ -225,9 +225,9 @@ perfect-convergence
        → (M : ⟨ X ⟩ → ⟪ Y ⟫) (ϕᴹ : f-ucontinuous' (ι X) Y M)
        → (k : ⟨ X ⟩)
        → let
-           𝓞 = M k
-           reg = p-regressor X Y S ε
-           ω = M (reg M ϕᴹ 𝓞)
+          𝓞 = M k
+          reg = p-regressor X Y S ε
+          ω = M (reg M ϕᴹ 𝓞)
          in C' Y ε 𝓞 ω
 perfect-convergence X Y S ε M ϕᴹ k
  = s-imperfect-convergence X Y S ε M ϕᴹ id k (C'-refl Y ε 𝓞)

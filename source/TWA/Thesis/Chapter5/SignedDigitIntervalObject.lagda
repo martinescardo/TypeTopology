@@ -25,7 +25,7 @@ open basic-interval-object-development fe io hiding (−1 ; O ; +1)
 
 ## Representation map
 
-\end{code}
+\begin{code}
 ⟨_⟩ : 𝟛 → 𝕀
 ⟨ −1 ⟩ = u
 ⟨  O ⟩ = u ⊕ v
@@ -78,7 +78,7 @@ map-realiser² f f' f→ f⊕ α β
 
 ## Negation
 
-\end{code}
+\begin{code}
 flip-realiser : flip pw-realises¹ −_
 flip-realiser −1 = −1-inverse
 flip-realiser  O =  O-inverse
@@ -91,7 +91,7 @@ neg-realiser
 
 ## Binary midpoint
 
-\end{code}
+\begin{code}
 half : 𝟝 → 𝕀
 half −2 = u
 half −1 = u /2
@@ -176,7 +176,7 @@ mid-realiser α β = div2-realiser (add2 α β)
 
 ## Infinitary midpoint
 
-\end{code}
+\begin{code}
 quarter : 𝟡 → 𝕀
 quarter −4 = u
 quarter −3 = u ⊕ (u ⊕ (u ⊕ v))
@@ -634,7 +634,7 @@ M-realiser δs = fg-approx-holds (map ⟪_⟫) (map quarter ∘ bigMid')
 
 ## Multiplication
 
-\end{code}
+\begin{code}
 digitMul-realiser : digitMul realises' _*_
 digitMul-realiser −1 α
  = neg-realiser α ⁻¹ ∙ *-gives-negation-r ⟪ α ⟫ ⁻¹

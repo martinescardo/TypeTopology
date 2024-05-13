@@ -30,18 +30,22 @@ module TWA.Thesis.Chapter3.ClosenessSpaces (fe : FunExt) where
 open import TWA.Closeness fe hiding (is-ultra; is-closeness)
 
 is-decreasing'
- : (v : ℕ∞) (n : ℕ) → (i : ℕ) → i ≤ n → pr₁ v n ＝ ₁ → pr₁ v i ＝ ₁
+ : (v : ℕ∞) (n i : ℕ)
+ → i ≤ n
+ → ℕ∞-to-ℕ→𝟚 v n ＝ ₁
+ → ℕ∞-to-ℕ→𝟚 v i ＝ ₁
 is-decreasing' v
- = regress (λ z → pr₁ v z ＝ ₁) (λ n → ≤₂-criterion-converse (pr₂ v n))
+ = regress (λ z → ℕ∞-to-ℕ→𝟚 v z ＝ ₁)
+     (λ n → ≤₂-criterion-converse (pr₂ v n))
 
-positive-below-n : (i n : ℕ) → pr₁ (Succ (n ↑)) i ＝ ₁ → i ≤ n
+positive-below-n : (i n : ℕ) → ℕ∞-to-ℕ→𝟚 (Succ (n ↑)) i ＝ ₁ → i ≤ n
 positive-below-n zero n snᵢ=1 = ⋆
 positive-below-n (succ i) (succ n) snᵢ=1 = positive-below-n i n snᵢ=1
 
 ≼-left-decidable : (n : ℕ) (v : ℕ∞) → is-decidable ((n ↑) ≼ v)
 ≼-left-decidable zero v = inl (zero-minimal v)
 ≼-left-decidable (succ n) v
- = Cases (𝟚-is-discrete (pr₁ v n) ₁)
+ = Cases (𝟚-is-discrete (ℕ∞-to-ℕ→𝟚 v n) ₁)
      (λ  vₙ=1 → inl (λ i snᵢ=1 → is-decreasing' v n i
                                    (positive-below-n i n snᵢ=1) vₙ=1))
      (λ ¬vₙ=1 → inr (λ sn≼v → ¬vₙ=1 (sn≼v n (ℕ-to-ℕ∞-diagonal₁ n))))
@@ -208,7 +212,7 @@ closeness-∞-implies-ϵ-close : (X : ClosenessSpace 𝓤)
                             → c⟨ X ⟩ x y ＝ ∞
                             → (ϵ : ℕ) → C X ϵ x y
 closeness-∞-implies-ϵ-close X x y cxy＝∞ ϵ n _
- = ap (λ - → pr₁ - n) cxy＝∞
+ = ap (λ - → ℕ∞-to-ℕ→𝟚 - n) cxy＝∞
 
 C-id : (X : ClosenessSpace 𝓤)
      → (n : ℕ)
