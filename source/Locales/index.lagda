@@ -122,4 +122,6 @@ import Locales.SIP.FrameSIP
 
 import Locales.StoneDuality.ForSpectralLocales
 
+import Locales.LawsonLocale.CompactElementsOfPoint
+
 \end{code}
