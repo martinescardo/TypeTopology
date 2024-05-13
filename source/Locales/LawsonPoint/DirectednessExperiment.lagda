@@ -1,3 +1,8 @@
+--------------------------------------------------------------------------------
+author:       Ayberk Tosun
+date-started: 2024-03-15
+--------------------------------------------------------------------------------
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K --lossy-unification #-}
@@ -24,6 +29,8 @@ open import DomainTheory.Basics.WayBelow pt fe 𝓤
 open import DomainTheory.Topology.ScottTopology pt fe 𝓤
 open import DomainTheory.Topology.ScottTopologyProperties pt fe 𝓤
 open import Locales.Compactness pt fe hiding (is-compact)
+open import Locales.ContinuousMap.Definition pt fe
+open import Locales.ContinuousMap.FrameHomomorphism-Definition pt fe
 open import Locales.DistributiveLattice.Definition fe pt
 open import Locales.DistributiveLattice.Ideal pt fe pe hiding (is-inhabited)
 open import Locales.DistributiveLattice.Properties fe pt
@@ -33,9 +40,9 @@ open import Locales.ScottLocale.Definition pt fe 𝓤
 open import Locales.ScottLocale.Properties pt fe 𝓤
 open import Locales.ScottLocale.ScottLocalesOfAlgebraicDcpos pt fe 𝓤
 open import Locales.ScottLocale.ScottLocalesOfScottDomains pt fe sr 𝓤
-open import Locales.TerminalLocale.Properties pt fe sr
 open import Locales.SmallBasis pt fe sr
 open import Locales.Spectrality.SpectralMap pt fe
+open import Locales.TerminalLocale.Properties pt fe sr
 open import MLTT.Fin hiding (𝟎; 𝟏)
 open import MLTT.List hiding ([_])
 open import Slice.Family
@@ -49,12 +56,15 @@ open import UF.Univalence
 open AllCombinators pt fe renaming (_∧_ to _∧ₚ_; _∨_ to _∨ₚ_)
 open Locale
 open PropositionalTruncation pt hiding (_∨_)
+open FrameHomomorphisms
 
 \end{code}
 
 \begin{code}
 
 module Preliminaries (X : Locale (𝓤 ⁺) 𝓤 𝓤) where
+
+ open ContinuousMaps
 
  𝟏L : Locale (𝓤 ⁺) 𝓤 𝓤
  𝟏L = 𝟏Loc pe
@@ -99,10 +109,11 @@ module Experiment
  βₖ i = B𝓓 [ i ] , basis-is-compact i
 
  compact-opens-of : Point → Fam 𝓤 ⟨ 𝓓 ⟩∙
- compact-opens-of ℱ = ⁅ B𝓓 [ c ] ∣ (c , _) ∶ Σ i ꞉ index B𝓓 , ↑ˢ[ βₖ i ] ∈ₚ F holds ⁆
-  where
-   F : ⟨ 𝒪 σ⦅𝓓⦆ ⟩ → Ω 𝓤
-   F = pr₁ ℱ
+ compact-opens-of ℱ =
+  ⁅ B𝓓 [ c ] ∣ (c , _) ∶ Σ i ꞉ index B𝓓 , ↑ˢ[ βₖ i ] ∈ₚ F holds ⁆
+   where
+    F : ⟨ 𝒪 σ⦅𝓓⦆ ⟩ → Ω 𝓤
+    F = pr₁ ℱ
 
 \end{code}
 
@@ -211,7 +222,7 @@ module Experiment
       β = not-bounded-lemma b c κᵇ κᶜ ν
 
       Ⅰ = 𝟎-is-⊥ pe
-      Ⅱ = frame-homomorphisms-preserve-bottom (𝒪 Σ⦅𝓓⦆) (𝟎-𝔽𝕣𝕞 pe) ℱ ⁻¹
+      Ⅱ = {! frame-homomorphisms-preserve-bottom (𝒪 Σ⦅𝓓⦆) (𝟎-𝔽𝕣𝕞 pe) ℱ ⁻¹ !}
       Ⅲ = ap F (β ⁻¹)
       Ⅳ = holds-gives-equal-⊤ pe fe (F (↑ˢ[ b , κᵇ ] ∧[ 𝒪 Σ⦅𝓓⦆ ] ↑ˢ[ c , κᶜ ])) μₘ
 
