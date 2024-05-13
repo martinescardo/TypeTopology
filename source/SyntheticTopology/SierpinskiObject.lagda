@@ -29,6 +29,7 @@ open import UF.ImageAndSurjection pt
 open import UF.Logic
 open import UF.Subsingletons-FunExt
 open import UF.Univalence
+open import UF.UniverseEmbedding
 
 open AllCombinators pt fe
 open PropositionalTruncation pt hiding (_∨_)
@@ -64,6 +65,18 @@ sierpinski-fun (_ , α , _) = α
 In the module below, we assume the existence of a Sierpiński object `𝕊` and
 define some notions _synthetically_, following the work of Martín Escardó (and
 Davorin Lešnik).
+
+\begin{code}
+
+
+⇔-transport : {𝓥 𝓦 : Universe} {P Q : Ω 𝓥} → (𝓟 : Ω 𝓥 → 𝓦 ̇) → ((P ⇔ Q) holds) → (𝓟 P) → (𝓟 Q)
+⇔-transport {𝓥} {𝓦} {P} {Q} (𝓟) P-iff-Q Prop-P = transport 𝓟 q Prop-P
+  where
+   q : P ＝ Q
+   q = ⇔-gives-＝ pe P Q (holds-gives-equal-⊤ pe fe (P ⇔ Q) P-iff-Q)
+
+
+\end{code}
 
 \begin{code}
 
@@ -113,13 +126,6 @@ The former definition turns out to more useful in our case.
 Useful lemmas, which shorten proofs (maybe move it elsewhere at some point)
 
 \begin{code}
-
- ⇔-transport : {P Q : Ω 𝓤} → (𝓟 : Ω 𝓤 → 𝓤 ⁺ ̇) → ((P ⇔ Q) holds) → (𝓟 P) → (𝓟 Q)
- ⇔-transport {P} {Q} (𝓟) P-iff-Q Prop-P = transport 𝓟 q Prop-P
-   where
-    q : P ＝ Q
-    q = ⇔-gives-＝ pe P Q (holds-gives-equal-⊤ pe fe (P ⇔ Q) P-iff-Q)
-
  ⇔-affirmable : {P Q : Ω 𝓤}
               → ((P ⇔ Q) ⇒ is-affirmable P ⇒ is-affirmable Q) holds
  ⇔-affirmable = ⇔-transport (_holds ∘ is-affirmable)
@@ -150,10 +156,14 @@ First, the Dominance Axiom:
 \begin{code}
 
  openness-is-transitive : (𝓤 ⁺) ̇
- openness-is-transitive = (u : Ω 𝓤) → (is-affirmable u) holds → (p : Ω 𝓤) → (u holds → (is-affirmable p) holds) → (is-affirmable (u ∧ p) ) holds
+ openness-is-transitive = (u : Ω 𝓤)
+                                         → (is-affirmable u) holds
+                                         → (p : Ω 𝓤)
+                                         → (u holds → (is-affirmable p) holds)
+                                         → (is-affirmable (u ∧ p) ) holds
 
  contains-top : Ω (𝓤 ⁺)
- contains-top = is-affirmable ⊤
+ contains-top = is-affirmable (⊤ {𝓤})
 
  is-synthetic-dominance : (𝓤 ⁺) ̇
  is-synthetic-dominance = contains-top holds × openness-is-transitive
@@ -167,7 +177,7 @@ Phoa’s Principle:
  phoa’s-principle : Ω (𝓤 ⁺)
  phoa’s-principle =
   Ɐ f ꞉ (Ω 𝓤 → Ω 𝓤) , Ɐ U ꞉ Ω 𝓤 , is-affirmable U ⇒ f U ⇔ (f ⊥ ∨  U) ∧ f ⊤
-
+  
 \end{code}
 
 \section{Compactness}
@@ -307,4 +317,49 @@ Overtness:
  is-overt X =
   Ɐ P ꞉ (X → Ω 𝓤) , is-intrinsically-open P ⇒ is-affirmable (Ǝₚ x ꞉ X , P x)
 
+ countable-are-overt : (is-overt (Lift 𝓤 ℕ) holds) → (is-overt (𝟘 {𝓤}) holds) → (X : 𝓤 ̇) → (f : ( (Lift 𝓤 ℕ) → (𝟙 {𝓤} ) + X)) → (is-surjection f) → (is-overt X holds) 
+ countable-are-overt overt-ℕ overt-𝟘 X f surf = λ P open-P → ⇔-affirmable (eq P) († P open-P)
+
+  where
+  
+   lemma₁ : is-overt (𝟙 {𝓤} + X) holds
+   lemma₁ = λ Q open-Q → ∥∥-rec (holds-is-prop (is-affirmable (Ǝₚ x ꞉ (𝟙 {𝓤} + X) , Q x))) (†' Q) (overt-ℕ (λ n → Q (f n)) (λ n → open-Q (f n)))
+
+     where
+      †' : (Q : 𝟙 + X → Ω 𝓤) → Σ (λ x → ι x ＝ (Ǝₚ n ꞉ (Lift 𝓤 ℕ) , Q (f n))) → is-affirmable ((Ǝₚ x ꞉ (𝟙 + X) ,  Q x)) holds
+      †' Q (h , φ) = ∣ h , (φ ∙ q Q)  ∣
+
+       where 
+        p :  (Q : 𝟙 + X → Ω 𝓤) → (Ǝₚ n ꞉ (Lift 𝓤 ℕ) , Q (f n) ⇔ Ǝₚ x ꞉ (𝟙 + X) , Q x)  holds
+        p Q = ( λ ex-ℕ → ∥∥-rec (holds-is-prop (Ǝₚ x ꞉ (𝟙 + X) , Q x)) (λ (n , pn) → ∣ f n , pn  ∣) ex-ℕ  ) ,
+                λ ex-X → ∥∥-rec (holds-is-prop (Ǝₚ n ꞉ (Lift 𝓤 ℕ) , Q (f n))) ((λ (x , px) → ∥∥-rec (holds-is-prop (Ǝₚ n ꞉ (Lift 𝓤 ℕ) , Q (f n))) ((λ (n , fnx) → ∣ n , transport (λ v → pr₁ (Q v)) (fnx ⁻¹) px  ∣)) (surf x))) ex-X
+
+        q : (Q : 𝟙 + X → Ω 𝓤) →  (Ǝₚ n ꞉ (Lift 𝓤 ℕ) , Q (f n)) ＝ (Ǝₚ x ꞉ (𝟙 + X) ,  Q x)
+        q Q = ⇔-gives-＝ pe (Ǝₚ n ꞉ (Lift 𝓤 ℕ) , Q (f n)) (Ǝₚ x ꞉ (𝟙 + X) , Q x)
+                    (holds-gives-equal-⊤ pe fe (Ǝₚ n ꞉ (Lift 𝓤 ℕ) , Q (f n) ⇔ Ǝₚ x ꞉ (𝟙 + X) , Q x) (p Q))
+
+   extend : (X → Ω 𝓤) → (𝟙 {𝓤} + X) → Ω 𝓤
+   extend _ (inl ⋆) = ⊥ {𝓤}
+   extend P (inr x) = P x
+
+   eq : (P : X → Ω 𝓤) → ( (Ǝₚ x' ꞉ (𝟙 + X) , (extend P) x') ⇔ Ǝₚ x ꞉ X , P x) holds
+   eq P = (λ extended → ∥∥-rec (holds-is-prop (Ǝₚ x ꞉ X , P x))
+                                              (uncurry (λ x' → dep-cases {𝓤} {𝓤} {𝓤} {𝟙} {X} {λ z → extend P z holds → (Ǝₚ x ꞉ X , P x) holds}  (λ ⋆ es → 𝟘-elim es) (λ x ex → ∣ x , ex ∣) x'))
+                                             extended ) ,
+               λ base → ∥∥-rec (holds-is-prop (Ǝₚ x' ꞉ (𝟙 + X) , (extend P) x')) (λ (x , Px) → ∣ (inr x) , Px  ∣) base
+
+   𝟘-iff : ((Ǝₚ z ꞉ (𝟘 {𝓤})  , ⊥ ) ⇔ ⊥ {𝓤}) holds 
+   𝟘-iff = (λ hyp → ∥∥-rec (holds-is-prop (⊥ {𝓤})) (λ z → 𝟘-elim (pr₁ z)) hyp) , λ zero → 𝟘-elim zero
+
+   † : (P : X → Ω 𝓤) → is-intrinsically-open P holds →  is-affirmable (Ǝₚ x ꞉ (𝟙 + X) , extend P x) holds
+   † P open-P = lemma₁ (extend P) λ x' → dep-cases {𝓤} {𝓤} {𝓤 ⁺} {𝟙 {𝓤}} {X} { λ z → is-affirmable (extend P z) holds } (λ ⋆ → ⇔-affirmable 𝟘-iff (overt-𝟘 (λ _ → ⊥) (λ z → 𝟘-elim z))) (λ x → open-P x) x'
+
+
+   
+   
 \end{code}
+
+Find a way to define :
+ _ : is-overt ℕ → is-overt 𝟘 → (X : 𝓤 ̇) → (f : is-surjection ℕ (𝟙 + X)) → is-overt X
+
+Problem : ℕ : 𝓤₀ and not 𝓤
