@@ -3,6 +3,17 @@ author:       Ayberk Tosun
 date-started: 2024-03-15
 --------------------------------------------------------------------------------
 
+Let `D` be a Scott domain satisfying the condition that upper boundedness of
+compact opens is decidable, and denote by `σ(D)` the Scott locale of `D`.
+
+By a “point” of `D`, we mean a frame homomorphism `F : 𝒪(σ(D)) → Ω`.
+
+In this module, we define the family
+
+  { c : 𝒦(D) ∣ ↑(c) ∈ F }
+
+and prove that it is directed.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K --lossy-unification #-}
