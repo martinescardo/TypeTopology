@@ -353,13 +353,50 @@ Overtness:
 
    † : (P : X → Ω 𝓤) → is-intrinsically-open P holds →  is-affirmable (Ǝₚ x ꞉ (𝟙 + X) , extend P x) holds
    † P open-P = lemma₁ (extend P) λ x' → dep-cases {𝓤} {𝓤} {𝓤 ⁺} {𝟙 {𝓤}} {X} { λ z → is-affirmable (extend P z) holds } (λ ⋆ → ⇔-affirmable 𝟘-iff (overt-𝟘 (λ _ → ⊥) (λ z → 𝟘-elim z))) (λ x → open-P x) x'
-
-
-   
    
 \end{code}
 
-Find a way to define :
- _ : is-overt ℕ → is-overt 𝟘 → (X : 𝓤 ̇) → (f : is-surjection ℕ (𝟙 + X)) → is-overt X
+Sub-ness (subcompact, subovert ... )
 
-Problem : ℕ : 𝓤₀ and not 𝓤
+\begin{code}
+
+ is-subcompact : (Y : 𝓤 ̇) → (X : Y → Ω 𝓤) → 𝓤 ⁺ ̇   -- X ⊆ Y with Lesnik's notations of 2.15
+ is-subcompact Y X = (U : Y → Ω 𝓤) → is-intrinsically-open U holds → (is-affirmable (Ɐ x ꞉ Y , (X x ⇒ U x))) holds
+
+ is-subovert : (Y : 𝓤 ̇) → (X : Y → Ω 𝓤) → 𝓤 ⁺ ̇   -- same as above
+ is-subovert Y X = (U : Y → Ω 𝓤) → is-intrinsically-open U holds → (is-affirmable (Ǝₚ x ꞉ Y , (X x ∧ U x))) holds
+
+
+ subovert-of-discrete-is-open : {Y : 𝓤 ̇} → (X : Y → Ω 𝓤) → is-subovert Y X → (setY : is-set Y) →  (is-discrete-set Y setY) → is-intrinsically-open X holds
+ subovert-of-discrete-is-open {Y} X subovert-X setY discrete-Y y = ⇔-affirmable X-iff †
+  where
+   X-iff : ((Ǝₚ y' ꞉ Y , (X y' ∧ ((y ＝ y') , setY))) ⇔ X y) holds
+   X-iff = (λ exequal → ∥∥-rec (holds-is-prop (X y)) (λ (y' , Xy' , y-equals-y') → transport (λ i → pr₁ (X i)) (y-equals-y' ⁻¹)  Xy') exequal)  ,
+               λ Xy → ∣ y , Xy , refl  ∣
+   
+   † : is-affirmable (Ǝₚ y' ꞉ Y , (X y' ∧ ((y ＝ y') , setY))) holds
+   † = subovert-X (λ z → (y ＝ z) , setY) (λ z → discrete-Y (y , z) )
+
+\end{code}
+
+Density
+
+\begin{code}
+
+ is-dense : {X : 𝓤 ̇} → (D : X → Ω 𝓤) → 𝓤 ⁺ ̇  -- should be read : "D is dense in X"
+ is-dense {X} D = (P : X → Ω 𝓤) → is-intrinsically-open P holds → (Ǝₚ x ꞉ X , P x) holds → (Ǝₚ x ꞉ X , ((P x) ∧ (D x))) holds
+
+ self-is-dense-in-self : {X : 𝓤 ̇} → is-dense {X} (λ x → ⊤)
+ self-is-dense-in-self  P open-P inhabited-P = ∥∥-rec (holds-is-prop (Ǝₚ x' ꞉ X , ((P x') ∧ (D x')))) † inhabited-P
+   where
+    X : 𝓤 ̇
+    X = domain P
+    
+    D : X → Ω 𝓤
+    D x = ⊤
+    
+    † : Σ x ꞉ X , P x holds → (Ǝₚ x' ꞉ X , ((P x') ∧ (D x'))) holds
+    † (x , Px) = ∣ x , ∧-Intro (P x) (D x)  Px ⊤-holds  ∣
+
+
+\end{code}
