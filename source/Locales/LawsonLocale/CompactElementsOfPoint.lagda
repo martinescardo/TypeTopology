@@ -1,12 +1,13 @@
 --------------------------------------------------------------------------------
-author:       Ayberk Tosun
-date-started: 2024-03-15
+author:         Ayberk Tosun
+date-started:   2024-03-15
+date-completed: 2024-05-13
 --------------------------------------------------------------------------------
 
-Let `D` be a Scott domain satisfying the condition that upper boundedness of
-compact opens is decidable, and denote by `σ(D)` the Scott locale of `D`.
+Let D be a Scott domain satisfying the condition that upper boundedness of
+compact opens is decidable, and denote by σ(D) the Scott locale of D.
 
-By a “point” of `D`, we mean a frame homomorphism `F : 𝒪(σ(D)) → Ω`.
+By a “point” of D, we mean a frame homomorphism F : 𝒪(σ(D)) → Ω.
 
 In this module, we define the family
 
@@ -24,7 +25,7 @@ open import UF.PropTrunc
 open import UF.Size
 open import UF.Subsingletons
 
-module Locales.LawsonPoint.DirectednessExperiment
+module Locales.LawsonLocale.CompactElementsOfPoint
         (𝓤  : Universe)
         (fe : Fun-Ext)
         (pe : Prop-Ext)
@@ -64,8 +65,8 @@ open import UF.SubtypeClassifier renaming (⊥ to ⊥ₚ)
 open import UF.Univalence
 
 open AllCombinators pt fe renaming (_∧_ to _∧ₚ_; _∨_ to _∨ₚ_)
-open FrameHomomorphisms
 open FrameHomomorphismProperties
+open FrameHomomorphisms
 open Locale
 open PropositionalTruncation pt hiding (_∨_)
 
@@ -81,7 +82,8 @@ module Preliminaries (X : Locale (𝓤 ⁺) 𝓤 𝓤) where
 
 \end{code}
 
-We use the abbreviation `𝟏L` the terminal locale of the category of 𝓤-Locales.
+We use the abbreviation `𝟏L` for the terminal locale of the category of
+`𝓤`-locales (i.e. large and locally small locales over universe `𝓤`).
 
 \begin{code}
 
@@ -90,7 +92,8 @@ We use the abbreviation `𝟏L` the terminal locale of the category of 𝓤-Loca
 
 \end{code}
 
-This is the locale defined by the frame of opens `Ω`.
+For the reader who might not be familiar, this is the locale defined by the
+frame of opens `Ω`.
 
 \begin{code}
 
@@ -119,11 +122,11 @@ reflecting compact opens.
 \end{code}
 
 We now proceed to the definition of the family mentioned in the preamble. We
-work with a dcpo `𝓓` that is assumed to have
+work with a dcpo `𝓓` that is assumed to
 
-  - have a top element,
-  - be a Scott domain,
-  - satisfy the aforementioned decidability condition.
+  - have a bottom element,
+  - be a Scott domain, and
+  - satisfy the aforementioned decidability condition for upper boundedness.
 
 \begin{code}
 
@@ -145,20 +148,27 @@ module Construction
 
 \end{code}
 
-We denote by `B𝓓` the index set of the basis of `𝓓`.
+We denote by `B𝓓` the basis of `𝓓`.
 
 \begin{code}
 
  B𝓓 : Fam 𝓤 ⟨ 𝓓 ⟩∙
  B𝓓 = index-of-compact-basis 𝓓 hscb , family-of-compact-elements 𝓓 hscb
 
+\end{code}
+
+We use the abbreviation `scb` for the proof that `B𝓓` is a small basis
+consisting of compact opens.
+
+\begin{code}
+
  scb : is-small-compact-basis 𝓓 (family-of-compact-elements 𝓓 hscb)
  scb = small-compact-basis 𝓓 hscb
 
 \end{code}
 
-By `βₖ`, we denote the element denoted by an index packaged up with the proof
-that it is compact.
+By `βₖ i`, we denote the element denoted by an index `i`, packaged up with the
+proof that it is compact.
 
 \begin{code}
 
@@ -176,11 +186,8 @@ We now write down the family of compact opens of a point which we denote
 \begin{code}
 
  𝒦-in-point : Point → Fam 𝓤 ⟨ 𝓓 ⟩∙
- 𝒦-in-point ℱ =
+ 𝒦-in-point (F , _) =
   ⁅ B𝓓 [ i ] ∣ (i , _) ∶ (Σ i ꞉ index B𝓓 , ↑ˢ[ βₖ i ] ∈ₚ F holds) ⁆
-   where
-    F : ⟨ 𝒪 σ⦅𝓓⦆ ⟩ → Ω 𝓤
-    F = pr₁ ℱ
 
 \end{code}
 
@@ -193,11 +200,8 @@ The family `𝒦-in-point` is always inhabited.
  𝒦-in-point-is-inhabited
   : (ℱ@(F , _) : Point)
   → is-inhabited (underlying-order 𝓓) (index (𝒦-in-point ℱ))
- 𝒦-in-point-is-inhabited ℱ = ∥∥-rec ∃-is-prop † γ
+ 𝒦-in-point-is-inhabited ℱ@(F , _) = ∥∥-rec ∃-is-prop † γ
   where
-   F : ⟨ 𝒪 σ⦅𝓓⦆ ⟩ → Ω 𝓤
-   F = pr₁ ℱ
-
    Ⅲ : F 𝟏[ 𝒪 σ⦅𝓓⦆ ] ＝ ⊤
    Ⅲ = frame-homomorphisms-preserve-top (𝒪 σ⦅𝓓⦆) (𝒪 𝟏L) ℱ
 
@@ -236,12 +240,24 @@ The family `𝒦-in-point` is closed under binary upper bounds.
 
 \end{code}
 
-In the proof, we use the assumption that upper boundedness of compact elements
+To prove this, we use the assumption that upper boundedness of compact elements
 is decidable.
 
 \begin{code}
 
-  cases †₁ †₂ (dc (B𝓓 [ i ]) (B𝓓 [ j ]) (basis-is-compact i) (basis-is-compact j))
+  let
+   ϑ : is-decidable (bounded-above 𝓓 (B𝓓 [ i ]) (B𝓓 [ j ]) holds)
+   ϑ = dc (B𝓓 [ i ]) (B𝓓 [ j ]) (basis-is-compact i) (basis-is-compact j)
+  in
+
+\end{code}
+
+We now proceed by case analysis on whether or not the upper bound of `B𝓓 [ i ]`
+and `B𝓓 [ j ]` exists. The cases are given in `case₁` and `case₂`.
+
+\begin{code}
+
+  cases case₁ case₂ ϑ
    where
     open DefnOfScottLocale 𝓓 𝓤 pe
 
@@ -298,11 +314,11 @@ Case 1: the upper bound of `b` and `c` exists.
 
 \begin{code}
 
-    †₁ : bounded-above 𝓓 (B𝓓 [ i ]) (B𝓓 [ j ]) holds
-       → ∃ k ꞉ index (𝒦-in-point ℱ)
-             , (𝒦-in-point ℱ [ i , κᵢ ]) ⊑⟨ 𝓓 ⟩ (𝒦-in-point ℱ [ k ])
-             × (𝒦-in-point ℱ [ j , κⱼ ]) ⊑⟨ 𝓓 ⟩ (𝒦-in-point ℱ [ k ])
-    †₁ υ = ∥∥-rec ∃-is-prop ‡₁ 𝒷ᵈ
+    case₁ : bounded-above 𝓓 (B𝓓 [ i ]) (B𝓓 [ j ]) holds
+          → ∃ k ꞉ index (𝒦-in-point ℱ)
+                , (𝒦-in-point ℱ [ i , κᵢ ]) ⊑⟨ 𝓓 ⟩ (𝒦-in-point ℱ [ k ])
+                × (𝒦-in-point ℱ [ j , κⱼ ]) ⊑⟨ 𝓓 ⟩ (𝒦-in-point ℱ [ k ])
+    case₁ υ = ∥∥-rec ∃-is-prop ‡₁ 𝒷ᵈ
      where
       𝓈 : has-sup (underlying-order 𝓓) (binary-family 𝓤 b c [_])
       𝓈 = bc (binary-family 𝓤 b c) υ
@@ -358,21 +374,21 @@ the least upper bound exists. We denote this by `d`.
 
 \end{code}
 
-Case 2: the upper bound of `B𝓓 [ i ]` and `B𝓓 [ j ]` _does not_ exist.
+Case 2: the upper bound of `b` and `c` _does not_ exist. We derive contradiction
+in this case.
 
 \begin{code}
 
-    †₂ : ¬ ((B𝓓 [ i ]) ↑[ 𝓓 ] (B𝓓 [ j ]) holds)
-       → ∃ k ꞉ index (𝒦-in-point ℱ)
-             , (𝒦-in-point ℱ [ i , κᵢ ]) ⊑⟨ 𝓓 ⟩ (𝒦-in-point ℱ [ k ])
-             × (𝒦-in-point ℱ [ j , κⱼ ]) ⊑⟨ 𝓓 ⟩ (𝒦-in-point ℱ [ k ])
-    †₂ ν = 𝟘-elim (⊥-is-not-⊤ ϟ)
+    case₂ : ¬ ((B𝓓 [ i ]) ↑[ 𝓓 ] (B𝓓 [ j ]) holds)
+          → ∃ k ꞉ index (𝒦-in-point ℱ)
+                , (𝒦-in-point ℱ [ i , κᵢ ]) ⊑⟨ 𝓓 ⟩ (𝒦-in-point ℱ [ k ])
+                × (𝒦-in-point ℱ [ j , κⱼ ]) ⊑⟨ 𝓓 ⟩ (𝒦-in-point ℱ [ k ])
+    case₂ ν = 𝟘-elim (⊥-is-not-⊤ ϟ)
      where
 
 \end{code}
 
-In this case, we have that `↑(B𝓓 [ i ]) ∧ ↑(B𝓓 [ j ]) ＝ 𝟎`, given by
-`not-bounded-lemma`.
+We have that `↑(b) ∧ ↑(c) ＝ 𝟎`, given by `not-bounded-lemma`.
 
 \begin{code}
 
@@ -399,7 +415,7 @@ is a contradiction since `F(𝟎) ＝ ⊥`.
 
       ϟ : ⊥ₚ ＝ ⊤
       ϟ = ⊥ₚ                                          ＝⟨ Ⅰ ⟩
-          𝟎[ (𝟎-𝔽𝕣𝕞 pe) ]                             ＝⟨ Ⅱ ⟩
+          𝟎[ 𝟎-𝔽𝕣𝕞 pe ]                               ＝⟨ Ⅱ ⟩
           F 𝟎[ 𝒪 Σ⦅𝓓⦆ ]                               ＝⟨ Ⅲ ⟩
           F (↑ˢ[ b , κᵇ ] ∧[ 𝒪 Σ⦅𝓓⦆ ] ↑ˢ[ c , κᶜ ])   ＝⟨ Ⅳ ⟩
           ⊤                                           ∎
