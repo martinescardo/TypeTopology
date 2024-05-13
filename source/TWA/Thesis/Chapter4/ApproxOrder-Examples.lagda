@@ -41,7 +41,7 @@ open import TWA.Thesis.Chapter4.ApproxOrder fe
 
 ## Subtype orders
 
-\end{code}
+\begin{code}
 inclusion-order
  : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (f : X → Y) (_≤_ : Y → Y → 𝓦 ̇) → X → X → 𝓦 ̇
 inclusion-order f _≤_ x₁ x₂ = f x₁ ≤ f x₂
@@ -175,7 +175,7 @@ module ΣOrder-Relates (pt : propositional-truncations-exist) where
 
 ## Finite orders
 
-\end{code}
+\begin{code}
 _≤Fin_ : {n : ℕ} → Fin n → Fin n → 𝓤₀  ̇
 _≤Fin_ {succ n} 𝟎 y = 𝟙
 _≤Fin_ {succ n} (suc x) 𝟎 = 𝟘
@@ -249,7 +249,7 @@ finite-order-is-linear-order (n , (g , i))
 
 ## Discrete-sequence orders
 
-\end{code}
+\begin{code}
 discrete-lexicorder : {D : 𝓤 ̇ }
                     → is-discrete D
                     → (_≤_ : D → D → 𝓥 ̇ )
@@ -531,7 +531,7 @@ module LexicographicOrder-Relates
 
 ## Specific example orders
 
-\end{code}
+\begin{code}
 ℕ→𝟚-lexicorder : (ℕ → 𝟚) → (ℕ → 𝟚) → 𝓤₀ ̇
 ℕ→𝟚-lexicorder
  = discrete-lexicorder 𝟚-is-discrete (finite-order 𝟚-is-finite)

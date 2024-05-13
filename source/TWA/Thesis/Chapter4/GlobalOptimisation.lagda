@@ -20,7 +20,7 @@ open import TWA.Thesis.Chapter4.ApproxOrder fe
 
 ## Absolute global optimisation
 
-\end{code}
+\begin{code}
 is-global-minimal : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (_≤_ : Y → Y → 𝓦 ̇ )
                   → (X → Y) → X → 𝓤 ⊔ 𝓦  ̇
 is-global-minimal {𝓤} {𝓥} {𝓦'} {X} _≤_ f x₀ = (x : X) → f x₀ ≤ f x
@@ -75,7 +75,7 @@ finite-global-minimal x (n , e@(g , _ , (h , μ))) _≤_ l f
 
 ## Approximate global optimisation
 
-\end{code}
+\begin{code}
 is_global-minimal : ℕ → {𝓤 𝓥 : Universe}
                   → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                   → (_≤ⁿ_ : Y → Y → ℕ → 𝓦 ̇ )
@@ -102,7 +102,7 @@ F-ϵ-global-minimal Y x l _≤ⁿ_ a ϵ
 
 ## Global optimisation theorem
 
-\end{code}
+\begin{code}
 cover-continuity-lemma
  : (X : ClosenessSpace 𝓤) {X' : 𝓤' ̇ } (Y : ClosenessSpace 𝓥)
  → (_≤ⁿ_ : ⟨ Y ⟩ → ⟨ Y ⟩ → ℕ → 𝓦'  ̇ )

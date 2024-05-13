@@ -29,7 +29,7 @@ open import TWA.Thesis.Chapter3.PredicateEquality fe pe
 
 ## Finite uniformly continuously searchable spaces
 
-\end{code}
+\begin{code}
 finite-csearchable
  : (X : ClosenessSpace 𝓤)
  → (f : finite-linear-order ⟨ X ⟩)
@@ -41,7 +41,7 @@ finite-csearchable X f x
 
 ## Disjoint union of uniformly continuously searchable spaces
 
-\end{code}
+\begin{code}
 +-csearchable : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥)
               → csearchable 𝓦 X
               → csearchable 𝓦 Y
@@ -74,7 +74,7 @@ finite-csearchable X f x
 
 ## Binary product of uniformly continuously searchable spaces
 
-\end{code}
+\begin{code}
 ×-pred-left : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥)
             → decidable-uc-predicate 𝓦 (×-ClosenessSpace X Y)
             → ⟨ Y ⟩ → decidable-uc-predicate 𝓦 X
@@ -140,7 +140,7 @@ finite-csearchable X f x
 
 ## Equivalent uniformly continuously searchable spaces
 
-\end{code}
+\begin{code}
 ≃-csearchable : {X : 𝓤 ̇} (Y : ClosenessSpace 𝓥)
               → (e : X ≃ ⟨ Y ⟩)
               → csearchable 𝓦 Y
@@ -172,7 +172,7 @@ finite-csearchable X f x
 
 ## Finite-sequence uniformly continuously searchable spaces
 
-\end{code}
+\begin{code}
 tail-predicate
  : {X : ℕ → 𝓤 ̇ }
  → (f : (n : ℕ) → finite-linear-order (X n))
@@ -275,7 +275,7 @@ discrete-finite-seq-csearchable x₀ f ds
 
 ## Tychonoff theorem
 
-\end{code}
+\begin{code}
 tail-predicate-tych
  : (T : ℕ → ClosenessSpace 𝓤)
  → (δ : ℕ)

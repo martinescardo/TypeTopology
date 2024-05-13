@@ -19,7 +19,7 @@ open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.SubtypeClassifier
 
-open import TWA.Thesis.Chapter5.BelowAndAbove
+open import TWA.Thesis.Chapter5.BoehmStructure
  hiding (downLeft; downMid; downRight; upRight; upLeft; _below_)
 open import TWA.Thesis.AndrewSneap.DyadicRationals
  renaming (normalise to ι)
@@ -45,7 +45,7 @@ open import TWA.Thesis.Chapter3.ClosenessSpaces-Examples fe
 
 ## Structural operations and properties
 
-\end{code}
+\begin{code}
 downLeft downMid downRight : ℤ → ℤ
 downLeft  k = (k ℤ+ k)
 downMid   k = (k ℤ+ k) +pos 1
@@ -111,7 +111,7 @@ nested-implies-fully-nested ζ ρ n m (k , refl)
 
 ## Verification of the structure of ternary Boehm encodings
 
-\end{code}
+\begin{code}
 -- By Andrew Sneap
 ⦅_⦆ : (χ : ℤ → ℤ[1/2]ᴵ) → nested χ → positioned χ → ℝ-d
 ⦅_⦆ χ τ π = (L , R)
@@ -479,7 +479,7 @@ ternary-normalised≃𝕋
 
 ## Representing compact intervals
 
-\end{code} 
+\begin{code} 
 CompactInterval : ℤ × ℤ → 𝓤₀ ̇
 CompactInterval (k , δ) = Σ (x , _) ꞉ 𝕋 , x(δ) ＝ k
 

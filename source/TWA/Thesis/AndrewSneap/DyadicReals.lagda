@@ -1,5 +1,7 @@
 Andrew Sneap, April 2023
 
+Note that this file is incomplete.
+
 \begin{code}
 {-# OPTIONS --without-K --safe  #-}
 

@@ -14,7 +14,7 @@ open import Naturals.Addition renaming (_+_ to _ℕ+_)
 
 open import TWA.Thesis.Chapter5.Integers
 
-module TWA.Thesis.Chapter5.BelowAndAbove where
+module TWA.Thesis.Chapter5.BoehmStructure where
 \end{code}
 
 ## downLeft, downMid and downRight
