@@ -65,9 +65,9 @@ open import UF.SubtypeClassifier renaming (⊥ to ⊥ₚ)
 open import UF.Univalence
 
 open AllCombinators pt fe renaming (_∧_ to _∧ₚ_; _∨_ to _∨ₚ_)
+open FrameHomomorphisms
 open Locale
 open PropositionalTruncation pt hiding (_∨_)
-open FrameHomomorphisms
 
 \end{code}
 
