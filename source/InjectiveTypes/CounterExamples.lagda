@@ -42,7 +42,7 @@ open PropositionalTruncation pt
 open import MLTT.Spartan
 open import Taboos.Decomposability ua
 open import UF.Embeddings
-open import UF.ExcludedMiddle
+open import UF.ClassicalLogic
 open import UF.FunExt
 open import UF.Retracts
 open import UF.SubtypeClassifier
@@ -124,7 +124,8 @@ conclusion.
 \begin{code}
 
 simple-type₂-injective-gives-WEM : (X : 𝓤₀ ̇)
-                                 → simple-type₂ X → ainjective-type X 𝓤 𝓤 → WEM 𝓤
+                                 → simple-type₂ X
+                                 → ainjective-type X 𝓤 𝓤 → WEM 𝓤
 simple-type₂-injective-gives-WEM X s X-ainj =
  𝟚-ainjective-gives-WEM
   (retract-of-ainjective 𝟚 X X-ainj
@@ -299,7 +300,7 @@ injectivity to define a non-continuous function.
 
 \begin{code}
 
-open import CoNaturals.GenericConvergentSequence
+open import CoNaturals.Type
 open import Taboos.BasicDiscontinuity (fe 𝓤₀ 𝓤₀)
 open import Taboos.WLPO
 open import Notation.CanonicalMap

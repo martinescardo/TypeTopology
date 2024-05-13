@@ -156,7 +156,7 @@ assuming in this module. We introduce friendlier notation for it:
 ⇁⇁_ : Ω → Ω
 ⇁⇁ p = ⇁(⇁ p)
 
-open import UF.ExcludedMiddle
+open import UF.ClassicalLogic
 
 lc-monoid-structure-on-Ω-gives-EM : (O : Ω)
                                     (_⊕_ : Ω → Ω → Ω)

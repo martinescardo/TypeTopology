@@ -13,7 +13,7 @@ principle that every subsingleton type is inhabited or empty.
 
 {-# OPTIONS --safe --without-K #-}
 
-module UF.ExcludedMiddle where
+module UF.ClassicalLogic where
 
 open import MLTT.Spartan
 

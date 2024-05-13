@@ -21,14 +21,15 @@ module Locales.BooleanAlgebra
         (fe : Fun-Ext)
        where
 
+open import Locales.CompactRegular pt fe
+open import Locales.ContinuousMap.FrameHomomorphism-Definition pt fe
+open import Locales.ContinuousMap.FrameHomomorphism-Properties pt fe
+open import Locales.Frame pt fe
 open import UF.Logic
 open import UF.Subsingletons
 
+open FrameHomomorphismProperties
 open AllCombinators pt fe
-
-open import Locales.Frame pt fe
-open import Locales.CompactRegular pt fe
-
 open PropositionalTruncation pt
 
 \end{code}
@@ -380,6 +381,8 @@ contains-compact-opens L B η =
 \end{code}
 
 \begin{code}
+
+open FrameHomomorphisms
 
 extension-lemma : (B : BooleanAlgebra 𝓦 𝓦) (L L′ : Frame 𝓤 𝓦 𝓦)
                 → (η : ⟪ B ⟫ → ⟨ L ⟩)

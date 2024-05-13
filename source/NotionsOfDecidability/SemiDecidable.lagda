@@ -701,7 +701,7 @@ fact that EM ≃ BKS⁺ × MP.
 LPO→MP : LPO → MP
 LPO→MP lpo α = ¬¬-stable-if-decidable (∃ n ꞉ ℕ , α n ＝ ₁) (lpo α)
 
-open import UF.ExcludedMiddle
+open import UF.ClassicalLogic
 
 BKS⁺→LPO→EM : BKS⁺ 𝓤 → LPO' 𝓤 → EM 𝓤
 BKS⁺→LPO→EM {𝓤} bks lpo X X-is-prop = lpo X (bks X X-is-prop)

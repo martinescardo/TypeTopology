@@ -29,8 +29,6 @@ open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.SubtypeClassifier
 
-open Implication fe
-
 \end{code}
 
 We first formulate the `α ＝⦅ n ⦆ β` relation expressing that two sequences `α`,

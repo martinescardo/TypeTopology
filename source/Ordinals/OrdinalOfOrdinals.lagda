@@ -813,7 +813,7 @@ order-preserving-gives-not-⊲ {𝓤} α β σ (x₀ , refl) = γ σ
     κ = no-minimal-is-empty' (underlying-order α) (Well-foundedness α)
          A d (x₀ , 0 , refl)
 
-open import UF.ExcludedMiddle
+open import UF.ClassicalLogic
 
 order-preserving-gives-≼ : EM (𝓤 ⁺)
                          → (α β : Ordinal 𝓤)

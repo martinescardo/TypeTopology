@@ -22,7 +22,7 @@ open import UF.Base
 open import UF.DiscreteAndSeparated
 open import UF.Equiv
 open import UF.Equiv-FunExt
-open import UF.ExcludedMiddle
+open import UF.ClassicalLogic
 open import UF.Retracts
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt

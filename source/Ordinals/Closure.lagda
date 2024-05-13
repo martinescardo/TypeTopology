@@ -12,7 +12,7 @@ module Ordinals.Closure
         (fe : FunExt)
        where
 
-open import CoNaturals.GenericConvergentSequence
+open import CoNaturals.Type
 open import InjectiveTypes.Blackboard fe
 open import MLTT.AlternativePlus
 open import MLTT.Plus-Properties

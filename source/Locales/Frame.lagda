@@ -25,9 +25,12 @@ open import Slice.Family
 open import UF.Hedberg
 open import UF.Logic
 open import UF.Sets
-open import UF.SubtypeClassifier
+open import UF.Sets-Properties
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
+open import UF.Subsingletons-Properties
+open import UF.SubtypeClassifier
+open import UF.SubtypeClassifier-Properties
 
 open AllCombinators pt fe
 
@@ -131,6 +134,9 @@ syntax poset-eq-syntax P x y = x ≣[ P ] y
 ≤-is-reflexive : (P : Poset 𝓤 𝓥)
                → is-reflexive (λ x y → x ≤[ P ] x) holds
 ≤-is-reflexive (_ , _ , ((r , _) , _)) = r
+
+≣-is-reflexive : (P : Poset 𝓤 𝓥) → is-reflexive (λ x y → x ≣[ P ] x) holds
+≣-is-reflexive P x = ≤-is-reflexive P x , ≤-is-reflexive P x
 
 reflexivity+ : (P : Poset 𝓤 𝓥)
              → {x y : pr₁ P} → x ＝ y → (x ≤[ P ] y) holds
@@ -323,9 +329,41 @@ satisfies-frame-laws {𝓤 = 𝓤} {𝓥} {𝓦} {A = A}  (_≤_ , 𝟏 , _⊓_ 
     ε = Ɐ (x , U) ꞉ A × Fam 𝓦 A ,
         (x ⊓ (⋁⟨ i ⟩ U [ i ]) ＝[ iss ]＝ ⋁⟨ i ⟩ x ⊓ (U [ i ]))
 
+\end{code}
+
+The proof `satisfying-frame-laws-is-prop` has been added on 2024-04-15.
+
+\begin{code}
+
+satisfying-frame-laws-is-prop : {A : 𝓤  ̇} (d : frame-data 𝓥 𝓦 A)
+                              → is-prop (satisfies-frame-laws d)
+satisfying-frame-laws-is-prop {𝓤} {𝓥} {𝓦} {A} d@(_≤_ , 𝟏 , _⊓_ , ⊔_) =
+ Σ-is-prop (being-partial-order-is-prop A _≤_) †
+  where
+   open Meets _≤_
+   open Joins _≤_
+   open JoinNotation ⊔_
+
+   β = is-top 𝟏
+   γ = Ɐ (x , y) ꞉ (A × A) , ((x ⊓ y) is-glb-of (x , y))
+   δ = Ɐ U ꞉ Fam 𝓦 A , (⊔ U) is-lub-of U
+
+   ε : is-set A → Ω (𝓤 ⊔ 𝓦 ⁺)
+   ε σ = Ɐ (x , U) ꞉ A × Fam 𝓦 A ,
+          (x ⊓ (⋁⟨ i ⟩ U [ i ]) ＝[ σ ]＝ ⋁⟨ i ⟩ x ⊓ (U [ i ]))
+
+   ‡ : (p : is-partial-order A _≤_) (σ : is-set A)
+     → is-prop ((β ∧ γ ∧ δ ∧ ε σ) holds)
+   ‡ p σ = holds-is-prop (β ∧ γ ∧ δ ∧ ε σ)
+
+   χ : is-partial-order A _≤_ → is-set A
+   χ p = carrier-of-[ (A , _≤_ , p) ]-is-set
+
+   † : (p : is-partial-order A _≤_) → is-prop ((β ∧ γ ∧ δ ∧ ε (χ p)) holds)
+   † p = ‡ p (χ p)
+
 frame-structure : (𝓥 𝓦 : Universe) → 𝓤 ̇ → 𝓤 ⊔ 𝓥 ⁺ ⊔ 𝓦 ⁺ ̇
-frame-structure 𝓥 𝓦 A =
-  Σ d ꞉ (frame-data 𝓥 𝓦 A) , satisfies-frame-laws d
+frame-structure 𝓥 𝓦 A = Σ d ꞉ frame-data 𝓥 𝓦 A , satisfies-frame-laws d
 
 \end{code}
 
@@ -696,43 +734,6 @@ id-is-scott-continuous F S δ = ⋁[ F ]-upper S , ⋁[ F ]-least S
 
 \begin{code}
 
-preserves-binary-meets : (F : Frame 𝓤 𝓥 𝓦) (G : Frame 𝓤′ 𝓥′ 𝓦)
-                → (⟨ F ⟩ → ⟨ G ⟩) → Ω (𝓤 ⊔ 𝓤′)
-preserves-binary-meets F G h =
- Ɐ x ꞉ ⟨ F ⟩ , Ɐ y ꞉ ⟨ F ⟩ , (h (x ∧[ F ] y) ＝[ ψ ]＝ h x ∧[ G ] h y)
-  where
-   ψ : is-set ⟨ G ⟩
-   ψ = carrier-of-[ poset-of G ]-is-set
-
-preserves-binary-joins : (F : Frame 𝓤 𝓥 𝓦) (G : Frame 𝓤′ 𝓥′ 𝓦)
-                       → (⟨ F ⟩ → ⟨ G ⟩) → Ω (𝓤 ⊔ 𝓤′)
-preserves-binary-joins F G h =
- Ɐ x ꞉ ⟨ F ⟩ , Ɐ y ꞉ ⟨ F ⟩ , (h (x ∨[ F ] y) ＝[ ψ ]＝ h x ∨[ G ] h y)
-  where
-   ψ : is-set ⟨ G ⟩
-   ψ = carrier-of-[ poset-of G ]-is-set
-
-is-a-frame-homomorphism : (F : Frame 𝓤  𝓥  𝓦)
-                          (G : Frame 𝓤′ 𝓥′ 𝓦)
-                        → (⟨ F ⟩ → ⟨ G ⟩)
-                        → Ω (𝓤 ⊔ 𝓦 ⁺ ⊔ 𝓤′ ⊔ 𝓥′)
-is-a-frame-homomorphism {𝓦 = 𝓦} F G f = α ∧ β ∧ γ
- where
-  P = poset-of G
-
-  iss : is-set ⟨ G ⟩
-  iss = carrier-of-[ P ]-is-set
-
-  open Joins (λ x y → x ≤[ P ] y)
-
-  α = f 𝟏[ F ] ＝[ iss ]＝ 𝟏[ G ]
-  β = preserves-binary-meets F G f
-  γ = Ɐ U ꞉ Fam 𝓦 ⟨ F ⟩ , f (⋁[ F ] U) is-lub-of ⁅ f x ∣ x ε U ⁆
-
-_─f→_ : Frame 𝓤 𝓥 𝓦 → Frame 𝓤′ 𝓥′ 𝓦 → 𝓤 ⊔ 𝓦 ⁺ ⊔ 𝓤′ ⊔ 𝓥′ ̇
-F ─f→ G =
- Σ f ꞉ (⟨ F ⟩ → ⟨ G ⟩) , is-a-frame-homomorphism F G f holds
-
 is-monotonic : (P : Poset 𝓤 𝓥) (Q : Poset 𝓤′ 𝓥′)
              → (pr₁ P → pr₁ Q) → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓥′)
 is-monotonic P Q f =
@@ -788,15 +789,6 @@ join-preserving-implies-scott-continuous F G f φ S _ = γ
        (λ - → (- is-lub-of (fmap-syntax (λ s → f s)) S) holds)
        (φ S ⁻¹)
        (⋁[ G ]-upper ⁅ f s ∣ s ε S ⁆ , ⋁[ G ]-least ⁅ f s ∣ s ε S ⁆)
-
-continuous-map-equality : (F : Frame 𝓤 𝓥 𝓦) (G : Frame 𝓤' 𝓥' 𝓦)
-                        → (h₁ h₂  : F ─f→ G)
-                        → ((x : ⟨ F ⟩) → h₁ .pr₁ x ＝ h₂ .pr₁ x)
-                        → h₁ ＝ h₂
-continuous-map-equality F G h₁ h₂ ψ = to-subtype-＝ † (dfunext fe ψ)
- where
-  † : (f : ⟨ F ⟩ → ⟨ G ⟩) → is-prop (is-a-frame-homomorphism F G f holds)
-  † f = holds-is-prop (is-a-frame-homomorphism F G f)
 
 \end{code}
 
@@ -871,30 +863,6 @@ connecting-lemma₄ F {x} {y} p = ≤-is-antisymmetric (poset-of F) β γ
   γ : ((x ∨[ F ] y) ≤[ poset-of F ] y) holds
   γ = ∨[ F ]-least p (≤-is-reflexive (poset-of F) y)
 
-frame-morphisms-are-monotonic : (F : Frame 𝓤  𝓥  𝓦)
-                                (G : Frame 𝓤′ 𝓥′ 𝓦)
-                              → (f : ⟨ F ⟩ → ⟨ G ⟩)
-                              → is-a-frame-homomorphism F G f holds
-                              → is-monotonic (poset-of F) (poset-of G) f holds
-frame-morphisms-are-monotonic F G f (_ , ψ , _) (x , y) p =
- f x            ≤⟨ i                         ⟩
- f (x ∧[ F ] y) ≤⟨ ii                        ⟩
- f x ∧[ G ] f y ≤⟨ ∧[ G ]-lower₂ (f x) (f y) ⟩
- f y            ■
-  where
-   open PosetReasoning (poset-of G)
-
-   i  = reflexivity+ (poset-of G) (ap f (connecting-lemma₁ F p))
-   ii = reflexivity+ (poset-of G) (ψ x y)
-
-monotone-map-of : (F : Frame 𝓤 𝓥 𝓦) (G : Frame 𝓤′ 𝓥′ 𝓦)
-                → (F ─f→ G)
-                → poset-of F ─m→ poset-of G
-monotone-map-of F G h = pr₁ h , †
- where
-  † : is-monotonic (poset-of F) (poset-of G) (pr₁ h) holds
-  † = frame-morphisms-are-monotonic F G (pr₁ h) (pr₂ h)
-
 yoneda : (F : Frame 𝓤 𝓥 𝓦)
        → (x y : ⟨ F ⟩)
        → ((z : ⟨ F ⟩) → ((z ≤[ poset-of F ] x) ⇒ (z ≤[ poset-of F ] y)) holds)
@@ -938,76 +906,6 @@ scott-continuous-implies-monotone {𝓦 = 𝓦} F G f φ (x , y) p =
            (φ ⁅ x , y ⁆ δ)) ⁻¹
    iv  = ap f (connecting-lemma₄ F p) ⁻¹
 
-
-meet-preserving-implies-monotone : (F : Frame 𝓤 𝓥 𝓦) (G : Frame 𝓤′ 𝓥′ 𝓦)
-                                 → (h : ⟨ F ⟩ → ⟨ G ⟩)
-                                 → preserves-binary-meets F G h holds
-                                 → is-monotonic (poset-of F) (poset-of G) h holds
-meet-preserving-implies-monotone F G h μ (x , y) p =
- h x              ＝⟨ i   ⟩ₚ
- h (x ∧[ F ] y)   ＝⟨ ii  ⟩ₚ
- h x ∧[ G ] h y   ≤⟨ iii ⟩
- h y              ■
-  where
-   open PosetReasoning (poset-of G)
-
-   i   = ap h (connecting-lemma₁ F p)
-   ii  = μ x y
-   iii = ∧[ G ]-lower₂ (h x) (h y)
-
-frame-homomorphisms-preserve-meets : (F : Frame 𝓤 𝓥 𝓦) (G : Frame 𝓤′ 𝓥′ 𝓦)
-                                   → (h : F ─f→ G)
-                                   → preserves-binary-meets F G (h .pr₁) holds
-frame-homomorphisms-preserve-meets F G 𝒽@(_ , _ , β , _) = β
-
-frame-homomorphisms-preserve-top : (F : Frame 𝓤 𝓥 𝓦) (G : Frame 𝓤′ 𝓥′ 𝓦)
-                                 → (h : F ─f→ G)
-                                 → h .pr₁ 𝟏[ F ] ＝ 𝟏[ G ]
-frame-homomorphisms-preserve-top F G 𝒽@(_ , α , _ , _) = α
-
-frame-homomorphisms-preserve-bottom : (F : Frame 𝓤 𝓥 𝓦) (G : Frame 𝓤′ 𝓥′ 𝓦)
-                                    → (h : F ─f→ G)
-                                    → h .pr₁ 𝟎[ F ] ＝ 𝟎[ G ]
-frame-homomorphisms-preserve-bottom {𝓦 = 𝓦}F G 𝒽@(h , _ , _ , γ) =
- only-𝟎-is-below-𝟎 G (𝒽 .pr₁ 𝟎[ F ]) †
-  where
-   † : (h 𝟎[ F ] ≤[ poset-of G ] 𝟎[ G ]) holds
-   † = pr₂ (γ (∅ _)) ((⋁[ G ] ∅ 𝓦) , λ ())
-
-frame-homomorphisms-preserve-all-joins : (F : Frame 𝓤 𝓥 𝓦) (G : Frame 𝓤′ 𝓥′ 𝓦)
-                                       → (h : F ─f→ G)
-                                       → is-join-preserving F G (h .pr₁) holds
-frame-homomorphisms-preserve-all-joins F G h = †
- where
-  open Joins (λ x y → x ≤[ poset-of G ] y)
-
-  † : is-join-preserving F G (h .pr₁) holds
-  † S = ⋁[ G ]-unique
-         ⁅ h .pr₁ x ∣ x ε S ⁆
-         (h .pr₁ (⋁[ F ] S))
-         (pr₂ (pr₂ (pr₂ h)) S)
-
-frame-homomorphisms-preserve-binary-joins : (F : Frame 𝓤 𝓥 𝓦) (G : Frame 𝓤′ 𝓥′ 𝓦)
-                                          → (h : F ─f→ G)
-                                          → (x y : ⟨ F ⟩)
-                                          → h .pr₁ (x ∨[ F ] y)
-                                          ＝ (h .pr₁ x) ∨[ G ] (h .pr₁ y)
-frame-homomorphisms-preserve-binary-joins F G 𝒽@(h , _ , _ , γ) x y =
- ⋁[ G ]-unique ⁅ h x , h y ⁆ (h (x ∨[ F ] y)) († , ‡)
-  where
-   open Joins (λ x y → x ≤[ poset-of G ] y)
-
-   † : (h (x ∨[ F ] y) is-an-upper-bound-of ⁅ h x , h y ⁆) holds
-   † (inl ⋆) = pr₁ (γ ⁅ x , y ⁆) (inl ⋆)
-   † (inr ⋆) = pr₁ (γ ⁅ x , y ⁆) (inr ⋆)
-
-   ‡ : ((u , _) : upper-bound ⁅ h x , h y ⁆)
-     → (h (x ∨[ F ] y) ≤[ poset-of G ] u) holds
-   ‡ (u , p) = pr₂ (γ ⁅ x , y ⁆) (u , q)
-    where
-     q : (u is-an-upper-bound-of ⁅ h z ∣ z ε ⁅ x , y ⁆ ⁆) holds
-     q (inl ⋆) = p (inl ⋆)
-     q (inr ⋆) = p (inr ⋆)
 
 scott-continuous-join-eq : (F : Frame 𝓤  𝓥  𝓦)
                          → (G : Frame 𝓤′ 𝓥′ 𝓦)
@@ -1856,96 +1754,8 @@ record Locale (𝓤 𝓥 𝓦 : Universe) : 𝓤 ⁺ ⊔ 𝓥 ⁺ ⊔ 𝓦 ⁺ �
  𝒪 : Frame 𝓤 𝓥 𝓦
  𝒪 = ⟨_⟩ₗ , frame-str-of
 
-\end{code}
-
-The type of continuous maps from locale `X` to locale `Y`:
-
-\begin{code}
-
-open Locale
-
-_─c→_ : Locale 𝓤 𝓥 𝓦 → Locale 𝓤′ 𝓥′ 𝓦 → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺ ⊔ 𝓤′ ̇
-X ─c→ Y = (𝒪 Y) ─f→ (𝒪 X)
-
-continuity-of : (X : Locale 𝓤 𝓥 𝓦) (Y : Locale 𝓤′ 𝓥′ 𝓦) (f : X ─c→ Y)
-              → (S : Fam 𝓦 ⟨ 𝒪 Y ⟩)
-              → f .pr₁ (⋁[ 𝒪 Y ] S) ＝ ⋁[ 𝒪 X ] ⁅ f .pr₁ V ∣ V ε S ⁆
-continuity-of X Y f S =
- ⋁[ 𝒪 X ]-unique ⁅ f $ V ∣ V ε S ⁆ (f $ (⋁[ 𝒪 Y ] S)) (pr₂ (pr₂ (pr₂ f)) S)
-  where
-   open Joins (λ x y → x ≤[ poset-of (𝒪 X) ] y)
-
-   infixr 25 _$_
-   _$_ = pr₁
-
-module ContinuousMapNotation (X : Locale 𝓤 𝓥 𝓦) (Y : Locale 𝓤' 𝓥' 𝓦) where
-
- infix 9 _⋆
- infixl 9 _⋆∙_
- -- infixl 9 _⁎∙_
-
- _⋆ : (f : X ─c→ Y)
-      → 𝒪 Y ─f→ 𝒪 X
- _⋆ f = f
-
- _⋆∙_ : (f : X ─c→ Y)
-      → ⟨ 𝒪 Y ⟩ → ⟨ 𝒪 X ⟩
- _⋆∙_ f V = (_⋆ f) .pr₁ V
-
-\end{code}
-
-\begin{code}
-
-cont-comp : (X : Locale 𝓤   𝓥   𝓦)
-          → (Y : Locale 𝓤′  𝓥′  𝓦)
-          → (Z : Locale 𝓤′′ 𝓥′′ 𝓦)
-          → (Y ─c→ Z) → (X ─c→ Y) → X ─c→ Z
-cont-comp {𝓦 = 𝓦} X Y Z ℊ@(g , α₁ , α₂ , α₃) 𝒻@(f , β₁ , β₂ , β₃) = h , †
- where
-  open ContinuousMapNotation X Y using () renaming (_⋆∙_ to _⋆₁∙_)
-  open ContinuousMapNotation Y Z using () renaming (_⋆∙_ to _⋆₂∙_)
-
-  h : ⟨ 𝒪 Z ⟩ → ⟨ 𝒪 X ⟩
-  h W = 𝒻 ⋆₁∙ (ℊ ⋆₂∙ W)
-
-  † : is-a-frame-homomorphism (𝒪 Z) (𝒪 X) h holds
-  † = †₁ , †₂ , †₃
-   where
-    †₁ : 𝒻 ⋆₁∙ (ℊ ⋆₂∙ 𝟏[ 𝒪 Z ]) ＝ 𝟏[ 𝒪 X ]
-    †₁ = 𝒻 ⋆₁∙ (ℊ ⋆₂∙ 𝟏[ 𝒪 Z ])     ＝⟨ Ⅰ ⟩
-         𝒻 ⋆₁∙ 𝟏[ 𝒪 Y ]             ＝⟨ Ⅱ ⟩
-         𝟏[ 𝒪 X ]                   ∎
-          where
-           Ⅰ = ap (λ - → 𝒻 ⋆₁∙ -) α₁
-           Ⅱ = β₁
-
-    †₂ : (U V : ⟨ 𝒪 Z ⟩)
-       → 𝒻 ⋆₁∙ (ℊ ⋆₂∙ (U ∧[ 𝒪 Z ] V))
-       ＝ (𝒻 ⋆₁∙ (ℊ ⋆₂∙ U)) ∧[ 𝒪 X ] (𝒻 ⋆₁∙ (ℊ ⋆₂∙ V))
-    †₂ U V = 𝒻 ⋆₁∙ (ℊ ⋆₂∙ (U ∧[ 𝒪 Z ] V))                   ＝⟨ Ⅰ ⟩
-             𝒻 ⋆₁∙ ((ℊ ⋆₂∙ U) ∧[ 𝒪 Y ] (ℊ ⋆₂∙ V))           ＝⟨ Ⅱ ⟩
-             (𝒻 ⋆₁∙ (ℊ ⋆₂∙ U)) ∧[ 𝒪 X ] (𝒻 ⋆₁∙ (ℊ ⋆₂∙ V))   ∎
-              where
-               Ⅰ = ap (λ - → 𝒻 ⋆₁∙ -) (α₂ U V)
-               Ⅱ = β₂ (ℊ ⋆₂∙ U) (ℊ ⋆₂∙ V)
-
-    open Joins (λ x y → x ≤[ poset-of (𝒪 X) ] y)
-
-    †₃ : (U : Fam 𝓦 ⟨ 𝒪 Z ⟩) → ((h (⋁[ 𝒪 Z ] U)) is-lub-of ⁅ h x ∣ x ε U ⁆) holds
-    †₃ U = transport
-            (λ - → (- is-lub-of ⁅ h x ∣ x ε U ⁆) holds)
-            (†₄ ⁻¹)
-            (⋁[ 𝒪 X ]-upper ⁅ h x ∣ x ε U ⁆ , ⋁[ 𝒪 X ]-least ⁅ h x ∣ x ε U ⁆)
-     where
-      open PosetReasoning (poset-of (𝒪 X))
-
-      †₄ : h (⋁[ 𝒪 Z ] U) ＝ ⋁[ 𝒪 X ] ⁅ h x ∣ x ε U ⁆
-      †₄ = 𝒻 ⋆₁∙ (ℊ ⋆₂∙ (⋁[ 𝒪 Z ] U))              ＝⟨ I  ⟩
-           𝒻 ⋆₁∙ (⋁[ 𝒪 Y ] ⁅ ℊ ⋆₂∙ x ∣ x ε U ⁆)    ＝⟨ II ⟩
-           ⋁[ 𝒪 X ] ⁅ h x ∣ x ε U ⁆                ∎
-            where
-             I  = ap (λ - → 𝒻 ⋆₁∙ -) (⋁[ 𝒪 Y ]-unique ⁅ ℊ ⋆₂∙ x ∣ x ε U ⁆ _ (α₃ _))
-             II = ⋁[ 𝒪 X ]-unique ⁅ h x ∣ x ε U ⁆ _ (β₃ _)
+to-locale-＝ : (X Y : Locale 𝓤 𝓥 𝓦) → Locale.𝒪 X ＝ Locale.𝒪 Y → X ＝ Y
+to-locale-＝ X Y refl = refl
 
 \end{code}
 
@@ -2194,5 +2004,35 @@ join-𝟎-lemma₂ F {x} {y} p = only-𝟎-is-below-𝟎 F y †
 
   † : (y ≤[ poset-of F ] 𝟎[ F ]) holds
   † = y ≤⟨ ∨[ F ]-upper₂ x y ⟩ x ∨[ F ] y ＝⟨ p ⟩ₚ 𝟎[ F ] ■
+
+\end{code}
+
+The proofs `order-is-set`, `frame-data-is-set`, and `frame-structure-is-set`
+below have been been added on 2024-04-17.
+
+\begin{code}
+
+order-is-set : {𝓥 : Universe} (pe : propext 𝓥) (A : 𝓤  ̇) → is-set (A → A → Ω 𝓥)
+order-is-set {𝓥} pe A {_≤₁_} {_≤₂_} =
+ Π-is-set fe λ x → Π-is-set fe λ y → Ω-is-set fe pe
+
+frame-data-is-set : (A : 𝓤  ̇) (σ : is-set A) (𝓥 𝓦 : Universe) → propext 𝓥 → is-set (frame-data 𝓥 𝓦 A)
+frame-data-is-set A σ 𝓥 𝓦 pe =
+ Σ-is-set (order-is-set pe A) λ _≤_ →
+  ×-is-set
+   σ
+   (×-is-set (Π-is-set fe λ _ → Π-is-set fe λ _ → σ) (Π-is-set fe λ _ → σ))
+
+frame-structure-is-set : {𝓤 : Universe}
+                       → (A : 𝓤  ̇) (𝓥 𝓦 : Universe)
+                       → propext 𝓥
+                       → is-set (frame-structure 𝓥 𝓦 A)
+frame-structure-is-set A 𝓥 𝓦 pe {(d₁ , p₁)} {(d₂ , p₂)} =
+ Σ-is-set
+  (frame-data-is-set A σ 𝓥 𝓦 pe)
+  (λ d → props-are-sets (satisfying-frame-laws-is-prop d))
+   where
+    σ : is-set A
+    σ = carrier-of-[ poset-of (A , (d₁ , p₁)) ]-is-set
 
 \end{code}

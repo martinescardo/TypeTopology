@@ -148,6 +148,18 @@ import DomainTheory.ScottModelOfPCF.ScottModelOfPCF -- (2)
 import DomainTheory.Topology.ScottTopology           -- (0)
 import DomainTheory.Topology.ScottTopologyProperties -- (1)
 
+{-
+  In the locale theory development, some results on the pointfree topology of
+  domains have been proved by Ayberk Tosun. Most importantly, the fact that the
+  Scott locale of a Scott domain is a spectral locale has been proved, which was
+  previously listed as an additional formalization target in the list at the
+  bottom of this module.
+
+  Such results on the pointfree topology of domains can be found in the
+  directory `Locales/ScottLocale`. The proof of spectrality is in the module
+  `Locales.ScottLocale.ScottLocalesOfScottDomains`.
+-}
+
 \end{code}
 
 Additional formalization targets
@@ -170,15 +182,5 @@ We present a succinct list of domain-theoretic formalization targets here:
 3. Formalize the results in reverse mathematics and delta-complete posets.
    See Chapter 6 of the PhD thesis for details.
 
-4. Formalize the definition of the Scott topology of a (continuous) dcpo and
-   show that the Scott opens form a frame, using Ayberk Tosun's formalization of
-   frames and locales, see Locales.index.
-
-   Additionally, show that the Scott topology of a continuous dcpo is spectral,
-   as defined in Locales.CompactRegular.
-
-
 Item 2 should be a fun challenge for a student with an interest in
 (domain-theoretic semantics of) programming languages.
-
-If you'd like to work on Item 4, please get in touch with Ayberk Tosun.

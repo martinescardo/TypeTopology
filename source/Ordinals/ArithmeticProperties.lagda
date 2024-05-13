@@ -14,7 +14,7 @@ open import UF.Base
 open import UF.Embeddings hiding (⌊_⌋)
 open import UF.Equiv
 open import UF.EquivalenceExamples
-open import UF.ExcludedMiddle
+open import UF.ClassicalLogic
 open import UF.FunExt
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
@@ -946,8 +946,8 @@ also is not a successor ordinal unless LPO holds:
 
 \begin{code}
 
+ open import CoNaturals.Type
  open import Notation.CanonicalMap
- open import CoNaturals.GenericConvergentSequence
  open import Notation.Order
  open import Naturals.Order
 

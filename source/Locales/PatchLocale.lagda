@@ -8,13 +8,13 @@ Based on `ayberkt/formal-topology-in-UF`.
 
 open import MLTT.List hiding ([_])
 open import MLTT.Pi
-open import UF.Size
 open import MLTT.Spartan
 open import Slice.Family
 open import UF.Base
 open import UF.EquivalenceExamples
 open import UF.FunExt
 open import UF.PropTrunc
+open import UF.Size
 open import UF.SubtypeClassifier
 open import UF.UA-FunExt
 open import UF.Univalence
@@ -29,17 +29,21 @@ module Locales.PatchLocale
         (sr : Set-Replacement pt)
        where
 
-open import UF.Subsingletons
-open import UF.Logic
-open import UF.Equiv using (_≃_; logically-equivalent-props-give-is-equiv)
+open import Locales.Compactness pt fe
+open import Locales.ContinuousMap.FrameHomomorphism-Definition pt fe
+open import Locales.ContinuousMap.FrameHomomorphism-Properties pt fe
 open import Locales.Frame pt fe
-
-open AllCombinators pt fe
-open PropositionalTruncation pt
 open import Locales.Nucleus pt fe
 open import Locales.SmallBasis pt fe sr
-open import Locales.Compactness pt fe
 open import Locales.Spectrality.SpectralLocale pt fe
+open import UF.Equiv using (_≃_; logically-equivalent-props-give-is-equiv)
+open import UF.Logic
+open import UF.Subsingletons
+
+open AllCombinators pt fe
+open FrameHomomorphismProperties
+open FrameHomomorphisms hiding (fun; fun-syntax)
+open PropositionalTruncation pt
 
 \end{code}
 

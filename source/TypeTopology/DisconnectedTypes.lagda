@@ -49,10 +49,10 @@ is-disconnected₃ : 𝓤 ̇ → 𝓤 ⁺ ̇
 is-disconnected₃ {𝓤} X = Σ X₀ ꞉ 𝓤 ̇ , Σ X₁ ꞉ 𝓤 ̇ , X₀ × X₁ × (retract (X₀ + X₁) of X)
 
 is-disconnected-eq : (X : 𝓤 ̇ )
-                → (is-disconnected₀ X → is-disconnected₁ X)
-                × (is-disconnected₁ X → is-disconnected₂ X)
-                × (is-disconnected₂ X → is-disconnected₃ X)
-                × (is-disconnected₃ X → is-disconnected₀ X)
+                   → (is-disconnected₀ X → is-disconnected₁ X)
+                   × (is-disconnected₁ X → is-disconnected₂ X)
+                   × (is-disconnected₂ X → is-disconnected₃ X)
+                   × (is-disconnected₃ X → is-disconnected₀ X)
 
 is-disconnected-eq {𝓤} X = (f , g , h , k)
  where

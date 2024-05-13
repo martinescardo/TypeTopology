@@ -23,20 +23,17 @@ module UF.Powerset specializes this module to the case 𝓤=𝓥.
 module UF.Powerset-MultiUniverse where
 
 open import MLTT.Spartan
-open import UF.Equiv
-open import UF.Equiv-FunExt
 open import UF.FunExt
 open import UF.Lower-FunExt
 open import UF.PropTrunc
-open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
-open import UF.UA-FunExt
-open import UF.Univalence
-open import UF.SubtypeClassifier
-open import UF.SubtypeClassifier-Properties
 open import UF.Sets
 open import UF.Sets-Properties
-open import UF.Hedberg
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
+open import UF.SubtypeClassifier
+open import UF.SubtypeClassifier-Properties
+open import UF.UA-FunExt
+open import UF.Univalence
 
 𝓟 : {𝓥 𝓤 : Universe} → 𝓤 ̇ → 𝓤 ⊔ (𝓥 ⁺) ̇
 𝓟 {𝓥} {𝓤} X = X → Ω 𝓥
@@ -158,7 +155,7 @@ module inhabited-subsets (pt : propositional-truncations-exist) where
  infix  40 _∈⁺_
  infix  40 _∉⁺_
 
- open import UF.ExcludedMiddle
+ open import UF.ClassicalLogic
 
  non-empty-subsets-are-inhabited : Excluded-Middle
                                  → {X : 𝓤 ̇ } (B : 𝓟 {𝓥} X)

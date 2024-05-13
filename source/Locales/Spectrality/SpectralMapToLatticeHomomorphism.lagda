@@ -17,8 +17,6 @@ open import MLTT.Pi
 open import MLTT.Spartan
 open import Slice.Family
 open import UF.Base
-open import UF.EquivalenceExamples
-open import UF.FunExt
 open import UF.FunExt
 open import UF.ImageAndSurjection
 open import UF.Logic
@@ -39,16 +37,23 @@ module Locales.Spectrality.SpectralMapToLatticeHomomorphism
 fe : Fun-Ext
 fe {𝓤} {𝓥} = univalence-gives-funext' 𝓤 𝓥 (ua 𝓤) (ua (𝓤 ⊔ 𝓥))
 
-open import Locales.Frame pt fe
 open import Locales.Compactness pt fe
-open import Locales.Spectrality.SpectralLocale pt fe
-open import Locales.Spectrality.SpectralMap pt fe
-open import Locales.Spectrality.LatticeOfCompactOpens ua pt sr
+open import Locales.ContinuousMap.Definition pt fe
+open import Locales.ContinuousMap.FrameHomomorphism-Definition pt fe
+open import Locales.ContinuousMap.FrameHomomorphism-Properties pt fe
 open import Locales.DistributiveLattice.Definition fe pt
 open import Locales.DistributiveLattice.Homomorphism fe pt
+open import Locales.Frame pt fe
 open import Locales.SmallBasis pt fe sr
+open import Locales.Spectrality.LatticeOfCompactOpens ua pt sr
+open import Locales.Spectrality.SpectralLocale pt fe
+open import Locales.Spectrality.SpectralMap pt fe
+open import UF.EquivalenceExamples
 
 open AllCombinators pt fe
+open ContinuousMaps
+open FrameHomomorphismProperties
+open FrameHomomorphisms
 open Locale
 open PropositionalTruncation pt
 

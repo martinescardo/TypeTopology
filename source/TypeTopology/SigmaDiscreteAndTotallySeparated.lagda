@@ -12,7 +12,7 @@ ordinals.
 
 module TypeTopology.SigmaDiscreteAndTotallySeparated where
 
-open import CoNaturals.GenericConvergentSequence
+open import CoNaturals.Type
 open import MLTT.Spartan
 open import NotionsOfDecidability.Complemented
 open import Taboos.WLPO

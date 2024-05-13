@@ -11,7 +11,7 @@ open import UF.FunExt
 module TWA.BanachFixedPointTheorem (fe : FunExt) where
 
 open import MLTT.Spartan
-open import CoNaturals.GenericConvergentSequence hiding (min)
+open import CoNaturals.Type hiding (min)
 open import CoNaturals.Arithmetic fe
 open import TWA.Closeness fe
 open import Naturals.Order

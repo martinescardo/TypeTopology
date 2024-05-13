@@ -16,7 +16,7 @@ import UF.Embeddings
 import UF.Equiv
 import UF.Equiv-FunExt
 import UF.EquivalenceExamples
-import UF.ExcludedMiddle
+import UF.ClassicalLogic
 import UF.FunExt
 import UF.FunExt-Properties
 import UF.FunExt-from-Naive-FunExt
