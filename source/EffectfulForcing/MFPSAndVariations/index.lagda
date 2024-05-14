@@ -25,7 +25,7 @@ import EffectfulForcing.MFPSAndVariations.Church                      -- (2013)
 import EffectfulForcing.MFPSAndVariations.Internal                    -- (2013)
 import EffectfulForcing.MFPSAndVariations.WithoutOracle               -- By Vincent Rahli (2015)
 import EffectfulForcing.MFPSAndVariations.Dialogue-to-Brouwer         -- By Martin Escardo
-                                                                      -- and Paulo Olivacl (2017)
+                                                                      -- and Paulo Oliva (2017)
 
 \end{code}
 
