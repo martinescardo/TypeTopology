@@ -10,11 +10,13 @@ of domain D.
 
 By a “point” of D, we mean a frame homomorphism F : 𝒪(σ(D)) → Ω.
 
-In this module, we define the family
+Given a point F, we define the family of compact elements with principal filters
+falling in F:
 
-  { c : 𝒦(D) ∣ ↑c ∈ F }
+  { c : 𝒦(D) ∣ ↑c ∈ F }.
 
-and prove that it is directed.
+The notation 𝒦(D) above is our notation for the type of compact elements of
+the domain.
 
 \begin{code}
 
