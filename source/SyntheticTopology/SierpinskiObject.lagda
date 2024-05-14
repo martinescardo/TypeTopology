@@ -5,7 +5,7 @@ date-started: 2024-05-02
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split --auto-inline #-}
+{-# OPTIONS --safe --without-K --exact-split --auto-inline --lossy-unification #-}
 
 open import MLTT.Spartan
 open import UF.FunExt
@@ -47,6 +47,20 @@ universe 𝓤).
 
 Sierpinski-Object : 𝓤 ⁺  ̇
 Sierpinski-Object = Subtypes' 𝓤  (Ω 𝓤)
+
+Sierpinski-Object' : 𝓤 ⁺ ⁺  ̇
+Sierpinski-Object' = Ω 𝓤 → Ω (𝓤 ⁺)
+
+\end{code}
+
+Claim: these are equivalent.
+
+\begin{code}
+
+equivalence-of-sierpinski-object-definitions
+ : is-univalent (𝓤 ⁺) → funext (𝓤 ⁺) (𝓤 ⁺ ⁺) → Subtypes' (𝓤 ⁺) (Ω 𝓤) ≃ Sierpinski-Object'
+equivalence-of-sierpinski-object-definitions ua fe =
+ Ω-is-subtype-classifier ua fe (Ω 𝓤)
 
 \end{code}
 
@@ -177,7 +191,7 @@ Phoa’s Principle:
  phoa’s-principle : Ω (𝓤 ⁺)
  phoa’s-principle =
   Ɐ f ꞉ (Ω 𝓤 → Ω 𝓤) , Ɐ U ꞉ Ω 𝓤 , is-affirmable U ⇒ f U ⇔ (f ⊥ ∨  U) ∧ f ⊤
-  
+
 \end{code}
 
 Sierpinski being closed under finite meets :
@@ -273,7 +287,7 @@ Truncation inside an → : nightmare
  is-discrete-set X setX =
   is-intrinsically-open
    (λ ((x , y) : X × X) → ((x ＝ y) , setX))
-    
+
 
 \end{code}
 
@@ -326,11 +340,11 @@ Overtness:
  is-overt X =
   Ɐ P ꞉ (X → Ω 𝓤) , is-intrinsically-open P ⇒ is-affirmable (Ǝₚ x ꞉ X , P x)
 
- countable-are-overt : (is-overt (Lift 𝓤 ℕ) holds) → (is-overt (𝟘 {𝓤}) holds) → (X : 𝓤 ̇) → (f : ( (Lift 𝓤 ℕ) → (𝟙 {𝓤} ) + X)) → (is-surjection f) → (is-overt X holds) 
+ countable-are-overt : (is-overt (Lift 𝓤 ℕ) holds) → (is-overt (𝟘 {𝓤}) holds) → (X : 𝓤 ̇) → (f : ( (Lift 𝓤 ℕ) → (𝟙 {𝓤} ) + X)) → (is-surjection f) → (is-overt X holds)
  countable-are-overt overt-ℕ overt-𝟘 X f surf = λ P open-P → ⇔-affirmable (eq P) († P open-P)
 
   where
-  
+
    lemma₁ : is-overt (𝟙 {𝓤} + X) holds
    lemma₁ = λ Q open-Q → ∥∥-rec (holds-is-prop (is-affirmable (Ǝₚ x ꞉ (𝟙 {𝓤} + X) , Q x))) (†' Q) (overt-ℕ (λ n → Q (f n)) (λ n → open-Q (f n)))
 
@@ -338,7 +352,7 @@ Overtness:
       †' : (Q : 𝟙 + X → Ω 𝓤) → Σ (λ x → ι x ＝ (Ǝₚ n ꞉ (Lift 𝓤 ℕ) , Q (f n))) → is-affirmable ((Ǝₚ x ꞉ (𝟙 + X) ,  Q x)) holds
       †' Q (h , φ) = ∣ h , (φ ∙ q Q)  ∣
 
-       where 
+       where
         p :  (Q : 𝟙 + X → Ω 𝓤) → (Ǝₚ n ꞉ (Lift 𝓤 ℕ) , Q (f n) ⇔ Ǝₚ x ꞉ (𝟙 + X) , Q x)  holds
         p Q = ( λ ex-ℕ → ∥∥-rec (holds-is-prop (Ǝₚ x ꞉ (𝟙 + X) , Q x)) (λ (n , pn) → ∣ f n , pn  ∣) ex-ℕ  ) ,
                 λ ex-X → ∥∥-rec (holds-is-prop (Ǝₚ n ꞉ (Lift 𝓤 ℕ) , Q (f n))) ((λ (x , px) → ∥∥-rec (holds-is-prop (Ǝₚ n ꞉ (Lift 𝓤 ℕ) , Q (f n))) ((λ (n , fnx) → ∣ n , transport (λ v → pr₁ (Q v)) (fnx ⁻¹) px  ∣)) (surf x))) ex-X
@@ -357,12 +371,12 @@ Overtness:
                                              extended ) ,
                λ base → ∥∥-rec (holds-is-prop (Ǝₚ x' ꞉ (𝟙 + X) , (extend P) x')) (λ (x , Px) → ∣ (inr x) , Px  ∣) base
 
-   𝟘-iff : ((Ǝₚ z ꞉ (𝟘 {𝓤})  , ⊥ ) ⇔ ⊥ {𝓤}) holds 
+   𝟘-iff : ((Ǝₚ z ꞉ (𝟘 {𝓤})  , ⊥ ) ⇔ ⊥ {𝓤}) holds
    𝟘-iff = (λ hyp → ∥∥-rec (holds-is-prop (⊥ {𝓤})) (λ z → 𝟘-elim (pr₁ z)) hyp) , λ zero → 𝟘-elim zero
 
    † : (P : X → Ω 𝓤) → is-intrinsically-open P holds →  is-affirmable (Ǝₚ x ꞉ (𝟙 + X) , extend P x) holds
    † P open-P = lemma₁ (extend P) λ x' → dep-cases {𝓤} {𝓤} {𝓤 ⁺} {𝟙 {𝓤}} {X} { λ z → is-affirmable (extend P z) holds } (λ ⋆ → ⇔-affirmable 𝟘-iff (overt-𝟘 (λ _ → ⊥) (λ z → 𝟘-elim z))) (λ x → open-P x) x'
-   
+
 \end{code}
 
 Sub-ness (subcompact, subovert ... )
@@ -382,7 +396,7 @@ Sub-ness (subcompact, subovert ... )
    X-iff : ((Ǝₚ y' ꞉ Y , (X y' ∧ ((y ＝ y') , setY))) ⇔ X y) holds
    X-iff = (λ exequal → ∥∥-rec (holds-is-prop (X y)) (λ (y' , Xy' , y-equals-y') → transport (λ i → pr₁ (X i)) (y-equals-y' ⁻¹)  Xy') exequal)  ,
                λ Xy → ∣ y , Xy , refl  ∣
-   
+
    † : is-affirmable (Ǝₚ y' ꞉ Y , (X y' ∧ ((y ＝ y') , setY))) holds
    † = subovert-X (λ z → (y ＝ z) , setY) (λ z → discrete-Y (y , z) )
 
@@ -400,10 +414,10 @@ Density
    where
     X : 𝓤 ̇
     X = domain P
-    
+
     D : X → Ω 𝓤
     D x = ⊤
-    
+
     † : Σ x ꞉ X , P x holds → (Ǝₚ x' ꞉ X , ((D x') ∧ (P x'))) holds
     † (x , Px) = ∣ x , ∧-Intro (D x) (P x) ⊤-holds Px  ∣
 
@@ -430,7 +444,7 @@ Density
     inter-iff : (Ǝₚ x ꞉ X , (A x ∧ (U x ∧ V x)) ⇔ (Ǝₚ x ꞉ X , ((A x ∧ U x) ∧ V x))) holds
     inter-iff = (λ right → ∥∥-rec (holds-is-prop (Ǝₚ x ꞉ X , ((A x ∧ U x) ∧ V x))) (λ (x , Ax , Ux , Vx) → ∣ x , (Ax , Ux) , Vx ∣) right) ,
                       λ left → ∥∥-rec (holds-is-prop (Ǝₚ x ꞉ X , (A x ∧ (U x ∧ V x)))) (λ (x , (Ax , Ux) , Vx) → ∣ x , Ax , Ux , Vx  ∣) left
-    
+
     † : is-affirmable (Ǝₚ x ꞉ X , (A x ∧ (U x ∧ V x))) holds
     † = subovert-A P (λ x → cl-∧ (U x) (V x) ( open-U x , open-V x ) )
 
