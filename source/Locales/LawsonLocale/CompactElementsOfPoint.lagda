@@ -367,8 +367,8 @@ the least upper bound exists. We denote this by `d`.
 
 \end{code}
 
-Case 2: the upper bound of `b` and `c` _does not_ exist. We derive contradiction
-in this case.
+Case 2: the upper bound of `b` and `c` _does not_ exist. We derive a
+contradiction in this case.
 
 \begin{code}
 
