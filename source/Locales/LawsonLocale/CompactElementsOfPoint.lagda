@@ -311,7 +311,7 @@ Case 1: the upper bound of `b` and `c` exists.
           → ∃ k ꞉ index (𝒦-in-point ℱ)
                 , (𝒦-in-point ℱ [ i , κᵢ ]) ⊑⟨ 𝓓 ⟩ (𝒦-in-point ℱ [ k ])
                 × (𝒦-in-point ℱ [ j , κⱼ ]) ⊑⟨ 𝓓 ⟩ (𝒦-in-point ℱ [ k ])
-    case₁ υ = ∥∥-rec ∃-is-prop ‡₁ 𝒷ᵈ
+    case₁ υ = ∥∥-functor ‡₁ 𝒷ᵈ
      where
       𝓈 : has-sup (underlying-order 𝓓) (binary-family 𝓤 b c [_])
       𝓈 = bc (binary-family 𝓤 b c) υ
@@ -339,10 +339,10 @@ the least upper bound exists. We denote this by `d`.
       𝒷ᵈ = small-compact-basis-contains-all-compact-elements 𝓓 (B𝓓 [_]) scb d κᵈ
 
       ‡₁ : Σ k ꞉ index B𝓓 , B𝓓 [ k ] ＝ d
-         → ∃ (λ k →
+         → Σ k ꞉ index (𝒦-in-point ℱ) ,
                  ((𝒦-in-point ℱ [ i , κᵢ ]) ⊑⟨ 𝓓 ⟩ (B𝓓 [ pr₁ k ]))
-               × ((𝒦-in-point ℱ [ j , κⱼ ]) ⊑⟨ 𝓓 ⟩ (B𝓓 [ pr₁ k ])))
-      ‡₁ (k , ψ) = ∣ (k , ※) , ♠ , ♣ ∣
+               × ((𝒦-in-point ℱ [ j , κⱼ ]) ⊑⟨ 𝓓 ⟩ (B𝓓 [ pr₁ k ]))
+      ‡₁ (k , ψ) = (k , ※) , ♠ , ♣
        where
         r : ↑ˢ[ d , κᵈ ] ＝ ↑ˢ[ b , κᵇ ] ∧[ 𝒪 Σ[𝓓] ] ↑ˢ[ c , κᶜ ]
         r = principal-filter-reflects-joins b c d κᵇ κᶜ (pr₂ 𝓈)
