@@ -4,8 +4,9 @@ date-started:   2024-03-15
 date-completed: 2024-05-13
 --------------------------------------------------------------------------------
 
-Let D be a Scott domain satisfying the condition that upper boundedness of
-compact opens is decidable, and denote by σ(D) the Scott locale of D.
+Let D be a Scott domain satisfying the condition that the existence of binary
+upper bounds is decidable for compact elements. Denote by σ(D) the Scott locale
+of domain D.
 
 By a “point” of D, we mean a frame homomorphism F : 𝒪(σ(D)) → Ω.
 
