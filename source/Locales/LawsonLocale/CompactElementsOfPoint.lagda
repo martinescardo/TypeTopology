@@ -11,7 +11,7 @@ of domain D.
 By a “point” of D, we mean a frame homomorphism F : 𝒪(σ(D)) → Ω.
 
 Given a point F, we define the family of compact elements with principal filters
-falling in F:
+falling in F, i.e.
 
   { c : 𝒦(D) ∣ ↑c ∈ F }.
 
