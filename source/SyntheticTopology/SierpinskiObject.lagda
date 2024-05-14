@@ -180,6 +180,15 @@ Phoa’s Principle:
   
 \end{code}
 
+Sierpinski being closed under finite meets :
+
+\begin{code}
+
+ closed-under-binary-meets : Ω (𝓤 ⁺)
+ closed-under-binary-meets = Ɐ P ꞉ Ω 𝓤 , Ɐ Q ꞉ Ω 𝓤 , ((is-affirmable P ∧ is-affirmable Q) ⇒ is-affirmable (P ∧ Q))
+
+\end{code}
+
 \section{Compactness}
 
 We now start to investigate some notions of compactness.
@@ -249,8 +258,8 @@ Images of compact types are compact.
 
 \begin{code}
 
- is-discrete-trunc : 𝓤 ̇ → 𝓤 ⁺ ̇
- is-discrete-trunc X = is-intrinsically-open (λ ((x , y) : X × X) → (∥ x ＝ y ∥ , ∥∥-is-prop )) holds
+ is-discrete-trunc : 𝓤 ̇ → Ω (𝓤 ⁺)
+ is-discrete-trunc X = is-intrinsically-open (λ ((x , y) : X × X) → (∥ x ＝ y ∥ , ∥∥-is-prop ))
 
 \end{code}
 
@@ -260,11 +269,11 @@ Truncation inside an → : nightmare
 
 \begin{code}
 
- is-discrete-set : (X : 𝓤 ̇) → is-set X → 𝓤 ⁺ ̇
+ is-discrete-set : (X : 𝓤 ̇) → is-set X → Ω (𝓤 ⁺)
  is-discrete-set X setX =
   is-intrinsically-open
    (λ ((x , y) : X × X) → ((x ＝ y) , setX))
-    holds
+    
 
 \end{code}
 
@@ -276,7 +285,7 @@ implies that "x ＝ y" lies in Ω 𝓤 (⁺)
 
 \begin{code}
 
- 𝟙-is-discrete-trunc : contains-top holds →  is-discrete-trunc 𝟙
+ 𝟙-is-discrete-trunc : contains-top holds →  is-discrete-trunc 𝟙 holds
  𝟙-is-discrete-trunc ct =
   λ (⋆ , ⋆) → ∥∥-rec (holds-is-prop (is-affirmable (∥ ⋆ ＝ ⋆ ∥ , ∥∥-is-prop ))) † ct
    where
@@ -295,8 +304,8 @@ implies that "x ＝ y" lies in Ω 𝓤 (⁺)
  compact-Π-discrete-set : (K : 𝓤 ̇) → (X : K → 𝓤 ̇)
                         → is-compact' K holds
                         → (set-certificate : ((k : K) → is-set (X k)))
-                        → ((k : K) → is-discrete-set (X k) (set-certificate k) )
-                        → is-discrete-set (Π X) (Π-is-set fe set-certificate)
+                        → ((k : K) → is-discrete-set (X k) (set-certificate k) holds)
+                        → is-discrete-set (Π X) (Π-is-set fe set-certificate) holds
  compact-Π-discrete-set K X kK 𝓈 dX (x₁ , x₂) = ⇔-affirmable p †
   where
    p :  ((k : K) →  ( (x₁ k) ＝ (x₂ k) ) ) ↔ (x₁ ＝ x₂)
@@ -360,14 +369,14 @@ Sub-ness (subcompact, subovert ... )
 
 \begin{code}
 
- is-subcompact : (Y : 𝓤 ̇) → (X : Y → Ω 𝓤) → 𝓤 ⁺ ̇   -- X ⊆ Y with Lesnik's notations of 2.15
- is-subcompact Y X = (U : Y → Ω 𝓤) → is-intrinsically-open U holds → (is-affirmable (Ɐ x ꞉ Y , (X x ⇒ U x))) holds
+ is-subcompact : (Y : 𝓤 ̇) → (X : Y → Ω 𝓤) → Ω (𝓤 ⁺)   -- X ⊆ Y with Lesnik's notations of 2.15
+ is-subcompact Y X = (Ɐ U ꞉   (Y → Ω 𝓤) , is-intrinsically-open U ⇒ (is-affirmable (Ɐ x ꞉ Y , (X x ⇒ U x))) )
 
- is-subovert : (Y : 𝓤 ̇) → (X : Y → Ω 𝓤) → 𝓤 ⁺ ̇   -- same as above
- is-subovert Y X = (U : Y → Ω 𝓤) → is-intrinsically-open U holds → (is-affirmable (Ǝₚ x ꞉ Y , (X x ∧ U x))) holds
+ is-subovert : (Y : 𝓤 ̇) → (X : Y → Ω 𝓤) → Ω (𝓤 ⁺)  -- same as above
+ is-subovert Y X = (Ɐ U ꞉ (Y → Ω 𝓤) , is-intrinsically-open U ⇒ (is-affirmable (Ǝₚ x ꞉ Y , (X x ∧ U x))))
 
 
- subovert-of-discrete-is-open : {Y : 𝓤 ̇} → (X : Y → Ω 𝓤) → is-subovert Y X → (setY : is-set Y) →  (is-discrete-set Y setY) → is-intrinsically-open X holds
+ subovert-of-discrete-is-open : {Y : 𝓤 ̇} → (X : Y → Ω 𝓤) → is-subovert Y X holds → (setY : is-set Y) →  (is-discrete-set Y setY holds) → is-intrinsically-open X holds
  subovert-of-discrete-is-open {Y} X subovert-X setY discrete-Y y = ⇔-affirmable X-iff †
   where
    X-iff : ((Ǝₚ y' ꞉ Y , (X y' ∧ ((y ＝ y') , setY))) ⇔ X y) holds
@@ -383,11 +392,11 @@ Density
 
 \begin{code}
 
- is-dense : {X : 𝓤 ̇} → (D : X → Ω 𝓤) → 𝓤 ⁺ ̇  -- should be read : "D is dense in X"
- is-dense {X} D = (P : X → Ω 𝓤) → is-intrinsically-open P holds → (Ǝₚ x ꞉ X , P x) holds → (Ǝₚ x ꞉ X , ((P x) ∧ (D x))) holds
+ is-dense : {X : 𝓤 ̇} → (D : X → Ω 𝓤) → Ω (𝓤 ⁺)  -- should be read : "D is dense in X"
+ is-dense {X} D = (Ɐ P ꞉ (X → Ω 𝓤) , (is-intrinsically-open P  ⇒  (Ǝₚ x ꞉ X , P x) ⇒ (Ǝₚ x ꞉ X , ((D x) ∧ (P x)))))
 
- self-is-dense-in-self : {X : 𝓤 ̇} → is-dense {X} (λ x → ⊤)
- self-is-dense-in-self  P open-P inhabited-P = ∥∥-rec (holds-is-prop (Ǝₚ x' ꞉ X , ((P x') ∧ (D x')))) † inhabited-P
+ self-is-dense-in-self : {X : 𝓤 ̇} → is-dense {X} (λ x → ⊤) holds
+ self-is-dense-in-self  P open-P inhabited-P = ∥∥-rec (holds-is-prop (Ǝₚ x' ꞉ X , ((D x') ∧ (P x')))) † inhabited-P
    where
     X : 𝓤 ̇
     X = domain P
@@ -395,8 +404,39 @@ Density
     D : X → Ω 𝓤
     D x = ⊤
     
-    † : Σ x ꞉ X , P x holds → (Ǝₚ x' ꞉ X , ((P x') ∧ (D x'))) holds
-    † (x , Px) = ∣ x , ∧-Intro (P x) (D x)  Px ⊤-holds  ∣
+    † : Σ x ꞉ X , P x holds → (Ǝₚ x' ꞉ X , ((D x') ∧ (P x'))) holds
+    † (x , Px) = ∣ x , ∧-Intro (D x) (P x) ⊤-holds Px  ∣
 
+
+ subovert-dense-overt : (X : 𝓤 ̇) → (U : X → Ω 𝓤) → is-subovert X U holds → is-dense U holds → is-overt X holds
+ subovert-dense-overt X U subovert-U dense-U P open-P = ⇔-affirmable U-iff †
+  where
+   U-iff : ((Ǝₚ x ꞉ X , (U x ∧ P x)) ⇔ (Ǝₚ x ꞉ X , P x)) holds
+   U-iff = (λ U-hyp → ∥∥-rec (holds-is-prop (Ǝₚ x ꞉ X , P x)) (λ (x-both , px-both) → ∣ x-both , pr₂ px-both ∣) U-hyp) ,
+               λ P-hyp → ∥∥-rec (holds-is-prop (Ǝₚ x ꞉ X , (U x ∧ P x))) (λ (x-only , px-only) →  dense-U P open-P ∣ x-only ,  px-only ∣) P-hyp
+
+   † : is-affirmable (Ǝₚ x ꞉ X , (U x ∧ P x)) holds
+   † = subovert-U P open-P
+
+
+ subovert-inter-open-subovert : closed-under-binary-meets holds
+                                                            → {X : 𝓤 ̇}
+                                                            → (Ɐ A ꞉ (X → Ω 𝓤) , Ɐ U ꞉ (X → Ω 𝓤) , is-subovert X A ⇒ is-intrinsically-open U ⇒ is-subovert X (λ x → (A x ∧ U x))) holds
+ subovert-inter-open-subovert cl-∧ {X} A U subovert-A open-U V open-V = ⇔-affirmable inter-iff †
+   where
+    P : X → Ω 𝓤   -- P = U ∧ V
+    P x = U x ∧ V x
+
+    inter-iff : (Ǝₚ x ꞉ X , (A x ∧ (U x ∧ V x)) ⇔ (Ǝₚ x ꞉ X , ((A x ∧ U x) ∧ V x))) holds
+    inter-iff = (λ right → ∥∥-rec (holds-is-prop (Ǝₚ x ꞉ X , ((A x ∧ U x) ∧ V x))) (λ (x , Ax , Ux , Vx) → ∣ x , (Ax , Ux) , Vx ∣) right) ,
+                      λ left → ∥∥-rec (holds-is-prop (Ǝₚ x ꞉ X , (A x ∧ (U x ∧ V x)))) (λ (x , (Ax , Ux) , Vx) → ∣ x , Ax , Ux , Vx  ∣) left
+    
+    † : is-affirmable (Ǝₚ x ꞉ X , (A x ∧ (U x ∧ V x))) holds
+    † = subovert-A P (λ x → cl-∧ (U x) (V x) ( open-U x , open-V x ) )
+
+
+ open-subset-overt-is-overt : closed-under-binary-meets holds →
+                                                       {X : 𝓤 ̇} → (Ɐ U ꞉ (X → Ω 𝓤) , (is-intrinsically-open U ⇒ is-overt X ⇒ is-subovert X U)) holds
+ open-subset-overt-is-overt cl-∧ {X} U open-U overt-X V open-V = overt-X (λ x → (U x ∧ V x)) (λ x → cl-∧ (U x) (V x) ((open-U x , open-V x)))
 
 \end{code}
