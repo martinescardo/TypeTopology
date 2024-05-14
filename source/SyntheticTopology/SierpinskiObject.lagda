@@ -381,6 +381,17 @@ Overtness:
 
 Sub-ness (subcompact, subovert ... )
 
+In our settings, how can we define a proper notion of maps of subobjects ?
+For example see "image-of-subovert". We want, given (X Y : 𝓤 ̇)  ;  (f : X → Y)  and A ⊆ X represented by (A : X → Ω 𝓤),
+a definition of "f (A)". The choice made in image-of-subovert was to define f (A) : Y → Ω 𝓤 with f (A) = λ y → Ǝₚ x ꞉ X , (A x ∧ (f x ＝ y))
+This requires " f x ＝ y " to be a prop, this is why we assume that Y is a set in the definition.
+Maybe other choices are possible.
+
+If we rather define f (A) as λ y → ∃ x ꞉ X , ((A x holds) × (f x ＝ y)) , (not the same "∃" symbol as the previous one) we may be able to get rid of the assumption "Y is a set". 
+I have not tested if it works.
+
+We should try to come up with a generic definition of "image-of" in order to wrap it up and avoid defining things in proofs explicitely
+
 \begin{code}
 
  is-subcompact : (Y : 𝓤 ̇) → (X : Y → Ω 𝓤) → Ω (𝓤 ⁺)   -- X ⊆ Y with Lesnik's notations of 2.15
@@ -399,6 +410,39 @@ Sub-ness (subcompact, subovert ... )
 
    † : is-affirmable (Ǝₚ y' ꞉ Y , (X y' ∧ ((y ＝ y') , setY))) holds
    † = subovert-X (λ z → (y ＝ z) , setY) (λ z → discrete-Y (y , z) )
+
+
+ subovert-inter-open-subovert : closed-under-binary-meets holds
+                                                            → {X : 𝓤 ̇}
+                                                            → (Ɐ A ꞉ (X → Ω 𝓤) , Ɐ U ꞉ (X → Ω 𝓤) , is-subovert X A ⇒ is-intrinsically-open U ⇒ is-subovert X (λ x → (A x ∧ U x))) holds
+ subovert-inter-open-subovert cl-∧ {X} A U subovert-A open-U V open-V = ⇔-affirmable inter-iff †
+   where
+    P : X → Ω 𝓤   -- P = U ∧ V
+    P x = U x ∧ V x
+
+    inter-iff : (Ǝₚ x ꞉ X , (A x ∧ (U x ∧ V x)) ⇔ (Ǝₚ x ꞉ X , ((A x ∧ U x) ∧ V x))) holds
+    inter-iff = (λ right → ∥∥-rec (holds-is-prop (Ǝₚ x ꞉ X , ((A x ∧ U x) ∧ V x))) (λ (x , Ax , Ux , Vx) → ∣ x , (Ax , Ux) , Vx ∣) right) ,
+                      λ left → ∥∥-rec (holds-is-prop (Ǝₚ x ꞉ X , (A x ∧ (U x ∧ V x)))) (λ (x , (Ax , Ux) , Vx) → ∣ x , Ax , Ux , Vx  ∣) left
+    
+    † : is-affirmable (Ǝₚ x ꞉ X , (A x ∧ (U x ∧ V x))) holds
+    † = subovert-A P (λ x → cl-∧ (U x) (V x) ( open-U x , open-V x ) )
+
+
+ open-subset-overt-is-overt : closed-under-binary-meets holds →
+                                                       {X : 𝓤 ̇} → (Ɐ U ꞉ (X → Ω 𝓤) , (is-intrinsically-open U ⇒ is-overt X ⇒ is-subovert X U)) holds
+ open-subset-overt-is-overt cl-∧ {X} U open-U overt-X V open-V = overt-X (λ x → (U x ∧ V x)) (λ x → cl-∧ (U x) (V x) ((open-U x , open-V x)))
+
+
+ image-of-subovert : {X Y : 𝓤 ̇ } → (f : X → Y) → (setY : is-set Y) → (Ɐ A ꞉ (X → Ω 𝓤) , is-subovert X A ⇒ is-subovert Y (λ y → (Ǝₚ x ꞉ X , (A x ∧ ((f x) ＝ y) , setY)))) holds 
+ image-of-subovert {X} {Y} f setY A subovert-A P open-P  = ⇔-affirmable Y-iff †
+  where
+   Y-iff : (Ǝₚ x' ꞉ X , (A x' ∧ P (f x')) ⇔ (Ǝₚ y ꞉ Y , (Ǝₚ x ꞉ X , (A x ∧ (f x ＝ y) , setY) ∧ P y))) holds
+   Y-iff = (λ x'-hyp → ∥∥-rec (holds-is-prop (Ǝₚ y ꞉ Y , (Ǝₚ x ꞉ X , (A x ∧ (f x ＝ y) , setY) ∧ P y))) (λ (x' , Ax' , Pfx') → ∣ f x' , ∣ x' , Ax' , refl ∣ , Pfx' ∣) x'-hyp ) ,
+               λ y-hyp → ∥∥-rec (holds-is-prop (Ǝₚ x' ꞉ X , (A x' ∧ P (f x')))) (λ (y , x-existence , Py)
+                                 → ∥∥-rec (holds-is-prop (Ǝₚ x' ꞉ X , (A x' ∧ P (f x')))) (λ (x , Ax , fx-equal-y) → ∣ x , Ax , (transport (_holds ∘ P) (fx-equal-y ⁻¹) Py) ∣) x-existence) y-hyp
+   
+   † : is-affirmable (Ǝₚ x' ꞉ X , (A x' ∧ P (f x'))) holds
+   † = subovert-A (P ∘ f) ( λ x → open-P (f x) )
 
 \end{code}
 
@@ -431,7 +475,6 @@ Density
 
    † : is-affirmable (Ǝₚ x ꞉ X , (U x ∧ P x)) holds
    † = subovert-U P open-P
-
 
  subovert-inter-open-subovert : closed-under-binary-meets holds
                                                             → {X : 𝓤 ̇}
