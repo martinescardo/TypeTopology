@@ -173,7 +173,7 @@ proof that it is compact.
 
 \end{code}
 
-We now write down the family of compact opens of a point which we denote
+We now write down the family of compact elements of a point which we denote
 `𝒦-in-point`.
 
 \begin{code}
