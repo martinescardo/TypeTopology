@@ -5,14 +5,14 @@ date-completed: 2024-05-13
 --------------------------------------------------------------------------------
 
 Let D be a Scott domain satisfying the condition that the existence of binary
-upper bounds is decidable for compact elements. Denote by σ(D) the Scott locale
+upper bounds of compact elements is decidable. Denote by σ(D) the Scott locale
 of domain D.
 
 By a “point” of D, we mean a frame homomorphism F : 𝒪(σ(D)) → Ω.
 
 In this module, we define the family
 
-  { c : 𝒦(D) ∣ ↑(c) ∈ F }
+  { c : 𝒦(D) ∣ ↑c ∈ F }
 
 and prove that it is directed.
 
