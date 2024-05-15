@@ -4,7 +4,9 @@ author:         Ayberk Tosun
 date-started:   2024-05-06
 --------------------------------------------------------------------------------
 
-Factored out from the `Locales.Frame` module on 2024-05-06.
+Generalization of notions from the `Locales.DirectedFamily` module which were
+defined only for frames. That module is now obsolete and should be removed in
+favour of this one.
 
 \begin{code}
 
