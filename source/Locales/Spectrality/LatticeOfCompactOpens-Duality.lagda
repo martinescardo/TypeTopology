@@ -585,7 +585,7 @@ Functor Theorem.
     in
      (ϕₘ ⊣ joinₘ) holds
  ϕ-is-left-adjoint-of-join =
-  monotone-equivalences-are-adjoint
+  monotone-equivalences-are-adjoints
    spec-𝒦⁻X
    X
    X-has-basis
@@ -594,12 +594,13 @@ Functor Theorem.
    join-cancels-ϕ
    ϕ-cancels-join
 
- ϕ-is-right-adjoint-to-join : let
-                               open GaloisConnectionBetween poset-of-ideals (poset-of (𝒪 X))
-                              in
-                               (joinₘ ⊣ ϕₘ) holds
+ ϕ-is-right-adjoint-to-join
+  : let
+     open GaloisConnectionBetween poset-of-ideals (poset-of (𝒪 X))
+    in
+     (joinₘ ⊣ ϕₘ) holds
  ϕ-is-right-adjoint-to-join =
-  monotone-equivalences-are-adjoint
+  monotone-equivalences-are-adjoints
    X
    spec-𝒦⁻X
    spec-𝒦⁻X-has-basis
