@@ -8,8 +8,8 @@ date-started: 2024-03-02
 
 {-# OPTIONS --safe --without-K #-}
 
-open import UF.PropTrunc
 open import UF.FunExt
+open import UF.PropTrunc
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
@@ -43,9 +43,9 @@ open PropositionalTruncation pt hiding (_∨_)
 
 module IdealProperties (L : DistributiveLattice 𝓤) where
 
+ open DefnOfFrameOfIdeal  L
  open DistributiveLattice L
  open IdealNotation L
- open DefnOfFrameOfIdeal  L
 
  contains-𝟏-implies-above-𝟏 : (I : Ideal L) → 𝟏 ∈ⁱ I → (𝟏ᵢ ⊆ᵢ I) holds
  contains-𝟏-implies-above-𝟏 I μ₁ x μ₂ =
