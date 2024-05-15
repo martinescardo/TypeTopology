@@ -12,9 +12,9 @@ favour of this one.
 
 {-# OPTIONS --safe --without-K --lossy-unification --exact-split --double-check #-}
 
-open import UF.PropTrunc
-open import UF.FunExt
 open import Slice.Family
+open import UF.FunExt
+open import UF.PropTrunc
 open import UF.SubtypeClassifier
 
 module Locales.DirectedFamily-Poset (pt : propositional-truncations-exist)
@@ -22,11 +22,10 @@ module Locales.DirectedFamily-Poset (pt : propositional-truncations-exist)
 
 open import Locales.Frame pt fe hiding (is-directed)
 open import MLTT.Spartan
-open import UF.Subsingletons
 open import UF.Logic
+open import UF.Subsingletons
 
 open AllCombinators pt fe
-
 open PropositionalTruncation pt
 
 \end{code}
