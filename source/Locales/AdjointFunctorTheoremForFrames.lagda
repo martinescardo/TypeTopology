@@ -13,21 +13,21 @@ Originally part of `ayberkt/formal-topology-in-UF`. Ported to TypeTopology on
 
 open import MLTT.Spartan
 open import UF.Base
-open import UF.PropTrunc
 open import UF.FunExt
+open import UF.PropTrunc
 
 module Locales.AdjointFunctorTheoremForFrames
          (pt : propositional-truncations-exist)
          (fe : Fun-Ext)
          where
 
+open import Locales.ContinuousMap.Definition pt fe
+open import Locales.ContinuousMap.FrameHomomorphism-Properties pt fe
 open import Locales.Frame pt fe
 open import Locales.GaloisConnection pt fe
 open import Slice.Family
-open import UF.Subsingletons
 open import UF.Logic
-open import Locales.ContinuousMap.Definition pt fe
-open import Locales.ContinuousMap.FrameHomomorphism-Properties pt fe
+open import UF.Subsingletons
 
 open AllCombinators pt fe
 open PropositionalTruncation pt
