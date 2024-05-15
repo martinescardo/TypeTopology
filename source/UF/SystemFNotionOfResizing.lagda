@@ -44,7 +44,8 @@ Propositional-System-F-Resizing =
 
 \end{code}
 
-This proposition form is of course trivially implied by propositional resizing.
+This propositional form is of course trivially implied by propositional
+resizing.
 
 \begin{code}
 
