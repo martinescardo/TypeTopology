@@ -1,7 +1,8 @@
 --------------------------------------------------------------------------------
-title:        Properties of ideals
-author:       Ayberk Tosun
-date-started: 2024-03-02
+title:         Properties of ideals
+author:        Ayberk Tosun
+date-started:  2024-03-02
+dates-updated: [2024-03-13, 2024-03-28, 2024-05-03]
 --------------------------------------------------------------------------------
 
 \begin{code}
@@ -38,6 +39,8 @@ open AllCombinators pt fe hiding (_∨_)
 open PropositionalTruncation pt hiding (_∨_)
 
 \end{code}
+
+We work in a module parameterized by a 𝓤-distributive-lattice `L`.
 
 \begin{code}
 
@@ -140,7 +143,11 @@ Every ideal is directed.
 
  open classifier-single-universe 𝓤
 
- open import Locales.DirectedFamily pt fe (λ x y → x ≤ᵈ[ L ] y) using () renaming (is-directed to is-directed-L; is-closed-under-binary-upper-bounds to is-closed-under-binary-upper-bounds-L)
+ open import Locales.DirectedFamily pt fe (λ x y → x ≤ᵈ[ L ] y)
+  using ()
+  renaming (is-directed to is-directed-L;
+            is-closed-under-binary-upper-bounds
+             to is-closed-under-binary-upper-bounds-L)
 
  ideals-are-directed : (I : Ideal L)
                      → is-directed-L (𝕋 ∣ L ∣ᵈ (_∈ⁱ I)) holds

@@ -79,8 +79,7 @@ module DistributiveLatticeResizing (L  : DistributiveLattice 𝓤)
 
 \end{code}
 
-The copy of the meet operation on type `A` is denoted `_∧ᶜ_` and is defined
-as:
+The copy of the meet operation on type `A` is denoted `_∧ᶜ_` and is defined as:
 
 \begin{code}
 
