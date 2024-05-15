@@ -1,6 +1,6 @@
 --------------------------------------------------------------------------------
-title:   System F Resizing considered as an axiom
-authors: ["Sam Speight", "Ayberk Tosun"]
+title:        System F Resizing considered as an axiom
+authors:      ["Sam Speight", "Ayberk Tosun"]
 date-started: 2024-05-15
 --------------------------------------------------------------------------------
 
@@ -15,9 +15,9 @@ open import UF.FunExt
 module UF.SystemFNotionOfResizing (fe : Fun-Ext) where
 
 open import MLTT.Spartan
-open import UF.Size
-open import UF.Logic
 open import UF.Equiv
+open import UF.Logic
+open import UF.Size
 
 open Universal fe
 
