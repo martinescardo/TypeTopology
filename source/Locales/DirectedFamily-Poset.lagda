@@ -10,7 +10,7 @@ favour of this one.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --lossy-unification --exact-split --double-check #-}
+{-# OPTIONS --safe --without-K --lossy-unification #-}
 
 open import Slice.Family
 open import UF.FunExt
@@ -45,10 +45,6 @@ We denote the carrier sets of `P` and `Q` by `∣P∣` and `∣Q∣` respectivel
  ∣P∣ = ∣ P ∣ₚ
  ∣Q∣ = ∣ Q ∣ₚ
 
-\end{code}
-
-\begin{code}
-
  open import Locales.DirectedFamily pt fe (λ x y → x ≤[ P ] y)
   using ()
   renaming (is-directed to is-directed₁)
@@ -57,6 +53,9 @@ We denote the carrier sets of `P` and `Q` by `∣P∣` and `∣Q∣` respectivel
   renaming (is-directed to is-directed₂)
 
 \end{code}
+
+Given any monotone function `f : P → Q` and any directed family `S`, the image
+of `f` on `S` is also a directed family.
 
 \begin{code}
 
