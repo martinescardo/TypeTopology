@@ -5,14 +5,23 @@ open import UF.Equiv
 open import UF.FunExt
 open import UF.PropTrunc
 open import UF.Size
+open import UF.UA-FunExt
 open import UF.Univalence
+open import MLTT.Spartan
+open import UF.Subsingletons
 
 module EffectfulForcing.Internal.Ordinals
         (ua : Univalence)
-        (fe : Fun-Ext)
         (pt : propositional-truncations-exist)
         (sr : Set-Replacement pt)
        where
+
+private
+ fe : Fun-Ext
+ fe {𝓤} {𝓥} = univalence-gives-funext' 𝓤 𝓥 (ua 𝓤) (ua (𝓤 ⊔ 𝓥))
+
+ pe : Prop-Ext
+ pe {𝓤} = univalence-gives-propext (ua 𝓤)
 
 open import MLTT.Spartan
 open import Ordinals.Brouwer
