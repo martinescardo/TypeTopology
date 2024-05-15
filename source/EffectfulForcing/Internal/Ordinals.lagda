@@ -1,14 +1,14 @@
 \begin{code}
 {-# OPTIONS --allow-unsolved-metas --without-K #-}
 
+open import MLTT.Spartan
 open import UF.Equiv
 open import UF.FunExt
 open import UF.PropTrunc
 open import UF.Size
+open import UF.Subsingletons
 open import UF.UA-FunExt
 open import UF.Univalence
-open import MLTT.Spartan
-open import UF.Subsingletons
 
 module EffectfulForcing.Internal.Ordinals
         (ua : Univalence)
@@ -23,13 +23,12 @@ private
  pe : Prop-Ext
  pe {𝓤} = univalence-gives-propext (ua 𝓤)
 
-open import MLTT.Spartan
 open import Ordinals.Brouwer
+open import Ordinals.Equivalence
 open import Ordinals.Maps
-open import Ordinals.Type
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.OrdinalOfOrdinalsSuprema ua
-open import Ordinals.Equivalence
+open import Ordinals.Type
 open import Ordinals.Underlying
 
 import Ordinals.NotationInterpretation0 ua pt as NotationInterpretation
