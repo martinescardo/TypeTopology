@@ -30,7 +30,12 @@ open Existential pt
 \begin{code}
 
 System-F-Resizing : 𝓤₂  ̇
-System-F-Resizing = (A : 𝓤₁  ̇) → (B : A → 𝓤₀  ̇) → (Π x ꞉ A , B x) is 𝓤₀ small
+System-F-Resizing =
+ (A : 𝓤₁  ̇) → (B : A → 𝓤₀  ̇) → (Π x ꞉ A , B x) is 𝓤₀ small
+
+Generalized-System-F-Resizing : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥) ⁺  ̇
+Generalized-System-F-Resizing 𝓤 𝓥 =
+ (A : (𝓤 ⊔ 𝓥)  ̇) → (B : A → 𝓤  ̇) → (Π x ꞉ A , B x) is 𝓤 small
 
 \end{code}
 
