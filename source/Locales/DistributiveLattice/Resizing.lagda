@@ -329,10 +329,6 @@ We package everything up into `copyᵈ` below.
  ⦅_⦆ᶜ : DistributiveLattice 𝓥
  ⦅_⦆ᶜ = Lᶜ
 
-\end{code}
-
-\begin{code}
-
  s-preserves-𝟏 : preserves-𝟏 L Lᶜ s holds
  s-preserves-𝟏 = refl
 
