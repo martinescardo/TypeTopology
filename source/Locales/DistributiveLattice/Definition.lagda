@@ -1,7 +1,8 @@
 ---
-title:       Distributive lattices
-author:      Ayberk Tosun
-start-date:  2024-02-14
+title:         Distributive lattices
+author:        Ayberk Tosun
+date-started:  2024-02-14
+dates-updated: [2024-05-16]
 ---
 
 \begin{code}
