@@ -6,8 +6,9 @@ date-completed: 2024-05-12
 
 Every spectral locale `X` is homeomorphic to the spectrum of its distributive
 lattice `𝒦(X)` of compact opens. We construct a proof of this fact in this
-module. The proof is implemented in the function
-`X-is-homeomorphic-to-spec-𝒦⁻X`.
+module.
+
+The proof is implemented in the function called `X-is-homeomorphic-to-spec-𝒦⁻X`.
 
 \begin{code}
 
