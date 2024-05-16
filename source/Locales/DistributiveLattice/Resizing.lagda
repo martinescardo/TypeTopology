@@ -326,16 +326,6 @@ We package everything up into `copyᵈ` below.
        ; distributivityᵈ = distributivityᶜ
        }
 
-\end{code}
-
-For the reader who is wondering why we marked the above as `private`, the reason
-is that we would like to avoid referring to this lattice as `Lᶜ` outside the
-module as `L` is just a variable name that we use inside the module. We define
-the notation `⦅_⦆ᶜ` to be used from the outside as `⦅ K ⦆ᶜ`, for any
-distributive lattice `K`.
-
-\begin{code}
-
  ⦅_⦆ᶜ : DistributiveLattice 𝓥
  ⦅_⦆ᶜ = Lᶜ
 
