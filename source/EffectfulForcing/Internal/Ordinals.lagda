@@ -1,4 +1,9 @@
+--------------------------------------------------------------------------------
+authors:      ["Bruno Paiva"]
+date-started: 2024-05-15
+--------------------------------------------------------------------------------
 \begin{code}
+
 {-# OPTIONS --allow-unsolved-metas --without-K #-}
 
 open import MLTT.Spartan
@@ -41,8 +46,23 @@ open suprema pt sr
 
 -- TODO remove --allow-unsolved-metas and add back --safe
 
+\end{code}
+
+By `⦅_⦆`, we denote the standard interpretation of ordinals.
+
+\begin{code}
+
 ⦅_⦆ : B → Ordinal 𝓤₀
 ⦅ b ⦆ = NotationInterpretation.⟦_⟧₀ sr b
+
+\end{code}
+
+Ordinals form an ordinal themselves when ordered under the subordinal relation
+`◁`.
+
+The successor constructor `S` gives a higher ordinal.
+
+\begin{code}
 
 B-⊲-S : (b : B) → ⦅ b ⦆ ⊲ ⦅ S b ⦆
 B-⊲-S b = (inr ⋆) , eqtoidₒ (ua 𝓤₀) fe ⦅ b ⦆ (⦅ S b ⦆ ↓ inr ⋆) goal
@@ -79,23 +99,75 @@ B-rec z s l Z     = z
 B-rec z s l (S d) = s (B-rec z s l d)
 B-rec z s l (L ϕ) = l (B-rec z s l ∘ ϕ)
 
+\end{code}
+
+Addition of Brouwer trees.
+
+\begin{code}
+
 B-add : B → B → B
 B-add u v = B-rec v S L u
+
+\end{code}
+
+Multiplication of Brouwer trees.
+
+\begin{code}
 
 B-mul : B → B → B
 B-mul u v = B-rec Z (λ r → B-add u r) L v
 
+\end{code}
+
+Exponentiation of Brouwer trees.
+
+\begin{code}
+
 B-exp : B → B → B
 B-exp u v = B-rec (S Z) (λ r → B-mul u r) L v
+
+\end{code}
+
+Given a natural number `n : ℕ`, `B-finite n` denotes the finite ordinal
+corresponding to `n`.
+
+\begin{code}
 
 B-finite : ℕ → B
 B-finite = rec Z S
 
+\end{code}
+
+By taking the limit of all finite ordinals, we obtain `ω`.
+
+\begin{code}
+
 B-ω : B
 B-ω = L B-finite
 
+\end{code}
+
+We now write down the sequence of iterating the operation of exponentiating `ω`
+to itself.
+
+\begin{code}
+
 B-ω-tower : ℕ → B
 B-ω-tower = rec B-ω (B-exp B-ω)
+
+ω-tower-0 : B-ω-tower 0 ＝ B-ω
+ω-tower-0 = refl
+
+ω-tower-1 : B-ω-tower 1 ＝ (B-exp B-ω B-ω)
+ω-tower-1 = refl
+
+\end{code}
+
+and so on and so on...
+
+When we take the limit of this sequence, we obtain `ε₀`.
+
+\begin{code}
 
 B-ε₀ : B
 B-ε₀ = L B-ω-tower
