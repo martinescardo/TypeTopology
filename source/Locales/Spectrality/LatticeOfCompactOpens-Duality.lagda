@@ -159,10 +159,13 @@ involves some bureaucracy.
 
  ι-preserves-∧ : (K₁ K₂ : 𝒦⁻X) → ι (K₁ ∧⁻ K₂) ＝ ι K₁ ∧[ 𝒪 X ] ι K₂
  ι-preserves-∧ K₁ K₂ =
-  ι (K₁ ∧⁻ K₂)         ＝⟨ refl                         ⟩
-  pr₁ (r (K₁ ∧⁻ K₂))   ＝⟨ ap pr₁ (r-preserves-∧ K₁ K₂) ⟩
-  pr₁ (r K₁ ∧L r K₂)   ＝⟨ ιₖ-preserves-∧ (r K₁) (r K₂) ⟩
+  ι (K₁ ∧⁻ K₂)         ＝⟨ refl ⟩
+  pr₁ (r (K₁ ∧⁻ K₂))   ＝⟨ Ⅰ    ⟩
+  pr₁ (r K₁ ∧L r K₂)   ＝⟨ Ⅱ    ⟩
   ι K₁ ∧[ 𝒪 X ] ι K₂   ∎
+   where
+    Ⅰ = ap pr₁ (r-preserves-∧ K₁ K₂)
+    Ⅱ = ιₖ-preserves-∧ (r K₁) (r K₂)
 
  ι-is-monotone : (K₁ K₂ : 𝒦⁻X)
                → (K₁ ≤ᵈ[ 𝒦-X⁻ ] K₂ ⇒ ι K₁ ≤[ poset-of (𝒪 X) ] ι K₂) holds
@@ -260,8 +263,8 @@ gives ideals.
 
 \end{code}
 
-We follow Johnstone’s proof from Stone Spaces (II.3.2) where he uses the symbol
-`ϕ` for this function.
+We follow Johnstone’s proof from Stone Spaces (II.3.2) [1] where he uses the
+symbol `ϕ` for this function.
 
 We now show that the map `ϕ` preserves finite meets.
 
@@ -274,22 +277,22 @@ We now show that the map `ϕ` preserves finite meets.
     † : (𝟏[ 𝒪 spec-𝒦⁻X ] ⊆ᵢ ϕ 𝟏[ 𝒪 X ]) holds
     † K _ = 𝟏-is-top (𝒪 X) (ι K)
 
- open IdealNotation 𝒦-X⁻
+  open IdealNotation 𝒦-X⁻
 
- ϕ-preserves-∧ : (U V : ⟨ 𝒪 X ⟩) → ϕ (U ∧[ 𝒪 X ] V) ＝ ϕ U ∧ᵢ ϕ V
- ϕ-preserves-∧ U V = ≤-is-antisymmetric poset-of-ideals † ‡
-  where
-   † : ϕ (U ∧[ 𝒪 X ] V) ⊆ᵢ (ϕ U ∧ᵢ ϕ V) holds
-   † K p = p₁ , p₂
-    where
-     p₁ : K ∈ⁱ ϕ U
-     p₁ = ι K ≤⟨ p ⟩ U ∧[ 𝒪 X ] V ≤⟨ ∧[ 𝒪 X ]-lower₁ U V ⟩ U ■
+  ϕ-preserves-∧ : (U V : ⟨ 𝒪 X ⟩) → ϕ (U ∧[ 𝒪 X ] V) ＝ ϕ U ∧ᵢ ϕ V
+  ϕ-preserves-∧ U V = ≤-is-antisymmetric poset-of-ideals † ‡
+   where
+    † : ϕ (U ∧[ 𝒪 X ] V) ⊆ᵢ (ϕ U ∧ᵢ ϕ V) holds
+    † K p = p₁ , p₂
+     where
+      p₁ : K ∈ⁱ ϕ U
+      p₁ = ι K ≤⟨ p ⟩ U ∧[ 𝒪 X ] V ≤⟨ ∧[ 𝒪 X ]-lower₁ U V ⟩ U ■
 
-     p₂ : K ∈ⁱ ϕ V
-     p₂ = ι K ≤⟨ p ⟩ U ∧[ 𝒪 X ] V ≤⟨ ∧[ 𝒪 X ]-lower₂ U V ⟩ V ■
+      p₂ : K ∈ⁱ ϕ V
+      p₂ = ι K ≤⟨ p ⟩ U ∧[ 𝒪 X ] V ≤⟨ ∧[ 𝒪 X ]-lower₂ U V ⟩ V ■
 
-   ‡ : (ϕ U ∧ᵢ ϕ V) ⊆ᵢ ϕ (U ∧[ 𝒪 X ] V) holds
-   ‡ K (p₁ , p₂) = ∧[ 𝒪 X ]-greatest U V (ι K) p₁ p₂
+    ‡ : (ϕ U ∧ᵢ ϕ V) ⊆ᵢ ϕ (U ∧[ 𝒪 X ] V) holds
+    ‡ K (p₁ , p₂) = ∧[ 𝒪 X ]-greatest U V (ι K) p₁ p₂
 
  ϕ-is-monotone : is-monotonic (poset-of (𝒪 X)) poset-of-ideals ϕ holds
  ϕ-is-monotone (U , V) p = connecting-lemma₂ frame-of-ideals †
@@ -324,8 +327,10 @@ is an equivalence, we will delay its proof for a bit.
 
 We now construct the opposite direction of the equivalence formed by `ϕ`. This
 is simply the map that sends an ideal to its join `I ↦ ⋁ I`. But because ideals
-are defined using powersets, we need to first use `𝕋` to switch to the family
-representation of the ideal. We denote this by `join`.
+are defined using powersets, we need to use `𝕋` to switch to the family
+representation of the ideal before taking its join.
+
+We call this map simply `join`.
 
 \begin{code}
 
@@ -374,8 +379,8 @@ The map `join` preserves binary meets.
                              → join (ℐ ∧ᵢ 𝒥) ＝ join ℐ ∧[ 𝒪 X ] join 𝒥
  join-preserves-binary-meets ℐ 𝒥 =
   join (ℐ ∧ᵢ 𝒥)                                                              ＝⟨ refl ⟩
-  ⋁[ 𝒪 X ] ⁅ ι K ∣ K ε 𝕋 𝒦⁻X (_∈ⁱ ℐ ∧ᵢ 𝒥) ⁆                                  ＝⟨ Ⅱ ⟩
-  ⋁⟨ ((i , _) , (j , _)) ∶ (_ × _) ⟩ ι i ∧[ 𝒪 X ] ι j                        ＝⟨ Ⅰ ⟩
+  ⋁[ 𝒪 X ] ⁅ ι K ∣ K ε 𝕋 𝒦⁻X (_∈ⁱ ℐ ∧ᵢ 𝒥) ⁆                                  ＝⟨ Ⅰ ⟩
+  ⋁⟨ ((i , _) , (j , _)) ∶ (_ × _) ⟩ ι i ∧[ 𝒪 X ] ι j                        ＝⟨ Ⅱ ⟩
   (⋁[ 𝒪 X ] ⁅ ι K ∣ K ε 𝕋 𝒦⁻X I ⁆) ∧[ 𝒪 X ] (⋁[ 𝒪 X ] ⁅ ι K ∣ K ε 𝕋 𝒦⁻X J ⁆) ＝⟨ refl ⟩
   join ℐ ∧[ 𝒪 X ] join 𝒥 ∎
   where
@@ -431,12 +436,12 @@ The map `join` preserves binary meets.
             ϑ = ι K₁ ∧[ 𝒪 X ] ι K₂ ＝⟨ ι-preserves-∧ K₁ K₂ ⁻¹ ⟩ₚ
                 ι (K₁ ∧⁻ K₂)       ■
 
-   Ⅰ = distributivity+ (𝒪 X) ⁅ ι K ∣ K ε 𝕋 𝒦⁻X I ⁆ ⁅ ι K ∣ K ε 𝕋 𝒦⁻X J ⁆ ⁻¹
-   Ⅱ = ≤-is-antisymmetric (poset-of (𝒪 X)) † ‡
+   Ⅰ = ≤-is-antisymmetric (poset-of (𝒪 X)) † ‡
+   Ⅱ = distributivity+ (𝒪 X) ⁅ ι K ∣ K ε 𝕋 𝒦⁻X I ⁆ ⁅ ι K ∣ K ε 𝕋 𝒦⁻X J ⁆ ⁻¹
 
 \end{code}
 
-The map `ϕ` is indeed the left inverse of the map `join` as promised.
+The map `ϕ` is the left inverse of the map `join` as promised.
 
 \begin{code}
 
@@ -494,8 +499,8 @@ is called `join-cancels-ϕ`.
    ψ : (i : index S) → (S [ i ] ≤[ poset-of (𝒪 X) ] U) holds
    ψ = pr₁ (basisₛ-covers-do-cover X σᴰ U)
 
-   goal₁ : cofinal-in (𝒪 X) S ⁅ ι K ∣ K ε 𝕋 𝒦⁻X (_∈ⁱ (ϕ U)) ⁆ holds
-   goal₁ i = ∣ (s (S [ i ] , κ) , p) , † ∣
+   β : cofinal-in (𝒪 X) S ⁅ ι K ∣ K ε 𝕋 𝒦⁻X (_∈ⁱ (ϕ U)) ⁆ holds
+   β i = ∣ (s (S [ i ] , κ) , p) , † ∣
     where
      open Ideal (ϕ U) using (I-is-downward-closed)
 
@@ -503,44 +508,52 @@ is called `join-cancels-ϕ`.
      κ = basisₛ-consists-of-compact-opens X σᴰ (J [ i ])
 
      p : (pr₁ (r (s (S [ i ] , κ))) ≤[ poset-of (𝒪 X) ] U) holds
-     p = pr₁ (r (s (S [ i ] , κ))) ＝⟨ ap pr₁ (inverses-are-sections' e (S [ i ] , κ)) ⟩ₚ S [ i ] ≤⟨ ψ i ⟩ U ■
+     p = pr₁ (r (s (S [ i ] , κ))) ＝⟨ Ⅰ ⟩ₚ
+         S [ i ]                   ≤⟨ ψ i ⟩
+         U                         ■
+          where
+           Ⅰ = ap pr₁ (inverses-are-sections' e (S [ i ] , κ))
+           Ⅱ = ψ i
 
      † : (S [ i ] ≤[ poset-of (𝒪 X) ] pr₁ (r (s (S [ i ] , κ)))) holds
-     † = S [ i ] ＝⟨ ap pr₁ (inverses-are-sections' e (S [ i ] , κ) ⁻¹ ) ⟩ₚ pr₁ (r (s (S [ i ] , κ))) ■
+     † = reflexivity+
+          (poset-of (𝒪 X))
+          (ap pr₁ (inverses-are-sections' e (S [ i ] , κ) ⁻¹ ) )
 
-   goal₂ : cofinal-in (𝒪 X) ⁅ ι K ∣ K ε 𝕋 𝒦⁻X (_∈ⁱ (ϕ U)) ⁆ S holds
-   goal₂ (K , p) = ∣ ((K , p) ∷ []) , † ∣
+   γ : cofinal-in (𝒪 X) ⁅ ι K ∣ K ε 𝕋 𝒦⁻X (_∈ⁱ (ϕ U)) ⁆ S holds
+   γ (K , p) = ∣ ((K , p) ∷ []) , † ∣
     where
      † : (ι K ≤[ poset-of (𝒪 X) ] S [ (K , p ∷ []) ]) holds
      † = reflexivity+ (poset-of (𝒪 X)) (𝟎-left-unit-of-∨ (𝒪 X) (ι K) ⁻¹)
 
-   Ⅱ = bicofinal-implies-same-join (𝒪 X) S _ goal₁ goal₂ ⁻¹
+   Ⅱ = bicofinal-implies-same-join (𝒪 X) S _ β γ ⁻¹
 
    ♣ : (join (ϕ (⋁[ 𝒪 X ] S))
          ≤[ poset-of (𝒪 X) ]
         (⋁[ 𝒪 X ] ⁅ ι K ∣ K ε 𝕋 𝒦⁻X (_∈ⁱ (ϕ U)) ⁆))
        holds
-   ♣ = cofinal-implies-join-covered (𝒪 X) _ _ γ
+   ♣ = cofinal-implies-join-covered (𝒪 X) _ _ ϵ
     where
-     γ : cofinal-in
+     ϵ : cofinal-in
           (𝒪 X)
           (𝒦-below (ϕ (join-of (𝒪 X) S)))
           ⁅ ι K ∣ K ε 𝕋 𝒦⁻X (_∈ⁱ (ϕ U)) ⁆ holds
-     γ (K , q) = ∣ (K , (transport (λ - → K ∈ⁱ ϕ -) (c ⁻¹) q)) , ≤-is-reflexive (poset-of (𝒪 X)) (ι K) ∣
+     ϵ (K , q) = ∣ (K , (transport (λ - → K ∈ⁱ ϕ -) (c ⁻¹) q))
+                 , ≤-is-reflexive (poset-of (𝒪 X)) (ι K) ∣
 
    ♠ : ((⋁[ 𝒪 X ] ⁅ ι K ∣ K ε 𝕋 𝒦⁻X (_∈ⁱ (ϕ U)) ⁆)
          ≤[ poset-of (𝒪 X) ]
         join (ϕ (⋁[ 𝒪 X ] S)))
        holds
-   ♠ = cofinal-implies-join-covered (𝒪 X) _ _ γ
+   ♠ = cofinal-implies-join-covered (𝒪 X) _ _ δ
     where
-     γ : cofinal-in
+     δ : cofinal-in
           (𝒪 X)
           ⁅ ι K ∣ K ε 𝕋 𝒦⁻X (_∈ⁱ (ϕ U)) ⁆
           (𝒦-below (ϕ (⋁[ 𝒪 X ] S)))
          holds
-     γ (K , q) =
-      ∣ (K , transport (λ - → K ∈ⁱ ϕ -) c q) , ≤-is-reflexive (poset-of (𝒪 X)) (ι K) ∣
+     δ (K , q) = ∣ (K , transport (λ - → K ∈ⁱ ϕ -) c q)
+                 , ≤-is-reflexive (poset-of (𝒪 X)) (ι K) ∣
 
    Ⅰ = ≤-is-antisymmetric (poset-of (𝒪 X)) ♣ ♠
 
@@ -558,8 +571,14 @@ The map `join` is monotone.
  join-is-monotone : is-monotonic poset-of-ideals (poset-of (𝒪 X)) join holds
  join-is-monotone (U , V) p = connecting-lemma₂ (𝒪 X) †
   where
-   † : join U ＝ join U ∧[ 𝒪 X ] join V
-   † = join U ＝⟨ ap join (connecting-lemma₁ frame-of-ideals p) ⟩ join (U ∧ᵢ V) ＝⟨ join-preserves-binary-meets U V ⟩ join U ∧[ 𝒪 X ] join V ∎
+   Ⅰ = ap join (connecting-lemma₁ frame-of-ideals p)
+   Ⅱ = join-preserves-binary-meets U V
+
+   abstract
+    † : join U ＝ join U ∧[ 𝒪 X ] join V
+    † = join U                  ＝⟨ Ⅰ ⟩
+        join (U ∧ᵢ V)           ＝⟨ Ⅱ ⟩
+        join U ∧[ 𝒪 X ] join V  ∎
 
  joinₘ : poset-of-ideals ─m→ poset-of (𝒪 X)
  joinₘ = join , join-is-monotone
@@ -567,7 +586,7 @@ The map `join` is monotone.
 \end{code}
 
 We now prove that the maps `ϕ` and `join` preserve joins using the Adjoint
-Functor Theorem.
+Functor Theorem for frames.
 
 \begin{code}
 
@@ -626,13 +645,12 @@ Functor Theorem.
 
 \end{code}
 
-We can now package things up into the following proof that `ϕ` is a frame
-homomorphism:
+We can now package things up into the following proof that `ϕ` and `join` are
+frame homomorphisms.
 
 \begin{code}
 
- ϕ-is-a-frame-homomorphism
-  : is-a-frame-homomorphism (𝒪 X) (𝒪 spec-𝒦⁻X) ϕ holds
+ ϕ-is-a-frame-homomorphism : is-a-frame-homomorphism (𝒪 X) (𝒪 spec-𝒦⁻X) ϕ holds
  ϕ-is-a-frame-homomorphism = ϕ-preserves-top , ϕ-preserves-∧ , †
   where
    open Joins (λ x y → x ≤[ poset-of (𝒪 spec-𝒦⁻X) ] y)
@@ -643,10 +661,6 @@ homomorphism:
      (λ - → (- is-lub-of ⁅ ϕ I ∣ I ε S ⁆) holds)
      (ϕ-preserves-joins S ⁻¹)
      (⋁[ 𝒪 spec-𝒦⁻X ]-upper _ , ⋁[ 𝒪 spec-𝒦⁻X ]-least _)
-
-\end{code}
-
-\begin{code}
 
  join-is-a-frame-homomorphism
   : is-a-frame-homomorphism (𝒪 spec-𝒦⁻X) (𝒪 X) join holds
@@ -702,10 +716,6 @@ open DefnOfFrameOfIdeal renaming (spectrum to spec)
 
 is-spectral· : Locale (𝓤 ⁺) 𝓤 𝓤 → Ω (𝓤 ⁺)
 is-spectral· {𝓤} X = Ǝ L ꞉ DistributiveLattice 𝓤 , X ≅c≅ spec L
-
-\end{code}
-
-\begin{code}
 
 spectral-implies-spectral·
  : (X : Locale (𝓤 ⁺) 𝓤 𝓤)
