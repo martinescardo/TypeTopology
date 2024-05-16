@@ -3,6 +3,7 @@ title:          Distributive lattice of compact opens
 author:         Ayberk Tosun
 date-started:   2024-02-24
 date-completed: 2024-02-27
+dates-updated:  [2024-04-30]
 ---
 
 \begin{code}
@@ -258,6 +259,8 @@ Added on 2024-04-12.
  to-original = ⌜ resizing-condition 𝒦⦅X⦆-is-small ⌝
 
 \end{code}
+
+Added on 2024-04-30.
 
 \begin{code}
 
