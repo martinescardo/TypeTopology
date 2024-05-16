@@ -86,6 +86,8 @@ Transport lemma for homeomorphic locales.
 
 Added on 2024-05-07.
 
+Being homeomorphic is a symmetric relation.
+
 \begin{code}
 
 ≅c-sym : (X Y : Locale (𝓤 ⁺) 𝓤 𝓤) → X ≅c≅ Y → Y ≅c≅ X
