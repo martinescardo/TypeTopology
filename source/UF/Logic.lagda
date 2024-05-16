@@ -91,6 +91,23 @@ module Universal (fe : Fun-Ext) where
  syntax ∀[꞉]-syntax I (λ i → e) = Ɐ i ꞉ I , e
  syntax ∀[]-syntax    (λ i → e) = Ɐ i , e
 
+ ∀₂[꞉]-syntax : (I : 𝓤 ̇ )→ (I → I → Ω 𝓥) → Ω (𝓤 ⊔ 𝓥)
+ ∀₂[꞉]-syntax I P = ((i j : I) → P i j holds) , γ
+  where
+   γ : is-prop ((i j : I) → P i j holds)
+   γ = Π₂-is-prop fe λ i j → holds-is-prop (P i j)
+
+ infixr -1 ∀₂[꞉]-syntax
+
+ syntax ∀₂[꞉]-syntax I (λ i j → e) = Ɐ i j ꞉ I , e
+
+ ∀₃[꞉]-syntax : (I : 𝓤 ̇ )→ (I → I → I → Ω 𝓥) → Ω (𝓤 ⊔ 𝓥)
+ ∀₃[꞉]-syntax I P = Ɐ i ꞉ I , Ɐ j ꞉ I , Ɐ k ꞉ I , P i j k
+
+ infixr -1 ∀₃[꞉]-syntax
+
+ syntax ∀₃[꞉]-syntax I (λ i j k → e) = Ɐ i j k ꞉ I , e
+
 \end{code}
 
 \section{Implication}
