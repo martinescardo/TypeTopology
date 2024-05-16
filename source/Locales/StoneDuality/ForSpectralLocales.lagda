@@ -78,7 +78,7 @@ spectrum of some distributive lattice `L `.
 
 _ : (X : Locale (𝓤 ⁺) 𝓤 𝓤)
   → is-spectral· X ＝ (Ǝ L ꞉ DistributiveLattice 𝓤 , X ≅c≅ spec L)
-_ = λ X → refl
+_ = λ _ → refl
 
 \end{code}
 
