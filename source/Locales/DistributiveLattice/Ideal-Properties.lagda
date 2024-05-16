@@ -149,19 +149,18 @@ Every ideal is directed.
             is-closed-under-binary-upper-bounds
              to is-closed-under-binary-upper-bounds-L)
 
- ideals-are-directed : (I : Ideal L)
-                     → is-directed-L (𝕋 ∣ L ∣ᵈ (_∈ⁱ I)) holds
- ideals-are-directed I = ∣ 𝟎 , I-contains-𝟎 ∣ , †
+ ideals-are-directed : (I : Ideal L) → is-directed-L (𝕋 ∣ L ∣ᵈ (_∈ⁱ I)) holds
+ ideals-are-directed ℐ = ∣ 𝟎 , I-contains-𝟎 ∣ , †
   where
-   open Ideal I using (I-contains-𝟎; I-is-closed-under-∨)
+   open Ideal ℐ using (I-contains-𝟎; I-is-closed-under-∨)
 
-   † : is-closed-under-binary-upper-bounds-L (𝕋 ∣ L ∣ᵈ (_∈ⁱ I)) holds
-   † (x , μ₁) (y , μ₂) = ∣ ((x ∨ y) , I-is-closed-under-∨ x y μ₁ μ₂) , ♣ , ♠ ∣
+   † : is-closed-under-binary-upper-bounds-L (𝕋 ∣ L ∣ᵈ (_∈ⁱ ℐ)) holds
+   † (x , μ₁) (y , μ₂) = ∣ ((x ∨ y) , I-is-closed-under-∨ x y μ₁ μ₂) , β , γ ∣
     where
-     ♣ : (x ≤ᵈ[ L ] (x ∨ y)) holds
-     ♣ = ∨-is-an-upper-bound₁ L x y
+     β : (x ≤ᵈ[ L ] (x ∨ y)) holds
+     β = ∨-is-an-upper-bound₁ L x y
 
-     ♠ : (y ≤ᵈ[ L ] (x ∨ y)) holds
-     ♠ = ∨-is-an-upper-bound₂ L x y
+     γ : (y ≤ᵈ[ L ] (x ∨ y)) holds
+     γ = ∨-is-an-upper-bound₂ L x y
 
 \end{code}
