@@ -21,6 +21,7 @@ open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.SubtypeClassifier
 open import UF.SubtypeClassifier-Properties
+open import UF.Sets
 
 \end{code}
 
@@ -272,6 +273,21 @@ module Negation-of-equality (fe : Fun-Ext) where
 
  _≢_ : {X : 𝓤 ̇ } → X → X → Ω 𝓤
  x ≢ y = (x ≠ y) , Π-is-prop fe (λ _ → 𝟘-is-prop)
+
+\end{code}
+
+\section{Equality}
+
+The following was added on 2024-05-16.
+
+\begin{code}
+
+module Equality {X : 𝓤  ̇} (s : is-set X) where
+
+ _＝ₚ_ : X → X → Ω 𝓤
+ _＝ₚ_ x y = (x ＝ y) , s
+
+ infix 0 _＝ₚ_
 
 \end{code}
 
