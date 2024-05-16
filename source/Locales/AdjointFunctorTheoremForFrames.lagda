@@ -314,18 +314,10 @@ Monotone equivalences are adjoints.
 
    † : (r U ≤[ 𝒪Xₚ ] V ⇒ U ≤[ 𝒪Yₚ ] s V) holds
    † p =
-    equivalences-are-order-embeddings
-     (poset-of (𝒪 Y))
-     (poset-of (𝒪 X))
-     r
-     s
-     𝓂₂
-     𝓂₁
-     φ
-     ※
-      where
-       ※ : (r U ≤[ 𝒪Xₚ ] r (s V)) holds
-       ※ = r U ≤⟨ p ⟩ V ＝⟨ ψ V ⁻¹ ⟩ₚ r (s V) ■
+    sections-are-order-embeddings (poset-of (𝒪 Y)) (poset-of (𝒪 X)) r s 𝓂₁ φ ※
+     where
+      ※ : (r U ≤[ 𝒪Xₚ ] r (s V)) holds
+      ※ = r U ≤⟨ p ⟩ V ＝⟨ ψ V ⁻¹ ⟩ₚ r (s V) ■
 
    ‡ : (U ≤[ 𝒪Yₚ ] s V ⇒ r U ≤[ 𝒪Xₚ ] V) holds
    ‡ p = r U ≤⟨ 𝓂₂ (U , _) p ⟩ r (s V) ＝⟨ ψ V ⟩ₚ V ■
