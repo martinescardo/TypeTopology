@@ -414,4 +414,28 @@ We now prove that this type is equivalent to the record-based version.
 
 \begin{code}
 
+to-distributive-lattice : (𝓤 : Universe)
+                        → Distributive-Lattice₀ 𝓤
+                        → DistributiveLattice 𝓤
+to-distributive-lattice 𝓤 (X , ((𝟎 , 𝟏 , _∧_ , _∨_) , _)) =
+ record
+  { X = X
+  ; 𝟏 = 𝟏
+  ; 𝟎 = 𝟎
+  ; _∧_ = _∧_
+  ; _∨_ = _∨_
+  ; X-is-set = {!!}
+  ; ∧-associative = {!!}
+  ; ∧-commutative = {!!}
+  ; ∧-unit = {!!}
+  ; ∧-idempotent = {!!}
+  ; ∧-absorptive = {!!}
+  ; ∨-associative = {!!}
+  ; ∨-commutative = {!!}
+  ; ∨-unit = {!!}
+  ; ∨-idempotent = {!!}
+  ; ∨-absorptive = {!!}
+  ; distributivityᵈ = {!!}
+  }
+
 \end{code}
