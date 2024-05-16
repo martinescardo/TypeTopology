@@ -275,7 +275,7 @@ module Negation-of-equality (fe : Fun-Ext) where
 
 \section{Equality}
 
-The following was added on 2024-05-16.
+The following was added by Ayberk Tosun on 2024-05-16.
 
 \begin{code}
 
@@ -287,6 +287,8 @@ module Equality {X : 𝓤  ̇} (s : is-set X) where
  infix 0 _＝ₚ_
 
 \end{code}
+
+End of addition.
 
 \section{A module for importing all combinators}
 
