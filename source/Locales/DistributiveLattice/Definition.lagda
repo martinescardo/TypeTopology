@@ -354,3 +354,64 @@ module _ (L : DistributiveLattice 𝓤) where
               , λ (z , p) → ∨-is-least x y z p
 
 \end{code}
+
+Added on 2024-05-16.
+
+Sigma-based definition of distributive lattices.
+
+\begin{code}
+
+distributive-lattice-data : 𝓤  ̇ → 𝓤  ̇
+distributive-lattice-data A = A           -- top element
+                            × A           -- bottom element
+                            × (A → A → A) -- binary meet
+                            × (A → A → A) -- binary join
+
+open AllCombinators pt fe renaming (_∧_ to _∧ₚ_)
+
+satisfies-distributive-lattice-laws
+ : {A : 𝓤  ̇} → distributive-lattice-data A → 𝓤  ̇
+satisfies-distributive-lattice-laws {𝓤} {A} (𝟎 , 𝟏 , _∧_ , _∨_) =
+ Σ s ꞉ is-set A , rest s holds
+  where
+
+   rest : is-set A → Ω 𝓤
+   rest s =  (Ɐ x y z ꞉ A , x ∧ (y ∧ z) ＝ₚ (x ∧ y) ∧ z)
+          ∧ₚ (Ɐ x y ꞉ A , x ∧ y ＝ₚ y ∧ x)
+          ∧ₚ (Ɐ x ꞉ A , x ∧ 𝟏 ＝ₚ x)
+          ∧ₚ (Ɐ x ꞉ A , x ∧ x ＝ₚ x)
+          ∧ₚ (Ɐ x y ꞉ A , x ∧ (x ∨ y) ＝ₚ x)
+          ∧ₚ (Ɐ x y z ꞉ A , x ∨ (y ∨ z) ＝ₚ (x ∨ y) ∨ z)
+          ∧ₚ (Ɐ x y ꞉ A , x ∨ y ＝ₚ y ∨ x)
+          ∧ₚ (Ɐ x ꞉ A , x ∨ 𝟎 ＝ₚ x)
+          ∧ₚ (Ɐ x ꞉ A , x ∨ x ＝ₚ x)
+          ∧ₚ (Ɐ x y ꞉ A , x ∨ (x ∧ y) ＝ₚ x)
+          ∧ₚ (Ɐ x y z ꞉ A , x ∧ (y ∨ z) ＝ₚ (x ∧ y) ∨ (x ∧ z))
+    where
+     open Equality s
+
+\end{code}
+
+\begin{code}
+
+Distributive-Lattice-Structure : (A : 𝓤  ̇) → 𝓤  ̇
+Distributive-Lattice-Structure A =
+ Σ d ꞉ distributive-lattice-data A , satisfies-distributive-lattice-laws d
+
+\end{code}
+
+We denote the type Σ-version of the type of distributive lattices
+`Distributive-Lattice₀` to distinguish it from the record-based version.
+
+\begin{code}
+
+Distributive-Lattice₀ : (𝓤 : Universe) → 𝓤 ⁺  ̇
+Distributive-Lattice₀ 𝓤 = Σ A ꞉ 𝓤  ̇ , Distributive-Lattice-Structure A
+
+\end{code}
+
+We now prove that this type is equivalent to the record-based version.
+
+\begin{code}
+
+\end{code}
