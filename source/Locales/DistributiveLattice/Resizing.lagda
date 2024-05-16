@@ -2,6 +2,7 @@
 title:          Transporting a distributive lattice along an equivalence
 author:         Ayberk Tosun
 date-started:   2024-04-22
+date-completed: 2024-04-30
 --------------------------------------------------------------------------------
 
 Given a distributive lattice `L : 𝓤` and an equivalence of the carrier set
