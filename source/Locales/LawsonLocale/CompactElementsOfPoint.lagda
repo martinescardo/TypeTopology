@@ -96,6 +96,15 @@ We use the abbreviation `𝟏L` for the terminal locale of the category of
 
 \end{code}
 
+This is the locale given by the frame of opens `Ω∙`.
+
+\begin{code}
+
+ Ω∙ : Frame (𝓤 ⁺) 𝓤 𝓤
+ Ω∙ = 𝒪 (𝟏Loc pe)
+
+\end{code}
+
 For the reader who might not be familiar, this is the locale defined by the
 frame of opens `Ω`.
 
@@ -106,12 +115,25 @@ frame of opens `Ω`.
 
 \end{code}
 
-By a point of locale, we mean a continuous map from `𝟏L` into `X`.
+By a point of locale, we mean a continuous map from `𝟏L` into `X` as mentioned
+in the preamble.
 
 \begin{code}
 
  Point : 𝓤 ⁺  ̇
  Point = 𝟏L ─c→  X
+
+\end{code}
+
+This is definitionally the same thing as a frame homomorphism `𝒪(X) → Ω`.
+
+\begin{code}
+
+ Point′ : 𝓤 ⁺  ̇
+ Point′ = 𝒪 X ─f→ Ω∙
+
+ _ : Point ＝ Point′
+ _ = refl
 
 \end{code}
 
