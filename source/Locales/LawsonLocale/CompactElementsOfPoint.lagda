@@ -187,10 +187,10 @@ a given point `ℱ`. We denote this `𝒦-in-point ℱ`.
 Ideally, the name here would be `𝒦-with-principal-ideals-in-point` but this is
 too long, which is why we use the name `𝒦-in-point`.
 
-It makes sense to me to think of this as the compact approximants to the given
-point, but I'm not sure this geometric view is accurate at the time of writing.
-I will improve this name in the future as my understanding of the underlying
-geometric intuition increases.
+It makes sense to me to think of this as the family of compact approximants to
+the given point, but I'm not sure this geometric view is accurate at the time of
+writing. I will improve this name in the future as my understanding of the
+underlying geometric intuition increases.
 
 The family `𝒦-in-point` is always inhabited.
 
