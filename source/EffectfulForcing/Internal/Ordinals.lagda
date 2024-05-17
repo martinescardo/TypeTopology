@@ -176,3 +176,52 @@ B-ε₀ = L B-ω-tower
 ε₀ = ⦅ B-ε₀ ⦆
 
 \end{code}
+
+The following is taken from Peter Hancock's MGS lecture notes on
+(ordinal-theoretic) proof theory.
+
+We can define the ordering relation on Brouwer codes directly. We start
+by defining a type of downward paths from an ordinal that pass through
+at least one successor ordinal.
+
+By induction on the paths and the base ordinal, we can give the corresponding
+ordinal that the path ended at.
+
+\begin{code}
+
+downpath-through-S : B → 𝓤₀ ̇
+downpath-through-S Z     = 𝟘
+downpath-through-S (S b) = 𝟙 + downpath-through-S b
+downpath-through-S (L ϕ) = Σ n ꞉ ℕ , downpath-through-S (ϕ n)
+
+path-to-ordinal : {b : B} → downpath-through-S b → B
+path-to-ordinal {S b} (inl ⋆) = b
+path-to-ordinal {S b} (inr p) = path-to-ordinal p
+path-to-ordinal {L ϕ} (n , p) = path-to-ordinal p
+
+\end{code}
+
+We define `b ⊑ c` by induction on the code `b` according to the following
+three cases:
+  - `z ⊑ c` holds for all codes `c`
+  - `S b ⊑ c` holds if there is a path `p` down from `c` such that
+    `b ⊑ path-to-ordinal p`
+  - `L ϕ ⊑ c` if `ϕ n ⊑ c` for all natural numbers `n`
+
+Notice that this relation is not proposition-valued due to the successor
+case which asks for existence of a path.
+
+From `_⊑_` we can define the strict relation `_⊏_`. Again, this will also
+not be proposition-valued.
+
+\begin{code}
+
+data _⊑_ : B → B → 𝓤₀ ̇ where
+ Z-⊑ : (c : B) → Z ⊑ c
+ S-⊑ : (b c : B) (p : downpath-through-S c) → b ⊑ path-to-ordinal p → S b ⊑ c
+ L-⊑ : (ϕ : ℕ → B) (c : B) → ((n : ℕ) → ϕ n ⊑ c) → L ϕ ⊑ c
+
+_⊏_ : B → B → 𝓤₀ ̇
+b ⊏ c = Σ p ꞉ downpath-through-S c , b ⊑ path-to-ordinal p
+
+\end{code}
