@@ -109,6 +109,17 @@ record Homomorphismᵈᵣ (L₁ : DistributiveLattice 𝓤) (L₂ : Distributive
  h-preserves-∨ : preserves-∨ L₁ L₂ h holds
  h-preserves-∨ = pr₂ (pr₂ (pr₂ h-is-homomorphism))
 
+ h-is-monotone : is-monotonic (poset-ofᵈ L₁) (poset-ofᵈ L₂) h holds
+ h-is-monotone (x , y) p = h x ∧₂ h y   ＝⟨ Ⅰ ⟩
+                           h (x ∧₁ y)   ＝⟨ Ⅱ ⟩
+                           h x          ∎
+  where
+   open DistributiveLattice L₁ renaming (_∧_ to _∧₁_)
+   open DistributiveLattice L₂ renaming (_∧_ to _∧₂_)
+
+   Ⅰ = h-preserves-∧ x y ⁻¹
+   Ⅱ = ap h p
+
 \end{code}
 
 Added on 2024-03-04.
