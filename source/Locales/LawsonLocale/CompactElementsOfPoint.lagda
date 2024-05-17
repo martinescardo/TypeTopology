@@ -8,7 +8,8 @@ Let D be a Scott domain satisfying the condition that the existence of binary
 upper bounds of compact elements is decidable. Denote by σ(D) the Scott locale
 of domain D.
 
-By a “point” of D, we mean a frame homomorphism F : 𝒪(σ(D)) → Ω.
+By a “point” of D, we mean a continuous map 𝟏 → σ(D) (where 𝟏 denotes the
+terminal locale), or equivalently, a frame homomorphism 𝒪(σ(D)) → Ω.
 
 Given a point F, we define the family of compact elements with principal filters
 falling in F, i.e.
