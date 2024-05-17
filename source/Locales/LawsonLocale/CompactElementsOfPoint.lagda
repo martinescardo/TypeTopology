@@ -257,14 +257,17 @@ The family `𝒦-in-point` is always inhabited.
 
 Before we proceed to proving that the family `𝒦-in-point` is always
 semidirected, we prove a lemma that we will use in the proof. The reader not
-interested in the lemma may jump directly to the proof which is given in the
-function called `𝒦-in-point-is-semidirected`.
+interested in the lemma may jump directly to the proof which is implemented in
+the function called `𝒦-in-point-is-semidirected`.
 
 The lemma is simply the fact that
 ```
     ↑b ∈ F and ↑c ∈ F    implies    (↑b ∧ ↑c) ∈ F
 ```
-for any two compact elements `c`, `d` in `𝓓`.
+for any two compact elements `b` and `c` of `𝓓`.
+
+This is actually something already implemented in the `Locales.Point` directory,
+where it is shown that points correspond to completely prime filters.
 
 \begin{code}
 
