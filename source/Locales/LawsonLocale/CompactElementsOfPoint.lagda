@@ -58,6 +58,8 @@ open import Locales.ScottLocale.Properties pt fe 𝓤
 open import Locales.ScottLocale.ScottLocalesOfAlgebraicDcpos pt fe 𝓤
 open import Locales.ScottLocale.ScottLocalesOfScottDomains pt fe sr 𝓤
 open import Locales.SmallBasis pt fe sr
+open import Locales.Point.Definition pt fe
+open import Locales.Point.Properties pt fe 𝓤 pe hiding (𝟏L)
 open import Locales.Spectrality.SpectralMap pt fe
 open import Locales.TerminalLocale.Properties pt fe sr
 open import Slice.Family
@@ -253,6 +255,33 @@ The family `𝒦-in-point` is always inhabited.
 
 \end{code}
 
+Before we proceed to proving that the family `𝒦-in-point` is always
+semidirected, we prove a lemma that we will use in the proof. The reader not
+interested in the lemma may jump directly to the proof which is given in the
+function called `𝒦-in-point-is-semidirected`.
+
+The lemma is simply the fact that
+```
+    ↑b ∈ F and ↑c ∈ F    implies    (↑b ∧ ↑c) ∈ F
+```
+for any two compact elements `c`, `d` in `𝓓`.
+
+\begin{code}
+
+ point-preserves-meets : (ℱ@(F , _) : Point) (c d : ⟨ 𝓓 ⟩∙)
+                       → (κc : is-compact 𝓓 c)
+                       → (κd : is-compact 𝓓 d)
+                       → (F ↑ˢ[ (c , κc) ]
+                       ⇒ F ↑ˢ[ (d , κd) ]
+                       ⇒ F (↑ˢ[ c , κc ] ∧[ 𝒪 Σ⦅𝓓⦆ ] ↑ˢ[ d , κd ])) holds
+ point-preserves-meets ℱ@(F , _) c d κc κd =
+  point-is-closed-under-∧ ↑ˢ[ c , κc ] ↑ˢ[ d , κd ]
+   where
+    open DefnOfCPF Σ⦅𝓓⦆
+    open Pointᵣ (to-pointᵣ Σ⦅𝓓⦆ (𝔰 Σ⦅𝓓⦆ ℱ))
+
+\end{code}
+
 The family `𝒦-in-point` is semidirected.
 
 \begin{code}
@@ -297,38 +326,6 @@ We denote by `b` and `c`, the elements `B𝓓 [ i ]` and `B𝓓 [ j ]` respectiv
     κᵇ = basis-is-compact i
     c  = B𝓓 [ j ]
     κᶜ = basis-is-compact j
-
-\end{code}
-
-We first record, as a lemma that we will use in both cases, that
-```
-    (↑(b) ∧ ↑(c)) ∈ F
-```
-
-This is the case because we know `F(↑(b)) ＝ ⊤` and `F(↑(c)) ＝ ⊤` meaning we
-have
-```
-  F(↑(b) ∧ ↑(c)) ＝ F(↑(b)) ∧ F(↑(c)) ＝ ⊤ ∧ ⊤ ＝ ⊤.
-```
-
-\begin{code}
-
-    μₘ : (↑ˢ[ b , κᵇ ] ∧[ 𝒪 Σ⦅𝓓⦆ ] ↑ˢ[ c , κᶜ ]) ∈ F
-    μₘ = equal-⊤-gives-holds (F (↑ˢ[ b , κᵇ ] ∧[ 𝒪 Σ⦅𝓓⦆ ] ↑ˢ[ c , κᶜ ])) †
-     where
-      Ⅰ = frame-homomorphisms-preserve-meets
-           (𝒪 Σ⦅𝓓⦆)
-           (𝟎-𝔽𝕣𝕞 pe)
-           ℱ
-           ↑ˢ[ b , κᵇ ]
-           ↑ˢ[ c , κᶜ ]
-
-      Ⅱ = holds-gives-equal-⊤ pe fe (F ↑ˢ[ b , κᵇ ] ∧ₚ F ↑ˢ[ c , κᶜ ]) (κᵢ , κⱼ)
-
-      † : F (↑ˢ[ b , κᵇ ] ∧[ 𝒪 Σ⦅𝓓⦆ ] ↑ˢ[ c , κᶜ ]) ＝ ⊤
-      † = F (↑ˢ[ b , κᵇ ] ∧[ 𝒪 Σ⦅𝓓⦆ ] ↑ˢ[ c , κᶜ ]) ＝⟨ Ⅰ ⟩
-          F ↑ˢ[ b , κᵇ ] ∧ₚ F ↑ˢ[ c , κᶜ ]          ＝⟨ Ⅱ ⟩
-          ⊤                                         ∎
 
 \end{code}
 
@@ -379,7 +376,10 @@ the least upper bound exists. We denote this by `d`.
         r = principal-filter-reflects-joins b c d κᵇ κᶜ (pr₂ 𝓈)
 
         ♥ : ↑ˢ[ d , κᵈ ] ∈ F
-        ♥ = transport (λ - → - ∈ F) (r ⁻¹) μₘ
+        ♥ = transport
+             (λ - → - ∈ F)
+             (r ⁻¹)
+             (point-preserves-meets ℱ b c κᵇ κᶜ κᵢ κⱼ)
 
         ※ : ↑ˢ[ βₖ k ] ∈ F
         ※ = transport
@@ -435,7 +435,11 @@ is a contradiction since `F(𝟎) ＝ ⊥`.
       Ⅰ = 𝟎-is-⊥ pe
       Ⅱ = frame-homomorphisms-preserve-bottom (𝒪 Σ⦅𝓓⦆) (𝟎-𝔽𝕣𝕞 pe) ℱ ⁻¹
       Ⅲ = ap F (β ⁻¹)
-      Ⅳ = holds-gives-equal-⊤ pe fe (F (↑ˢ[ b , κᵇ ] ∧[ 𝒪 Σ⦅𝓓⦆ ] ↑ˢ[ c , κᶜ ])) μₘ
+      Ⅳ = holds-gives-equal-⊤
+           pe
+           fe
+           (F (↑ˢ[ b , κᵇ ] ∧[ 𝒪 Σ⦅𝓓⦆ ] ↑ˢ[ c , κᶜ ]))
+           (point-preserves-meets ℱ b c κᵇ κᶜ κᵢ κⱼ)
 
       ϟ : ⊥ₚ ＝ ⊤
       ϟ = ⊥ₚ                                          ＝⟨ Ⅰ ⟩
