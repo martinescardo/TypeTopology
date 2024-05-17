@@ -234,10 +234,10 @@ The family `𝒦-in-point` is closed under binary upper bounds.
 
 \begin{code}
 
- closed-under-binary-upperbounds
+ 𝒦-in-point-is-semidirected
   : (ℱ : Point)
   → is-semidirected (underlying-order 𝓓) (𝒦-in-point ℱ [_])
- closed-under-binary-upperbounds ℱ (i , κᵢ) (j , κⱼ) =
+ 𝒦-in-point-is-semidirected ℱ (i , κᵢ) (j , κⱼ) =
 
 \end{code}
 
@@ -431,6 +431,6 @@ We now have everything required to record the proof that the family
  𝒦-in-point-is-directed : (ℱ : Point)
                         → is-directed (underlying-order 𝓓) (𝒦-in-point ℱ [_])
  𝒦-in-point-is-directed ℱ = 𝒦-in-point-is-inhabited ℱ
-                          , closed-under-binary-upperbounds ℱ
+                          , 𝒦-in-point-is-semidirected ℱ
 
 \end{code}
