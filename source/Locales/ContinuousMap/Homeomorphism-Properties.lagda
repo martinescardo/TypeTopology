@@ -83,3 +83,17 @@ Transport lemma for homeomorphic locales.
   p = homeomorphic-locales-are-equal X Y 𝒽
 
 \end{code}
+
+Added on 2024-05-07.
+
+Being homeomorphic is a symmetric relation.
+
+\begin{code}
+
+≅c-sym : (X Y : Locale (𝓤 ⁺) 𝓤 𝓤) → X ≅c≅ Y → Y ≅c≅ X
+≅c-sym X Y 𝒽 =
+ record { 𝓈 = 𝓇 ; 𝓇 = 𝓈 ; 𝓇-cancels-𝓈 = 𝓈-cancels-𝓇 ; 𝓈-cancels-𝓇 = 𝓇-cancels-𝓈 }
+  where
+   open FrameIsomorphisms.Isomorphismᵣ 𝒽
+
+\end{code}

@@ -142,3 +142,14 @@ module OperationsOnCompactOpens (X : Locale 𝓤 𝓥 𝓦) (σ : is-spectral X 
   (K₁ ∨[ 𝒪 X ] K₂) , compact-opens-are-closed-under-∨ X K₁ K₂ κ₁ κ₂
 
 \end{code}
+
+Added on 2024-04-29.
+
+Inclusion of the compact opens of `X`.
+
+\begin{code}
+
+ ιₖ : 𝒦 X → ⟨ 𝒪 X ⟩
+ ιₖ (K , _) = K
+
+\end{code}

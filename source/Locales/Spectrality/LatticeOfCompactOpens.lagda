@@ -3,6 +3,7 @@ title:          Distributive lattice of compact opens
 author:         Ayberk Tosun
 date-started:   2024-02-24
 date-completed: 2024-02-27
+dates-updated:  [2024-04-30]
 ---
 
 \begin{code}
@@ -256,5 +257,48 @@ Added on 2024-04-12.
 
  to-original : 𝒦⁻ → ∣ 𝒦⦅X⦆ ∣ᵈ
  to-original = ⌜ resizing-condition 𝒦⦅X⦆-is-small ⌝
+
+\end{code}
+
+Added on 2024-04-30.
+
+\begin{code}
+
+ open OperationsOnCompactOpens X σ
+
+ open DistributiveLattice hiding (X)
+
+ ιₖ-preserves-∨ : (K₁ K₂ : ∣ 𝒦⦅X⦆ ∣ᵈ) → pr₁ (K₁ ∨ₖ K₂) ＝ pr₁ K₁ ∨[ 𝒪 X ] pr₁ K₂
+ ιₖ-preserves-∨ K₁ K₂ = ≤-is-antisymmetric (poset-of (𝒪 X)) † ‡
+  where
+   † : (ιₖ (K₁ ∨ₖ K₂) ≤[ poset-of (𝒪 X) ] (ιₖ K₁ ∨[ 𝒪 X ] ιₖ K₂)) holds
+   † = ∨[ 𝒪 X ]-least
+        (∨[ 𝒪 X ]-upper₁ (ιₖ K₁) (ιₖ K₂))
+        (∨[ 𝒪 X ]-upper₂ (ιₖ K₁) (ιₖ K₂))
+
+   ‡ : ((ιₖ K₁ ∨[ 𝒪 X ] ιₖ K₂) ≤[ poset-of (𝒪 X) ] ιₖ (K₁ ∨ₖ K₂)) holds
+   ‡ = ∨[ 𝒪 X ]-least
+        (∨[ 𝒪 X ]-upper₁ (ιₖ K₁) (ιₖ K₂))
+        (∨[ 𝒪 X ]-upper₂ (ιₖ K₁) (ιₖ K₂))
+
+ ιₖ-preserves-∧ : (K₁ K₂ : ∣ 𝒦⦅X⦆ ∣ᵈ)
+                → pr₁ (K₁ ∧ₖ K₂) ＝ pr₁ K₁ ∧[ 𝒪 X ] pr₁ K₂
+ ιₖ-preserves-∧ K₁ K₂ = ≤-is-antisymmetric (poset-of (𝒪 X)) † ‡
+  where
+   † : (pr₁ (K₁ ∧ₖ K₂) ≤[ poset-of (𝒪 X) ] (pr₁ K₁ ∧[ 𝒪 X ] pr₁ K₂)) holds
+   † = ∧[ 𝒪 X ]-greatest
+        (ιₖ K₁)
+        (ιₖ K₂)
+        (pr₁ (K₁ ∧ₖ K₂))
+        (∧[ 𝒪 X ]-lower₁ (ιₖ K₁) (ιₖ K₂))
+        (∧[ 𝒪 X ]-lower₂ (pr₁ K₁) (pr₁ K₂))
+
+   ‡ : ((pr₁ K₁ ∧[ 𝒪 X ] pr₁ K₂) ≤[ poset-of (𝒪 X) ] pr₁ (K₁ ∧ₖ K₂)) holds
+   ‡ = ∧[ 𝒪 X ]-greatest
+        (pr₁ K₁)
+        (pr₁ K₂)
+        (pr₁ (K₁ ∧ₖ K₂))
+        (∧[ 𝒪 X ]-lower₁ (ιₖ K₁) (ιₖ K₂))
+        (∧[ 𝒪 X ]-lower₂ (pr₁ K₁) (pr₁ K₂))
 
 \end{code}

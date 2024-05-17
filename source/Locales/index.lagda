@@ -120,6 +120,8 @@ import Locales.ContinuousMap.Homeomorphism-Properties
 
 import Locales.SIP.FrameSIP
 
+import Locales.DirectedFamily-Poset
+
 import Locales.StoneDuality.ForSpectralLocales
 
 \end{code}

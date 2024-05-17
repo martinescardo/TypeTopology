@@ -2,6 +2,7 @@
 title:          Transporting a distributive lattice along an equivalence
 author:         Ayberk Tosun
 date-started:   2024-04-22
+date-completed: 2024-04-30
 --------------------------------------------------------------------------------
 
 Given a distributive lattice `L : 𝓤` and an equivalence of the carrier set
@@ -65,9 +66,9 @@ a type `A : 𝓥`, and an equivalence `e : ⟨ L ⟩ ≃ A`.
 
 \begin{code}
 
-module _ (L  : DistributiveLattice 𝓤)
-         (Aᶜ : 𝓥  ̇)
-         (e  : ∣ L ∣ᵈ ≃ Aᶜ) where
+module DistributiveLatticeResizing (L  : DistributiveLattice 𝓤)
+                                   (Aᶜ : 𝓥  ̇)
+                                   (e  : ∣ L ∣ᵈ ≃ Aᶜ) where
 
  open DistributiveLattice L renaming (𝟏 to 𝟏L; 𝟎 to 𝟎L)
 
@@ -79,8 +80,7 @@ module _ (L  : DistributiveLattice 𝓤)
 
 \end{code}
 
-The copy of the meet operation on type `A` is denoted `_∧ᶜ_` and is defined
-as:
+The copy of the meet operation on type `A` is denoted `_∧ᶜ_` and is defined as:
 
 \begin{code}
 
@@ -303,46 +303,31 @@ We package everything up into `copyᵈ` below.
 
 \begin{code}
 
- private
-  Lᶜ : DistributiveLattice 𝓥
-  Lᶜ = record
-        { X               = Aᶜ
-        ; 𝟏               = 𝟏ᶜ
-        ; 𝟎               = 𝟎ᶜ
-        ; _∧_             = _∧ᶜ_
-        ; _∨_             = _∨ᶜ_
-        ; X-is-set        = equiv-to-set
-                             (≃-sym e)
-                             carrier-of-[ poset-ofᵈ L ]-is-set
-        ; ∧-associative   = ∧ᶜ-is-associative
-        ; ∧-commutative   = ∧ᶜ-is-commutative
-        ; ∧-unit          = ∧ᶜ-unit
-        ; ∧-idempotent    = ∧ᶜ-idempotent
-        ; ∧-absorptive    = ∧ᶜ-absorptive
-        ; ∨-associative   = ∨ᶜ-associative
-        ; ∨-commutative   = ∨ᶜ-commutative
-        ; ∨-unit          = ∨ᶜ-unit
-        ; ∨-idempotent    = ∨ᶜ-idempotent
-        ; ∨-absorptive    = ∨ᶜ-absorptive
-        ; distributivityᵈ = distributivityᶜ
-        }
-
-\end{code}
-
-For the reader who is wondering why we marked the above as `private`, the reason
-is that we would like to avoid referring to this lattice as `Lᶜ` outside the
-module as `L` is just a variable name that we use inside the module. We define
-the notation `⦅_⦆ᶜ` to be used from the outside as `⦅ K ⦆ᶜ`, for any
-distributive lattice `K`.
-
-\begin{code}
+ Lᶜ : DistributiveLattice 𝓥
+ Lᶜ = record
+       { X               = Aᶜ
+       ; 𝟏               = 𝟏ᶜ
+       ; 𝟎               = 𝟎ᶜ
+       ; _∧_             = _∧ᶜ_
+       ; _∨_             = _∨ᶜ_
+       ; X-is-set        = equiv-to-set
+                            (≃-sym e)
+                            carrier-of-[ poset-ofᵈ L ]-is-set
+       ; ∧-associative   = ∧ᶜ-is-associative
+       ; ∧-commutative   = ∧ᶜ-is-commutative
+       ; ∧-unit          = ∧ᶜ-unit
+       ; ∧-idempotent    = ∧ᶜ-idempotent
+       ; ∧-absorptive    = ∧ᶜ-absorptive
+       ; ∨-associative   = ∨ᶜ-associative
+       ; ∨-commutative   = ∨ᶜ-commutative
+       ; ∨-unit          = ∨ᶜ-unit
+       ; ∨-idempotent    = ∨ᶜ-idempotent
+       ; ∨-absorptive    = ∨ᶜ-absorptive
+       ; distributivityᵈ = distributivityᶜ
+       }
 
  ⦅_⦆ᶜ : DistributiveLattice 𝓥
  ⦅_⦆ᶜ = Lᶜ
-
-\end{code}
-
-\begin{code}
 
  s-preserves-𝟏 : preserves-𝟏 L Lᶜ s holds
  s-preserves-𝟏 = refl
