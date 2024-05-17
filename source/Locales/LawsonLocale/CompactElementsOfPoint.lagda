@@ -253,7 +253,7 @@ The family `𝒦-in-point` is always inhabited.
 
 \end{code}
 
-The family `𝒦-in-point` is closed under binary upper bounds.
+The family `𝒦-in-point` is semidirected.
 
 \begin{code}
 
