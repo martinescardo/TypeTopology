@@ -44,15 +44,15 @@ open import DomainTheory.Basics.Pointed                      pt fe 𝓤
 open import DomainTheory.Basics.WayBelow                     pt fe 𝓤
 open import DomainTheory.Topology.ScottTopology              pt fe 𝓤
 open import DomainTheory.Topology.ScottTopologyProperties    pt fe 𝓤
-open import Locales.Frame                                    pt fe
 open import Locales.Compactness                              pt fe
  hiding (is-compact)
+open import Locales.Frame                                    pt fe
 open import Locales.ScottLocale.Definition                   pt fe 𝓤
 open import Locales.ScottLocale.ScottLocalesOfAlgebraicDcpos pt fe 𝓤
 
+open AllCombinators pt fe
 open Locale
 open PropositionalTruncation pt
-open AllCombinators pt fe
 
 \end{code}
 
