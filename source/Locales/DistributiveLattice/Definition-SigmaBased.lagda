@@ -1,9 +1,9 @@
----
+--------------------------------------------------------------------------------
 title:          Definition of distributive lattices (Σ-based)
 author:         Ayberk Tosun
 date-started:   2024-05-16
 date-completed: 2024-05-17
----
+--------------------------------------------------------------------------------
 
 \begin{code}
 
@@ -18,14 +18,14 @@ module Locales.DistributiveLattice.Definition-SigmaBased
         (pt : propositional-truncations-exist)
        where
 
+open import Locales.DistributiveLattice.Definition fe pt
 open import Locales.Frame pt fe
 open import MLTT.Spartan
 open import UF.Base
+open import UF.Equiv
 open import UF.Logic
 open import UF.Powerset-MultiUniverse
 open import UF.SubtypeClassifier
-open import UF.Equiv
-open import Locales.DistributiveLattice.Definition fe pt
 
 open Implication fe
 
