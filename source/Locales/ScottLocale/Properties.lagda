@@ -143,14 +143,14 @@ The principal filter `↑(x)` on any `x : 𝓓` is a compact Scott open.
  principal-filter-is-compact₀ : (c : ⟨ 𝓓 ⟩∙)
                               → (κ : is-compact 𝓓 c)
                               → is-compact-open Σ⦅𝓓⦆ ↑ˢ[ (c , κ) ] holds
- principal-filter-is-compact₀ c κ S δ p = ∥∥-rec ∃-is-prop † q
+ principal-filter-is-compact₀ c κ S δ p = ∥∥-functor † μ
   where
-   q : (c ∈ₛ (⋁[ 𝒪 Σ⦅𝓓⦆ ] S)) holds
-   q = ⊆ₖ-implies-⊆ₛ ↑ˢ[ (c , κ) ] (⋁[ 𝒪 Σ⦅𝓓⦆ ] S) p c (reflexivity 𝓓 c)
+   μ : (c ∈ₛ (⋁[ 𝒪 Σ⦅𝓓⦆ ] S)) holds
+   μ = ⊆ₖ-implies-⊆ₛ ↑ˢ[ (c , κ) ] (⋁[ 𝒪 Σ⦅𝓓⦆ ] S) p c (reflexivity 𝓓 c)
 
    † : Σ i ꞉ index S , (c ∈ₛ (S [ i ])) holds
-     → ∃ i ꞉ index S , (↑ˢ[ (c , κ) ] ≤[ poset-of (𝒪 Σ⦅𝓓⦆) ] S [ i ]) holds
-   † (i , r) = ∣ i , ‡ ∣
+     → Σ i ꞉ index S , (↑ˢ[ (c , κ) ] ≤[ poset-of (𝒪 Σ⦅𝓓⦆) ] S [ i ]) holds
+   † (i , r) = i , ‡
     where
      ‡ :  (↑ˢ[ c , κ ] ≤[ poset-of (𝒪 Σ⦅𝓓⦆) ] (S [ i ])) holds
      ‡ d = upward-closure (S [ i ]) c (β d) r
