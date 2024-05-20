@@ -148,19 +148,44 @@ First, the part of the equivalence going from `Isomorphismᵈᵣ K L` to
  to-isomorphismᵈᵣ (e , 𝒽) =
   record
    { 𝓈           = 𝓈
-   ; 𝓇           = {!!}
-   ; r-cancels-s = {!!}
+   ; 𝓇           = 𝓇
+   ; r-cancels-s = †
    ; s-cancels-r = {!!}
    }
     where
      s = ⌜ e ⌝
+     r = ⌜ ≃-sym e ⌝
 
      μ : preserves-𝟏 K L s holds
      μ = {!!}
 
+     τ₂ : preserves-𝟏 L K r holds
+     τ₂ = {!!}
+
+     μ₂ : {!!}
+     μ₂ = {!!}
+
+     γ : preserves-𝟎 L K r holds
+     γ = {!!}
+
+     δ₂ : preserves-∨ L K r holds
+     δ₂ = {!!}
+
      𝓈 : Homomorphismᵈᵣ K L
      𝓈 = record
-          { h = s
+          { h                 = s
           ; h-is-homomorphism = μ , {!!} }
+
+     𝓇 : Homomorphismᵈᵣ L K
+     𝓇 = record
+          { h                 = r
+          ; h-is-homomorphism = {!!} , {!!} , {!!} , δ₂
+          }
+
+     † : r ∘ s ∼ id
+     † = {!!}
+
+     ‡ : s ∘ r ∼ id
+     ‡ = {!!}
 
 \end{code}
