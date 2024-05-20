@@ -18,9 +18,11 @@ module Locales.DistributiveLattice.Isomorphism
        where
 
 open import Locales.AdjointFunctorTheoremForFrames pt fe
+open import Locales.Adjunctions.Adjunction-Properties pt fe
 open import Locales.DistributiveLattice.Definition fe pt
 open import Locales.DistributiveLattice.Homomorphism fe pt
 open import Locales.Frame pt fe
+open import Locales.GaloisConnection pt fe
 open import MLTT.Spartan
 open import UF.Base
 open import UF.Equiv
@@ -120,6 +122,7 @@ First, the part of the equivalence going from `Isomorphismᵈᵣ K L` to
 \begin{code}
 
  open DistributiveLatticeIsomorphisms
+ open Some-Properties-Of-Posetal-Adjunctions
 
  to-isomorphism₀ : Isomorphismᵈᵣ K L → Isomorphism₀
  to-isomorphism₀ 𝒾 = e , 𝒽
@@ -145,8 +148,11 @@ First, the part of the equivalence going from `Isomorphismᵈᵣ K L` to
    𝒽 : is-homomorphic e holds
    𝒽 = 𝓈-is-monotone , 𝓇-is-monotone
 
+ open AdjointFunctorTheorem
+ open GaloisConnectionBetween (poset-ofᵈ L) (poset-ofᵈ K)
+
  to-isomorphismᵈᵣ : Isomorphism₀ → Isomorphismᵈᵣ K L
- to-isomorphismᵈᵣ (e , 𝒽) =
+ to-isomorphismᵈᵣ (e , (μ₁ , μ₂)) =
   record
    { 𝓈           = 𝓈
    ; 𝓇           = 𝓇
@@ -154,17 +160,54 @@ First, the part of the equivalence going from `Isomorphismᵈᵣ K L` to
    ; s-cancels-r = {!!}
    }
     where
+     open DistributiveLattice L using () renaming (𝟏 to 𝟏L; 𝟎 to 𝟎L)
+     open DistributiveLattice K using () renaming (𝟏 to 𝟏K; 𝟎 to 𝟎K)
+
      s = ⌜ e ⌝
      r = ⌜ ≃-sym e ⌝
 
-     μ : preserves-𝟏 K L s holds
-     μ = {!!}
+     sₘ : poset-ofᵈ K ─m→ poset-ofᵈ L
+     sₘ = s , μ₁
 
-     τ₂ : preserves-𝟏 L K r holds
-     τ₂ = {!!}
+     rₘ : poset-ofᵈ L ─m→ poset-ofᵈ K
+     rₘ = r , μ₂
 
-     μ₂ : {!!}
-     μ₂ = {!!}
+     -- 𝒶𝒹𝒿 : (sₘ ⊣ rₘ) holds
+     -- 𝒶𝒹𝒿 = monotone-equivalences-are-adjoint
+     --        (s , μ₁)
+     --        (r , μ₂)
+     --        (inverses-are-sections' e)
+     --        (inverses-are-retractions' e)
+
+     𝒶𝒹𝒿 : (rₘ ⊣ sₘ) holds
+     𝒶𝒹𝒿 = {!!}
+
+     𝒶𝒹𝒿' : (poset-ofᵈ K GaloisConnectionBetween.⊣ poset-ofᵈ L) sₘ rₘ holds
+     𝒶𝒹𝒿' = {!!}
+
+     α₁ : preserves-𝟏 K L s holds
+     α₁ = ≤-is-antisymmetric (poset-ofᵈ L) (𝟏ᵈ-is-top L (s 𝟏K)) †
+      where
+       † : (𝟏L ≤[ poset-ofᵈ L ] s 𝟏K) holds
+       † = adjunction-law₁
+            (poset-ofᵈ L)
+            (poset-ofᵈ K)
+            rₘ
+            sₘ
+            𝒶𝒹𝒿
+            (𝟏ᵈ-is-top K (r 𝟏L))
+
+     β₁ : preserves-∧ K L s holds
+     β₁ = {!!}
+
+     γ₁ : preserves-𝟎 K L s holds
+     γ₁ = ≤-is-antisymmetric
+           (poset-ofᵈ L)
+           (adjunction-law₂ (poset-ofᵈ K) (poset-ofᵈ L) sₘ rₘ 𝒶𝒹𝒿' (𝟎ᵈ-is-bottom K (r 𝟎L)) )
+           (𝟎ᵈ-is-bottom L (s 𝟎K))
+
+     δ₁ : preserves-∨ K L s holds
+     δ₁ = {!!}
 
      γ : preserves-𝟎 L K r holds
      γ = {!!}
@@ -175,7 +218,7 @@ First, the part of the equivalence going from `Isomorphismᵈᵣ K L` to
      𝓈 : Homomorphismᵈᵣ K L
      𝓈 = record
           { h                 = s
-          ; h-is-homomorphism = μ , {!!} }
+          ; h-is-homomorphism = α₁ , β₁ , γ₁ , δ₁ }
 
      𝓇 : Homomorphismᵈᵣ L K
      𝓇 = record
