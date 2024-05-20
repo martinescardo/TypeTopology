@@ -17,6 +17,7 @@ module Locales.DistributiveLattice.Isomorphism
         (pt : propositional-truncations-exist)
        where
 
+open import Locales.AdjointFunctorTheoremForFrames pt fe
 open import Locales.DistributiveLattice.Definition fe pt
 open import Locales.DistributiveLattice.Homomorphism fe pt
 open import Locales.Frame pt fe
