@@ -851,7 +851,7 @@ module subgroup
 
    Subgroups                                                                                       ≃⟨ i ⟩
    (Σ A ꞉ 𝓟 ⟨ G ⟩ , group-closed (_∈ A))                                                           ≃⟨ ii ⟩
-   (Σ (X , h , e) ꞉ Subtypes ⟨ G ⟩ , group-closed (fiber h))                                       ≃⟨ iii ⟩
+   (Σ (X , h , e) ꞉ Subtype ⟨ G ⟩ , group-closed (fiber h))                                       ≃⟨ iii ⟩
    (Σ X ꞉ 𝓤 ̇ , Σ (h , e) ꞉ X ↪ ⟨ G ⟩ , group-closed (fiber h))                                     ≃⟨ iv ⟩
    (Σ X ꞉ 𝓤 ̇ , Σ (h , e) ꞉ X ↪ ⟨ G ⟩ , Σ τ ꞉ T X , is-homomorphism (X , τ) G h)                    ≃⟨ v ⟩
    (Σ X ꞉ 𝓤 ̇ , Σ h ꞉ (X → ⟨ G ⟩) , Σ e ꞉ is-embedding h , Σ τ ꞉ T X , is-homomorphism (X , τ) G h) ≃⟨ vi ⟩
@@ -862,7 +862,7 @@ module subgroup
       where
        open special-classifier-single-universe 𝓤
 
-       φ : Subtypes ⟨ G ⟩ → 𝓟 ⟨ G ⟩
+       φ : Subtype ⟨ G ⟩ → 𝓟 ⟨ G ⟩
        φ = χ-special is-prop ⟨ G ⟩
 
        j : is-equiv φ
