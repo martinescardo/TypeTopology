@@ -95,9 +95,6 @@ B-⊲-S b = (inr ⋆) , eqtoidₒ (ua 𝓤₀) fe' ⦅ b ⦆ (⦅ S b ⦆ ↓ in
 B-⊴-L : (ϕ : ℕ → B) (n : ℕ) → ⦅ ϕ n ⦆ ⊴ ⦅ L ϕ ⦆
 B-⊴-L ϕ n = sup-is-upper-bound (λ i → ⦅ ϕ i ⦆) n
 
-⊴-and-⊲-implies-⊲ : (α β γ :  Ordinal 𝓤) → α ⊴ β → β ⊲ γ → α ⊲ γ
-⊴-and-⊲-implies-⊲ α β γ (f , hf) (c , eq) = {!!}
-
 B-rec : {X : 𝓤₀ ̇ } → X → (X → X) → ((ℕ → X) → X) → B → X
 B-rec z s l Z     = z
 B-rec z s l (S d) = s (B-rec z s l d)
@@ -276,6 +273,18 @@ sufficient-path-condition-for-⊑ (L ϕ) c h = L-⊑ ϕ c IH
   IH : (n : ℕ) → ϕ n ⊑ c
   IH n = sufficient-path-condition-for-⊑ (ϕ n) c (h ∘ pick ϕ n)
 
+
+path-to-ordinal-⊑ : {b : B} (p : PathThroughS b) → Path-to-ordinal p ⊑ b
+path-to-ordinal-⊑ p = sufficient-path-condition-for-⊑ (Path-to-ordinal p) _
+                        (λ q → compose-path p q , compose-path-correct p q)
+
+compose-path-⊑ : {b : B}
+                 (p : PathThroughS b) (q : PathThroughS (Path-to-ordinal p))
+               → Path-to-ordinal (compose-path p q) ⊑ Path-to-ordinal p
+compose-path-⊑ (stop b)     q = path-to-ordinal-⊑ q
+compose-path-⊑ (continue p) q = compose-path-⊑ p q
+compose-path-⊑ (pick ϕ n p) q = compose-path-⊑ p q
+
 \end{code}
 
 Very similar reasoning also allows us to prove the following result. Once we
@@ -288,11 +297,11 @@ some path `p : PathThroughS b`, but Agda does not realize that
 
 \begin{code}
 
-simulation-implies-⊑ : (b c : B)
-                     → ((p : PathThroughS b)
-                           → Σ q ꞉ PathThroughS c ,
-                             Path-to-ordinal p ⊑ Path-to-ordinal q)
-                     → b ⊑ c
+_simulates_ : B → B → 𝓤₀ ̇
+b simulates c = (p : PathThroughS b)
+              → Σ q ꞉ PathThroughS c , Path-to-ordinal p ⊑ Path-to-ordinal q
+
+simulation-implies-⊑ : (b c : B) → b simulates c → b ⊑ c
 simulation-implies-⊑ Z c h     = Z-⊑ c
 simulation-implies-⊑ (S b) c h = S-⊑ b c q e
  where
@@ -309,22 +318,7 @@ simulation-implies-⊑ (L ϕ) c h = L-⊑ ϕ c IH
   IH : (n : ℕ) → ϕ n ⊑ c
   IH n = simulation-implies-⊑ (ϕ n) c (h ∘ pick ϕ n)
 
-
-path-to-ordinal-⊑ : {b : B} (p : PathThroughS b) → Path-to-ordinal p ⊑ b
-path-to-ordinal-⊑ p = sufficient-path-condition-for-⊑ (Path-to-ordinal p) _
-                        (λ q → compose-path p q , compose-path-correct p q)
-
-compose-path-⊑ : {b : B}
-                 (p : PathThroughS b) (q : PathThroughS (Path-to-ordinal p))
-               → Path-to-ordinal (compose-path p q) ⊑ Path-to-ordinal p
-compose-path-⊑ (stop b)     q = path-to-ordinal-⊑ q
-compose-path-⊑ (continue p) q = compose-path-⊑ p q
-compose-path-⊑ (pick ϕ n p) q = compose-path-⊑ p q
-
-⊑-implies-simulation : {b c : B}
-      → b ⊑ c
-      → (p : PathThroughS b)
-      → Σ q ꞉ PathThroughS c , Path-to-ordinal p ⊑ Path-to-ordinal q
+⊑-implies-simulation : {b c : B} → b ⊑ c → b simulates c
 ⊑-implies-simulation (S-⊑ b c q h) (stop b)     = q , h
 ⊑-implies-simulation (S-⊑ b c q h) (continue p) =
  compose-path q r , transport (Path-to-ordinal p ⊑_) (compose-path-correct q r) l
@@ -363,41 +357,63 @@ L-is-upper-bound ϕ n = sufficient-path-condition-for-⊑ (ϕ n) (L ϕ)
 ⊑-refl (S b) = S-⊑ b (S b) (stop b) (⊑-refl b)
 ⊑-refl (L ϕ) = L-⊑ ϕ (L ϕ) (L-is-upper-bound ϕ)
 
-
 ⊑-trans : (b c d : B) → b ⊑ c → c ⊑ d → b ⊑ d
 ⊑-trans Z     c d (Z-⊑ c)       l = Z-⊑ d
 ⊑-trans (S b) c d (S-⊑ b c p h) l =
- S-⊑ b d {!!} {!!}
---⊑-trans (S b) (S c) d (S-⊑ b (S c) p h) (S-⊑ c d q l) =
--- {!!}
---⊑-trans (S b) (L ϕ) d (S-⊑ b (L ϕ) p h) (L-⊑ ϕ d l) =
--- {!!}
-⊑-trans (L ϕ) c d (L-⊑ ϕ c h)   l = L-⊑ ϕ d (λ n → ⊑-trans (ϕ n) c d (h n) l)
+ S-⊑ b d q (⊑-trans b (Path-to-ordinal p) (Path-to-ordinal q) h m)
+ where
+  q : PathThroughS d
+  q = pr₁ (⊑-implies-simulation l p)
 
+  m : Path-to-ordinal p ⊑ Path-to-ordinal q
+  m = pr₂ (⊑-implies-simulation l p)
+⊑-trans (L ϕ) c d (L-⊑ ϕ c h) l = L-⊑ ϕ d (λ n → ⊑-trans (ϕ n) c d (h n) l)
 
 L-is-monotonic : (ϕ ψ : ℕ → B)
                → ((n : ℕ) → ϕ n ⊑ ψ n)
                → L ϕ ⊑ L ψ
-L-is-monotonic ϕ ψ h = L-⊑ ϕ (L ψ) IH
- where
-  IH : (n : ℕ) → ϕ n ⊑ L ψ
-  IH n = ⊑-trans (ϕ n) (ψ n) (L ψ) (h n) (L-is-upper-bound ψ n)
+L-is-monotonic ϕ ψ h =
+ L-⊑ ϕ (L ψ) (λ n → ⊑-trans (ϕ n) (ψ n) (L ψ) (h n) (L-is-upper-bound ψ n))
+
+path-to-elem : {b : B} (p : PathThroughS b) → ⟨ ⦅ b ⦆ ⟩
+path-to-elem (stop b)     = inr ⋆
+path-to-elem (continue p) = inl (path-to-elem p)
+path-to-elem (pick ϕ n p) = sum-to-sup (λ i → ⦅ ϕ i ⦆) (n , (path-to-elem p))
 
 ⦅⦆-sends-⊑-to-⊴ : (b c : B) → b ⊑ c → ⦅ b ⦆ ⊴ ⦅ c ⦆
 ⦅⦆-sends-⊑-to-⊴ Z     c (Z-⊑ c) = 𝟘-elim , (λ x → 𝟘-elim x) , (λ x → 𝟘-elim x)
 ⦅⦆-sends-⊑-to-⊴ (S b) c (S-⊑ b c p h) = f , f-is-initial-segment , f-is-order-preserving
  where
-  IH : ⦅ b ⦆ ⊴ ⦅ Path-to-ordinal p ⦆
-  IH = ⦅⦆-sends-⊑-to-⊴ b (Path-to-ordinal p) h
+  IH : ⦅ b ⦆ ⊴ ⦅ c ⦆
+  IH = ⦅⦆-sends-⊑-to-⊴ b c (⊑-trans b (Path-to-ordinal p) c h (path-to-ordinal-⊑ p))
+
+  g : ⟨ ⦅ b ⦆ ⟩ → ⟨ ⦅ c ⦆ ⟩
+  g = pr₁ IH
+
+  g-is-initial-segment : is-initial-segment ⦅ b ⦆ ⦅ c ⦆ g
+  g-is-initial-segment = pr₁ (pr₂ IH)
+
+  g-is-order-preserving : is-order-preserving ⦅ b ⦆ ⦅ c ⦆ g
+  g-is-order-preserving = pr₂ (pr₂ IH)
+
+  foo : (x : ⟨ ⦅ b ⦆ ⟩) → g x ≺⟨ ⦅ c ⦆ ⟩ path-to-elem p
+  foo = {!!}
 
   f : ⟨ ⦅ b ⦆ +ₒ 𝟙ₒ ⟩  → ⟨ ⦅ c ⦆ ⟩
-  f = {!!}
+  f (inl x) = g x
+  f (inr ⋆) = path-to-elem p
 
   f-is-initial-segment : is-initial-segment ⦅ S b ⦆ ⦅ c ⦆ f
-  f-is-initial-segment x = {!!}
+  f-is-initial-segment (inl x) y l = inl (pr₁ (g-is-initial-segment x y l))
+                                   , pr₁ (pr₂ (g-is-initial-segment x y l))
+                                   , pr₂ (pr₂ (g-is-initial-segment x y l))
+  f-is-initial-segment (inr ⋆) y l = {!!}
+                                   , {!!}
+                                   , {!!}
 
   f-is-order-preserving : is-order-preserving ⦅ S b ⦆ ⦅ c ⦆ f
-  f-is-order-preserving x = {!!}
+  f-is-order-preserving (inl x) (inl y) l = g-is-order-preserving x y l
+  f-is-order-preserving (inl x) (inr ⋆) ⋆ = {!!}
 ⦅⦆-sends-⊑-to-⊴ (L ϕ) c (L-⊑ ϕ c x) = {!!}
 
 \end{code}
