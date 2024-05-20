@@ -203,6 +203,20 @@ Path-to-ordinal (stop b)     = b
 Path-to-ordinal (continue p) = Path-to-ordinal p
 Path-to-ordinal (pick ϕ n p) = Path-to-ordinal p
 
+compose-path : {b : B} (p : PathThroughS b) → PathThroughS (Path-to-ordinal p)
+             → PathThroughS b
+compose-path (stop b)     q = continue q
+compose-path (continue p) q = continue (compose-path p q)
+compose-path (pick ϕ n p) q = pick ϕ n (compose-path p q)
+
+compose-path-correct : {b : B}
+                       (p : PathThroughS b)
+                       (q : PathThroughS (Path-to-ordinal p))
+                     → Path-to-ordinal q ＝ Path-to-ordinal (compose-path p q)
+compose-path-correct (stop b)     q = refl
+compose-path-correct (continue p) q = compose-path-correct p q
+compose-path-correct (pick ϕ n p) q = compose-path-correct p q
+
 \end{code}
 
 We define `b ⊑ c` by induction on the code `b` according to the following
@@ -295,6 +309,36 @@ simulation-implies-⊑ (L ϕ) c h = L-⊑ ϕ c IH
   IH : (n : ℕ) → ϕ n ⊑ c
   IH n = simulation-implies-⊑ (ϕ n) c (h ∘ pick ϕ n)
 
+
+path-to-ordinal-⊑ : {b : B} (p : PathThroughS b) → Path-to-ordinal p ⊑ b
+path-to-ordinal-⊑ p = sufficient-path-condition-for-⊑ (Path-to-ordinal p) _
+                        (λ q → compose-path p q , compose-path-correct p q)
+
+compose-path-⊑ : {b : B}
+                 (p : PathThroughS b) (q : PathThroughS (Path-to-ordinal p))
+               → Path-to-ordinal (compose-path p q) ⊑ Path-to-ordinal p
+compose-path-⊑ (stop b)     q = path-to-ordinal-⊑ q
+compose-path-⊑ (continue p) q = compose-path-⊑ p q
+compose-path-⊑ (pick ϕ n p) q = compose-path-⊑ p q
+
+⊑-implies-simulation : {b c : B}
+      → b ⊑ c
+      → (p : PathThroughS b)
+      → Σ q ꞉ PathThroughS c , Path-to-ordinal p ⊑ Path-to-ordinal q
+⊑-implies-simulation (S-⊑ b c q h) (stop b)     = q , h
+⊑-implies-simulation (S-⊑ b c q h) (continue p) =
+ compose-path q r , transport (Path-to-ordinal p ⊑_) (compose-path-correct q r) l
+ where
+  IH : Σ r ꞉ PathThroughS (Path-to-ordinal q) , Path-to-ordinal p ⊑ Path-to-ordinal r
+  IH = ⊑-implies-simulation h p
+
+  r : PathThroughS (Path-to-ordinal q)
+  r = pr₁ IH
+
+  l : Path-to-ordinal p ⊑ Path-to-ordinal r
+  l = pr₂ IH
+⊑-implies-simulation (L-⊑ ϕ c h)   (pick ϕ n p) = ⊑-implies-simulation (h n) p
+
 \end{code}
 
 With this we can now prove that the constructors `S` and `L` of Brouwer
@@ -319,15 +363,17 @@ L-is-upper-bound ϕ n = sufficient-path-condition-for-⊑ (ϕ n) (L ϕ)
 ⊑-refl (S b) = S-⊑ b (S b) (stop b) (⊑-refl b)
 ⊑-refl (L ϕ) = L-⊑ ϕ (L ϕ) (L-is-upper-bound ϕ)
 
+
 ⊑-trans : (b c d : B) → b ⊑ c → c ⊑ d → b ⊑ d
 ⊑-trans Z     c d (Z-⊑ c)       l = Z-⊑ d
-⊑-trans (S b) c d (S-⊑ b c p h) l = simulation-implies-⊑ (S b) d (λ q → {!!})
-⊑-trans (L ϕ) c d (L-⊑ ϕ c h)   l = L-⊑ ϕ d (λ n → ⊑-trans (ϕ n) c d (h n) l)
-
+⊑-trans (S b) c d (S-⊑ b c p h) l =
+ S-⊑ b d {!!} {!!}
 --⊑-trans (S b) (S c) d (S-⊑ b (S c) p h) (S-⊑ c d q l) =
--- S-⊑ b d q (⊑-trans b (Path-to-ordinal p) (Path-to-ordinal q) h {!!})
+-- {!!}
 --⊑-trans (S b) (L ϕ) d (S-⊑ b (L ϕ) p h) (L-⊑ ϕ d l) =
 -- {!!}
+⊑-trans (L ϕ) c d (L-⊑ ϕ c h)   l = L-⊑ ϕ d (λ n → ⊑-trans (ϕ n) c d (h n) l)
+
 
 L-is-monotonic : (ϕ ψ : ℕ → B)
                → ((n : ℕ) → ϕ n ⊑ ψ n)
@@ -336,16 +382,6 @@ L-is-monotonic ϕ ψ h = L-⊑ ϕ (L ψ) IH
  where
   IH : (n : ℕ) → ϕ n ⊑ L ψ
   IH n = ⊑-trans (ϕ n) (ψ n) (L ψ) (h n) (L-is-upper-bound ψ n)
-
-path-to-ordinal-⊑-ordinal : (b : B) (p : PathThroughS b)
-                          →  Path-to-ordinal p ⊑ b
-path-to-ordinal-⊑-ordinal (S b) (stop b) = S-is-inflationary b
-path-to-ordinal-⊑-ordinal (S b) (continue p) =
- ⊑-trans (Path-to-ordinal p) b (S b)
-  (path-to-ordinal-⊑-ordinal b p) (S-is-inflationary b)
-path-to-ordinal-⊑-ordinal (L ϕ) (pick ϕ n p) =
- ⊑-trans (Path-to-ordinal p) (ϕ n) (L ϕ)
-  (path-to-ordinal-⊑-ordinal (ϕ n) p) (L-is-upper-bound ϕ n)
 
 ⦅⦆-sends-⊑-to-⊴ : (b c : B) → b ⊑ c → ⦅ b ⦆ ⊴ ⦅ c ⦆
 ⦅⦆-sends-⊑-to-⊴ Z     c (Z-⊑ c) = 𝟘-elim , (λ x → 𝟘-elim x) , (λ x → 𝟘-elim x)
