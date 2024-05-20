@@ -225,14 +225,26 @@ data _⊑_ : B → B → 𝓤₀ ̇ where
  S-⊑ : (b c : B) (p : PathThroughS c) → b ⊑ Path-to-ordinal p → S b ⊑ c
  L-⊑ : (ϕ : ℕ → B) (c : B) → ((n : ℕ) → ϕ n ⊑ c) → L ϕ ⊑ c
 
--- TODO tidy up
+_⊏_ : B → B → 𝓤₀ ̇
+b ⊏ c = Σ p ꞉ PathThroughS c , b ⊑ Path-to-ordinal p
 
--- Crucial lemma to prove that L gives the least upper bound
-lemma : (b c : B)
-      → ((p : PathThroughS b) → Σ q ꞉ PathThroughS c , Path-to-ordinal p ＝ Path-to-ordinal q)
-      → b ⊑ c
-lemma Z c h     = Z-⊑ c
-lemma (S b) c h = S-⊑ b c q (transport (b ⊑_) e IH)
+\end{code}
+
+Before proving this gives a preorder on Brouwer ordinals, we need to understand
+the relation `_⊑_` better. As this relation is defined by induction on the first
+argument, we can often find ourselves in trouble if the first argument is
+a variable. For such cases, looking at paths gives a useful sufficient condition
+for `b ⊑ c`.
+
+\begin{code}
+
+sufficient-path-condition-for-⊑ : (b c : B)
+                                → ((p : PathThroughS b)
+                                      → Σ q ꞉ PathThroughS c ,
+                                        Path-to-ordinal p ＝ Path-to-ordinal q)
+                                → b ⊑ c
+sufficient-path-condition-for-⊑ Z c h     = Z-⊑ c
+sufficient-path-condition-for-⊑ (S b) c h = S-⊑ b c q (transport (b ⊑_) e IH)
  where
   p : PathThroughS (S b)
   p = stop b
@@ -244,58 +256,86 @@ lemma (S b) c h = S-⊑ b c q (transport (b ⊑_) e IH)
   e = pr₂ (h p)
 
   IH : b ⊑ b
-  IH = lemma b b (λ r → r , refl)
-lemma (L ϕ) c h = L-⊑ ϕ c IH
+  IH = sufficient-path-condition-for-⊑ b b (λ r → r , refl)
+sufficient-path-condition-for-⊑ (L ϕ) c h = L-⊑ ϕ c IH
  where
   IH : (n : ℕ) → ϕ n ⊑ c
-  IH n = lemma (ϕ n) c (h ∘ pick ϕ n)
-
-
-_⊏_ : B → B → 𝓤₀ ̇
-b ⊏ c = Σ p ꞉ PathThroughS c , b ⊑ Path-to-ordinal p
+  IH n = sufficient-path-condition-for-⊑ (ϕ n) c (h ∘ pick ϕ n)
 
 \end{code}
 
-Trying to figure out some properties of this order
+Very similar reasoning also allows us to prove the following result. Once we
+know that `_⊑_` is reflexive, then we can always succeeding lemma, but
+interestingly, the only proof of reflexivity we are aware of must use the
+preceding lemma. An attempt to prove reflexivity using `simulation-implies-⊑`
+will eventually require proving `Path-to-ordinal p ⊑ Path-to-ordinal p` for
+some path `p : PathThroughS b`, but Agda does not realize that
+`Path-to-ordinal p` is always structurally smaller than `b`.
 
 \begin{code}
 
-_ : L (λ n → rec Z S n) ⊑ L (λ n → rec Z S n)
-_ = L-⊑ _ _ aux
+simulation-implies-⊑ : (b c : B)
+                     → ((p : PathThroughS b)
+                           → Σ q ꞉ PathThroughS c ,
+                             Path-to-ordinal p ⊑ Path-to-ordinal q)
+                     → b ⊑ c
+simulation-implies-⊑ Z c h     = Z-⊑ c
+simulation-implies-⊑ (S b) c h = S-⊑ b c q e
  where
-  aux : (n : ℕ) → rec Z S n ⊑ L (λ n → rec Z S n)
-  aux zero     = Z-⊑ (L (rec Z S))
-  aux (succ n) = S-⊑ _ _ (pick _ n {!!}) {!!}
+  p : PathThroughS (S b)
+  p = stop b
 
-⊑-trans : (b c d : B) → b ⊑ c → c ⊑ d → b ⊑ d
-⊑-trans b c d h l = {!!}
+  q : PathThroughS c
+  q = pr₁ (h p)
 
-mutual
- L-is-monotonic : (ϕ ψ : ℕ → B)
-                → ((n : ℕ) → ϕ n ⊑ ψ n)
-                → L ϕ ⊑ L ψ
- L-is-monotonic ϕ ψ h = L-⊑ ϕ (L ψ) IH
-  where
-   IH : (n : ℕ) → ϕ n ⊑ L ψ
-   IH n = ⊑-trans (ϕ n) (ψ n) (L ψ) (h n) (L-is-upper-bound ψ n)
+  e : Path-to-ordinal p ⊑ Path-to-ordinal q
+  e = pr₂ (h p)
+simulation-implies-⊑ (L ϕ) c h = L-⊑ ϕ c IH
+ where
+  IH : (n : ℕ) → ϕ n ⊑ c
+  IH n = simulation-implies-⊑ (ϕ n) c (h ∘ pick ϕ n)
 
- L-is-upper-bound : (ϕ : ℕ → B) (n : ℕ) → ϕ n ⊑ L ϕ
- L-is-upper-bound ϕ n = lemma (ϕ n) (L ϕ) (λ p → pick ϕ n p , refl)
+\end{code}
+
+With this we can now prove that the constructors `S` and `L` of Brouwer
+ordinals always give bigger ordinals.
+
+\begin{code}
+
+S-is-inflationary : (b : B) → b ⊑ S b
+S-is-inflationary b = sufficient-path-condition-for-⊑ b (S b)
+                                                      (λ p → continue p , refl)
+
+L-is-upper-bound : (ϕ : ℕ → B) (n : ℕ) → ϕ n ⊑ L ϕ
+L-is-upper-bound ϕ n = sufficient-path-condition-for-⊑ (ϕ n) (L ϕ)
+                                                       (λ p → pick ϕ n p , refl)
+
+\end{code}
+
+\begin{code}
 
 ⊑-refl : (b : B) → b ⊑ b
 ⊑-refl Z     = Z-⊑ Z
 ⊑-refl (S b) = S-⊑ b (S b) (stop b) (⊑-refl b)
 ⊑-refl (L ϕ) = L-⊑ ϕ (L ϕ) (L-is-upper-bound ϕ)
 
-S-is-inflationary : (b : B) → b ⊑ S b
-S-is-inflationary Z     = Z-⊑ (S Z)
-S-is-inflationary (S b) = S-⊑ b (S (S b)) (stop (S b)) (S-is-inflationary b)
-S-is-inflationary (L ϕ) = L-⊑ ϕ (S (L ϕ)) aux
+⊑-trans : (b c d : B) → b ⊑ c → c ⊑ d → b ⊑ d
+⊑-trans Z     c d (Z-⊑ c)       l = Z-⊑ d
+⊑-trans (S b) c d (S-⊑ b c p h) l = simulation-implies-⊑ (S b) d (λ q → {!!})
+⊑-trans (L ϕ) c d (L-⊑ ϕ c h)   l = L-⊑ ϕ d (λ n → ⊑-trans (ϕ n) c d (h n) l)
+
+--⊑-trans (S b) (S c) d (S-⊑ b (S c) p h) (S-⊑ c d q l) =
+-- S-⊑ b d q (⊑-trans b (Path-to-ordinal p) (Path-to-ordinal q) h {!!})
+--⊑-trans (S b) (L ϕ) d (S-⊑ b (L ϕ) p h) (L-⊑ ϕ d l) =
+-- {!!}
+
+L-is-monotonic : (ϕ ψ : ℕ → B)
+               → ((n : ℕ) → ϕ n ⊑ ψ n)
+               → L ϕ ⊑ L ψ
+L-is-monotonic ϕ ψ h = L-⊑ ϕ (L ψ) IH
  where
-  aux : (i : ℕ) → ϕ i ⊑ S (L ϕ)
-  aux i = ⊑-trans (ϕ i) (S (ϕ i)) (S (L ϕ))
-                (S-is-inflationary (ϕ i))
-                (S-⊑ (ϕ i) (S (L ϕ)) (stop (L ϕ)) (L-is-upper-bound ϕ i))
+  IH : (n : ℕ) → ϕ n ⊑ L ψ
+  IH n = ⊑-trans (ϕ n) (ψ n) (L ψ) (h n) (L-is-upper-bound ψ n)
 
 path-to-ordinal-⊑-ordinal : (b : B) (p : PathThroughS b)
                           →  Path-to-ordinal p ⊑ b
