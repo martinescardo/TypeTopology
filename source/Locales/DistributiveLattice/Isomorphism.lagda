@@ -76,6 +76,27 @@ between distributive lattices `L₁` and `L₂`.
 
 \end{code}
 
+\begin{code}
+
+ has-homomorphic-inverse : (L₁ ─d→ L₂) → 𝓤 ⊔ 𝓥  ̇
+ has-homomorphic-inverse 𝓈 =
+  Σ 𝓇 ꞉ (L₂ ─d→ L₁) , (funᵈ L₂ L₁ 𝓇  ∘ funᵈ L₁ L₂ 𝓈 ∼ id)
+                    × (funᵈ L₁ L₂ 𝓈  ∘ funᵈ L₂ L₁ 𝓇 ∼ id)
+
+ having-homomorphic-inverse-is-prop : (h : L₁ ─d→ L₂)
+                                    → is-prop (has-homomorphic-inverse h)
+ having-homomorphic-inverse-is-prop h =
+  {!to-subtype-＝ ? ?!}
+
+
+ is-isomorphism : (L₁ ─d→ L₂) → Ω {!!}
+ is-isomorphism h = has-homomorphic-inverse h , {!!}
+
+ Isomorphism : 𝓤 ⊔ 𝓥  ̇
+ Isomorphism = Σ h ꞉ (L₁ ─d→ L₂) , is-isomorphism h holds
+
+\end{code}
+
 Pretty syntax for `Isomorphismᵈᵣ`.
 
 \begin{code}
@@ -87,6 +108,20 @@ Isomorphismᵈᵣ-Syntax K L = DistributiveLatticeIsomorphisms.Isomorphismᵈᵣ
 
 infix 0 Isomorphismᵈᵣ-Syntax
 syntax Isomorphismᵈᵣ-Syntax K L = K ≅d≅ L
+
+\end{code}
+
+Added on 2024-05-20.
+
+We now give a Σ-based definition.
+
+\begin{code}
+
+
+-- Isomorphismᵈ : DistributiveLattice 𝓤
+--              → DistributiveLattice 𝓥
+--              → 𝓤 ⊔ 𝓥 ⁺  ̇
+-- Isomorphismᵈ K L = {!DistributiveLatticeIsomorphisms.Isomorphismᵈᵣ K L!}
 
 \end{code}
 
@@ -335,7 +370,7 @@ The actual proof that these form an equivalence is trivial.
      (to-subtype-＝ (being-equiv-is-prop (λ 𝓤 𝓥 → fe {𝓤} {𝓥})) refl)
 
    ‡ : to-isomorphismᵈᵣ ∘ to-isomorphism₀ ∼ id
-   ‡ 𝒾 = {!𝒾!}
+   ‡ 𝒾 = {!!}
 
    ※ : (to-isomorphism₀ ∘ to-isomorphismᵈᵣ ∼ id)
      × (to-isomorphismᵈᵣ ∘ to-isomorphism₀ ∼ id)

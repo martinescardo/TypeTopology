@@ -129,3 +129,12 @@ Added on 2024-03-04.
 syntax Homomorphismᵈᵣ L₁ L₂ = L₁ ─d→ L₂
 
 \end{code}
+
+Added on 2024-05-20.
+
+\begin{code}
+
+funᵈ : (K : DistributiveLattice 𝓤) (L : DistributiveLattice 𝓥) → K ─d→ L → ∣ K ∣ᵈ → ∣ L ∣ᵈ
+funᵈ K L 𝒽 = Homomorphismᵈᵣ.h {L₁ = K} {L₂ = L} 𝒽
+
+\end{code}
