@@ -18,7 +18,7 @@ module Locales.DistributiveLattice.Isomorphism
        where
 
 open import Locales.AdjointFunctorTheoremForFrames pt fe
-open import Locales.Adjunctions.Adjunction-Properties pt fe
+open import Locales.Adjunctions.Properties pt fe
 open import Locales.DistributiveLattice.Definition fe pt
 open import Locales.DistributiveLattice.Homomorphism fe pt
 open import Locales.Frame pt fe
@@ -157,7 +157,7 @@ First, the part of the equivalence going from `Isomorphismᵈᵣ K L` to
    { 𝓈           = 𝓈
    ; 𝓇           = 𝓇
    ; r-cancels-s = †
-   ; s-cancels-r = {!!}
+   ; s-cancels-r = {!‡!}
    }
     where
      open DistributiveLattice L using () renaming (𝟏 to 𝟏L; 𝟎 to 𝟎L)

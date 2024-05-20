@@ -1,5 +1,5 @@
 --------------------------------------------------------------------------------
-title:        Isomorphisms of distributive lattices
+title:        Properties of posetal adjunctions
 author:       Ayberk Tosun
 date-started: 2024-05-20
 --------------------------------------------------------------------------------
@@ -24,15 +24,15 @@ open import UF.Base
 open import UF.FunExt
 open import UF.PropTrunc
 
-module Locales.Adjunctions.Adjunction-Properties
+module Locales.Adjunctions.Properties
         (pt : propositional-truncations-exist)
         (fe : Fun-Ext) where
 
+open import Locales.ContinuousMap.FrameHomomorphism-Properties pt fe
 open import Locales.Frame pt fe
 open import Locales.GaloisConnection pt fe
 open import UF.Logic
 open import UF.SubtypeClassifier
-open import Locales.ContinuousMap.FrameHomomorphism-Properties pt fe
 
 open AllCombinators pt fe
 
@@ -86,16 +86,12 @@ Monotone equivalences are adjoints.
      Ⅱ = φ y ⁻¹
 
      ※ : (s x ≤[ Q ] s (r y)) holds
-     ※ = s x        ≤⟨  Ⅰ ⟩
-         y          ＝⟨ Ⅱ ⟩ₚ
-         s (r y)    ■
+     ※ = s x ≤⟨ Ⅰ ⟩ y ＝⟨ Ⅱ ⟩ₚ s (r y) ■
 
    ‡ : (x ≤[ P ] r y ⇒ s x ≤[ Q ] y) holds
-   ‡ p = s x        ≤⟨ Ⅰ ⟩
-         s (r y)    ＝⟨ Ⅱ ⟩ₚ
-         y          ■
-          where
-           Ⅰ = 𝓂₁ (x , r y) p
-           Ⅱ = φ y
+   ‡ p = s x ≤⟨ Ⅰ ⟩ s (r y) ＝⟨ Ⅱ ⟩ₚ y ■
+    where
+     Ⅰ = 𝓂₁ (x , r y) p
+     Ⅱ = φ y
 
 \end{code}
