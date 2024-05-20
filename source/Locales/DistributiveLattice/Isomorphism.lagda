@@ -19,6 +19,7 @@ module Locales.DistributiveLattice.Isomorphism
 
 open import Locales.AdjointFunctorTheoremForFrames pt fe
 open import Locales.Adjunctions.Properties pt fe
+open import Locales.Adjunctions.Properties-DistributiveLattice pt fe
 open import Locales.DistributiveLattice.Definition fe pt
 open import Locales.DistributiveLattice.Homomorphism fe pt
 open import Locales.Frame pt fe
@@ -26,9 +27,12 @@ open import Locales.GaloisConnection pt fe
 open import MLTT.Spartan
 open import UF.Base
 open import UF.Equiv
+open import UF.Equiv-FunExt
 open import UF.Logic
 open import UF.Powerset-MultiUniverse
 open import UF.SubtypeClassifier
+open import UF.Subsingletons
+open import UF.Subsingletons-Properties
 
 open AllCombinators pt fe renaming (_∧_ to _∧ₚ_)
 
@@ -88,7 +92,8 @@ syntax Isomorphismᵈᵣ-Syntax K L = K ≅d≅ L
 
 Added on 2025-05-17.
 
-Homomorphic equivalences.
+We now give the alternative definition of the notion of distributive lattice
+homomorphism: an equivalence whose both sides are monotone.
 
 \begin{code}
 
@@ -104,8 +109,8 @@ module HomomorphicEquivalences (K : DistributiveLattice 𝓤)
 
 \end{code}
 
-We now give an alternative definition of the notion of distributive lattice
-isomorphism, which asserts the existence of a homomorphic equivalence.
+We denote by `Isomorphism₀` the type of isomorphisms given via this alternative
+definition.
 
 \begin{code}
 
@@ -114,15 +119,17 @@ isomorphism, which asserts the existence of a homomorphic equivalence.
 
 \end{code}
 
-These two notions of distributive lattice isomorphism are equivalent.
+We now prove that this is equivalent to the categorical definition.
 
-First, the part of the equivalence going from `Isomorphismᵈᵣ K L` to
-`Isomorphism₀`.
+The part of the equivalence going from `Isomorphismᵈᵣ K L` to
+`Isomorphism₀` is easy.
 
 \begin{code}
 
  open DistributiveLatticeIsomorphisms
  open Some-Properties-Of-Posetal-Adjunctions
+
+ open Properties-Of-Posetal-Adjunctions-on-Distributive-Lattices
 
  to-isomorphism₀ : Isomorphismᵈᵣ K L → Isomorphism₀
  to-isomorphism₀ 𝒾 = e , 𝒽
@@ -148,23 +155,47 @@ First, the part of the equivalence going from `Isomorphismᵈᵣ K L` to
    𝒽 : is-homomorphic e holds
    𝒽 = 𝓈-is-monotone , 𝓇-is-monotone
 
+\end{code}
+
+We now address the other direction.
+
+Both parts of an equivalence are both a left adjoint and a right adjoint. It
+follows from this that they preserves finite meets and finite joins.
+
+\begin{code}
+
  open AdjointFunctorTheorem
- open GaloisConnectionBetween (poset-ofᵈ L) (poset-ofᵈ K)
+ open GaloisConnectionBetween (poset-ofᵈ L) (poset-ofᵈ K) renaming (_⊣_ to _⊣₁_)
+ open GaloisConnectionBetween (poset-ofᵈ K) (poset-ofᵈ L) renaming (_⊣_ to _⊣₂_)
 
  to-isomorphismᵈᵣ : Isomorphism₀ → Isomorphismᵈᵣ K L
  to-isomorphismᵈᵣ (e , (μ₁ , μ₂)) =
   record
    { 𝓈           = 𝓈
    ; 𝓇           = 𝓇
-   ; r-cancels-s = †
-   ; s-cancels-r = {!‡!}
+   ; r-cancels-s = inverses-are-retractions' e
+   ; s-cancels-r = inverses-are-sections' e
    }
     where
      open DistributiveLattice L using () renaming (𝟏 to 𝟏L; 𝟎 to 𝟎L)
      open DistributiveLattice K using () renaming (𝟏 to 𝟏K; 𝟎 to 𝟎K)
 
+\end{code}
+
+We have the monotone equivalence `e`, the forward and backward components of
+which we denote `s` and `r`:
+
+\begin{code}
+
      s = ⌜ e ⌝
      r = ⌜ ≃-sym e ⌝
+
+\end{code}
+
+We denote by `sₘ` and `rₘ`, the versions of these packaged up with the proofs
+that they are monotone.
+
+\begin{code}
 
      sₘ : poset-ofᵈ K ─m→ poset-ofᵈ L
      sₘ = s , μ₁
@@ -172,48 +203,109 @@ First, the part of the equivalence going from `Isomorphismᵈᵣ K L` to
      rₘ : poset-ofᵈ L ─m→ poset-ofᵈ K
      rₘ = r , μ₂
 
-     -- 𝒶𝒹𝒿 : (sₘ ⊣ rₘ) holds
-     -- 𝒶𝒹𝒿 = monotone-equivalences-are-adjoint
-     --        (s , μ₁)
-     --        (r , μ₂)
-     --        (inverses-are-sections' e)
-     --        (inverses-are-retractions' e)
+\end{code}
 
-     𝒶𝒹𝒿 : (rₘ ⊣ sₘ) holds
-     𝒶𝒹𝒿 = {!!}
+The map `s` is the left adjoint of `r` and vice versa.
 
-     𝒶𝒹𝒿' : (poset-ofᵈ K GaloisConnectionBetween.⊣ poset-ofᵈ L) sₘ rₘ holds
-     𝒶𝒹𝒿' = {!!}
+\begin{code}
 
-     α₁ : preserves-𝟏 K L s holds
-     α₁ = ≤-is-antisymmetric (poset-ofᵈ L) (𝟏ᵈ-is-top L (s 𝟏K)) †
-      where
-       † : (𝟏L ≤[ poset-ofᵈ L ] s 𝟏K) holds
-       † = adjunction-law₁
+     𝒶𝒹𝒿 : (rₘ ⊣₁ sₘ) holds
+     𝒶𝒹𝒿 = monotone-equivalences-are-adjoint
             (poset-ofᵈ L)
             (poset-ofᵈ K)
             rₘ
             sₘ
-            𝒶𝒹𝒿
-            (𝟏ᵈ-is-top K (r 𝟏L))
+            (inverses-are-retractions' e)
+            (inverses-are-sections' e)
+
+
+     𝒶𝒹𝒿' : (sₘ ⊣₂ rₘ) holds
+     𝒶𝒹𝒿' = monotone-equivalences-are-adjoint
+             (poset-ofᵈ K)
+             (poset-ofᵈ L)
+             sₘ
+             rₘ
+             (inverses-are-sections' e)
+             (inverses-are-retractions' e)
+
+\end{code}
+
+Because `r` is a right adjoint, it preserves `𝟏`.
+
+\begin{code}
+
+     α₁ : preserves-𝟏 K L s holds
+     α₁ = right-adjoint-preserves-𝟏 L K rₘ sₘ 𝒶𝒹𝒿
+
+\end{code}
+
+Because `s` is a right adjoint, it preserves binary meets.
+
+\begin{code}
 
      β₁ : preserves-∧ K L s holds
-     β₁ = {!!}
+     β₁ = right-adjoint-preserves-∧ L K rₘ sₘ 𝒶𝒹𝒿
+
+\end{code}
+
+Because `s` is a left adjoint, it preserves the bottom element `𝟎`.
+
+\begin{code}
 
      γ₁ : preserves-𝟎 K L s holds
-     γ₁ = ≤-is-antisymmetric
-           (poset-ofᵈ L)
-           (adjunction-law₂ (poset-ofᵈ K) (poset-ofᵈ L) sₘ rₘ 𝒶𝒹𝒿' (𝟎ᵈ-is-bottom K (r 𝟎L)) )
-           (𝟎ᵈ-is-bottom L (s 𝟎K))
+     γ₁ = left-adjoint-preserves-𝟎 K L sₘ rₘ 𝒶𝒹𝒿'
+
+\end{code}
+
+Because `s` is a left adjoint, it preserves binary joins.
+
+\begin{code}
 
      δ₁ : preserves-∨ K L s holds
-     δ₁ = {!!}
+     δ₁ = left-adjoint-preserves-∨ K L sₘ rₘ 𝒶𝒹𝒿'
 
-     γ : preserves-𝟎 L K r holds
-     γ = {!!}
+\end{code}
+
+Because `r` is a right adjoint, it preserves the top element `𝟏`.
+
+\begin{code}
+
+     α₂ : preserves-𝟏 L K r holds
+     α₂ = right-adjoint-preserves-𝟏 K L sₘ rₘ 𝒶𝒹𝒿'
+
+\end{code}
+
+Because `r` is a right adjoint, it preserves binary meets.
+
+\begin{code}
+
+     β₂ : preserves-∧ L K r holds
+     β₂ = right-adjoint-preserves-∧ K L sₘ rₘ 𝒶𝒹𝒿'
+
+\end{code}
+
+Because `r` is a left adjoint, it preserves the bottom element `𝟎`.
+
+\begin{code}
+
+     γ₂ : preserves-𝟎 L K r holds
+     γ₂ = left-adjoint-preserves-𝟎 L K rₘ sₘ 𝒶𝒹𝒿
+
+\end{code}
+
+Because `r` is a left adjoint, it preserves binary joins.
+
+\begin{code}
 
      δ₂ : preserves-∨ L K r holds
-     δ₂ = {!!}
+     δ₂ = left-adjoint-preserves-∨ L K rₘ sₘ 𝒶𝒹𝒿
+
+\end{code}
+
+Finally, we package everything up into the distributive lattice homomorphism
+type.
+
+\begin{code}
 
      𝓈 : Homomorphismᵈᵣ K L
      𝓈 = record
@@ -223,13 +315,30 @@ First, the part of the equivalence going from `Isomorphismᵈᵣ K L` to
      𝓇 : Homomorphismᵈᵣ L K
      𝓇 = record
           { h                 = r
-          ; h-is-homomorphism = {!!} , {!!} , {!!} , δ₂
+          ; h-is-homomorphism = α₂ , β₂ , γ₂ , δ₂
           }
 
-     † : r ∘ s ∼ id
-     † = {!!}
+\end{code}
 
-     ‡ : s ∘ r ∼ id
-     ‡ = {!!}
+The actual proof that these form an equivalence is trivial.
+
+\begin{code}
+
+ isomorphismᵈᵣ-is-equivalent-to-isomorphism₀ : Isomorphism₀ ≃ Isomorphismᵈᵣ K L
+ isomorphismᵈᵣ-is-equivalent-to-isomorphism₀ =
+  to-isomorphismᵈᵣ , qinvs-are-equivs to-isomorphismᵈᵣ (to-isomorphism₀ , ※)
+  where
+   † : to-isomorphism₀ ∘ to-isomorphismᵈᵣ ∼ id
+   † 𝒾@(e , (μ₁ , μ₂)) =
+    to-subtype-＝
+     (holds-is-prop ∘ is-homomorphic)
+     (to-subtype-＝ (being-equiv-is-prop (λ 𝓤 𝓥 → fe {𝓤} {𝓥})) refl)
+
+   ‡ : to-isomorphismᵈᵣ ∘ to-isomorphism₀ ∼ id
+   ‡ 𝒾 = {!𝒾!}
+
+   ※ : (to-isomorphism₀ ∘ to-isomorphismᵈᵣ ∼ id)
+     × (to-isomorphismᵈᵣ ∘ to-isomorphism₀ ∼ id)
+   ※ = † , ‡
 
 \end{code}
