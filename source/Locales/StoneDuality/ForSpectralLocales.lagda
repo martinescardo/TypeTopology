@@ -45,6 +45,7 @@ open import Locales.Frame pt fe
 open import Locales.SIP.FrameSIP
 open import Locales.SmallBasis pt fe sr
 open import Locales.Spectrality.LatticeOfCompactOpens ua pt sr
+open import Locales.Spectrality.LatticeOfCompactOpens-Duality ua pt sr
 open import Locales.Spectrality.SpectralLocale pt fe
 open import Slice.Family
 open import UF.Equiv
@@ -70,21 +71,19 @@ spec = spectrum
 
 \end{code}
 
-A locale `X` is called `spectral·` if it is homeomorphic to the spectrum of some
-distributive lattice `L `.
+Recall that a locale `X` is called `spectral·` if it is homeomorphic to the
+spectrum of some distributive lattice `L `.
 
 \begin{code}
 
-is-spectral· : (X : Locale (𝓤 ⁺) 𝓤 𝓤) → Ω (𝓤 ⁺)
-is-spectral· {𝓤} X = Ǝ L ꞉ DistributiveLattice 𝓤 , X ≅c≅ spec L
+_ : (X : Locale (𝓤 ⁺) 𝓤 𝓤)
+  → is-spectral· X ＝ (Ǝ L ꞉ DistributiveLattice 𝓤 , X ≅c≅ spec L)
+_ = λ _ → refl
 
 \end{code}
 
 This definition uses `∃` instead of `Σ`, because even though the distributive
 lattice of compact opens is unique, the homeomorphism involved need not be.
-
-TODO: add the definition that specifies the equivalence and is therefore
-naturally propositional and prove the equivalence.
 
 Because `spec L` is a spectral locale (with a small basis), any locale `X` that
 is homeomorphic to `spec L` for some distributive lattice `L` must be spectral.
@@ -114,5 +113,33 @@ spectral·-implies-spectral-with-small-basis {𝓤} X =
 
      𝕤 : is-spectral-with-small-basis ua (spec L) holds
      𝕤 = spec-L-is-spectral , spec-L-has-small-𝒦
+
+\end{code}
+
+Added on 2024-05-12.
+
+The converse of this implication is proved in the module
+`LatticeOfCompactOpens-Duality`.
+
+\begin{code}
+
+spectral-with-small-basis-implies-spectral·
+ : {𝓤 : Universe} (X : Locale (𝓤 ⁺) 𝓤 𝓤)
+ → (is-spectral-with-small-basis ua X ⇒ is-spectral· X) holds
+spectral-with-small-basis-implies-spectral· X σ = spectral-implies-spectral· X σ
+
+\end{code}
+
+We now explicitly record this logical equivalence.
+
+\begin{code}
+
+spectral-with-small-basis-iff-spectral·
+ : {𝓤 : Universe} (X : Locale (𝓤 ⁺) 𝓤 𝓤)
+ → (is-spectral-with-small-basis ua X ⇔ is-spectral· X) holds
+spectral-with-small-basis-iff-spectral· X = † , ‡
+ where
+  † = spectral-with-small-basis-implies-spectral· X
+  ‡ = spectral·-implies-spectral-with-small-basis X
 
 \end{code}
