@@ -23,6 +23,7 @@ module UF.SystemFNotionOfResizing
 open import InjectiveTypes.Resizing
 open import MLTT.Spartan
 open import UF.Equiv
+open import UF.EquivalenceExamples
 open import UF.Logic
 open import UF.NotNotStablePropositions
 open import UF.Retracts
@@ -296,12 +297,35 @@ It follows easily from this then `Ω¬¬ 𝓤₀` is equivalent to `Ω¬¬ 𝓤�
 
 \end{code}
 
-One could also consider Σ-resizing, but we do not know if it is consistent or not.
+One might be tempted to consider Σ-resizing, but this immediately gives that 𝓤₀
+is 𝓤₀-small (thanks to Jon Sterling who pointed this out in a code review).
 
 \begin{code}
 
 Σ-Resizing : 𝓤₂  ̇
 Σ-Resizing = (A : 𝓤₁  ̇) → (B : A → 𝓤₀  ̇) → (Σ x ꞉ A , B x) is 𝓤₀ small
+
+Σ-resizing-gives-𝓤₀-is-𝓤₀-small : Σ-Resizing → (𝓤₀  ̇) is 𝓤₀ small
+Σ-resizing-gives-𝓤₀-is-𝓤₀-small ψ = resized ((𝓤₀  ̇) × 𝟙 {𝓤₀}) † , e
+ where
+  † : ((𝓤₀  ̇) × 𝟙 {𝓤₀}) is 𝓤₀ small
+  † = ψ (𝓤₀  ̇) (λ _ → 𝟙 {𝓤₀})
+
+  Ⅰ : resized ((𝓤₀  ̇) × 𝟙 {𝓤₀}) † ≃ (𝓤₀  ̇) × 𝟙 {𝓤₀}
+  Ⅰ = resizing-condition †
+
+  s : resized ((𝓤₀  ̇) × 𝟙 {𝓤₀}) † → 𝓤₀  ̇
+  s = pr₁ ∘ ⌜ Ⅰ ⌝
+
+  r : 𝓤₀  ̇ → resized ((𝓤₀  ̇) × 𝟙 {𝓤₀}) †
+  r A = ⌜ ≃-sym Ⅰ ⌝ (A , ⋆)
+
+  e : resized ((𝓤₀  ̇) × 𝟙 {𝓤₀}) † ≃ 𝓤₀  ̇
+  e = resized ((𝓤₀  ̇) × 𝟙 {𝓤₀}) †  ≃⟨ Ⅰ ⟩
+      (𝓤₀  ̇) × 𝟙 {𝓤₀}              ≃⟨ Ⅱ ⟩
+      𝓤₀  ̇                         ■
+       where
+        Ⅱ = 𝟙-rneutral {𝓤₁} {𝓤₀} {Y = (𝓤₀  ̇)}
 
 \end{code}
 
