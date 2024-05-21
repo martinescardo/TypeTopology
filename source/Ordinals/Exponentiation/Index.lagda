@@ -3,7 +3,7 @@ Tom de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg, Chuangjie Xu,
 
 \begin{code}
 
-{-# OPTIONS --without-K --no-exact-split #-}
+{-# OPTIONS --safe --without-K --no-exact-split #-}
 
 
 module Ordinals.Exponentiation.Index where

@@ -3,8 +3,7 @@ Tom de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg, Chuangjie Xu,
 
 \begin{code}
 
-{-# OPTIONS --without-K --no-exact-split --lossy-unification #-}
-{-# OPTIONS --allow-unsolved-metas #-}
+{-# OPTIONS --safe --without-K --no-exact-split --lossy-unification #-}
 
 open import UF.Univalence
 open import UF.PropTrunc
@@ -68,21 +67,26 @@ by transfinite recursion on β.
 
 \begin{code}
 
-exp : (α : Ordinal 𝓤) → (β : Ordinal 𝓥) → Ordinal (𝓤 ⊔ 𝓥)
-exp {𝓤} {𝓥} α = transfinite-recursion-on-OO
-                  (Ordinal (𝓤 ⊔ 𝓥))
-                  (λ β ih → sup {I = 𝟙 {𝓤} + ⟨ β ⟩}
-                                  (cases
-                                    (λ _ → 𝟙ₒ)
-                                    (λ b → ih b ×ₒ α))) -- exp α (β ↓ b) ×ₒ α
+exp-bundled : Σ f ꞉ (Ordinal 𝓤 → Ordinal 𝓥 → Ordinal (𝓤 ⊔ 𝓥)) ,
+                ((α : Ordinal 𝓤) (β : Ordinal 𝓥)
+                → f α β ＝ sup {I = 𝟙 {𝓤} + ⟨ β ⟩}
+                              (cases {X = 𝟙} (λ _ → 𝟙ₒ)
+                              (λ b → f α (β ↓ b) ×ₒ α)))
+exp-bundled {𝓤} {𝓥} =
+ (λ α → transfinite-recursion-on-OO
+         (Ordinal (𝓤 ⊔ 𝓥))
+         (λ β ih → sup {I = 𝟙 {𝓤} + ⟨ β ⟩} (cases (λ _ → 𝟙ₒ) λ b → ih b ×ₒ α))) ,
+ (λ α → transfinite-recursion-on-OO-behaviour
+         (Ordinal (𝓤 ⊔ 𝓥))
+         (λ β ih → sup {I = 𝟙 {𝓤} + ⟨ β ⟩} (cases (λ _ → 𝟙ₒ) λ b → ih b ×ₒ α)))
 
-exp-behaviour : (α : Ordinal 𝓤) → (β : Ordinal 𝓥) →
-                exp α β ＝ sup {I = 𝟙 {𝓤} + ⟨ β ⟩} (cases {X = 𝟙} (λ _ → 𝟙ₒ) (λ b → exp α (β ↓ b) ×ₒ α))
-exp-behaviour {𝓤} {𝓥} α = {!transfinite-recursion-on-OO-behaviour (Ordinal (𝓤 ⊔ 𝓥)) (λ β ih → sup {I = 𝟙 {𝓤} + ⟨ β ⟩} (cases {X = 𝟙} (λ _ → 𝟙ₒ) (λ b → ih b ×ₒ α)))!}
+abstract
+ exp : (α : Ordinal 𝓤) → (β : Ordinal 𝓥) → Ordinal (𝓤 ⊔ 𝓥)
+ exp = pr₁ exp-bundled
 
-\end{code}
-
-\begin{code}
+ exp-behaviour : (α : Ordinal 𝓤) → (β : Ordinal 𝓥) →
+                 exp α β ＝ sup {I = 𝟙 {𝓤} + ⟨ β ⟩} (cases {X = 𝟙} (λ _ → 𝟙ₒ) (λ b → exp α (β ↓ b) ×ₒ α))
+ exp-behaviour = pr₂ exp-bundled
 
 sup-composition : {B : 𝓤 ̇ }{C : 𝓤 ̇ } → (f : B → C) → (F : C → Ordinal 𝓤) → sup (F ∘ f) ⊴ sup F
 sup-composition f F = sup-is-lower-bound-of-upper-bounds (F ∘ f) (sup F) (λ i → sup-is-upper-bound F (f i))
