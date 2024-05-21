@@ -60,6 +60,7 @@ Please add yourself the first time you contribute.
 * Paul Levy (i)
 * Paulo Oliva
 * Peter Dybjer
+* Sam Speight (ii)
 * Simcha van Collem
 * Thierry Coquand
 * Todd Waugh Ambridge
