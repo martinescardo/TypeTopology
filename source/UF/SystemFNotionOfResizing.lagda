@@ -294,7 +294,7 @@ It follows easily from this then `Ω¬¬ 𝓤₀` is equivalent to `Ω¬¬ 𝓤�
 
 \end{code}
 
-We could also consider Σ-resizing, but we do not know if it is consistent or not.
+One could also consider Σ-resizing, but we do not know if it is consistent or not.
 
 \begin{code}
 
@@ -304,7 +304,7 @@ We could also consider Σ-resizing, but we do not know if it is consistent or no
 \end{code}
 
 The version of this with truncation, which we denote ∃-resizing, must be
-consistent as it is implies by propositional resizing.
+consistent as it is implied by propositional resizing.
 
 \begin{code}
 
