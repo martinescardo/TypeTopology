@@ -73,6 +73,10 @@ Propositional-System-F-Resizing =
   (P : A → Ω 𝓤₀) →
    (Ɐ x ꞉ A , P x) holds is 𝓤₀ small
 
+system-F-resizing-implies-prop-system-F-resizing
+ : System-F-Resizing → Propositional-System-F-Resizing
+system-F-resizing-implies-prop-system-F-resizing 𝕣 A P = 𝕣 A (_holds ∘ P)
+
 \end{code}
 
 The propositional version is of course trivially implied by propositional
