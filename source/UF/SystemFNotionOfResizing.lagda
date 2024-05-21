@@ -36,10 +36,12 @@ open AllCombinators pt fe
 \end{code}
 
 One can consider System F resizing in a universe polymorphic form, but we think
-this should be inconsistent due to some form of Girard’s Paradox, as it gives
-nested impredicative universes which is known to be inconsistent. However,
-there are lots of details to check here. It would be nice to have this paradox
-in TypeTopology.
+this should be inconsistent due to some form of Girard’s Paradox. This is
+because it gives nested impredicative universes which is known to be
+inconsistent. However, there are lots of details to check here. It would be nice
+to have this paradox in TypeTopology.
+
+TODO: show that the following axiom is inconsistent.
 
 \begin{code}
 
