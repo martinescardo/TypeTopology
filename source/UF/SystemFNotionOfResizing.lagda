@@ -39,10 +39,7 @@ open AllCombinators pt fe
 One can consider System F resizing in a universe polymorphic form, but we think
 this should be inconsistent due to some form of Girard’s Paradox. This is
 because it gives nested impredicative universes which is known to be
-inconsistent. However, there are lots of details to check here. It would be nice
-to have this paradox in TypeTopology.
-
-TODO: show that the following axiom is inconsistent.
+inconsistent. However, there are lots of details to check here.
 
 \begin{code}
 
@@ -51,6 +48,9 @@ Generalized-System-F-Resizing 𝓤 𝓥 =
  (A : 𝓤 ⊔ 𝓥  ̇) → (B : A → 𝓤  ̇) → (Π x ꞉ A , B x) is 𝓤 small
 
 \end{code}
+
+TODO: prove that this generalized form is inconsistent.
+
 
 The special case of this notion of resizing where we pick `𝓤 := 𝓤₀` and
 `𝓥 := 𝓤₁` should be consistent.
