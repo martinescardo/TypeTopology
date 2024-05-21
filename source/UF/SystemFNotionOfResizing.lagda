@@ -1,7 +1,7 @@
 --------------------------------------------------------------------------------
 title:        System F Resizing considered as an axiom
 authors:      ["Sam Speight", "Ayberk Tosun"]
-date-started: 2024-05-15
+date-started: 2024-05-21
 --------------------------------------------------------------------------------
 
 This module contains some notes from various discussions with Sam Speight.
@@ -87,12 +87,21 @@ prop-resizing-implies-prop-f-resizing 𝕣 A P = 𝕣 (Π x ꞉ A , P x holds) �
 
 \end{code}
 
-TODO: prove that propositional System F resizing implies `Ω¬¬`-resizing.
+We now prove that propositional System F resizing implies `Ω¬¬`-resizing.
+
+First, we define the following abbreviation for asserting a ¬¬-stable
+proposition.
 
 \begin{code}
 
 _holds· : {𝓤 : Universe} → Ω¬¬ 𝓤 → 𝓤  ̇
 _holds· (P , f) = P holds
+
+\end{code}
+
+We also define a version of the `resize-up` map on ¬¬-stable propositions.
+
+\begin{code}
 
 resize-up-¬¬ : Ω¬¬ 𝓤₀ → Ω¬¬ 𝓤₁
 resize-up-¬¬ (P , φ) = P⁺ , γ
@@ -102,7 +111,6 @@ resize-up-¬¬ (P , φ) = P⁺ , γ
 
   e : P holds ≃ resized (P holds) †
   e = ≃-sym (resizing-condition †)
-
 
   P⁺ : Ω 𝓤₁
   P⁺ = resized (P holds) † , equiv-to-prop (≃-sym e) (holds-is-prop P)
@@ -119,19 +127,39 @@ resize-up-¬¬ (P , φ) = P⁺ , γ
   γ : ¬¬-stable (P⁺ holds)
   γ f = φ (β f) , ⋆
 
+\end{code}
+
+We now prove that propositional System F resizing implies Ω¬¬-resizing.
+
+\begin{code}
+
 prop-F-resizing-implies-Ω¬¬-resizing : Propositional-System-F-Resizing
                                      → Ω¬¬-Resizing 𝓤₁ 𝓤₁
 prop-F-resizing-implies-Ω¬¬-resizing 𝕣 = Ω¬¬ 𝓤₀ , †
  where
+
+\end{code}
+
+Note that we denote by `𝕣` the assumption of propositional System F resizing.
+
+The map going upward is `resize-up-¬¬`.
+
+\begin{code}
+
   s : Ω¬¬ 𝓤₀ → Ω¬¬ 𝓤₁
   s = resize-up-¬¬
 
-  r : Ω¬¬ 𝓤₁ → Ω¬¬ 𝓤₀
-  r (P , φ) = (resized (¬¬ (P holds)) γ , i) , ψ
-   where
-    β : ¬ (P holds) is 𝓤₀ small
-    β = 𝕣 (P holds) (λ _ → ⊥)
+\end{code}
 
+We now define the map going downward which we call `r`. We first give the
+preliminary version in `r₀`, without the proof of ¬¬-stability, which we then
+package up with the proof of ¬¬-stability in `r`.
+
+\begin{code}
+
+  r₀ : Ω¬¬ 𝓤₁ → Ω 𝓤₀
+  r₀ (P , φ) = resized (¬¬ (P holds)) γ , i
+   where
     γ : ¬¬ (P holds) is 𝓤₀ small
     γ = 𝕣 (¬ (P holds)) λ _ → ⊥
 
@@ -140,6 +168,15 @@ prop-F-resizing-implies-Ω¬¬-resizing 𝕣 = Ω¬¬ 𝓤₀ , †
 
     i : is-prop P⁻
     i = equiv-to-prop (resizing-condition γ) (Π-is-prop fe λ _ → 𝟘-is-prop)
+
+  r : Ω¬¬ 𝓤₁ → Ω¬¬ 𝓤₀
+  r (P , φ) = r₀ (P , φ) , ψ
+   where
+    γ : ¬¬ (P holds) is 𝓤₀ small
+    γ = 𝕣 (¬ (P holds)) λ _ → ⊥
+
+    P⁻ : 𝓤₀  ̇
+    P⁻ = resized (¬¬ (P holds)) γ
 
     f : P holds → P⁻
     f p = ⌜ ≃-sym (resizing-condition γ) ⌝ λ f → 𝟘-elim (f p)
@@ -153,14 +190,32 @@ prop-F-resizing-implies-Ω¬¬-resizing 𝕣 = Ω¬¬ 𝓤₀ , †
       nts : ¬¬ (P holds)
       nts u = q (λ p⁻ → u (g p⁻))
 
-  foo : (P : Ω¬¬ 𝓤₀) → s P holds· → P holds·
-  foo P (p , ⋆) = p
+\end{code}
 
-  bar : (P : Ω¬¬ 𝓤₀) → P holds· → (s P) holds·
-  bar P p = (p , ⋆)
+The proposition `s P` trivially implies `P`.
 
-  baz : (P : Ω¬¬ 𝓤₁) → (r P) holds· → P holds·
-  baz (P , φ) p = ξ (ψ λ u → 𝟘-elim (u p))
+\begin{code}
+
+  ϑ : (P : Ω¬¬ 𝓤₀) → s P holds· → P holds·
+  ϑ P (p , ⋆) = p
+
+\end{code}
+
+The converse.
+
+\begin{code}
+
+  ι : (P : Ω¬¬ 𝓤₀) → P holds· → (s P) holds·
+  ι P p = (p , ⋆)
+
+\end{code}
+
+The proposition `r P` implies `P`.
+
+\begin{code}
+
+  μ : (P : Ω¬¬ 𝓤₁) → (r P) holds· → P holds·
+  μ (P , φ) p = ξ (ψ λ u → 𝟘-elim (u p))
    where
     β : ¬ (P holds) is 𝓤₀ small
     β = 𝕣 (P holds) (λ _ → ⊥)
@@ -178,28 +233,49 @@ prop-F-resizing-implies-Ω¬¬-resizing 𝕣 = Ω¬¬ 𝓤₀ , †
     ξ p⁻ = φ (eqtofun (resizing-condition γ) p⁻)
 
     ψ : ¬¬ P⁻ → P⁻
-    ψ q = ζ (φ nts)
+    ψ q = ζ (φ †)
      where
-      nts : ¬¬ (P holds)
-      nts u = q (λ p⁻ → u (ξ p⁻))
+      † : ¬¬ (P holds)
+      † u = q (λ p⁻ → u (ξ p⁻))
 
-  quux : (P : Ω¬¬ 𝓤₁) → P holds· → (r P) holds·
-  quux (P , φ) p = ⌜ ≃-sym (resizing-condition γ) ⌝ λ f → 𝟘-elim (f p)
+\end{code}
+
+The converse of this implication.
+
+\begin{code}
+
+  ν : (P : Ω¬¬ 𝓤₁) → P holds· → (r P) holds·
+  ν (P , φ) p = ⌜ ≃-sym (resizing-condition γ) ⌝ λ f → 𝟘-elim (f p)
    where
     γ : ¬¬ (P holds) is 𝓤₀ small
     γ = 𝕣 (¬ (P holds)) λ _ → ⊥
 
+\end{code}
+
+We now combine these implications to get implications
+
+  - `r (s P) ⇔ P`, for every ¬¬-stable 𝓤₀-proposition `P`
+  - `s (r P) ⇔ P`, for every ¬¬-stable 𝓤₁-proposition `P`.
+
+\begin{code}
+
   rs₁ : (P : Ω¬¬ 𝓤₀) → r (s P) holds· → P holds·
-  rs₁ (P , f) r = foo (P , f) (baz (s (P , f)) r)
+  rs₁ P = ϑ P ∘ μ (s P)
 
   rs₂ : (P : Ω¬¬ 𝓤₀) → P holds· → r (s P) holds·
-  rs₂ (P , f) p = quux (s (P , f)) (p , ⋆)
+  rs₂ P = ν (s P) ∘ ι P
 
   sr₁ : (P : Ω¬¬ 𝓤₁) → s (r P) holds· → P holds·
-  sr₁ (P , f) = baz (P , f) ∘ foo (r (P , f))
+  sr₁ P = μ P ∘ ϑ (r P)
 
   sr₂ : (P : Ω¬¬ 𝓤₁) → P holds· → s (r P) holds·
-  sr₂ (P , f) = bar (r (P , f)) ∘ quux (P , f)
+  sr₂ P = ι (r P) ∘ ν P
+
+\end{code}
+
+It follows easily from this then `Ω¬¬ 𝓤₀` is equivalent to `Ω¬¬ 𝓤₁`.
+
+\begin{code}
 
   † : Ω¬¬ 𝓤₀ ≃ Ω¬¬ 𝓤₁
   † = s , qinvs-are-equivs s (r , †₁ , †₂)
@@ -208,13 +284,7 @@ prop-F-resizing-implies-Ω¬¬-resizing 𝕣 = Ω¬¬ 𝓤₀ , †
     †₁ (P , f) =
      to-subtype-＝
       (λ P → being-¬¬-stable-is-prop fe (holds-is-prop P))
-      (⇔-gives-＝ pe _ _ (holds-gives-equal-⊤ pe fe _ (goal₁ , goal₂)))
-       where
-        goal₁ : r (s (P , f)) holds· → P holds
-        goal₁ = rs₁ (P , f)
-
-        goal₂ : P holds → r (s (P , f)) holds·
-        goal₂ = rs₂ (P , f)
+      (⇔-gives-＝ pe _ _ (holds-gives-equal-⊤ pe fe _ (rs₁ (P , f) , rs₂ (P , f))))
 
     †₂ : resize-up-¬¬ ∘ r ∼ id
     †₂ (P , f) =
