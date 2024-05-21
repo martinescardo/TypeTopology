@@ -157,13 +157,49 @@ prop-F-resizing-implies-Ω¬¬-resizing 𝕣 = Ω¬¬ 𝓤₀ , †
   foo P (p , ⋆) = p
 
   bar : (P : Ω¬¬ 𝓤₀) → P holds· → (s P) holds·
-  bar P p = p , ⋆
+  bar P p = (p , ⋆)
 
   baz : (P : Ω¬¬ 𝓤₁) → (r P) holds· → P holds·
-  baz (P , f) p = {!!}
+  baz (P , φ) p = ξ (ψ λ u → 𝟘-elim (u p))
+   where
+    β : ¬ (P holds) is 𝓤₀ small
+    β = 𝕣 (P holds) (λ _ → ⊥)
 
-  sr : (P : Ω¬¬ 𝓤₀) → r (s P) holds· → P holds·
-  sr (P , f) = {!!}
+    γ : ¬¬ (P holds) is 𝓤₀ small
+    γ = 𝕣 (¬ (P holds)) λ _ → ⊥
+
+    P⁻ : 𝓤₀  ̇
+    P⁻ = resized (¬¬ (P holds)) γ
+
+    ζ : P holds → P⁻
+    ζ p = ⌜ ≃-sym (resizing-condition γ) ⌝ λ f → 𝟘-elim (f p)
+
+    ξ : P⁻ → P holds
+    ξ p⁻ = φ (eqtofun (resizing-condition γ) p⁻)
+
+    ψ : ¬¬ P⁻ → P⁻
+    ψ q = ζ (φ nts)
+     where
+      nts : ¬¬ (P holds)
+      nts u = q (λ p⁻ → u (ξ p⁻))
+
+  quux : (P : Ω¬¬ 𝓤₁) → P holds· → (r P) holds·
+  quux (P , φ) p = ⌜ ≃-sym (resizing-condition γ) ⌝ λ f → 𝟘-elim (f p)
+   where
+    γ : ¬¬ (P holds) is 𝓤₀ small
+    γ = 𝕣 (¬ (P holds)) λ _ → ⊥
+
+  rs₁ : (P : Ω¬¬ 𝓤₀) → r (s P) holds· → P holds·
+  rs₁ (P , f) r = foo (P , f) (baz (s (P , f)) r)
+
+  rs₂ : (P : Ω¬¬ 𝓤₀) → P holds· → r (s P) holds·
+  rs₂ (P , f) p = quux (s (P , f)) (p , ⋆)
+
+  sr₁ : (P : Ω¬¬ 𝓤₁) → s (r P) holds· → P holds·
+  sr₁ (P , f) = baz (P , f) ∘ foo (r (P , f))
+
+  sr₂ : (P : Ω¬¬ 𝓤₁) → P holds· → s (r P) holds·
+  sr₂ (P , f) = bar (r (P , f)) ∘ quux (P , f)
 
   † : Ω¬¬ 𝓤₀ ≃ Ω¬¬ 𝓤₁
   † = s , qinvs-are-equivs s (r , †₁ , †₂)
@@ -175,17 +211,20 @@ prop-F-resizing-implies-Ω¬¬-resizing 𝕣 = Ω¬¬ 𝓤₀ , †
       (⇔-gives-＝ pe _ _ (holds-gives-equal-⊤ pe fe _ (goal₁ , goal₂)))
        where
         goal₁ : r (s (P , f)) holds· → P holds
-        goal₁ = sr (P , f)
+        goal₁ = rs₁ (P , f)
 
         goal₂ : P holds → r (s (P , f)) holds·
-        goal₂ p = {!!}
+        goal₂ = rs₂ (P , f)
 
     †₂ : resize-up-¬¬ ∘ r ∼ id
-    †₂ = {!!}
+    †₂ (P , f) =
+     to-subtype-＝
+      (λ Q → being-¬¬-stable-is-prop fe (holds-is-prop Q))
+      (⇔-gives-＝ pe _ P (holds-gives-equal-⊤ pe fe _ (sr₁ (P , f) , sr₂ (P , f))))
 
 \end{code}
 
-We could also consider Σ-resizing.
+We could also consider Σ-resizing, but we do not know if it is consistent or not.
 
 \begin{code}
 
@@ -194,16 +233,13 @@ We could also consider Σ-resizing.
 
 \end{code}
 
-Similarly, ∃-resizing.
+The version of this with truncation, which we denote ∃-resizing, must be
+consistent as it is implies by propositional resizing.
 
 \begin{code}
 
 ∃-Resizing : 𝓤₂  ̇
 ∃-Resizing = (A : 𝓤₁  ̇) → (B : A → 𝓤₀  ̇) → (Ǝ x ꞉ A , B x) holds is 𝓤₀ small
-
-\end{code}
-
-\begin{code}
 
 prop-resizing-implies-∃-resizing : propositional-resizing 𝓤₁ 𝓤₀ → ∃-Resizing
 prop-resizing-implies-∃-resizing 𝕣 A B =
