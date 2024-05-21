@@ -303,8 +303,8 @@ One could also consider Σ-resizing, but we do not know if it is consistent or n
 
 \end{code}
 
-The version of this with truncation, which we denote ∃-resizing, must be
-consistent as it is implied by propositional resizing.
+The version of this notion of resizing with truncation, which we denote
+∃-resizing, must be consistent as it is implied by propositional resizing.
 
 \begin{code}
 
