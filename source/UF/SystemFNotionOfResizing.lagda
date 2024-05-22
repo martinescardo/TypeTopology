@@ -334,7 +334,7 @@ is 𝓤₀-small (thanks to Jon Sterling who pointed this out in a code review).
 \end{code}
 
 The version of this notion of resizing with truncation, which we denote
-∃-resizing, must be consistent as it is implied by propositional resizing.
+∃-resizing is equivalent to propositional resizing.
 
 \begin{code}
 
