@@ -26,7 +26,7 @@ open import EffectfulForcing.MFPSAndVariations.CombinatoryT
 open import EffectfulForcing.MFPSAndVariations.Dialogue
 open import EffectfulForcing.MFPSAndVariations.MFPS-XXIX
 
-open import EffectfulForcing.Internal.Ordinals ua fe pt sr
+open import EffectfulForcing.Internal.Ordinals ua pt sr
 
 -- TODO add back --safe
 
@@ -50,7 +50,7 @@ P-kleisli-lemma-ι g (β ϕ i) pg pd = goal
   I = ⊲-is-transitive _ _ _ (B-⊲-S (L (height ∘ ϕ))) pd
 
   II : ∀ m → ⦅ height (ϕ m) ⦆ ⊲ ε₀
-  II m = ⊴-and-⊲-implies-⊲ _ _ _ (B-⊴-L (height ∘ ϕ) m) I
+  II m = {!!} -- ⊴-and-⊲-implies-⊲ _ _ _ (B-⊴-L (height ∘ ϕ) m) I
 
   IH : ∀ m → ⦅ height (kleisli-extension g (ϕ m)) ⦆ ⊲ ε₀
   IH m = P-kleisli-lemma-ι g (ϕ m) pg (II m)
