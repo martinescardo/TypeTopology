@@ -25,6 +25,7 @@ open import Ordinals.Underlying
 open import EffectfulForcing.MFPSAndVariations.CombinatoryT
 open import EffectfulForcing.MFPSAndVariations.Dialogue
 open import EffectfulForcing.MFPSAndVariations.MFPS-XXIX
+open import EffectfulForcing.MFPSAndVariations.Combinators
 
 open import EffectfulForcing.Internal.Ordinals ua pt sr
 
@@ -42,7 +43,7 @@ P-kleisli-lemma-ι : (g : ℕ → B ℕ)
                     (d : B ℕ)
                   → ((m : ℕ) → P (g m))
                   → P d
-                  → ⦅ height (kleisli-extension g d) ⦆ ⊲ ε₀
+                  → ⦅ height (kleisli-extension g d) ⦆ ⊲ ε₀ -- P (kleisli-extension g d)
 P-kleisli-lemma-ι g (η n)   pg pd = pg n
 P-kleisli-lemma-ι g (β ϕ i) pg pd = goal
  where
@@ -65,6 +66,21 @@ P-kleisli-lemma : (σ : type)
                 → P d
                 → P (Kleisli-extension g d)
 P-kleisli-lemma ι g d pg pd = P-kleisli-lemma-ι g d pg pd
-P-kleisli-lemma (σ ⇒ τ) = {!!}
+P-kleisli-lemma (σ ⇒ τ) g f pg pf d pd = P-kleisli-lemma τ (λ z → g z d) f (λ m → pg m d pd) pf
+
+P-main-lemma : {σ : type} (t : TΩ σ)
+             → P B⟦ t ⟧
+P-main-lemma {(ι ⇒ ι)} Ω = {!!}
+P-main-lemma {ι} Zero = {!!}
+P-main-lemma {(ι ⇒ ι)} Succ = {!!}
+P-main-lemma {((σ ⇒ σ) ⇒ σ ⇒ ι ⇒ σ)} Iter s ps z pz d pd = P-kleisli-lemma σ (iter s z) d goal pd
+ where
+  goal : (m : ℕ) → P (iter s z m)
+  goal zero     = pz
+  goal (succ m) = ps (iter s z m) (goal m)
+P-main-lemma {(_ ⇒ _ ⇒ _)} K = λ x z x₁ _ → z
+P-main-lemma {((_ ⇒ _ ⇒ _) ⇒ (_ ⇒ _) ⇒ _ ⇒ _)} S = λ x z x₁ z₁ x₂ z₂ → z x₂ z₂ (x₁ x₂) (z₁ x₂ z₂)
+P-main-lemma {σ} (t · t₁) = P-main-lemma t B⟦ t₁ ⟧ (P-main-lemma t₁)
+--
 
 \end{code}

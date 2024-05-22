@@ -396,8 +396,8 @@ path-to-elem (pick ϕ n p) = sum-to-sup (λ i → ⦅ ϕ i ⦆) (n , (path-to-el
   g-is-order-preserving : is-order-preserving ⦅ b ⦆ ⦅ c ⦆ g
   g-is-order-preserving = pr₂ (pr₂ IH)
 
-  foo : (x : ⟨ ⦅ b ⦆ ⟩) → g x ≺⟨ ⦅ c ⦆ ⟩ path-to-elem p
-  foo = {!!}
+  --foo : (x : ⟨ ⦅ b ⦆ ⟩) → g x ≺⟨ ⦅ c ⦆ ⟩ path-to-elem p
+  --foo = {!!}
 
   f : ⟨ ⦅ b ⦆ +ₒ 𝟙ₒ ⟩  → ⟨ ⦅ c ⦆ ⟩
   f (inl x) = g x
@@ -415,5 +415,9 @@ path-to-elem (pick ϕ n p) = sum-to-sup (λ i → ⦅ ϕ i ⦆) (n , (path-to-el
   f-is-order-preserving (inl x) (inl y) l = g-is-order-preserving x y l
   f-is-order-preserving (inl x) (inr ⋆) ⋆ = {!!}
 ⦅⦆-sends-⊑-to-⊴ (L ϕ) c (L-⊑ ϕ c x) = {!!}
+
+
+foo : (a b c : B) → a ⊑ b → b ⊏ c → a ⊏ c
+foo a b c h (p , l) = p , ⊑-trans _ _ _ h l
 
 \end{code}
