@@ -208,6 +208,29 @@ For convenience, we also define some direct projections on the Σ-based type.
   in
    h-preserves-joins
 
+\end{code}
+
+Added on 2024-05-22.
+
+\begin{code}
+
+ preserves-joins′ : (⟨ F ⟩ → ⟨ G ⟩) → Ω (𝓤 ⊔ 𝓤' ⊔ 𝓦 ⁺)
+ preserves-joins′ h =
+  Ɐ S ꞉ Fam 𝓦 ⟨ F ⟩ , h (⋁[ F ] S) ＝[ σ ]＝ ⋁[ G ] ⁅ h x ∣ x ε S ⁆
+
+\end{code}
+
+\begin{code}
+
+ -- preserves-joins-implies-preserves-joins′ : (h : ⟨ F ⟩ → ⟨ G ⟩)
+ --                                          → (preserves-joins′ h
+ --                                          ⇒  preserves-joins  h) holds
+ -- preserves-joins-implies-preserves-joins′ h φ S = {!!}
+
+\end{code}
+
+\begin{code}
+
  frame-homomorphisms-preserve-all-joins′
   : (h : _─f→_)
   → (S : Fam 𝓦 ⟨ F ⟩)
