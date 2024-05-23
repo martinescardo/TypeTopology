@@ -464,3 +464,11 @@ We now have everything required to record the proof that the family
                           , 𝒦-in-point-is-semidirected ℱ
 
 \end{code}
+
+Added on 2024-05-23.
+
+\begin{code}
+
+
+
+\end{code}

@@ -368,9 +368,6 @@ Given any sharp element `𝓍`, the point `pt 𝓍` is a spectral map.
 
 \begin{code}
 
- open PropertiesAlgebraic 𝓓 𝕒
- open Properties 𝓓
-
  pt-is-spectral : (𝓍 : ♯𝓓) → is-spectral-map σ⦅𝓓⦆ (𝟏Loc pe) pt[ 𝓍 ] holds
  pt-is-spectral 𝓍@(x , 𝓈𝒽) 𝒦@(K , σ) 𝕜 = decidable-implies-compact pe (x ∈ₛ 𝒦) †
   where
@@ -390,5 +387,15 @@ Given any sharp element `𝓍`, the point `pt 𝓍` is a spectral map.
 \end{code}
 
 \begin{code}
+
+ lemma-6 : (ℱ@(F , _) : Point σ⦅𝓓⦆) (c : ⟨ 𝓓 ⟩∙) (𝕜 : is-compact 𝓓 c)
+         → c ⊑⟨ 𝓓 ⟩ {!⋁ (𝒦-in-point ℱ , δ) !} → F ↑ˢ[ c , 𝕜 ] holds
+ lemma-6 F c 𝕜 p = {!!}
+
+ sharp₀-gives-sharp-elements : (F : Point σ⦅𝓓⦆) → is-sharp (sharp₀ F) holds
+ sharp₀-gives-sharp-elements F c 𝕜 = {!!}
+
+ sharp : Point σ⦅𝓓⦆ → ♯𝓓
+ sharp F = sharp₀ F , sharp₀-gives-sharp-elements F
 
 \end{code}
