@@ -8,7 +8,10 @@ The formalization of a proof.
 
 \begin{code}
 
+{--# OPTIONS --safe --without-K #--}
+
 open import MLTT.Spartan
+open import MLTT.List hiding ([_])
 open import UF.FunExt
 open import UF.PropTrunc
 open import UF.Size
@@ -38,17 +41,22 @@ open import DomainTheory.Basics.Dcpo pt fe 𝓤 renaming (⟨_⟩ to ⟨_⟩∙)
 open import DomainTheory.Basics.WayBelow pt fe 𝓤
 open import DomainTheory.Topology.ScottTopology pt fe 𝓤
 open import DomainTheory.Topology.ScottTopologyProperties pt fe 𝓤
+open import Locales.Compactness pt fe hiding (is-compact)
+open import Locales.Clopen pt fe sr
 open import Locales.ContinuousMap.FrameHomomorphism-Definition pt fe
+open import Locales.ContinuousMap.FrameHomomorphism-Properties pt fe
 open import Locales.Frame pt fe
 open import Locales.InitialFrame pt fe hiding (_⊑_)
 open import Locales.LawsonLocale.CompactElementsOfPoint 𝓤 fe pe pt sr
+open import Locales.CompactRegular pt fe using (clopens-are-compact-in-compact-frames)
 open import Locales.ScottLocale.Definition pt fe 𝓤
 open import Locales.ScottLocale.Properties pt fe 𝓤
 open import Locales.ScottLocale.ScottLocalesOfAlgebraicDcpos pt fe 𝓤
 open import Locales.ScottLocale.ScottLocalesOfScottDomains pt fe sr 𝓤
+open import Locales.SmallBasis pt fe sr
 open import Locales.Spectrality.SpectralMap pt fe
-open import Locales.Compactness pt fe hiding (is-compact)
 open import Locales.TerminalLocale.Properties pt fe sr
+open import NotionsOfDecidability.Decidable
 open import NotionsOfDecidability.SemiDecidable fe pe pt
 open import Slice.Family
 open import UF.Logic
@@ -58,7 +66,7 @@ open import UF.SubtypeClassifier
 
 open AllCombinators pt fe
 open DefinitionOfScottDomain
-open PropositionalTruncation pt
+open PropositionalTruncation pt hiding (_∨_)
 
 \end{code}
 
@@ -107,24 +115,28 @@ is proposition-valued.
  𝒷₀ : has-unspecified-small-compact-basis 𝓓
  𝒷₀ = pr₁ sd
 
- bc : DefinitionOfBoundedCompleteness.bounded-complete 𝓓 holds
- bc = pr₂ sd
+ open SpectralScottLocaleConstruction₂ 𝓓 ua hl sd dc pe
+ open SpectralScottLocaleConstruction 𝓓 hl hscb dc bc pe hiding (scb; σᴰ)
+ open ScottLocaleProperties 𝓓 hl hscb pe renaming (⊤-is-compact to σ⦅𝓓⦆-is-compact)
 
- hscb : has-specified-small-compact-basis 𝓓
- hscb = specified-small-compact-basis-has-split-support ua sr 𝓓 𝒷₀
-
- 𝕒 : structurally-algebraic 𝓓
- 𝕒 = structurally-algebraic-if-specified-small-compact-basis 𝓓 hscb
-
- open SpectralScottLocaleConstruction 𝓓 hl hscb dc bc pe hiding (scb)
  open structurally-algebraic
  open is-small-compact-basis scb
+ open Locale
 
- κ : (b : B) → is-compact 𝓓 (β b)
- κ = basis-is-compact
+ σᴰ : spectralᴰ σ⦅𝓓⦆
+ σᴰ = scott-locale-spectralᴰ
 
- σ⦅𝓓⦆ : Locale (𝓤 ⁺) 𝓤 𝓤
- σ⦅𝓓⦆ = Σ[𝓓]
+ basis : Fam 𝓤 ⟨ 𝒪 σ⦅𝓓⦆ ⟩
+ basis = basisₛ σ⦅𝓓⦆ σᴰ
+
+ Bσ : 𝓤  ̇
+ Bσ = index basis
+
+ βσ : Bσ → ⟨ 𝒪 σ⦅𝓓⦆ ⟩
+ βσ = basis [_]
+
+ κσ : (i : Bσ) → is-compact-open σ⦅𝓓⦆ (βσ i) holds
+ κσ = basisₛ-consists-of-compact-opens σ⦅𝓓⦆ σᴰ
 
  _⊑_ : ⟨ 𝓓 ⟩∙ → ⟨ 𝓓 ⟩∙ → Ω 𝓤
  x ⊑ y = (x ⊑⟨ 𝓓 ⟩ y) , prop-valuedness 𝓓 x y
@@ -147,14 +159,14 @@ algebraic dcpo, however, we could define a small version.
 \begin{code}
 
  is-sharp⁻ : ⟨ 𝓓 ⟩∙ → Ω 𝓤
- is-sharp⁻ x = Ɐ i ꞉ B , is-decidableₚ (β i ⊑ x)
+ is-sharp⁻ x = Ɐ i ꞉ index B𝓓 , is-decidableₚ ((B𝓓 [ i ]) ⊑ x)
 
 \end{code}
 
 \begin{code}
 
  sharp-implies-sharp⁻ : (Ɐ x ꞉ ⟨ 𝓓 ⟩∙ , is-sharp x ⇒ is-sharp⁻ x) holds
- sharp-implies-sharp⁻ x 𝕤 i = 𝕤 (β i) (κ i)
+ sharp-implies-sharp⁻ x 𝕤 i = 𝕤 (B𝓓 [ i ]) (basis-is-compact i)
 
 \end{code}
 
@@ -164,10 +176,10 @@ algebraic dcpo, however, we could define a small version.
  sharp⁻-implies-sharp x 𝕤 c χ =
   ∥∥-rec (holds-is-prop (is-decidableₚ (c ⊑ x))) † μ
    where
-    μ : ∃ i ꞉ B , β i ＝ c
-    μ = small-compact-basis-contains-all-compact-elements 𝓓 β scb c χ
+    μ : ∃ i ꞉ index B𝓓 , B𝓓 [ i ] ＝ c
+    μ = small-compact-basis-contains-all-compact-elements 𝓓 (B𝓓 [_]) scb c χ
 
-    † : Σ i ꞉ B , β i ＝ c → is-decidableₚ (c ⊑ x) holds
+    † : Σ i ꞉ index B𝓓 , B𝓓 [ i ] ＝ c → is-decidableₚ (c ⊑ x) holds
     † (i , p) = transport (λ - → is-decidableₚ (- ⊑ x) holds) p (𝕤 i)
 
 \end{code}
@@ -205,21 +217,150 @@ algebraic dcpo, however, we could define a small version.
 \begin{code}
 
  open FrameHomomorphisms
+ open FrameHomomorphismProperties (𝒪 σ⦅𝓓⦆) (𝟎-𝔽𝕣𝕞 pe)
 
  pt[_] : ♯𝓓 → Point σ⦅𝓓⦆
  pt[_] 𝓍@(x , 𝕤) = pt₀[ x ] , †
   where
-   †₂ : preserves-binary-meets (𝒪 σ⦅𝓓⦆) (𝟎-𝔽𝕣𝕞 pe) pt₀[ x ] holds
-   †₂ x y = refl
+   ‡ : preserves-joins (𝒪 σ⦅𝓓⦆) (𝟎-𝔽𝕣𝕞 pe) pt₀[ x ] holds
+   ‡ S = (⋁[ 𝟎-𝔽𝕣𝕞 pe ]-upper ⁅ pt₀[ x ] y ∣ y ε S ⁆) , goal
+    where
+     open Joins _⇒_
 
-   †₃ : preserves-joins (𝒪 σ⦅𝓓⦆) (𝟎-𝔽𝕣𝕞 pe) pt₀[ x ] holds
-   †₃ = {!!}
-
-   foo : preserves-joins′ (𝒪 σ⦅𝓓⦆) (𝟎-𝔽𝕣𝕞 pe) pt₀[ x ] holds
-   foo S = refl
+     goal : ((u , _) : upper-bound ⁅ pt₀[ x ] y ∣ y ε S ⁆)
+          → (pt₀[ x ] (⋁[ 𝒪 σ⦅𝓓⦆ ] S) ⇒ u) holds
+     goal (u , a) p = ⋁[ 𝟎-𝔽𝕣𝕞 pe ]-least ⁅ pt₀[ x ] y ∣ y ε S ⁆ (u , a) p
 
    † : is-a-frame-homomorphism (𝒪 σ⦅𝓓⦆) (𝟎-𝔽𝕣𝕞 pe) pt₀[ x ] holds
-   † = refl , (λ _ _ → refl) , †₃
+   † = refl , (λ _ _ → refl) , ‡
+
+\end{code}
+
+\begin{code}
+
+ -- TODO: has this been written down somewhere?
+
+ ∨-preserves-decidability : (P Q : Ω 𝓤)
+                          → is-decidableₚ P holds
+                          → is-decidableₚ Q holds
+                          → is-decidableₚ (P ∨ Q) holds
+ ∨-preserves-decidability P Q φ ψ =
+  cases case₁ case₂ (+-preserves-decidability φ ψ)
+   where
+    case₁ : (P holds) + (Q holds) → is-decidableₚ (P ∨ Q) holds
+    case₁ (inl p) = inl ∣ inl p ∣
+    case₁ (inr q) = inl ∣ inr q ∣
+
+    case₂ : ¬ (P holds + Q holds) → is-decidableₚ (P ∨ Q) holds
+    case₂ = inr ∘ ∥∥-rec 𝟘-is-prop
+
+\end{code}
+
+For any sharp element `𝓍` and any compact Scott open `𝒦`, `𝓍 ∈ 𝒦` is a decidable
+proposition.
+
+\begin{code}
+
+ open BottomLemma 𝓓 𝕒 hl
+ open Properties 𝓓
+
+\end{code}
+
+We define the following predicate expressing that an element `x` has decidable
+membership in compact Scott opens.
+
+\begin{code}
+
+ admits-decidable-membership-in-compact-scott-opens : ⟨ 𝓓 ⟩∙ → Ω (𝓤 ⁺)
+ admits-decidable-membership-in-compact-scott-opens x =
+  Ɐ 𝒦 ꞉ ⟨ 𝒪 σ⦅𝓓⦆ ⟩ , is-compact-open σ⦅𝓓⦆ 𝒦 ⇒ is-decidableₚ (x ∈ₛ 𝒦)
+
+ admits-decidable-membership-in-scott-clopens : ⟨ 𝓓 ⟩∙ → Ω (𝓤 ⁺)
+ admits-decidable-membership-in-scott-clopens x =
+  Ɐ 𝒦 ꞉ ⟨ 𝒪 σ⦅𝓓⦆ ⟩ , is-clopen (𝒪 σ⦅𝓓⦆) 𝒦 ⇒ is-decidableₚ (x ∈ₛ 𝒦)
+
+\end{code}
+
+Every sharp element satisfies this property.
+
+\begin{code}
+
+ sharp-implies-admits-decidable-membership-in-compact-scott-opens
+  : (x : ⟨ 𝓓 ⟩∙)
+  → (is-sharp x ⇒ admits-decidable-membership-in-compact-scott-opens x) holds
+ sharp-implies-admits-decidable-membership-in-compact-scott-opens x 𝓈𝒽 𝒦 𝕜 =
+  ∥∥-rec (holds-is-prop (is-decidableₚ (x ∈ₛ 𝒦))) † ♢
+   where
+    ♢ : is-basic σ⦅𝓓⦆ 𝒦 (spectralᴰ-implies-directed-basisᴰ σ⦅𝓓⦆ σᴰ) holds
+    ♢ = compact-opens-are-basic
+         σ⦅𝓓⦆
+         (spectralᴰ-implies-directed-basisᴰ σ⦅𝓓⦆ σᴰ)
+         𝒦
+         𝕜
+
+    quux : βσ [] ＝ 𝟎[ 𝒪 σ⦅𝓓⦆ ]
+    quux = 𝜸-equal-to-𝜸₁ []
+
+    lemma : (xs : List (index B𝓓)) → is-decidableₚ (x ∈ₛ βσ xs) holds
+    lemma []       = inr 𝟘-elim
+    lemma (i ∷ is) = ∨-preserves-decidability (x ∈ₛ ↑ˢ[ βₖ i ]) (x ∈ₛ 𝜸 is) †₁ †₂
+     where
+      †₁ : is-decidableₚ (x ∈ₛ ↑ˢ[ βₖ i ]) holds
+      †₁ = 𝓈𝒽 (β i) (basis-is-compact i)
+
+      †₂ : is-decidableₚ (x ∈ₛ 𝜸 is) holds
+      †₂ = lemma is
+
+    ‡ : (xs : List (index B𝓓)) → βσ xs ＝ 𝒦 → is-decidableₚ (x ∈ₛ 𝒦) holds
+    ‡ xs p = transport (λ - → is-decidableₚ (x ∈ₛ -) holds) p (lemma xs)
+
+    † : Σ xs ꞉ List (index B𝓓) , βσ xs ＝ 𝒦 → is-decidableₚ (x ∈ₛ 𝒦) holds
+    † (xs , q) = ‡ xs q
+
+\end{code}
+
+\begin{code}
+
+ admits-decidable-membership-in-compact-scott-opens-implies-is-sharp
+  : (x : ⟨ 𝓓 ⟩∙)
+  → admits-decidable-membership-in-compact-scott-opens x holds
+  → is-sharp x holds
+ admits-decidable-membership-in-compact-scott-opens-implies-is-sharp x φ c 𝕜 =
+  φ ↑ˢ[ (c , 𝕜) ] (principal-filter-is-compact₀ c 𝕜)
+
+\end{code}
+
+\begin{code}
+
+ admits-decidable-membership-in-scott-clopens-implies-is-sharp
+  : (x : ⟨ 𝓓 ⟩∙)
+  → is-sharp x holds
+  → admits-decidable-membership-in-scott-clopens x holds
+ admits-decidable-membership-in-scott-clopens-implies-is-sharp x 𝓈𝒽 K χ =
+  ψ K κ
+   where
+    ψ : admits-decidable-membership-in-compact-scott-opens x holds
+    ψ = sharp-implies-admits-decidable-membership-in-compact-scott-opens x 𝓈𝒽
+
+    κ : is-compact-open σ⦅𝓓⦆ K holds
+    κ = clopens-are-compact-in-compact-frames
+         (𝒪 σ⦅𝓓⦆)
+         σ⦅𝓓⦆-is-compact
+         K
+         χ
+
+
+\end{code}
+
+\begin{code}
+
+ characterization-of-sharp-elements
+  : (x : ⟨ 𝓓 ⟩∙)
+  → (admits-decidable-membership-in-compact-scott-opens x ⇔ is-sharp x) holds
+ characterization-of-sharp-elements x = † , ‡
+  where
+   † = admits-decidable-membership-in-compact-scott-opens-implies-is-sharp x
+   ‡ = sharp-implies-admits-decidable-membership-in-compact-scott-opens x
 
 \end{code}
 
@@ -231,36 +372,10 @@ Given any sharp element `𝓍`, the point `pt 𝓍` is a spectral map.
  open Properties 𝓓
 
  pt-is-spectral : (𝓍 : ♯𝓓) → is-spectral-map σ⦅𝓓⦆ (𝟏Loc pe) pt[ 𝓍 ] holds
- pt-is-spectral 𝓍@(x , _) (K , σ) 𝕜 = decidable-implies-compact pe P {!!}
+ pt-is-spectral 𝓍@(x , 𝓈𝒽) 𝒦@(K , σ) 𝕜 = decidable-implies-compact pe (x ∈ₛ 𝒦) †
   where
-   P : Ω 𝓤
-   P = pt₀[ x ] (K , σ)
-
-   foo : pt₀[ x ] (⋁[ 𝒪 σ⦅𝓓⦆ ] ⁅ ↑ˢ[ β i , κ i ] ∣ (i , _) ∶ (Σ i ꞉ B , K (β i) holds) ⁆)
-       ＝ ⋁[ 𝟎-𝔽𝕣𝕞 pe ] ⁅  pt₀[ x ] ↑ˢ[ β i , κ i ]  ∣ (i , _) ∶ (Σ i ꞉ B , K (β i) holds) ⁆
-   foo = refl
-
-   goal : is-compact-open (𝟏Loc pe) (Ǝₚ (i , _) ꞉ (Σ i ꞉ B , K (β i) holds) , pt₀[ x ] ↑ˢ[ β i , κ i ]) holds
-   goal S δ p = {!!}
-    where
-     baz : {!!} → ∃ i ꞉ index S , (S [ i ]) holds
-     baz = p
-    -- frame-homomorphisms-preserve-all-joins′
-    --  (𝒪 σ⦅𝓓⦆)
-    --  (𝟎-𝔽𝕣𝕞 pe)
-    --  pt[ 𝓍 ]
-    --  ⁅ ↑ˢ[ β i , κ i ] ∣ (i , _) ∶ (Σ i ꞉ B , K (β i) holds) ⁆
-  -- ∥∥-rec ∃-is-prop goal (bar (♠ {!!}))
-  --  where
-  --   ♠ : join-of-compact-opens K x holds → K x holds
-  --   ♠ = characterization-of-scott-opens₂ K σ x
-
-  --   bar : K x holds → ∃ i ꞉ index S , (S [ i ]) holds
-  --   bar = p
-
-  --   goal : (Σ i ꞉ index S , (S [ i ]) holds)
-  --        → ∃ i ꞉ index S , (K x ⇒ S [ i ]) holds
-  --   goal (i , p) = ∣ i , (λ _ → p) ∣
+   † : is-decidableₚ (x ∈ₛ (K , σ)) holds
+   † = sharp-implies-admits-decidable-membership-in-compact-scott-opens x 𝓈𝒽 𝒦 𝕜
 
 \end{code}
 
@@ -271,5 +386,9 @@ Given any sharp element `𝓍`, the point `pt 𝓍` is a spectral map.
   where
    δ : is-Directed 𝓓 (𝒦-in-point F [_])
    δ = 𝒦-in-point-is-directed F
+
+\end{code}
+
+\begin{code}
 
 \end{code}
