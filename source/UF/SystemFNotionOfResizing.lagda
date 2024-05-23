@@ -1,8 +1,8 @@
---------------------------------------------------------------------------------
+---
 title:        System F Resizing considered as an axiom
 authors:      ["Sam Speight", "Ayberk Tosun"]
 date-started: 2024-05-21
---------------------------------------------------------------------------------
+---
 
 This module contains some notes from various discussions with Sam Speight.
 
