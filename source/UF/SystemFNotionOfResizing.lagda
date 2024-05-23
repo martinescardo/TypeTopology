@@ -1,6 +1,6 @@
 ---
 title:        System F Resizing considered as an axiom
-authors:      ["Sam Speight", "Ayberk Tosun"]
+author:       Ayberk Tosun and Sam Speight
 date-started: 2024-05-21
 ---
 
