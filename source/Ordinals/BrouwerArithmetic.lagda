@@ -22,6 +22,8 @@ u +B Z   = u
 u +B S v = S (u +B v)
 u +B L ϕ = L (λ i → u +B ϕ i)
 
+infixr 3 _+B_
+
 \end{code}
 
 Multiplication of Brouwer trees.
@@ -33,6 +35,8 @@ u ×B Z   = Z
 u ×B S v = (u ×B v) +B u
 u ×B L ϕ = L (λ i → u ×B ϕ i)
 
+infixr 2 _×B_
+
 \end{code}
 
 Exponentiation of Brouwer trees.
@@ -43,6 +47,8 @@ _^B_ : B → B → B
 u ^B  Z     = S Z
 u ^B  (S v) = (u ^B v) ×B u
 u ^B  (L ϕ) = L (λ i → u ^B ϕ i)
+
+infixr 1 _^B_
 
 \end{code}
 

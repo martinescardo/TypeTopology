@@ -4,7 +4,7 @@ date-started: 2024-05-22
 --------------------------------------------------------------------------------
 \begin{code}
 
-{-# OPTIONS --safe --without-K #-}
+{-# OPTIONS --allow-unsolved-metas --without-K #-}
 
 open import MLTT.Spartan
 open import Ordinals.Brouwer
@@ -80,6 +80,9 @@ data _⊑_ : B → B → 𝓤₀ ̇ where
 
 _⊏_ : B → B → 𝓤₀ ̇
 b ⊏ c = Σ p ꞉ PathThroughS c , b ⊑ Path-to-ordinal p
+
+infix 1 _⊑_
+infix 1 _⊏_
 
 \end{code}
 
