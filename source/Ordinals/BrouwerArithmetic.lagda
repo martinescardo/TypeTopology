@@ -3,7 +3,8 @@ authors:      ["Bruno Paiva"]
 date-started: 2024-05-22
 ---
 
-This module contains
+This module contains the definitions of basic arithmetic operations on Brouwer
+ordinals as well as the definition of the first epsilon number.
 
 \begin{code}
 
