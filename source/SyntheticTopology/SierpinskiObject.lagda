@@ -82,7 +82,6 @@ Davorin Lešnik).
 
 \begin{code}
 
-
 ⇔-transport : {𝓥 𝓦 : Universe} {P Q : Ω 𝓥} → (𝓟 : Ω 𝓥 → 𝓦 ̇) → ((P ⇔ Q) holds) → (𝓟 P) → (𝓟 Q)
 ⇔-transport {𝓥} {𝓦} {P} {Q} (𝓟) P-iff-Q Prop-P = transport 𝓟 q Prop-P
   where
@@ -114,13 +113,31 @@ object are called _affirmable.
 
 \end{code}
 
-A subset of a type is said to be intrinsically open if it is a predicate defined
+Here, we only work with sets. 
+
+A subset of a set is said to be intrinsically open if it is a predicate defined
 by affirmable propositions.
 
 \begin{code}
 
- is-intrinsically-open : {X : 𝓤  ̇} → (X → Ω 𝓤) → Ω (𝓤 ⁺)
- is-intrinsically-open {X} P = Ɐ x ꞉ X , is-affirmable (P x)
+ is-intrinsically-open : {(X , sX) : hSet 𝓤} → (X → Ω 𝓤) → Ω (𝓤 ⁺)
+ is-intrinsically-open {X , sX} P = Ɐ x ꞉ X , is-affirmable (P x)
+
+\end{code}
+
+
+For convenience, we write down the subtype of open propositions (= subset) of a type X
+
+\begin{code}
+
+ open-props : hSet 𝓤 → (𝓤 ⁺) ̇
+ open-props (X , sX) = Σ P ꞉ (X → Ω 𝓤) , is-intrinsically-open {X , sX} P holds
+
+ syntax open-props X = 𝓞 X
+
+ underlying-prop : {(X , sX) : hSet 𝓤} → (open-props (X , sX)) → (X → Ω 𝓤)
+ underlying-prop = pr₁
+
 
 \end{code}
 
@@ -129,8 +146,8 @@ following:
 
 \begin{code}
 
- is-intrinsically-open′ : {X : 𝓤  ̇} → (X → Ω 𝓤) → Ω 𝓤
- is-intrinsically-open′ {X} P =
+ is-intrinsically-open′ : {(X , sX) : hSet 𝓤} → (X → Ω 𝓤) → Ω 𝓤
+ is-intrinsically-open′ {X , sX} P =
   Ǝₚ h ꞉ (X → S) , (Ɐ x ꞉ X , P x ⇔ ι (h x))
 
 \end{code}
@@ -150,9 +167,9 @@ The definition `is-intrinsically-open′` is stronger than is-intrinsically-open
 
 \begin{code}
 
- open-implies-open′ : {X : 𝓤  ̇} → (P : X → Ω 𝓤)
-                    → (is-intrinsically-open′  P ⇒ is-intrinsically-open P) holds
- open-implies-open′ {X} P = ∥∥-rec (holds-is-prop (is-intrinsically-open P)) †
+ open-implies-open′ : {(X , sX) : hSet 𝓤 } → (P : X → Ω 𝓤)
+                    → (is-intrinsically-open′ {X , sX}  P ⇒ is-intrinsically-open {X , sX} P) holds
+ open-implies-open′ {X , sX} P = ∥∥-rec (holds-is-prop (is-intrinsically-open P)) †
   where
    † : (Σ h ꞉ (X → S) , ((x : X) → P x holds ↔ ι (h x) holds))
      → is-intrinsically-open P holds
@@ -212,39 +229,42 @@ open predicates is affirmable.
 
 \begin{code}
 
- is-compact' : 𝓤 ̇  → Ω (𝓤 ⁺)
- is-compact' X =
-  Ɐ P ꞉ (X → Ω 𝓤) , is-intrinsically-open P ⇒ is-affirmable (Ɐ x ꞉ X , (P x))
+ is-compact' : hSet 𝓤  → Ω (𝓤 ⁺)
+ is-compact' (X , sX) =
+  Ɐ (P , open-P) ꞉ 𝓞 (X , sX) ,  is-affirmable (Ɐ x ꞉ X , (P x))
 
 \end{code}
 
 The type `𝟙` is compact i.e. the empty product is compact.
 
 \begin{code}
+{-
+ 𝟙-is-set : is-set 𝟙
+ 𝟙-is-set = ?
 
- 𝟙-is-compact : is-compact' 𝟙 holds
+ 𝟙-is-compact : is-compact' (𝟙 , 𝟙-is-set) holds
  𝟙-is-compact P φ = ⇔-affirmable p (φ ⋆)
   where
    p : (P ⋆ ⇔ (Ɐ x ꞉ 𝟙 , P x)) holds
    p = (λ pstar  x → pstar) , (λ f → f ⋆)
-
+-}
 \end{code}
 
 Binary products of compact types are compact.
 
 \begin{code}
 
- ×-is-compact' : {X Y : 𝓤 ̇ }
-               → is-compact' X holds
-               → is-compact' Y holds
-               → is-compact'(X × Y) holds
- ×-is-compact' {X} {Y} kX kY P iP = ⇔-affirmable p †
+ ×-is-compact' : {(X , sX) (Y , sY) : hSet 𝓤 }
+               → is-compact' (X , sX) holds
+               → is-compact' (Y , sY) holds
+               → is-compact'((X × Y) , (×-is-set sX sY)) holds
+ ×-is-compact' {X , sX} {Y , sY} kX kY (P , open-P) = ⇔-affirmable p †
   where
    p : ((Ɐ x ꞉ X , (Ɐ y ꞉ Y , P (x , y))) ⇔ (Ɐ z ꞉ (X × Y) , P z) ) holds
    p =  (λ Qxy z → Qxy (pr₁ z) (pr₂ z)) , (λ Qz x' y' → Qz (x' , y') )
 
    † : is-affirmable (Ɐ x ꞉ X , (Ɐ y ꞉ Y ,  P (x , y)))  holds
-   † = kX (λ x → (Ɐ y ꞉ Y , (P (x , y)))) (λ x → (kY (λ y → (P (x , y))) (λ y → iP ((x , y)))))
+   † = kX ((λ x → Ɐ y ꞉ Y , P (x , y)) , (λ x → kY ((λ y → P (x , y)) , ( λ y → open-P (x , y) ))))
 
 \end{code}
 
@@ -252,19 +272,19 @@ Images of compact types are compact.
 
 \begin{code}
 
- image-of-compact' : {X Y : 𝓤 ̇ }
+ image-of-compact' : {(X , sX) (Y , sY) : hSet 𝓤}
                    → (f : X → Y)
                    → is-surjection f
-                   → is-compact' X holds
-                   → is-compact' Y holds
- image-of-compact' {X} {Y} f surf kX P iP = ⇔-affirmable p †
+                   → is-compact' (X , sX) holds
+                   → is-compact' (Y , sY) holds
+ image-of-compact' {X , sX} {Y , sY} f surf kX (P , open-P) = ⇔-affirmable p †
   where
    p : ((Ɐ x ꞉ X , P (f x)) ⇔ (Ɐ y ꞉ Y , P y)) holds
    p = (λ pX y → surjection-induction f surf (_holds ∘ P) (λ y → holds-is-prop (P y)) pX y)
      , (λ pY x → pY (f x))
 
    † : is-affirmable (Ɐ x ꞉ X , P (f x)) holds
-   † = kX (P ∘ f) (iP ∘ f)
+   † = kX ((P ∘ f) , (open-P ∘ f))
 
 \end{code}
 
@@ -272,63 +292,40 @@ Images of compact types are compact.
 
 \begin{code}
 
- is-discrete-trunc : 𝓤 ̇ → Ω (𝓤 ⁺)
- is-discrete-trunc X = is-intrinsically-open (λ ((x , y) : X × X) → (∥ x ＝ y ∥ , ∥∥-is-prop ))
-
-\end{code}
-
-Question: in the definition above, should we directly require X to be a set?
-
-Truncation inside an → : nightmare
-
-\begin{code}
-
- is-discrete-set : (X : 𝓤 ̇) → is-set X → Ω (𝓤 ⁺)
- is-discrete-set X setX =
-  is-intrinsically-open
-   (λ ((x , y) : X × X) → ((x ＝ y) , setX))
+ is-discrete : ((X , sX) : hSet 𝓤) → Ω (𝓤 ⁺)
+ is-discrete (X , sX) =  is-intrinsically-open {(X × X) , (×-is-set sX sX)} (λ ((x , y) : X × X) → ((x ＝ y) , sX))
 
 
 \end{code}
 
-Works better for proving that compact product of discrete is discrete.
-
-In Lesnik's thesis, everything is mentionned as "sets". But discussion right
-before prop 2.8 suggests that "_＝_" should be an "open predicate", which
-implies that "x ＝ y" lies in Ω 𝓤 (⁺)
+We prove here that 𝟙 is discrete as long as the true truth value lies in the
+Sierpinski object's image.
 
 \begin{code}
 
- 𝟙-is-discrete-trunc : contains-top holds →  is-discrete-trunc 𝟙 holds
- 𝟙-is-discrete-trunc ct =
-  λ (⋆ , ⋆) → ∥∥-rec (holds-is-prop (is-affirmable (∥ ⋆ ＝ ⋆ ∥ , ∥∥-is-prop ))) † ct
-   where
-     † : Σ (λ x → ι x ＝ ⊤)
-       → is-affirmable (∥ ⋆ ＝ ⋆ ∥ , ∥∥-is-prop) holds
-     † (⊤⁻¹ , φ) =
-      ∣ ⊤⁻¹ , ⇔-gives-＝ pe (ι ⊤⁻¹) (∥ ⋆ ＝ ⋆ ∥ , ∥∥-is-prop) (holds-gives-equal-⊤ pe fe ( ι ⊤⁻¹ ⇔ ∥ ⋆ ＝ ⋆ ∥ , ∥∥-is-prop)  p)  ∣
-       where
-        p : (ι ⊤⁻¹ ⇔ ∥ ⋆ ＝ ⋆ ∥ , ∥∥-is-prop) holds
-        p = (λ _ → ∣ refl  ∣ ) , λ _ → transport _holds (φ ⁻¹) ⊤-holds
-
+ 𝟙-is-discrete : contains-top holds → (𝟙-is-set : is-set 𝟙) → is-discrete (𝟙 , 𝟙-is-set) holds
+ 𝟙-is-discrete ct 𝟙-is-set (⋆ , ⋆) = ⇔-affirmable † ct
+  where
+   † : (⊤ ⇔ (⋆ ＝ ⋆) , 𝟙-is-set) holds
+   † = (λ _ → refl) , (λ _ → ⊤-holds)
+ 
 \end{code}
 
 \begin{code}
 
- compact-Π-discrete-set : (K : 𝓤 ̇) → (X : K → 𝓤 ̇)
-                        → is-compact' K holds
-                        → (set-certificate : ((k : K) → is-set (X k)))
-                        → ((k : K) → is-discrete-set (X k) (set-certificate k) holds)
-                        → is-discrete-set (Π X) (Π-is-set fe set-certificate) holds
- compact-Π-discrete-set K X kK 𝓈 dX (x₁ , x₂) = ⇔-affirmable p †
+ compact-Π-discrete-set : ((K , sK) : hSet 𝓤) → (X : K → hSet 𝓤)
+                        → is-compact' (K , sK) holds
+                        → ((k : K) → is-discrete (X k) holds)
+                        → is-discrete (Π (λ k → (underlying-set (X k))) , (Π-is-set fe (λ k → (pr₂ (X k))))) holds
+ compact-Π-discrete-set (K , sK) X kK dX (x₁ , x₂) = ⇔-affirmable p †
   where
    p :  ((k : K) →  ( (x₁ k) ＝ (x₂ k) ) ) ↔ (x₁ ＝ x₂)
    p = dfunext fe
       , (λ x₁-equal-x₂ → transport (λ - → ((k : K) → (( x₁ k ) ＝( - k) ))) x₁-equal-x₂ (λ _ → refl))
    -- there is certainly some magic function in funext's family doing the job but I have not found it
 
-   † : is-affirmable (Ɐ k ꞉ K , ((x₁ k ＝ x₂ k) , 𝓈 k)) holds
-   † = kK (λ k → (x₁ k ＝ x₂ k) , 𝓈 k) (λ k → dX k (x₁ k , x₂ k))
+   † : is-affirmable (Ɐ k ꞉ K , ((x₁ k ＝ x₂ k) , pr₂ (X k))) holds
+   † = kK ((λ k → (x₁ k ＝ x₂ k) , pr₂ (X k)) , (λ k → dX k (x₁ k , x₂ k)))
 
 \end{code}
 
@@ -336,12 +333,13 @@ Overtness:
 
 \begin{code}
 
- is-overt : 𝓤  ̇ → Ω (𝓤 ⁺)
- is-overt X =
-  Ɐ P ꞉ (X → Ω 𝓤) , is-intrinsically-open P ⇒ is-affirmable (Ǝₚ x ꞉ X , P x)
+ is-overt : hSet 𝓤  → Ω (𝓤 ⁺)
+ is-overt (X , sX) =
+  Ɐ (P , open-P) ꞉ 𝓞 (X , sX) ,  is-affirmable (Ǝₚ x ꞉ X , P x)
 
+{-
  countable-are-overt : (is-overt (Lift 𝓤 ℕ) holds) → (is-overt (𝟘 {𝓤}) holds) → (X : 𝓤 ̇) → (f : ( (Lift 𝓤 ℕ) → (𝟙 {𝓤} ) + X)) → (is-surjection f) → (is-overt X holds)
- countable-are-overt overt-ℕ overt-𝟘 X f surf = λ P open-P → ⇔-affirmable (eq P) († P open-P)
+ countable-are-overt overt-ℕ overt-𝟘 X f surf = λ P open-P → ⇔-affirmable (eq P) († P open-P) -- GENERALIZE INTO IMAGE OF OVERT ARE OVERT AND ℕ IS OVERT
 
   where
 
@@ -376,7 +374,7 @@ Overtness:
 
    † : (P : X → Ω 𝓤) → is-intrinsically-open P holds →  is-affirmable (Ǝₚ x ꞉ (𝟙 + X) , extend P x) holds
    † P open-P = lemma₁ (extend P) λ x' → dep-cases {𝓤} {𝓤} {𝓤 ⁺} {𝟙 {𝓤}} {X} { λ z → is-affirmable (extend P z) holds } (λ ⋆ → ⇔-affirmable 𝟘-iff (overt-𝟘 (λ _ → ⊥) (λ z → 𝟘-elim z))) (λ x → open-P x) x'
-
+-}
 \end{code}
 
 Sub-ness (subcompact, subovert ... )
@@ -384,38 +382,35 @@ Sub-ness (subcompact, subovert ... )
 In our settings, how can we define a proper notion of maps of subobjects ?
 For example see "image-of-subovert". We want, given (X Y : 𝓤 ̇)  ;  (f : X → Y)  and A ⊆ X represented by (A : X → Ω 𝓤),
 a definition of "f (A)". The choice made in image-of-subovert was to define f (A) : Y → Ω 𝓤 with f (A) = λ y → Ǝₚ x ꞉ X , (A x ∧ (f x ＝ y))
-This requires " f x ＝ y " to be a prop, this is why we assume that Y is a set in the definition.
-Maybe other choices are possible.
 
-If we rather define f (A) as λ y → ∃ x ꞉ X , ((A x holds) × (f x ＝ y)) , (not the same "∃" symbol as the previous one) we may be able to get rid of the assumption "Y is a set". 
-I have not tested if it works.
+Maybe other choices are possible.
 
 We should try to come up with a generic definition of "image-of" in order to wrap it up and avoid defining things in proofs explicitely
 
 \begin{code}
 
- is-subcompact : (Y : 𝓤 ̇) → (X : Y → Ω 𝓤) → Ω (𝓤 ⁺)   -- X ⊆ Y with Lesnik's notations of 2.15
- is-subcompact Y X = (Ɐ U ꞉   (Y → Ω 𝓤) , is-intrinsically-open U ⇒ (is-affirmable (Ɐ x ꞉ Y , (X x ⇒ U x))) )
+ is-subcompact : ((Y , sY) : hSet 𝓤) → (X : Y → Ω 𝓤) → Ω (𝓤 ⁺)   -- X ⊆ Y with Lesnik's notations of 2.15
+ is-subcompact (Y , sY) X = (Ɐ (U , _) ꞉ 𝓞 (Y , sY) , is-affirmable (Ɐ x ꞉ Y , (X x ⇒ U x)) )
 
- is-subovert : (Y : 𝓤 ̇) → (X : Y → Ω 𝓤) → Ω (𝓤 ⁺)  -- same as above
- is-subovert Y X = (Ɐ U ꞉ (Y → Ω 𝓤) , is-intrinsically-open U ⇒ (is-affirmable (Ǝₚ x ꞉ Y , (X x ∧ U x))))
+ is-subovert : ((Y , sY) : hSet 𝓤) → (X : Y → Ω 𝓤) → Ω (𝓤 ⁺)  -- same as above
+ is-subovert (Y , sY) X = (Ɐ (U , _) ꞉ 𝓞 (Y , sY) , is-affirmable (Ǝₚ x ꞉ Y , (X x ∧ U x)))
 
 
- subovert-of-discrete-is-open : {Y : 𝓤 ̇} → (X : Y → Ω 𝓤) → is-subovert Y X holds → (setY : is-set Y) →  (is-discrete-set Y setY holds) → is-intrinsically-open X holds
- subovert-of-discrete-is-open {Y} X subovert-X setY discrete-Y y = ⇔-affirmable X-iff †
+ subovert-of-discrete-is-open : {(Y , sY) : hSet 𝓤} → (X : Y → Ω 𝓤) → is-subovert (Y , sY) X holds → (is-discrete (Y , sY) holds) → is-intrinsically-open {Y , sY} X holds
+ subovert-of-discrete-is-open {Y , sY} X subovert-X discrete-Y y = ⇔-affirmable X-iff †
   where
-   X-iff : ((Ǝₚ y' ꞉ Y , (X y' ∧ ((y ＝ y') , setY))) ⇔ X y) holds
+   X-iff : (Ǝₚ y' ꞉ Y , ((X y' ∧ (y ＝ y') , sY)) ⇔ X y) holds
    X-iff = (λ exequal → ∥∥-rec (holds-is-prop (X y)) (λ (y' , Xy' , y-equals-y') → transport (λ i → pr₁ (X i)) (y-equals-y' ⁻¹)  Xy') exequal)  ,
                λ Xy → ∣ y , Xy , refl  ∣
 
-   † : is-affirmable (Ǝₚ y' ꞉ Y , (X y' ∧ ((y ＝ y') , setY))) holds
-   † = subovert-X (λ z → (y ＝ z) , setY) (λ z → discrete-Y (y , z) )
+   † : is-affirmable (Ǝₚ y' ꞉ Y , (X y' ∧ ((y ＝ y') , sY))) holds
+   † = subovert-X ((λ z → (y ＝ z) , sY) , (λ z → discrete-Y (y , z)))
 
 
  subovert-inter-open-subovert : closed-under-binary-meets holds
-                                                            → {X : 𝓤 ̇}
-                                                            → (Ɐ A ꞉ (X → Ω 𝓤) , Ɐ U ꞉ (X → Ω 𝓤) , is-subovert X A ⇒ is-intrinsically-open U ⇒ is-subovert X (λ x → (A x ∧ U x))) holds
- subovert-inter-open-subovert cl-∧ {X} A U subovert-A open-U V open-V = ⇔-affirmable inter-iff †
+                                                            → {(X , sX) : hSet 𝓤}
+                                                            → (Ɐ A ꞉ (X → Ω 𝓤) , Ɐ (U , _) ꞉ 𝓞 (X , sX) , is-subovert (X , sX) A ⇒ is-subovert (X , sX) (λ x → (A x ∧ U x))) holds
+ subovert-inter-open-subovert cl-∧ {X , sX} A (U , open-U) subovert-A (V , open-V) = ⇔-affirmable inter-iff †
    where
     P : X → Ω 𝓤   -- P = U ∧ V
     P x = U x ∧ V x
@@ -425,24 +420,24 @@ We should try to come up with a generic definition of "image-of" in order to wra
                       λ left → ∥∥-rec (holds-is-prop (Ǝₚ x ꞉ X , (A x ∧ (U x ∧ V x)))) (λ (x , (Ax , Ux) , Vx) → ∣ x , Ax , Ux , Vx  ∣) left
     
     † : is-affirmable (Ǝₚ x ꞉ X , (A x ∧ (U x ∧ V x))) holds
-    † = subovert-A P (λ x → cl-∧ (U x) (V x) ( open-U x , open-V x ) )
+    † = subovert-A (P , (λ x → cl-∧ (U x) (V x) ( open-U x , open-V x )))
 
 
  open-subset-overt-is-overt : closed-under-binary-meets holds →
-                                                       {X : 𝓤 ̇} → (Ɐ U ꞉ (X → Ω 𝓤) , (is-intrinsically-open U ⇒ is-overt X ⇒ is-subovert X U)) holds
- open-subset-overt-is-overt cl-∧ {X} U open-U overt-X V open-V = overt-X (λ x → (U x ∧ V x)) (λ x → cl-∧ (U x) (V x) ((open-U x , open-V x)))
+                                                       {(X , sX) : hSet 𝓤} → (Ɐ (U , _) ꞉ 𝓞 (X , sX) , is-overt (X , sX) ⇒ is-subovert (X , sX) U) holds
+ open-subset-overt-is-overt cl-∧ {X , sX} (U , open-U) overt-X (V , open-V) = overt-X ((λ x → (U x ∧ V x)) , (λ x → cl-∧ (U x) (V x) ((open-U x , open-V x))))
 
 
- image-of-subovert : {X Y : 𝓤 ̇ } → (f : X → Y) → (setY : is-set Y) → (Ɐ A ꞉ (X → Ω 𝓤) , is-subovert X A ⇒ is-subovert Y (λ y → (Ǝₚ x ꞉ X , (A x ∧ ((f x) ＝ y) , setY)))) holds 
- image-of-subovert {X} {Y} f setY A subovert-A P open-P  = ⇔-affirmable Y-iff †
+ image-of-subovert : {(X , sX) (Y , sY) : hSet 𝓤 } → (f : X → Y) → (Ɐ A ꞉ (X → Ω 𝓤) , is-subovert (X , sX) A ⇒ is-subovert (Y , sY) (λ y → (Ǝₚ x ꞉ X , (A x ∧ ((f x) ＝ y) , sY)))) holds 
+ image-of-subovert {X , sX} {Y , sY} f  A subovert-A (P , open-P)  = ⇔-affirmable Y-iff †
   where
-   Y-iff : (Ǝₚ x' ꞉ X , (A x' ∧ P (f x')) ⇔ (Ǝₚ y ꞉ Y , (Ǝₚ x ꞉ X , (A x ∧ (f x ＝ y) , setY) ∧ P y))) holds
-   Y-iff = (λ x'-hyp → ∥∥-rec (holds-is-prop (Ǝₚ y ꞉ Y , (Ǝₚ x ꞉ X , (A x ∧ (f x ＝ y) , setY) ∧ P y))) (λ (x' , Ax' , Pfx') → ∣ f x' , ∣ x' , Ax' , refl ∣ , Pfx' ∣) x'-hyp ) ,
+   Y-iff : (Ǝₚ x' ꞉ X , (A x' ∧ P (f x')) ⇔ (Ǝₚ y ꞉ Y , (Ǝₚ x ꞉ X , (A x ∧ (f x ＝ y) , sY) ∧ P y))) holds
+   Y-iff = (λ x'-hyp → ∥∥-rec (holds-is-prop (Ǝₚ y ꞉ Y , (Ǝₚ x ꞉ X , (A x ∧ (f x ＝ y) , sY) ∧ P y))) (λ (x' , Ax' , Pfx') → ∣ f x' , ∣ x' , Ax' , refl ∣ , Pfx' ∣) x'-hyp ) ,
                λ y-hyp → ∥∥-rec (holds-is-prop (Ǝₚ x' ꞉ X , (A x' ∧ P (f x')))) (λ (y , x-existence , Py)
                                  → ∥∥-rec (holds-is-prop (Ǝₚ x' ꞉ X , (A x' ∧ P (f x')))) (λ (x , Ax , fx-equal-y) → ∣ x , Ax , (transport (_holds ∘ P) (fx-equal-y ⁻¹) Py) ∣) x-existence) y-hyp
    
    † : is-affirmable (Ǝₚ x' ꞉ X , (A x' ∧ P (f x'))) holds
-   † = subovert-A (P ∘ f) ( λ x → open-P (f x) )
+   † = subovert-A ((P ∘ f) , ( λ x → open-P (f x)))
 
 \end{code}
 
@@ -450,11 +445,11 @@ Density
 
 \begin{code}
 
- is-dense : {X : 𝓤 ̇} → (D : X → Ω 𝓤) → Ω (𝓤 ⁺)  -- should be read : "D is dense in X"
- is-dense {X} D = (Ɐ P ꞉ (X → Ω 𝓤) , (is-intrinsically-open P  ⇒  (Ǝₚ x ꞉ X , P x) ⇒ (Ǝₚ x ꞉ X , ((D x) ∧ (P x)))))
+ is-dense : {(X , sX) : hSet 𝓤} → (D : X → Ω 𝓤) → Ω (𝓤 ⁺)  -- should be read : "D is dense in X"
+ is-dense {X , sX} D = (Ɐ (P , open-P) ꞉ 𝓞 (X , sX) , (Ǝₚ x ꞉ X , P x) ⇒ (Ǝₚ x ꞉ X , ((D x) ∧ (P x))))
 
- self-is-dense-in-self : {X : 𝓤 ̇} → is-dense {X} (λ x → ⊤) holds
- self-is-dense-in-self  P open-P inhabited-P = ∥∥-rec (holds-is-prop (Ǝₚ x' ꞉ X , ((D x') ∧ (P x')))) † inhabited-P
+ self-is-dense-in-self : {(X , sX) : hSet 𝓤} → is-dense {X , sX} (λ x → ⊤) holds
+ self-is-dense-in-self  (P , open-P) inhabited-P = ∥∥-rec (holds-is-prop (Ǝₚ x' ꞉ X , ((D x') ∧ (P x')))) † inhabited-P
    where
     X : 𝓤 ̇
     X = domain P
@@ -466,34 +461,14 @@ Density
     † (x , Px) = ∣ x , ∧-Intro (D x) (P x) ⊤-holds Px  ∣
 
 
- subovert-dense-overt : (X : 𝓤 ̇) → (U : X → Ω 𝓤) → is-subovert X U holds → is-dense U holds → is-overt X holds
- subovert-dense-overt X U subovert-U dense-U P open-P = ⇔-affirmable U-iff †
+ subovert-dense-overt : ((X , sX) : hSet 𝓤) → (U : X → Ω 𝓤) → is-subovert (X , sX) U holds → is-dense {X , sX} U holds → is-overt (X , sX) holds
+ subovert-dense-overt (X , sX) U subovert-U dense-U (P , open-P) = ⇔-affirmable U-iff †
   where
    U-iff : ((Ǝₚ x ꞉ X , (U x ∧ P x)) ⇔ (Ǝₚ x ꞉ X , P x)) holds
    U-iff = (λ U-hyp → ∥∥-rec (holds-is-prop (Ǝₚ x ꞉ X , P x)) (λ (x-both , px-both) → ∣ x-both , pr₂ px-both ∣) U-hyp) ,
-               λ P-hyp → ∥∥-rec (holds-is-prop (Ǝₚ x ꞉ X , (U x ∧ P x))) (λ (x-only , px-only) →  dense-U P open-P ∣ x-only ,  px-only ∣) P-hyp
+               λ P-hyp → ∥∥-rec (holds-is-prop (Ǝₚ x ꞉ X , (U x ∧ P x))) (λ (x-only , px-only) →  dense-U (P , open-P) ∣ x-only ,  px-only ∣) P-hyp
 
    † : is-affirmable (Ǝₚ x ꞉ X , (U x ∧ P x)) holds
-   † = subovert-U P open-P
-
- subovert-inter-open-subovert : closed-under-binary-meets holds
-                                                            → {X : 𝓤 ̇}
-                                                            → (Ɐ A ꞉ (X → Ω 𝓤) , Ɐ U ꞉ (X → Ω 𝓤) , is-subovert X A ⇒ is-intrinsically-open U ⇒ is-subovert X (λ x → (A x ∧ U x))) holds
- subovert-inter-open-subovert cl-∧ {X} A U subovert-A open-U V open-V = ⇔-affirmable inter-iff †
-   where
-    P : X → Ω 𝓤   -- P = U ∧ V
-    P x = U x ∧ V x
-
-    inter-iff : (Ǝₚ x ꞉ X , (A x ∧ (U x ∧ V x)) ⇔ (Ǝₚ x ꞉ X , ((A x ∧ U x) ∧ V x))) holds
-    inter-iff = (λ right → ∥∥-rec (holds-is-prop (Ǝₚ x ꞉ X , ((A x ∧ U x) ∧ V x))) (λ (x , Ax , Ux , Vx) → ∣ x , (Ax , Ux) , Vx ∣) right) ,
-                      λ left → ∥∥-rec (holds-is-prop (Ǝₚ x ꞉ X , (A x ∧ (U x ∧ V x)))) (λ (x , (Ax , Ux) , Vx) → ∣ x , Ax , Ux , Vx  ∣) left
-
-    † : is-affirmable (Ǝₚ x ꞉ X , (A x ∧ (U x ∧ V x))) holds
-    † = subovert-A P (λ x → cl-∧ (U x) (V x) ( open-U x , open-V x ) )
-
-
- open-subset-overt-is-overt : closed-under-binary-meets holds →
-                                                       {X : 𝓤 ̇} → (Ɐ U ꞉ (X → Ω 𝓤) , (is-intrinsically-open U ⇒ is-overt X ⇒ is-subovert X U)) holds
- open-subset-overt-is-overt cl-∧ {X} U open-U overt-X V open-V = overt-X (λ x → (U x ∧ V x)) (λ x → cl-∧ (U x) (V x) ((open-U x , open-V x)))
+   † = subovert-U (P , open-P)
 
 \end{code}
