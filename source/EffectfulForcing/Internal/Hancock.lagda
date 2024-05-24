@@ -2,6 +2,7 @@
 authors:      ["Bruno Paiva"]
 date-started: 2024-05-22
 --------------------------------------------------------------------------------
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}
