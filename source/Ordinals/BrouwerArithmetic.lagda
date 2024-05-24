@@ -4,7 +4,7 @@ date-started: 2024-05-22
 --------------------------------------------------------------------------------
 \begin{code}
 
-{-# OPTIONS --allow-unsolved-metas --without-K #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 open import Ordinals.Brouwer
