@@ -36,6 +36,8 @@ open AllCombinators pt fe
 
 \end{code}
 
+\section{Introduction}
+
 One can consider System F resizing in a universe polymorphic form, but we think
 this should be inconsistent due to some form of Girard’s Paradox. This is
 because it gives nested impredicative universes which is known to be
@@ -62,6 +64,8 @@ System-F-Resizing =
  (A : 𝓤₁  ̇) → (B : A → 𝓤₀  ̇) → (Π x ꞉ A , B x) is 𝓤₀ small
 
 \end{code}
+
+\section{Propositional System F resizing}
 
 One could also consider the propositional form of this notion of resizing.
 
@@ -93,6 +97,8 @@ prop-resizing-implies-prop-f-resizing 𝕣 A P = 𝕣 (Π x ꞉ A , P x holds) �
   † = holds-is-prop (Ɐ x ꞉ A , P x)
 
 \end{code}
+
+\section{System F resizing implies Ω¬¬-resizing}
 
 We now prove that propositional System F resizing implies `Ω¬¬`-resizing.
 
