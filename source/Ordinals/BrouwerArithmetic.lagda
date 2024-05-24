@@ -99,3 +99,5 @@ When we take the limit of this sequence, we obtain `ε₀`.
 
 ε₀ : B
 ε₀ = L ω-tower
+
+\end{code}
