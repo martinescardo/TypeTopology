@@ -18,6 +18,7 @@ import EffectfulForcing.Internal.Correctness
 import EffectfulForcing.Internal.FurtherThoughts
 import EffectfulForcing.Internal.InternalModCont    -- by Ayberk Tosun
 import EffectfulForcing.Internal.InternalModUniCont -- by Ayberk Tosun
+import EffectfulForcing.Internal.HancockLemmas
 
 \end{code}
 
