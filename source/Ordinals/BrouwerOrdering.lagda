@@ -4,7 +4,7 @@ date-started: 2024-05-22
 --------------------------------------------------------------------------------
 \begin{code}
 
-{-# OPTIONS --allow-unsolved-metas --without-K #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 open import Ordinals.Brouwer
@@ -205,8 +205,8 @@ we would expect.
 ⊑-refl (S b) = S-⊑ b (S b) (stop b) (⊑-refl b)
 ⊑-refl (L ϕ) = L-⊑ ϕ (L ϕ) (L-is-upper-bound ϕ)
 
-⊏-irrefl : (b : B) → ¬ (b ⊏ b)
-⊏-irrefl = {!!}
+-- ⊏-irrefl : (b : B) → ¬ (b ⊏ b)
+-- ⊏-irrefl = {!!}
 
 ⊑-trans : (b c d : B) → b ⊑ c → c ⊑ d → b ⊑ d
 ⊑-trans Z     c d (Z-⊑ c)       l = Z-⊑ d
@@ -298,40 +298,40 @@ module OrderingsAgree
  path-to-elem (pick ϕ n p) = sum-to-sup (λ i → ⦅ ϕ i ⦆) (n , (path-to-elem p))
 
 
- ⦅⦆-sends-⊑-to-⊴ : (b c : B) → b ⊑ c → ⦅ b ⦆ ⊴ ⦅ c ⦆
- ⦅⦆-sends-⊑-to-⊴ Z     c (Z-⊑ c) = 𝟘-elim , (λ x → 𝟘-elim x) , (λ x → 𝟘-elim x)
- ⦅⦆-sends-⊑-to-⊴ (S b) c (S-⊑ b c p h) = f , f-is-initial-segment , f-is-order-preserving
-  where
-   IH : ⦅ b ⦆ ⊴ ⦅ c ⦆
-   IH = ⦅⦆-sends-⊑-to-⊴ b c (⊑-trans b (Path-to-ordinal p) c h (path-to-ordinal-⊑ p))
+ -- ⦅⦆-sends-⊑-to-⊴ : (b c : B) → b ⊑ c → ⦅ b ⦆ ⊴ ⦅ c ⦆
+ -- ⦅⦆-sends-⊑-to-⊴ Z     c (Z-⊑ c) = 𝟘-elim , (λ x → 𝟘-elim x) , (λ x → 𝟘-elim x)
+ -- ⦅⦆-sends-⊑-to-⊴ (S b) c (S-⊑ b c p h) = f , f-is-initial-segment , f-is-order-preserving
+ --  where
+ --   IH : ⦅ b ⦆ ⊴ ⦅ c ⦆
+ --   IH = ⦅⦆-sends-⊑-to-⊴ b c (⊑-trans b (Path-to-ordinal p) c h (path-to-ordinal-⊑ p))
 
-   g : ⟨ ⦅ b ⦆ ⟩ → ⟨ ⦅ c ⦆ ⟩
-   g = pr₁ IH
+ --   g : ⟨ ⦅ b ⦆ ⟩ → ⟨ ⦅ c ⦆ ⟩
+ --   g = pr₁ IH
 
-   g-is-initial-segment : is-initial-segment ⦅ b ⦆ ⦅ c ⦆ g
-   g-is-initial-segment = pr₁ (pr₂ IH)
+ --   g-is-initial-segment : is-initial-segment ⦅ b ⦆ ⦅ c ⦆ g
+ --   g-is-initial-segment = pr₁ (pr₂ IH)
 
-   g-is-order-preserving : is-order-preserving ⦅ b ⦆ ⦅ c ⦆ g
-   g-is-order-preserving = pr₂ (pr₂ IH)
+ --   g-is-order-preserving : is-order-preserving ⦅ b ⦆ ⦅ c ⦆ g
+ --   g-is-order-preserving = pr₂ (pr₂ IH)
 
-   --foo : (x : ⟨ ⦅ b ⦆ ⟩) → g x ≺⟨ ⦅ c ⦆ ⟩ path-to-elem p
-   --foo = {!!}
+ --   --foo : (x : ⟨ ⦅ b ⦆ ⟩) → g x ≺⟨ ⦅ c ⦆ ⟩ path-to-elem p
+ --   --foo = {!!}
 
-   f : ⟨ ⦅ b ⦆ +ₒ 𝟙ₒ ⟩  → ⟨ ⦅ c ⦆ ⟩
-   f (inl x) = g x
-   f (inr ⋆) = path-to-elem p
+ --   f : ⟨ ⦅ b ⦆ +ₒ 𝟙ₒ ⟩  → ⟨ ⦅ c ⦆ ⟩
+ --   f (inl x) = g x
+ --   f (inr ⋆) = path-to-elem p
 
-   f-is-initial-segment : is-initial-segment ⦅ S b ⦆ ⦅ c ⦆ f
-   f-is-initial-segment (inl x) y l = inl (pr₁ (g-is-initial-segment x y l))
-                                    , pr₁ (pr₂ (g-is-initial-segment x y l))
-                                    , pr₂ (pr₂ (g-is-initial-segment x y l))
-   f-is-initial-segment (inr ⋆) y l = {!!}
-                                    , {!!}
-                                    , {!!}
+ --   f-is-initial-segment : is-initial-segment ⦅ S b ⦆ ⦅ c ⦆ f
+ --   f-is-initial-segment (inl x) y l = inl (pr₁ (g-is-initial-segment x y l))
+ --                                    , pr₁ (pr₂ (g-is-initial-segment x y l))
+ --                                    , pr₂ (pr₂ (g-is-initial-segment x y l))
+ --   f-is-initial-segment (inr ⋆) y l = {!!}
+ --                                    , {!!}
+ --                                    , {!!}
 
-   f-is-order-preserving : is-order-preserving ⦅ S b ⦆ ⦅ c ⦆ f
-   f-is-order-preserving (inl x) (inl y) l = g-is-order-preserving x y l
-   f-is-order-preserving (inl x) (inr ⋆) ⋆ = {!!}
- ⦅⦆-sends-⊑-to-⊴ (L ϕ) c (L-⊑ ϕ c x) = {!!}
+ --   f-is-order-preserving : is-order-preserving ⦅ S b ⦆ ⦅ c ⦆ f
+ --   f-is-order-preserving (inl x) (inl y) l = g-is-order-preserving x y l
+ --   f-is-order-preserving (inl x) (inr ⋆) ⋆ = {!!}
+ -- ⦅⦆-sends-⊑-to-⊴ (L ϕ) c (L-⊑ ϕ c x) = {!!}
 
 \end{code}
