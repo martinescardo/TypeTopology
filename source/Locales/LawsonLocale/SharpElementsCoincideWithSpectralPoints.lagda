@@ -1,14 +1,14 @@
---------------------------------------------------------------------------------
+---
 title:          Equivalence of sharp elements with spectral points
 author:         Ayberk Tosun
 date-started:   2024-05-22
---------------------------------------------------------------------------------
+---
 
 The formalization of a proof.
 
 \begin{code}
 
-{--# OPTIONS --safe --without-K #--}
+{--# OPTIONS --safe --without-K --lossy-unification #--}
 
 open import MLTT.Spartan
 open import MLTT.List hiding ([_])
