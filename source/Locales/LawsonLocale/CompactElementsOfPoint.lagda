@@ -469,6 +469,7 @@ Added on 2024-05-23.
 
 \begin{code}
 
-
+ 𝒦-in-point↑ : (ℱ : Point) → Fam↑
+ 𝒦-in-point↑ ℱ = 𝒦-in-point ℱ , 𝒦-in-point-is-directed ℱ
 
 \end{code}
