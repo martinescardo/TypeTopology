@@ -384,18 +384,63 @@ Given any sharp element `𝓍`, the point `pt 𝓍` is a spectral map.
    δ : is-Directed 𝓓 (𝒦-in-point F [_])
    δ = 𝒦-in-point-is-directed F
 
-\end{code}
+ lemma-6-⇒ : (ℱ@(F , _) : Point σ⦅𝓓⦆) (c : ⟨ 𝓓 ⟩∙) (𝕜 : is-compact 𝓓 c)
+         → c ⊑⟨ 𝓓 ⟩ sharp₀ ℱ → F ↑ˢ[ c , 𝕜 ] holds
+ lemma-6-⇒ ℱ@(F , 𝒽) c 𝕜 p =
+  ∥∥-rec (holds-is-prop (F ↑ˢ[ c , 𝕜 ])) † γ
+   where
+    open 𝒪ₛᴿ (to-𝒪ₛᴿ ↑ˢ[ c , 𝕜 ])
 
-\begin{code}
+    γ : ∃ (i , _) ꞉ (index (𝒦-in-point ℱ)) , c ⊑⟨ 𝓓 ⟩ (B𝓓 [ i ])
+    γ = pred-is-inaccessible-by-dir-joins (𝒦-in-point↑ ℱ) p
 
- lemma-6 : (ℱ@(F , _) : Point σ⦅𝓓⦆) (c : ⟨ 𝓓 ⟩∙) (𝕜 : is-compact 𝓓 c)
-         → c ⊑⟨ 𝓓 ⟩ {!⋁ (𝒦-in-point ℱ , δ) !} → F ↑ˢ[ c , 𝕜 ] holds
- lemma-6 F c 𝕜 p = {!!}
+    † : Σ (i , _) ꞉ (index (𝒦-in-point ℱ)) , c ⊑⟨ 𝓓 ⟩ (B𝓓 [ i ])
+      → F ↑ˢ[ c , 𝕜 ] holds
+    † ((i , p) , φ) =
+     frame-morphisms-are-monotonic F 𝒽 (↑ˢ[ βₖ i ] , ↑ˢ[ c , 𝕜 ]) ‡ p
+      where
+       ‡ : (↑ˢ[ βₖ i ] ≤[ poset-of (𝒪 σ⦅𝓓⦆) ] ↑ˢ[ c , 𝕜 ]) holds
+       ‡ =
+        principal-filter-is-antitone c (B𝓓 [ i ]) φ 𝕜 (basis-is-compact i)
 
- sharp₀-gives-sharp-elements : (F : Point σ⦅𝓓⦆) → is-sharp (sharp₀ F) holds
- sharp₀-gives-sharp-elements F c 𝕜 = {!!}
+ lemma-6-⇐ : (ℱ@(F , _) : Point σ⦅𝓓⦆) (c : ⟨ 𝓓 ⟩∙) (𝕜 : is-compact 𝓓 c)
+           → F ↑ˢ[ c , 𝕜 ] holds → c ⊑⟨ 𝓓 ⟩ sharp₀ ℱ
+ lemma-6-⇐ ℱ@(F , ψ) c 𝕜 χ =
+  ∥∥-rec (prop-valuedness 𝓓 c (⋁ 𝒦-in-point↑ ℱ)) † γ
+   where
+    γ : ∃ i ꞉ index B𝓓 , B𝓓 [ i ] ＝ c
+    γ = small-compact-basis-contains-all-compact-elements 𝓓 (B𝓓 [_]) scb c 𝕜
 
- sharp : Point σ⦅𝓓⦆ → ♯𝓓
- sharp F = sharp₀ F , sharp₀-gives-sharp-elements F
+    † : Σ i ꞉ index B𝓓 , B𝓓 [ i ] ＝ c → c ⊑⟨ 𝓓 ⟩ (⋁ 𝒦-in-point↑ ℱ)
+    † (i , p) = transport (λ - → - ⊑⟨ 𝓓 ⟩ (⋁ 𝒦-in-point↑ ℱ)) p ‡
+     where
+      q : ↑ˢ[ βₖ i ] ＝ ↑ˢ[ c , 𝕜 ]
+      q = ap ↑ˢ[_] (to-subtype-＝ (holds-is-prop ∘ is-compactₚ 𝓓) p)
+
+      μ : F ↑ˢ[ βₖ i ] holds
+      μ = transport (λ - → F - holds) (q ⁻¹) χ
+
+      ‡ : (B𝓓 [ i ]) ⊑⟨ 𝓓 ⟩ (⋁ 𝒦-in-point↑ ℱ)
+      ‡ = ⋁-is-upperbound (𝒦-in-point↑ ℱ) (i , μ)
+
+ sharp₀-gives-sharp-elements : (F : Point σ⦅𝓓⦆)
+                             → is-spectral-map σ⦅𝓓⦆ (𝟏Loc pe) F holds
+                             → is-sharp (sharp₀ F) holds
+ sharp₀-gives-sharp-elements ℱ@(F , _) σ c 𝕜 = cases case₁ case₂ γ
+  where
+   φ : is-compact-open (𝟏Loc pe) (F ↑ˢ[ c , 𝕜 ]) holds
+   φ = σ ↑ˢ[ c , 𝕜 ] (principal-filter-is-compact₀ c 𝕜 )
+
+   γ : is-decidableₚ (F ↑ˢ[ c , 𝕜 ]) holds
+   γ = compact-implies-boolean pe (F ↑ˢ[ c , 𝕜 ]) φ
+
+   case₁ : F ↑ˢ[ c , 𝕜 ] holds → is-decidableₚ (c ⊑ sharp₀ ℱ) holds
+   case₁ = inl ∘ lemma-6-⇐ ℱ c 𝕜
+
+   case₂ : ¬ (F ↑ˢ[ c , 𝕜 ] holds) → is-decidableₚ (c ⊑ sharp₀ ℱ) holds
+   case₂ χ = inr λ q → χ (lemma-6-⇒ ℱ c 𝕜 q)
+
+ sharp : (ℱ : Point σ⦅𝓓⦆) → is-spectral-map σ⦅𝓓⦆ (𝟏Loc pe) ℱ holds → ♯𝓓
+ sharp ℱ@(F , _) σ = sharp₀ ℱ , sharp₀-gives-sharp-elements ℱ σ
 
 \end{code}
