@@ -17,6 +17,7 @@ open import MLTT.Spartan
 open import UF.FunExt
 open import UF.PropTrunc
 open import UF.Sets
+open import UF.SubtypeClassifier
 
 module DomainTheory.Basics.Dcpo
         (pt : propositional-truncations-exist)
@@ -187,6 +188,22 @@ module _ {𝓤 𝓣 : Universe} where
 
  antisymmetry : (𝓓 : DCPO) → is-antisymmetric (underlying-order 𝓓)
  antisymmetry (D , _⊑_ , (s  , p  , r  , t  , a)  , c ) = a
+
+\end{code}
+
+Added by Ayberk Tosun on 2024-04-19.
+
+To work with the combinators in `UF.Logic`, it is convenient to have a version
+of equality on domain elements that is packaged up with the proof that it is
+a proposition.
+
+\begin{code}
+
+ dcpo-equalityₚ : (𝓓 : DCPO) → ⟨ 𝓓 ⟩ → ⟨ 𝓓 ⟩ → Ω 𝓤
+ dcpo-equalityₚ 𝓓 x y = (x ＝ y) , sethood 𝓓
+
+ syntax dcpo-equalityₚ 𝓓 x y = x ＝ₚ[ 𝓓 ] y
+ infix 2 dcpo-equalityₚ
 
 \end{code}
 

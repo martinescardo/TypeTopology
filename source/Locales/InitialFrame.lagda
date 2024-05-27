@@ -361,3 +361,15 @@ module Spectrality-of-𝟎 (𝓤 : Universe) (pe : propext 𝓤) where
    d = covers-of-directified-basis-are-directed (𝟎-𝔽𝕣𝕞 pe) ℬ𝟎 ℬ𝟎-is-basis-for-𝟎
 
 \end{code}
+
+Added on 2024-05-17.
+
+It is sometimes conventient to refer to the initial frame as “Ω viewed as a
+frame”, and we add some notation to highlight this.
+
+\begin{code}
+
+ Ω-Frm : Frame (𝓤 ⁺) 𝓤 𝓤
+ Ω-Frm = 𝟎-𝔽𝕣𝕞 pe
+
+\end{code}

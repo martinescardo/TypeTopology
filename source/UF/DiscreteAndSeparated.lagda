@@ -709,3 +709,15 @@ global-point-is-embedding f h =
     h' ⋆ = h
 
 \end{code}
+
+Added 1st May 2024. Wrapper for use with instance arguments:
+
+\begin{code}
+
+data is-discrete' {𝓤 : Universe} (X : 𝓤 ̇ ) : 𝓤 ̇ where
+ discrete-gives-discrete' : is-discrete X → is-discrete' X
+
+discrete'-gives-discrete : {X : 𝓤 ̇ } → is-discrete' X → is-discrete X
+discrete'-gives-discrete (discrete-gives-discrete' d) = d
+
+\end{code}

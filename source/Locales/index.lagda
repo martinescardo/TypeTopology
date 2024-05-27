@@ -28,9 +28,11 @@ import Locales.Complements                       -- (8)
 import Locales.DistributiveLattice.Definition
 import Locales.DistributiveLattice.Homomorphism
 import Locales.DistributiveLattice.Ideal
-import Locales.DistributiveLattice.LocaleOfSpectra
-import Locales.DistributiveLattice.LocaleOfSpectra-Properties
+import Locales.DistributiveLattice.Spectrum
+import Locales.DistributiveLattice.Spectrum-Properties
 import Locales.DistributiveLattice.Properties
+import Locales.DistributiveLattice.Isomorphism
+import Locales.DistributiveLattice.Resizing
 
 import Locales.Frame                             -- (9)
 
@@ -114,5 +116,14 @@ import Locales.ContinuousMap.FrameHomomorphism-Properties
 import Locales.ContinuousMap.Definition
 import Locales.ContinuousMap.Properties
 import Locales.ContinuousMap.Homeomorphism-Definition
+import Locales.ContinuousMap.Homeomorphism-Properties
+
+import Locales.SIP.FrameSIP
+
+import Locales.DirectedFamily-Poset
+
+import Locales.StoneDuality.ForSpectralLocales
+
+import Locales.LawsonLocale.CompactElementsOfPoint
 
 \end{code}

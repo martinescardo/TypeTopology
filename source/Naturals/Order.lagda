@@ -230,6 +230,30 @@ course-of-values-induction : (P : ℕ → 𝓤 ̇ )
                            → (n : ℕ) → P n
 course-of-values-induction = transfinite-induction _<_ <-is-well-founded
 
+course-of-values-induction-on-value-of-function
+ : {X : 𝓤 ̇}
+   (f : X → ℕ)
+   (P : X → 𝓥 ̇ )
+ → ((x : X) → ((y : X) → f y < f x → P y) → P x)
+ → (x : X) → P x
+course-of-values-induction-on-value-of-function
+ {𝓤} {𝓥} {X} f P h x = II (f x) x refl
+ where
+  A : ℕ → 𝓤 ⊔ 𝓥 ̇
+  A n = (x : X) → f x ＝ n → P x
+
+  I : (n : ℕ) → ((m : ℕ) → m < n → A m) → A n
+  I .(f x) g x refl = h x (λ y l → g (f y) l y refl)
+
+  II : (n : ℕ) → A n
+  II = course-of-values-induction A I
+
+\end{code}
+
+TODO. Also add plain induction on the values of a function.
+
+\begin{code}
+
 <-is-extensional : is-extensional _<_
 <-is-extensional 0        0        f g = refl
 <-is-extensional 0        (succ n) f g = unique-from-𝟘 (g 0    (zero-least n))

@@ -5,7 +5,7 @@ date-started:   2024-03-01
 dates-updated:  [2024-03-27, 2024-04-08, 2024-04-09]
 --------------------------------------------------------------------------------
 
-We define the locale of spectra over a distributive lattice `L`, the defining
+We define the spectrum locale over a distributive lattice `L`, the defining
 frame of which is the frame of ideals over `L`.
 
 \begin{code}
@@ -17,7 +17,7 @@ open import UF.FunExt
 open import UF.Subsingletons
 open import UF.Size
 
-module Locales.DistributiveLattice.LocaleOfSpectra-Properties
+module Locales.DistributiveLattice.Spectrum-Properties
         (fe : Fun-Ext)
         (pe : Prop-Ext)
         (pt : propositional-truncations-exist)
@@ -28,7 +28,7 @@ open import Locales.Compactness pt fe
 open import Locales.DistributiveLattice.Definition fe pt
 open import Locales.DistributiveLattice.Ideal pt fe pe
 open import Locales.DistributiveLattice.Ideal-Properties pt fe pe
-open import Locales.DistributiveLattice.LocaleOfSpectra fe pe pt
+open import Locales.DistributiveLattice.Spectrum fe pe pt
 open import Locales.DistributiveLattice.Properties fe pt
 open import Locales.Frame pt fe
 open import Locales.SmallBasis pt fe sr
@@ -64,21 +64,21 @@ module Spectrality (L : DistributiveLattice 𝓤) where
 
 \end{code}
 
-We abbreviate `locale-of-spectra` to `spec-L`.
+We abbreviate `spectrum` to `spec-L`.
 
 \begin{code}
 
  spec-L : Locale (𝓤 ⁺) 𝓤 𝓤
- spec-L = locale-of-spectra
+ spec-L = spectrum
 
 \end{code}
 
-The locale of spectra of is a compact locale.
+The spectrum is a compact locale.
 
 \begin{code}
 
- locale-of-spectra-is-compact : is-compact spec-L holds
- locale-of-spectra-is-compact S δ p =
+ spectrum-is-compact : is-compact spec-L holds
+ spectrum-is-compact S δ p =
   ∥∥-rec ∃-is-prop † (p 𝟏 (𝟏ᵈ-is-top L 𝟏))
    where
     † : Σ xs ꞉ List X , xs ◁ S × (𝟏 ＝ join-listᵈ L xs)
@@ -261,9 +261,9 @@ The binary meet of two compact ideals is compact.
 
 \begin{code}
 
- compacts-of-the-locale-of-spectra-are-closed-under-∧
+ compacts-of-the-spectrum-are-closed-under-∧
   : compacts-of-[ spec-L ]-are-closed-under-binary-meets holds
- compacts-of-the-locale-of-spectra-are-closed-under-∧ K₁ K₂ κ₁ κ₂ = κ
+ compacts-of-the-spectrum-are-closed-under-∧ K₁ K₂ κ₁ κ₂ = κ
   where
    ι₁ : ∃ x₁ ꞉ ∣ L ∣ᵈ , K₁ ＝ ↓ x₁
    ι₁ = compact-ideal-is-principal K₁ κ₁
@@ -298,8 +298,8 @@ The binary meet of two compact ideals is compact.
 
 Added on 2024-04-08.
 
-Finally, we package everything up into a proof that the locale of spectra is a
-spectral locale.
+Finally, we package everything up into a proof that the spectrum locale is
+spectral.
 
 \begin{code}
 
@@ -307,10 +307,10 @@ spectral locale.
  spec-L-is-spectral = (κ , ν) , ideal-has-directed-cover-of-compact-opens
   where
    κ : is-compact spec-L holds
-   κ = locale-of-spectra-is-compact
+   κ = spectrum-is-compact
 
    ν : compacts-of-[ spec-L ]-are-closed-under-binary-meets holds
-   ν = compacts-of-the-locale-of-spectra-are-closed-under-∧
+   ν = compacts-of-the-spectrum-are-closed-under-∧
 
 \end{code}
 
@@ -341,13 +341,17 @@ intensional specified basis for `Idl(L)` given by the family `↓(-) : L → Idl
    𝒹 : is-directed (𝒪 spec-L) ⁅ ↓ x ∣ x ε (𝕋 𝓤 ∣ L ∣ᵈ (_∈ⁱ ℐ)) ⁆ holds
    𝒹 = factorization-is-directed ℐ
 
+ ℬ-spec-is-basis : basis-forᴰ (𝒪 spec-L) ℬ-spec
+ ℬ-spec-is-basis =
+  directed-basis-is-basis (𝒪 spec-L) ℬ-spec ℬ-spec-is-directed-basis
+
 \end{code}
 
 We denote by `𝒦-fam` the family corresponding to the subset of compact opens.
 
 \begin{code}
 
- 𝒦-fam : Fam (𝓤 ⁺) ⟨ 𝒪 locale-of-spectra ⟩
+ 𝒦-fam : Fam (𝓤 ⁺) ⟨ 𝒪 spec-L ⟩
  𝒦-fam = 𝕋 (𝓤 ⁺) ⟨ 𝒪 spec-L ⟩ (_holds ∘ is-compact-open spec-L)
 
 \end{code}

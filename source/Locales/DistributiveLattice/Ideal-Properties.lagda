@@ -1,15 +1,16 @@
 --------------------------------------------------------------------------------
-title:        Properties of ideals
-author:       Ayberk Tosun
-date-started: 2024-03-02
+title:         Properties of ideals
+author:        Ayberk Tosun
+date-started:  2024-03-02
+dates-updated: [2024-03-13, 2024-03-28, 2024-05-03]
 --------------------------------------------------------------------------------
 
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}
 
-open import UF.PropTrunc
 open import UF.FunExt
+open import UF.PropTrunc
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
@@ -21,16 +22,17 @@ module Locales.DistributiveLattice.Ideal-Properties
 
 open import Locales.DistributiveLattice.Definition fe pt
 open import Locales.DistributiveLattice.Ideal pt fe pe
-open import Locales.DistributiveLattice.LocaleOfSpectra fe pe pt
 open import Locales.DistributiveLattice.Properties fe pt
+open import Locales.DistributiveLattice.Spectrum fe pe pt
 open import Locales.Frame pt fe hiding (is-directed)
 open import MLTT.List
 open import MLTT.Spartan
 open import Slice.Family
 open import UF.Base
+open import UF.Classifiers
 open import UF.Equiv hiding (_■)
 open import UF.Logic
-open import UF.Powerset-MultiUniverse
+open import UF.Powerset-MultiUniverse hiding (𝕋)
 open import UF.SubtypeClassifier
 
 open AllCombinators pt fe hiding (_∨_)
@@ -38,13 +40,15 @@ open PropositionalTruncation pt hiding (_∨_)
 
 \end{code}
 
+We work in a module parameterized by a 𝓤-distributive-lattice `L`.
+
 \begin{code}
 
 module IdealProperties (L : DistributiveLattice 𝓤) where
 
+ open DefnOfFrameOfIdeal  L
  open DistributiveLattice L
  open IdealNotation L
- open DefnOfFrameOfIdeal  L
 
  contains-𝟏-implies-above-𝟏 : (I : Ideal L) → 𝟏 ∈ⁱ I → (𝟏ᵢ ⊆ᵢ I) holds
  contains-𝟏-implies-above-𝟏 I μ₁ x μ₂ =
@@ -128,5 +132,35 @@ Added on 2024-03-28.
 
       γ : (↓ y ⊆ᵢ ↓ (x ∨ y)) holds
       γ z p = z ≤⟨ p ⟩ y ≤⟨ ∨-is-an-upper-bound₂ L x y ⟩ (x ∨ y) ■
+
+\end{code}
+
+Added on 2024-05-03.
+
+Every ideal is directed.
+
+\begin{code}
+
+ open classifier-single-universe 𝓤
+
+ open import Locales.DirectedFamily pt fe (λ x y → x ≤ᵈ[ L ] y)
+  using ()
+  renaming (is-directed to is-directed-L;
+            is-closed-under-binary-upper-bounds
+             to is-closed-under-binary-upper-bounds-L)
+
+ ideals-are-directed : (I : Ideal L) → is-directed-L (𝕋 ∣ L ∣ᵈ (_∈ⁱ I)) holds
+ ideals-are-directed ℐ = ∣ 𝟎 , I-contains-𝟎 ∣ , †
+  where
+   open Ideal ℐ using (I-contains-𝟎; I-is-closed-under-∨)
+
+   † : is-closed-under-binary-upper-bounds-L (𝕋 ∣ L ∣ᵈ (_∈ⁱ ℐ)) holds
+   † (x , μ₁) (y , μ₂) = ∣ ((x ∨ y) , I-is-closed-under-∨ x y μ₁ μ₂) , β , γ ∣
+    where
+     β : (x ≤ᵈ[ L ] (x ∨ y)) holds
+     β = ∨-is-an-upper-bound₁ L x y
+
+     γ : (y ≤ᵈ[ L ] (x ∨ y)) holds
+     γ = ∨-is-an-upper-bound₂ L x y
 
 \end{code}

@@ -1,5 +1,12 @@
 Todd Waugh Ambridge, January 2024
 
+M.H. Escardo and A. Simpson. A universal characterization of the
+closed Euclidean interval (extended abstract). Proceedings of the 16th
+Annual IEEE Symposium on Logic in Computer Science,
+pp.115--125. Boston, Massachusetts, June 16-19, 2001.
+
+https://doi.org/10.1109/LICS.2001.932488
+
 # Formalisation of the Escardo-Simpson interval object
 
 \begin{code}
@@ -19,9 +26,7 @@ open import Naturals.Sequence fe
 ## Midpoint algebras
 
 \begin{code}
-associative' idempotent transpositional : {X : 𝓤 ̇ } → (X → X → X) → 𝓤 ̇
-associative'     _∙_
- = ∀ a b c   → a ∙ (b ∙ c)       ＝ (a ∙ b) ∙ c
+idempotent transpositional : {X : 𝓤 ̇ } → (X → X → X) → 𝓤 ̇
 idempotent       _∙_
  = ∀ a       → a ∙ a             ＝ a
 transpositional  _∙_
@@ -140,7 +145,7 @@ id-is-⊕-homomorphism 𝓐 x y = refl
 \begin{code}
 is-interval-object
  : (𝓘 : Convex-body 𝓤) (𝓥 : Universe) → ⟨ 𝓘 ⟩ → ⟨ 𝓘 ⟩ → 𝓤 ⊔ 𝓥 ⁺ ̇
-is-interval-object 𝓘 𝓥 u v 
+is-interval-object 𝓘 𝓥 u v
  = (𝓐 : Convex-body 𝓥) (a b : ⟨ 𝓐 ⟩)
  → ∃! h ꞉ (⟨ 𝓘 ⟩ → ⟨ 𝓐 ⟩)
  , (h u ＝ a) × (h v ＝ b)

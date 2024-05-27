@@ -3,6 +3,7 @@ title:          Distributive lattice of compact opens
 author:         Ayberk Tosun
 date-started:   2024-02-24
 date-completed: 2024-02-27
+dates-updated:  [2024-04-30]
 ---
 
 \begin{code}
@@ -37,13 +38,14 @@ private
  fe : Fun-Ext
  fe {𝓤} {𝓥} = univalence-gives-funext' 𝓤 𝓥 (ua 𝓤) (ua (𝓤 ⊔ 𝓥))
 
-open import Locales.Frame pt fe
 open import Locales.Compactness pt fe
-open import Locales.Spectrality.SpectralLocale pt fe
-open import Locales.Spectrality.SpectralMap pt fe
 open import Locales.DistributiveLattice.Definition fe pt
 open import Locales.DistributiveLattice.Homomorphism fe pt
+open import Locales.Frame pt fe
 open import Locales.SmallBasis pt fe sr
+open import Locales.Spectrality.SpectralLocale pt fe
+open import Locales.Spectrality.SpectralMap pt fe
+open import UF.Equiv
 
 open AllCombinators pt fe
 open Locale
@@ -236,5 +238,67 @@ of compact opens to be small.
 
  𝒦⦅X⦆-is-small : is-small ∣ 𝒦⦅X⦆ ∣ᵈ
  𝒦⦅X⦆-is-small = smallness-of-𝒦 ua X σ₀
+
+\end{code}
+
+Added on 2024-04-12.
+
+\begin{code}
+
+ 𝒦⁻ : 𝓤  ̇
+ 𝒦⁻ = resized ∣ 𝒦⦅X⦆ ∣ᵈ 𝒦⦅X⦆-is-small
+
+ to-small-copy : ∣ 𝒦⦅X⦆ ∣ᵈ → 𝒦⁻
+ to-small-copy K =
+  let
+   e = resizing-condition 𝒦⦅X⦆-is-small
+  in
+   inverse ⌜ e ⌝ (⌜⌝-is-equiv e) K
+
+ to-original : 𝒦⁻ → ∣ 𝒦⦅X⦆ ∣ᵈ
+ to-original = ⌜ resizing-condition 𝒦⦅X⦆-is-small ⌝
+
+\end{code}
+
+Added on 2024-04-30.
+
+\begin{code}
+
+ open OperationsOnCompactOpens X σ
+
+ open DistributiveLattice hiding (X)
+
+ ιₖ-preserves-∨ : (K₁ K₂ : ∣ 𝒦⦅X⦆ ∣ᵈ) → pr₁ (K₁ ∨ₖ K₂) ＝ pr₁ K₁ ∨[ 𝒪 X ] pr₁ K₂
+ ιₖ-preserves-∨ K₁ K₂ = ≤-is-antisymmetric (poset-of (𝒪 X)) † ‡
+  where
+   † : (ιₖ (K₁ ∨ₖ K₂) ≤[ poset-of (𝒪 X) ] (ιₖ K₁ ∨[ 𝒪 X ] ιₖ K₂)) holds
+   † = ∨[ 𝒪 X ]-least
+        (∨[ 𝒪 X ]-upper₁ (ιₖ K₁) (ιₖ K₂))
+        (∨[ 𝒪 X ]-upper₂ (ιₖ K₁) (ιₖ K₂))
+
+   ‡ : ((ιₖ K₁ ∨[ 𝒪 X ] ιₖ K₂) ≤[ poset-of (𝒪 X) ] ιₖ (K₁ ∨ₖ K₂)) holds
+   ‡ = ∨[ 𝒪 X ]-least
+        (∨[ 𝒪 X ]-upper₁ (ιₖ K₁) (ιₖ K₂))
+        (∨[ 𝒪 X ]-upper₂ (ιₖ K₁) (ιₖ K₂))
+
+ ιₖ-preserves-∧ : (K₁ K₂ : ∣ 𝒦⦅X⦆ ∣ᵈ)
+                → pr₁ (K₁ ∧ₖ K₂) ＝ pr₁ K₁ ∧[ 𝒪 X ] pr₁ K₂
+ ιₖ-preserves-∧ K₁ K₂ = ≤-is-antisymmetric (poset-of (𝒪 X)) † ‡
+  where
+   † : (pr₁ (K₁ ∧ₖ K₂) ≤[ poset-of (𝒪 X) ] (pr₁ K₁ ∧[ 𝒪 X ] pr₁ K₂)) holds
+   † = ∧[ 𝒪 X ]-greatest
+        (ιₖ K₁)
+        (ιₖ K₂)
+        (pr₁ (K₁ ∧ₖ K₂))
+        (∧[ 𝒪 X ]-lower₁ (ιₖ K₁) (ιₖ K₂))
+        (∧[ 𝒪 X ]-lower₂ (pr₁ K₁) (pr₁ K₂))
+
+   ‡ : ((pr₁ K₁ ∧[ 𝒪 X ] pr₁ K₂) ≤[ poset-of (𝒪 X) ] pr₁ (K₁ ∧ₖ K₂)) holds
+   ‡ = ∧[ 𝒪 X ]-greatest
+        (pr₁ K₁)
+        (pr₁ K₂)
+        (pr₁ (K₁ ∧ₖ K₂))
+        (∧[ 𝒪 X ]-lower₁ (ιₖ K₁) (ιₖ K₂))
+        (∧[ 𝒪 X ]-lower₂ (pr₁ K₁) (pr₁ K₂))
 
 \end{code}

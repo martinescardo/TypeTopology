@@ -3,6 +3,7 @@ title:          The spectral Scott locale of a Scott domain
 author:         Ayberk Tosun
 date-started:   2023-10-25
 date-completed: 2023-11-26
+dates-updated:  [2024-03-16]
 ---
 
 In this module, we prove that the Scott locale of any Scott domain is a spectral
@@ -13,22 +14,22 @@ satisfies a certain decidability condition).
 
 {-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
 
-open import MLTT.Spartan hiding (𝟚)
 open import MLTT.List hiding ([_])
+open import MLTT.Negation
+open import MLTT.Spartan hiding (𝟚)
 open import Slice.Family
-open import UF.FunExt
-open import UF.Logic
-open import UF.PropTrunc
-open import UF.SubtypeClassifier
-open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
-open import UF.Powerset-MultiUniverse
-open import UF.Size
 open import UF.Classifiers
-open import UF.Univalence
 open import UF.Embeddings
 open import UF.EquivalenceExamples
-open import MLTT.Negation
+open import UF.FunExt
+open import UF.Logic
+open import UF.Powerset-MultiUniverse
+open import UF.PropTrunc
+open import UF.Size
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
+open import UF.SubtypeClassifier
+open import UF.Univalence
 
 module Locales.ScottLocale.ScottLocalesOfScottDomains
         (pt : propositional-truncations-exist)
@@ -36,28 +37,28 @@ module Locales.ScottLocale.ScottLocalesOfScottDomains
         (sr : Set-Replacement pt)
         (𝓤  : Universe) where
 
+open import DomainTheory.BasesAndContinuity.Bases            pt fe 𝓤
+open import DomainTheory.BasesAndContinuity.CompactBasis     pt fe 𝓤
+open import DomainTheory.BasesAndContinuity.Continuity       pt fe 𝓤
+open import DomainTheory.BasesAndContinuity.ScottDomain      pt fe 𝓤
 open import DomainTheory.Basics.Dcpo                         pt fe 𝓤
- renaming (⟨_⟩ to ⟨_⟩∙)
- hiding   (is-directed)
+ renaming (⟨_⟩ to ⟨_⟩∙) hiding   (is-directed)
 open import DomainTheory.Basics.Pointed                      pt fe 𝓤
  renaming (⊥ to ⊥d)
 open import DomainTheory.Basics.WayBelow                     pt fe 𝓤
-open import DomainTheory.BasesAndContinuity.Bases            pt fe 𝓤
-open import DomainTheory.BasesAndContinuity.Continuity       pt fe 𝓤
-open import DomainTheory.BasesAndContinuity.CompactBasis     pt fe 𝓤
-open import DomainTheory.BasesAndContinuity.ScottDomain      pt fe 𝓤
-open import Locales.ScottLocale.Definition                   pt fe 𝓤
 open import DomainTheory.Topology.ScottTopology              pt fe 𝓤
 open import DomainTheory.Topology.ScottTopologyProperties    pt fe 𝓤
-open import Locales.Frame                                    pt fe
- hiding (∅)
 open import Locales.Compactness                              pt fe
  hiding (is-compact)
-open import Locales.Spectrality.SpectralLocale               pt fe
+open import Locales.Frame                                    pt fe
+ hiding (∅)
+open import Locales.ScottLocale.Definition                   pt fe 𝓤
+open import Locales.ScottLocale.Properties pt fe 𝓤
 open import Locales.SmallBasis pt fe sr
+open import Locales.Spectrality.SpectralLocale               pt fe
 
-open Locale
 open AllCombinators pt fe
+open Locale
 open PropositionalTruncation pt hiding (_∨_)
 
 \end{code}
@@ -70,8 +71,7 @@ open import Locales.ScottLocale.ScottLocalesOfAlgebraicDcpos pt fe 𝓤
 
 \end{code}
 
-contains a proof that the Scott locale of any algebraic dcpo is a spectral
-locale.
+contains a proof that the Scott locale of any algebraic dcpo is a locale.
 
 In this module, we extend this proof by showing that the Scott locale is
 spectral.
@@ -87,24 +87,8 @@ _⊆⊆_ {_} {_} {X} xs U = (x : X) → member x xs → x ∈ U
 
 \end{code}
 
-We define the following predicate that expresses what it means for two elements
-of a DCPO `𝓓` to be “bounded above”.
-
-\begin{code}
-
-bounded-above : (𝓓 : DCPO {𝓤 ⁺} {𝓤}) → ⟨ 𝓓 ⟩∙ → ⟨ 𝓓 ⟩∙ → Ω (𝓤 ⁺)
-bounded-above 𝓓 x y = ∥ upper-bound (binary-family 𝓤 x y) ∥Ω
- where
-  open Joins (λ a b → a ⊑⟨ 𝓓 ⟩ₚ b)
-
-infix 30 bounded-above
-
-syntax bounded-above 𝓓 x y = x ↑[ 𝓓 ] y
-
-\end{code}
-
 For the proof of spectrality, we will also need the following decidability
-assumption.
+assumption for upper boundedness of compact elements.
 
 \begin{code}
 
@@ -114,6 +98,11 @@ decidability-condition 𝓓 = (c d : ⟨ 𝓓 ⟩∙) →
                              is-decidable (bounded-above 𝓓 c d holds)
 
 \end{code}
+
+This condition is trivially satisfied if the dcpo in consideration is complete
+(or equivalently, it has all binary joins) because the upper bound mentioned
+here will always exist. In many cases, the dcpos we are interested in turn out
+to be such complete lattices.
 
 \section{The proof}
 
@@ -146,7 +135,6 @@ We denote by `Σ𝓓` the large and locally small Scott locale of the dcpo `𝓓
 
 \begin{code}
 
- open import Locales.ScottLocale.Properties pt fe 𝓤
  open ScottLocaleProperties 𝓓 hl hscb pe
 
  Σ[𝓓] : Locale (𝓤 ⁺) 𝓤 𝓤
@@ -180,17 +168,16 @@ We define some nice notation for the prop-valued equality of the dcpo `𝓓`.
 
 \begin{code}
 
- _＝ₚ_ : ⟨ 𝓓 ⟩∙ → ⟨ 𝓓 ⟩∙ → Ω (𝓤 ⁺)
- x ＝ₚ y = (x ＝ y) , sethood 𝓓
-
-\end{code}
-
-\begin{code}
-
  open DefnOfScottTopology 𝓓 𝓤
  open BottomLemma 𝓓 𝕒 hl
  open Properties 𝓓
  open binary-unions-of-subsets pt
+
+\end{code}
+
+We also define some nice notation for the open given by a basis index.
+
+\begin{code}
 
  ↑ᵏ[_] : B →  ⟨ 𝒪 Σ[𝓓] ⟩
  ↑ᵏ[ i ] = ↑ˢ[ β i , ϟ i ]
@@ -205,6 +192,18 @@ The basis is the family `(List B , 𝜸₀)`, where `𝜸₀` is the following f
 
  𝜸₀ : List B → 𝓟 {𝓤} ⟨ 𝓓 ⟩∙
  𝜸₀ = foldr _∪_ ∅ ∘ map (principal-filter 𝓓 ∘ β)
+
+\end{code}
+
+For the reader who might be unfamiliar with it, `foldr` is a function on lists
+that takes a binary function `f : X → Y → Y` and an element `u : Y`, and "folds"
+a given a list `x[0], …, x[n-1]` into
+
+```
+f(x[0], f(x[1], … f(x[n-1], u)))
+```
+
+\begin{code}
 
  𝜸₀-is-upwards-closed : (ks : List B)
                       → is-upwards-closed (𝜸₀ ks) holds
@@ -268,10 +267,6 @@ The basis is the family `(List B , 𝜸₀)`, where `𝜸₀` is the following f
                 ∃-is-prop
                 (λ { (k₀ , r , s) → ∣ k₀ , in-tail r , s ∣ })
                 (𝜸₀-lemma x ks q)
-
-\end{code}
-
-\begin{code}
 
  𝜸 : List B → ⟨ 𝒪 Σ[𝓓] ⟩
  𝜸 ks = 𝜸₀ ks , 𝜸₀-gives-scott-opens ks
@@ -366,21 +361,6 @@ The principal filter `↑(x)` on any `x : 𝓓` is a compact Scott open.
 
 \begin{code}
 
- principal-filter-is-compact₀ : (c : ⟨ 𝓓 ⟩∙)
-                              → (κ : is-compact 𝓓 c)
-                              → is-compact-open Σ[𝓓] ↑ˢ[ (c , κ) ] holds
- principal-filter-is-compact₀ c κ S δ p = ∥∥-rec ∃-is-prop † q
-  where
-   q : (c ∈ₛ (⋁[ 𝒪 Σ[𝓓] ] S)) holds
-   q = ⊆ₖ-implies-⊆ₛ ↑ˢ[ (c , κ) ] (⋁[ 𝒪 Σ[𝓓] ] S) p c (reflexivity 𝓓 c)
-
-   † : Σ i ꞉ index S , (c ∈ₛ (S [ i ])) holds
-     → ∃ i ꞉ index S , (↑ˢ[ (c , κ) ] ≤[ poset-of (𝒪 Σ[𝓓]) ] S [ i ]) holds
-   † (i , r) = ∣ i , ‡ ∣
-    where
-     ‡ :  (↑ˢ[ c , κ ] ≤[ poset-of (𝒪 Σ[𝓓]) ] (S [ i ])) holds
-     ‡ d = upward-closure (S [ i ]) c (β d) r
-
  principal-filter-is-compact : (b : B)
                              → is-compact-open Σ[𝓓] ↑ᵏ[ b ] holds
  principal-filter-is-compact b = principal-filter-is-compact₀ (β b) (ϟ b)
@@ -444,6 +424,14 @@ then it is compact.
 
 \begin{code}
 
+ principal-filter-is-antitone : (b c : ⟨ 𝓓 ⟩∙)
+                              → b ⊑⟨ 𝓓 ⟩ c
+                              → (κᵇ : is-compact 𝓓 b)
+                              → (κᶜ : is-compact 𝓓 c)
+                              → (↑ˢ[ c , κᶜ ] ≤[ poset-of (𝒪 Σ[𝓓]) ] ↑ˢ[ b , κᵇ ]) holds
+ principal-filter-is-antitone b c p κᵇ κᶜ x =
+  upward-closure ↑ˢ[ b , κᵇ ] c (β x) p
+
  principal-filter-reflects-joins
   : (c d s : ⟨ 𝓓 ⟩∙)
   → (κᶜ : is-compact 𝓓 c)
@@ -473,31 +461,6 @@ then it is compact.
 
     Ⅱ : ((↑ˢ[ c , κᶜ ] ∧[ 𝒪 Σ[𝓓] ] ↑ˢ[ d , κᵈ ]) ⊆ₖ ↑ˢ[ s , κₛ ]) holds
     Ⅱ = ⊆ₛ-implies-⊆ₖ (↑ˢ[ c , κᶜ ] ∧[ 𝒪 Σ[𝓓] ] ↑ˢ[ d , κᵈ ]) ↑ˢ[ s , κₛ ] ‡
-
-\end{code}
-
-The top element of the Scott locale is always compact.
-
-TODO: move to ScottLocale.Properties.
-
-\begin{code}
-
- ⊤-is-compact : is-compact-open Σ[𝓓] 𝟏[ 𝒪 Σ[𝓓] ] holds
- ⊤-is-compact = transport (λ - → is-compact-open Σ[𝓓] - holds) ↑⊥-is-top †
-  where
-   † : is-compact-open ScottLocale ↑ˢ[ ⊥ᴰ , ⊥κ ] holds
-   † = principal-filter-is-compact₀ ⊥ᴰ ⊥κ
-
- not-bounded-lemma : (c d : ⟨ 𝓓 ⟩∙)
-                   → (κᶜ : is-compact 𝓓 c)
-                   → (κᵈ : is-compact 𝓓 d)
-                   → ¬ ((c ↑[ 𝓓 ] d) holds)
-                   → ↑ˢ[ c , κᶜ ] ∧[ 𝒪 Σ[𝓓] ] ↑ˢ[ d , κᵈ ] ＝ 𝟎[ 𝒪 Σ[𝓓] ]
- not-bounded-lemma c d κᶜ κᵈ ν =
-  only-𝟎-is-below-𝟎 (𝒪 Σ[𝓓]) (↑ˢ[ c , κᶜ ] ∧[ 𝒪 Σ[𝓓] ] ↑ˢ[ d , κᵈ ]) †
-   where
-    † : ((↑ˢ[ c , κᶜ ] ∧[ 𝒪 Σ[𝓓] ] ↑ˢ[ d , κᵈ ]) ⊆ₖ 𝟎[ 𝒪 Σ[𝓓] ]) holds
-    † i (p₁ , p₂) = 𝟘-elim (ν ∣ β i , (λ { (inl ⋆) → p₁ ; (inr ⋆) → p₂ }) ∣)
 
 \end{code}
 
@@ -602,10 +565,6 @@ closed under binary meets.
                (λ - → - ∨[ 𝒪 Σ[𝓓] ] (↑ᵏ[ i ] ∧[ 𝒪 Σ[𝓓] ] 𝜸₁ js))
                (not-bounded-lemma (β i) (β j) (ϟ i) (ϟ j) ν ⁻¹ )
           Ⅲ = binary-distributivity (𝒪 Σ[𝓓]) ↑ᵏ[ i ] ↑ᵏ[ j ] (𝜸₁ js) ⁻¹
-
-\end{code}
-
-\begin{code}
 
  𝜸-closure-under-∧ : (is js : List B)
                    → ∃ ks ꞉ List B , 𝜸₁ ks ＝ 𝜸₁ is ∧[ 𝒪 Σ[𝓓] ] 𝜸₁ js
@@ -724,7 +683,7 @@ This forms a directed basis.
 
 \end{code}
 
-Everything we have explained so far constitute the proof of spectrality when
+The lemmas we have proved so far constitute the proof of spectrality when
 combined as follows.
 
 \begin{code}
@@ -774,6 +733,13 @@ combined as follows.
 
 \end{code}
 
+In the module `SpectralScottLocaleConstruction` above, we worked with a
+specified basis for convenience. Because the type of bases for algebraic dcpos
+has split support, we can carry out the same construction with an unspecified
+basis. The following module is a wrapper around the previous
+`SpectralScottLocaleConstruction` module in which the spectrality proof is
+constructed with only the assumption of an unspecified basis.
+
 \begin{code}
 
 open DefinitionOfScottDomain
@@ -795,10 +761,16 @@ module SpectralScottLocaleConstruction₂
  hscb : has-specified-small-compact-basis 𝓓
  hscb = specified-small-compact-basis-has-split-support ua sr 𝓓 𝒷₀
 
+ 𝕒 : structurally-algebraic 𝓓
+ 𝕒 = structurally-algebraic-if-specified-small-compact-basis 𝓓 hscb
+
  pe′ : propext 𝓤
  pe′ = univalence-gives-propext (ua 𝓤)
 
  open SpectralScottLocaleConstruction 𝓓 hl hscb dc bc pe
+
+ σ⦅𝓓⦆ : Locale (𝓤 ⁺) 𝓤 𝓤
+ σ⦅𝓓⦆ = Σ[𝓓]
 
  scott-locale-spectralᴰ : spectralᴰ Σ[𝓓]
  scott-locale-spectralᴰ = σᴰ

@@ -55,8 +55,8 @@
 
      (https://www.cs.bham.ac.uk/~mhe/TypeTopology/AllModulesIndex.html)
 
-   * In our last count, on 22nd February 2024, this development has
-     722 files and 204k lines of code, including comments and blank
+   * In our last count, on 2024.05.17, this development has 753 Agda
+     files with 211k lines of code, including comments and blank
      lines. But we don't update the count frequently.
 
 Philosophy of the repository
@@ -129,6 +129,7 @@ import ContinuityAxiom.index
 import Coslice.index
 import CrossedModules.index
 import DedekindReals.index
+import DiscreteGraphicMonoids.index
 import DomainTheory.index
 import Dominance.index
 import Duploids.index
