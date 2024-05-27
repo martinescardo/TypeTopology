@@ -49,6 +49,7 @@ open import Locales.ContinuousMap.FrameHomomorphism-Properties pt fe
 open import Locales.Frame pt fe
 open import Locales.InitialFrame pt fe hiding (_⊑_)
 open import Locales.LawsonLocale.CompactElementsOfPoint 𝓤 fe pe pt sr
+open import Locales.Point.SpectralPoint-Definition pt fe
 open import Locales.ScottLocale.Definition pt fe 𝓤
 open import Locales.ScottLocale.Properties pt fe 𝓤
 open import Locales.ScottLocale.ScottLocalesOfAlgebraicDcpos pt fe 𝓤
@@ -444,7 +445,12 @@ Given any sharp element `𝓍`, the point `pt 𝓍` is a spectral map.
 
 \begin{code}
 
- sharp : (ℱ : Point σ⦅𝓓⦆) → is-spectral-map σ⦅𝓓⦆ (𝟏Loc pe) ℱ holds → ♯𝓓
- sharp ℱ@(F , _) σ = sharp₀ ℱ , sharp₀-gives-sharp-elements ℱ σ
+ open Notion-Of-Spectral-Point pe
+
+ sharp : Spectral-Point σ⦅𝓓⦆ → ♯𝓓
+ sharp ℱ = sharp₀ F· , sharp₀-gives-sharp-elements F· σ
+  where
+   open Spectral-Point σ⦅𝓓⦆ ℱ
+    renaming (point-fn to F; point to F·; point-preserves-compactness to σ)
 
 \end{code}
