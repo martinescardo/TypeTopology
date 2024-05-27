@@ -48,6 +48,9 @@ The simulations make the ordinals into a poset:
 _⊴_ : Ordinal 𝓤 → Ordinal 𝓥 → 𝓤 ⊔ 𝓥 ̇
 α ⊴ β = Σ f ꞉ (⟨ α ⟩ → ⟨ β ⟩) , is-simulation α β f
 
+[_,_]⟨_⟩ : (α : Ordinal 𝓤) (β : Ordinal 𝓥) → α ⊴ β → ⟨ α ⟩ → ⟨ β ⟩
+[ α , β ]⟨ f ⟩ = pr₁ f
+
 ⊴-gives-↪ : (α : Ordinal 𝓤)
             (β : Ordinal 𝓥)
           → α ⊴ β
