@@ -440,6 +440,10 @@ Given any sharp element `𝓍`, the point `pt 𝓍` is a spectral map.
    case₂ : ¬ (F ↑ˢ[ c , 𝕜 ] holds) → is-decidableₚ (c ⊑ sharp₀ ℱ) holds
    case₂ χ = inr λ q → χ (lemma-6-⇒ ℱ c 𝕜 q)
 
+\end{code}
+
+\begin{code}
+
  sharp : (ℱ : Point σ⦅𝓓⦆) → is-spectral-map σ⦅𝓓⦆ (𝟏Loc pe) ℱ holds → ♯𝓓
  sharp ℱ@(F , _) σ = sharp₀ ℱ , sharp₀-gives-sharp-elements ℱ σ
 
