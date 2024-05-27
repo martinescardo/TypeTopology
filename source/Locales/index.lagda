@@ -101,8 +101,8 @@ import Locales.Spectrality.LatticeOfCompactOpens
 import Locales.Spectrality.SpectralMapToLatticeHomomorphism
 
 import Locales.Point.Definition                  -- (36)
-
 import Locales.Point.Properties                  -- (37)
+import Locales.Point.SpectralPoint-Definition
 
 import Locales.TerminalLocale.Properties
 

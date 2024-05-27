@@ -78,12 +78,21 @@ homomorphism `point-fn.
 
 \end{code}
 
-We now prove the equivalence of this definition
+This record-based definition is of course just a more verbose way of writing
+“spectral map into the initial frame”. We call this alternative definition
+`Spectral-Point₀` and prove its equivalence to the type `Spectral-Point`.
 
 \begin{code}
 
- to-spectral-map-into-Ω : Spectral-Point → Spectral-Map (𝟏Loc pe) X
- to-spectral-map-into-Ω sp = (point-fn , †) , point-preserves-compactness
+ Spectral-Point₀ : 𝓤 ⁺  ̇
+ Spectral-Point₀ = Spectral-Map (𝟏Loc pe) X
+
+\end{code}
+
+\begin{code}
+
+ to-spectral-point₀ : Spectral-Point → Spectral-Point₀
+ to-spectral-point₀ sp = (point-fn , †) , point-preserves-compactness
   where
    open Spectral-Point sp
 
@@ -109,11 +118,37 @@ We now prove the equivalence of this definition
 \begin{code}
 
  spectral-point-equivalent-to-spectral-map-into-Ω
-  : Spectral-Map (𝟏Loc pe) X ≃ Spectral-Point
+  : Spectral-Point₀ ≃ Spectral-Point
  spectral-point-equivalent-to-spectral-map-into-Ω =
   to-spectral-point , qinvs-are-equivs to-spectral-point †
    where
     † : qinv to-spectral-point
-    † = to-spectral-map-into-Ω , (λ _ → refl) , (λ _ → refl)
+    † = to-spectral-point₀ , (λ _ → refl) , (λ _ → refl)
+
+\end{code}
+
+\begin{code}
+
+ open Spectral-Point
+
+ to-spectral-point-＝ : (ℱ 𝒢 : Spectral-Point)
+                      → point-fn ℱ ＝ point-fn 𝒢
+                      → ℱ ＝ 𝒢
+ to-spectral-point-＝ ℱ 𝒢 p =
+  ℱ                                          ＝⟨ Ⅰ ⟩
+  to-spectral-point (to-spectral-point₀ ℱ)   ＝⟨ Ⅱ ⟩
+  to-spectral-point (to-spectral-point₀ 𝒢)   ＝⟨ Ⅲ ⟩
+  𝒢                                          ∎
+  where
+   e = spectral-point-equivalent-to-spectral-map-into-Ω
+
+   † : to-spectral-point₀ ℱ ＝ to-spectral-point₀ 𝒢
+   † = to-subtype-＝
+        (holds-is-prop ∘ is-spectral-map X (𝟏Loc pe))
+        (to-subtype-＝ (holds-is-prop ∘ is-a-frame-homomorphism) p)
+
+   Ⅰ = inverses-are-sections' e ℱ
+   Ⅱ = ap to-spectral-point †
+   Ⅲ = inverses-are-sections' e 𝒢 ⁻¹
 
 \end{code}

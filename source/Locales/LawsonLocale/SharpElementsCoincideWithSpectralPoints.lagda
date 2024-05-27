@@ -8,7 +8,7 @@ The formalization of a proof.
 
 \begin{code}
 
-{--# OPTIONS --safe --without-K --lossy-unification #--}
+{-# OPTIONS --safe --without-K --lossy-unification #-}
 
 open import MLTT.Spartan
 open import MLTT.List hiding ([_])
@@ -60,6 +60,7 @@ open import Locales.TerminalLocale.Properties pt fe sr
 open import NotionsOfDecidability.Decidable
 open import NotionsOfDecidability.SemiDecidable fe pe pt
 open import Slice.Family
+open import UF.Equiv
 open import UF.Logic
 open import UF.Subsingletons-FunExt
 open import UF.Subsingletons-Properties
@@ -189,6 +190,14 @@ algebraic dcpo, however, we could define a small version.
 
  ♯𝓓 : 𝓤 ⁺  ̇
  ♯𝓓 = Σ x ꞉ ⟨ 𝓓 ⟩∙ , is-sharp x holds
+
+\end{code}
+
+\begin{code}
+
+ abstract
+  to-sharp-＝ : (𝓍 𝓎 : ♯𝓓) → pr₁ 𝓍 ＝ pr₁ 𝓎 → 𝓍 ＝ 𝓎
+  to-sharp-＝ 𝓍 𝓎 = to-subtype-＝ (holds-is-prop ∘ is-sharp)
 
 \end{code}
 
@@ -375,15 +384,20 @@ Given any sharp element `𝓍`, the point `pt 𝓍` is a spectral map.
    † : is-decidableₚ (x ∈ₛ (K , σ)) holds
    † = sharp-implies-admits-decidable-membership-in-compact-scott-opens x 𝓈𝒽 𝒦 𝕜
 
+ open Notion-Of-Spectral-Point pe
+
+ 𝓅𝓉[_] : ♯𝓓 → Spectral-Point σ⦅𝓓⦆
+ 𝓅𝓉[_] 𝓍 = to-spectral-point σ⦅𝓓⦆ ℱ
+  where
+   ℱ : Spectral-Map (𝟏Loc pe) σ⦅𝓓⦆
+   ℱ = pt[ 𝓍 ] , pt-is-spectral 𝓍
+
 \end{code}
 
 \begin{code}
 
  sharp₀ : Point σ⦅𝓓⦆ → ⟨ 𝓓 ⟩∙
- sharp₀ F = ⋁ (𝒦-in-point F , δ)
-  where
-   δ : is-Directed 𝓓 (𝒦-in-point F [_])
-   δ = 𝒦-in-point-is-directed F
+ sharp₀ ℱ = ∐ 𝓓 (𝒦-in-point-is-directed ℱ)
 
  lemma-6-⇒ : (ℱ@(F , _) : Point σ⦅𝓓⦆) (c : ⟨ 𝓓 ⟩∙) (𝕜 : is-compact 𝓓 c)
          → c ⊑⟨ 𝓓 ⟩ sharp₀ ℱ → F ↑ˢ[ c , 𝕜 ] holds
@@ -445,12 +459,139 @@ Given any sharp element `𝓍`, the point `pt 𝓍` is a spectral map.
 
 \begin{code}
 
- open Notion-Of-Spectral-Point pe
-
  sharp : Spectral-Point σ⦅𝓓⦆ → ♯𝓓
  sharp ℱ = sharp₀ F· , sharp₀-gives-sharp-elements F· σ
   where
    open Spectral-Point σ⦅𝓓⦆ ℱ
     renaming (point-fn to F; point to F·; point-preserves-compactness to σ)
+
+\end{code}
+
+\begin{code}
+
+ ⦅_⦆ : ♯𝓓 → ⟨ 𝓓 ⟩∙
+ ⦅_⦆ (x , _) = x
+
+\end{code}
+
+We now proceed to prove that the type of sharp elements is equivalent to the
+type of spectral points.
+
+\begin{code}
+
+ abstract
+  lemma₁ : (x : ⟨ 𝓓 ⟩∙) (𝕤 : is-sharp x holds) (c : ⟨ 𝓓 ⟩∙)
+         → is-compact 𝓓 c
+         → c ⊑⟨ 𝓓 ⟩ x
+         → c ⊑⟨ 𝓓 ⟩ (⋁ 𝒦-in-point↑ pt[ (x , 𝕤) ])
+  lemma₁ x 𝕤 c κ p = ∥∥-rec (prop-valuedness 𝓓 c (sharp₀ pt[ x , 𝕤 ])) † γ
+   where
+    † : (Σ i ꞉ index B𝓓 , B𝓓 [ i ] ＝ c) → c ⊑⟨ 𝓓 ⟩ sharp₀ pt[ x , 𝕤 ]
+    † (i , q) = transport (λ - → underlying-order 𝓓 - (sharp₀ pt[ x , 𝕤 ])) q ‡
+     where
+      r : (B𝓓 [ i ]) ⊑⟨ 𝓓 ⟩ x
+      r = transport (λ - → - ⊑⟨ 𝓓 ⟩ x) (q ⁻¹) p
+
+      ‡ : (B𝓓 [ i ]) ⊑⟨ 𝓓 ⟩ sharp₀ pt[ x , 𝕤 ]
+      ‡ = sup-is-upperbound (underlying-order 𝓓)
+           (⋁-is-sup (𝒦-in-point↑ pt[ x , 𝕤 ])) (i , r)
+
+    γ : ∃ i ꞉ index B𝓓 , B𝓓 [ i ] ＝ c
+    γ = small-compact-basis-contains-all-compact-elements 𝓓 (B𝓓 [_]) scb c κ
+
+ lemma₃ : (x : ⟨ 𝓓 ⟩∙) (𝕤 : is-sharp x holds) (c : ⟨ 𝓓 ⟩∙)
+        → is-compact 𝓓 c
+        → ∃ i ꞉ (index (𝒦-in-point pt[ (x , 𝕤) ])) , c ＝ 𝒦-in-point pt[ (x , 𝕤) ] [ i ]
+        → c ⊑⟨ 𝓓 ⟩ x
+ lemma₃ x 𝕤 c κ = ∥∥-rec (prop-valuedness 𝓓 c x) †
+  where
+   † : Σ i ꞉ (index (𝒦-in-point pt[ (x , 𝕤) ])) , c ＝ 𝒦-in-point pt[ x , 𝕤 ] [ i ]
+     → c ⊑⟨ 𝓓 ⟩ x
+   † ((i , foo) , r) = transport (λ - → - ⊑⟨ 𝓓 ⟩ x) (r ⁻¹) foo
+
+ abstract
+  lemma₄ : (x : ⟨ 𝓓 ⟩∙) (𝕤 : is-sharp x holds)
+         → ∐ 𝓓 (↓ᴮₛ-is-directed x) ＝ ∐ 𝓓 (𝒦-in-point-is-directed pt[ (x , 𝕤) ])
+  lemma₄ x 𝕤 =
+   antisymmetry 𝓓 (∐ 𝓓 (↓ᴮₛ-is-directed x)) (⋁ 𝒦-in-point↑ pt[ (x , 𝕤) ]) † ‡
+    where
+     abstract
+      † : (∐ 𝓓 (↓ᴮₛ-is-directed x)) ⊑⟨ 𝓓 ⟩ (⋁ 𝒦-in-point↑ pt[ (x , 𝕤) ])
+      † = ∐-is-lowerbound-of-upperbounds
+           𝓓
+           (↓ᴮₛ-is-directed x)
+           (⋁ 𝒦-in-point↑ pt[ x , 𝕤 ])
+           goal
+            where
+             goal : (i : ↓ᴮₛ x) →
+                     underlying-order 𝓓 (↓-inclusionₛ x i) (⋁ 𝒦-in-point↑ pt[ x , 𝕤 ])
+             goal (i , q) = lemma₁ x 𝕤 (B𝓓 [ i ]) (pr₂ (βₖ i)) (⊑ᴮₛ-to-⊑ᴮ q)
+
+      ‡ : ((⋁ 𝒦-in-point↑ pt[ (x , 𝕤) ]) ⊑⟨ 𝓓 ⟩ ∐ 𝓓 (↓ᴮₛ-is-directed x))
+      ‡ = sup-is-lowerbound-of-upperbounds
+           (underlying-order 𝓓)
+           (⋁-is-sup (𝒦-in-point↑ pt[ (x , 𝕤) ]))
+           (∐ 𝓓 (↓ᴮₛ-is-directed x))
+           goal
+            where
+             goal : is-upperbound
+                     (underlying-order 𝓓)
+                     (∐ 𝓓 (↓ᴮₛ-is-directed x))
+                     (𝒦-in-point pt[ x , 𝕤 ] [_])
+             goal (i , q) = ∐-is-upperbound 𝓓 (↓ᴮₛ-is-directed x) (i , ⊑ᴮ-to-⊑ᴮₛ q)
+
+ sharp-cancels-pt : (𝓍 : ♯𝓓) → sharp 𝓅𝓉[ 𝓍 ] ＝ 𝓍
+ sharp-cancels-pt 𝓍@(x , 𝕤) = to-sharp-＝ (sharp 𝓅𝓉[ 𝓍 ]) 𝓍 †
+  where
+   † : ⦅ sharp 𝓅𝓉[ 𝓍 ] ⦆ ＝ x
+   † = ⦅ sharp 𝓅𝓉[ 𝓍 ] ⦆        ＝⟨ Ⅰ ⟩
+       ∐ 𝓓 (↓ᴮₛ-is-directed x)  ＝⟨ Ⅱ ⟩
+       ⦅ 𝓍 ⦆                    ∎
+        where
+         Ⅰ = lemma₄ x 𝕤 ⁻¹
+         Ⅱ = ↓ᴮₛ-∐-＝ ⦅ 𝓍 ⦆
+
+ open PropertiesAlgebraic 𝓓 𝕒
+
+ pt-cancels-sharp : (ℱ : Spectral-Point σ⦅𝓓⦆) → 𝓅𝓉[ sharp ℱ ] ＝ ℱ
+ pt-cancels-sharp ℱ =
+  to-spectral-point-＝ σ⦅𝓓⦆ 𝓅𝓉[ sharp ℱ ] ℱ (dfunext fe †)
+   where
+    open Spectral-Point σ⦅𝓓⦆ ℱ renaming (point-fn to F; point to ℱ₀)
+
+    †₁ : (𝔘 : ⟨ 𝒪 σ⦅𝓓⦆ ⟩) → (sharp₀ ℱ₀ ∈ₛ 𝔘 ⇒ F 𝔘) holds
+    †₁ 𝔘@(U , s) μ = {!lemma-6-⇐ ℱ₀ !}
+
+    †₂ : (𝔘 : ⟨ 𝒪 σ⦅𝓓⦆ ⟩) → (F 𝔘 ⇒ sharp₀ ℱ₀ ∈ₛ 𝔘) holds
+    †₂ 𝔘@(U , s) μ = {!!}
+     where
+      foo : {!!}
+      foo = {!pr₁ (characterization-of-scott-opens U s ?)!}
+
+    † : (𝔘 : ⟨ 𝒪 σ⦅𝓓⦆ ⟩) → (sharp₀ ℱ₀ ∈ₛ 𝔘) ＝ F 𝔘
+    † 𝔘@(U , s) = transport (λ - → (sharp₀ ℱ₀ ∈ₛ -) ＝ F -) (q ⁻¹) nts
+     where
+      S : Fam 𝓤 ⟨ 𝒪 σ⦅𝓓⦆ ⟩
+      S = covering-familyₛ σ⦅𝓓⦆ σᴰ 𝔘
+
+      q : 𝔘 ＝ ⋁[ 𝒪 σ⦅𝓓⦆ ] S
+      q = basisₛ-covers-do-cover-eq σ⦅𝓓⦆ σᴰ 𝔘
+
+      nts : sharp₀ ℱ₀ ∈ₛ (⋁[ 𝒪 σ⦅𝓓⦆ ] S) ＝ F (⋁[ 𝒪 σ⦅𝓓⦆ ] S)
+      nts = sharp₀ ℱ₀ ∈ₛ (⋁[ 𝒪 σ⦅𝓓⦆ ] S)                  ＝⟨ refl ⟩
+            pt₀[ sharp₀ ℱ₀ ] (⋁[ 𝒪 σ⦅𝓓⦆ ] S)              ＝⟨ Ⅰ ⟩
+            ⋁[ 𝟎-𝔽𝕣𝕞 pe ] ⁅ pt₀[ sharp₀ ℱ₀ ] 𝔘 ∣ 𝔘  ε S ⁆  ＝⟨ refl ⟩
+            ⋁[ 𝟎-𝔽𝕣𝕞 pe ] ⁅ sharp₀ ℱ₀ ∈ₛ 𝔘 ∣ 𝔘 ε S ⁆       ＝⟨ {!!} ⟩
+            ⋁[ 𝟎-𝔽𝕣𝕞 pe ] ⁅ F 𝔘 ∣ 𝔘 ε S ⁆                  ＝⟨ Ⅴ ⟩
+            F (⋁[ 𝒪 σ⦅𝓓⦆ ] S)                              ∎
+             where
+              Ⅰ = frame-homomorphisms-preserve-all-joins′ (𝒪 σ⦅𝓓⦆) (𝟎-𝔽𝕣𝕞 pe) pt[ sharp ℱ ] S
+              Ⅴ = frame-homomorphisms-preserve-all-joins′ (𝒪 σ⦅𝓓⦆) (𝟎-𝔽𝕣𝕞 pe) ℱ₀ S ⁻¹
+
+ ♯𝓓-equivalent-to-spectral-points-of-σ⦅𝓓⦆ : ♯𝓓 ≃ Spectral-Point σ⦅𝓓⦆
+ ♯𝓓-equivalent-to-spectral-points-of-σ⦅𝓓⦆ = 𝓅𝓉[_] , qinvs-are-equivs 𝓅𝓉[_] †
+  where
+   † : qinv 𝓅𝓉[_]
+   † = sharp , sharp-cancels-pt , pt-cancels-sharp
 
 \end{code}
