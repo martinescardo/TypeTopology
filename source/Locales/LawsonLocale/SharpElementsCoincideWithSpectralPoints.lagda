@@ -586,9 +586,6 @@ type of spectral points.
  final-lemma (k ∷ ks) ℱ@(F , _) p =
   ∥∥-rec (holds-is-prop ((sharp₀ ℱ ∈ₛ 𝜸 (k ∷ ks)))) ‡ †
    where
-    IH : (sharp₀ ℱ ∈ₛ 𝜸 ks) holds
-    IH = final-lemma ks ℱ {!!}
-
     foo : F (𝜸 (k ∷ ks)) ＝ F ↑ᵏ[ k ] ∨ F (𝜸 ks)
     foo = F (𝜸 (k ∷ ks))                     ＝⟨ ap F (𝜸-equal-to-𝜸₁ (k ∷ ks)) ⟩
           F (𝜸₁ (k ∷ ks))                    ＝⟨ frame-homomorphisms-preserve-binary-joins ℱ _ _  ⟩
@@ -625,7 +622,7 @@ type of spectral points.
       nts₁ k = ∣ k , another-lemma (S [ k ]) ℱ₀ ∣
 
       nts₂ : cofinal-in (𝟎-𝔽𝕣𝕞 pe) ⁅ F 𝔘 ∣ 𝔘 ε S ⁆ ⁅ sharp₀ ℱ₀ ∈ₛ 𝔘 ∣ 𝔘 ε S ⁆ holds
-      nts₂ (ks , p) = {!final-lemma!}
+      nts₂ (ks , p) = ∣ (ks , p) , final-lemma ks ℱ₀ ∣
 
       nts : sharp₀ ℱ₀ ∈ₛ (⋁[ 𝒪 σ⦅𝓓⦆ ] S) ＝ F (⋁[ 𝒪 σ⦅𝓓⦆ ] S)
       nts = sharp₀ ℱ₀ ∈ₛ (⋁[ 𝒪 σ⦅𝓓⦆ ] S)                  ＝⟨ refl ⟩
