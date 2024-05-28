@@ -248,6 +248,10 @@ Some more results that may become useful at some point.
 path-to-ordinal-⊏ : {b : B} (p : PathThroughS b) → Path-to-ordinal p ⊏ b
 path-to-ordinal-⊏ p = p , ⊑-refl (Path-to-ordinal p)
 
+S-is-monotonic : (b c : B)
+               → b ⊑ c
+               → S b ⊑ S c
+S-is-monotonic b c h = S-⊑ b (S c) (stop c) h
 
 L-is-monotonic : (ϕ ψ : ℕ → B)
                → ((n : ℕ) → ϕ n ⊑ ψ n)
