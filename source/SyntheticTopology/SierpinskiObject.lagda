@@ -1,6 +1,7 @@
 ---
-authors:      ["Ayberk Tosun", "Martin Trucchi"]
-date-started: 2024-05-02
+authors:       ["Ayberk Tosun", "Martin Trucchi"]
+date-started:  2024-05-02
+dates-updated: [2024-05-28]
 ---
 
 \begin{code}
@@ -65,8 +66,8 @@ notion of Sierpiński object as follows:
 
 \begin{code}
 
-Generalized-Sierpinski-Object[_] : (𝓥 𝓤 : Universe) → (𝓤 ⊔ 𝓥) ⁺  ̇
-Generalized-Sierpinski-Object[_] 𝓥 𝓤 = Ω 𝓤 → Ω 𝓥
+Generalized-Sierpinski-Object : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥) ⁺  ̇
+Generalized-Sierpinski-Object 𝓤 𝓥 = Ω 𝓤 → Ω 𝓥
 
 \end{code}
 
@@ -82,7 +83,7 @@ Davorin Lešnik).
 
 \begin{code}
 
-module Sierpinski-notations (𝕊 : Generalized-Sierpinski-Object[ 𝓥 ] 𝓤) where
+module Sierpinski-notations (𝕊 : Generalized-Sierpinski-Object 𝓤 𝓥) where
 
 \end{code}
 
