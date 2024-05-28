@@ -49,6 +49,7 @@ open import Locales.ContinuousMap.FrameHomomorphism-Properties pt fe
 open import Locales.Frame pt fe
 open import Locales.InitialFrame pt fe hiding (_⊑_)
 open import Locales.LawsonLocale.CompactElementsOfPoint 𝓤 fe pe pt sr
+open import Locales.Point.Definition pt fe
 open import Locales.Point.SpectralPoint-Definition pt fe
 open import Locales.ScottLocale.Definition pt fe 𝓤
 open import Locales.ScottLocale.Properties pt fe 𝓤
@@ -64,7 +65,7 @@ open import UF.Equiv
 open import UF.Logic
 open import UF.Subsingletons-FunExt
 open import UF.Subsingletons-Properties
-open import UF.SubtypeClassifier
+open import UF.SubtypeClassifier renaming (⊥ to ⊥ₚ)
 
 open AllCombinators pt fe
 open DefinitionOfScottDomain
@@ -553,20 +554,63 @@ type of spectral points.
 
  open PropertiesAlgebraic 𝓓 𝕒
 
+ another-lemma : (𝔘 : ⟨ 𝒪 σ⦅𝓓⦆ ⟩) (ℱ@(F , _) : Point σ⦅𝓓⦆)
+               → (sharp₀ ℱ ∈ₛ 𝔘 ⇒ F 𝔘) holds
+ another-lemma 𝔘 ℱ@(F , 𝒽) = †
+  where
+   open 𝒪ₛᴿ (to-𝒪ₛᴿ 𝔘)
+
+   † : (sharp₀ ℱ ∈ₛ 𝔘 ⇒ F 𝔘) holds
+   † p = ∥∥-rec (holds-is-prop (F 𝔘)) †₁ (pred-is-inaccessible-by-dir-joins (𝒦-in-point↑ ℱ) p)
+    where
+     †₁ : Σ i ꞉ index (pr₁ (𝒦-in-point↑ ℱ)) , pred (pr₁ (𝒦-in-point↑ ℱ) [ i ]) holds
+       → F 𝔘 holds
+     †₁ ((a , b) , c) = frame-morphisms-are-monotonic F 𝒽 (↑ˢ[ βₖ a ] , 𝔘) foo b
+      where
+       foo : (↑ˢ[ βₖ a ] ≤[ poset-of (𝒪 σ⦅𝓓⦆) ] 𝔘) holds
+       foo x = pred-is-upwards-closed (B𝓓 [ a ]) (B𝓓 [ x ]) c
+
+ final-lemma : (ks : List (index B𝓓)) (ℱ@(F , _) : Point σ⦅𝓓⦆)
+             → (F (𝜸 ks) ⇒ sharp₀ ℱ ∈ₛ 𝜸 ks) holds
+ final-lemma []       ℱ@(F , _) p = 𝟘-elim quux
+  where
+   φ : F 𝟎[ 𝒪 σ⦅𝓓⦆ ] holds
+   φ = transport (λ - → (F -) holds) (𝜸-equal-to-𝜸₁ []) p
+
+   baz : 𝟎[ 𝟎-𝔽𝕣𝕞 pe ] holds
+   baz = transport _holds (frame-homomorphisms-preserve-bottom ℱ) φ
+
+   quux : ⊥ₚ holds
+   quux = transport (λ - → - holds) (𝟎-is-⊥ pe ⁻¹) baz
+
+ final-lemma (k ∷ ks) ℱ@(F , _) p =
+  ∥∥-rec (holds-is-prop ((sharp₀ ℱ ∈ₛ 𝜸 (k ∷ ks)))) ‡ †
+   where
+    IH : (sharp₀ ℱ ∈ₛ 𝜸 ks) holds
+    IH = final-lemma ks ℱ {!!}
+
+    foo : F (𝜸 (k ∷ ks)) ＝ F ↑ᵏ[ k ] ∨ F (𝜸 ks)
+    foo = F (𝜸 (k ∷ ks))                     ＝⟨ ap F (𝜸-equal-to-𝜸₁ (k ∷ ks)) ⟩
+          F (𝜸₁ (k ∷ ks))                    ＝⟨ frame-homomorphisms-preserve-binary-joins ℱ _ _  ⟩
+          F ↑ᵏ[ k ] ∨[ 𝟎-𝔽𝕣𝕞 pe ] F (𝜸₁ ks)  ＝⟨ Ⅲ ⟩
+          F ↑ᵏ[ k ] ∨[ 𝟎-𝔽𝕣𝕞 pe ] F (𝜸 ks)   ＝⟨ Ⅳ ⟩
+          F ↑ᵏ[ k ] ∨ F (𝜸 ks)               ∎
+           where
+            Ⅲ = ap (λ - → F ↑ᵏ[ k ] ∨[ 𝟎-𝔽𝕣𝕞 pe ] F -) (𝜸-equal-to-𝜸₁ ks ⁻¹)
+            Ⅳ = binary-join-is-disjunction pe (F ↑ᵏ[ k ]) (F (𝜸 ks))
+
+    † : (F ↑ᵏ[ k ] ∨ F (𝜸 ks)) holds
+    † = transport _holds foo p
+
+    ‡ : F ↑ᵏ[ k ] holds + F (𝜸 ks) holds → (sharp₀ ℱ ∈ₛ 𝜸 (k ∷ ks)) holds
+    ‡ (inl p) = ∣ inl (∐-is-upperbound 𝓓 (𝒦-in-point-is-directed ℱ) (k , p)) ∣
+    ‡ (inr q) = ∣ inr (final-lemma ks ℱ q) ∣
+
  pt-cancels-sharp : (ℱ : Spectral-Point σ⦅𝓓⦆) → 𝓅𝓉[ sharp ℱ ] ＝ ℱ
  pt-cancels-sharp ℱ =
   to-spectral-point-＝ σ⦅𝓓⦆ 𝓅𝓉[ sharp ℱ ] ℱ (dfunext fe †)
    where
     open Spectral-Point σ⦅𝓓⦆ ℱ renaming (point-fn to F; point to ℱ₀)
-
-    †₁ : (𝔘 : ⟨ 𝒪 σ⦅𝓓⦆ ⟩) → (sharp₀ ℱ₀ ∈ₛ 𝔘 ⇒ F 𝔘) holds
-    †₁ 𝔘@(U , s) μ = {!lemma-6-⇐ ℱ₀ !}
-
-    †₂ : (𝔘 : ⟨ 𝒪 σ⦅𝓓⦆ ⟩) → (F 𝔘 ⇒ sharp₀ ℱ₀ ∈ₛ 𝔘) holds
-    †₂ 𝔘@(U , s) μ = {!!}
-     where
-      foo : {!!}
-      foo = {!pr₁ (characterization-of-scott-opens U s ?)!}
 
     † : (𝔘 : ⟨ 𝒪 σ⦅𝓓⦆ ⟩) → (sharp₀ ℱ₀ ∈ₛ 𝔘) ＝ F 𝔘
     † 𝔘@(U , s) = transport (λ - → (sharp₀ ℱ₀ ∈ₛ -) ＝ F -) (q ⁻¹) nts
@@ -577,11 +621,17 @@ type of spectral points.
       q : 𝔘 ＝ ⋁[ 𝒪 σ⦅𝓓⦆ ] S
       q = basisₛ-covers-do-cover-eq σ⦅𝓓⦆ σᴰ 𝔘
 
+      nts₁ : cofinal-in (𝟎-𝔽𝕣𝕞 pe) ⁅ sharp₀ ℱ₀ ∈ₛ 𝔘 ∣ 𝔘 ε S ⁆ ⁅ F 𝔘 ∣ 𝔘 ε S ⁆ holds
+      nts₁ k = ∣ k , another-lemma (S [ k ]) ℱ₀ ∣
+
+      nts₂ : cofinal-in (𝟎-𝔽𝕣𝕞 pe) ⁅ F 𝔘 ∣ 𝔘 ε S ⁆ ⁅ sharp₀ ℱ₀ ∈ₛ 𝔘 ∣ 𝔘 ε S ⁆ holds
+      nts₂ (ks , p) = {!final-lemma!}
+
       nts : sharp₀ ℱ₀ ∈ₛ (⋁[ 𝒪 σ⦅𝓓⦆ ] S) ＝ F (⋁[ 𝒪 σ⦅𝓓⦆ ] S)
       nts = sharp₀ ℱ₀ ∈ₛ (⋁[ 𝒪 σ⦅𝓓⦆ ] S)                  ＝⟨ refl ⟩
             pt₀[ sharp₀ ℱ₀ ] (⋁[ 𝒪 σ⦅𝓓⦆ ] S)              ＝⟨ Ⅰ ⟩
             ⋁[ 𝟎-𝔽𝕣𝕞 pe ] ⁅ pt₀[ sharp₀ ℱ₀ ] 𝔘 ∣ 𝔘  ε S ⁆  ＝⟨ refl ⟩
-            ⋁[ 𝟎-𝔽𝕣𝕞 pe ] ⁅ sharp₀ ℱ₀ ∈ₛ 𝔘 ∣ 𝔘 ε S ⁆       ＝⟨ {!!} ⟩
+            ⋁[ 𝟎-𝔽𝕣𝕞 pe ] ⁅ sharp₀ ℱ₀ ∈ₛ 𝔘 ∣ 𝔘 ε S ⁆       ＝⟨ bicofinal-implies-same-join (𝟎-𝔽𝕣𝕞 pe) ⁅ sharp₀ ℱ₀ ∈ₛ 𝔘 ∣ 𝔘 ε S ⁆ ⁅ F 𝔘 ∣ 𝔘 ε S ⁆ nts₁ nts₂ ⟩
             ⋁[ 𝟎-𝔽𝕣𝕞 pe ] ⁅ F 𝔘 ∣ 𝔘 ε S ⁆                  ＝⟨ Ⅴ ⟩
             F (⋁[ 𝒪 σ⦅𝓓⦆ ] S)                              ∎
              where
