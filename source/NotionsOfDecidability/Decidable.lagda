@@ -101,7 +101,7 @@ module _ (pt : propositional-truncations-exist) where
  open Disjunction pt
  open PropositionalTruncation pt using (∣_∣; ∥∥-rec)
 
- ∨-preserves-decidability : (P Q : Ω 𝓤)
+ ∨-preserves-decidability : (P : Ω 𝓤) (Q : Ω 𝓥)
                           → is-decidable (P holds)
                           → is-decidable (Q holds)
                           → is-decidable ((P ∨ Q) holds)
