@@ -55,7 +55,7 @@ to:
 \begin{code}
 
 Sierpinski-Object₀ : 𝓤 ⁺  ̇
-Sierpinski-Object₀ = Subtypes' 𝓤 (Ω 𝓤)
+Sierpinski-Object₀ = Subtype' 𝓤 (Ω 𝓤)
 
 \end{code}
 
