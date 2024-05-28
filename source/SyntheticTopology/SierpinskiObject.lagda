@@ -229,8 +229,8 @@ open predicates is affirmable.
 
 \begin{code}
 
- is-compact' : hSet 𝓤  → Ω (𝓤 ⁺)
- is-compact' (X , sX) =
+ is-compact : hSet 𝓤  → Ω (𝓤 ⁺)
+ is-compact (X , sX) =
   Ɐ (P , open-P) ꞉ 𝓞 (X , sX) ,  is-affirmable (Ɐ x ꞉ X , (P x))
 
 \end{code}
@@ -242,7 +242,7 @@ The type `𝟙` is compact i.e. the empty product is compact.
  𝟙-is-set : is-set 𝟙
  𝟙-is-set = ?
 
- 𝟙-is-compact : is-compact' (𝟙 , 𝟙-is-set) holds
+ 𝟙-is-compact : is-compact (𝟙 , 𝟙-is-set) holds
  𝟙-is-compact P φ = ⇔-affirmable p (φ ⋆)
   where
    p : (P ⋆ ⇔ (Ɐ x ꞉ 𝟙 , P x)) holds
@@ -254,11 +254,11 @@ Binary products of compact types are compact.
 
 \begin{code}
 
- ×-is-compact' : {(X , sX) (Y , sY) : hSet 𝓤 }
-               → is-compact' (X , sX) holds
-               → is-compact' (Y , sY) holds
-               → is-compact'((X × Y) , (×-is-set sX sY)) holds
- ×-is-compact' {X , sX} {Y , sY} kX kY (P , open-P) = ⇔-affirmable p †
+ ×-is-compact : {(X , sX) (Y , sY) : hSet 𝓤 }
+               → is-compact (X , sX) holds
+               → is-compact (Y , sY) holds
+               → is-compact((X × Y) , (×-is-set sX sY)) holds
+ ×-is-compact {X , sX} {Y , sY} kX kY (P , open-P) = ⇔-affirmable p †
   where
    p : ((Ɐ x ꞉ X , (Ɐ y ꞉ Y , P (x , y))) ⇔ (Ɐ z ꞉ (X × Y) , P z) ) holds
    p =  (λ Qxy z → Qxy (pr₁ z) (pr₂ z)) , (λ Qz x' y' → Qz (x' , y') )
@@ -272,12 +272,12 @@ Images of compact types are compact.
 
 \begin{code}
 
- image-of-compact' : {(X , sX) (Y , sY) : hSet 𝓤}
+ image-of-compact : {(X , sX) (Y , sY) : hSet 𝓤}
                    → (f : X → Y)
                    → is-surjection f
-                   → is-compact' (X , sX) holds
-                   → is-compact' (Y , sY) holds
- image-of-compact' {X , sX} {Y , sY} f surf kX (P , open-P) = ⇔-affirmable p †
+                   → is-compact (X , sX) holds
+                   → is-compact (Y , sY) holds
+ image-of-compact {X , sX} {Y , sY} f surf kX (P , open-P) = ⇔-affirmable p †
   where
    p : ((Ɐ x ꞉ X , P (f x)) ⇔ (Ɐ y ꞉ Y , P y)) holds
    p = (λ pX y → surjection-induction f surf (_holds ∘ P) (λ y → holds-is-prop (P y)) pX y)
@@ -313,11 +313,11 @@ Sierpinski object's image.
 
 \begin{code}
 
- compact-Π-discrete-set : ((K , sK) : hSet 𝓤) → (X : K → hSet 𝓤)
-                        → is-compact' (K , sK) holds
+ compact-Π-discrete : ((K , sK) : hSet 𝓤) → (X : K → hSet 𝓤)
+                        → is-compact (K , sK) holds
                         → ((k : K) → is-discrete (X k) holds)
                         → is-discrete (Π (λ k → (underlying-set (X k))) , (Π-is-set fe (λ k → (pr₂ (X k))))) holds
- compact-Π-discrete-set (K , sK) X kK dX (x₁ , x₂) = ⇔-affirmable p †
+ compact-Π-discrete (K , sK) X kK dX (x₁ , x₂) = ⇔-affirmable p †
   where
    p :  ((k : K) →  ( (x₁ k) ＝ (x₂ k) ) ) ↔ (x₁ ＝ x₂)
    p = dfunext fe
@@ -337,6 +337,26 @@ Overtness:
  is-overt (X , sX) =
   Ɐ (P , open-P) ꞉ 𝓞 (X , sX) ,  is-affirmable (Ǝₚ x ꞉ X , P x)
 
+
+ image-of-overt :  {(X , sX) (Y , sY) : hSet 𝓤}
+                   → (f : X → Y)
+                   → is-surjection f
+                   → is-overt (X , sX) holds
+                   → is-overt (Y , sY) holds
+ image-of-overt {X , sX} {Y , sY} f surf overt-X (P , open-P) = ⇔-affirmable p †
+  where
+   p : ((Ǝₚ x ꞉ X , P (f x)) ⇔ (Ǝₚ y ꞉ Y , P y)) holds
+   p = (λ pX → ∥∥-rec (holds-is-prop (Ǝₚ y ꞉ Y , P y)) (λ (x , Pxf) → ∣ f x , Pxf  ∣) pX) ,
+          λ pY → ∥∥-rec (holds-is-prop (Ǝₚ x ꞉ X , P (f x)))
+                        (λ (y , Py) → ∥∥-rec (holds-is-prop (Ǝₚ x ꞉ X , P (f x))) (λ (x , x-eq-fy) → ∣ x ,  transport (λ y' → P y' holds) (x-eq-fy ⁻¹) Py ∣) (exists-preimage-of-y y) ) pY
+
+    where
+     exists-preimage-of-y : (y : Y) → ((Ǝₚ x ꞉ X , ((f x ＝ y) , sY)) holds)
+     exists-preimage-of-y y =
+        surjection-induction f surf (λ y → ((Ǝₚ x ꞉ X , ((f x ＝ y) , sY)) holds)) (λ y → holds-is-prop _) (λ x → ∣ x , refl  ∣) y
+   
+   † : is-affirmable (Ǝₚ x ꞉ X , P (f x)) holds
+   † = overt-X ((P ∘ f) , (open-P ∘ f))
 {-
  countable-are-overt : (is-overt (Lift 𝓤 ℕ) holds) → (is-overt (𝟘 {𝓤}) holds) → (X : 𝓤 ̇) → (f : ( (Lift 𝓤 ℕ) → (𝟙 {𝓤} ) + X)) → (is-surjection f) → (is-overt X holds)
  countable-are-overt overt-ℕ overt-𝟘 X f surf = λ P open-P → ⇔-affirmable (eq P) († P open-P) -- GENERALIZE INTO IMAGE OF OVERT ARE OVERT AND ℕ IS OVERT
