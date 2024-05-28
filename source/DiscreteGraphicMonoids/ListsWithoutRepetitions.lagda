@@ -7,9 +7,7 @@ The type of lists without repetitions, and various facts about it.
 
 {-# OPTIONS --safe --without-K #-}
 
-open import MLTT.Spartan
 open import UF.FunExt
-open import UF.DiscreteAndSeparated
 
 module DiscreteGraphicMonoids.ListsWithoutRepetitions
         (fe : Fun-Ext)
@@ -19,15 +17,17 @@ open import MLTT.List
             renaming (_∷_ to _•_ ;          -- typed as \bub
                       _++_ to _◦_ ;         -- typed as \buw
                       ++-assoc to ◦-assoc)
+open import MLTT.Spartan
 open import Naturals.Order
+open import Notation.CanonicalMap
 open import Notation.Order
 open import NotionsOfDecidability.Decidable
 open import UF.Base
+open import UF.DiscreteAndSeparated
 open import UF.Embeddings
 open import UF.Subsingletons
 
 module _
-         {𝓤 : Universe}
          {X : 𝓤 ̇ }
          {{d' : is-discrete' X}}
        where
@@ -39,7 +39,8 @@ module _
 \end{code}
 
 We first define a conditional `cons` operation, and then we use it to
-define the function δ that deletes an element from a list.
+define the function δ that deletes all occurences of an element from a
+list.
 
 \begin{code}
 
@@ -54,8 +55,9 @@ define the function δ that deletes an element from a list.
 
 \end{code}
 
-The following function δ' is used only during development, and, so
-far, doesn't occur in production code.
+The following function δ' is used only during development to prevent δ
+from reducing in more complicated expressions, and, so far, doesn't
+occur in production code.
 
 \begin{code}
 
@@ -177,6 +179,9 @@ one.
  ρ []       = []
  ρ (x • xs) = x • δ x (ρ xs)
 
+ ρ-is-non-empty : (xs : List X) → is-non-empty xs → is-non-empty (ρ xs)
+ ρ-is-non-empty (x • xs) cons-is-non-empty = cons-is-non-empty
+
 \end{code}
 
 The following function ρ' is used only during development, and, so
@@ -184,10 +189,9 @@ far, doesn't occur in production code.
 
 \begin{code}
 
- abstract
-  ρ' : List X → List X
-  ρ' []       = []
-  ρ' (x • xs) = x • δ' x (ρ' xs)
+ ρ' : List X → List X
+ ρ' []       = []
+ ρ' (x • xs) = x • δ' x (ρ' xs)
 
  δ-ρ-cancel : (x : X) (ys : List X)
             → δ x (ρ (x • ys)) ＝ δ x (ρ ys)
@@ -330,12 +334,53 @@ More generally, we have the following.
 
 \end{code}
 
+The following two technical lemmas, which are probably not very well
+named, and are used to show that the that monad of non-empty lists
+without repetitions is affine, in another module.WS
+
+\begin{code}
+
+ δ-deletion-lemma : (y : X) (xs : List X)
+                  → ¬ (Σ zs ꞉ List X , (δ y xs ＝ y • zs))
+ δ-deletion-lemma y (x • xs) (zs , p) = h (d y x)
+  where
+   h : ¬ is-decidable (y ＝ x)
+   h (inl refl) = δ-deletion-lemma y xs
+                   (zs , (δ y xs       ＝⟨ (δ-same y xs)⁻¹ ⟩
+                          δ y (y • xs) ＝⟨ p ⟩
+                          y • zs       ∎))
+
+   h (inr u) = u (equal-heads (y • zs       ＝⟨ p ⁻¹ ⟩
+                               δ y (x • xs) ＝⟨ δ-≠ y x xs u ⟩
+                               x • δ y xs   ∎))
+
+ repetition-lemma : (x : X) (xs : List X)
+                  → ¬ has-no-reps (x • x • xs)
+ repetition-lemma x xs p = δ-deletion-lemma x (x • xs) (xs , III)
+  where
+   have-p : ρ (x • x • xs) ＝ x • x • xs
+   have-p = p
+
+   remark : x • δ x (x • δ x (ρ xs)) ＝ x • x • xs
+   remark = p
+
+   I : ρ (x • xs) ＝ x • xs
+   I = ρ-tail x (x • xs) p
+
+   II : δ x (ρ (x • xs)) ＝ x • xs
+   II = equal-tails p
+
+   III : δ x (x • xs) ＝ x • xs
+   III = transport (λ - → δ x - ＝ x • xs) I II
+
+\end{code}
+
 We temporarily exit the above anonymous module to make the argument X
 explicit.
 
 \begin{code}
 
-List⁻ : {𝓤 : Universe} (X : 𝓤 ̇ ) {{_ : is-discrete' X}} → 𝓤 ̇
+List⁻ : (X : 𝓤 ̇ ) {{_ : is-discrete' X}} → 𝓤 ̇
 List⁻ X = Σ xs ꞉ List X , has-no-reps xs
 
 \end{code}
@@ -344,9 +389,7 @@ And now we work again in an anonymous module with X implicit.
 
 \begin{code}
 
-module _
-         {𝓤 : Universe}
-         {X : 𝓤 ̇ }
+module _ {X : 𝓤 ̇ }
          {{d' : is-discrete' X}}
        where
 
@@ -360,7 +403,11 @@ module _
  underlying-list : List⁻ X → List X
  underlying-list = pr₁
 
- underlying-list-has-no-reps : (xs : List⁻ X) → has-no-reps (underlying-list xs)
+ instance
+  canonical-map-List⁻-to-List : Canonical-Map (List⁻ X) (List X)
+  ι {{canonical-map-List⁻-to-List}} = underlying-list
+
+ underlying-list-has-no-reps : (𝔁𝓈 : List⁻ X) → has-no-reps (ι 𝔁𝓈)
  underlying-list-has-no-reps = pr₂
 
 \end{code}
@@ -411,16 +458,32 @@ The symbol ⊙ can be typed a "\o." or "\odot".
  underlying-list-is-embedding : is-embedding underlying-list
  underlying-list-is-embedding = pr₁-is-embedding having-no-reps-is-prop
 
- to-List⁻-＝ : {𝔁𝓼 𝔂𝓼 : List⁻ X}
-            → underlying-list 𝔁𝓼 ＝ underlying-list 𝔂𝓼
-            → 𝔁𝓼 ＝ 𝔂𝓼
+ to-List⁻-＝ : {𝔁𝓼 𝔂𝓼 : List⁻ X} → ι 𝔁𝓼 ＝ ι 𝔂𝓼 → 𝔁𝓼 ＝ 𝔂𝓼
  to-List⁻-＝ = to-subtype-＝ having-no-reps-is-prop
+
+ ·-lemma : (x : X) (xs : List X) (a : has-no-reps (x • xs))
+         → ((x • xs) , a) ＝[ List⁻ X ] (η⁻ x · (xs , ρ-tail x xs a))
+ ·-lemma x xs a =
+  to-List⁻-＝(x • xs         ＝⟨ ap (x •_) (equal-tails a)⁻¹ ⟩
+              x • δ x (ρ xs) ＝⟨ refl ⟩
+              ι (η⁻ x) ⊙ xs  ∎)
+   where
+    have-a : ρ (x • xs) ＝ x • xs
+    have-a = a
+
+    remark : x • δ x (ρ xs) ＝ x • xs
+    remark = a
+
+    b : ρ xs ＝ xs
+    b = ρ-tail x xs a
+
+    𝔁𝓼 : List⁻ X
+    𝔁𝓼 = xs , b
 
  List⁻-is-discrete : is-discrete (List⁻ X)
  List⁻-is-discrete (xs , _) (ys , _) with List-is-discrete xs ys
  ... | inl e = inl (to-List⁻-＝ e)
- ... | inr u = inr (λ (e : (xs , _) ＝ (ys , _))
-                         → u (ap underlying-list e))
+ ... | inr u = inr (λ (e : (xs , _) ＝ (ys , _)) → u (ap ι e))
 
  instance
   List⁻-is-discrete' : is-discrete' (List⁻ X)
@@ -429,17 +492,17 @@ The symbol ⊙ can be typed a "\o." or "\odot".
  []⁻-left-neutral : (𝔁𝓼 : List⁻ X) → []⁻ · 𝔁𝓼 ＝ 𝔁𝓼
  []⁻-left-neutral 𝔁𝓼 =
   to-List⁻-＝
-   (underlying-list ([]⁻ · 𝔁𝓼) ＝⟨ refl ⟩
-    ρ (underlying-list 𝔁𝓼)     ＝⟨ underlying-list-has-no-reps 𝔁𝓼 ⟩
-    underlying-list 𝔁𝓼         ∎)
+   (ι ([]⁻ · 𝔁𝓼) ＝⟨ refl ⟩
+    ρ (ι 𝔁𝓼)     ＝⟨ underlying-list-has-no-reps 𝔁𝓼 ⟩
+    ι 𝔁𝓼         ∎)
 
  []⁻-right-neutral : (𝔁𝓼 : List⁻ X) → 𝔁𝓼 · []⁻ ＝ 𝔁𝓼
  []⁻-right-neutral 𝔁𝓼 =
   to-List⁻-＝
-   (underlying-list (𝔁𝓼 · []⁻)  ＝⟨ refl ⟩
-    ρ (underlying-list 𝔁𝓼 ◦ []) ＝⟨ ap ρ (([]-right-neutral (underlying-list 𝔁𝓼))⁻¹) ⟩
-    ρ (underlying-list 𝔁𝓼)      ＝⟨ underlying-list-has-no-reps 𝔁𝓼 ⟩
-    underlying-list 𝔁𝓼          ∎)
+   (ι (𝔁𝓼 · []⁻)  ＝⟨ refl ⟩
+    ρ (ι 𝔁𝓼 ◦ []) ＝⟨ ap ρ (([]-right-neutral (ι 𝔁𝓼))⁻¹) ⟩
+    ρ (ι 𝔁𝓼)      ＝⟨ underlying-list-has-no-reps 𝔁𝓼 ⟩
+    ι 𝔁𝓼          ∎)
 
  ·-assoc : (𝔁𝓼 𝔂𝓼 𝔃𝓼 : List⁻ X) → 𝔁𝓼 · (𝔂𝓼 · 𝔃𝓼) ＝ (𝔁𝓼 · 𝔂𝓼) · 𝔃𝓼
  ·-assoc (xs , _) (ys , _) (zs , _) =
@@ -511,7 +574,7 @@ The symbol ⊙ can be typed a "\o." or "\odot".
 
  δ-length : (z : X) (xs : List X)
           → length (δ z xs) ≤ length xs
- δ-length z []       = ⋆
+ δ-length z []       = zero-least 0
  δ-length z (x • xs) = h (d z x)
   where
    IH : length (δ z xs) ≤ length xs
@@ -535,9 +598,7 @@ The symbol ⊙ can be typed a "\o." or "\odot".
      II : length (x • δ z xs) ≤ succ (length xs)
      II = succ-monotone (length (δ z xs)) (length xs) IH
 
-module _
-         {𝓤 𝓥 : Universe}
-         {X : 𝓤 ̇ }
+module _ {X : 𝓤 ̇ }
          {Y : 𝓥 ̇ }
          {{X-is-discrete' : is-discrete' X}}
          {{Y-is-discrete' : is-discrete' Y}}

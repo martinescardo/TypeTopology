@@ -22,18 +22,20 @@ We thank Jonas Frey for giving us this reference:
 
 module DiscreteGraphicMonoids.index where
 
-open import DiscreteGraphicMonoids.Type
-open import DiscreteGraphicMonoids.ListsWithoutRepetitions
-open import DiscreteGraphicMonoids.LWRDGM
-open import DiscreteGraphicMonoids.Free
-open import DiscreteGraphicMonoids.Monad
-open import DiscreteGraphicMonoids.ListsWithoutRepetitionsMore
+import DiscreteGraphicMonoids.Type
+import DiscreteGraphicMonoids.ListsWithoutRepetitions
+import DiscreteGraphicMonoids.LWRDGM
+import DiscreteGraphicMonoids.Free
+import DiscreteGraphicMonoids.Monad
+import DiscreteGraphicMonoids.AffineMonad
+import DiscreteGraphicMonoids.ListsWithoutRepetitionsMore
 
 \end{code}
 
 1. The module Type defines the type of discrete graphic monoids.
 
-2. The module ListsWithoutRepetitions investigates lists without repetitions.
+2. The module ListsWithoutRepetitions investigates lists without
+   repetitions over discrete types.
 
 3. The module LWRDGM shows that lists without repetitions over a
    discrete type form a discrete graphic monoid.
@@ -46,6 +48,9 @@ open import DiscreteGraphicMonoids.ListsWithoutRepetitionsMore
    are, up to equivalence, the graphic monoids, again in a standard
    way.)
 
-6. The module ListsWithoutRepetitionsMore includes additional facts
+6. The module AffineMonad shows that non-empty lists without
+   repetitions form an affine submonad of the above.
+
+7. The module ListsWithoutRepetitionsMore includes additional facts
    about lists without repetitions that are not needed for our main
    results.

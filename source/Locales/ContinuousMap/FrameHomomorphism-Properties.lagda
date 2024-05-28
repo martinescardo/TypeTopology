@@ -2,6 +2,7 @@
 title:          Properties of frame homomorphisms
 author:         Ayberk Tosun
 date-started:   2024-04-10
+dates-updated:  [2024-05-06]
 --------------------------------------------------------------------------------
 
 Originally written as part of the `Locales.Frame` module on 2021-03-09.
@@ -12,11 +13,11 @@ Factored out from the `Locales.Frame` module on 2024-04-10.
 
 {-# OPTIONS --safe --without-K #-}
 
+open import MLTT.List hiding ([_])
 open import MLTT.Spartan hiding (𝟚; ₀; ₁)
 open import UF.Base
 open import UF.FunExt
 open import UF.PropTrunc
-open import MLTT.List hiding ([_])
 
 module Locales.ContinuousMap.FrameHomomorphism-Properties
         (pt : propositional-truncations-exist)
@@ -145,5 +146,24 @@ homomorphisms are extensionally equal, then the frame homomorphisms are equal.
       q : (u is-an-upper-bound-of ⁅ h z ∣ z ε ⁅ x , y ⁆ ⁆) holds
       q (inl ⋆) = p (inl ⋆)
       q (inr ⋆) = p (inr ⋆)
+
+\end{code}
+
+Added on 2024-05-06.
+
+\begin{code}
+
+sections-are-order-embeddings : (P : Poset 𝓤 𝓥) (Q : Poset 𝓤' 𝓥')
+                              → (s : ∣ P ∣ₚ → ∣ Q ∣ₚ)
+                              → (r : ∣ Q ∣ₚ → ∣ P ∣ₚ )
+                              → is-monotonic Q P r holds
+                              → r ∘ s ∼ id
+                              → {x y : ∣ P ∣ₚ}
+                              → (s x ≤[ Q ] s y ⇒ x ≤[ P ] y) holds
+sections-are-order-embeddings P Q s r 𝓂 φ {x} {y} p =
+ transport₂ (λ x y → (x ≤[ P ] y) holds) (φ x) (φ y) †
+  where
+   † : (r (s x) ≤[ P ] r (s y)) holds
+   † = 𝓂 (s x , s y) p
 
 \end{code}

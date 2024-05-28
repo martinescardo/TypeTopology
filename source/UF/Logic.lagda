@@ -1,4 +1,8 @@
-Ayberk Tosun, 10 March 2021.
+---
+title:        Logic
+author:       Martín Escardó and Ayberk Tosun
+date-started: 2021-03-10
+---
 
 Based in part by the `Cubical.Functions.Logic` module UF.of
 `agda/cubical`.
