@@ -36,12 +36,16 @@ open PropositionalTruncation pt hiding (_∨_)
 
 \end{code}
 
-What is a Sierpiński object? In Definition 2.4 of Davorin Lesnik's thesis, it is
-defined simply as a subobject of the subobject classifier (in some topos). This
-idea goes back to Martín Escardó’s Barbados Notes.
+What is a Sierpiński object? In Martín Escardó´s unpublished note [_Topology via
+higher-order intuitionistic logic_][1], a Sierpiński object is defined in the
+setting of a topos as a subobject of the subobject classifier. This is also
+given in Definition 2.4 of Davorin Lesnik's thesis, who took this unpublished
+note as a starting point for his PhD thesis.
 
-In the setting of type theory, we define it as a subtype over `Ω_{𝓤}` (for some
-universe 𝓤).
+The purpose of this development is to develop these notions in the context of
+HoTT/UF, where we look at subtypes of the subtype classifier. Because we work
+predicatively, however, the definition of the notion of Sierpiński object is not
+that straightforward in our setting.
 
 \begin{code}
 
@@ -174,3 +178,5 @@ The definition `is-intrinsically-open′` is stronger than is-intrinsically-open
      p = ↔-sym (φ x)
 
 \end{code}
+
+[1]: https://www.cs.bham.ac.uk/~mhe/papers/pittsburgh.pdf
