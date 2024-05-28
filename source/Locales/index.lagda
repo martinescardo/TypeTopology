@@ -125,5 +125,6 @@ import Locales.DirectedFamily-Poset
 import Locales.StoneDuality.ForSpectralLocales
 
 import Locales.LawsonLocale.CompactElementsOfPoint
+import Locales.LawsonLocale.SharpElementsCoincideWithSpectralPoints
 
 \end{code}
