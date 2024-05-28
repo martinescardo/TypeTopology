@@ -86,8 +86,8 @@ module Sierpinski-notations (𝕊 : Generalized-Sierpinski-Object[ 𝓥 ] 𝓤) 
 
 \end{code}
 
-The propositions in `Ω` that fall in the subset delineated by the Sierpiński
-object are called _affirmable_. We introduce suggestive terminology for this.
+The propositions in `Ω` that fall in the subset `𝕊` are called _affirmable_. We
+introduce suggestive terminology accordingly.
 
 \begin{code}
 
@@ -98,10 +98,8 @@ object are called _affirmable_. We introduce suggestive terminology for this.
 
 Here, we only work with sets.
 
-A subset of a set is said to be intrinsically open if it is a predicate defined
-by affirmable propositions.
-
-We work in a module parameterized by an hSet `𝒳`.
+To define this and some related notions, we work in a module parameterized by an
+hSet `𝒳`.
 
 \begin{code}
 
@@ -109,13 +107,16 @@ We work in a module parameterized by an hSet `𝒳`.
 
 \end{code}
 
-We call the underlying set `X`
+We denote by `X` the underlying set of `𝒳`.
 
 \begin{code}
 
   X = underlying-set 𝒳
 
 \end{code}
+
+A subset of a set is said to be _intrinsically open_ if it is a predicate
+defined by affirmable propositions.
 
 \begin{code}
 
@@ -124,7 +125,8 @@ We call the underlying set `X`
 
 \end{code}
 
-For convenience, we write down the subtype of open propositions (= subset) of a set X
+For convenience, we write down the subtype of open propositions (= subset) of a
+set X
 
 \begin{code}
 
