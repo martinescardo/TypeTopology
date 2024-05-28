@@ -410,10 +410,10 @@ We should try to come up with a generic definition of "image-of" in order to wra
 \begin{code}
 
  is-subcompact : ((Y , sY) : hSet 𝓤) → (X : Y → Ω 𝓤) → Ω (𝓤 ⁺)   -- X ⊆ Y with Lesnik's notations of 2.15
- is-subcompact (Y , sY) X = (Ɐ (U , _) ꞉ 𝓞 (Y , sY) , is-affirmable (Ɐ x ꞉ Y , (X x ⇒ U x)) )
+ is-subcompact (Y , sY) X = (Ɐ (U , open-U) ꞉ 𝓞 (Y , sY) , is-affirmable (Ɐ x ꞉ Y , (X x ⇒ U x)))
 
  is-subovert : ((Y , sY) : hSet 𝓤) → (X : Y → Ω 𝓤) → Ω (𝓤 ⁺)  -- same as above
- is-subovert (Y , sY) X = (Ɐ (U , _) ꞉ 𝓞 (Y , sY) , is-affirmable (Ǝₚ x ꞉ Y , (X x ∧ U x)))
+ is-subovert (Y , sY) X = (Ɐ (U , open-U) ꞉ 𝓞 (Y , sY) , is-affirmable (Ǝₚ x ꞉ Y , (X x ∧ U x)))
 
 
  subovert-of-discrete-is-open : {(Y , sY) : hSet 𝓤} → (X : Y → Ω 𝓤) → is-subovert (Y , sY) X holds → (is-discrete (Y , sY) holds) → is-intrinsically-open {Y , sY} X holds
@@ -458,6 +458,32 @@ We should try to come up with a generic definition of "image-of" in order to wra
    
    † : is-affirmable (Ǝₚ x' ꞉ X , (A x' ∧ P (f x'))) holds
    † = subovert-A ((P ∘ f) , ( λ x → open-P (f x)))
+
+\end{code}
+
+
+We have some lemmas that states the consistency of "sub" definitions related to "plain" ones.
+
+\begin{code}
+
+ compact-iff-subcompact-in-self : {(X , sX) : hSet 𝓤}
+                                               → ((is-compact (X , sX)) ⇔(is-subcompact (X , sX) (λ x → ⊤))) holds
+
+ compact-iff-subcompact-in-self {(X , sX)} = (λ compact-X (U , open-U) → ⇔-affirmable (p (U , open-U)) (compact-X (U , open-U))) ,
+    λ subcompact-X (U , open-U) → ⇔-affirmable (⇔-swap pe (Ɐ x ꞉ X , U x) (Ɐ x ꞉ X , ⊤ ⇒ U x) (p (U , open-U)))  (subcompact-X (U , open-U))
+  where
+   p : ((U , open-U) : 𝓞 (X , sX)) → ((Ɐ x ꞉ X , U x) ⇔ (Ɐ x ꞉ X , ⊤ ⇒ U x)) holds
+   p (U , open-U) = (λ Ux x top → Ux x) , λ top-imp-Ux x → top-imp-Ux x ⊤-holds
+
+ overt-iff-subovert-in-self : {(X , sX) : hSet 𝓤}
+                                               → ((is-overt (X , sX)) ⇔(is-subovert (X , sX) (λ x → ⊤))) holds
+
+ overt-iff-subovert-in-self {(X , sX)} = (λ overt-X (U , open-U) → ⇔-affirmable (p (U , open-U)) (overt-X (U , open-U))) ,
+    λ subovert-X (U , open-U) → ⇔-affirmable (⇔-swap pe (Ǝₚ x ꞉ X , U x) (Ǝₚ x ꞉ X , (⊤ ∧ U x)) (p (U , open-U)))  (subovert-X (U , open-U))
+  where
+   p : ((U , open-U) : 𝓞 (X , sX)) → ((Ǝₚ x ꞉ X , U x) ⇔ (Ǝₚ x ꞉ X , (⊤ ∧ U x))) holds
+   p (U , open-U) = (λ ex-x → ∥∥-rec (holds-is-prop (Ǝₚ x ꞉ X , (⊤ ∧ U x))) (λ (x , Ux) → ∣ x , ⊤-holds , Ux  ∣) ex-x) ,
+                                 λ ex-x-top → ∥∥-rec (holds-is-prop (Ǝₚ x ꞉ X , U x)) (λ (x , top-and-Ux) → ∣ x , ∧-Elim-R ⊤ (U x) top-and-Ux ∣) ex-x-top
 
 \end{code}
 
