@@ -5,7 +5,7 @@ date-started: 2024-05-02
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K #-}
+{-# OPTIONS --safe --without-K --lossy-unification #-}
 
 open import MLTT.Spartan
 open import UF.FunExt
@@ -47,38 +47,34 @@ HoTT/UF, where we look at subtypes of the subtype classifier. Because we work
 predicatively, however, the definition of the notion of Sierpiński object is not
 that straightforward in our setting.
 
-\begin{code}
-
-Sierpinski-Object : 𝓤 ⁺  ̇
-Sierpinski-Object = Subtypes' 𝓤  (Ω 𝓤)
-
-Sierpinski-Object' : 𝓤 ⁺ ⁺  ̇
-Sierpinski-Object' = Ω 𝓤 → Ω (𝓤 ⁺)
-
-\end{code}
-
-Claim: these are equivalent.
+In the impredicative setting of topos theory, one works with the topos of 𝓤-sets
+over some universe 𝓤, and the Sierpiński object in that setting would translate
+to:
 
 \begin{code}
 
-equivalence-of-sierpinski-object-definitions
- : is-univalent (𝓤 ⁺) → funext (𝓤 ⁺) (𝓤 ⁺ ⁺) → Subtypes' (𝓤 ⁺) (Ω 𝓤) ≃ Sierpinski-Object'
-equivalence-of-sierpinski-object-definitions ua fe =
- Ω-is-subtype-classifier ua fe (Ω 𝓤)
+Sierpinski-Object₀ : 𝓤 ⁺  ̇
+Sierpinski-Object₀ = Subtypes' 𝓤 (Ω 𝓤)
 
 \end{code}
+
+However, many dominances that we are interested in do not fit this definition in
+a predicative setting. For example, the largest possible dominance of `Ω 𝓤` is
+𝓤⁺-set rather than a 𝓤-set. Accordingly, we generalize the universes in the
+notion of Sierpiński object as follows:
+
+\begin{code}
+
+Generalized-Sierpinski-Object[_] : (𝓥 𝓤 : Universe) → (𝓤 ⊔ 𝓥) ⁺  ̇
+Generalized-Sierpinski-Object[_] 𝓥 𝓤 = Ω 𝓤 → Ω 𝓥
+
+\end{code}
+
+We think that in most cases, our dominances will be of the form `Ω 𝓤 → Ω (𝓤 ⁺)`,
+but because we can prove things in this general setting, we choose to work with
+the generalized definition instead.
 
 We define some notation to refer to components of a Sierpiński object.
-
-\begin{code}
-
-index : Sierpinski-Object → 𝓤  ̇
-index (I , α , _) = I
-
-sierpinski-fun : (𝕊 : Sierpinski-Object) → index 𝕊 → Ω 𝓤
-sierpinski-fun (_ , α , _) = α
-
-\end{code}
 
 In the module below, we assume the existence of a Sierpiński object `𝕊` and
 define some notions _synthetically_, following the work of Martín Escardó (and
@@ -86,35 +82,45 @@ Davorin Lešnik).
 
 \begin{code}
 
-module Sierpinski-notations (𝕊 : Sierpinski-Object) where
-
- ι : index 𝕊 → Ω 𝓤
- ι = sierpinski-fun 𝕊
-
- S : 𝓤  ̇
- S = index 𝕊
+module Sierpinski-notations (𝕊 : Generalized-Sierpinski-Object[ 𝓥 ] 𝓤) where
 
 \end{code}
 
 The propositions in `Ω` that fall in the subset delineated by the Sierpiński
-object are called _affirmable.
+object are called _affirmable_. We introduce suggestive terminology for this.
 
 \begin{code}
 
- is-affirmable : Ω 𝓤 → Ω (𝓤 ⁺)
- is-affirmable P = P ∈image ι , ∃-is-prop
+ is-affirmable : Ω 𝓤 → Ω 𝓥
+ is-affirmable = 𝕊
 
 \end{code}
 
-Here, we only work with sets. 
+Here, we only work with sets.
 
 A subset of a set is said to be intrinsically open if it is a predicate defined
 by affirmable propositions.
 
+We work in a module parameterized by an hSet `𝒳`.
+
 \begin{code}
 
- is-intrinsically-open : {(X , sX) : hSet 𝓤} → (X → Ω 𝓤) → Ω (𝓤 ⁺)
- is-intrinsically-open {X , sX} P = Ɐ x ꞉ X , is-affirmable (P x)
+ module _ (𝒳 : hSet 𝓤) where
+
+\end{code}
+
+We call the underlying set `X`
+
+\begin{code}
+
+  X = underlying-set 𝒳
+
+\end{code}
+
+\begin{code}
+
+  is-intrinsically-open : (X → Ω 𝓤) → Ω (𝓤 ⊔ 𝓥)
+  is-intrinsically-open P = Ɐ x ꞉ X , is-affirmable (P x)
 
 \end{code}
 
@@ -122,60 +128,18 @@ For convenience, we write down the subtype of open propositions (= subset) of a 
 
 \begin{code}
 
- open-props : hSet 𝓤 → (𝓤 ⁺) ̇
- open-props (X , sX) = Σ P ꞉ (X → Ω 𝓤) , is-intrinsically-open {X , sX} P holds
+  𝓞 : 𝓤 ⁺ ⊔ 𝓥  ̇
+  𝓞 = Σ P ꞉ (X → Ω 𝓤) , is-intrinsically-open P holds
 
- syntax open-props X = 𝓞 X
-
- underlying-prop : {(X , sX) : hSet 𝓤} → (open-props (X , sX)) → (X → Ω 𝓤)
- underlying-prop = pr₁
-
+  underlying-prop : 𝓞 → (X → Ω 𝓤)
+  underlying-prop = pr₁
 
 \end{code}
 
-Another way to define this notion, which is equivalent assuming choice, is the
-following:
-
 \begin{code}
 
- is-intrinsically-open′ : {(X , sX) : hSet 𝓤} → (X → Ω 𝓤) → Ω 𝓤
- is-intrinsically-open′ {X , sX} P =
-  Ǝₚ h ꞉ (X → S) , (Ɐ x ꞉ X , P x ⇔ ι (h x))
-
-\end{code}
-
-The former definition turns out to more useful in our case.
-
-Useful lemmas, which shorten proofs (maybe move it elsewhere at some point)
-
-\begin{code}
-
- ⇔-transport : {𝓥 𝓦 : Universe} {P Q : Ω 𝓥} → (𝓟 : Ω 𝓥 → 𝓦 ̇) → ((P ⇔ Q) holds) → (𝓟 P) → (𝓟 Q)
- ⇔-transport {𝓥} {𝓦} {P} {Q} (𝓟) P-iff-Q Prop-P = transport 𝓟 q Prop-P
-   where
-    q : P ＝ Q
-    q = ⇔-gives-＝ pe P Q (holds-gives-equal-⊤ pe fe (P ⇔ Q) P-iff-Q)
-
-
- ⇔-affirmable : {P Q : Ω 𝓤}  → ((P ⇔ Q) ⇒ is-affirmable P ⇒ is-affirmable Q) holds
- ⇔-affirmable = ⇔-transport (_holds ∘ is-affirmable)
-
-\end{code}
-
-The definition `is-intrinsically-open′` is stronger than is-intrinsically-open.
-
-\begin{code}
-
- open-implies-open′ : {(X , sX) : hSet 𝓤 } → (P : X → Ω 𝓤)
-                    → (is-intrinsically-open′ {X , sX}  P ⇒ is-intrinsically-open {X , sX} P) holds
- open-implies-open′ {X , sX} P = ∥∥-rec (holds-is-prop (is-intrinsically-open P)) †
-  where
-   † : (Σ h ꞉ (X → S) , ((x : X) → P x holds ↔ ι (h x) holds))
-     → is-intrinsically-open P holds
-   † (h , φ) x = ⇔-affirmable p ∣ (h x) , refl ∣
-    where
-     p : (ι (h x) holds) ↔ (P x holds)
-     p = ↔-sym (φ x)
+ ⇔-affirmable : (P Q : Ω 𝓤)  → ((P ⇔ Q) ⇒ is-affirmable P ⇒ is-affirmable Q) holds
+ ⇔-affirmable P Q = ⇔-transport pe P Q (_holds ∘ is-affirmable)
 
 \end{code}
 
