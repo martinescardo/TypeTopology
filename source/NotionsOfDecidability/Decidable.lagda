@@ -9,7 +9,10 @@ module NotionsOfDecidability.Decidable where
 open import MLTT.Spartan
 open import MLTT.Two-Properties
 open import UF.Equiv
+open import UF.PropTrunc
 open import UF.Subsingletons
+open import UF.SubtypeClassifier
+open import UF.Logic
 
 ¬¬-elim : {A : 𝓤 ̇ } → is-decidable A → ¬¬ A → A
 ¬¬-elim (inl a) f = a
@@ -86,6 +89,37 @@ decidable-closed-under-Σ {𝓤} {𝓥} {X} {Y} isp d e = g d
 +-preserves-decidability (inl a) _       = inl (inl a)
 +-preserves-decidability (inr u) (inl b) = inl (inr b)
 +-preserves-decidability (inr u) (inr v) = inr (cases u v)
+
+\end{code}
+
+The following was added by Ayberk Tosun on 2024-05-28.
+
+\begin{code}
+
+module _ (pt : propositional-truncations-exist) where
+
+ open Disjunction pt
+ open PropositionalTruncation pt using (∣_∣; ∥∥-rec)
+
+ ∨-preserves-decidability : (P Q : Ω 𝓤)
+                          → is-decidable (P holds)
+                          → is-decidable (Q holds)
+                          → is-decidable ((P ∨ Q) holds)
+ ∨-preserves-decidability P Q φ ψ =
+  cases case₁ case₂ (+-preserves-decidability φ ψ)
+   where
+    case₁ : P holds + Q holds → is-decidable ((P ∨ Q) holds)
+    case₁ (inl p) = inl ∣ inl p ∣
+    case₁ (inr q) = inl ∣ inr q ∣
+
+    case₂ : ¬ (P holds + Q holds) → is-decidable ((P ∨ Q) holds)
+    case₂ = inr ∘ ∥∥-rec 𝟘-is-prop
+
+\end{code}
+
+End of addition.
+
+\begin{code}
 
 →-preserves-decidability : {A : 𝓤 ̇ } {B : 𝓥 ̇ }
                          → is-decidable A
