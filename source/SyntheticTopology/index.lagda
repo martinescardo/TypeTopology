@@ -13,3 +13,11 @@ The following module contains definition of the notion of Sierpiński object.
 import SyntheticTopology.SierpinskiObject
 
 \end{code}
+
+The axioms considered on Sierpiński objects live in module `SierpinskiAxioms`:
+
+\begin{code}
+
+-- import SyntheticTopology.Dominance
+
+\end{code}
