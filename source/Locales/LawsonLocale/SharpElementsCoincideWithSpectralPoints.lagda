@@ -245,6 +245,20 @@ We now define the type `♯𝓓` of sharp elements of the Scott domain `𝓓`.
  ♯𝓓 : 𝓤 ⁺  ̇
  ♯𝓓 = Σ x ꞉ ⟨ 𝓓 ⟩∙ , is-sharp x holds
 
+\end{code}
+
+We usually pattern match on the inhabitants of `♯𝓓` to refer to the first
+component.
+
+\begin{code}
+
+ ⦅_⦆ : ♯𝓓 → ⟨ 𝓓 ⟩∙
+ ⦅_⦆ (x , _) = x
+
+\end{code}
+
+\begin{code}
+
  abstract
   to-sharp-＝ : (𝓍 𝓎 : ♯𝓓) → pr₁ 𝓍 ＝ pr₁ 𝓎 → 𝓍 ＝ 𝓎
   to-sharp-＝ 𝓍 𝓎 = to-subtype-＝ (holds-is-prop ∘ is-sharp)
@@ -510,6 +524,12 @@ We now define the map `sharp` going in the opposite direction.
       ‡ : (B𝓓 [ i ]) ⊑⟨ 𝓓 ⟩ (⋁ 𝒦-in-point↑ ℱ)
       ‡ = ⋁-is-upperbound (𝒦-in-point↑ ℱ) (i , μ)
 
+\end{code}
+
+The map `sharp₀` always gives sharp elements.
+
+\begin{code}
+
  sharp₀-gives-sharp-elements : (F : Point scott[𝓓])
                              → is-spectral-map scott[𝓓] (𝟏Loc pe) F holds
                              → is-sharp (sharp₀ F) holds
@@ -529,6 +549,9 @@ We now define the map `sharp` going in the opposite direction.
 
 \end{code}
 
+We package up `sharp₀` with the proof that it always gives sharp elements
+and denote it by `sharp`.
+
 \begin{code}
 
  sharp : Spectral-Point scott[𝓓] → ♯𝓓
@@ -536,13 +559,6 @@ We now define the map `sharp` going in the opposite direction.
   where
    open Spectral-Point scott[𝓓] ℱ
     renaming (point-fn to F; point to F·; point-preserves-compactness to σ)
-
-\end{code}
-
-\begin{code}
-
- ⦅_⦆ : ♯𝓓 → ⟨ 𝓓 ⟩∙
- ⦅_⦆ (x , _) = x
 
 \end{code}
 
