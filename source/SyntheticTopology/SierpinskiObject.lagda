@@ -5,7 +5,7 @@ date-started: 2024-05-02
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split --auto-inline --lossy-unification #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 open import UF.FunExt
