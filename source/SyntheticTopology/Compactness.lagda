@@ -1,6 +1,11 @@
+---
+title:  Compactness in Synthetic Topology
+author: Martin Trucchi
+---
+
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split --auto-inline --lossy-unification #-}
+{-# OPTIONS --safe --without-K --lossy-unification #-}
 
 open import MLTT.Spartan
 open import UF.Base
