@@ -285,29 +285,6 @@ membership in compact Scott opens.
 
 \end{code}
 
-I used the following lemma when proving that `pt` gives spectral points. I
-looked around in TypeTopology but could not find it anywhere.
-
-TODO: avoid duplicating this if it has not been written down already.
-
-\begin{code}
-
- ∨-preserves-decidability : (P Q : Ω 𝓤)
-                          → is-decidableₚ P holds
-                          → is-decidableₚ Q holds
-                          → is-decidableₚ (P ∨ Q) holds
- ∨-preserves-decidability P Q φ ψ =
-  cases case₁ case₂ (+-preserves-decidability φ ψ)
-   where
-    case₁ : P holds + Q holds → is-decidableₚ (P ∨ Q) holds
-    case₁ (inl p) = inl ∣ inl p ∣
-    case₁ (inr q) = inl ∣ inr q ∣
-
-    case₂ : ¬ (P holds + Q holds) → is-decidableₚ (P ∨ Q) holds
-    case₂ = inr ∘ ∥∥-rec 𝟘-is-prop
-
-\end{code}
-
 Every sharp element satisfies this property of admitting decidable membership
 in compact Scott opens.
 
@@ -329,7 +306,7 @@ in compact Scott opens.
     lemma : (xs : List (index B𝓓)) → is-decidableₚ (x ∈ₛ βσ xs) holds
     lemma []       = inr 𝟘-elim
     lemma (i ∷ is) =
-     ∨-preserves-decidability (x ∈ₛ ↑ˢ[ βₖ i ]) (x ∈ₛ 𝜸 is) † IH
+     ∨-preserves-decidability pt (x ∈ₛ ↑ˢ[ βₖ i ]) (x ∈ₛ 𝜸 is) † IH
       where
        † : is-decidableₚ (x ∈ₛ ↑ˢ[ βₖ i ]) holds
        † = 𝓈𝒽 (β i) (basis-is-compact i)
