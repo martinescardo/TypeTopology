@@ -142,13 +142,11 @@ embeddings-with-sections-are-equivs : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y
 embeddings-with-sections-are-equivs f i h =
  vv-equivs-are-equivs f (embeddings-with-sections-are-vv-equivs f i h)
 
--- TODO: rename the following to 'Subtype'. The singular form makes more sense.
+Subtype' : (𝓤 {𝓥} : Universe) → 𝓥 ̇ → 𝓤 ⁺ ⊔ 𝓥 ̇
+Subtype' 𝓤 {𝓥} Y = Σ X ꞉ 𝓤 ̇ , X ↪ Y
 
-Subtypes' : (𝓤 {𝓥} : Universe) → 𝓥 ̇ → 𝓤 ⁺ ⊔ 𝓥 ̇
-Subtypes' 𝓤 {𝓥} Y = Σ X ꞉ 𝓤 ̇ , X ↪ Y
-
-Subtypes : 𝓤 ̇ → 𝓤 ⁺ ̇
-Subtypes {𝓤} Y = Subtypes' 𝓤 Y
+Subtype : 𝓤 ̇ → 𝓤 ⁺ ̇
+Subtype {𝓤} Y = Subtype' 𝓤 Y
 
 etofun : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X ↪ Y) → (X → Y)
 etofun = pr₁
