@@ -143,7 +143,8 @@ Added on 2024-05-29.
 
 \begin{code}
 
-to-homomorphismᵈ-＝ : (K L : DistributiveLattice 𝓤) (h₁ h₂ : K ─d→ L)
+to-homomorphismᵈ-＝ : (K : DistributiveLattice 𝓤) (L : DistributiveLattice 𝓥)
+                      (h₁ h₂ : K ─d→ L)
                     → (funᵈ K L h₁ ∼ funᵈ K L h₂)
                     → h₁ ＝ h₂
 to-homomorphismᵈ-＝ K L 𝒽₁ 𝒽₂ φ = † (dfunext fe φ)
