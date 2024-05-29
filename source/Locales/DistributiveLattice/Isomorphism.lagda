@@ -30,9 +30,10 @@ open import UF.Equiv
 open import UF.Equiv-FunExt
 open import UF.Logic
 open import UF.Powerset-MultiUniverse
-open import UF.SubtypeClassifier
+open import UF.Subsingletons-FunExt
 open import UF.Subsingletons
 open import UF.Subsingletons-Properties
+open import UF.SubtypeClassifier
 
 open AllCombinators pt fe renaming (_∧_ to _∧ₚ_)
 
@@ -85,12 +86,31 @@ between distributive lattices `L₁` and `L₂`.
 
  having-homomorphic-inverse-is-prop : (h : L₁ ─d→ L₂)
                                     → is-prop (has-homomorphic-inverse h)
- having-homomorphic-inverse-is-prop h =
-  {!to-subtype-＝ ? ?!}
+ having-homomorphic-inverse-is-prop h (r₁ , p) (r₂ , q) =
+  to-subtype-＝ † (to-homomorphismᵈ-＝ L₂ L₁ r₁ r₂ γ)
+   where
+    open DistributiveLattice
+
+    † : (h′ : L₂ ─d→ L₁) → is-prop ({!!} × {!!})
+    † h′ = ×-is-prop
+            (Π-is-prop fe λ _ → X-is-set L₁)
+            (Π-is-prop fe λ _ → X-is-set L₂)
 
 
- is-isomorphism : (L₁ ─d→ L₂) → Ω {!!}
- is-isomorphism h = has-homomorphic-inverse h , {!!}
+    ϑ : funᵈ L₁ L₂ h ∘ funᵈ L₂ L₁ r₁ ∼ funᵈ L₁ L₂ h ∘ funᵈ L₂ L₁ r₂
+    ϑ x = funᵈ L₁ L₂ h (funᵈ L₂ L₁ r₁ x) ＝⟨ {!!} ⟩
+          ?                              ＝⟨ ?    ⟩
+          {!!}                           ∎
+
+    ξ : left-cancellable (funᵈ L₂ L₁ r₁)
+    ξ = {!!}
+
+    γ : funᵈ L₂ L₁ r₁ ∼ funᵈ L₂ L₁ r₂
+    γ x = {!!}
+
+ is-isomorphism : (L₁ ─d→ L₂) → Ω (𝓤 ⊔ 𝓥)
+ is-isomorphism h =
+  has-homomorphic-inverse h , having-homomorphic-inverse-is-prop h
 
  Isomorphism : 𝓤 ⊔ 𝓥  ̇
  Isomorphism = Σ h ꞉ (L₁ ─d→ L₂) , is-isomorphism h holds
