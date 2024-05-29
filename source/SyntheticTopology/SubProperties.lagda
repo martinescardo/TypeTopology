@@ -13,23 +13,22 @@ open import UF.SubtypeClassifier
 open import SyntheticTopology.SierpinskiObject 
 
 module SyntheticTopology.SubProperties
-        (𝓤  : Universe)
+        (𝓤 𝓥 : Universe)
         (fe : Fun-Ext)
         (pe : Prop-Ext)
         (pt : propositional-truncations-exist)
-        (𝕊 : Sierpinski-Object 𝓤 fe pe pt)
+        (𝕊 : Generalized-Sierpinski-Object fe pe pt 𝓤 𝓥)
         where
 
-open import SyntheticTopology.Compactness 𝓤 fe pe pt 𝕊
-open import SyntheticTopology.Discreteness 𝓤 fe pe pt 𝕊
-open import SyntheticTopology.Dominance 𝓤 fe pe pt 𝕊
-open import SyntheticTopology.Overtness 𝓤 fe pe pt 𝕊
+open import SyntheticTopology.Compactness 𝓤 𝓥 fe pe pt 𝕊
+open import SyntheticTopology.Discreteness 𝓤 𝓥 fe pe pt 𝕊
+open import SyntheticTopology.Dominance 𝓤 𝓥 fe pe pt 𝕊
 open import UF.ImageAndSurjection pt
 open import UF.Logic
 
 open AllCombinators pt fe
 open PropositionalTruncation pt hiding (_∨_)
-open Sierpinski-notations 𝓤 fe pe pt 𝕊
+open Sierpinski-notations fe pe pt 𝕊
 
 \end{code}
 
@@ -46,15 +45,15 @@ We should try to come up with a generic definition of "image-of" in order to wra
 
 \begin{code}
 
-is-subcompact : ((Y , sY) : hSet 𝓤) → (X : Y → Ω 𝓤) → Ω (𝓤 ⁺)   -- X ⊆ Y with Lesnik's notations of 2.15
+is-subcompact : ((Y , sY) : hSet 𝓤) → (X : Y → Ω 𝓤) → Ω ((𝓤 ⁺) ⊔ 𝓥)  -- X ⊆ Y with Lesnik's notations of 2.15
 is-subcompact (Y , sY) X = (Ɐ (U , open-U) ꞉ 𝓞 (Y , sY) , is-affirmable (Ɐ x ꞉ Y , (X x ⇒ U x)))
 
-is-subovert : ((Y , sY) : hSet 𝓤) → (X : Y → Ω 𝓤) → Ω (𝓤 ⁺)  -- same as above
+is-subovert : ((Y , sY) : hSet 𝓤) → (X : Y → Ω 𝓤) → Ω ((𝓤 ⁺) ⊔ 𝓥)  -- same as above
 is-subovert (Y , sY) X = (Ɐ (U , open-U) ꞉ 𝓞 (Y , sY) , is-affirmable (Ǝₚ x ꞉ Y , (X x ∧ U x)))
 
 
-subovert-of-discrete-is-open : {(Y , sY) : hSet 𝓤} → (X : Y → Ω 𝓤) → is-subovert (Y , sY) X holds → (is-discrete (Y , sY) holds) → is-intrinsically-open {Y , sY} X holds
-subovert-of-discrete-is-open {Y , sY} X subovert-X discrete-Y y = ⇔-affirmable X-iff †
+subovert-of-discrete-is-open : {(Y , sY) : hSet 𝓤} → (X : Y → Ω 𝓤) → is-subovert (Y , sY) X holds → (is-discrete (Y , sY) holds) → is-intrinsically-open (Y , sY) X holds
+subovert-of-discrete-is-open {Y , sY} X subovert-X discrete-Y y = ⇔-affirmable (Ǝₚ y' ꞉ Y , ((X y' ∧ (y ＝ y') , sY))) (X y) X-iff †
   where
    X-iff : (Ǝₚ y' ꞉ Y , ((X y' ∧ (y ＝ y') , sY)) ⇔ X y) holds
    X-iff = (λ exequal → ∥∥-rec (holds-is-prop (X y)) (λ (y' , Xy' , y-equals-y') → transport (λ i → pr₁ (X i)) (y-equals-y' ⁻¹)  Xy') exequal)  ,
@@ -68,7 +67,7 @@ subovert-of-discrete-is-open {Y , sY} X subovert-X discrete-Y y = ⇔-affirmable
 subovert-inter-open-subovert : closed-under-binary-meets holds
                                                             → {(X , sX) : hSet 𝓤}
                                                             → (Ɐ A ꞉ (X → Ω 𝓤) , Ɐ (U , _) ꞉ 𝓞 (X , sX) , is-subovert (X , sX) A ⇒ is-subovert (X , sX) (λ x → (A x ∧ U x))) holds
-subovert-inter-open-subovert cl-∧ {X , sX} A (U , open-U) subovert-A (V , open-V) = ⇔-affirmable inter-iff †
+subovert-inter-open-subovert cl-∧ {X , sX} A (U , open-U) subovert-A (V , open-V) = ⇔-affirmable (Ǝₚ x ꞉ X , (A x ∧ (U x ∧ V x))) (Ǝₚ x ꞉ X , ((A x ∧ U x) ∧ V x)) inter-iff †
    where
     P : X → Ω 𝓤   -- P = U ∧ V
     P x = U x ∧ V x
@@ -80,14 +79,14 @@ subovert-inter-open-subovert cl-∧ {X , sX} A (U , open-U) subovert-A (V , open
     † : is-affirmable (Ǝₚ x ꞉ X , (A x ∧ (U x ∧ V x))) holds
     † = subovert-A (P , (λ x → cl-∧ (U x) (V x) ( open-U x , open-V x )))
 
-
-open-subset-overt-is-overt : closed-under-binary-meets holds →
+{-
+open-subset-of-overt-is-subovert : closed-under-binary-meets holds →
                                                        {(X , sX) : hSet 𝓤} → (Ɐ (U , _) ꞉ 𝓞 (X , sX) , is-overt (X , sX) ⇒ is-subovert (X , sX) U) holds
-open-subset-overt-is-overt cl-∧ {X , sX} (U , open-U) overt-X (V , open-V) = overt-X ((λ x → (U x ∧ V x)) , (λ x → cl-∧ (U x) (V x) ((open-U x , open-V x))))
-
+open-subset-of-overt-is-subovert cl-∧ {X , sX} (U , open-U) overt-X (V , open-V) = overt-X ((λ x → (U x ∧ V x)) , (λ x → cl-∧ (U x) (V x) ((open-U x , open-V x))))
+-}
 
 image-of-subovert : {(X , sX) (Y , sY) : hSet 𝓤 } → (f : X → Y) → (Ɐ A ꞉ (X → Ω 𝓤) , is-subovert (X , sX) A ⇒ is-subovert (Y , sY) (λ y → (Ǝₚ x ꞉ X , (A x ∧ ((f x) ＝ y) , sY)))) holds 
-image-of-subovert {X , sX} {Y , sY} f  A subovert-A (P , open-P)  = ⇔-affirmable Y-iff †
+image-of-subovert {X , sX} {Y , sY} f  A subovert-A (P , open-P)  = ⇔-affirmable (Ǝₚ x' ꞉ X , (A x' ∧ P (f x'))) (Ǝₚ y ꞉ Y , (Ǝₚ x ꞉ X , (A x ∧ (f x ＝ y) , sY) ∧ P y)) Y-iff †
   where
    Y-iff : (Ǝₚ x' ꞉ X , (A x' ∧ P (f x')) ⇔ (Ǝₚ y ꞉ Y , (Ǝₚ x ꞉ X , (A x ∧ (f x ＝ y) , sY) ∧ P y))) holds
    Y-iff = (λ x'-hyp → ∥∥-rec (holds-is-prop (Ǝₚ y ꞉ Y , (Ǝₚ x ꞉ X , (A x ∧ (f x ＝ y) , sY) ∧ P y))) (λ (x' , Ax' , Pfx') → ∣ f x' , ∣ x' , Ax' , refl ∣ , Pfx' ∣) x'-hyp ) ,
@@ -107,12 +106,13 @@ We have some lemmas that states the consistency of "sub" definitions related to 
 compact-iff-subcompact-in-self : {(X , sX) : hSet 𝓤}
                                                → ((is-compact (X , sX)) ⇔(is-subcompact (X , sX) (λ x → ⊤))) holds
 
-compact-iff-subcompact-in-self {(X , sX)} = (λ compact-X (U , open-U) → ⇔-affirmable (p (U , open-U)) (compact-X (U , open-U))) ,
-    λ subcompact-X (U , open-U) → ⇔-affirmable (⇔-swap pe (Ɐ x ꞉ X , U x) (Ɐ x ꞉ X , ⊤ ⇒ U x) (p (U , open-U)))  (subcompact-X (U , open-U))
+compact-iff-subcompact-in-self {(X , sX)} = (λ compact-X (U , open-U) → ⇔-affirmable (Ɐ x ꞉ X , U x) (Ɐ x ꞉ X , ⊤ ⇒ U x) (p (U , open-U)) (compact-X (U , open-U))) ,
+    λ subcompact-X (U , open-U) → ⇔-affirmable (Ɐ x ꞉ X , ⊤ ⇒ U x) (Ɐ x ꞉ X , U x) (⇔-swap pe (Ɐ x ꞉ X , U x) (Ɐ x ꞉ X , ⊤ ⇒ U x) (p (U , open-U)))  (subcompact-X (U , open-U))
   where
    p : ((U , open-U) : 𝓞 (X , sX)) → ((Ɐ x ꞉ X , U x) ⇔ (Ɐ x ꞉ X , ⊤ ⇒ U x)) holds
    p (U , open-U) = (λ Ux x top → Ux x) , λ top-imp-Ux x → top-imp-Ux x ⊤-holds
 
+{-
 overt-iff-subovert-in-self : {(X , sX) : hSet 𝓤}
                                                → ((is-overt (X , sX)) ⇔(is-subovert (X , sX) (λ x → ⊤))) holds
 
@@ -122,5 +122,5 @@ overt-iff-subovert-in-self {(X , sX)} = (λ overt-X (U , open-U) → ⇔-affirma
    p : ((U , open-U) : 𝓞 (X , sX)) → ((Ǝₚ x ꞉ X , U x) ⇔ (Ǝₚ x ꞉ X , (⊤ ∧ U x))) holds
    p (U , open-U) = (λ ex-x → ∥∥-rec (holds-is-prop (Ǝₚ x ꞉ X , (⊤ ∧ U x))) (λ (x , Ux) → ∣ x , ⊤-holds , Ux  ∣) ex-x) ,
                                  λ ex-x-top → ∥∥-rec (holds-is-prop (Ǝₚ x ꞉ X , U x)) (λ (x , top-and-Ux) → ∣ x , ∧-Elim-R ⊤ (U x) top-and-Ux ∣) ex-x-top
-
+-}
 \end{code}

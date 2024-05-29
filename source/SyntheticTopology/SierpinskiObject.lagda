@@ -17,7 +17,6 @@ open import UF.Subsingletons
 open import UF.SubtypeClassifier
 
 module SyntheticTopology.SierpinskiObject
-        (𝓤  : Universe)
         (fe : Fun-Ext)
         (pe : Prop-Ext)
         (pt : propositional-truncations-exist) where
@@ -54,8 +53,8 @@ to:
 
 \begin{code}
 
-Sierpinski-Object₀ : 𝓤 ⁺  ̇
-Sierpinski-Object₀ = Subtype' 𝓤 (Ω 𝓤)
+Sierpinski-Object₀ : (𝓤 : Universe) → 𝓤 ⁺  ̇
+Sierpinski-Object₀ 𝓤 = Subtype' 𝓤 (Ω 𝓤)
 
 \end{code}
 

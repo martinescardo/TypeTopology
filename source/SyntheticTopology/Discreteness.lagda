@@ -13,24 +13,23 @@ open import UF.SubtypeClassifier
 open import SyntheticTopology.SierpinskiObject 
 
 module SyntheticTopology.Discreteness
-        (𝓤  : Universe)
+        (𝓤 𝓥 : Universe)
         (fe : Fun-Ext)
         (pe : Prop-Ext)
         (pt : propositional-truncations-exist)
-        (𝕊 : Sierpinski-Object 𝓤 fe pe pt)
+        (𝕊 : Generalized-Sierpinski-Object fe pe pt 𝓤 𝓥)
         where
 
-open import SyntheticTopology.Compactness 𝓤 fe pe pt 𝕊
-open import SyntheticTopology.Dominance 𝓤 fe pe pt 𝕊
+open import SyntheticTopology.Compactness 𝓤 𝓥 fe pe pt 𝕊
+open import SyntheticTopology.Dominance 𝓤 𝓥 fe pe pt 𝕊
 open import UF.ImageAndSurjection pt
 open import UF.Logic
 
 open AllCombinators pt fe
 open PropositionalTruncation pt hiding (_∨_)
-open Sierpinski-notations 𝓤 fe pe pt 𝕊
+open Sierpinski-notations fe pe pt 𝕊
 
 \end{code}
-
 
 Discrete spaces.
 
@@ -38,8 +37,8 @@ Being discrete means having affirmable equality
 
 \begin{code}
 
-is-discrete : ((X , sX) : hSet 𝓤) → Ω (𝓤 ⁺)
-is-discrete (X , sX) = is-intrinsically-open {(X × X) , (×-is-set sX sX)} (λ ((x , y) : X × X) → ((x ＝ y) , sX))
+is-discrete : ((X , sX) : hSet 𝓤) → Ω (𝓤 ⊔ 𝓥)
+is-discrete (X , sX) = is-intrinsically-open ((X × X) , (×-is-set sX sX)) (λ ((x , y) : X × X) → ((x ＝ y) , sX))
 
 
 \end{code}
@@ -50,14 +49,14 @@ Sierpinski object's image.
 \begin{code}
 
 𝟙-is-discrete : contains-top holds → (𝟙-is-set : is-set 𝟙) → is-discrete (𝟙 , 𝟙-is-set) holds
-𝟙-is-discrete ct 𝟙-is-set (⋆ , ⋆) = ⇔-affirmable † ct
+𝟙-is-discrete ct 𝟙-is-set (⋆ , ⋆) = ⇔-affirmable ⊤ ((⋆ ＝ ⋆) , 𝟙-is-set) † ct
   where
    † : (⊤ ⇔ (⋆ ＝ ⋆) , 𝟙-is-set) holds
    † = (λ _ → refl) , (λ _ → ⊤-holds)
 
 \end{code}
 
-Compact indexed product of discrete set is itself discrete (requires functionnal extensionality)
+Compact indexed product of discrete set is itself discrete (requires functional extensionality)
 
 \begin{code}
 
@@ -65,7 +64,7 @@ compact-Π-discrete : ((K , sK) : hSet 𝓤) → (X : K → hSet 𝓤)
                         → is-compact (K , sK) holds
                         → ((k : K) → is-discrete (X k) holds)
                         → is-discrete (Π (λ k → (underlying-set (X k))) , (Π-is-set fe (λ k → (pr₂ (X k))))) holds
-compact-Π-discrete (K , sK) X kK dX (x₁ , x₂) = ⇔-affirmable p †
+compact-Π-discrete (K , sK) X kK dX (x₁ , x₂) = ⇔-affirmable (Ɐ k ꞉ K , ((x₁ k ＝ x₂ k) , pr₂ (X k))) ((x₁ ＝ x₂) , Π-is-set fe (λ k → pr₂ (X k))) p †
   where
    p :  ((k : K) →  ( (x₁ k) ＝ (x₂ k) ) ) ↔ (x₁ ＝ x₂)
    p = dfunext fe
