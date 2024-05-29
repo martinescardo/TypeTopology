@@ -1,6 +1,11 @@
+---
+title:  Density in Synthetic Topology
+author: Martin Trucchi
+---
+
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split --auto-inline --lossy-unification #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 open import UF.Base
