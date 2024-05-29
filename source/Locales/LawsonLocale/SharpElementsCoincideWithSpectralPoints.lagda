@@ -648,7 +648,7 @@ type of spectral points.
    open 𝒪ₛᴿ (to-𝒪ₛᴿ 𝔘)
 
    † : (sharp₀ ℱ ∈ₛ 𝔘 ⇒ F 𝔘) holds
-   † p = ∥∥-rec (holds-is-prop (F 𝔘)) †₁ (pred-is-inaccessible-by-dir-joins (𝒦-in-point↑ ℱ) p)
+   † p = ∥∥-rec (holds-is-prop (F 𝔘)) †₁ γ
     where
      †₁ : Σ i ꞉ index (pr₁ (𝒦-in-point↑ ℱ)) , pred (pr₁ (𝒦-in-point↑ ℱ) [ i ]) holds
        → F 𝔘 holds
@@ -657,29 +657,34 @@ type of spectral points.
        q : (↑ˢ[ βₖ a ] ≤[ poset-of (𝒪 Scott⦅𝓓⦆) ] 𝔘) holds
        q x = pred-is-upwards-closed (B𝓓 [ a ]) (B𝓓 [ x ]) c
 
+     γ : ∥ Σ i ꞉ index (pr₁ (𝒦-in-point↑ ℱ)) , pred (pr₁ (𝒦-in-point↑ ℱ) [ i ]) holds ∥
+     γ = pred-is-inaccessible-by-dir-joins (𝒦-in-point↑ ℱ) p
+
  lemma₆ : (ks : List (index B𝓓)) (ℱ@(F , _) : Point Scott⦅𝓓⦆)
         → (F (𝜸 ks) ⇒ sharp₀ ℱ ∈ₛ 𝜸 ks) holds
- lemma₆ []       ℱ@(F , _) p = 𝟘-elim quux
+ lemma₆ []       ℱ@(F , _) p = 𝟘-elim Ⅰ
   where
    φ : F 𝟎[ 𝒪 Scott⦅𝓓⦆ ] holds
    φ = transport (λ - → (F -) holds) (𝜸-equal-to-𝜸₁ []) p
 
-   baz : 𝟎[ 𝟎-𝔽𝕣𝕞 pe ] holds
-   baz = transport _holds (frame-homomorphisms-preserve-bottom ℱ) φ
+   Ⅱ : 𝟎[ 𝟎-𝔽𝕣𝕞 pe ] holds
+   Ⅱ = transport _holds (frame-homomorphisms-preserve-bottom ℱ) φ
 
-   quux : ⊥ₚ holds
-   quux = transport (λ - → - holds) (𝟎-is-⊥ pe ⁻¹) baz
+   Ⅰ : ⊥ₚ holds
+   Ⅰ = transport (λ - → - holds) (𝟎-is-⊥ pe ⁻¹) Ⅱ
 
  lemma₆ (k ∷ ks) ℱ@(F , _) p =
   ∥∥-rec (holds-is-prop ((sharp₀ ℱ ∈ₛ 𝜸 (k ∷ ks)))) ‡ (transport _holds ♠ p)
    where
     ♠ : F (𝜸 (k ∷ ks)) ＝ F ↑ᵏ[ k ] ∨ F (𝜸 ks)
-    ♠ = F (𝜸 (k ∷ ks))                     ＝⟨ ap F (𝜸-equal-to-𝜸₁ (k ∷ ks)) ⟩
-        F (𝜸₁ (k ∷ ks))                    ＝⟨ frame-homomorphisms-preserve-binary-joins ℱ _ _  ⟩
+    ♠ = F (𝜸 (k ∷ ks))                     ＝⟨ Ⅰ ⟩
+        F (𝜸₁ (k ∷ ks))                    ＝⟨ Ⅱ ⟩
         F ↑ᵏ[ k ] ∨[ 𝟎-𝔽𝕣𝕞 pe ] F (𝜸₁ ks)  ＝⟨ Ⅲ ⟩
         F ↑ᵏ[ k ] ∨[ 𝟎-𝔽𝕣𝕞 pe ] F (𝜸 ks)   ＝⟨ Ⅳ ⟩
         F ↑ᵏ[ k ] ∨ F (𝜸 ks)               ∎
          where
+          Ⅰ = ap F (𝜸-equal-to-𝜸₁ (k ∷ ks))
+          Ⅱ = frame-homomorphisms-preserve-binary-joins ℱ _ _
           Ⅲ = ap (λ - → F ↑ᵏ[ k ] ∨[ 𝟎-𝔽𝕣𝕞 pe ] F -) (𝜸-equal-to-𝜸₁ ks ⁻¹)
           Ⅳ = binary-join-is-disjunction pe (F ↑ᵏ[ k ]) (F (𝜸 ks))
 
@@ -694,7 +699,7 @@ type of spectral points.
     open Spectral-Point Scott⦅𝓓⦆ ℱ renaming (point-fn to F; point to ℱ₀)
 
     † : (𝔘 : ⟨ 𝒪 Scott⦅𝓓⦆ ⟩) → (sharp₀ ℱ₀ ∈ₛ 𝔘) ＝ F 𝔘
-    † 𝔘@(U , s) = transport (λ - → (sharp₀ ℱ₀ ∈ₛ -) ＝ F -) (q ⁻¹) nts
+    † 𝔘@(U , s) = transport (λ - → (sharp₀ ℱ₀ ∈ₛ -) ＝ F -) (q ⁻¹) ‡
      where
       S : Fam 𝓤 ⟨ 𝒪 Scott⦅𝓓⦆ ⟩
       S = covering-familyₛ Scott⦅𝓓⦆ σᴰ 𝔘
@@ -702,23 +707,36 @@ type of spectral points.
       q : 𝔘 ＝ ⋁[ 𝒪 Scott⦅𝓓⦆ ] S
       q = basisₛ-covers-do-cover-eq Scott⦅𝓓⦆ σᴰ 𝔘
 
-      nts₁ : cofinal-in (𝟎-𝔽𝕣𝕞 pe) ⁅ sharp₀ ℱ₀ ∈ₛ 𝔘 ∣ 𝔘 ε S ⁆ ⁅ F 𝔘 ∣ 𝔘 ε S ⁆ holds
-      nts₁ k = ∣ k , lemma₅ (S [ k ]) ℱ₀ ∣
+      ‡₁ : cofinal-in (𝟎-𝔽𝕣𝕞 pe) ⁅ sharp₀ ℱ₀ ∈ₛ 𝔘 ∣ 𝔘 ε S ⁆ ⁅ F 𝔘 ∣ 𝔘 ε S ⁆ holds
+      ‡₁ k = ∣ k , lemma₅ (S [ k ]) ℱ₀ ∣
 
-      nts₂ : cofinal-in (𝟎-𝔽𝕣𝕞 pe) ⁅ F 𝔘 ∣ 𝔘 ε S ⁆ ⁅ sharp₀ ℱ₀ ∈ₛ 𝔘 ∣ 𝔘 ε S ⁆ holds
-      nts₂ (ks , p) = ∣ (ks , p) , lemma₆ ks ℱ₀ ∣
+      ‡₂ : cofinal-in (𝟎-𝔽𝕣𝕞 pe) ⁅ F 𝔘 ∣ 𝔘 ε S ⁆ ⁅ sharp₀ ℱ₀ ∈ₛ 𝔘 ∣ 𝔘 ε S ⁆ holds
+      ‡₂ (ks , p) = ∣ (ks , p) , lemma₆ ks ℱ₀ ∣
 
-      nts : sharp₀ ℱ₀ ∈ₛ (⋁[ 𝒪 Scott⦅𝓓⦆ ] S) ＝ F (⋁[ 𝒪 Scott⦅𝓓⦆ ] S)
-      nts = sharp₀ ℱ₀ ∈ₛ (⋁[ 𝒪 Scott⦅𝓓⦆ ] S)               ＝⟨ refl ⟩
-            pt₀[ sharp₀ ℱ₀ ] (⋁[ 𝒪 Scott⦅𝓓⦆ ] S)           ＝⟨ Ⅰ    ⟩
-            ⋁[ 𝟎-𝔽𝕣𝕞 pe ] ⁅ pt₀[ sharp₀ ℱ₀ ] 𝔘 ∣ 𝔘  ε S ⁆  ＝⟨ refl ⟩
-            ⋁[ 𝟎-𝔽𝕣𝕞 pe ] ⁅ sharp₀ ℱ₀ ∈ₛ 𝔘 ∣ 𝔘 ε S ⁆       ＝⟨ Ⅳ    ⟩
-            ⋁[ 𝟎-𝔽𝕣𝕞 pe ] ⁅ F 𝔘 ∣ 𝔘 ε S ⁆                  ＝⟨ Ⅴ    ⟩
-            F (⋁[ 𝒪 Scott⦅𝓓⦆ ] S)                          ∎
-             where
-              Ⅰ = frame-homomorphisms-preserve-all-joins′ (𝒪 Scott⦅𝓓⦆) (𝟎-𝔽𝕣𝕞 pe) pt[ sharp ℱ ] S
-              Ⅳ = bicofinal-implies-same-join (𝟎-𝔽𝕣𝕞 pe) ⁅ sharp₀ ℱ₀ ∈ₛ 𝔘 ∣ 𝔘 ε S ⁆ ⁅ F 𝔘 ∣ 𝔘 ε S ⁆ nts₁ nts₂
-              Ⅴ = frame-homomorphisms-preserve-all-joins′ (𝒪 Scott⦅𝓓⦆) (𝟎-𝔽𝕣𝕞 pe) ℱ₀ S ⁻¹
+      ‡ : sharp₀ ℱ₀ ∈ₛ (⋁[ 𝒪 Scott⦅𝓓⦆ ] S) ＝ F (⋁[ 𝒪 Scott⦅𝓓⦆ ] S)
+      ‡ = sharp₀ ℱ₀ ∈ₛ (⋁[ 𝒪 Scott⦅𝓓⦆ ] S)               ＝⟨ refl ⟩
+          pt₀[ sharp₀ ℱ₀ ] (⋁[ 𝒪 Scott⦅𝓓⦆ ] S)           ＝⟨ Ⅰ    ⟩
+          ⋁[ 𝟎-𝔽𝕣𝕞 pe ] ⁅ pt₀[ sharp₀ ℱ₀ ] 𝔘 ∣ 𝔘  ε S ⁆  ＝⟨ refl ⟩
+          ⋁[ 𝟎-𝔽𝕣𝕞 pe ] ⁅ sharp₀ ℱ₀ ∈ₛ 𝔘 ∣ 𝔘 ε S ⁆       ＝⟨ Ⅳ    ⟩
+          ⋁[ 𝟎-𝔽𝕣𝕞 pe ] ⁅ F 𝔘 ∣ 𝔘 ε S ⁆                  ＝⟨ Ⅴ    ⟩
+          F (⋁[ 𝒪 Scott⦅𝓓⦆ ] S)                          ∎
+           where
+            Ⅰ = frame-homomorphisms-preserve-all-joins′
+                 (𝒪 Scott⦅𝓓⦆)
+                 (𝟎-𝔽𝕣𝕞 pe)
+                 pt[ sharp ℱ ]
+                 S
+            Ⅳ = bicofinal-implies-same-join
+                 (𝟎-𝔽𝕣𝕞 pe)
+                 ⁅ sharp₀ ℱ₀ ∈ₛ 𝔘 ∣ 𝔘 ε S ⁆
+                 ⁅ F 𝔘 ∣ 𝔘 ε S ⁆
+                 ‡₁
+                 ‡₂
+            Ⅴ = frame-homomorphisms-preserve-all-joins′
+                 (𝒪 Scott⦅𝓓⦆)
+                 (𝟎-𝔽𝕣𝕞 pe)
+                 ℱ₀
+                 S ⁻¹
 
  ♯𝓓-equivalent-to-spectral-points-of-Scott⦅𝓓⦆ : ♯𝓓 ≃ Spectral-Point Scott⦅𝓓⦆
  ♯𝓓-equivalent-to-spectral-points-of-Scott⦅𝓓⦆ = 𝓅𝓉[_] , qinvs-are-equivs 𝓅𝓉[_] †
