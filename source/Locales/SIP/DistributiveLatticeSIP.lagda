@@ -32,6 +32,8 @@ private
 open import Locales.ContinuousMap.FrameHomomorphism-Definition pt fe
 open import Locales.ContinuousMap.FrameHomomorphism-Properties pt fe
 open import Locales.ContinuousMap.FrameIsomorphism-Definition pt fe
+open import Locales.DistributiveLattice.Definition fe pt
+open import Locales.DistributiveLattice.Definition-SigmaBased fe pt
 open import Locales.Frame pt fe
 open import Slice.Family
 open import UF.Base
@@ -41,8 +43,6 @@ open import UF.SIP
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.SubtypeClassifier
-open import Locales.DistributiveLattice.Definition fe pt
-open import Locales.DistributiveLattice.Definition-SigmaBased fe pt
 
 open AllCombinators pt fe
 open FrameHomomorphismProperties
