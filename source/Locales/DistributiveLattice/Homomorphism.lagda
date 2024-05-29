@@ -138,3 +138,33 @@ funᵈ : (K : DistributiveLattice 𝓤) (L : DistributiveLattice 𝓥) → K ─
 funᵈ K L 𝒽 = Homomorphismᵈᵣ.h {L₁ = K} {L₂ = L} 𝒽
 
 \end{code}
+
+Added on 2024-05-29.
+
+\begin{code}
+
+to-homomorphismᵈ-＝ : (K L : DistributiveLattice 𝓤) (h₁ h₂ : K ─d→ L)
+                    → (funᵈ K L h₁ ∼ funᵈ K L h₂)
+                    → h₁ ＝ h₂
+to-homomorphismᵈ-＝ K L 𝒽₁ 𝒽₂ φ = † (dfunext fe φ)
+ where
+  open Homomorphismᵈᵣ 𝒽₁
+   using ()
+   renaming (h to h₁; h-is-homomorphism to h₁-is-homomorphism)
+  open Homomorphismᵈᵣ 𝒽₂
+   using ()
+   renaming (h to h₂; h-is-homomorphism to h₂-is-homomorphism)
+
+  f : is-homomorphismᵈ K L h₁ holds → Homomorphismᵈᵣ K L
+  f ϑ = record { h = h₁ ; h-is-homomorphism = ϑ }
+
+  † : funᵈ K L 𝒽₁ ＝ funᵈ K L 𝒽₂ → 𝒽₁ ＝ 𝒽₂
+  † refl = ap f p
+   where
+    p : h₁-is-homomorphism ＝ h₂-is-homomorphism
+    p = holds-is-prop
+         (is-homomorphismᵈ K L h₁)
+         h₁-is-homomorphism
+         h₂-is-homomorphism
+
+\end{code}
