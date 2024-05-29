@@ -7,11 +7,9 @@ date-completed: 2024-05-28
 
 This module contains the proof of equivalence between the sharp elements of a
 Scott domain and the “spectral points” of its Scott locale. This equivalence
-conjectured by Martín Escardó and proved by Ayberk Tosun on 2024-03-15, in the
-context of our work on the patch topology in univalent foundations (j.w.w. Igor
-Arrieta)
+conjectured by Martín Escardó and proved by Ayberk Tosun on 2024-03-15.
 
-The formalization was completed on 2024-05-28
+The formalization of the proof was completed on 2024-05-28
 
 \begin{code}[hide]
 
