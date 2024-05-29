@@ -7,7 +7,7 @@ date-completed: 2024-05-28
 
 This module contains the proof of equivalence between the sharp elements of a
 Scott domain and the “spectral points” of its Scott locale. This equivalence
-conjectured by Martín Escardó and proved by Ayberk Tosun on 2024-03-15.
+was conjectured by Martín Escardó and proved by Ayberk Tosun on 2024-03-15.
 
 The formalization of the proof was completed on 2024-05-28
 
@@ -107,8 +107,8 @@ is-decidableₚ P =
 We work in a module parameterized by
 
  - a large and locally small Scott domain `𝓓`,
- - assumed to satisfy `decidability-condition` which says that upper boundedness
-   of its compact elements is a decidable property.
+ - assumed to satisfy the `decidability-condition` which says that upper
+   boundedness of its compact elements is a decidable property.
 
 \begin{code}
 
@@ -135,43 +135,43 @@ and self-containment.
 
 \end{code}
 
-We denote by `scott[𝓓]` the Scott locale of domain `𝓓`.
+We denote by `Scott⦅𝓓⦆` the Scott locale of domain `𝓓`.
 
 \begin{code}
 
- open SpectralScottLocaleConstruction₂ 𝓓 ua hl sd dc pe renaming (σ⦅𝓓⦆ to scott[𝓓])
+ open SpectralScottLocaleConstruction₂ 𝓓 ua hl sd dc pe renaming (σ⦅𝓓⦆ to Scott⦅𝓓⦆)
 
 \end{code}
 
-For the frame of opens of the Scott locale `scott[𝓓]`, we reserve the notation
+For the frame of opens of the Scott locale `Scott⦅𝓓⦆`, we reserve the notation
 `σ[𝓓]`. This notation differs from other uses in TypeTopology, but it should be
 the standard one and the notation elsewhere should be updated to use this one.
 
 \begin{code}
 
  σ[𝓓] : Frame (𝓤 ⁺) 𝓤 𝓤
- σ[𝓓] = 𝒪 scott[𝓓]
+ σ[𝓓] = 𝒪 Scott⦅𝓓⦆
 
  open SpectralScottLocaleConstruction  𝓓 hl hscb dc bc pe hiding (scb; σᴰ)
 
- open ScottLocaleProperties 𝓓 hl hscb pe renaming (⊤-is-compact to scott[𝓓]-is-compact)
+ open ScottLocaleProperties 𝓓 hl hscb pe renaming (⊤-is-compact to Scott⦅𝓓⦆-is-compact)
  open is-small-compact-basis scb
  open structurally-algebraic
 
- σᴰ : spectralᴰ scott[𝓓]
+ σᴰ : spectralᴰ Scott⦅𝓓⦆
  σᴰ = scott-locale-spectralᴰ
 
- basis : Fam 𝓤 ⟨ 𝒪 scott[𝓓] ⟩
- basis = basisₛ scott[𝓓] σᴰ
+ basis : Fam 𝓤 ⟨ 𝒪 Scott⦅𝓓⦆ ⟩
+ basis = basisₛ Scott⦅𝓓⦆ σᴰ
 
  Bσ : 𝓤  ̇
  Bσ = index basis
 
- βσ : Bσ → ⟨ 𝒪 scott[𝓓] ⟩
+ βσ : Bσ → ⟨ 𝒪 Scott⦅𝓓⦆ ⟩
  βσ = basis [_]
 
- κσ : (i : Bσ) → is-compact-open scott[𝓓] (βσ i) holds
- κσ = basisₛ-consists-of-compact-opens scott[𝓓] σᴰ
+ κσ : (i : Bσ) → is-compact-open Scott⦅𝓓⦆ (βσ i) holds
+ κσ = basisₛ-consists-of-compact-opens Scott⦅𝓓⦆ σᴰ
 
 \end{code}
 
@@ -277,11 +277,11 @@ membership in compact Scott opens.
 
  admits-decidable-membership-in-compact-scott-opens : ⟨ 𝓓 ⟩∙ → Ω (𝓤 ⁺)
  admits-decidable-membership-in-compact-scott-opens x =
-  Ɐ 𝒦 ꞉ ⟨ 𝒪 scott[𝓓] ⟩ , is-compact-open scott[𝓓] 𝒦 ⇒ is-decidableₚ (x ∈ₛ 𝒦)
+  Ɐ 𝒦 ꞉ ⟨ 𝒪 Scott⦅𝓓⦆ ⟩ , is-compact-open Scott⦅𝓓⦆ 𝒦 ⇒ is-decidableₚ (x ∈ₛ 𝒦)
 
  admits-decidable-membership-in-scott-clopens : ⟨ 𝓓 ⟩∙ → Ω (𝓤 ⁺)
  admits-decidable-membership-in-scott-clopens x =
-  Ɐ 𝒦 ꞉ ⟨ 𝒪 scott[𝓓] ⟩ , is-clopen (𝒪 scott[𝓓]) 𝒦 ⇒ is-decidableₚ (x ∈ₛ 𝒦)
+  Ɐ 𝒦 ꞉ ⟨ 𝒪 Scott⦅𝓓⦆ ⟩ , is-clopen (𝒪 Scott⦅𝓓⦆) 𝒦 ⇒ is-decidableₚ (x ∈ₛ 𝒦)
 
 \end{code}
 
@@ -319,10 +319,10 @@ in compact Scott opens.
  sharp-implies-admits-decidable-membership-in-compact-scott-opens x 𝓈𝒽 𝒦 𝕜 =
   ∥∥-rec (holds-is-prop (is-decidableₚ (x ∈ₛ 𝒦))) (uncurry ‡) ♢
    where
-    ♢ : is-basic scott[𝓓] 𝒦 (spectralᴰ-implies-directed-basisᴰ scott[𝓓] σᴰ) holds
+    ♢ : is-basic Scott⦅𝓓⦆ 𝒦 (spectralᴰ-implies-directed-basisᴰ Scott⦅𝓓⦆ σᴰ) holds
     ♢ = compact-opens-are-basic
-         scott[𝓓]
-         (spectralᴰ-implies-directed-basisᴰ scott[𝓓] σᴰ)
+         Scott⦅𝓓⦆
+         (spectralᴰ-implies-directed-basisᴰ Scott⦅𝓓⦆ σᴰ)
          𝒦
          𝕜
 
@@ -382,10 +382,10 @@ What can be said about the converse? That is something to keep thinking about.
     ψ : admits-decidable-membership-in-compact-scott-opens x holds
     ψ = sharp-implies-admits-decidable-membership-in-compact-scott-opens x 𝓈𝒽
 
-    κ : is-compact-open scott[𝓓] K holds
+    κ : is-compact-open Scott⦅𝓓⦆ K holds
     κ = clopens-are-compact-in-compact-frames
-         (𝒪 scott[𝓓])
-         scott[𝓓]-is-compact
+         (𝒪 Scott⦅𝓓⦆)
+         Scott⦅𝓓⦆-is-compact
          K
          χ
 
@@ -395,13 +395,13 @@ What can be said about the converse? That is something to keep thinking about.
 
 \section{The equivalence}
 
-We now start constructing an equivalence between the type `Spectral-Point scott[𝓓]`
+We now start constructing an equivalence between the type `Spectral-Point Scott⦅𝓓⦆`
 and the type `♯𝓓`.
 
 This equivalence consists of the maps:
 
-  1. `𝓅𝓉[_] : ♯𝓓 → Spectral-Point scott[𝓓]`, and
-  2. `sharp : Spectral-Point scott[𝓓] → ♯𝓓`.
+  1. `𝓅𝓉[_] : ♯𝓓 → Spectral-Point Scott⦅𝓓⦆`, and
+  2. `sharp : Spectral-Point Scott⦅𝓓⦆ → ♯𝓓`.
 
 We now construct these maps in this order.
 
@@ -412,25 +412,25 @@ version of the construction of interest, which is then packaged up with a proof.
 
 \begin{code}
 
- pt₀[_] : ⟨ 𝓓 ⟩∙ → ⟨ 𝒪 scott[𝓓] ⟩ → Ω 𝓤
+ pt₀[_] : ⟨ 𝓓 ⟩∙ → ⟨ 𝒪 Scott⦅𝓓⦆ ⟩ → Ω 𝓤
  pt₀[_] x U = x ∈ₛ U
 
  open FrameHomomorphisms
- open FrameHomomorphismProperties (𝒪 scott[𝓓]) (𝟎-𝔽𝕣𝕞 pe)
+ open FrameHomomorphismProperties (𝒪 Scott⦅𝓓⦆) (𝟎-𝔽𝕣𝕞 pe)
 
- pt[_] : ♯𝓓 → Point scott[𝓓]
+ pt[_] : ♯𝓓 → Point Scott⦅𝓓⦆
  pt[_] 𝓍@(x , 𝕤) = pt₀[ x ] , †
   where
-   ‡ : preserves-joins (𝒪 scott[𝓓]) (𝟎-𝔽𝕣𝕞 pe) pt₀[ x ] holds
+   ‡ : preserves-joins (𝒪 Scott⦅𝓓⦆) (𝟎-𝔽𝕣𝕞 pe) pt₀[ x ] holds
    ‡ S = (⋁[ 𝟎-𝔽𝕣𝕞 pe ]-upper ⁅ pt₀[ x ] y ∣ y ε S ⁆) , goal
     where
      open Joins _⇒_
 
      goal : ((u , _) : upper-bound ⁅ pt₀[ x ] y ∣ y ε S ⁆)
-          → (pt₀[ x ] (⋁[ 𝒪 scott[𝓓] ] S) ⇒ u) holds
+          → (pt₀[ x ] (⋁[ 𝒪 Scott⦅𝓓⦆ ] S) ⇒ u) holds
      goal (u , a) p = ⋁[ 𝟎-𝔽𝕣𝕞 pe ]-least ⁅ pt₀[ x ] y ∣ y ε S ⁆ (u , a) p
 
-   † : is-a-frame-homomorphism (𝒪 scott[𝓓]) (𝟎-𝔽𝕣𝕞 pe) pt₀[ x ] holds
+   † : is-a-frame-homomorphism (𝒪 Scott⦅𝓓⦆) (𝟎-𝔽𝕣𝕞 pe) pt₀[ x ] holds
    † = refl , (λ _ _ → refl) , ‡
 
 \end{code}
@@ -448,7 +448,7 @@ Given any sharp element `𝓍`, the point `pt 𝓍` is a spectral map.
 
 \begin{code}
 
- pt-is-spectral : (𝓍 : ♯𝓓) → is-spectral-map scott[𝓓] (𝟏Loc pe) pt[ 𝓍 ] holds
+ pt-is-spectral : (𝓍 : ♯𝓓) → is-spectral-map Scott⦅𝓓⦆ (𝟏Loc pe) pt[ 𝓍 ] holds
  pt-is-spectral 𝓍@(x , 𝓈𝒽) 𝒦@(K , σ) 𝕜 = decidable-implies-compact pe (x ∈ₛ 𝒦) †
   where
    † : is-decidableₚ (x ∈ₛ (K , σ)) holds
@@ -462,10 +462,10 @@ We package `pt[_]` up with this proof spectrality to obtain the following:
 
 \begin{code}
 
- 𝓅𝓉[_] : ♯𝓓 → Spectral-Point scott[𝓓]
- 𝓅𝓉[_] 𝓍 = to-spectral-point scott[𝓓] ℱ
+ 𝓅𝓉[_] : ♯𝓓 → Spectral-Point Scott⦅𝓓⦆
+ 𝓅𝓉[_] 𝓍 = to-spectral-point Scott⦅𝓓⦆ ℱ
   where
-   ℱ : Spectral-Map (𝟏Loc pe) scott[𝓓]
+   ℱ : Spectral-Map (𝟏Loc pe) Scott⦅𝓓⦆
    ℱ = pt[ 𝓍 ] , pt-is-spectral 𝓍
 
 \end{code}
@@ -476,10 +476,10 @@ We now define the map `sharp` going in the opposite direction.
 
 \begin{code}
 
- sharp₀ : Point scott[𝓓] → ⟨ 𝓓 ⟩∙
+ sharp₀ : Point Scott⦅𝓓⦆ → ⟨ 𝓓 ⟩∙
  sharp₀ ℱ = ∐ 𝓓 (𝒦-in-point-is-directed ℱ)
 
- lemma-6-⇒ : (ℱ@(F , _) : Point scott[𝓓]) (c : ⟨ 𝓓 ⟩∙) (𝕜 : is-compact 𝓓 c)
+ lemma-6-⇒ : (ℱ@(F , _) : Point Scott⦅𝓓⦆) (c : ⟨ 𝓓 ⟩∙) (𝕜 : is-compact 𝓓 c)
          → c ⊑⟨ 𝓓 ⟩ sharp₀ ℱ → F ↑ˢ[ c , 𝕜 ] holds
  lemma-6-⇒ ℱ@(F , 𝒽) c 𝕜 p =
   ∥∥-rec (holds-is-prop (F ↑ˢ[ c , 𝕜 ])) † γ
@@ -494,11 +494,11 @@ We now define the map `sharp` going in the opposite direction.
     † ((i , p) , φ) =
      frame-morphisms-are-monotonic F 𝒽 (↑ˢ[ βₖ i ] , ↑ˢ[ c , 𝕜 ]) ‡ p
       where
-       ‡ : (↑ˢ[ βₖ i ] ≤[ poset-of (𝒪 scott[𝓓]) ] ↑ˢ[ c , 𝕜 ]) holds
+       ‡ : (↑ˢ[ βₖ i ] ≤[ poset-of (𝒪 Scott⦅𝓓⦆) ] ↑ˢ[ c , 𝕜 ]) holds
        ‡ =
         principal-filter-is-antitone c (B𝓓 [ i ]) φ 𝕜 (basis-is-compact i)
 
- lemma-6-⇐ : (ℱ@(F , _) : Point scott[𝓓]) (c : ⟨ 𝓓 ⟩∙) (𝕜 : is-compact 𝓓 c)
+ lemma-6-⇐ : (ℱ@(F , _) : Point Scott⦅𝓓⦆) (c : ⟨ 𝓓 ⟩∙) (𝕜 : is-compact 𝓓 c)
            → F ↑ˢ[ c , 𝕜 ] holds → c ⊑⟨ 𝓓 ⟩ sharp₀ ℱ
  lemma-6-⇐ ℱ@(F , ψ) c 𝕜 χ =
   ∥∥-rec (prop-valuedness 𝓓 c (⋁ 𝒦-in-point↑ ℱ)) † γ
@@ -524,8 +524,8 @@ The map `sharp₀` always gives sharp elements.
 
 \begin{code}
 
- sharp₀-gives-sharp-elements : (F : Point scott[𝓓])
-                             → is-spectral-map scott[𝓓] (𝟏Loc pe) F holds
+ sharp₀-gives-sharp-elements : (F : Point Scott⦅𝓓⦆)
+                             → is-spectral-map Scott⦅𝓓⦆ (𝟏Loc pe) F holds
                              → is-sharp (sharp₀ F) holds
  sharp₀-gives-sharp-elements ℱ@(F , _) σ c 𝕜 = cases case₁ case₂ γ
   where
@@ -548,10 +548,10 @@ and denote it by `sharp`.
 
 \begin{code}
 
- sharp : Spectral-Point scott[𝓓] → ♯𝓓
+ sharp : Spectral-Point Scott⦅𝓓⦆ → ♯𝓓
  sharp ℱ = sharp₀ F· , sharp₀-gives-sharp-elements F· σ
   where
-   open Spectral-Point scott[𝓓] ℱ
+   open Spectral-Point Scott⦅𝓓⦆ ℱ
     renaming (point-fn to F; point to F·; point-preserves-compactness to σ)
 
 \end{code}
@@ -635,7 +635,7 @@ type of spectral points.
 
  open PropertiesAlgebraic 𝓓 𝕒
 
- another-lemma : (𝔘 : ⟨ 𝒪 scott[𝓓] ⟩) (ℱ@(F , _) : Point scott[𝓓])
+ another-lemma : (𝔘 : ⟨ 𝒪 Scott⦅𝓓⦆ ⟩) (ℱ@(F , _) : Point Scott⦅𝓓⦆)
                → (sharp₀ ℱ ∈ₛ 𝔘 ⇒ F 𝔘) holds
  another-lemma 𝔘 ℱ@(F , 𝒽) = †
   where
@@ -648,14 +648,14 @@ type of spectral points.
        → F 𝔘 holds
      †₁ ((a , b) , c) = frame-morphisms-are-monotonic F 𝒽 (↑ˢ[ βₖ a ] , 𝔘) foo b
       where
-       foo : (↑ˢ[ βₖ a ] ≤[ poset-of (𝒪 scott[𝓓]) ] 𝔘) holds
+       foo : (↑ˢ[ βₖ a ] ≤[ poset-of (𝒪 Scott⦅𝓓⦆) ] 𝔘) holds
        foo x = pred-is-upwards-closed (B𝓓 [ a ]) (B𝓓 [ x ]) c
 
- final-lemma : (ks : List (index B𝓓)) (ℱ@(F , _) : Point scott[𝓓])
+ final-lemma : (ks : List (index B𝓓)) (ℱ@(F , _) : Point Scott⦅𝓓⦆)
              → (F (𝜸 ks) ⇒ sharp₀ ℱ ∈ₛ 𝜸 ks) holds
  final-lemma []       ℱ@(F , _) p = 𝟘-elim quux
   where
-   φ : F 𝟎[ 𝒪 scott[𝓓] ] holds
+   φ : F 𝟎[ 𝒪 Scott⦅𝓓⦆ ] holds
    φ = transport (λ - → (F -) holds) (𝜸-equal-to-𝜸₁ []) p
 
    baz : 𝟎[ 𝟎-𝔽𝕣𝕞 pe ] holds
@@ -684,20 +684,20 @@ type of spectral points.
     ‡ (inl p) = ∣ inl (∐-is-upperbound 𝓓 (𝒦-in-point-is-directed ℱ) (k , p)) ∣
     ‡ (inr q) = ∣ inr (final-lemma ks ℱ q) ∣
 
- pt-cancels-sharp : (ℱ : Spectral-Point scott[𝓓]) → 𝓅𝓉[ sharp ℱ ] ＝ ℱ
+ pt-cancels-sharp : (ℱ : Spectral-Point Scott⦅𝓓⦆) → 𝓅𝓉[ sharp ℱ ] ＝ ℱ
  pt-cancels-sharp ℱ =
-  to-spectral-point-＝ scott[𝓓] 𝓅𝓉[ sharp ℱ ] ℱ (dfunext fe †)
+  to-spectral-point-＝ Scott⦅𝓓⦆ 𝓅𝓉[ sharp ℱ ] ℱ (dfunext fe †)
    where
-    open Spectral-Point scott[𝓓] ℱ renaming (point-fn to F; point to ℱ₀)
+    open Spectral-Point Scott⦅𝓓⦆ ℱ renaming (point-fn to F; point to ℱ₀)
 
-    † : (𝔘 : ⟨ 𝒪 scott[𝓓] ⟩) → (sharp₀ ℱ₀ ∈ₛ 𝔘) ＝ F 𝔘
+    † : (𝔘 : ⟨ 𝒪 Scott⦅𝓓⦆ ⟩) → (sharp₀ ℱ₀ ∈ₛ 𝔘) ＝ F 𝔘
     † 𝔘@(U , s) = transport (λ - → (sharp₀ ℱ₀ ∈ₛ -) ＝ F -) (q ⁻¹) nts
      where
-      S : Fam 𝓤 ⟨ 𝒪 scott[𝓓] ⟩
-      S = covering-familyₛ scott[𝓓] σᴰ 𝔘
+      S : Fam 𝓤 ⟨ 𝒪 Scott⦅𝓓⦆ ⟩
+      S = covering-familyₛ Scott⦅𝓓⦆ σᴰ 𝔘
 
-      q : 𝔘 ＝ ⋁[ 𝒪 scott[𝓓] ] S
-      q = basisₛ-covers-do-cover-eq scott[𝓓] σᴰ 𝔘
+      q : 𝔘 ＝ ⋁[ 𝒪 Scott⦅𝓓⦆ ] S
+      q = basisₛ-covers-do-cover-eq Scott⦅𝓓⦆ σᴰ 𝔘
 
       nts₁ : cofinal-in (𝟎-𝔽𝕣𝕞 pe) ⁅ sharp₀ ℱ₀ ∈ₛ 𝔘 ∣ 𝔘 ε S ⁆ ⁅ F 𝔘 ∣ 𝔘 ε S ⁆ holds
       nts₁ k = ∣ k , another-lemma (S [ k ]) ℱ₀ ∣
@@ -705,19 +705,19 @@ type of spectral points.
       nts₂ : cofinal-in (𝟎-𝔽𝕣𝕞 pe) ⁅ F 𝔘 ∣ 𝔘 ε S ⁆ ⁅ sharp₀ ℱ₀ ∈ₛ 𝔘 ∣ 𝔘 ε S ⁆ holds
       nts₂ (ks , p) = ∣ (ks , p) , final-lemma ks ℱ₀ ∣
 
-      nts : sharp₀ ℱ₀ ∈ₛ (⋁[ 𝒪 scott[𝓓] ] S) ＝ F (⋁[ 𝒪 scott[𝓓] ] S)
-      nts = sharp₀ ℱ₀ ∈ₛ (⋁[ 𝒪 scott[𝓓] ] S)                  ＝⟨ refl ⟩
-            pt₀[ sharp₀ ℱ₀ ] (⋁[ 𝒪 scott[𝓓] ] S)              ＝⟨ Ⅰ ⟩
+      nts : sharp₀ ℱ₀ ∈ₛ (⋁[ 𝒪 Scott⦅𝓓⦆ ] S) ＝ F (⋁[ 𝒪 Scott⦅𝓓⦆ ] S)
+      nts = sharp₀ ℱ₀ ∈ₛ (⋁[ 𝒪 Scott⦅𝓓⦆ ] S)                  ＝⟨ refl ⟩
+            pt₀[ sharp₀ ℱ₀ ] (⋁[ 𝒪 Scott⦅𝓓⦆ ] S)              ＝⟨ Ⅰ ⟩
             ⋁[ 𝟎-𝔽𝕣𝕞 pe ] ⁅ pt₀[ sharp₀ ℱ₀ ] 𝔘 ∣ 𝔘  ε S ⁆  ＝⟨ refl ⟩
             ⋁[ 𝟎-𝔽𝕣𝕞 pe ] ⁅ sharp₀ ℱ₀ ∈ₛ 𝔘 ∣ 𝔘 ε S ⁆       ＝⟨ bicofinal-implies-same-join (𝟎-𝔽𝕣𝕞 pe) ⁅ sharp₀ ℱ₀ ∈ₛ 𝔘 ∣ 𝔘 ε S ⁆ ⁅ F 𝔘 ∣ 𝔘 ε S ⁆ nts₁ nts₂ ⟩
             ⋁[ 𝟎-𝔽𝕣𝕞 pe ] ⁅ F 𝔘 ∣ 𝔘 ε S ⁆                  ＝⟨ Ⅴ ⟩
-            F (⋁[ 𝒪 scott[𝓓] ] S)                              ∎
+            F (⋁[ 𝒪 Scott⦅𝓓⦆ ] S)                              ∎
              where
-              Ⅰ = frame-homomorphisms-preserve-all-joins′ (𝒪 scott[𝓓]) (𝟎-𝔽𝕣𝕞 pe) pt[ sharp ℱ ] S
-              Ⅴ = frame-homomorphisms-preserve-all-joins′ (𝒪 scott[𝓓]) (𝟎-𝔽𝕣𝕞 pe) ℱ₀ S ⁻¹
+              Ⅰ = frame-homomorphisms-preserve-all-joins′ (𝒪 Scott⦅𝓓⦆) (𝟎-𝔽𝕣𝕞 pe) pt[ sharp ℱ ] S
+              Ⅴ = frame-homomorphisms-preserve-all-joins′ (𝒪 Scott⦅𝓓⦆) (𝟎-𝔽𝕣𝕞 pe) ℱ₀ S ⁻¹
 
- ♯𝓓-equivalent-to-spectral-points-of-scott[𝓓] : ♯𝓓 ≃ Spectral-Point scott[𝓓]
- ♯𝓓-equivalent-to-spectral-points-of-scott[𝓓] = 𝓅𝓉[_] , qinvs-are-equivs 𝓅𝓉[_] †
+ ♯𝓓-equivalent-to-spectral-points-of-Scott⦅𝓓⦆ : ♯𝓓 ≃ Spectral-Point Scott⦅𝓓⦆
+ ♯𝓓-equivalent-to-spectral-points-of-Scott⦅𝓓⦆ = 𝓅𝓉[_] , qinvs-are-equivs 𝓅𝓉[_] †
   where
    † : qinv 𝓅𝓉[_]
    † = sharp , sharp-cancels-pt , pt-cancels-sharp
