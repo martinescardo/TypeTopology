@@ -30,8 +30,9 @@ open import UF.Equiv
 open import UF.Equiv-FunExt
 open import UF.Logic
 open import UF.Powerset-MultiUniverse
-open import UF.Subsingletons-FunExt
+open import UF.Retracts
 open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
 open import UF.Subsingletons-Properties
 open import UF.SubtypeClassifier
 
@@ -86,7 +87,7 @@ between distributive lattices `L₁` and `L₂`.
 
  having-homomorphic-inverse-is-prop : (h : L₁ ─d→ L₂)
                                     → is-prop (has-homomorphic-inverse h)
- having-homomorphic-inverse-is-prop h (r₁ , p) (r₂ , q) =
+ having-homomorphic-inverse-is-prop h (r₁ , φ₁ , ψ₁) (r₂ , φ₂ , ψ₂) =
   to-subtype-＝ † (to-homomorphismᵈ-＝ L₂ L₁ r₁ r₂ γ)
    where
     open DistributiveLattice
@@ -98,12 +99,15 @@ between distributive lattices `L₁` and `L₂`.
 
 
     ϑ : funᵈ L₁ L₂ h ∘ funᵈ L₂ L₁ r₁ ∼ funᵈ L₁ L₂ h ∘ funᵈ L₂ L₁ r₂
-    ϑ x = funᵈ L₁ L₂ h (funᵈ L₂ L₁ r₁ x) ＝⟨ {!!} ⟩
-          ?                              ＝⟨ ?    ⟩
-          {!!}                           ∎
+    ϑ x = funᵈ L₁ L₂ h (funᵈ L₂ L₁ r₁ x)   ＝⟨ Ⅰ ⟩
+          x                                ＝⟨ Ⅱ ⟩
+          funᵈ L₁ L₂ h (funᵈ L₂ L₁ r₂ x)   ∎
+           where
+            Ⅰ = ψ₁ x
+            Ⅱ = {!!}
 
-    ξ : left-cancellable (funᵈ L₂ L₁ r₁)
-    ξ = {!!}
+    ξ : left-cancellable (funᵈ L₁ L₂ h)
+    ξ = sections-are-lc (funᵈ L₁ L₂ h) (funᵈ L₂ L₁ r₁ , φ₁)
 
     γ : funᵈ L₂ L₁ r₁ ∼ funᵈ L₂ L₁ r₂
     γ x = {!!}
