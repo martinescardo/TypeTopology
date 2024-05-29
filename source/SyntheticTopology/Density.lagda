@@ -15,7 +15,7 @@ open import UF.Sets
 open import UF.Sets-Properties
 open import UF.Subsingletons
 open import UF.SubtypeClassifier
-open import SyntheticTopology.SierpinskiObject 
+open import SyntheticTopology.SierpinskiObject
 
 module SyntheticTopology.Density
         (𝓤  𝓥 : Universe)
@@ -46,7 +46,10 @@ A subset D of a set X is dense if D intersects every inhabited open subset of X
 \begin{code}
 
 is-dense : ((X , sX) : hSet 𝓤) → (D : X → Ω 𝓤) → Ω (𝓤 ⁺ ⊔ 𝓥)  -- should be read : "D is dense in X"
-is-dense (X , sX) D = (Ɐ (P , open-P) ꞉ 𝓞 (X , sX) , (Ǝₚ x ꞉ X , P x) ⇒ (Ǝₚ x ꞉ X , ((D x) ∧ (P x))))
+is-dense (X , sX) D =
+ Ɐ (P , open-P) ꞉ 𝓞 (X , sX) ,
+  (Ǝₚ x ꞉ X , P x) ⇒
+   (Ǝₚ x ꞉ X , ((D x) ∧ (P x)))
 
 self-is-dense-in-self : ((X , sX) : hSet 𝓤) → is-dense (X , sX) (λ x → ⊤) holds
 self-is-dense-in-self (X , sX) (P , open-P) inhabited-P = ∥∥-rec (holds-is-prop (Ǝₚ x' ꞉ X , ((D x') ∧ (P x')))) † inhabited-P
