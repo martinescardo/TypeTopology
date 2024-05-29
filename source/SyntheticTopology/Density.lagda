@@ -53,12 +53,12 @@ is-dense (X , sX) D =
 
 self-is-dense-in-self : ((X , sX) : hSet 𝓤) → is-dense (X , sX) (λ x → ⊤) holds
 self-is-dense-in-self (X , sX) (P , open-P) inhabited-P = ∥∥-rec (holds-is-prop (Ǝₚ x' ꞉ X , ((D x') ∧ (P x')))) † inhabited-P
-   where
-    D : X → Ω 𝓤
-    D x = ⊤
+ where
+  D : X → Ω 𝓤
+  D x = ⊤
 
-    † : Σ x ꞉ X , P x holds → (Ǝₚ x' ꞉ X , ((D x') ∧ (P x'))) holds
-    † (x , Px) = ∣ x , ∧-Intro (D x) (P x) ⊤-holds Px  ∣
+  † : Σ x ꞉ X , P x holds → (Ǝₚ x' ꞉ X , ((D x') ∧ (P x'))) holds
+  † (x , Px) = ∣ x , ∧-Intro (D x) (P x) ⊤-holds Px  ∣
 
 {-
 subovert-dense-overt : ((X , sX) : hSet 𝓤) → (U : X → Ω 𝓤) → is-subovert (X , sX) U holds → is-dense {X , sX} U holds → is-overt (X , sX) holds
