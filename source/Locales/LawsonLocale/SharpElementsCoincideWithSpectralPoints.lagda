@@ -96,7 +96,7 @@ up with the proof that it is a proposition.
 
 \begin{code}
 
-is-decidableₚ : (P : Ω 𝓤) → Ω 𝓤
+is-decidableₚ : Ω 𝓤 → Ω 𝓤
 is-decidableₚ P =
  is-decidable (P holds) , decidability-of-prop-is-prop fe (holds-is-prop P)
 
@@ -145,16 +145,12 @@ We denote by `scott[𝓓]` the Scott locale of domain `𝓓`.
 
 For the frame of opens of the Scott locale `scott[𝓓]`, we reserve the notation
 `σ[𝓓]`. This notation differs from other uses in TypeTopology, but it should be
-the standard one and the notation elsewhere should be updated to this one.
+the standard one and the notation elsewhere should be updated to use this one.
 
 \begin{code}
 
  σ[𝓓] : Frame (𝓤 ⁺) 𝓤 𝓤
  σ[𝓓] = 𝒪 scott[𝓓]
-
-\end{code}
-
-\begin{code}
 
  open SpectralScottLocaleConstruction  𝓓 hl hscb dc bc pe hiding (scb; σᴰ)
 
