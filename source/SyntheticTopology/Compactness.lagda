@@ -15,7 +15,7 @@ open import UF.Sets
 open import UF.Sets-Properties
 open import UF.Subsingletons
 open import UF.SubtypeClassifier
-open import SyntheticTopology.SierpinskiObject 
+open import SyntheticTopology.SierpinskiObject
 
 module SyntheticTopology.Compactness
         (𝓤  𝓥 : Universe)
