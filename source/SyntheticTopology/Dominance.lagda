@@ -1,6 +1,12 @@
+---
+title:                  Dominance and Phoa's principle in Synthetic Topology
+authors:            [Martin Trucchi , Ayberk Tosun]
+date-started:  2024-05-28
+---
+
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split --auto-inline --lossy-unification #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 open import UF.Base
@@ -28,7 +34,7 @@ open Sierpinski-notations fe pe pt 𝕊
 
 \end{code}
 
-We are now ready to write down the Dominance Axiom and Phoa’s Principle.
+We write down the Dominance Axiom and Phoa’s Principle.
 
 First, the Dominance Axiom:
 
@@ -59,11 +65,16 @@ phoa’s-principle =
 
 \end{code}
 
-Sierpinski being closed under finite meets :
+We also give a natural axiom saying that the Sierpinski object is being closed under
+binary (and thus, finite if contains-top holds) meets :
 
 \begin{code}
 
 closed-under-binary-meets : Ω (𝓤 ⁺ ⊔ 𝓥)
-closed-under-binary-meets = Ɐ P ꞉ Ω 𝓤 , Ɐ Q ꞉ Ω 𝓤 , ((is-affirmable P ∧ is-affirmable Q) ⇒ is-affirmable (P ∧ Q))
+closed-under-binary-meets =
+ Ɐ P ꞉ Ω 𝓤 ,
+  Ɐ Q ꞉ Ω 𝓤 ,
+   ((is-affirmable P ∧ is-affirmable Q)
+    ⇒ is-affirmable (P ∧ Q))
 
 \end{code}

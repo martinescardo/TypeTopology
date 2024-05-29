@@ -1,12 +1,13 @@
 ---
-authors:       ["Ayberk Tosun", "Martin Trucchi"]
-date-started:  2024-05-02
-dates-updated: [2024-05-28]
+title:                       Sierpinski Object definition in synthetic topology
+authors:                 ["Ayberk Tosun", "Martin Trucchi"]
+date-started:       2024-05-02
+dates-updated:   [2024-05-28]
 ---
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --lossy-unification #-}
+{-# OPTIONS --safe --without-K --lossy-unification #-}                                        
 
 open import MLTT.Spartan
 open import UF.FunExt
@@ -110,8 +111,8 @@ hSet `𝒳`.
 We denote by `X` the underlying set of `𝒳`.
 
 \begin{code}
-
-  X = underlying-set 𝒳
+  private
+   X = underlying-set 𝒳 
 
 \end{code}
 
