@@ -88,7 +88,8 @@ image-of-compact : {(X , sX) (Y , sY) : hSet 𝓤}
                    → is-surjection f
                    → is-compact (X , sX) holds
                    → is-compact (Y , sY) holds
-image-of-compact {X , sX} {Y , sY} f surf kX (P , open-P) = ⇔-affirmable (Ɐ x ꞉ X , P (f x)) (Ɐ y ꞉ Y , P y) p †
+image-of-compact {X , sX} {Y , sY} f surf kX (P , open-P) =
+ ⇔-affirmable (Ɐ x ꞉ X , P (f x)) (Ɐ y ꞉ Y , P y) p †
   where
    p : ((Ɐ x ꞉ X , P (f x)) ⇔ (Ɐ y ꞉ Y , P y)) holds
    p = (λ pX y → surjection-induction f surf (_holds ∘ P) (λ y → holds-is-prop (P y)) pX y)
