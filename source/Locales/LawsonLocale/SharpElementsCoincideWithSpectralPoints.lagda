@@ -175,9 +175,8 @@ the standard one and the notation elsewhere should be updated to use this one.
 
 \end{code}
 
-We define a version of the ordering of the domain that is packaged up with the
-proof that it is a proposition (called `prop-valuedness` in the domain theory
-development).
+We define a version of the order of `𝓓` that is packaged up with the proof that
+it is a proposition (called `prop-valuedness` in the domain theory development).
 
 \begin{code}
 
@@ -242,7 +241,8 @@ We now define the type `♯𝓓` of sharp elements of the Scott domain `𝓓`.
 \end{code}
 
 We usually pattern match on the inhabitants of `♯𝓓` to refer to the first
-component.
+component. But if the need arises, we denote the underlying element of
+a sharp element `𝓍` by `⦅ 𝓍 ⦆`.
 
 \begin{code}
 
@@ -342,7 +342,8 @@ in compact Scott opens.
 
 \end{code}
 
-The converse also holds so this is a necessary and sufficient condition.
+The converse also holds meaning elements that admit decidable membership in
+compact Scott opens are _exactly_ the sharp elements.
 
 \begin{code}
 
@@ -368,8 +369,6 @@ The converse also holds so this is a necessary and sufficient condition.
 Because clopens are compact in compact frames, we can also give as a necessary
 condition that sharp elements admit decidable membership in Scott clopens.
 
-What can be said about the converse? That is something to keep thinking about.
-
 \begin{code}
 
  admits-decidable-membership-in-scott-clopens-implies-is-sharp
@@ -390,6 +389,10 @@ What can be said about the converse? That is something to keep thinking about.
          χ
 
 \end{code}
+
+What can be said about the converse of this implication? In other words, what is
+the meaning of the set of elements of the domain that admit decidable membership
+in Scott clopens. I do not know the answer yet.
 
 \section{Some useful lemmas}
 
@@ -479,28 +482,39 @@ We now define the map `sharp` going in the opposite direction.
  sharp₀ : Point Scott⦅𝓓⦆ → ⟨ 𝓓 ⟩∙
  sharp₀ ℱ = ∐ 𝓓 (𝒦-in-point-is-directed ℱ)
 
- lemma-6-⇒ : (ℱ@(F , _) : Point Scott⦅𝓓⦆) (c : ⟨ 𝓓 ⟩∙) (𝕜 : is-compact 𝓓 c)
-         → c ⊑⟨ 𝓓 ⟩ sharp₀ ℱ → F ↑ˢ[ c , 𝕜 ] holds
- lemma-6-⇒ ℱ@(F , 𝒽) c 𝕜 p =
+\end{code}
+
+We prove the following lemma which says `c ⊑ sharp(ℱ)` if and only if `ℱ(↑c)`,
+for every compact element `c` of the domain `𝓓`.
+
+\begin{code}
+
+ below-sharp-implies-in-point₁
+  : (ℱ@(F , _) : Point Scott⦅𝓓⦆) (c : ⟨ 𝓓 ⟩∙) (𝕜 : is-compact 𝓓 c)
+  → c ⊑⟨ 𝓓 ⟩ sharp₀ ℱ
+  → F ↑ˢ[ c , 𝕜 ] holds
+ below-sharp-implies-in-point₁ ℱ@(F , 𝒽) c 𝕜 p =
   ∥∥-rec (holds-is-prop (F ↑ˢ[ c , 𝕜 ])) † γ
    where
+    𝔠 = (c , 𝕜)
+
     open 𝒪ₛᴿ (to-𝒪ₛᴿ ↑ˢ[ c , 𝕜 ])
 
     γ : ∃ (i , _) ꞉ (index (𝒦-in-point ℱ)) , c ⊑⟨ 𝓓 ⟩ (B𝓓 [ i ])
     γ = pred-is-inaccessible-by-dir-joins (𝒦-in-point↑ ℱ) p
 
     † : Σ (i , _) ꞉ (index (𝒦-in-point ℱ)) , c ⊑⟨ 𝓓 ⟩ (B𝓓 [ i ])
-      → F ↑ˢ[ c , 𝕜 ] holds
+      → F ↑ˢ[ 𝔠 ] holds
     † ((i , p) , φ) =
-     frame-morphisms-are-monotonic F 𝒽 (↑ˢ[ βₖ i ] , ↑ˢ[ c , 𝕜 ]) ‡ p
+     frame-morphisms-are-monotonic F 𝒽 (↑ˢ[ βₖ i ] , ↑ˢ[ 𝔠 ]) ‡ p
       where
-       ‡ : (↑ˢ[ βₖ i ] ≤[ poset-of (𝒪 Scott⦅𝓓⦆) ] ↑ˢ[ c , 𝕜 ]) holds
-       ‡ =
-        principal-filter-is-antitone c (B𝓓 [ i ]) φ 𝕜 (basis-is-compact i)
+       ‡ : (↑ˢ[ βₖ i ] ≤[ poset-of (𝒪 Scott⦅𝓓⦆) ] ↑ˢ[ 𝔠 ]) holds
+       ‡ = principal-filter-is-antitone c (B𝓓 [ i ]) φ 𝕜 (basis-is-compact i)
 
- lemma-6-⇐ : (ℱ@(F , _) : Point Scott⦅𝓓⦆) (c : ⟨ 𝓓 ⟩∙) (𝕜 : is-compact 𝓓 c)
-           → F ↑ˢ[ c , 𝕜 ] holds → c ⊑⟨ 𝓓 ⟩ sharp₀ ℱ
- lemma-6-⇐ ℱ@(F , ψ) c 𝕜 χ =
+ in-point-implies-below-sharp
+  : (ℱ@(F , _) : Point Scott⦅𝓓⦆) (c : ⟨ 𝓓 ⟩∙) (𝕜 : is-compact 𝓓 c)
+  → F ↑ˢ[ c , 𝕜 ] holds → c ⊑⟨ 𝓓 ⟩ sharp₀ ℱ
+ in-point-implies-below-sharp ℱ@(F , ψ) c 𝕜 χ =
   ∥∥-rec (prop-valuedness 𝓓 c (⋁ 𝒦-in-point↑ ℱ)) † γ
    where
     γ : ∃ i ꞉ index B𝓓 , B𝓓 [ i ] ＝ c
@@ -529,22 +543,22 @@ The map `sharp₀` always gives sharp elements.
                              → is-sharp (sharp₀ F) holds
  sharp₀-gives-sharp-elements ℱ@(F , _) σ c 𝕜 = cases case₁ case₂ γ
   where
-   φ : is-compact-open (𝟏Loc pe) (F ↑ˢ[ c , 𝕜 ]) holds
-   φ = σ ↑ˢ[ c , 𝕜 ] (principal-filter-is-compact₀ c 𝕜 )
+   χ : is-compact-open (𝟏Loc pe) (F ↑ˢ[ c , 𝕜 ]) holds
+   χ = σ ↑ˢ[ c , 𝕜 ] (principal-filter-is-compact₀ c 𝕜 )
 
    γ : is-decidableₚ (F ↑ˢ[ c , 𝕜 ]) holds
-   γ = compact-implies-boolean pe (F ↑ˢ[ c , 𝕜 ]) φ
+   γ = compact-implies-boolean pe (F ↑ˢ[ c , 𝕜 ]) χ
 
    case₁ : F ↑ˢ[ c , 𝕜 ] holds → is-decidableₚ (c ⊑ sharp₀ ℱ) holds
-   case₁ = inl ∘ lemma-6-⇐ ℱ c 𝕜
+   case₁ = inl ∘ in-point-implies-below-sharp ℱ c 𝕜
 
    case₂ : ¬ (F ↑ˢ[ c , 𝕜 ] holds) → is-decidableₚ (c ⊑ sharp₀ ℱ) holds
-   case₂ χ = inr λ q → χ (lemma-6-⇒ ℱ c 𝕜 q)
+   case₂ χ = inr (χ ∘ below-sharp-implies-in-point₁ ℱ c 𝕜)
 
 \end{code}
 
-We package up `sharp₀` with the proof that it always gives sharp elements
-and denote it by `sharp`.
+We denote by `sharp` the version of `sharp₀` that is packaged up with the proof
+that it always gives sharp elements and denote it by `sharp`.
 
 \begin{code}
 
@@ -568,33 +582,25 @@ type of spectral points.
          → c ⊑⟨ 𝓓 ⟩ (⋁ 𝒦-in-point↑ pt[ (x , 𝕤) ])
   lemma₁ x 𝕤 c κ p = ∥∥-rec (prop-valuedness 𝓓 c (sharp₀ pt[ x , 𝕤 ])) † γ
    where
-    † : (Σ i ꞉ index B𝓓 , B𝓓 [ i ] ＝ c) → c ⊑⟨ 𝓓 ⟩ sharp₀ pt[ x , 𝕤 ]
+    † : Σ i ꞉ index B𝓓 , B𝓓 [ i ] ＝ c → (c ⊑ sharp₀ pt[ x , 𝕤 ]) holds
     † (i , q) = transport (λ - → underlying-order 𝓓 - (sharp₀ pt[ x , 𝕤 ])) q ‡
      where
       r : (B𝓓 [ i ]) ⊑⟨ 𝓓 ⟩ x
       r = transport (λ - → - ⊑⟨ 𝓓 ⟩ x) (q ⁻¹) p
 
       ‡ : (B𝓓 [ i ]) ⊑⟨ 𝓓 ⟩ sharp₀ pt[ x , 𝕤 ]
-      ‡ = sup-is-upperbound (underlying-order 𝓓)
+      ‡ = sup-is-upperbound
+           (underlying-order 𝓓)
            (⋁-is-sup (𝒦-in-point↑ pt[ x , 𝕤 ])) (i , r)
 
     γ : ∃ i ꞉ index B𝓓 , B𝓓 [ i ] ＝ c
     γ = small-compact-basis-contains-all-compact-elements 𝓓 (B𝓓 [_]) scb c κ
 
- lemma₃ : (x : ⟨ 𝓓 ⟩∙) (𝕤 : is-sharp x holds) (c : ⟨ 𝓓 ⟩∙)
-        → is-compact 𝓓 c
-        → ∃ i ꞉ (index (𝒦-in-point pt[ (x , 𝕤) ])) , c ＝ 𝒦-in-point pt[ (x , 𝕤) ] [ i ]
-        → c ⊑⟨ 𝓓 ⟩ x
- lemma₃ x 𝕤 c κ = ∥∥-rec (prop-valuedness 𝓓 c x) †
-  where
-   † : Σ i ꞉ (index (𝒦-in-point pt[ (x , 𝕤) ])) , c ＝ 𝒦-in-point pt[ x , 𝕤 ] [ i ]
-     → c ⊑⟨ 𝓓 ⟩ x
-   † ((i , foo) , r) = transport (λ - → - ⊑⟨ 𝓓 ⟩ x) (r ⁻¹) foo
-
  abstract
-  lemma₄ : (x : ⟨ 𝓓 ⟩∙) (𝕤 : is-sharp x holds)
-         → ∐ 𝓓 (↓ᴮₛ-is-directed x) ＝ ∐ 𝓓 (𝒦-in-point-is-directed pt[ (x , 𝕤) ])
-  lemma₄ x 𝕤 =
+  lemma₄
+   : (𝓍 : ♯𝓓)
+   → ∐ 𝓓 (↓ᴮₛ-is-directed ⦅ 𝓍 ⦆) ＝ ∐ 𝓓 (𝒦-in-point-is-directed pt[ 𝓍 ])
+  lemma₄ (x , 𝕤) =
    antisymmetry 𝓓 (∐ 𝓓 (↓ᴮₛ-is-directed x)) (⋁ 𝒦-in-point↑ pt[ (x , 𝕤) ]) † ‡
     where
      abstract
@@ -623,14 +629,14 @@ type of spectral points.
              goal (i , q) = ∐-is-upperbound 𝓓 (↓ᴮₛ-is-directed x) (i , ⊑ᴮ-to-⊑ᴮₛ q)
 
  sharp-cancels-pt : (𝓍 : ♯𝓓) → sharp 𝓅𝓉[ 𝓍 ] ＝ 𝓍
- sharp-cancels-pt 𝓍@(x , 𝕤) = to-sharp-＝ (sharp 𝓅𝓉[ 𝓍 ]) 𝓍 †
+ sharp-cancels-pt 𝓍 = to-sharp-＝ (sharp 𝓅𝓉[ 𝓍 ]) 𝓍 †
   where
-   † : ⦅ sharp 𝓅𝓉[ 𝓍 ] ⦆ ＝ x
-   † = ⦅ sharp 𝓅𝓉[ 𝓍 ] ⦆        ＝⟨ Ⅰ ⟩
-       ∐ 𝓓 (↓ᴮₛ-is-directed x)  ＝⟨ Ⅱ ⟩
-       ⦅ 𝓍 ⦆                    ∎
+   † : ⦅ sharp 𝓅𝓉[ 𝓍 ] ⦆ ＝ ⦅ 𝓍 ⦆
+   † = ⦅ sharp 𝓅𝓉[ 𝓍 ] ⦆           ＝⟨ Ⅰ ⟩
+       ∐ 𝓓 (↓ᴮₛ-is-directed ⦅ 𝓍 ⦆) ＝⟨ Ⅱ ⟩
+       ⦅ 𝓍 ⦆                       ∎
         where
-         Ⅰ = lemma₄ x 𝕤 ⁻¹
+         Ⅰ = lemma₄ 𝓍 ⁻¹
          Ⅱ = ↓ᴮₛ-∐-＝ ⦅ 𝓍 ⦆
 
  open PropertiesAlgebraic 𝓓 𝕒
