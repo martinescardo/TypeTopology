@@ -70,12 +70,12 @@ Binary products of compact types are compact.
                → is-compact (Y , sY) holds
                → is-compact((X × Y) , (×-is-set sX sY)) holds
 ×-is-compact {X , sX} {Y , sY} kX kY (P , open-P) = ⇔-affirmable (Ɐ x ꞉ X , (Ɐ y ꞉ Y , P (x , y))) (Ɐ z ꞉ (X × Y) , P z) p †
-  where
-   p : ((Ɐ x ꞉ X , (Ɐ y ꞉ Y , P (x , y))) ⇔ (Ɐ z ꞉ (X × Y) , P z) ) holds
-   p =  (λ Qxy z → Qxy (pr₁ z) (pr₂ z)) , (λ Qz x' y' → Qz (x' , y') )
+ where
+  p : ((Ɐ x ꞉ X , (Ɐ y ꞉ Y , P (x , y))) ⇔ (Ɐ z ꞉ (X × Y) , P z) ) holds
+  p =  (λ Qxy z → Qxy (pr₁ z) (pr₂ z)) , (λ Qz x' y' → Qz (x' , y') )
 
-   † : is-affirmable (Ɐ x ꞉ X , (Ɐ y ꞉ Y ,  P (x , y)))  holds
-   † = kX ((λ x → Ɐ y ꞉ Y , P (x , y)) , (λ x → kY ((λ y → P (x , y)) , ( λ y → open-P (x , y) ))))
+  † : is-affirmable (Ɐ x ꞉ X , (Ɐ y ꞉ Y ,  P (x , y)))  holds
+  † = kX ((λ x → Ɐ y ꞉ Y , P (x , y)) , (λ x → kY ((λ y → P (x , y)) , ( λ y → open-P (x , y) ))))
 
 \end{code}
 
