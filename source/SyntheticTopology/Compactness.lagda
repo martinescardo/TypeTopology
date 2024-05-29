@@ -45,7 +45,7 @@ open predicates is affirmable.
 
 is-compact : hSet 𝓤 → Ω ((𝓤 ⁺) ⊔ 𝓥)
 is-compact (X , sX) =
-   Ɐ (P , open-P) ꞉ 𝓞 (X , sX) ,  is-affirmable (Ɐ x ꞉ X , (P x))
+ Ɐ (P , open-P) ꞉ 𝓞 (X , sX) ,  is-affirmable (Ɐ x ꞉ X , (P x))
 
 \end{code}
 
