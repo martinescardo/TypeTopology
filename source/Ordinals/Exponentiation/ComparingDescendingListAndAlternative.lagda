@@ -15,13 +15,13 @@ module Ordinals.Exponentiation.ComparingDescendingListAndAlternative
        (sr : Set-Replacement pt)
        where
 
--- open import UF.Base
+open import UF.Base
 -- open import UF.Equiv
 -- open import UF.ExcludedMiddle
 open import UF.FunExt
 -- open import UF.Sets
 open import UF.Subsingletons
--- open import UF.Subsingletons-FunExt
+open import UF.Subsingletons-FunExt
 open import UF.UA-FunExt
 -- open import UF.ImageAndSurjection pt
 
@@ -38,7 +38,8 @@ private
 
 -- open import Naturals.Order
 
-open import MLTT.Spartan
+open import MLTT.Spartan hiding (𝟚; ₀; ₁)
+open import MLTT.Plus-Properties
 open import MLTT.Sigma
 open import MLTT.List
 
@@ -50,8 +51,8 @@ open import Ordinals.Notions
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.Type
 open import Ordinals.Underlying
--- open import Ordinals.WellOrderingTaboo
 open import Ordinals.OrdinalOfOrdinalsSuprema ua
+open import Ordinals.Taboos
 
 open import Ordinals.Exponentiation.DecreasingList ua pt sr
 open import Ordinals.Exponentiation.Alternative ua pt sr
@@ -104,4 +105,82 @@ to-alternative-order-preserving α β ((x ∷ xs) , p) ((y ∷ ys) , q) (head-le
 -- exp α (β ↓ b) × (1 + α ↓ a) + exp α (β ↓ b) ↓ (to-alternative α (β ↓ b) ys)
 to-alternative-order-preserving α β ((x ∷ xs) , p) ((x ∷ ys) , q) (tail-lex refl rr) = {!!}
 -}
+\end{code}
+
+\begin{code}
+
+-- An ordinal that can perhaps be useful in deriving constructive taboos
+
+module _ (P : 𝓤 ̇ ) where
+
+ _≺𝟚ₚ_ : 𝟚 {𝓤} → 𝟚 {𝓤} → 𝓤 ̇
+ ₀ ≺𝟚ₚ ₀ = 𝟘
+ ₀ ≺𝟚ₚ ₁ = P
+ ₁ ≺𝟚ₚ ₀ = ¬ P
+ ₁ ≺𝟚ₚ ₁ = 𝟘
+
+ ≺-is-prop-valued : is-prop P → is-prop-valued _≺𝟚ₚ_
+ ≺-is-prop-valued i ₀ ₀ = 𝟘-is-prop
+ ≺-is-prop-valued i ₀ ₁ = i
+ ≺-is-prop-valued i ₁ ₀ = Π-is-prop fe' (λ x → 𝟘-is-prop)
+ ≺-is-prop-valued i ₁ ₁ = 𝟘-is-prop
+
+ ≺-is-transitive : transitive _≺𝟚ₚ_
+ ≺-is-transitive ₀ ₁ ₀ u v = 𝟘-elim (v u)
+ ≺-is-transitive ₀ ₁ ₁ u v = 𝟘-elim v
+ ≺-is-transitive ₁ ₀ ₁ u v = 𝟘-elim (u v)
+ ≺-is-transitive ₁ ₁ z u v = 𝟘-elim u
+
+ ≺-is-extensional : is-extensional _≺𝟚ₚ_
+ ≺-is-extensional ₀ ₀ u v = refl
+ ≺-is-extensional ₁ ₁ u v = refl
+ ≺-is-extensional ₀ ₁ u v = 𝟘-elim (δ γ)
+  where
+   γ : ¬ P
+   γ p = 𝟘-elim (v ₀ p)
+   δ : ¬ ¬ P
+   δ np = 𝟘-elim (u ₁ np)
+ ≺-is-extensional ₁ ₀ u v = 𝟘-elim (δ γ)
+  where
+   γ : ¬ P
+   γ p = 𝟘-elim (u ₀ p)
+   δ : ¬ ¬ P
+   δ np = 𝟘-elim (v ₁ np)
+
+ ≺-is-well-founded : is-well-founded _≺𝟚ₚ_
+ ≺-is-well-founded ₀ = acc ₀-accessible
+  where
+    ₀-accessible : (y : 𝟚) → y ≺𝟚ₚ ₀ → is-accessible _≺𝟚ₚ_ y
+    ₀-accessible ₁ np = acc g
+     where
+      g : (y : 𝟚) → y ≺𝟚ₚ ₁ → is-accessible _≺𝟚ₚ_ y
+      g ₀ p = 𝟘-elim (np p)
+ ≺-is-well-founded ₁ = acc ₁-accessible
+  where
+   ₁-accessible : (y : 𝟚) → y ≺𝟚ₚ ₁ → is-accessible _≺𝟚ₚ_ y
+   ₁-accessible ₀ p = acc g
+    where
+     g : (y : 𝟚) → y ≺𝟚ₚ ₀ → is-accessible _≺𝟚ₚ_ y
+     g ₁ np = 𝟘-elim (np p)
+
+ ≺𝟚ₚ-ordinal : is-prop P → Ordinal 𝓤
+ ≺𝟚ₚ-ordinal i = 𝟚 , _≺𝟚ₚ_ , ≺-is-prop-valued i , ≺-is-well-founded , ≺-is-extensional , ≺-is-transitive
+
+ ≺-trichotomous-characterization : is-trichotomous-order _≺𝟚ₚ_ ↔ (P + ¬ P)
+ ≺-trichotomous-characterization = ⦅⇒⦆ , ⦅⇐⦆
+  where
+   ⦅⇐⦆ : (P + ¬ P) → is-trichotomous-order _≺𝟚ₚ_
+   ⦅⇐⦆ p ₀ ₀ = inr (inl refl)
+   ⦅⇐⦆ (inl p) ₀ ₁ = inl p
+   ⦅⇐⦆ (inr np) ₀ ₁ = inr (inr np)
+   ⦅⇐⦆ (inl p) ₁ ₀ = inr (inr p)
+   ⦅⇐⦆ (inr np) ₁ ₀ = inl np
+   ⦅⇐⦆ p ₁ ₁ = inr (inl refl)
+   ⦅⇒⦆ : is-trichotomous-order _≺𝟚ₚ_ → (P + ¬ P)
+   ⦅⇒⦆ t = translate (t ₀ ₁)
+    where
+     translate : (₀ ≺𝟚ₚ ₁) + (₀ ＝ ₁) + (₁ ≺𝟚ₚ ₀) → (P + ¬ P)
+     translate (inl p)       = inl p
+     translate (inr (inl e)) = 𝟘-elim (+disjoint e)
+     translate (inr (inr np)) = inr np
 \end{code}
