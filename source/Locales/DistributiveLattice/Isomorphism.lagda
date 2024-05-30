@@ -436,7 +436,13 @@ The actual proof that these form an equivalence is trivial.
      (to-subtype-＝ (being-equiv-is-prop (λ 𝓤 𝓥 → fe {𝓤} {𝓥})) refl)
 
    ‡ : to-isomorphismᵈᵣ ∘ to-isomorphism₀ ∼ id
-   ‡ 𝒾 = {!!}
+   ‡ 𝒾 = to-isomorphismᵈᵣ-＝
+          K
+          L
+          (to-isomorphismᵈᵣ (to-isomorphism₀ 𝒾))
+          𝒾
+          (λ _ → refl)
+          (λ _ → refl)
 
    ※ : (to-isomorphism₀ ∘ to-isomorphismᵈᵣ ∼ id)
      × (to-isomorphismᵈᵣ ∘ to-isomorphism₀ ∼ id)
