@@ -27,7 +27,7 @@ module SyntheticTopology.Discreteness
         where
 
 open import SyntheticTopology.Compactness 𝓤 𝓥 fe pe pt 𝕊
-open import SyntheticTopology.Dominance 𝓤 𝓥 fe pe pt 𝕊
+open import SyntheticTopology.SierpinskiAxioms 𝓤 𝓥 fe pe pt 𝕊
 open import UF.ImageAndSurjection pt
 open import UF.Logic
 
