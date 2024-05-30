@@ -78,6 +78,48 @@ between distributive lattices `L₁` and `L₂`.
 
 \end{code}
 
+Added on 2024-05-30.
+
+\begin{code}
+
+ open Isomorphismᵈᵣ
+
+ to-isomorphismᵈᵣ-＝ : (𝒾 𝒿 : Isomorphismᵈᵣ) → s 𝒾 ∼ s 𝒿 → r 𝒾 ∼ r 𝒿 → 𝒾 ＝ 𝒿
+ to-isomorphismᵈᵣ-＝ 𝒾 𝒿 φ ψ = † p q
+  where
+   open DistributiveLattice
+
+   p : 𝓈 𝒾 ＝ 𝓈 𝒿
+   p = to-homomorphismᵈ-＝ L₁ L₂ (𝓈 𝒾) (𝓈 𝒿) φ
+
+   q : 𝓇 𝒾 ＝ 𝓇 𝒿
+   q = to-homomorphismᵈ-＝ L₂ L₁ (𝓇 𝒾) (𝓇 𝒿) ψ
+
+   g : (r 𝒾 ∘ s 𝒾) ∼ id → (s 𝒾 ∘ r 𝒾) ∼ id → Isomorphismᵈᵣ
+   g e₁ e₂ = record { 𝓈 = 𝓈 𝒾 ; 𝓇 = 𝓇 𝒾 ; r-cancels-s = e₁ ; s-cancels-r = e₂ }
+
+   f : 𝓈 𝒾 ＝ 𝓈 𝒿 → 𝓇 𝒾 ＝ 𝓇 𝒿 → Isomorphismᵈᵣ
+   f refl refl =
+    record
+     { 𝓈           = 𝓈 𝒾
+     ; 𝓇           = 𝓇 𝒾
+     ; r-cancels-s = r-cancels-s 𝒾
+     ; s-cancels-r = s-cancels-r 𝒾
+     }
+
+   † : 𝓈 𝒾 ＝ 𝓈 𝒿 → 𝓇 𝒾 ＝ 𝓇 𝒿 → 𝒾 ＝ 𝒿
+   † refl refl = ap₂ g β γ
+    where
+     β : r-cancels-s 𝒾 ＝ r-cancels-s 𝒿
+     β = Π-is-prop fe (λ _ → X-is-set L₁) (r-cancels-s 𝒾) (r-cancels-s 𝒿)
+
+     γ : s-cancels-r 𝒾 ＝ s-cancels-r 𝒿
+     γ = {!!}
+
+\end{code}
+
+End of addition.
+
 \begin{code}
 
  has-homomorphic-inverse : (L₁ ─d→ L₂) → 𝓤 ⊔ 𝓥  ̇
