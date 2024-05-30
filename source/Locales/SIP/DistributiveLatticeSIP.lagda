@@ -29,11 +29,10 @@ private
  pe : Prop-Ext
  pe {𝓤} = univalence-gives-propext (ua 𝓤)
 
-open import Locales.ContinuousMap.FrameHomomorphism-Definition pt fe
-open import Locales.ContinuousMap.FrameHomomorphism-Properties pt fe
-open import Locales.ContinuousMap.FrameIsomorphism-Definition pt fe
 open import Locales.DistributiveLattice.Definition fe pt
 open import Locales.DistributiveLattice.Definition-SigmaBased fe pt
+open import Locales.DistributiveLattice.Homomorphism fe pt
+open import Locales.DistributiveLattice.Isomorphism fe pt
 open import Locales.Frame pt fe
 open import Slice.Family
 open import UF.Base
@@ -45,8 +44,6 @@ open import UF.Subsingletons-FunExt
 open import UF.SubtypeClassifier
 
 open AllCombinators pt fe
-open FrameHomomorphismProperties
-open FrameHomomorphisms
 open sip hiding (⟨_⟩)
 
 \end{code}
@@ -112,10 +109,10 @@ module.
  𝟏₂ = DistributiveLattice.𝟏 Lᵣ
 
  𝟎₁ : A
- 𝟎₁ = DistributiveLattice.𝟏 Kᵣ
+ 𝟎₁ = DistributiveLattice.𝟎 Kᵣ
 
  𝟎₂ : A
- 𝟎₂ = DistributiveLattice.𝟏 Lᵣ
+ 𝟎₂ = DistributiveLattice.𝟎 Lᵣ
 
  _∧₁_ : A → A → A
  _∧₁_ = λ x y → x ∧∙ y
@@ -140,5 +137,98 @@ module.
 \end{code}
 
 \begin{code}
+
+ open HomomorphicEquivalences Kᵣ Lᵣ
+
+ homomorphic-identity-equivalence-gives-order-agreement
+  : is-homomorphic (≃-refl ∣ Lᵣ ∣ᵈ) holds
+  → _≤₁_ ＝ _≤₂_
+ homomorphic-identity-equivalence-gives-order-agreement (𝓂₁ , 𝓂₂) =
+  dfunext fe λ x → dfunext fe λ y → † x y
+   where
+    † : (x y : ∣ Kᵣ ∣ᵈ) → x ≤₁ y ＝ x ≤₂ y
+    † x y = ⇔-gives-＝ pe (x ≤₁ y) (x ≤₂ y) ‡
+     where
+      ‡ : (x ≤₁ y) ⇔ (x ≤₂ y) ＝ ⊤
+      ‡ = holds-gives-equal-⊤ pe fe ((x ≤₁ y) ⇔ (x ≤₂ y)) (β , γ)
+       where
+        β : (x ≤₁ y ⇒ x ≤₂ y) holds
+        β = 𝓂₁ (x , y)
+
+        γ : (x ≤₂ y ⇒ x ≤₁ y) holds
+        γ = 𝓂₂ (x , y)
+
+\end{code}
+
+Homomorphic identity equivalence gives top agreement.
+
+\begin{code}
+
+ open DistributiveLatticeIsomorphisms Kᵣ Lᵣ
+
+ homomorphic-identity-equivalence-gives-top-agreement
+  : is-homomorphic (≃-refl ∣ Lᵣ ∣ᵈ) holds
+  → 𝟏₁ ＝ 𝟏₂
+ homomorphic-identity-equivalence-gives-top-agreement 𝒽 = †
+  where
+   iso : DistributiveLatticeIsomorphisms.Isomorphismᵈᵣ Kᵣ Lᵣ
+   iso = to-isomorphismᵈᵣ (≃-refl A , 𝒽)
+
+   † : preserves-𝟏 Kᵣ Lᵣ id holds
+   † = Homomorphismᵈᵣ.h-preserves-𝟏 (Isomorphismᵈᵣ.𝓈 iso)
+
+\end{code}
+
+The identity function being homomorphic gives the equality of bottom elements.
+
+\begin{code}
+
+ homomorphic-identity-equivalence-gives-bottom-agreement
+  : is-homomorphic (≃-refl ∣ Lᵣ ∣ᵈ) holds
+  → 𝟎₁ ＝ 𝟎₂
+ homomorphic-identity-equivalence-gives-bottom-agreement 𝒽 = †
+  where
+   iso : DistributiveLatticeIsomorphisms.Isomorphismᵈᵣ Kᵣ Lᵣ
+   iso = to-isomorphismᵈᵣ (≃-refl A , 𝒽)
+
+   † : preserves-𝟎 Kᵣ Lᵣ id holds
+   † = Homomorphismᵈᵣ.h-preserves-𝟎 (Isomorphismᵈᵣ.𝓈 iso)
+
+\end{code}
+
+The identity function being homomorphic gives the equality of meets.
+
+\begin{code}
+
+\end{code}
+
+\begin{code}
+
+ homomorphic-equivalence-gives-distributive-lattice-data-agreement
+  : is-homomorphic (≃-refl A) holds
+  → distributive-lattice-data-of A str₁ ＝ distributive-lattice-data-of A str₂
+ homomorphic-equivalence-gives-distributive-lattice-data-agreement 𝒽 =
+  goal
+   where
+    γ : 𝟏₁ , _∧₁_ , _∨₁_ ＝ 𝟏₂ , _∧₂_ , _∨₂_
+    γ = {!!}
+
+    β : 𝟎₁ , 𝟏₁ , _∧₁_ , _∨₁_ ＝ 𝟎₂ , 𝟏₂ , _∧₂_ , _∨₂_
+    β = transport
+         (λ - → 𝟎₁ , 𝟏₁ , _∧₁_ , _∨₁_ ＝ - , 𝟏₂ , _∧₂_ , _∨₂_)
+         (homomorphic-identity-equivalence-gives-bottom-agreement 𝒽)
+         (to-Σ-＝' γ)
+
+    goal : 𝟎₁ , 𝟏₁ , _∧₁_ , _∨₁_  ＝ 𝟎₂ , 𝟏₂ , _∧₂_ , _∨₂_
+    goal = {!!}
+
+\end{code}
+
+\begin{code}
+
+ homomorphic-equivalence-gives-structural-equality
+  : is-homomorphic (≃-refl A) holds
+  → str₁ ＝ str₂
+ homomorphic-equivalence-gives-structural-equality = {!!}
 
 \end{code}

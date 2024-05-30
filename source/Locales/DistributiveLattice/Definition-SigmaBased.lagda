@@ -36,8 +36,8 @@ Sigma-based definition of distributive lattices.
 \begin{code}
 
 Distributive-Lattice-Data : 𝓤  ̇ → 𝓤  ̇
-Distributive-Lattice-Data A = A           -- top element
-                            × A           -- bottom element
+Distributive-Lattice-Data A = A           -- bottom element
+                            × A           -- top element
                             × (A → A → A) -- binary meet
                             × (A → A → A) -- binary join
 
@@ -81,6 +81,17 @@ We denote the type Σ-version of the type of distributive lattices
 
 Distributive-Lattice₀ : (𝓤 : Universe) → 𝓤 ⁺  ̇
 Distributive-Lattice₀ 𝓤 = Σ A ꞉ 𝓤  ̇ , Distributive-Lattice-Structure A
+
+\end{code}
+
+Notation for the underlying distributive lattice data.
+
+\begin{code}
+
+distributive-lattice-data-of : (A : 𝓤  ̇)
+                             → Distributive-Lattice-Structure A
+                             → Distributive-Lattice-Data A
+distributive-lattice-data-of A (str , _) = str
 
 \end{code}
 
