@@ -114,7 +114,7 @@ Added on 2024-05-30.
      β = Π-is-prop fe (λ _ → X-is-set L₁) (r-cancels-s 𝒾) (r-cancels-s 𝒿)
 
      γ : s-cancels-r 𝒾 ＝ s-cancels-r 𝒿
-     γ = {!!}
+     γ = Π-is-prop fe (λ _ → X-is-set L₂) (s-cancels-r 𝒾) (s-cancels-r 𝒿)
 
 \end{code}
 
