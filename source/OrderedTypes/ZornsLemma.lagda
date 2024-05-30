@@ -1,0 +1,297 @@
+\begin{code}
+{-# OPTIONS --safe --without-K --exact-split #-}
+
+open import MLTT.Spartan
+open import Ordinals.Notions
+open import Ordinals.Type
+open import UF.Sets
+open import UF.Size
+open import UF.Embeddings
+open import UF.Powerset-MultiUniverse
+open import UF.SubtypeClassifier
+open import UF.DiscreteAndSeparated
+open import UF.PropTrunc
+open import UF.ClassicalLogic
+open import UF.Univalence
+open import UF.FunExt
+open import UF.UA-FunExt
+open import Ordinals.Underlying
+open import Ordinals.Equivalence
+open import UF.Logic
+open import UF.Base
+open import UF.Equiv
+open import UF.Subsingletons
+open import UF.Choice
+open import UF.Subsingletons-FunExt
+open import UF.EquivalenceExamples
+open import UF.UniverseEmbedding
+
+module OrderedTypes.ZornsLemma
+  {𝓤 : Universe}
+  {𝓣 : Universe}
+  (pt : propositional-truncations-exist)
+  (ua : Univalence)
+  {X : 𝓤 ̇}
+  (_≪_ : X → X → 𝓣 ̇)
+
+  where
+
+open PropositionalTruncation pt
+open import Ordinals.OrdinalOfOrdinals ua
+open import Ordinals.BuraliForti ua
+open import UF.ImageAndSurjection pt
+
+fe : FunExt
+fe = Univalence-gives-FunExt ua
+pe : Prop-Ext
+pe = Univalence-gives-Prop-Ext ua
+pe' : PropExt
+pe' 𝓤 = pe {𝓤}
+fe' : Fun-Ext
+fe' {𝓤} {𝓥} = fe 𝓤 𝓥
+
+open UF.Choice.choice-functions pt pe' fe
+open UF.Choice.Univalent-Choice fe pt
+open import Ordinals.Arithmetic fe
+open import OrderedTypes.Poset fe'
+open import Ordinals.WellOrderingTaboo fe' pe
+open PosetAxioms
+open ClassicalWellOrder pt
+open UF.Logic.AllCombinators pt fe'
+open UF.Choice.ExcludedMiddle pt fe
+open inhabited-subsets pt
+
+_⋘_ : X → X → (𝓤 ⊔ 𝓣) ̇
+a ⋘ b =  a ≪ b × (a ≠ b)
+
+is-chain : {𝓥 : Universe} → (Y : 𝓟 {𝓥} X ) →  (𝓤 ⊔ 𝓣 ⊔ 𝓥) ̇
+is-chain Y = (x y : X) → x ∈ Y → y ∈ Y → ∥ (x ≪ y + y ≪ x) ∥
+
+has-maximal-element-strong :  (𝓤 ⊔ 𝓣) ̇
+has-maximal-element-strong = Σ x ꞉ X , ((y : X) → x ≪ y → x ＝ y)
+
+all-chains-have-upper-bound : {𝓥 : Universe} → (𝓤 ⊔ 𝓣 ⊔ (𝓥 ⁺))  ̇
+all-chains-have-upper-bound {𝓥} = (Y : 𝓟 {𝓥} X) → (is-chain Y) → Σ x ꞉ X , (∀ y → y ∈ Y → y ≪ x)
+
+choice-function-gives-not-not-zorns-lemma :
+  Excluded-Middle →
+  poset-axioms (_≪_) →
+  all-chains-have-upper-bound  →
+  (Σ ε ꞉ (𝓟 {𝓣 ⊔ 𝓤} X → X) , ((A : 𝓟 X) → is-inhabited A → ε A ∈ A)) →
+  ¬¬ has-maximal-element-strong
+
+choice-function-gives-not-not-zorns-lemma lem  (X-is-set , ≪-prop , ≪-refl , ≪-trans , ≪-antisym ) chains (ε , ε-behavior) no-max = absurd
+  where
+    dn : {𝓥 : Universe } → DNE 𝓥
+    dn {𝓥} = EM-gives-DNE lem
+
+    eq-is-¬¬-stable : {x : X} {y : X } →  ¬¬-stable (x ＝ y)
+    eq-is-¬¬-stable {x} {y} ¬¬x=y = dn (x ＝ y) (X-is-set) ¬¬x=y
+
+    ≪-is-¬¬-stable : {x : X} {y : X} → ¬¬-stable (x ≪ y)
+    ≪-is-¬¬-stable {x} {y} ¬¬ll = dn (x ≪ y) (≪-prop x y) ¬¬ll
+
+    ¬¬Σ→∃ : {𝓤 : Universe} {A : X → 𝓤  ̇} → ¬ ¬ (Σ x ꞉ X , A x ) → (∃ x ꞉ X , A x)
+    ¬¬Σ→∃ {𝓤} {A} ¬¬Σ = dn _ ∥∥-is-prop (¬¬-functor ∣_∣ ¬¬Σ)
+
+    ⋘-prop : (a : X) → (b : X) → is-prop (a ⋘ b)
+    ⋘-prop a b = ×-is-prop (≪-prop a b) (negations-are-props fe')
+
+    ≪-trans-⋘ : (x y z : X) →  x ≪ y → y ⋘ z → x ⋘ z
+    ≪-trans-⋘ x y z x≪y (y≪z , y≠z) = ( ≪-trans x y z x≪y y≪z , λ x=z → y≠z ((≪-antisym y z) y≪z (transport (λ q → q ≪ y) x=z x≪y)) )
+
+    g : (α : Ordinal 𝓤) → ( ⟨ α ⟩ → X) → X
+    g α s = ε  ⁅ x ꞉ X ∣ Ɐ a ꞉ ⟨ α ⟩ , (( s a ⋘ x ) , ⋘-prop (s a) x ) ⁆
+
+    f : Ordinal 𝓤 → X
+    f = transfinite-recursion-on-OO X g
+
+    A : Ordinal 𝓤 → 𝓟 { (𝓤 ⊔ 𝓣) } X
+    A α = ⁅ x ꞉ X ∣ Ɐ a ꞉ ⟨ α ⟩ , (f (α ↓ a) ⋘ x , ⋘-prop (f (α ↓ a)) x ) ⁆
+
+    f-behaviour : (α : Ordinal 𝓤) → f α ＝ ε (A α)
+    f-behaviour = transfinite-recursion-on-OO-behaviour X g
+
+    ⊲-is-classical-well-order : is-classical-well-order (_⊲_ {𝓤})
+    ⊲-is-classical-well-order = inductive-well-order-is-classical _⊲_ lem ⊲-is-well-order
+
+    ⊲-is-trichotomous : {a b : Ordinal 𝓤} → (a ⊲ b) + (a ＝ b) + (b ⊲ a)
+    ⊲-is-trichotomous {a} {b} = pr₁ (( pr₁ (pr₂ ⊲-is-classical-well-order)) a b)
+
+    f-preserves-order : (α : Ordinal 𝓤) → (β : Ordinal 𝓤) → β ⊲ α → f β ⋘ f α
+    f-preserves-order  = transfinite-induction-on-OO P v
+      where
+      P : Ordinal 𝓤 → (𝓤 ⁺ ⊔ 𝓣) ̇
+      P α = ∀ β → β ⊲ α → f β ⋘ f α
+      v : (α : Ordinal 𝓤) → ((a : ⟨ α ⟩) → P (α ↓ a)) → P α
+      v α s β (a , β=α↓a) = transport⁻¹ (λ q → f q ⋘ f α) β=α↓a (transport⁻¹ (λ q → f (α ↓ a) ⋘ q) (f-behaviour α) (step a))
+        where
+          allfb : 𝓟  X
+          allfb = ⁅ x ꞉ X ∣ Ǝ β' , ((β' ⊲ α ) × (x ＝ (f β')))   ⁆
+
+          untrunc-works : (x y : X) → (Σ β' ꞉ Ordinal 𝓤 , ((β' ⊲ α) × (x ＝ f β'))) → (Σ β'' ꞉ Ordinal 𝓤 , ((β'' ⊲ α) × (y ＝ f β''))) → x ≪ y + y ≪ x
+          untrunc-works x y (β' , ((b' , β'=α↓b') , x=fβ')) (β'' , ((b'' , β''=α↓b'') , y=fβ'')) = cases less (cases equal more) ⊲-is-trichotomous
+            where
+              less : β'' ⊲ β' → (x ≪ y + y ≪ x)
+              less b''<b' = inr (transport⁻¹ (λ q → y ≪ q) x=fβ' (transport⁻¹ (λ q → q ≪ f β') y=fβ'' (pr₁ (transport⁻¹ (λ q → f β'' ⋘ f q) β'=α↓b'
+                                ((s b') β'' (transport (λ q → β'' ⊲ q) β'=α↓b' b''<b'))))))
+              equal : β'' ＝ β' → (x ≪ y + y ≪ x)
+              equal b''=b' = inr (transport (λ q → y ≪ q) (transport⁻¹ (λ q → y ＝ q) x=fβ' (transport⁻¹ (λ q → q ＝ f β') y=fβ'' (ap f b''=b'))) (≪-refl y))
+
+              more : β' ⊲ β'' → (x ≪ y + y ≪ x)
+              more b'<b'' = inl (transport⁻¹ (λ q → x ≪ q) y=fβ'' (transport⁻¹ (λ q → q ≪ f β'') x=fβ' (pr₁ (transport⁻¹ (λ q → f β' ⋘ f q) β''=α↓b''
+                                ((s b'') β' (transport (λ q → β' ⊲ q) β''=α↓b'' b'<b''))))))
+          has-max-neg : (x : X) → ¬ ¬ (Σ y ꞉ X , ¬ (x ≪ y → x ＝ y))
+          has-max-neg =  λ x → not-Π-implies-not-not-Σ (λ z → →-is-¬¬-stable eq-is-¬¬-stable) ((not-Σ-implies-Π-not no-max) x)
+
+          allfb-is-chain :  is-chain allfb
+          allfb-is-chain x y = ∥∥-functor₂ (untrunc-works x y)
+
+          allfb-has-ub : Σ x ꞉ X , (∀ y → y ∈ allfb → y ≪ x)
+          allfb-has-ub = chains allfb allfb-is-chain
+
+          ub : X
+          ub = pr₁ allfb-has-ub
+
+          ub-is-ub : ∀ y → y ∈ allfb → y ≪ ub
+          ub-is-ub = pr₂ allfb-has-ub
+
+          ub-is-strict' : (Σ q ꞉ X , (¬ ( ub ≪ q → ub ＝ q))) →  Σ z ꞉ X , (∀ y → y ∈ allfb → y ⋘ z)
+          ub-is-strict' (q , foo) =  q , λ y yin → ≪-trans-⋘ y ub q (ub-is-ub y yin) ((≪-is-¬¬-stable (pr₁ (negation-of-implication foo))) , (pr₂ (negation-of-implication foo)))
+
+          ub-is-strict : ∃ z ꞉ X , (∀ y → y ∈ allfb → y ⋘ z)
+          ub-is-strict = (∥∥-functor ub-is-strict') (¬¬Σ→∃ (has-max-neg ub))
+
+          Aα-inhabited' :  Σ x ꞉ X , (∀ y → y ∈ allfb → y ⋘ x) →  Σ x ꞉ X , ((i : ⟨ α ⟩) → f (α ↓ i) ⋘ x)
+          Aα-inhabited' (x , ylt) =  x ,  λ i →  ylt (f (α ↓ i))  ∣  (α ↓ i) ,  ( ( i , refl )) , refl ∣
+
+          Aα-inhabited :  ∃ x ꞉ X , (∀ y → y ∈ allfb → y ⋘ x) → is-inhabited (A α)
+          Aα-inhabited =  ∥∥-functor Aα-inhabited'
+
+          step : (a : ⟨ α ⟩) →  (f (α ↓ a) ⋘ ε (A α))
+          step a = (ε-behavior (A α) (Aα-inhabited (ub-is-strict ))) a
+
+    f-is-injective : (a b : Ordinal 𝓤) → a ≠ b → f a ≠ f b
+    f-is-injective a b a≠b = cases (less a b) (cases (equal a b a≠b) (more a b)) ⊲-is-trichotomous
+      where
+        less : (a b : Ordinal 𝓤) → a ⊲ b → f a ≠ f b
+        less a b a<b = pr₂ (f-preserves-order b a a<b)
+
+        more : (a b : Ordinal 𝓤) → b ⊲ a → f a ≠ f b
+        more a b b<a = ≠-sym (pr₂ (f-preserves-order a b b<a))
+
+        equal : (a b : Ordinal 𝓤) → a ≠ b → a ＝ b → f a ≠ f b
+        equal a b a≠b a=b = unique-from-𝟘 (a≠b a=b)
+
+    f-is-left-cancellable : {a : Ordinal 𝓤} → {b : Ordinal 𝓤} → f a ＝ f b → a ＝ b
+    f-is-left-cancellable {a} {b}  p = dn (a ＝ b) (the-type-of-ordinals-is-a-set (ua 𝓤) fe') ((contrapositive (f-is-injective a b)) (¬¬-intro p))
+
+    f-is-embedding : is-embedding f
+    f-is-embedding = lc-maps-into-sets-are-embeddings f f-is-left-cancellable X-is-set
+
+    X' : 𝓤 ⁺ ̇
+
+    X' = image f
+
+    f' : Ordinal 𝓤 → X'
+    f' = corestriction f
+
+    f'-is-equiv : is-equiv f'
+    f'-is-equiv = corestriction-of-embedding-is-equivalence f f-is-embedding
+
+    B : X → 𝓤 ⁺ ̇
+    B x = x ∈image f
+
+    B-is-prop : (x : X) → is-prop (B x)
+    B-is-prop x = being-in-the-image-is-prop x f
+
+    ρ : Propositional-Resizing
+    ρ = EM-gives-PR lem
+
+    C : X → 𝓤 ̇
+    C x = resize ρ (B x) (B-is-prop x)
+
+    τ : Nat C B
+    τ x = from-resize ρ (B x) (B-is-prop x)
+
+    τ-is-equiv : (x : X) → is-equiv (τ x)
+    τ-is-equiv x = from-resize-is-equiv ρ (B x) (B-is-prop x)
+
+    X'' : 𝓤 ̇
+    X'' = Σ x ꞉ X , C x
+
+    e = X''       ≃⟨ NatΣ τ , NatΣ-is-equiv C B τ τ-is-equiv ⟩
+        X'        ≃⟨ ≃-sym (f' , f'-is-equiv) ⟩
+        Ordinal 𝓤 ■
+
+    the-type-of-ordinals-is-small : is-small (Ordinal 𝓤)
+    the-type-of-ordinals-is-small = X'' , e
+
+    absurd : 𝟘
+    absurd = the-type-of-ordinals-is-large the-type-of-ordinals-is-small
+
+has-maximal-element : (𝓤 ⊔ 𝓣) ̇
+has-maximal-element = ∃ x ꞉ X , ((y : X) → x ≪ y → x ＝ y)
+
+
+choice-function-gives-zorns-lemma :
+  Excluded-Middle →
+  poset-axioms (_≪_) →
+  all-chains-have-upper-bound  →
+  (Σ ε ꞉ (𝓟 {𝓣 ⊔ 𝓤} X → X) , ((A : 𝓟 X) → is-inhabited A → ε A ∈ A)) →
+  has-maximal-element
+
+choice-function-gives-zorns-lemma lem axioms chains cf = ¬¬Σ→∃ ¬¬max
+  where
+    dn : {𝓥 : Universe } → DNE 𝓥
+    dn {𝓥} = EM-gives-DNE lem
+    ¬¬Σ→∃ : {𝓤 : Universe} {A : X → 𝓤 ̇} → ¬ ¬ (Σ x ꞉ X , A x ) → (∃ x ꞉ X , A x)
+    ¬¬Σ→∃ {𝓤} {A} inside = dn _ ∥∥-is-prop (¬¬-functor ∣_∣ inside)
+    ¬¬max : ¬ ¬ has-maximal-element-strong
+    ¬¬max = (choice-function-gives-not-not-zorns-lemma lem axioms chains cf)
+
+axiom-of-choice-implies-zorns-lemma :
+  Axiom-of-Choice →
+  poset-axioms (_≪_) →
+  (all-chains-have-upper-bound  →
+  has-maximal-element)
+
+axiom-of-choice-implies-zorns-lemma ac (X-is-set , axioms-rest) = III
+  where
+    em : Excluded-Middle
+    em = Choice-gives-Excluded-Middle pe' ac
+
+    lifted-choice-function : ∥ Lift (𝓤 ⊔ 𝓣) X ∥ → ∃ ε ꞉ (𝓟 {𝓤 ⊔ 𝓣} (Lift (𝓤 ⊔ 𝓣) X) → (Lift (𝓤 ⊔ 𝓣) X)) , ((A : 𝓟 {𝓤 ⊔ 𝓣} (Lift (𝓤 ⊔ 𝓣) X)) → is-inhabited A → ε A ∈ A)
+    lifted-choice-function = Choice-gives-Choice₄ ac (Lift (𝓤 ⊔ 𝓣) X) (Lift-is-set (𝓤 ⊔ 𝓣) X X-is-set)
+
+    lower-choice-function : (Σ ε ꞉ (𝓟 {𝓤 ⊔ 𝓣} (Lift (𝓤 ⊔ 𝓣) X) → (Lift (𝓤 ⊔ 𝓣) X)) , ((A : 𝓟 {𝓤 ⊔ 𝓣} (Lift (𝓤 ⊔ 𝓣) X)) → is-inhabited A → ε A ∈ A)) →
+                              Σ ε ꞉ (𝓟 X → X) , ((A : 𝓟 X) → is-inhabited A → ε A ∈ A)
+    lower-choice-function (ϵ , f) = (ϵ' , f')
+                         where
+                          ϵ' : 𝓟 X → X
+                          ϵ' S = lower (ϵ (S ∘ lower))
+                          inhab-trans : {A' : 𝓟 X} → is-inhabited A' → is-inhabited (A' ∘ lower)
+                          inhab-trans {A'} isA' =  isA' >>= λ isA'' →  ∣ lift (𝓤 ⊔ 𝓣) (pr₁ isA'') ,  transport (λ q → (A' q) holds) (ε-Lift (𝓤 ⊔ 𝓣) (pr₁ isA'')) (pr₂ isA'')  ∣
+                          f' : (A' : 𝓟 X) → is-inhabited A' → ϵ' A' ∈ A'
+                          f' A' A'-inhab = (f (A' ∘ lower) (inhab-trans {A'} A'-inhab))
+
+    choice-function : ∥ X ∥ → ∃ ε ꞉ (𝓟 X → X) , ((A : 𝓟 X) → is-inhabited A → ε A ∈ A)
+    choice-function isX =  ∥∥-functor lower-choice-function (lifted-choice-function (∥∥-functor (lift (𝓤 ⊔ 𝓣)) isX))
+
+
+    I' : all-chains-have-upper-bound →  ∃ ε ꞉ (𝓟 X → X) , ((A : 𝓟 X) → is-inhabited A → ε A ∈ A) → has-maximal-element
+    I' chains = ∥∥-rec (∃-is-prop)
+          (choice-function-gives-zorns-lemma em (X-is-set , axioms-rest) chains)
+
+    I : all-chains-have-upper-bound → ∥ X ∥ → has-maximal-element
+    I chains-have-ub z = I' chains-have-ub (choice-function z)
+
+    empty-has-no-ub : ¬ ∥ X ∥ → ¬ (all-chains-have-upper-bound {𝓥})
+    empty-has-no-ub ν  chains =  ν ∣ pr₁ (chains ∅ λ x y xin yin →  unique-from-𝟘 (ν ∣ x ∣)) ∣
+
+    II : all-chains-have-upper-bound  →  ¬ ∥ X ∥ → has-maximal-element
+    II chains-have-ub ν = unique-from-𝟘 ((empty-has-no-ub ν) chains-have-ub)
+
+    III : all-chains-have-upper-bound → has-maximal-element
+    III chains-have-ub = cases (I chains-have-ub) (II chains-have-ub) (em ∥ X ∥ ∥∥-is-prop)
+\end{code}
