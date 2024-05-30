@@ -427,7 +427,7 @@ The actual proof that these form an equivalence is trivial.
 
  isomorphismᵈᵣ-is-equivalent-to-isomorphism₀ : Isomorphism₀ ≃ Isomorphismᵈᵣ K L
  isomorphismᵈᵣ-is-equivalent-to-isomorphism₀ =
-  to-isomorphismᵈᵣ , qinvs-are-equivs to-isomorphismᵈᵣ (to-isomorphism₀ , ※)
+  to-isomorphismᵈᵣ , qinvs-are-equivs to-isomorphismᵈᵣ (to-isomorphism₀ , † , ‡)
   where
    † : to-isomorphism₀ ∘ to-isomorphismᵈᵣ ∼ id
    † 𝒾@(e , μ₁ , μ₂) =
@@ -443,9 +443,5 @@ The actual proof that these form an equivalence is trivial.
           𝒾
           (λ _ → refl)
           (λ _ → refl)
-
-   ※ : (to-isomorphism₀ ∘ to-isomorphismᵈᵣ ∼ id)
-     × (to-isomorphismᵈᵣ ∘ to-isomorphism₀ ∼ id)
-   ※ = † , ‡
 
 \end{code}
