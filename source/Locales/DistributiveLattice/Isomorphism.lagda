@@ -92,25 +92,25 @@ between distributive lattices `L₁` and `L₂`.
    where
     open DistributiveLattice
 
-    † : (h′ : L₂ ─d→ L₁) → is-prop ({!!} × {!!})
+    † : (h′ : L₂ ─d→ L₁)
+      → is-prop ((funᵈ L₂ L₁ h′ ∘ funᵈ L₁ L₂ h ∼ id) × (funᵈ L₁ L₂ h  ∘ funᵈ L₂ L₁ h′ ∼ id))
     † h′ = ×-is-prop
             (Π-is-prop fe λ _ → X-is-set L₁)
             (Π-is-prop fe λ _ → X-is-set L₂)
 
-
     ϑ : funᵈ L₁ L₂ h ∘ funᵈ L₂ L₁ r₁ ∼ funᵈ L₁ L₂ h ∘ funᵈ L₂ L₁ r₂
-    ϑ x = funᵈ L₁ L₂ h (funᵈ L₂ L₁ r₁ x)   ＝⟨ Ⅰ ⟩
-          x                                ＝⟨ Ⅱ ⟩
-          funᵈ L₁ L₂ h (funᵈ L₂ L₁ r₂ x)   ∎
+    ϑ x = funᵈ L₁ L₂ h (funᵈ L₂ L₁ r₁ x)     ＝⟨ Ⅰ ⟩
+          x                                  ＝⟨ Ⅱ ⟩
+          funᵈ L₁ L₂ h (funᵈ L₂ L₁ r₂ x)     ∎
            where
             Ⅰ = ψ₁ x
-            Ⅱ = {!!}
+            Ⅱ = ψ₂ x ⁻¹
 
     ξ : left-cancellable (funᵈ L₁ L₂ h)
     ξ = sections-are-lc (funᵈ L₁ L₂ h) (funᵈ L₂ L₁ r₁ , φ₁)
 
     γ : funᵈ L₂ L₁ r₁ ∼ funᵈ L₂ L₁ r₂
-    γ x = {!!}
+    γ x = ξ (ϑ x)
 
  is-isomorphism : (L₁ ─d→ L₂) → Ω (𝓤 ⊔ 𝓥)
  is-isomorphism h =
