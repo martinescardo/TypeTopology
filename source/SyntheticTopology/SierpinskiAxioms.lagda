@@ -1,5 +1,5 @@
 ---
-title:                  Dominance and Phoa's principle in Synthetic Topology
+title:                  Axioms verified by the Sierpinski object
 authors:            [Martin Trucchi , Ayberk Tosun]
 date-started:  2024-05-28
 ---
@@ -18,7 +18,7 @@ open import UF.Subsingletons
 open import UF.SubtypeClassifier
 open import SyntheticTopology.SierpinskiObject 
 
-module SyntheticTopology.Dominance
+module SyntheticTopology.SierpinskiAxioms
         (𝓤  𝓥 : Universe)
         (fe : Fun-Ext)
         (pe : Prop-Ext)
