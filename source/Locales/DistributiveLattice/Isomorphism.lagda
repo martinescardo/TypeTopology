@@ -388,7 +388,7 @@ The actual proof that these form an equivalence is trivial.
   to-isomorphismᵈᵣ , qinvs-are-equivs to-isomorphismᵈᵣ (to-isomorphism₀ , ※)
   where
    † : to-isomorphism₀ ∘ to-isomorphismᵈᵣ ∼ id
-   † 𝒾@(e , (μ₁ , μ₂)) =
+   † 𝒾@(e , μ₁ , μ₂) =
     to-subtype-＝
      (holds-is-prop ∘ is-homomorphic)
      (to-subtype-＝ (being-equiv-is-prop (λ 𝓤 𝓥 → fe {𝓤} {𝓥})) refl)
