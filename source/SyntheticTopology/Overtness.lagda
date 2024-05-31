@@ -1,7 +1,7 @@
 ---
-title:                  Compactness in Synthetic Topology
-author:             Martin Trucchi
-date-started:  2024-05-28
+title:        Overtness in Synthetic Topology
+author:       Martin Trucchi
+date-started: 2024-05-28
 ---
 
 \begin{code}
@@ -55,34 +55,47 @@ We prove here, similar to image-of-compact, that image of overt sets are overt.
 
 \begin{code}
 
-image-of-overt :  ((X , sX) (Y , sY) : hSet 𝓤)
-                   → (f : X → Y)
-                   → is-surjection f
-                   → is-overt (X , sX) holds
-                   → is-overt (Y , sY) holds
+image-of-overt : ((X , sX) (Y , sY) : hSet 𝓤)
+               → (f : X → Y)
+               → is-surjection f
+               → is-overt (X , sX) holds
+               → is-overt (Y , sY) holds
                    
 image-of-overt (X , sX) (Y , sY) f sf overt-X (P , open-P) =
- ⇔-affirmable (Ǝₚ x ꞉ X , P (f x)) (Ǝₚ y ꞉ Y , P y) (p₁ , p₂) †
+ ⇔-affirmable preimage-exists image-exists (p₁ , p₂) †
   where
-   p₁ : ((Ǝₚ x ꞉ X , P (f x)) ⇒ (Ǝₚ y ꞉ Y , P y)) holds
-   p₁ = λ pX → ∥∥-rec (holds-is-prop (Ǝₚ y ꞉ Y , P y)) (λ (x , Pxf) → ∣ f x , Pxf  ∣) pX
+   preimage-exists : Ω 𝓤
+   preimage-exists = (Ǝₚ x ꞉ X , P (f x))
+   
+   image-exists : Ω 𝓤
+   image-exists =  (Ǝₚ y ꞉ Y , P y)
+
+   p₁ : (preimage-exists ⇒ image-exists) holds
+   p₁ = λ pX → ∥∥-rec (holds-is-prop image-exists)
+                      (λ (x , Pxf) → ∣ f x , Pxf  ∣)
+                      pX
 
    exists-preimage-of-y : (y : Y) → ((Ǝₚ x ꞉ X , ((f x ＝ y) , sY)) holds)
    exists-preimage-of-y y =
-    surjection-induction f sf (λ y → ((Ǝₚ x ꞉ X , ((f x ＝ y) , sY)) holds))
-                                                 (λ y → holds-is-prop (Ǝₚ x ꞉ X , ((f x ＝ y) , sY)))
-                                                 (λ x → ∣ x , refl  ∣)
-                                                  y
+    surjection-induction f
+                         sf
+                         (λ y → ((Ǝₚ x ꞉ X , ((f x ＝ y) , sY)) holds))
+                         (λ y → holds-is-prop (Ǝₚ x ꞉ X , ((f x ＝ y) , sY)))
+                         (λ x → ∣ x , refl  ∣)
+                         y
 
-   p₂ : ((Ǝₚ y ꞉ Y , P y) ⇒ Ǝₚ x ꞉ X , P (f x)) holds
-   p₂ = λ pY → ∥∥-rec (holds-is-prop (Ǝₚ x ꞉ X , P (f x)))
-                          (λ (y , Py) →
-                           ∥∥-rec (holds-is-prop (Ǝₚ x ꞉ X , P (f x)))
-                            (λ (x , x-eq-fy) → ∣ x ,  transport (λ y' → P y' holds) (x-eq-fy ⁻¹) Py ∣)
-                            (exists-preimage-of-y y))
-                           pY
+   p₂ : (image-exists ⇒ preimage-exists) holds
+   p₂ = λ pY → ∥∥-rec (holds-is-prop preimage-exists)
+                      (λ (y , Py) → ∥∥-rec (holds-is-prop preimage-exists)
+                                           (λ (x , x-eq-fy) →
+                                            ∣ x , transport (λ y' → P y' holds)
+                                                            (x-eq-fy ⁻¹)
+                                                            Py
+                                            ∣)
+                                           (exists-preimage-of-y y))
+                      pY
                            
-   † : is-open-proposition (Ǝₚ x ꞉ X , P (f x)) holds
+   † : is-open-proposition preimage-exists holds
    † = overt-X ((P ∘ f) , (open-P ∘ f))
 
 \end{code}

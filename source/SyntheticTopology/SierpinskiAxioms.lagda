@@ -1,7 +1,7 @@
 ---
-title:                  Axioms verified by the Sierpinski object
-authors:            [Martin Trucchi , Ayberk Tosun]
-date-started:  2024-05-28
+title:        Axioms about the Sierpinski object
+authors:      [Martin Trucchi , Ayberk Tosun]
+date-started: 2024-05-28
 ---
 
 \begin{code}
@@ -42,10 +42,10 @@ First, the Dominance Axiom:
 
 openness-is-transitive : ((𝓤 ⁺) ⊔ 𝓥) ̇
 openness-is-transitive = (u : Ω 𝓤)
-                                         → (is-open-proposition u) holds
-                                         → (p : Ω 𝓤)
-                                         → (u holds → (is-open-proposition p) holds)
-                                         → (is-open-proposition (u ∧ p) ) holds
+                       → (is-open-proposition u) holds
+                       → (p : Ω 𝓤)
+                       → (u holds → (is-open-proposition p) holds)
+                       → (is-open-proposition (u ∧ p) ) holds
 
 contains-top : Ω 𝓥
 contains-top = is-open-proposition ⊤
@@ -57,16 +57,21 @@ is-synthetic-dominance = contains-top holds × openness-is-transitive
 
 Phoa’s Principle:
 
+Note that Phoa's principle concerns only functions from the Sierpinski object
+to itself. Here we restricts to open propositions after, but it may not be the
+correct way to do it.
+
 \begin{code}
 
 phoa’s-principle :  Ω (𝓤 ⁺ ⊔ 𝓥)
 phoa’s-principle =
-  Ɐ f ꞉ (Ω 𝓤 → Ω 𝓤) , Ɐ U ꞉ Ω 𝓤 , is-open-proposition U ⇒ f U ⇔ (f ⊥ ∨  U) ∧ f ⊤
+  Ɐ f ꞉ (Ω 𝓤 → Ω 𝓤) ,
+   Ɐ U ꞉ Ω 𝓤 , is-open-proposition U ⇒ f U ⇔ (f ⊥ ∨ U) ∧ f ⊤
 
 \end{code}
 
-We also give a natural axiom saying that the Sierpinski object is being closed under
-binary (and thus, finite if contains-top holds) meets :
+We also give a natural axiom saying that the Sierpinski object is being closed
+under binary (and thus, finite if contains-top holds) meets :
 
 \begin{code}
 

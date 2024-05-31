@@ -1,7 +1,7 @@
 ---
-title:                  Discreteness in Synthetic Topology
-author:             Martin Trucchi
-date-started:  2024-05-28
+title:        Discreteness in Synthetic Topology
+author:       Martin Trucchi
+date-started: 2024-05-28
 ---
 
 \begin{code}
@@ -10,6 +10,7 @@ date-started:  2024-05-28
 
 open import MLTT.Spartan
 open import UF.Base
+open import UF.DiscreteAndSeparated hiding (is-discrete ; 𝟙-is-discrete)
 open import UF.FunExt
 open import UF.PropTrunc
 open import UF.Sets
@@ -46,22 +47,19 @@ The proof of the product to be a set is given be ×-is-set.
 
 is-discrete : ((X , sX) : hSet 𝓤) → Ω (𝓤 ⊔ 𝓥)
 is-discrete (X , sX) =
- is-intrinsically-open ((X × X) , (×-is-set sX sX)) (λ ((x , y) : X × X) → ((x ＝ y) , sX))
-
+ is-intrinsically-open ((X × X) , (×-is-set sX sX))
+                       (λ ((x , y) : X × X) → ((x ＝ y) , sX))
 
 \end{code}
 
-We prove here that 𝟙 is discrete as long as the true truth value lies in the
+We prove here that `𝟙` is discrete as long as the true truth value lies in the
 Sierpinski object's image.
-As in compactness, having a proof that 𝟙 is actually a set would be better.
-
 \begin{code}
 
 𝟙-is-discrete : contains-top holds
-                    → (𝟙-is-set : is-set 𝟙)
-                    → is-discrete (𝟙 , 𝟙-is-set) holds
+              → is-discrete (𝟙 , 𝟙-is-set) holds
 
-𝟙-is-discrete ct 𝟙-is-set (⋆ , ⋆) =
+𝟙-is-discrete ct (⋆ , ⋆) =
  ⇔-affirmable ⊤ ((⋆ ＝ ⋆) , 𝟙-is-set) (p₁ , p₂) ct
   where
    p₁ : (⊤ ⇒ (⋆ ＝ ⋆) , 𝟙-is-set) holds
@@ -73,18 +71,20 @@ As in compactness, having a proof that 𝟙 is actually a set would be better.
 \end{code}
 
 Compact indexed product of discrete set is itself discrete.
-The proof requires functional extensionality and uses Π-is-set to construct the proof
-that the Π type is a set.
+The proof requires functional extensionality and uses Π-is-set to construct
+the proof that the Π type is a set.
 
 
 \begin{code}
 
-compact-Π-discrete : ((K , sK) : hSet 𝓤) → (X : K → hSet 𝓤)
-                        → is-compact (K , sK) holds
-                        → ((k : K) → is-discrete (X k) holds)
-                        → is-discrete
-                              (Π (λ k → (underlying-set (X k))) , (Π-is-set fe (λ k → (pr₂ (X k))))) holds
-compact-Π-discrete (K , sK) X kK dX (x₁ , x₂) =
+compact-Π-discrete : ((K , sK) : hSet 𝓤)
+                   → (X : K → hSet 𝓤)
+                   → is-compact (K , sK) holds
+                   → ((k : K) → is-discrete (X k) holds)
+                   → is-discrete (Π (λ k → (underlying-set (X k))) ,
+                                 (Π-is-set fe (λ k → (pr₂ (X k))))) holds
+                                 
+compact-Π-discrete (K , sK) X compact-K discrete-X (x₁ , x₂) =
  ⇔-affirmable extensional-eq global-eq (p₁ , p₂) †
   where
    extensional-eq : Ω 𝓤
@@ -97,9 +97,12 @@ compact-Π-discrete (K , sK) X kK dX (x₁ , x₂) =
    p₁ = dfunext fe
    
    p₂ : (global-eq ⇒ extensional-eq) holds
-   p₂ = λ x₁-eq-x₂ → transport (λ - → ((k : K) → ((x₁ k)  ＝ ( - k) ))) x₁-eq-x₂ (λ _ → refl)
+   p₂ x₁-eq-x₂ = transport (λ - → ((k : K) → ((x₁ k)  ＝ ( - k) )))
+                           x₁-eq-x₂
+                           (λ _ → refl)
 
    † : is-open-proposition extensional-eq holds
-   † = kK ((λ k → (x₁ k ＝ x₂ k) , pr₂ (X k)) , (λ k → dX k (x₁ k , x₂ k)))
+   † = compact-K ((λ k → (x₁ k ＝ x₂ k) , pr₂ (X k)) ,
+                 (λ k → discrete-X k (x₁ k , x₂ k)))
 
 \end{code}

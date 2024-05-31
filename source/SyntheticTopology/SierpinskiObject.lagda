@@ -8,7 +8,7 @@ dates-updated:  [2024-05-28]
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --lossy-unification #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 open import UF.FunExt
@@ -119,7 +119,7 @@ We denote by `X` the underlying set of `𝒳`.
 
 \end{code}
 
-A subset of a set is said to be _intrinsically open_ if it is a predicate
+A subset of a set is said to be `intrinsically open` if it is a predicate
 defined by affirmable propositions.
 
 \begin{code}
@@ -130,7 +130,7 @@ defined by affirmable propositions.
 \end{code}
 
 For convenience, we write down the subtype of open propositions (= subset) of a
-set X
+set `X`
 
 \begin{code}
 
@@ -142,9 +142,12 @@ set X
 
 \end{code}
 
+We also prove the following convenient lemma.
+
 \begin{code}
 
- ⇔-affirmable : (P Q : Ω 𝓤)  → ((P ⇔ Q) ⇒ is-open-proposition P ⇒ is-open-proposition Q) holds
+ ⇔-affirmable : (P Q : Ω 𝓤)
+              → ((P ⇔ Q) ⇒ is-open-proposition P ⇒ is-open-proposition Q) holds
  ⇔-affirmable P Q = ⇔-transport pe P Q (_holds ∘ is-open-proposition)
 
 \end{code}
