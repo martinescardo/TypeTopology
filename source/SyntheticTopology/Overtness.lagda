@@ -47,7 +47,7 @@ A set is overt if the proposition (∃ x , P x) is open whenever P is open.
 is-overt : hSet 𝓤  → Ω (𝓤 ⁺ ⊔ 𝓥)
 is-overt (X , sX) =
   Ɐ (P , open-P) ꞉ 𝓞 (X , sX) ,
-   is-affirmable (Ǝₚ x ꞉ X , P x)
+   is-open-proposition (Ǝₚ x ꞉ X , P x)
 
 \end{code}
 
@@ -82,7 +82,7 @@ image-of-overt (X , sX) (Y , sY) f sf overt-X (P , open-P) =
                             (exists-preimage-of-y y))
                            pY
                            
-   † : is-affirmable (Ǝₚ x ꞉ X , P (f x)) holds
+   † : is-open-proposition (Ǝₚ x ꞉ X , P (f x)) holds
    † = overt-X ((P ∘ f) , (open-P ∘ f))
 
 \end{code}

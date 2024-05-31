@@ -99,7 +99,7 @@ compact-Π-discrete (K , sK) X kK dX (x₁ , x₂) =
    p₂ : (global-eq ⇒ extensional-eq) holds
    p₂ = λ x₁-eq-x₂ → transport (λ - → ((k : K) → ((x₁ k)  ＝ ( - k) ))) x₁-eq-x₂ (λ _ → refl)
 
-   † : is-affirmable extensional-eq holds
+   † : is-open-proposition extensional-eq holds
    † = kK ((λ k → (x₁ k ＝ x₂ k) , pr₂ (X k)) , (λ k → dX k (x₁ k , x₂ k)))
 
 \end{code}

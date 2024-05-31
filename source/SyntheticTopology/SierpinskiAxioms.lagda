@@ -42,13 +42,13 @@ First, the Dominance Axiom:
 
 openness-is-transitive : ((𝓤 ⁺) ⊔ 𝓥) ̇
 openness-is-transitive = (u : Ω 𝓤)
-                                         → (is-affirmable u) holds
+                                         → (is-open-proposition u) holds
                                          → (p : Ω 𝓤)
-                                         → (u holds → (is-affirmable p) holds)
-                                         → (is-affirmable (u ∧ p) ) holds
+                                         → (u holds → (is-open-proposition p) holds)
+                                         → (is-open-proposition (u ∧ p) ) holds
 
 contains-top : Ω 𝓥
-contains-top = is-affirmable ⊤
+contains-top = is-open-proposition ⊤
 
 is-synthetic-dominance : (𝓤 ⁺ ⊔ 𝓥) ̇
 is-synthetic-dominance = contains-top holds × openness-is-transitive
@@ -61,7 +61,7 @@ Phoa’s Principle:
 
 phoa’s-principle :  Ω (𝓤 ⁺ ⊔ 𝓥)
 phoa’s-principle =
-  Ɐ f ꞉ (Ω 𝓤 → Ω 𝓤) , Ɐ U ꞉ Ω 𝓤 , is-affirmable U ⇒ f U ⇔ (f ⊥ ∨  U) ∧ f ⊤
+  Ɐ f ꞉ (Ω 𝓤 → Ω 𝓤) , Ɐ U ꞉ Ω 𝓤 , is-open-proposition U ⇒ f U ⇔ (f ⊥ ∨  U) ∧ f ⊤
 
 \end{code}
 
@@ -74,7 +74,7 @@ closed-under-binary-meets : Ω (𝓤 ⁺ ⊔ 𝓥)
 closed-under-binary-meets =
  Ɐ P ꞉ Ω 𝓤 ,
   Ɐ Q ꞉ Ω 𝓤 ,
-   ((is-affirmable P ∧ is-affirmable Q)
-    ⇒ is-affirmable (P ∧ Q))
+   ((is-open-proposition P ∧ is-open-proposition Q)
+    ⇒ is-open-proposition (P ∧ Q))
 
 \end{code}

@@ -45,7 +45,7 @@ open predicates is affirmable.
 
 is-compact : hSet 𝓤 → Ω ((𝓤 ⁺) ⊔ 𝓥)
 is-compact (X , sX) =
- Ɐ (P , open-P) ꞉ 𝓞 (X , sX) ,  is-affirmable (Ɐ x ꞉ X , (P x))
+ Ɐ (P , open-P) ꞉ 𝓞 (X , sX) ,  is-open-proposition (Ɐ x ꞉ X , (P x))
 
 \end{code}
 
@@ -86,10 +86,10 @@ being a set is given by ×-is-set.
    prop-y : X → Ω 𝓤
    prop-y x = Ɐ y ꞉ Y , P (x , y)
 
-   prop-y-open : (x : X) → is-affirmable (prop-y x) holds 
+   prop-y-open : (x : X) → is-open-proposition (prop-y x) holds 
    prop-y-open x = kY ((λ y → P (x , y)) , λ y → open-P (x , y))
 
-   † : is-affirmable (Ɐ x ꞉ X , (Ɐ y ꞉ Y ,  P (x , y))) holds
+   † : is-open-proposition (Ɐ x ꞉ X , (Ɐ y ꞉ Y ,  P (x , y))) holds
    † = kX ((λ x → prop-y x) , λ x → prop-y-open x)
 
 \end{code}
@@ -114,7 +114,7 @@ image-of-compact (X , sX) (Y , sY) f sf kX (P , open-P) =
    p₂ : ((Ɐ y ꞉ Y , (P y)) ⇒ (Ɐ x ꞉ X , P (f x))) holds
    p₂ = λ pY x → pY (f x)
 
-   † : is-affirmable (Ɐ x ꞉ X , P (f x)) holds
+   † : is-open-proposition (Ɐ x ꞉ X , P (f x)) holds
    † = kX ((P ∘ f) , (open-P ∘ f))
 
 \end{code}

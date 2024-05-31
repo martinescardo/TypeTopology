@@ -58,10 +58,10 @@ image-of-subset : ((X , sX) (Y , sY) : hSet 𝓤) → (f : X → Y) → (A : X �
 image-of-subset (X , sX) (Y , sY) f A = λ y → Ǝₚ x ꞉ X , (A x ∧ (f x ＝ y) , sY)
 
 is-subcompact : ((Y , sY) : hSet 𝓤) → (X : Y → Ω 𝓤) → Ω ((𝓤 ⁺) ⊔ 𝓥)  -- X ⊆ Y 
-is-subcompact (Y , sY) X = Ɐ (U , open-U) ꞉ 𝓞 (Y , sY) , is-affirmable (Ɐ x ꞉ Y , (X x ⇒ U x))
+is-subcompact (Y , sY) X = Ɐ (U , open-U) ꞉ 𝓞 (Y , sY) , is-open-proposition (Ɐ x ꞉ Y , (X x ⇒ U x))
 
 is-subovert : ((Y , sY) : hSet 𝓤) → (X : Y → Ω 𝓤) → Ω ((𝓤 ⁺) ⊔ 𝓥)  -- same as above
-is-subovert (Y , sY) X = (Ɐ (U , open-U) ꞉ 𝓞 (Y , sY) , is-affirmable (Ǝₚ x ꞉ Y , (X x ∧ U x)))
+is-subovert (Y , sY) X = (Ɐ (U , open-U) ꞉ 𝓞 (Y , sY) , is-open-proposition (Ǝₚ x ꞉ Y , (X x ∧ U x)))
 
 
 subovert-of-discrete-is-open : ((Y , sY) : hSet 𝓤)
@@ -82,7 +82,7 @@ subovert-of-discrete-is-open (Y , sY) X subovert-X discrete-Y y =
    p₂ : (X y ⇒ (Ǝₚ y' ꞉ Y , ((X y' ∧ (y ＝ y') , sY)))) holds
    p₂ = λ Xy → ∣ y , Xy , refl  ∣
 
-   † : is-affirmable (Ǝₚ y' ꞉ Y , (X y' ∧ ((y ＝ y') , sY))) holds
+   † : is-open-proposition (Ǝₚ y' ꞉ Y , (X y' ∧ ((y ＝ y') , sY))) holds
    † = subovert-X ((λ z → (y ＝ z) , sY) , (λ z → discrete-Y (y , z)))
 
 
@@ -116,7 +116,7 @@ subovert-inter-open-subovert cl-∧ (X , sX) A (U , open-U) subovert-A (V , open
                             (λ (x , ((Ax , Ux) , Vx)) → ∣ x , Ax , Ux , Vx ∣)
                             left
    
-   † : is-affirmable right-par holds
+   † : is-open-proposition right-par holds
    † = subovert-A ((λ x → U x ∧ V x) , λ x → cl-∧ (U x) (V x) ((open-U x) , (open-V x)))
 
 
@@ -164,7 +164,7 @@ image-of-subovert (X , sX) (Y , sY) f  A subovert-A (P , open-P)  =
                                                                                     (transport (_holds ∘ P) (fx-eq-y ⁻¹) Py)∣)
                                                                                 x-exists
    
-   † : is-affirmable x'-exists holds
+   † : is-open-proposition x'-exists holds
    † = subovert-A ((P ∘ f) , ( λ x → open-P (f x)))
 
 \end{code}

@@ -82,7 +82,7 @@ having-subovert-dense-subset-gives-self-overt (X , sX) U so-U dense-U (P , open-
                                 (λ (x-only , px-only) → dense-U (P , open-P) ∣ x-only ,  px-only ∣)
                                 P-hyp
 
-   † : is-affirmable (Ǝₚ x ꞉ X , (U x ∧ P x)) holds
+   † : is-open-proposition (Ǝₚ x ꞉ X , (U x ∧ P x)) holds
    † = so-U (P , open-P)
 
 
