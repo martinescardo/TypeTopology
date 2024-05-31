@@ -93,8 +93,8 @@ propositions_. We introduce suggestive terminology accordingly.
 
 \begin{code}
 
- is-affirmable : Ω 𝓤 → Ω 𝓥
- is-affirmable = 𝕊
+ is-open-proposition : Ω 𝓤 → Ω 𝓥
+ is-open-proposition = 𝕊
 
 \end{code}
 
@@ -125,7 +125,7 @@ defined by affirmable propositions.
 \begin{code}
 
   is-intrinsically-open : (X → Ω 𝓤) → Ω (𝓤 ⊔ 𝓥)
-  is-intrinsically-open P = Ɐ x ꞉ X , is-affirmable (P x)
+  is-intrinsically-open P = Ɐ x ꞉ X , is-open-proposition (P x)
 
 \end{code}
 
@@ -144,8 +144,8 @@ set X
 
 \begin{code}
 
- ⇔-affirmable : (P Q : Ω 𝓤)  → ((P ⇔ Q) ⇒ is-affirmable P ⇒ is-affirmable Q) holds
- ⇔-affirmable P Q = ⇔-transport pe P Q (_holds ∘ is-affirmable)
+ ⇔-affirmable : (P Q : Ω 𝓤)  → ((P ⇔ Q) ⇒ is-open-proposition P ⇒ is-open-proposition Q) holds
+ ⇔-affirmable P Q = ⇔-transport pe P Q (_holds ∘ is-open-proposition)
 
 \end{code}
 
