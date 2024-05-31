@@ -3,6 +3,7 @@ Updated 23 December 2021
 Updated 12 and 14 June 2022
 Updated 30 October 2023 (by Ayberk Tosun)
 Updated 6 November 2023 (by Ayberk Tosun)
+Updated 31 May 2024 (by Tom de Jong)
 
 Index for the formalization of domain theory, briefly describing the contents of
 each directory, ordered almost¹ alphabetically by directory name.
@@ -94,15 +95,19 @@ import DomainTheory.Bilimits.Dinfinity  -- (3)
 1. The ideal completion of the dyadics is a nice example of a continuous dcpo
    (with a small basis) that cannot be algebraic as it has no compact elements
    at all.
-2. The type Ω of propositions is an examples of a pointed algebraic dcpo with
+2. The type Ω of propositions is an example of a pointed algebraic dcpo with
    the booleans giving a small compact basis
-3. The powerset is an examples of a pointed algebraic dcpo with lists giving a
+3. The large poset of small ordinals is an example of an algebraic dcpo with no
+   small compact basis
+   [Added 31 May 2024]
+4. The powerset is an examples of a pointed algebraic dcpo with lists giving a
    small compact basis (through Kuratowski finite subsets)
 -}
 
 import DomainTheory.Examples.IdlDyadics -- (1)
 import DomainTheory.Examples.Omega      -- (2)
-import DomainTheory.Examples.Powerset   -- (3)
+import DomainTheory.Examples.Ordinals   -- (3)
+import DomainTheory.Examples.Powerset   -- (4)
 
 {- IdealCompletion
 
