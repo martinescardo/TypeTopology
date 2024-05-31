@@ -66,7 +66,7 @@ having-subovert-dense-subset-gives-self-overt : ((X , sX) : hSet 𝓤)
                                                                                     → is-subovert (X , sX) U holds
                                                                                     → is-dense (X , sX) U holds
                                                                                     → is-overt (X , sX) holds
-                                                                                    
+
 having-subovert-dense-subset-gives-self-overt (X , sX) U so-U dense-U (P , open-P) =
  ⇔-affirmable (Ǝₚ x ꞉ X , (U x ∧ P x)) (Ǝₚ x ꞉ X , P x) (p₁ , p₂) †
   where
@@ -75,7 +75,7 @@ having-subovert-dense-subset-gives-self-overt (X , sX) U so-U dense-U (P , open-
                                 (holds-is-prop (Ǝₚ x ꞉ X , P x))
                                 (λ (x-both , px-both) → ∣ x-both , pr₂ px-both ∣)
                                 U-hyp
-   
+
    p₂ : ((Ǝₚ x ꞉ X , P x) ⇒ Ǝₚ x ꞉ X , (U x ∧ P x)) holds
    p₂ = λ P-hyp → ∥∥-rec
                                 (holds-is-prop (Ǝₚ x ꞉ X , (U x ∧ P x)))
