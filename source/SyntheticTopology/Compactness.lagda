@@ -9,6 +9,7 @@ date-started:  2024-05-28
 {-# OPTIONS --safe --without-K --lossy-unification #-}
 
 open import MLTT.Spartan
+open import SyntheticTopology.SierpinskiObject
 open import UF.Base
 open import UF.FunExt
 open import UF.PropTrunc
@@ -16,7 +17,6 @@ open import UF.Sets
 open import UF.Sets-Properties
 open import UF.Subsingletons
 open import UF.SubtypeClassifier
-open import SyntheticTopology.SierpinskiObject
 
 module SyntheticTopology.Compactness
         (𝓤  𝓥 : Universe)
