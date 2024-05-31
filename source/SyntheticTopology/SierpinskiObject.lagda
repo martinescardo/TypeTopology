@@ -1,8 +1,9 @@
 ---
-title:         Definition of Sierpinski object synthetic topology
-authors:       ["Ayberk Tosun", "Martin Trucchi"]
-date-started:  2024-05-02
-dates-updated: [2024-05-28]
+title:          Definition of Sierpinski object synthetic topology
+authors:        ["Ayberk Tosun", "Martin Trucchi"]
+date-started:   2024-05-02
+date-completed: 2024-05-31
+dates-updated:  [2024-05-28]
 ---
 
 \begin{code}
