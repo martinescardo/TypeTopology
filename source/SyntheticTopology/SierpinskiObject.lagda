@@ -88,8 +88,8 @@ module Sierpinski-notations (𝕊 : Generalized-Sierpinski-Object 𝓤 𝓥) whe
 
 \end{code}
 
-The propositions in `Ω` that fall in the subset `𝕊` are called _affirmable_. We
-introduce suggestive terminology accordingly.
+The propositions in `Ω` that fall in the subset `𝕊` are called _open
+propositions_. We introduce suggestive terminology accordingly.
 
 \begin{code}
 
@@ -101,7 +101,8 @@ introduce suggestive terminology accordingly.
 Here, we only work with sets.
 
 To define this and some related notions, we work in a module parameterized by an
-hSet `𝒳`.
+hSet `𝒳`. We adopt the convention of using calligraphic letters `𝒳`, `𝒴`, ...
+for inhabitans of the type `hSet`.
 
 \begin{code}
 
@@ -112,6 +113,7 @@ hSet `𝒳`.
 We denote by `X` the underlying set of `𝒳`.
 
 \begin{code}
+
   private
    X = underlying-set 𝒳
 
