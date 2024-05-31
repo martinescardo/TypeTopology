@@ -7,7 +7,7 @@ dates-updated:   [2024-05-28]
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --lossy-unification #-}                                        
+{-# OPTIONS --safe --without-K --lossy-unification #-}
 
 open import MLTT.Spartan
 open import UF.FunExt
@@ -112,7 +112,7 @@ We denote by `X` the underlying set of `𝒳`.
 
 \begin{code}
   private
-   X = underlying-set 𝒳 
+   X = underlying-set 𝒳
 
 \end{code}
 
