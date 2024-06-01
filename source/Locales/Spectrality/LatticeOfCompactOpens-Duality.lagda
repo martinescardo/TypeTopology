@@ -53,6 +53,7 @@ open import Locales.DistributiveLattice.Isomorphism fe pt
 open import Locales.DistributiveLattice.Resizing ua pt sr
 open import Locales.DistributiveLattice.Spectrum fe pe pt
 open import Locales.DistributiveLattice.Spectrum-Properties fe pe pt sr
+open import Locales.SIP.DistributiveLatticeSIP ua pt sr
 open import Locales.Frame pt fe
 open import Locales.GaloisConnection pt fe
 open import Locales.SmallBasis pt fe sr
@@ -727,7 +728,76 @@ spectral-implies-spectral· X σ =
 
 \end{code}
 
-TODO: add the definition with the explicit equivalence.
+\begin{code}
+
+module OtherDirection (L : DistributiveLattice 𝓤) where
+
+ open 𝒦-Duality
+ open 𝒦-Lattice
+ open DefnOfFrameOfIdeal
+
+ spec-L : Locale (𝓤 ⁺) 𝓤 𝓤
+ spec-L = spectrum L
+
+ 𝕤 : is-spectral-with-small-basis ua spec-L holds
+ 𝕤 = Spectrality.spec-L-is-spectral L , Spectrality.spec-L-has-small-𝒦 L
+
+ 𝒦⁻-spec-L : DistributiveLattice 𝓤
+ 𝒦⁻-spec-L = 𝒦-X⁻ (spectrum L) 𝕤
+
+ spec-isomorphism : 𝒦⁻-spec-L ≅d≅ L
+ spec-isomorphism = {!!}
+
+\end{code}
+
+Put this in the `LatticeOfCompactOpens-Duality` module.
+
+Recall that the type of spectral locales is defined as
+
+\begin{code}
+
+Spectral-Locale : (𝓤 : Universe) → 𝓤 ⁺ ⁺  ̇
+Spectral-Locale 𝓤 =
+ Σ X ꞉ Locale (𝓤 ⁺) 𝓤 𝓤 , is-spectral-with-small-basis ua X holds
+
+spec-dlat-equivalence : (𝓤 : Universe) → Spectral-Locale 𝓤 ≃ DistributiveLattice 𝓤
+spec-dlat-equivalence 𝓤 = sec , qinvs-are-equivs sec γ
+ where
+  open 𝒦-Duality
+  open 𝒦-Lattice
+  open DefnOfFrameOfIdeal
+
+  sec : Spectral-Locale 𝓤 → DistributiveLattice 𝓤
+  sec = uncurry ⦅_⦆ᶜ
+
+  ret : DistributiveLattice 𝓤 → Spectral-Locale 𝓤
+  ret L = spectrum L , Spectrality.spec-L-is-spectral L , Spectrality.spec-L-has-small-𝒦 L
+
+  † : ret ∘ sec ∼ id
+  † (X , σ) =
+   to-subtype-＝
+    (holds-is-prop ∘ is-spectral-with-small-basis ua)
+    (homeomorphic-locales-are-equal (spec 𝒦X⁻) X goal)
+     where
+      𝒦X⁻ : DistributiveLattice 𝓤
+      𝒦X⁻ = ⦅_⦆ᶜ X σ
+
+      goal : spec 𝒦X⁻ ≅c≅ X
+      goal = X-is-homeomorphic-to-spec-𝒦⁻X X σ
+
+  ‡ : sec ∘ ret ∼ id
+  ‡ L =
+   isomorphic-distributive-lattices-are-equal (sec (ret L)) L goal
+    where
+     open OtherDirection L
+
+     goal : ⦅_⦆ᶜ (spectrum L) 𝕤 ≅d≅ L
+     goal = spec-isomorphism
+
+  γ : qinv sec
+  γ = ret , † , ‡
+
+\end{code}
 
 [1] Johnstone, Peter T., Stone Spaces. Cambridge University Press, Cambridge,
     1982
