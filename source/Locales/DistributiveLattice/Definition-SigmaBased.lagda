@@ -3,6 +3,7 @@ title:          Definition of distributive lattices (Σ-based)
 author:         Ayberk Tosun
 date-started:   2024-05-16
 date-completed: 2024-05-17
+dates-updated:  [2024-06-01]
 --------------------------------------------------------------------------------
 
 \begin{code}
@@ -27,6 +28,8 @@ open import UF.Logic
 open import UF.Powerset-MultiUniverse
 open import UF.Sets-Properties
 open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
+open import UF.Subsingletons-Properties
 open import UF.SubtypeClassifier
 
 open Implication fe
@@ -209,3 +212,36 @@ distributive-lattice₀-equivalent-to-distributive-lattice 𝓤 =
    † = to-distributive-lattice₀ 𝓤 , (λ _ → refl) , (λ _ → refl)
 
 \end{code}
+
+Added on 2024-06-01.
+
+\begin{code}
+
+distributive-lattice-data-is-set
+ : (A : 𝓤  ̇)
+ → is-set A
+ → propext 𝓤
+ → is-set (Distributive-Lattice-Data A)
+distributive-lattice-data-is-set A σ pe =
+ ×-is-set σ (×-is-set σ (×-is-set † †))
+  where
+   † : is-set (A → A → A)
+   † = Π-is-set fe λ _ → Π-is-set fe λ _ → σ
+
+distributive-lattice-structure-is-set
+ : (A : 𝓤  ̇)
+ → propext 𝓤
+ → is-set (Distributive-Lattice-Structure A)
+distributive-lattice-structure-is-set A pe {str₁} {str₂} =
+ Σ-is-set (distributive-lattice-data-is-set A σ pe) †
+  where
+   σ : is-set A
+   σ = DistributiveLattice.X-is-set (to-distributive-lattice _ (A , str₁))
+
+   † : (d : Distributive-Lattice-Data A)
+     → is-set (satisfies-distributive-lattice-laws d)
+   † d = props-are-sets (satisfying-distributive-lattice-laws-is-prop d)
+
+\end{code}
+
+End of addition.

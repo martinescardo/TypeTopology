@@ -77,11 +77,12 @@ two distributive lattices.
 
 \begin{code}
 
- Kᵣ : DistributiveLattice 𝓤
- Kᵣ = to-distributive-lattice 𝓤 K
+ private
+  Kᵣ : DistributiveLattice 𝓤
+  Kᵣ = to-distributive-lattice 𝓤 K
 
- Lᵣ : DistributiveLattice 𝓤
- Lᵣ = to-distributive-lattice 𝓤 L
+  Lᵣ : DistributiveLattice 𝓤
+  Lᵣ = to-distributive-lattice 𝓤 L
 
 \end{code}
 
@@ -214,35 +215,116 @@ The identity function being homomorphic gives the equality of meets.
 
 \end{code}
 
+The identity function being homomorphic gives equality of joins.
+
 \begin{code}
 
- homomorphic-equivalence-gives-distributive-lattice-data-agreement
-  : is-homomorphic (≃-refl A) holds
-  → distributive-lattice-data-of A str₁ ＝ distributive-lattice-data-of A str₂
- homomorphic-equivalence-gives-distributive-lattice-data-agreement 𝒽 = β
-  where
-   δ : _∧₁_ , _∨₁_ ＝ _∧₂_ , _∨₂_
-   δ = {!!}
+ homomorphic-identity-equivalence-gives-join-agreement
+  : is-homomorphic (≃-refl ∣ Lᵣ ∣ᵈ) holds
+  → _∨₁_ ＝ _∨₂_
+ homomorphic-identity-equivalence-gives-join-agreement 𝒽 =
+  dfunext fe λ x → dfunext fe λ y → φ x y
+   where
+    iso : Isomorphismᵈᵣ
+    iso = to-isomorphismᵈᵣ (≃-refl A , 𝒽)
 
-   γ : 𝟏₁ , _∧₁_ , _∨₁_ ＝ 𝟏₂ , _∧₂_ , _∨₂_
-   γ = transport
-        (λ - → 𝟏₁ , _∧₁_ , _∨₁_ ＝ - , _∧₂_ , _∨₂_)
-        (homomorphic-identity-equivalence-gives-top-agreement 𝒽)
-        (to-Σ-＝' δ)
+    φ : preserves-∨ Kᵣ Lᵣ id holds
+    φ = Homomorphismᵈᵣ.h-preserves-∨ (Isomorphismᵈᵣ.𝓈 iso)
 
-   β : 𝟎₁ , 𝟏₁ , _∧₁_ , _∨₁_ ＝ 𝟎₂ , 𝟏₂ , _∧₂_ , _∨₂_
-   β = transport
-        (λ - → 𝟎₁ , 𝟏₁ , _∧₁_ , _∨₁_ ＝ - , 𝟏₂ , _∧₂_ , _∨₂_)
-        (homomorphic-identity-equivalence-gives-bottom-agreement 𝒽)
-        (to-Σ-＝' γ)
+
+\end{code}
+
+If the identity equivalence is homomorphic, then the two distributive lattice
+structures must be equal.
+
+\begin{code}
+
+ abstract
+  homomorphic-equivalence-gives-distributive-lattice-data-agreement
+   : is-homomorphic (≃-refl A) holds
+   → distributive-lattice-data-of A str₁ ＝ distributive-lattice-data-of A str₂
+  homomorphic-equivalence-gives-distributive-lattice-data-agreement 𝒽 = β
+   where
+    ϵ : _∨₁_ ＝ _∨₂_
+    ϵ = homomorphic-identity-equivalence-gives-join-agreement 𝒽
+
+    δ : _∧₁_ , _∨₁_ ＝ _∧₂_ , _∨₂_
+    δ = transport
+         (λ - → _∧₁_ , _∨₁_ ＝ - , _∨₂_)
+         (homomorphic-identity-equivalence-gives-meet-agreement 𝒽)
+         (to-Σ-＝' ϵ)
+
+    γ : 𝟏₁ , _∧₁_ , _∨₁_ ＝ 𝟏₂ , _∧₂_ , _∨₂_
+    γ = transport
+         (λ - → 𝟏₁ , _∧₁_ , _∨₁_ ＝ - , _∧₂_ , _∨₂_)
+         (homomorphic-identity-equivalence-gives-top-agreement 𝒽)
+         (to-Σ-＝' δ)
+
+    β : 𝟎₁ , 𝟏₁ , _∧₁_ , _∨₁_ ＝ 𝟎₂ , 𝟏₂ , _∧₂_ , _∨₂_
+    β = transport
+         (λ - → 𝟎₁ , 𝟏₁ , _∧₁_ , _∨₁_ ＝ - , 𝟏₂ , _∧₂_ , _∨₂_)
+         (homomorphic-identity-equivalence-gives-bottom-agreement 𝒽)
+         (to-Σ-＝' γ)
 
 \end{code}
 
 \begin{code}
 
- homomorphic-equivalence-gives-structural-equality
-  : is-homomorphic (≃-refl A) holds
-  → str₁ ＝ str₂
- homomorphic-equivalence-gives-structural-equality = {!!}
+ abstract
+  homomorphic-equivalence-gives-structural-equality
+   : is-homomorphic (≃-refl A) holds
+   → str₁ ＝ str₂
+  homomorphic-equivalence-gives-structural-equality 𝒽 =
+   to-subtype-＝
+    satisfying-distributive-lattice-laws-is-prop
+    (homomorphic-equivalence-gives-distributive-lattice-data-agreement 𝒽)
+
+\end{code}
+
+\begin{code}
+
+distributive-lattice-sns-data : SNS Distributive-Lattice-Structure 𝓤
+distributive-lattice-sns-data {𝓤} = ι , ρ , θ
+ where
+  ι : (K′ L′ : Distributive-Lattice₀ 𝓤) → sip.⟨ K′ ⟩ ≃ sip.⟨ L′ ⟩ → 𝓤  ̇
+  ι K′ L′ e = is-homomorphic e holds
+   where
+    K′ᵣ = to-distributive-lattice 𝓤 K′
+    L′ᵣ = to-distributive-lattice 𝓤 L′
+
+    open HomomorphicEquivalences K′ᵣ L′ᵣ
+
+  ρ : (L : Distributive-Lattice₀ 𝓤) → ι L L (≃-refl sip.⟨ L ⟩)
+  ρ L = (λ _ → id) , (λ _ → id)
+
+  θ : {X : 𝓤  ̇}
+    → (str₁ str₂ : Distributive-Lattice-Structure X)
+    → is-equiv (canonical-map ι ρ str₁ str₂)
+  θ {X} str₁ str₂ = (homomorphic-equivalence-gives-structural-equality , †)
+                  , (homomorphic-equivalence-gives-structural-equality , ‡)
+   where
+    open SIP-For-Distributive-Lattices str₁ str₂
+    open HomomorphicEquivalences
+
+    Kᵣ = to-distributive-lattice 𝓤 (X , str₁)
+    Lᵣ = to-distributive-lattice 𝓤 (X , str₂)
+
+    † : (h : is-homomorphic Kᵣ Lᵣ (≃-refl X) holds)
+      → let
+         p = homomorphic-equivalence-gives-structural-equality h
+        in
+         canonical-map ι ρ str₁ str₂ p ＝ h
+    † h = holds-is-prop
+           (is-homomorphic Kᵣ Lᵣ (≃-refl X))
+           (canonical-map ι ρ str₁ str₂ (homomorphic-equivalence-gives-structural-equality h))
+           h
+
+    ‡ : (p : str₁ ＝ str₂)
+      → homomorphic-equivalence-gives-structural-equality (canonical-map ι ρ str₁ str₂ p) ＝ p
+    ‡ p = distributive-lattice-structure-is-set
+           X
+           pe
+           (homomorphic-equivalence-gives-structural-equality (canonical-map ι ρ str₁ str₂ p))
+           p
 
 \end{code}
