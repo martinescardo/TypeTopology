@@ -1,3 +1,6 @@
+Kelton OBrien, 31 May 2024
+
+A proof that the Axiom of Choice implies Zorn's Lemma, as well as relevant definitions.
 \begin{code}
 {-# OPTIONS --safe --without-K --exact-split #-}
 
@@ -27,13 +30,12 @@ open import UF.EquivalenceExamples
 open import UF.UniverseEmbedding
 
 module OrderedTypes.ZornsLemma
-  {𝓤 : Universe}
-  {𝓣 : Universe}
-  (pt : propositional-truncations-exist)
-  (ua : Univalence)
-  {X : 𝓤 ̇}
-  (_≪_ : X → X → 𝓣 ̇)
-
+ {𝓤 : Universe}
+ {𝓣 : Universe}
+ (pt : propositional-truncations-exist)
+ (ua : Univalence)
+ {X : 𝓤 ̇}
+ (_≪_ : X → X → 𝓣 ̇)
   where
 
 open PropositionalTruncation pt
@@ -71,17 +73,46 @@ has-maximal-element-strong :  (𝓤 ⊔ 𝓣) ̇
 has-maximal-element-strong = Σ x ꞉ X , ((y : X) → x ≪ y → x ＝ y)
 
 all-chains-have-upper-bound : {𝓥 : Universe} → (𝓤 ⊔ 𝓣 ⊔ (𝓥 ⁺))  ̇
-all-chains-have-upper-bound {𝓥} = (Y : 𝓟 {𝓥} X) → (is-chain Y) → Σ x ꞉ X , (∀ y → y ∈ Y → y ≪ x)
+all-chains-have-upper-bound {𝓥} =
+ (Y : 𝓟 {𝓥} X) → (is-chain Y) → Σ x ꞉ X , (∀ y → y ∈ Y → y ≪ x)
+
+\end{code}
+The following is not a direct formalization of any extant proof,
+but follows the same proof idea as the standard transfinite-induction-based
+proof of Zorn's lemma. The closest informal analog to the proof can be found
+here: https://math.stackexchange.com/a/2889205 .
+
+We do a proof by contradiction (which is why we have that double negation),
+where we assume that even though all chains have a least upper bound,
+the set at hand does not have a maximal element.
+These assumptions allow us to construct a function `f' from the ordinals to X,
+which is a set, which preserves order, is therefore left-cancellable, and again
+in turn an equivalence.
+`f' being order preserving relies on the fact that there is no maximal element,
+as otherwise `f' would (as defined) map many ordinals to the maximal element.
+An equivalence between the ordinals and a set is impossible,
+so there must (not-not) be a maximum.
+
+While this is the core of the proof logic, the final result to be used elsewhere
+is found below, and takes in more reasonable inputs.
+
+\begin{code}
 
 choice-function-gives-not-not-zorns-lemma :
-  Excluded-Middle →
-  poset-axioms (_≪_) →
-  all-chains-have-upper-bound  →
-  (Σ ε ꞉ (𝓟 {𝓣 ⊔ 𝓤} X → X) , ((A : 𝓟 X) → is-inhabited A → ε A ∈ A)) →
-  ¬¬ has-maximal-element-strong
+ Excluded-Middle →
+ poset-axioms (_≪_) →
+ all-chains-have-upper-bound  →
+ (Σ ε ꞉ (𝓟 {𝓣 ⊔ 𝓤} X → X) , ((A : 𝓟 X) → is-inhabited A → ε A ∈ A)) →
+ ¬¬ has-maximal-element-strong
 
-choice-function-gives-not-not-zorns-lemma lem  (X-is-set , ≪-prop , ≪-refl , ≪-trans , ≪-antisym ) chains (ε , ε-behavior) no-max = absurd
-  where
+choice-function-gives-not-not-zorns-lemma
+ lem
+ (X-is-set , ≪-prop , ≪-refl , ≪-trans , ≪-antisym )
+ chains
+ (ε , ε-behaviour)
+ no-max =
+  absurd
+   where
     dn : {𝓥 : Universe } → DNE 𝓥
     dn {𝓥} = EM-gives-DNE lem
 
@@ -98,7 +129,9 @@ choice-function-gives-not-not-zorns-lemma lem  (X-is-set , ≪-prop , ≪-refl ,
     ⋘-prop a b = ×-is-prop (≪-prop a b) (negations-are-props fe')
 
     ≪-trans-⋘ : (x y z : X) →  x ≪ y → y ⋘ z → x ⋘ z
-    ≪-trans-⋘ x y z x≪y (y≪z , y≠z) = ( ≪-trans x y z x≪y y≪z , λ x=z → y≠z ((≪-antisym y z) y≪z (transport (λ q → q ≪ y) x=z x≪y)) )
+    ≪-trans-⋘ x y z x≪y (y≪z , y≠z) =
+     ≪-trans x y z x≪y y≪z ,
+      λ x=z → y≠z ((≪-antisym y z) y≪z (transport (λ q → q ≪ y) x=z x≪y))
 
     g : (α : Ordinal 𝓤) → ( ⟨ α ⟩ → X) → X
     g α s = ε  ⁅ x ꞉ X ∣ Ɐ a ꞉ ⟨ α ⟩ , (( s a ⋘ x ) , ⋘-prop (s a) x ) ⁆
@@ -113,78 +146,109 @@ choice-function-gives-not-not-zorns-lemma lem  (X-is-set , ≪-prop , ≪-refl ,
     f-behaviour = transfinite-recursion-on-OO-behaviour X g
 
     ⊲-is-classical-well-order : is-classical-well-order (_⊲_ {𝓤})
-    ⊲-is-classical-well-order = inductive-well-order-is-classical _⊲_ lem ⊲-is-well-order
+    ⊲-is-classical-well-order =
+      inductive-well-order-is-classical _⊲_ lem ⊲-is-well-order
 
     ⊲-is-trichotomous : {a b : Ordinal 𝓤} → (a ⊲ b) + (a ＝ b) + (b ⊲ a)
     ⊲-is-trichotomous {a} {b} = pr₁ (( pr₁ (pr₂ ⊲-is-classical-well-order)) a b)
 
     f-preserves-order : (α : Ordinal 𝓤) → (β : Ordinal 𝓤) → β ⊲ α → f β ⋘ f α
     f-preserves-order  = transfinite-induction-on-OO P v
-      where
+     where
       P : Ordinal 𝓤 → (𝓤 ⁺ ⊔ 𝓣) ̇
       P α = ∀ β → β ⊲ α → f β ⋘ f α
       v : (α : Ordinal 𝓤) → ((a : ⟨ α ⟩) → P (α ↓ a)) → P α
-      v α s β (a , β=α↓a) = transport⁻¹ (λ q → f q ⋘ f α) β=α↓a (transport⁻¹ (λ q → f (α ↓ a) ⋘ q) (f-behaviour α) (step a))
-        where
-          allfb : 𝓟  X
-          allfb = ⁅ x ꞉ X ∣ Ǝ β' , ((β' ⊲ α ) × (x ＝ (f β')))   ⁆
+      v α s β (a , β=α↓a) =
+       transport⁻¹ (λ q → f q ⋘ f α) β=α↓a
+        (transport⁻¹ (λ q → f (α ↓ a) ⋘ q) (f-behaviour α) (step a))
+       where
+        allfb : 𝓟  X
+        allfb = ⁅ x ꞉ X ∣ Ǝ β' , ((β' ⊲ α ) × (x ＝ (f β')))   ⁆
 
-          untrunc-works : (x y : X) → (Σ β' ꞉ Ordinal 𝓤 , ((β' ⊲ α) × (x ＝ f β'))) → (Σ β'' ꞉ Ordinal 𝓤 , ((β'' ⊲ α) × (y ＝ f β''))) → x ≪ y + y ≪ x
-          untrunc-works x y (β' , ((b' , β'=α↓b') , x=fβ')) (β'' , ((b'' , β''=α↓b'') , y=fβ'')) = cases less (cases equal more) ⊲-is-trichotomous
-            where
-              less : β'' ⊲ β' → (x ≪ y + y ≪ x)
-              less b''<b' = inr (transport⁻¹ (λ q → y ≪ q) x=fβ' (transport⁻¹ (λ q → q ≪ f β') y=fβ'' (pr₁ (transport⁻¹ (λ q → f β'' ⋘ f q) β'=α↓b'
-                                ((s b') β'' (transport (λ q → β'' ⊲ q) β'=α↓b' b''<b'))))))
-              equal : β'' ＝ β' → (x ≪ y + y ≪ x)
-              equal b''=b' = inr (transport (λ q → y ≪ q) (transport⁻¹ (λ q → y ＝ q) x=fβ' (transport⁻¹ (λ q → q ＝ f β') y=fβ'' (ap f b''=b'))) (≪-refl y))
+        untrunc-works : (x y : X)
+                      → (Σ β' ꞉ Ordinal 𝓤 , ((β' ⊲ α) × (x ＝ f β')))
+                      → (Σ β'' ꞉ Ordinal 𝓤 , ((β'' ⊲ α) × (y ＝ f β'')))
+                      → x ≪ y + y ≪ x
+        untrunc-works
+         x
+         y
+         (β' , ((b' , β'=α↓b') , x=fβ'))
+         (β'' , ((b'' , β''=α↓b'') , y=fβ''))
+         = cases less (cases equal more) ⊲-is-trichotomous
+         where
+          less : β'' ⊲ β' → (x ≪ y + y ≪ x)
+          less b''<b' =
+           inr (transport⁻¹ (λ q → y ≪ q) x=fβ'
+            (transport⁻¹ (λ q → q ≪ f β') y=fβ''
+              (pr₁ (transport⁻¹ (λ q → f β'' ⋘ f q) β'=α↓b' ((s b') β''
+               (transport (λ q → β'' ⊲ q) β'=α↓b' b''<b'))))))
+          equal : β'' ＝ β' → (x ≪ y + y ≪ x)
+          equal b''=b' =
+           inr (transport (λ q → y ≪ q)
+            (transport⁻¹ (λ q → y ＝ q) x=fβ'
+             (transport⁻¹ (λ q → q ＝ f β') y=fβ'' (ap f b''=b'))) (≪-refl y))
 
-              more : β' ⊲ β'' → (x ≪ y + y ≪ x)
-              more b'<b'' = inl (transport⁻¹ (λ q → x ≪ q) y=fβ'' (transport⁻¹ (λ q → q ≪ f β'') x=fβ' (pr₁ (transport⁻¹ (λ q → f β' ⋘ f q) β''=α↓b''
-                                ((s b'') β' (transport (λ q → β' ⊲ q) β''=α↓b'' b'<b''))))))
-          has-max-neg : (x : X) → ¬ ¬ (Σ y ꞉ X , ¬ (x ≪ y → x ＝ y))
-          has-max-neg =  λ x → not-Π-implies-not-not-Σ (λ z → →-is-¬¬-stable eq-is-¬¬-stable) ((not-Σ-implies-Π-not no-max) x)
+          more : β' ⊲ β'' → (x ≪ y + y ≪ x)
+          more b'<b'' =
+            inl (transport⁻¹ (λ q → x ≪ q) y=fβ''
+             (transport⁻¹ (λ q → q ≪ f β'') x=fβ'
+              (pr₁ (transport⁻¹ (λ q → f β' ⋘ f q) β''=α↓b''
+               ((s b'') β' (transport (λ q → β' ⊲ q) β''=α↓b'' b'<b''))))))
+        has-max-neg : (x : X) → ¬¬ (Σ y ꞉ X , ¬ (x ≪ y → x ＝ y))
+        has-max-neg x =
+         not-Π-implies-not-not-Σ (λ z → →-is-¬¬-stable eq-is-¬¬-stable)
+          ((not-Σ-implies-Π-not no-max) x)
 
-          allfb-is-chain :  is-chain allfb
-          allfb-is-chain x y = ∥∥-functor₂ (untrunc-works x y)
+        allfb-is-chain :  is-chain allfb
+        allfb-is-chain x y = ∥∥-functor₂ (untrunc-works x y)
 
-          allfb-has-ub : Σ x ꞉ X , (∀ y → y ∈ allfb → y ≪ x)
-          allfb-has-ub = chains allfb allfb-is-chain
+        allfb-has-ub : Σ x ꞉ X , (∀ y → y ∈ allfb → y ≪ x)
+        allfb-has-ub = chains allfb allfb-is-chain
 
-          ub : X
-          ub = pr₁ allfb-has-ub
+        ub : X
+        ub = pr₁ allfb-has-ub
 
-          ub-is-ub : ∀ y → y ∈ allfb → y ≪ ub
-          ub-is-ub = pr₂ allfb-has-ub
+        ub-is-ub : ∀ y → y ∈ allfb → y ≪ ub
+        ub-is-ub = pr₂ allfb-has-ub
 
-          ub-is-strict' : (Σ q ꞉ X , (¬ ( ub ≪ q → ub ＝ q))) →  Σ z ꞉ X , (∀ y → y ∈ allfb → y ⋘ z)
-          ub-is-strict' (q , foo) =  q , λ y yin → ≪-trans-⋘ y ub q (ub-is-ub y yin) ((≪-is-¬¬-stable (pr₁ (negation-of-implication foo))) , (pr₂ (negation-of-implication foo)))
+        ub-is-strict' : (Σ q ꞉ X , (¬ ( ub ≪ q → ub ＝ q)))
+                         →  Σ z ꞉ X , (∀ y → y ∈ allfb → y ⋘ z)
+        ub-is-strict' (q , foo) =  q ,
+         λ y yin → ≪-trans-⋘ y ub q (ub-is-ub y yin)
+          ((≪-is-¬¬-stable (pr₁ (negation-of-implication foo)))
+           , (pr₂ (negation-of-implication foo)))
 
-          ub-is-strict : ∃ z ꞉ X , (∀ y → y ∈ allfb → y ⋘ z)
-          ub-is-strict = (∥∥-functor ub-is-strict') (¬¬Σ→∃ (has-max-neg ub))
+        ub-is-strict : ∃ z ꞉ X , (∀ y → y ∈ allfb → y ⋘ z)
+        ub-is-strict = (∥∥-functor ub-is-strict') (¬¬Σ→∃ (has-max-neg ub))
 
-          Aα-inhabited' :  Σ x ꞉ X , (∀ y → y ∈ allfb → y ⋘ x) →  Σ x ꞉ X , ((i : ⟨ α ⟩) → f (α ↓ i) ⋘ x)
-          Aα-inhabited' (x , ylt) =  x ,  λ i →  ylt (f (α ↓ i))  ∣  (α ↓ i) ,  ( ( i , refl )) , refl ∣
+        Aα-inhabited' :  Σ x ꞉ X , (∀ y → y ∈ allfb → y ⋘ x)
+                         →  Σ x ꞉ X , ((i : ⟨ α ⟩) → f (α ↓ i) ⋘ x)
+        Aα-inhabited' (x , ylt) =
+         x ,  λ i →  ylt (f (α ↓ i))  ∣  (α ↓ i) ,  ( ( i , refl )) , refl ∣
 
-          Aα-inhabited :  ∃ x ꞉ X , (∀ y → y ∈ allfb → y ⋘ x) → is-inhabited (A α)
-          Aα-inhabited =  ∥∥-functor Aα-inhabited'
+        Aα-inhabited :  ∃ x ꞉ X , (∀ y → y ∈ allfb → y ⋘ x) → is-inhabited (A α)
+        Aα-inhabited =  ∥∥-functor Aα-inhabited'
 
-          step : (a : ⟨ α ⟩) →  (f (α ↓ a) ⋘ ε (A α))
-          step a = (ε-behavior (A α) (Aα-inhabited (ub-is-strict ))) a
+        step : (a : ⟨ α ⟩) →  (f (α ↓ a) ⋘ ε (A α))
+        step a = (ε-behaviour (A α) (Aα-inhabited (ub-is-strict ))) a
 
     f-is-injective : (a b : Ordinal 𝓤) → a ≠ b → f a ≠ f b
-    f-is-injective a b a≠b = cases (less a b) (cases (equal a b a≠b) (more a b)) ⊲-is-trichotomous
-      where
-        less : (a b : Ordinal 𝓤) → a ⊲ b → f a ≠ f b
-        less a b a<b = pr₂ (f-preserves-order b a a<b)
+    f-is-injective a b a≠b =
+     cases (less a b) (cases (equal a b a≠b) (more a b)) ⊲-is-trichotomous
+     where
+      less : (a b : Ordinal 𝓤) → a ⊲ b → f a ≠ f b
+      less a b a<b = pr₂ (f-preserves-order b a a<b)
 
-        more : (a b : Ordinal 𝓤) → b ⊲ a → f a ≠ f b
-        more a b b<a = ≠-sym (pr₂ (f-preserves-order a b b<a))
+      more : (a b : Ordinal 𝓤) → b ⊲ a → f a ≠ f b
+      more a b b<a = ≠-sym (pr₂ (f-preserves-order a b b<a))
 
-        equal : (a b : Ordinal 𝓤) → a ≠ b → a ＝ b → f a ≠ f b
-        equal a b a≠b a=b = unique-from-𝟘 (a≠b a=b)
+      equal : (a b : Ordinal 𝓤) → a ≠ b → a ＝ b → f a ≠ f b
+      equal a b a≠b a=b = unique-from-𝟘 (a≠b a=b)
 
     f-is-left-cancellable : {a : Ordinal 𝓤} → {b : Ordinal 𝓤} → f a ＝ f b → a ＝ b
-    f-is-left-cancellable {a} {b}  p = dn (a ＝ b) (the-type-of-ordinals-is-a-set (ua 𝓤) fe') ((contrapositive (f-is-injective a b)) (¬¬-intro p))
+    f-is-left-cancellable {a} {b} p =
+     dn (a ＝ b) (the-type-of-ordinals-is-a-set (ua 𝓤) fe')
+                 ((contrapositive (f-is-injective a b)) (¬¬-intro p))
 
     f-is-embedding : is-embedding f
     f-is-embedding = lc-maps-into-sets-are-embeddings f f-is-left-cancellable X-is-set
@@ -234,64 +298,75 @@ has-maximal-element : (𝓤 ⊔ 𝓣) ̇
 has-maximal-element = ∃ x ꞉ X , ((y : X) → x ≪ y → x ＝ y)
 
 
-choice-function-gives-zorns-lemma :
-  Excluded-Middle →
-  poset-axioms (_≪_) →
-  all-chains-have-upper-bound  →
-  (Σ ε ꞉ (𝓟 {𝓣 ⊔ 𝓤} X → X) , ((A : 𝓟 X) → is-inhabited A → ε A ∈ A)) →
-  has-maximal-element
+choice-function-gives-zorns-lemma
+ : Excluded-Middle
+ → poset-axioms (_≪_)
+ → all-chains-have-upper-bound
+ → (Σ ε ꞉ (𝓟 {𝓣 ⊔ 𝓤} X → X) , ((A : 𝓟 X) → is-inhabited A → ε A ∈ A))
+ → has-maximal-element
 
 choice-function-gives-zorns-lemma lem axioms chains cf = ¬¬Σ→∃ ¬¬max
-  where
-    dn : {𝓥 : Universe } → DNE 𝓥
-    dn {𝓥} = EM-gives-DNE lem
-    ¬¬Σ→∃ : {𝓤 : Universe} {A : X → 𝓤 ̇} → ¬ ¬ (Σ x ꞉ X , A x ) → (∃ x ꞉ X , A x)
-    ¬¬Σ→∃ {𝓤} {A} inside = dn _ ∥∥-is-prop (¬¬-functor ∣_∣ inside)
-    ¬¬max : ¬ ¬ has-maximal-element-strong
-    ¬¬max = (choice-function-gives-not-not-zorns-lemma lem axioms chains cf)
+ where
+  dn : {𝓥 : Universe } → DNE 𝓥
+  dn {𝓥} = EM-gives-DNE lem
+  ¬¬Σ→∃ : {𝓤 : Universe} {A : X → 𝓤 ̇} → ¬ ¬ (Σ x ꞉ X , A x ) → (∃ x ꞉ X , A x)
+  ¬¬Σ→∃ {𝓤} {A} inside = dn _ ∥∥-is-prop (¬¬-functor ∣_∣ inside)
+  ¬¬max : ¬ ¬ has-maximal-element-strong
+  ¬¬max = (choice-function-gives-not-not-zorns-lemma lem axioms chains cf)
 
-axiom-of-choice-implies-zorns-lemma :
-  Axiom-of-Choice →
-  poset-axioms (_≪_) →
-  (all-chains-have-upper-bound  →
-  has-maximal-element)
+axiom-of-choice-implies-zorns-lemma
+ : Axiom-of-Choice
+ → poset-axioms (_≪_)
+ → (all-chains-have-upper-bound → has-maximal-element)
 
 axiom-of-choice-implies-zorns-lemma ac (X-is-set , axioms-rest) = III
-  where
-    em : Excluded-Middle
-    em = Choice-gives-Excluded-Middle pe' ac
+ where
+  em : Excluded-Middle
+  em = Choice-gives-Excluded-Middle pe' ac
 
-    lifted-choice-function : ∥ Lift (𝓤 ⊔ 𝓣) X ∥ → ∃ ε ꞉ (𝓟 {𝓤 ⊔ 𝓣} (Lift (𝓤 ⊔ 𝓣) X) → (Lift (𝓤 ⊔ 𝓣) X)) , ((A : 𝓟 {𝓤 ⊔ 𝓣} (Lift (𝓤 ⊔ 𝓣) X)) → is-inhabited A → ε A ∈ A)
-    lifted-choice-function = Choice-gives-Choice₄ ac (Lift (𝓤 ⊔ 𝓣) X) (Lift-is-set (𝓤 ⊔ 𝓣) X X-is-set)
+  lifted-cf
+   : ∥ Lift (𝓤 ⊔ 𝓣) X ∥
+   → ∃ ε ꞉ (𝓟 (Lift (𝓤 ⊔ 𝓣) X) → (Lift (𝓤 ⊔ 𝓣) X))
+         , ((A : 𝓟 (Lift (𝓤 ⊔ 𝓣) X)) → is-inhabited A → ε A ∈ A)
+  lifted-cf =
+   Choice-gives-Choice₄ ac (Lift (𝓤 ⊔ 𝓣) X) (Lift-is-set (𝓤 ⊔ 𝓣) X X-is-set)
 
-    lower-choice-function : (Σ ε ꞉ (𝓟 {𝓤 ⊔ 𝓣} (Lift (𝓤 ⊔ 𝓣) X) → (Lift (𝓤 ⊔ 𝓣) X)) , ((A : 𝓟 {𝓤 ⊔ 𝓣} (Lift (𝓤 ⊔ 𝓣) X)) → is-inhabited A → ε A ∈ A)) →
-                              Σ ε ꞉ (𝓟 X → X) , ((A : 𝓟 X) → is-inhabited A → ε A ∈ A)
-    lower-choice-function (ϵ , f) = (ϵ' , f')
-                         where
-                          ϵ' : 𝓟 X → X
-                          ϵ' S = lower (ϵ (S ∘ lower))
-                          inhab-trans : {A' : 𝓟 X} → is-inhabited A' → is-inhabited (A' ∘ lower)
-                          inhab-trans {A'} isA' =  isA' >>= λ isA'' →  ∣ lift (𝓤 ⊔ 𝓣) (pr₁ isA'') ,  transport (λ q → (A' q) holds) (ε-Lift (𝓤 ⊔ 𝓣) (pr₁ isA'')) (pr₂ isA'')  ∣
-                          f' : (A' : 𝓟 X) → is-inhabited A' → ϵ' A' ∈ A'
-                          f' A' A'-inhab = (f (A' ∘ lower) (inhab-trans {A'} A'-inhab))
+  lower-cf
+   : Σ ε ꞉ (𝓟 (Lift (𝓤 ⊔ 𝓣) X) → (Lift (𝓤 ⊔ 𝓣) X))
+         , ((A : 𝓟 (Lift (𝓤 ⊔ 𝓣) X)) → is-inhabited A → ε A ∈ A)
+   →  Σ ε ꞉ (𝓟 X → X) , ((A : 𝓟 X) → is-inhabited A → ε A ∈ A)
+  lower-cf (ϵ , f) = (ϵ' , f')
+   where
+    ϵ' : 𝓟 X → X
+    ϵ' S = lower (ϵ (S ∘ lower))
+    inhab-trans : {A' : 𝓟 X} → is-inhabited A' → is-inhabited (A' ∘ lower)
+    inhab-trans {A'} isA' =
+     isA' >>= λ isA'' →
+      ∣ lift (𝓤 ⊔ 𝓣) (pr₁ isA'')
+       , transport (λ q → (A' q) holds) (ε-Lift (𝓤 ⊔ 𝓣) (pr₁ isA'')) (pr₂ isA'')∣
+    f' : (A' : 𝓟 X) → is-inhabited A' → ϵ' A' ∈ A'
+    f' A' A'-inhab = (f (A' ∘ lower) (inhab-trans {A'} A'-inhab))
 
-    choice-function : ∥ X ∥ → ∃ ε ꞉ (𝓟 X → X) , ((A : 𝓟 X) → is-inhabited A → ε A ∈ A)
-    choice-function isX =  ∥∥-functor lower-choice-function (lifted-choice-function (∥∥-functor (lift (𝓤 ⊔ 𝓣)) isX))
+  choice-function : ∥ X ∥ → ∃ ε ꞉ (𝓟 X → X) , ((A : 𝓟 X) → is-inhabited A → ε A ∈ A)
+  choice-function isX =  ∥∥-functor lower-cf (lifted-cf (∥∥-functor (lift (𝓤 ⊔ 𝓣)) isX))
 
-
-    I' : all-chains-have-upper-bound →  ∃ ε ꞉ (𝓟 X → X) , ((A : 𝓟 X) → is-inhabited A → ε A ∈ A) → has-maximal-element
-    I' chains = ∥∥-rec (∃-is-prop)
+  I'
+   : all-chains-have-upper-bound
+   → ∃ ε ꞉ (𝓟 X → X) , ((A : 𝓟 X) → is-inhabited A → ε A ∈ A)
+   → has-maximal-element
+  I' chains = ∥∥-rec (∃-is-prop)
           (choice-function-gives-zorns-lemma em (X-is-set , axioms-rest) chains)
 
-    I : all-chains-have-upper-bound → ∥ X ∥ → has-maximal-element
-    I chains-have-ub z = I' chains-have-ub (choice-function z)
+  I : all-chains-have-upper-bound → ∥ X ∥ → has-maximal-element
+  I chains-have-ub z = I' chains-have-ub (choice-function z)
 
-    empty-has-no-ub : ¬ ∥ X ∥ → ¬ (all-chains-have-upper-bound {𝓥})
-    empty-has-no-ub ν  chains =  ν ∣ pr₁ (chains ∅ λ x y xin yin →  unique-from-𝟘 (ν ∣ x ∣)) ∣
+  empty-has-no-ub : ¬ ∥ X ∥ → ¬ (all-chains-have-upper-bound {𝓥})
+  empty-has-no-ub ν  chains =  ν ∣ pr₁ (chains ∅ λ x y xin yin →  unique-from-𝟘 (ν ∣ x ∣)) ∣
 
-    II : all-chains-have-upper-bound  →  ¬ ∥ X ∥ → has-maximal-element
-    II chains-have-ub ν = unique-from-𝟘 ((empty-has-no-ub ν) chains-have-ub)
+  II : all-chains-have-upper-bound  →  ¬ ∥ X ∥ → has-maximal-element
+  II chains-have-ub ν = unique-from-𝟘 ((empty-has-no-ub ν) chains-have-ub)
 
-    III : all-chains-have-upper-bound → has-maximal-element
-    III chains-have-ub = cases (I chains-have-ub) (II chains-have-ub) (em ∥ X ∥ ∥∥-is-prop)
+  III : all-chains-have-upper-bound → has-maximal-element
+  III chains-have-ub =
+   cases (I chains-have-ub) (II chains-have-ub) (em ∥ X ∥ ∥∥-is-prop)
 \end{code}
