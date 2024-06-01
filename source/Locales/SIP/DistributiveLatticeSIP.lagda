@@ -219,20 +219,22 @@ The identity function being homomorphic gives the equality of meets.
  homomorphic-equivalence-gives-distributive-lattice-data-agreement
   : is-homomorphic (≃-refl A) holds
   → distributive-lattice-data-of A str₁ ＝ distributive-lattice-data-of A str₂
- homomorphic-equivalence-gives-distributive-lattice-data-agreement 𝒽 =
-  goal
-   where
-    γ : 𝟏₁ , _∧₁_ , _∨₁_ ＝ 𝟏₂ , _∧₂_ , _∨₂_
-    γ = {!!}
+ homomorphic-equivalence-gives-distributive-lattice-data-agreement 𝒽 = β
+  where
+   δ : _∧₁_ , _∨₁_ ＝ _∧₂_ , _∨₂_
+   δ = {!!}
 
-    β : 𝟎₁ , 𝟏₁ , _∧₁_ , _∨₁_ ＝ 𝟎₂ , 𝟏₂ , _∧₂_ , _∨₂_
-    β = transport
-         (λ - → 𝟎₁ , 𝟏₁ , _∧₁_ , _∨₁_ ＝ - , 𝟏₂ , _∧₂_ , _∨₂_)
-         (homomorphic-identity-equivalence-gives-bottom-agreement 𝒽)
-         (to-Σ-＝' γ)
+   γ : 𝟏₁ , _∧₁_ , _∨₁_ ＝ 𝟏₂ , _∧₂_ , _∨₂_
+   γ = transport
+        (λ - → 𝟏₁ , _∧₁_ , _∨₁_ ＝ - , _∧₂_ , _∨₂_)
+        (homomorphic-identity-equivalence-gives-top-agreement 𝒽)
+        (to-Σ-＝' δ)
 
-    goal : 𝟎₁ , 𝟏₁ , _∧₁_ , _∨₁_  ＝ 𝟎₂ , 𝟏₂ , _∧₂_ , _∨₂_
-    goal = {!!}
+   β : 𝟎₁ , 𝟏₁ , _∧₁_ , _∨₁_ ＝ 𝟎₂ , 𝟏₂ , _∧₂_ , _∨₂_
+   β = transport
+        (λ - → 𝟎₁ , 𝟏₁ , _∧₁_ , _∨₁_ ＝ - , 𝟏₂ , _∧₂_ , _∨₂_)
+        (homomorphic-identity-equivalence-gives-bottom-agreement 𝒽)
+        (to-Σ-＝' γ)
 
 \end{code}
 
