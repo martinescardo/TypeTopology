@@ -200,6 +200,18 @@ The identity function being homomorphic gives the equality of meets.
 
 \begin{code}
 
+ homomorphic-identity-equivalence-gives-meet-agreement
+  : is-homomorphic (≃-refl ∣ Lᵣ ∣ᵈ) holds
+  → _∧₁_ ＝ _∧₂_
+ homomorphic-identity-equivalence-gives-meet-agreement 𝒽 =
+  dfunext fe λ x → dfunext fe λ y → φ x y
+   where
+    iso : Isomorphismᵈᵣ
+    iso = to-isomorphismᵈᵣ (≃-refl A , 𝒽)
+
+    φ : preserves-∧ Kᵣ Lᵣ id holds
+    φ = Homomorphismᵈᵣ.h-preserves-∧ (Isomorphismᵈᵣ.𝓈 iso)
+
 \end{code}
 
 \begin{code}
