@@ -25,6 +25,8 @@ open import UF.Base
 open import UF.Equiv
 open import UF.Logic
 open import UF.Powerset-MultiUniverse
+open import UF.Sets-Properties
+open import UF.Subsingletons
 open import UF.SubtypeClassifier
 
 open Implication fe
@@ -43,28 +45,50 @@ Distributive-Lattice-Data A = A           -- bottom element
 
 open AllCombinators pt fe renaming (_∧_ to _∧ₚ_; _∨_ to _∨ₚ_)
 
+satisfies-distributive-lattice-laws₀
+ : {A : 𝓤  ̇}
+ → is-set A
+ → Distributive-Lattice-Data A
+ → Ω 𝓤
+satisfies-distributive-lattice-laws₀ {𝓤} {A} s (𝟎 , 𝟏 , _∧_ , _∨_) =
+ let
+  open Equality s
+ in
+     (Ɐ x y z ꞉ A , x ∧ (y ∧ z) ＝ₚ (x ∧ y) ∧ z)
+  ∧ₚ (Ɐ x y ꞉ A , x ∧ y ＝ₚ y ∧ x)
+  ∧ₚ (Ɐ x ꞉ A , x ∧ 𝟏 ＝ₚ x)
+  ∧ₚ (Ɐ x ꞉ A , x ∧ x ＝ₚ x)
+  ∧ₚ (Ɐ x y ꞉ A , x ∧ (x ∨ y) ＝ₚ x)
+  ∧ₚ (Ɐ x y z ꞉ A , x ∨ (y ∨ z) ＝ₚ (x ∨ y) ∨ z)
+  ∧ₚ (Ɐ x y ꞉ A , x ∨ y ＝ₚ y ∨ x)
+  ∧ₚ (Ɐ x ꞉ A , x ∨ 𝟎 ＝ₚ x)
+  ∧ₚ (Ɐ x ꞉ A , x ∨ x ＝ₚ x)
+  ∧ₚ (Ɐ x y ꞉ A , x ∨ (x ∧ y) ＝ₚ x)
+  ∧ₚ (Ɐ x y z ꞉ A , x ∧ (y ∨ z) ＝ₚ (x ∧ y) ∨ (x ∧ z))
+
 satisfies-distributive-lattice-laws
  : {A : 𝓤  ̇} → Distributive-Lattice-Data A → 𝓤  ̇
-satisfies-distributive-lattice-laws {𝓤} {A} (𝟎 , 𝟏 , _∧_ , _∨_) =
- Σ s ꞉ is-set A , rest s holds
-  where
-
-   rest : is-set A → Ω 𝓤
-   rest s =  (Ɐ x y z ꞉ A , x ∧ (y ∧ z) ＝ₚ (x ∧ y) ∧ z)
-          ∧ₚ (Ɐ x y ꞉ A , x ∧ y ＝ₚ y ∧ x)
-          ∧ₚ (Ɐ x ꞉ A , x ∧ 𝟏 ＝ₚ x)
-          ∧ₚ (Ɐ x ꞉ A , x ∧ x ＝ₚ x)
-          ∧ₚ (Ɐ x y ꞉ A , x ∧ (x ∨ y) ＝ₚ x)
-          ∧ₚ (Ɐ x y z ꞉ A , x ∨ (y ∨ z) ＝ₚ (x ∨ y) ∨ z)
-          ∧ₚ (Ɐ x y ꞉ A , x ∨ y ＝ₚ y ∨ x)
-          ∧ₚ (Ɐ x ꞉ A , x ∨ 𝟎 ＝ₚ x)
-          ∧ₚ (Ɐ x ꞉ A , x ∨ x ＝ₚ x)
-          ∧ₚ (Ɐ x y ꞉ A , x ∨ (x ∧ y) ＝ₚ x)
-          ∧ₚ (Ɐ x y z ꞉ A , x ∧ (y ∨ z) ＝ₚ (x ∧ y) ∨ (x ∧ z))
-    where
-     open Equality s
+satisfies-distributive-lattice-laws {𝓤} {A} d =
+ Σ s ꞉ is-set A , satisfies-distributive-lattice-laws₀ s d holds
 
 \end{code}
+
+Added on 2024-06-01.
+
+\begin{code}
+
+satisfying-distributive-lattice-laws-is-prop
+ : {A : 𝓤  ̇}
+ → (d : Distributive-Lattice-Data A)
+ → is-prop (satisfies-distributive-lattice-laws d)
+satisfying-distributive-lattice-laws-is-prop d =
+ Σ-is-prop
+  (being-set-is-prop fe)
+  (λ s → holds-is-prop (satisfies-distributive-lattice-laws₀ s d))
+
+\end{code}
+
+End of addition.
 
 \begin{code}
 
