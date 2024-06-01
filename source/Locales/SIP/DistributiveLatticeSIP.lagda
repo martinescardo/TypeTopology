@@ -328,3 +328,96 @@ distributive-lattice-sns-data {𝓤} = ι , ρ , θ
            p
 
 \end{code}
+
+We abbreviate this to
+
+\begin{code}
+
+private
+ snsᵈ = distributive-lattice-sns-data
+
+\end{code}
+
+The notion of isomorphism given by `snsᵈ` is trivially equivalent to our type
+`Isomorphismᵈ₀`.
+
+\begin{code}
+
+ open HomomorphicEquivalences
+
+ isomorphism₀-equivalent-to-sns-isomorphism
+  : (K L : Distributive-Lattice₀ 𝓤)
+  → let
+     Kᵣ = to-distributive-lattice 𝓤 K
+     Lᵣ = to-distributive-lattice 𝓤 L
+    in
+     (K ≃[ snsᵈ ] L) ≃ (Isomorphism₀ Kᵣ Lᵣ)
+ isomorphism₀-equivalent-to-sns-isomorphism {𝓤} K L = 𝔰 , qinvs-are-equivs 𝔰 †
+  where
+   Kᵣ = to-distributive-lattice 𝓤 K
+   Lᵣ = to-distributive-lattice 𝓤 L
+
+   𝔰 : K ≃[ snsᵈ ] L → Isomorphism₀ Kᵣ Lᵣ
+   𝔰 (f , (e , φ)) = (f , e) , φ
+
+   𝔯 : Isomorphism₀ Kᵣ Lᵣ → K ≃[ snsᵈ ] L
+   𝔯 ((f , e) , φ) = f , (e , φ)
+
+   † : qinv 𝔰
+   † = 𝔯 , (λ _ → refl) , (λ _ → refl)
+
+\end{code}
+
+\begin{code}
+
+characterization-of-distributive-lattice₀-＝ : (K L : Distributive-Lattice₀ 𝓤)
+                                             → (K ＝ L) ≃ (K ≃[ snsᵈ ] L)
+characterization-of-distributive-lattice₀-＝ {𝓤} K L =
+ characterization-of-＝ (ua 𝓤) snsᵈ K L
+
+\end{code}
+
+\begin{code}
+
+characterization-of-distributive-lattice-＝ : (K L : DistributiveLattice 𝓤)
+                                            → (K ＝ L) ≃ (K ≅d≅ L)
+characterization-of-distributive-lattice-＝ {𝓤} K L =
+ let
+  K₀ = to-distributive-lattice₀ 𝓤 K
+  L₀ = to-distributive-lattice₀ 𝓤 L
+
+  Ⅱ = characterization-of-distributive-lattice₀-＝ K₀ L₀
+  Ⅲ = isomorphism₀-equivalent-to-sns-isomorphism K₀ L₀
+  Ⅳ = isomorphismᵈᵣ-is-equivalent-to-isomorphism₀ K L
+
+  𝔰 : K ＝ L → K₀ ＝ L₀
+  𝔰 = λ { refl → refl }
+
+  𝔯 : K₀ ＝ L₀ → K ＝ L
+  𝔯 = λ { refl → refl }
+
+  † : (𝔯 ∘ 𝔰) ∼ id
+  † = (λ { refl → refl })
+
+  ‡ : (𝔰 ∘ 𝔯) ∼ id
+  ‡ = (λ { refl → refl })
+
+  goal : (K ＝ L) ≃ (K₀ ＝ L₀)
+  goal = 𝔰 , qinvs-are-equivs 𝔰 (𝔯 , † , ‡)
+ in
+  (K ＝ L)           ≃⟨ goal ⟩
+  (K₀ ＝ L₀)         ≃⟨ Ⅱ ⟩
+  (K₀ ≃[ snsᵈ ] L₀)  ≃⟨ Ⅲ ⟩
+  (Isomorphism₀ K L) ≃⟨ Ⅳ ⟩
+  (K ≅d≅ L)          ■
+
+\end{code}
+
+\begin{code}
+
+isomorphic-distributive-lattices-are-equal
+ : (K L : DistributiveLattice 𝓤) → K ≅d≅ L → K ＝ L
+isomorphic-distributive-lattices-are-equal K L =
+ ⌜ ≃-sym (characterization-of-distributive-lattice-＝ K L) ⌝
+
+\end{code}
