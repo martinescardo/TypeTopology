@@ -445,3 +445,63 @@ The actual proof that these form an equivalence is trivial.
           (λ _ → refl)
 
 \end{code}
+
+Added on 2024-06-01.
+
+We define the identity homomorphism on a distributive lattice.
+
+The identity function preserves the bottom element.
+
+\begin{code}
+
+id-preserves-bottom : (L : DistributiveLattice 𝓤) → preserves-𝟎 L L id holds
+id-preserves-bottom _ = refl
+
+\end{code}
+
+The identity function preserves the top element definitionally.
+
+\begin{code}
+
+id-preserves-top : (L : DistributiveLattice 𝓤) → preserves-𝟏 L L id holds
+id-preserves-top _ = refl
+
+\end{code}
+
+The identity function preserves the meets definitionally.
+
+\begin{code}
+
+id-preserves-meets : (L : DistributiveLattice 𝓤) → preserves-∧ L L id holds
+id-preserves-meets _ _ _ = refl
+
+\end{code}
+
+The identity function preserves the joins definitionally.
+
+\begin{code}
+
+id-preserves-joins : (L : DistributiveLattice 𝓤) → preserves-∨ L L id holds
+id-preserves-joins _ _ _ = refl
+
+\end{code}
+
+\begin{code}
+
+id-is-homomorphism : (L : DistributiveLattice 𝓤) → is-homomorphismᵈ L L id holds
+id-is-homomorphism L = id-preserves-top L
+                     , id-preserves-meets L
+                     , id-preserves-bottom L
+                     , id-preserves-joins L
+
+\end{code}
+
+We package up the identity function together with the proof that it is a
+homomorphism and denote it `𝔦𝔡`.
+
+\begin{code}
+
+𝔦𝔡 : (L : DistributiveLattice 𝓤) → L ─d→ L
+𝔦𝔡 L = record { h = id ; h-is-homomorphism = id-is-homomorphism L }
+
+\end{code}
