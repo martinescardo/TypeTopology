@@ -1,4 +1,5 @@
 Tom de Jong, 31 May 2024.
+(Following a suggestion by Martín Escardó.)
 
 We consider the large ordinal of small ordinals as a locally small algebraic
 dcpo which does not have a small basis (even impredicatively).
@@ -57,6 +58,15 @@ open import Ordinals.Underlying
 
 open suprema pt sr
 
+\end{code}
+
+The ordinals in a given universe 𝓤 form a dcpo whose carrier lives in the
+successor universe 𝓤 ⁺. The ordinal relation lives in 𝓤, and so the dcpo of
+ordinals is large, but locally small. It has suprema for all families of
+ordinals indexed by types in 𝓤.
+
+\begin{code}
+
 Ordinals-DCPO : DCPO {𝓤 ⁺} {𝓤}
 Ordinals-DCPO = Ordinal 𝓤 , _⊴_ ,
                 (underlying-type-is-set fe' (OO 𝓤) ,
@@ -72,14 +82,24 @@ Ordinals-DCPO-is-sup-complete =
 
 open sup-complete-dcpo Ordinals-DCPO Ordinals-DCPO-is-sup-complete
 
+\end{code}
+
+The dcpo of ordinals is algebraic. This follows from three facts:
+(1) Every ordinal α is equal to the supremum of the successors of its initial
+    segments, i.e. α = sup (λ a → (α ↓ a) +ₒ 𝟙ₒ)
+(2) Every successor ordinal, i.e. every ordinal of the form β +ₒ 𝟙ₒ is compact.
+(3) The family in (1) can be "directified" by taking finite joins which
+    preserves compactness.
+
+\begin{code}
+
 successor-ordinals-are-compact : (α : Ordinal 𝓤)
                                → is-compact Ordinals-DCPO (α +ₒ 𝟙ₒ)
 successor-ordinals-are-compact α I β δ l =
  ∥∥-functor (λ (i , b , eq₂) → ⦅3⦆ (i , b , (eq₁ ∙ eq₂))) ⦅2⦆
   where
    ⦅1⦆ : Σ s ꞉ ⟨ sup β ⟩ , α ＝ sup β ↓ s
-   ⦅1⦆ = ⊴-gives-≼ (α +ₒ 𝟙ₒ) (sup β) l α
-         (inr ⋆ , ((successor-lemma-right α) ⁻¹))
+   ⦅1⦆ = ⊴-gives-≼ (α +ₒ 𝟙ₒ) (sup β) l α (successor-increasing α)
    s : ⟨ sup β ⟩
    s = pr₁ ⦅1⦆
    eq₁ : α ＝ sup β ↓ s
@@ -121,5 +141,28 @@ Ordinals-DCPO-is-algebraic' =
 
 Ordinals-DCPO-is-algebraic : is-algebraic-dcpo Ordinals-DCPO
 Ordinals-DCPO-is-algebraic = ∣ Ordinals-DCPO-is-algebraic' ∣
+
+\end{code}
+
+Unlike many other examples, such as the dpcos in the Scott model of PCF, or
+Scott's D∞, the dpco of ordinals, while algebraic, does not have a small
+(compact) basis. If it did, we could take the join of all the basis elements to
+obtain a greatest ordinal, which does not exist.
+
+\begin{code}
+
+Ordinals-DCPO-has-no-small-basis : ¬ (has-unspecified-small-basis Ordinals-DCPO)
+Ordinals-DCPO-has-no-small-basis h =
+ no-greatest-ordinal
+  (greatest-element-if-sup-complete-with-small-basis
+    Ordinals-DCPO
+    Ordinals-DCPO-is-sup-complete
+    h)
+
+Ordinals-DCPO-has-no-small-compact-basis :
+ ¬ (has-unspecified-small-compact-basis Ordinals-DCPO)
+Ordinals-DCPO-has-no-small-compact-basis h =
+ Ordinals-DCPO-has-no-small-basis
+  (∥∥-functor (λ (B , β , scb) → B , β , compact-basis-is-basis _ β scb) h)
 
 \end{code}
