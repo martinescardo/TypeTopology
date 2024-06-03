@@ -662,7 +662,7 @@ the compact approximants of `𝓍`.
 
 \subsection{The equivalence proof}
 
-The fact that `sharp` is a retraction `𝓅𝓉[_]` follows easily from the lemma
+The fact that `sharp` is a retraction of `𝓅𝓉[_]` follows easily from the lemma
 `sharp-equal-to-join-of-covering-family` above.
 
 \begin{code}
