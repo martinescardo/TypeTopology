@@ -355,11 +355,11 @@ down regardless as it is a potentially useful observation.
  admits-decidable-membership-in-scott-clopens x =
   Ɐ 𝒦 ꞉ ⟨ 𝒪 Scott⦅𝓓⦆ ⟩ , is-clopen (𝒪 Scott⦅𝓓⦆) 𝒦 ⇒ is-decidableₚ (x ∈ₛ 𝒦)
 
- admits-decidable-membership-in-scott-clopens-implies-is-sharp
+ sharp-implies-admits-decidable-membership-in-scott-clopens
   : (x : ⟨ 𝓓 ⟩∙)
   → is-sharp x holds
   → admits-decidable-membership-in-scott-clopens x holds
- admits-decidable-membership-in-scott-clopens-implies-is-sharp x 𝓈𝒽 K χ =
+ sharp-implies-admits-decidable-membership-in-scott-clopens x 𝓈𝒽 K χ =
   ψ K κ
    where
     ψ : admits-decidable-membership-in-compact-scott-opens x holds
