@@ -745,5 +745,12 @@ sharp elements and the spectral points.
 
 \end{code}
 
+\section{Acknowledgements}
+
+I am grateful to Tom de Jong for his comments on a write-up of the proof
+formalized in this module.
+
+\section{References}
+
 [1]: de Jong, Tom. "Apartness, sharp elements, and the Scott topology of
      domains." Mathematical Structures in Computer Science 33.7 (2023): 573-604.
