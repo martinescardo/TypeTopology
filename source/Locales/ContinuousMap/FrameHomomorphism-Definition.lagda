@@ -208,10 +208,6 @@ For convenience, we also define some direct projections on the Σ-based type.
   in
    h-preserves-joins
 
-\end{code}
-
-\begin{code}
-
  frame-homomorphisms-preserve-all-joins′
   : (h : _─f→_)
   → (S : Fam 𝓦 ⟨ F ⟩)
