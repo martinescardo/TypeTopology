@@ -285,8 +285,7 @@ membership in compact Scott opens.
 
 \end{code}
 
-Every sharp element satisfies this property of admitting decidable membership
-in compact Scott opens.
+Every sharp element admits decidable membership in compact Scott opens.
 
 \begin{code}
 
@@ -347,8 +346,8 @@ Because clopens are compact in compact frames, we can also prove that admitting
 decidable membership in Scott clopens is a necessary condition for an element of
 the domain to be sharp.
 
-We do not need this result in the present development, but we note it down as it
-is a potentially useful observation.
+We do not need this result for the main result in this module, but we note it
+down regardless as it is a potentially useful observation.
 
 \begin{code}
 
@@ -379,6 +378,8 @@ What can be said about the converse of this implication? In other words, what is
 the meaning of the set of elements that admit decidable membership in Scott
 clopens. I do not know the answer yet.
 
+TODO: think more about this.
+
 \section{The equivalence}
 
 We now start constructing an equivalence between the type
@@ -393,9 +394,9 @@ We now construct these maps in this order.
 
 \subsection{Definition of the map `𝓅𝓉`}
 
-We follow our usual convention denoting by the subscript `₀` the preliminary
-version of the construction of interest, which is then packaged up with a proof
-that it satisfies some property.
+We follow our usual convention of distinguishing the preliminary version of the
+construction of interest using the subscript `₀`, which we then package up with
+the proof that it satisfies some property.
 
 \begin{code}
 
@@ -486,8 +487,7 @@ every Scott open `𝔘`.
 
 \end{code}
 
-As an immediate special case of this lemma, we obtain the following which we
-record explicitly.
+As an immediate special case of this lemma, we obtain the following.
 
 \begin{code}
 
@@ -504,14 +504,16 @@ record explicitly.
 
 \end{code}
 
-In fact, it can be generalized to finite joins of principal filters on compact
-elements i.e. compact Scott opens.
+The converse of this special case also holds. In fact, the converse holds
+for _all_ compact Scott opens.
 
 \begin{code}
 
- in-point-implies-below-sharp⋆ : (ks : List (index B𝓓)) (ℱ@(F , _) : Point Scott⦅𝓓⦆)
-                              → (F (𝜸 ks) ⇒ sharp₀ ℱ ∈ₛ 𝜸 ks) holds
- in-point-implies-below-sharp⋆ [] ℱ@(F , _) p = 𝟘-elim Ⅰ
+ in-point-implies-contains-sharp⋆
+  : (ks : List (index B𝓓))
+  → (ℱ@(F , _) : Point Scott⦅𝓓⦆)
+  → (F (𝜸 ks) ⇒ sharp₀ ℱ ∈ₛ 𝜸 ks) holds
+ in-point-implies-contains-sharp⋆ [] ℱ@(F , _) p = 𝟘-elim Ⅰ
   where
    φ : F 𝟎[ 𝒪 Scott⦅𝓓⦆ ] holds
    φ = transport (λ - → (F -) holds) (𝜸-equal-to-𝜸₁ []) p
@@ -522,7 +524,7 @@ elements i.e. compact Scott opens.
    Ⅰ : ⊥ₚ holds
    Ⅰ = transport (λ - → - holds) (𝟎-is-⊥ pe ⁻¹) Ⅱ
 
- in-point-implies-below-sharp⋆ (k ∷ ks) ℱ@(F , _) p =
+ in-point-implies-contains-sharp⋆ (k ∷ ks) ℱ@(F , _) p =
   ∥∥-rec (holds-is-prop ((sharp₀ ℱ ∈ₛ 𝜸 (k ∷ ks)))) ‡ (transport _holds ♠ p)
    where
     ♠ : F (𝜸 (k ∷ ks)) ＝ F ↑ᵏ[ k ] ∨ F (𝜸 ks)
@@ -539,7 +541,7 @@ elements i.e. compact Scott opens.
 
     ‡ : F ↑ᵏ[ k ] holds + F (𝜸 ks) holds → (sharp₀ ℱ ∈ₛ 𝜸 (k ∷ ks)) holds
     ‡ (inl p) = ∣ inl (∐-is-upperbound 𝓓 (𝒦-in-point-is-directed ℱ) (k , p)) ∣
-    ‡ (inr q) = ∣ inr (in-point-implies-below-sharp⋆ ks ℱ q) ∣
+    ‡ (inr q) = ∣ inr (in-point-implies-contains-sharp⋆ ks ℱ q) ∣
 
 \end{code}
 
@@ -549,12 +551,12 @@ principal filters on compact opens.
 
 \begin{code}
 
- in-point-implies-below-sharp
+ in-point-implies-contains-sharp
   : (ℱ@(F , _) : Point Scott⦅𝓓⦆)
   → (K : ⟨ σ⦅𝓓⦆ ⟩)
   → (𝕜 : is-compact-open Scott⦅𝓓⦆ K holds)
   → (F K ⇒ sharp₀ ℱ ∈ₛ K) holds
- in-point-implies-below-sharp ℱ@(F , ψ) K 𝕜 χ =
+ in-point-implies-contains-sharp ℱ@(F , ψ) K 𝕜 χ =
   ∥∥-rec (holds-is-prop (sharp₀ ℱ ∈ₛ K)) † γ
    where
     ℬ↑ : directed-basisᴰ (𝒪 Scott⦅𝓓⦆)
@@ -570,7 +572,7 @@ principal filters on compact opens.
       μ = transport (λ - → F - holds) (p ⁻¹) χ
 
       ‡ : (sharp₀ (F , ψ) ∈ₛ βσ i) holds
-      ‡ = in-point-implies-below-sharp⋆ i ℱ μ
+      ‡ = in-point-implies-contains-sharp⋆ i ℱ μ
 
 \end{code}
 
@@ -593,7 +595,7 @@ We now prove that the map `sharp₀` always gives sharp elements.
    κ = principal-filter-is-compact₀ c 𝕜
 
    case₁ : F ↑ˢ[ c , 𝕜 ] holds → is-decidableₚ (c ⊑ sharp₀ ℱ) holds
-   case₁ = inl ∘ in-point-implies-below-sharp ℱ ↑ˢ[ (c , 𝕜) ] κ
+   case₁ = inl ∘ in-point-implies-contains-sharp ℱ ↑ˢ[ (c , 𝕜) ] κ
 
    case₂ : ¬ (F ↑ˢ[ c , 𝕜 ] holds) → is-decidableₚ (c ⊑ sharp₀ ℱ) holds
    case₂ χ = inr (χ ∘ below-sharp-implies-in-point ℱ c 𝕜)
@@ -630,7 +632,7 @@ the compact approximants of `𝓍`.
   antisymmetry 𝓓 (∐ 𝓓 (↓ᴮₛ-is-directed x)) (⋁ 𝒦-in-point↑ pt[ (x , 𝕤) ]) † ‡
    where
     γ : ((i , _) : ↓ᴮₛ x) → (sharp₀ pt[ x , 𝕤 ] ∈ₛ ↑ˢ[ βₖ i ]) holds
-    γ (i , q) = in-point-implies-below-sharp
+    γ (i , q) = in-point-implies-contains-sharp
                  pt[ x , 𝕤 ]
                  ↑ˢ[ βₖ i ]
                  (principal-filter-is-compact i)
@@ -701,7 +703,7 @@ The map `𝓅𝓉[_]` is a retraction of the map `sharp`.
       ‡₁ k = ∣ k , sharp-in-scott-open-implies-in-point (S [ k ]) ℱ₀ ∣
 
       ‡₂ : cofinal-in (𝟎-𝔽𝕣𝕞 pe) ⁅ F 𝔘 ∣ 𝔘 ε S ⁆ ⁅ sharp₀ ℱ₀ ∈ₛ 𝔘 ∣ 𝔘 ε S ⁆ holds
-      ‡₂ (ks , p) = ∣ (ks , p) , in-point-implies-below-sharp⋆ ks ℱ₀ ∣
+      ‡₂ (ks , p) = ∣ (ks , p) , in-point-implies-contains-sharp⋆ ks ℱ₀ ∣
 
       ‡ : sharp₀ ℱ₀ ∈ₛ (⋁[ 𝒪 Scott⦅𝓓⦆ ] S) ＝ F (⋁[ 𝒪 Scott⦅𝓓⦆ ] S)
       ‡ = sharp₀ ℱ₀ ∈ₛ (⋁[ 𝒪 Scott⦅𝓓⦆ ] S)               ＝⟨ refl ⟩
