@@ -675,7 +675,7 @@ The fact that `sharp` is a retraction `𝓅𝓉[_]` follows easily from the lemm
 
 \end{code}
 
-It is also the case that `𝓅𝓉[_]` is a retraction of `sharp`.
+The map `𝓅𝓉[_]` is a retraction of the map `sharp`.
 
 \begin{code}
 
