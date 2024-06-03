@@ -408,13 +408,8 @@ that it satisfies some property.
  pt[_] 𝓍@(x , 𝕤) = pt₀[ x ] , †
   where
    ‡ : preserves-joins (𝒪 Scott⦅𝓓⦆) (𝟎-𝔽𝕣𝕞 pe) pt₀[ x ] holds
-   ‡ S = (⋁[ 𝟎-𝔽𝕣𝕞 pe ]-upper ⁅ pt₀[ x ] y ∣ y ε S ⁆) , goal
-    where
-     open Joins _⇒_
-
-     goal : ((u , _) : upper-bound ⁅ pt₀[ x ] y ∣ y ε S ⁆)
-          → (pt₀[ x ] (⋁[ 𝒪 Scott⦅𝓓⦆ ] S) ⇒ u) holds
-     goal (u , a) p = ⋁[ 𝟎-𝔽𝕣𝕞 pe ]-least ⁅ pt₀[ x ] y ∣ y ε S ⁆ (u , a) p
+   ‡ S = ⋁[ 𝟎-𝔽𝕣𝕞 pe ]-upper ⁅ pt₀[ x ] y ∣ y ε S ⁆
+       , ⋁[ 𝟎-𝔽𝕣𝕞 pe ]-least ⁅ pt₀[ x ] y ∣ y ε S ⁆
 
    † : is-a-frame-homomorphism (𝒪 Scott⦅𝓓⦆) (𝟎-𝔽𝕣𝕞 pe) pt₀[ x ] holds
    † = refl , (λ _ _ → refl) , ‡
