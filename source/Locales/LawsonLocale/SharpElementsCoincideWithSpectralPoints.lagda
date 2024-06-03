@@ -752,5 +752,10 @@ formalized in this module.
 
 \section{References}
 
-[1]: de Jong, Tom. "Apartness, sharp elements, and the Scott topology of
-     domains." Mathematical Structures in Computer Science 33.7 (2023): 573-604.
+- [1]: Tom de Jong. *Apartness, sharp elements, and the Scott topology of
+  domains*.
+
+  Mathematical Structures in Computer Science, vol. 33, no. 7,
+  pp 573-604, August 2023.
+
+  https://doi.org/10.1017/S0960129523000282
