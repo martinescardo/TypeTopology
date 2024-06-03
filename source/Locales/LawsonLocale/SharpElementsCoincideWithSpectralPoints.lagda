@@ -540,7 +540,9 @@ Scott opens.
 
 \end{code}
 
-The converse of this special case is true as well.
+We can reformulate this more concisely to say the same thing for any compact
+Scott open `K` since a Scott open is compact iff it is a finite join of
+principal filters on compact opens.
 
 \begin{code}
 
@@ -569,7 +571,7 @@ The converse of this special case is true as well.
 
 \end{code}
 
-The map `sharp₀` always gives sharp elements.
+We now prove that the map `sharp₀` always gives sharp elements.
 
 \begin{code}
 
@@ -608,7 +610,7 @@ that it always gives sharp elements.
 
 \end{code}
 
-\subsection{Some lemmas}
+\subsection{A useful lemma}
 
 We now prove some useful lemmas that we use in showing that these two maps
 form an equivalence.
@@ -672,6 +674,8 @@ The fact that `sharp` is a retraction `𝓅𝓉[_]` follows easily from the lemm
          Ⅱ = ↓ᴮₛ-∐-＝ ⦅ 𝓍 ⦆
 
 \end{code}
+
+It is also the case that `𝓅𝓉[_]` is a retraction of `sharp`.
 
 \begin{code}
 
