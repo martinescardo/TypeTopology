@@ -756,6 +756,6 @@ formalized in this module.
   domains*.
 
   Mathematical Structures in Computer Science, vol. 33, no. 7,
-  pp 573-604, August 2023.
+  pp 573-604, August 2023. doi:10.1017/S0960129523000282
 
   https://doi.org/10.1017/S0960129523000282
