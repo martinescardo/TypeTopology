@@ -6,7 +6,7 @@ dcpo which does not have a small basis (even impredicatively).
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --lossy-unification #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 
@@ -136,8 +136,12 @@ Ordinals-DCPO-is-algebraic' =
       II = (supremum-of-successors-of-initial-segments pt sr α) ⁻¹
       I = sups-are-unique _⊴_
            (pr₁ (axioms-of-dcpo Ordinals-DCPO)) (family α)
-           (directify-sup' (family α) _ (∐-is-sup Ordinals-DCPO _))
+           (directify-sup' (family α)
+             (∐ Ordinals-DCPO δ) (∐-is-sup Ordinals-DCPO δ))
            (sup-is-least-upper-bound (family α))
+       where
+        δ : is-Directed Ordinals-DCPO (directify (family α))
+        δ = directify-is-directed (family α)
 
 Ordinals-DCPO-is-algebraic : is-algebraic-dcpo Ordinals-DCPO
 Ordinals-DCPO-is-algebraic = ∣ Ordinals-DCPO-is-algebraic' ∣
