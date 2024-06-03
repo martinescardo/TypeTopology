@@ -17,6 +17,7 @@ The proof is implemented in the function called `X-is-homeomorphic-to-spec-𝒦�
 open import MLTT.List hiding ([_])
 open import MLTT.Spartan hiding (J; rhs)
 open import UF.Base
+open import UF.Embeddings
 open import UF.FunExt
 open import UF.PropTrunc
 open import UF.Size
@@ -735,9 +736,9 @@ module OtherDirection (L : DistributiveLattice 𝓤) where
  open 𝒦-Duality
  open 𝒦-Lattice
  open DefnOfFrameOfIdeal
-
- spec-L : Locale (𝓤 ⁺) 𝓤 𝓤
- spec-L = spectrum L
+ open IdealProperties
+ open Spectrality L
+ open PrincipalIdeals L
 
  𝕤 : is-spectral-with-small-basis ua spec-L holds
  𝕤 = Spectrality.spec-L-is-spectral L , Spectrality.spec-L-has-small-𝒦 L
@@ -745,8 +746,52 @@ module OtherDirection (L : DistributiveLattice 𝓤) where
  𝒦⁻-spec-L : DistributiveLattice 𝓤
  𝒦⁻-spec-L = 𝒦-X⁻ (spectrum L) 𝕤
 
+ to-lattice : 𝒦⁻-spec-L ─d→ L
+ to-lattice = {!!}
+
+ to-spectrum₀ : ∣ L ∣ᵈ → ∣ 𝒦⁻-spec-L ∣ᵈ
+ to-spectrum₀ x = s (spectrum L) 𝕤 (↓ x , principal-ideal-is-compact x)
+
+ ↓-is-embedding : is-embedding principal-ideal
+ ↓-is-embedding I (x , p) (y , q) =
+  to-subtype-＝
+   (λ _ → carrier-of-[ poset-of-ideals L  ]-is-set )
+   (≤-is-antisymmetric (poset-ofᵈ L) † ‡)
+    where
+     φ : ↓ x ＝ ↓ y
+     φ = ↓ x ＝⟨ p ⟩ I ＝⟨ q ⁻¹ ⟩ ↓ y ∎
+
+     β : (↓ x  ≤[ poset-of-ideals L ] ↓ y) holds
+     β = reflexivity+ (poset-of-ideals L) φ
+
+     γ : (↓ y  ≤[ poset-of-ideals L ] ↓ x) holds
+     γ = reflexivity+ (poset-of-ideals L) (φ ⁻¹)
+
+     † : rel-syntax (poset-ofᵈ L) x y holds
+     † = β x (≤-is-reflexive (poset-ofᵈ L) x)
+
+     ‡ : rel-syntax (poset-ofᵈ L) y x holds
+     ‡ = γ y (≤-is-reflexive (poset-ofᵈ L) y)
+
+ to-lattice₀ : ∣ 𝒦⁻-spec-L ∣ᵈ → ∣ L ∣ᵈ
+ to-lattice₀ K = {!!}
+  where
+   foo : ∃ x ꞉ ∣ L ∣ᵈ , {!!}
+   foo = compact-opens-are-basic
+          (spectrum L)
+          (ℬ-spec , ℬ-spec-is-directed-basis) {!K!} {!!}
+
+
+ to-spectrum : L ─d→ 𝒦⁻-spec-L
+ to-spectrum = {!!}
+
  spec-isomorphism : 𝒦⁻-spec-L ≅d≅ L
- spec-isomorphism = {!!}
+ spec-isomorphism =
+  record
+   { 𝓈           = to-lattice
+   ; 𝓇           = to-spectrum
+   ; r-cancels-s = {!!}
+   ; s-cancels-r = {!!} }
 
 \end{code}
 
