@@ -9,7 +9,7 @@ This module contains the proof of equivalence between the sharp elements of a
 Scott domain and the “spectral points” of its Scott locale. This equivalence
 was conjectured by Martín Escardó and proved by Ayberk Tosun on 2024-03-15.
 
-The formalization of the proof was completed on 2024-05-28
+The formalization of the proof was completed on 2024-05-28.
 
 \begin{code}[hide]
 
@@ -124,9 +124,9 @@ module Sharp-Element-Spectral-Point-Equivalence
 
 \end{code}
 
-The following is a bit of preparation for the development of the proofs. We open
-up relevant proofs and define abbreviations for them for the sake of readability
-and self-containment.
+The following is a bit of preparation for the proofs. We open up relevant proofs
+and define abbreviations for them for the sake of readability and
+self-containment.
 
 \begin{code}
 
@@ -144,13 +144,13 @@ We denote by `Scott⦅𝓓⦆` the Scott locale of domain `𝓓`.
 \end{code}
 
 For the frame of opens of the Scott locale `Scott⦅𝓓⦆`, we reserve the notation
-`σ[𝓓]`. This notation differs from other uses in TypeTopology, but it should be
+`σ⦅𝓓⦆`. This notation differs from other uses in TypeTopology, but it should be
 the standard one and the notation elsewhere should be updated to use this one.
 
 \begin{code}
 
- σ[𝓓] : Frame (𝓤 ⁺) 𝓤 𝓤
- σ[𝓓] = 𝒪 Scott⦅𝓓⦆
+ σ⦅𝓓⦆ : Frame (𝓤 ⁺) 𝓤 𝓤
+ σ⦅𝓓⦆ = 𝒪 Scott⦅𝓓⦆
 
  open SpectralScottLocaleConstruction  𝓓 hl hscb dc bc pe hiding (scb; σᴰ)
 
@@ -160,6 +160,12 @@ the standard one and the notation elsewhere should be updated to use this one.
 
  σᴰ : spectralᴰ Scott⦅𝓓⦆
  σᴰ = scott-locale-spectralᴰ
+
+\end{code}
+
+The family `basis` given below is the basis of the Scott locale of domain `𝓓`.
+
+\begin{code}
 
  basis : Fam 𝓤 ⟨ 𝒪 Scott⦅𝓓⦆ ⟩
  basis = basisₛ Scott⦅𝓓⦆ σᴰ
@@ -187,7 +193,8 @@ it is a proposition (called `prop-valuedness` in the domain theory development).
 
 \section{Definition of sharpness}
 
-We now define what it means for an element to be _sharp_.
+We now define what it means for an element to be _sharp_ as defined by de Jong
+[1].
 
 \begin{code}
 
@@ -249,10 +256,6 @@ a sharp element `𝓍` by `⦅ 𝓍 ⦆`.
  ⦅_⦆ : ♯𝓓 → ⟨ 𝓓 ⟩∙
  ⦅_⦆ (x , _) = x
 
-\end{code}
-
-\begin{code}
-
  abstract
   to-sharp-＝ : (𝓍 𝓎 : ♯𝓓) → pr₁ 𝓍 ＝ pr₁ 𝓎 → 𝓍 ＝ 𝓎
   to-sharp-＝ 𝓍 𝓎 = to-subtype-＝ (holds-is-prop ∘ is-sharp)
@@ -278,10 +281,6 @@ membership in compact Scott opens.
  admits-decidable-membership-in-compact-scott-opens : ⟨ 𝓓 ⟩∙ → Ω (𝓤 ⁺)
  admits-decidable-membership-in-compact-scott-opens x =
   Ɐ 𝒦 ꞉ ⟨ 𝒪 Scott⦅𝓓⦆ ⟩ , is-compact-open Scott⦅𝓓⦆ 𝒦 ⇒ is-decidableₚ (x ∈ₛ 𝒦)
-
- admits-decidable-membership-in-scott-clopens : ⟨ 𝓓 ⟩∙ → Ω (𝓤 ⁺)
- admits-decidable-membership-in-scott-clopens x =
-  Ɐ 𝒦 ꞉ ⟨ 𝒪 Scott⦅𝓓⦆ ⟩ , is-clopen (𝒪 Scott⦅𝓓⦆) 𝒦 ⇒ is-decidableₚ (x ∈ₛ 𝒦)
 
 \end{code}
 
@@ -341,12 +340,20 @@ compact Scott opens are _exactly_ the sharp elements.
 
 \end{code}
 
-\section{A small digression}
+\subsection{A corollary of the characterization}
 
-Because clopens are compact in compact frames, we can also give as a necessary
-condition that sharp elements admit decidable membership in Scott clopens.
+Because clopens are compact in compact frames, we can also prove that admitting
+decidable membership in Scott clopens is a necessary condition for an element of
+the domain to be sharp.
+
+We do not need this result in the present development, but we note it down as it
+is a potentially useful observation.
 
 \begin{code}
+
+ admits-decidable-membership-in-scott-clopens : ⟨ 𝓓 ⟩∙ → Ω (𝓤 ⁺)
+ admits-decidable-membership-in-scott-clopens x =
+  Ɐ 𝒦 ꞉ ⟨ 𝒪 Scott⦅𝓓⦆ ⟩ , is-clopen (𝒪 Scott⦅𝓓⦆) 𝒦 ⇒ is-decidableₚ (x ∈ₛ 𝒦)
 
  admits-decidable-membership-in-scott-clopens-implies-is-sharp
   : (x : ⟨ 𝓓 ⟩∙)
@@ -371,12 +378,10 @@ What can be said about the converse of this implication? In other words, what is
 the meaning of the set of elements of the domain that admit decidable membership
 in Scott clopens. I do not know the answer yet.
 
-\section{Some useful lemmas}
-
 \section{The equivalence}
 
-We now start constructing an equivalence between the type `Spectral-Point Scott⦅𝓓⦆`
-and the type `♯𝓓`.
+We now start constructing an equivalence between the type
+`Spectral-Point Scott⦅𝓓⦆` and the type `♯𝓓`.
 
 This equivalence consists of the maps:
 
@@ -388,15 +393,16 @@ We now construct these maps in this order.
 \subsection{Definition of the map `𝓅𝓉`}
 
 We follow our usual convention denoting by the subscript `₀` the preliminary
-version of the construction of interest, which is then packaged up with a proof.
+version of the construction of interest, which is then packaged up with a proof
+that it satisfies some property.
 
 \begin{code}
 
  pt₀[_] : ⟨ 𝓓 ⟩∙ → ⟨ 𝒪 Scott⦅𝓓⦆ ⟩ → Ω 𝓤
  pt₀[_] x U = x ∈ₛ U
 
- open FrameHomomorphisms
  open FrameHomomorphismProperties (𝒪 Scott⦅𝓓⦆) (𝟎-𝔽𝕣𝕞 pe)
+ open FrameHomomorphisms
 
  pt[_] : ♯𝓓 → Point Scott⦅𝓓⦆
  pt[_] 𝓍@(x , 𝕤) = pt₀[ x ] , †
@@ -412,13 +418,6 @@ version of the construction of interest, which is then packaged up with a proof.
 
    † : is-a-frame-homomorphism (𝒪 Scott⦅𝓓⦆) (𝟎-𝔽𝕣𝕞 pe) pt₀[ x ] holds
    † = refl , (λ _ _ → refl) , ‡
-
-\end{code}
-
-For any sharp element `𝓍` and any compact Scott open `𝒦`, `𝓍 ∈ 𝒦` is a decidable
-proposition.
-
-\begin{code}
 
  open BottomLemma 𝓓 𝕒 hl
 
@@ -461,32 +460,54 @@ We now define the map `sharp` going in the opposite direction.
 
 \end{code}
 
-We prove the following lemma which says `c ⊑ sharp(ℱ)` if and only if `ℱ(↑c)`,
-for every compact element `c` of the domain `𝓓`.
+The following lemma says if `sharp(ℱ) ∈ 𝔘` then `U ∈ ℱ`.
 
 \begin{code}
 
- below-sharp-implies-in-point₁
+ open PropertiesAlgebraic 𝓓 𝕒 hiding (is-compactₚ)
+
+ sharp-in-scott-open-implies-in-point
+  : (𝔘 : ⟨ 𝒪 Scott⦅𝓓⦆ ⟩)
+  → (ℱ@(F , _) : Point Scott⦅𝓓⦆)
+  → (sharp₀ ℱ ∈ₛ 𝔘 ⇒ F 𝔘) holds
+ sharp-in-scott-open-implies-in-point 𝔘 ℱ@(F , 𝒽) = †
+  where
+   open 𝒪ₛᴿ (to-𝒪ₛᴿ 𝔘)
+
+   † : (sharp₀ ℱ ∈ₛ 𝔘 ⇒ F 𝔘) holds
+   † p = ∥∥-rec (holds-is-prop (F 𝔘)) †₁ γ
+    where
+     †₁ : Σ i ꞉ index (pr₁ (𝒦-in-point↑ ℱ)) , pred (pr₁ (𝒦-in-point↑ ℱ) [ i ]) holds
+       → F 𝔘 holds
+     †₁ ((a , b) , c) = frame-morphisms-are-monotonic F 𝒽 (↑ˢ[ βₖ a ] , 𝔘) q b
+      where
+       q : (↑ˢ[ βₖ a ] ≤[ poset-of (𝒪 Scott⦅𝓓⦆) ] 𝔘) holds
+       q x = pred-is-upwards-closed (B𝓓 [ a ]) (B𝓓 [ x ]) c
+
+     γ : ∥ Σ i ꞉ index (pr₁ (𝒦-in-point↑ ℱ)) , pred (pr₁ (𝒦-in-point↑ ℱ) [ i ]) holds ∥
+     γ = pred-is-inaccessible-by-dir-joins (𝒦-in-point↑ ℱ) p
+
+\end{code}
+
+As an immediate special case of this lemma, we obtain the following lemma
+which we record explicitly.
+
+\begin{code}
+
+ below-sharp-implies-in-point
   : (ℱ@(F , _) : Point Scott⦅𝓓⦆) (c : ⟨ 𝓓 ⟩∙) (𝕜 : is-compact 𝓓 c)
   → c ⊑⟨ 𝓓 ⟩ sharp₀ ℱ
   → F ↑ˢ[ c , 𝕜 ] holds
- below-sharp-implies-in-point₁ ℱ@(F , 𝒽) c 𝕜 p =
-  ∥∥-rec (holds-is-prop (F ↑ˢ[ c , 𝕜 ])) † γ
+ below-sharp-implies-in-point ℱ@(F , 𝒽) c 𝕜 =
+  sharp-in-scott-open-implies-in-point ↑ˢ[ 𝔠 ] ℱ
    where
     𝔠 = (c , 𝕜)
 
-    open 𝒪ₛᴿ (to-𝒪ₛᴿ ↑ˢ[ c , 𝕜 ])
+\end{code}
 
-    γ : ∃ (i , _) ꞉ (index (𝒦-in-point ℱ)) , c ⊑⟨ 𝓓 ⟩ (B𝓓 [ i ])
-    γ = pred-is-inaccessible-by-dir-joins (𝒦-in-point↑ ℱ) p
+The converse of this special case is true as well.
 
-    † : Σ (i , _) ꞉ (index (𝒦-in-point ℱ)) , c ⊑⟨ 𝓓 ⟩ (B𝓓 [ i ])
-      → F ↑ˢ[ 𝔠 ] holds
-    † ((i , p) , φ) =
-     frame-morphisms-are-monotonic F 𝒽 (↑ˢ[ βₖ i ] , ↑ˢ[ 𝔠 ]) ‡ p
-      where
-       ‡ : (↑ˢ[ βₖ i ] ≤[ poset-of (𝒪 Scott⦅𝓓⦆) ] ↑ˢ[ 𝔠 ]) holds
-       ‡ = principal-filter-is-antitone c (B𝓓 [ i ]) φ 𝕜 (basis-is-compact i)
+\begin{code}
 
  in-point-implies-below-sharp
   : (ℱ@(F , _) : Point Scott⦅𝓓⦆) (c : ⟨ 𝓓 ⟩∙) (𝕜 : is-compact 𝓓 c)
@@ -511,6 +532,44 @@ for every compact element `c` of the domain `𝓓`.
 
 \end{code}
 
+In fact, it can be generalized to finite joins of compact elements
+
+\begin{code}
+
+ in-point-implies-below-sharp⋆ : (ks : List (index B𝓓)) (ℱ@(F , _) : Point Scott⦅𝓓⦆)
+                              → (F (𝜸 ks) ⇒ sharp₀ ℱ ∈ₛ 𝜸 ks) holds
+ in-point-implies-below-sharp⋆ []       ℱ@(F , _) p = 𝟘-elim Ⅰ
+  where
+   φ : F 𝟎[ 𝒪 Scott⦅𝓓⦆ ] holds
+   φ = transport (λ - → (F -) holds) (𝜸-equal-to-𝜸₁ []) p
+
+   Ⅱ : 𝟎[ 𝟎-𝔽𝕣𝕞 pe ] holds
+   Ⅱ = transport _holds (frame-homomorphisms-preserve-bottom ℱ) φ
+
+   Ⅰ : ⊥ₚ holds
+   Ⅰ = transport (λ - → - holds) (𝟎-is-⊥ pe ⁻¹) Ⅱ
+
+ in-point-implies-below-sharp⋆ (k ∷ ks) ℱ@(F , _) p =
+  ∥∥-rec (holds-is-prop ((sharp₀ ℱ ∈ₛ 𝜸 (k ∷ ks)))) ‡ (transport _holds ♠ p)
+   where
+    ♠ : F (𝜸 (k ∷ ks)) ＝ F ↑ᵏ[ k ] ∨ F (𝜸 ks)
+    ♠ = F (𝜸 (k ∷ ks))                     ＝⟨ Ⅰ ⟩
+        F (𝜸₁ (k ∷ ks))                    ＝⟨ Ⅱ ⟩
+        F ↑ᵏ[ k ] ∨[ 𝟎-𝔽𝕣𝕞 pe ] F (𝜸₁ ks)  ＝⟨ Ⅲ ⟩
+        F ↑ᵏ[ k ] ∨[ 𝟎-𝔽𝕣𝕞 pe ] F (𝜸 ks)   ＝⟨ Ⅳ ⟩
+        F ↑ᵏ[ k ] ∨ F (𝜸 ks)               ∎
+         where
+          Ⅰ = ap F (𝜸-equal-to-𝜸₁ (k ∷ ks))
+          Ⅱ = frame-homomorphisms-preserve-binary-joins ℱ _ _
+          Ⅲ = ap (λ - → F ↑ᵏ[ k ] ∨[ 𝟎-𝔽𝕣𝕞 pe ] F -) (𝜸-equal-to-𝜸₁ ks ⁻¹)
+          Ⅳ = binary-join-is-disjunction pe (F ↑ᵏ[ k ]) (F (𝜸 ks))
+
+    ‡ : F ↑ᵏ[ k ] holds + F (𝜸 ks) holds → (sharp₀ ℱ ∈ₛ 𝜸 (k ∷ ks)) holds
+    ‡ (inl p) = ∣ inl (∐-is-upperbound 𝓓 (𝒦-in-point-is-directed ℱ) (k , p)) ∣
+    ‡ (inr q) = ∣ inr (in-point-implies-below-sharp⋆ ks ℱ q) ∣
+
+\end{code}
+
 The map `sharp₀` always gives sharp elements.
 
 \begin{code}
@@ -530,7 +589,7 @@ The map `sharp₀` always gives sharp elements.
    case₁ = inl ∘ in-point-implies-below-sharp ℱ c 𝕜
 
    case₂ : ¬ (F ↑ˢ[ c , 𝕜 ] holds) → is-decidableₚ (c ⊑ sharp₀ ℱ) holds
-   case₂ χ = inr (χ ∘ below-sharp-implies-in-point₁ ℱ c 𝕜)
+   case₂ χ = inr (χ ∘ below-sharp-implies-in-point ℱ c 𝕜)
 
 \end{code}
 
@@ -547,63 +606,56 @@ that it always gives sharp elements and denote it by `sharp`.
 
 \end{code}
 
-We now proceed to prove that the type of sharp elements is equivalent to the
-type of spectral points.
+\subsection{Some lemmas}
+
+We now prove some useful lemmas that we use in the equivalence proof.
+
+Given a sharp element `𝓍`, the element `sharp (pt 𝓍)` is exactly the join of
+the compact approximants of `𝓍`.
 
 \begin{code}
 
- abstract
-  lemma₁ : (x : ⟨ 𝓓 ⟩∙) (𝕤 : is-sharp x holds) (c : ⟨ 𝓓 ⟩∙)
-         → is-compact 𝓓 c
-         → c ⊑⟨ 𝓓 ⟩ x
-         → c ⊑⟨ 𝓓 ⟩ (⋁ 𝒦-in-point↑ pt[ (x , 𝕤) ])
-  lemma₁ x 𝕤 c κ p = ∥∥-rec (prop-valuedness 𝓓 c (sharp₀ pt[ x , 𝕤 ])) † γ
+ sharp-equal-to-join-of-covering-family
+  : (𝓍 : ♯𝓓)
+  → ∐ 𝓓 (↓ᴮₛ-is-directed ⦅ 𝓍 ⦆) ＝ sharp₀ pt[ 𝓍 ]
+ sharp-equal-to-join-of-covering-family (x , 𝕤) =
+  antisymmetry 𝓓 (∐ 𝓓 (↓ᴮₛ-is-directed x)) (⋁ 𝒦-in-point↑ pt[ (x , 𝕤) ]) † ‡
    where
-    † : Σ i ꞉ index B𝓓 , B𝓓 [ i ] ＝ c → (c ⊑ sharp₀ pt[ x , 𝕤 ]) holds
-    † (i , q) = transport (λ - → underlying-order 𝓓 - (sharp₀ pt[ x , 𝕤 ])) q ‡
-     where
-      r : (B𝓓 [ i ]) ⊑⟨ 𝓓 ⟩ x
-      r = transport (λ - → - ⊑⟨ 𝓓 ⟩ x) (q ⁻¹) p
+    γ : ((i , _) : ↓ᴮₛ x) → (sharp₀ pt[ x , 𝕤 ] ∈ₛ ↑ˢ[ βₖ i ]) holds
+    γ (i , q) = in-point-implies-below-sharp
+                 pt[ x , 𝕤 ]
+                 (B𝓓 [ i ])
+                 (basis-is-compact i)
+                 (⊑ᴮₛ-to-⊑ᴮ q)
 
-      ‡ : (B𝓓 [ i ]) ⊑⟨ 𝓓 ⟩ sharp₀ pt[ x , 𝕤 ]
-      ‡ = sup-is-upperbound
-           (underlying-order 𝓓)
-           (⋁-is-sup (𝒦-in-point↑ pt[ x , 𝕤 ])) (i , r)
+    δ : is-upperbound
+         (underlying-order 𝓓)
+         (∐ 𝓓 (↓ᴮₛ-is-directed x))
+         (𝒦-in-point pt[ x , 𝕤 ] [_])
+    δ (i , q) = ∐-is-upperbound 𝓓 (↓ᴮₛ-is-directed x) (i , ⊑ᴮ-to-⊑ᴮₛ q)
 
-    γ : ∃ i ꞉ index B𝓓 , B𝓓 [ i ] ＝ c
-    γ = small-compact-basis-contains-all-compact-elements 𝓓 (B𝓓 [_]) scb c κ
+    † : (∐ 𝓓 (↓ᴮₛ-is-directed x)) ⊑⟨ 𝓓 ⟩ (⋁ 𝒦-in-point↑ pt[ (x , 𝕤) ])
+    † = ∐-is-lowerbound-of-upperbounds
+         𝓓
+         (↓ᴮₛ-is-directed x)
+         (⋁ 𝒦-in-point↑ pt[ x , 𝕤 ])
+         γ
 
- abstract
-  lemma₄
-   : (𝓍 : ♯𝓓)
-   → ∐ 𝓓 (↓ᴮₛ-is-directed ⦅ 𝓍 ⦆) ＝ ∐ 𝓓 (𝒦-in-point-is-directed pt[ 𝓍 ])
-  lemma₄ (x , 𝕤) =
-   antisymmetry 𝓓 (∐ 𝓓 (↓ᴮₛ-is-directed x)) (⋁ 𝒦-in-point↑ pt[ (x , 𝕤) ]) † ‡
-    where
-     abstract
-      † : (∐ 𝓓 (↓ᴮₛ-is-directed x)) ⊑⟨ 𝓓 ⟩ (⋁ 𝒦-in-point↑ pt[ (x , 𝕤) ])
-      † = ∐-is-lowerbound-of-upperbounds
-           𝓓
-           (↓ᴮₛ-is-directed x)
-           (⋁ 𝒦-in-point↑ pt[ x , 𝕤 ])
-           goal
-            where
-             goal : (i : ↓ᴮₛ x) →
-                     underlying-order 𝓓 (↓-inclusionₛ x i) (⋁ 𝒦-in-point↑ pt[ x , 𝕤 ])
-             goal (i , q) = lemma₁ x 𝕤 (B𝓓 [ i ]) (pr₂ (βₖ i)) (⊑ᴮₛ-to-⊑ᴮ q)
+    ‡ : ((⋁ 𝒦-in-point↑ pt[ (x , 𝕤) ]) ⊑⟨ 𝓓 ⟩ ∐ 𝓓 (↓ᴮₛ-is-directed x))
+    ‡ = sup-is-lowerbound-of-upperbounds
+         (underlying-order 𝓓)
+         (⋁-is-sup (𝒦-in-point↑ pt[ (x , 𝕤) ]))
+         (∐ 𝓓 (↓ᴮₛ-is-directed x))
+         δ
 
-      ‡ : ((⋁ 𝒦-in-point↑ pt[ (x , 𝕤) ]) ⊑⟨ 𝓓 ⟩ ∐ 𝓓 (↓ᴮₛ-is-directed x))
-      ‡ = sup-is-lowerbound-of-upperbounds
-           (underlying-order 𝓓)
-           (⋁-is-sup (𝒦-in-point↑ pt[ (x , 𝕤) ]))
-           (∐ 𝓓 (↓ᴮₛ-is-directed x))
-           goal
-            where
-             goal : is-upperbound
-                     (underlying-order 𝓓)
-                     (∐ 𝓓 (↓ᴮₛ-is-directed x))
-                     (𝒦-in-point pt[ x , 𝕤 ] [_])
-             goal (i , q) = ∐-is-upperbound 𝓓 (↓ᴮₛ-is-directed x) (i , ⊑ᴮ-to-⊑ᴮₛ q)
+\end{code}
+
+\subsection{The equivalence proof}
+
+The fact that `sharp` is a retraction `𝓅𝓉[_]` follows easily from the lemma
+`sharp-equal-to-join-of-covering-family` above.
+
+\begin{code}
 
  sharp-cancels-pt : (𝓍 : ♯𝓓) → sharp 𝓅𝓉[ 𝓍 ] ＝ 𝓍
  sharp-cancels-pt 𝓍 = to-sharp-＝ (sharp 𝓅𝓉[ 𝓍 ]) 𝓍 †
@@ -613,61 +665,12 @@ type of spectral points.
        ∐ 𝓓 (↓ᴮₛ-is-directed ⦅ 𝓍 ⦆) ＝⟨ Ⅱ ⟩
        ⦅ 𝓍 ⦆                       ∎
         where
-         Ⅰ = lemma₄ 𝓍 ⁻¹
+         Ⅰ = sharp-equal-to-join-of-covering-family 𝓍 ⁻¹
          Ⅱ = ↓ᴮₛ-∐-＝ ⦅ 𝓍 ⦆
 
- open PropertiesAlgebraic 𝓓 𝕒
+\end{code}
 
- lemma₅ : (𝔘 : ⟨ 𝒪 Scott⦅𝓓⦆ ⟩) (ℱ@(F , _) : Point Scott⦅𝓓⦆)
-        → (sharp₀ ℱ ∈ₛ 𝔘 ⇒ F 𝔘) holds
- lemma₅ 𝔘 ℱ@(F , 𝒽) = †
-  where
-   open 𝒪ₛᴿ (to-𝒪ₛᴿ 𝔘)
-
-   † : (sharp₀ ℱ ∈ₛ 𝔘 ⇒ F 𝔘) holds
-   † p = ∥∥-rec (holds-is-prop (F 𝔘)) †₁ γ
-    where
-     †₁ : Σ i ꞉ index (pr₁ (𝒦-in-point↑ ℱ)) , pred (pr₁ (𝒦-in-point↑ ℱ) [ i ]) holds
-       → F 𝔘 holds
-     †₁ ((a , b) , c) = frame-morphisms-are-monotonic F 𝒽 (↑ˢ[ βₖ a ] , 𝔘) q b
-      where
-       q : (↑ˢ[ βₖ a ] ≤[ poset-of (𝒪 Scott⦅𝓓⦆) ] 𝔘) holds
-       q x = pred-is-upwards-closed (B𝓓 [ a ]) (B𝓓 [ x ]) c
-
-     γ : ∥ Σ i ꞉ index (pr₁ (𝒦-in-point↑ ℱ)) , pred (pr₁ (𝒦-in-point↑ ℱ) [ i ]) holds ∥
-     γ = pred-is-inaccessible-by-dir-joins (𝒦-in-point↑ ℱ) p
-
- lemma₆ : (ks : List (index B𝓓)) (ℱ@(F , _) : Point Scott⦅𝓓⦆)
-        → (F (𝜸 ks) ⇒ sharp₀ ℱ ∈ₛ 𝜸 ks) holds
- lemma₆ []       ℱ@(F , _) p = 𝟘-elim Ⅰ
-  where
-   φ : F 𝟎[ 𝒪 Scott⦅𝓓⦆ ] holds
-   φ = transport (λ - → (F -) holds) (𝜸-equal-to-𝜸₁ []) p
-
-   Ⅱ : 𝟎[ 𝟎-𝔽𝕣𝕞 pe ] holds
-   Ⅱ = transport _holds (frame-homomorphisms-preserve-bottom ℱ) φ
-
-   Ⅰ : ⊥ₚ holds
-   Ⅰ = transport (λ - → - holds) (𝟎-is-⊥ pe ⁻¹) Ⅱ
-
- lemma₆ (k ∷ ks) ℱ@(F , _) p =
-  ∥∥-rec (holds-is-prop ((sharp₀ ℱ ∈ₛ 𝜸 (k ∷ ks)))) ‡ (transport _holds ♠ p)
-   where
-    ♠ : F (𝜸 (k ∷ ks)) ＝ F ↑ᵏ[ k ] ∨ F (𝜸 ks)
-    ♠ = F (𝜸 (k ∷ ks))                     ＝⟨ Ⅰ ⟩
-        F (𝜸₁ (k ∷ ks))                    ＝⟨ Ⅱ ⟩
-        F ↑ᵏ[ k ] ∨[ 𝟎-𝔽𝕣𝕞 pe ] F (𝜸₁ ks)  ＝⟨ Ⅲ ⟩
-        F ↑ᵏ[ k ] ∨[ 𝟎-𝔽𝕣𝕞 pe ] F (𝜸 ks)   ＝⟨ Ⅳ ⟩
-        F ↑ᵏ[ k ] ∨ F (𝜸 ks)               ∎
-         where
-          Ⅰ = ap F (𝜸-equal-to-𝜸₁ (k ∷ ks))
-          Ⅱ = frame-homomorphisms-preserve-binary-joins ℱ _ _
-          Ⅲ = ap (λ - → F ↑ᵏ[ k ] ∨[ 𝟎-𝔽𝕣𝕞 pe ] F -) (𝜸-equal-to-𝜸₁ ks ⁻¹)
-          Ⅳ = binary-join-is-disjunction pe (F ↑ᵏ[ k ]) (F (𝜸 ks))
-
-    ‡ : F ↑ᵏ[ k ] holds + F (𝜸 ks) holds → (sharp₀ ℱ ∈ₛ 𝜸 (k ∷ ks)) holds
-    ‡ (inl p) = ∣ inl (∐-is-upperbound 𝓓 (𝒦-in-point-is-directed ℱ) (k , p)) ∣
-    ‡ (inr q) = ∣ inr (lemma₆ ks ℱ q) ∣
+\begin{code}
 
  pt-cancels-sharp : (ℱ : Spectral-Point Scott⦅𝓓⦆) → 𝓅𝓉[ sharp ℱ ] ＝ ℱ
  pt-cancels-sharp ℱ =
@@ -685,17 +688,17 @@ type of spectral points.
       q = basisₛ-covers-do-cover-eq Scott⦅𝓓⦆ σᴰ 𝔘
 
       ‡₁ : cofinal-in (𝟎-𝔽𝕣𝕞 pe) ⁅ sharp₀ ℱ₀ ∈ₛ 𝔘 ∣ 𝔘 ε S ⁆ ⁅ F 𝔘 ∣ 𝔘 ε S ⁆ holds
-      ‡₁ k = ∣ k , lemma₅ (S [ k ]) ℱ₀ ∣
+      ‡₁ k = ∣ k , sharp-in-scott-open-implies-in-point (S [ k ]) ℱ₀ ∣
 
       ‡₂ : cofinal-in (𝟎-𝔽𝕣𝕞 pe) ⁅ F 𝔘 ∣ 𝔘 ε S ⁆ ⁅ sharp₀ ℱ₀ ∈ₛ 𝔘 ∣ 𝔘 ε S ⁆ holds
-      ‡₂ (ks , p) = ∣ (ks , p) , lemma₆ ks ℱ₀ ∣
+      ‡₂ (ks , p) = ∣ (ks , p) , in-point-implies-below-sharp⋆ ks ℱ₀ ∣
 
       ‡ : sharp₀ ℱ₀ ∈ₛ (⋁[ 𝒪 Scott⦅𝓓⦆ ] S) ＝ F (⋁[ 𝒪 Scott⦅𝓓⦆ ] S)
       ‡ = sharp₀ ℱ₀ ∈ₛ (⋁[ 𝒪 Scott⦅𝓓⦆ ] S)               ＝⟨ refl ⟩
           pt₀[ sharp₀ ℱ₀ ] (⋁[ 𝒪 Scott⦅𝓓⦆ ] S)           ＝⟨ Ⅰ    ⟩
           ⋁[ 𝟎-𝔽𝕣𝕞 pe ] ⁅ pt₀[ sharp₀ ℱ₀ ] 𝔘 ∣ 𝔘  ε S ⁆  ＝⟨ refl ⟩
-          ⋁[ 𝟎-𝔽𝕣𝕞 pe ] ⁅ sharp₀ ℱ₀ ∈ₛ 𝔘 ∣ 𝔘 ε S ⁆       ＝⟨ Ⅳ    ⟩
-          ⋁[ 𝟎-𝔽𝕣𝕞 pe ] ⁅ F 𝔘 ∣ 𝔘 ε S ⁆                  ＝⟨ Ⅴ    ⟩
+          ⋁[ 𝟎-𝔽𝕣𝕞 pe ] ⁅ sharp₀ ℱ₀ ∈ₛ 𝔘 ∣ 𝔘 ε S ⁆       ＝⟨ Ⅱ    ⟩
+          ⋁[ 𝟎-𝔽𝕣𝕞 pe ] ⁅ F 𝔘 ∣ 𝔘 ε S ⁆                  ＝⟨ Ⅲ    ⟩
           F (⋁[ 𝒪 Scott⦅𝓓⦆ ] S)                          ∎
            where
             Ⅰ = frame-homomorphisms-preserve-all-joins′
@@ -703,17 +706,24 @@ type of spectral points.
                  (𝟎-𝔽𝕣𝕞 pe)
                  pt[ sharp ℱ ]
                  S
-            Ⅳ = bicofinal-implies-same-join
+            Ⅱ = bicofinal-implies-same-join
                  (𝟎-𝔽𝕣𝕞 pe)
                  ⁅ sharp₀ ℱ₀ ∈ₛ 𝔘 ∣ 𝔘 ε S ⁆
                  ⁅ F 𝔘 ∣ 𝔘 ε S ⁆
                  ‡₁
                  ‡₂
-            Ⅴ = frame-homomorphisms-preserve-all-joins′
+            Ⅲ = frame-homomorphisms-preserve-all-joins′
                  (𝒪 Scott⦅𝓓⦆)
                  (𝟎-𝔽𝕣𝕞 pe)
                  ℱ₀
                  S ⁻¹
+
+\end{code}
+
+Finally, we conclude this development by giving the equivalence between the
+sharp elements and the spectral points.
+
+\begin{code}
 
  ♯𝓓-equivalent-to-spectral-points-of-Scott⦅𝓓⦆ : ♯𝓓 ≃ Spectral-Point Scott⦅𝓓⦆
  ♯𝓓-equivalent-to-spectral-points-of-Scott⦅𝓓⦆ = 𝓅𝓉[_] , qinvs-are-equivs 𝓅𝓉[_] †
@@ -722,3 +732,6 @@ type of spectral points.
    † = sharp , sharp-cancels-pt , pt-cancels-sharp
 
 \end{code}
+
+[1]: de Jong, Tom. "Apartness, sharp elements, and the Scott topology of
+     domains." Mathematical Structures in Computer Science 33.7 (2023): 573-604.
