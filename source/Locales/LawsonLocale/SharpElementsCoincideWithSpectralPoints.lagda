@@ -3,6 +3,7 @@ title:          Equivalence of sharp elements with spectral points
 author:         Ayberk Tosun
 date-started:   2024-05-22
 date-completed: 2024-05-28
+dates-updated:  [2024-06-03]
 ---
 
 This module contains the proof of equivalence between the sharp elements of a
@@ -432,7 +433,7 @@ Given any sharp element `𝓍`, the point `pt 𝓍` is a spectral map.
 
 \end{code}
 
-We package `pt[_]` up with this proof spectrality to obtain the following:
+We package `pt[_]` up with this proof of spectrality and denote it `𝓅𝓉[_]`.
 
 \begin{code}
 
@@ -470,16 +471,16 @@ The following lemma says if `sharp(ℱ) ∈ 𝔘` then `U ∈ ℱ`.
    open 𝒪ₛᴿ (to-𝒪ₛᴿ 𝔘)
 
    † : (sharp₀ ℱ ∈ₛ 𝔘 ⇒ F 𝔘) holds
-   † p = ∥∥-rec (holds-is-prop (F 𝔘)) †₁ γ
+   † p = ∥∥-rec (holds-is-prop (F 𝔘)) ‡ γ
     where
-     †₁ : Σ i ꞉ index (pr₁ (𝒦-in-point↑ ℱ)) , pred (pr₁ (𝒦-in-point↑ ℱ) [ i ]) holds
+     ‡ : Σ (i , _) ꞉ index (𝒦-in-point ℱ) , ((B𝓓 [ i ]) ∈ₛ 𝔘) holds
        → F 𝔘 holds
-     †₁ ((a , b) , c) = frame-morphisms-are-monotonic F 𝒽 (↑ˢ[ βₖ a ] , 𝔘) q b
+     ‡ ((a , b) , c) = frame-morphisms-are-monotonic F 𝒽 (↑ˢ[ βₖ a ] , 𝔘) q b
       where
        q : (↑ˢ[ βₖ a ] ≤[ poset-of (𝒪 Scott⦅𝓓⦆) ] 𝔘) holds
        q x = pred-is-upwards-closed (B𝓓 [ a ]) (B𝓓 [ x ]) c
 
-     γ : ∥ Σ i ꞉ index (pr₁ (𝒦-in-point↑ ℱ)) , pred (pr₁ (𝒦-in-point↑ ℱ) [ i ]) holds ∥
+     γ : ∥ Σ (i , _) ꞉ index (𝒦-in-point ℱ) , ((B𝓓 [ i ]) ∈ₛ 𝔘) holds ∥
      γ = pred-is-inaccessible-by-dir-joins (𝒦-in-point↑ ℱ) p
 
 \end{code}
@@ -500,34 +501,8 @@ which we record explicitly.
 
 \end{code}
 
-The converse of this special case is true as well.
-
-\begin{code}
-
- in-point-implies-below-sharp
-  : (ℱ@(F , _) : Point Scott⦅𝓓⦆) (c : ⟨ 𝓓 ⟩∙) (𝕜 : is-compact 𝓓 c)
-  → F ↑ˢ[ c , 𝕜 ] holds → c ⊑⟨ 𝓓 ⟩ sharp₀ ℱ
- in-point-implies-below-sharp ℱ@(F , ψ) c 𝕜 χ =
-  ∥∥-rec (prop-valuedness 𝓓 c (⋁ 𝒦-in-point↑ ℱ)) † γ
-   where
-    γ : ∃ i ꞉ index B𝓓 , B𝓓 [ i ] ＝ c
-    γ = small-compact-basis-contains-all-compact-elements 𝓓 (B𝓓 [_]) scb c 𝕜
-
-    † : Σ i ꞉ index B𝓓 , B𝓓 [ i ] ＝ c → c ⊑⟨ 𝓓 ⟩ (⋁ 𝒦-in-point↑ ℱ)
-    † (i , p) = transport (λ - → - ⊑⟨ 𝓓 ⟩ (⋁ 𝒦-in-point↑ ℱ)) p ‡
-     where
-      q : ↑ˢ[ βₖ i ] ＝ ↑ˢ[ c , 𝕜 ]
-      q = ap ↑ˢ[_] (to-subtype-＝ (holds-is-prop ∘ is-compactₚ 𝓓) p)
-
-      μ : F ↑ˢ[ βₖ i ] holds
-      μ = transport (λ - → F - holds) (q ⁻¹) χ
-
-      ‡ : (B𝓓 [ i ]) ⊑⟨ 𝓓 ⟩ (⋁ 𝒦-in-point↑ ℱ)
-      ‡ = ⋁-is-upperbound (𝒦-in-point↑ ℱ) (i , μ)
-
-\end{code}
-
-In fact, it can be generalized to finite joins of compact elements
+In fact, it can be generalized to finite joins of compact element i.e. compact
+Scott opens.
 
 \begin{code}
 
@@ -565,6 +540,35 @@ In fact, it can be generalized to finite joins of compact elements
 
 \end{code}
 
+The converse of this special case is true as well.
+
+\begin{code}
+
+ in-point-implies-below-sharp
+  : (ℱ@(F , _) : Point Scott⦅𝓓⦆)
+  → (K : ⟨ σ⦅𝓓⦆ ⟩)
+  → (𝕜 : is-compact-open Scott⦅𝓓⦆ K holds)
+  → (F K ⇒ sharp₀ ℱ ∈ₛ K) holds
+ in-point-implies-below-sharp ℱ@(F , ψ) K 𝕜 χ =
+  ∥∥-rec (holds-is-prop (sharp₀ ℱ ∈ₛ K)) † γ
+   where
+    ℬ↑ : directed-basisᴰ (𝒪 Scott⦅𝓓⦆)
+    ℬ↑ = spectralᴰ-implies-directed-basisᴰ Scott⦅𝓓⦆ σᴰ
+
+    γ : is-basic Scott⦅𝓓⦆ K (spectralᴰ-implies-directed-basisᴰ Scott⦅𝓓⦆ σᴰ) holds
+    γ = compact-opens-are-basic Scott⦅𝓓⦆ ℬ↑ K 𝕜
+
+    † : Σ i ꞉ Bσ , βσ i ＝ K → (sharp₀ ℱ ∈ₛ K) holds
+    † (i , p) = transport (λ - → (sharp₀ ℱ ∈ₛ -) holds) p ‡
+     where
+      μ : F (𝜸 i) holds
+      μ = transport (λ - → F - holds) (p ⁻¹) χ
+
+      ‡ : (sharp₀ (F , ψ) ∈ₛ βσ i) holds
+      ‡ = in-point-implies-below-sharp⋆ i ℱ μ
+
+\end{code}
+
 The map `sharp₀` always gives sharp elements.
 
 \begin{code}
@@ -580,8 +584,11 @@ The map `sharp₀` always gives sharp elements.
    γ : is-decidableₚ (F ↑ˢ[ c , 𝕜 ]) holds
    γ = compact-implies-boolean pe (F ↑ˢ[ c , 𝕜 ]) χ
 
+   κ : is-compact-open Scott⦅𝓓⦆ ↑ˢ[ c , 𝕜 ] holds
+   κ = principal-filter-is-compact₀ c 𝕜
+
    case₁ : F ↑ˢ[ c , 𝕜 ] holds → is-decidableₚ (c ⊑ sharp₀ ℱ) holds
-   case₁ = inl ∘ in-point-implies-below-sharp ℱ c 𝕜
+   case₁ = inl ∘ in-point-implies-below-sharp ℱ ↑ˢ[ (c , 𝕜) ] κ
 
    case₂ : ¬ (F ↑ˢ[ c , 𝕜 ] holds) → is-decidableₚ (c ⊑ sharp₀ ℱ) holds
    case₂ χ = inr (χ ∘ below-sharp-implies-in-point ℱ c 𝕜)
@@ -589,7 +596,7 @@ The map `sharp₀` always gives sharp elements.
 \end{code}
 
 We denote by `sharp` the version of `sharp₀` that is packaged up with the proof
-that it always gives sharp elements and denote it by `sharp`.
+that it always gives sharp elements.
 
 \begin{code}
 
@@ -603,7 +610,8 @@ that it always gives sharp elements and denote it by `sharp`.
 
 \subsection{Some lemmas}
 
-We now prove some useful lemmas that we use in the equivalence proof.
+We now prove some useful lemmas that we use in showing that these two maps
+form an equivalence.
 
 Given a sharp element `𝓍`, the element `sharp (pt 𝓍)` is exactly the join of
 the compact approximants of `𝓍`.
@@ -619,8 +627,8 @@ the compact approximants of `𝓍`.
     γ : ((i , _) : ↓ᴮₛ x) → (sharp₀ pt[ x , 𝕤 ] ∈ₛ ↑ˢ[ βₖ i ]) holds
     γ (i , q) = in-point-implies-below-sharp
                  pt[ x , 𝕤 ]
-                 (B𝓓 [ i ])
-                 (basis-is-compact i)
+                 ↑ˢ[ βₖ i ]
+                 (principal-filter-is-compact i)
                  (⊑ᴮₛ-to-⊑ᴮ q)
 
     δ : is-upperbound
