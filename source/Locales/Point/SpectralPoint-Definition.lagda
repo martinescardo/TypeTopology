@@ -4,7 +4,12 @@ author:         Ayberk Tosun
 date-started:   2024-05-26
 ---
 
-The formalization of a proof.
+A _spectral point_ of a locale `X` is a continuous map `p : 𝟏 → X` whose right
+adjoint `p^* : 𝒪(X) → 𝒪(𝟏)` preserves compact opens.
+
+In this module, we give the definition of this notion. We define it using
+records for the sake of convenience, and prove that the record-based definition
+is equivalent to the standard definition.
 
 \begin{code}[hide]
 
@@ -87,10 +92,6 @@ This record-based definition is of course just a more verbose way of writing
  Spectral-Point₀ : 𝓤 ⁺  ̇
  Spectral-Point₀ = Spectral-Map (𝟏Loc pe) X
 
-\end{code}
-
-\begin{code}
-
  to-spectral-point₀ : Spectral-Point → Spectral-Point₀
  to-spectral-point₀ sp = (point-fn , †) , point-preserves-compactness
   where
@@ -98,10 +99,6 @@ This record-based definition is of course just a more verbose way of writing
 
    † : is-a-frame-homomorphism point-fn holds
    † = point-is-a-frame-homomorphism
-
-\end{code}
-
-\begin{code}
 
  to-spectral-point : Spectral-Map (𝟏Loc pe) X → Spectral-Point
  to-spectral-point ((F , α , β , γ) , σ) =
@@ -115,6 +112,8 @@ This record-based definition is of course just a more verbose way of writing
 
 \end{code}
 
+The equivalence proof.
+
 \begin{code}
 
  spectral-point-equivalent-to-spectral-map-into-Ω
@@ -126,6 +125,9 @@ This record-based definition is of course just a more verbose way of writing
     † = to-spectral-point₀ , (λ _ → refl) , (λ _ → refl)
 
 \end{code}
+
+To show that two spectral points are equal, it suffices to show that their
+underlying functions are equal. We call this lemma `to-spectral-point-＝`.
 
 \begin{code}
 
