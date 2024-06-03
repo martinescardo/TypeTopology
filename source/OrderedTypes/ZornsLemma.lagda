@@ -2,6 +2,7 @@ Kelton OBrien, 31 May 2024
 
 A proof that the Axiom of Choice implies Zorn's Lemma, as well as relevant definitions.
 \begin{code}
+
 {-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan
@@ -77,6 +78,7 @@ all-chains-have-upper-bound {𝓥} =
  (Y : 𝓟 {𝓥} X) → (is-chain Y) → Σ x ꞉ X , (∀ y → y ∈ Y → y ≪ x)
 
 \end{code}
+
 The following is not a direct formalization of any extant proof,
 but follows the same proof idea as the standard transfinite-induction-based
 proof of Zorn's lemma. The closest informal analog to the proof can be found
@@ -369,4 +371,5 @@ axiom-of-choice-implies-zorns-lemma ac (X-is-set , axioms-rest) = III
   III : all-chains-have-upper-bound → has-maximal-element
   III chains-have-ub =
    cases (I chains-have-ub) (II chains-have-ub) (em ∥ X ∥ ∥∥-is-prop)
+
 \end{code}
