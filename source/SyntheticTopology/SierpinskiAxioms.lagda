@@ -40,18 +40,19 @@ First, the Dominance Axiom:
 
 \begin{code}
 
-openness-is-transitive : ((𝓤 ⁺) ⊔ 𝓥) ̇
-openness-is-transitive = (u : Ω 𝓤)
-                       → (is-open-proposition u) holds
-                       → (p : Ω 𝓤)
-                       → (u holds → (is-open-proposition p) holds)
-                       → (is-open-proposition (u ∧ p) ) holds
-
 contains-top : Ω 𝓥
 contains-top = is-open-proposition ⊤
 
-is-synthetic-dominance : (𝓤 ⁺ ⊔ 𝓥) ̇
-is-synthetic-dominance = contains-top holds × openness-is-transitive
+openness-is-transitive : Ω ((𝓤 ⁺) ⊔ 𝓥)
+openness-is-transitive =
+ Ɐ u ꞉ (Ω 𝓤) ,
+  (is-open-proposition u
+   ⇒ (Ɐ p ꞉ (Ω 𝓤) ,
+    (u ⇒ (is-open-proposition p))
+     ⇒ (is-open-proposition (u ∧ p))))
+
+is-synthetic-dominance : Ω (𝓤 ⁺ ⊔ 𝓥)
+is-synthetic-dominance = contains-top ∧ openness-is-transitive
 
 \end{code}
 
@@ -83,3 +84,41 @@ closed-under-binary-meets =
     ⇒ is-open-proposition (P ∧ Q))
 
 \end{code}
+
+
+Added by Martin Trucchi - 3rd June 2024.
+
+The latter directly follows from openness-is-transitive. It is a particular
+case in which both P and Q are known to be open.
+
+\begin{code}
+
+open-transitive-gives-cl-∧
+ : (openness-is-transitive ⇒ closed-under-binary-meets) holds
+open-transitive-gives-cl-∧ open-transitive P Q (open-P , open-Q) =
+  open-transitive P open-P Q λ _ → open-Q
+
+\end{code}
+
+
+We define here the axiom of being a "standard topology", defined on 5.9 of [1]
+
+\begin{code}
+
+contains-bot : Ω 𝓥
+contains-bot = is-open-proposition ⊥
+
+closed-under-binary-joins : Ω ((𝓤 ⁺) ⊔ 𝓥)
+closed-under-binary-joins =
+ Ɐ P ꞉ Ω 𝓤 ,
+  Ɐ Q ꞉ Ω 𝓤 ,
+   ((is-open-proposition P ∧ is-open-proposition Q)
+    ⇒ is-open-proposition (P ∨ Q))
+
+is-standard : Ω ((𝓤 ⁺) ⊔ 𝓥)
+is-standard = contains-bot ∧ closed-under-binary-joins
+
+\end{code}
+
+
+[1] : https://www.cs.bham.ac.uk/~mhe/papers/pittsburgh.pdf
