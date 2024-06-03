@@ -7,8 +7,8 @@ dates-updated:  [2024-06-03]
 ---
 
 This module contains the proof of equivalence between the sharp elements of a
-Scott domain and the “spectral points” of its Scott locale. This equivalence
-was conjectured by Martín Escardó and proved by Ayberk Tosun on 2024-03-15.
+Scott domain and the “spectral points” of its Scott locale. This equivalence was
+conjectured by Martín Escardó and proved by Ayberk Tosun on 2024-03-15.
 
 The formalization of the proof was completed on 2024-05-28.
 
@@ -125,9 +125,9 @@ module Sharp-Element-Spectral-Point-Equivalence
 
 \end{code}
 
-The following is a bit of preparation for the proofs. We open up relevant proofs
-and define abbreviations for them for the sake of readability and
-self-containment.
+The following is a bit of preparation for the proofs. We open up relevant
+modules and define abbreviations for constructions that we use for the sake of
+readability and self-containment.
 
 \begin{code}
 
@@ -194,8 +194,8 @@ it is a proposition (called `prop-valuedness` in the domain theory development).
 
 \section{Definition of sharpness}
 
-We now define what it means for an element to be _sharp_ as defined by de Jong
-[1].
+We now define what it means for an element to be _sharp_, following the work of
+de Jong [1].
 
 \begin{code}
 
@@ -249,8 +249,8 @@ We now define the type `♯𝓓` of sharp elements of the Scott domain `𝓓`.
 \end{code}
 
 We usually pattern match on the inhabitants of `♯𝓓` to refer to the first
-component. But if the need arises, we denote the underlying element of
-a sharp element `𝓍` by `⦅ 𝓍 ⦆`.
+component. But if the need arises, we denote the underlying element of a sharp
+element `𝓍` by `⦅ 𝓍 ⦆`.
 
 \begin{code}
 
@@ -269,8 +269,8 @@ a sharp element `𝓍` by `⦅ 𝓍 ⦆`.
 
 \section{Characterization of sharp elements}
 
-In this section, we give a characterization of sharp elements that we use when
-constructing the equivalence (which we do in the next section).
+In this section, we give a characterization of sharp elements which we use
+when constructing the equivalence (in the next section).
 
 We define the following predicate expressing that an element `x` has decidable
 membership in compact Scott opens.
@@ -376,8 +376,8 @@ is a potentially useful observation.
 \end{code}
 
 What can be said about the converse of this implication? In other words, what is
-the meaning of the set of elements of the domain that admit decidable membership
-in Scott clopens. I do not know the answer yet.
+the meaning of the set of elements that admit decidable membership in Scott
+clopens. I do not know the answer yet.
 
 \section{The equivalence}
 
@@ -456,7 +456,8 @@ We now define the map `sharp` going in the opposite direction.
 
 \end{code}
 
-The following lemma says if `sharp(ℱ) ∈ 𝔘` then `U ∈ ℱ`.
+The following lemma says if `sharp(ℱ) ∈ 𝔘` then `U ∈ ℱ`, for every point `ℱ` and
+every Scott open `𝔘`.
 
 \begin{code}
 
@@ -485,13 +486,15 @@ The following lemma says if `sharp(ℱ) ∈ 𝔘` then `U ∈ ℱ`.
 
 \end{code}
 
-As an immediate special case of this lemma, we obtain the following lemma
-which we record explicitly.
+As an immediate special case of this lemma, we obtain the following which we
+record explicitly.
 
 \begin{code}
 
  below-sharp-implies-in-point
-  : (ℱ@(F , _) : Point Scott⦅𝓓⦆) (c : ⟨ 𝓓 ⟩∙) (𝕜 : is-compact 𝓓 c)
+  : (ℱ@(F , _) : Point Scott⦅𝓓⦆)
+  → (c : ⟨ 𝓓 ⟩∙)
+  → (𝕜 : is-compact 𝓓 c)
   → c ⊑⟨ 𝓓 ⟩ sharp₀ ℱ
   → F ↑ˢ[ c , 𝕜 ] holds
  below-sharp-implies-in-point ℱ@(F , 𝒽) c 𝕜 =
@@ -501,14 +504,14 @@ which we record explicitly.
 
 \end{code}
 
-In fact, it can be generalized to finite joins of compact element i.e. compact
-Scott opens.
+In fact, it can be generalized to finite joins of principal filters on compact
+elements i.e. compact Scott opens.
 
 \begin{code}
 
  in-point-implies-below-sharp⋆ : (ks : List (index B𝓓)) (ℱ@(F , _) : Point Scott⦅𝓓⦆)
                               → (F (𝜸 ks) ⇒ sharp₀ ℱ ∈ₛ 𝜸 ks) holds
- in-point-implies-below-sharp⋆ []       ℱ@(F , _) p = 𝟘-elim Ⅰ
+ in-point-implies-below-sharp⋆ [] ℱ@(F , _) p = 𝟘-elim Ⅰ
   where
    φ : F 𝟎[ 𝒪 Scott⦅𝓓⦆ ] holds
    φ = transport (λ - → (F -) holds) (𝜸-equal-to-𝜸₁ []) p
@@ -612,8 +615,8 @@ that it always gives sharp elements.
 
 \subsection{A useful lemma}
 
-We now prove some useful lemmas that we use in showing that these two maps
-form an equivalence.
+We now prove a lemma which we use when showing that these two maps form an
+equivalence.
 
 Given a sharp element `𝓍`, the element `sharp (pt 𝓍)` is exactly the join of
 the compact approximants of `𝓍`.
