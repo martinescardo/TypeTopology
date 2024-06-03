@@ -1,7 +1,7 @@
 ---
 title:          The notion of spectral point
 author:         Ayberk Tosun
-date-started:   2024-05-26
+date-started:   2024-05-27
 ---
 
 A _spectral point_ of a locale `X` is a continuous map `p : 𝟏 → X` whose right
