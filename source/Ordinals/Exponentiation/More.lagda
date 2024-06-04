@@ -214,6 +214,7 @@ flatten-×-decreasing-lemma-1 α β γ c l δ =
 ++-decreasing-lemma α β (a , b ∷ (a' , b') ∷ l) k x y (many-decr p δ) ε H =
   many-decr p (++-decreasing-lemma α β ((a' , b') ∷ l) k x y δ ε (λ z q → H z (in-tail q)))
 
+{-
 flatten-×-decreasing : (α β γ : Ordinal 𝓤) (ls : List (List⁺ (⟨ α ⟩ × ⟨ β ⟩) × ⟨ γ ⟩))
                      → is-decreasing (underlying-order γ) (map pr₂ ls)
                      → ((l : List⁺ (⟨ α ⟩ × ⟨ β ⟩)) → member l (map pr₁ ls) → is-decreasing (underlying-order β) (map pr₂ (l ⁻)))
@@ -223,6 +224,7 @@ flatten-×-decreasing {𝓤} α β γ (((((a , b) ∷ l) , _) , c) ∷ []) δ ε
  transport (λ - → is-decreasing (underlying-order (β ×ₒ γ)) (map pr₂ -)) ([]-right-neutral _) (flatten-×-decreasing-lemma-1 α β γ c ((a , b ) ∷ l) (ε _ in-head))
 flatten-×-decreasing {𝓤} α β γ (((((a , b) ∷ l) , _) , c) ∷ ((((a' , b') ∷ l') , _) , c') ∷ ls) δ ε =
  {!++-decreasing-lemma α (β ×ₒ γ) {!!} (flatten-× ls) a' (b' , c') {!!} {!!} {!!}!}
+-}
 
 {-
 flatten-×-decreasing : {A : 𝓤 ̇  } (β γ : Ordinal 𝓤) (ls : List (List⁺ (A × ⟨ β ⟩) × ⟨ γ ⟩))
@@ -321,3 +323,79 @@ Wikipedia:
 * γ > 1 => γ^(-) is order preserving
 * α^(β + γ) = α^β × α^γ              [ exp-+-distributes ]
 * α^(β × γ) = (α^β)^γ
+
+
+
+
+Added 4 June 2024.
+
+Given a (necessarily commutative) diagram of ordinals and simulations
+  f : α ⊴ γ and g : β ⊴ γ
+like this
+
+  α ↓ a   ≃ₒ   β ↓ b
+    ⊴           ⊴
+    α           β
+      ⊴ᶠ     ᵍ⊵
+          γ
+
+we have f a ＝ g b.
+
+\begin{code}
+
+simulation-inequality-lemma : (α : Ordinal 𝓤) (β : Ordinal 𝓥) (γ : Ordinal 𝓦)
+                              (f : α ⊴ γ) (g : β ⊴ γ)
+                              (a : ⟨ α ⟩)( b : ⟨ β ⟩)
+                              (e : (α ↓ a) ≃ₒ (β ↓ b))
+                            → (pr₁ f) a ≼⟨ γ ⟩ (pr₁ g) b
+simulation-inequality-lemma α β γ 𝕗@(f , f-sim) 𝕘@(g , g-sim)
+                            a b e c c-below-fa = V
+ where
+  I : Σ x ꞉ ⟨ α ⟩ , x ≺⟨ α ⟩ a × (f x ＝ c)
+  I = simulations-are-initial-segments α γ f f-sim a c c-below-fa
+  x : ⟨ α ⟩
+  x = pr₁ I
+  x-below-a : x ≺⟨ α ⟩ a
+  x-below-a = pr₁ (pr₂ I)
+  fx-equals-c : f x ＝ c
+  fx-equals-c = pr₂ (pr₂ I)
+
+  II : ⟨ β ↓ b ⟩
+  II = ≃ₒ-to-fun (α ↓ a) (β ↓ b) e (x , x-below-a)
+  y : ⟨ β ⟩
+  y = pr₁ II
+  y-below-b : y ≺⟨ β ⟩ b
+  y-below-b = pr₂ II
+
+  III : f x ＝ g y
+  III = ap (λ - → pr₁ - (x , x-below-a)) sim-commute
+   where
+    𝕖 : (α ↓ a) ⊴ (β ↓ b)
+    𝕖 = ≃ₒ-to-⊴ (α ↓ a) (β ↓ b) e
+    sim-commute :
+        ⊴-trans _ _ _ (segment-⊴ α a) 𝕗
+     ＝ ⊴-trans _ _ _ 𝕖 (⊴-trans _ _ _ (segment-⊴ β b) 𝕘)
+    sim-commute =
+     ⊴-is-prop-valued _ _ (⊴-trans _ _ _ (segment-⊴ α a) 𝕗)
+                          (⊴-trans _ _ _ 𝕖 (⊴-trans _ _ _ (segment-⊴ β b) 𝕘))
+
+  IV : c ＝ g y
+  IV = fx-equals-c ⁻¹ ∙ III
+
+  V : c ≺⟨ γ ⟩ g b
+  V = transport⁻¹ (λ - → - ≺⟨ γ ⟩ g b) IV
+                  (simulations-are-order-preserving β γ g g-sim y b y-below-b)
+
+simulation-equality-lemma : (α : Ordinal 𝓤) (β : Ordinal 𝓥) (γ : Ordinal 𝓦)
+                              (f : α ⊴ γ) (g : β ⊴ γ)
+                              (a : ⟨ α ⟩)( b : ⟨ β ⟩)
+                              (e : (α ↓ a) ≃ₒ (β ↓ b))
+                            → (pr₁ f) a ＝ (pr₁ g) b
+simulation-equality-lemma α β γ f g a b e = Extensionality γ (pr₁ f a) (pr₁ g b) I II
+ where
+  I : pr₁ f a ≼⟨ γ ⟩ pr₁ g b
+  I = simulation-inequality-lemma α β γ f g a b e
+  II : pr₁ g b ≼⟨ γ ⟩ pr₁ f a
+  II = simulation-inequality-lemma β α γ g f b a (≃ₒ-sym (α ↓ a) (β ↓ b) e)
+
+\end{code}
