@@ -345,11 +345,11 @@ we have f a ＝ g b.
 
 simulation-inequality-lemma : (α : Ordinal 𝓤) (β : Ordinal 𝓥) (γ : Ordinal 𝓦)
                               (f : α ⊴ γ) (g : β ⊴ γ)
-                              (a : ⟨ α ⟩)( b : ⟨ β ⟩)
-                              (e : (α ↓ a) ≃ₒ (β ↓ b))
+                              (a : ⟨ α ⟩) (b : ⟨ β ⟩)
+                            → (α ↓ a) ⊴ (β ↓ b)
                             → (pr₁ f) a ≼⟨ γ ⟩ (pr₁ g) b
 simulation-inequality-lemma α β γ 𝕗@(f , f-sim) 𝕘@(g , g-sim)
-                            a b e c c-below-fa = V
+                            a b 𝕖@(e , e-sim) c c-below-fa = V
  where
   I : Σ x ꞉ ⟨ α ⟩ , x ≺⟨ α ⟩ a × (f x ＝ c)
   I = simulations-are-initial-segments α γ f f-sim a c c-below-fa
@@ -361,7 +361,7 @@ simulation-inequality-lemma α β γ 𝕗@(f , f-sim) 𝕘@(g , g-sim)
   fx-equals-c = pr₂ (pr₂ I)
 
   II : ⟨ β ↓ b ⟩
-  II = ≃ₒ-to-fun (α ↓ a) (β ↓ b) e (x , x-below-a)
+  II = e (x , x-below-a)
   y : ⟨ β ⟩
   y = pr₁ II
   y-below-b : y ≺⟨ β ⟩ b
@@ -370,8 +370,6 @@ simulation-inequality-lemma α β γ 𝕗@(f , f-sim) 𝕘@(g , g-sim)
   III : f x ＝ g y
   III = ap (λ - → pr₁ - (x , x-below-a)) sim-commute
    where
-    𝕖 : (α ↓ a) ⊴ (β ↓ b)
-    𝕖 = ≃ₒ-to-⊴ (α ↓ a) (β ↓ b) e
     sim-commute :
         ⊴-trans _ _ _ (segment-⊴ α a) 𝕗
      ＝ ⊴-trans _ _ _ 𝕖 (⊴-trans _ _ _ (segment-⊴ β b) 𝕘)
@@ -387,15 +385,91 @@ simulation-inequality-lemma α β γ 𝕗@(f , f-sim) 𝕘@(g , g-sim)
                   (simulations-are-order-preserving β γ g g-sim y b y-below-b)
 
 simulation-equality-lemma : (α : Ordinal 𝓤) (β : Ordinal 𝓥) (γ : Ordinal 𝓦)
-                              (f : α ⊴ γ) (g : β ⊴ γ)
-                              (a : ⟨ α ⟩)( b : ⟨ β ⟩)
-                              (e : (α ↓ a) ≃ₒ (β ↓ b))
-                            → (pr₁ f) a ＝ (pr₁ g) b
+                            (f : α ⊴ γ) (g : β ⊴ γ)
+                            (a : ⟨ α ⟩) (b : ⟨ β ⟩)
+                          → (α ↓ a) ≃ₒ (β ↓ b)
+                          → (pr₁ f) a ＝ (pr₁ g) b
 simulation-equality-lemma α β γ f g a b e = Extensionality γ (pr₁ f a) (pr₁ g b) I II
  where
   I : pr₁ f a ≼⟨ γ ⟩ pr₁ g b
-  I = simulation-inequality-lemma α β γ f g a b e
+  I = simulation-inequality-lemma α β γ f g a b (≃ₒ-to-⊴ _ _ e)
   II : pr₁ g b ≼⟨ γ ⟩ pr₁ f a
-  II = simulation-inequality-lemma β α γ g f b a (≃ₒ-sym (α ↓ a) (β ↓ b) e)
+  II = simulation-inequality-lemma β α γ g f b a (≃ₒ-to-⊴ _ _ (≃ₒ-sym _ _ e))
+
+simulation-inequality-lemma-converse : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
+                                       (γ : Ordinal 𝓦)
+                                       (f : α ⊴ γ) (g : β ⊴ γ)
+                                       (a : ⟨ α ⟩) (b : ⟨ β ⟩)
+                                     → (pr₁ f) a ≼⟨ γ ⟩ (pr₁ g) b
+                                     → (α ↓ a) ⊴ (β ↓ b)
+simulation-inequality-lemma-converse α β γ 𝕗@(f , f-sim) 𝕘@(g , g-sim)
+                                     a b fa-below-gb =
+ h , h-intial-segment , h-order-preserving
+  where
+   h-prelim : (x : ⟨ α ⟩)
+            → x ≺⟨ α ⟩ a
+            → Σ y ꞉ ⟨ β ⟩ , (y ≺⟨ β ⟩ b) × (g y ＝ f x)
+   h-prelim x l = simulations-are-initial-segments β γ g g-sim b (f x) l'
+    where
+     l' : f x ≺⟨ γ ⟩ g b
+     l' = fa-below-gb (f x) (simulations-are-order-preserving α γ f f-sim x a l)
+
+   h : ⟨ α ↓ a ⟩ → ⟨ β ↓ b ⟩
+   h (x , l) = (pr₁ (h-prelim x l) , pr₁ (pr₂ (h-prelim x l)))
+   h̅ : ⟨ α ↓ a ⟩ → ⟨ β ⟩
+   h̅ = segment-inclusion _ _ ∘ h
+
+   h-eq : (x : ⟨ α ⟩) (l : x ≺⟨ α ⟩ a)
+        → g (h̅ (x , l)) ＝ f x
+   h-eq x l = pr₂ (pr₂ (h-prelim x l))
+
+   h-order-preserving : is-order-preserving (α ↓ a) (β ↓ b) h
+   h-order-preserving (x , l) (y , k) x-below-y = III
+    where
+     I : f x ≺⟨ γ ⟩ f y
+     I = simulations-are-order-preserving α γ f f-sim x y x-below-y
+     II : g (h̅ (x , l)) ≺⟨ γ ⟩ g (h̅ (y , k))
+     II = transport₂⁻¹ (underlying-order γ) (h-eq x l) (h-eq y k) I
+     III : h̅ (x , l) ≺⟨ β ⟩ h̅ (y , k)
+     III = simulations-are-order-reflecting β γ g g-sim
+                                            (h̅ (x , l)) (h̅ (y , k)) II
+
+   h-intial-segment : is-initial-segment (α ↓ a) (β ↓ b) h
+   h-intial-segment (x , l) (y , k) y-below-hx = (x' , IV) , x'-below-x , V
+    where
+     I : g y ≺⟨ γ ⟩ g (h̅ (x , l))
+     I = simulations-are-order-preserving β γ g g-sim y (h̅ (x , l)) y-below-hx
+     II : g y ≺⟨ γ ⟩ f x
+     II = transport (λ - → g y ≺⟨ γ ⟩ -) (h-eq x l) I
+     III : Σ x' ꞉ ⟨ α ⟩ , x' ≺⟨ α ⟩ x × (f x' ＝ g y)
+     III = simulations-are-initial-segments α γ f f-sim x (g y) II
+     x' : ⟨ α ⟩
+     x' = pr₁ III
+     x'-below-x : x' ≺⟨ α ⟩ x
+     x'-below-x = pr₁ (pr₂ III)
+     IV : x' ≺⟨ α ⟩ a
+     IV = Transitivity α x' x a x'-below-x l
+     V : h (x' , IV) ＝ y , k
+     V = to-subtype-＝ (λ _ → Prop-valuedness β _ b)
+                       (simulations-are-lc β γ g g-sim
+                                           (g (h̅ (x' , IV)) ＝⟨ h-eq x' IV ⟩
+                                            f x'            ＝⟨ pr₂ (pr₂ III) ⟩
+                                            g y             ∎))
+
+simulation-equality-lemma-converse : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
+                                     (γ : Ordinal 𝓦)
+                                     (f : α ⊴ γ) (g : β ⊴ γ)
+                                     (a : ⟨ α ⟩) (b : ⟨ β ⟩)
+                                   → (pr₁ f) a ＝ (pr₁ g) b
+                                   → (α ↓ a) ≃ₒ (β ↓ b)
+simulation-equality-lemma-converse α β γ f g a b eq =
+ bisimilarity-gives-ordinal-equiv (α ↓ a) (β ↓ b) I II
+  where
+   I : (α ↓ a) ⊴ (β ↓ b)
+   I = simulation-inequality-lemma-converse α β γ f g a b
+        (≼-refl-＝ (underlying-order γ) eq)
+   II : (β ↓ b) ⊴ (α ↓ a)
+   II = simulation-inequality-lemma-converse β α γ g f b a
+         (≼-refl-＝ (underlying-order γ) (eq ⁻¹))
 
 \end{code}
