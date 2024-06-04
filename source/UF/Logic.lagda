@@ -207,6 +207,22 @@ module Disjunction (pt : propositional-truncations-exist) where
 
 \end{code}
 
+Added by Ayberk Tosun 2024-05-28.
+
+\begin{code}
+
+ ∨-elim : (P : Ω 𝓤) (Q : Ω 𝓥) (R : Ω 𝓦)
+        → (P holds → R holds)
+        → (Q holds → R holds)
+        → ((P ∨ Q) holds → R holds)
+ ∨-elim P Q R φ ψ = ∥∥-rec (holds-is-prop R) †
+  where
+   † : P holds + Q holds → R holds
+   † (inl p) = φ p
+   † (inr q) = ψ q
+
+\end{code}
+
 \section{Truncation}
 
 \begin{code}
