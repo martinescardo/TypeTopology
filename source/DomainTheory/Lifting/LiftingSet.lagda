@@ -458,10 +458,10 @@ An equivalence of types induces an isomorphism of pointed dcpos on the liftings.
 
 \begin{code}
 
-𝓛̇-isomorphism : {X : 𝓤 ̇  } {Y : 𝓦 ̇  } (i : is-set X) (j : is-set Y)
-               → X ≃ Y
-               → 𝓛-DCPO⊥ i ≃ᵈᶜᵖᵒ⊥ 𝓛-DCPO⊥ j
-𝓛̇-isomorphism i j e = ≃ᵈᶜᵖᵒ-to-≃ᵈᶜᵖᵒ⊥ (𝓛-DCPO⊥ i) (𝓛-DCPO⊥ j) I
+𝓛̇-≃ᵈᶜᵖᵒ⊥ : {X : 𝓤 ̇  } {Y : 𝓦 ̇  } (i : is-set X) (j : is-set Y)
+          → X ≃ Y
+          → 𝓛-DCPO⊥ i ≃ᵈᶜᵖᵒ⊥ 𝓛-DCPO⊥ j
+𝓛̇-≃ᵈᶜᵖᵒ⊥ i j e = ≃ᵈᶜᵖᵒ-to-≃ᵈᶜᵖᵒ⊥ (𝓛-DCPO⊥ i) (𝓛-DCPO⊥ j) I
  where
   I : 𝓛-DCPO i ≃ᵈᶜᵖᵒ 𝓛-DCPO j
   I = 𝓛̇ ⌜ e ⌝ ,
@@ -470,5 +470,10 @@ An equivalence of types induces an isomorphism of pointed dcpos on the liftings.
       (λ x → ap (λ - → 𝓛̇ - x) (dfunext fe (inverses-are-sections' e))) ,
       𝓛̇-continuous i j ⌜ e ⌝ ,
       𝓛̇-continuous j i ⌜ e ⌝⁻¹
+
+𝓛̇-≃ᵈᶜᵖᵒ : {X : 𝓤 ̇  } {Y : 𝓦 ̇  } (i : is-set X) (j : is-set Y)
+         → X ≃ Y
+         → 𝓛-DCPO i ≃ᵈᶜᵖᵒ 𝓛-DCPO j
+𝓛̇-≃ᵈᶜᵖᵒ i j e = ≃ᵈᶜᵖᵒ⊥-to-≃ᵈᶜᵖᵒ (𝓛-DCPO⊥ i) (𝓛-DCPO⊥ j) (𝓛̇-≃ᵈᶜᵖᵒ⊥ i j e)
 
 \end{code}
