@@ -27,6 +27,7 @@ module DomainTheory.Lifting.LiftingSet
         (pe : propext 𝓣)
        where
 
+open import UF.Base
 open import UF.Equiv
 open import UF.Hedberg
 open import UF.ImageAndSurjection pt
@@ -448,5 +449,26 @@ module _
          h (i , q) = ＝-to-is-defined (l-is-ub i q) q
        g : sup-map α ∼ (λ q → value l (f q))
        g q = P-is-prop (sup-map α q) (value l (f q))
+
+\end{code}
+
+Added 5 June 2024.
+
+An equivalence of types induces an isomorphism of pointed dcpos on the liftings.
+
+\begin{code}
+
+𝓛̇-isomorphism : {X : 𝓤 ̇  } {Y : 𝓦 ̇  } (i : is-set X) (j : is-set Y)
+               → X ≃ Y
+               → 𝓛-DCPO⊥ i ≃ᵈᶜᵖᵒ⊥ 𝓛-DCPO⊥ j
+𝓛̇-isomorphism i j e = ≃ᵈᶜᵖᵒ-to-≃ᵈᶜᵖᵒ⊥ (𝓛-DCPO⊥ i) (𝓛-DCPO⊥ j) I
+ where
+  I : 𝓛-DCPO i ≃ᵈᶜᵖᵒ 𝓛-DCPO j
+  I = 𝓛̇ ⌜ e ⌝ ,
+      𝓛̇ ⌜ e ⌝⁻¹  ,
+      (λ x → ap (λ - → 𝓛̇ - x) (dfunext fe (inverses-are-retractions' e))) ,
+      (λ x → ap (λ - → 𝓛̇ - x) (dfunext fe (inverses-are-sections' e))) ,
+      𝓛̇-continuous i j ⌜ e ⌝ ,
+      𝓛̇-continuous j i ⌜ e ⌝⁻¹
 
 \end{code}

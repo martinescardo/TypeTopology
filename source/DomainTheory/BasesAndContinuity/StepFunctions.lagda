@@ -493,8 +493,8 @@ argument is fully formalized.
 
    exponential-has-small-basis : has-specified-small-basis (𝓓 ⟹ᵈᶜᵖᵒ 𝓔)
    exponential-has-small-basis = B , r ∘ β ,
-    small-basis-from-continuous-retract (𝓓 ⟹ᵈᶜᵖᵒ 𝓔) (𝓓' ⟹ᵈᶜᵖᵒ 𝓔')
-     exp-continuous-retract pe β (compact-basis-is-basis (𝓓' ⟹ᵈᶜᵖᵒ 𝓔') β κ)
+    small-basis-from-continuous-retract pe (𝓓 ⟹ᵈᶜᵖᵒ 𝓔) (𝓓' ⟹ᵈᶜᵖᵒ 𝓔')
+     exp-continuous-retract β (compact-basis-is-basis (𝓓' ⟹ᵈᶜᵖᵒ 𝓔') β κ)
     where
      open _continuous-retract-of_ exp-continuous-retract
      exp-small-compact-basis : has-specified-small-compact-basis (𝓓' ⟹ᵈᶜᵖᵒ 𝓔')
