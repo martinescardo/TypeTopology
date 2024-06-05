@@ -184,6 +184,9 @@ extensional-po-is-prop-valued fe isp x y =
 ≼-refl : {x : X} → x ≼ x
 ≼-refl u l = l
 
+≼-refl-＝ : {x y : X} → x ＝ y → x ≼ y
+≼-refl-＝ refl = ≼-refl
+
 ≼-trans : {x y z : X} → x ≼ y → y ≼ z → x ≼ z
 ≼-trans f g u l = g u (f u l)
 
