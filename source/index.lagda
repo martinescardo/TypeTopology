@@ -4,11 +4,11 @@
    -------------------------------------------------------------
 
    Martin Escardo and collaborators,
-   2010--2023--∞, continuously evolving.
+   2010--2024--∞, continuously evolving.
    https://www.cs.bham.ac.uk/~mhe/
    https://github.com/martinescardo/TypeTopology
 
-   Tested with Agda 2.6.4
+   Tested with Agda 2.6.4.3
 
    * Our main use of this development is as a personal blackboard or
      notepad for our research and that of collaborators. In
@@ -55,8 +55,8 @@
 
      (https://www.cs.bham.ac.uk/~mhe/TypeTopology/AllModulesIndex.html)
 
-   * In our last count, on 24th October 2023, this development has
-     650 files and 180k lines of code, including comments and blank
+   * In our last count, on 2024.05.17, this development has 753 Agda
+     files with 211k lines of code, including comments and blank
      lines. But we don't update the count frequently.
 
 Philosophy of the repository
@@ -129,6 +129,7 @@ import ContinuityAxiom.index
 import Coslice.index
 import CrossedModules.index
 import DedekindReals.index
+import DiscreteGraphicMonoids.index
 import DomainTheory.index
 import Dominance.index
 import Duploids.index
@@ -152,13 +153,13 @@ import Modal.index
 import Naturals.index
 import Notation.index
 import NotionsOfDecidability.index
+import OrderedTypes.index
 import Ordinals.index
-import PathSequences.index
 import PCF.index
-import Posets.index
+import PathSequences.index
 import Quotient.index
-import Relations.index
 import Rationals.index
+import Relations.index
 import Slice.index
 import TWA.index
 import Taboos.index
@@ -167,6 +168,7 @@ import UF.index
 import Various.index
 import W.index
 import WildCategories.index
+import gist.index
 
 \end{code}
 

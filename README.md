@@ -40,6 +40,7 @@ Please add yourself the first time you contribute.
 
 * Alice Laroche
 * Andrew Sneap
+* Andrew Swan
 * Ayberk Tosun
 * Brendan Hart
 * Bruno Paiva
@@ -47,6 +48,7 @@ Please add yourself the first time you contribute.
 * Cory Knapp
 * Ettore Aldrovandi
 * Fredrik Nordvall Forsberg
+* Ian Ray
 * Igor Arrieta (ii)
 * Jon Sterling
 * Keri D'Angelo
@@ -178,6 +180,15 @@ Tosun.
 
    https://doi.org/10.4230/LIPIcs.FSCD.2021.8
 
+1. Tom de Jong. *Domain Theory in Constructive and Predicative Univalent
+   Foundations*. PhD thesis. School of Computer Science, University of
+   Birmingham, UK. Submitted: 30 September 2022; accepted: 1 February 2023.
+
+   https://etheses.bham.ac.uk/id/eprint/13401/ \
+   Updated versions: \
+   https://arxiv.org/abs/2301.12405 \
+   https://tdejong.com/writings/phd-thesis.pdf
+
 1. Ayberk Tosun and Martín H. Escardó. *Patch Locale of a Spectral
    Locale in Univalent Type Theory.* [Electronic Notes in Theoretical
    Informatics and Computer Science](https://entics.episciences.org/),
@@ -212,6 +223,17 @@ Tosun.
    volume 974, 29 September 2023, available online 2 August 2023.
 
    https://doi.org/10.1016/j.tcs.2023.114111
+
+1. Todd Waugh Ambridge. *Exact Real Search: Formalised Optimisation and Regression in Constructive Univalent Mathematics.* January 2024. University of Birmingham. PhD thesis.
+
+   https://doi.org/10.48550/arXiv.2401.09270
+
+1. Igor Arrieta, Martín H. Escardó and Ayberk Tosun. *The Patch Topology in
+   Univalent Foundations*.
+
+   ArXiv preprint. Available online 5 February 2024.
+
+   https://arxiv.org/abs/2402.03134
 
 [CSL21]:  https://csl2021.fmf.uni-lj.si/
 [FSCD21]: https://fscd2021.dc.uba.ar/

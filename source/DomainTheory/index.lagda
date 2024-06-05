@@ -1,6 +1,9 @@
 Tom de Jong, 4 June 2019
 Updated 23 December 2021
 Updated 12 and 14 June 2022
+Updated 30 October 2023 (by Ayberk Tosun)
+Updated 6 November 2023 (by Ayberk Tosun)
+Updated 31 May 2024 (by Tom de Jong)
 
 Index for the formalization of domain theory, briefly describing the contents of
 each directory, ordered almost¹ alphabetically by directory name.
@@ -64,6 +67,7 @@ import DomainTheory.Basics.WayBelow        -- (7)
    continuous dcpos
 7. Using step functions we show that sup-complete dcpos with small compact
    bases are closed under exponentials
+8. Definition of the notion of a Scott domain (by Ayberk Tosun)
 -}
 
 import DomainTheory.BasesAndContinuity.Bases                   -- (1)
@@ -73,6 +77,7 @@ import DomainTheory.BasesAndContinuity.ContinuityDiscussion    -- (4)
 import DomainTheory.BasesAndContinuity.ContinuityImpredicative -- (5)
 import DomainTheory.BasesAndContinuity.IndCompletion           -- (6)
 import DomainTheory.BasesAndContinuity.StepFunctions           -- (7)
+import DomainTheory.BasesAndContinuity.ScottDomain             -- (8)
 
 {- Bilimits
 
@@ -90,15 +95,19 @@ import DomainTheory.Bilimits.Dinfinity  -- (3)
 1. The ideal completion of the dyadics is a nice example of a continuous dcpo
    (with a small basis) that cannot be algebraic as it has no compact elements
    at all.
-2. The type Ω of propositions is an examples of a pointed algebraic dcpo with
+2. The type Ω of propositions is an example of a pointed algebraic dcpo with
    the booleans giving a small compact basis
-3. The powerset is an examples of a pointed algebraic dcpo with lists giving a
+3. The large poset of small ordinals is an example of an algebraic dcpo with no
+   small compact basis
+   [Added 31 May 2024]
+4. The powerset is an examples of a pointed algebraic dcpo with lists giving a
    small compact basis (through Kuratowski finite subsets)
 -}
 
 import DomainTheory.Examples.IdlDyadics -- (1)
 import DomainTheory.Examples.Omega      -- (2)
-import DomainTheory.Examples.Powerset   -- (3)
+import DomainTheory.Examples.Ordinals   -- (3)
+import DomainTheory.Examples.Powerset   -- (4)
 
 {- IdealCompletion
 
@@ -137,10 +146,24 @@ import DomainTheory.ScottModelOfPCF.ScottModelOfPCF -- (2)
 {- Topology (by Ayberk Tosun)
 
 0. The definition of the Scott topology of a dcpo
+1. Some properties of the Scott topology of a dcpo
 
 -}
 
-import DomainTheory.Topology.ScottTopology          -- (0)
+import DomainTheory.Topology.ScottTopology           -- (0)
+import DomainTheory.Topology.ScottTopologyProperties -- (1)
+
+{-
+  In the locale theory development, some results on the pointfree topology of
+  domains have been proved by Ayberk Tosun. Most importantly, the fact that the
+  Scott locale of a Scott domain is a spectral locale has been proved, which was
+  previously listed as an additional formalization target in the list at the
+  bottom of this module.
+
+  Such results on the pointfree topology of domains can be found in the
+  directory `Locales/ScottLocale`. The proof of spectrality is in the module
+  `Locales.ScottLocale.ScottLocalesOfScottDomains`.
+-}
 
 \end{code}
 
@@ -164,15 +187,5 @@ We present a succinct list of domain-theoretic formalization targets here:
 3. Formalize the results in reverse mathematics and delta-complete posets.
    See Chapter 6 of the PhD thesis for details.
 
-4. Formalize the definition of the Scott topology of a (continuous) dcpo and
-   show that the Scott opens form a frame, using Ayberk Tosun's formalization of
-   frames and locales, see Locales.index.
-
-   Additionally, show that the Scott topology of a continuous dcpo is spectral,
-   as defined in Locales.CompactRegular.
-
-
 Item 2 should be a fun challenge for a student with an interest in
 (domain-theoretic semantics of) programming languages.
-
-If you'd like to work on Item 4, please get in touch with Ayberk Tosun.

@@ -1,4 +1,11 @@
-Ayberk Tosun, 1 March 2022.
+--------------------------------------------------------------------------------
+author:        Ayberk Tosun
+date-started:  2022-03-01
+dates-updated: [2024-05-06]
+--------------------------------------------------------------------------------
+
+Originally part of `ayberkt/formal-topology-in-UF`. Ported to TypeTopology on
+2022-03-01.
 
 \begin{code}
 
@@ -6,19 +13,21 @@ Ayberk Tosun, 1 March 2022.
 
 open import MLTT.Spartan
 open import UF.Base
-open import UF.PropTrunc
 open import UF.FunExt
+open import UF.PropTrunc
 
 module Locales.AdjointFunctorTheoremForFrames
          (pt : propositional-truncations-exist)
          (fe : Fun-Ext)
          where
 
+open import Locales.ContinuousMap.Definition pt fe
+open import Locales.ContinuousMap.FrameHomomorphism-Properties pt fe
 open import Locales.Frame pt fe
 open import Locales.GaloisConnection pt fe
 open import Slice.Family
-open import UF.Subsingletons
 open import UF.Logic
+open import UF.Subsingletons
 
 open AllCombinators pt fe
 open PropositionalTruncation pt
@@ -161,6 +170,9 @@ module AdjointFunctorTheorem (X : Locale 𝓤' 𝓥 𝓥)
 
 \begin{code}
 
+ open ContinuousMaps
+ open FrameHomomorphismProperties
+
  aft : (𝒻 : 𝒪Yₚ ─m→ 𝒪Xₚ)
      → has-right-adjoint 𝒻 ↔ is-join-preserving (𝒪 Y) (𝒪 X) (𝒻 .pr₁) holds
  aft 𝒻 = aft-forward 𝒻 , aft-backward 𝒻
@@ -281,5 +293,33 @@ module AdjointFunctorTheorem (X : Locale 𝓤' 𝓥 𝓥)
 
    † : (𝒻₊ (U ∧[ 𝒪 X ] V) is-glb-of (𝒻₊ U , 𝒻₊ V)) holds
    † = †₁ , †₂
+
+\end{code}
+
+Added on 2024-05-06.
+
+Monotone equivalences are adjoints.
+
+\begin{code}
+
+ monotone-equivalences-are-adjoints
+  : (sₘ@(s , _) : poset-of (𝒪 X) ─m→ poset-of (𝒪 Y))
+  → (rₘ@(r , _) : poset-of (𝒪 Y) ─m→ poset-of (𝒪 X))
+  → s ∘ r ∼ id
+  → r ∘ s ∼ id
+  → (rₘ ⊣ sₘ) holds
+ monotone-equivalences-are-adjoints (s , 𝓂₁) (r , 𝓂₂) φ ψ U V = † , ‡
+  where
+   open PosetReasoning 𝒪Xₚ
+
+   † : (r U ≤[ 𝒪Xₚ ] V ⇒ U ≤[ 𝒪Yₚ ] s V) holds
+   † p =
+    sections-are-order-embeddings (poset-of (𝒪 Y)) (poset-of (𝒪 X)) r s 𝓂₁ φ ※
+     where
+      ※ : (r U ≤[ 𝒪Xₚ ] r (s V)) holds
+      ※ = r U ≤⟨ p ⟩ V ＝⟨ ψ V ⁻¹ ⟩ₚ r (s V) ■
+
+   ‡ : (U ≤[ 𝒪Yₚ ] s V ⇒ r U ≤[ 𝒪Xₚ ] V) holds
+   ‡ p = r U ≤⟨ 𝓂₂ (U , _) p ⟩ r (s V) ＝⟨ ψ V ⟩ₚ V ■
 
 \end{code}

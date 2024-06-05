@@ -7,8 +7,10 @@ Martin Escardo
 module TypeTopology.index where
 
 import TypeTopology.ADecidableQuantificationOverTheNaturals
+import TypeTopology.AbsolutenessOfCompactness
+import TypeTopology.AbsolutenessOfCompactnessExample
+import TypeTopology.CantorMinusPoint
 import TypeTopology.CantorSearch
-import TypeTopology.UniformSearch -- by Ayberk Tosun
 import TypeTopology.CompactTypes
 import TypeTopology.ConvergentSequenceHasInf
 import TypeTopology.DecidabilityOfNonContinuity
@@ -28,6 +30,7 @@ import TypeTopology.SquashedCantor
 import TypeTopology.SquashedSum
 import TypeTopology.TheTopologyOfTheUniverse
 import TypeTopology.TotallySeparated
+import TypeTopology.UniformSearch -- by Ayberk Tosun
 import TypeTopology.WeaklyCompactTypes
 
 \end{code}

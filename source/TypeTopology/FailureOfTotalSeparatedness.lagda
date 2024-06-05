@@ -24,12 +24,12 @@ constructive taboo. The proof works by constructing two elements x₀
 and x₁ of X, and a discontinuous function ℕ∞→𝟚 from any hypothetical
 p:X→𝟚 with p x₀ ≠ p x₁, and then reducing discontinuity to WLPO.
 
-Our proof postulates extensionality. Without the postulate there are
-fewer closed terms of type X→𝟚, and their question was for closed
-terms X, x₀,x₁:X, and d:x₀≠x₁, and so the negative answer also works
-in the absence of extensionality. But assuming extensionality we get a
-stronger result, which is not restricted to closed terms, and which is
-a theorem rather than a metatheorem.
+Our proof assumes function extensionality. Without the assumption
+there are fewer closed terms of type X→𝟚, and their question was for
+closed terms X, x₀,x₁:X, and d:x₀≠x₁, and so the negative answer also
+works in the absence of function extensionality. But assuming function
+extensionality we get a stronger result, which is not restricted to
+closed terms, and which is a theorem rather than a metatheorem.
 
 \begin{code}
 
@@ -42,8 +42,8 @@ module TypeTopology.FailureOfTotalSeparatedness (fe : FunExt) where
 open import MLTT.Spartan
 
 open import MLTT.Two-Properties
-open import CoNaturals.GenericConvergentSequence
-open import Taboos.BasicDiscontinuity
+open import CoNaturals.Type
+open import Taboos.BasicDiscontinuity (fe 𝓤₀ 𝓤₀)
 open import Taboos.WLPO
 open import UF.Base
 open import Notation.CanonicalMap
@@ -101,7 +101,7 @@ module concrete-example where
 \begin{code}
 
  failure : (p : X → 𝟚) → p ∞₀ ≠ p ∞₁ → WLPO
- failure p = disagreement-taboo fe p₀ p₁ lemma
+ failure p = disagreement-taboo p₀ p₁ lemma
   where
    p₀ : ℕ∞ → 𝟚
    p₀ u = p (u , λ r → ₀)
@@ -130,28 +130,24 @@ module concrete-example where
 \begin{code}
 
  ∞₀-and-∞₁-different : ∞₀ ≠ ∞₁
- ∞₀-and-∞₁-different r = zero-is-not-one claim₃
+ ∞₀-and-∞₁-different r = zero-is-not-one claim₂
   where
    p : ∞ ＝ ∞
    p = ap pr₁ r
 
-   φ : {x x' : ℕ∞} → x ＝ x' → (x ＝ ∞ → 𝟚) → (x' ＝ ∞ → 𝟚)
-   φ = transport _
+   t : {x x' : ℕ∞} → x ＝ x' → (x ＝ ∞ → 𝟚) → (x' ＝ ∞ → 𝟚)
+   t = transport (λ - → - ＝ ∞ → 𝟚)
 
-   claim₀ : φ p (λ p → ₀) ＝ (λ p → ₁)
-   claim₀ = from-Σ-＝' r
+   claim₀ : refl ＝ p
+   claim₀ = ℕ∞-is-set (fe 𝓤₀ 𝓤₀) refl p
 
-   claim₁ : φ p (λ p → ₀) refl ＝ ₁
-   claim₁ = ap (λ - → - refl) claim₀
+   claim₁ : t p (λ p → ₀) ＝ (λ p → ₁)
+   claim₁ = from-Σ-＝' r
 
-   fact : refl ＝ p
-   fact = ℕ∞-is-set (fe 𝓤₀ 𝓤₀) refl p
-
-   claim₂ : ₀ ＝ φ p (λ _ → ₀) refl
-   claim₂ = ap (λ - → φ - (λ _ → ₀) refl) fact
-
-   claim₃ : ₀ ＝ ₁
-   claim₃ =  claim₂ ∙ claim₁
+   claim₂ : ₀ ＝ ₁
+   claim₂ =  ₀                  ＝⟨ ap (λ - → t - (λ _ → ₀) refl) claim₀ ⟩
+             t p (λ _ → ₀) refl ＝⟨ ap (λ - → - refl) claim₁ ⟩
+             ₁                  ∎
 
 \end{code}
 
@@ -207,14 +203,14 @@ module general-example (𝓤 : Universe) (X : 𝓤 ̇ ) (a : X) where
    observation₁ : P a₁ ＝ (a ＝ a) × (₁ ＝ ₁)
    observation₁ = refl
 
-   f : P a₁ → P a₀
-   f = transport P (r ⁻¹)
+   t : P a₁ → P a₀
+   t = transport P (r ⁻¹)
 
    p₁ : P a₁
    p₁ = refl , refl
 
    p₀ : P a₀
-   p₀ = f p₁
+   p₀ = t p₁
 
    zero-is-one : ₀ ＝ ₁
    zero-is-one = pr₂ p₀
@@ -247,7 +243,7 @@ extensionality. (Cf. the module DiscreteAndSeparated.)
  weakly-isolated x = ∀ x' → is-decidable (x' ≠ x)
 
  Theorem : (Σ g ꞉ (Y → 𝟚), g a₀ ≠ g a₁) → weakly-isolated a
- Theorem (g , d) = λ x → 𝟚-equality-cases' (claim₀' x) (claim₁' x)
+ Theorem (g , d) x = 𝟚-equality-cases' (claim₀' x) (claim₁' x)
   where
    f : X → 𝟚
    f x = g (e ₀ x) ⊕ g (e ₁ x)

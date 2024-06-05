@@ -728,11 +728,11 @@ _≤₂ₗₑₓ_ = lex-order _≤₂_
 
 open import TypeTopology.InfProperty
 
-ε-is-root-lower-bound : {n : ℕ}
+ε-is-roots-lower-bound : {n : ℕ}
                         (f : 𝟚 ^ n → 𝟚)
-                      → root-lower-bound _≤₂ₗₑₓ_ f (ε f)
-ε-is-root-lower-bound {0}      f _        fxs=₀ = ⋆
-ε-is-root-lower-bound {succ n} f (x , xs) fxs=₀ = γ (x , xs) fxs=₀
+                      → is-roots-lower-bound _≤₂ₗₑₓ_ f (ε f)
+ε-is-roots-lower-bound {0}      f _        fxs=₀ = ⋆
+ε-is-roots-lower-bound {succ n} f (x , xs) fxs=₀ = γ (x , xs) fxs=₀
  where
   b₀ : 𝟚
   b₀ = ε𝟚 (b ↦ A (f ∘ cons b))
@@ -741,7 +741,7 @@ open import TypeTopology.InfProperty
   b₀-property xs f₀xs=₀ = ε-gives-putative-root (f ∘ cons ₀) (xs , f₀xs=₀)
 
   δ : (b : 𝟚) (xs : 𝟚 ^ n) → f (b , xs) ＝ ₀ → b₀ ＝ b → ε (f ∘ cons b₀) ≤₂ₗₑₓ xs
-  δ b xs fbxs=₀ refl = ε-is-root-lower-bound (f ∘ cons b₀) xs fbxs=₀
+  δ b xs fbxs=₀ refl = ε-is-roots-lower-bound (f ∘ cons b₀) xs fbxs=₀
 
   γ : (xs : 𝟚 ^ (succ n)) → f xs ＝ ₀ → ε f ≤₂ₗₑₓ  xs
   γ (₀ , xs) f₀xs=₀ = ₀-minimal-converse (b₀-property xs f₀xs=₀) , δ ₀ xs f₀xs=₀
@@ -751,42 +751,42 @@ lower-bound-property : {n : ℕ}
                        (f : 𝟚 ^ (succ n) → 𝟚)
                        (b : 𝟚)
                        (xs : 𝟚 ^ n)
-                     → root-lower-bound _≤₂ₗₑₓ_ f (b , xs)
-                     → root-lower-bound _≤₂ₗₑₓ_ (f ∘ cons b) xs
+                     → is-roots-lower-bound _≤₂ₗₑₓ_ f (b , xs)
+                     → is-roots-lower-bound _≤₂ₗₑₓ_ (f ∘ cons b) xs
 lower-bound-property f b xs lower-bound ys fbys=₀ = pr₂ (lower-bound (b , ys) fbys=₀) refl
 
-ε-is-upper-bound-of-root-lower-bounds : {n : ℕ}
-                                        (f : 𝟚 ^ n → 𝟚)
-                                      → upper-bound-of-root-lower-bounds _≤₂ₗₑₓ_ f (ε f)
-ε-is-upper-bound-of-root-lower-bounds {0}      f xs lower-bound = ⋆
-ε-is-upper-bound-of-root-lower-bounds {succ n} f xs lower-bound = γ xs lower-bound
+ε-is-upper-bound-of-roots-lower-bounds : {n : ℕ}
+                                         (f : 𝟚 ^ n → 𝟚)
+                                       → is-upper-bound-of-lower-bounds _≤₂ₗₑₓ_ f (ε f)
+ε-is-upper-bound-of-roots-lower-bounds {0}      f xs lower-bound = ⋆
+ε-is-upper-bound-of-roots-lower-bounds {succ n} f xs lower-bound = γ xs lower-bound
  where
 
   b₀ : 𝟚
   b₀ = ε𝟚 (b ↦ A (f ∘ cons b))
 
   b₀-property : (xs : 𝟚 ^ n)
-              → root-lower-bound _≤₂ₗₑₓ_ f (₁ , xs)
+              → is-roots-lower-bound _≤₂ₗₑₓ_ f (₁ , xs)
               → (b : 𝟚) → b ＝ b₀ → ₁ ≤ b₀
   b₀-property xs lower-bound ₀ eq = transport (₁ ≤_) eq
                                      (pr₁ (lower-bound (₀ , ε (f ∘ cons ₀)) (eq ⁻¹)))
   b₀-property xs lower-bound ₁ eq = transport (₁ ≤_) eq ⋆
 
   δ : (b : 𝟚) (xs : 𝟚 ^ n)
-    → root-lower-bound _≤₂ₗₑₓ_ f (b , xs)
+    → is-roots-lower-bound _≤₂ₗₑₓ_ f (b , xs)
     → b ＝ b₀
     → xs ≤₂ₗₑₓ ε (f ∘ cons b₀)
-  δ b xs lower-bound refl = ε-is-upper-bound-of-root-lower-bounds
+  δ b xs lower-bound refl = ε-is-upper-bound-of-roots-lower-bounds
                              (f ∘ cons b₀) xs
                              (lower-bound-property f b₀ xs lower-bound)
 
-  γ : (xs : 𝟚 ^ (succ n)) → root-lower-bound _≤₂ₗₑₓ_ f xs → xs ≤₂ₗₑₓ ε f
+  γ : (xs : 𝟚 ^ (succ n)) → is-roots-lower-bound _≤₂ₗₑₓ_ f xs → xs ≤₂ₗₑₓ ε f
   γ (₀ , xs) lower-bound = ⋆                                  , δ ₀ xs lower-bound
   γ (₁ , xs) lower-bound = b₀-property xs lower-bound b₀ refl , δ ₁ xs lower-bound
 
-ε-is-roots-infimum : {n : ℕ} (f : 𝟚 ^ n → 𝟚) → roots-infimum _≤₂ₗₑₓ_ f (ε f)
-ε-is-roots-infimum f = ε-is-root-lower-bound f ,
-                       ε-is-upper-bound-of-root-lower-bounds f
+ε-is-roots-infimum : {n : ℕ} (f : 𝟚 ^ n → 𝟚) → is-roots-infimum _≤₂ₗₑₓ_ f (ε f)
+ε-is-roots-infimum f = ε-is-roots-lower-bound f ,
+                       ε-is-upper-bound-of-roots-lower-bounds f
 
 𝟚^n-has-inf : {n : ℕ} → has-inf {X = 𝟚 ^ n} _≤₂ₗₑₓ_
 𝟚^n-has-inf p =  ε p ,

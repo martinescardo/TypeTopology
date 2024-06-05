@@ -21,8 +21,8 @@ module Lifting.Miscelanea-PropExt-FunExt
         (fe : Fun-Ext)
        where
 
+open import Lifting.Construction 𝓣
 open import Lifting.IdentityViaSIP 𝓣
-open import Lifting.Lifting 𝓣
 open import Lifting.Miscelanea 𝓣
 open import Lifting.Monad 𝓣
 open import UF.Base

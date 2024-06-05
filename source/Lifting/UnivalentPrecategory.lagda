@@ -20,7 +20,7 @@ module Lifting.UnivalentPrecategory
        where
 
 open import Lifting.IdentityViaSIP 𝓣
-open import Lifting.Lifting 𝓣
+open import Lifting.Construction 𝓣
 open import UF.Base
 open import UF.Embeddings
 open import UF.Equiv
@@ -38,12 +38,19 @@ open import UF.Univalence
 \end{code}
 
 We define l ⊑ m to mean that if l is defined then so is m with the
-same value:
+same value. Here the suffix "-pr" standands for preservation (and also
+for projection!).
 
 \begin{code}
 
 _⊑_ : 𝓛 X → 𝓛 X → 𝓤 ⊔ 𝓣 ̇
 l ⊑ m = Σ f ꞉ (is-defined l → is-defined m) , value l ∼ value m ∘ f
+
+def-pr : (l m : 𝓛 X) → l ⊑ m → (is-defined l → is-defined m)
+def-pr l m = pr₁
+
+val-pr : (l m : 𝓛 X) (α : l ⊑ m) → value l ∼ value m ∘ (def-pr l m α)
+val-pr l m = pr₂
 
 dom : {l m : 𝓛 X} → l ⊑ m → 𝓛 X
 dom {l} {m} α = l
@@ -55,7 +62,7 @@ cod {l} {m} α = m
 𝓛-id l = id , (λ x → refl)
 
 𝓛-Id-to-arrow : (l m : 𝓛 X) → l ＝ m → l ⊑ m
-𝓛-Id-to-arrow l .l refl = 𝓛-id l
+𝓛-Id-to-arrow l l refl = 𝓛-id l
 
 𝓛-comp : (l m n : 𝓛 X) → l ⊑ m → m ⊑ n → l ⊑ n
 𝓛-comp l m n (f , δ) (g , ε) = g ∘ f , (λ p → δ p ∙ ε (f p))
@@ -63,12 +70,15 @@ cod {l} {m} α = m
 𝓛-comp-unit-right : (l m : 𝓛 X) (α : l ⊑ m) → 𝓛-comp l m m α (𝓛-id m) ＝ α
 𝓛-comp-unit-right l m α = refl
 
-𝓛-comp-unit-left : funext 𝓣 𝓤 → (l m : 𝓛 X) (α : l ⊑ m) → 𝓛-comp l l m (𝓛-id l) α ＝ α
+𝓛-comp-unit-left : funext 𝓣 𝓤
+                 → (l m : 𝓛 X) (α : l ⊑ m)
+                 → 𝓛-comp l l m (𝓛-id l) α ＝ α
 𝓛-comp-unit-left fe l m α = to-Σ-＝ (refl , dfunext fe λ p → refl-left-neutral)
 
 𝓛-comp-assoc : funext 𝓣 𝓤
              → {l m n o : 𝓛 X} (α : l ⊑ m) (β : m ⊑ n) (γ : n ⊑ o)
-             →  𝓛-comp l n o (𝓛-comp l m n α β) γ ＝ 𝓛-comp l m o α (𝓛-comp m n o β γ)
+             → 𝓛-comp l n o (𝓛-comp l m n α β) γ
+             ＝ 𝓛-comp l m o α (𝓛-comp m n o β γ)
 𝓛-comp-assoc fe (f , δ) (g , ε) (h , ζ) =
  to-Σ-＝ (refl , dfunext fe (λ p → ∙assoc (δ p) (ε (f p)) (ζ (g (f p)))))
 
@@ -126,14 +136,20 @@ embedding.
   b = dfunext fe (λ p → j (Idtofun (a ⁻¹) p) (g p))
 
   c : transport (λ - → (- → X) × is-prop -) a (ψ , j)
-    ＝ (transport (λ - → - → X) a ψ , transport is-prop a j)
+    ＝[ (P → X) × is-prop P ]
+     (transport (λ - → - → X) a ψ , transport is-prop a j)
   c = transport-× (λ - → - → X) is-prop a
 
-  d = pr₁ (transport (λ - → (- → X) × is-prop -) a (ψ , j)) ＝⟨ ap pr₁ c ⟩
-      transport (λ - → - → X) a ψ                           ＝⟨ transport-is-pre-comp a ψ ⟩
-      ψ ∘ Idtofun (a ⁻¹)                                    ＝⟨ ap (λ - → ψ ∘ -) b ⟩
-      ψ ∘ g                                                 ＝⟨ dfunext fe' ε ⟩
+  d = pr₁ (transport (λ - → (- → X) × is-prop -) a (ψ , j)) ＝⟨ I ⟩
+      transport (λ - → - → X) a ψ                           ＝⟨ II ⟩
+      ψ ∘ Idtofun (a ⁻¹)                                    ＝⟨ III ⟩
+      ψ ∘ g                                                 ＝⟨ IV ⟩
       φ                                                     ∎
+       where
+        I   = ap pr₁ c
+        II  = transport-is-pre-comp a ψ
+        III = ap (λ - → ψ ∘ -) b
+        IV  = dfunext fe' ε
 
   e : Q , ψ , j ＝ P , φ , i
   e = to-Σ-＝ (a , to-×-＝ d (being-prop-is-prop fe _ i))
@@ -232,16 +248,16 @@ to-⋍· (Q , ψ , j) (P , φ , i) ((f , δ) , g) =
   (f , ((g , (λ p → i (f (g p)) p)) , (g , (λ q → j (g (f q)) q)))) , δ
 
 from-⋍· : (l m : 𝓛 X) → (l ⋍· m) → (l ⊑ m) × (is-defined m → is-defined l)
-from-⋍· l m ((f , δ) , g) = (f , g) , pr₁ (pr₁ δ)
+from-⋍· l m (f , g) = (⌜ f ⌝ , g) , ⌜ f ⌝⁻¹
 
-from-to : (l m : 𝓛 X) →  from-⋍· l m ∘ to-⋍· l m ∼ id
-from-to l m e = refl
+from-to-⋍· : (l m : 𝓛 X) →  from-⋍· l m ∘ to-⋍· l m ∼ id
+from-to-⋍· l m e = refl
 
 to-from : funext 𝓣 𝓣 → (l m : 𝓛 X) → to-⋍· l m ∘ from-⋍· l m ∼ id
-to-from fe l m ((f , δ) , g) = b
+to-from fe l m 𝕗@((f , δ) , g) = b
  where
   δ' : is-equiv f
-  δ' = pr₂ (pr₁ (to-⋍· l m (from-⋍· l m ((f , δ) , g))))
+  δ' = ⌜ is-defined-⋍· l m (to-⋍· l m (from-⋍· l m 𝕗)) ⌝-is-equiv
 
   a : δ' ＝ δ
   a = being-equiv-is-prop'' fe f δ' δ
@@ -252,7 +268,7 @@ to-from fe l m ((f , δ) , g) = b
 ⊑-anti-equiv-lemma'' : funext 𝓣 𝓣 → (l m : 𝓛 X) → is-equiv (to-⋍· l m)
 ⊑-anti-equiv-lemma'' fe l m = qinvs-are-equivs
                                (to-⋍· l m)
-                               (from-⋍· l m , from-to l m , to-from fe l m)
+                               (from-⋍· l m , from-to-⋍· l m , to-from fe l m)
 
 ⊑-anti-equiv-lemma' : funext 𝓣 𝓣
                    → (l m : 𝓛 X)
@@ -330,7 +346,7 @@ proposition "is-defined l" (and gave me a headache):
   π α d = α
 
   ρ : (is-defined l → l ⊑ m) → l ⊑ m
-  ρ h = (λ d → pr₁ (h d) d) , (λ d → pr₂ (h d) d)
+  ρ h = (λ d → def-pr l m (h d) d) , (λ d → val-pr l m (h d) d)
 
   ρπ : ρ ∘ π ∼ id
   ρπ α = refl
@@ -338,45 +354,52 @@ proposition "is-defined l" (and gave me a headache):
   ρ-lemma : (h : is-defined l → l ⊑ m) (q : is-defined l) → ρ h ＝ h q
   ρ-lemma h q = γ
    where
-    remark = h q  ＝⟨ refl ⟩  (λ d → pr₁ (h q) d) , (λ d → pr₂ (h q) d) ∎
+    remark : h q ＝ def-pr l m (h q) , val-pr l m (h q)
+    remark = refl
 
-    k : (d : Q) → pr₁ (h d) d ＝ pr₁ (h q) d
-    k d = ap (λ - → pr₁ (h -) d) (j d q)
+    k : (d : Q) → def-pr l m (h d) d ＝ def-pr l m (h q) d
+    k d = ap (λ - → def-pr l m (h -) d) (j d q)
 
-    a : (λ d → pr₁ (h d) d) ＝ pr₁ (h q)
+    a : (λ d → def-pr l m (h d) d) ＝ def-pr l m (h q)
     a = dfunext fe k
 
     u : (d : Q) {f g : Q → P} (k : f ∼ g)
-      → ap (λ (- : Q → P) → φ (- d)) (dfunext fe k)
-      ＝ ap φ (k d)
+      → ap (λ (- : Q → P) → φ (- d)) (dfunext fe k) ＝ ap φ (k d)
     u d {f} {g} k = ap-funext f g φ k fe d
 
-    v : (d : Q) → pr₂ (h d) d ∙ ap (λ - → φ (- d)) a
-                ＝ pr₂ (h q) d
-    v d = pr₂ (h d) d ∙ ap (λ - → φ (- d)) a                  ＝⟨ using-u ⟩
-          pr₂ (h d) d ∙ ap φ (ap (λ - → pr₁ (h -) d) (j d q)) ＝⟨ ap-ap-is-ap-of-∘ ⟩
-          pr₂ (h d) d ∙ ap (λ - → φ (pr₁ (h -) d)) (j d q)    ＝⟨ by-naturality ⟩
-          ap (λ _ → ψ d) (j d q) ∙ pr₂ (h q) d                ＝⟨ ap-const-is-refl ⟩
-          refl ∙ pr₂ (h q) d                                  ＝⟨ refl-left-neutral ⟩
-          pr₂ (h q) d                                         ∎
-     where
-      using-u = ap (λ - → pr₂ (h d) d ∙ -) (u d k)
-      ap-ap-is-ap-of-∘ = ap (λ - → pr₂ (h d) d ∙ -) (ap-ap (λ - → pr₁ (h -) d) φ (j d q))
-      by-naturality = homotopies-are-natural
-                       (λ _ → ψ d) (λ - → φ (pr₁ (h -) d)) (λ - → pr₂ (h -) d)
-                       {d} {q} {j d q}
-      ap-const-is-refl = ap (λ - → - ∙ pr₂ (h q) d) (ap-const (ψ d) (j d q))
+    v : (d : Q) → val-pr l m (h d) d ∙ ap (λ - → φ (- d)) a
+                ＝ val-pr l m (h q) d
+    v d =
+     val-pr l m (h d) d ∙ ap (λ - → φ (- d)) a                         ＝⟨ I ⟩
+     val-pr l m (h d) d ∙ ap φ (ap (λ - → def-pr l m (h -) d) (j d q)) ＝⟨ II ⟩
+     val-pr l m (h d) d ∙ ap (λ - → φ (def-pr l m (h -) d)) (j d q)    ＝⟨ III ⟩
+     ap (λ _ → ψ d) (j d q) ∙ val-pr l m (h q) d                       ＝⟨ IV ⟩
+     refl ∙ val-pr l m (h q) d                                         ＝⟨ V ⟩
+     val-pr l m (h q) d                                                ∎
+      where
+       I   = ap (λ - → val-pr l m (h d) d ∙ -) (u d k)
+       II  = ap (λ - → val-pr l m (h d) d ∙ -)
+                (ap-ap (λ - → def-pr l m (h -) d) φ (j d q))
+       III = homotopies-are-natural
+              (λ _ → ψ d)
+              (λ - → φ (def-pr l m (h -) d))
+              (λ - → val-pr l m (h -) d)
+              {d} {q} {j d q}
+       IV  = ap (λ - → - ∙ val-pr l m (h q) d) (ap-const (ψ d) (j d q))
+       V   = refl-left-neutral
 
     t : {f g : Q → P} (r : f ＝ g) (h : ψ ∼ φ ∘ f)
-      → transport (λ - → ψ ∼ φ ∘ -) r h
-      ＝ λ q → h q ∙ ap (λ - → φ (- q)) r
+      → transport (λ - → ψ ∼ φ ∘ -) r h ＝ λ q → h q ∙ ap (λ - → φ (- q)) r
     t refl h = refl
 
-    b = transport (λ - → ψ ∼ φ ∘ -) a (λ d → pr₂ (h d) d) ＝⟨ t a (λ d → pr₂ (h d) d) ⟩
-        (λ d → pr₂ (h d) d ∙ ap (λ - → φ (- d)) a)        ＝⟨ dfunext (lower-funext 𝓣 𝓣 fe'') v ⟩
-        pr₂ (h q)                                         ∎
+    b = transport (λ - → ψ ∼ φ ∘ -) a (λ d → val-pr l m (h d) d) ＝⟨ I ⟩
+        (λ d → val-pr l m (h d) d ∙ ap (λ - → φ (- d)) a)        ＝⟨ II ⟩
+        val-pr l m (h q)                                         ∎
+         where
+          I  = t a (λ d → val-pr l m (h d) d)
+          II = dfunext (lower-funext 𝓣 𝓣 fe'') v
 
-    γ : (λ d → pr₁ (h d) d) , (λ d → pr₂ (h d) d) ＝ h q
+    γ : (λ d → def-pr l m (h d) d) , (λ d → val-pr l m (h d) d) ＝ h q
     γ = to-Σ-＝ (a , b)
 
   πρ :  π ∘ ρ ∼ id
@@ -447,77 +470,108 @@ is-𝓛-equiv : (l m : 𝓛 X) → l ⊑ m → 𝓣 ⁺ ⊔ 𝓤 ̇
 is-𝓛-equiv l m α = (n : 𝓛 X) → is-equiv (𝓛-pre-comp-with l m α n)
 
 being-𝓛-equiv-is-prop : funext (𝓣 ⁺ ⊔ 𝓤) (𝓣 ⊔ 𝓤)
-                      → (l m : 𝓛 X) (α : l ⊑ m) → is-prop (is-𝓛-equiv l m α)
+                      → (l m : 𝓛 X) (α : l ⊑ m)
+                      → is-prop (is-𝓛-equiv l m α)
 being-𝓛-equiv-is-prop fe l m α =
  Π-is-prop fe
   (λ n → being-equiv-is-prop''
           (lower-funext (𝓣 ⁺) 𝓤 fe)
           (𝓛-pre-comp-with l m α n))
 
-is-𝓛-equiv→ : (l m : 𝓛 X) (α : l ⊑ m) → is-𝓛-equiv l m α → is-equiv (pr₁ α)
-is-𝓛-equiv→ l m α e = qinvs-are-equivs
-                       (pr₁ α)
-                       (pr₁ β ,
-                        (λ p → being-defined-is-prop l (pr₁ β (pr₁ α p)) p) ,
-                        (λ q → being-defined-is-prop m (pr₁ α (pr₁ β q)) q))
+is-𝓛-equiv→ : (l m : 𝓛 X) (α : l ⊑ m)
+            → is-𝓛-equiv l m α
+            → is-equiv (def-pr l m α)
+is-𝓛-equiv→ l m α e =
+ qinvs-are-equivs
+  (def-pr l m α)
+  (def-pr m l β ,
+    (λ p → being-defined-is-prop l
+            (def-pr m l β
+              (def-pr l m α p)) p) ,
+    (λ q → being-defined-is-prop m
+            (def-pr l m α
+              (def-pr m l β q)) q))
  where
   u : m ⊑ l → l ⊑ l
   u = 𝓛-pre-comp-with l m α l
+
   β : m ⊑ l
   β = inverse u (e l) (𝓛-id l)
 
 is-𝓛-equiv← : propext 𝓣
             → funext 𝓣 𝓣
             → funext 𝓣 𝓤
-            → (l m : 𝓛 X) (α : l ⊑ m) → is-equiv (pr₁ α) → is-𝓛-equiv l m α
+            → (l m : 𝓛 X) (α : l ⊑ m)
+            → is-equiv (def-pr l m α)
+            → is-𝓛-equiv l m α
 is-𝓛-equiv← pe fe fe' l m α e = γ
  where
   r : l ＝ m
-  r = ⊑-anti-lemma pe fe fe' α (inverse (pr₁ α) e)
+  r = ⊑-anti-lemma pe fe fe' α (inverse (def-pr l m α) e)
 
-  π : (l n : 𝓛 X) (α : l ⊑ l) → pr₁ α ＝ id
+  π : (l n : 𝓛 X) (α : l ⊑ l)
+    → def-pr l l α ＝ id
     → Σ δ ꞉ ((q : is-defined l) → value l q ＝ value l q)
           , 𝓛-pre-comp-with l l α n
-            ∼ λ β → pr₁ β , (λ q → δ q ∙ pr₂ β q)
+            ∼ λ β → (def-pr l n β , (λ q → δ q ∙ val-pr l n β q))
   π l n (.id , δ) refl = δ , λ β → refl
 
-  ρ : (l : 𝓛 X) (α : l ⊑ l) → is-equiv (pr₁ α) → is-𝓛-equiv l l α
+  ρ : (l : 𝓛 X) (α : l ⊑ l)
+    → is-equiv (def-pr l l α)
+    → is-𝓛-equiv l l α
   ρ l α e n = equiv-closed-under-∼ u (𝓛-pre-comp-with l l α n) i h
    where
-    s : pr₁ α ＝ id
-    s = dfunext fe (λ q → being-defined-is-prop l (pr₁ α q) q)
+    s : def-pr l l α ＝ id
+    s = dfunext fe (λ q → being-defined-is-prop l
+                           (def-pr l l α q) q)
 
     δ : (q : is-defined l) → value l q ＝ value l q
     δ = pr₁ (π l n α s)
 
     u : l ⊑ n → l ⊑ n
-    u β = pr₁ β , λ q → δ q ∙ pr₂ β q
+    u β = def-pr l n β , λ q → δ q ∙ val-pr l n β q
 
     h : 𝓛-pre-comp-with l l α n ∼ u
     h = pr₂ (π l n α s)
 
     v : l ⊑ n → l ⊑ n
-    v γ = pr₁ γ , (λ p → (δ p)⁻¹ ∙ pr₂ γ p)
+    v γ = def-pr l n γ ,
+          (λ p → (δ p)⁻¹ ∙ val-pr l n γ p)
 
     vu : v ∘ u ∼ id
-    vu (g , ε) = to-Σ-＝ (refl , a)
+    vu (g , ε) = to-Σ-＝ (refl , dfunext fe' a)
      where
-      a = dfunext fe' (λ q →  (δ q)⁻¹ ∙ (δ q ∙ ε q)  ＝⟨ (∙assoc ((δ q)⁻¹) (δ q) (ε q))⁻¹ ⟩
-                             ((δ q)⁻¹ ∙ δ q) ∙ ε q   ＝⟨ ap (λ - → - ∙ ε q) ((sym-is-inverse (δ q))⁻¹)⟩
-                               refl ∙ ε q            ＝⟨ refl-left-neutral ⟩
-                               ε q                   ∎)
+      a : (q : is-defined l) → (δ q)⁻¹ ∙ (δ q ∙ ε q) ＝ ε q
+      a q = (δ q)⁻¹ ∙ (δ q ∙ ε q) ＝⟨ I ⟩
+            ((δ q)⁻¹ ∙ δ q) ∙ ε q ＝⟨ II ⟩
+            refl ∙ ε q            ＝⟨ III ⟩
+            ε q                   ∎
+             where
+              I   = (∙assoc ((δ q)⁻¹) (δ q) (ε q))⁻¹
+              II  = ap (λ - → - ∙ ε q) ((sym-is-inverse (δ q))⁻¹)
+              III = refl-left-neutral
 
     uv : u ∘ v ∼ id
-    uv (g , ε) = to-Σ-＝ (refl , a)
+    uv (g , ε) = to-Σ-＝ (refl , dfunext fe' a)
      where
-      a = dfunext fe' (λ q →  δ q ∙ ((δ q)⁻¹ ∙ ε q)  ＝⟨ (∙assoc (δ q) ((δ q)⁻¹) (ε q))⁻¹ ⟩
-                             (δ q ∙ ((δ q)⁻¹)) ∙ ε q ＝⟨ ap (λ - → - ∙ ε q) ((sym-is-inverse' (δ q))⁻¹)⟩
-                              refl ∙ ε q             ＝⟨ refl-left-neutral ⟩
-                              ε q                    ∎)
+      a : (q : is-defined l) → δ q ∙ ((δ q)⁻¹ ∙ ε q) ＝ ε q
+      a q = δ q ∙ ((δ q)⁻¹ ∙ ε q)  ＝⟨ I ⟩
+           (δ q ∙ ((δ q)⁻¹)) ∙ ε q ＝⟨ II ⟩
+            refl ∙ ε q             ＝⟨ III ⟩
+            ε q                    ∎
+             where
+              I   = (∙assoc (δ q) ((δ q)⁻¹) (ε q))⁻¹
+              II  = ap (λ - → - ∙ ε q) ((sym-is-inverse' (δ q))⁻¹)
+              III = refl-left-neutral
+
     i : is-equiv u
     i = qinvs-are-equivs u (v , vu , uv)
 
-  σ : (l m : 𝓛 X)  → l ＝ m → (α : l ⊑ m) → is-equiv (pr₁ α) → is-𝓛-equiv l m α
+  σ : (l m : 𝓛 X)
+    → l ＝ m
+    → (α : l ⊑ m)
+    → is-equiv (def-pr l m α)
+    → is-𝓛-equiv l m α
   σ l .l refl = ρ l
 
   γ : is-𝓛-equiv l m α
@@ -545,25 +599,28 @@ module univalence-of-𝓛 (ua : is-univalent 𝓣)
 
  is-𝓛-equiv-charac : (l m : 𝓛 X) (α : l ⊑ m)
                    → is-𝓛-equiv l m α ≃ (is-defined m → is-defined l)
- is-𝓛-equiv-charac l m α = is-𝓛-equiv l m α              ≃⟨ a ⟩
-                           is-equiv (pr₁ α)              ≃⟨ b ⟩
-                           (is-defined m → is-defined l) ■
+ is-𝓛-equiv-charac l m α =
+  is-𝓛-equiv l m α              ≃⟨ a ⟩
+  is-equiv (def-pr l m α)   ≃⟨ b ⟩
+  (is-defined m → is-defined l) ■
   where
    a = logically-equivalent-props-are-equivalent
         (being-𝓛-equiv-is-prop fe l m α)
-        (being-equiv-is-prop'' fe (pr₁ α))
+        (being-equiv-is-prop'' fe (def-pr l m α))
         (is-𝓛-equiv→ l m α)
         (is-𝓛-equiv← pe fe fe l m α)
 
    b = logically-equivalent-props-are-equivalent
-        (being-equiv-is-prop'' fe (pr₁ α))
+        (being-equiv-is-prop'' fe (def-pr l m α))
         (Π-is-prop fe (λ p → being-defined-is-prop l))
-        (inverse (pr₁ α))
+        (inverse (def-pr l m α))
         (λ g → qinvs-are-equivs
-                (pr₁ α)
+                (def-pr l m α)
                 (g ,
-                 (λ q → being-defined-is-prop l (g (pr₁ α q)) q) ,
-                 (λ p → being-defined-is-prop m (pr₁ α (g p)) p)))
+                 (λ q → being-defined-is-prop l
+                         (g (def-pr l m α q)) q) ,
+                 (λ p → being-defined-is-prop m
+                         (def-pr l m α (g p)) p)))
 
  _≃⟨𝓛⟩_ : 𝓛 X → 𝓛 X → 𝓣 ⁺ ⊔ 𝓤 ̇
  l ≃⟨𝓛⟩ m = Σ α ꞉ l ⊑ m , is-𝓛-equiv l m α
@@ -609,8 +666,16 @@ We have yet another equivalence, using the above techniques:
 
 \begin{code}
 
-η-maximal : (x : X) (l : 𝓛 X) → η x ⊑ l → l ⊑ η x
-η-maximal x (P , ψ , i) (f , δ) = (λ p → ⋆) , (λ p → ap ψ (i p (f ⋆)) ∙ (δ ⋆)⁻¹)
+η-maximal' : (x : X) (l : 𝓛 X) → η x ⊑ l → l ⊑ η x
+η-maximal' x (P , ψ , i) (f , δ) = (λ p → ⋆) , (λ p → ap ψ (i p (f ⋆)) ∙ (δ ⋆)⁻¹)
+
+η-maximal : propext 𝓣
+          → funext 𝓣 𝓣
+          → funext 𝓣 𝓤
+          → (x : X) (l : 𝓛 X)
+          → η x ⊑ l
+          → η x ＝ l
+η-maximal pe fe fe' x l a = ⊑-anti pe fe fe' (a , η-maximal' x l a)
 
 ⊥-least : (l : 𝓛 X) → ⊥ ⊑ l
 ⊥-least l = unique-from-𝟘 , λ z → unique-from-𝟘 z
@@ -646,5 +711,41 @@ Id-via-lifting : funext 𝓣 𝓣
                → funext 𝓣 𝓤
                → {x y : X} → (x ＝ y) ≃ (η x ⊑ η y)
 Id-via-lifting fe fe' = η-＝-gives-⊑ , η-＝-gives-⊑-is-equiv fe fe'
+
+\end{code}
+
+Added 13th March 2024.
+
+\begin{code}
+
+η-image : funext 𝓣 𝓣
+        → funext 𝓣 𝓤
+        → propext 𝓣
+        → {X : 𝓤 ̇ }
+        → ¬ (Σ l ꞉ 𝓛 X , (l ≠ ⊥) × ((x : X) → l ≠ η x))
+η-image fe fe' pe ((P , φ , P-is-prop) , ν , f) =
+ no-props-other-than-𝟘-or-𝟙 pe (P , P-is-prop , g , h)
+ where
+  g : ¬ (P ＝ 𝟘)
+  g e = ν (to-Σ-＝
+            (e ,
+             to-subtype-＝
+              (λ _ → being-prop-is-prop fe)
+              (dfunext fe' (λ x → 𝟘-elim x))))
+
+  h : ¬ (P ＝ 𝟙)
+  h refl = f (φ ⋆)
+             (to-Σ-＝
+               (refl ,
+                to-subtype-＝
+                 (λ _ → being-prop-is-prop fe)
+                 (dfunext fe' (λ ⋆ → refl))))
+
+η-bounded : (y : 𝓛 X) (x x' : X) → η x ⊑ y → η x' ⊑ y → x ＝ x'
+η-bounded y@(P , φ , P-is-prop) x x' (p , e) (p' , e') =
+ x        ＝⟨ e ⋆ ⟩
+ φ (p  ⋆) ＝⟨ ap φ (P-is-prop (p ⋆) (p' ⋆)) ⟩
+ φ (p' ⋆) ＝⟨ (e' ⋆)⁻¹ ⟩
+ x'       ∎
 
 \end{code}

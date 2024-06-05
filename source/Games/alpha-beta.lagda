@@ -250,7 +250,7 @@ reader monad, to speed-up the computation of the optimal play.
   ρ : T R → R
   ρ = structure-map 𝓡
 
-  open import Games.FiniteHistoryDependentTransformer
+  open import Games.Transformer
                fe
                (Reader AB)
                R
@@ -574,12 +574,12 @@ module _ {X : Type }
                                ∷ λ (_ , m) → perm-tree {n} (delete v m)
 
  perm-tree-is-listed⁺ : {n : ℕ}
-                          (v : Vector' X n)
-                        → structure listed⁺ (perm-tree {n} v)
+                        (v : Vector' X n)
+                      → structure listed⁺ (perm-tree {n} v)
  perm-tree-is-listed⁺ {0}      ([]         , _) = ⟨⟩
  perm-tree-is-listed⁺ {succ n} (xs@(y ∷ _) , p) = ((y , in-head) , type-from-list-is-listed xs)
-                                                  :: λ (_ , m) → perm-tree-is-listed⁺ {n}
-                                                                  (delete (xs , p) m)
+                                                :: λ (_ , m) → perm-tree-is-listed⁺ {n}
+                                                                (delete (xs , p) m)
 
 module tic-tac-toe where
 

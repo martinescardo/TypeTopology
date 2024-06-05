@@ -8,20 +8,20 @@ trees, with Church encoding, to functions of type (ι → ι) → ι.
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --without-K --safe #-}
 
 module EffectfulForcing.Internal.Internal where
 
-open import MLTT.Spartan hiding (rec ; _^_) renaming (⋆ to 〈〉)
+open import MLTT.Spartan
+             hiding (rec ; _^_)
+             renaming (⋆ to 〈〉)
 open import EffectfulForcing.MFPSAndVariations.Combinators
 open import EffectfulForcing.MFPSAndVariations.Dialogue
-open import EffectfulForcing.MFPSAndVariations.SystemT using (type ; ι ; _⇒_ ; 〖_〗)
-open import EffectfulForcing.MFPSAndVariations.Church hiding (B⋆【_】 ; ⟪⟫⋆ ; _‚‚⋆_ ; B⋆⟦_⟧ ; dialogue-tree⋆)
+open import EffectfulForcing.MFPSAndVariations.SystemT
+             using (type ; ι ; _⇒_ ; 〖_〗)
+open import EffectfulForcing.MFPSAndVariations.Church
+             hiding (B⋆【_】 ; ⟪⟫⋆ ; _‚‚⋆_ ; B⋆⟦_⟧ ; dialogue-tree⋆)
 open import EffectfulForcing.Internal.SystemT
-
-\end{code}
-
-\begin{code}
 
 B⋆【_】 : (Γ : Cxt) (A : Type) → Type
 B⋆【 Γ 】 A = {σ : type} (i : ∈Cxt σ Γ) → B⋆〖 σ 〗 A
@@ -106,7 +106,9 @@ B-functor-meaning = refl
 
 -- λη.λβ.t (λs.f (λg.η(g s)) β) β
 ⌜app⌝ : {A : type} {σ τ : type} {Γ : Cxt}
-       (f : T Γ (⌜B⌝ (σ ⇒ τ) A)) (t : T Γ (⌜B⌝ σ A)) → T Γ (⌜B⌝ τ A)
+        (f : T Γ (⌜B⌝ (σ ⇒ τ) A))
+        (t : T Γ (⌜B⌝ σ A))
+      → T Γ (⌜B⌝ τ A)
 ⌜app⌝ {A} {σ} {τ} {Γ} f t = ⌜star⌝ · f · t
 
 B-type〖_〗 : type → type → type
@@ -156,7 +158,8 @@ B-context【_】 (Γ ,, σ) A = B-context【_】 Γ A ,, B-type〖 σ 〗 A
 
 infix 10 B-context【_】
 
-∈Cxt-B-type : {Γ : Cxt} {A : type} {σ : type} (i : ∈Cxt σ Γ) → ∈Cxt (B-type〖 σ 〗 A) (B-context【 Γ 】 A)
+∈Cxt-B-type : {Γ : Cxt} {A : type} {σ : type} (i : ∈Cxt σ Γ)
+            → ∈Cxt (B-type〖 σ 〗 A) (B-context【 Γ 】 A)
 ∈Cxt-B-type {Γ ,, σ} {A} {σ} (∈Cxt0 Γ) = ∈Cxt0 (B-context【 Γ 】 A)
 ∈Cxt-B-type {Γ ,, τ} {A} {σ} (∈CxtS τ i) = ∈CxtS (B-type〖 τ 〗 A) (∈Cxt-B-type i)
 

@@ -21,7 +21,7 @@ open import UF.DiscreteAndSeparated
 open import UF.Embeddings
 open import UF.Equiv
 open import UF.EquivalenceExamples
-open import UF.ExcludedMiddle
+open import UF.ClassicalLogic
 open import UF.FunExt
 open import UF.PropIndexedPiSigma
 open import UF.PropTrunc
@@ -284,7 +284,7 @@ by 𝓕𝓲𝓷 : 𝓝 → 𝓥.
     where
      II  = +-cong (≃-refl 𝟙) 𝟙-lneutral
      III = +-cong (≃-refl 𝟙) IH
-     IV  = +-cong (≃-refl _) (one-𝟙-only 𝓥 𝓤₀)
+     IV  = +-cong (≃-refl _) one-𝟙-only
 
 \end{code}
 

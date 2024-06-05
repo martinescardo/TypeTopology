@@ -10,7 +10,7 @@ open import MLTT.Spartan
 
 module Lifting.Miscelanea (𝓣 : Universe) where
 
-open import Lifting.Lifting 𝓣
+open import Lifting.Construction 𝓣
 
 module _ {𝓤 : Universe}
          {X : 𝓤 ̇ }

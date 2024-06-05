@@ -12,7 +12,7 @@ module UF.Powerset where
 open import MLTT.Spartan
 open import UF.Powerset-MultiUniverse renaming (𝓟 to 𝓟') public
 
-𝓟 : 𝓤  ̇ → 𝓤 ⁺ ̇
+𝓟 : 𝓤 ̇ → 𝓤 ⁺ ̇
 𝓟 {𝓤} X = 𝓟' {𝓤} X
 
 \end{code}

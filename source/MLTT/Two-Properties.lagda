@@ -46,8 +46,10 @@ open import UF.Subsingletons
 
 𝟚-things-distinct-from-a-third-are-equal : (x y z : 𝟚) → x ≠ z → y ≠ z → x ＝ y
 𝟚-things-distinct-from-a-third-are-equal ₀ ₀ z u v = refl
-𝟚-things-distinct-from-a-third-are-equal ₀ ₁ z u v = 𝟘-elim (𝟚-excluded-third z (≠-sym u) (≠-sym v))
-𝟚-things-distinct-from-a-third-are-equal ₁ ₀ z u v = 𝟘-elim (𝟚-excluded-third z (≠-sym v) (≠-sym u))
+𝟚-things-distinct-from-a-third-are-equal ₀ ₁ z u v =
+ 𝟘-elim (𝟚-excluded-third z (≠-sym u) (≠-sym v))
+𝟚-things-distinct-from-a-third-are-equal ₁ ₀ z u v =
+ 𝟘-elim (𝟚-excluded-third z (≠-sym v) (≠-sym u))
 𝟚-things-distinct-from-a-third-are-equal ₁ ₁ z u v = refl
 
 one-is-not-zero : ₁ ≠ ₀
@@ -342,6 +344,12 @@ Lemma[b≠c→b⊕c＝₁] = different-from-₀-equal-₁ ∘ (contrapositive Le
 Lemma[b⊕c＝₁→b≠c] : {b c : 𝟚} → b ⊕ c ＝ ₁ → b ≠ c
 Lemma[b⊕c＝₁→b≠c] = (contrapositive Lemma[b＝c→b⊕c＝₀]) ∘ equal-₁-different-from-₀
 
+complement₁ : {a : 𝟚} → complement a ＝ ₁ → a ＝ ₀
+complement₁ {₀} refl = refl
+
+complement₀ : {a : 𝟚} → complement a ＝ ₀ → a ＝ ₁
+complement₀ {₁} refl = refl
+
 complement-left : {b c : 𝟚} → complement b ≤ c → complement c ≤ b
 complement-left {₀} {₁} l = ⋆
 complement-left {₁} {₀} l = ⋆
@@ -365,6 +373,11 @@ complement-both-right {₁} {₁} l = ⋆
 ⊕-involutive : {a b : 𝟚} → a ⊕ a ⊕ b ＝ b
 ⊕-involutive {₀} {b} = refl
 ⊕-involutive {₁} {b} = complement-involutive b
+
+⊕-assoc : {a b c : 𝟚} → (a ⊕ b) ⊕ c ＝ a ⊕ (b ⊕ c)
+⊕-assoc {₀} {b} {c} = refl
+⊕-assoc {₁} {₀} {c} = refl
+⊕-assoc {₁} {₁} {c} = (complement-involutive c)⁻¹
 
 ⊕-property₁ : {a b : 𝟚} (g : a ≥ b)
             → a ⊕ b ＝ ₁ → (a ＝ ₁) × (b ＝ ₀)

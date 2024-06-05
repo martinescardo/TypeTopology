@@ -26,10 +26,10 @@ open import UF.FunExt
 
 module CoNaturals.Exercise (fe : FunExt) where
 
+open import CoNaturals.Type
+open import CoNaturals.UniversalProperty fe
 open import MLTT.Spartan
 open import MLTT.Two-Properties
-open import CoNaturals.UniversalProperty fe
-open import CoNaturals.GenericConvergentSequence
 open import Naturals.Sequence fe
 open import Notation.CanonicalMap
 

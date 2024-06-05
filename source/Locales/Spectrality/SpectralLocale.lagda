@@ -127,3 +127,29 @@ spectral-implies-compact : (X : Locale 𝓤 𝓥 𝓦) (σ : is-spectral X holds
 spectral-implies-compact X σ = pr₁ (pr₁ σ)
 
 \end{code}
+
+Addition on 2024-02-24.
+
+\begin{code}
+
+module OperationsOnCompactOpens (X : Locale 𝓤 𝓥 𝓦) (σ : is-spectral X holds) where
+
+ _∧ₖ_ : 𝒦 X → 𝒦 X → 𝒦 X
+ _∧ₖ_ (K₁ , κ₁) (K₂ , κ₂) = (K₁ ∧[ 𝒪 X ] K₂) , binary-coherence X σ K₁ K₂ κ₁ κ₂
+
+ _∨ₖ_ : 𝒦 X → 𝒦 X → 𝒦 X
+ (K₁ , κ₁) ∨ₖ (K₂ , κ₂) =
+  (K₁ ∨[ 𝒪 X ] K₂) , compact-opens-are-closed-under-∨ X K₁ K₂ κ₁ κ₂
+
+\end{code}
+
+Added on 2024-04-29.
+
+Inclusion of the compact opens of `X`.
+
+\begin{code}
+
+ ιₖ : 𝒦 X → ⟨ 𝒪 X ⟩
+ ιₖ (K , _) = K
+
+\end{code}

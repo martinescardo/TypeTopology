@@ -1,4 +1,8 @@
-Ayberk Tosun, 10 March 2021.
+---
+title:        Logic
+author:       Martín Escardó and Ayberk Tosun
+date-started: 2021-03-10
+---
 
 Based in part by the `Cubical.Functions.Logic` module UF.of
 `agda/cubical`.
@@ -39,30 +43,30 @@ Added by Martin Escardo 1st Nov 2023.
 
 \begin{code}
 
- ∧-intro' : (p q : Ω 𝓤) → p holds → q holds → (p ∧ q) holds
- ∧-intro' p q a b = (a , b)
+ ∧-Intro :  (p : Ω 𝓤) (q : Ω 𝓥) → p holds → q holds → (p ∧ q) holds
+ ∧-Intro p q a b = (a , b)
 
- ∧-elim-L' : (p q : Ω 𝓤) → (p ∧ q) holds → p holds
- ∧-elim-L' p q = pr₁
+ ∧-Elim-L : (p : Ω 𝓤) (q : Ω 𝓥) → (p ∧ q) holds → p holds
+ ∧-Elim-L p q = pr₁
 
- ∧-elim-R' : (p q : Ω 𝓤) → (p ∧ q) holds → q holds
- ∧-elim-R' p q = pr₂
+ ∧-Elim-R :  (p : Ω 𝓤) (q : Ω 𝓥) → (p ∧ q) holds → q holds
+ ∧-Elim-R p q = pr₂
 
  module _ (pe : propext 𝓤) (fe : funext 𝓤 𝓤) where
 
-  ∧-intro : (p q : Ω 𝓤) → p ＝ ⊤ → q ＝ ⊤ → p ∧ q ＝ ⊤
+  ∧-intro :  (p q : Ω 𝓤) → p ＝ ⊤ → q ＝ ⊤ → p ∧ q ＝ ⊤
   ∧-intro p q a b = holds-gives-equal-⊤ pe fe (p ∧ q)
-                     (∧-intro' p q
+                     (∧-Intro p q
                        (equal-⊤-gives-holds p a)
                        (equal-⊤-gives-holds q b))
 
-  ∧-elim-L : (p q : Ω 𝓤) → p ∧ q ＝ ⊤ → p ＝ ⊤
+  ∧-elim-L :  (p q : Ω 𝓤) → p ∧ q ＝ ⊤ → p ＝ ⊤
   ∧-elim-L p q c = holds-gives-equal-⊤ pe fe p
-                    (∧-elim-L' p q (equal-⊤-gives-holds (p ∧ q) c))
+                    (∧-Elim-L p q (equal-⊤-gives-holds (p ∧ q) c))
 
-  ∧-elim-R : (p q : Ω 𝓤) → p ∧ q ＝ ⊤ → q ＝ ⊤
+  ∧-elim-R :  (p q : Ω 𝓤) → p ∧ q ＝ ⊤ → q ＝ ⊤
   ∧-elim-R p q c = holds-gives-equal-⊤ pe fe q
-                    (∧-elim-R' p q (equal-⊤-gives-holds (p ∧ q) c))
+                    (∧-Elim-R p q (equal-⊤-gives-holds (p ∧ q) c))
 
 \end{code}
 
@@ -123,6 +127,11 @@ module Implication (fe : Fun-Ext) where
                         → (P ⇔ Q) holds → (Q ⇒ P) holds
  biimplication-backward P Q (_ , ψ) = ψ
 
+ infix 3 ¬ₚ_
+
+ ¬ₚ_ : Ω 𝓤 → Ω 𝓤
+ ¬ₚ_ {𝓤} P = _⇒_ P (𝟘 {𝓤} , 𝟘-is-prop)
+
 \end{code}
 
 Added by Martin Escardo 1st Nov 2023.
@@ -140,14 +149,14 @@ Added by Martin Escardo 1st Nov 2023.
    (λ (h : (p ⇔ ⊤ {𝓤}) holds) → ⇔-gives-⇐ p ⊤ h ⊤-holds)
    (λ (h : p holds) → (λ _ → ⊤-holds) , (λ _ → h))
 
-  ⇔-swap : (p q : Ω 𝓤) → (p ⇔ q) holds → (q ⇔ p) holds
+  ⇔-swap :  (p : Ω 𝓤) (q : Ω 𝓥) → (p ⇔ q) holds → (q ⇔ p) holds
   ⇔-swap p q (h , k) = (k , h)
 
-  ⇔-swap' : (p q : Ω 𝓤) → (p ⇔ q) ＝ ⊤ → (q ⇔ p) ＝ ⊤
+  ⇔-swap' :  (p q : Ω 𝓤) → (p ⇔ q) ＝ ⊤ → (q ⇔ p) ＝ ⊤
   ⇔-swap' p q e = holds-gives-equal-⊤ pe fe (q ⇔ p)
                    (⇔-swap p q (equal-⊤-gives-holds (p ⇔ q) e))
 
-  ⇔-sym : (p q : Ω 𝓤) → (p ⇔ q) ＝ (q ⇔ p)
+  ⇔-sym :  (p q : Ω 𝓤) → (p ⇔ q) ＝ (q ⇔ p)
   ⇔-sym p q = Ω-ext pe fe (⇔-swap' p q) (⇔-swap' q p)
 
   ⊤-⇔-neutral' : (p : Ω 𝓤) → (⊤ ⇔ p) ＝ p
@@ -160,10 +169,10 @@ Added by Martin Escardo 1st Nov 2023.
               (p ⇔ p)
               (id , id)
 
-  ＝-gives-⇔  : (p q : Ω 𝓤) →  p ＝ q → (p ⇔ q) ＝ ⊤
+  ＝-gives-⇔  :  (p q : Ω 𝓤) →  p ＝ q → (p ⇔ q) ＝ ⊤
   ＝-gives-⇔ p p refl = ⇔-refl p
 
-  ⇔-gives-＝ : (p q : Ω 𝓤) → (p ⇔ q) ＝ ⊤ → p ＝ q
+  ⇔-gives-＝ :  (p q : Ω 𝓤) → (p ⇔ q) ＝ ⊤ → p ＝ q
   ⇔-gives-＝ p q e = Ω-extensionality pe fe f g
    where
     f : p holds → q holds
@@ -172,7 +181,7 @@ Added by Martin Escardo 1st Nov 2023.
     g : q holds → p holds
     g = ⇔-gives-⇐ p q (equal-⊤-gives-holds (p ⇔ q) e)
 
-  ⇔-equiv-to-＝ : (p q : Ω 𝓤) → ((p ⇔ q) ＝ ⊤) ≃ (p ＝ q)
+  ⇔-equiv-to-＝ :  (p q : Ω 𝓤) → ((p ⇔ q) ＝ ⊤) ≃ (p ＝ q)
   ⇔-equiv-to-＝ p q = qinveq
                        (⇔-gives-＝ p q)
                        (＝-gives-⇔ p q ,
@@ -195,6 +204,22 @@ module Disjunction (pt : propositional-truncations-exist) where
  P ∨ Q = ∥ P holds + Q holds ∥ , ∥∥-is-prop
 
  infix 3 _∨_
+
+\end{code}
+
+Added by Ayberk Tosun 2024-05-28.
+
+\begin{code}
+
+ ∨-elim : (P : Ω 𝓤) (Q : Ω 𝓥) (R : Ω 𝓦)
+        → (P holds → R holds)
+        → (Q holds → R holds)
+        → ((P ∨ Q) holds → R holds)
+ ∨-elim P Q R φ ψ = ∥∥-rec (holds-is-prop R) †
+  where
+   † : P holds + Q holds → R holds
+   † (inl p) = φ p
+   † (inr q) = ψ q
 
 \end{code}
 
@@ -227,11 +252,15 @@ module Existential (pt : propositional-truncations-exist) where
  ∃[]-syntax : {I : 𝓤 ̇ } → (I → 𝓥 ̇ )→ Ω (𝓤 ⊔ 𝓥)
  ∃[]-syntax {I = I} P = ∃[꞉]-syntax I P
 
+ ∃ₚ[꞉]-syntax : (I : 𝓤 ̇ )→ (I → Ω 𝓥)→ Ω (𝓤 ⊔ 𝓥)
+ ∃ₚ[꞉]-syntax I A = Ǝ i ꞉ I , A i holds
+
  infixr -1 ∃[꞉]-syntax
  infixr -1 ∃[]-syntax
 
  syntax ∃[꞉]-syntax I (λ i → e) = Ǝ i ꞉ I , e
  syntax ∃[]-syntax    (λ i → e) = Ǝ i , e
+ syntax ∃ₚ[꞉]-syntax I (λ i → e) = Ǝₚ i ꞉ I , e
 
 \end{code}
 

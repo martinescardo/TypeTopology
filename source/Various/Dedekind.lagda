@@ -34,7 +34,7 @@ See also the discussion at https://twitter.com/EscardoMartin/status/147339326101
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K #-}
+{-# OPTIONS --safe --without-K --lossy-unification #-}
 
 open import MLTT.Plus-Properties
 open import MLTT.Spartan
@@ -1987,7 +1987,7 @@ Limits of sequences, but using the topological, rather than metric, structure of
                  → x∞ ∈ ⦅ p , q ⦆
                  → ∃ n ꞉ ℕ , ((k : ℕ) → k ≥ n → x k ∈ ⦅ p , q ⦆)
 
- open import CoNaturals.GenericConvergentSequence
+ open import CoNaturals.Type
 
  is-continuous-ℕ∞-ℝ : (ℕ∞ → ℝ) → 𝓤 ̇
  is-continuous-ℕ∞-ℝ x = (𝓃 : ℕ∞) (p q : ℚ)

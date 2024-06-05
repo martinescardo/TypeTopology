@@ -486,9 +486,13 @@ module _
  index-of-compact-basis : has-specified-small-compact-basis → 𝓥  ̇
  index-of-compact-basis (B , _) = B
 
- family-of-basic-opens : (𝒷 : has-specified-small-compact-basis)
-                       → index-of-compact-basis 𝒷 → ⟨ 𝓓 ⟩
- family-of-basic-opens (_ , β , _) = β
+ family-of-compact-elements : (𝒷 : has-specified-small-compact-basis)
+                            → index-of-compact-basis 𝒷 → ⟨ 𝓓 ⟩
+ family-of-compact-elements (_ , β , _) = β
+
+ small-compact-basis : (𝒷 : has-specified-small-compact-basis)
+                     → is-small-compact-basis 𝓓 (family-of-compact-elements 𝒷)
+ small-compact-basis (_ , _ , scb) = scb
 
  has-unspecified-small-compact-basis : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
  has-unspecified-small-compact-basis = ∥ has-specified-small-compact-basis ∥
@@ -728,5 +732,41 @@ locally-small-exponential-criterion {𝓤} {𝓣} {𝓤'} {𝓣'} pe 𝓓 𝓔 �
                   where
                    ⦅†⦆ = ⊑ₛ-to-⊑ (f-below-g b)
                    ⦅‡⦆ = ∐-is-upperbound 𝓔 εᵍ (b , i)
+
+\end{code}
+
+Added 2 June 2024.
+
+Any sup-complete dcpo with a small basis has a greatest element.
+(In fact, it is inf-complete, but we don't formalise this here, see
+Locales.AdjointFunctorTheoremForFrames though.)
+
+\begin{code}
+
+open import DomainTheory.Basics.SupComplete pt fe 𝓥
+
+greatest-element-if-sup-complete-with-small-basis :
+   (𝓓 : DCPO {𝓤} {𝓣})
+ → is-sup-complete 𝓓
+ → has-unspecified-small-basis 𝓓
+ → Σ ⊤ ꞉ ⟨ 𝓓 ⟩ , ((x : ⟨ 𝓓 ⟩) → x ⊑⟨ 𝓓 ⟩ ⊤)
+greatest-element-if-sup-complete-with-small-basis 𝓓 sc = ∥∥-rec I II
+ where
+  I : is-prop (Σ ⊤ ꞉ ⟨ 𝓓 ⟩ , ((x : ⟨ 𝓓 ⟩) → x ⊑⟨ 𝓓 ⟩ ⊤))
+  I (t , l) (s , k) = to-subtype-＝
+                       (λ y → Π-is-prop fe (λ x → prop-valuedness 𝓓 x y))
+                       (antisymmetry 𝓓 t s (k t) (l s))
+  II : has-specified-small-basis 𝓓
+     → Σ ⊤ ꞉ ⟨ 𝓓 ⟩ , ((x : ⟨ 𝓓 ⟩) → x ⊑⟨ 𝓓 ⟩ ⊤)
+  II (B , β , β-is-small-basis) = ⊤ , ⊤-is-greatest
+   where
+    open is-small-basis β-is-small-basis
+    open is-sup-complete sc
+    ⊤ : ⟨ 𝓓 ⟩
+    ⊤ = ⋁ β
+    ⊤-is-greatest : (x : ⟨ 𝓓 ⟩) → x ⊑⟨ 𝓓 ⟩ ⊤
+    ⊤-is-greatest x =
+     sup-is-lowerbound-of-upperbounds
+      (underlying-order 𝓓) (↡ᴮ-is-sup x) ⊤ (λ (b , _) → ⋁-is-upperbound β b)
 
 \end{code}

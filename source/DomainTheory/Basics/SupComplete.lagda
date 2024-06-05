@@ -157,9 +157,17 @@ supremum).
 
   directify-sup : (x : ⟨ 𝓓 ⟩) → is-sup (underlying-order 𝓓) x α
                 → is-sup (underlying-order 𝓓) x directify
-  directify-sup x (x-is-ub , x-is-lb-of-ubs)  =
+  directify-sup x (x-is-ub , x-is-lb-of-ubs) =
    ( directify-upperbound x x-is-ub
    , directify-lowerbound-of-upperbounds x x-is-lb-of-ubs)
+
+  directify-sup' : (x : ⟨ 𝓓 ⟩) → is-sup (underlying-order 𝓓) x directify
+                 → is-sup (underlying-order 𝓓) x α
+  directify-sup' x (x-is-ub , x-is-lb-of-ubs) =
+   ( (λ i → α i              ⊑⟨ 𝓓 ⟩[ ∨-is-upperbound₁ ]
+             directify [ i ] ⊑⟨ 𝓓 ⟩[ x-is-ub [ i ] ]
+             x               ∎⟨ 𝓓 ⟩)
+   , (λ y y-is-ub → x-is-lb-of-ubs y (directify-upperbound y y-is-ub)))
 
 \end{code}
 

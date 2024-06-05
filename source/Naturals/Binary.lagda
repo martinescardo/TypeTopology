@@ -41,7 +41,7 @@ Applications:
 
 module Naturals.Binary where
 
-open import MLTT.Spartan renaming (_+_ to _∔_)
+open import MLTT.Spartan renaming (_+_ to _∔_) hiding (ℕ-induction)
 open import Naturals.Properties
 open import UF.Equiv
 open import UF.Base
@@ -257,14 +257,6 @@ height-equationᵣ n =
 We now show that height (2ⁿ-1) ＝ n.
 
 \begin{code}
-
-double power2 : ℕ → ℕ
-
-double 0        = 0
-double (succ n) = succ (succ (double n))
-
-power2 0        = 1
-power2 (succ n) = double (power2 n)
 
 height-power2-equation : (n : ℕ) → height (pred (power2 n)) ＝ n
 height-power2-equation n = VI

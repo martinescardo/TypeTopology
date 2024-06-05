@@ -73,7 +73,7 @@ open import UF.FunExt
 
 module CoNaturals.UniversalProperty (fe : FunExt) where
 
-open import CoNaturals.GenericConvergentSequence
+open import CoNaturals.Type
 open import MLTT.Plus-Properties
 open import MLTT.Spartan
 open import MLTT.Two-Properties
@@ -86,16 +86,16 @@ private
  fe₀ : funext 𝓤₀ 𝓤₀
  fe₀ = fe 𝓤₀ 𝓤₀
 
-Zero' : 𝟙 + ℕ∞
-Zero' = inl {𝓤₀} {𝓤₀} ⋆
+ZERO : 𝟙 + ℕ∞
+ZERO = inl {𝓤₀} {𝓤₀} ⋆
 
-Pred' : ℕ∞ → 𝟙 + ℕ∞
-Pred' u = inr {𝓤₀} {𝓤₀} (Pred u)
+PRED' : ℕ∞ → 𝟙 + ℕ∞
+PRED' u = inr {𝓤₀} {𝓤₀} (Pred u)
 
 PRED : ℕ∞ → 𝟙 + ℕ∞
-PRED u = 𝟚-Cases (positivity u) Zero' (Pred' u)
+PRED u = 𝟚-Cases (positivity u) ZERO (PRED' u)
 
-PRED-Zero : PRED Zero ＝ Zero'
+PRED-Zero : PRED Zero ＝ ZERO
 PRED-Zero = refl
 
 PRED-Succ : (u : ℕ∞) → PRED(Succ u) ＝ inr u
@@ -123,8 +123,8 @@ SUCC-PRED {u} = 𝟚-equality-cases l₀ l₁
          Zero         ＝⟨ (is-Zero-equal-Zero fe₀ r)⁻¹ ⟩
          u            ∎
     where
-     c₀ : PRED u ＝ Zero'
-     c₀ = ap (𝟚-cases Zero' (Pred' u)) r
+     c₀ : PRED u ＝ ZERO
+     c₀ = ap (𝟚-cases ZERO (PRED' u)) r
 
   l₁ : positivity u ＝ ₁ → SUCC(PRED u) ＝ u
   l₁ r = SUCC (PRED u) ＝⟨ ap SUCC c₀ ⟩
@@ -132,8 +132,8 @@ SUCC-PRED {u} = 𝟚-equality-cases l₀ l₁
          u             ∎
 
    where
-     c₀ : PRED u ＝ Pred' u
-     c₀ = ap (𝟚-cases Zero' (Pred' u)) r
+     c₀ : PRED u ＝ PRED' u
+     c₀ = ap (𝟚-cases ZERO (PRED' u)) r
      c₁ : u ≠ Zero
      c₁ s = equal-₀-different-from-₁(ap positivity s) r
 
@@ -203,7 +203,7 @@ homomorphism-existence {𝓤} {X} κ = h , dfunext (fe 𝓤 𝓤₀) h-spec
     l₀ : (s : 𝟙) → κ x ＝ inl s → PRED(h x) ＝ (𝟙+ h)(κ x)
     l₀ ⋆ r = PRED (h x) ＝⟨ ap PRED c ⟩
              PRED Zero  ＝⟨ PRED-Zero ⟩
-             Zero'      ＝⟨ (ap (𝟙+ h) r)⁻¹ ⟩
+             ZERO      ＝⟨ (ap (𝟙+ h) r)⁻¹ ⟩
              𝟙+ h (κ x) ∎
      where
       c : h x ＝ Zero
@@ -264,7 +264,7 @@ coalgebra homomorphisms in more detail.
 
 \begin{code}
 
-coalg-morphism-Zero : {X : 𝓤 ̇ } (κ : X →  𝟙 + X) (h : X → ℕ∞)
+coalg-morphism-Zero : {X : 𝓤 ̇ } (κ : X → 𝟙 + X) (h : X → ℕ∞)
                     → is-homomorphism κ h
                     → (x : X) (s : 𝟙) → κ x ＝ inl s → h x ＝ Zero
 coalg-morphism-Zero p h a x ⋆ κ = h x               ＝⟨ SUCC-PRED ⁻¹ ⟩
@@ -276,12 +276,12 @@ coalg-morphism-Zero p h a x ⋆ κ = h x               ＝⟨ SUCC-PRED ⁻¹ �
       𝟙+ h (p x) ＝⟨ ap (𝟙+ h) κ ⟩
       inl ⋆      ∎
 
-Coalg-morphism-Zero : {X : 𝓤 ̇ } (κ : X →  𝟙 + X)
+Coalg-morphism-Zero : {X : 𝓤 ̇ } (κ : X → 𝟙 + X)
                     → (x : X) (s : 𝟙) → κ x ＝ inl s → ℕ∞-corec κ x ＝ Zero
 Coalg-morphism-Zero κ = coalg-morphism-Zero κ (ℕ∞-corec κ) (ℕ∞-corec-homomorphism κ)
 
 coalg-morphism-Succ : {X : 𝓤 ̇ }
-                      (κ : X →  𝟙 + X) (h : X → ℕ∞)
+                      (κ : X → 𝟙 + X) (h : X → ℕ∞)
                     → is-homomorphism κ h
                     → (x x' : X) → κ x ＝ inr x' → h x ＝ Succ (h x')
 coalg-morphism-Succ κ h a x x' q = h x               ＝⟨ SUCC-PRED ⁻¹ ⟩
@@ -293,7 +293,7 @@ coalg-morphism-Succ κ h a x x' q = h x               ＝⟨ SUCC-PRED ⁻¹ ⟩
       𝟙+ h (κ x) ＝⟨ ap (𝟙+ h) q ⟩
       inr (h x') ∎
 
-Coalg-morphism-Succ : {X : 𝓤 ̇ } (κ : X →  𝟙 + X)
+Coalg-morphism-Succ : {X : 𝓤 ̇ } (κ : X → 𝟙 + X)
                     → (x x' : X) → κ x ＝ inr x' → ℕ∞-corec κ x ＝ Succ (ℕ∞-corec κ x')
 Coalg-morphism-Succ κ = coalg-morphism-Succ κ (ℕ∞-corec κ) (ℕ∞-corec-homomorphism κ)
 
@@ -305,7 +305,7 @@ bisimulation:
 \begin{code}
 
 coalg-morphism-positivity : {X : 𝓤 ̇ }
-                            (κ : X →  𝟙 + X) (f g : X → ℕ∞)
+                            (κ : X → 𝟙 + X) (f g : X → ℕ∞)
                           → is-homomorphism κ f
                           → is-homomorphism κ g
                           → (x : X) → positivity(f x) ＝ positivity(g x)
@@ -322,7 +322,7 @@ coalg-morphism-positivity {𝓤} {X} κ f g a b x = equality-cases (κ x) l₀ l
             positivity (g x)         ∎
 
 coalg-morphism-Pred : {X : 𝓤 ̇ }
-                      (κ : X →  𝟙 + X) (f g : X → ℕ∞)
+                      (κ : X → 𝟙 + X) (f g : X → ℕ∞)
                     → is-homomorphism κ f
                     → is-homomorphism κ g
                     → (x : X) (u v : ℕ∞)

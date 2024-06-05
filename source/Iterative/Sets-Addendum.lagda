@@ -22,7 +22,7 @@ open import Iterative.Multisets 𝓤
 open import Iterative.Multisets-Addendum ua 𝓤
 open import Iterative.Sets ua 𝓤
 open import Taboos.Decomposability ua
-open import UF.ExcludedMiddle
+open import UF.ClassicalLogic
 open import UF.FunExt
 open import UF.PropTrunc
 open import UF.Size

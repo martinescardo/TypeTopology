@@ -14,10 +14,10 @@ be eventually constant (which we don't postulate).
 open import MLTT.Spartan
 open import UF.FunExt
 
-module Taboos.BasicDiscontinuity (fe : FunExt) where
+module Taboos.BasicDiscontinuity (fe : funext₀) where
 
+open import CoNaturals.Type
 
-open import CoNaturals.GenericConvergentSequence
 open import MLTT.Plus-Properties
 open import MLTT.Two-Properties
 open import Notation.CanonicalMap
@@ -50,7 +50,7 @@ basic-discontinuity-taboo p (f , r) u = 𝟚-equality-cases lemma₀ lemma₁
                                  ₁       ∎)
 
   lemma₁ : p u ＝ ₁ → (u ＝ ∞) + (u ≠ ∞)
-  lemma₁ t = inl (not-finite-is-∞ (fe 𝓤₀ 𝓤₀) (fact₃ t))
+  lemma₁ t = inl (not-finite-is-∞ fe (fact₃ t))
 
 \end{code}
 
@@ -135,7 +135,7 @@ basic-discontinuity-taboo' f (f₀ , f₁) = VI
               ι 1 ∎)
 
   II : (u : ℕ∞) → f u ≠ ι 0 → u ＝ ∞
-  II u ν = not-finite-is-∞ (fe _ _) III
+  II u ν = not-finite-is-∞ fe III
    where
     III : (n : ℕ) → u ≠ ι n
     III n refl = V IV
@@ -147,7 +147,7 @@ basic-discontinuity-taboo' f (f₀ , f₁) = VI
       V = ν
 
   VI : WLPO
-  VI u = Cases (finite-isolated (fe _ _) 0 (f u))
+  VI u = Cases (finite-isolated fe 0 (f u))
           (λ (p : ι 0 ＝ f u) → inr (I u (p ⁻¹)))
           (λ (ν : ι 0 ≠ f u) → inl (II u (≠-sym ν)))
 

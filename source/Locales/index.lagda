@@ -24,6 +24,16 @@ import Locales.Compactness                       -- (7)
 
 import Locales.Complements                       -- (8)
 
+-- Distributive lattices
+import Locales.DistributiveLattice.Definition
+import Locales.DistributiveLattice.Homomorphism
+import Locales.DistributiveLattice.Ideal
+import Locales.DistributiveLattice.Spectrum
+import Locales.DistributiveLattice.Spectrum-Properties
+import Locales.DistributiveLattice.Properties
+import Locales.DistributiveLattice.Isomorphism
+import Locales.DistributiveLattice.Resizing
+
 import Locales.Frame                             -- (9)
 
 import Locales.GaloisConnection                  -- (10)
@@ -52,10 +62,15 @@ import Locales.ScottContinuity                   -- (21)
 
 import Locales.ScottLocale.Definition            -- (22)
 
--- TODO: naming and numbering to be improved.
-import Locales.ScottLocale.ScottLocalesOfAlgebraicDcpos -- (22.5)
+import Locales.ScottLocale.ScottLocalesOfAlgebraicDcpos
+import Locales.ScottLocale.ScottLocalesOfScottDomains
+import Locales.ScottLocale.Properties
 
 import Locales.Sierpinski                        -- (23)
+import Locales.Sierpinski.Definition
+import Locales.Sierpinski.Patch
+import Locales.Sierpinski.Properties
+import Locales.Sierpinski.UniversalProperty
 
 import Locales.SmallBasis                        -- (24)
 
@@ -82,8 +97,34 @@ import Locales.UniversalPropertyOfPatch          -- (34)
 
 import Locales.Spectrality.BasisDirectification  -- (35)
 
-import Locales.Point.Definition                  -- (36)
+import Locales.Spectrality.LatticeOfCompactOpens
+import Locales.Spectrality.SpectralMapToLatticeHomomorphism
 
+import Locales.Point.Definition                  -- (36)
 import Locales.Point.Properties                  -- (37)
+import Locales.Point.SpectralPoint-Definition
+
+import Locales.TerminalLocale.Properties
+
+import Locales.DiscreteLocale.Definition
+
+import Locales.DiscreteLocale.Two
+import Locales.DiscreteLocale.Two-Properties
+
+import Locales.ContinuousMap.FrameHomomorphism-Definition
+import Locales.ContinuousMap.FrameHomomorphism-Properties
+import Locales.ContinuousMap.Definition
+import Locales.ContinuousMap.Properties
+import Locales.ContinuousMap.Homeomorphism-Definition
+import Locales.ContinuousMap.Homeomorphism-Properties
+
+import Locales.SIP.FrameSIP
+
+import Locales.DirectedFamily-Poset
+
+import Locales.StoneDuality.ForSpectralLocales
+
+import Locales.LawsonLocale.CompactElementsOfPoint
+import Locales.LawsonLocale.SharpElementsCoincideWithSpectralPoints
 
 \end{code}

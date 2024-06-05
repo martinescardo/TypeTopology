@@ -324,7 +324,7 @@ module Ind-completion-poset-reflection
 
  open Ind-completion 𝓓
 
- open import Posets.PosetReflection pt fe pe
+ open import OrderedTypes.PosetReflection pt fe pe
  open poset-reflection Ind _≲_ ≲-is-prop-valued ≲-is-reflexive ≲-is-transitive public
 
  Ind/≈ : 𝓥 ⁺ ⊔ 𝓣 ⁺ ⊔ 𝓤 ̇

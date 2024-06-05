@@ -17,6 +17,7 @@ open import MLTT.Spartan
 open import UF.FunExt
 open import UF.PropTrunc
 open import UF.Sets
+open import UF.SubtypeClassifier
 
 module DomainTheory.Basics.Dcpo
         (pt : propositional-truncations-exist)
@@ -29,7 +30,7 @@ open PropositionalTruncation pt
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
-open import Posets.Poset fe
+open import OrderedTypes.Poset fe
 
 module _ {𝓤 𝓣 : Universe}
          {D : 𝓤 ̇ }
@@ -190,6 +191,22 @@ module _ {𝓤 𝓣 : Universe} where
 
 \end{code}
 
+Added by Ayberk Tosun on 2024-04-19.
+
+To work with the combinators in `UF.Logic`, it is convenient to have a version
+of equality on domain elements that is packaged up with the proof that it is
+a proposition.
+
+\begin{code}
+
+ dcpo-equalityₚ : (𝓓 : DCPO) → ⟨ 𝓓 ⟩ → ⟨ 𝓓 ⟩ → Ω 𝓤
+ dcpo-equalityₚ 𝓓 x y = (x ＝ y) , sethood 𝓓
+
+ syntax dcpo-equalityₚ 𝓓 x y = x ＝ₚ[ 𝓓 ] y
+ infix 2 dcpo-equalityₚ
+
+\end{code}
+
 We introduce pretty syntax for chain reasoning with inequalities.
 (Cf. ＝⟨_⟩ and ∎ in Id.lagda, ≃⟨_⟩ and ■ in UF.Equiv.lagda)
 
@@ -225,6 +242,9 @@ z = transitivity 𝓓 a c d z' w
 
  syntax reflexivity 𝓓 x = x ∎⟨ 𝓓 ⟩
  infix 1 reflexivity
+
+ has-bottom : DCPO → 𝓤 ⊔ 𝓣 ̇
+ has-bottom 𝓓 = has-least (underlying-order 𝓓)
 
 \end{code}
 

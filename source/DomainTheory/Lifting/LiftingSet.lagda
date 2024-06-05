@@ -36,7 +36,7 @@ open import UF.Subsingletons-Properties
 
 open PropositionalTruncation pt
 
-open import Lifting.Lifting 𝓣 hiding (⊥)
+open import Lifting.Construction 𝓣 hiding (⊥)
 open import Lifting.Miscelanea 𝓣
 open import Lifting.Miscelanea-PropExt-FunExt 𝓣 pe fe
 open import Lifting.Monad 𝓣
@@ -45,7 +45,7 @@ open import DomainTheory.Basics.Dcpo pt fe 𝓣
 open import DomainTheory.Basics.Miscelanea pt fe 𝓣
 open import DomainTheory.Basics.Pointed pt fe 𝓣
 
-open import Posets.Poset fe
+open import OrderedTypes.Poset fe
 
 \end{code}
 
@@ -168,6 +168,62 @@ module _ {𝓤 : Universe}
   where
    l : 𝓛 X
    l = (𝟘 , 𝟘-elim , 𝟘-is-prop)
+
+\end{code}
+
+Minor addition by Ayberk Tosun.
+
+The lifting of a set as a dcpo as defined above has an order that is essentially
+locally small. It is sometimes convenient, however, to repackage the lifting
+dcpo with the equivalent order that has small values.
+
+The development where this function is used can be updated as to work on a dcpo
+with an external proof of local smallness as to obviate the need for this
+repackaging. This is a refactoring to consider in the future.
+
+\begin{code}
+
+ open import Lifting.UnivalentPrecategory 𝓣 X
+ open PosetAxioms
+
+ 𝓛-DCPO⁻ : DCPO {𝓣 ⁺ ⊔ 𝓤} {𝓣 ⊔ 𝓤}
+ 𝓛-DCPO⁻ = 𝓛 X , _⊑_ , †
+  where
+   γ : {x y : 𝓛 X} → (x ⊑ y) ≃ (x ⊑' y)
+   γ {x} {y} = logically-equivalent-props-are-equivalent
+                (⊑-prop-valued fe fe s x y)
+                (⊑'-prop-valued s)
+                ⊑-to-⊑' ⊑'-to-⊑
+
+   p : is-prop-valued _⊑_
+   p = ⊑-prop-valued fe fe s
+
+   a : is-antisymmetric _⊑_
+   a l m p q = ⊑'-is-antisymmetric (⊑-to-⊑' p) (⊑-to-⊑' q)
+
+   δ : is-directed-complete _⊑_
+   δ I ι (i , υ)  = lifting-sup ι δ′ , σ
+    where
+     δ′ : is-directed _⊑'_ ι
+     δ′ = i
+        , λ j k →
+           ∥∥-rec
+            ∃-is-prop
+            (λ { (i , p , q) → ∣ i , ⊑-to-⊑' p , ⊑-to-⊑' q ∣ })
+            (υ j k)
+
+     σ₁ : (j : I) → ι j ⊑ lifting-sup ι δ′
+     σ₁ j = ⊑'-to-⊑ (lifting-sup-is-upperbound ι δ′ j)
+
+     σ₂ : is-lowerbound-of-upperbounds _⊑_ (lifting-sup ι δ′) ι
+     σ₂ j φ = ⊑'-to-⊑
+               (lifting-sup-is-lowerbound-of-upperbounds δ′ j λ k → ⊑-to-⊑' (φ k))
+
+     σ : is-sup _⊑_ (lifting-sup ι δ′) ι
+     σ = σ₁ , σ₂
+
+   † : dcpo-axioms _⊑_
+   † = (lifting-of-set-is-set s , p , 𝓛-id , 𝓛-comp , a) , δ
 
 \end{code}
 

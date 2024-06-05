@@ -25,7 +25,7 @@ module DomainTheory.IdealCompletion.IdealCompletion
        where
 
 open import DomainTheory.Basics.Dcpo pt fe 𝓥
-open import Posets.Poset fe
+open import OrderedTypes.Poset fe
 open import UF.Powerset
 open import UF.Sets
 open import UF.Sets-Properties

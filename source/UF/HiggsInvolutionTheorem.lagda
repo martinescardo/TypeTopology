@@ -156,7 +156,7 @@ assuming in this module. We introduce friendlier notation for it:
 ⇁⇁_ : Ω → Ω
 ⇁⇁ p = ⇁(⇁ p)
 
-open import UF.ExcludedMiddle
+open import UF.ClassicalLogic
 
 lc-monoid-structure-on-Ω-gives-EM : (O : Ω)
                                     (_⊕_ : Ω → Ω → Ω)
@@ -715,7 +715,7 @@ Added 6th November 2023.
         I₃ = equal-⊤-gives-holds _ I₂
 
         g : (r ⇒ p) holds
-        g x = ∧-elim-R' _ _ (I₃ x) x
+        g x = ∧-Elim-R _ _ (I₃ x) x
 
         I₄ : p ＝ r
         I₄ = Ω-extensionality pe fe f g
