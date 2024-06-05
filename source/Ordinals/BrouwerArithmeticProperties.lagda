@@ -130,6 +130,24 @@ the right, but not on the left.
 
 \end{code}
 
+Addition is not commutative, for example `1 + ω` is strictly smaller
+(and hence distinct) from `ω + 1`. This is related to why addition is
+not strictly inflationary fixing the left summand.
+
+\begin{code}
+
+1+ω-less-than-ω+1 : S Z +B ω ⊏ ω +B S Z
+1+ω-less-than-ω+1 =
+  stop ω ,
+  L-⊑ (λ i → S Z +B finite i) ω
+   (λ n → transport (_⊑ ω) (aux n) (L-is-upper-bound finite (succ n)))
+ where
+  aux : (n : ℕ) → finite (succ n) ＝ S Z +B finite n
+  aux zero     = refl
+  aux (succ n) = ap S (aux n)
+
+\end{code}
+
 \section{Properties of Multiplication}
 
 We can build paths from the product of two ordinals from two paths through
@@ -279,71 +297,53 @@ TODO talk about linking multiplication and addition
 
 \begin{code}
 
---L-+B-⊑-+B-L : (b : B) (ϕ : ℕ → B)
---            → L (λ i → b +B ϕ i) ⊑ b +B L ϕ
---L-+B-⊑-+B-L b ϕ = L-⊑ (λ i → b +B ϕ i) (L (λ i → b +B ϕ i)) (L-is-upper-bound (λ i → b +B ϕ i))
---
---+B-L-⊑-L-+B : (b : B) (ϕ : ℕ → B)
---            → b +B L ϕ ⊑ L (λ i → b +B ϕ i)
---+B-L-⊑-L-+B b ϕ = L-⊑ (λ i → b +B ϕ i) (L (λ i → b +B ϕ i)) (L-is-upper-bound (λ i → b +B ϕ i))
---
---L-×B-⊑-×B-L : (b : B) (ϕ : ℕ → B)
---            → L (λ i → b ×B ϕ i) ⊑ b ×B L ϕ
---L-×B-⊑-×B-L b ϕ = L-⊑ (λ i → b ×B ϕ i) (L (λ i → b ×B ϕ i)) (L-is-upper-bound (λ i → b ×B ϕ i))
---
---×B-L-⊑-L-×B : (b : B) (ϕ : ℕ → B)
---            → b ×B L ϕ ⊑ L (λ i → b ×B ϕ i)
---×B-L-⊑-L-×B b ϕ = L-⊑ (λ i → b ×B ϕ i) (L (λ i → b ×B ϕ i)) (L-is-upper-bound (λ i → b ×B ϕ i))
-
 -- b and c both at least 2
-+B-⊑-×B : (b c : B) → S Z ⊏ b → S Z ⊏ c → b +B c ⊑ b ×B c
-+B-⊑-×B b (S Z) h r = 𝟘-elim (⊏-irrefl (S Z) r)
-+B-⊑-×B b (S (S Z)) (p , S-⊑ _ _ q _) r =
- S-⊑ (S b) ((Z +B b) +B b)
-  (extend-path-right-+B (Z +B b) b p)
-  (S-⊑ b (Path-to-ordinal (extend-path-right-+B (Z +B b) b p))
-   (transport PathThroughS
-    (extend-path-right-+B-correct (Z +B b) b p)
-    (extend-path-right-+B (Z +B b) (Path-to-ordinal p) q))
-   (transport (b ⊑_) (aux (Z +B b) b p q) (⊑-trans _ _ _ I II)))
- where
-  aux : (a b : B)
-        (p : PathThroughS b)
-        (q : PathThroughS (Path-to-ordinal p))
-      → a +B Path-to-ordinal q ＝
-         Path-to-ordinal (transport PathThroughS (extend-path-right-+B-correct a b p) (extend-path-right-+B a (Path-to-ordinal p) q))
-  aux a (S b) (stop b)     q = extend-path-right-+B-correct a b q
-  aux a (S b) (continue p) q = aux a b p q
-  aux a (L ϕ) (pick ϕ n p) q = aux a (ϕ n) p q
-
-  I : b ⊑ Z +B b
-  I = +B-inflationary-right Z b
-
-  II : Z +B b ⊑ (Z +B b) +B Path-to-ordinal q
-  II = +B-inflationary-left (Z +B b) (Path-to-ordinal q)
-+B-⊑-×B b (S (S (S c))) h r =
- ⊑-trans _ _ _ (+B-monotonic-left (S (S (b +B c))) (S Z) (((b ×B c) +B b) +B b) (+B-⊑-×B b (S (S c)) h (stop (S c) , S-⊑ Z (S c) (stop c) (Z-⊑ c)))) II
- where
-  IH : S (S (b +B c)) ⊑ ((b ×B c) +B b) +B b
-  IH = +B-⊑-×B b (S (S c)) h (stop (S c) , S-⊑ Z (S c) (stop c) (Z-⊑ c))
-
-  I : S (S (b +B c)) +B S Z ⊑ (((b ×B c) +B b) +B b) +B S Z
-  I = +B-monotonic-left (S (S (b +B c))) (S Z) (((b ×B c) +B b) +B b) IH
-
-  II :  (((b ×B c) +B b) +B b) +B S Z ⊑ (((b ×B c) +B b) +B b) +B b
-  II = +B-monotonic-right _ _ _ (⊏-implies-⊑ _ _ h)
-+B-⊑-×B b (S (S (L ϕ))) h (p , S-⊑ _ _ q _) = {!!}
- where
-  goal : ((L (λ i → b +B ϕ i)) +B b) +B b ⊑ (L (λ i → b ×B ϕ i) +B b) +B b
-  goal = {!!}
-
-
-  --I : (b +B c) +B S Z ⊑ (b +B c) +B b
-  --I = +B-monotonic-right (b +B c) (S Z) b (S-⊑ Z b p (Z-⊑ (Path-to-ordinal p)))
-  --II : {!!}
-  --II = +B-monotonic-left (b +B c) b (b ×B c) (+B-⊑-×B {b} {c} (p , S-⊑ Z (Path-to-ordinal p) q h) {!!})
-+B-⊑-×B b (S (L ϕ)) (p , S-⊑ _ _ q h) (r , S-⊑ _ _ s l) = {!!}
-+B-⊑-×B b (L ϕ) (p , S-⊑ _ _ q h) (r , S-⊑ _ _ s l) = {!!}
+--+B-⊑-×B : (b c : B) → S Z ⊏ b → S Z ⊏ c → b +B c ⊑ b ×B c
+--+B-⊑-×B b (S Z) h r = 𝟘-elim (⊏-irrefl (S Z) r)
+--+B-⊑-×B b (S (S Z)) (p , S-⊑ _ _ q _) r =
+-- S-⊑ (S b) ((Z +B b) +B b)
+--  (extend-path-right-+B (Z +B b) b p)
+--  (S-⊑ b (Path-to-ordinal (extend-path-right-+B (Z +B b) b p))
+--   (transport PathThroughS
+--    (extend-path-right-+B-correct (Z +B b) b p)
+--    (extend-path-right-+B (Z +B b) (Path-to-ordinal p) q))
+--   (transport (b ⊑_) (aux (Z +B b) b p q) (⊑-trans _ _ _ I II)))
+-- where
+--  aux : (a b : B)
+--        (p : PathThroughS b)
+--        (q : PathThroughS (Path-to-ordinal p))
+--      → a +B Path-to-ordinal q ＝
+--         Path-to-ordinal (transport PathThroughS (extend-path-right-+B-correct a b p) (extend-path-right-+B a (Path-to-ordinal p) q))
+--  aux a (S b) (stop b)     q = extend-path-right-+B-correct a b q
+--  aux a (S b) (continue p) q = aux a b p q
+--  aux a (L ϕ) (pick ϕ n p) q = aux a (ϕ n) p q
+--
+--  I : b ⊑ Z +B b
+--  I = +B-inflationary-right Z b
+--
+--  II : Z +B b ⊑ (Z +B b) +B Path-to-ordinal q
+--  II = +B-inflationary-left (Z +B b) (Path-to-ordinal q)
+--+B-⊑-×B b (S (S (S c))) h r =
+-- ⊑-trans _ _ _ (+B-monotonic-left (S (S (b +B c))) (S Z) (((b ×B c) +B b) +B b) (+B-⊑-×B b (S (S c)) h (stop (S c) , S-⊑ Z (S c) (stop c) (Z-⊑ c)))) II
+-- where
+--  IH : S (S (b +B c)) ⊑ ((b ×B c) +B b) +B b
+--  IH = +B-⊑-×B b (S (S c)) h (stop (S c) , S-⊑ Z (S c) (stop c) (Z-⊑ c))
+--
+--  I : S (S (b +B c)) +B S Z ⊑ (((b ×B c) +B b) +B b) +B S Z
+--  I = +B-monotonic-left (S (S (b +B c))) (S Z) (((b ×B c) +B b) +B b) IH
+--
+--  II :  (((b ×B c) +B b) +B b) +B S Z ⊑ (((b ×B c) +B b) +B b) +B b
+--  II = +B-monotonic-right _ _ _ (⊏-implies-⊑ _ _ h)
+--+B-⊑-×B b (S (S (L ϕ))) h (p , S-⊑ _ _ q _) = {!!}
+-- where
+--  goal : ((L (λ i → b +B ϕ i)) +B b) +B b ⊑ (L (λ i → b ×B ϕ i) +B b) +B b
+--  goal = {!!}
+--  --I : (b +B c) +B S Z ⊑ (b +B c) +B b
+--  --I = +B-monotonic-right (b +B c) (S Z) b (S-⊑ Z b p (Z-⊑ (Path-to-ordinal p)))
+--  --II : {!!}
+--  --II = +B-monotonic-left (b +B c) b (b ×B c) (+B-⊑-×B {b} {c} (p , S-⊑ Z (Path-to-ordinal p) q h) {!!})
+--+B-⊑-×B b (S (L ϕ)) (p , S-⊑ _ _ q h) (r , S-⊑ _ _ s l) = {!!}
+--+B-⊑-×B b (L ϕ) (p , S-⊑ _ _ q h) (r , S-⊑ _ _ s l) = {!!}
 
 \end{code}
 
@@ -357,47 +357,46 @@ TODO talk about results
 
 data PathThroughS_Over_ : B → B → 𝓤₀ ̇ where
 
- Z-path : (b : B)
-        → PathThroughS b Over Z
+ 1-path : {b : B}
+        → PathThroughS b
+        → PathThroughS b Over (S Z)
 
  S-path : {b c : B}
-        → PathThroughS b
         → PathThroughS b Over c
+        → PathThroughS b
         → PathThroughS b Over (S c)
 
  L-path : {b : B}
+          (ϕ : ℕ → B)
+        → (n : ℕ)
+        → PathThroughS b Over (ϕ n)
         → PathThroughS b
-        → (ϕ : ℕ → B)
-        → ((n : ℕ) → PathThroughS b Over (ϕ n))
         → PathThroughS b Over (L ϕ)
 
-join-paths-^B : {b c : B}
+join-paths-^B : (b : B) {c : B}
               → PathThroughS b Over c
-              → PathThroughS c
               → PathThroughS (b ^B c)
-join-paths-^B {b} {S c} (S-path p ps)   (stop c)     =
- join-paths-×B {!!} p
-join-paths-^B {b} {S c} (S-path p ps)   (continue q) =
- join-paths-×B (join-paths-^B ps q) p
-join-paths-^B {b} {L ϕ} (L-path p ϕ ps) (pick ϕ n q) =
- pick (λ i → b ^B ϕ i) n (join-paths-^B (ps n) q)
+join-paths-^B b (1-path p)        = join-paths-×B (stop Z) p
+join-paths-^B b (S-path ps p)     = join-paths-×B (join-paths-^B b ps) p
+join-paths-^B b (L-path ϕ n ps p) = pick (λ i → b ^B ϕ i) n (join-paths-^B b ps)
 
-^B-inflationary-right : (b c : B) → S Z ⊏ b → c ⊑ b ^B c
-^B-inflationary-right b Z     h = Z-⊑ (S Z)
-^B-inflationary-right b (S c) (p , S-⊑ _ _ q h) =
-  {!!}
- where
-  I : c +B S Z ⊑ c ×B b
-  I = {!!}
 
-  II : c ×B b ⊑ (b ^B c) ×B b
-  II = ×B-monotonic-left c b (b ^B c)
-        (^B-inflationary-right b c (p , S-⊑ Z (Path-to-ordinal p) q h))
-^B-inflationary-right b (L ϕ) h =
- L-⊑ ϕ (L (λ i → b ^B ϕ i))
-  (λ i → ⊑-trans _ _ _
-   (^B-inflationary-right b (ϕ i) h)
-   (L-is-upper-bound (λ i → b ^B ϕ i) i))
+--^B-inflationary-right : (b c : B) → S Z ⊏ b → c ⊑ b ^B c
+--^B-inflationary-right b Z     h = Z-⊑ (S Z)
+--^B-inflationary-right b (S c) (p , S-⊑ _ _ q h) =
+--  {!!}
+-- where
+--  I : c +B S Z ⊑ c ×B b
+--  I = {!!}
+--
+--  II : c ×B b ⊑ (b ^B c) ×B b
+--  II = ×B-monotonic-left c b (b ^B c)
+--        (^B-inflationary-right b c (p , S-⊑ Z (Path-to-ordinal p) q h))
+--^B-inflationary-right b (L ϕ) h =
+-- L-⊑ ϕ (L (λ i → b ^B ϕ i))
+--  (λ i → ⊑-trans _ _ _
+--   (^B-inflationary-right b (ϕ i) h)
+--   (L-is-upper-bound (λ i → b ^B ϕ i) i))
 
 \end{code}
 
@@ -407,35 +406,23 @@ TODO come up with results we need. make it general for all fixed points?
 
 \begin{code}
 
--- Not exactly relevant for here, but good to better understand the ordering
-outside-S-not-⊑-inside-S : ¬ (S ω ⊑ L (S ∘ finite))
-outside-S-not-⊑-inside-S (S-⊑ _ _ (pick _ n (stop _)) (L-⊑ _ _ h)) =
- ⊏-irrefl (finite (succ n)) (⊑-and-⊏-implies-⊏ _ _ _ I II)
- where
-  I : finite (succ n) ⊑ finite n
-  I = h (succ n)
+S-preserves-⊏-ε₀ : (b : B) → b ⊏ ε₀ → S b ⊏ ε₀
+S-preserves-⊏-ε₀ b (pick _ n p , h) =
+  ⊏-and-⊑-implies-⊏ _ _ _ III IV
+  where
+   ω-greater-than-1 : S Z ⊏ ω
+   ω-greater-than-1 = pick finite 2 (stop (S Z)) , S-⊑ Z (S Z) (stop Z) (Z-⊑ Z)
 
-  II : finite n ⊏ finite (succ n)
-  II = S-is-strictly-inflationary (finite n)
-outside-S-not-⊑-inside-S (S-⊑ _ _ (pick _ n (continue p)) (L-⊑ _ _ h)) =
- ⊏-irrefl (finite (succ n))
-  (⊑-and-⊏-implies-⊏ _ _ _ I (⊑-and-⊏-implies-⊏ _ _ _ II III))
- where
-  I : finite (succ n) ⊑ Path-to-ordinal p
-  I = h (succ n)
+   I : S b ⊑ ω-tower n
+   I = ⊏-implies-S-⊑ _ _ (⊑-and-⊏-implies-⊏ _ _ _ h (path-to-ordinal-⊏ p))
 
-  II : Path-to-ordinal p ⊑ finite n
-  II = path-to-ordinal-⊑ p
+   II : ω-tower n ⊏ ω ^B ω-tower n
+   II = {!!}
 
-  III : finite n ⊏ finite (succ n) 
-  III = S-is-strictly-inflationary (finite n)
+   III : S b ⊏ ω-tower (succ n)
+   III = ⊑-and-⊏-implies-⊏ _ _ _ I II
 
- 
---⊏-ε₀-implies-S-⊏-ε₀ : (b : B) → b ⊏ ε₀ → S b ⊏ ε₀
---⊏-ε₀-implies-S-⊏-ε₀ b (pick .ω-tower n p , h) =
--- pick ω-tower (succ n) q , {!!}
--- where
---  q : PathThroughS (ω-tower (succ n))
---  q = {!!}
+   IV : ω-tower (succ n) ⊑ ε₀
+   IV = L-is-upper-bound ω-tower (succ n)
 
 \end{code}
