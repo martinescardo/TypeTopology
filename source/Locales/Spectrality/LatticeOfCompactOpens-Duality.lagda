@@ -827,9 +827,7 @@ The principal ideal map is an embedding.
  to-spectrum-preserves-top : preserves-𝟏 L 𝒦⁻-spec-L to-𝒦-spec-L holds
  to-spectrum-preserves-top =
   s (↓ₖ (𝟏 L))           ＝⟨ {!refl!} ⟩
-  s (𝟏 𝒦⦅X⦆)           ＝⟨ {!!} ⟩
-  𝟏 {!!}                 ＝⟨ {!!} ⟩
-  ⌜ ≃-sym e  ⌝ (𝟏 𝒦⦅X⦆)  ＝⟨ refl ⟩
+  s (𝟏 𝒦⦅X⦆)             ＝⟨ refl ⟩
   𝟏 𝒦⁻-spec-L            ∎
 
 \end{code}
