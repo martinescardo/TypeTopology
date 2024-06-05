@@ -122,6 +122,9 @@ to-alternative-order-preserving α β ((x ∷ xs) , p) ((x ∷ ys) , q) (tail-le
     𝕗' ((inl _ , e) , inl _) = [] , []-decr
     𝕗' ((inl _ , e) , inr a) = [ a , b ] , sing-decr
     𝕗' ((inr b' , e) , inl _) = {!!}
+     where
+      fb' : ⟨ [𝟙+ α ]^ (β ↓ b) ⟩
+      fb' = [ exp (𝟙ₒ +ₒ α) ((β ↓ b) ↓ b') ×ₒ (𝟙ₒ +ₒ α) , [𝟙+ α ]^ (β ↓ b) ]⟨ IH b b' ⟩ e
     𝕗' ((inr b' , e) , inr a) = {!!}
 
 

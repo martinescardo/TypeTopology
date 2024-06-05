@@ -16,8 +16,8 @@ module Ordinals.Exponentiation.Alternative
        where
 
 open import UF.Base
+open import UF.ClassicalLogic
 open import UF.Equiv
-open import UF.ExcludedMiddle
 open import UF.FunExt
 open import UF.Sets
 open import UF.Subsingletons
@@ -156,7 +156,7 @@ exp-satisfies-succ-specification {𝓤} α β p = transport⁻¹ (λ - → - ＝
    eq : (i : 𝟙 + (⟨ β ⟩ + 𝟙)) → (cases (λ _ → 𝟙ₒ) (λ b → exp α ((β +ₒ 𝟙ₒ) ↓ b) ×ₒ α)) i ＝ F i
    eq (inl _) = refl
    eq (inr (inl b)) = ap (λ z → exp α z ×ₒ α) (+ₒ-↓-left b ⁻¹)
-   eq (inr (inr _)) = ap (λ z → exp α z ×ₒ α) (+ₒ-𝟙ₒ-↓-right β)
+   eq (inr (inr _)) = ap (λ z → exp α z ×ₒ α) (successor-lemma-right β)
 
    eq' : (cases (λ _ → 𝟙ₒ) (λ b → exp α ((β +ₒ 𝟙ₒ) ↓ b) ×ₒ α)) ＝ F
    eq' = dfunext fe' eq
@@ -233,7 +233,7 @@ curiosity {𝓤} P pp = transport⁻¹ (λ - → - ＝ 𝟙ₒ +ₒ (prop-ordina
     eq₂ = sup F ↓ pr₁ (sup-is-upper-bound F (inr p)) (inr ⋆)
             ＝⟨ initial-segment-of-sup-at-component F (inr p) (inr ⋆) ⟩
           (𝟚ₒ ↓ inr ⋆)
-            ＝⟨ +ₒ-𝟙ₒ-↓-right 𝟙ₒ ⟩
+            ＝⟨ successor-lemma-right 𝟙ₒ ⟩
           𝟙ₒ
             ∎
     q : (sup F ↓ pr₁ (sup-is-upper-bound F (inl ⋆)) ⋆) ⊲ (sup F ↓ pr₁ (sup-is-upper-bound F (inr p)) (inr ⋆))

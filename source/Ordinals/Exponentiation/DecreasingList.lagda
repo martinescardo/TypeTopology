@@ -16,8 +16,8 @@ module Ordinals.Exponentiation.DecreasingList
        where
 
 open import UF.Base
+open import UF.ClassicalLogic
 open import UF.Equiv
-open import UF.ExcludedMiddle
 open import UF.FunExt
 open import UF.Sets
 open import UF.Subsingletons
