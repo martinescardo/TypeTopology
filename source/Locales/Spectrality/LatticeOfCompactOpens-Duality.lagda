@@ -1,8 +1,8 @@
---------------------------------------------------------------------------------
+---
 title:          Basics of duality for spectral locales
 author:         Ayberk Tosun
 date-completed: 2024-05-12
---------------------------------------------------------------------------------
+---
 
 Every spectral locale `X` is homeomorphic to the spectrum of its distributive
 lattice `𝒦(X)` of compact opens. We construct a proof of this fact in this
@@ -734,7 +734,6 @@ spectral-implies-spectral· X σ =
 module OtherDirection (L : DistributiveLattice 𝓤) where
 
  open 𝒦-Duality
- open 𝒦-Lattice
  open DefnOfFrameOfIdeal
  open IdealProperties
  open Spectrality L
@@ -745,9 +744,6 @@ module OtherDirection (L : DistributiveLattice 𝓤) where
 
  𝒦⁻-spec-L : DistributiveLattice 𝓤
  𝒦⁻-spec-L = 𝒦-X⁻ (spectrum L) 𝕤
-
- to-lattice : 𝒦⁻-spec-L ─d→ L
- to-lattice = {!!}
 
  to-spectrum₀ : ∣ L ∣ᵈ → ∣ 𝒦⁻-spec-L ∣ᵈ
  to-spectrum₀ x = s (spectrum L) 𝕤 (↓ x , principal-ideal-is-compact x)
@@ -774,16 +770,45 @@ module OtherDirection (L : DistributiveLattice 𝓤) where
      ‡ = γ y (≤-is-reflexive (poset-ofᵈ L) y)
 
  to-lattice₀ : ∣ 𝒦⁻-spec-L ∣ᵈ → ∣ L ∣ᵈ
- to-lattice₀ K = {!!}
+ to-lattice₀ K = pr₁ (exit-∥∥ † foo)
   where
-   foo : ∃ x ꞉ ∣ L ∣ᵈ , {!!}
+   foo : ∃ x ꞉ ∣ L ∣ᵈ , ↓ x  ＝ pr₁ (r (spectrum L) 𝕤 K)
    foo = compact-opens-are-basic
           (spectrum L)
-          (ℬ-spec , ℬ-spec-is-directed-basis) {!K!} {!!}
+          (ℬ-spec , ℬ-spec-is-directed-basis)
+          (pr₁ (r (spectrum L) 𝕤 K)) (pr₂ (r (spectrum L) 𝕤 K))
 
+   † : is-prop (Σ y ꞉ ∣ L ∣ᵈ , ↓ y ＝ pr₁ (r (spectrum L) 𝕤 K))
+   † (x , p) (y , q) = ↓-is-embedding ((pr₁ (r (spectrum L) 𝕤 K))) (x , p) (y , q)
+
+ to-lattice₀-preserves-top : preserves-𝟏 𝒦⁻-spec-L L to-lattice₀ holds
+ to-lattice₀-preserves-top = goal
+  where
+   open DistributiveLattice 𝒦⁻-spec-L using () renaming (𝟏 to 𝟏₁)
+   open DistributiveLattice L using () renaming (𝟏 to 𝟏₂)
+
+   goal : to-lattice₀ 𝟏₁ ＝ 𝟏₂
+   goal = to-lattice₀ 𝟏₁                                      ＝⟨ refl ⟩
+          to-lattice₀ (s (spectrum L) 𝕤 (𝟏ₖ (spectrum L) 𝕤))  ＝⟨ {!!} ⟩
+          𝟏₂ ∎
+
+ to-lattice-is-homomorphism : is-homomorphismᵈ 𝒦⁻-spec-L L to-lattice₀ holds
+ to-lattice-is-homomorphism = {!!} , {!!}
+
+ to-lattice : 𝒦⁻-spec-L ─d→ L
+ to-lattice = record
+               { h                 = to-lattice₀
+               ; h-is-homomorphism = to-lattice-is-homomorphism
+               }
+
+ to-spectrum-is-a-homomorphism : is-homomorphismᵈ L 𝒦⁻-spec-L to-spectrum₀ holds
+ to-spectrum-is-a-homomorphism = {!!}
 
  to-spectrum : L ─d→ 𝒦⁻-spec-L
- to-spectrum = {!!}
+ to-spectrum = record
+                { h                 = to-spectrum₀
+                ; h-is-homomorphism = to-spectrum-is-a-homomorphism
+                }
 
  spec-isomorphism : 𝒦⁻-spec-L ≅d≅ L
  spec-isomorphism =
