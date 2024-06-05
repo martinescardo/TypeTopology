@@ -407,19 +407,28 @@ TODO come up with results we need. make it general for all fixed points?
 
 \begin{code}
 
-foo : ¬ (S ω ⊑ L (S ∘ finite))
-foo (S-⊑ _ _ (pick _ n (stop _)) (L-⊑ _ _ h)) =
+-- Not exactly relevant for here, but good to better understand the ordering
+outside-S-not-⊑-inside-S : ¬ (S ω ⊑ L (S ∘ finite))
+outside-S-not-⊑-inside-S (S-⊑ _ _ (pick _ n (stop _)) (L-⊑ _ _ h)) =
+ ⊏-irrefl (finite (succ n)) (⊑-and-⊏-implies-⊏ _ _ _ I II)
+ where
+  I : finite (succ n) ⊑ finite n
+  I = h (succ n)
+
+  II : finite n ⊏ finite (succ n)
+  II = S-is-strictly-inflationary (finite n)
+outside-S-not-⊑-inside-S (S-⊑ _ _ (pick _ n (continue p)) (L-⊑ _ _ h)) =
  ⊏-irrefl (finite (succ n))
-  (⊑-and-⊏-implies-⊏ _ _ _
-   (h (succ n))
-   (S-is-strictly-inflationary (finite n)))
-foo (S-⊑ _ _ (pick _ n (continue p)) (L-⊑ _ _ h)) =
- ⊏-irrefl (finite (succ n))
-  (⊑-and-⊏-implies-⊏ _ _ _
-   (h (succ n))
-   (⊑-and-⊏-implies-⊏ _ _ _
-    (path-to-ordinal-⊑ p)
-    (S-is-strictly-inflationary (finite n))))
+  (⊑-and-⊏-implies-⊏ _ _ _ I (⊑-and-⊏-implies-⊏ _ _ _ II III))
+ where
+  I : finite (succ n) ⊑ Path-to-ordinal p
+  I = h (succ n)
+
+  II : Path-to-ordinal p ⊑ finite n
+  II = path-to-ordinal-⊑ p
+
+  III : finite n ⊏ finite (succ n) 
+  III = S-is-strictly-inflationary (finite n)
 
  
 --⊏-ε₀-implies-S-⊏-ε₀ : (b : B) → b ⊏ ε₀ → S b ⊏ ε₀
