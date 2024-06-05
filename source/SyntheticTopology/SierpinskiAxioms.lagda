@@ -29,6 +29,7 @@ module SyntheticTopology.SierpinskiAxioms
 open import UF.Logic
 
 open AllCombinators pt fe
+open PropositionalTruncation pt hiding (_∨_)
 open Sierpinski-notations fe pe pt 𝕊
 
 
@@ -67,7 +68,62 @@ correct way to do it.
 phoa’s-principle :  Ω (𝓤 ⁺ ⊔ 𝓥)
 phoa’s-principle =
   Ɐ f ꞉ (Ω 𝓤 → Ω 𝓤) ,
-   Ɐ U ꞉ Ω 𝓤 , is-open-proposition U ⇒ f U ⇔ (f ⊥ ∨ U) ∧ f ⊤
+   (Ɐ U ꞉ Ω 𝓤 , (is-open-proposition U ⇒ is-open-proposition (f U))) ⇒ 
+    (Ɐ V ꞉ Ω 𝓤 , is-open-proposition V ⇒ f V ⇔ ((f ⊤ ∧ V) ∨ f ⊥))
+
+⇒-functor : (P P' Q Q' : Ω 𝓤)
+      → ((P ⇔ P') holds)
+      → ((Q ⇔ Q') holds)
+      → ((P ⇒ Q) holds)
+      → ((P' ⇒ Q') holds)
+      
+⇒-functor P P' Q Q' P-eq-P' Q-eq-Q' P-gives-Q P'-holds =
+ ⇔-transport pe Q Q' _holds Q-eq-Q'
+   (P-gives-Q (⇔-transport pe P' P _holds (⇔-swap pe P P' P-eq-P') P'-holds))
+
+phoa’s-principle-gives-monotonous-maps
+ : (phoa’s-principle ⇒
+    (Ɐ f ꞉ (Ω 𝓤 → Ω 𝓤) ,
+     (Ɐ U ꞉ Ω 𝓤 , (is-open-proposition U ⇒ is-open-proposition (f U))) ⇒
+      (Ɐ P ꞉ Ω 𝓤 , is-open-proposition P ⇒
+       (Ɐ Q ꞉ Ω 𝓤 , is-open-proposition Q ⇒
+        (P ⇒ Q) ⇒ (f P ⇒ f Q))))) holds
+        
+phoa’s-principle-gives-monotonous-maps
+ phoa-p f sierpinski-valued-f P open-P Q open-Q P-gives-Q =
+  ⇔-transport pe
+              (((f ⊤ ∧ P) ∨ f ⊥) ⇒ ((f ⊤ ∧ Q) ∨ f ⊥))
+              (f P ⇒ f Q)
+              _holds
+              (equiv₁ , equiv₂)
+              †
+   where
+    equiv₁ : (((f ⊤ ∧ P ∨ f ⊥) ⇒ (f ⊤ ∧ Q ∨ f ⊥)) ⇒ f P ⇒ f Q) holds
+    equiv₁ = ⇒-functor (f ⊤ ∧ P ∨ f ⊥)
+                       (f P)
+                       (f ⊤ ∧ Q ∨ f ⊥)
+                       (f Q)
+                       (⇔-swap pe (f P) (f ⊤ ∧ P ∨ f ⊥)
+                                        (phoa-p f sierpinski-valued-f P open-P))
+                       (⇔-swap pe (f Q) (f ⊤ ∧ Q ∨ f ⊥)
+                                        (phoa-p f sierpinski-valued-f Q open-Q))
+    
+    equiv₂ : ((f P ⇒ f Q) ⇒ (f ⊤ ∧ P ∨ f ⊥) ⇒ (f ⊤ ∧ Q ∨ f ⊥)) holds
+    equiv₂ = ⇒-functor (f P)
+                       (f ⊤ ∧ P ∨ f ⊥)
+                       (f Q)
+                       (f ⊤ ∧ Q ∨ f ⊥)
+                       (phoa-p f sierpinski-valued-f P open-P)
+                       (phoa-p f sierpinski-valued-f Q open-Q)
+    
+    † : ((f ⊤ ∧ P ∨ f ⊥) ⇒ (f ⊤ ∧ Q ∨ f ⊥)) holds
+    † and-or-P = ∥∥-rec (holds-is-prop (f ⊤ ∧ Q ∨ f ⊥))
+                        (cases (λ (f-top-holds , P-holds) →
+                                 ∣ inl (f-top-holds , P-gives-Q P-holds)  ∣)
+                               (∣_∣ ∘ inr))
+                        and-or-P 
+
+
 
 \end{code}
 
