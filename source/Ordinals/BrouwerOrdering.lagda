@@ -205,9 +205,6 @@ we would expect.
 ⊑-refl (S b) = S-⊑ b (S b) (stop b) (⊑-refl b)
 ⊑-refl (L ϕ) = L-⊑ ϕ (L ϕ) (L-is-upper-bound ϕ)
 
--- ⊏-irrefl : (b : B) → ¬ (b ⊏ b)
--- ⊏-irrefl = {!!}
-
 ⊑-trans : (b c d : B) → b ⊑ c → c ⊑ d → b ⊑ d
 ⊑-trans Z     c d (Z-⊑ c)       l = Z-⊑ d
 ⊑-trans (S b) c d (S-⊑ b c p h) l =
@@ -239,14 +236,48 @@ we would expect.
   m : Path-to-ordinal p ⊑ Path-to-ordinal q
   m = pr₂ aux
 
+⊏-trans : (b c d : B) → b ⊏ c → c ⊏ d → b ⊏ d
+⊏-trans b c d h l = ⊑-and-⊏-implies-⊏ b c d (⊏-implies-⊑ b c h) l
+
+path-to-ordinal-⊏ : {b : B} (p : PathThroughS b) → Path-to-ordinal p ⊏ b
+path-to-ordinal-⊏ p = p , ⊑-refl (Path-to-ordinal p)
+
+S-is-strictly-inflationary : (b : B) → b ⊏ S b
+S-is-strictly-inflationary b = stop b , ⊑-refl b
+
+⊏-irrefl : (b : B) → ¬ (b ⊏ b)
+⊏-irrefl (S b) (stop b , h)     =
+ ⊏-irrefl b (⊏-and-⊑-implies-⊏ _ _ _ (S-is-strictly-inflationary b) h)
+⊏-irrefl (S b) (continue q , h) =
+  ⊏-irrefl b (⊏-trans _ _ _ (⊏-and-⊑-implies-⊏ _ _ _ I II) III)
+ where
+  I : b ⊏ S b
+  I = S-is-strictly-inflationary b
+
+  II : S b ⊑ Path-to-ordinal q
+  II = h
+
+  III : Path-to-ordinal q ⊏ b
+  III = path-to-ordinal-⊏ q
+⊏-irrefl (L ϕ) (pick ϕ n q , L-⊑ _ _ h) =
+ ⊏-irrefl (ϕ n) (⊑-and-⊏-implies-⊏ _ _ _ (h n) (path-to-ordinal-⊏ q))
+
 \end{code}
 
 Some more results that may become useful at some point.
 
 \begin{code}
 
-path-to-ordinal-⊏ : {b : B} (p : PathThroughS b) → Path-to-ordinal p ⊏ b
-path-to-ordinal-⊏ p = p , ⊑-refl (Path-to-ordinal p)
+Z-is-minimal : (b : B) → ¬ (b ⊏ Z)
+Z-is-minimal Z =  ⊏-irrefl Z
+
+S-reflects-⊏ : (b c : B) → S b ⊏ S c → b ⊏ c
+S-reflects-⊏ b c (stop _     , S-⊑ _ _ p h) = p , h
+S-reflects-⊏ b c (continue p , S-⊑ _ _ q h) =
+ p , ⊑-trans b (Path-to-ordinal q) (Path-to-ordinal p) h (path-to-ordinal-⊑ q)
+
+⊏-implies-S-⊑ : (b c : B) → b ⊏ c → S b ⊑ c
+⊏-implies-S-⊑ b c (p , h) = S-⊑ b c p h
 
 S-is-monotonic : (b c : B)
                → b ⊑ c
