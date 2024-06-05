@@ -96,7 +96,6 @@ to-alternative α = transfinite-induction-on-OO (λ β → ⟨[𝟙+ α ]^ β �
                                                   (ih b (decreasing-pr₂-to-more-precise-tail α β a b xs ps
                                                         , decreasing-pr₂-to-more-precise-tail-decreasing α β a b xs ps) , inr a))
 
-
 {-
 to-alternative-order-preserving : (α : Ordinal 𝓤) (β : Ordinal 𝓥) → is-order-preserving ([𝟙+ α ]^ β) (exp (𝟙ₒ +ₒ α) β) (to-alternative α β)
 to-alternative-order-preserving α β ([] , p) (((a , b) ∷ ys) , q) []-lex = {!!}
@@ -105,12 +104,34 @@ to-alternative-order-preserving α β ((x ∷ xs) , p) ((y ∷ ys) , q) (head-le
 -- exp α (β ↓ b) × (1 + α ↓ a) + exp α (β ↓ b) ↓ (to-alternative α (β ↓ b) ys)
 to-alternative-order-preserving α β ((x ∷ xs) , p) ((x ∷ ys) , q) (tail-lex refl rr) = {!!}
 -}
+
+𝕗 : (α : Ordinal 𝓤) (β : Ordinal 𝓥) (b : ⟨ β ⟩)
+  → (exp (𝟙ₒ +ₒ α) (β ↓ b) ×ₒ (𝟙ₒ +ₒ α)) ⊴ ([𝟙+ α ]^ β)
+𝕗 {𝓤} {𝓥} α = transfinite-induction-on-OO (λ β → (b : ⟨ β ⟩) → (exp (𝟙ₒ +ₒ α) (β ↓ b) ×ₒ (𝟙ₒ +ₒ α)) ⊴ ([𝟙+ α ]^ β)) H
+ where
+  H : (β : Ordinal 𝓥)
+    → ((b : ⟨ β ⟩) (b' : ⟨ β ↓ b ⟩)
+          → (exp (𝟙ₒ +ₒ α) ((β ↓ b) ↓ b') ×ₒ (𝟙ₒ +ₒ α)) ⊴ ([𝟙+ α ]^ (β ↓ b)))
+    → (b : ⟨ β ⟩)
+    → (exp (𝟙ₒ +ₒ α) (β ↓ b) ×ₒ (𝟙ₒ +ₒ α)) ⊴ ([𝟙+ α ]^ β)
+  H β IH b = {!!}
+   where
+    𝕗' : (Σ x ꞉ 𝟙{𝓤} + ⟨ β ↓ b ⟩ ,
+         (cases {X = 𝟙} (λ _ → 𝟙) (λ b' → ⟨ exp (𝟙ₒ +ₒ α) ((β ↓ b) ↓ b') ×ₒ (𝟙ₒ +ₒ α) ⟩) x)) × ⟨ 𝟙ₒ +ₒ α ⟩
+       → ⟨ [𝟙+ α ]^ β ⟩
+    𝕗' ((inl _ , e) , inl _) = [] , []-decr
+    𝕗' ((inl _ , e) , inr a) = [ a , b ] , sing-decr
+    𝕗' ((inr b' , e) , inl _) = {!!}
+    𝕗' ((inr b' , e) , inr a) = {!!}
+
+
 \end{code}
 
 \begin{code}
 
 -- An ordinal that can perhaps be useful in deriving constructive taboos
 
+{-
 module _ (P : 𝓤 ̇ ) where
 
  _≺𝟚ₚ_ : 𝟚 {𝓤} → 𝟚 {𝓤} → 𝓤 ̇
@@ -183,4 +204,6 @@ module _ (P : 𝓤 ̇ ) where
      translate (inl p)       = inl p
      translate (inr (inl e)) = 𝟘-elim (+disjoint e)
      translate (inr (inr np)) = inr np
+-}
+
 \end{code}
