@@ -899,3 +899,192 @@ definition-by-transfinite-induction-on-OO X f =
  transfinite-induction-on-OO-behaviour X f
 
 \end{code}
+
+Added 4 June 2024 at the Hausdorff Reseach Institute for Mathematics (HIM).
+By Tom de Jong and Fredrik Nordvall Forsberg.
+
+Given simulations
+  f : α ⊴ γ and g : β ⊴ γ
+and points a : α and b : β we have
+  f a ≼ g b   ⇔   α ↓ a ⊴ β ↓ b,
+and
+  f a ＝ g b   ⇔   α ↓ a ≃ₒ β ↓ b.
+
+\begin{code}
+
+initial-segments-⊴-gives-simulations-pointwise-≼ :
+   (α : Ordinal 𝓤) (β : Ordinal 𝓥) (γ : Ordinal 𝓦)
+   (f : α ⊴ γ) (g : β ⊴ γ)
+   (a : ⟨ α ⟩) (b : ⟨ β ⟩)
+ → (α ↓ a) ⊴ (β ↓ b)
+ → [ α , γ ]⟨ f ⟩ a ≼⟨ γ ⟩ [ β , γ ]⟨ g ⟩ b
+initial-segments-⊴-gives-simulations-pointwise-≼
+ α β γ 𝕗@(f , f-sim) 𝕘@(g , g-sim) a b 𝕖@(e , e-sim) c c-below-fa = V
+ where
+  I : Σ x ꞉ ⟨ α ⟩ , x ≺⟨ α ⟩ a × (f x ＝ c)
+  I = simulations-are-initial-segments α γ f f-sim a c c-below-fa
+  x : ⟨ α ⟩
+  x = pr₁ I
+  x-below-a : x ≺⟨ α ⟩ a
+  x-below-a = pr₁ (pr₂ I)
+  fx-equals-c : f x ＝ c
+  fx-equals-c = pr₂ (pr₂ I)
+
+  II : ⟨ β ↓ b ⟩
+  II = e (x , x-below-a)
+  y : ⟨ β ⟩
+  y = pr₁ II
+  y-below-b : y ≺⟨ β ⟩ b
+  y-below-b = pr₂ II
+
+\end{code}
+
+  We now prove that f x ＝ g y by considering the necessarily commutative
+  diagram of simulations
+
+    α ↓ a   ⊴   β ↓ b
+      ⊴           ⊴
+      α           β
+        ⊴ᶠ     ᵍ⊵
+            γ
+
+\begin{code}
+
+  III : f x ＝ g y
+  III = ap (λ - → pr₁ - (x , x-below-a)) sim-commute
+   where
+    sim-commute :
+        ⊴-trans (α ↓ a) α γ (segment-⊴ α a) 𝕗
+     ＝ ⊴-trans (α ↓ a) (β ↓ b) γ 𝕖 (⊴-trans (β ↓ b) β γ (segment-⊴ β b) 𝕘)
+    sim-commute =
+     ⊴-is-prop-valued (α ↓ a) γ
+      (⊴-trans (α ↓ a) α γ (segment-⊴ α a) 𝕗)
+      (⊴-trans (α ↓ a) (β ↓ b) γ 𝕖 (⊴-trans (β ↓ b) β γ (segment-⊴ β b) 𝕘))
+
+  IV : c ＝ g y
+  IV = fx-equals-c ⁻¹ ∙ III
+
+  V : c ≺⟨ γ ⟩ g b
+  V = transport⁻¹ (λ - → - ≺⟨ γ ⟩ g b) IV
+                  (simulations-are-order-preserving β γ g g-sim y b y-below-b)
+
+isomorphic-initial-segments-gives-simulations-pointwise-equal :
+   (α : Ordinal 𝓤) (β : Ordinal 𝓥) (γ : Ordinal 𝓦)
+   (f : α ⊴ γ) (g : β ⊴ γ)
+   (a : ⟨ α ⟩) (b : ⟨ β ⟩)
+ → (α ↓ a) ≃ₒ (β ↓ b)
+ → (pr₁ f) a ＝ (pr₁ g) b
+isomorphic-initial-segments-gives-simulations-pointwise-equal α β γ f g a b e =
+ Extensionality γ (pr₁ f a) (pr₁ g b) I II
+  where
+   I : pr₁ f a ≼⟨ γ ⟩ pr₁ g b
+   I = initial-segments-⊴-gives-simulations-pointwise-≼ α β γ f g a b
+        (≃ₒ-to-⊴ (α ↓ a) (β ↓ b) e)
+   II : pr₁ g b ≼⟨ γ ⟩ pr₁ f a
+   II = initial-segments-⊴-gives-simulations-pointwise-≼ β α γ g f b a
+         (≃ₒ-to-⊴ (β ↓ b) (α ↓ a) (≃ₒ-sym (α ↓ a) (β ↓ b) e))
+
+\end{code}
+
+We illustrate the above lemmas by showing that they generalize the
+left-cancellability of taking initial segments (which was already proved above).
+
+\begin{code}
+
+↓-⊴-lc-bis : (α : Ordinal 𝓤) (a b : ⟨ α ⟩)
+           → (α ↓ a) ⊴ (α ↓ b )
+           → a ≼⟨ α ⟩ b
+↓-⊴-lc-bis α =
+ initial-segments-⊴-gives-simulations-pointwise-≼ α α α (⊴-refl α) (⊴-refl α)
+
+↓-lc-bis : (α : Ordinal 𝓤) (a b : ⟨ α ⟩)
+         → (α ↓ a) ≃ₒ (α ↓ b )
+         → a ＝ b
+↓-lc-bis α =
+ isomorphic-initial-segments-gives-simulations-pointwise-equal α α α
+  (⊴-refl α) (⊴-refl α)
+
+\end{code}
+
+We now prove the converses to the above lemmas.
+
+\begin{code}
+
+simulations-pointwise-≼-gives-initial-segments-⊴ :
+   (α : Ordinal 𝓤) (β : Ordinal 𝓥) (γ : Ordinal 𝓦)
+   (f : α ⊴ γ) (g : β ⊴ γ)
+   (a : ⟨ α ⟩) (b : ⟨ β ⟩)
+ → (pr₁ f) a ≼⟨ γ ⟩ (pr₁ g) b
+ → (α ↓ a) ⊴ (β ↓ b)
+simulations-pointwise-≼-gives-initial-segments-⊴
+ α β γ 𝕗@(f , f-sim) 𝕘@(g , g-sim) a b fa-below-gb = h ,
+                                                     h-intial-segment ,
+                                                     h-order-preserving
+  where
+   h-prelim : (x : ⟨ α ⟩)
+            → x ≺⟨ α ⟩ a
+            → Σ y ꞉ ⟨ β ⟩ , (y ≺⟨ β ⟩ b) × (g y ＝ f x)
+   h-prelim x l = simulations-are-initial-segments β γ g g-sim b (f x) l'
+    where
+     l' : f x ≺⟨ γ ⟩ g b
+     l' = fa-below-gb (f x) (simulations-are-order-preserving α γ f f-sim x a l)
+
+   h : ⟨ α ↓ a ⟩ → ⟨ β ↓ b ⟩
+   h (x , l) = (pr₁ (h-prelim x l) , pr₁ (pr₂ (h-prelim x l)))
+   h̅ : ⟨ α ↓ a ⟩ → ⟨ β ⟩
+   h̅ = segment-inclusion β b ∘ h
+
+   h-eq : (x : ⟨ α ⟩) (l : x ≺⟨ α ⟩ a)
+        → g (h̅ (x , l)) ＝ f x
+   h-eq x l = pr₂ (pr₂ (h-prelim x l))
+
+   h-order-preserving : is-order-preserving (α ↓ a) (β ↓ b) h
+   h-order-preserving (x , l) (y , k) x-below-y = III
+    where
+     I : f x ≺⟨ γ ⟩ f y
+     I = simulations-are-order-preserving α γ f f-sim x y x-below-y
+     II : g (h̅ (x , l)) ≺⟨ γ ⟩ g (h̅ (y , k))
+     II = transport₂⁻¹ (underlying-order γ) (h-eq x l) (h-eq y k) I
+     III : h̅ (x , l) ≺⟨ β ⟩ h̅ (y , k)
+     III = simulations-are-order-reflecting β γ g g-sim
+                                            (h̅ (x , l)) (h̅ (y , k)) II
+
+   h-intial-segment : is-initial-segment (α ↓ a) (β ↓ b) h
+   h-intial-segment (x , l) (y , k) y-below-hx = (x' , IV) , x'-below-x , V
+    where
+     I : g y ≺⟨ γ ⟩ g (h̅ (x , l))
+     I = simulations-are-order-preserving β γ g g-sim y (h̅ (x , l)) y-below-hx
+     II : g y ≺⟨ γ ⟩ f x
+     II = transport (λ - → g y ≺⟨ γ ⟩ -) (h-eq x l) I
+     III : Σ x' ꞉ ⟨ α ⟩ , x' ≺⟨ α ⟩ x × (f x' ＝ g y)
+     III = simulations-are-initial-segments α γ f f-sim x (g y) II
+     x' : ⟨ α ⟩
+     x' = pr₁ III
+     x'-below-x : x' ≺⟨ α ⟩ x
+     x'-below-x = pr₁ (pr₂ III)
+     IV : x' ≺⟨ α ⟩ a
+     IV = Transitivity α x' x a x'-below-x l
+     V : h (x' , IV) ＝ y , k
+     V = to-subtype-＝ (λ _ → Prop-valuedness β _ b)
+                       (simulations-are-lc β γ g g-sim
+                                           (g (h̅ (x' , IV)) ＝⟨ h-eq x' IV ⟩
+                                            f x'            ＝⟨ pr₂ (pr₂ III) ⟩
+                                            g y             ∎))
+
+simulations-pointwise-equal-gives-isomorphic-initial-segments :
+   (α : Ordinal 𝓤) (β : Ordinal 𝓥) (γ : Ordinal 𝓦)
+   (f : α ⊴ γ) (g : β ⊴ γ)
+   (a : ⟨ α ⟩) (b : ⟨ β ⟩)
+ → (pr₁ f) a ＝ (pr₁ g) b
+ → (α ↓ a) ≃ₒ (β ↓ b)
+simulations-pointwise-equal-gives-isomorphic-initial-segments α β γ f g a b eq =
+ bisimilarity-gives-ordinal-equiv (α ↓ a) (β ↓ b) I II
+  where
+   I : (α ↓ a) ⊴ (β ↓ b)
+   I = simulations-pointwise-≼-gives-initial-segments-⊴ α β γ f g a b
+        (≼-refl-＝ (underlying-order γ) eq)
+   II : (β ↓ b) ⊴ (α ↓ a)
+   II = simulations-pointwise-≼-gives-initial-segments-⊴ β α γ g f b a
+         (≼-refl-＝ (underlying-order γ) (eq ⁻¹))
+
+\end{code}
