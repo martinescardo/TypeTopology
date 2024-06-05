@@ -733,20 +733,69 @@ spectral-implies-spectral· X σ =
 
 module OtherDirection (L : DistributiveLattice 𝓤) where
 
- open 𝒦-Duality
+\end{code}
+
+We denote by `spec-L` the spectrum of the lattice `L`, which is a large and
+locally small locale.
+
+\begin{code}
+
  open DefnOfFrameOfIdeal
+
+ spec-L : Locale (𝓤 ⁺) 𝓤 𝓤
+ spec-L = spectrum L
+
+\end{code}
+
+We also define an abbreviation for the proof that `spectrum L` is a spectral
+locale (with a small basis).
+
+\begin{code}
+
+ spec-L-is-ssb : is-spectral-with-small-basis ua spec-L holds
+ spec-L-is-ssb = Spectrality.spec-L-is-spectral L
+               , Spectrality.spec-L-has-small-𝒦 L
+
  open IdealProperties
  open Spectrality L
  open PrincipalIdeals L
+ open 𝒦-Duality spec-L spec-L-is-ssb
 
- 𝕤 : is-spectral-with-small-basis ua spec-L holds
- 𝕤 = Spectrality.spec-L-is-spectral L , Spectrality.spec-L-has-small-𝒦 L
+\end{code}
+
+We denote by `𝒦⁻-spec-L` the small distributive lattice of compact opens of
+the spectrum of `L`.
+
+\begin{code}
 
  𝒦⁻-spec-L : DistributiveLattice 𝓤
- 𝒦⁻-spec-L = 𝒦-X⁻ (spectrum L) 𝕤
+ 𝒦⁻-spec-L = 𝒦-X⁻
 
- to-spectrum₀ : ∣ L ∣ᵈ → ∣ 𝒦⁻-spec-L ∣ᵈ
- to-spectrum₀ x = s (spectrum L) 𝕤 (↓ x , principal-ideal-is-compact x)
+\end{code}
+
+We now start working towards the construction of a lattice isomorphism:
+
+```text
+    L ≅ 𝒦⁻(spec(L))
+```
+
+The isomorphism that we construct consists of the maps:
+
+  1. `to-𝒦-spec-L : ∣ L ∣ᵈ → ∣ 𝒦⁻-spec-L ∣ᵈ`, and
+  2. `back-to-L : ∣ 𝒦⁻-spec-L ∣ᵈ → ∣ L ∣ᵈ`.
+
+We first construct the map `back-to-L`.
+
+\begin{code}
+
+ to-𝒦-spec-L : ∣ L ∣ᵈ → ∣ 𝒦⁻-spec-L ∣ᵈ
+ to-𝒦-spec-L = s ∘ ↓ₖ_
+
+\end{code}
+
+The principal ideal map is an embedding.
+
+\begin{code}
 
  ↓-is-embedding : is-embedding principal-ideal
  ↓-is-embedding I (x , p) (y , q) =
@@ -769,28 +818,36 @@ module OtherDirection (L : DistributiveLattice 𝓤) where
      ‡ : rel-syntax (poset-ofᵈ L) y x holds
      ‡ = γ y (≤-is-reflexive (poset-ofᵈ L) y)
 
+\end{code}
+
+\begin{code}
+
+ open DistributiveLattice
+
+ to-spectrum-preserves-top : preserves-𝟏 L 𝒦⁻-spec-L to-𝒦-spec-L holds
+ to-spectrum-preserves-top =
+  s (↓ₖ (𝟏 L))           ＝⟨ {!refl!} ⟩
+  s (𝟏 𝒦⦅X⦆)           ＝⟨ {!!} ⟩
+  𝟏 {!!}                 ＝⟨ {!!} ⟩
+  ⌜ ≃-sym e  ⌝ (𝟏 𝒦⦅X⦆)  ＝⟨ refl ⟩
+  𝟏 𝒦⁻-spec-L            ∎
+
+\end{code}
+
+{--
+
  to-lattice₀ : ∣ 𝒦⁻-spec-L ∣ᵈ → ∣ L ∣ᵈ
- to-lattice₀ K = pr₁ (exit-∥∥ † foo)
+ to-lattice₀ K = pr₁ (exit-∥∥ † γ)
   where
-   foo : ∃ x ꞉ ∣ L ∣ᵈ , ↓ x  ＝ pr₁ (r (spectrum L) 𝕤 K)
-   foo = compact-opens-are-basic
-          (spectrum L)
-          (ℬ-spec , ℬ-spec-is-directed-basis)
-          (pr₁ (r (spectrum L) 𝕤 K)) (pr₂ (r (spectrum L) 𝕤 K))
+   γ : ∃ x ꞉ ∣ L ∣ᵈ , ↓ x  ＝ pr₁ (r (spectrum L) 𝕤 K)
+   γ = compact-opens-are-basic
+        (spectrum L)
+        (ℬ-spec , ℬ-spec-is-directed-basis)
+        (pr₁ (r (spectrum L) 𝕤 K)) (pr₂ (r (spectrum L) 𝕤 K))
 
    † : is-prop (Σ y ꞉ ∣ L ∣ᵈ , ↓ y ＝ pr₁ (r (spectrum L) 𝕤 K))
    † (x , p) (y , q) = ↓-is-embedding ((pr₁ (r (spectrum L) 𝕤 K))) (x , p) (y , q)
 
- to-lattice₀-preserves-top : preserves-𝟏 𝒦⁻-spec-L L to-lattice₀ holds
- to-lattice₀-preserves-top = goal
-  where
-   open DistributiveLattice 𝒦⁻-spec-L using () renaming (𝟏 to 𝟏₁)
-   open DistributiveLattice L using () renaming (𝟏 to 𝟏₂)
-
-   goal : to-lattice₀ 𝟏₁ ＝ 𝟏₂
-   goal = to-lattice₀ 𝟏₁                                      ＝⟨ refl ⟩
-          to-lattice₀ (s (spectrum L) 𝕤 (𝟏ₖ (spectrum L) 𝕤))  ＝⟨ {!!} ⟩
-          𝟏₂ ∎
 
  to-lattice-is-homomorphism : is-homomorphismᵈ 𝒦⁻-spec-L L to-lattice₀ holds
  to-lattice-is-homomorphism = {!!} , {!!}
@@ -823,8 +880,6 @@ module OtherDirection (L : DistributiveLattice 𝓤) where
 Put this in the `LatticeOfCompactOpens-Duality` module.
 
 Recall that the type of spectral locales is defined as
-
-\begin{code}
 
 Spectral-Locale : (𝓤 : Universe) → 𝓤 ⁺ ⁺  ̇
 Spectral-Locale 𝓤 =

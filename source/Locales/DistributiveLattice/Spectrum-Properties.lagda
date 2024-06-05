@@ -68,8 +68,9 @@ We abbreviate `spectrum` to `spec-L`.
 
 \begin{code}
 
- spec-L : Locale (𝓤 ⁺) 𝓤 𝓤
- spec-L = spectrum
+ private
+  spec-L : Locale (𝓤 ⁺) 𝓤 𝓤
+  spec-L = spectrum
 
 \end{code}
 
@@ -165,6 +166,17 @@ spectra.
          ϵ = transport (λ - → (y ≤ᵈ[ L ] -) holds) r′ φ
 
 \end{code}
+
+Added on 2024-06-05.
+
+\begin{code}
+
+ ↓ₖ_ : ∣ L ∣ᵈ → Σ I ꞉ Ideal L , (is-compact-open spec-L I holds)
+ ↓ₖ_ x = ↓ x , principal-ideal-is-compact x
+
+\end{code}
+
+End of addition.
 
 Added on 2024-03-13.
 
