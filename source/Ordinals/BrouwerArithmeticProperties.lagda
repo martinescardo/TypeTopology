@@ -135,7 +135,23 @@ the right, but not on the left.
 We can build paths from the product of two ordinals from two paths through
 each factor.
 
-TODO explain the geometric picture
+The geometric picture is as follows: given ordinals α and β like
+
+```
+ α = (*  *  *  * ...)
+
+ β = (&  &  &  ...)
+```
+
+their product will consist of a copy of α for each point of β like
+
+```
+   β   = (      &                 &                &                ...)
+ α × β = (*  *  *  * ...)  (*  *  *  * ...) (*  *  *  * ...)
+```
+
+Hence we can use a path from β to reach a copy of α, and from there use
+a path from α.
 
 \begin{code}
 
@@ -221,7 +237,8 @@ strictly greater than zero.
 
 \end{code}
 
-TODO talk about when ×B is strictly inflationary
+Similarly to addition, fixing the left factor to be greater than 1 makes
+multiplication a strictly inflationary function.
 
 \begin{code}
 
@@ -238,7 +255,8 @@ TODO talk about when ×B is strictly inflationary
 
 \end{code}
 
-TODO talk about when ×B is strictly monotone
+And fixing the right factor to be greater than 1 turns multiplication into a
+strictly monotonic function.
 
 \begin{code}
 
