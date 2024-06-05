@@ -55,6 +55,7 @@ Please add yourself the first time you contribute.
 * Lane Biocini
 * Marc Bezem
 * Martin Escardo
+* Martin Trucchi
 * Nicolai Kraus
 * Ohad Kammar
 * Paul Levy (i)
