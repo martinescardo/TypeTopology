@@ -438,6 +438,9 @@ successor-lemma-right α  = III
         α +ₒ 𝟘ₒ           ＝⟨ 𝟘ₒ-right-neutral α ⟩
         α                 ∎
 
+successor-increasing : (α : Ordinal 𝓤) → α ⊲ (α +ₒ 𝟙ₒ)
+successor-increasing α = inr ⋆ , ((successor-lemma-right α)⁻¹)
+
 \end{code}
 
 Added on 24th May 2024 by Tom de Jong.
@@ -884,9 +887,6 @@ its predecessors:
    III : ⌊ α +ₒ 𝟙ₒ ⌋ ＝ α
    III = ⊴-antisym _ _ (⌊⌋-of-successor α) II
 
- successor-increasing : (α : Ordinal 𝓤) → α ⊲ (α +ₒ 𝟙ₒ)
- successor-increasing α = inr ⋆ , ((successor-lemma-right α)⁻¹)
-
  successors-are-not-limit-ordinals : (α : Ordinal 𝓤)
                                    → ¬ is-limit-ordinal (α +ₒ 𝟙ₒ)
  successors-are-not-limit-ordinals α le = irrefl (OO _) α II
@@ -1154,5 +1154,23 @@ module _ (pt : propositional-truncations-exist)
     II : s ⊴ α
     II = sup-is-lower-bound-of-upper-bounds F α
           (upper-bound-of-successors-of-initial-segments α)
+
+\end{code}
+
+Added 2 June 2024 by Tom de Jong.
+
+\begin{code}
+
+no-greatest-ordinal : ¬ (Σ α ꞉ Ordinal 𝓤 , ((β : Ordinal 𝓤) → β ⊴ α))
+no-greatest-ordinal {𝓤} (α , α-greatest) = irrefl (OO 𝓤) α IV
+ where
+  I : (α +ₒ 𝟙ₒ) ⊴ α
+  I = α-greatest (α +ₒ 𝟙ₒ)
+  II : α ⊴ (α +ₒ 𝟙ₒ)
+  II = ⊲-gives-⊴ α (α +ₒ 𝟙ₒ) (successor-increasing α)
+  III : α +ₒ 𝟙ₒ ＝ α
+  III = ⊴-antisym (α +ₒ 𝟙ₒ) α I II
+  IV : α ⊲ α
+  IV = transport (α ⊲_) III (successor-increasing α)
 
 \end{code}
