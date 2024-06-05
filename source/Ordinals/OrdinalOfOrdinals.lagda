@@ -90,7 +90,7 @@ _⊴_ : Ordinal 𝓤 → Ordinal 𝓥 → 𝓤 ⊔ 𝓥 ̇
 ≃ₒ-to-⊴ : (α : Ordinal 𝓤) (β : Ordinal 𝓥) → α ≃ₒ β → α ⊴ β
 ≃ₒ-to-⊴ α β (f , e) = (f , order-equivs-are-simulations α β f e)
 
-ordinal-equiv-gives-bisimilarity : (α β : Ordinal 𝓤)
+ordinal-equiv-gives-bisimilarity : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
                                  → α ≃ₒ β
                                  → (α ⊴ β) × (β ⊴ α)
 ordinal-equiv-gives-bisimilarity α β (f , p , e , q) = γ
@@ -105,7 +105,7 @@ ordinal-equiv-gives-bisimilarity α β (f , p , e , q) = γ
   γ = (f , order-equivs-are-simulations α β f (p , e , q)) ,
       (g , order-equivs-are-simulations β α g (q , d , p))
 
-bisimilarity-gives-ordinal-equiv : (α β : Ordinal 𝓤)
+bisimilarity-gives-ordinal-equiv : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
                                  → α ⊴ β
                                  → β ⊴ α
                                  → α ≃ₒ β
