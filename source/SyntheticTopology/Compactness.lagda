@@ -57,7 +57,7 @@ Sierpinski Object.
 
 𝟙-is-compact : is-compact (𝟙 , 𝟙-is-set) holds
 𝟙-is-compact (P , open-P) =
- ⇔-affirmable (P ⋆) (Ɐ x ꞉ 𝟙 , P x) p (open-P ⋆)
+ ⇔-open (P ⋆) (Ɐ x ꞉ 𝟙 , P x) p (open-P ⋆)
   where
    p : (P ⋆ ⇔ (Ɐ x ꞉ 𝟙 , P x)) holds
    p = (λ pstar  x → pstar) , (λ f → f ⋆)
@@ -75,7 +75,7 @@ being a set is given by ×-is-set.
                → is-compact((X × Y) , (×-is-set sX sY)) holds
                
 ×-is-compact (X , sX) (Y , sY) kX kY (P , open-P) =
- ⇔-affirmable chained-forall
+ ⇔-open chained-forall
                tuple-forall
                (p₁ , p₂)
                †
@@ -115,7 +115,7 @@ image-of-compact : ((X , sX) (Y , sY) : hSet 𝓤)
                    → is-compact (X , sX) holds
                    → is-compact (Y , sY) holds
 image-of-compact (X , sX) (Y , sY) f sf kX (P , open-P) =
- ⇔-affirmable pre-image-forall image-forall (p₁ , p₂) †
+ ⇔-open pre-image-forall image-forall (p₁ , p₂) †
   where
    pre-image-forall : Ω 𝓤
    pre-image-forall = (Ɐ x ꞉ X , P (f x))

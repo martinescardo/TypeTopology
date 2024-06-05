@@ -1,5 +1,5 @@
 ---
-title:        Subproperties in Synthetic Topology
+title:        Subobjects in Synthetic Topology
 author:       Martin Trucchi
 date-started: 2024-05-28
 ---
@@ -18,7 +18,7 @@ open import UF.Subsingletons
 open import UF.SubtypeClassifier
 open import SyntheticTopology.SierpinskiObject 
 
-module SyntheticTopology.SubProperties
+module SyntheticTopology.SubObjects
         (𝓤 𝓥 : Universe)
         (fe : Fun-Ext)
         (pe : Prop-Ext)
@@ -40,10 +40,10 @@ open Sierpinski-notations fe pe pt 𝕊
 \end{code}
 
 
-Sub-ness (subcompact, subovert ... )
+Investigating notions on subobjects? (subcompact, subovert ... )
 
 In our settings, how can we define a proper notion of maps of subobjects ?
-For example see "image-of-subovert". We want, given (X Y : 𝓤 ̇)  ;  (f : X → Y)
+For example see "image-of-subset". We want, given (X Y : 𝓤 ̇)  ;  (f : X → Y)
 and A ⊆ X represented by (A : X → Ω 𝓤), a definition of "f (A)".
 
 The choice made in image-of-subset was to define
@@ -82,7 +82,7 @@ subovert-of-discrete-is-open : ((Y , sY) : hSet 𝓤)
                              → is-intrinsically-open (Y , sY) X holds
                              
 subovert-of-discrete-is-open (Y , sY) X subovert-X discrete-Y y =
- ⇔-affirmable (Ǝₚ y' ꞉ Y , ((X y' ∧ (y ＝ y') , sY))) (X y) (p₁ , p₂) †
+ ⇔-open (Ǝₚ y' ꞉ Y , ((X y' ∧ (y ＝ y') , sY))) (X y) (p₁ , p₂) †
   where
    p₁ : (Ǝₚ y' ꞉ Y , ((X y' ∧ (y ＝ y') , sY)) ⇒ X y) holds
    p₁ = λ ex-equal → ∥∥-rec (holds-is-prop (X y))
@@ -109,7 +109,7 @@ subovert-inter-open-subovert : closed-under-binary-meets holds
                                       
 subovert-inter-open-subovert cl-∧
                              (X , sX) A (U , open-U) subovert-A (V , open-V) =
- ⇔-affirmable right-par left-par (p₁ , p₂) †
+ ⇔-open right-par left-par (p₁ , p₂) †
   where
    left-par : Ω 𝓤
    left-par = Ǝₚ x ꞉ X , ((A x ∧ U x) ∧ V x)
@@ -158,7 +158,7 @@ image-of-subovert : ((X , sX) (Y , sY) : hSet 𝓤)
                                      holds
                                      
 image-of-subovert (X , sX) (Y , sY) f  A subovert-A (P , open-P)  =
- ⇔-affirmable x'-exists y-exists (p₁ , p₂) †
+ ⇔-open x'-exists y-exists (p₁ , p₂) †
   where
   
    x'-exists : Ω 𝓤
@@ -225,7 +225,7 @@ compact-iff-subcompact-in-self (X , sX) =
     ( is-compact (X , sX) ⇒ is-subcompact (X , sX) (λ x → ⊤) ) holds
     
    compact-gives-subcompact = λ compact-X (U , open-U) →
-    ⇔-affirmable (Ɐ x ꞉ X , U x)
+    ⇔-open (Ɐ x ꞉ X , U x)
                  (Ɐ x ꞉ X , ⊤ ⇒ U x)
                  (p₁ (U , open-U) , p₂ (U , open-U))
                  (compact-X (U , open-U))
@@ -234,7 +234,7 @@ compact-iff-subcompact-in-self (X , sX) =
     ( is-subcompact (X , sX) (λ x → ⊤)  ⇒ is-compact (X , sX) ) holds
     
    subcompact-gives-compact = λ subcompact-X (U , open-U) →
-    ⇔-affirmable (Ɐ x ꞉ X , ⊤ ⇒ U x)
+    ⇔-open (Ɐ x ꞉ X , ⊤ ⇒ U x)
                  (Ɐ x ꞉ X , U x)
                  (p₂ (U , open-U) , p₁ (U , open-U))
                  (subcompact-X (U , open-U))
@@ -270,22 +270,22 @@ overt-iff-subovert-in-self (X , sX) =
                                        ∣ x , ∧-Elim-R ⊤ (U x) ⊤-Ux ∣)
                                       ex-x-⊤
 
-  overt-gives-subovert : ((is-overt (X , sX))
-                         ⇒ (is-subovert (X , sX) (λ x → ⊤))) holds
+  overt-gives-subovert
+   : (is-overt (X , sX) ⇒ (is-subovert (X , sX) (λ x → ⊤))) holds
                          
   overt-gives-subovert = (λ overt-X (U , open-U) →
-   ⇔-affirmable (x-exists (U , open-U))
-                (x-⊤-exists (U , open-U))
-                (p₁ (U , open-U) , p₂ (U , open-U))
-                (overt-X (U , open-U)))
+   ⇔-open (x-exists (U , open-U))
+          (x-⊤-exists (U , open-U))
+          (p₁ (U , open-U) , p₂ (U , open-U))
+          (overt-X (U , open-U)))
   
-  subovert-gives-overt : (is-subovert (X , sX) (λ x → ⊤)
-                       ⇒ (is-overt (X , sX))) holds
+  subovert-gives-overt
+   : (is-subovert (X , sX) (λ x → ⊤) ⇒ (is-overt (X , sX))) holds
   
   subovert-gives-overt = λ subovert-X (U , open-U) →
-   ⇔-affirmable (x-⊤-exists (U , open-U))
-                (x-exists (U , open-U))
-                (p₂ (U , open-U) , p₁ (U , open-U))
-                (subovert-X (U , open-U))
+   ⇔-open (x-⊤-exists (U , open-U))
+          (x-exists (U , open-U))
+          (p₂ (U , open-U) , p₁ (U , open-U))
+          (subovert-X (U , open-U))
 
 \end{code}

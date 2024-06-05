@@ -62,7 +62,7 @@ image-of-overt : ((X , sX) (Y , sY) : hSet 𝓤)
                → is-overt (Y , sY) holds
                    
 image-of-overt (X , sX) (Y , sY) f sf overt-X (P , open-P) =
- ⇔-affirmable preimage-exists image-exists (p₁ , p₂) †
+ ⇔-open preimage-exists image-exists (p₁ , p₂) †
   where
    preimage-exists : Ω 𝓤
    preimage-exists = (Ǝₚ x ꞉ X , P (f x))

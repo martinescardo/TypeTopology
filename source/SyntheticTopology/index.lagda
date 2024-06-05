@@ -62,6 +62,6 @@ compactness for subsets and states somme lemmas.
 
 \begin{code}
 
-import SyntheticTopology.SubProperties
+import SyntheticTopology.SubObjects
 
 \end{code}

@@ -28,7 +28,7 @@ module SyntheticTopology.Density
 
 open import SyntheticTopology.Compactness 𝓤 𝓥 fe pe pt 𝕊
 open import SyntheticTopology.Overtness 𝓤 𝓥 fe pe pt 𝕊
-open import SyntheticTopology.SubProperties 𝓤 𝓥 fe pe pt 𝕊
+open import SyntheticTopology.SubObjects 𝓤 𝓥 fe pe pt 𝕊
 open import UF.ImageAndSurjection pt
 open import UF.Logic
 
@@ -80,7 +80,7 @@ having-subovert-dense-subset-gives-self-overt (X , sX)
                                               dense-U
                                               (P , open-P) =
                                               
- ⇔-affirmable U-and-P-exists P-exists (p₁ , p₂) †
+ ⇔-open U-and-P-exists P-exists (p₁ , p₂) †
   where
    U-and-P-exists : Ω 𝓤
    U-and-P-exists = Ǝₚ x ꞉ X , (U x ∧ P x)

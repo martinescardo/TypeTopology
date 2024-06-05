@@ -60,7 +60,7 @@ Sierpinski object's image.
               → is-discrete (𝟙 , 𝟙-is-set) holds
 
 𝟙-is-discrete ct (⋆ , ⋆) =
- ⇔-affirmable ⊤ ((⋆ ＝ ⋆) , 𝟙-is-set) (p₁ , p₂) ct
+ ⇔-open ⊤ ((⋆ ＝ ⋆) , 𝟙-is-set) (p₁ , p₂) ct
   where
    p₁ : (⊤ ⇒ (⋆ ＝ ⋆) , 𝟙-is-set) holds
    p₁ = λ _ → refl
@@ -85,7 +85,7 @@ compact-Π-discrete : ((K , sK) : hSet 𝓤)
                                  (Π-is-set fe (λ k → (pr₂ (X k))))) holds
                                  
 compact-Π-discrete (K , sK) X compact-K discrete-X (x₁ , x₂) =
- ⇔-affirmable extensional-eq global-eq (p₁ , p₂) †
+ ⇔-open extensional-eq global-eq (p₁ , p₂) †
   where
    extensional-eq : Ω 𝓤
    extensional-eq = (Ɐ k ꞉ K , ((x₁ k ＝ x₂ k) , pr₂ (X k)))

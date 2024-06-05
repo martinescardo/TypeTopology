@@ -3,7 +3,7 @@ title:          Definition of Sierpinski object synthetic topology
 authors:        ["Ayberk Tosun", "Martin Trucchi"]
 date-started:   2024-05-02
 date-completed: 2024-05-31
-dates-updated:  [2024-05-28]
+dates-updated:  [2024-05-28, 2024-06-05]
 ---
 
 \begin{code}
@@ -23,7 +23,6 @@ module SyntheticTopology.SierpinskiObject
         (pe : Prop-Ext)
         (pt : propositional-truncations-exist) where
 
-open import Dominance.Definition
 open import UF.Classifiers
 open import UF.Embeddings
 open import UF.Equiv
@@ -102,7 +101,7 @@ Here, we only work with sets.
 
 To define this and some related notions, we work in a module parameterized by an
 hSet `𝒳`. We adopt the convention of using calligraphic letters `𝒳`, `𝒴`, ...
-for inhabitans of the type `hSet`.
+for inhabitants of the type `hSet`.
 
 \begin{code}
 
@@ -120,7 +119,7 @@ We denote by `X` the underlying set of `𝒳`.
 \end{code}
 
 A subset of a set is said to be `intrinsically open` if it is a predicate
-defined by affirmable propositions.
+defined by open propositions.
 
 \begin{code}
 
@@ -146,9 +145,10 @@ We also prove the following convenient lemma.
 
 \begin{code}
 
- ⇔-affirmable : (P Q : Ω 𝓤)
-              → ((P ⇔ Q) ⇒ is-open-proposition P ⇒ is-open-proposition Q) holds
- ⇔-affirmable P Q = ⇔-transport pe P Q (_holds ∘ is-open-proposition)
+ ⇔-open
+  : (P Q : Ω 𝓤)
+  → ((P ⇔ Q) ⇒ is-open-proposition P ⇒ is-open-proposition Q) holds
+ ⇔-open P Q = ⇔-transport pe P Q (_holds ∘ is-open-proposition)
 
 \end{code}
 
