@@ -35,7 +35,6 @@ open AllCombinators pt fe
 open PropositionalTruncation pt hiding (_∨_)
 open Sierpinski-notations fe pe pt 𝕊
 
-
 \end{code}
 
 We here start to investigate a notion of compactness.
@@ -56,7 +55,7 @@ module _ (𝒳 : hSet 𝓤) where
 \end{code}
 
 The type `𝟙` is compact i.e. the empty product is compact, regardless of the
-Sierpinski Object. 
+Sierpinski Object.
 
 \begin{code}
 
@@ -81,33 +80,33 @@ module _ (𝒳 : hSet 𝓤) (𝒴 : hSet 𝓤) where
  ×-is-compact : is-compact 𝒳 holds
               → is-compact 𝒴 holds
               → is-compact (𝒳 ×ₛ 𝒴)  holds
-               
- ×-is-compact kX kY (P , open-P) =
+
+ ×-is-compact compact-X compact-Y (P , open-P) =
   ⇔-open chained-forall
-                tuple-forall
-                (p₁ , p₂)
-                †
+         tuple-forall
+         (p₁ , p₂)
+         †
    where
     tuple-forall : Ω 𝓤
-    tuple-forall = (Ɐ z ꞉ (X × Y) , P z)
-   
+    tuple-forall = Ɐ z ꞉ (X × Y) , P z
+
     chained-forall : Ω 𝓤
-    chained-forall = (Ɐ x ꞉ X , (Ɐ y ꞉ Y , P (x , y)))
-   
+    chained-forall = Ɐ x ꞉ X , (Ɐ y ꞉ Y , P (x , y))
+
     p₁ : (chained-forall ⇒ tuple-forall) holds
-    p₁ =  (λ Qxy z → Qxy (pr₁ z) (pr₂ z))
+    p₁ = λ Qxy z → Qxy (pr₁ z) (pr₂ z)
 
     p₂ : (tuple-forall ⇒ chained-forall) holds
-    p₂ = (λ Qz x' y' → Qz (x' , y'))
+    p₂ = λ Qz x' y' → Qz (x' , y')
 
     prop-y : X → Ω 𝓤
     prop-y x = Ɐ y ꞉ Y , P (x , y)
 
-    prop-y-open : (x : X) → is-open-proposition (prop-y x) holds 
-    prop-y-open x = kY ((λ y → P (x , y)) , λ y → open-P (x , y))
+    prop-y-open : (x : X) → is-open-proposition (prop-y x) holds
+    prop-y-open x = compact-Y ((λ y → P (x , y)) , λ y → open-P (x , y))
 
-    † : is-open-proposition chained-forall  holds
-    † = kX ((λ x → prop-y x) , λ x → prop-y-open x)
+    † : is-open-proposition chained-forall holds
+    † = compact-X ((λ x → prop-y x) , prop-y-open)
 
 \end{code}
 
@@ -119,15 +118,15 @@ Images of compact types by surjective functions are compact.
                   → is-surjection f
                   → is-compact 𝒳 holds
                   → is-compact 𝒴 holds
- image-of-compact f sf kX (P , open-P) =
+ image-of-compact f sf compact-X (P , open-P) =
   ⇔-open pre-image-forall image-forall (p₁ , p₂) †
    where
     pre-image-forall : Ω 𝓤
-    pre-image-forall = (Ɐ x ꞉ X , P (f x))
-   
+    pre-image-forall = Ɐ x ꞉ X , P (f x)
+
     image-forall : Ω 𝓤
-    image-forall = (Ɐ y ꞉ Y , P y)
-   
+    image-forall = Ɐ y ꞉ Y , P y
+
     p₁ : (pre-image-forall ⇒ image-forall) holds
     p₁ pX y = surjection-induction f
                                    sf
@@ -135,12 +134,12 @@ Images of compact types by surjective functions are compact.
                                    (λ y → holds-is-prop (P y))
                                    pX
                                    y
-   
+
     p₂ : (image-forall ⇒ pre-image-forall) holds
-    p₂ = λ pY x → pY (f x)
+    p₂ pY x = pY (f x)
 
     † : is-open-proposition pre-image-forall holds
-    † = kX ((P ∘ f) , (open-P ∘ f))
+    † = compact-X (P ∘ f , open-P ∘ f)
 
 \end{code}
 
@@ -157,11 +156,11 @@ image-of-compact' : ((X , sX) : hSet 𝓤)
                   → (f : X → Y)
                   → is-compact (X , sX) holds
                   → is-compact (imageₛ (X , sX) (Y , sY) f) holds
-                                      
-image-of-compact' (X , sX) (Y , sY) f kX =
+
+image-of-compact' (X , sX) (Y , sY) f compact-X =
  image-of-compact (X , sX)
                   (imageₛ (X , sX) (Y , sY) f)
                   (corestriction f)
                   (corestrictions-are-surjections f)
-                  kX
+                  compact-X
 \end{code}
