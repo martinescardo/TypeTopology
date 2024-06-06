@@ -125,7 +125,8 @@ conclusion.
 
 simple-type₂-injective-gives-WEM : (X : 𝓤₀ ̇)
                                  → simple-type₂ X
-                                 → ainjective-type X 𝓤 𝓤 → WEM 𝓤
+                                 → ainjective-type X 𝓤 𝓤
+                                 → WEM 𝓤
 simple-type₂-injective-gives-WEM X s X-ainj =
  𝟚-ainjective-gives-WEM
   (retract-of-ainjective 𝟚 X X-ainj
@@ -147,6 +148,9 @@ simple-type₂-injective-gives-WEM-examples =
  simple-type₂-injective-gives-WEM _ (step (step (step base base) base) base)
 
 \end{code}
+
+TODO. More generally, if a non-trivial totally separated type is
+injective, then WEM holds.
 
 TODO. We can also close under _×_ and _+_ to get the same result. We
 can also close under Π, but maybe not under Σ.
