@@ -83,7 +83,7 @@ module 𝒦-Duality (X  : Locale (𝓤 ⁺) 𝓤 𝓤)
                  (σ₀ : is-spectral-with-small-basis ua X holds) where
 
  open 𝒦-Lattice X σ₀
-  using (𝟏ₖ; 𝒦⦅X⦆-is-small; 𝒦⦅X⦆; σ; ιₖ-preserves-∨; ιₖ-preserves-∧)
+  using (𝟏ₖ; 𝟎ₖ; 𝒦⦅X⦆-is-small; 𝒦⦅X⦆; σ; ιₖ-preserves-∨; ιₖ-preserves-∧)
   renaming (𝒦⁻ to 𝒦⁻X) public
 
 \end{code}
@@ -793,6 +793,94 @@ We first construct the map `back-to-L`.
 
 \end{code}
 
+This map preserves the top element of `L`.
+
+\begin{code}
+
+ open DistributiveLattice
+
+ to-𝒦-spec-L-preserves-top : preserves-𝟏 L 𝒦⁻-spec-L to-𝒦-spec-L holds
+ to-𝒦-spec-L-preserves-top =
+  s (↓ₖ 𝟏 L)           ＝⟨ Ⅰ    ⟩
+  s (𝟏 𝒦⦅X⦆)             ＝⟨ refl ⟩
+  𝟏 𝒦⁻-spec-L            ∎
+   where
+    ‡ : 𝟏[ 𝒪 spec-L ] ＝ ↓ (𝟏 L)
+    ‡ = principal-ideal-preserves-top ⁻¹
+
+    † = to-𝒦-＝ spec-L (principal-ideal-is-compact (𝟏 L)) spectrum-is-compact ‡
+
+    Ⅰ = ap s †
+
+\end{code}
+
+It also preserves meets.
+
+\begin{code}
+
+ open OperationsOnCompactOpens spec-L spec-L-is-spectral
+
+ to-𝒦-spec-L-preserves-∧ : preserves-∧ L 𝒦⁻-spec-L to-𝒦-spec-L holds
+ to-𝒦-spec-L-preserves-∧ x y =
+  s (↓ₖ (x ∧L y))                   ＝⟨ Ⅰ ⟩
+  s ((↓ₖ x) ∧ₖ (↓ₖ y))              ＝⟨ Ⅱ ⟩
+  to-𝒦-spec-L x ∧· to-𝒦-spec-L y    ∎
+   where
+    open DistributiveLattice L renaming (_∧_ to _∧L_)
+    open DistributiveLattice 𝒦⁻-spec-L renaming (_∧_ to _∧·_)
+
+    † : ↓ₖ (x ∧L y) ＝ (↓ₖ x) ∧ₖ (↓ₖ y)
+    † = to-𝒦-＝
+         spec-L
+         (principal-ideal-is-compact (x ∧L y))
+         (pr₂ ((↓ₖ x) ∧ₖ (↓ₖ y)))
+         (principal-ideal-preserves-meets x y)
+
+    Ⅰ = ap s †
+    Ⅱ = s-preserves-∧ (↓ₖ x) (↓ₖ y)
+
+\end{code}
+
+We now show that `to-𝒦-spec` preserves the bottom element.
+
+\begin{code}
+
+ to-𝒦-spec-L-preserves-𝟎 : preserves-𝟎 L 𝒦⁻-spec-L to-𝒦-spec-L holds
+ to-𝒦-spec-L-preserves-𝟎 =
+  s (↓ₖ (𝟎 L))        ＝⟨ Ⅰ    ⟩
+  s 𝟎ₖ                ＝⟨ refl ⟩
+  𝟎 𝒦⁻-spec-L         ∎
+   where
+    ‡ : ↓ (𝟎 L) ＝ 𝟎[ 𝒪 spec-L ]
+    ‡ = principal-ideal-preserves-bottom
+
+    † : ↓ₖ (𝟎 L) ＝ 𝟎ₖ
+    † = to-𝒦-＝
+         spec-L
+         (principal-ideal-is-compact (𝟎 L))
+         (𝟎-is-compact spec-L)
+         ‡
+
+    Ⅰ = ap s †
+
+\end{code}
+
+The map `to-𝒦-spec-L` preserves binary joins.
+
+\begin{code}
+
+ to-𝒦-spec-L-preserves-∨ : preserves-∨ L 𝒦⁻-spec-L to-𝒦-spec-L holds
+ to-𝒦-spec-L-preserves-∨ x y =
+  s (↓ₖ (x ∨L y))         ＝⟨ {!!} ⟩
+  s ((↓ₖ x) ∨ₖ (↓ₖ y))    ＝⟨ {!!} ⟩
+  {!!}                    ∎
+   where
+    open DistributiveLattice L renaming (_∨_ to _∨L_)
+    open DistributiveLattice 𝒦⁻-spec-L renaming (_∨_ to _∨·_)
+
+
+\end{code}
+
 The principal ideal map is an embedding.
 
 \begin{code}
@@ -817,18 +905,6 @@ The principal ideal map is an embedding.
 
      ‡ : rel-syntax (poset-ofᵈ L) y x holds
      ‡ = γ y (≤-is-reflexive (poset-ofᵈ L) y)
-
-\end{code}
-
-\begin{code}
-
- open DistributiveLattice
-
- to-spectrum-preserves-top : preserves-𝟏 L 𝒦⁻-spec-L to-𝒦-spec-L holds
- to-spectrum-preserves-top =
-  s (↓ₖ (𝟏 L))           ＝⟨ {!refl!} ⟩
-  s (𝟏 𝒦⦅X⦆)             ＝⟨ refl ⟩
-  𝟏 𝒦⁻-spec-L            ∎
 
 \end{code}
 
