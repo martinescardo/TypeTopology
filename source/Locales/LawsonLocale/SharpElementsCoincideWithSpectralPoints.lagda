@@ -340,46 +340,6 @@ compact Scott opens are _exactly_ the sharp elements.
 
 \end{code}
 
-\subsection{A corollary of the characterization}
-
-Because clopens are compact in compact frames, we can also prove that admitting
-decidable membership in Scott clopens is a necessary condition for an element of
-the domain to be sharp.
-
-We do not need this result for the main result in this module, but we note it
-down regardless as it is a potentially useful observation.
-
-\begin{code}
-
- admits-decidable-membership-in-scott-clopens : ⟨ 𝓓 ⟩∙ → Ω (𝓤 ⁺)
- admits-decidable-membership-in-scott-clopens x =
-  Ɐ 𝒦 ꞉ ⟨ 𝒪 Scott⦅𝓓⦆ ⟩ , is-clopen (𝒪 Scott⦅𝓓⦆) 𝒦 ⇒ is-decidableₚ (x ∈ₛ 𝒦)
-
- sharp-implies-admits-decidable-membership-in-scott-clopens
-  : (x : ⟨ 𝓓 ⟩∙)
-  → is-sharp x holds
-  → admits-decidable-membership-in-scott-clopens x holds
- sharp-implies-admits-decidable-membership-in-scott-clopens x 𝓈𝒽 K χ =
-  ψ K κ
-   where
-    ψ : admits-decidable-membership-in-compact-scott-opens x holds
-    ψ = sharp-implies-admits-decidable-membership-in-compact-scott-opens x 𝓈𝒽
-
-    κ : is-compact-open Scott⦅𝓓⦆ K holds
-    κ = clopens-are-compact-in-compact-frames
-         (𝒪 Scott⦅𝓓⦆)
-         Scott⦅𝓓⦆-is-compact
-         K
-         χ
-
-\end{code}
-
-What can be said about the converse of this implication? In other words, what is
-the meaning of the set of elements that admit decidable membership in Scott
-clopens. I do not know the answer yet.
-
-TODO: think more about this.
-
 \section{The equivalence}
 
 We now start constructing an equivalence between the type
