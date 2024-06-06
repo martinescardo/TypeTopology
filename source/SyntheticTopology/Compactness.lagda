@@ -17,6 +17,7 @@ open import UF.PropTrunc
 open import UF.Sets
 open import UF.Sets-Properties
 open import UF.Subsingletons
+open import UF.Subsingletons-Properties
 open import UF.SubtypeClassifier
 
 module SyntheticTopology.Compactness
@@ -39,14 +40,18 @@ open Sierpinski-notations fe pe pt 𝕊
 
 We here start to investigate a notion of compactness.
 
-A type `X` is called compact if its universal quantification on intrinsically
-open predicates is affirmable.
+A type `X` is called `compact` if its universal quantification on
+`intrinsically-open` predicates is an open proposition.
 
 \begin{code}
 
-is-compact : hSet 𝓤 → Ω ((𝓤 ⁺) ⊔ 𝓥)
-is-compact (X , sX) =
- Ɐ (P , open-P) ꞉ 𝓞 (X , sX) , is-open-proposition (Ɐ x ꞉ X , (P x))
+module _ (𝒳 : hSet 𝓤) where
+ private
+  X = underlying-set 𝒳
+
+ is-compact : Ω (𝓤 ⁺ ⊔ 𝓥)
+ is-compact =
+  Ɐ (P , open-P) ꞉ 𝓞 𝒳 , is-open-proposition (Ɐ x ꞉ X , P x)
 
 \end{code}
 
@@ -64,78 +69,99 @@ Sierpinski Object.
 
 \end{code}
 
-Binary products of compact types are compact. The proof of the binary product
-being a set is given by ×-is-set.
+Binary products of compact types are compact.
 
 \begin{code}
 
-×-is-compact : ((X , sX) (Y , sY) : hSet 𝓤)
-               → is-compact (X , sX) holds
-               → is-compact (Y , sY) holds
-               → is-compact((X × Y) , (×-is-set sX sY)) holds
+module _ (𝒳 : hSet 𝓤) (𝒴 : hSet 𝓤) where
+ private
+  X = underlying-set 𝒳
+  Y = underlying-set 𝒴
+
+ ×-is-compact : is-compact 𝒳 holds
+              → is-compact 𝒴 holds
+              → is-compact (𝒳 ×ₛ 𝒴)  holds
                
-×-is-compact (X , sX) (Y , sY) kX kY (P , open-P) =
- ⇔-open chained-forall
-               tuple-forall
-               (p₁ , p₂)
-               †
-  where
-   tuple-forall : Ω 𝓤
-   tuple-forall = (Ɐ z ꞉ (X × Y) , P z)
+ ×-is-compact kX kY (P , open-P) =
+  ⇔-open chained-forall
+                tuple-forall
+                (p₁ , p₂)
+                †
+   where
+    tuple-forall : Ω 𝓤
+    tuple-forall = (Ɐ z ꞉ (X × Y) , P z)
    
-   chained-forall : Ω 𝓤
-   chained-forall = (Ɐ x ꞉ X , (Ɐ y ꞉ Y , P (x , y)))
+    chained-forall : Ω 𝓤
+    chained-forall = (Ɐ x ꞉ X , (Ɐ y ꞉ Y , P (x , y)))
    
-   p₁ : (chained-forall ⇒ tuple-forall) holds
-   p₁ =  (λ Qxy z → Qxy (pr₁ z) (pr₂ z))
+    p₁ : (chained-forall ⇒ tuple-forall) holds
+    p₁ =  (λ Qxy z → Qxy (pr₁ z) (pr₂ z))
 
-   p₂ : (tuple-forall ⇒ chained-forall) holds
-   p₂ = (λ Qz x' y' → Qz (x' , y'))
+    p₂ : (tuple-forall ⇒ chained-forall) holds
+    p₂ = (λ Qz x' y' → Qz (x' , y'))
 
-   prop-y : X → Ω 𝓤
-   prop-y x = Ɐ y ꞉ Y , P (x , y)
+    prop-y : X → Ω 𝓤
+    prop-y x = Ɐ y ꞉ Y , P (x , y)
 
-   prop-y-open : (x : X) → is-open-proposition (prop-y x) holds 
-   prop-y-open x = kY ((λ y → P (x , y)) , λ y → open-P (x , y))
+    prop-y-open : (x : X) → is-open-proposition (prop-y x) holds 
+    prop-y-open x = kY ((λ y → P (x , y)) , λ y → open-P (x , y))
 
-   † : is-open-proposition chained-forall  holds
-   † = kX ((λ x → prop-y x) , λ x → prop-y-open x)
+    † : is-open-proposition chained-forall  holds
+    † = kX ((λ x → prop-y x) , λ x → prop-y-open x)
 
 \end{code}
 
-Images of compact types are compact. We require the function to be surjective.
-We could also try to prove that this works for any f, and prove that (image f)
-is compact.
+Images of compact types by surjective functions are compact.
 
 \begin{code}
 
-image-of-compact : ((X , sX) (Y , sY) : hSet 𝓤)
-                   → (f : X → Y)
-                   → is-surjection f
-                   → is-compact (X , sX) holds
-                   → is-compact (Y , sY) holds
-image-of-compact (X , sX) (Y , sY) f sf kX (P , open-P) =
- ⇔-open pre-image-forall image-forall (p₁ , p₂) †
-  where
-   pre-image-forall : Ω 𝓤
-   pre-image-forall = (Ɐ x ꞉ X , P (f x))
+ image-of-compact : (f : X → Y)
+                  → is-surjection f
+                  → is-compact 𝒳 holds
+                  → is-compact 𝒴 holds
+ image-of-compact f sf kX (P , open-P) =
+  ⇔-open pre-image-forall image-forall (p₁ , p₂) †
+   where
+    pre-image-forall : Ω 𝓤
+    pre-image-forall = (Ɐ x ꞉ X , P (f x))
    
-   image-forall : Ω 𝓤
-   image-forall = (Ɐ y ꞉ Y , P y)
+    image-forall : Ω 𝓤
+    image-forall = (Ɐ y ꞉ Y , P y)
    
-   p₁ : (pre-image-forall ⇒ image-forall) holds
-   p₁ pX y = surjection-induction f
-                                  sf
-                                  (_holds ∘ P)
-                                  (λ y → holds-is-prop (P y))
-                                  pX
-                                  y
+    p₁ : (pre-image-forall ⇒ image-forall) holds
+    p₁ pX y = surjection-induction f
+                                   sf
+                                   (_holds ∘ P)
+                                   (λ y → holds-is-prop (P y))
+                                   pX
+                                   y
    
-   p₂ : (image-forall ⇒ pre-image-forall) holds
-   p₂ = λ pY x → pY (f x)
+    p₂ : (image-forall ⇒ pre-image-forall) holds
+    p₂ = λ pY x → pY (f x)
 
-   † : is-open-proposition pre-image-forall holds
-   † = kX ((P ∘ f) , (open-P ∘ f))
+    † : is-open-proposition pre-image-forall holds
+    † = kX ((P ∘ f) , (open-P ∘ f))
 
 \end{code}
 
+This also works for any function, in which case we prove that `image f` is
+compact.
+
+We have to get out of the module defining `𝒳` and `𝒴` in order to apply the
+previous lemma.
+
+\begin{code}
+
+image-of-compact' : ((X , sX) : hSet 𝓤)
+                  → ((Y , sY) : hSet 𝓤)
+                  → (f : X → Y)
+                  → is-compact (X , sX) holds
+                  → is-compact (imageₛ (X , sX) (Y , sY) f) holds
+                                      
+image-of-compact' (X , sX) (Y , sY) f kX =
+ image-of-compact (X , sX)
+                  (imageₛ (X , sX) (Y , sY) f)
+                  (corestriction f)
+                  (corestrictions-are-surjections f)
+                  kX
+\end{code}

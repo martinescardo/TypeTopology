@@ -16,7 +16,7 @@ open import UF.Sets
 open import UF.Sets-Properties
 open import UF.Subsingletons
 open import UF.SubtypeClassifier
-open import SyntheticTopology.SierpinskiObject 
+open import SyntheticTopology.SierpinskiObject
 
 module SyntheticTopology.SubObjects
         (𝓤 𝓥 : Universe)
@@ -257,14 +257,14 @@ overt-iff-subovert-in-self (X , sX) =
   
   p₁ : ((U , open-U) : 𝓞 (X , sX))
      → (x-exists (U , open-U) ⇒ x-⊤-exists (U , open-U)) holds
-     
+
   p₁ (U , open-U) = λ ex-x → ∥∥-rec (holds-is-prop (x-⊤-exists (U , open-U)))
                                     (λ (x , Ux) → ∣ x , ⊤-holds , Ux  ∣)
                                     ex-x
-  
+
   p₂ : ((U , open-U) : 𝓞 (X , sX))
      → (x-⊤-exists (U , open-U) ⇒ x-exists (U , open-U)) holds
-  
+
   p₂ (U , open-U) = λ ex-x-⊤ → ∥∥-rec (holds-is-prop (x-exists (U , open-U)))
                                       (λ (x , ⊤-Ux) →
                                        ∣ x , ∧-Elim-R ⊤ (U x) ⊤-Ux ∣)

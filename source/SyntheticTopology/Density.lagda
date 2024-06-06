@@ -33,7 +33,7 @@ open import UF.ImageAndSurjection pt
 open import UF.Logic
 
 open AllCombinators pt fe
-open PropositionalTruncation pt hiding (_∨_) 
+open PropositionalTruncation pt hiding (_∨_)
 open Sierpinski-notations fe pe pt 𝕊
 
 \end{code}
@@ -57,7 +57,7 @@ is-dense (X , sX) D =
 
 self-is-dense-in-self : ((X , sX) : hSet 𝓤)
                       → is-dense (X , sX) (λ x → ⊤) holds
-                      
+
 self-is-dense-in-self (X , sX) (P , open-P) inhabited-P =
  ∥∥-rec (holds-is-prop (Ǝₚ x' ꞉ X , ((D x') ∧ (P x')))) † inhabited-P
   where
@@ -79,15 +79,15 @@ having-subovert-dense-subset-gives-self-overt (X , sX)
                                               subovert-U
                                               dense-U
                                               (P , open-P) =
-                                              
+
  ⇔-open U-and-P-exists P-exists (p₁ , p₂) †
   where
    U-and-P-exists : Ω 𝓤
    U-and-P-exists = Ǝₚ x ꞉ X , (U x ∧ P x)
-   
+
    P-exists : Ω 𝓤
    P-exists = Ǝₚ x ꞉ X , P x
-   
+
    p₁ : (U-and-P-exists ⇒ P-exists) holds
    p₁ = λ U-hyp → ∥∥-rec (holds-is-prop P-exists)
                            (λ (x-both , px-both) → ∣ x-both , pr₂ px-both ∣)
