@@ -341,3 +341,30 @@ conclusion with a weaker assumption and a simpler proof.
  𝟚-ainjective-gives-WEM (retract-of-ainjective 𝟚 ℕ∞ ℕ∞-ainj 𝟚-retract-of-ℕ∞)
 
 \end{code}
+
+Added 6 June 2024 by Tom de Jong during a meeting with Martín Escardó.
+
+A type X with an apartness relation ♯ such that it has two points x₀ ♯ x₁ cannot be injective unless WEM holds.
+
+TODO: Implement the below proof sketch in Agda.
+
+Let x₀ , x₁ : X with x₀ ♯ x₁.
+
+Assume X is flabby. Define, for a proposition P, an element x : X such that
+
+  P → x ＝ x₀
+¬ P → x ＝ x₁
+
+Then
+
+x ≠ x₀ →  ¬ P
+x ≠ x₁ → ¬¬ P
+
+By cotransitivity and x₀ ♯ x₁, we have x ♯ x₀ or x ♯ x₁.
+
+If x ♯ x₀, then x ≠ x₀, so  ¬ P holds.
+If x ♯ x₁, then x ≠ x₁, so ¬¬ P holds. ∎
+
+Axioms:
+Cotransitivity: x ♯ y → x ♯ z ∨ y ♯ z
+Irreflexivity: x ♯ y → x ≠ y   (¬ (x ♯ x))
