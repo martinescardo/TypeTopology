@@ -110,7 +110,7 @@ we define it this way to keep the coherence between the arguments.
  _×ₛ_ : hSet 𝓤 → hSet 𝓤 → hSet 𝓤
  _×ₛ_ (X , sX) (Y , sY) = (X × Y) , ×-is-set sX sY
 
- Πₛ : ((X , sX) : hSet 𝓤) → (X → hSet 𝓤) → (hSet 𝓤)
+ Πₛ : ((X , sX) : hSet 𝓤) → (X → hSet 𝓤) → hSet 𝓤
  Πₛ (X , sX) f = Π (underlying-set ∘ f) , Π-is-set fe (pr₂ ∘ f)
 
  imageₛ : ((X , sX) : hSet 𝓤) → ((Y , sY) : hSet 𝓤) → (X → Y) → hSet 𝓤 
