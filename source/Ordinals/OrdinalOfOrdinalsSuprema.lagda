@@ -49,6 +49,7 @@ open import UF.Base hiding (_≈_)
 open import UF.Equiv
 open import UF.FunExt
 open import UF.PropTrunc
+open import UF.Sets
 open import UF.Size
 open import UF.SubtypeClassifier
 open import UF.Subsingletons
@@ -1168,6 +1169,55 @@ TODO: Clean up
          where
           y' : ⟨ sup ⟩
           y' = pr₁ (sup-is-upper-bound i) x
+
+\end{code}
+
+TODO: Clean up & rename
+
+\begin{code}
+
+   factor-through-sup : {Y : 𝓥 ̇  }
+                      → is-set Y
+                      → (f : (Σ i ꞉ I , ⟨ α i ⟩) → Y)
+                      → ((i j : I) (x : ⟨ α i ⟩) (y : ⟨ α j ⟩)
+                              → (α i ↓ x) ＝ (α j ↓ y)
+                              → f (i , x) ＝ f (j , y))
+                      → Σ g ꞉ (⟨ sup ⟩ → Y) , g ∘ sum-to-sup ∼ f
+   factor-through-sup i f h =
+    factor-through-surjection sum-to-sup sum-to-sup-is-surjection i f
+     foo
+      where
+       foo : (s t : Σ i ꞉ I , ⟨ α i ⟩)
+           → sum-to-sup s ＝ sum-to-sup t
+           → f s ＝ f t
+       foo (i , x) (j , y) e = h i j x y (ap (restriction σ) e')
+        where
+         e' : corestriction σ (i , x) ＝ corestriction σ (j , y)
+         e' = (inverses-are-sections' sup-is-image-of-sum-to-ordinals (corestriction σ (i , x))) ⁻¹
+              ∙ (ap ⌜ sup-is-image-of-sum-to-ordinals ⌝ e)
+              ∙ inverses-are-sections' sup-is-image-of-sum-to-ordinals (corestriction σ (j , y))
+
+   induced-map-from-sup : {Y : 𝓥 ̇  }
+                        → is-set Y
+                        → (f : (Σ i ꞉ I , ⟨ α i ⟩) → Y)
+                        → ((i j : I) (x : ⟨ α i ⟩) (y : ⟨ α j ⟩)
+                                → (α i ↓ x) ＝ (α j ↓ y)
+                                → f (i , x) ＝ f (j , y))
+                        → ⟨ sup ⟩ → Y
+   induced-map-from-sup i f h = pr₁ (factor-through-sup i f h)
+
+   induced-map-from-sup-behaviour : {Y : 𝓥 ̇  }
+                                    (i : is-set Y)
+                                    (f : (Σ i ꞉ I , ⟨ α i ⟩) → Y)
+                                    (h : ((i j : I) (x : ⟨ α i ⟩) (y : ⟨ α j ⟩)
+                                               → (α i ↓ x) ＝ (α j ↓ y)
+                                               → f (i , x) ＝ f (j , y)))
+                                  → (induced-map-from-sup i f h) ∘ sum-to-sup ∼ f
+   induced-map-from-sup-behaviour i f h = pr₂ (factor-through-sup i f h)
+
+\end{code}
+
+\begin{code}
 
  sup-monotone : {I : 𝓤 ̇ } (α β : I → Ordinal 𝓤)
               → ((i : I) → α i ⊴ β i)
