@@ -163,4 +163,5 @@ image-of-compact' (X , sX) (Y , sY) f compact-X =
                   (corestriction f)
                   (corestrictions-are-surjections f)
                   compact-X
+                  
 \end{code}
