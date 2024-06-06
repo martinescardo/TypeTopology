@@ -50,8 +50,8 @@ The whole module is parametrized by a set `𝒳`.
 `is-dense 𝒳 D` should be read "D is dense in X".
 
 \begin{code}
-
-X = underlying-set 𝒳
+private
+ X = underlying-set 𝒳
 
 is-dense : (D : X → Ω 𝓤) → Ω (𝓤 ⁺ ⊔ 𝓥)
 is-dense D =
