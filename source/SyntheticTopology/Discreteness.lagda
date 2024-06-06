@@ -2,7 +2,11 @@
 title:        Discreteness in Synthetic Topology
 author:       Martin Trucchi
 date-started: 2024-05-28
+dates-modified: [2024-06-06]
 ---
+
+We here implement the notion of discreteness in Synthetic Topology defined
+in TODO and prove two lemmas.
 
 \begin{code}
 
@@ -17,7 +21,7 @@ open import UF.Sets
 open import UF.Sets-Properties
 open import UF.Subsingletons
 open import UF.SubtypeClassifier
-open import SyntheticTopology.SierpinskiObject 
+open import SyntheticTopology.SierpinskiObject
 
 module SyntheticTopology.Discreteness
         (𝓤 𝓥 : Universe)
@@ -38,22 +42,27 @@ open Sierpinski-notations fe pe pt 𝕊
 
 \end{code}
 
-Discrete spaces.
+Discrete sets.
 
-Being discrete means having affirmable equality.
-The proof of the product to be a set is given be ×-is-set.
+A set `𝒳` is `discrete` if its equality map `λ (x , y) → x ＝ y` is
+`intrinsically-open` in the product set `𝒳 × 𝒳`.
 
 \begin{code}
 
-is-discrete : ((X , sX) : hSet 𝓤) → Ω (𝓤 ⊔ 𝓥)
-is-discrete (X , sX) =
- is-intrinsically-open ((X × X) , (×-is-set sX sX))
-                       (λ ((x , y) : X × X) → ((x ＝ y) , sX))
+module _ (𝒳 : hSet 𝓤) where
+ private
+  X = underlying-set 𝒳
+
+ is-discrete : Ω (𝓤 ⊔ 𝓥)
+ is-discrete =
+  is-intrinsically-open (𝒳 ×ₛ 𝒳)
+                        λ ((x , y) : X × X) → (x ＝ y) , pr₂ 𝒳
 
 \end{code}
 
 We prove here that `𝟙` is discrete as long as the true truth value lies in the
 Sierpinski object's image.
+
 \begin{code}
 
 𝟙-is-discrete : contains-top holds
@@ -64,45 +73,44 @@ Sierpinski object's image.
   where
    p₁ : (⊤ ⇒ (⋆ ＝ ⋆) , 𝟙-is-set) holds
    p₁ = λ _ → refl
-   
+
    p₂ : (((⋆ ＝ ⋆) , 𝟙-is-set) ⇒ ⊤) holds
    p₂ = λ _ → ⊤-holds
 
 \end{code}
 
 Compact indexed product of discrete set is itself discrete.
-The proof requires functional extensionality and uses Π-is-set to construct
-the proof that the Π type is a set.
-
 
 \begin{code}
 
-compact-Π-discrete : ((K , sK) : hSet 𝓤)
-                   → (X : K → hSet 𝓤)
-                   → is-compact (K , sK) holds
-                   → ((k : K) → is-discrete (X k) holds)
-                   → is-discrete (Π (λ k → (underlying-set (X k))) ,
-                                 (Π-is-set fe (λ k → (pr₂ (X k))))) holds
-                                 
-compact-Π-discrete (K , sK) X compact-K discrete-X (x₁ , x₂) =
- ⇔-open extensional-eq global-eq (p₁ , p₂) †
-  where
-   extensional-eq : Ω 𝓤
-   extensional-eq = (Ɐ k ꞉ K , ((x₁ k ＝ x₂ k) , pr₂ (X k)))
+module _ (𝒳 : hSet 𝓤) where
+ private
+  X = underlying-set 𝒳
 
-   global-eq : Ω 𝓤
-   global-eq = ((x₁ ＝ x₂) , Π-is-set fe (λ k → pr₂ (X k)))
-   
-   p₁ : (extensional-eq ⇒ global-eq) holds
-   p₁ = dfunext fe
-   
-   p₂ : (global-eq ⇒ extensional-eq) holds
-   p₂ x₁-eq-x₂ = transport (λ - → ((k : K) → ((x₁ k)  ＝ ( - k) )))
-                           x₁-eq-x₂
-                           (λ _ → refl)
+ compact-Π-discrete : (Y : X → hSet 𝓤)
+                    → is-compact 𝒳 holds
+                    → ((x : X) → is-discrete (Y x) holds)
+                    → is-discrete (Πₛ 𝒳 Y) holds
 
-   † : is-open-proposition extensional-eq holds
-   † = compact-K ((λ k → (x₁ k ＝ x₂ k) , pr₂ (X k)) ,
-                 (λ k → discrete-X k (x₁ k , x₂ k)))
+ compact-Π-discrete Y compact-X discrete-Y (y₁ , y₂) =
+  ⇔-open extensional-eq global-eq (p₁ , p₂) †
+   where
+    extensional-eq : Ω 𝓤
+    extensional-eq = Ɐ x ꞉ X , ((y₁ x ＝ y₂ x) , pr₂ (Y x))
+
+    global-eq : Ω 𝓤
+    global-eq = (y₁ ＝ y₂) , pr₂ (Πₛ 𝒳 Y)
+
+    p₁ : (extensional-eq ⇒ global-eq) holds
+    p₁ = dfunext fe
+
+    p₂ : (global-eq ⇒ extensional-eq) holds
+    p₂ y₁-eq-y₂ = transport (λ - → (x : X) → ((y₁ x) ＝ ( - x)))
+                            y₁-eq-y₂
+                            λ _ → refl
+
+    † : is-open-proposition extensional-eq holds
+    † = compact-X ((λ x → (y₁ x ＝ y₂ x) , pr₂ (Y x)) ,
+                  λ x → discrete-Y x (y₁ x , y₂ x))
 
 \end{code}
