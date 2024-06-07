@@ -31,7 +31,7 @@ module SyntheticTopology.Compactness
 
 open import UF.ImageAndSurjection pt
 open import UF.Logic
-open import SyntheticTopology.SetCombinators fe pe pt 𝓤
+open import SyntheticTopology.SetCombinators 𝓤 fe pe pt
 
 open AllCombinators pt fe
 open PropositionalTruncation pt hiding (_∨_)

@@ -30,7 +30,7 @@ module SyntheticTopology.Overtness
         (𝕊 : Generalized-Sierpinski-Object fe pe pt 𝓤 𝓥)
         where
 
-open import SyntheticTopology.SetCombinators fe pe pt 𝓤
+open import SyntheticTopology.SetCombinators 𝓤 fe pe pt
 open import UF.ImageAndSurjection pt
 
 open AllCombinators pt fe

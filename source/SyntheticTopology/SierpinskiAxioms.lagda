@@ -68,10 +68,10 @@ under binary (and thus, finite if `contains-top` holds) meets :
 
 closed-under-binary-meets : Ω (𝓤 ⁺ ⊔ 𝓥)
 closed-under-binary-meets =
- Ɐ P ꞉ Ω 𝓤 ,
-  Ɐ Q ꞉ Ω 𝓤 ,
-   ((is-open-proposition P ∧ is-open-proposition Q)
-    ⇒ is-open-proposition (P ∧ Q))
+ Ɐ p ꞉ Ω 𝓤 ,
+  Ɐ q ꞉ Ω 𝓤 ,
+   ((is-open-proposition p ∧ is-open-proposition q)
+    ⇒ is-open-proposition (p ∧ q))
 
 \end{code}
 
@@ -84,8 +84,8 @@ case in which both `P` and `Q` are known to be `open-proposition`.
 
 open-transitive-gives-cl-∧
  : (openness-is-transitive ⇒ closed-under-binary-meets) holds
-open-transitive-gives-cl-∧ open-transitive P Q (open-P , open-Q) =
-  open-transitive P open-P Q λ _ → open-Q
+open-transitive-gives-cl-∧ open-transitive p q (open-p , open-q) =
+  open-transitive p open-p q λ _ → open-q
 
 \end{code}
 
@@ -189,12 +189,12 @@ contains-bot = is-open-proposition ⊥
 
 closed-under-binary-joins : Ω (𝓤 ⁺ ⊔ 𝓥)
 closed-under-binary-joins =
- Ɐ P ꞉ Ω 𝓤 ,
-  Ɐ Q ꞉ Ω 𝓤 ,
-   ((is-open-proposition P ∧ is-open-proposition Q)
-    ⇒ is-open-proposition (P ∨ Q))
+ Ɐ p ꞉ Ω 𝓤 ,
+  Ɐ q ꞉ Ω 𝓤 ,
+   ((is-open-proposition p ∧ is-open-proposition q)
+    ⇒ is-open-proposition (p ∨ q))
 
-is-standard : Ω ((𝓤 ⁺) ⊔ 𝓥)
+is-standard : Ω (𝓤 ⁺ ⊔ 𝓥)
 is-standard = contains-bot ∧ closed-under-binary-joins
 
 \end{code}
