@@ -117,6 +117,9 @@ we define it this way to keep the coherence between the arguments.
  imageₛ (X , sX) (Y , sY) f =
   (image f , Σ-is-set sY λ y → props-are-sets ∃-is-prop)
 
+ Ωₛ : Ω 𝓤 → hSet 𝓤
+ Ωₛ p = (p holds , props-are-sets (holds-is-prop p))
+
 \end{code}
 
 To define this and some related notions, we work in a module parameterized by an
