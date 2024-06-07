@@ -12,6 +12,7 @@ open import MLTT.Spartan hiding (𝟚 ; ℕ)
 open import UF.DiscreteAndSeparated hiding (𝟚-is-set ; ℕ-is-set ; ℕ-is-discrete)
 open import UF.FunExt
 open import UF.Logic
+open import UF.Powerset
 open import UF.PropTrunc
 open import UF.Sets
 open import UF.Sets-Properties
@@ -132,3 +133,13 @@ module _ (𝒳 : hSet 𝓤) where
 
 \end{code}
 
+We now define a combinator to get the set induced by a subset. That is, if
+`𝒳 = (X , set-X)` is a set, and `U : 𝓟 X` is a subset of 𝒳, we can get the
+set induced by `U` using `𝕋ₛ U`.
+
+\begin{code}
+
+ 𝕋ₛ : 𝓟 X → hSet 𝓤
+ 𝕋ₛ U = 𝕋 U , Σ-is-set set-X λ x → props-are-sets (holds-is-prop (U x))
+
+\end{code}
