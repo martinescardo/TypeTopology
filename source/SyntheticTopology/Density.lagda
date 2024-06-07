@@ -53,11 +53,11 @@ The whole module is parametrized by a set `𝒳`.
 private
  X = underlying-set 𝒳
 
-is-dense : (D : X → Ω 𝓤) → Ω (𝓤 ⁺ ⊔ 𝓥)
+is-dense : (D : 𝓟 X) → Ω (𝓤 ⁺ ⊔ 𝓥)
 is-dense D =
  Ɐ (P , open-P) ꞉ 𝓞 𝒳 ,
-  (Ǝₚ x ꞉ X , P x) ⇒
-   (Ǝₚ x ꞉ X , (D x ∧ P x))
+  (Ǝₚ x ꞉ X , x ∈ₚ P) ⇒
+   (Ǝₚ x ꞉ X , (x ∈ₚ D ∧ x ∈ₚ P))
 
 \end{code}
 
@@ -68,16 +68,14 @@ and that a set containing a subovert dense subset is itself overt.
 
 self-is-dense-in-self : is-dense full holds
 self-is-dense-in-self (P , open-P) inhabited-P =
- ∥∥-rec (holds-is-prop (Ǝₚ x' ꞉ X , (D x' ∧ P x'))) † inhabited-P
+ ∥∥-rec (holds-is-prop (Ǝₚ x' ꞉ X , (x' ∈ₚ full ∧ x' ∈ₚ P))) † inhabited-P
   where
-   D : X → Ω 𝓤
-   D x = ⊤
 
-   † : Σ x ꞉ X , P x holds → (Ǝₚ x' ꞉ X , (D x' ∧ P x')) holds
+   † : Σ x ꞉ X , P x holds → (Ǝₚ x' ꞉ X , (x' ∈ₚ full ∧ x' ∈ₚ P)) holds
    † (x , Px) = ∣ x , ⊤-holds , Px  ∣
 
 
-having-subovert-dense-subset-gives-self-overt : (U : X → Ω 𝓤)
+having-subovert-dense-subset-gives-self-overt : (U : 𝓟 X)
                                               → is-subovert 𝒳 U holds
                                               → is-dense U holds
                                               → is-overt 𝒳 holds
@@ -90,10 +88,10 @@ having-subovert-dense-subset-gives-self-overt U
  ⇔-open U-and-P-exists P-exists (p₁ , p₂) †
   where
    U-and-P-exists : Ω 𝓤
-   U-and-P-exists = Ǝₚ x ꞉ X , (U x ∧ P x)
+   U-and-P-exists = Ǝₚ x ꞉ X , (x ∈ₚ U ∧ x ∈ₚ P )
 
    P-exists : Ω 𝓤
-   P-exists = Ǝₚ x ꞉ X , P x
+   P-exists = Ǝₚ x ꞉ X , x ∈ₚ P
 
    p₁ : (U-and-P-exists ⇒ P-exists) holds
    p₁ = λ U-hyp → ∥∥-rec (holds-is-prop P-exists)

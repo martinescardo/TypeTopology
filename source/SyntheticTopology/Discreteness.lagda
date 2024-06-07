@@ -14,9 +14,9 @@ in TODO and prove two lemmas.
 
 open import MLTT.Spartan
 open import UF.Base
-open import UF.DiscreteAndSeparated hiding (is-discrete ; 𝟙-is-discrete)
 open import UF.FunExt
 open import UF.PropTrunc
+open import UF.Powerset
 open import UF.Sets
 open import UF.Sets-Properties
 open import UF.Subsingletons
@@ -32,6 +32,7 @@ module SyntheticTopology.Discreteness
         where
 
 open import SyntheticTopology.Compactness 𝓤 𝓥 fe pe pt 𝕊
+open import SyntheticTopology.SetCombinators fe pe pt 𝓤
 open import SyntheticTopology.SierpinskiAxioms 𝓤 𝓥 fe pe pt 𝕊
 open import UF.ImageAndSurjection pt
 open import UF.Logic
@@ -65,16 +66,19 @@ Sierpinski object's image.
 
 \begin{code}
 
+private
+ 𝟙ₛ-is-set = pr₂ 𝟙ₛ
+
 𝟙-is-discrete : contains-top holds
-              → is-discrete (𝟙 , 𝟙-is-set) holds
+              → is-discrete 𝟙ₛ holds
 
 𝟙-is-discrete ct (⋆ , ⋆) =
- ⇔-open ⊤ ((⋆ ＝ ⋆) , 𝟙-is-set) (p₁ , p₂) ct
+ ⇔-open ⊤ ((⋆ ＝ ⋆) , 𝟙ₛ-is-set) (p₁ , p₂) ct
   where
-   p₁ : (⊤ ⇒ (⋆ ＝ ⋆) , 𝟙-is-set) holds
+   p₁ : (⊤ ⇒ (⋆ ＝ ⋆) , 𝟙ₛ-is-set) holds
    p₁ = λ _ → refl
 
-   p₂ : (((⋆ ＝ ⋆) , 𝟙-is-set) ⇒ ⊤) holds
+   p₂ : (((⋆ ＝ ⋆) , 𝟙ₛ-is-set) ⇒ ⊤) holds
    p₂ = λ _ → ⊤-holds
 
 \end{code}
@@ -86,6 +90,7 @@ Compact indexed product of discrete set is itself discrete.
 module _ (𝒳 : hSet 𝓤) where
  private
   X = underlying-set 𝒳
+
 
  compact-Π-discrete : (Y : X → hSet 𝓤)
                     → is-compact 𝒳 holds
