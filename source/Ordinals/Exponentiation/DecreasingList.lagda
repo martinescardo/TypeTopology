@@ -358,6 +358,10 @@ module _ {X : 𝓤 ̇  } (R : X → X → 𝓥 ̇  ) where
 
  lex-decr : DecreasingList → DecreasingList → 𝓤 ⊔ 𝓥 ̇
  lex-decr (xs , _) (ys , _) = lex R xs ys
+
+ cons-decr : (y : X) → (xs : DecreasingList) → ((x : X) → member x (pr₁ xs) → R x y) → DecreasingList
+ cons-decr y ([] , δ) g = (y ∷ []) , sing-decr
+ cons-decr y ((x ∷ xs) , δ) g = (y ∷ x ∷ xs) , (many-decr (g x in-head) δ)
 \end{code}
 
 \begin{code}
@@ -451,6 +455,17 @@ module _ (α : Ordinal 𝓤)(β : Ordinal 𝓥) where
    is-decreasing-pr₂-to-is-decreasing (x ∷ x' ∷ xs) (many-decr p ps)
     = many-decr (inl p) (is-decreasing-pr₂-to-is-decreasing (x' ∷ xs) ps)
 
+ exponential-cons : (ab : ⟨ α ×ₒ β ⟩) → (xs : ⟨[𝟙+_]^_⟩)
+                  → ((b : ⟨ β ⟩) → member b (map pr₂ (underlying-list xs)) → b ≺⟨ β ⟩ pr₂ ab)
+                  → ⟨[𝟙+_]^_⟩
+ exponential-cons ab (xs , δ) g = (ab ∷ xs) , decr-proof ab (xs , δ) g
+  where
+   decr-proof : (ab : ⟨ α ×ₒ β ⟩) → (xs : ⟨[𝟙+_]^_⟩)
+              → ((b : ⟨ β ⟩) → member b (map pr₂ (underlying-list xs)) → b ≺⟨ β ⟩ pr₂ ab)
+              → is-decreasing-pr₂ (ab ∷ underlying-list xs)
+   decr-proof (a , b) ([] , δ) g = sing-decr
+   decr-proof (a , b) (((a' , b') ∷ xs) , δ) g = many-decr (g b' in-head) δ
+
  exponential-order : ⟨[𝟙+_]^_⟩ → ⟨[𝟙+_]^_⟩ → 𝓤 ⊔ 𝓥 ̇
  exponential-order (xs , _) (ys , _) = xs ≺⟨List (α ×ₒ β) ⟩ ys
 
@@ -478,35 +493,35 @@ module _ (α : Ordinal 𝓤)(β : Ordinal 𝓥) where
 
  -- TODO: CLEAN UP
  -- TODO: Rename
- lemma' : (xs ys : List ⟨ α ×ₒ β ⟩) (x : ⟨ α ×ₒ β ⟩)
-        → is-decreasing-pr₂ (x ∷ xs)
-        → is-decreasing-pr₂ ys
-        → lex R ys xs
-        → is-decreasing-pr₂ (x ∷ ys)
- lemma' (x' ∷ xs) [] x δ ε l = sing-decr
- lemma' (x' ∷ xs) (y ∷ ys) x (many-decr l δ) ε (head-lex (inl k)) =
+ lemma-extensionality' : (xs ys : List ⟨ α ×ₒ β ⟩) (x : ⟨ α ×ₒ β ⟩)
+                       → is-decreasing-pr₂ (x ∷ xs)
+                       → is-decreasing-pr₂ ys
+                       → lex R ys xs
+                       → is-decreasing-pr₂ (x ∷ ys)
+ lemma-extensionality' (x' ∷ xs) [] x δ ε l = sing-decr
+ lemma-extensionality' (x' ∷ xs) (y ∷ ys) x (many-decr l δ) ε (head-lex (inl k)) =
   many-decr (Transitivity β (pr₂ y) (pr₂ x') (pr₂ x) k l) ε
- lemma' ((x₁' , _) ∷ xs) ((y₁ , y₂) ∷ ys) (x₁ , x₂) δ ε (head-lex (inr (refl , k))) =
+ lemma-extensionality' ((x₁' , _) ∷ xs) ((y₁ , y₂) ∷ ys) (x₁ , x₂) δ ε (head-lex (inr (refl , k))) =
   many-decr (is-decreasing-heads (underlying-order β) δ) ε
- lemma' (_ ∷ xs) (y ∷ ys) x δ ε (tail-lex refl l) =
+ lemma-extensionality' (_ ∷ xs) (y ∷ ys) x δ ε (tail-lex refl l) =
   many-decr (is-decreasing-heads (underlying-order β) δ) ε
 
  -- TODO: Rename
- lemma : (xs ys : List ⟨ α ×ₒ β ⟩) (x : ⟨ α ×ₒ β ⟩)
-       → is-decreasing-pr₂ (x ∷ xs) → is-decreasing-pr₂ (x ∷ ys)
-       → ((zs : List ⟨ α ×ₒ β ⟩)
-              → is-decreasing-pr₂ zs
-              → lex R zs (x ∷ xs) → lex R zs (x ∷ ys)) -- TODO: Use ≤
-       → ((zs : List ⟨ α ×ₒ β ⟩)
-              → is-decreasing-pr₂ zs
-              → lex R zs xs → lex R zs ys) -- TODO: Use ≤
- lemma xs ys x δ ε h zs ε' l = g hₓ
+ lemma-extensionality : (xs ys : List ⟨ α ×ₒ β ⟩) (x : ⟨ α ×ₒ β ⟩)
+                      → is-decreasing-pr₂ (x ∷ xs) → is-decreasing-pr₂ (x ∷ ys)
+                      → ((zs : List ⟨ α ×ₒ β ⟩)
+                             → is-decreasing-pr₂ zs
+                             → lex R zs (x ∷ xs) → lex R zs (x ∷ ys)) -- TODO: Use ≤
+                      → ((zs : List ⟨ α ×ₒ β ⟩)
+                             → is-decreasing-pr₂ zs
+                             → lex R zs xs → lex R zs ys) -- TODO: Use ≤
+ lemma-extensionality xs ys x δ ε h zs ε' l = g hₓ
   where
    hₓ : lex R (x ∷ zs) (x ∷ ys)
    hₓ = h (x ∷ zs) lem (tail-lex refl l)
     where
      lem : is-decreasing-pr₂ (x ∷ zs)
-     lem = lemma' xs zs x δ ε' l
+     lem = lemma-extensionality' xs zs x δ ε' l
    g : lex R (x ∷ zs) (x ∷ ys) → lex R zs ys
    g (head-lex r) = 𝟘-elim (irreflexive R x (Well-foundedness (α ×ₒ β) x) r)
    g (tail-lex _ k) = k
@@ -614,12 +629,12 @@ module _ (α : Ordinal 𝓤)(β : Ordinal 𝓥) where
          → is-decreasing-pr₂ zs
          → lex R zs (x' ∷ xs)
          → lex R zs (y' ∷ ys)
-      p' refl = lemma (x' ∷ xs) (y' ∷ ys) x δ ε p
+      p' refl = lemma-extensionality (x' ∷ xs) (y' ∷ ys) x δ ε p
       q' : (x ＝ y) → (zs : List ⟨ α ×ₒ β ⟩)
          → is-decreasing-pr₂ zs
          → lex R zs (y' ∷ ys)
          → lex R zs (x' ∷ xs)
-      q' refl = lemma (y' ∷ ys) (x' ∷ xs) y ε δ q
+      q' refl = lemma-extensionality (y' ∷ ys) (x' ∷ xs) y ε δ q
 
 
  exponential-order-transitive : is-transitive exponential-order
@@ -633,6 +648,13 @@ module _ (α : Ordinal 𝓤)(β : Ordinal 𝓥) where
            , exponential-order-wellfounded α β
            , exponential-order-extensional α β
            , exponential-order-transitive α β
+
+\end{code}
+
+\begin{code}
+
+[𝟙+α]^β-has-least : (α : Ordinal 𝓤) → (β : Ordinal 𝓥) → 𝟙ₒ {𝓦} ⊴ ([𝟙+ α ]^ β)
+[𝟙+α]^β-has-least α β = (λ _ → [] , []-decr) , (λ xs _ p → 𝟘-elim ([]-lex-bot _ _ p)) , (λ x y p → 𝟘-elim p)
 
 \end{code}
 
@@ -1353,7 +1375,7 @@ full-spec-gives-Has-least-or-is-zero {𝓤} (exp , exp-spec) = EM-gives-Has-leas
 
 \begin{code}
 
-monotone-in-exponent : (α : Ordinal 𝓤)
+monotone-in-exponent : ∀ {𝓤} (α : Ordinal 𝓤)
                      → is-monotone (OO 𝓤) (OO 𝓤) [𝟙+ α ]^_
 monotone-in-exponent α =
  is-monotone-if-continuous ([𝟙+ α ]^_) (λ i γ → (exp-sup-spec α i γ) ⁻¹)

@@ -1179,7 +1179,7 @@ TODO: Clean up & rename
    factor-through-sup : {Y : 𝓥 ̇  }
                       → is-set Y
                       → (f : (Σ i ꞉ I , ⟨ α i ⟩) → Y)
-                      → ((i j : I) (x : ⟨ α i ⟩) (y : ⟨ α j ⟩)
+                      → ((i : I) (x : ⟨ α i ⟩) (j : I) (y : ⟨ α j ⟩)
                               → (α i ↓ x) ＝ (α j ↓ y)
                               → f (i , x) ＝ f (j , y))
                       → Σ g ꞉ (⟨ sup ⟩ → Y) , g ∘ sum-to-sup ∼ f
@@ -1190,7 +1190,7 @@ TODO: Clean up & rename
        foo : (s t : Σ i ꞉ I , ⟨ α i ⟩)
            → sum-to-sup s ＝ sum-to-sup t
            → f s ＝ f t
-       foo (i , x) (j , y) e = h i j x y (ap (restriction σ) e')
+       foo (i , x) (j , y) e = h i x j y (ap (restriction σ) e')
         where
          e' : corestriction σ (i , x) ＝ corestriction σ (j , y)
          e' = (inverses-are-sections' sup-is-image-of-sum-to-ordinals (corestriction σ (i , x))) ⁻¹
@@ -1200,7 +1200,7 @@ TODO: Clean up & rename
    induced-map-from-sup : {Y : 𝓥 ̇  }
                         → is-set Y
                         → (f : (Σ i ꞉ I , ⟨ α i ⟩) → Y)
-                        → ((i j : I) (x : ⟨ α i ⟩) (y : ⟨ α j ⟩)
+                        → ((i : I) (x : ⟨ α i ⟩) (j : I) (y : ⟨ α j ⟩)
                                 → (α i ↓ x) ＝ (α j ↓ y)
                                 → f (i , x) ＝ f (j , y))
                         → ⟨ sup ⟩ → Y
@@ -1209,7 +1209,7 @@ TODO: Clean up & rename
    induced-map-from-sup-behaviour : {Y : 𝓥 ̇  }
                                     (i : is-set Y)
                                     (f : (Σ i ꞉ I , ⟨ α i ⟩) → Y)
-                                    (h : ((i j : I) (x : ⟨ α i ⟩) (y : ⟨ α j ⟩)
+                                    (h : ((i : I) (x : ⟨ α i ⟩) (j : I) (y : ⟨ α j ⟩)
                                                → (α i ↓ x) ＝ (α j ↓ y)
                                                → f (i , x) ＝ f (j , y)))
                                   → (induced-map-from-sup i f h) ∘ sum-to-sup ∼ f

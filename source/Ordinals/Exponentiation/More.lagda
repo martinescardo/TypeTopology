@@ -5,8 +5,7 @@ TEMPORARILY SPLIT UP TO SPEED UP TYPECHECKING
 
 \begin{code}
 
-{-# OPTIONS --without-K --no-exact-split  --lossy-unification #-}
-{-# OPTIONS --allow-unsolved-metas #-}
+{-# OPTIONS --safe --without-K --no-exact-split  --lossy-unification #-}
 
 open import UF.Univalence
 open import UF.PropTrunc
@@ -20,10 +19,10 @@ module Ordinals.Exponentiation.More
        where
 
 open import UF.Base
+open import UF.ClassicalLogic
 open import UF.Embeddings hiding (⌊_⌋)
 open import UF.Equiv
 open import UF.EquivalenceExamples
-open import UF.ExcludedMiddle
 open import UF.FunExt
 open import UF.PropTrunc
 open import UF.Sets
