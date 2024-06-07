@@ -86,7 +86,8 @@ is-in-T-equilibrium : {X : 𝓤 ̇ } {Xf : X → 𝑻}
                     → T-Strategy (X ∷ Xf)
                     → 𝓦₀ ̇
 is-in-T-equilibrium {X} {Xf} q ϕ σt@(σ :: σf)  =
- α-extᵀ q (T-strategic-path σt) ＝ ϕ (λ (x : X) → α-curryᵀ q x (T-strategic-path (σf x)))
+    α-extᵀ q (T-strategic-path σt)
+ ＝ ϕ (λ (x : X) → α-curryᵀ q x (T-strategic-path (σf x)))
 
 is-in-T-sgpe : {Xt : 𝑻} → 𝓚 Xt → (Path Xt → R) → T-Strategy Xt → 𝓤 ⊔ 𝓦₀ ̇
 is-in-T-sgpe {[]}     ⟨⟩        q ⟨⟩           = 𝟙
@@ -203,7 +204,8 @@ mapᵀ-path-head-lemma {X} {Xf} a b ext-const =
 
   ⦅1⦆ = (assocᵀ g (λ x → extᵀ (f x) (b x)) a)⁻¹
   ⦅2⦆ = ap (λ - → extᵀ - a) (dfunext fe I)
-  ⦅3⦆ = ap (λ - →  extᵀ (λ x → extᵀ (- x) (b x)) a) (dfunext fe (λ x → dfunext fe (II x)))
+  ⦅3⦆ = ap (λ - →  extᵀ (λ x → extᵀ (- x) (b x)) a)
+            (dfunext fe (λ x → dfunext fe (II x)))
   ⦅4⦆ = ap (λ - → extᵀ - a) (dfunext fe (λ x → ext-const (ηᵀ x) (b x)))
 
 \end{code}
@@ -243,8 +245,9 @@ module _ {X  : 𝓤 ̇ }
 
       I : (λ x → extᴶᵀ (λ y _ → ηᵀ (x , y)) (δ x)) ＝ Θ
       I = dfunext fe (λ x →
-          dfunext fe (λ r → ap (λ - → extᵀ (λ y → ηᵀ (x , y)) (δ x (λ y → - (x , y))))
-                         (dfunext fe (unitᵀ r))))
+          dfunext fe (λ r → ap (λ - → extᵀ (λ y → ηᵀ (x , y))
+                                           (δ x (λ y → - (x , y))))
+                               (dfunext fe (unitᵀ r))))
 
       ⦅1⦆ = ap (λ - → extᴶᵀ - ε q) I
 
