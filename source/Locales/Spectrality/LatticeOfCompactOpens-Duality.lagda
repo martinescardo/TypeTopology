@@ -869,14 +869,14 @@ The map `to-𝒦-spec-L` preserves binary joins.
 
 \begin{code}
 
- to-𝒦-spec-L-preserves-∨ : preserves-∨ L 𝒦⁻-spec-L to-𝒦-spec-L holds
- to-𝒦-spec-L-preserves-∨ x y =
-  s (↓ₖ (x ∨L y))                  ＝⟨ {!!} ⟩
-  s ((↓ₖ x) ∨ₖ (↓ₖ y))             ＝⟨ {!!} ⟩
-  to-𝒦-spec-L x ∨· to-𝒦-spec-L y   ∎
-   where
-    open DistributiveLattice L renaming (_∨_ to _∨L_)
-    open DistributiveLattice 𝒦⁻-spec-L renaming (_∨_ to _∨·_)
+ -- to-𝒦-spec-L-preserves-∨ : preserves-∨ L 𝒦⁻-spec-L to-𝒦-spec-L holds
+ -- to-𝒦-spec-L-preserves-∨ x y =
+ --  s (↓ₖ (x ∨L y))                  ＝⟨ {!!} ⟩
+ --  s ((↓ₖ x) ∨ₖ (↓ₖ y))             ＝⟨ {!!} ⟩
+ --  to-𝒦-spec-L x ∨· to-𝒦-spec-L y   ∎
+ --   where
+ --    open DistributiveLattice L renaming (_∨_ to _∨L_)
+ --    open DistributiveLattice 𝒦⁻-spec-L renaming (_∨_ to _∨·_)
 
 
 \end{code}
@@ -964,6 +964,42 @@ The principal ideal map is an embedding.
 
     Ⅰ = inverses-are-retractions' e K ⁻¹
     Ⅱ = ap s p
+
+\end{code}
+
+\begin{code}
+
+ to-lattice-preserves-∧ : preserves-∧ 𝒦⁻-spec-L L to-lattice₀ holds
+ to-lattice-preserves-∧ K₁ K₂ = goal
+  where
+   open DistributiveLattice L renaming (_∧_ to _∧L_)
+   open DistributiveLattice 𝒦⁻-spec-L renaming (_∧_ to _∧·_)
+
+   x₁ = to-lattice₀ K₁
+   x₂ = to-lattice₀ K₂
+
+   goal₁ : s (↓ₖ (to-lattice₀ (K₁ ∧· K₂))) ＝ s (↓ₖ (to-lattice₀ K₁ ∧L to-lattice₀ K₂))
+   goal₁ =
+    s (↓ₖ (to-lattice₀ (K₁ ∧· K₂)))                      ＝⟨ Ⅰ  ⟩
+    K₁ ∧· K₂                                             ＝⟨ Ⅱ  ⟩
+    K₁ ∧· s (↓ₖ (to-lattice₀ K₂))                        ＝⟨ Ⅲ  ⟩
+    s (↓ₖ (to-lattice₀ K₁)) ∧· s (↓ₖ (to-lattice₀ K₂))   ＝⟨ Ⅳ  ⟩
+    s (↓ₖ (to-lattice₀ K₁ ∧L to-lattice₀ K₂))            ∎
+     where
+      Ⅰ = to-lattice₀-lemma (K₁ ∧· K₂) ⁻¹
+      Ⅱ = ap (λ - → K₁ ∧· -) (to-lattice₀-lemma K₂)
+      Ⅲ = ap (λ - → - ∧· s (↓ₖ (to-lattice₀ K₂))) (to-lattice₀-lemma K₁)
+
+      foo : ?
+      foo = ?
+
+      Ⅳ = ap s (to-𝒦-＝ {!!} {!!} {!!} {!!})
+
+   goal′ : ↓ to-lattice₀ (K₁ ∧· K₂) ＝ ↓ (to-lattice₀ K₁ ∧L to-lattice₀ K₂)
+   goal′ = {!!}
+
+   goal : to-lattice₀ (K₁ ∧· K₂) ＝ to-lattice₀ K₁ ∧L to-lattice₀ K₂
+   goal = {!!}
 
 \end{code}
 
