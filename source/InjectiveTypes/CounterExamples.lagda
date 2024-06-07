@@ -344,27 +344,62 @@ conclusion with a weaker assumption and a simpler proof.
 
 Added 6 June 2024 by Tom de Jong during a meeting with Martín Escardó.
 
-A type X with an apartness relation ♯ such that it has two points x₀ ♯ x₁ cannot be injective unless WEM holds.
+A type with a nontrivial apartness relation cannot be injective unless weak
+excluded middle holds.
 
-TODO: Implement the below proof sketch in Agda.
+TODO(?). We could derive ℝ-ainjective-gives-WEM from the below. (Note the
+         similarities in the two proofs.)
 
-Let x₀ , x₁ : X with x₀ ♯ x₁.
+\begin{code}
 
-Assume X is flabby. Define, for a proposition P, an element x : X such that
+open import TypeTopology.TotallySeparated
+open Apartness fe pt
 
-  P → x ＝ x₀
-¬ P → x ＝ x₁
+type-with-non-trivial-apartness-injective-gives-WEM : {X : 𝓤 ̇  }
+                                                    → (_♯_ : X → X → 𝓥 ̇  )
+                                                    → is-apartness _♯_
+                                                    → (x₀ x₁ : X)
+                                                    → x₀ ♯ x₁
+                                                    → ainjective-type X 𝓣 𝓦
+                                                    → WEM 𝓣
+type-with-non-trivial-apartness-injective-gives-WEM
+ {𝓤} {𝓥} {𝓣} {𝓦} {X} _♯_ α x₀ x₁ points-apart ainj P P-is-prop = VII
+  where
+   X-aflabby : aflabby X 𝓣
+   X-aflabby = ainjective-types-are-aflabby _ ainj
 
-Then
+   f : (P + ¬ P) → X
+   f = cases (λ _ → x₀) (λ _ → x₁)
 
-x ≠ x₀ →  ¬ P
-x ≠ x₁ → ¬¬ P
+   q : Ω 𝓣
+   q = (P + ¬ P) , decidability-of-prop-is-prop fe' P-is-prop
 
-By cotransitivity and x₀ ♯ x₁, we have x ♯ x₀ or x ♯ x₁.
+   x : X
+   x = aflabby-extension X-aflabby q f
 
-If x ♯ x₀, then x ≠ x₀, so  ¬ P holds.
-If x ♯ x₁, then x ≠ x₁, so ¬¬ P holds. ∎
+   I : P → x ＝ x₀
+   I p = aflabby-extension-property X-aflabby q f (inl p)
 
-Axioms:
-Cotransitivity: x ♯ y → x ♯ z ∨ y ♯ z
-Irreflexivity: x ♯ y → x ≠ y   (¬ (x ♯ x))
+   II : ¬ P → x ＝ x₁
+   II ν = aflabby-extension-property X-aflabby q f (inr ν)
+
+   III : x ≠ x₀ → ¬ P
+   III = contrapositive I
+
+   IV : x ≠ x₁ → ¬¬ P
+   IV = contrapositive II
+
+   V : x₀ ♯ x ∨ x₁ ♯ x
+   V = apartness-is-cotransitive _♯_ α x₀ x₁ x points-apart
+
+   VI : (x ≠ x₀) ∨ (x ≠ x₁)
+   VI = ∨-functor ν ν V
+    where
+     ν : {x y : X} → x ♯ y → y ≠ x
+     ν a refl = apartness-is-irreflexive _♯_ α _ a
+
+   VII : ¬ P + ¬¬ P
+   VII = ∨-elim (decidability-of-prop-is-prop fe' (negations-are-props fe'))
+                (inl ∘ III) (inr ∘ IV) VI
+
+\end{code}
