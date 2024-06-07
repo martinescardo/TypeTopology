@@ -871,15 +871,17 @@ The map `to-𝒦-spec-L` preserves binary joins.
 
  to-𝒦-spec-L-preserves-∨ : preserves-∨ L 𝒦⁻-spec-L to-𝒦-spec-L holds
  to-𝒦-spec-L-preserves-∨ x y =
-  s (↓ₖ (x ∨L y))         ＝⟨ {!!} ⟩
-  s ((↓ₖ x) ∨ₖ (↓ₖ y))    ＝⟨ {!!} ⟩
-  {!!}                    ∎
+  s (↓ₖ (x ∨L y))                  ＝⟨ {!!} ⟩
+  s ((↓ₖ x) ∨ₖ (↓ₖ y))             ＝⟨ {!!} ⟩
+  to-𝒦-spec-L x ∨· to-𝒦-spec-L y   ∎
    where
     open DistributiveLattice L renaming (_∨_ to _∨L_)
     open DistributiveLattice 𝒦⁻-spec-L renaming (_∨_ to _∨·_)
 
 
 \end{code}
+
+We now start working on the map `to-lattice`.
 
 The principal ideal map is an embedding.
 
@@ -908,20 +910,26 @@ The principal ideal map is an embedding.
 
 \end{code}
 
-{--
+\begin{code}
+
+ r₀ : ∣ 𝒦⁻-spec-L ∣ᵈ → ⟨ 𝒪 spec-L ⟩
+ r₀ K = ιₖ (r K)
 
  to-lattice₀ : ∣ 𝒦⁻-spec-L ∣ᵈ → ∣ L ∣ᵈ
- to-lattice₀ K = pr₁ (exit-∥∥ † γ)
+ to-lattice₀ K = {!!}
   where
-   γ : ∃ x ꞉ ∣ L ∣ᵈ , ↓ x  ＝ pr₁ (r (spectrum L) 𝕤 K)
-   γ = compact-opens-are-basic
-        (spectrum L)
-        (ℬ-spec , ℬ-spec-is-directed-basis)
-        (pr₁ (r (spectrum L) 𝕤 K)) (pr₂ (r (spectrum L) 𝕤 K))
+   γ : ∃ x ꞉ ∣ L ∣ᵈ , ↓ x  ＝ r₀ K
+   γ = {!compact-opens-are-basic spec-L (ℬ-spec , ?) (r₀ K)!}
 
-   † : is-prop (Σ y ꞉ ∣ L ∣ᵈ , ↓ y ＝ pr₁ (r (spectrum L) 𝕤 K))
-   † (x , p) (y , q) = ↓-is-embedding ((pr₁ (r (spectrum L) 𝕤 K))) (x , p) (y , q)
+   † : is-prop (Σ y ꞉ ∣ L ∣ᵈ , ↓ y ＝ r₀ K)
+   † (x , p) (y , q) = {!!}
 
+   t : Σ x ꞉ ∣ L ∣ᵈ , ↓ x  ＝ r₀ K
+   t = exit-∥∥ † γ
+
+\end{code}
+
+{--
 
  to-lattice-is-homomorphism : is-homomorphismᵈ 𝒦⁻-spec-L L to-lattice₀ holds
  to-lattice-is-homomorphism = {!!} , {!!}
@@ -997,6 +1005,8 @@ spec-dlat-equivalence 𝓤 = sec , qinvs-are-equivs sec γ
   γ = ret , † , ‡
 
 \end{code}
+
+\section{References}
 
 [1] Johnstone, Peter T., Stone Spaces. Cambridge University Press, Cambridge,
     1982

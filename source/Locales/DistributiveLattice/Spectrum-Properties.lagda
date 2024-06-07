@@ -305,10 +305,10 @@ This has also probably been written down somewhere elsle.
   ≤-is-antisymmetric poset-of-ideals † ‡
    where
     † : (↓ (x ∨ y) ≤[ poset-of-ideals ] (↓ x ∨[ 𝒪 spec-L ] ↓ y)) holds
-    † z p = {!!}
+    † z p = ∨[ 𝒪 spec-L ]-least {!!} {!!} {!!} {!!}
 
     ‡ : ((↓ x ∨[ 𝒪 spec-L ] ↓ y) ≤[ poset-of-ideals ] ↓ (x ∨ y)) holds
-    ‡ = {!!}
+    ‡ z p = {!!}
 
 --}
 
