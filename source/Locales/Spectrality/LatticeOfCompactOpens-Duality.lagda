@@ -915,17 +915,55 @@ The principal ideal map is an embedding.
  r₀ : ∣ 𝒦⁻-spec-L ∣ᵈ → ⟨ 𝒪 spec-L ⟩
  r₀ K = ιₖ (r K)
 
+ r₀-gives-compact-opens : (K : ∣ 𝒦⁻-spec-L ∣ᵈ)
+                        → is-compact-open spec-L (r₀ K) holds
+ r₀-gives-compact-opens = ι-gives-compact-opens
+
  to-lattice₀ : ∣ 𝒦⁻-spec-L ∣ᵈ → ∣ L ∣ᵈ
- to-lattice₀ K = {!!}
+ to-lattice₀ K = pr₁ t
   where
+   κ : is-compact-open spec-L (r₀ K) holds
+   κ = r₀-gives-compact-opens K
+
    γ : ∃ x ꞉ ∣ L ∣ᵈ , ↓ x  ＝ r₀ K
-   γ = {!compact-opens-are-basic spec-L (ℬ-spec , ?) (r₀ K)!}
+   γ = compact-opens-are-basic spec-L (ℬ-spec , ℬ-spec-is-directed-basis) (r₀ K) κ
 
    † : is-prop (Σ y ꞉ ∣ L ∣ᵈ , ↓ y ＝ r₀ K)
-   † (x , p) (y , q) = {!!}
+   † = ↓-is-embedding (r₀ K)
 
    t : Σ x ꞉ ∣ L ∣ᵈ , ↓ x  ＝ r₀ K
    t = exit-∥∥ † γ
+
+ to-lattice₀-lemma : (K : ∣ 𝒦⁻-spec-L ∣ᵈ) → K ＝ s (↓ₖ (to-lattice₀ K))
+ to-lattice₀-lemma K =
+  K                      ＝⟨ Ⅰ ⟩
+  s (r K)                ＝⟨ Ⅱ ⟩
+  s (↓ₖ to-lattice₀ K)   ∎
+   where
+    κ : is-compact-open spec-L (r₀ K) holds
+    κ = r₀-gives-compact-opens K
+
+    γ : ∃ x ꞉ ∣ L ∣ᵈ , ↓ x  ＝ r₀ K
+    γ = compact-opens-are-basic spec-L (ℬ-spec , ℬ-spec-is-directed-basis) (r₀ K) κ
+
+    † : is-prop (Σ y ꞉ ∣ L ∣ᵈ , ↓ y ＝ r₀ K)
+    † = ↓-is-embedding (r₀ K)
+
+    t : Σ x ꞉ ∣ L ∣ᵈ , ↓ x  ＝ r₀ K
+    t = exit-∥∥ † γ
+
+    q : r₀ K ＝ ↓ (to-lattice₀ K)
+    q = pr₂ t ⁻¹
+
+    p : r K ＝ ↓ₖ (to-lattice₀ K)
+    p = to-𝒦-＝
+         spec-L
+         (r₀-gives-compact-opens K)
+         (principal-ideal-is-compact (to-lattice₀ K))
+         q
+
+    Ⅰ = inverses-are-retractions' e K ⁻¹
+    Ⅱ = ap s p
 
 \end{code}
 
