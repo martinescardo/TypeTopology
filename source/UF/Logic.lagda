@@ -21,6 +21,7 @@ open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.SubtypeClassifier
 open import UF.SubtypeClassifier-Properties
+open import UF.Sets
 
 \end{code}
 
@@ -219,6 +220,22 @@ module Disjunction (pt : propositional-truncations-exist) where
 
 \end{code}
 
+Added by Ayberk Tosun 2024-05-28.
+
+\begin{code}
+
+ ∨-elim : (P : Ω 𝓤) (Q : Ω 𝓥) (R : Ω 𝓦)
+        → (P holds → R holds)
+        → (Q holds → R holds)
+        → ((P ∨ Q) holds → R holds)
+ ∨-elim P Q R φ ψ = ∥∥-rec (holds-is-prop R) †
+  where
+   † : P holds + Q holds → R holds
+   † (inl p) = φ p
+   † (inr q) = ψ q
+
+\end{code}
+
 \section{Truncation}
 
 \begin{code}
@@ -268,6 +285,21 @@ module Negation-of-equality (fe : Fun-Ext) where
 
  _≢_ : {X : 𝓤 ̇ } → X → X → Ω 𝓤
  x ≢ y = (x ≠ y) , Π-is-prop fe (λ _ → 𝟘-is-prop)
+
+\end{code}
+
+\section{Equality}
+
+The following was added on 2024-05-16.
+
+\begin{code}
+
+module Equality {X : 𝓤  ̇} (s : is-set X) where
+
+ _＝ₚ_ : X → X → Ω 𝓤
+ _＝ₚ_ x y = (x ＝ y) , s
+
+ infix 0 _＝ₚ_
 
 \end{code}
 
