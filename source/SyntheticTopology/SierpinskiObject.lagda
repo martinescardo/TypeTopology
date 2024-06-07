@@ -12,6 +12,7 @@ dates-updated:  [2024-05-28, 2024-06-05]
 
 open import MLTT.Spartan
 open import UF.FunExt
+open import UF.Powerset
 open import UF.PropTrunc
 open import UF.Sets
 open import UF.Sets-Properties
@@ -100,27 +101,8 @@ propositions_. We introduce suggestive terminology accordingly.
 
 Here, we only work with sets.
 
-We define some combinators for the sake of notational simplicity.
-
-Note : for `imageₛ` , the fact that `(X , sX)` is a set is not useful, but
-we define it this way to keep the coherence between the arguments. 
-
-\begin{code}
-
- _×ₛ_ : hSet 𝓤 → hSet 𝓤 → hSet 𝓤
- _×ₛ_ (X , sX) (Y , sY) = (X × Y) , ×-is-set sX sY
-
- Πₛ : ((X , sX) : hSet 𝓤) → (X → hSet 𝓤) → hSet 𝓤
- Πₛ (X , sX) f = Π (underlying-set ∘ f) , Π-is-set fe (pr₂ ∘ f)
-
- imageₛ : ((X , sX) : hSet 𝓤) → ((Y , sY) : hSet 𝓤) → (X → Y) → hSet 𝓤 
- imageₛ (X , sX) (Y , sY) f =
-  (image f , Σ-is-set sY λ y → props-are-sets ∃-is-prop)
-
- Ωₛ : Ω 𝓤 → hSet 𝓤
- Ωₛ p = (p holds , props-are-sets (holds-is-prop p))
-
-\end{code}
+We defined some combinators for the sake of notational simplicity in the module
+SetCombinators.
 
 To define this and some related notions, we work in a module parameterized by an
 hSet `𝒳`. We adopt the convention of using calligraphic letters `𝒳`, `𝒴`, ...
@@ -146,8 +128,8 @@ defined by open propositions.
 
 \begin{code}
 
-  is-intrinsically-open : (X → Ω 𝓤) → Ω (𝓤 ⊔ 𝓥)
-  is-intrinsically-open P = Ɐ x ꞉ X , is-open-proposition (P x)
+  is-intrinsically-open : 𝓟 X → Ω (𝓤 ⊔ 𝓥)
+  is-intrinsically-open P = Ɐ x ꞉ X , is-open-proposition (x ∈ₚ P)
 
 \end{code}
 
@@ -157,9 +139,9 @@ set `X`
 \begin{code}
 
   𝓞 : 𝓤 ⁺ ⊔ 𝓥  ̇
-  𝓞 = Σ P ꞉ (X → Ω 𝓤) , is-intrinsically-open P holds
+  𝓞 = Σ P ꞉ 𝓟 X , is-intrinsically-open P holds
 
-  underlying-prop : 𝓞 → (X → Ω 𝓤)
+  underlying-prop : 𝓞 → 𝓟 X
   underlying-prop = pr₁
 
 \end{code}

@@ -13,6 +13,7 @@ open import SyntheticTopology.SierpinskiObject
 open import UF.Base
 open import UF.DiscreteAndSeparated
 open import UF.FunExt
+open import UF.Powerset
 open import UF.PropTrunc
 open import UF.Sets
 open import UF.Sets-Properties
@@ -30,6 +31,7 @@ module SyntheticTopology.Compactness
 
 open import UF.ImageAndSurjection pt
 open import UF.Logic
+open import SyntheticTopology.SetCombinators fe pe pt 𝓤
 
 open AllCombinators pt fe
 open PropositionalTruncation pt hiding (_∨_)
@@ -50,7 +52,7 @@ module _ (𝒳 : hSet 𝓤) where
 
  is-compact : Ω (𝓤 ⁺ ⊔ 𝓥)
  is-compact =
-  Ɐ (P , open-P) ꞉ 𝓞 𝒳 , is-open-proposition (Ɐ x ꞉ X , P x)
+  Ɐ (P , open-P) ꞉ 𝓞 𝒳 , is-open-proposition (Ɐ x ꞉ X , x ∈ₚ P)
 
 \end{code}
 
@@ -59,12 +61,12 @@ Sierpinski Object.
 
 \begin{code}
 
-𝟙-is-compact : is-compact (𝟙 , 𝟙-is-set) holds
+𝟙-is-compact : is-compact 𝟙ₛ holds
 𝟙-is-compact (P , open-P) =
- ⇔-open (P ⋆) (Ɐ x ꞉ 𝟙 , P x) p (open-P ⋆)
+ ⇔-open (⋆ ∈ₚ P) (Ɐ x ꞉ 𝟙 , x ∈ₚ P) eq (open-P ⋆)
   where
-   p : (P ⋆ ⇔ (Ɐ x ꞉ 𝟙 , P x)) holds
-   p = (λ pstar  x → pstar) , (λ f → f ⋆)
+   eq : (⋆ ∈ₚ P ⇔ (Ɐ x ꞉ 𝟙 , x ∈ₚ P)) holds
+   eq = (λ pstar  x → pstar) , (λ f → f ⋆)
 
 \end{code}
 
@@ -88,10 +90,10 @@ module _ (𝒳 : hSet 𝓤) (𝒴 : hSet 𝓤) where
          †
    where
     tuple-forall : Ω 𝓤
-    tuple-forall = Ɐ z ꞉ (X × Y) , P z
+    tuple-forall = Ɐ z ꞉ (X × Y) , z ∈ₚ P
 
     chained-forall : Ω 𝓤
-    chained-forall = Ɐ x ꞉ X , (Ɐ y ꞉ Y , P (x , y))
+    chained-forall = Ɐ x ꞉ X , (Ɐ y ꞉ Y , (x , y) ∈ₚ P)
 
     p₁ : (chained-forall ⇒ tuple-forall) holds
     p₁ = λ Qxy z → Qxy (pr₁ z) (pr₂ z)
@@ -99,11 +101,11 @@ module _ (𝒳 : hSet 𝓤) (𝒴 : hSet 𝓤) where
     p₂ : (tuple-forall ⇒ chained-forall) holds
     p₂ = λ Qz x' y' → Qz (x' , y')
 
-    prop-y : X → Ω 𝓤
-    prop-y x = Ɐ y ꞉ Y , P (x , y)
+    prop-y : 𝓟 X
+    prop-y x = Ɐ y ꞉ Y , (x , y) ∈ₚ P
 
     prop-y-open : (x : X) → is-open-proposition (prop-y x) holds
-    prop-y-open x = compact-Y ((λ y → P (x , y)) , λ y → open-P (x , y))
+    prop-y-open x = compact-Y ((λ y → (x , y) ∈ₚ P) , λ y → open-P (x , y))
 
     † : is-open-proposition chained-forall holds
     † = compact-X ((λ x → prop-y x) , prop-y-open)
@@ -122,10 +124,10 @@ Images of compact types by surjective functions are compact.
   ⇔-open pre-image-forall image-forall (p₁ , p₂) †
    where
     pre-image-forall : Ω 𝓤
-    pre-image-forall = Ɐ x ꞉ X , P (f x)
+    pre-image-forall = Ɐ x ꞉ X , (f x) ∈ₚ P
 
     image-forall : Ω 𝓤
-    image-forall = Ɐ y ꞉ Y , P y
+    image-forall = Ɐ y ꞉ Y , y ∈ₚ P
 
     p₁ : (pre-image-forall ⇒ image-forall) holds
     p₁ pX y = surjection-induction f

@@ -40,6 +40,15 @@ import SyntheticTopology.Overtness
 
 \end{code}
 
+We define in this module useful combinators and shortcut for sets :
+
+\begin{code}
+
+import SyntheticTopology.SetCombinators
+
+\end{code}
+
+
 The axioms considered on Sierpiński objects live in module `SierpinskiAxioms`:
 
 \begin{code}

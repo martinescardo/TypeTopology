@@ -1,8 +1,8 @@
 ---
-title:        Axioms about the Sierpinski object
-authors:      ['Martin Trucchi' , 'Ayberk Tosun']
-date-started: 2024-05-28
-dates-modified: [2024-06-06]
+title:          Axioms about the Sierpinski object
+authors:        ["Martin Trucchi" , "Ayberk Tosun"]
+date-started:   2024-05-28
+dates-modified: [2024-06-07]
 ---
 
 We write down here various axioms for the Sierpinski object, defined in TODO.
@@ -14,6 +14,8 @@ We write down here various axioms for the Sierpinski object, defined in TODO.
 open import MLTT.Spartan
 open import UF.Base
 open import UF.FunExt
+open import UF.Logic
+open import UF.Powerset
 open import UF.PropTrunc
 open import UF.Sets
 open import UF.Sets-Properties
@@ -28,8 +30,6 @@ module SyntheticTopology.SierpinskiAxioms
         (pt : propositional-truncations-exist)
         (𝕊 : Generalized-Sierpinski-Object fe pe pt 𝓤 𝓥)
         where
-
-open import UF.Logic
 
 open AllCombinators pt fe
 open PropositionalTruncation pt hiding (_∨_)
@@ -50,11 +50,11 @@ contains-top = is-open-proposition ⊤
 
 openness-is-transitive : Ω (𝓤 ⁺ ⊔ 𝓥)
 openness-is-transitive =
- Ɐ U ꞉ Ω 𝓤 ,
-  (is-open-proposition U
-   ⇒ (Ɐ P ꞉ Ω 𝓤 ,
-    (U ⇒ (is-open-proposition P))
-     ⇒ (is-open-proposition (U ∧ P))))
+ Ɐ u ꞉ Ω 𝓤 ,
+  (is-open-proposition u
+   ⇒ (Ɐ p ꞉ Ω 𝓤 ,
+    (u ⇒ (is-open-proposition p))
+     ⇒ (is-open-proposition (u ∧ p))))
 
 is-synthetic-dominance : Ω (𝓤 ⁺ ⊔ 𝓥)
 is-synthetic-dominance = contains-top ∧ openness-is-transitive

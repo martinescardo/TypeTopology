@@ -14,15 +14,13 @@ TODO, and prove some lemmas.
 
 open import MLTT.Spartan
 open import SyntheticTopology.SierpinskiObject
-open import UF.Base
-open import UF.DiscreteAndSeparated
 open import UF.FunExt
+open import UF.Logic
+open import UF.Powerset
 open import UF.PropTrunc
 open import UF.Sets
-open import UF.Sets-Properties
 open import UF.Subsingletons
 open import UF.SubtypeClassifier
-open import UF.UniverseEmbedding
 
 module SyntheticTopology.Overtness
         (𝓤  𝓥 : Universe)
@@ -32,8 +30,8 @@ module SyntheticTopology.Overtness
         (𝕊 : Generalized-Sierpinski-Object fe pe pt 𝓤 𝓥)
         where
 
+open import SyntheticTopology.SetCombinators fe pe pt 𝓤
 open import UF.ImageAndSurjection pt
-open import UF.Logic
 
 open AllCombinators pt fe
 open PropositionalTruncation pt hiding (_∨_)
@@ -44,7 +42,7 @@ open Sierpinski-notations fe pe pt 𝕊
 Overtness
 
 Overtness is a dual notion of compactness.
-A set is `overt` if the proposition `∃ x , P x` is `open` whenever `P` is
+A set is `overt` if the proposition `∃ x , x ∈ₚ P` is `open` whenever `P` is
 `open`.
 
 \begin{code}
@@ -54,7 +52,7 @@ module _ (𝒳 : hSet 𝓤) where
   X = underlying-set 𝒳
 
  is-overt : Ω (𝓤 ⁺ ⊔ 𝓥)
- is-overt = Ɐ (P , open-P) ꞉ 𝓞 𝒳 , is-open-proposition (Ǝₚ x ꞉ X , P x)
+ is-overt = Ɐ (P , open-P) ꞉ 𝓞 𝒳 , is-open-proposition (Ǝₚ x ꞉ X , x ∈ₚ P)
 
 \end{code}
 
@@ -62,14 +60,15 @@ The type `𝟙` is always overt, regardless of the Sierpinski object.
 
 \begin{code}
 
-𝟙-is-overt : is-overt (𝟙 , 𝟙-is-set) holds
-𝟙-is-overt (P , open-P) = ⇔-open (P ⋆) (Ǝₚ x ꞉ 𝟙 , P x) (p₁ , p₂) (open-P ⋆)
+𝟙-is-overt : is-overt 𝟙ₛ holds
+𝟙-is-overt (P , open-P) =
+ ⇔-open (⋆ ∈ₚ P) (Ǝₚ x ꞉ 𝟙 , x ∈ₚ P) (p₁ , p₂) (open-P ⋆)
  where
-  p₁ : (P ⋆ ⇒ Ǝₚ x ꞉ 𝟙 , P x) holds
+  p₁ : (⋆ ∈ₚ P ⇒ Ǝₚ x ꞉ 𝟙 , x ∈ₚ P) holds
   p₁ P-star = ∣ ⋆ , P-star ∣
 
-  p₂ : (Ǝₚ x ꞉ 𝟙 , P x ⇒ P ⋆) holds
-  p₂ exists-x = ∥∥-rec (holds-is-prop (P ⋆)) (λ (x , Px) → Px) exists-x
+  p₂ : (Ǝₚ x ꞉ 𝟙 , x ∈ₚ P ⇒ ⋆ ∈ₚ P) holds
+  p₂ exists-x = ∥∥-rec (holds-is-prop (⋆ ∈ₚ P)) (λ (x , Px) → Px) exists-x
 
 \end{code}
 
@@ -93,10 +92,10 @@ module _ (𝒳 𝒴 : hSet 𝓤) where
   ⇔-open preimage-exists image-exists (p₁ , p₂) †
    where
     preimage-exists : Ω 𝓤
-    preimage-exists = Ǝₚ x ꞉ X , P (f x)
+    preimage-exists = Ǝₚ x ꞉ X , (f x) ∈ₚ P
 
     image-exists : Ω 𝓤
-    image-exists = Ǝₚ y ꞉ Y , P y
+    image-exists = Ǝₚ y ꞉ Y , y ∈ₚ P
 
     p₁ : (preimage-exists ⇒ image-exists) holds
     p₁ Px = ∥∥-rec (holds-is-prop image-exists)
