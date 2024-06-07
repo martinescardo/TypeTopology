@@ -68,10 +68,9 @@ and that a set containing a subovert dense subset is itself overt.
 
 self-is-dense-in-self : is-dense full holds
 self-is-dense-in-self (P , open-P) inhabited-P =
- ∥∥-rec (holds-is-prop (Ǝₚ x' ꞉ X , (x' ∈ₚ full ∧ x' ∈ₚ P))) † inhabited-P
+ ∥∥-rec (holds-is-prop (Ǝₚ x' ꞉ X , (x' ∈ₚ (full ∩ P)))) † inhabited-P
   where
-
-   † : Σ x ꞉ X , P x holds → (Ǝₚ x' ꞉ X , (x' ∈ₚ full ∧ x' ∈ₚ P)) holds
+   † : Σ x ꞉ X , x ∈ₚ P holds → (Ǝₚ x' ꞉ X , (x' ∈ₚ (full ∩ P))) holds
    † (x , Px) = ∣ x , ⊤-holds , Px  ∣
-                                    
+
 \end{code}

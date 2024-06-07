@@ -74,7 +74,7 @@ Binary products of compact types are compact.
 
 \begin{code}
 
-module _ (𝒳 : hSet 𝓤) (𝒴 : hSet 𝓤) where
+module _ (𝒳 𝒴 : hSet 𝓤) where
  private
   X = underlying-set 𝒳
   Y = underlying-set 𝒴
@@ -165,5 +165,5 @@ image-of-compact' (X , sX) (Y , sY) f compact-X =
                   (corestriction f)
                   (corestrictions-are-surjections f)
                   compact-X
-                  
+
 \end{code}

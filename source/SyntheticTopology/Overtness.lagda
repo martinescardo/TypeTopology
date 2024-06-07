@@ -1,7 +1,7 @@
 ---
-title:        Overtness in Synthetic Topology
-author:       Martin Trucchi
-date-started: 2024-05-28
+title:          Overtness in Synthetic Topology
+author:         Martin Trucchi
+date-started:   2024-05-28
 dates-modified: [2024-06-06]
 ---
 
@@ -82,6 +82,7 @@ module _ (𝒳 𝒴 : hSet 𝓤) where
   X = underlying-set 𝒳
   Y = underlying-set 𝒴
   set-Y = pr₂ 𝒴
+  open Equality set-Y
 
  image-of-overt : (f : X → Y)
                 → is-surjection f
@@ -102,13 +103,13 @@ module _ (𝒳 𝒴 : hSet 𝓤) where
                    (λ (x , Pxf) → ∣ f x , Pxf  ∣)
                    Px
 
-    exists-preimage-of-y : (y : Y) → (Ǝₚ x ꞉ X , ((f x ＝ y) , set-Y)) holds
+    exists-preimage-of-y : (y : Y) → (Ǝₚ x ꞉ X , (f x ＝ₚ y)) holds
     exists-preimage-of-y y =
      surjection-induction f
                           sf
-                          (λ y → ((Ǝₚ x ꞉ X , ((f x ＝ y) , set-Y)) holds))
+                          (λ y → ((Ǝₚ x ꞉ X , (f x ＝ₚ y)) holds))
                           (λ y → holds-is-prop
-                                  (Ǝₚ x ꞉ X , ((f x ＝ y) , set-Y)))
+                                  (Ǝₚ x ꞉ X , (f x ＝ₚ y)))
                           (λ x → ∣ x , refl  ∣)
                           y
 

@@ -51,11 +51,15 @@ Here we define shortcuts rather than combinators for sets used in the module.
 
 \begin{code}
 
+𝟘ₛ-is-set = 𝟘-is-set
+
 𝟘ₛ : hSet 𝓤
-𝟘ₛ = 𝟘 , 𝟘-is-set
+𝟘ₛ = 𝟘 , 𝟘ₛ-is-set
+
+𝟙ₛ-is-set = 𝟙-is-set
 
 𝟙ₛ : hSet 𝓤
-𝟙ₛ = 𝟙 , 𝟙-is-set
+𝟙ₛ = 𝟙 , 𝟙ₛ-is-set
 
 \end{code}
 
@@ -64,8 +68,10 @@ polymorphic version of `𝟚`.
 
 \begin{code}
 
+𝟚ₛ-is-set = 𝟚-is-set 𝓤
+
 𝟚ₛ : hSet 𝓤
-𝟚ₛ = (𝟚 𝓤) , 𝟚-is-set 𝓤
+𝟚ₛ = (𝟚 𝓤) , 𝟚ₛ-is-set
 
 \end{code}
 
@@ -81,7 +87,7 @@ pred : ℕ → ℕ
 pred zero = zero
 pred (succ n) = n
 
-boom : ℕ → 𝓤 ̇ 
+boom : ℕ → 𝓤 ̇
 boom zero = 𝟘
 boom (succ _) = 𝟙
 
@@ -97,8 +103,10 @@ boom (succ _) = 𝟙
 ℕ-is-set : is-set ℕ
 ℕ-is-set = discrete-types-are-sets ℕ-is-discrete
 
+ℕₛ-is-set = ℕ-is-set
+
 ℕₛ : hSet 𝓤
-ℕₛ = ℕ , ℕ-is-set
+ℕₛ = ℕ , ℕₛ-is-set
 
 \end{code}
 
@@ -108,7 +116,7 @@ We have the same convention of using `𝒳` as a generic set along with the proo
 with its underlying set being `X`.
 
 Note : for `imageₛ` , the fact that `𝒳` is a set is not useful, but
-we define it this way to keep the coherence between the arguments. 
+we define it this way to keep the coherence between the arguments.
 
 \begin{code}
 
@@ -128,7 +136,7 @@ module _ (𝒳 : hSet 𝓤) where
   _×ₛ_ : hSet 𝓤
   _×ₛ_ = (X × Y) , ×-is-set set-X set-Y
 
-  imageₛ : (X → Y) → hSet 𝓤 
+  imageₛ : (X → Y) → hSet 𝓤
   imageₛ f = (image f , Σ-is-set set-Y λ y → props-are-sets ∃-is-prop)
 
 \end{code}

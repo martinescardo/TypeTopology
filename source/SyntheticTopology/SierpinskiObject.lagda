@@ -3,7 +3,7 @@ title:          Definition of Sierpinski object synthetic topology
 authors:        ["Ayberk Tosun", "Martin Trucchi"]
 date-started:   2024-05-02
 date-completed: 2024-05-31
-dates-updated:  [2024-05-28, 2024-06-05]
+dates-updated:  [2024-05-28, 2024-06-05 , 2024-06-07]
 ---
 
 \begin{code}
@@ -151,9 +151,9 @@ We also prove the following convenient lemma.
 \begin{code}
 
  ⇔-open
-  : (P Q : Ω 𝓤)
-  → ((P ⇔ Q) ⇒ is-open-proposition P ⇒ is-open-proposition Q) holds
- ⇔-open P Q = ⇔-transport pe P Q (_holds ∘ is-open-proposition)
+  : (p q : Ω 𝓤)
+  → ((p ⇔ q) ⇒ is-open-proposition p ⇒ is-open-proposition q) holds
+ ⇔-open p q = ⇔-transport pe p q (_holds ∘ is-open-proposition)
 
 \end{code}
 

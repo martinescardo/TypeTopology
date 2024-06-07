@@ -1,8 +1,8 @@
 ---
-title:        Discreteness in Synthetic Topology
-author:       Martin Trucchi
-date-started: 2024-05-28
-dates-modified: [2024-06-06]
+title:          Discreteness in Synthetic Topology
+author:         Martin Trucchi
+date-started:   2024-05-28
+dates-modified: [2024-06-07]
 ---
 
 We here implement the notion of discreteness in Synthetic Topology defined
@@ -66,19 +66,18 @@ Sierpinski object's image.
 
 \begin{code}
 
-private
- 𝟙ₛ-is-set = pr₂ 𝟙ₛ
-
 𝟙-is-discrete : contains-top holds
               → is-discrete 𝟙ₛ holds
 
 𝟙-is-discrete ct (⋆ , ⋆) =
- ⇔-open ⊤ ((⋆ ＝ ⋆) , 𝟙ₛ-is-set) (p₁ , p₂) ct
+ ⇔-open ⊤ (⋆ ＝ₚ ⋆) (p₁ , p₂) ct
   where
-   p₁ : (⊤ ⇒ (⋆ ＝ ⋆) , 𝟙ₛ-is-set) holds
+   open Equality 𝟙ₛ-is-set
+
+   p₁ : (⊤ ⇒ (⋆ ＝ₚ ⋆)) holds
    p₁ = λ _ → refl
 
-   p₂ : (((⋆ ＝ ⋆) , 𝟙ₛ-is-set) ⇒ ⊤) holds
+   p₂ : ((⋆ ＝ₚ ⋆) ⇒ ⊤) holds
    p₂ = λ _ → ⊤-holds
 
 \end{code}
