@@ -131,3 +131,15 @@ module _ (𝒳 : hSet 𝓤) where
   imageₛ f = (image f , Σ-is-set set-Y λ y → props-are-sets ∃-is-prop)
 
 \end{code}
+
+We also want, in `SyntheticTopology.Discreteness` for example, use the fact that
+for a set `𝒳`, and for `(x y : X)`, the type `x ＝ y` is a prop. This is exactly
+why our defintions require sets in the first place. We then define a shortcut
+for this proposition.
+
+\begin{code}
+
+ _＝ₚ_ : X → X → Ω 𝓤
+ x ＝ₚ y = (x ＝ y) , set-X
+
+\end{code}
