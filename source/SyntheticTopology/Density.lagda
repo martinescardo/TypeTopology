@@ -55,9 +55,9 @@ private
 
 is-dense : (D : 𝓟 X) → Ω (𝓤 ⁺ ⊔ 𝓥)
 is-dense D =
- Ɐ (P , open-P) ꞉ 𝓞 𝒳 ,
-  (Ǝₚ x ꞉ X , x ∈ₚ P) ⇒
-   (Ǝₚ x ꞉ X , (x ∈ₚ D ∧ x ∈ₚ P))
+ Ɐ (U , open-U) ꞉ 𝓞 𝒳 ,
+  (Ǝₚ x ꞉ X , x ∈ₚ U) ⇒
+   (Ǝₚ x ꞉ X , (x ∈ₚ (D ∩ U)))
 
 \end{code}
 
@@ -73,38 +73,5 @@ self-is-dense-in-self (P , open-P) inhabited-P =
 
    † : Σ x ꞉ X , P x holds → (Ǝₚ x' ꞉ X , (x' ∈ₚ full ∧ x' ∈ₚ P)) holds
    † (x , Px) = ∣ x , ⊤-holds , Px  ∣
-
-
-having-subovert-dense-subset-gives-self-overt : (U : 𝓟 X)
-                                              → is-subovert 𝒳 U holds
-                                              → is-dense U holds
-                                              → is-overt 𝒳 holds
-
-having-subovert-dense-subset-gives-self-overt U
-                                              subovert-U
-                                              dense-U
-                                              (P , open-P) =
-
- ⇔-open U-and-P-exists P-exists (p₁ , p₂) †
-  where
-   U-and-P-exists : Ω 𝓤
-   U-and-P-exists = Ǝₚ x ꞉ X , (x ∈ₚ U ∧ x ∈ₚ P )
-
-   P-exists : Ω 𝓤
-   P-exists = Ǝₚ x ꞉ X , x ∈ₚ P
-
-   p₁ : (U-and-P-exists ⇒ P-exists) holds
-   p₁ = λ U-hyp → ∥∥-rec (holds-is-prop P-exists)
-                         (λ (x-both , px-both) → ∣ x-both , pr₂ px-both ∣)
-                         U-hyp
-
-   p₂ : (P-exists ⇒ U-and-P-exists) holds
-   p₂ = λ P-hyp → ∥∥-rec (holds-is-prop U-and-P-exists)
-                         (λ (x-only , px-only) →
-                         dense-U (P , open-P) ∣ x-only ,  px-only ∣)
-                         P-hyp
-
-   † : is-open-proposition U-and-P-exists holds
-   † = subovert-U (P , open-P)
-
+                                    
 \end{code}
