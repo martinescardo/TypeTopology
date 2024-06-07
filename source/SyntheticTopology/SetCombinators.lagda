@@ -20,10 +20,10 @@ open import UF.Subsingletons-Properties
 open import UF.SubtypeClassifier
 
 module SyntheticTopology.SetCombinators
+        (𝓤 : Universe)
         (fe : Fun-Ext)
         (pe : Prop-Ext)
-        (pt : propositional-truncations-exist) 
-        (𝓤 : Universe) where
+        (pt : propositional-truncations-exist) where
 
 open import Locales.DiscreteLocale.Two fe pe pt
 open import Locales.Frame pt fe
@@ -132,14 +132,3 @@ module _ (𝒳 : hSet 𝓤) where
 
 \end{code}
 
-We also want, in `SyntheticTopology.Discreteness` for example, use the fact that
-for a set `𝒳`, and for `(x y : X)`, the type `x ＝ y` is a prop. This is exactly
-why our defintions require sets in the first place. We then define a shortcut
-for this proposition.
-
-\begin{code}
-
- _＝ₚ_ : X → X → Ω 𝓤
- x ＝ₚ y = (x ＝ y) , set-X
-
-\end{code}
