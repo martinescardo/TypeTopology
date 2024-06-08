@@ -980,26 +980,35 @@ The principal ideal map is an embedding.
 
    goal₁ : s (↓ₖ (to-lattice₀ (K₁ ∧· K₂))) ＝ s (↓ₖ (to-lattice₀ K₁ ∧L to-lattice₀ K₂))
    goal₁ =
-    s (↓ₖ (to-lattice₀ (K₁ ∧· K₂)))                      ＝⟨ Ⅰ  ⟩
-    K₁ ∧· K₂                                             ＝⟨ Ⅱ  ⟩
-    K₁ ∧· s (↓ₖ (to-lattice₀ K₂))                        ＝⟨ Ⅲ  ⟩
-    s (↓ₖ (to-lattice₀ K₁)) ∧· s (↓ₖ (to-lattice₀ K₂))   ＝⟨ Ⅳ  ⟩
+    s (↓ₖ (to-lattice₀ (K₁ ∧· K₂)))                      ＝⟨ Ⅰ ⟩
+    K₁ ∧· K₂                                             ＝⟨ Ⅱ ⟩
+    K₁ ∧· s (↓ₖ (to-lattice₀ K₂))                        ＝⟨ Ⅲ ⟩
+    s (↓ₖ (to-lattice₀ K₁)) ∧· s (↓ₖ (to-lattice₀ K₂))   ＝⟨ Ⅴ ⟩
+    s ((↓ₖ (to-lattice₀ K₁)) ∧ₖ (↓ₖ (to-lattice₀ K₂)))   ＝⟨ Ⅳ ⟩
     s (↓ₖ (to-lattice₀ K₁ ∧L to-lattice₀ K₂))            ∎
      where
       Ⅰ = to-lattice₀-lemma (K₁ ∧· K₂) ⁻¹
       Ⅱ = ap (λ - → K₁ ∧· -) (to-lattice₀-lemma K₂)
       Ⅲ = ap (λ - → - ∧· s (↓ₖ (to-lattice₀ K₂))) (to-lattice₀-lemma K₁)
 
-      foo : ?
-      foo = ?
+      † = to-𝒦-＝
+           spec-L
+           (pr₂ ((↓ₖ (to-lattice₀ K₁)) ∧ₖ (↓ₖ (to-lattice₀ K₂))))
+           (principal-ideal-is-compact (to-lattice₀ K₁ ∧L to-lattice₀ K₂))
+           (principal-ideal-preserves-meets (to-lattice₀ K₁) (to-lattice₀ K₂) ⁻¹ )
 
-      Ⅳ = ap s (to-𝒦-＝ {!!} {!!} {!!} {!!})
+      Ⅳ = ap s †
 
-   goal′ : ↓ to-lattice₀ (K₁ ∧· K₂) ＝ ↓ (to-lattice₀ K₁ ∧L to-lattice₀ K₂)
-   goal′ = {!!}
+      Ⅴ = s-preserves-∧ (↓ₖ (to-lattice₀ K₁)) (↓ₖ (to-lattice₀ K₂)) ⁻¹
+
+   goal′ : ↓ₖ to-lattice₀ (K₁ ∧· K₂) ＝ ↓ₖ (to-lattice₀ K₁ ∧L to-lattice₀ K₂)
+   goal′ = equivs-are-lc s (⌜⌝-is-equiv (≃-sym e)) goal₁
+
+   goal₂ : ↓ to-lattice₀ (K₁ ∧· K₂) ＝ ↓ (to-lattice₀ K₁ ∧L to-lattice₀ K₂)
+   goal₂ = pr₁ (from-Σ-＝ goal′)
 
    goal : to-lattice₀ (K₁ ∧· K₂) ＝ to-lattice₀ K₁ ∧L to-lattice₀ K₂
-   goal = {!!}
+   goal = pr₁ (from-Σ-＝ (↓-is-embedding (↓ to-lattice₀ (K₁ ∧· K₂)) {!!} {!!}))
 
 \end{code}
 
