@@ -75,8 +75,8 @@ is-decreasing-less-than-head {X = X} R trans x (x' ∷ xs) (many-decr p ps) y (i
 
 decreasing-pr₂-to-more-precise-tail :  (α : Ordinal 𝓤) (β : Ordinal 𝓥) → (a : ⟨ α ⟩)(b : ⟨ β ⟩)(xs : List ⟨ α ×ₒ β ⟩) → is-decreasing-pr₂ α β ((a , b) ∷ xs) → List ⟨ α ×ₒ (β ↓ b) ⟩
 decreasing-pr₂-to-more-precise-tail α β a b [] p = []
-decreasing-pr₂-to-more-precise-tail α β a b ((a' , b') ∷ xs) (many-decr p ps)
-  = (a' , (b' , p)) ∷ decreasing-pr₂-to-more-precise-tail α β a b xs (is-decreasing-skip-one (underlying-order β) (Transitivity β) b b' (map pr₂ xs) ps p)
+decreasing-pr₂-to-more-precise-tail α β a b ((a' , b') ∷ xs) ps
+  = (a' , (b' , is-decreasing-heads _ ps)) ∷ decreasing-pr₂-to-more-precise-tail α β a b xs (is-decreasing-skip-one (underlying-order β) (Transitivity β) b b' (map pr₂ xs) (is-decreasing-tail _ ps) (is-decreasing-heads _ ps))
 
 decreasing-pr₂-to-more-precise-tail-decreasing : (α : Ordinal 𝓤) (β : Ordinal 𝓥) → (a : ⟨ α ⟩) (b : ⟨ β ⟩) (xs : List ⟨ α ×ₒ β ⟩) → (ps : is-decreasing-pr₂ α β ((a , b) ∷ xs))
                                                → is-decreasing-pr₂ α (β ↓ b) (decreasing-pr₂-to-more-precise-tail α β a b xs ps)
@@ -93,6 +93,22 @@ more-precise-tail-pair α β a b xs ps =
  decreasing-pr₂-to-more-precise-tail α β a b xs ps ,
  decreasing-pr₂-to-more-precise-tail-decreasing α β a b xs ps
 
+more-precise-tail-order-preserving : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
+                                     (a₀ : ⟨ α ⟩) (b₀ : ⟨ β ⟩)
+                                     (xs : List ⟨ α ×ₒ β ⟩)
+                                     (δ : is-decreasing-pr₂ α β ((a₀ , b₀) ∷ xs))
+                                     (xs' : List ⟨ α ×ₒ β ⟩)
+                                     (δ' : is-decreasing-pr₂ α β ((a₀ , b₀) ∷ xs'))
+                                   → xs ≺⟨List (α ×ₒ β) ⟩ xs'
+                                   → more-precise-tail-pair α β a₀ b₀ xs δ ≺⟨ ([𝟙+ α ]^ (β ↓ b₀)) ⟩ more-precise-tail-pair α β a₀ b₀ xs' δ'
+more-precise-tail-order-preserving α β a₀ b₀ [] ps (x' ∷ xs') ps' q = []-lex
+more-precise-tail-order-preserving α β a₀ b₀ ((a , b) ∷ xs) (many-decr p ps) ((a' , b') ∷ xs') (many-decr p' ps') (head-lex (inl q)) = head-lex (inl q)
+more-precise-tail-order-preserving α β a₀ b₀ ((a , b) ∷ xs) (many-decr p ps) ((a' , b) ∷ xs') (many-decr p' ps') (head-lex (inr (refl , q))) =
+ head-lex (inr (to-subtype-＝ (λ x → Prop-valuedness β x b₀) refl , q))
+more-precise-tail-order-preserving α β a₀ b₀ ((a , b) ∷ xs) (many-decr p ps) ((a , b) ∷ xs') (many-decr p' ps') (tail-lex refl q) =
+ tail-lex (ap (a ,_) (to-subtype-＝ ((λ x → Prop-valuedness β x b₀)) refl)) (more-precise-tail-order-preserving α β a₀ b₀ xs _ xs' _ q)
+
+
 
 \end{code}
 
@@ -101,12 +117,30 @@ more-precise-tail-pair α β a b xs ps =
 open import Ordinals.Equivalence
 open import Ordinals.ArithmeticProperties ua
 
-[𝟙+]^-↓-lemma : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
+[𝟙+]^-↓-lemma : (α : Ordinal 𝓤) (β : Ordinal 𝓤)
                 (a : ⟨ α ⟩) (b : ⟨ β ⟩) (l : List ⟨ α ×ₒ β ⟩)
                 (δ : is-decreasing-pr₂ α β ((a , b) ∷ l))
               → (([𝟙+ α ]^ β) ↓ (((a , b) ∷ l) , δ)) ≃ₒ
                 ((([𝟙+ α ]^ (β ↓ b)) ×ₒ (𝟙ₒ +ₒ (α ↓ a))) +ₒ (([𝟙+ α ]^ (β ↓ b)) ↓ more-precise-tail-pair α β a b l δ))
-[𝟙+]^-↓-lemma = {!!}
+[𝟙+]^-↓-lemma α β a b l δ = {!!}
+ where
+  f : ⟨ ([𝟙+ α ]^ β) ↓ (((a , b) ∷ l) , δ) ⟩ →
+                 ⟨ (([𝟙+ α ]^ (β ↓ b)) ×ₒ (𝟙ₒ +ₒ (α ↓ a))) +ₒ (([𝟙+ α ]^ (β ↓ b)) ↓ more-precise-tail-pair α β a b l δ) ⟩
+  f (([] , []-decr) , p) = inl (([] , []-decr) , inl ⋆)
+  f ((((a' , b') ∷ l') , ε) , head-lex (inl p)) =
+   let
+    ε' = is-decreasing-skip-one (underlying-order β) (Transitivity β) b b' (map pr₂ l') ε p
+    l'' = more-precise-tail-pair α β a b l' ε'
+   in
+    inl ((((a' , (b' , p)) ∷ pr₁ l'') , b'l''-decreasing l' a' b' p ε) , (inl ⋆))
+   where
+    b'l''-decreasing : ∀ l' a' b' p ε → is-decreasing-pr₂ α (β ↓ b) (a' , (b' , p) ∷ pr₁ (more-precise-tail-pair α β a b l' (is-decreasing-skip-one (pr₁ (pr₂ β)) (Transitivity β) b b' (map (λ r → pr₂ r) l') ε p)))
+    b'l''-decreasing [] a' b' p ε = sing-decr
+    b'l''-decreasing (a'' , b'' ∷ l'') a' b' p (many-decr p'' ε'') = many-decr p'' (b'l''-decreasing l'' a'' b'' (Transitivity β _ _ _ p'' p) ε'')
+  f ((((a' , b) ∷ l') , ε) , head-lex (inr (refl , p))) = inl (more-precise-tail-pair α β a b l' ε , inr (a' , p))
+  f ((((a' , b') ∷ l') , ε) , tail-lex refl p) = inr (more-precise-tail-pair α β a b' l' ε , more-precise-tail-order-preserving α β a b' l' ε l δ p)
+
+{-
 
 ↓-eq-lemma : (α β : Ordinal 𝓤) (a : ⟨ α ⟩)
              (e : α ＝ β)
@@ -308,5 +342,5 @@ amazing {𝓤} α = transfinite-induction-on-OO _ I
 --      translate (inr (inl e)) = 𝟘-elim (+disjoint e)
 --      translate (inr (inr np)) = inr np
 -- -}
-
+-}
 -- \end{code}
