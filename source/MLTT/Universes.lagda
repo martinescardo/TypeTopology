@@ -33,7 +33,7 @@ _⁺⁺ : Universe → Universe
 
 \end{code}
 
-precedences:
+Precedences:
 
 \begin{code}
 
