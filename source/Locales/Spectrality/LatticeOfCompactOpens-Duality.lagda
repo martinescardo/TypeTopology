@@ -908,6 +908,10 @@ The principal ideal map is an embedding.
      ‡ : rel-syntax (poset-ofᵈ L) y x holds
      ‡ = γ y (≤-is-reflexive (poset-ofᵈ L) y)
 
+ equality-of-principal-ideals-gives-equality : left-cancellable principal-ideal
+ equality-of-principal-ideals-gives-equality =
+  embeddings-are-lc principal-ideal ↓-is-embedding
+
 \end{code}
 
 \begin{code}
@@ -1008,7 +1012,26 @@ The principal ideal map is an embedding.
    goal₂ = pr₁ (from-Σ-＝ goal′)
 
    goal : to-lattice₀ (K₁ ∧· K₂) ＝ to-lattice₀ K₁ ∧L to-lattice₀ K₂
-   goal = pr₁ (from-Σ-＝ (↓-is-embedding (↓ to-lattice₀ (K₁ ∧· K₂)) {!!} {!!}))
+   goal = pr₁ (from-Σ-＝ (↓-is-embedding (↓ to-lattice₀ (K₁ ∧· K₂)) ((to-lattice₀ (K₁ ∧· K₂)) , refl) ((to-lattice₀ K₁ ∧L to-lattice₀ K₂) , (goal₂ ⁻¹))))
+
+\end{code}
+
+\begin{code}
+
+ to-lattice-cancels-to-𝒦-spec-L : to-lattice₀ ∘ to-𝒦-spec-L ∼ id
+ to-lattice-cancels-to-𝒦-spec-L x =
+  equality-of-principal-ideals-gives-equality goal′′
+   where
+    goal : s (↓ₖ to-lattice₀ (s (↓ₖ x))) ＝ s (↓ₖ x)
+    goal = to-lattice₀-lemma (s (↓ₖ x)) ⁻¹
+
+    goal′ : ↓ₖ to-lattice₀ (s (↓ₖ x)) ＝ ↓ₖ x
+    goal′ = equivs-are-lc s (⌜⌝-is-equiv (≃-sym e)) goal
+
+    goal′′ : ↓ to-lattice₀ (s (↓ₖ x)) ＝ ↓ x
+    goal′′ = {!to-𝒦-＝ ? ? ? !}
+
+-- to-lattice₀-lemma : (K : ∣ 𝒦⁻-spec-L ∣ᵈ) → K ＝ s (↓ₖ (to-lattice₀ K))
 
 \end{code}
 
