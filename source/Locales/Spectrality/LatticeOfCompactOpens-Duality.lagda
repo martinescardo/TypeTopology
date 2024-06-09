@@ -51,6 +51,7 @@ open import Locales.DistributiveLattice.Homomorphism fe pt
 open import Locales.DistributiveLattice.Ideal pt fe pe
 open import Locales.DistributiveLattice.Ideal-Properties pt fe pe
 open import Locales.DistributiveLattice.Isomorphism fe pt
+open import Locales.DistributiveLattice.Isomorphism-Properties ua pt sr
 open import Locales.DistributiveLattice.Resizing ua pt sr
 open import Locales.DistributiveLattice.Spectrum fe pe pt
 open import Locales.DistributiveLattice.Spectrum-Properties fe pe pt sr
@@ -1092,39 +1093,14 @@ The principal ideal map is an embedding.
 
 \begin{code}
 
- to-lattice-is-homomorphism : is-homomorphismᵈ 𝒦⁻-spec-L L to-lattice₀ holds
- to-lattice-is-homomorphism = {!!} , {!!}
+ open DistributiveLatticeIsomorphisms L 𝒦⁻-spec-L
 
-\end{code}
-
-\begin{code}
-
- to-lattice : 𝒦⁻-spec-L ─d→ L
- to-lattice = record
-               { h                 = to-lattice₀
-               ; h-is-homomorphism = to-lattice-is-homomorphism
-               }
-
-\end{code}
-
-{--
-
- to-spectrum-is-a-homomorphism : is-homomorphismᵈ L 𝒦⁻-spec-L to-spectrum₀ holds
- to-spectrum-is-a-homomorphism = {!!}
-
- to-spectrum : L ─d→ 𝒦⁻-spec-L
- to-spectrum = record
-                { h                 = to-spectrum₀
-                ; h-is-homomorphism = to-spectrum-is-a-homomorphism
-                }
-
- spec-isomorphism : 𝒦⁻-spec-L ≅d≅ L
+ spec-isomorphism : L ≅d≅ 𝒦⁻-spec-L
  spec-isomorphism =
-  record
-   { 𝓈           = to-lattice
-   ; 𝓇           = to-spectrum
-   ; r-cancels-s = {!!}
-   ; s-cancels-r = {!!} }
+  to-isomorphismᵈᵣ
+   (L-equivalent-to-𝒦⁻-spec-L , to-𝒦-spec-L-is-a-homomorphic-equivalence)
+
+\end{code}
 
 \end{code}
 
@@ -1132,9 +1108,15 @@ Put this in the `LatticeOfCompactOpens-Duality` module.
 
 Recall that the type of spectral locales is defined as
 
+\begin{code}
+
 Spectral-Locale : (𝓤 : Universe) → 𝓤 ⁺ ⁺  ̇
 Spectral-Locale 𝓤 =
  Σ X ꞉ Locale (𝓤 ⁺) 𝓤 𝓤 , is-spectral-with-small-basis ua X holds
+
+\end{code}
+
+\begin{code}
 
 spec-dlat-equivalence : (𝓤 : Universe) → Spectral-Locale 𝓤 ≃ DistributiveLattice 𝓤
 spec-dlat-equivalence 𝓤 = sec , qinvs-are-equivs sec γ
@@ -1167,8 +1149,8 @@ spec-dlat-equivalence 𝓤 = sec , qinvs-are-equivs sec γ
     where
      open OtherDirection L
 
-     goal : ⦅_⦆ᶜ (spectrum L) 𝕤 ≅d≅ L
-     goal = spec-isomorphism
+     goal : 𝒦⁻-spec-L ≅d≅ L
+     goal = ≅d-sym L 𝒦⁻-spec-L spec-isomorphism
 
   γ : qinv sec
   γ = ret , † , ‡
