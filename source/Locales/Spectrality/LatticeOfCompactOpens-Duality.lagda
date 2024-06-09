@@ -1072,6 +1072,26 @@ The principal ideal map is an embedding.
 
 \begin{code}
 
+ open HomomorphicEquivalences L 𝒦⁻-spec-L
+
+ to-𝒦-spec-L-is-a-homomorphic-equivalence
+  : is-homomorphic L-equivalent-to-𝒦⁻-spec-L holds
+ to-𝒦-spec-L-is-a-homomorphic-equivalence = † , ‡
+  where
+   † : is-monotonic (poset-ofᵈ L) (poset-ofᵈ 𝒦⁻-spec-L) to-𝒦-spec-L holds
+   † = meet-preserving-implies-monotone
+        L
+        𝒦⁻-spec-L
+        to-𝒦-spec-L
+        to-𝒦-spec-L-preserves-∧
+
+   ‡ : is-monotonic (poset-ofᵈ 𝒦⁻-spec-L) (poset-ofᵈ L) to-lattice₀ holds
+   ‡ = to-lattice₀-is-monotone
+
+\end{code}
+
+\begin{code}
+
  to-lattice-is-homomorphism : is-homomorphismᵈ 𝒦⁻-spec-L L to-lattice₀ holds
  to-lattice-is-homomorphism = {!!} , {!!}
 
