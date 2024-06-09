@@ -1031,20 +1031,54 @@ The principal ideal map is an embedding.
     goal′′ : ↓ to-lattice₀ (s (↓ₖ x)) ＝ ↓ x
     goal′′ = pr₁ (from-Σ-＝ goal′)
 
--- to-lattice₀-lemma : (K : ∣ 𝒦⁻-spec-L ∣ᵈ) → K ＝ s (↓ₖ (to-lattice₀ K))
+\end{code}
+
+\begin{code}
+
+ to-𝒦-spec-L-cancels-to-lattice : to-𝒦-spec-L ∘ to-lattice₀ ∼ id
+ to-𝒦-spec-L-cancels-to-lattice K =
+  to-𝒦-spec-L (to-lattice₀ K)    ＝⟨ refl ⟩
+  s (↓ₖ (to-lattice₀ K))         ＝⟨ †    ⟩
+  K                              ∎
+   where
+    † = to-lattice₀-lemma K ⁻¹
 
 \end{code}
 
-{--
+\begin{code}
+
+ L-equivalent-to-𝒦⁻-spec-L : ∣ L ∣ᵈ ≃ ∣ 𝒦⁻-spec-L ∣ᵈ
+ L-equivalent-to-𝒦⁻-spec-L = to-𝒦-spec-L , qinvs-are-equivs to-𝒦-spec-L †
+  where
+   Ⅰ : to-lattice₀ ∘ to-𝒦-spec-L ∼ id
+   Ⅰ = to-lattice-cancels-to-𝒦-spec-L
+
+   Ⅱ : to-𝒦-spec-L ∘ to-lattice₀ ∼ id
+   Ⅱ = to-𝒦-spec-L-cancels-to-lattice
+
+   † : qinv to-𝒦-spec-L
+   † = to-lattice₀ , Ⅰ , Ⅱ
+
+\end{code}
+
+\begin{code}
 
  to-lattice-is-homomorphism : is-homomorphismᵈ 𝒦⁻-spec-L L to-lattice₀ holds
  to-lattice-is-homomorphism = {!!} , {!!}
+
+\end{code}
+
+\begin{code}
 
  to-lattice : 𝒦⁻-spec-L ─d→ L
  to-lattice = record
                { h                 = to-lattice₀
                ; h-is-homomorphism = to-lattice-is-homomorphism
                }
+
+\end{code}
+
+{--
 
  to-spectrum-is-a-homomorphism : is-homomorphismᵈ L 𝒦⁻-spec-L to-spectrum₀ holds
  to-spectrum-is-a-homomorphism = {!!}
