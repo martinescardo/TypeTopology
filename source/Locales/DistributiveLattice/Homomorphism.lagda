@@ -169,3 +169,26 @@ to-homomorphismᵈ-＝ K L 𝒽₁ 𝒽₂ φ = † (dfunext fe φ)
          h₂-is-homomorphism
 
 \end{code}
+
+Added on 2024-06-09.
+
+\begin{code}
+
+meet-preserving-implies-monotone
+ : (K L : DistributiveLattice 𝓤)
+ → (f : ∣ K ∣ᵈ → ∣ L ∣ᵈ)
+ → (preserves-∧ K L f ⇒ is-monotonic (poset-ofᵈ K) (poset-ofᵈ L) f) holds
+meet-preserving-implies-monotone K L f φ (x , y) p =
+ f x ∧₂ f y    ＝⟨ Ⅰ ⟩
+ f (x ∧₁ y)    ＝⟨ Ⅱ ⟩
+ f x           ∎
+  where
+   open DistributiveLattice K renaming (_∧_ to _∧₁_)
+   open DistributiveLattice L renaming (_∧_ to _∧₂_)
+
+   Ⅰ = φ x y ⁻¹
+   Ⅱ = ap f p
+
+\end{code}
+
+End of addition.
