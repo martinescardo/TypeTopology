@@ -84,3 +84,26 @@ Transport lemma for distributive lattices.
    † = isomorphic-distributive-lattices-are-equal K L iso
 
 \end{code}
+
+Added on 2024-06-09.
+
+Distributive lattice isomorphisms are symmetric.
+
+\begin{code}
+
+≅d-sym : (K : DistributiveLattice 𝓤)
+       → (L : DistributiveLattice 𝓥)
+       → K ≅d≅ L → L ≅d≅ K
+≅d-sym K L 𝒾 =
+ record
+  { 𝓈           = 𝓇 𝒾
+  ; 𝓇           = 𝓈 𝒾
+  ; r-cancels-s = s-cancels-r 𝒾
+  ; s-cancels-r = r-cancels-s 𝒾
+  }
+   where
+    open DistributiveLatticeIsomorphisms.Isomorphismᵈᵣ
+
+\end{code}
+
+End of addition.
