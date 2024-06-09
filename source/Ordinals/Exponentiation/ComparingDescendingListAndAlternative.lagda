@@ -174,93 +174,105 @@ more-precise-embed-is-id α β a b ((a' , b' , p') ∷ l) ε δ =
 \end{code}
 
 \begin{code}
-[𝟙+]^-↓-lemma : (α : Ordinal 𝓤) (β : Ordinal 𝓤)
-                (a : ⟨ α ⟩) (b : ⟨ β ⟩) (l : List ⟨ α ×ₒ β ⟩)
-                (δ : is-decreasing-pr₂ α β ((a , b) ∷ l))
-              → (([𝟙+ α ]^ β) ↓ (((a , b) ∷ l) , δ)) ≃ₒ
-                ((([𝟙+ α ]^ (β ↓ b)) ×ₒ (𝟙ₒ +ₒ (α ↓ a))) +ₒ (([𝟙+ α ]^ (β ↓ b)) ↓ more-precise-tail-pair α β a b l δ))
-[𝟙+]^-↓-lemma α β a b l δ = {!!}
- where
-  f : ⟨ ([𝟙+ α ]^ β) ↓ (((a , b) ∷ l) , δ) ⟩ →
-                 ⟨ (([𝟙+ α ]^ (β ↓ b)) ×ₒ (𝟙ₒ +ₒ (α ↓ a))) +ₒ (([𝟙+ α ]^ (β ↓ b)) ↓ more-precise-tail-pair α β a b l δ) ⟩
-  f (([] , _) , p) = inl (([] , []-decr) , inl ⋆)
-  f ((((a' , b') ∷ l') , ε) , head-lex (inl p)) =
-   let
-    ε' = is-decreasing-skip-one (underlying-order β) (Transitivity β) b b' (map pr₂ l') ε p
-    l'' = more-precise-tail-pair α β a b l' ε'
-   in
-    inl ((((a' , (b' , p)) ∷ pr₁ l'') , b'l''-decreasing l' a' b' p ε) , (inl ⋆))
-   where
-    b'l''-decreasing : ∀ l' a' b' p ε → is-decreasing-pr₂ α (β ↓ b) (a' , (b' , p) ∷ pr₁ (more-precise-tail-pair α β a b l' (is-decreasing-skip-one (pr₁ (pr₂ β)) (Transitivity β) b b' (map (λ r → pr₂ r) l') ε p)))
-    b'l''-decreasing [] a' b' p ε = sing-decr
-    b'l''-decreasing (a'' , b'' ∷ l'') a' b' p (many-decr p'' ε'') = many-decr p'' (b'l''-decreasing l'' a'' b'' (Transitivity β _ _ _ p'' p) ε'')
-  f ((((a' , b) ∷ l') , ε) , head-lex (inr (refl , p))) = inl (more-precise-tail-pair α β a b l' ε , inr (a' , p))
-  f ((((a , b) ∷ l') , ε) , tail-lex refl p) = inr (more-precise-tail-pair α β a b l' ε , more-precise-tail-order-preserving α β a b l' ε l δ p)
 
-  f-is-order-preserving : is-order-preserving (([𝟙+ α ]^ β) ↓ ((a , b ∷ l) , δ))
-                                              ((([𝟙+ α ]^ (β ↓ b)) ×ₒ (𝟙ₒ +ₒ (α ↓ a))) +ₒ (([𝟙+ α ]^ (β ↓ b)) ↓ more-precise-tail-pair α β a b l δ))
-                                              f
-  f-is-order-preserving (([] , pr₄) , i) (((x ∷ pr₅) , pr₆) , head-lex (inl _)) u = inr (refl , []-lex)
-  f-is-order-preserving (([] , pr₄) , i) (((x ∷ pr₅) , pr₆) , head-lex (inr (refl , p))) u = inl ⋆
-  f-is-order-preserving (([] , pr₄) , i) (((x ∷ pr₅) , pr₆) , tail-lex refl j) u = ⋆
-  f-is-order-preserving (((x ∷ pr₃) , pr₄) , head-lex (inl y)) (((x₁ ∷ pr₅) , pr₆) , head-lex (inl w)) (head-lex (inl v)) = inr (refl , head-lex (inl v))
-  f-is-order-preserving (((x ∷ pr₃) , pr₄) , head-lex (inl y)) (((x₁ ∷ pr₅) , pr₆) , head-lex (inl w)) (head-lex (inr (refl , v))) = inr (refl , head-lex (inr (to-subtype-＝ (λ - → Prop-valuedness β - b) refl , v)))
-  f-is-order-preserving (((x ∷ pr₃) , pr₄) , head-lex (inl y)) (((x₁ ∷ pr₅) , pr₆) , head-lex (inl w)) (tail-lex refl u) = inr (refl , tail-lex (ap₂ _,_ refl (to-subtype-＝ ((λ - → Prop-valuedness β - b)) refl)) (more-precise-tail-order-preserving α β a b pr₃ _ pr₅ _ u))
-  f-is-order-preserving (((x ∷ pr₃) , pr₄) , head-lex (inl y)) (((x₁ ∷ pr₅) , pr₆) , head-lex (inr (refl , q))) u = inl ⋆
-  f-is-order-preserving (((x ∷ pr₃) , pr₄) , head-lex (inr (refl , p))) (((x₁ ∷ pr₅) , pr₆) , head-lex (inl w)) (head-lex (inl u)) = 𝟘-elim (irrefl β (pr₂ x) (Transitivity β _ _ _ u w))
-  f-is-order-preserving (((x ∷ pr₃) , pr₄) , head-lex (inr (refl , p))) (((x₁ ∷ pr₅) , pr₆) , head-lex (inl w)) (head-lex (inr (refl , v))) = 𝟘-elim (irrefl β _ w)
-  f-is-order-preserving (((x ∷ pr₃) , pr₄) , head-lex (inr (refl , p))) (((x₁ ∷ pr₅) , pr₆) , head-lex (inl w)) (tail-lex refl u) = 𝟘-elim (irrefl β _ w)
-  f-is-order-preserving (((pr₇ , .(pr₂ x₁) ∷ pr₃) , pr₄) , head-lex (inr (refl , p))) (((x₁ ∷ pr₅) , pr₆) , head-lex (inr (refl , q))) (head-lex (inl u)) = 𝟘-elim (irrefl β _ u)
-  f-is-order-preserving (((pr₇ , .(pr₂ x₁) ∷ pr₃) , pr₄) , head-lex (inr (refl , p))) (((x₁ ∷ pr₅) , pr₆) , head-lex (inr (refl , q))) (head-lex (inr (e , v))) = inl v
-  f-is-order-preserving (((pr₇ , .(pr₂ x₁) ∷ pr₃) , pr₄) , head-lex (inr (refl , p))) (((x₁ ∷ pr₅) , pr₆) , head-lex (inr (refl , q))) (tail-lex e u) = inr ((ap inr (to-subtype-＝ (λ - → Prop-valuedness α - a) (ap pr₁ e))) , (more-precise-tail-order-preserving α β a b pr₃ _ pr₅ _ u))
-  f-is-order-preserving (((x ∷ pr₃) , pr₄) , head-lex (inl y)) (((x₁ ∷ pr₅) , pr₆) , tail-lex refl j) u = ⋆
-  f-is-order-preserving (((x ∷ pr₃) , pr₄) , head-lex (inr (refl , p))) (((x₁ ∷ pr₅) , pr₆) , tail-lex refl j) u = ⋆
-  f-is-order-preserving (((.(a , b) ∷ pr₃) , pr₄) , tail-lex refl i) (((x₁ ∷ pr₅) , pr₆) , head-lex (inl v)) (head-lex (inl u)) = 𝟘-elim (irrefl β _ (Transitivity β _ _ _ u v))
-  f-is-order-preserving (((.(a , b) ∷ pr₃) , pr₄) , tail-lex refl i) (((x₁ ∷ pr₅) , pr₆) , head-lex (inl v)) (head-lex (inr (refl , q))) = 𝟘-elim (irrefl β _ v)
-  f-is-order-preserving (((.(a , b) ∷ pr₃) , pr₄) , tail-lex refl i) (((x₁ ∷ pr₅) , pr₆) , head-lex (inl v)) (tail-lex refl u) = 𝟘-elim (irrefl β _ v)
-  f-is-order-preserving (((.(a , b) ∷ pr₃) , pr₄) , tail-lex refl i) (((x₁ ∷ pr₅) , pr₆) , head-lex (inr (refl , q))) (head-lex (inl u)) = 𝟘-elim (irrefl β _ u)
-  f-is-order-preserving (((.(a , b) ∷ pr₃) , pr₄) , tail-lex refl i) (((x₁ ∷ pr₅) , pr₆) , head-lex (inr (refl , q))) (head-lex (inr (e , r))) = 𝟘-elim (irrefl α _ (Transitivity α _ _ _ q r))
-  f-is-order-preserving (((.(a , b) ∷ pr₃) , pr₄) , tail-lex refl i) (((x₁ ∷ pr₅) , pr₆) , head-lex (inr (refl , q))) (tail-lex e u) = 𝟘-elim (irrefl α a (transport⁻¹ (λ - → - ≺⟨ α ⟩ a) (ap pr₁ e) q))
-  f-is-order-preserving (((.(a , b) ∷ pr₃) , pr₄) , tail-lex refl i) (((.(a , b) ∷ pr₅) , pr₆) , tail-lex refl j) (head-lex (inl u)) = 𝟘-elim (irrefl β _ u)
-  f-is-order-preserving (((.(a , b) ∷ pr₃) , pr₄) , tail-lex refl i) (((.(a , b) ∷ pr₅) , pr₆) , tail-lex refl j) (head-lex (inr (e , q))) = 𝟘-elim (irrefl α _ q)
-  f-is-order-preserving (((.(a , b) ∷ pr₃) , pr₄) , tail-lex refl i) (((.(a , b) ∷ pr₅) , pr₆) , tail-lex refl j) (tail-lex _ u) = more-precise-tail-order-preserving α β a b _ _ _ _ u
+open import UF.Equiv
 
-{-
-  g : ⟨ (([𝟙+ α ]^ (β ↓ b)) ×ₒ (𝟙ₒ +ₒ (α ↓ a))) +ₒ (([𝟙+ α ]^ (β ↓ b)) ↓ more-precise-tail-pair α β a b l δ) ⟩
-            → ⟨ ([𝟙+ α ]^ β) ↓ (((a , b) ∷ l) , δ) ⟩
-  g (inl (l' , inl ⋆)) = embed α β b l' , embed-below-lists-starting-b α β a b l' l δ
-  g (inl (l' , inr (a' , q))) = (((a' , b) ∷ pr₁ (embed α β b l')) , embed-decreasing α β b l') , head-lex (inr (refl , q))
-  g (inr (l' , l'-below-l)) = (((a , b) ∷ pr₁ (embed α β b l')) , embed-decreasing α β b l') , tail-lex refl embedl'-below-l
-   where
-    embedl'-below-l : (pr₁ (embed α β b l')) ≺⟨List (α ×ₒ β) ⟩ l
-    embedl'-below-l = transport (λ - → (pr₁ (embed α β b l')) ≺⟨List (α ×ₒ β) ⟩ - )
-                                (embed-more-precise-is-id α β a b l δ)
-                                (embed-order-preserving α β b _ (more-precise-tail-pair α β a b l δ) l'-below-l)
+abstract
+ [𝟙+]^-↓-lemma : (α : Ordinal 𝓤) (β : Ordinal 𝓤)
+                 (a : ⟨ α ⟩) (b : ⟨ β ⟩) (l : List ⟨ α ×ₒ β ⟩)
+                 (δ : is-decreasing-pr₂ α β ((a , b) ∷ l))
+               → (([𝟙+ α ]^ β) ↓ (((a , b) ∷ l) , δ)) ≃ₒ
+                 ((([𝟙+ α ]^ (β ↓ b)) ×ₒ (𝟙ₒ +ₒ (α ↓ a))) +ₒ (([𝟙+ α ]^ (β ↓ b)) ↓ more-precise-tail-pair α β a b l δ))
+ [𝟙+]^-↓-lemma α β a b l δ = f , f-is-order-preserving , qinvs-are-equivs f (g , gf-is-id , fg-is-id) , g-is-order-preserving
+  where
+   f : ⟨ ([𝟙+ α ]^ β) ↓ (((a , b) ∷ l) , δ) ⟩ →
+                  ⟨ (([𝟙+ α ]^ (β ↓ b)) ×ₒ (𝟙ₒ +ₒ (α ↓ a))) +ₒ (([𝟙+ α ]^ (β ↓ b)) ↓ more-precise-tail-pair α β a b l δ) ⟩
+   f (([] , _) , p) = inl (([] , []-decr) , inl ⋆)
+   f ((((a' , b') ∷ l') , ε) , head-lex (inl p)) =
+    let
+     ε' = is-decreasing-skip-one (underlying-order β) (Transitivity β) b b' (map pr₂ l') ε p
+     l'' = more-precise-tail-pair α β a b l' ε'
+    in
+     inl ((((a' , (b' , p)) ∷ pr₁ l'') , b'l''-decreasing l' a' b' p ε) , (inl ⋆))
+    where
+     b'l''-decreasing : ∀ l' a' b' p ε → is-decreasing-pr₂ α (β ↓ b) (a' , (b' , p) ∷ pr₁ (more-precise-tail-pair α β a b l' (is-decreasing-skip-one (pr₁ (pr₂ β)) (Transitivity β) b b' (map (λ r → pr₂ r) l') ε p)))
+     b'l''-decreasing [] a' b' p ε = sing-decr
+     b'l''-decreasing (a'' , b'' ∷ l'') a' b' p (many-decr p'' ε'') = many-decr p'' (b'l''-decreasing l'' a'' b'' (Transitivity β _ _ _ p'' p) ε'')
+   f ((((a' , b) ∷ l') , ε) , head-lex (inr (refl , p))) = inl (more-precise-tail-pair α β a b l' ε , inr (a' , p))
+   f ((((a , b) ∷ l') , ε) , tail-lex refl p) = inr (more-precise-tail-pair α β a b l' ε , more-precise-tail-order-preserving α β a b l' ε l δ p)
 
-  fg-is-id : ∀ x → f (g x) ＝ x
-  fg-is-id (inl (([] , []-decr) , inl ⋆)) = refl
-  fg-is-id (inl ((((a' , b') ∷ l') , ε) , inl ⋆)) =
-   ap (λ z → (inl (z , inl ⋆)))
-      (to-exponential-＝ α (β ↓ b) (ap ((a' , b') ∷_)
-                                       (more-precise-embed-is-id α β a b l' (is-decreasing-tail (underlying-order (β ↓ b)) ε) _)))
-  fg-is-id (inl ((l' , ε') , inr (a' , q))) = ap (λ z → inl (z , inr (a' , q))) (to-exponential-＝ α (β ↓ b) (more-precise-embed-is-id α β a b l' ε' _))
-  fg-is-id (inr ((l' , ε') , l'-below-l)) = ap inr (to-subtype-＝ (λ x → Prop-valuedness ([𝟙+ α ]^ (β ↓ b)) x _) (to-exponential-＝ α (β ↓ b) (more-precise-embed-is-id α β a b l' ε' _)))
+   f-is-order-preserving : is-order-preserving (([𝟙+ α ]^ β) ↓ ((a , b ∷ l) , δ))
+                                               ((([𝟙+ α ]^ (β ↓ b)) ×ₒ (𝟙ₒ +ₒ (α ↓ a))) +ₒ (([𝟙+ α ]^ (β ↓ b)) ↓ more-precise-tail-pair α β a b l δ))
+                                               f
+   f-is-order-preserving (([] , pr₄) , i) (((x ∷ pr₅) , pr₆) , head-lex (inl _)) u = inr (refl , []-lex)
+   f-is-order-preserving (([] , pr₄) , i) (((x ∷ pr₅) , pr₆) , head-lex (inr (refl , p))) u = inl ⋆
+   f-is-order-preserving (([] , pr₄) , i) (((x ∷ pr₅) , pr₆) , tail-lex refl j) u = ⋆
+   f-is-order-preserving (((x ∷ pr₃) , pr₄) , head-lex (inl y)) (((x₁ ∷ pr₅) , pr₆) , head-lex (inl w)) (head-lex (inl v)) = inr (refl , head-lex (inl v))
+   f-is-order-preserving (((x ∷ pr₃) , pr₄) , head-lex (inl y)) (((x₁ ∷ pr₅) , pr₆) , head-lex (inl w)) (head-lex (inr (refl , v))) = inr (refl , head-lex (inr (to-subtype-＝ (λ - → Prop-valuedness β - b) refl , v)))
+   f-is-order-preserving (((x ∷ pr₃) , pr₄) , head-lex (inl y)) (((x₁ ∷ pr₅) , pr₆) , head-lex (inl w)) (tail-lex refl u) = inr (refl , tail-lex (ap₂ _,_ refl (to-subtype-＝ ((λ - → Prop-valuedness β - b)) refl)) (more-precise-tail-order-preserving α β a b pr₃ _ pr₅ _ u))
+   f-is-order-preserving (((x ∷ pr₃) , pr₄) , head-lex (inl y)) (((x₁ ∷ pr₅) , pr₆) , head-lex (inr (refl , q))) u = inl ⋆
+   f-is-order-preserving (((x ∷ pr₃) , pr₄) , head-lex (inr (refl , p))) (((x₁ ∷ pr₅) , pr₆) , head-lex (inl w)) (head-lex (inl u)) = 𝟘-elim (irrefl β (pr₂ x) (Transitivity β _ _ _ u w))
+   f-is-order-preserving (((x ∷ pr₃) , pr₄) , head-lex (inr (refl , p))) (((x₁ ∷ pr₅) , pr₆) , head-lex (inl w)) (head-lex (inr (refl , v))) = 𝟘-elim (irrefl β _ w)
+   f-is-order-preserving (((x ∷ pr₃) , pr₄) , head-lex (inr (refl , p))) (((x₁ ∷ pr₅) , pr₆) , head-lex (inl w)) (tail-lex refl u) = 𝟘-elim (irrefl β _ w)
+   f-is-order-preserving (((pr₇ , .(pr₂ x₁) ∷ pr₃) , pr₄) , head-lex (inr (refl , p))) (((x₁ ∷ pr₅) , pr₆) , head-lex (inr (refl , q))) (head-lex (inl u)) = 𝟘-elim (irrefl β _ u)
+   f-is-order-preserving (((pr₇ , .(pr₂ x₁) ∷ pr₃) , pr₄) , head-lex (inr (refl , p))) (((x₁ ∷ pr₅) , pr₆) , head-lex (inr (refl , q))) (head-lex (inr (e , v))) = inl v
+   f-is-order-preserving (((pr₇ , .(pr₂ x₁) ∷ pr₃) , pr₄) , head-lex (inr (refl , p))) (((x₁ ∷ pr₅) , pr₆) , head-lex (inr (refl , q))) (tail-lex e u) = inr ((ap inr (to-subtype-＝ (λ - → Prop-valuedness α - a) (ap pr₁ e))) , (more-precise-tail-order-preserving α β a b pr₃ _ pr₅ _ u))
+   f-is-order-preserving (((x ∷ pr₃) , pr₄) , head-lex (inl y)) (((x₁ ∷ pr₅) , pr₆) , tail-lex refl j) u = ⋆
+   f-is-order-preserving (((x ∷ pr₃) , pr₄) , head-lex (inr (refl , p))) (((x₁ ∷ pr₅) , pr₆) , tail-lex refl j) u = ⋆
+   f-is-order-preserving (((.(a , b) ∷ pr₃) , pr₄) , tail-lex refl i) (((x₁ ∷ pr₅) , pr₆) , head-lex (inl v)) (head-lex (inl u)) = 𝟘-elim (irrefl β _ (Transitivity β _ _ _ u v))
+   f-is-order-preserving (((.(a , b) ∷ pr₃) , pr₄) , tail-lex refl i) (((x₁ ∷ pr₅) , pr₆) , head-lex (inl v)) (head-lex (inr (refl , q))) = 𝟘-elim (irrefl β _ v)
+   f-is-order-preserving (((.(a , b) ∷ pr₃) , pr₄) , tail-lex refl i) (((x₁ ∷ pr₅) , pr₆) , head-lex (inl v)) (tail-lex refl u) = 𝟘-elim (irrefl β _ v)
+   f-is-order-preserving (((.(a , b) ∷ pr₃) , pr₄) , tail-lex refl i) (((x₁ ∷ pr₅) , pr₆) , head-lex (inr (refl , q))) (head-lex (inl u)) = 𝟘-elim (irrefl β _ u)
+   f-is-order-preserving (((.(a , b) ∷ pr₃) , pr₄) , tail-lex refl i) (((x₁ ∷ pr₅) , pr₆) , head-lex (inr (refl , q))) (head-lex (inr (e , r))) = 𝟘-elim (irrefl α _ (Transitivity α _ _ _ q r))
+   f-is-order-preserving (((.(a , b) ∷ pr₃) , pr₄) , tail-lex refl i) (((x₁ ∷ pr₅) , pr₆) , head-lex (inr (refl , q))) (tail-lex e u) = 𝟘-elim (irrefl α a (transport⁻¹ (λ - → - ≺⟨ α ⟩ a) (ap pr₁ e) q))
+   f-is-order-preserving (((.(a , b) ∷ pr₃) , pr₄) , tail-lex refl i) (((.(a , b) ∷ pr₅) , pr₆) , tail-lex refl j) (head-lex (inl u)) = 𝟘-elim (irrefl β _ u)
+   f-is-order-preserving (((.(a , b) ∷ pr₃) , pr₄) , tail-lex refl i) (((.(a , b) ∷ pr₅) , pr₆) , tail-lex refl j) (head-lex (inr (e , q))) = 𝟘-elim (irrefl α _ q)
+   f-is-order-preserving (((.(a , b) ∷ pr₃) , pr₄) , tail-lex refl i) (((.(a , b) ∷ pr₅) , pr₆) , tail-lex refl j) (tail-lex _ u) = more-precise-tail-order-preserving α β a b _ _ _ _ u
 
-  gf-is-id : ∀ x → g (f x) ＝ x
-  gf-is-id (([] , []-decr) , []-lex) = refl
-  gf-is-id ((((a' , b') ∷ l') , ε) , head-lex (inl p)) = to-subtype-＝ (λ x → Prop-valuedness _ x _) (to-exponential-＝ α β (ap ((a' , b') ∷_) (embed-more-precise-is-id α β a b l' _)))
-  gf-is-id ((((a' , b) ∷ l') , ε) , head-lex (inr (refl , p))) = to-subtype-＝ (λ x → Prop-valuedness _ x _) (to-exponential-＝ α β ((ap ((a' , b) ∷_) (embed-more-precise-is-id α β a b l' _))))
-  gf-is-id ((((a , b) ∷ l') , ε) , tail-lex refl p) = to-subtype-＝ (λ x → Prop-valuedness _ x _) (to-exponential-＝ α β ((ap ((a , b) ∷_) (embed-more-precise-is-id α β a b l' _))))
--}
+   g : ⟨ (([𝟙+ α ]^ (β ↓ b)) ×ₒ (𝟙ₒ +ₒ (α ↓ a))) +ₒ (([𝟙+ α ]^ (β ↓ b)) ↓ more-precise-tail-pair α β a b l δ) ⟩
+             → ⟨ ([𝟙+ α ]^ β) ↓ (((a , b) ∷ l) , δ) ⟩
+   g (inl (l' , inl ⋆)) = embed α β b l' , embed-below-lists-starting-b α β a b l' l δ
+   g (inl (l' , inr (a' , q))) = (((a' , b) ∷ pr₁ (embed α β b l')) , embed-decreasing α β b l') , head-lex (inr (refl , q))
+   g (inr (l' , l'-below-l)) = (((a , b) ∷ pr₁ (embed α β b l')) , embed-decreasing α β b l') , tail-lex refl embedl'-below-l
+    where
+     embedl'-below-l : (pr₁ (embed α β b l')) ≺⟨List (α ×ₒ β) ⟩ l
+     embedl'-below-l = transport (λ - → (pr₁ (embed α β b l')) ≺⟨List (α ×ₒ β) ⟩ - )
+                                 (embed-more-precise-is-id α β a b l δ)
+                                 (embed-order-preserving α β b _ (more-precise-tail-pair α β a b l δ) l'-below-l)
 
+   g-is-order-preserving : is-order-preserving ((([𝟙+ α ]^ (β ↓ b)) ×ₒ (𝟙ₒ +ₒ (α ↓ a))) +ₒ (([𝟙+ α ]^ (β ↓ b)) ↓ more-precise-tail-pair α β a b l δ))
+                                               (([𝟙+ α ]^ β) ↓ ((a , b ∷ l) , δ))
+                                               g
+   g-is-order-preserving (inl (l , inl ⋆)) (inl (l' , inl ⋆)) (inr (refl , u)) = embed-order-preserving α β b l l' u
+   g-is-order-preserving (inl (l , inl ⋆)) (inl (l' , inr (a' , j))) u = embed-below-lists-starting-b α β a' b l (pr₁ (embed α β b l')) (embed-decreasing α β b l')
+   g-is-order-preserving (inl (l , inr (a' , i))) (inl (l' , inl ⋆)) (inr (e , u)) = 𝟘-elim (+disjoint (e ⁻¹))
+   g-is-order-preserving (inl (l , inr (a' , i))) (inl (l' , inr (a'' , j))) (inl u) = head-lex (inr (refl , u))
+   g-is-order-preserving (inl (l , inr (a' , i))) (inl (l' , inr (a'' , j))) (inr (refl , v)) = tail-lex refl (embed-order-preserving α β b l l' v)
+   g-is-order-preserving (inl (l , inl ⋆)) (inr (l' , v)) _ = embed-below-lists-starting-b α β a b l (pr₁ (embed α β b l')) (embed-decreasing α β b l')
+   g-is-order-preserving (inl (l , inr (a' , i))) (inr (l' , v)) _ = head-lex (inr (refl , i))
+   g-is-order-preserving (inr (l , v)) (inr (l' , v')) u = tail-lex refl (embed-order-preserving α β b l l' u)
 
-{-
+   fg-is-id : ∀ x → f (g x) ＝ x
+   fg-is-id (inl (([] , []-decr) , inl ⋆)) = refl
+   fg-is-id (inl ((((a' , b') ∷ l') , ε) , inl ⋆)) =
+    ap (λ z → (inl (z , inl ⋆)))
+       (to-exponential-＝ α (β ↓ b) (ap ((a' , b') ∷_)
+                                        (more-precise-embed-is-id α β a b l' (is-decreasing-tail (underlying-order (β ↓ b)) ε) _)))
+   fg-is-id (inl ((l' , ε') , inr (a' , q))) = ap (λ z → inl (z , inr (a' , q))) (to-exponential-＝ α (β ↓ b) (more-precise-embed-is-id α β a b l' ε' _))
+   fg-is-id (inr ((l' , ε') , l'-below-l)) = ap inr (to-subtype-＝ (λ x → Prop-valuedness ([𝟙+ α ]^ (β ↓ b)) x _) (to-exponential-＝ α (β ↓ b) (more-precise-embed-is-id α β a b l' ε' _)))
+
+   gf-is-id : ∀ x → g (f x) ＝ x
+   gf-is-id (([] , []-decr) , []-lex) = refl
+   gf-is-id ((((a' , b') ∷ l') , ε) , head-lex (inl p)) = to-subtype-＝ (λ x → Prop-valuedness _ x _) (to-exponential-＝ α β (ap ((a' , b') ∷_) (embed-more-precise-is-id α β a b l' _)))
+   gf-is-id ((((a' , b) ∷ l') , ε) , head-lex (inr (refl , p))) = to-subtype-＝ (λ x → Prop-valuedness _ x _) (to-exponential-＝ α β ((ap ((a' , b) ∷_) (embed-more-precise-is-id α β a b l' _))))
+   gf-is-id ((((a , b) ∷ l') , ε) , tail-lex refl p) = to-subtype-＝ (λ x → Prop-valuedness _ x _) (to-exponential-＝ α β ((ap ((a , b) ∷_) (embed-more-precise-is-id α β a b l' _))))
 
 ↓-eq-lemma : (α β : Ordinal 𝓤) (a : ⟨ α ⟩)
              (e : α ＝ β)
            → α ↓ a ＝ β ↓ Idtofun (ap ⟨_⟩ e) a
 ↓-eq-lemma α β a refl = refl
 
+{-
 -- TODO: Generalize universe levels later (first +ₒ should be made more general)
 amazing : (α : Ordinal 𝓤) (β : Ordinal 𝓤) → exp (𝟙ₒ +ₒ α) β ＝ [𝟙+ α ]^ β
 amazing {𝓤} α = transfinite-induction-on-OO _ I
