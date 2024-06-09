@@ -44,9 +44,9 @@ open import MLTT.Sigma
 open import MLTT.List
 
 open import Ordinals.Arithmetic fe
--- open import Ordinals.ArithmeticProperties ua
--- open import Ordinals.Equivalence
--- open import Ordinals.Maps
+open import Ordinals.ArithmeticProperties ua
+open import Ordinals.Equivalence
+open import Ordinals.Maps
 open import Ordinals.Notions
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.Type
@@ -108,15 +108,72 @@ more-precise-tail-order-preserving α β a₀ b₀ ((a , b) ∷ xs) (many-decr p
 more-precise-tail-order-preserving α β a₀ b₀ ((a , b) ∷ xs) (many-decr p ps) ((a , b) ∷ xs') (many-decr p' ps') (tail-lex refl q) =
  tail-lex (ap (a ,_) (to-subtype-＝ ((λ x → Prop-valuedness β x b₀)) refl)) (more-precise-tail-order-preserving α β a₀ b₀ xs _ xs' _ q)
 
-
-
 \end{code}
+
+Conversely, we can forget more precise bound information to embed back into the original type.
 
 \begin{code}
 
-open import Ordinals.Equivalence
-open import Ordinals.ArithmeticProperties ua
+project₂ : (α : Ordinal 𝓤) (β : Ordinal 𝓥) (b : ⟨ β ⟩) → ⟨ α ×ₒ (β ↓ b) ⟩ → ⟨ α ×ₒ β ⟩
+project₂ α β b (a , x) = (a , segment-inclusion β b x)
 
+project₂-preserves-decreasing : (α : Ordinal 𝓤) (β : Ordinal 𝓥) (b : ⟨ β ⟩)
+                              → (xs : List ⟨ α ×ₒ (β ↓ b) ⟩) → is-decreasing-pr₂ α (β ↓ b) xs → is-decreasing-pr₂ α β (map (project₂ α β b) xs)
+project₂-preserves-decreasing α β b [] _ = []-decr
+project₂-preserves-decreasing α β b ((a , x) ∷ []) _ = sing-decr
+project₂-preserves-decreasing α β b ((a , x) ∷ (a' , x') ∷ xs) (many-decr p δ) = many-decr p (project₂-preserves-decreasing α β b ((a' , x') ∷ xs) δ)
+
+embed : (α : Ordinal 𝓤) (β : Ordinal 𝓥) (b : ⟨ β ⟩) → ⟨ [𝟙+ α ]^ (β ↓ b) ⟩ → ⟨ [𝟙+ α ]^ β ⟩
+embed α β b (xs , δ) = map (project₂ α β b) xs , project₂-preserves-decreasing α β b xs δ
+
+embed-order-preserving : (α : Ordinal 𝓤) (β : Ordinal 𝓥) (b : ⟨ β ⟩) → is-order-preserving ([𝟙+ α ]^ (β ↓ b)) ([𝟙+ α ]^ β) (embed α β b)
+embed-order-preserving α β b ([] , pr₃) ((y ∷ ys) , ε) []-lex = []-lex
+embed-order-preserving α β b ((x ∷ xs) , δ) ((y ∷ ys) , ε) (head-lex (inl p)) = head-lex (inl p)
+embed-order-preserving α β b ((x ∷ xs) , δ) ((y ∷ ys) , ε) (head-lex (inr (refl , p))) = head-lex (inr (refl , p))
+embed-order-preserving α β b ((x ∷ xs) , δ) ((y ∷ ys) , ε) (tail-lex refl p) = tail-lex refl (embed-order-preserving α β b (xs , is-decreasing-tail _ δ) (ys , is-decreasing-tail _ ε) p)
+
+embed-below-b : (α : Ordinal 𝓤) (β : Ordinal 𝓥) (b : ⟨ β ⟩) → (xs : ⟨ [𝟙+ α ]^ (β ↓ b) ⟩)
+              → (y : ⟨ β ⟩) → member y (map pr₂ (underlying-list α β (embed α β b xs))) → y ≺⟨ β ⟩ b
+embed-below-b α β b (((a , (b' , p)) ∷ xs) , δ) y in-head = p
+embed-below-b α β b ((x ∷ xs) , δ) y (in-tail m) = embed-below-b α β b (xs , is-decreasing-tail _ δ) y m
+
+embed-below-lists-starting-b : (α : Ordinal 𝓤) (β : Ordinal 𝓥) (a : ⟨ α ⟩) (b : ⟨ β ⟩) → (xs : ⟨ [𝟙+ α ]^ (β ↓ b) ⟩)
+                             → (l : List ⟨ α ×ₒ β ⟩) → (δ : is-decreasing-pr₂  α β ((a , b) ∷ l))
+                             → embed α β b xs ≺⟨ [𝟙+ α ]^ β ⟩ (((a , b) ∷ l), δ)
+embed-below-lists-starting-b α β a b ([] , ε) l δ = []-lex
+embed-below-lists-starting-b α β a b (((a' , (b' , p')) ∷ xs) , ε) l δ = head-lex (inl p')
+
+embed-decreasing : (α : Ordinal 𝓤) (β : Ordinal 𝓥) (b : ⟨ β ⟩) → (l : ⟨ [𝟙+ α ]^ (β ↓ b) ⟩) → is-decreasing (underlying-order β) (b ∷ map pr₂ (pr₁ (embed α β b l)))
+embed-decreasing α β b ([] , δ) = sing-decr
+embed-decreasing α β b (((a' , (b' , p)) ∷ l) , δ) = many-decr p (project₂-preserves-decreasing α β b ((a' , (b' , p)) ∷ l) δ)
+
+embed-more-precise-is-id : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
+                           (a : ⟨ α ⟩) (b : ⟨ β ⟩) (l : List ⟨ α ×ₒ β ⟩)
+                           (δ : is-decreasing-pr₂ α β ((a , b) ∷ l))
+                         → pr₁ (embed α β b (more-precise-tail-pair α β a b l δ)) ＝ l
+embed-more-precise-is-id α β a b [] δ = refl
+embed-more-precise-is-id α β a b ((a' , b') ∷ l) δ =
+ ap ((a' , b') ∷_)
+    (embed-more-precise-is-id α β a b l (is-decreasing-skip-one (underlying-order β)
+                                                                (Transitivity β)
+                                                                b
+                                                                b'
+                                                                (map pr₂ l)
+                                                                (is-decreasing-tail (underlying-order β) δ)
+                                                                (is-decreasing-heads (underlying-order β) δ)))
+
+
+more-precise-embed-is-id : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
+                           (a : ⟨ α ⟩) (b : ⟨ β ⟩)
+                           (l : List ⟨ α ×ₒ (β ↓ b) ⟩) (ε : is-decreasing-pr₂ α (β ↓ b) l)
+                           (δ : is-decreasing-pr₂ α β (a , b ∷ pr₁ (embed α β b (l , ε))))
+                         → pr₁ (more-precise-tail-pair α β a b (pr₁ (embed α β b (l , ε))) δ)  ＝ l
+more-precise-embed-is-id α β a b [] []-decr δ = refl
+more-precise-embed-is-id α β a b ((a' , b' , p') ∷ l) ε δ =
+ ap₂ _∷_ (ap (a' ,_) (to-subtype-＝ (λ x → Prop-valuedness β x b) refl)) (more-precise-embed-is-id α β a b l (is-decreasing-tail (underlying-order (β ↓ b)) ε) _)
+\end{code}
+
+\begin{code}
 [𝟙+]^-↓-lemma : (α : Ordinal 𝓤) (β : Ordinal 𝓤)
                 (a : ⟨ α ⟩) (b : ⟨ β ⟩) (l : List ⟨ α ×ₒ β ⟩)
                 (δ : is-decreasing-pr₂ α β ((a , b) ∷ l))
@@ -138,7 +195,35 @@ open import Ordinals.ArithmeticProperties ua
     b'l''-decreasing [] a' b' p ε = sing-decr
     b'l''-decreasing (a'' , b'' ∷ l'') a' b' p (many-decr p'' ε'') = many-decr p'' (b'l''-decreasing l'' a'' b'' (Transitivity β _ _ _ p'' p) ε'')
   f ((((a' , b) ∷ l') , ε) , head-lex (inr (refl , p))) = inl (more-precise-tail-pair α β a b l' ε , inr (a' , p))
-  f ((((a' , b') ∷ l') , ε) , tail-lex refl p) = inr (more-precise-tail-pair α β a b' l' ε , more-precise-tail-order-preserving α β a b' l' ε l δ p)
+  f ((((a , b) ∷ l') , ε) , tail-lex refl p) = inr (more-precise-tail-pair α β a b l' ε , more-precise-tail-order-preserving α β a b l' ε l δ p)
+
+  g : ⟨ (([𝟙+ α ]^ (β ↓ b)) ×ₒ (𝟙ₒ +ₒ (α ↓ a))) +ₒ (([𝟙+ α ]^ (β ↓ b)) ↓ more-precise-tail-pair α β a b l δ) ⟩
+            → ⟨ ([𝟙+ α ]^ β) ↓ (((a , b) ∷ l) , δ) ⟩
+  g (inl (l' , inl ⋆)) = embed α β b l' , embed-below-lists-starting-b α β a b l' l δ
+  g (inl (l' , inr (a' , q))) = (((a' , b) ∷ pr₁ (embed α β b l')) , embed-decreasing α β b l') , head-lex (inr (refl , q))
+  g (inr (l' , l'-below-l)) = (((a , b) ∷ pr₁ (embed α β b l')) , embed-decreasing α β b l') , tail-lex refl embedl'-below-l
+   where
+    embedl'-below-l : (pr₁ (embed α β b l')) ≺⟨List (α ×ₒ β) ⟩ l
+    embedl'-below-l = transport (λ - → (pr₁ (embed α β b l')) ≺⟨List (α ×ₒ β) ⟩ - )
+                                (embed-more-precise-is-id α β a b l δ)
+                                (embed-order-preserving α β b _ (more-precise-tail-pair α β a b l δ) l'-below-l)
+
+  fg-is-id : ∀ x → f (g x) ＝ x
+  fg-is-id (inl (([] , []-decr) , inl ⋆)) = refl
+  fg-is-id (inl ((((a' , b') ∷ l') , ε) , inl ⋆)) =
+   ap (λ z → (inl (z , inl ⋆)))
+      (to-exponential-＝ α (β ↓ b) (ap ((a' , b') ∷_)
+                                       (more-precise-embed-is-id α β a b l' (is-decreasing-tail (underlying-order (β ↓ b)) ε) _)))
+  fg-is-id (inl ((l' , ε') , inr (a' , q))) = ap (λ z → inl (z , inr (a' , q))) (to-exponential-＝ α (β ↓ b) (more-precise-embed-is-id α β a b l' ε' _))
+  fg-is-id (inr ((l' , ε') , l'-below-l)) = ap inr (to-subtype-＝ (λ x → Prop-valuedness ([𝟙+ α ]^ (β ↓ b)) x _) (to-exponential-＝ α (β ↓ b) (more-precise-embed-is-id α β a b l' ε' _)))
+
+  gf-is-id : ∀ x → g (f x) ＝ x
+  gf-is-id (([] , []-decr) , []-lex) = refl
+  gf-is-id ((((a' , b') ∷ l') , ε) , head-lex (inl p)) = to-subtype-＝ (λ x → Prop-valuedness _ x _) (to-exponential-＝ α β (ap ((a' , b') ∷_) (embed-more-precise-is-id α β a b l' _)))
+  gf-is-id ((((a' , b) ∷ l') , ε) , head-lex (inr (refl , p))) = to-subtype-＝ (λ x → Prop-valuedness _ x _) (to-exponential-＝ α β ((ap ((a' , b) ∷_) (embed-more-precise-is-id α β a b l' _))))
+  gf-is-id ((((a , b) ∷ l') , ε) , tail-lex refl p) = to-subtype-＝ (λ x → Prop-valuedness _ x _) (to-exponential-＝ α β ((ap ((a , b) ∷_) (embed-more-precise-is-id α β a b l' _))))
+
+
 
 {-
 
