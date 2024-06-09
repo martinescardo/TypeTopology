@@ -1014,6 +1014,15 @@ The principal ideal map is an embedding.
    goal : to-lattice₀ (K₁ ∧· K₂) ＝ to-lattice₀ K₁ ∧L to-lattice₀ K₂
    goal = pr₁ (from-Σ-＝ (↓-is-embedding (↓ to-lattice₀ (K₁ ∧· K₂)) ((to-lattice₀ (K₁ ∧· K₂)) , refl) ((to-lattice₀ K₁ ∧L to-lattice₀ K₂) , (goal₂ ⁻¹))))
 
+ to-lattice₀-is-monotone
+  : is-monotonic (poset-ofᵈ 𝒦⁻-spec-L) (poset-ofᵈ L) to-lattice₀ holds
+ to-lattice₀-is-monotone =
+  meet-preserving-implies-monotone
+   𝒦⁻-spec-L
+   L
+   to-lattice₀
+   to-lattice-preserves-∧
+
 \end{code}
 
 \begin{code}
