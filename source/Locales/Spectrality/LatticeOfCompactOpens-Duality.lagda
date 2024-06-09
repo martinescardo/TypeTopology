@@ -1029,7 +1029,7 @@ The principal ideal map is an embedding.
     goal′ = equivs-are-lc s (⌜⌝-is-equiv (≃-sym e)) goal
 
     goal′′ : ↓ to-lattice₀ (s (↓ₖ x)) ＝ ↓ x
-    goal′′ = {!to-𝒦-＝ ? ? ? !}
+    goal′′ = pr₁ (from-Σ-＝ goal′)
 
 -- to-lattice₀-lemma : (K : ∣ 𝒦⁻-spec-L ∣ᵈ) → K ＝ s (↓ₖ (to-lattice₀ K))
 
