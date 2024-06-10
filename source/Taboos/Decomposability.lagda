@@ -21,6 +21,12 @@ Further additions 3rd August 2023.
 
 open import UF.Univalence
 
+\end{code}
+
+TODO. Get rid of a global assumption of univalence here:
+
+\begin{code}
+
 module Taboos.Decomposability (ua : Univalence) where
 
 open import MLTT.Spartan
@@ -360,9 +366,9 @@ type of ordinals gives a specific decomposition.
 
 \begin{code}
 
-module _ (pt : propositional-truncations-exist) where
+module decomposability (pt : propositional-truncations-exist) where
 
- open propositional-truncations-exist pt public
+ open PropositionalTruncation pt
 
  decomposable : 𝓤 ̇ → 𝓤 ̇
  decomposable X = ∥ decomposition X ∥
@@ -552,6 +558,51 @@ decomposition-of-ordinals-type-gives-WEM-bis {𝓤} =
 
 \end{code}
 
-More examples are included in Iterative.Multisets-Addendum and Iterative.Sets-Addendum.
+Added by Martin Escardo 10th June 2024. From any non-trivial,
+totally separated, injective type we get the double negation of the
+principle of weak excluded middle. Here by non-trivial we mean that
+not all two elements are equal, which means that the type is not a
+proposition.
+
+(Of course, "Σ" in the hypothesis can be replaced by "∃" because the
+type of the conclusion, being a negation, is a proposition.)
+
+\begin{code}
+
+open import UF.Hedberg using (wconstant)
+open import TypeTopology.TotallySeparated
+
+non-trivial-totally-separated-ainjective-type-gives-¬¬-WEM
+ : (Σ X ꞉ 𝓤 ̇ , ((¬ is-prop X) × is-totally-separated X × ainjective-type X 𝓥 𝓦))
+ → ¬¬ WEM 𝓥
+non-trivial-totally-separated-ainjective-type-gives-¬¬-WEM {𝓤} {𝓥} {𝓦} (X , ν , ts , a) = V
+ where
+  I : ¬ decomposition X → (p : X → 𝟚) → wconstant p
+  I ν p x₀ x₁ = h (p x₀) (p x₁) refl refl
+   where
+    h : (b₀ b₁ : 𝟚) → p x₀ ＝ b₀ → p x₁ ＝ b₁ → p x₀ ＝ p x₁
+    h ₀ ₀ e₀ e₁ = e₀ ∙ e₁ ⁻¹
+    h ₀ ₁ e₀ e₁ = 𝟘-elim (ν (p , (x₀ , e₀) , (x₁ , e₁)))
+    h ₁ ₀ e₀ e₁ = 𝟘-elim (ν (p , (x₁ , e₁) , (x₀ , e₀)))
+    h ₁ ₁ e₀ e₁ = e₀ ∙ e₁ ⁻¹
+
+  II : ((p : X → 𝟚) → wconstant p) → is-prop X
+  II w x₀ x₁ = ts (λ p → w p x₀ x₁)
+
+  III : ¬ decomposition X → is-prop X
+  III ν = II (I ν)
+
+  IV : ¬ is-prop X → ¬¬ decomposition X
+  IV = contrapositive III
+
+  V : ¬¬ WEM 𝓥
+  V = ¬¬-functor (decomposition-of-ainjective-type-gives-WEM X a) (IV ν)
 
 \end{code}
+
+Notice that ¬ WEM 𝓤 is consistent and hence ¬¬ WEM 𝓤 is not
+provable. But of course ¬¬ WEM 𝓤 is consistent as it follows from WEM 𝓤,
+which in turn follows from EM 𝓤.
+
+More examples are included in Iterative.Multisets-Addendum and
+Iterative.Sets-Addendum.
