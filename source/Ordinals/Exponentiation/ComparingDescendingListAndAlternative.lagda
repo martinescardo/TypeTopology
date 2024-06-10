@@ -267,12 +267,21 @@ abstract
    gf-is-id ((((a' , b) ∷ l') , ε) , head-lex (inr (refl , p))) = to-subtype-＝ (λ x → Prop-valuedness _ x _) (to-exponential-＝ α β ((ap ((a' , b) ∷_) (embed-more-precise-is-id α β a b l' _))))
    gf-is-id ((((a , b) ∷ l') , ε) , tail-lex refl p) = to-subtype-＝ (λ x → Prop-valuedness _ x _) (to-exponential-＝ α β ((ap ((a , b) ∷_) (embed-more-precise-is-id α β a b l' _))))
 
-↓-eq-lemma : (α β : Ordinal 𝓤) (a : ⟨ α ⟩)
-             (e : α ＝ β)
-           → α ↓ a ＝ β ↓ Idtofun (ap ⟨_⟩ e) a
-↓-eq-lemma α β a refl = refl
+abstract
+ [𝟙+]^-↓-lemma' : (α : Ordinal 𝓤) (β : Ordinal 𝓤)
+                  (a : ⟨ α ⟩) (b : ⟨ β ⟩) (l : List ⟨ α ×ₒ (β ↓ b) ⟩)
+                  (δ : is-decreasing-pr₂ α (β ↓ b) l)
+                → (([𝟙+ α ]^ β) ↓ (((a , b) ∷ pr₁ (embed α β b (l , δ))) , embed-decreasing α β b (l , δ))) ≃ₒ
+                  ((([𝟙+ α ]^ (β ↓ b)) ×ₒ (𝟙ₒ +ₒ (α ↓ a))) +ₒ (([𝟙+ α ]^ (β ↓ b)) ↓ (l , δ)))
+ [𝟙+]^-↓-lemma' α β a b l δ = {!!} -- derive from above, using that more-precise-tail and embed are inverses
 
-{-
+abstract
+ ↓-eq-lemma : (α β : Ordinal 𝓤) (a : ⟨ α ⟩)
+              (e : α ＝ β)
+            → α ↓ a ＝ β ↓ Idtofun (ap ⟨_⟩ e) a
+ ↓-eq-lemma α β a refl = refl
+
+
 -- TODO: Generalize universe levels later (first +ₒ should be made more general)
 amazing : (α : Ordinal 𝓤) (β : Ordinal 𝓤) → exp (𝟙ₒ +ₒ α) β ＝ [𝟙+ α ]^ β
 amazing {𝓤} α = transfinite-induction-on-OO _ I
@@ -292,7 +301,6 @@ amazing {𝓤} α = transfinite-induction-on-OO _ I
                                pr₁ (sup-is-upper-bound _ i) x ＝ Idtofun (ap ⟨_⟩ (exp-behaviour (𝟙ₒ +ₒ α) β)) e
                      → (exp (𝟙ₒ +ₒ α) β ↓ e) ⊲ ([𝟙+ α ]^ β)
       the-real-thing (inl _ , ⋆ , p) = {!!}
-       where
        {-
         foo : {!!}
         foo = (exp (𝟙ₒ +ₒ α) β ↓ e) ＝⟨ ↓-eq-lemma (exp (𝟙ₒ +ₒ α) β) (sup (cases (λ _ → 𝟙ₒ) (λ b → exp (𝟙ₒ +ₒ α) (β ↓ b) ×ₒ (𝟙ₒ +ₒ α)))) e (exp-behaviour (𝟙ₒ +ₒ α) β) ⟩
@@ -311,8 +319,27 @@ amazing {𝓤} α = transfinite-induction-on-OO _ I
                 cons-is-non-empty) ＝⟨ {!!} ⟩
               {!!} ＝⟨ {!!} ⟩
               {!!} ∎ -}
-      the-real-thing (inr b , (e , inl ⋆) , p) = {!!}
-      the-real-thing (inr b , (e , inr a) , p) = {!!}
+      the-real-thing (inr b , (e' , inl ⋆) , p) = {!!}
+      the-real-thing (inr b , (e' , inr a) , p) = _ , foo -- {!!} , foo
+       where
+        foo = (exp (𝟙ₒ +ₒ α) β ↓ e) ＝⟨ ↓-eq-lemma (exp (𝟙ₒ +ₒ α) β) (sup (cases (λ _ → 𝟙ₒ) (λ b₁ → exp (𝟙ₒ +ₒ α) (β ↓ b₁) ×ₒ (𝟙ₒ +ₒ α)))) e (exp-behaviour (𝟙ₒ +ₒ α) β) ⟩
+              (sup (cases (λ _ → 𝟙ₒ) (λ b₁ → exp (𝟙ₒ +ₒ α) (β ↓ b₁) ×ₒ (𝟙ₒ +ₒ α))) ↓ x) ＝⟨ fact ⟩ -- ap ((sup (cases (λ _ → 𝟙ₒ) (λ b₁ → exp (𝟙ₒ +ₒ α) (β ↓ b₁) ×ₒ (𝟙ₒ +ₒ α)))) ↓_) (p ⁻¹) ⟩
+              (sup (cases (λ _ → 𝟙ₒ) (λ b₁ → exp (𝟙ₒ +ₒ α) (β ↓ b₁) ×ₒ (𝟙ₒ +ₒ α))) ↓ y) ＝⟨ initial-segment-of-sup-at-component _ (inr b) (e' , inr a) ⟩
+              ((exp (𝟙ₒ +ₒ α) (β ↓ b) ×ₒ (𝟙ₒ +ₒ α)) ↓ (e' , inr a)) ＝⟨ ×ₒ-↓ (exp (𝟙ₒ +ₒ α) (β ↓ b)) (𝟙ₒ +ₒ α) e' (inr a) ⟩
+              (((exp (𝟙ₒ +ₒ α) (β ↓ b)) ×ₒ ((𝟙ₒ +ₒ α) ↓ inr a)) +ₒ (exp (𝟙ₒ +ₒ α) (β ↓ b) ↓ e')) ＝⟨ {!!} ⟩ -- easy
+              (((exp (𝟙ₒ +ₒ α) (β ↓ b)) ×ₒ ((𝟙ₒ +ₒ (α ↓ a)))) +ₒ (exp (𝟙ₒ +ₒ α) (β ↓ b) ↓ e')) ＝⟨ ap (λ - → (- ×ₒ ((𝟙ₒ +ₒ (α ↓ a)))) +ₒ (exp (𝟙ₒ +ₒ α) (β ↓ b) ↓ e')) (IH b) ⟩
+              ((([𝟙+ α ]^ (β ↓ b)) ×ₒ (𝟙ₒ +ₒ (α ↓ a))) +ₒ (exp (𝟙ₒ +ₒ α) (β ↓ b) ↓ e')) ＝⟨ ap ((([𝟙+ α ]^ (β ↓ b)) ×ₒ (𝟙ₒ +ₒ (α ↓ a))) +ₒ_) (↓-eq-lemma _ _ e' (IH b)) ⟩
+              ((([𝟙+ α ]^ (β ↓ b)) ×ₒ (𝟙ₒ +ₒ (α ↓ a))) +ₒ (([𝟙+ α ]^ (β ↓ b)) ↓ l)) ＝⟨ eqtoidₒ (ua 𝓤) fe' _ _ (≃ₒ-sym _ _ ([𝟙+]^-↓-lemma' α β a b (pr₁ l) (pr₂ l))) ⟩
+              (([𝟙+ α ]^ β) ↓ (((a , b) ∷ pr₁ (embed α β b l)) , embed-decreasing α β b l)) ∎
+         where
+          x : ⟨ (sup (cases (λ _ → 𝟙ₒ) (λ b₁ → exp (𝟙ₒ +ₒ α) (β ↓ b₁) ×ₒ (𝟙ₒ +ₒ α)))) ⟩
+          x = Idtofun (ap ⟨_⟩ (exp-behaviour (𝟙ₒ +ₒ α) β)) e
+          y : ⟨ (sup (cases {X = 𝟙{𝓤}} (λ _ → 𝟙ₒ) (λ b₁ → exp (𝟙ₒ +ₒ α) (β ↓ b₁) ×ₒ (𝟙ₒ +ₒ α)))) ⟩
+          y = pr₁ (sup-is-upper-bound _ (inr b)) (e' , inr a)
+          p-fact : x ＝ y
+          p-fact = p ⁻¹
+          fact = ap (sup (cases {X = 𝟙{𝓤}} (λ _ → 𝟙ₒ) (λ b₁ → exp (𝟙ₒ +ₒ α) (β ↓ b₁) ×ₒ (𝟙ₒ +ₒ α))) ↓_) p-fact
+          l = Idtofun (ap (λ v → pr₁ v) (IH b)) e'
     III : (γ : Ordinal 𝓤) → γ ⊲ ([𝟙+ α ]^ β) → γ ⊲ exp (𝟙ₒ +ₒ α) β
     III = {!!} {- _ (([] , δ) , refl) = {!!} -- 𝟘 ⊲ exp (𝟙ₒ +ₒ α) β
     III _ ((((a , b) ∷ l) , δ) , refl) = _ , foo
@@ -343,7 +370,7 @@ amazing {𝓤} α = transfinite-induction-on-OO _ I
                  ＝ ((exp (𝟙ₒ +ₒ α) (β ↓ b) ×ₒ (𝟙ₒ +ₒ α)) ↓ (l'' , inr a))
         fold = ×ₒ-↓ _ _ l'' (inr a) ⁻¹
         fact' = (initial-segment-of-sup-at-component (cases {X = 𝟙{𝓤}} (λ _ → 𝟙ₒ) (λ b → exp (𝟙ₒ +ₒ α) (β ↓ b) ×ₒ (𝟙ₒ +ₒ α))) (inr b) (l'' , inr a)) ⁻¹
--}
+
 
 -- to-alternative : (α : Ordinal 𝓤) (β : Ordinal 𝓥) → ⟨[𝟙+ α ]^ β ⟩ → ⟨ exp (𝟙ₒ +ₒ α) β ⟩
 -- to-alternative α = transfinite-induction-on-OO (λ β → ⟨[𝟙+ α ]^ β ⟩ → ⟨ exp (𝟙ₒ +ₒ α) β ⟩) g
