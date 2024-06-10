@@ -578,25 +578,25 @@ non-trivial-totally-separated-ainjective-type-gives-¬¬-WEM
 non-trivial-totally-separated-ainjective-type-gives-¬¬-WEM {𝓤} {𝓥} {𝓦} (X , ν , ts , a) = V
  where
   I : ¬ decomposition X → (p : X → 𝟚) → wconstant p
-  I ν p x₀ x₁ = h (p x₀) (p x₁) refl refl
+  I δ p x₀ x₁ = h (p x₀) (p x₁) refl refl
    where
     h : (b₀ b₁ : 𝟚) → p x₀ ＝ b₀ → p x₁ ＝ b₁ → p x₀ ＝ p x₁
     h ₀ ₀ e₀ e₁ = e₀ ∙ e₁ ⁻¹
-    h ₀ ₁ e₀ e₁ = 𝟘-elim (ν (p , (x₀ , e₀) , (x₁ , e₁)))
-    h ₁ ₀ e₀ e₁ = 𝟘-elim (ν (p , (x₁ , e₁) , (x₀ , e₀)))
+    h ₀ ₁ e₀ e₁ = 𝟘-elim (δ (p , (x₀ , e₀) , (x₁ , e₁)))
+    h ₁ ₀ e₀ e₁ = 𝟘-elim (δ (p , (x₁ , e₁) , (x₀ , e₀)))
     h ₁ ₁ e₀ e₁ = e₀ ∙ e₁ ⁻¹
 
   II : ((p : X → 𝟚) → wconstant p) → is-prop X
   II w x₀ x₁ = ts (λ p → w p x₀ x₁)
 
   III : ¬ decomposition X → is-prop X
-  III ν = II (I ν)
+  III = II ∘ I
 
-  IV : ¬ is-prop X → ¬¬ decomposition X
-  IV = contrapositive III
+  IV : ¬¬ decomposition X
+  IV = contrapositive III ν
 
   V : ¬¬ WEM 𝓥
-  V = ¬¬-functor (decomposition-of-ainjective-type-gives-WEM X a) (IV ν)
+  V = ¬¬-functor (decomposition-of-ainjective-type-gives-WEM X a) IV
 
 \end{code}
 
