@@ -575,7 +575,8 @@ open import TypeTopology.TotallySeparated
 non-trivial-totally-separated-ainjective-type-gives-¬¬-WEM
  : (Σ X ꞉ 𝓤 ̇ , ((¬ is-prop X) × is-totally-separated X × ainjective-type X 𝓥 𝓦))
  → ¬¬ WEM 𝓥
-non-trivial-totally-separated-ainjective-type-gives-¬¬-WEM {𝓤} {𝓥} {𝓦} (X , ν , ts , a) = V
+non-trivial-totally-separated-ainjective-type-gives-¬¬-WEM
+  {𝓤} {𝓥} {𝓦} (X , X-is-not-prop , X-is-totally-separated , X-is-ainjective) = V
  where
   I : ¬ decomposition X → (p : X → 𝟚) → wconstant p
   I δ p x₀ x₁ = h (p x₀) (p x₁) refl refl
@@ -587,16 +588,18 @@ non-trivial-totally-separated-ainjective-type-gives-¬¬-WEM {𝓤} {𝓥} {𝓦
     h ₁ ₁ e₀ e₁ = e₀ ∙ e₁ ⁻¹
 
   II : ((p : X → 𝟚) → wconstant p) → is-prop X
-  II w x₀ x₁ = ts (λ p → w p x₀ x₁)
+  II w x₀ x₁ = X-is-totally-separated (λ p → w p x₀ x₁)
 
   III : ¬ decomposition X → is-prop X
   III = II ∘ I
 
   IV : ¬¬ decomposition X
-  IV = contrapositive III ν
+  IV = contrapositive III X-is-not-prop
 
   V : ¬¬ WEM 𝓥
-  V = ¬¬-functor (decomposition-of-ainjective-type-gives-WEM X a) IV
+  V = ¬¬-functor
+       (decomposition-of-ainjective-type-gives-WEM X X-is-ainjective)
+       IV
 
 \end{code}
 
