@@ -274,4 +274,16 @@ exp-satisfies-sup-specification {𝓤} α p {I} i₀ F =
       y' = pr₁ (sup-is-upper-bound F i) y
       eq : exp α (sup F ↓ y') ×ₒ α ＝ exp α (F i ↓ y) ×ₒ α
       eq = ap (λ - → exp α - ×ₒ α) (initial-segment-of-sup-at-component F i y)
+
+-- TODO: Move elsewhere & generalize
+initial-segment-of-𝟙ₒ-is-𝟘ₒ : 𝟙ₒ{𝓤} ↓ ⋆ ＝ 𝟘ₒ
+initial-segment-of-𝟙ₒ-is-𝟘ₒ =
+ ⊲-is-extensional (𝟙ₒ ↓ ⋆) 𝟘ₒ (to-≼ (λ (⋆ , u) → 𝟘-elim (irrefl 𝟙ₒ ⋆ u))) (𝟘ₒ-least (𝟙ₒ ↓ ⋆))
+
+𝟘ₒ-initial-segment-of-exp : (α : Ordinal 𝓤) (β : Ordinal 𝓥) → 𝟘ₒ ⊲ exp α β
+𝟘ₒ-initial-segment-of-exp {𝓤} {𝓥} α β =
+ transport (_⊲ exp α β) initial-segment-of-𝟙ₒ-is-𝟘ₒ
+           (from-≼ (⊴-gives-≼ 𝟙ₒ (exp α β)
+                   (exp-has-least-element α β)) ⋆)
+
 \end{code}

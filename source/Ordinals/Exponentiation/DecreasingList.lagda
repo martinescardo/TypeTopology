@@ -656,8 +656,18 @@ module _ (α : Ordinal 𝓤)(β : Ordinal 𝓥) where
 [𝟙+α]^β-has-least : (α : Ordinal 𝓤) → (β : Ordinal 𝓥) → 𝟙ₒ {𝓦} ⊴ ([𝟙+ α ]^ β)
 [𝟙+α]^β-has-least α β = (λ _ → [] , []-decr) , (λ xs _ p → 𝟘-elim ([]-lex-bot _ _ p)) , (λ x y p → 𝟘-elim p)
 
-\end{code}
+[𝟙+α]^β-has-least' : (α : Ordinal 𝓤) (β : Ordinal 𝓥) (δ : is-decreasing-pr₂ α β [])
+                   → 𝟘ₒ ＝ ([𝟙+ α ]^ β) ↓ ([] , δ)
+[𝟙+α]^β-has-least' α β δ =
+ ⊲-is-extensional 𝟘ₒ (([𝟙+ α ]^ β) ↓ ([] , δ))
+                  (𝟘ₒ-least (([𝟙+ α ]^ β) ↓ ([] , δ)))
+                  (to-≼ h)
+  where
+   h : (l : ⟨ (([𝟙+ α ]^ β) ↓ ([] , δ)) ⟩)
+     → ((([𝟙+ α ]^ β) ↓ ([] , δ)) ↓ l) ⊲ 𝟘ₒ
+   h ((l , δ) , ())
 
+\end{code}
 
 We now prove that [𝟙+ α ]^ β satisfies the specification for
 exponentiation (𝟙 + α) ^ β.
