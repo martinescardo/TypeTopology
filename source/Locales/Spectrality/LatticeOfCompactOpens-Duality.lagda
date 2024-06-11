@@ -1,14 +1,18 @@
 ---
-title:          Basics of duality for spectral locales
+title:          Lemmas on the duality of compact opens of spectral locales
 author:         Ayberk Tosun
-date-completed: 2024-05-12
+date-completed: 2024-06-09
 ---
 
-Every spectral locale `X` is homeomorphic to the spectrum of its distributive
-lattice `𝒦(X)` of compact opens. We construct a proof of this fact in this
-module.
+In this module, we prove two important lemmas about the distributive lattice of
+compact opens of spectral locales:
 
-The proof is implemented in the function called `X-is-homeomorphic-to-spec-𝒦⁻X`.
+  1. Every _large and locally small_ spectral locale `X` is homeomorphic to the
+     spectrum of its _small_ distributive lattice `𝒦(X)` of compact opens.
+  1. Every _small_ distributive lattice `L` is isomorphic to the distributive
+     lattice of compact opens of its spectrum locale.
+
+TODO: add proof names.
 
 \begin{code}
 
@@ -80,8 +84,8 @@ type of compact opens.
 
 \begin{code}
 
-module 𝒦-Duality (X  : Locale (𝓤 ⁺) 𝓤 𝓤)
-                 (σ₀ : is-spectral-with-small-basis ua X holds) where
+module 𝒦-Duality₁ (X  : Locale (𝓤 ⁺) 𝓤 𝓤)
+                  (σ₀ : is-spectral-with-small-basis ua X holds) where
 
  open 𝒦-Lattice X σ₀
   using (𝟏ₖ; 𝟎ₖ; 𝒦⦅X⦆-is-small; 𝒦⦅X⦆; σ; ιₖ-preserves-∨; ιₖ-preserves-∧)
@@ -726,7 +730,7 @@ spectral-implies-spectral·
 spectral-implies-spectral· X σ =
  ∣ 𝒦-X⁻ , ≅c-sym spec-𝒦⁻X X X-is-homeomorphic-to-spec-𝒦⁻X ∣
   where
-   open 𝒦-Duality X σ
+   open 𝒦-Duality₁ X σ
 
 \end{code}
 
@@ -760,7 +764,7 @@ locale (with a small basis).
  open IdealProperties
  open Spectrality L
  open PrincipalIdeals L
- open 𝒦-Duality spec-L spec-L-is-ssb
+ open 𝒦-Duality₁ spec-L spec-L-is-ssb
 
 \end{code}
 
@@ -1121,7 +1125,7 @@ Spectral-Locale 𝓤 =
 spec-dlat-equivalence : (𝓤 : Universe) → Spectral-Locale 𝓤 ≃ DistributiveLattice 𝓤
 spec-dlat-equivalence 𝓤 = sec , qinvs-are-equivs sec γ
  where
-  open 𝒦-Duality
+  open 𝒦-Duality₁
   open 𝒦-Lattice
   open DefnOfFrameOfIdeal
 
