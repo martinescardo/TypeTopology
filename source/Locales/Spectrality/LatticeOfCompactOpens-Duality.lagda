@@ -734,14 +734,18 @@ spectral-implies-spectral· X σ =
 
 \end{code}
 
+\section{L to 𝒦(Spec(L))}
+
+We work in a module parameterized by a small distributive lattice `L`.
+
 \begin{code}
 
-module OtherDirection (L : DistributiveLattice 𝓤) where
+module 𝒦-Duality₂ (L : DistributiveLattice 𝓤) where
 
 \end{code}
 
-We denote by `spec-L` the spectrum of the lattice `L`, which is a large and
-locally small locale.
+We denote by `spec-L` the spectrum of the lattice `L`, which is a _large_ and
+_locally small_ locale.
 
 \begin{code}
 
@@ -769,7 +773,7 @@ locale (with a small basis).
 \end{code}
 
 We denote by `𝒦⁻-spec-L` the small distributive lattice of compact opens of
-the spectrum of `L`.
+`spec-L`.
 
 \begin{code}
 
@@ -778,7 +782,8 @@ the spectrum of `L`.
 
 \end{code}
 
-We now start working towards the construction of a lattice isomorphism:
+We now start working towards the construction of an isomorphism of distributive
+lattices:
 
 ```text
     L ≅ 𝒦⁻(spec(L))
@@ -1148,13 +1153,12 @@ spec-dlat-equivalence 𝓤 = sec , qinvs-are-equivs sec γ
       goal = X-is-homeomorphic-to-spec-𝒦⁻X X σ
 
   ‡ : sec ∘ ret ∼ id
-  ‡ L =
-   isomorphic-distributive-lattices-are-equal (sec (ret L)) L goal
-    where
-     open OtherDirection L
+  ‡ L = isomorphic-distributive-lattices-are-equal (sec (ret L)) L goal
+   where
+    open 𝒦-Duality₂ L
 
-     goal : 𝒦⁻-spec-L ≅d≅ L
-     goal = ≅d-sym L 𝒦⁻-spec-L spec-isomorphism
+    goal : 𝒦⁻-spec-L ≅d≅ L
+    goal = ≅d-sym L 𝒦⁻-spec-L spec-isomorphism
 
   γ : qinv sec
   γ = ret , † , ‡
