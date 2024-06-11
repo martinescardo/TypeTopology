@@ -340,6 +340,11 @@ _≃ᵈᶜᵖᵒ_ : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'}) �
               × is-continuous 𝓓 𝓔 f
               × is-continuous 𝓔 𝓓 g
 
+≃ᵈᶜᵖᵒ-inv : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
+          → 𝓓 ≃ᵈᶜᵖᵒ 𝓔
+          → 𝓔 ≃ᵈᶜᵖᵒ 𝓓
+≃ᵈᶜᵖᵒ-inv 𝓓 𝓔 (f , g , s , r , cf , cg) = (g , f , r , s , cg , cf)
+
 is-deflation : (𝓓 : DCPO {𝓤} {𝓣}) → DCPO[ 𝓓 , 𝓓 ] → 𝓤 ⊔ 𝓣 ̇
 is-deflation 𝓓 f = (x : ⟨ 𝓓 ⟩) → [ 𝓓 , 𝓓 ]⟨ f ⟩ x ⊑⟨ 𝓓 ⟩ x
 
@@ -365,6 +370,19 @@ record _continuous-retract-of_
   𝕣 : DCPO[ 𝓔 , 𝓓 ]
   𝕣 = r , r-is-continuous
 
+≃ᵈᶜᵖᵒ-to-continuous-retract : (𝓓 : DCPO {𝓤} {𝓣})
+                              (𝓔 : DCPO {𝓤'} {𝓣'})
+                            → 𝓓 ≃ᵈᶜᵖᵒ 𝓔
+                            → 𝓓 continuous-retract-of 𝓔
+≃ᵈᶜᵖᵒ-to-continuous-retract 𝓓 𝓔 (f , g , s , r , cf , cg) =
+ record
+  { s = f
+  ; r = g
+  ; s-section-of-r = s
+  ; s-is-continuous = cf
+  ; r-is-continuous = cg
+  }
+
 is-embedding-projection : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
                         → DCPO[ 𝓓 , 𝓔 ]
                         → DCPO[ 𝓔 , 𝓓 ]
@@ -389,6 +407,19 @@ record embedding-projection-pair-between
   𝕡 : DCPO[ 𝓔 , 𝓓 ]
   𝕡 = p , p-is-continuous
 
+≃ᵈᶜᵖᵒ-to-embedding-projection-pair : (𝓓 : DCPO {𝓤} {𝓣})
+                                     (𝓔 : DCPO {𝓤'} {𝓣'})
+                                   → 𝓓 ≃ᵈᶜᵖᵒ 𝓔
+                                   → embedding-projection-pair-between 𝓓 𝓔
+≃ᵈᶜᵖᵒ-to-embedding-projection-pair 𝓓 𝓔 (f , g , s , r , cf , cg) =
+ record
+  { e = f
+  ; p = g
+  ; e-section-of-p = s
+  ; e-p-deflation = λ y → ＝-to-⊑ 𝓔 (r y)
+  ; e-is-continuous = cf
+  ; p-is-continuous = cg
+  }
 
 \end{code}
 

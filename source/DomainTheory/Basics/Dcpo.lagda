@@ -174,6 +174,9 @@ module _ {𝓤 𝓣 : Universe} where
  axioms-of-dcpo : (𝓓 : DCPO) → dcpo-axioms (underlying-order 𝓓)
  axioms-of-dcpo (D , _⊑_ , d) = d
 
+ poset-axioms-of-dcpo : (𝓓 : DCPO) → poset-axioms (underlying-order 𝓓)
+ poset-axioms-of-dcpo (D , _⊑_ , d) = pr₁ d
+
  sethood : (𝓓 : DCPO) → is-set ⟨ 𝓓 ⟩
  sethood (D , _⊑_ , (s  , p  , r  , t  , a)  , c ) = s
 
