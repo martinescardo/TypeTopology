@@ -792,7 +792,7 @@ lattices:
 The isomorphism that we construct consists of the maps:
 
   1. `to-𝒦-spec-L : ∣ L ∣ᵈ → ∣ 𝒦⁻-spec-L ∣ᵈ`, and
-  2. `back-to-L : ∣ 𝒦⁻-spec-L ∣ᵈ → ∣ L ∣ᵈ`.
+  2. `maximum : ∣ 𝒦⁻-spec-L ∣ᵈ → ∣ L ∣ᵈ`.
 
 We first construct the map `to-𝒦-spec-L`. We follow our usual convention of
 denoting by the subscript `₀` the preliminary version of the construction in
@@ -806,31 +806,11 @@ property.
 
 \end{code}
 
-This map preserves the top element of `L`.
+The map `to-𝒦-spec-L₀` preserves meets.
 
 \begin{code}
 
  open DistributiveLattice
-
- to-𝒦-spec-L-preserves-top : preserves-𝟏 L 𝒦⁻-spec-L to-𝒦-spec-L₀ holds
- to-𝒦-spec-L-preserves-top =
-  s (↓ₖ 𝟏 L)           ＝⟨ Ⅰ    ⟩
-  s (𝟏 𝒦⦅X⦆)             ＝⟨ refl ⟩
-  𝟏 𝒦⁻-spec-L            ∎
-   where
-    ‡ : 𝟏[ 𝒪 spec-L ] ＝ ↓ (𝟏 L)
-    ‡ = principal-ideal-preserves-top ⁻¹
-
-    † = to-𝒦-＝ spec-L (principal-ideal-is-compact (𝟏 L)) spectrum-is-compact ‡
-
-    Ⅰ = ap s †
-
-\end{code}
-
-It also preserves meets.
-
-\begin{code}
-
  open OperationsOnCompactOpens spec-L spec-L-is-spectral
 
  to-𝒦-spec-L-preserves-∧ : preserves-∧ L 𝒦⁻-spec-L to-𝒦-spec-L₀ holds
@@ -846,7 +826,13 @@ It also preserves meets.
     † = to-𝒦-＝
          spec-L
          (principal-ideal-is-compact (x ∧L y))
-         (pr₂ ((↓ₖ x) ∧ₖ (↓ₖ y)))
+         (binary-coherence
+           spec-L
+           spec-L-is-spectral
+           (↓ x)
+           (↓ y)
+           (principal-ideal-is-compact x)
+           (principal-ideal-is-compact y))
          (principal-ideal-preserves-meets x y)
 
     Ⅰ = ap s †
@@ -854,49 +840,13 @@ It also preserves meets.
 
 \end{code}
 
-We now show that `to-𝒦-spec` preserves the bottom element.
+\section{𝒦(Spec(L)) to L}
 
-\begin{code}
+We now start working on the map `maximum` that takes us from the small
+distributive lattice of compact opens of `spec-L` back to `L`.
 
- to-𝒦-spec-L-preserves-𝟎 : preserves-𝟎 L 𝒦⁻-spec-L to-𝒦-spec-L₀ holds
- to-𝒦-spec-L-preserves-𝟎 =
-  s (↓ₖ (𝟎 L))        ＝⟨ Ⅰ    ⟩
-  s 𝟎ₖ                ＝⟨ refl ⟩
-  𝟎 𝒦⁻-spec-L         ∎
-   where
-    ‡ : ↓ (𝟎 L) ＝ 𝟎[ 𝒪 spec-L ]
-    ‡ = principal-ideal-preserves-bottom
-
-    † : ↓ₖ (𝟎 L) ＝ 𝟎ₖ
-    † = to-𝒦-＝
-         spec-L
-         (principal-ideal-is-compact (𝟎 L))
-         (𝟎-is-compact spec-L)
-         ‡
-
-    Ⅰ = ap s †
-
-\end{code}
-
-The map `to-𝒦-spec-L` preserves binary joins.
-
-\begin{code}
-
- -- to-𝒦-spec-L-preserves-∨ : preserves-∨ L 𝒦⁻-spec-L to-𝒦-spec-L holds
- -- to-𝒦-spec-L-preserves-∨ x y =
- --  s (↓ₖ (x ∨L y))                  ＝⟨ {!!} ⟩
- --  s ((↓ₖ x) ∨ₖ (↓ₖ y))             ＝⟨ {!!} ⟩
- --  to-𝒦-spec-L x ∨· to-𝒦-spec-L y   ∎
- --   where
- --    open DistributiveLattice L renaming (_∨_ to _∨L_)
- --    open DistributiveLattice 𝒦⁻-spec-L renaming (_∨_ to _∨·_)
-
-
-\end{code}
-
-We now start working on the map `to-lattice`.
-
-The principal ideal map is an embedding.
+We first prove that the principal ideal map is an embedding, and is hence
+left-cancellable.
 
 \begin{code}
 
@@ -927,17 +877,36 @@ The principal ideal map is an embedding.
 
 \end{code}
 
+We define the following map `r₀` which gives the ideal corresponding to an
+element in the small distributive lattice of compact opens. This is simply
+the composition
+
+```text
+                      r               ιₖ
+        𝒦⁻-spec-L  ------> 𝒦-spec-L ------> 𝒪 spec(L)
+```
+
+where `ιₖ` is the inclusion of the compact opens into the frame of ideals, and
+`r` is one direction of the equivalence between `𝒦-spec-L` and its small copy.
+
 \begin{code}
 
  r₀ : ∣ 𝒦⁻-spec-L ∣ᵈ → ⟨ 𝒪 spec-L ⟩
- r₀ K = ιₖ (r K)
+ r₀ = ιₖ ∘ r
 
  r₀-gives-compact-opens : (K : ∣ 𝒦⁻-spec-L ∣ᵈ)
                         → is-compact-open spec-L (r₀ K) holds
  r₀-gives-compact-opens = ι-gives-compact-opens
 
- to-lattice₀ : ∣ 𝒦⁻-spec-L ∣ᵈ → ∣ L ∣ᵈ
- to-lattice₀ K = pr₁ t
+\end{code}
+
+We now define the underlying function of the distributive lattice homomorphism
+`maximum`, which we denote `maximum₀`:
+
+\begin{code}
+
+ maximum₀ : ∣ 𝒦⁻-spec-L ∣ᵈ → ∣ L ∣ᵈ
+ maximum₀ K = pr₁ t
   where
    κ : is-compact-open spec-L (r₀ K) holds
    κ = r₀-gives-compact-opens K
@@ -951,11 +920,19 @@ The principal ideal map is an embedding.
    t : Σ x ꞉ ∣ L ∣ᵈ , ↓ x  ＝ r₀ K
    t = exit-∥∥ † γ
 
- to-lattice₀-lemma : (K : ∣ 𝒦⁻-spec-L ∣ᵈ) → K ＝ s (↓ₖ (to-lattice₀ K))
- to-lattice₀-lemma K =
+\end{code}
+
+This map satisfies the property that every compact open `K` of `spec-L` can be
+factored as `s (↓ₖ (maximum₀ K))`. This can be thought of as saying that
+`maximum₀` computes _the maximum element_ of the compact ideal `K`.
+
+\begin{code}
+
+ maximum₀-lemma : (K : ∣ 𝒦⁻-spec-L ∣ᵈ) → K ＝ s (↓ₖ (maximum₀ K))
+ maximum₀-lemma K =
   K                      ＝⟨ Ⅰ ⟩
   s (r K)                ＝⟨ Ⅱ ⟩
-  s (↓ₖ to-lattice₀ K)   ∎
+  s (↓ₖ maximum₀ K)   ∎
    where
     κ : is-compact-open spec-L (r₀ K) holds
     κ = r₀-gives-compact-opens K
@@ -969,14 +946,14 @@ The principal ideal map is an embedding.
     t : Σ x ꞉ ∣ L ∣ᵈ , ↓ x  ＝ r₀ K
     t = exit-∥∥ † γ
 
-    q : r₀ K ＝ ↓ (to-lattice₀ K)
+    q : r₀ K ＝ ↓ (maximum₀ K)
     q = pr₂ t ⁻¹
 
-    p : r K ＝ ↓ₖ (to-lattice₀ K)
+    p : r K ＝ ↓ₖ (maximum₀ K)
     p = to-𝒦-＝
          spec-L
          (r₀-gives-compact-opens K)
-         (principal-ideal-is-compact (to-lattice₀ K))
+         (principal-ideal-is-compact (maximum₀ K))
          q
 
     Ⅰ = inverses-are-retractions' e K ⁻¹
@@ -986,84 +963,84 @@ The principal ideal map is an embedding.
 
 \begin{code}
 
- to-lattice-preserves-∧ : preserves-∧ 𝒦⁻-spec-L L to-lattice₀ holds
- to-lattice-preserves-∧ K₁ K₂ = goal
+ maximum-preserves-∧ : preserves-∧ 𝒦⁻-spec-L L maximum₀ holds
+ maximum-preserves-∧ K₁ K₂ = goal
   where
    open DistributiveLattice L renaming (_∧_ to _∧L_)
    open DistributiveLattice 𝒦⁻-spec-L renaming (_∧_ to _∧·_)
 
-   x₁ = to-lattice₀ K₁
-   x₂ = to-lattice₀ K₂
+   x₁ = maximum₀ K₁
+   x₂ = maximum₀ K₂
 
-   goal₁ : s (↓ₖ (to-lattice₀ (K₁ ∧· K₂))) ＝ s (↓ₖ (to-lattice₀ K₁ ∧L to-lattice₀ K₂))
+   goal₁ : s (↓ₖ (maximum₀ (K₁ ∧· K₂))) ＝ s (↓ₖ (maximum₀ K₁ ∧L maximum₀ K₂))
    goal₁ =
-    s (↓ₖ (to-lattice₀ (K₁ ∧· K₂)))                      ＝⟨ Ⅰ ⟩
+    s (↓ₖ (maximum₀ (K₁ ∧· K₂)))                      ＝⟨ Ⅰ ⟩
     K₁ ∧· K₂                                             ＝⟨ Ⅱ ⟩
-    K₁ ∧· s (↓ₖ (to-lattice₀ K₂))                        ＝⟨ Ⅲ ⟩
-    s (↓ₖ (to-lattice₀ K₁)) ∧· s (↓ₖ (to-lattice₀ K₂))   ＝⟨ Ⅴ ⟩
-    s ((↓ₖ (to-lattice₀ K₁)) ∧ₖ (↓ₖ (to-lattice₀ K₂)))   ＝⟨ Ⅳ ⟩
-    s (↓ₖ (to-lattice₀ K₁ ∧L to-lattice₀ K₂))            ∎
+    K₁ ∧· s (↓ₖ (maximum₀ K₂))                        ＝⟨ Ⅲ ⟩
+    s (↓ₖ (maximum₀ K₁)) ∧· s (↓ₖ (maximum₀ K₂))   ＝⟨ Ⅴ ⟩
+    s ((↓ₖ (maximum₀ K₁)) ∧ₖ (↓ₖ (maximum₀ K₂)))   ＝⟨ Ⅳ ⟩
+    s (↓ₖ (maximum₀ K₁ ∧L maximum₀ K₂))            ∎
      where
-      Ⅰ = to-lattice₀-lemma (K₁ ∧· K₂) ⁻¹
-      Ⅱ = ap (λ - → K₁ ∧· -) (to-lattice₀-lemma K₂)
-      Ⅲ = ap (λ - → - ∧· s (↓ₖ (to-lattice₀ K₂))) (to-lattice₀-lemma K₁)
+      Ⅰ = maximum₀-lemma (K₁ ∧· K₂) ⁻¹
+      Ⅱ = ap (λ - → K₁ ∧· -) (maximum₀-lemma K₂)
+      Ⅲ = ap (λ - → - ∧· s (↓ₖ (maximum₀ K₂))) (maximum₀-lemma K₁)
 
       † = to-𝒦-＝
            spec-L
-           (pr₂ ((↓ₖ (to-lattice₀ K₁)) ∧ₖ (↓ₖ (to-lattice₀ K₂))))
-           (principal-ideal-is-compact (to-lattice₀ K₁ ∧L to-lattice₀ K₂))
-           (principal-ideal-preserves-meets (to-lattice₀ K₁) (to-lattice₀ K₂) ⁻¹ )
+           (pr₂ ((↓ₖ (maximum₀ K₁)) ∧ₖ (↓ₖ (maximum₀ K₂))))
+           (principal-ideal-is-compact (maximum₀ K₁ ∧L maximum₀ K₂))
+           (principal-ideal-preserves-meets (maximum₀ K₁) (maximum₀ K₂) ⁻¹ )
 
       Ⅳ = ap s †
 
-      Ⅴ = s-preserves-∧ (↓ₖ (to-lattice₀ K₁)) (↓ₖ (to-lattice₀ K₂)) ⁻¹
+      Ⅴ = s-preserves-∧ (↓ₖ (maximum₀ K₁)) (↓ₖ (maximum₀ K₂)) ⁻¹
 
-   goal′ : ↓ₖ to-lattice₀ (K₁ ∧· K₂) ＝ ↓ₖ (to-lattice₀ K₁ ∧L to-lattice₀ K₂)
+   goal′ : ↓ₖ maximum₀ (K₁ ∧· K₂) ＝ ↓ₖ (maximum₀ K₁ ∧L maximum₀ K₂)
    goal′ = equivs-are-lc s (⌜⌝-is-equiv (≃-sym e)) goal₁
 
-   goal₂ : ↓ to-lattice₀ (K₁ ∧· K₂) ＝ ↓ (to-lattice₀ K₁ ∧L to-lattice₀ K₂)
+   goal₂ : ↓ maximum₀ (K₁ ∧· K₂) ＝ ↓ (maximum₀ K₁ ∧L maximum₀ K₂)
    goal₂ = pr₁ (from-Σ-＝ goal′)
 
-   goal : to-lattice₀ (K₁ ∧· K₂) ＝ to-lattice₀ K₁ ∧L to-lattice₀ K₂
-   goal = pr₁ (from-Σ-＝ (↓-is-embedding (↓ to-lattice₀ (K₁ ∧· K₂)) ((to-lattice₀ (K₁ ∧· K₂)) , refl) ((to-lattice₀ K₁ ∧L to-lattice₀ K₂) , (goal₂ ⁻¹))))
+   goal : maximum₀ (K₁ ∧· K₂) ＝ maximum₀ K₁ ∧L maximum₀ K₂
+   goal = pr₁ (from-Σ-＝ (↓-is-embedding (↓ maximum₀ (K₁ ∧· K₂)) ((maximum₀ (K₁ ∧· K₂)) , refl) ((maximum₀ K₁ ∧L maximum₀ K₂) , (goal₂ ⁻¹))))
 
- to-lattice₀-is-monotone
-  : is-monotonic (poset-ofᵈ 𝒦⁻-spec-L) (poset-ofᵈ L) to-lattice₀ holds
- to-lattice₀-is-monotone =
+ maximum₀-is-monotone
+  : is-monotonic (poset-ofᵈ 𝒦⁻-spec-L) (poset-ofᵈ L) maximum₀ holds
+ maximum₀-is-monotone =
   meet-preserving-implies-monotone
    𝒦⁻-spec-L
    L
-   to-lattice₀
-   to-lattice-preserves-∧
+   maximum₀
+   maximum-preserves-∧
 
 \end{code}
 
 \begin{code}
 
- to-lattice-cancels-to-𝒦-spec-L : to-lattice₀ ∘ to-𝒦-spec-L₀ ∼ id
- to-lattice-cancels-to-𝒦-spec-L x =
+ maximum-cancels-to-𝒦-spec-L : maximum₀ ∘ to-𝒦-spec-L₀ ∼ id
+ maximum-cancels-to-𝒦-spec-L x =
   equality-of-principal-ideals-gives-equality goal′′
    where
-    goal : s (↓ₖ to-lattice₀ (s (↓ₖ x))) ＝ s (↓ₖ x)
-    goal = to-lattice₀-lemma (s (↓ₖ x)) ⁻¹
+    goal : s (↓ₖ maximum₀ (s (↓ₖ x))) ＝ s (↓ₖ x)
+    goal = maximum₀-lemma (s (↓ₖ x)) ⁻¹
 
-    goal′ : ↓ₖ to-lattice₀ (s (↓ₖ x)) ＝ ↓ₖ x
+    goal′ : ↓ₖ maximum₀ (s (↓ₖ x)) ＝ ↓ₖ x
     goal′ = equivs-are-lc s (⌜⌝-is-equiv (≃-sym e)) goal
 
-    goal′′ : ↓ to-lattice₀ (s (↓ₖ x)) ＝ ↓ x
+    goal′′ : ↓ maximum₀ (s (↓ₖ x)) ＝ ↓ x
     goal′′ = pr₁ (from-Σ-＝ goal′)
 
 \end{code}
 
 \begin{code}
 
- to-𝒦-spec-L-cancels-to-lattice : to-𝒦-spec-L₀ ∘ to-lattice₀ ∼ id
- to-𝒦-spec-L-cancels-to-lattice K =
-  to-𝒦-spec-L₀ (to-lattice₀ K)    ＝⟨ refl ⟩
-  s (↓ₖ (to-lattice₀ K))         ＝⟨ †    ⟩
+ to-𝒦-spec-L-cancels-maximum : to-𝒦-spec-L₀ ∘ maximum₀ ∼ id
+ to-𝒦-spec-L-cancels-maximum K =
+  to-𝒦-spec-L₀ (maximum₀ K)    ＝⟨ refl ⟩
+  s (↓ₖ (maximum₀ K))         ＝⟨ †    ⟩
   K                              ∎
    where
-    † = to-lattice₀-lemma K ⁻¹
+    † = maximum₀-lemma K ⁻¹
 
 \end{code}
 
@@ -1072,14 +1049,14 @@ The principal ideal map is an embedding.
  L-equivalent-to-𝒦⁻-spec-L : ∣ L ∣ᵈ ≃ ∣ 𝒦⁻-spec-L ∣ᵈ
  L-equivalent-to-𝒦⁻-spec-L = to-𝒦-spec-L₀ , qinvs-are-equivs to-𝒦-spec-L₀ †
   where
-   Ⅰ : to-lattice₀ ∘ to-𝒦-spec-L₀ ∼ id
-   Ⅰ = to-lattice-cancels-to-𝒦-spec-L
+   Ⅰ : maximum₀ ∘ to-𝒦-spec-L₀ ∼ id
+   Ⅰ = maximum-cancels-to-𝒦-spec-L
 
-   Ⅱ : to-𝒦-spec-L₀ ∘ to-lattice₀ ∼ id
-   Ⅱ = to-𝒦-spec-L-cancels-to-lattice
+   Ⅱ : to-𝒦-spec-L₀ ∘ maximum₀ ∼ id
+   Ⅱ = to-𝒦-spec-L-cancels-maximum
 
    † : qinv to-𝒦-spec-L₀
-   † = to-lattice₀ , Ⅰ , Ⅱ
+   † = maximum₀ , Ⅰ , Ⅱ
 
 \end{code}
 
@@ -1098,8 +1075,8 @@ The principal ideal map is an embedding.
         to-𝒦-spec-L₀
         to-𝒦-spec-L-preserves-∧
 
-   ‡ : is-monotonic (poset-ofᵈ 𝒦⁻-spec-L) (poset-ofᵈ L) to-lattice₀ holds
-   ‡ = to-lattice₀-is-monotone
+   ‡ : is-monotonic (poset-ofᵈ 𝒦⁻-spec-L) (poset-ofᵈ L) maximum₀ holds
+   ‡ = maximum₀-is-monotone
 
 \end{code}
 
