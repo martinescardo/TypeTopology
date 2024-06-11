@@ -794,12 +794,15 @@ The isomorphism that we construct consists of the maps:
   1. `to-𝒦-spec-L : ∣ L ∣ᵈ → ∣ 𝒦⁻-spec-L ∣ᵈ`, and
   2. `back-to-L : ∣ 𝒦⁻-spec-L ∣ᵈ → ∣ L ∣ᵈ`.
 
-We first construct the map `back-to-L`.
+We first construct the map `to-𝒦-spec-L`. We follow our usual convention of
+denoting by the subscript `₀` the preliminary version of the construction in
+consideration, which is then paired up with the proof that it satisfies some
+property.
 
 \begin{code}
 
- to-𝒦-spec-L : ∣ L ∣ᵈ → ∣ 𝒦⁻-spec-L ∣ᵈ
- to-𝒦-spec-L = s ∘ ↓ₖ_
+ to-𝒦-spec-L₀ : ∣ L ∣ᵈ → ∣ 𝒦⁻-spec-L ∣ᵈ
+ to-𝒦-spec-L₀ = s ∘ ↓ₖ_
 
 \end{code}
 
@@ -809,7 +812,7 @@ This map preserves the top element of `L`.
 
  open DistributiveLattice
 
- to-𝒦-spec-L-preserves-top : preserves-𝟏 L 𝒦⁻-spec-L to-𝒦-spec-L holds
+ to-𝒦-spec-L-preserves-top : preserves-𝟏 L 𝒦⁻-spec-L to-𝒦-spec-L₀ holds
  to-𝒦-spec-L-preserves-top =
   s (↓ₖ 𝟏 L)           ＝⟨ Ⅰ    ⟩
   s (𝟏 𝒦⦅X⦆)             ＝⟨ refl ⟩
@@ -830,11 +833,11 @@ It also preserves meets.
 
  open OperationsOnCompactOpens spec-L spec-L-is-spectral
 
- to-𝒦-spec-L-preserves-∧ : preserves-∧ L 𝒦⁻-spec-L to-𝒦-spec-L holds
+ to-𝒦-spec-L-preserves-∧ : preserves-∧ L 𝒦⁻-spec-L to-𝒦-spec-L₀ holds
  to-𝒦-spec-L-preserves-∧ x y =
   s (↓ₖ (x ∧L y))                   ＝⟨ Ⅰ ⟩
   s ((↓ₖ x) ∧ₖ (↓ₖ y))              ＝⟨ Ⅱ ⟩
-  to-𝒦-spec-L x ∧· to-𝒦-spec-L y    ∎
+  to-𝒦-spec-L₀ x ∧· to-𝒦-spec-L₀ y  ∎
    where
     open DistributiveLattice L renaming (_∧_ to _∧L_)
     open DistributiveLattice 𝒦⁻-spec-L renaming (_∧_ to _∧·_)
@@ -855,7 +858,7 @@ We now show that `to-𝒦-spec` preserves the bottom element.
 
 \begin{code}
 
- to-𝒦-spec-L-preserves-𝟎 : preserves-𝟎 L 𝒦⁻-spec-L to-𝒦-spec-L holds
+ to-𝒦-spec-L-preserves-𝟎 : preserves-𝟎 L 𝒦⁻-spec-L to-𝒦-spec-L₀ holds
  to-𝒦-spec-L-preserves-𝟎 =
   s (↓ₖ (𝟎 L))        ＝⟨ Ⅰ    ⟩
   s 𝟎ₖ                ＝⟨ refl ⟩
@@ -1037,7 +1040,7 @@ The principal ideal map is an embedding.
 
 \begin{code}
 
- to-lattice-cancels-to-𝒦-spec-L : to-lattice₀ ∘ to-𝒦-spec-L ∼ id
+ to-lattice-cancels-to-𝒦-spec-L : to-lattice₀ ∘ to-𝒦-spec-L₀ ∼ id
  to-lattice-cancels-to-𝒦-spec-L x =
   equality-of-principal-ideals-gives-equality goal′′
    where
@@ -1054,9 +1057,9 @@ The principal ideal map is an embedding.
 
 \begin{code}
 
- to-𝒦-spec-L-cancels-to-lattice : to-𝒦-spec-L ∘ to-lattice₀ ∼ id
+ to-𝒦-spec-L-cancels-to-lattice : to-𝒦-spec-L₀ ∘ to-lattice₀ ∼ id
  to-𝒦-spec-L-cancels-to-lattice K =
-  to-𝒦-spec-L (to-lattice₀ K)    ＝⟨ refl ⟩
+  to-𝒦-spec-L₀ (to-lattice₀ K)    ＝⟨ refl ⟩
   s (↓ₖ (to-lattice₀ K))         ＝⟨ †    ⟩
   K                              ∎
    where
@@ -1067,15 +1070,15 @@ The principal ideal map is an embedding.
 \begin{code}
 
  L-equivalent-to-𝒦⁻-spec-L : ∣ L ∣ᵈ ≃ ∣ 𝒦⁻-spec-L ∣ᵈ
- L-equivalent-to-𝒦⁻-spec-L = to-𝒦-spec-L , qinvs-are-equivs to-𝒦-spec-L †
+ L-equivalent-to-𝒦⁻-spec-L = to-𝒦-spec-L₀ , qinvs-are-equivs to-𝒦-spec-L₀ †
   where
-   Ⅰ : to-lattice₀ ∘ to-𝒦-spec-L ∼ id
+   Ⅰ : to-lattice₀ ∘ to-𝒦-spec-L₀ ∼ id
    Ⅰ = to-lattice-cancels-to-𝒦-spec-L
 
-   Ⅱ : to-𝒦-spec-L ∘ to-lattice₀ ∼ id
+   Ⅱ : to-𝒦-spec-L₀ ∘ to-lattice₀ ∼ id
    Ⅱ = to-𝒦-spec-L-cancels-to-lattice
 
-   † : qinv to-𝒦-spec-L
+   † : qinv to-𝒦-spec-L₀
    † = to-lattice₀ , Ⅰ , Ⅱ
 
 \end{code}
@@ -1088,11 +1091,11 @@ The principal ideal map is an embedding.
   : is-homomorphic L-equivalent-to-𝒦⁻-spec-L holds
  to-𝒦-spec-L-is-a-homomorphic-equivalence = † , ‡
   where
-   † : is-monotonic (poset-ofᵈ L) (poset-ofᵈ 𝒦⁻-spec-L) to-𝒦-spec-L holds
+   † : is-monotonic (poset-ofᵈ L) (poset-ofᵈ 𝒦⁻-spec-L) to-𝒦-spec-L₀ holds
    † = meet-preserving-implies-monotone
         L
         𝒦⁻-spec-L
-        to-𝒦-spec-L
+        to-𝒦-spec-L₀
         to-𝒦-spec-L-preserves-∧
 
    ‡ : is-monotonic (poset-ofᵈ 𝒦⁻-spec-L) (poset-ofᵈ L) to-lattice₀ holds
