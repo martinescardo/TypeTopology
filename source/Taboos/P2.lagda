@@ -75,7 +75,8 @@ inhabited-gives-pseudo-inhabited : {P : 𝓤 ̇ }
                                  → is-prop P
                                  → P
                                  → is-pseudo-inhabited P
-inhabited-gives-pseudo-inhabited {𝓤} {P} i p = pseudo-inhabitedness-criterion i (γ , γκ)
+inhabited-gives-pseudo-inhabited {𝓤} {P} i p =
+  pseudo-inhabitedness-criterion i (γ , γκ)
  where
   γ : (P → 𝟚) → 𝟚
   γ f = f p
@@ -100,11 +101,14 @@ pseudo-inhabited-gives-irrefutable {𝓤} {P} e n = zero-is-not-one II
 pseudo-inhabited-gives-irrefutable-special : {P : 𝓤 ̇ }
                                            → is-pseudo-inhabited (¬ P)
                                            → ¬ P
-pseudo-inhabited-gives-irrefutable-special h = three-negations-imply-one
-                                                (pseudo-inhabited-gives-irrefutable h)
+pseudo-inhabited-gives-irrefutable-special h =
+ three-negations-imply-one (pseudo-inhabited-gives-irrefutable h)
 
-P→𝟚-discreteness-criterion : {P : 𝓤 ̇ } → ¬ P + is-pseudo-inhabited P → is-discrete (P → 𝟚)
-P→𝟚-discreteness-criterion (inl n) f g = inl (dfunext (fe _ 𝓤₀) (λ p → 𝟘-elim (n p)))
+P→𝟚-discreteness-criterion : {P : 𝓤 ̇ }
+                           → ¬ P + is-pseudo-inhabited P
+                           → is-discrete (P → 𝟚)
+P→𝟚-discreteness-criterion (inl n) f g = inl (dfunext (fe _ 𝓤₀)
+                                               (λ p → 𝟘-elim (n p)))
 P→𝟚-discreteness-criterion (inr s) f g = retract-is-discrete
                                           (≃-gives-▷ (κ _ , s))
                                           𝟚-is-discrete
@@ -190,11 +194,10 @@ pseudo-inhabitedness-wem-lemma Q h = b
   b : ¬ Q + ¬¬ Q
   b = a (inverse (κ P) h f) refl
 
-irrefutable-pseudo-inhabited-taboo :
-
- ((P : 𝓤 ̇ ) → is-prop P → ¬¬ P → is-pseudo-inhabited P) → WEM 𝓤
-
-irrefutable-pseudo-inhabited-taboo {𝓤} α Q i = pseudo-inhabitedness-wem-lemma Q h
+irrefutable-pseudo-inhabited-taboo
+ : ((P : 𝓤 ̇ ) → is-prop P → ¬¬ P → is-pseudo-inhabited P) → WEM 𝓤
+irrefutable-pseudo-inhabited-taboo {𝓤} α Q i =
+  pseudo-inhabitedness-wem-lemma Q h
  where
   P = Q + ¬ Q
 
@@ -203,9 +206,11 @@ irrefutable-pseudo-inhabited-taboo {𝓤} α Q i = pseudo-inhabitedness-wem-lemm
 
   h : is-pseudo-inhabited P
   h = α P (decidability-of-prop-is-prop (fe 𝓤 𝓤₀) i) ν
+
 \end{code}
 
-Nathanael Rosnik proved the above taboo independently within a few hours of difference here:
+Nathanael Rosnik proved the above taboo independently within a few
+hours of difference here:
 https://gist.github.com/nrosnick/922250ddcc6bd04272199f59443d7510
 
 A special case of the lemma:
@@ -215,9 +220,11 @@ A special case of the lemma:
 pseudo-inhabitedness-wem-special : (Q : 𝓤 ̇)
                                  → is-pseudo-inhabited (¬ Q + ¬¬ Q)
                                  → ¬ Q + ¬¬ Q
-pseudo-inhabitedness-wem-special Q h = Cases (pseudo-inhabitedness-wem-lemma (¬ Q) h)
-                                        inr
-                                        (inl ∘ three-negations-imply-one)
+pseudo-inhabitedness-wem-special Q h =
+ Cases (pseudo-inhabitedness-wem-lemma (¬ Q) h)
+  inr
+  (inl ∘ three-negations-imply-one)
+
 \end{code}
 
 
@@ -259,10 +266,12 @@ _♯ {𝓤} {𝓥} {X} {Y} h (r , rκ) = q
   → is-pseudo-inhabited' X
 μ X = id ♯
 
-being-pseudo-inhabited'-is-prop : {X : 𝓤 ̇ } → is-prop X → is-prop (is-pseudo-inhabited' X)
+being-pseudo-inhabited'-is-prop : {X : 𝓤 ̇ }
+                                → is-prop X
+                                → is-prop (is-pseudo-inhabited' X)
 being-pseudo-inhabited'-is-prop {𝓤} {X} i =
  prop-criterion
   (λ (r , rκ) → sections-have-at-most-one-retraction fe (κ X)
-               (r , retraction-of-κ-is-section i r rκ))
+                 (r , retraction-of-κ-is-section i r rκ))
 
 \end{code}
