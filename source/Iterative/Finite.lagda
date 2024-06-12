@@ -1,34 +1,64 @@
-Alice Laroche, 26th September 2023
-
+Alice Laroche , 26th September 2023
 \begin{code}
 
 {-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan
-open import UF.Univalence
-
-module Various.File2
-        (ua : Univalence)
-        (𝓤 : Universe)
-       where
-
 open import MLTT.NaturalNumbers
 open import UF.Base
 open import UF.DiscreteAndSeparated
 open import UF.Embeddings
 open import UF.Sets
 open import UF.Subsingletons
+open import UF.Univalence
 open import W.Type
+
+module Iterative.Finite
+        (ua : Univalence)
+        (𝓤 : Universe)
+       where
+
 open import Iterative.Multisets 𝓤
 open import Iterative.Multisets-Addendum ua 𝓤
 open import Iterative.Sets ua 𝓤
 open import Iterative.Sets-Addendum ua 𝓤
 open import Iterative.Ordinals ua 𝓤
-open import Various.File1 ua 𝓤
 
-𝕄-dont-contain-themselves : (M : 𝕄) → ¬ (M ⁅ M)
-𝕄-dont-contain-themselves (ssup X φ) (x , eq) =
- 𝕄-dont-contain-themselves (φ x) (y , eq')
+𝟘ⱽ-is-transitive-iset : is-transitive-iset 𝟘ⱽ
+𝟘ⱽ-is-transitive-iset v₁ v₂ v₁⁅𝟘ⱽ =  𝟘-elim (pr₁ v₁⁅𝟘ⱽ)
+
+𝟘ⱽ-has-transitive-members : has-transitive-members 𝟘ⱽ
+𝟘ⱽ-has-transitive-members v₁ v₁⁅𝟘ⱽ = 𝟘-elim (pr₁ v₁⁅𝟘ⱽ)
+
+𝟘ⱽ-is-iordinal : is-iterative-ordinal 𝟘ⱽ
+𝟘ⱽ-is-iordinal = 𝟘ⱽ-is-transitive-iset , 𝟘ⱽ-has-transitive-members
+
+𝟘ᴼ : 𝕆
+𝟘ᴼ = 𝟘ⱽ , 𝟘ⱽ-is-iordinal
+
+𝟙ⱽ-is-transitive-iset : is-transitive-iset 𝟙ⱽ
+𝟙ⱽ-is-transitive-iset v₁ v₂ (⋆ , p) (b , q) =
+ ⋆ , 𝟘-elim (transport (𝕄-root) (p ⁻¹) b)
+
+𝟙ⱽ-has-transitive-members : has-transitive-members 𝟙ⱽ
+𝟙ⱽ-has-transitive-members v₁ (⋆ , p) = II
+ where
+  I : 𝟘ⱽ ＝ v₁
+  I = to-subtype-＝ being-iset-is-prop p
+
+  II : is-transitive-iset v₁
+  II = transport is-transitive-iset I 𝟘ⱽ-is-transitive-iset 
+  
+𝟙ⱽ-is-iordinal : is-iterative-ordinal 𝟙ⱽ
+𝟙ⱽ-is-iordinal = 𝟙ⱽ-is-transitive-iset , 𝟙ⱽ-has-transitive-members
+
+𝟙ᴼ : 𝕆
+𝟙ᴼ = 𝟙ⱽ , 𝟙ⱽ-is-iordinal
+
+
+⁅-is-irreflexive : (M : 𝕄) → ¬ (M ⁅ M)
+⁅-is-irreflexive (ssup X φ) (x , eq) =
+ ⁅-is-irreflexive (φ x) (y , eq')
  where
   y : 𝕄-root (φ x)
   y = transport⁻¹ 𝕄-root eq x
@@ -58,7 +88,7 @@ succᴹ-preserves-iset M is-iset = III , IV
   III = disjoint-cases-embedding _ _
          (𝕄-forest-is-embedding M is-iset)
          II
-         (λ x ⋆ eq → 𝕄-dont-contain-themselves M (x , eq))
+         (λ x ⋆ eq → ⁅-is-irreflexive M (x , eq))
 
   IV : (x : 𝕄-root (succᴹ M)) → is-iterative-set (𝕄-forest (succᴹ M) x)
   IV = dep-cases (𝕄-subtrees-are-iterative M is-iset) (λ ⋆ → is-iset)
@@ -66,8 +96,8 @@ succᴹ-preserves-iset M is-iset = III , IV
 ℕ-to-𝕄-gives-iset : (n : ℕ) → is-iterative-set (ℕ-to-𝕄 n)
 ℕ-to-𝕄-gives-iset zero     = 𝟘ᴹ-is-iset
 ℕ-to-𝕄-gives-iset (succ n) = succᴹ-preserves-iset
-                              (ℕ-to-𝕄 n)
-                              (ℕ-to-𝕄-gives-iset n)
+                               (ℕ-to-𝕄 n)
+                               (ℕ-to-𝕄-gives-iset n)
 
 succⱽ : 𝕍 → 𝕍
 succⱽ (M , M-is-iset) = succᴹ M , succᴹ-preserves-iset M M-is-iset
