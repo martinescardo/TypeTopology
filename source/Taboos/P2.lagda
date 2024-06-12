@@ -30,6 +30,40 @@ open import UF.Subsingletons-FunExt
 κ : (P : 𝓤 ̇ ) → 𝟚 → (P → 𝟚)
 κ P n = λ _ → n
 
+κ-remark : (P : 𝓤 ̇ ) → (κ P ₀ ＝ κ P ₁) ↔ ¬ P
+κ-remark {𝓤} P = (f , g)
+ where
+  κ₀ = κ P ₀
+  κ₁ = κ P ₁
+
+  f : κ₀ ＝ κ₁ → ¬ P
+  f e p = zero-is-not-one
+           (₀    ＝⟨ refl ⟩
+            κ₀ p ＝⟨ happly e p ⟩
+            κ₁ p ＝⟨ refl ⟩
+            ₁    ∎)
+
+  g : ¬ P → κ₀ ＝ κ₁
+  g ν = dfunext (fe 𝓤 𝓤₀) (λ (p : P) → 𝟘-elim (ν p))
+
+κ-remark' : (P : 𝓤 ̇ ) → (κ P ₀ ≠ κ P ₁) ↔ ¬¬ P
+κ-remark' {𝓤} P = I (κ-remark P)
+ where
+  κ₀ = κ P ₀
+  κ₁ = κ P ₁
+
+  I : type-of (κ-remark P) → (κ₀ ≠ κ₁) ↔ ¬¬ P
+  I (f , g) = contrapositive g ,
+              (λ (ν : ¬¬ P) (e : κ₀ ＝ κ₁) → ν (f e))
+
+\end{code}
+
+The following makes sense when P is a proposition. (Then we could say
+that a type X is pseudo-inhabited if the proposition ∥ X ∥ is
+pseudo-inhabited.)
+
+\begin{code}
+
 is-pseudo-inhabited : 𝓤 ̇ → 𝓤 ̇
 is-pseudo-inhabited P = is-equiv (κ P)
 
@@ -59,6 +93,13 @@ retraction-of-κ-is-section {𝓤} {P} i r h f = IV
   IV : κ P (r f) ＝ f
   IV = fe₀ I
 
+\end{code}
+
+TODO. In light of the above, is-pseudo-inhabited' X should be a
+proposition.
+
+\begin{code}
+
 pseudo-inhabitedness-criterion : {P : 𝓤 ̇ }
                                → is-prop P
                                → is-pseudo-inhabited' P
@@ -84,6 +125,13 @@ inhabited-gives-pseudo-inhabited {𝓤} {P} i p =
   γκ : γ ∘ κ P ∼ id
   γκ n = refl
 
+\end{code}
+
+We will later see that the following implication can't be reversed
+unless weak excluded middle holds:
+
+\begin{code}
+
 pseudo-inhabited-gives-irrefutable : {P : 𝓤 ̇ }
                                    → is-pseudo-inhabited P
                                    → ¬¬ P
@@ -103,6 +151,12 @@ pseudo-inhabited-gives-irrefutable-special : {P : 𝓤 ̇ }
                                            → ¬ P
 pseudo-inhabited-gives-irrefutable-special h =
  three-negations-imply-one (pseudo-inhabited-gives-irrefutable h)
+
+pseudo-inhabited-gives-irrefutable-special' : {P : 𝓤 ̇ }
+                                            → is-pseudo-inhabited (¬¬ P)
+                                            → ¬¬ P
+pseudo-inhabited-gives-irrefutable-special' =
+ pseudo-inhabited-gives-irrefutable-special
 
 P→𝟚-discreteness-criterion : {P : 𝓤 ̇ }
                            → ¬ P + is-pseudo-inhabited P
@@ -151,6 +205,9 @@ P→𝟚-discreteness-criterion-necessity {𝓤} {P} i δ = ϕ (δ (κ P ₀) (�
 Added 25th March 2022. If every irrefutable proposition is
 pseudo-inhabited, then weak excluded middle holds.
 
+TODO. We should actually have the stronger implication
+is-pseudo-inhabited (Q + ¬ Q) → ¬ Q + ¬¬ Q with a similar proof.
+
 \begin{code}
 
 pseudo-inhabitedness-wem-lemma : (Q : 𝓤 ̇)
@@ -164,35 +221,36 @@ pseudo-inhabitedness-wem-lemma Q h = b
   f (inl _) = ₀
   f (inr _) = ₁
 
-  a : (n : 𝟚) → inverse (κ P) h f ＝ n → ¬ Q + ¬¬ Q
+  n : 𝟚
+  n = inverse (κ P) h f
+
+  a : (k : 𝟚) → n ＝ k → ¬ Q + ¬¬ Q
   a ₀ e = inr ϕ
    where
-    I = f                       ＝⟨ (inverses-are-sections (κ P) h f)⁻¹ ⟩
-        κ P (inverse (κ P) h f) ＝⟨ ap (κ P) e ⟩
-        (λ _ → ₀)               ∎
+    I = f         ＝⟨ (inverses-are-sections (κ P) h f)⁻¹ ⟩
+        κ P n     ＝⟨ ap (κ P) e ⟩
+        (λ _ → ₀) ∎
 
     ϕ : ¬¬ Q
-    ϕ u = zero-is-not-one II
-     where
-      II = ₀         ＝⟨ (ap (λ - → - (inr u)) I)⁻¹ ⟩
-           f (inr u) ＝⟨ refl ⟩
-           ₁         ∎
+    ϕ u = zero-is-not-one
+           (₀         ＝⟨ (ap (λ - → - (inr u)) I)⁻¹ ⟩
+            f (inr u) ＝⟨ refl ⟩
+            ₁         ∎)
 
   a ₁ e = inl u
    where
-    I = f                       ＝⟨ (inverses-are-sections (κ P) h f)⁻¹ ⟩
-        κ P (inverse (κ P) h f) ＝⟨ ap (κ P) e ⟩
-        (λ _ → ₁)               ∎
+    I = f         ＝⟨ (inverses-are-sections (κ P) h f)⁻¹ ⟩
+        κ P n     ＝⟨ ap (κ P) e ⟩
+        (λ _ → ₁) ∎
 
     u : ¬ Q
-    u q = zero-is-not-one II
-     where
-      II = ₀         ＝⟨ refl ⟩
-           f (inl q) ＝⟨ ap (λ - → - (inl q)) I ⟩
-           ₁         ∎
+    u q = zero-is-not-one
+           (₀         ＝⟨ refl ⟩
+            f (inl q) ＝⟨ ap (λ - → - (inl q)) I ⟩
+            ₁         ∎)
 
   b : ¬ Q + ¬¬ Q
-  b = a (inverse (κ P) h f) refl
+  b = a n refl
 
 irrefutable-pseudo-inhabited-taboo
  : ((P : 𝓤 ̇ ) → is-prop P → ¬¬ P → is-pseudo-inhabited P) → WEM 𝓤
@@ -230,12 +288,14 @@ pseudo-inhabitedness-wem-special Q h =
 
 TODO. Derive a constructive taboo from the hypothesis
 
-      ((P : 𝓤 ̇ ) → is-prop P → is-pseudo-inhabited P → P).
+      (P : 𝓤 ̇ ) → is-prop P → is-pseudo-inhabited P → P.
+
+A monad on propositions (or even on all types?).
 
 \begin{code}
 
-η : (X : 𝓤 ̇ ) → X → is-pseudo-inhabited' X
-η X x = (λ f → f x) , (λ n → refl)
+η : {X : 𝓤 ̇ } → X → is-pseudo-inhabited' X
+η x = (λ f → f x) , (λ n → refl)
 
 _♯ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
    → (X → is-pseudo-inhabited' Y)
@@ -260,6 +320,11 @@ _♯ {𝓤} {𝓥} {X} {Y} h (r , rκ) = q
 
   q : is-pseudo-inhabited' Y
   q = u , v
+
+functor : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+        → (X → Y)
+        → (is-pseudo-inhabited' X → is-pseudo-inhabited' Y)
+functor f = (η ∘ f) ♯
 
 μ : (X : 𝓤 ̇ )
   → is-pseudo-inhabited' (is-pseudo-inhabited' X)
