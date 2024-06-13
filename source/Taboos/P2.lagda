@@ -393,6 +393,39 @@ module retraction-monad where
 TODO. It doesn't seem to be possible to give the structure of a monad
 to is-thinly-inhabited.
 
+Added 13th June 2024. The homotopy circle S¹ is thinly populated
+because, being a connected 1-type, all functions S¹ → 𝟚 are constant
+as 𝟚 is a set. As another example, the type ℝ of Dedekind reals is a
+set, but still there may be no function ℝ → 𝟚 other than the constant
+functions, because "all functions ℝ → 𝟚" are continuous is a
+consistent axiom. But if a totally separated type (which is
+necessarily a set) is thinly populated, then it must be a proposition.
+
+\begin{code}
+
+open import TypeTopology.TotallySeparated
+
+thin-totally-separated-types-are-props : {X : 𝓤 ̇ }
+                                       → is-totally-separated X
+                                       → is-thinly-populated X
+                                       → is-prop X
+thin-totally-separated-types-are-props {𝓤} {X} ts tp x y = II
+ where
+  e : 𝟚 ≃ (X → 𝟚)
+  e = σ X , tp
+
+  I : (f : X → 𝟚) → f x ＝ f y
+  I f = f x                 ＝⟨ happly ((inverses-are-sections' e f)⁻¹) x ⟩
+        ⌜ e ⌝ (⌜ e ⌝⁻¹ f) x ＝⟨ refl ⟩
+        ⌜ e ⌝⁻¹ f           ＝⟨ refl ⟩
+        ⌜ e ⌝ (⌜ e ⌝⁻¹ f) y ＝⟨ happly (inverses-are-sections' e f) y ⟩
+        f y                 ∎
+
+  II : x ＝ y
+  II = ts I
+
+\end{code}
+
 TODO. Derive a constructive taboo from the hypothesis
 
       (P : 𝓤 ̇ ) → is-prop P → is-thinly-populated P → P.
