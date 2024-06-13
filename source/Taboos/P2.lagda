@@ -395,7 +395,7 @@ A minor observation:
 \begin{code}
 
 inhabited₂-wem-special : (X : 𝓤 ̇)
-                       → is-inhabited₂ (is-empty X + is-nonempty X)
+                       → holds₂ (is-empty X + is-nonempty X)
                        → is-empty X + is-nonempty X
 inhabited₂-wem-special X h =
  Cases (inhabited₂-wem-lemma (¬ X) h)
@@ -487,9 +487,9 @@ inhabited₂-types-are-connected₂ {𝓤} {X} tp x y = I
         p y                 ∎
 
 totally-separated-inhabited₂-types-are-props : {X : 𝓤 ̇ }
-                                                   → is-totally-separated X
-                                                   → is-inhabited₂ X
-                                                   → is-prop X
+                                             → is-totally-separated X
+                                             → is-inhabited₂ X
+                                             → is-prop X
 totally-separated-inhabited₂-types-are-props ts tp x y = I
  where
   I : x ＝ y
