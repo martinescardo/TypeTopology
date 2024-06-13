@@ -401,28 +401,38 @@ functions, because "all functions ℝ → 𝟚" are continuous is a
 consistent axiom. But if a totally separated type (which is
 necessarily a set) is thinly populated, then it must be a proposition.
 
+Recall that x ＝₂ y is defined to mean that p x = p y for all p : X → 𝟚,
+that is, x and y satisfy the same boolean-valued properties. When
+all x ＝₂ y holds for all x and y in X, we say that X is connected₂.
+
 \begin{code}
 
 open import TypeTopology.TotallySeparated
+open import TypeTopology.DisconnectedTypes
 
-thin-totally-separated-types-are-props : {X : 𝓤 ̇ }
-                                       → is-totally-separated X
-                                       → is-thinly-populated X
-                                       → is-prop X
-thin-totally-separated-types-are-props {𝓤} {X} ts tp x y = II
+thinly-populated-types-are-connected₂ : {X : 𝓤 ̇ }
+                                      → is-thinly-populated X
+                                      → is-connected₂ X
+thinly-populated-types-are-connected₂ {𝓤} {X} tp x y = I
  where
   e : 𝟚 ≃ (X → 𝟚)
   e = σ X , tp
 
-  I : (f : X → 𝟚) → f x ＝ f y
-  I f = f x                 ＝⟨ happly ((inverses-are-sections' e f)⁻¹) x ⟩
-        ⌜ e ⌝ (⌜ e ⌝⁻¹ f) x ＝⟨ refl ⟩
-        ⌜ e ⌝⁻¹ f           ＝⟨ refl ⟩
-        ⌜ e ⌝ (⌜ e ⌝⁻¹ f) y ＝⟨ happly (inverses-are-sections' e f) y ⟩
-        f y                 ∎
+  I : (p : X → 𝟚) → p x ＝ p y
+  I p = p x                 ＝⟨ happly ((inverses-are-sections' e p)⁻¹) x ⟩
+        ⌜ e ⌝ (⌜ e ⌝⁻¹ p) x ＝⟨ refl ⟩
+        ⌜ e ⌝⁻¹ p           ＝⟨ refl ⟩
+        ⌜ e ⌝ (⌜ e ⌝⁻¹ p) y ＝⟨ happly (inverses-are-sections' e p) y ⟩
+        p y                 ∎
 
-  II : x ＝ y
-  II = ts I
+totally-separated-thinly-populated-types-are-props : {X : 𝓤 ̇ }
+                                                   → is-totally-separated X
+                                                   → is-thinly-populated X
+                                                   → is-prop X
+totally-separated-thinly-populated-types-are-props ts tp x y = I
+ where
+  I : x ＝ y
+  I = ts (thinly-populated-types-are-connected₂ tp x y)
 
 \end{code}
 
