@@ -1,4 +1,4 @@
-Martin Escardo, 24th March 2022
+Martin Escardo, 24th March 2022 with minor improvements June 2024.
 
 This file is a apropos the discussion at the end of the file
 Ordinals.NotationInterpretation2.
@@ -10,10 +10,11 @@ Ordinals.NotationInterpretation2.
 open import MLTT.Spartan
 open import UF.FunExt
 
-module Taboos.P2 (fe : FunExt) where
+module Taboos.P2 (fe : Fun-Ext) where
 
-fe₀ : {𝓤 : Universe} → DN-funext 𝓤 𝓤₀
-fe₀ {𝓤} = dfunext (fe 𝓤 𝓤₀)
+private
+ fe' : FunExt
+ fe' 𝓤 𝓥 = fe {𝓤} {𝓥}
 
 open import MLTT.Two
 open import MLTT.Two-Properties
@@ -27,247 +28,306 @@ open import UF.Retracts
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
-κ : (P : 𝓤 ̇ ) → 𝟚 → (P → 𝟚)
-κ P n = λ _ → n
+σ : (X : 𝓤 ̇ ) → 𝟚 → (X → 𝟚)
+σ X n = λ _ → n
 
-κ-remark : (P : 𝓤 ̇ ) → (κ P ₀ ＝ κ P ₁) ↔ ¬ P
-κ-remark {𝓤} P = (f , g)
+\end{code}
+
+Abbreviations.
+
+\begin{code}
+
+σ₀ : {X : 𝓤 ̇ } → (X → 𝟚)
+σ₀ {𝓤} {X} = σ X ₀
+
+σ₁ : {X : 𝓤 ̇ } → (X → 𝟚)
+σ₁ {𝓤} {X} = σ X ₁
+
+\end{code}
+
+Recall that we say that a type X is empty to mean ¬ X, that is X → 𝟘,
+and nonempty to mean ¬¬ X.
+
+\begin{code}
+
+emptiness-criterion : (X : 𝓤 ̇ ) → is-empty X ↔ (σ₀ ＝ σ₁)
+emptiness-criterion {𝓤} X = (f , g)
  where
-  κ₀ = κ P ₀
-  κ₁ = κ P ₁
+  f : ¬ X → σ₀ ＝ σ₁
+  f ν = dfunext fe (λ (x : X) → 𝟘-elim (ν x))
 
-  f : κ₀ ＝ κ₁ → ¬ P
-  f e p = zero-is-not-one
+  g : σ₀ ＝ σ₁ → ¬ X
+  g e x = zero-is-not-one
            (₀    ＝⟨ refl ⟩
-            κ₀ p ＝⟨ happly e p ⟩
-            κ₁ p ＝⟨ refl ⟩
+            σ₀ x ＝⟨ happly e x ⟩
+            σ₁ x ＝⟨ refl ⟩
             ₁    ∎)
 
-  g : ¬ P → κ₀ ＝ κ₁
-  g ν = dfunext (fe 𝓤 𝓤₀) (λ (p : P) → 𝟘-elim (ν p))
-
-κ-remark' : (P : 𝓤 ̇ ) → (κ P ₀ ≠ κ P ₁) ↔ ¬¬ P
-κ-remark' {𝓤} P = I (κ-remark P)
+nonemptiness-criterion : (X : 𝓤 ̇ ) → is-nonempty X ↔ (σ₀ ≠ σ₁)
+nonemptiness-criterion {𝓤} X = I (emptiness-criterion X)
  where
-  κ₀ = κ P ₀
-  κ₁ = κ P ₁
-
-  I : type-of (κ-remark P) → (κ₀ ≠ κ₁) ↔ ¬¬ P
-  I (f , g) = contrapositive g ,
-              (λ (ν : ¬¬ P) (e : κ₀ ＝ κ₁) → ν (f e))
+  I : type-of (emptiness-criterion X) → ¬¬ X ↔ (σ₀ ≠ σ₁)
+  I (f , g) = (λ (ν : ¬¬ X) (e : σ₀ ＝ σ₁) → ν (g e)) ,
+              contrapositive f
 
 \end{code}
 
-The following makes sense when P is a proposition. (Then we could say
-that a type X is pseudo-inhabited if the proposition ∥ X ∥ is
-pseudo-inhabited.)
+The main notion studied in this file is the following.
 
 \begin{code}
 
-is-pseudo-inhabited : 𝓤 ̇ → 𝓤 ̇
-is-pseudo-inhabited P = is-equiv (κ P)
+is-thinly-populated : 𝓤 ̇ → 𝓤 ̇
+is-thinly-populated X = is-equiv (σ X)
 
-is-pseudo-inhabited' : 𝓤 ̇ → 𝓤 ̇
-is-pseudo-inhabited' P = is-section (κ P)
+being-thinly-populated-is-prop : {X : 𝓤 ̇ } → is-prop (is-thinly-populated X)
+being-thinly-populated-is-prop {𝓤} {X} = being-equiv-is-prop fe' (σ X)
 
-retraction-of-κ-is-section : {P : 𝓤 ̇ }
+\end{code}
+
+For propositions X, this is equivalent to the map σ X having a
+retraction ρ.
+
+                            σ X
+                          𝟚  ↪  (X → 𝟚)
+                          𝟚  ↞  (X → 𝟚)
+                             ρ
+
+In general there can be many maps ρ with ρ ∘ σ X ∼ id, but there is at
+most one if X is a proposition:
+
+\begin{code}
+
+retraction-of-σ-is-section : {P : 𝓤 ̇ }
                            → is-prop P
-                           → (r : (P → 𝟚) → 𝟚)
-                           → r ∘ κ P ∼ id
-                           → κ P ∘ r ∼ id
-retraction-of-κ-is-section {𝓤} {P} i r h f = IV
+                           → (ρ : (P → 𝟚) → 𝟚)
+                           → ρ ∘ σ P ∼ id
+                           → σ P ∘ ρ ∼ id
+retraction-of-σ-is-section {𝓤} {P} i ρ h f = IV
  where
-  I : (p : P) → r f ＝ f p
-  I p = r f           ＝⟨ ap r III ⟩
-        r (κ P (f p)) ＝⟨ h (f p) ⟩
+  I : (p : P) → ρ f ＝ f p
+  I p = ρ f           ＝⟨ ap ρ III ⟩
+        ρ (σ P (f p)) ＝⟨ h (f p) ⟩
         f p           ∎
    where
-    II : f ∼ κ P (f p)
+    II : f ∼ σ P (f p)
     II q = f q         ＝⟨ ap f (i q p) ⟩
            f p         ＝⟨ refl ⟩
-           κ P (f p) q ∎
+           σ P (f p) q ∎
 
-    III : f ＝ κ P (f p)
-    III = fe₀ II
+    III : f ＝ σ P (f p)
+    III = dfunext fe II
 
-  IV : κ P (r f) ＝ f
-  IV = fe₀ I
+  IV : σ P (ρ f) ＝ f
+  IV = dfunext fe I
+
+σ-having-retraction-is-prop : {X : 𝓤 ̇ }
+                            → is-prop X
+                            → is-prop (has-retraction (σ X))
+σ-having-retraction-is-prop {𝓤} {X} i =
+ prop-criterion
+  (λ (ρ , ρσ) → sections-have-at-most-one-retraction fe' (σ X)
+                 (ρ , retraction-of-σ-is-section i ρ ρσ))
+
+retraction-of-σ-gives-thin-populatedness : {P : 𝓤 ̇ }
+                                         → is-prop P
+                                         → has-retraction (σ P)
+                                         → is-thinly-populated P
+retraction-of-σ-gives-thin-populatedness {𝓤} {P} i (ρ , ρσ) =
+ qinvs-are-equivs (σ P) (ρ , ρσ , retraction-of-σ-is-section i ρ ρσ)
 
 \end{code}
 
-TODO. In light of the above, is-pseudo-inhabited' X should be a
-proposition.
+For the converse we don't need X to be a proposition, of course.
 
 \begin{code}
 
-pseudo-inhabitedness-criterion : {P : 𝓤 ̇ }
-                               → is-prop P
-                               → is-pseudo-inhabited' P
-                               → is-pseudo-inhabited  P
-pseudo-inhabitedness-criterion {𝓤} {P} i (r , rκ) =
- qinvs-are-equivs (κ P) (r , rκ , retraction-of-κ-is-section i r rκ)
+thin-populatedness-gives-retraction-of-σ : {X : 𝓤 ̇ }
+                                         → is-thinly-populated X
+                                         → has-retraction (σ X)
+thin-populatedness-gives-retraction-of-σ {𝓤} {X} = equivs-are-sections (σ X)
 
-pseudo-inhabitedness-criterion-necessity : {P : 𝓤 ̇ }
-                                         → is-pseudo-inhabited P
-                                         → is-pseudo-inhabited' P
-pseudo-inhabitedness-criterion-necessity {𝓤} {P} = equivs-are-sections (κ P)
-
-inhabited-gives-pseudo-inhabited : {P : 𝓤 ̇ }
-                                 → is-prop P
-                                 → P
-                                 → is-pseudo-inhabited P
-inhabited-gives-pseudo-inhabited {𝓤} {P} i p =
-  pseudo-inhabitedness-criterion i (γ , γκ)
+point-gives-retraction-of-σ : {X : 𝓤 ̇ }
+                            → X
+                            → has-retraction (σ X)
+point-gives-retraction-of-σ {𝓤} {X} x = (γ , γσ)
  where
-  γ : (P → 𝟚) → 𝟚
-  γ f = f p
+  γ : (X → 𝟚) → 𝟚
+  γ f = f x
 
-  γκ : γ ∘ κ P ∼ id
-  γκ n = refl
+  γσ : γ ∘ σ X ∼ id
+  γσ n = refl
+
+\end{code}
+
+Notice, however, that pointed types X other than propositions are not
+thinly-populated in general. An example is the type X := 𝟚, because there
+are four maps X → 𝟚 in this case, and we need exactly two to have an
+equivalence.
+
+\begin{code}
+
+point-gives-thinly-populated : {P : 𝓤 ̇ }
+                             → is-prop P
+                             → P
+                             → is-thinly-populated P
+point-gives-thinly-populated {𝓤} {P} i p =
+ retraction-of-σ-gives-thin-populatedness i (point-gives-retraction-of-σ p)
 
 \end{code}
 
 We will later see that the following implication can't be reversed
-unless weak excluded middle holds:
+unless weak excluded middle holds, so that being thinly populated is
+stronger, in general, than being nonempty.
 
 \begin{code}
 
-pseudo-inhabited-gives-irrefutable : {P : 𝓤 ̇ }
-                                   → is-pseudo-inhabited P
-                                   → ¬¬ P
-pseudo-inhabited-gives-irrefutable {𝓤} {P} e n = zero-is-not-one II
+thinly-populated-gives-nonempty : {X : 𝓤 ̇ }
+                                → is-thinly-populated X
+                                → is-nonempty X
+thinly-populated-gives-nonempty {𝓤} {X} e ν = zero-is-not-one II
  where
-  I : inverse (κ P) e (κ P ₀) ＝ inverse (κ P) e (κ P ₁)
-  I = ap (inverse (κ P) e) (κ P ₀ ＝⟨ fe₀ (λ p → 𝟘-elim (n p)) ⟩
-                            κ P ₁ ∎)
+  I : inverse (σ X) e σ₀ ＝ inverse (σ X) e σ₁
+  I = ap (inverse (σ X) e) (σ₀ ＝⟨ dfunext fe (λ x → 𝟘-elim (ν x)) ⟩
+                            σ₁ ∎)
 
-  II = ₀                       ＝⟨ (inverses-are-retractions (κ P) e ₀)⁻¹ ⟩
-       inverse (κ P) e (κ P ₀) ＝⟨ I ⟩
-       inverse (κ P) e (κ P ₁) ＝⟨ inverses-are-retractions (κ P) e ₁ ⟩
+  II = ₀                       ＝⟨ (inverses-are-retractions (σ X) e ₀)⁻¹ ⟩
+       inverse (σ X) e (σ X ₀) ＝⟨ I ⟩
+       inverse (σ X) e (σ X ₁) ＝⟨ inverses-are-retractions (σ X) e ₁ ⟩
        ₁                       ∎
 
-pseudo-inhabited-gives-irrefutable-special : {P : 𝓤 ̇ }
-                                           → is-pseudo-inhabited (¬ P)
-                                           → ¬ P
-pseudo-inhabited-gives-irrefutable-special h =
- three-negations-imply-one (pseudo-inhabited-gives-irrefutable h)
+\end{code}
 
-pseudo-inhabited-gives-irrefutable-special' : {P : 𝓤 ̇ }
-                                            → is-pseudo-inhabited (¬¬ P)
-                                            → ¬¬ P
-pseudo-inhabited-gives-irrefutable-special' =
- pseudo-inhabited-gives-irrefutable-special
+In some cases the above implication P → is-thinly-populated P can be
+reversed:
 
-P→𝟚-discreteness-criterion : {P : 𝓤 ̇ }
-                           → ¬ P + is-pseudo-inhabited P
-                           → is-discrete (P → 𝟚)
-P→𝟚-discreteness-criterion (inl n) f g = inl (dfunext (fe _ 𝓤₀)
-                                               (λ p → 𝟘-elim (n p)))
-P→𝟚-discreteness-criterion (inr s) f g = retract-is-discrete
-                                          (≃-gives-▷ (κ _ , s))
+\begin{code}
+
+thinly-populated-emptiness-gives-emptiness : {X : 𝓤 ̇ }
+                                           → is-thinly-populated (is-empty X)
+                                           → is-empty X
+thinly-populated-emptiness-gives-emptiness h =
+ three-negations-imply-one (thinly-populated-gives-nonempty h)
+
+thinly-populated-nonemptiness-gives-nonemptiness : {X : 𝓤 ̇ }
+                                                 → is-thinly-populated (is-nonempty X)
+                                                 → is-nonempty X
+thinly-populated-nonemptiness-gives-nonemptiness {𝓤} {X} =
+ thinly-populated-emptiness-gives-emptiness {𝓤} {is-empty X}
+
+X→𝟚-discreteness-criterion : {X : 𝓤 ̇ }
+                           → is-empty X + is-thinly-populated X
+                           → is-discrete (X → 𝟚)
+X→𝟚-discreteness-criterion (inl ν) f g = inl (dfunext fe (λ x → 𝟘-elim (ν x)))
+X→𝟚-discreteness-criterion (inr h) f g = retract-is-discrete
+                                          (≃-gives-▷ (σ _ , h))
                                           𝟚-is-discrete
                                           f g
 
 P→𝟚-discreteness-criterion-necessity : {P : 𝓤 ̇ }
                                      → is-prop P
                                      → is-discrete (P → 𝟚)
-                                     → ¬ P + is-pseudo-inhabited P
-P→𝟚-discreteness-criterion-necessity {𝓤} {P} i δ = ϕ (δ (κ P ₀) (κ P ₁))
+                                     → ¬ P + is-thinly-populated P
+P→𝟚-discreteness-criterion-necessity {𝓤} {P} i δ = ϕ (δ σ₀ σ₁)
  where
-  ϕ : is-decidable (κ P ₀ ＝ κ P ₁) → ¬ P + is-pseudo-inhabited P
+  ϕ : is-decidable (σ₀ ＝ σ₁) → ¬ P + is-thinly-populated P
   ϕ (inl e) = inl (fact e)
    where
-    fact : κ P ₀ ＝ κ P ₁ → ¬ P
+    fact : σ₀ ＝ σ₁ → ¬ P
     fact e p = zero-is-not-one (ap (λ f → f p) e)
-  ϕ (inr n) = inr (pseudo-inhabitedness-criterion i (γ , γκ))
+  ϕ (inr n) = inr (retraction-of-σ-gives-thin-populatedness i (γ , γσ))
    where
-    h : (f : P → 𝟚) → is-decidable (f ＝ κ P ₀) → 𝟚
+    h : (f : P → 𝟚) → is-decidable (f ＝ σ₀) → 𝟚
     h f (inl _) = ₀
     h f (inr _) = ₁
 
     γ : (P → 𝟚) → 𝟚
-    γ f = h f (δ f (κ P ₀))
+    γ f = h f (δ f σ₀)
 
-    h₀ : (d : is-decidable (κ P ₀ ＝ κ P ₀)) → h (κ P ₀) d ＝ ₀
+    h₀ : (d : is-decidable (σ₀ ＝ σ₀)) → h σ₀ d ＝ ₀
     h₀ (inl _) = refl
     h₀ (inr d) = 𝟘-elim (d refl)
 
-    h₁ : (d : is-decidable (κ P ₁ ＝ κ P ₀)) → h (κ P ₁) d ＝ ₁
+    h₁ : (d : is-decidable (σ₁ ＝ σ₀)) → h σ₁ d ＝ ₁
     h₁ (inl e) = 𝟘-elim (n (e ⁻¹))
     h₁ (inr _) = refl
 
-    γκ : γ ∘ κ P ∼ id
-    γκ ₀ = h₀ (δ (κ P ₀) (κ P ₀))
-    γκ ₁ = h₁ (δ (κ P ₁) (κ P ₀))
+    γσ : γ ∘ σ P ∼ id
+    γσ ₀ = h₀ (δ σ₀ σ₀)
+    γσ ₁ = h₁ (δ σ₁ σ₀)
 
 \end{code}
 
 Added 25th March 2022. If every irrefutable proposition is
-pseudo-inhabited, then weak excluded middle holds.
-
-TODO. We should actually have the stronger implication
-is-pseudo-inhabited (Q + ¬ Q) → ¬ Q + ¬¬ Q with a similar proof.
+thinly-populated, then weak excluded middle holds.
 
 \begin{code}
 
-pseudo-inhabitedness-wem-lemma : (Q : 𝓤 ̇)
-                               → is-pseudo-inhabited (Q + ¬ Q)
-                               → ¬ Q + ¬¬ Q
-pseudo-inhabitedness-wem-lemma Q h = b
+thin-populatedness-wem-lemma : (X : 𝓤 ̇)
+                             → is-thinly-populated (X + is-empty X)
+                             → is-empty X + is-nonempty X
+thin-populatedness-wem-lemma X h = II
  where
-  P = Q + ¬ Q
+  Y = X + ¬ X
 
-  f : P → 𝟚
+  f : Y → 𝟚
   f (inl _) = ₀
   f (inr _) = ₁
 
   n : 𝟚
-  n = inverse (κ P) h f
+  n = inverse (σ Y) h f
 
-  a : (k : 𝟚) → n ＝ k → ¬ Q + ¬¬ Q
-  a ₀ e = inr ϕ
+  I : (k : 𝟚) → n ＝ k → ¬ X + is-nonempty X
+  I ₀ e = inr ϕ
    where
-    I = f         ＝⟨ (inverses-are-sections (κ P) h f)⁻¹ ⟩
-        κ P n     ＝⟨ ap (κ P) e ⟩
-        (λ _ → ₀) ∎
+    I₀ = f         ＝⟨ (inverses-are-sections (σ Y) h f)⁻¹ ⟩
+         σ Y n     ＝⟨ ap (σ Y) e ⟩
+         (λ _ → ₀) ∎
 
-    ϕ : ¬¬ Q
+    ϕ : ¬¬ X
     ϕ u = zero-is-not-one
-           (₀         ＝⟨ (ap (λ - → - (inr u)) I)⁻¹ ⟩
+           (₀         ＝⟨ (ap (λ - → - (inr u)) I₀)⁻¹ ⟩
             f (inr u) ＝⟨ refl ⟩
             ₁         ∎)
 
-  a ₁ e = inl u
+  I ₁ e = inl u
    where
-    I = f         ＝⟨ (inverses-are-sections (κ P) h f)⁻¹ ⟩
-        κ P n     ＝⟨ ap (κ P) e ⟩
-        (λ _ → ₁) ∎
+    I₁ = f         ＝⟨ (inverses-are-sections (σ Y) h f)⁻¹ ⟩
+         σ Y n     ＝⟨ ap (σ Y) e ⟩
+         (λ _ → ₁) ∎
 
-    u : ¬ Q
+    u : ¬ X
     u q = zero-is-not-one
            (₀         ＝⟨ refl ⟩
-            f (inl q) ＝⟨ ap (λ - → - (inl q)) I ⟩
+            f (inl q) ＝⟨ ap (λ - → - (inl q)) I₁ ⟩
             ₁         ∎)
 
-  b : ¬ Q + ¬¬ Q
-  b = a n refl
+  II : ¬ X + ¬¬ X
+  II = I n refl
 
-irrefutable-pseudo-inhabited-taboo
- : ((P : 𝓤 ̇ ) → is-prop P → ¬¬ P → is-pseudo-inhabited P) → WEM 𝓤
-irrefutable-pseudo-inhabited-taboo {𝓤} α Q i =
-  pseudo-inhabitedness-wem-lemma Q h
+\end{code}
+
+As promised above, thin population is stronger than nonemptiness in
+general:
+
+\begin{code}
+
+nonempty-props-are-thinly-populated-gives-WEM
+ : ((P : 𝓤 ̇ ) → is-prop P → is-nonempty P → is-thinly-populated P)
+ → WEM 𝓤
+nonempty-props-are-thinly-populated-gives-WEM {𝓤} α Q i =
+  thin-populatedness-wem-lemma Q h
  where
   P = Q + ¬ Q
 
   ν : ¬¬ P
   ν ϕ = ϕ (inr (λ q → ϕ (inl q)))
 
-  h : is-pseudo-inhabited P
-  h = α P (decidability-of-prop-is-prop (fe 𝓤 𝓤₀) i) ν
+  h : is-thinly-populated P
+  h = α P (decidability-of-prop-is-prop fe i) ν
 
 \end{code}
 
-Nathanael Rosnik proved the above taboo independently within a few
+Nathanael Rosnik proved the above independently within a few
 hours of difference here:
 https://gist.github.com/nrosnick/922250ddcc6bd04272199f59443d7510
 
@@ -275,68 +335,61 @@ A special case of the lemma:
 
 \begin{code}
 
-pseudo-inhabitedness-wem-special : (Q : 𝓤 ̇)
-                                 → is-pseudo-inhabited (¬ Q + ¬¬ Q)
-                                 → ¬ Q + ¬¬ Q
-pseudo-inhabitedness-wem-special Q h =
- Cases (pseudo-inhabitedness-wem-lemma (¬ Q) h)
+thin-populatedness-wem-special : (X : 𝓤 ̇)
+                               → is-thinly-populated (is-empty X + is-nonempty X)
+                               → is-empty X + is-nonempty X
+thin-populatedness-wem-special X h =
+ Cases (thin-populatedness-wem-lemma (¬ X) h)
   inr
   (inl ∘ three-negations-imply-one)
 
 \end{code}
 
-
 TODO. Derive a constructive taboo from the hypothesis
 
-      (P : 𝓤 ̇ ) → is-prop P → is-pseudo-inhabited P → P.
+      (P : 𝓤 ̇ ) → is-prop P → is-thinly-populated P → P.
 
-A monad on propositions (or even on all types?).
+A monad on propositions (or even a wild monad on all types?).
 
 \begin{code}
 
-η : {X : 𝓤 ̇ } → X → is-pseudo-inhabited' X
-η x = (λ f → f x) , (λ n → refl)
+module retraction-monad where
 
-_♯ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-   → (X → is-pseudo-inhabited' Y)
-   → (is-pseudo-inhabited' X → is-pseudo-inhabited' Y)
-_♯ {𝓤} {𝓥} {X} {Y} h (r , rκ) = q
- where
-  a : X → (Y → 𝟚) → 𝟚
-  a x = pr₁ (h x)
+ η : {X : 𝓤 ̇ } → X → has-retraction (σ X)
+ η x = (λ f → f x) , (λ n → refl)
 
-  b : (x : X) (n : 𝟚) → a x (κ Y n) ＝ n
-  b x = pr₂ (h x)
+ _♯ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+    → (X → has-retraction (σ Y))
+    → (has-retraction (σ X) → has-retraction (σ Y))
+ _♯ {𝓤} {𝓥} {X} {Y} h (ρ , ρσ) = q
+  where
+   a : X → (Y → 𝟚) → 𝟚
+   a x = retraction-of (σ Y) (h x)
 
-  u : (Y → 𝟚) → 𝟚
-  u g = r (λ x → a x g)
+   b : (x : X) (n : 𝟚) → a x (σ Y n) ＝ n
+   b x = retraction-equation (σ Y) (h x)
 
-  v : u ∘ κ Y ∼ id
-  v n = (u ∘ κ Y) n           ＝⟨ refl ⟩
-        r (λ x → a x (κ Y n)) ＝⟨ ap r (fe₀ (λ x → b x n)) ⟩
-        r (λ _ → n)           ＝⟨ refl ⟩
-        r (κ X n)             ＝⟨ rκ n ⟩
-        n                     ∎
+   u : (Y → 𝟚) → 𝟚
+   u g = ρ (λ x → a x g)
 
-  q : is-pseudo-inhabited' Y
-  q = u , v
+   v : u ∘ σ Y ∼ id
+   v n = (u ∘ σ Y) n           ＝⟨ refl ⟩
+         ρ (λ x → a x (σ Y n)) ＝⟨ ap ρ (dfunext fe (λ x → b x n)) ⟩
+         ρ (λ _ → n)           ＝⟨ refl ⟩
+         ρ (σ X n)             ＝⟨ ρσ n ⟩
+         n                     ∎
 
-functor : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-        → (X → Y)
-        → (is-pseudo-inhabited' X → is-pseudo-inhabited' Y)
-functor f = (η ∘ f) ♯
+   q : has-retraction (σ Y)
+   q = u , v
 
-μ : (X : 𝓤 ̇ )
-  → is-pseudo-inhabited' (is-pseudo-inhabited' X)
-  → is-pseudo-inhabited' X
-μ X = id ♯
+ functor : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+         → (X → Y)
+         → (has-retraction (σ X) → has-retraction (σ Y))
+ functor f = (η ∘ f) ♯
 
-being-pseudo-inhabited'-is-prop : {X : 𝓤 ̇ }
-                                → is-prop X
-                                → is-prop (is-pseudo-inhabited' X)
-being-pseudo-inhabited'-is-prop {𝓤} {X} i =
- prop-criterion
-  (λ (r , rκ) → sections-have-at-most-one-retraction fe (κ X)
-                 (r , retraction-of-κ-is-section i r rκ))
+ μ : (X : 𝓤 ̇ )
+   → has-retraction (σ (has-retraction (σ X)))
+   → has-retraction (σ X)
+ μ X = id ♯
 
 \end{code}

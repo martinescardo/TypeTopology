@@ -34,8 +34,8 @@ retraction-of : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (r : X → Y)
 retraction-of s (r , rs) = r
 
 retraction-equation : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (s : X → Y)
-                 → (h : has-retraction s)
-                 → retraction-of s h ∘ s ∼ id
+                    → (h : has-retraction s)
+                    → retraction-of s h ∘ s ∼ id
 retraction-equation s (r , rs) = rs
 
 sections-are-lc : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (s : X → Y)
