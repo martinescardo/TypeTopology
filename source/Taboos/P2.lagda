@@ -345,11 +345,7 @@ thin-populatedness-wem-special X h =
 
 \end{code}
 
-TODO. Derive a constructive taboo from the hypothesis
-
-      (P : 𝓤 ̇ ) → is-prop P → is-thinly-populated P → P.
-
-A monad on propositions (or even a wild monad on all types?).
+Digression. A monad on propositions (or even a wild monad on all types?).
 
 \begin{code}
 
@@ -393,3 +389,10 @@ module retraction-monad where
  μ X = id ♯
 
 \end{code}
+
+TODO. It doesn't seem to be possible to give the structure of a monad
+to is-thinly-inhabited.
+
+TODO. Derive a constructive taboo from the hypothesis
+
+      (P : 𝓤 ̇ ) → is-prop P → is-thinly-populated P → P.
