@@ -1,4 +1,5 @@
-Martin Escardo, 24th March 2022 with minor improvements June 2024.
+Martin Escardo, 24th March 2022
+with minor improvements and additions June 2024.
 
 This file is a apropos the discussion at the end of the file
 Ordinals.NotationInterpretation2.
@@ -7,7 +8,6 @@ Ordinals.NotationInterpretation2.
 
 {-# OPTIONS --safe --without-K #-}
 
-open import MLTT.Spartan
 open import UF.FunExt
 
 module Taboos.P2 (fe : Fun-Ext) where
@@ -16,17 +16,24 @@ private
  fe' : FunExt
  fe' 𝓤 𝓥 = fe {𝓤} {𝓥}
 
+open import MLTT.Spartan
 open import MLTT.Two
 open import MLTT.Two-Properties
-
 open import UF.Base
+open import UF.ClassicalLogic
 open import UF.DiscreteAndSeparated
 open import UF.Equiv
 open import UF.Equiv-FunExt
-open import UF.ClassicalLogic
 open import UF.Retracts
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
+
+\end{code}
+
+The following map plays a central role in the investigations of this
+file.
+
+\begin{code}
 
 σ : (X : 𝓤 ̇ ) → 𝟚 → (X → 𝟚)
 σ X n = λ _ → n
@@ -45,8 +52,13 @@ Abbreviations.
 
 \end{code}
 
-Recall that we say that a type X is empty to mean ¬ X, that is X → 𝟘,
+Recall that we say that a type X is empty to mean ¬ X, namely X → 𝟘,
 and nonempty to mean ¬¬ X.
+
+In general, if the type X is a proposition we will write "¬ X" rather
+than the synonym "is-empty X", and "¬¬ X" rather than the synonym
+"is-nonempty X". Also, we will pronounce "¬¬ X" as "X is irrefutable"
+when X is a proposition.
 
 \begin{code}
 
@@ -72,20 +84,48 @@ nonemptiness-criterion {𝓤} X = I (emptiness-criterion X)
 
 \end{code}
 
-The main notion studied in this file is the following.
+The main notion studied in this file is the following, which we refer
+to as "two-inhabitedness". We are mainly interested in this notion
+when X is a proposition. (But we prove below that for certain types
+called totally separated, if they are two-inhabited then they are
+necessarily propositions.)
+
+Another terminology we experimented with for this notion was "thinly
+inhabited", but, as suggestive as it may be, there may be other
+related notions which equally deserve this alternative
+terminology. But the overall idea is that in some sense the type is
+inhabited, but we may not be able get hold of any point of the type,
+and in some sense there is at most one inhabitant anyway, similarly to
+nonempty types
 
 \begin{code}
 
-is-thinly-populated : 𝓤 ̇ → 𝓤 ̇
-is-thinly-populated X = is-equiv (σ X)
+is-inhabited₂ : 𝓤 ̇ → 𝓤 ̇
+is-inhabited₂ X = is-equiv (σ X)
 
-being-thinly-populated-is-prop : {X : 𝓤 ̇ } → is-prop (is-thinly-populated X)
-being-thinly-populated-is-prop {𝓤} {X} = being-equiv-is-prop fe' (σ X)
+being-inhabited₂-is-prop : {X : 𝓤 ̇ } → is-prop (is-inhabited₂ X)
+being-inhabited₂-is-prop {𝓤} {X} = being-equiv-is-prop fe' (σ X)
 
 \end{code}
 
-For propositions X, this is equivalent to the map σ X having a
-retraction ρ.
+For a proposition P, we will use the synonym "holds₂ P" for
+"is-inhabited₂ P".
+
+\begin{code}
+
+holds₂ : 𝓤 ̇ → 𝓤 ̇
+holds₂ = is-inhabited₂
+
+\end{code}
+
+Exercise (easy but tedious, and hence I didn't implement it). A type X
+is two-inhabited if and only if there is *any* equivalence 𝟚 ≃ (X → 𝟚).
+If this gets added here, it should be added towards the end as an
+appendix (but before the main open problem), to avoid unnecessary
+distractions.
+
+For propositions X, the two-inhabitedness of X is equivalent to the
+map σ X having a retraction ρ.
 
                             σ X
                           𝟚  ↪  (X → 𝟚)
@@ -93,7 +133,8 @@ retraction ρ.
                              ρ
 
 In general there can be many maps ρ with ρ ∘ σ X ∼ id, but there is at
-most one if X is a proposition:
+most one if X is a proposition. We use the following lemma to prove
+this:
 
 \begin{code}
 
@@ -128,11 +169,11 @@ retraction-of-σ-is-section {𝓤} {P} i ρ h f = IV
   (λ (ρ , ρσ) → sections-have-at-most-one-retraction fe' (σ X)
                  (ρ , retraction-of-σ-is-section i ρ ρσ))
 
-retraction-of-σ-gives-thin-populatedness : {P : 𝓤 ̇ }
-                                         → is-prop P
-                                         → has-retraction (σ P)
-                                         → is-thinly-populated P
-retraction-of-σ-gives-thin-populatedness {𝓤} {P} i (ρ , ρσ) =
+retraction-of-σ-gives-inhabited₂ : {P : 𝓤 ̇ }
+                                 → is-prop P
+                                 → has-retraction (σ P)
+                                 → holds₂ P
+retraction-of-σ-gives-inhabited₂ {𝓤} {P} i (ρ , ρσ) =
  qinvs-are-equivs (σ P) (ρ , ρσ , retraction-of-σ-is-section i ρ ρσ)
 
 \end{code}
@@ -141,10 +182,17 @@ For the converse we don't need X to be a proposition, of course.
 
 \begin{code}
 
-thin-populatedness-gives-retraction-of-σ : {X : 𝓤 ̇ }
-                                         → is-thinly-populated X
-                                         → has-retraction (σ X)
-thin-populatedness-gives-retraction-of-σ {𝓤} {X} = equivs-are-sections (σ X)
+inhabited₂-gives-retraction-of-σ : {X : 𝓤 ̇ }
+                                 → is-inhabited₂ X
+                                 → has-retraction (σ X)
+inhabited₂-gives-retraction-of-σ {𝓤} {X} = equivs-are-sections (σ X)
+
+\end{code}
+
+Next we want to show that P → holds₂ P for any proposition P,
+and we use the following lemma.
+
+\begin{code}
 
 point-gives-retraction-of-σ : {X : 𝓤 ̇ }
                             → X
@@ -157,34 +205,30 @@ point-gives-retraction-of-σ {𝓤} {X} x = (γ , γσ)
   γσ : γ ∘ σ X ∼ id
   γσ n = refl
 
+point-gives-holds₂ : {P : 𝓤 ̇ }
+                   → is-prop P
+                   → P
+                   → holds₂ P
+point-gives-holds₂ {𝓤} {P} i p =
+ retraction-of-σ-gives-inhabited₂ i (point-gives-retraction-of-σ p)
+
 \end{code}
 
 Notice, however, that pointed types X other than propositions are not
-thinly-populated in general. An example is the type X := 𝟚, because there
+two-inhabited in general. An example is the type X := 𝟚, because there
 are four maps X → 𝟚 in this case, and we need exactly two to have an
 equivalence.
 
-\begin{code}
-
-point-gives-thinly-populated : {P : 𝓤 ̇ }
-                             → is-prop P
-                             → P
-                             → is-thinly-populated P
-point-gives-thinly-populated {𝓤} {P} i p =
- retraction-of-σ-gives-thin-populatedness i (point-gives-retraction-of-σ p)
-
-\end{code}
-
-We will later see that the following implication can't be reversed
-unless weak excluded middle holds, so that being thinly populated is
-stronger, in general, than being nonempty.
+We will see later that the following implication can't be reversed,
+even for just propositions, unless weak excluded middle holds, so that
+being two-inhabited is stronger, in general, than being nonempty.
 
 \begin{code}
 
-thinly-populated-gives-nonempty : {X : 𝓤 ̇ }
-                                → is-thinly-populated X
-                                → is-nonempty X
-thinly-populated-gives-nonempty {𝓤} {X} e ν = zero-is-not-one II
+inhabited₂-gives-nonempty : {X : 𝓤 ̇ }
+                          → is-inhabited₂ X
+                          → is-nonempty X
+inhabited₂-gives-nonempty {𝓤} {X} e ν = zero-is-not-one II
  where
   I : inverse (σ X) e σ₀ ＝ inverse (σ X) e σ₁
   I = ap (inverse (σ X) e) (σ₀ ＝⟨ dfunext fe (λ x → 𝟘-elim (ν x)) ⟩
@@ -197,25 +241,35 @@ thinly-populated-gives-nonempty {𝓤} {X} e ν = zero-is-not-one II
 
 \end{code}
 
-In some cases the above implication P → is-thinly-populated P can be
-reversed:
+In some cases the implication
+
+ X → is-inhabited₂ X
+
+can be reversed:
 
 \begin{code}
 
-thinly-populated-emptiness-gives-emptiness : {X : 𝓤 ̇ }
-                                           → is-thinly-populated (is-empty X)
-                                           → is-empty X
-thinly-populated-emptiness-gives-emptiness h =
- three-negations-imply-one (thinly-populated-gives-nonempty h)
+inhabited₂-emptiness-gives-emptiness : {X : 𝓤 ̇ }
+                                     → is-inhabited₂ (is-empty X)
+                                     → is-empty X
+inhabited₂-emptiness-gives-emptiness h =
+ three-negations-imply-one (inhabited₂-gives-nonempty h)
 
-thinly-populated-nonemptiness-gives-nonemptiness : {X : 𝓤 ̇ }
-                                                 → is-thinly-populated (is-nonempty X)
-                                                 → is-nonempty X
-thinly-populated-nonemptiness-gives-nonemptiness {𝓤} {X} =
- thinly-populated-emptiness-gives-emptiness {𝓤} {is-empty X}
+inhabited₂-nonemptiness-gives-nonemptiness : {X : 𝓤 ̇ }
+                                           → is-inhabited₂ (is-nonempty X)
+                                           → is-nonempty X
+inhabited₂-nonemptiness-gives-nonemptiness {𝓤} {X} =
+ inhabited₂-emptiness-gives-emptiness {𝓤} {is-empty X}
+
+\end{code}
+
+The following is a digression from our main aims. Recall that a type
+is called discrete if it has decidable equality.
+
+\begin{code}
 
 X→𝟚-discreteness-criterion : {X : 𝓤 ̇ }
-                           → is-empty X + is-thinly-populated X
+                           → is-empty X + is-inhabited₂ X
                            → is-discrete (X → 𝟚)
 X→𝟚-discreteness-criterion (inl ν) f g = inl (dfunext fe (λ x → 𝟘-elim (ν x)))
 X→𝟚-discreteness-criterion (inr h) f g = retract-is-discrete
@@ -226,15 +280,15 @@ X→𝟚-discreteness-criterion (inr h) f g = retract-is-discrete
 P→𝟚-discreteness-criterion-necessity : {P : 𝓤 ̇ }
                                      → is-prop P
                                      → is-discrete (P → 𝟚)
-                                     → ¬ P + is-thinly-populated P
+                                     → ¬ P + holds₂ P
 P→𝟚-discreteness-criterion-necessity {𝓤} {P} i δ = ϕ (δ σ₀ σ₁)
  where
-  ϕ : is-decidable (σ₀ ＝ σ₁) → ¬ P + is-thinly-populated P
+  ϕ : is-decidable (σ₀ ＝ σ₁) → ¬ P + holds₂ P
   ϕ (inl e) = inl (fact e)
    where
     fact : σ₀ ＝ σ₁ → ¬ P
     fact e p = zero-is-not-one (ap (λ f → f p) e)
-  ϕ (inr n) = inr (retraction-of-σ-gives-thin-populatedness i (γ , γσ))
+  ϕ (inr n) = inr (retraction-of-σ-gives-inhabited₂ i (γ , γσ))
    where
     h : (f : P → 𝟚) → is-decidable (f ＝ σ₀) → 𝟚
     h f (inl _) = ₀
@@ -257,15 +311,18 @@ P→𝟚-discreteness-criterion-necessity {𝓤} {P} i δ = ϕ (δ σ₀ σ₁)
 
 \end{code}
 
-Added 25th March 2022. If every irrefutable proposition is
-thinly-populated, then weak excluded middle holds.
+Added 25th March 2022. If every nonempty proposition is inhabited₂,
+then weak excluded middle holds. We use the following lemma to prove
+this. Recall that the principle of weak excluded middle, which is
+equivalent to De Morgan's Law, say that for every proposition P,
+either ¬ P or ¬¬ P holds.
 
 \begin{code}
 
-thin-populatedness-wem-lemma : (X : 𝓤 ̇)
-                             → is-thinly-populated (X + is-empty X)
-                             → is-empty X + is-nonempty X
-thin-populatedness-wem-lemma X h = II
+inhabited₂-wem-lemma : (X : 𝓤 ̇)
+                     → is-inhabited₂ (X + is-empty X)
+                     → is-empty X + is-nonempty X
+inhabited₂-wem-lemma X h = II
  where
   Y = X + ¬ X
 
@@ -306,23 +363,25 @@ thin-populatedness-wem-lemma X h = II
 
 \end{code}
 
-As promised above, thin population is stronger than nonemptiness in
-general:
+As promised above, two-inhabitedness is stronger than nonemptiness in
+general, because WEM is not provable or disprovable, as it is true in
+some models and false in others, and this is the main observation in
+this file so far.
 
 \begin{code}
 
-nonempty-props-are-thinly-populated-gives-WEM
- : ((P : 𝓤 ̇ ) → is-prop P → is-nonempty P → is-thinly-populated P)
+irrefutable-props-hold₂-gives-WEM
+ : ((P : 𝓤 ̇ ) → is-prop P → ¬¬ P → holds₂ P)
  → WEM 𝓤
-nonempty-props-are-thinly-populated-gives-WEM {𝓤} α Q i =
-  thin-populatedness-wem-lemma Q h
+irrefutable-props-hold₂-gives-WEM {𝓤} α Q i =
+  inhabited₂-wem-lemma Q h
  where
   P = Q + ¬ Q
 
   ν : ¬¬ P
   ν ϕ = ϕ (inr (λ q → ϕ (inl q)))
 
-  h : is-thinly-populated P
+  h : holds₂ P
   h = α P (decidability-of-prop-is-prop fe i) ν
 
 \end{code}
@@ -331,15 +390,15 @@ Nathanael Rosnik proved the above independently within a few
 hours of difference here:
 https://gist.github.com/nrosnick/922250ddcc6bd04272199f59443d7510
 
-A special case of the lemma:
+A minor observation:
 
 \begin{code}
 
-thin-populatedness-wem-special : (X : 𝓤 ̇)
-                               → is-thinly-populated (is-empty X + is-nonempty X)
-                               → is-empty X + is-nonempty X
-thin-populatedness-wem-special X h =
- Cases (thin-populatedness-wem-lemma (¬ X) h)
+inhabited₂-wem-special : (X : 𝓤 ̇)
+                       → is-inhabited₂ (is-empty X + is-nonempty X)
+                       → is-empty X + is-nonempty X
+inhabited₂-wem-special X h =
+ Cases (inhabited₂-wem-lemma (¬ X) h)
   inr
   (inl ∘ three-negations-imply-one)
 
@@ -391,29 +450,31 @@ module retraction-monad where
 \end{code}
 
 TODO. It doesn't seem to be possible to give the structure of a monad
-to is-thinly-inhabited.
+to is-inhabited₂.
 
-Added 13th June 2024. The homotopy circle S¹ is thinly populated
-because, being a connected 1-type, all functions S¹ → 𝟚 are constant
-as 𝟚 is a set. As another example, the type ℝ of Dedekind reals is a
-set, but still there may be no function ℝ → 𝟚 other than the constant
-functions, because "all functions ℝ → 𝟚" are continuous is a
+Added 13th June 2024. The homotopy circle S¹ is two-inhabited because,
+as its a connected 1-type, all functions S¹ → 𝟚 are constant as 𝟚 is a
+set. As another example, the type ℝ of Dedekind reals is a set, but
+still there may be no function ℝ → 𝟚 other than the constant
+functions, because "all functions ℝ → 𝟚 are continuous" is a
 consistent axiom. But if a totally separated type (which is
-necessarily a set) is thinly populated, then it must be a proposition.
+necessarily a set) is two-inhabited, then it must be a proposition.
 
 Recall that x ＝₂ y is defined to mean that p x = p y for all p : X → 𝟚,
 that is, x and y satisfy the same boolean-valued properties. When
-all x ＝₂ y holds for all x and y in X, we say that X is connected₂.
+all x ＝₂ y holds for all x and y in X, we say that X is
+connected₂. And recall that, in another extreme, when x ＝₂ y implies
+x ＝ y for all x and y, we say that X is totally separated.w
 
 \begin{code}
 
 open import TypeTopology.TotallySeparated
 open import TypeTopology.DisconnectedTypes
 
-thinly-populated-types-are-connected₂ : {X : 𝓤 ̇ }
-                                      → is-thinly-populated X
-                                      → is-connected₂ X
-thinly-populated-types-are-connected₂ {𝓤} {X} tp x y = I
+inhabited₂-types-are-connected₂ : {X : 𝓤 ̇ }
+                                → is-inhabited₂ X
+                                → is-connected₂ X
+inhabited₂-types-are-connected₂ {𝓤} {X} tp x y = I
  where
   e : 𝟚 ≃ (X → 𝟚)
   e = σ X , tp
@@ -425,17 +486,21 @@ thinly-populated-types-are-connected₂ {𝓤} {X} tp x y = I
         ⌜ e ⌝ (⌜ e ⌝⁻¹ p) y ＝⟨ happly (inverses-are-sections' e p) y ⟩
         p y                 ∎
 
-totally-separated-thinly-populated-types-are-props : {X : 𝓤 ̇ }
+totally-separated-inhabited₂-types-are-props : {X : 𝓤 ̇ }
                                                    → is-totally-separated X
-                                                   → is-thinly-populated X
+                                                   → is-inhabited₂ X
                                                    → is-prop X
-totally-separated-thinly-populated-types-are-props ts tp x y = I
+totally-separated-inhabited₂-types-are-props ts tp x y = I
  where
   I : x ＝ y
-  I = ts (thinly-populated-types-are-connected₂ tp x y)
+  I = ts (inhabited₂-types-are-connected₂ tp x y)
 
 \end{code}
 
 TODO. Derive a constructive taboo from the hypothesis
 
-      (P : 𝓤 ̇ ) → is-prop P → is-thinly-populated P → P.
+      (P : 𝓤 ̇ ) → is-prop P → holds₂ P → P.
+
+The difficulty, of course, is to come up with a type P which we can
+prove to be two-inhabited but (we can't prove to be pointed and)
+whose pointedness would give a constructive taboo.
