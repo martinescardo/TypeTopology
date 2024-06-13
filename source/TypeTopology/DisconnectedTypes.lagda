@@ -139,26 +139,21 @@ Some examples:
   rs ₀ = refl
   rs ₁ = refl
 
-types-with-isolated-point-different-from-another-point-are-disconnected :
+types-with-isolated-point-different-from-another-point-are-disconnected
+ : {Y : 𝓥 ̇ }
+ → (Σ y₀ ꞉ Y , Σ y₁ ꞉ Y , (y₀ ≠ y₁) × is-isolated y₀ )
+ → is-disconnected Y
+types-with-isolated-point-different-from-another-point-are-disconnected
+ (y₀ , y₁ , ne , i) = 𝟚-retract-of-non-trivial-type-with-isolated-point ne i
 
-    {Y : 𝓥 ̇ }
-  → (Σ y₀ ꞉ Y , Σ y₁ ꞉ Y , (y₀ ≠ y₁) × is-isolated y₀ )
-  → is-disconnected Y
-
-types-with-isolated-point-different-from-another-point-are-disconnected (y₀ , y₁ , ne , i) =
-  𝟚-retract-of-non-trivial-type-with-isolated-point ne i
-
-discrete-types-with-two-different-points-are-disconnected :
-
-    {Y : 𝓥 ̇ }
-  → (Σ y₀ ꞉ Y , Σ y₁ ꞉ Y , y₀ ≠ y₁)
-  → is-discrete Y
-  → is-disconnected Y
-
+discrete-types-with-two-different-points-are-disconnected
+ : {Y : 𝓥 ̇ }
+ → (Σ y₀ ꞉ Y , Σ y₁ ꞉ Y , y₀ ≠ y₁)
+ → is-discrete Y
+ → is-disconnected Y
 discrete-types-with-two-different-points-are-disconnected (y₀ , y₁ , ne) d =
   types-with-isolated-point-different-from-another-point-are-disconnected
    (y₀ , y₁ , ne , d y₀)
-
 
 ℕ-is-disconnected' : is-disconnected ℕ
 ℕ-is-disconnected' = discrete-types-with-two-different-points-are-disconnected
