@@ -501,10 +501,10 @@ totally-separated-thinly-inhabited-types-are-props : {X : 𝓤 ̇ }
                                                    → is-totally-separated X
                                                    → is-thinly-inhabited X
                                                    → is-prop X
-totally-separated-thinly-inhabited-types-are-props ts tp x y = I
+totally-separated-thinly-inhabited-types-are-props ts ti x y = I
  where
   I : x ＝ y
-  I = ts (thinly-inhabited-types-are-connected₂ tp x y)
+  I = ts (thinly-inhabited-types-are-connected₂ ti x y)
 
 \end{code}
 
