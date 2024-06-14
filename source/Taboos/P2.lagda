@@ -510,9 +510,9 @@ totally-separated-thinly-inhabited-types-are-props ts ti x y = I
 
 If replace the type 𝟚 by the type Ω of propositions in the notion of
 thin inhabitedness, then we can replace the assumption
-"is-totally-separated X" by "is-set X" to get the same conclusion. And
-if we replace 𝟚 by some universe 𝓤, no assumption is needed to
-conclude that thinly inhabited types are propositions:
+"is-totally-separated X" by "is-set X" to get the same conclusion
+(exercise). And if we replace 𝟚 by some universe 𝓤, no assumption is
+needed to conclude that thinly inhabited types are propositions:
 
 \begin{code}
 
