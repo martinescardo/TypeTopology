@@ -472,7 +472,7 @@ is a consistent axiom. But if a totally separated type (which is
 necessarily a set) is thinly inhabited, then it must be a proposition.
 
 Recall that x ＝₂ y is defined to mean that p x = p y for all p : X → 𝟚,
-that is, x and y satisfy the same boolean-valued properties. When all
+that is, x and y satisfy the same boolean-valued properties. When
 x ＝₂ y holds for all x and y in X, we say that X is connected₂. And
 recall that, in another extreme, when x ＝₂ y implies x ＝ y for all x
 and y, we say that X is totally separated.
