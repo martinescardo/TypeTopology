@@ -97,12 +97,11 @@ being-thinly-inhabited-is-prop {𝓤} {X} = being-equiv-is-prop fe' (σ X)
 \end{code}
 
 The idea of the terminology "thinly" is that there are very few
-elements in the type, but at the same time the type is non-empty. As
-we shall see, this is actually a notion stronger than
-non-emptiness. But this idea works only for types that have enough
-functions into the booleans, called totally separated. We show below
-that if X is totally separated and thinly inhabited then X is a
-proposition.
+elements in the type, but at the same time the type is nonempty. As we
+shall see, this is actually a notion stronger than nonemptiness. But
+this idea works only for types that have enough functions into the
+booleans, called totally separated. We show below that if X is totally
+separated and thinly inhabited then X is a proposition.
 
 Exercise. A type X is thinly inhabited if and only if there is *any*
 equivalence 𝟚 ≃ (X → 𝟚).
@@ -172,6 +171,22 @@ thinly-inhabited-gives-retraction-of-σ {𝓤} {X} = equivs-are-sections (σ X)
 
 \end{code}
 
+By construction, every 𝟚-valued function on a thinly inhabited type is
+constant.
+
+\begin{code}
+
+constancy : {X : 𝓤 ̇ }
+          → is-thinly-inhabited X
+          → (f : X → 𝟚)
+          → Σ n ꞉ 𝟚 , f ＝ λ _ → n
+constancy {𝓤} {X} ti f = ⌜ e ⌝⁻¹ f , ((inverses-are-sections' e f)⁻¹)
+ where
+  e : 𝟚 ≃ (X → 𝟚)
+  e = σ X , ti
+
+\end{code}
+
 Next we want to show that
 
  P → is-thinly-inhabited P
@@ -215,16 +230,22 @@ that of being nonempty.
 thinly-inhabited-gives-nonempty : {X : 𝓤 ̇ }
                                 → is-thinly-inhabited X
                                 → is-nonempty X
-thinly-inhabited-gives-nonempty {𝓤} {X} e ν = zero-is-not-one II
+thinly-inhabited-gives-nonempty {𝓤} {X} ti ν = III
  where
-  I : inverse (σ X) e σ₀ ＝ inverse (σ X) e σ₁
-  I = ap (inverse (σ X) e) (σ₀ ＝⟨ dfunext fe (λ x → 𝟘-elim (ν x)) ⟩
-                            σ₁ ∎)
+  e : 𝟚 ≃ (X → 𝟚)
+  e = σ X , ti
 
-  II = ₀                       ＝⟨ (inverses-are-retractions (σ X) e ₀)⁻¹ ⟩
-       inverse (σ X) e (σ X ₀) ＝⟨ I ⟩
-       inverse (σ X) e (σ X ₁) ＝⟨ inverses-are-retractions (σ X) e ₁ ⟩
-       ₁                       ∎
+  I : ⌜ e ⌝⁻¹ σ₀ ＝ ⌜ e ⌝⁻¹ σ₁
+  I = ap (⌜ e ⌝⁻¹) (σ₀ ＝⟨ dfunext fe (λ x → 𝟘-elim (ν x)) ⟩
+                    σ₁ ∎)
+
+  II = ₀          ＝⟨ (inverses-are-retractions' e ₀)⁻¹ ⟩
+       ⌜ e ⌝⁻¹ σ₀ ＝⟨ I ⟩
+       ⌜ e ⌝⁻¹ σ₁ ＝⟨ inverses-are-retractions' e ₁ ⟩
+       ₁          ∎
+
+  III : 𝟘
+  III = zero-is-not-one II
 
 \end{code}
 
@@ -311,7 +332,7 @@ either ¬ P or ¬¬ P holds.
 thinly-inhabited-wem-lemma : (X : 𝓤 ̇)
                            → is-thinly-inhabited (X + is-empty X)
                            → is-empty X + is-nonempty X
-thinly-inhabited-wem-lemma X h = II
+thinly-inhabited-wem-lemma X ti = II
  where
   Y = X + ¬ X
 
@@ -320,12 +341,12 @@ thinly-inhabited-wem-lemma X h = II
   f (inr _) = ₁
 
   n : 𝟚
-  n = inverse (σ Y) h f
+  n = inverse (σ Y) ti f
 
-  I : (k : 𝟚) → n ＝ k → ¬ X + is-nonempty X
+  I : (k : 𝟚) → n ＝ k → ¬ X + ¬¬ X
   I ₀ e = inr ϕ
    where
-    I₀ = f         ＝⟨ (inverses-are-sections (σ Y) h f)⁻¹ ⟩
+    I₀ = f         ＝⟨ (inverses-are-sections (σ Y) ti f)⁻¹ ⟩
          σ Y n     ＝⟨ ap (σ Y) e ⟩
          (λ _ → ₀) ∎
 
@@ -337,7 +358,7 @@ thinly-inhabited-wem-lemma X h = II
 
   I ₁ e = inl u
    where
-    I₁ = f         ＝⟨ (inverses-are-sections (σ Y) h f)⁻¹ ⟩
+    I₁ = f         ＝⟨ (inverses-are-sections (σ Y) ti f)⁻¹ ⟩
          σ Y n     ＝⟨ ap (σ Y) e ⟩
          (λ _ → ₁) ∎
 
@@ -535,6 +556,26 @@ module universe-discussion where
 
    κs : κ X ∘ s ∼ id
    κs A = dfunext fe (λ x → ap A (i x₀ x))
+
+ thinly-inhabited'-gives-nonempty : {X : 𝓤 ̇ }
+                                  → is-thinly-inhabited' X
+                                  → is-nonempty X
+ thinly-inhabited'-gives-nonempty {𝓤} {X} ti ν = III
+  where
+   e : 𝓤 ̇ ≃ (X → 𝓤 ̇ )
+   e = κ X , ti
+
+   I : ⌜ e ⌝⁻¹  (⌜ e ⌝ 𝟙) ＝ ⌜ e ⌝⁻¹  (⌜ e ⌝ 𝟘)
+   I = ap (⌜ e ⌝⁻¹) (⌜ e ⌝ 𝟙 ＝⟨ dfunext fe (λ x → 𝟘-elim (ν x)) ⟩
+                     ⌜ e ⌝ 𝟘 ∎)
+
+   II = 𝟙                 ＝⟨ (inverses-are-retractions' e 𝟙)⁻¹ ⟩
+        ⌜ e ⌝⁻¹ (⌜ e ⌝ 𝟙) ＝⟨ I ⟩
+        ⌜ e ⌝⁻¹ (⌜ e ⌝ 𝟘) ＝⟨ inverses-are-retractions' e 𝟘 ⟩
+        𝟘                 ∎
+
+   III : 𝟘 {𝓤₀}
+   III = 𝟘-elim (idtofun' II ⋆)
 
 \end{code}
 
