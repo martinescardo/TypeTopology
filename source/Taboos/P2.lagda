@@ -321,10 +321,10 @@ P→𝟚-discreteness-criterion-necessity {𝓤} {P} i δ = ϕ (δ σ₀ σ₁)
 
 \end{code}
 
-Added 25th March 2022. If every nonempty proposition is thinly-inhabited,
+Added 25th March 2022. If every nonempty proposition is thinly inhabited,
 then weak excluded middle holds. We use the following lemma to prove
 this. Recall that the principle of weak excluded middle, which is
-equivalent to De Morgan's Law, say that for every proposition P,
+equivalent to De Morgan's Law, says that for every proposition P,
 either ¬ P or ¬¬ P holds.
 
 \begin{code}
