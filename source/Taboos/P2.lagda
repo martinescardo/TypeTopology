@@ -464,10 +464,10 @@ open import TypeTopology.DisconnectedTypes
 thinly-inhabited-types-are-connected₂ : {X : 𝓤 ̇ }
                                       → is-thinly-inhabited X
                                       → is-connected₂ X
-thinly-inhabited-types-are-connected₂ {𝓤} {X} tp x y = I
+thinly-inhabited-types-are-connected₂ {𝓤} {X} ti x y = I
  where
   e : 𝟚 ≃ (X → 𝟚)
-  e = σ X , tp
+  e = σ X , ti
 
   I : (p : X → 𝟚) → p x ＝ p y
   I p = p x                 ＝⟨ happly ((inverses-are-sections' e p)⁻¹) x ⟩
@@ -489,10 +489,57 @@ totally-separated-thinly-inhabited-types-are-props ts tp x y = I
 
 If replace the type 𝟚 by the type Ω of propositions in the notion of
 thin inhabitedness, then we can replace the assumption
-"is-totally-separated X" by "is-set X" to get the same
-conclusion. This modified notion may be worth investigating. And, wild
-speculation: what happens if we replace 𝟚 by some universe 𝓤?
+"is-totally-separated X" by "is-set X" to get the same conclusion. And
+if we replace 𝟚 by some universe 𝓤, no assumption is needed to
+conclude that thinly inhabited types are propositions:
 
+\begin{code}
+
+module universe-discussion where
+
+ κ : (X : 𝓤 ̇ ) → 𝓤 ̇ → (X → 𝓤 ̇ )
+ κ X Y = λ (_ : X) → Y
+
+ is-thinly-inhabited' : 𝓤 ̇ → 𝓤 ⁺ ̇
+ is-thinly-inhabited' X = is-equiv (κ X)
+
+ thinly-inhabited'-types-are-props : {X : 𝓤 ̇ }
+                                   → is-thinly-inhabited' X
+                                   → is-prop X
+ thinly-inhabited'-types-are-props {𝓤} {X} ti x y = III
+  where
+   e : 𝓤 ̇ ≃ (X → 𝓤 ̇ )
+   e = κ X , ti
+
+   I : (p : X → 𝓤 ̇ ) → p x ＝ p y
+   I p = p x                 ＝⟨ happly ((inverses-are-sections' e p)⁻¹) x ⟩
+         ⌜ e ⌝ (⌜ e ⌝⁻¹ p) x ＝⟨ refl ⟩
+         ⌜ e ⌝⁻¹ p           ＝⟨ refl ⟩
+         ⌜ e ⌝ (⌜ e ⌝⁻¹ p) y ＝⟨ happly (inverses-are-sections' e p) y ⟩
+         p y                 ∎
+
+   II : (x ＝ x) ＝ (x ＝ y)
+   II = I (x ＝_)
+
+   III : x ＝ y
+   III = idtofun' II refl
+
+ η : {X : 𝓤 ̇ } → is-prop X → X → is-thinly-inhabited' X
+ η {𝓤} {X} i x₀ = qinvs-are-equivs (κ X) (s , sκ , κs)
+  where
+   s : (X → 𝓤 ̇) → 𝓤 ̇
+   s A = A x₀
+
+   sκ : s ∘ κ X ∼ id
+   sκ Y = refl
+
+   κs : κ X ∘ s ∼ id
+   κs A = dfunext fe (λ x → ap A (i x₀ x))
+
+\end{code}
+
+We now come back to the original notion of thin inhabitedness studied
+in this file.
 
 TODO. Derive a constructive taboo from the hypothesis
 
