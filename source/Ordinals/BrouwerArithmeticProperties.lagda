@@ -406,6 +406,8 @@ TODO come up with results we need. make it general for all fixed points?
 
 \begin{code}
 
+{--
+
 S-preserves-⊏-ε₀ : (b : B) → b ⊏ ε₀ → S b ⊏ ε₀
 S-preserves-⊏-ε₀ b (pick _ n p , h) =
   ⊏-and-⊑-implies-⊏ _ _ _ III IV
@@ -424,5 +426,7 @@ S-preserves-⊏-ε₀ b (pick _ n p , h) =
 
    IV : ω-tower (succ n) ⊑ ε₀
    IV = L-is-upper-bound ω-tower (succ n)
+
+--}
 
 \end{code}
