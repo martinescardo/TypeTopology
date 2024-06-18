@@ -1,38 +1,38 @@
 Kelton OBrien, 31 May 2024
 
 A proof that the Axiom of Choice implies Zorn's Lemma, as well as relevant definitions.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan
+open import Ordinals.Equivalence
 open import Ordinals.Notions
 open import Ordinals.Type
+open import Ordinals.Underlying
+open import UF.Base
+open import UF.Choice
+open import UF.ClassicalLogic
+open import UF.DiscreteAndSeparated
+open import UF.Embeddings
+open import UF.Equiv
+open import UF.EquivalenceExamples
+open import UF.FunExt
+open import UF.Logic
+open import UF.Powerset-MultiUniverse
+open import UF.PropTrunc
 open import UF.Sets
 open import UF.Size
-open import UF.Embeddings
-open import UF.Powerset-MultiUniverse
-open import UF.SubtypeClassifier
-open import UF.DiscreteAndSeparated
-open import UF.PropTrunc
-open import UF.ClassicalLogic
-open import UF.Univalence
-open import UF.FunExt
-open import UF.UA-FunExt
-open import Ordinals.Underlying
-open import Ordinals.Equivalence
-open import UF.Logic
-open import UF.Base
-open import UF.Equiv
 open import UF.Subsingletons
-open import UF.Choice
 open import UF.Subsingletons-FunExt
-open import UF.EquivalenceExamples
+open import UF.SubtypeClassifier
+open import UF.UA-FunExt
+open import UF.Univalence
 open import UF.UniverseEmbedding
 
 module OrderedTypes.ZornsLemma
- {𝓤 : Universe}
- {𝓣 : Universe}
+ {𝓤 𝓣 : Universe}
  (pt : propositional-truncations-exist)
  (ua : Univalence)
  {X : 𝓤 ̇}
@@ -40,8 +40,8 @@ module OrderedTypes.ZornsLemma
   where
 
 open PropositionalTruncation pt
-open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.BuraliForti ua
+open import Ordinals.OrdinalOfOrdinals ua
 open import UF.ImageAndSurjection pt
 
 fe : FunExt
@@ -53,25 +53,30 @@ pe' 𝓤 = pe {𝓤}
 fe' : Fun-Ext
 fe' {𝓤} {𝓥} = fe 𝓤 𝓥
 
-open UF.Choice.choice-functions pt pe' fe
+open UF.Choice.ExcludedMiddle pt fe
 open UF.Choice.Univalent-Choice fe pt
-open import Ordinals.Arithmetic fe
+open UF.Choice.choice-functions pt pe' fe
+open UF.Logic.Existential pt
+open UF.Logic.Universal fe'
 open import OrderedTypes.Poset fe'
+open import Ordinals.Arithmetic fe
 open import Ordinals.WellOrderingTaboo fe' pe
+open inhabited-subsets pt
+
 open PosetAxioms
 open ClassicalWellOrder pt
-open UF.Logic.AllCombinators pt fe'
-open UF.Choice.ExcludedMiddle pt fe
-open inhabited-subsets pt
 
 _⋘_ : X → X → (𝓤 ⊔ 𝓣) ̇
 a ⋘ b =  a ≪ b × (a ≠ b)
 
 is-chain : {𝓥 : Universe} → (Y : 𝓟 {𝓥} X ) →  (𝓤 ⊔ 𝓣 ⊔ 𝓥) ̇
-is-chain Y = (x y : X) → x ∈ Y → y ∈ Y → ∥ (x ≪ y + y ≪ x) ∥
+is-chain Y = (x y : X) → x ∈ Y → y ∈ Y → (x ≪ y ∨ y ≪ x)
 
 has-maximal-element-strong :  (𝓤 ⊔ 𝓣) ̇
 has-maximal-element-strong = Σ x ꞉ X , ((y : X) → x ≪ y → x ＝ y)
+
+has-maximal-element : (𝓤 ⊔ 𝓣) ̇
+has-maximal-element = ∃ x ꞉ X , ((y : X) → x ≪ y → x ＝ y)
 
 all-chains-have-upper-bound : {𝓥 : Universe} → (𝓤 ⊔ 𝓣 ⊔ (𝓥 ⁺))  ̇
 all-chains-have-upper-bound {𝓥} =
@@ -79,10 +84,14 @@ all-chains-have-upper-bound {𝓥} =
 
 \end{code}
 
-The following is not a direct formalization of any extant proof,
-but follows the same proof idea as the standard transfinite-induction-based
+The following is a formalization ofthe standard transfinite-induction-based
 proof of Zorn's lemma. The closest informal analog to the proof can be found
-here: https://math.stackexchange.com/a/2889205 .
+here: https://math.stackexchange.com/a/2889205.
+The primary differences between this proof and that proof are just ones of
+how sets are treated (notice the lack of a particular poset P),
+additional detail in things that are glossed over in the formal proof,
+(e.g the proof that the chain allfbs is a chain is not given).
+The proof idea is the same.
 
 We do a proof by contradiction (which is why we have that double negation),
 where we assume that even though all chains have a least upper bound,
@@ -100,20 +109,19 @@ is found below, and takes in more reasonable inputs.
 
 \begin{code}
 
-choice-function-gives-not-not-zorns-lemma :
- Excluded-Middle →
- poset-axioms (_≪_) →
- all-chains-have-upper-bound  →
- (Σ ε ꞉ (𝓟 {𝓣 ⊔ 𝓤} X → X) , ((A : 𝓟 X) → is-inhabited A → ε A ∈ A)) →
- ¬¬ has-maximal-element-strong
+choice-function-gives-zorns-lemma
+ : Excluded-Middle
+ → poset-axioms (_≪_)
+ → all-chains-have-upper-bound
+ → (Σ ε ꞉ (𝓟 {𝓣 ⊔ 𝓤} X → X) , ((A : 𝓟 X) → is-inhabited A → ε A ∈ A))
+ → has-maximal-element
 
-choice-function-gives-not-not-zorns-lemma
+choice-function-gives-zorns-lemma
  lem
  (X-is-set , ≪-prop , ≪-refl , ≪-trans , ≪-antisym )
  chains
- (ε , ε-behaviour)
- no-max =
-  absurd
+ (ε , ε-behaviour) =
+  (¬¬Σ→∃ pt dn (λ no-max → absurd no-max))
    where
     dn : {𝓥 : Universe } → DNE 𝓥
     dn {𝓥} = EM-gives-DNE lem
@@ -123,9 +131,6 @@ choice-function-gives-not-not-zorns-lemma
 
     ≪-is-¬¬-stable : {x : X} {y : X} → ¬¬-stable (x ≪ y)
     ≪-is-¬¬-stable {x} {y} ¬¬ll = dn (x ≪ y) (≪-prop x y) ¬¬ll
-
-    ¬¬Σ→∃ : {𝓤 : Universe} {A : X → 𝓤  ̇} → ¬ ¬ (Σ x ꞉ X , A x ) → (∃ x ꞉ X , A x)
-    ¬¬Σ→∃ {𝓤} {A} ¬¬Σ = dn _ ∥∥-is-prop (¬¬-functor ∣_∣ ¬¬Σ)
 
     ⋘-prop : (a : X) → (b : X) → is-prop (a ⋘ b)
     ⋘-prop a b = ×-is-prop (≪-prop a b) (negations-are-props fe')
@@ -154,18 +159,18 @@ choice-function-gives-not-not-zorns-lemma
     ⊲-is-trichotomous : {a b : Ordinal 𝓤} → (a ⊲ b) + (a ＝ b) + (b ⊲ a)
     ⊲-is-trichotomous {a} {b} = pr₁ (( pr₁ (pr₂ ⊲-is-classical-well-order)) a b)
 
-    f-preserves-order : (α : Ordinal 𝓤) → (β : Ordinal 𝓤) → β ⊲ α → f β ⋘ f α
-    f-preserves-order  = transfinite-induction-on-OO P v
+    f-preserves-order : ¬ has-maximal-element-strong → (α β : Ordinal 𝓤) → β ⊲ α → f β ⋘ f α
+    f-preserves-order no-max = transfinite-induction-on-OO P (v no-max)
      where
       P : Ordinal 𝓤 → (𝓤 ⁺ ⊔ 𝓣) ̇
       P α = ∀ β → β ⊲ α → f β ⋘ f α
-      v : (α : Ordinal 𝓤) → ((a : ⟨ α ⟩) → P (α ↓ a)) → P α
-      v α s β (a , β=α↓a) =
+      v : ¬ has-maximal-element-strong → (α : Ordinal 𝓤) → ((a : ⟨ α ⟩) → P (α ↓ a)) → P α
+      v no-max α s β (a , β=α↓a) =
        transport⁻¹ (λ q → f q ⋘ f α) β=α↓a
         (transport⁻¹ (λ q → f (α ↓ a) ⋘ q) (f-behaviour α) (step a))
        where
         allfb : 𝓟  X
-        allfb = ⁅ x ꞉ X ∣ Ǝ β' , ((β' ⊲ α ) × (x ＝ (f β')))   ⁆
+        allfb = ⁅ x ꞉ X ∣ Ǝ β' , ((β' ⊲ α ) × (x ＝ (f β'))) ⁆
 
         untrunc-works : (x y : X)
                       → (Σ β' ꞉ Ordinal 𝓤 , ((β' ⊲ α) × (x ＝ f β')))
@@ -213,15 +218,16 @@ choice-function-gives-not-not-zorns-lemma
         ub-is-ub : ∀ y → y ∈ allfb → y ≪ ub
         ub-is-ub = pr₂ allfb-has-ub
 
-        ub-is-strict' : (Σ q ꞉ X , (¬ ( ub ≪ q → ub ＝ q)))
-                         →  Σ z ꞉ X , (∀ y → y ∈ allfb → y ⋘ z)
+        ub-is-strict'
+         : (Σ q ꞉ X , (¬ ( ub ≪ q → ub ＝ q)))
+         → Σ z ꞉ X , (∀ y → y ∈ allfb → y ⋘ z)
         ub-is-strict' (q , foo) =  q ,
          λ y yin → ≪-trans-⋘ y ub q (ub-is-ub y yin)
           ((≪-is-¬¬-stable (pr₁ (negation-of-implication foo)))
            , (pr₂ (negation-of-implication foo)))
 
         ub-is-strict : ∃ z ꞉ X , (∀ y → y ∈ allfb → y ⋘ z)
-        ub-is-strict = (∥∥-functor ub-is-strict') (¬¬Σ→∃ (has-max-neg ub))
+        ub-is-strict = (∥∥-functor ub-is-strict') (¬¬Σ→∃ pt dn (has-max-neg ub))
 
         Aα-inhabited' :  Σ x ꞉ X , (∀ y → y ∈ allfb → y ⋘ x)
                          →  Σ x ꞉ X , ((i : ⟨ α ⟩) → f (α ↓ i) ⋘ x)
@@ -234,36 +240,40 @@ choice-function-gives-not-not-zorns-lemma
         step : (a : ⟨ α ⟩) →  (f (α ↓ a) ⋘ ε (A α))
         step a = (ε-behaviour (A α) (Aα-inhabited (ub-is-strict ))) a
 
-    f-is-injective : (a b : Ordinal 𝓤) → a ≠ b → f a ≠ f b
-    f-is-injective a b a≠b =
+    f-is-injective : ¬ has-maximal-element-strong →  (a b : Ordinal 𝓤) → a ≠ b → f a ≠ f b
+    f-is-injective no-max a b a≠b =
      cases (less a b) (cases (equal a b a≠b) (more a b)) ⊲-is-trichotomous
      where
       less : (a b : Ordinal 𝓤) → a ⊲ b → f a ≠ f b
-      less a b a<b = pr₂ (f-preserves-order b a a<b)
+      less a b a<b = pr₂ (f-preserves-order no-max b a a<b)
 
       more : (a b : Ordinal 𝓤) → b ⊲ a → f a ≠ f b
-      more a b b<a = ≠-sym (pr₂ (f-preserves-order a b b<a))
+      more a b b<a = ≠-sym (pr₂ (f-preserves-order no-max a b b<a))
 
       equal : (a b : Ordinal 𝓤) → a ≠ b → a ＝ b → f a ≠ f b
       equal a b a≠b a=b = unique-from-𝟘 (a≠b a=b)
 
-    f-is-left-cancellable : {a : Ordinal 𝓤} → {b : Ordinal 𝓤} → f a ＝ f b → a ＝ b
-    f-is-left-cancellable {a} {b} p =
+    f-is-left-cancellable
+     : {a : Ordinal 𝓤}
+     → {b : Ordinal 𝓤}
+     → ¬ has-maximal-element-strong
+     → f a ＝ f b
+     → a ＝ b
+    f-is-left-cancellable {a} {b} no-max p =
      dn (a ＝ b) (the-type-of-ordinals-is-a-set (ua 𝓤) fe')
-                 ((contrapositive (f-is-injective a b)) (¬¬-intro p))
+                 ((contrapositive (f-is-injective no-max a b)) (¬¬-intro p))
 
-    f-is-embedding : is-embedding f
-    f-is-embedding = lc-maps-into-sets-are-embeddings f f-is-left-cancellable X-is-set
+    f-is-embedding : ¬ has-maximal-element-strong → is-embedding f
+    f-is-embedding no-max = lc-maps-into-sets-are-embeddings f (f-is-left-cancellable no-max) X-is-set
 
     X' : 𝓤 ⁺ ̇
-
     X' = image f
 
     f' : Ordinal 𝓤 → X'
     f' = corestriction f
 
-    f'-is-equiv : is-equiv f'
-    f'-is-equiv = corestriction-of-embedding-is-equivalence f f-is-embedding
+    f'-is-equiv : ¬ has-maximal-element-strong → is-equiv f'
+    f'-is-equiv no-max = corestriction-of-embedding-is-equivalence f (f-is-embedding no-max)
 
     B : X → 𝓤 ⁺ ̇
     B x = x ∈image f
@@ -286,40 +296,23 @@ choice-function-gives-not-not-zorns-lemma
     X'' : 𝓤 ̇
     X'' = Σ x ꞉ X , C x
 
-    e = X''       ≃⟨ NatΣ τ , NatΣ-is-equiv C B τ τ-is-equiv ⟩
-        X'        ≃⟨ ≃-sym (f' , f'-is-equiv) ⟩
+    e : ¬ has-maximal-element-strong → X'' ≃ Ordinal 𝓤
+    e no-max = X''       ≃⟨ NatΣ τ , NatΣ-is-equiv C B τ τ-is-equiv ⟩
+        X'        ≃⟨ ≃-sym (f' , f'-is-equiv no-max) ⟩
         Ordinal 𝓤 ■
 
-    the-type-of-ordinals-is-small : is-small (Ordinal 𝓤)
-    the-type-of-ordinals-is-small = X'' , e
+    the-type-of-ordinals-is-small : ¬ has-maximal-element-strong → is-small (Ordinal 𝓤)
+    the-type-of-ordinals-is-small no-max = X'' , (e no-max)
 
-    absurd : 𝟘
-    absurd = the-type-of-ordinals-is-large the-type-of-ordinals-is-small
+    absurd : ¬ has-maximal-element-strong → 𝟘
+    absurd no-max = the-type-of-ordinals-is-large (the-type-of-ordinals-is-small no-max)
 
-has-maximal-element : (𝓤 ⊔ 𝓣) ̇
-has-maximal-element = ∃ x ꞉ X , ((y : X) → x ≪ y → x ＝ y)
-
-
-choice-function-gives-zorns-lemma
- : Excluded-Middle
- → poset-axioms (_≪_)
- → all-chains-have-upper-bound
- → (Σ ε ꞉ (𝓟 {𝓣 ⊔ 𝓤} X → X) , ((A : 𝓟 X) → is-inhabited A → ε A ∈ A))
- → has-maximal-element
-
-choice-function-gives-zorns-lemma lem axioms chains cf = ¬¬Σ→∃ ¬¬max
- where
-  dn : {𝓥 : Universe } → DNE 𝓥
-  dn {𝓥} = EM-gives-DNE lem
-  ¬¬Σ→∃ : {𝓤 : Universe} {A : X → 𝓤 ̇} → ¬ ¬ (Σ x ꞉ X , A x ) → (∃ x ꞉ X , A x)
-  ¬¬Σ→∃ {𝓤} {A} inside = dn _ ∥∥-is-prop (¬¬-functor ∣_∣ inside)
-  ¬¬max : ¬ ¬ has-maximal-element-strong
-  ¬¬max = (choice-function-gives-not-not-zorns-lemma lem axioms chains cf)
 
 axiom-of-choice-implies-zorns-lemma
  : Axiom-of-Choice
  → poset-axioms (_≪_)
- → (all-chains-have-upper-bound → has-maximal-element)
+ → all-chains-have-upper-bound
+ → has-maximal-element
 
 axiom-of-choice-implies-zorns-lemma ac (X-is-set , axioms-rest) = III
  where
@@ -352,10 +345,9 @@ axiom-of-choice-implies-zorns-lemma ac (X-is-set , axioms-rest) = III
   choice-function : ∥ X ∥ → ∃ ε ꞉ (𝓟 X → X) , ((A : 𝓟 X) → is-inhabited A → ε A ∈ A)
   choice-function isX =  ∥∥-functor lower-cf (lifted-cf (∥∥-functor (lift (𝓤 ⊔ 𝓣)) isX))
 
-  I'
-   : all-chains-have-upper-bound
-   → ∃ ε ꞉ (𝓟 X → X) , ((A : 𝓟 X) → is-inhabited A → ε A ∈ A)
-   → has-maximal-element
+  I' : all-chains-have-upper-bound
+     → ∃ ε ꞉ (𝓟 X → X) , ((A : 𝓟 X) → is-inhabited A → ε A ∈ A)
+     → has-maximal-element
   I' chains = ∥∥-rec (∃-is-prop)
           (choice-function-gives-zorns-lemma em (X-is-set , axioms-rest) chains)
 
