@@ -495,3 +495,19 @@ amazing {𝓤} α = transfinite-induction-on-OO _ I
 -- -}
 
 -- \end{code}
+
+
+
+to-alternative : (α : Ordinal 𝓤) (β : Ordinal 𝓥) → ⟨[𝟙+ α ]^ β ⟩ → ⟨ exp α β ⟩
+to-alternative α = transfinite-induction-on-OO (λ β → ⟨[𝟙+ α ]^ β ⟩ → ⟨ exp α β ⟩) g
+ where
+  g : (β : Ordinal 𝓥) → ((b : ⟨ β ⟩) → ⟨[𝟙+ α ]^ β ↓ b ⟩ →  ⟨ exp α (β ↓ b) ⟩) →
+      ⟨[𝟙+ α ]^ β ⟩ → ⟨ exp α β ⟩
+  g β ih ([] , ps) = transport⁻¹ ⟨_⟩ (exp-behaviour α β) (pr₁ (sup-is-upper-bound _ (inl ⋆)) ⋆)
+  g β ih (((a , b) ∷ xs) , ps) = transport⁻¹ ⟨_⟩ (exp-behaviour α β)
+                                             (pr₁ (sup-is-upper-bound _ (inr b))
+                                                  (ih b (decreasing-pr₂-to-more-precise-tail α β a b xs ps
+                                                        , decreasing-pr₂-to-more-precise-tail-decreasing α β a b xs ps) , a))
+
+
+\end{code}
