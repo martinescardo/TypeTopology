@@ -132,6 +132,15 @@ is-increasing ϕ = (i : ℕ) → ϕ i ⊏ ϕ (succ i)
 
 \end{code}
 
+Alternative formulation of being increasing:
+
+\begin{code}
+
+is-increasing₀ : (ℕ → Brw) → 𝓤₀  ̇
+is-increasing₀ ϕ = (i j : ℕ) → (i <ℕ j) → ϕ i ⊏ ϕ j
+
+\end{code}
+
 Using this, we define the following type expressing that all sequences in a
 Brouwer tree are increasing.
 
@@ -168,5 +177,37 @@ addition-does-not-add-non-increasing-sequences s (lim ϕ) φ ψ@(inc , ϑ) = †
 
   ‡ : (i : ℕ) → all-sequences-are-increasing (s +B ϕ i)
   ‡ i = addition-does-not-add-non-increasing-sequences s (ϕ i) φ (ϑ i)
+
+\end{code}
+
+\begin{code}
+
+one-is-below-the-limit-of-any-increasing-sequence : (ϕ : ℕ → Brw) → is-increasing ϕ → 𝐒 𝐙 ⊏ lim ϕ
+one-is-below-the-limit-of-any-increasing-sequence ϕ inc = {!!}
+
+×B-does-not-add-non-increasing-sequences
+ : (s t : Brw)
+ → all-sequences-are-increasing s
+ → all-sequences-are-increasing t
+ → all-sequences-are-increasing (s ×B t)
+×B-does-not-add-non-increasing-sequences s 𝐙       φ ψ = ψ
+×B-does-not-add-non-increasing-sequences s (𝐒 t)   φ ψ =
+ addition-does-not-add-non-increasing-sequences (s ×B t) s † φ
+  where
+   † : all-sequences-are-increasing (s ×B t)
+   † = ×B-does-not-add-non-increasing-sequences s t φ ψ
+×B-does-not-add-non-increasing-sequences 𝐙 (lim ϕ) φ ψ = {!!}
+×B-does-not-add-non-increasing-sequences (𝐒 s) (lim ϕ) φ ψ = {!!} , {!!}
+×B-does-not-add-non-increasing-sequences (lim ϕ₁) (lim ϕ₂) (inc , χ) (inc₂ , υ) =
+ † , ‡
+  where
+   Ⅰ : 𝐒 𝐙 ⊏ lim ϕ₁
+   Ⅰ = one-is-below-the-limit-of-any-increasing-sequence ϕ₁ inc
+
+   † : is-increasing (λ i → lim ϕ₁ ×B ϕ₂ i)
+   † i = ×B-strictly-monotonic-right (lim ϕ₁) (ϕ₂ i) (ϕ₂ (succ i)) Ⅰ (inc₂ i)
+
+   ‡ : (i : ℕ) → all-sequences-are-increasing (lim ϕ₁ ×B ϕ₂ i)
+   ‡ i = ×B-does-not-add-non-increasing-sequences (lim ϕ₁) (ϕ₂ i) (inc , χ) (υ i)
 
 \end{code}
