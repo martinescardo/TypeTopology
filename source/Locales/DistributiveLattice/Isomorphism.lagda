@@ -1,7 +1,8 @@
 ---
-title:        Isomorphisms of distributive lattices
-author:       Ayberk Tosun
-date-started: 2024-04-24
+title:         Isomorphisms of distributive lattices
+author:        Ayberk Tosun
+date-started:  2024-04-24
+dates-updated: [2024-06-17, 2024-05-30, 2024-06-01]
 ---
 
 This module contains the definition of the notion of distributive lattice
@@ -125,53 +126,6 @@ Lemma for showing the equality two distributive lattice isomorphisms.
 
 End of addition.
 
-Now, we give the “homomorphic equivalence” definition of isomorphism.
-
-\begin{code}
-
- has-homomorphic-inverse : (L₁ ─d→ L₂) → 𝓤 ⊔ 𝓥  ̇
- has-homomorphic-inverse 𝓈 =
-  Σ 𝓇 ꞉ (L₂ ─d→ L₁) , (funᵈ L₂ L₁ 𝓇  ∘ funᵈ L₁ L₂ 𝓈 ∼ id)
-                    × (funᵈ L₁ L₂ 𝓈  ∘ funᵈ L₂ L₁ 𝓇 ∼ id)
-
- having-homomorphic-inverse-is-prop : (h : L₁ ─d→ L₂)
-                                    → is-prop (has-homomorphic-inverse h)
- having-homomorphic-inverse-is-prop h (r₁ , φ₁ , ψ₁) (r₂ , φ₂ , ψ₂) =
-  to-subtype-＝ † (to-homomorphismᵈ-＝ L₂ L₁ r₁ r₂ γ)
-   where
-    open DistributiveLattice
-
-    † : (h′ : L₂ ─d→ L₁)
-      → is-prop ((funᵈ L₂ L₁ h′ ∘ funᵈ L₁ L₂ h ∼ id)
-                 ×
-                 (funᵈ L₁ L₂ h  ∘ funᵈ L₂ L₁ h′ ∼ id))
-    † h′ = ×-is-prop
-            (Π-is-prop fe λ _ → X-is-set L₁)
-            (Π-is-prop fe λ _ → X-is-set L₂)
-
-    ϑ : funᵈ L₁ L₂ h ∘ funᵈ L₂ L₁ r₁ ∼ funᵈ L₁ L₂ h ∘ funᵈ L₂ L₁ r₂
-    ϑ x = funᵈ L₁ L₂ h (funᵈ L₂ L₁ r₁ x)     ＝⟨ Ⅰ ⟩
-          x                                  ＝⟨ Ⅱ ⟩
-          funᵈ L₁ L₂ h (funᵈ L₂ L₁ r₂ x)     ∎
-           where
-            Ⅰ = ψ₁ x
-            Ⅱ = ψ₂ x ⁻¹
-
-    ξ : left-cancellable (funᵈ L₁ L₂ h)
-    ξ = sections-are-lc (funᵈ L₁ L₂ h) (funᵈ L₂ L₁ r₁ , φ₁)
-
-    γ : funᵈ L₂ L₁ r₁ ∼ funᵈ L₂ L₁ r₂
-    γ x = ξ (ϑ x)
-
- is-isomorphism : (L₁ ─d→ L₂) → Ω (𝓤 ⊔ 𝓥)
- is-isomorphism h =
-  has-homomorphic-inverse h , having-homomorphic-inverse-is-prop h
-
- Isomorphism : 𝓤 ⊔ 𝓥  ̇
- Isomorphism = Σ h ꞉ (L₁ ─d→ L₂) , is-isomorphism h holds
-
-\end{code}
-
 Pretty syntax for `Isomorphismᵈᵣ`.
 
 \begin{code}
@@ -186,7 +140,7 @@ syntax Isomorphismᵈᵣ-Syntax K L = K ≅d≅ L
 
 \end{code}
 
-Added on 2025-05-17.
+Added on 2024-05-17.
 
 We now give an alternative definition of the notion of distributive lattice
 homomorphism: an equivalence whose both sides are monotone.
