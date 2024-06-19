@@ -12,9 +12,9 @@ open import MLTT.Spartan hiding (𝟚; ₀; ₁)
 open import UF.FunExt
 open import UF.PropTrunc
 open import UF.Size
+open import UF.Subsingletons
 open import UF.UA-FunExt
 open import UF.Univalence
-open import UF.Subsingletons
 
 module Locales.SIP.DistributiveLatticeSIP
         (ua : Univalence)
@@ -135,10 +135,6 @@ module.
   where
    open DistributiveLattice Lᵣ renaming (_∨_ to _∨∙_)
 
-\end{code}
-
-\begin{code}
-
  open HomomorphicEquivalences Kᵣ Lᵣ
 
  homomorphic-identity-equivalence-gives-order-agreement
@@ -161,7 +157,7 @@ module.
 
 \end{code}
 
-Homomorphic identity equivalence gives top agreement.
+The identity equivalence being homomorphic gives the equality of top elements.
 
 \begin{code}
 
@@ -215,7 +211,7 @@ The identity function being homomorphic gives the equality of meets.
 
 \end{code}
 
-The identity function being homomorphic gives equality of joins.
+The identity function being homomorphic gives join agreement.
 
 \begin{code}
 
@@ -266,10 +262,6 @@ structures must be equal.
          (homomorphic-identity-equivalence-gives-bottom-agreement 𝒽)
          (to-Σ-＝' γ)
 
-\end{code}
-
-\begin{code}
-
  abstract
   homomorphic-equivalence-gives-structural-equality
    : is-homomorphic (≃-refl A) holds
@@ -280,6 +272,8 @@ structures must be equal.
     (homomorphic-equivalence-gives-distributive-lattice-data-agreement 𝒽)
 
 \end{code}
+
+The distributive lattice structure is a standard notion of structure.
 
 \begin{code}
 
@@ -329,7 +323,7 @@ distributive-lattice-sns-data {𝓤} = ι , ρ , θ
 
 \end{code}
 
-We abbreviate this to
+We abbreviate this proof by `snsᵈ`.
 
 \begin{code}
 
@@ -338,7 +332,7 @@ private
 
 \end{code}
 
-The notion of isomorphism given by `snsᵈ` is trivially equivalent to our type
+The notion of isomorphism given by `snsᵈ` is trivially equivalent to the type
 `Isomorphismᵈ₀`.
 
 \begin{code}
@@ -368,16 +362,14 @@ The notion of isomorphism given by `snsᵈ` is trivially equivalent to our type
 
 \end{code}
 
+From this, we get the characterization of equality for distributive lattices.
+
 \begin{code}
 
 characterization-of-distributive-lattice₀-＝ : (K L : Distributive-Lattice₀ 𝓤)
                                              → (K ＝ L) ≃ (K ≃[ snsᵈ ] L)
 characterization-of-distributive-lattice₀-＝ {𝓤} K L =
  characterization-of-＝ (ua 𝓤) snsᵈ K L
-
-\end{code}
-
-\begin{code}
 
 characterization-of-distributive-lattice-＝ : (K L : DistributiveLattice 𝓤)
                                             → (K ＝ L) ≃ (K ≅d≅ L)
@@ -413,10 +405,14 @@ characterization-of-distributive-lattice-＝ {𝓤} K L =
 
 \end{code}
 
+Finally, we record the fact that isomorphic distributive lattices are _equal_.
+
 \begin{code}
 
 isomorphic-distributive-lattices-are-equal
- : (K L : DistributiveLattice 𝓤) → K ≅d≅ L → K ＝ L
+ : (K L : DistributiveLattice 𝓤)
+ → K ≅d≅ L
+ → K ＝ L
 isomorphic-distributive-lattices-are-equal K L =
  ⌜ ≃-sym (characterization-of-distributive-lattice-＝ K L) ⌝
 
