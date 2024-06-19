@@ -1,5 +1,7 @@
 Martin Escardo 7 May 2014, 10 Oct 2014, 25 January 2018, 17 December 2022.
 
+Several equivalent formulations of the axiom of choice in HoTT/UF.
+
 We first look at choice as in the HoTT book a little bit more
 abstractly, where for the HoTT book we take T X = ∥ X ∥. It also makes
 sense to consider T = ¬¬, in connection with the double-negation
@@ -69,8 +71,8 @@ We observe that this is equivalent to
 
     T (Π x ꞉ X , T (A x) → A x)
 
-This generalizes the T-condition that the double negation shift is
-equivalent to
+This generalizes the fact that the double negation shift is equivalent
+to
 
    ¬¬ (Π x ꞉ X , A x + ¬ (A x))
 
@@ -81,10 +83,13 @@ or
 \begin{code}
 
  Shift : {𝓤 𝓥 : Universe} → (𝓤 ⊔ 𝓥)⁺ ̇
- Shift {𝓤} {𝓥} = (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) → (Π x ꞉ X , T (A x)) → T (Π x ꞉ X , A x)
+ Shift {𝓤} {𝓥} = (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ )
+               → (Π x ꞉ X , T (A x))
+               → T (Π x ꞉ X , A x)
 
  Shift' : {𝓤 𝓥 : Universe} → (𝓤 ⊔ 𝓥)⁺ ̇
- Shift' {𝓤} {𝓥} = (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) → T (Π x ꞉ X , (T (A x) → A x))
+ Shift' {𝓤} {𝓥} = (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ )
+                → T (Π x ꞉ X , (T (A x) → A x))
 
  Shift-gives-Shift' : Shift {𝓤} {𝓤} → Shift' {𝓤} {𝓤}
  Shift-gives-Shift' {𝓤} s X A = s X (λ x → T (A x) → A x) (λ x → F s (A x))
@@ -144,7 +149,7 @@ module TChoice
 
 January 2018.
 
-We now formalize the examples discussed above, which give
+We now implement the examples discussed above, which give
 characterizations choice as in the HoTT book, which we refer to as
 Univalent Choice.
 
@@ -194,7 +199,13 @@ module Univalent-Choice
  AC-gives-AC₁ ac X A i j f = h
   where
    g : ∃ f ꞉ Π A , (X → 𝟙)
-   g = ac X A (λ x a → 𝟙) i j (λ x a → 𝟙-is-prop) (λ x → ∥∥-functor (λ z → z , ⋆) (f x))
+   g = ac X A
+        (λ x a → 𝟙)
+        i
+        j (
+        λ x a → 𝟙-is-prop)
+        (λ x → ∥∥-functor (λ z → z , ⋆)
+        (f x))
 
    h : ∥ Π A ∥
    h = ∥∥-functor pr₁ g
@@ -203,9 +214,7 @@ module Univalent-Choice
  AC₁-gives-AC ac₁ X A P s t i f = ∥∥-functor ΠΣ-distr g
   where
    g : ∥(Π x ꞉ X , Σ a ꞉ A x , P x a)∥
-   g = ac₁
-        X
-        (λ x → Σ a ꞉ A x , P x a)
+   g = ac₁ X (λ x → Σ a ꞉ A x , P x a)
         s
         (λ x → subsets-of-sets-are-sets (A x) (P x) (t x) (λ {a} → i x a))
         f
@@ -229,7 +238,7 @@ function extensionality, AC is equivalent to EM × DNS.
 What if we don't (necessarily) have the quotient 𝟚/P for an arbitrary
 proposition P?  We get from AC that all sets have decidable
 equality. This is because the quotient 𝟚/(a₀＝a₁), for two points a₀
-and a₁ of a set X can be constructed as the image of the map a:𝟚→X
+and a₁ of a set X can be constructed as the image of the map a : 𝟚 → X
 with values a ₀ = a₀ and a ₁ = a₁.
 
 \begin{code}
@@ -242,6 +251,12 @@ module ExcludedMiddle
  open PropositionalTruncation pt
  open Univalent-Choice fe pt
  open import UF.ImageAndSurjection pt
+
+\end{code}
+
+I originally proved this on 1st April 2013.
+
+\begin{code}
 
  decidability-lemma : {X : 𝓤 ̇ } (a : 𝟚 → X)
                     → ((x : X) → (∃ i ꞉ 𝟚 , a i ＝ x) → Σ i ꞉ 𝟚 , a i ＝ x)
@@ -623,9 +638,10 @@ module Observation
         (fe : FunExt)
         where
 
- decidability-observation : {X : 𝓤 ̇ } (a : 𝟚 → X)
-                          → ((x : X) → ¬¬ (Σ i ꞉ 𝟚 , a i ＝ x) → Σ i ꞉ 𝟚 , a i ＝ x)
-                          → is-decidable (a ₀ ＝ a ₁)
+ decidability-observation
+  : {X : 𝓤 ̇ } (a : 𝟚 → X)
+  → ((x : X) → ¬¬ (Σ i ꞉ 𝟚 , a i ＝ x) → Σ i ꞉ 𝟚 , a i ＝ x)
+  → is-decidable (a ₀ ＝ a ₁)
  decidability-observation {𝓤} {X} a c = claim (𝟚-is-discrete (s(r ₀)) (s(r ₁)))
   where
    Y = Σ x ꞉ X , ¬¬ (Σ i ꞉ 𝟚 , a i ＝ x)
@@ -691,5 +707,7 @@ Notice that we don't require that this is a family of sets. Notice
 also that excluded middle implies PAC. For more information, see
 Theorem 7.7 of the above reference.
 
-TODO. Are these and more facts about this. Some of them can be adapted
+TODO. Add these and more facts about this. Some of them can be adapted
 from this Agda file: https://www.cs.bham.ac.uk/~mhe/GeneralizedHedberg/html/GeneralizedHedberg.html
+
+These addition are done in NotionsOfDecidability.SemiDecidable by Tom de Jong.
