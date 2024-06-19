@@ -1,8 +1,11 @@
 ---
-title:        Properties of distributive lattice isomorphisms
-author:       Ayberk Tosun
-date-started: 2024-06-01
+title:         Properties of distributive lattice isomorphisms
+author:        Ayberk Tosun
+date-started:  2024-06-01
+dates-updated: [2024-06-09]
 ---
+
+In this module, we collect properties of distributive lattice isomorphisms.
 
 \begin{code}
 
@@ -56,7 +59,7 @@ open AllCombinators pt fe renaming (_∧_ to _∧ₚ_)
 
 \end{code}
 
-We work in a module parameterized by a 𝓤-distributive-lattices `K` and `L`.
+We work in a module parameterized by 𝓤-distributive-lattices `K` and `L`.
 
 \begin{code}
 
@@ -74,11 +77,11 @@ Transport lemma for distributive lattices.
 \begin{code}
 
  ≅d≅-transport : (K L : DistributiveLattice 𝓤)
-               → (P : DistributiveLattice 𝓤 → Ω 𝓣)
+               → (B : DistributiveLattice 𝓤 → 𝓣  ̇)
                → K ≅d≅ L
-               → P K holds
-               → P L holds
- ≅d≅-transport K L P iso = transport (_holds ∘ P) †
+               → B K
+               → B L
+ ≅d≅-transport K L B iso = transport B †
   where
    † : K ＝ L
    † = isomorphic-distributive-lattices-are-equal K L iso
