@@ -4,6 +4,9 @@ author:      Ayberk Tosun
 start-date:  2024-02-21
 ---
 
+This module contains the definition of the notion of a distributive lattice
+homomorphism.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}
@@ -17,17 +20,19 @@ module Locales.DistributiveLattice.Homomorphism
         (pt : propositional-truncations-exist)
        where
 
+open import Locales.DistributiveLattice.Definition fe pt
 open import Locales.Frame pt fe
 open import MLTT.Spartan
 open import UF.Base
 open import UF.Logic
 open import UF.Powerset-MultiUniverse
 open import UF.SubtypeClassifier
-open import Locales.DistributiveLattice.Definition fe pt
 
 open AllCombinators pt fe renaming (_∧_ to _∧ₚ_)
 
 \end{code}
+
+The properties of preserving bottom, top, binary joins, and binary meets.
 
 \begin{code}
 
@@ -38,20 +43,12 @@ preserves-𝟎 L₁ L₂ h = h 𝟎₁ ＝[ σ₂ ]＝ 𝟎₂
   open DistributiveLattice L₁ renaming (𝟎 to 𝟎₁)
   open DistributiveLattice L₂ renaming (𝟎 to 𝟎₂; X-is-set to σ₂)
 
-\end{code}
-
-\begin{code}
-
 preserves-𝟏 : (L₁ : DistributiveLattice 𝓤) (L₂ : DistributiveLattice 𝓥)
             → (∣ L₁ ∣ᵈ → ∣ L₂ ∣ᵈ) → Ω 𝓥
 preserves-𝟏 L₁ L₂ h = h 𝟏₁ ＝[ σ₂ ]＝ 𝟏₂
  where
   open DistributiveLattice L₁ renaming (𝟏 to 𝟏₁)
   open DistributiveLattice L₂ renaming (𝟏 to 𝟏₂; X-is-set to σ₂)
-
-\end{code}
-
-\begin{code}
 
 preserves-∨ : (L₁ : DistributiveLattice 𝓤) (L₂ : DistributiveLattice 𝓥)
             → (∣ L₁ ∣ᵈ → ∣ L₂ ∣ᵈ)
@@ -61,10 +58,6 @@ preserves-∨ L₁ L₂ h =
   where
    open DistributiveLattice L₁ renaming (_∨_ to _∨₁_)
    open DistributiveLattice L₂ renaming (_∨_ to _∨₂_; X-is-set to σ)
-
-\end{code}
-
-\begin{code}
 
 preserves-∧ : (L₁ : DistributiveLattice 𝓤) (L₂ : DistributiveLattice 𝓥)
             → (∣ L₁ ∣ᵈ → ∣ L₂ ∣ᵈ)
@@ -76,6 +69,8 @@ preserves-∧ L₁ L₂ h =
    open DistributiveLattice L₂ renaming (_∧_ to _∧₂_; X-is-set to σ)
 
 \end{code}
+
+The property of being a homomorphism of distributive lattices.
 
 \begin{code}
 
@@ -89,6 +84,8 @@ is-homomorphismᵈ L₁ L₂ h =  preserves-𝟏 L₁ L₂ h
 
 
 \end{code}
+
+Record-based definition of distributive lattice homomorphisms.
 
 \begin{code}
 
