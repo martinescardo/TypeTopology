@@ -4,12 +4,15 @@ author:      Ayberk Tosun
 start-date:  2024-02-14
 ---
 
+This module contains the definition of the notion of ideal over a distributive
+lattice.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}
 
-open import UF.PropTrunc
 open import UF.FunExt
+open import UF.PropTrunc
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
