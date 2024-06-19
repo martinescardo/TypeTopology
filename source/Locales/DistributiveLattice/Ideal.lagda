@@ -191,6 +191,8 @@ module PrincipalIdeals (L : DistributiveLattice 𝓤) where
 
 \end{code}
 
+Some nice syntax.
+
 \begin{code}
 
  syntax principal-ideal x = ↓ x
