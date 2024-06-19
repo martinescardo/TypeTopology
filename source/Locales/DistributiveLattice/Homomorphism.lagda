@@ -1,7 +1,7 @@
 ---
-title:       Homomorphisms of distributive lattices
-author:      Ayberk Tosun
-start-date:  2024-02-21
+title:        Homomorphisms of distributive lattices
+author:       Ayberk Tosun
+date-started: 2024-02-21
 ---
 
 This module contains the definition of the notion of a distributive lattice
