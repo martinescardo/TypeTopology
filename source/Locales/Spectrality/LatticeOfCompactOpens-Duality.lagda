@@ -9,6 +9,7 @@ compact opens of spectral locales:
 
   1. Every _large and locally small_ spectral locale `X` is homeomorphic to the
      spectrum of its _small_ distributive lattice `𝒦(X)` of compact opens.
+     - This is given in the proof called `X-is-homeomorphic-to-spec-𝒦⁻X`.
   1. Every _small_ distributive lattice `L` is isomorphic to the distributive
      lattice of compact opens of its _large and locally small_ spectrum locale.
 
@@ -131,7 +132,7 @@ The map `ι` below is the inclusion of `𝒦⁻X` into `𝒪(X)`.
 \end{code}
 
 This map is quite obviously a frame homomorphism, but writing this fact down
-involves some bureaucracy.
+involves some bureaucracy which we handle below.
 
 \begin{code}
 
@@ -334,8 +335,8 @@ is an equivalence, we will delay its proof for a bit.
 
 We now construct the opposite direction of the equivalence formed by `ϕ`. This
 is simply the map that sends an ideal to its join `I ↦ ⋁ I`. But because ideals
-are defined using powersets, we need to use `𝕋` to switch to the family
-representation of the ideal before taking its join.
+are defined using powersets, we use `𝕋` to work with the total space of the
+ideal before taking its join.
 
 We call this map simply `join`.
 
@@ -386,8 +387,8 @@ The map `join` preserves binary meets.
                              → join (ℐ ∧ᵢ 𝒥) ＝ join ℐ ∧[ 𝒪 X ] join 𝒥
  join-preserves-binary-meets ℐ 𝒥 =
   join (ℐ ∧ᵢ 𝒥)                                                              ＝⟨ refl ⟩
-  ⋁[ 𝒪 X ] ⁅ ι K ∣ K ε 𝕋 𝒦⁻X (_∈ⁱ ℐ ∧ᵢ 𝒥) ⁆                                  ＝⟨ Ⅰ ⟩
-  ⋁⟨ ((i , _) , (j , _)) ∶ (_ × _) ⟩ ι i ∧[ 𝒪 X ] ι j                        ＝⟨ Ⅱ ⟩
+  ⋁[ 𝒪 X ] ⁅ ι K ∣ K ε 𝕋 𝒦⁻X (_∈ⁱ ℐ ∧ᵢ 𝒥) ⁆                                  ＝⟨ Ⅰ    ⟩
+  ⋁⟨ ((i , _) , (j , _)) ∶ (_ × _) ⟩ ι i ∧[ 𝒪 X ] ι j                        ＝⟨ Ⅱ    ⟩
   (⋁[ 𝒪 X ] ⁅ ι K ∣ K ε 𝕋 𝒦⁻X I ⁆) ∧[ 𝒪 X ] (⋁[ 𝒪 X ] ⁅ ι K ∣ K ε 𝕋 𝒦⁻X J ⁆) ＝⟨ refl ⟩
   join ℐ ∧[ 𝒪 X ] join 𝒥 ∎
   where
@@ -396,7 +397,6 @@ The map `join` preserves binary meets.
 
    open JoinNotation (join-of (𝒪 X))
    open Joins (λ x y → x ≤[ poset-of (𝒪 X) ] y)
-
 
    † : ((⋁[ 𝒪 X ] ⁅ ι K ∣ K ε 𝕋 𝒦⁻X (_∈ⁱ ℐ ∧ᵢ 𝒥) ⁆)
          ≤[ poset-of (𝒪 X) ]
@@ -448,7 +448,7 @@ The map `join` preserves binary meets.
 
 \end{code}
 
-The map `ϕ` is the left inverse of the map `join` as promised.
+We now show that the map `ϕ` is the left inverse of the map `join` as promised.
 
 \begin{code}
 
@@ -592,8 +592,8 @@ The map `join` is monotone.
 
 \end{code}
 
-We now prove that the maps `ϕ` and `join` preserve joins using the Adjoint
-Functor Theorem for frames.
+We now prove that the maps `ϕ` and `join` preserve joins using the posetal
+Adjoint Functor Theorem for frames.
 
 \begin{code}
 
@@ -657,7 +657,8 @@ frame homomorphisms.
 
 \begin{code}
 
- ϕ-is-a-frame-homomorphism : is-a-frame-homomorphism (𝒪 X) (𝒪 spec-𝒦⁻X) ϕ holds
+ ϕ-is-a-frame-homomorphism
+  : is-a-frame-homomorphism (𝒪 X) (𝒪 spec-𝒦⁻X) ϕ holds
  ϕ-is-a-frame-homomorphism = ϕ-preserves-top , ϕ-preserves-∧ , †
   where
    open Joins (λ x y → x ≤[ poset-of (𝒪 spec-𝒦⁻X) ] y)
@@ -684,7 +685,7 @@ frame homomorphisms.
 
 \end{code}
 
-The set `𝒪 X` is equivalent to the type `Ideal 𝒦-X⁻`.
+The type `𝒪 X` is equivalent to the type `Ideal 𝒦-X⁻`.
 
 \begin{code}
 
@@ -698,6 +699,12 @@ The set `𝒪 X` is equivalent to the type `Ideal 𝒦-X⁻`.
 
    ‡ : (join ∘ ϕ) ∼ id
    ‡ = join-cancels-ϕ
+
+\end{code}
+
+Moreover, this equivalence is homeomorphic.
+
+\begin{code}
 
  X-is-homeomorphic-to-spec-𝒦⁻X : spec-𝒦⁻X ≅c≅ X
  X-is-homeomorphic-to-spec-𝒦⁻X =
@@ -734,7 +741,10 @@ spectral-implies-spectral· X σ =
 
 \end{code}
 
-\section{L to 𝒦(Spec(L))}
+\section{From L to 𝒦(Spec(L))}
+
+In this section, we show that every distributive lattice `L` is isomorphic to
+the small distributive lattice of compact opens of its spectrum.
 
 We work in a module parameterized by a small distributive lattice `L`.
 
