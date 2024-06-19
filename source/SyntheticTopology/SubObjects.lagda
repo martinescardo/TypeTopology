@@ -55,7 +55,8 @@ module subdefinitions (𝒳 : hSet 𝓤) where
 
  is-subcompact : (U : 𝓟 X) → Ω (𝓤 ⁺ ⊔ 𝓥)
  is-subcompact U =
-  Ɐ (P , open-P) ꞉ 𝓞 𝒳 , is-open-proposition (Ɐ (x , Ux) ꞉ (𝕋 U) , x ∈ₚ P)
+  Ɐ (P , open-P) ꞉ 𝓞 𝒳
+   , is-open-proposition (Ɐ x ꞉ X , (x ∈ₚ U) ⇒ x ∈ₚ P)
 
  is-subovert : (U : 𝓟 X) → Ω (𝓤 ⁺ ⊔ 𝓥)
  is-subovert U =
@@ -148,32 +149,24 @@ related to "plain" ones.
 
  compact-iff-subcompact-in-self =
   compact-gives-subcompact , subcompact-gives-compact
-   where
-    p₁ : (U : 𝓟 X)
-       → ((Ɐ x ꞉ X , x ∈ₚ U) ⇒ (Ɐ (x , true) ꞉ (𝕋 full) , U x)) holds
-    p₁ U x-in-X = λ (x , true) → x-in-X x
-    
-    p₂ : (U : 𝓟 X)
-       → ((Ɐ (x , true) ꞉ (𝕋 full) , U x) ⇒ (Ɐ x ꞉ X , x ∈ₚ U)) holds
-    p₂ U x-in-Tfull = λ x → x-in-Tfull (x , ⊤-holds)
-   
+
+  where   
     compact-gives-subcompact :
      (is-compact 𝒳 ⇒ is-subcompact full) holds
-
     compact-gives-subcompact compact-X (U , open-U) =
      ⇔-open (Ɐ x ꞉ X , x ∈ₚ U)
-            (Ɐ (x , true) ꞉ (𝕋 full) , U x)
-            (p₁ U , p₂ U)
+            (Ɐ x ꞉ X , ⊤ ⇒ U x)
+            ((λ hyp x _ → hyp x) , (λ hyp x → hyp x ⊤-holds))
             (compact-X (U , open-U))
-
+    
     subcompact-gives-compact :
      ( is-subcompact full ⇒ is-compact 𝒳) holds
-
     subcompact-gives-compact = λ subcompact-X (U , open-U) →
-      ⇔-open (Ɐ (x , true) ꞉ (𝕋 full) , U x)
-             (Ɐ x ꞉ X , x ∈ₚ U)
-             (p₂ U , p₁ U)
-             (subcompact-X (U , open-U))
+     ⇔-open (Ɐ x ꞉ X , ⊤ ⇒ x ∈ₚ U)
+            (Ɐ x ꞉ X , x ∈ₚ U)
+            ((λ hyp x → hyp x ⊤-holds) , (λ hyp x _ → hyp x))
+            (subcompact-X ((λ z → z ∈ₚ U) , open-U))
+ 
 
  overt-iff-subovert-in-self
   : ((is-overt 𝒳 ⇔ (is-subovert full))) holds
