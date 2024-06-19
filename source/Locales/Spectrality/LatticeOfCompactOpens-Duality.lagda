@@ -1045,8 +1045,7 @@ The map `back-to-L₀` is a retraction of the map `to-𝒦-spec-L₀`.
 
 \end{code}
 
-From all this, we conclude that the underlying types of `L` and `𝒦⁻(spec-L)` are
-equivalent.
+We conclude that the underlying types of `L` and `𝒦⁻(spec-L)` are equivalent.
 
 \begin{code}
 
@@ -1063,6 +1062,8 @@ equivalent.
    † = back-to-L₀ , Ⅰ , Ⅱ
 
 \end{code}
+
+The equivalence `to-𝒦-spec-L` is homomorphic.
 
 \begin{code}
 
@@ -1084,6 +1085,9 @@ equivalent.
 
 \end{code}
 
+We package everything up into a proof that `L` is isomorphic to the
+distributive lattice `𝒦⁻-spec-L`.
+
 \begin{code}
 
  open DistributiveLatticeIsomorphisms L 𝒦⁻-spec-L
@@ -1094,10 +1098,6 @@ equivalent.
    (L-equivalent-to-𝒦⁻-spec-L , to-𝒦-spec-L-is-a-homomorphic-equivalence)
 
 \end{code}
-
-\end{code}
-
-Put this in the `LatticeOfCompactOpens-Duality` module.
 
 Recall that the type of spectral locales is defined as
 
