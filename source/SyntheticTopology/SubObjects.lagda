@@ -58,13 +58,37 @@ module subdefinitions (𝒳 : hSet 𝓤) where
   Ɐ (P , open-P) ꞉ 𝓞 𝒳
    , is-open-proposition (Ɐ x ꞉ X , (x ∈ₚ U) ⇒ x ∈ₚ P)
 
+ is-subcompact' : (U : 𝓟 X) → Ω (𝓤 ⁺ ⊔ 𝓥)
+ is-subcompact' U =
+  Ɐ (P , open-P) ꞉ 𝓞 𝒳
+   , is-open-proposition (Ɐ (x , Ux) ꞉ (𝕋 U) , x ∈ₚ P)
+
  is-subovert : (U : 𝓟 X) → Ω (𝓤 ⁺ ⊔ 𝓥)
  is-subovert U =
   Ɐ (P , open-P) ꞉ 𝓞 𝒳 , is-open-proposition (Ǝₚ (x , Ux) ꞉ (𝕋 U) , x ∈ₚ P)
 
 \end{code}
 
-We now prove some basic lemmas.
+First, we can prove that the two notions of subcompactness are equivalent.
+
+\begin{code}
+
+ sub-gives-sub' : (U : 𝓟 X) → is-subcompact U holds → is-subcompact' U holds
+ sub-gives-sub' U sub-U (P , open-P) =
+  ⇔-open (Ɐ x ꞉ X , x ∈ₚ U ⇒ x ∈ₚ P) (Ɐ (x , Ux) ꞉ (𝕋 U) , x ∈ₚ P)
+          ((λ hyp (x , Ux) → hyp x Ux) , λ hyp x Ux → hyp (x , Ux))
+          (sub-U ((λ x → x ∈ₚ P) , open-P))
+ 
+
+ sub'-gives-sub : (U : 𝓟 X) → is-subcompact' U holds → is-subcompact U holds
+ sub'-gives-sub U sub'-U (P , open-P) =
+  ⇔-open (Ɐ (x , Ux) ꞉ (𝕋 U) , x ∈ₚ P) (Ɐ x ꞉ X , x ∈ₚ U ⇒ x ∈ₚ P) 
+          ((λ hyp x Ux → hyp (x , Ux)) , (λ hyp (x , Ux) → hyp x Ux))
+          (sub'-U ((λ x → x ∈ₚ P) , open-P))
+
+\end{code}
+
+Then we prove some lemmas.
 
 \begin{code}
 
