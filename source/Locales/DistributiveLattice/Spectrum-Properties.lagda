@@ -2,7 +2,7 @@
 title:          Properties of the locale of spectra
 author:         Ayberk Tosun
 date-started:   2024-03-01
-dates-updated:  [2024-03-27, 2024-04-08, 2024-04-09]
+dates-updated:  [2024-03-27, 2024-04-08, 2024-04-09, 2024-06-05]
 ---
 
 We define the spectrum locale over a distributive lattice `L`, the defining
@@ -51,7 +51,7 @@ open PropositionalTruncation pt hiding (_∨_)
 
 \end{code}
 
-We work with a fixed distributive lattice `L` in this module.
+We work with a fixed distributive 𝓤-lattice `L` in this module.
 
 \begin{code}
 
@@ -64,7 +64,7 @@ module Spectrality (L : DistributiveLattice 𝓤) where
 
 \end{code}
 
-We abbreviate `spectrum` to `spec-L`.
+We abbreviate the `spectrum` of `L` to `spec-L`.
 
 \begin{code}
 
@@ -74,7 +74,7 @@ We abbreviate `spectrum` to `spec-L`.
 
 \end{code}
 
-The spectrum is a compact locale.
+The locale `spec-L` is a compact locale.
 
 \begin{code}
 
@@ -98,8 +98,8 @@ The spectrum is a compact locale.
 Added on 2024-03-13.
 
 Every ideal `I` is the join of its principal ideals. We call this join the
-_factorization_ of `I` into its join of principal ideals, and we denote function
-implementing this `factorization`.
+_factorization_ of `I` into its join of principal ideals, and we denote by
+`factorization` the function implementing this.
 
 \begin{code}
 
@@ -187,16 +187,17 @@ Every ideal has a directed covering family consisting of compact opens.
  ideal-has-directed-cover-of-compact-opens
   : (I : Ideal L)
   → has-a-directed-cover-of-compact-opens spec-L I holds
- ideal-has-directed-cover-of-compact-opens I = ∣ principal-ideals-of I , κ , δ , eq ∣
-  where
-   κ : consists-of-compact-opens spec-L (principal-ideals-of I) holds
-   κ (x , _) =  principal-ideal-is-compact x
+ ideal-has-directed-cover-of-compact-opens I =
+  ∣ principal-ideals-of I , κ , δ , eq ∣
+   where
+    κ : consists-of-compact-opens spec-L (principal-ideals-of I) holds
+    κ (x , _) =  principal-ideal-is-compact x
 
-   δ : is-directed (𝒪 spec-L) (principal-ideals-of I) holds
-   δ = principal-ideals-of-ideal-form-a-directed-family I
+    δ : is-directed (𝒪 spec-L) (principal-ideals-of I) holds
+    δ = principal-ideals-of-ideal-form-a-directed-family I
 
-   eq : I ＝ ⋁[ 𝒪 spec-L ] principal-ideals-of I
-   eq = ideal-equal-to-factorization I
+    eq : I ＝ ⋁[ 𝒪 spec-L ] principal-ideals-of I
+    eq = ideal-equal-to-factorization I
 
 \end{code}
 
@@ -276,12 +277,6 @@ This has probably been written down somewhere else before.
  principal-ideal-preserves-top : ↓ 𝟏 ＝ 𝟏[ 𝒪 spec-L ]
  principal-ideal-preserves-top = only-𝟏-is-above-𝟏 (𝒪 spec-L) (↓ 𝟏) (λ _ → id)
 
-\end{code}
-
-This has also probably been written down somewhere elsle.
-
-\begin{code}
-
  principal-ideal-preserves-bottom : ↓ 𝟎 ＝ 𝟎[ 𝒪 spec-L ]
  principal-ideal-preserves-bottom = only-𝟎-is-below-𝟎 (𝒪 spec-L) (↓ 𝟎) †
   where
@@ -292,25 +287,6 @@ This has also probably been written down somewhere elsle.
 
      p : x ＝ 𝟎
      p = only-𝟎-is-below-𝟎ᵈ L x μ
-
-\end{code}
-
-\begin{code}
-
-{--
-
- principal-ideal-preserves-joins : (x y : ∣ L ∣ᵈ)
-                                 → ↓ (x ∨ y) ＝ ↓ x ∨[ 𝒪 spec-L ] ↓ y
- principal-ideal-preserves-joins x y =
-  ≤-is-antisymmetric poset-of-ideals † ‡
-   where
-    † : (↓ (x ∨ y) ≤[ poset-of-ideals ] (↓ x ∨[ 𝒪 spec-L ] ↓ y)) holds
-    † z p = ∨[ 𝒪 spec-L ]-least {!!} {!!} {!!} {!!}
-
-    ‡ : ((↓ x ∨[ 𝒪 spec-L ] ↓ y) ≤[ poset-of-ideals ] ↓ (x ∨ y)) holds
-    ‡ z p = {!!}
-
---}
 
 \end{code}
 
