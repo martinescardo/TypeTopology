@@ -1,9 +1,9 @@
---------------------------------------------------------------------------------
+---
 title:          Properties of the locale of spectra
 author:         Ayberk Tosun
 date-started:   2024-03-01
 dates-updated:  [2024-03-27, 2024-04-08, 2024-04-09]
---------------------------------------------------------------------------------
+---
 
 We define the spectrum locale over a distributive lattice `L`, the defining
 frame of which is the frame of ideals over `L`.
