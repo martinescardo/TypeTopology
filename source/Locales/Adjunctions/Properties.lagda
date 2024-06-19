@@ -4,7 +4,7 @@ author:       Ayberk Tosun
 date-started: 2024-05-20
 ---
 
-Many facts about posetal adjunctions have been writen in modules
+Many facts about posetal adjunctions have previously been recorded in modules
 
   - `Locales.GaloisConnection`, and
   - `Locales.AdjointFunctorTheoremForFrames`.
@@ -43,7 +43,7 @@ We work in a module parameterized by two posets `P` and `Q`.
 \begin{code}
 
 module Some-Properties-Of-Posetal-Adjunctions
-        (P : Poset 𝓤 𝓥)
+        (P : Poset 𝓤  𝓥)
         (Q : Poset 𝓤' 𝓥')
        where
 
