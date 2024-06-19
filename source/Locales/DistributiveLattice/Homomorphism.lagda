@@ -2,6 +2,7 @@
 title:        Homomorphisms of distributive lattices
 author:       Ayberk Tosun
 date-started: 2024-02-21
+dates-updated: [2024-05-20, 2024-05-29, 2024-06-09]
 ---
 
 This module contains the definition of the notion of a distributive lattice
@@ -137,6 +138,9 @@ funᵈ K L 𝒽 = Homomorphismᵈᵣ.h {L₁ = K} {L₂ = L} 𝒽
 \end{code}
 
 Added on 2024-05-29.
+
+If the underlying functions of two lattice homomorphisms are equal, then they
+are equal.
 
 \begin{code}
 
