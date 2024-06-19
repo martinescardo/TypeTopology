@@ -35,7 +35,7 @@ open AllCombinators pt fe
 
 \end{code}
 
-We work in a module parameterized by two posets `P` and `Q`.
+We work in a module parameterized by two distributive lattices `K` and `L`.
 
 \begin{code}
 
