@@ -217,7 +217,7 @@ distributive-lattice₀-equivalent-to-distributive-lattice 𝓤 =
 
 Added on 2024-06-01.
 
-The types of distributive lattice data is and distributive lattice structure are
+The types of distributive lattice data and distributive lattice structure are
 sets.
 
 \begin{code}
