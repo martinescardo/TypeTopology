@@ -5,9 +5,9 @@ date-started: 2024-05-20
 ---
 
 Many properties of posetal adjunctions have previously been written down, mostly
-in the context of frames. In this module, we consider some of these properties
-in the case where the lattices in consideration are distributive lattices and
-not necessarily frames.
+in the context of frames. In this module, we collect some of these properties in
+the more general case where the lattices in consideration are not necessarily
+frames.
 
 \begin{code}
 
