@@ -746,7 +746,9 @@ spectral-implies-spectral· X σ =
 In this section, we show that every distributive lattice `L` is isomorphic to
 the small distributive lattice of compact opens of its spectrum.
 
-We work in a module parameterized by a small distributive lattice `L`.
+The proof, given below, is called `spec-isomorphism`.
+
+We work in a module parameterized by a small distributive 𝓤-lattice `L`.
 
 \begin{code}
 
@@ -802,7 +804,7 @@ lattices:
 The isomorphism that we construct consists of the maps:
 
   1. `to-𝒦-spec-L : ∣ L ∣ᵈ → ∣ 𝒦⁻-spec-L ∣ᵈ`, and
-  2. `maximum : ∣ 𝒦⁻-spec-L ∣ᵈ → ∣ L ∣ᵈ`.
+  2. `back-to-L : ∣ 𝒦⁻-spec-L ∣ᵈ → ∣ L ∣ᵈ`.
 
 We first construct the map `to-𝒦-spec-L`. We follow our usual convention of
 denoting by the subscript `₀` the preliminary version of the construction in
@@ -816,7 +818,7 @@ property.
 
 \end{code}
 
-The map `to-𝒦-spec-L₀` preserves meets.
+The map `to-𝒦-spec-L₀` preserves binary meets.
 
 \begin{code}
 
@@ -850,12 +852,12 @@ The map `to-𝒦-spec-L₀` preserves meets.
 
 \end{code}
 
-\section{𝒦(Spec(L)) to L}
+\section{From 𝒦(Spec(L)) to L}
 
-We now start working on the map `maximum` that takes us from the small
+We now start working on the map `back-to-L` that takes us from the small
 distributive lattice of compact opens of `spec-L` back to `L`.
 
-We first prove that the principal ideal map is an embedding, and is hence
+We first prove that the principal ideal map is an embedding and is hence
 left-cancellable.
 
 \begin{code}
@@ -911,12 +913,12 @@ where `ιₖ` is the inclusion of the compact opens into the frame of ideals, an
 \end{code}
 
 We now define the underlying function of the distributive lattice homomorphism
-`maximum`, which we denote `maximum₀`:
+`back-to-L`, which we denote `back-to-L₀`:
 
 \begin{code}
 
- maximum₀ : ∣ 𝒦⁻-spec-L ∣ᵈ → ∣ L ∣ᵈ
- maximum₀ K = pr₁ t
+ back-to-L₀ : ∣ 𝒦⁻-spec-L ∣ᵈ → ∣ L ∣ᵈ
+ back-to-L₀ K = pr₁ t
   where
    κ : is-compact-open spec-L (r₀ K) holds
    κ = r₀-gives-compact-opens K
@@ -932,17 +934,15 @@ We now define the underlying function of the distributive lattice homomorphism
 
 \end{code}
 
-This map satisfies the property that every compact open `K` of `spec-L` can be
-factored as `s (↓ₖ (maximum₀ K))`. This can be thought of as saying that
-`maximum₀` computes _the maximum element_ of the compact ideal `K`.
+The map `back-to-L₀` is a section of `to-𝒦-spec-L₀`.
 
 \begin{code}
 
- maximum₀-lemma : (K : ∣ 𝒦⁻-spec-L ∣ᵈ) → K ＝ s (↓ₖ (maximum₀ K))
- maximum₀-lemma K =
-  K                      ＝⟨ Ⅰ ⟩
-  s (r K)                ＝⟨ Ⅱ ⟩
-  s (↓ₖ maximum₀ K)   ∎
+ to-𝒦-spec-L-cancels-back-to-L : (K : ∣ 𝒦⁻-spec-L ∣ᵈ) → to-𝒦-spec-L₀ (back-to-L₀ K) ＝ K
+ to-𝒦-spec-L-cancels-back-to-L K =
+  s (↓ₖ back-to-L₀ K)    ＝⟨ {!!} ⟩
+  s (r K)                ＝⟨ {!!} ⟩
+  K                      ∎
    where
     κ : is-compact-open spec-L (r₀ K) holds
     κ = r₀-gives-compact-opens K
@@ -956,14 +956,14 @@ factored as `s (↓ₖ (maximum₀ K))`. This can be thought of as saying that
     t : Σ x ꞉ ∣ L ∣ᵈ , ↓ x  ＝ r₀ K
     t = exit-∥∥ † γ
 
-    q : r₀ K ＝ ↓ (maximum₀ K)
+    q : r₀ K ＝ ↓ (back-to-L₀ K)
     q = pr₂ t ⁻¹
 
-    p : r K ＝ ↓ₖ (maximum₀ K)
+    p : r K ＝ ↓ₖ (back-to-L₀ K)
     p = to-𝒦-＝
          spec-L
          (r₀-gives-compact-opens K)
-         (principal-ideal-is-compact (maximum₀ K))
+         (principal-ideal-is-compact (back-to-L₀ K))
          q
 
     Ⅰ = inverses-are-retractions' e K ⁻¹
@@ -971,102 +971,96 @@ factored as `s (↓ₖ (maximum₀ K))`. This can be thought of as saying that
 
 \end{code}
 
+The map `back-to-L₀` preserves binary meets.
+
 \begin{code}
 
- maximum-preserves-∧ : preserves-∧ 𝒦⁻-spec-L L maximum₀ holds
- maximum-preserves-∧ K₁ K₂ = goal
+ back-to-L₀-preserves-∧ : preserves-∧ 𝒦⁻-spec-L L back-to-L₀ holds
+ back-to-L₀-preserves-∧ K₁ K₂ = †
   where
    open DistributiveLattice L renaming (_∧_ to _∧L_)
    open DistributiveLattice 𝒦⁻-spec-L renaming (_∧_ to _∧·_)
 
-   x₁ = maximum₀ K₁
-   x₂ = maximum₀ K₂
+   x₁ = back-to-L₀ K₁
+   x₂ = back-to-L₀ K₂
 
-   goal₁ : s (↓ₖ (maximum₀ (K₁ ∧· K₂))) ＝ s (↓ₖ (maximum₀ K₁ ∧L maximum₀ K₂))
+   goal₁ : s (↓ₖ (back-to-L₀ (K₁ ∧· K₂))) ＝ s (↓ₖ (back-to-L₀ K₁ ∧L back-to-L₀ K₂))
    goal₁ =
-    s (↓ₖ (maximum₀ (K₁ ∧· K₂)))                      ＝⟨ Ⅰ ⟩
+    s (↓ₖ (back-to-L₀ (K₁ ∧· K₂)))                      ＝⟨ Ⅰ ⟩
     K₁ ∧· K₂                                             ＝⟨ Ⅱ ⟩
-    K₁ ∧· s (↓ₖ (maximum₀ K₂))                        ＝⟨ Ⅲ ⟩
-    s (↓ₖ (maximum₀ K₁)) ∧· s (↓ₖ (maximum₀ K₂))   ＝⟨ Ⅴ ⟩
-    s ((↓ₖ (maximum₀ K₁)) ∧ₖ (↓ₖ (maximum₀ K₂)))   ＝⟨ Ⅳ ⟩
-    s (↓ₖ (maximum₀ K₁ ∧L maximum₀ K₂))            ∎
+    K₁ ∧· s (↓ₖ (back-to-L₀ K₂))                        ＝⟨ Ⅲ ⟩
+    s (↓ₖ (back-to-L₀ K₁)) ∧· s (↓ₖ (back-to-L₀ K₂))   ＝⟨ Ⅴ ⟩
+    s ((↓ₖ (back-to-L₀ K₁)) ∧ₖ (↓ₖ (back-to-L₀ K₂)))   ＝⟨ Ⅳ ⟩
+    s (↓ₖ (back-to-L₀ K₁ ∧L back-to-L₀ K₂))            ∎
      where
-      Ⅰ = maximum₀-lemma (K₁ ∧· K₂) ⁻¹
-      Ⅱ = ap (λ - → K₁ ∧· -) (maximum₀-lemma K₂)
-      Ⅲ = ap (λ - → - ∧· s (↓ₖ (maximum₀ K₂))) (maximum₀-lemma K₁)
+      Ⅰ = to-𝒦-spec-L-cancels-back-to-L (K₁ ∧· K₂)
+      Ⅱ = ap (λ - → K₁ ∧· -) (to-𝒦-spec-L-cancels-back-to-L K₂ ⁻¹)
+      Ⅲ = ap (λ - → - ∧· s (↓ₖ (back-to-L₀ K₂))) (to-𝒦-spec-L-cancels-back-to-L K₁ ⁻¹)
 
       † = to-𝒦-＝
            spec-L
-           (pr₂ ((↓ₖ (maximum₀ K₁)) ∧ₖ (↓ₖ (maximum₀ K₂))))
-           (principal-ideal-is-compact (maximum₀ K₁ ∧L maximum₀ K₂))
-           (principal-ideal-preserves-meets (maximum₀ K₁) (maximum₀ K₂) ⁻¹ )
+           (pr₂ ((↓ₖ (back-to-L₀ K₁)) ∧ₖ (↓ₖ (back-to-L₀ K₂))))
+           (principal-ideal-is-compact (back-to-L₀ K₁ ∧L back-to-L₀ K₂))
+           (principal-ideal-preserves-meets (back-to-L₀ K₁) (back-to-L₀ K₂) ⁻¹ )
 
       Ⅳ = ap s †
 
-      Ⅴ = s-preserves-∧ (↓ₖ (maximum₀ K₁)) (↓ₖ (maximum₀ K₂)) ⁻¹
+      Ⅴ = s-preserves-∧ (↓ₖ (back-to-L₀ K₁)) (↓ₖ (back-to-L₀ K₂)) ⁻¹
 
-   goal′ : ↓ₖ maximum₀ (K₁ ∧· K₂) ＝ ↓ₖ (maximum₀ K₁ ∧L maximum₀ K₂)
+   goal′ : ↓ₖ back-to-L₀ (K₁ ∧· K₂) ＝ ↓ₖ (back-to-L₀ K₁ ∧L back-to-L₀ K₂)
    goal′ = equivs-are-lc s (⌜⌝-is-equiv (≃-sym e)) goal₁
 
-   goal₂ : ↓ maximum₀ (K₁ ∧· K₂) ＝ ↓ (maximum₀ K₁ ∧L maximum₀ K₂)
+   goal₂ : ↓ back-to-L₀ (K₁ ∧· K₂) ＝ ↓ (back-to-L₀ K₁ ∧L back-to-L₀ K₂)
    goal₂ = pr₁ (from-Σ-＝ goal′)
 
-   goal : maximum₀ (K₁ ∧· K₂) ＝ maximum₀ K₁ ∧L maximum₀ K₂
-   goal = pr₁ (from-Σ-＝ (↓-is-embedding (↓ maximum₀ (K₁ ∧· K₂)) ((maximum₀ (K₁ ∧· K₂)) , refl) ((maximum₀ K₁ ∧L maximum₀ K₂) , (goal₂ ⁻¹))))
+   † : back-to-L₀ (K₁ ∧· K₂) ＝ back-to-L₀ K₁ ∧L back-to-L₀ K₂
+   † = pr₁ (from-Σ-＝ (↓-is-embedding (↓ back-to-L₀ (K₁ ∧· K₂)) ((back-to-L₀ (K₁ ∧· K₂)) , refl) ((back-to-L₀ K₁ ∧L back-to-L₀ K₂) , (goal₂ ⁻¹))))
 
- maximum₀-is-monotone
-  : is-monotonic (poset-ofᵈ 𝒦⁻-spec-L) (poset-ofᵈ L) maximum₀ holds
- maximum₀-is-monotone =
+ back-to-L₀-is-monotone
+  : is-monotonic (poset-ofᵈ 𝒦⁻-spec-L) (poset-ofᵈ L) back-to-L₀ holds
+ back-to-L₀-is-monotone =
   meet-preserving-implies-monotone
    𝒦⁻-spec-L
    L
-   maximum₀
-   maximum-preserves-∧
+   back-to-L₀
+   back-to-L₀-preserves-∧
 
 \end{code}
+
+The map `back-to-L₀` is a retraction of the map `to-𝒦-spec-L₀`.
 
 \begin{code}
 
- maximum-cancels-to-𝒦-spec-L : maximum₀ ∘ to-𝒦-spec-L₀ ∼ id
- maximum-cancels-to-𝒦-spec-L x =
-  equality-of-principal-ideals-gives-equality goal′′
-   where
-    goal : s (↓ₖ maximum₀ (s (↓ₖ x))) ＝ s (↓ₖ x)
-    goal = maximum₀-lemma (s (↓ₖ x)) ⁻¹
+ back-to-L-cancels-to-𝒦-spec-L : back-to-L₀ ∘ to-𝒦-spec-L₀ ∼ id
+ back-to-L-cancels-to-𝒦-spec-L x = equality-of-principal-ideals-gives-equality †
+  where
+   ♠ : s (↓ₖ back-to-L₀ (s (↓ₖ x))) ＝ s (↓ₖ x)
+   ♠ = to-𝒦-spec-L-cancels-back-to-L (s (↓ₖ x))
 
-    goal′ : ↓ₖ maximum₀ (s (↓ₖ x)) ＝ ↓ₖ x
-    goal′ = equivs-are-lc s (⌜⌝-is-equiv (≃-sym e)) goal
+   ‡ : ↓ₖ back-to-L₀ (s (↓ₖ x)) ＝ ↓ₖ x
+   ‡ = equivs-are-lc s (⌜⌝-is-equiv (≃-sym e)) ♠
 
-    goal′′ : ↓ maximum₀ (s (↓ₖ x)) ＝ ↓ x
-    goal′′ = pr₁ (from-Σ-＝ goal′)
-
-\end{code}
-
-\begin{code}
-
- to-𝒦-spec-L-cancels-maximum : to-𝒦-spec-L₀ ∘ maximum₀ ∼ id
- to-𝒦-spec-L-cancels-maximum K =
-  to-𝒦-spec-L₀ (maximum₀ K)    ＝⟨ refl ⟩
-  s (↓ₖ (maximum₀ K))         ＝⟨ †    ⟩
-  K                              ∎
-   where
-    † = maximum₀-lemma K ⁻¹
+   † : ↓ back-to-L₀ (s (↓ₖ x)) ＝ ↓ x
+   † = pr₁ (from-Σ-＝ ‡)
 
 \end{code}
+
+From all this, we conclude that the underlying types of `L` and `𝒦⁻(spec-L)` are
+equivalent.
 
 \begin{code}
 
  L-equivalent-to-𝒦⁻-spec-L : ∣ L ∣ᵈ ≃ ∣ 𝒦⁻-spec-L ∣ᵈ
  L-equivalent-to-𝒦⁻-spec-L = to-𝒦-spec-L₀ , qinvs-are-equivs to-𝒦-spec-L₀ †
   where
-   Ⅰ : maximum₀ ∘ to-𝒦-spec-L₀ ∼ id
-   Ⅰ = maximum-cancels-to-𝒦-spec-L
+   Ⅰ : back-to-L₀ ∘ to-𝒦-spec-L₀ ∼ id
+   Ⅰ = back-to-L-cancels-to-𝒦-spec-L
 
-   Ⅱ : to-𝒦-spec-L₀ ∘ maximum₀ ∼ id
-   Ⅱ = to-𝒦-spec-L-cancels-maximum
+   Ⅱ : to-𝒦-spec-L₀ ∘ back-to-L₀ ∼ id
+   Ⅱ = to-𝒦-spec-L-cancels-back-to-L
 
    † : qinv to-𝒦-spec-L₀
-   † = maximum₀ , Ⅰ , Ⅱ
+   † = back-to-L₀ , Ⅰ , Ⅱ
 
 \end{code}
 
@@ -1085,8 +1079,8 @@ factored as `s (↓ₖ (maximum₀ K))`. This can be thought of as saying that
         to-𝒦-spec-L₀
         to-𝒦-spec-L-preserves-∧
 
-   ‡ : is-monotonic (poset-ofᵈ 𝒦⁻-spec-L) (poset-ofᵈ L) maximum₀ holds
-   ‡ = maximum₀-is-monotone
+   ‡ : is-monotonic (poset-ofᵈ 𝒦⁻-spec-L) (poset-ofᵈ L) back-to-L₀ holds
+   ‡ = back-to-L₀-is-monotone
 
 \end{code}
 
