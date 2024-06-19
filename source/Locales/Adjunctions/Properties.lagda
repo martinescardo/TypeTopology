@@ -1,8 +1,8 @@
---------------------------------------------------------------------------------
+---
 title:        Properties of posetal adjunctions
 author:       Ayberk Tosun
 date-started: 2024-05-20
---------------------------------------------------------------------------------
+---
 
 Many facts about posetal adjunctions have been writen in modules
 
@@ -42,7 +42,10 @@ We work in a module parameterized by two posets `P` and `Q`.
 
 \begin{code}
 
-module Some-Properties-Of-Posetal-Adjunctions (P : Poset 𝓤 𝓥) (Q : Poset 𝓤' 𝓥') where
+module Some-Properties-Of-Posetal-Adjunctions
+        (P : Poset 𝓤 𝓥)
+        (Q : Poset 𝓤' 𝓥')
+       where
 
  open GaloisConnectionBetween P Q
 
@@ -77,7 +80,6 @@ Monotone equivalences are adjoints.
  monotone-equivalences-are-adjoint (s , 𝓂₁) (r , 𝓂₂) φ ψ x y = † , ‡
   where
    open PosetReasoning Q
-
 
    † : (s x ≤[ Q ] y ⇒ x ≤[ P ] r y) holds
    † p = sections-are-order-embeddings P Q s r 𝓂₂ ψ ※
