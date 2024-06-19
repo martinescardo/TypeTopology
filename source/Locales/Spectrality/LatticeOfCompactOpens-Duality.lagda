@@ -10,9 +10,9 @@ compact opens of spectral locales:
   1. Every _large and locally small_ spectral locale `X` is homeomorphic to the
      spectrum of its _small_ distributive lattice `𝒦(X)` of compact opens.
   1. Every _small_ distributive lattice `L` is isomorphic to the distributive
-     lattice of compact opens of its spectrum locale.
+     lattice of compact opens of its _large and locally small_ spectrum locale.
 
-TODO: add proof names.
+The type equivalence is given in the proof `spec-dlat-equivalence`.
 
 \begin{code}
 
