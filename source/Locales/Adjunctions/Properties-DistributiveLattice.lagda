@@ -1,8 +1,8 @@
---------------------------------------------------------------------------------
+---
 title:        Properties of posetal adjunctions on distributive lattices
 author:       Ayberk Tosun
 date-started: 2024-05-20
---------------------------------------------------------------------------------
+---
 
 Many properties of posetal adjunctions have previously been written down, mostly
 in the context of frames. In this module, we consider some of these properties
