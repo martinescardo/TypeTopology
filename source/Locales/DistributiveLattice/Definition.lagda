@@ -20,7 +20,6 @@ module Locales.DistributiveLattice.Definition
 open import Locales.Frame pt fe
 open import MLTT.Spartan
 open import UF.Base
-open import UF.Equiv
 open import UF.Logic
 open import UF.Powerset-MultiUniverse
 open import UF.SubtypeClassifier
