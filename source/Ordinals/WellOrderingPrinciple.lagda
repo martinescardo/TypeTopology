@@ -352,10 +352,10 @@ And our desired results follows directly from this:
 
 Using this we can prove the main theorem stated above, and restated
 below, as follows. We first obtain a choice function conditionally to
-the inhabitation of X from the axiom of choice, and also the principle
-of excluded middle. We then use excluded middle to check whether X is
-inhabited. If it is, we apply the above lemma. Otherwise it is empty
-and hence clearly well-ordered.
+the inhabitation of X from the axiom of choice. We then use excluded
+middle, which follows from choice, to check whether X is inhabited. If
+it is, we apply the above lemma. Otherwise it is empty and hence
+clearly well-ordered.
 
 \begin{code}
 
