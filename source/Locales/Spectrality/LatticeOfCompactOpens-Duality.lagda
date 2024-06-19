@@ -10,8 +10,9 @@ compact opens of spectral locales:
   1. Every _large and locally small_ spectral locale `X` is homeomorphic to the
      spectrum of its _small_ distributive lattice `𝒦(X)` of compact opens.
      - This is given in the proof called `X-is-homeomorphic-to-spec-𝒦⁻X`.
-  1. Every _small_ distributive lattice `L` is isomorphic to the distributive
+  2. Every _small_ distributive lattice `L` is isomorphic to the distributive
      lattice of compact opens of its _large and locally small_ spectrum locale.
+     - This is given in the proof called `spec-isomorphism`.
 
 The type equivalence is given in the proof `spec-dlat-equivalence`.
 
@@ -1092,8 +1093,8 @@ distributive lattice `𝒦⁻-spec-L`.
 
  open DistributiveLatticeIsomorphisms L 𝒦⁻-spec-L
 
- spec-isomorphism : L ≅d≅ 𝒦⁻-spec-L
- spec-isomorphism =
+ L-is-isomorphic-to-𝒦-spec-L : L ≅d≅ 𝒦⁻-spec-L
+ L-is-isomorphic-to-𝒦-spec-L =
   to-isomorphismᵈᵣ
    (L-equivalent-to-𝒦⁻-spec-L , to-𝒦-spec-L-is-a-homomorphic-equivalence)
 
@@ -1142,7 +1143,7 @@ spec-dlat-equivalence 𝓤 = sec , qinvs-are-equivs sec γ
     open 𝒦-Duality₂ L
 
     goal : 𝒦⁻-spec-L ≅d≅ L
-    goal = ≅d-sym L 𝒦⁻-spec-L spec-isomorphism
+    goal = ≅d-sym L 𝒦⁻-spec-L L-is-isomorphic-to-𝒦-spec-L
 
   γ : qinv sec
   γ = ret , † , ‡
