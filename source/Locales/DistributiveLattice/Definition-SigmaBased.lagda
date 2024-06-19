@@ -1,10 +1,10 @@
---------------------------------------------------------------------------------
+---
 title:          Definition of distributive lattices (Σ-based)
 author:         Ayberk Tosun
 date-started:   2024-05-16
 date-completed: 2024-05-17
 dates-updated:  [2024-06-01]
---------------------------------------------------------------------------------
+---
 
 \begin{code}
 
@@ -101,7 +101,7 @@ Distributive-Lattice-Structure A =
 
 \end{code}
 
-We denote the type Σ-version of the type of distributive lattices
+We denote the Σ-based version of the type of distributive lattices by
 `Distributive-Lattice₀` to distinguish it from the record-based version.
 
 \begin{code}
@@ -169,6 +169,8 @@ to-distributive-lattice 𝓤 (X , ((𝟎 , 𝟏 , _∧_ , _∨_) , laws)) =
 
 \end{code}
 
+Now the map going from the record-based definition to the Σ-based one.
+
 \begin{code}
 
 to-distributive-lattice₀ : (𝓤 : Universe)
@@ -214,6 +216,9 @@ distributive-lattice₀-equivalent-to-distributive-lattice 𝓤 =
 \end{code}
 
 Added on 2024-06-01.
+
+The types of distributive lattice data is and distributive lattice structure are
+sets.
 
 \begin{code}
 
