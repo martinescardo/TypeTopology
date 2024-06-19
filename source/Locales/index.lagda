@@ -7,6 +7,8 @@ Ayberk Tosun.
 module Locales.index where
 
 import Locales.AdjointFunctorTheoremForFrames    -- (1)
+import Locales.Adjunctions.Properties
+import Locales.Adjunctions.Properties-DistributiveLattice
 
 import Locales.BooleanAlgebra                    -- (2)
 
