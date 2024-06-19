@@ -28,14 +28,15 @@ import Locales.Complements                       -- (8)
 
 -- Distributive lattices
 import Locales.DistributiveLattice.Definition
+import Locales.DistributiveLattice.Definition-SigmaBased
 import Locales.DistributiveLattice.Homomorphism
 import Locales.DistributiveLattice.Ideal
-import Locales.DistributiveLattice.Spectrum
-import Locales.DistributiveLattice.Spectrum-Properties
-import Locales.DistributiveLattice.Properties
 import Locales.DistributiveLattice.Isomorphism
 import Locales.DistributiveLattice.Isomorphism-Properties
+import Locales.DistributiveLattice.Properties
 import Locales.DistributiveLattice.Resizing
+import Locales.DistributiveLattice.Spectrum
+import Locales.DistributiveLattice.Spectrum-Properties
 
 import Locales.Frame                             -- (9)
 
