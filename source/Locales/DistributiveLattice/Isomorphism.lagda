@@ -4,6 +4,9 @@ author:       Ayberk Tosun
 date-started: 2024-04-24
 ---
 
+This module contains the definition of the notion of distributive lattice
+isomorphism.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}
@@ -80,6 +83,8 @@ between distributive lattices `L₁` and `L₂`.
 
 Added on 2024-05-30.
 
+Lemma for showing the equality two distributive lattice isomorphisms.
+
 \begin{code}
 
  open Isomorphismᵈᵣ
@@ -120,6 +125,8 @@ Added on 2024-05-30.
 
 End of addition.
 
+Now, we give the “homomorphic equivalence” definition of isomorphism.
+
 \begin{code}
 
  has-homomorphic-inverse : (L₁ ─d→ L₂) → 𝓤 ⊔ 𝓥  ̇
@@ -135,7 +142,9 @@ End of addition.
     open DistributiveLattice
 
     † : (h′ : L₂ ─d→ L₁)
-      → is-prop ((funᵈ L₂ L₁ h′ ∘ funᵈ L₁ L₂ h ∼ id) × (funᵈ L₁ L₂ h  ∘ funᵈ L₂ L₁ h′ ∼ id))
+      → is-prop ((funᵈ L₂ L₁ h′ ∘ funᵈ L₁ L₂ h ∼ id)
+                 ×
+                 (funᵈ L₁ L₂ h  ∘ funᵈ L₂ L₁ h′ ∼ id))
     † h′ = ×-is-prop
             (Π-is-prop fe λ _ → X-is-set L₁)
             (Π-is-prop fe λ _ → X-is-set L₂)
@@ -177,23 +186,9 @@ syntax Isomorphismᵈᵣ-Syntax K L = K ≅d≅ L
 
 \end{code}
 
-Added on 2024-05-20.
-
-We now give a Σ-based definition.
-
-\begin{code}
-
-
--- Isomorphismᵈ : DistributiveLattice 𝓤
---              → DistributiveLattice 𝓥
---              → 𝓤 ⊔ 𝓥 ⁺  ̇
--- Isomorphismᵈ K L = {!DistributiveLatticeIsomorphisms.Isomorphismᵈᵣ K L!}
-
-\end{code}
-
 Added on 2025-05-17.
 
-We now give the alternative definition of the notion of distributive lattice
+We now give an alternative definition of the notion of distributive lattice
 homomorphism: an equivalence whose both sides are monotone.
 
 \begin{code}
@@ -260,8 +255,8 @@ The part of the equivalence going from `Isomorphismᵈᵣ K L` to
 
 We now address the other direction.
 
-Both parts of an equivalence are both a left adjoint and a right adjoint. It
-follows from this that they preserves finite meets and finite joins.
+Both parts of an equivalence are both a left adjoint and a right adjoint.
+Therefore, they preserve finite meets and finite joins.
 
 \begin{code}
 
@@ -284,7 +279,7 @@ follows from this that they preserves finite meets and finite joins.
 \end{code}
 
 We have the monotone equivalence `e`, the forward and backward components of
-which we denote `s` and `r`:
+which we denote by `s` and `r`:
 
 \begin{code}
 
@@ -485,6 +480,8 @@ id-preserves-joins : (L : DistributiveLattice 𝓤) → preserves-∨ L L id hol
 id-preserves-joins _ _ _ = refl
 
 \end{code}
+
+We package up these into the proof that `id` is a homomorphism.
 
 \begin{code}
 
