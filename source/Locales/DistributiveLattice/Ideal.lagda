@@ -28,13 +28,9 @@ open import Locales.Frame pt fe
 open import MLTT.List
 open import MLTT.Spartan
 open import UF.Base
-open import UF.Embeddings
 open import UF.Equiv hiding (_■)
 open import UF.Logic
 open import UF.Powerset-MultiUniverse
-open import UF.Retracts
-open import UF.Sets
-open import UF.Sets-Properties
 open import UF.SubtypeClassifier
 
 open AllCombinators pt fe hiding (_∨_)
