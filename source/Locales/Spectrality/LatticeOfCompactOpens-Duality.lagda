@@ -982,21 +982,20 @@ The map `back-to-L₀` preserves binary meets.
    open DistributiveLattice L renaming (_∧_ to _∧L_)
    open DistributiveLattice 𝒦⁻-spec-L renaming (_∧_ to _∧·_)
 
-   x₁ = back-to-L₀ K₁
-   x₂ = back-to-L₀ K₂
-
-   goal₁ : s (↓ₖ (back-to-L₀ (K₁ ∧· K₂))) ＝ s (↓ₖ (back-to-L₀ K₁ ∧L back-to-L₀ K₂))
-   goal₁ =
-    s (↓ₖ (back-to-L₀ (K₁ ∧· K₂)))                      ＝⟨ Ⅰ ⟩
-    K₁ ∧· K₂                                             ＝⟨ Ⅱ ⟩
-    K₁ ∧· s (↓ₖ (back-to-L₀ K₂))                        ＝⟨ Ⅲ ⟩
-    s (↓ₖ (back-to-L₀ K₁)) ∧· s (↓ₖ (back-to-L₀ K₂))   ＝⟨ Ⅴ ⟩
-    s ((↓ₖ (back-to-L₀ K₁)) ∧ₖ (↓ₖ (back-to-L₀ K₂)))   ＝⟨ Ⅳ ⟩
+   ‡ : s (↓ₖ (back-to-L₀ (K₁ ∧· K₂))) ＝ s (↓ₖ (back-to-L₀ K₁ ∧L back-to-L₀ K₂))
+   ‡ =
+    s (↓ₖ (back-to-L₀ (K₁ ∧· K₂)))                     ＝⟨ Ⅰ ⟩
+    K₁ ∧· K₂                                           ＝⟨ Ⅱ ⟩
+    K₁ ∧· s (↓ₖ (back-to-L₀ K₂))                       ＝⟨ Ⅲ ⟩
+    s (↓ₖ (back-to-L₀ K₁)) ∧· s (↓ₖ (back-to-L₀ K₂))   ＝⟨ Ⅳ ⟩
+    s ((↓ₖ (back-to-L₀ K₁)) ∧ₖ (↓ₖ (back-to-L₀ K₂)))   ＝⟨ Ⅴ ⟩
     s (↓ₖ (back-to-L₀ K₁ ∧L back-to-L₀ K₂))            ∎
      where
       Ⅰ = to-𝒦-spec-L-cancels-back-to-L (K₁ ∧· K₂)
       Ⅱ = ap (λ - → K₁ ∧· -) (to-𝒦-spec-L-cancels-back-to-L K₂ ⁻¹)
-      Ⅲ = ap (λ - → - ∧· s (↓ₖ (back-to-L₀ K₂))) (to-𝒦-spec-L-cancels-back-to-L K₁ ⁻¹)
+      Ⅲ = ap
+           (λ - → - ∧· s (↓ₖ (back-to-L₀ K₂)))
+           (to-𝒦-spec-L-cancels-back-to-L K₁ ⁻¹)
 
       † = to-𝒦-＝
            spec-L
@@ -1004,18 +1003,22 @@ The map `back-to-L₀` preserves binary meets.
            (principal-ideal-is-compact (back-to-L₀ K₁ ∧L back-to-L₀ K₂))
            (principal-ideal-preserves-meets (back-to-L₀ K₁) (back-to-L₀ K₂) ⁻¹ )
 
-      Ⅳ = ap s †
+      Ⅴ = ap s †
+      Ⅳ = s-preserves-∧ (↓ₖ (back-to-L₀ K₁)) (↓ₖ (back-to-L₀ K₂)) ⁻¹
 
-      Ⅴ = s-preserves-∧ (↓ₖ (back-to-L₀ K₁)) (↓ₖ (back-to-L₀ K₂)) ⁻¹
+   γ : ↓ₖ back-to-L₀ (K₁ ∧· K₂) ＝ ↓ₖ (back-to-L₀ K₁ ∧L back-to-L₀ K₂)
+   γ = equivs-are-lc s (⌜⌝-is-equiv (≃-sym e)) ‡
 
-   goal′ : ↓ₖ back-to-L₀ (K₁ ∧· K₂) ＝ ↓ₖ (back-to-L₀ K₁ ∧L back-to-L₀ K₂)
-   goal′ = equivs-are-lc s (⌜⌝-is-equiv (≃-sym e)) goal₁
-
-   goal₂ : ↓ back-to-L₀ (K₁ ∧· K₂) ＝ ↓ (back-to-L₀ K₁ ∧L back-to-L₀ K₂)
-   goal₂ = pr₁ (from-Σ-＝ goal′)
+   β : ↓ back-to-L₀ (K₁ ∧· K₂) ＝ ↓ (back-to-L₀ K₁ ∧L back-to-L₀ K₂)
+   β = pr₁ (from-Σ-＝ γ)
 
    † : back-to-L₀ (K₁ ∧· K₂) ＝ back-to-L₀ K₁ ∧L back-to-L₀ K₂
-   † = pr₁ (from-Σ-＝ (↓-is-embedding (↓ back-to-L₀ (K₁ ∧· K₂)) ((back-to-L₀ (K₁ ∧· K₂)) , refl) ((back-to-L₀ K₁ ∧L back-to-L₀ K₂) , (goal₂ ⁻¹))))
+   † = pr₁
+        (from-Σ-＝
+          (↓-is-embedding
+            (↓ back-to-L₀ (K₁ ∧· K₂))
+            (back-to-L₀ (K₁ ∧· K₂) , refl)
+            (back-to-L₀ K₁ ∧L back-to-L₀ K₂ , (β ⁻¹))))
 
  back-to-L₀-is-monotone
   : is-monotonic (poset-ofᵈ 𝒦⁻-spec-L) (poset-ofᵈ L) back-to-L₀ holds
