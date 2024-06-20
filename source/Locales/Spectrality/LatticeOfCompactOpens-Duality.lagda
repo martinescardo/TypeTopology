@@ -12,7 +12,7 @@ compact opens of spectral locales:
      - This is given in the proof called `X-is-homeomorphic-to-spec-𝒦⁻X`.
   2. Every _small_ distributive lattice `L` is isomorphic to the distributive
      lattice of compact opens of its _large and locally small_ spectrum locale.
-     - This is given in the proof called `L-is-isomorphic-to-𝒦-spec-L`.
+     - This is given in the proof called `L-is-isomorphic-to-𝒦⁻-spec-L`.
 
 The type equivalence is given in the proof `spec-dlat-equivalence`.
 
@@ -747,7 +747,7 @@ spectral-implies-spectral· X σ =
 In this section, we show that every distributive lattice `L` is isomorphic to
 the small distributive lattice of compact opens of its spectrum.
 
-The proof, given below, is called `L-is-isomorphic-to-𝒦-spec-L`.
+The proof, given below, is called `L-is-isomorphic-to-𝒦⁻-spec-L`.
 
 We work in a module parameterized by a small distributive 𝓤-lattice `L`.
 
@@ -939,7 +939,8 @@ The map `back-to-L₀` is a section of `to-𝒦-spec-L₀`.
 
 \begin{code}
 
- to-𝒦-spec-L-cancels-back-to-L : (K : ∣ 𝒦⁻-spec-L ∣ᵈ) → to-𝒦-spec-L₀ (back-to-L₀ K) ＝ K
+ to-𝒦-spec-L-cancels-back-to-L : (K : ∣ 𝒦⁻-spec-L ∣ᵈ)
+                               → to-𝒦-spec-L₀ (back-to-L₀ K) ＝ K
  to-𝒦-spec-L-cancels-back-to-L K =
   s (↓ₖ back-to-L₀ K)    ＝⟨ Ⅰ ⟩
   s (r K)                ＝⟨ Ⅱ ⟩
@@ -1096,8 +1097,8 @@ distributive lattice `𝒦⁻-spec-L`.
 
  open DistributiveLatticeIsomorphisms L 𝒦⁻-spec-L
 
- L-is-isomorphic-to-𝒦-spec-L : L ≅d≅ 𝒦⁻-spec-L
- L-is-isomorphic-to-𝒦-spec-L =
+ L-is-isomorphic-to-𝒦⁻-spec-L : L ≅d≅ 𝒦⁻-spec-L
+ L-is-isomorphic-to-𝒦⁻-spec-L =
   to-isomorphismᵈᵣ
    (L-equivalent-to-𝒦⁻-spec-L , to-𝒦-spec-L-is-a-homomorphic-equivalence)
 

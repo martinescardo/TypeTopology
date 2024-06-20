@@ -201,7 +201,7 @@ spec-dlat-equivalence 𝓤 = sec , qinvs-are-equivs sec γ
     open 𝒦-Duality₂ L
 
     iso : 𝒦⁻-spec-L ≅d≅ L
-    iso = ≅d-sym L 𝒦⁻-spec-L L-is-isomorphic-to-𝒦-spec-L
+    iso = ≅d-sym L 𝒦⁻-spec-L L-is-isomorphic-to-𝒦⁻-spec-L
 
   γ : qinv sec
   γ = ret , † , ‡
