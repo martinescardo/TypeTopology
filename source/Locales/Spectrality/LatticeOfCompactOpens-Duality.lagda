@@ -941,8 +941,8 @@ The map `back-to-L₀` is a section of `to-𝒦-spec-L₀`.
 
  to-𝒦-spec-L-cancels-back-to-L : (K : ∣ 𝒦⁻-spec-L ∣ᵈ) → to-𝒦-spec-L₀ (back-to-L₀ K) ＝ K
  to-𝒦-spec-L-cancels-back-to-L K =
-  s (↓ₖ back-to-L₀ K)    ＝⟨ {!!} ⟩
-  s (r K)                ＝⟨ {!!} ⟩
+  s (↓ₖ back-to-L₀ K)    ＝⟨ Ⅰ ⟩
+  s (r K)                ＝⟨ Ⅱ ⟩
   K                      ∎
    where
     κ : is-compact-open spec-L (r₀ K) holds
@@ -967,8 +967,8 @@ The map `back-to-L₀` is a section of `to-𝒦-spec-L₀`.
          (principal-ideal-is-compact (back-to-L₀ K))
          q
 
-    Ⅰ = inverses-are-retractions' e K ⁻¹
-    Ⅱ = ap s p
+    Ⅱ = inverses-are-retractions' e K
+    Ⅰ = ap s p ⁻¹
 
 \end{code}
 
