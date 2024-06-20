@@ -163,10 +163,10 @@ module inhabited-subsets (pt : propositional-truncations-exist) where
                                  → is-inhabited B
  non-empty-subsets-are-inhabited em B = not-Π-not-implies-∃ pt em
 
- non-inhabited-subsets-are-empty : {X : 𝓤 ̇ } (B : 𝓟 {𝓥} X)
-                                 → ¬ is-inhabited B
-                                 → is-empty-subset B
- non-inhabited-subsets-are-empty B ν x m = ν ∣ x , m ∣
+ uninhabited-subsets-are-empty : {X : 𝓤 ̇ } (B : 𝓟 {𝓥} X)
+                               → ¬ is-inhabited B
+                               → is-empty-subset B
+ uninhabited-subsets-are-empty B ν x m = ν ∣ x , m ∣
 
 complement :  {X : 𝓤 ̇ } → funext 𝓤 𝓤₀ → 𝓟 X → 𝓟 X
 complement fe A = λ x → (x ∉ A) , (∉-is-prop fe A x)

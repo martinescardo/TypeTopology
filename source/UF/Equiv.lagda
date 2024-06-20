@@ -153,6 +153,9 @@ eqtoeq-agreement {𝓤} X _ refl = refl
 idtofun : (X Y : 𝓤 ̇ ) → X ＝ Y → X → Y
 idtofun X Y p = ⌜ idtoeq X Y p ⌝
 
+idtofun' : {X Y : 𝓤 ̇ } → X ＝ Y → X → Y
+idtofun' = idtofun _ _
+
 idtofun-agreement : (X Y : 𝓤 ̇ ) (p : X ＝ Y) → idtofun X Y p ＝ Idtofun p
 idtofun-agreement X Y refl = refl
 

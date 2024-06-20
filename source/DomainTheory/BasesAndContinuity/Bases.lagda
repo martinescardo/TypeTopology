@@ -597,6 +597,7 @@ basis for 𝓓.
 \begin{code}
 
 module _
+        (pe : Prop-Ext)
         (𝓓 : DCPO {𝓤} {𝓣})
         (𝓔 : DCPO {𝓤'} {𝓣'})
         (ρ : 𝓓 continuous-retract-of 𝓔)
@@ -604,10 +605,10 @@ module _
 
  open _continuous-retract-of_ ρ
 
- small-basis-from-continuous-retract : Prop-Ext → {B : 𝓥 ̇ } (β : B → ⟨ 𝓔 ⟩)
+ small-basis-from-continuous-retract : {B : 𝓥 ̇ } (β : B → ⟨ 𝓔 ⟩)
                                      → is-small-basis 𝓔 β
                                      → is-small-basis 𝓓 (r ∘ β)
- small-basis-from-continuous-retract pe {B} β sb =
+ small-basis-from-continuous-retract {B} β sb =
   record
    { ≪ᴮ-is-small    = ≪ʳᴮ-is-small
    ; ↡ᴮ-is-directed = ≪ʳᴮ-is-directed
@@ -663,6 +664,41 @@ module _
         issup : is-sup (underlying-order 𝓓) (r (∐ 𝓔 (ε x)))
                                             (r ∘ ↡-inclusionₛ (s x))
         issup = r-is-continuous (↡ᴮₛ (s x)) (↡-inclusionₛ (s x)) (ε x)
+
+\end{code}
+
+Added 5 June 2024.
+
+We transfer small (compact) bases along isomorphisms of dcpos.
+
+\begin{code}
+
+module _
+        (pe : Prop-Ext)
+        (𝓓 : DCPO {𝓤} {𝓣})
+        (𝓔 : DCPO {𝓤'} {𝓣'})
+       where
+
+ small-basis-from-≃ᵈᶜᵖᵒ : 𝓓 ≃ᵈᶜᵖᵒ 𝓔
+                        → has-specified-small-basis 𝓓
+                        → has-specified-small-basis 𝓔
+ small-basis-from-≃ᵈᶜᵖᵒ 𝕗@(f , g , s , r , cf , cg) (B , β , sb) =
+  B , f ∘ β ,
+  small-basis-from-continuous-retract pe 𝓔 𝓓
+   (≃ᵈᶜᵖᵒ-to-continuous-retract 𝓔 𝓓 (≃ᵈᶜᵖᵒ-inv 𝓓 𝓔 𝕗)) β sb
+
+ small-compact-basis-from-≃ᵈᶜᵖᵒ : 𝓓 ≃ᵈᶜᵖᵒ 𝓔
+                                → has-specified-small-compact-basis 𝓓
+                                → has-specified-small-compact-basis 𝓔
+ small-compact-basis-from-≃ᵈᶜᵖᵒ 𝕗@(f , g , s , r , cf , cg) (B , β , scb) =
+  B , f ∘ β ,
+  small-and-compact-basis 𝓔 (f ∘ β)
+   (pr₂ (pr₂ (small-basis-from-≃ᵈᶜᵖᵒ
+               𝕗 (B , β , compact-basis-is-basis 𝓓 β scb))))
+   (λ b → embeddings-preserve-compactness
+           𝓓 𝓔 f cf g cg s (λ y → ＝-to-⊑ 𝓔 (r y)) (β b) (basis-is-compact b))
+    where
+     open is-small-compact-basis scb
 
 \end{code}
 
