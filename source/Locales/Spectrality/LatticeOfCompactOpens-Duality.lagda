@@ -1100,54 +1100,6 @@ distributive lattice `𝒦⁻-spec-L`.
 
 \end{code}
 
-Recall that the type of spectral locales is defined as
-
-\begin{code}
-
-Spectral-Locale : (𝓤 : Universe) → 𝓤 ⁺ ⁺  ̇
-Spectral-Locale 𝓤 =
- Σ X ꞉ Locale (𝓤 ⁺) 𝓤 𝓤 , is-spectral-with-small-basis ua X holds
-
-spec-dlat-equivalence : (𝓤 : Universe) → Spectral-Locale 𝓤 ≃ DistributiveLattice 𝓤
-spec-dlat-equivalence 𝓤 = sec , qinvs-are-equivs sec γ
- where
-  open 𝒦-Duality₁
-  open 𝒦-Lattice
-  open DefnOfFrameOfIdeal
-
-  sec : Spectral-Locale 𝓤 → DistributiveLattice 𝓤
-  sec = uncurry ⦅_⦆ᶜ
-
-  ret : DistributiveLattice 𝓤 → Spectral-Locale 𝓤
-  ret L = spectrum L
-        , Spectrality.spec-L-is-spectral L
-        , Spectrality.spec-L-has-small-𝒦 L
-
-  † : ret ∘ sec ∼ id
-  † (X , σ) =
-   to-subtype-＝
-    (holds-is-prop ∘ is-spectral-with-small-basis ua)
-    (homeomorphic-locales-are-equal (spec 𝒦X⁻) X goal)
-     where
-      𝒦X⁻ : DistributiveLattice 𝓤
-      𝒦X⁻ = ⦅_⦆ᶜ X σ
-
-      goal : spec 𝒦X⁻ ≅c≅ X
-      goal = X-is-homeomorphic-to-spec-𝒦⁻X X σ
-
-  ‡ : sec ∘ ret ∼ id
-  ‡ L = isomorphic-distributive-lattices-are-equal (sec (ret L)) L iso
-   where
-    open 𝒦-Duality₂ L
-
-    iso : 𝒦⁻-spec-L ≅d≅ L
-    iso = ≅d-sym L 𝒦⁻-spec-L L-is-isomorphic-to-𝒦-spec-L
-
-  γ : qinv sec
-  γ = ret , † , ‡
-
-\end{code}
-
 \section{References}
 
 [1] Johnstone, Peter T., Stone Spaces. Cambridge University Press, Cambridge,
