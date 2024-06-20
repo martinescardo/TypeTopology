@@ -747,7 +747,7 @@ spectral-implies-spectral· X σ =
 In this section, we show that every distributive lattice `L` is isomorphic to
 the small distributive lattice of compact opens of its spectrum.
 
-The proof, given below, is called `spec-isomorphism`.
+The proof, given below, is called `L-is-isomorphic-to-𝒦-spec-L`.
 
 We work in a module parameterized by a small distributive 𝓤-lattice `L`.
 
@@ -757,8 +757,8 @@ module 𝒦-Duality₂ (L : DistributiveLattice 𝓤) where
 
 \end{code}
 
-We denote by `spec-L` the spectrum of the lattice `L`, which is a _large_ and
-_locally small_ locale.
+We denote by `spec-L` the spectrum of the lattice `L`, which is a large, locally
+small, and small cocomplete locale.
 
 \begin{code}
 
