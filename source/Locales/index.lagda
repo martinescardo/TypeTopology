@@ -102,6 +102,7 @@ import Locales.UniversalPropertyOfPatch          -- (34)
 import Locales.Spectrality.BasisDirectification  -- (35)
 
 import Locales.Spectrality.LatticeOfCompactOpens
+import Locales.Spectrality.LatticeOfCompactOpens-Duality
 import Locales.Spectrality.SpectralMapToLatticeHomomorphism
 
 import Locales.Point.Definition                  -- (36)
