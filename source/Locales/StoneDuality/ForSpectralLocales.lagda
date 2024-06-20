@@ -2,7 +2,7 @@
 title:         Stone duality for spectral locales
 author:        Ayberk Tosun
 date-started:  2024-04-12
-dates-updated: [2024-05-08]
+dates-updated: [2024-05-08, 2024-06-20]
 ---
 
 This module will eventually contain the proof of Stone duality for spectral
