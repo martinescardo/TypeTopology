@@ -123,6 +123,7 @@ import Locales.ContinuousMap.Homeomorphism-Definition
 import Locales.ContinuousMap.Homeomorphism-Properties
 
 import Locales.SIP.FrameSIP
+import Locales.SIP.DistributiveLatticeSIP
 
 import Locales.DirectedFamily-Poset
 
