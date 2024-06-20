@@ -37,12 +37,16 @@ open import Locales.Compactness pt fe
 open import Locales.ContinuousMap.FrameHomomorphism-Definition pt fe
 open import Locales.ContinuousMap.FrameHomomorphism-Properties pt fe
 open import Locales.ContinuousMap.Homeomorphism-Definition pt fe
+open import Locales.ContinuousMap.Homeomorphism-Properties ua pt sr
 open import Locales.DistributiveLattice.Definition fe pt
+open import Locales.DistributiveLattice.Isomorphism fe pt
+open import Locales.DistributiveLattice.Isomorphism-Properties ua pt sr
 open import Locales.DistributiveLattice.Resizing ua pt sr
 open import Locales.DistributiveLattice.Spectrum fe pe pt
-open import Locales.DistributiveLattice.Spectrum-Properties fe pe pt
+open import Locales.DistributiveLattice.Spectrum-Properties fe pe pt sr
 open import Locales.Frame pt fe
 open import Locales.SIP.FrameSIP
+open import Locales.SIP.DistributiveLatticeSIP ua pt sr
 open import Locales.SmallBasis pt fe sr
 open import Locales.Spectrality.LatticeOfCompactOpens ua pt sr
 open import Locales.Spectrality.LatticeOfCompactOpens-Duality ua pt sr
@@ -103,7 +107,7 @@ spectral·-implies-spectral-with-small-basis {𝓤} X =
      → is-spectral-with-small-basis ua X holds
    † (L , 𝒽) = transport (_holds ∘ is-spectral-with-small-basis ua) q 𝕤
     where
-     open Spectrality sr L
+     open Spectrality L
 
      p : 𝒪 (spec L) ＝ 𝒪 X
      p = isomorphic-frames-are-equal ua pt sr (𝒪 (spec L)) (𝒪 X) 𝒽
@@ -141,5 +145,65 @@ spectral-with-small-basis-iff-spectral· X = † , ‡
  where
   † = spectral-with-small-basis-implies-spectral· X
   ‡ = spectral·-implies-spectral-with-small-basis X
+
+\end{code}
+
+Added on 2024-06-20.
+
+We now show that the type `Spectral-Locale 𝓤` is equivalent to the type
+`DistributiveLattice 𝓤`.
+
+Recall that the type of spectral locales is defined as:
+
+\begin{code}
+
+Spectral-Locale : (𝓤 : Universe) → 𝓤 ⁺ ⁺  ̇
+Spectral-Locale 𝓤 =
+ Σ X ꞉ Locale (𝓤 ⁺) 𝓤 𝓤 , is-spectral-with-small-basis ua X holds
+
+\end{code}
+
+For any universe `𝓤`, the type `Spectral-Locale 𝓤` is equivalent to the type
+`DistributiveLattice 𝓤`.
+
+\begin{code}
+
+spec-dlat-equivalence : (𝓤 : Universe) → Spectral-Locale 𝓤 ≃ DistributiveLattice 𝓤
+spec-dlat-equivalence 𝓤 = sec , qinvs-are-equivs sec γ
+ where
+  open 𝒦-Duality₁
+  open 𝒦-Lattice
+  open DefnOfFrameOfIdeal
+
+  sec : Spectral-Locale 𝓤 → DistributiveLattice 𝓤
+  sec = uncurry ⦅_⦆ᶜ
+
+  ret : DistributiveLattice 𝓤 → Spectral-Locale 𝓤
+  ret L = spectrum L
+        , Spectrality.spec-L-is-spectral L
+        , Spectrality.spec-L-has-small-𝒦 L
+
+  † : ret ∘ sec ∼ id
+  † (X , σ) =
+   to-subtype-＝
+    (holds-is-prop ∘ is-spectral-with-small-basis ua)
+    (homeomorphic-locales-are-equal (spec 𝒦X⁻) X 𝒽)
+     where
+      𝒦X⁻ : DistributiveLattice 𝓤
+      𝒦X⁻ = ⦅_⦆ᶜ X σ
+
+      𝒽 : spec 𝒦X⁻ ≅c≅ X
+      𝒽 = X-is-homeomorphic-to-spec-𝒦⁻X X σ
+
+  ‡ : sec ∘ ret ∼ id
+  ‡ L = isomorphic-distributive-lattices-are-equal (sec (ret L)) L iso
+   where
+    open 𝒦-Duality₂ L
+
+    iso : 𝒦⁻-spec-L ≅d≅ L
+    iso = ≅d-sym L 𝒦⁻-spec-L L-is-isomorphic-to-𝒦-spec-L
+
+  γ : qinv sec
+  γ = ret , † , ‡
 
 \end{code}

@@ -12,7 +12,7 @@ compact opens of spectral locales:
      - This is given in the proof called `X-is-homeomorphic-to-spec-𝒦⁻X`.
   2. Every _small_ distributive lattice `L` is isomorphic to the distributive
      lattice of compact opens of its _large and locally small_ spectrum locale.
-     - This is given in the proof called `spec-isomorphism`.
+     - This is given in the proof called `L-is-isomorphic-to-𝒦-spec-L`.
 
 The type equivalence is given in the proof `spec-dlat-equivalence`.
 
@@ -1108,10 +1108,6 @@ Spectral-Locale : (𝓤 : Universe) → 𝓤 ⁺ ⁺  ̇
 Spectral-Locale 𝓤 =
  Σ X ꞉ Locale (𝓤 ⁺) 𝓤 𝓤 , is-spectral-with-small-basis ua X holds
 
-\end{code}
-
-\begin{code}
-
 spec-dlat-equivalence : (𝓤 : Universe) → Spectral-Locale 𝓤 ≃ DistributiveLattice 𝓤
 spec-dlat-equivalence 𝓤 = sec , qinvs-are-equivs sec γ
  where
@@ -1123,7 +1119,9 @@ spec-dlat-equivalence 𝓤 = sec , qinvs-are-equivs sec γ
   sec = uncurry ⦅_⦆ᶜ
 
   ret : DistributiveLattice 𝓤 → Spectral-Locale 𝓤
-  ret L = spectrum L , Spectrality.spec-L-is-spectral L , Spectrality.spec-L-has-small-𝒦 L
+  ret L = spectrum L
+        , Spectrality.spec-L-is-spectral L
+        , Spectrality.spec-L-has-small-𝒦 L
 
   † : ret ∘ sec ∼ id
   † (X , σ) =
@@ -1138,12 +1136,12 @@ spec-dlat-equivalence 𝓤 = sec , qinvs-are-equivs sec γ
       goal = X-is-homeomorphic-to-spec-𝒦⁻X X σ
 
   ‡ : sec ∘ ret ∼ id
-  ‡ L = isomorphic-distributive-lattices-are-equal (sec (ret L)) L goal
+  ‡ L = isomorphic-distributive-lattices-are-equal (sec (ret L)) L iso
    where
     open 𝒦-Duality₂ L
 
-    goal : 𝒦⁻-spec-L ≅d≅ L
-    goal = ≅d-sym L 𝒦⁻-spec-L L-is-isomorphic-to-𝒦-spec-L
+    iso : 𝒦⁻-spec-L ≅d≅ L
+    iso = ≅d-sym L 𝒦⁻-spec-L L-is-isomorphic-to-𝒦-spec-L
 
   γ : qinv sec
   γ = ret , † , ‡
