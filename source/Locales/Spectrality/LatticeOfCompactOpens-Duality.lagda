@@ -1,14 +1,18 @@
---------------------------------------------------------------------------------
-title:          Basics of duality for spectral locales
+---
+title:          Lemmas on the duality of compact opens of spectral locales
 author:         Ayberk Tosun
-date-completed: 2024-05-12
---------------------------------------------------------------------------------
+date-completed: 2024-06-09
+---
 
-Every spectral locale `X` is homeomorphic to the spectrum of its distributive
-lattice `𝒦(X)` of compact opens. We construct a proof of this fact in this
-module.
+In this module, we prove two important lemmas about the distributive lattice of
+compact opens of spectral locales:
 
-The proof is implemented in the function called `X-is-homeomorphic-to-spec-𝒦⁻X`.
+  1. Every _large and locally small_ spectral locale `X` is homeomorphic to the
+     spectrum of its _small_ distributive lattice `𝒦(X)` of compact opens.
+  1. Every _small_ distributive lattice `L` is isomorphic to the distributive
+     lattice of compact opens of its spectrum locale.
+
+TODO: add proof names.
 
 \begin{code}
 
@@ -17,6 +21,7 @@ The proof is implemented in the function called `X-is-homeomorphic-to-spec-𝒦�
 open import MLTT.List hiding ([_])
 open import MLTT.Spartan hiding (J; rhs)
 open import UF.Base
+open import UF.Embeddings
 open import UF.FunExt
 open import UF.PropTrunc
 open import UF.Size
@@ -50,9 +55,11 @@ open import Locales.DistributiveLattice.Homomorphism fe pt
 open import Locales.DistributiveLattice.Ideal pt fe pe
 open import Locales.DistributiveLattice.Ideal-Properties pt fe pe
 open import Locales.DistributiveLattice.Isomorphism fe pt
+open import Locales.DistributiveLattice.Isomorphism-Properties ua pt sr
 open import Locales.DistributiveLattice.Resizing ua pt sr
 open import Locales.DistributiveLattice.Spectrum fe pe pt
 open import Locales.DistributiveLattice.Spectrum-Properties fe pe pt sr
+open import Locales.SIP.DistributiveLatticeSIP ua pt sr
 open import Locales.Frame pt fe
 open import Locales.GaloisConnection pt fe
 open import Locales.SmallBasis pt fe sr
@@ -77,11 +84,11 @@ type of compact opens.
 
 \begin{code}
 
-module 𝒦-Duality (X  : Locale (𝓤 ⁺) 𝓤 𝓤)
-                 (σ₀ : is-spectral-with-small-basis ua X holds) where
+module 𝒦-Duality₁ (X  : Locale (𝓤 ⁺) 𝓤 𝓤)
+                  (σ₀ : is-spectral-with-small-basis ua X holds) where
 
  open 𝒦-Lattice X σ₀
-  using (𝟏ₖ; 𝒦⦅X⦆-is-small; 𝒦⦅X⦆; σ; ιₖ-preserves-∨; ιₖ-preserves-∧)
+  using (𝟏ₖ; 𝟎ₖ; 𝒦⦅X⦆-is-small; 𝒦⦅X⦆; σ; ιₖ-preserves-∨; ιₖ-preserves-∧)
   renaming (𝒦⁻ to 𝒦⁻X) public
 
 \end{code}
@@ -723,11 +730,422 @@ spectral-implies-spectral·
 spectral-implies-spectral· X σ =
  ∣ 𝒦-X⁻ , ≅c-sym spec-𝒦⁻X X X-is-homeomorphic-to-spec-𝒦⁻X ∣
   where
-   open 𝒦-Duality X σ
+   open 𝒦-Duality₁ X σ
 
 \end{code}
 
-TODO: add the definition with the explicit equivalence.
+\section{L to 𝒦(Spec(L))}
+
+We work in a module parameterized by a small distributive lattice `L`.
+
+\begin{code}
+
+module 𝒦-Duality₂ (L : DistributiveLattice 𝓤) where
+
+\end{code}
+
+We denote by `spec-L` the spectrum of the lattice `L`, which is a _large_ and
+_locally small_ locale.
+
+\begin{code}
+
+ open DefnOfFrameOfIdeal
+
+ spec-L : Locale (𝓤 ⁺) 𝓤 𝓤
+ spec-L = spectrum L
+
+\end{code}
+
+We also define an abbreviation for the proof that `spectrum L` is a spectral
+locale (with a small basis).
+
+\begin{code}
+
+ spec-L-is-ssb : is-spectral-with-small-basis ua spec-L holds
+ spec-L-is-ssb = Spectrality.spec-L-is-spectral L
+               , Spectrality.spec-L-has-small-𝒦 L
+
+ open IdealProperties
+ open Spectrality L
+ open PrincipalIdeals L
+ open 𝒦-Duality₁ spec-L spec-L-is-ssb
+
+\end{code}
+
+We denote by `𝒦⁻-spec-L` the small distributive lattice of compact opens of
+`spec-L`.
+
+\begin{code}
+
+ 𝒦⁻-spec-L : DistributiveLattice 𝓤
+ 𝒦⁻-spec-L = 𝒦-X⁻
+
+\end{code}
+
+We now start working towards the construction of an isomorphism of distributive
+lattices:
+
+```text
+    L ≅ 𝒦⁻(spec(L))
+```
+
+The isomorphism that we construct consists of the maps:
+
+  1. `to-𝒦-spec-L : ∣ L ∣ᵈ → ∣ 𝒦⁻-spec-L ∣ᵈ`, and
+  2. `maximum : ∣ 𝒦⁻-spec-L ∣ᵈ → ∣ L ∣ᵈ`.
+
+We first construct the map `to-𝒦-spec-L`. We follow our usual convention of
+denoting by the subscript `₀` the preliminary version of the construction in
+consideration, which is then paired up with the proof that it satisfies some
+property.
+
+\begin{code}
+
+ to-𝒦-spec-L₀ : ∣ L ∣ᵈ → ∣ 𝒦⁻-spec-L ∣ᵈ
+ to-𝒦-spec-L₀ = s ∘ ↓ₖ_
+
+\end{code}
+
+The map `to-𝒦-spec-L₀` preserves meets.
+
+\begin{code}
+
+ open DistributiveLattice
+ open OperationsOnCompactOpens spec-L spec-L-is-spectral
+
+ to-𝒦-spec-L-preserves-∧ : preserves-∧ L 𝒦⁻-spec-L to-𝒦-spec-L₀ holds
+ to-𝒦-spec-L-preserves-∧ x y =
+  s (↓ₖ (x ∧L y))                   ＝⟨ Ⅰ ⟩
+  s ((↓ₖ x) ∧ₖ (↓ₖ y))              ＝⟨ Ⅱ ⟩
+  to-𝒦-spec-L₀ x ∧· to-𝒦-spec-L₀ y  ∎
+   where
+    open DistributiveLattice L renaming (_∧_ to _∧L_)
+    open DistributiveLattice 𝒦⁻-spec-L renaming (_∧_ to _∧·_)
+
+    † : ↓ₖ (x ∧L y) ＝ (↓ₖ x) ∧ₖ (↓ₖ y)
+    † = to-𝒦-＝
+         spec-L
+         (principal-ideal-is-compact (x ∧L y))
+         (binary-coherence
+           spec-L
+           spec-L-is-spectral
+           (↓ x)
+           (↓ y)
+           (principal-ideal-is-compact x)
+           (principal-ideal-is-compact y))
+         (principal-ideal-preserves-meets x y)
+
+    Ⅰ = ap s †
+    Ⅱ = s-preserves-∧ (↓ₖ x) (↓ₖ y)
+
+\end{code}
+
+\section{𝒦(Spec(L)) to L}
+
+We now start working on the map `maximum` that takes us from the small
+distributive lattice of compact opens of `spec-L` back to `L`.
+
+We first prove that the principal ideal map is an embedding, and is hence
+left-cancellable.
+
+\begin{code}
+
+ ↓-is-embedding : is-embedding principal-ideal
+ ↓-is-embedding I (x , p) (y , q) =
+  to-subtype-＝
+   (λ _ → carrier-of-[ poset-of-ideals L  ]-is-set )
+   (≤-is-antisymmetric (poset-ofᵈ L) † ‡)
+    where
+     φ : ↓ x ＝ ↓ y
+     φ = ↓ x ＝⟨ p ⟩ I ＝⟨ q ⁻¹ ⟩ ↓ y ∎
+
+     β : (↓ x  ≤[ poset-of-ideals L ] ↓ y) holds
+     β = reflexivity+ (poset-of-ideals L) φ
+
+     γ : (↓ y  ≤[ poset-of-ideals L ] ↓ x) holds
+     γ = reflexivity+ (poset-of-ideals L) (φ ⁻¹)
+
+     † : rel-syntax (poset-ofᵈ L) x y holds
+     † = β x (≤-is-reflexive (poset-ofᵈ L) x)
+
+     ‡ : rel-syntax (poset-ofᵈ L) y x holds
+     ‡ = γ y (≤-is-reflexive (poset-ofᵈ L) y)
+
+ equality-of-principal-ideals-gives-equality : left-cancellable principal-ideal
+ equality-of-principal-ideals-gives-equality =
+  embeddings-are-lc principal-ideal ↓-is-embedding
+
+\end{code}
+
+We define the following map `r₀` which gives the ideal corresponding to an
+element in the small distributive lattice of compact opens. This is simply
+the composition
+
+```text
+                      r               ιₖ
+        𝒦⁻-spec-L  ------> 𝒦-spec-L ------> 𝒪 spec(L)
+```
+
+where `ιₖ` is the inclusion of the compact opens into the frame of ideals, and
+`r` is one direction of the equivalence between `𝒦-spec-L` and its small copy.
+
+\begin{code}
+
+ r₀ : ∣ 𝒦⁻-spec-L ∣ᵈ → ⟨ 𝒪 spec-L ⟩
+ r₀ = ιₖ ∘ r
+
+ r₀-gives-compact-opens : (K : ∣ 𝒦⁻-spec-L ∣ᵈ)
+                        → is-compact-open spec-L (r₀ K) holds
+ r₀-gives-compact-opens = ι-gives-compact-opens
+
+\end{code}
+
+We now define the underlying function of the distributive lattice homomorphism
+`maximum`, which we denote `maximum₀`:
+
+\begin{code}
+
+ maximum₀ : ∣ 𝒦⁻-spec-L ∣ᵈ → ∣ L ∣ᵈ
+ maximum₀ K = pr₁ t
+  where
+   κ : is-compact-open spec-L (r₀ K) holds
+   κ = r₀-gives-compact-opens K
+
+   γ : ∃ x ꞉ ∣ L ∣ᵈ , ↓ x  ＝ r₀ K
+   γ = compact-opens-are-basic spec-L (ℬ-spec , ℬ-spec-is-directed-basis) (r₀ K) κ
+
+   † : is-prop (Σ y ꞉ ∣ L ∣ᵈ , ↓ y ＝ r₀ K)
+   † = ↓-is-embedding (r₀ K)
+
+   t : Σ x ꞉ ∣ L ∣ᵈ , ↓ x  ＝ r₀ K
+   t = exit-∥∥ † γ
+
+\end{code}
+
+This map satisfies the property that every compact open `K` of `spec-L` can be
+factored as `s (↓ₖ (maximum₀ K))`. This can be thought of as saying that
+`maximum₀` computes _the maximum element_ of the compact ideal `K`.
+
+\begin{code}
+
+ maximum₀-lemma : (K : ∣ 𝒦⁻-spec-L ∣ᵈ) → K ＝ s (↓ₖ (maximum₀ K))
+ maximum₀-lemma K =
+  K                      ＝⟨ Ⅰ ⟩
+  s (r K)                ＝⟨ Ⅱ ⟩
+  s (↓ₖ maximum₀ K)   ∎
+   where
+    κ : is-compact-open spec-L (r₀ K) holds
+    κ = r₀-gives-compact-opens K
+
+    γ : ∃ x ꞉ ∣ L ∣ᵈ , ↓ x  ＝ r₀ K
+    γ = compact-opens-are-basic spec-L (ℬ-spec , ℬ-spec-is-directed-basis) (r₀ K) κ
+
+    † : is-prop (Σ y ꞉ ∣ L ∣ᵈ , ↓ y ＝ r₀ K)
+    † = ↓-is-embedding (r₀ K)
+
+    t : Σ x ꞉ ∣ L ∣ᵈ , ↓ x  ＝ r₀ K
+    t = exit-∥∥ † γ
+
+    q : r₀ K ＝ ↓ (maximum₀ K)
+    q = pr₂ t ⁻¹
+
+    p : r K ＝ ↓ₖ (maximum₀ K)
+    p = to-𝒦-＝
+         spec-L
+         (r₀-gives-compact-opens K)
+         (principal-ideal-is-compact (maximum₀ K))
+         q
+
+    Ⅰ = inverses-are-retractions' e K ⁻¹
+    Ⅱ = ap s p
+
+\end{code}
+
+\begin{code}
+
+ maximum-preserves-∧ : preserves-∧ 𝒦⁻-spec-L L maximum₀ holds
+ maximum-preserves-∧ K₁ K₂ = goal
+  where
+   open DistributiveLattice L renaming (_∧_ to _∧L_)
+   open DistributiveLattice 𝒦⁻-spec-L renaming (_∧_ to _∧·_)
+
+   x₁ = maximum₀ K₁
+   x₂ = maximum₀ K₂
+
+   goal₁ : s (↓ₖ (maximum₀ (K₁ ∧· K₂))) ＝ s (↓ₖ (maximum₀ K₁ ∧L maximum₀ K₂))
+   goal₁ =
+    s (↓ₖ (maximum₀ (K₁ ∧· K₂)))                      ＝⟨ Ⅰ ⟩
+    K₁ ∧· K₂                                             ＝⟨ Ⅱ ⟩
+    K₁ ∧· s (↓ₖ (maximum₀ K₂))                        ＝⟨ Ⅲ ⟩
+    s (↓ₖ (maximum₀ K₁)) ∧· s (↓ₖ (maximum₀ K₂))   ＝⟨ Ⅴ ⟩
+    s ((↓ₖ (maximum₀ K₁)) ∧ₖ (↓ₖ (maximum₀ K₂)))   ＝⟨ Ⅳ ⟩
+    s (↓ₖ (maximum₀ K₁ ∧L maximum₀ K₂))            ∎
+     where
+      Ⅰ = maximum₀-lemma (K₁ ∧· K₂) ⁻¹
+      Ⅱ = ap (λ - → K₁ ∧· -) (maximum₀-lemma K₂)
+      Ⅲ = ap (λ - → - ∧· s (↓ₖ (maximum₀ K₂))) (maximum₀-lemma K₁)
+
+      † = to-𝒦-＝
+           spec-L
+           (pr₂ ((↓ₖ (maximum₀ K₁)) ∧ₖ (↓ₖ (maximum₀ K₂))))
+           (principal-ideal-is-compact (maximum₀ K₁ ∧L maximum₀ K₂))
+           (principal-ideal-preserves-meets (maximum₀ K₁) (maximum₀ K₂) ⁻¹ )
+
+      Ⅳ = ap s †
+
+      Ⅴ = s-preserves-∧ (↓ₖ (maximum₀ K₁)) (↓ₖ (maximum₀ K₂)) ⁻¹
+
+   goal′ : ↓ₖ maximum₀ (K₁ ∧· K₂) ＝ ↓ₖ (maximum₀ K₁ ∧L maximum₀ K₂)
+   goal′ = equivs-are-lc s (⌜⌝-is-equiv (≃-sym e)) goal₁
+
+   goal₂ : ↓ maximum₀ (K₁ ∧· K₂) ＝ ↓ (maximum₀ K₁ ∧L maximum₀ K₂)
+   goal₂ = pr₁ (from-Σ-＝ goal′)
+
+   goal : maximum₀ (K₁ ∧· K₂) ＝ maximum₀ K₁ ∧L maximum₀ K₂
+   goal = pr₁ (from-Σ-＝ (↓-is-embedding (↓ maximum₀ (K₁ ∧· K₂)) ((maximum₀ (K₁ ∧· K₂)) , refl) ((maximum₀ K₁ ∧L maximum₀ K₂) , (goal₂ ⁻¹))))
+
+ maximum₀-is-monotone
+  : is-monotonic (poset-ofᵈ 𝒦⁻-spec-L) (poset-ofᵈ L) maximum₀ holds
+ maximum₀-is-monotone =
+  meet-preserving-implies-monotone
+   𝒦⁻-spec-L
+   L
+   maximum₀
+   maximum-preserves-∧
+
+\end{code}
+
+\begin{code}
+
+ maximum-cancels-to-𝒦-spec-L : maximum₀ ∘ to-𝒦-spec-L₀ ∼ id
+ maximum-cancels-to-𝒦-spec-L x =
+  equality-of-principal-ideals-gives-equality goal′′
+   where
+    goal : s (↓ₖ maximum₀ (s (↓ₖ x))) ＝ s (↓ₖ x)
+    goal = maximum₀-lemma (s (↓ₖ x)) ⁻¹
+
+    goal′ : ↓ₖ maximum₀ (s (↓ₖ x)) ＝ ↓ₖ x
+    goal′ = equivs-are-lc s (⌜⌝-is-equiv (≃-sym e)) goal
+
+    goal′′ : ↓ maximum₀ (s (↓ₖ x)) ＝ ↓ x
+    goal′′ = pr₁ (from-Σ-＝ goal′)
+
+\end{code}
+
+\begin{code}
+
+ to-𝒦-spec-L-cancels-maximum : to-𝒦-spec-L₀ ∘ maximum₀ ∼ id
+ to-𝒦-spec-L-cancels-maximum K =
+  to-𝒦-spec-L₀ (maximum₀ K)    ＝⟨ refl ⟩
+  s (↓ₖ (maximum₀ K))         ＝⟨ †    ⟩
+  K                              ∎
+   where
+    † = maximum₀-lemma K ⁻¹
+
+\end{code}
+
+\begin{code}
+
+ L-equivalent-to-𝒦⁻-spec-L : ∣ L ∣ᵈ ≃ ∣ 𝒦⁻-spec-L ∣ᵈ
+ L-equivalent-to-𝒦⁻-spec-L = to-𝒦-spec-L₀ , qinvs-are-equivs to-𝒦-spec-L₀ †
+  where
+   Ⅰ : maximum₀ ∘ to-𝒦-spec-L₀ ∼ id
+   Ⅰ = maximum-cancels-to-𝒦-spec-L
+
+   Ⅱ : to-𝒦-spec-L₀ ∘ maximum₀ ∼ id
+   Ⅱ = to-𝒦-spec-L-cancels-maximum
+
+   † : qinv to-𝒦-spec-L₀
+   † = maximum₀ , Ⅰ , Ⅱ
+
+\end{code}
+
+\begin{code}
+
+ open HomomorphicEquivalences L 𝒦⁻-spec-L
+
+ to-𝒦-spec-L-is-a-homomorphic-equivalence
+  : is-homomorphic L-equivalent-to-𝒦⁻-spec-L holds
+ to-𝒦-spec-L-is-a-homomorphic-equivalence = † , ‡
+  where
+   † : is-monotonic (poset-ofᵈ L) (poset-ofᵈ 𝒦⁻-spec-L) to-𝒦-spec-L₀ holds
+   † = meet-preserving-implies-monotone
+        L
+        𝒦⁻-spec-L
+        to-𝒦-spec-L₀
+        to-𝒦-spec-L-preserves-∧
+
+   ‡ : is-monotonic (poset-ofᵈ 𝒦⁻-spec-L) (poset-ofᵈ L) maximum₀ holds
+   ‡ = maximum₀-is-monotone
+
+\end{code}
+
+\begin{code}
+
+ open DistributiveLatticeIsomorphisms L 𝒦⁻-spec-L
+
+ spec-isomorphism : L ≅d≅ 𝒦⁻-spec-L
+ spec-isomorphism =
+  to-isomorphismᵈᵣ
+   (L-equivalent-to-𝒦⁻-spec-L , to-𝒦-spec-L-is-a-homomorphic-equivalence)
+
+\end{code}
+
+\end{code}
+
+Put this in the `LatticeOfCompactOpens-Duality` module.
+
+Recall that the type of spectral locales is defined as
+
+\begin{code}
+
+Spectral-Locale : (𝓤 : Universe) → 𝓤 ⁺ ⁺  ̇
+Spectral-Locale 𝓤 =
+ Σ X ꞉ Locale (𝓤 ⁺) 𝓤 𝓤 , is-spectral-with-small-basis ua X holds
+
+\end{code}
+
+\begin{code}
+
+spec-dlat-equivalence : (𝓤 : Universe) → Spectral-Locale 𝓤 ≃ DistributiveLattice 𝓤
+spec-dlat-equivalence 𝓤 = sec , qinvs-are-equivs sec γ
+ where
+  open 𝒦-Duality₁
+  open 𝒦-Lattice
+  open DefnOfFrameOfIdeal
+
+  sec : Spectral-Locale 𝓤 → DistributiveLattice 𝓤
+  sec = uncurry ⦅_⦆ᶜ
+
+  ret : DistributiveLattice 𝓤 → Spectral-Locale 𝓤
+  ret L = spectrum L , Spectrality.spec-L-is-spectral L , Spectrality.spec-L-has-small-𝒦 L
+
+  † : ret ∘ sec ∼ id
+  † (X , σ) =
+   to-subtype-＝
+    (holds-is-prop ∘ is-spectral-with-small-basis ua)
+    (homeomorphic-locales-are-equal (spec 𝒦X⁻) X goal)
+     where
+      𝒦X⁻ : DistributiveLattice 𝓤
+      𝒦X⁻ = ⦅_⦆ᶜ X σ
+
+      goal : spec 𝒦X⁻ ≅c≅ X
+      goal = X-is-homeomorphic-to-spec-𝒦⁻X X σ
+
+  ‡ : sec ∘ ret ∼ id
+  ‡ L = isomorphic-distributive-lattices-are-equal (sec (ret L)) L goal
+   where
+    open 𝒦-Duality₂ L
+
+    goal : 𝒦⁻-spec-L ≅d≅ L
+    goal = ≅d-sym L 𝒦⁻-spec-L spec-isomorphism
+
+  γ : qinv sec
+  γ = ret , † , ‡
+
+\end{code}
+
+\section{References}
 
 [1] Johnstone, Peter T., Stone Spaces. Cambridge University Press, Cambridge,
     1982

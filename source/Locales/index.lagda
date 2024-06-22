@@ -32,6 +32,7 @@ import Locales.DistributiveLattice.Spectrum
 import Locales.DistributiveLattice.Spectrum-Properties
 import Locales.DistributiveLattice.Properties
 import Locales.DistributiveLattice.Isomorphism
+import Locales.DistributiveLattice.Isomorphism-Properties
 import Locales.DistributiveLattice.Resizing
 
 import Locales.Frame                             -- (9)

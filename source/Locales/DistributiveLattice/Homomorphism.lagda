@@ -109,6 +109,17 @@ record Homomorphismᵈᵣ (L₁ : DistributiveLattice 𝓤) (L₂ : Distributive
  h-preserves-∨ : preserves-∨ L₁ L₂ h holds
  h-preserves-∨ = pr₂ (pr₂ (pr₂ h-is-homomorphism))
 
+ h-is-monotone : is-monotonic (poset-ofᵈ L₁) (poset-ofᵈ L₂) h holds
+ h-is-monotone (x , y) p = h x ∧₂ h y   ＝⟨ Ⅰ ⟩
+                           h (x ∧₁ y)   ＝⟨ Ⅱ ⟩
+                           h x          ∎
+  where
+   open DistributiveLattice L₁ renaming (_∧_ to _∧₁_)
+   open DistributiveLattice L₂ renaming (_∧_ to _∧₂_)
+
+   Ⅰ = h-preserves-∧ x y ⁻¹
+   Ⅱ = ap h p
+
 \end{code}
 
 Added on 2024-03-04.
@@ -118,3 +129,66 @@ Added on 2024-03-04.
 syntax Homomorphismᵈᵣ L₁ L₂ = L₁ ─d→ L₂
 
 \end{code}
+
+Added on 2024-05-20.
+
+\begin{code}
+
+funᵈ : (K : DistributiveLattice 𝓤) (L : DistributiveLattice 𝓥) → K ─d→ L → ∣ K ∣ᵈ → ∣ L ∣ᵈ
+funᵈ K L 𝒽 = Homomorphismᵈᵣ.h {L₁ = K} {L₂ = L} 𝒽
+
+\end{code}
+
+Added on 2024-05-29.
+
+\begin{code}
+
+to-homomorphismᵈ-＝ : (K : DistributiveLattice 𝓤) (L : DistributiveLattice 𝓥)
+                      (h₁ h₂ : K ─d→ L)
+                    → (funᵈ K L h₁ ∼ funᵈ K L h₂)
+                    → h₁ ＝ h₂
+to-homomorphismᵈ-＝ K L 𝒽₁ 𝒽₂ φ = † (dfunext fe φ)
+ where
+  open Homomorphismᵈᵣ 𝒽₁
+   using ()
+   renaming (h to h₁; h-is-homomorphism to h₁-is-homomorphism)
+  open Homomorphismᵈᵣ 𝒽₂
+   using ()
+   renaming (h to h₂; h-is-homomorphism to h₂-is-homomorphism)
+
+  f : is-homomorphismᵈ K L h₁ holds → Homomorphismᵈᵣ K L
+  f ϑ = record { h = h₁ ; h-is-homomorphism = ϑ }
+
+  † : funᵈ K L 𝒽₁ ＝ funᵈ K L 𝒽₂ → 𝒽₁ ＝ 𝒽₂
+  † refl = ap f p
+   where
+    p : h₁-is-homomorphism ＝ h₂-is-homomorphism
+    p = holds-is-prop
+         (is-homomorphismᵈ K L h₁)
+         h₁-is-homomorphism
+         h₂-is-homomorphism
+
+\end{code}
+
+Added on 2024-06-09.
+
+\begin{code}
+
+meet-preserving-implies-monotone
+ : (K L : DistributiveLattice 𝓤)
+ → (f : ∣ K ∣ᵈ → ∣ L ∣ᵈ)
+ → (preserves-∧ K L f ⇒ is-monotonic (poset-ofᵈ K) (poset-ofᵈ L) f) holds
+meet-preserving-implies-monotone K L f φ (x , y) p =
+ f x ∧₂ f y    ＝⟨ Ⅰ ⟩
+ f (x ∧₁ y)    ＝⟨ Ⅱ ⟩
+ f x           ∎
+  where
+   open DistributiveLattice K renaming (_∧_ to _∧₁_)
+   open DistributiveLattice L renaming (_∧_ to _∧₂_)
+
+   Ⅰ = φ x y ⁻¹
+   Ⅱ = ap f p
+
+\end{code}
+
+End of addition.

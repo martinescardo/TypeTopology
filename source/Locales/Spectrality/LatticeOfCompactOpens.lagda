@@ -76,6 +76,9 @@ We define some shorthand notation to simplify the proofs.
  𝟏ₖ : 𝒦 X
  𝟏ₖ = 𝟏[ 𝒪 X ] , 𝟏-is-compact
 
+ 𝟎ₖ : 𝒦 X
+ 𝟎ₖ = 𝟎[ 𝒪 X ] , 𝟎-is-compact X
+
 \end{code}
 
 We now construct the distributive lattice of compact opens.
@@ -87,7 +90,7 @@ We now construct the distributive lattice of compact opens.
   record
    { X               = 𝒦 X
    ; 𝟏               = 𝟏ₖ
-   ; 𝟎               = 𝟎[ 𝒪 X ] , 𝟎-is-compact X
+   ; 𝟎               = 𝟎ₖ
    ; _∧_             = _∧ₖ_
    ; _∨_             = _∨ₖ_
    ; X-is-set        = 𝒦-is-set X
