@@ -302,14 +302,13 @@ Sometimes we want to show that types of the form
 
   Σ x ꞉ X , Σ a ꞉ A x , B x a
 
-is aflabby/ainjective, where the family B happens to be proposition
-valued and the type Σ x : X , Σ a ꞉ A x is already known to be
-aflabby/ainjective. (See the discussion below for the case that B is
-not necessarily proposition valued.) This can often be done directly
-using the simplified compatibility condition if we consider types of
-the equivalent form
+is aflabby/ainjective, where the family B happens to be proposition valued and
+the type Σ x : X , A x is already known to be aflabby/ainjective. (See the
+discussion below for the case that B is not necessarily proposition valued.)
+This can often be done directly using the simplified compatibility condition if
+we consider types of the equivalent form
 
-  Σ σ ꞉ (Σ x : X , Σ a ꞉ A x) , C σ
+  Σ σ ꞉ (Σ x : X , A x) , C σ
 
 again with C proposition valued.
 
@@ -329,7 +328,7 @@ private
 
 One practical example of this situation takes place when the type X is
 a universe, the family A is the structure of pointed ∞-magmas, and C
-gives the monoid axioms. So we we first show that pointed ∞-magmas are
+gives the monoid axioms. So we first show that pointed ∞-magmas are
 aflabby, then, using the above, we conclude that so is the subtype of
 monoids, provided we also show that the monoid axioms satisfy the
 simplified compatibility condition.
@@ -367,10 +366,10 @@ compatibility-condition-with-axioms
  ρ-has-section
  B
  B-is-prop-valued
- B-is-closed-under-extension = ρₐ-has-section
+ B-is-closed-under-extension = ρ'-has-section
   where
-   Aₐ : X → 𝓥 ⊔ 𝓦 ̇
-   Aₐ x = Σ a ꞉ A x , B x a
+   A' : X → 𝓥 ⊔ 𝓦 ̇
+   A' x = Σ a ꞉ A x , B x a
 
    module _ (p : Ω 𝓥)
             (f : p holds → X)
@@ -379,33 +378,39 @@ compatibility-condition-with-axioms
     σ : ((h : p holds) → A (f h)) → A (extension ϕ p f)
     σ = section-of (ρ A ϕ p f) (ρ-has-section p f)
 
-    ρₐ : Aₐ (extension ϕ p f) → ((h : p holds) → Aₐ (f h))
-    ρₐ = ρ Aₐ ϕ p f
+    ρ' : A' (extension ϕ p f) → ((h : p holds) → A' (f h))
+    ρ' = ρ A' ϕ p f
 
-    σₐ : ((h : p holds) → Aₐ (f h)) → Aₐ (extension ϕ p f)
-    σₐ α = σ (λ h → pr₁ (α h)) ,
-             B-is-closed-under-extension p f
-             (λ h → pr₁ (α h))
-             (λ h → pr₂ (α h))
+    τ : (α : (h : p holds) → A' (f h))
+      → B (extension ϕ p f) (σ (λ h → pr₁ (α h)))
+    τ α = B-is-closed-under-extension p f
+           (λ h → pr₁ (α h))
+           (λ h → pr₂ (α h))
 
-    ρσₐ : ρₐ ∘ σₐ ∼ id
-    ρσₐ α = dfunext fe' I
+    σ' : ((h : p holds) → A' (f h)) → A' (extension ϕ p f)
+    σ' α = σ (λ h → pr₁ (α h)) , τ α
+
+    ρσ' : ρ' ∘ σ' ∼ id
+    ρσ' α = dfunext fe' I
      where
       α₁ = λ h → pr₁ (α h)
       α₂ = λ h → pr₂ (α h)
 
-      I : ρₐ (σₐ α) ∼ α
+      I : ρ' (σ' α) ∼ α
       I h =
-       ρₐ (σₐ α) h                    ＝⟨ refl ⟩
-       ρₐ (σ α₁ , _) h                ＝⟨ refl ⟩
-       transport Aₐ (e h) (σ α₁ , _)  ＝⟨ II ⟩
-       (transport A (e h) (σ α₁) , _) ＝⟨ refl ⟩
-       (ρ A ϕ p f (σ α₁) h , _)       ＝⟨ III ⟩
-       (α₁ h , α₂ h)                  ＝⟨ refl ⟩
-       α h                            ∎
+       ρ' (σ' α) h                     ＝⟨ refl ⟩
+       ρ' (σ α₁ , τ α) h               ＝⟨ refl ⟩
+       transport A' (e h) (σ α₁ , τ α) ＝⟨ II ⟩
+       (transport A (e h) (σ α₁) , τ') ＝⟨ refl ⟩
+       (ρ A ϕ p f (σ α₁) h , _)        ＝⟨ III ⟩
+       (α₁ h , α₂ h)                   ＝⟨ refl ⟩
+       α h                             ∎
         where
          e : (h : p holds) → extension ϕ p f ＝ f h
          e = extends ϕ p f
+
+         τ' : B (f h) (transport A (extends ϕ p f h) (σ α₁))
+         τ' = transportd A B (σ α₁) (e h) (τ α)
 
          II  = transport-Σ A B (f h) (e h) (σ α₁)
          III = to-subtype-＝
@@ -413,8 +418,8 @@ compatibility-condition-with-axioms
                 (ap (λ - → - h)
                     (section-equation (ρ A ϕ p f) (ρ-has-section p f) α₁))
 
-    ρₐ-has-section : has-section ρₐ
-    ρₐ-has-section = σₐ , ρσₐ
+    ρ'-has-section : has-section ρ'
+    ρ'-has-section = σ' , ρσ'
 
 \end{code}
 

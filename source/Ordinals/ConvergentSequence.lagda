@@ -30,7 +30,7 @@ open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.Type
 open import Ordinals.Equivalence
 open import Ordinals.Underlying
-open import CoNaturals.GenericConvergentSequence
+open import CoNaturals.Type
 open import UF.Equiv
 
 ω+𝟙-is-⊴-ℕ∞ : (ω +ₒ 𝟙ₒ) ⊴ ℕ∞ₒ

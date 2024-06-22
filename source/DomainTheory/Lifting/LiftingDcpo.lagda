@@ -31,7 +31,7 @@ open import UF.ImageAndSurjection pt
 open import UF.Sets
 open import UF.Subsingletons-FunExt
 
-open import Lifting.Lifting 𝓥 hiding (⊥)
+open import Lifting.Construction 𝓥 hiding (⊥)
 open import Lifting.IdentityViaSIP 𝓥
 open import Lifting.Miscelanea 𝓥
 open import Lifting.Miscelanea-PropExt-FunExt 𝓥 pe fe

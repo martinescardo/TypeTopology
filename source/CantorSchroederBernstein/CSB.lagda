@@ -45,7 +45,7 @@ assumption beyond MLTT is explicit in each claim).
 
 module CantorSchroederBernstein.CSB where
 
-open import CoNaturals.GenericConvergentSequence
+open import CoNaturals.Type
 open import MLTT.Plus-Properties
 open import MLTT.Spartan
 open import Naturals.Properties
@@ -56,7 +56,7 @@ open import UF.Base
 open import UF.DiscreteAndSeparated
 open import UF.Embeddings
 open import UF.Equiv
-open import UF.ExcludedMiddle
+open import UF.ClassicalLogic
 open import UF.FunExt
 open import UF.Lower-FunExt
 open import UF.PropTrunc

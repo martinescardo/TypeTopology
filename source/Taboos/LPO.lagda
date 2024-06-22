@@ -30,7 +30,7 @@ open import UF.FunExt
 
 module Taboos.LPO (fe : FunExt) where
 
-open import CoNaturals.GenericConvergentSequence
+open import CoNaturals.Type
 open import MLTT.Spartan
 open import MLTT.Two-Properties
 open import Naturals.Order

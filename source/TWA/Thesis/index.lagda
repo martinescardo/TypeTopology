@@ -145,8 +145,8 @@ open import TWA.Thesis.Chapter5.IntervalObject
 open import TWA.Thesis.Chapter5.IntervalObjectApproximation
 open import TWA.Thesis.Chapter5.SignedDigit
 open import TWA.Thesis.Chapter5.SignedDigitIntervalObject
+open import TWA.Thesis.Chapter5.BoehmStructure
 open import TWA.Thesis.Chapter5.BoehmVerification
-open import TWA.Thesis.Chapter5.BelowAndAbove
 open import TWA.Thesis.Chapter5.Integers
 \end{code}
 

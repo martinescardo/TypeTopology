@@ -115,17 +115,17 @@ R⋆-main-lemma-ι : (t : T₀ ι)
                  (α : Baire)
                → R⋆ α ⟦ t ⟧₀ ⌜ t ⌝
 R⋆-main-lemma-ι t α =
- ⟦ t ⟧₀
-  ＝⟨ main-lemma t α ⟨⟩ ⟪⟫ (λ ()) ⟩
- dialogue B⟦ t ⟧₀ α
-  ＝⟨ dialogues-agreement B⟦ t ⟧₀ α ⟩
- dialogue⋆ (church-encode B⟦ t ⟧₀) α
-  ＝⟨ ≡-sym (Rnorm-lemmaι t α _ _ e) ⟩
- dialogue⋆ ⟦ ⌜ t ⌝ ⟧₀ α
-  ∎
+ ⟦ t ⟧₀                              ＝⟨ Ⅰ ⟩
+ dialogue B⟦ t ⟧₀ α                  ＝⟨ Ⅱ ⟩
+ dialogue⋆ (church-encode B⟦ t ⟧₀) α ＝⟨ Ⅲ ⟩
+ dialogue⋆ ⟦ ⌜ t ⌝ ⟧₀ α ∎
  where
   e : (a b : ℕ) → a ＝ b → α a ＝ α b
   e a .a refl = refl
+
+  Ⅰ = main-lemma t α ⟨⟩ ⟪⟫ (λ ())
+  Ⅱ = dialogues-agreement B⟦ t ⟧₀ α
+  Ⅲ = ≡-symm (Rnorm-lemmaι t (e _ _))
 
 {-
 

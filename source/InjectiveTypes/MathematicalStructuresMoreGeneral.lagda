@@ -37,7 +37,7 @@ open import MLTT.Spartan
 open import Taboos.Decomposability ua
 open import UF.Base
 open import UF.Equiv
-open import UF.ExcludedMiddle
+open import UF.ClassicalLogic
 open import UF.PropIndexedPiSigma
 open import UF.Retracts
 open import UF.Sets

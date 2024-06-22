@@ -20,7 +20,7 @@ module Lifting.UnivalentPrecategory
        where
 
 open import Lifting.IdentityViaSIP 𝓣
-open import Lifting.Lifting 𝓣
+open import Lifting.Construction 𝓣
 open import UF.Base
 open import UF.Embeddings
 open import UF.Equiv
@@ -666,8 +666,16 @@ We have yet another equivalence, using the above techniques:
 
 \begin{code}
 
-η-maximal : (x : X) (l : 𝓛 X) → η x ⊑ l → l ⊑ η x
-η-maximal x (P , ψ , i) (f , δ) = (λ p → ⋆) , (λ p → ap ψ (i p (f ⋆)) ∙ (δ ⋆)⁻¹)
+η-maximal' : (x : X) (l : 𝓛 X) → η x ⊑ l → l ⊑ η x
+η-maximal' x (P , ψ , i) (f , δ) = (λ p → ⋆) , (λ p → ap ψ (i p (f ⋆)) ∙ (δ ⋆)⁻¹)
+
+η-maximal : propext 𝓣
+          → funext 𝓣 𝓣
+          → funext 𝓣 𝓤
+          → (x : X) (l : 𝓛 X)
+          → η x ⊑ l
+          → η x ＝ l
+η-maximal pe fe fe' x l a = ⊑-anti pe fe fe' (a , η-maximal' x l a)
 
 ⊥-least : (l : 𝓛 X) → ⊥ ⊑ l
 ⊥-least l = unique-from-𝟘 , λ z → unique-from-𝟘 z
@@ -703,5 +711,41 @@ Id-via-lifting : funext 𝓣 𝓣
                → funext 𝓣 𝓤
                → {x y : X} → (x ＝ y) ≃ (η x ⊑ η y)
 Id-via-lifting fe fe' = η-＝-gives-⊑ , η-＝-gives-⊑-is-equiv fe fe'
+
+\end{code}
+
+Added 13th March 2024.
+
+\begin{code}
+
+η-image : funext 𝓣 𝓣
+        → funext 𝓣 𝓤
+        → propext 𝓣
+        → {X : 𝓤 ̇ }
+        → ¬ (Σ l ꞉ 𝓛 X , (l ≠ ⊥) × ((x : X) → l ≠ η x))
+η-image fe fe' pe ((P , φ , P-is-prop) , ν , f) =
+ no-props-other-than-𝟘-or-𝟙 pe (P , P-is-prop , g , h)
+ where
+  g : ¬ (P ＝ 𝟘)
+  g e = ν (to-Σ-＝
+            (e ,
+             to-subtype-＝
+              (λ _ → being-prop-is-prop fe)
+              (dfunext fe' (λ x → 𝟘-elim x))))
+
+  h : ¬ (P ＝ 𝟙)
+  h refl = f (φ ⋆)
+             (to-Σ-＝
+               (refl ,
+                to-subtype-＝
+                 (λ _ → being-prop-is-prop fe)
+                 (dfunext fe' (λ ⋆ → refl))))
+
+η-bounded : (y : 𝓛 X) (x x' : X) → η x ⊑ y → η x' ⊑ y → x ＝ x'
+η-bounded y@(P , φ , P-is-prop) x x' (p , e) (p' , e') =
+ x        ＝⟨ e ⋆ ⟩
+ φ (p  ⋆) ＝⟨ ap φ (P-is-prop (p ⋆) (p' ⋆)) ⟩
+ φ (p' ⋆) ＝⟨ (e' ⋆)⁻¹ ⟩
+ x'       ∎
 
 \end{code}

@@ -22,7 +22,7 @@ open import UF.Univalence
 open import UF.UA-FunExt
 open import UF.StructureIdentityPrinciple
 
-open import Slice.Slice 𝓣
+open import Slice.Construction 𝓣
 
 _⋍_ : 𝓕 X → 𝓕 X → 𝓣 ⊔ 𝓤 ̇
 l ⋍ m = Σ e ꞉ source l ≃ source m , family l ＝ family m ∘ ⌜ e ⌝

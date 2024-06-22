@@ -73,7 +73,7 @@ open import UF.FunExt
 
 module CoNaturals.UniversalProperty (fe : FunExt) where
 
-open import CoNaturals.GenericConvergentSequence
+open import CoNaturals.Type
 open import MLTT.Plus-Properties
 open import MLTT.Spartan
 open import MLTT.Two-Properties

@@ -15,7 +15,7 @@ open import UF.Retracts
 open import UF.Embeddings
 open import UF.EquivalenceExamples
 import UF.PairFun as PairFun
-import Slice.Slice as Slice
+import Slice.Construction as Slice
 
 open import Modal.Subuniverse
 open import Modal.Homotopy

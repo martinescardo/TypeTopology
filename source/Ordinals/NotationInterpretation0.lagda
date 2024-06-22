@@ -34,7 +34,7 @@ private
 
 open PropositionalTruncation pt
 
-open import CoNaturals.GenericConvergentSequence
+open import CoNaturals.Type
 open import MLTT.Plus-Properties
 open import MLTT.Spartan
 open import Notation.CanonicalMap
@@ -165,7 +165,7 @@ is if excluded middle holds.
 
 \begin{code}
 
- open import UF.ExcludedMiddle
+ open import UF.ClassicalLogic
  open import Ordinals.SupSum ua
 
  comparison₀₃ : Excluded-Middle → (b : B) → ⟦ b ⟧₀ ⊴ [ ⟦ b ⟧₃ ]

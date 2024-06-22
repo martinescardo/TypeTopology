@@ -48,7 +48,7 @@ open import Locales.ScottLocale.Definition pt fe 𝓤
 
 open DefnOfScottLocale (𝕊-dcpo ⁻) 𝓤 pe
 open Locale
-open import Lifting.Lifting (𝓤 ⁺)
+open import Lifting.Construction (𝓤 ⁺)
 
 𝕊 : Locale (𝓤 ⁺) (𝓤 ⁺) 𝓤
 𝕊 = ScottLocale

@@ -9,7 +9,7 @@ properties of lifting are discussed in other modules.
 
 open import MLTT.Spartan
 
-module Lifting.Lifting (𝓣 : Universe) where
+module Lifting.Construction (𝓣 : Universe) where
 
 open import UF.Subsingletons
 

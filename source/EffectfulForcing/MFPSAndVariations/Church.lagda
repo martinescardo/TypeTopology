@@ -6,7 +6,7 @@ are Church encoded.
 
 \begin{code}
 
-{-# OPTIONS --without-K --safe --no-sized-types --no-guardedness --auto-inline #-}
+{-# OPTIONS --without-K --safe #-}
 
 module EffectfulForcing.MFPSAndVariations.Church where
 
@@ -102,7 +102,8 @@ B↦B⋆ : {X A : Type} → B X → B⋆ X A
 B↦B⋆ = church-encode
 
 church-encode-B : {X : 𝓦 ̇ } {A : 𝓣  ̇ }
-                → B X → B⋆ X A
+                → B X
+                → B⋆ X A
 church-encode-B = church-encode
 
 dialogues-agreement : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }

@@ -108,7 +108,7 @@ open import UF.Embeddings
 open import UF.Equiv
 open import UF.Equiv-FunExt
 open import UF.EquivalenceExamples
-open import UF.ExcludedMiddle
+open import UF.ClassicalLogic
 open import UF.IdEmbedding
 open import UF.Lower-FunExt
 open import UF.PairFun
@@ -1392,7 +1392,7 @@ Added 23rd January 2019:
 
 module ainjectivity-of-Lifting (𝓤 : Universe) where
 
- open import Lifting.Lifting 𝓤 public
+ open import Lifting.Construction 𝓤 public
  open import Lifting.Algebras 𝓤
  open import Lifting.EmbeddingViaSIP 𝓤 public
 

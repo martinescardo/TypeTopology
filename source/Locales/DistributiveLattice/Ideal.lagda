@@ -183,3 +183,11 @@ module PrincipalIdeals (L : DistributiveLattice 𝓤) where
     }
 
 \end{code}
+
+\begin{code}
+
+ syntax principal-ideal x = ↓ x
+
+ infix 32 principal-ideal
+
+\end{code}

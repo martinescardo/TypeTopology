@@ -16,7 +16,7 @@ open import GamesExperimental.Transformer             -- With additional monad f
 open import GamesExperimental.J                       -- Selection monad.
 open import GamesExperimental.K                       -- Continuation (or quantifier) monad.
 open import GamesExperimental.JK                      -- Relationship between the two mondas.
-open import GamesExperimental.Monad                   -- (Automatically strong, wild) monads on types.
+open import GamesExperimental.Monad                   -- (Automatically strong, wild) monads on suitable types.
 open import GamesExperimental.Reader
 open import GamesExperimental.NonEmptyList
 open import GamesExperimental.TicTacToe0

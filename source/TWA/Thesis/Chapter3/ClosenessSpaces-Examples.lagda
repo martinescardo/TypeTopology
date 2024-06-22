@@ -6,7 +6,7 @@ Todd Waugh Ambridge, January 2024
 {-# OPTIONS --without-K --safe #-}
 
 open import MLTT.Spartan
-open import CoNaturals.GenericConvergentSequence
+open import CoNaturals.Type
  renaming (ℕ-to-ℕ∞ to _↑)
  hiding (max)
 open import Notation.Order
@@ -46,7 +46,7 @@ open import TWA.Closeness fe hiding (is-ultra; is-closeness)
  , (λ _ _ _     → refl)
  , (λ _         → refl)
  , (λ _ _       → refl)
- , (λ _ _ _ _ _ → refl)  
+ , (λ _ _ _ _ _ → refl)
 \end{code}
 
 ## Discrete closeness spaces
@@ -65,8 +65,8 @@ discrete-clofun''-e : {X : 𝓤 ̇ } (x y : X)
                     → (d : is-decidable (x ＝ y))
                     → discrete-clofun'' x y d ＝ ∞ → x ＝ y
 discrete-clofun''-e x y (inl e) cxy＝∞ = e
-discrete-clofun''-e x y (inr f) cxy＝∞ 
- = 𝟘-elim (zero-is-not-one (ap (λ - → pr₁ - 0) cxy＝∞))
+discrete-clofun''-e x y (inr f) cxy＝∞
+ = 𝟘-elim (zero-is-not-one (ap (λ - → ℕ∞-to-ℕ→𝟚 - 0) cxy＝∞))
 
 discrete-clofun''-i : {X : 𝓤 ̇ } (x : X)
                     → (d : is-decidable (x ＝ x))
@@ -83,7 +83,7 @@ discrete-clofun''-s x y (inl _) (inl _) = refl
 discrete-clofun''-s x y (inr _) (inr _) = refl
 discrete-clofun''-s x y (inl e) (inr f) = 𝟘-elim (f (e ⁻¹))
 discrete-clofun''-s x y (inr f) (inl e) = 𝟘-elim (f (e ⁻¹))
-                                           
+
 discrete-clofun''-u : {X : 𝓤 ̇ } (x y z : X)
                     → (d   : is-decidable (x ＝ y))
                     → (d'  : is-decidable (y ＝ z))
@@ -126,7 +126,7 @@ finite-totally-bounded {𝓤} {X} f d x (succ ε)
  = X , (id , id , η) , f
  where
   η : (x : X) → C (D-ClosenessSpace d) (succ ε) x x
-  η x n _ = ap (λ - → pr₁ - n) (i⟨ D-ClosenessSpace d ⟩ x)
+  η x n _ = ap (λ - → ℕ∞-to-ℕ→𝟚 - n) (i⟨ D-ClosenessSpace d ⟩ x)
 
 discrete-apart-implies-closeness-0
  : {X : 𝓤 ̇ }
@@ -136,7 +136,7 @@ discrete-apart-implies-closeness-0
  → c⟨ D-ClosenessSpace d ⟩ x y ＝ 0 ↑
 discrete-apart-implies-closeness-0 d x y f = γ (d x y)
  where
-  γ : (dxy : is-decidable (x ＝ y)) → discrete-clofun'' x y dxy ＝ Zero 
+  γ : (dxy : is-decidable (x ＝ y)) → discrete-clofun'' x y dxy ＝ Zero
   γ (inl e) = 𝟘-elim (f e)
   γ (inr _) = refl
 
@@ -151,7 +151,7 @@ discrete-closeness-succ-implies-equal d x y n Csnxy
  = γ (d x y) (Csnxy n (<-gives-⊏ n (succ n) (<-succ n)))
  where
   γ : (dxy : is-decidable (x ＝ y))
-    → pr₁ (discrete-clofun'' x y dxy) n ＝ ₁
+    → ℕ∞-to-ℕ→𝟚 (discrete-clofun'' x y dxy) n ＝ ₁
     → x ＝ y
   γ (inl e) _ = e
   γ (inr f) cxyₙ=₁ = 𝟘-elim (zero-is-not-one cxyₙ=₁)
@@ -174,9 +174,9 @@ discrete-closeness-succ-implies-equal d x y n Csnxy
 +-clofun'-e X Y (inr y₁) (inr y₂) q
  = ap inr (e⟨ Y ⟩ y₁ y₂ q)
 +-clofun'-e X Y (inl x₁) (inr y₂) f
- = 𝟘-elim (zero-is-not-one (ap (λ - → pr₁ - 0) f))
+ = 𝟘-elim (zero-is-not-one (ap (λ - → ℕ∞-to-ℕ→𝟚 - 0) f))
 +-clofun'-e X Y (inr y₁) (inl x₂) f
- = 𝟘-elim (zero-is-not-one (ap (λ - → pr₁ - 0) f))
+ = 𝟘-elim (zero-is-not-one (ap (λ - → ℕ∞-to-ℕ→𝟚 - 0) f))
 
 +-clofun'-i : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥)
             → self-indistinguishable (+-clofun' X Y)
@@ -203,12 +203,12 @@ discrete-closeness-succ-implies-equal d x y n Csnxy
 
 +-clofun'-is-clofun : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥)
                     → is-closeness (+-clofun' X Y)
-+-clofun'-is-clofun X Y 
++-clofun'-is-clofun X Y
  = +-clofun'-e X Y
  , +-clofun'-i X Y
  , +-clofun'-s X Y
  , +-clofun'-u X Y
- 
+
 +-clospace : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥)
            → is-closeness-space (⟨ X ⟩ + ⟨ Y ⟩)
 +-clospace X Y = +-clofun' X Y , +-clofun'-is-clofun X Y
@@ -237,7 +237,7 @@ discrete-closeness-succ-implies-equal d x y n Csnxy
   η (inr y ) = ηy y
   f : finite-linear-order (X' + Y')
   f = +-is-finite fx fy
-                 
+
 +-totally-bounded : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥)
                   → totally-bounded X 𝓤'
                   → totally-bounded Y 𝓥'
@@ -251,7 +251,7 @@ discrete-closeness-succ-implies-equal d x y n Csnxy
   Y'-is-ε-net = pr₂ (ty ε)
 
 +-C-left  : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥)
-          → (x₁ x₂ : ⟨ X ⟩) 
+          → (x₁ x₂ : ⟨ X ⟩)
           → (ε : ℕ) → C (+-ClosenessSpace X Y) ε (inl x₁) (inl x₂)
           → C X ε x₁ x₂
 +-C-left  X Y x₁ x₂ ε Cxy n = Cxy n
@@ -265,17 +265,17 @@ discrete-closeness-succ-implies-equal d x y n Csnxy
 ×-clofun' X Y (x₁ , y₁) (x₂ , y₂)
  = min (c⟨ X ⟩ x₁ x₂) (c⟨ Y ⟩ y₁ y₂)
 
-min-∞-l : (u v : ℕ∞) → min u v ＝ ∞ → u ＝ ∞ 
+min-∞-l : (u v : ℕ∞) → min u v ＝ ∞ → u ＝ ∞
 min-∞-l u v min＝∞
  = to-subtype-＝ (being-decreasing-is-prop (fe _ _))
      (dfunext (fe _ _)
-       (λ i → Lemma[min𝟚ab＝₁→a＝₁] (ap (λ - → pr₁ - i) min＝∞)))
+       (λ i → Lemma[min𝟚ab＝₁→a＝₁] (ap (λ - → ℕ∞-to-ℕ→𝟚 - i) min＝∞)))
 
-min-∞-r : (u v : ℕ∞) → min u v ＝ ∞ → v ＝ ∞ 
+min-∞-r : (u v : ℕ∞) → min u v ＝ ∞ → v ＝ ∞
 min-∞-r u v min＝∞
  = to-subtype-＝ (being-decreasing-is-prop (fe _ _))
      (dfunext (fe _ _)
-       (λ i → Lemma[min𝟚ab＝₁→b＝₁] (ap (λ - → pr₁ - i) min＝∞)))
+       (λ i → Lemma[min𝟚ab＝₁→b＝₁] (ap (λ - → ℕ∞-to-ℕ→𝟚 - i) min＝∞)))
 
 ×-clofun'-e : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥)
             → indistinguishable-are-equal (×-clofun' X Y)
@@ -318,9 +318,11 @@ minℕ∞-abcdef : (a b c d e f : ℕ∞)
 minℕ∞-abcdef a b c d e f mab≼e mcd≼f n minabcd＝₁
  = Lemma[a＝₁→b＝₁→min𝟚ab＝₁]
      (mab≼e n (min𝟚-abcd-ac
-       (pr₁ a n) (pr₁ c n) (pr₁ b n) (pr₁ d n) minabcd＝₁))
+       (ℕ∞-to-ℕ→𝟚 a n) (ℕ∞-to-ℕ→𝟚 c n) (ℕ∞-to-ℕ→𝟚 b n) (ℕ∞-to-ℕ→𝟚 d n)
+       minabcd＝₁))
      (mcd≼f n (min𝟚-abcd-bd
-       (pr₁ a n) (pr₁ c n) (pr₁ b n) (pr₁ d n) minabcd＝₁))
+       (ℕ∞-to-ℕ→𝟚 a n) (ℕ∞-to-ℕ→𝟚 c n) (ℕ∞-to-ℕ→𝟚 b n) (ℕ∞-to-ℕ→𝟚 d n)
+       minabcd＝₁))
 
 ×-clofun'-u : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥)
             → is-ultra (×-clofun' X Y)
@@ -333,7 +335,7 @@ minℕ∞-abcdef a b c d e f mab≼e mcd≼f n minabcd＝₁
 
 ×-clofun'-is-clofun : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥)
                     → is-closeness (×-clofun' X Y)
-×-clofun'-is-clofun X Y 
+×-clofun'-is-clofun X Y
  = ×-clofun'-e X Y
  , ×-clofun'-i X Y
  , ×-clofun'-s X Y
@@ -386,7 +388,7 @@ minℕ∞-abcdef a b c d e f mab≼e mcd≼f n minabcd＝₁
    = ×-C-combine X Y x (gx (hx x)) y (gy (hy y)) ε (ηx x) (ηy y)
   f : finite-linear-order (X' × Y')
   f = ×-is-finite fx fy
-                 
+
 ×-totally-bounded : (X : ClosenessSpace 𝓤) (Y : ClosenessSpace 𝓥)
                   → totally-bounded X 𝓤'
                   → totally-bounded Y 𝓥'
@@ -444,7 +446,7 @@ Vec-clospace : (X : ClosenessSpace 𝓤) (n : ℕ)
              → is-closeness-space (Vec ⟨ X ⟩ n)
 Vec-clospace X n = vec-clospace n (λ _ → X)
 
-Vec-ClosenessSpace : (X : ClosenessSpace 𝓤) (n : ℕ) 
+Vec-ClosenessSpace : (X : ClosenessSpace 𝓤) (n : ℕ)
                    → ClosenessSpace 𝓤
 Vec-ClosenessSpace X n = Vec ⟨ X ⟩ n , Vec-clospace X n
 
@@ -560,7 +562,7 @@ close-to-close X Y Z f {succ n} v@(y :: ys) ϕʸ g ε = δ , γ
                  → X ≃ ⟨ Y ⟩
                  → ClosenessSpace 𝓤
 ≃-ClosenessSpace Y e
-  = ↪-ClosenessSpace Y (equivs-embedding e)                      
+  = ↪-ClosenessSpace Y (equivs-embedding e)
 
 ≃-preserves-nets : {X : 𝓤 ̇ } (Y : ClosenessSpace 𝓥)
                  → (e : X ≃ ⟨ Y ⟩)
@@ -620,7 +622,7 @@ discrete-seq-clofun'
  : {X : ℕ → 𝓤 ̇ } → ((i : ℕ) → is-discrete (X i)) → Π X → Π X → (ℕ → 𝟚)
 discrete-seq-clofun' d α β
  = decidable-seq-𝟚 (∼ⁿ-decidable d α β)
- 
+
 discrete-seq-clofun'-e
  : {X : ℕ → 𝓤 ̇ }
  → (d : (i : ℕ) → is-discrete (X i))
@@ -633,7 +635,7 @@ discrete-seq-clofun'-e d α β f
               (f n) n (<-succ n))
 
 discrete-seq-clofun'-i
- : {X : ℕ → 𝓤 ̇ } 
+ : {X : ℕ → 𝓤 ̇ }
  → (d : (i : ℕ) → is-discrete (X i))
  → (α : Π X)
  → (n : ℕ) → discrete-seq-clofun' d α α n ＝ ₁
@@ -713,8 +715,8 @@ discrete-seq-clofun-e
  → (d : (i : ℕ) → is-discrete (X i))
  → indistinguishable-are-equal (discrete-seq-clofun d)
 discrete-seq-clofun-e d α β cαβ=∞
- = discrete-seq-clofun'-e d α β (λ n → ap (λ - → pr₁ - n) cαβ=∞) 
-     
+ = discrete-seq-clofun'-e d α β (λ n → ap (λ - → ℕ∞-to-ℕ→𝟚 - n) cαβ=∞)
+
 discrete-seq-clofun-i : {X : ℕ → 𝓤 ̇ }
                       → (d : (i : ℕ) → is-discrete (X i))
                       → self-indistinguishable (discrete-seq-clofun d)
@@ -819,9 +821,9 @@ C-to-∼ⁿ d = C-to-∼ⁿ' (λ _ → d)
 \begin{code}
 Π-clofun' : (T : ℕ → ClosenessSpace 𝓤)
           → Π (⟨_⟩ ∘ T) → Π (⟨_⟩ ∘ T) → (ℕ → 𝟚)
-Π-clofun' T x y zero = pr₁ (c⟨ T 0 ⟩ (x 0) (y 0)) 0
+Π-clofun' T x y zero = ℕ∞-to-ℕ→𝟚 (c⟨ T 0 ⟩ (x 0) (y 0)) 0
 Π-clofun' T x y (succ n)
- = min𝟚 (pr₁ (c⟨ T 0 ⟩ (x 0) (y 0)) (succ n))
+ = min𝟚 (ℕ∞-to-ℕ→𝟚 (c⟨ T 0 ⟩ (x 0) (y 0)) (succ n))
      (Π-clofun' (T ∘ succ) (x ∘ succ) (y ∘ succ) n)
 
 Π-clofun'-d : (T : ℕ → ClosenessSpace 𝓤)
@@ -836,7 +838,8 @@ C-to-∼ⁿ d = C-to-∼ⁿ' (λ _ → d)
 Π-clofun'-all : (T : ℕ → ClosenessSpace 𝓤)
               → (x y : Π (⟨_⟩ ∘ T))
               → Π-clofun' T x y ∼ (λ i → ₁)
-              → (n : ℕ) → (pr₁ (c⟨ T n ⟩ (x n) (y n))) ∼ (λ i → ₁)
+              → (n : ℕ)
+              → (ℕ∞-to-ℕ→𝟚 (c⟨ T n ⟩ (x n) (y n))) ∼ (λ i → ₁)
 Π-clofun'-all T x y cxy∼∞ 0 zero = cxy∼∞ 0
 Π-clofun'-all T x y cxy∼∞ 0 (succ i)
  = Lemma[min𝟚ab＝₁→a＝₁] (cxy∼∞ (succ i))
@@ -849,49 +852,34 @@ C-to-∼ⁿ d = C-to-∼ⁿ' (λ _ → d)
             → Π-clofun' T x y ∼ (λ i → ₁) → x ＝ y
 Π-clofun'-e T x y f
  = dfunext (fe _ _)
-     (λ i → e i (x i) (y i)
+     (λ i → e⟨ T i ⟩ (x i) (y i)
        (to-subtype-＝ (being-decreasing-is-prop (fe _ _))
          (dfunext (fe _ _) (Π-clofun'-all T x y f i))))
- where
-  e : (n : ℕ) → indistinguishable-are-equal c⟨ T n ⟩
-  e n = pr₁ (pr₂ (pr₂ (T n)))
 
 Π-clofun'-i : (T : ℕ → ClosenessSpace 𝓤)
             → (x : Π (⟨_⟩ ∘ T)) → Π-clofun' T x x ∼ (λ i → ₁)
-Π-clofun'-i T x 0 = ap (λ - → pr₁ - 0) (i 0 (x 0))
- where
-  i : (n : ℕ) → self-indistinguishable c⟨ T n ⟩
-  i n = pr₁ (pr₂ (pr₂ (pr₂ (T n))))
+Π-clofun'-i T x 0 = ap (λ - → ℕ∞-to-ℕ→𝟚 - 0) (i⟨ T 0 ⟩ (x 0))
 Π-clofun'-i T x (succ n)
  = Lemma[a＝₁→b＝₁→min𝟚ab＝₁]
-     (ap (λ - → pr₁ - (succ n)) (i 0 (x 0)))
+     (ap (λ - → ℕ∞-to-ℕ→𝟚 - (succ n)) (i⟨ T 0 ⟩ (x 0)))
      (Π-clofun'-i (T ∘ succ) (x ∘ succ) n)
- where
-  i : (n : ℕ) → self-indistinguishable c⟨ T n ⟩
-  i n = pr₁ (pr₂ (pr₂ (pr₂ (T n))))
 
 Π-clofun'-s : (T : ℕ → ClosenessSpace 𝓤)
             → (x y : Π (⟨_⟩ ∘ T))
             → Π-clofun' T x y ∼ Π-clofun' T y x
 Π-clofun'-s T x y zero
- = ap (λ - → pr₁ - 0) (s 0 (x 0) (y 0))
- where
-  s : (n : ℕ) → is-symmetric c⟨ T n ⟩
-  s n = pr₁ (pr₂ (pr₂ (pr₂ (pr₂ (T n))))) 
+ = ap (λ - → ℕ∞-to-ℕ→𝟚 - 0) (s⟨ T 0 ⟩ (x 0) (y 0))
 Π-clofun'-s T x y (succ n)
  = ap (λ - → min𝟚 - (Π-clofun' (T ∘ succ) (x ∘ succ) (y ∘ succ) n))
-     (ap (λ - → pr₁ - (succ n)) (s 0 (x 0) (y 0)))
+     (ap (λ - → pr₁ - (succ n)) (s⟨ T 0 ⟩ (x 0) (y 0)))
  ∙ ap (λ - → min𝟚 (pr₁ (c⟨ T 0 ⟩ (y 0) (x 0)) (succ n)) -)
      (Π-clofun'-s (T ∘ succ) (x ∘ succ) (y ∘ succ) n)
- where
-  s : (n : ℕ) → is-symmetric c⟨ T n ⟩
-  s n = pr₁ (pr₂ (pr₂ (pr₂ (pr₂ (T n)))))
 
 Lemma[min𝟚abcd＝₁→min𝟚ac＝₁] : (a b c d : 𝟚)
                             → min𝟚 (min𝟚 a b) (min𝟚 c d) ＝ ₁
                             → min𝟚 a c ＝ ₁
 Lemma[min𝟚abcd＝₁→min𝟚ac＝₁] ₁ ₁ ₁ ₁ e = refl
- 
+
 Lemma[min𝟚abcd＝₁→min𝟚bd＝₁] : (a b c d : 𝟚)
                             → min𝟚 (min𝟚 a b) (min𝟚 c d) ＝ ₁
                             → min𝟚 b d ＝ ₁
@@ -903,29 +891,23 @@ Lemma[min𝟚abcd＝₁→min𝟚bd＝₁] ₁ ₁ ₁ ₁ e = refl
             → min𝟚 (Π-clofun' T x y n) (Π-clofun' T y z n) ＝ ₁
             → Π-clofun' T x z n ＝ ₁
 Π-clofun'-u T x y z 0 η
- = u 0 (x 0) (y 0) (z 0) 0 η
- where
-  u : (n : ℕ) → is-ultra c⟨ T n ⟩
-  u n = pr₂ (pr₂ (pr₂ (pr₂ (pr₂ (T n)))))
+ = u⟨ T 0 ⟩ (x 0) (y 0) (z 0) 0 η
 Π-clofun'-u T x y z (succ n) η
  = Lemma[a＝₁→b＝₁→min𝟚ab＝₁]
-     (u 0 (x 0) (y 0) (z 0) (succ n)
+     (u⟨ T 0 ⟩ (x 0) (y 0) (z 0) (succ n)
        (Lemma[min𝟚abcd＝₁→min𝟚ac＝₁]
-         (pr₁ (c⟨ T 0 ⟩ (x 0) (y 0)) (succ n))
+         (ℕ∞-to-ℕ→𝟚 (c⟨ T 0 ⟩ (x 0) (y 0)) (succ n))
          (Π-clofun' (T ∘ succ) (x ∘ succ) (y ∘ succ) n)
-         (pr₁ (c⟨ T 0 ⟩ (y 0) (z 0)) (succ n))
+         (ℕ∞-to-ℕ→𝟚 (c⟨ T 0 ⟩ (y 0) (z 0)) (succ n))
          (Π-clofun' (T ∘ succ) (y ∘ succ) (z ∘ succ) n)
          η))
      (Π-clofun'-u (T ∘ succ) (x ∘ succ) (y ∘ succ) (z ∘ succ) n
        (Lemma[min𝟚abcd＝₁→min𝟚bd＝₁]
-         (pr₁ (c⟨ T 0 ⟩ (x 0) (y 0)) (succ n))
+         (ℕ∞-to-ℕ→𝟚 (c⟨ T 0 ⟩ (x 0) (y 0)) (succ n))
          (Π-clofun' (T ∘ succ) (x ∘ succ) (y ∘ succ) n)
-         (pr₁ (c⟨ T 0 ⟩ (y 0) (z 0)) (succ n))
+         (ℕ∞-to-ℕ→𝟚 (c⟨ T 0 ⟩ (y 0) (z 0)) (succ n))
          (Π-clofun' (T ∘ succ) (y ∘ succ) (z ∘ succ) n)
          η))
- where
-  u : (n : ℕ) → is-ultra c⟨ T n ⟩
-  u n = pr₂ (pr₂ (pr₂ (pr₂ (pr₂ (T n)))))
 
 Π-clofun : (T : ℕ → ClosenessSpace 𝓤)
          → Π (⟨_⟩ ∘ T) → Π (⟨_⟩ ∘ T) → ℕ∞

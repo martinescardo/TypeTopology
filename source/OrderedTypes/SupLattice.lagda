@@ -44,22 +44,22 @@ We commence by defining sup lattices.
 
 \begin{code}
 
-module _ (𝓤 𝓦 𝓥 : Universe) where
+module _ (𝓤 𝓣 𝓥 : Universe) where
 
- sup-lattice-data : 𝓤  ̇ → 𝓤 ⊔ 𝓦 ⁺ ⊔ 𝓥 ⁺  ̇
- sup-lattice-data A = (A → A → Ω 𝓦) × (Fam 𝓥 A → A)
+ sup-lattice-data : 𝓤  ̇ → 𝓤 ⊔ 𝓣 ⁺ ⊔ 𝓥 ⁺  ̇
+ sup-lattice-data A = (A → A → Ω 𝓣) × (Fam 𝓥 A → A)
  
- is-sup-lattice : {A : 𝓤  ̇} → sup-lattice-data A → 𝓤 ⊔ 𝓦 ⊔ 𝓥 ⁺  ̇  
+ is-sup-lattice : {A : 𝓤  ̇} → sup-lattice-data A → 𝓤 ⊔ 𝓣 ⊔ 𝓥 ⁺  ̇  
  is-sup-lattice {A} (_≤_ , ⋁_) = is-partial-order A _≤_ × suprema
   where
    open Joins _≤_
-   suprema : 𝓤 ⊔ 𝓦 ⊔ 𝓥 ⁺  ̇
+   suprema : 𝓤 ⊔ 𝓣 ⊔ 𝓥 ⁺  ̇
    suprema = (U : Fam 𝓥 A) → ((⋁ U) is-lub-of U) holds
 
- sup-lattice-structure : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ⁺ ⊔ 𝓦 ⁺ ̇
+ sup-lattice-structure : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ⁺ ⊔ 𝓣 ⁺ ̇
  sup-lattice-structure A = Σ d ꞉ (sup-lattice-data A) , is-sup-lattice d
 
- Sup-Lattice : (𝓤 ⊔ 𝓦 ⊔ 𝓥) ⁺  ̇
+ Sup-Lattice : (𝓤 ⊔ 𝓣 ⊔ 𝓥) ⁺  ̇
  Sup-Lattice = Σ A ꞉ 𝓤  ̇ , sup-lattice-structure A
 
 \end{code}
@@ -68,50 +68,50 @@ Now we give some naming conventions which will be useful.
 
 \begin{code}
 
-⟨_⟩ : Sup-Lattice 𝓤 𝓦 𝓥 → 𝓤  ̇
+⟨_⟩ : Sup-Lattice 𝓤 𝓣 𝓥 → 𝓤  ̇
 ⟨ A , rest ⟩ = A
 
-order-of : (L : Sup-Lattice 𝓤 𝓦 𝓥) → (⟨ L ⟩ → ⟨ L ⟩ → Ω 𝓦)
+order-of : (L : Sup-Lattice 𝓤 𝓣 𝓥) → (⟨ L ⟩ → ⟨ L ⟩ → Ω 𝓣)
 order-of (A , (_≤_ , ⋁_) , rest) = _≤_
 
 syntax order-of L x y = x ≤⟨ L ⟩ y
 
-join-of : (L : Sup-Lattice 𝓤 𝓦 𝓥) → Fam 𝓥 ⟨ L ⟩ → ⟨ L ⟩
+join-of : (L : Sup-Lattice 𝓤 𝓣 𝓥) → Fam 𝓥 ⟨ L ⟩ → ⟨ L ⟩
 join-of (A , (_≤_ , ⋁_) , rest) = ⋁_
 
 syntax join-of L U = ⋁⟨ L ⟩ U
 
-partial-orderedness-of : (L : Sup-Lattice 𝓤 𝓦 𝓥)
+partial-orderedness-of : (L : Sup-Lattice 𝓤 𝓣 𝓥)
                        → is-partial-order ⟨ L ⟩ (order-of L)
 partial-orderedness-of (A , (_≤_ , ⋁_) , order , is-lub-of) = order
 
-reflexivity-of : (L : Sup-Lattice 𝓤 𝓦 𝓥) → is-reflexive (order-of L) holds
+reflexivity-of : (L : Sup-Lattice 𝓤 𝓣 𝓥) → is-reflexive (order-of L) holds
 reflexivity-of L = pr₁ (pr₁ (partial-orderedness-of L))
 
-antisymmetry-of : (L : Sup-Lattice 𝓤 𝓦 𝓥) → is-antisymmetric (order-of L) 
+antisymmetry-of : (L : Sup-Lattice 𝓤 𝓣 𝓥) → is-antisymmetric (order-of L) 
 antisymmetry-of L = pr₂ (partial-orderedness-of L)
 
-transitivity-of : (L : Sup-Lattice 𝓤 𝓦 𝓥) → is-transitive (order-of L) holds
+transitivity-of : (L : Sup-Lattice 𝓤 𝓣 𝓥) → is-transitive (order-of L) holds
 transitivity-of L = pr₂ (pr₁ (partial-orderedness-of L))
 
-join-is-lub-of : (L : Sup-Lattice 𝓤 𝓦 𝓥)
+join-is-lub-of : (L : Sup-Lattice 𝓤 𝓣 𝓥)
                → (U : Fam 𝓥 ⟨ L ⟩)
                → ((order-of L) Joins.is-lub-of join-of L U) U holds
 join-is-lub-of (A , (_≤_ , ⋁_) , order , suprema) = suprema
 
-join-is-upper-bound-of : (L : Sup-Lattice 𝓤 𝓦 𝓥)
+join-is-upper-bound-of : (L : Sup-Lattice 𝓤 𝓣 𝓥)
                        → (U : Fam 𝓥 ⟨ L ⟩)
                        → ((order-of L) Joins.is-an-upper-bound-of
                           join-of L U) U holds
 join-is-upper-bound-of L U = pr₁ (join-is-lub-of L U)
 
-join-is-least-upper-bound-of : (L : Sup-Lattice 𝓤 𝓦 𝓥)
+join-is-least-upper-bound-of : (L : Sup-Lattice 𝓤 𝓣 𝓥)
                              → (U : Fam 𝓥 ⟨ L ⟩)
                              → ((u' , _) : Joins.upper-bound (order-of L) U)
                              → (order-of L (join-of L U) u') holds
 join-is-least-upper-bound-of L U = pr₂ (join-is-lub-of L U)
 
-sethood-of : (L : Sup-Lattice 𝓤 𝓦 𝓥) → is-set ⟨ L ⟩
+sethood-of : (L : Sup-Lattice 𝓤 𝓣 𝓥) → is-set ⟨ L ⟩
 sethood-of L =
  type-with-prop-valued-refl-antisym-rel-is-set
   (λ x → λ y → order-of L x y holds)
@@ -128,18 +128,18 @@ as a special case.
 
 module _ where
 
- is-monotone : {𝓤 𝓤' 𝓦 𝓦' 𝓥 𝓥' : Universe}
-             → (L : Sup-Lattice 𝓤 𝓦 𝓥) (M : Sup-Lattice 𝓤' 𝓦' 𝓥')
+ is-monotone : {𝓤 𝓤' 𝓣 𝓣' 𝓥 𝓥' : Universe}
+             → (L : Sup-Lattice 𝓤 𝓣 𝓥) (M : Sup-Lattice 𝓤' 𝓣' 𝓥')
              → (f : ⟨ L ⟩ → ⟨ M ⟩)
-             → 𝓤 ⊔ 𝓦 ⊔ 𝓦'  ̇
+             → 𝓤 ⊔ 𝓣 ⊔ 𝓣'  ̇
  is-monotone L M f = (x y : ⟨ L ⟩)
                    → (x ≤⟨ L ⟩ y) holds
                    → (f x ≤⟨ M ⟩ f y) holds
 
- is-monotone-endomap : {𝓤 𝓦 𝓥 : Universe}
-                     → (L : Sup-Lattice 𝓤 𝓦 𝓥)
+ is-monotone-endomap : {𝓤 𝓣 𝓥 : Universe}
+                     → (L : Sup-Lattice 𝓤 𝓣 𝓥)
                      → (f : ⟨ L ⟩ → ⟨ L ⟩)
-                     → 𝓤 ⊔ 𝓦  ̇
+                     → 𝓤 ⊔ 𝓣  ̇
  is-monotone-endomap L f = is-monotone L L f
 
 \end{code}
@@ -150,8 +150,8 @@ spaces are ordered as expected.
 \begin{code}
 
 module _
-        {𝓤 𝓦 𝓥 : Universe}
-        (L : Sup-Lattice 𝓤 𝓦 𝓥)
+        {𝓤 𝓣 𝓥 : Universe}
+        (L : Sup-Lattice 𝓤 𝓣 𝓥)
         {A : 𝓥  ̇}
         (m : A → ⟨ L ⟩)
        where
@@ -175,9 +175,9 @@ We now show if a type is small and has a map to the carrier then it has a join.
 \begin{code}
 
 module _
-        {𝓤 𝓦 𝓥 𝓣 : Universe}
-        (L : Sup-Lattice 𝓤 𝓦 𝓥)
-        {T : 𝓣  ̇}
+        {𝓤 𝓣 𝓥 𝓦 : Universe}
+        (L : Sup-Lattice 𝓤 𝓣 𝓥)
+        {T : 𝓦  ̇}
         (m : T → ⟨ L ⟩)
         (T-is-small : T is 𝓥 small)
        where
@@ -241,10 +241,10 @@ We now show that reindexing families along a surjection preserves the supremum.
 \begin{code}
 
 module _
-        {𝓤 𝓦 𝓥 𝓣 𝓣' : Universe}
-        (L : Sup-Lattice 𝓤 𝓦 𝓥)
-        {T : 𝓣  ̇}
-        {T' : 𝓣'  ̇}
+        {𝓤 𝓣 𝓥 𝓦 𝓦' : Universe}
+        (L : Sup-Lattice 𝓤 𝓣 𝓥)
+        {T : 𝓦  ̇}
+        {T' : 𝓦'  ̇}
         (e : T' ↠ T)
         (m : T → ⟨ L ⟩)
        where
@@ -283,10 +283,10 @@ surjection.
 \begin{code}
 
 module _
-        {𝓤 𝓦 𝓥 𝓣 𝓣' : Universe}
-        (L : Sup-Lattice 𝓤 𝓦 𝓥)
-        {T : 𝓣  ̇}
-        {T' : 𝓣'  ̇}
+        {𝓤 𝓣 𝓥 𝓦 𝓦' : Universe}
+        (L : Sup-Lattice 𝓤 𝓣 𝓥)
+        {T : 𝓦  ̇}
+        {T' : 𝓦'  ̇}
         (e : T' ≃ T)
         (m : T → ⟨ L ⟩)
        where

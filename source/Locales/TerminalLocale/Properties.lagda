@@ -48,7 +48,7 @@ open import UF.SubtypeClassifier
 
 open AllCombinators pt fe
 open Locale
-open PropositionalTruncation pt
+open PropositionalTruncation pt hiding (_∨_; ∨-elim)
 
 module _ (pe : propext 𝓤) where
 
@@ -126,6 +126,31 @@ this fact is not a definitional equality.
            (holds-gives-equal-⊤ pe fe _ ((λ ()) , 𝟎-is-bottom (𝒪 (𝟏Loc pe)) ⊥))
 
 \end{code}
+
+Added on 2024-05-28.
+
+The following is probably written down somewhere else, but this is the right
+place for it.
+
+\begin{code}
+
+ binary-join-is-disjunction : (P Q : ⟨ 𝒪 (𝟏Loc pe) ⟩)
+                            → P ∨[ 𝟎-𝔽𝕣𝕞 pe ] Q ＝ P ∨ Q
+ binary-join-is-disjunction P Q =
+  ⋁[ 𝟎-𝔽𝕣𝕞 pe ]-unique ⁅ P , Q ⁆ (P ∨ Q) (υ , φ) ⁻¹
+   where
+    open Joins (λ x y → x ≤[ poset-of (𝟎-𝔽𝕣𝕞 pe) ] y)
+
+    υ : ((P ∨ Q) is-an-upper-bound-of ⁅ P , Q ⁆) holds
+    υ ₀ p = ∣ inl p ∣
+    υ ₁ q = ∣ inr q ∣
+
+    φ : ((R , _) : upper-bound ⁅ P , Q ⁆) → ((P ∨ Q) ⇒ R) holds
+    φ (R , ψ) = ∨-elim P Q R (ψ (inl ⋆)) (ψ (inr ⋆))
+
+\end{code}
+
+End of addition
 
 Every compact open of the initial frame is a clopen i.e. is a complemented
 proposition.

@@ -42,7 +42,7 @@ module TypeTopology.FailureOfTotalSeparatedness (fe : FunExt) where
 open import MLTT.Spartan
 
 open import MLTT.Two-Properties
-open import CoNaturals.GenericConvergentSequence
+open import CoNaturals.Type
 open import Taboos.BasicDiscontinuity (fe 𝓤₀ 𝓤₀)
 open import Taboos.WLPO
 open import UF.Base

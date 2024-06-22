@@ -32,7 +32,7 @@ open import UF.Subsingletons
 If function extensionality is available, then for any f : ₂ℕ → ℕ,
 the type
 
-  UC(f) = Σ \(n : ℕ) → ∀(α β : ₂ℕ) → α ＝⟦ n ] β → f α ＝ f β
+  UC(f) = Σ n : ℕ , ∀(α β : ₂ℕ) → α ＝⟦ n ] β → f α ＝ f β
 
 has a propositional truncation, using the main lemma, because the
 type family A(f) : ℕ → Set, defined by

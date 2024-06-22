@@ -14,7 +14,7 @@ module Lifting.Set
   (𝓣 : Universe) -- fix a universe for the propositions
   where
 
-open import Lifting.Lifting 𝓣
+open import Lifting.Construction 𝓣
 open import UF.Base
 open import UF.FunExt
 open import UF.Retracts

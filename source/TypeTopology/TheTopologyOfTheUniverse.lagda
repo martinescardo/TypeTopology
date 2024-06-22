@@ -120,11 +120,11 @@ open import UF.FunExt
 
 module TypeTopology.TheTopologyOfTheUniverse (fe : FunExt) where
 
-open import MLTT.Spartan
-open import UF.Equiv
-open import CoNaturals.GenericConvergentSequence
+open import CoNaturals.Type
 open import InjectiveTypes.Blackboard fe
+open import MLTT.Spartan
 open import Notation.CanonicalMap
+open import UF.Equiv
 
 \end{code}
 

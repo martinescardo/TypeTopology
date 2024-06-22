@@ -16,7 +16,7 @@ open import Integers.Order
 
 open import TWA.Thesis.Chapter2.Sequences
 open import TWA.Thesis.Chapter5.SignedDigit
-open import TWA.Thesis.Chapter5.BelowAndAbove
+open import TWA.Thesis.Chapter5.BoehmStructure
 open import TWA.Thesis.Chapter5.Integers
 
 module TWA.Thesis.Chapter6.SignedDigitOrder
@@ -29,7 +29,7 @@ open import TWA.Thesis.Chapter4.ApproxOrder fe
 
 ## Integer approx (originally defined in BoehmVerification)
 
-\end{code}
+\begin{code}
 𝟛-to-down : (a : 𝟛) → (ℤ → ℤ)
 𝟛-to-down −1 = downLeft
 𝟛-to-down  O = downMid
@@ -56,7 +56,7 @@ ternary-to-ℤ² α = ternary-to-ℤ²' (α 0) (α ∘ succ) (negsucc 0)
 
 ## Real preserving preorder
 
-\end{code}
+\begin{code}
 
 module RealPresOrder (pt : propositional-truncations-exist) where
 
@@ -96,7 +96,7 @@ module RealPresOrder (pt : propositional-truncations-exist) where
 
 ## Real-preserving approximate order
 
-\end{code}
+\begin{code}
 _≤ⁿ𝟛ᴺ_ : 𝟛ᴺ → 𝟛ᴺ → ℕ → 𝓤₀ ̇
 (x ≤ⁿ𝟛ᴺ y) n = integer-approx x n ≤ integer-approx y n
 

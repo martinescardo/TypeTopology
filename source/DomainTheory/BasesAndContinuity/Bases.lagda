@@ -597,6 +597,7 @@ basis for 𝓓.
 \begin{code}
 
 module _
+        (pe : Prop-Ext)
         (𝓓 : DCPO {𝓤} {𝓣})
         (𝓔 : DCPO {𝓤'} {𝓣'})
         (ρ : 𝓓 continuous-retract-of 𝓔)
@@ -604,10 +605,10 @@ module _
 
  open _continuous-retract-of_ ρ
 
- small-basis-from-continuous-retract : Prop-Ext → {B : 𝓥 ̇ } (β : B → ⟨ 𝓔 ⟩)
+ small-basis-from-continuous-retract : {B : 𝓥 ̇ } (β : B → ⟨ 𝓔 ⟩)
                                      → is-small-basis 𝓔 β
                                      → is-small-basis 𝓓 (r ∘ β)
- small-basis-from-continuous-retract pe {B} β sb =
+ small-basis-from-continuous-retract {B} β sb =
   record
    { ≪ᴮ-is-small    = ≪ʳᴮ-is-small
    ; ↡ᴮ-is-directed = ≪ʳᴮ-is-directed
@@ -663,6 +664,41 @@ module _
         issup : is-sup (underlying-order 𝓓) (r (∐ 𝓔 (ε x)))
                                             (r ∘ ↡-inclusionₛ (s x))
         issup = r-is-continuous (↡ᴮₛ (s x)) (↡-inclusionₛ (s x)) (ε x)
+
+\end{code}
+
+Added 5 June 2024.
+
+We transfer small (compact) bases along isomorphisms of dcpos.
+
+\begin{code}
+
+module _
+        (pe : Prop-Ext)
+        (𝓓 : DCPO {𝓤} {𝓣})
+        (𝓔 : DCPO {𝓤'} {𝓣'})
+       where
+
+ small-basis-from-≃ᵈᶜᵖᵒ : 𝓓 ≃ᵈᶜᵖᵒ 𝓔
+                        → has-specified-small-basis 𝓓
+                        → has-specified-small-basis 𝓔
+ small-basis-from-≃ᵈᶜᵖᵒ 𝕗@(f , g , s , r , cf , cg) (B , β , sb) =
+  B , f ∘ β ,
+  small-basis-from-continuous-retract pe 𝓔 𝓓
+   (≃ᵈᶜᵖᵒ-to-continuous-retract 𝓔 𝓓 (≃ᵈᶜᵖᵒ-inv 𝓓 𝓔 𝕗)) β sb
+
+ small-compact-basis-from-≃ᵈᶜᵖᵒ : 𝓓 ≃ᵈᶜᵖᵒ 𝓔
+                                → has-specified-small-compact-basis 𝓓
+                                → has-specified-small-compact-basis 𝓔
+ small-compact-basis-from-≃ᵈᶜᵖᵒ 𝕗@(f , g , s , r , cf , cg) (B , β , scb) =
+  B , f ∘ β ,
+  small-and-compact-basis 𝓔 (f ∘ β)
+   (pr₂ (pr₂ (small-basis-from-≃ᵈᶜᵖᵒ
+               𝕗 (B , β , compact-basis-is-basis 𝓓 β scb))))
+   (λ b → embeddings-preserve-compactness
+           𝓓 𝓔 f cf g cg s (λ y → ＝-to-⊑ 𝓔 (r y)) (β b) (basis-is-compact b))
+    where
+     open is-small-compact-basis scb
 
 \end{code}
 
@@ -732,5 +768,41 @@ locally-small-exponential-criterion {𝓤} {𝓣} {𝓤'} {𝓣'} pe 𝓓 𝓔 �
                   where
                    ⦅†⦆ = ⊑ₛ-to-⊑ (f-below-g b)
                    ⦅‡⦆ = ∐-is-upperbound 𝓔 εᵍ (b , i)
+
+\end{code}
+
+Added 2 June 2024.
+
+Any sup-complete dcpo with a small basis has a greatest element.
+(In fact, it is inf-complete, but we don't formalise this here, see
+Locales.AdjointFunctorTheoremForFrames though.)
+
+\begin{code}
+
+open import DomainTheory.Basics.SupComplete pt fe 𝓥
+
+greatest-element-if-sup-complete-with-small-basis :
+   (𝓓 : DCPO {𝓤} {𝓣})
+ → is-sup-complete 𝓓
+ → has-unspecified-small-basis 𝓓
+ → Σ ⊤ ꞉ ⟨ 𝓓 ⟩ , ((x : ⟨ 𝓓 ⟩) → x ⊑⟨ 𝓓 ⟩ ⊤)
+greatest-element-if-sup-complete-with-small-basis 𝓓 sc = ∥∥-rec I II
+ where
+  I : is-prop (Σ ⊤ ꞉ ⟨ 𝓓 ⟩ , ((x : ⟨ 𝓓 ⟩) → x ⊑⟨ 𝓓 ⟩ ⊤))
+  I (t , l) (s , k) = to-subtype-＝
+                       (λ y → Π-is-prop fe (λ x → prop-valuedness 𝓓 x y))
+                       (antisymmetry 𝓓 t s (k t) (l s))
+  II : has-specified-small-basis 𝓓
+     → Σ ⊤ ꞉ ⟨ 𝓓 ⟩ , ((x : ⟨ 𝓓 ⟩) → x ⊑⟨ 𝓓 ⟩ ⊤)
+  II (B , β , β-is-small-basis) = ⊤ , ⊤-is-greatest
+   where
+    open is-small-basis β-is-small-basis
+    open is-sup-complete sc
+    ⊤ : ⟨ 𝓓 ⟩
+    ⊤ = ⋁ β
+    ⊤-is-greatest : (x : ⟨ 𝓓 ⟩) → x ⊑⟨ 𝓓 ⟩ ⊤
+    ⊤-is-greatest x =
+     sup-is-lowerbound-of-upperbounds
+      (underlying-order 𝓓) (↡ᴮ-is-sup x) ⊤ (λ (b , _) → ⋁-is-upperbound β b)
 
 \end{code}

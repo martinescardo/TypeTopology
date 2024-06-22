@@ -1,11 +1,11 @@
 --------------------------------------------------------------------------------
-title:          Locale of spectra of a distributive lattice
+title:          The spectrum of a distributive lattice
 author:         Ayberk Tosun
 date-started:   2024-02-21
 date-completed: 2024-03-01
 --------------------------------------------------------------------------------
 
-We define the locale of spectra over a distributive lattice `L`, the defining
+We define the spectrum locale over a distributive lattice `L`, the defining
 frame of which is the frame of ideals over `L`.
 
 \begin{code}
@@ -16,7 +16,7 @@ open import UF.PropTrunc
 open import UF.FunExt
 open import UF.Subsingletons
 
-module Locales.DistributiveLattice.LocaleOfSpectra
+module Locales.DistributiveLattice.Spectrum
         (fe : Fun-Ext)
         (pe : Prop-Ext)
         (pt : propositional-truncations-exist)
@@ -486,16 +486,16 @@ We are now ready to package everything up as a frame.
 
 \end{code}
 
-This is the frame of opens of the “space of spectra” of the distributive lattice
+This is the frame of opens of the “spectrum space” of the distributive lattice
 `L`. Because we work with locales as our notion of space, we just take the
-locale that this frame defines as the locale of spectral over the distributive
-lattice `L`.
+locale that this frame defines as the spectrum over the distributive lattice
+`L`.
 
 \begin{code}
 
- locale-of-spectra : Locale (𝓤 ⁺) 𝓤 𝓤
- locale-of-spectra = record
-                      { ⟨_⟩ₗ         = Ideal L
-                      ; frame-str-of = pr₂ frame-of-ideals }
+ spectrum : Locale (𝓤 ⁺) 𝓤 𝓤
+ spectrum = record
+             { ⟨_⟩ₗ         = Ideal L
+             ; frame-str-of = pr₂ frame-of-ideals }
 
 \end{code}

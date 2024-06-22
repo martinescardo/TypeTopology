@@ -13,7 +13,7 @@ principle that every subsingleton type is inhabited or empty.
 
 {-# OPTIONS --safe --without-K #-}
 
-module UF.ExcludedMiddle where
+module UF.ClassicalLogic where
 
 open import MLTT.Spartan
 
@@ -22,6 +22,7 @@ open import UF.Embeddings
 open import UF.Equiv
 open import UF.FunExt
 open import UF.PropTrunc
+
 open import UF.SubtypeClassifier
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
@@ -299,6 +300,9 @@ Morgan are logically equivalent (https://ncatlab.org/nlab/show/De%20Morgan%20law
    (λ (u : ¬ ∥ X ∥)
          → 𝟘-elim (φ (contrapositive ∣_∣ u))) (em ∥ X ∥ ∥∥-is-prop)
 
+ ¬¬Σ→∃ : {𝓤 𝓣 : Universe} {X : 𝓤 ̇ } → {A : X → 𝓣  ̇} → DNE (𝓤 ⊔ 𝓣) → ¬¬ (Σ x ꞉ X , A x ) → (∃ x ꞉ X , A x)
+ ¬¬Σ→∃ {𝓤} {A} {X} {A₁} dn ¬¬Σ = dn _ ∥∥-is-prop (¬¬-functor ∣_∣ ¬¬Σ)
+
  ∃-not+Π : EM (𝓤 ⊔ 𝓥)
          → {X : 𝓤 ̇ }
          → (A : X → 𝓥 ̇ )
@@ -348,6 +352,8 @@ Added by Tom de Jong in August 2021.
 
 \begin{code}
 
+
+
  not-Π-not-implies-∃ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
                      → EM (𝓤 ⊔ 𝓥)
                      → ¬ ((x : X) → ¬ A x)
@@ -357,6 +363,7 @@ Added by Tom de Jong in August 2021.
     γ : ¬¬ (∃ A)
     γ g = f (λ x a → g ∣ x , a ∣)
 
+ 
 \end{code}
 
 Added by Martin Escardo 26th April 2022.
