@@ -28,13 +28,13 @@ module Locales.DiscreteLocale.Two-Properties
 open import Locales.DiscreteLocale.Definition fe pe pt
 open import Locales.DiscreteLocale.Two fe pe pt
 open import Locales.DistributiveLattice.Definition fe pt
-open import Locales.Frame pt fe
+open import Locales.Frame pt fe hiding (∅)
 open import Locales.SmallBasis pt fe sr
 open import Locales.Spectrality.SpectralLocale pt fe
 open import Locales.Spectrality.SpectralMap pt fe
+open import Locales.SmallBasis pt fe sr
 open import Locales.Sierpinski 𝓤 pe pt fe
 open import Locales.Stone pt fe sr
--- open import Locales.PatchProperties pt fe sr
 open import Locales.Compactness pt fe
 open import Slice.Family
 open import UF.DiscreteAndSeparated hiding (𝟚-is-set)
@@ -80,5 +80,126 @@ The locale two is compact.
       β : full ⊆ (S [ k ])
       β ₀ ⋆ = φ ₀ μᵢ
       β ₁ ⋆ = ψ ₁ μⱼ
+
+\end{code}
+
+Added on 2024-06-22.
+
+\begin{code}
+
+fullₖ : ⟨ 𝒪 𝟚ₗ ⟩
+fullₖ = full
+
+fullₖ-is-compact : is-compact-open 𝟚ₗ fullₖ holds
+fullₖ-is-compact = 𝟚ₗ-is-compact
+
+𝟎-equal-to-∅ : ∅ ＝ 𝟎[ 𝒪 𝟚ₗ ]
+𝟎-equal-to-∅ = only-𝟎-is-below-𝟎 (𝒪 𝟚ₗ) ∅ (λ _ → 𝟘-elim)
+
+empty-is-compact : is-compact-open 𝟚ₗ ∅ holds
+empty-is-compact =
+ transport
+  (λ - → is-compact-open 𝟚ₗ - holds)
+  (𝟎-equal-to-∅ ⁻¹)
+  (𝟎-is-compact 𝟚ₗ)
+
+\end{code}
+
+The singleton set `{ ₀ }`.
+
+\begin{code}
+
+falseₖ : ⟨ 𝒪 𝟚ₗ ⟩
+falseₖ = λ x → x ＝ₚ ₀
+ where
+  open Equality (𝟚-is-set 𝓤)
+
+\end{code}
+
+\begin{code}
+
+falseₖ-is-compact : is-compact-open 𝟚ₗ falseₖ holds
+falseₖ-is-compact S δ p = ∥∥-functor † (p ₀ refl)
+ where
+  † : Σ k ꞉ index S , (S [ k ]) ₀ holds
+    → Σ i ꞉ index S , (poset-of (𝒪 𝟚ₗ) PosetNotation.≤ falseₖ) (S [ i ]) holds
+  † (k , μ) = k , (λ x q → transport (λ - → (S [ k ]) - holds) (q ⁻¹) μ)
+
+\end{code}
+
+We denote by `trueₖ` the singleton set `{ ₁ }`.
+
+\begin{code}
+
+trueₖ : ⟨ 𝒪 𝟚ₗ ⟩
+trueₖ = λ x → x ＝ₚ ₁
+ where
+  open Equality (𝟚-is-set 𝓤)
+
+\end{code}
+
+The singleton `trueₖ` is compact.
+
+\begin{code}
+
+trueₖ-is-compact : is-compact-open 𝟚ₗ trueₖ holds
+trueₖ-is-compact S δ p = ∥∥-functor † (p ₁ refl)
+ where
+  † : Σ k ꞉ index S , (S [ k ]) ₁ holds
+    → Σ i ꞉ index S , (poset-of (𝒪 𝟚ₗ) PosetNotation.≤ trueₖ) (S [ i ]) holds
+  † (k , μ) = k , (λ x q → transport (λ - → (S [ k ]) - holds) (q ⁻¹) μ)
+
+\end{code}
+
+These are the only compact opens of the locale `𝟚`. Accordingly, we can
+construct the following intensional basis for it.
+
+\begin{code}
+
+Four : 𝓤  ̇
+Four = 𝟚 𝓤 × 𝟚 𝓤
+
+𝛃 : Four → ⟨ 𝒪 𝟚ₗ ⟩
+𝛃 (₀ , ₀) = ∅
+𝛃 (₀ , ₁) = falseₖ
+𝛃 (₁ , ₀) = trueₖ
+𝛃 (₁ , ₁) = full
+
+ℬ-𝟚 : Fam 𝓤 ⟨ 𝒪 𝟚ₗ ⟩
+ℬ-𝟚 = Four , 𝛃
+
+\end{code}
+
+We now prove that this is a spectral basis.
+
+\begin{code}
+
+cover-𝟚 : (U : ⟨ 𝒪 𝟚ₗ ⟩) → Fam 𝓤 Four
+cover-𝟚 U = ((U ₀ holds + ¬ (U ₀ holds)) × (¬ (U ₁ holds) + U ₁ holds)) , h
+ where
+  h : (U ₀ holds + ¬ (U ₀ holds)) × (¬ (U ₁ holds) + U ₁ holds) → Four
+  h (inl p , inl q) = ₀ , ₁
+  h (inl p , inr q) = ₁ , ₁
+  h (inr p , inl q) = ₀ , ₀
+  h (inr p , inr q) = ₁ , ₀
+
+ℬ-𝟚-is-basis : is-basis-for (𝒪 𝟚ₗ) ℬ-𝟚
+ℬ-𝟚-is-basis U = cover-𝟚 U , †
+ where
+  open Joins (λ x y → x ≤[ poset-of (𝒪 𝟚ₗ) ] y)
+
+  foo : ((u′ , _) : upper-bound ⁅ ℬ-𝟚 [ i ] ∣ i ε (cover-𝟚 U) ⁆)
+      → (U ≤[ poset-of (𝒪 𝟚ₗ) ] u′) holds
+  foo (u′ , φ) ₀ p = {!!}
+  foo (u′ , φ) ₁ p = {!!}
+
+  υ : (U is-an-upper-bound-of ⁅ ℬ-𝟚 [ i ] ∣ i ε (cover-𝟚 U) ⁆) holds
+  υ = {!!}
+
+  † : (U is-lub-of ⁅ ℬ-𝟚 [ i ] ∣ i ε cover-𝟚 U ⁆) holds
+  † = υ , {!!}
+
+ℬ-𝟚-is-directed-basis : is-directed-basis (𝒪 𝟚ₗ) ℬ-𝟚
+ℬ-𝟚-is-directed-basis = ℬ-𝟚-is-basis , {!!}
 
 \end{code}

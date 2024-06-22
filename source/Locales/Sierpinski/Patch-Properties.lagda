@@ -31,7 +31,7 @@ open import DomainTheory.Basics.Pointed pt fe 𝓤 renaming (⊥ to ⊥∙)
 open import DomainTheory.Basics.WayBelow pt fe 𝓤
 open import DomainTheory.Lifting.LiftingSet pt fe 𝓤 pe
 open import DomainTheory.Lifting.LiftingSetAlgebraic pt pe fe 𝓤
-open import Lifting.Lifting 𝓤
+open import Lifting.Set 𝓤
 open import Lifting.Miscelanea-PropExt-FunExt 𝓤 pe fe
 open import Lifting.UnivalentPrecategory 𝓤 (𝟙 {𝓤})
 open import Locales.Frame pt fe hiding (𝟚; is-directed)
@@ -43,6 +43,7 @@ open import Locales.Sierpinski.UniversalProperty 𝓤 fe pe pt sr
 open import Locales.Spectrality.SpectralLocale pt fe
 open import Locales.Spectrality.SpectralMap pt fe
 open import Locales.DiscreteLocale.Two fe pe pt
+open import Locales.ContinuousMap.Definition pt fe
 open import Locales.Stone pt fe sr
 open import Slice.Family
 open import UF.DiscreteAndSeparated
@@ -66,6 +67,8 @@ module _ (S : Locale (𝓤 ⁺) 𝓤 𝓤)
 \end{code}
 
 \begin{code}
+
+ open ContinuousMaps
 
  𝔠 : 𝟚-loc 𝓤 ─c→ S
  𝔠 = pr₁ (center (ump (𝟚-loc 𝓤) true₂))
