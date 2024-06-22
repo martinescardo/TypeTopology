@@ -42,6 +42,7 @@ open import UF.Logic
 open import UF.Powerset
 open import UF.Sets
 open import UF.SubtypeClassifier
+open import MLTT.List hiding ([_])
 
 open AllCombinators pt fe renaming (_∧_ to _∧ₚ_; _∨_ to _∨ₚ_)
 open Locale
@@ -160,7 +161,7 @@ Four : 𝓤  ̇
 Four = 𝟚 𝓤 × 𝟚 𝓤
 
 𝛃 : Four → ⟨ 𝒪 𝟚ₗ ⟩
-𝛃 (₀ , ₀) = ∅
+𝛃 (₀ , ₀) = 𝟎[ 𝒪 𝟚ₗ ]
 𝛃 (₀ , ₁) = falseₖ
 𝛃 (₁ , ₀) = trueₖ
 𝛃 (₁ , ₁) = full
@@ -175,31 +176,96 @@ We now prove that this is a spectral basis.
 \begin{code}
 
 cover-𝟚 : (U : ⟨ 𝒪 𝟚ₗ ⟩) → Fam 𝓤 Four
-cover-𝟚 U = ((U ₀ holds + ¬ (U ₀ holds)) × (¬ (U ₁ holds) + U ₁ holds)) , h
+cover-𝟚 U = (U ₀ holds + U ₁ holds) , h
  where
-  h : (U ₀ holds + ¬ (U ₀ holds)) × (¬ (U ₁ holds) + U ₁ holds) → Four
-  h (inl p , inl q) = ₀ , ₁
-  h (inl p , inr q) = ₁ , ₁
-  h (inr p , inl q) = ₀ , ₀
-  h (inr p , inr q) = ₁ , ₀
+  h : U ₀ holds + U ₁ holds → Four
+  h (inl p) = (₀ , ₁)
+  h (inr q) = (₁ , ₀)
 
 ℬ-𝟚-is-basis : is-basis-for (𝒪 𝟚ₗ) ℬ-𝟚
 ℬ-𝟚-is-basis U = cover-𝟚 U , †
  where
   open Joins (λ x y → x ≤[ poset-of (𝒪 𝟚ₗ) ] y)
 
-  foo : ((u′ , _) : upper-bound ⁅ ℬ-𝟚 [ i ] ∣ i ε (cover-𝟚 U) ⁆)
-      → (U ≤[ poset-of (𝒪 𝟚ₗ) ] u′) holds
-  foo (u′ , φ) ₀ p = {!!}
-  foo (u′ , φ) ₁ p = {!!}
+  ψ : ((u′ , _) : upper-bound ⁅ ℬ-𝟚 [ i ] ∣ i ε (cover-𝟚 U) ⁆)
+    → (U ≤[ poset-of (𝒪 𝟚ₗ) ] u′) holds
+  ψ (u′ , φ) ₀ μ = φ (inl μ) ₀ refl
+  ψ (u′ , φ) ₁ μ = φ (inr μ) ₁ refl
 
-  υ : (U is-an-upper-bound-of ⁅ ℬ-𝟚 [ i ] ∣ i ε (cover-𝟚 U) ⁆) holds
-  υ = {!!}
+  υ : (U is-an-upper-bound-of ⁅ ℬ-𝟚 [ i ] ∣ i ε cover-𝟚 U ⁆) holds
+  υ (inl p) ₀ _ = p
+  υ (inr q) ₁ _ = q
 
   † : (U is-lub-of ⁅ ℬ-𝟚 [ i ] ∣ i ε cover-𝟚 U ⁆) holds
-  † = υ , {!!}
+  † = υ , ψ
 
-ℬ-𝟚-is-directed-basis : is-directed-basis (𝒪 𝟚ₗ) ℬ-𝟚
-ℬ-𝟚-is-directed-basis = ℬ-𝟚-is-basis , {!!}
+ℬ-𝟚↑ : Fam 𝓤 ⟨ 𝒪 (𝟚-loc 𝓤) ⟩
+ℬ-𝟚↑ = directify (𝒪 𝟚ₗ) ℬ-𝟚
+
+ℬ-𝟚↑-is-basis : is-basis-for (𝒪 𝟚ₗ) ℬ-𝟚↑
+ℬ-𝟚↑-is-basis = directified-basis-is-basis (𝒪 𝟚ₗ) ℬ-𝟚 ℬ-𝟚-is-basis
+
+ℬ-𝟚-is-directed-basis : is-directed-basis (𝒪 𝟚ₗ) ℬ-𝟚↑
+ℬ-𝟚-is-directed-basis = ℬ-𝟚↑-is-basis
+                      , covers-of-directified-basis-are-directed (𝒪 𝟚ₗ) ℬ-𝟚 ℬ-𝟚-is-basis
+
+\end{code}
+
+\begin{code}
+
+ℬ-𝟚↑-is-spectral : consists-of-compact-opens 𝟚ₗ ℬ-𝟚↑ holds
+ℬ-𝟚↑-is-spectral []           = 𝟎-is-compact 𝟚ₗ
+ℬ-𝟚↑-is-spectral (₀ , ₀ ∷ is) = compact-opens-are-closed-under-∨
+                                 𝟚ₗ
+                                 𝟎[ 𝒪 𝟚ₗ ]
+                                 (ℬ-𝟚↑ [ is ])
+                                 (𝟎-is-compact 𝟚ₗ)
+                                 (ℬ-𝟚↑-is-spectral is)
+ℬ-𝟚↑-is-spectral (₀ , ₁ ∷ is) = compact-opens-are-closed-under-∨
+                                 𝟚ₗ
+                                 falseₖ
+                                 (ℬ-𝟚↑ [ is ])
+                                 falseₖ-is-compact
+                                 (ℬ-𝟚↑-is-spectral is)
+ℬ-𝟚↑-is-spectral (₁ , ₀ ∷ is) = compact-opens-are-closed-under-∨
+                                 𝟚ₗ
+                                 trueₖ
+                                 (ℬ-𝟚↑ [ is ])
+                                 trueₖ-is-compact
+                                 (ℬ-𝟚↑-is-spectral is)
+ℬ-𝟚↑-is-spectral (₁ , ₁ ∷ is) = compact-opens-are-closed-under-∨ 𝟚ₗ fullₖ (ℬ-𝟚↑ [ is ]) fullₖ-is-compact (ℬ-𝟚↑-is-spectral is)
+
+\end{code}
+
+\begin{code}
+
+equal-to-one-of-the-four-compact-opens : (U : ⟨ 𝒪 𝟚ₗ ⟩) → 𝓤 ⁺  ̇
+equal-to-one-of-the-four-compact-opens U =
+   (U ＝ 𝟎[ 𝒪 𝟚ₗ ]) + (U ＝ falseₖ) + (U ＝ trueₖ) + (U ＝ 𝟏[ 𝒪 𝟚ₗ ])
+
+
+basis-tetrachotomy : (is : List Four)
+                   → equal-to-one-of-the-four-compact-opens (ℬ-𝟚↑ [ is ])
+basis-tetrachotomy []           = inl refl
+basis-tetrachotomy (₀ , ₀ ∷ is) =
+ transport equal-to-one-of-the-four-compact-opens († ⁻¹) IH
+  where
+   † : ℬ-𝟚↑ [ (₀ , ₀) ∷ is ] ＝ ℬ-𝟚↑ [ is ]
+   † = 𝟎-right-unit-of-∨ (𝒪 𝟚ₗ) (ℬ-𝟚↑ [ is ])
+
+   IH : equal-to-one-of-the-four-compact-opens (ℬ-𝟚↑ [ is ])
+   IH = basis-tetrachotomy is
+basis-tetrachotomy ((₀ , ₁) ∷ is) = {!!}
+basis-tetrachotomy ((₁ , ₀) ∷ is) = {!!}
+basis-tetrachotomy ((₁ , ₁) ∷ is) =
+ transport
+  equal-to-one-of-the-four-compact-opens
+  († ⁻¹)
+  (inr (inr (inr refl)))
+  where
+   Ⅰ = 𝟏-left-annihilator-for-∨ (𝒪 𝟚ₗ) (ℬ-𝟚↑ [ is ])
+
+   † : ℬ-𝟚↑ [ (₁ , ₁) ∷ is ] ＝ 𝟏[ 𝒪 𝟚ₗ ]
+   † = 𝟏[ 𝒪 𝟚ₗ ] ∨[ 𝒪 𝟚ₗ ] ℬ-𝟚↑ [ is ] ＝⟨ Ⅰ ⟩ 𝟏[ 𝒪 𝟚ₗ ] ∎
 
 \end{code}
