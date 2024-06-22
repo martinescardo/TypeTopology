@@ -1,8 +1,8 @@
---------------------------------------------------------------------------------
+---
 title:          Properties of the locale two
 author:         Ayberk Tosun
 date-started:   2024-03-04
---------------------------------------------------------------------------------
+---
 
 We define the locale corresponding to the two-point discrete space.
 
