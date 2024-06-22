@@ -844,6 +844,23 @@ complement-is-equiv = qinvs-are-equivs
 complement-≃ : 𝟚 ≃ 𝟚
 complement-≃ = (complement , complement-is-equiv)
 
+𝟚-≃-𝟙+𝟙 : 𝟚 ≃ 𝟙{𝓤} + 𝟙{𝓤}
+𝟚-≃-𝟙+𝟙 = f , qinvs-are-equivs f (g , gf , fg)
+ where
+  f : 𝟚 → 𝟙 + 𝟙
+  f = 𝟚-cases (inl ⋆) (inr ⋆)
+
+  g : 𝟙 + 𝟙 → 𝟚
+  g = cases (λ x → ₀) (λ x → ₁)
+
+  fg : (x : 𝟙 + 𝟙) → f (g x) ＝ x
+  fg (inl ⋆) = refl
+  fg (inr ⋆) = refl
+
+  gf : (x : 𝟚) → g (f x) ＝ x
+  gf ₀ = refl
+  gf ₁ = refl
+
 alternative-× : funext 𝓤₀ 𝓤
               → {A : 𝟚 → 𝓤 ̇ }
               → (Π n ꞉ 𝟚 , A n) ≃ (A ₀ × A ₁)
