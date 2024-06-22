@@ -211,3 +211,40 @@ module _ {X : 𝓤 ̇ } {A₀ : X → 𝓥 ̇ } {A₁ : X → 𝓦 ̇ }
  indicator₁ x = pr₂ (pr₂ indicator x)
 
 \end{code}
+
+Added by Tom de Jong, November 2021.
+
+\begin{code}
+
+decidable-↔ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+            → X ↔ Y
+            → is-decidable X
+            → is-decidable Y
+decidable-↔ {𝓤} {𝓥} {X} {Y} (f , g) (inl  x) = inl (f x)
+decidable-↔ {𝓤} {𝓥} {X} {Y} (f , g) (inr nx) = inr (nx ∘ g)
+
+decidable-cong : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+               → X ≃ Y
+               → is-decidable X
+               → is-decidable Y
+decidable-cong e = decidable-↔ (⌜ e ⌝ , ⌜ e ⌝⁻¹)
+
+\end{code}
+
+Added by Tom de Jong in January 2022.
+
+\begin{code}
+
+all-types-are-¬¬-decidable : (X : 𝓤 ̇ ) → ¬¬ (is-decidable X)
+all-types-are-¬¬-decidable X h = claim₂ claim₁
+ where
+  claim₁ : ¬ X
+  claim₁ x = h (inl x)
+  claim₂ : ¬¬ X
+  claim₂ nx = h (inr nx)
+
+¬¬-stable-if-decidable : (X : 𝓤 ̇ ) → is-decidable X → ¬¬-stable X
+¬¬-stable-if-decidable X (inl  x) = λ _ → x
+¬¬-stable-if-decidable X (inr nx) = λ h → 𝟘-elim (h nx)
+
+\end{code}
