@@ -60,38 +60,4 @@ open PropositionalTruncation pt
 
 \begin{code}
 
-module _ (S : Locale (𝓤 ⁺) 𝓤 𝓤)
-         (truth : ⟨ 𝒪 S ⟩)
-         (ump : has-the-universal-property-of-sierpinski S truth) where
-
-\end{code}
-
-\begin{code}
-
- open ContinuousMaps
-
- 𝔠 : 𝟚-loc 𝓤 ─c→ S
- 𝔠 = pr₁ (center (ump (𝟚-loc 𝓤) true₂))
-
- 𝔠₀ : ⟨ 𝒪 S ⟩ → ⟨ 𝒪 (𝟚-loc 𝓤) ⟩
- 𝔠₀ = pr₁ 𝔠
-
-\end{code}
-
-\begin{code}
-
- has-ump-of-patch-𝕊 : (X : Locale (𝓤 ⁺) 𝓤 𝓤)
-                    → is-stone X holds
-                    → (𝒻@(f , _) : X ─c→ S)
-                    → is-spectral-map S X 𝒻 holds
-                    → ∃! (f⁻ , _) ꞉ X ─c→ 𝟚-loc 𝓤 ,
-                       ((𝔙 : ⟨ 𝒪 S ⟩) → f 𝔙 ＝ f⁻ (𝔠₀ 𝔙))
- has-ump-of-patch-𝕊 X σ 𝒻@(f , _) 𝕤 = (f⁻ , {!!}) , {!!}
-  where
-   f⁻₀ : ⟨ 𝒪 (𝟚-loc 𝓤) ⟩ → ⟨ 𝒪 X ⟩
-   f⁻₀ P = ⋁[ 𝒪 X ] {!⁅ ⁆!}
-
-   f⁻ : X ─c→ 𝟚-loc 𝓤
-   f⁻ = {!!}
-
 \end{code}
