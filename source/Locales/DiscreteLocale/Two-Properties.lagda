@@ -327,7 +327,57 @@ basis-tetrachotomy ((₀ , ₁) ∷ is) = cases₄ case₁ case₂ case₃ case�
 
   IH : equal-to-one-of-the-four-compact-opens (ℬ-𝟚↑ [ is ])
   IH = basis-tetrachotomy is
-basis-tetrachotomy ((₁ , ₀) ∷ is) = {!!}
+basis-tetrachotomy ((₁ , ₀) ∷ is) = cases₄ case₁ case₂ case₃ case₄ IH
+ where
+  case₁ : ℬ-𝟚↑ [ is ] ＝ 𝟎[ 𝒪 𝟚ₗ ]
+        → equal-to-one-of-the-four-compact-opens (ℬ-𝟚↑ [ ₁ , ₀ ∷ is ])
+  case₁ p = inr (inr (inl †))
+   where
+    Ⅰ = ap (λ - → trueₖ ∨[ 𝒪 𝟚ₗ ] -) p
+    Ⅱ = 𝟎-left-unit-of-∨ (𝒪 𝟚ₗ) trueₖ
+
+    † : ℬ-𝟚↑ [ (₁ , ₀) ∷ is ] ＝ trueₖ
+    † = trueₖ ∨[ 𝒪 𝟚ₗ ] ℬ-𝟚↑ [ is ]   ＝⟨ Ⅰ ⟩
+        trueₖ ∨[ 𝒪 𝟚ₗ ] 𝟎[ 𝒪 𝟚ₗ ]     ＝⟨ Ⅱ ⟩
+        trueₖ                         ∎
+
+  case₂ : ℬ-𝟚↑ [ is ] ＝ falseₖ
+        → equal-to-one-of-the-four-compact-opens (ℬ-𝟚↑ [ ₁ , ₀ ∷ is ])
+  case₂ p = inr (inr (inr †))
+   where
+    Ⅰ = ap (λ - → trueₖ ∨[ 𝒪 𝟚ₗ ] -) p
+    Ⅱ = true-join-false-is-𝟏
+
+    † : ℬ-𝟚↑ [ (₁ , ₀) ∷ is ] ＝ 𝟏[ 𝒪 𝟚ₗ ]
+    † = trueₖ ∨[ 𝒪 𝟚ₗ ] ℬ-𝟚↑ [ is ]  ＝⟨ Ⅰ ⟩
+        trueₖ ∨[ 𝒪 𝟚ₗ ] falseₖ       ＝⟨ Ⅱ ⟩
+        𝟏[ 𝒪 𝟚ₗ ]                    ∎
+
+  case₃ : ℬ-𝟚↑ [ is ] ＝ trueₖ
+        → equal-to-one-of-the-four-compact-opens (ℬ-𝟚↑ [ ₁ , ₀ ∷ is ])
+  case₃ p = inr (inr (inl †))
+   where
+    Ⅰ = ap (λ - → trueₖ ∨[ 𝒪 𝟚ₗ ] -) p
+    Ⅱ = ∨[ 𝒪 𝟚ₗ ]-is-idempotent trueₖ ⁻¹
+
+    † : ℬ-𝟚↑ [ (₁ , ₀) ∷ is ] ＝ trueₖ
+    † = trueₖ ∨[ 𝒪 𝟚ₗ ] ℬ-𝟚↑ [ is ]   ＝⟨ Ⅰ ⟩
+        trueₖ ∨[ 𝒪 𝟚ₗ ] trueₖ         ＝⟨ Ⅱ ⟩
+        trueₖ                         ∎
+
+  case₄ : ℬ-𝟚↑ [ is ] ＝ 𝟏[ 𝒪 𝟚ₗ ]
+        → equal-to-one-of-the-four-compact-opens (ℬ-𝟚↑ [ ₁ , ₀ ∷ is ])
+  case₄ p = inr (inr (inr †))
+   where
+    † : ℬ-𝟚↑ [ (₁ , ₀) ∷ is ] ＝ 𝟏[ 𝒪 𝟚ₗ ]
+    † = ℬ-𝟚↑ [ (₁ , ₀) ∷ is ]                ＝⟨ Ⅰ ⟩
+        ℬ-𝟚 [ (₁ , ₀) ] ∨[ 𝒪 𝟚ₗ ] 𝟏[ 𝒪 𝟚ₗ ]  ＝⟨ Ⅱ ⟩
+        𝟏[ 𝒪 𝟚ₗ ]                            ∎
+         where
+          Ⅰ = ap (λ - → _ ∨[ 𝒪 𝟚ₗ ] -) p
+          Ⅱ = 𝟏-right-annihilator-for-∨ (𝒪 𝟚ₗ) (ℬ-𝟚 [ (₁ , ₀) ])
+
+  IH = basis-tetrachotomy is
 basis-tetrachotomy ((₁ , ₁) ∷ is) =
  transport
   equal-to-one-of-the-four-compact-opens
