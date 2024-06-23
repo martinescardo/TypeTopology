@@ -152,6 +152,27 @@ trueₖ-is-compact S δ p = ∥∥-functor † (p ₁ refl)
 
 \end{code}
 
+\begin{code}
+
+true-join-false-is-𝟏 : trueₖ ∨[ 𝒪 𝟚ₗ ] falseₖ ＝ 𝟏[ 𝒪 𝟚ₗ ]
+true-join-false-is-𝟏 =
+ only-𝟏-is-above-𝟏 (𝒪 𝟚ₗ) (trueₖ ∨[ 𝒪 𝟚ₗ ] falseₖ) †
+  where
+   † : (𝟏[ 𝒪 𝟚ₗ ] ≤[ poset-of (𝒪 𝟚ₗ) ] (trueₖ ∨[ 𝒪 𝟚ₗ ] falseₖ)) holds
+   † ₀ ⋆ = ∣ inr ⋆ , refl ∣
+   † ₁ ⋆ = ∣ inl ⋆ , refl ∣
+
+false-join-true-is-𝟏 : falseₖ ∨[ 𝒪 𝟚ₗ ] trueₖ ＝ 𝟏[ 𝒪 𝟚ₗ ]
+false-join-true-is-𝟏 =
+ falseₖ ∨[ 𝒪 𝟚ₗ ] trueₖ   ＝⟨ Ⅰ ⟩
+ trueₖ ∨[ 𝒪 𝟚ₗ ] falseₖ   ＝⟨ Ⅱ ⟩
+ 𝟏[ 𝒪 𝟚ₗ ]                ∎
+  where
+   Ⅰ = ∨[ 𝒪 𝟚ₗ ]-is-commutative falseₖ trueₖ
+   Ⅱ = true-join-false-is-𝟏
+
+\end{code}
+
 These are the only compact opens of the locale `𝟚`. Accordingly, we can
 construct the following intensional basis for it.
 
@@ -241,8 +262,7 @@ cover-𝟚 U = (U ₀ holds + U ₁ holds) , h
 
 equal-to-one-of-the-four-compact-opens : (U : ⟨ 𝒪 𝟚ₗ ⟩) → 𝓤 ⁺  ̇
 equal-to-one-of-the-four-compact-opens U =
-   (U ＝ 𝟎[ 𝒪 𝟚ₗ ]) + (U ＝ falseₖ) + (U ＝ trueₖ) + (U ＝ 𝟏[ 𝒪 𝟚ₗ ])
-
+ (U ＝ 𝟎[ 𝒪 𝟚ₗ ]) + (U ＝ falseₖ) + (U ＝ trueₖ) + (U ＝ 𝟏[ 𝒪 𝟚ₗ ])
 
 basis-tetrachotomy : (is : List Four)
                    → equal-to-one-of-the-four-compact-opens (ℬ-𝟚↑ [ is ])
@@ -255,7 +275,58 @@ basis-tetrachotomy (₀ , ₀ ∷ is) =
 
    IH : equal-to-one-of-the-four-compact-opens (ℬ-𝟚↑ [ is ])
    IH = basis-tetrachotomy is
-basis-tetrachotomy ((₀ , ₁) ∷ is) = {!!}
+basis-tetrachotomy ((₀ , ₁) ∷ is) = cases₄ case₁ case₂ case₃ case₄ IH
+ where
+  case₁ : ℬ-𝟚↑ [ is ] ＝ 𝟎[ 𝒪 (𝟚-loc 𝓤) ]
+        → equal-to-one-of-the-four-compact-opens (ℬ-𝟚↑ [ ₀ , ₁ ∷ is ])
+  case₁ p = inr (inl †)
+   where
+    Ⅰ = ap (λ - → falseₖ ∨[ 𝒪 𝟚ₗ ] -) p
+    Ⅱ = 𝟎-left-unit-of-∨ (𝒪 𝟚ₗ) falseₖ
+
+    † : ℬ-𝟚↑ [ ₀ , ₁ ∷ is ] ＝ falseₖ
+    † = falseₖ ∨[ 𝒪 𝟚ₗ ] ℬ-𝟚↑ [ is ]   ＝⟨ Ⅰ ⟩
+        falseₖ ∨[ 𝒪 𝟚ₗ ] 𝟎[ 𝒪 𝟚ₗ ]     ＝⟨ Ⅱ ⟩
+        falseₖ                         ∎
+
+  case₂ : ℬ-𝟚↑ [ is ] ＝ falseₖ
+        → equal-to-one-of-the-four-compact-opens (ℬ-𝟚↑ [ ₀ , ₁ ∷ is ])
+  case₂ p = inr (inl †)
+   where
+    Ⅰ = ap (λ - → falseₖ ∨[ 𝒪 𝟚ₗ ] -) p
+    Ⅱ = ∨[ 𝒪 𝟚ₗ ]-is-idempotent falseₖ ⁻¹
+
+    † : ℬ-𝟚↑ [ (₀ , ₁) ∷ is ] ＝ falseₖ
+    † = falseₖ ∨[ 𝒪 𝟚ₗ ] ℬ-𝟚↑ [ is ]  ＝⟨ Ⅰ ⟩
+        falseₖ ∨[ 𝒪 𝟚ₗ ] falseₖ       ＝⟨ Ⅱ ⟩
+        falseₖ                        ∎
+
+  case₃ : ℬ-𝟚↑ [ is ] ＝ trueₖ
+        → equal-to-one-of-the-four-compact-opens (ℬ-𝟚↑ [ (₀ , ₁) ∷ is ])
+  case₃ p = inr (inr (inr †))
+   where
+    † : ℬ-𝟚↑ [ (₀ , ₁) ∷ is ] ＝ 𝟏[ 𝒪 𝟚ₗ ]
+    † = falseₖ ∨[ 𝒪 𝟚ₗ ] ℬ-𝟚↑ [ is ]    ＝⟨ Ⅰ ⟩
+        falseₖ ∨[ 𝒪 𝟚ₗ ] trueₖ          ＝⟨ Ⅱ ⟩
+        𝟏[ 𝒪 𝟚ₗ ]                       ∎
+         where
+          Ⅰ = ap (λ - → falseₖ ∨[ 𝒪 𝟚ₗ ] -) p
+          Ⅱ = false-join-true-is-𝟏
+
+  case₄ : ℬ-𝟚↑ [ is ] ＝ 𝟏[ 𝒪 (𝟚-loc 𝓤) ]
+        → equal-to-one-of-the-four-compact-opens (ℬ-𝟚↑ [ (₀ , ₁) ∷ is ])
+  case₄ p = inr (inr (inr †))
+   where
+    † : ℬ-𝟚↑ [ (₀ , ₁) ∷ is ] ＝ 𝟏[ 𝒪 (𝟚-loc 𝓤) ]
+    † = ℬ-𝟚↑ [ (₀ , ₁) ∷ is ]                ＝⟨ Ⅰ ⟩
+        ℬ-𝟚 [ (₀ , ₁) ] ∨[ 𝒪 𝟚ₗ ] 𝟏[ 𝒪 𝟚ₗ ]  ＝⟨ Ⅱ ⟩
+        𝟏[ 𝒪 𝟚ₗ ]                            ∎
+         where
+          Ⅰ = ap (λ - → _ ∨[ 𝒪 𝟚ₗ ] -) p
+          Ⅱ = 𝟏-right-annihilator-for-∨ (𝒪 𝟚ₗ) (ℬ-𝟚 [ (₀ , ₁) ])
+
+  IH : equal-to-one-of-the-four-compact-opens (ℬ-𝟚↑ [ is ])
+  IH = basis-tetrachotomy is
 basis-tetrachotomy ((₁ , ₀) ∷ is) = {!!}
 basis-tetrachotomy ((₁ , ₁) ∷ is) =
  transport
