@@ -4,12 +4,15 @@ author:      Ayberk Tosun
 start-date:  2024-02-14
 ---
 
+This module contains the definition of the notion of ideal over a distributive
+lattice.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}
 
-open import UF.PropTrunc
 open import UF.FunExt
+open import UF.PropTrunc
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
@@ -22,13 +25,13 @@ module Locales.DistributiveLattice.Ideal
 open import Locales.DistributiveLattice.Definition fe pt
 open import Locales.DistributiveLattice.Properties fe pt
 open import Locales.Frame pt fe
-open import UF.Powerset-MultiUniverse
 open import MLTT.List
 open import MLTT.Spartan
 open import UF.Base
-open import UF.SubtypeClassifier
-open import UF.Logic
 open import UF.Equiv hiding (_■)
+open import UF.Logic
+open import UF.Powerset-MultiUniverse
+open import UF.SubtypeClassifier
 
 open AllCombinators pt fe hiding (_∨_)
 open PropositionalTruncation pt hiding (_∨_)
@@ -183,6 +186,8 @@ module PrincipalIdeals (L : DistributiveLattice 𝓤) where
     }
 
 \end{code}
+
+Some nice syntax.
 
 \begin{code}
 
