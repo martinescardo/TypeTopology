@@ -4,6 +4,7 @@ Updated 12 and 14 June 2022
 Updated 30 October 2023 (by Ayberk Tosun)
 Updated 6 November 2023 (by Ayberk Tosun)
 Updated 31 May 2024 (by Tom de Jong)
+Updated 23 June 2024 (by Tom de Jong)
 
 Index for the formalization of domain theory, briefly describing the contents of
 each directory, ordered almost¹ alphabetically by directory name.
@@ -145,6 +146,14 @@ import DomainTheory.Lifting.LiftingSetAlgebraic -- (3)
 import DomainTheory.ScottModelOfPCF.PCF             -- (0)
 import DomainTheory.ScottModelOfPCF.PCFCombinators  -- (1)
 import DomainTheory.ScottModelOfPCF.ScottModelOfPCF -- (2)
+
+{- Taboos (added 23 June 2024)
+
+1. If the flat poset with carrier 𝟙 + ℕ is ω-complete/directed complete, then
+   LPO holds.
+-}
+
+import DomainTheory.Taboos.ClassicalLiftingOfNaturalNumbers
 
 {- Topology (by Ayberk Tosun)
 
