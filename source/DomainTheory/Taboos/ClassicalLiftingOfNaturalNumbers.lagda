@@ -43,7 +43,9 @@ NB: In this file, and this file only, we denote this poset by ℕ⊥. In
 CoNaturals/Sharp this notation is reserved for the lifting of the natural
 numbers which constructively *does* yield a directed complete
 poset. Classically, the constructions are equivalent, as formalized in
-Lifting.Miscelanea-PropExt-FunExt.
+Lifting.Miscelanea-PropExt-FunExt. Indeed, this is the case *only* classically,
+as this file shows by deriving a constructive taboo from the assumption that ℕ⊥
+is directed complete.
 
 \begin{code}
 
