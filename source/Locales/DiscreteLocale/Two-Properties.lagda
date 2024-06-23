@@ -32,7 +32,6 @@ open import Locales.Frame pt fe hiding (∅)
 open import Locales.SmallBasis pt fe sr
 open import Locales.Spectrality.SpectralLocale pt fe
 open import Locales.Spectrality.SpectralMap pt fe
-open import Locales.SmallBasis pt fe sr
 open import Locales.Sierpinski 𝓤 pe pt fe
 open import Locales.Stone pt fe sr
 open import Locales.Compactness pt fe
@@ -226,9 +225,13 @@ cover-𝟚 U = (U ₀ holds + U ₁ holds) , h
 ℬ-𝟚↑-is-basis : is-basis-for (𝒪 𝟚ₗ) ℬ-𝟚↑
 ℬ-𝟚↑-is-basis = directified-basis-is-basis (𝒪 𝟚ₗ) ℬ-𝟚 ℬ-𝟚-is-basis
 
-ℬ-𝟚-is-directed-basis : is-directed-basis (𝒪 𝟚ₗ) ℬ-𝟚↑
-ℬ-𝟚-is-directed-basis = ℬ-𝟚↑-is-basis
-                      , covers-of-directified-basis-are-directed (𝒪 𝟚ₗ) ℬ-𝟚 ℬ-𝟚-is-basis
+ℬ-𝟚↑-is-directed-basis : directed-basis-forᴰ (𝒪 𝟚ₗ) ℬ-𝟚↑
+ℬ-𝟚↑-is-directed-basis U = pr₁ (ℬ-𝟚↑-is-basis U)
+                         , pr₂ (ℬ-𝟚↑-is-basis U)
+                         , covers-of-directified-basis-are-directed (𝒪 𝟚ₗ) ℬ-𝟚 ℬ-𝟚-is-basis U
+
+ℬ-𝟚-directed-basisᴰ : directed-basisᴰ (𝒪 𝟚ₗ)
+ℬ-𝟚-directed-basisᴰ = ℬ-𝟚↑ , ℬ-𝟚↑-is-directed-basis
 
 \end{code}
 
@@ -388,5 +391,26 @@ basis-tetrachotomy ((₁ , ₁) ∷ is) =
 
    † : ℬ-𝟚↑ [ (₁ , ₁) ∷ is ] ＝ 𝟏[ 𝒪 𝟚ₗ ]
    † = 𝟏[ 𝒪 𝟚ₗ ] ∨[ 𝒪 𝟚ₗ ] ℬ-𝟚↑ [ is ] ＝⟨ Ⅰ ⟩ 𝟏[ 𝒪 𝟚ₗ ] ∎
+
+\end{code}
+
+Tetrachotomy for compact opens.
+
+\begin{code}
+
+compact-tetrachotomy : (U : ⟨ 𝒪 𝟚ₗ ⟩)
+                     → is-compact-open 𝟚ₗ U holds
+                     → ∥ equal-to-one-of-the-four-compact-opens U ∥
+compact-tetrachotomy U κ = ∥∥-functor † γ
+ where
+  † : Σ is ꞉ List Four , (ℬ-𝟚↑ [ is ] ＝ U)
+    → equal-to-one-of-the-four-compact-opens U
+  † (is , p) = transport equal-to-one-of-the-four-compact-opens p ‡
+   where
+    ‡ : equal-to-one-of-the-four-compact-opens (ℬ-𝟚↑ [ is ])
+    ‡ = basis-tetrachotomy is
+
+  γ : is-basic (𝟚-loc 𝓤) U ℬ-𝟚-directed-basisᴰ holds
+  γ = compact-opens-are-basic 𝟚ₗ ℬ-𝟚-directed-basisᴰ U κ
 
 \end{code}
