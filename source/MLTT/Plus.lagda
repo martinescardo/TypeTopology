@@ -54,3 +54,24 @@ cases₃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {A : 𝓣 ̇ }
 cases₃ = dep-cases₃
 
 \end{code}
+
+Added on 2024-06-23 by Ayberk Tosun.
+
+\begin{code}
+
+dep-cases₄ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {W : 𝓦'  ̇} {A : X + Y + Z + W → 𝓣 ̇ }
+           → ((x : X) → A (inl x))
+           → ((y : Y) → A (inr (inl y)))
+           → ((z : Z) → A (inr (inr (inl z))))
+           → ((w : W) → A (inr (inr (inr w))))
+           → ((p : X + Y + Z + W) → A p)
+dep-cases₄ f g h u (inl x)       = f x
+dep-cases₄ f g h u (inr (inl y)) = g y
+dep-cases₄ f g h u (inr (inr (inl z))) = h z
+dep-cases₄ f g h u (inr (inr (inr w))) = u w
+
+cases₄ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {W : 𝓦'  ̇} {A : 𝓣  ̇}
+       → (X → A) → (Y → A) → (Z → A) → (W → A) → X + Y + Z + W → A
+cases₄ = dep-cases₄
+
+\end{code}
