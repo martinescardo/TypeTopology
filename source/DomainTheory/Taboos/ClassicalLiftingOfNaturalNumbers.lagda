@@ -1,6 +1,6 @@
 Tom de Jong, 22 & 23 June 2024
 
-We formalize what we've known for a long time: if the poset ℕ⊥ pictured below
+We formalize what we've known for a long time: if the poset pictured below
 
    0   1   2   3   ...
      \ \   / /
@@ -38,6 +38,12 @@ open import Taboos.LPO (λ 𝓤 𝓥 → fe)
 
 The poset is defined as follows. Notice that the set of natural numbers is
 ordered discretely.
+
+NB: In this file, and this file only, we denote this poset by ℕ⊥. In
+CoNaturals/Sharp this notation is reserved for the lifting of the natural
+numbers which constructively *does* yield a directed complete
+poset. Classically, the constructions are equivalent, as formalized in
+Lifting.Miscelanea-PropExt-FunExt.
 
 \begin{code}
 
