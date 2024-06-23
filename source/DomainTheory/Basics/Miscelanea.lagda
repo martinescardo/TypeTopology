@@ -15,6 +15,8 @@ Table of contents
    retracts.
  * Lemmas involving (joins of) cofinal directed families.
  * Reindexing directed families.
+ * Suprema of ω-chains (added 23 June 2024).
+ * Subdcpo induced by a subset/property (added 18th Feb 2024 by Martin Escardo).
 
 \begin{code}
 
@@ -41,6 +43,7 @@ open import UF.EquivalenceExamples
 open import UF.Size hiding (is-small ; is-locally-small)
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
+open import UF.UniverseEmbedding
 
 open import DomainTheory.Basics.Dcpo pt fe 𝓥
 
@@ -716,6 +719,52 @@ module _
        ⦅1⦆ = ＝-to-⊒ 𝓓
              (ap α (inverses-are-retractions ⌜ ρ ⌝ (⌜⌝-is-equiv ρ) i))
        ⦅2⦆ = y-is-ub (⌜ ρ ⌝ i)
+
+module _
+        (𝓓 : DCPO {𝓤} {𝓣})
+        {I : 𝓦 ̇ } {J : 𝓦' ̇ }
+        (ρ : I ≃ J)
+        (α : I → ⟨ 𝓓 ⟩)
+       where
+
+ sup-reindexed-family : (x : ⟨ 𝓓 ⟩)
+                      → is-sup (underlying-order 𝓓) x (reindexed-family 𝓓 ρ α)
+                      → is-sup (underlying-order 𝓓) x α
+ sup-reindexed-family x x-is-sup =
+  transport (is-sup (underlying-order 𝓓) x) (dfunext fe h)
+            (reindexed-family-sup 𝓓 (≃-sym ρ) β x x-is-sup)
+   where
+    β = reindexed-family 𝓓 ρ α
+    h : reindexed-family 𝓓 (≃-sym ρ) β ∼ α
+    h i = (α ∘ ⌜ ρ ⌝⁻¹ ∘ ⌜ ≃-sym ρ ⌝⁻¹) i ＝⟨ e₁ ⟩
+          (α ∘ ⌜ ρ ⌝⁻¹ ∘ ⌜ ρ ⌝) i         ＝⟨ e₂ ⟩
+          α i                             ∎
+     where
+      e₁ = ap (λ - → (α ∘ ⌜ ρ ⌝⁻¹ ∘ -) i)
+              (inversion-involutive ⌜ ρ ⌝ (⌜⌝-is-equiv ρ))
+      e₂ = ap α (inverses-are-retractions' ρ i)
+
+\end{code}
+
+Added 23 June 2024.
+All dcpos (regardless of the universe level for index families) are ω-complete.
+
+\begin{code}
+
+dcpos-are-ω-complete : (𝓓 : DCPO {𝓤} {𝓣})
+                     → is-ω-complete (underlying-order 𝓓)
+dcpos-are-ω-complete 𝓓 α α-is-ω-chain = s , s-is-sup
+ where
+  ℕ' : 𝓥 ̇
+  ℕ' = Lift 𝓥 ℕ
+  ρ : ℕ ≃ Lift 𝓥 ℕ
+  ρ = ≃-Lift 𝓥 ℕ
+  δ : is-Directed 𝓓 (reindexed-family 𝓓 (≃-Lift 𝓥 ℕ) α)
+  δ = reindexed-family-is-directed 𝓓 ρ α (ω-chains-are-Directed 𝓓 α α-is-ω-chain)
+  s : ⟨ 𝓓 ⟩
+  s = ∐ 𝓓 δ
+  s-is-sup : is-sup (underlying-order 𝓓) s α
+  s-is-sup = sup-reindexed-family 𝓓 ρ α s (∐-is-sup 𝓓 δ)
 
 \end{code}
 
