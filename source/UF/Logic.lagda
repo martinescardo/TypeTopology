@@ -193,6 +193,18 @@ Added by Martin Escardo 1st Nov 2023.
 
 End of addition.
 
+Added by Martin Trucchi and Ayberk Tosun 2024-05-28.
+
+\begin{code}
+
+  ⇔-transport : (P Q : Ω 𝓤) → (B : Ω 𝓤 → 𝓦  ̇) → ((P ⇔ Q) holds) → B P → B Q
+  ⇔-transport {𝓤} P Q (𝓟) P-iff-Q Prop-P = transport 𝓟 q Prop-P
+    where
+     q : P ＝ Q
+     q = ⇔-gives-＝ P Q (holds-gives-equal-⊤ pe fe (P ⇔ Q) P-iff-Q)
+
+\end{code}
+
 \section{Disjunction}
 
 \begin{code}
