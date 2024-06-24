@@ -35,6 +35,7 @@ open import DomainTheory.Topology.ScottTopology pt fe 𝓤
 open import Lifting.Construction 𝓤
 open import Lifting.Miscelanea-PropExt-FunExt 𝓤 pe fe
 open import Lifting.UnivalentPrecategory 𝓤 (𝟙 {𝓤})
+open import Locales.Compactness pt fe
 open import Locales.Frame pt fe hiding (is-directed)
 open import Locales.InitialFrame pt fe
 open import Locales.ScottLocale.Definition pt fe 𝓤
@@ -302,5 +303,20 @@ above-truth-implies-contains-⊤ₛ : (𝔘 : ⟨ 𝒪 𝕊 ⟩)
                                 → (truth ≤[ poset-of (𝒪 𝕊) ] 𝔘) holds
                                 → (⊤ₛ ∈ₛ 𝔘) holds
 above-truth-implies-contains-⊤ₛ 𝔘 p = ⊆ₖ-implies-⊆ₛ truth 𝔘 p ⊤ₛ ⋆
+
+\end{code}
+
+Added on 2024-06-24.
+
+\begin{code}
+
+truth-is-compact : is-compact-open 𝕊 truth holds
+truth-is-compact = transport (λ - → is-compact-open 𝕊 - holds) p †
+ where
+  p : ↑ᵏ[ ₁ ] ＝ truth
+  p = principal-filter-on-₁-is-truth
+
+  † : is-compact-open 𝕊 ↑ᵏ[ ₁ ] holds
+  † = principal-filter-is-compact ₁
 
 \end{code}
