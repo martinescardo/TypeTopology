@@ -17,7 +17,7 @@ induces a map from the ideal completion to the dcpo.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K #-}
+{-# OPTIONS --safe --without-K --lossy-unification #-}
 
 open import MLTT.Spartan hiding (J)
 
@@ -35,6 +35,7 @@ module DomainTheory.IdealCompletion.Properties
 
 open import UF.Equiv
 open import UF.Powerset
+open import UF.Subsingletons-FunExt
 
 open import DomainTheory.Basics.Dcpo pt fe 𝓥
 open import DomainTheory.Basics.Miscelanea pt fe 𝓥
@@ -524,5 +525,45 @@ If _≺_ is reflexive, then the mediating map makes the obvious triangle commute
         g (y , l) = f-is-monotone l
       b : f x ⊑⟨ 𝓓 ⟩ ∐ 𝓓 δ
       b = ∐-is-upperbound 𝓓 δ (x , r x)
+
+\end{code}
+
+Added 24 June 2024.
+
+Moreover, it is the unique Scott continuous to do so.
+
+\begin{code}
+
+  Idl-mediating-map-is-unique' : reflexive _≺_
+                               → (g : Idl → ⟨ 𝓓 ⟩)
+                               → is-continuous Idl-DCPO 𝓓 g
+                               → g ∘ ↓_ ∼ f
+                               → g ∼ Idl-mediating-map
+  Idl-mediating-map-is-unique' r g c h I =
+   g I                                           ＝⟨ ⦅1⦆ ⟩
+   g (∐ Idl-DCPO δ)                              ＝⟨ ⦅2⦆ ⟩
+   ∐ 𝓓 (image-is-directed' Idl-DCPO 𝓓 (g , c) δ) ＝⟨ ⦅3⦆ ⟩
+   ∐ 𝓓 (Idl-mediating-directed I)                ＝⟨ refl ⟩
+   Idl-mediating-map I                           ∎
+    where
+     δ : is-Directed Idl-DCPO (↓-of-ideal I)
+     δ = ↓-of-ideal-is-directed I
+
+     ⦅1⦆ = ap g (Idl-∐-＝ I)
+     ⦅2⦆ = continuous-∐-＝ Idl-DCPO 𝓓 (g , c) δ
+     ⦅3⦆ = ∐-family-＝' 𝓓 (λ (b , _) → h b)
+                       (image-is-directed' Idl-DCPO 𝓓 (g , c) δ)
+                       (Idl-mediating-directed I)
+
+  Idl-mediating-map-is-unique : reflexive _≺_
+                              → ∃! f̅ ꞉ DCPO[ Idl-DCPO , 𝓓 ] ,
+                                   [ Idl-DCPO , 𝓓 ]⟨ f̅ ⟩ ∘ ↓_ ∼ f
+  Idl-mediating-map-is-unique r =
+   ((Idl-mediating-map , Idl-mediating-map-is-continuous) ,
+    Idl-mediating-map-commutes r) ,
+    (λ ((g , c) , h) → to-subtype-＝
+                        (λ _ → Π-is-prop fe (λ _ → sethood 𝓓))
+                        (to-continuous-function-＝ Idl-DCPO 𝓓
+                          (∼-sym (Idl-mediating-map-is-unique' r g c h))))
 
 \end{code}
