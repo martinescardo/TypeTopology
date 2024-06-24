@@ -92,10 +92,15 @@ module Sierpinski-notations (𝕊 : Generalized-Sierpinski-Object 𝓤 𝓥) whe
 The propositions in `Ω` that fall in the subset `𝕊` are called _open
 propositions_. We introduce suggestive terminology accordingly.
 
+The type of open proposition is noted Ωₒ
+
 \begin{code}
 
  is-open-proposition : Ω 𝓤 → Ω 𝓥
  is-open-proposition = 𝕊
+
+ Ωₒ : 𝓤 ⁺ ⊔ 𝓥  ̇
+ Ωₒ = Σ p ꞉ Ω 𝓤 , is-open-proposition p holds
 
 \end{code}
 
