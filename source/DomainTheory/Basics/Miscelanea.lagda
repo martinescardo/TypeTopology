@@ -64,10 +64,25 @@ Some preliminary basic lemmas.
         β i   ⊑⟨ 𝓓 ⟩[ ∐-is-upperbound 𝓓 ε i ]
         ∐ 𝓓 ε ∎⟨ 𝓓 ⟩
 
+∐-independent-of-directedness-witness : (𝓓 : DCPO {𝓤} {𝓣})
+                                        {I : 𝓥 ̇ } {α : I → ⟨ 𝓓 ⟩}
+                                        (δ ε : is-Directed 𝓓 α)
+                                      → ∐ 𝓓 δ ＝ ∐ 𝓓 ε
+∐-independent-of-directedness-witness 𝓓 {I} {α} δ ε = ap (∐ 𝓓) p
+ where
+  p : δ ＝ ε
+  p = being-directed-is-prop (underlying-order 𝓓) α δ ε
+
 ∐-family-＝ : (𝓓 : DCPO {𝓤} {𝓣}) {I : 𝓥 ̇ } {α β : I → ⟨ 𝓓 ⟩}
              (p : α ＝ β) (δ : is-Directed 𝓓 α)
            → ∐ 𝓓 {I} {α} δ ＝ ∐ 𝓓 {I} {β} (transport (is-Directed 𝓓) p δ)
 ∐-family-＝ 𝓓 {I} {α} {α} refl δ = refl
+
+∐-family-＝' : (𝓓 : DCPO {𝓤} {𝓣}) {I : 𝓥 ̇ } {α β : I → ⟨ 𝓓 ⟩}
+              (h : α ∼ β) (δ : is-Directed 𝓓 α) (ε : is-Directed 𝓓 β)
+            → ∐ 𝓓 {I} {α} δ ＝ ∐ 𝓓 {I} {β} ε
+∐-family-＝' 𝓓 {I} {α} {β} h δ ε =
+ ∐-family-＝ 𝓓 (dfunext fe h) δ ∙ ∐-independent-of-directedness-witness 𝓓 _ ε
 
 to-continuous-function-＝ : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
                            {f g : DCPO[ 𝓓 , 𝓔 ]}
@@ -81,15 +96,6 @@ to-continuous-function-＝ 𝓓 𝓔 h =
 
 ＝-to-⊒ : (𝓓 : DCPO {𝓤} {𝓣}) {x y : ⟨ 𝓓 ⟩} → y ＝ x → x ⊑⟨ 𝓓 ⟩ y
 ＝-to-⊒ 𝓓 p = ＝-to-⊑ 𝓓 (p ⁻¹)
-
-∐-independent-of-directedness-witness : (𝓓 : DCPO {𝓤} {𝓣})
-                                        {I : 𝓥 ̇ } {α : I → ⟨ 𝓓 ⟩}
-                                        (δ ε : is-Directed 𝓓 α)
-                                      → ∐ 𝓓 δ ＝ ∐ 𝓓 ε
-∐-independent-of-directedness-witness 𝓓 {I} {α} δ ε = ap (∐ 𝓓) p
- where
-  p : δ ＝ ε
-  p = being-directed-is-prop (underlying-order 𝓓) α δ ε
 
 is-monotone : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
             → (⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩) → 𝓤 ⊔ 𝓣 ⊔ 𝓣' ̇
