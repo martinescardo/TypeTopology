@@ -806,3 +806,60 @@ greatest-element-if-sup-complete-with-small-basis 𝓓 sc = ∥∥-rec I II
       (underlying-order 𝓓) (↡ᴮ-is-sup x) ⊤ (λ (b , _) → ⋁-is-upperbound β b)
 
 \end{code}
+
+Added 26 June 2024.
+We can close small bases under finite joins.
+
+\begin{code}
+
+module _
+        (𝓓 : DCPO{𝓤} {𝓣})
+        {B : 𝓥 ̇  }
+        (β : B → ⟨ 𝓓 ⟩)
+        (β-is-basis : is-small-basis 𝓓 β)
+        (𝓓-has-finite-joins : has-finite-joins 𝓓)
+       where
+
+ open has-finite-joins 𝓓-has-finite-joins
+
+ record basis-has-finite-joins : 𝓥 ⊔ 𝓤 ̇  where
+  field
+   ⊥ᴮ : B
+   _∨ᴮ_ : B → B → B
+   ⊥ᴮ-is-⊥ : β ⊥ᴮ ＝ ⊥
+   ∨ᴮ-is-∨ : {a b : B} → β (a ∨ᴮ b) ＝ β a ∨ β b
+
+module _
+        (𝓓 : DCPO{𝓤} {𝓣})
+        {B : 𝓥 ̇  }
+        (β : B → ⟨ 𝓓 ⟩)
+        (β-is-basis : is-small-basis 𝓓 β)
+        (𝓓-has-finite-joins : has-finite-joins 𝓓)
+       where
+
+ open import MLTT.List
+ open make-family-directed 𝓓 𝓓-has-finite-joins
+ open has-finite-joins 𝓓-has-finite-joins
+
+ refine-basis-to-have-finite-joins :
+  Σ B' ꞉ 𝓥 ̇  , Σ β' ꞉ (B' → ⟨ 𝓓 ⟩) ,
+  Σ p ꞉ is-small-basis 𝓓 β' , basis-has-finite-joins 𝓓 β' p 𝓓-has-finite-joins
+ refine-basis-to-have-finite-joins = B' , β' , p , j
+  where
+   B' : 𝓥 ̇
+   B' = List B
+   β' : List B → ⟨ 𝓓 ⟩
+   β' = directify β
+   p : is-small-basis 𝓓 β'
+   p = {!!}
+   j : basis-has-finite-joins 𝓓 β' p 𝓓-has-finite-joins
+   j = record
+        { ⊥ᴮ = [] ;
+          _∨ᴮ_ = _++_ ;
+          ⊥ᴮ-is-⊥ = refl ;
+          ∨ᴮ-is-∨ = λ {l} {k} → sups-are-unique (underlying-order 𝓓) (poset-axioms-of-dcpo 𝓓) (∨-family 𝓓 (β' l) (β' k))
+                      (++-is-binary-sup β l k)
+                      (∨-is-sup (β' l) (β' k))
+        }
+
+\end{code}
