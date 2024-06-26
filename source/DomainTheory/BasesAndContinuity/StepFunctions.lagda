@@ -461,6 +461,7 @@ argument is fully formalized.
          where
 
    open sup-complete-dcpo 𝓔' 𝓔'-is-sup-complete
+   open has-finite-joins (sup-complete-dcpo-has-finite-joins 𝓔' 𝓔'-is-sup-complete)
 
    exp-has-small-compact-basis : has-specified-small-compact-basis (𝓓' ⟹ᵈᶜᵖᵒ 𝓔')
    exp-has-small-compact-basis =
