@@ -1,4 +1,5 @@
 Tom de Jong, late February - early March 2022.
+Refactored slightly on 26 June 2024.
 
 We consider sup-complete dcpos. Of course, every sup-complete poset is a dcpo,
 but because the basic object of our domain-theoretic development is a dcpo, the
@@ -23,6 +24,8 @@ module DomainTheory.Basics.SupComplete
 
 open PropositionalTruncation pt hiding (_∨_)
 
+open import MLTT.List
+
 open import UF.Equiv
 open import UF.EquivalenceExamples
 
@@ -30,10 +33,16 @@ open import DomainTheory.Basics.Dcpo pt fe 𝓥
 open import DomainTheory.Basics.Miscelanea pt fe 𝓥
 open import DomainTheory.Basics.WayBelow pt fe 𝓥
 
+\end{code}
+
+We first define, using a record for convenience, when a dcpo additionally has
+all (small) suprema.
+
+\begin{code}
+
 module _
         (𝓓 : DCPO {𝓤} {𝓣})
        where
-
  record is-sup-complete : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇  where
   field
    ⋁ : {I : 𝓥 ̇ } (α : I → ⟨ 𝓓 ⟩) → ⟨ 𝓓 ⟩
@@ -51,57 +60,70 @@ module _
 
 \end{code}
 
-Since we have all small joins, we have binary joins in particular.
+In particular, we get finite joins, which we first define.
 
 \begin{code}
 
-module sup-complete-dcpo
-        (𝓓 : DCPO {𝓤} {𝓣'})
-        (𝓓-is-sup-complete : is-sup-complete 𝓓)
+module _
+        (𝓓 : DCPO {𝓤} {𝓣})
        where
 
- open is-sup-complete 𝓓-is-sup-complete
-
- open import MLTT.List
-
- ⊥ : ⟨ 𝓓 ⟩
- ⊥ = ⋁ 𝟘-elim
-
- ⊥-is-least : is-least (underlying-order 𝓓) ⊥
- ⊥-is-least x = ⋁-is-lowerbound-of-upperbounds 𝟘-elim x 𝟘-induction
-
- ∨-family : (x y : ⟨ 𝓓 ⟩) → 𝟙 {𝓥} + 𝟙 {𝓥} → ⟨ 𝓓 ⟩
+ ∨-family : (x y : ⟨ 𝓓 ⟩) → 𝟙{𝓥} + 𝟙{𝓥} → ⟨ 𝓓 ⟩
  ∨-family x y (inl _) = x
  ∨-family x y (inr _) = y
 
- _∨_ : ⟨ 𝓓 ⟩ → ⟨ 𝓓 ⟩ → ⟨ 𝓓 ⟩
- x ∨ y = ⋁ (∨-family x y)
+ record has-finite-joins : 𝓤 ⊔ 𝓣 ⊔ 𝓥 ̇  where
+  field
+   ⊥ : ⟨ 𝓓 ⟩
+   ⊥-is-least : is-least (underlying-order 𝓓) ⊥
+   _∨_ : ⟨ 𝓓 ⟩ → ⟨ 𝓓 ⟩ → ⟨ 𝓓 ⟩
+   ∨-is-sup : (x y : ⟨ 𝓓 ⟩)
+            → is-sup (underlying-order 𝓓) (x ∨ y) (∨-family x y)
 
- infix 100 _∨_
+  infix 100 _∨_
 
- ∨-is-upperbound₁ : {x y : ⟨ 𝓓 ⟩} → x ⊑⟨ 𝓓 ⟩ x ∨ y
- ∨-is-upperbound₁ {x} {y} = ⋁-is-upperbound (∨-family x y) (inl ⋆)
+  ∨-is-upperbound₁ : {x y : ⟨ 𝓓 ⟩} → x ⊑⟨ 𝓓 ⟩ x ∨ y
+  ∨-is-upperbound₁ {x} {y} = pr₁ (∨-is-sup x y) (inl ⋆)
 
- ∨-is-upperbound₂ : {x y : ⟨ 𝓓 ⟩} → y ⊑⟨ 𝓓 ⟩ x ∨ y
- ∨-is-upperbound₂ {x} {y} = ⋁-is-upperbound (∨-family x y) (inr ⋆)
+  ∨-is-upperbound₂ : {x y : ⟨ 𝓓 ⟩} → y ⊑⟨ 𝓓 ⟩ x ∨ y
+  ∨-is-upperbound₂ {x} {y} = pr₁ (∨-is-sup x y) (inr ⋆)
 
- ∨-is-lowerbound-of-upperbounds : {x y z : ⟨ 𝓓 ⟩}
-                                → x ⊑⟨ 𝓓 ⟩ z → y ⊑⟨ 𝓓 ⟩ z
-                                → x ∨ y ⊑⟨ 𝓓 ⟩ z
- ∨-is-lowerbound-of-upperbounds {x} {y} {z} u v =
-  ⋁-is-lowerbound-of-upperbounds (∨-family x y) z γ
+  ∨-is-lowerbound-of-upperbounds : {x y z : ⟨ 𝓓 ⟩}
+                                 → x ⊑⟨ 𝓓 ⟩ z → y ⊑⟨ 𝓓 ⟩ z
+                                 → x ∨ y ⊑⟨ 𝓓 ⟩ z
+  ∨-is-lowerbound-of-upperbounds {x} {y} {z} u v = pr₂ (∨-is-sup x y) z γ
    where
     γ : is-upperbound (underlying-order 𝓓) z (∨-family x y)
     γ (inl _) = u
     γ (inr _) = v
 
+sup-complete-dcpo-has-finite-joins : (𝓓 : DCPO {𝓤} {𝓣})
+                                   → is-sup-complete 𝓓
+                                   → has-finite-joins 𝓓
+sup-complete-dcpo-has-finite-joins 𝓓 sc =
+ record { ⊥ = ⋁ 𝟘-elim ;
+          ⊥-is-least = λ x → ⋁-is-lowerbound-of-upperbounds 𝟘-elim x 𝟘-induction ;
+          _∨_ = λ x y → ⋁ (∨-family 𝓓 x y);
+          ∨-is-sup = λ x y → ⋁-is-sup (∨-family 𝓓 x y)
+        }
+  where
+   open is-sup-complete sc
+
 \end{code}
 
-An important consequence of having binary joins is that every (small) family can
-be made directed (in the sense that the resulting family will have the same
-supremum).
+The converse holds as well: if a dcpo has finite joins then it is sup-complete.
+This is because, by taking finite joins, we can replace an arbitrary family by
+one that is directed and which has the same supremum.
+This an important separate fact that we prove now.
 
 \begin{code}
+
+module make-family-directed
+        (𝓓 : DCPO {𝓤} {𝓣})
+        (𝓓-has-finite-joins : has-finite-joins 𝓓)
+       where
+
+ open has-finite-joins 𝓓-has-finite-joins
 
  module _
          {I : 𝓦 ̇ }
@@ -129,6 +151,38 @@ supremum).
    directify k              ⊑⟨ 𝓓 ⟩[ ++-is-upperbound₂ l k ]
    directify (l ++ k)       ⊑⟨ 𝓓 ⟩[ ∨-is-upperbound₂ ]
    α i ∨ directify (l ++ k) ∎⟨ 𝓓 ⟩
+
+  ++-is-lowerbound-of-upperbounds : (l k : List I) (x : ⟨ 𝓓 ⟩)
+                                  → directify l ⊑⟨ 𝓓 ⟩ x
+                                  → directify k ⊑⟨ 𝓓 ⟩ x
+                                  → directify (l ++ k) ⊑⟨ 𝓓 ⟩ x
+  ++-is-lowerbound-of-upperbounds []      k x  u v = v
+  ++-is-lowerbound-of-upperbounds (i ∷ l) k x u v =
+   ∨-is-lowerbound-of-upperbounds ⦅1⦆ ⦅2⦆
+    where
+     ⦅1⦆ = α i              ⊑⟨ 𝓓 ⟩[ ∨-is-upperbound₁ ]
+          α i ∨ directify l ⊑⟨ 𝓓 ⟩[ u ]
+          x                 ∎⟨ 𝓓 ⟩
+     ⦅2⦆ : directify (l ++ k) ⊑⟨ 𝓓 ⟩ x
+     ⦅2⦆ = ++-is-lowerbound-of-upperbounds l k x ⦅2'⦆ v
+      where
+       ⦅2'⦆ = directify l      ⊑⟨ 𝓓 ⟩[ ∨-is-upperbound₂ ]
+             α i ∨ directify l ⊑⟨ 𝓓 ⟩[ u ]
+             x                 ∎⟨ 𝓓 ⟩
+
+  ++-is-binary-sup : (l k : List I)
+                   → is-sup (underlying-order 𝓓) (directify (l ++ k))
+                            (∨-family 𝓓 (directify l) (directify k))
+  ++-is-binary-sup l k = ⦅1⦆ , ⦅2⦆
+   where
+    ⦅1⦆ : (b : 𝟙 + 𝟙)
+        → ∨-family 𝓓 (directify l) (directify k) b ⊑⟨ 𝓓 ⟩ directify (l ++ k)
+    ⦅1⦆ (inl _) = ++-is-upperbound₁ l k
+    ⦅1⦆ (inr _) = ++-is-upperbound₂ l k
+    ⦅2⦆ : is-lowerbound-of-upperbounds (underlying-order 𝓓)
+           (directify (l ++ k)) (∨-family 𝓓 (directify l) (directify k))
+    ⦅2⦆ x x-ub = ++-is-lowerbound-of-upperbounds l k x
+                  (x-ub (inl ⋆)) (x-ub (inr ⋆))
 
   directify-is-semidirected : is-Semidirected 𝓓 directify
   directify-is-semidirected l k =
@@ -209,27 +263,9 @@ directify l is less than x.
    directify-↓-is-inhabited : ∥ domain directify-↓ ∥
    directify-↓-is-inhabited = ∣ [] , ⊥-is-least x ∣
 
-   ++-is-lowerbound-of-upperbounds : (l k : List I)
-                                   → directify l ⊑⟨ 𝓓 ⟩ x
-                                   → directify k ⊑⟨ 𝓓 ⟩ x
-                                   → directify (l ++ k) ⊑⟨ 𝓓 ⟩ x
-   ++-is-lowerbound-of-upperbounds []      k u v = v
-   ++-is-lowerbound-of-upperbounds (i ∷ l) k u v =
-    ∨-is-lowerbound-of-upperbounds ⦅1⦆ ⦅2⦆
-     where
-      ⦅1⦆ = α i              ⊑⟨ 𝓓 ⟩[ ∨-is-upperbound₁ ]
-           α i ∨ directify l ⊑⟨ 𝓓 ⟩[ u ]
-           x                 ∎⟨ 𝓓 ⟩
-      ⦅2⦆ : directify (l ++ k) ⊑⟨ 𝓓 ⟩ x
-      ⦅2⦆ = ++-is-lowerbound-of-upperbounds l k ⦅2'⦆ v
-       where
-        ⦅2'⦆ = directify l      ⊑⟨ 𝓓 ⟩[ ∨-is-upperbound₂ ]
-              α i ∨ directify l ⊑⟨ 𝓓 ⟩[ u ]
-              x                 ∎⟨ 𝓓 ⟩
-
    directify-↓-is-semidirected : is-Semidirected 𝓓 directify-↓
    directify-↓-is-semidirected (l , l-below-x) (k , k-below-x) =
-    ∣ ((l ++ k) , ++-is-lowerbound-of-upperbounds l k l-below-x k-below-x)
+    ∣ ((l ++ k) , ++-is-lowerbound-of-upperbounds l k x l-below-x k-below-x)
                 , (++-is-upperbound₁ l k) , (++-is-upperbound₂ l k) ∣
 
 
@@ -298,5 +334,43 @@ by a small type (provided the original family was indexed by a small type).
    directify-↓-small-is-directed =
     reindexed-family-is-directed 𝓓 directify-↓-small-≃
      (directify-↓ α) (directify-↓-is-directed α)
+
+\end{code}
+
+As announced, we get that dcpos with finite joins are sup-complete.
+
+\begin{code}
+
+dcpo-with-finite-joins-is-sup-complete : (𝓓 : DCPO {𝓤} {𝓣})
+                                       → has-finite-joins 𝓓
+                                       → is-sup-complete 𝓓
+dcpo-with-finite-joins-is-sup-complete 𝓓 h =
+ record {
+  ⋁ = sup ;
+  ⋁-is-sup = λ α → directify-sup' 𝓓 h α (sup α)
+                                  (∐-is-sup 𝓓 (directify-is-directed 𝓓 h α))
+ }
+  where
+   open has-finite-joins h
+   open make-family-directed
+   sup : {I : 𝓥 ̇} → (I → ⟨ 𝓓 ⟩) → ⟨ 𝓓 ⟩
+   sup {I} α = ∐ 𝓓 (directify-is-directed 𝓓 h α)
+
+\end{code}
+
+Finally, we re-export the directify constructions via this module for use in
+other files.
+
+\begin{code}
+
+module sup-complete-dcpo
+        (𝓓 : DCPO {𝓤} {𝓣'})
+        (𝓓-is-sup-complete : is-sup-complete 𝓓)
+       where
+
+ open is-sup-complete 𝓓-is-sup-complete
+ open make-family-directed
+       𝓓 (sup-complete-dcpo-has-finite-joins 𝓓 𝓓-is-sup-complete)
+      public
 
 \end{code}

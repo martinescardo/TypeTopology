@@ -1,4 +1,5 @@
 Tom de Jong, late February, early March 2022.
+Updated 27 June 2024.
 
 We use single step functions to construct a small compact basis on the
 exponential of dcpos Eᴰ where D and E have small compact bases and E is
@@ -359,11 +360,10 @@ can use the continuous retract to give a small basis on (𝓓 ⟹ᵈᶜᵖᵒ �
 
 NB: The above proof outline depends on the fact that 𝓔' and (hence)
 (𝓓' ⟹ᵈᶜᵖᵒ 𝓔') are sup-complete. This can be shown by using the concrete
-definition of 𝓔' as the ideal completion of βᴱ. This step has not been
-formalized (yet), but all the other steps in the outline have.
-
-TODO: Formalize the proof that Idl(βᴱ,⊑) is is sup-complete. It looks like it
-will be helpful to prove separately that we can close bases under finite joins.
+definition of 𝓔' as the ideal completion of βᴱ and by ensuring that the basis βᴱ
+is closed under finite joins to begin with.
+This was formalized on 27 June 2024. Prior to this, the sup-completeness of 𝓔'
+was an assumption to an anonymous module.
 
 \begin{code}
 
@@ -371,17 +371,50 @@ module _
         (pe : Prop-Ext)
         (𝓓 : DCPO {𝓤} {𝓣})
         (𝓔 : DCPO {𝓤'} {𝓣'})
-        {Bᴰ Bᴱ : 𝓥 ̇ }
+        {Bᴰ Bᴱₚᵣₑ : 𝓥 ̇ }
         (βᴰ : Bᴰ → ⟨ 𝓓 ⟩)
-        (βᴱ : Bᴱ → ⟨ 𝓔 ⟩)
+        (βᴱₚᵣₑ : Bᴱₚᵣₑ → ⟨ 𝓔 ⟩)
         (βᴰ-is-small-basis : is-small-basis 𝓓 βᴰ)
-        (βᴱ-is-small-basis : is-small-basis 𝓔 βᴱ)
+        (βᴱₚᵣₑ-is-small-basis : is-small-basis 𝓔 βᴱₚᵣₑ)
         (𝓔-is-sup-complete : is-sup-complete 𝓔)
        where
 
  open import DomainTheory.IdealCompletion.Retracts pt fe pe 𝓥
 
+\end{code}
+
+As a first step, we construct a new basis of 𝓔 which is guaranteed to have
+finite joins.
+
+\begin{code}
+
  private
+  𝓔-has-finite-joins : has-finite-joins 𝓔
+  𝓔-has-finite-joins = sup-complete-dcpo-has-finite-joins 𝓔 𝓔-is-sup-complete
+
+  refined-basis : Σ B ꞉ 𝓥 ̇  , Σ β ꞉ (B → ⟨ 𝓔 ⟩) ,
+                  Σ p ꞉ is-small-basis 𝓔 β ,
+                  basis-has-finite-joins 𝓔 β p 𝓔-has-finite-joins
+  refined-basis = refine-basis-to-have-finite-joins 𝓔 βᴱₚᵣₑ
+                                                    βᴱₚᵣₑ-is-small-basis
+                                                    𝓔-has-finite-joins
+
+  Bᴱ : 𝓥 ̇
+  Bᴱ = pr₁ refined-basis
+  βᴱ : Bᴱ → ⟨ 𝓔 ⟩
+  βᴱ = pr₁ (pr₂ refined-basis)
+  βᴱ-is-small-basis : is-small-basis 𝓔 βᴱ
+  βᴱ-is-small-basis = pr₁ (pr₂ (pr₂ refined-basis))
+  βᴱ-has-finite-joins : basis-has-finite-joins 𝓔 βᴱ βᴱ-is-small-basis
+                                                    𝓔-has-finite-joins
+  βᴱ-has-finite-joins = pr₂ (pr₂ (pr₂ (refined-basis)))
+
+\end{code}
+
+We now proceed with the proof as outlined above.
+
+\begin{code}
+
   module _ where
    open Idl-continuous-retract-of-algebraic 𝓓 βᴰ βᴰ-is-small-basis
    𝓓' : DCPO {𝓥 ⁺} {𝓥}
@@ -394,13 +427,17 @@ module _
    𝓔' = Idl-DCPO
    𝓔-continuous-retract-of-𝓔' : 𝓔 continuous-retract-of 𝓔'
    𝓔-continuous-retract-of-𝓔' = Idl-continuous-retract
+   𝓔'-is-sup-complete : is-sup-complete 𝓔'
+   𝓔'-is-sup-complete =
+    Idl-is-sup-complete-if-basis-has-finite-joins 𝓔-is-sup-complete
+                                                  βᴱ-has-finite-joins
 
   exp-continuous-retract : (𝓓 ⟹ᵈᶜᵖᵒ 𝓔) continuous-retract-of (𝓓' ⟹ᵈᶜᵖᵒ 𝓔')
   exp-continuous-retract =
    record
     { s               = s
     ; r               = r
-    ; s-section-of-r    = s-section-of-r
+    ; s-section-of-r  = s-section-of-r
     ; s-is-continuous = s-is-cts
     ; r-is-continuous = r-is-cts
     }
@@ -437,73 +474,51 @@ module _
      r-is-cts = DCPO-∘₃-is-continuous₂ 𝓓 𝓓' 𝓔' 𝓔
                  (sᴰ , sᴰ-is-cts) (rᴱ , rᴱ-is-cts)
 
-\end{code}
+  open sup-complete-dcpo 𝓔' 𝓔'-is-sup-complete
+  open has-finite-joins (sup-complete-dcpo-has-finite-joins 𝓔' 𝓔'-is-sup-complete)
 
-Sup-completeness of 𝓔' is the only remaining hole in the formalization of the
-argument outlined above.
+  exp-has-small-compact-basis : has-specified-small-compact-basis (𝓓' ⟹ᵈᶜᵖᵒ 𝓔')
+  exp-has-small-compact-basis =
+   exponential-has-specified-small-compact-basis 𝓓' (𝓔' , ⊥ , ⊥-is-least)
+    (locally-small-if-small-compact-basis 𝓓' βᴰ' κᴰ')
+    Bᴰ' Bᴱ' βᴰ' βᴱ' κᴰ' κᴱ' 𝓔'-is-sup-complete pe
+     where
+      module _ where
+       open Idl-continuous-retract-of-algebraic 𝓓 βᴰ βᴰ-is-small-basis
+       small-compact-basisᴰ' : has-specified-small-compact-basis 𝓓'
+       small-compact-basisᴰ' = Idl-has-specified-small-compact-basis
+                                (λ _ → ⊑ᴮ-is-reflexive)
+       Bᴰ' : 𝓥 ̇
+       Bᴰ' = pr₁ small-compact-basisᴰ'
+       βᴰ' : Bᴰ' → ⟨ 𝓓' ⟩
+       βᴰ' = pr₁ (pr₂ small-compact-basisᴰ')
+       κᴰ' : is-small-compact-basis 𝓓' βᴰ'
+       κᴰ' = pr₂ (pr₂ small-compact-basisᴰ')
+      module _ where
+       open Idl-continuous-retract-of-algebraic 𝓔 βᴱ βᴱ-is-small-basis
+       small-compact-basisᴱ' : has-specified-small-compact-basis 𝓔'
+       small-compact-basisᴱ' = Idl-has-specified-small-compact-basis
+                                (λ _ → ⊑ᴮ-is-reflexive)
+       Bᴱ' : 𝓥 ̇
+       Bᴱ' = pr₁ small-compact-basisᴱ'
+       βᴱ' : Bᴱ' → ⟨ 𝓔' ⟩
+       βᴱ' = pr₁ (pr₂ small-compact-basisᴱ')
+       κᴱ' : is-small-compact-basis 𝓔' βᴱ'
+       κᴱ' = pr₂ (pr₂ small-compact-basisᴱ')
 
-\begin{code}
-
-{- TODO
-  𝓔'-is-sup-complete : is-sup-complete 𝓔'
-  𝓔'-is-sup-complete = {!!}
--}
-
-\end{code}
-
-We assume sup-completeness of 𝓔' here to illustrate that the remainder of the
-argument is fully formalized.
-
-\begin{code}
-
-  module _
-          (𝓔'-is-sup-complete : is-sup-complete 𝓔')
-         where
-
-   open sup-complete-dcpo 𝓔' 𝓔'-is-sup-complete
-
-   exp-has-small-compact-basis : has-specified-small-compact-basis (𝓓' ⟹ᵈᶜᵖᵒ 𝓔')
-   exp-has-small-compact-basis =
-    exponential-has-specified-small-compact-basis 𝓓' (𝓔' , ⊥ , ⊥-is-least)
-     (locally-small-if-small-compact-basis 𝓓' βᴰ' κᴰ')
-     Bᴰ' Bᴱ' βᴰ' βᴱ' κᴰ' κᴱ' 𝓔'-is-sup-complete pe
-      where
-       module _ where
-        open Idl-continuous-retract-of-algebraic 𝓓 βᴰ βᴰ-is-small-basis
-        small-compact-basisᴰ' : has-specified-small-compact-basis 𝓓'
-        small-compact-basisᴰ' = Idl-has-specified-small-compact-basis
-                                 (λ _ → ⊑ᴮ-is-reflexive)
-        Bᴰ' : 𝓥 ̇
-        Bᴰ' = pr₁ small-compact-basisᴰ'
-        βᴰ' : Bᴰ' → ⟨ 𝓓' ⟩
-        βᴰ' = pr₁ (pr₂ small-compact-basisᴰ')
-        κᴰ' : is-small-compact-basis 𝓓' βᴰ'
-        κᴰ' = pr₂ (pr₂ small-compact-basisᴰ')
-       module _ where
-        open Idl-continuous-retract-of-algebraic 𝓔 βᴱ βᴱ-is-small-basis
-        small-compact-basisᴱ' : has-specified-small-compact-basis 𝓔'
-        small-compact-basisᴱ' = Idl-has-specified-small-compact-basis
-                                 (λ _ → ⊑ᴮ-is-reflexive)
-        Bᴱ' : 𝓥 ̇
-        Bᴱ' = pr₁ small-compact-basisᴱ'
-        βᴱ' : Bᴱ' → ⟨ 𝓔' ⟩
-        βᴱ' = pr₁ (pr₂ small-compact-basisᴱ')
-        κᴱ' : is-small-compact-basis 𝓔' βᴱ'
-        κᴱ' = pr₂ (pr₂ small-compact-basisᴱ')
-
-   exponential-has-small-basis : has-specified-small-basis (𝓓 ⟹ᵈᶜᵖᵒ 𝓔)
-   exponential-has-small-basis = B , r ∘ β ,
-    small-basis-from-continuous-retract pe (𝓓 ⟹ᵈᶜᵖᵒ 𝓔) (𝓓' ⟹ᵈᶜᵖᵒ 𝓔')
-     exp-continuous-retract β (compact-basis-is-basis (𝓓' ⟹ᵈᶜᵖᵒ 𝓔') β κ)
-    where
-     open _continuous-retract-of_ exp-continuous-retract
-     exp-small-compact-basis : has-specified-small-compact-basis (𝓓' ⟹ᵈᶜᵖᵒ 𝓔')
-     exp-small-compact-basis = exp-has-small-compact-basis
-     B : 𝓥 ̇
-     B = pr₁ exp-has-small-compact-basis
-     β : B → DCPO[ 𝓓' , 𝓔' ]
-     β = pr₁ (pr₂ exp-has-small-compact-basis)
-     κ : is-small-compact-basis (𝓓' ⟹ᵈᶜᵖᵒ 𝓔') β
-     κ = pr₂ (pr₂ exp-has-small-compact-basis)
+  exponential-has-small-basis : has-specified-small-basis (𝓓 ⟹ᵈᶜᵖᵒ 𝓔)
+  exponential-has-small-basis = B , r ∘ β ,
+   small-basis-from-continuous-retract pe (𝓓 ⟹ᵈᶜᵖᵒ 𝓔) (𝓓' ⟹ᵈᶜᵖᵒ 𝓔')
+    exp-continuous-retract β (compact-basis-is-basis (𝓓' ⟹ᵈᶜᵖᵒ 𝓔') β κ)
+   where
+    open _continuous-retract-of_ exp-continuous-retract
+    exp-small-compact-basis : has-specified-small-compact-basis (𝓓' ⟹ᵈᶜᵖᵒ 𝓔')
+    exp-small-compact-basis = exp-has-small-compact-basis
+    B : 𝓥 ̇
+    B = pr₁ exp-has-small-compact-basis
+    β : B → DCPO[ 𝓓' , 𝓔' ]
+    β = pr₁ (pr₂ exp-has-small-compact-basis)
+    κ : is-small-compact-basis (𝓓' ⟹ᵈᶜᵖᵒ 𝓔') β
+    κ = pr₂ (pr₂ exp-has-small-compact-basis)
 
 \end{code}
