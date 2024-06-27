@@ -6,23 +6,25 @@ Based in part on `ayberkt/formal-topology-in-UF`.
 
 {-# OPTIONS --safe --without-K #-}
 
-open import MLTT.Spartan hiding (𝟚)
 open import MLTT.List hiding ([_])
+open import MLTT.Spartan hiding (𝟚)
 open import UF.Base
-open import UF.PropTrunc
 open import UF.FunExt
+open import UF.PropTrunc
 
 module Locales.InitialFrame
         (pt : propositional-truncations-exist)
         (fe : Fun-Ext)
        where
 
+open import Locales.ContinuousMap.FrameHomomorphism-Definition pt fe
+open import Locales.ContinuousMap.FrameHomomorphism-Properties pt fe
+open import Locales.Frame pt fe
+open import Slice.Family
+open import UF.Logic
 open import UF.Sets
 open import UF.Subsingletons
-open import UF.Logic
 open import UF.Subsingletons-FunExt
-open import Slice.Family
-open import Locales.Frame pt fe
 open import UF.SubtypeClassifier
 
 open AllCombinators pt fe
@@ -216,6 +218,9 @@ f-respects-⋁ pe A U = β , γ
 
 \begin{code}
 
+open FrameHomomorphisms
+open FrameHomomorphismProperties
+
 𝒻 : {𝓦 : Universe} (pe : propext 𝓦) (F : Frame 𝓤 𝓥 𝓦)
   → (𝟎-𝔽𝕣𝕞 pe) ─f→ F
 𝒻 pe F = (f pe F)
@@ -354,5 +359,17 @@ module Spectrality-of-𝟎 (𝓤 : Universe) (pe : propext 𝓤) where
   where
    d : (U : ⟨ 𝟎-𝔽𝕣𝕞 pe ⟩) → is-directed (𝟎-𝔽𝕣𝕞 pe) (𝒮↑ U) holds
    d = covers-of-directified-basis-are-directed (𝟎-𝔽𝕣𝕞 pe) ℬ𝟎 ℬ𝟎-is-basis-for-𝟎
+
+\end{code}
+
+Added on 2024-05-17.
+
+It is sometimes conventient to refer to the initial frame as “Ω viewed as a
+frame”, and we add some notation to highlight this.
+
+\begin{code}
+
+ Ω-Frm : Frame (𝓤 ⁺) 𝓤 𝓤
+ Ω-Frm = 𝟎-𝔽𝕣𝕞 pe
 
 \end{code}

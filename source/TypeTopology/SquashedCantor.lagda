@@ -20,7 +20,7 @@ open import UF.FunExt
 
 module TypeTopology.SquashedCantor (fe : FunExt) where
 
-open import CoNaturals.GenericConvergentSequence
+open import CoNaturals.Type
 open import CoNaturals.UniversalProperty fe
 open import InjectiveTypes.Blackboard fe
 open import MLTT.Spartan

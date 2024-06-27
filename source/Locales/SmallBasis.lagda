@@ -423,6 +423,13 @@ cover-indexₛ : (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ X)
                 ⟨ 𝒪 X ⟩ → Fam 𝓦 (index ℬ)
 cover-indexₛ X σᴰ U = pr₁ (basisₛ-is-basis X σᴰ U)
 
+covering-familyₛ : (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ X)
+                 → let
+                    ℬ = basisₛ X σᴰ
+                   in
+                    ⟨ 𝒪 X ⟩ → Fam 𝓦 ⟨ 𝒪 X ⟩
+covering-familyₛ X σᴰ U = ⁅ basisₛ X σᴰ [ j ] ∣ j ε cover-indexₛ X σᴰ U ⁆
+
 basisₛ-covers-are-directed : (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ X) (U : ⟨ 𝒪 X ⟩)
                            → let
                               ℬ = basisₛ X σᴰ
@@ -439,6 +446,25 @@ basisₛ-covers-do-cover : (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ X) (
                          in
                           (U is-lub-of ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆) holds
 basisₛ-covers-do-cover X σᴰ U = pr₁ (pr₂ (pr₁ (pr₂ σᴰ) U))
+
+basisₛ-covers-do-cover-eq : (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ X) (U : ⟨ 𝒪 X ⟩)
+                          → let
+                             ℬ = basisₛ X σᴰ
+                             𝒥 = cover-indexₛ X σᴰ U
+                             open Joins (λ U V → U ≤[ poset-of (𝒪 X) ] V)
+                            in
+                             U ＝ ⋁[ 𝒪 X ] ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆
+basisₛ-covers-do-cover-eq X σᴰ U =
+ ⋁[ 𝒪 X ]-unique ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆ U c
+  where
+   open Joins (λ U V → U ≤[ poset-of (𝒪 X) ] V)
+
+   ℬ = basisₛ X σᴰ
+   𝒥 = cover-indexₛ X σᴰ U
+
+   c : (U is-lub-of ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆) holds
+   c = basisₛ-covers-do-cover X σᴰ U
+
 
 basisₛ-is-directed-basis : (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ X)
                          → directed-basis-forᴰ (𝒪 X) (basisₛ X σᴰ)

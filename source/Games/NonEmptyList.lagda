@@ -43,7 +43,7 @@ assoc-++ (x :: xs) ys zs = ap (x ::_) (assoc-++ xs ys zs)
   ext' f [ x ]     = f x
   ext' f (x :: xs) = f x ++ ext' f xs
 
-  ext'-++ : {Y Z : Set}
+  ext'-++ : {Y Z : Type}
             (g : Y → neList Z)
             (xs ys : neList Y)
           → ext' g xs ++ ext' g ys ＝ ext' g (xs ++ ys)
@@ -55,11 +55,11 @@ assoc-++ (x :: xs) ys zs = ap (x ::_) (assoc-++ xs ys zs)
    g x ++ ext' g (xs ++ ys)        ＝⟨ refl ⟩
    ext' g (x :: xs ++ ys)          ∎
 
-  ext'-η : {X : Set} → ext' [_] ∼ 𝑖𝑑 (neList X)
+  ext'-η : {X : Type} → ext' [_] ∼ 𝑖𝑑 (neList X)
   ext'-η [ x ]     = refl
   ext'-η (x :: xs) = ap (x ::_) (ext'-η xs)
 
-  assoc' : {X Y Z : Set}
+  assoc' : {X Y Z : Type}
            (g : Y → neList Z) (f : X → neList Y)
            (xs : neList X)
          → ext' (λ - → ext' g (f -)) xs ＝ ext' g (ext' f xs)

@@ -42,7 +42,7 @@ open PropositionalTruncation pt
 open import MLTT.Spartan
 open import Taboos.Decomposability ua
 open import UF.Embeddings
-open import UF.ExcludedMiddle
+open import UF.ClassicalLogic
 open import UF.FunExt
 open import UF.Retracts
 open import UF.SubtypeClassifier
@@ -124,7 +124,9 @@ conclusion.
 \begin{code}
 
 simple-type₂-injective-gives-WEM : (X : 𝓤₀ ̇)
-                                 → simple-type₂ X → ainjective-type X 𝓤 𝓤 → WEM 𝓤
+                                 → simple-type₂ X
+                                 → ainjective-type X 𝓤 𝓤
+                                 → WEM 𝓤
 simple-type₂-injective-gives-WEM X s X-ainj =
  𝟚-ainjective-gives-WEM
   (retract-of-ainjective 𝟚 X X-ainj
@@ -146,6 +148,9 @@ simple-type₂-injective-gives-WEM-examples =
  simple-type₂-injective-gives-WEM _ (step (step (step base base) base) base)
 
 \end{code}
+
+TODO. More generally, if a non-trivial totally separated type is
+injective, then WEM holds.
 
 TODO. We can also close under _×_ and _+_ to get the same result. We
 can also close under Π, but maybe not under Σ.
@@ -299,7 +304,7 @@ injectivity to define a non-continuous function.
 
 \begin{code}
 
-open import CoNaturals.GenericConvergentSequence
+open import CoNaturals.Type
 open import Taboos.BasicDiscontinuity (fe 𝓤₀ 𝓤₀)
 open import Taboos.WLPO
 open import Notation.CanonicalMap
@@ -334,5 +339,67 @@ conclusion with a weaker assumption and a simpler proof.
 ℕ∞-injective-gives-WEM : ainjective-type ℕ∞ 𝓤 𝓥 → WEM 𝓤
 ℕ∞-injective-gives-WEM ℕ∞-ainj =
  𝟚-ainjective-gives-WEM (retract-of-ainjective 𝟚 ℕ∞ ℕ∞-ainj 𝟚-retract-of-ℕ∞)
+
+\end{code}
+
+Added 6 June 2024 by Tom de Jong during a meeting with Martín Escardó.
+
+A type with a nontrivial apartness relation cannot be injective unless weak
+excluded middle holds.
+
+TODO(?). We could derive ℝ-ainjective-gives-WEM from the below. (Note the
+         similarities in the two proofs.)
+
+\begin{code}
+
+open import TypeTopology.TotallySeparated
+open Apartness fe pt
+
+type-with-non-trivial-apartness-injective-gives-WEM : {X : 𝓤 ̇  }
+                                                    → (_♯_ : X → X → 𝓥 ̇  )
+                                                    → is-apartness _♯_
+                                                    → (x₀ x₁ : X)
+                                                    → x₀ ♯ x₁
+                                                    → ainjective-type X 𝓣 𝓦
+                                                    → WEM 𝓣
+type-with-non-trivial-apartness-injective-gives-WEM
+ {𝓤} {𝓥} {𝓣} {𝓦} {X} _♯_ α x₀ x₁ points-apart ainj P P-is-prop = VII
+  where
+   X-aflabby : aflabby X 𝓣
+   X-aflabby = ainjective-types-are-aflabby _ ainj
+
+   f : (P + ¬ P) → X
+   f = cases (λ _ → x₀) (λ _ → x₁)
+
+   q : Ω 𝓣
+   q = (P + ¬ P) , decidability-of-prop-is-prop fe' P-is-prop
+
+   x : X
+   x = aflabby-extension X-aflabby q f
+
+   I : P → x ＝ x₀
+   I p = aflabby-extension-property X-aflabby q f (inl p)
+
+   II : ¬ P → x ＝ x₁
+   II ν = aflabby-extension-property X-aflabby q f (inr ν)
+
+   III : x ≠ x₀ → ¬ P
+   III = contrapositive I
+
+   IV : x ≠ x₁ → ¬¬ P
+   IV = contrapositive II
+
+   V : x₀ ♯ x ∨ x₁ ♯ x
+   V = apartness-is-cotransitive _♯_ α x₀ x₁ x points-apart
+
+   VI : (x ≠ x₀) ∨ (x ≠ x₁)
+   VI = ∨-functor ν ν V
+    where
+     ν : {x y : X} → x ♯ y → y ≠ x
+     ν a refl = apartness-is-irreflexive _♯_ α _ a
+
+   VII : ¬ P + ¬¬ P
+   VII = ∨-elim (decidability-of-prop-is-prop fe' (negations-are-props fe'))
+                (inl ∘ III) (inr ∘ IV) VI
 
 \end{code}

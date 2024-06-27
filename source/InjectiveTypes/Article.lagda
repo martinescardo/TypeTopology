@@ -1556,7 +1556,7 @@ the lifting monad in conjunction with resizing.
 
 \begin{code}
 
-import Lifting.Lifting
+import Lifting.Construction
 open import Lifting.Algebras
 import Lifting.EmbeddingViaSIP
 
@@ -1701,7 +1701,7 @@ types are (algebraically) injective iff excluded middle holds.
 
 \begin{code}
 
-open import UF.ExcludedMiddle
+open import UF.ClassicalLogic
 
 EM-gives-pointed-types-aflabby : (D : 𝓦 ̇ ) → EM 𝓤 → D → aflabby D 𝓤
 EM-gives-pointed-types-aflabby {𝓦} {𝓤} D em d P i f = h (em P i)

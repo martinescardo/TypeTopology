@@ -142,11 +142,11 @@ embeddings-with-sections-are-equivs : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y
 embeddings-with-sections-are-equivs f i h =
  vv-equivs-are-equivs f (embeddings-with-sections-are-vv-equivs f i h)
 
-Subtypes' : (𝓤 {𝓥} : Universe) → 𝓥 ̇ → 𝓤 ⁺ ⊔ 𝓥 ̇
-Subtypes' 𝓤 {𝓥} Y = Σ X ꞉ 𝓤 ̇ , X ↪ Y
+Subtype' : (𝓤 {𝓥} : Universe) → 𝓥 ̇ → 𝓤 ⁺ ⊔ 𝓥 ̇
+Subtype' 𝓤 {𝓥} Y = Σ X ꞉ 𝓤 ̇ , X ↪ Y
 
-Subtypes : 𝓤 ̇ → 𝓤 ⁺ ̇
-Subtypes {𝓤} Y = Subtypes' 𝓤 Y
+Subtype : 𝓤 ̇ → 𝓤 ⁺ ̇
+Subtype {𝓤} Y = Subtype' 𝓤 Y
 
 etofun : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X ↪ Y) → (X → Y)
 etofun = pr₁
@@ -199,6 +199,21 @@ embedding-gives-embedding' {𝓤} {𝓥} {X} {Y} f ise = g
          (λ x' → f x ＝ f x')
          (center (c x))
          (centrality (c x)))
+
+\end{code}
+
+Added 27 June 2024.
+It follows that if f is an equivalence, then so is ap f.
+It is added here, rather than in UF.EquivalenceExamples, to avoid cyclic module
+dependencies.
+
+\begin{code}
+
+ap-is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+            → is-equiv f
+            → {x x' : X} → is-equiv (ap f {x} {x'})
+ap-is-equiv f e {x} {x'} =
+ embedding-gives-embedding' f (equivs-are-embeddings f e) x x'
 
 embedding-criterion-converse' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                              → is-embedding f

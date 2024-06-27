@@ -28,7 +28,7 @@ constructively, well, taboos!
 module Taboos.WLPO where
 
 open import MLTT.Spartan
-open import CoNaturals.GenericConvergentSequence
+open import CoNaturals.Type
 open import UF.DiscreteAndSeparated
 open import UF.FunExt
 open import NotionsOfDecidability.Decidable
@@ -75,7 +75,7 @@ Notice that weak excluded middle implies WLPO.
 
 \begin{code}
 
-open import UF.ExcludedMiddle
+open import UF.ClassicalLogic
 
 WEM-gives-WLPO : funext₀ → WEM 𝓤₀ → WLPO
 WEM-gives-WLPO fe wem u = Cases (wem (u ＝ ∞) (ℕ∞-is-set fe))

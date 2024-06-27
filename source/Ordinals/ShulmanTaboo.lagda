@@ -53,7 +53,7 @@ open import Ordinals.Notions
 open import Ordinals.Underlying
 
 open import UF.Base
-open import UF.ExcludedMiddle
+open import UF.ClassicalLogic
 open import UF.SubtypeClassifier
 open import UF.Subsingletons-FunExt
 

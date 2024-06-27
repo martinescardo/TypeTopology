@@ -15,6 +15,8 @@ Table of contents
    retracts.
  * Lemmas involving (joins of) cofinal directed families.
  * Reindexing directed families.
+ * Suprema of ω-chains (added 23 June 2024).
+ * Subdcpo induced by a subset/property (added 18th Feb 2024 by Martin Escardo).
 
 \begin{code}
 
@@ -41,6 +43,7 @@ open import UF.EquivalenceExamples
 open import UF.Size hiding (is-small ; is-locally-small)
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
+open import UF.UniverseEmbedding
 
 open import DomainTheory.Basics.Dcpo pt fe 𝓥
 
@@ -61,10 +64,25 @@ Some preliminary basic lemmas.
         β i   ⊑⟨ 𝓓 ⟩[ ∐-is-upperbound 𝓓 ε i ]
         ∐ 𝓓 ε ∎⟨ 𝓓 ⟩
 
+∐-independent-of-directedness-witness : (𝓓 : DCPO {𝓤} {𝓣})
+                                        {I : 𝓥 ̇ } {α : I → ⟨ 𝓓 ⟩}
+                                        (δ ε : is-Directed 𝓓 α)
+                                      → ∐ 𝓓 δ ＝ ∐ 𝓓 ε
+∐-independent-of-directedness-witness 𝓓 {I} {α} δ ε = ap (∐ 𝓓) p
+ where
+  p : δ ＝ ε
+  p = being-directed-is-prop (underlying-order 𝓓) α δ ε
+
 ∐-family-＝ : (𝓓 : DCPO {𝓤} {𝓣}) {I : 𝓥 ̇ } {α β : I → ⟨ 𝓓 ⟩}
              (p : α ＝ β) (δ : is-Directed 𝓓 α)
            → ∐ 𝓓 {I} {α} δ ＝ ∐ 𝓓 {I} {β} (transport (is-Directed 𝓓) p δ)
 ∐-family-＝ 𝓓 {I} {α} {α} refl δ = refl
+
+∐-family-＝' : (𝓓 : DCPO {𝓤} {𝓣}) {I : 𝓥 ̇ } {α β : I → ⟨ 𝓓 ⟩}
+              (h : α ∼ β) (δ : is-Directed 𝓓 α) (ε : is-Directed 𝓓 β)
+            → ∐ 𝓓 {I} {α} δ ＝ ∐ 𝓓 {I} {β} ε
+∐-family-＝' 𝓓 {I} {α} {β} h δ ε =
+ ∐-family-＝ 𝓓 (dfunext fe h) δ ∙ ∐-independent-of-directedness-witness 𝓓 _ ε
 
 to-continuous-function-＝ : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
                            {f g : DCPO[ 𝓓 , 𝓔 ]}
@@ -78,15 +96,6 @@ to-continuous-function-＝ 𝓓 𝓔 h =
 
 ＝-to-⊒ : (𝓓 : DCPO {𝓤} {𝓣}) {x y : ⟨ 𝓓 ⟩} → y ＝ x → x ⊑⟨ 𝓓 ⟩ y
 ＝-to-⊒ 𝓓 p = ＝-to-⊑ 𝓓 (p ⁻¹)
-
-∐-independent-of-directedness-witness : (𝓓 : DCPO {𝓤} {𝓣})
-                                        {I : 𝓥 ̇ } {α : I → ⟨ 𝓓 ⟩}
-                                        (δ ε : is-Directed 𝓓 α)
-                                      → ∐ 𝓓 δ ＝ ∐ 𝓓 ε
-∐-independent-of-directedness-witness 𝓓 {I} {α} δ ε = ap (∐ 𝓓) p
- where
-  p : δ ＝ ε
-  p = being-directed-is-prop (underlying-order 𝓓) α δ ε
 
 is-monotone : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
             → (⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩) → 𝓤 ⊔ 𝓣 ⊔ 𝓣' ̇
@@ -340,6 +349,11 @@ _≃ᵈᶜᵖᵒ_ : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'}) �
               × is-continuous 𝓓 𝓔 f
               × is-continuous 𝓔 𝓓 g
 
+≃ᵈᶜᵖᵒ-inv : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
+          → 𝓓 ≃ᵈᶜᵖᵒ 𝓔
+          → 𝓔 ≃ᵈᶜᵖᵒ 𝓓
+≃ᵈᶜᵖᵒ-inv 𝓓 𝓔 (f , g , s , r , cf , cg) = (g , f , r , s , cg , cf)
+
 is-deflation : (𝓓 : DCPO {𝓤} {𝓣}) → DCPO[ 𝓓 , 𝓓 ] → 𝓤 ⊔ 𝓣 ̇
 is-deflation 𝓓 f = (x : ⟨ 𝓓 ⟩) → [ 𝓓 , 𝓓 ]⟨ f ⟩ x ⊑⟨ 𝓓 ⟩ x
 
@@ -365,6 +379,19 @@ record _continuous-retract-of_
   𝕣 : DCPO[ 𝓔 , 𝓓 ]
   𝕣 = r , r-is-continuous
 
+≃ᵈᶜᵖᵒ-to-continuous-retract : (𝓓 : DCPO {𝓤} {𝓣})
+                              (𝓔 : DCPO {𝓤'} {𝓣'})
+                            → 𝓓 ≃ᵈᶜᵖᵒ 𝓔
+                            → 𝓓 continuous-retract-of 𝓔
+≃ᵈᶜᵖᵒ-to-continuous-retract 𝓓 𝓔 (f , g , s , r , cf , cg) =
+ record
+  { s = f
+  ; r = g
+  ; s-section-of-r = s
+  ; s-is-continuous = cf
+  ; r-is-continuous = cg
+  }
+
 is-embedding-projection : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
                         → DCPO[ 𝓓 , 𝓔 ]
                         → DCPO[ 𝓔 , 𝓓 ]
@@ -389,6 +416,19 @@ record embedding-projection-pair-between
   𝕡 : DCPO[ 𝓔 , 𝓓 ]
   𝕡 = p , p-is-continuous
 
+≃ᵈᶜᵖᵒ-to-embedding-projection-pair : (𝓓 : DCPO {𝓤} {𝓣})
+                                     (𝓔 : DCPO {𝓤'} {𝓣'})
+                                   → 𝓓 ≃ᵈᶜᵖᵒ 𝓔
+                                   → embedding-projection-pair-between 𝓓 𝓔
+≃ᵈᶜᵖᵒ-to-embedding-projection-pair 𝓓 𝓔 (f , g , s , r , cf , cg) =
+ record
+  { e = f
+  ; p = g
+  ; e-section-of-p = s
+  ; e-p-deflation = λ y → ＝-to-⊑ 𝓔 (r y)
+  ; e-is-continuous = cf
+  ; p-is-continuous = cg
+  }
 
 \end{code}
 
@@ -685,6 +725,52 @@ module _
        ⦅1⦆ = ＝-to-⊒ 𝓓
              (ap α (inverses-are-retractions ⌜ ρ ⌝ (⌜⌝-is-equiv ρ) i))
        ⦅2⦆ = y-is-ub (⌜ ρ ⌝ i)
+
+module _
+        (𝓓 : DCPO {𝓤} {𝓣})
+        {I : 𝓦 ̇ } {J : 𝓦' ̇ }
+        (ρ : I ≃ J)
+        (α : I → ⟨ 𝓓 ⟩)
+       where
+
+ sup-reindexed-family : (x : ⟨ 𝓓 ⟩)
+                      → is-sup (underlying-order 𝓓) x (reindexed-family 𝓓 ρ α)
+                      → is-sup (underlying-order 𝓓) x α
+ sup-reindexed-family x x-is-sup =
+  transport (is-sup (underlying-order 𝓓) x) (dfunext fe h)
+            (reindexed-family-sup 𝓓 (≃-sym ρ) β x x-is-sup)
+   where
+    β = reindexed-family 𝓓 ρ α
+    h : reindexed-family 𝓓 (≃-sym ρ) β ∼ α
+    h i = (α ∘ ⌜ ρ ⌝⁻¹ ∘ ⌜ ≃-sym ρ ⌝⁻¹) i ＝⟨ e₁ ⟩
+          (α ∘ ⌜ ρ ⌝⁻¹ ∘ ⌜ ρ ⌝) i         ＝⟨ e₂ ⟩
+          α i                             ∎
+     where
+      e₁ = ap (λ - → (α ∘ ⌜ ρ ⌝⁻¹ ∘ -) i)
+              (inversion-involutive ⌜ ρ ⌝ (⌜⌝-is-equiv ρ))
+      e₂ = ap α (inverses-are-retractions' ρ i)
+
+\end{code}
+
+Added 23 June 2024.
+All dcpos (regardless of the universe level for index families) are ω-complete.
+
+\begin{code}
+
+dcpos-are-ω-complete : (𝓓 : DCPO {𝓤} {𝓣})
+                     → is-ω-complete (underlying-order 𝓓)
+dcpos-are-ω-complete 𝓓 α α-is-ω-chain = s , s-is-sup
+ where
+  ℕ' : 𝓥 ̇
+  ℕ' = Lift 𝓥 ℕ
+  ρ : ℕ ≃ Lift 𝓥 ℕ
+  ρ = ≃-Lift 𝓥 ℕ
+  δ : is-Directed 𝓓 (reindexed-family 𝓓 (≃-Lift 𝓥 ℕ) α)
+  δ = reindexed-family-is-directed 𝓓 ρ α (ω-chains-are-Directed 𝓓 α α-is-ω-chain)
+  s : ⟨ 𝓓 ⟩
+  s = ∐ 𝓓 δ
+  s-is-sup : is-sup (underlying-order 𝓓) s α
+  s-is-sup = sup-reindexed-family 𝓓 ρ α s (∐-is-sup 𝓓 δ)
 
 \end{code}
 

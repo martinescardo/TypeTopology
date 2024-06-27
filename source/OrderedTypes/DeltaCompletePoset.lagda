@@ -26,7 +26,7 @@ open import UF.Subsingletons-FunExt
 open import UF.NotNotStablePropositions
 open import UF.Embeddings
 open import UF.Sets
-open import UF.ExcludedMiddle
+open import UF.ClassicalLogic
 open import Slice.Family
 
 module OrderedTypes.DeltaCompletePoset
@@ -35,13 +35,13 @@ module OrderedTypes.DeltaCompletePoset
  (pe : Prop-Ext)
   where
 
-open import Locales.Frame pt fe hiding (𝟚)
+open import Locales.Frame pt fe hiding (𝟚; ₀; ₁)
 open import OrderedTypes.TwoElementPoset pt fe
 open AllCombinators pt fe
 
 module δ-complete-poset {𝓤 𝓦 : Universe} (𝓥 : Universe) (A : Poset 𝓤 𝓦) where
 
- δ : (x y : ∣ A ∣ₚ) → (P : Ω 𝓥) → (𝟙{𝓥} + P holds) → ∣ A ∣ₚ 
+ δ : (x y : ∣ A ∣ₚ) → (P : Ω 𝓥) → (𝟙{𝓥} + P holds) → ∣ A ∣ₚ
  δ x y P (inl _) = x
  δ x y P (inr _) = y
 
@@ -53,7 +53,7 @@ module δ-complete-poset {𝓤 𝓦 : Universe} (𝓥 : Universe) (A : Poset �
  δ-fam : (x y : ∣ A ∣ₚ) → (P : Ω 𝓥) → Fam 𝓥 ∣ A ∣ₚ
  δ-fam x y P = ((𝟙 + P holds) , δ x y P)
 
- is-δ-complete : 𝓤 ⊔ 𝓦 ⊔ (𝓥 ⁺) ̇ 
+ is-δ-complete : 𝓤 ⊔ 𝓦 ⊔ (𝓥 ⁺) ̇
  is-δ-complete = (x y : ∣ A ∣ₚ)
                → (x ≤ y) holds
                → (P : Ω 𝓥)
@@ -86,7 +86,7 @@ module δ-complete-poset {𝓤 𝓦 : Universe} (𝓥 : Universe) (A : Poset �
   lower-is-sup-δ not-P = ≤-is-antisymmetric A x-below-sup sup-below-x
    where
     x-below-sup : (x ≤ sup-of-δ i x y o P) holds
-    x-below-sup = is-ub-of-δ (inl ⋆) 
+    x-below-sup = is-ub-of-δ (inl ⋆)
 
     x-is-ub : (x is-an-upper-bound-of (δ-fam x y P)) holds
     x-is-ub (inl ⋆) = ≤-is-reflexive A x
@@ -107,7 +107,7 @@ module δ-complete-poset {𝓤 𝓦 : Universe} (𝓥 : Universe) (A : Poset �
 
     sup-below-y : (sup-of-δ i x y o P ≤ y) holds
     sup-below-y = has-lub-cond-δ (y , y-is-ub)
-   
+
   sup-δ-below-upper : (sup-of-δ i x y o P ≤ y) holds
   sup-δ-below-upper = has-lub-cond-δ (y , y-is-ub)
    where
@@ -167,7 +167,7 @@ module non-trivial-posets {𝓤  𝓦 : Universe} (A : Poset 𝓤 𝓦) where
    x = lower i
    y = upper i
    x-below-y = ordering i
-   x-not-equal-y = not-equal i 
+   x-not-equal-y = not-equal i
 
   WEM-lemma : (P : Ω 𝓥)
             → ((x is-lub-of (δ-fam x y P)) holds → ¬ (P holds))
@@ -193,7 +193,7 @@ module non-trivial-posets {𝓤  𝓦 : Universe} (A : Poset 𝓤 𝓦) where
   y-is-lub-gives-not-not-P : (P : Ω 𝓥)
                            → (y is-lub-of (δ-fam x y P)) holds → ¬ ¬ (P holds)
   y-is-lub-gives-not-not-P P = pr₂ (WEM-lemma P)
-    
+
 \end{code}
 
 We now show that the two element poset is δ complete only if WEM holds.
@@ -210,7 +210,7 @@ We now show that the two element poset is δ complete only if WEM holds.
  where
   open Joins (rel-syntax 2-Poset)
   open δ-complete-poset 𝓥 2-Poset
-  open non-trivial-posets 2-Poset  
+  open non-trivial-posets 2-Poset
 
   sup-from-δ-completeness : Σ s ꞉ ∣ 2-Poset ∣ₚ ,
                           (s is-lub-of (δ-fam ₀ ₁ (P , P-is-prop))) holds
@@ -235,7 +235,7 @@ WEM, we now introduce the stronger concept of positivity.
 \begin{code}
 
 module Positive-Posets (𝓤  𝓦  𝓥 : Universe) (A : Poset 𝓤 𝓦) where
- 
+
  open δ-complete-poset 𝓥 A
  open Universal fe
  open PosetReasoning A
@@ -243,7 +243,7 @@ module Positive-Posets (𝓤  𝓦  𝓥 : Universe) (A : Poset 𝓤 𝓦) where
 
  module positive-posets (i : is-δ-complete) where
 
-  _<_ : (x y : ∣ A ∣ₚ) → 𝓤 ⊔ 𝓦 ⊔ (𝓥 ⁺) ̇ 
+  _<_ : (x y : ∣ A ∣ₚ) → 𝓤 ⊔ 𝓦 ⊔ (𝓥 ⁺) ̇
   x < y = (x ≤ y) holds
         × ((z : ∣ A ∣ₚ)
           → (y ≤ z) holds
@@ -302,7 +302,7 @@ it is well established that DNE is equivalent to EM.
   ≤-<-to-< : (i : is-δ-complete)
            → (x y z : ∣ A ∣ₚ)
            → (x ≤ y) holds × y < z
-           → x < z 
+           → x < z
   ≤-<-to-< i x y z (x-below-y , y-strictly-below-z) =
     (≤-is-transitive A x y z x-below-y
                      (order-from-strictly-below y-strictly-below-z)
@@ -325,7 +325,7 @@ it is well established that DNE is equivalent to EM.
       w-is-ub (inr p) = ≤-is-reflexive A w
 
       w-has-lub-cond : ((u , u-is-ub) : (upper-bound (δ-fam y w P)))
-                     → (w ≤ u) holds 
+                     → (w ≤ u) holds
       w-has-lub-cond (u , u-is-ub) = w-has-lub-condₓ (u , u-is-ubₓ)
        where
         u-is-ubₓ : (u is-an-upper-bound-of (δ-fam x w P)) holds
@@ -353,7 +353,7 @@ it is well established that DNE is equivalent to EM.
                                                           z-below-w)
                                          P w-is-lub
 
-  is-positive-poset : 𝓤 ⊔ 𝓦 ⊔ (𝓥 ⁺) ̇ 
+  is-positive-poset : 𝓤 ⊔ 𝓦 ⊔ (𝓥 ⁺) ̇
   is-positive-poset = Σ x ꞉ ∣ A ∣ₚ , (Σ y ꞉ ∣ A ∣ₚ , x < y)
 
 \end{code}
@@ -483,7 +483,7 @@ module Retract-Lemmas (𝓤  𝓦  𝓥 : Universe) (A : Poset 𝓤 𝓦) where
 
 We now formalize the second retract lemma. Here we replace the assumption of
 non-triviality with positivity. This allows us to exhibit the type of
-propositions as a retract of a locally small positive δ-complete poset. 
+propositions as a retract of a locally small positive δ-complete poset.
 
 \begin{code}
 
@@ -545,7 +545,7 @@ propositions as a retract of a locally small positive δ-complete poset.
                                           (holds-is-prop P)
                                           (f P)
                                           (g P))
- 
+
   Δ-section-to-positive : ((z : ∣ A ∣ₚ)
                         → (y-below-z : (y ≤ z) holds)
                         → is-section (Δ (t z y-below-z)))
@@ -598,7 +598,7 @@ propositions as a retract of a locally small positive δ-complete poset.
                                    → (y-below-z : (y ≤ z) holds)
                                    → is-section (Δ (t z y-below-z)))
   positive-iff-Δ-section = (positive-to-Δ-section , Δ-section-to-positive)
-   
+
 \end{code}
 
 We will now define what it means for a δ-complete poset to be small.
@@ -628,7 +628,7 @@ module Ω-δ-complete-positive-Poset (𝓥 : Universe) where
  _⊑_ : Ω 𝓥 → Ω 𝓥 → 𝓥  ̇
  P ⊑ Q = P holds → Q holds
 
- ⊑-is-prop-valued : (P Q : Ω 𝓥) → is-prop (P ⊑ Q) 
+ ⊑-is-prop-valued : (P Q : Ω 𝓥) → is-prop (P ⊑ Q)
  ⊑-is-prop-valued P Q = Π-is-prop fe (λ _ → holds-is-prop Q)
 
  ⊑-is-reflexive : (P : Ω 𝓥) → P ⊑ P
@@ -697,13 +697,13 @@ module Ω¬¬-δ-complete-non-trivial-Poset (𝓥 : Universe) where
  _⊑_ : Ω¬¬ 𝓥 → Ω¬¬ 𝓥 → 𝓥  ̇
  P ⊑ Q = P holds' → Q holds'
 
- ⊑-is-prop-valued : (P Q : Ω¬¬ 𝓥) → is-prop (P ⊑ Q) 
+ ⊑-is-prop-valued : (P Q : Ω¬¬ 𝓥) → is-prop (P ⊑ Q)
  ⊑-is-prop-valued P Q = Π-is-prop fe (λ _ → holds'-is-prop Q)
 
  ⊑-is-reflexive : (P : Ω¬¬ 𝓥) → P ⊑ P
  ⊑-is-reflexive _ = id
 
- ⊑-is-antisymmetric : {P Q : Ω¬¬ 𝓥} → P ⊑ Q → Q ⊑ P → P ＝ Q 
+ ⊑-is-antisymmetric : {P Q : Ω¬¬ 𝓥} → P ⊑ Q → Q ⊑ P → P ＝ Q
  ⊑-is-antisymmetric {P} {Q} o r =
    to-subtype-＝ (λ X → being-¬¬-stable-is-prop fe (holds-is-prop X))
                  (to-subtype-＝ (λ _ → being-prop-is-prop fe)
@@ -731,7 +731,7 @@ module Ω¬¬-δ-complete-non-trivial-Poset (𝓥 : Universe) where
    (((¬¬ (((Ǝ i ꞉ (𝟙 + P holds) , (δ Q R P i) holds') holds)) ,
     negations-are-props fe) ,
     ¬-is-¬¬-stable) ,
-    (is-upbnd , has-lub-cond)) 
+    (is-upbnd , has-lub-cond))
   where
    open Joins (λ Q → λ R → (Q ⊑ R , ⊑-is-prop-valued Q R))
    open propositional-truncations-exist pt
@@ -740,8 +740,8 @@ module Ω¬¬-δ-complete-non-trivial-Poset (𝓥 : Universe) where
    E = ((¬¬ ((Ǝ i ꞉ (𝟙 + P holds) , (δ Q R P i) holds') holds) ,
         negations-are-props fe) ,
         ¬-is-¬¬-stable)
-   
-   is-upbnd : (E is-an-upper-bound-of (δ-fam Q R P)) holds 
+
+   is-upbnd : (E is-an-upper-bound-of (δ-fam Q R P)) holds
    is-upbnd i δ-i not-exists = not-exists ∣ (i , δ-i) ∣
 
    has-lub-cond : ((U , _) : upper-bound (δ-fam Q R P)) → E ⊑ U
@@ -807,7 +807,7 @@ module Predicative-Taboos (𝓤 𝓦 𝓥 : Universe) (A : Poset 𝓤 𝓦) wher
      sections-into-sets-are-embeddings (Δ x-below-y ∘ Ω¬¬-to-Ω)
                                        (r , H)
                                        carrier-of-[ A ]-is-set
- 
+
  small-positive-δ-complete-poset-implies-resizing :
    (δ-complete : is-δ-complete)
   → is-positive-poset δ-complete

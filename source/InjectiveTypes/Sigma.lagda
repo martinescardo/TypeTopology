@@ -96,8 +96,8 @@ module _ {X : 𝓤 ̇ }
 
 \end{code}
 
-We now give a sufficient condition to derive the aflabbiness
-of Σ x ꞉ X , A x from that of X.
+We now give a sufficient *compatibility* condition to derive the
+aflabbiness of Σ x ꞉ X , A x from that of X.
 
 In order to extend f' as in the diagram below, first notice that it is
 of the form ⟨ f , g ⟩ with f as in the previous diagram and
@@ -112,7 +112,7 @@ g : (h : p holds) → A (f h).
                    v
                Σ x ꞉ X , A x.
 
-Our technical condition says that the map ρ defined below has a
+Our compatibility condition says that the map ρ defined below has a
 section, so that we can define the extension (x , a) by
 
  x = extension ϕ p f,
@@ -127,30 +127,31 @@ section, so that we can define the extension (x , a) by
 \end{code}
 
 Our first objective is to prove that Σ x ꞉ X , A x is aflabby if the
-following technical condition holds. For a motivation for this
-technical condition, see the file InjectiveTypes.MathematicalStructures.
+following compatibility condition holds. For a motivation for this
+compatibility condition, see the file
+InjectiveTypes.MathematicalStructures.
 
 \begin{code}
 
- technical-condition : 𝓤 ⊔ 𝓥 ⊔ (𝓦 ⁺)  ̇
- technical-condition = (p : Ω 𝓦)
-                       (f : p holds → X)
-                     → has-section (ρ p f)
+ compatibility-condition : 𝓤 ⊔ 𝓥 ⊔ (𝓦 ⁺)  ̇
+ compatibility-condition = (p : Ω 𝓦)
+                           (f : p holds → X)
+                         → has-section (ρ p f)
 
 \end{code}
 
-That this technical condition is sufficient but not necessary is
+That this compatibility condition is sufficient but not necessary is
 illustrated in the file InjectiveTypes.InhabitednessTaboo, with the
 type of pointed types (which is injective) shown to be equivalent to a
 subtype of the type of inhabited types (which is "not" injective).
 
 One of the main results of this file is that if A satisfies the
-technical condition, then Σ x ꞉ X , A x is aflabby and hence
+compatibility condition, then Σ x ꞉ X , A x is aflabby and hence
 ainjective.
 
 \begin{code}
 
- Σ-is-aflabby : technical-condition → aflabby (Σ A) 𝓦
+ Σ-is-aflabby : compatibility-condition → aflabby (Σ A) 𝓦
  Σ-is-aflabby ρ-has-section = I
   where
    I : aflabby (Σ A) 𝓦
@@ -187,33 +188,35 @@ ainjective.
              ρ p f (σ g) h                    ＝⟨ ap (λ - → - h) (η g) ⟩
              g h                              ∎
 
- Σ-ainjective : technical-condition → ainjective-type (Σ A) 𝓦 𝓦
+ Σ-ainjective : compatibility-condition → ainjective-type (Σ A) 𝓦 𝓦
  Σ-ainjective = aflabby-types-are-ainjective (Σ A) ∘ Σ-is-aflabby
 
 \end{code}
 
-If the type family A is a predicate, i.e. a family of propositions, then the
-technical condition simplies to just having a map in the reverse direction of
-ρ p f with the requirement that it's a section following automatically.
+If the type family A is a predicate, i.e. a family of propositions,
+then the compatibility condition simplifies to just having a map in
+the reverse direction of ρ p f with the requirement that it's a
+section following automatically.
 
 \begin{code}
 
- simplified-technical-condition : 𝓤 ⊔ 𝓥 ⊔ (𝓦 ⁺)  ̇
- simplified-technical-condition = (p : Ω 𝓦)
-                                  (f : p holds → X)
-                                → ((h : p holds) → A (f h)) → A (extension ϕ p f)
+ simplified-compatibility-condition : 𝓤 ⊔ 𝓥 ⊔ (𝓦 ⁺) ̇
+ simplified-compatibility-condition =
+    (p : Ω 𝓦)
+    (f : p holds → X)
+  → ((h : p holds) → A (f h)) → A (extension ϕ p f)
 
- technical-condition-gives-simplified-technical-condition :
-    technical-condition
-  → simplified-technical-condition
- technical-condition-gives-simplified-technical-condition c p f =
+ compatibility-condition-gives-simplified-compatibility-condition :
+    compatibility-condition
+  → simplified-compatibility-condition
+ compatibility-condition-gives-simplified-compatibility-condition c p f =
   section-of (ρ p f) (c p f)
 
- simplified-technical-condition-gives-technical-condition :
+ simplified-compatibility-condition-gives-compatibility-condition :
     ((x : X) → is-prop (A x))
-  → simplified-technical-condition
-  → technical-condition
- simplified-technical-condition-gives-technical-condition
+  → simplified-compatibility-condition
+  → compatibility-condition
+ simplified-compatibility-condition-gives-compatibility-condition
   A-is-prop-valued c p f = I , II
    where
     I : ((h : p holds) → A (f h)) → A (extension ϕ p f)
@@ -222,52 +225,32 @@ technical condition simplies to just having a map in the reverse direction of
     II g = dfunext fe'
                    (λ h → A-is-prop-valued (f h) ((ρ p f ∘ c p f) g h) (g h))
 
- Σ-predicate-is-aflabby : ((x : X) → is-prop (A x))
-                        → simplified-technical-condition
-                        → aflabby (Σ A) 𝓦
- Σ-predicate-is-aflabby A-is-prop-valued c =
+ subtype-is-aflabby : ((x : X) → is-prop (A x))
+                    → simplified-compatibility-condition
+                    → aflabby (Σ A) 𝓦
+ subtype-is-aflabby A-is-prop-valued c =
   Σ-is-aflabby
-   (simplified-technical-condition-gives-technical-condition A-is-prop-valued c)
-
-simplified-technical-condition-with-axioms :
-   {X : 𝓤 ̇  } (A : X → 𝓥 ̇  ) (ϕ : aflabby X 𝓣)
-   (A-technical-condition : technical-condition A ϕ)
-   (B : Σ A → 𝓦 ̇  )
-   (B-is-prop-valued : (σ : Σ A) → is-prop (B σ))
-   (B-simplified-technical-condition :
-    simplified-technical-condition B (Σ-is-aflabby A ϕ A-technical-condition))
- → technical-condition B (Σ-is-aflabby A ϕ A-technical-condition)
-simplified-technical-condition-with-axioms
- A ϕ
- A-technical-condition
- B
- B-is-prop-valued
- B-simplified-technical-condition =
-  simplified-technical-condition-gives-technical-condition
-   B
-   (Σ-is-aflabby A ϕ A-technical-condition)
-   B-is-prop-valued
-   B-simplified-technical-condition
+   (simplified-compatibility-condition-gives-compatibility-condition A-is-prop-valued c)
 
 \end{code}
 
 Sometimes we want to prove that Σ x : X , A₁ x × A₂ x is
 aflabby/ainjective when we already know that A₁ and A₂ satisfy the
-technical conditions, and the following lemma can be used for that
+compatibility conditions, and the following lemma can be used for that
 purpose.
 
 \begin{code}
 
-technical-condition-×
+compatibility-condition-×
  : {𝓤 𝓥₁ 𝓥₂ 𝓦 : Universe}
    {X : 𝓤 ̇ }
    (ϕ : aflabby X 𝓦)
    {A₁ : X → 𝓥₁ ̇ } {A₂ : X → 𝓥₂ ̇ }
- → technical-condition A₁ ϕ
- → technical-condition A₂ ϕ
- → technical-condition (λ x → A₁ x × A₂ x) ϕ
-technical-condition-× {𝓤} {𝓥₁} {𝓥₂} {𝓦} {X} ϕ {A₁} {A₂}
-                      ρ₁-has-section ρ₂-has-section = γ
+ → compatibility-condition A₁ ϕ
+ → compatibility-condition A₂ ϕ
+ → compatibility-condition (λ x → A₁ x × A₂ x) ϕ
+compatibility-condition-× {𝓤} {𝓥₁} {𝓥₂} {𝓦} {X} ϕ {A₁} {A₂}
+                          ρ₁-has-section ρ₂-has-section = γ
  where
   A : X → 𝓥₁ ⊔ 𝓥₂ ̇
   A x = A₁ x × A₂ x
@@ -315,22 +298,58 @@ technical-condition-× {𝓤} {𝓥₁} {𝓥₂} {𝓦} {X} ϕ {A₁} {A₂}
 
 \end{code}
 
-Sometimes we want to show that a type of the form Σ x ꞉ X , Σ a ꞉ A x , B x a
-is aflabby/ainjective, where the family B happens to be proposition
-valued. (See the discussion below for the case that B is not
-necessarily proposition valued.)
+Sometimes we want to show that types of the form
 
-We think of B as "axioms" on x and a. For example, in one application,
-we choose B to be the monoid axioms in the file
-InjectiveTypes.MathematicalStructuresMoreGeneral.
+  Σ x ꞉ X , Σ a ꞉ A x , B x a
+
+is aflabby/ainjective, where the family B happens to be proposition valued and
+the type Σ x : X , A x is already known to be aflabby/ainjective. (See the
+discussion below for the case that B is not necessarily proposition valued.)
+This can often be done directly using the simplified compatibility condition if
+we consider types of the equivalent form
+
+  Σ σ ꞉ (Σ x : X , A x) , C σ
+
+again with C proposition valued.
 
 \begin{code}
 
-technical-condition-with-axioms
+private
+ example : {X : 𝓤 ̇ }
+           {A : X → 𝓥 ̇ }
+           (C : Σ A → 𝓣 ̇ )
+         → (ϕ : aflabby (Σ A) 𝓦)
+         → ((σ : Σ A) → is-prop (C σ))
+         → simplified-compatibility-condition C ϕ
+         → aflabby (Σ C) 𝓦
+ example = subtype-is-aflabby
+
+\end{code}
+
+One practical example of this situation takes place when the type X is
+a universe, the family A is the structure of pointed ∞-magmas, and C
+gives the monoid axioms. So we first show that pointed ∞-magmas are
+aflabby, then, using the above, we conclude that so is the subtype of
+monoids, provided we also show that the monoid axioms satisfy the
+simplified compatibility condition.
+
+The following theorem strengthens both the hypothesis and the
+conclusion of the above example, by showing that the full
+compatibility condition is preserved if B is closed under extension in
+a suitable sense. This gives an alternative way of successively
+combining simple mathematical structures such as pointed types and
+∞-magmas to get monoids, groups, rings, etc., to show that all the
+axioms considered satisfy the compatibility condition and hence the
+corresponding types of mathematical structures are aflabby, as
+exemplified in the module InjectiveTypes.MathematicalStructuresMoreGeneral.
+
+\begin{code}
+
+compatibility-condition-with-axioms
  : {X : 𝓤 ̇ }
    (ϕ : aflabby X 𝓥)
    (A : X → 𝓦 ̇ )
-   (ρ-has-section : technical-condition A ϕ)
+   (ρ-has-section : compatibility-condition A ϕ)
    (B : (x : X ) → A x → 𝓥 ̇ )
    (B-is-prop-valued : (x : X) (a : A x) → is-prop (B x a))
    (B-is-closed-under-extension
@@ -339,18 +358,18 @@ technical-condition-with-axioms
      → (α : (h : p holds) → A (f h))
      → ((h : p holds) → B (f h) (α h))
      → B (extension ϕ p f) (section-of (ρ A ϕ p f) (ρ-has-section p f) α))
- → technical-condition (λ x → Σ a ꞉ A x , B x a) ϕ
-technical-condition-with-axioms
+ → compatibility-condition (λ x → Σ a ꞉ A x , B x a) ϕ
+compatibility-condition-with-axioms
  {𝓤} {𝓥} {𝓦} {X}
  ϕ
  A
  ρ-has-section
  B
  B-is-prop-valued
- B-is-closed-under-extension = ρₐ-has-section
+ B-is-closed-under-extension = ρ'-has-section
   where
-   Aₐ : X → 𝓥 ⊔ 𝓦 ̇
-   Aₐ x = Σ a ꞉ A x , B x a
+   A' : X → 𝓥 ⊔ 𝓦 ̇
+   A' x = Σ a ꞉ A x , B x a
 
    module _ (p : Ω 𝓥)
             (f : p holds → X)
@@ -359,33 +378,39 @@ technical-condition-with-axioms
     σ : ((h : p holds) → A (f h)) → A (extension ϕ p f)
     σ = section-of (ρ A ϕ p f) (ρ-has-section p f)
 
-    ρₐ : Aₐ (extension ϕ p f) → ((h : p holds) → Aₐ (f h))
-    ρₐ = ρ Aₐ ϕ p f
+    ρ' : A' (extension ϕ p f) → ((h : p holds) → A' (f h))
+    ρ' = ρ A' ϕ p f
 
-    σₐ : ((h : p holds) → Aₐ (f h)) → Aₐ (extension ϕ p f)
-    σₐ α = σ (λ h → pr₁ (α h)) ,
-             B-is-closed-under-extension p f
-             (λ h → pr₁ (α h))
-             (λ h → pr₂ (α h))
+    τ : (α : (h : p holds) → A' (f h))
+      → B (extension ϕ p f) (σ (λ h → pr₁ (α h)))
+    τ α = B-is-closed-under-extension p f
+           (λ h → pr₁ (α h))
+           (λ h → pr₂ (α h))
 
-    ρσₐ : ρₐ ∘ σₐ ∼ id
-    ρσₐ α = dfunext fe' I
+    σ' : ((h : p holds) → A' (f h)) → A' (extension ϕ p f)
+    σ' α = σ (λ h → pr₁ (α h)) , τ α
+
+    ρσ' : ρ' ∘ σ' ∼ id
+    ρσ' α = dfunext fe' I
      where
       α₁ = λ h → pr₁ (α h)
       α₂ = λ h → pr₂ (α h)
 
-      I : ρₐ (σₐ α) ∼ α
+      I : ρ' (σ' α) ∼ α
       I h =
-       ρₐ (σₐ α) h                    ＝⟨ refl ⟩
-       ρₐ (σ α₁ , _) h                ＝⟨ refl ⟩
-       transport Aₐ (e h) (σ α₁ , _)  ＝⟨ II ⟩
-       (transport A (e h) (σ α₁) , _) ＝⟨ refl ⟩
-       (ρ A ϕ p f (σ α₁) h , _)       ＝⟨ III ⟩
-       (α₁ h , α₂ h)                  ＝⟨ refl ⟩
-       α h                            ∎
+       ρ' (σ' α) h                     ＝⟨ refl ⟩
+       ρ' (σ α₁ , τ α) h               ＝⟨ refl ⟩
+       transport A' (e h) (σ α₁ , τ α) ＝⟨ II ⟩
+       (transport A (e h) (σ α₁) , τ') ＝⟨ refl ⟩
+       (ρ A ϕ p f (σ α₁) h , _)        ＝⟨ III ⟩
+       (α₁ h , α₂ h)                   ＝⟨ refl ⟩
+       α h                             ∎
         where
          e : (h : p holds) → extension ϕ p f ＝ f h
          e = extends ϕ p f
+
+         τ' : B (f h) (transport A (extends ϕ p f h) (σ α₁))
+         τ' = transportd A B (σ α₁) (e h) (τ α)
 
          II  = transport-Σ A B (f h) (e h) (σ α₁)
          III = to-subtype-＝
@@ -393,8 +418,8 @@ technical-condition-with-axioms
                 (ap (λ - → - h)
                     (section-equation (ρ A ϕ p f) (ρ-has-section p f) α₁))
 
-    ρₐ-has-section : has-section ρₐ
-    ρₐ-has-section = σₐ , ρσₐ
+    ρ'-has-section : has-section ρ'
+    ρ'-has-section = σ' , ρσ'
 
 \end{code}
 

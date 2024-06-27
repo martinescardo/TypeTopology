@@ -48,7 +48,7 @@ module Ordinals.NotationInterpretation2 (fe : FunExt) where
 private
  fe₀ = fe 𝓤₀ 𝓤₀
 
-open import CoNaturals.GenericConvergentSequence
+open import CoNaturals.Type
 open import MLTT.Two-Properties
 open import Naturals.Binary hiding (_+_)
 open import Notation.CanonicalMap hiding (ι)

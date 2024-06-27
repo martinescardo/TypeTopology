@@ -197,6 +197,9 @@ subtype-is-¬¬-separated : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (m : X → Y)
                                      → is-¬¬-separated X
 subtype-is-¬¬-separated {𝓤} {𝓥} {X} m i s x x' e = i (s (m x) (m x') (¬¬-functor (ap m) e))
 
+Cantor-is-¬¬-separated : funext₀ → is-¬¬-separated (ℕ → 𝟚)
+Cantor-is-¬¬-separated fe = Π-is-¬¬-separated fe (λ _ → 𝟚-is-¬¬-separated)
+
 \end{code}
 
 The following is an apartness relation when Y is ¬¬-separated, but we
@@ -559,6 +562,9 @@ discrete-inl : {X : 𝓤 ̇ } (d : is-discrete X) (x y : X) (r : x ＝ y)
              → d x y ＝ inl r
 discrete-inl d x = isolated-inl x (d x)
 
+discrete-inl-refl : {X : 𝓤 ̇ } (d : is-discrete X) (x : X) → d x x ＝ inl refl
+discrete-inl-refl {𝓤} {X} d x = discrete-inl d x x refl
+
 discrete-inr : funext 𝓤 𝓤₀
              → {X : 𝓤 ̇ }
                (d : is-discrete X)
@@ -701,5 +707,17 @@ global-point-is-embedding f h =
    where
     h' : (p : 𝟙) → is-h-isolated (f p)
     h' ⋆ = h
+
+\end{code}
+
+Added 1st May 2024. Wrapper for use with instance arguments:
+
+\begin{code}
+
+data is-discrete' {𝓤 : Universe} (X : 𝓤 ̇ ) : 𝓤 ̇ where
+ discrete-gives-discrete' : is-discrete X → is-discrete' X
+
+discrete'-gives-discrete : {X : 𝓤 ̇ } → is-discrete' X → is-discrete X
+discrete'-gives-discrete (discrete-gives-discrete' d) = d
 
 \end{code}

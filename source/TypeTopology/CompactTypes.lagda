@@ -1152,7 +1152,7 @@ Added 26th April 2022. All types are compact iff global choice holds:
 
 \begin{code}
 
-open import UF.ExcludedMiddle
+open import UF.ClassicalLogic
 
 all-types-compact-gives-global-choice : ((X : 𝓤 ̇ ) → is-Compact X {𝓤})
                                       → Global-Choice 𝓤

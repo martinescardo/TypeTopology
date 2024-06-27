@@ -27,7 +27,7 @@ open import UF.Subsingletons-FunExt
 
 open PropositionalTruncation pt
 
-open import Lifting.Lifting 𝓤 hiding (⊥)
+open import Lifting.Construction 𝓤 hiding (⊥)
 open import Lifting.Miscelanea 𝓤
 open import Lifting.Miscelanea-PropExt-FunExt 𝓤 pe fe
 open import Lifting.Monad 𝓤

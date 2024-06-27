@@ -293,7 +293,7 @@ proposition P, which is weak excluded middle, which is not provable.
 
 \begin{code}
 
-open import UF.ExcludedMiddle
+open import UF.ClassicalLogic
 
 compact-prop-tychonoff-gives-WEM : ((X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ )
                                        → is-prop X

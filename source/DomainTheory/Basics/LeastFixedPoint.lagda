@@ -199,18 +199,11 @@ module _ {𝓥 : Universe} where
 
   iter-increases : (n m : ℕ) → (n ≤ m)
                  → (iter-c n) ⊑⟨ ((𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓) ⁻) ⟹ᵈᶜᵖᵒ (𝓓 ⁻) ⟩ (iter-c m)
-  iter-increases n zero l     f = transport
-                                   (λ - → iter - f ⊑⟪ 𝓓 ⟫ iter zero f)
-                                   (unique-least n l ⁻¹)
-                                   (reflexivity (𝓓 ⁻) (iter zero f))
-  iter-increases n (succ m) l f = h (≤-split n m l)
+  iter-increases = ω-chains-increase
+                    (underlying-order 𝓔) (reflexivity 𝓔) (transitivity 𝓔)
+                    iter-c iter-is-ω-chain
    where
-    h : (n ≤ m) + (n ＝ succ m) → (iter n f) ⊑⟪ 𝓓 ⟫ iter (succ m) f
-    h (inl l') = iter n f        ⊑⟪ 𝓓 ⟫[ iter-increases n m l' f ]
-                 iter m f        ⊑⟪ 𝓓 ⟫[ iter-is-ω-chain m f     ]
-                 iter (succ m) f ∎⟪ 𝓓 ⟫
-    h (inr e)  = transport (λ - → iter - f ⊑⟪ 𝓓 ⟫ iter (succ m) f) (e ⁻¹)
-                  (reflexivity (𝓓 ⁻) (iter (succ m) f))
+    𝓔 = ((𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓) ⁻) ⟹ᵈᶜᵖᵒ (𝓓 ⁻)
 
 \end{code}
 
@@ -221,6 +214,10 @@ Of course, we can easily construct ℕ' : 𝓥 in any 𝓥 with ℕ ≃ ℕ' and
 this equivalent type when dealing with 𝓥-dcpos. But this would require going
 back-and-forth along the equivalence which would be somewhat cumbersome and we
 don't have a practical use for it anyway (at the time of writing).
+
+Added 23 June 2024: I implemented the above as dcpos-are-ω-complete in
+DomainTheory.Basics.Miscelanea, but leave the generalization of the code below
+to possible future work.
 
 \begin{code}
 
@@ -233,19 +230,10 @@ module _ where
 
  module _ (𝓓 : DCPO⊥ {𝓤} {𝓣}) where
 
-  iter-is-directed : is-directed (λ F G → ∀ f → F f ⊑⟪ 𝓓 ⟫ G f) (iter 𝓓)
-  iter-is-directed = ∣ zero ∣ , δ
-   where
-    δ : (i j : ℕ)
-      → ∃ k ꞉ ℕ , ((f : DCPO[ (𝓓 ⁻) , (𝓓 ⁻) ]) → iter 𝓓 i f ⊑⟪ 𝓓 ⟫ iter 𝓓 k f)
-                × ((f : DCPO[ (𝓓 ⁻) , (𝓓 ⁻) ]) → iter 𝓓 j f ⊑⟪ 𝓓 ⟫ iter 𝓓 k f)
-    δ i j = ∣ i +' j , l , m ∣
-     where
-      l : (f : DCPO[ (𝓓 ⁻) , (𝓓 ⁻) ]) → iter 𝓓 i f ⊑⟪ 𝓓 ⟫ iter 𝓓 (i +' j) f
-      l = iter-increases 𝓓 i (i +' j)
-           (cosubtraction i (i +' j) (j , (addition-commutativity j i)))
-      m : (f : DCPO[ (𝓓 ⁻) , (𝓓 ⁻) ]) → iter 𝓓 j f ⊑⟪ 𝓓 ⟫ iter 𝓓 (i +' j) f
-      m = iter-increases 𝓓 j (i +' j) (cosubtraction j (i +' j) (i , refl))
+  iter-is-directed : is-Directed (((𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓) ⁻) ⟹ᵈᶜᵖᵒ (𝓓 ⁻)) (iter-c 𝓓)
+  iter-is-directed =
+   ω-chains-are-Directed (((𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓) ⁻) ⟹ᵈᶜᵖᵒ (𝓓 ⁻))
+                         (iter-c 𝓓) (iter-is-ω-chain 𝓓)
 
   μ : DCPO[ ((𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓) ⁻) , (𝓓 ⁻) ]
   μ = continuous-functions-sup ((𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓) ⁻) (𝓓 ⁻) (iter-c 𝓓) iter-is-directed

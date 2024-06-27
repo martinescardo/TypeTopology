@@ -67,6 +67,9 @@ right-neutral e _·_ = ∀ x → x · e ＝ x
 associative : {X : 𝓤 ̇ } → (X → X → X) → 𝓤 ̇
 associative _·_ = ∀ x y z → (x · y) · z ＝ x · (y · z)
 
+associative' : {X : 𝓤 ̇ } → (X → X → X) → 𝓤 ̇
+associative' _·_ = ∀ x y z → x · (y · z) ＝ (x · y) · z
+
 commutative : {X : 𝓤 ̇ } → (X → X → X) → 𝓤 ̇
 commutative _·_ = ∀ x y → (x · y) ＝ (y · x)
 

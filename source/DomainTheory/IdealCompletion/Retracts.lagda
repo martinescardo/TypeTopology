@@ -1,5 +1,6 @@
 Tom de Jong, 31 January - 4 February 2022.
 Material moved to separate file on 11 June 2022.
+Updated with sup-complete ideal completion on 27 June 2024.
 
 Suppose we are given a continuous dcpo D with small basis β : B → D. We show
 that D is a continuous retract of the ideal completion Idl(B,⊑) which is an
@@ -46,6 +47,7 @@ open import UF.Powerset
 
 open import DomainTheory.Basics.Dcpo pt fe 𝓥
 open import DomainTheory.Basics.Miscelanea pt fe 𝓥
+open import DomainTheory.Basics.SupComplete pt fe 𝓥
 open import DomainTheory.Basics.WayBelow pt fe 𝓥
 
 open import DomainTheory.BasesAndContinuity.Bases pt fe 𝓥
@@ -324,6 +326,160 @@ module Idl-continuous-retract-of-algebraic
 
  Idl-is-algebraic : is-algebraic-dcpo Idl-DCPO
  Idl-is-algebraic = Idl-is-algebraic-dcpo (λ b → ⊑ᴮ-is-reflexive)
+
+\end{code}
+
+Added 27 June 2024.
+Taking the ideal completion of a small basis closed under finite joins of a
+sup-complete dcpo yields another sup-complete dcpo.
+
+\begin{code}
+
+ module _
+         (fj : has-finite-joins 𝓓)
+         (bfj : basis-has-finite-joins 𝓓 β β-is-small-basis fj)
+        where
+
+  open basis-has-finite-joins bfj
+  open has-finite-joins fj
+
+  ideals-contain-⊥ : (I : Idl) → ⊥ᴮ ∈ᵢ I
+  ideals-contain-⊥ I =
+   ∥∥-rec (∈-is-prop (carrier I) ⊥ᴮ) h
+          (ideals-are-inhabited (carrier I) (ideality I))
+    where
+     h : (Σ b ꞉ B , b ∈ carrier I) → ⊥ᴮ ∈ carrier I
+     h (b , b-in-I) = ideals-are-lowersets (carrier I) (ideality I) ⊥ᴮ b
+                       (⌜ ⊑ᴮ-≃-⊑ ⌝⁻¹ (⊥ᴮ-is-least _))
+                       b-in-I
+
+  ideals-are-closed-under-∨ : (I : Idl) {a b : B}
+                            → a ∈ᵢ I → b ∈ᵢ I → a ∨ᴮ b ∈ᵢ I
+  ideals-are-closed-under-∨ I {a} {b} a-in-I b-in-I =
+   ∥∥-rec (∈-is-prop (carrier I) (a ∨ᴮ b)) h
+          (ideals-are-semidirected (carrier I) (ideality I) a b a-in-I b-in-I)
+    where
+     h : (Σ c ꞉ B , c ∈ᵢ I × (a ⊑ᴮ c) × (b ⊑ᴮ c)) → a ∨ᴮ b ∈ᵢ I
+     h (c , c-in-I , u , v) =
+      ideals-are-lowersets (carrier I) (ideality I)
+                           (a ∨ᴮ b) c
+                           (⌜ ⊑ᴮ-≃-⊑ ⌝⁻¹ (∨ᴮ-is-lowerbound-of-upperbounds
+                                           (⌜ ⊑ᴮ-≃-⊑ ⌝ u) (⌜ ⊑ᴮ-≃-⊑ ⌝ v)))
+                           c-in-I
+
+  Idl-is-sup-complete-if-basis-has-finite-joins' : is-sup-complete Idl-DCPO
+  Idl-is-sup-complete-if-basis-has-finite-joins' =
+   dcpo-with-finite-joins-is-sup-complete Idl-DCPO γ
+    where
+     ⊥Idl : Idl
+     ⊥Idl = (λ b → b ⊑ᴮ ⊥ᴮ , ⊑ᴮ-is-prop-valued) ,
+            (λ b c b-below-c c-below-⊥ → ⊑ᴮ-is-transitive b-below-c c-below-⊥) ,
+            ∣ ⊥ᴮ , ⊑ᴮ-is-reflexive ∣ ,
+            (λ b c b-below-⊥ c-below-⊥ → ∣ ⊥ᴮ , ⊑ᴮ-is-reflexive ,
+                                           b-below-⊥ , c-below-⊥ ∣)
+
+     ⊥Idl-is-least : is-least (underlying-order Idl-DCPO) ⊥Idl
+     ⊥Idl-is-least I b b-below-⊥ =
+      ideals-are-lowersets (carrier I) (ideality I)
+                           b ⊥ᴮ b-below-⊥ (ideals-contain-⊥ I)
+
+     _∨Idl_ : Idl → Idl → Idl
+     I ∨Idl J = K , K-is-lowerset , K-is-inhabited , K-is-semidirected
+      where
+       K : 𝓟 B
+       K b = ∥ (Σ c ꞉ B , Σ d ꞉ B , c ∈ᵢ I × d ∈ᵢ J × (b ⊑ᴮ (c ∨ᴮ d))) ∥ ,
+             ∥∥-is-prop
+
+       K-is-lowerset : is-lowerset K
+       K-is-lowerset b₁ b₂ b₁-below-b₂ =
+        ∥∥-functor
+         (λ (c , d , c-in-I , d-in-J , b₂-below-join)
+           → (c , d , c-in-I , d-in-J ,
+              ⊑ᴮ-is-transitive b₁-below-b₂ b₂-below-join))
+
+       K-is-inhabited : is-inhabited-set K
+       K-is-inhabited = ∣ ⊥ᴮ , ∣ ⊥ᴮ , ⊥ᴮ ,
+                                 ideals-contain-⊥ I , ideals-contain-⊥ J ,
+                                 ⌜ ⊑ᴮ-≃-⊑ ⌝⁻¹ (⊥ᴮ-is-least _) ∣ ∣
+
+       K-is-semidirected : is-semidirected-set K
+       K-is-semidirected b₁ b₂ = ∥∥-functor₂ h
+        where
+         h : (Σ c₁ ꞉ B , Σ d₁ ꞉ B , c₁ ∈ᵢ I × d₁ ∈ᵢ J × (b₁ ⊑ᴮ c₁ ∨ᴮ d₁))
+           → (Σ c₂ ꞉ B , Σ d₂ ꞉ B , c₂ ∈ᵢ I × d₂ ∈ᵢ J × (b₂ ⊑ᴮ c₂ ∨ᴮ d₂))
+           → Σ b ꞉ B , b ∈ K × (b₁ ⊑ᴮ b) × (b₂ ⊑ᴮ b)
+         h (c₁ , d₁ , c₁-in-I , d₁-in-J , u)
+           (c₂ , d₂ , c₂-in-I , d₂-in-J , v) = b₁ ∨ᴮ b₂ ,
+                                               join-in-K ,
+                                               ⌜ ⊑ᴮ-≃-⊑ ⌝⁻¹ ∨ᴮ-is-upperbound₁ ,
+                                               ⌜ ⊑ᴮ-≃-⊑ ⌝⁻¹ ∨ᴮ-is-upperbound₂
+          where
+           join-in-K : b₁ ∨ᴮ b₂ ∈ K
+           join-in-K = ∣ c₁ ∨ᴮ c₂ , d₁ ∨ᴮ d₂ ,
+                         ideals-are-closed-under-∨ I c₁-in-I c₂-in-I ,
+                         ideals-are-closed-under-∨ J d₁-in-J d₂-in-J ,
+                         ⌜ ⊑ᴮ-≃-⊑ ⌝⁻¹ (∨ᴮ-is-lowerbound-of-upperbounds ⦅1⦆ ⦅2⦆) ∣
+            where
+             ⦅1⦆ = β b₁                        ⊑⟨ 𝓓 ⟩[ ⌜ ⊑ᴮ-≃-⊑ ⌝ u ]
+                  β (c₁ ∨ᴮ d₁)                 ⊑⟨ 𝓓 ⟩[ w ]
+                  β ((c₁ ∨ᴮ c₂) ∨ᴮ (d₁ ∨ᴮ d₂)) ∎⟨ 𝓓 ⟩
+              where
+               w = ∨ᴮ-is-lowerbound-of-upperbounds
+                    (transitivity 𝓓 _ _ _ ∨ᴮ-is-upperbound₁ ∨ᴮ-is-upperbound₁)
+                    (transitivity 𝓓 _ _ _ ∨ᴮ-is-upperbound₁ ∨ᴮ-is-upperbound₂)
+             ⦅2⦆ = β b₂                        ⊑⟨ 𝓓 ⟩[ ⌜ ⊑ᴮ-≃-⊑ ⌝ v ]
+                  β (c₂ ∨ᴮ d₂)                 ⊑⟨ 𝓓 ⟩[ w ]
+                  β ((c₁ ∨ᴮ c₂) ∨ᴮ (d₁ ∨ᴮ d₂)) ∎⟨ 𝓓 ⟩
+              where
+               w = ∨ᴮ-is-lowerbound-of-upperbounds
+                    (transitivity 𝓓 _ _ _ ∨ᴮ-is-upperbound₂ ∨ᴮ-is-upperbound₁)
+                    (transitivity 𝓓 _ _ _ ∨ᴮ-is-upperbound₂ ∨ᴮ-is-upperbound₂)
+
+     ∨Idl-is-sup : (I J : Idl)
+                 → is-sup (underlying-order Idl-DCPO) (I ∨Idl J)
+                          (∨-family Idl-DCPO I J)
+     ∨Idl-is-sup I J = ub , lb-of-ubs
+      where
+       ub : is-upperbound (underlying-order Idl-DCPO) (I ∨Idl J)
+                          (∨-family Idl-DCPO I J)
+       ub (inl _) b b-in-I = ∣ b , ⊥ᴮ , b-in-I , ideals-contain-⊥ J ,
+                               ⌜ ⊑ᴮ-≃-⊑ ⌝⁻¹ ∨ᴮ-is-upperbound₁ ∣
+       ub (inr _) c c-in-J = ∣ ⊥ᴮ , c , ideals-contain-⊥ I , c-in-J ,
+                               ⌜ ⊑ᴮ-≃-⊑ ⌝⁻¹ ∨ᴮ-is-upperbound₂ ∣
+       lb-of-ubs : is-lowerbound-of-upperbounds (underlying-order Idl-DCPO)
+                    (I ∨Idl J) (∨-family Idl-DCPO I J)
+       lb-of-ubs L L-ub b b-in-join =
+        ∥∥-rec (∈-is-prop (carrier L) b) h b-in-join
+         where
+          h : (Σ c ꞉ B , Σ d ꞉ B , (c ∈ᵢ I) × (d ∈ᵢ J) × (b ⊑ᴮ c ∨ᴮ d))
+            → b ∈ carrier L
+          h (c , d , c-in-I , d-in-J , p) =
+           ideals-are-lowersets (carrier L) (ideality L) b (c ∨ᴮ d) p
+            (ideals-are-closed-under-∨ L
+              (L-ub (inl ⋆) c c-in-I) (L-ub (inr ⋆) d d-in-J))
+
+     γ : has-finite-joins Idl-DCPO
+     γ = record
+          { ⊥          = ⊥Idl ;
+            ⊥-is-least = ⊥Idl-is-least ;
+            _∨_        = _∨Idl_ ;
+            ∨-is-sup   = ∨Idl-is-sup
+          }
+
+\end{code}
+
+Repackaged, we get the desired result:
+
+\begin{code}
+
+ Idl-is-sup-complete-if-basis-has-finite-joins :
+    (c : is-sup-complete 𝓓)
+  → basis-has-finite-joins 𝓓 β β-is-small-basis
+                           (sup-complete-dcpo-has-finite-joins 𝓓 c)
+  → is-sup-complete Idl-DCPO
+ Idl-is-sup-complete-if-basis-has-finite-joins c =
+  Idl-is-sup-complete-if-basis-has-finite-joins'
+   (sup-complete-dcpo-has-finite-joins 𝓓 c)
 
 \end{code}
 

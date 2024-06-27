@@ -25,6 +25,19 @@ section-equation r (s , rs) = rs
 is-section : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 is-section s = Σ r ꞉ (codomain s → domain s), r ∘ s ∼ id
 
+has-retraction : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
+has-retraction = is-section
+
+retraction-of : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (r : X → Y)
+              → has-retraction r
+              → (Y → X)
+retraction-of s (r , rs) = r
+
+retraction-equation : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (s : X → Y)
+                    → (h : has-retraction s)
+                    → retraction-of s h ∘ s ∼ id
+retraction-equation s (r , rs) = rs
+
 sections-are-lc : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (s : X → Y)
                 → is-section s
                 → left-cancellable s

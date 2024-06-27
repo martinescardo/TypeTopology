@@ -8,7 +8,9 @@ Lesser Limited Principle of Omniscience.
 
 module Taboos.LLPO where
 
-open import CoNaturals.GenericConvergentSequence
+open import CoNaturals.BothTypes
+open import CoNaturals.Equivalence
+open import CoNaturals.Type2Properties
 open import MLTT.Plus-Properties
 open import MLTT.Spartan
 open import MLTT.Two-Properties
@@ -21,6 +23,8 @@ open import UF.Equiv
 open import UF.FunExt
 open import UF.PropTrunc
 open import UF.Subsingletons
+
+open ℕ∞-equivalence
 
 private
  T : (ℕ → 𝟚) → 𝓤₀ ̇
@@ -65,8 +69,8 @@ untruncated-LLPO' = (β γ : ℕ → 𝟚)
                   → is-prop (T γ)
                   → ¬ (T β × T γ) → ¬ T β + ¬ T γ
 
-unprime : untruncated-LLPO' → untruncated-LLPO
-unprime llpo' α h = III
+untrucated-LLPO'-gives-untruncated-LLPO : untruncated-LLPO' → untruncated-LLPO
+untrucated-LLPO'-gives-untruncated-LLPO llpo' α h = III
  where
   β γ : ℕ → 𝟚
   β n = α ( double n)
@@ -87,8 +91,8 @@ unprime llpo' α h = III
   III : ((n : ℕ) → α (double n) ＝ ₀) + ((n : ℕ) → α (sdouble n) ＝ ₀)
   III = +functor not-T-gives-¬T not-T-gives-¬T II
 
-prime : untruncated-LLPO → untruncated-LLPO'
-prime llpo β γ i j ν = III
+untrucated-LLPO-gives-untruncated-LLPO' : untruncated-LLPO → untruncated-LLPO'
+untrucated-LLPO-gives-untruncated-LLPO' llpo β γ i j ν = III
  where
   f : (n : ℕ) → is-even' n + is-odd' n → 𝟚
   f n (inl (k , _)) = β k
@@ -144,10 +148,14 @@ Two more equivalent formulations of LLPO.
 \begin{code}
 
 untruncated-ℕ∞-LLPO : 𝓤₀ ̇
-untruncated-ℕ∞-LLPO = (u v : ℕ∞) → ¬ (is-finite u × is-finite v) → (u ＝ ∞) + (v ＝ ∞)
+untruncated-ℕ∞-LLPO = (u v : ℕ∞)
+                    → ¬ (is-finite u × is-finite v)
+                    → (u ＝ ∞) + (v ＝ ∞)
 
 untruncated-ℕ∞'-LLPO : 𝓤₀ ̇
-untruncated-ℕ∞'-LLPO = (u v : ℕ∞') → ¬ (is-finite' u × is-finite' v) → (u ＝ ∞') + (v ＝ ∞')
+untruncated-ℕ∞'-LLPO = (u v : ℕ∞')
+                     → ¬ (is-finite' u × is-finite' v)
+                     → (u ＝ ∞') + (v ＝ ∞')
 
 untruncated-LLPO'-gives-untruncated-ℕ∞'-LLPO : funext₀
                                              → untruncated-LLPO'
@@ -161,10 +169,10 @@ untruncated-LLPO'-gives-untruncated-ℕ∞'-LLPO fe llpo u v μ = II I
   II (inl a) = inl (not-T-is-∞' fe u a)
   II (inr b) = inr (not-T-is-∞' fe v b)
 
-untruncated-ℕ∞-LLPO'-gives-untruncated'-LLPO : funext₀
+untruncated-ℕ∞'-LLPO-gives-untruncated-LLPO' : funext₀
                                              → untruncated-ℕ∞'-LLPO
                                              → untruncated-LLPO'
-untruncated-ℕ∞-LLPO'-gives-untruncated'-LLPO fe llpo α β a b μ = II I
+untruncated-ℕ∞'-LLPO-gives-untruncated-LLPO' fe llpo α β a b μ = II I
  where
   I : ((α , a) ＝ ∞') + ((β , b) ＝ ∞')
   I = llpo (α , a) (β , b) (λ (ϕ , γ) → μ (ϕ , γ))
@@ -204,6 +212,22 @@ untruncated-ℕ∞'-LLPO-gives-untruncated-ℕ∞-LLPO fe llpo u v μ = II I
   II : type-of I → (u ＝ ∞) + (v ＝ ∞)
   II (inl d) = inl (∞'-gives-∞ fe u d)
   II (inr e) = inr (∞'-gives-∞ fe v e)
+
+untruncated-ℕ∞-LLPO-gives-untruncated-LPO : funext₀
+                                          → untruncated-ℕ∞-LLPO
+                                          → untruncated-LLPO
+untruncated-ℕ∞-LLPO-gives-untruncated-LPO fe unllpo =
+ untrucated-LLPO'-gives-untruncated-LLPO
+  (untruncated-ℕ∞'-LLPO-gives-untruncated-LLPO' fe
+    (untruncated-ℕ∞-LLPO-gives-untruncated-ℕ∞'-LLPO fe unllpo))
+
+untruncated-LLPO-gives-untruncated-ℕ∞-LPO : funext₀
+                                          → untruncated-LLPO
+                                          → untruncated-ℕ∞-LLPO
+untruncated-LLPO-gives-untruncated-ℕ∞-LPO fe ullpo =
+ untruncated-ℕ∞'-LLPO-gives-untruncated-ℕ∞-LLPO fe
+  (untruncated-LLPO'-gives-untruncated-ℕ∞'-LLPO fe
+   (untrucated-LLPO-gives-untruncated-LLPO' ullpo))
 
 \end{code}
 
@@ -340,22 +364,28 @@ module _ (pt : propositional-truncations-exist) where
       → is-prop (Σ n ꞉ ℕ , α n ＝ ₁)
       → ((n : ℕ) → α (double n) ＝ ₀) ∨ ((n : ℕ) → α (sdouble n) ＝ ₀)
 
+ LLPO' : 𝓤₀ ̇
+ LLPO' = (β γ : ℕ → 𝟚)
+       → is-prop (T β)
+       → is-prop (T γ)
+       → ¬ (T β × T γ) → ¬ T β ∨ ¬ T γ
+
+ ℕ∞-LLPO : 𝓤₀ ̇
+ ℕ∞-LLPO = (u v : ℕ∞) → ¬ (is-finite u × is-finite v) → (u ＝ ∞) ∨ (v ＝ ∞)
+
+ ℕ∞-LLPO' : 𝓤₀ ̇
+ ℕ∞-LLPO' = (u v : ℕ∞) → ¬ ((u ≠ ∞) × (v ≠ ∞)) → (u ＝ ∞) ∨ (v ＝ ∞)
+
+ ℕ∞'-LLPO : 𝓤₀ ̇
+ ℕ∞'-LLPO = (u v : ℕ∞') → ¬ (is-finite' u × is-finite' v) → (u ＝ ∞') ∨ (v ＝ ∞')
+
  untruncated-LLPO-gives-LLPO : untruncated-LLPO → LLPO
  untruncated-LLPO-gives-LLPO ullpo α i = ∣ ullpo α i ∣
 
 \end{code}
 
-The most natural form of LLPO for what we've done above is the following.
+TODO. Show that all these variants are equivalent.
 
-\begin{code}
-
- ℕ∞-LLPO : 𝓤₀ ̇
- ℕ∞-LLPO = (u v : ℕ∞) → ¬ (is-finite u × is-finite v) → (u ＝ ∞) ∨ (v ＝ ∞)
-
-\end{code}
-
-TODO. Show that ℕ∞-LLPO and LLPO are equivalent.
-
-LLPO doesn't imply WLPO (there are published refereced - find and
+LLPO doesn't imply WLPO (there are published refereces - find and
 include them here). One example seems to Johnstone's topological
 topos, but this is unpublished as far as I know.

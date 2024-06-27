@@ -123,6 +123,13 @@ write some boiler plate around that.
           (λ (b , v) → ∐-is-upperbound 𝓓 (↡ᴮₛ-is-directed x)
                         (b , ≪ᴮ-to-≪ᴮₛ v))
 
+  ↡ᴮₛ-is-sup : (x : ⟨ 𝓓 ⟩)
+             → is-sup (underlying-order 𝓓) x (↡-inclusionₛ x)
+  ↡ᴮₛ-is-sup x =
+   transport (λ - → is-sup (underlying-order 𝓓) - (↡-inclusionₛ x))
+             (↡ᴮₛ-∐-＝ x)
+             (∐-is-sup 𝓓 (↡ᴮₛ-is-directed x))
+
   ↡ᴮₛ-∐-⊑ : (x : ⟨ 𝓓 ⟩) → ∐ 𝓓 (↡ᴮₛ-is-directed x) ⊑⟨ 𝓓 ⟩ x
   ↡ᴮₛ-∐-⊑ x = ＝-to-⊑ 𝓓 (↡ᴮₛ-∐-＝ x)
 
@@ -261,6 +268,12 @@ module _
         I   = Π-cong fe fe (λ b → →cong fe fe (≃-refl (b ≪ᴮₛ x)) ≪ᴮₛ-≃-≪ᴮ)
         II  = Π-cong fe fe (λ b → →cong fe fe ≪ᴮₛ-≃-≪ᴮ (≃-refl (β b ≪⟨ 𝓓 ⟩ y)))
         III = ≃-sym (⊑-in-terms-of-≪ᴮ)
+
+ ≪-is-small-valued-if-small-basis : (x y : ⟨ 𝓓 ⟩) → is-small (x ≪⟨ 𝓓 ⟩ y)
+ ≪-is-small-valued-if-small-basis =
+  ≪-is-small-valued-str 𝓓
+   (structurally-continuous-if-specified-small-basis 𝓓 (B , β , sb))
+   locally-small-if-small-basis
 
 \end{code}
 
@@ -597,6 +610,7 @@ basis for 𝓓.
 \begin{code}
 
 module _
+        (pe : Prop-Ext)
         (𝓓 : DCPO {𝓤} {𝓣})
         (𝓔 : DCPO {𝓤'} {𝓣'})
         (ρ : 𝓓 continuous-retract-of 𝓔)
@@ -604,10 +618,10 @@ module _
 
  open _continuous-retract-of_ ρ
 
- small-basis-from-continuous-retract : Prop-Ext → {B : 𝓥 ̇ } (β : B → ⟨ 𝓔 ⟩)
+ small-basis-from-continuous-retract : {B : 𝓥 ̇ } (β : B → ⟨ 𝓔 ⟩)
                                      → is-small-basis 𝓔 β
                                      → is-small-basis 𝓓 (r ∘ β)
- small-basis-from-continuous-retract pe {B} β sb =
+ small-basis-from-continuous-retract {B} β sb =
   record
    { ≪ᴮ-is-small    = ≪ʳᴮ-is-small
    ; ↡ᴮ-is-directed = ≪ʳᴮ-is-directed
@@ -663,6 +677,41 @@ module _
         issup : is-sup (underlying-order 𝓓) (r (∐ 𝓔 (ε x)))
                                             (r ∘ ↡-inclusionₛ (s x))
         issup = r-is-continuous (↡ᴮₛ (s x)) (↡-inclusionₛ (s x)) (ε x)
+
+\end{code}
+
+Added 5 June 2024.
+
+We transfer small (compact) bases along isomorphisms of dcpos.
+
+\begin{code}
+
+module _
+        (pe : Prop-Ext)
+        (𝓓 : DCPO {𝓤} {𝓣})
+        (𝓔 : DCPO {𝓤'} {𝓣'})
+       where
+
+ small-basis-from-≃ᵈᶜᵖᵒ : 𝓓 ≃ᵈᶜᵖᵒ 𝓔
+                        → has-specified-small-basis 𝓓
+                        → has-specified-small-basis 𝓔
+ small-basis-from-≃ᵈᶜᵖᵒ 𝕗@(f , g , s , r , cf , cg) (B , β , sb) =
+  B , f ∘ β ,
+  small-basis-from-continuous-retract pe 𝓔 𝓓
+   (≃ᵈᶜᵖᵒ-to-continuous-retract 𝓔 𝓓 (≃ᵈᶜᵖᵒ-inv 𝓓 𝓔 𝕗)) β sb
+
+ small-compact-basis-from-≃ᵈᶜᵖᵒ : 𝓓 ≃ᵈᶜᵖᵒ 𝓔
+                                → has-specified-small-compact-basis 𝓓
+                                → has-specified-small-compact-basis 𝓔
+ small-compact-basis-from-≃ᵈᶜᵖᵒ 𝕗@(f , g , s , r , cf , cg) (B , β , scb) =
+  B , f ∘ β ,
+  small-and-compact-basis 𝓔 (f ∘ β)
+   (pr₂ (pr₂ (small-basis-from-≃ᵈᶜᵖᵒ
+               𝕗 (B , β , compact-basis-is-basis 𝓓 β scb))))
+   (λ b → embeddings-preserve-compactness
+           𝓓 𝓔 f cf g cg s (λ y → ＝-to-⊑ 𝓔 (r y)) (β b) (basis-is-compact b))
+    where
+     open is-small-compact-basis scb
 
 \end{code}
 
@@ -732,5 +781,153 @@ locally-small-exponential-criterion {𝓤} {𝓣} {𝓤'} {𝓣'} pe 𝓓 𝓔 �
                   where
                    ⦅†⦆ = ⊑ₛ-to-⊑ (f-below-g b)
                    ⦅‡⦆ = ∐-is-upperbound 𝓔 εᵍ (b , i)
+
+\end{code}
+
+Added 2 June 2024.
+
+Any sup-complete dcpo with a small basis has a greatest element.
+(In fact, it is inf-complete, but we don't formalise this here, see
+Locales.AdjointFunctorTheoremForFrames though.)
+
+\begin{code}
+
+open import DomainTheory.Basics.SupComplete pt fe 𝓥
+
+greatest-element-if-sup-complete-with-small-basis :
+   (𝓓 : DCPO {𝓤} {𝓣})
+ → is-sup-complete 𝓓
+ → has-unspecified-small-basis 𝓓
+ → Σ ⊤ ꞉ ⟨ 𝓓 ⟩ , ((x : ⟨ 𝓓 ⟩) → x ⊑⟨ 𝓓 ⟩ ⊤)
+greatest-element-if-sup-complete-with-small-basis 𝓓 sc = ∥∥-rec I II
+ where
+  I : is-prop (Σ ⊤ ꞉ ⟨ 𝓓 ⟩ , ((x : ⟨ 𝓓 ⟩) → x ⊑⟨ 𝓓 ⟩ ⊤))
+  I (t , l) (s , k) = to-subtype-＝
+                       (λ y → Π-is-prop fe (λ x → prop-valuedness 𝓓 x y))
+                       (antisymmetry 𝓓 t s (k t) (l s))
+  II : has-specified-small-basis 𝓓
+     → Σ ⊤ ꞉ ⟨ 𝓓 ⟩ , ((x : ⟨ 𝓓 ⟩) → x ⊑⟨ 𝓓 ⟩ ⊤)
+  II (B , β , β-is-small-basis) = ⊤ , ⊤-is-greatest
+   where
+    open is-small-basis β-is-small-basis
+    open is-sup-complete sc
+    ⊤ : ⟨ 𝓓 ⟩
+    ⊤ = ⋁ β
+    ⊤-is-greatest : (x : ⟨ 𝓓 ⟩) → x ⊑⟨ 𝓓 ⟩ ⊤
+    ⊤-is-greatest x =
+     sup-is-lowerbound-of-upperbounds
+      (underlying-order 𝓓) (↡ᴮ-is-sup x) ⊤ (λ (b , _) → ⋁-is-upperbound β b)
+
+\end{code}
+
+Added 26 June 2024.
+We can refine a small basis to be closed under finite joins.
+
+\begin{code}
+
+module _
+        (𝓓 : DCPO{𝓤} {𝓣})
+        {B : 𝓥 ̇  }
+        (β : B → ⟨ 𝓓 ⟩)
+        (β-is-basis : is-small-basis 𝓓 β)
+        (𝓓-has-finite-joins : has-finite-joins 𝓓)
+       where
+
+ open has-finite-joins 𝓓-has-finite-joins
+
+ record basis-has-finite-joins : 𝓥 ⊔ 𝓤 ̇  where
+  field
+   ⊥ᴮ : B
+   _∨ᴮ_ : B → B → B
+   ⊥ᴮ-is-⊥ : β ⊥ᴮ ＝ ⊥
+   ∨ᴮ-is-∨ : (a b : B) → β (a ∨ᴮ b) ＝ β a ∨ β b
+
+  infix 100 _∨ᴮ_
+
+  ⊥ᴮ-is-least : (b : B) → β ⊥ᴮ ⊑⟨ 𝓓 ⟩ β b
+  ⊥ᴮ-is-least b = transport⁻¹ (λ - → - ⊑⟨ 𝓓 ⟩ β b) ⊥ᴮ-is-⊥ (⊥-is-least (β b))
+
+  ∨ᴮ-is-upperbound₁ : {a b : B} → β a ⊑⟨ 𝓓 ⟩ β (a ∨ᴮ b)
+  ∨ᴮ-is-upperbound₁ {a} {b} =
+   transport⁻¹ (λ - → β a ⊑⟨ 𝓓 ⟩ -) (∨ᴮ-is-∨ a b) ∨-is-upperbound₁
+
+  ∨ᴮ-is-upperbound₂ : {a b : B} → β b ⊑⟨ 𝓓 ⟩ β (a ∨ᴮ b)
+  ∨ᴮ-is-upperbound₂ {a} {b} =
+   transport⁻¹ (λ - → β b ⊑⟨ 𝓓 ⟩ -) (∨ᴮ-is-∨ a b) ∨-is-upperbound₂
+
+  ∨ᴮ-is-lowerbound-of-upperbounds : {a b c : B}
+                                  → β a ⊑⟨ 𝓓 ⟩ β c → β b ⊑⟨ 𝓓 ⟩ β c
+                                  → β (a ∨ᴮ b) ⊑⟨ 𝓓 ⟩ β c
+  ∨ᴮ-is-lowerbound-of-upperbounds {a} {b} {c} u v =
+   transport⁻¹ (λ - → - ⊑⟨ 𝓓 ⟩ β c) (∨ᴮ-is-∨ a b)
+               (∨-is-lowerbound-of-upperbounds u v)
+
+module _
+        (𝓓 : DCPO{𝓤} {𝓣})
+        {B : 𝓥 ̇  }
+        (β : B → ⟨ 𝓓 ⟩)
+        (β-is-basis : is-small-basis 𝓓 β)
+        (𝓓-has-finite-joins : has-finite-joins 𝓓)
+       where
+
+ open import MLTT.List
+ open make-family-directed 𝓓 𝓓-has-finite-joins
+ open has-finite-joins 𝓓-has-finite-joins
+
+ refine-basis-to-have-finite-joins :
+  Σ B' ꞉ 𝓥 ̇  , Σ β' ꞉ (B' → ⟨ 𝓓 ⟩) ,
+  Σ p ꞉ is-small-basis 𝓓 β' , basis-has-finite-joins 𝓓 β' p 𝓓-has-finite-joins
+ refine-basis-to-have-finite-joins = B' , β' , p , j
+  where
+   B' : 𝓥 ̇
+   B' = List B
+   β' : List B → ⟨ 𝓓 ⟩
+   β' = directify β
+
+   p : is-small-basis 𝓓 β'
+   p = record
+        { ≪ᴮ-is-small =
+           λ x l → ≪-is-small-valued-if-small-basis 𝓓 β β-is-basis (β' l) x;
+          ↡ᴮ-is-directed =
+           λ x → ↡ᴮ-directedness-criterion 𝓓 β' x (ι x) (δ x) (ub x);
+          ↡ᴮ-is-sup = λ x → ↡ᴮ-sup-criterion 𝓓 β' x (ι x) (sup x)
+        }
+    where
+     open is-small-basis β-is-basis
+     I : β' ∘ [_] ∼ β
+     I b = antisymmetry 𝓓 (β' [ b ]) (β b)
+            (∨-is-lowerbound-of-upperbounds
+              (reflexivity 𝓓 (β b)) (⊥-is-least (β b)))
+            ∨-is-upperbound₁
+     ι : (x : ⟨ 𝓓 ⟩)
+       → ↡ᴮₛ x → Σ l ꞉ List B , β' l ≪⟨ 𝓓 ⟩ x
+     ι x (b , w) = [ b ] , transport⁻¹ (λ - → - ≪⟨ 𝓓 ⟩ x) (I b) (≪ᴮₛ-to-≪ᴮ w)
+     II : (x : ⟨ 𝓓 ⟩) → ↡-inclusion 𝓓 β' x ∘ ι x ∼ ↡-inclusionₛ x
+     II x (b , w) = I b
+     δ : (x : ⟨ 𝓓 ⟩) → is-Directed 𝓓 (↡-inclusion 𝓓 β' x ∘ ι x)
+     δ x = transport⁻¹ (is-Directed 𝓓) (dfunext fe (II x)) (↡ᴮₛ-is-directed x)
+     ub : (x : ⟨ 𝓓 ⟩) → x ⊑⟨ 𝓓 ⟩ ∐ 𝓓 (δ x)
+     ub x = transport⁻¹ (λ - → x ⊑⟨ 𝓓 ⟩ -)
+                        (∐-family-＝' 𝓓 (II x) (δ x) (↡ᴮₛ-is-directed x))
+                        (↡ᴮₛ-∐-⊒ x)
+     sup : (x : ⟨ 𝓓 ⟩) → is-sup (underlying-order 𝓓) x (↡-inclusion 𝓓 β' x ∘ ι x)
+     sup x = transport⁻¹ (is-sup (underlying-order 𝓓) x)
+                         (dfunext fe (II x))
+                         (↡ᴮₛ-is-sup x)
+
+   j : basis-has-finite-joins 𝓓 β' p 𝓓-has-finite-joins
+   j = record
+        { ⊥ᴮ = [] ;
+          _∨ᴮ_ = _++_ ;
+          ⊥ᴮ-is-⊥ = refl ;
+          ∨ᴮ-is-∨ = finite-join-eq
+        }
+    where
+     finite-join-eq : (l k : List B) → directify β (l ++ k) ＝ β' l ∨ β' k
+     finite-join-eq l k =
+      sups-are-unique (underlying-order 𝓓) (poset-axioms-of-dcpo 𝓓)
+                      (∨-family 𝓓 (β' l) (β' k))
+                      (++-is-binary-sup β l k)
+                      (∨-is-sup (β' l) (β' k))
 
 \end{code}

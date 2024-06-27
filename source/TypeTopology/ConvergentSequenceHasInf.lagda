@@ -17,7 +17,7 @@ module TypeTopology.ConvergentSequenceHasInf (fe₀ : funext 𝓤₀ 𝓤₀) wh
 
 open import MLTT.Two-Properties
 open import TypeTopology.InfProperty
-open import CoNaturals.GenericConvergentSequence
+open import CoNaturals.Type
 open import Notation.Order
 open import Notation.CanonicalMap
 

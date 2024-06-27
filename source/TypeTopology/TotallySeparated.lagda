@@ -228,6 +228,12 @@ retract-of-totally-separated (r , s , rs) τ {y} {y'} α = section-lc s (r , rs)
   h : s y ＝ s y'
   h = τ (λ p → α (p ∘ s))
 
+equiv-to-totally-separated : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                           → X ≃ Y
+                           → is-totally-separated X
+                           → is-totally-separated Y
+equiv-to-totally-separated 𝕗 = retract-of-totally-separated (≃-gives-▷ 𝕗)
+
 \end{code}
 
 Recall that a type is called ¬¬-separated if the doubly negated equality
@@ -265,7 +271,7 @@ already implies excluded middle:
 
 \begin{code}
 
-open import UF.ExcludedMiddle
+open import UF.ClassicalLogic
 
 Ω-separated-gives-DNE : propext 𝓤
                       → funext 𝓤 𝓤
@@ -817,7 +823,8 @@ apartness relation _♯₂ is tight:
    d x y z = ∥∥-functor g
     where
      g : (Σ p ꞉ (X → 𝟚) , p x ≠ p y) → (x ♯₂ z) + (y ♯₂ z)
-     g (p , u) = h (discrete-types-are-cotransitive 𝟚-is-discrete {p x} {p y} {p z} u)
+     g (p , u) =
+       h (discrete-types-are-cotransitive 𝟚-is-discrete {p x} {p y} {p z} u)
       where
        h : (p x ≠ p z) + (p z ≠ p y) → (x ♯₂ z) + (y ♯₂ z)
        h (inl u) = inl ∣ p , u ∣

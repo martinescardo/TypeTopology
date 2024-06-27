@@ -79,19 +79,19 @@ families.
 \begin{code}
 
 module _
-        {A : 𝓥  ̇}
-        {B : 𝓤  ̇}
-        (m : A → B)
+        {B : 𝓥  ̇}
+        {A : 𝓤  ̇}
+        (m : B → A)
        where
 
- subset-to-family : 𝓟 {𝓥} A → Fam 𝓥 B
+ subset-to-family : 𝓟 {𝓣} B → Fam (𝓣 ⊔ 𝓥) A
  subset-to-family S = (𝕋 S , m ∘ 𝕋-to-carrier S)
 
  syntax subset-to-family m S = 【 m , S 】   
 
-module _ {B : 𝓤 ̇} where 
+module _ {A : 𝓤 ̇} where 
 
- subset-to-family' : 𝓟 {𝓤} B → Fam 𝓤 B
+ subset-to-family' : 𝓟 {𝓣} A → Fam (𝓣 ⊔ 𝓤) A
  subset-to-family' S = subset-to-family id S
  
 

@@ -23,7 +23,8 @@ module TypeTopology.SimpleTypes
 
 open import TypeTopology.DisconnectedTypes
 open import TypeTopology.TotallySeparated
-open import TypeTopology.WeaklyCompactTypes fe pt renaming (is-Π-compact to is-compact)
+open import TypeTopology.WeaklyCompactTypes fe pt
+            renaming (is-Π-compact to is-compact)
 open import UF.DiscreteAndSeparated
 open import UF.Retracts
 open import UF.Retracts-FunExt
@@ -65,7 +66,7 @@ cfdbce s t c = tscd₀
 \end{code}
 
 TODO: prove that WLPO' is equivalent to WLPO. But notice that WLPO' is
-the original formalution of WLPO by Bishop (written in type theory).
+the original formulation of WLPO by Bishop (written in type theory).
 
 We have that simple types are "not" compact:
 
@@ -116,11 +117,14 @@ compact, it is necessary that X is discrete and Y is compact.
 
 \begin{code}
 
-simple-types₂-totally-separated : {X : 𝓤₀ ̇ } → simple-type₂ X → is-totally-separated X
+simple-types₂-totally-separated : {X : 𝓤₀ ̇ }
+                                → simple-type₂ X
+                                → is-totally-separated X
 simple-types₂-totally-separated base₂       = 𝟚-is-totally-separated
 simple-types₂-totally-separated base        = ℕ-is-totally-separated
-simple-types₂-totally-separated (step s t)  = Π-is-totally-separated (fe 𝓤₀ 𝓤₀)
-                                               λ _ → simple-types₂-totally-separated t
+simple-types₂-totally-separated (step s t)  =
+ Π-is-totally-separated (fe 𝓤₀ 𝓤₀)
+  (λ _ → simple-types₂-totally-separated t)
 
 simple-types₂-pointed : {X : 𝓤₀ ̇ } → simple-type₂ X → X
 simple-types₂-pointed base₂      = ₀
@@ -141,7 +145,10 @@ cfdbce₂ : {X Y : 𝓤₀ ̇ }
         → simple-type₂ Y
         → is-compact (X → Y)
         → is-discrete X × is-compact Y
-cfdbce₂ s t c = tscd₀ (simple-types₂-totally-separated s) (simple-types₂-disconnected t) c ,
-                Π-compact-exponential-with-pointed-domain-has-Π-compact-domain (simple-types₂-pointed s) c
+cfdbce₂ s t c = tscd₀ (simple-types₂-totally-separated s)
+                      (simple-types₂-disconnected t) c ,
+                Π-compact-exponential-with-pointed-domain-has-Π-compact-domain
+                 (simple-types₂-pointed s)
+                 c
 
 \end{code}
