@@ -367,8 +367,8 @@ sup-complete dcpo yields another sup-complete dcpo.
                                            (⌜ ⊑ᴮ-≃-⊑ ⌝ u) (⌜ ⊑ᴮ-≃-⊑ ⌝ v)))
                            c-in-I
 
-  Idl-sup-complete-if-basis-has-finite-joins' : is-sup-complete Idl-DCPO
-  Idl-sup-complete-if-basis-has-finite-joins' =
+  Idl-is-sup-complete-if-basis-has-finite-joins' : is-sup-complete Idl-DCPO
+  Idl-is-sup-complete-if-basis-has-finite-joins' =
    dcpo-with-finite-joins-is-sup-complete Idl-DCPO γ
     where
      ⊥Idl : Idl
@@ -472,13 +472,13 @@ Repackaged, we get the desired result:
 
 \begin{code}
 
- Idl-sup-complete-if-basis-has-finite-joins :
+ Idl-is-sup-complete-if-basis-has-finite-joins :
     (c : is-sup-complete 𝓓)
   → basis-has-finite-joins 𝓓 β β-is-small-basis
                            (sup-complete-dcpo-has-finite-joins 𝓓 c)
   → is-sup-complete Idl-DCPO
- Idl-sup-complete-if-basis-has-finite-joins c =
-  Idl-sup-complete-if-basis-has-finite-joins'
+ Idl-is-sup-complete-if-basis-has-finite-joins c =
+  Idl-is-sup-complete-if-basis-has-finite-joins'
    (sup-complete-dcpo-has-finite-joins 𝓓 c)
 
 \end{code}
