@@ -109,6 +109,11 @@ module Ideals
  ideals-are-inhabited I ι =
   directed-sets-are-inhabited I (ideals-are-directed-sets I ι)
 
+ ideals-are-semidirected : (I : P → Ω (𝓥 ⊔ 𝓣))
+                         → is-ideal I → is-semidirected-set I
+ ideals-are-semidirected I ι =
+  directed-sets-are-semidirected I (ideals-are-directed-sets I ι)
+
  Idl : 𝓥 ⁺ ⊔ 𝓣 ⁺ ⊔ 𝓤 ̇
  Idl = Σ I ꞉ (P → Ω (𝓥 ⊔ 𝓣)) , is-ideal I
 

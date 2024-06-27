@@ -842,8 +842,25 @@ module _
    ⊥ᴮ-is-⊥ : β ⊥ᴮ ＝ ⊥
    ∨ᴮ-is-∨ : (a b : B) → β (a ∨ᴮ b) ＝ β a ∨ β b
 
+  infix 100 _∨ᴮ_
+
   ⊥ᴮ-is-least : (b : B) → β ⊥ᴮ ⊑⟨ 𝓓 ⟩ β b
   ⊥ᴮ-is-least b = transport⁻¹ (λ - → - ⊑⟨ 𝓓 ⟩ β b) ⊥ᴮ-is-⊥ (⊥-is-least (β b))
+
+  ∨ᴮ-is-upperbound₁ : {a b : B} → β a ⊑⟨ 𝓓 ⟩ β (a ∨ᴮ b)
+  ∨ᴮ-is-upperbound₁ {a} {b} =
+   transport⁻¹ (λ - → β a ⊑⟨ 𝓓 ⟩ -) (∨ᴮ-is-∨ a b) ∨-is-upperbound₁
+
+  ∨ᴮ-is-upperbound₂ : {a b : B} → β b ⊑⟨ 𝓓 ⟩ β (a ∨ᴮ b)
+  ∨ᴮ-is-upperbound₂ {a} {b} =
+   transport⁻¹ (λ - → β b ⊑⟨ 𝓓 ⟩ -) (∨ᴮ-is-∨ a b) ∨-is-upperbound₂
+
+  ∨ᴮ-is-lowerbound-of-upperbounds : {a b c : B}
+                                  → β a ⊑⟨ 𝓓 ⟩ β c → β b ⊑⟨ 𝓓 ⟩ β c
+                                  → β (a ∨ᴮ b) ⊑⟨ 𝓓 ⟩ β c
+  ∨ᴮ-is-lowerbound-of-upperbounds {a} {b} {c} u v =
+   transport⁻¹ (λ - → - ⊑⟨ 𝓓 ⟩ β c) (∨ᴮ-is-∨ a b)
+               (∨-is-lowerbound-of-upperbounds u v)
 
 module _
         (𝓓 : DCPO{𝓤} {𝓣})

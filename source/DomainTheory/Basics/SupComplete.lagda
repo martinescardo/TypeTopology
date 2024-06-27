@@ -81,6 +81,7 @@ module _
             → is-sup (underlying-order 𝓓) (x ∨ y) (∨-family x y)
 
   infix 100 _∨_
+
   ∨-is-upperbound₁ : {x y : ⟨ 𝓓 ⟩} → x ⊑⟨ 𝓓 ⟩ x ∨ y
   ∨-is-upperbound₁ {x} {y} = pr₁ (∨-is-sup x y) (inl ⋆)
 
