@@ -1058,6 +1058,7 @@ small-implies-locally-small : (X : 𝓤 ̇) → (𝓥 : Universe)
                             → X is 𝓥 small
                             → X is-locally 𝓥 small
 small-implies-locally-small X 𝓥 (Y , e) x x' =
- ((⌜ e ⌝⁻¹ x ＝ ⌜ e ⌝⁻¹ x') , (⌜ {!ap-is-equiv ?!} ⌝⁻¹ , {!!}))
+ ((⌜ e ⌝⁻¹ x ＝ ⌜ e ⌝⁻¹ x')
+  , ≃-sym (ap ⌜ e ⌝⁻¹ , ap-is-equiv ⌜ e ⌝⁻¹ (⌜⌝⁻¹-is-equiv e)))
 
 \end{code}
