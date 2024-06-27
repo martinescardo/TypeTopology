@@ -46,6 +46,7 @@ open import UF.Powerset
 
 open import DomainTheory.Basics.Dcpo pt fe 𝓥
 open import DomainTheory.Basics.Miscelanea pt fe 𝓥
+open import DomainTheory.Basics.SupComplete pt fe 𝓥
 open import DomainTheory.Basics.WayBelow pt fe 𝓥
 
 open import DomainTheory.BasesAndContinuity.Bases pt fe 𝓥
@@ -324,6 +325,83 @@ module Idl-continuous-retract-of-algebraic
 
  Idl-is-algebraic : is-algebraic-dcpo Idl-DCPO
  Idl-is-algebraic = Idl-is-algebraic-dcpo (λ b → ⊑ᴮ-is-reflexive)
+
+\end{code}
+
+Taking the ideal completion of a small basis closed under finite joins of a
+sup-complete dcpo yields another sup-complete dcpo.
+
+\begin{code}
+
+ Idl-sup-complete-if-basis-has-finite-joins' :
+    (fj : has-finite-joins 𝓓)
+  → basis-has-finite-joins 𝓓 β β-is-small-basis fj
+  → is-sup-complete Idl-DCPO
+ Idl-sup-complete-if-basis-has-finite-joins' fj bfj =
+  dcpo-with-finite-joins-is-sup-complete Idl-DCPO γ
+   where
+    open basis-has-finite-joins bfj
+    open has-finite-joins fj
+
+    ⊥Idl : Idl
+    ⊥Idl = (λ b → b ⊑ᴮ ⊥ᴮ , ⊑ᴮ-is-prop-valued) ,
+           (λ b c b-below-c c-below-⊥ → ⊑ᴮ-is-transitive b-below-c c-below-⊥) ,
+           ∣ ⊥ᴮ , ⊑ᴮ-is-reflexive ∣ ,
+           (λ b c b-below-⊥ c-below-⊥ → ∣ ⊥ᴮ , ⊑ᴮ-is-reflexive ,
+                                          b-below-⊥ , c-below-⊥ ∣)
+
+    ⊥Idl-is-least : is-least (underlying-order Idl-DCPO) ⊥Idl
+    ⊥Idl-is-least I b b-below-⊥ =
+     ∥∥-rec (∈-is-prop (carrier I) b)
+            h
+            (ideals-are-inhabited (carrier I) (ideality I))
+      where
+       h : (Σ c ꞉ B , c ∈ carrier I) → b ∈ carrier I
+       h (c , c-in-I) =
+        ideals-are-lowersets (carrier I) (ideality I) b c b-below-c c-in-I
+        where
+         ⊥-eq-b : ⊥ ＝ β b
+         ⊥-eq-b = antisymmetry 𝓓 ⊥ (β b)
+                   (⊥-is-least (β b))
+                   (transport _ ⊥ᴮ-is-⊥ (⌜ ⊑ᴮ-≃-⊑ ⌝ b-below-⊥))
+         b-below-c : b ⊑ᴮ c
+         b-below-c = ⌜ ⊑ᴮ-≃-⊑ ⌝⁻¹ (transport _ ⊥-eq-b (⊥-is-least (β c)))
+
+    _∨Idl_ : Idl → Idl → Idl
+    I ∨Idl J = K , K-is-lowerset , K-is-inhabited , {!!}
+     where
+      K : 𝓟 B
+      K b = ∥ (Σ c ꞉ B , Σ d ꞉ B , c ∈ᵢ I × d ∈ᵢ J × (b ⊑ᴮ (c ∨ᴮ d))) ∥ ,
+            ∥∥-is-prop
+
+      K-is-lowerset : is-lowerset K
+      K-is-lowerset b₁ b₂ b₁-below-b₂ =
+       ∥∥-functor
+        (λ (c , d , c-in-I , d-in-J , b₂-below-join)
+          → (c , d , c-in-I , d-in-J ,
+             ⊑ᴮ-is-transitive b₁-below-b₂ b₂-below-join))
+
+      K-is-inhabited : is-inhabited-set K
+      K-is-inhabited = ∣ ⊥ᴮ , ∣ ⊥ᴮ , ⊥ᴮ ,
+                                {!!} , {!!} ,
+                                ⌜ ⊑ᴮ-≃-⊑ ⌝⁻¹ (⊥ᴮ-is-least _) ∣ ∣
+
+    γ : has-finite-joins Idl-DCPO
+    γ = record
+         { ⊥ = ⊥Idl ;
+           ⊥-is-least = ⊥Idl-is-least ;
+           _∨_ = {!!} ;
+           ∨-is-sup = {!!}
+         }
+
+ Idl-sup-complete-if-basis-has-finite-joins :
+    (c : is-sup-complete 𝓓)
+  → basis-has-finite-joins 𝓓 β β-is-small-basis
+                           (sup-complete-dcpo-has-finite-joins 𝓓 c)
+  → is-sup-complete Idl-DCPO
+ Idl-sup-complete-if-basis-has-finite-joins c =
+  Idl-sup-complete-if-basis-has-finite-joins'
+   (sup-complete-dcpo-has-finite-joins 𝓓 c)
 
 \end{code}
 
