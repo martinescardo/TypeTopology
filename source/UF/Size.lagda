@@ -1045,3 +1045,19 @@ module _ (pt : propositional-truncations-exist) where
                  → is-set Y
                  → image f is (𝓤 ⊔ 𝓥) small
 \end{code}
+
+Ian 27/06/2024:
+
+If X is 𝓥-small then it is locally 𝓥-small.
+
+\begin{code}
+
+open import MLTT.Spartan
+
+small-implies-locally-small : (X : 𝓤 ̇) → (𝓥 : Universe)
+                            → X is 𝓥 small
+                            → X is-locally 𝓥 small
+small-implies-locally-small X 𝓥 (Y , e) x x' =
+ ((⌜ e ⌝⁻¹ x ＝ ⌜ e ⌝⁻¹ x') , (⌜ {!ap-is-equiv ?!} ⌝⁻¹ , {!!}))
+
+\end{code}
