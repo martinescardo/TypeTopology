@@ -104,6 +104,11 @@ module Ideals
                           → is-ideal I → is-directed-set I
  ideals-are-directed-sets I = pr₂
 
+ ideals-are-inhabited : (I : P → Ω (𝓥 ⊔ 𝓣))
+                      → is-ideal I → is-inhabited-set I
+ ideals-are-inhabited I ι =
+  directed-sets-are-inhabited I (ideals-are-directed-sets I ι)
+
  Idl : 𝓥 ⁺ ⊔ 𝓣 ⁺ ⊔ 𝓤 ̇
  Idl = Σ I ꞉ (P → Ω (𝓥 ⊔ 𝓣)) , is-ideal I
 

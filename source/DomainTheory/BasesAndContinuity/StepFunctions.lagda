@@ -400,7 +400,7 @@ module _
    record
     { s               = s
     ; r               = r
-    ; s-section-of-r    = s-section-of-r
+    ; s-section-of-r  = s-section-of-r
     ; s-is-continuous = s-is-cts
     ; r-is-continuous = r-is-cts
     }
