@@ -38,6 +38,7 @@ open import Naturals.Properties
 module UF.SizeAndTruncation (fe : FunExt)
                             (fe' : Fun-Ext)
                             (pt : propositional-truncations-exist)
+                            (u : Univalence)
                              where
 
  open import UF.H-Levels fe fe' pt
@@ -62,23 +63,34 @@ We will now begin proving some of the results of the paper. We will attempt to
 avoid any unnecesay use of propositional resizing. Theorem numbers will be
 provided for easy reference.
 
-WARNING: Be aware that our definitions are 'off by two' which results from our
-choice of H-levels.
-
-Proposition 2.2.
+WARNING: Be aware that our connectedness definitions are 'off by two' with
+respect to our reference material.
 
 \begin{code}
 
   open H-level-truncations-exist te
   open k-connectedness te
+  open PropositionalTruncation pt
 
-  Join-Construction-Result : {𝓤 𝓦 : Universe} {A : 𝓤 ̇} {X : 𝓦 ̇}
-                           → (𝓥 ⁺) ⊔ 𝓤 ⊔ 𝓦 ̇
-  Join-Construction-Result {𝓤} {𝓦} {A} {X} = (f : A → X)
-                                           → A is 𝓥 small
-                                           → X is 1 locally-small
-                                           → map f is 1 connected
-                                           → X is 𝓥 small
+  Join-Construction-Result : {𝓤 𝓦 : Universe} → (𝓥 ⁺) ⊔ (𝓤 ⁺) ⊔ (𝓦 ⁺) ̇
+  Join-Construction-Result {𝓤} {𝓦} = (A : 𝓤 ̇) (X : 𝓦 ̇) (f : A → X)
+                                   → A is 𝓥 small
+                                   → X is 1 locally-small
+                                   → map f is 1 connected
+                                   → X is 𝓥 small
+
+\end{code}
+
+Prop 2.2.
+
+\begin{code}
+
+  ap-connectedness : {𝓤 𝓥 : Universe} {X : 𝓤 ̇} {Y : 𝓥 ̇}
+                   → (f : X → Y)
+                   → (n : ℕ)
+                   → map f is succ n connected
+                   → map ap f is n connected
+  ap-connectedness f n f-is-con p = {!!}
 
   Prop-2-2 : {𝓤 𝓦 : Universe} {A : 𝓤 ̇} {X : 𝓦 ̇}
            → (f : A → X)
@@ -86,16 +98,27 @@ Proposition 2.2.
            → map f is n connected
            → A is 𝓥 small
            → X is n locally-small
-           → Join-Construction-Result {𝓤} {𝓦} {A} {X}
+           → Join-Construction-Result {𝓤} {𝓦}
            → X is 𝓥 small
   Prop-2-2 f zero f-is-con A-small X-is-loc-small j = X-is-loc-small
   Prop-2-2 {𝓤} {𝓦} {A} {X} f (succ n) f-is-con A-small X-is-loc-small j =
-    j f A-small (id-is-small (1-connected-map-is-surj f-1-con)) f-1-con
+    j A X f A-small
+      (surjection-implies-locally-small (1-connected-map-is-surj f-1-con))
+      f-1-con
    where
     f-1-con : map f is 1 connected
     f-1-con y = connectedness-extends-below (succ n) 1 ⋆ (f-is-con y)
-    id-is-small : is-surjection f → (x x' : X) → (x ＝ x') is 𝓥 small
-    id-is-small f-is-surj x x' = {!!}
+    helper-small : (x x' : X)
+                 → Σ a ꞉ A , f a ＝ x
+                 → Σ a ꞉ A , f a ＝ x'
+                 → (x ＝ x') is 𝓥 small
+    helper-small .(f a) .(f a') (a , refl) (a' , refl) =
+     Prop-2-2 (ap f) n {!!} {!!} (X-is-loc-small (f a) (f a')) j
+    surjection-implies-locally-small : is-surjection f
+                                     → (x x' : X) → (x ＝ x') is 𝓥 small
+    surjection-implies-locally-small f-is-surj x x' =
+     ∥∥-rec₂ (being-small-is-prop u (x ＝ x') 𝓥) (helper-small x x')
+             (f-is-surj x) (f-is-surj x')
 
 \end{code}
 
