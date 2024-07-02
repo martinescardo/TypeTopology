@@ -1046,7 +1046,7 @@ module _ (pt : propositional-truncations-exist) where
                  → image f is (𝓤 ⊔ 𝓥) small
 \end{code}
 
-Ian 27/06/2024:
+Ian Ray; 27/06/2024:
 
 If X is 𝓥-small then it is locally 𝓥-small.
 
