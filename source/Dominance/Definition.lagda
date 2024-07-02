@@ -138,7 +138,7 @@ We now define, alternatively, a dominance to be a function Ω → Ω and
 prove the equivalence with the above definition, assuming function
 extensionality and propositional extensionality. The equivalence
 requires the universe 𝓚 to be above the universe 𝓣, which in practice
-means that we replace 𝓚 by 𝓚 ⊔ 𝓛.
+means that we replace 𝓚 by 𝓚 ⊔ 𝓣.
 
 \begin{code}
 
