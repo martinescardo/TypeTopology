@@ -241,10 +241,8 @@ module _ (fe : Fun-Ext) where
     where
      lemma : (P : 𝓣 ̇ ) → is-prop P × d' P ＝ d' P
      lemma P = pe
-                (Σ-is-prop
-                  (being-prop-is-prop fe)
-                  (λ _ → II P))
+                (×-is-prop (being-prop-is-prop fe) (II P))
                 (II P)
                 (λ (i , h) → h)
-                (λ δ → (III P δ) , δ)
+                (λ δ → III P δ , δ)
 \end{code}
