@@ -181,31 +181,27 @@ module _ (fe : Fun-Ext) where
    d' X = Σ i ꞉ is-prop X , d (X , i) holds
 
    II : D2 d'
-   II = λ X → Σ-is-prop
-               (being-prop-is-prop fe)
-               (λ i → holds-is-prop (d (X , i)))
+   II X = Σ-is-prop
+           (being-prop-is-prop fe)
+           (λ i → holds-is-prop (d (X , i)))
 
    III : D3 d'
-   III  = λ X (i , h) → i
+   III X (i , h) = i
 
    IV' : d' 𝟙
    IV' = 𝟙-is-prop , IV
 
    V' : D5 d'
-   V' = λ P Q (i , h) (a : (p : P) → d' (Q p))
-      → (Σ-is-prop i (λ p → pr₁ (a p))) ,
-        V (P , i) (λ p → Q p , pr₁ (a p)) h (λ p → pr₂ (a p))
+   V' P Q (i , h) a = Σ-is-prop i (λ p → pr₁ (a p)) ,
+                      V (P , i) (λ p → Q p , pr₁ (a p)) h (λ p → pr₂ (a p))
 
  Dominance-gives-Dominance' : {𝓣 𝓚 : Universe}
                             → Dominance {𝓣} {𝓚}
                             → Dominance' {𝓣} {𝓚}
- Dominance-gives-Dominance' {𝓣} {𝓚} (d' , II , III , IV' , V') = (d , IV , V)
+ Dominance-gives-Dominance' {𝓣} {𝓚} (d' , II , III , IV' , V') = (d , IV' , V)
   where
    d : Ω 𝓣 → Ω 𝓚
-   d (P , i) = d' P , II P
-
-   IV : d ⊤ holds
-   IV = IV'
+   d p = d' (p holds) , II (p holds)
 
    V : d5 d holds
    V p q = V' (p holds) (λ h → q h holds )
