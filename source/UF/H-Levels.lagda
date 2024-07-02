@@ -25,6 +25,7 @@ open import UF.EquivalenceExamples
 open import UF.Equiv-FunExt
 open import UF.FunExt
 open import UF.IdentitySystems
+open import UF.PropTrunc
 open import UF.Retracts
 open import UF.Sets
 open import UF.Singleton-Properties
@@ -35,7 +36,10 @@ open import UF.Univalence
 open import UF.UA-FunExt
 open import Naturals.Order
 
-module UF.H-Levels (fe : FunExt) (fe' : Fun-Ext) where
+module UF.H-Levels (fe : FunExt)
+                   (fe' : Fun-Ext)
+                   (pt : propositional-truncations-exist)
+                    where
 
 _is-of-hlevel_ : 𝓤 ̇ → ℕ → 𝓤 ̇
 X is-of-hlevel zero = is-contr X
@@ -252,8 +256,8 @@ record H-level-truncations-exist : 𝓤ω where
 \end{code}
 
 We now add the notion of k-connectedness of type and functions with respect to
-H-levels. We will then see that connectedness as defined elsewhere in the
-library is a special case
+H-levels. TODO: Show that connectedness as defined elsewhere in the
+library is a special case of what follows.
 
 \begin{code}
 
@@ -266,5 +270,24 @@ module k-connectedness (te : H-level-truncations-exist) where
 
  map_is_connected : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (f : X → Y) → ℕ → 𝓤 ⊔ 𝓥 ̇
  map f is k connected = (y : codomain f) → (fiber f y) is k connected
+
+\end{code}
+
+We now add some results about connectedness.
+
+\begin{code}
+
+ open propositional-truncations-exist pt
+
+ connected-characterization : {X : 𝓤 ̇} {n : ℕ}
+                            → X is (succ n) connected
+                            ↔ ∥ X ∥ × ((x y : X) → {!x ＝ y!} is n connected)
+ connected-characterization = {!!}
+
+ ap-is-less-connected : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (f : X → Y)
+                      → (n : ℕ)
+                      → map f is (succ n) connected
+                      → map (ap f) is n connected
+ ap-is-less-connected = {!!}
 
 \end{code}
