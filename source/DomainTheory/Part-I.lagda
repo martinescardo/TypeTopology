@@ -26,53 +26,16 @@ open PropositionalTruncation pt
 
 open import MLTT.Spartan
 
+open import UF.Base
+open import UF.Equiv
 open import UF.Powerset-MultiUniverse
 open import UF.Sets
-open import UF.Size
+open import UF.Size hiding (is-locally-small)
 open import UF.SubtypeClassifier
 
 open import OrderedTypes.Poset fe
-{-
 
-open import DomainTheory.Basics.Exponential     -- (2)
-open import DomainTheory.Basics.LeastFixedPoint -- (3)
-open import DomainTheory.Basics.Miscelanea      -- (4)
-open import DomainTheory.Basics.Pointed         -- (5)
-open import DomainTheory.Basics.SupComplete     -- (6)
-open import DomainTheory.Basics.WayBelow        -- (7)
-
-open import DomainTheory.BasesAndContinuity.Bases                   -- (1)
-open import DomainTheory.BasesAndContinuity.CompactBasis            -- (2)
-open import DomainTheory.BasesAndContinuity.Continuity              -- (3)
-open import DomainTheory.BasesAndContinuity.ContinuityDiscussion    -- (4)
-open import DomainTheory.BasesAndContinuity.ContinuityImpredicative -- (5)
-open import DomainTheory.BasesAndContinuity.IndCompletion           -- (6)
-open import DomainTheory.BasesAndContinuity.StepFunctions           -- (7)
-
-open import DomainTheory.Bilimits.Directed   -- (1)
-open import DomainTheory.Bilimits.Sequential -- (2)
-open import DomainTheory.Bilimits.Dinfinity  -- (3)
-
-open import DomainTheory.Examples.IdlDyadics              -- (1)
-open import DomainTheory.Examples.LiftingLargeProposition -- (2)
-open import DomainTheory.Examples.Omega                   -- (3)
-open import DomainTheory.Examples.Ordinals                -- (4)
-open import DomainTheory.Examples.Powerset                -- (5)
-
-open import DomainTheory.IdealCompletion.IdealCompletion -- (1)
-open import DomainTheory.IdealCompletion.Properties      -- (2)
-open import DomainTheory.IdealCompletion.Retracts        -- (3)
-
-open import DomainTheory.Lifting.LiftingDcpo         -- (1)
-open import DomainTheory.Lifting.LiftingSet          -- (2)
-open import DomainTheory.Lifting.LiftingSetAlgebraic -- (3)
-
-open import DomainTheory.Taboos.ClassicalLiftingOfNaturalNumbers
--}
-
--- open import DomainTheory.Lifting.*
-
--- Section 2
+{- Section 2 -}
 
 Definition-2-1 : (𝓤 : Universe) (X : 𝓥 ̇  ) → 𝓤 ⁺ ⊔ 𝓥 ̇
 Definition-2-1 𝓤 X = X is 𝓤 small
@@ -88,7 +51,7 @@ Definition-2-4 : (𝓥 : Universe) (X : 𝓤 ̇  )
                × (𝓟 {𝓥} X → 𝓟 {𝓥} X → 𝓥 ⊔ 𝓤 ̇  )
 Definition-2-4 𝓥 X = _∈_ , _⊆_
 
--- Section 3
+{- Section 3 -}
 
 module _
         (P : 𝓤 ̇  ) (_⊑_ : P → P → 𝓣 ̇  )
@@ -136,10 +99,106 @@ module _
                       {α : I → ⟨ 𝓓 ⟩} → is-Directed 𝓓 α → ⟨ 𝓓 ⟩
   Definition-3-7-ad = ∐
 
-  Remark-3-8 : {!!}
-  Remark-3-8 = {!!}
+  Remark-3-8 : poset-axioms _⊑_
+             → {I : 𝓥 ̇  } (α : I → P)
+             → is-prop (has-sup _⊑_ α)
+  Remark-3-8 = having-sup-is-prop _⊑_
 
-  Definition-3-9 : {𝓤 𝓣 : Universe} → (𝓤 ⊔ 𝓥 ⊔ 𝓣) ⁺ ̇
-  Definition-3-9 {𝓤} {𝓣} = DCPO {𝓤} {𝓣}
+module _ (𝓥 : Universe) where
+ open import DomainTheory.Basics.Dcpo pt fe 𝓥
+
+ Definition-3-9 : {𝓤 𝓣 : Universe} → (𝓤 ⊔ 𝓥 ⊔ 𝓣) ⁺ ̇
+ Definition-3-9 {𝓤} {𝓣} = DCPO {𝓤} {𝓣}
+
+ -- Remark-3-10: No formalisable content.
+
+ open import DomainTheory.Basics.Pointed pt fe 𝓥
+ open import DomainTheory.Basics.Miscelanea pt fe 𝓥
+
+ Definition-3-11 : {𝓤 𝓣 : Universe} → (𝓥 ⊔ 𝓤 ⊔ 𝓣) ⁺ ̇
+ Definition-3-11 {𝓤} {𝓣} = DCPO⊥ {𝓤} {𝓣}
+
+ Definition-3-12 : (𝓓 : DCPO {𝓤} {𝓣}) → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
+ Definition-3-12 𝓓 = is-locally-small' 𝓓
+
+ Lemma-3-13 : (𝓓 : DCPO {𝓤} {𝓣})
+            → is-locally-small 𝓓 ≃ is-locally-small' 𝓓
+ Lemma-3-13 𝓓 = local-smallness-equivalent-definitions 𝓓
+
+ open import DomainTheory.Examples.Omega pt fe pe 𝓥
+
+ Example-3-14 : DCPO⊥ {𝓥 ⁺} {𝓥}
+ Example-3-14 = Ω-DCPO⊥
+
+ module _
+         (X : 𝓤 ̇  )
+         (X-is-set : is-set X)
+        where
+
+  open import DomainTheory.Examples.Powerset pt fe pe X-is-set
+
+  Example-3-15 :  DCPO⊥ {𝓥 ⁺ ⊔ 𝓤} {𝓥 ⊔ 𝓤}
+  Example-3-15 = generalized-𝓟-DCPO⊥ 𝓥
+
+ module _
+         (X : 𝓥 ̇  )
+         (X-is-set : is-set X)
+        where
+
+  open import DomainTheory.Examples.Powerset pt fe pe X-is-set
+
+  Example-3-15-ad :  DCPO⊥ {𝓥 ⁺} {𝓥}
+  Example-3-15-ad = 𝓟-DCPO⊥
+
+ Proposition-3-16 : (𝓓 : DCPO {𝓤} {𝓣})
+                  → is-ω-complete (underlying-order 𝓓)
+ Proposition-3-16 = dcpos-are-ω-complete
+
+{- Section 4 -}
+
+ Definition-4-1 : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
+                → (⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩)
+                → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ⊔ 𝓤' ⊔ 𝓣' ̇
+ Definition-4-1 𝓓 𝓔 f = is-continuous 𝓓 𝓔 f
+
+ -- Remark-4-2: Note that the parameter 𝓥 in the type DCPO is fixed.
+
+ module _
+         (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
+        where
+
+  Lemma-4-3 : (f : ⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩)
+            → is-prop (is-continuous 𝓓 𝓔 f)
+  Lemma-4-3 = being-continuous-is-prop 𝓓 𝓔
+
+  Lemma-4-3-ad : (f g : DCPO[ 𝓓 , 𝓔 ])
+               → underlying-function 𝓓 𝓔 f ＝ underlying-function 𝓓 𝓔 g
+               → f ＝ g
+  Lemma-4-3-ad f g e = to-continuous-function-＝ 𝓓 𝓔 (happly e)
+
+  Lemma-4-4 : (f : DCPO[ 𝓓 , 𝓔 ])
+            → is-monotone 𝓓 𝓔 [ 𝓓 , 𝓔 ]⟨ f ⟩
+  Lemma-4-4 = monotone-if-continuous 𝓓 𝓔
+
+  Lemma-4-5 : {f : ⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩} → is-monotone 𝓓 𝓔 f
+            → {I : 𝓥 ̇ } {α : I → ⟨ 𝓓 ⟩}
+            → is-Directed 𝓓 α
+            → is-Directed 𝓔 (f ∘ α)
+  Lemma-4-5 = image-is-directed 𝓓 𝓔
+
+  Lemma-4-6 : (f : DCPO[ 𝓓 , 𝓔 ]) {I : 𝓥 ̇ } {α : I → ⟨ 𝓓 ⟩}
+              (δ : is-Directed 𝓓 α)
+            → [ 𝓓 , 𝓔 ]⟨ f ⟩ (∐ 𝓓 δ) ⊑⟨ 𝓔 ⟩
+              ∐ 𝓔 (image-is-directed' 𝓓 𝓔 f δ)
+  Lemma-4-6 = continuous-∐-⊑ 𝓓 𝓔
+
+  Lemma-4-6-ad : (f : ⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩) (m : is-monotone 𝓓 𝓔 f)
+               → ((I : 𝓥 ̇ ) (α : I → ⟨ 𝓓 ⟩) (δ : is-Directed 𝓓 α)
+                     → f (∐ 𝓓 δ) ⊑⟨ 𝓔 ⟩ ∐ 𝓔 (image-is-directed 𝓓 𝓔 m δ))
+               → is-continuous 𝓓 𝓔 f
+  Lemma-4-6-ad = continuity-criterion 𝓓 𝓔
+
+  -- Remark-4-7: No formalisable content.
+
 
 \end{code}
