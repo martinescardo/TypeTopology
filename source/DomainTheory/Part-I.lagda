@@ -31,6 +31,7 @@ open import UF.Equiv
 open import UF.Powerset-MultiUniverse
 open import UF.Sets
 open import UF.Size hiding (is-locally-small)
+open import UF.Subsingletons-FunExt
 open import UF.SubtypeClassifier
 
 open import OrderedTypes.Poset fe
@@ -198,7 +199,15 @@ module _ (𝓥 : Universe) where
                → is-continuous 𝓓 𝓔 f
   Lemma-4-6-ad = continuity-criterion 𝓓 𝓔
 
-  -- Remark-4-7: No formalisable content.
-
+  Remark-4-7 : Σ 𝓓 ꞉ DCPO {𝓥 ⁺} {𝓥} ,
+               Σ f ꞉ (⟨ 𝓓 ⟩ → ⟨ 𝓓 ⟩) , ¬ is-continuous 𝓓 𝓓 f
+  Remark-4-7 = Ω-DCPO , ν , II
+   where
+    ν : Ω 𝓥 → Ω 𝓥
+    ν P = ¬ (P holds) , negations-are-props fe
+    I : ¬ (is-monotone Ω-DCPO Ω-DCPO ν)
+    I m = m (𝟘 , 𝟘-is-prop) (𝟙 , 𝟙-is-prop) (λ _ → ⋆) 𝟘-elim ⋆
+    II : ¬ (is-continuous Ω-DCPO Ω-DCPO ν)
+    II c = I (monotone-if-continuous Ω-DCPO Ω-DCPO (ν , c))
 
 \end{code}
