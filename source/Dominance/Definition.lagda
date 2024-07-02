@@ -239,7 +239,7 @@ module _ (fe : Fun-Ext) where
      (being-dominance-is-prop fe)
      (dfunext fe lemma)
     where
-     lemma : (P : 𝓣 ̇ ) → (Σ i ꞉ is-prop P , d' P) ＝ d' P
+     lemma : (P : 𝓣 ̇ ) → is-prop P × d' P ＝ d' P
      lemma P = pe
                 (Σ-is-prop
                   (being-prop-is-prop fe)
@@ -247,5 +247,4 @@ module _ (fe : Fun-Ext) where
                 (II P)
                 (λ (i , h) → h)
                 (λ δ → (III P δ) , δ)
-
 \end{code}
