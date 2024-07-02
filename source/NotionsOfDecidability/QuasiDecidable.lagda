@@ -631,7 +631,7 @@ We now give the quasidecidable propositions the structure of a
 
 \end{code}
 
-Putting these axioms together we get the σ-suplattice of
+Putting these axioms together we get the σ-sup-lattice of
 quasidecidable propositions:
 
 \begin{code}
@@ -652,8 +652,8 @@ quasidecidable propositions:
 
 \end{code}
 
-We now show that QD is the free σ-suplattice on one generator. For
-this purpose, we assume that we are give a σ-suplattice 𝓐 with a
+We now show that QD is the free σ-sup-lattice on one generator. For
+this purpose, we assume that we are give a σ-sup-lattice 𝓐 with a
 distinguished element t.
 
 \begin{code}
