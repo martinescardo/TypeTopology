@@ -199,15 +199,90 @@ module _ (𝓥 : Universe) where
                → is-continuous 𝓓 𝓔 f
   Lemma-4-6-ad = continuity-criterion 𝓓 𝓔
 
-  Remark-4-7 : Σ 𝓓 ꞉ DCPO {𝓥 ⁺} {𝓥} ,
-               Σ f ꞉ (⟨ 𝓓 ⟩ → ⟨ 𝓓 ⟩) , ¬ is-continuous 𝓓 𝓓 f
-  Remark-4-7 = Ω-DCPO , ν , II
-   where
-    ν : Ω 𝓥 → Ω 𝓥
-    ν P = ¬ (P holds) , negations-are-props fe
-    I : ¬ (is-monotone Ω-DCPO Ω-DCPO ν)
-    I m = m (𝟘 , 𝟘-is-prop) (𝟙 , 𝟙-is-prop) (λ _ → ⋆) 𝟘-elim ⋆
-    II : ¬ (is-continuous Ω-DCPO Ω-DCPO ν)
-    II c = I (monotone-if-continuous Ω-DCPO Ω-DCPO (ν , c))
+ Remark-4-7 : Σ 𝓓 ꞉ DCPO {𝓥 ⁺} {𝓥} ,
+              Σ f ꞉ (⟨ 𝓓 ⟩ → ⟨ 𝓓 ⟩) , ¬ is-continuous 𝓓 𝓓 f
+ Remark-4-7 = Ω-DCPO , ν , II
+  where
+   ν : Ω 𝓥 → Ω 𝓥
+   ν P = ¬ (P holds) , negations-are-props fe
+   I : ¬ (is-monotone Ω-DCPO Ω-DCPO ν)
+   I m = m (𝟘 , 𝟘-is-prop) (𝟙 , 𝟙-is-prop) (λ _ → ⋆) 𝟘-elim ⋆
+   II : ¬ (is-continuous Ω-DCPO Ω-DCPO ν)
+   II c = I (monotone-if-continuous Ω-DCPO Ω-DCPO (ν , c))
+
+ Definition-4-8 : (𝓓 : DCPO⊥ {𝓤} {𝓣}) (𝓔 : DCPO⊥ {𝓤'} {𝓣'})
+                → (⟪ 𝓓 ⟫ → ⟪ 𝓔 ⟫) → 𝓤' ̇
+ Definition-4-8 𝓓 𝓔 f = is-strict 𝓓 𝓔 f
+
+ Lemma-4-9 : (𝓓 : DCPO⊥ {𝓤} {𝓣})
+             {I : 𝓥 ̇  } {α : I → ⟪ 𝓓 ⟫}
+           → is-semidirected (underlying-order (𝓓 ⁻)) α
+           → has-sup (underlying-order (𝓓 ⁻)) α
+ Lemma-4-9 = semidirected-complete-if-pointed
+
+ Lemma-4-9-ad₁ : (𝓓 : DCPO {𝓤} {𝓣})
+               → ({I : 𝓥 ̇ } {α : I → ⟨ 𝓓 ⟩}
+                     → is-semidirected (underlying-order 𝓓) α
+                     → has-sup (underlying-order 𝓓) α)
+               → has-least (underlying-order 𝓓)
+ Lemma-4-9-ad₁ = pointed-if-semidirected-complete
+
+ Lemma-4-9-ad₂ : (𝓓 : DCPO⊥ {𝓤} {𝓣}) (𝓔 : DCPO⊥ {𝓤'} {𝓣'})
+                 (f : ⟪ 𝓓 ⟫ → ⟪ 𝓔 ⟫)
+               → is-continuous (𝓓 ⁻) (𝓔 ⁻) f
+               → is-strict 𝓓 𝓔 f
+               → {I : 𝓥 ̇ } {α : I → ⟪ 𝓓 ⟫}
+               → (σ : is-semidirected (underlying-order (𝓓 ⁻)) α)
+               → is-sup (underlying-order (𝓔 ⁻)) (f (∐ˢᵈ 𝓓 σ)) (f ∘ α)
+ Lemma-4-9-ad₂ = preserves-semidirected-sups-if-continuous-and-strict
+
+ Proposition-4-10-i : (𝓓 : DCPO {𝓤} {𝓣}) → is-continuous 𝓓 𝓓 id
+ Proposition-4-10-i = id-is-continuous
+
+ Proposition-4-10-i-ad : (𝓓 : DCPO⊥ {𝓤} {𝓣}) → is-strict 𝓓 𝓓 id
+ Proposition-4-10-i-ad 𝓓 = refl
+
+ module _
+         (𝓓 : DCPO {𝓤} {𝓣})
+         (𝓔 : DCPO {𝓤'} {𝓣'})
+        where
+
+  Proposition-4-10-ii : (y : ⟨ 𝓔 ⟩) → is-continuous 𝓓 𝓔 (λ _ → y)
+  Proposition-4-10-ii _ = constant-functions-are-continuous 𝓓 𝓔
+
+  Proposition-4-10-iii : {𝓤'' 𝓣'' : Universe}
+                         (𝓔' : DCPO {𝓤''} {𝓣''})
+                         (f : ⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩) (g : ⟨ 𝓔 ⟩ → ⟨ 𝓔' ⟩)
+                       → is-continuous 𝓓 𝓔 f
+                       → is-continuous 𝓔 𝓔' g
+                       → is-continuous 𝓓 𝓔' (g ∘ f)
+  Proposition-4-10-iii = ∘-is-continuous 𝓓 𝓔
+
+ Proposition-4-10-iii-ad : {𝓤'' 𝓣'' : Universe}
+                           (𝓓 : DCPO⊥ {𝓤} {𝓣}) (𝓔 : DCPO⊥ {𝓤'} {𝓣'})
+                           (𝓔' : DCPO⊥ {𝓤''} {𝓣''})
+                           (f : ⟪ 𝓓 ⟫ → ⟪ 𝓔 ⟫) (g : ⟪ 𝓔 ⟫ → ⟪ 𝓔' ⟫)
+                         → is-strict 𝓓 𝓔 f
+                         → is-strict 𝓔 𝓔' g
+                         → is-strict 𝓓 𝓔' (g ∘ f)
+ Proposition-4-10-iii-ad = ∘-is-strict
+
+ Definition-4-11 : DCPO {𝓤} {𝓣} → DCPO {𝓤'} {𝓣'} → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ⊔ 𝓤' ⊔ 𝓣' ̇
+ Definition-4-11 𝓓 𝓔 = 𝓓 ≃ᵈᶜᵖᵒ 𝓔
+
+ Lemma-4-12 : (𝓓 : DCPO⊥ {𝓤} {𝓣}) (𝓔 : DCPO⊥ {𝓤'} {𝓣'})
+            → (𝓓 ⁻) ≃ᵈᶜᵖᵒ (𝓔 ⁻) → 𝓓 ≃ᵈᶜᵖᵒ⊥ 𝓔
+ Lemma-4-12 = ≃ᵈᶜᵖᵒ-to-≃ᵈᶜᵖᵒ⊥
+
+ Definition-4-13 : DCPO {𝓤} {𝓣} → DCPO {𝓤'} {𝓣'} → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ⊔ 𝓤' ⊔ 𝓣' ̇
+ Definition-4-13 𝓓 𝓔 = 𝓓 continuous-retract-of 𝓔
+
+ Lemma-4-14 : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
+            → 𝓓 continuous-retract-of 𝓔
+            → is-locally-small 𝓔
+            → is-locally-small 𝓓
+ Lemma-4-14 = local-smallness-preserved-by-continuous-retract
+
+{- Section 5 -}
 
 \end{code}
