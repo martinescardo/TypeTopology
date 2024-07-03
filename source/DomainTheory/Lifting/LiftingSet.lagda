@@ -1,4 +1,4 @@
-Tom de Jong, 27 May 2019.
+sTom de Jong, 27 May 2019.
 Refactored 29 April 2020.
 
 We show that lifting (cf. Escardó-Knapp) a set gives the free pointed dcpo on
@@ -279,14 +279,76 @@ can be expressed as such a supremum.
 
 \begin{code}
 
-module _
+module lifting-is-free-pointed-dcpo-on-set
          {X : 𝓤 ̇ }
          (X-is-set : is-set X)
+         (𝓓 : DCPO⊥ {𝓥} {𝓦})
+         (f : X → ⟪ 𝓓 ⟫)
        where
 
- private
-  𝓛X : DCPO⊥ {𝓣 ⁺ ⊔ 𝓤} {𝓣 ⁺ ⊔ 𝓤}
-  𝓛X = 𝓛-DCPO⊥ X-is-set
+ 𝓛X : DCPO⊥ {𝓣 ⁺ ⊔ 𝓤} {𝓣 ⁺ ⊔ 𝓤}
+ 𝓛X = 𝓛-DCPO⊥ X-is-set
+
+ f̃ : ⟪ 𝓛X ⟫ → ⟪ 𝓓 ⟫
+ f̃ (P , ϕ , P-is-prop) = ∐ˢˢ 𝓓 (f ∘ ϕ) P-is-prop
+
+ f̃-is-strict : is-strict 𝓛X 𝓓 f̃
+ f̃-is-strict = strictness-criterion 𝓛X 𝓓 f̃ γ
+  where
+   γ : f̃ (⊥ 𝓛X) ⊑⟪ 𝓓 ⟫ ⊥ 𝓓
+   γ = ∐ˢˢ-is-lowerbound-of-upperbounds 𝓓
+        (f ∘ unique-from-𝟘) 𝟘-is-prop (⊥ 𝓓) 𝟘-induction
+
+ f̃-is-continuous : is-continuous (𝓛X ⁻) (𝓓 ⁻) f̃
+ f̃-is-continuous I α δ = ub , lb-of-ubs
+  where
+   s : 𝓛 X
+   s = ∐ (𝓛X ⁻) δ
+   ρ : (l : 𝓛 X) → is-prop (is-defined l)
+   ρ = being-defined-is-prop
+   lemma : (i : I) (p : is-defined (α i))
+         → value (α i) p ＝ value s ∣ i , p ∣
+   lemma i p = ＝-of-values-from-＝
+                (family-defined-somewhere-sup-＝ X-is-set δ i p)
+   ub : (i : I) → f̃ (α i) ⊑⟪ 𝓓 ⟫ f̃ s
+   ub i = ∐ˢˢ-is-lowerbound-of-upperbounds 𝓓 (f ∘ value (α i)) (ρ (α i)) (f̃ s) γ
+    where
+     γ : (p : is-defined (α i))
+       → f (value (α i) p) ⊑⟪ 𝓓 ⟫ f̃ s
+     γ p = f (value (α i) p)     ⊑⟪ 𝓓 ⟫[ ⦅1⦆ ]
+           f (value s ∣ i , p ∣) ⊑⟪ 𝓓 ⟫[ ⦅2⦆ ]
+           f̃ s                   ∎⟪ 𝓓 ⟫
+      where
+       ⦅1⦆ = ＝-to-⊑ (𝓓 ⁻) (ap f (lemma i p))
+       ⦅2⦆ = ∐ˢˢ-is-upperbound 𝓓 (f ∘ value s) (ρ s) ∣ i , p ∣
+   lb-of-ubs : is-lowerbound-of-upperbounds (underlying-order (𝓓 ⁻))
+                (f̃ s) (f̃ ∘ α)
+   lb-of-ubs y y-is-ub = ∐ˢˢ-is-lowerbound-of-upperbounds 𝓓 (f ∘ value s) (ρ s)
+                          y γ
+    where
+     γ : (q : is-defined s)
+       → (f (value s q)) ⊑⟪ 𝓓 ⟫ y
+     γ q = ∥∥-rec (prop-valuedness (𝓓 ⁻) (f (value s q)) y) r q
+      where
+       r : (Σ i ꞉ I , is-defined (α i)) → f (value s q) ⊑⟪ 𝓓 ⟫ y
+       r (i , p) = f (value s q)                     ⊑⟪ 𝓓 ⟫[ ⦅1⦆       ]
+                   f (value s ∣ i , p ∣)             ⊑⟪ 𝓓 ⟫[ ⦅2⦆       ]
+                   f (value (α i) p)                 ⊑⟪ 𝓓 ⟫[ ⦅3⦆       ]
+                   ∐ˢˢ 𝓓 (f ∘ value (α i)) (ρ (α i)) ⊑⟪ 𝓓 ⟫[ y-is-ub i ]
+                   y                                 ∎⟪ 𝓓 ⟫
+        where
+         ⦅1⦆ = ＝-to-⊑ (𝓓 ⁻) (ap f (value-is-constant s q ∣ i , p ∣))
+         ⦅2⦆ = ＝-to-⊒ (𝓓 ⁻) (ap f (lemma i p))
+         ⦅3⦆ = ∐ˢˢ-is-upperbound 𝓓 (f ∘ value (α i)) (being-defined-is-prop (α i)) p
+
+ f̃-after-η-is-f : f̃ ∘ η ∼ f
+ f̃-after-η-is-f x = antisymmetry (𝓓 ⁻) (f̃ (η x)) (f x) u v
+  where
+   u : f̃ (η x) ⊑⟪ 𝓓 ⟫ f x
+   u = ∐ˢˢ-is-lowerbound-of-upperbounds 𝓓 (f ∘ (λ _ → x)) 𝟙-is-prop
+        (f x) (λ _ → reflexivity (𝓓 ⁻) (f x))
+   v : f x ⊑⟪ 𝓓 ⟫ f̃ (η x)
+   v = ∐ˢˢ-is-upperbound 𝓓 (λ _ → f x) 𝟙-is-prop ⋆
 
  all-partial-elements-are-subsingleton-sups :
     (l : ⟪ 𝓛X ⟫)
@@ -305,107 +367,39 @@ module _
            η (ϕ p)          ⊑⟪ 𝓛X ⟫[ ∐ˢˢ-is-upperbound 𝓛X (η ∘ ϕ) ρ p ]
            ∐ˢˢ 𝓛X (η ∘ ϕ) ρ ∎⟪ 𝓛X ⟫
 
- module lifting-is-free-pointed-dcpo-on-set
-         (𝓓 : DCPO⊥ {𝓥} {𝓦})
-         (f : X → ⟪ 𝓓 ⟫)
-       where
-
-  f̃ : ⟪ 𝓛X ⟫ → ⟪ 𝓓 ⟫
-  f̃ (P , ϕ , P-is-prop) = ∐ˢˢ 𝓓 (f ∘ ϕ) P-is-prop
-
-  f̃-is-strict : is-strict 𝓛X 𝓓 f̃
-  f̃-is-strict = strictness-criterion 𝓛X 𝓓 f̃ γ
+ f̃-is-unique : (g : ⟪ 𝓛X ⟫ → ⟪ 𝓓 ⟫)
+             → is-continuous (𝓛X ⁻) (𝓓 ⁻) g
+             → is-strict 𝓛X 𝓓 g
+             → g ∘ η ＝ f
+             → g ∼ f̃
+ f̃-is-unique g con str eq (P , ϕ , ρ) = g (P , ϕ , ρ)        ＝⟨ ⦅1⦆  ⟩
+                                        g (∐ˢˢ 𝓛X (η ∘ ϕ) ρ) ＝⟨ ⦅2⦆  ⟩
+                                        ∐ˢˢ 𝓓 (g ∘ η ∘ ϕ) ρ  ＝⟨ ⦅3⦆  ⟩
+                                        ∐ˢˢ 𝓓 (f ∘ ϕ) ρ      ＝⟨ refl ⟩
+                                        f̃ (P , ϕ , ρ)        ∎
    where
-    γ : f̃ (⊥ 𝓛X) ⊑⟪ 𝓓 ⟫ ⊥ 𝓓
-    γ = ∐ˢˢ-is-lowerbound-of-upperbounds 𝓓
-         (f ∘ unique-from-𝟘) 𝟘-is-prop (⊥ 𝓓) 𝟘-induction
+    ⦅1⦆ = ap g (all-partial-elements-are-subsingleton-sups (P , ϕ , ρ))
+    ⦅2⦆ = ∐ˢˢ-＝-if-continuous-and-strict 𝓛X 𝓓 g con str (η ∘ ϕ) ρ
+    ⦅3⦆ = ∐ˢˢ-family-＝ 𝓓 ρ (ap (_∘ ϕ) eq)
 
-  f̃-is-continuous : is-continuous (𝓛X ⁻) (𝓓 ⁻) f̃
-  f̃-is-continuous I α δ = ub , lb-of-ubs
+ 𝓛-gives-the-free-pointed-dcpo-on-a-set :
+  ∃! h ꞉ (⟪ 𝓛X ⟫ → ⟪ 𝓓 ⟫) , is-continuous (𝓛X ⁻) (𝓓 ⁻) h
+                          × is-strict 𝓛X 𝓓 h
+                          × (h ∘ η ＝ f)
+ 𝓛-gives-the-free-pointed-dcpo-on-a-set =
+  (f̃ , f̃-is-continuous , f̃-is-strict , (dfunext fe f̃-after-η-is-f)) , γ
    where
-    s : 𝓛 X
-    s = ∐ (𝓛X ⁻) δ
-    ρ : (l : 𝓛 X) → is-prop (is-defined l)
-    ρ = being-defined-is-prop
-    lemma : (i : I) (p : is-defined (α i))
-          → value (α i) p ＝ value s ∣ i , p ∣
-    lemma i p = ＝-of-values-from-＝
-                 (family-defined-somewhere-sup-＝ X-is-set δ i p)
-    ub : (i : I) → f̃ (α i) ⊑⟪ 𝓓 ⟫ f̃ s
-    ub i = ∐ˢˢ-is-lowerbound-of-upperbounds 𝓓 (f ∘ value (α i)) (ρ (α i)) (f̃ s) γ
-     where
-      γ : (p : is-defined (α i))
-        → f (value (α i) p) ⊑⟪ 𝓓 ⟫ f̃ s
-      γ p = f (value (α i) p)     ⊑⟪ 𝓓 ⟫[ ⦅1⦆ ]
-            f (value s ∣ i , p ∣) ⊑⟪ 𝓓 ⟫[ ⦅2⦆ ]
-            f̃ s                   ∎⟪ 𝓓 ⟫
-       where
-        ⦅1⦆ = ＝-to-⊑ (𝓓 ⁻) (ap f (lemma i p))
-        ⦅2⦆ = ∐ˢˢ-is-upperbound 𝓓 (f ∘ value s) (ρ s) ∣ i , p ∣
-    lb-of-ubs : is-lowerbound-of-upperbounds (underlying-order (𝓓 ⁻))
-                 (f̃ s) (f̃ ∘ α)
-    lb-of-ubs y y-is-ub = ∐ˢˢ-is-lowerbound-of-upperbounds 𝓓 (f ∘ value s) (ρ s)
-                           y γ
-     where
-      γ : (q : is-defined s)
-        → (f (value s q)) ⊑⟪ 𝓓 ⟫ y
-      γ q = ∥∥-rec (prop-valuedness (𝓓 ⁻) (f (value s q)) y) r q
-       where
-        r : (Σ i ꞉ I , is-defined (α i)) → f (value s q) ⊑⟪ 𝓓 ⟫ y
-        r (i , p) = f (value s q)                     ⊑⟪ 𝓓 ⟫[ ⦅1⦆       ]
-                    f (value s ∣ i , p ∣)             ⊑⟪ 𝓓 ⟫[ ⦅2⦆       ]
-                    f (value (α i) p)                 ⊑⟪ 𝓓 ⟫[ ⦅3⦆       ]
-                    ∐ˢˢ 𝓓 (f ∘ value (α i)) (ρ (α i)) ⊑⟪ 𝓓 ⟫[ y-is-ub i ]
-                    y                                 ∎⟪ 𝓓 ⟫
-         where
-          ⦅1⦆ = ＝-to-⊑ (𝓓 ⁻) (ap f (value-is-constant s q ∣ i , p ∣))
-          ⦅2⦆ = ＝-to-⊒ (𝓓 ⁻) (ap f (lemma i p))
-          ⦅3⦆ = ∐ˢˢ-is-upperbound 𝓓 (f ∘ value (α i))
-                                    (being-defined-is-prop (α i)) p
-
-  f̃-after-η-is-f : f̃ ∘ η ∼ f
-  f̃-after-η-is-f x = antisymmetry (𝓓 ⁻) (f̃ (η x)) (f x) u v
-   where
-    u : f̃ (η x) ⊑⟪ 𝓓 ⟫ f x
-    u = ∐ˢˢ-is-lowerbound-of-upperbounds 𝓓 (f ∘ (λ _ → x)) 𝟙-is-prop
-         (f x) (λ _ → reflexivity (𝓓 ⁻) (f x))
-    v : f x ⊑⟪ 𝓓 ⟫ f̃ (η x)
-    v = ∐ˢˢ-is-upperbound 𝓓 (λ _ → f x) 𝟙-is-prop ⋆
-
-  f̃-is-unique : (g : ⟪ 𝓛X ⟫ → ⟪ 𝓓 ⟫)
-              → is-continuous (𝓛X ⁻) (𝓓 ⁻) g
-              → is-strict 𝓛X 𝓓 g
-              → g ∘ η ＝ f
-              → g ∼ f̃
-  f̃-is-unique g con str eq (P , ϕ , ρ) = g (P , ϕ , ρ)        ＝⟨ ⦅1⦆  ⟩
-                                         g (∐ˢˢ 𝓛X (η ∘ ϕ) ρ) ＝⟨ ⦅2⦆  ⟩
-                                         ∐ˢˢ 𝓓 (g ∘ η ∘ ϕ) ρ  ＝⟨ ⦅3⦆  ⟩
-                                         ∐ˢˢ 𝓓 (f ∘ ϕ) ρ      ＝⟨ refl ⟩
-                                         f̃ (P , ϕ , ρ)        ∎
-    where
-     ⦅1⦆ = ap g (all-partial-elements-are-subsingleton-sups (P , ϕ , ρ))
-     ⦅2⦆ = ∐ˢˢ-＝-if-continuous-and-strict 𝓛X 𝓓 g con str (η ∘ ϕ) ρ
-     ⦅3⦆ = ∐ˢˢ-family-＝ 𝓓 ρ (ap (_∘ ϕ) eq)
-
-  𝓛-gives-the-free-pointed-dcpo-on-a-set :
-   ∃! h ꞉ (⟪ 𝓛X ⟫ → ⟪ 𝓓 ⟫) , is-continuous (𝓛X ⁻) (𝓓 ⁻) h
-                           × is-strict 𝓛X 𝓓 h
-                           × (h ∘ η ＝ f)
-  𝓛-gives-the-free-pointed-dcpo-on-a-set =
-   (f̃ , f̃-is-continuous , f̃-is-strict , (dfunext fe f̃-after-η-is-f)) , γ
-    where
-     γ : is-central (Σ h ꞉ (⟪ 𝓛X ⟫ → ⟪ 𝓓 ⟫) , is-continuous (𝓛X ⁻) (𝓓 ⁻) h
-                                            × is-strict 𝓛X 𝓓 h
-                                            × (h ∘ η ＝ f))
-          (f̃ , f̃-is-continuous , f̃-is-strict , dfunext fe f̃-after-η-is-f)
-     γ (g , cont , str , eq) =
-      to-subtype-＝ (λ h → ×₃-is-prop (being-continuous-is-prop (𝓛X ⁻) (𝓓 ⁻) h)
-                                     (being-strict-is-prop 𝓛X 𝓓 h)
-                                     (equiv-to-prop
-                                       (≃-funext fe (h ∘ η) f)
-                                       (Π-is-prop fe (λ _ → sethood (𝓓 ⁻)))))
-                                     ((dfunext fe
-                                               (f̃-is-unique g cont str eq)) ⁻¹)
+    γ : is-central (Σ h ꞉ (⟪ 𝓛X ⟫ → ⟪ 𝓓 ⟫) , is-continuous (𝓛X ⁻) (𝓓 ⁻) h
+                                           × is-strict 𝓛X 𝓓 h
+                                           × (h ∘ η ＝ f))
+         (f̃ , f̃-is-continuous , f̃-is-strict , dfunext fe f̃-after-η-is-f)
+    γ (g , cont , str , eq) =
+     to-subtype-＝ (λ h → ×₃-is-prop (being-continuous-is-prop (𝓛X ⁻) (𝓓 ⁻) h)
+                                    (being-strict-is-prop 𝓛X 𝓓 h)
+                                    (equiv-to-prop
+                                      (≃-funext fe (h ∘ η) f)
+                                      (Π-is-prop fe (λ _ → sethood (𝓓 ⁻)))))
+                                    ((dfunext fe (f̃-is-unique g cont str eq)) ⁻¹)
 
 \end{code}
 

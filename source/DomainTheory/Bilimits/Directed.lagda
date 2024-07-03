@@ -153,27 +153,26 @@ module Diagram
      eq₂ = ∐-family-＝ (𝓓 i) h δ₁
      eq₃ = ∐-independent-of-directedness-witness (𝓓 i) δ₂ (δ' i)
 
- 𝓓∞-poset-axioms : PosetAxioms.poset-axioms _≼_
- 𝓓∞-poset-axioms = sl , pv , r , t , a
-  where
-   open PosetAxioms {𝓥 ⊔ 𝓤 ⊔ 𝓦} {𝓥 ⊔ 𝓣} {𝓓∞-carrier} _≼_
-   sl : is-set 𝓓∞-carrier
-   sl = subsets-of-sets-are-sets _ _
-         (Π-is-set fe (λ i → sethood (𝓓 i)))
-         (Π₃-is-prop fe (λ i j l → sethood (𝓓 i)))
-   pv : is-prop-valued
-   pv σ τ = Π-is-prop fe (λ i → prop-valuedness (𝓓 i) (⦅ σ ⦆ i) (⦅ τ ⦆ i))
-   r : is-reflexive
-   r σ i = reflexivity (𝓓 i) (⦅ σ ⦆ i)
-   t : is-transitive
-   t σ τ ρ l k i = transitivity (𝓓 i) (⦅ σ ⦆ i) (⦅ τ ⦆ i) (⦅ ρ ⦆ i) (l i) (k i)
-   a : is-antisymmetric
-   a σ τ l k =
-    to-𝓓∞-＝ (λ i → antisymmetry (𝓓 i) (⦅ σ ⦆ i) (⦅ τ ⦆ i) (l i) (k i))
-
  𝓓∞ : DCPO {𝓥 ⊔ 𝓤 ⊔ 𝓦} {𝓥 ⊔ 𝓣}
- 𝓓∞ = (𝓓∞-carrier , _≼_ , 𝓓∞-poset-axioms , dc)
+ 𝓓∞ = (𝓓∞-carrier , _≼_ , pa , dc)
   where
+   pa : PosetAxioms.poset-axioms _≼_
+   pa = sl , pv , r , t , a
+    where
+     open PosetAxioms {𝓥 ⊔ 𝓤 ⊔ 𝓦} {𝓥 ⊔ 𝓣} {𝓓∞-carrier} _≼_
+     sl : is-set 𝓓∞-carrier
+     sl = subsets-of-sets-are-sets _ _
+           (Π-is-set fe (λ i → sethood (𝓓 i)))
+           (Π₃-is-prop fe (λ i j l → sethood (𝓓 i)))
+     pv : is-prop-valued
+     pv σ τ = Π-is-prop fe (λ i → prop-valuedness (𝓓 i) (⦅ σ ⦆ i) (⦅ τ ⦆ i))
+     r : is-reflexive
+     r σ i = reflexivity (𝓓 i) (⦅ σ ⦆ i)
+     t : is-transitive
+     t σ τ ρ l k i = transitivity (𝓓 i) (⦅ σ ⦆ i) (⦅ τ ⦆ i) (⦅ ρ ⦆ i) (l i) (k i)
+     a : is-antisymmetric
+     a σ τ l k =
+      to-𝓓∞-＝ (λ i → antisymmetry (𝓓 i) (⦅ σ ⦆ i) (⦅ τ ⦆ i) (l i) (k i))
    dc : is-directed-complete _≼_
    dc 𝓐 α δ = (𝓓∞-∐ α δ) , ub , lb-of-ubs
     where
@@ -243,20 +242,6 @@ module Diagram
     ν = pr₁ φ
     p = ap ν (∥∥-is-prop (I-semidirected i j) ∣ k , lᵢ , lⱼ ∣)
     q = (pr₂ φ (k , lᵢ , lⱼ)) ⁻¹
-
- ρ-is-continuous : (i j : I) → is-continuous (𝓓 i) (𝓓 j) (ρ i j)
- ρ-is-continuous i j =
-  ∥∥-rec (being-continuous-is-prop (𝓓 i) (𝓓 j) (ρ i j)) h (I-semidirected i j)
-   where
-    h : (Σ k ꞉ I , (i ⊑ k) × (j ⊑ k))
-      → is-continuous (𝓓 i) (𝓓 j) (ρ i j)
-    h (k , u , v) = transport⁻¹ (is-continuous (𝓓 i) (𝓓 j)) e c
-     where
-      e : ρ i j ＝ (λ x → κ x (k , u , v))
-      e = dfunext fe (ρ-in-terms-of-κ u v)
-      c : is-continuous (𝓓 i) (𝓓 j) (λ x → κ x (k , u , v))
-      c = ∘-is-continuous (𝓓 i) (𝓓 k) (𝓓 j) (ε u) (π v)
-                          (ε-is-continuous u) (π-is-continuous v)
 
  ε∞ : (i : I) → ⟨ 𝓓 i ⟩ → ⟨ 𝓓∞ ⟩
  ε∞ i x = σ , φ
@@ -382,24 +367,52 @@ module Diagram
        u₇ = reflexivity (𝓓 j) (ρ i j y)
 
  ε∞-is-continuous : (i : I) → is-continuous (𝓓 i) 𝓓∞ (ε∞ i)
- ε∞-is-continuous i = continuity-criterion (𝓓 i) 𝓓∞ (ε∞ i) (ε∞-is-monotone i) γ
+ ε∞-is-continuous i = continuity-criterion' (𝓓 i) 𝓓∞ (ε∞ i) (ε∞-is-monotone i) γ
   where
-   γ : (𝓐 : 𝓥 ̇ ) (α : 𝓐 → ⟨ 𝓓 i ⟩) (δ : is-Directed (𝓓 i) α)
-     → ε∞ i (∐ (𝓓 i) δ)
-     ≼ (∐ 𝓓∞ (image-is-directed (𝓓 i) 𝓓∞ (ε∞-is-monotone i) δ))
-   γ 𝓐 α δ j =
-    ⦅ ε∞ i (∐ (𝓓 i) δ) ⦆ j                  ⊑⟨ 𝓓 j ⟩[ reflexivity (𝓓 j) _ ]
-    ρ i j (∐ (𝓓 i) δ)                       ⊑⟨ 𝓓 j ⟩[ ⦅1⦆ ]
-    ∐ (𝓓 j) {𝓐} {ρ i j ∘ α} δ₁              ⊑⟨ 𝓓 j ⟩[ reflexivity (𝓓 j) _ ]
-    ∐ (𝓓 j) {𝓐} {λ a → ⦅ ε∞ i (α a) ⦆ j} δ₁ ⊑⟨ 𝓓 j ⟩[ ⦅2⦆ ]
-    ∐ (𝓓 j) {𝓐} {λ a → ⦅ ε∞ i (α a) ⦆ j} δ₂ ⊑⟨ 𝓓 j ⟩[ reflexivity (𝓓 j) _ ]
-    ⦅ ∐ 𝓓∞ {𝓐} {ε∞ i ∘ α} δ₃ ⦆ j            ∎⟨ 𝓓 j ⟩
-     where
-      δ₁ = image-is-directed' (𝓓 i) (𝓓 j) (ρ i j , ρ-is-continuous i j) δ
-      δ₃ = image-is-directed (𝓓 i) 𝓓∞ (ε∞-is-monotone i) δ
-      δ₂ = family-at-ith-component-is-directed (ε∞ i ∘ α) δ₃ j
-      ⦅1⦆ = continuous-∐-⊑ (𝓓 i) (𝓓 j) (ρ i j , ρ-is-continuous i j) δ
-      ⦅2⦆ = ＝-to-⊑ (𝓓 j) (∐-independent-of-directedness-witness (𝓓 j) δ₁ δ₂)
+   γ : (𝓐 : 𝓥 ̇ )(α : 𝓐 → ⟨ 𝓓 i ⟩) (δ : is-Directed (𝓓 i) α)
+     → is-lowerbound-of-upperbounds (underlying-order 𝓓∞)
+        (ε∞ i (∐ (𝓓 i) δ)) (ε∞ i ∘ α)
+   γ 𝓐 α δ σ ub j =
+    ∥∥-rec (prop-valuedness (𝓓 j) (⦅ ε∞ i (∐ (𝓓 i) δ) ⦆ j) (⦅ σ ⦆ j))
+     g (I-semidirected i j)
+      where
+       g : (Σ k ꞉ I , i ⊑ k × j ⊑ k)
+         → ⦅ ε∞ i (∐ (𝓓 i) δ) ⦆ j ⊑⟨ 𝓓 j ⟩ ⦅ σ ⦆ j
+       g (k , lᵢ , lⱼ) =
+        ⦅ ε∞ i (∐ (𝓓 i) δ) ⦆ j                  ⊑⟨ 𝓓 j ⟩[ u₁ ]
+        ρ i j (∐ (𝓓 i) δ)                       ⊑⟨ 𝓓 j ⟩[ u₂ ]
+        κ (∐ (𝓓 i) δ) (k , lᵢ , lⱼ)             ⊑⟨ 𝓓 j ⟩[ u₃ ]
+        π lⱼ (ε lᵢ (∐ (𝓓 i) δ))                 ⊑⟨ 𝓓 j ⟩[ u₄ ]
+        ∐ (𝓓 j) {𝓐} {πε ∘ α} δ₁                 ⊑⟨ 𝓓 j ⟩[ u₅ ]
+        ∐ (𝓓 j) {𝓐} {λ a → ⦅ ε∞ i (α a) ⦆ j} δ₂ ⊑⟨ 𝓓 j ⟩[ u₆ ]
+        ⦅ σ ⦆ j ∎⟨ 𝓓 j ⟩
+         where
+          πε : ⟨ 𝓓 i ⟩ → ⟨ 𝓓 j ⟩
+          πε = π lⱼ ∘ ε lᵢ
+          πε-is-continuous : is-continuous (𝓓 i) (𝓓 j) πε
+          πε-is-continuous = ∘-is-continuous (𝓓 i) (𝓓 k) (𝓓 j) (ε lᵢ) (π lⱼ)
+                              (ε-is-continuous lᵢ) (π-is-continuous lⱼ)
+          πε' : DCPO[ 𝓓 i , 𝓓 j ]
+          πε' = πε , πε-is-continuous
+          δ₁ : is-Directed (𝓓 j) (πε ∘ α)
+          δ₁ = image-is-directed' (𝓓 i) (𝓓 j) πε' δ
+          p : πε ∘ α ＝ (λ a → ⦅ ε∞ i (α a) ⦆ j)
+          p = dfunext fe h
+           where
+            h : πε ∘ α ∼ (λ a → ⦅ ε∞ i (α a) ⦆ j)
+            h a = πε (α a)              ＝⟨ refl ⟩
+                  π lⱼ (ε lᵢ (α a))     ＝⟨ refl ⟩
+                  κ (α a) (k , lᵢ , lⱼ) ＝⟨ (ρ-in-terms-of-κ lᵢ lⱼ (α a)) ⁻¹ ⟩
+                  ρ i j (α a)           ＝⟨ refl ⟩
+                  ⦅ ε∞ i (α a) ⦆ j      ∎
+          δ₂ : is-Directed (𝓓 j) (λ a → ⦅ ε∞ i (α a) ⦆ j)
+          δ₂ = transport (is-Directed (𝓓 j)) p δ₁
+          u₁ = reflexivity (𝓓 j) (⦅ ε∞ i (∐ (𝓓 i) δ) ⦆ j)
+          u₂ = ＝-to-⊑ (𝓓 j) (ρ-in-terms-of-κ lᵢ lⱼ (∐ (𝓓 i) δ))
+          u₃ = reflexivity (𝓓 j) (κ (∐ (𝓓 i) δ) (k , lᵢ , lⱼ))
+          u₄ = continuous-∐-⊑ (𝓓 i) (𝓓 j) πε' δ
+          u₅ = ＝-to-⊑ (𝓓 j) (∐-family-＝ (𝓓 j) p δ₁)
+          u₆ = ∐-is-lowerbound-of-upperbounds (𝓓 j) δ₂ (⦅ σ ⦆ j) (λ a → ub a j)
 
  ε∞' : (i : I) → DCPO[ 𝓓 i , 𝓓∞ ]
  ε∞' i = ε∞ i , ε∞-is-continuous i
@@ -461,18 +474,6 @@ indeed the limit of the diagram.
       u₁ = reflexivity (𝓓 i) (⦅ m (∐ 𝓔 δ) ⦆ i)
       u₂ = continuous-∐-⊑ 𝓔 (𝓓 i) (f i , f-cont i) δ
       u₃ = ∐-is-lowerbound-of-upperbounds (𝓓 i) δ' (⦅ σ ⦆ i) (λ a → ub a i)
-
-  𝓓∞-is-limit : ∃! f∞ ꞉ (⟨ 𝓔 ⟩ → ⟨ 𝓓∞ ⟩) , is-continuous 𝓔 𝓓∞ f∞
-                                         × ((i : I) → π∞ i ∘ f∞ ∼ f i)
-  𝓓∞-is-limit = (limit-mediating-arrow ,
-                 limit-mediating-arrow-is-continuous ,
-                 limit-mediating-arrow-commutes) ,
-                (λ (g , _ , g-comm)
-                  → to-subtype-＝
-                     (λ h → ×-is-prop (being-continuous-is-prop 𝓔 𝓓∞ h)
-                                      (Π₂-is-prop fe (λ i x → sethood (𝓓 i))))
-                     (dfunext fe
-                       (∼-sym (limit-mediating-arrow-is-unique g g-comm))))
 
 \end{code}
 
@@ -770,19 +771,6 @@ We now show that 𝓓∞ is the colimit of the diagram.
                  y                                      ∎⟨ 𝓔 ⟩
             where
              v = ∐-is-upperbound 𝓔 (colimit-family-is-directed (α a)) i
-
-  𝓓∞-is-colimit : ∃! g∞ ꞉ (⟨ 𝓓∞ ⟩ → ⟨ 𝓔 ⟩) , is-continuous 𝓓∞ 𝓔 g∞
-                                           × ((i : I) → g∞ ∘ ε∞ i ∼ g i)
-  𝓓∞-is-colimit = (colimit-mediating-arrow ,
-                  colimit-mediating-arrow-is-continuous ,
-                  colimit-mediating-arrow-commutes) ,
-                  (λ (f , f-cont , f-comm)
-                    → to-subtype-＝
-                      (λ h → ×-is-prop (being-continuous-is-prop 𝓓∞ 𝓔 h)
-                                       (Π₂-is-prop fe (λ i x → sethood 𝓔)))
-                      (dfunext fe
-                        (∼-sym (colimit-mediating-arrow-is-unique
-                                 f f-cont f-comm))))
 
 \end{code}
 

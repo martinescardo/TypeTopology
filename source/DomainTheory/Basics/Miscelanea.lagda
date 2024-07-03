@@ -363,14 +363,6 @@ is-continuous-retract : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'}
                       → 𝓤 ̇
 is-continuous-retract 𝓓 𝓔 (σ , _) (ρ , _) = (x : ⟨ 𝓓 ⟩) → ρ (σ x) ＝ x
 
-is-embedding-projection-pair : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
-                             → DCPO[ 𝓓 , 𝓔 ]
-                             → DCPO[ 𝓔 , 𝓓 ]
-                             → 𝓤 ⊔ 𝓤' ⊔ 𝓣' ̇
-is-embedding-projection-pair 𝓓 𝓔 𝕤@(s , cs) 𝕣@(r , cr) =
-   is-continuous-retract 𝓓 𝓔 𝕤 𝕣
- × is-deflation 𝓔 (s ∘ r , ∘-is-continuous 𝓔 𝓓 𝓔 r s cr cs)
-
 record _continuous-retract-of_
         (𝓓 : DCPO {𝓤} {𝓣})
         (𝓔 : DCPO {𝓤'} {𝓣'}) : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ⊔ 𝓤' ⊔ 𝓣' ̇  where
