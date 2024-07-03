@@ -524,9 +524,24 @@ module _ (𝓥 : Universe) where
  Proposition-6-7 : {!!} -- TODO
  Proposition-6-7 = {!!}
 
- open import DomainTheory.Basics.LeastFixedPoint pt fe
+ open import DomainTheory.Basics.LeastFixedPoint pt fe 𝓥
 
- Theorem-6-8 : (𝓓 : DCPO⊥ {𝓤} {𝓣}) → DCPO[ ((𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓) ⁻) , (𝓓 ⁻) ]
- Theorem-6-8 𝓓 = {!!} -- TODO: (Generalize some bits)
+ module _ (𝓓 : DCPO⊥ {𝓤} {𝓣}) where
+
+  Theorem-6-8 : DCPO[ ((𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓) ⁻) , (𝓓 ⁻) ]
+  Theorem-6-8 = μ 𝓓
+
+  Theorem-6-8-i : (f : DCPO[ 𝓓 ⁻ , 𝓓 ⁻ ])
+                → [ (𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓) ⁻ , 𝓓 ⁻ ]⟨ μ 𝓓 ⟩ f
+                ＝ [ 𝓓 ⁻ , 𝓓 ⁻ ]⟨ f ⟩ ([ (𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓) ⁻ , 𝓓 ⁻ ]⟨ μ 𝓓 ⟩ f)
+  Theorem-6-8-i = μ-gives-a-fixed-point 𝓓
+
+  Theorem-6-8-ii : (f : DCPO[ (𝓓 ⁻) , (𝓓 ⁻) ])
+                   (x : ⟪ 𝓓 ⟫)
+                 → [ 𝓓 ⁻ , 𝓓 ⁻ ]⟨ f ⟩ x  ⊑⟪ 𝓓 ⟫ x
+                 → [ (𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓) ⁻ , 𝓓 ⁻ ]⟨ μ 𝓓 ⟩ f ⊑⟪ 𝓓 ⟫ x
+  Theorem-6-8-ii = μ-gives-lowerbound-of-fixed-points 𝓓
+
+{- Section 7 -}
 
 \end{code}
