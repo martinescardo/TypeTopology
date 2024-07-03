@@ -28,6 +28,8 @@ open import MLTT.Spartan
 
 open import UF.Base
 open import UF.Equiv
+open import UF.Hedberg
+open import UF.ImageAndSurjection pt
 open import UF.Powerset-MultiUniverse
 open import UF.Sets
 open import UF.Size hiding (is-locally-small)
@@ -543,5 +545,106 @@ module _ (𝓥 : Universe) where
   Theorem-6-8-ii = μ-gives-lowerbound-of-fixed-points 𝓓
 
 {- Section 7 -}
+
+module _ (𝓥 : Universe) where
+
+ open import DomainTheory.Basics.Dcpo pt fe 𝓥
+ open import DomainTheory.Basics.FunctionComposition pt fe 𝓥
+ open import DomainTheory.Basics.Miscelanea pt fe 𝓥
+
+ Definition-7-1 : (𝓓 : DCPO {𝓤} {𝓣}) → DCPO[ 𝓓 , 𝓓 ] → 𝓤 ⊔ 𝓣 ̇
+ Definition-7-1 = is-deflation
+
+ Definition-7-2 : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
+                → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ⊔ 𝓤' ⊔ 𝓣' ̇
+ Definition-7-2 𝓓 𝓔 =
+  Σ cr ꞉ 𝓓 continuous-retract-of 𝓔 , let open _continuous-retract-of_ cr in
+       is-deflation 𝓔 ([ 𝓔 , 𝓓 , 𝓔 ] 𝕤 ∘ᵈᶜᵖᵒ 𝕣)
+
+ module setup
+         {𝓤 𝓣 : Universe}
+         {I : 𝓥 ̇ }
+         (_⊑_ : I → I → 𝓦 ̇ )
+         (⊑-refl : {i : I} → i ⊑ i)
+         (⊑-trans : {i j k : I} → i ⊑ j → j ⊑ k → i ⊑ k)
+         (⊑-prop-valued : (i j : I) → is-prop (i ⊑ j))
+         (I-inhabited : ∥ I ∥)
+         (I-semidirected : (i j : I) → ∃ k ꞉ I , i ⊑ k × j ⊑ k)
+         (𝓓 : I → DCPO {𝓤} {𝓣})
+         (ε : {i j : I} → i ⊑ j → ⟨ 𝓓 i ⟩ → ⟨ 𝓓 j ⟩)
+         (π : {i j : I} → i ⊑ j → ⟨ 𝓓 j ⟩ → ⟨ 𝓓 i ⟩)
+         (επ-deflation : {i j : I} (l : i ⊑ j) (x : ⟨ 𝓓 j ⟩)
+                       → ε l (π l x) ⊑⟨ 𝓓 j ⟩ x )
+         (ε-section-of-π : {i j : I} (l : i ⊑ j) → π l ∘ ε l ∼ id )
+         (ε-is-continuous : {i j : I} (l : i ⊑ j)
+                          → is-continuous (𝓓 i) (𝓓 j) (ε {i} {j} l))
+         (π-is-continuous : {i j : I} (l : i ⊑ j)
+                          → is-continuous (𝓓 j) (𝓓 i) (π {i} {j} l))
+         (ε-id : (i : I ) → ε (⊑-refl {i}) ∼ id)
+         (π-id : (i : I ) → π (⊑-refl {i}) ∼ id)
+         (ε-comp : {i j k : I} (l : i ⊑ j) (m : j ⊑ k)
+                 → ε m ∘ ε l ∼ ε (⊑-trans l m))
+         (π-comp : {i j k : I} (l : i ⊑ j) (m : j ⊑ k)
+                 → π l ∘ π m ∼ π (⊑-trans l m))
+       where
+
+  open import DomainTheory.Bilimits.Directed pt fe 𝓥 𝓤 𝓣
+  open Diagram _⊑_ ⊑-refl ⊑-trans ⊑-prop-valued
+               I-inhabited I-semidirected
+               𝓓 ε π
+               επ-deflation ε-section-of-π
+               ε-is-continuous π-is-continuous
+               ε-id π-id ε-comp π-comp
+  open PosetAxioms
+
+  -- Example-7-3 : See DomainTheory.Bilimits.Sequential
+
+  Definition-7-4 : Σ 𝓓∞ ꞉ 𝓥 ⊔ 𝓦 ⊔ 𝓤 ̇  ,
+                   Σ _≼_ ꞉ (𝓓∞ → 𝓓∞ → 𝓥 ⊔ 𝓣 ̇  ) ,
+                   poset-axioms _≼_
+  Definition-7-4 = 𝓓∞-carrier , _≼_  , 𝓓∞-poset-axioms
+
+  Lemma-7-5 : is-directed-complete _≼_
+  Lemma-7-5 = directed-completeness 𝓓∞
+
+  Lemma-7-5-ad : DCPO {𝓥 ⊔ 𝓦 ⊔ 𝓤} {𝓥 ⊔ 𝓣}
+  Lemma-7-5-ad = 𝓓∞
+
+  -- Remark-7-6: See code for Section 8 below.
+
+  Definition-7-7 : (i : I) → ⟨ 𝓓∞ ⟩ → ⟨ 𝓓 i ⟩
+  Definition-7-7 = π∞
+
+  Lemma-7-8 : (i : I) → is-continuous 𝓓∞ (𝓓 i) (π∞ i)
+  Lemma-7-8 = π∞-is-continuous
+
+  Definition-7-9 : {i j : I} (x : ⟨ 𝓓 i ⟩)
+                 → (Σ k ꞉ I , i ⊑ k × j ⊑ k) → ⟨ 𝓓 j ⟩
+  Definition-7-9 = κ
+
+  Lemma-7-10 : (i j : I) (x : ⟨ 𝓓 i ⟩) → wconstant (κ x)
+  Lemma-7-10 = κ-wconstant
+
+  Lemma-7-10-ad : (i j : I) (x : ⟨ 𝓓 i ⟩)
+                → Σ (λ κ' → κ x ∼ κ' ∘ ∣_∣)
+  Lemma-7-10-ad i j x  =
+   wconstant-map-to-set-factors-through-truncation-of-domain
+    (sethood (𝓓 j)) (κ x) (κ-wconstant i j x)
+
+  Definition-7-11 : (i j : I) → ⟨ 𝓓 i ⟩ → ⟨ 𝓓 j ⟩
+  Definition-7-11 = ρ
+
+  Definition-7-11-ad : {i j k : I} (lᵢ : i ⊑ k) (lⱼ : j ⊑ k) (x : ⟨ 𝓓 i ⟩)
+                     → ρ i j x ＝ κ x (k , lᵢ , lⱼ)
+  Definition-7-11-ad = ρ-in-terms-of-κ
+
+  Definition-7-12 : (i : I) → ⟨ 𝓓 i ⟩ → ⟨ 𝓓∞ ⟩
+  Definition-7-12 = ε∞
+
+  Lemma-7-13 : (i j : I) → is-continuous (𝓓 i) (𝓓 j) (ρ i j)
+  Lemma-7-13 = ρ-is-continuous
+
+  Lemma-7-14 : (i : I) → is-continuous (𝓓 i) 𝓓∞ (ε∞ i)
+  Lemma-7-14 = ε∞-is-continuous
 
 \end{code}
