@@ -19,7 +19,7 @@ open PropositionalTruncation pt
 
 open import DomainTheory.Basics.Dcpo pt fe 𝓤₀
 open import DomainTheory.Basics.Exponential pt fe 𝓤₀
-open import DomainTheory.Basics.LeastFixedPoint pt fe
+open import DomainTheory.Basics.LeastFixedPoint pt fe 𝓤₀
 open import DomainTheory.Basics.Pointed pt fe 𝓤₀
 open import DomainTheory.Lifting.LiftingDcpo pt fe 𝓤₀ pe
 open import Lifting.Construction 𝓤₀ hiding (⊥)
