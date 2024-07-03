@@ -535,8 +535,24 @@ module _ (𝓥 : Universe) where
             → type-of (𝓓 ⟹ᵈᶜᵖᵒ 𝓔) ＝ DCPO {𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓤' ⊔ 𝓣 ⊔ 𝓣'} {𝓤 ⊔ 𝓣'}
  Remark-6-6 𝓓 𝓔 = refl
 
- Proposition-6-7 : {!!} -- TODO
- Proposition-6-7 = {!!}
+ module _
+         (𝓓 : DCPO {𝓤} {𝓣'}) (𝓔 : DCPO {𝓤'} {𝓣'})
+        where
+
+  -- We introduce abbreviations for readability
+  𝓔ᴰ = 𝓓 ⟹ᵈᶜᵖᵒ 𝓔
+  ev = underlying-function (𝓔ᴰ ×ᵈᶜᵖᵒ 𝓓) 𝓔 (eval 𝓓 𝓔)
+
+  Proposition-6-7 : (𝓓' : DCPO {𝓦} {𝓦'})
+                    (f : ⟨ 𝓓' ×ᵈᶜᵖᵒ 𝓓 ⟩ → ⟨ 𝓔 ⟩)
+                  → is-continuous (𝓓' ×ᵈᶜᵖᵒ 𝓓) 𝓔 f
+                  → ∃! f̅ ꞉ (⟨ 𝓓' ⟩ → ⟨ 𝓔ᴰ ⟩) ,
+                           is-continuous 𝓓' 𝓔ᴰ f̅
+                         × ev ∘ (λ (d' , d) → f̅ d' , d) ∼ f
+  Proposition-6-7 = ⟹ᵈᶜᵖᵒ-is-exponential 𝓓 𝓔
+
+  Proposition-6-7-ad : is-continuous (𝓔ᴰ ×ᵈᶜᵖᵒ 𝓓) 𝓔 ev
+  Proposition-6-7-ad = continuity-of-function (𝓔ᴰ ×ᵈᶜᵖᵒ 𝓓) 𝓔 (eval 𝓓 𝓔)
 
  open import DomainTheory.Basics.LeastFixedPoint pt fe 𝓥
 

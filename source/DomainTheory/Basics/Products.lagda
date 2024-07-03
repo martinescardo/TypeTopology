@@ -1,6 +1,6 @@
 Brendan Hart 2019-2020
 
-Additions by Tom de Jong in July 2024.
+Addition by Tom de Jong in July 2024.
 
 \begin{code}
 
@@ -491,14 +491,12 @@ Added 3 July 2024 by Tom de Jong.
  ×ᵈᶜᵖᵒ-is-product 𝓓₁ 𝓓₂ 𝓔 f g cf cg =
   (k , k-is-continuous , ∼-refl , ∼-refl) , k-is-unique
    where
-    𝕗 = (f , cf)
-    𝕘 = (g , cg)
-    foo : DCPO[ 𝓔 , 𝓓₁ ×ᵈᶜᵖᵒ 𝓓₂ ]
-    foo = to-×-DCPO 𝓔 𝓓₁ 𝓓₂ 𝕗 𝕘
+    k-bundled : DCPO[ 𝓔 , 𝓓₁ ×ᵈᶜᵖᵒ 𝓓₂ ]
+    k-bundled = to-×-DCPO 𝓔 𝓓₁ 𝓓₂ (f , cf) (g , cg)
     k : ⟨ 𝓔 ⟩ → ⟨ 𝓓₁ ×ᵈᶜᵖᵒ 𝓓₂ ⟩
-    k = pr₁ foo
+    k = pr₁ k-bundled
     k-is-continuous : is-continuous 𝓔 (𝓓₁ ×ᵈᶜᵖᵒ 𝓓₂) k
-    k-is-continuous = pr₂ foo
+    k-is-continuous = pr₂ k-bundled
     k-is-unique : is-central _ (k , k-is-continuous ,
                                 (λ x → refl) , (λ x → refl))
     k-is-unique (h , h-cont , h-eqf , h-eqg) =
