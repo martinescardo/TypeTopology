@@ -126,6 +126,9 @@ module _ {𝓤 : Universe}
  is-defined-η-＝ {l} d =
   ⊑-to-⊑' ((λ _ → ⋆) , λ (e : is-defined l) → value-is-constant l e d) d
 
+ ＝-to-⋍ : {l m : 𝓛 X} → l ＝ m → l ⋍ m
+ ＝-to-⋍ {l} {m} refl = ≃-refl (is-defined l) , refl
+
  ⋍-to-＝ : {l m : 𝓛 X} → l ⋍ m → l ＝ m
  ⋍-to-＝ {l} {m} (deq , veq) = ⊑-anti pe fe fe (a , b)
   where

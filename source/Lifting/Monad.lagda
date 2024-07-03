@@ -169,7 +169,7 @@ Kleisli-Law₀ (P , φ) = 𝟙-rneutral , refl
 Kleisli-Law₁ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → 𝓛 Y) (x : X) → (f ♯) (η x) ⋍ f x
 Kleisli-Law₁ f x = 𝟙-lneutral , refl
 
-Kleisli-Law₂ : {X : 𝓥 ̇ } {Y : 𝓦 ̇ } {Z : 𝓣 ̇ } (f : X → 𝓛 Y) (g : Y → 𝓛 Z) (l : 𝓛 X)
+Kleisli-Law₂ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → 𝓛 Y) (g : Y → 𝓛 Z) (l : 𝓛 X)
              → (g ♯ ∘ f ♯) l ⋍ ((g ♯ ∘ f)♯) l
 Kleisli-Law₂ f g l = Σ-assoc , refl
 
