@@ -462,6 +462,18 @@ indeed the limit of the diagram.
       u₂ = continuous-∐-⊑ 𝓔 (𝓓 i) (f i , f-cont i) δ
       u₃ = ∐-is-lowerbound-of-upperbounds (𝓓 i) δ' (⦅ σ ⦆ i) (λ a → ub a i)
 
+  𝓓∞-is-limit : ∃! f∞ ꞉ (⟨ 𝓔 ⟩ → ⟨ 𝓓∞ ⟩) , is-continuous 𝓔 𝓓∞ f∞
+                                         × ((i : I) → π∞ i ∘ f∞ ∼ f i)
+  𝓓∞-is-limit = (limit-mediating-arrow ,
+                 limit-mediating-arrow-is-continuous ,
+                 limit-mediating-arrow-commutes) ,
+                (λ (g , _ , g-comm)
+                  → to-subtype-＝
+                     (λ h → ×-is-prop (being-continuous-is-prop 𝓔 𝓓∞ h)
+                                      (Π₂-is-prop fe (λ i x → sethood (𝓓 i))))
+                     (dfunext fe
+                       (∼-sym (limit-mediating-arrow-is-unique g g-comm))))
+
 \end{code}
 
 Next, we wish to show that 𝓓∞ is also the colimit of the diagram. The following

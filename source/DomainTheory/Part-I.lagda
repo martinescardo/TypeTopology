@@ -557,9 +557,8 @@ module _ (𝓥 : Universe) where
 
  Definition-7-2 : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
                 → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ⊔ 𝓤' ⊔ 𝓣' ̇
- Definition-7-2 𝓓 𝓔 =
-  Σ cr ꞉ 𝓓 continuous-retract-of 𝓔 , let open _continuous-retract-of_ cr in
-       is-deflation 𝓔 ([ 𝓔 , 𝓓 , 𝓔 ] 𝕤 ∘ᵈᶜᵖᵒ 𝕣)
+ Definition-7-2 𝓓 𝓔 = Σ s ꞉ DCPO[ 𝓓 , 𝓔 ] ,
+                      Σ r ꞉ DCPO[ 𝓔 , 𝓓 ] , is-embedding-projection-pair 𝓓 𝓔 s r
 
  module setup
          {𝓤 𝓣 : Universe}
@@ -646,5 +645,22 @@ module _ (𝓥 : Universe) where
 
   Lemma-7-14 : (i : I) → is-continuous (𝓓 i) 𝓓∞ (ε∞ i)
   Lemma-7-14 = ε∞-is-continuous
+
+  Theorem-7-15 : (i : I) → Σ s ꞉ DCPO[ 𝓓 i , 𝓓∞ ] ,
+                           Σ r ꞉ DCPO[ 𝓓∞ , 𝓓 i ] ,
+                               is-embedding-projection-pair (𝓓 i) 𝓓∞ s r
+  Theorem-7-15 i = ε∞' i , π∞' i , ε∞-section-of-π∞ , ε∞π∞-deflation
+
+  Lemma-7-16 : (i j : I) (l : i ⊑ j)
+             → (π l ∘ π∞ j ∼ π∞ i)
+             × (ε∞ j ∘ ε l ∼ ε∞ i)
+  Lemma-7-16 i j l = π∞-commutes-with-πs i j l , ε∞-commutes-with-εs i j l
+
+  Theorem-7-17 : (𝓔 : DCPO {𝓤'} {𝓣'}) (f : (i : I) → ⟨ 𝓔 ⟩ → ⟨ 𝓓 i ⟩)
+               → ((i : I) → is-continuous 𝓔 (𝓓 i) (f i))
+               → ((i j : I) (l : i ⊑ j) → π l ∘ f j ∼ f i)
+               → ∃! f∞ ꞉ (⟨ 𝓔 ⟩ → ⟨ 𝓓∞ ⟩) , is-continuous 𝓔 𝓓∞ f∞
+                                          × ((i : I) → π∞ i ∘ f∞ ∼ f i)
+  Theorem-7-17 = DcpoCone.𝓓∞-is-limit
 
 \end{code}
