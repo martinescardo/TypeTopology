@@ -771,6 +771,19 @@ We now show that 𝓓∞ is the colimit of the diagram.
             where
              v = ∐-is-upperbound 𝓔 (colimit-family-is-directed (α a)) i
 
+  𝓓∞-is-colimit : ∃! g∞ ꞉ (⟨ 𝓓∞ ⟩ → ⟨ 𝓔 ⟩) , is-continuous 𝓓∞ 𝓔 g∞
+                                           × ((i : I) → g∞ ∘ ε∞ i ∼ g i)
+  𝓓∞-is-colimit = (colimit-mediating-arrow ,
+                  colimit-mediating-arrow-is-continuous ,
+                  colimit-mediating-arrow-commutes) ,
+                  (λ (f , f-cont , f-comm)
+                    → to-subtype-＝
+                      (λ h → ×-is-prop (being-continuous-is-prop 𝓓∞ 𝓔 h)
+                                       (Π₂-is-prop fe (λ i x → sethood 𝓔)))
+                      (dfunext fe
+                        (∼-sym (colimit-mediating-arrow-is-unique
+                                 f f-cont f-comm))))
+
 \end{code}
 
 Finally, we consider a curried version of ε∞-family, which will prove useful

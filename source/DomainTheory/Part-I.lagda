@@ -549,6 +549,7 @@ module _ (𝓥 : Universe) where
 module _ (𝓥 : Universe) where
 
  open import DomainTheory.Basics.Dcpo pt fe 𝓥
+ open import DomainTheory.Basics.Exponential pt fe 𝓥
  open import DomainTheory.Basics.FunctionComposition pt fe 𝓥
  open import DomainTheory.Basics.Miscelanea pt fe 𝓥
 
@@ -662,5 +663,29 @@ module _ (𝓥 : Universe) where
                → ∃! f∞ ꞉ (⟨ 𝓔 ⟩ → ⟨ 𝓓∞ ⟩) , is-continuous 𝓔 𝓓∞ f∞
                                           × ((i : I) → π∞ i ∘ f∞ ∼ f i)
   Theorem-7-17 = DcpoCone.𝓓∞-is-limit
+
+  Lemma-7-18 : (σ : ⟨ 𝓓∞ ⟩) (i j : I)
+             → i ⊑ j → ε∞ i (⦅ σ ⦆ i) ≼  ε∞ j (⦅ σ ⦆ j)
+  Lemma-7-18 = ε∞-family-is-monotone
+
+  Lemma-7-19 : (σ : ⟨ 𝓓∞ ⟩)
+             → σ ＝ ∐ 𝓓∞ {I} {λ i → ε∞ i (⦅ σ ⦆ i)} (ε∞-family-is-directed σ)
+  Lemma-7-19 = ∐-of-ε∞s
+
+  Lemma-7-20 : ∐ (𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞) ε∞π∞-family-is-directed
+             ＝ id , id-is-continuous 𝓓∞
+  Lemma-7-20 = ∐-of-ε∞π∞s-is-id
+
+  Theorem-7-21 : (𝓔 : DCPO {𝓤'} {𝓣'}) (g : (i : I) → ⟨ 𝓓 i ⟩ → ⟨ 𝓔 ⟩)
+               → ((i : I) → is-continuous (𝓓 i) 𝓔 (g i))
+               → ((i j : I) (l : i ⊑ j) → g j ∘ ε l ∼ g i)
+               → ∃! g∞ ꞉ (⟨ 𝓓∞ ⟩ → ⟨ 𝓔 ⟩) , is-continuous 𝓓∞ 𝓔 g∞
+                                           × ((i : I) → g∞ ∘ ε∞ i ∼ g i)
+  Theorem-7-21 = DcpoCocone.𝓓∞-is-colimit
+
+  Proposition-7-22 : ((i : I) → is-locally-small (𝓓 i)) → is-locally-small 𝓓∞
+  Proposition-7-22 = 𝓓∞-is-locally-small
+
+{- Section 8 -}
 
 \end{code}
