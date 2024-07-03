@@ -8,6 +8,9 @@ This file corresponds to the paper
    2024
    https://arxiv.org/abs/TODO
 
+See DomainTheory.index.lagda for an overview of all domain theory in
+TypeTopology.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K --lossy-unification #-}
@@ -16,6 +19,7 @@ open import UF.FunExt
 open import UF.Subsingletons
 open import UF.PropTrunc
 
+-- Our global assumptions
 module DomainTheory.Part-I
         (fe : Fun-Ext)
         (pe : Prop-Ext)
@@ -305,7 +309,6 @@ module _ where
  Proposition-5-1-ad = ℕ⊥-is-directed-complete-gives-LPO
 
  -- Remark-5-2: No formalisable content.
-
 
 module _ (𝓥 : Universe) where
 

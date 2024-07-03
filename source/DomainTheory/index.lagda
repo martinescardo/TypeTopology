@@ -187,6 +187,10 @@ import DomainTheory.Topology.ScottTopologyProperties -- (1)
   `Locales.ScottLocale.ScottLocalesOfScottDomains`.
 -}
 
+{- Index files for papers -}
+
+import DomainTheory.Part-I
+
 \end{code}
 
 Additional formalization targets
