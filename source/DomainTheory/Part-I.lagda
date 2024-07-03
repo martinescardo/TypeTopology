@@ -26,6 +26,10 @@ open PropositionalTruncation pt
 
 open import MLTT.Spartan
 
+open import Naturals.Order hiding (subtraction')
+open import Naturals.Addition renaming (_+_ to _+'_)
+open import Notation.Order hiding (_⊑_ ; _≼_)
+
 open import UF.Base
 open import UF.Equiv
 open import UF.Hedberg
@@ -34,7 +38,7 @@ open import UF.Powerset-MultiUniverse
 open import UF.Sets
 open import UF.Size hiding (is-locally-small)
 open import UF.Subsingletons-FunExt
-open import UF.SubtypeClassifier
+open import UF.SubtypeClassifier hiding (⊥)
 open import UF.Univalence
 
 open import OrderedTypes.Poset fe
@@ -597,7 +601,7 @@ module _ (𝓥 : Universe) where
                ε-id π-id ε-comp π-comp
   open PosetAxioms
 
-  -- Example-7-3 : See DomainTheory.Bilimits.Sequential
+  -- Example-7-3: See DomainTheory.Bilimits.Sequential
 
   Definition-7-4 : Σ 𝓓∞ ꞉ 𝓥 ⊔ 𝓦 ⊔ 𝓤 ̇  ,
                    Σ _≼_ ꞉ (𝓓∞ → 𝓓∞ → 𝓥 ⊔ 𝓣 ̇  ) ,
@@ -687,5 +691,102 @@ module _ (𝓥 : Universe) where
   Proposition-7-22 = 𝓓∞-is-locally-small
 
 {- Section 8 -}
+
+open import DomainTheory.Basics.Dcpo pt fe 𝓤₀
+open import DomainTheory.Basics.Exponential pt fe 𝓤₀
+open import DomainTheory.Basics.Miscelanea pt fe 𝓤₀
+open import DomainTheory.Basics.Pointed pt fe 𝓤₀
+
+open import DomainTheory.Bilimits.Dinfinity pt fe pe
+open import DomainTheory.Bilimits.Sequential pt fe 𝓤₁ 𝓤₁
+
+Definition-8-1 : (n : ℕ) → DCPO⊥ {𝓤₁} {𝓤₁}
+Definition-8-1 = 𝓓⊥
+
+Definition-8-2 : (n : ℕ)
+               → DCPO[ 𝓓 n , 𝓓 (succ n) ]
+               × DCPO[ 𝓓 (succ n) , 𝓓 n ]
+Definition-8-2 n = ε' n , π' n
+
+Lemma-8-3 : (n : ℕ)
+          → is-embedding-projection-pair (𝓓 n) (𝓓 (succ n)) (ε' n) (π' n)
+Lemma-8-3 n = ε-section-of-π n , επ-deflation n
+
+open SequentialDiagram
+      𝓓 ε π
+      επ-deflation
+      ε-section-of-π
+      ε-is-continuous
+      π-is-continuous
+
+Definition-8-4 : (n m : ℕ) → n ≤ m
+               → DCPO[ 𝓓 n , 𝓓 m ]
+               × DCPO[ 𝓓 m , 𝓓 n ]
+Definition-8-4 n m l = (ε⁺ l , ε⁺-is-continuous l) ,
+                       (π⁺ l , π⁺-is-continuous l)
+
+Definition-8-5 : DCPO {𝓤₁} {𝓤₁}
+Definition-8-5 = 𝓓∞
+
+Lemma-8-6 : (n : ℕ) → is-strict (𝓓⊥ (succ n)) (𝓓⊥ n) (π n)
+Lemma-8-6 = π-is-strict
+
+Lemma-8-6-ad : (n m : ℕ) (l : n ≤ m) → is-strict (𝓓⊥ m) (𝓓⊥ n) (π⁺ l)
+Lemma-8-6-ad = π⁺-is-strict
+
+Proposition-8-7 : has-least (underlying-order 𝓓∞)
+Proposition-8-7 = 𝓓∞-has-least
+
+Definition-8-8 : (n : ℕ) → ⟨ 𝓓 n ⟩ → ⟨ 𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞ ⟩
+Definition-8-8 = ε-exp
+
+-- To match the paper
+-- (although the subscript can't really function as the argument)
+Φₙ = ε-exp
+
+Lemma-8-9 : (n m : ℕ) (l : n ≤ m) → Φₙ m ∘ ε⁺ l ∼ Φₙ n
+Lemma-8-9 = ε-exp-commutes-with-ε⁺
+
+Definition-8-10 : ⟨ 𝓓∞ ⟩ → ⟨ 𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞ ⟩
+Definition-8-10 = ε-exp∞
+
+-- To match the paper
+Φ = Definition-8-10
+
+Lemma-8-11 : (σ : ⟨ 𝓓∞ ⟩)
+           → Φ σ ＝ ∐ (𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞) {ℕ} {λ n → Φₙ (succ n) (⦅ σ ⦆ (succ n))}
+                                          (ε-exp-family-is-directed σ)
+Lemma-8-11 = ε-exp∞-alt
+
+Definition-8-12 : (n : ℕ) → ⟨ 𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞ ⟩ → ⟨ 𝓓 n ⟩
+Definition-8-12 = π-exp
+
+-- To match the paper
+-- (although the subscript can't really function as the argument)
+Ψₙ = π-exp
+
+Lemma-8-13 : (n m : ℕ) (l : n ≤ m) → π⁺ l ∘ Ψₙ m ∼ Ψₙ n
+Lemma-8-13 = π-exp-commutes-with-π⁺
+
+Definition-8-14 : ⟨ 𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞ ⟩ → ⟨ 𝓓∞ ⟩
+Definition-8-14 = π-exp∞
+
+-- To match the paper
+Ψ = Definition-8-14
+
+Lemma-8-15 : (f : ⟨ 𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞ ⟩)
+           → Ψ f ＝ ∐ 𝓓∞ {ℕ} {λ n → ε∞ (succ n) (Ψₙ (succ n) f)}
+                             (π-exp-family-is-directed f)
+Lemma-8-15 = π-exp∞-alt
+
+Theorem-8-16 : Ψ ∘ Φ ∼ id
+             × Φ ∘ Ψ ∼ id
+             × 𝓓∞ ≃ᵈᶜᵖᵒ (𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞)
+Theorem-8-16 = ε-exp∞-section-of-π-exp∞ ,
+               π-exp∞-section-of-ε-exp∞ ,
+               𝓓∞-isomorphic-to-its-self-exponential
+
+Remark-8-17 : Σ σ₀ ꞉ ⟨ 𝓓∞ ⟩ , σ₀ ≠ ⊥ 𝓓∞⊥
+Remark-8-17 = σ₀ , 𝓓∞⊥-is-nontrivial
 
 \end{code}
