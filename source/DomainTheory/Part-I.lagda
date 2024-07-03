@@ -301,9 +301,7 @@ module _ where
  -- Remark-5-2: No formalisable content.
 
 
-module _
-        (𝓥 : Universe)
-       where
+module _ (𝓥 : Universe) where
 
  open import Lifting.Construction 𝓥 renaming (⊥ to ⊥𝓛)
  open import Lifting.IdentityViaSIP 𝓥
@@ -460,5 +458,75 @@ module _
                → ∃! f̅ ꞉ (𝓛D → ⟪ 𝓔 ⟫) , is-continuous (𝓛-DCPO⊥ ⁻) (𝓔 ⁻) f̅
                                       × is-strict 𝓛-DCPO⊥ 𝓔 f̅ × (f̅ ∘ η ＝ f)
   Theorem-5-21 = 𝓛-gives-the-free-pointed-dcpo-on-a-dcpo
+
+{- Section 6 -}
+
+module _ (𝓥 : Universe) where
+
+ open import DomainTheory.Basics.Curry pt fe 𝓥
+ open import DomainTheory.Basics.Dcpo pt fe 𝓥
+ open import DomainTheory.Basics.FunctionComposition pt fe 𝓥
+ open import DomainTheory.Basics.Pointed pt fe 𝓥
+ open import DomainTheory.Basics.Products pt fe
+ open DcpoProductsGeneral 𝓥
+ open import DomainTheory.Basics.ProductsContinuity pt fe 𝓥
+ open import DomainTheory.Basics.Exponential pt fe 𝓥
+
+ Definition-6-1 : DCPO {𝓤} {𝓣}
+                → DCPO {𝓤'} {𝓣'}
+                → DCPO {𝓤 ⊔ 𝓤'} {𝓣 ⊔ 𝓣'}
+ Definition-6-1 𝓓 𝓔 = 𝓓 ×ᵈᶜᵖᵒ 𝓔
+
+ Definition-6-1-ad : DCPO⊥ {𝓤} {𝓣}
+                   → DCPO⊥ {𝓤'} {𝓣'}
+                   → DCPO⊥ {𝓤 ⊔ 𝓤'} {𝓣 ⊔ 𝓣'}
+ Definition-6-1-ad 𝓓 𝓔 = 𝓓 ×ᵈᶜᵖᵒ⊥ 𝓔
+
+ Remark-6-2 : DCPO {𝓤} {𝓣}
+            → DCPO {𝓤} {𝓣}
+            → DCPO {𝓤} {𝓣}
+ Remark-6-2 𝓓 𝓔 = 𝓓 ×ᵈᶜᵖᵒ 𝓔
+
+ Proposition-6-3 : {!!} -- TODO
+ Proposition-6-3 = {!!}
+
+ module _
+         (𝓓₁ : DCPO {𝓤} {𝓤'})
+         (𝓓₂ : DCPO {𝓣} {𝓣'})
+         (𝓔 : DCPO {𝓦} {𝓦'})
+         (f : ⟨ 𝓓₁ ×ᵈᶜᵖᵒ 𝓓₂ ⟩ → ⟨ 𝓔 ⟩)
+        where
+
+  Lemma-6-4 : ((e : ⟨ 𝓓₂ ⟩) → is-continuous 𝓓₁ 𝓔 (λ d → f (d , e)))
+            → ((d : ⟨ 𝓓₁ ⟩) → is-continuous 𝓓₂ 𝓔 (λ e → f (d , e)))
+            → is-continuous (𝓓₁ ×ᵈᶜᵖᵒ 𝓓₂) 𝓔 f
+  Lemma-6-4 = continuous-in-arguments→continuous 𝓓₁ 𝓓₂ 𝓔 f
+
+  Lemma-6-4-ad : is-continuous (𝓓₁ ×ᵈᶜᵖᵒ 𝓓₂) 𝓔 f
+               → ((e : ⟨ 𝓓₂ ⟩) → is-continuous 𝓓₁ 𝓔 (λ d → f (d , e)))
+               × ((d : ⟨ 𝓓₁ ⟩) → is-continuous 𝓓₂ 𝓔 (λ e → f (d , e)))
+  Lemma-6-4-ad c =
+   (λ e → pr₂ (continuous→continuous-in-pr₁ 𝓓₁ 𝓓₂ 𝓔 (f , c) e)) ,
+   (λ d → pr₂ (continuous→continuous-in-pr₂ 𝓓₁ 𝓓₂ 𝓔 (f , c) d))
+
+ Definition-6-5 : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
+                → DCPO {𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓤' ⊔ 𝓣 ⊔ 𝓣'} {𝓤 ⊔ 𝓣'}
+ Definition-6-5 𝓓 𝓔 = 𝓓 ⟹ᵈᶜᵖᵒ 𝓔
+
+ Definition-6-5-ad : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO⊥ {𝓤'} {𝓣'})
+                   → DCPO⊥ {𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓤' ⊔ 𝓣 ⊔ 𝓣'} {𝓤 ⊔ 𝓣'}
+ Definition-6-5-ad 𝓓 𝓔 = 𝓓 ⟹ᵈᶜᵖᵒ⊥' 𝓔
+
+ Remark-6-6 : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
+            → type-of (𝓓 ⟹ᵈᶜᵖᵒ 𝓔) ＝ DCPO {𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓤' ⊔ 𝓣 ⊔ 𝓣'} {𝓤 ⊔ 𝓣'}
+ Remark-6-6 𝓓 𝓔 = refl
+
+ Proposition-6-7 : {!!} -- TODO
+ Proposition-6-7 = {!!}
+
+ open import DomainTheory.Basics.LeastFixedPoint pt fe
+
+ Theorem-6-8 : (𝓓 : DCPO⊥ {𝓤} {𝓣}) → DCPO[ ((𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓) ⁻) , (𝓓 ⁻) ]
+ Theorem-6-8 𝓓 = {!!} -- TODO: (Generalize some bits)
 
 \end{code}
