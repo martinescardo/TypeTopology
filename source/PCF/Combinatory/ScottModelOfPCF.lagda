@@ -43,7 +43,7 @@ open import UF.DiscreteAndSeparated
 open import PCF.Combinatory.PCF pt
 open import DomainTheory.Basics.Dcpo pt fe 𝓤₀
 open import DomainTheory.Basics.Exponential pt fe 𝓤₀
-open import DomainTheory.Basics.LeastFixedPoint pt fe
+open import DomainTheory.Basics.LeastFixedPoint pt fe 𝓤₀
 open import DomainTheory.Basics.Miscelanea pt fe 𝓤₀
 open import DomainTheory.Basics.Pointed pt fe 𝓤₀
 
