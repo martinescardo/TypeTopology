@@ -217,9 +217,10 @@ module _ (𝓓 : DCPO {𝓤} {𝓤'})
 
 Added 3 July 2024 by Tom de Jong.
 
+We introduce two abbreviations for readability.
+
 \begin{code}
 
- -- We introduce abbreviations for readability
  private
   𝓔ᴰ = 𝓓 ⟹ᵈᶜᵖᵒ 𝓔
   ev = underlying-function (𝓔ᴰ ×ᵈᶜᵖᵒ 𝓓) 𝓔 eval
