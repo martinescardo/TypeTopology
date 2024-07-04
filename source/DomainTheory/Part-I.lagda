@@ -136,7 +136,8 @@ module _ (𝓥 : Universe) where
  Definition-3-9 : {𝓤 𝓣 : Universe} → (𝓤 ⊔ 𝓥 ⊔ 𝓣) ⁺ ̇
  Definition-3-9 {𝓤} {𝓣} = DCPO {𝓤} {𝓣}
 
- -- Remark-3-10: No formalisable content.
+ -- Remark-3-10: No formalisable content (as it's a meta-mathematical remark on
+ --              the importance of keeping track of universe levels).
 
  open import DomainTheory.Basics.Pointed pt fe 𝓥
  open import DomainTheory.Basics.Miscelanea pt fe 𝓥
