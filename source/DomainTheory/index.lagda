@@ -48,7 +48,7 @@ module DomainTheory.index where
    compactness
 
 (B1)─(B4) These files are due to Brendan Hart and were ported to TypeTopology by
-          Martín Escardó, cf. PCF.Lmabda.index.lagda.
+          Martín Escardó, cf. PCF.Lambda.index.lagda.
 -}
 
 import DomainTheory.Basics.Dcpo            -- (1)

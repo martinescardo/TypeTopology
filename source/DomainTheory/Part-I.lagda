@@ -664,7 +664,8 @@ module _ (𝓥 : Universe) where
                ε-id π-id ε-comp π-comp
   open PosetAxioms
 
-  -- Example-7-3: See DomainTheory.Bilimits.Sequential
+  -- Example-7-3: See the file
+  import DomainTheory.Bilimits.Sequential
 
   Definition-7-4 : Σ 𝓓∞ ꞉ 𝓥 ⊔ 𝓦 ⊔ 𝓤 ̇  ,
                    Σ _≼_ ꞉ (𝓓∞ → 𝓓∞ → 𝓥 ⊔ 𝓣 ̇  ) ,
