@@ -19,7 +19,13 @@ open import UF.FunExt
 open import UF.Subsingletons
 open import UF.PropTrunc
 
--- Our global assumptions
+\end{code}
+
+Our global assumptions are function extensionality, propositional extensionality
+and the existence of propositional truncations.
+
+\begin{code}
+
 module DomainTheory.Part-I
         (fe : Fun-Ext)
         (pe : Prop-Ext)
@@ -47,7 +53,11 @@ open import UF.Univalence
 
 open import OrderedTypes.Poset fe
 
-{- Section 2 -}
+\end{code}
+
+Section 2
+
+\begin{code}
 
 Definition-2-1 : (𝓤 : Universe) (X : 𝓥 ̇  ) → 𝓤 ⁺ ⊔ 𝓥 ̇
 Definition-2-1 𝓤 X = X is 𝓤 small
@@ -63,7 +73,11 @@ Definition-2-4 : (𝓥 : Universe) (X : 𝓤 ̇  )
                × (𝓟 {𝓥} X → 𝓟 {𝓥} X → 𝓥 ⊔ 𝓤 ̇  )
 Definition-2-4 𝓥 X = _∈_ , _⊆_
 
-{- Section 3 -}
+\end{code}
+
+Section 3
+
+\begin{code}
 
 module _
         (P : 𝓤 ̇  ) (_⊑_ : P → P → 𝓣 ̇  )
@@ -166,7 +180,11 @@ module _ (𝓥 : Universe) where
                   → is-ω-complete (underlying-order 𝓓)
  Proposition-3-16 = dcpos-are-ω-complete
 
-{- Section 4 -}
+\end{code}
+
+Section 4
+
+\begin{code}
 
  Definition-4-1 : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
                 → (⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩)
@@ -294,7 +312,11 @@ module _ (𝓥 : Universe) where
             → is-locally-small 𝓓
  Lemma-4-14 = local-smallness-preserved-by-continuous-retract
 
-{- Section 5 -}
+\end{code}
+
+Section 5
+
+\begin{code}
 
 module _ where
  open import DomainTheory.Basics.Dcpo pt fe 𝓤₀
@@ -468,7 +490,11 @@ module _ (𝓥 : Universe) where
                                       × is-strict 𝓛-DCPO⊥ 𝓔 f̅ × (f̅ ∘ η ＝ f)
   Theorem-5-21 = 𝓛-gives-the-free-pointed-dcpo-on-a-dcpo
 
-{- Section 6 -}
+\end{code}
+
+Section 6
+
+\begin{code}
 
 module _ (𝓥 : Universe) where
 
@@ -542,7 +568,12 @@ module _ (𝓥 : Universe) where
          (𝓓 : DCPO {𝓤} {𝓣'}) (𝓔 : DCPO {𝓤'} {𝓣'})
         where
 
-  -- We introduce abbreviations for readability
+\end{code}
+
+  We introduce two abbreviations for readability.
+
+\begin{code}
+
   𝓔ᴰ = 𝓓 ⟹ᵈᶜᵖᵒ 𝓔
   ev = underlying-function (𝓔ᴰ ×ᵈᶜᵖᵒ 𝓓) 𝓔 (eval 𝓓 𝓔)
 
@@ -575,7 +606,11 @@ module _ (𝓥 : Universe) where
                  → [ (𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓) ⁻ , 𝓓 ⁻ ]⟨ μ 𝓓 ⟩ f ⊑⟪ 𝓓 ⟫ x
   Theorem-6-8-ii = μ-gives-lowerbound-of-fixed-points 𝓓
 
-{- Section 7 -}
+\end{code}
+
+Section 7
+
+\begin{code}
 
 module _ (𝓥 : Universe) where
 
@@ -717,7 +752,11 @@ module _ (𝓥 : Universe) where
   Proposition-7-22 : ((i : I) → is-locally-small (𝓓 i)) → is-locally-small 𝓓∞
   Proposition-7-22 = 𝓓∞-is-locally-small
 
-{- Section 8 -}
+\end{code}
+
+Section 8
+
+\begin{code}
 
 open import DomainTheory.Basics.Dcpo pt fe 𝓤₀
 open import DomainTheory.Basics.Exponential pt fe 𝓤₀
@@ -767,8 +806,13 @@ Proposition-8-7 = 𝓓∞-has-least
 Definition-8-8 : (n : ℕ) → ⟨ 𝓓 n ⟩ → ⟨ 𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞ ⟩
 Definition-8-8 = ε-exp
 
--- To match the paper
--- (although the subscript can't really function as the argument)
+\end{code}
+
+To match the paper we introduce the following notation (although the subscript
+can't really function as the argument)
+
+\begin{code}
+
 Φₙ = ε-exp
 
 Lemma-8-9 : (n m : ℕ) (l : n ≤ m) → Φₙ m ∘ ε⁺ l ∼ Φₙ n
@@ -777,7 +821,6 @@ Lemma-8-9 = ε-exp-commutes-with-ε⁺
 Definition-8-10 : ⟨ 𝓓∞ ⟩ → ⟨ 𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞ ⟩
 Definition-8-10 = ε-exp∞
 
--- To match the paper
 Φ = Definition-8-10
 
 Lemma-8-11 : (σ : ⟨ 𝓓∞ ⟩)
@@ -788,8 +831,13 @@ Lemma-8-11 = ε-exp∞-alt
 Definition-8-12 : (n : ℕ) → ⟨ 𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞ ⟩ → ⟨ 𝓓 n ⟩
 Definition-8-12 = π-exp
 
--- To match the paper
--- (although the subscript can't really function as the argument)
+\end{code}
+
+To match the paper we introduce the following notation (although the subscript
+can't really function as the argument)
+
+\begin{code}
+
 Ψₙ = π-exp
 
 Lemma-8-13 : (n m : ℕ) (l : n ≤ m) → π⁺ l ∘ Ψₙ m ∼ Ψₙ n
@@ -798,7 +846,6 @@ Lemma-8-13 = π-exp-commutes-with-π⁺
 Definition-8-14 : ⟨ 𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞ ⟩ → ⟨ 𝓓∞ ⟩
 Definition-8-14 = π-exp∞
 
--- To match the paper
 Ψ = Definition-8-14
 
 Lemma-8-15 : (f : ⟨ 𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞ ⟩)
