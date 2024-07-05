@@ -283,3 +283,81 @@ Section 3
   Proposition-3-9 = left-adjoint-to-∐-map-characterization
 
 \end{code}
+
+Section 4.1
+
+\begin{code}
+
+\end{code}
+
+Section 4.2
+
+\begin{code}
+
+\end{code}
+
+Section 4.3
+
+\begin{code}
+
+\end{code}
+
+Section 5
+
+\begin{code}
+
+\end{code}
+
+Section 5.1
+
+\begin{code}
+
+\end{code}
+
+Section 5.2
+
+\begin{code}
+
+\end{code}
+
+Section 5.3
+
+\begin{code}
+
+\end{code}
+
+Section 6
+
+\begin{code}
+
+\end{code}
+
+Section 6.1
+
+\begin{code}
+
+\end{code}
+
+Section 6.2
+
+\begin{code}
+
+\end{code}
+
+Section 6.3
+
+\begin{code}
+
+\end{code}
+
+Section 7.1
+
+\begin{code}
+
+\end{code}
+
+Section 7.2
+
+\begin{code}
+
+\end{code}
