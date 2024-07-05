@@ -43,7 +43,6 @@ open import Naturals.Addition renaming (_+_ to _+'_)
 open import Notation.Order hiding (_⊑_ ; _≼_)
 
 open import UF.Base
-open import UF.Equiv
 open import UF.Hedberg
 open import UF.Powerset-MultiUniverse
 open import UF.Size hiding (is-locally-small)
@@ -52,6 +51,7 @@ open import UF.Univalence
 
 -}
 
+open import UF.Equiv
 open import UF.ImageAndSurjection pt
 open import UF.Powerset-Fin pt hiding (⟨_⟩)
 open import UF.Powerset-MultiUniverse renaming (𝓟 to 𝓟-general)
@@ -213,17 +213,73 @@ universe as the index types for directed completeness.
          ((sec , defl) : is-embedding-projection-pair 𝓓 𝓔 (ε , ε-cont) (π , π-cont))
         where
 
-  Lemma-2-16 : (x y : ⟨ 𝓓 ⟩) → x ≪⟨ 𝓓 ⟩ y → ε x ≪⟨ 𝓔 ⟩ ε y
-  Lemma-2-16 = embeddings-preserve-≪ 𝓓 𝓔 ε ε-cont π π-cont sec defl
+  Lemma-2-16 : (x y : ⟨ 𝓓 ⟩) → x ≪⟨ 𝓓 ⟩ y ↔ ε x ≪⟨ 𝓔 ⟩ ε y
+  Lemma-2-16 x y = embeddings-preserve-≪ 𝓓 𝓔 ε ε-cont π π-cont sec defl x y ,
+                   embeddings-reflect-≪ 𝓓 𝓔 ε ε-cont π π-cont sec defl x y
 
-  Lemma-2-16-ad₁ : (x y : ⟨ 𝓓 ⟩) → ε x ≪⟨ 𝓔 ⟩ ε y → x ≪⟨ 𝓓 ⟩ y
-  Lemma-2-16-ad₁ = embeddings-reflect-≪ 𝓓 𝓔 ε ε-cont π π-cont sec defl
-
-  Lemma-2-16-ad₂ : (x : ⟨ 𝓓 ⟩) → is-compact 𝓓 x ↔ is-compact 𝓔 (ε x)
-  Lemma-2-16-ad₂ x =
+  Lemma-2-16-ad : (x : ⟨ 𝓓 ⟩) → is-compact 𝓓 x ↔ is-compact 𝓔 (ε x)
+  Lemma-2-16-ad x =
    embeddings-preserve-compactness 𝓓 𝓔 ε ε-cont π π-cont sec defl x ,
    embeddings-reflect-compactness 𝓓 𝓔 ε ε-cont π π-cont sec defl x
 
 \end{code}
 
 Section 3
+
+\begin{code}
+
+ open import DomainTheory.BasesAndContinuity.IndCompletion pt fe 𝓥
+ module _
+         (𝓓 : DCPO {𝓤} {𝓣})
+        where
+
+  open Ind-completion 𝓓
+
+  Definition-3-1 : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
+  Definition-3-1 = Ind
+
+  Definition-3-1-ad : Ind → Ind → 𝓥 ⊔ 𝓣 ̇
+  Definition-3-1-ad = _≲_
+
+  Lemma-3-2 : is-prop-valued _≲_
+            × is-reflexive _≲_
+            × is-transitive _≲_
+  Lemma-3-2 = ≲-is-prop-valued ,
+              ≲-is-reflexive ,
+              ≲-is-transitive
+
+  Lemma-3-3 : is-directed-complete _≲_
+  Lemma-3-3 I α δ = Ind-∐ α δ ,
+                    Ind-∐-is-upperbound α δ ,
+                    Ind-∐-is-lowerbound-of-upperbounds α δ
+
+  Lemma-3-4 : Ind → ⟨ 𝓓 ⟩
+  Lemma-3-4 = ∐-map
+
+  Lemma-3-4-ad : (α β : Ind) → α ≲ β → ∐-map α ⊑⟨ 𝓓 ⟩ ∐-map β
+  Lemma-3-4-ad = ∐-map-is-monotone
+
+  Definition-3-5 : (x : ⟨ 𝓓 ⟩) (α : Ind) → (𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇  ) × (𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇  )
+  Definition-3-5 x α = α approximates x , α is-left-adjunct-to x
+
+  Remark-3-6 : (L : ⟨ 𝓓 ⟩ → Ind)
+             → (  ((x y : ⟨ 𝓓 ⟩) → underlying-order 𝓓 x y → L x ≲ L y)
+                × ((x : ⟨ 𝓓 ⟩) (β : Ind) → (L x ≲ β) ↔ (x ⊑⟨ 𝓓 ⟩ ∐-map β)))
+             ↔ ((x : ⟨ 𝓓 ⟩) → (L x) is-left-adjunct-to x)
+  Remark-3-6 L = pr₂ ,
+                 (λ adj → left-adjoint-to-∐-map-is-monotone L adj , adj)
+
+  Lemma-3-7 : (L : ⟨ 𝓓 ⟩ → Ind)
+            → ((x : ⟨ 𝓓 ⟩) → (L x) is-left-adjunct-to x)
+            → (x y : ⟨ 𝓓 ⟩) → underlying-order 𝓓 x y → L x ≲ L y
+  Lemma-3-7 = left-adjoint-to-∐-map-is-monotone
+
+  Lemma-3-8 : (α : Ind) (x : ⟨ 𝓓 ⟩) → α approximates x ↔ α is-left-adjunct-to x
+  Lemma-3-8 α x = left-adjunct-to-if-approximates α x ,
+                  approximates-if-left-adjunct-to α x
+
+  Proposition-3-9 : (L : ⟨ 𝓓 ⟩ → Ind)
+                  → is-approximating L ≃ left-adjoint-to-∐-map L
+  Proposition-3-9 = left-adjoint-to-∐-map-characterization
+
+\end{code}
