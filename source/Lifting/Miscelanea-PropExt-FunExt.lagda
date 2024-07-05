@@ -41,7 +41,7 @@ open import UF.Sets
 open import UF.Sets-Properties
 open import UF.Subsingletons-FunExt
 open import UF.Subsingletons-Properties
-open import UF.SubtypeClassifier
+open import UF.SubtypeClassifier hiding (⊥)
 
 \end{code}
 
@@ -121,6 +121,12 @@ module _ {𝓤 : Universe}
  ⊑'-prop-valued : is-set X → {l m : 𝓛 X} → is-prop (l ⊑' m)
  ⊑'-prop-valued s {l} {m} =
   Π-is-prop fe λ (d : is-defined l) → lifting-of-set-is-set s
+
+ not-defined-⊥-＝ : {l : 𝓛 X} → ¬ (is-defined l) → l ＝ ⊥
+ not-defined-⊥-＝ {l} nd =
+  ⊑-anti pe fe fe
+         (((λ d → 𝟘-elim (nd d)) , (λ d → 𝟘-elim (nd d))) ,
+         𝟘-elim , 𝟘-induction)
 
  is-defined-η-＝ : {l : 𝓛 X} (d : is-defined l) → l ＝ η (value l d)
  is-defined-η-＝ {l} d =
