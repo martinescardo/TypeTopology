@@ -291,7 +291,8 @@ Section 4.1
 
 
  open import DomainTheory.BasesAndContinuity.Continuity pt fe 𝓥
-  renaming (structurally-continuous to continuity-data)
+  renaming (structurally-continuous to continuity-data ;
+            structurally-algebraic to algebraicity-data)
  open import DomainTheory.BasesAndContinuity.ContinuityDiscussion pt fe 𝓥
 
  module _
@@ -306,32 +307,38 @@ Section 4.1
   Proposition-4-2 : ∐-map-has-specified-left-adjoint ≃ continuity-data 𝓓
   Proposition-4-2 = specified-left-adjoint-structurally-continuous-≃ 𝓓
 
-  {- TODO
-  Remark-4-3 : (s : continuity-data 𝓓)
-             → Σ s' ꞉ continuity-data 𝓓 , s ≠ s'
-  Remark-4-3 s = s' , h
-   where
-    open structurally-continuous s
-    I = index-of-approximating-family
-    α = approximating-family
-    s' : continuity-data 𝓓
-    s' = record
-           { index-of-approximating-family = λ x → I x + I x
-           ; approximating-family = λ x → cases (α x) (α x)
-           ; approximating-family-is-directed = {!!}
-           ; approximating-family-is-way-below = {!!}
-           ; approximating-family-∐-＝ = {!!}
-           }
-    h : s ≠ s'
-    h e = {!!}
-     where
-      baz : structurally-continuous-to-Σ 𝓓 s ＝
-              structurally-continuous-to-Σ 𝓓 s'
-      baz = ap (structurally-continuous-to-Σ 𝓓) e
-      bazz = happly baz
-      foo : (x : ⟨ 𝓓 ⟩) → I x ＝ I x + I x
-      foo x = ap pr₁ (happly baz x)
-  -}
+ -- TODO
+ Remark-4-3 : Σ 𝓔 ꞉ DCPO {𝓤₁} {𝓤₁} , ¬ is-prop (continuity-data 𝓔)
+ Remark-4-3 = {!!}
+ {- s = s' , h
+  where
+   open structurally-continuous s
+   I = index-of-approximating-family
+   α = approximating-family
+   s' : continuity-data 𝓓
+   s' = record
+          { index-of-approximating-family = λ x → I x + I x
+          ; approximating-family = λ x → cases (α x) (α x)
+          ; approximating-family-is-directed = {!!}
+          ; approximating-family-is-way-below = {!!}
+          ; approximating-family-∐-＝ = {!!}
+          }
+   h : s ≠ s'
+   h e = {!!}
+    where
+     baz : structurally-continuous-to-Σ 𝓓 s ＝
+             structurally-continuous-to-Σ 𝓓 s'
+     baz = ap (structurally-continuous-to-Σ 𝓓) e
+     bazz = happly baz
+     foo : (x : ⟨ 𝓓 ⟩) → I x ＝ I x + I x
+     foo x = ap pr₁ (happly baz x)
+ -}
+
+ module _
+         (𝓓 : DCPO {𝓤} {𝓣})
+        where
+
+  open Ind-completion 𝓓
 
   Definition-4-4 : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
   Definition-4-4 = is-continuous-dcpo 𝓓
@@ -401,11 +408,49 @@ Section 4.2
 
 \begin{code}
 
+ module _
+         (𝓓 : DCPO {𝓤} {𝓣})
+        where
+
+  open Ind-completion 𝓓
+  open Ind-completion-poset-reflection pe 𝓓
+
+  Definition-4-13 : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
+  Definition-4-13 = is-pseudocontinuous-dcpo 𝓓
+
+  Proposition-4-14 : ∐-map/-has-specified-left-adjoint
+                   ≃ is-pseudocontinuous-dcpo 𝓓
+  Proposition-4-14 = specified-left-adjoint-pseudo-continuous-≃ pe 𝓓
+
+  Table-1 : (continuity-data 𝓓 ≃ ∐-map-has-specified-left-adjoint)
+          × (Σ 𝓔 ꞉ DCPO {𝓤₁} {𝓤₁} , ¬ is-prop (continuity-data 𝓔))
+          × (is-continuous-dcpo 𝓓 ≃ ∐-map-has-unspecified-left-adjoint 𝓓)
+          × is-prop (is-continuous-dcpo 𝓓)
+          × (is-pseudocontinuous-dcpo 𝓓 ≃ ∐-map/-has-specified-left-adjoint)
+          × is-prop (is-pseudocontinuous-dcpo 𝓓)
+  Table-1 = ≃-sym (specified-left-adjoint-structurally-continuous-≃ 𝓓) ,
+            Remark-4-3 ,
+            ≃-sym (is-continuous-dcpo-iff-∐-map-has-unspecified-left-adjoint 𝓓) ,
+            being-continuous-dcpo-is-prop 𝓓 ,
+            ≃-sym (specified-left-adjoint-pseudo-continuous-≃ pe 𝓓) ,
+            being-pseudocontinuous-dcpo-is-prop 𝓓
+
+  -- Remark-4-15: No formalisable content  (as it's a meta-mathematical remark)
+
 \end{code}
 
 Section 4.3
 
 \begin{code}
+
+  Definition-4-16 : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
+  Definition-4-16 = algebraicity-data 𝓓
+
+  Definition-4-17 : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
+  Definition-4-17 = is-algebraic-dcpo 𝓓
+
+  Lemma-4-18 : is-algebraic-dcpo 𝓓 → is-continuous-dcpo 𝓓
+  Lemma-4-18 = is-continuous-dcpo-if-algebraic-dcpo 𝓓
 
 \end{code}
 
