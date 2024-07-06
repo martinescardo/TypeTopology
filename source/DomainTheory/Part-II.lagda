@@ -51,6 +51,7 @@ open import UF.Univalence
 
 -}
 
+open import UF.Base
 open import UF.Equiv
 open import UF.ImageAndSurjection pt
 open import UF.Powerset-Fin pt hiding (⟨_⟩)
@@ -287,6 +288,112 @@ Section 3
 Section 4.1
 
 \begin{code}
+
+
+ open import DomainTheory.BasesAndContinuity.Continuity pt fe 𝓥
+  renaming (structurally-continuous to continuity-data)
+ open import DomainTheory.BasesAndContinuity.ContinuityDiscussion pt fe 𝓥
+
+ module _
+         (𝓓 : DCPO {𝓤} {𝓣})
+        where
+
+  open Ind-completion 𝓓
+
+  Definition-4-1 : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
+  Definition-4-1 = continuity-data 𝓓
+
+  Proposition-4-2 : ∐-map-has-specified-left-adjoint ≃ continuity-data 𝓓
+  Proposition-4-2 = specified-left-adjoint-structurally-continuous-≃ 𝓓
+
+  {- TODO
+  Remark-4-3 : (s : continuity-data 𝓓)
+             → Σ s' ꞉ continuity-data 𝓓 , s ≠ s'
+  Remark-4-3 s = s' , h
+   where
+    open structurally-continuous s
+    I = index-of-approximating-family
+    α = approximating-family
+    s' : continuity-data 𝓓
+    s' = record
+           { index-of-approximating-family = λ x → I x + I x
+           ; approximating-family = λ x → cases (α x) (α x)
+           ; approximating-family-is-directed = {!!}
+           ; approximating-family-is-way-below = {!!}
+           ; approximating-family-∐-＝ = {!!}
+           }
+    h : s ≠ s'
+    h e = {!!}
+     where
+      baz : structurally-continuous-to-Σ 𝓓 s ＝
+              structurally-continuous-to-Σ 𝓓 s'
+      baz = ap (structurally-continuous-to-Σ 𝓓) e
+      bazz = happly baz
+      foo : (x : ⟨ 𝓓 ⟩) → I x ＝ I x + I x
+      foo x = ap pr₁ (happly baz x)
+  -}
+
+  Definition-4-4 : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
+  Definition-4-4 = is-continuous-dcpo 𝓓
+
+  Proposition-4-5 : ∐-map-has-unspecified-left-adjoint 𝓓 ≃ is-continuous-dcpo 𝓓
+  Proposition-4-5 = is-continuous-dcpo-iff-∐-map-has-unspecified-left-adjoint 𝓓
+
+  module _
+          (c : continuity-data 𝓓)
+         where
+
+   open continuity-data c
+
+\end{code}
+
+We introduce the following abbrevations for readability and to match the paper.
+
+\begin{code}
+
+   I = index-of-approximating-family
+   α = approximating-family
+
+   Lemma-4-6 : (x y : ⟨ 𝓓 ⟩)
+             → (x ⊑⟨ 𝓓 ⟩ y ↔ ((i : I x) → α x i ⊑⟨ 𝓓 ⟩ y))
+             × (x ⊑⟨ 𝓓 ⟩ y ↔ ((i : I x) → α x i ≪⟨ 𝓓 ⟩ y))
+   Lemma-4-6 x y = (structurally-continuous-⊑-criterion-converse 𝓓 c ,
+                    structurally-continuous-⊑-criterion 𝓓 c) ,
+                   (structurally-continuous-⊑-criterion'-converse 𝓓 c ,
+                    structurally-continuous-⊑-criterion' 𝓓 c)
+
+   Lemma-4-7 : (x y : ⟨ 𝓓 ⟩) → x ≪⟨ 𝓓 ⟩ y ↔ (∃ i ꞉ I y , x ⊑⟨ 𝓓 ⟩ α y i)
+   Lemma-4-7 x y = structurally-continuous-≪-criterion-converse 𝓓 c ,
+                   structurally-continuous-≪-criterion 𝓓 c
+
+  Lemma-4-8 : is-continuous-dcpo 𝓓
+            → (x : ⟨ 𝓓 ⟩) → ∃ y ꞉ ⟨ 𝓓 ⟩ , y ≪⟨ 𝓓 ⟩ x
+  Lemma-4-8 = ≪-nullary-interpolation 𝓓
+
+  Lemma-4-9 : is-continuous-dcpo 𝓓
+            → {x y : ⟨ 𝓓 ⟩} → x ≪⟨ 𝓓 ⟩ y
+            → ∃ d ꞉ ⟨ 𝓓 ⟩ , (x ≪⟨ 𝓓 ⟩ d) × (d ≪⟨ 𝓓 ⟩ y)
+  Lemma-4-9 = ≪-unary-interpolation 𝓓
+
+  Lemma-4-10 : is-continuous-dcpo 𝓓
+             → {x y z : ⟨ 𝓓 ⟩} → x ≪⟨ 𝓓 ⟩ z → y ≪⟨ 𝓓 ⟩ z
+             → ∃ d ꞉ ⟨ 𝓓 ⟩ , (x ≪⟨ 𝓓 ⟩ d) × (y ≪⟨ 𝓓 ⟩ d) × (d ≪⟨ 𝓓 ⟩ z)
+  Lemma-4-10 = ≪-binary-interpolation 𝓓
+
+ Theorem-4-11 : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
+              → 𝓓 continuous-retract-of 𝓔
+              → (continuity-data 𝓔 → continuity-data 𝓓)
+              × (is-continuous-dcpo 𝓔 → is-continuous-dcpo 𝓓)
+ Theorem-4-11 𝓓 𝓔 ρ =
+  structural-continuity-of-dcpo-preserved-by-continuous-retract 𝓓 𝓔 ρ ,
+  continuity-of-dcpo-preserved-by-continuous-retract 𝓓 𝓔 ρ
+
+ Proposition-4-12 : (𝓓 : DCPO {𝓤} {𝓣})
+                  → is-continuous-dcpo 𝓓
+                  → (is-locally-small 𝓓
+                  ↔ ((x y : ⟨ 𝓓 ⟩) → is-small (x ≪⟨ 𝓓 ⟩ y)))
+ Proposition-4-12 𝓓 c = ≪-is-small-valued pe 𝓓 c ,
+                        ≪-is-small-valued-converse pe 𝓓 c
 
 \end{code}
 
