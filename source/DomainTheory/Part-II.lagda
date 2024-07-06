@@ -45,7 +45,6 @@ open import Notation.Order hiding (_⊑_ ; _≼_)
 open import UF.Base
 open import UF.Hedberg
 open import UF.Powerset-MultiUniverse
-open import UF.Size hiding (is-locally-small)
 open import UF.Subsingletons-FunExt
 open import UF.Univalence
 
@@ -53,11 +52,14 @@ open import UF.Univalence
 
 open import UF.Base
 open import UF.Equiv
+open import UF.EquivalenceExamples
 open import UF.ImageAndSurjection pt
 open import UF.Powerset-Fin pt hiding (⟨_⟩)
 open import UF.Powerset-MultiUniverse renaming (𝓟 to 𝓟-general)
 open import UF.Powerset
 open import UF.Sets
+open import UF.Size hiding (is-locally-small ; is-small)
+open import UF.Subsingletons-FunExt
 open import UF.SubtypeClassifier renaming (⊥ to 𝟘Ω ; ⊤ to 𝟙Ω)
 
 open import OrderedTypes.Poset fe
@@ -457,6 +459,120 @@ Section 4.3
 Section 5
 
 \begin{code}
+
+ open import DomainTheory.BasesAndContinuity.Bases pt fe 𝓥
+
+ Definition-5-1 : (𝓓 : DCPO {𝓤} {𝓣}) {B : 𝓥 ̇  } (β : B → ⟨ 𝓓 ⟩)
+                → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
+ Definition-5-1 = is-small-basis
+
+ module _
+         (𝓓 : DCPO {𝓤} {𝓣})
+         {B : 𝓥 ̇  }
+         (β : B → ⟨ 𝓓 ⟩)
+         (β-is-small-basis : is-small-basis 𝓓 β)
+        where
+
+  open is-small-basis β-is-small-basis
+
+  Remark-5-2 : (x : ⟨ 𝓓 ⟩)
+             → (↡ᴮ 𝓓 β x ≃ ↡ᴮₛ x)
+             × is-Directed 𝓓 (↡-inclusionₛ x)
+             × (∐ 𝓓 (↡ᴮₛ-is-directed x) ＝ x)
+  Remark-5-2 x = Σ-cong (λ b → ≃-sym ≪ᴮₛ-≃-≪ᴮ) ,
+                 ↡ᴮₛ-is-directed x ,
+                 ↡ᴮₛ-∐-＝ x
+
+ Lemma-5-3 : (𝓓 : DCPO {𝓤} {𝓣})
+           → (has-specified-small-basis 𝓓 → continuity-data 𝓓)
+           × (has-unspecified-small-basis 𝓓 → is-continuous-dcpo 𝓓)
+ Lemma-5-3 𝓓 = structurally-continuous-if-specified-small-basis 𝓓 ,
+               is-continuous-dcpo-if-unspecified-small-basis 𝓓
+
+ module _
+         (𝓓 : DCPO {𝓤} {𝓣})
+         {B : 𝓥 ̇  }
+         (β : B → ⟨ 𝓓 ⟩)
+         (β-is-small-basis : is-small-basis 𝓓 β)
+        where
+
+  open is-small-basis β-is-small-basis
+
+  Lemma-5-4 : {x y : ⟨ 𝓓 ⟩}
+            → x ⊑⟨ 𝓓 ⟩ y ≃ ((b : B) → β b ≪⟨ 𝓓 ⟩ x → β b ≪⟨ 𝓓 ⟩ y)
+  Lemma-5-4 = ⊑-in-terms-of-≪ᴮ 𝓓 β β-is-small-basis
+
+ Proposition-5-5 : (𝓓 : DCPO {𝓤} {𝓣})
+                 → has-unspecified-small-basis 𝓓
+                 → is-locally-small 𝓓
+                 × ((x y : ⟨ 𝓓 ⟩) → is-small (x ≪⟨ 𝓓 ⟩ y))
+ Proposition-5-5 𝓓 =
+  ∥∥-rec (×-is-prop (being-locally-small-is-prop 𝓓 (λ _ → pe))
+                    (Π₂-is-prop fe
+                      (λ x y → prop-being-small-is-prop
+                                (λ _ → pe) (λ _ _ → fe)
+                                (x ≪⟨ 𝓓 ⟩ y) (≪-is-prop-valued 𝓓))))
+         (λ (B , β , β-sb) → locally-small-if-small-basis 𝓓 β β-sb ,
+                             ≪-is-small-valued-if-small-basis 𝓓 β β-sb)
+
+ module _
+         (𝓓 : DCPO {𝓤} {𝓣})
+         {B : 𝓥 ̇  }
+         (β : B → ⟨ 𝓓 ⟩)
+         (β-is-small-basis : is-small-basis 𝓓 β)
+        where
+
+  open is-small-basis β-is-small-basis
+
+  Lemma-5-6 : (x : ⟨ 𝓓 ⟩) → ∃ b ꞉ B , β b ≪⟨ 𝓓 ⟩ x
+  Lemma-5-6 = ≪-nullary-interpolation-basis 𝓓 β β-is-small-basis
+
+  Lemma-5-7 : {x y : ⟨ 𝓓 ⟩} → x ≪⟨ 𝓓 ⟩ y
+            → ∃ b ꞉ B , (x ≪⟨ 𝓓 ⟩ β b) × (β b ≪⟨ 𝓓 ⟩ y)
+  Lemma-5-7 = ≪-unary-interpolation-basis 𝓓 β β-is-small-basis
+
+  Lemma-5-8 : {x y z : ⟨ 𝓓 ⟩} → x ≪⟨ 𝓓 ⟩ z → y ≪⟨ 𝓓 ⟩ z
+            → ∃ b ꞉ B , (x   ≪⟨ 𝓓 ⟩ β b)
+                      × (y   ≪⟨ 𝓓 ⟩ β b)
+                      × (β b ≪⟨ 𝓓 ⟩ z  )
+  Lemma-5-8 = ≪-binary-interpolation-basis 𝓓 β β-is-small-basis
+
+ Lemma-5-9 : (𝓓 : DCPO {𝓤} {𝓣}) {B : 𝓥 ̇ } (β : B → ⟨ 𝓓 ⟩)
+             (x : ⟨ 𝓓 ⟩) {I : 𝓥 ̇ } (σ : I → ↡ᴮ 𝓓 β x)
+           → (is-sup (underlying-order 𝓓) x (↡-inclusion 𝓓 β x ∘ σ)
+             → is-sup (underlying-order 𝓓) x (↡-inclusion 𝓓 β x))
+           × ((δ : is-Directed 𝓓 (↡-inclusion 𝓓 β x ∘ σ))
+             → x ⊑⟨ 𝓓 ⟩ ∐ 𝓓 δ
+             → is-Directed 𝓓 (↡-inclusion 𝓓 β x))
+ Lemma-5-9 𝓓 β x σ = ↡ᴮ-sup-criterion 𝓓 β x σ ,
+                     ↡ᴮ-directedness-criterion 𝓓 β x σ
+
+ module _
+         (𝓓 : DCPO {𝓤} {𝓣})
+         (𝓔 : DCPO {𝓤'} {𝓣'})
+        where
+
+  Theorem-5-10 : (s : DCPO[ 𝓓 , 𝓔 ]) (r : DCPO[ 𝓔 , 𝓓 ])
+               → is-continuous-retract 𝓓 𝓔 s r
+               → {B : 𝓥 ̇  } (β : B → ⟨ 𝓔 ⟩)
+               → is-small-basis 𝓔 β
+               → is-small-basis 𝓓 ([ 𝓔 , 𝓓 ]⟨ r ⟩ ∘ β)
+  Theorem-5-10 (s , s-cont) (r , r-cont) s-section-of-r =
+   small-basis-from-continuous-retract pe 𝓓 𝓔
+    (record
+       { s = s
+       ; r = r
+       ; s-section-of-r = s-section-of-r
+       ; s-is-continuous = s-cont
+       ; r-is-continuous = r-cont
+       })
+
+  open import DomainTheory.Basics.Exponential pt fe 𝓥
+
+  Proposition-5-11 : has-unspecified-small-basis 𝓓
+                   → is-locally-small 𝓔
+                   → is-locally-small (𝓓 ⟹ᵈᶜᵖᵒ 𝓔)
+  Proposition-5-11 = locally-small-exponential-criterion pe 𝓓 𝓔
 
 \end{code}
 
