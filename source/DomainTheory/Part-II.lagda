@@ -37,19 +37,8 @@ open PropositionalTruncation pt
 open import MLTT.List
 open import MLTT.Spartan
 
-{-
-open import Naturals.Order hiding (subtraction')
-open import Naturals.Addition renaming (_+_ to _+'_)
-open import Notation.Order hiding (_⊑_ ; _≼_)
-
 open import UF.Base
-open import UF.Hedberg
-open import UF.Powerset-MultiUniverse
-open import UF.Subsingletons-FunExt
-
--}
-
-open import UF.Base
+open import UF.DiscreteAndSeparated
 open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.ImageAndSurjection pt
@@ -806,8 +795,8 @@ Section 6.1
   record
    { basis-carrier = B
    ; _≺_ = _≺_
-   ; ≺-prop-valued = λ {x} {y} → p x y
-   ; ≺-trans = λ {x} {y} {z} → t x y z
+   ; ≺-prop-valued = λ {x y} → p x y
+   ; ≺-trans = λ {x y z} → t x y z
    ; INT₀ = reflexivity-implies-INT₀ _≺_ (λ {b} → r b)
    ; INT₂ = reflexivity-implies-INT₂ _≺_ (λ {b} → r b)
    }
@@ -852,6 +841,60 @@ Section 6.1
 Section 6.2
 
 \begin{code}
+
+module _ where
+
+ open import DyadicsInductive.Dyadics
+ open import DyadicsInductive.DyadicOrder
+ open import DyadicsInductive.DyadicOrder-PropTrunc pt
+
+ open import DomainTheory.Basics.Dcpo pt fe 𝓤₀
+ open import DomainTheory.Basics.WayBelow pt fe 𝓤₀
+ open import DomainTheory.BasesAndContinuity.Continuity pt fe 𝓤₀
+ open import DomainTheory.BasesAndContinuity.Bases pt fe 𝓤₀
+ open import DomainTheory.Examples.IdlDyadics pt fe pe
+ open import DomainTheory.IdealCompletion.IdealCompletion pt fe pe 𝓤₀
+ open import DomainTheory.IdealCompletion.Properties pt fe pe 𝓤₀
+
+ Definition-6-17 : (𝓤₀ ̇ ) × (𝔻 → 𝔻 → 𝓤₀ ̇  )
+ Definition-6-17 = 𝔻 , _≺_
+
+ Lemma-6-18 : is-discrete 𝔻 × is-set 𝔻
+ Lemma-6-18 = 𝔻-is-discrete , 𝔻-is-set
+
+ -- Definition-6-19: Inlined into Lemma 6.20
+
+ Lemma-6-20 : is-prop-valued _≺_
+            × is-transitive _≺_
+            × ({x : 𝔻} → ¬ (x ≺ x))
+            × ({x y z : 𝔻} → is-singleton ((x ≺ y) + (x ＝ y) + (y ≺ x)))
+            × ({x y : 𝔻} → x ≺ y → ∃ z ꞉ 𝔻 , (x ≺ z) × (z ≺ y))
+            × ((x : 𝔻) → (∃ y ꞉ 𝔻 , y ≺ x) × (∃ z ꞉ 𝔻 , x ≺ z))
+ Lemma-6-20 = ≺-is-prop-valued ,
+              ≺-is-transitive ,
+              ＝-to-¬≺ refl ,
+              trichotomy-is-a-singleton ,
+              ≺-is-dense ,
+              (λ x → (≺-has-no-left-endpoint x) , (≺-has-no-right-endpoint x))
+
+ Proposition-6-21 : abstract-basis
+ Proposition-6-21 = record
+                     { basis-carrier = 𝔻
+                     ; _≺_ = _≺_
+                     ; ≺-prop-valued = λ {x y} → ≺-is-prop-valued x y
+                     ; ≺-trans = λ {x y z} → ≺-is-transitive x y z
+                     ; INT₀ = ≺-has-no-left-endpoint
+                     ; INT₂ = λ {x y z} → ≺-interpolation₂ x y z
+                     }
+
+ Proposition-6-22 : has-specified-small-basis Idl-𝔻
+                  × is-continuous-dcpo Idl-𝔻
+                  × ((I : ⟨ Idl-𝔻 ⟩) → ¬ (is-compact Idl-𝔻 I))
+                  × ¬ (is-algebraic-dcpo Idl-𝔻)
+ Proposition-6-22 = Idl-𝔻-has-small-basis ,
+                    Idl-𝔻-is-continuous ,
+                    Idl-𝔻-has-no-compact-elements ,
+                    Idl-𝔻-is-not-algebraic
 
 \end{code}
 
