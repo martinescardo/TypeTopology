@@ -310,9 +310,10 @@ ideal.
               → x ∈ᵢ I → ↓ x ⊑ I
  ↓⊑-criterion I x x-in-I = ≪-to-⊑ Idl-DCPO {↓ x} {I} (↓≪-criterion I x x-in-I)
 
- ↓⊑-criterion-converse : reflexive _≺_
-                       → (I : Idl) (x : X) → ↓ x ⊑ I → x ∈ᵢ I
- ↓⊑-criterion-converse r I x ↓x-below-I = ↓x-below-I x (r x)
+ ↓⊑-criterion-converse : (I : Idl) (x : X)
+                       → x ≺ x
+                       → ↓ x ⊑ I → x ∈ᵢ I
+ ↓⊑-criterion-converse I x r ↓x-below-I = ↓x-below-I x r
 
 \end{code}
 
@@ -414,21 +415,22 @@ compact basis, as we prove now.
 
 \begin{code}
 
+ ↓-is-compact : (x : X) → x ≺ x → is-compact Idl-DCPO (↓ x)
+ ↓-is-compact x r 𝓘 α δ x-below-∐α =
+  ∥∥-functor h (x-below-∐α x r)
+   where
+    h : (Σ i ꞉ 𝓘 , x ∈ᵢ α i)
+      → Σ i ꞉ 𝓘 , ↓ x ⊑ α i
+    h (i , x-in-αᵢ) = (i , ↓⊑-criterion (α i) x x-in-αᵢ)
+
  module _
          (≺-is-reflexive : (x : X) → x ≺ x)
         where
 
-  ↓-is-compact : (x : X) → is-compact Idl-DCPO (↓ x)
-  ↓-is-compact x 𝓘 α δ x-below-∐α =
-   ∥∥-functor h (x-below-∐α x (≺-is-reflexive x))
-    where
-     h : (Σ i ꞉ 𝓘 , x ∈ᵢ α i)
-       → Σ i ꞉ 𝓘 , ↓ x ⊑ α i
-     h (i , x-in-αᵢ) = (i , ↓⊑-criterion (α i) x x-in-αᵢ)
-
   ↓-is-small-compact-basis : is-small-compact-basis Idl-DCPO ↓_
   ↓-is-small-compact-basis =
-   small-and-compact-basis Idl-DCPO ↓_ ↓-is-small-basis ↓-is-compact
+   small-and-compact-basis Idl-DCPO ↓_ ↓-is-small-basis
+                           (λ x → ↓-is-compact x (≺-is-reflexive x))
 
   Idl-has-specified-small-compact-basis : has-specified-small-compact-basis Idl-DCPO
   Idl-has-specified-small-compact-basis = (X , ↓_ , ↓-is-small-compact-basis)

@@ -744,8 +744,7 @@ Section 6
         where
 
   open abstract-basis abs-basis renaming (basis-carrier to B)
-
-  open Ideals-of-small-abstract-basis abs-basis public
+  open Ideals-of-small-abstract-basis abs-basis
   open unions-of-small-families pt 𝓥 𝓥 B
 
   Definition-6-2 : (𝓟 B → 𝓥 ̇  ) × (𝓥 ⁺ ̇  )
@@ -797,6 +796,56 @@ Section 6
 Section 6.1
 
 \begin{code}
+
+ Lemma-6-12 : (B : 𝓥 ̇  ) (_≺_ : B → B → 𝓥 ̇  )
+            → is-prop-valued _≺_
+            → is-transitive _≺_
+            → is-reflexive _≺_
+            → abstract-basis
+ Lemma-6-12 B _≺_ p t r =
+  record
+   { basis-carrier = B
+   ; _≺_ = _≺_
+   ; ≺-prop-valued = λ {x} {y} → p x y
+   ; ≺-trans = λ {x} {y} {z} → t x y z
+   ; INT₀ = reflexivity-implies-INT₀ _≺_ (λ {b} → r b)
+   ; INT₂ = reflexivity-implies-INT₂ _≺_ (λ {b} → r b)
+   }
+
+ module _
+         (abs-basis : abstract-basis)
+        where
+
+  open abstract-basis abs-basis renaming (basis-carrier to B)
+  open Ideals-of-small-abstract-basis abs-basis public
+
+  Lemma-6-13 : (I : Idl) (b : B)
+             → (b ∈ᵢ I → (↓ b) ⊑ I)
+             × (b ≺ b → (↓ b) ⊑ I → b ∈ᵢ I)
+  Lemma-6-13 I b = ↓⊑-criterion I b , ↓⊑-criterion-converse I b
+
+  Lemma-6-14 : (b : B) → b ≺ b → is-compact Idl-DCPO (↓ b)
+  Lemma-6-14 = ↓-is-compact
+
+  Theorem-6-15 : is-reflexive _≺_
+               → is-small-compact-basis Idl-DCPO ↓_
+               × is-algebraic-dcpo Idl-DCPO
+  Theorem-6-15 r = ↓-is-small-compact-basis r , Idl-is-algebraic-dcpo r
+
+  module _
+          (𝓓 : DCPO {𝓤} {𝓣})
+          (f : B → ⟨ 𝓓 ⟩)
+          (f-is-monotone : {a b : B} → a ≺ b → f a ⊑⟨ 𝓓 ⟩ f b)
+         where
+
+   open Idl-mediating 𝓓 f f-is-monotone
+
+   Theorem-6-16 : is-continuous Idl-DCPO 𝓓 Idl-mediating-map
+                × (reflexive _≺_
+                    → ∃! f̅ ꞉ DCPO[ Idl-DCPO , 𝓓 ] ,
+                         [ Idl-DCPO , 𝓓 ]⟨ f̅ ⟩ ∘ ↓_ ∼ f)
+   Theorem-6-16 = Idl-mediating-map-is-continuous ,
+                  Idl-mediating-map-is-unique
 
 \end{code}
 
