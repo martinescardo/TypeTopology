@@ -694,6 +694,38 @@ Section 5.3
 
 \begin{code}
 
+module _
+        (𝓥 : Universe)
+       where
+
+ open import DomainTheory.Basics.Dcpo pt fe 𝓥
+ open import DomainTheory.Basics.Miscelanea pt fe 𝓥
+ open import DomainTheory.BasesAndContinuity.Bases pt fe 𝓥
+ open import DomainTheory.BasesAndContinuity.Continuity pt fe 𝓥
+ open import DomainTheory.BasesAndContinuity.CompactBasis pt fe 𝓥
+
+ module _
+         (𝓓 : DCPO {𝓤} {𝓣})
+        where
+
+  Lemma-5-22 : is-algebraic-dcpo 𝓓
+             → (x : ⟨ 𝓓 ⟩) → is-sup (underlying-order 𝓓) x (↓ᴷ-inclusion 𝓓 x)
+  Lemma-5-22 = ↓ᴷ-is-sup 𝓓
+
+  Lemma-5-23 : Set-Replacement pt
+             → has-specified-small-compact-basis 𝓓 → is-small (K 𝓓)
+  Lemma-5-23 = K-is-small' 𝓓
+
+  Lemma-5-23-ad : Univalence
+                → Set-Replacement pt
+                → has-unspecified-small-compact-basis 𝓓 → is-small (K 𝓓)
+  Lemma-5-23-ad = K-is-small 𝓓
+
+  Proposition-5-24 : Univalence → Set-Replacement pt
+                   → has-specified-small-compact-basis 𝓓
+                   ↔ has-unspecified-small-compact-basis 𝓓
+  Proposition-5-24 ua sr = specified-unspecified-equivalence ua sr 𝓓
+
 \end{code}
 
 Section 6
