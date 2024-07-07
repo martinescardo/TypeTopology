@@ -657,24 +657,36 @@ Section 5.2
                  (𝓛P-has-unspecified-small-compact-basis-resizes ,
                   ∣_∣ ∘ resizing-gives-small-compact-basis)
 
- -- TODO: Re-import things because fe and pe is derived from funext...
- module _
-         (ua : Univalence)
-         (sr : Set-Replacement pt)
-        where
+\end{code}
 
-  open import DomainTheory.Examples.Ordinals pt ua sr 𝓥
-  open import DomainTheory.Basics.SupComplete pt
-                                              (Univalence-gives-FunExt ua _ _) 𝓥
+Example 5.21 is one of the few places where we use univalence (and set
+replacement, or equivalently, small set quotients).
 
-  Example-5-21 : DCPO {𝓥 ⁺} {𝓥}
-               × is-sup-complete Ordinals-DCPO
-               × {!is-algebraic-dcpo!}
-               × {!!}
-  Example-5-21 = Ordinals-DCPO ,
-                 Ordinals-DCPO-is-sup-complete ,
-                 Ordinals-DCPO-is-algebraic ,
-                 {!!}
+\begin{code}
+
+module _
+        (ua : Univalence)
+        (sr : Set-Replacement pt)
+        (𝓤 : Universe)
+       where
+
+ fe' : Fun-Ext
+ fe' {𝓤 } {𝓥} = Univalence-gives-FunExt ua 𝓤 𝓥
+
+ open import DomainTheory.Examples.Ordinals pt ua sr 𝓤
+ open import DomainTheory.Basics.Dcpo pt fe' 𝓤
+ open import DomainTheory.Basics.SupComplete pt fe' 𝓤
+ open import DomainTheory.BasesAndContinuity.Continuity pt fe' 𝓤
+ open import DomainTheory.BasesAndContinuity.Bases pt fe' 𝓤
+
+ Example-5-21 : DCPO {𝓤 ⁺} {𝓤}
+              × is-sup-complete Ordinals-DCPO
+              × is-algebraic-dcpo Ordinals-DCPO
+              × ¬ (has-unspecified-small-basis Ordinals-DCPO)
+ Example-5-21 = Ordinals-DCPO ,
+                Ordinals-DCPO-is-sup-complete ,
+                Ordinals-DCPO-is-algebraic ,
+                Ordinals-DCPO-has-no-small-basis
 
 \end{code}
 
