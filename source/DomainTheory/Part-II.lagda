@@ -580,6 +580,44 @@ Section 5.1
 
 \begin{code}
 
+ Definition-5-12 : (𝓓 : DCPO {𝓤} {𝓣}) {B : 𝓥 ̇  } (β : B → ⟨ 𝓓 ⟩)
+                 → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
+ Definition-5-12 = is-small-compact-basis
+
+ module _
+         (𝓓 : DCPO {𝓤} {𝓣})
+         {B : 𝓥 ̇  }
+         (β : B → ⟨ 𝓓 ⟩)
+         (β-is-small-compact-basis : is-small-compact-basis 𝓓 β)
+        where
+
+  open is-small-compact-basis β-is-small-compact-basis
+
+  Remark-5-13 : (x : ⟨ 𝓓 ⟩)
+              → (↓ᴮ 𝓓 β x ≃ ↓ᴮₛ x)
+              × is-Directed 𝓓 (↓-inclusionₛ x)
+              × (∐ 𝓓 (↓ᴮₛ-is-directed x) ＝ x)
+  Remark-5-13 x = Σ-cong (λ b → ≃-sym ⊑ᴮₛ-≃-⊑ᴮ) ,
+                  ↓ᴮₛ-is-directed x ,
+                  ↓ᴮₛ-∐-＝ x
+
+ Lemma-5-14 : (𝓓 : DCPO {𝓤} {𝓣})
+            → (has-specified-small-compact-basis 𝓓 → algebraicity-data 𝓓)
+            × (has-unspecified-small-compact-basis 𝓓 → is-algebraic-dcpo 𝓓)
+ Lemma-5-14 𝓓 = structurally-algebraic-if-specified-small-compact-basis 𝓓 ,
+                is-algebraic-dcpo-if-unspecified-small-compact-basis 𝓓
+
+ Lemma-5-15 : (𝓓 : DCPO {𝓤} {𝓣}) {B : 𝓥 ̇} (β : B → ⟨ 𝓓 ⟩)
+            → is-small-basis 𝓓 β
+            → ((b : B) → is-compact 𝓓 (β b))
+            → is-small-compact-basis 𝓓 β
+ Lemma-5-15 = small-and-compact-basis
+
+ Proposition-5-16 : (𝓓 : DCPO {𝓤} {𝓣}) {B : 𝓥 ̇} (β : B → ⟨ 𝓓 ⟩)
+                  → is-small-compact-basis 𝓓 β
+                  → (x : ⟨ 𝓓 ⟩) → is-compact 𝓓 x → ∃ b ꞉ B , β b ＝ x
+ Proposition-5-16 = small-compact-basis-contains-all-compact-elements
+
 \end{code}
 
 Section 5.2
