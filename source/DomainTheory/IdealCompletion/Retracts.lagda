@@ -251,11 +251,15 @@ module Idl-continuous-retract-of-algebraic
  ⊑ᴮ-is-transitive u v = ⌜ ⊑ᴮ-≃-⊑ ⌝⁻¹
                          (transitivity 𝓓 _ _ _ (⌜ ⊑ᴮ-≃-⊑ ⌝ u) (⌜ ⊑ᴮ-≃-⊑ ⌝ v))
 
- open Ideals-of-small-abstract-basis {B} _⊑ᴮ_
-        ⊑ᴮ-is-prop-valued
-        (reflexivity-implies-INT₂ _⊑ᴮ_ ⊑ᴮ-is-reflexive)
-        (reflexivity-implies-INT₀ _⊑ᴮ_ ⊑ᴮ-is-reflexive)
-        ⊑ᴮ-is-transitive
+ open Ideals-of-small-abstract-basis
+       (record
+          { basis-carrier = B
+          ; _≺_ = _⊑ᴮ_
+          ; ≺-prop-valued = ⊑ᴮ-is-prop-valued
+          ; ≺-trans = ⊑ᴮ-is-transitive
+          ; INT₀ = reflexivity-implies-INT₀ _⊑ᴮ_ ⊑ᴮ-is-reflexive
+          ; INT₂ = reflexivity-implies-INT₂ _⊑ᴮ_ ⊑ᴮ-is-reflexive
+          })
       public
  open Idl-retract-common 𝓓 β β-is-small-basis public
  open Idl-mediating 𝓓 β ⌜ ⊑ᴮ-≃-⊑ ⌝ public
@@ -529,12 +533,15 @@ module Idl-continuous
       → (Σ c ꞉ B , (b₁ ≺ c) × (b₂ ≺ c) × (c ≺ b))
     h (c , u , v , w) = (c , ⌜ ≺-≃-≪ ⌝⁻¹ u , ⌜ ≺-≃-≪ ⌝⁻¹ v , ⌜ ≺-≃-≪ ⌝⁻¹ w)
 
- open Ideals-of-small-abstract-basis {B}  _≺_
-                                     ≺-is-prop-valued
-                                     ≺-INT₂
-                                     ≺-INT₀
-                                     ≺-is-transitive
-
+ open Ideals-of-small-abstract-basis
+       (record
+          { basis-carrier = B
+          ; _≺_ = _≺_
+          ; ≺-prop-valued = ≺-is-prop-valued
+          ; ≺-trans = ≺-is-transitive
+          ; INT₀ = ≺-INT₀
+          ; INT₂ = ≺-INT₂
+          })
  open Idl-retract-common 𝓓 β β-is-small-basis
  open Idl-mediating 𝓓 β (≪-to-⊑ 𝓓 ∘ ⌜ ≺-≃-≪ ⌝)
 

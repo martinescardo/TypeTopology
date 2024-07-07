@@ -137,15 +137,21 @@ _≺_ takes values in 𝓥.
 
 \begin{code}
 
+record abstract-basis : 𝓥 ⁺ ̇  where
+ field
+  basis-carrier : 𝓥 ̇
+  _≺_ : basis-carrier → basis-carrier → 𝓥 ̇
+  ≺-prop-valued : {x y : basis-carrier} → is-prop (x ≺ y)
+  ≺-trans : {x y z : basis-carrier} → x ≺ y → y ≺ z → x ≺ z
+  INT₀ : (x : basis-carrier) → ∃ y ꞉ basis-carrier , y ≺ x
+  INT₂ : {y₀ y₁ x : basis-carrier} → y₀ ≺ x → y₁ ≺ x
+       → ∃ z ꞉ basis-carrier , y₀ ≺ z × y₁ ≺ z × z ≺ x
+
 module Ideals-of-small-abstract-basis
-        {X : 𝓥 ̇ }
-        (_≺_ : X → X → 𝓥 ̇ )
-        (≺-prop-valued : {x y : X} → is-prop (x ≺ y))
-        (INT₂ : {y₀ y₁ x : X} → y₀ ≺ x → y₁ ≺ x
-              → ∃ z ꞉ X , y₀ ≺ z × y₁ ≺ z × z ≺ x)
-        (INT₀ : (x : X) → ∃ y ꞉ X , y ≺ x)
-        (≺-trans : {x y z : X} → x ≺ y → y ≺ z → x ≺ z)
+        (abs-basis : abstract-basis)
        where
+
+ open abstract-basis abs-basis renaming (basis-carrier to X)
 
  open Ideals {𝓥} {𝓥} {X} _≺_ ≺-prop-valued INT₂ INT₀ ≺-trans public
  open Idl-Properties {𝓥} {𝓥} {X} _≺_ ≺-prop-valued INT₂ INT₀ ≺-trans public

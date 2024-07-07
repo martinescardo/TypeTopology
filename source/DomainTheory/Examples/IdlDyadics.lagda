@@ -35,11 +35,14 @@ open import DomainTheory.IdealCompletion.IdealCompletion pt fe pe 𝓤₀
 open import DomainTheory.IdealCompletion.Properties pt fe pe 𝓤₀
 
 open Ideals-of-small-abstract-basis
- _≺_
- (λ {x} {y} → ≺-is-prop-valued x y)
- (λ {x} {y} {z} → ≺-interpolation₂ x y z)
- ≺-has-no-left-endpoint
- (λ {x} {y} {z} → ≺-is-transitive x y z)
+      (record
+         { basis-carrier = 𝔻
+         ; _≺_ = _≺_
+         ; ≺-prop-valued = λ {x} {y} → ≺-is-prop-valued x y
+         ; ≺-trans = λ {x} {y} {z} → ≺-is-transitive x y z
+         ; INT₀ = ≺-has-no-left-endpoint
+         ; INT₂ = λ {x} {y} {z} → ≺-interpolation₂ x y z
+         })
 
 Idl-𝔻 : DCPO {𝓤₁} {𝓤₀}
 Idl-𝔻 = Idl-DCPO

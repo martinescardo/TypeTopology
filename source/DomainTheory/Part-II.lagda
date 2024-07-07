@@ -732,6 +732,35 @@ Section 6
 
 \begin{code}
 
+ open import DomainTheory.IdealCompletion.IdealCompletion pt fe pe 𝓥
+ open import DomainTheory.IdealCompletion.Properties pt fe pe 𝓥
+
+ Definition-6-1 : 𝓥 ⁺ ̇
+ Definition-6-1 = abstract-basis
+
+ module _
+         (abs-basis : abstract-basis)
+        where
+
+  open abstract-basis abs-basis renaming (basis-carrier to B)
+
+  open Ideals-of-small-abstract-basis abs-basis public
+  open unions-of-small-families pt 𝓥 𝓥 B
+
+  Definition-6-2 : (𝓟 B → 𝓥 ̇  ) × (𝓥 ⁺ ̇  )
+  Definition-6-2 = is-ideal , Idl
+
+  Definition-6-3 : {S : 𝓥 ̇  } → (S → 𝓟 B) → 𝓟 B
+  Definition-6-3 = ⋃
+
+  Lemma-6-4 : {S : 𝓥 ̇  } (𝓘 : S → Idl)
+            → is-directed _⊑_ 𝓘
+            → is-ideal (⋃ (carrier ∘ 𝓘))
+  Lemma-6-4 𝓘 δ = ideality (Idl-∐ 𝓘 δ)
+
+  Lemma-6-5 : DCPO {𝓥 ⁺ } {𝓥}
+  Lemma-6-5 = Idl-DCPO
+
 \end{code}
 
 Section 6.1
