@@ -91,8 +91,8 @@ We proceed by showing that the Booleans give a small compact basis for Ω 𝓤.
 
 \begin{code}
 
-⊤-is-greatest : (P : Ω 𝓤) → P ⊑ 𝟙Ω
-⊤-is-greatest P _ = ⋆
+𝟙Ω-is-greatest : (P : Ω 𝓤) → P ⊑ 𝟙Ω
+𝟙Ω-is-greatest P _ = ⋆
 
 Bool : 𝓤 ̇
 Bool = 𝟙{𝓤} + 𝟙{𝓤}
@@ -113,7 +113,7 @@ Bool = 𝟙{𝓤} + 𝟙{𝓤}
   semidir (inl ⋆ , _) i = ∣ i , ⊥-is-least Ω-DCPO⊥ (κ⁺ P i)
                               , ⊑-is-reflexive (κ⁺ P i) ∣
   semidir (inr ⋆ , u) j = ∣ (inr ⋆ , u) , ⊑-is-reflexive 𝟙Ω
-                                        , ⊤-is-greatest (κ⁺ P j) ∣
+                                        , 𝟙Ω-is-greatest (κ⁺ P j) ∣
 
 κ⁺-sup : (P : Ω 𝓤) → is-sup _⊑_ P (κ⁺ P)
 κ⁺-sup P = ub , lb-of-ubs
@@ -124,7 +124,7 @@ Bool = 𝟙{𝓤} + 𝟙{𝓤}
   lb-of-ubs Q Q-is-ub p = Q-is-ub (inr ⋆ , (λ _ → p)) ⋆
 
 𝟙-is-compact : is-compact Ω-DCPO 𝟙Ω
-𝟙-is-compact I α δ ⊤-below-∐α = ∥∥-functor γ (⊤-below-∐α ⋆)
+𝟙-is-compact I α δ 𝟙Ω-below-∐α = ∥∥-functor γ (𝟙Ω-below-∐α ⋆)
  where
   γ : (Σ i ꞉ I , α i holds) → (Σ i ꞉ I , 𝟙Ω ⊑ α i)
   γ (i , p) = (i , (λ _ → p))

@@ -46,7 +46,6 @@ open import UF.Base
 open import UF.Hedberg
 open import UF.Powerset-MultiUniverse
 open import UF.Subsingletons-FunExt
-open import UF.Univalence
 
 -}
 
@@ -61,6 +60,8 @@ open import UF.Sets
 open import UF.Size hiding (is-locally-small ; is-small)
 open import UF.Subsingletons-FunExt
 open import UF.SubtypeClassifier renaming (⊥ to 𝟘Ω ; ⊤ to 𝟙Ω)
+open import UF.Univalence
+open import UF.UA-FunExt
 
 open import OrderedTypes.Poset fe
 open PosetAxioms
@@ -102,21 +103,22 @@ module _ (𝓥 : Universe) where
  Example-2-4 : (𝓓 : DCPO⊥ {𝓤} {𝓣}) → is-compact (𝓓 ⁻) (⊥ 𝓓)
  Example-2-4 𝓓 = ⊥-is-compact 𝓓
 
- open import DomainTheory.Examples.Omega pt fe pe 𝓥 hiding (κ)
- Example-2-5 : (P : Ω 𝓥)
-             → (is-compact Ω-DCPO P ↔ (P ＝ 𝟘Ω) + (P ＝ 𝟙Ω))
-             × (is-compact Ω-DCPO P ↔ is-decidable (P holds))
- Example-2-5 P = compact-iff-empty-or-unit P ,
-                 compact-iff-decidable P
+ module _ where
+  open import DomainTheory.Examples.Omega pt fe pe 𝓥 hiding (κ)
+  Example-2-5 : (P : Ω 𝓥)
+              → (is-compact Ω-DCPO P ↔ (P ＝ 𝟘Ω) + (P ＝ 𝟙Ω))
+              × (is-compact Ω-DCPO P ↔ is-decidable (P holds))
+  Example-2-5 P = compact-iff-empty-or-unit P ,
+                  compact-iff-decidable P
 
- open import Lifting.Construction 𝓥 renaming (⊥ to ⊥𝓛)
- open import DomainTheory.Lifting.LiftingSet pt fe 𝓥 pe
- open import DomainTheory.Lifting.LiftingSetAlgebraic pt pe fe 𝓥 hiding (κ)
- Example-2-6 : {X : 𝓥 ̇  } (X-set : is-set X) (l : 𝓛 X)
-             → (is-compact (𝓛-DCPO X-set) l ↔ (l ＝ ⊥𝓛) + (Σ x ꞉ X , η x ＝ l))
-             × (is-compact (𝓛-DCPO X-set) l ↔ is-decidable (is-defined l))
- Example-2-6 s l = compact-iff-⊥-or-η s l ,
-                   compact-iff-is-defined-decidable s l
+  open import Lifting.Construction 𝓥 renaming (⊥ to ⊥𝓛)
+  open import DomainTheory.Lifting.LiftingSet pt fe 𝓥 pe
+  open import DomainTheory.Lifting.LiftingSetAlgebraic pt pe fe 𝓥 hiding (κ)
+  Example-2-6 : {X : 𝓥 ̇  } (X-set : is-set X) (l : 𝓛 X)
+              → (is-compact (𝓛-DCPO X-set) l ↔ (l ＝ ⊥𝓛) + (Σ x ꞉ X , η x ＝ l))
+              × (is-compact (𝓛-DCPO X-set) l ↔ is-decidable (is-defined l))
+  Example-2-6 s l = compact-iff-⊥-or-η s l ,
+                    compact-iff-is-defined-decidable s l
 
  Lemma-2-7 : (𝓓 : DCPO {𝓤} {𝓣}) {x y z : ⟨ 𝓓 ⟩}
            → x ⊑⟨ 𝓓 ⟩ z → y ⊑⟨ 𝓓 ⟩ z
@@ -157,18 +159,10 @@ module _ (𝓥 : Universe) where
              → (A : 𝓚 X) → Q A
   Lemma-2-11 = Kuratowski-finite-subset-induction pe fe X X-set
 
-  open canonical-map-from-lists-to-subsets X-set
+  open canonical-map-from-lists-to-subsets X-set renaming (κ to β)
 
   Definition-2-12 : List X → 𝓟 X
-  Definition-2-12 = κ
-
-\end{code}
-
-To match the paper, we write β for κ.
-
-\begin{code}
-
-  β = κ
+  Definition-2-12 = β
 
   Lemma-2-13 : (A : 𝓟 X)
              → (A ∈image β → is-Kuratowski-finite-subset A)
@@ -623,6 +617,64 @@ Section 5.1
 Section 5.2
 
 \begin{code}
+
+ module _ where
+  open import DomainTheory.Examples.Omega pt fe pe 𝓥
+  Example-5-17 : is-small-compact-basis Ω-DCPO κ
+               × is-algebraic-dcpo Ω-DCPO
+  Example-5-17 = κ-is-small-compact-basis , Ω-is-algebraic-dcpo
+
+ module _ where
+  open import Lifting.Construction 𝓥 renaming (⊥ to ⊥𝓛)
+  open import DomainTheory.Lifting.LiftingSet pt fe 𝓥 pe
+  open import DomainTheory.Lifting.LiftingSetAlgebraic pt pe fe 𝓥
+  Example-5-18 : {X : 𝓥 ̇  } (X-set : is-set X)
+               → is-small-compact-basis (𝓛-DCPO X-set) (κ X-set)
+               × is-algebraic-dcpo (𝓛-DCPO X-set)
+  Example-5-18 X-set = κ-is-small-compact-basis X-set ,
+                       𝓛-is-algebraic-dcpo X-set
+
+ module _
+         {X : 𝓥 ̇  }
+         (X-set : is-set X)
+        where
+
+  open import DomainTheory.Examples.Powerset pt fe pe X-set
+  open canonical-map-from-lists-to-subsets X-set renaming (κ to β)
+  Example-5-19 : is-small-compact-basis 𝓟-DCPO (canonical-map-from-lists-to-subsets.κ X-set)
+               × is-algebraic-dcpo 𝓟-DCPO
+  Example-5-19 = κ-is-small-compact-basis , 𝓟-is-algebraic-dcpo
+
+ module _
+         (P : 𝓤 ̇  )
+         (P-is-prop : is-prop P)
+        where
+
+  open import DomainTheory.Examples.LiftingLargeProposition pt fe pe 𝓥 𝓤 P P-is-prop
+  Example-5-20 : is-algebraic-dcpo (𝓛P ⁻)
+               × (has-unspecified-small-compact-basis (𝓛P ⁻) ↔ P is 𝓥 small)
+  Example-5-20 = 𝓛P-is-algebraic ,
+                 (𝓛P-has-unspecified-small-compact-basis-resizes ,
+                  ∣_∣ ∘ resizing-gives-small-compact-basis)
+
+ -- TODO: Re-import things because fe and pe is derived from funext...
+ module _
+         (ua : Univalence)
+         (sr : Set-Replacement pt)
+        where
+
+  open import DomainTheory.Examples.Ordinals pt ua sr 𝓥
+  open import DomainTheory.Basics.SupComplete pt
+                                              (Univalence-gives-FunExt ua _ _) 𝓥
+
+  Example-5-21 : DCPO {𝓥 ⁺} {𝓥}
+               × is-sup-complete Ordinals-DCPO
+               × {!is-algebraic-dcpo!}
+               × {!!}
+  Example-5-21 = Ordinals-DCPO ,
+                 Ordinals-DCPO-is-sup-complete ,
+                 Ordinals-DCPO-is-algebraic ,
+                 {!!}
 
 \end{code}
 
