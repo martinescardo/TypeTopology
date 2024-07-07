@@ -700,6 +700,7 @@ module _
 
  open import DomainTheory.Basics.Dcpo pt fe 𝓥
  open import DomainTheory.Basics.Miscelanea pt fe 𝓥
+ open import DomainTheory.Basics.WayBelow pt fe 𝓥
  open import DomainTheory.BasesAndContinuity.Bases pt fe 𝓥
  open import DomainTheory.BasesAndContinuity.Continuity pt fe 𝓥
  open import DomainTheory.BasesAndContinuity.CompactBasis pt fe 𝓥
@@ -760,6 +761,36 @@ Section 6
 
   Lemma-6-5 : DCPO {𝓥 ⁺ } {𝓥}
   Lemma-6-5 = Idl-DCPO
+
+  Lemma-6-6 : (I : Idl) {a : B} → (a ∈ᵢ I) → ∃ b ꞉ B , b ∈ᵢ I × a ≺ b
+  Lemma-6-6 = roundedness
+
+  Definition-6-7 : B → Idl
+  Definition-6-7 = ↓_
+
+  Lemma-6-8 : {a b : B} → a ≺ b → ↓ a ⊑ ↓ b
+  Lemma-6-8 = ↓-is-monotone
+
+  Lemma-6-9 : (I : Idl) → I ＝ ∐ Idl-DCPO (↓-of-ideal-is-directed I)
+  Lemma-6-9 = Idl-∐-＝
+
+  Lemma-6-10 : (I J : Idl)
+             → (I ≪⟨ Idl-DCPO ⟩ J ↔ (∃ b ꞉ B , b ∈ᵢ J × I ⊑ ↓ b))
+             × (I ≪⟨ Idl-DCPO ⟩ J ↔ (∃ a ꞉ B , Σ b ꞉ B , a ≺ b
+                                         × I ⊑⟨ Idl-DCPO ⟩ ↓ a
+                                         × ↓ a ⊑⟨ Idl-DCPO ⟩ ↓ b
+                                         × ↓ b ⊑⟨ Idl-DCPO ⟩ J))
+  Lemma-6-10 I J = (Idl-≪-in-terms-of-⊑ I J ,
+                    Idl-≪-in-terms-of-⊑-converse I J) ,
+                   (Idl-≪-in-terms-of-⊑₂ I J ,
+                    Idl-≪-in-terms-of-⊑₂-converse I J)
+
+  Lemma-6-10-ad : (I : Idl) (b : B) → b ∈ᵢ I → ↓ b ≪⟨ Idl-DCPO ⟩ I
+  Lemma-6-10-ad = ↓≪-criterion
+
+  Theorem-6-11 : is-small-basis Idl-DCPO ↓_
+               × is-continuous-dcpo Idl-DCPO
+  Theorem-6-11 = ↓-is-small-basis , Idl-is-continuous-dcpo
 
 \end{code}
 
