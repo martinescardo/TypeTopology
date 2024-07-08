@@ -302,12 +302,12 @@ Section 4.1
    α = approximating-family
    s' : continuity-data 𝓓
    s' = record
-          { index-of-approximating-family = λ x → I x + I x
-          ; approximating-family = λ x → cases (α x) (α x)
-          ; approximating-family-is-directed = {!!}
-          ; approximating-family-is-way-below = {!!}
-          ; approximating-family-∐-＝ = {!!}
-          }
+         { index-of-approximating-family = λ x → I x + I x
+         ; approximating-family = λ x → cases (α x) (α x)
+         ; approximating-family-is-directed = {!!}
+         ; approximating-family-is-way-below = {!!}
+         ; approximating-family-∐-＝ = {!!}
+         }
    h : s ≠ s'
    h e = {!!}
     where
@@ -343,8 +343,9 @@ We introduce the following abbrevations for readability and to match the paper.
 
 \begin{code}
 
-   I = index-of-approximating-family
-   α = approximating-family
+   private
+    I = index-of-approximating-family
+    α = approximating-family
 
    Lemma-4-6 : (x y : ⟨ 𝓓 ⟩)
              → (x ⊑⟨ 𝓓 ⟩ y ↔ ((i : I x) → α x i ⊑⟨ 𝓓 ⟩ y))
@@ -543,12 +544,12 @@ Section 5
   Theorem-5-10 (s , s-cont) (r , r-cont) s-section-of-r =
    small-basis-from-continuous-retract pe 𝓓 𝓔
     (record
-       { s = s
-       ; r = r
-       ; s-section-of-r = s-section-of-r
-       ; s-is-continuous = s-cont
-       ; r-is-continuous = r-cont
-       })
+      { s = s
+      ; r = r
+      ; s-section-of-r = s-section-of-r
+      ; s-is-continuous = s-cont
+      ; r-is-continuous = r-cont
+      })
 
   open import DomainTheory.Basics.Exponential pt fe 𝓥
 
@@ -806,7 +807,7 @@ Section 6.1
         where
 
   open abstract-basis abs-basis renaming (basis-carrier to B)
-  open Ideals-of-small-abstract-basis abs-basis public
+  open Ideals-of-small-abstract-basis abs-basis
 
   Lemma-6-13 : (I : Idl) (b : B)
              → (b ∈ᵢ I → (↓ b) ⊑ I)
@@ -901,6 +902,198 @@ module _ where
 Section 6.3
 
 \begin{code}
+
+module _ (𝓥 : Universe) where
+
+ open import DomainTheory.Basics.Dcpo pt fe 𝓥
+ open import DomainTheory.Basics.Miscelanea pt fe 𝓥
+ open import DomainTheory.Basics.WayBelow pt fe 𝓥
+ open import DomainTheory.BasesAndContinuity.Continuity pt fe 𝓥
+ open import DomainTheory.BasesAndContinuity.Bases pt fe 𝓥
+ open import DomainTheory.IdealCompletion.IdealCompletion pt fe pe 𝓥
+ open import DomainTheory.IdealCompletion.Properties pt fe pe 𝓥
+ open import DomainTheory.IdealCompletion.Retracts pt fe pe 𝓥
+
+ module _
+         (𝓓 : DCPO {𝓤} {𝓣})
+         {B : 𝓥 ̇  }
+         (β : B → ⟨ 𝓓 ⟩)
+         (β-is-small-basis : is-small-basis 𝓓 β)
+        where
+
+  open is-small-basis β-is-small-basis
+  open Idl-retract-common 𝓓 β β-is-small-basis
+
+  Lemma-6-23 : {I : 𝓥 ̇ } {α : I → ⟨ 𝓓 ⟩} (δ : is-Directed 𝓓 α)
+             → is-sup _⊆_ (↡ᴮ-subset (∐ 𝓓 δ)) (↡ᴮ-subset ∘ α)
+  Lemma-6-23 = ↡ᴮ-is-continuous
+
+  module _
+          (I : 𝓟 B)
+          {δ : is-Directed 𝓓 (β ∘ 𝕋-to-carrier I)}
+         where
+
+   Lemma-6-24-i : ((b c : B) → β b ⊑⟨ 𝓓 ⟩ β c → c ∈ I → b ∈ I)
+                → ↡ᴮ-subset (∐-of-directed-subset I δ) ⊆ I
+   Lemma-6-24-i = ↡ᴮ-∐-deflation I
+
+   Lemma-6-24-ii : ((b : B) → b ∈ I → ∃ c ꞉ B , c ∈ I × β b ≪⟨ 𝓓 ⟩ β c)
+                 → I ⊆ ↡ᴮ-subset (∐-of-directed-subset I δ)
+   Lemma-6-24-ii = ↡ᴮ-∐-inflation I
+
+   Lemma-6-24-ad : ((b c : B) → β b ⊑⟨ 𝓓 ⟩ β c → c ∈ I → b ∈ I)
+                 → ((b : B) → b ∈ I → ∃ c ꞉ B , c ∈ I × β b ≪⟨ 𝓓 ⟩ β c)
+                 → ↡ᴮ-subset (∐-of-directed-subset I δ) ＝ I
+   Lemma-6-24-ad = ∐-↡ᴮ-retract I
+
+  module _
+          (_≺_ : B → B → 𝓥 ̇)
+          (x : ⟨ 𝓓 ⟩)
+         where
+
+   Lemma-6-25-i : ((b c : B) → b ≺ c → β b ⊑⟨ 𝓓 ⟩ β c)
+                → (b c : B) → b ≺ c → c ∈ ↡ᴮ-subset x → b ∈ ↡ᴮ-subset x
+   Lemma-6-25-i = ↡ᴮ-lowerset-criterion _≺_ x
+
+   Lemma-6-25-ii : ((b c : B) → β b ≪⟨ 𝓓 ⟩ β c → b ≺ c)
+                 → (a b : B) → a ∈ ↡ᴮ-subset x → b ∈ ↡ᴮ-subset x
+                 → ∃ c ꞉ B , c ∈ ↡ᴮ-subset x × (a ≺ c) × (b ≺ c)
+   Lemma-6-25-ii = ↡ᴮ-semidirected-set-criterion _≺_ x
+
+  module _ where
+   open Idl-continuous 𝓓 β β-is-small-basis
+
+   Lemma-6-26 : abstract-basis
+   Lemma-6-26 = record
+                 { basis-carrier = B
+                 ; _≺_ = _≺_
+                 ; ≺-prop-valued = ≺-is-prop-valued
+                 ; ≺-trans = ≺-is-transitive
+                 ; INT₀ = ≺-INT₀
+                 ; INT₂ = ≺-INT₂
+                 }
+
+   Remark-6-27 : {b b' : B} → (b ≺ b') ≃ (β b ≪⟨ 𝓓 ⟩ β b')
+   Remark-6-27 = ≺-≃-≪
+
+   open Ideals-of-small-abstract-basis Lemma-6-26
+
+   Theorem-6-28 : 𝓓 ≃ᵈᶜᵖᵒ Idl-DCPO
+   Theorem-6-28 = Idl-≃
+
+  module _ where
+   open Idl-continuous-retract-of-algebraic 𝓓 β β-is-small-basis
+
+   Lemma-6-29 : reflexive-abstract-basis
+              × abstract-basis
+   Lemma-6-29 = rab , reflexive-abstract-basis-to-abstract-basis rab
+    where
+     rab = record
+            { basis-carrier = B
+            ; _≺_ = _⊑ᴮ_
+            ; ≺-prop-valued = ⊑ᴮ-is-prop-valued
+            ; ≺-trans = ⊑ᴮ-is-transitive
+            ; ≺-refl = ⊑ᴮ-is-reflexive
+            }
+
+   Remark-6-30 : {b b' : B} → (b ⊑ᴮ b') ≃ (β b ⊑⟨ 𝓓 ⟩ β b')
+   Remark-6-30 =  ⊑ᴮ-≃-⊑
+
+   Theorem-6-31 : embedding-projection-pair-between 𝓓 Idl-DCPO
+                × 𝓓 continuous-retract-of Idl-DCPO
+                × is-algebraic-dcpo Idl-DCPO
+                × has-specified-small-compact-basis Idl-DCPO
+   Theorem-6-31 = Idl-embedding-projection-pair ,
+                  Idl-continuous-retract ,
+                  Idl-is-algebraic ,
+                  Idl-has-specified-small-compact-basis (λ b → ⊑ᴮ-is-reflexive)
+
+  module _
+          (β-is-small-compact-basis : is-small-compact-basis 𝓓 β)
+         where
+
+   open Idl-continuous-retract-of-algebraic 𝓓 β
+         (compact-basis-is-basis 𝓓 β β-is-small-compact-basis)
+   open Idl-algebraic 𝓓 β β-is-small-compact-basis
+
+   Theorem-6-31-ad : 𝓓 ≃ᵈᶜᵖᵒ Idl-DCPO
+   Theorem-6-31-ad = Idl-≃
+
+ module _ where
+  open Ideals-of-small-abstract-basis
+
+  -- TODO: Merge into development
+  Corollary-6-32-i : (𝓓 : DCPO {𝓤} {𝓣})
+                    → has-specified-small-basis 𝓓
+                    ↔ (Σ ab ꞉ abstract-basis , (𝓓 ≃ᵈᶜᵖᵒ Idl-DCPO ab))
+  Corollary-6-32-i 𝓓 = I , II
+   where
+    I : has-specified-small-basis 𝓓
+      → Σ ab ꞉ abstract-basis , (𝓓 ≃ᵈᶜᵖᵒ Idl-DCPO ab)
+    I (B , β , β-is-small-basis) = Lemma-6-26 𝓓 β β-is-small-basis ,
+                                   Theorem-6-28 𝓓 β β-is-small-basis
+    II : (Σ ab ꞉ abstract-basis , (𝓓 ≃ᵈᶜᵖᵒ Idl-DCPO ab))
+       → has-specified-small-basis 𝓓
+    II (ab , iso) = small-basis-from-≃ᵈᶜᵖᵒ pe
+                     (Idl-DCPO ab) 𝓓
+                     (≃ᵈᶜᵖᵒ-inv 𝓓 (Idl-DCPO ab) iso)
+                     (Idl-has-specified-small-basis ab)
+
+  private
+   ρ = reflexive-abstract-basis-to-abstract-basis
+
+  Corollary-6-32-ii : (𝓓 : DCPO {𝓤} {𝓣})
+                     → has-specified-small-compact-basis 𝓓
+                     ↔ (Σ rab ꞉ reflexive-abstract-basis ,
+                              (𝓓 ≃ᵈᶜᵖᵒ Idl-DCPO (ρ rab)))
+  Corollary-6-32-ii 𝓓 = I , II
+   where
+    I : has-specified-small-compact-basis 𝓓
+      → Σ rab ꞉ reflexive-abstract-basis , (𝓓 ≃ᵈᶜᵖᵒ Idl-DCPO (ρ rab))
+    I (B , β , β-is-small-compact-basis) =
+     pr₁ (Lemma-6-29 𝓓 β β-sb) ,
+     Theorem-6-31-ad 𝓓 β β-sb β-is-small-compact-basis
+      where
+       β-sb = compact-basis-is-basis 𝓓 β β-is-small-compact-basis
+    II : (Σ rab ꞉ reflexive-abstract-basis , (𝓓 ≃ᵈᶜᵖᵒ Idl-DCPO (ρ rab)))
+       → has-specified-small-compact-basis 𝓓
+    II (rab , iso) =
+     small-compact-basis-from-≃ᵈᶜᵖᵒ pe
+      (Idl-DCPO (ρ rab)) 𝓓
+      (≃ᵈᶜᵖᵒ-inv 𝓓 (Idl-DCPO (ρ rab)) iso)
+      (Idl-has-specified-small-compact-basis (ρ rab) (λ b → ≺-refl))
+      where
+       open reflexive-abstract-basis rab
+
+  Corollary-6-32-iii : (𝓓 : DCPO {𝓤} {𝓣})
+                      → has-specified-small-basis 𝓓
+                      ↔ (Σ 𝓔 ꞉ DCPO {𝓥 ⁺} {𝓥} ,
+                               has-specified-small-compact-basis 𝓔
+                             × 𝓓 continuous-retract-of 𝓔)
+  Corollary-6-32-iii 𝓓 = I , II
+   where
+    I : has-specified-small-basis 𝓓
+      → Σ 𝓔 ꞉ DCPO {𝓥 ⁺} {𝓥} , has-specified-small-compact-basis 𝓔
+                             × 𝓓 continuous-retract-of 𝓔
+    I (B , β , β-sb) = Idl-DCPO ab ,
+                       pr₂ (pr₂ (pr₂ (Theorem-6-31 𝓓 β β-sb))) ,
+                       pr₁ (pr₂ (Theorem-6-31 𝓓 β β-sb))
+     where
+      ab : abstract-basis
+      ab = pr₂ (Lemma-6-29 𝓓 β β-sb)
+    II : (Σ 𝓔 ꞉ DCPO {𝓥 ⁺} {𝓥} , has-specified-small-compact-basis 𝓔
+                               × 𝓓 continuous-retract-of 𝓔)
+       → has-specified-small-basis 𝓓
+    II (𝓔 , (B , β , β-scb) , cr) =
+     B , r ∘ β ,
+     small-basis-from-continuous-retract pe 𝓓 𝓔 cr β
+                                         (compact-basis-is-basis 𝓔 β β-scb)
+      where
+       open _continuous-retract-of_ cr
+
+  Corollary-6-32-ad : (ab : abstract-basis)
+                    → type-of (Idl-DCPO ab) ＝ DCPO {𝓥 ⁺} {𝓥}
+  Corollary-6-32-ad ab = refl
 
 \end{code}
 

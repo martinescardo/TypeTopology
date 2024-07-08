@@ -147,6 +147,35 @@ record abstract-basis : 𝓥 ⁺ ̇  where
   INT₂ : {y₀ y₁ x : basis-carrier} → y₀ ≺ x → y₁ ≺ x
        → ∃ z ꞉ basis-carrier , y₀ ≺ z × y₁ ≺ z × z ≺ x
 
+record reflexive-abstract-basis : 𝓥 ⁺ ̇  where
+ field
+  basis-carrier : 𝓥 ̇
+  _≺_ : basis-carrier → basis-carrier → 𝓥 ̇
+  ≺-prop-valued : {x y : basis-carrier} → is-prop (x ≺ y)
+  ≺-trans : {x y z : basis-carrier} → x ≺ y → y ≺ z → x ≺ z
+  ≺-refl : {x : basis-carrier} → x ≺ x
+
+ INT₀ : (x : basis-carrier) → ∃ y ꞉ basis-carrier , y ≺ x
+ INT₀ = reflexivity-implies-INT₀ _≺_ ≺-refl
+
+ INT₂ : {y₀ y₁ x : basis-carrier} → y₀ ≺ x → y₁ ≺ x
+       → ∃ z ꞉ basis-carrier , y₀ ≺ z × y₁ ≺ z × z ≺ x
+ INT₂ = reflexivity-implies-INT₂ _≺_ ≺-refl
+
+reflexive-abstract-basis-to-abstract-basis : reflexive-abstract-basis
+                                           → abstract-basis
+reflexive-abstract-basis-to-abstract-basis rab =
+ record
+  { basis-carrier = basis-carrier
+  ; _≺_ = _≺_
+  ; ≺-prop-valued = ≺-prop-valued
+  ; ≺-trans = ≺-trans
+  ; INT₀ = INT₀
+  ; INT₂ = INT₂
+  }
+  where
+   open reflexive-abstract-basis rab
+
 module Ideals-of-small-abstract-basis
         (abs-basis : abstract-basis)
        where
