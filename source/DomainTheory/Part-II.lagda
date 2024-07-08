@@ -909,6 +909,8 @@ module _ (𝓥 : Universe) where
  open import DomainTheory.Basics.Miscelanea pt fe 𝓥
  open import DomainTheory.Basics.WayBelow pt fe 𝓥
  open import DomainTheory.BasesAndContinuity.Continuity pt fe 𝓥
+  renaming (structurally-continuous to continuity-data ;
+            structurally-algebraic to algebraicity-data)
  open import DomainTheory.BasesAndContinuity.Bases pt fe 𝓥
  open import DomainTheory.IdealCompletion.IdealCompletion pt fe pe 𝓥
  open import DomainTheory.IdealCompletion.Properties pt fe pe 𝓥
@@ -1100,6 +1102,79 @@ module _ (𝓥 : Universe) where
 Section 7.1
 
 \begin{code}
+
+ module setup
+         {𝓤 𝓣 : Universe}
+         {I : 𝓥 ̇ }
+         (_⊑_ : I → I → 𝓦 ̇ )
+         (⊑-refl : {i : I} → i ⊑ i)
+         (⊑-trans : {i j k : I} → i ⊑ j → j ⊑ k → i ⊑ k)
+         (⊑-prop-valued : (i j : I) → is-prop (i ⊑ j))
+         (I-inhabited : ∥ I ∥)
+         (I-semidirected : (i j : I) → ∃ k ꞉ I , i ⊑ k × j ⊑ k)
+         (𝓓 : I → DCPO {𝓤} {𝓣})
+         (ε : {i j : I} → i ⊑ j → ⟨ 𝓓 i ⟩ → ⟨ 𝓓 j ⟩)
+         (π : {i j : I} → i ⊑ j → ⟨ 𝓓 j ⟩ → ⟨ 𝓓 i ⟩)
+         (επ-deflation : {i j : I} (l : i ⊑ j) (x : ⟨ 𝓓 j ⟩)
+                       → ε l (π l x) ⊑⟨ 𝓓 j ⟩ x )
+         (ε-section-of-π : {i j : I} (l : i ⊑ j) → π l ∘ ε l ∼ id )
+         (ε-is-continuous : {i j : I} (l : i ⊑ j)
+                          → is-continuous (𝓓 i) (𝓓 j) (ε {i} {j} l))
+         (π-is-continuous : {i j : I} (l : i ⊑ j)
+                          → is-continuous (𝓓 j) (𝓓 i) (π {i} {j} l))
+         (ε-id : (i : I ) → ε (⊑-refl {i}) ∼ id)
+         (π-id : (i : I ) → π (⊑-refl {i}) ∼ id)
+         (ε-comp : {i j k : I} (l : i ⊑ j) (m : j ⊑ k)
+                 → ε m ∘ ε l ∼ ε (⊑-trans l m))
+         (π-comp : {i j k : I} (l : i ⊑ j) (m : j ⊑ k)
+                 → π l ∘ π m ∼ π (⊑-trans l m))
+       where
+
+  open import DomainTheory.BasesAndContinuity.IndCompletion pt fe 𝓥
+  open import DomainTheory.Bilimits.Directed pt fe 𝓥 𝓤 𝓣
+  open Diagram _⊑_ ⊑-refl ⊑-trans ⊑-prop-valued
+               I-inhabited I-semidirected
+               𝓓 ε π
+               επ-deflation ε-section-of-π
+               ε-is-continuous π-is-continuous
+               ε-id π-id ε-comp π-comp
+
+  module _
+          {J : I → 𝓥 ̇  }
+          (α : (i : I) → J i → ⟨ 𝓓 i ⟩)
+         where
+
+   open 𝓓∞-family J α
+   open Ind-completion
+
+   Lemma-7-1 : (δ : (i : I) → is-Directed (𝓓 i) (α i))
+               (σ : ⟨ 𝓓∞ ⟩)
+             → ((i : I) → _approximates_ (𝓓 i) (J i , α i , δ i) (⦅ σ ⦆ i))
+             → Σ δ∞ ꞉ is-Directed 𝓓∞ α∞ , _approximates_ 𝓓∞ (J∞ , α∞ , δ∞) σ
+   Lemma-7-1 δ σ αs-approx = δ∞ , eq , wb
+    where
+     δ∞ = α∞-is-directed-lemma σ δ
+           (λ i → approximates-to-∐-＝ (𝓓 i) (αs-approx i))
+           (λ i → approximates-to-≪ (𝓓 i) (αs-approx i))
+     eq = α∞-is-directed-sup-lemma σ δ
+           (λ i → approximates-to-∐-＝ (𝓓 i) (αs-approx i)) δ∞
+     wb = α∞-is-way-below σ (λ i → approximates-to-≪ (𝓓 i) (αs-approx i))
+
+   Lemma-7-2 : ((i : I) (j : J i) → is-compact (𝓓 i) (α i j))
+             → (j : J∞) → is-compact 𝓓∞ (α∞ j)
+   Lemma-7-2 = α∞-is-compact
+
+   Theorem-7-3 : (((i : I) → continuity-data (𝓓 i)) → continuity-data 𝓓∞)
+               × (((i : I) → algebraicity-data (𝓓 i)) → algebraicity-data 𝓓∞)
+   Theorem-7-3 = 𝓓∞-structurally-continuous ,
+                 𝓓∞-structurally-algebraic
+
+   Theorem-7-4 : (((i : I) → has-specified-small-basis (𝓓 i))
+                      → has-specified-small-basis 𝓓∞)
+               × (((i : I) → has-specified-small-compact-basis (𝓓 i))
+                      → has-specified-small-compact-basis 𝓓∞)
+   Theorem-7-4 = 𝓓∞-has-small-basis ,
+                 𝓓∞-has-small-compact-basis
 
 \end{code}
 
