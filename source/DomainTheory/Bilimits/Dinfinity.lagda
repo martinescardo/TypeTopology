@@ -221,6 +221,7 @@ open SequentialDiagram
       ε-section-of-π
       ε-is-continuous
       π-is-continuous
+     public
 
 π-exp-to-succ : (n : ℕ) → ⟨ 𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞ ⟩ → ⟨ 𝓓 (succ n) ⟩
 π-exp-to-succ n f = DCPO-∘₃ (𝓓 n) 𝓓∞ 𝓓∞ (𝓓 n) (ε∞' n) f (π∞' n)

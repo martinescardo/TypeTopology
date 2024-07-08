@@ -1270,4 +1270,61 @@ Section 7.2
   Theorem-7-12 = exponential-has-small-compact-basis
                   𝓓 𝓔 𝓔-is-sup-complete Bᴰ Bᴱ βᴰ βᴱ κᴰ κᴱ pe
 
+ module _
+         (𝓓 : DCPO{𝓤} {𝓣})
+         {B : 𝓥 ̇  } (β : B → ⟨ 𝓓 ⟩)
+         (β-is-small-basis : is-small-basis 𝓓 β)
+         (𝓓-is-sup-complete : is-sup-complete 𝓓)
+        where
+
+  open sup-complete-dcpo 𝓓 𝓓-is-sup-complete
+   renaming (directify to directification)
+
+  𝓓-has-finite-joins : has-finite-joins 𝓓
+  𝓓-has-finite-joins = sup-complete-dcpo-has-finite-joins 𝓓 𝓓-is-sup-complete
+
+  Definition-7-13 : 𝓥 ⊔ 𝓤 ̇
+  Definition-7-13 = basis-has-finite-joins
+                     𝓓 β β-is-small-basis 𝓓-has-finite-joins
+
+  Lemma-7-14 : Σ B' ꞉ 𝓥 ̇  , Σ β' ꞉ (B' → ⟨ 𝓓 ⟩) ,
+               Σ p ꞉ is-small-basis 𝓓 β' ,
+                   basis-has-finite-joins 𝓓 β' p 𝓓-has-finite-joins
+  Lemma-7-14 = refine-basis-to-have-finite-joins
+                𝓓 β β-is-small-basis 𝓓-has-finite-joins
+
+  Lemma-7-14-ad : pr₁ (pr₂ Lemma-7-14) ＝ directification β
+  Lemma-7-14-ad = refl
+
+ module _
+         (𝓓 : DCPO {𝓤} {𝓣})
+         {B : 𝓥 ̇ }
+         (β : B → ⟨ 𝓓 ⟩)
+         (β-is-small-basis : is-small-basis 𝓓 β)
+        where
+
+  open Idl-continuous-retract-of-algebraic 𝓓 β β-is-small-basis
+
+  Lemma-7-15 : (c : is-sup-complete 𝓓)
+             → basis-has-finite-joins 𝓓 β β-is-small-basis
+                                      (sup-complete-dcpo-has-finite-joins 𝓓 c)
+             → is-sup-complete Idl-DCPO
+  Lemma-7-15 = Idl-is-sup-complete-if-basis-has-finite-joins
+
+ Theorem-7-16 : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
+              → has-specified-small-basis 𝓓
+              → has-specified-small-basis 𝓔
+              → is-sup-complete 𝓔
+              → has-specified-small-basis (𝓓 ⟹ᵈᶜᵖᵒ 𝓔)
+ Theorem-7-16 𝓓 𝓔 (Bᴰ , βᴰ , βᴰ-sb) (Bᴱ , βᴱ , βᴱ-sb) =
+  exponential-has-specified-small-basis pe 𝓓 𝓔 βᴰ βᴱ βᴰ-sb βᴱ-sb
+
+open import DomainTheory.BasesAndContinuity.Bases pt fe 𝓤₀
+open import DomainTheory.BasesAndContinuity.Continuity pt fe 𝓤₀
+open import DomainTheory.Bilimits.Dinfinity pt fe pe
+
+Theorem-7-17 : has-specified-small-compact-basis 𝓓∞
+             × is-algebraic-dcpo 𝓓∞
+Theorem-7-17 = 𝓓∞-has-specified-small-compact-basis , 𝓓∞-is-algebraic-dcpo
+
 \end{code}

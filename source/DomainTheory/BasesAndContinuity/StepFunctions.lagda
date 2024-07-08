@@ -522,19 +522,19 @@ We now proceed with the proof as outlined above.
        κᴱ' : is-small-compact-basis 𝓔' βᴱ'
        κᴱ' = pr₂ (pr₂ small-compact-basisᴱ')
 
-  exponential-has-small-basis : has-specified-small-basis (𝓓 ⟹ᵈᶜᵖᵒ 𝓔)
-  exponential-has-small-basis = B , r ∘ β ,
-   small-basis-from-continuous-retract pe (𝓓 ⟹ᵈᶜᵖᵒ 𝓔) (𝓓' ⟹ᵈᶜᵖᵒ 𝓔')
-    exp-continuous-retract β (compact-basis-is-basis (𝓓' ⟹ᵈᶜᵖᵒ 𝓔') β κ)
-   where
-    open _continuous-retract-of_ exp-continuous-retract
-    exp-small-compact-basis : has-specified-small-compact-basis (𝓓' ⟹ᵈᶜᵖᵒ 𝓔')
-    exp-small-compact-basis = exp-has-small-compact-basis
-    B : 𝓥 ̇
-    B = pr₁ exp-has-small-compact-basis
-    β : B → DCPO[ 𝓓' , 𝓔' ]
-    β = pr₁ (pr₂ exp-has-small-compact-basis)
-    κ : is-small-compact-basis (𝓓' ⟹ᵈᶜᵖᵒ 𝓔') β
-    κ = pr₂ (pr₂ exp-has-small-compact-basis)
+ exponential-has-specified-small-basis : has-specified-small-basis (𝓓 ⟹ᵈᶜᵖᵒ 𝓔)
+ exponential-has-specified-small-basis = B , r ∘ β ,
+  small-basis-from-continuous-retract pe (𝓓 ⟹ᵈᶜᵖᵒ 𝓔) (𝓓' ⟹ᵈᶜᵖᵒ 𝓔')
+   exp-continuous-retract β (compact-basis-is-basis (𝓓' ⟹ᵈᶜᵖᵒ 𝓔') β κ)
+    where
+     open _continuous-retract-of_ exp-continuous-retract
+     exp-small-compact-basis : has-specified-small-compact-basis (𝓓' ⟹ᵈᶜᵖᵒ 𝓔')
+     exp-small-compact-basis = exp-has-small-compact-basis
+     B : 𝓥 ̇
+     B = pr₁ exp-has-small-compact-basis
+     β : B → DCPO[ 𝓓' , 𝓔' ]
+     β = pr₁ (pr₂ exp-has-small-compact-basis)
+     κ : is-small-compact-basis (𝓓' ⟹ᵈᶜᵖᵒ 𝓔') β
+     κ = pr₂ (pr₂ exp-has-small-compact-basis)
 
 \end{code}
