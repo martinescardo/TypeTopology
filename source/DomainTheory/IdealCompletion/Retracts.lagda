@@ -251,12 +251,20 @@ module Idl-continuous-retract-of-algebraic
  ⊑ᴮ-is-transitive u v = ⌜ ⊑ᴮ-≃-⊑ ⌝⁻¹
                          (transitivity 𝓓 _ _ _ (⌜ ⊑ᴮ-≃-⊑ ⌝ u) (⌜ ⊑ᴮ-≃-⊑ ⌝ v))
 
- open Ideals-of-small-abstract-basis {B} _⊑ᴮ_
-        ⊑ᴮ-is-prop-valued
-        (reflexivity-implies-INT₂ _⊑ᴮ_ ⊑ᴮ-is-reflexive)
-        (reflexivity-implies-INT₀ _⊑ᴮ_ ⊑ᴮ-is-reflexive)
-        ⊑ᴮ-is-transitive
-      public
+ ⊑ᴮ-reflexive-abstract-basis : reflexive-abstract-basis
+ ⊑ᴮ-reflexive-abstract-basis = record
+                                { basis-carrier = B
+                                ; _≺_ = _⊑ᴮ_
+                                ; ≺-prop-valued = ⊑ᴮ-is-prop-valued
+                                ; ≺-trans = ⊑ᴮ-is-transitive
+                                ; ≺-refl = ⊑ᴮ-is-reflexive
+                                }
+
+ ⊑ᴮ-abstract-basis : abstract-basis
+ ⊑ᴮ-abstract-basis = reflexive-abstract-basis-to-abstract-basis
+                      ⊑ᴮ-reflexive-abstract-basis
+
+ open Ideals-of-small-abstract-basis ⊑ᴮ-abstract-basis public
  open Idl-retract-common 𝓓 β β-is-small-basis public
  open Idl-mediating 𝓓 β ⌜ ⊑ᴮ-≃-⊑ ⌝ public
 
@@ -529,12 +537,17 @@ module Idl-continuous
       → (Σ c ꞉ B , (b₁ ≺ c) × (b₂ ≺ c) × (c ≺ b))
     h (c , u , v , w) = (c , ⌜ ≺-≃-≪ ⌝⁻¹ u , ⌜ ≺-≃-≪ ⌝⁻¹ v , ⌜ ≺-≃-≪ ⌝⁻¹ w)
 
- open Ideals-of-small-abstract-basis {B}  _≺_
-                                     ≺-is-prop-valued
-                                     ≺-INT₂
-                                     ≺-INT₀
-                                     ≺-is-transitive
+ ≪-abstract-basis : abstract-basis
+ ≪-abstract-basis = record
+                     { basis-carrier = B
+                     ; _≺_ = _≺_
+                     ; ≺-prop-valued = ≺-is-prop-valued
+                     ; ≺-trans = ≺-is-transitive
+                     ; INT₀ = ≺-INT₀
+                     ; INT₂ = ≺-INT₂
+                     }
 
+ open Ideals-of-small-abstract-basis ≪-abstract-basis
  open Idl-retract-common 𝓓 β β-is-small-basis
  open Idl-mediating 𝓓 β (≪-to-⊑ 𝓓 ∘ ⌜ ≺-≃-≪ ⌝)
 
@@ -624,5 +637,98 @@ module Idl-algebraic
        where
         condition : (b : B) → b ∈ᵢ I → ∃ c ꞉ B , c ∈ᵢ I × (β b ≪⟨ 𝓓 ⟩ β c)
         condition b b-in-I = ∣ b , b-in-I , basis-is-compact b ∣
+
+\end{code}
+
+Added 8 July 2024.
+
+We summarise the above in three logical characterisations.
+
+\begin{code}
+
+open Ideals-of-small-abstract-basis
+
+has-specified-small-basis-iff-to-ideal-completion :
+   (𝓓 : DCPO {𝓤} {𝓣})
+ → has-specified-small-basis 𝓓
+ ↔ (Σ ab ꞉ abstract-basis , (𝓓 ≃ᵈᶜᵖᵒ Idl-DCPO ab))
+has-specified-small-basis-iff-to-ideal-completion 𝓓 = I , II
+ where
+  open Idl-continuous
+  I : has-specified-small-basis 𝓓
+    → Σ ab ꞉ abstract-basis , (𝓓 ≃ᵈᶜᵖᵒ Idl-DCPO ab)
+  I (B , β , β-is-small-basis) = ≪-abstract-basis 𝓓 β β-is-small-basis ,
+                                 Idl-≃ 𝓓 β β-is-small-basis
+  II : (Σ ab ꞉ abstract-basis , (𝓓 ≃ᵈᶜᵖᵒ Idl-DCPO ab))
+     → has-specified-small-basis 𝓓
+  II (ab , iso) = small-basis-from-≃ᵈᶜᵖᵒ pe
+                   (Idl-DCPO ab) 𝓓
+                   (≃ᵈᶜᵖᵒ-inv 𝓓 (Idl-DCPO ab) iso)
+                   (Idl-has-specified-small-basis ab)
+
+
+private
+ ρ = reflexive-abstract-basis-to-abstract-basis
+
+has-specified-small-compact-basis-reflexive-ideal-completion :
+   (𝓓 : DCPO {𝓤} {𝓣})
+ → has-specified-small-compact-basis 𝓓
+ ↔ (Σ rab ꞉ reflexive-abstract-basis ,
+          (𝓓 ≃ᵈᶜᵖᵒ Idl-DCPO (ρ rab)))
+has-specified-small-compact-basis-reflexive-ideal-completion 𝓓 = I , II
+ where
+  open Idl-algebraic
+  open Idl-continuous-retract-of-algebraic
+       hiding (Idl-DCPO ; Idl-has-specified-small-compact-basis)
+
+  I : has-specified-small-compact-basis 𝓓
+    → Σ rab ꞉ reflexive-abstract-basis , (𝓓 ≃ᵈᶜᵖᵒ Idl-DCPO (ρ rab))
+  I (B , β , β-is-small-compact-basis) =
+   ⊑ᴮ-reflexive-abstract-basis 𝓓 β β-sb ,
+   Idl-≃ 𝓓 β β-is-small-compact-basis
+    where
+     β-sb = compact-basis-is-basis 𝓓 β β-is-small-compact-basis
+
+  II : (Σ rab ꞉ reflexive-abstract-basis , (𝓓 ≃ᵈᶜᵖᵒ Idl-DCPO (ρ rab)))
+     → has-specified-small-compact-basis 𝓓
+  II (rab , iso) =
+   small-compact-basis-from-≃ᵈᶜᵖᵒ pe
+    (Idl-DCPO (ρ rab)) 𝓓
+    (≃ᵈᶜᵖᵒ-inv 𝓓 (Idl-DCPO (ρ rab)) iso)
+    (Idl-has-specified-small-compact-basis (ρ rab) (λ b → ≺-refl))
+    where
+     open reflexive-abstract-basis rab
+
+has-specified-small-basis-iff-retract-of-dcpo-with-small-compact-basis :
+   (𝓓 : DCPO {𝓤} {𝓣})
+  → has-specified-small-basis 𝓓
+  ↔ (Σ 𝓔 ꞉ DCPO {𝓥 ⁺} {𝓥} , has-specified-small-compact-basis 𝓔
+                           × 𝓓 continuous-retract-of 𝓔)
+has-specified-small-basis-iff-retract-of-dcpo-with-small-compact-basis 𝓓 = I , II
+ where
+  open Idl-algebraic
+  open Idl-continuous-retract-of-algebraic
+       hiding (Idl-DCPO ; Idl-has-specified-small-compact-basis)
+
+  I : has-specified-small-basis 𝓓
+    → Σ 𝓔 ꞉ DCPO {𝓥 ⁺} {𝓥} , has-specified-small-compact-basis 𝓔
+                           × 𝓓 continuous-retract-of 𝓔
+  I (B , β , β-sb) = Idl-DCPO ab ,
+                     Idl-has-specified-small-compact-basis ab
+                      (λ b → ⊑ᴮ-is-reflexive 𝓓 β β-sb) ,
+                     Idl-continuous-retract 𝓓 β β-sb
+   where
+    ab : abstract-basis
+    ab = ⊑ᴮ-abstract-basis 𝓓 β β-sb
+
+  II : (Σ 𝓔 ꞉ DCPO {𝓥 ⁺} {𝓥} , has-specified-small-compact-basis 𝓔
+                             × 𝓓 continuous-retract-of 𝓔)
+     → has-specified-small-basis 𝓓
+  II (𝓔 , (B , β , β-scb) , cr) =
+   B , r ∘ β ,
+   small-basis-from-continuous-retract pe 𝓓 𝓔 cr β
+                                       (compact-basis-is-basis 𝓔 β β-scb)
+    where
+     open _continuous-retract-of_ cr
 
 \end{code}

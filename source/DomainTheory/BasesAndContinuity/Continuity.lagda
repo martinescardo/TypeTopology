@@ -506,3 +506,50 @@ module _
   ∥∥-functor structural-continuity-of-dcpo-preserved-by-continuous-retract
 
 \end{code}
+
+Added 8 July 2024.
+
+The purpose of the following construction is to show that structural continuity
+is not a property of a dcpo.
+
+\begin{code}
+
+structurally-continuous-+-construction :
+  (𝓓 : DCPO {𝓤} {𝓣})
+ → structurally-continuous 𝓓
+ → structurally-continuous 𝓓
+structurally-continuous-+-construction 𝓓 sc =
+ record
+  { index-of-approximating-family = λ x → I x + I x
+  ; approximating-family = [α,α]
+  ; approximating-family-is-directed = δ'
+  ; approximating-family-is-way-below = wb'
+  ; approximating-family-∐-＝ = eq'
+  }
+  where
+   open structurally-continuous sc
+         renaming (index-of-approximating-family to I ;
+                   approximating-family to α ;
+                   approximating-family-is-directed to δ ;
+                   approximating-family-is-way-below to wb ;
+                   approximating-family-∐-＝ to eq)
+   [α,α] : (x : ⟨ 𝓓 ⟩) → I x + I x → ⟨ 𝓓 ⟩
+   [α,α] x = cases (α x) (α x)
+
+   lemma₁ : {x : ⟨ 𝓓 ⟩} (i : I x) → ∃ j ꞉ I x + I x , α x i ⊑⟨ 𝓓 ⟩ [α,α] x j
+   lemma₁ {x} i = ∣ inl i , reflexivity 𝓓 (α x i) ∣
+   lemma₂ : {x : ⟨ 𝓓 ⟩} (j : I x + I x) → ∃ i ꞉ I x , [α,α] x j ⊑⟨ 𝓓 ⟩ α x i
+   lemma₂ {x} (inl i) = ∣ i , reflexivity 𝓓 (α x i) ∣
+   lemma₂ {x} (inr i) = ∣ i , reflexivity 𝓓 (α x i) ∣
+
+   δ' : (x : ⟨ 𝓓 ⟩) → is-Directed 𝓓 ([α,α] x)
+   δ' x = directed-if-bicofinal 𝓓 lemma₁ lemma₂ (δ x)
+
+   wb' : (x : ⟨ 𝓓 ⟩) → is-way-upperbound 𝓓 x ([α,α] x)
+   wb' x (inl i) = wb x i
+   wb' x (inr i) = wb x i
+
+   eq' : (x : ⟨ 𝓓 ⟩) → ∐ 𝓓 (δ' x) ＝ x
+   eq' x = ∐-＝-if-bicofinal 𝓓 lemma₂ lemma₁ (δ' x) (δ x) ∙ eq x
+
+\end{code}

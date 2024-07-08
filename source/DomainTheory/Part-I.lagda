@@ -780,13 +780,6 @@ Lemma-8-3 : (n : ℕ)
           → is-embedding-projection-pair (𝓓 n) (𝓓 (succ n)) (ε' n) (π' n)
 Lemma-8-3 n = ε-section-of-π n , επ-deflation n
 
-open SequentialDiagram
-      𝓓 ε π
-      επ-deflation
-      ε-section-of-π
-      ε-is-continuous
-      π-is-continuous
-
 Definition-8-4 : (n m : ℕ) → n ≤ m
                → DCPO[ 𝓓 n , 𝓓 m ]
                × DCPO[ 𝓓 m , 𝓓 n ]
