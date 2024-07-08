@@ -5,7 +5,7 @@ Updated 30 October 2023 (by Ayberk Tosun)
 Updated 6 November 2023 (by Ayberk Tosun)
 Updated 31 May 2024 (by Tom de Jong)
 Updated 23 June 2024 (by Tom de Jong)
-Updated 3 July 2024 (by Tom de Jong)
+Updated 3 and 8 July 2024 (by Tom de Jong)
 
 Index for the formalization of domain theory, briefly describing the contents of
 each directory, ordered almost¹ alphabetically by directory name.
@@ -190,6 +190,7 @@ import DomainTheory.Topology.ScottTopologyProperties -- (1)
 {- Index files for papers -}
 
 import DomainTheory.Part-I
+import DomainTheory.Part-II
 
 \end{code}
 
