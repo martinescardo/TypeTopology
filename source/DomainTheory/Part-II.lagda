@@ -277,8 +277,8 @@ Section 4.1
 
 
  open import DomainTheory.BasesAndContinuity.Continuity pt fe 𝓥
-  renaming (structurally-continuous to continuity-data ;
-            structurally-algebraic to algebraicity-data)
+      renaming (structurally-continuous to continuity-data ;
+                structurally-algebraic to algebraicity-data)
  open import DomainTheory.BasesAndContinuity.ContinuityDiscussion pt fe 𝓥
  open Ind-completion
 
@@ -621,8 +621,8 @@ Section 5.2
 
 \end{code}
 
-Example 5.21 is one of the few places where we use univalence (and set
-replacement, or equivalently, small set quotients).
+Example 5.21 and Section 5.3 are the only places where we use univalence and set
+replacement (or equivalently, small set quotients).
 
 \begin{code}
 
@@ -881,8 +881,8 @@ module _ (𝓥 : Universe) where
  open import DomainTheory.Basics.Miscelanea pt fe 𝓥
  open import DomainTheory.Basics.WayBelow pt fe 𝓥
  open import DomainTheory.BasesAndContinuity.Continuity pt fe 𝓥
-  renaming (structurally-continuous to continuity-data ;
-            structurally-algebraic to algebraicity-data)
+      renaming (structurally-continuous to continuity-data ;
+                structurally-algebraic to algebraicity-data)
  open import DomainTheory.BasesAndContinuity.Bases pt fe 𝓥
  open import DomainTheory.IdealCompletion.IdealCompletion pt fe pe 𝓥
  open import DomainTheory.IdealCompletion.Properties pt fe pe 𝓥
@@ -938,14 +938,7 @@ module _ (𝓥 : Universe) where
    open Idl-continuous 𝓓 β β-is-small-basis
 
    Lemma-6-26 : abstract-basis
-   Lemma-6-26 = record
-                 { basis-carrier = B
-                 ; _≺_ = _≺_
-                 ; ≺-prop-valued = ≺-is-prop-valued
-                 ; ≺-trans = ≺-is-transitive
-                 ; INT₀ = ≺-INT₀
-                 ; INT₂ = ≺-INT₂
-                 }
+   Lemma-6-26 = ≪-abstract-basis
 
    Remark-6-27 : {b b' : B} → (b ≺ b') ≃ (β b ≪⟨ 𝓓 ⟩ β b')
    Remark-6-27 = ≺-≃-≪
@@ -960,15 +953,7 @@ module _ (𝓥 : Universe) where
 
    Lemma-6-29 : reflexive-abstract-basis
               × abstract-basis
-   Lemma-6-29 = rab , reflexive-abstract-basis-to-abstract-basis rab
-    where
-     rab = record
-            { basis-carrier = B
-            ; _≺_ = _⊑ᴮ_
-            ; ≺-prop-valued = ⊑ᴮ-is-prop-valued
-            ; ≺-trans = ⊑ᴮ-is-transitive
-            ; ≺-refl = ⊑ᴮ-is-reflexive
-            }
+   Lemma-6-29 = ⊑ᴮ-reflexive-abstract-basis , ⊑ᴮ-abstract-basis
 
    Remark-6-30 : {b b' : B} → (b ⊑ᴮ b') ≃ (β b ⊑⟨ 𝓓 ⟩ β b')
    Remark-6-30 =  ⊑ᴮ-≃-⊑
@@ -982,92 +967,44 @@ module _ (𝓥 : Universe) where
                   Idl-is-algebraic ,
                   Idl-has-specified-small-compact-basis (λ b → ⊑ᴮ-is-reflexive)
 
-  module _
-          (β-is-small-compact-basis : is-small-compact-basis 𝓓 β)
-         where
+  module _ where
+   open Idl-continuous-retract-of-algebraic
+   open Idl-algebraic
 
-   open Idl-continuous-retract-of-algebraic 𝓓 β
-         (compact-basis-is-basis 𝓓 β β-is-small-compact-basis)
-   open Idl-algebraic 𝓓 β β-is-small-compact-basis
-
-   Theorem-6-31-ad : 𝓓 ≃ᵈᶜᵖᵒ Idl-DCPO
-   Theorem-6-31-ad = Idl-≃
+   Theorem-6-31-ad : (scb : is-small-compact-basis 𝓓 β)
+                   → 𝓓 ≃ᵈᶜᵖᵒ Idl-DCPO 𝓓 β (compact-basis-is-basis 𝓓 β scb)
+   Theorem-6-31-ad = Idl-≃ 𝓓 β
 
  module _ where
   open Ideals-of-small-abstract-basis
 
-  -- TODO: Merge into development
   Corollary-6-32-i : (𝓓 : DCPO {𝓤} {𝓣})
                     → has-specified-small-basis 𝓓
                     ↔ (Σ ab ꞉ abstract-basis , (𝓓 ≃ᵈᶜᵖᵒ Idl-DCPO ab))
-  Corollary-6-32-i 𝓓 = I , II
-   where
-    I : has-specified-small-basis 𝓓
-      → Σ ab ꞉ abstract-basis , (𝓓 ≃ᵈᶜᵖᵒ Idl-DCPO ab)
-    I (B , β , β-is-small-basis) = Lemma-6-26 𝓓 β β-is-small-basis ,
-                                   Theorem-6-28 𝓓 β β-is-small-basis
-    II : (Σ ab ꞉ abstract-basis , (𝓓 ≃ᵈᶜᵖᵒ Idl-DCPO ab))
-       → has-specified-small-basis 𝓓
-    II (ab , iso) = small-basis-from-≃ᵈᶜᵖᵒ pe
-                     (Idl-DCPO ab) 𝓓
-                     (≃ᵈᶜᵖᵒ-inv 𝓓 (Idl-DCPO ab) iso)
-                     (Idl-has-specified-small-basis ab)
+  Corollary-6-32-i = has-specified-small-basis-iff-to-ideal-completion
 
   private
+   ρ : reflexive-abstract-basis → abstract-basis
    ρ = reflexive-abstract-basis-to-abstract-basis
 
   Corollary-6-32-ii : (𝓓 : DCPO {𝓤} {𝓣})
                      → has-specified-small-compact-basis 𝓓
                      ↔ (Σ rab ꞉ reflexive-abstract-basis ,
                               (𝓓 ≃ᵈᶜᵖᵒ Idl-DCPO (ρ rab)))
-  Corollary-6-32-ii 𝓓 = I , II
-   where
-    I : has-specified-small-compact-basis 𝓓
-      → Σ rab ꞉ reflexive-abstract-basis , (𝓓 ≃ᵈᶜᵖᵒ Idl-DCPO (ρ rab))
-    I (B , β , β-is-small-compact-basis) =
-     pr₁ (Lemma-6-29 𝓓 β β-sb) ,
-     Theorem-6-31-ad 𝓓 β β-sb β-is-small-compact-basis
-      where
-       β-sb = compact-basis-is-basis 𝓓 β β-is-small-compact-basis
-    II : (Σ rab ꞉ reflexive-abstract-basis , (𝓓 ≃ᵈᶜᵖᵒ Idl-DCPO (ρ rab)))
-       → has-specified-small-compact-basis 𝓓
-    II (rab , iso) =
-     small-compact-basis-from-≃ᵈᶜᵖᵒ pe
-      (Idl-DCPO (ρ rab)) 𝓓
-      (≃ᵈᶜᵖᵒ-inv 𝓓 (Idl-DCPO (ρ rab)) iso)
-      (Idl-has-specified-small-compact-basis (ρ rab) (λ b → ≺-refl))
-      where
-       open reflexive-abstract-basis rab
+  Corollary-6-32-ii =
+   has-specified-small-compact-basis-reflexive-ideal-completion
 
   Corollary-6-32-iii : (𝓓 : DCPO {𝓤} {𝓣})
                       → has-specified-small-basis 𝓓
                       ↔ (Σ 𝓔 ꞉ DCPO {𝓥 ⁺} {𝓥} ,
                                has-specified-small-compact-basis 𝓔
                              × 𝓓 continuous-retract-of 𝓔)
-  Corollary-6-32-iii 𝓓 = I , II
-   where
-    I : has-specified-small-basis 𝓓
-      → Σ 𝓔 ꞉ DCPO {𝓥 ⁺} {𝓥} , has-specified-small-compact-basis 𝓔
-                             × 𝓓 continuous-retract-of 𝓔
-    I (B , β , β-sb) = Idl-DCPO ab ,
-                       pr₂ (pr₂ (pr₂ (Theorem-6-31 𝓓 β β-sb))) ,
-                       pr₁ (pr₂ (Theorem-6-31 𝓓 β β-sb))
-     where
-      ab : abstract-basis
-      ab = pr₂ (Lemma-6-29 𝓓 β β-sb)
-    II : (Σ 𝓔 ꞉ DCPO {𝓥 ⁺} {𝓥} , has-specified-small-compact-basis 𝓔
-                               × 𝓓 continuous-retract-of 𝓔)
-       → has-specified-small-basis 𝓓
-    II (𝓔 , (B , β , β-scb) , cr) =
-     B , r ∘ β ,
-     small-basis-from-continuous-retract pe 𝓓 𝓔 cr β
-                                         (compact-basis-is-basis 𝓔 β β-scb)
-      where
-       open _continuous-retract-of_ cr
+  Corollary-6-32-iii =
+   has-specified-small-basis-iff-retract-of-dcpo-with-small-compact-basis
 
   Corollary-6-32-ad : (ab : abstract-basis)
                     → type-of (Idl-DCPO ab) ＝ DCPO {𝓥 ⁺} {𝓥}
-  Corollary-6-32-ad ab = refl
+  Corollary-6-32-ad _ = refl
 
 \end{code}
 
@@ -1209,7 +1146,7 @@ Section 7.2
         where
 
   open sup-complete-dcpo 𝓓 𝓓-is-sup-complete
-   renaming (directify to directification)
+       renaming (directify to directification)
 
   Definition-7-10 : {𝓦 : Universe} {I : 𝓦 ̇}
                   → (α : I → ⟨ 𝓓 ⟩)
@@ -1250,7 +1187,7 @@ Section 7.2
         where
 
   open sup-complete-dcpo 𝓓 𝓓-is-sup-complete
-   renaming (directify to directification)
+       renaming (directify to directification)
 
   𝓓-has-finite-joins : has-finite-joins 𝓓
   𝓓-has-finite-joins = sup-complete-dcpo-has-finite-joins 𝓓 𝓓-is-sup-complete
