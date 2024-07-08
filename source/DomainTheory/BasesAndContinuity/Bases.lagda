@@ -370,6 +370,9 @@ module _
   ⊑ᴮ-to-⊑ᴮₛ : {b : B} {x : ⟨ 𝓓 ⟩} → (β b ⊑⟨ 𝓓 ⟩ x) → (b ⊑ᴮₛ x)
   ⊑ᴮ-to-⊑ᴮₛ {b} {x} = ⌜ ⊑ᴮₛ-≃-⊑ᴮ ⌝⁻¹
 
+  ⊑ᴮₛ-is-prop-valued : {b : B} {x : ⟨ 𝓓 ⟩} → is-prop (b ⊑ᴮₛ x)
+  ⊑ᴮₛ-is-prop-valued {b} {x} = equiv-to-prop ⊑ᴮₛ-≃-⊑ᴮ (prop-valuedness 𝓓 (β b) x)
+
   ↓ᴮₛ : ⟨ 𝓓 ⟩ → 𝓥 ̇
   ↓ᴮₛ x = Σ b ꞉ B , (b ⊑ᴮₛ x)
 
@@ -750,8 +753,7 @@ locally-small-exponential-criterion {𝓤} {𝓣} {𝓤'} {𝓣'} pe 𝓓 𝓔 �
         order-lemma : order-using-basis ≃ ptwise-order
         order-lemma =
          logically-equivalent-props-are-equivalent
-          (Π-is-prop fe (λ b → equiv-to-prop ⊑ₛ-≃-⊑
-                                (prop-valuedness 𝓔 (f (β b)) (g (β b)))))
+          (Π-is-prop fe (λ b → ⊑ₛ-is-prop-valued (f (β b)) (g (β b))))
           (Π-is-prop fe (λ x → prop-valuedness 𝓔 (f x) (g x)))
           ⦅⇒⦆ ⦅⇐⦆
           where

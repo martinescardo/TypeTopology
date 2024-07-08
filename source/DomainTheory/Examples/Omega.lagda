@@ -25,6 +25,7 @@ module DomainTheory.Examples.Omega
 
 open PropositionalTruncation pt
 
+open import MLTT.Plus-Properties
 open import NotionsOfDecidability.Decidable
 
 open import UF.Equiv
@@ -223,5 +224,51 @@ compact-iff-decidable P = I , II
     h : (P ＝ 𝟙Ω) + (P ＝ 𝟘Ω) → (P ＝ 𝟘Ω) + (P ＝ 𝟙Ω)
     h (inl x) = inr x
     h (inr x) = inl x
+
+\end{code}
+
+Added 8 July 2024.
+
+We can use the above to give an explicit counterexample to the claim that a
+structural continuity of a dcpo expresses a property.
+
+The idea is simply that if α : I → 𝓓 approximates an element x of a dcpo 𝓓, then
+so does [α,α] : I + I → 𝓓, but the index types of these families are not equal
+in general. Indeed they fail to be equal for the approximating family of 𝟘Ω that
+we constructed above.
+
+\begin{code}
+
+structural-continuity-is-not-prop : ¬ is-prop (structurally-continuous Ω-DCPO)
+structural-continuity-is-not-prop ν =
+ I+I-is-not-prop (equiv-to-prop (≃-sym equivalent-index-types) I-is-prop)
+  where
+   open structurally-continuous
+   open is-small-compact-basis κ-is-small-compact-basis
+   s₁ : structurally-continuous Ω-DCPO
+   s₁ = structurally-continuous-if-structurally-algebraic
+         Ω-DCPO
+         Ω-structurally-algebraic
+
+   I = index-of-approximating-family s₁ 𝟘Ω
+   i₀ : I
+   i₀ = inl ⋆ , 𝟘-elim
+   I-is-prop : is-prop I
+   I-is-prop (inl ⋆ , _) (inl ⋆ , _) =
+    to-subtype-＝ (λ b → ⊑ᴮₛ-is-prop-valued {b} {𝟘Ω})
+                  refl
+   I-is-prop (inl ⋆ , _) (inr ⋆ , b) = 𝟘-elim (b ⋆)
+   I-is-prop (inr ⋆ , b) _           = 𝟘-elim (b ⋆)
+
+   s₂ : structurally-continuous Ω-DCPO
+   s₂ = structurally-continuous-+-construction Ω-DCPO s₁
+
+   equivalent-index-types : I ≃ I + I
+   equivalent-index-types = idtoeq I (I + I)
+                                   (ap (λ - → index-of-approximating-family - 𝟘Ω)
+                                       (ν s₁ s₂))
+
+   I+I-is-not-prop : ¬ is-prop (I + I)
+   I+I-is-not-prop ρ = +disjoint (ρ (inl i₀) (inr i₀))
 
 \end{code}

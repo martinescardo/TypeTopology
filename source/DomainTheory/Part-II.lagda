@@ -35,7 +35,8 @@ module DomainTheory.Part-II
 open PropositionalTruncation pt
 
 open import MLTT.List
-open import MLTT.Spartan
+open import MLTT.Plus-Properties
+open import MLTT.Spartan hiding (J)
 
 open import UF.Base
 open import UF.DiscreteAndSeparated
@@ -279,51 +280,32 @@ Section 4.1
   renaming (structurally-continuous to continuity-data ;
             structurally-algebraic to algebraicity-data)
  open import DomainTheory.BasesAndContinuity.ContinuityDiscussion pt fe 𝓥
+ open Ind-completion
 
  module _
          (𝓓 : DCPO {𝓤} {𝓣})
         where
-
-  open Ind-completion 𝓓
 
   Definition-4-1 : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
   Definition-4-1 = continuity-data 𝓓
 
-  Proposition-4-2 : ∐-map-has-specified-left-adjoint ≃ continuity-data 𝓓
+  Proposition-4-2 : ∐-map-has-specified-left-adjoint 𝓓 ≃ continuity-data 𝓓
   Proposition-4-2 = specified-left-adjoint-structurally-continuous-≃ 𝓓
 
- -- TODO
- Remark-4-3 : Σ 𝓔 ꞉ DCPO {𝓤₁} {𝓤₁} , ¬ is-prop (continuity-data 𝓔)
- Remark-4-3 = {!!}
- {- s = s' , h
+ Remark-4-3 : Σ 𝓔 ꞉ DCPO {𝓥 ⁺} {𝓥} ,
+                    ¬ is-prop (continuity-data 𝓔)
+                  × ¬ is-prop (∐-map-has-specified-left-adjoint 𝓔)
+ Remark-4-3 = Ω-DCPO ,
+              structural-continuity-is-not-prop ,
+              contrapositive
+               (equiv-to-prop (≃-sym (Proposition-4-2 Ω-DCPO)))
+               structural-continuity-is-not-prop
   where
-   open structurally-continuous s
-   I = index-of-approximating-family
-   α = approximating-family
-   s' : continuity-data 𝓓
-   s' = record
-         { index-of-approximating-family = λ x → I x + I x
-         ; approximating-family = λ x → cases (α x) (α x)
-         ; approximating-family-is-directed = {!!}
-         ; approximating-family-is-way-below = {!!}
-         ; approximating-family-∐-＝ = {!!}
-         }
-   h : s ≠ s'
-   h e = {!!}
-    where
-     baz : structurally-continuous-to-Σ 𝓓 s ＝
-             structurally-continuous-to-Σ 𝓓 s'
-     baz = ap (structurally-continuous-to-Σ 𝓓) e
-     bazz = happly baz
-     foo : (x : ⟨ 𝓓 ⟩) → I x ＝ I x + I x
-     foo x = ap pr₁ (happly baz x)
- -}
+   open import DomainTheory.Examples.Omega pt fe pe 𝓥
 
  module _
          (𝓓 : DCPO {𝓤} {𝓣})
         where
-
-  open Ind-completion 𝓓
 
   Definition-4-4 : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
   Definition-4-4 = is-continuous-dcpo 𝓓
@@ -335,17 +317,8 @@ Section 4.1
           (c : continuity-data 𝓓)
          where
 
-   open continuity-data c
-
-\end{code}
-
-We introduce the following abbrevations for readability and to match the paper.
-
-\begin{code}
-
-   private
-    I = index-of-approximating-family
-    α = approximating-family
+   open continuity-data c renaming (index-of-approximating-family to I ;
+                                    approximating-family to α)
 
    Lemma-4-6 : (x y : ⟨ 𝓓 ⟩)
              → (x ⊑⟨ 𝓓 ⟩ y ↔ ((i : I x) → α x i ⊑⟨ 𝓓 ⟩ y))
@@ -398,7 +371,6 @@ Section 4.2
          (𝓓 : DCPO {𝓤} {𝓣})
         where
 
-  open Ind-completion 𝓓
   open Ind-completion-poset-reflection pe 𝓓
 
   Definition-4-13 : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
@@ -408,14 +380,14 @@ Section 4.2
                    ≃ is-pseudocontinuous-dcpo 𝓓
   Proposition-4-14 = specified-left-adjoint-pseudo-continuous-≃ pe 𝓓
 
-  Table-1 : (continuity-data 𝓓 ≃ ∐-map-has-specified-left-adjoint)
-          × (Σ 𝓔 ꞉ DCPO {𝓤₁} {𝓤₁} , ¬ is-prop (continuity-data 𝓔))
+  Table-1 : (continuity-data 𝓓 ≃ ∐-map-has-specified-left-adjoint 𝓓)
+          × (Σ 𝓔 ꞉ DCPO {𝓥 ⁺} {𝓥} , ¬ is-prop (continuity-data 𝓔))
           × (is-continuous-dcpo 𝓓 ≃ ∐-map-has-unspecified-left-adjoint 𝓓)
           × is-prop (is-continuous-dcpo 𝓓)
           × (is-pseudocontinuous-dcpo 𝓓 ≃ ∐-map/-has-specified-left-adjoint)
           × is-prop (is-pseudocontinuous-dcpo 𝓓)
   Table-1 = ≃-sym (specified-left-adjoint-structurally-continuous-≃ 𝓓) ,
-            Remark-4-3 ,
+            (pr₁ (Remark-4-3) , pr₁ (pr₂ (Remark-4-3))) ,
             ≃-sym (is-continuous-dcpo-iff-∐-map-has-unspecified-left-adjoint 𝓓) ,
             being-continuous-dcpo-is-prop 𝓓 ,
             ≃-sym (specified-left-adjoint-pseudo-continuous-≃ pe 𝓓) ,
