@@ -85,11 +85,15 @@ module _
  K : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
  K = Σ x ꞉ ⟨ 𝓓 ⟩ , is-compact 𝓓 x
 
- ι : K → ⟨ 𝓓 ⟩
- ι = pr₁
+ K-inclusion : K → ⟨ 𝓓 ⟩
+ K-inclusion = pr₁
 
- ι-is-compact : (c : K) → is-compact 𝓓 (ι c)
- ι-is-compact = pr₂
+ private
+  ι : K → ⟨ 𝓓 ⟩
+  ι = pr₁
+
+ K-inclusion-is-compact : (c : K) → is-compact 𝓓 (ι c)
+ K-inclusion-is-compact = pr₂
 
  ↓ᴷ : ⟨ 𝓓 ⟩ → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
  ↓ᴷ x = Σ k ꞉ K , ι k ⊑⟨ 𝓓 ⟩ x
@@ -297,8 +301,12 @@ the equivalence Kₛ ≃ K, to produce a small compact basis.
   Kₛ : 𝓥 ̇
   Kₛ = resized K K-is-small
 
-  ιₛ : Kₛ → ⟨ 𝓓 ⟩
-  ιₛ = ι ∘ ⌜ resizing-condition K-is-small ⌝
+  Kₛ-inclusion : Kₛ → ⟨ 𝓓 ⟩
+  Kₛ-inclusion = ι ∘ ⌜ resizing-condition K-is-small ⌝
+
+  private
+   ιₛ : Kₛ → ⟨ 𝓓 ⟩
+   ιₛ = Kₛ-inclusion
 
   ↓-resizing : (x : ⟨ 𝓓 ⟩) → ↓ᴷ x ≃ ↓ᴮ 𝓓 ιₛ x
   ↓-resizing x =
@@ -311,10 +319,10 @@ the equivalence Kₛ ≃ K, to produce a small compact basis.
                                   (↓ᴷ-inclusion x)
                                   (↓ᴷ-is-directed is-alg x)
 
-  ιₛ-is-small-compact-basis : is-small-compact-basis 𝓓 ιₛ
-  ιₛ-is-small-compact-basis =
+  Kₛ-is-small-compact-basis : is-small-compact-basis 𝓓 ιₛ
+  Kₛ-is-small-compact-basis =
    record
-    { basis-is-compact = λ k → ι-is-compact (⌜ resizing-condition K-is-small ⌝ k)
+    { basis-is-compact = λ k → K-inclusion-is-compact (⌜ resizing-condition K-is-small ⌝ k)
     ; ⊑ᴮ-is-small = λ x k → ι-⊑-is-small x (⌜ resizing-condition K-is-small ⌝ k)
     ; ↓ᴮ-is-directed = ↓ᴷₛ-is-directed
     ; ↓ᴮ-is-sup = λ x → reindexed-family-sup 𝓓 (↓-resizing x)
@@ -338,7 +346,8 @@ module _
  specified-small-compact-basis-has-split-support :
   has-split-support (has-specified-small-compact-basis 𝓓)
  specified-small-compact-basis-has-split-support uscb =
-  Kₛ 𝓓 ua sr uscb , ιₛ 𝓓 ua sr uscb , ιₛ-is-small-compact-basis 𝓓 ua sr uscb
+  Kₛ 𝓓 ua sr uscb , Kₛ-inclusion 𝓓 ua sr uscb ,
+  Kₛ-is-small-compact-basis 𝓓 ua sr uscb
 
 \end{code}
 
