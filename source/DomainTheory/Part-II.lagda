@@ -445,18 +445,13 @@ Section 5
  Lemma-5-3 𝓓 = structurally-continuous-if-specified-small-basis 𝓓 ,
                is-continuous-dcpo-if-unspecified-small-basis 𝓓
 
- module _
-         (𝓓 : DCPO {𝓤} {𝓣})
-         {B : 𝓥 ̇  }
-         (β : B → ⟨ 𝓓 ⟩)
-         (β-is-small-basis : is-small-basis 𝓓 β)
-        where
-
-  open is-small-basis β-is-small-basis
-
-  Lemma-5-4 : {x y : ⟨ 𝓓 ⟩}
-            → x ⊑⟨ 𝓓 ⟩ y ≃ ((b : B) → β b ≪⟨ 𝓓 ⟩ x → β b ≪⟨ 𝓓 ⟩ y)
-  Lemma-5-4 = ⊑-in-terms-of-≪ᴮ 𝓓 β β-is-small-basis
+ Lemma-5-4 : (𝓓 : DCPO {𝓤} {𝓣})
+             {B : 𝓥 ̇  }
+             (β : B → ⟨ 𝓓 ⟩)
+           → is-small-basis 𝓓 β
+           → {x y : ⟨ 𝓓 ⟩}
+           → x ⊑⟨ 𝓓 ⟩ y ≃ ((b : B) → β b ≪⟨ 𝓓 ⟩ x → β b ≪⟨ 𝓓 ⟩ y)
+ Lemma-5-4 𝓓 β β-sb = ⊑-in-terms-of-≪ᴮ 𝓓 β β-sb
 
  Proposition-5-5 : (𝓓 : DCPO {𝓤} {𝓣})
                  → has-unspecified-small-basis 𝓓
@@ -477,8 +472,6 @@ Section 5
          (β : B → ⟨ 𝓓 ⟩)
          (β-is-small-basis : is-small-basis 𝓓 β)
         where
-
-  open is-small-basis β-is-small-basis
 
   Lemma-5-6 : (x : ⟨ 𝓓 ⟩) → ∃ b ꞉ B , β b ≪⟨ 𝓓 ⟩ x
   Lemma-5-6 = ≪-nullary-interpolation-basis 𝓓 β β-is-small-basis
@@ -581,15 +574,19 @@ Section 5.2
 \begin{code}
 
  module _ where
+
   open import DomainTheory.Examples.Omega pt fe pe 𝓥
+
   Example-5-17 : is-small-compact-basis Ω-DCPO κ
                × is-algebraic-dcpo Ω-DCPO
   Example-5-17 = κ-is-small-compact-basis , Ω-is-algebraic-dcpo
 
  module _ where
+
   open import Lifting.Construction 𝓥 renaming (⊥ to ⊥𝓛)
   open import DomainTheory.Lifting.LiftingSet pt fe 𝓥 pe
   open import DomainTheory.Lifting.LiftingSetAlgebraic pt pe fe 𝓥
+
   Example-5-18 : {X : 𝓥 ̇  } (X-set : is-set X)
                → is-small-compact-basis (𝓛-DCPO X-set) (κ X-set)
                × is-algebraic-dcpo (𝓛-DCPO X-set)
@@ -603,6 +600,7 @@ Section 5.2
 
   open import DomainTheory.Examples.Powerset pt fe pe X-set
   open canonical-map-from-lists-to-subsets X-set renaming (κ to β)
+
   Example-5-19 : is-small-compact-basis 𝓟-DCPO (canonical-map-from-lists-to-subsets.κ X-set)
                × is-algebraic-dcpo 𝓟-DCPO
   Example-5-19 = κ-is-small-compact-basis , 𝓟-is-algebraic-dcpo
@@ -949,6 +947,7 @@ module _ (𝓥 : Universe) where
    Theorem-6-28 = Idl-≃
 
   module _ where
+
    open Idl-continuous-retract-of-algebraic 𝓓 β β-is-small-basis
 
    Lemma-6-29 : reflexive-abstract-basis
@@ -968,6 +967,7 @@ module _ (𝓥 : Universe) where
                   Idl-has-specified-small-compact-basis (λ b → ⊑ᴮ-is-reflexive)
 
   module _ where
+
    open Idl-continuous-retract-of-algebraic
    open Idl-algebraic
 
@@ -976,6 +976,7 @@ module _ (𝓥 : Universe) where
    Theorem-6-31-ad = Idl-≃ 𝓓 β
 
  module _ where
+
   open Ideals-of-small-abstract-basis
 
   Corollary-6-32-i : (𝓓 : DCPO {𝓤} {𝓣})
