@@ -1182,4 +1182,92 @@ Section 7.2
 
 \begin{code}
 
+ open import DomainTheory.Basics.Pointed pt fe 𝓥
+ open import DomainTheory.Basics.Exponential pt fe 𝓥
+ open import DomainTheory.Basics.SupComplete pt fe 𝓥
+ open import DomainTheory.BasesAndContinuity.StepFunctions pt fe 𝓥
+
+ module _
+         (𝓓 : DCPO {𝓤} {𝓣})
+         (𝓔 : DCPO⊥ {𝓤'} {𝓣'})
+         (𝓓-is-locally-small : is-locally-small 𝓓)
+        where
+
+  open single-step-function-def 𝓓 𝓔 𝓓-is-locally-small
+
+  Definition-7-5 : ⟨ 𝓓 ⟩ → ⟪ 𝓔 ⟫ → ⟨ 𝓓 ⟩ → ⟪ 𝓔 ⟫
+  Definition-7-5 = ⦅_⇒_⦆
+
+  Lemma-7-6 : (d : ⟨ 𝓓 ⟩) → is-compact 𝓓 d
+            → (e : ⟪ 𝓔 ⟫) → is-continuous 𝓓 (𝓔 ⁻) ⦅ d ⇒ e ⦆
+  Lemma-7-6 d κ e = single-step-function-is-continuous d e κ
+
+  Lemma-7-7 : (f : DCPO[ 𝓓 , 𝓔 ⁻ ]) (d : ⟨ 𝓓 ⟩) (e : ⟪ 𝓔 ⟫)
+            → (κ : is-compact 𝓓 d)
+            → ⦅ d ⇒ e ⦆[ κ ] ⊑⟨ 𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻ ) ⟩ f
+            ↔ e ⊑⟨ 𝓔 ⁻ ⟩ [ 𝓓 , 𝓔 ⁻ ]⟨ f ⟩ d
+  Lemma-7-7 f d e κ = below-single-step-function-criterion d e κ f
+
+  Lemma-7-8 : (d : ⟨ 𝓓 ⟩) (e : ⟪ 𝓔 ⟫)
+            → (κ : is-compact 𝓓 d)
+            → is-compact (𝓔 ⁻) e
+            → is-compact (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻)) ⦅ d ⇒ e ⦆[ κ ]
+  Lemma-7-8 = single-step-function-is-compact
+
+  module _
+          (Bᴰ Bᴱ : 𝓥 ̇ )
+          (βᴰ : Bᴰ → ⟨ 𝓓 ⟩)
+          (βᴱ : Bᴱ → ⟪ 𝓔 ⟫)
+          (κᴰ : is-small-compact-basis 𝓓     βᴰ)
+          (κᴱ : is-small-compact-basis (𝓔 ⁻) βᴱ)
+          (𝓔-is-sup-complete : is-sup-complete (𝓔 ⁻))
+         where
+
+   open single-step-functions-bases Bᴰ Bᴱ βᴰ βᴱ κᴰ κᴱ
+   open single-step-functions-into-sup-complete-dcpo 𝓔-is-sup-complete
+
+   Lemma-7-9 : (f : DCPO[ 𝓓 , 𝓔 ⁻ ])
+             → is-sup (underlying-order (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻))) f
+                (single-step-functions-below-function f)
+   Lemma-7-9 = single-step-functions-below-function-sup
+
+ module _
+         (𝓓 : DCPO {𝓤} {𝓣})
+         (𝓓-is-sup-complete : is-sup-complete 𝓓)
+        where
+
+  open sup-complete-dcpo 𝓓 𝓓-is-sup-complete
+   renaming (directify to directification)
+
+  Definition-7-10 : {𝓦 : Universe} {I : 𝓦 ̇}
+                  → (α : I → ⟨ 𝓓 ⟩)
+                  → List I → ⟨ 𝓓 ⟩
+  Definition-7-10 = directification
+
+  Lemma-7-11 : {I : 𝓦 ̇  } (α : I → ⟨ 𝓓 ⟩)
+             → ((i : I) → is-compact 𝓓 (α i))
+             → (l : List I) → is-compact 𝓓 (directification α l)
+  Lemma-7-11 = directify-is-compact
+
+ module _
+         (𝓓 : DCPO {𝓤} {𝓣})
+         (𝓔 : DCPO⊥ {𝓤'} {𝓣'})
+         (𝓔-is-sup-complete : is-sup-complete (𝓔 ⁻))
+         (Bᴰ Bᴱ : 𝓥 ̇ )
+         (βᴰ : Bᴰ → ⟨ 𝓓 ⟩)
+         (βᴱ : Bᴱ → ⟪ 𝓔 ⟫)
+         (κᴰ : is-small-compact-basis 𝓓     βᴰ)
+         (κᴱ : is-small-compact-basis (𝓔 ⁻) βᴱ)
+        where
+
+  open sup-complete-dcpo (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻))
+                         (exponential-is-sup-complete 𝓓 (𝓔 ⁻) 𝓔-is-sup-complete)
+  open single-step-function-def 𝓓 𝓔 (locally-small-if-small-compact-basis 𝓓 βᴰ κᴰ)
+  open single-step-functions-bases Bᴰ Bᴱ βᴰ βᴱ κᴰ κᴱ
+
+  Theorem-7-12 : is-small-compact-basis (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻))
+                                        (directify single-step-functions)
+  Theorem-7-12 = exponential-has-small-compact-basis
+                  𝓓 𝓔 𝓔-is-sup-complete Bᴰ Bᴱ βᴰ βᴱ κᴰ κᴱ pe
+
 \end{code}
