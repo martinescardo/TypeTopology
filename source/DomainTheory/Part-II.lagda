@@ -49,7 +49,7 @@ open import UF.Powerset
 open import UF.Sets
 open import UF.Size hiding (is-locally-small ; is-small)
 open import UF.Subsingletons-FunExt
-open import UF.SubtypeClassifier renaming (⊥ to 𝟘Ω ; ⊤ to 𝟙Ω)
+open import UF.SubtypeClassifier renaming (⊥ to ⊥Ω ; ⊤ to ⊤Ω)
 open import UF.Univalence
 open import UF.UA-FunExt
 
@@ -96,7 +96,7 @@ module _ (𝓥 : Universe) where
  module _ where
   open import DomainTheory.Examples.Omega pt fe pe 𝓥 hiding (κ)
   Example-2-5 : (P : Ω 𝓥)
-              → (is-compact Ω-DCPO P ↔ (P ＝ 𝟘Ω) + (P ＝ 𝟙Ω))
+              → (is-compact Ω-DCPO P ↔ (P ＝ ⊥Ω) + (P ＝ ⊤Ω))
               × (is-compact Ω-DCPO P ↔ is-decidable (P holds))
   Example-2-5 P = compact-iff-empty-or-unit P ,
                   compact-iff-decidable P
@@ -275,10 +275,7 @@ Section 4.1
 
 \begin{code}
 
-
  open import DomainTheory.BasesAndContinuity.Continuity pt fe 𝓥
-      renaming (structurally-continuous to continuity-data ;
-                structurally-algebraic to algebraicity-data)
  open import DomainTheory.BasesAndContinuity.ContinuityDiscussion pt fe 𝓥
  open Ind-completion
 
@@ -879,8 +876,6 @@ module _ (𝓥 : Universe) where
  open import DomainTheory.Basics.Miscelanea pt fe 𝓥
  open import DomainTheory.Basics.WayBelow pt fe 𝓥
  open import DomainTheory.BasesAndContinuity.Continuity pt fe 𝓥
-      renaming (structurally-continuous to continuity-data ;
-                structurally-algebraic to algebraicity-data)
  open import DomainTheory.BasesAndContinuity.Bases pt fe 𝓥
  open import DomainTheory.IdealCompletion.IdealCompletion pt fe pe 𝓥
  open import DomainTheory.IdealCompletion.Properties pt fe pe 𝓥

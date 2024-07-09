@@ -40,8 +40,8 @@ open import DomainTheory.BasesAndContinuity.IndCompletion pt fe 𝓥
 \end{code}
 
 We first define an untruncated, non-propositional, version of continuity for
-dcpos, which we call structural continuity. The notion of a continuous dcpo will
-then be given by truncating the type expressing its structural continuity.
+dcpos, which we call continuity data. The notion of a continuous dcpo will
+then be given by truncating the type of continuity data.
 
 The motivation for our definition of continuity is discussed in
 ContinuityDiscussion.lagda.
@@ -51,7 +51,7 @@ having to add them as boilerplate.
 
 \begin{code}
 
-record structurally-continuous (𝓓 : DCPO {𝓤} {𝓣}) : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇  where
+record continuity-data  (𝓓 : DCPO {𝓤} {𝓣}) : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇  where
  field
   index-of-approximating-family : ⟨ 𝓓 ⟩ → 𝓥 ̇
   approximating-family : (x : ⟨ 𝓓 ⟩)
@@ -72,6 +72,27 @@ record structurally-continuous (𝓓 : DCPO {𝓤} {𝓣}) : 𝓥 ⁺ ⊔ 𝓤 �
                           → x ⊑⟨ 𝓓 ⟩ ∐ 𝓓 (approximating-family-is-directed x)
  approximating-family-∐-⊒ x = ＝-to-⊒ 𝓓 (approximating-family-∐-＝ x)
 
+\end{code}
+
+NB. We previously used the terminology "structural continuity" instead of
+"continuity data".
+
+We now prefer the latter because the word "structure" suggests that we are
+interested in preserving this data, but we are not. (E.g., preserving this data
+would mean preserving the way-below relation which Scott continuous functions
+rarely do, ruling out constant functions with non-compact values for example.)
+We only want to stress that we are not dealing with a property and the word
+"data" is better for this.
+
+At the moment the code and its comments still use the old terminology, so for
+now we have following aliases, although in the future we will likely update the
+terminology throughout the development.
+
+\begin{code}
+
+module structurally-continuous = continuity-data
+structurally-continuous = continuity-data
+
 is-continuous-dcpo : DCPO {𝓤} {𝓣} → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
 is-continuous-dcpo 𝓓 = ∥ structurally-continuous 𝓓 ∥
 
@@ -81,12 +102,12 @@ being-continuous-dcpo-is-prop 𝓓 = ∥∥-is-prop
 
 \end{code}
 
-Similarly, we define when a dcpo is (structurally) algebraic where the
+Similarly, we define when a dcpo has algebraicity data where the
 approximating family is required to consist of compact elements.
 
 \begin{code}
 
-record structurally-algebraic (𝓓 : DCPO {𝓤} {𝓣}) : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇  where
+record algebraicity-data (𝓓 : DCPO {𝓤} {𝓣}) : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇  where
  field
   index-of-compact-family : ⟨ 𝓓 ⟩ → 𝓥 ̇
   compact-family : (x : ⟨ 𝓓 ⟩) → (index-of-compact-family x) → ⟨ 𝓓 ⟩
@@ -105,6 +126,21 @@ record structurally-algebraic (𝓓 : DCPO {𝓤} {𝓣}) : 𝓥 ⁺ ⊔ 𝓤 �
    where
     ⦅1⦆ = ∐-is-upperbound 𝓓 (compact-family-is-directed x) i
     ⦅2⦆ = ＝-to-⊑ 𝓓 (compact-family-∐-＝ x)
+
+\end{code}
+
+NB. We previously used the terminology "structural algebraicity" instead of
+"algebraicity data". Again, we now prefer the latter for the reasons explained
+above in the other comment on terminology.
+
+At the moment the code and its comments still use the old terminology, so for
+now we have following aliases, although in the future we will likely update the
+terminology throughout the development.
+
+\begin{code}
+
+module structurally-algebraic = algebraicity-data
+structurally-algebraic = algebraicity-data
 
 is-algebraic-dcpo : (𝓓 : DCPO {𝓤} {𝓣}) → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
 is-algebraic-dcpo 𝓓 = ∥ structurally-algebraic 𝓓 ∥
