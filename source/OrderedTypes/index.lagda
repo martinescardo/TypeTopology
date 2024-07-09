@@ -17,5 +17,6 @@ import OrderedTypes.sigma-sup-lattice               -- by Martin Escardo
 import OrderedTypes.SupLattice                      -- by Ian Ray
 import OrderedTypes.SupLattice-SmallBasis           -- by Ian Ray
 import OrderedTypes.TwoElementPoset                 -- by Ian Ray
+import OrderedTypes.ZornsLemma                      -- by Kelton OBrien
 
 \end{code}

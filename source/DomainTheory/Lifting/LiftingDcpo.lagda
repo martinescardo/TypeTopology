@@ -27,6 +27,7 @@ module DomainTheory.Lifting.LiftingDcpo
 open PropositionalTruncation pt
 
 open import UF.Equiv
+open import UF.EquivalenceExamples
 open import UF.ImageAndSurjection pt
 open import UF.Sets
 open import UF.Subsingletons-FunExt
@@ -169,6 +170,21 @@ module freely-add-⊥
  𝓛-DCPO⊥ : DCPO⊥ {𝓥 ⁺ ⊔ 𝓤} {𝓥 ⊔ 𝓣}
  𝓛-DCPO⊥ = (𝓛-DCPO , (𝟘 , 𝟘-elim , 𝟘-is-prop)
                    , (λ l → 𝟘-elim , 𝟘-induction))
+
+\end{code}
+
+Added 3 July 2024 (but known much earlier of course).
+
+\begin{code}
+
+ 𝓛-DCPO-is-locally-small : is-locally-small 𝓓 → is-locally-small 𝓛-DCPO
+ 𝓛-DCPO-is-locally-small ls =
+  record { _⊑ₛ_ = _≼_ ;
+           ⊑ₛ-≃-⊑ = Σ-cong (λ f → Π-cong fe fe (λ p → ⊑ₛ-≃-⊑)) }
+  where
+   open is-locally-small ls
+   _≼_ : 𝓛D → 𝓛D → 𝓥 ̇
+   (P , φ , _) ≼ (Q , ψ , _) = Σ f ꞉ (P → Q) , ((p : P) → φ p ⊑ₛ ψ (f p))
 
 \end{code}
 

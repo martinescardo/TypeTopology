@@ -224,6 +224,16 @@ and the way-below relation.
  _approximates_ : Ind → ⟨ 𝓓 ⟩ → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
  (I , α , δ) approximates x = (∐ 𝓓 δ ＝ x) × ((i : I) → α i ≪⟨ 𝓓 ⟩ x)
 
+ approximates-to-∐-＝ : {(I , α , δ) : Ind} {x : ⟨ 𝓓 ⟩}
+                      → (I , α , δ) approximates x
+                      → ∐ 𝓓 δ ＝ x
+ approximates-to-∐-＝ = pr₁
+
+ approximates-to-≪ : {(I , α , δ) : Ind} {x : ⟨ 𝓓 ⟩}
+                   → (I , α , δ) approximates x
+                   → ((i : I) → α i ≪⟨ 𝓓 ⟩ x)
+ approximates-to-≪ = pr₂
+
  approximates-is-prop : (σ : Ind) (x : ⟨ 𝓓 ⟩) → is-prop (σ approximates x)
  approximates-is-prop σ x =
   ×-is-prop (sethood 𝓓) (Π-is-prop fe (λ i → ≪-is-prop-valued 𝓓))

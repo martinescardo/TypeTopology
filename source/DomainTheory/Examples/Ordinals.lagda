@@ -135,7 +135,7 @@ Ordinals-DCPO-is-algebraic' =
      where
       II = (supremum-of-successors-of-initial-segments pt sr α) ⁻¹
       I = sups-are-unique _⊴_
-           (pr₁ (axioms-of-dcpo Ordinals-DCPO)) (family α)
+           (poset-axioms-of-dcpo Ordinals-DCPO) (family α)
            (directify-sup' (family α)
              (∐ Ordinals-DCPO δ) (∐-is-sup Ordinals-DCPO δ))
            (sup-is-least-upper-bound (family α))

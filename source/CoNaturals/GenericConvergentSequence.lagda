@@ -59,6 +59,9 @@ instance
 ℕ∞-to-ℕ→𝟚-lc : funext₀ → left-cancellable ℕ∞-to-ℕ→𝟚
 ℕ∞-to-ℕ→𝟚-lc fe = pr₁-lc (being-decreasing-is-prop fe _)
 
+stays-zero : (u : ℕ∞) {n : ℕ} → ι u n ＝ ₀ → ι u (succ n) ＝ ₀
+stays-zero u@(α , d) {n} p = ₀-minimal (transport (ι u (succ n) ≤₂_) p (d n))
+
 force-decreasing : (ℕ → 𝟚) → (ℕ → 𝟚)
 force-decreasing β 0        = β 0
 force-decreasing β (succ i) = min𝟚 (β (succ i)) (force-decreasing β i)
@@ -514,6 +517,9 @@ finite-isolated fe n u = is-decidable-eq-sym u (ι n) (f u n)
 
 is-finite : ℕ∞ → 𝓤₀ ̇
 is-finite u = Σ n ꞉ ℕ , ι n ＝ u
+
+is-finite' : ℕ∞ → 𝓤₀ ̇
+is-finite' u = Σ n ꞉ ℕ , u ＝ ι n
 
 size : {u : ℕ∞} → is-finite u → ℕ
 size (n , r) = n

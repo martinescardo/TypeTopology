@@ -79,7 +79,7 @@ End of addition.
 
 module Universal (fe : Fun-Ext) where
 
- ∀[꞉]-syntax : (I : 𝓤 ̇ )→ (I → Ω 𝓥) → Ω (𝓤 ⊔ 𝓥)
+ ∀[꞉]-syntax : (I : 𝓤 ̇ ) → (I → Ω 𝓥) → Ω (𝓤 ⊔ 𝓥)
  ∀[꞉]-syntax I P = ((i : I) → P i holds) , γ
   where
    γ : is-prop ((i : I) → P i holds)

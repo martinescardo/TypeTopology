@@ -347,8 +347,8 @@ Added 6 June 2024 by Tom de Jong during a meeting with Martín Escardó.
 A type with a nontrivial apartness relation cannot be injective unless weak
 excluded middle holds.
 
-TODO(?). We could derive ℝ-ainjective-gives-WEM from the below. (Note the
-         similarities in the two proofs.)
+TODO. We could derive ℝ-ainjective-gives-WEM from the below. (Note the
+      similarities in the two proofs.)
 
 \begin{code}
 
@@ -358,12 +358,11 @@ open Apartness fe pt
 type-with-non-trivial-apartness-injective-gives-WEM : {X : 𝓤 ̇  }
                                                     → (_♯_ : X → X → 𝓥 ̇  )
                                                     → is-apartness _♯_
-                                                    → (x₀ x₁ : X)
-                                                    → x₀ ♯ x₁
+                                                    → (Σ (x₀ , x₁) ꞉ X × X , x₀ ♯ x₁)
                                                     → ainjective-type X 𝓣 𝓦
                                                     → WEM 𝓣
 type-with-non-trivial-apartness-injective-gives-WEM
- {𝓤} {𝓥} {𝓣} {𝓦} {X} _♯_ α x₀ x₁ points-apart ainj P P-is-prop = VII
+ {𝓤} {𝓥} {𝓣} {𝓦} {X} _♯_ α ((x₀ , x₁) , points-apart) ainj P P-is-prop = VII
   where
    X-aflabby : aflabby X 𝓣
    X-aflabby = ainjective-types-are-aflabby _ ainj
@@ -403,3 +402,37 @@ type-with-non-trivial-apartness-injective-gives-WEM
                 (inl ∘ III) (inr ∘ IV) VI
 
 \end{code}
+
+Notice that this last theore subsumes all the previous examples: the
+type 𝟚, which is a simple type, the simple types (because they are
+totally separated and hence they have a (tight) apartness), the
+Dedekind reals (with their standard apartness), ℕ∞ (again because it
+is totally separated). TODO. Maybe we can list a few more interesting
+examples?
+
+TODO.
+
+ * It also follows that a universe can't have an apartness relation
+   that distinguishes two types, unless weak excluded middle holds. If
+   WEM does hold, then we can define
+
+    X ♯ Y := (¬ X × ¬¬ Y) + (¬¬ X × ¬ Y).
+
+   Symmetry is clear. For cotransitivity, assume that X ♯ Y and let Z
+   be any type. We use WEM to check which of ¬ Z and ¬¬ Z holds. We
+   have four cases to check, but in practice only two by symmetry. So
+   assume ¬ X and ¬¬ Y w.l.o.g. If ¬ Z, then Z ♯ Y, and if ¬¬ Z, then
+   X ♯ Z. So a universe, being injective, has an apartness relation
+   that distinguishes two types if and only if WEM holds.
+
+ * More generally, an injective type has an apartness relation that
+   distinguishes two points if and only if WEM holds.
+   Cf. Taboos.Decomposability.
+
+ * Notice also that that if a type Y has an apartness with y₀ ♯ y₁, then
+   the function type (X → Y) has an apartness
+
+    f ♯ g := ∃ x ꞉ X , f x ♯ g x
+
+   that tells apart the constant functions with values y₀ and y₁
+   respectively.

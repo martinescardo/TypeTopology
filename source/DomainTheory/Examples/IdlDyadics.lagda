@@ -35,11 +35,14 @@ open import DomainTheory.IdealCompletion.IdealCompletion pt fe pe 𝓤₀
 open import DomainTheory.IdealCompletion.Properties pt fe pe 𝓤₀
 
 open Ideals-of-small-abstract-basis
- _≺_
- (λ {x} {y} → ≺-is-prop-valued x y)
- (λ {x} {y} {z} → ≺-interpolation₂ x y z)
- ≺-has-no-left-endpoint
- (λ {x} {y} {z} → ≺-is-transitive x y z)
+      (record
+         { basis-carrier = 𝔻
+         ; _≺_ = _≺_
+         ; ≺-prop-valued = λ {x} {y} → ≺-is-prop-valued x y
+         ; ≺-trans = λ {x} {y} {z} → ≺-is-transitive x y z
+         ; INT₀ = ≺-has-no-left-endpoint
+         ; INT₂ = λ {x} {y} {z} → ≺-interpolation₂ x y z
+         })
 
 Idl-𝔻 : DCPO {𝓤₁} {𝓤₀}
 Idl-𝔻 = Idl-DCPO
@@ -50,7 +53,7 @@ Idl-𝔻-is-continuous = Idl-is-continuous-dcpo
 Idl-𝔻-has-small-basis : has-specified-small-basis Idl-𝔻
 Idl-𝔻-has-small-basis = 𝔻 , ↓_ , ↓-is-small-basis
 
-Idl-𝔻-has-no-compact-elements : (I : Idl) → ¬ (is-compact Idl-DCPO I)
+Idl-𝔻-has-no-compact-elements : (I : Idl) → ¬ (is-compact Idl-𝔻 I)
 Idl-𝔻-has-no-compact-elements I κ = ∥∥-rec 𝟘-is-prop γ g
  where
   γ : ¬ (Σ x ꞉ 𝔻 , x ∈ᵢ I × I ⊑ (↓ x))
@@ -64,16 +67,16 @@ Idl-𝔻-has-no-compact-elements I κ = ∥∥-rec 𝟘-is-prop γ g
 Idl-𝔻-is-not-algebraic : ¬ (is-algebraic-dcpo Idl-𝔻)
 Idl-𝔻-is-not-algebraic = ∥∥-rec 𝟘-is-prop γ
  where
-  γ : structurally-algebraic Idl-𝔻 → 𝟘
+  γ : ¬ (structurally-algebraic Idl-𝔻)
   γ str-alg = ∥∥-rec 𝟘-is-prop r I-inh
    where
     open structurally-algebraic str-alg
     x : 𝔻
     x = middle
     I-inh : ∥ index-of-compact-family (↓ x) ∥
-    I-inh = inhabited-if-Directed Idl-DCPO (compact-family (↓ x))
-                                           (compact-family-is-directed (↓ x))
-    r : index-of-compact-family (↓ x) → 𝟘
+    I-inh = inhabited-if-Directed Idl-𝔻 (compact-family (↓ x))
+                                         (compact-family-is-directed (↓ x))
+    r : ¬ (index-of-compact-family (↓ x))
     r i = Idl-𝔻-has-no-compact-elements (compact-family (↓ x) i)
                                         (compact-family-is-compact (↓ x) i)
 

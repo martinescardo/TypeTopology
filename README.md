@@ -51,6 +51,7 @@ Please add yourself the first time you contribute.
 * Ian Ray
 * Igor Arrieta (ii)
 * Jon Sterling
+* Kelton OBrien
 * Keri D'Angelo
 * Lane Biocini
 * Marc Bezem
