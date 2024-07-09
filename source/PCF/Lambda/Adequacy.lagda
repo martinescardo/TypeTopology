@@ -17,9 +17,10 @@ module PCF.Lambda.Adequacy
 
 open PropositionalTruncation pt
 
+open import UF.UniverseEmbedding
 open import DomainTheory.Basics.Dcpo pt fe 𝓤₀
 open import DomainTheory.Basics.Exponential pt fe 𝓤₀
-open import DomainTheory.Basics.LeastFixedPoint pt fe
+open import DomainTheory.Basics.LeastFixedPoint pt fe 𝓤₀
 open import DomainTheory.Basics.Pointed pt fe 𝓤₀
 open import DomainTheory.Lifting.LiftingDcpo pt fe 𝓤₀ pe
 open import Lifting.Construction 𝓤₀ hiding (⊥)
@@ -145,25 +146,21 @@ lemma7-3 : {σ : type}
          → adequate σ (pr₁ (μ ⟦ σ ⟧) f) (Fix M)
 lemma7-3 {σ} M f rel = adequacy-lubs iter-M iter-M-is-directed (Fix M) fn
  where
-  iter-M : ℕ → ⟨ ⟦ σ ⟧ ⁻ ⟩
-  iter-M n = iter ⟦ σ ⟧ n f
+  iter-M : Lift 𝓤₀ ℕ → ⟨ ⟦ σ ⟧ ⁻ ⟩
+  iter-M (n , ⋆) = iter ⟦ σ ⟧ n f
 
-  iter-M-is-directed : is-Directed ( ⟦ σ ⟧ ⁻) iter-M
-  iter-M-is-directed = (pr₁ (iter-is-directed ⟦ σ ⟧)) , order
-   where
-    order : (i j : ℕ)
-          → ∃ k ꞉ ℕ , ((iter-M i) ⊑⟨ ⟦ σ ⟧ ⁻ ⟩ (iter-M k) ×
-                       (iter-M j) ⊑⟨  ⟦ σ ⟧ ⁻ ⟩ (iter-M k))
-    order i j = ∥∥-functor
-                 (λ (n , g , h) → n , g f , h f)
-                 (pr₂ (iter-is-directed ⟦ σ ⟧) i j)
+  iter-M-is-directed : is-Directed (⟦ σ ⟧ ⁻) iter-M
+  iter-M-is-directed =
+   pointwise-family-is-directed
+    ((⟦ σ ⟧ ⟹ᵈᶜᵖᵒ⊥ ⟦ σ ⟧) ⁻) (⟦ σ ⟧ ⁻)
+    (iter-c' ⟦ σ ⟧) (iter-is-directed' ⟦ σ ⟧) f
 
-  fn : ∀ n → adequate σ (iter ⟦ σ ⟧ n f) (Fix M)
-  fn zero     = adequacy-bottom (Fix M)
-  fn (succ n) = adequacy-step (M · Fix M) (Fix M) fix-⊏̰ (iter ⟦ σ ⟧ (succ n) f) IH₁
+  fn : (n : Lift 𝓤₀ ℕ) → adequate σ (iter ⟦ σ ⟧ (lower n) f) (Fix M)
+  fn (zero , ⋆)   = adequacy-bottom (Fix M)
+  fn (succ n , ⋆) = adequacy-step (M · Fix M) (Fix M) fix-⊏̰ (iter ⟦ σ ⟧ (succ n) f) IH₁
    where
     IH : adequate σ (iter ⟦ σ ⟧ n f) (Fix M)
-    IH = fn n
+    IH = fn (n , ⋆)
 
     IH₁ : adequate σ (iter ⟦ σ ⟧ (succ n) f) (M · (Fix M))
     IH₁ = rel (iter ⟦ σ ⟧ n f) (Fix M) IH

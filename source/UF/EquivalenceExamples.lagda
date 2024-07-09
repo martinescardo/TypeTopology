@@ -1039,6 +1039,40 @@ fiber-of-unique-to-𝟙 {𝓤} {𝓥} {X} ⋆ =
           → (y : Y) → fiber f y ≃ fiber g y
 ∼-fiber-≃ H y = Σ-cong (∼-fiber-identifications-≃ H y)
 
+\end{code}
+
+Added 9 July 2024 by Tom de Jong.
+
+\begin{code}
+
+fiber-of-ap-≃' : {A : 𝓤 ̇  } {B : 𝓥 ̇  } (f : A → B)
+                 {x y : A} (p : f x ＝ f y)
+               → fiber (ap f) p ≃ ((x , refl) ＝[ fiber' f (f x) ] (y , p))
+fiber-of-ap-≃' f {x} {y} p =
+ fiber (ap f) p                                              ≃⟨ ≃-refl _ ⟩
+ (Σ e ꞉ x ＝ y , transport (λ - → (f x ＝ f -)) e refl ＝ p) ≃⟨ ≃-sym Σ-＝-≃ ⟩
+ ((x , refl) ＝ (y , p))                                     ■
+
+fiber-of-ap-≃ : {A : 𝓤 ̇  } {B : 𝓥 ̇  } (f : A → B)
+                {x y : A} (p : f x ＝ f y)
+              → fiber (ap f) p ≃ ((x , p) ＝[ fiber f (f y) ] (y , refl))
+fiber-of-ap-≃ f {x} {y} p =
+ fiber (ap f) p                                              ≃⟨ Σ-cong I ⟩
+ (Σ e ꞉ x ＝ y , transport (λ - → f - ＝ f y) e p ＝ refl)   ≃⟨ ≃-sym Σ-＝-≃ ⟩
+ ((x , p) ＝ (y , refl))                                     ■
+  where
+   I : (e : x ＝ y)
+     → (ap f e ＝ p) ≃ (transport (λ - → f - ＝ f y) e p ＝ refl)
+   I refl = (refl ＝ p)                                   ≃⟨ ＝-flip ⟩
+            (p ＝ refl)                                   ≃⟨ ≃-refl _ ⟩
+            (transport (λ - → f - ＝ f x) refl p ＝ refl) ■
+
+\end{code}
+
+End of addition.
+
+\begin{code}
+
 ∙-is-equiv-left : {X : 𝓤 ̇ } {x y z : X} (p : z ＝ x)
                 → is-equiv (λ (q : x ＝ y) → p ∙ q)
 ∙-is-equiv-left {𝓤} {X} {x} {y} refl =
@@ -1052,7 +1086,7 @@ fiber-of-unique-to-𝟙 {𝓤} {𝓥} {X} ⋆ =
 \end{code}
 
 Added by Tom de Jong, November 2021.
-s
+
 \begin{code}
 
 open import UF.PropTrunc

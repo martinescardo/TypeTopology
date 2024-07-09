@@ -19,7 +19,7 @@ open PropositionalTruncation pt
 
 open import DomainTheory.Basics.Curry pt fe 𝓤₀
 open import DomainTheory.Basics.Dcpo pt fe 𝓤₀
-open import DomainTheory.Basics.LeastFixedPoint pt fe
+open import DomainTheory.Basics.LeastFixedPoint pt fe 𝓤₀
 open import DomainTheory.Basics.Pointed pt fe 𝓤₀
 open import DomainTheory.Basics.Products pt fe
 open import Lifting.Construction 𝓤₀
