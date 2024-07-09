@@ -1052,7 +1052,7 @@ fiber-of-unique-to-𝟙 {𝓤} {𝓥} {X} ⋆ =
 \end{code}
 
 Added by Tom de Jong, November 2021.
-s
+
 \begin{code}
 
 open import UF.PropTrunc
