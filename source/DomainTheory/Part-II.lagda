@@ -276,8 +276,6 @@ Section 4.1
 \begin{code}
 
  open import DomainTheory.BasesAndContinuity.Continuity pt fe 𝓥
-      renaming (structurally-continuous to continuity-data ;
-                structurally-algebraic to algebraicity-data)
  open import DomainTheory.BasesAndContinuity.ContinuityDiscussion pt fe 𝓥
  open Ind-completion
 
@@ -878,8 +876,6 @@ module _ (𝓥 : Universe) where
  open import DomainTheory.Basics.Miscelanea pt fe 𝓥
  open import DomainTheory.Basics.WayBelow pt fe 𝓥
  open import DomainTheory.BasesAndContinuity.Continuity pt fe 𝓥
-      renaming (structurally-continuous to continuity-data ;
-                structurally-algebraic to algebraicity-data)
  open import DomainTheory.BasesAndContinuity.Bases pt fe 𝓥
  open import DomainTheory.IdealCompletion.IdealCompletion pt fe pe 𝓥
  open import DomainTheory.IdealCompletion.Properties pt fe pe 𝓥
