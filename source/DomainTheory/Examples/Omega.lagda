@@ -32,7 +32,7 @@ open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.ImageAndSurjection pt
 open import UF.Subsingletons-FunExt
-open import UF.SubtypeClassifier renaming (⊥ to 𝟘Ω ; ⊤ to 𝟙Ω)
+open import UF.SubtypeClassifier renaming (⊥ to ⊥Ω ; ⊤ to ⊤Ω)
 open import UF.SubtypeClassifier-Properties
 open import UF.Sets
 open import OrderedTypes.Poset fe
@@ -92,15 +92,15 @@ We proceed by showing that the Booleans give a small compact basis for Ω 𝓤.
 
 \begin{code}
 
-𝟙Ω-is-greatest : (P : Ω 𝓤) → P ⊑ 𝟙Ω
-𝟙Ω-is-greatest P _ = ⋆
+⊤Ω-is-greatest : (P : Ω 𝓤) → P ⊑ ⊤Ω
+⊤Ω-is-greatest P _ = ⋆
 
 Bool : 𝓤 ̇
 Bool = 𝟙{𝓤} + 𝟙{𝓤}
 
 κ : Bool → Ω 𝓤
-κ (inl _) = 𝟘Ω
-κ (inr _) = 𝟙Ω
+κ (inl _) = ⊥Ω
+κ (inr _) = ⊤Ω
 
 κ⁺ : (P : Ω 𝓤) → (Σ b ꞉ Bool , κ b ⊑ P) → Ω 𝓤
 κ⁺ P = κ ∘ pr₁
@@ -113,8 +113,8 @@ Bool = 𝟙{𝓤} + 𝟙{𝓤}
   semidir : is-semidirected _⊑_ (κ⁺ P)
   semidir (inl ⋆ , _) i = ∣ i , ⊥-is-least Ω-DCPO⊥ (κ⁺ P i)
                               , ⊑-is-reflexive (κ⁺ P i) ∣
-  semidir (inr ⋆ , u) j = ∣ (inr ⋆ , u) , ⊑-is-reflexive 𝟙Ω
-                                        , 𝟙Ω-is-greatest (κ⁺ P j) ∣
+  semidir (inr ⋆ , u) j = ∣ (inr ⋆ , u) , ⊑-is-reflexive ⊤Ω
+                                        , ⊤Ω-is-greatest (κ⁺ P j) ∣
 
 κ⁺-sup : (P : Ω 𝓤) → is-sup _⊑_ P (κ⁺ P)
 κ⁺-sup P = ub , lb-of-ubs
@@ -124,10 +124,10 @@ Bool = 𝟙{𝓤} + 𝟙{𝓤}
   lb-of-ubs : is-lowerbound-of-upperbounds _⊑_ P (κ⁺ P)
   lb-of-ubs Q Q-is-ub p = Q-is-ub (inr ⋆ , (λ _ → p)) ⋆
 
-𝟙-is-compact : is-compact Ω-DCPO 𝟙Ω
-𝟙-is-compact I α δ 𝟙Ω-below-∐α = ∥∥-functor γ (𝟙Ω-below-∐α ⋆)
+𝟙-is-compact : is-compact Ω-DCPO ⊤Ω
+𝟙-is-compact I α δ ⊤Ω-below-∐α = ∥∥-functor γ (⊤Ω-below-∐α ⋆)
  where
-  γ : (Σ i ꞉ I , α i holds) → (Σ i ꞉ I , 𝟙Ω ⊑ α i)
+  γ : (Σ i ꞉ I , α i holds) → (Σ i ꞉ I , ⊤Ω ⊑ α i)
   γ (i , p) = (i , (λ _ → p))
 
 compact-if-in-image-of-κ : (P : Ω 𝓤) → P ∈image κ → is-compact Ω-DCPO P
@@ -144,18 +144,18 @@ in-image-of-κ-if-compact P P-cpt = ∥∥-functor goal claim
   I : 𝓤 ̇
   I = 𝟙{𝓤} + (P holds)
   α : I → Ω 𝓤
-  α = add-⊥ Ω-DCPO⊥ (λ _ → 𝟙Ω)
+  α = add-⊥ Ω-DCPO⊥ (λ _ → ⊤Ω)
   δ : is-Directed Ω-DCPO α
   δ = add-⊥-is-directed Ω-DCPO⊥
-       (subsingleton-indexed-is-semidirected Ω-DCPO (λ _ → 𝟙Ω) (holds-is-prop P))
+       (subsingleton-indexed-is-semidirected Ω-DCPO (λ _ → ⊤Ω) (holds-is-prop P))
   P-below-∐α : P ⊑ ∐ Ω-DCPO {I} {α} δ
   P-below-∐α p = ∣ inr p , ⋆ ∣
   claim : ∃ i ꞉ I , P ⊑ α i
   claim = P-cpt I α δ P-below-∐α
   goal : (Σ i ꞉ I , P ⊑ α i) → Σ b ꞉ Bool , κ b ＝ P
-  goal (inl ⋆ , u) = (inl ⋆ , ⊑-is-antisymmetric 𝟘Ω P
+  goal (inl ⋆ , u) = (inl ⋆ , ⊑-is-antisymmetric ⊥Ω P
                                (⊥-is-least Ω-DCPO⊥ P) u)
-  goal (inr p , u) = (inr ⋆ , ⊑-is-antisymmetric 𝟙Ω P (λ _ → p) u)
+  goal (inr p , u) = (inr ⋆ , ⊑-is-antisymmetric ⊤Ω P (λ _ → p) u)
 
 κ-is-small-compact-basis : is-small-compact-basis Ω-DCPO κ
 κ-is-small-compact-basis =
@@ -191,20 +191,20 @@ propositions.
 \begin{code}
 
 compact-iff-empty-or-unit : (P : Ω 𝓤)
-                          → is-compact Ω-DCPO P ↔ (P ＝ 𝟘Ω) + (P ＝ 𝟙Ω)
+                          → is-compact Ω-DCPO P ↔ (P ＝ ⊥Ω) + (P ＝ ⊤Ω)
 compact-iff-empty-or-unit P = I , II
  where
-  I : is-compact Ω-DCPO P → (P ＝ 𝟘Ω) + (P ＝ 𝟙Ω)
+  I : is-compact Ω-DCPO P → (P ＝ ⊥Ω) + (P ＝ ⊤Ω)
   I c = ∥∥-rec (+-is-prop (Ω-is-set fe pe) (Ω-is-set fe pe) I₁)
                   I₂
                   (in-image-of-κ-if-compact P c)
    where
-    I₁ : P ＝ 𝟘Ω → ¬ (P ＝ 𝟙Ω)
+    I₁ : P ＝ ⊥Ω → ¬ (P ＝ ⊤Ω)
     I₁ refl e = 𝟘-is-not-𝟙 (ap (_holds) e)
-    I₂ : (Σ b ꞉ domain κ , κ b ＝ P) → (P ＝ 𝟘Ω) + (P ＝ 𝟙Ω)
+    I₂ : (Σ b ꞉ domain κ , κ b ＝ P) → (P ＝ ⊥Ω) + (P ＝ ⊤Ω)
     I₂ (inl ⋆ , refl) = inl refl
     I₂ (inr ⋆ , refl) = inr refl
-  II : (P ＝ 𝟘Ω) + (P ＝ 𝟙Ω) → is-compact Ω-DCPO P
+  II : (P ＝ ⊥Ω) + (P ＝ ⊤Ω) → is-compact Ω-DCPO P
   II (inl refl) = ⊥-is-compact Ω-DCPO⊥
   II (inr refl) = 𝟙-is-compact
 
@@ -214,14 +214,14 @@ compact-iff-decidable P = I , II
   I : is-compact Ω-DCPO P → is-decidable (P holds)
   I c = h (lr-implication (compact-iff-empty-or-unit P) c)
    where
-    h : (P ＝ 𝟘Ω) + (P ＝ 𝟙Ω) → is-decidable (P holds)
+    h : (P ＝ ⊥Ω) + (P ＝ ⊤Ω) → is-decidable (P holds)
     h (inl refl) = inr 𝟘-elim
     h (inr refl) = inl ⋆
   II : is-decidable (P holds) → is-compact Ω-DCPO P
   II d = rl-implication (compact-iff-empty-or-unit P)
                         (h (decidable-truth-values-are-⊥-or-⊤' pe fe P d))
    where
-    h : (P ＝ 𝟙Ω) + (P ＝ 𝟘Ω) → (P ＝ 𝟘Ω) + (P ＝ 𝟙Ω)
+    h : (P ＝ ⊤Ω) + (P ＝ ⊥Ω) → (P ＝ ⊥Ω) + (P ＝ ⊤Ω)
     h (inl x) = inr x
     h (inr x) = inl x
 
@@ -234,7 +234,7 @@ structural continuity of a dcpo expresses a property.
 
 The idea is simply that if α : I → 𝓓 approximates an element x of a dcpo 𝓓, then
 so does [α,α] : I + I → 𝓓, but the index types of these families are not equal
-in general. Indeed they fail to be equal for the approximating family of 𝟘Ω that
+in general. Indeed they fail to be equal for the approximating family of ⊥Ω that
 we constructed above.
 
 \begin{code}
@@ -250,12 +250,12 @@ structural-continuity-is-not-prop ν =
          Ω-DCPO
          Ω-structurally-algebraic
 
-   I = index-of-approximating-family s₁ 𝟘Ω
+   I = index-of-approximating-family s₁ ⊥Ω
    i₀ : I
    i₀ = inl ⋆ , 𝟘-elim
    I-is-prop : is-prop I
    I-is-prop (inl ⋆ , _) (inl ⋆ , _) =
-    to-subtype-＝ (λ b → ⊑ᴮₛ-is-prop-valued {b} {𝟘Ω})
+    to-subtype-＝ (λ b → ⊑ᴮₛ-is-prop-valued {b} {⊥Ω})
                   refl
    I-is-prop (inl ⋆ , _) (inr ⋆ , b) = 𝟘-elim (b ⋆)
    I-is-prop (inr ⋆ , b) _           = 𝟘-elim (b ⋆)
@@ -265,7 +265,7 @@ structural-continuity-is-not-prop ν =
 
    equivalent-index-types : I ≃ I + I
    equivalent-index-types = idtoeq I (I + I)
-                                   (ap (λ - → index-of-approximating-family - 𝟘Ω)
+                                   (ap (λ - → index-of-approximating-family - ⊥Ω)
                                        (ν s₁ s₂))
 
    I+I-is-not-prop : ¬ is-prop (I + I)

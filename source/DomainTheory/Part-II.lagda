@@ -49,7 +49,7 @@ open import UF.Powerset
 open import UF.Sets
 open import UF.Size hiding (is-locally-small ; is-small)
 open import UF.Subsingletons-FunExt
-open import UF.SubtypeClassifier renaming (⊥ to 𝟘Ω ; ⊤ to 𝟙Ω)
+open import UF.SubtypeClassifier renaming (⊥ to ⊥Ω ; ⊤ to ⊤Ω)
 open import UF.Univalence
 open import UF.UA-FunExt
 
@@ -96,7 +96,7 @@ module _ (𝓥 : Universe) where
  module _ where
   open import DomainTheory.Examples.Omega pt fe pe 𝓥 hiding (κ)
   Example-2-5 : (P : Ω 𝓥)
-              → (is-compact Ω-DCPO P ↔ (P ＝ 𝟘Ω) + (P ＝ 𝟙Ω))
+              → (is-compact Ω-DCPO P ↔ (P ＝ ⊥Ω) + (P ＝ ⊤Ω))
               × (is-compact Ω-DCPO P ↔ is-decidable (P holds))
   Example-2-5 P = compact-iff-empty-or-unit P ,
                   compact-iff-decidable P
@@ -274,7 +274,6 @@ Section 3
 Section 4.1
 
 \begin{code}
-
 
  open import DomainTheory.BasesAndContinuity.Continuity pt fe 𝓥
       renaming (structurally-continuous to continuity-data ;

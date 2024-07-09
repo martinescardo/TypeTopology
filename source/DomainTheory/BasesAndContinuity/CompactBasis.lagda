@@ -73,8 +73,8 @@ open import DomainTheory.BasesAndContinuity.Continuity pt fe 𝓥
 As announced above, we start by establishing as many as properties of K as
 possible without considering that K needs to be small.
 
-For this, we only assume, in a few places, that our dcpo is algebraic (in the
-truncated sense).
+For this, we only assume, in a few places, that our dcpo is algebraic (as a
+property rather than as data).
 
 \begin{code}
 
