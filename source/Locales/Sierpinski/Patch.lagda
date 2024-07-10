@@ -38,10 +38,12 @@ open import Locales.ContinuousMap.Definition pt fe
 open import Locales.ContinuousMap.FrameHomomorphism-Definition pt fe
 open import Locales.ContinuousMap.FrameHomomorphism-Properties pt fe
 open import Locales.Frame pt fe hiding (𝟚; is-directed)
+open import Locales.HeytingImplication pt fe
 open import Locales.InitialFrame pt fe
 open import Locales.Sierpinski.Definition 𝓤 pe pt fe sr
 open import Locales.Sierpinski.Properties 𝓤 pe pt fe sr
 open import Locales.SmallBasis pt fe sr
+open import Locales.Complements pt fe
 open import Locales.Spectrality.SpectralLocale pt fe
 open import Locales.Spectrality.SpectralMap pt fe
 open import Locales.Stone pt fe sr
@@ -111,12 +113,29 @@ closed-𝟏 = ‘ 𝟏[ 𝒪 𝕊 ] ’
 
 \end{code}
 
+\begin{code}
+
+closed-𝟏-is-top : closed-𝟏 ＝ 𝟏[ 𝒪 Patch-𝕊 ]
+closed-𝟏-is-top = only-𝟏-is-above-𝟏 (𝒪 Patch-𝕊) closed-𝟏 †
+ where
+  † : (𝟏[ 𝒪 Patch-𝕊 ] ≤[ poset-of (𝒪 Patch-𝕊) ] closed-𝟏) holds
+  † = ≼-implies-≼ᵏ 𝟏[ 𝒪 Patch-𝕊 ] closed-𝟏 (∨[ 𝒪 𝕊 ]-upper₁ 𝟏[ 𝒪 𝕊 ])
+
+\end{code}
+
 The second one: the closed nucleus on the bottom element of `𝕊`.
 
 \begin{code}
 
 closed-𝟎 : ⟨ 𝒪 Patch-𝕊 ⟩
 closed-𝟎 = ‘ 𝟎[ 𝒪 𝕊 ] ’
+
+open PatchStoneᴰ 𝕊 𝕊-is-spectralᴰ
+open BasisOfPatch 𝕊 𝕊-is-spectralᴰ
+open OpenNucleus 𝕊 𝕊-is-spectralᴰ 𝕊-has-small-𝒦
+
+open-𝟏 : ⟨ 𝒪 Patch-𝕊 ⟩
+open-𝟏 = ¬‘ 𝟏[ 𝒪 𝕊 ] , 𝕊-is-compact ’
 
 \end{code}
 
@@ -133,6 +152,30 @@ closed-𝟎-is-bottom =
         U                      ＝⟨ 𝟎-is-id U ⁻¹ ⟩
         𝟎[ 𝒪 Patch-𝕊 ] .pr₁ U  ∎
 
+𝕊-has-basis : has-basis (𝒪 𝕊) holds
+𝕊-has-basis = ∣ spectralᴰ-implies-basisᴰ 𝕊 σᴰ ∣
+
+open HeytingImplicationConstruction 𝕊 𝕊-has-basis
+
+open-𝟏-is-bottom : open-𝟏 ＝ 𝟎[ 𝒪 Patch-𝕊 ]
+open-𝟏-is-bottom = perfect-nuclei-eq open-𝟏 𝟎[ 𝒪 Patch-𝕊 ] (dfunext fe γ)
+ where
+  open PosetReasoning (poset-of (𝒪 𝕊)) renaming (_■ to QED)
+
+  γ : (U : ⟨ 𝒪 𝕊 ⟩) → open-𝟏 .pr₁ U ＝ 𝟎[ 𝒪 Patch-𝕊 ] .pr₁ U
+  γ U = open-𝟏 .pr₁ U         ＝⟨ 𝟏-==>-law U ⁻¹ ⟩
+        U                     ＝⟨ 𝟎-is-id U ⁻¹ ⟩
+        𝟎[ 𝒪 Patch-𝕊 ] .pr₁ U ∎
+
+open-𝟎 : ⟨ 𝒪 Patch-𝕊 ⟩
+open-𝟎 = ¬‘ 𝟎[ 𝒪 𝕊 ] , 𝟎-is-compact 𝕊 ’
+
+open-𝟎-is-top : open-𝟎 ＝ 𝟏[ 𝒪 Patch-𝕊 ]
+open-𝟎-is-top = perfect-nuclei-eq open-𝟎 𝟏[ 𝒪 Patch-𝕊 ] (dfunext fe †)
+ where
+  † : open-𝟎 .pr₁ ∼ 𝟏[ 𝒪 Patch-𝕊 ] .pr₁
+  † U = ex-falso-quodlibet-eq U ⁻¹
+
 \end{code}
 
 The third one: the closed nucleus on the singleton set `{ ⊤ }`.
@@ -148,15 +191,19 @@ The fourth one: the _open_ nucleus on the singleton `{ ⊤ }`.
 
 \begin{code}
 
-open PatchStoneᴰ 𝕊 𝕊-is-spectralᴰ
-open BasisOfPatch 𝕊 𝕊-is-spectralᴰ
-open OpenNucleus 𝕊 𝕊-is-spectralᴰ 𝕊-has-small-𝒦
-
 truthₖ : 𝒦 𝕊
 truthₖ = truth , truth-is-compact
 
 open-truth : ⟨ 𝒪 Patch-𝕊 ⟩
 open-truth = ¬‘ truthₖ ’
+
+open PatchComplementation 𝕊 σᴰ
+
+open-truth-is-closed-false : is-join-complement-of (𝒪 Patch-𝕊) ¬‘ truthₖ ’ ‘ truth ’ holds
+open-truth-is-closed-false = boolean-complement-is-join-complement (𝒪 Patch-𝕊) c
+ where
+  c : is-boolean-complement-of (𝒪 Patch-𝕊) ¬‘ truthₖ ’ ‘ truth ’ holds
+  c = open-complements-closed truth truth-is-compact
 
 \end{code}
 
@@ -174,11 +221,122 @@ basis-tetrachotomy-for-Patch-𝕊
  → equal-to-one-of-the-four-compact-opensₚ (ℬ-patch-↑ [ i ])
 basis-tetrachotomy-for-Patch-𝕊 []       = inl †
  where
-  goal : ℬ-patch-↑ [ [] ] ＝ 𝟎[ 𝒪 Patch-𝕊 ]
-  goal = refl
-
   † : 𝟎[ 𝒪 Patch-𝕊 ] ＝ closed-𝟎
   † = closed-𝟎-is-bottom ⁻¹
-basis-tetrachotomy-for-Patch-𝕊 (i ∷ is) = {!!}
+basis-tetrachotomy-for-Patch-𝕊 ((i , j) ∷ is) =
+ cases₃ case₁ case₂ case₃ (basis-trichotomy i)
+  where
+   IH : equal-to-one-of-the-four-compact-opensₚ (ℬ-patch-↑ [ is ])
+   IH = basis-tetrachotomy-for-Patch-𝕊 is
+
+   case₁ : 𝜸 i ＝ 𝟏[ 𝒪 𝕊 ]
+         → equal-to-one-of-the-four-compact-opensₚ (ℬ-patch-↑ [ (i , j) ∷ is ])
+   case₁ p = transport equal-to-one-of-the-four-compact-opensₚ (q ⁻¹) γ
+    where
+     case₁a : 𝜸 j ＝ 𝟏[ 𝒪 𝕊 ]
+            → equal-to-one-of-the-four-compact-opensₚ
+               (𝔬 j ∨[ 𝒪 Patch-𝕊 ] ℬ-patch-↑ [ is ])
+     case₁a q = transport equal-to-one-of-the-four-compact-opensₚ (r ⁻¹) IH
+      where
+       Ⅰ = ap (λ - → - ∨[ 𝒪 Patch-𝕊 ] (ℬ-patch-↑ [ is ]))
+              (ap (λ - → ¬‘ - ’) (to-𝒦-＝ 𝕊 (𝜸-gives-compact-opens j) 𝕊-is-compact q))
+       Ⅱ = ap (λ - → - ∨[ 𝒪 Patch-𝕊 ] (ℬ-patch-↑ [ is ])) open-𝟏-is-bottom
+       Ⅲ = 𝟎-right-unit-of-∨ (𝒪 Patch-𝕊) (ℬ-patch-↑ [ is ])
+
+       r : 𝔬 j ∨[ 𝒪 Patch-𝕊 ] (ℬ-patch-↑ [ is ]) ＝ ℬ-patch-↑ [ is ]
+       r = 𝔬 j ∨[ 𝒪 Patch-𝕊 ] (ℬ-patch-↑ [ is ])             ＝⟨ Ⅰ ⟩
+           open-𝟏 ∨[ 𝒪 Patch-𝕊 ] (ℬ-patch-↑ [ is ])          ＝⟨ Ⅱ ⟩
+           𝟎[ 𝒪 Patch-𝕊 ] ∨[ 𝒪 Patch-𝕊 ] (ℬ-patch-↑ [ is ])  ＝⟨ Ⅲ ⟩
+           ℬ-patch-↑ [ is ]                                  ∎
+
+     case₁b : 𝜸 j ＝ truth
+            → equal-to-one-of-the-four-compact-opensₚ
+               (𝔬 j ∨[ 𝒪 Patch-𝕊 ] ℬ-patch-↑ [ is ])
+     case₁b q = cases₄ case₁b-α case₁b-β {!!} {!!} IH
+      where
+       r : 𝔬 j ∨[ 𝒪 Patch-𝕊 ] ℬ-patch-↑ [ is ]
+           ＝ open-truth ∨[ 𝒪 Patch-𝕊 ] ℬ-patch-↑ [ is ]
+       r = ap
+            (λ - → ¬‘ - ’ ∨[ 𝒪 Patch-𝕊 ] ℬ-patch-↑ [ is ])
+            (to-𝒦-＝ 𝕊 (𝜸-gives-compact-opens j) truth-is-compact q)
+
+       case₁b-α : ℬ-patch-↑ [ is ] ＝ closed-𝟎
+                → equal-to-one-of-the-four-compact-opensₚ (binary-join (𝒪 Patch-𝕊) (𝔬 j) (ℬ-patch-↑ [ is ]))
+       case₁b-α = {!!}
+
+       case₁b-β : {!!}
+       case₁b-β = {!!}
+
+     case₁c : 𝜸 j ＝ 𝟎[ 𝒪 𝕊 ]
+            → equal-to-one-of-the-four-compact-opensₚ
+               (𝔬 j ∨[ 𝒪 Patch-𝕊 ] ℬ-patch-↑ [ is ])
+     case₁c q = transport equal-to-one-of-the-four-compact-opensₚ (r ⁻¹) †
+      where
+       Ⅰ = ap
+            (λ - → ¬‘ - ’ ∨[ 𝒪 Patch-𝕊 ] ℬ-patch-↑ [ is ])
+            (to-𝒦-＝ 𝕊 (𝜸-gives-compact-opens j) (𝟎-is-compact 𝕊) q)
+       Ⅱ = ap (λ - → - ∨[ 𝒪 Patch-𝕊 ] ℬ-patch-↑ [ is ]) open-𝟎-is-top
+       Ⅲ = 𝟏-left-annihilator-for-∨ (𝒪 Patch-𝕊) (ℬ-patch-↑ [ is ])
+
+       r : (𝔬 j ∨[ 𝒪 Patch-𝕊 ] ℬ-patch-↑ [ is ]) ＝ 𝟏[ 𝒪 Patch-𝕊 ]
+       r = 𝔬 j ∨[ 𝒪 Patch-𝕊 ] ℬ-patch-↑ [ is ]                                 ＝⟨ refl ⟩
+           ¬‘ 𝜸 j , 𝜸-gives-compact-opens j ’ ∨[ 𝒪 Patch-𝕊 ] ℬ-patch-↑ [ is ]  ＝⟨ Ⅰ ⟩
+           ¬‘ 𝟎[ 𝒪 𝕊 ] , 𝟎-is-compact 𝕊 ’ ∨[ 𝒪 Patch-𝕊 ] ℬ-patch-↑ [ is ]      ＝⟨ Ⅱ ⟩
+           𝟏[ 𝒪 Patch-𝕊 ] ∨[ 𝒪 Patch-𝕊 ] ℬ-patch-↑ [ is ]                      ＝⟨ Ⅲ ⟩
+           𝟏[ 𝒪 Patch-𝕊 ]                                                      ∎
+
+       † : equal-to-one-of-the-four-compact-opensₚ 𝟏[ 𝒪 Patch-𝕊 ]
+       † = inr (inr (inr (closed-𝟏-is-top ⁻¹)))
+
+     γ : equal-to-one-of-the-four-compact-opensₚ
+          (𝔬 j ∨[ 𝒪 Patch-𝕊 ] (ℬ-patch-↑ [ is ]))
+     γ = cases₃ case₁a case₁b case₁c (basis-trichotomy j)
+
+     q : ℬ-patch-↑ [ (i , j) ∷ is ] ＝ 𝔬 j ∨[ 𝒪 Patch-𝕊 ] ℬ-patch-↑ [ is ]
+     q =
+      ℬ-patch-↑ [ (i , j) ∷ is ]                                           ＝⟨ Ⅰ ⟩
+      (𝔠 i ∧[ 𝒪 Patch-𝕊 ] 𝔬 j) ∨[ 𝒪 Patch-𝕊 ] ℬ-patch-↑ [ is ]             ＝⟨ Ⅱ ⟩
+      (𝟏[ 𝒪 Patch-𝕊 ] ∧[ 𝒪 Patch-𝕊 ] 𝔬 j) ∨[ 𝒪 Patch-𝕊 ] ℬ-patch-↑ [ is ]  ＝⟨ Ⅲ ⟩
+      𝔬 j ∨[ 𝒪 Patch-𝕊 ] ℬ-patch-↑ [ is ]                                  ∎
+       where
+        Ⅰ = refl
+        Ⅱ = ap
+             (λ - → (- ∧[ 𝒪 Patch-𝕊 ] 𝔬 j) ∨[ 𝒪 Patch-𝕊 ] ℬ-patch-↑ [ is ])
+             (𝔠 i ＝⟨ ap (λ - → ‘ - ’) p ⟩ closed-𝟏 ＝⟨ closed-𝟏-is-top ⟩ 𝟏[ 𝒪 Patch-𝕊 ] ∎)
+        Ⅲ = ap
+             (λ - → - ∨[ 𝒪 Patch-𝕊 ] ℬ-patch-↑ [ is ])
+             (𝟏-left-unit-of-∧ (𝒪 Patch-𝕊) (𝔬 j))
+
+   case₂ : 𝜸 i ＝ truth
+         → equal-to-one-of-the-four-compact-opensₚ (ℬ-patch-↑ [ i , j ∷ is ])
+   case₂ = {!!}
+
+   case₃ : 𝜸 i ＝ 𝟎[ 𝒪 𝕊 ]
+         → equal-to-one-of-the-four-compact-opensₚ (ℬ-patch-↑ [ i , j ∷ is ])
+   case₃ p = transport equal-to-one-of-the-four-compact-opensₚ († ⁻¹) IH
+    where
+     q : 𝔠 i ＝ closed-𝟎
+     q = 𝔠 i ＝⟨ ap (λ - → ‘ - ’) p ⟩ closed-𝟎 ∎
+
+     foo : 𝔠 i ∧[ 𝒪 Patch-𝕊 ] 𝔬 j ＝ closed-𝟎 ∧[ 𝒪 Patch-𝕊 ] 𝔬 j
+     foo = ap (λ - → - ∧[ 𝒪 Patch-𝕊 ] 𝔬 j) q
+
+     † : ℬ-patch-↑ [ i , j ∷ is ] ＝ ℬ-patch-↑ [ is ]
+     † = (𝔠 i ∧[ 𝒪 Patch-𝕊 ] 𝔬 j) ∨[ 𝒪 Patch-𝕊 ] ℬ-patch-↑ [ is ]             ＝⟨ Ⅰ ⟩
+         (‘ 𝟎[ 𝒪 𝕊 ] ’ ∧[ 𝒪 Patch-𝕊 ] 𝔬 j) ∨[ 𝒪 Patch-𝕊 ] ℬ-patch-↑ [ is ]    ＝⟨ Ⅱ ⟩
+         (𝟎[ 𝒪 Patch-𝕊 ] ∧[ 𝒪 Patch-𝕊 ] 𝔬 j) ∨[ 𝒪 Patch-𝕊 ] ℬ-patch-↑ [ is ]  ＝⟨ Ⅲ ⟩
+         𝟎[ 𝒪 Patch-𝕊 ] ∨[ 𝒪 Patch-𝕊 ] ℬ-patch-↑ [ is ]                       ＝⟨ Ⅳ ⟩
+         ℬ-patch-↑ [ is ]                                                     ∎
+          where
+           Ⅰ = ap
+                (λ - → (- ∧[ 𝒪 Patch-𝕊 ] 𝔬 j) ∨[ 𝒪 Patch-𝕊 ] ℬ-patch-↑ [ is ])
+                q
+           Ⅱ = ap
+                (λ - → (- ∧[ 𝒪 Patch-𝕊 ] 𝔬 j) ∨[ 𝒪 Patch-𝕊 ] ℬ-patch-↑ [ is ])
+                closed-𝟎-is-bottom
+           Ⅲ = ap
+                (λ - → - ∨[ 𝒪 Patch-𝕊 ] ℬ-patch-↑ [ is ])
+                (𝟎-left-annihilator-for-∧ (𝒪 Patch-𝕊) (𝔬 j))
+           Ⅳ = 𝟎-right-unit-of-∨ (𝒪 Patch-𝕊) (ℬ-patch-↑ [ is ])
 
 \end{code}
