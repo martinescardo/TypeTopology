@@ -28,7 +28,7 @@ open import DomainTheory.BasesAndContinuity.Continuity pt fe 𝓤
 open import DomainTheory.Basics.Dcpo    pt fe 𝓤 renaming (⟨_⟩ to ⟨_⟩∙)
 open import DomainTheory.Basics.Miscelanea pt fe 𝓤
 open import DomainTheory.Basics.Pointed pt fe 𝓤 renaming (⊥ to ⊥∙)
-open import DomainTheory.Basics.WayBelow pt fe 𝓤
+open import DomainTheory.Basics.WayBelow pt fe 𝓤 hiding (is-compact)
 open import DomainTheory.Lifting.LiftingSet pt fe 𝓤 pe
 open import DomainTheory.Lifting.LiftingSetAlgebraic pt pe fe 𝓤
 open import DomainTheory.Topology.ScottTopology pt fe 𝓤
@@ -171,6 +171,9 @@ open import Locales.PatchLocale pt fe sr
 
 𝕊-has-small-𝒦 : has-small-𝒦 𝕊
 𝕊-has-small-𝒦 = spectralᴰ-implies-small-𝒦 𝕊 σᴰ
+
+𝕊-is-compact : is-compact 𝕊 holds
+𝕊-is-compact = spectral-implies-compact 𝕊 𝕊-is-spectral
 
 \end{code}
 
