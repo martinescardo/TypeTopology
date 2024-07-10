@@ -6,7 +6,6 @@ This file corresponds to the paper
     Directed complete posets and Scott’s D∞"
    Tom de Jong
    2024
-   https://arxiv.org/abs/2407.06952
    https://doi.org/10.48550/arxiv.2407.06952
 
 See DomainTheory.index.lagda for an overview of all domain theory in
