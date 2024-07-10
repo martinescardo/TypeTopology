@@ -45,6 +45,45 @@ is-boolean-complement-of F x′ x =
 
 \end{code}
 
+Added on 2024-07-10.
+
+\begin{code}
+
+is-meet-complement-of : (L : Frame 𝓤 𝓥 𝓦) → ⟨ L ⟩ → ⟨ L ⟩ → Ω 𝓤
+is-meet-complement-of L x′ x = x ∧[ L ] x′ ＝[ iss ]＝ 𝟎[ L ]
+ where
+  iss = carrier-of-[ poset-of L ]-is-set
+
+is-join-complement-of : (L : Frame 𝓤 𝓥 𝓦) → ⟨ L ⟩ → ⟨ L ⟩ → Ω 𝓤
+is-join-complement-of L x′ x = x ∨[ L ] x′ ＝[ iss ]＝ 𝟏[ L ]
+ where
+  iss = carrier-of-[ poset-of L ]-is-set
+
+boolean-complement-is-meet-complement : (L : Frame 𝓤 𝓥 𝓦) {x x′ : ⟨ L ⟩}
+                                      → is-boolean-complement-of L x′ x holds
+                                      → is-meet-complement-of L x′ x holds
+boolean-complement-is-meet-complement L = pr₁
+
+boolean-complement-is-join-complement : (L : Frame 𝓤 𝓥 𝓦) {x x′ : ⟨ L ⟩}
+                                      → is-boolean-complement-of L x′ x holds
+                                      → is-join-complement-of L x′ x holds
+boolean-complement-is-join-complement L = pr₂
+
+boolean-complement-is-join-complement′ : (L : Frame 𝓤 𝓥 𝓦) {x x′ : ⟨ L ⟩}
+                                       → is-boolean-complement-of L x′ x holds
+                                       → is-join-complement-of L x x′ holds
+boolean-complement-is-join-complement′ L {x} {x′} p =
+ x′ ∨[ L ] x    ＝⟨ Ⅰ ⟩
+ x  ∨[ L ] x′   ＝⟨ Ⅱ ⟩
+ 𝟏[ L ]         ∎
+  where
+   Ⅱ : is-join-complement-of L x′ x holds
+   Ⅱ = boolean-complement-is-join-complement L p
+
+   Ⅰ = ∨[ L ]-is-commutative x′ x
+
+\end{code}
+
 \begin{code}
 
 complementation-is-symmetric : (F : Frame 𝓤 𝓥 𝓦) (x y : ⟨ F ⟩)
