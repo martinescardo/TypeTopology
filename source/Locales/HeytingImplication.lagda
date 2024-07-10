@@ -149,6 +149,17 @@ module HeytingImplicationConstruction (X : Locale 𝓤  𝓥  𝓥)
        𝟎[ 𝒪 X ]                    ≤⟨ 𝟎-is-bottom (𝒪 X) U ⟩
        U                           ■
 
+ ex-falso-quodlibet-eq : (U : ⟨ 𝒪 X ⟩) → 𝟏[ 𝒪 X ] ＝ 𝟎[ 𝒪 X ] ==> U
+ ex-falso-quodlibet-eq U = ≤-is-antisymmetric (poset-of (𝒪 X)) † ‡
+  where
+   open PosetReasoning (poset-of (𝒪 X))
+
+   † : (𝟏[ 𝒪 X ] ≤[ poset-of (𝒪 X) ] (𝟎[ 𝒪 X ] ==> U)) holds
+   † = ex-falso-quodlibet U
+
+   ‡ : ((𝟎[ 𝒪 X ] ==> U) ≤[ poset-of (𝒪 X) ] 𝟏[ 𝒪 X ]) holds
+   ‡ = 𝟏-is-top (𝒪 X) (𝟎[ 𝒪 X ] ==> U)
+
  H₈ : (U V : ⟨ 𝒪 X ⟩) → U ＝ (U ∨[ 𝒪 X ] V) ∧[ 𝒪 X ] (V ==> U)
  H₈ U V = ≤-is-antisymmetric (poset-of (𝒪 X)) † ‡
   where
