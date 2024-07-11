@@ -6,6 +6,11 @@ This is loosely based on my LICS'2007 paper "Infinite sets that admit
 fast exhaustive search" and my LMCS'2008 paper "Exhaustible sets in
 higher-type computation".
 
+Removed assumption of function extensionality 11th July 2024 by using
+the observation that 𝟚-valued uniformly continuous functions on the
+Cantor type are extensional in the sense that they map pointwise equal
+sequences to equal booleans.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}
@@ -18,7 +23,7 @@ open import UF.FunExt
 open import UF.Base
 open import UF.DiscreteAndSeparated
 
-module TypeTopology.CantorSearch (fe : funext 𝓤₀ 𝓤₀) where
+module TypeTopology.CantorSearch where
 
 \end{code}
 
@@ -114,12 +119,9 @@ head-cons n α = refl
 tail-cons : (n : 𝟚) (α : Cantor) → tail (cons n α) ＝ α
 tail-cons n α = refl
 
-cons-head-tail : (α : Cantor) → cons (head α) (tail α) ＝ α
-cons-head-tail α = dfunext fe h
- where
-  h : cons (head α) (tail α) ∼ α
-  h zero     = refl
-  h (succ i) = refl
+cons-head-tail : (α : Cantor) → α ∼ cons (head α) (tail α)
+cons-head-tail α 0        = refl
+cons-head-tail α (succ i) = refl
 
 \end{code}
 
@@ -222,6 +224,26 @@ cons-decreases-modulus p n b u α β = III
 
 \end{code}
 
+Added 11th July 2024. Uniformly continuous functions are extensional
+in the following sense. This allows us to remove the previous
+assumption of function extensionality.
+
+\begin{code}
+
+uniform-continuity-gives-extensionality : (p : Cantor → 𝟚)
+                                        → uniformly-continuous p
+                                        → (α β : Cantor) → α ∼ β → p α ＝ p β
+uniform-continuity-gives-extensionality p (n , u) = II
+ where
+  I : (n : ℕ) (α β : Cantor) → α ∼ β → α ＝⟦ n ⟧ β
+  I 0        α β h = ⋆
+  I (succ n) α β h = h 0 , I n (α ∘ succ) (β ∘ succ) (h ∘ succ)
+
+  II : (α β : Cantor) → α ∼ β → p α ＝ p β
+  II α β h = u α β (I n α β h)
+
+\end{code}
+
 We now define search over the Cantor space. The functions A and ε are
 mutually recursively defined. But of course we can consider only ε
 expanding the definition of A in that of ε, because the definition of
@@ -280,7 +302,7 @@ A-property→ : (p : Cantor → 𝟚)
 A-property→ p 0        u r α = p α  ＝⟨ u α c₀ ⋆ ⟩
                                p c₀ ＝⟨ r ⟩
                                ₁    ∎
-A-property→ p (succ n) u r α = IV
+A-property→ p (succ n) u r α = V
  where
   IH : (b : 𝟚) → A n (p ∘ cons b) ＝ ₁ → (β : Cantor) → p (cons b β) ＝ ₁
   IH b = A-property→ (p ∘ cons b) n (cons-decreases-modulus p n b u)
@@ -303,8 +325,18 @@ A-property→ p (succ n) u r α = IV
   III : p (cons (head α) (tail α)) ＝ ₁
   III = II (head α) (tail α)
 
-  IV : p α ＝ ₁
-  IV = transport (λ - → p - ＝ ₁) (cons-head-tail α) III
+  IV : p α ＝ p (cons (head α) (tail α))
+  IV = uniform-continuity-gives-extensionality
+        p
+        (succ n , u)
+        α
+        (cons (head α) (tail α))
+        (cons-head-tail α)
+
+  V : p α ＝ ₁
+  V =  p α                        ＝⟨ IV ⟩
+       p (cons (head α) (tail α)) ＝⟨ III ⟩
+       ₁                          ∎
 
 \end{code}
 
