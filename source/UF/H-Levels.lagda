@@ -130,7 +130,7 @@ Using closure under equivalence we can show closure under Σ and Π.
 \begin{code}
 
 hlevel-closed-under-Σ : (n : ℕ)
-                      → (X : 𝓤 ̇ ) (Y : X → 𝓤 ̇ )
+                      → (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ )
                       → X is-of-hlevel n
                       → ((x : X) → (Y x) is-of-hlevel n)
                       → (Σ Y) is-of-hlevel n
@@ -145,16 +145,23 @@ hlevel-closed-under-Σ (succ n) X Y l m (x , y) (x' , y') =
                                                             (transport Y p y)
                                                             y'))
 
-hlevel-closed-under-Π : {𝓤 : Universe}
+hlevel-closed-under-Π : {𝓤 𝓥 : Universe}
                       → (n : ℕ)
-                      → (X : 𝓤 ̇ ) (Y : X → 𝓤 ̇ )
+                      → (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ )
                       → ((x : X) → (Y x) is-of-hlevel n)
                       → (Π Y) is-of-hlevel n
-hlevel-closed-under-Π {𝓤} zero X Y m = Π-is-singleton (fe 𝓤 𝓤) m
-hlevel-closed-under-Π {𝓤} (succ n) X Y m f g =
-  hlevel-closed-under-equiv n (f ＝ g) (f ∼ g) (happly-≃ (fe 𝓤 𝓤))
+hlevel-closed-under-Π {𝓤} {𝓥} zero X Y m = Π-is-singleton (fe 𝓤 𝓥) m
+hlevel-closed-under-Π {𝓤} {𝓥} (succ n) X Y m f g = 
+  hlevel-closed-under-equiv n (f ＝ g) (f ∼ g) (happly-≃ (fe 𝓤 𝓥))
                             (hlevel-closed-under-Π n X (λ x → f x ＝ g x)
                                                    (λ x → m x (f x) (g x)))
+
+hlevel-closed-under-→ : {𝓤 𝓥 : Universe}
+                      → (n : ℕ)
+                      → (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )
+                      → Y is-of-hlevel n
+                      → (X → Y) is-of-hlevel n
+hlevel-closed-under-→ n X Y m = hlevel-closed-under-Π n X (λ - → Y) (λ - → m)
 
 \end{code}
 
@@ -245,13 +252,145 @@ We now define the notion of a k-truncation using record types.
 
 record H-level-truncations-exist : 𝓤ω where
  field
-  ∣∣_∣∣_ : {𝓤 : Universe} → 𝓤 ̇ → ℕ → 𝓤 ̇
-  ∣∣∣∣-is-prop : {𝓤 : Universe} {X : 𝓤 ̇ } {n : ℕ} → is-prop (∣∣ X ∣∣ n)
-  ∣_∣_ :  {𝓤 : Universe} {X : 𝓤 ̇ } → X → (n : ℕ) → ∣∣ X ∣∣ n
-  ∣∣∣∣-rec : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {n : ℕ}
-           → Y is-of-hlevel n → (X → Y) → ∣∣ X ∣∣ n → Y
- infix 0 ∣∣_∣∣_
- infix 0 ∣_∣_
+  ∣∣_∣∣[_] : {𝓤 : Universe} → 𝓤 ̇ → ℕ → 𝓤 ̇
+  ∣∣∣∣-h-level : {𝓤 : Universe} {X : 𝓤 ̇ } (n : ℕ) → X is-of-hlevel n
+  ∣_∣[_] :  {𝓤 : Universe} {X : 𝓤 ̇ } → X → (n : ℕ) → ∣∣ X ∣∣[ n ]
+  ∣∣∣∣-ind : {X : 𝓤 ̇ } {n : ℕ} {P : ∣∣ X ∣∣[ n ] → 𝓥 ̇ }
+           → ((s : ∣∣ X ∣∣[ n ]) → (P s) is-of-hlevel n)
+           → ((x : X) → P (∣ x ∣[ n ]))
+           → (s : ∣∣ X ∣∣[ n ]) → P s
+  ∣∣∣∣-ind-comp : {X : 𝓤 ̇ } {n : ℕ} {P : ∣∣ X ∣∣[ n ] → 𝓥 ̇ }
+                → (m : (s : ∣∣ X ∣∣[ n ]) → (P s) is-of-hlevel n)
+                → (g : (x : X) → P (∣ x ∣[ n ]))
+                → (x : X) → ∣∣∣∣-ind m g (∣ x ∣[ n ]) ＝ g x
+ infix 0 ∣∣_∣∣[_]
+ infix 0 ∣_∣[_]
+
+\end{code}
+
+We add truncation recursion.
+
+\begin{code}
+
+module GeneralTruncations
+        (te : H-level-truncations-exist)
+        (ua : Univalence)
+       where
+
+ open H-level-truncations-exist te
+
+ ∣∣∣∣-rec : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {n : ℕ}
+          → Y is-of-hlevel n → (X → Y) → ∣∣ X ∣∣[ n ] → Y
+ ∣∣∣∣-rec {𝓤} {𝓥} {X} {Y} {n} Y-h-level f s = ∣∣∣∣-ind (λ - → Y-h-level) f s
+
+ ∣∣∣∣-rec-comp : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {n : ℕ}
+               → (m : Y is-of-hlevel n)
+               → (g : X → Y)
+               → (x : X) → ∣∣∣∣-rec m g ∣ x ∣[ n ] ＝ g x
+ ∣∣∣∣-rec-comp m g = ∣∣∣∣-ind-comp (λ - → m) g
+
+ ∣∣∣∣-rec-double : {𝓤 𝓥 𝓦 : Universe} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {n : ℕ}
+                 → Z is-of-hlevel n
+                 → (X → Y → Z)
+                 → ∣∣ X ∣∣[ n ] → ∣∣ Y ∣∣[ n ] → Z
+ ∣∣∣∣-rec-double {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {n} Z-h-level f =
+  ∣∣∣∣-rec (hlevel-closed-under-→ n (∣∣ Y ∣∣[ n ])  Z Z-h-level)
+           (λ x → ∣∣∣∣-rec Z-h-level (λ y → f x y))
+
+ ∣∣∣∣-rec-double-comp : {𝓤 𝓥 𝓦 : Universe}
+                        {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {n : ℕ}
+                      → (m : Z is-of-hlevel n)
+                      → (g : X → Y → Z)
+                      → (x : X) → (y : Y)
+                      → ∣∣∣∣-rec-double m g ∣ x ∣[ n ] ∣ y ∣[ n ] ＝ g x y
+ ∣∣∣∣-rec-double-comp m g = {!!}
+
+ ∣∣∣∣-ind-double : {𝓤 𝓥 𝓦 : Universe} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {n : ℕ}
+                   {P : ∣∣ X ∣∣[ n ] → ∣∣ Y ∣∣[ n ] → 𝓦 ̇ } 
+                 → ((u : ∣∣ X ∣∣[ n ]) → (v : ∣∣ Y ∣∣[ n ])
+                    → (P u v) is-of-hlevel n)
+                 → ((x : X) → (y : Y) → P (∣ x ∣[ n ]) (∣ y ∣[ n ]))
+                 → (u : ∣∣ X ∣∣[ n ]) → (v : ∣∣ Y ∣∣[ n ]) → P u v
+ ∣∣∣∣-ind-double {𝓤} {𝓥} {𝓦} {X} {Y} {n} {P} P-h-level f =
+  ∣∣∣∣-ind (λ u → hlevel-closed-under-Π n ∣∣ Y ∣∣[ n ] (P u)
+                                        (λ v → P-h-level u v))
+           (λ x → ∣∣∣∣-ind (λ v → P-h-level ∣ x ∣[ n ] v) (λ y → f x y))
+
+ canonical-id-trunc-map : {𝓤 : Universe} {X : 𝓤 ̇} {x y : X} {n : ℕ}
+                        → ∣∣ x ＝ y ∣∣[ n ]
+                        → (∣ x ∣[ succ n ] ＝ ∣ y ∣[ succ n ])
+ canonical-id-trunc-map {𝓤} {X} {x} {y} {n} =
+  ∣∣∣∣-rec (∣∣∣∣-h-level n) (ap (λ p → ∣ p ∣[ (succ n) ]))
+
+ private
+  P' : {𝓤 : Universe} {X : 𝓤 ̇} {n : ℕ}
+    → ∣∣ X ∣∣[ succ n ] → ∣∣ X ∣∣[ succ n ] → ℍ n 𝓤
+  P' {𝓤} {X} {n} =
+   ∣∣∣∣-rec-double (ℍ-is-of-next-hlevel n 𝓤 (ua 𝓤))
+                   (λ x x' → (∣∣ x ＝ x' ∣∣[ n ] , ∣∣∣∣-h-level n))
+
+  P : {𝓤 : Universe} {X : 𝓤 ̇} {n : ℕ}
+    → ∣∣ X ∣∣[ succ n ] → ∣∣ X ∣∣[ succ n ] → 𝓤 ̇
+  P u v = pr₁ (P' u v)
+
+ P-computes : {𝓤 : Universe} {X : 𝓤 ̇} {x y : X} {n : ℕ}
+            → P ∣ x ∣[ succ n ] ∣ y ∣[ succ n ] ＝ ∣∣ x ＝ y ∣∣[ n ]
+ P-computes = {!∣∣∣∣-rec-double-comp!}
+
+ gen-trunc-id-type-char : {𝓤 : Universe} {X : 𝓤 ̇} {n : ℕ}
+                        → (u v : ∣∣ X ∣∣[ succ n ])
+                        → P u v ≃ (u ＝ v)
+ gen-trunc-id-type-char {𝓤} {X} {n} = {!!}
+  where
+   encode : (u v : ∣∣ X ∣∣[ succ n ])
+          → P u v → u ＝ v
+   encode =
+    ∣∣∣∣-ind-double (λ u v → hlevel-closed-under-→ (succ n) (P u v) (u ＝ v)
+                                                   (∣∣∣∣-h-level (succ n)))
+                    {!!}
+   decode : (u v : ∣∣ X ∣∣[ succ n ])
+          → u ＝ v → P u v
+   decode = {!!}
+
+ trunc-id-type-char : {𝓤 : Universe} {X : 𝓤 ̇} {x y : X} {n : ℕ}
+                    → ∣∣ x ＝ y ∣∣[ n ]
+                    ≃ (∣ x ∣[ succ n ] ＝ ∣ y ∣[ succ n ])
+ trunc-id-type-char {𝓤} {X} {x} {y} {n} = {!!}
+  where
+   ϕ : ∣∣ x ＝ y ∣∣[ n ] → (∣ x ∣[ succ n ] ＝ ∣ y ∣[ succ n ])
+   ϕ = ∣∣∣∣-rec (∣∣∣∣-h-level n) (ap (λ p → ∣ p ∣[ (succ n) ]))
+   ψ : (∣ x ∣[ succ n ] ＝ ∣ y ∣[ succ n ]) → ∣∣ x ＝ y ∣∣[ n ]
+   ψ = {!!}
+
+\end{code}
+
+We now add some code that allows us to identify the 1-truncation and
+propositional truncation:
+  ∣∣ X ∣∣₁ ≃ ∥ X ∥
+
+\begin{code}
+
+module _ (te : H-level-truncations-exist)
+         (pt : propositional-truncations-exist)
+         (ua : Univalence)
+          where
+
+ open H-level-truncations-exist te
+ open GeneralTruncations te ua
+ open propositional-truncations-exist pt
+
+ 1-trunc-is-prop : {X : 𝓤 ̇} → is-prop (∣∣ X ∣∣[ 1 ])
+ 1-trunc-is-prop = is-prop'-implies-is-prop (∣∣∣∣-h-level 1)
+
+ 1-trunc-≃-prop-trunc : {X : 𝓤 ̇}
+                      → (∣∣ X ∣∣[ 1 ]) ≃ ∥ X ∥
+ 1-trunc-≃-prop-trunc {𝓤} {X} =
+  logically-equivalent-props-are-equivalent 1-trunc-is-prop ∥∥-is-prop ϕ ψ
+  where
+   ϕ : ∣∣ X ∣∣[ 1 ] → ∥ X ∥
+   ϕ = ∣∣∣∣-rec (is-prop-implies-is-prop' ∥∥-is-prop) ∣_∣
+   ψ : ∥ X ∥ → ∣∣ X ∣∣[ 1 ]
+   ψ = ∥∥-rec 1-trunc-is-prop (λ x → ∣ x ∣[ 1 ])
 
 \end{code}
 
@@ -261,12 +400,15 @@ library is a special case of what follows.
 
 \begin{code}
 
-module k-connectedness (te : H-level-truncations-exist) where
+module k-connectedness
+        (te : H-level-truncations-exist)
+        (ua : Univalence)
+       where
 
  open H-level-truncations-exist te
 
  _is_connected : 𝓤 ̇ → ℕ → 𝓤 ̇
- X is k connected = is-contr (∣∣ X ∣∣ k)
+ X is k connected = is-contr (∣∣ X ∣∣[ k ])
 
  map_is_connected : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (f : X → Y) → ℕ → 𝓤 ⊔ 𝓥 ̇
  map f is k connected = (y : codomain f) → (fiber f y) is k connected
@@ -278,11 +420,20 @@ We now add some results about connectedness.
 \begin{code}
 
  open propositional-truncations-exist pt
+ open GeneralTruncations te ua
 
  connected-characterization : {X : 𝓤 ̇} {n : ℕ}
                             → X is (succ n) connected
-                            ↔ ∥ X ∥ × ((x y : X) → {!x ＝ y!} is n connected)
- connected-characterization = {!!}
+                            ↔ ∥ X ∥ × ((x y : X) → (x ＝ y) is n connected)
+ connected-characterization {𝓤} {X} {zero} = (left-to-right , {!!})
+  where
+   left-to-right : X is 1 connected
+                 → ∥ X ∥ × ((x y : X) → (x ＝ y) is zero connected)
+   left-to-right X-is-conn =
+    (center (equiv-to-singleton' (1-trunc-≃-prop-trunc te pt ua) X-is-conn)
+     , {!!})
+ connected-characterization {𝓤} {X} {succ n} = ({!!} , {!!})
+
 
  ap-is-less-connected : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (f : X → Y)
                       → (n : ℕ)
