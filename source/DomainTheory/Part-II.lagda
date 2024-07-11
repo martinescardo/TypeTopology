@@ -2,7 +2,7 @@ Tom de Jong, July 2024.
 
 This file corresponds to the paper
 
-   "Domain Theory in Univalent Foundations II:
+   "Domain theory in univalent foundations II:
     Continuous and algebraic domains"
    Tom de Jong and Martín Hötzel Escardó
    2024
