@@ -422,8 +422,11 @@ basis-tetrachotomy-for-Patch-𝕊 ((i , j) ∷ is) =
                 (binary-join (𝒪 Patch-𝕊) (meet-of (𝒪 Patch-𝕊) closed-truth (𝔬 j)) (ℬ-patch-↑ [ is ]))
      case₂-c p = {!!}
       where
-       r : ?
-       r = ?
+       r : ((closed-truth ∧[ 𝒪 Patch-𝕊 ] 𝔬 j) ∨[ 𝒪 Patch-𝕊 ] ℬ-patch-↑ [ is ])
+           ＝ ((closed-truth ∧[ 𝒪 Patch-𝕊 ] 𝟏[ 𝒪 Patch-𝕊 ]) ∨[ 𝒪 Patch-𝕊 ] ℬ-patch-↑ [ is ])
+       r = (closed-truth ∧[ 𝒪 Patch-𝕊 ] 𝔬 j) ∨[ 𝒪 Patch-𝕊 ] (ℬ-patch-↑ [ is ])
+            ＝⟨ {!!} ⟩
+           {!!} ∎
 
      † : equal-to-one-of-the-four-compact-opensₚ
           ((closed-truth ∧[ 𝒪 Patch-𝕊 ] 𝔬 j) ∨[ 𝒪 Patch-𝕊 ] (ℬ-patch-↑ [ is ]))
