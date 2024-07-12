@@ -280,7 +280,8 @@ basis-tetrachotomy-for-Patch-𝕊 ((i , j) ∷ is) =
             (to-𝒦-＝ 𝕊 (𝜸-gives-compact-opens j) truth-is-compact q)
 
        case₁b-α : ℬ-patch-↑ [ is ] ＝ closed-𝟎
-                → equal-to-one-of-the-four-compact-opensₚ (binary-join (𝒪 Patch-𝕊) open-truth (ℬ-patch-↑ [ is ]))
+                → equal-to-one-of-the-four-compact-opensₚ
+                   (open-truth ∨[ 𝒪 Patch-𝕊 ] ℬ-patch-↑ [ is ])
        case₁b-α p = inr (inr (inl †))
         where
          Ⅰ = ap (λ - → open-truth ∨[ 𝒪 Patch-𝕊 ] -) p
@@ -371,7 +372,7 @@ basis-tetrachotomy-for-Patch-𝕊 ((i , j) ∷ is) =
 
    case₂ : 𝜸 i ＝ truth
          → equal-to-one-of-the-four-compact-opensₚ (ℬ-patch-↑ [ i , j ∷ is ])
-   case₂ p = transport equal-to-one-of-the-four-compact-opensₚ (r ⁻¹) (case-lemma₂ j is)
+   case₂ p = transport equal-to-one-of-the-four-compact-opensₚ (q′ ⁻¹) †
     where
      q : (ℬ-patch-↑ [ (i , j) ∷ is ]) ＝ (𝔠 i ∧[ 𝒪 Patch-𝕊 ] 𝔬 j) ∨[ 𝒪 Patch-𝕊 ] ℬ-patch-↑ [ is ]
      q = refl
@@ -383,18 +384,50 @@ basis-tetrachotomy-for-Patch-𝕊 ((i , j) ∷ is) =
               (ℬ-patch-↑ [ is ]))
            (ap (λ - → ‘ - ’) p)
 
-     Ⅰ = q′
-     Ⅱ = ap
-          (λ - →
-             binary-join (𝒪 Patch-𝕊) (meet-of (𝒪 Patch-𝕊) - (𝔬 j))
-             (ℬ-patch-↑ [ is ]))
-          {!closed-truth-is-𝟏!}
+     case₂-a : 𝜸 j ＝ 𝟏[ 𝒪 𝕊 ]
+             → equal-to-one-of-the-four-compact-opensₚ
+                (closed-truth ∧[ 𝒪 Patch-𝕊 ] (𝔬 j) ∨[ 𝒪 Patch-𝕊 ] ℬ-patch-↑ [ is ])
+     case₂-a p = transport equal-to-one-of-the-four-compact-opensₚ (r ⁻¹) IH
+      where
+       Ⅰ = ap
+            (λ - → (closed-truth ∧[ 𝒪 Patch-𝕊 ] ¬‘ - ’) ∨[ 𝒪 Patch-𝕊 ] ℬ-patch-↑ [ is ])
+            (to-𝒦-＝ 𝕊 (𝜸-gives-compact-opens j) 𝕊-is-compact p)
+       Ⅱ = ap
+            (λ - → ((closed-truth ∧[ 𝒪 Patch-𝕊 ] -) ∨[ 𝒪 Patch-𝕊 ] ℬ-patch-↑ [ is ]))
+            open-𝟏-is-bottom
+       Ⅲ = ap
+            (λ - → - ∨[ 𝒪 Patch-𝕊 ] ℬ-patch-↑ [ is ])
+            (𝟎-right-annihilator-for-∧ (𝒪 Patch-𝕊) closed-truth)
+       Ⅳ = 𝟎-right-unit-of-∨ (𝒪 Patch-𝕊) (ℬ-patch-↑ [ is ])
 
-     r : ℬ-patch-↑ [ (i , j) ∷ is ] ＝ 𝔬 j ∨[ 𝒪 Patch-𝕊 ] ℬ-patch-↑ [ is ]
-     r = (𝔠 i ∧[ 𝒪 Patch-𝕊 ] 𝔬 j) ∨[ 𝒪 Patch-𝕊 ] ℬ-patch-↑ [ is ]             ＝⟨ Ⅰ ⟩
-         (closed-truth ∧[ 𝒪 Patch-𝕊 ] 𝔬 j) ∨[ 𝒪 Patch-𝕊 ] ℬ-patch-↑ [ is ]    ＝⟨ Ⅱ ⟩
-         (𝟏[ 𝒪 Patch-𝕊 ] ∧[ 𝒪 Patch-𝕊 ] 𝔬 j) ∨[ 𝒪 Patch-𝕊 ] ℬ-patch-↑ [ is ]  ＝⟨ {!!} ⟩
-         𝔬 j ∨[ 𝒪 Patch-𝕊 ] ℬ-patch-↑ [ is ]                                  ∎
+       r : ((closed-truth ∧[ 𝒪 Patch-𝕊 ] 𝔬 j) ∨[ 𝒪 Patch-𝕊 ] ℬ-patch-↑ [ is ])
+           ＝ (ℬ-patch-↑ [ is ])
+       r = (closed-truth ∧[ 𝒪 Patch-𝕊 ] 𝔬 j) ∨[ 𝒪 Patch-𝕊 ] ℬ-patch-↑ [ is ]
+             ＝⟨ Ⅰ ⟩
+          (closed-truth ∧[ 𝒪 Patch-𝕊 ] open-𝟏) ∨[ 𝒪 Patch-𝕊 ] ℬ-patch-↑ [ is ]
+             ＝⟨ Ⅱ ⟩
+          (closed-truth ∧[ 𝒪 Patch-𝕊 ] 𝟎[ 𝒪 Patch-𝕊 ]) ∨[ 𝒪 Patch-𝕊 ] ℬ-patch-↑ [ is ]
+             ＝⟨ Ⅲ ⟩
+          𝟎[ 𝒪 Patch-𝕊 ] ∨[ 𝒪 Patch-𝕊 ] (ℬ-patch-↑ [ is ])
+             ＝⟨ Ⅳ ⟩
+          (ℬ-patch-↑ [ is ]) ∎
+
+     case₂-b : 𝜸 j ＝ truth
+             → equal-to-one-of-the-four-compact-opensₚ
+                (closed-truth ∧[ 𝒪 Patch-𝕊 ] (𝔬 j) ∨[ 𝒪 Patch-𝕊 ] (ℬ-patch-↑ [ is ]))
+     case₂-b = {!!}
+
+     case₂-c : 𝜸 j ＝ 𝟎[ 𝒪 𝕊 ]
+             → equal-to-one-of-the-four-compact-opensₚ
+                (binary-join (𝒪 Patch-𝕊) (meet-of (𝒪 Patch-𝕊) closed-truth (𝔬 j)) (ℬ-patch-↑ [ is ]))
+     case₂-c p = {!!}
+      where
+       r : ?
+       r = ?
+
+     † : equal-to-one-of-the-four-compact-opensₚ
+          ((closed-truth ∧[ 𝒪 Patch-𝕊 ] 𝔬 j) ∨[ 𝒪 Patch-𝕊 ] (ℬ-patch-↑ [ is ]))
+     † = cases₃ case₂-a case₂-b case₂-c (basis-trichotomy j)
 
    case₃ : 𝜸 i ＝ 𝟎[ 𝒪 𝕊 ]
          → equal-to-one-of-the-four-compact-opensₚ (ℬ-patch-↑ [ i , j ∷ is ])
