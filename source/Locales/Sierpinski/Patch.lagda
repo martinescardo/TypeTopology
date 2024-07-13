@@ -202,6 +202,26 @@ open PatchComplementation 𝕊 σᴰ
 important-lemma : open-truth ∨[ 𝒪 Patch-𝕊 ] closed-truth ＝ 𝟏[ 𝒪 Patch-𝕊 ]
 important-lemma = pr₂ (closed-complements-open truth truth-is-compact)
 
+important-lemma′ : closed-truth ∨[ 𝒪 Patch-𝕊 ] open-truth ＝ 𝟏[ 𝒪 Patch-𝕊 ]
+important-lemma′ = closed-truth ∨[ 𝒪 Patch-𝕊 ] open-truth   ＝⟨ Ⅰ ⟩
+                   open-truth ∨[ 𝒪 Patch-𝕊 ] closed-truth   ＝⟨ Ⅱ ⟩
+                   𝟏[ 𝒪 Patch-𝕊 ]                           ∎
+                    where
+                     Ⅰ = ∨[ 𝒪 Patch-𝕊 ]-is-commutative closed-truth open-truth
+                     Ⅱ = important-lemma
+
+important-lemma₂ : open-truth ∧[ 𝒪 Patch-𝕊 ] closed-truth ＝ 𝟎[ 𝒪 Patch-𝕊 ]
+important-lemma₂ = pr₁ (closed-complements-open truth truth-is-compact)
+
+important-lemma₂′ : closed-truth ∧[ 𝒪 Patch-𝕊 ] open-truth ＝ 𝟎[ 𝒪 Patch-𝕊 ]
+important-lemma₂′ =
+ closed-truth ∧[ 𝒪 Patch-𝕊 ] open-truth   ＝⟨ Ⅰ ⟩
+ open-truth ∧[ 𝒪 Patch-𝕊 ] closed-truth   ＝⟨ Ⅱ ⟩
+ 𝟎[ 𝒪 Patch-𝕊 ]                           ∎
+  where
+   Ⅰ = ∧[ 𝒪 Patch-𝕊 ]-is-commutative closed-truth open-truth
+   Ⅱ = important-lemma₂
+
 \end{code}
 
 We now write down a type family expressing that a given open is equal to one
@@ -229,11 +249,6 @@ case-lemma₁ 𝒿 𝓀 p = inr (inr (inr †))
       𝒿 ∨[ 𝒪 Patch-𝕊 ] 𝟏[ 𝒪 Patch-𝕊 ]  ＝⟨ Ⅲ ⟩
       𝟏[ 𝒪 Patch-𝕊 ]                   ＝⟨ Ⅳ ⟩
       closed-𝟏                         ∎
-
-case-lemma₂ : (i : index ℬ𝕊)
-            → (is : index ℬ-patch-↑)
-            → equal-to-one-of-the-four-compact-opensₚ (𝔬 i ∨[ 𝒪 Patch-𝕊 ] ℬ-patch-↑ [ is ])
-case-lemma₂ i is = {!!}
 
 basis-tetrachotomy-for-Patch-𝕊
  : (i : index ℬ-patch-↑)
@@ -415,18 +430,105 @@ basis-tetrachotomy-for-Patch-𝕊 ((i , j) ∷ is) =
      case₂-b : 𝜸 j ＝ truth
              → equal-to-one-of-the-four-compact-opensₚ
                 (closed-truth ∧[ 𝒪 Patch-𝕊 ] (𝔬 j) ∨[ 𝒪 Patch-𝕊 ] (ℬ-patch-↑ [ is ]))
-     case₂-b = {!!}
+     case₂-b p = transport equal-to-one-of-the-four-compact-opensₚ (r ⁻¹) IH
+      where
+       Ⅰ = ap
+            (λ - →
+               binary-join (𝒪 Patch-𝕊) (meet-of (𝒪 Patch-𝕊) closed-truth -)
+               (ℬ-patch-↑ [ is ]))
+            (ap (λ - → ¬‘ - ’) (to-𝒦-＝ 𝕊 (𝜸-gives-compact-opens j) truth-is-compact p))
+       Ⅱ = ap (λ - → (- ∨[ 𝒪 Patch-𝕊 ] ℬ-patch-↑ [ is ])) important-lemma₂′
+       Ⅲ = 𝟎-right-unit-of-∨ (𝒪 Patch-𝕊) (ℬ-patch-↑ [ is ])
+
+       r : (closed-truth ∧[ 𝒪 Patch-𝕊 ] 𝔬 j ∨[ 𝒪 Patch-𝕊 ] ℬ-patch-↑ [ is ])
+           ＝ ℬ-patch-↑ [ is ]
+       r = ((closed-truth ∧[ 𝒪 Patch-𝕊 ] 𝔬 j) ∨[ 𝒪 Patch-𝕊 ] ℬ-patch-↑ [ is ])
+             ＝⟨ Ⅰ ⟩
+           ((closed-truth ∧[ 𝒪 Patch-𝕊 ] open-truth) ∨[ 𝒪 Patch-𝕊 ] ℬ-patch-↑ [ is ])
+             ＝⟨ Ⅱ ⟩
+           (𝟎[ 𝒪 Patch-𝕊 ] ∨[ 𝒪 Patch-𝕊 ] ℬ-patch-↑ [ is ])
+             ＝⟨ Ⅲ ⟩
+           ℬ-patch-↑ [ is ]
+             ∎
 
      case₂-c : 𝜸 j ＝ 𝟎[ 𝒪 𝕊 ]
              → equal-to-one-of-the-four-compact-opensₚ
-                (binary-join (𝒪 Patch-𝕊) (meet-of (𝒪 Patch-𝕊) closed-truth (𝔬 j)) (ℬ-patch-↑ [ is ]))
-     case₂-c p = {!!}
+                ((closed-truth ∧[ 𝒪 Patch-𝕊 ] (𝔬 j)) ∨[ 𝒪 Patch-𝕊 ] (ℬ-patch-↑ [ is ]))
+     case₂-c p = transport equal-to-one-of-the-four-compact-opensₚ (r ⁻¹) ‡
       where
+       case₂-c-α : ℬ-patch-↑ [ is ] ＝ closed-𝟎 →
+                    equal-to-one-of-the-four-compact-opensₚ
+                    (binary-join (𝒪 Patch-𝕊) closed-truth (ℬ-patch-↑ [ is ]))
+       case₂-c-α q = inr (inl †)
+        where
+         Ⅰ = ap (λ - → closed-truth ∨[ 𝒪 Patch-𝕊 ] -) q
+         Ⅱ = ap (λ - → closed-truth ∨[ 𝒪 Patch-𝕊 ] -) closed-𝟎-is-bottom
+         Ⅲ = 𝟎-left-unit-of-∨ (𝒪 Patch-𝕊) closed-truth
+
+         † : closed-truth ∨[ 𝒪 Patch-𝕊 ] ℬ-patch-↑ [ is ] ＝ closed-truth
+         † = closed-truth ∨[ 𝒪 Patch-𝕊 ] ℬ-patch-↑ [ is ]   ＝⟨ Ⅰ ⟩
+             closed-truth ∨[ 𝒪 Patch-𝕊 ] closed-𝟎           ＝⟨ Ⅱ ⟩
+             closed-truth ∨[ 𝒪 Patch-𝕊 ] 𝟎[ 𝒪 Patch-𝕊 ]     ＝⟨ Ⅲ ⟩
+             closed-truth                                   ∎
+
+       case₂-c-β : ℬ-patch-↑ [ is ] ＝ closed-truth →
+                    equal-to-one-of-the-four-compact-opensₚ
+                    (binary-join (𝒪 Patch-𝕊) closed-truth (ℬ-patch-↑ [ is ]))
+       case₂-c-β q = inr (inl †)
+        where
+         Ⅰ = ap (λ - → closed-truth ∨[ 𝒪 Patch-𝕊 ] -) q
+         Ⅱ = ∨[ 𝒪 Patch-𝕊 ]-is-idempotent closed-truth ⁻¹
+
+         † : closed-truth ∨[ 𝒪 Patch-𝕊 ] (ℬ-patch-↑ [ is ]) ＝ closed-truth
+         † = closed-truth ∨[ 𝒪 Patch-𝕊 ] (ℬ-patch-↑ [ is ])  ＝⟨ Ⅰ ⟩
+             closed-truth ∨[ 𝒪 Patch-𝕊 ] closed-truth        ＝⟨ Ⅱ ⟩
+             closed-truth                                    ∎
+
+       case₂-c-γ : ℬ-patch-↑ [ is ] ＝ open-truth
+                 → equal-to-one-of-the-four-compact-opensₚ
+                    (closed-truth ∨[ 𝒪 Patch-𝕊 ] (ℬ-patch-↑ [ is ]))
+       case₂-c-γ p = inr (inr (inr †))
+        where
+         Ⅰ = ap (λ - → closed-truth ∨[ 𝒪 Patch-𝕊 ] -) p
+         Ⅱ = important-lemma′
+
+         r : closed-truth ∨[ 𝒪 Patch-𝕊 ] (ℬ-patch-↑ [ is ]) ＝ 𝟏[ 𝒪 Patch-𝕊 ]
+         r = closed-truth ∨[ 𝒪 Patch-𝕊 ] (ℬ-patch-↑ [ is ]) ＝⟨ Ⅰ ⟩
+             closed-truth ∨[ 𝒪 Patch-𝕊 ] open-truth         ＝⟨ Ⅱ ⟩
+             𝟏[ 𝒪 Patch-𝕊 ]                                 ∎
+
+         † : closed-truth ∨[ 𝒪 Patch-𝕊 ] (ℬ-patch-↑ [ is ]) ＝ closed-𝟏
+         † = closed-truth ∨[ 𝒪 Patch-𝕊 ] (ℬ-patch-↑ [ is ]) ＝⟨ r ⟩
+             𝟏[ 𝒪 Patch-𝕊 ]                                 ＝⟨ closed-𝟏-is-top ⁻¹ ⟩
+             closed-𝟏                                        ∎
+
+       case₂-c-δ : ℬ-patch-↑ [ is ] ＝ closed-𝟏 →
+                    equal-to-one-of-the-four-compact-opensₚ
+                    (binary-join (𝒪 Patch-𝕊) closed-truth (ℬ-patch-↑ [ is ]))
+       case₂-c-δ = case-lemma₁ closed-truth (ℬ-patch-↑ [ is ])
+
+       Ⅰ = ap
+            (λ - → closed-truth ∧[ 𝒪 Patch-𝕊 ] ¬‘ - ’ ∨[ 𝒪 Patch-𝕊 ] (ℬ-patch-↑ [ is ]))
+            (to-𝒦-＝ 𝕊 (𝜸-gives-compact-opens j) (𝟎-is-compact 𝕊) p)
+       Ⅱ = ap
+            (λ - → (closed-truth ∧[ 𝒪 Patch-𝕊 ] -) ∨[ 𝒪 Patch-𝕊 ] (ℬ-patch-↑ [ is ]))
+            open-𝟎-is-top
+       Ⅲ = ap (λ - → - ∨[ 𝒪 Patch-𝕊 ] (ℬ-patch-↑ [ is ])) (𝟏-right-unit-of-∧ (𝒪 Patch-𝕊) closed-truth)
+
        r : ((closed-truth ∧[ 𝒪 Patch-𝕊 ] 𝔬 j) ∨[ 𝒪 Patch-𝕊 ] ℬ-patch-↑ [ is ])
-           ＝ ((closed-truth ∧[ 𝒪 Patch-𝕊 ] 𝟏[ 𝒪 Patch-𝕊 ]) ∨[ 𝒪 Patch-𝕊 ] ℬ-patch-↑ [ is ])
+           ＝ (closed-truth ∨[ 𝒪 Patch-𝕊 ] ℬ-patch-↑ [ is ])
        r = (closed-truth ∧[ 𝒪 Patch-𝕊 ] 𝔬 j) ∨[ 𝒪 Patch-𝕊 ] (ℬ-patch-↑ [ is ])
-            ＝⟨ {!!} ⟩
-           {!!} ∎
+            ＝⟨ Ⅰ ⟩
+           (closed-truth ∧[ 𝒪 Patch-𝕊 ] open-𝟎) ∨[ 𝒪 Patch-𝕊 ] (ℬ-patch-↑ [ is ])
+            ＝⟨ Ⅱ ⟩
+           (closed-truth ∧[ 𝒪 Patch-𝕊 ] 𝟏[ 𝒪 Patch-𝕊 ]) ∨[ 𝒪 Patch-𝕊 ] (ℬ-patch-↑ [ is ])
+            ＝⟨ Ⅲ ⟩
+           closed-truth ∨[ 𝒪 Patch-𝕊 ] ℬ-patch-↑ [ is ]
+            ∎
+
+       ‡ : equal-to-one-of-the-four-compact-opensₚ
+            (closed-truth ∨[ 𝒪 Patch-𝕊 ] ℬ-patch-↑ [ is ])
+       ‡ = cases₄ case₂-c-α case₂-c-β case₂-c-γ case₂-c-δ IH
 
      † : equal-to-one-of-the-four-compact-opensₚ
           ((closed-truth ∧[ 𝒪 Patch-𝕊 ] 𝔬 j) ∨[ 𝒪 Patch-𝕊 ] (ℬ-patch-↑ [ is ]))
