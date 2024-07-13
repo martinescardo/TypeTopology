@@ -13,14 +13,22 @@ open import UF.FunExt
 open import UF.PropTrunc
 open import UF.Size
 open import UF.Subsingletons
+open import UF.UA-FunExt
+open import UF.Univalence
 
 module Locales.Sierpinski.Patch
         (𝓤  : Universe)
-        (pe : Prop-Ext)
+        (ua : Univalence)
         (pt : propositional-truncations-exist)
-        (fe : Fun-Ext)
         (sr : Set-Replacement pt)
        where
+
+private
+ fe : Fun-Ext
+ fe {𝓤} {𝓥} = univalence-gives-funext' 𝓤 𝓥 (ua 𝓤) (ua (𝓤 ⊔ 𝓥))
+
+ pe : Prop-Ext
+ pe {𝓤} = univalence-gives-propext (ua 𝓤)
 
 open import DomainTheory.BasesAndContinuity.Bases pt fe 𝓤
 open import DomainTheory.BasesAndContinuity.Continuity pt fe 𝓤
@@ -30,25 +38,32 @@ open import DomainTheory.Basics.Pointed pt fe 𝓤 renaming (⊥ to ⊥∙)
 open import DomainTheory.Basics.WayBelow pt fe 𝓤
 open import DomainTheory.Lifting.LiftingSet pt fe 𝓤 pe
 open import DomainTheory.Lifting.LiftingSetAlgebraic pt pe fe 𝓤
+open import DomainTheory.Topology.ScottTopology pt fe 𝓤
 open import Lifting.Construction 𝓤
 open import Lifting.Miscelanea-PropExt-FunExt 𝓤 pe fe
 open import Lifting.UnivalentPrecategory 𝓤 (𝟙 {𝓤})
 open import Locales.Compactness pt fe
+open import Locales.Complements pt fe
 open import Locales.ContinuousMap.Definition pt fe
 open import Locales.ContinuousMap.FrameHomomorphism-Definition pt fe
 open import Locales.ContinuousMap.FrameHomomorphism-Properties pt fe
+open import Locales.DiscreteLocale.Two fe pe pt
+open import Locales.DiscreteLocale.Two-Properties fe pe pt sr 𝓤
+open import Locales.DistributiveLattice.Definition fe pt
 open import Locales.Frame pt fe hiding (𝟚; is-directed)
 open import Locales.HeytingImplication pt fe
 open import Locales.InitialFrame pt fe
 open import Locales.Sierpinski.Definition 𝓤 pe pt fe sr
 open import Locales.Sierpinski.Properties 𝓤 pe pt fe sr
 open import Locales.SmallBasis pt fe sr
-open import Locales.Complements pt fe
+open import Locales.Spectrality.LatticeOfCompactOpens ua pt sr
 open import Locales.Spectrality.SpectralLocale pt fe
 open import Locales.Spectrality.SpectralMap pt fe
 open import Locales.Stone pt fe sr
 open import MLTT.List hiding ([_])
+open import MLTT.Sigma
 open import Slice.Family
+open import UF.Base
 open import UF.DiscreteAndSeparated
 open import UF.Equiv
 open import UF.Logic
@@ -61,6 +76,8 @@ open FrameHomomorphismProperties
 open FrameHomomorphisms
 open Locale
 open PropositionalTruncation pt
+
+open AllCombinators pt fe
 
 \end{code}
 
@@ -561,5 +578,84 @@ basis-tetrachotomy-for-Patch-𝕊 ((i , j) ∷ is) =
                 (λ - → - ∨[ 𝒪 Patch-𝕊 ] ℬ-patch-↑ [ is ])
                 (𝟎-left-annihilator-for-∧ (𝒪 Patch-𝕊) (𝔬 j))
            Ⅳ = 𝟎-right-unit-of-∨ (𝒪 Patch-𝕊) (ℬ-patch-↑ [ is ])
+
+\end{code}
+
+Added on 2024-07-13.
+
+\begin{code}
+
+𝟚-is-spectral-with-ssb : is-spectral-with-small-basis ua (𝟚-loc 𝓤) holds
+𝟚-is-spectral-with-ssb = spectralᴰ-implies-ssb ua (𝟚-loc 𝓤) †
+ where
+  † : spectralᴰ (𝟚-loc 𝓤)
+  † = ℬ-𝟚↑ , ℬ-𝟚↑-is-directed-basis , ℬ-𝟚↑-is-spectral , {!!}
+
+\end{code}
+
+\begin{code}
+
+open 𝒦-Lattice (𝟚-loc 𝓤) 𝟚-is-spectral-with-ssb using () renaming (𝒦⦅X⦆ to 𝒦𝟚)
+
+patch-𝕊-is-ssb : is-spectral-with-small-basis ua Patch-𝕊 holds
+patch-𝕊-is-ssb = spectralᴰ-implies-ssb ua Patch-𝕊 patchₛ-spectralᴰ
+
+open 𝒦-Lattice Patch-𝕊 patch-𝕊-is-ssb using () renaming (𝒦⦅X⦆ to 𝒦-Patch-𝕊)
+
+\end{code}
+
+\begin{code}
+
+open DefnOfScottTopology 𝕊𝓓 𝓤
+
+truth-is-not-zero : ¬ (truth ＝ 𝟎[ 𝒪 𝕊 ])
+truth-is-not-zero p = 𝟘-is-not-𝟙 ( pr₁ (from-Σ-＝ q′) ⁻¹)
+ where
+  foo : Ω 𝓤
+  foo = truth₀ (to-𝕊𝓓 (𝟘 , 𝟘-is-prop))
+
+  bar : Ω 𝓤
+  bar = 𝟎[ 𝒪 𝕊 ] .pr₁ (to-𝕊𝓓 (𝟙 , 𝟙-is-prop))
+
+  r : pr₁ truth ＝ pr₁ 𝟎[ 𝒪 𝕊 ]
+  r = pr₁ (from-Σ-＝ p)
+
+  † : (x : ⟨ 𝕊𝓓 ⟩∙) → 𝟎[ 𝒪 𝕊 ] .pr₁ x ＝ 𝟘 , 𝟘-is-prop
+  † x = to-subtype-＝ (λ _ → being-prop-is-prop fe) ‡
+   where
+    h : ∥ Σ i ꞉ index (∅ 𝓤) , pr₁ (∅ {A = ⟨ 𝒪 𝕊 ⟩} 𝓤 [ i ]) x holds ∥ → 𝟘
+    h = ∥∥-rec 𝟘-is-prop λ p → 𝟘-elim (pr₁ p)
+
+    ‡ : ∥ Sigma (index (∅ 𝓤)) (λ i → pr₁ (∅ {A = ⟨ 𝒪 𝕊 ⟩} 𝓤 [ i ]) x holds) ∥ ＝ 𝟘
+    ‡ = pe ∥∥-is-prop 𝟘-is-prop h (λ ())
+
+  q : (x : ⟨ 𝕊𝓓 ⟩∙) → truth₀ x ＝ to-Ω x
+  q x@(a , pr₃ , pr₄) = to-subtype-＝ (λ _ → being-prop-is-prop fe) refl
+
+  r′ : (x : ⟨ 𝕊𝓓 ⟩∙) → truth₀ x ＝ 𝟘 , 𝟘-is-prop
+  r′ x = transport (λ - → - x ＝ 𝟘 , 𝟘-is-prop) (r ⁻¹) († x)
+
+  q′ : truth₀ (to-𝕊𝓓 (𝟙 , 𝟙-is-prop)) ＝ 𝟘 , 𝟘-is-prop
+  q′ = r′ (to-𝕊𝓓 (𝟙 , 𝟙-is-prop))
+
+closed-truth-is-not-closed-𝟎 : ¬ (closed-truth ＝ closed-𝟎)
+closed-truth-is-not-closed-𝟎 p = {!!}
+
+tetrachotomy-is-prop : (𝒿 : ⟨ 𝒪 Patch-𝕊 ⟩)
+                     → is-prop (equal-to-one-of-the-four-compact-opensₚ 𝒿)
+tetrachotomy-is-prop 𝒿 (inl p) (inl q)       = ap inl (carrier-of-[ poset-of (𝒪 Patch-𝕊) ]-is-set p q)
+tetrachotomy-is-prop 𝒿 (inl p) (inr (inl q)) = {!!}
+tetrachotomy-is-prop 𝒿 (inl x) (inr (inr y)) = {!!}
+tetrachotomy-is-prop 𝒿 (inr x) y = {!!}
+
+\end{code}
+
+\begin{code}
+
+to-patch-𝕊 : ∣ 𝒦𝟚 ∣ᵈ → ∣ 𝒦-Patch-𝕊 ∣ᵈ
+to-patch-𝕊 (U , κ) = {!!}
+ where
+  γ : ∥ equal-to-one-of-the-four-compact-opens U ∥
+  γ = compact-tetrachotomy U κ
 
 \end{code}
