@@ -41,6 +41,7 @@ open import DomainTheory.Lifting.LiftingSetAlgebraic pt pe fe 𝓤
 open import DomainTheory.Topology.ScottTopology pt fe 𝓤
 open import Lifting.Miscelanea-PropExt-FunExt 𝓤 pe fe
 open import Lifting.UnivalentPrecategory 𝓤 (𝟙 {𝓤})
+open import Locales.Clopen pt fe sr
 open import Locales.Compactness pt fe
 open import Locales.Complements pt fe
 open import Locales.ContinuousMap.Definition pt fe
@@ -49,8 +50,8 @@ open import Locales.ContinuousMap.FrameHomomorphism-Properties pt fe
 open import Locales.DiscreteLocale.Definition fe pe pt
 open import Locales.DiscreteLocale.Two fe pe pt
 open import Locales.DiscreteLocale.Two-Properties fe pe pt sr 𝓤
-open import Locales.Clopen pt fe sr
 open import Locales.DistributiveLattice.Definition fe pt
+open import Locales.DistributiveLattice.Isomorphism fe pt
 open import Locales.Frame pt fe hiding (𝟚; is-directed)
 open import Locales.HeytingImplication pt fe
 open import Locales.InitialFrame pt fe
@@ -1052,7 +1053,7 @@ to-patch-𝕊-qinv = to-𝒦𝟚 , († , ‡)
           𝟎𝒦𝟚                        ∎
 
     case₂ : K ＝ falseₖ → to-𝒦𝟚 (to-patch-𝕊 𝔎) ＝ 𝔎
-    case₂ = {!!}
+    case₂ p = {!!}
 
     case₃ : K ＝ trueₖ → to-𝒦𝟚 (to-patch-𝕊 𝔎) ＝ 𝔎
     case₃ = {!!}
@@ -1076,10 +1077,10 @@ to-patch-𝕊-qinv = to-𝒦𝟚 , († , ‡)
                  Ⅱ = ap to-patch-𝕊 to-𝒦𝟚-equality-𝟎
                  Ⅲ = to-patch-𝕊-𝟎-equality′
 
-     case₂ : {!!}
+     case₂ : U ＝ closed-truth → to-patch-𝕊 (to-𝒦𝟚 𝔎) ＝ 𝔎
      case₂ = {!!}
 
-     case₃ : {!!}
+     case₃ : U ＝ open-truth → to-patch-𝕊 (to-𝒦𝟚 𝔎) ＝ 𝔎
      case₃ = {!!}
 
      case₄ : U ＝ closed-𝟏 → to-patch-𝕊 (to-𝒦𝟚 𝔎) ＝ 𝔎
@@ -1097,5 +1098,53 @@ to-patch-𝕊-qinv = to-𝒦𝟚 , († , ‡)
 𝟚-equiv-Patch-𝕊 : ∣ 𝒦𝟚 ∣ᵈ ≃ ∣ 𝒦-Patch-𝕊 ∣ᵈ
 𝟚-equiv-Patch-𝕊 = to-patch-𝕊
                 , (qinvs-are-equivs to-patch-𝕊 to-patch-𝕊-qinv)
+
+\end{code}
+
+\begin{code}
+
+open DistributiveLatticeIsomorphisms
+open HomomorphicEquivalences
+
+to-patch-𝕊-is-monotone : is-monotonic
+                          (poset-ofᵈ 𝒦𝟚)
+                          (poset-ofᵈ 𝒦-Patch-𝕊)
+                          to-patch-𝕊
+                         holds
+to-patch-𝕊-is-monotone = {!!}
+
+to-𝒦𝟚-is-monotone
+ : is-monotonic (poset-ofᵈ 𝒦-Patch-𝕊) (poset-ofᵈ 𝒦𝟚) to-𝒦𝟚 holds
+to-𝒦𝟚-is-monotone ((𝒿 , κ₁) , (𝓀 , κ₂)) p =
+ cases₄ case₁ case₂ case₃ case₄ (compact-tetrachotomy-for-Patch-𝕊 𝒿 κ₁)
+  where
+   case₁ : 𝒿 ＝ closed-𝟎 → (to-𝒦𝟚 (𝒿 , κ₁) ≤[ poset-ofᵈ 𝒦𝟚 ] to-𝒦𝟚 (𝓀 , κ₂)) holds
+   case₁ p = transport
+              (λ - → (- ≤[ poset-ofᵈ 𝒦𝟚 ] to-𝒦𝟚 (𝓀 , κ₂)) holds)
+              (ap to-𝒦𝟚 {!!})
+              {!!}
+    where
+     q : to-𝒦𝟚 (𝒿 , κ₁) ＝ 𝟎𝒦𝟚
+     q = {!!}
+
+   case₂ : 𝒿 ＝ closed-truth
+         → (to-𝒦𝟚 (𝒿 , κ₁) ≤[ poset-ofᵈ 𝒦𝟚 ] to-𝒦𝟚 (𝓀 , κ₂)) holds
+   case₂ = {!!}
+
+   case₃ : {!!}
+   case₃ = {!!}
+
+   case₄ : {!!}
+   case₄ = {!!}
+
+equiv-is-homomorphic : is-homomorphic 𝒦𝟚 𝒦-Patch-𝕊 𝟚-equiv-Patch-𝕊 holds
+equiv-is-homomorphic = to-patch-𝕊-is-monotone , to-𝒦𝟚-is-monotone
+
+𝒦𝟚-is-isomorphic-to-𝒦-Patch-𝕊₀ : Isomorphism₀ 𝒦𝟚 𝒦-Patch-𝕊
+𝒦𝟚-is-isomorphic-to-𝒦-Patch-𝕊₀ = 𝟚-equiv-Patch-𝕊 , equiv-is-homomorphic
+
+𝒦𝟚-is-isomorphic-to-𝒦-Patch-𝕊 : 𝒦𝟚 ≅d≅ 𝒦-Patch-𝕊
+𝒦𝟚-is-isomorphic-to-𝒦-Patch-𝕊 =
+ to-isomorphismᵈᵣ 𝒦𝟚 𝒦-Patch-𝕊 𝒦𝟚-is-isomorphic-to-𝒦-Patch-𝕊₀
 
 \end{code}
