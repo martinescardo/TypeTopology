@@ -976,7 +976,7 @@ to-𝒦𝟚-equality-𝟎 = h e
   e = compact-tetrachotomy-for-Patch-𝕊 closed-𝟎 closed-𝟎-is-compact
 
   h : (p : equal-to-one-of-the-four-compact-opensₚ closed-𝟎)
-    → to-𝒦𝟚₀ closed-𝟎ₖ p ＝ 𝟎𝒦𝟚 
+    → to-𝒦𝟚₀ closed-𝟎ₖ p ＝ 𝟎𝒦𝟚
   h (inl p) = refl
   h (inr (inl p)) = 𝟘-elim (closed-truth-is-not-closed-𝟎 (p ⁻¹))
   h (inr (inr (inl p))) = 𝟘-elim (open-truth-is-not-closed-𝟎 (p ⁻¹))
@@ -1074,7 +1074,7 @@ to-patch-𝕊-qinv = to-𝒦𝟚 , († , ‡)
                  Ⅳ = to-𝒦-＝ Patch-𝕊 closed-𝟎-is-compact κ (p ⁻¹)
                  Ⅰ = ap (to-patch-𝕊 ∘ to-𝒦𝟚) (Ⅳ ⁻¹)
                  Ⅱ = ap to-patch-𝕊 to-𝒦𝟚-equality-𝟎
-                 Ⅲ = to-patch-𝕊-𝟎-equality′ 
+                 Ⅲ = to-patch-𝕊-𝟎-equality′
 
      case₂ : {!!}
      case₂ = {!!}
