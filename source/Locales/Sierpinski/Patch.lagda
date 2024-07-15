@@ -8,7 +8,7 @@ date-completed: 2024-02-12
 
 {-# OPTIONS --safe --without-K --lossy-unification #-}
 
-open import MLTT.Spartan hiding (𝟚)
+open import MLTT.Spartan hiding (𝟚; ₁)
 open import UF.FunExt
 open import UF.PropTrunc
 open import UF.Size
@@ -39,7 +39,6 @@ open import DomainTheory.Basics.WayBelow pt fe 𝓤
 open import DomainTheory.Lifting.LiftingSet pt fe 𝓤 pe
 open import DomainTheory.Lifting.LiftingSetAlgebraic pt pe fe 𝓤
 open import DomainTheory.Topology.ScottTopology pt fe 𝓤
-open import Lifting.Construction 𝓤
 open import Lifting.Miscelanea-PropExt-FunExt 𝓤 pe fe
 open import Lifting.UnivalentPrecategory 𝓤 (𝟙 {𝓤})
 open import Locales.Compactness pt fe
@@ -47,6 +46,7 @@ open import Locales.Complements pt fe
 open import Locales.ContinuousMap.Definition pt fe
 open import Locales.ContinuousMap.FrameHomomorphism-Definition pt fe
 open import Locales.ContinuousMap.FrameHomomorphism-Properties pt fe
+open import Locales.DiscreteLocale.Definition fe pe pt
 open import Locales.DiscreteLocale.Two fe pe pt
 open import Locales.DiscreteLocale.Two-Properties fe pe pt sr 𝓤
 open import Locales.DistributiveLattice.Definition fe pt
@@ -581,15 +581,25 @@ basis-tetrachotomy-for-Patch-𝕊 ((i , j) ∷ is) =
 
 \end{code}
 
-Added on 2024-07-13.
-
 \begin{code}
 
 𝟚-is-spectral-with-ssb : is-spectral-with-small-basis ua (𝟚-loc 𝓤) holds
 𝟚-is-spectral-with-ssb = spectralᴰ-implies-ssb ua (𝟚-loc 𝓤) †
  where
+  p : 𝟏[ 𝒪 𝟚ₗ ] ＝ 𝟏[ 𝒪 𝟚ₗ ] ∨[ 𝒪 𝟚ₗ ] 𝟎[ 𝒪 𝟚ₗ ]
+  p = 𝟏-left-annihilator-for-∨ (𝒪 𝟚ₗ) 𝟎[ 𝒪 𝟚ₗ ] ⁻¹
+
+  ζ : is-top (𝒪 (𝟚-loc 𝓤)) (𝟏[ 𝒪 𝟚ₗ ] ∨[ 𝒪 𝟚ₗ ] 𝟎[ 𝒪 𝟚ₗ ]) holds
+  ζ = transport (λ - → is-top (𝒪 (𝟚-loc 𝓤)) - holds) p (𝟏-is-top (𝒪 𝟚ₗ))
+
+  γ : contains-top (𝒪 (𝟚-loc 𝓤)) ℬ-𝟚↑ holds
+  γ = ∣ ((₁ , ₁) ∷ []) , ζ ∣
+
+  δ : closed-under-binary-meets (𝒪 (𝟚-loc 𝓤)) ℬ-𝟚↑ holds
+  δ = {!!}
+
   † : spectralᴰ (𝟚-loc 𝓤)
-  † = ℬ-𝟚↑ , ℬ-𝟚↑-is-directed-basis , ℬ-𝟚↑-is-spectral , {!!}
+  † = ℬ-𝟚↑ , ℬ-𝟚↑-is-directed-basis , ℬ-𝟚↑-is-spectral , (γ , δ)
 
 \end{code}
 
@@ -611,9 +621,6 @@ open DefnOfScottTopology 𝕊𝓓 𝓤
 truth-is-not-zero : ¬ (truth ＝ 𝟎[ 𝒪 𝕊 ])
 truth-is-not-zero p = 𝟘-is-not-𝟙 ( pr₁ (from-Σ-＝ q′) ⁻¹)
  where
-  foo : Ω 𝓤
-  foo = truth₀ (to-𝕊𝓓 (𝟘 , 𝟘-is-prop))
-
   bar : Ω 𝓤
   bar = 𝟎[ 𝒪 𝕊 ] .pr₁ (to-𝕊𝓓 (𝟙 , 𝟙-is-prop))
 
@@ -635,27 +642,274 @@ truth-is-not-zero p = 𝟘-is-not-𝟙 ( pr₁ (from-Σ-＝ q′) ⁻¹)
   r′ : (x : ⟨ 𝕊𝓓 ⟩∙) → truth₀ x ＝ 𝟘 , 𝟘-is-prop
   r′ x = transport (λ - → - x ＝ 𝟘 , 𝟘-is-prop) (r ⁻¹) († x)
 
-  q′ : truth₀ (to-𝕊𝓓 (𝟙 , 𝟙-is-prop)) ＝ 𝟘 , 𝟘-is-prop
+  q′ : truth₀ (to-𝕊𝓓 ⊤) ＝ ⊥
   q′ = r′ (to-𝕊𝓓 (𝟙 , 𝟙-is-prop))
 
-closed-truth-is-not-closed-𝟎 : ¬ (closed-truth ＝ closed-𝟎)
-closed-truth-is-not-closed-𝟎 p = {!!}
+ext-eq : (𝒿 𝓀 : ⟨ 𝒪 Patch-𝕊 ⟩) → 𝒿 ＝ 𝓀 → (U : ⟨ 𝒪 𝕊 ⟩) → 𝒿 .pr₁ U ＝ 𝓀 .pr₁ U
+ext-eq 𝒿 𝓀 p U = ap (λ - → - U) q
+ where
+  q : 𝒿 .pr₁ ＝ 𝓀 .pr₁
+  q = pr₁ (from-Σ-＝ p)
 
-tetrachotomy-is-prop : (𝒿 : ⟨ 𝒪 Patch-𝕊 ⟩)
+truth-is-not-𝟏 : ¬ (truth ＝ 𝟏[ 𝒪 𝕊 ])
+truth-is-not-𝟏 p = 𝟘-elim (equal-⊤-gives-holds ⊥ bar)
+ where
+  foo : truth .pr₁ ＝ 𝟏[ 𝒪 𝕊 ] .pr₁
+  foo = pr₁ (from-Σ-＝ p)
+
+  † : (x : ⟨ 𝕊𝓓 ⟩∙) → truth₀ x ＝ ⊤
+  † x = ap (λ - → - x) foo
+
+  bar : truth₀ (to-𝕊𝓓 ⊥) ＝ ⊤
+  bar = † (to-𝕊𝓓 ⊥)
+
+closed-truth-is-not-closed-𝟎 : ¬ (closed-truth ＝ closed-𝟎)
+closed-truth-is-not-closed-𝟎 p = truth-is-not-zero †
+ where
+  Ⅰ = 𝟎-left-unit-of-∨ (𝒪 𝕊) truth ⁻¹
+  Ⅱ = ext-eq closed-truth closed-𝟎 p 𝟎[ 𝒪 𝕊 ]
+  Ⅲ = ∨[ 𝒪 𝕊 ]-is-idempotent 𝟎[ 𝒪 𝕊 ] ⁻¹
+
+  † : truth ＝ 𝟎[ 𝒪 𝕊 ]
+  † = truth                        ＝⟨ Ⅰ ⟩
+      truth ∨[ 𝒪 𝕊 ] 𝟎[ 𝒪 𝕊 ]      ＝⟨ Ⅱ ⟩
+      𝟎[ 𝒪 𝕊 ] ∨[ 𝒪 𝕊 ] 𝟎[ 𝒪 𝕊 ]   ＝⟨ Ⅲ ⟩
+      𝟎[ 𝒪 𝕊 ]                     ∎
+
+closed-truth-is-not-closed-𝟏 : ¬ (closed-truth ＝ closed-𝟏)
+closed-truth-is-not-closed-𝟏 p = truth-is-not-𝟏 †
+ where
+  Ⅰ = ∨[ 𝒪 𝕊 ]-is-idempotent truth
+  Ⅱ = ext-eq closed-truth closed-𝟏 p truth
+  Ⅲ = 𝟏-left-annihilator-for-∨ (𝒪 𝕊) truth
+
+  † : truth ＝ 𝟏[ 𝒪 𝕊 ]
+  † = truth                     ＝⟨ Ⅰ ⟩
+      truth ∨[ 𝒪 𝕊 ] truth      ＝⟨ Ⅱ ⟩
+      𝟏[ 𝒪 𝕊 ] ∨[ 𝒪 𝕊 ] truth   ＝⟨ Ⅲ ⟩
+      𝟏[ 𝒪 𝕊 ]                  ∎
+
+open-truth-is-not-closed-𝟎 : ¬ (open-truth ＝ closed-𝟎)
+open-truth-is-not-closed-𝟎 p = truth-is-not-𝟏 s
+ where
+  r : (truth ==> truth) ＝ 𝟏[ 𝒪 𝕊 ]
+  r = heyting-implication-identity truth
+
+  q : (truth ==> truth) ＝ 𝟎[ 𝒪 𝕊 ] ∨[ 𝒪 𝕊 ] truth
+  q = ext-eq open-truth closed-𝟎 p truth
+
+  Ⅰ = 𝟎-right-unit-of-∨ (𝒪 𝕊) truth ⁻¹
+  Ⅱ = q ⁻¹
+  Ⅲ = r
+
+  s : truth ＝ 𝟏[ 𝒪 𝕊 ]
+  s = truth                     ＝⟨ Ⅰ ⟩
+      𝟎[ 𝒪 𝕊 ] ∨[ 𝒪 𝕊 ] truth   ＝⟨ Ⅱ ⟩
+      (truth ==> truth)         ＝⟨ Ⅲ ⟩
+      𝟏[ 𝒪 𝕊 ]                  ∎
+-- TODO: Use the fact that `truth ==> truth` is 1 which is not 0.
+
+open-truth-is-not-bottom : ¬ (open-truth ＝ 𝟎[ 𝒪 Patch-𝕊 ])
+open-truth-is-not-bottom p = open-truth-is-not-closed-𝟎 †
+ where
+  † : open-truth ＝ closed-𝟎
+  † = open-truth ＝⟨ p ⟩ 𝟎[ 𝒪 Patch-𝕊 ] ＝⟨ closed-𝟎-is-bottom ⁻¹ ⟩ closed-𝟎 ∎
+
+closed-truth-is-not-bottom : ¬ (closed-truth ＝ 𝟎[ 𝒪 Patch-𝕊 ])
+closed-truth-is-not-bottom p = closed-truth-is-not-closed-𝟎 †
+ where
+  † : closed-truth ＝ closed-𝟎
+  † = closed-truth    ＝⟨ p ⟩
+      𝟎[ 𝒪 Patch-𝕊 ]  ＝⟨ closed-𝟎-is-bottom ⁻¹ ⟩
+      closed-𝟎        ∎
+
+open-truth-is-not-closed-𝟏 : ¬ (open-truth ＝ closed-𝟏)
+open-truth-is-not-closed-𝟏 p = closed-truth-is-not-bottom bb
+ where
+  γ : truth ==> 𝟎[ 𝒪 𝕊 ] ＝ 𝟏[ 𝒪 𝕊 ] ∨[ 𝒪 𝕊 ] 𝟎[ 𝒪 𝕊 ]
+  γ = ext-eq open-truth closed-𝟏 p 𝟎[ 𝒪 𝕊 ]
+
+  Ⅰ = ap (λ - → closed-truth ∧[ 𝒪 Patch-𝕊 ] -) (p ⁻¹)
+
+  aa : closed-truth ∧[ 𝒪 Patch-𝕊 ] closed-𝟏 ＝ 𝟎[ 𝒪 Patch-𝕊 ]
+  aa = closed-truth ∧[ 𝒪 Patch-𝕊 ] closed-𝟏    ＝⟨ Ⅰ ⟩
+       closed-truth ∧[ 𝒪 Patch-𝕊 ] open-truth  ＝⟨ important-lemma₂′ ⟩
+       𝟎[ 𝒪 Patch-𝕊 ]                          ∎
+
+  Ⅱ = 𝟏-right-unit-of-∧ (𝒪 Patch-𝕊) closed-truth ⁻¹
+  Ⅲ = ap (λ - → closed-truth ∧[ 𝒪 Patch-𝕊 ] -) (closed-𝟏-is-top ⁻¹)
+
+  bb : closed-truth ＝ 𝟎[ 𝒪 Patch-𝕊 ]
+  bb = closed-truth                                 ＝⟨ Ⅱ ⟩
+       closed-truth ∧[ 𝒪 Patch-𝕊 ] 𝟏[ 𝒪 Patch-𝕊 ]   ＝⟨ Ⅲ ⟩
+       closed-truth ∧[ 𝒪 Patch-𝕊 ] closed-𝟏         ＝⟨ aa ⟩
+       𝟎[ 𝒪 Patch-𝕊 ]                               ∎
+
+-- TODO: Use the fact that `truth ==> 1` is 1 which is not 0.
+
+𝟏𝕊-is-not-𝟎𝕊 : ¬ (𝟏[ 𝒪 𝕊 ] ＝ 𝟎[ 𝒪 𝕊 ])
+𝟏𝕊-is-not-𝟎𝕊 r = χ μ
+ where
+  χ : ¬ ((to-𝕊𝓓 ⊤ ∈ₛ 𝟎[ 𝒪 𝕊 ]) holds)
+  χ = ∥∥-rec 𝟘-is-prop (λ ())
+
+  μ : (to-𝕊𝓓 ⊤ ∈ₛ 𝟎[ 𝒪 𝕊 ]) holds
+  μ = transport (λ - → (to-𝕊𝓓 ⊤ ∈ₛ -) holds) r ⋆
+
+𝟏-is-not-𝟎-in-Patch-𝕊 : ¬ (𝟏[ 𝒪 Patch-𝕊 ] ＝ 𝟎[ 𝒪 Patch-𝕊 ])
+𝟏-is-not-𝟎-in-Patch-𝕊 p = 𝟏𝕊-is-not-𝟎𝕊 δ
+ where
+  γ : (U : ⟨ 𝒪 𝕊 ⟩) → 𝟏[ 𝒪 Patch-𝕊 ] .pr₁ U ＝ 𝟎[ 𝒪 Patch-𝕊 ] .pr₁ U
+  γ U = transport (λ - → - .pr₁ U ＝ 𝟎[ 𝒪 Patch-𝕊 ] .pr₁ U) (p ⁻¹) refl
+
+  foo : 𝟏[ 𝒪 Patch-𝕊 ] .pr₁ 𝟎[ 𝒪 𝕊 ] ＝ 𝟏[ 𝒪 𝕊 ]
+  foo = refl
+
+  Ⅱ : 𝟎[ 𝒪 Patch-𝕊 ] .pr₁ 𝟎[ 𝒪 𝕊 ] ＝ 𝟎[ 𝒪 𝕊 ]
+  Ⅱ = 𝟎-is-id 𝟎[ 𝒪 𝕊 ]
+
+  δ : 𝟏[ 𝒪 𝕊 ] ＝ 𝟎[ 𝒪 𝕊 ]
+  δ = 𝟏[ 𝒪 𝕊 ] ＝⟨ γ 𝟎[ 𝒪 𝕊 ] ⟩ 𝟎[ 𝒪 Patch-𝕊 ] .pr₁ 𝟎[ 𝒪 𝕊 ] ＝⟨ Ⅱ ⟩ 𝟎[ 𝒪 𝕊 ] ∎
+
+closed-𝟏-is-not-closed-𝟎 : ¬ (closed-𝟏 ＝ closed-𝟎)
+closed-𝟏-is-not-closed-𝟎 p = 𝟏-is-not-𝟎-in-Patch-𝕊 †
+ where
+  Ⅰ = closed-𝟏-is-top ⁻¹
+  Ⅱ = p
+  Ⅲ = closed-𝟎-is-bottom
+
+  † : 𝟏[ 𝒪 Patch-𝕊 ] ＝ 𝟎[ 𝒪 Patch-𝕊 ]
+  † = 𝟏[ 𝒪 Patch-𝕊 ]   ＝⟨ Ⅰ ⟩
+      closed-𝟏         ＝⟨ Ⅱ ⟩
+      closed-𝟎         ＝⟨ Ⅲ ⟩
+      𝟎[ 𝒪 Patch-𝕊 ]   ∎
+
+open-truth-is-not-closed-truth : ¬ (open-truth ＝ closed-truth)
+open-truth-is-not-closed-truth p = open-truth-is-not-bottom s
+ where
+  q : open-truth ∧[ 𝒪 Patch-𝕊 ] closed-truth ＝ 𝟎[ 𝒪 Patch-𝕊 ]
+  q = important-lemma₂
+
+  Ⅰ = ∧[ 𝒪 Patch-𝕊 ]-is-idempotent open-truth
+  Ⅱ = ap (λ - → open-truth ∧[ 𝒪 Patch-𝕊 ] -) p
+
+  s : open-truth ＝ 𝟎[ 𝒪 Patch-𝕊 ]
+  s = open-truth                              ＝⟨ Ⅰ ⟩
+      open-truth ∧[ 𝒪 Patch-𝕊 ] open-truth    ＝⟨ Ⅱ ⟩
+      open-truth ∧[ 𝒪 Patch-𝕊 ] closed-truth  ＝⟨ q ⟩
+      𝟎[ 𝒪 Patch-𝕊 ]                          ∎
+
+being-equal-to-one-of-the-four-compact-opens-is-prop : (𝒿 : ⟨ 𝒪 Patch-𝕊 ⟩)
                      → is-prop (equal-to-one-of-the-four-compact-opensₚ 𝒿)
-tetrachotomy-is-prop 𝒿 (inl p) (inl q)       = ap inl (carrier-of-[ poset-of (𝒪 Patch-𝕊) ]-is-set p q)
-tetrachotomy-is-prop 𝒿 (inl p) (inr (inl q)) = {!!}
-tetrachotomy-is-prop 𝒿 (inl x) (inr (inr y)) = {!!}
-tetrachotomy-is-prop 𝒿 (inr x) y = {!!}
+being-equal-to-one-of-the-four-compact-opens-is-prop 𝒿 (inl p) (inl q)       = ap inl (carrier-of-[ poset-of (𝒪 Patch-𝕊) ]-is-set p q)
+being-equal-to-one-of-the-four-compact-opens-is-prop 𝒿 (inl p) (inr (inl q)) = 𝟘-elim (closed-truth-is-not-closed-𝟎 †)
+ where
+  † : closed-truth ＝ closed-𝟎
+  † = closed-truth ＝⟨ q ⁻¹ ⟩ 𝒿 ＝⟨ p ⟩ closed-𝟎 ∎
+being-equal-to-one-of-the-four-compact-opens-is-prop 𝒿 (inl p) (inr (inr (inl q))) = 𝟘-elim (open-truth-is-not-closed-𝟎 †)
+ where
+  † : open-truth ＝ closed-𝟎
+  † = open-truth ＝⟨ q ⁻¹ ⟩ 𝒿 ＝⟨ p ⟩ closed-𝟎 ∎
+being-equal-to-one-of-the-four-compact-opens-is-prop 𝒿 (inl p) (inr (inr (inr q))) = 𝟘-elim (closed-𝟏-is-not-closed-𝟎 †)
+ where
+  † : closed-𝟏 ＝ closed-𝟎
+  † = closed-𝟏 ＝⟨ q ⁻¹ ⟩ 𝒿 ＝⟨ p ⟩ closed-𝟎 ∎
+being-equal-to-one-of-the-four-compact-opens-is-prop 𝒿 (inr (inl p)) (inl q) = 𝟘-elim (closed-truth-is-not-closed-𝟎 †)
+ where
+  † : closed-truth ＝ closed-𝟎
+  † = closed-truth ＝⟨ p ⁻¹ ⟩ 𝒿 ＝⟨ q ⟩ closed-𝟎 ∎
+being-equal-to-one-of-the-four-compact-opens-is-prop 𝒿 (inr (inr (inl p))) (inl q) = 𝟘-elim (open-truth-is-not-closed-𝟎 †)
+ where
+  † : open-truth ＝ closed-𝟎
+  † = open-truth ＝⟨ p ⁻¹ ⟩ 𝒿 ＝⟨ q ⟩ closed-𝟎 ∎
+being-equal-to-one-of-the-four-compact-opens-is-prop 𝒿 (inr (inr (inr p))) (inl q) = 𝟘-elim (closed-𝟏-is-not-closed-𝟎 †)
+ where
+  † : closed-𝟏 ＝ closed-𝟎
+  † = closed-𝟏 ＝⟨ p ⁻¹ ⟩ 𝒿 ＝⟨ q ⟩ closed-𝟎 ∎
+being-equal-to-one-of-the-four-compact-opens-is-prop 𝒿 (inr (inl p)) (inr (inl q)) = ap (inr ∘ inl) (carrier-of-[ poset-of (𝒪 Patch-𝕊) ]-is-set p q)
+being-equal-to-one-of-the-four-compact-opens-is-prop 𝒿 (inr (inl p)) (inr (inr (inl q))) = 𝟘-elim (open-truth-is-not-closed-truth †)
+ where
+  † : open-truth ＝ closed-truth
+  † = open-truth ＝⟨ q ⁻¹ ⟩ 𝒿 ＝⟨ p ⟩ closed-truth ∎
+being-equal-to-one-of-the-four-compact-opens-is-prop 𝒿 (inr (inl p)) (inr (inr (inr q))) = 𝟘-elim (closed-truth-is-not-closed-𝟏 †)
+ where
+  † : closed-truth ＝ closed-𝟏
+  † = closed-truth ＝⟨ p ⁻¹ ⟩ 𝒿 ＝⟨ q ⟩ closed-𝟏 ∎
+being-equal-to-one-of-the-four-compact-opens-is-prop 𝒿 (inr (inr (inl p))) (inr (inl q)) = 𝟘-elim (open-truth-is-not-closed-truth †)
+ where
+  † : open-truth ＝ closed-truth
+  † = open-truth ＝⟨ p ⁻¹ ⟩ 𝒿 ＝⟨ q ⟩ closed-truth ∎
+being-equal-to-one-of-the-four-compact-opens-is-prop 𝒿 (inr (inr (inr p))) (inr (inl q)) = 𝟘-elim (closed-truth-is-not-closed-𝟏 †)
+ where
+  † : closed-truth ＝ closed-𝟏
+  † = closed-truth ＝⟨ q ⁻¹ ⟩ 𝒿 ＝⟨ p ⟩ closed-𝟏 ∎
+being-equal-to-one-of-the-four-compact-opens-is-prop 𝒿 (inr (inr (inl p))) (inr (inr (inl q))) = ap (inr ∘ inr ∘ inl) (carrier-of-[ poset-of (𝒪 Patch-𝕊) ]-is-set p q)
+being-equal-to-one-of-the-four-compact-opens-is-prop 𝒿 (inr (inr (inl p))) (inr (inr (inr q))) = 𝟘-elim (open-truth-is-not-closed-𝟏 †)
+ where
+  † : open-truth ＝ closed-𝟏
+  † = open-truth ＝⟨ p ⁻¹ ⟩ 𝒿 ＝⟨ q ⟩ closed-𝟏 ∎
+being-equal-to-one-of-the-four-compact-opens-is-prop 𝒿 (inr (inr (inr p))) (inr (inr (inl q))) = 𝟘-elim (open-truth-is-not-closed-𝟏 †)
+ where
+  † : open-truth ＝ closed-𝟏
+  † = open-truth ＝⟨ q ⁻¹ ⟩ 𝒿 ＝⟨ p ⟩ closed-𝟏 ∎
+being-equal-to-one-of-the-four-compact-opens-is-prop 𝒿 (inr (inr (inr p))) (inr (inr (inr q))) = ap (inr ∘ inr ∘ inr) (carrier-of-[ poset-of (𝒪 Patch-𝕊) ]-is-set p q)
+
+is-equal-to-one-of-the-four-compact-opens : ⟨ 𝒪 Patch-𝕊 ⟩ → Ω (𝓤 ⁺)
+is-equal-to-one-of-the-four-compact-opens 𝒿 =
+ equal-to-one-of-the-four-compact-opensₚ 𝒿 , being-equal-to-one-of-the-four-compact-opens-is-prop 𝒿
+
+\end{code}
+
+Added on 2024-07-13.
+
+\begin{code}
+
+compact-tetrachotomy-for-Patch-𝕊
+ : (𝒿 : ⟨ 𝒪 Patch-𝕊 ⟩)
+ → is-compact-open Patch-𝕊 𝒿 holds
+ → equal-to-one-of-the-four-compact-opensₚ 𝒿
+compact-tetrachotomy-for-Patch-𝕊 𝒿 κ =
+ ∥∥-rec (holds-is-prop (is-equal-to-one-of-the-four-compact-opens 𝒿)) † γ
+  where
+   † : (Σ is ꞉ (index ℬ-patch-↑) , (ℬ-patch-↑ [ is ]) ＝ 𝒿)
+     → is-equal-to-one-of-the-four-compact-opens 𝒿 holds
+   † (is , p) = transport equal-to-one-of-the-four-compact-opensₚ p δ
+    where
+     δ : equal-to-one-of-the-four-compact-opensₚ (ℬ-patch-↑ [ is ])
+     δ = basis-tetrachotomy-for-Patch-𝕊 is
+
+   γ : is-basic Patch-𝕊 𝒿 (ℬ-patch-↑ , ℬ-patchₛ-β↑) holds
+   γ = compact-opens-are-basic Patch-𝕊 (ℬ-patch-↑ , ℬ-patchₛ-β↑) 𝒿 κ
 
 \end{code}
 
 \begin{code}
+
+to-𝒦𝟚 : ∣ 𝒦-Patch-𝕊 ∣ᵈ → ∣ 𝒦𝟚 ∣ᵈ
+to-𝒦𝟚 (𝒿 , κ) = cases₄ case₁ case₂ case₃ case₄ γ
+ where
+  γ : equal-to-one-of-the-four-compact-opensₚ 𝒿
+  γ = compact-tetrachotomy-for-Patch-𝕊 𝒿 κ
+
+  case₁ : 𝒿 ＝ closed-𝟎 → ∣ 𝒦𝟚 ∣ᵈ
+  case₁ _ = 𝟎[ 𝒪 𝟚ₗ ] , 𝟎-is-compact 𝟚ₗ
+
+  case₂ : 𝒿 ＝ closed-truth → ∣ 𝒦𝟚 ∣ᵈ
+  case₂ _ = trueₖ , trueₖ-is-compact
+
+  case₃ : 𝒿 ＝ open-truth → ∣ 𝒦𝟚 ∣ᵈ
+  case₃ _ = falseₖ , falseₖ-is-compact
+
+  case₄ : 𝒿 ＝ closed-𝟏 → ∣ 𝒦𝟚 ∣ᵈ
+  case₄ _ = 𝟏[ 𝒪 𝟚ₗ ] , 𝟚ₗ-is-compact
 
 to-patch-𝕊 : ∣ 𝒦𝟚 ∣ᵈ → ∣ 𝒦-Patch-𝕊 ∣ᵈ
 to-patch-𝕊 (U , κ) = {!!}
  where
   γ : ∥ equal-to-one-of-the-four-compact-opens U ∥
   γ = compact-tetrachotomy U κ
+
+  † : equal-to-one-of-the-four-compact-opens U
+  † = {!exit-∥∥ !}
 
 \end{code}

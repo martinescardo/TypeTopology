@@ -414,3 +414,18 @@ compact-tetrachotomy U κ = ∥∥-functor † γ
   γ = compact-opens-are-basic 𝟚ₗ ℬ-𝟚-directed-basisᴰ U κ
 
 \end{code}
+
+Added on 2024-07-15.
+
+\begin{code}
+
+ℬ-𝟚↑-contains-top : contains-top (𝒪 (𝟚-loc 𝓤)) ℬ-𝟚↑ holds
+ℬ-𝟚↑-contains-top = ∣ ((₁ , ₁) ∷ []) , † ∣
+ where
+  p : 𝟏[ 𝒪 𝟚ₗ ] ＝ 𝟏[ 𝒪 𝟚ₗ ] ∨[ 𝒪 𝟚ₗ ] 𝟎[ 𝒪 𝟚ₗ ]
+  p = 𝟏-left-annihilator-for-∨ (𝒪 𝟚ₗ) 𝟎[ 𝒪 𝟚ₗ ] ⁻¹
+
+  † : is-top (𝒪 (𝟚-loc 𝓤)) (𝟏[ 𝒪 𝟚ₗ ] ∨[ 𝒪 𝟚ₗ ] 𝟎[ 𝒪 𝟚ₗ ]) holds
+  † = transport (λ - → is-top (𝒪 (𝟚-loc 𝓤)) - holds) p (𝟏-is-top (𝒪 𝟚ₗ))
+
+\end{code}
