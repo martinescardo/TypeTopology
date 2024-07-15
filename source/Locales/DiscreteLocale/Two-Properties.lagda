@@ -489,76 +489,76 @@ Added on 2024-07-15.
 
 \begin{code}
 
-being-equal-to-one-of-the-four-compact-opens-is-prop
+being-equal-to-one-of-the-four-compact-opens-is-prop-𝟚
  : (U : ⟨ 𝒪 𝟚ₗ ⟩)
  → is-prop (equal-to-one-of-the-four-compact-opens U)
-being-equal-to-one-of-the-four-compact-opens-is-prop U (inl p) (inl q) =
+being-equal-to-one-of-the-four-compact-opens-is-prop-𝟚 U (inl p) (inl q) =
  ap inl (carrier-of-[ poset-of (𝒪 𝟚ₗ) ]-is-set p q)
-being-equal-to-one-of-the-four-compact-opens-is-prop U (inl p) (inr (inl q)) =
+being-equal-to-one-of-the-four-compact-opens-is-prop-𝟚 U (inl p) (inr (inl q)) =
  𝟘-elim (false-is-not-𝟎 †)
   where
    † : 𝟎[ 𝒪 𝟚ₗ ] ＝ falseₖ
    † = 𝟎[ 𝒪 𝟚ₗ ] ＝⟨ p ⁻¹ ⟩ U ＝⟨ q ⟩ falseₖ ∎
-being-equal-to-one-of-the-four-compact-opens-is-prop U (inl p) (inr (inr (inl q))) =
+being-equal-to-one-of-the-four-compact-opens-is-prop-𝟚 U (inl p) (inr (inr (inl q))) =
  𝟘-elim (true-is-not-𝟎 †)
   where
    † : trueₖ ＝ 𝟎[ 𝒪 (𝟚-loc 𝓤) ]
    † = trueₖ ＝⟨ q ⁻¹ ⟩ U ＝⟨ p ⟩ 𝟎[ 𝒪 (𝟚-loc 𝓤) ] ∎
-being-equal-to-one-of-the-four-compact-opens-is-prop U (inl p) (inr (inr (inr q))) =
+being-equal-to-one-of-the-four-compact-opens-is-prop-𝟚 U (inl p) (inr (inr (inr q))) =
  𝟘-elim (𝟎-is-not-𝟏 †)
   where
    † : 𝟎[ 𝒪 (𝟚-loc 𝓤) ] ＝ 𝟏[ 𝒪 (𝟚-loc 𝓤) ]
    † = 𝟎[ 𝒪 (𝟚-loc 𝓤) ] ＝⟨ p ⁻¹ ⟩ U ＝⟨ q ⟩ 𝟏[ 𝒪 (𝟚-loc 𝓤) ] ∎
-being-equal-to-one-of-the-four-compact-opens-is-prop U (inr (inl p)) (inl q) =
+being-equal-to-one-of-the-four-compact-opens-is-prop-𝟚 U (inr (inl p)) (inl q) =
  𝟘-elim (false-is-not-𝟎 †)
   where
    † : 𝟎[ 𝒪 (𝟚-loc 𝓤) ] ＝ falseₖ
    † = 𝟎[ 𝒪 (𝟚-loc 𝓤) ] ＝⟨ q ⁻¹ ⟩ U ＝⟨ p ⟩ falseₖ ∎
-being-equal-to-one-of-the-four-compact-opens-is-prop U (inr (inr (inl p))) (inl q) =
+being-equal-to-one-of-the-four-compact-opens-is-prop-𝟚 U (inr (inr (inl p))) (inl q) =
  𝟘-elim (true-is-not-𝟎 †)
   where
    † : trueₖ ＝ 𝟎[ 𝒪 (𝟚-loc 𝓤) ]
    † = trueₖ ＝⟨ p ⁻¹ ⟩ U ＝⟨ q ⟩ 𝟎[ 𝒪 (𝟚-loc 𝓤) ] ∎
-being-equal-to-one-of-the-four-compact-opens-is-prop U (inr (inr (inr p))) (inl q) =
+being-equal-to-one-of-the-four-compact-opens-is-prop-𝟚 U (inr (inr (inr p))) (inl q) =
  𝟘-elim (𝟎-is-not-𝟏 †)
   where
    † :  𝟎[ 𝒪 (𝟚-loc 𝓤) ] ＝ 𝟏[ 𝒪 (𝟚-loc 𝓤) ]
    † =  𝟎[ 𝒪 (𝟚-loc 𝓤) ] ＝⟨ q ⁻¹ ⟩ U ＝⟨ p ⟩ 𝟏[ 𝒪 (𝟚-loc 𝓤) ] ∎
-being-equal-to-one-of-the-four-compact-opens-is-prop U (inr (inl p)) (inr (inl q)) =
+being-equal-to-one-of-the-four-compact-opens-is-prop-𝟚 U (inr (inl p)) (inr (inl q)) =
  ap (inr ∘ inl) (carrier-of-[ poset-of (𝒪 𝟚ₗ) ]-is-set p q)
-being-equal-to-one-of-the-four-compact-opens-is-prop U (inr (inl p)) (inr (inr (inl q))) =
+being-equal-to-one-of-the-four-compact-opens-is-prop-𝟚 U (inr (inl p)) (inr (inr (inl q))) =
  𝟘-elim (true-is-not-false †)
   where
    † : trueₖ ＝ falseₖ
    † = trueₖ ＝⟨ q ⁻¹ ⟩ U ＝⟨ p ⟩ falseₖ ∎
-being-equal-to-one-of-the-four-compact-opens-is-prop U (inr (inl p)) (inr (inr (inr q))) =
+being-equal-to-one-of-the-four-compact-opens-is-prop-𝟚 U (inr (inl p)) (inr (inr (inr q))) =
  𝟘-elim (false-is-not-𝟏 †)
   where
    † : falseₖ ＝ 𝟏[ 𝒪 (𝟚-loc 𝓤) ]
    † = falseₖ ＝⟨ p ⁻¹ ⟩ U ＝⟨ q ⟩ 𝟏[ 𝒪 (𝟚-loc 𝓤) ] ∎
-being-equal-to-one-of-the-four-compact-opens-is-prop U (inr (inr (inl p))) (inr (inl q)) =
+being-equal-to-one-of-the-four-compact-opens-is-prop-𝟚 U (inr (inr (inl p))) (inr (inl q)) =
  𝟘-elim (true-is-not-false †)
   where
    † : trueₖ ＝ falseₖ
    † = trueₖ ＝⟨ p ⁻¹ ⟩ U ＝⟨ q ⟩ falseₖ ∎
-being-equal-to-one-of-the-four-compact-opens-is-prop U (inr (inr (inr p))) (inr (inl q)) =
+being-equal-to-one-of-the-four-compact-opens-is-prop-𝟚 U (inr (inr (inr p))) (inr (inl q)) =
  𝟘-elim (false-is-not-𝟏 †)
   where
    † : falseₖ ＝ 𝟏[ 𝒪 (𝟚-loc 𝓤) ]
    † = falseₖ ＝⟨ q ⁻¹ ⟩ U ＝⟨ p ⟩ 𝟏[ 𝒪 (𝟚-loc 𝓤) ] ∎
-being-equal-to-one-of-the-four-compact-opens-is-prop U (inr (inr (inl p))) (inr (inr (inl q))) =
+being-equal-to-one-of-the-four-compact-opens-is-prop-𝟚 U (inr (inr (inl p))) (inr (inr (inl q))) =
  ap (inr ∘ inr ∘ inl) (carrier-of-[ poset-of (𝒪 𝟚ₗ) ]-is-set p q)
-being-equal-to-one-of-the-four-compact-opens-is-prop U (inr (inr (inl p))) (inr (inr (inr q))) =
+being-equal-to-one-of-the-four-compact-opens-is-prop-𝟚 U (inr (inr (inl p))) (inr (inr (inr q))) =
  𝟘-elim (true-is-not-𝟏 †)
   where
    † : trueₖ ＝ 𝟏[ 𝒪 (𝟚-loc 𝓤) ]
    † = trueₖ ＝⟨ p ⁻¹ ⟩ U ＝⟨ q ⟩ 𝟏[ 𝒪 (𝟚-loc 𝓤) ] ∎
-being-equal-to-one-of-the-four-compact-opens-is-prop U (inr (inr (inr p))) (inr (inr (inl q))) =
+being-equal-to-one-of-the-four-compact-opens-is-prop-𝟚 U (inr (inr (inr p))) (inr (inr (inl q))) =
  𝟘-elim (true-is-not-𝟏 †)
   where
    † : trueₖ ＝ 𝟏[ 𝒪 (𝟚-loc 𝓤) ]
    † = trueₖ ＝⟨ q ⁻¹ ⟩ U ＝⟨ p ⟩ 𝟏[ 𝒪 (𝟚-loc 𝓤) ] ∎
-being-equal-to-one-of-the-four-compact-opens-is-prop U (inr (inr (inr p))) (inr (inr (inr q))) =
+being-equal-to-one-of-the-four-compact-opens-is-prop-𝟚 U (inr (inr (inr p))) (inr (inr (inr q))) =
  ap (inr ∘ inr ∘ inr) (carrier-of-[ poset-of (𝒪 𝟚ₗ) ]-is-set p q)
 
 \end{code}
