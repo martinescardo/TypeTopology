@@ -25,23 +25,24 @@ module Locales.DiscreteLocale.Two-Properties
        where
 
 
+open import Locales.Compactness pt fe
 open import Locales.DiscreteLocale.Definition fe pe pt
 open import Locales.DiscreteLocale.Two fe pe pt
 open import Locales.DistributiveLattice.Definition fe pt
 open import Locales.Frame pt fe hiding (∅)
+open import Locales.Sierpinski 𝓤 pe pt fe
 open import Locales.SmallBasis pt fe sr
 open import Locales.Spectrality.SpectralLocale pt fe
 open import Locales.Spectrality.SpectralMap pt fe
-open import Locales.Sierpinski 𝓤 pe pt fe
 open import Locales.Stone pt fe sr
-open import Locales.Compactness pt fe
+open import MLTT.List hiding ([_])
+open import MLTT.Plus-Properties
 open import Slice.Family
 open import UF.DiscreteAndSeparated hiding (𝟚-is-set)
 open import UF.Logic
 open import UF.Powerset
 open import UF.Sets
 open import UF.SubtypeClassifier
-open import MLTT.List hiding ([_])
 
 open AllCombinators pt fe renaming (_∧_ to _∧ₚ_; _∨_ to _∨ₚ_)
 open Locale
@@ -427,5 +428,135 @@ Added on 2024-07-15.
 
   † : is-top (𝒪 (𝟚-loc 𝓤)) (𝟏[ 𝒪 𝟚ₗ ] ∨[ 𝒪 𝟚ₗ ] 𝟎[ 𝒪 𝟚ₗ ]) holds
   † = transport (λ - → is-top (𝒪 (𝟚-loc 𝓤)) - holds) p (𝟏-is-top (𝒪 𝟚ₗ))
+
+ℬ-𝟚↑-contains-bottom : contains-bottom (𝒪 (𝟚-loc 𝓤)) ℬ-𝟚↑ holds
+ℬ-𝟚↑-contains-bottom = ∣ (((₀ , ₀) ∷ [])) , † ∣
+ where
+  p : 𝟎[ 𝒪 𝟚ₗ ] ＝ 𝟎[ 𝒪 𝟚ₗ ] ∨[ 𝒪 𝟚ₗ ] 𝟎[ 𝒪 𝟚ₗ ]
+  p = ∨[ 𝒪 𝟚ₗ ]-is-idempotent 𝟎[ 𝒪 𝟚ₗ ]
+
+  † : is-bottom (𝒪 (𝟚-loc 𝓤)) (𝟎[ 𝒪 𝟚ₗ ] ∨[ 𝒪 𝟚ₗ ] 𝟎[ 𝒪 𝟚ₗ ]) holds
+  † = transport
+       (λ - → is-bottom (𝒪 (𝟚-loc 𝓤)) - holds)
+       p
+       (𝟎-is-bottom (𝒪 𝟚ₗ))
+
+\end{code}
+
+Added on 2024-07-15.
+
+\begin{code}
+
+false-is-not-𝟎 : ¬ (𝟎[ 𝒪 (𝟚-loc 𝓤) ] ＝ falseₖ)
+false-is-not-𝟎 p = ∥∥-rec 𝟘-is-prop (λ { (() , _) }) μ
+ where
+  μ : ₀ ∈ 𝟎[ 𝒪 (𝟚-loc 𝓤) ]
+  μ = transport (λ - → ₀ ∈ -) (p ⁻¹) refl
+
+false-is-not-𝟏 : ¬ (falseₖ ＝ 𝟏[ 𝒪 (𝟚-loc 𝓤) ])
+false-is-not-𝟏 p = +disjoint (μ ⁻¹)
+ where
+  μ : ₁ ∈ falseₖ
+  μ = transport (λ - → ₁ ∈ -) (p ⁻¹) ⋆
+
+true-is-not-𝟎 : ¬ (trueₖ ＝ 𝟎[ 𝒪 (𝟚-loc 𝓤) ])
+true-is-not-𝟎 p = ∥∥-rec 𝟘-is-prop (λ { (() , _) }) μ
+ where
+  μ : ₁ ∈ 𝟎[ 𝒪 (𝟚-loc 𝓤) ]
+  μ = transport (λ - → ₁ ∈ -) p refl
+
+true-is-not-𝟏 : ¬ (trueₖ ＝ 𝟏[ 𝒪 (𝟚-loc 𝓤) ])
+true-is-not-𝟏 p = +disjoint μ
+ where
+  μ : ₀ ∈ trueₖ
+  μ = transport (λ - → ₀ ∈ -) (p ⁻¹) ⋆
+
+𝟎-is-not-𝟏 : ¬ (𝟎[ 𝒪 (𝟚-loc 𝓤) ] ＝ 𝟏[ 𝒪 (𝟚-loc 𝓤) ])
+𝟎-is-not-𝟏 p = ∥∥-rec 𝟘-is-prop (λ { (() , _) }) μ
+ where
+  μ : ₁ ∈ 𝟎[ 𝒪 (𝟚-loc 𝓤) ]
+  μ = transport (λ - → ₁ ∈ -) (p ⁻¹) ⋆
+
+true-is-not-false : ¬ (trueₖ ＝ falseₖ)
+true-is-not-false p = +disjoint (μ ⁻¹)
+ where
+  μ : ₁ ∈ falseₖ
+  μ = transport (λ - → ₁ ∈ -) p refl
+
+\end{code}
+
+\begin{code}
+
+being-equal-to-one-of-the-four-compact-opens-is-prop
+ : (U : ⟨ 𝒪 𝟚ₗ ⟩)
+ → is-prop (equal-to-one-of-the-four-compact-opens U)
+being-equal-to-one-of-the-four-compact-opens-is-prop U (inl p) (inl q) =
+ ap inl (carrier-of-[ poset-of (𝒪 𝟚ₗ) ]-is-set p q)
+being-equal-to-one-of-the-four-compact-opens-is-prop U (inl p) (inr (inl q)) =
+ 𝟘-elim (false-is-not-𝟎 †)
+  where
+   † : 𝟎[ 𝒪 𝟚ₗ ] ＝ falseₖ
+   † = 𝟎[ 𝒪 𝟚ₗ ] ＝⟨ p ⁻¹ ⟩ U ＝⟨ q ⟩ falseₖ ∎
+being-equal-to-one-of-the-four-compact-opens-is-prop U (inl p) (inr (inr (inl q))) =
+ 𝟘-elim (true-is-not-𝟎 †)
+  where
+   † : trueₖ ＝ 𝟎[ 𝒪 (𝟚-loc 𝓤) ]
+   † = trueₖ ＝⟨ q ⁻¹ ⟩ U ＝⟨ p ⟩ 𝟎[ 𝒪 (𝟚-loc 𝓤) ] ∎
+being-equal-to-one-of-the-four-compact-opens-is-prop U (inl p) (inr (inr (inr q))) =
+ 𝟘-elim (𝟎-is-not-𝟏 †)
+  where
+   † : 𝟎[ 𝒪 (𝟚-loc 𝓤) ] ＝ 𝟏[ 𝒪 (𝟚-loc 𝓤) ]
+   † = 𝟎[ 𝒪 (𝟚-loc 𝓤) ] ＝⟨ p ⁻¹ ⟩ U ＝⟨ q ⟩ 𝟏[ 𝒪 (𝟚-loc 𝓤) ] ∎
+being-equal-to-one-of-the-four-compact-opens-is-prop U (inr (inl p)) (inl q) =
+ 𝟘-elim (false-is-not-𝟎 †)
+  where
+   † : 𝟎[ 𝒪 (𝟚-loc 𝓤) ] ＝ falseₖ
+   † = 𝟎[ 𝒪 (𝟚-loc 𝓤) ] ＝⟨ q ⁻¹ ⟩ U ＝⟨ p ⟩ falseₖ ∎
+being-equal-to-one-of-the-four-compact-opens-is-prop U (inr (inr (inl p))) (inl q) =
+ 𝟘-elim (true-is-not-𝟎 †)
+  where
+   † : trueₖ ＝ 𝟎[ 𝒪 (𝟚-loc 𝓤) ]
+   † = trueₖ ＝⟨ p ⁻¹ ⟩ U ＝⟨ q ⟩ 𝟎[ 𝒪 (𝟚-loc 𝓤) ] ∎
+being-equal-to-one-of-the-four-compact-opens-is-prop U (inr (inr (inr p))) (inl q) =
+ 𝟘-elim (𝟎-is-not-𝟏 †)
+  where
+   † :  𝟎[ 𝒪 (𝟚-loc 𝓤) ] ＝ 𝟏[ 𝒪 (𝟚-loc 𝓤) ]
+   † =  𝟎[ 𝒪 (𝟚-loc 𝓤) ] ＝⟨ q ⁻¹ ⟩ U ＝⟨ p ⟩ 𝟏[ 𝒪 (𝟚-loc 𝓤) ] ∎
+being-equal-to-one-of-the-four-compact-opens-is-prop U (inr (inl p)) (inr (inl q)) =
+ ap (inr ∘ inl) (carrier-of-[ poset-of (𝒪 𝟚ₗ) ]-is-set p q)
+being-equal-to-one-of-the-four-compact-opens-is-prop U (inr (inl p)) (inr (inr (inl q))) =
+ 𝟘-elim (true-is-not-false †)
+  where
+   † : trueₖ ＝ falseₖ
+   † = trueₖ ＝⟨ q ⁻¹ ⟩ U ＝⟨ p ⟩ falseₖ ∎
+being-equal-to-one-of-the-four-compact-opens-is-prop U (inr (inl p)) (inr (inr (inr q))) =
+ 𝟘-elim (false-is-not-𝟏 †)
+  where
+   † : falseₖ ＝ 𝟏[ 𝒪 (𝟚-loc 𝓤) ]
+   † = falseₖ ＝⟨ p ⁻¹ ⟩ U ＝⟨ q ⟩ 𝟏[ 𝒪 (𝟚-loc 𝓤) ] ∎
+being-equal-to-one-of-the-four-compact-opens-is-prop U (inr (inr (inl p))) (inr (inl q)) =
+ 𝟘-elim (true-is-not-false †)
+  where
+   † : trueₖ ＝ falseₖ
+   † = trueₖ ＝⟨ p ⁻¹ ⟩ U ＝⟨ q ⟩ falseₖ ∎
+being-equal-to-one-of-the-four-compact-opens-is-prop U (inr (inr (inr p))) (inr (inl q)) =
+ 𝟘-elim (false-is-not-𝟏 †)
+  where
+   † : falseₖ ＝ 𝟏[ 𝒪 (𝟚-loc 𝓤) ]
+   † = falseₖ ＝⟨ q ⁻¹ ⟩ U ＝⟨ p ⟩ 𝟏[ 𝒪 (𝟚-loc 𝓤) ] ∎
+being-equal-to-one-of-the-four-compact-opens-is-prop U (inr (inr (inl p))) (inr (inr (inl q))) =
+ ap (inr ∘ inr ∘ inl) (carrier-of-[ poset-of (𝒪 𝟚ₗ) ]-is-set p q)
+being-equal-to-one-of-the-four-compact-opens-is-prop U (inr (inr (inl p))) (inr (inr (inr q))) =
+ 𝟘-elim (true-is-not-𝟏 †)
+  where
+   † : trueₖ ＝ 𝟏[ 𝒪 (𝟚-loc 𝓤) ]
+   † = trueₖ ＝⟨ p ⁻¹ ⟩ U ＝⟨ q ⟩ 𝟏[ 𝒪 (𝟚-loc 𝓤) ] ∎
+being-equal-to-one-of-the-four-compact-opens-is-prop U (inr (inr (inr p))) (inr (inr (inl q))) =
+ 𝟘-elim (true-is-not-𝟏 †)
+  where
+   † : trueₖ ＝ 𝟏[ 𝒪 (𝟚-loc 𝓤) ]
+   † = trueₖ ＝⟨ q ⁻¹ ⟩ U ＝⟨ p ⟩ 𝟏[ 𝒪 (𝟚-loc 𝓤) ] ∎
+being-equal-to-one-of-the-four-compact-opens-is-prop U (inr (inr (inr p))) (inr (inr (inr q))) =
+ ap (inr ∘ inr ∘ inr) (carrier-of-[ poset-of (𝒪 𝟚ₗ) ]-is-set p q)
 
 \end{code}
