@@ -49,6 +49,7 @@ open import Locales.ContinuousMap.FrameHomomorphism-Properties pt fe
 open import Locales.DiscreteLocale.Definition fe pe pt
 open import Locales.DiscreteLocale.Two fe pe pt
 open import Locales.DiscreteLocale.Two-Properties fe pe pt sr 𝓤
+open import Locales.Clopen pt fe sr
 open import Locales.DistributiveLattice.Definition fe pt
 open import Locales.Frame pt fe hiding (𝟚; is-directed)
 open import Locales.HeytingImplication pt fe
@@ -609,7 +610,7 @@ basis-tetrachotomy-for-Patch-𝕊 ((i , j) ∷ is) =
 
 \begin{code}
 
-open 𝒦-Lattice (𝟚-loc 𝓤) 𝟚-is-spectral-with-ssb using () renaming (𝒦⦅X⦆ to 𝒦𝟚)
+open 𝒦-Lattice (𝟚-loc 𝓤) 𝟚-is-spectral-with-ssb using () renaming (𝒦⦅X⦆ to 𝒦𝟚; 𝟎ₖ to 𝟎𝒦𝟚; 𝟏ₖ to 𝟏𝒦𝟚)
 
 patch-𝕊-is-ssb : is-spectral-with-small-basis ua Patch-𝕊 holds
 patch-𝕊-is-ssb = spectralᴰ-implies-ssb ua Patch-𝕊 patchₛ-spectralᴰ
@@ -889,57 +890,212 @@ compact-tetrachotomy-for-Patch-𝕊 𝒿 κ =
 
 \begin{code}
 
+to-𝒦𝟚₀ : ((𝒿 , _) : ∣ 𝒦-Patch-𝕊 ∣ᵈ)
+       → equal-to-one-of-the-four-compact-opensₚ 𝒿 → ∣ 𝒦𝟚 ∣ᵈ
+to-𝒦𝟚₀ (𝒿 , _) (inl p)             = 𝟎[ 𝒪 𝟚ₗ ] , 𝟎-is-compact 𝟚ₗ
+to-𝒦𝟚₀ (𝒿 , _) (inr (inl p))       = trueₖ , trueₖ-is-compact
+to-𝒦𝟚₀ (𝒿 , _) (inr (inr (inl p))) = falseₖ , falseₖ-is-compact
+to-𝒦𝟚₀ (𝒿 , _) (inr (inr (inr p))) = 𝟏[ 𝒪 𝟚ₗ ] , 𝟚ₗ-is-compact
+
 to-𝒦𝟚 : ∣ 𝒦-Patch-𝕊 ∣ᵈ → ∣ 𝒦𝟚 ∣ᵈ
-to-𝒦𝟚 (𝒿 , κ) = cases₄ case₁ case₂ case₃ case₄ γ
- where
-  γ : equal-to-one-of-the-four-compact-opensₚ 𝒿
-  γ = compact-tetrachotomy-for-Patch-𝕊 𝒿 κ
-
-  case₁ : 𝒿 ＝ closed-𝟎 → ∣ 𝒦𝟚 ∣ᵈ
-  case₁ _ = 𝟎[ 𝒪 𝟚ₗ ] , 𝟎-is-compact 𝟚ₗ
-
-  case₂ : 𝒿 ＝ closed-truth → ∣ 𝒦𝟚 ∣ᵈ
-  case₂ _ = trueₖ , trueₖ-is-compact
-
-  case₃ : 𝒿 ＝ open-truth → ∣ 𝒦𝟚 ∣ᵈ
-  case₃ _ = falseₖ , falseₖ-is-compact
-
-  case₄ : 𝒿 ＝ closed-𝟏 → ∣ 𝒦𝟚 ∣ᵈ
-  case₄ _ = 𝟏[ 𝒪 𝟚ₗ ] , 𝟚ₗ-is-compact
+to-𝒦𝟚 (𝒿 , κ) = to-𝒦𝟚₀ (𝒿 , κ) (compact-tetrachotomy-for-Patch-𝕊 𝒿 κ)
 
 \end{code}
 
 \begin{code}
 
-closed-𝟎-is-clopen : {!!}
-closed-𝟎-is-clopen = {!!}
+closed-𝟎-is-clopen : is-clopen (𝒪 Patch-𝕊) closed-𝟎 holds
+closed-𝟎-is-clopen = open-𝟎 , open-complements-closed 𝟎[ 𝒪 𝕊 ] (𝟎-is-compact 𝕊)
 
-closed-𝟏-is-clopen : {!!}
-closed-𝟏-is-clopen = {!!}
+closed-𝟏-is-clopen : is-clopen (𝒪 Patch-𝕊) closed-𝟏 holds
+closed-𝟏-is-clopen = open-𝟏 , (open-complements-closed 𝟏[ 𝒪 𝕊 ] 𝕊-is-compact)
 
 closed-𝟎-is-compact : is-compact-open Patch-𝕊 closed-𝟎 holds
 closed-𝟎-is-compact =
- clopens-are-compact-in-compact-locales Patch-𝕊 patchₛ-is-compact closed-𝟎 closed-𝟎-is-clopen
+ clopens-are-compact-in-compact-locales
+  Patch-𝕊
+  patchₛ-is-compact
+  closed-𝟎
+  closed-𝟎-is-clopen
 
-closed-𝟏-is-compact : {!!}
-closed-𝟏-is-compact = {!!}
+closed-𝟎ₖ : ∣ 𝒦-Patch-𝕊 ∣ᵈ
+closed-𝟎ₖ = closed-𝟎 , closed-𝟎-is-compact
+
+closed-𝟏-is-compact : is-compact-open Patch-𝕊 closed-𝟏 holds
+closed-𝟏-is-compact =
+ clopens-are-compact-in-compact-locales
+  Patch-𝕊
+  patchₛ-is-compact
+  closed-𝟏
+  closed-𝟏-is-clopen
+
+closed-𝟏ₖ : ∣ 𝒦-Patch-𝕊 ∣ᵈ
+closed-𝟏ₖ = closed-𝟏 , closed-𝟏-is-compact
+
+open-truth-is-clopen : is-clopen (𝒪 Patch-𝕊) open-truth holds
+open-truth-is-clopen = closed-truth
+                     , closed-complements-open truth truth-is-compact
+
+open-truth-is-compact : is-compact-open Patch-𝕊 open-truth holds
+open-truth-is-compact =
+ clopens-are-compact-in-compact-locales
+  Patch-𝕊
+  patchₛ-is-compact
+  open-truth
+  open-truth-is-clopen
+
+closed-truth-is-clopen : is-clopen (𝒪 Patch-𝕊) closed-truth holds
+closed-truth-is-clopen = open-truth
+                       , open-complements-closed truth truth-is-compact
+
+closed-truth-is-compact : is-compact-open Patch-𝕊 closed-truth holds
+closed-truth-is-compact =
+ clopens-are-compact-in-compact-locales
+  Patch-𝕊
+  patchₛ-is-compact
+  closed-truth
+  closed-truth-is-clopen
+
+to-patch-𝕊₀ : ((K , _) : ∣ 𝒦𝟚 ∣ᵈ) → equal-to-one-of-the-four-compact-opens K →  ∣ 𝒦-Patch-𝕊 ∣ᵈ
+to-patch-𝕊₀ (K , _) (inl p)       = closed-𝟎 , closed-𝟎-is-compact
+to-patch-𝕊₀ (K , _) (inr (inl p)) = open-truth , open-truth-is-compact
+to-patch-𝕊₀ (K , _) (inr (inr (inl p))) = closed-truth , closed-truth-is-compact
+to-patch-𝕊₀ (K , _) (inr (inr (inr p))) = closed-𝟏 , closed-𝟏-is-compact
 
 to-patch-𝕊 : ∣ 𝒦𝟚 ∣ᵈ → ∣ 𝒦-Patch-𝕊 ∣ᵈ
-to-patch-𝕊 (U , κ) = cases₄ case₁ case₂ case₃ case₄ γ
+to-patch-𝕊 (U , κ) = to-patch-𝕊₀ (U , κ) (compact-tetrachotomy U κ)
+
+\end{code}
+
+\begin{code}
+
+to-𝒦𝟚-equality-𝟎 : to-𝒦𝟚 closed-𝟎ₖ ＝ 𝟎𝒦𝟚
+to-𝒦𝟚-equality-𝟎 = h e
  where
-  γ : equal-to-one-of-the-four-compact-opens U
-  γ = compact-tetrachotomy U κ
+  e : equal-to-one-of-the-four-compact-opensₚ closed-𝟎
+  e = compact-tetrachotomy-for-Patch-𝕊 closed-𝟎 closed-𝟎-is-compact
 
-  case₁ : U ＝ 𝟎[ 𝒪 (𝟚-loc 𝓤) ] → ∣ 𝒦-Patch-𝕊 ∣ᵈ
-  case₁ _ = closed-𝟎 , closed-𝟎-is-compact
+  h : (p : equal-to-one-of-the-four-compact-opensₚ closed-𝟎)
+    → to-𝒦𝟚₀ closed-𝟎ₖ p ＝ 𝟎𝒦𝟚 
+  h (inl p) = refl
+  h (inr (inl p)) = 𝟘-elim (closed-truth-is-not-closed-𝟎 (p ⁻¹))
+  h (inr (inr (inl p))) = 𝟘-elim (open-truth-is-not-closed-𝟎 (p ⁻¹))
+  h (inr (inr (inr p))) = 𝟘-elim (closed-𝟏-is-not-closed-𝟎 (p ⁻¹))
 
-  case₂ : U ＝ falseₖ → ∣ 𝒦-Patch-𝕊 ∣ᵈ
-  case₂ _ = open-truth , {! !}
+to-𝒦𝟚-equality-𝟏 : to-𝒦𝟚 closed-𝟏ₖ ＝ 𝟏𝒦𝟚
+to-𝒦𝟚-equality-𝟏 = h e
+ where
+  e : equal-to-one-of-the-four-compact-opensₚ closed-𝟏
+  e = compact-tetrachotomy-for-Patch-𝕊 closed-𝟏 closed-𝟏-is-compact
 
-  case₃ : U ＝ trueₖ → ∣ 𝒦-Patch-𝕊 ∣ᵈ
-  case₃ _ = closed-truth , {!!}
+  h : (p : equal-to-one-of-the-four-compact-opensₚ closed-𝟏)
+    → to-𝒦𝟚₀ closed-𝟏ₖ p ＝ 𝟏𝒦𝟚
+  h (inl p) = 𝟘-elim (closed-𝟏-is-not-closed-𝟎 p)
+  h (inr (inl p)) = 𝟘-elim (closed-truth-is-not-closed-𝟏 (p ⁻¹))
+  h (inr (inr (inl p))) = 𝟘-elim (open-truth-is-not-closed-𝟏 (p ⁻¹))
+  h (inr (inr (inr p))) =
+   to-𝒦-＝ 𝟚ₗ 𝟚ₗ-is-compact (spectral-locales-are-compact 𝟚ₗ (pr₁ 𝟚-is-spectral-with-ssb)) refl
 
-  case₄ : U ＝ 𝟏[ 𝒪 (𝟚-loc 𝓤) ] → ∣ 𝒦-Patch-𝕊 ∣ᵈ
-  case₄ _ = closed-𝟏 , closed-𝟏-is-compact
+\end{code}
+
+\begin{code}
+
+to-patch-𝕊-𝟎-equality : (U : ∣ 𝒦𝟚 ∣ᵈ)
+                      → U ＝ 𝟎𝒦𝟚
+                      → to-patch-𝕊 U ＝ (closed-𝟎 , closed-𝟎-is-compact)
+to-patch-𝕊-𝟎-equality U p = transport (λ - → to-patch-𝕊 - ＝ closed-𝟎 , closed-𝟎-is-compact) (p ⁻¹) (foo γ)
+ where
+  γ : equal-to-one-of-the-four-compact-opens 𝟎[ 𝒪 𝟚ₗ ]
+  γ = compact-tetrachotomy 𝟎[ 𝒪 𝟚ₗ ] (𝟎-is-compact 𝟚ₗ)
+
+  foo : (p : equal-to-one-of-the-four-compact-opens 𝟎[ 𝒪 𝟚ₗ ]) → to-patch-𝕊₀ 𝟎𝒦𝟚 p ＝ (closed-𝟎 , closed-𝟎-is-compact)
+  foo (inl p) = refl
+  foo (inr (inl p)) = 𝟘-elim (false-is-not-𝟎 p)
+  foo (inr (inr (inl p))) = 𝟘-elim (true-is-not-𝟎 (p ⁻¹))
+  foo (inr (inr (inr p))) = 𝟘-elim (𝟎-is-not-𝟏 p)
+
+to-patch-𝕊-𝟎-equality′ : to-patch-𝕊 𝟎𝒦𝟚 ＝ closed-𝟎ₖ
+to-patch-𝕊-𝟎-equality′ = to-patch-𝕊-𝟎-equality 𝟎𝒦𝟚 refl
+
+to-patch-𝕊-𝟏-equality : to-patch-𝕊 𝟏𝒦𝟚 ＝ closed-𝟏ₖ
+to-patch-𝕊-𝟏-equality = h e
+ where
+  e : equal-to-one-of-the-four-compact-opens 𝟏[ 𝒪 𝟚ₗ ]
+  e = compact-tetrachotomy 𝟏[ 𝒪 𝟚ₗ ] (spectral-locales-are-compact 𝟚ₗ (pr₁ 𝟚-is-spectral-with-ssb))
+
+  h : (p : equal-to-one-of-the-four-compact-opens 𝟏[ 𝒪 𝟚ₗ ])
+    → to-patch-𝕊₀ 𝟏𝒦𝟚 p ＝ closed-𝟏ₖ
+  h (inl p)             = 𝟘-elim (𝟎-is-not-𝟏 (p ⁻¹))
+  h (inr (inl p))       = 𝟘-elim (false-is-not-𝟏 (p ⁻¹))
+  h (inr (inr (inl p))) = 𝟘-elim (true-is-not-𝟏 (p ⁻¹))
+  h (inr (inr (inr p))) = refl
+
+\end{code}
+
+\begin{code}
+
+to-patch-𝕊-qinv : qinv to-patch-𝕊
+to-patch-𝕊-qinv = to-𝒦𝟚 , († , ‡)
+ where
+  † : (x : ∣ 𝒦𝟚 ∣ᵈ) → to-𝒦𝟚 (to-patch-𝕊 x) ＝ x
+  † 𝔎@(K , κ) = cases₄ case₁ case₂ case₃ case₄ (compact-tetrachotomy K κ)
+   where
+    case₁ : K ＝ 𝟎[ 𝒪 𝟚ₗ ] → to-𝒦𝟚 (to-patch-𝕊 𝔎) ＝ 𝔎
+    case₁ p = transport (λ - → to-𝒦𝟚 (to-patch-𝕊 -) ＝ -) (q ⁻¹) ♢
+     where
+      q : 𝔎 ＝ 𝟎𝒦𝟚
+      q = to-𝒦-＝ 𝟚ₗ κ (𝟎-is-compact 𝟚ₗ) p
+
+      ♢ : to-𝒦𝟚 (to-patch-𝕊 𝟎𝒦𝟚) ＝ 𝟎𝒦𝟚
+      ♢ = to-𝒦𝟚 (to-patch-𝕊 𝟎𝒦𝟚)     ＝⟨ ap to-𝒦𝟚 to-patch-𝕊-𝟎-equality′ ⟩
+          to-𝒦𝟚 closed-𝟎ₖ            ＝⟨ to-𝒦𝟚-equality-𝟎 ⟩
+          𝟎𝒦𝟚                        ∎
+
+    case₂ : K ＝ falseₖ → to-𝒦𝟚 (to-patch-𝕊 𝔎) ＝ 𝔎
+    case₂ = {!!}
+
+    case₃ : K ＝ trueₖ → to-𝒦𝟚 (to-patch-𝕊 𝔎) ＝ 𝔎
+    case₃ = {!!}
+
+    case₄ : K ＝ 𝟏[ 𝒪 𝟚ₗ ] → to-𝒦𝟚 (to-patch-𝕊 𝔎) ＝ 𝔎
+    case₄ = {!!}
+
+  ‡ : (K : ∣ 𝒦-Patch-𝕊 ∣ᵈ) → to-patch-𝕊 (to-𝒦𝟚 K) ＝ K
+  ‡ 𝔎@(U , κ) =
+   cases₄ case₁ case₂ case₃ case₄ (compact-tetrachotomy-for-Patch-𝕊 U κ)
+    where
+     case₁ : U ＝ closed-𝟎 → to-patch-𝕊 (to-𝒦𝟚 𝔎) ＝ 𝔎
+     case₁ p = to-patch-𝕊 (to-𝒦𝟚 𝔎)         ＝⟨ Ⅰ ⟩
+               to-patch-𝕊 (to-𝒦𝟚 closed-𝟎ₖ) ＝⟨ Ⅱ ⟩
+               to-patch-𝕊 𝟎𝒦𝟚               ＝⟨ Ⅲ ⟩
+               closed-𝟎ₖ                    ＝⟨ Ⅳ ⟩
+               𝔎                            ∎
+                where
+                 Ⅳ = to-𝒦-＝ Patch-𝕊 closed-𝟎-is-compact κ (p ⁻¹)
+                 Ⅰ = ap (to-patch-𝕊 ∘ to-𝒦𝟚) (Ⅳ ⁻¹)
+                 Ⅱ = ap to-patch-𝕊 to-𝒦𝟚-equality-𝟎
+                 Ⅲ = to-patch-𝕊-𝟎-equality′ 
+
+     case₂ : {!!}
+     case₂ = {!!}
+
+     case₃ : {!!}
+     case₃ = {!!}
+
+     case₄ : U ＝ closed-𝟏 → to-patch-𝕊 (to-𝒦𝟚 𝔎) ＝ 𝔎
+     case₄ p = to-patch-𝕊 (to-𝒦𝟚 𝔎)          ＝⟨ Ⅰ     ⟩
+               to-patch-𝕊 (to-𝒦𝟚 closed-𝟏ₖ)  ＝⟨ Ⅱ ⟩
+               to-patch-𝕊 𝟏𝒦𝟚                ＝⟨ Ⅲ ⟩
+               closed-𝟏ₖ                     ＝⟨ Ⅳ ⟩
+               𝔎                             ∎
+                where
+                 Ⅳ = to-𝒦-＝ Patch-𝕊 closed-𝟏-is-compact κ (p ⁻¹)
+                 Ⅰ = ap (to-patch-𝕊 ∘ to-𝒦𝟚) (Ⅳ ⁻¹)
+                 Ⅱ = ap to-patch-𝕊 to-𝒦𝟚-equality-𝟏
+                 Ⅲ = to-patch-𝕊-𝟏-equality
+
+𝟚-equiv-Patch-𝕊 : ∣ 𝒦𝟚 ∣ᵈ ≃ ∣ 𝒦-Patch-𝕊 ∣ᵈ
+𝟚-equiv-Patch-𝕊 = to-patch-𝕊
+                , (qinvs-are-equivs to-patch-𝕊 to-patch-𝕊-qinv)
 
 \end{code}
