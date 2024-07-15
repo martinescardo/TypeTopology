@@ -60,6 +60,7 @@ open import Locales.Spectrality.LatticeOfCompactOpens ua pt sr
 open import Locales.Spectrality.SpectralLocale pt fe
 open import Locales.Spectrality.SpectralMap pt fe
 open import Locales.Stone pt fe sr
+open import Locales.StoneImpliesSpectral pt fe sr
 open import MLTT.List hiding ([_])
 open import MLTT.Sigma
 open import Slice.Family
@@ -596,7 +597,10 @@ basis-tetrachotomy-for-Patch-𝕊 ((i , j) ∷ is) =
   γ = ∣ ((₁ , ₁) ∷ []) , ζ ∣
 
   δ : closed-under-binary-meets (𝒪 (𝟚-loc 𝓤)) ℬ-𝟚↑ holds
-  δ = {!!}
+  δ is js = cases₄ case₁ {!!} {!!} {!!} (basis-tetrachotomy is)
+   where
+    case₁ : ℬ-𝟚↑ [ is ] ＝ 𝟎[ 𝒪 (𝟚-loc 𝓤) ] → {!!}
+    case₁ = {!!}
 
   † : spectralᴰ (𝟚-loc 𝓤)
   † = ℬ-𝟚↑ , ℬ-𝟚↑-is-directed-basis , ℬ-𝟚↑-is-spectral , (γ , δ)
@@ -903,13 +907,39 @@ to-𝒦𝟚 (𝒿 , κ) = cases₄ case₁ case₂ case₃ case₄ γ
   case₄ : 𝒿 ＝ closed-𝟏 → ∣ 𝒦𝟚 ∣ᵈ
   case₄ _ = 𝟏[ 𝒪 𝟚ₗ ] , 𝟚ₗ-is-compact
 
+\end{code}
+
+\begin{code}
+
+closed-𝟎-is-clopen : {!!}
+closed-𝟎-is-clopen = {!!}
+
+closed-𝟏-is-clopen : {!!}
+closed-𝟏-is-clopen = {!!}
+
+closed-𝟎-is-compact : is-compact-open Patch-𝕊 closed-𝟎 holds
+closed-𝟎-is-compact =
+ clopens-are-compact-in-compact-locales Patch-𝕊 patchₛ-is-compact closed-𝟎 closed-𝟎-is-clopen
+
+closed-𝟏-is-compact : {!!}
+closed-𝟏-is-compact = {!!}
+
 to-patch-𝕊 : ∣ 𝒦𝟚 ∣ᵈ → ∣ 𝒦-Patch-𝕊 ∣ᵈ
-to-patch-𝕊 (U , κ) = {!!}
+to-patch-𝕊 (U , κ) = cases₄ case₁ case₂ case₃ case₄ γ
  where
-  γ : ∥ equal-to-one-of-the-four-compact-opens U ∥
+  γ : equal-to-one-of-the-four-compact-opens U
   γ = compact-tetrachotomy U κ
 
-  † : equal-to-one-of-the-four-compact-opens U
-  † = {!exit-∥∥ !}
+  case₁ : U ＝ 𝟎[ 𝒪 (𝟚-loc 𝓤) ] → ∣ 𝒦-Patch-𝕊 ∣ᵈ
+  case₁ _ = closed-𝟎 , closed-𝟎-is-compact
+
+  case₂ : U ＝ falseₖ → ∣ 𝒦-Patch-𝕊 ∣ᵈ
+  case₂ _ = open-truth , {! !}
+
+  case₃ : U ＝ trueₖ → ∣ 𝒦-Patch-𝕊 ∣ᵈ
+  case₃ _ = closed-truth , {!!}
+
+  case₄ : U ＝ 𝟏[ 𝒪 (𝟚-loc 𝓤) ] → ∣ 𝒦-Patch-𝕊 ∣ᵈ
+  case₄ _ = closed-𝟏 , closed-𝟏-is-compact
 
 \end{code}
