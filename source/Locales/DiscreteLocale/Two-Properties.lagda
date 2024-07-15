@@ -395,27 +395,6 @@ basis-tetrachotomy ((₁ , ₁) ∷ is) =
 
 \end{code}
 
-Tetrachotomy for compact opens.
-
-\begin{code}
-
-compact-tetrachotomy : (U : ⟨ 𝒪 𝟚ₗ ⟩)
-                     → is-compact-open 𝟚ₗ U holds
-                     → ∥ equal-to-one-of-the-four-compact-opens U ∥
-compact-tetrachotomy U κ = ∥∥-functor † γ
- where
-  † : Σ is ꞉ List Four , (ℬ-𝟚↑ [ is ] ＝ U)
-    → equal-to-one-of-the-four-compact-opens U
-  † (is , p) = transport equal-to-one-of-the-four-compact-opens p ‡
-   where
-    ‡ : equal-to-one-of-the-four-compact-opens (ℬ-𝟚↑ [ is ])
-    ‡ = basis-tetrachotomy is
-
-  γ : is-basic (𝟚-loc 𝓤) U ℬ-𝟚-directed-basisᴰ holds
-  γ = compact-opens-are-basic 𝟚ₗ ℬ-𝟚-directed-basisᴰ U κ
-
-\end{code}
-
 Added on 2024-07-15.
 
 \begin{code}
@@ -560,5 +539,29 @@ being-equal-to-one-of-the-four-compact-opens-is-prop-𝟚 U (inr (inr (inr p))) 
    † = trueₖ ＝⟨ q ⁻¹ ⟩ U ＝⟨ p ⟩ 𝟏[ 𝒪 (𝟚-loc 𝓤) ] ∎
 being-equal-to-one-of-the-four-compact-opens-is-prop-𝟚 U (inr (inr (inr p))) (inr (inr (inr q))) =
  ap (inr ∘ inr ∘ inr) (carrier-of-[ poset-of (𝒪 𝟚ₗ) ]-is-set p q)
+
+\end{code}
+
+Tetrachotomy for compact opens. Truncation removed on 2024-07-15.
+
+\begin{code}
+
+compact-tetrachotomy : (U : ⟨ 𝒪 𝟚ₗ ⟩)
+                     → is-compact-open 𝟚ₗ U holds
+                     → equal-to-one-of-the-four-compact-opens U
+compact-tetrachotomy U κ = ∥∥-rec φ † γ
+ where
+  † : Σ is ꞉ List Four , (ℬ-𝟚↑ [ is ] ＝ U)
+    → equal-to-one-of-the-four-compact-opens U
+  † (is , p) = transport equal-to-one-of-the-four-compact-opens p ‡
+   where
+    ‡ : equal-to-one-of-the-four-compact-opens (ℬ-𝟚↑ [ is ])
+    ‡ = basis-tetrachotomy is
+
+  γ : is-basic (𝟚-loc 𝓤) U ℬ-𝟚-directed-basisᴰ holds
+  γ = compact-opens-are-basic 𝟚ₗ ℬ-𝟚-directed-basisᴰ U κ
+
+  φ : is-prop (equal-to-one-of-the-four-compact-opens U)
+  φ = being-equal-to-one-of-the-four-compact-opens-is-prop-𝟚 U
 
 \end{code}
