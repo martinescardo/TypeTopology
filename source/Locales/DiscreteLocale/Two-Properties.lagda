@@ -485,6 +485,8 @@ true-is-not-false p = +disjoint (μ ⁻¹)
 
 \end{code}
 
+Added on 2024-07-15.
+
 \begin{code}
 
 being-equal-to-one-of-the-four-compact-opens-is-prop
