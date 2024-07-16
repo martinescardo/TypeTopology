@@ -187,7 +187,9 @@ module PrincipalIdeals (L : DistributiveLattice 𝓤) where
 
 \end{code}
 
-Some nice syntax.
+Some nice syntax. Tried turning this into a definition with the same precedence,
+but it doesn't seem to work.
+
 
 \begin{code}
 
