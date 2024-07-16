@@ -550,8 +550,8 @@ Added by Alice Laroche, 1st June 2023.
 We show that both definitions are equivalent, and from that deduce the
 correctness of ε-formula'.
 
-We first define another pair of auxilliary constructions that will be used
-to reason about εᵉ.
+We first define another pair of auxiliary constructions that will be
+used to reason about εᵉ.
 
 \begin{code}
 
@@ -707,9 +707,9 @@ It then follows immediately by transport that ε-formula' is correct.
 
 \end{code}
 
-Added by Alice Laroche, 5th june 2023
+Added by Alice Laroche, 5th june 2023.
 
-We prove that ε f computes in fact the infimum of the set of roots
+We prove that ε f indeed computes the infimum of the set of roots
 ordered by the lexicographical order.
 
 \begin{code}
