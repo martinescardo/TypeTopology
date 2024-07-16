@@ -1,6 +1,7 @@
 Kelton OBrien, 31 May 2024
 
-A proof that the Axiom of Choice implies Zorn's Lemma, as well as relevant definitions.
+A proof that the Axiom of Choice implies Zorn's Lemma, as well as
+relevant definitions.
 
 \begin{code}
 
@@ -98,14 +99,14 @@ where we assume that even though all chains have a least upper bound,
 the set at hand does not have a maximal element.
 These assumptions allow us to construct a function `f' from the ordinals to X,
 which is a set, which preserves order, is therefore left-cancellable, and again
-in turn an equivalence.
-`f' being order preserving relies on the fact that there is no maximal element,
-as otherwise `f' would (as defined) map many ordinals to the maximal element.
-An equivalence between the ordinals and a set is impossible,
-so there must (not-not) be a maximum.
+in turn an equivalence. `f' being order preserving relies on the fact
+that there is no maximal element, as otherwise `f' would (as defined)
+map many ordinals to the maximal element.  An equivalence between the
+ordinals and a set is impossible, so there must (not-not) be a
+maximum.
 
-While this is the core of the proof logic, the final result to be used elsewhere
-is found below, and takes in more reasonable inputs.
+While this is the core of the proof logic, the final result to be used
+elsewhere is found below, and takes in more reasonable inputs.
 
 \begin{code}
 
@@ -159,12 +160,18 @@ choice-function-gives-zorns-lemma
     ⊲-is-trichotomous : {a b : Ordinal 𝓤} → (a ⊲ b) + (a ＝ b) + (b ⊲ a)
     ⊲-is-trichotomous {a} {b} = pr₁ (( pr₁ (pr₂ ⊲-is-classical-well-order)) a b)
 
-    f-preserves-order : ¬ has-maximal-element-strong → (α β : Ordinal 𝓤) → β ⊲ α → f β ⋘ f α
+    f-preserves-order : ¬ has-maximal-element-strong
+                      → (α β : Ordinal 𝓤)
+                      → β ⊲ α
+                      → f β ⋘ f α
     f-preserves-order no-max = transfinite-induction-on-OO P (v no-max)
      where
       P : Ordinal 𝓤 → (𝓤 ⁺ ⊔ 𝓣) ̇
       P α = ∀ β → β ⊲ α → f β ⋘ f α
-      v : ¬ has-maximal-element-strong → (α : Ordinal 𝓤) → ((a : ⟨ α ⟩) → P (α ↓ a)) → P α
+      v : ¬ has-maximal-element-strong
+        → (α : Ordinal 𝓤)
+        → ((a : ⟨ α ⟩) → P (α ↓ a))
+        → P α
       v no-max α s β (a , β=α↓a) =
        transport⁻¹ (λ q → f q ⋘ f α) β=α↓a
         (transport⁻¹ (λ q → f (α ↓ a) ⋘ q) (f-behaviour α) (step a))
@@ -240,7 +247,9 @@ choice-function-gives-zorns-lemma
         step : (a : ⟨ α ⟩) →  (f (α ↓ a) ⋘ ε (A α))
         step a = (ε-behaviour (A α) (Aα-inhabited (ub-is-strict ))) a
 
-    f-is-injective : ¬ has-maximal-element-strong →  (a b : Ordinal 𝓤) → a ≠ b → f a ≠ f b
+    f-is-injective : ¬ has-maximal-element-strong
+                   → (a b : Ordinal 𝓤)
+                   → a ≠ b → f a ≠ f b
     f-is-injective no-max a b a≠b =
      cases (less a b) (cases (equal a b a≠b) (more a b)) ⊲-is-trichotomous
      where
@@ -264,7 +273,9 @@ choice-function-gives-zorns-lemma
                  ((contrapositive (f-is-injective no-max a b)) (¬¬-intro p))
 
     f-is-embedding : ¬ has-maximal-element-strong → is-embedding f
-    f-is-embedding no-max = lc-maps-into-sets-are-embeddings f (f-is-left-cancellable no-max) X-is-set
+    f-is-embedding no-max = lc-maps-into-sets-are-embeddings f
+                             (f-is-left-cancellable no-max)
+                             X-is-set
 
     X' : 𝓤 ⁺ ̇
     X' = image f
@@ -273,7 +284,8 @@ choice-function-gives-zorns-lemma
     f' = corestriction f
 
     f'-is-equiv : ¬ has-maximal-element-strong → is-equiv f'
-    f'-is-equiv no-max = corestriction-of-embedding-is-equivalence f (f-is-embedding no-max)
+    f'-is-equiv no-max = corestriction-of-embedding-is-equivalence f
+                          (f-is-embedding no-max)
 
     B : X → 𝓤 ⁺ ̇
     B x = x ∈image f
@@ -301,12 +313,13 @@ choice-function-gives-zorns-lemma
         X'        ≃⟨ ≃-sym (f' , f'-is-equiv no-max) ⟩
         Ordinal 𝓤 ■
 
-    the-type-of-ordinals-is-small : ¬ has-maximal-element-strong → is-small (Ordinal 𝓤)
+    the-type-of-ordinals-is-small : ¬ has-maximal-element-strong
+                                  → is-small (Ordinal 𝓤)
     the-type-of-ordinals-is-small no-max = X'' , (e no-max)
 
     absurd : ¬ has-maximal-element-strong → 𝟘
-    absurd no-max = the-type-of-ordinals-is-large (the-type-of-ordinals-is-small no-max)
-
+    absurd no-max = the-type-of-ordinals-is-large
+                     (the-type-of-ordinals-is-small no-max)
 
 axiom-of-choice-implies-zorns-lemma
  : Axiom-of-Choice
@@ -337,25 +350,32 @@ axiom-of-choice-implies-zorns-lemma ac (X-is-set , axioms-rest) = III
     inhab-trans : {A' : 𝓟 X} → is-inhabited A' → is-inhabited (A' ∘ lower)
     inhab-trans {A'} isA' =
      isA' >>= λ isA'' →
-      ∣ lift (𝓤 ⊔ 𝓣) (pr₁ isA'')
-       , transport (λ q → (A' q) holds) (ε-Lift (𝓤 ⊔ 𝓣) (pr₁ isA'')) (pr₂ isA'')∣
+      ∣ lift (𝓤 ⊔ 𝓣) (pr₁ isA'') ,
+      transport (λ q → (A' q) holds) (ε-Lift (𝓤 ⊔ 𝓣) (pr₁ isA'')) (pr₂ isA'')∣
     f' : (A' : 𝓟 X) → is-inhabited A' → ϵ' A' ∈ A'
     f' A' A'-inhab = (f (A' ∘ lower) (inhab-trans {A'} A'-inhab))
 
-  choice-function : ∥ X ∥ → ∃ ε ꞉ (𝓟 X → X) , ((A : 𝓟 X) → is-inhabited A → ε A ∈ A)
-  choice-function isX =  ∥∥-functor lower-cf (lifted-cf (∥∥-functor (lift (𝓤 ⊔ 𝓣)) isX))
+  choice-function : ∥ X ∥
+                  → ∃ ε ꞉ (𝓟 X → X) , ((A : 𝓟 X) → is-inhabited A → ε A ∈ A)
+  choice-function isX =  ∥∥-functor
+                          lower-cf
+                          (lifted-cf (∥∥-functor (lift (𝓤 ⊔ 𝓣)) isX))
 
   I' : all-chains-have-upper-bound
      → ∃ ε ꞉ (𝓟 X → X) , ((A : 𝓟 X) → is-inhabited A → ε A ∈ A)
      → has-maximal-element
-  I' chains = ∥∥-rec (∃-is-prop)
-          (choice-function-gives-zorns-lemma em (X-is-set , axioms-rest) chains)
+  I' chains = ∥∥-rec
+               (∃-is-prop)
+               (choice-function-gives-zorns-lemma em
+                 (X-is-set , axioms-rest)
+                 chains)
 
   I : all-chains-have-upper-bound → ∥ X ∥ → has-maximal-element
   I chains-have-ub z = I' chains-have-ub (choice-function z)
 
   empty-has-no-ub : ¬ ∥ X ∥ → ¬ (all-chains-have-upper-bound {𝓥})
-  empty-has-no-ub ν  chains =  ν ∣ pr₁ (chains ∅ λ x y xin yin →  unique-from-𝟘 (ν ∣ x ∣)) ∣
+  empty-has-no-ub ν  chains =
+   ν ∣ pr₁ (chains ∅ λ x y xin yin →  unique-from-𝟘 (ν ∣ x ∣)) ∣
 
   II : all-chains-have-upper-bound  →  ¬ ∥ X ∥ → has-maximal-element
   II chains-have-ub ν = unique-from-𝟘 ((empty-has-no-ub ν) chains-have-ub)

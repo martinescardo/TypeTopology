@@ -14,7 +14,6 @@ open import UF.Base
 open import UF.Equiv
 open import UF.FunExt
 open import UF.Subsingletons
-open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
 Ω : ∀ 𝓤 → 𝓤 ⁺ ̇
@@ -40,6 +39,14 @@ from-Ω-＝ : {P Q : 𝓤 ̇ }
           → (P , i) ＝[ Ω 𝓤 ] (Q , j)
           → P ＝ Q
 from-Ω-＝ = ap _holds
+
+SigmaΩ : {𝓤 𝓥 : Universe} (p : Ω 𝓤) (q : p holds → Ω 𝓥) → Ω (𝓤 ⊔ 𝓥)
+SigmaΩ p q = (Σ h ꞉ p holds , q h holds) ,
+             Σ-is-prop (holds-is-prop p) (λ (h : p holds) → holds-is-prop (q h))
+
+syntax SigmaΩ p (λ x → q) = ΣΩ x ꞉ p , q
+
+infixr -1 SigmaΩ
 
 ⊥ ⊤ : Ω 𝓤
 ⊥ = 𝟘 , 𝟘-is-prop   -- false

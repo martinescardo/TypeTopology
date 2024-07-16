@@ -9,11 +9,11 @@
    Martin Escardo and collaborators, 2010--2024--∞
    Continuously evolving.
 
-   https://githubn.com/martinescardo/TypeTopology
+   https://github.com/martinescardo/TypeTopology
 
 \begin{code}
 
-{-# OPTIONS --without-K --no-level-universe #-}
+{-# OPTIONS --without-K --type-in-type --no-level-universe --no-termination-check #-}
 
 import index                    -- Of --safe modules using --level-universe.
 import GamesExperimental.index  -- With --safe but --no-level-universe.

@@ -1,6 +1,6 @@
 \begin{code}
 
-{-# OPTIONS --without-K #-}
+{-# OPTIONS --without-K --type-in-type --no-termination-check #-}
 
 module Unsafe.index where
 

@@ -1,5 +1,7 @@
 Brendan Hart 2019-2020
 
+Addition by Tom de Jong in July 2024.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}
@@ -470,5 +472,43 @@ Some useful proofs on products.
 
    to-×-DCPO⊥ : DCPO⊥[ 𝓓 , 𝓔 ] → DCPO⊥[ 𝓓 , 𝓕 ] → DCPO⊥[ 𝓓 , 𝓔 ×ᵈᶜᵖᵒ⊥ 𝓕 ]
    to-×-DCPO⊥ f g = to-×-DCPO (𝓓 ⁻) (𝓔 ⁻) (𝓕 ⁻) f g
+
+\end{code}
+
+Added 3 July 2024 by Tom de Jong.
+
+\begin{code}
+
+ ×ᵈᶜᵖᵒ-is-product : (𝓓₁ : DCPO {𝓤} {𝓣}) (𝓓₂ : DCPO {𝓤'} {𝓣'})
+                    (𝓔 : DCPO {𝓦} {𝓦'})
+                    (f : ⟨ 𝓔 ⟩ → ⟨ 𝓓₁ ⟩) (g : ⟨ 𝓔 ⟩ → ⟨ 𝓓₂ ⟩)
+                  → is-continuous 𝓔 𝓓₁ f
+                  → is-continuous 𝓔 𝓓₂ g
+                  → ∃! k ꞉ (⟨ 𝓔 ⟩ → ⟨ 𝓓₁ ×ᵈᶜᵖᵒ 𝓓₂ ⟩) ,
+                           is-continuous 𝓔 (𝓓₁ ×ᵈᶜᵖᵒ 𝓓₂) k
+                         × pr₁ ∘ k ∼ f
+                         × pr₂ ∘ k ∼ g
+ ×ᵈᶜᵖᵒ-is-product 𝓓₁ 𝓓₂ 𝓔 f g cf cg =
+  (k , k-is-continuous , ∼-refl , ∼-refl) , k-is-unique
+   where
+    k-bundled : DCPO[ 𝓔 , 𝓓₁ ×ᵈᶜᵖᵒ 𝓓₂ ]
+    k-bundled = to-×-DCPO 𝓔 𝓓₁ 𝓓₂ (f , cf) (g , cg)
+    k : ⟨ 𝓔 ⟩ → ⟨ 𝓓₁ ×ᵈᶜᵖᵒ 𝓓₂ ⟩
+    k = pr₁ k-bundled
+    k-is-continuous : is-continuous 𝓔 (𝓓₁ ×ᵈᶜᵖᵒ 𝓓₂) k
+    k-is-continuous = pr₂ k-bundled
+    k-is-unique : is-central _ (k , k-is-continuous ,
+                                (λ x → refl) , (λ x → refl))
+    k-is-unique (h , h-cont , h-eqf , h-eqg) =
+     to-subtype-＝ (λ j → ×-is-prop
+                           (being-continuous-is-prop 𝓔 (𝓓₁ ×ᵈᶜᵖᵒ 𝓓₂) j)
+                           (×-is-prop (Π-is-prop fe (λ e → sethood 𝓓₁))
+                                      (Π-is-prop fe (λ e → sethood 𝓓₂))))
+                   (dfunext fe (λ e → k e       ＝⟨ refl ⟩
+                                      f e , g e ＝⟨ (eq e ) ⁻¹ ⟩
+                                      h e       ∎))
+      where
+       eq : (e : ⟨ 𝓔 ⟩) → h e ＝ f e , g e
+       eq e = ap₂ _,_ (h-eqf e) (h-eqg e)
 
 \end{code}
