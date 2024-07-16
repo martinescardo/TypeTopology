@@ -158,7 +158,7 @@ Recall that the type of spectral locales is defined as:
 
 \begin{code}
 
-Spectral-Locale : (𝓤 : Universe) → 𝓤 ⁺ ⁺  ̇
+Spectral-Locale : (𝓤 : Universe) → 𝓤 ⁺⁺  ̇
 Spectral-Locale 𝓤 =
  Σ X ꞉ Locale (𝓤 ⁺) 𝓤 𝓤 , is-spectral-with-small-basis ua X holds
 
