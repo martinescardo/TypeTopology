@@ -293,9 +293,9 @@ module GeneralTruncations
                  → Z is-of-hlevel n
                  → (X → Y → Z)
                  → ∣∣ X ∣∣[ n ] → ∣∣ Y ∣∣[ n ] → Z
- ∣∣∣∣-rec-double {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {n} Z-h-level f =
-  ∣∣∣∣-rec (hlevel-closed-under-→ n (∣∣ Y ∣∣[ n ])  Z Z-h-level)
-           (λ x → ∣∣∣∣-rec Z-h-level (λ y → f x y))
+ ∣∣∣∣-rec-double {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {n} Z-h-level g =
+  ∣∣∣∣-rec (hlevel-closed-under-→ n (∣∣ Y ∣∣[ n ]) Z Z-h-level)
+           (λ x → ∣∣∣∣-rec Z-h-level (λ y → g x y))
 
  ∣∣∣∣-rec-double-comp : {𝓤 𝓥 𝓦 : Universe}
                         {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {n : ℕ}
@@ -303,7 +303,15 @@ module GeneralTruncations
                       → (g : X → Y → Z)
                       → (x : X) → (y : Y)
                       → ∣∣∣∣-rec-double m g ∣ x ∣[ n ] ∣ y ∣[ n ] ＝ g x y
- ∣∣∣∣-rec-double-comp m g = {!!}
+ ∣∣∣∣-rec-double-comp {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {n} m g x y =
+  ∣∣∣∣-rec-double m g ∣ x ∣[ n ] ∣ y ∣[ n ] ＝⟨ happly
+                                              (∣∣∣∣-rec-comp
+                                              (hlevel-closed-under-→ n
+                                                (∣∣ Y ∣∣[ n ]) Z m)
+                                              (λ x → ∣∣∣∣-rec m (λ y → g x y)) x)
+                                              ∣ y ∣[ n ]  ⟩
+  ∣∣∣∣-rec m (λ y → g x y) ∣ y ∣[ n ]       ＝⟨ ∣∣∣∣-rec-comp m (λ y → g x y) y ⟩
+  g x y                                     ∎
 
  ∣∣∣∣-ind-double : {𝓤 𝓥 𝓦 : Universe} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {n : ℕ}
                    {P : ∣∣ X ∣∣[ n ] → ∣∣ Y ∣∣[ n ] → 𝓦 ̇ } 
@@ -316,11 +324,41 @@ module GeneralTruncations
                                         (λ v → P-h-level u v))
            (λ x → ∣∣∣∣-ind (λ v → P-h-level ∣ x ∣[ n ] v) (λ y → f x y))
 
+ ∣∣∣∣-ind-double-comp : {𝓤 𝓥 𝓦 : Universe} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {n : ℕ}
+                        {P : ∣∣ X ∣∣[ n ] → ∣∣ Y ∣∣[ n ] → 𝓦 ̇ } 
+                      → (m : (u : ∣∣ X ∣∣[ n ]) → (v : ∣∣ Y ∣∣[ n ])
+                       → (P u v) is-of-hlevel n)
+                      → (g : (x : X) → (y : Y) → P (∣ x ∣[ n ]) (∣ y ∣[ n ]))
+                      → (x : X) → (y : Y)
+                      → ∣∣∣∣-ind-double m g ∣ x ∣[ n ] ∣ y ∣[ n ] ＝ g x y
+ ∣∣∣∣-ind-double-comp {𝓤} {𝓥} {𝓦} {X} {Y} {n} {P} m g x y =
+  ∣∣∣∣-ind-double m g ∣ x ∣[ n ] ∣ y ∣[ n ] ＝⟨ happly
+                                               (∣∣∣∣-ind-comp
+                                                (λ u → hlevel-closed-under-Π
+                                                 n ∣∣ Y ∣∣[ n ] (P u)
+                                                 (λ v → m u v))
+                                                (λ x' → ∣∣∣∣-ind
+                                                 (λ v → m ∣ x' ∣[ n ] v)
+                                                 (λ y' → g x' y')) x)
+                                               ∣ y ∣[ n ] ⟩
+  ∣∣∣∣-ind (λ v → m ∣ x ∣[ n ] v)
+           (λ y' → g x y') ∣ y ∣[ n ]       ＝⟨ ∣∣∣∣-ind-comp
+                                                (λ v → m ∣ x ∣[ n ] v)
+                                                (λ y' → g x y') y ⟩
+  g x y                                     ∎
+
+\end{code}
+
+We now set out to define a critical eqeuivalence that characterizes the
+truncated identity type.
+
+\begin{code}
+
  canonical-id-trunc-map : {𝓤 : Universe} {X : 𝓤 ̇} {x y : X} {n : ℕ}
                         → ∣∣ x ＝ y ∣∣[ n ]
-                        → (∣ x ∣[ succ n ] ＝ ∣ y ∣[ succ n ])
+                        → ∣ x ∣[ succ n ] ＝ ∣ y ∣[ succ n ]
  canonical-id-trunc-map {𝓤} {X} {x} {y} {n} =
-  ∣∣∣∣-rec (∣∣∣∣-h-level n) (ap (λ p → ∣ p ∣[ (succ n) ]))
+  ∣∣∣∣-rec (∣∣∣∣-h-level n) (ap (λ x → ∣ x ∣[ (succ n) ]))
 
  private
   P' : {𝓤 : Universe} {X : 𝓤 ̇} {n : ℕ}
@@ -333,36 +371,52 @@ module GeneralTruncations
     → ∣∣ X ∣∣[ succ n ] → ∣∣ X ∣∣[ succ n ] → 𝓤 ̇
   P u v = pr₁ (P' u v)
 
- P-computes : {𝓤 : Universe} {X : 𝓤 ̇} {x y : X} {n : ℕ}
-            → P ∣ x ∣[ succ n ] ∣ y ∣[ succ n ] ＝ ∣∣ x ＝ y ∣∣[ n ]
- P-computes = {!∣∣∣∣-rec-double-comp!}
+  P-computes : {𝓤 : Universe} {X : 𝓤 ̇} {x y : X} {n : ℕ}
+             → P ∣ x ∣[ succ n ] ∣ y ∣[ succ n ] ＝ ∣∣ x ＝ y ∣∣[ n ]
+  P-computes {𝓤} {X} {x} {y} {n} =
+   ap pr₁ (∣∣∣∣-rec-double-comp (ℍ-is-of-next-hlevel n 𝓤 (ua 𝓤))
+        (λ x x' → (∣∣ x ＝ x' ∣∣[ n ] , ∣∣∣∣-h-level n)) x y)
 
  gen-trunc-id-type-char : {𝓤 : Universe} {X : 𝓤 ̇} {n : ℕ}
                         → (u v : ∣∣ X ∣∣[ succ n ])
                         → P u v ≃ (u ＝ v)
- gen-trunc-id-type-char {𝓤} {X} {n} = {!!}
+ gen-trunc-id-type-char {𝓤} {X} {n} u v =
+  (decode u v , qinvs-are-equivs (decode u v) (encode u v , H u v , G u v))
   where
-   encode : (u v : ∣∣ X ∣∣[ succ n ])
+   decode : (u v : ∣∣ X ∣∣[ succ n ])
           → P u v → u ＝ v
-   encode =
+   decode =
     ∣∣∣∣-ind-double (λ u v → hlevel-closed-under-→ (succ n) (P u v) (u ＝ v)
                                                    (∣∣∣∣-h-level (succ n)))
-                    {!!}
-   decode : (u v : ∣∣ X ∣∣[ succ n ])
+                    (λ x y → transport (λ T →
+                                        T → ∣ x ∣[ succ n ] ＝ ∣ y ∣[ succ n ])
+                                       (P-computes ⁻¹)
+                                       canonical-id-trunc-map)
+   P-refl : (u : ∣∣ X ∣∣[ succ n ]) → P u u
+   P-refl = ∣∣∣∣-ind (λ - → ∣∣∣∣-h-level (succ n))
+                     (λ x → Idtofun (P-computes ⁻¹) ∣ refl ∣[ n ])
+   encode : (u v : ∣∣ X ∣∣[ succ n ])
           → u ＝ v → P u v
-   decode = {!!}
+   encode u v p = transport (λ v' → P u v') p (P-refl u)
+   H : (u v : ∣∣ X ∣∣[ succ n ]) → encode u v ∘ decode u v ∼ id
+   H u v s = ∣∣∣∣-ind-double (λ - - → ∣∣∣∣-h-level (succ n))
+                             (λ x y → ∣∣∣∣-ind-double-comp) u v
+   G : (u v : ∣∣ X ∣∣[ succ n ]) → decode u v ∘ encode u v ∼ id 
+   G u .u refl = ∣∣∣∣-ind-double (λ - - → ∣∣∣∣-h-level (succ n))
+                                 (λ x y → ∣∣∣∣-ind-double-comp) u u
 
  trunc-id-type-char : {𝓤 : Universe} {X : 𝓤 ̇} {x y : X} {n : ℕ}
                     → ∣∣ x ＝ y ∣∣[ n ]
                     ≃ (∣ x ∣[ succ n ] ＝ ∣ y ∣[ succ n ])
- trunc-id-type-char {𝓤} {X} {x} {y} {n} = {!!}
-  where
-   ϕ : ∣∣ x ＝ y ∣∣[ n ] → (∣ x ∣[ succ n ] ＝ ∣ y ∣[ succ n ])
-   ϕ = ∣∣∣∣-rec (∣∣∣∣-h-level n) (ap (λ p → ∣ p ∣[ (succ n) ]))
-   ψ : (∣ x ∣[ succ n ] ＝ ∣ y ∣[ succ n ]) → ∣∣ x ＝ y ∣∣[ n ]
-   ψ = {!!}
+ trunc-id-type-char {𝓤} {X} {x} {y} {n} =
+  ≃-comp (idtoeq ∣∣ x ＝ y ∣∣[ n ]
+                 (P ∣ x ∣[ succ n ] ∣ y ∣[ succ n ])
+                 (P-computes ⁻¹))
+         (gen-trunc-id-type-char ∣ x ∣[ succ n ] ∣ y ∣[ succ n ])
 
 \end{code}
+
+canonical-id-trunc-map ∘ Idtofun P-computes
 
 We now add some code that allows us to identify the 1-truncation and
 propositional truncation:
