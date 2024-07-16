@@ -191,8 +191,7 @@ Some nice syntax.
 
 \begin{code}
 
- ↓_ : ∣ L ∣ᵈ → Ideal L
- ↓_ = principal-ideal
+ syntax principal-ideal x = ↓ x
 
  infix 32 principal-ideal
 
