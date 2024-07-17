@@ -85,10 +85,11 @@ no-non-trivial-sequentially-Hausdorff-types-under-WLPO
 
 \end{code}
 
-The reason WLPO doesn't hold topological toposes is that the negation
-of WLPO is a weak continuity principle [1], which holds in topological
-toposes. So it makes sense to investigate which sets are sequentially
-Hausdorff assuming ¬ WLPO or stronger continuity principles.
+The reason WLPO doesn't hold topological in toposes is that the
+negation of WLPO is a weak continuity principle [1], which holds in
+topological toposes. So it makes sense to investigate which sets are
+sequentially Hausdorff assuming ¬ WLPO or stronger continuity
+principles.
 
 [1] https://doi.org/10.1017/S096012951300042X
 
