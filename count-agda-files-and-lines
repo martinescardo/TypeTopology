@@ -1,2 +1,6 @@
-git ls-files source |  grep agda | wc -l
-git ls-files source | grep agda | xargs cat | wc -l
+#!/bin/bash
+
+ROOT_DIR=$(git rev-parse --show-toplevel)
+
+git ls-files $ROOT_DIR/source | grep agda | wc -l
+git ls-files $ROOT_DIR/source | grep agda | xargs cat | wc -l
