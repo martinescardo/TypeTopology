@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ROOT_DIR=$(git rev-parse --show-toplevel)
+root_dir=$(git rev-parse --show-toplevel)
 
-git ls-files $ROOT_DIR/source | grep agda | wc -l
-git ls-files $ROOT_DIR/source | grep agda | xargs cat | wc -l
+git ls-files $root_dir/source | grep agda | wc -l
+git ls-files $root_dir/source | grep agda | xargs cat | wc -l
