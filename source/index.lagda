@@ -55,7 +55,7 @@
 
      (https://www.cs.bham.ac.uk/~mhe/TypeTopology/AllModulesIndex.html)
 
-   * In our last count, on 2024.07.16, this development has 768 Agda
+   * In our last count, on 2024.07.17, this development has 769 Agda
      files with 221K lines of code, including comments and blank
      lines. But we don't update the count frequently.
 
