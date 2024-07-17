@@ -389,3 +389,6 @@ TODO. Show that all these variants are equivalent.
 LLPO doesn't imply WLPO (there are published refereces - find and
 include them here). One example seems to Johnstone's topological
 topos, but this is unpublished as far as I know.
+
+Added 17th July 2024. There is a proof by Chris Grossack here:
+https://grossack.site/2024/07/03/topological-topos-3-bonus-axioms
