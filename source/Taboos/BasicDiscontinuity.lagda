@@ -97,7 +97,10 @@ at ∞ too, unless WLPO holds:
 
 \begin{code}
 
-disagreement-taboo : (p q : ℕ∞ → 𝟚) → ((n : ℕ) → p (ι n) ＝ q (ι n)) → p ∞ ≠ q ∞ → WLPO
+disagreement-taboo : (p q : ℕ∞ → 𝟚)
+                   → ((n : ℕ) → p (ι n) ＝ q (ι n))
+                   → p ∞ ≠ q ∞
+                   → WLPO
 disagreement-taboo p q f g = basic-discontinuity-taboo r (r-lemma , r-lemma∞)
  where
   r : ℕ∞ → 𝟚

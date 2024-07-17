@@ -28,6 +28,7 @@ import TypeTopology.LexicographicCompactness
 import TypeTopology.PropInfTychonoff
 import TypeTopology.PropTychonoff
 import TypeTopology.RicesTheoremForTheUniverse
+import TypeTopology.SequentiallyHausdorff
 import TypeTopology.SigmaDiscreteAndTotallySeparated
 import TypeTopology.SimpleTypes
 import TypeTopology.SquashedCantor
