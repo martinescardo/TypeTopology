@@ -6,7 +6,7 @@ dates-modified: [2024-06-06]
 ---
 
 We implement here the notion of overtness in Synthetic Topology defined here :
-TODO, and prove some lemmas.
+[1] and [2]. We then foramlize some lemmas.
 
 \begin{code}
 
@@ -151,3 +151,17 @@ image-of-overt' (X , sX) (Y , sY) f overt-X =
                   overt-X
 
 \end{code}
+
+\section{References}
+
+- [1]: Davorin Lesňik. *Synthetic Topology and Constructive Metric Spaces*.
+
+  PhD Thesis, 2010
+
+  https://doi.org/10.48550/arXiv.2104.10399
+
+- [2]: Martín Escardó. *Topology via higher-order intuitionistic logic*
+
+  Unpublished notes, Pittsburgh, 2004
+
+  https://www.cs.bham.ac.uk/~mhe/papers/pittsburgh.pdf

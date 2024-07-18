@@ -168,7 +168,6 @@ image-of-compact' (X , sX) (Y , sY) f compact-X =
 
 \end{code}
 
-
 \section{References}
 
 - [1]: Davorin Lesňik. *Synthetic Topology and Constructive Metric Spaces*.
