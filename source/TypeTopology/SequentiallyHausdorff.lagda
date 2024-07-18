@@ -94,7 +94,7 @@ principles.
 [1] https://doi.org/10.1017/S096012951300042X
 
 To begin with, we show that all totally separated types are
-sequentially Hausdorff.
+sequentially Hausdorff in topological toposes.
 
 \begin{code}
 
@@ -175,13 +175,14 @@ The following was already proved in TypeTopology.FailureOfTotalSeparatedness.
 
 \begin{code}
 
-ℕ∞₂-is-not-always-totally-separated : is-totally-separated ℕ∞₂ → ¬¬ WLPO
-ℕ∞₂-is-not-always-totally-separated ts nwlpo =
+ℕ∞₂-is-not-totally-separated-in-topological-toposes
+ : ¬ WLPO
+ → ¬ is-totally-separated ℕ∞₂
+ℕ∞₂-is-not-totally-separated-in-topological-toposes nwlpo ts =
  ℕ∞₂-is-not-sequentially-Hausdorff
   (totally-separated-types-are-sequentially-Hausdorff nwlpo ℕ∞₂ ts)
 
 \end{code}
 
-The proof given here is the same, but factored in two steps. Notice
-that if ¬ WLPO is regarded as a continuity principle, then ¬¬ WLPO is
-a discontinuity principle.
+The proof given here is the same, but factored in two steps, by
+considering sequentially Hausdorff spaces as an intermediate step.
