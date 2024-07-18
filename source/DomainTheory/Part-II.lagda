@@ -2,11 +2,12 @@ Tom de Jong, July 2024.
 
 This file corresponds to the paper
 
-   "Domain Theory in Univalent Foundations II:
+   "Domain theory in univalent foundations II:
     Continuous and algebraic domains"
    Tom de Jong and Martín Hötzel Escardó
    2024
-   https://arxiv.org/abs/TODO
+   https://doi.org/10.48550/arxiv.2407.06956
+
 
 See DomainTheory.index.lagda for an overview of all domain theory in
 TypeTopology.

@@ -7,6 +7,8 @@ Ayberk Tosun.
 module Locales.index where
 
 import Locales.AdjointFunctorTheoremForFrames    -- (1)
+import Locales.Adjunctions.Properties
+import Locales.Adjunctions.Properties-DistributiveLattice
 
 import Locales.BooleanAlgebra                    -- (2)
 
@@ -26,13 +28,15 @@ import Locales.Complements                       -- (8)
 
 -- Distributive lattices
 import Locales.DistributiveLattice.Definition
+import Locales.DistributiveLattice.Definition-SigmaBased
 import Locales.DistributiveLattice.Homomorphism
 import Locales.DistributiveLattice.Ideal
+import Locales.DistributiveLattice.Isomorphism
+import Locales.DistributiveLattice.Isomorphism-Properties
+import Locales.DistributiveLattice.Properties
+import Locales.DistributiveLattice.Resizing
 import Locales.DistributiveLattice.Spectrum
 import Locales.DistributiveLattice.Spectrum-Properties
-import Locales.DistributiveLattice.Properties
-import Locales.DistributiveLattice.Isomorphism
-import Locales.DistributiveLattice.Resizing
 
 import Locales.Frame                             -- (9)
 
@@ -98,6 +102,7 @@ import Locales.UniversalPropertyOfPatch          -- (34)
 import Locales.Spectrality.BasisDirectification  -- (35)
 
 import Locales.Spectrality.LatticeOfCompactOpens
+import Locales.Spectrality.LatticeOfCompactOpens-Duality
 import Locales.Spectrality.SpectralMapToLatticeHomomorphism
 
 import Locales.Point.Definition                  -- (36)
@@ -119,6 +124,7 @@ import Locales.ContinuousMap.Homeomorphism-Definition
 import Locales.ContinuousMap.Homeomorphism-Properties
 
 import Locales.SIP.FrameSIP
+import Locales.SIP.DistributiveLatticeSIP
 
 import Locales.DirectedFamily-Poset
 

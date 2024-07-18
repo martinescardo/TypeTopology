@@ -226,7 +226,9 @@ Tosun.
 
    https://doi.org/10.1016/j.tcs.2023.114111
 
-1. Todd Waugh Ambridge. *Exact Real Search: Formalised Optimisation and Regression in Constructive Univalent Mathematics.* January 2024. University of Birmingham. PhD thesis.
+1. Todd Waugh Ambridge. *Exact Real Search: Formalised Optimisation and
+   Regression in Constructive Univalent Mathematics.* January 2024. University
+   of Birmingham. PhD thesis.
 
    https://doi.org/10.48550/arXiv.2401.09270
 
@@ -236,6 +238,17 @@ Tosun.
    ArXiv preprint. Available online 5 February 2024.
 
    https://arxiv.org/abs/2402.03134
+
+1. Tom de Jong. *Domain theory in univalent foundations I: Directed complete
+   posets and Scott's D∞*. July 2024.
+
+   https://doi.org/10.48550/arxiv.2407.06952
+
+1. Tom de Jong and Martín H. Escardó. *Domain theory in univalent
+   foundations II: Continuous and algebraic domains*. July 2024.
+
+   https://doi.org/10.48550/arxiv.2407.06956
+
 
 [CSL21]:  https://csl2021.fmf.uni-lj.si/
 [FSCD21]: https://fscd2021.dc.uba.ar/

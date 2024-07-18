@@ -13,7 +13,7 @@
 
 \begin{code}
 
-{-# OPTIONS --without-K --no-level-universe #-}
+{-# OPTIONS --without-K --type-in-type --no-level-universe --no-termination-check #-}
 
 import index                    -- Of --safe modules using --level-universe.
 import GamesExperimental.index  -- With --safe but --no-level-universe.

@@ -1,14 +1,20 @@
---------------------------------------------------------------------------------
-title:          Basics of duality for spectral locales
+---
+title:          Lemmas on the duality of compact opens of spectral locales
 author:         Ayberk Tosun
-date-completed: 2024-05-12
---------------------------------------------------------------------------------
+date-completed: 2024-06-09
+---
 
-Every spectral locale `X` is homeomorphic to the spectrum of its distributive
-lattice `𝒦(X)` of compact opens. We construct a proof of this fact in this
-module.
+In this module, we prove two important lemmas about the distributive lattice of
+compact opens of spectral locales:
 
-The proof is implemented in the function called `X-is-homeomorphic-to-spec-𝒦⁻X`.
+  1. Every _large and locally small_ spectral locale `X` is homeomorphic to the
+     spectrum of its _small_ distributive lattice `𝒦(X)` of compact opens.
+     - This is given in the proof called `X-is-homeomorphic-to-spec-𝒦⁻X`.
+  2. Every _small_ distributive lattice `L` is isomorphic to the distributive
+     lattice of compact opens of its _large and locally small_ spectrum locale.
+     - This is given in the proof called `L-is-isomorphic-to-𝒦⁻-spec-L`.
+
+The type equivalence is given in the proof `spec-dlat-equivalence`.
 
 \begin{code}
 
@@ -17,6 +23,7 @@ The proof is implemented in the function called `X-is-homeomorphic-to-spec-𝒦�
 open import MLTT.List hiding ([_])
 open import MLTT.Spartan hiding (J; rhs)
 open import UF.Base
+open import UF.Embeddings
 open import UF.FunExt
 open import UF.PropTrunc
 open import UF.Size
@@ -50,11 +57,13 @@ open import Locales.DistributiveLattice.Homomorphism fe pt
 open import Locales.DistributiveLattice.Ideal pt fe pe
 open import Locales.DistributiveLattice.Ideal-Properties pt fe pe
 open import Locales.DistributiveLattice.Isomorphism fe pt
+open import Locales.DistributiveLattice.Isomorphism-Properties ua pt sr
 open import Locales.DistributiveLattice.Resizing ua pt sr
 open import Locales.DistributiveLattice.Spectrum fe pe pt
 open import Locales.DistributiveLattice.Spectrum-Properties fe pe pt sr
 open import Locales.Frame pt fe
 open import Locales.GaloisConnection pt fe
+open import Locales.SIP.DistributiveLatticeSIP ua pt sr
 open import Locales.SmallBasis pt fe sr
 open import Locales.Spectrality.LatticeOfCompactOpens ua pt sr
 open import Locales.Spectrality.SpectralLocale pt fe
@@ -77,11 +86,11 @@ type of compact opens.
 
 \begin{code}
 
-module 𝒦-Duality (X  : Locale (𝓤 ⁺) 𝓤 𝓤)
-                 (σ₀ : is-spectral-with-small-basis ua X holds) where
+module 𝒦-Duality₁ (X  : Locale (𝓤 ⁺) 𝓤 𝓤)
+                  (σ₀ : is-spectral-with-small-basis ua X holds) where
 
  open 𝒦-Lattice X σ₀
-  using (𝟏ₖ; 𝒦⦅X⦆-is-small; 𝒦⦅X⦆; σ; ιₖ-preserves-∨; ιₖ-preserves-∧)
+  using (𝟏ₖ; 𝟎ₖ; 𝒦⦅X⦆-is-small; 𝒦⦅X⦆; σ; ιₖ-preserves-∨; ιₖ-preserves-∧)
   renaming (𝒦⁻ to 𝒦⁻X) public
 
 \end{code}
@@ -124,7 +133,7 @@ The map `ι` below is the inclusion of `𝒦⁻X` into `𝒪(X)`.
 \end{code}
 
 This map is quite obviously a frame homomorphism, but writing this fact down
-involves some bureaucracy.
+involves some bureaucracy which we handle below.
 
 \begin{code}
 
@@ -327,8 +336,8 @@ is an equivalence, we will delay its proof for a bit.
 
 We now construct the opposite direction of the equivalence formed by `ϕ`. This
 is simply the map that sends an ideal to its join `I ↦ ⋁ I`. But because ideals
-are defined using powersets, we need to use `𝕋` to switch to the family
-representation of the ideal before taking its join.
+are defined using powersets, we use `𝕋` to work with the total space of the
+ideal before taking its join.
 
 We call this map simply `join`.
 
@@ -379,8 +388,8 @@ The map `join` preserves binary meets.
                              → join (ℐ ∧ᵢ 𝒥) ＝ join ℐ ∧[ 𝒪 X ] join 𝒥
  join-preserves-binary-meets ℐ 𝒥 =
   join (ℐ ∧ᵢ 𝒥)                                                              ＝⟨ refl ⟩
-  ⋁[ 𝒪 X ] ⁅ ι K ∣ K ε 𝕋 𝒦⁻X (_∈ⁱ ℐ ∧ᵢ 𝒥) ⁆                                  ＝⟨ Ⅰ ⟩
-  ⋁⟨ ((i , _) , (j , _)) ∶ (_ × _) ⟩ ι i ∧[ 𝒪 X ] ι j                        ＝⟨ Ⅱ ⟩
+  ⋁[ 𝒪 X ] ⁅ ι K ∣ K ε 𝕋 𝒦⁻X (_∈ⁱ ℐ ∧ᵢ 𝒥) ⁆                                  ＝⟨ Ⅰ    ⟩
+  ⋁⟨ ((i , _) , (j , _)) ∶ (_ × _) ⟩ ι i ∧[ 𝒪 X ] ι j                        ＝⟨ Ⅱ    ⟩
   (⋁[ 𝒪 X ] ⁅ ι K ∣ K ε 𝕋 𝒦⁻X I ⁆) ∧[ 𝒪 X ] (⋁[ 𝒪 X ] ⁅ ι K ∣ K ε 𝕋 𝒦⁻X J ⁆) ＝⟨ refl ⟩
   join ℐ ∧[ 𝒪 X ] join 𝒥 ∎
   where
@@ -389,7 +398,6 @@ The map `join` preserves binary meets.
 
    open JoinNotation (join-of (𝒪 X))
    open Joins (λ x y → x ≤[ poset-of (𝒪 X) ] y)
-
 
    † : ((⋁[ 𝒪 X ] ⁅ ι K ∣ K ε 𝕋 𝒦⁻X (_∈ⁱ ℐ ∧ᵢ 𝒥) ⁆)
          ≤[ poset-of (𝒪 X) ]
@@ -441,7 +449,7 @@ The map `join` preserves binary meets.
 
 \end{code}
 
-The map `ϕ` is the left inverse of the map `join` as promised.
+We now show that the map `ϕ` is the left inverse of the map `join` as promised.
 
 \begin{code}
 
@@ -585,8 +593,8 @@ The map `join` is monotone.
 
 \end{code}
 
-We now prove that the maps `ϕ` and `join` preserve joins using the Adjoint
-Functor Theorem for frames.
+We now prove that the maps `ϕ` and `join` preserve joins using the posetal
+Adjoint Functor Theorem for frames.
 
 \begin{code}
 
@@ -650,7 +658,8 @@ frame homomorphisms.
 
 \begin{code}
 
- ϕ-is-a-frame-homomorphism : is-a-frame-homomorphism (𝒪 X) (𝒪 spec-𝒦⁻X) ϕ holds
+ ϕ-is-a-frame-homomorphism
+  : is-a-frame-homomorphism (𝒪 X) (𝒪 spec-𝒦⁻X) ϕ holds
  ϕ-is-a-frame-homomorphism = ϕ-preserves-top , ϕ-preserves-∧ , †
   where
    open Joins (λ x y → x ≤[ poset-of (𝒪 spec-𝒦⁻X) ] y)
@@ -677,7 +686,7 @@ frame homomorphisms.
 
 \end{code}
 
-The set `𝒪 X` is equivalent to the type `Ideal 𝒦-X⁻`.
+The type `𝒪 X` is equivalent to the type `Ideal 𝒦-X⁻`.
 
 \begin{code}
 
@@ -691,6 +700,12 @@ The set `𝒪 X` is equivalent to the type `Ideal 𝒦-X⁻`.
 
    ‡ : (join ∘ ϕ) ∼ id
    ‡ = join-cancels-ϕ
+
+\end{code}
+
+Moreover, this equivalence is homeomorphic.
+
+\begin{code}
 
  X-is-homeomorphic-to-spec-𝒦⁻X : spec-𝒦⁻X ≅c≅ X
  X-is-homeomorphic-to-spec-𝒦⁻X =
@@ -723,11 +738,373 @@ spectral-implies-spectral·
 spectral-implies-spectral· X σ =
  ∣ 𝒦-X⁻ , ≅c-sym spec-𝒦⁻X X X-is-homeomorphic-to-spec-𝒦⁻X ∣
   where
-   open 𝒦-Duality X σ
+   open 𝒦-Duality₁ X σ
 
 \end{code}
 
-TODO: add the definition with the explicit equivalence.
+\section{From L to 𝒦(Spec(L))}
+
+In this section, we show that every distributive lattice `L` is isomorphic to
+the small distributive lattice of compact opens of its spectrum.
+
+The proof, given below, is called `L-is-isomorphic-to-𝒦⁻-spec-L`.
+
+We work in a module parameterized by a small distributive 𝓤-lattice `L`.
+
+\begin{code}
+
+module 𝒦-Duality₂ (L : DistributiveLattice 𝓤) where
+
+\end{code}
+
+We denote by `spec-L` the spectrum of the lattice `L`, which is a large, locally
+small, and small cocomplete locale.
+
+\begin{code}
+
+ open DefnOfFrameOfIdeal
+
+ spec-L : Locale (𝓤 ⁺) 𝓤 𝓤
+ spec-L = spectrum L
+
+\end{code}
+
+We also define an abbreviation for the proof that `spectrum L` is a spectral
+locale (with a small basis).
+
+\begin{code}
+
+ spec-L-is-ssb : is-spectral-with-small-basis ua spec-L holds
+ spec-L-is-ssb = Spectrality.spec-L-is-spectral L
+               , Spectrality.spec-L-has-small-𝒦 L
+
+ open IdealProperties
+ open Spectrality L
+ open PrincipalIdeals L
+ open 𝒦-Duality₁ spec-L spec-L-is-ssb
+
+\end{code}
+
+We denote by `𝒦⁻-spec-L` the small distributive lattice of compact opens of
+`spec-L`.
+
+\begin{code}
+
+ 𝒦⁻-spec-L : DistributiveLattice 𝓤
+ 𝒦⁻-spec-L = 𝒦-X⁻
+
+\end{code}
+
+We now start working towards the construction of an isomorphism of distributive
+lattices:
+
+```text
+    L ≅ 𝒦⁻(spec(L))
+```
+
+The isomorphism that we construct consists of the maps:
+
+  1. `to-𝒦-spec-L : ∣ L ∣ᵈ → ∣ 𝒦⁻-spec-L ∣ᵈ`, and
+  2. `back-to-L : ∣ 𝒦⁻-spec-L ∣ᵈ → ∣ L ∣ᵈ`.
+
+We first construct the map `to-𝒦-spec-L`. We follow our usual convention of
+denoting by the subscript `₀` the preliminary version of the construction in
+consideration, which is then paired up with the proof that it satisfies some
+property.
+
+\begin{code}
+
+ to-𝒦-spec-L₀ : ∣ L ∣ᵈ → ∣ 𝒦⁻-spec-L ∣ᵈ
+ to-𝒦-spec-L₀ = s ∘ ↓ₖ_
+
+\end{code}
+
+The map `to-𝒦-spec-L₀` preserves binary meets.
+
+\begin{code}
+
+ open DistributiveLattice
+ open OperationsOnCompactOpens spec-L spec-L-is-spectral
+
+ to-𝒦-spec-L-preserves-∧ : preserves-∧ L 𝒦⁻-spec-L to-𝒦-spec-L₀ holds
+ to-𝒦-spec-L-preserves-∧ x y =
+  s (↓ₖ (x ∧L y))                   ＝⟨ Ⅰ ⟩
+  s ((↓ₖ x) ∧ₖ (↓ₖ y))              ＝⟨ Ⅱ ⟩
+  to-𝒦-spec-L₀ x ∧· to-𝒦-spec-L₀ y  ∎
+   where
+    open DistributiveLattice L renaming (_∧_ to _∧L_)
+    open DistributiveLattice 𝒦⁻-spec-L renaming (_∧_ to _∧·_)
+
+    † : ↓ₖ (x ∧L y) ＝ (↓ₖ x) ∧ₖ (↓ₖ y)
+    † = to-𝒦-＝
+         spec-L
+         (principal-ideal-is-compact (x ∧L y))
+         (binary-coherence
+           spec-L
+           spec-L-is-spectral
+           (↓ x)
+           (↓ y)
+           (principal-ideal-is-compact x)
+           (principal-ideal-is-compact y))
+         (principal-ideal-preserves-meets x y)
+
+    Ⅰ = ap s †
+    Ⅱ = s-preserves-∧ (↓ₖ x) (↓ₖ y)
+
+\end{code}
+
+\section{From 𝒦(Spec(L)) to L}
+
+We now start working on the map `back-to-L` that takes us from the small
+distributive lattice of compact opens of `spec-L` back to `L`.
+
+We first prove that the principal ideal map is an embedding and is hence
+left-cancellable.
+
+\begin{code}
+
+ ↓-is-embedding : is-embedding principal-ideal
+ ↓-is-embedding I (x , p) (y , q) =
+  to-subtype-＝
+   (λ _ → carrier-of-[ poset-of-ideals L  ]-is-set )
+   (≤-is-antisymmetric (poset-ofᵈ L) † ‡)
+    where
+     φ : ↓ x ＝ ↓ y
+     φ = ↓ x ＝⟨ p ⟩ I ＝⟨ q ⁻¹ ⟩ ↓ y ∎
+
+     β : (↓ x  ≤[ poset-of-ideals L ] ↓ y) holds
+     β = reflexivity+ (poset-of-ideals L) φ
+
+     γ : (↓ y  ≤[ poset-of-ideals L ] ↓ x) holds
+     γ = reflexivity+ (poset-of-ideals L) (φ ⁻¹)
+
+     † : rel-syntax (poset-ofᵈ L) x y holds
+     † = β x (≤-is-reflexive (poset-ofᵈ L) x)
+
+     ‡ : rel-syntax (poset-ofᵈ L) y x holds
+     ‡ = γ y (≤-is-reflexive (poset-ofᵈ L) y)
+
+ equality-of-principal-ideals-gives-equality : left-cancellable principal-ideal
+ equality-of-principal-ideals-gives-equality =
+  embeddings-are-lc principal-ideal ↓-is-embedding
+
+\end{code}
+
+We define the following map `r₀` which gives the ideal corresponding to an
+element in the small distributive lattice of compact opens. This is simply
+the composition
+
+```text
+                      r               ιₖ
+        𝒦⁻-spec-L  ------> 𝒦-spec-L ------> 𝒪 spec(L)
+```
+
+where `ιₖ` is the inclusion of the compact opens into the frame of ideals, and
+`r` is one direction of the equivalence between `𝒦-spec-L` and its small copy.
+
+\begin{code}
+
+ r₀ : ∣ 𝒦⁻-spec-L ∣ᵈ → ⟨ 𝒪 spec-L ⟩
+ r₀ = ιₖ ∘ r
+
+ r₀-gives-compact-opens : (K : ∣ 𝒦⁻-spec-L ∣ᵈ)
+                        → is-compact-open spec-L (r₀ K) holds
+ r₀-gives-compact-opens = ι-gives-compact-opens
+
+\end{code}
+
+We now define the underlying function of the distributive lattice homomorphism
+`back-to-L`, which we denote `back-to-L₀`:
+
+\begin{code}
+
+ back-to-L₀ : ∣ 𝒦⁻-spec-L ∣ᵈ → ∣ L ∣ᵈ
+ back-to-L₀ K = pr₁ t
+  where
+   κ : is-compact-open spec-L (r₀ K) holds
+   κ = r₀-gives-compact-opens K
+
+   γ : ∃ x ꞉ ∣ L ∣ᵈ , ↓ x  ＝ r₀ K
+   γ = compact-opens-are-basic spec-L (ℬ-spec , ℬ-spec-is-directed-basis) (r₀ K) κ
+
+   † : is-prop (Σ y ꞉ ∣ L ∣ᵈ , ↓ y ＝ r₀ K)
+   † = ↓-is-embedding (r₀ K)
+
+   t : Σ x ꞉ ∣ L ∣ᵈ , ↓ x  ＝ r₀ K
+   t = exit-∥∥ † γ
+
+\end{code}
+
+The map `back-to-L₀` is a section of `to-𝒦-spec-L₀`.
+
+\begin{code}
+
+ to-𝒦-spec-L-cancels-back-to-L : (K : ∣ 𝒦⁻-spec-L ∣ᵈ)
+                               → to-𝒦-spec-L₀ (back-to-L₀ K) ＝ K
+ to-𝒦-spec-L-cancels-back-to-L K =
+  s (↓ₖ back-to-L₀ K)    ＝⟨ Ⅰ ⟩
+  s (r K)                ＝⟨ Ⅱ ⟩
+  K                      ∎
+   where
+    κ : is-compact-open spec-L (r₀ K) holds
+    κ = r₀-gives-compact-opens K
+
+    γ : ∃ x ꞉ ∣ L ∣ᵈ , ↓ x  ＝ r₀ K
+    γ = compact-opens-are-basic spec-L (ℬ-spec , ℬ-spec-is-directed-basis) (r₀ K) κ
+
+    † : is-prop (Σ y ꞉ ∣ L ∣ᵈ , ↓ y ＝ r₀ K)
+    † = ↓-is-embedding (r₀ K)
+
+    t : Σ x ꞉ ∣ L ∣ᵈ , ↓ x  ＝ r₀ K
+    t = exit-∥∥ † γ
+
+    q : r₀ K ＝ ↓ (back-to-L₀ K)
+    q = pr₂ t ⁻¹
+
+    p : r K ＝ ↓ₖ (back-to-L₀ K)
+    p = to-𝒦-＝
+         spec-L
+         (r₀-gives-compact-opens K)
+         (principal-ideal-is-compact (back-to-L₀ K))
+         q
+
+    Ⅱ = inverses-are-retractions' e K
+    Ⅰ = ap s p ⁻¹
+
+\end{code}
+
+The map `back-to-L₀` preserves binary meets.
+
+\begin{code}
+
+ back-to-L₀-preserves-∧ : preserves-∧ 𝒦⁻-spec-L L back-to-L₀ holds
+ back-to-L₀-preserves-∧ K₁ K₂ = †
+  where
+   open DistributiveLattice L renaming (_∧_ to _∧L_)
+   open DistributiveLattice 𝒦⁻-spec-L renaming (_∧_ to _∧·_)
+
+   ‡ : s (↓ₖ (back-to-L₀ (K₁ ∧· K₂))) ＝ s (↓ₖ (back-to-L₀ K₁ ∧L back-to-L₀ K₂))
+   ‡ =
+    s (↓ₖ (back-to-L₀ (K₁ ∧· K₂)))                     ＝⟨ Ⅰ ⟩
+    K₁ ∧· K₂                                           ＝⟨ Ⅱ ⟩
+    K₁ ∧· s (↓ₖ (back-to-L₀ K₂))                       ＝⟨ Ⅲ ⟩
+    s (↓ₖ (back-to-L₀ K₁)) ∧· s (↓ₖ (back-to-L₀ K₂))   ＝⟨ Ⅳ ⟩
+    s ((↓ₖ (back-to-L₀ K₁)) ∧ₖ (↓ₖ (back-to-L₀ K₂)))   ＝⟨ Ⅴ ⟩
+    s (↓ₖ (back-to-L₀ K₁ ∧L back-to-L₀ K₂))            ∎
+     where
+      Ⅰ = to-𝒦-spec-L-cancels-back-to-L (K₁ ∧· K₂)
+      Ⅱ = ap (λ - → K₁ ∧· -) (to-𝒦-spec-L-cancels-back-to-L K₂ ⁻¹)
+      Ⅲ = ap
+           (λ - → - ∧· s (↓ₖ (back-to-L₀ K₂)))
+           (to-𝒦-spec-L-cancels-back-to-L K₁ ⁻¹)
+
+      † = to-𝒦-＝
+           spec-L
+           (pr₂ ((↓ₖ (back-to-L₀ K₁)) ∧ₖ (↓ₖ (back-to-L₀ K₂))))
+           (principal-ideal-is-compact (back-to-L₀ K₁ ∧L back-to-L₀ K₂))
+           (principal-ideal-preserves-meets (back-to-L₀ K₁) (back-to-L₀ K₂) ⁻¹ )
+
+      Ⅴ = ap s †
+      Ⅳ = s-preserves-∧ (↓ₖ (back-to-L₀ K₁)) (↓ₖ (back-to-L₀ K₂)) ⁻¹
+
+   γ : ↓ₖ back-to-L₀ (K₁ ∧· K₂) ＝ ↓ₖ (back-to-L₀ K₁ ∧L back-to-L₀ K₂)
+   γ = equivs-are-lc s (⌜⌝-is-equiv (≃-sym e)) ‡
+
+   β : ↓ back-to-L₀ (K₁ ∧· K₂) ＝ ↓ (back-to-L₀ K₁ ∧L back-to-L₀ K₂)
+   β = pr₁ (from-Σ-＝ γ)
+
+   † : back-to-L₀ (K₁ ∧· K₂) ＝ back-to-L₀ K₁ ∧L back-to-L₀ K₂
+   † = pr₁
+        (from-Σ-＝
+          (↓-is-embedding
+            (↓ back-to-L₀ (K₁ ∧· K₂))
+            (back-to-L₀ (K₁ ∧· K₂) , refl)
+            (back-to-L₀ K₁ ∧L back-to-L₀ K₂ , (β ⁻¹))))
+
+ back-to-L₀-is-monotone
+  : is-monotonic (poset-ofᵈ 𝒦⁻-spec-L) (poset-ofᵈ L) back-to-L₀ holds
+ back-to-L₀-is-monotone =
+  meet-preserving-implies-monotone
+   𝒦⁻-spec-L
+   L
+   back-to-L₀
+   back-to-L₀-preserves-∧
+
+\end{code}
+
+The map `back-to-L₀` is a retraction of the map `to-𝒦-spec-L₀`.
+
+\begin{code}
+
+ back-to-L-cancels-to-𝒦-spec-L : back-to-L₀ ∘ to-𝒦-spec-L₀ ∼ id
+ back-to-L-cancels-to-𝒦-spec-L x = equality-of-principal-ideals-gives-equality †
+  where
+   ♠ : s (↓ₖ back-to-L₀ (s (↓ₖ x))) ＝ s (↓ₖ x)
+   ♠ = to-𝒦-spec-L-cancels-back-to-L (s (↓ₖ x))
+
+   ‡ : ↓ₖ back-to-L₀ (s (↓ₖ x)) ＝ ↓ₖ x
+   ‡ = equivs-are-lc s (⌜⌝-is-equiv (≃-sym e)) ♠
+
+   † : ↓ back-to-L₀ (s (↓ₖ x)) ＝ ↓ x
+   † = pr₁ (from-Σ-＝ ‡)
+
+\end{code}
+
+We conclude that the underlying types of `L` and `𝒦⁻(spec-L)` are equivalent.
+
+\begin{code}
+
+ L-equivalent-to-𝒦⁻-spec-L : ∣ L ∣ᵈ ≃ ∣ 𝒦⁻-spec-L ∣ᵈ
+ L-equivalent-to-𝒦⁻-spec-L = to-𝒦-spec-L₀ , qinvs-are-equivs to-𝒦-spec-L₀ †
+  where
+   Ⅰ : back-to-L₀ ∘ to-𝒦-spec-L₀ ∼ id
+   Ⅰ = back-to-L-cancels-to-𝒦-spec-L
+
+   Ⅱ : to-𝒦-spec-L₀ ∘ back-to-L₀ ∼ id
+   Ⅱ = to-𝒦-spec-L-cancels-back-to-L
+
+   † : qinv to-𝒦-spec-L₀
+   † = back-to-L₀ , Ⅰ , Ⅱ
+
+\end{code}
+
+The equivalence `to-𝒦-spec-L` is homomorphic.
+
+\begin{code}
+
+ open HomomorphicEquivalences L 𝒦⁻-spec-L
+
+ to-𝒦-spec-L-is-a-homomorphic-equivalence
+  : is-homomorphic L-equivalent-to-𝒦⁻-spec-L holds
+ to-𝒦-spec-L-is-a-homomorphic-equivalence = † , ‡
+  where
+   † : is-monotonic (poset-ofᵈ L) (poset-ofᵈ 𝒦⁻-spec-L) to-𝒦-spec-L₀ holds
+   † = meet-preserving-implies-monotone
+        L
+        𝒦⁻-spec-L
+        to-𝒦-spec-L₀
+        to-𝒦-spec-L-preserves-∧
+
+   ‡ : is-monotonic (poset-ofᵈ 𝒦⁻-spec-L) (poset-ofᵈ L) back-to-L₀ holds
+   ‡ = back-to-L₀-is-monotone
+
+\end{code}
+
+We package everything up into a proof that `L` is isomorphic to the
+distributive lattice `𝒦⁻-spec-L`.
+
+\begin{code}
+
+ open DistributiveLatticeIsomorphisms L 𝒦⁻-spec-L
+
+ L-is-isomorphic-to-𝒦⁻-spec-L : L ≅d≅ 𝒦⁻-spec-L
+ L-is-isomorphic-to-𝒦⁻-spec-L =
+  to-isomorphismᵈᵣ
+   (L-equivalent-to-𝒦⁻-spec-L , to-𝒦-spec-L-is-a-homomorphic-equivalence)
+
+\end{code}
+
+\section{References}
 
 [1] Johnstone, Peter T., Stone Spaces. Cambridge University Press, Cambridge,
     1982

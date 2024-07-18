@@ -2,11 +2,11 @@ Tom de Jong, July 2024.
 
 This file corresponds to the paper
 
-   "Domain Theory in Univalent Foundations I:
+   "Domain theory in univalent foundations I:
     Directed complete posets and Scott’s D∞"
    Tom de Jong
    2024
-   https://arxiv.org/abs/TODO
+   https://doi.org/10.48550/arxiv.2407.06952
 
 See DomainTheory.index.lagda for an overview of all domain theory in
 TypeTopology.
