@@ -394,11 +394,12 @@ of them if we are given a proof of decomposability.
 
 Added 9th September 2022 by Tom de Jong.
 
-After a discussion with Martín on 8th September 2022, we noticed that the
-decomposability theorem can be generalised from Ord 𝓤 to any locally small
-𝓤-sup-lattice with two distinct points. (This is indeed a generalisation because
-Ord 𝓤 is a locally small 𝓤-sup-lattice, at least in the presence of small set
-quotients or set replacement, see Ordinals.OrdinalOfOrdinalsSuprema.)
+After a discussion with Martín on 8th September 2022, we noticed that
+the decomposability theorem can be generalised from Ord 𝓤 to any
+locally small 𝓤-sup-lattice with two distinct points. (This is indeed
+a generalisation because Ord 𝓤 is a locally small 𝓤-sup-lattice, at
+least in the presence of small set quotients or set replacement, see
+Ordinals.OrdinalOfOrdinalsSuprema.)
 
 One direction is still given by the lemma above:
   WEM-gives-decomposition-of-two-pointed-types⁺ :
@@ -555,6 +556,36 @@ decomposition-of-ordinals-type-gives-WEM-bis {𝓤} =
  decomposition-of-ainjective-type-gives-WEM {𝓤 ⁺} {𝓤} {𝓤}
   (Ordinal 𝓤)
   (Ordinal-is-ainjective (ua 𝓤))
+
+\end{code}
+
+Added by Martin Escardo and Tom de Jong 18th July 2024. We generalize
+a fact given above from ordinals to injective types.
+
+\begin{code}
+
+module decomposability-bis (pt : propositional-truncations-exist) where
+
+ open PropositionalTruncation pt
+ open decomposability pt
+
+ ainjective-type-decomposable-iff-WEM
+  : (D : 𝓤 ̇ )
+  → ainjective-type D 𝓤 𝓥
+  → has-two-distinct-points D
+  → decomposable D ↔ WEM 𝓤
+ ainjective-type-decomposable-iff-WEM D D-ainj htdp =
+  ∥∥-rec (WEM-is-prop fe) (decomposition-of-ainjective-type-gives-WEM D D-ainj) ,
+  (λ wem → ∣ WEM-gives-decomposition-of-two-pointed-types wem D htdp ∣)
+
+ ainjective-type-decomposability-gives-decomposition
+  : (D : 𝓤 ̇ )
+  → ainjective-type D 𝓤 𝓥
+  → has-two-distinct-points D
+  → decomposable D
+  → decomposition D
+ ainjective-type-decomposability-gives-decomposition {𝓤} D D-ainj htdp δ =
+  WEM-gives-decomposition-of-two-pointed-types (lr-implication (ainjective-type-decomposable-iff-WEM D D-ainj htdp) δ) D htdp
 
 \end{code}
 
