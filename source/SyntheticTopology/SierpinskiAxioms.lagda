@@ -5,7 +5,7 @@ date-started:   2024-05-28
 dates-modified: [2024-06-07]
 ---
 
-We write down here various axioms for the Sierpinski object, defined in TODO.
+We write down here various axioms for the Sierpinski object, defined in [1].
 
 \begin{code}
 
@@ -37,7 +37,6 @@ open Sierpinski-notations fe pe pt 𝕊
 
 \end{code}
 
-TODO : ADD REFERENCES
 
 \section{Dominance axiom}
 
@@ -92,10 +91,10 @@ open-transitive-gives-cl-∧ open-transitive p q (open-p , open-q) =
 
 \section{Standard topology}
 
-We define here the axiom of being a `standard-topology`, defined on 5.9 of [1]
-TODO : NICER CITATION
-Note that not all "used" Sierpinski verify this
-(e.g. : see paper haskell in TODO)
+We define here the axiom of being a `standard-topology`, defined on 5.9 of [2].
+
+Note that not all "used" Sierpiński verify this (for example, see the Sierpiński
+defined in [3])
 
 \begin{code}
 
@@ -126,7 +125,7 @@ phoa’s-principle ct cb =
 
 \end{code}
 
-As proved in TODO , `phoa’s-principle` implies that all endomaps of the
+As proved in [1] , `phoa’s-principle` implies that all endomaps of the
 Sierpinski are monotonous.
 
 \begin{code}
@@ -147,7 +146,7 @@ phoa’s-principle-gives-monotonous-maps
     (Ɐ f ꞉ (Ωₒ → Ωₒ) ,
       (Ɐ (p , open-p) ꞉ Ωₒ , (Ɐ (q , open-q) ꞉ Ωₒ ,
         (p ⇒ q) ⇒ (pr₁ (f (p , open-p)) ⇒ pr₁ (f (q , open-q))))))) holds
-        
+
 phoa’s-principle-gives-monotonous-maps
  ct cb phoa-p f (p , open-p) (q , open-q) p-gives-q =
   ⇔-transport pe
@@ -193,5 +192,22 @@ phoa’s-principle-gives-monotonous-maps
 
 \end{code}
 
-[1] : https://www.cs.bham.ac.uk/~mhe/papers/pittsburgh.pdf
-[2] : Paper haskell
+\section{References}
+
+- [1]: Davorin Lesňik. *Synthetic Topology and Constructive Metric Spaces*.
+
+  PhD Thesis, 2010
+
+  https://doi.org/10.48550/arXiv.2104.10399
+
+- [2]: Martín Escardó. *Topology via higher-order intuitionistic logic*
+
+  Unpublished notes, Pittsburgh, 2004
+
+  https://www.cs.bham.ac.uk/~mhe/papers/pittsburgh.pdf
+
+- [3]: Martín Escardó. *Synthetic topology of data types and classical spaces*.
+
+  ENTCS, Elsevier, volume 87, pages 21-156, November 2004.
+
+  https://www.cs.bham.ac.uk/~mhe/papers/entcs87.pdf
