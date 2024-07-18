@@ -49,7 +49,7 @@ conceivable sense, and no non-trivial type is sequentially Hausdorff.
 no-non-trivial-sequentially-Hausdorff-types-under-WLPO
  : WLPO
  → (X : 𝓤 ̇ )
- → (Σ (x₀ , x₁) ꞉ X × X , x₀ ≠ x₁)
+ → has-two-distinct-points X
  → ¬ is-sequentially-Hausdorff X
 no-non-trivial-sequentially-Hausdorff-types-under-WLPO
  wlpo X ((x₀ , x₁), d) X-is-seq-Haus = III

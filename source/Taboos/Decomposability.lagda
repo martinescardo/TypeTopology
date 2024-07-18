@@ -585,7 +585,10 @@ module decomposability-bis (pt : propositional-truncations-exist) where
   → decomposable D
   → decomposition D
  ainjective-type-decomposability-gives-decomposition {𝓤} D D-ainj htdp δ =
-  WEM-gives-decomposition-of-two-pointed-types (lr-implication (ainjective-type-decomposable-iff-WEM D D-ainj htdp) δ) D htdp
+  WEM-gives-decomposition-of-two-pointed-types
+   (lr-implication (ainjective-type-decomposable-iff-WEM D D-ainj htdp) δ)
+   D
+   htdp
 
 \end{code}
 
