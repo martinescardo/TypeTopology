@@ -39,7 +39,7 @@ open Sierpinski-notations fe pe pt 𝕊
 
 \end{code}
 
-We here start to investigate a notion of compactness.
+We here start to investigate a notion of compactness defined in [1] and [2].
 
 A type `X` is called `compact` if its universal quantification on
 `intrinsically-open` predicates is an open proposition.
@@ -167,3 +167,18 @@ image-of-compact' (X , sX) (Y , sY) f compact-X =
                   compact-X
 
 \end{code}
+
+
+\section{References}
+
+- [1]: Davorin Lesňik. *Synthetic Topology and Constructive Metric Spaces*.
+
+  PhD Thesis, 2010
+
+  https://doi.org/10.48550/arXiv.2104.10399
+
+- [2]: Martín Escardó. *Topology via higher-order intuitionistic logic*
+
+  Unpublished notes, Pittsburgh, 2004
+
+  https://www.cs.bham.ac.uk/~mhe/papers/pittsburgh.pdf
