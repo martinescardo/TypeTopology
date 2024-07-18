@@ -40,7 +40,6 @@ module InjectiveTypes.CounterExamples
 open PropositionalTruncation pt
 
 open import MLTT.Spartan
-open import Taboos.Decomposability ua
 open import UF.Embeddings
 open import UF.ClassicalLogic
 open import UF.FunExt
@@ -64,6 +63,7 @@ private
  pe' : Prop-Ext
  pe' {𝓤} = pe 𝓤
 
+open import Taboos.Decomposability fe
 open import InjectiveTypes.Blackboard fe
 open import TypeTopology.SimpleTypes fe pt
 
@@ -81,7 +81,7 @@ injective if and only if weak excluded middle holds.
   d = id , (₀ , refl) , (₁ , refl)
 
   I : WEM 𝓤
-  I = decomposition-of-ainjective-type-gives-WEM 𝟚 𝟚-ainj d
+  I = decomposition-of-ainjective-type-gives-WEM pe' 𝟚 𝟚-ainj d
 
 WEM-gives-𝟚-retract-of-Ω : WEM 𝓤 → retract 𝟚 of Ω 𝓤
 WEM-gives-𝟚-retract-of-Ω {𝓤} wem = II

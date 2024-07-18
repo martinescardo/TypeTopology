@@ -21,7 +21,6 @@ module Iterative.Multisets-Addendum
 
 open import Iterative.Multisets 𝓤
 open import Iterative.Sets ua 𝓤
-open import Taboos.Decomposability ua
 open import UF.Base
 open import UF.DiscreteAndSeparated
 open import UF.Embeddings
@@ -48,6 +47,7 @@ private
  fe' : FunExt
  fe' 𝓤 𝓥 = fe {𝓤} {𝓥}
 
+open import Taboos.Decomposability fe'
 open import InjectiveTypes.Blackboard fe'
 
 \end{code}
@@ -361,6 +361,7 @@ excluded middle holds, which also seems to be a new result.
 decomposition-of-𝕄-gives-WEM : decomposition 𝕄 → WEM 𝓤
 decomposition-of-𝕄-gives-WEM =
  decomposition-of-ainjective-type-gives-WEM
+  (univalence-gives-propext (ua 𝓤))
   𝕄
   𝕄-is-ainjective
 

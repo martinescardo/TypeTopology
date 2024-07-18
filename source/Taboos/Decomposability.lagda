@@ -19,50 +19,40 @@ Further additions 3rd August 2023.
 
 {-# OPTIONS --safe --without-K #-}
 
-open import UF.Univalence
+open import UF.FunExt
 
-\end{code}
-
-TODO. Get rid of a global assumption of univalence here:
-
-\begin{code}
-
-module Taboos.Decomposability (ua : Univalence) where
+module Taboos.Decomposability (fe : FunExt) where
 
 open import MLTT.Spartan
 open import MLTT.Two-Properties
+open import Ordinals.Arithmetic fe
 open import Ordinals.Equivalence
 open import Ordinals.Maps
-open import Ordinals.OrdinalOfOrdinals ua
+open import Ordinals.OrdinalOfOrdinals
 open import Ordinals.Type
 open import Ordinals.Underlying
 open import UF.Base
+open import UF.ClassicalLogic
 open import UF.Classifiers
 open import UF.Equiv
 open import UF.Equiv-FunExt
 open import UF.EquivalenceExamples
-open import UF.ClassicalLogic
-open import UF.FunExt
 open import UF.PropTrunc
 open import UF.Sets
 open import UF.Size
-open import UF.SubtypeClassifier
-open import UF.SubtypeClassifier-Properties
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
+open import UF.SubtypeClassifier
+open import UF.SubtypeClassifier-Properties
 open import UF.UA-FunExt
+open import UF.Univalence
 
 private
- fe : FunExt
- fe = Univalence-gives-FunExt ua
-
  fe' : Fun-Ext
  fe' {𝓤} {𝓥} = fe 𝓤 𝓥
 
-⇁_ : Ω 𝓤 → Ω 𝓤
-⇁_ = not fe'
-
-open import Ordinals.Arithmetic fe
+ ⇁_ : Ω 𝓤 → Ω 𝓤
+ ⇁_ = not fe'
 
 \end{code}
 
@@ -85,28 +75,33 @@ decomposition' {𝓤} X = Σ Y ꞉ (𝟚 → 𝓤 ̇ ) , (Y ₀ + Y ₁ ≃ X) �
 
 \end{code}
 
-The above two decomposition types are equivalent:
+We remark that the above two decomposition types are equivalent, but
+we don't use this fact anywhere for the moment, and we work with the
+first one.
 
 \begin{code}
 
-decomposition-lemma : (X : 𝓤 ̇ )
+decomposition-lemma : is-univalent 𝓤
+                    → (X : 𝓤 ̇ )
                     → (Σ Y ꞉ (𝟚 → 𝓤 ̇ ) , (Y ₀ + Y ₁ ≃ X))
                     ≃ (X → 𝟚)
-decomposition-lemma {𝓤} X =
+decomposition-lemma {𝓤} ua X =
  (Σ Y ꞉ (𝟚 → 𝓤 ̇ ) , (Y ₀ + Y ₁ ≃ X))       ≃⟨ I ⟩
  (Σ Y ꞉ (𝟚 → 𝓤 ̇ ) , ((Σ n ꞉ 𝟚 , Y n) ≃ X)) ≃⟨ II ⟩
  (X → 𝟚)                                    ■
  where
   I  = Σ-cong (λ Y → ≃-cong-left fe (≃-sym alternative-+))
-  II = Σ-fibers-≃ (ua 𝓤) fe'
+  II = Σ-fibers-≃ ua fe'
 
-decompositions-agree : (X : 𝓤 ̇ ) → decomposition X ≃ decomposition' X
-decompositions-agree {𝓤} X =
+decompositions-agree : is-univalent 𝓤
+                     → (X : 𝓤 ̇ )
+                     → decomposition X ≃ decomposition' X
+decompositions-agree {𝓤} ua X =
  (Σ f ꞉ (X → 𝟚) , fiber f ₀ × fiber f ₁)                        ≃⟨ I ⟩
  (Σ (Y , _) ꞉ (Σ Y ꞉ (𝟚 → 𝓤 ̇ ) , (Y ₀ + Y ₁ ≃ X)) , Y ₀ × Y ₁)  ≃⟨ II ⟩
  (Σ Y ꞉ (𝟚 → 𝓤 ̇ ) , (Y ₀ + Y ₁ ≃ X) × Y ₀ × Y ₁)                ■
  where
-  I  = Σ-change-of-variable-≃ _ (≃-sym (decomposition-lemma X))
+  I  = Σ-change-of-variable-≃ _ (≃-sym (decomposition-lemma ua X))
   II = Σ-assoc
 
 WEM-gives-decomposition-of-two-pointed-types : WEM 𝓤
@@ -142,7 +137,8 @@ WEM-gives-decomposition-of-two-pointed-types wem X ((x₀ , x₁) , d) = γ
   γ : decomposition X
   γ = f , (x₀ , e₀) , (x₁ , e₁)
 
-WEM-gives-decomposition-of-ordinals-type⁺ : WEM (𝓤 ⁺) → decomposition (Ordinal 𝓤)
+WEM-gives-decomposition-of-ordinals-type⁺ : WEM (𝓤 ⁺)
+                                          → decomposition (Ordinal 𝓤)
 WEM-gives-decomposition-of-ordinals-type⁺ {𝓤} wem =
  WEM-gives-decomposition-of-two-pointed-types wem (Ordinal 𝓤)
   ((𝟙ₒ , 𝟘ₒ) , (λ (e : 𝟙ₒ ＝ 𝟘ₒ) → 𝟘-elim (idtofun 𝟙 𝟘 (ap ⟨_⟩ e) ⋆)))
@@ -188,10 +184,12 @@ WEM-gives-decomposition-of-two-pointed-types⁺ {𝓤} wem X l ((x₀ , x₁) , 
   γ : decomposition X
   γ = f , (x₀ , e₀) , (x₁ , e₁)
 
-WEM-gives-decomposition-of-ordinals-type : WEM 𝓤 → decomposition (Ordinal 𝓤)
-WEM-gives-decomposition-of-ordinals-type {𝓤} wem =
+WEM-gives-decomposition-of-ordinals-type : is-univalent 𝓤
+                                         → WEM 𝓤
+                                         → decomposition (Ordinal 𝓤)
+WEM-gives-decomposition-of-ordinals-type {𝓤} ua wem =
  WEM-gives-decomposition-of-two-pointed-types⁺ wem (Ordinal 𝓤)
-  (the-type-of-ordinals-is-locally-small (ua 𝓤) fe')
+  (the-type-of-ordinals-is-locally-small ua fe')
   ((𝟙ₒ , 𝟘ₒ) , (λ (e : 𝟙ₒ ＝ 𝟘ₒ) → 𝟘-elim (idtofun 𝟙 𝟘 (ap ⟨_⟩ e) ⋆)))
 
 \end{code}
@@ -215,14 +213,16 @@ The type of ordinals in any universe has Ω-paths between any two points.
 has-Ω-paths : (𝓥 : Universe) → 𝓤 ̇  → 𝓤 ⊔ (𝓥 ⁺) ̇
 has-Ω-paths 𝓥 X = (x y : X) → Ω-Path 𝓥 x y
 
-type-of-ordinals-has-Ω-paths : has-Ω-paths 𝓤 (Ordinal 𝓤)
-type-of-ordinals-has-Ω-paths {𝓤} α β = f , γ⊥ , γ⊤
+type-of-ordinals-has-Ω-paths : is-univalent 𝓤
+                             → has-Ω-paths 𝓤 (Ordinal 𝓤)
+type-of-ordinals-has-Ω-paths {𝓤} ua α β = f , γ⊥ , γ⊤
  where
+
   f : Ω 𝓤 → Ordinal 𝓤
   f p = (Ω-to-ordinal (⇁ p) ×ₒ α) +ₒ (Ω-to-ordinal p ×ₒ β)
 
   γ⊥ : f ⊥ ＝ α
-  γ⊥ = eqtoidₒ (ua 𝓤) fe' (f ⊥) α (u , o , e , p)
+  γ⊥ = eqtoidₒ ua fe' (f ⊥) α (u , o , e , p)
    where
     u : ⟨ f ⊥ ⟩ → ⟨ α ⟩
     u (inl (x , a)) = a
@@ -246,7 +246,7 @@ type-of-ordinals-has-Ω-paths {𝓤} α β = f , γ⊥ , γ⊤
     p a b l = inr (refl , l)
 
   γ⊤ : f ⊤ ＝ β
-  γ⊤ = eqtoidₒ (ua 𝓤) fe' (f ⊤) β (u , o , e , p)
+  γ⊤ = eqtoidₒ ua fe' (f ⊤) β (u , o , e , p)
    where
     u : ⟨ f ⊤ ⟩ → ⟨ β ⟩
     u (inl (f , _)) = 𝟘-elim (f ⋆)
@@ -272,8 +272,11 @@ type-of-ordinals-has-Ω-paths {𝓤} α β = f , γ⊥ , γ⊤
     p : is-order-preserving β (f ⊤) v
     p b c l = inr (refl , l)
 
-decomposition-of-Ω-gives-WEM : decomposition (Ω 𝓤) → WEM 𝓤
-decomposition-of-Ω-gives-WEM {𝓤} (f , (p₀@(P₀ , i₀) , e₀) , (p₁@(P₁ , i₁) , e₁)) = IV
+decomposition-of-Ω-gives-WEM : propext 𝓤
+                             → decomposition (Ω 𝓤)
+                             → WEM 𝓤
+decomposition-of-Ω-gives-WEM
+  {𝓤} pe (f , (p₀@(P₀ , i₀) , e₀) , (p₁@(P₁ , i₁) , e₁)) = IV
  where
   g : Ω 𝓤 → Ω 𝓤
   g (Q , j) = ((P₀ × Q) + (P₁ × ¬ Q)) , k
@@ -290,7 +293,7 @@ decomposition-of-Ω-gives-WEM {𝓤} (f , (p₀@(P₀ , i₀) , e₀) , (p₁@(P
     I : g q ＝ p₀
     I = to-subtype-＝
           (λ _ → being-prop-is-prop fe')
-          (univalence-gives-propext (ua 𝓤) (pr₂ (g q)) i₀
+          (pe (pr₂ (g q)) i₀
             (cases pr₁ (λ (_ , n) → 𝟘-elim (n h)))
             (λ x → inl (x , h)))
 
@@ -304,7 +307,7 @@ decomposition-of-Ω-gives-WEM {𝓤} (f , (p₀@(P₀ , i₀) , e₀) , (p₁@(P
     I : g q ＝ p₁
     I = to-subtype-＝
           (λ _ → being-prop-is-prop fe')
-          (univalence-gives-propext (ua 𝓤) (pr₂ (g q)) i₁
+          (pe (pr₂ (g q)) i₁
           (cases (λ (_ , h) → 𝟘-elim (n h)) pr₁)
           (λ x → inr (x , n)))
 
@@ -321,12 +324,13 @@ decomposition-of-Ω-gives-WEM {𝓤} (f , (p₀@(P₀ , i₀) , e₀) , (p₁@(P
   IV : (Q : 𝓤  ̇ )→ is-prop Q → ¬ Q + ¬¬ Q
   IV Q j = 𝟚-equality-cases (III₀ (Q , j)) (III₁ (Q , j))
 
-decomposition-of-type-with-Ω-paths-gives-WEM : {X : 𝓤 ̇ }
+decomposition-of-type-with-Ω-paths-gives-WEM : propext 𝓥
+                                             → {X : 𝓤 ̇ }
                                              → decomposition X
                                              → has-Ω-paths 𝓥 X
                                              → WEM 𝓥
-decomposition-of-type-with-Ω-paths-gives-WEM {𝓤} {𝓥} {X}
-                                             (f , (x₀ , e₀) , (x₁ , e₁)) c = γ
+decomposition-of-type-with-Ω-paths-gives-WEM
+  {𝓥} {𝓤} pe {X} (f , (x₀ , e₀) , (x₁ , e₁)) c = γ
  where
   g : Ω 𝓥 → X
   g = pr₁ (c x₀ x₁)
@@ -343,21 +347,24 @@ decomposition-of-type-with-Ω-paths-gives-WEM {𝓤} {𝓥} {X}
        ₁       ∎
 
   γ : WEM 𝓥
-  γ = decomposition-of-Ω-gives-WEM (f ∘ g , (⊥ , I₀) , (⊤ , I₁))
+  γ = decomposition-of-Ω-gives-WEM pe (f ∘ g , (⊥ , I₀) , (⊤ , I₁))
 
-decomposition-of-ordinals-type-gives-WEM : decomposition (Ordinal 𝓤) → WEM 𝓤
-decomposition-of-ordinals-type-gives-WEM d =
- decomposition-of-type-with-Ω-paths-gives-WEM d type-of-ordinals-has-Ω-paths
+decomposition-of-ordinals-type-gives-WEM : is-univalent 𝓤
+                                         → decomposition (Ordinal 𝓤)
+                                         → WEM 𝓤
+decomposition-of-ordinals-type-gives-WEM ua d =
+ decomposition-of-type-with-Ω-paths-gives-WEM
+  (univalence-gives-propext ua)
+  d
+  (type-of-ordinals-has-Ω-paths ua)
 
-Ordinal-decomposition-iff-WEM : decomposition (Ordinal 𝓤) ↔ WEM 𝓤
-Ordinal-decomposition-iff-WEM = decomposition-of-ordinals-type-gives-WEM ,
-                                WEM-gives-decomposition-of-ordinals-type
+Ordinal-decomposition-iff-WEM : is-univalent 𝓤
+                              → decomposition (Ordinal 𝓤) ↔ WEM 𝓤
+Ordinal-decomposition-iff-WEM ua =
+ decomposition-of-ordinals-type-gives-WEM ua ,
+ WEM-gives-decomposition-of-ordinals-type ua
 
 \end{code}
-
-TODO. Actually, WEM 𝓤 is logically equivalent to WEM 𝓥 for any two
-universes 𝓤 and 𝓥. The reason is that negated propositions are 𝓤₀
-small.
 
 We now assume that propositional truncations exist to define
 decomposability as the truncation of the type of decompositions. It is
@@ -373,16 +380,18 @@ module decomposability (pt : propositional-truncations-exist) where
  decomposable : 𝓤 ̇ → 𝓤 ̇
  decomposable X = ∥ decomposition X ∥
 
- Ordinal-decomposable-iff-WEM : decomposable (Ordinal 𝓤) ↔ WEM 𝓤
- Ordinal-decomposable-iff-WEM =
-  ∥∥-rec (WEM-is-prop fe) decomposition-of-ordinals-type-gives-WEM ,
-  (λ wem → ∣ WEM-gives-decomposition-of-ordinals-type wem ∣)
+ Ordinal-decomposable-iff-WEM : is-univalent 𝓤
+                              → decomposable (Ordinal 𝓤) ↔ WEM 𝓤
+ Ordinal-decomposable-iff-WEM ua =
+  ∥∥-rec (WEM-is-prop fe) (decomposition-of-ordinals-type-gives-WEM ua) ,
+  (λ wem → ∣ WEM-gives-decomposition-of-ordinals-type ua wem ∣)
 
- decomposability-gives-decomposition : decomposable (Ordinal 𝓤)
+ decomposability-gives-decomposition : is-univalent 𝓤
+                                     → decomposable (Ordinal 𝓤)
                                      → decomposition (Ordinal 𝓤)
- decomposability-gives-decomposition {𝓤} δ =
-  WEM-gives-decomposition-of-ordinals-type
-   (lr-implication Ordinal-decomposable-iff-WEM δ)
+ decomposability-gives-decomposition ua δ =
+  WEM-gives-decomposition-of-ordinals-type ua
+   (lr-implication (Ordinal-decomposable-iff-WEM ua) δ)
 
 \end{code}
 
@@ -428,17 +437,18 @@ For the other we use
     → has-Ω-paths 𝓥 X
     → WEM 𝓥
 
-The point is that every 𝓤-sup-lattice X has Ω𝓤-paths, because given x y : X, we
-can define f : Ω 𝓤 → X by mapping a proposition P to the join of the family
+The point is that every 𝓤-sup-lattice X has Ω𝓤-paths, because given x
+y : X, we can define f : Ω 𝓤 → X by mapping a proposition P to the
+join of the family
 
   δ : 𝟙 + P → X
   δ(inl ⋆) = x;
   δ(inr p) = y.
 
-The family δ also plays a key role in [dJE21,dJE22] although we have the
-restriction that x ⊑ y in those papers, because we consider a broader collection
-of posets there that includes the 𝓤-sup-lattices, but also 𝓤-bounded-complete
-posets and 𝓤-directed complete posets.
+The family δ also plays a key role in [dJE21,dJE22] although we have
+the restriction that x ⊑ y in those papers, because we consider a
+broader collection of posets there that includes the 𝓤-sup-lattices,
+but also 𝓤-bounded-complete posets and 𝓤-directed complete posets.
 
 References
 ----------
@@ -450,6 +460,7 @@ References
         Leibniz International Proceedings in Informatics (LIPIcs).
         Schloss Dagstuhl–Leibniz-Zentrum für Informatik, 2021, 8:1–8:18.
         doi: 10.4230/LIPIcs.FSCD.2021.8.
+
 [dJE22] Tom de Jong and Martín Hötzel Escardó.
         ‘On Small Types in Univalent Foundations’. Sept. 2022.
         arXiv: 2111.00482 [cs.LO]. Revised and expanded version of [dJE21b].
@@ -470,20 +481,17 @@ open import Ordinals.Injectivity
 
 open ordinals-injectivity fe
 
-private
- pe : Prop-Ext
- pe = Univalence-gives-Prop-Ext ua
-
 \end{code}
 
 A naive application of injectivity gives the following:
 
 \begin{code}
 
-ainjective-types-have-Ω-Paths-naive : (D : 𝓤 ̇ )
+ainjective-types-have-Ω-Paths-naive : propext 𝓦
+                                    → (D : 𝓤 ̇ )
                                     → ainjective-type D 𝓤₀ (𝓦 ⁺)
                                     → has-Ω-paths 𝓦 D
-ainjective-types-have-Ω-Paths-naive {𝓤} {𝓦} D D-ainj x₀ x₁ = II I
+ainjective-types-have-Ω-Paths-naive {𝓦} {𝓤} pe D D-ainj x₀ x₁ = II I
  where
   f : 𝟚 → D
   f ₀ = x₀
@@ -509,10 +517,11 @@ and to that of the type of ordinals, and more examples like these.
 
 \begin{code}
 
-ainjective-types-have-Ω-Paths : (D : 𝓤 ̇ )
+ainjective-types-have-Ω-Paths : propext 𝓥
+                              → (D : 𝓤 ̇ )
                               → ainjective-type D 𝓥 𝓦
                               → has-Ω-paths 𝓥 D
-ainjective-types-have-Ω-Paths {𝓤} {𝓥} {𝓦} D D-ainj x₀ x₁ = II I
+ainjective-types-have-Ω-Paths {𝓥} {𝓤} {𝓦} pe D D-ainj x₀ x₁ = II I
  where
   f : 𝟚 → D
   f ₀ = x₀
@@ -530,14 +539,17 @@ ainjective-types-have-Ω-Paths {𝓤} {𝓥} {𝓦} D D-ainj x₀ x₁ = II I
   II : type-of I → Ω-Path 𝓥 x₀ x₁
   II (g , h) = g , h ₀ , h ₁
 
-decomposition-of-ainjective-type-gives-WEM : (D : 𝓤 ̇ )
+decomposition-of-ainjective-type-gives-WEM : propext 𝓥
+                                           → (D : 𝓤 ̇ )
                                            → ainjective-type D 𝓥 𝓦
                                            → decomposition D
                                            → WEM 𝓥
-decomposition-of-ainjective-type-gives-WEM {𝓤} {𝓥} {𝓦} D D-ainj D-decomp =
- decomposition-of-type-with-Ω-paths-gives-WEM
-  D-decomp
-  (ainjective-types-have-Ω-Paths {𝓤} {𝓥} {𝓦} D D-ainj)
+decomposition-of-ainjective-type-gives-WEM
+ {𝓥} {𝓤} {𝓦} pe D D-ainj D-decomp =
+  decomposition-of-type-with-Ω-paths-gives-WEM
+   pe
+   D-decomp
+   (ainjective-types-have-Ω-Paths {𝓥} {𝓤} {𝓦} pe D D-ainj)
 
 \end{code}
 
@@ -545,17 +557,23 @@ Examples:
 
 \begin{code}
 
-decomposition-of-universe-gives-WEM : decomposition (𝓤 ̇ ) → WEM 𝓤
-decomposition-of-universe-gives-WEM {𝓤} =
- decomposition-of-ainjective-type-gives-WEM {𝓤 ⁺} {𝓤} {𝓤}
+decomposition-of-universe-gives-WEM : is-univalent 𝓤
+                                    → decomposition (𝓤 ̇ )
+                                    → WEM 𝓤
+decomposition-of-universe-gives-WEM {𝓤} ua =
+ decomposition-of-ainjective-type-gives-WEM {𝓤} {𝓤 ⁺} {𝓤}
+  (univalence-gives-propext ua)
   (𝓤 ̇ )
-  (universes-are-ainjective-Π (ua 𝓤))
+  (universes-are-ainjective-Π ua)
 
-decomposition-of-ordinals-type-gives-WEM-bis : decomposition (Ordinal 𝓤) → WEM 𝓤
-decomposition-of-ordinals-type-gives-WEM-bis {𝓤} =
- decomposition-of-ainjective-type-gives-WEM {𝓤 ⁺} {𝓤} {𝓤}
+decomposition-of-ordinals-type-gives-WEM-bis : is-univalent 𝓤
+                                             → decomposition (Ordinal 𝓤)
+                                             → WEM 𝓤
+decomposition-of-ordinals-type-gives-WEM-bis {𝓤} ua =
+ decomposition-of-ainjective-type-gives-WEM {𝓤} {𝓤 ⁺} {𝓤}
+  (univalence-gives-propext ua)
   (Ordinal 𝓤)
-  (Ordinal-is-ainjective (ua 𝓤))
+  (Ordinal-is-ainjective ua)
 
 \end{code}
 
@@ -570,23 +588,27 @@ module decomposability-bis (pt : propositional-truncations-exist) where
  open decomposability pt
 
  ainjective-type-decomposable-iff-WEM
-  : (D : 𝓤 ̇ )
+  : propext 𝓤
+  → (D : 𝓤 ̇ )
   → ainjective-type D 𝓤 𝓥
   → has-two-distinct-points D
   → decomposable D ↔ WEM 𝓤
- ainjective-type-decomposable-iff-WEM D D-ainj htdp =
-  ∥∥-rec (WEM-is-prop fe) (decomposition-of-ainjective-type-gives-WEM D D-ainj) ,
+ ainjective-type-decomposable-iff-WEM pe D D-ainj htdp =
+  ∥∥-rec
+   (WEM-is-prop fe)
+   (decomposition-of-ainjective-type-gives-WEM pe D D-ainj) ,
   (λ wem → ∣ WEM-gives-decomposition-of-two-pointed-types wem D htdp ∣)
 
  ainjective-type-decomposability-gives-decomposition
-  : (D : 𝓤 ̇ )
+  : propext 𝓤
+  → (D : 𝓤 ̇ )
   → ainjective-type D 𝓤 𝓥
   → has-two-distinct-points D
   → decomposable D
   → decomposition D
- ainjective-type-decomposability-gives-decomposition {𝓤} D D-ainj htdp δ =
+ ainjective-type-decomposability-gives-decomposition pe D D-ainj htdp δ =
   WEM-gives-decomposition-of-two-pointed-types
-   (lr-implication (ainjective-type-decomposable-iff-WEM D D-ainj htdp) δ)
+   (lr-implication (ainjective-type-decomposable-iff-WEM pe D D-ainj htdp) δ)
    D
    htdp
 
@@ -607,10 +629,11 @@ open import UF.Hedberg using (wconstant)
 open import TypeTopology.TotallySeparated
 
 non-trivial-totally-separated-ainjective-type-gives-¬¬-WEM
- : (Σ X ꞉ 𝓤 ̇ , ((¬ is-prop X) × is-totally-separated X × ainjective-type X 𝓥 𝓦))
+ : propext 𝓥
+ → (Σ X ꞉ 𝓤 ̇ , ((¬ is-prop X) × is-totally-separated X × ainjective-type X 𝓥 𝓦))
  → ¬¬ WEM 𝓥
 non-trivial-totally-separated-ainjective-type-gives-¬¬-WEM
-  {𝓤} {𝓥} {𝓦} (X , X-is-not-prop , X-is-totally-separated , X-is-ainjective) = V
+  {𝓥} {𝓤} {𝓦} pe (X , X-is-not-prop , X-is-totally-separated , X-ainj) = V
  where
   I : ¬ decomposition X → (p : X → 𝟚) → wconstant p
   I δ p x₀ x₁ = h (p x₀) (p x₁) refl refl
@@ -632,7 +655,7 @@ non-trivial-totally-separated-ainjective-type-gives-¬¬-WEM
 
   V : ¬¬ WEM 𝓥
   V = ¬¬-functor
-       (decomposition-of-ainjective-type-gives-WEM X X-is-ainjective)
+       (decomposition-of-ainjective-type-gives-WEM pe X X-ainj)
        IV
 
 \end{code}
