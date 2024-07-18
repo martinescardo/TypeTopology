@@ -40,10 +40,10 @@ open Sierpinski-notations fe pe pt 𝕊
 
 \end{code}
 
-Density
+Density in synthetic topology. The definition comes from [1].
 
 A subset `D` of a set `X` is dense if `D` intersects every inhabited open
-subset of `X`.
+subset of `X`. 
 
 The whole module is parametrized by a set `𝒳`.
 
@@ -74,3 +74,11 @@ self-is-dense-in-self (P , open-P) inhabited-P =
    † (x , Px) = ∣ x , ⊤-holds , Px  ∣
 
 \end{code}
+
+\section{References}
+
+- [1]: Davorin Lesňik. *Synthetic Topology and Constructive Metric Spaces*.
+
+  PhD Thesis, 2010
+
+  https://doi.org/10.48550/arXiv.2104.10399
