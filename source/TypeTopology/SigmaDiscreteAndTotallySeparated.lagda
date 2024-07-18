@@ -175,7 +175,7 @@ module _ (fe : FunExt) where
       ¬¬ WLPO
 
  Σ-totally-separated-taboo τ =
-   concrete-example.Failure fe
+   ℕ∞₂.Failure fe₀
     (τ ℕ∞ (λ u → u ＝ ∞ → 𝟚)
        (ℕ∞-is-totally-separated fe₀)
           (λ u → Π-is-totally-separated fe₀ (λ _ → 𝟚-is-totally-separated)))
@@ -207,7 +207,7 @@ Even compact totally separated types fail to be closed under Σ:
       ¬¬ WLPO
 
  Σ-totally-separated-stronger-taboo τ =
-   concrete-example.Failure fe
+   ℕ∞₂.Failure fe₀
     (τ ℕ∞ (λ u → u ＝ ∞ → 𝟚)
        (ℕ∞-compact fe₀)
        (λ _ → compact∙-types-are-compact

@@ -235,7 +235,7 @@ The following result seems to be new (and I announced it years ago in
 the constructivenews mailing list). The idea is to construct a
 non-continuous function using untruncated LLPO, and then derive WLPO
 from this. This proof was written here 15th November 2023, simplified
-28th February 2024, for which we included the above ℕ∞-versions of
+28th February 2023, for which we included the above ℕ∞-versions of
 LLPO and their equivalences.
 
 \begin{code}
@@ -389,3 +389,6 @@ TODO. Show that all these variants are equivalent.
 LLPO doesn't imply WLPO (there are published refereces - find and
 include them here). One example seems to Johnstone's topological
 topos, but this is unpublished as far as I know.
+
+Added 17th July 2024. There is a proof by Chris Grossack here:
+https://grossack.site/2024/07/03/topological-topos-3-bonus-axioms

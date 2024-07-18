@@ -37,13 +37,13 @@ closed terms, and which is a theorem rather than a metatheorem.
 
 open import UF.FunExt
 
-module TypeTopology.FailureOfTotalSeparatedness (fe : FunExt) where
+module TypeTopology.FailureOfTotalSeparatedness (fe₀ : funext₀) where
 
 open import MLTT.Spartan
 
 open import MLTT.Two-Properties
 open import CoNaturals.Type
-open import Taboos.BasicDiscontinuity (fe 𝓤₀ 𝓤₀)
+open import Taboos.BasicDiscontinuity fe₀
 open import Taboos.WLPO
 open import UF.Base
 open import Notation.CanonicalMap
@@ -59,15 +59,15 @@ more transparent and conceptual argument.)
 
 \begin{code}
 
-module concrete-example where
+module ℕ∞₂ where
 
- X : 𝓤₀ ̇
- X = Σ u ꞉ ℕ∞ , (u ＝ ∞ → 𝟚)
+ ℕ∞₂ : 𝓤₀ ̇
+ ℕ∞₂ = Σ u ꞉ ℕ∞ , (u ＝ ∞ → 𝟚)
 
- ∞₀ : X
+ ∞₀ : ℕ∞₂
  ∞₀ = (∞ , λ r → ₀)
 
- ∞₁ : X
+ ∞₁ : ℕ∞₂
  ∞₁ = (∞ , λ r → ₁)
 
 \end{code}
@@ -81,12 +81,12 @@ module concrete-example where
 
 \end{code}
 
- But there is no function p : X → 𝟚 such that p x = pr₂ x refl, because
+ But there is no function p : ℕ∞₂ → 𝟚 such that p x = pr₂ x refl, because
  pr₁ x may be different from ∞, in which case pr₂ x is the function with
  empty graph, and so it can't be applied to anything, and certainly
  not to refl. In fact, the definition
 
-    p : X → 𝟚
+    p : ℕ∞₂ → 𝟚
     p x = pr₂ x refl
 
  doesn't type check (Agda says: " (pr₁ (pr₁ x) x) != ₁ of type 𝟚 when
@@ -100,7 +100,7 @@ module concrete-example where
 
 \begin{code}
 
- failure : (p : X → 𝟚) → p ∞₀ ≠ p ∞₁ → WLPO
+ failure : (p : ℕ∞₂ → 𝟚) → p ∞₀ ≠ p ∞₁ → WLPO
  failure p = disagreement-taboo p₀ p₁ lemma
   where
    p₀ : ℕ∞ → 𝟚
@@ -110,20 +110,23 @@ module concrete-example where
    p₁ u = p (u , λ r → ₁)
 
    lemma : (n : ℕ) → p₀ (ι n) ＝ p₁ (ι n)
-   lemma n = ap (λ - → p (ι n , -)) (dfunext (fe 𝓤₀ 𝓤₀) claim)
+   lemma n = ap (λ - → p (ι n , -)) (dfunext fe₀ claim)
     where
      claim : (r : ι n ＝ ∞) → (λ r → ₀) r ＝ (λ r → ₁) r
      claim s = 𝟘-elim (∞-is-not-finite n (s ⁻¹))
 
  open import UF.DiscreteAndSeparated
 
- 𝟚-indistinguishability : ¬ WLPO → (p : X → 𝟚) → p ∞₀ ＝ p ∞₁
+ 𝟚-indistinguishability : ¬ WLPO → (p : ℕ∞₂ → 𝟚) → p ∞₀ ＝ p ∞₁
  𝟚-indistinguishability nwlpo p = 𝟚-is-¬¬-separated (p ∞₀) (p ∞₁)
                                    (not-Σ-implies-Π-not
-                                   (contrapositive (λ σ → failure (pr₁ σ) (pr₂ σ)) nwlpo) p)
+                                     (contrapositive
+                                       (λ (p , ν) → failure p ν)
+                                       nwlpo)
+                                     p)
 \end{code}
 
- Precisely because one cannot construct maps from X into 𝟚 that
+ Precisely because one cannot construct maps from ℕ∞₂ into 𝟚 that
  distinguish ∞₀ and ∞₁, it is a bit tricky to prove that they are
  indeed different:
 
@@ -139,7 +142,7 @@ module concrete-example where
    t = transport (λ - → - ＝ ∞ → 𝟚)
 
    claim₀ : refl ＝ p
-   claim₀ = ℕ∞-is-set (fe 𝓤₀ 𝓤₀) refl p
+   claim₀ = ℕ∞-is-set fe₀ refl p
 
    claim₁ : t p (λ p → ₀) ＝ (λ p → ₁)
    claim₁ = from-Σ-＝' r
@@ -151,17 +154,17 @@ module concrete-example where
 
 \end{code}
 
- Finally, the total separatedness of X is a taboo. In particular, it
- can't be proved, because ¬WLPO is consistent.
+ Finally, the total separatedness of ℕ∞₂ is a taboo. In particular, it
+ can't be proved, because ¬ WLPO is consistent.
 
 \begin{code}
 
  open import TypeTopology.TotallySeparated
 
- Failure : is-totally-separated X → ¬¬ WLPO
+ Failure : is-totally-separated ℕ∞₂ → ¬¬ WLPO
  Failure ts nwlpo = g (𝟚-indistinguishability nwlpo)
   where
-   g : ¬ ((p : X → 𝟚) → p ∞₀ ＝ p ∞₁)
+   g : ¬ ((p : ℕ∞₂ → 𝟚) → p ∞₀ ＝ p ∞₁)
    g = contrapositive ts ∞₀-and-∞₁-different
 
 \end{code}
@@ -177,7 +180,12 @@ unchanged.
 
 \begin{code}
 
-module general-example (𝓤 : Universe) (X : 𝓤 ̇ ) (a : X) where
+module general-example
+        (fe : FunExt)
+        (𝓤 : Universe)
+        (X : 𝓤 ̇ )
+        (a : X)
+       where
 
  Y : 𝓤 ̇
  Y = Σ x ꞉ X , (x ＝ a → 𝟚)

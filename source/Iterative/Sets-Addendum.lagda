@@ -21,7 +21,6 @@ module Iterative.Sets-Addendum
 open import Iterative.Multisets 𝓤
 open import Iterative.Multisets-Addendum ua 𝓤
 open import Iterative.Sets ua 𝓤
-open import Taboos.Decomposability ua
 open import UF.ClassicalLogic
 open import UF.FunExt
 open import UF.PropTrunc
@@ -39,6 +38,8 @@ private
 
  fe' : FunExt
  fe' 𝓤 𝓥 = fe {𝓤} {𝓥}
+
+open import Taboos.Decomposability fe'
 
 𝟘ⱽ : 𝕍
 𝟘ⱽ = 𝟘ᴹ , 𝟘ᴹ-is-iset
@@ -164,6 +165,7 @@ excluded middle holds.
  decomposition-of-𝕍-gives-WEM : decomposition 𝕍 → WEM 𝓤
  decomposition-of-𝕍-gives-WEM =
   decomposition-of-ainjective-type-gives-WEM
+   (univalence-gives-propext (ua 𝓤))
    𝕍
    𝕍-is-ainjective
 

@@ -242,10 +242,10 @@ set.
 
 \begin{code}
 
-totally-separated-types-are-separated : (X : 𝓤 ̇ )
-                                      → is-totally-separated X
-                                      → is-¬¬-separated X
-totally-separated-types-are-separated X τ = g
+totally-separated-types-are-¬¬-separated : (X : 𝓤 ̇ )
+                                         → is-totally-separated X
+                                         → is-¬¬-separated X
+totally-separated-types-are-¬¬-separated X τ = g
  where
   g : (x y : X) → ¬¬ (x ＝ y) → x ＝ y
   g x y φ  = τ h
@@ -261,7 +261,7 @@ totally-separated-types-are-sets : funext 𝓤 𝓤₀
                                  → is-totally-separated X
                                  → is-set X
 totally-separated-types-are-sets fe X t =
- ¬¬-separated-types-are-sets fe (totally-separated-types-are-separated X t)
+ ¬¬-separated-types-are-sets fe (totally-separated-types-are-¬¬-separated X t)
 
 \end{code}
 
@@ -304,7 +304,7 @@ open import UF.ClassicalLogic
                              → EM 𝓤
 Ω-totally-separated-gives-EM {𝓤} pe fe Ω-is-totally-separated =
  Ω-separated-gives-EM pe fe
-  (totally-separated-types-are-separated (Ω 𝓤) Ω-is-totally-separated)
+  (totally-separated-types-are-¬¬-separated (Ω 𝓤) Ω-is-totally-separated)
 
 \end{code}
 
