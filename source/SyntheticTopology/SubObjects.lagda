@@ -78,11 +78,11 @@ First, we can prove that the two notions of subcompactness are equivalent.
   ⇔-open (Ɐ x ꞉ X , x ∈ₚ U ⇒ x ∈ₚ P) (Ɐ (x , Ux) ꞉ (𝕋 U) , x ∈ₚ P)
           ((λ hyp (x , Ux) → hyp x Ux) , λ hyp x Ux → hyp (x , Ux))
           (sub-U ((λ x → x ∈ₚ P) , open-P))
- 
+
 
  sub'-gives-sub : (U : 𝓟 X) → is-subcompact' U holds → is-subcompact U holds
  sub'-gives-sub U sub'-U (P , open-P) =
-  ⇔-open (Ɐ (x , Ux) ꞉ (𝕋 U) , x ∈ₚ P) (Ɐ x ꞉ X , x ∈ₚ U ⇒ x ∈ₚ P) 
+  ⇔-open (Ɐ (x , Ux) ꞉ (𝕋 U) , x ∈ₚ P) (Ɐ x ꞉ X , x ∈ₚ U ⇒ x ∈ₚ P)
           ((λ hyp x Ux → hyp (x , Ux)) , (λ hyp (x , Ux) → hyp x Ux))
           (sub'-U ((λ x → x ∈ₚ P) , open-P))
 
@@ -174,7 +174,7 @@ related to "plain" ones.
  compact-iff-subcompact-in-self =
   compact-gives-subcompact , subcompact-gives-compact
 
-  where   
+  where
     compact-gives-subcompact :
      (is-compact 𝒳 ⇒ is-subcompact full) holds
     compact-gives-subcompact compact-X (U , open-U) =
@@ -182,7 +182,7 @@ related to "plain" ones.
             (Ɐ x ꞉ X , ⊤ ⇒ U x)
             ((λ hyp x _ → hyp x) , (λ hyp x → hyp x ⊤-holds))
             (compact-X (U , open-U))
-    
+
     subcompact-gives-compact :
      ( is-subcompact full ⇒ is-compact 𝒳) holds
     subcompact-gives-compact = λ subcompact-X (U , open-U) →
@@ -190,7 +190,7 @@ related to "plain" ones.
             (Ɐ x ꞉ X , x ∈ₚ U)
             ((λ hyp x → hyp x ⊤-holds) , (λ hyp x _ → hyp x))
             (subcompact-X ((λ z → z ∈ₚ U) , open-U))
- 
+
 
  overt-iff-subovert-in-self
   : ((is-overt 𝒳 ⇔ (is-subovert full))) holds
@@ -203,13 +203,13 @@ related to "plain" ones.
     p₁ U ex-U = ∥∥-rec (holds-is-prop (Ǝₚ (x , true) ꞉ (𝕋 full) , x ∈ₚ U))
                        (λ (x , Ux) → ∣ (x , ⊤-holds) , Ux ∣)
                        ex-U
-    
+
     p₂ : (U : 𝓟 X)
        → ((Ǝₚ (x , true) ꞉ (𝕋 full) , x ∈ₚ U) ⇒ (Ǝₚ x ꞉ X , x ∈ₚ U)) holds
     p₂ U ex-full = ∥∥-rec (holds-is-prop (Ǝₚ x ꞉ X , x ∈ₚ U))
                           (λ ((x , true) , Ux) → ∣ x , Ux ∣)
                           ex-full
-    
+
     overt-gives-subovert :
      (is-overt 𝒳 ⇒ is-subovert full) holds
 
