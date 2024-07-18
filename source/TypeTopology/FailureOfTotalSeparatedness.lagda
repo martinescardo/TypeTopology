@@ -59,15 +59,15 @@ more transparent and conceptual argument.)
 
 \begin{code}
 
-module concrete-example where
+module ℕ∞₂ where
 
- X : 𝓤₀ ̇
- X = Σ u ꞉ ℕ∞ , (u ＝ ∞ → 𝟚)
+ ℕ∞₂ : 𝓤₀ ̇
+ ℕ∞₂ = Σ u ꞉ ℕ∞ , (u ＝ ∞ → 𝟚)
 
- ∞₀ : X
+ ∞₀ : ℕ∞₂
  ∞₀ = (∞ , λ r → ₀)
 
- ∞₁ : X
+ ∞₁ : ℕ∞₂
  ∞₁ = (∞ , λ r → ₁)
 
 \end{code}
@@ -81,12 +81,12 @@ module concrete-example where
 
 \end{code}
 
- But there is no function p : X → 𝟚 such that p x = pr₂ x refl, because
+ But there is no function p : ℕ∞₂ → 𝟚 such that p x = pr₂ x refl, because
  pr₁ x may be different from ∞, in which case pr₂ x is the function with
  empty graph, and so it can't be applied to anything, and certainly
  not to refl. In fact, the definition
 
-    p : X → 𝟚
+    p : ℕ∞₂ → 𝟚
     p x = pr₂ x refl
 
  doesn't type check (Agda says: " (pr₁ (pr₁ x) x) != ₁ of type 𝟚 when
@@ -100,7 +100,7 @@ module concrete-example where
 
 \begin{code}
 
- failure : (p : X → 𝟚) → p ∞₀ ≠ p ∞₁ → WLPO
+ failure : (p : ℕ∞₂ → 𝟚) → p ∞₀ ≠ p ∞₁ → WLPO
  failure p = disagreement-taboo p₀ p₁ lemma
   where
    p₀ : ℕ∞ → 𝟚
@@ -117,7 +117,7 @@ module concrete-example where
 
  open import UF.DiscreteAndSeparated
 
- 𝟚-indistinguishability : ¬ WLPO → (p : X → 𝟚) → p ∞₀ ＝ p ∞₁
+ 𝟚-indistinguishability : ¬ WLPO → (p : ℕ∞₂ → 𝟚) → p ∞₀ ＝ p ∞₁
  𝟚-indistinguishability nwlpo p = 𝟚-is-¬¬-separated (p ∞₀) (p ∞₁)
                                    (not-Σ-implies-Π-not
                                      (contrapositive
@@ -126,7 +126,7 @@ module concrete-example where
                                      p)
 \end{code}
 
- Precisely because one cannot construct maps from X into 𝟚 that
+ Precisely because one cannot construct maps from ℕ∞₂ into 𝟚 that
  distinguish ∞₀ and ∞₁, it is a bit tricky to prove that they are
  indeed different:
 
@@ -154,17 +154,17 @@ module concrete-example where
 
 \end{code}
 
- Finally, the total separatedness of X is a taboo. In particular, it
- can't be proved, because ¬WLPO is consistent.
+ Finally, the total separatedness of ℕ∞₂ is a taboo. In particular, it
+ can't be proved, because ¬ WLPO is consistent.
 
 \begin{code}
 
  open import TypeTopology.TotallySeparated
 
- Failure : is-totally-separated X → ¬¬ WLPO
+ Failure : is-totally-separated ℕ∞₂ → ¬¬ WLPO
  Failure ts nwlpo = g (𝟚-indistinguishability nwlpo)
   where
-   g : ¬ ((p : X → 𝟚) → p ∞₀ ＝ p ∞₁)
+   g : ¬ ((p : ℕ∞₂ → 𝟚) → p ∞₀ ＝ p ∞₁)
    g = contrapositive ts ∞₀-and-∞₁-different
 
 \end{code}

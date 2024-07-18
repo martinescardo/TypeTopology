@@ -136,23 +136,26 @@ import TypeTopology.TotallySeparated.
 
 And here is an example of a non-sequentially Hausdorff space, which
 was originally offered in the following imported module as an example
-of a type which is not totally separated in general.
+of a type which is not totally separated in general. This is the type
+
+    ℕ∞₂ = Σ u ꞉ ℕ∞ , (u ＝ ∞ → 𝟚),
+
+which amounts to ℕ∞ with the point ∞ split into two copies
+
+    ∞₀ = (∞ , λ _ → ₀),
+    ∞₁ = (∞ , λ _ → ₁).
 
 \begin{code}
 
 open import TypeTopology.FailureOfTotalSeparatedness fe₀
-
-ℕ∞₂ : 𝓤₀ ̇
-ℕ∞₂ = Σ u ꞉ ℕ∞ , (u ＝ ∞ → 𝟚)
+open ℕ∞₂
 
 ℕ∞₂-is-not-sequentially-Hausdorff : ¬ is-sequentially-Hausdorff ℕ∞₂
 ℕ∞₂-is-not-sequentially-Hausdorff h = III
  where
-  open concrete-example
-
   f g : ℕ∞ → ℕ∞₂
-  f u = u , (λ (e : u ＝ ∞) → ₀)
-  g u = u , (λ (e : u ＝ ∞) → ₁)
+  f u = u , λ (e : u ＝ ∞) → ₀
+  g u = u , λ (e : u ＝ ∞) → ₁
 
   I : (n : ℕ) → (λ (e : ι n ＝ ∞) → ₀) ＝ (λ (e : ι n ＝ ∞) → ₁)
   I n = dfunext fe₀ (λ (e : ι n ＝ ∞) → 𝟘-elim (∞-is-not-finite n (e ⁻¹)))
