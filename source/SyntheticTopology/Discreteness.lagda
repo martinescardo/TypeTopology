@@ -6,7 +6,7 @@ dates-modified: [2024-06-07]
 ---
 
 We here implement the notion of discreteness in Synthetic Topology defined
-in TODO and prove two lemmas.
+in [1] and [2], and then prove two lemmas.
 
 \begin{code}
 
@@ -118,3 +118,17 @@ module _ (𝒳 : hSet 𝓤) where
                   λ x → discrete-Y x (y₁ x , y₂ x))
 
 \end{code}
+
+\section{References}
+
+- [1]: Davorin Lesňik. *Synthetic Topology and Constructive Metric Spaces*.
+
+  PhD Thesis, 2010
+
+  https://doi.org/10.48550/arXiv.2104.10399
+
+- [2]: Martín Escardó. *Topology via higher-order intuitionistic logic*
+
+  Unpublished notes, Pittsburgh, 2004
+
+  https://www.cs.bham.ac.uk/~mhe/papers/pittsburgh.pdf
