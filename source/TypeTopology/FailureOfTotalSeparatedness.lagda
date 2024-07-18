@@ -37,13 +37,13 @@ closed terms, and which is a theorem rather than a metatheorem.
 
 open import UF.FunExt
 
-module TypeTopology.FailureOfTotalSeparatedness (fe : FunExt) where
+module TypeTopology.FailureOfTotalSeparatedness (fe₀ : funext₀) where
 
 open import MLTT.Spartan
 
 open import MLTT.Two-Properties
 open import CoNaturals.Type
-open import Taboos.BasicDiscontinuity (fe 𝓤₀ 𝓤₀)
+open import Taboos.BasicDiscontinuity fe₀
 open import Taboos.WLPO
 open import UF.Base
 open import Notation.CanonicalMap
@@ -110,7 +110,7 @@ module concrete-example where
    p₁ u = p (u , λ r → ₁)
 
    lemma : (n : ℕ) → p₀ (ι n) ＝ p₁ (ι n)
-   lemma n = ap (λ - → p (ι n , -)) (dfunext (fe 𝓤₀ 𝓤₀) claim)
+   lemma n = ap (λ - → p (ι n , -)) (dfunext fe₀ claim)
     where
      claim : (r : ι n ＝ ∞) → (λ r → ₀) r ＝ (λ r → ₁) r
      claim s = 𝟘-elim (∞-is-not-finite n (s ⁻¹))
@@ -120,7 +120,10 @@ module concrete-example where
  𝟚-indistinguishability : ¬ WLPO → (p : X → 𝟚) → p ∞₀ ＝ p ∞₁
  𝟚-indistinguishability nwlpo p = 𝟚-is-¬¬-separated (p ∞₀) (p ∞₁)
                                    (not-Σ-implies-Π-not
-                                   (contrapositive (λ σ → failure (pr₁ σ) (pr₂ σ)) nwlpo) p)
+                                     (contrapositive
+                                       (λ (p , ν) → failure p ν)
+                                       nwlpo)
+                                     p)
 \end{code}
 
  Precisely because one cannot construct maps from X into 𝟚 that
@@ -139,7 +142,7 @@ module concrete-example where
    t = transport (λ - → - ＝ ∞ → 𝟚)
 
    claim₀ : refl ＝ p
-   claim₀ = ℕ∞-is-set (fe 𝓤₀ 𝓤₀) refl p
+   claim₀ = ℕ∞-is-set fe₀ refl p
 
    claim₁ : t p (λ p → ₀) ＝ (λ p → ₁)
    claim₁ = from-Σ-＝' r
@@ -177,7 +180,12 @@ unchanged.
 
 \begin{code}
 
-module general-example (𝓤 : Universe) (X : 𝓤 ̇ ) (a : X) where
+module general-example
+        (fe : FunExt)
+        (𝓤 : Universe)
+        (X : 𝓤 ̇ )
+        (a : X)
+       where
 
  Y : 𝓤 ̇
  Y = Σ x ꞉ X , (x ＝ a → 𝟚)

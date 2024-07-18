@@ -134,19 +134,51 @@ closed under products (and hence function spaces and more generally
 form an exponential ideal) and under retracts, as proved in the above
 import TypeTopology.TotallySeparated.
 
-But there are also counterexamples, which, in particular, show that
-totally separated types are not necessarily closed under sums.
+And here is an example of a non-sequentially Hausdorff space, which
+was originally offered in the following imported module as an example
+of a type which is not totally separated in general.
 
 \begin{code}
 
-import TypeTopology.FailureOfTotalSeparatedness
+open import TypeTopology.FailureOfTotalSeparatedness fe₀
+
+ℕ∞₂ : 𝓤₀ ̇
+ℕ∞₂ = Σ u ꞉ ℕ∞ , (u ＝ ∞ → 𝟚)
+
+ℕ∞₂-is-not-sequentially-Hausdorff : ¬ is-sequentially-Hausdorff ℕ∞₂
+ℕ∞₂-is-not-sequentially-Hausdorff h = III
+ where
+  open concrete-example
+
+  f g : ℕ∞ → ℕ∞₂
+  f u = u , (λ (e : u ＝ ∞) → ₀)
+  g u = u , (λ (e : u ＝ ∞) → ₁)
+
+  I : (n : ℕ) → (λ (e : ι n ＝ ∞) → ₀) ＝ (λ (e : ι n ＝ ∞) → ₁)
+  I n = dfunext fe₀ (λ (e : ι n ＝ ∞) → 𝟘-elim (∞-is-not-finite n (e ⁻¹)))
+
+  a : (n : ℕ) → f (ι n) ＝ g (ι n)
+  a n = ap (ι n ,_) (I n)
+
+  II : ∞₀ ＝ ∞₁
+  II = h f g a
+
+  III : 𝟘
+  III = ∞₀-and-∞₁-different II
 
 \end{code}
 
-It is a fact that the types defined in the above import are not
-sequentially Hausdorff in Johnstone's topological topos.
+The following was already proved in TypeTopology.FailureOfTotalSeparatedness.
 
-TODO. Prove this synthetically here, assuming ¬ WLPO. It is not
-possible to prove this without assuming anything, given what we proved
-above. I think I know how to prove this, but I haven't tested this
-here yet.
+\begin{code}
+
+ℕ∞₂-is-not-always-totally-separated : is-totally-separated ℕ∞₂ → ¬¬ WLPO
+ℕ∞₂-is-not-always-totally-separated ts nwlpo =
+ ℕ∞₂-is-not-sequentially-Hausdorff
+  (totally-separated-types-are-sequentially-Hausdorff nwlpo ℕ∞₂ ts)
+
+\end{code}
+
+The proof given here is the same, but factored in two steps. Notice
+that if ¬ WLPO is regarded as a continuity principle, then ¬¬ WLPO is
+a discontinuity principle.
