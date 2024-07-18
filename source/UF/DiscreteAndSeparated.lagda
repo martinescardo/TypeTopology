@@ -76,8 +76,10 @@ props-are-discrete i x y = inl (i x y)
 
 ℕ-is-discrete : is-discrete ℕ
 ℕ-is-discrete 0 0 = inl refl
-ℕ-is-discrete 0 (succ n) = inr (λ (p : zero ＝ succ n) → positive-not-zero n (p ⁻¹))
-ℕ-is-discrete (succ m) 0 = inr (λ (p : succ m ＝ zero) → positive-not-zero m p)
+ℕ-is-discrete 0 (succ n) = inr (λ (p : zero ＝ succ n)
+                                     → positive-not-zero n (p ⁻¹))
+ℕ-is-discrete (succ m) 0 = inr (λ (p : succ m ＝ zero)
+                                     → positive-not-zero m p)
 ℕ-is-discrete (succ m) (succ n) =  step (ℕ-is-discrete m n)
   where
    step : (m ＝ n) + (m ≠ n) → (succ m ＝ succ n) + (succ m ≠ succ n)
@@ -142,9 +144,14 @@ retract-is-discrete (f , (s , φ)) d y y' = g (d (s y) (s y'))
   g (inl p) = inl ((φ y) ⁻¹ ∙ ap f p ∙ φ y')
   g (inr u) = inr (contrapositive (ap s) u)
 
-𝟚-retract-of-non-trivial-type-with-isolated-point : {X : 𝓤 ̇ } {x₀ x₁ : X} → x₀ ≠ x₁
-                                                  → is-isolated x₀ → retract 𝟚 of X
-𝟚-retract-of-non-trivial-type-with-isolated-point {𝓤} {X} {x₀} {x₁} ne d = r , (s , rs)
+𝟚-retract-of-non-trivial-type-with-isolated-point
+ : {X : 𝓤 ̇ }
+   {x₀ x₁ : X}
+ → x₀ ≠ x₁
+ → is-isolated x₀
+ → retract 𝟚 of X
+𝟚-retract-of-non-trivial-type-with-isolated-point {𝓤} {X} {x₀} {x₁} ne d =
+  r , (s , rs)
  where
   r : X → 𝟚
   r = pr₁ (characteristic-function d)
@@ -157,7 +164,11 @@ retract-is-discrete (f , (s , φ)) d y y' = g (d (s y) (s y'))
   rs ₀ = different-from-₁-equal-₀ (λ p → pr₂ (φ x₀) p refl)
   rs ₁ = different-from-₀-equal-₁ λ p → 𝟘-elim (ne (pr₁ (φ x₁) p))
 
-𝟚-retract-of-discrete : {X : 𝓤 ̇ } {x₀ x₁ : X} → x₀ ≠ x₁ → is-discrete X → retract 𝟚 of X
+𝟚-retract-of-discrete : {X : 𝓤 ̇ }
+                        {x₀ x₁ : X}
+                      → x₀ ≠ x₁
+                      → is-discrete X
+                      → retract 𝟚 of X
 𝟚-retract-of-discrete {𝓤} {X} {x₀} {x₁} ne d = 𝟚-retract-of-non-trivial-type-with-isolated-point ne (d x₀)
 
 \end{code}
@@ -260,7 +271,9 @@ tight fe s f g h = dfunext fe lemma₁
 tight' : {X : 𝓤 ̇ }
        → funext 𝓤 𝓥
        → {Y : X → 𝓥 ̇ }
-       → ((x : X) → is-discrete (Y x)) → (f g : (x : X) → Y x) → ¬ (f ♯ g) → f ＝ g
+       → ((x : X) → is-discrete (Y x))
+       → (f g : (x : X) → Y x)
+       → ¬ (f ♯ g) → f ＝ g
 tight' fe d = tight fe (λ x → discrete-is-¬¬-separated (d x))
 
 \end{code}
@@ -308,9 +321,12 @@ binary-sum-is-¬¬-separated {𝓤} {𝓥} {X} {Y} s t (inl x) (inl x') = lemma
   lemma : ¬¬ (inl x ＝ inl x') → inl x ＝ inl x'
   lemma = ap inl ∘ s x x' ∘ ¬¬-functor claim
 
-binary-sum-is-¬¬-separated s t (inl x) (inr y) =  λ φ → 𝟘-elim (φ +disjoint )
-binary-sum-is-¬¬-separated s t (inr y) (inl x)  = λ φ → 𝟘-elim (φ (+disjoint ∘ _⁻¹))
-binary-sum-is-¬¬-separated {𝓤} {𝓥} {X} {Y} s t (inr y) (inr y') = lemma
+binary-sum-is-¬¬-separated s t (inl x) (inr y) =
+ λ φ → 𝟘-elim (φ +disjoint )
+binary-sum-is-¬¬-separated s t (inr y) (inl x)  =
+ λ φ → 𝟘-elim (φ (+disjoint ∘ _⁻¹))
+binary-sum-is-¬¬-separated {𝓤} {𝓥} {X} {Y} s t (inr y) (inr y') =
+  lemma
  where
   claim : inr y ＝ inr y' → y ＝ y'
   claim = ap q
@@ -412,7 +428,8 @@ equality-of-¬¬stable-propositions fe pe p q f g a = γ
             → f ⊥ ＝ ₁
             → f ⊤ ＝ ₁
             → (p : Ω 𝓤) → f p ＝ ₁
-⊥-⊤-density fe pe f r s p = ⊥-⊤-Density fe pe f 𝟚-is-¬¬-separated (r ∙ s ⁻¹) p ∙ s
+⊥-⊤-density fe pe f r s p =
+ ⊥-⊤-Density fe pe f 𝟚-is-¬¬-separated (r ∙ s ⁻¹) p ∙ s
 
 \end{code}
 
@@ -460,9 +477,12 @@ m ＝[ℕ] n = (χ＝ m n) ＝ ₁
 infix  30 _＝[ℕ]_
 
 ＝-agrees-with-＝[ℕ] : (m n : ℕ) → m ＝ n ↔ m ＝[ℕ] n
-＝-agrees-with-＝[ℕ] m n = (λ r → different-from-₀-equal-₁ (λ s → pr₁ (χ＝-spec m n) s r)) , pr₂ (χ＝-spec m n)
+＝-agrees-with-＝[ℕ] m n =
+ (λ r → different-from-₀-equal-₁ (λ s → pr₁ (χ＝-spec m n) s r)) ,
+ pr₂ (χ＝-spec m n)
 
-≠-indicator :  (m : ℕ) → Σ p ꞉ (ℕ → 𝟚) , ((n : ℕ) → (p n ＝ ₀ → m ＝ n) × (p n ＝ ₁ → m ≠ n))
+≠-indicator : (m : ℕ)
+            → Σ p ꞉ (ℕ → 𝟚) , ((n : ℕ) → (p n ＝ ₀ → m ＝ n) × (p n ＝ ₁ → m ≠ n))
 ≠-indicator m = indicator (ℕ-is-discrete m)
 
 χ≠ : ℕ → ℕ → 𝟚
@@ -477,9 +497,13 @@ m ≠[ℕ] n = (χ≠ m n) ＝ ₁
 infix  30 _≠[ℕ]_
 
 ≠[ℕ]-agrees-with-≠ : (m n : ℕ) → m ≠[ℕ] n ↔ m ≠ n
-≠[ℕ]-agrees-with-≠ m n = pr₂ (χ≠-spec m n) , (λ d → different-from-₀-equal-₁ (contrapositive (pr₁ (χ≠-spec m n)) d))
+≠[ℕ]-agrees-with-≠ m n =
+ pr₂ (χ≠-spec m n) ,
+ (λ d → different-from-₀-equal-₁ (contrapositive (pr₁ (χ≠-spec m n)) d))
 
 \end{code}
+
+We now show that discrete types are sets (Hedberg's Theorem).
 
 \begin{code}
 
@@ -491,7 +515,8 @@ discrete-is-Id-collapsible : {X : 𝓤 ̇ } → is-discrete X → Id-collapsible
 discrete-is-Id-collapsible d = decidable-types-are-collapsible (d _ _)
 
 discrete-types-are-sets : {X : 𝓤 ̇ } → is-discrete X → is-set X
-discrete-types-are-sets d = Id-collapsibles-are-sets (discrete-is-Id-collapsible d)
+discrete-types-are-sets d =
+ Id-collapsibles-are-sets (discrete-is-Id-collapsible d)
 
 being-isolated-is-prop : FunExt → {X : 𝓤 ̇ } (x : X) → is-prop (is-isolated x)
 being-isolated-is-prop {𝓤} fe x = prop-criterion γ
@@ -509,7 +534,8 @@ being-isolated'-is-prop {𝓤} fe x = prop-criterion γ
   γ : is-isolated' x → is-prop (is-isolated' x)
   γ i = Π-is-prop (fe 𝓤 𝓤)
          (λ x → sum-of-contradictory-props
-                 (local-hedberg' _ (λ y → decidable-types-are-collapsible (i y)) x)
+                 (local-hedberg' _
+                   (λ y → decidable-types-are-collapsible (i y)) x)
                  (negations-are-props (fe 𝓤 𝓤₀))
                  (λ p n → n p))
 
@@ -646,12 +672,14 @@ Added 14th Feb 2020:
 
 \begin{code}
 
-discrete-exponential-has-decidable-emptiness-of-exponent : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-                                                         → funext 𝓤 𝓥
-                                                         → (Σ y₀ ꞉ Y , Σ y₁ ꞉ Y , y₀ ≠ y₁)
-                                                         → is-discrete (X → Y)
-                                                         → is-decidable (is-empty X)
-discrete-exponential-has-decidable-emptiness-of-exponent {𝓤} {𝓥} {X} {Y} fe (y₀ , y₁ , ne) d = γ
+discrete-exponential-has-decidable-emptiness-of-exponent
+ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+ → funext 𝓤 𝓥
+ → (Σ y₀ ꞉ Y , Σ y₁ ꞉ Y , y₀ ≠ y₁)
+ → is-discrete (X → Y)
+ → is-decidable (is-empty X)
+discrete-exponential-has-decidable-emptiness-of-exponent
+  {𝓤} {𝓥} {X} {Y} fe (y₀ , y₁ , ne) d = γ
  where
   a : is-decidable ((λ _ → y₀) ＝ (λ _ → y₁))
   a = d (λ _ → y₀) (λ _ → y₁)

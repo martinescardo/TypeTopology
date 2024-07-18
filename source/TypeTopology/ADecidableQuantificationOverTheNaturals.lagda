@@ -181,7 +181,8 @@ module examples where
     p₄ : ℕ∞ → 𝟚
     p₄ (α , _) = α 5 == α 100
 
-    to-something : (p : ℕ∞ → 𝟚) → is-decidable ((n : ℕ) → p (ι n) ＝ ₁) → (p (ι 17) ＝ ₁) + ℕ
+    to-something : (p : ℕ∞ → 𝟚)
+                 → is-decidable ((n : ℕ) → p (ι n) ＝ ₁) → (p (ι 17) ＝ ₁) + ℕ
     to-something p (inl f) = inl (f 17)
     to-something p (inr _) = inr 1070
 

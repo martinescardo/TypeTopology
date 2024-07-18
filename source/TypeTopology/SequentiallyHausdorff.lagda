@@ -27,9 +27,9 @@ open import Taboos.WLPO
 
 \end{code}
 
-A topological space is sequentially Hausdorff if every sequence of
-points converges to at most one point. In our synthetic setting, this
-can be formulated as follows, following the above blog post by Chris
+A topological space is sequentially Hausdorff if every sequence
+converges to at most one point. In our synthetic setting, this can be
+formulated as follows, following the above blog post by Chris
 Grossack.
 
 \begin{code}
