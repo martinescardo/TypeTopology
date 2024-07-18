@@ -39,11 +39,11 @@ open PropositionalTruncation pt hiding (_∨_)
 
 \end{code}
 
-What is a Sierpiński object? In Martín Escardó´s unpublished note [_Topology via
-higher-order intuitionistic logic_][1], a Sierpiński object is defined in the
-setting of a topos as a subobject of the subobject classifier. This is also
-given in Definition 2.4 of Davorin Lesnik's thesis, who took this unpublished
-note as a starting point for his PhD thesis.
+What is a Sierpiński object? In Martín Escardó´s unpublished note [2],
+a Sierpiński object is defined in the setting of a topos as a subobject of the
+subobject classifier. This is also given in Definition 2.4 of Davorin Lesnik's
+thesis [1], who took this unpublished note as a starting point for his PhD
+thesis.
 
 The purpose of this development is to develop these notions in the context of
 HoTT/UF, where we look at subtypes of the subtype classifier. Because we work
@@ -162,4 +162,16 @@ We also prove the following convenient lemma.
 
 \end{code}
 
-[1]: https://www.cs.bham.ac.uk/~mhe/papers/pittsburgh.pdf
+\section{References}
+
+- [1]: Davorin Lesňik. *Synthetic Topology and Constructive Metric Spaces*.
+
+  PhD Thesis, 2010
+
+  https://doi.org/10.48550/arXiv.2104.10399
+
+- [2]: Martín Escardó. *Topology via higher-order intuitionistic logic*
+
+  Unpublished notes, Pittsburgh, 2004
+
+  https://www.cs.bham.ac.uk/~mhe/papers/pittsburgh.pdf
