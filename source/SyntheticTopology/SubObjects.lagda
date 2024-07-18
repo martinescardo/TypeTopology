@@ -39,12 +39,14 @@ open AllCombinators pt fe
 open PropositionalTruncation pt hiding (_∨_)
 open Sierpinski-notations fe pe pt 𝕊
 
-
 \end{code}
 
 We define notions involving sub-objects (sub-overtness, sub-compactness...)
+defined in [2].
+We also prove some lemmas that are in [1] and [2].
+
 Because of predicativity, we have to use definitions 2. of 7.2 and 8.2
-for subcompactness and subovertness.
+for subcompactness and subovertness in [2].
 
 \begin{code}
 
@@ -228,3 +230,17 @@ related to "plain" ones.
              (p₂ U , p₁ U)
              (subovert-X (U , open-U))
 \end{code}
+
+\section{References}
+
+- [1]: Davorin Lesňik. *Synthetic Topology and Constructive Metric Spaces*.
+
+  PhD Thesis, 2010
+
+  https://doi.org/10.48550/arXiv.2104.10399
+
+- [2]: Martín Escardó. *Topology via higher-order intuitionistic logic*
+
+  Unpublished notes, Pittsburgh, 2004
+
+  https://www.cs.bham.ac.uk/~mhe/papers/pittsburgh.pdf
