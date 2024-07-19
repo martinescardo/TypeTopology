@@ -34,6 +34,7 @@ open import Slice.Family
 open import Taboos.FiniteSubsetTaboo pt fe
 open import UF.ImageAndSurjection pt
 open import UF.Logic
+open import UF.Powerset-MultiUniverse hiding (⟨_⟩)
 open import UF.Powerset-Fin hiding (⟨_⟩)
 open import UF.Sets-Properties
 open import UF.Equiv hiding (_■)
@@ -318,6 +319,14 @@ another-lemma X S δ@(_ , υ) J h (succ n) (e , ψ) = {!!}
 
   p : {!!} ＝ {!!}
   p = {!!}
+
+directedness-lemma : (F : Frame 𝓤 𝓥 𝓦)
+                   → (S : Fam 𝓦 ⟨ F ⟩)
+                   → (xs : List ⟨ F ⟩)
+                   → ((x : ⟨ F ⟩) → member x xs → x ∈image (S [_]))
+                   → ∃ i ꞉ index S , ((x : ⟨ F ⟩) → member x xs → (x ≤[ poset-of F ] (S [ i ])) holds)
+directedness-lemma F S [] φ = {!!}
+directedness-lemma F S (x ∷ xs) φ = {!!}
 
 directed-family-lemma : (X : Locale 𝓤 𝓥 𝓦)
                       →
