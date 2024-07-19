@@ -12,27 +12,30 @@ will be broken down into smaller modules.
 
 {-# OPTIONS --safe --without-K #-}
 
+open import MLTT.Spartan hiding (J)
 open import UF.Base
+open import UF.FunExt
+open import UF.PropTrunc
 open import UF.Sets
 open import UF.Subsingletons
-open import UF.Subsingletons-Properties
 open import UF.Subsingletons-FunExt
-open import UF.PropTrunc
-open import UF.FunExt
-open import MLTT.Spartan
+open import UF.Subsingletons-Properties
 open import UF.SubtypeClassifier
 
 module Locales.Compactness (pt : propositional-truncations-exist)
                            (fe : Fun-Ext)                          where
 
+open import Fin.Kuratowski pt
 open import Locales.Frame     pt fe
 open import Locales.WayBelowRelation.Definition  pt fe
-open import UF.Logic
 open import Slice.Family
+open import UF.Logic
 open import UF.Sets-Properties
+open import MLTT.List using (member; []; _∷_; List; in-head; in-tail; length)
+open import Fin.Type
 
 open PropositionalTruncation pt
-open Existential pt
+open AllCombinators pt fe
 
 open Locale
 
@@ -149,5 +152,133 @@ compact-opens-are-closed-under-∨ X U V κ₁ κ₂ S δ p =
 
    ψ : (V ≤[ poset-of (𝒪 X) ] (⋁[ 𝒪 X ] S)) holds
    ψ = V ≤⟨ ∨[ 𝒪 X ]-upper₂ U V ⟩ U ∨[ 𝒪 X ] V ≤⟨ p ⟩ ⋁[ 𝒪 X ] S ■
+
+\end{code}
+
+Added on 2024-07-17.
+
+\begin{code}
+
+is-compact-open' : (X : Locale 𝓤 𝓥 𝓦) → ⟨ 𝒪 X ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
+is-compact-open' {𝓤} {𝓥} {𝓦} X U =
+ Ɐ S ꞉ Fam 𝓦 ⟨ 𝒪 X ⟩ ,
+  U ≤[ Xₚ ] (⋁[ 𝒪 X ] S) ⇒
+   (Ǝ J ꞉ (𝓦  ̇) ,
+     (Σ h ꞉ (J → index S) ,
+      is-Kuratowski-finite J
+      × (U ≤[ Xₚ ] (⋁[ 𝒪 X ] (J , S [_] ∘ h))) holds))
+  where
+   Xₚ = poset-of (𝒪 X)
+
+\end{code}
+
+\begin{code}
+
+family-of-lists : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Fam 𝓦 (Fam 𝓦 ⟨ F ⟩)
+family-of-lists {𝓤} {𝓥} {𝓦} F S = List (index S) , h
+ where
+  h : List (index S) → Fam 𝓦 ⟨ F ⟩
+  h is = (Σ i ꞉ index S , member i is) , S [_] ∘ pr₁
+
+directify₂ : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Fam 𝓦 ⟨ F ⟩
+directify₂ F S = List (index S) , (λ is → ⋁[ F ] (family-of-lists F S [ is ]))
+
+helper-lemma : (X : Locale 𝓤 𝓥 𝓦) (U : ⟨ 𝒪 X ⟩) (S : Fam 𝓦 ⟨ 𝒪 X ⟩)
+             → (is : List (index S))
+             → directify (𝒪 X) S [ is ] ＝ directify₂ (𝒪 X) S [ is ]
+helper-lemma X U S []       = directify (𝒪 X) S [ [] ]   ＝⟨ refl ⟩
+                              𝟎[ 𝒪 X ]                   ＝⟨ † ⟩
+                              join-of (𝒪 X) (Sigma (index S) (λ i → member i []) , _[_] S ∘ (λ r → pr₁ r))                       ∎
+                               where
+                                † : 𝟎[ 𝒪 X ] ＝ join-of (𝒪 X) (Sigma (index S) (λ i → member i []) , (λ x → S [ pr₁ x ]))
+                                † = only-𝟎-is-below-𝟎 (𝒪 X) _ (⋁[ 𝒪 X ]-least _ (_ , (λ ()))) ⁻¹
+helper-lemma X U S (i ∷ is) =
+ directify (𝒪 X) S [ i ∷ is ]               ＝⟨ refl ⟩
+ S [ i ] ∨[ 𝒪 X ] directify (𝒪 X) S [ is ] ＝⟨ Ⅱ ⟩
+ S [ i ] ∨[ 𝒪 X ] directify₂ (𝒪 X) S [ is ] ＝⟨ Ⅰ ⟩
+ directify₂ (𝒪 X) S [ i ∷ is ] ∎
+  where
+   open PosetReasoning (poset-of (𝒪 X))
+
+   ‡ : rel-syntax (poset-of (𝒪 X)) (directify₂ (𝒪 X) S [ is ]) (join-of (𝒪 X) (family-of-lists (𝒪 X) S [ i ∷ is ])) holds
+   ‡ = ⋁[ 𝒪 X ]-least (family-of-lists (𝒪 X) S [ is ]) (_ , λ { (j , p) → ⋁[ 𝒪 X ]-upper (family-of-lists (𝒪 X) S [ i ∷ is ]) (j , in-tail p) })
+
+   † : ((S [ i ] ∨[ 𝒪 X ] directify₂ (𝒪 X) S [ is ]) ≤[ poset-of (𝒪 X) ] (directify₂ (𝒪 X) S [ i ∷ is ])) holds
+   † = ∨[ 𝒪 X ]-least (⋁[ 𝒪 X ]-upper (family-of-lists (𝒪 X) S [ i ∷ is ]) (i , in-head)) ‡
+
+   ‡₁ : (rel-syntax (poset-of (𝒪 X)) Joins.is-an-upper-bound-of binary-join (𝒪 X) (S [ i ]) (directify₂ (𝒪 X) S [ is ])) (family-of-lists (𝒪 X) S [ i ∷ is ]) holds
+   ‡₁ (j , in-head) = ∨[ 𝒪 X ]-upper₁ (S [ j ]) (directify₂ (𝒪 X) S [ is ])
+   ‡₁ (j , in-tail p) =
+    family-of-lists (𝒪 X) S [ i ∷ is ] [ j , in-tail p ]    ＝⟨ refl ⟩ₚ
+    S [ j ]                                                 ≤⟨ foo ⟩
+    directify₂ (𝒪 X) S [ is ]                               ≤⟨ ∨[ 𝒪 X ]-upper₂ (S [ i ]) (directify₂ (𝒪 X) S [ is ]) ⟩
+    binary-join (𝒪 X) (S [ i ]) (directify₂ (𝒪 X) S [ is ]) ■
+     where
+      foo : (S [ j ] ≤[ poset-of (𝒪 X) ] (⋁[ 𝒪 X ] (family-of-lists (𝒪 X) S [ is ]))) holds
+      foo = ⋁[ 𝒪 X ]-upper (family-of-lists (𝒪 X) S [ is ]) (j , p)
+
+   †₁ : (directify₂ (𝒪 X) S [ i ∷ is ] ≤[ poset-of (𝒪 X) ] (S [ i ] ∨[ 𝒪 X ] directify₂ (𝒪 X) S [ is ])) holds
+   †₁ = ⋁[ 𝒪 X ]-least (family-of-lists (𝒪 X) S [ i ∷ is ]) (_ , ‡₁)
+
+   Ⅰ = ≤-is-antisymmetric (poset-of (𝒪 X)) † †₁
+
+   Ⅱ = ap (λ - → S [ i ] ∨[ 𝒪 X ] -) (helper-lemma X U S is)
+
+nth : {X : 𝓤  ̇} → (xs : List X) → (i : Fin (length xs)) → X
+nth (x ∷ xs) (inr ⋆) = x
+nth (x ∷ xs) (inl n) = nth xs n
+
+kfin-lemma : {A : 𝓤  ̇} (xs : List A) → is-Kuratowski-finite (Σ x ꞉ A , member x xs)
+kfin-lemma {𝓤} {A} xs = ∣ length xs , {!!} , {!!} ∣
+ where
+  h : Fin (length xs) → Σ x ꞉ A , member x xs
+  h n = nth xs n , {!!}
+
+main-lemma : (X : Locale 𝓤 𝓥 𝓦) (U : ⟨ 𝒪 X ⟩) (S : Fam 𝓦 ⟨ 𝒪 X ⟩)
+           → let
+              S↑ = directify (𝒪 X) S
+             in
+             (is : List (index S))
+           → (U ≤[ poset-of (𝒪 X) ] S↑ [ is ]) holds
+           → Σ J ꞉ (𝓦  ̇) ,
+              Σ h ꞉ (J → index S) ,
+               is-Kuratowski-finite J × ((U ≤[ poset-of (𝒪 X) ] (⋁[ 𝒪 X ] (J , S [_] ∘ h))) holds)
+main-lemma {_} {_} {𝓦} X U S is p = (Σ i ꞉ index S , member i is) , pr₁ , {!!} , †
+ where
+  open PosetReasoning (poset-of (𝒪 X))
+
+  † : rel-syntax (poset-of (𝒪 X)) U (join-of (𝒪 X) (Sigma (index S) (λ i → member i is) , _[_] S ∘ (λ r → pr₁ r))) holds
+  † = U ≤⟨ p ⟩ directify (𝒪 X) S [ is ] ＝⟨ helper-lemma X U S is ⟩ₚ join-of (𝒪 X) (Sigma (index S) (λ i → member i is) , _[_] S ∘ (λ r → pr₁ r)) ■
+
+compact-open-implies-compact-open' : (X : Locale 𝓤 𝓥 𝓦)
+                                   → (U : ⟨ 𝒪 X ⟩)
+                                   → is-compact-open  X U holds
+                                   → is-compact-open' X U holds
+compact-open-implies-compact-open' {_} {_} {𝓦} X U κ S q =
+ ∥∥-functor † (κ S↑ δ p)
+ where
+  open PosetReasoning (poset-of (𝒪 X))
+
+  Xₚ = poset-of (𝒪 X)
+
+  S↑ : Fam 𝓦 ⟨ 𝒪 X ⟩
+  S↑ = directify (𝒪 X) S
+
+  δ : is-directed (𝒪 X) (directify (𝒪 X) S) holds
+  δ = directify-is-directed (𝒪 X) S
+
+  p : (U ≤[ Xₚ ] (⋁[ 𝒪 X ] S↑)) holds
+  p = U             ≤⟨ Ⅰ ⟩
+      ⋁[ 𝒪 X ] S    ＝⟨ Ⅱ ⟩ₚ
+      ⋁[ 𝒪 X ] S↑   ■
+       where
+        Ⅰ = q
+        Ⅱ = directify-preserves-joins (𝒪 X) S
+
+  † : (Σ is ꞉ index S↑ , (U ≤[ Xₚ ] (S↑ [ is ])) holds)
+    → Σ J ꞉ 𝓦  ̇ ,
+       Σ h ꞉ (J → index S) ,
+        is-Kuratowski-finite J × (U ≤[ Xₚ ] (⋁[ 𝒪 X ] (J , S [_] ∘ h))) holds
+  † (is , r) = main-lemma X U S is r
 
 \end{code}
