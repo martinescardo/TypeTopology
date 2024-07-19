@@ -26,13 +26,18 @@ module Locales.Compactness (pt : propositional-truncations-exist)
                            (fe : Fun-Ext)                          where
 
 open import Fin.Kuratowski pt
+open import Fin.Type
 open import Locales.Frame     pt fe
 open import Locales.WayBelowRelation.Definition  pt fe
-open import Slice.Family
-open import UF.Logic
-open import UF.Sets-Properties
 open import MLTT.List using (member; []; _∷_; List; in-head; in-tail; length)
-open import Fin.Type
+open import Slice.Family
+open import Taboos.FiniteSubsetTaboo pt fe
+open import UF.ImageAndSurjection pt
+open import UF.Logic
+open import UF.Powerset-Fin hiding (⟨_⟩)
+open import UF.Sets-Properties
+open import UF.Equiv hiding (_■)
+open import UF.EquivalenceExamples
 
 open PropositionalTruncation pt
 open AllCombinators pt fe
@@ -229,7 +234,7 @@ nth (x ∷ xs) (inr ⋆) = x
 nth (x ∷ xs) (inl n) = nth xs n
 
 kfin-lemma : {A : 𝓤  ̇} (xs : List A) → is-Kuratowski-finite (Σ x ꞉ A , member x xs)
-kfin-lemma {𝓤} {A} xs = ∣ length xs , {!!} , {!!} ∣
+kfin-lemma {𝓤} {A} xs = {!!}
  where
   h : Fin (length xs) → Σ x ꞉ A , member x xs
   h n = nth xs n , {!!}
@@ -243,7 +248,7 @@ main-lemma : (X : Locale 𝓤 𝓥 𝓦) (U : ⟨ 𝒪 X ⟩) (S : Fam 𝓦 ⟨ 
            → Σ J ꞉ (𝓦  ̇) ,
               Σ h ꞉ (J → index S) ,
                is-Kuratowski-finite J × ((U ≤[ poset-of (𝒪 X) ] (⋁[ 𝒪 X ] (J , S [_] ∘ h))) holds)
-main-lemma {_} {_} {𝓦} X U S is p = (Σ i ꞉ index S , member i is) , pr₁ , {!!} , †
+main-lemma {_} {_} {𝓦} X U S is p = (Σ i ꞉ index S , member i is) , pr₁ , kfin-lemma is , †
  where
   open PosetReasoning (poset-of (𝒪 X))
 
@@ -280,5 +285,70 @@ compact-open-implies-compact-open' {_} {_} {𝓦} X U κ S q =
        Σ h ꞉ (J → index S) ,
         is-Kuratowski-finite J × (U ≤[ Xₚ ] (⋁[ 𝒪 X ] (J , S [_] ∘ h))) holds
   † (is , r) = main-lemma X U S is r
+
+\end{code}
+
+\begin{code}
+
+foobar-lemma : {!!}
+foobar-lemma = {!!}
+
+another-lemma : (X : Locale 𝓤 𝓥 𝓦)
+                      →
+                        let open Joins (λ x y → x ≤[ poset-of (𝒪 X) ] y)  in
+                        (S : Fam 𝓦 ⟨ 𝒪 X ⟩)
+                      → is-directed (𝒪 X) S holds
+                      → (J : 𝓦  ̇)
+                      → (h : J → index S)
+                      → (n : ℕ)
+                      → Fin n ↠ J
+                      → (∃ i ꞉ index S , (((S [ i ]) is-an-upper-bound-of (J , S [_] ∘ h)) holds))
+another-lemma X S (ι , _) J h zero     (e , ψ) = ∥∥-rec ∃-is-prop (λ i → ∣ i , (λ j → 𝟘-elim (having-empty-enumeration-entails-emptiness J e ψ j)) ∣) ι
+another-lemma X S δ@(_ , υ) J h (succ n) (e , ψ) = {!!}
+ where
+  foo : Exists (index S)
+         (λ i →
+            (rel-syntax (poset-of (𝒪 X)) Joins.is-an-upper-bound-of (S [ i ]))
+            (J , _[_] S ∘ h)
+            holds)
+  foo = another-lemma X S δ J h n (pr₁ (⌜ +→ {X = Fin n} {Y = 𝟙} fe ⌝ e) , {!!})
+
+  j₂ : J
+  j₂ = e (inr ⋆)
+
+  p : {!!} ＝ {!!}
+  p = {!!}
+
+directed-family-lemma : (X : Locale 𝓤 𝓥 𝓦)
+                      →
+                        let open Joins (λ x y → x ≤[ poset-of (𝒪 X) ] y)  in
+                        (S : Fam 𝓦 ⟨ 𝒪 X ⟩)
+                      → is-Kuratowski-finite (index S)
+                      → (∃ i ꞉ index S , (((S [ i ]) is-an-upper-bound-of S) holds))
+directed-family-lemma X S 𝒻 = {!!}
+
+\end{code}
+
+\begin{code}
+
+compact-open'-implies-compact-open : (X : Locale 𝓤 𝓥 𝓦)
+                                   → (U : ⟨ 𝒪 X ⟩)
+                                   → is-compact-open' X U holds
+                                   → is-compact-open  X U holds
+compact-open'-implies-compact-open {𝓤} {𝓥} {𝓦} X U κ S δ p = ∥∥-rec ∃-is-prop † (κ S p)
+ where
+  open Joins (λ x y → x ≤[ poset-of (𝒪 X) ] y)
+  open PosetReasoning (poset-of (𝒪 X))
+
+  † : (Σ J ꞉ 𝓦  ̇ , Σ h ꞉ (J → index S) , is-Kuratowski-finite J × ((U ≤[ poset-of (𝒪 X) ] (⋁[ 𝒪 X ] (J , (λ x → S [ h x ])))) holds))
+    → (Ǝ k ꞉ index S , ((U ≤[ poset-of (𝒪 X) ] S [ k ]) holds)) holds
+  † (J , h , κ , q) = ∥∥-rec ∃-is-prop ‡ (directed-family-lemma X (J , (λ x → S [ h x ])) κ)
+   where
+    ‡ : (Σ j ꞉ J , (((S [ h j ]) is-an-upper-bound-of (J , (S [_] ∘ h))) holds))
+      → ∃ (λ k → rel-syntax (poset-of (𝒪 X)) U (S [ k ]) holds)
+    ‡ (j , υ) = ∣ h j , {!!} ∣
+     where
+      ♢ : (U ≤[ poset-of (𝒪 X) ] S [ h j ]) holds
+      ♢ = U ≤⟨ q ⟩ ⋁[ 𝒪 X ] (J , (λ x → S [ h x ])) ≤⟨ ⋁[ 𝒪 X ]-least (J , (λ x → S [ h x ])) ((S [ h j ]) , υ) ⟩ S [ h j ] ■
 
 \end{code}
