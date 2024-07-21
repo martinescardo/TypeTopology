@@ -166,21 +166,12 @@ Added on 2024-07-17.
 
 \begin{code}
 
-is-compact-open' : (X : Locale 𝓤 𝓥 𝓦) → ⟨ 𝒪 X ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
-is-compact-open' {𝓤} {𝓥} {𝓦} X U =
- Ɐ S ꞉ Fam 𝓦 ⟨ 𝒪 X ⟩ ,
-  U ≤[ Xₚ ] (⋁[ 𝒪 X ] S) ⇒
-   (Ǝ J ꞉ (𝓦  ̇) ,
-     (Σ h ꞉ (J → index S) ,
-      is-Kuratowski-finite J
-      × (U ≤[ Xₚ ] (⋁[ 𝒪 X ] (J , S [_] ∘ h))) holds))
-  where
-   Xₚ = poset-of (𝒪 X)
 
 \end{code}
 
 \begin{code}
 
+{--
 family-of-lists : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Fam 𝓦 (Fam 𝓦 ⟨ F ⟩)
 family-of-lists {𝓤} {𝓥} {𝓦} F S = List (index S) , h
  where
@@ -235,58 +226,60 @@ nth : {X : 𝓤  ̇} → (xs : List X) → (i : Fin (length xs)) → X
 nth (x ∷ xs) (inr ⋆) = x
 nth (x ∷ xs) (inl n) = nth xs n
 
-kfin-lemma : {A : 𝓤  ̇} (xs : List A) → is-Kuratowski-finite (Σ x ꞉ A , member x xs)
-kfin-lemma {𝓤} {A} xs = {!!}
- where
-  h : Fin (length xs) → Σ x ꞉ A , member x xs
-  h n = nth xs n , {!!}
+--}
 
-main-lemma : (X : Locale 𝓤 𝓥 𝓦) (U : ⟨ 𝒪 X ⟩) (S : Fam 𝓦 ⟨ 𝒪 X ⟩)
-           → let
-              S↑ = directify (𝒪 X) S
-             in
-             (is : List (index S))
-           → (U ≤[ poset-of (𝒪 X) ] S↑ [ is ]) holds
-           → Σ J ꞉ (𝓦  ̇) ,
-              Σ h ꞉ (J → index S) ,
-               is-Kuratowski-finite J × ((U ≤[ poset-of (𝒪 X) ] (⋁[ 𝒪 X ] (J , S [_] ∘ h))) holds)
-main-lemma {_} {_} {𝓦} X U S is p = (Σ i ꞉ index S , member i is) , pr₁ , kfin-lemma is , †
- where
-  open PosetReasoning (poset-of (𝒪 X))
+-- kfin-lemma : {A : 𝓤  ̇} (xs : List A) → is-Kuratowski-finite (Σ x ꞉ A , member x xs)
+-- kfin-lemma {𝓤} {A} xs = {!!}
+--  where
+--   h : Fin (length xs) → Σ x ꞉ A , member x xs
+--   h n = nth xs n , {!!}
 
-  † : rel-syntax (poset-of (𝒪 X)) U (join-of (𝒪 X) (Sigma (index S) (λ i → member i is) , _[_] S ∘ (λ r → pr₁ r))) holds
-  † = U ≤⟨ p ⟩ directify (𝒪 X) S [ is ] ＝⟨ helper-lemma X U S is ⟩ₚ join-of (𝒪 X) (Sigma (index S) (λ i → member i is) , _[_] S ∘ (λ r → pr₁ r)) ■
+-- main-lemma : (X : Locale 𝓤 𝓥 𝓦) (U : ⟨ 𝒪 X ⟩) (S : Fam 𝓦 ⟨ 𝒪 X ⟩)
+--            → let
+--               S↑ = directify (𝒪 X) S
+--              in
+--              (is : List (index S))
+--            → (U ≤[ poset-of (𝒪 X) ] S↑ [ is ]) holds
+--            → Σ J ꞉ (𝓦  ̇) ,
+--               Σ h ꞉ (J → index S) ,
+--                is-Kuratowski-finite J × ((U ≤[ poset-of (𝒪 X) ] (⋁[ 𝒪 X ] (J , S [_] ∘ h))) holds)
+-- main-lemma {_} {_} {𝓦} X U S is p = (Σ i ꞉ index S , member i is) , pr₁ , kfin-lemma is , †
+--  where
+--   open PosetReasoning (poset-of (𝒪 X))
 
-compact-open-implies-compact-open' : (X : Locale 𝓤 𝓥 𝓦)
-                                   → (U : ⟨ 𝒪 X ⟩)
-                                   → is-compact-open  X U holds
-                                   → is-compact-open' X U holds
-compact-open-implies-compact-open' {_} {_} {𝓦} X U κ S q =
- ∥∥-functor † (κ S↑ δ p)
- where
-  open PosetReasoning (poset-of (𝒪 X))
+--   † : rel-syntax (poset-of (𝒪 X)) U (join-of (𝒪 X) (Sigma (index S) (λ i → member i is) , _[_] S ∘ (λ r → pr₁ r))) holds
+--   † = U ≤⟨ p ⟩ directify (𝒪 X) S [ is ] ＝⟨ helper-lemma X U S is ⟩ₚ join-of (𝒪 X) (Sigma (index S) (λ i → member i is) , _[_] S ∘ (λ r → pr₁ r)) ■
 
-  Xₚ = poset-of (𝒪 X)
+-- compact-open-implies-compact-open' : (X : Locale 𝓤 𝓥 𝓦)
+--                                    → (U : ⟨ 𝒪 X ⟩)
+--                                    → is-compact-open  X U holds
+--                                    → is-compact-open' X U holds
+-- compact-open-implies-compact-open' {_} {_} {𝓦} X U κ S q =
+--  ∥∥-functor † (κ S↑ δ p)
+--  where
+--   open PosetReasoning (poset-of (𝒪 X))
 
-  S↑ : Fam 𝓦 ⟨ 𝒪 X ⟩
-  S↑ = directify (𝒪 X) S
+--   Xₚ = poset-of (𝒪 X)
 
-  δ : is-directed (𝒪 X) (directify (𝒪 X) S) holds
-  δ = directify-is-directed (𝒪 X) S
+--   S↑ : Fam 𝓦 ⟨ 𝒪 X ⟩
+--   S↑ = directify (𝒪 X) S
 
-  p : (U ≤[ Xₚ ] (⋁[ 𝒪 X ] S↑)) holds
-  p = U             ≤⟨ Ⅰ ⟩
-      ⋁[ 𝒪 X ] S    ＝⟨ Ⅱ ⟩ₚ
-      ⋁[ 𝒪 X ] S↑   ■
-       where
-        Ⅰ = q
-        Ⅱ = directify-preserves-joins (𝒪 X) S
+--   δ : is-directed (𝒪 X) (directify (𝒪 X) S) holds
+--   δ = directify-is-directed (𝒪 X) S
 
-  † : (Σ is ꞉ index S↑ , (U ≤[ Xₚ ] (S↑ [ is ])) holds)
-    → Σ J ꞉ 𝓦  ̇ ,
-       Σ h ꞉ (J → index S) ,
-        is-Kuratowski-finite J × (U ≤[ Xₚ ] (⋁[ 𝒪 X ] (J , S [_] ∘ h))) holds
-  † (is , r) = main-lemma X U S is r
+--   p : (U ≤[ Xₚ ] (⋁[ 𝒪 X ] S↑)) holds
+--   p = U             ≤⟨ Ⅰ ⟩
+--       ⋁[ 𝒪 X ] S    ＝⟨ Ⅱ ⟩ₚ
+--       ⋁[ 𝒪 X ] S↑   ■
+--        where
+--         Ⅰ = q
+--         Ⅱ = directify-preserves-joins (𝒪 X) S
+
+--   † : (Σ is ꞉ index S↑ , (U ≤[ Xₚ ] (S↑ [ is ])) holds)
+--     → Σ J ꞉ 𝓦  ̇ ,
+--        Σ h ꞉ (J → index S) ,
+--         is-Kuratowski-finite J × (U ≤[ Xₚ ] (⋁[ 𝒪 X ] (J , S [_] ∘ h))) holds
+--   † (is , r) = main-lemma X U S is r
 
 \end{code}
 
@@ -370,35 +363,35 @@ hauptsatz {𝓤} pe F S (ι , υ) P φ 𝒻 =
             ♠ (inl μ) = x ≤⟨ p x μ ⟩ S [ i ] ≤⟨ ζ ⟩ S [ k ] ■
             ♠ (inr μ) = x ≤⟨ q x μ ⟩ S [ j ] ≤⟨ ξ ⟩ S [ k ] ■
 
-directed-family-lemma : (pe : Prop-Ext)
-                      → (F : Frame (𝓤 ⁺) 𝓤 𝓤)
-                      →
-                        let open Joins (λ x y → x ≤[ poset-of F ] y)  in
-                        (S : Fam 𝓤 ⟨ F ⟩)
-                      → is-directed F S holds
-                      → is-Kuratowski-finite (index S)
-                      → (∃ i ꞉ index S , (((S [ i ]) is-an-upper-bound-of S) holds))
-directed-family-lemma {𝓤} pe F S 𝒹 𝒻 = ∥∥-functor † foo
- where
-  Pₛ : 𝓟 {𝓤 ⁺} ⟨ F ⟩
-  Pₛ = χ F S
+-- directed-family-lemma : (pe : Prop-Ext)
+--                       → (F : Frame (𝓤 ⁺) 𝓤 𝓤)
+--                       →
+--                         let open Joins (λ x y → x ≤[ poset-of F ] y)  in
+--                         (S : Fam 𝓤 ⟨ F ⟩)
+--                       → is-directed F S holds
+--                       → is-Kuratowski-finite (index S)
+--                       → (∃ i ꞉ index S , (((S [ i ]) is-an-upper-bound-of S) holds))
+-- directed-family-lemma {𝓤} pe F S 𝒹 𝒻 = ∥∥-functor † foo
+--  where
+--   Pₛ : 𝓟 {𝓤 ⁺} ⟨ F ⟩
+--   Pₛ = χ F S
 
-  𝒻′ : is-Kuratowski-finite-subset Pₛ
-  𝒻′ = {!!}
+--   𝒻′ : is-Kuratowski-finite-subset Pₛ
+--   𝒻′ = {!!}
 
-  foo : has-upper-bound-in F (χ F S) S holds
-  foo = hauptsatz pe F S 𝒹 Pₛ (⊆-refl (χ F S)) 𝒻′
+--   foo : has-upper-bound-in F (χ F S) S holds
+--   foo = hauptsatz pe F S 𝒹 Pₛ (⊆-refl (χ F S)) 𝒻′
 
-  † : Sigma (index S)
-       (λ i →
-          ∀[꞉]-syntax ⟨ F ⟩
-          (λ x → χ F S x ⇒ rel-syntax (poset-of F) x (S [ i ]))
-          holds) →
-       Σ
-       (λ i →
-          (rel-syntax (poset-of F) Joins.is-an-upper-bound-of (S [ i ])) S
-          holds)
-  † (i , bar) = i , (λ j → bar (S [ j ]) ∣ j , refl ∣)
+--   † : Sigma (index S)
+--        (λ i →
+--           ∀[꞉]-syntax ⟨ F ⟩
+--           (λ x → χ F S x ⇒ rel-syntax (poset-of F) x (S [ i ]))
+--           holds) →
+--        Σ
+--        (λ i →
+--           (rel-syntax (poset-of F) Joins.is-an-upper-bound-of (S [ i ])) S
+--           holds)
+--   † (i , bar) = i , (λ j → bar (S [ j ]) ∣ j , refl ∣)
 
 \end{code}
 
