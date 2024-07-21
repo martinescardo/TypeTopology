@@ -21,6 +21,7 @@ open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.Subsingletons-Properties
 open import UF.SubtypeClassifier
+open import UF.Classifiers
 
 module Locales.Compactness (pt : propositional-truncations-exist)
                            (fe : Fun-Ext)                          where
@@ -291,26 +292,113 @@ compact-open-implies-compact-open' {_} {_} {𝓦} X U κ S q =
 
 \begin{code}
 
-hauptsatz : (X : Locale 𝓤 𝓥 𝓦)
-          → let open Joins (λ x y → x ≤[ poset-of (𝒪 X) ] y)  in
-          (S : 𝓟 {𝓤 ⁺} ⟨ 𝒪 X ⟩)
-          → is-Kuratowski-finite-subset S
-          → ∃ U ꞉ ⟨ 𝒪 X ⟩ ,
-             ((V : ⟨ 𝒪 X ⟩) →
-               (S V) holds →
-                (U ≤[ poset-of (𝒪 X ) ] V) holds)
-hauptsatz X S 𝒻 = {!!}
- where
-  P : 𝓚 ⟨ 𝒪 X ⟩ → {!!}
-  P (T , f) = {!!}
+upper-bound-data : (F : Frame 𝓤 𝓥 𝓦) → 𝓟 {𝓣} ⟨ F ⟩ → Fam 𝓦 ⟨ F ⟩ → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣  ̇
+upper-bound-data F S T =
+ Σ i ꞉ index T , (Ɐ x ꞉ ⟨ F ⟩ , (S x) ⇒ (x ≤[ poset-of F ] T [ i ]) ) holds
 
-directed-family-lemma : (X : Locale 𝓤 𝓥 𝓦)
+has-upper-bound-in : (F : Frame 𝓤 𝓥 𝓦) → 𝓟 {𝓣} ⟨ F ⟩ → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣)
+has-upper-bound-in F S T =
+ Ǝₚ i ꞉ index T , (Ɐ x ꞉ ⟨ F ⟩ , (S x) ⇒ (x ≤[ poset-of F ] T [ i ]) )
+
+χ : (F : Frame (𝓤 ⁺) 𝓤 𝓤) → Fam 𝓤 ⟨ F ⟩ → ⟨ F ⟩ → Ω (𝓤 ⁺)
+χ F S x = Ǝₚ i ꞉ index S , (x ＝ₚ S [ i ])
+ where
+  open Equality carrier-of-[ poset-of F ]-is-set
+
+open singleton-Kuratowski-finite-subsets
+open binary-unions-of-subsets pt
+
+hauptsatz : (pe : Prop-Ext)
+          → (F : Frame (𝓤 ⁺) 𝓤 𝓤)
+          → (S : Fam 𝓤 ⟨ F ⟩)
+          → is-directed F S holds
+          → (P : 𝓟 {𝓤 ⁺} ⟨ F ⟩)
+          → (P ⊆ χ F S)
+          → is-Kuratowski-finite-subset P
+          → has-upper-bound-in F P S holds
+hauptsatz {𝓤} pe F S (ι , υ) P φ 𝒻 =
+ Kuratowski-finite-subset-induction pe fe ⟨ F ⟩ σ R i β γ δ (P , 𝒻) (⊆-refl P)
+  where
+   open PosetReasoning (poset-of F)
+
+   R : 𝓚 ⟨ F ⟩ → 𝓤 ⁺  ̇
+   R (Q , φ) = (Q ⊆ P) → has-upper-bound-in F Q S holds
+
+   i : (A : 𝓚 ⟨ F ⟩) → is-prop (R A)
+   i (A , _) = Π-is-prop fe (λ q → holds-is-prop (has-upper-bound-in F A S))
+
+   σ : is-set ⟨ F ⟩
+   σ = carrier-of-[ poset-of F ]-is-set
+
+   β : R ∅[𝓚]
+   β _ = ∥∥-functor (λ i → i , λ x ()) ι
+
+   γ : (x : ⟨ F ⟩) → R (❴ σ ❵[𝓚] x)
+   γ x μ = ∥∥-functor † (φ x (μ x refl))
+    where
+     † : Σ i ꞉ index S , x ＝ (S [ i ])
+       → Σ i ꞉ index S , ((y : ⟨ F ⟩) → x ＝ y → (y ≤[ poset-of F ] S [ i ]) holds)
+     † (i , q) = i , ‡
+      where
+       ‡ : (y : ⟨ F ⟩) → x ＝ y → (y ≤[ poset-of F ] S [ i ]) holds
+       ‡ y p = y ＝⟨ p ⁻¹ ⟩ₚ x ＝⟨ q ⟩ₚ S [ i ] ■
+
+   δ : (𝒜 ℬ : 𝓚 ⟨ F ⟩) → R 𝒜 → R ℬ → R (𝒜 ∪[𝓚] ℬ)
+   δ 𝒜@(A , _) ℬ@(B , _) φ ψ h =
+    ∥∥-rec₂ (holds-is-prop (has-upper-bound-in F (A ∪ B) S)) † (φ h₁) (ψ h₂)
+     where
+      h₁ : A ⊆ P
+      h₁ = ⊆-trans A (A ∪ B) P (∪-is-upperbound₁ A B) h
+
+      h₂ : B ⊆ P
+      h₂ = ⊆-trans B (A ∪ B) P (∪-is-upperbound₂ A B) h
+
+      † : upper-bound-data F A S
+        → upper-bound-data F B S
+        → has-upper-bound-in F (A ∪ B) S holds
+      † (i , p) (j , q) = ∥∥-functor ‡ (υ i j)
+       where
+        ‡ : (Σ k ꞉ index S , ((S [ i ] ≤[ poset-of F ] S [ k ])
+                           ∧ (S [ j ] ≤[ poset-of F ] S [ k ])) holds)
+          → Σ k ꞉ index S , ((x : ⟨ F ⟩) → ((A ∪ B) x ⇒ x ≤[ poset-of F ] (S [ k ])) holds)
+        ‡ (k , ζ , ξ) = k , ♢
+         where
+          ♢ : (x : ⟨ F ⟩) → ((A ∪ B) x ⇒ rel-syntax (poset-of F) x (S [ k ])) holds
+          ♢ x μ = ∥∥-rec (holds-is-prop (rel-syntax (poset-of F) x (S [ k ]))) ♠ μ
+           where
+            ♠ : (A x holds) + (B x holds) → rel-syntax (poset-of F) x (S [ k ]) holds
+            ♠ (inl μ) = x ≤⟨ p x μ ⟩ S [ i ] ≤⟨ ζ ⟩ S [ k ] ■
+            ♠ (inr μ) = x ≤⟨ q x μ ⟩ S [ j ] ≤⟨ ξ ⟩ S [ k ] ■
+
+directed-family-lemma : (pe : Prop-Ext)
+                      → (F : Frame (𝓤 ⁺) 𝓤 𝓤)
                       →
-                        let open Joins (λ x y → x ≤[ poset-of (𝒪 X) ] y)  in
-                        (S : Fam 𝓦 ⟨ 𝒪 X ⟩)
+                        let open Joins (λ x y → x ≤[ poset-of F ] y)  in
+                        (S : Fam 𝓤 ⟨ F ⟩)
+                      → is-directed F S holds
                       → is-Kuratowski-finite (index S)
                       → (∃ i ꞉ index S , (((S [ i ]) is-an-upper-bound-of S) holds))
-directed-family-lemma X S 𝒻 = {!!}
+directed-family-lemma {𝓤} pe F S 𝒹 𝒻 = ∥∥-functor † foo
+ where
+  Pₛ : 𝓟 {𝓤 ⁺} ⟨ F ⟩
+  Pₛ = χ F S
+
+  𝒻′ : is-Kuratowski-finite-subset Pₛ
+  𝒻′ = {!!}
+
+  foo : has-upper-bound-in F (χ F S) S holds
+  foo = hauptsatz pe F S 𝒹 Pₛ (⊆-refl (χ F S)) 𝒻′
+
+  † : Sigma (index S)
+       (λ i →
+          ∀[꞉]-syntax ⟨ F ⟩
+          (λ x → χ F S x ⇒ rel-syntax (poset-of F) x (S [ i ]))
+          holds) →
+       Σ
+       (λ i →
+          (rel-syntax (poset-of F) Joins.is-an-upper-bound-of (S [ i ])) S
+          holds)
+  † (i , bar) = i , (λ j → bar (S [ j ]) ∣ j , refl ∣)
 
 \end{code}
 
