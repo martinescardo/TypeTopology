@@ -99,7 +99,7 @@ directify₂ F S = ⁅ ⋁[ F ] T ∣ T ε family-of-lists F S ⁆
 
 \end{code}
 
-As expected, `directify₂` is equal to `directify`.
+The function `directify₂` is equal to `directify` as expected.
 
 \begin{code}
 
@@ -124,10 +124,53 @@ directify₂-is-equal-to-directify F S (i ∷ is) =
  S [ i ] ∨[ F ] directify  F S [ is ]   ＝⟨ refl ⟩
  directify F S [ i ∷ is ]               ∎
   where
+   open PosetNotation (poset-of F)
+   open PosetReasoning (poset-of F)
+   open Joins (λ x y → x ≤[ poset-of F ] y)
+
    IH = directify₂-is-equal-to-directify F S is
 
+   β : ((S [ i ] ∨[ F ] directify₂ F S [ is ])
+         is-an-upper-bound-of
+        (family-of-lists F S [ i ∷ is ]))
+        holds
+   β (j , in-head)   = ∨[ F ]-upper₁ (S [ j ]) (directify₂ F S [ is ])
+   β (j , in-tail p) =
+    family-of-lists F S [ i ∷ is ] [ j , in-tail p ]   ＝⟨ refl ⟩ₚ
+    S [ j ]                                            ≤⟨ Ⅰ     ⟩
+    directify₂ F S [ is ]                              ≤⟨ Ⅱ     ⟩
+    S [ i ] ∨[ F ] directify₂ F S [ is ]               ■
+     where
+      Ⅰ = ⋁[ F ]-upper (family-of-lists F S [ is ]) (j , p)
+      Ⅱ = ∨[ F ]-upper₂ (S [ i ]) (directify₂ F S [ is ])
+
+   γ : ((directify₂ F S [ i ∷ is ])
+         is-an-upper-bound-of
+        (family-of-lists F S [ is ]))
+       holds
+   γ (k , μ) = ⋁[ F ]-upper (family-of-lists F S [ i ∷ is ]) (k , in-tail μ)
+
+   † : (directify₂ F S [ i ∷ is ] ≤ (S [ i ] ∨[ F ] directify₂ F S [ is ]))
+        holds
+   † = ⋁[ F ]-least
+        (family-of-lists F S [ i ∷ is ])
+        ((S [ i ] ∨[ F ] directify₂ F S [ is ]) , β)
+
+   ‡ : ((S [ i ] ∨[ F ] directify₂ F S [ is ]) ≤ directify₂ F S [ i ∷ is ])
+        holds
+   ‡ = ∨[ F ]-least ‡₁ ‡₂
+    where
+     ‡₁ : (S [ i ] ≤ directify₂ F S [ i ∷ is ]) holds
+     ‡₁ = ⋁[ F ]-upper (family-of-lists F S [ i ∷ is ]) (i , in-head)
+
+     ‡₂ : (directify₂ F S [ is ] ≤ directify₂ F S [ i ∷ is ]) holds
+     ‡₂ = ⋁[ F ]-least
+           (family-of-lists F S [ is ])
+           (directify₂ F S [ i ∷ is ] , γ)
+
+
    Ⅱ  = ap (λ - → S [ i ] ∨[ F ] -) IH
-   Ⅰ  = {!!}
+   Ⅰ  = ≤-is-antisymmetric (poset-of F) † ‡
 
 \end{code}
 
