@@ -237,14 +237,21 @@ module Characterization-Of-Compactness (X : Locale 𝓤 𝓥 𝓦) where
      is-Kuratowski-finite J × (U ≤ (⋁[ 𝒪 X ] ⁅  S [ β j ] ∣ j ∶ J ⁆)) holds
  finite-subcover-through-directification U S is p = T , 𝕗 , q
   where
+   open PosetReasoning (poset-of (𝒪 X))
+
    T : SubFam S
    T = (Σ i ꞉ index S , ∥ member i is ∥) , pr₁
 
    𝕗 : is-Kuratowski-finite (index T)
    𝕗 = list-members-is-Kuratowski-finite is
 
+   † = directify₂-is-equal-to-directify S is ⁻¹
+
    q : (U ≤ (⋁[ 𝒪 X ] ⁅ S [ T [ x ] ] ∣ x ∶ index T ⁆)) holds
-   q = {!!}
+   q = U                                          ≤⟨ p ⟩
+       directify (𝒪 X) S [ is ]                   ＝⟨ † ⟩ₚ
+       directify₂ S [ is ]                        ＝⟨ {!!} ⟩ₚ
+       ⋁[ 𝒪 X ] ⁅ S [ T [ x ] ] ∣ x ∶ index T ⁆   ■
 
 \end{code}
 
