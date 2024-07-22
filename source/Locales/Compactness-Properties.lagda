@@ -73,6 +73,37 @@ is-compact-open' {𝓤} {𝓥} {𝓦} X U =
 
 \end{code}
 
+Given any list, the type of elements that fall in the list is a
+Kuratowski-finite type.
+
+TODO: The following function `nth` should be placed in a more appropriate
+module.
+
+\begin{code}
+
+nth : {X : 𝓤  ̇} → (xs : List X) → (i : Fin (length xs)) → Σ x ꞉ X , member x xs
+nth (x ∷ _)  (inr ⋆) = x , in-head
+nth (_ ∷ xs) (inl n) = let (x , μ) = nth xs n in x , in-tail μ
+
+nth-is-surjection : {X : 𝓤  ̇} (xs : List X) → is-surjection (nth xs)
+nth-is-surjection []       (y , ())
+nth-is-surjection (x ∷ xs) (y , in-head)   = ∣ inr ⋆ , refl ∣
+nth-is-surjection {_} {X} (x ∷ xs) (y , in-tail μ) = ∥∥-functor † IH
+ where
+  IH = nth-is-surjection xs (y , μ)
+
+  † : Σ i ꞉ Fin (length xs) , nth xs i ＝ (y , μ)
+    → Σ i ꞉ Fin (length (x ∷ xs)) , nth (x ∷ xs) i ＝ (y , in-tail μ)
+  † (i , p) = inl i , ?
+
+list-members-is-Kuratowski-finite : {X : 𝓤  ̇}
+                                  → (xs : List X)
+                                  → is-Kuratowski-finite (Σ x ꞉ X , member x xs)
+list-members-is-Kuratowski-finite {𝓤} {A} xs =
+ ∣ length xs , nth xs , nth-is-surjection xs ∣
+
+\end{code}
+
 It is easy to show that this implies the standdard definition of compactness,
 but we need a bit of preparation first.
 
@@ -81,11 +112,13 @@ of lists of `S`.
 
 \begin{code}
 
-family-of-lists : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Fam 𝓦 (Fam 𝓦 ⟨ F ⟩)
-family-of-lists {𝓤} {𝓥} {𝓦} F S = List (index S) , h
- where
-  h : List (index S) → Fam 𝓦 ⟨ F ⟩
-  h is = (Σ i ꞉ index S , member i is) , S [_] ∘ pr₁
+module Some-Lemmas-On-Directification (F : Frame 𝓤 𝓥 𝓦) where
+
+ family-of-lists : Fam 𝓦 ⟨ F ⟩ → Fam 𝓦 (Fam 𝓦 ⟨ F ⟩)
+ family-of-lists S = List (index S) , h
+  where
+   h : List (index S) → Fam 𝓦 ⟨ F ⟩
+   h is = (Σ i ꞉ index S , member i is) , S [_] ∘ pr₁
 
 \end{code}
 
@@ -94,8 +127,8 @@ a family:
 
 \begin{code}
 
-directify₂ : (F : Frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Fam 𝓦 ⟨ F ⟩
-directify₂ F S = ⁅ ⋁[ F ] T ∣ T ε family-of-lists F S ⁆
+ directify₂ : Fam 𝓦 ⟨ F ⟩ → Fam 𝓦 ⟨ F ⟩
+ directify₂ S = ⁅ ⋁[ F ] T ∣ T ε family-of-lists S ⁆
 
 \end{code}
 
@@ -103,74 +136,100 @@ The function `directify₂` is equal to `directify` as expected.
 
 \begin{code}
 
-directify₂-is-equal-to-directify
- : (F : Frame 𝓤 𝓥 𝓦)
- → (S : Fam 𝓦 ⟨ F ⟩)
- → directify₂ F S [_] ∼ directify F S [_]
+ directify₂-is-equal-to-directify
+  : (S : Fam 𝓦 ⟨ F ⟩)
+  → directify₂ S [_] ∼ directify F S [_]
 
-directify₂-is-equal-to-directify F S [] =
- directify₂ F S [ [] ]   ＝⟨ Ⅰ    ⟩
- 𝟎[ F ]                  ＝⟨ refl ⟩
- directify  F S [ [] ]   ∎
-  where
-   † : (directify₂ F S [ [] ] ≤[ poset-of F ] 𝟎[ F ]) holds
-   † = ⋁[ F ]-least (family-of-lists F S [ [] ]) (_ , λ ())
+ directify₂-is-equal-to-directify S [] =
+  directify₂ S [ [] ]   ＝⟨ Ⅰ    ⟩
+  𝟎[ F ]                ＝⟨ refl ⟩
+  directify F S [ [] ]   ∎
+   where
+    † : (directify₂ S [ [] ] ≤[ poset-of F ] 𝟎[ F ]) holds
+    † = ⋁[ F ]-least (family-of-lists S [ [] ]) (_ , λ ())
 
-   Ⅰ = only-𝟎-is-below-𝟎 F (directify₂ F S [ [] ]) †
+    Ⅰ = only-𝟎-is-below-𝟎 F (directify₂ S [ [] ]) †
 
-directify₂-is-equal-to-directify F S (i ∷ is) =
- directify₂ F S [ i ∷ is ]              ＝⟨ Ⅰ    ⟩
- S [ i ] ∨[ F ] directify₂ F S [ is ]   ＝⟨ Ⅱ    ⟩
- S [ i ] ∨[ F ] directify  F S [ is ]   ＝⟨ refl ⟩
- directify F S [ i ∷ is ]               ∎
-  where
-   open PosetNotation (poset-of F)
-   open PosetReasoning (poset-of F)
-   open Joins (λ x y → x ≤[ poset-of F ] y)
+ directify₂-is-equal-to-directify S (i ∷ is) =
+  directify₂ S [ i ∷ is ]                ＝⟨ Ⅰ    ⟩
+  S [ i ] ∨[ F ] directify₂ S [ is ]     ＝⟨ Ⅱ    ⟩
+  S [ i ] ∨[ F ] directify  F S [ is ]   ＝⟨ refl ⟩
+  directify F S [ i ∷ is ]               ∎
+   where
+    open PosetNotation (poset-of F)
+    open PosetReasoning (poset-of F)
+    open Joins (λ x y → x ≤[ poset-of F ] y)
 
-   IH = directify₂-is-equal-to-directify F S is
+    IH = directify₂-is-equal-to-directify S is
 
-   β : ((S [ i ] ∨[ F ] directify₂ F S [ is ])
-         is-an-upper-bound-of
-        (family-of-lists F S [ i ∷ is ]))
+    β : ((S [ i ] ∨[ F ] directify₂ S [ is ])
+          is-an-upper-bound-of
+         (family-of-lists S [ i ∷ is ]))
+         holds
+    β (j , in-head)   = ∨[ F ]-upper₁ (S [ j ]) (directify₂ S [ is ])
+    β (j , in-tail p) =
+     family-of-lists S [ i ∷ is ] [ j , in-tail p ]   ＝⟨ refl ⟩ₚ
+     S [ j ]                                          ≤⟨ Ⅰ     ⟩
+     directify₂ S [ is ]                              ≤⟨ Ⅱ     ⟩
+     S [ i ] ∨[ F ] directify₂ S [ is ]               ■
+      where
+       Ⅰ = ⋁[ F ]-upper (family-of-lists S [ is ]) (j , p)
+       Ⅱ = ∨[ F ]-upper₂ (S [ i ]) (directify₂ S [ is ])
+
+    γ : ((directify₂ S [ i ∷ is ])
+          is-an-upper-bound-of
+         (family-of-lists S [ is ]))
         holds
-   β (j , in-head)   = ∨[ F ]-upper₁ (S [ j ]) (directify₂ F S [ is ])
-   β (j , in-tail p) =
-    family-of-lists F S [ i ∷ is ] [ j , in-tail p ]   ＝⟨ refl ⟩ₚ
-    S [ j ]                                            ≤⟨ Ⅰ     ⟩
-    directify₂ F S [ is ]                              ≤⟨ Ⅱ     ⟩
-    S [ i ] ∨[ F ] directify₂ F S [ is ]               ■
+    γ (k , μ) = ⋁[ F ]-upper (family-of-lists S [ i ∷ is ]) (k , in-tail μ)
+
+    † : (directify₂ S [ i ∷ is ] ≤ (S [ i ] ∨[ F ] directify₂ S [ is ]))
+         holds
+    † = ⋁[ F ]-least
+         (family-of-lists S [ i ∷ is ])
+         ((S [ i ] ∨[ F ] directify₂ S [ is ]) , β)
+
+    ‡ : ((S [ i ] ∨[ F ] directify₂ S [ is ]) ≤ directify₂ S [ i ∷ is ])
+         holds
+    ‡ = ∨[ F ]-least ‡₁ ‡₂
      where
-      Ⅰ = ⋁[ F ]-upper (family-of-lists F S [ is ]) (j , p)
-      Ⅱ = ∨[ F ]-upper₂ (S [ i ]) (directify₂ F S [ is ])
+      ‡₁ : (S [ i ] ≤ directify₂ S [ i ∷ is ]) holds
+      ‡₁ = ⋁[ F ]-upper (family-of-lists S [ i ∷ is ]) (i , in-head)
 
-   γ : ((directify₂ F S [ i ∷ is ])
-         is-an-upper-bound-of
-        (family-of-lists F S [ is ]))
-       holds
-   γ (k , μ) = ⋁[ F ]-upper (family-of-lists F S [ i ∷ is ]) (k , in-tail μ)
-
-   † : (directify₂ F S [ i ∷ is ] ≤ (S [ i ] ∨[ F ] directify₂ F S [ is ]))
-        holds
-   † = ⋁[ F ]-least
-        (family-of-lists F S [ i ∷ is ])
-        ((S [ i ] ∨[ F ] directify₂ F S [ is ]) , β)
-
-   ‡ : ((S [ i ] ∨[ F ] directify₂ F S [ is ]) ≤ directify₂ F S [ i ∷ is ])
-        holds
-   ‡ = ∨[ F ]-least ‡₁ ‡₂
-    where
-     ‡₁ : (S [ i ] ≤ directify₂ F S [ i ∷ is ]) holds
-     ‡₁ = ⋁[ F ]-upper (family-of-lists F S [ i ∷ is ]) (i , in-head)
-
-     ‡₂ : (directify₂ F S [ is ] ≤ directify₂ F S [ i ∷ is ]) holds
-     ‡₂ = ⋁[ F ]-least
-           (family-of-lists F S [ is ])
-           (directify₂ F S [ i ∷ is ] , γ)
+      ‡₂ : (directify₂ S [ is ] ≤ directify₂ S [ i ∷ is ]) holds
+      ‡₂ = ⋁[ F ]-least
+            (family-of-lists S [ is ])
+            (directify₂ S [ i ∷ is ] , γ)
 
 
-   Ⅱ  = ap (λ - → S [ i ] ∨[ F ] -) IH
-   Ⅰ  = ≤-is-antisymmetric (poset-of F) † ‡
+    Ⅱ  = ap (λ - → S [ i ] ∨[ F ] -) IH
+    Ⅰ  = ≤-is-antisymmetric (poset-of F) † ‡
+
+\end{code}
+
+Using the equality between `directify` and `directify₂`, we can now easily show
+how to obtain a subcover.
+
+\begin{code}
+
+module Characterization-Of-Compactness (X : Locale 𝓤 𝓥 𝓦) where
+
+ open Some-Lemmas-On-Directification (𝒪 X)
+ open PosetNotation (poset-of (𝒪 X))
+
+ finite-subcover-through-directification
+  : (U : ⟨ 𝒪 X ⟩)
+  → (S : Fam 𝓦 ⟨ 𝒪 X ⟩)
+  → (is : List (index S))
+  → (U ≤ directify (𝒪 X) S [ is ]) holds
+  → Σ (J , β) ꞉ SubFam S ,
+     is-Kuratowski-finite J × (U ≤ (⋁[ 𝒪 X ] ⁅  S [ β j ] ∣ j ∶ J ⁆)) holds
+ finite-subcover-through-directification U S is p = T , 𝕗 , {!!}
+  where
+   T : SubFam S
+   T = (Σ i ꞉ index S , member i is) , pr₁
+
+   𝕗 : is-Kuratowski-finite (index T)
+   𝕗 = {!!}
 
 \end{code}
 
