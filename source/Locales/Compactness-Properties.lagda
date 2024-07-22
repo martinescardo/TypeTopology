@@ -81,24 +81,36 @@ module.
 
 \begin{code}
 
-nth : {X : 𝓤  ̇} → (xs : List X) → (i : Fin (length xs)) → Σ x ꞉ X , member x xs
-nth (x ∷ _)  (inr ⋆) = x , in-head
-nth (_ ∷ xs) (inl n) = let (x , μ) = nth xs n in x , in-tail μ
+nth : {X : 𝓤  ̇} → (xs : List X) → (i : Fin (length xs)) → Σ x ꞉ X , ∥ member x xs ∥
+nth         (x ∷ _)  (inr ⋆) = x , ∣ in-head ∣
+nth {_} {X} (_ ∷ xs) (inl n) = x , ∥∥-functor in-tail (pr₂ IH)
+ where
+  IH : Σ x ꞉ X , ∥ member x xs ∥
+  IH = nth xs n
+
+  x : X
+  x = pr₁ IH
 
 nth-is-surjection : {X : 𝓤  ̇} (xs : List X) → is-surjection (nth xs)
-nth-is-surjection []       (y , ())
-nth-is-surjection (x ∷ xs) (y , in-head)   = ∣ inr ⋆ , refl ∣
-nth-is-surjection {_} {X} (x ∷ xs) (y , in-tail μ) = ∥∥-functor † IH
+nth-is-surjection []       (y , μ) = ∥∥-rec ∃-is-prop (λ ()) μ
+nth-is-surjection (x ∷ xs) (y , μ) = ∥∥-rec ∃-is-prop † μ
  where
-  IH = nth-is-surjection xs (y , μ)
 
-  † : Σ i ꞉ Fin (length xs) , nth xs i ＝ (y , μ)
-    → Σ i ꞉ Fin (length (x ∷ xs)) , nth (x ∷ xs) i ＝ (y , in-tail μ)
-  † (i , p) = inl i , ?
+  † : member y (x ∷ xs) → ∃ i ꞉ Fin (length (x ∷ xs)) , (nth (x ∷ xs) i ＝ y , μ)
+  † in-head     = ∣ inr ⋆ , to-subtype-＝ (λ _ → ∥∥-is-prop) refl ∣
+  † (in-tail p) = ∥∥-rec ∃-is-prop ‡ IH
+   where
+    IH : (y , ∣ p ∣) ∈image nth xs
+    IH = nth-is-surjection xs (y , ∣ p ∣)
+
+    ‡ : Σ i ꞉ Fin (length xs) , (nth xs i ＝ y , ∣ p ∣)
+      → ∃ i ꞉ Fin (length (x ∷ xs)) , (nth (x ∷ xs) i ＝ y , μ)
+    ‡ (i , q) =
+     ∣ (inl i) , (to-subtype-＝ (λ _ → ∥∥-is-prop) (pr₁ (from-Σ-＝ q))) ∣
 
 list-members-is-Kuratowski-finite : {X : 𝓤  ̇}
                                   → (xs : List X)
-                                  → is-Kuratowski-finite (Σ x ꞉ X , member x xs)
+                                  → is-Kuratowski-finite (Σ x ꞉ X , ∥ member x xs ∥)
 list-members-is-Kuratowski-finite {𝓤} {A} xs =
  ∣ length xs , nth xs , nth-is-surjection xs ∣
 
@@ -223,13 +235,16 @@ module Characterization-Of-Compactness (X : Locale 𝓤 𝓥 𝓦) where
   → (U ≤ directify (𝒪 X) S [ is ]) holds
   → Σ (J , β) ꞉ SubFam S ,
      is-Kuratowski-finite J × (U ≤ (⋁[ 𝒪 X ] ⁅  S [ β j ] ∣ j ∶ J ⁆)) holds
- finite-subcover-through-directification U S is p = T , 𝕗 , {!!}
+ finite-subcover-through-directification U S is p = T , 𝕗 , q
   where
    T : SubFam S
-   T = (Σ i ꞉ index S , member i is) , pr₁
+   T = (Σ i ꞉ index S , ∥ member i is ∥) , pr₁
 
    𝕗 : is-Kuratowski-finite (index T)
-   𝕗 = {!!}
+   𝕗 = list-members-is-Kuratowski-finite is
+
+   q : (U ≤ (⋁[ 𝒪 X ] ⁅ S [ T [ x ] ] ∣ x ∶ index T ⁆)) holds
+   q = {!!}
 
 \end{code}
 
