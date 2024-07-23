@@ -57,6 +57,13 @@ SubFam {𝓤} {A} {𝓦} (I , α) = Σ J ꞉ 𝓦  ̇ , (J → I)
 
 \end{code}
 
+\begin{code}
+
+not-in-empty-list : {A : 𝓤  ̇} {x : A} → ¬ ∥ member x [] ∥
+not-in-empty-list = ∥∥-rec 𝟘-is-prop (λ ())
+
+\end{code}
+
 Compactness could have been alternatively defined as:
 
 \begin{code}
@@ -130,7 +137,7 @@ module Some-Lemmas-On-Directification (F : Frame 𝓤 𝓥 𝓦) where
  family-of-lists S = List (index S) , h
   where
    h : List (index S) → Fam 𝓦 ⟨ F ⟩
-   h is = (Σ i ꞉ index S , member i is) , S [_] ∘ pr₁
+   h is = (Σ i ꞉ index S , ∥ member i is ∥) , S [_] ∘ pr₁
 
 \end{code}
 
@@ -157,8 +164,11 @@ The function `directify₂` is equal to `directify` as expected.
   𝟎[ F ]                ＝⟨ refl ⟩
   directify F S [ [] ]   ∎
    where
+
     † : (directify₂ S [ [] ] ≤[ poset-of F ] 𝟎[ F ]) holds
-    † = ⋁[ F ]-least (family-of-lists S [ [] ]) (_ , λ ())
+    † = ⋁[ F ]-least
+         (family-of-lists S [ [] ])
+         (𝟎[ F ] , λ { (_ , μ) → 𝟘-elim (not-in-empty-list μ) })
 
     Ⅰ = only-𝟎-is-below-𝟎 F (directify₂ S [ [] ]) †
 
@@ -178,21 +188,33 @@ The function `directify₂` is equal to `directify` as expected.
           is-an-upper-bound-of
          (family-of-lists S [ i ∷ is ]))
          holds
-    β (j , in-head)   = ∨[ F ]-upper₁ (S [ j ]) (directify₂ S [ is ])
-    β (j , in-tail p) =
-     family-of-lists S [ i ∷ is ] [ j , in-tail p ]   ＝⟨ refl ⟩ₚ
-     S [ j ]                                          ≤⟨ Ⅰ     ⟩
-     directify₂ S [ is ]                              ≤⟨ Ⅱ     ⟩
-     S [ i ] ∨[ F ] directify₂ S [ is ]               ■
+    β (j , ∣μ∣) =
+     ∥∥-rec (holds-is-prop (S [ j ] ≤ (S [ i ] ∨[ F ] directify₂ S [ is ]))) † ∣μ∣
       where
-       Ⅰ = ⋁[ F ]-upper (family-of-lists S [ is ]) (j , p)
-       Ⅱ = ∨[ F ]-upper₂ (S [ i ]) (directify₂ S [ is ])
+       † : member j (i ∷ is)
+         → (S [ j ] ≤ (S [ i ] ∨[ F ] directify₂ S [ is ]))
+            holds
+       † in-head     = ∨[ F ]-upper₁ (S [ j ]) (directify₂ S [ is ])
+       † (in-tail μ) =
+        family-of-lists S [ i ∷ is ] [ j , μ′ ]  ＝⟨ refl ⟩ₚ
+        S [ j ]                                  ≤⟨ Ⅰ     ⟩
+        directify₂ S [ is ]                      ≤⟨ Ⅱ     ⟩
+        S [ i ] ∨[ F ] directify₂ S [ is ]       ■
+         where
+          μ′ : ∥ member j (i ∷ is) ∥
+          μ′ = ∣ in-tail μ ∣
+
+          Ⅰ = ⋁[ F ]-upper (family-of-lists S [ is ]) (j , ∣ μ ∣)
+          Ⅱ = ∨[ F ]-upper₂ (S [ i ]) (directify₂ S [ is ])
 
     γ : ((directify₂ S [ i ∷ is ])
           is-an-upper-bound-of
          (family-of-lists S [ is ]))
         holds
-    γ (k , μ) = ⋁[ F ]-upper (family-of-lists S [ i ∷ is ]) (k , in-tail μ)
+    γ (k , μ) = ∥∥-rec (holds-is-prop (S [ k ] ≤ directify₂ S [ i ∷ is ])) ♢ μ
+     where
+      ♢ : member k is → (S [ k ] ≤ directify₂ S [ i ∷ is ]) holds
+      ♢ μ = ⋁[ F ]-upper (family-of-lists S [ i ∷ is ]) (k , ∣ in-tail μ ∣)
 
     † : (directify₂ S [ i ∷ is ] ≤ (S [ i ] ∨[ F ] directify₂ S [ is ]))
          holds
@@ -205,7 +227,7 @@ The function `directify₂` is equal to `directify` as expected.
     ‡ = ∨[ F ]-least ‡₁ ‡₂
      where
       ‡₁ : (S [ i ] ≤ directify₂ S [ i ∷ is ]) holds
-      ‡₁ = ⋁[ F ]-upper (family-of-lists S [ i ∷ is ]) (i , in-head)
+      ‡₁ = ⋁[ F ]-upper (family-of-lists S [ i ∷ is ]) (i , ∣ in-head ∣)
 
       ‡₂ : (directify₂ S [ is ] ≤ directify₂ S [ i ∷ is ]) holds
       ‡₂ = ⋁[ F ]-least
@@ -227,6 +249,8 @@ module Characterization-Of-Compactness (X : Locale 𝓤 𝓥 𝓦) where
 
  open Some-Lemmas-On-Directification (𝒪 X)
  open PosetNotation (poset-of (𝒪 X))
+
+{--
 
  finite-subcover-through-directification
   : (U : ⟨ 𝒪 X ⟩)
@@ -286,5 +310,8 @@ compact-open-implies-compact-open' {_} {_} {𝓦} X U κ S q =
     → Σ (J , h) ꞉ SubFam S ,
         is-Kuratowski-finite J × (U ≤[ Xₚ ] (⋁[ 𝒪 X ] (J , S [_] ∘ h))) holds
   † (is , r) = {!!}
+
+-- --}
+-- --}
 
 \end{code}
