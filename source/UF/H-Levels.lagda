@@ -25,7 +25,7 @@ open import UF.EquivalenceExamples
 open import UF.Equiv-FunExt
 open import UF.FunExt
 open import UF.IdentitySystems
-open import UF.PropTrunc
+open import UF.PropTrunc 
 open import UF.Retracts
 open import UF.Sets
 open import UF.Singleton-Properties
@@ -34,12 +34,15 @@ open import UF.Subsingletons-FunExt
 open import UF.Subsingletons-Properties
 open import UF.Univalence
 open import UF.UA-FunExt
+open import Naturals.Addition renaming (_+_ to _+'_)
 open import Naturals.Order
 
 module UF.H-Levels (fe : FunExt)
                    (fe' : Fun-Ext)
                    (pt : propositional-truncations-exist)
                     where
+
+open import UF.ImageAndSurjection pt
 
 _is-of-hlevel_ : 𝓤 ̇ → ℕ → 𝓤 ̇
 X is-of-hlevel zero = is-contr X
@@ -52,26 +55,37 @@ hlevel-relation-is-prop {𝓤} (succ n) X =
   Π₂-is-prop fe'
              (λ x x' → hlevel-relation-is-prop n (x ＝ x'))
 
+map_is-of-hlevel_ : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (f : X → Y) → ℕ → 𝓤 ⊔ 𝓥 ̇
+map f is-of-hlevel n = (y : codomain f) → (fiber f y) is-of-hlevel n
+
 \end{code}
 
 H-Levels are cumulative.
 
 \begin{code}
 
+contr-lemma : {X : 𝓤 ̇} → is-contr X → (x x' : X) → is-contr (x ＝ x')
+contr-lemma (c , C) x x' = (((C x)⁻¹ ∙ C x') , D)
+ where
+  D : is-central (x ＝ x') (C x ⁻¹ ∙ C x')
+  D refl = left-inverse (C x)
+
 hlevels-are-upper-closed : (n : ℕ) (X : 𝓤 ̇)
                          → (X is-of-hlevel n)
                          → (X is-of-hlevel succ n)
-hlevels-are-upper-closed zero X h-level = base h-level
- where
-  base : is-contr X → (x x' : X) → is-contr (x ＝ x')
-  base (c , C) x x' = (((C x)⁻¹ ∙ C x') , D)
-   where
-    D : is-central (x ＝ x') (C x ⁻¹ ∙ C x')
-    D refl = left-inverse (C x)
+hlevels-are-upper-closed zero X h-level = contr-lemma h-level
+
 hlevels-are-upper-closed (succ n) X h-level = step
  where
   step : (x x' : X) (p q : x ＝ x') → (p ＝ q) is-of-hlevel n
   step x x' p q = hlevels-are-upper-closed n (x ＝ x') (h-level x x') p q
+
+id-types-are-same-hlevel : {X : 𝓤 ̇ } (n : ℕ)
+                         → X is-of-hlevel n
+                         → (x x' : X) → (x ＝ x') is-of-hlevel n
+id-types-are-same-hlevel zero X-hlev x x' = contr-lemma X-hlev x x'
+id-types-are-same-hlevel (succ n) X-hlev x x' =
+  hlevels-are-upper-closed n (x ＝ x') (X-hlev x x')
 
 \end{code}
 
@@ -246,298 +260,3 @@ From Univalence we can show that (ℍ n) is of level (n + 1), for all n : ℕ.
 
 \end{code}
 
-We now define the notion of a k-truncation using record types.
-
-\begin{code}
-
-record H-level-truncations-exist : 𝓤ω where
- field
-  ∣∣_∣∣[_] : {𝓤 : Universe} → 𝓤 ̇ → ℕ → 𝓤 ̇
-  ∣∣∣∣-h-level : {𝓤 : Universe} {X : 𝓤 ̇ } (n : ℕ) → X is-of-hlevel n
-  ∣_∣[_] :  {𝓤 : Universe} {X : 𝓤 ̇ } → X → (n : ℕ) → ∣∣ X ∣∣[ n ]
-  ∣∣∣∣-ind : {X : 𝓤 ̇ } {n : ℕ} {P : ∣∣ X ∣∣[ n ] → 𝓥 ̇ }
-           → ((s : ∣∣ X ∣∣[ n ]) → (P s) is-of-hlevel n)
-           → ((x : X) → P (∣ x ∣[ n ]))
-           → (s : ∣∣ X ∣∣[ n ]) → P s
-  ∣∣∣∣-ind-comp : {X : 𝓤 ̇ } {n : ℕ} {P : ∣∣ X ∣∣[ n ] → 𝓥 ̇ }
-                → (m : (s : ∣∣ X ∣∣[ n ]) → (P s) is-of-hlevel n)
-                → (g : (x : X) → P (∣ x ∣[ n ]))
-                → (x : X) → ∣∣∣∣-ind m g (∣ x ∣[ n ]) ＝ g x
- infix 0 ∣∣_∣∣[_]
- infix 0 ∣_∣[_]
-
-\end{code}
-
-We add truncation recursion.
-
-\begin{code}
-
-module GeneralTruncations
-        (te : H-level-truncations-exist)
-        (ua : Univalence)
-       where
-
- open H-level-truncations-exist te
-
- ∣∣∣∣-rec : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {n : ℕ}
-          → Y is-of-hlevel n → (X → Y) → ∣∣ X ∣∣[ n ] → Y
- ∣∣∣∣-rec {𝓤} {𝓥} {X} {Y} {n} Y-h-level f s = ∣∣∣∣-ind (λ - → Y-h-level) f s
-
- ∣∣∣∣-rec-comp : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {n : ℕ}
-               → (m : Y is-of-hlevel n)
-               → (g : X → Y)
-               → (x : X) → ∣∣∣∣-rec m g ∣ x ∣[ n ] ＝ g x
- ∣∣∣∣-rec-comp m g = ∣∣∣∣-ind-comp (λ - → m) g
-
- ∣∣∣∣-rec-double : {𝓤 𝓥 𝓦 : Universe} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {n : ℕ}
-                 → Z is-of-hlevel n
-                 → (X → Y → Z)
-                 → ∣∣ X ∣∣[ n ] → ∣∣ Y ∣∣[ n ] → Z
- ∣∣∣∣-rec-double {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {n} Z-h-level g =
-  ∣∣∣∣-rec (hlevel-closed-under-→ n (∣∣ Y ∣∣[ n ]) Z Z-h-level)
-           (λ x → ∣∣∣∣-rec Z-h-level (λ y → g x y))
-
- ∣∣∣∣-rec-double-comp : {𝓤 𝓥 𝓦 : Universe}
-                        {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {n : ℕ}
-                      → (m : Z is-of-hlevel n)
-                      → (g : X → Y → Z)
-                      → (x : X) → (y : Y)
-                      → ∣∣∣∣-rec-double m g ∣ x ∣[ n ] ∣ y ∣[ n ] ＝ g x y
- ∣∣∣∣-rec-double-comp {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {n} m g x y =
-  ∣∣∣∣-rec-double m g ∣ x ∣[ n ] ∣ y ∣[ n ] ＝⟨ happly
-                                              (∣∣∣∣-rec-comp
-                                              (hlevel-closed-under-→ n
-                                                (∣∣ Y ∣∣[ n ]) Z m)
-                                              (λ x → ∣∣∣∣-rec m (λ y → g x y)) x)
-                                              ∣ y ∣[ n ]  ⟩
-  ∣∣∣∣-rec m (λ y → g x y) ∣ y ∣[ n ]       ＝⟨ ∣∣∣∣-rec-comp m (λ y → g x y) y ⟩
-  g x y                                     ∎
-
- abstract
-  ∣∣∣∣-ind-double : {𝓤 𝓥 𝓦 : Universe} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {n : ℕ}
-                    {P : ∣∣ X ∣∣[ n ] → ∣∣ Y ∣∣[ n ] → 𝓦 ̇ } 
-                  → ((u : ∣∣ X ∣∣[ n ]) → (v : ∣∣ Y ∣∣[ n ])
-                   → (P u v) is-of-hlevel n)
-                  → ((x : X) → (y : Y) → P (∣ x ∣[ n ]) (∣ y ∣[ n ]))
-                  → (u : ∣∣ X ∣∣[ n ]) → (v : ∣∣ Y ∣∣[ n ]) → P u v
-  ∣∣∣∣-ind-double {𝓤} {𝓥} {𝓦} {X} {Y} {n} {P} P-h-level f =
-   ∣∣∣∣-ind (λ u → hlevel-closed-under-Π n ∣∣ Y ∣∣[ n ] (P u)
-                                         (λ v → P-h-level u v))
-            (λ x → ∣∣∣∣-ind (λ v → P-h-level ∣ x ∣[ n ] v) (λ y → f x y))
-
-  ∣∣∣∣-ind-double-comp : {𝓤 𝓥 𝓦 : Universe} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {n : ℕ}
-                         {P : ∣∣ X ∣∣[ n ] → ∣∣ Y ∣∣[ n ] → 𝓦 ̇ } 
-                       → (m : (u : ∣∣ X ∣∣[ n ]) → (v : ∣∣ Y ∣∣[ n ])
-                        → (P u v) is-of-hlevel n)
-                       → (g : (x : X) → (y : Y) → P (∣ x ∣[ n ]) (∣ y ∣[ n ]))
-                       → (x : X) → (y : Y)
-                       → ∣∣∣∣-ind-double m g ∣ x ∣[ n ] ∣ y ∣[ n ] ＝ g x y
-  ∣∣∣∣-ind-double-comp {𝓤} {𝓥} {𝓦} {X} {Y} {n} {P} m g x y =
-   ∣∣∣∣-ind-double m g ∣ x ∣[ n ] ∣ y ∣[ n ] ＝⟨ happly
-                                                (∣∣∣∣-ind-comp
-                                                 (λ u → hlevel-closed-under-Π
-                                                  n ∣∣ Y ∣∣[ n ] (P u)
-                                                  (λ v → m u v))
-                                                 (λ x' → ∣∣∣∣-ind
-                                                  (λ v → m ∣ x' ∣[ n ] v)
-                                                  (λ y' → g x' y')) x)
-                                                ∣ y ∣[ n ] ⟩
-   ∣∣∣∣-ind (λ v → m ∣ x ∣[ n ] v)
-            (λ y' → g x y') ∣ y ∣[ n ]       ＝⟨ ∣∣∣∣-ind-comp
-                                                 (λ v → m ∣ x ∣[ n ] v)
-                                                 (λ y' → g x y') y ⟩
-   g x y                                     ∎
-
-\end{code}
-
-We now set out to define a critical eqeuivalence that characterizes the
-truncated identity type.
-
-\begin{code}
-
- canonical-id-trunc-map : {𝓤 : Universe} {X : 𝓤 ̇} {x y : X} {n : ℕ}
-                        → ∣∣ x ＝ y ∣∣[ n ]
-                        → ∣ x ∣[ succ n ] ＝ ∣ y ∣[ succ n ]
- canonical-id-trunc-map {𝓤} {X} {x} {y} {n} =
-  ∣∣∣∣-rec (∣∣∣∣-h-level n) (ap (λ x → ∣ x ∣[ (succ n) ]))
-
- private
-  P' : {𝓤 : Universe} {X : 𝓤 ̇} {n : ℕ}
-    → ∣∣ X ∣∣[ succ n ] → ∣∣ X ∣∣[ succ n ] → ℍ n 𝓤
-  P' {𝓤} {X} {n} =
-   ∣∣∣∣-rec-double (ℍ-is-of-next-hlevel n 𝓤 (ua 𝓤))
-                   (λ x x' → (∣∣ x ＝ x' ∣∣[ n ] , ∣∣∣∣-h-level n))
-
-  P : {𝓤 : Universe} {X : 𝓤 ̇} {n : ℕ}
-    → ∣∣ X ∣∣[ succ n ] → ∣∣ X ∣∣[ succ n ] → 𝓤 ̇
-  P u v = pr₁ (P' u v)
-
-  P-computes : {𝓤 : Universe} {X : 𝓤 ̇} {x y : X} {n : ℕ}
-             → P ∣ x ∣[ succ n ] ∣ y ∣[ succ n ] ＝ ∣∣ x ＝ y ∣∣[ n ]
-  P-computes {𝓤} {X} {x} {y} {n} =
-   ap pr₁ (∣∣∣∣-rec-double-comp (ℍ-is-of-next-hlevel n 𝓤 (ua 𝓤))
-        (λ x x' → (∣∣ x ＝ x' ∣∣[ n ] , ∣∣∣∣-h-level n)) x y)
-
- gen-trunc-id-type-char : {𝓤 : Universe} {X : 𝓤 ̇} {n : ℕ}
-                        → (u v : ∣∣ X ∣∣[ succ n ])
-                        → P u v ≃ (u ＝ v)
- gen-trunc-id-type-char {𝓤} {X} {n} u v =
-  (decode u v , qinvs-are-equivs (decode u v) (encode u v , H u v , G u v))
-  where
-   decode : (u v : ∣∣ X ∣∣[ succ n ])
-          → P u v → u ＝ v
-   decode =
-    ∣∣∣∣-ind-double (λ u v → hlevel-closed-under-→ (succ n) (P u v) (u ＝ v)
-                                                   (∣∣∣∣-h-level (succ n)))
-                    (λ x y → transport (λ T →
-                                        T → ∣ x ∣[ succ n ] ＝ ∣ y ∣[ succ n ])
-                                       (P-computes ⁻¹)
-                                       canonical-id-trunc-map)
-   P-refl : (u : ∣∣ X ∣∣[ succ n ]) → P u u
-   P-refl = ∣∣∣∣-ind (λ - → ∣∣∣∣-h-level (succ n))
-                     (λ x → transport (λ - → -) (P-computes ⁻¹) ∣ refl ∣[ n ] )
-   encode : (u v : ∣∣ X ∣∣[ succ n ])
-          → u ＝ v → P u v
-   encode u v p = transport (λ v' → P u v') p (P-refl u)
-   H : (u v : ∣∣ X ∣∣[ succ n ]) → encode u v ∘ decode u v ∼ id
-   H = ∣∣∣∣-ind-double {𝓤} {𝓤} {𝓤} {X} {X} {succ n}
-                       {λ u v → encode u v ∘ decode u v ∼ id}
-                       (λ - - → (λ - - → ∣∣∣∣-h-level n)) H'
-    where
-     H' : (x y : X) (s : P ∣ x ∣[ succ n ] ∣ y ∣[ succ n ])
-        → encode ∣ x ∣[ succ n ] ∣ y ∣[ succ n ]
-          (decode ∣ x ∣[ succ n ] ∣ y ∣[ succ n ] s)
-          ＝ s
-     H' x y s =
-      encode ∣ x ∣[ succ n ] ∣ y ∣[ succ n ]
-       (decode ∣ x ∣[ succ n ] ∣ y ∣[ succ n ] s)＝⟨ ap
-                                                    (encode ∣ x ∣[ succ n ]
-                                                    ∣ y ∣[ succ n ]) refl ⟩
-      encode ∣ x ∣[ succ n ] ∣ y ∣[ succ n ]
-       ((transport (λ T →
-        T → ∣ x ∣[ succ n ] ＝ ∣ y ∣[ succ n ])
-        (P-computes ⁻¹)
-        canonical-id-trunc-map) s)               ＝⟨ refl ⟩
-      transport (λ v' → P ∣ x ∣[ succ n ] v')
-                 ((transport (λ T →
-                  T → ∣ x ∣[ succ n ] ＝ ∣ y ∣[ succ n ])
-                 (P-computes ⁻¹)
-                 canonical-id-trunc-map) s)
-                (P-refl ∣ x ∣[ succ n ])         ＝⟨ {!!} ⟩
-      {!!}
-   G : (u v : ∣∣ X ∣∣[ succ n ]) → decode u v ∘ encode u v ∼ id 
-   G u .u refl = ∣∣∣∣-ind {𝓤} {𝓤} {X} {succ n}
-                          {λ u → (decode u u ∘ encode u u) refl ＝ refl}
-                          (λ - → ∣∣∣∣-h-level (succ n)) G' u
-    where
-     G' : (x : X) → decode ∣ x ∣[ succ n ] ∣ x ∣[ succ n ]
-                    (encode ∣ x ∣[ succ n ] ∣ x ∣[ succ n ] refl)
-                  ＝ refl
-     G' x =
-      decode ∣ x ∣[ succ n ] ∣ x ∣[ succ n ]
-       (encode ∣ x ∣[ succ n ] ∣ x ∣[ succ n ] refl)＝⟨ ap (decode
-                                                            ∣ x ∣[ succ n ]
-                                                            ∣ x ∣[ succ n ])
-                                                            refl ⟩
-      decode ∣ x ∣[ succ n ] ∣ x ∣[ succ n ]
-       (P-refl ∣ x ∣[ succ n ])                     ＝⟨ happly refl
-                                                       (P-refl ∣ x ∣[ succ n ]) ⟩
-      transport
-       (λ T → T → ∣ x ∣[ succ n ] ＝ ∣ x ∣[ succ n ])
-       (P-computes ⁻¹)
-       canonical-id-trunc-map
-       (P-refl ∣ x ∣[ succ n ]) ＝⟨ {!!} ⟩
-      {!!}
-
- trunc-id-type-char : {𝓤 : Universe} {X : 𝓤 ̇} {x y : X} {n : ℕ}
-                    → ∣∣ x ＝ y ∣∣[ n ]
-                    ≃ (∣ x ∣[ succ n ] ＝ ∣ y ∣[ succ n ])
- trunc-id-type-char {𝓤} {X} {x} {y} {n} =
-  ≃-comp (idtoeq ∣∣ x ＝ y ∣∣[ n ]
-                 (P ∣ x ∣[ succ n ] ∣ y ∣[ succ n ])
-                 (P-computes ⁻¹))
-         (gen-trunc-id-type-char ∣ x ∣[ succ n ] ∣ y ∣[ succ n ])
-
-\end{code}
-
-{𝓤} {𝓤} {X} {succ n}
-{λ u → (decode u u ∘ encode u u) refl ＝ refl}
-
-We now add some code that allows us to identify the 1-truncation and
-propositional truncation:
-  ∣∣ X ∣∣₁ ≃ ∥ X ∥
-
-\begin{code}
-
-module _ (te : H-level-truncations-exist)
-         (pt : propositional-truncations-exist)
-         (ua : Univalence)
-          where
-
- open H-level-truncations-exist te
- open GeneralTruncations te ua
- open propositional-truncations-exist pt
-
- 1-trunc-is-prop : {X : 𝓤 ̇} → is-prop (∣∣ X ∣∣[ 1 ])
- 1-trunc-is-prop = is-prop'-implies-is-prop (∣∣∣∣-h-level 1)
-
- 1-trunc-≃-prop-trunc : {X : 𝓤 ̇}
-                      → (∣∣ X ∣∣[ 1 ]) ≃ ∥ X ∥
- 1-trunc-≃-prop-trunc {𝓤} {X} =
-  logically-equivalent-props-are-equivalent 1-trunc-is-prop ∥∥-is-prop ϕ ψ
-  where
-   ϕ : ∣∣ X ∣∣[ 1 ] → ∥ X ∥
-   ϕ = ∣∣∣∣-rec (is-prop-implies-is-prop' ∥∥-is-prop) ∣_∣
-   ψ : ∥ X ∥ → ∣∣ X ∣∣[ 1 ]
-   ψ = ∥∥-rec 1-trunc-is-prop (λ x → ∣ x ∣[ 1 ])
-
-\end{code}
-
-We now add the notion of k-connectedness of type and functions with respect to
-H-levels. TODO: Show that connectedness as defined elsewhere in the
-library is a special case of what follows.
-
-\begin{code}
-
-module k-connectedness
-        (te : H-level-truncations-exist)
-        (ua : Univalence)
-       where
-
- open H-level-truncations-exist te
-
- _is_connected : 𝓤 ̇ → ℕ → 𝓤 ̇
- X is k connected = is-contr (∣∣ X ∣∣[ k ])
-
- map_is_connected : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (f : X → Y) → ℕ → 𝓤 ⊔ 𝓥 ̇
- map f is k connected = (y : codomain f) → (fiber f y) is k connected
-
-\end{code}
-
-We now add some results about connectedness.
-
-\begin{code}
-
- open propositional-truncations-exist pt
- open GeneralTruncations te ua
-
- connected-characterization : {X : 𝓤 ̇} {n : ℕ}
-                            → X is (succ n) connected
-                            ↔ ∥ X ∥ × ((x y : X) → (x ＝ y) is n connected)
- connected-characterization {𝓤} {X} {zero} = (left-to-right , {!!})
-  where
-   left-to-right : X is 1 connected
-                 → ∥ X ∥ × ((x y : X) → (x ＝ y) is zero connected)
-   left-to-right X-is-conn =
-    (center (equiv-to-singleton' (1-trunc-≃-prop-trunc te pt ua) X-is-conn)
-     , {!!})
- connected-characterization {𝓤} {X} {succ n} = ({!!} , {!!})
-
-
- ap-is-less-connected : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (f : X → Y)
-                      → (n : ℕ)
-                      → map f is (succ n) connected
-                      → map (ap f) is n connected
- ap-is-less-connected = {!!}
-
-\end{code}
