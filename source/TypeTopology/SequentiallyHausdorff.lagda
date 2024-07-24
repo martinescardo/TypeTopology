@@ -42,7 +42,8 @@ is-sequentially-Hausdorff X = (f g : ℕ∞ → X)
 \end{code}
 
 If WLPO holds in our topos, then our topos is not topological, in any
-conceivable sense, and no non-trivial type is sequentially Hausdorff.
+conceivable sense, and no type with two distinct points is
+sequentially Hausdorff.
 
 \begin{code}
 
@@ -148,7 +149,6 @@ which amounts to ℕ∞ with the point ∞ split into two copies
 \begin{code}
 
 open import TypeTopology.FailureOfTotalSeparatedness fe₀
-open ℕ∞₂
 
 ℕ∞₂-is-not-sequentially-Hausdorff : ¬ is-sequentially-Hausdorff ℕ∞₂
 ℕ∞₂-is-not-sequentially-Hausdorff h = III
