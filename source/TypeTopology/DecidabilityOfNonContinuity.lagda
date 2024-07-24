@@ -149,10 +149,15 @@ discontinuous-map-gives-WLPO f f-non-cts = VII
   G : ℕ∞ → ℕ∞
   G u = max u (g u)
 
-  G-property : (u : ℕ∞) → f (G u) ＝ f ∞ → (v : ℕ∞) → f (max u v) ＝ f ∞
+  G-property : (u : ℕ∞)
+             → f (G u) ＝ f ∞
+             → (v : ℕ∞)
+             → f (max u v) ＝ f ∞
   G-property u = pr₂ (I u)
 
-  G-property₁ : (u : ℕ∞) → (Σ v ꞉ ℕ∞ , f (max u v) ≠ f ∞) → f (G u) ≠ f ∞
+  G-property₁ : (u : ℕ∞)
+              → (Σ v ꞉ ℕ∞ , f (max u v) ≠ f ∞)
+              → f (G u) ≠ f ∞
   G-property₁ u (v , d) = contrapositive
                             (λ (e : f (G u) ＝ f ∞) → G-property u e v)
                             d
@@ -180,7 +185,9 @@ discontinuous-map-gives-WLPO f f-non-cts = VII
      → ¬¬ (Σ v ꞉ ℕ∞ , f (max u v) ≠ f ∞)
   IV u = contrapositive (III u)
 
-  G-property₂ : (u : ℕ∞) → ¬ ((v : ℕ∞) → f (max u v) ＝ f ∞) → f (G u) ≠ f ∞
+  G-property₂ : (u : ℕ∞)
+              → ¬ ((v : ℕ∞) → f (max u v) ＝ f ∞)
+              → f (G u) ≠ f ∞
   G-property₂ u a = G-property₁ u (II u (IV u a))
 
   G-property₃ : (n : ℕ) → f (G (ι n)) ≠ f ∞
@@ -224,10 +231,6 @@ WLPO-iff-there-is-a-noncontinous-map =
     e : 𝟚 → ℕ
     e ₀ = 0
     e ₁ = 1
-
-    e-lc : (b c : 𝟚) → e b ＝ e c → b ＝ c
-    e-lc ₀ ₀ r = refl
-    e-lc ₁ ₁ r = refl
 
     f : ℕ∞ → ℕ
     f = e ∘ p
