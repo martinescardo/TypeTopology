@@ -121,7 +121,7 @@ Fin-to-Ω-embedding-is-equiv-iff-2-and-EM {𝓤} fe pe 2 (e , e-is-embedding) =
       I₁ = Fin-is-discrete (e⁻¹ p) (e⁻¹ ⊤)
 
       I₂ : is-decidable (e⁻¹ p ＝ e⁻¹ ⊤) → is-decidable (p holds)
-      I₂ = map-is-decidable
+      I₂ = map-decidable
            (λ (r : e⁻¹ p ＝ e⁻¹ ⊤)
                  → equal-⊤-gives-holds p
                     (equivs-are-lc e⁻¹ (inverses-are-equivs e e-is-equiv) r))

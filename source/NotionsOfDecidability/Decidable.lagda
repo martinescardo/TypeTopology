@@ -18,22 +18,32 @@ open import UF.Logic
 ¬¬-elim (inl a) f = a
 ¬¬-elim (inr g) f = 𝟘-elim(f g)
 
-map-is-decidable : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → (A → B) → (B → A) → is-decidable A → is-decidable B
-map-is-decidable f g (inl x) = inl (f x)
-map-is-decidable f g (inr h) = inr (λ y → h (g y))
+map-decidable : {A : 𝓤 ̇ } {B : 𝓥 ̇ }
+              → (A → B)
+              → (B → A)
+              → is-decidable A
+              → is-decidable B
+map-decidable f g (inl x) = inl (f x)
+map-decidable f g (inr h) = inr (λ y → h (g y))
 
-map-is-decidable-↔ : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → (A ↔ B) → (is-decidable A ↔ is-decidable B)
-map-is-decidable-↔ (f , g) = map-is-decidable f g , map-is-decidable g f
+map-decidable-↔ : {A : 𝓤 ̇ } {B : 𝓥 ̇ }
+                → (A ↔ B)
+                → (is-decidable A ↔ is-decidable B)
+map-decidable-↔ (f , g) = map-decidable f g ,
+                          map-decidable g f
 
 decidability-is-closed-under-≃ : {A : 𝓤 ̇ } {B : 𝓥 ̇ }
                                → (A ≃ B)
                                → is-decidable A
                                → is-decidable B
-decidability-is-closed-under-≃ (f , e) = map-is-decidable f (inverse f e)
+decidability-is-closed-under-≃ (f , e) = map-decidable f (inverse f e)
 
-map-is-decidable' : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → (A → ¬ B) → (¬ A → B) → is-decidable A → is-decidable B
-map-is-decidable' f g (inl x) = inr (f x)
-map-is-decidable' f g (inr h) = inl (g h)
+map-decidable' : {A : 𝓤 ̇ } {B : 𝓥 ̇ }
+               → (A → ¬ B) → (¬ A → B)
+               → is-decidable A
+               → is-decidable B
+map-decidable' f g (inl x) = inr (f x)
+map-decidable' f g (inr h) = inl (g h)
 
 empty-is-decidable : {X : 𝓤 ̇ } → is-empty X → is-decidable X
 empty-is-decidable = inr
@@ -161,8 +171,12 @@ which-of : {A : 𝓤 ̇ } {B : 𝓥 ̇ }
          → A + B
          → Σ b ꞉ 𝟚 , (b ＝ ₀ → A)
                    × (b ＝ ₁ → B)
-which-of (inl a) = ₀ , (λ (r : ₀ ＝ ₀) → a) , λ (p : ₀ ＝ ₁) → 𝟘-elim (zero-is-not-one p)
-which-of (inr b) = ₁ , (λ (p : ₁ ＝ ₀) → 𝟘-elim (zero-is-not-one (p ⁻¹))) , (λ (r : ₁ ＝ ₁) → b)
+which-of (inl a) = ₀ ,
+                   (λ (r : ₀ ＝ ₀) → a) ,
+                   (λ (p : ₀ ＝ ₁) → 𝟘-elim (zero-is-not-one p))
+which-of (inr b) = ₁ ,
+                   (λ (p : ₁ ＝ ₀) → 𝟘-elim (zero-is-not-one (p ⁻¹))) ,
+                   (λ (r : ₁ ＝ ₁) → b)
 
 \end{code}
 
@@ -195,7 +209,8 @@ module _ {X : 𝓤 ̇ } {A₀ : X → 𝓥 ̇ } {A₁ : X → 𝓦 ̇ }
                                       × (p x ＝ ₁ → A₁ x))
  indicator = (λ x → pr₁(lemma₁ x)) , (λ x → pr₂(lemma₁ x))
   where
-   lemma₀ : (x : X) → (A₀ x + A₁ x) → Σ b ꞉ 𝟚 , (b ＝ ₀ → A₀ x) × (b ＝ ₁ → A₁ x)
+   lemma₀ : (x : X) → (A₀ x + A₁ x) → Σ b ꞉ 𝟚 , (b ＝ ₀ → A₀ x)
+                                              × (b ＝ ₁ → A₁ x)
    lemma₀ x = which-of
 
    lemma₁ : (x : X) → Σ b ꞉ 𝟚 , (b ＝ ₀ → A₀ x) × (b ＝ ₁ → A₁ x)

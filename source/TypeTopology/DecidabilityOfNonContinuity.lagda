@@ -89,7 +89,6 @@ and its negation to
 continuous : (ℕ∞ → ℕ) → 𝓤₀ ̇
 continuous f = Σ m ꞉ ℕ , ((n : ℕ) → f (max (ι m) (ι n)) ＝ f ∞)
 
-
 Theorem-3·2 : (f : ℕ∞ → ℕ) → is-decidable (¬ continuous f)
 Theorem-3·2 f = V
  where
@@ -113,12 +112,8 @@ Theorem-3·2 f = V
   III : is-decidable ncf
   III = Lemma-3·1 (λ x y → χ＝ (f (max x y)) (f ∞))
 
-  IV : is-decidable ncf → is-decidable (¬ continuous f)
-  IV (inl ν) = inl (I ν)
-  IV (inr ϕ) = inr (contrapositive II ϕ)
-
   V : is-decidable (¬ continuous f)
-  V = IV III
+  V = map-decidable I II III
 
 \end{code}
 

@@ -462,8 +462,9 @@ Back to old stuff:
 
 \begin{code}
 
-＝-indicator :  (m : ℕ)
-            → Σ p ꞉ (ℕ → 𝟚) , ((n : ℕ) → (p n ＝ ₀ → m ≠ n) × (p n ＝ ₁ → m ＝ n))
+＝-indicator : (m : ℕ)
+            → Σ p ꞉ (ℕ → 𝟚) , ((n : ℕ) → (p n ＝ ₀ → m ≠ n)
+                                       × (p n ＝ ₁ → m ＝ n))
 ＝-indicator m = co-characteristic-function (ℕ-is-discrete m)
 
 χ＝ : ℕ → ℕ → 𝟚
@@ -483,7 +484,8 @@ infix  30 _＝[ℕ]_
  pr₂ (χ＝-spec m n)
 
 ≠-indicator : (m : ℕ)
-            → Σ p ꞉ (ℕ → 𝟚) , ((n : ℕ) → (p n ＝ ₀ → m ＝ n) × (p n ＝ ₁ → m ≠ n))
+            → Σ p ꞉ (ℕ → 𝟚) , ((n : ℕ) → (p n ＝ ₀ → m ＝ n)
+                                       × (p n ＝ ₁ → m ≠ n))
 ≠-indicator m = indicator (ℕ-is-discrete m)
 
 χ≠ : ℕ → ℕ → 𝟚
