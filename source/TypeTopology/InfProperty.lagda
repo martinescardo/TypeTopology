@@ -20,7 +20,8 @@ is-upper-bound-of-lower-bounds : (X → 𝟚) → X → 𝓤 ⊔ 𝓥 ̇
 is-upper-bound-of-lower-bounds p u = (l : X) → is-roots-lower-bound p l → l ≤ u
 
 is-roots-infimum : (X → 𝟚) → X → 𝓤 ⊔ 𝓥 ̇
-is-roots-infimum p x = is-roots-lower-bound p x × is-upper-bound-of-lower-bounds p x
+is-roots-infimum p x = is-roots-lower-bound p x
+                     × is-upper-bound-of-lower-bounds p x
 
 has-inf : 𝓤 ⊔ 𝓥 ̇
 has-inf = (p : X → 𝟚) → Σ x ꞉ X , is-conditional-root p x × is-roots-infimum p x

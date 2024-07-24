@@ -277,6 +277,10 @@ max𝟚 : 𝟚 → 𝟚 → 𝟚
 max𝟚 ₀ b = b
 max𝟚 ₁ b = ₁
 
+max𝟚-idemp : (b : 𝟚) → max𝟚 b b ＝ b
+max𝟚-idemp ₀ = refl
+max𝟚-idemp ₁ = refl
+
 max𝟚-lemma : {a b : 𝟚} → max𝟚 a b ＝ ₁ → (a ＝ ₁) + (b ＝ ₁)
 max𝟚-lemma {₀} r = inr r
 max𝟚-lemma {₁} r = inl refl

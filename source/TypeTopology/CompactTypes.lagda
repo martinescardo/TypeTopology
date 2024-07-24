@@ -680,6 +680,14 @@ in the original development:
 is-Σ-Compact : 𝓤 ̇ → {𝓥 : Universe} → 𝓤 ⊔ (𝓥 ⁺) ̇
 is-Σ-Compact X {𝓥} = (A : X → 𝓥 ̇ ) → is-complemented A → is-decidable (Σ A)
 
+Σ-Compactness-gives-Markov : {X : 𝓤 ̇ }
+                           → is-Σ-Compact X {𝓥}
+                           → (A : X → 𝓥 ̇ )
+                           → is-complemented A
+                           → ¬¬ Σ A
+                           → Σ A
+Σ-Compactness-gives-Markov {𝓤} {𝓥} {X} c A δ = ¬¬-elim (c A δ)
+
 is-Compact = is-Σ-Compact
 
 Complemented-choice : 𝓤 ̇ → {𝓥 : Universe} → 𝓤 ⊔ (𝓥 ⁺) ̇
