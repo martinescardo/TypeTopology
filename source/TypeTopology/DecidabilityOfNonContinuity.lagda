@@ -89,11 +89,36 @@ and its negation to
 continuous : (ℕ∞ → ℕ) → 𝓤₀ ̇
 continuous f = Σ m ꞉ ℕ , ((n : ℕ) → f (max (ι m) (ι n)) ＝ f ∞)
 
-noncontinuous : (ℕ∞ → ℕ) → 𝓤₀ ̇
-noncontinuous f = (m : ℕ) → ¬ ((n : ℕ) → f (max (ι m) (ι n)) ＝[ℕ] f ∞)
 
-Theorem-3·2 : (f : ℕ∞ → ℕ) → is-decidable (noncontinuous f)
-Theorem-3·2 f = Lemma-3·1 (λ x y → χ＝ (f (max x y)) (f ∞))
+Theorem-3·2 : (f : ℕ∞ → ℕ) → is-decidable (¬ continuous f)
+Theorem-3·2 f = V
+ where
+  ncf : 𝓤₀ ̇
+  ncf = (m : ℕ) → ¬ ((n : ℕ) → f (max (ι m) (ι n)) ＝[ℕ] f ∞)
+
+  I : ncf → ¬ continuous f
+  I ν (m , a) = ν m (λ n → lr-implication
+                            (＝-agrees-with-＝[ℕ]
+                              (f (max (ι m) (ι n)))
+                              (f ∞))
+                            (a n))
+
+  II : ¬ continuous f → ncf
+  II ν m a = ν (m , (λ n → rl-implication
+                            (＝-agrees-with-＝[ℕ]
+                               (f (max (ι m) (ι n)))
+                               (f ∞))
+                            (a n)))
+
+  III : is-decidable ncf
+  III = Lemma-3·1 (λ x y → χ＝ (f (max x y)) (f ∞))
+
+  IV : is-decidable ncf → is-decidable (¬ continuous f)
+  IV (inl ν) = inl (I ν)
+  IV (inr ϕ) = inr (contrapositive II ϕ)
+
+  V : is-decidable (¬ continuous f)
+  V = IV III
 
 \end{code}
 

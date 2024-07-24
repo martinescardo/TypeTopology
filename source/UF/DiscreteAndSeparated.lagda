@@ -462,7 +462,8 @@ Back to old stuff:
 
 \begin{code}
 
-＝-indicator :  (m : ℕ) → Σ p ꞉ (ℕ → 𝟚) , ((n : ℕ) → (p n ＝ ₀ → m ≠ n) × (p n ＝ ₁ → m ＝ n))
+＝-indicator :  (m : ℕ)
+            → Σ p ꞉ (ℕ → 𝟚) , ((n : ℕ) → (p n ＝ ₀ → m ≠ n) × (p n ＝ ₁ → m ＝ n))
 ＝-indicator m = co-characteristic-function (ℕ-is-discrete m)
 
 χ＝ : ℕ → ℕ → 𝟚
