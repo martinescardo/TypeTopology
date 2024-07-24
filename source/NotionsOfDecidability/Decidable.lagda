@@ -204,11 +204,15 @@ module _ {X : 𝓤 ̇ } {A₀ : X → 𝓥 ̇ } {A₁ : X → 𝓦 ̇ }
  indicator-map : X → 𝟚
  indicator-map = pr₁ indicator
 
- indicator₀ : (x : X) → indicator-map x ＝ ₀ → A₀ x
- indicator₀ x = pr₁ (pr₂ indicator x)
+ indicator-property : (x : X) → (indicator-map x ＝ ₀ → A₀ x)
+                              × (indicator-map x ＝ ₁ → A₁ x)
+ indicator-property = pr₂ indicator
 
- indicator₁ : (x : X) → indicator-map x ＝ ₁ → A₁ x
- indicator₁ x = pr₂ (pr₂ indicator x)
+ indicator-property₀ : (x : X) → indicator-map x ＝ ₀ → A₀ x
+ indicator-property₀ x = pr₁ (indicator-property x)
+
+ indicator-property₁ : (x : X) → indicator-map x ＝ ₁ → A₁ x
+ indicator-property₁ x = pr₂ (indicator-property x)
 
 \end{code}
 

@@ -40,10 +40,10 @@ Lemma-3·1 q = claim₄
   claim₀ u = Theorem-8·2 (q u)
 
   p : ℕ∞ → 𝟚
-  p = pr₁ (indicator claim₀)
+  p = indicator-map claim₀
 
   p-spec : (x : ℕ∞) → (p x ＝ ₀ → A x) × (p x ＝ ₁ → ¬ A x)
-  p-spec = pr₂ (indicator claim₀)
+  p-spec = indicator-property claim₀
 
   claim₁ : is-decidable ((n : ℕ) → p (ι n) ＝ ₁)
   claim₁ = Theorem-8·2 p
@@ -51,7 +51,8 @@ Lemma-3·1 q = claim₄
   claim₂ : ((n : ℕ) → ¬ A (ι n)) → (n : ℕ) → p (ι n) ＝ ₁
   claim₂ φ n = different-from-₀-equal-₁ (λ v → φ n (pr₁ (p-spec (ι n)) v))
 
-  claim₃ : is-decidable ((n : ℕ) → p (ι n) ＝ ₁) → is-decidable ((n : ℕ) → ¬ A (ι n))
+  claim₃ : is-decidable ((n : ℕ) → p (ι n) ＝ ₁)
+         → is-decidable ((n : ℕ) → ¬ A (ι n))
   claim₃ (inl f) = inl (λ n → pr₂ (p-spec (ι n)) (f n))
   claim₃ (inr u) = inr (contrapositive claim₂ u)
 
@@ -91,9 +92,6 @@ continuous f = Σ m ꞉ ℕ , ((n : ℕ) → f (max (ι m) (ι n)) ＝ f ∞)
 noncontinuous : (ℕ∞ → ℕ) → 𝓤₀ ̇
 noncontinuous f = (m : ℕ) → ¬ ((n : ℕ) → f (max (ι m) (ι n)) ＝[ℕ] f ∞)
 
-discontinuous : (ℕ∞ → ℕ) → 𝓤₀ ̇
-discontinuous f = (m : ℕ) → ¬ ((n : ℕ) → f (max (ι m) (ι n)) ＝[ℕ] f ∞)
-
 Theorem-3·2 : (f : ℕ∞ → ℕ) → is-decidable (noncontinuous f)
 Theorem-3·2 f = Lemma-3·1 (λ x y → χ＝ (f (max x y)) (f ∞))
 
@@ -101,17 +99,10 @@ Theorem-3·2 f = Lemma-3·1 (λ x y → χ＝ (f (max x y)) (f ∞))
 
 (Maybe) to be continued (see the paper for the moment).
 
-   * MP gives that continuity and doubly negated continuity agree.
+ * MP gives that continuity and doubly negated continuity agree.
 
-   * WLPO is equivalent to the existence of a noncontinuous function ℕ∞ → ℕ.
+ * WLPO is equivalent to the existence of a noncontinuous function ℕ∞ → ℕ.
 
-   * ¬WLPO is equivalent to the doubly negated continuity of all functions ℕ∞ → ℕ.
+ * ¬WLPO is equivalent to the doubly negated continuity of all functions ℕ∞ → ℕ.
 
-   * If MP and ¬WLPO then all functions ℕ∞ → ℕ are continuous.
-
-For future use:
-
-\begin{code}
-
-
-\end{code}
+ * If MP and ¬WLPO then all functions ℕ∞ → ℕ are continuous.
