@@ -85,11 +85,17 @@ and its negation to
 
 \begin{code}
 
-non-continuous : (ℕ∞ → ℕ) → 𝓤₀ ̇
-non-continuous f = (m : ℕ) → ¬ ((n : ℕ) → f (max (ι m) (ι n)) ＝[ℕ] f ∞)
+continuous : (ℕ∞ → ℕ) → 𝓤₀ ̇
+continuous f = Σ m ꞉ ℕ , ((n : ℕ) → f (max (ι m) (ι n)) ＝ f ∞)
 
-Theorem-3·2 : (f : ℕ∞ → ℕ) → is-decidable (non-continuous f)
-Theorem-3·2 f = Lemma-3·1 ((λ x y → χ＝ (f (max x y)) (f ∞)))
+noncontinuous : (ℕ∞ → ℕ) → 𝓤₀ ̇
+noncontinuous f = (m : ℕ) → ¬ ((n : ℕ) → f (max (ι m) (ι n)) ＝[ℕ] f ∞)
+
+discontinuous : (ℕ∞ → ℕ) → 𝓤₀ ̇
+discontinuous f = (m : ℕ) → ¬ ((n : ℕ) → f (max (ι m) (ι n)) ＝[ℕ] f ∞)
+
+Theorem-3·2 : (f : ℕ∞ → ℕ) → is-decidable (noncontinuous f)
+Theorem-3·2 f = Lemma-3·1 (λ x y → χ＝ (f (max x y)) (f ∞))
 
 \end{code}
 
@@ -97,7 +103,7 @@ Theorem-3·2 f = Lemma-3·1 ((λ x y → χ＝ (f (max x y)) (f ∞)))
 
    * MP gives that continuity and doubly negated continuity agree.
 
-   * WLPO is equivalent to the existence of a non-continuous function ℕ∞ → ℕ.
+   * WLPO is equivalent to the existence of a noncontinuous function ℕ∞ → ℕ.
 
    * ¬WLPO is equivalent to the doubly negated continuity of all functions ℕ∞ → ℕ.
 
@@ -107,7 +113,5 @@ For future use:
 
 \begin{code}
 
-continuous : (ℕ∞ → ℕ) → 𝓤₀ ̇
-continuous f = Σ m ꞉ ℕ , ((n : ℕ) → f (max (ι m) (ι n)) ＝ f ∞)
 
 \end{code}

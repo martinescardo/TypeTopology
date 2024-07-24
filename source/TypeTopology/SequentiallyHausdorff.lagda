@@ -128,8 +128,8 @@ totally-separated-types-are-sequentially-Hausdorff nwlpo X X-is-ts f g a = II
 
 \end{code}
 
-There are plenty of totally separated types. For example, the types 𝟚
-and ℕ are totally separated, and the totally separated types are
+There are plenty of totally separated types. For example, the types 𝟚,
+ℕ and ℕ∞ are totally separated, and the totally separated types are
 closed under products (and hence function spaces and more generally
 form an exponential ideal) and under retracts, as proved in the above
 import TypeTopology.TotallySeparated.
