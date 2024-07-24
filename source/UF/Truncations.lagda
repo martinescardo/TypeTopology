@@ -31,12 +31,11 @@ module UF.Truncations (fe : FunExt)
                       (pt : propositional-truncations-exist)
                        where
 
-open import UF.ImageAndSurjection pt
-open import UF.H-Levels fe fe' pt
+open import UF.H-Levels fe fe' 
 
 \end{code}
 
-We now define the notion of a k-truncation using record types.
+We define the notion of a k-truncation using record types.
 
 \begin{code}
 
@@ -58,7 +57,9 @@ record H-level-truncations-exist : 𝓤ω where
 
 \end{code}
 
-We add truncation recursion.
+We now add some some machinary that will prove usefule: truncation recursion
+and uniqueness, indduction/recursion for two arguments and all associated
+computation rules.
 
 \begin{code}
 
@@ -148,7 +149,10 @@ module GeneralTruncations
 
 \end{code}
 
-We develop useful results related to general truncations.
+We develop useful results related to general truncations. We characterize the
+first couple levels of truncation (TODO: three-hlevel is a groupoid). We
+provide the canonical predecessor map and show truncations are closed under
+equivalence and succesive applications of truncation.
 
 \begin{code}
 
@@ -258,8 +262,7 @@ We develop useful results related to general truncations.
 
 \end{code}
 
-We now define a critical equivalence that characterizes the truncated identity
-type.
+We now define an equivalence that characterizes the truncated identity type.
 
 \begin{code}
 
@@ -287,6 +290,9 @@ type.
         (λ x x' → (∥ x ＝ x' ∥[ n ] , ∥∥ₙ-h-level)) x y)
 
 \end{code}
+
+TODO: Current proof follows the HoTT book encode-decode method but it is
+believed there is a better proof.
 
  gen-trunc-id-type-char : {𝓤 : Universe} {X : 𝓤 ̇} {n : ℕ}
                         → (u v : ∥ X ∥[ succ n ])
@@ -373,13 +379,12 @@ type.
 {𝓤} {𝓤} {X} {succ n}
 {λ u → (decode u u ∘ encode u u) refl ＝ refl}
 
-We now add some code that allows us to identify the 1-truncation and
-propositional truncation:
+We demonstrate the equivalence of 1-truncation and propositional truncation:
   ∥ X ∥₁ ≃ ∥ X ∥
 
 \begin{code}
 
-module 1-truncation-propositional-truncation
+module 1-truncation-propositional-truncation-relationship
         (te : H-level-truncations-exist)
         (ua : Univalence)
          where

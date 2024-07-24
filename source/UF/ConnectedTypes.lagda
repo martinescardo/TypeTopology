@@ -32,7 +32,7 @@ module UF.ConnectedTypes (fe : FunExt)
                           where
 
 open import UF.ImageAndSurjection pt
-open import UF.H-Levels fe fe' pt
+open import UF.H-Levels fe fe' 
 open import UF.Truncations fe fe' pt
 
 \end{code}
@@ -60,24 +60,55 @@ module k-connectedness
 
 \end{code}
 
-We now add some results about connectedness.
+We now characterize 1-connected types as inhabited types and 1-connected maps
+as surjections.
 
 \begin{code}
 
  open propositional-truncations-exist pt
  open GeneralTruncations te ua
- open 1-truncation-propositional-truncation te ua
+ open 1-truncation-propositional-truncation-relationship te ua
+
+ 1-connected-is-inhabited : {X : 𝓤 ̇}
+                          → X is 1 connected → ∥ X ∥
+ 1-connected-is-inhabited X-1-conn = 1-trunc-to-prop-trunc (center X-1-conn)
+
+ inhabited-is-1-connected : {X : 𝓤 ̇}
+                          → ∥ X ∥ → X is 1 connected
+ inhabited-is-1-connected x-anon =
+  pointed-props-are-singletons (prop-trunc-to-1-trunc x-anon) 1-trunc-is-prop
+
+ 1-connected-iff-inhabited : {X : 𝓤 ̇}
+                           → X is 1 connected
+                           ↔ ∥ X ∥
+ 1-connected-iff-inhabited {𝓤} {X} =
+  (1-connected-is-inhabited , inhabited-is-1-connected)
 
  1-connected-map-is-surj : {X : 𝓤 ̇} {Y : 𝓥 ̇} {f : X → Y}
                          → map f is 1 connected
                          → is-surjection f
  1-connected-map-is-surj {𝓤} {𝓥} {X} {Y} {f} f-1-con y =
-   g y (center (f-1-con y))
-  where
-   g : (y : Y) → ∥ fiber f y ∥[ 1 ] → y ∈image f
-   g y' = ∥∥ₙ-rec (is-prop-implies-is-prop'
-                  (being-in-the-image-is-prop y' f))
-                  ∣_∣
+  1-connected-is-inhabited (f-1-con y)
+
+ surj-is-1-connected-map : {X : 𝓤 ̇} {Y : 𝓥 ̇} {f : X → Y}
+                         → is-surjection f
+                         → map f is 1 connected
+ surj-is-1-connected-map f-is-surj y = inhabited-is-1-connected (f-is-surj y)
+
+ 1-connected-map-iff-surj : {X : 𝓤 ̇} {Y : 𝓥 ̇} {f : X → Y}
+                         → map f is 1 connected
+                         ↔ is-surjection f
+ 1-connected-map-iff-surj = (1-connected-map-is-surj , surj-is-1-connected-map)
+
+\end{code}
+
+We now devlop some closure conditions pertaining to connectedness. Connectedness
+is closed under equivalence as expected, but more importantly connectedness
+extends below: more precisely if a type is n connected then it is k connected
+for all k ≤ n. We provide many incarnations of this fact below which may prove
+useful. 
+
+\begin{code}
 
  connectedness-closed-under-equiv : {𝓤 𝓥 : Universe}
                                   → (k : ℕ)
@@ -135,6 +166,11 @@ We now add some results about connectedness.
        l +' m   ∎
 
 \end{code}
+
+We can characterize connected types in terms of inhabitedness and connectedness
+at the level below of the identity type.
+
+TODO: Finish Truncation proof this depends on.
 
  connected-characterization : {X : 𝓤 ̇} {n : ℕ}
                             → X is (succ n) connected

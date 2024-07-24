@@ -39,10 +39,7 @@ open import Naturals.Order
 
 module UF.H-Levels (fe : FunExt)
                    (fe' : Fun-Ext)
-                   (pt : propositional-truncations-exist)
                     where
-
-open import UF.ImageAndSurjection pt
 
 _is-of-hlevel_ : 𝓤 ̇ → ℕ → 𝓤 ̇
 X is-of-hlevel zero = is-contr X
