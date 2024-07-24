@@ -42,22 +42,18 @@ Lemma-3·1 q = claim₄
   p : ℕ∞ → 𝟚
   p = indicator-map claim₀
 
-  p-spec : (x : ℕ∞) → (p x ＝ ₀ → A x) × (p x ＝ ₁ → ¬ A x)
-  p-spec = indicator-property claim₀
-
   claim₁ : is-decidable ((n : ℕ) → p (ι n) ＝ ₁)
   claim₁ = Theorem-8·2 p
 
   claim₂ : ((n : ℕ) → ¬ A (ι n)) → (n : ℕ) → p (ι n) ＝ ₁
-  claim₂ φ n = different-from-₀-equal-₁ (λ v → φ n (pr₁ (p-spec (ι n)) v))
+  claim₂ φ n = different-from-₀-equal-₁
+                (λ v → φ n (indicator-property₀ claim₀ (ι n) v))
 
-  claim₃ : is-decidable ((n : ℕ) → p (ι n) ＝ ₁)
-         → is-decidable ((n : ℕ) → ¬ A (ι n))
-  claim₃ (inl f) = inl (λ n → pr₂ (p-spec (ι n)) (f n))
-  claim₃ (inr u) = inr (contrapositive claim₂ u)
+  claim₃ : ((n : ℕ) → p (ι n) ＝ ₁) → (n : ℕ) → ¬ A (ι n)
+  claim₃ f n = indicator-property₁ claim₀ (ι n) (f n)
 
   claim₄ : is-decidable ((n : ℕ) → ¬ (A (ι n)))
-  claim₄ = claim₃ claim₁
+  claim₄ = map-decidable claim₃ claim₂ claim₁
 
 \end{code}
 
