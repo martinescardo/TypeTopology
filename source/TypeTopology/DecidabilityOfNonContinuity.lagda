@@ -237,15 +237,15 @@ WLPO-iff-there-is-a-noncontinous-map =
             g ₀     ＝⟨ refl ⟩
             0       ∎
 
-    f-property : (n : ℕ) → f (ι n) ≠ f ∞
-    f-property n e = zero-not-positive 0
-                      (0       ＝⟨ f₀ n ⁻¹ ⟩
-                       f (ι n) ＝⟨ e ⟩
-                       f ∞     ＝⟨ ap g (pr₂ p-spec) ⟩
-                       1       ∎)
+    f∞ : (n : ℕ) → f (ι n) ≠ f ∞
+    f∞ n e = zero-not-positive 0
+              (0       ＝⟨ f₀ n ⁻¹ ⟩
+               f (ι n) ＝⟨ e ⟩
+               f ∞     ＝⟨ ap g (pr₂ p-spec) ⟩
+               1       ∎)
 
     f-non-cts : ¬ continuous f
-    f-non-cts (m , a) = f-property m
+    f-non-cts (m , a) = f∞ m
                          (f (ι m)             ＝⟨ ap f ((max∞-idemp fe (ι m))⁻¹) ⟩
                           f (max (ι m) (ι m)) ＝⟨ a m ⟩
                           f ∞                 ∎)
