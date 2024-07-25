@@ -653,6 +653,27 @@ necessarily non-constructive.
 
 \end{code}
 
+Also added 25th July 2024 for the same reason given above:
+
+\begin{code}
+
+ ainjective-type-decomposability-gives-decomposition⁺
+  : propext 𝓤
+  → (D : 𝓤 ⁺ ̇ )
+  → is-locally-small D
+  → ainjective-type D 𝓤 𝓥
+  → has-two-distinct-points D
+  → decomposable D
+  → decomposition D
+ ainjective-type-decomposability-gives-decomposition⁺ pe D D-ls D-ainj htdp δ =
+  WEM-gives-decomposition-of-two-pointed-types⁺
+   (lr-implication (ainjective-type-decomposable-iff-WEM⁺ pe D D-ls D-ainj htdp) δ)
+   D
+   D-ls
+   htdp
+
+\end{code}
+
 Added by Martin Escardo 10th June 2024. From any non-trivial,
 totally separated, injective type we get the double negation of the
 principle of weak excluded middle. Here by non-trivial we mean that
