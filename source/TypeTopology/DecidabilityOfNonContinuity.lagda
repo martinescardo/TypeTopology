@@ -2,16 +2,17 @@ Martin Escardo, 7 May 2014, with additions 25th July 2024.
 
 For any function f : ℕ∞ → ℕ, it is decidable whether f is non-continuous.
 
-  Π (f : ℕ∞ → ℕ). ¬ (continuous f) + ¬¬ (continuous f).
+  (f : ℕ∞ → ℕ) → ¬ continuous f + ¬¬ continuous f.
 
 Based on the paper
 
+    Constructive decidability of classical continuity
     Mathematical Structures in Computer Science , Volume 25,
     October 2015 , pp. 1578 - 1589
-    DOI: https://doi.org/10.1017/S096012951300042X
+    https://doi.org/10.1017/S096012951300042X
 
-The title of this paper is a bit misleading. It should have been
-called "Decidability of non-continuity".
+The title of this paper is a bit misleading. It should probably have
+been called "Decidability of non-continuity".
 
 \begin{code}
 
@@ -121,7 +122,7 @@ Theorem-3·2 f = V
 
  3. ¬ WLPO is equivalent to the doubly negated continuity of all functions ℕ∞ → ℕ.
 
- 4. If MP and ¬WLPO then all functions ℕ∞ → ℕ are continuous.
+ 4. If MP and ¬ WLPO then all functions ℕ∞ → ℕ are continuous.
 
 Added 24th July 2024. Still based on the same paper. We write down the proof of 3.
 
