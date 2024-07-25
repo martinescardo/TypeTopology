@@ -135,29 +135,22 @@ open import TypeTopology.GenericConvergentSequenceCompactness fe
 discontinuous-map-gives-WLPO : (f : ℕ∞ → ℕ) → ¬ continuous f → WLPO
 discontinuous-map-gives-WLPO f f-non-cts = VII
  where
-  A : ℕ∞ → ℕ∞ → 𝓤₀ ̇
-  A u v = f (max u v) ＝ f ∞
-
-  A-is-complemented : (u v : ℕ∞) → is-decidable (A u v)
-  A-is-complemented u v = ℕ-is-discrete (f (max u v)) (f ∞)
-
   I : (u : ℕ∞) → Σ v₀ ꞉ ℕ∞ , (f (max u v₀) ＝ f ∞ → (v : ℕ∞) → f (max u v) ＝ f ∞)
-  I u = ℕ∞-Compact∙ (A u) (A-is-complemented u)
+  I u = ℕ∞-Compact∙
+         (λ v → f (max u v) ＝ f ∞)
+         (λ v → ℕ-is-discrete (f (max u v)) (f ∞))
 
   G : ℕ∞ → ℕ∞
   G u = max u (pr₁ (I u))
 
-  G-property : (u : ℕ∞)
-             → f (G u) ＝ f ∞
-             → (v : ℕ∞)
-             → f (max u v) ＝ f ∞
-  G-property u = pr₂ (I u)
+  G-property₀ : (u : ℕ∞) → f (G u) ＝ f ∞ → (v : ℕ∞) → f (max u v) ＝ f ∞
+  G-property₀ u = pr₂ (I u)
 
   G-property₁ : (u : ℕ∞)
               → (Σ v ꞉ ℕ∞ , f (max u v) ≠ f ∞)
               → f (G u) ≠ f ∞
   G-property₁ u (v , d) = contrapositive
-                            (λ (e : f (G u) ＝ f ∞) → G-property u e v)
+                            (λ (e : f (G u) ＝ f ∞) → G-property₀ u e v)
                             d
 
   II : (u : ℕ∞)
@@ -247,7 +240,7 @@ WLPO-iff-there-is-a-noncontinous-map =
 
     f-non-cts : ¬ continuous f
     f-non-cts (m , a) = f∞ m
-                         (f (ι m)             ＝⟨ ap f ((max∞-idemp fe (ι m))⁻¹) ⟩
+                         (f (ι m)             ＝⟨ ap f ((max-idemp fe (ι m))⁻¹) ⟩
                           f (max (ι m) (ι m)) ＝⟨ a m ⟩
                           f ∞                 ∎)
 
