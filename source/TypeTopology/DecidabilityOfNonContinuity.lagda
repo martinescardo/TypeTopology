@@ -133,18 +133,18 @@ open import TypeTopology.CompactTypes
 open import TypeTopology.GenericConvergentSequenceCompactness fe
 
 discontinuous-map-gives-WLPO : (f : ℕ∞ → ℕ) → ¬ continuous f → WLPO
-discontinuous-map-gives-WLPO f f-non-cts = VII
+discontinuous-map-gives-WLPO f f-non-cts = VI
  where
-  I : (u : ℕ∞) → Σ v₀ ꞉ ℕ∞ , (f (max u v₀) ＝ f ∞ → (v : ℕ∞) → f (max u v) ＝ f ∞)
-  I u = ℕ∞-Compact∙
+  g : (u : ℕ∞) → Σ v₀ ꞉ ℕ∞ , (f (max u v₀) ＝ f ∞ → (v : ℕ∞) → f (max u v) ＝ f ∞)
+  g u = ℕ∞-Compact∙
          (λ v → f (max u v) ＝ f ∞)
          (λ v → ℕ-is-discrete (f (max u v)) (f ∞))
 
   G : ℕ∞ → ℕ∞
-  G u = max u (pr₁ (I u))
+  G u = max u (pr₁ (g u))
 
   G-property₀ : (u : ℕ∞) → f (G u) ＝ f ∞ → (v : ℕ∞) → f (max u v) ＝ f ∞
-  G-property₀ u = pr₂ (I u)
+  G-property₀ u = pr₂ (g u)
 
   G-property₁ : (u : ℕ∞)
               → (Σ v ꞉ ℕ∞ , f (max u v) ≠ f ∞)
@@ -153,54 +153,62 @@ discontinuous-map-gives-WLPO f f-non-cts = VII
                             (λ (e : f (G u) ＝ f ∞) → G-property₀ u e v)
                             d
 
-  II : (u : ℕ∞)
-     → ¬¬ (Σ v ꞉ ℕ∞ , f (max u v) ≠ f ∞)
-     → (Σ v ꞉ ℕ∞ , f (max u v) ≠ f ∞)
-  II u = Σ-Compactness-gives-Markov
+  I : (u : ℕ∞)
+    → ¬¬ (Σ v ꞉ ℕ∞ , f (max u v) ≠ f ∞)
+    → (Σ v ꞉ ℕ∞ , f (max u v) ≠ f ∞)
+  I u = Σ-Compactness-gives-Markov
           ℕ∞-Compact
           (λ v → f (max u v) ≠ f ∞)
           (λ v → ¬-preserves-decidability
                   (ℕ-is-discrete (f (max u v)) (f ∞)))
 
-  III : (u : ℕ∞)
-      → ¬ (Σ v ꞉ ℕ∞ , f (max u v) ≠ f ∞)
-      → (v : ℕ∞) → f (max u v) ＝ f ∞
-  III u ν v  = discrete-is-¬¬-separated
-                ℕ-is-discrete
-                (f (max u v))
-                (f ∞)
-                (λ (d : f (max u v) ≠ f ∞) → ν (v , d))
+  II : (u : ℕ∞)
+     → ¬ (Σ v ꞉ ℕ∞ , f (max u v) ≠ f ∞)
+     → (v : ℕ∞) → f (max u v) ＝ f ∞
+  II u ν v = discrete-is-¬¬-separated
+              ℕ-is-discrete
+              (f (max u v))
+              (f ∞)
+              (λ (d : f (max u v) ≠ f ∞) → ν (v , d))
 
-  IV : (u : ℕ∞)
-     → ¬ ((v : ℕ∞) → f (max u v) ＝ f ∞)
-     → ¬¬ (Σ v ꞉ ℕ∞ , f (max u v) ≠ f ∞)
-  IV u = contrapositive (III u)
+  III : (u : ℕ∞)
+      → ¬ ((v : ℕ∞) → f (max u v) ＝ f ∞)
+      → ¬¬ (Σ v ꞉ ℕ∞ , f (max u v) ≠ f ∞)
+  III u = contrapositive (II u)
 
   G-property₂ : (u : ℕ∞)
               → ¬ ((v : ℕ∞) → f (max u v) ＝ f ∞)
               → f (G u) ≠ f ∞
-  G-property₂ u a = G-property₁ u (II u (IV u a))
+  G-property₂ u a = G-property₁ u (I u (III u a))
 
   G-propertyₙ : (n : ℕ) → f (G (ι n)) ≠ f ∞
   G-propertyₙ n = G-property₂ (ι n) h
    where
     h : ¬ ((v : ℕ∞) → f (max (ι n) v) ＝ f ∞)
-    h a = f-non-cts (n , (λ n → a (ι n)))
+    h a = f-non-cts (n , a ∘ ι)
 
   G-property∞ : G ∞ ＝ ∞
-  G-property∞ = max∞-property (pr₁ (I ∞))
+  G-property∞ = max∞-property (pr₁ (g ∞))
 
-  V : (u : ℕ∞) → u ＝ ∞ → f (G u) ＝ f ∞
-  V u refl = ap f G-property∞
+  IV : (u : ℕ∞) → u ＝ ∞ → f (G u) ＝ f ∞
+  IV u refl = ap f G-property∞
 
-  VI : (u : ℕ∞) → f (G u) ＝ f ∞ → u ＝ ∞
-  VI u a = not-finite-is-∞ fe VI₀
+  V : (u : ℕ∞) → f (G u) ＝ f ∞ → u ＝ ∞
+  V u a = not-finite-is-∞ fe h
    where
-    VI₀ : (n : ℕ) → u ≠ ι n
-    VI₀ n refl = G-propertyₙ n a
+    h : (n : ℕ) → u ≠ ι n
+    h n refl = G-propertyₙ n a
 
-  VII : WLPO
-  VII u = map-decidable (VI u) (V u) (ℕ-is-discrete (f (G u)) (f ∞))
+  VI : WLPO
+  VI u = map-decidable (V u) (IV u) (ℕ-is-discrete (f (G u)) (f ∞))
+
+\end{code}
+
+In the following fact, we can replace Σ by ∃ because WLPO is a
+proposition. Hence WLPO is the propositional truncation of the type
+Σ f ꞉ (ℕ∞ → ℕ) , ¬ continuous f.
+
+\begin{code}
 
 open import Taboos.BasicDiscontinuity fe
 open import Naturals.Properties
