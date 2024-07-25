@@ -81,6 +81,10 @@ and its negation to
 
    ∀ m. ¬ ∀ n. f (max m n) ＝ ∞.
 
+Because we are going to prove facts about the negation of continuity,
+it doesn't matter whether we define the notion with ∃ or Σ, and we
+choose the latter for convenience.
+
 \begin{code}
 
 continuous : (ℕ∞ → ℕ) → 𝓤₀ ̇
