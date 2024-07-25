@@ -1,4 +1,4 @@
-Martin Escardo, 7 May 2014.
+Martin Escardo, 7 May 2014, with additions 25th July 2024.
 
 For any function f : ℕ∞ → ℕ, it is decidable whether f is non-continuous.
 
