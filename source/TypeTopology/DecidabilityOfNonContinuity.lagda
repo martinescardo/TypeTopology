@@ -128,7 +128,7 @@ Theorem-3·2 f = V
 
  4. If MP and ¬ WLPO then all functions ℕ∞ → ℕ are continuous.
 
-Added 24th July 2024. Still based on the same paper. We write down the proof of 3.
+Added 24th July 2024. Still based on the same paper. We write down the proof of (3).
 
 \begin{code}
 
@@ -208,7 +208,7 @@ discontinuous-map-gives-WLPO f f-non-cts = VI
 
 \end{code}
 
-In the following fact, we can replace Σ by ∃ because WLPO is a
+In the following fact we can replace Σ by ∃ because WLPO is a
 proposition. Hence WLPO is the propositional truncation of the type
 Σ f ꞉ (ℕ∞ → ℕ) , ¬ continuous f.
 
@@ -269,3 +269,5 @@ WLPO-iff-there-is-a-noncontinous-map =
       (λ (f , f-non-cts) → a f f-non-cts))
 
 \end{code}
+
+Hence ¬ WLPO can be considered as a (rather weak) continuity principle.
