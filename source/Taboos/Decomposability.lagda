@@ -401,7 +401,8 @@ types decomposable (Ordinal 𝓤) and WEM are property, we get data out
 of them if we are given a proof of decomposability.
 
 
-Added 9th September 2022 by Tom de Jong.
+Added 9th September 2022 by Tom de Jong (which is subsumed by a remark
+below added 25th July 2024).
 
 After a discussion with Martín on 8th September 2022, we noticed that
 the decomposability theorem can be generalised from Ord 𝓤 to any
@@ -598,6 +599,44 @@ module decomposability-bis (pt : propositional-truncations-exist) where
    (WEM-is-prop fe)
    (decomposition-of-ainjective-type-gives-WEM pe D D-ainj) ,
   (λ wem → ∣ WEM-gives-decomposition-of-two-pointed-types wem D htdp ∣)
+
+\end{code}
+
+Added 25th July 2024 by Tom de Jong and Martin Escardo.
+
+The previous theorem, however, doesn't capture our examples of injective types. Indeed, the assumption that D : 𝓤 is injective with respect to 𝓤
+and 𝓥 is a bit unnatural, as all known examples of injective types are
+large, e.g. the universe 𝓤 is injective w.r.t 𝓤 and 𝓤, as are the
+ordinals in 𝓤 and the propositions in 𝓤. In fact, in
+InjectiveTypes.Resizing we showed that such injective types are
+necessarily large unless Ω¬¬-resizing holds. Therefore, we now improve
+and generalize the above theorem to a large, but locally small,
+type, so that all known examples are captured.
+
+\begin{code}
+
+ ainjective-type-decomposable-iff-WEM⁺
+  : propext 𝓤
+  → (D : 𝓤 ⁺ ̇ )
+  → is-locally-small D
+  → ainjective-type D 𝓤 𝓥
+  → has-two-distinct-points D
+  → decomposable D ↔ WEM 𝓤
+ ainjective-type-decomposable-iff-WEM⁺ pe D D-ls D-ainj htdp =
+  ∥∥-rec
+   (WEM-is-prop fe)
+   (decomposition-of-ainjective-type-gives-WEM pe D D-ainj) ,
+  (λ wem → ∣ WEM-gives-decomposition-of-two-pointed-types⁺ wem D D-ls htdp ∣)
+
+\end{code}
+
+End of addition.
+
+Notice that the following doesn't mention WEM in its statement, but
+its proof does. Although the proof is constructive, the assumption is
+necessarily non-constructive.
+
+\begin{code}
 
  ainjective-type-decomposability-gives-decomposition
   : propext 𝓤
