@@ -271,3 +271,16 @@ WLPO-iff-there-is-a-noncontinous-map =
 \end{code}
 
 Hence ¬ WLPO can be considered as a (rather weak) continuity principle.
+
+It is shown in [1] that negative consistent axioms can be postulated
+in MLTT without loss of canonicity, and Andreas Abel filled important
+gaps and formalized this in Agda [2] using a logical-relations
+technique. Hence we can, if we wish, postulate ¬ WLPO without loss of
+canonicity, and get a weak continuity axiom for free.
+
+[1] T. Coquand, N.A. Danielsson, M.H. Escardo, U. Norell and Chuangjie Xu.
+Negative consistent axioms can be postulated without loss of canonicity.
+https://www.cs.bham.ac.uk/~mhe/papers/negative-axioms.pdf
+
+[2] Andreas Abel. Negative Axioms.
+https://github.com/andreasabel/logrel-mltt/tree/master/Application/NegativeAxioms
