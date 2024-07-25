@@ -187,8 +187,8 @@ discontinuous-map-gives-WLPO f f-non-cts = VII
               → f (G u) ≠ f ∞
   G-property₂ u a = G-property₁ u (II u (IV u a))
 
-  G-property₃ : (n : ℕ) → f (G (ι n)) ≠ f ∞
-  G-property₃ n = G-property₂ (ι n) h
+  G-propertyₙ : (n : ℕ) → f (G (ι n)) ≠ f ∞
+  G-propertyₙ n = G-property₂ (ι n) h
    where
     h : ¬ ((v : ℕ∞) → f (max (ι n) v) ＝ f ∞)
     h a = f-non-cts (n , (λ n → a (ι n)))
@@ -203,7 +203,7 @@ discontinuous-map-gives-WLPO f f-non-cts = VII
   VI u a = not-finite-is-∞ fe VI₀
    where
     VI₀ : (n : ℕ) → u ≠ ι n
-    VI₀ n refl = G-property₃ n a
+    VI₀ n refl = G-propertyₙ n a
 
   VII : WLPO
   VII u = map-decidable (VI u) (V u) (ℕ-is-discrete (f (G u)) (f ∞))
