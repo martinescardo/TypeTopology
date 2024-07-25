@@ -143,11 +143,8 @@ discontinuous-map-gives-WLPO f f-non-cts = VII
   I : (u : ℕ∞) → Σ v₀ ꞉ ℕ∞ , (f (max u v₀) ＝ f ∞ → (v : ℕ∞) → f (max u v) ＝ f ∞)
   I u = ℕ∞-Compact∙ (A u) (A-is-complemented u)
 
-  g : ℕ∞ → ℕ∞
-  g u = pr₁ (I u)
-
   G : ℕ∞ → ℕ∞
-  G u = max u (g u)
+  G u = max u (pr₁ (I u))
 
   G-property : (u : ℕ∞)
              → f (G u) ＝ f ∞
@@ -228,26 +225,23 @@ WLPO-iff-there-is-a-noncontinous-map =
     p-spec : ((n : ℕ) → p (ι n) ＝ ₀) × (p ∞ ＝ ₁)
     p-spec = pr₂ (WLPO-is-discontinuous wlpo)
 
-    e : 𝟚 → ℕ
-    e ₀ = 0
-    e ₁ = 1
+    g : 𝟚 → ℕ
+    g ₀ = 0
+    g ₁ = 1
 
     f : ℕ∞ → ℕ
-    f = e ∘ p
+    f = g ∘ p
 
     f₀ : (n : ℕ) → f (ι n) ＝ 0
-    f₀ n =  f (ι n) ＝⟨ ap e (pr₁ p-spec n) ⟩
-            e ₀     ＝⟨ refl ⟩
+    f₀ n =  f (ι n) ＝⟨ ap g (pr₁ p-spec n) ⟩
+            g ₀     ＝⟨ refl ⟩
             0       ∎
-
-    f∞ : f ∞ ＝ 1
-    f∞ = ap e (pr₂ p-spec)
 
     f-property : (n : ℕ) → f (ι n) ≠ f ∞
     f-property n e = zero-not-positive 0
                       (0       ＝⟨ f₀ n ⁻¹ ⟩
                        f (ι n) ＝⟨ e ⟩
-                       f ∞     ＝⟨ f∞ ⟩
+                       f ∞     ＝⟨ ap g (pr₂ p-spec) ⟩
                        1       ∎)
 
     f-non-cts : ¬ continuous f
