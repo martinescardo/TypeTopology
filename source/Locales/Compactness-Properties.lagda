@@ -22,6 +22,7 @@ open import UF.SubtypeClassifier
 module Locales.Compactness-Properties
         (pt : propositional-truncations-exist)
         (fe : Fun-Ext)
+        (pe : Prop-Ext)
        where
 
 open import Fin.Kuratowski pt
@@ -241,16 +242,16 @@ The function `directify₂` is equal to `directify` as expected.
 \end{code}
 
 Using the equality between `directify` and `directify₂`, we can now easily show
-how to obtain a subcover.
+how to obtain a subcover, from which it follows that `is-compact` implies
+`is-compact'`.
 
 \begin{code}
 
-module Characterization-Of-Compactness (X : Locale 𝓤 𝓥 𝓦) where
+module Characterization-Of-Compactness₁ (X : Locale 𝓤 𝓥 𝓦) where
 
  open Some-Lemmas-On-Directification (𝒪 X)
  open PosetNotation (poset-of (𝒪 X))
-
-{--
+ open PosetReasoning (poset-of (𝒪 X))
 
  finite-subcover-through-directification
   : (U : ⟨ 𝒪 X ⟩)
@@ -261,8 +262,6 @@ module Characterization-Of-Compactness (X : Locale 𝓤 𝓥 𝓦) where
      is-Kuratowski-finite J × (U ≤ (⋁[ 𝒪 X ] ⁅  S [ β j ] ∣ j ∶ J ⁆)) holds
  finite-subcover-through-directification U S is p = T , 𝕗 , q
   where
-   open PosetReasoning (poset-of (𝒪 X))
-
    T : SubFam S
    T = (Σ i ꞉ index S , ∥ member i is ∥) , pr₁
 
@@ -272,46 +271,184 @@ module Characterization-Of-Compactness (X : Locale 𝓤 𝓥 𝓦) where
    † = directify₂-is-equal-to-directify S is ⁻¹
 
    q : (U ≤ (⋁[ 𝒪 X ] ⁅ S [ T [ x ] ] ∣ x ∶ index T ⁆)) holds
-   q = U                                          ≤⟨ p ⟩
-       directify (𝒪 X) S [ is ]                   ＝⟨ † ⟩ₚ
-       directify₂ S [ is ]                        ＝⟨ {!!} ⟩ₚ
+   q = U                                          ≤⟨ p     ⟩
+       directify (𝒪 X) S [ is ]                   ＝⟨ †    ⟩ₚ
+       directify₂ S [ is ]                        ＝⟨ refl ⟩ₚ
        ⋁[ 𝒪 X ] ⁅ S [ T [ x ] ] ∣ x ∶ index T ⁆   ■
+
+\end{code}
+
+It follows from this that `is-compact-open` implies `is-compact-open'`.
+
+\begin{code}
+
+ compact-open-implies-compact-open' : (U : ⟨ 𝒪 X ⟩)
+                                    → is-compact-open  X U holds
+                                    → is-compact-open' X U holds
+ compact-open-implies-compact-open' U κ S q =
+  ∥∥-functor † (κ S↑ δ p)
+  where
+   open JoinNotation (join-of (𝒪 X))
+
+   Xₚ = poset-of (𝒪 X)
+
+   S↑ : Fam 𝓦 ⟨ 𝒪 X ⟩
+   S↑ = directify (𝒪 X) S
+
+   δ : is-directed (𝒪 X) (directify (𝒪 X) S) holds
+   δ = directify-is-directed (𝒪 X) S
+
+   p : (U ≤[ Xₚ ] (⋁[ 𝒪 X ] S↑)) holds
+   p = U             ≤⟨ Ⅰ ⟩
+       ⋁[ 𝒪 X ] S    ＝⟨ Ⅱ ⟩ₚ
+       ⋁[ 𝒪 X ] S↑   ■
+        where
+         Ⅰ = q
+         Ⅱ = directify-preserves-joins (𝒪 X) S
+
+   † : (Σ is ꞉ index S↑ , (U ≤[ Xₚ ] S↑ [ is ]) holds)
+     → Σ (J , β) ꞉ SubFam S ,
+        is-Kuratowski-finite J × (U ≤[ Xₚ ] (⋁⟨ j ∶ J ⟩ S [ β j ])) holds
+   † = uncurry (finite-subcover-through-directification U S)
+
+\end{code}
+
+\section{The property `is-compact-open'` implies `is-compact-open`}
+
+We now prove the converse which is a bit more difficult. We start with some
+preparation.
+
+Given a subset `P : ⟨ 𝒪 X ⟩ → Ω` and a family `S : Fam 𝓤 ⟨ 𝒪 X ⟩`, the type
+`Upper-Bound-Data P S` is the type indices of `S` such that `S [ i ]` is an
+upper bound of the subset `P`.
+
+\begin{code}
+
+module Characterization-Of-Compactness₂ (X : Locale (𝓤 ⁺) 𝓤 𝓤) where
+
+ open Some-Lemmas-On-Directification (𝒪 X)
+ open PosetNotation (poset-of (𝒪 X))
+ open PosetReasoning (poset-of (𝒪 X))
+ open Joins (λ x y → x ≤ y)
+
+ Upper-Bound-Data : 𝓟 {𝓣} ⟨ 𝒪 X ⟩ → Fam 𝓤 ⟨ 𝒪 X ⟩ → 𝓤 ⁺ ⊔ 𝓣  ̇
+ Upper-Bound-Data P S =
+  Σ i ꞉ index S , (Ɐ x ꞉ ⟨ 𝒪 X ⟩ , P x ⇒ x ≤ S [ i ]) holds
+
+\end{code}
+
+Now, the truncated version of this which we denote `has-upper-bound-in`:
+
+\begin{code}
+
+ has-upper-bound-in :  𝓟 {𝓣} ⟨ 𝒪 X ⟩ → Fam 𝓤 ⟨ 𝒪 X ⟩ → Ω (𝓤 ⁺ ⊔ 𝓣)
+ has-upper-bound-in P S = ∥ Upper-Bound-Data P S ∥Ω
+
+\end{code}
+
+We define the following version of the characteristic function.
+
+\begin{code}
+
+ χ∙ : Fam 𝓤 ⟨ 𝒪 X ⟩ → ⟨ 𝒪 X ⟩ → Ω (𝓤 ⁺)
+ χ∙ S U = U ∈image (S [_]) , being-in-the-image-is-prop U (S [_])
+  where
+   open Equality carrier-of-[ poset-of (𝒪 X) ]-is-set
 
 \end{code}
 
 \begin{code}
 
-compact-open-implies-compact-open' : (X : Locale 𝓤 𝓥 𝓦)
-                                   → (U : ⟨ 𝒪 X ⟩)
-                                   → is-compact-open  X U holds
-                                   → is-compact-open' X U holds
-compact-open-implies-compact-open' {_} {_} {𝓦} X U κ S q =
- ∥∥-functor † (κ S↑ δ p)
- where
-  open PosetReasoning (poset-of (𝒪 X))
+ open singleton-Kuratowski-finite-subsets
+ open binary-unions-of-subsets pt
 
-  Xₚ = poset-of (𝒪 X)
+ main-lemma : (S : Fam 𝓤 ⟨ 𝒪 X ⟩)
+            → is-directed (𝒪 X) S holds
+            → (P : 𝓟 {𝓤 ⁺} ⟨ 𝒪 X ⟩)
+            → (P ⊆ χ∙ S)
+            → is-Kuratowski-finite-subset P
+            → has-upper-bound-in P S holds
+ main-lemma S (ι , υ) P ψ 𝕗 =
+  Kuratowski-finite-subset-induction pe fe ⟨ 𝒪 X ⟩ σ R i β γ δ {!!} {!!}
+   where
+    R : 𝓚 ⟨ 𝒪 X ⟩ → 𝓤 ⁺  ̇
+    R (Q , φ) = (Q ⊆ P) → has-upper-bound-in Q S holds
 
-  S↑ : Fam 𝓦 ⟨ 𝒪 X ⟩
-  S↑ = directify (𝒪 X) S
+    i : (A : 𝓚 ⟨ 𝒪 X ⟩) → is-prop (R A)
+    i (A , _) = Π-is-prop fe (λ q → holds-is-prop (has-upper-bound-in A S))
 
-  δ : is-directed (𝒪 X) (directify (𝒪 X) S) holds
-  δ = directify-is-directed (𝒪 X) S
+    σ : is-set ⟨ 𝒪 X ⟩
+    σ = carrier-of-[ poset-of (𝒪 X) ]-is-set
 
-  p : (U ≤[ Xₚ ] (⋁[ 𝒪 X ] S↑)) holds
-  p = U             ≤⟨ Ⅰ ⟩
-      ⋁[ 𝒪 X ] S    ＝⟨ Ⅱ ⟩ₚ
-      ⋁[ 𝒪 X ] S↑   ■
+    β : R ∅[𝓚]
+    β _ = ∥∥-functor (λ i → i , λ _ ()) ι
+
+    γ : (U : ⟨ 𝒪 X ⟩) → R (❴ σ ❵[𝓚] U)
+    γ U μ = ∥∥-functor † (ψ U (μ U refl))
+     where
+      † : Σ i ꞉ index S , S [ i ] ＝ U
+        → Σ i ꞉ index S , ((V : ⟨ 𝒪 X ⟩) → U ＝ V → (V ≤ S [ i ]) holds)
+      † (i , p) = i , ϑ
        where
-        Ⅰ = q
-        Ⅱ = directify-preserves-joins (𝒪 X) S
+        ϑ : (V : ⟨ 𝒪 X ⟩) → U ＝ V → (V ≤ S [ i ]) holds
+        ϑ V q = V        ＝⟨ q ⁻¹ ⟩ₚ
+                U        ＝⟨ p ⁻¹ ⟩ₚ
+                S [ i ]  ■
 
-  † : (Σ is ꞉ index S↑ , (U ≤[ Xₚ ] (S↑ [ is ])) holds)
-    → Σ (J , h) ꞉ SubFam S ,
-        is-Kuratowski-finite J × (U ≤[ Xₚ ] (⋁[ 𝒪 X ] (J , S [_] ∘ h))) holds
-  † (is , r) = {!!}
+    δ : (𝒜 ℬ : 𝓚 ⟨ 𝒪 X ⟩) → R 𝒜 → R ℬ → R (𝒜 ∪[𝓚] ℬ)
+    δ 𝒜@(A , _) ℬ@(B , _) φ ψ h =
+     ∥∥-rec₂ (holds-is-prop (has-upper-bound-in (A ∪ B) S)) † (φ i₁) (ψ i₂)
+      where
+       i₁ : A ⊆ P
+       i₁ = ⊆-trans A (A ∪ B) P (∪-is-upperbound₁ A B) h
 
--- --}
--- --}
+       i₂ : B ⊆ P
+       i₂ = ⊆-trans B (A ∪ B) P (∪-is-upperbound₂ A B) h
+
+       † : Upper-Bound-Data A S
+         → Upper-Bound-Data B S
+         → has-upper-bound-in (A ∪ B) S holds
+       † (i , a) (j , b) = ∥∥-functor ‡ (υ i j)
+        where
+         ‡ : (Σ k ꞉ index S ,
+               ((S [ k ]) is-an-upper-bound-of₂ (S [ i ] , S [ j ])) holds)
+           → Σ k ꞉ index S , ((U : ⟨ 𝒪 X ⟩) → U ∈ (A ∪ B) → (U ≤ S [ k ]) holds)
+         ‡ (k , p₁ , p₂) = {!!}
+
+\end{code}
+
+A directed family contains at least one upper bound of every Kuratowski-finite
+subfamily.
+
+\begin{code}
+
+ directed-families-have-upper-bounds-of-Kuratowski-finite-subfamilies
+  : (S : Fam 𝓤 ⟨ 𝒪 X ⟩)
+  → is-directed (𝒪 X) S holds
+  → is-Kuratowski-finite (index S)
+  → has-upper-bound-in (χ∙ S) S holds
+ directed-families-have-upper-bounds-of-Kuratowski-finite-subfamilies S 𝒹 𝒻 =
+  {!!}
+
+\end{code}
+
+\begin{code}
+
+ compact-open'-implies-compact-open : (U : ⟨ 𝒪 X ⟩)
+                                    → is-compact-open' X U holds
+                                    → is-compact-open  X U holds
+ compact-open'-implies-compact-open U κ S δ p =
+  ∥∥-rec ∃-is-prop † (κ S p)
+  where
+   † : (Σ (J , h) ꞉ SubFam S , is-Kuratowski-finite J × ((U ≤[ poset-of (𝒪 X) ] (⋁[ 𝒪 X ] (J , (λ x → S [ h x ])))) holds))
+     → (Ǝ k ꞉ index S , ((U ≤[ poset-of (𝒪 X) ] S [ k ]) holds)) holds
+   † ((J , h) , κ , q) = ∥∥-rec ∃-is-prop ‡ {!!}
+    where
+     ‡ : (Σ j ꞉ J , (((S [ h j ]) is-an-upper-bound-of (J , (S [_] ∘ h))) holds))
+       → ∃ (λ k → rel-syntax (poset-of (𝒪 X)) U (S [ k ]) holds)
+     ‡ (j , υ) = ∣ h j , {!!} ∣
+      where
+       ♢ : (U ≤[ poset-of (𝒪 X) ] S [ h j ]) holds
+       ♢ = U ≤⟨ q ⟩ ⋁[ 𝒪 X ] (J , (λ x → S [ h x ])) ≤⟨ ⋁[ 𝒪 X ]-least (J , (λ x → S [ h x ])) ((S [ h j ]) , υ) ⟩ S [ h j ] ■
 
 \end{code}
