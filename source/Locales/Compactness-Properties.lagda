@@ -610,19 +610,36 @@ module Characterization-Of-Compactness₃ (X : Locale 𝓤 𝓥 𝓦) where
         ⋁[ 𝒪 X ] S′  ■
 
     † : (Σ (J , h) ꞉ SubFam S , is-Kuratowski-finite J × (U ≤ (⋁[ 𝒪 X ] ⁅  S′ [ h j ] ∣ j ∶ J ⁆)) holds)
-      → Σ (J , h) ꞉ SubFam S , is-Kuratowski-finite J × (U ＝ ⋁[ 𝒪 X ] ⁅  S [ h j ] ∣ j ∶ J ⁆)
+      → Σ (J , h) ꞉ SubFam S , is-Kuratowski-finite J × (U ＝ ⋁[ 𝒪 X ] ⁅ S [ h j ] ∣ j ∶ J ⁆)
     † ((J , h) , 𝕗 , r) = (J , h) , (𝕗 , ‡)
      where
-      ‡₁ : rel-syntax (poset-of (𝒪 X)) U (join-of (𝒪 X) (compr-syntax J (λ j → S [ h j ]))) holds
-      ‡₁ = {!!}
 
-      ‡₂ : {!!}
-      ‡₂ = {!!}
+      ‡₁ : (U ≤ (⋁[ 𝒪 X ] ⁅  S [ h j ] ∣ j ∶ J ⁆)) holds
+      ‡₁ = U                                 ≤⟨ r ⟩
+           ⋁[ 𝒪 X ] ⁅ S′ [ h j ] ∣ j ∶ J ⁆   ≤⟨ Ⅱ ⟩
+           ⋁[ 𝒪 X ] ⁅ S [ h j ] ∣ j ∶ J ⁆    ■
+            where
+             Ⅱ = cofinal-implies-join-covered
+                  (𝒪 X)
+                  ⁅ S′ [ h j ] ∣ j ∶ J ⁆
+                  ⁅ S [ h j ] ∣ j ∶ J ⁆
+                  λ j → ∣ j , ∧[ 𝒪 X ]-lower₂ U (S [ h j ]) ∣
 
-      ♢ : ((⋁[ 𝒪 X ] ⁅  S′ [ h j ] ∣ j ∶ J ⁆) ≤ U) holds
+      ♢ : ((⋁[ 𝒪 X ] ⁅ S′ [ h j ] ∣ j ∶ J ⁆) ≤ U) holds
       ♢ = ⋁[ 𝒪 X ]-least ⁅ S′ [ h j ] ∣ j ∶ J ⁆ (U , (λ j → ∧[ 𝒪 X ]-lower₁ U (S [ h j ])))
 
-      ‡ : U ＝ ⋁[ 𝒪 X ] (compr-syntax J (λ j → S [ h j ]))
+      Ⅰ = cofinal-implies-join-covered
+           (𝒪 X)
+           ⁅ S [ h j ] ∣ j ∶ J ⁆
+           ⁅ S′ [ h j ] ∣ j ∶ J ⁆
+           (λ j → ∣ j , ∧[ 𝒪 X ]-greatest U (S [ h j ]) (S [ h j ]) (υ (h j)) (≤-is-reflexive (poset-of (𝒪 X)) (S [ h j ])) ∣)
+
+      ‡₂ : ((⋁[ 𝒪 X ] ⁅  S [ h j ] ∣ j ∶ J ⁆) ≤ U) holds
+      ‡₂ = ⋁[ 𝒪 X ] ⁅ S [ h j ] ∣ j ∶ J ⁆    ≤⟨ Ⅰ ⟩
+           ⋁[ 𝒪 X ] ⁅ S′ [ h j ] ∣ j ∶ J ⁆   ≤⟨ ♢ ⟩
+           U                                  ■
+
+      ‡ : U ＝ ⋁[ 𝒪 X ] ⁅ S [ h j ] ∣ j ∶ J ⁆
       ‡ = ≤-is-antisymmetric (poset-of (𝒪 X)) ‡₁ ‡₂
 
 \end{code}
