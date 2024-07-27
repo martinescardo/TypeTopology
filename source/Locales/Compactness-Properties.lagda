@@ -346,7 +346,8 @@ Now, the truncated version of this which we denote `has-upper-bound-in`:
 
 \end{code}
 
-We define the following version of the characteristic function.
+Given a family `S`, we denote by `χ∙ S` the subset expressing falling in the
+image of the family.
 
 \begin{code}
 
@@ -354,6 +355,42 @@ We define the following version of the characteristic function.
  χ∙ S U = U ∈image (S [_]) , being-in-the-image-is-prop U (S [_])
   where
    open Equality carrier-of-[ poset-of (𝒪 X) ]-is-set
+
+\end{code}
+
+Given a Kuratowski-finite family `S`, the subset `χ∙ S` is a Kuratowski-finite
+subset.
+
+\begin{code}
+
+ χ∙-of-Kuratowski-finite-subset-is-Kuratowski-finite
+  : (S : Fam 𝓤 ⟨ 𝒪 X ⟩)
+  → is-Kuratowski-finite (index S)
+  → is-Kuratowski-finite-subset (χ∙ S)
+ χ∙-of-Kuratowski-finite-subset-is-Kuratowski-finite S 𝕗 = ∥∥-functor † 𝕗
+  where
+   † : (Σ n ꞉ ℕ , Fin n ↠ index S) → Σ n ꞉ ℕ , Fin n ↠ 𝕋 (χ∙ S)
+   † (n , (h , σ)) = n , h′ , σ′
+    where
+     h′ : Fin n → 𝕋 (χ∙ S)
+     h′ i = S [ h i ] , ∣ h i , refl ∣
+
+     σ′ : is-surjection h′
+     σ′ (U , p) = ∥∥-rec ∥∥-is-prop ♢ p
+      where
+       ♢ : Σ x ꞉ index S , S [ x ] ＝ U → ∃ i ꞉ Fin n , (h′ i ＝ U , p)
+       ♢ (i , q) = ∥∥-rec ∃-is-prop ♠ (σ i)
+        where
+         ♠ : Σ (λ x → h x ＝ i) → ∃ (λ j → h′ j ＝ U , p)
+         ♠ (m , r) = ∣ m , to-subtype-＝ (λ _ → ∃-is-prop) ※ ∣
+          where
+           Ⅰ = ap (S [_]) r
+           Ⅱ = q
+
+           ※ : S [ h m ] ＝ U
+           ※ = S [ h m ]   ＝⟨ Ⅰ ⟩
+               S [ i ]     ＝⟨ Ⅱ ⟩
+               U           ∎
 
 \end{code}
 
@@ -369,7 +406,7 @@ We define the following version of the characteristic function.
             → is-Kuratowski-finite-subset P
             → has-upper-bound-in P S holds
  main-lemma S (ι , υ) P ψ 𝕗 =
-  Kuratowski-finite-subset-induction pe fe ⟨ 𝒪 X ⟩ σ R i β γ δ {!!} {!!}
+  Kuratowski-finite-subset-induction pe fe ⟨ 𝒪 X ⟩ σ R i β γ δ (P , 𝕗) (⊆-refl P)
    where
     R : 𝓚 ⟨ 𝒪 X ⟩ → 𝓤 ⁺  ̇
     R (Q , φ) = (Q ⊆ P) → has-upper-bound-in Q S holds
@@ -408,12 +445,23 @@ We define the following version of the characteristic function.
        † : Upper-Bound-Data A S
          → Upper-Bound-Data B S
          → has-upper-bound-in (A ∪ B) S holds
-       † (i , a) (j , b) = ∥∥-functor ‡ (υ i j)
+       † (i , ζ) (j , ξ) = ∥∥-functor ‡ (υ i j)
         where
          ‡ : (Σ k ꞉ index S ,
                ((S [ k ]) is-an-upper-bound-of₂ (S [ i ] , S [ j ])) holds)
            → Σ k ꞉ index S , ((U : ⟨ 𝒪 X ⟩) → U ∈ (A ∪ B) → (U ≤ S [ k ]) holds)
-         ‡ (k , p₁ , p₂) = {!!}
+         ‡ (k , p₁ , p₂) = k , ♢
+          where
+           ♢ : (U : ⟨ 𝒪 X ⟩) → U ∈ (A ∪ B) → (U ≤ S [ k ]) holds
+           ♢ U μ = ∥∥-rec (holds-is-prop (U ≤ S [ k ])) ♠ μ
+            where
+             ♠ : A U holds + B U holds → (U ≤ S [ k ]) holds
+             ♠ (inl μ) = U         ≤⟨ ζ U μ ⟩
+                         S [ i ]   ≤⟨ p₁    ⟩
+                         S [ k ]   ■
+             ♠ (inr μ) = U         ≤⟨ ξ U μ ⟩
+                         S [ j ]   ≤⟨ p₂    ⟩
+                         S [ k ]   ■
 
 \end{code}
 
@@ -425,12 +473,28 @@ subfamily.
  directed-families-have-upper-bounds-of-Kuratowski-finite-subfamilies
   : (S : Fam 𝓤 ⟨ 𝒪 X ⟩)
   → is-directed (𝒪 X) S holds
-  → is-Kuratowski-finite (index S)
-  → has-upper-bound-in (χ∙ S) S holds
- directed-families-have-upper-bounds-of-Kuratowski-finite-subfamilies S 𝒹 𝒻 =
-  {!!}
+  → (𝒥 : Fam 𝓤 (index S))
+  → is-Kuratowski-finite (index 𝒥)
+  → has-upper-bound-in (χ∙ ⁅ S [ 𝒥 [ j ] ] ∣ j ∶ index 𝒥 ⁆) S holds
+ directed-families-have-upper-bounds-of-Kuratowski-finite-subfamilies S 𝒹 𝒥 𝕗 =
+  main-lemma S 𝒹 (χ∙ ⁅ S [ 𝒥 [ j ] ] ∣ j ∶ index 𝒥 ⁆) † 𝕗′
+   where
+    𝕗′ : is-Kuratowski-finite-subset (χ∙ ⁅ S [ 𝒥 [ j ] ] ∣ j ∶ index 𝒥 ⁆)
+    𝕗′ = χ∙-of-Kuratowski-finite-subset-is-Kuratowski-finite
+          ⁅ S [ 𝒥 [ j ] ] ∣ j ∶ index 𝒥 ⁆
+          𝕗
+
+    † : χ∙ ⁅ S [ 𝒥 [ j ] ] ∣ j ∶ index 𝒥 ⁆ ⊆ χ∙ S
+    † U = ∥∥-functor ‡
+     where
+      ‡ : Σ (λ x → compr-syntax (index 𝒥) (λ j → S [ 𝒥 [ j ] ]) [ x ] ＝ U)
+        → Σ (λ x → S [ x ] ＝ U)
+      ‡ (i , p) = 𝒥 [ i ] , p
 
 \end{code}
+
+From this, we can easily derive the fact that `is-compact-open'` implies
+`is-compact-open`.
 
 \begin{code}
 
@@ -439,16 +503,34 @@ subfamily.
                                     → is-compact-open  X U holds
  compact-open'-implies-compact-open U κ S δ p =
   ∥∥-rec ∃-is-prop † (κ S p)
-  where
-   † : (Σ (J , h) ꞉ SubFam S , is-Kuratowski-finite J × ((U ≤[ poset-of (𝒪 X) ] (⋁[ 𝒪 X ] (J , (λ x → S [ h x ])))) holds))
-     → (Ǝ k ꞉ index S , ((U ≤[ poset-of (𝒪 X) ] S [ k ]) holds)) holds
-   † ((J , h) , κ , q) = ∥∥-rec ∃-is-prop ‡ {!!}
-    where
-     ‡ : (Σ j ꞉ J , (((S [ h j ]) is-an-upper-bound-of (J , (S [_] ∘ h))) holds))
-       → ∃ (λ k → rel-syntax (poset-of (𝒪 X)) U (S [ k ]) holds)
-     ‡ (j , υ) = ∣ h j , {!!} ∣
-      where
-       ♢ : (U ≤[ poset-of (𝒪 X) ] S [ h j ]) holds
-       ♢ = U ≤⟨ q ⟩ ⋁[ 𝒪 X ] (J , (λ x → S [ h x ])) ≤⟨ ⋁[ 𝒪 X ]-least (J , (λ x → S [ h x ])) ((S [ h j ]) , υ) ⟩ S [ h j ] ■
+   where
+    † : Σ (J , h) ꞉ SubFam S , is-Kuratowski-finite J
+                             × (U ≤ (⋁[ 𝒪 X ] ⁅  S [ h j ] ∣ j ∶ J ⁆)) holds
+      → ∃ i ꞉ index S , (U ≤ S [ i ]) holds
+    † ((J , h) , 𝕗 , c) = ∥∥-functor ‡ γ
+     where
+      S′ : Fam 𝓤 ⟨ 𝒪 X ⟩
+      S′ = ⁅  S [ h j ] ∣ j ∶ J ⁆
+
+      ‡ : Upper-Bound-Data (χ∙ S′) S → Σ (λ i → (U ≤ S [ i ]) holds)
+      ‡ (i , q) = i , ♢
+       where
+        φ : ((S [ i ]) is-an-upper-bound-of S′) holds
+        φ j = q (S′ [ j ]) ∣ j , refl ∣
+
+        Ⅰ = c
+        Ⅱ = ⋁[ 𝒪 X ]-least ⁅ S [ h j ] ∣ j ∶ J ⁆ (S [ i ] , φ)
+
+        ♢ : (U ≤ S [ i ]) holds
+        ♢ = U                                 ≤⟨ Ⅰ ⟩
+            ⋁[ 𝒪 X ] ⁅ S [ h j ] ∣ j ∶ J ⁆    ≤⟨ Ⅱ ⟩
+            S [ i ]                           ■
+
+      γ : has-upper-bound-in (χ∙ S′) S holds
+      γ = directed-families-have-upper-bounds-of-Kuratowski-finite-subfamilies
+           S
+           δ
+           (J , h)
+           𝕗
 
 \end{code}
