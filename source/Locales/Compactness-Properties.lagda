@@ -1,7 +1,8 @@
 ---
-title:        Properties of compactness
-author:       Ayberk Tosun
-date-started: 2024-07-19
+title:          Properties of compactness
+author:         Ayberk Tosun
+date-started:   2024-07-19
+date-completed: 2024-07-27
 ---
 
 \begin{code}[hide]
@@ -58,12 +59,16 @@ SubFam {𝓤} {A} {𝓦} (I , α) = Σ J ꞉ 𝓦  ̇ , (J → I)
 
 \end{code}
 
+Tiny lemma recording the fact that nothing is a member of the empty list.
+
 \begin{code}
 
 not-in-empty-list : {A : 𝓤  ̇} {x : A} → ¬ ∥ member x [] ∥
 not-in-empty-list = ∥∥-rec 𝟘-is-prop (λ ())
 
 \end{code}
+
+\section{Alternative definition of compactness}
 
 Compactness could have been alternatively defined as:
 
@@ -80,6 +85,9 @@ is-compact-open' {𝓤} {𝓥} {𝓦} X U =
    open PosetNotation (poset-of (𝒪 X))
 
 \end{code}
+
+This is much closer to the “every cover has a finite subcover definition” from
+point-set topology.
 
 Given any list, the type of elements that fall in the list is a
 Kuratowski-finite type.
@@ -285,8 +293,7 @@ It follows from this that `is-compact-open` implies `is-compact-open'`.
  compact-open-implies-compact-open' : (U : ⟨ 𝒪 X ⟩)
                                     → is-compact-open  X U holds
                                     → is-compact-open' X U holds
- compact-open-implies-compact-open' U κ S q =
-  ∥∥-functor † (κ S↑ δ p)
+ compact-open-implies-compact-open' U κ S q = ∥∥-functor † (κ S↑ δ p)
   where
    open JoinNotation (join-of (𝒪 X))
 
@@ -313,8 +320,6 @@ It follows from this that `is-compact-open` implies `is-compact-open'`.
 
 \end{code}
 
-\section{The property `is-compact-open'` implies `is-compact-open`}
-
 We now prove the converse which is a bit more difficult. We start with some
 preparation.
 
@@ -337,7 +342,7 @@ module Characterization-Of-Compactness₂ (X : Locale (𝓤 ⁺) 𝓤 𝓤) wher
 
 \end{code}
 
-Now, the truncated version of this which we denote `has-upper-bound-in`:
+Now, we give the truncated version of this which we denote `has-upper-bound-in`:
 
 \begin{code}
 
@@ -346,8 +351,8 @@ Now, the truncated version of this which we denote `has-upper-bound-in`:
 
 \end{code}
 
-Given a family `S`, we denote by `χ∙ S` the subset expressing falling in the
-image of the family.
+Given a family `S`, we denote by `χ∙ S` the subset corresponding to the image of
+the family.
 
 \begin{code}
 
@@ -369,8 +374,8 @@ subset.
   → is-Kuratowski-finite-subset (χ∙ S)
  χ∙-of-Kuratowski-finite-subset-is-Kuratowski-finite S 𝕗 = ∥∥-functor † 𝕗
   where
-   † : (Σ n ꞉ ℕ , Fin n ↠ index S) → Σ n ꞉ ℕ , Fin n ↠ 𝕋 (χ∙ S)
-   † (n , (h , σ)) = n , h′ , σ′
+   † : Σ n ꞉ ℕ , Fin n ↠ index S → Σ n ꞉ ℕ , Fin n ↠ 𝕋 (χ∙ S)
+   † (n , h , σ) = n , h′ , σ′
     where
      h′ : Fin n → 𝕋 (χ∙ S)
      h′ i = S [ h i ] , ∣ h i , refl ∣
@@ -394,18 +399,22 @@ subset.
 
 \end{code}
 
+We are now ready to prove our main lemma, which states that every directed
+family `S` contains at least one upper bound of every Kuratowski-finite subset.
+
 \begin{code}
 
  open singleton-Kuratowski-finite-subsets
  open binary-unions-of-subsets pt
 
- main-lemma : (S : Fam 𝓤 ⟨ 𝒪 X ⟩)
-            → is-directed (𝒪 X) S holds
-            → (P : 𝓟 {𝓤 ⁺} ⟨ 𝒪 X ⟩)
-            → (P ⊆ χ∙ S)
-            → is-Kuratowski-finite-subset P
-            → has-upper-bound-in P S holds
- main-lemma S (ι , υ) P ψ 𝕗 =
+ directed-families-have-upper-bounds-of-Kuratowski-finite-subsets
+  : (S : Fam 𝓤 ⟨ 𝒪 X ⟩)
+  → is-directed (𝒪 X) S holds
+  → (P : 𝓟 {𝓤 ⁺} ⟨ 𝒪 X ⟩)
+  → (P ⊆ χ∙ S)
+  → is-Kuratowski-finite-subset P
+  → has-upper-bound-in P S holds
+ directed-families-have-upper-bounds-of-Kuratowski-finite-subsets S (ι , υ) P ψ 𝕗 =
   Kuratowski-finite-subset-induction pe fe ⟨ 𝒪 X ⟩ σ R i β γ δ (P , 𝕗) (⊆-refl P)
    where
     R : 𝓚 ⟨ 𝒪 X ⟩ → 𝓤 ⁺  ̇
@@ -465,8 +474,8 @@ subset.
 
 \end{code}
 
-A directed family contains at least one upper bound of every Kuratowski-finite
-subfamily.
+From this, we get that directed families contain at least one upper bound of
+their Kuratowski-finite subfamilies.
 
 \begin{code}
 
@@ -477,24 +486,27 @@ subfamily.
   → is-Kuratowski-finite (index 𝒥)
   → has-upper-bound-in (χ∙ ⁅ S [ 𝒥 [ j ] ] ∣ j ∶ index 𝒥 ⁆) S holds
  directed-families-have-upper-bounds-of-Kuratowski-finite-subfamilies S 𝒹 𝒥 𝕗 =
-  main-lemma S 𝒹 (χ∙ ⁅ S [ 𝒥 [ j ] ] ∣ j ∶ index 𝒥 ⁆) † 𝕗′
-   where
-    𝕗′ : is-Kuratowski-finite-subset (χ∙ ⁅ S [ 𝒥 [ j ] ] ∣ j ∶ index 𝒥 ⁆)
-    𝕗′ = χ∙-of-Kuratowski-finite-subset-is-Kuratowski-finite
-          ⁅ S [ 𝒥 [ j ] ] ∣ j ∶ index 𝒥 ⁆
-          𝕗
+  directed-families-have-upper-bounds-of-Kuratowski-finite-subsets
+   S
+   𝒹
+   (χ∙ ⁅ S [ 𝒥 [ j ] ] ∣ j ∶ index 𝒥 ⁆)
+   †
+   𝕗′
+    where
+     𝕗′ : is-Kuratowski-finite-subset (χ∙ ⁅ S [ 𝒥 [ j ] ] ∣ j ∶ index 𝒥 ⁆)
+     𝕗′ = χ∙-of-Kuratowski-finite-subset-is-Kuratowski-finite
+           ⁅ S [ 𝒥 [ j ] ] ∣ j ∶ index 𝒥 ⁆
+           𝕗
 
-    † : χ∙ ⁅ S [ 𝒥 [ j ] ] ∣ j ∶ index 𝒥 ⁆ ⊆ χ∙ S
-    † U = ∥∥-functor ‡
-     where
-      ‡ : Σ (λ x → compr-syntax (index 𝒥) (λ j → S [ 𝒥 [ j ] ]) [ x ] ＝ U)
-        → Σ (λ x → S [ x ] ＝ U)
-      ‡ (i , p) = 𝒥 [ i ] , p
+     † : χ∙ ⁅ S [ 𝒥 [ j ] ] ∣ j ∶ index 𝒥 ⁆ ⊆ χ∙ S
+     † U = ∥∥-functor ‡
+      where
+       ‡ : Σ j ꞉ index 𝒥 , S [ 𝒥 [ j ] ] ＝ U → Σ i ꞉ index S , S [ i ] ＝ U
+       ‡ (i , p) = 𝒥 [ i ] , p
 
 \end{code}
 
-From this, we can easily derive the fact that `is-compact-open'` implies
-`is-compact-open`.
+It easily follows from this that `is-compact-open'` implies `is-compact-open`.
 
 \begin{code}
 
