@@ -546,3 +546,83 @@ It easily follows from this that `is-compact-open'` implies `is-compact-open`.
            𝕗
 
 \end{code}
+
+\section{Another alternative definition}
+
+We now provide another variant of the definition `is-compact-open'` which is
+easily shown to be equivalent.
+
+\begin{code}
+
+is-compact-open'' : (X : Locale 𝓤 𝓥 𝓦) → ⟨ 𝒪 X ⟩ → Ω (𝓤 ⊔ 𝓦 ⁺)
+is-compact-open'' {𝓤} {𝓥} {𝓦} X U =
+ Ɐ S ꞉ Fam 𝓦 ⟨ 𝒪 X ⟩ ,
+  (U ＝ₚ ⋁[ 𝒪 X ] S) ⇒
+   (Ǝ (J , h) ꞉ SubFam S , is-Kuratowski-finite J
+                         × (U ＝ ⋁[ 𝒪 X ] ⁅  S [ h j ] ∣ j ∶ J ⁆))
+   where
+    open PosetNotation (poset-of (𝒪 X))
+    open Equality carrier-of-[ poset-of (𝒪 X) ]-is-set
+
+\end{code}
+
+\begin{code}
+
+module Characterization-Of-Compactness₃ (X : Locale 𝓤 𝓥 𝓦) where
+
+ open Some-Lemmas-On-Directification (𝒪 X)
+ open PosetNotation (poset-of (𝒪 X))
+ open PosetReasoning (poset-of (𝒪 X))
+
+\end{code}
+
+\begin{code}
+
+ compact-open'-implies-compact-open'' : (U : ⟨ 𝒪 X ⟩)
+                                      → is-compact-open'  X U holds
+                                      → is-compact-open'' X U holds
+ compact-open'-implies-compact-open'' U κ S p =
+  ∥∥-functor † (κ S′ c)
+   where
+    open Joins (λ x y → x ≤ y)
+
+    S′ : Fam 𝓦 ⟨ 𝒪 X ⟩
+    S′ = ⁅ U ∧[ 𝒪 X ] S [ i ] ∣ i ∶ index S ⁆
+
+    υ : (U is-an-upper-bound-of S) holds
+    υ = transport
+         (λ - → (- is-an-upper-bound-of S) holds)
+         (p ⁻¹)
+         (⋁[ 𝒪 X ]-upper S)
+
+    φ : cofinal-in (𝒪 X) S S′ holds
+    φ i = ∣ i , ∧[ 𝒪 X ]-greatest U (S [ i ]) (S [ i ]) (υ i) (≤-is-reflexive (poset-of (𝒪 X)) (S [ i ])) ∣
+
+    ψ : cofinal-in (𝒪 X) S′ S holds
+    ψ i = ∣ i , ∧[ 𝒪 X ]-lower₂ U (S [ i ]) ∣
+
+    q : ⋁[ 𝒪 X ] S ＝ ⋁[ 𝒪 X ] S′
+    q = bicofinal-implies-same-join (𝒪 X) S S′ φ ψ
+
+    c : (U ≤ (⋁[ 𝒪 X ] S′)) holds
+    c = U            ＝⟨ p ⟩ₚ
+        ⋁[ 𝒪 X ] S   ＝⟨ q ⟩ₚ
+        ⋁[ 𝒪 X ] S′  ■
+
+    † : (Σ (J , h) ꞉ SubFam S , is-Kuratowski-finite J × (U ≤ (⋁[ 𝒪 X ] ⁅  S′ [ h j ] ∣ j ∶ J ⁆)) holds)
+      → Σ (J , h) ꞉ SubFam S , is-Kuratowski-finite J × (U ＝ ⋁[ 𝒪 X ] ⁅  S [ h j ] ∣ j ∶ J ⁆)
+    † ((J , h) , 𝕗 , r) = (J , h) , (𝕗 , ‡)
+     where
+      ‡₁ : rel-syntax (poset-of (𝒪 X)) U (join-of (𝒪 X) (compr-syntax J (λ j → S [ h j ]))) holds
+      ‡₁ = {!!}
+
+      ‡₂ : {!!}
+      ‡₂ = {!!}
+
+      ♢ : ((⋁[ 𝒪 X ] ⁅  S′ [ h j ] ∣ j ∶ J ⁆) ≤ U) holds
+      ♢ = ⋁[ 𝒪 X ]-least ⁅ S′ [ h j ] ∣ j ∶ J ⁆ (U , (λ j → ∧[ 𝒪 X ]-lower₁ U (S [ h j ])))
+
+      ‡ : U ＝ ⋁[ 𝒪 X ] (compr-syntax J (λ j → S [ h j ]))
+      ‡ = ≤-is-antisymmetric (poset-of (𝒪 X)) ‡₁ ‡₂
+
+\end{code}
