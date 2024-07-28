@@ -576,6 +576,47 @@ module Characterization-Of-Compactness₃ (X : Locale 𝓤 𝓥 𝓦) where
 
 \end{code}
 
+To see that `is-compact-open'` implies `is-compact-open''`, notice that
+for every open `U : ⟨ 𝒪 X ⟩` with a cover `U ≤ ⋁_{i : I} V_i`, we have that
+```
+  ⋁_{i : I} V_i ＝ ⋁_{i : I} U ∧ V_i
+```
+
+\begin{code}
+
+ distribute-inside-cover
+  : (U : ⟨ 𝒪 X ⟩) (S : Fam 𝓦 ⟨ 𝒪 X ⟩)
+  → (U ≤ (⋁[ 𝒪 X ] S)) holds
+  → U ＝ ⋁[ 𝒪 X ] ⁅ U ∧[ 𝒪 X ] (S [ i ]) ∣ i ∶ index S ⁆
+ distribute-inside-cover U S p =
+  U                                                 ＝⟨ Ⅰ ⟩
+  U ∧[ 𝒪 X ] (⋁[ 𝒪 X ] S)                           ＝⟨ Ⅱ ⟩
+  ⋁[ 𝒪 X ] ⁅ U ∧[ 𝒪 X ] (S [ i ]) ∣ i ∶ index S ⁆   ∎
+  where
+   Ⅰ = connecting-lemma₁ (𝒪 X) p
+   Ⅱ = distributivity (𝒪 X) U S
+
+\end{code}
+
+\begin{code}
+
+ distribute-inside-cover₁ : (U : ⟨ 𝒪 X ⟩) (S : Fam 𝓦 ⟨ 𝒪 X ⟩)
+                          → U ＝ ⋁[ 𝒪 X ] ⁅ U ∧[ 𝒪 X ] (S [ i ]) ∣ i ∶ index S ⁆
+                          → (U ≤ (⋁[ 𝒪 X ] S)) holds
+ distribute-inside-cover₁ U S p = connecting-lemma₂ (𝒪 X) †
+  where
+   Ⅰ = p
+
+   Ⅱ : ⋁[ 𝒪 X ] ⁅ U ∧[ 𝒪 X ] S [ i ] ∣ i ∶ index S ⁆ ＝ U ∧[ 𝒪 X ] (⋁[ 𝒪 X ] S)
+   Ⅱ = distributivity (𝒪 X) U S ⁻¹
+
+   † : U ＝ U ∧[ 𝒪 X ] (⋁[ 𝒪 X ] S)
+   † = U                                               ＝⟨ Ⅰ ⟩
+       ⋁[ 𝒪 X ] ⁅ U ∧[ 𝒪 X ] S [ i ] ∣ i ∶ index S ⁆   ＝⟨ Ⅱ ⟩
+       U ∧[ 𝒪 X ] (⋁[ 𝒪 X ] S)                         ∎
+
+\end{code}
+
 \begin{code}
 
  compact-open'-implies-compact-open'' : (U : ⟨ 𝒪 X ⟩)
@@ -641,5 +682,30 @@ module Characterization-Of-Compactness₃ (X : Locale 𝓤 𝓥 𝓦) where
 
       ‡ : U ＝ ⋁[ 𝒪 X ] ⁅ S [ h j ] ∣ j ∶ J ⁆
       ‡ = ≤-is-antisymmetric (poset-of (𝒪 X)) ‡₁ ‡₂
+
+\end{code}
+
+We now prove the converse: `is-compact-open''` implies `is-compact-open'`.
+
+\begin{code}
+
+ compact-open''-implies-compact-open' : (U : ⟨ 𝒪 X ⟩)
+                                      → is-compact-open'' X U holds
+                                      → is-compact-open'  X U holds
+ compact-open''-implies-compact-open' U κ S p = ∥∥-functor † ♢
+  where
+   q : U ＝ ⋁[ 𝒪 X ] ⁅ U ∧[ 𝒪 X ] (S [ i ]) ∣ i ∶ index S ⁆
+   q = distribute-inside-cover U S p
+
+   ♢ : ∃ (J , h) ꞉ SubFam S , is-Kuratowski-finite J
+                            × (U ＝ ⋁[ 𝒪 X ] ⁅ U ∧[ 𝒪 X ] S [ h j ] ∣ j ∶ J ⁆)
+   ♢ = κ ⁅ U ∧[ 𝒪 X ] (S [ i ]) ∣ i ∶ index S ⁆ q
+
+   † : Σ (J , h) ꞉ SubFam S , is-Kuratowski-finite J
+                            × (U ＝ ⋁[ 𝒪 X ] ⁅ U ∧[ 𝒪 X ] S [ h j ] ∣ j ∶ J ⁆)
+     → Σ (J , h) ꞉ SubFam S , is-Kuratowski-finite J
+                            × (U ≤ (⋁[ 𝒪 X ] ⁅ S [ h j ] ∣ j ∶ J ⁆)) holds
+   † (𝒥@(J , h) , 𝕗 , p) =
+    𝒥 , 𝕗 , distribute-inside-cover₁ U ⁅ S [ h j ] ∣ j ∶ J ⁆ p
 
 \end{code}
