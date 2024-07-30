@@ -631,6 +631,8 @@ for every open `U : ⟨ 𝒪 X ⟩` with a cover `U ≤ ⋁_{i : I} V_i`, we hav
                           → U ＝ ⋁[ 𝒪 X ] S
  distribute-inside-cover₃ U S p = ≤-is-antisymmetric (poset-of (𝒪 X)) † ‡
   where
+   open Joins (λ x y → x ≤[ poset-of (𝒪 X) ] y)
+
    q : ((⋁[ 𝒪 X ] ⁅ U ∧[ 𝒪 X ] (S [ i ]) ∣ i ∶ index S ⁆) ≤ U) holds
    q = ⋁[ 𝒪 X ]-least
         ⁅ U ∧[ 𝒪 X ] (S [ i ]) ∣ i ∶ index S ⁆
@@ -638,6 +640,13 @@ for every open `U : ⟨ 𝒪 X ⟩` with a cover `U ≤ ⋁_{i : I} V_i`, we hav
 
    r : U ＝ ⋁[ 𝒪 X ] ⁅ U ∧[ 𝒪 X ] (S [ i ]) ∣ i ∶ index S ⁆
    r = ≤-is-antisymmetric (poset-of (𝒪 X)) p q
+
+   υ : (U is-an-upper-bound-of ⁅ U ∧[ 𝒪 X ] (S [ i ]) ∣ i ∶ index S ⁆) holds
+   υ =
+    transport
+     (λ - → (- is-an-upper-bound-of ⁅ U ∧[ 𝒪 X ] (S [ i ]) ∣ i ∶ index S ⁆) holds)
+     (r ⁻¹)
+     (⋁[ 𝒪 X ]-upper ⁅ U ∧[ 𝒪 X ] (S [ i ]) ∣ i ∶ index S ⁆)
 
    † : (U ≤ (⋁[ 𝒪 X ] S)) holds
    † = connecting-lemma₂ (𝒪 X) (†₁ ⁻¹)
@@ -673,12 +682,12 @@ for every open `U : ⟨ 𝒪 X ⟩` with a cover `U ≤ ⋁_{i : I} V_i`, we hav
     q : U ＝ ⋁[ 𝒪 X ] ⁅ U ∧[ 𝒪 X ] (S [ i ]) ∣ i ∶ index S ⁆
     q = distribute-inside-cover U S p
 
-    γ : ⋁[ 𝒪 X ] S
-        ＝ (⋁[ 𝒪 X ] S) ∧[ 𝒪 X ] (⋁[ 𝒪 X ] ⁅ U ∧[ 𝒪 X ] (S [ i ]) ∣ i ∶ index S ⁆)
-    γ = {!!}
-
     † : ((⋁[ 𝒪 X ] S) ≤ (⋁[ 𝒪 X ] ⁅ U ∧[ 𝒪 X ] (S [ i ]) ∣ i ∶ index S ⁆)) holds
-    † = connecting-lemma₂ (𝒪 X) γ
+    † = cofinal-implies-join-covered
+         (𝒪 X)
+         S
+         ⁅ U ∧[ 𝒪 X ] (S [ i ]) ∣ i ∶ index S ⁆
+         λ j → ∣ j , {!!} ∣
 
     ‡ : ((⋁[ 𝒪 X ] ⁅ U ∧[ 𝒪 X ] (S [ i ]) ∣ i ∶ index S ⁆) ≤ (⋁[ 𝒪 X ] S)) holds
     ‡ = ⋁[ 𝒪 X ] ⁅ U ∧[ 𝒪 X ] (S [ i ]) ∣ i ∶ index S ⁆   ＝⟨ q ⁻¹ ⟩ₚ
