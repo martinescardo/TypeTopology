@@ -30,7 +30,7 @@ module Locales.Point.SpectralPoint-Definition
         (pe : Prop-Ext)
        where
 
-open import Locales.Compactness pt fe
+open import Locales.Compactness.Definition pt fe
 open import Locales.ContinuousMap.Definition pt fe
 open import Locales.ContinuousMap.FrameHomomorphism-Definition pt fe
 open import Locales.Frame pt fe

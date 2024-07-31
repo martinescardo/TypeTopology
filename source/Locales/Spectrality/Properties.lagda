@@ -23,7 +23,7 @@ module Locales.Spectrality.Properties (pt : propositional-truncations-exist)
                                       (fe : Fun-Ext) where
 
 open import Locales.Frame                      pt fe
-open import Locales.Compactness                pt fe
+open import Locales.Compactness.Definition     pt fe
 open import Locales.Spectrality.SpectralLocale pt fe
 
 open PropositionalTruncation pt

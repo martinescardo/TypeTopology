@@ -6,6 +6,29 @@ Ayberk Tosun.
 
 module Locales.index where
 
+\end{code}
+
+\section{Basics}
+
+Basics of frames and quite a bit of order theory.
+
+\begin{code}
+
+import Locales.Frame
+
+\end{code}
+
+Compact opens.
+
+\begin{code}
+
+import Locales.Compactness.Definition
+import Locales.Compactness.Properties
+
+\end{code}
+
+\begin{code}
+
 import Locales.AdjointFunctorTheoremForFrames    -- (1)
 import Locales.Adjunctions.Properties
 import Locales.Adjunctions.Properties-DistributiveLattice
@@ -22,7 +45,7 @@ import Locales.Clopen                            -- (5)
 import Locales.CompactRegular                    -- (6)
 -- ↑ DEPRECATED DO NOT USE ↑ --
 
-import Locales.Compactness                       -- (7)
+import Locales.Compactness.Definition            -- (7)
 
 import Locales.Complements                       -- (8)
 
@@ -38,7 +61,6 @@ import Locales.DistributiveLattice.Resizing
 import Locales.DistributiveLattice.Spectrum
 import Locales.DistributiveLattice.Spectrum-Properties
 
-import Locales.Frame                             -- (9)
 
 import Locales.GaloisConnection                  -- (10)
 

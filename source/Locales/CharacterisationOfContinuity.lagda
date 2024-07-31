@@ -18,7 +18,7 @@ open import Locales.Frame               pt fe
 open import Locales.WayBelowRelation.Definition pt fe
 open import UF.Logic
 open import Slice.Family
-open import Locales.Compactness pt fe
+open import Locales.Compactness.Definition pt fe
 open import Locales.Spectrality.SpectralLocale pt fe
 open import Locales.Spectrality.Properties     pt fe
 

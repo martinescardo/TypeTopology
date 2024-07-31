@@ -45,7 +45,7 @@ private
  pe {𝓤} = univalence-gives-propext (ua 𝓤)
 
 open import Locales.AdjointFunctorTheoremForFrames pt fe
-open import Locales.Compactness pt fe
+open import Locales.Compactness.Definition pt fe
 open import Locales.ContinuousMap.Definition pt fe
 open import Locales.ContinuousMap.FrameHomomorphism-Definition pt fe
 open import Locales.ContinuousMap.FrameIsomorphism-Definition pt fe

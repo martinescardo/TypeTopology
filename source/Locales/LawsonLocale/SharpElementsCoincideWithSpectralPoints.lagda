@@ -49,7 +49,7 @@ open import DomainTheory.Topology.ScottTopology pt fe 𝓤
 open import DomainTheory.Topology.ScottTopologyProperties pt fe 𝓤
 open import Locales.Clopen pt fe sr
 open import Locales.CompactRegular pt fe using (clopens-are-compact-in-compact-frames)
-open import Locales.Compactness pt fe hiding (is-compact)
+open import Locales.Compactness.Definition pt fe hiding (is-compact)
 open import Locales.ContinuousMap.FrameHomomorphism-Definition pt fe
 open import Locales.ContinuousMap.FrameHomomorphism-Properties pt fe
 open import Locales.Frame pt fe

@@ -44,7 +44,7 @@ open import DomainTheory.Basics.Pointed pt fe 𝓤
 open import DomainTheory.Basics.WayBelow pt fe 𝓤
 open import DomainTheory.Topology.ScottTopology pt fe 𝓤
 open import DomainTheory.Topology.ScottTopologyProperties pt fe 𝓤
-open import Locales.Compactness pt fe hiding (is-compact)
+open import Locales.Compactness.Definition pt fe hiding (is-compact)
 open import Locales.ContinuousMap.Definition pt fe
 open import Locales.ContinuousMap.FrameHomomorphism-Definition pt fe
 open import Locales.ContinuousMap.FrameHomomorphism-Properties pt fe

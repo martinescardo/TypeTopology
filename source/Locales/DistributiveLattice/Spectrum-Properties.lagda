@@ -24,7 +24,7 @@ module Locales.DistributiveLattice.Spectrum-Properties
         (sr : Set-Replacement pt)
        where
 
-open import Locales.Compactness pt fe
+open import Locales.Compactness.Definition pt fe
 open import Locales.DistributiveLattice.Definition fe pt
 open import Locales.DistributiveLattice.Ideal pt fe pe
 open import Locales.DistributiveLattice.Ideal-Properties pt fe pe
