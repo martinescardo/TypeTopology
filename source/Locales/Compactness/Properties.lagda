@@ -20,7 +20,7 @@ open import UF.Subsingletons-FunExt
 open import UF.Subsingletons-Properties
 open import UF.SubtypeClassifier
 
-module Locales.Compactness-Properties
+module Locales.Compactness.Properties
         (pt : propositional-truncations-exist)
         (fe : Fun-Ext)
         (pe : Prop-Ext)
@@ -28,8 +28,8 @@ module Locales.Compactness-Properties
 
 open import Fin.Kuratowski pt
 open import Fin.Type
-open import Locales.Compactness pt fe
-open import Locales.Frame     pt fe
+open import Locales.Compactness.Definition pt fe
+open import Locales.Frame pt fe
 open import Locales.WayBelowRelation.Definition  pt fe
 open import MLTT.List using (member; []; _∷_; List; in-head; in-tail; length)
 open import Slice.Family
