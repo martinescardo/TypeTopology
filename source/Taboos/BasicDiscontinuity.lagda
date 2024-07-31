@@ -26,7 +26,9 @@ open import Taboos.WLPO
 basic-discontinuity : (ℕ∞ → 𝟚) → 𝓤₀ ̇
 basic-discontinuity p = ((n : ℕ) → p (ι n) ＝ ₀) × (p ∞ ＝ ₁)
 
-basic-discontinuity-taboo : (p : ℕ∞ → 𝟚) → basic-discontinuity p → WLPO
+basic-discontinuity-taboo : (p : ℕ∞ → 𝟚)
+                          → basic-discontinuity p
+                          → WLPO
 basic-discontinuity-taboo p (f , r) u = 𝟚-equality-cases lemma₀ lemma₁
  where
   fact₀ : u ＝ ∞ → p u ＝ ₁
@@ -60,7 +62,8 @@ of type ℕ∞ → 𝟚.
 
 \begin{code}
 
-WLPO-is-discontinuous : WLPO → Σ p ꞉ (ℕ∞ → 𝟚), basic-discontinuity p
+WLPO-is-discontinuous : WLPO
+                      → Σ p ꞉ (ℕ∞ → 𝟚), basic-discontinuity p
 WLPO-is-discontinuous f = p , (d , d∞)
  where
   p : ℕ∞ → 𝟚
@@ -114,7 +117,10 @@ disagreement-taboo p q f g = basic-discontinuity-taboo r (r-lemma , r-lemma∞)
 
 open import UF.DiscreteAndSeparated
 
-agreement-cotaboo :  ¬ WLPO → (p q : ℕ∞ → 𝟚) → ((n : ℕ) → p (ι n) ＝ q (ι n)) → p ∞ ＝ q ∞
+agreement-cotaboo :  ¬ WLPO
+                  → (p q : ℕ∞ → 𝟚)
+                  → ((n : ℕ) → p (ι n) ＝ q (ι n))
+                  → p ∞ ＝ q ∞
 agreement-cotaboo φ p q f = 𝟚-is-¬¬-separated (p ∞) (q ∞)
                              (contrapositive (disagreement-taboo p q f) φ)
 
@@ -127,7 +133,9 @@ Added 23rd August 2023. Variation.
 basic-discontinuity' : (ℕ∞ → ℕ∞) → 𝓤₀ ̇
 basic-discontinuity' f = ((n : ℕ) → f (ι n) ＝ ι 0) × (f ∞ ＝ ι 1)
 
-basic-discontinuity-taboo' : (f : ℕ∞ → ℕ∞) → basic-discontinuity' f → WLPO
+basic-discontinuity-taboo' : (f : ℕ∞ → ℕ∞)
+                           → basic-discontinuity' f
+                           → WLPO
 basic-discontinuity-taboo' f (f₀ , f₁) = VI
  where
   I : (u : ℕ∞) → f u ＝ ι 0 → u ≠ ∞

@@ -108,7 +108,10 @@ If two sequences α and β are apart, they agree before the apartness index n.
 
 \begin{code}
 
-♯-agreement : (α β : Cantor) ((n , δ , μ) : α ♯ β) → (i : ℕ) → i < n → α i ＝ β i
+♯-agreement : (α β : Cantor)
+              ((n , δ , μ) : α ♯ β)
+              (i : ℕ)
+            → i < n → α i ＝ β i
 ♯-agreement α β (n , _ , μ) i ℓ = IV
  where
   I : α i ≠ β i → n ≤ i

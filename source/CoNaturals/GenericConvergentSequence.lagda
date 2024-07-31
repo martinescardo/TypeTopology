@@ -17,7 +17,7 @@ module CoNaturals.GenericConvergentSequence where
 open import CoNaturals.Cantor
 open import MLTT.Spartan
 open import MLTT.Two-Properties
-open import Naturals.Order hiding (max)
+open import Naturals.Order hiding (max ; max-idemp)
 open import Notation.CanonicalMap
 open import Notation.Order
 open import Ordinals.Notions
@@ -631,6 +631,12 @@ max (α , r) (β , s) = (λ i → max𝟚 (α i) (β i)) , t
  where
   t : is-decreasing (λ i → max𝟚 (α i) (β i))
   t i = max𝟚-preserves-≤ (r i) (s i)
+
+max∞-property : (u : ℕ∞) → max ∞ u ＝ ∞
+max∞-property u = refl
+
+max-idemp : funext₀ → (u : ℕ∞) → max u u ＝ u
+max-idemp fe₀ u = ℕ∞-to-ℕ→𝟚-lc fe₀ (dfunext fe₀ (λ i → max𝟚-idemp (ι u i)))
 
 min : ℕ∞ → ℕ∞ → ℕ∞
 min (α , r) (β , s) = (λ i → min𝟚 (α i) (β i)) , t

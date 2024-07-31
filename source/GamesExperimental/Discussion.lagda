@@ -822,7 +822,7 @@ hereditarily-decidable→ = transfinite-induction-on-OO _ ϕ
     I : (a : ⟨ α ⟩)
         ((b , l) : ⟨ α ↓ a ⟩)
       → is-decidable (∃ (x , m) ꞉ ⟨ α ↓ a ⟩ , x ≺⟨ α ⟩ b )
-    I a (b , l) = map-is-decidable (∥∥-functor (g a b l)) (∥∥-functor (h a b)) (e b)
+    I a (b , l) = map-decidable (∥∥-functor (g a b l)) (∥∥-functor (h a b)) (e b)
 
     II : (a : ⟨ α ⟩) → is-hereditarily-decidable (Ord-to-𝔸 (α ↓ a))
     II a = f a (e a , I a)
