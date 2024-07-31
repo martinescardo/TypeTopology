@@ -463,7 +463,7 @@ Yoneda-Theorem-back x η φ = Yoneda-section-back x η (λ y → pr₁(φ y))
 \end{code}
 
 Egbert Rijke, in his book [1], refers to Yoneda-Theorem-forth and
-Yoneda-Theorem-back as "the fundamental theorem of identity types.
+Yoneda-Theorem-back as "the fundamental theorem of identity types".
 See also his master thesis [2] and his blog post [3].
 
 Next we conclude that a presheaf A is representable iff Σ A is a
