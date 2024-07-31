@@ -18,7 +18,7 @@ import Locales.Frame
 
 \end{code}
 
-The `ContinuousMap` sub directory contains:
+The `ContinuousMap` subdirectory contains:
 
   1. Definition of the notion of frame homomorphism.
   2. Properties of frame homomorphisms.
