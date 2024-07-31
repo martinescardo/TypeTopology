@@ -37,16 +37,16 @@ open import Iterative.Multisets 𝓤
 open import Iterative.Multisets-Addendum ua 𝓤
 
 swap-Idtofun : {X Y : 𝓤 ̇ } {Z : 𝓥 ̇ } → {f : X → Z} {g : Y → Z}
-      → (p : Y ＝ X)
-      → f ∘ Idtofun p ＝ g
-      → f ＝ g ∘ Idtofun⁻¹ p
+             → (p : Y ＝ X)
+             → f ∘ Idtofun p ＝ g
+             → f ＝ g ∘ Idtofun⁻¹ p
 swap-Idtofun  refl refl = refl
 
 Question𝟘 :
  ¬ (Σ Πᴹ ꞉ ((𝟘 {𝓤} → 𝕄) → 𝕄)
-           , ((A : 𝟘 → 𝕄) → Πᴹ A ＝ ssup
-                                     (Π x ꞉ 𝟘 , 𝕄-root (A x))
-                                     (λ g → Πᴹ (λ x → 𝕄-forest (A x) (g x)))))
+         , ((A : 𝟘 → 𝕄) → Πᴹ A ＝ ssup
+                                  (Π x ꞉ 𝟘 , 𝕄-root (A x))
+                                  (λ g → Πᴹ (λ x → 𝕄-forest (A x) (g x)))))
 Question𝟘 (Πᴹ , eq) = recurs A (Πᴹ A) (eq A)
  where
   A : 𝟘 → 𝕄
@@ -130,17 +130,17 @@ module _ {X : 𝓤 ̇ } where
     II A acc₁ =  transfinite-induction'-behaviour (λ - → 𝕄) I A acc₁ 
 
     III : (A : X → 𝕄)
-        → ((g : X → 𝕄)
-          → g < A
-          → (acc₁ acc₂ : is-accessible g)
-          → Πᴹ' g acc₁ ≃ᴹ Πᴹ' g acc₂)
+        → ( (g : X → 𝕄)
+            → g < A
+            → (acc₁ acc₂ : is-accessible g)
+            → Πᴹ' g acc₁ ≃ᴹ Πᴹ' g acc₂)
         → (acc₁ acc₂ : is-accessible A) → Πᴹ' A acc₁ ≃ᴹ Πᴹ' A acc₂
     III A rec acc₁ acc₂ = transport₂ _≃ᴹ_ (II A acc₁ ⁻¹) (II A acc₂ ⁻¹)
                            ((≃-refl _)
-                            , λ g → rec (λ x → 𝕄-forest (A x) (g x))
-                                        (smaller λ y → (g y) , refl)
-                                        (prev acc₁ _ _)
-                                        (prev acc₂ _ _))
+                           , λ g → rec (λ x → 𝕄-forest (A x) (g x))
+                                       (smaller λ y → (g y) , refl)
+                                       (prev acc₁ _ _)
+                                       (prev acc₂ _ _))
 
     IV : (A : X → 𝕄) → (acc₁ acc₂ : is-accessible A)
         → Πᴹ' A acc₁ ≃ᴹ Πᴹ' A acc₂
@@ -171,9 +171,9 @@ module _ {X : 𝓤 ̇ } where
 
   <-is-well-founded' : ∥ X ∥ → is-well-founded
   <-is-well-founded' x f = ∥∥-rec
-                           (accessibility-is-prop fe f)
-                           (λ x → <-is-well-founded x f)
-                           x
+                            (accessibility-is-prop fe f)
+                            (λ x → <-is-well-founded x f)
+                            x
 
   QuestionX :
    ∥ X ∥ → Σ Πᴹ ꞉ ((X → 𝕄) → 𝕄)
