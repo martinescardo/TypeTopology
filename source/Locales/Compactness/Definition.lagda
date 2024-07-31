@@ -23,8 +23,10 @@ open import UF.Subsingletons-Properties
 open import UF.SubtypeClassifier
 open import UF.Classifiers
 
-module Locales.Compactness (pt : propositional-truncations-exist)
-                           (fe : Fun-Ext)                          where
+module Locales.Compactness.Definition
+        (pt : propositional-truncations-exist)
+        (fe : Fun-Ext)
+       where
 
 open import Fin.Kuratowski pt
 open import Fin.Type
