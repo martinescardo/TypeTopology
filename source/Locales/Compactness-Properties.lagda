@@ -618,81 +618,12 @@ for every open `U : ⟨ 𝒪 X ⟩` with a cover `U ≤ ⋁_{i : I} V_i`, we hav
 
 \end{code}
 
-
 \begin{code}
 
- distribute-inside-cover₂ : (U : ⟨ 𝒪 X ⟩) (S : Fam 𝓦 ⟨ 𝒪 X ⟩)
-                          → (U ≤ (⋁[ 𝒪 X ] S)) holds
-                          → U ＝ ⋁[ 𝒪 X ] ⁅ U ∧[ 𝒪 X ] (S [ i ]) ∣ i ∶ index S ⁆
- distribute-inside-cover₂ U S p = {!!}
-
- distribute-inside-cover₃ : (U : ⟨ 𝒪 X ⟩) (S : Fam 𝓦 ⟨ 𝒪 X ⟩)
-                          → (U ≤ (⋁[ 𝒪 X ] ⁅ U ∧[ 𝒪 X ] (S [ i ]) ∣ i ∶ index S ⁆)) holds
-                          → U ＝ ⋁[ 𝒪 X ] S
- distribute-inside-cover₃ U S p = ≤-is-antisymmetric (poset-of (𝒪 X)) † ‡
-  where
-   open Joins (λ x y → x ≤[ poset-of (𝒪 X) ] y)
-
-   q : ((⋁[ 𝒪 X ] ⁅ U ∧[ 𝒪 X ] (S [ i ]) ∣ i ∶ index S ⁆) ≤ U) holds
-   q = ⋁[ 𝒪 X ]-least
-        ⁅ U ∧[ 𝒪 X ] (S [ i ]) ∣ i ∶ index S ⁆
-        (U , λ j → ∧[ 𝒪 X ]-lower₁ U (S [ j ]))
-
-   r : U ＝ ⋁[ 𝒪 X ] ⁅ U ∧[ 𝒪 X ] (S [ i ]) ∣ i ∶ index S ⁆
-   r = ≤-is-antisymmetric (poset-of (𝒪 X)) p q
-
-   υ : (U is-an-upper-bound-of ⁅ U ∧[ 𝒪 X ] (S [ i ]) ∣ i ∶ index S ⁆) holds
-   υ =
-    transport
-     (λ - → (- is-an-upper-bound-of ⁅ U ∧[ 𝒪 X ] (S [ i ]) ∣ i ∶ index S ⁆) holds)
-     (r ⁻¹)
-     (⋁[ 𝒪 X ]-upper ⁅ U ∧[ 𝒪 X ] (S [ i ]) ∣ i ∶ index S ⁆)
-
-   † : (U ≤ (⋁[ 𝒪 X ] S)) holds
-   † = connecting-lemma₂ (𝒪 X) (†₁ ⁻¹)
-    where
-     Ⅰ = distributivity (𝒪 X) U S
-     Ⅱ = r ⁻¹
-
-     †₁ : U ∧[ 𝒪 X ] (⋁[ 𝒪 X ] S) ＝ U
-     †₁ = U ∧[ 𝒪 X ] (⋁[ 𝒪 X ] S)                            ＝⟨ Ⅰ ⟩
-          ⋁[ 𝒪 X ] ⁅ U ∧[ 𝒪 X ] (S [ i ]) ∣ i ∶ index S ⁆    ＝⟨ Ⅱ ⟩
-          U                                                  ∎
-
-   ‡ : ((⋁[ 𝒪 X ] S) ≤ U) holds
-   ‡ = {!!}
-
-   -- † : U ∧[ 𝒪 X ] (⋁[ 𝒪 X ] ⁅ U ∧[ 𝒪 X ] (S [ i ]) ∣ i ∶ index S ⁆)
-   --    ＝ ⋁[ 𝒪 X ] ⁅ U ∧[ 𝒪 X ] (S [ i ]) ∣ i ∶ index S ⁆
-   -- † = {!!}
-
-\end{code}
-
-\begin{code}
-
- covering-implies-equal-to-distribution-inside-cover
-  : (U : ⟨ 𝒪 X ⟩) (S : Fam 𝓦 ⟨ 𝒪 X ⟩)
-  → (U ≤ (⋁[ 𝒪 X ] S)) holds
-  → (⋁[ 𝒪 X ] S) ＝ ⋁[ 𝒪 X ] ⁅ U ∧[ 𝒪 X ] (S [ i ]) ∣ i ∶ index S ⁆
- covering-implies-equal-to-distribution-inside-cover U S p =
-  ≤-is-antisymmetric (poset-of (𝒪 X)) † ‡
-   where
-    open Joins (λ x y → x ≤[ poset-of (𝒪 X) ] y)
-
-    q : U ＝ ⋁[ 𝒪 X ] ⁅ U ∧[ 𝒪 X ] (S [ i ]) ∣ i ∶ index S ⁆
-    q = distribute-inside-cover U S p
-
-    † : ((⋁[ 𝒪 X ] S) ≤ (⋁[ 𝒪 X ] ⁅ U ∧[ 𝒪 X ] (S [ i ]) ∣ i ∶ index S ⁆)) holds
-    † = cofinal-implies-join-covered
-         (𝒪 X)
-         S
-         ⁅ U ∧[ 𝒪 X ] (S [ i ]) ∣ i ∶ index S ⁆
-         λ j → ∣ j , {!!} ∣
-
-    ‡ : ((⋁[ 𝒪 X ] ⁅ U ∧[ 𝒪 X ] (S [ i ]) ∣ i ∶ index S ⁆) ≤ (⋁[ 𝒪 X ] S)) holds
-    ‡ = ⋁[ 𝒪 X ] ⁅ U ∧[ 𝒪 X ] (S [ i ]) ∣ i ∶ index S ⁆   ＝⟨ q ⁻¹ ⟩ₚ
-        U                                                 ≤⟨ p ⟩
-        ⋁[ 𝒪 X ] S                                        ■
+ lemma : (U : ⟨ 𝒪 X ⟩) (S : Fam 𝓦 ⟨ 𝒪 X ⟩)
+       → (U ≤ (⋁[ 𝒪 X ] ⁅ U ∧[ 𝒪 X ] (S [ i ]) ∣ i ∶ index S ⁆)) holds
+       → U ＝ ⋁[ 𝒪 X ] S
+ lemma U S p = {!!}
 
 \end{code}
 
@@ -732,35 +663,7 @@ for every open `U : ⟨ 𝒪 X ⟩` with a cover `U ≤ ⋁_{i : I} V_i`, we hav
     † : (Σ (J , h) ꞉ SubFam S , is-Kuratowski-finite J × (U ≤ (⋁[ 𝒪 X ] ⁅  S′ [ h j ] ∣ j ∶ J ⁆)) holds)
       → Σ (J , h) ꞉ SubFam S , is-Kuratowski-finite J × (U ＝ ⋁[ 𝒪 X ] ⁅ S [ h j ] ∣ j ∶ J ⁆)
     † ((J , h) , 𝕗 , r) =
-     (J , h) , 𝕗 , distribute-inside-cover₃ U ⁅ S [ h j ] ∣ j ∶ J ⁆ r
-     -- where
-     --  ‡₁ : (U ≤ (⋁[ 𝒪 X ] ⁅  S [ h j ] ∣ j ∶ J ⁆)) holds
-     --  ‡₁ = U                                 ≤⟨ r ⟩
-     --       ⋁[ 𝒪 X ] ⁅ S′ [ h j ] ∣ j ∶ J ⁆   ≤⟨ Ⅱ ⟩
-     --       ⋁[ 𝒪 X ] ⁅ S [ h j ] ∣ j ∶ J ⁆    ■
-     --        where
-     --         Ⅱ = cofinal-implies-join-covered
-     --              (𝒪 X)
-     --              ⁅ S′ [ h j ] ∣ j ∶ J ⁆
-     --              ⁅ S [ h j ] ∣ j ∶ J ⁆
-     --              λ j → ∣ j , ∧[ 𝒪 X ]-lower₂ U (S [ h j ]) ∣
-
-     --  ♢ : ((⋁[ 𝒪 X ] ⁅ S′ [ h j ] ∣ j ∶ J ⁆) ≤ U) holds
-     --  ♢ = ⋁[ 𝒪 X ]-least ⁅ S′ [ h j ] ∣ j ∶ J ⁆ (U , (λ j → ∧[ 𝒪 X ]-lower₁ U (S [ h j ])))
-
-     --  Ⅰ = cofinal-implies-join-covered
-     --       (𝒪 X)
-     --       ⁅ S [ h j ] ∣ j ∶ J ⁆
-     --       ⁅ S′ [ h j ] ∣ j ∶ J ⁆
-     --       (λ j → ∣ j , ∧[ 𝒪 X ]-greatest U (S [ h j ]) (S [ h j ]) (υ (h j)) (≤-is-reflexive (poset-of (𝒪 X)) (S [ h j ])) ∣)
-
-     --  ‡₂ : ((⋁[ 𝒪 X ] ⁅  S [ h j ] ∣ j ∶ J ⁆) ≤ U) holds
-     --  ‡₂ = ⋁[ 𝒪 X ] ⁅ S [ h j ] ∣ j ∶ J ⁆    ≤⟨ Ⅰ ⟩
-     --       ⋁[ 𝒪 X ] ⁅ S′ [ h j ] ∣ j ∶ J ⁆   ≤⟨ ♢ ⟩
-     --       U                                  ■
-
-     --  ‡ : U ＝ ⋁[ 𝒪 X ] ⁅ S [ h j ] ∣ j ∶ J ⁆
-     --  ‡ = ≤-is-antisymmetric (poset-of (𝒪 X)) ‡₁ ‡₂
+     (J , h) , 𝕗 , lemma U ⁅ S [ h j ] ∣ j ∶ J ⁆ r
 
 \end{code}
 
