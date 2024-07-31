@@ -291,6 +291,8 @@ Question. Is there a function Πᴹ of the above type that satisfies the
 following equation? It seems that this possible for finite X. We guess
 there isn't such a function for general X, including X = ℕ.
 
+This question is answered in gist.multiset-addendum-question
+
 \begin{code}
 
 Question =
