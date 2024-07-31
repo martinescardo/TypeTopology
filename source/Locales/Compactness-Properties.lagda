@@ -2,7 +2,7 @@
 title:          Properties of compactness
 author:         Ayberk Tosun
 date-started:   2024-07-19
-date-completed: 2024-07-27
+date-completed: 2024-07-31
 ---
 
 \begin{code}[hide]
@@ -28,6 +28,7 @@ module Locales.Compactness-Properties
 
 open import Fin.Kuratowski pt
 open import Fin.Type
+open import Locales.Compactness pt fe
 open import Locales.Frame     pt fe
 open import Locales.WayBelowRelation.Definition  pt fe
 open import MLTT.List using (member; []; _∷_; List; in-head; in-tail; length)
@@ -40,7 +41,6 @@ open import UF.Logic
 open import UF.Powerset-Fin pt hiding (⟨_⟩)
 open import UF.Powerset-MultiUniverse
 open import UF.Sets-Properties
-open import Locales.Compactness pt fe
 
 open AllCombinators pt fe
 open Locale
@@ -68,6 +68,47 @@ not-in-empty-list = ∥∥-rec 𝟘-is-prop (λ ())
 
 \end{code}
 
+Given any list, the type of elements that fall in the list is a
+Kuratowski-finite type.
+
+\begin{code}
+
+nth : {X : 𝓤  ̇} → (xs : List X) → (i : Fin (length xs)) → Σ x ꞉ X , ∥ member x xs ∥
+nth         (x ∷ _)  (inr ⋆) = x , ∣ in-head ∣
+nth {_} {X} (_ ∷ xs) (inl n) = x , ∥∥-functor in-tail (pr₂ IH)
+ where
+  IH : Σ x ꞉ X , ∥ member x xs ∥
+  IH = nth xs n
+
+  x : X
+  x = pr₁ IH
+
+nth-is-surjection : {X : 𝓤  ̇} (xs : List X) → is-surjection (nth xs)
+nth-is-surjection []       (y , μ) = ∥∥-rec ∃-is-prop (λ ()) μ
+nth-is-surjection (x ∷ xs) (y , μ) = ∥∥-rec ∃-is-prop † μ
+ where
+  † : member y (x ∷ xs) → ∃ i ꞉ Fin (length (x ∷ xs)) , (nth (x ∷ xs) i ＝ y , μ)
+  † in-head     = ∣ inr ⋆ , to-subtype-＝ (λ _ → ∥∥-is-prop) refl ∣
+  † (in-tail p) = ∥∥-rec ∃-is-prop ‡ IH
+   where
+    IH : (y , ∣ p ∣) ∈image nth xs
+    IH = nth-is-surjection xs (y , ∣ p ∣)
+
+    ‡ : Σ i ꞉ Fin (length xs) , (nth xs i ＝ y , ∣ p ∣)
+      → ∃ i ꞉ Fin (length (x ∷ xs)) , (nth (x ∷ xs) i ＝ y , μ)
+    ‡ (i , q) = ∣ inl i , to-subtype-＝ (λ _ → ∥∥-is-prop) (pr₁ (from-Σ-＝ q)) ∣
+
+list-members-is-Kuratowski-finite : {X : 𝓤  ̇}
+                                  → (xs : List X)
+                                  → is-Kuratowski-finite (Σ x ꞉ X , ∥ member x xs ∥)
+list-members-is-Kuratowski-finite {𝓤} {A} xs =
+ ∣ length xs , nth xs , nth-is-surjection xs ∣
+
+\end{code}
+
+
+TODO: The function `nth` above should be placed in a more appropriate module.
+
 \section{Alternative definition of compactness}
 
 Compactness could have been alternatively defined as:
@@ -86,51 +127,8 @@ is-compact-open' {𝓤} {𝓥} {𝓦} X U =
 
 \end{code}
 
-This is much closer to the “every cover has a finite subcover definition” from
+This is much closer to the “every cover has a finite subcover” definition from
 point-set topology.
-
-Given any list, the type of elements that fall in the list is a
-Kuratowski-finite type.
-
-TODO: The following function `nth` should be placed in a more appropriate
-module.
-
-\begin{code}
-
-nth : {X : 𝓤  ̇} → (xs : List X) → (i : Fin (length xs)) → Σ x ꞉ X , ∥ member x xs ∥
-nth         (x ∷ _)  (inr ⋆) = x , ∣ in-head ∣
-nth {_} {X} (_ ∷ xs) (inl n) = x , ∥∥-functor in-tail (pr₂ IH)
- where
-  IH : Σ x ꞉ X , ∥ member x xs ∥
-  IH = nth xs n
-
-  x : X
-  x = pr₁ IH
-
-nth-is-surjection : {X : 𝓤  ̇} (xs : List X) → is-surjection (nth xs)
-nth-is-surjection []       (y , μ) = ∥∥-rec ∃-is-prop (λ ()) μ
-nth-is-surjection (x ∷ xs) (y , μ) = ∥∥-rec ∃-is-prop † μ
- where
-
-  † : member y (x ∷ xs) → ∃ i ꞉ Fin (length (x ∷ xs)) , (nth (x ∷ xs) i ＝ y , μ)
-  † in-head     = ∣ inr ⋆ , to-subtype-＝ (λ _ → ∥∥-is-prop) refl ∣
-  † (in-tail p) = ∥∥-rec ∃-is-prop ‡ IH
-   where
-    IH : (y , ∣ p ∣) ∈image nth xs
-    IH = nth-is-surjection xs (y , ∣ p ∣)
-
-    ‡ : Σ i ꞉ Fin (length xs) , (nth xs i ＝ y , ∣ p ∣)
-      → ∃ i ꞉ Fin (length (x ∷ xs)) , (nth (x ∷ xs) i ＝ y , μ)
-    ‡ (i , q) =
-     ∣ (inl i) , (to-subtype-＝ (λ _ → ∥∥-is-prop) (pr₁ (from-Σ-＝ q))) ∣
-
-list-members-is-Kuratowski-finite : {X : 𝓤  ̇}
-                                  → (xs : List X)
-                                  → is-Kuratowski-finite (Σ x ꞉ X , ∥ member x xs ∥)
-list-members-is-Kuratowski-finite {𝓤} {A} xs =
- ∣ length xs , nth xs , nth-is-surjection xs ∣
-
-\end{code}
 
 It is easy to show that this implies the standdard definition of compactness,
 but we need a bit of preparation first.
@@ -550,7 +548,8 @@ It easily follows from this that `is-compact-open'` implies `is-compact-open`.
 \section{Another alternative definition}
 
 We now provide another variant of the definition `is-compact-open'` which is
-easily shown to be equivalent.
+easily shown to be equivalent. This one says exactly that every cover has a
+Kuratowski-finite subcover.
 
 \begin{code}
 
@@ -564,10 +563,6 @@ is-compact-open'' {𝓤} {𝓥} {𝓦} X U =
     open PosetNotation (poset-of (𝒪 X))
     open Equality carrier-of-[ poset-of (𝒪 X) ]-is-set
 
-\end{code}
-
-\begin{code}
-
 module Characterization-Of-Compactness₃ (X : Locale 𝓤 𝓥 𝓦) where
 
  open Some-Lemmas-On-Directification (𝒪 X)
@@ -576,28 +571,9 @@ module Characterization-Of-Compactness₃ (X : Locale 𝓤 𝓥 𝓦) where
 
 \end{code}
 
-To see that `is-compact-open'` implies `is-compact-open''`, notice that
-for every open `U : ⟨ 𝒪 X ⟩` with a cover `U ≤ ⋁_{i : I} V_i`, we have that
-```
-  ⋁_{i : I} V_i ＝ ⋁_{i : I} U ∧ V_i
-```
-
-\begin{code}
-
- distribute-inside-cover
-  : (U : ⟨ 𝒪 X ⟩) (S : Fam 𝓦 ⟨ 𝒪 X ⟩)
-  → (U ≤ (⋁[ 𝒪 X ] S)) holds
-  → U ＝ ⋁[ 𝒪 X ] ⁅ U ∧[ 𝒪 X ] (S [ i ]) ∣ i ∶ index S ⁆
- distribute-inside-cover U S p =
-  U                                                 ＝⟨ Ⅰ ⟩
-  U ∧[ 𝒪 X ] (⋁[ 𝒪 X ] S)                           ＝⟨ Ⅱ ⟩
-  ⋁[ 𝒪 X ] ⁅ U ∧[ 𝒪 X ] (S [ i ]) ∣ i ∶ index S ⁆   ∎
-  where
-   Ⅰ = connecting-lemma₁ (𝒪 X) p
-   Ⅱ = distributivity (𝒪 X) U S
-
-\end{code}
-
+To see that `is-compact-open'` implies `is-compact-open''`, notice first that
+for every open `U : ⟨ 𝒪 X ⟩` and family `S`, we have that `U ≤ ⋁ S` if and
+only if `U ＝ ⋁ { U ∧ Sᵢ ∣ i : index S }`.
 
 \begin{code}
 
@@ -616,58 +592,21 @@ for every open `U : ⟨ 𝒪 X ⟩` with a cover `U ≤ ⋁_{i : I} V_i`, we hav
        ⋁[ 𝒪 X ] ⁅ U ∧[ 𝒪 X ] S [ i ] ∣ i ∶ index S ⁆   ＝⟨ Ⅱ ⟩
        U ∧[ 𝒪 X ] (⋁[ 𝒪 X ] S)                         ∎
 
-\end{code}
-
-\begin{code}
-
- lemma : (U : ⟨ 𝒪 X ⟩) (S : Fam 𝓦 ⟨ 𝒪 X ⟩)
-       → (U ≤ (⋁[ 𝒪 X ] ⁅ U ∧[ 𝒪 X ] (S [ i ]) ∣ i ∶ index S ⁆)) holds
-       → U ＝ ⋁[ 𝒪 X ] S
- lemma U S p = {!!}
-
-\end{code}
-
-\begin{code}
-
- compact-open'-implies-compact-open'' : (U : ⟨ 𝒪 X ⟩)
-                                      → is-compact-open'  X U holds
-                                      → is-compact-open'' X U holds
- compact-open'-implies-compact-open'' U κ S p =
-  ∥∥-functor † (κ S′ c)
-   where
-    open Joins (λ x y → x ≤ y)
-
-    S′ : Fam 𝓦 ⟨ 𝒪 X ⟩
-    S′ = ⁅ U ∧[ 𝒪 X ] S [ i ] ∣ i ∶ index S ⁆
-
-    υ : (U is-an-upper-bound-of S) holds
-    υ = transport
-         (λ - → (- is-an-upper-bound-of S) holds)
-         (p ⁻¹)
-         (⋁[ 𝒪 X ]-upper S)
-
-    φ : cofinal-in (𝒪 X) S S′ holds
-    φ i = ∣ i , ∧[ 𝒪 X ]-greatest U (S [ i ]) (S [ i ]) (υ i) (≤-is-reflexive (poset-of (𝒪 X)) (S [ i ])) ∣
-
-    ψ : cofinal-in (𝒪 X) S′ S holds
-    ψ i = ∣ i , ∧[ 𝒪 X ]-lower₂ U (S [ i ]) ∣
-
-    q : ⋁[ 𝒪 X ] S ＝ ⋁[ 𝒪 X ] S′
-    q = bicofinal-implies-same-join (𝒪 X) S S′ φ ψ
-
-    c : (U ≤ (⋁[ 𝒪 X ] S′)) holds
-    c = U            ＝⟨ p ⟩ₚ
-        ⋁[ 𝒪 X ] S   ＝⟨ q ⟩ₚ
-        ⋁[ 𝒪 X ] S′  ■
-
-    † : (Σ (J , h) ꞉ SubFam S , is-Kuratowski-finite J × (U ≤ (⋁[ 𝒪 X ] ⁅  S′ [ h j ] ∣ j ∶ J ⁆)) holds)
-      → Σ (J , h) ꞉ SubFam S , is-Kuratowski-finite J × (U ＝ ⋁[ 𝒪 X ] ⁅ S [ h j ] ∣ j ∶ J ⁆)
-    † ((J , h) , 𝕗 , r) =
-     (J , h) , 𝕗 , lemma U ⁅ S [ h j ] ∣ j ∶ J ⁆ r
+ distribute-inside-cover₂
+  : (U : ⟨ 𝒪 X ⟩) (S : Fam 𝓦 ⟨ 𝒪 X ⟩)
+  → (U ≤ (⋁[ 𝒪 X ] S)) holds
+  → U ＝ ⋁[ 𝒪 X ] ⁅ U ∧[ 𝒪 X ] (S [ i ]) ∣ i ∶ index S ⁆
+ distribute-inside-cover₂ U S p =
+  U                                                 ＝⟨ Ⅰ ⟩
+  U ∧[ 𝒪 X ] (⋁[ 𝒪 X ] S)                           ＝⟨ Ⅱ ⟩
+  ⋁[ 𝒪 X ] ⁅ U ∧[ 𝒪 X ] (S [ i ]) ∣ i ∶ index S ⁆   ∎
+  where
+   Ⅰ = connecting-lemma₁ (𝒪 X) p
+   Ⅱ = distributivity (𝒪 X) U S
 
 \end{code}
 
-We now prove the converse: `is-compact-open''` implies `is-compact-open'`.
+The backward implication follows easily from these two lemmas.
 
 \begin{code}
 
@@ -677,7 +616,7 @@ We now prove the converse: `is-compact-open''` implies `is-compact-open'`.
  compact-open''-implies-compact-open' U κ S p = ∥∥-functor † ♢
   where
    q : U ＝ ⋁[ 𝒪 X ] ⁅ U ∧[ 𝒪 X ] (S [ i ]) ∣ i ∶ index S ⁆
-   q = distribute-inside-cover U S p
+   q = distribute-inside-cover₂ U S p
 
    ♢ : ∃ (J , h) ꞉ SubFam S , is-Kuratowski-finite J
                             × (U ＝ ⋁[ 𝒪 X ] ⁅ U ∧[ 𝒪 X ] S [ h j ] ∣ j ∶ J ⁆)
@@ -689,5 +628,86 @@ We now prove the converse: `is-compact-open''` implies `is-compact-open'`.
                             × (U ≤ (⋁[ 𝒪 X ] ⁅ S [ h j ] ∣ j ∶ J ⁆)) holds
    † (𝒥@(J , h) , 𝕗 , p) =
     𝒥 , 𝕗 , distribute-inside-cover₁ U ⁅ S [ h j ] ∣ j ∶ J ⁆ p
+
+\end{code}
+
+Now, the forward implication, which is a bit more involved.
+
+\begin{code}
+
+ compact-open'-implies-compact-open'' : (U : ⟨ 𝒪 X ⟩)
+                                      → is-compact-open'  X U holds
+                                      → is-compact-open'' X U holds
+ compact-open'-implies-compact-open'' U κ S p = ∥∥-functor † (κ S′ c)
+  where
+   open Joins (λ x y → x ≤ y)
+
+   S′ : Fam 𝓦 ⟨ 𝒪 X ⟩
+   S′ = ⁅ U ∧[ 𝒪 X ] S [ i ] ∣ i ∶ index S ⁆
+
+   υ : (U is-an-upper-bound-of S) holds
+   υ = transport
+        (λ - → (- is-an-upper-bound-of S) holds)
+        (p ⁻¹)
+        (⋁[ 𝒪 X ]-upper S)
+
+   φ : cofinal-in (𝒪 X) S S′ holds
+   φ i = ∣ i , ∧[ 𝒪 X ]-greatest U (S [ i ]) (S [ i ]) (υ i) γ ∣
+    where
+     γ : (S [ i ] ≤ S [ i ]) holds
+     γ = ≤-is-reflexive (poset-of (𝒪 X)) (S [ i ])
+
+   ψ : cofinal-in (𝒪 X) S′ S holds
+   ψ i = ∣ i , ∧[ 𝒪 X ]-lower₂ U (S [ i ]) ∣
+
+   q : ⋁[ 𝒪 X ] S ＝ ⋁[ 𝒪 X ] S′
+   q = bicofinal-implies-same-join (𝒪 X) S S′ φ ψ
+
+   c : (U ≤ (⋁[ 𝒪 X ] ⁅ U ∧[ 𝒪 X ] S [ i ] ∣ i ∶ index S ⁆)) holds
+   c = reflexivity+
+        (poset-of (𝒪 X))
+        (distribute-inside-cover₂ U S (reflexivity+ (poset-of (𝒪 X)) p))
+
+   † : Σ (J , h) ꞉ SubFam S , is-Kuratowski-finite J
+                            × (U ≤ (⋁[ 𝒪 X ] ⁅ S′ [ h j ] ∣ j ∶ J ⁆)) holds
+     → Σ (J , h) ꞉ SubFam S , is-Kuratowski-finite J
+                            × (U ＝ ⋁[ 𝒪 X ] ⁅ S [ h j ] ∣ j ∶ J ⁆)
+   † ((J , h) , 𝕗 , r) = (J , h) , 𝕗 , ‡
+    where
+     ‡₁ : (U ≤ (⋁[ 𝒪 X ] ⁅ S [ h j ] ∣ j ∶ J ⁆)) holds
+     ‡₁ = U                                 ≤⟨ Ⅰ ⟩
+          ⋁[ 𝒪 X ] ⁅ S′ [ h j ] ∣ j ∶ J ⁆   ≤⟨ Ⅱ ⟩
+          ⋁[ 𝒪 X ] ⁅ S [ h j ] ∣ j ∶ J ⁆    ■
+           where
+            Ⅰ = r
+            Ⅱ = cofinal-implies-join-covered
+                 (𝒪 X)
+                 ⁅ S′ [ h j ] ∣ j ∶ J ⁆
+                 ⁅ S [ h j ] ∣ j ∶ J ⁆
+                 λ j → ∣ j , ∧[ 𝒪 X ]-lower₂ U (S [ h j ]) ∣
+
+     Ⅱ : ((⋁[ 𝒪 X ] ⁅ S′ [ h j ] ∣ j ∶ J ⁆) ≤ U) holds
+     Ⅱ = ⋁[ 𝒪 X ]-least
+          ⁅ S′ [ h j ] ∣ j ∶ J ⁆
+          (U , λ j → ∧[ 𝒪 X ]-lower₁ U (S [ h j ]))
+
+     ♢ : cofinal-in (𝒪 X) ⁅ S [ h j ] ∣ j ∶ J ⁆ ⁅ S′ [ h j ] ∣ j ∶ J ⁆ holds
+     ♢ j = ∣ j , ∧[ 𝒪 X ]-greatest U (S [ h j ]) (S [ h j ]) (υ (h j)) γ ∣
+      where
+       γ : (S [ h j ] ≤ S [ h j ]) holds
+       γ = ≤-is-reflexive (poset-of (𝒪 X)) (S [ h j ])
+
+     Ⅰ = cofinal-implies-join-covered
+          (𝒪 X)
+          ⁅ S [ h j ] ∣ j ∶ J ⁆
+          ⁅ S′ [ h j ] ∣ j ∶ J ⁆
+          ♢
+
+     ‡₂ : ((⋁[ 𝒪 X ] ⁅  S [ h j ] ∣ j ∶ J ⁆) ≤ U) holds
+     ‡₂ = ⋁[ 𝒪 X ] ⁅ S [ h j ] ∣ j ∶ J ⁆     ≤⟨ Ⅰ ⟩
+          ⋁[ 𝒪 X ] ⁅ S′ [ h j ] ∣ j ∶ J ⁆    ≤⟨ Ⅱ ⟩
+          U                                  ■
+
+     ‡ = ≤-is-antisymmetric (poset-of (𝒪 X)) ‡₁ ‡₂
 
 \end{code}
