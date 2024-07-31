@@ -1123,3 +1123,48 @@ module _ (pt : propositional-truncations-exist) where
       ϕ (x , p) = ∥∥-functor (λ (y , a) → x , y , a) p
 
 \end{code}
+
+Added by Tom de Jong, 31 July 2024.
+
+We formalize a variation on Theorem 5.8.4 of the HoTT Book which is due to
+Egbert Rijke who popularized it under the name "the fundamental theorem of
+identity types", see [1] and [Section 11, 2].
+
+[1] agda-unimath
+    https://unimath.github.io/agda-unimath/foundation.fundamental-theorem-of-identity-types.html
+[2] Egbert Rijke
+    Introdution to Homotopy Type Theory
+    Pre-publication of an upcoming book
+    https://doi.org/10.48550/arXiv.2212.11082
+
+\begin{code}
+
+module _
+        {X : 𝓤 ̇  }
+        (A : X → 𝓥 ̇  )
+        {x : X}
+       where
+
+ fundamental-theorem-of-identity-types : is-singleton (Σ A)
+                                       → (ζ : Nat (x ＝_) A)
+                                       → is-fiberwise-equiv ζ
+ fundamental-theorem-of-identity-types σ ζ =
+  NatΣ-equiv-gives-fiberwise-equiv ζ
+   (maps-of-singletons-are-equivs (NatΣ ζ)
+                                  (singleton-types-are-singletons x)
+                                  σ)
+
+ fundamental-theorem-of-identity-types-converse : (ζ : Nat (x ＝_) A)
+                                                → is-fiberwise-equiv ζ
+                                                → is-singleton (Σ A)
+ fundamental-theorem-of-identity-types-converse ζ ζ-eqv =
+  equiv-to-singleton' (NatΣ ζ , NatΣ-is-equiv (x ＝_) A ζ ζ-eqv)
+                      (singleton-types-are-singletons x)
+
+ fundamental-theorem-of-identity-types-≃ : is-singleton (Σ A)
+                                         → Nat (x ＝_) A
+                                         → (y : X) → (x ＝ y) ≃ A y
+ fundamental-theorem-of-identity-types-≃ σ ζ y =
+  ζ y , fundamental-theorem-of-identity-types σ ζ y
+
+\end{code}
