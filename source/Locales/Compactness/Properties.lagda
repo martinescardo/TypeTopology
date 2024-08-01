@@ -5,6 +5,10 @@ date-started:   2024-07-19
 date-completed: 2024-07-31
 ---
 
+We collect properties related to compactness in locale theory in this module.
+This includes the equivalences to two alternative definitions of the notion of
+compactness, which we denote `is-compact-open'` and `is-compact-open''`.
+
 \begin{code}[hide]
 
 {-# OPTIONS --safe --without-K #-}
@@ -105,7 +109,6 @@ list-members-is-Kuratowski-finite {𝓤} {A} xs =
  ∣ length xs , nth xs , nth-is-surjection xs ∣
 
 \end{code}
-
 
 TODO: The function `nth` above should be placed in a more appropriate module.
 
@@ -255,9 +258,9 @@ how to obtain a subcover, from which it follows that `is-compact` implies
 
 module Characterization-Of-Compactness₁ (X : Locale 𝓤 𝓥 𝓦) where
 
- open Some-Lemmas-On-Directification (𝒪 X)
  open PosetNotation (poset-of (𝒪 X))
  open PosetReasoning (poset-of (𝒪 X))
+ open Some-Lemmas-On-Directification (𝒪 X)
 
  finite-subcover-through-directification
   : (U : ⟨ 𝒪 X ⟩)
@@ -322,8 +325,8 @@ We now prove the converse which is a bit more difficult. We start with some
 preparation.
 
 Given a subset `P : ⟨ 𝒪 X ⟩ → Ω` and a family `S : Fam 𝓤 ⟨ 𝒪 X ⟩`, the type
-`Upper-Bound-Data P S` is the type indices of `S` such that `S [ i ]` is an
-upper bound of the subset `P`.
+`Upper-Bound-Data P S` is the type of indices `i` of `S` such that `S [ i ]` is
+an upper bound of the subset `P`.
 
 \begin{code}
 
@@ -340,7 +343,7 @@ module Characterization-Of-Compactness₂ (X : Locale (𝓤 ⁺) 𝓤 𝓤) wher
 
 \end{code}
 
-Now, we give the truncated version of this which we denote `has-upper-bound-in`:
+We now define the truncated version of this which we denote `has-upper-bound-in`:
 
 \begin{code}
 
@@ -397,8 +400,8 @@ subset.
 
 \end{code}
 
-We are now ready to prove our main lemma, which states that every directed
-family `S` contains at least one upper bound of every Kuratowski-finite subset.
+We are now ready to prove our main lemma stating that every directed family `S`
+contains at least one upper bound of every Kuratowski-finite subset.
 
 \begin{code}
 
@@ -480,7 +483,7 @@ their Kuratowski-finite subfamilies.
  directed-families-have-upper-bounds-of-Kuratowski-finite-subfamilies
   : (S : Fam 𝓤 ⟨ 𝒪 X ⟩)
   → is-directed (𝒪 X) S holds
-  → (𝒥 : Fam 𝓤 (index S))
+  → (𝒥 : SubFam S)
   → is-Kuratowski-finite (index 𝒥)
   → has-upper-bound-in (χ∙ ⁅ S [ 𝒥 [ j ] ] ∣ j ∶ index 𝒥 ⁆) S holds
  directed-families-have-upper-bounds-of-Kuratowski-finite-subfamilies S 𝒹 𝒥 𝕗 =
@@ -547,8 +550,8 @@ It easily follows from this that `is-compact-open'` implies `is-compact-open`.
 
 \section{Another alternative definition}
 
-We now provide another variant of the definition `is-compact-open'` which is
-easily shown to be equivalent. This one says exactly that every cover has a
+We now provide another variant of the definition `is-compact-open'`, which we
+show to be equivalent. This one says exactly that every cover has a
 Kuratowski-finite subcover.
 
 \begin{code}
@@ -559,15 +562,15 @@ is-compact-open'' {𝓤} {𝓥} {𝓦} X U =
   (U ＝ₚ ⋁[ 𝒪 X ] S) ⇒
    (Ǝ (J , h) ꞉ SubFam S , is-Kuratowski-finite J
                          × (U ＝ ⋁[ 𝒪 X ] ⁅  S [ h j ] ∣ j ∶ J ⁆))
-   where
-    open PosetNotation (poset-of (𝒪 X))
-    open Equality carrier-of-[ poset-of (𝒪 X) ]-is-set
+    where
+     open PosetNotation (poset-of (𝒪 X))
+     open Equality carrier-of-[ poset-of (𝒪 X) ]-is-set
 
 module Characterization-Of-Compactness₃ (X : Locale 𝓤 𝓥 𝓦) where
 
- open Some-Lemmas-On-Directification (𝒪 X)
  open PosetNotation (poset-of (𝒪 X))
  open PosetReasoning (poset-of (𝒪 X))
+ open Some-Lemmas-On-Directification (𝒪 X)
 
 \end{code}
 
