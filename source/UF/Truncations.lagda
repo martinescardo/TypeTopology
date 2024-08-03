@@ -363,6 +363,11 @@ We now define an equivalence that characterizes the truncated identity type.
                  (trunc-id-family-computes x x' ⁻¹))
          (≃-sym (trunc-identity-characterization x ∣ x' ∣[ succ n ]))
 
+ forth-trunc-id-char : {𝓤 : Universe} {X : 𝓤 ̇} {x x' : X} {n : ℕ}
+                     → ∥ x ＝ x' ∥[ n ]
+                     → (∣ x ∣[ succ n ] ＝ ∣ x' ∣[ succ n ])
+ forth-trunc-id-char = ⌜ eliminated-trunc-identity-char ⌝
+
 \end{code}
 
 We demonstrate the equivalence of 1-truncation and propositional truncation:

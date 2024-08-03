@@ -170,34 +170,64 @@ useful.
 We can characterize connected types in terms of inhabitedness and connectedness
 at the level below of the identity type.
 
-TODO: Finish Truncation proof this depends on.
+\begin{code}
 
- connected-characterization : {X : 𝓤 ̇} {n : ℕ}
+ conn-to-inhabited-id-conn : {X : 𝓤 ̇} (n : ℕ)
+                           → X is (succ n) connected
+                           → ∥ X ∥ × ((x y : X) → (x ＝ y) is n connected)
+ conn-to-inhabited-id-conn zero X-conn =
+  (center (equiv-to-singleton' 1-trunc-≃-prop-trunc X-conn)
+   , λ x x' → equiv-to-singleton eliminated-trunc-identity-char
+               (is-prop-implies-is-prop' (singletons-are-props X-conn)
+                ∣ x ∣[ 1 ] ∣ x' ∣[ 1 ]))
+ conn-to-inhabited-id-conn (succ n) X-conn =
+  (pr₁ (conn-to-inhabited-id-conn n (connectedness-is-lower-closed X-conn))
+   , λ y y' → equiv-to-singleton eliminated-trunc-identity-char
+               (is-prop-implies-is-prop' (singletons-are-props X-conn)
+                ∣ y ∣[ succ (succ n) ] ∣ y' ∣[ succ (succ n) ]))
+
+ inhabited-id-conn-to-conn : {X : 𝓤 ̇} (n : ℕ)
+                           → ∥ X ∥ × ((x y : X) → (x ＝ y) is n connected)
+                           → X is (succ n) connected
+ inhabited-id-conn-to-conn zero (anon-x , id-conn) =
+  pointed-props-are-singletons (prop-trunc-to-1-trunc anon-x) 1-trunc-is-prop
+ inhabited-id-conn-to-conn (succ n) (anon-x , id-conn) =
+  ∥∥-rec (being-singleton-is-prop fe')
+         (λ x → (∣ x ∣[ succ (succ n) ]
+          , ∥∥ₙ-ind (λ - → ∥∥ₙ-h-level)
+                    (λ y → forth-trunc-id-char (center (id-conn x y)))))
+         anon-x
+
+ connected-characterization : {X : 𝓤 ̇} (n : ℕ)
                             → X is (succ n) connected
                             ↔ ∥ X ∥ × ((x y : X) → (x ＝ y) is n connected)
- connected-characterization {𝓤} {X} {zero} = (left-to-right , right-to-left)
-  where
-   left-to-right : X is 1 connected
-                 → ∥ X ∥ × ((x y : X) → (x ＝ y) is zero connected)
-   left-to-right X-is-conn =
-    (center (equiv-to-singleton' 1-trunc-≃-prop-trunc X-is-conn)
-     , λ x x' → equiv-to-singleton trunc-id-type-char
-                 (is-prop-implies-is-prop' (singletons-are-props X-is-conn)
-                  ∣ x ∣[ 1 ] ∣ x' ∣[ 1 ]))
-   right-to-left : ∥ X ∥ × ((x y : X) → (x ＝ y) is zero connected)
-                 → X is 1 connected
-   right-to-left (anon-x , conn) =
-    pointed-props-are-singletons (prop-trunc-to-1-trunc anon-x) 1-trunc-is-prop
- connected-characterization {𝓤} {X} {succ n} = (left-to-right , {!!})
-  where
-   left-to-right : X is succ (succ n) connected
-                 → ∥ X ∥ × ((x y : X) → (x ＝ y) is succ n connected)
-   left-to-right X-is-conn = {!!}
+ connected-characterization {𝓤} {X} n =
+  (conn-to-inhabited-id-conn n , inhabited-id-conn-to-conn n)
 
- ap-is-less-connected : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (f : X → Y)
-                      → (n : ℕ)
+ ap-is-less-connected : {X : 𝓤 ̇} {Y : 𝓥 ̇} {n : ℕ} {x x' : X}
+                      → (f : X → Y)
                       → map f is (succ n) connected
-                      → map (ap f) is n connected
- ap-is-less-connected = {!!}
+                      → map (ap f {x} {x'}) is n connected
+ ap-is-less-connected f f-conn p = {!!}
 
 \end{code}
+   where
+   forth : X is 1 connected
+         → ∥ X ∥ × ((x y : X) → (x ＝ y) is zero connected)
+   forth X-is-conn =
+    (center (equiv-to-singleton' 1-trunc-≃-prop-trunc X-is-conn)
+     , λ x x' → equiv-to-singleton eliminated-trunc-identity-char
+                 (is-prop-implies-is-prop' (singletons-are-props X-is-conn)
+                  ∣ x ∣[ 1 ] ∣ x' ∣[ 1 ]))
+   back : ∥ X ∥ × ((x y : X) → (x ＝ y) is zero connected)
+        → X is 1 connected
+   back (anon-x , conn) =
+    pointed-props-are-singletons (prop-trunc-to-1-trunc anon-x) 1-trunc-is-prop
+ connected-characterization {𝓤} {X} (succ n) = (forth , back)
+  where
+   forth : X is succ (succ n) connected
+         → ∥ X ∥ × ((x y : X) → (x ＝ y) is succ n connected)
+   forth X-is-conn = (pr₁ (pr₁ {!!}) , {!!})
+   back : ∥ X ∥ × ((x y : X) → (x ＝ y) is succ n connected)
+        → X is succ (succ n) connected
+   back (anon-x , conn) = {!!}
