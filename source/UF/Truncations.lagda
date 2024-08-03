@@ -82,8 +82,7 @@ module GeneralTruncations
                 → ((x : X) → f (∣ x ∣[ n ]) ＝ g (∣ x ∣[ n ]))
                 → (s : ∥ X ∥[ n ]) → f s ＝ g s
  ∥∥ₙ-uniqueness {𝓤} {𝓥} {X} {Y} {n} Y-h-lev f g H =
-   ∥∥ₙ-ind (λ s → id-types-are-same-hlevel n Y-h-lev (f s) (g s))
-           H
+   ∥∥ₙ-ind (λ s → id-types-are-same-hlevel n Y-h-lev (f s) (g s)) H
 
  ∥∥ₙ-rec-comp : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {n : ℕ}
               → (m : Y is-of-hlevel n)
@@ -91,64 +90,63 @@ module GeneralTruncations
               → (x : X) → ∥∥ₙ-rec m g ∣ x ∣[ n ] ＝ g x
  ∥∥ₙ-rec-comp m g = ∥∥ₙ-ind-comp (λ - → m) g
 
- ∥∥ₙ-rec-double : {𝓤 𝓥 𝓦 : Universe} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {n : ℕ}
-                → Z is-of-hlevel n
-                → (X → Y → Z)
-                → ∥ X ∥[ n ] → ∥ Y ∥[ n ] → Z
- ∥∥ₙ-rec-double {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {n} Z-h-level g =
+ ∥∥ₙ-rec₂ : {𝓤 𝓥 𝓦 : Universe} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {n : ℕ}
+          → Z is-of-hlevel n
+          → (X → Y → Z)
+          → ∥ X ∥[ n ] → ∥ Y ∥[ n ] → Z
+ ∥∥ₙ-rec₂ {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {n} Z-h-level g =
   ∥∥ₙ-rec (hlevel-closed-under-→ n (∥ Y ∥[ n ]) Z Z-h-level)
           (λ x → ∥∥ₙ-rec Z-h-level (λ y → g x y))
 
- ∥∥ₙ-rec-double-comp : {𝓤 𝓥 𝓦 : Universe}
-                       {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {n : ℕ}
-                     → (m : Z is-of-hlevel n)
-                     → (g : X → Y → Z)
-                     → (x : X) → (y : Y)
-                     → ∥∥ₙ-rec-double m g ∣ x ∣[ n ] ∣ y ∣[ n ] ＝ g x y
- ∥∥ₙ-rec-double-comp {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {n} m g x y =
-  ∥∥ₙ-rec-double m g ∣ x ∣[ n ] ∣ y ∣[ n ] ＝⟨ happly
-                                              (∥∥ₙ-rec-comp
-                                              (hlevel-closed-under-→ n
-                                                (∥ Y ∥[ n ]) Z m)
-                                              (λ x → ∥∥ₙ-rec m (λ y → g x y)) x)
-                                              ∣ y ∣[ n ]  ⟩
-  ∥∥ₙ-rec m (λ y → g x y) ∣ y ∣[ n ]       ＝⟨ ∥∥ₙ-rec-comp m (λ y → g x y) y ⟩
-  g x y                                    ∎
+ ∥∥ₙ-rec-comp₂ : {𝓤 𝓥 𝓦 : Universe} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {n : ℕ}
+               → (m : Z is-of-hlevel n)
+               → (g : X → Y → Z)
+               → (x : X) → (y : Y)
+               → ∥∥ₙ-rec₂ m g ∣ x ∣[ n ] ∣ y ∣[ n ] ＝ g x y
+ ∥∥ₙ-rec-comp₂ {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {n} m g x y =
+  ∥∥ₙ-rec₂ m g ∣ x ∣[ n ] ∣ y ∣[ n ] ＝⟨ happly
+                                          (∥∥ₙ-rec-comp
+                                          (hlevel-closed-under-→ n
+                                            (∥ Y ∥[ n ]) Z m)
+                                           (λ x → ∥∥ₙ-rec m (λ y → g x y)) x)
+                                           ∣ y ∣[ n ]  ⟩
+  ∥∥ₙ-rec m (λ y → g x y) ∣ y ∣[ n ]  ＝⟨ ∥∥ₙ-rec-comp m (λ y → g x y) y ⟩
+  g x y                               ∎
 
  abstract
-  ∥∥ₙ-ind-double : {𝓤 𝓥 𝓦 : Universe} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {n : ℕ}
-                   {P : ∥ X ∥[ n ] → ∥ Y ∥[ n ] → 𝓦 ̇ } 
-                 → ((u : ∥ X ∥[ n ]) → (v : ∥ Y ∥[ n ])
-                  → (P u v) is-of-hlevel n)
-                 → ((x : X) → (y : Y) → P (∣ x ∣[ n ]) (∣ y ∣[ n ]))
-                 → (u : ∥ X ∥[ n ]) → (v : ∥ Y ∥[ n ]) → P u v
-  ∥∥ₙ-ind-double {𝓤} {𝓥} {𝓦} {X} {Y} {n} {P} P-h-level f =
+  ∥∥ₙ-ind₂ : {𝓤 𝓥 𝓦 : Universe} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {n : ℕ}
+             {P : ∥ X ∥[ n ] → ∥ Y ∥[ n ] → 𝓦 ̇ } 
+           → ((u : ∥ X ∥[ n ]) → (v : ∥ Y ∥[ n ])
+           → (P u v) is-of-hlevel n)
+           → ((x : X) → (y : Y) → P (∣ x ∣[ n ]) (∣ y ∣[ n ]))
+           → (u : ∥ X ∥[ n ]) → (v : ∥ Y ∥[ n ]) → P u v
+  ∥∥ₙ-ind₂ {𝓤} {𝓥} {𝓦} {X} {Y} {n} {P} P-h-level f =
    ∥∥ₙ-ind (λ u → hlevel-closed-under-Π n ∥ Y ∥[ n ] (P u)
                                         (λ v → P-h-level u v))
            (λ x → ∥∥ₙ-ind (λ v → P-h-level ∣ x ∣[ n ] v) (λ y → f x y))
 
-  ∥∥ₙ-ind-double-comp : {𝓤 𝓥 𝓦 : Universe} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {n : ℕ}
-                        {P : ∥ X ∥[ n ] → ∥ Y ∥[ n ] → 𝓦 ̇ } 
-                      → (m : (u : ∥ X ∥[ n ]) → (v : ∥ Y ∥[ n ])
-                       → (P u v) is-of-hlevel n)
-                      → (g : (x : X) → (y : Y) → P (∣ x ∣[ n ]) (∣ y ∣[ n ]))
-                      → (x : X) → (y : Y)
-                      → ∥∥ₙ-ind-double m g ∣ x ∣[ n ] ∣ y ∣[ n ] ＝ g x y
-  ∥∥ₙ-ind-double-comp {𝓤} {𝓥} {𝓦} {X} {Y} {n} {P} m g x y =
-   ∥∥ₙ-ind-double m g ∣ x ∣[ n ] ∣ y ∣[ n ] ＝⟨ happly
-                                                (∥∥ₙ-ind-comp
-                                                 (λ u → hlevel-closed-under-Π
-                                                  n ∥ Y ∥[ n ] (P u)
-                                                  (λ v → m u v))
-                                                 (λ x' → ∥∥ₙ-ind
+  ∥∥ₙ-ind-comp₂ : {𝓤 𝓥 𝓦 : Universe} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {n : ℕ}
+                  {P : ∥ X ∥[ n ] → ∥ Y ∥[ n ] → 𝓦 ̇ } 
+                → (m : (u : ∥ X ∥[ n ]) → (v : ∥ Y ∥[ n ])
+                → (P u v) is-of-hlevel n)
+                → (g : (x : X) → (y : Y) → P (∣ x ∣[ n ]) (∣ y ∣[ n ]))
+                → (x : X) → (y : Y)
+                → ∥∥ₙ-ind₂ m g ∣ x ∣[ n ] ∣ y ∣[ n ] ＝ g x y
+  ∥∥ₙ-ind-comp₂ {𝓤} {𝓥} {𝓦} {X} {Y} {n} {P} m g x y =
+   ∥∥ₙ-ind₂ m g ∣ x ∣[ n ] ∣ y ∣[ n ] ＝⟨ happly
+                                          (∥∥ₙ-ind-comp
+                                          (λ u → hlevel-closed-under-Π
+                                                 n ∥ Y ∥[ n ] (P u)
+                                                 (λ v → m u v))
+                                          (λ x' → ∥∥ₙ-ind
                                                   (λ v → m ∣ x' ∣[ n ] v)
                                                   (λ y' → g x' y')) x)
-                                                ∣ y ∣[ n ] ⟩
+                                                  ∣ y ∣[ n ] ⟩
    ∥∥ₙ-ind (λ v → m ∣ x ∣[ n ] v)
-           (λ y' → g x y') ∣ y ∣[ n ]       ＝⟨ ∥∥ₙ-ind-comp
-                                                 (λ v → m ∣ x ∣[ n ] v)
-                                                 (λ y' → g x y') y ⟩
-   g x y                                    ∎
+           (λ y' → g x y') ∣ y ∣[ n ]  ＝⟨ ∥∥ₙ-ind-comp
+                                            (λ v → m ∣ x ∣[ n ] v)
+                                            (λ y' → g x y') y ⟩
+   g x y                               ∎
 
 \end{code}
 
