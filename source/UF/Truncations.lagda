@@ -266,11 +266,80 @@ We now define an equivalence that characterizes the truncated identity type.
 
 \begin{code}
 
- canonical-id-trunc-map : {𝓤 : Universe} {X : 𝓤 ̇} {x y : X} {n : ℕ}
-                        → ∥ x ＝ y ∥[ n ]
-                        → ∣ x ∣[ succ n ] ＝ ∣ y ∣[ succ n ]
- canonical-id-trunc-map {𝓤} {X} {x} {y} {n} =
+ canonical-identity-trunc-map : {𝓤 : Universe} {X : 𝓤 ̇} {x y : X} {n : ℕ}
+                              → ∥ x ＝ y ∥[ n ]
+                              → ∣ x ∣[ succ n ] ＝ ∣ y ∣[ succ n ]
+ canonical-identity-trunc-map {𝓤} {X} {x} {y} {n} =
   ∥∥ₙ-rec ∥∥ₙ-h-level (ap (λ x → ∣ x ∣[ (succ n) ]))
+
+ module _ {𝓤 : Universe} {X : 𝓤 ̇} {n : ℕ} (x : X) where
+
+  trunc-id-family : ∥ X ∥[ succ n ] → ℍ n 𝓤
+  trunc-id-family = ∥∥ₙ-rec (ℍ-is-of-next-hlevel n 𝓤 (ua 𝓤))
+                            (λ x' → (∥ x ＝ x' ∥[ n ] , ∥∥ₙ-h-level))
+
+  trunc-id-family-type : ∥ X ∥[ succ n ] → 𝓤 ̇
+  trunc-id-family-type = pr₁ ∘ trunc-id-family
+
+  trunc-id-family-computes : (x' : X)
+                           → trunc-id-family-type ∣ x' ∣[ succ n ]
+                           ＝ ∥ x ＝ x' ∥[ n ]
+  trunc-id-family-computes x' =
+    ap pr₁ (∥∥ₙ-rec-comp (ℍ-is-of-next-hlevel n 𝓤 (ua 𝓤))
+                         (λ x' → (∥ x ＝ x' ∥[ n ] , ∥∥ₙ-h-level))
+                         x')
+
+  trunc-id-forward-map : (x' : X)
+                       → trunc-id-family-type ∣ x' ∣[ succ n ]
+                       → ∥ x ＝ x' ∥[ n ]
+  trunc-id-forward-map x' = transport id (trunc-id-family-computes x')
+
+  trunc-id-backward-map : (x' : X)
+                        → ∥ x ＝ x' ∥[ n ]
+                        → trunc-id-family-type ∣ x' ∣[ succ n ]
+  trunc-id-backward-map x' = transport id ((trunc-id-family-computes x') ⁻¹)
+
+  refl-trunc-id-family : trunc-id-family-type ∣ x ∣[ succ n ]
+  refl-trunc-id-family = trunc-id-backward-map x ∣ refl ∣[ n ]
+
+  identity-on-trunc-to-family : (v : ∥ X ∥[ succ n ])
+                              → (∣ x ∣[ succ n ] ＝ v)
+                              → trunc-id-family-type v
+  identity-on-trunc-to-family .(∣ x ∣[ succ n ]) refl = refl-trunc-id-family
+
+  suffices-map-1 : (x' : X) (p : x ＝ x')
+                 → (∣ x ∣[ succ n ] , refl-trunc-id-family)
+                 ＝ (∣ x' ∣[ succ n ] , trunc-id-backward-map x' ∣ p ∣[ n ])
+  suffices-map-1 = {!!}
+
+  trunc-id-family-is-identity-system : is-contr (Σ (trunc-id-family-type))
+  trunc-id-family-is-identity-system =
+   ((∣ x ∣[ succ n ] , refl-trunc-id-family) , center-Q)
+   where
+    center-Q : is-central (Σ (trunc-id-family-type))
+                          (∣ x ∣[ succ n ] , refl-trunc-id-family)
+    center-Q (v , q) = {!!} 
+
+ trunc-identity-characterization : {𝓤 : Universe} {X : 𝓤 ̇} {n : ℕ}
+                                 → (x : X) (v : ∥ X ∥[ succ n ])
+                                 → (∣ x ∣[ succ n ] ＝ v)
+                                 ≃ trunc-id-family-type x v
+ trunc-identity-characterization = {!!}
+
+\end{code}
+
+    H : (x' : X) (p : x ＝ x')
+      → (∣ x ∣[ succ n ] , refl-trunc-id-family)
+      ＝ (∣ x' ∣[ succ n ] , trunc-id-backward-map x' ∣ p ∣[ n ])
+    H x' refl = refl
+    H' : (x' : X) (q' : ∥ x ＝ x' ∥[ n ])
+      → (∣ x ∣[ succ n ] , refl-trunc-id-family)
+      ＝ (∣ x' ∣[ succ n ] , trunc-id-backward-map x' q')
+    H' x' = ∥∥ₙ-ind (λ - → ∥∥ₙ-h-level) (H x')
+    G : (v : ∥ X ∥[ succ n ]) (q : trunc-id-family-type v)
+      → (∣ x ∣[ succ n ] , refl-trunc-id-family) ＝ (v , q)
+    G = ∥∥ₙ-ind (λ - → ∥∥ₙ-h-level)
+                (λ x' q' → H' x' (trunc-id-forward-map x' q'))
 
  private
   P' : {𝓤 : Universe} {X : 𝓤 ̇} {n : ℕ}
@@ -287,9 +356,7 @@ We now define an equivalence that characterizes the truncated identity type.
              → P ∣ x ∣[ succ n ] ∣ y ∣[ succ n ] ＝ ∥ x ＝ y ∥[ n ]
   P-computes {𝓤} {X} {x} {y} {n} =
    ap pr₁ (∥∥ₙ-rec-double-comp (ℍ-is-of-next-hlevel n 𝓤 (ua 𝓤))
-        (λ x x' → (∥ x ＝ x' ∥[ n ] , ∥∥ₙ-h-level)) x y)
-
-\end{code}
+                               (λ x x' → (∥ x ＝ x' ∥[ n ] , ∥∥ₙ-h-level)) x y)
 
 TODO: Current proof follows the HoTT book encode-decode method but it is
 believed there is a better proof.
