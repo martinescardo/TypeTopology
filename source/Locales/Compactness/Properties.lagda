@@ -244,7 +244,6 @@ The function `directify₂` is equal to `directify` as expected.
             (family-of-lists S [ is ])
             (directify₂ S [ i ∷ is ] , γ)
 
-
     Ⅱ  = ap (λ - → S [ i ] ∨[ F ] -) IH
     Ⅰ  = ≤-is-antisymmetric (poset-of F) † ‡
 
