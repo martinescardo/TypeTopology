@@ -141,7 +141,7 @@ of lists of `S`.
 
 \begin{code}
 
-module Some-Lemmas-On-Directification (F : Frame 𝓤 𝓥 𝓦) where
+module some-lemmas-on-directification (F : Frame 𝓤 𝓥 𝓦) where
 
  family-of-lists : Fam 𝓦 ⟨ F ⟩ → Fam 𝓦 (Fam 𝓦 ⟨ F ⟩)
  family-of-lists S = List (index S) , h
@@ -255,11 +255,11 @@ how to obtain a subcover, from which it follows that `is-compact` implies
 
 \begin{code}
 
-module Characterization-Of-Compactness₁ (X : Locale 𝓤 𝓥 𝓦) where
+module characterization-of-compactness₁ (X : Locale 𝓤 𝓥 𝓦) where
 
  open PosetNotation (poset-of (𝒪 X))
  open PosetReasoning (poset-of (𝒪 X))
- open Some-Lemmas-On-Directification (𝒪 X)
+ open some-lemmas-on-directification (𝒪 X)
 
  finite-subcover-through-directification
   : (U : ⟨ 𝒪 X ⟩)
@@ -329,9 +329,9 @@ an upper bound of the subset `P`.
 
 \begin{code}
 
-module Characterization-Of-Compactness₂ (X : Locale (𝓤 ⁺) 𝓤 𝓤) where
+module characterization-of-compactness₂ (X : Locale (𝓤 ⁺) 𝓤 𝓤) where
 
- open Some-Lemmas-On-Directification (𝒪 X)
+ open some-lemmas-on-directification (𝒪 X)
  open PosetNotation (poset-of (𝒪 X))
  open PosetReasoning (poset-of (𝒪 X))
  open Joins (λ x y → x ≤ y)
@@ -565,11 +565,11 @@ is-compact-open'' {𝓤} {𝓥} {𝓦} X U =
      open PosetNotation (poset-of (𝒪 X))
      open Equality carrier-of-[ poset-of (𝒪 X) ]-is-set
 
-module Characterization-Of-Compactness₃ (X : Locale 𝓤 𝓥 𝓦) where
+module characterization-of-compactness₃ (X : Locale 𝓤 𝓥 𝓦) where
 
  open PosetNotation (poset-of (𝒪 X))
  open PosetReasoning (poset-of (𝒪 X))
- open Some-Lemmas-On-Directification (𝒪 X)
+ open some-lemmas-on-directification (𝒪 X)
 
 \end{code}
 
