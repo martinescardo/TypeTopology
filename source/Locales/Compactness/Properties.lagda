@@ -133,8 +133,8 @@ is-compact-open' {𝓤} {𝓥} {𝓦} X U =
 This is much closer to the “every cover has a finite subcover” definition from
 point-set topology.
 
-It is easy to show that this implies the standdard definition of compactness,
-but we need a bit of preparation first.
+It is easy to show that this implies the standard definition of compactness, but
+we need a bit of preparation first.
 
 Given a family `S`, we denote by `family-of-lists S` the family of families
 of lists of `S`.
