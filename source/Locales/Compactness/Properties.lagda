@@ -36,6 +36,7 @@ open import Locales.Compactness.Definition pt fe
 open import Locales.Frame pt fe
 open import Locales.WayBelowRelation.Definition  pt fe
 open import MLTT.List using (member; []; _∷_; List; in-head; in-tail; length)
+open import MLTT.List-Properties
 open import Slice.Family
 open import Taboos.FiniteSubsetTaboo pt fe
 open import UF.Equiv hiding (_■)
@@ -63,50 +64,19 @@ SubFam {𝓤} {A} {𝓦} (I , α) = Σ J ꞉ 𝓦  ̇ , (J → I)
 
 \end{code}
 
-Tiny lemma recording the fact that nothing is a member of the empty list.
-
-\begin{code}
-
-not-in-empty-list : {A : 𝓤  ̇} {x : A} → ¬ ∥ member x [] ∥
-not-in-empty-list = ∥∥-rec 𝟘-is-prop (λ ())
-
-\end{code}
-
 Given any list, the type of elements that fall in the list is a
 Kuratowski-finite type.
 
 \begin{code}
 
-nth : {X : 𝓤  ̇} → (xs : List X) → (i : Fin (length xs)) → Σ x ꞉ X , ∥ member x xs ∥
-nth         (x ∷ _)  (inr ⋆) = x , ∣ in-head ∣
-nth {_} {X} (_ ∷ xs) (inl n) = x , ∥∥-functor in-tail (pr₂ IH)
- where
-  IH : Σ x ꞉ X , ∥ member x xs ∥
-  IH = nth xs n
-
-  x : X
-  x = pr₁ IH
-
-nth-is-surjection : {X : 𝓤  ̇} (xs : List X) → is-surjection (nth xs)
-nth-is-surjection []       (y , μ) = ∥∥-rec ∃-is-prop (λ ()) μ
-nth-is-surjection (x ∷ xs) (y , μ) = ∥∥-rec ∃-is-prop † μ
- where
-  † : member y (x ∷ xs) → ∃ i ꞉ Fin (length (x ∷ xs)) , (nth (x ∷ xs) i ＝ y , μ)
-  † in-head     = ∣ inr ⋆ , to-subtype-＝ (λ _ → ∥∥-is-prop) refl ∣
-  † (in-tail p) = ∥∥-rec ∃-is-prop ‡ IH
-   where
-    IH : (y , ∣ p ∣) ∈image nth xs
-    IH = nth-is-surjection xs (y , ∣ p ∣)
-
-    ‡ : Σ i ꞉ Fin (length xs) , (nth xs i ＝ y , ∣ p ∣)
-      → ∃ i ꞉ Fin (length (x ∷ xs)) , (nth (x ∷ xs) i ＝ y , μ)
-    ‡ (i , q) = ∣ inl i , to-subtype-＝ (λ _ → ∥∥-is-prop) (pr₁ (from-Σ-＝ q)) ∣
-
 list-members-is-Kuratowski-finite : {X : 𝓤  ̇}
                                   → (xs : List X)
-                                  → is-Kuratowski-finite (Σ x ꞉ X , ∥ member x xs ∥)
+                                  → is-Kuratowski-finite
+                                     (Σ x ꞉ X , ∥ member x xs ∥)
 list-members-is-Kuratowski-finite {𝓤} {A} xs =
  ∣ length xs , nth xs , nth-is-surjection xs ∣
+  where
+   open list-indexing pt
 
 \end{code}
 
@@ -178,7 +148,7 @@ The function `directify₂` is equal to `directify` as expected.
     † : (directify₂ S [ [] ] ≤[ poset-of F ] 𝟎[ F ]) holds
     † = ⋁[ F ]-least
          (family-of-lists S [ [] ])
-         (𝟎[ F ] , λ { (_ , μ) → 𝟘-elim (not-in-empty-list μ) })
+         (𝟎[ F ] , λ { (_ , μ) → 𝟘-elim (∥∥-rec 𝟘-is-prop not-in-empty-list μ) })
 
     Ⅰ = only-𝟎-is-below-𝟎 F (directify₂ S [ [] ]) †
 
