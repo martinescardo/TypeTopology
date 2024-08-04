@@ -136,8 +136,8 @@ open import Taboos.WLPO
 open import TypeTopology.CompactTypes
 open import TypeTopology.GenericConvergentSequenceCompactness fe
 
-discontinuous-map-gives-WLPO : (f : ℕ∞ → ℕ) → ¬ continuous f → WLPO
-discontinuous-map-gives-WLPO f f-non-cts = VI
+noncontinuous-map-gives-WLPO : (f : ℕ∞ → ℕ) → ¬ continuous f → WLPO
+noncontinuous-map-gives-WLPO f f-non-cts = VI
  where
   g : (u : ℕ∞) → Σ v₀ ꞉ ℕ∞ , (f (max u v₀) ＝ f ∞ → (v : ℕ∞) → f (max u v) ＝ f ∞)
   g u = ℕ∞-Compact∙
@@ -220,7 +220,7 @@ open import Naturals.Properties
 WLPO-iff-there-is-a-noncontinous-map : WLPO ↔ (Σ f ꞉ (ℕ∞ → ℕ) , ¬ continuous f)
 WLPO-iff-there-is-a-noncontinous-map =
   I ,
-  (λ (f , ν) → discontinuous-map-gives-WLPO f ν)
+  (λ (f , ν) → noncontinuous-map-gives-WLPO f ν)
  where
   I : WLPO → Σ f ꞉ (ℕ∞ → ℕ) , ¬ continuous f
   I wlpo = f , f-non-cts
