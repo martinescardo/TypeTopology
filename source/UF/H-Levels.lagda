@@ -61,8 +61,8 @@ H-Levels are cumulative.
 
 \begin{code}
 
-contr-lemma : {X : 𝓤 ̇} → is-contr X → (x x' : X) → is-contr (x ＝ x')
-contr-lemma (c , C) x x' = (((C x)⁻¹ ∙ C x') , D)
+contr-implies-id-contr : {X : 𝓤 ̇} → is-contr X → (x x' : X) → is-contr (x ＝ x')
+contr-implies-id-contr (c , C) x x' = (((C x)⁻¹ ∙ C x') , D)
  where
   D : is-central (x ＝ x') (C x ⁻¹ ∙ C x')
   D refl = left-inverse (C x)
@@ -70,7 +70,7 @@ contr-lemma (c , C) x x' = (((C x)⁻¹ ∙ C x') , D)
 hlevels-are-upper-closed : (n : ℕ) (X : 𝓤 ̇)
                          → (X is-of-hlevel n)
                          → (X is-of-hlevel succ n)
-hlevels-are-upper-closed zero X h-level = contr-lemma h-level
+hlevels-are-upper-closed zero X h-level = contr-implies-id-contr h-level
 
 hlevels-are-upper-closed (succ n) X h-level = step
  where
@@ -80,7 +80,7 @@ hlevels-are-upper-closed (succ n) X h-level = step
 id-types-are-same-hlevel : {X : 𝓤 ̇ } (n : ℕ)
                          → X is-of-hlevel n
                          → (x x' : X) → (x ＝ x') is-of-hlevel n
-id-types-are-same-hlevel zero X-hlev x x' = contr-lemma X-hlev x x'
+id-types-are-same-hlevel zero X-hlev x x' = contr-implies-id-contr X-hlev x x'
 id-types-are-same-hlevel (succ n) X-hlev x x' =
   hlevels-are-upper-closed n (x ＝ x') (X-hlev x x')
 

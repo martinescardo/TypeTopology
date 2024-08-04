@@ -1,6 +1,8 @@
 Ian Ray, 07/23/2024
 
-Connectedness...
+We will define connected types and maps (recall our convetion for H-levels starts
+at 0). We then xplore relationships, closure properties and characterizations
+of interest pertaining to the concept of connectedness.
 
 \begin{code}
 
@@ -127,7 +129,7 @@ useful.
  contractible-types-are-connected X (c , C) n = ((∣ c ∣[ n ]) , C')
   where
    C' : (s : ∥ X ∥[ n ]) → (∣ c ∣[ n ]) ＝ s
-   C' = ∥∥ₙ-ind (id-types-are-same-hlevel n ∥∥ₙ-h-level (∣ c ∣[ n ]))
+   C' = ∥∥ₙ-ind (id-types-are-same-hlevel n (∥∥ₙ-h-level n) (∣ c ∣[ n ]))
                  (λ x → ap (λ x → ∣ x ∣[ n ]) (C x))
 
  connectedness-is-lower-closed : {X : 𝓤 ̇} {k : ℕ}
@@ -203,7 +205,10 @@ at the level below of the identity type.
  inhabited-id-conn-to-conn (succ n) (anon-x , id-conn) =
   ∥∥-rec (being-singleton-is-prop fe')
          (λ x → (∣ x ∣[ succ (succ n) ]
-          , ∥∥ₙ-ind (λ - → ∥∥ₙ-h-level)
+          , ∥∥ₙ-ind (λ - → hlevels-are-upper-closed (succ n)
+                            (∣ x ∣[ succ (succ n) ] ＝ -)
+                            (∥∥ₙ-h-level (succ (succ n))
+                                         ∣ x ∣[ succ (succ n) ] -))
                     (λ y → forth-trunc-id-char (center (id-conn x y)))))
          anon-x
 

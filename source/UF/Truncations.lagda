@@ -1,6 +1,10 @@
 Ian Ray, 07/23/2024
 
-Truncations...
+Using records we define the general truncation of a type which will include
+constructors, an induction principle and a computation rule (up to
+identification). We then proceed to develop somre boiler plate derived from
+then induction principle and explore relationships, closure properties and
+conclude by characterizing the identity type of truncations.
 
 \begin{code}
 
@@ -43,7 +47,7 @@ We define the notion of a k-truncation using record types.
 record H-level-truncations-exist : 𝓤ω where
  field
   ∥_∥[_] : {𝓤 : Universe} → 𝓤 ̇ → ℕ → 𝓤 ̇
-  ∥∥ₙ-h-level : {𝓤 : Universe} {X : 𝓤 ̇ } {n : ℕ} → X is-of-hlevel n
+  ∥∥ₙ-h-level : {𝓤 : Universe} {X : 𝓤 ̇ } (n : ℕ) → ∥ X ∥[ n ] is-of-hlevel n
   ∣_∣[_] :  {𝓤 : Universe} {X : 𝓤 ̇ } → X → (n : ℕ) → ∥ X ∥[ n ]
   ∥∥ₙ-ind : {X : 𝓤 ̇ } {n : ℕ} {P : ∥ X ∥[ n ] → 𝓥 ̇}
           → ((s : ∥ X ∥[ n ]) → (P s) is-of-hlevel n)
@@ -158,25 +162,25 @@ equivalence and succesive applications of truncation.
 \begin{code}
 
  zero-hlevel-is-contr : {X : 𝓤 ̇ } → is-contr (∥ X ∥[ zero ])
- zero-hlevel-is-contr = ∥∥ₙ-h-level 
+ zero-hlevel-is-contr = ∥∥ₙ-h-level zero
 
  one-hlevel-is-prop : {X : 𝓤 ̇ } → is-prop (∥ X ∥[ succ zero ])
- one-hlevel-is-prop = is-prop'-implies-is-prop ∥∥ₙ-h-level 
-
+ one-hlevel-is-prop = is-prop'-implies-is-prop (∥∥ₙ-h-level (succ zero))
+ 
  two-hlevel-is-set : {X : 𝓤 ̇ } → is-set (∥ X ∥[ succ (succ zero) ])
  two-hlevel-is-set {𝓤} {X} {x} {y} =
-  is-prop'-implies-is-prop (∥∥ₙ-h-level x y)
+  is-prop'-implies-is-prop (∥∥ₙ-h-level (succ (succ zero)) x y)
 
  canonical-pred-map : {X : 𝓤 ̇} {n : ℕ}
                     → ∥ X ∥[ succ n ] → ∥ X ∥[ n ]
  canonical-pred-map {𝓤} {X} {n} x =
-  ∥∥ₙ-rec (hlevels-are-upper-closed n (∥ X ∥[ n ]) ∥∥ₙ-h-level)
-           (λ x → ∣ x ∣[ n ]) x
+  ∥∥ₙ-rec (hlevels-are-upper-closed n (∥ X ∥[ n ]) (∥∥ₙ-h-level n))
+          (λ x → ∣ x ∣[ n ]) x
 
  canonical-pred-map-comp : {X : 𝓤 ̇} {n : ℕ} (x : X)
                          → canonical-pred-map (∣ x ∣[ succ n ]) ＝ (∣ x ∣[ n ])
  canonical-pred-map-comp {𝓤} {X} {n} x =
-  ∥∥ₙ-rec-comp (hlevels-are-upper-closed n (∥ X ∥[ n ]) ∥∥ₙ-h-level)
+  ∥∥ₙ-rec-comp (hlevels-are-upper-closed n (∥ X ∥[ n ]) (∥∥ₙ-h-level n))
                (λ _ → ∣ _ ∣[ n ]) x
 
  truncation-closed-under-equiv : {𝓤 𝓥 : Universe} {n : ℕ} {X : 𝓤 ̇} {Y : 𝓥 ̇}
@@ -185,32 +189,32 @@ equivalence and succesive applications of truncation.
  truncation-closed-under-equiv {𝓤} {𝓥} {n} {X} {Y} e = (f , (b , G) , (b , H))
   where
    f : ∥ X ∥[ n ] → ∥ Y ∥[ n ]
-   f = ∥∥ₙ-rec ∥∥ₙ-h-level (λ x → ∣ (⌜ e ⌝ x) ∣[ n ])
+   f = ∥∥ₙ-rec (∥∥ₙ-h-level n) (λ x → ∣ (⌜ e ⌝ x) ∣[ n ])
    b : ∥ Y ∥[ n ] → ∥ X ∥[ n ]
-   b = ∥∥ₙ-rec ∥∥ₙ-h-level (λ y → ∣ (⌜ e ⌝⁻¹ y) ∣[ n ])
+   b = ∥∥ₙ-rec (∥∥ₙ-h-level n) (λ y → ∣ (⌜ e ⌝⁻¹ y) ∣[ n ])
    H : b ∘ f ∼ id
-   H = ∥∥ₙ-ind (λ s → id-types-are-same-hlevel n ∥∥ₙ-h-level
+   H = ∥∥ₙ-ind (λ s → id-types-are-same-hlevel n (∥∥ₙ-h-level n)
                                                (b (f s)) s)
                H'
     where
      H' : (x : X) → b (f (∣ x ∣[ n ])) ＝ (∣ x ∣[ n ])
-     H' x = b (f (∣ x ∣[ n ]))         ＝⟨ ap b (∥∥ₙ-rec-comp ∥∥ₙ-h-level
+     H' x = b (f (∣ x ∣[ n ]))         ＝⟨ ap b (∥∥ₙ-rec-comp (∥∥ₙ-h-level n)
                                                 (λ x → ∣ (⌜ e ⌝ x) ∣[ n ]) x) ⟩
-            b (∣ ⌜ e ⌝ x ∣[ n ])       ＝⟨ ∥∥ₙ-rec-comp ∥∥ₙ-h-level
+            b (∣ ⌜ e ⌝ x ∣[ n ])       ＝⟨ ∥∥ₙ-rec-comp (∥∥ₙ-h-level n)
                                                (λ y → ∣ (⌜ e ⌝⁻¹ y) ∣[ n ])
                                                (⌜ e ⌝ x) ⟩
             (∣ ⌜ e ⌝⁻¹ (⌜ e ⌝ x) ∣[ n ]) ＝⟨ ap (λ x → ∣ x ∣[ n ])
                                             (inverses-are-retractions' e x) ⟩
             (∣ x ∣[ n ])                ∎ 
    G : f ∘ b ∼ id
-   G = ∥∥ₙ-ind (λ s → id-types-are-same-hlevel n ∥∥ₙ-h-level
+   G = ∥∥ₙ-ind (λ s → id-types-are-same-hlevel n (∥∥ₙ-h-level n)
                                                (f (b s)) s)
                G'
     where
      G' : (y : Y) → f (b (∣ y ∣[ n ])) ＝ (∣ y ∣[ n ])
-     G' y = f (b (∣ y ∣[ n ]))         ＝⟨ ap f (∥∥ₙ-rec-comp ∥∥ₙ-h-level
+     G' y = f (b (∣ y ∣[ n ]))         ＝⟨ ap f (∥∥ₙ-rec-comp (∥∥ₙ-h-level n)
                                               (λ y → ∣ (⌜ e ⌝⁻¹ y) ∣[ n ]) y) ⟩
-            f (∣ (⌜ e ⌝⁻¹ y) ∣[ n ])   ＝⟨ ∥∥ₙ-rec-comp ∥∥ₙ-h-level
+            f (∣ (⌜ e ⌝⁻¹ y) ∣[ n ])   ＝⟨ ∥∥ₙ-rec-comp (∥∥ₙ-h-level n)
                                           (λ x → ∣ ⌜ e ⌝ x ∣[ n ]) (⌜ e ⌝⁻¹ y) ⟩
             (∣ ⌜ e ⌝ (⌜ e ⌝⁻¹ y) ∣[ n ]) ＝⟨ ap (λ y → ∣ y ∣[ n ])
                                                 (inverses-are-sections' e y) ⟩
@@ -221,40 +225,40 @@ equivalence and succesive applications of truncation.
  succesive-truncations-equiv X n = (f , (b , G) , (b , H))
   where
    f : (∥ X ∥[ n ]) → (∥ (∥ X ∥[ succ n ]) ∥[ n ])
-   f = ∥∥ₙ-rec ∥∥ₙ-h-level (λ x → ∣ ∣ x ∣[ succ n ] ∣[ n ])
+   f = ∥∥ₙ-rec (∥∥ₙ-h-level n) (λ x → ∣ ∣ x ∣[ succ n ] ∣[ n ])
    b : (∥ (∥ X ∥[ succ n ]) ∥[ n ]) → (∥ X ∥[ n ])
-   b = ∥∥ₙ-rec ∥∥ₙ-h-level (canonical-pred-map)
+   b = ∥∥ₙ-rec (∥∥ₙ-h-level n) (canonical-pred-map)
    G : f ∘ b ∼ id
-   G = ∥∥ₙ-ind (λ s → id-types-are-same-hlevel n ∥∥ₙ-h-level
+   G = ∥∥ₙ-ind (λ s → id-types-are-same-hlevel n (∥∥ₙ-h-level n)
                                                 (f (b s)) s)
                (∥∥ₙ-ind (λ t → id-types-are-same-hlevel n
                                 (id-types-are-same-hlevel n
-                                ∥∥ₙ-h-level (f (b (∣ t ∣[ n ])))
+                                (∥∥ₙ-h-level n) (f (b (∣ t ∣[ n ])))
                                              ((∣ t ∣[ n ]))))
                          G')
     where
      G' : (x : X)
         → f (b (∣ ∣ x ∣[ succ n ] ∣[ n ])) ＝ (∣ ∣ x ∣[ succ n ] ∣[ n ])
      G' x = f (b (∣ ∣ x ∣[ succ n ] ∣[ n ]))     ＝⟨ ap f (∥∥ₙ-rec-comp
-                                                        ∥∥ₙ-h-level
+                                                        (∥∥ₙ-h-level n)
                                                         canonical-pred-map
                                                         (∣ x ∣[ succ n ])) ⟩
             f (canonical-pred-map (∣ x ∣[ succ n ])) ＝⟨ ap f
                                                    (canonical-pred-map-comp x) ⟩
             f (∣ x ∣[ n ])             ＝⟨ ∥∥ₙ-rec-comp
-                                            ∥∥ₙ-h-level
+                                            (∥∥ₙ-h-level n)
                                             (λ x → ∣ ∣ x ∣[ succ n ] ∣[ n ])
                                             x ⟩
             (∣ ∣ x ∣[ succ n ] ∣[ n ])   ∎
    H : b ∘ f ∼ id
-   H = ∥∥ₙ-ind (λ s → id-types-are-same-hlevel n ∥∥ₙ-h-level
+   H = ∥∥ₙ-ind (λ s → id-types-are-same-hlevel n (∥∥ₙ-h-level n)
                                                (b (f s)) s)
                H'
     where
      H' : (x : X) → b (f (∣ x ∣[ n ])) ＝ (∣ x ∣[ n ])
-     H' x = b (f (∣ x ∣[ n ]))       ＝⟨ ap b (∥∥ₙ-rec-comp ∥∥ₙ-h-level
+     H' x = b (f (∣ x ∣[ n ]))       ＝⟨ ap b (∥∥ₙ-rec-comp (∥∥ₙ-h-level n)
                                            (λ x → ∣ ∣ x ∣[ succ n ] ∣[ n ]) x) ⟩
-            b (∣ ∣ x ∣[ succ n ] ∣[ n ]) ＝⟨ ∥∥ₙ-rec-comp ∥∥ₙ-h-level
+            b (∣ ∣ x ∣[ succ n ] ∣[ n ]) ＝⟨ ∥∥ₙ-rec-comp (∥∥ₙ-h-level n)
                                           canonical-pred-map (∣ x ∣[ succ n ]) ⟩
             canonical-pred-map (∣ x ∣[ succ n ]) ＝⟨ canonical-pred-map-comp x ⟩
             (∣ x ∣[ n ])                   ∎
@@ -269,24 +273,29 @@ We now define an equivalence that characterizes the truncated identity type.
                               → ∥ x ＝ x' ∥[ n ]
                               → ∣ x ∣[ succ n ] ＝ ∣ x' ∣[ succ n ]
  canonical-identity-trunc-map {𝓤} {X} {x} {x'} {n} =
-  ∥∥ₙ-rec ∥∥ₙ-h-level (ap (λ x → ∣ x ∣[ (succ n) ]))
+  ∥∥ₙ-rec (∥∥ₙ-h-level (succ n) ∣ x ∣[ succ n ] ∣ x' ∣[ succ n ])
+          (ap (λ x → ∣ x ∣[ (succ n) ]))
 
  module _ {𝓤 : Universe} {X : 𝓤 ̇} {n : ℕ} (x : X) where
 
   trunc-id-family : ∥ X ∥[ succ n ] → ℍ n 𝓤
   trunc-id-family = ∥∥ₙ-rec {𝓤} {𝓤 ⁺} {X} {ℍ n 𝓤} {succ n}
                             (ℍ-is-of-next-hlevel n 𝓤 (ua 𝓤))
-                            (λ x' → (∥ x ＝ x' ∥[ n ] , ∥∥ₙ-h-level))
+                            (λ x' → (∥ x ＝ x' ∥[ n ] , (∥∥ₙ-h-level n)))
 
   trunc-id-family-type : ∥ X ∥[ succ n ] → 𝓤 ̇
   trunc-id-family-type = pr₁ ∘ trunc-id-family
+
+  trunc-id-family-level : (v : ∥ X ∥[ succ n ])
+                        → (trunc-id-family-type v) is-of-hlevel n
+  trunc-id-family-level = pr₂ ∘ trunc-id-family
 
   trunc-id-family-computes : (x' : X)
                            → trunc-id-family-type ∣ x' ∣[ succ n ]
                            ＝ ∥ x ＝ x' ∥[ n ]
   trunc-id-family-computes x' =
     ap pr₁ (∥∥ₙ-rec-comp (ℍ-is-of-next-hlevel n 𝓤 (ua 𝓤))
-                         (λ x' → (∥ x ＝ x' ∥[ n ] , ∥∥ₙ-h-level))
+                         (λ x' → (∥ x ＝ x' ∥[ n ] , (∥∥ₙ-h-level n)))
                          x')
 
   trunc-id-forward-map : (x' : X)
@@ -326,7 +335,16 @@ We now define an equivalence that characterizes the truncated identity type.
                      → (∣ x ∣[ succ n ] , refl-trunc-id-family)
                        ＝[ Σ (trunc-id-family-type) ]
                        (∣ x' ∣[ succ n ] , trunc-id-backward-map x' q')
-    sufficient-map-2 x' = ∥∥ₙ-ind (λ - → ∥∥ₙ-h-level) (sufficient-map-1 x')
+    sufficient-map-2 x' = ∥∥ₙ-ind (λ s → hlevel-closed-under-Σ (succ n)
+                                          ∥ X ∥[ succ n ] trunc-id-family-type
+                                          (∥∥ₙ-h-level (succ n))
+                                          (λ v → hlevels-are-upper-closed n
+                                                  (trunc-id-family-type v)
+                                                  (trunc-id-family-level v))
+                                          (∣ x ∣[ succ n ] , refl-trunc-id-family)
+                                          (∣ x' ∣[ succ n ]
+                                           , trunc-id-backward-map x' s))
+                                  (sufficient-map-1 x')
     sufficient-map-3 : (x' : X) (q : trunc-id-family-type ∣ x' ∣[ succ n ])
                      → (∣ x ∣[ succ n ] , refl-trunc-id-family)
                        ＝[ Σ (trunc-id-family-type) ]
@@ -339,7 +357,23 @@ We now define an equivalence that characterizes the truncated identity type.
                (sufficient-map-2 x' (trunc-id-forward-map x' q))
     sufficient-map-4 : (v : ∥ X ∥[ succ n ]) (q : trunc-id-family-type v)
                      → (∣ x ∣[ succ n ] , refl-trunc-id-family) ＝ (v , q)
-    sufficient-map-4 = ∥∥ₙ-ind (λ - → ∥∥ₙ-h-level) sufficient-map-3
+    sufficient-map-4 =
+     ∥∥ₙ-ind (λ s → hlevel-closed-under-Π (succ n) (trunc-id-family-type s)
+                     (λ q → (∣ x ∣[ succ n ] , refl-trunc-id-family) ＝ (s , q))
+                     (λ q → hlevel-closed-under-Σ (succ (succ n)) ∥ X ∥[ succ n ]
+                             trunc-id-family-type (hlevels-are-upper-closed
+                                                   (succ n) ∥ X ∥[ succ n ]
+                                                   (∥∥ₙ-h-level (succ n)))
+                                                  (λ v → hlevels-are-upper-closed
+                                                    (succ n)
+                                                    (trunc-id-family-type v)
+                                                    (hlevels-are-upper-closed n
+                                                     (trunc-id-family-type v)
+                                                     (trunc-id-family-level v)))
+                                                  (∣ x ∣[ succ n ]
+                                                   , refl-trunc-id-family)
+                                                  (s , q)))
+             sufficient-map-3
     center-Q : is-central (Σ (trunc-id-family-type))
                           (∣ x ∣[ succ n ] , refl-trunc-id-family)
     center-Q (v , q) = sufficient-map-4 v q 
@@ -368,6 +402,16 @@ We now define an equivalence that characterizes the truncated identity type.
 
 \end{code}
 
+(λ s → hlevel-closed-under-Π (succ n) (trunc-id-family-type s)
+                     (λ q → (∣ x ∣[ succ n ] , refl-trunc-id-family) ＝ (s , q))
+                     (λ q → hlevels-are-upper-closed n
+                             (∣ x ∣[ succ n ] , refl-trunc-id-family ＝ s , q)
+                             (hlevels-are-upper-closed n
+                               (Σ (trunc-id-family-type))
+                               (hlevel-closed-under-Σ n ∥ X ∥[ succ n ]
+                                trunc-id-family-type {!!} {!!})
+                               (∣ x ∣[ succ n ] , refl-trunc-id-family) (s , q))))
+
 We demonstrate the equivalence of 1-truncation and propositional truncation:
   ∥ X ∥₁ ≃ ∥ X ∥
 
@@ -383,7 +427,7 @@ module 1-truncation-propositional-truncation-relationship
  open propositional-truncations-exist pt
 
  1-trunc-is-prop : {X : 𝓤 ̇} → is-prop (∥ X ∥[ 1 ])
- 1-trunc-is-prop = is-prop'-implies-is-prop (∥∥ₙ-h-level)
+ 1-trunc-is-prop = is-prop'-implies-is-prop (∥∥ₙ-h-level 1)
 
  1-trunc-to-prop-trunc : {X : 𝓤 ̇} → ∥ X ∥[ 1 ] → ∥ X ∥
  1-trunc-to-prop-trunc = ∥∥ₙ-rec (is-prop-implies-is-prop' ∥∥-is-prop) ∣_∣
