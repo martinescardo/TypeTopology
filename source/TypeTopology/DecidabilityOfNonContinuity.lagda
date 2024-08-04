@@ -64,22 +64,22 @@ Omitting the inclusion function, or coercion,
 
 a map f : ℕ∞ → ℕ is called continuous iff
 
-   ∃ m. ∀ n ≥ m. f n ＝ ∞,
+   ∃ m. ∀ n ≥ m. f n ＝ f ∞,
 
 where m and n range over the natural numbers.
 
 The negation of this statement is equivalent to
 
-   ∀ m. ¬ ∀ n ≥ m. f n ＝ ∞.
+   ∀ m. ¬ ∀ n ≥ m. f n ＝ f ∞.
 
 We can implement ∀ y ≥ x. A y as ∀ x. A (max x y), so that the
 continuity of f amounts to
 
-   ∃ m. ∀ n. f (max m n) ＝ ∞,
+   ∃ m. ∀ n. f (max m n) ＝ f ∞,
 
 and its negation to
 
-   ∀ m. ¬ ∀ n. f (max m n) ＝ ∞.
+   ∀ m. ¬ ∀ n. f (max m n) ＝ f ∞.
 
 Because we are going to prove facts about the negation of continuity,
 it doesn't matter whether we define the notion with ∃ or Σ, and we
