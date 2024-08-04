@@ -179,12 +179,10 @@ equivalence and succesive applications of truncation.
   ∥∥ₙ-rec-comp (hlevels-are-upper-closed n (∥ X ∥[ n ]) ∥∥ₙ-h-level)
                (λ _ → ∣ _ ∣[ n ]) x
 
- truncation-closed-under-equiv : {𝓤 𝓥 : Universe}
-                               → (n : ℕ)
-                               → (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )
+ truncation-closed-under-equiv : {𝓤 𝓥 : Universe} {n : ℕ} {X : 𝓤 ̇} {Y : 𝓥 ̇}
                                → X ≃ Y
                                → (∥ X ∥[ n ]) ≃ (∥ Y ∥[ n ])
- truncation-closed-under-equiv n X Y e = (f , (b , G) , (b , H))
+ truncation-closed-under-equiv {𝓤} {𝓥} {n} {X} {Y} e = (f , (b , G) , (b , H))
   where
    f : ∥ X ∥[ n ] → ∥ Y ∥[ n ]
    f = ∥∥ₙ-rec ∥∥ₙ-h-level (λ x → ∣ (⌜ e ⌝ x) ∣[ n ])

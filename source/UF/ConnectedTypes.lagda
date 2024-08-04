@@ -117,7 +117,7 @@ useful.
                                   → Y is k connected
                                   → X is k connected
  connectedness-closed-under-equiv k X Y e Y-con =
-   equiv-to-singleton (truncation-closed-under-equiv k X Y e) Y-con
+   equiv-to-singleton (truncation-closed-under-equiv e) Y-con
 
  contractible-types-are-connected : {𝓤 : Universe}
                                   → (X : 𝓤 ̇ )
@@ -172,19 +172,28 @@ at the level below of the identity type.
 
 \begin{code}
 
+ conn-to-inhabited : {X : 𝓤 ̇} (n : ℕ)
+                   → X is (succ n) connected
+                   → ∥ X ∥
+ conn-to-inhabited zero X-conn =
+  center (equiv-to-singleton' 1-trunc-≃-prop-trunc X-conn)
+ conn-to-inhabited (succ n) X-conn =
+  conn-to-inhabited n (connectedness-is-lower-closed X-conn)
+
+ conn-to-id-conn : {X : 𝓤 ̇} (n : ℕ)
+                 → X is (succ n) connected
+                 → ((x y : X) → (x ＝ y) is n connected)
+ conn-to-id-conn n X-conn x y =
+  equiv-to-singleton eliminated-trunc-identity-char
+                     (is-prop-implies-is-prop' (singletons-are-props X-conn)
+                                               ∣ x ∣[ succ n ]
+                                               ∣ y ∣[ succ n ])
+
  conn-to-inhabited-id-conn : {X : 𝓤 ̇} (n : ℕ)
                            → X is (succ n) connected
                            → ∥ X ∥ × ((x y : X) → (x ＝ y) is n connected)
- conn-to-inhabited-id-conn zero X-conn =
-  (center (equiv-to-singleton' 1-trunc-≃-prop-trunc X-conn)
-   , λ x x' → equiv-to-singleton eliminated-trunc-identity-char
-               (is-prop-implies-is-prop' (singletons-are-props X-conn)
-                ∣ x ∣[ 1 ] ∣ x' ∣[ 1 ]))
- conn-to-inhabited-id-conn (succ n) X-conn =
-  (pr₁ (conn-to-inhabited-id-conn n (connectedness-is-lower-closed X-conn))
-   , λ y y' → equiv-to-singleton eliminated-trunc-identity-char
-               (is-prop-implies-is-prop' (singletons-are-props X-conn)
-                ∣ y ∣[ succ (succ n) ] ∣ y' ∣[ succ (succ n) ]))
+ conn-to-inhabited-id-conn n X-conn =
+  (conn-to-inhabited n X-conn , conn-to-id-conn n X-conn)
 
  inhabited-id-conn-to-conn : {X : 𝓤 ̇} (n : ℕ)
                            → ∥ X ∥ × ((x y : X) → (x ＝ y) is n connected)
@@ -208,26 +217,8 @@ at the level below of the identity type.
                       → (f : X → Y)
                       → map f is (succ n) connected
                       → map (ap f {x} {x'}) is n connected
- ap-is-less-connected f f-conn p = {!!}
+ ap-is-less-connected {𝓤} {𝓥} {X} {Y} {n} {x} {x'} f f-conn p =
+  equiv-to-singleton (truncation-closed-under-equiv (fiber-of-ap-≃ f p))
+                     (conn-to-id-conn n (f-conn (f x')) (x , p) (x' , refl))
 
 \end{code}
-   where
-   forth : X is 1 connected
-         → ∥ X ∥ × ((x y : X) → (x ＝ y) is zero connected)
-   forth X-is-conn =
-    (center (equiv-to-singleton' 1-trunc-≃-prop-trunc X-is-conn)
-     , λ x x' → equiv-to-singleton eliminated-trunc-identity-char
-                 (is-prop-implies-is-prop' (singletons-are-props X-is-conn)
-                  ∣ x ∣[ 1 ] ∣ x' ∣[ 1 ]))
-   back : ∥ X ∥ × ((x y : X) → (x ＝ y) is zero connected)
-        → X is 1 connected
-   back (anon-x , conn) =
-    pointed-props-are-singletons (prop-trunc-to-1-trunc anon-x) 1-trunc-is-prop
- connected-characterization {𝓤} {X} (succ n) = (forth , back)
-  where
-   forth : X is succ (succ n) connected
-         → ∥ X ∥ × ((x y : X) → (x ＝ y) is succ n connected)
-   forth X-is-conn = (pr₁ (pr₁ {!!}) , {!!})
-   back : ∥ X ∥ × ((x y : X) → (x ＝ y) is succ n connected)
-        → X is succ (succ n) connected
-   back (anon-x , conn) = {!!}
