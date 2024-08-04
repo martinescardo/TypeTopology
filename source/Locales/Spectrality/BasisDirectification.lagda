@@ -20,7 +20,7 @@ module Locales.Spectrality.BasisDirectification
         (sr : Set-Replacement pt) where
 
 open import Locales.Frame pt fe
-open import Locales.Compactness pt fe
+open import Locales.Compactness.Definition pt fe
 open import Locales.SmallBasis pt fe sr
 
 open import UF.Logic

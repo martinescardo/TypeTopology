@@ -15,7 +15,7 @@ open import UF.PropTrunc
 module Locales.Spectrality.SpectralMap (pt : propositional-truncations-exist)
                                        (fe : Fun-Ext) where
 
-open import Locales.Compactness pt fe
+open import Locales.Compactness.Definition pt fe
 open import Locales.ContinuousMap.Definition pt fe
 open import Locales.ContinuousMap.FrameHomomorphism-Definition pt fe
 open import Locales.ContinuousMap.FrameHomomorphism-Properties pt fe

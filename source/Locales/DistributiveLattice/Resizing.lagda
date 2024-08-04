@@ -45,7 +45,7 @@ private
  fe : Fun-Ext
  fe {𝓤} {𝓥} = univalence-gives-funext' 𝓤 𝓥 (ua 𝓤) (ua (𝓤 ⊔ 𝓥))
 
-open import Locales.Compactness pt fe
+open import Locales.Compactness.Definition pt fe
 open import Locales.DistributiveLattice.Definition fe pt
 open import Locales.DistributiveLattice.Homomorphism fe pt
 open import Locales.DistributiveLattice.Isomorphism fe pt

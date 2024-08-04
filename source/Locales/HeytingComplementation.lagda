@@ -20,7 +20,7 @@ module Locales.HeytingComplementation (pt : propositional-truncations-exist)
                                       (sr : Set-Replacement pt) where
 
 open import Locales.Frame              pt fe
-open import Locales.Compactness        pt fe
+open import Locales.Compactness.Definition pt fe
 open import Locales.HeytingImplication pt fe
 open import Locales.Complements        pt fe
 open import Locales.Clopen             pt fe sr

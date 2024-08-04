@@ -17,7 +17,7 @@ module Locales.Clopen (pt : propositional-truncations-exist)
 open import Locales.AdjointFunctorTheoremForFrames
 open import Locales.Frame pt fe
 open import Locales.WayBelowRelation.Definition pt fe
-open import Locales.Compactness pt fe
+open import Locales.Compactness.Definition pt fe
 open import Locales.Complements pt fe
 open import Locales.WellInside pt fe sr
 open import Slice.Family

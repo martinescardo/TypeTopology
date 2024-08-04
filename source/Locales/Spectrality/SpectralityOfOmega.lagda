@@ -27,7 +27,7 @@ module Locales.Spectrality.SpectralityOfOmega
 
 open import Locales.InitialFrame pt fe
 open import Locales.Frame        pt fe
-open import Locales.Compactness  pt fe
+open import Locales.Compactness.Definition pt fe
 open import Slice.Family
 open import Locales.Spectrality.SpectralLocale pt fe
 open import Locales.Spectrality.BasisDirectification pt fe sr
