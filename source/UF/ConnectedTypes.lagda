@@ -1,7 +1,7 @@
 Ian Ray, 07/23/2024
 
 We will define connected types and maps (recall our convetion for H-levels starts
-at 0). We then xplore relationships, closure properties and characterizations
+at 0). We then explore relationships, closure properties and characterizations
 of interest pertaining to the concept of connectedness.
 
 \begin{code}
@@ -41,7 +41,7 @@ open import UF.Truncations fe fe' pt
 
 We now define the notion of k-connectedness for types and functions with respect
 to H-levels. We will then see that connectedness as defined elsewhere is a
-special case:
+special case of k-connectedness:
 Connectedness typically means set connectedness. In terms of H-levels defined
 here it will mean 2-connectedness.
 
@@ -78,7 +78,7 @@ as surjections.
  inhabited-is-1-connected : {X : 𝓤 ̇}
                           → ∥ X ∥ → X is 1 connected
  inhabited-is-1-connected x-anon =
-  pointed-props-are-singletons (prop-trunc-to-1-trunc x-anon) 1-trunc-is-prop
+  pointed-props-are-singletons (prop-trunc-to-1-trunc x-anon) one-trunc-is-prop
 
  1-connected-iff-inhabited : {X : 𝓤 ̇}
                            → X is 1 connected
@@ -201,7 +201,7 @@ at the level below of the identity type.
                            → ∥ X ∥ × ((x y : X) → (x ＝ y) is n connected)
                            → X is (succ n) connected
  inhabited-id-conn-to-conn zero (anon-x , id-conn) =
-  pointed-props-are-singletons (prop-trunc-to-1-trunc anon-x) 1-trunc-is-prop
+  pointed-props-are-singletons (prop-trunc-to-1-trunc anon-x) one-trunc-is-prop
  inhabited-id-conn-to-conn (succ n) (anon-x , id-conn) =
   ∥∥-rec (being-singleton-is-prop fe')
          (λ x → (∣ x ∣[ succ (succ n) ]

@@ -1,10 +1,10 @@
 Ian Ray, 07/23/2024
 
 Using records we define the general truncation of a type which will include
-constructors, an induction principle and a computation rule (up to
-identification). We then proceed to develop somre boiler plate derived from
-then induction principle and explore relationships, closure properties and
-conclude by characterizing the identity type of truncations.
+constructor, induction principle and a computation rule (up to identification).
+We then proceed to develop some machinary derived from then induction principle
+and explore relationships, closure properties finally characterize the identity
+type of truncations.
 
 \begin{code}
 
@@ -114,8 +114,8 @@ module GeneralTruncations
                                             (∥ Y ∥[ n ]) Z m)
                                            (λ x → ∥∥ₙ-rec m (λ y → g x y)) x)
                                            ∣ y ∣[ n ]  ⟩
-  ∥∥ₙ-rec m (λ y → g x y) ∣ y ∣[ n ]  ＝⟨ ∥∥ₙ-rec-comp m (λ y → g x y) y ⟩
-  g x y                               ∎
+  ∥∥ₙ-rec m (λ y → g x y) ∣ y ∣[ n ] ＝⟨ ∥∥ₙ-rec-comp m (λ y → g x y) y ⟩
+  g x y                              ∎
 
  abstract
   ∥∥ₙ-ind₂ : {𝓤 𝓥 𝓦 : Universe} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {n : ℕ}
@@ -161,14 +161,14 @@ equivalence and succesive applications of truncation.
 
 \begin{code}
 
- zero-hlevel-is-contr : {X : 𝓤 ̇ } → is-contr (∥ X ∥[ zero ])
- zero-hlevel-is-contr = ∥∥ₙ-h-level zero
+ zero-trunc-is-contr : {X : 𝓤 ̇ } → is-contr (∥ X ∥[ zero ])
+ zero-trunc-is-contr = ∥∥ₙ-h-level zero
 
- one-hlevel-is-prop : {X : 𝓤 ̇ } → is-prop (∥ X ∥[ succ zero ])
- one-hlevel-is-prop = is-prop'-implies-is-prop (∥∥ₙ-h-level (succ zero))
+ one-trunc-is-prop : {X : 𝓤 ̇ } → is-prop (∥ X ∥[ succ zero ])
+ one-trunc-is-prop = is-prop'-implies-is-prop (∥∥ₙ-h-level (succ zero))
  
- two-hlevel-is-set : {X : 𝓤 ̇ } → is-set (∥ X ∥[ succ (succ zero) ])
- two-hlevel-is-set {𝓤} {X} {x} {y} =
+ two-trunc-is-set : {X : 𝓤 ̇ } → is-set (∥ X ∥[ succ (succ zero) ])
+ two-trunc-is-set {𝓤} {X} {x} {y} =
   is-prop'-implies-is-prop (∥∥ₙ-h-level (succ (succ zero)) x y)
 
  canonical-pred-map : {X : 𝓤 ̇} {n : ℕ}
@@ -402,16 +402,6 @@ We now define an equivalence that characterizes the truncated identity type.
 
 \end{code}
 
-(λ s → hlevel-closed-under-Π (succ n) (trunc-id-family-type s)
-                     (λ q → (∣ x ∣[ succ n ] , refl-trunc-id-family) ＝ (s , q))
-                     (λ q → hlevels-are-upper-closed n
-                             (∣ x ∣[ succ n ] , refl-trunc-id-family ＝ s , q)
-                             (hlevels-are-upper-closed n
-                               (Σ (trunc-id-family-type))
-                               (hlevel-closed-under-Σ n ∥ X ∥[ succ n ]
-                                trunc-id-family-type {!!} {!!})
-                               (∣ x ∣[ succ n ] , refl-trunc-id-family) (s , q))))
-
 We demonstrate the equivalence of 1-truncation and propositional truncation:
   ∥ X ∥₁ ≃ ∥ X ∥
 
@@ -426,19 +416,16 @@ module 1-truncation-propositional-truncation-relationship
  open GeneralTruncations te ua
  open propositional-truncations-exist pt
 
- 1-trunc-is-prop : {X : 𝓤 ̇} → is-prop (∥ X ∥[ 1 ])
- 1-trunc-is-prop = is-prop'-implies-is-prop (∥∥ₙ-h-level 1)
-
  1-trunc-to-prop-trunc : {X : 𝓤 ̇} → ∥ X ∥[ 1 ] → ∥ X ∥
  1-trunc-to-prop-trunc = ∥∥ₙ-rec (is-prop-implies-is-prop' ∥∥-is-prop) ∣_∣
 
  prop-trunc-to-1-trunc : {X : 𝓤 ̇} → ∥ X ∥ → ∥ X ∥[ 1 ]
- prop-trunc-to-1-trunc = ∥∥-rec 1-trunc-is-prop (λ x → ∣ x ∣[ 1 ])
+ prop-trunc-to-1-trunc = ∥∥-rec one-trunc-is-prop (λ x → ∣ x ∣[ 1 ])
 
  1-trunc-≃-prop-trunc : {X : 𝓤 ̇}
                       → (∥ X ∥[ 1 ]) ≃ ∥ X ∥
  1-trunc-≃-prop-trunc {𝓤} {X} =
-  logically-equivalent-props-are-equivalent 1-trunc-is-prop ∥∥-is-prop
+  logically-equivalent-props-are-equivalent one-trunc-is-prop ∥∥-is-prop
                                             1-trunc-to-prop-trunc
                                             prop-trunc-to-1-trunc
 
