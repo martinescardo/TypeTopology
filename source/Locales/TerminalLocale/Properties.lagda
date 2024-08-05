@@ -38,6 +38,7 @@ open import Locales.InitialFrame pt fe
 open import Locales.SmallBasis pt fe sr
 open import Locales.Spectrality.SpectralityOfOmega pt fe sr
 open import Locales.StoneImpliesSpectral pt fe sr
+open import Locales.ZeroDimensionality pt fe sr
 open import Slice.Family
 open import UF.Equiv
 open import UF.Logic
@@ -259,5 +260,39 @@ decidable propositions
    ‡ : (g ∘ h) ∼ id
    ‡ (P , _) =
     to-subtype-＝ (λ Q → decidability-of-prop-is-prop fe (holds-is-prop Q)) refl
+
+\end{code}
+
+Added on 2024-08-05.
+
+\begin{code}
+
+ ℬ𝟎-consists-of-clopens : consists-of-clopens (𝒪 (𝟏Loc pe)) ℬ𝟎 holds
+ ℬ𝟎-consists-of-clopens (inl ⋆) =
+  transport (λ - → is-clopen (𝒪 (𝟏Loc pe)) - holds) (p ⁻¹) †
+   where
+    p : ⊥ ＝ 𝟎[ 𝒪 (𝟏Loc pe) ]
+    p = 𝟎-is-⊥
+
+    † : is-clopen (𝒪 (𝟏Loc pe)) 𝟎[ 𝒪 (𝟏Loc pe) ] holds
+    † = 𝟎-is-clopen (𝒪 (𝟏Loc pe))
+ ℬ𝟎-consists-of-clopens (inr ⋆) =
+  𝟏-is-clopen (𝒪 (𝟏Loc pe))
+
+ ℬ𝟎↑-consists-of-clopens : consists-of-clopens (𝒪 (𝟏Loc pe)) ℬ𝟎↑ holds
+ ℬ𝟎↑-consists-of-clopens []       = 𝟎-is-clopen (𝒪 (𝟏Loc pe))
+ ℬ𝟎↑-consists-of-clopens (i ∷ is) =
+  clopens-are-closed-under-∨ (𝒪 (𝟏Loc pe)) (ℬ𝟎 [ i ]) (ℬ𝟎↑ [ is ]) † ‡
+   where
+    † : is-clopen (𝒪 (𝟏Loc pe)) (ℬ𝟎 [ i ]) holds
+    † = ℬ𝟎-consists-of-clopens i
+
+    ‡ : is-clopen (𝒪 (𝟏Loc pe)) (ℬ𝟎↑ [ is ]) holds
+    ‡ = ℬ𝟎↑-consists-of-clopens is
+
+ 𝟏-zero-dimensionalᴰ : zero-dimensionalᴰ (𝒪 (𝟏Loc pe))
+ 𝟏-zero-dimensionalᴰ = ℬ𝟎↑
+                     , pr₂ (ℬ𝟎↑-directed-basisᴰ 𝓤 pe)
+                     , ℬ𝟎↑-consists-of-clopens
 
 \end{code}

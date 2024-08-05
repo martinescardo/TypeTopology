@@ -56,8 +56,10 @@ open import Locales.ScottLocale.ScottLocalesOfAlgebraicDcpos pt fe 𝓤
 open import Locales.ScottLocale.ScottLocalesOfScottDomains pt fe sr 𝓤
 open import Locales.SmallBasis pt fe sr
 open import Locales.Spectrality.SpectralMap pt fe
+open import Locales.Spectrality.SpectralityOfOmega pt fe sr 𝓤 pe
 open import Locales.TerminalLocale.Properties pt fe sr
 open import Locales.UniversalPropertyOfPatch pt fe sr
+open import Locales.ZeroDimensionality pt fe sr
 open import NotionsOfDecidability.Decidable
 open import NotionsOfDecidability.SemiDecidable fe pe pt
 open import Slice.Family
@@ -83,16 +85,22 @@ module points-of-patch-are-spectral-points
         (dc : decidability-condition 𝓓)
        where
 
+ zd : zero-dimensionalᴰ {𝓤 ⁺} (𝒪 (𝟏Loc pe))
+ zd = 𝟏-zero-dimensionalᴰ pe
+
  open SpectralScottLocaleConstruction₂ 𝓓 ua hl sd dc pe
  open Notion-Of-Spectral-Point
  open SmallPatchConstruction σ⦅𝓓⦆ scott-locale-spectralᴰ
  open Preliminaries
- open UniversalProperty (𝟏Loc pe) σ⦅𝓓⦆ {!!} {!!}
+ open UniversalProperty σ⦅𝓓⦆ (𝟏Loc pe) scott-locale-spectralᴰ zd 𝟎Frm-is-compact
 
  patch-σ𝓓 : Locale (𝓤 ⁺) 𝓤 𝓤
  patch-σ𝓓 = SmallPatch
 
+ patch-ump : {!!}
+ patch-ump = {!ump-of-patch σ⦅𝓓⦆ scott-locale-is-spectral ? (𝟏Loc pe) ?!}
+
  spectral-point-to-patch-point : Spectral-Point σ⦅𝓓⦆ → Point patch-σ𝓓
- spectral-point-to-patch-point = {!ump-of-patch!}
+ spectral-point-to-patch-point ℱ = {!ump-of-patch!}
 
 \end{code}
