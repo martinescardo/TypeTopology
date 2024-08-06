@@ -168,7 +168,7 @@ useful.
 \end{code}
 
 We can characterize connected types in terms of inhabitedness and connectedness
-at the level below of the identity type.
+of the identity type at the level below.
 
 \begin{code}
 
