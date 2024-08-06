@@ -40,10 +40,8 @@ open import UF.Truncations fe fe' pt
 \end{code}
 
 We now define the notion of k-connectedness for types and functions with respect
-to H-levels. We will then see that connectedness as defined elsewhere is a
-special case of k-connectedness:
-Connectedness typically means set connectedness. In terms of H-levels defined
-here it will mean 2-connectedness.
+to H-levels. TODO: show that connectedness as defined elsewhere is a
+special case of k-connectedness. Connectedness typically means set connectedness. In terms of H-levels defined here it will mean 2-connectedness.
 
 \begin{code}
 
