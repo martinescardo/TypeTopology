@@ -1,8 +1,8 @@
 Martin Escardo and Ian Ray, 06/02/2024
 
 We develop H-levels (a la Voevodsky). In Homotopy Type Theory there is a
-natural stratification of types defined inductively starting with contractible
-types and saying the an (n+1)-type has an identity type that is an n-type.
+natural stratification of types defined inductively; with contractible
+types as the base and saying an (n+1)-type has identity type that is an n-type.
 Voevodsky introduced the notion of H-level where contractible types are at
 level n = 0. Alternatively, in book HoTT, truncated types are defined so that
 contractible types are at level k = -2. Of course, the two notions are
@@ -25,6 +25,7 @@ open import UF.EquivalenceExamples
 open import UF.Equiv-FunExt
 open import UF.FunExt
 open import UF.IdentitySystems
+open import UF.PropTrunc 
 open import UF.Retracts
 open import UF.Sets
 open import UF.Singleton-Properties
@@ -33,9 +34,12 @@ open import UF.Subsingletons-FunExt
 open import UF.Subsingletons-Properties
 open import UF.Univalence
 open import UF.UA-FunExt
+open import Naturals.Addition renaming (_+_ to _+'_)
 open import Naturals.Order
 
-module UF.H-Levels (fe : FunExt) (fe' : Fun-Ext) where
+module UF.H-Levels (fe : FunExt)
+                   (fe' : Fun-Ext)
+                    where
 
 _is-of-hlevel_ : 𝓤 ̇ → ℕ → 𝓤 ̇
 X is-of-hlevel zero = is-contr X
@@ -48,26 +52,37 @@ hlevel-relation-is-prop {𝓤} (succ n) X =
   Π₂-is-prop fe'
              (λ x x' → hlevel-relation-is-prop n (x ＝ x'))
 
+map_is-of-hlevel_ : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (f : X → Y) → ℕ → 𝓤 ⊔ 𝓥 ̇
+map f is-of-hlevel n = (y : codomain f) → (fiber f y) is-of-hlevel n
+
 \end{code}
 
 H-Levels are cumulative.
 
 \begin{code}
 
+contr-implies-id-contr : {X : 𝓤 ̇} → is-contr X → (x x' : X) → is-contr (x ＝ x')
+contr-implies-id-contr (c , C) x x' = (((C x)⁻¹ ∙ C x') , D)
+ where
+  D : is-central (x ＝ x') (C x ⁻¹ ∙ C x')
+  D refl = left-inverse (C x)
+
 hlevels-are-upper-closed : (n : ℕ) (X : 𝓤 ̇)
                          → (X is-of-hlevel n)
                          → (X is-of-hlevel succ n)
-hlevels-are-upper-closed zero X h-level = base h-level
- where
-  base : is-contr X → (x x' : X) → is-contr (x ＝ x')
-  base (c , C) x x' = (((C x)⁻¹ ∙ C x') , D)
-   where
-    D : is-central (x ＝ x') (C x ⁻¹ ∙ C x')
-    D refl = left-inverse (C x)
+hlevels-are-upper-closed zero X h-level = contr-implies-id-contr h-level
+
 hlevels-are-upper-closed (succ n) X h-level = step
  where
   step : (x x' : X) (p q : x ＝ x') → (p ＝ q) is-of-hlevel n
   step x x' p q = hlevels-are-upper-closed n (x ＝ x') (h-level x x') p q
+
+id-types-are-same-hlevel : {X : 𝓤 ̇ } (n : ℕ)
+                         → X is-of-hlevel n
+                         → (x x' : X) → (x ＝ x') is-of-hlevel n
+id-types-are-same-hlevel zero X-hlev x x' = contr-implies-id-contr X-hlev x x'
+id-types-are-same-hlevel (succ n) X-hlev x x' =
+  hlevels-are-upper-closed n (x ＝ x') (X-hlev x x')
 
 \end{code}
 
@@ -126,7 +141,7 @@ Using closure under equivalence we can show closure under Σ and Π.
 \begin{code}
 
 hlevel-closed-under-Σ : (n : ℕ)
-                      → (X : 𝓤 ̇ ) (Y : X → 𝓤 ̇ )
+                      → (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ )
                       → X is-of-hlevel n
                       → ((x : X) → (Y x) is-of-hlevel n)
                       → (Σ Y) is-of-hlevel n
@@ -141,16 +156,23 @@ hlevel-closed-under-Σ (succ n) X Y l m (x , y) (x' , y') =
                                                             (transport Y p y)
                                                             y'))
 
-hlevel-closed-under-Π : {𝓤 : Universe}
+hlevel-closed-under-Π : {𝓤 𝓥 : Universe}
                       → (n : ℕ)
-                      → (X : 𝓤 ̇ ) (Y : X → 𝓤 ̇ )
+                      → (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ )
                       → ((x : X) → (Y x) is-of-hlevel n)
                       → (Π Y) is-of-hlevel n
-hlevel-closed-under-Π {𝓤} zero X Y m = Π-is-singleton (fe 𝓤 𝓤) m
-hlevel-closed-under-Π {𝓤} (succ n) X Y m f g =
-  hlevel-closed-under-equiv n (f ＝ g) (f ∼ g) (happly-≃ (fe 𝓤 𝓤))
+hlevel-closed-under-Π {𝓤} {𝓥} zero X Y m = Π-is-singleton (fe 𝓤 𝓥) m
+hlevel-closed-under-Π {𝓤} {𝓥} (succ n) X Y m f g = 
+  hlevel-closed-under-equiv n (f ＝ g) (f ∼ g) (happly-≃ (fe 𝓤 𝓥))
                             (hlevel-closed-under-Π n X (λ x → f x ＝ g x)
                                                    (λ x → m x (f x) (g x)))
+
+hlevel-closed-under-→ : {𝓤 𝓥 : Universe}
+                      → (n : ℕ)
+                      → (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )
+                      → Y is-of-hlevel n
+                      → (X → Y) is-of-hlevel n
+hlevel-closed-under-→ n X Y m = hlevel-closed-under-Π n X (λ - → Y) (λ - → m)
 
 \end{code}
 
@@ -235,36 +257,3 @@ From Univalence we can show that (ℍ n) is of level (n + 1), for all n : ℕ.
 
 \end{code}
 
-We now define the notion of a k-truncation using record types.
-
-\begin{code}
-
-record H-level-truncations-exist : 𝓤ω where
- field
-  ∣∣_∣∣_ : {𝓤 : Universe} → 𝓤 ̇ → ℕ → 𝓤 ̇
-  ∣∣∣∣-is-prop : {𝓤 : Universe} {X : 𝓤 ̇ } {n : ℕ} → is-prop (∣∣ X ∣∣ n)
-  ∣_∣_ :  {𝓤 : Universe} {X : 𝓤 ̇ } → X → (n : ℕ) → ∣∣ X ∣∣ n
-  ∣∣∣∣-rec : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {n : ℕ}
-           → Y is-of-hlevel n → (X → Y) → ∣∣ X ∣∣ n → Y
- infix 0 ∣∣_∣∣_
- infix 0 ∣_∣_
-
-\end{code}
-
-We now add the notion of k-connectedness of type and functions with respect to
-H-levels. We will then see that connectedness as defined elsewhere in the
-library is a special case
-
-\begin{code}
-
-module k-connectedness (te : H-level-truncations-exist) where
-
- open H-level-truncations-exist te
-
- _is_connected : 𝓤 ̇ → ℕ → 𝓤 ̇
- X is k connected = is-contr (∣∣ X ∣∣ k)
-
- map_is_connected : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (f : X → Y) → ℕ → 𝓤 ⊔ 𝓥 ̇
- map f is k connected = (y : codomain f) → (fiber f y) is k connected
-
-\end{code}
