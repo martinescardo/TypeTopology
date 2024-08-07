@@ -1,8 +1,8 @@
 Martin Escardo and Ian Ray, 06/02/2024
 
 We develop H-levels (a la Voevodsky). In Homotopy Type Theory there is a
-natural stratification of types defined inductively starting with contractible
-types and saying the an (n+1)-type has an identity type that is an n-type.
+natural stratification of types defined inductively; with contractible
+types as the base and saying an (n+1)-type has identity type that is an n-type.
 Voevodsky introduced the notion of H-level where contractible types are at
 level n = 0. Alternatively, in book HoTT, truncated types are defined so that
 contractible types are at level k = -2. Of course, the two notions are
