@@ -326,38 +326,36 @@ We now define an equivalence that characterizes the truncated identity type.
   trunc-id-family-is-identity-system =
    ((∣ x ∣[ succ n ] , refl-trunc-id-family) , center-Q)
    where
-    sufficient-map-1 : (x' : X) (p : x ＝ x')
-                     → (∣ x ∣[ succ n ] , refl-trunc-id-family)
-                       ＝[ Σ (trunc-id-family-type) ]
-                       (∣ x' ∣[ succ n ] , trunc-id-backward-map x' ∣ p ∣[ n ])
-    sufficient-map-1 x' refl = refl
-    sufficient-map-2 : (x' : X) (q' : ∥ x ＝ x' ∥[ n ])
-                     → (∣ x ∣[ succ n ] , refl-trunc-id-family)
-                       ＝[ Σ (trunc-id-family-type) ]
-                       (∣ x' ∣[ succ n ] , trunc-id-backward-map x' q')
-    sufficient-map-2 x' = ∥∥ₙ-ind (λ s → hlevel-closed-under-Σ (succ n)
-                                          ∥ X ∥[ succ n ] trunc-id-family-type
-                                          (∥∥ₙ-h-level (succ n))
-                                          (λ v → hlevels-are-upper-closed n
-                                                  (trunc-id-family-type v)
-                                                  (trunc-id-family-level v))
-                                          (∣ x ∣[ succ n ] , refl-trunc-id-family)
-                                          (∣ x' ∣[ succ n ]
-                                           , trunc-id-backward-map x' s))
-                                  (sufficient-map-1 x')
-    sufficient-map-3 : (x' : X) (q : trunc-id-family-type ∣ x' ∣[ succ n ])
-                     → (∣ x ∣[ succ n ] , refl-trunc-id-family)
-                       ＝[ Σ (trunc-id-family-type) ]
-                       (∣ x' ∣[ succ n ] , q)
-    sufficient-map-3 x' q =
-     transport (λ - → (∣ x ∣[ succ n ] , refl-trunc-id-family)
-                      ＝[ Σ (trunc-id-family-type) ]
-                      (∣ x' ∣[ succ n ] , -))
-               (trunc-id-back-is-retraction x' q)
-               (sufficient-map-2 x' (trunc-id-forward-map x' q))
-    sufficient-map-4 : (v : ∥ X ∥[ succ n ]) (q : trunc-id-family-type v)
-                     → (∣ x ∣[ succ n ] , refl-trunc-id-family) ＝ (v , q)
-    sufficient-map-4 =
+    I : (x' : X) (p : x ＝ x')
+      → (∣ x ∣[ succ n ] , refl-trunc-id-family)
+       ＝[ Σ (trunc-id-family-type) ]
+        (∣ x' ∣[ succ n ] , trunc-id-backward-map x' ∣ p ∣[ n ])
+    I x' refl = refl
+    II : (x' : X) (q' : ∥ x ＝ x' ∥[ n ])
+       → (∣ x ∣[ succ n ] , refl-trunc-id-family)
+        ＝[ Σ (trunc-id-family-type) ]
+         (∣ x' ∣[ succ n ] , trunc-id-backward-map x' q')
+    II x' = ∥∥ₙ-ind (λ s → hlevel-closed-under-Σ (succ n)
+                            ∥ X ∥[ succ n ] trunc-id-family-type
+                            (∥∥ₙ-h-level (succ n))
+                            (λ v → hlevels-are-upper-closed n
+                                    (trunc-id-family-type v)
+                                    (trunc-id-family-level v))
+                            (∣ x ∣[ succ n ] , refl-trunc-id-family)
+                            (∣ x' ∣[ succ n ] , trunc-id-backward-map x' s))
+                     (I x')
+    III : (x' : X) (q : trunc-id-family-type ∣ x' ∣[ succ n ])
+        → (∣ x ∣[ succ n ] , refl-trunc-id-family)
+          ＝[ Σ (trunc-id-family-type) ]
+          (∣ x' ∣[ succ n ] , q)
+    III x' q = transport (λ - → (∣ x ∣[ succ n ] , refl-trunc-id-family)
+                                ＝[ Σ (trunc-id-family-type) ]
+                                (∣ x' ∣[ succ n ] , -))
+                         (trunc-id-back-is-retraction x' q)
+                         (II x' (trunc-id-forward-map x' q))
+    IV : (v : ∥ X ∥[ succ n ]) (q : trunc-id-family-type v)
+       → (∣ x ∣[ succ n ] , refl-trunc-id-family) ＝ (v , q)
+    IV =
      ∥∥ₙ-ind (λ s → hlevel-closed-under-Π (succ n) (trunc-id-family-type s)
                      (λ q → (∣ x ∣[ succ n ] , refl-trunc-id-family) ＝ (s , q))
                      (λ q → hlevel-closed-under-Σ (succ (succ n)) ∥ X ∥[ succ n ]
@@ -373,19 +371,19 @@ We now define an equivalence that characterizes the truncated identity type.
                                                   (∣ x ∣[ succ n ]
                                                    , refl-trunc-id-family)
                                                   (s , q)))
-             sufficient-map-3
+             III
     center-Q : is-central (Σ (trunc-id-family-type))
                           (∣ x ∣[ succ n ] , refl-trunc-id-family)
-    center-Q (v , q) = sufficient-map-4 v q 
+    center-Q (v , q) = IV v q 
 
  trunc-identity-characterization : {𝓤 : Universe} {X : 𝓤 ̇} {n : ℕ}
                                  → (x : X) (v : ∥ X ∥[ succ n ])
                                  → (∣ x ∣[ succ n ] ＝ v)
                                  ≃ trunc-id-family-type x v
  trunc-identity-characterization {𝓤} {X} {n} x v =
-  (identity-on-trunc-to-family x v
-   , Yoneda-Theorem-forth ∣ x ∣[ succ n ] (identity-on-trunc-to-family x)
-                          (trunc-id-family-is-identity-system x) v)
+  (identity-on-trunc-to-family x v , Yoneda-Theorem-forth ∣ x ∣[ succ n ]
+                                      (identity-on-trunc-to-family x)
+                                      (trunc-id-family-is-identity-system x) v)
 
  eliminated-trunc-identity-char : {𝓤 : Universe} {X : 𝓤 ̇} {x x' : X} {n : ℕ}
                                 → ∥ x ＝ x' ∥[ n ]
