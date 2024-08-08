@@ -407,6 +407,22 @@ ap-of-section-is-section {𝓤} {𝓥} {X} {Y} s (r , rs) x x' = ρ , ρap
 
 \end{code}
 
+Added 8 August 2024 by Tom de Jong.
+
+\begin{code}
+
+＝-retract : {X : 𝓤 ̇  } {Y : 𝓥 ̇  } (s : X → Y)
+           → is-section s
+           → (x x' : X) → (x ＝ x') ◁ (s x ＝ s x')
+＝-retract s s-sect x x' = ρ , ap s , η
+ where
+  ρ : s x ＝ s x' → x ＝ x'
+  ρ = retraction-of (ap s) (ap-of-section-is-section s s-sect x x')
+  η : ρ ∘ ap s ∼ id
+  η = retraction-equation (ap s) (ap-of-section-is-section s s-sect x x')
+
+\end{code}
+
 Fixities:
 
 \begin{code}
