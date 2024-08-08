@@ -64,22 +64,22 @@ Omitting the inclusion function, or coercion,
 
 a map f : ℕ∞ → ℕ is called continuous iff
 
-   ∃ m. ∀ n ≥ m. f n ＝ ∞,
+   ∃ m. ∀ n ≥ m. f n ＝ f ∞,
 
 where m and n range over the natural numbers.
 
 The negation of this statement is equivalent to
 
-   ∀ m. ¬ ∀ n ≥ m. f n ＝ ∞.
+   ∀ m. ¬ ∀ n ≥ m. f n ＝ f ∞.
 
 We can implement ∀ y ≥ x. A y as ∀ x. A (max x y), so that the
 continuity of f amounts to
 
-   ∃ m. ∀ n. f (max m n) ＝ ∞,
+   ∃ m. ∀ n. f (max m n) ＝ f ∞,
 
 and its negation to
 
-   ∀ m. ¬ ∀ n. f (max m n) ＝ ∞.
+   ∀ m. ¬ ∀ n. f (max m n) ＝ f ∞.
 
 Because we are going to prove facts about the negation of continuity,
 it doesn't matter whether we define the notion with ∃ or Σ, and we
@@ -136,8 +136,8 @@ open import Taboos.WLPO
 open import TypeTopology.CompactTypes
 open import TypeTopology.GenericConvergentSequenceCompactness fe
 
-discontinuous-map-gives-WLPO : (f : ℕ∞ → ℕ) → ¬ continuous f → WLPO
-discontinuous-map-gives-WLPO f f-non-cts = VI
+noncontinuous-map-gives-WLPO : (f : ℕ∞ → ℕ) → ¬ continuous f → WLPO
+noncontinuous-map-gives-WLPO f f-non-cts = VI
  where
   g : (u : ℕ∞) → Σ v₀ ꞉ ℕ∞ , (f (max u v₀) ＝ f ∞ → (v : ℕ∞) → f (max u v) ＝ f ∞)
   g u = ℕ∞-Compact∙
@@ -220,7 +220,7 @@ open import Naturals.Properties
 WLPO-iff-there-is-a-noncontinous-map : WLPO ↔ (Σ f ꞉ (ℕ∞ → ℕ) , ¬ continuous f)
 WLPO-iff-there-is-a-noncontinous-map =
   I ,
-  (λ (f , ν) → discontinuous-map-gives-WLPO f ν)
+  (λ (f , ν) → noncontinuous-map-gives-WLPO f ν)
  where
   I : WLPO → Σ f ꞉ (ℕ∞ → ℕ) , ¬ continuous f
   I wlpo = f , f-non-cts
