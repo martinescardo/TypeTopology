@@ -227,7 +227,7 @@ From Univalence we can show that (ℍ n) is of level (n + 1), for all n : ℕ.
                                                             (λ x x' → l' x')))
   where
    II = ≃-sym (to-subtype-＝-≃ λ _ → Π₂-is-prop fe
-               (λ x x' → hlevel-relation-is-prop n {!x ＝ x'!}))
+               (λ x x' → hlevel-relation-is-prop n (x ＝ x')))
    e = ((X , l) ＝ (X' , l')) ≃⟨ II ⟩
        (X ＝ X')              ≃⟨ univalence-≃ ua X X' ⟩
        (X ≃ X')               ■
@@ -237,7 +237,3 @@ From Univalence we can show that (ℍ n) is of level (n + 1), for all n : ℕ.
 
 \end{code}
 
-(λ _ → Π-is-prop fe
-                                  (λ x → Π-is-prop fe
-                                  (λ x' → hlevel-relation-is-prop
-                                            n (x ＝ x'))))
