@@ -41,6 +41,9 @@ open import Naturals.Order
 module UF.H-Levels (fe : Fun-Ext)
                     where
 
+fe' : FunExt
+fe' 𝓤 𝓥 = fe {𝓤} {𝓥}
+
 _is-of-hlevel_ : 𝓤 ̇ → ℕ → 𝓤 ̇
 X is-of-hlevel zero = is-contr X
 X is-of-hlevel succ n = (x x' : X) → (x ＝ x') is-of-hlevel n
@@ -118,14 +121,8 @@ hlevel-closed-under-retract : (n : ℕ)
 hlevel-closed-under-retract zero {X} {Y} X-retract-Y Y-contr =
  singleton-closed-under-retract X Y X-retract-Y Y-contr
 hlevel-closed-under-retract (succ n) (r , s , H) Y-h-level x x' =
- hlevel-closed-under-retract n retr (Y-h-level (s x) (s x'))
- where
-  t : (s x ＝ s x') → x ＝ x'
-  t q = H x ⁻¹ ∙ ap r q ∙ H x'
-  G : (p : x ＝ x') → H x ⁻¹ ∙ ap r (ap s p) ∙ H x' ＝ p
-  G refl = left-inverse (H x)
-  retr : retract x ＝ x' of (s x ＝ s x')
-  retr = (t , ap s , G)
+ hlevel-closed-under-retract n (＝-retract s (r , H) x x')
+                             (Y-h-level (s x) (s x'))
 
 hlevel-closed-under-equiv : (n : ℕ)
                           → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
@@ -213,33 +210,34 @@ From Univalence we can show that (ℍ n) is of level (n + 1), for all n : ℕ.
   C (X , X-is-contr) (X' , X'-is-contr) =
     hlevel-closed-under-equiv zero e C'
    where
-    e = ((X , X-is-contr) ＝ (X' , X'-is-contr)) ≃⟨ ≃-sym (to-subtype-＝-≃
-                                                  (λ X → being-singleton-is-prop
-                                                         fe)) ⟩
+    I = ≃-sym (to-subtype-＝-≃ (λ X → being-singleton-is-prop fe))
+    e = ((X , X-is-contr) ＝ (X' , X'-is-contr)) ≃⟨ I ⟩
         (X ＝ X')                                ≃⟨ univalence-≃ ua X X' ⟩
         (X ≃ X')                                 ■
     P : is-prop (X ≃ X')
-    P = ≃-is-prop (λ _ _ → fe) (is-prop'-implies-is-prop
-                        (hlevels-are-upper-closed zero X' X'-is-contr))
+    P = ≃-is-prop fe' (is-prop'-implies-is-prop
+                  (hlevels-are-upper-closed zero X' X'-is-contr))
     C' : is-contr (X ≃ X')
     C' = pointed-props-are-singletons (singleton-≃ X-is-contr X'-is-contr) P
 ℍ-is-of-next-hlevel (succ n) 𝓤 ua (X , l) (X' , l') =
   hlevel-closed-under-equiv (succ n) e
-      (hlevel-closed-under-embedding (succ n) ⋆ {X ≃ X'} {X → X'} e'
+      (hlevel-closed-under-embedding (succ n) ⋆ e'
                                      (hlevel-closed-under-Π (succ n)
                                                             (λ _ → X')
                                                             (λ x x' → l' x')))
   where
-   e = ((X , l) ＝ (X' , l')) ≃⟨ ≃-sym (to-subtype-＝-≃
-                                  (λ _ → Π-is-prop fe
-                                  (λ x → Π-is-prop fe
-                                  (λ x' → hlevel-relation-is-prop
-                                            n (x ＝ x'))))) ⟩
+   II = ≃-sym (to-subtype-＝-≃ λ _ → Π₂-is-prop fe
+               (λ x x' → hlevel-relation-is-prop n {!x ＝ x'!}))
+   e = ((X , l) ＝ (X' , l')) ≃⟨ II ⟩
        (X ＝ X')              ≃⟨ univalence-≃ ua X X' ⟩
        (X ≃ X')               ■
 
    e' : (X ≃ X') ↪ (X → X')
-   e' = (pr₁ , pr₁-is-embedding (λ f → being-equiv-is-prop (λ _ _ → fe) f))
+   e' = (pr₁ , pr₁-is-embedding (λ f → being-equiv-is-prop fe' f))
 
 \end{code}
 
+(λ _ → Π-is-prop fe
+                                  (λ x → Π-is-prop fe
+                                  (λ x' → hlevel-relation-is-prop
+                                            n (x ＝ x'))))
