@@ -9,6 +9,7 @@ import UF.Choice
 import UF.Classifiers
 import UF.Classifiers-Old
 import UF.Connected
+import UF.ConnectedTypes                    -- by [2]
 import UF.CumulativeHierarchy               -- by [1]
 import UF.CumulativeHierarchy-LocallySmall  -- by [1]
 import UF.DiscreteAndSeparated
@@ -67,6 +68,7 @@ import UF.Subsingletons-FunExt
 import UF.Subsingletons-Properties
 import UF.SubtypeClassifier
 import UF.SubtypeClassifier-Properties
+import UF.Truncations                -- by [2]
 import UF.UA-FunExt
 import UF.Univalence
 import UF.UniverseEmbedding
