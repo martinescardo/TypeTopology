@@ -114,6 +114,11 @@ module points-of-patch-are-spectral-points
                   σ
 
  spectral-point-to-patch-point : Spectral-Point σ⦅𝓓⦆ → Point patch-σ𝓓
- spectral-point-to-patch-point ℱ = {!ump-of-patch!}
+ spectral-point-to-patch-point ℱ = pr₁ (center (patch-ump F 𝕤))
+  where
+   open Spectral-Point ℱ renaming (point to F)
+
+   𝕤 : is-spectral-map σ⦅𝓓⦆ (𝟏Loc pe) F holds
+   𝕤 K κ = point-preserves-compactness K κ
 
 \end{code}
