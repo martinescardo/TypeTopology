@@ -50,6 +50,7 @@ open import Locales.InitialFrame pt fe hiding (_⊑_)
 open import Locales.LawsonLocale.CompactElementsOfPoint 𝓤 fe pe pt sr
 open import Locales.PatchLocale pt fe sr
 open import Locales.PatchProperties pt fe sr
+open import Locales.PerfectMaps pt fe
 open import Locales.Point.Definition pt fe
 open import Locales.Point.SpectralPoint-Definition pt fe pe
 open import Locales.ScottLocale.Definition pt fe 𝓤
@@ -74,6 +75,7 @@ open import UF.SubtypeClassifier renaming (⊥ to ⊥ₚ)
 open AllCombinators pt fe
 open DefinitionOfScottDomain
 open Locale
+open PerfectMaps
 open PropositionalTruncation pt hiding (_∨_)
 
 \end{code}
@@ -97,6 +99,7 @@ module points-of-patch-are-spectral-points
  open UniversalProperty σ⦅𝓓⦆ (𝟏Loc pe) scott-locale-spectralᴰ zd 𝟎Frm-is-compact
  open ContinuousMaps
  open ClosedNucleus σ⦅𝓓⦆ scott-locale-is-spectral
+ open Epsilon σ⦅𝓓⦆ scott-locale-spectralᴰ
 
  patch-σ𝓓 : Locale (𝓤 ⁺) 𝓤 𝓤
  patch-σ𝓓 = SmallPatch
@@ -113,12 +116,42 @@ module points-of-patch-are-spectral-points
                   𝓅
                   σ
 
- spectral-point-to-patch-point : Spectral-Point σ⦅𝓓⦆ → Point patch-σ𝓓
- spectral-point-to-patch-point ℱ = pr₁ (center (patch-ump F 𝕤))
+ to-patch-point : Spectral-Point σ⦅𝓓⦆ → Point patch-σ𝓓
+ to-patch-point ℱ = ∃!-witness (patch-ump F 𝕤)
   where
    open Spectral-Point ℱ renaming (point to F)
 
    𝕤 : is-spectral-map σ⦅𝓓⦆ (𝟏Loc pe) F holds
    𝕤 K κ = point-preserves-compactness K κ
+
+\end{code}
+
+The proof below should be placed in a more appropriate place.
+
+\begin{code}
+
+ ϵ-is-a-spectral-map : is-spectral-map σ⦅𝓓⦆ patch-σ𝓓 ϵ holds
+ ϵ-is-a-spectral-map =
+  perfect-maps-are-spectral
+   patch-σ𝓓
+   σ⦅𝓓⦆
+   ∣ spectralᴰ-implies-basisᴰ σ⦅𝓓⦆ scott-locale-spectralᴰ ∣
+   ϵ
+   ϵ-is-a-perfect-map
+
+\end{code}
+
+\begin{code}
+
+ to-spectral-point′ : Spectral-Point patch-σ𝓓 → Spectral-Point σ⦅𝓓⦆
+ to-spectral-point′ ℱ⁻ₛ = to-spectral-point σ⦅𝓓⦆ (ℱ , 𝕤)
+  where
+   open Spectral-Point ℱ⁻ₛ renaming (point to ℱ⁻)
+
+   ℱ : 𝟏Loc pe ─c→ σ⦅𝓓⦆
+   ℱ = cont-comp (𝟏Loc pe) patch-σ𝓓 σ⦅𝓓⦆ ϵ ℱ⁻
+
+   𝕤 : is-spectral-map σ⦅𝓓⦆ (𝟏Loc pe) ℱ holds
+   𝕤 K κ = point-preserves-compactness ‘ K ’ (ϵ-is-a-spectral-map K κ)
 
 \end{code}
