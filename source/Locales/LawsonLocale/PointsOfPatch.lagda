@@ -42,12 +42,14 @@ open import DomainTheory.Topology.ScottTopologyProperties pt fe 𝓤
 open import Locales.Clopen pt fe sr
 open import Locales.CompactRegular pt fe using (clopens-are-compact-in-compact-frames)
 open import Locales.Compactness pt fe hiding (is-compact)
+open import Locales.ContinuousMap.Definition pt fe
 open import Locales.ContinuousMap.FrameHomomorphism-Definition pt fe
 open import Locales.ContinuousMap.FrameHomomorphism-Properties pt fe
 open import Locales.Frame pt fe
 open import Locales.InitialFrame pt fe hiding (_⊑_)
 open import Locales.LawsonLocale.CompactElementsOfPoint 𝓤 fe pe pt sr
 open import Locales.PatchLocale pt fe sr
+open import Locales.PatchProperties pt fe sr
 open import Locales.Point.Definition pt fe
 open import Locales.Point.SpectralPoint-Definition pt fe pe
 open import Locales.ScottLocale.Definition pt fe 𝓤
@@ -93,12 +95,23 @@ module points-of-patch-are-spectral-points
  open SmallPatchConstruction σ⦅𝓓⦆ scott-locale-spectralᴰ
  open Preliminaries
  open UniversalProperty σ⦅𝓓⦆ (𝟏Loc pe) scott-locale-spectralᴰ zd 𝟎Frm-is-compact
+ open ContinuousMaps
+ open ClosedNucleus σ⦅𝓓⦆ scott-locale-is-spectral
 
  patch-σ𝓓 : Locale (𝓤 ⁺) 𝓤 𝓤
  patch-σ𝓓 = SmallPatch
 
- patch-ump : {!!}
- patch-ump = {!ump-of-patch σ⦅𝓓⦆ scott-locale-is-spectral ? (𝟏Loc pe) ?!}
+ patch-ump : (𝓅 : 𝟏Loc pe ─c→ σ⦅𝓓⦆)
+           → is-spectral-map σ⦅𝓓⦆ (𝟏Loc pe) 𝓅 holds
+           → ∃! 𝒻⁻ ꞉ 𝟏Loc pe ─c→ patch-σ𝓓 , ((U : ⟨ 𝒪 σ⦅𝓓⦆ ⟩) → 𝓅 .pr₁ U  ＝ 𝒻⁻ .pr₁ ‘ U ’ )
+ patch-ump 𝓅 σ = ump-of-patch
+                  σ⦅𝓓⦆
+                  scott-locale-is-spectral
+                  scott-locale-has-small-𝒦
+                  (𝟏Loc pe)
+                  (𝟏-is-stone pe)
+                  𝓅
+                  σ
 
  spectral-point-to-patch-point : Spectral-Point σ⦅𝓓⦆ → Point patch-σ𝓓
  spectral-point-to-patch-point ℱ = {!ump-of-patch!}
