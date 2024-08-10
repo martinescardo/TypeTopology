@@ -37,6 +37,7 @@ open import Locales.Frame pt fe
 open import Locales.InitialFrame pt fe
 open import Locales.SmallBasis pt fe sr
 open import Locales.Spectrality.SpectralityOfOmega pt fe sr
+open import Locales.Stone pt fe sr
 open import Locales.StoneImpliesSpectral pt fe sr
 open import Locales.ZeroDimensionality pt fe sr
 open import Slice.Family
@@ -294,5 +295,14 @@ Added on 2024-08-05.
  𝟏-zero-dimensionalᴰ = ℬ𝟎↑
                      , pr₂ (ℬ𝟎↑-directed-basisᴰ 𝓤 pe)
                      , ℬ𝟎↑-consists-of-clopens
+
+\end{code}
+
+Added on 2024-08-10.
+
+\begin{code}
+
+ 𝟏-is-stone : is-stone (𝟏Loc pe) holds
+ 𝟏-is-stone = 𝟎Frm-is-compact 𝓤 pe , ∣ 𝟏-zero-dimensionalᴰ ∣
 
 \end{code}
