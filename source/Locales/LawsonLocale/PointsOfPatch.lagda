@@ -60,6 +60,8 @@ open import Locales.ScottLocale.ScottLocalesOfScottDomains pt fe sr 𝓤
 open import Locales.SmallBasis pt fe sr
 open import Locales.Spectrality.SpectralMap pt fe
 open import Locales.Spectrality.SpectralityOfOmega pt fe sr 𝓤 pe
+open import Locales.Stone pt fe sr
+open import Locales.StoneImpliesSpectral pt fe sr
 open import Locales.TerminalLocale.Properties pt fe sr
 open import Locales.UniversalPropertyOfPatch pt fe sr
 open import Locales.ZeroDimensionality pt fe sr
@@ -100,9 +102,13 @@ module points-of-patch-are-spectral-points
  open ContinuousMaps
  open ClosedNucleus σ⦅𝓓⦆ scott-locale-is-spectral
  open Epsilon σ⦅𝓓⦆ scott-locale-spectralᴰ
+ open PatchStoneᴰ σ⦅𝓓⦆ scott-locale-spectralᴰ
 
  patch-σ𝓓 : Locale (𝓤 ⁺) 𝓤 𝓤
  patch-σ𝓓 = SmallPatch
+
+ patch-σ𝓓-stoneᴰ : stoneᴰ patch-σ𝓓
+ patch-σ𝓓-stoneᴰ = patchₛ-is-compact , patchₛ-zero-dimensionalᴰ
 
  patch-ump : (𝓅 : 𝟏Loc pe ─c→ σ⦅𝓓⦆)
            → is-spectral-map σ⦅𝓓⦆ (𝟏Loc pe) 𝓅 holds
@@ -116,13 +122,20 @@ module points-of-patch-are-spectral-points
                   𝓅
                   σ
 
- to-patch-point : Spectral-Point σ⦅𝓓⦆ → Point patch-σ𝓓
- to-patch-point ℱ = ∃!-witness (patch-ump F 𝕤)
+ to-patch-point : Spectral-Point σ⦅𝓓⦆ → Spectral-Point patch-σ𝓓
+ to-patch-point ℱ = to-spectral-point patch-σ𝓓 (𝓅 , †)
   where
    open Spectral-Point ℱ renaming (point to F)
+   open continuous-maps-of-stone-locales (𝟏Loc pe) patch-σ𝓓 (𝟏-stoneᴰ pe) patch-σ𝓓-stoneᴰ
 
    𝕤 : is-spectral-map σ⦅𝓓⦆ (𝟏Loc pe) F holds
    𝕤 K κ = point-preserves-compactness K κ
+
+   𝓅 : 𝟏Loc pe ─c→ patch-σ𝓓
+   𝓅 = ∃!-witness (patch-ump F 𝕤)
+
+   † : is-spectral-map patch-σ𝓓 (𝟏Loc pe) 𝓅 holds
+   † = continuous-maps-between-stone-locales-are-spectral 𝓅
 
 \end{code}
 
@@ -153,5 +166,58 @@ The proof below should be placed in a more appropriate place.
 
    𝕤 : is-spectral-map σ⦅𝓓⦆ (𝟏Loc pe) ℱ holds
    𝕤 K κ = point-preserves-compactness ‘ K ’ (ϵ-is-a-spectral-map K κ)
+
+\end{code}
+
+\begin{code}
+
+ to-patch-point-qinv : qinv to-patch-point
+ to-patch-point-qinv = to-spectral-point′ , † , ‡
+  where
+   open ContinuousMaps
+   open ContinuousMapNotation (𝟏Loc pe) patch-σ𝓓
+
+   † : to-spectral-point′ ∘ to-patch-point ∼ id
+   † ℱ = to-spectral-point-＝ σ⦅𝓓⦆ (to-spectral-point′ (to-patch-point ℱ)) ℱ ♢
+    where
+     open Spectral-Point using (point; point-fn; point-preserves-compactness)
+     open Spectral-Point ℱ using () renaming (point-fn to F)
+
+     𝕤 : is-spectral-map σ⦅𝓓⦆ (𝟏Loc pe) (point ℱ) holds
+     𝕤 K κ = point-preserves-compactness ℱ K κ
+
+     γ : (U : ⟨ 𝒪 σ⦅𝓓⦆ ⟩)
+       → point-fn (to-spectral-point′ (to-patch-point ℱ)) U ＝ F U
+     γ U = pr₂ (description (patch-ump (point ℱ) 𝕤)) U ⁻¹
+
+
+     ♢ : point-fn (to-spectral-point′ (to-patch-point ℱ)) ＝ F
+     ♢ = dfunext fe γ
+
+   ‡ : to-patch-point ∘ to-spectral-point′ ∼ id
+   ‡ ℱ⁻ₛ = to-spectral-point-＝ patch-σ𝓓 (to-patch-point (to-spectral-point′ ℱ⁻ₛ)) ℱ⁻ₛ ♢
+    where
+     open Spectral-Point ℱ⁻ₛ renaming (point-fn to F⁻; point to ℱ⁻)
+     open FrameHomomorphismProperties (𝒪 (𝟏Loc pe)) (𝒪 patch-σ𝓓)
+
+     ℱ : 𝟏Loc pe ─c→ σ⦅𝓓⦆
+     ℱ = cont-comp (𝟏Loc pe) patch-σ𝓓 σ⦅𝓓⦆ ϵ ℱ⁻
+
+     F = pr₁ ℱ
+
+     𝕤 : is-spectral-map σ⦅𝓓⦆ (𝟏Loc pe) ℱ holds
+     𝕤 K κ = point-preserves-compactness ‘ K ’ (ϵ-is-a-spectral-map K κ)
+
+     υ : ∃! 𝒻⁻ ꞉ 𝟏Loc pe ─c→ patch-σ𝓓 , ((U : ⟨ 𝒪 σ⦅𝓓⦆ ⟩) → F U  ＝ 𝒻⁻ ⋆∙ ‘ U ’ )
+     υ = patch-ump ℱ 𝕤
+
+     γ : (U : ⟨ 𝒪 patch-σ𝓓 ⟩)
+       → Spectral-Point.point-fn (to-patch-point (to-spectral-point′ ℱ⁻ₛ)) U ＝ F⁻ U
+     γ U = Spectral-Point.point-fn (to-patch-point (to-spectral-point′ ℱ⁻ₛ)) U  ＝⟨ refl ⟩
+           (∃!-witness υ ⋆∙ U)  ＝⟨ {!pr₂ (description υ) !} ⟩
+           F⁻ U    ∎
+
+     ♢ : Spectral-Point.point-fn (to-patch-point (to-spectral-point′ ℱ⁻ₛ)) ＝ F⁻
+     ♢ = dfunext fe γ
 
 \end{code}
