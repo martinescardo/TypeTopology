@@ -183,18 +183,35 @@ The proof below should be placed in a more appropriate place.
 
 \end{code}
 
+We now define the inverse of `to-patch-point`: given a spectral point `𝟏 →
+Patch⦅Scott⦅𝓓⦆⦆`, we can compose this with `ϵ : Patch⦅Scott⦅𝓓⦆⦆ → Scott⦅𝓓⦆` to
+obtain a map `𝟏 → Scott⦅𝓓⦆`. We call this map `to-scott-point`.
+
 \begin{code}
 
  to-scott-point : Spectral-Point Patch⦅Scott⦅𝓓⦆⦆ → Spectral-Point Scott⦅𝓓⦆
- to-scott-point ℱ⁻ₛ = to-spectral-point Scott⦅𝓓⦆ (ℱ , 𝕤)
+ to-scott-point 𝓅 = to-spectral-point Scott⦅𝓓⦆ (𝓅₀ , 𝕤)
   where
-   open Spectral-Point ℱ⁻ₛ renaming (point to ℱ⁻)
+   open Spectral-Point 𝓅 renaming (point to 𝓅⋆)
 
-   ℱ : 𝟏Loc pe ─c→ Scott⦅𝓓⦆
-   ℱ = cont-comp (𝟏Loc pe) Patch⦅Scott⦅𝓓⦆⦆ Scott⦅𝓓⦆ ϵ ℱ⁻
+   𝓅₀ : 𝟏Loc pe ─c→ Scott⦅𝓓⦆
+   𝓅₀ = cont-comp (𝟏Loc pe) Patch⦅Scott⦅𝓓⦆⦆ Scott⦅𝓓⦆ ϵ 𝓅⋆
 
-   𝕤 : is-spectral-map Scott⦅𝓓⦆ (𝟏Loc pe) ℱ holds
+   𝕤 : is-spectral-map Scott⦅𝓓⦆ (𝟏Loc pe) 𝓅₀ holds
    𝕤 K κ = point-preserves-compactness ‘ K ’ (ϵ-is-a-spectral-map K κ)
+
+\end{code}
+
+We now proceed to show these form a section-retraction pair.
+
+\begin{code}
+
+ to-scott-point-cancels-to-patch-point : to-scott-point ∘ to-patch-point ∼ id
+ to-scott-point-cancels-to-patch-point 𝓅 =
+  to-spectral-point-＝ Scott⦅𝓓⦆ (to-scott-point (to-patch-point 𝓅)) 𝓅 †
+   where
+    † : {!!} ＝ {!!}
+    † = {!!}
 
 \end{code}
 
