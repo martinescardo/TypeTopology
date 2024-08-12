@@ -4,6 +4,9 @@ author:         Ayberk Tosun
 date-started:   2024-08-04
 ---
 
+We prove that the sharp elements of a Scott domain `𝓓` are in bijection with the
+points of `Patch(Scott(𝓓))`.
+
 \begin{code}[hide]
 
 {-# OPTIONS --safe --without-K --lossy-unification #-}
@@ -83,6 +86,13 @@ open PropositionalTruncation pt hiding (_∨_)
 
 \end{code}
 
+In the module below, we show that points `𝟏 → Patch(Scott(𝓓))` are in
+bijection with spectral points `𝟏 → Scott(𝓓)`. This is done by constructing
+an equivalence
+```
+Point(Patch(Scott(𝓓))) ≃ Spectral-Point(Patch(Scott(𝓓))) ≃ Spectral-Point(Scott(𝓓))
+```
+
 \begin{code}
 
 module points-of-patch-are-spectral-points
@@ -105,6 +115,12 @@ module points-of-patch-are-spectral-points
  open Epsilon σ⦅𝓓⦆ scott-locale-spectralᴰ
  open PatchStoneᴰ σ⦅𝓓⦆ scott-locale-spectralᴰ
 
+\end{code}
+
+We define an abbreviation for `Patch(Scott(𝓓))`
+
+\begin{code}
+
  patch-σ𝓓 : Locale (𝓤 ⁺) 𝓤 𝓤
  patch-σ𝓓 = SmallPatch
 
@@ -122,6 +138,10 @@ module points-of-patch-are-spectral-points
                   (𝟏-is-stone pe)
                   𝓅
                   σ
+
+\end{code}
+
+\begin{code}
 
  to-patch-point : Spectral-Point σ⦅𝓓⦆ → Spectral-Point patch-σ𝓓
  to-patch-point ℱ = to-spectral-point patch-σ𝓓 (𝓅 , †)
