@@ -121,15 +121,15 @@ We define an abbreviation for `Patch(Scott(𝓓))`
 
 \begin{code}
 
- patch-σ𝓓 : Locale (𝓤 ⁺) 𝓤 𝓤
- patch-σ𝓓 = SmallPatch
+ Patch⦅Scott⦅𝓓⦆⦆ : Locale (𝓤 ⁺) 𝓤 𝓤
+ Patch⦅Scott⦅𝓓⦆⦆ = SmallPatch
 
- patch-σ𝓓-stoneᴰ : stoneᴰ patch-σ𝓓
- patch-σ𝓓-stoneᴰ = patchₛ-is-compact , patchₛ-zero-dimensionalᴰ
+ Patch⦅Scott⦅𝓓⦆⦆-stoneᴰ : stoneᴰ Patch⦅Scott⦅𝓓⦆⦆
+ Patch⦅Scott⦅𝓓⦆⦆-stoneᴰ = patchₛ-is-compact , patchₛ-zero-dimensionalᴰ
 
  patch-ump : (𝓅 : 𝟏Loc pe ─c→ σ⦅𝓓⦆)
            → is-spectral-map σ⦅𝓓⦆ (𝟏Loc pe) 𝓅 holds
-           → ∃! 𝒻⁻ ꞉ 𝟏Loc pe ─c→ patch-σ𝓓 , ((U : ⟨ 𝒪 σ⦅𝓓⦆ ⟩) → 𝓅 .pr₁ U  ＝ 𝒻⁻ .pr₁ ‘ U ’ )
+           → ∃! 𝒻⁻ ꞉ 𝟏Loc pe ─c→ Patch⦅Scott⦅𝓓⦆⦆ , ((U : ⟨ 𝒪 σ⦅𝓓⦆ ⟩) → 𝓅 .pr₁ U  ＝ 𝒻⁻ .pr₁ ‘ U ’ )
  patch-ump 𝓅 σ = ump-of-patch
                   σ⦅𝓓⦆
                   scott-locale-is-spectral
@@ -143,19 +143,19 @@ We define an abbreviation for `Patch(Scott(𝓓))`
 
 \begin{code}
 
- to-patch-point : Spectral-Point σ⦅𝓓⦆ → Spectral-Point patch-σ𝓓
- to-patch-point ℱ = to-spectral-point patch-σ𝓓 (𝓅 , †)
+ to-patch-point : Spectral-Point σ⦅𝓓⦆ → Spectral-Point Patch⦅Scott⦅𝓓⦆⦆
+ to-patch-point ℱ = to-spectral-point Patch⦅Scott⦅𝓓⦆⦆ (𝓅 , †)
   where
    open Spectral-Point ℱ renaming (point to F)
-   open continuous-maps-of-stone-locales (𝟏Loc pe) patch-σ𝓓 (𝟏-stoneᴰ pe) patch-σ𝓓-stoneᴰ
+   open continuous-maps-of-stone-locales (𝟏Loc pe) Patch⦅Scott⦅𝓓⦆⦆ (𝟏-stoneᴰ pe) Patch⦅Scott⦅𝓓⦆⦆-stoneᴰ
 
    𝕤 : is-spectral-map σ⦅𝓓⦆ (𝟏Loc pe) F holds
    𝕤 K κ = point-preserves-compactness K κ
 
-   𝓅 : 𝟏Loc pe ─c→ patch-σ𝓓
+   𝓅 : 𝟏Loc pe ─c→ Patch⦅Scott⦅𝓓⦆⦆
    𝓅 = ∃!-witness (patch-ump F 𝕤)
 
-   † : is-spectral-map patch-σ𝓓 (𝟏Loc pe) 𝓅 holds
+   † : is-spectral-map Patch⦅Scott⦅𝓓⦆⦆ (𝟏Loc pe) 𝓅 holds
    † = continuous-maps-between-stone-locales-are-spectral 𝓅
 
 \end{code}
@@ -164,10 +164,10 @@ The proof below should be placed in a more appropriate place.
 
 \begin{code}
 
- ϵ-is-a-spectral-map : is-spectral-map σ⦅𝓓⦆ patch-σ𝓓 ϵ holds
+ ϵ-is-a-spectral-map : is-spectral-map σ⦅𝓓⦆ Patch⦅Scott⦅𝓓⦆⦆ ϵ holds
  ϵ-is-a-spectral-map =
   perfect-maps-are-spectral
-   patch-σ𝓓
+   Patch⦅Scott⦅𝓓⦆⦆
    σ⦅𝓓⦆
    ∣ spectralᴰ-implies-basisᴰ σ⦅𝓓⦆ scott-locale-spectralᴰ ∣
    ϵ
@@ -177,13 +177,13 @@ The proof below should be placed in a more appropriate place.
 
 \begin{code}
 
- to-spectral-point′ : Spectral-Point patch-σ𝓓 → Spectral-Point σ⦅𝓓⦆
+ to-spectral-point′ : Spectral-Point Patch⦅Scott⦅𝓓⦆⦆ → Spectral-Point σ⦅𝓓⦆
  to-spectral-point′ ℱ⁻ₛ = to-spectral-point σ⦅𝓓⦆ (ℱ , 𝕤)
   where
    open Spectral-Point ℱ⁻ₛ renaming (point to ℱ⁻)
 
    ℱ : 𝟏Loc pe ─c→ σ⦅𝓓⦆
-   ℱ = cont-comp (𝟏Loc pe) patch-σ𝓓 σ⦅𝓓⦆ ϵ ℱ⁻
+   ℱ = cont-comp (𝟏Loc pe) Patch⦅Scott⦅𝓓⦆⦆ σ⦅𝓓⦆ ϵ ℱ⁻
 
    𝕤 : is-spectral-map σ⦅𝓓⦆ (𝟏Loc pe) ℱ holds
    𝕤 K κ = point-preserves-compactness ‘ K ’ (ϵ-is-a-spectral-map K κ)
@@ -196,7 +196,7 @@ The proof below should be placed in a more appropriate place.
  to-patch-point-qinv = to-spectral-point′ , † , ‡
   where
    open ContinuousMaps
-   open ContinuousMapNotation (𝟏Loc pe) patch-σ𝓓
+   open ContinuousMapNotation (𝟏Loc pe) Patch⦅Scott⦅𝓓⦆⦆
 
    † : to-spectral-point′ ∘ to-patch-point ∼ id
    † ℱ = to-spectral-point-＝ σ⦅𝓓⦆ (to-spectral-point′ (to-patch-point ℱ)) ℱ ♢
@@ -216,26 +216,26 @@ The proof below should be placed in a more appropriate place.
 
    ‡ : to-patch-point ∘ to-spectral-point′ ∼ id
    ‡ 𝓅 = to-spectral-point-＝'
-          patch-σ𝓓
+          Patch⦅Scott⦅𝓓⦆⦆
           (to-patch-point (to-spectral-point′ 𝓅))
           𝓅
           (γ ⁻¹)
     where
      open Spectral-Point 𝓅 renaming (point-fn to p⋆; point to 𝓅⋆)
-     open FrameHomomorphismProperties (𝒪 (𝟏Loc pe)) (𝒪 patch-σ𝓓)
+     open FrameHomomorphismProperties (𝒪 (𝟏Loc pe)) (𝒪 Patch⦅Scott⦅𝓓⦆⦆)
 
      𝓅₀ : 𝟏Loc pe ─c→ σ⦅𝓓⦆
-     𝓅₀ = cont-comp (𝟏Loc pe) patch-σ𝓓 σ⦅𝓓⦆ ϵ 𝓅⋆
+     𝓅₀ = cont-comp (𝟏Loc pe) Patch⦅Scott⦅𝓓⦆⦆ σ⦅𝓓⦆ ϵ 𝓅⋆
 
      p₀ = pr₁ 𝓅₀
 
      𝕤 : is-spectral-map σ⦅𝓓⦆ (𝟏Loc pe) 𝓅₀ holds
      𝕤 K κ = point-preserves-compactness ‘ K ’ (ϵ-is-a-spectral-map K κ)
 
-     υ : ∃! 𝓅₀⁻ ꞉ 𝟏Loc pe ─c→ patch-σ𝓓 , ((U : ⟨ 𝒪 σ⦅𝓓⦆ ⟩) → p₀ U  ＝ 𝓅₀⁻ ⋆∙ ‘ U ’ )
+     υ : ∃! 𝓅₀⁻ ꞉ 𝟏Loc pe ─c→ Patch⦅Scott⦅𝓓⦆⦆ , ((U : ⟨ 𝒪 σ⦅𝓓⦆ ⟩) → p₀ U  ＝ 𝓅₀⁻ ⋆∙ ‘ U ’ )
      υ = patch-ump 𝓅₀ 𝕤
 
-     𝓅₀⁻ : 𝟏Loc pe ─c→ patch-σ𝓓
+     𝓅₀⁻ : 𝟏Loc pe ─c→ Patch⦅Scott⦅𝓓⦆⦆
      𝓅₀⁻ = ∃!-witness υ
 
      foo : (U : ⟨ 𝒪 σ⦅𝓓⦆ ⟩) → p₀ U ＝ p⋆ ‘ U ’
