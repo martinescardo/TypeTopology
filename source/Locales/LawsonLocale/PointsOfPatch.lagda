@@ -68,6 +68,7 @@ open import Locales.ZeroDimensionality pt fe sr
 open import NotionsOfDecidability.Decidable
 open import NotionsOfDecidability.SemiDecidable fe pe pt
 open import Slice.Family
+open import UF.Base
 open import UF.Equiv
 open import UF.Logic
 open import UF.Subsingletons-FunExt
@@ -190,34 +191,37 @@ The proof below should be placed in a more appropriate place.
        → point-fn (to-spectral-point′ (to-patch-point ℱ)) U ＝ F U
      γ U = pr₂ (description (patch-ump (point ℱ) 𝕤)) U ⁻¹
 
-
      ♢ : point-fn (to-spectral-point′ (to-patch-point ℱ)) ＝ F
      ♢ = dfunext fe γ
 
    ‡ : to-patch-point ∘ to-spectral-point′ ∼ id
-   ‡ ℱ⁻ₛ = to-spectral-point-＝ patch-σ𝓓 (to-patch-point (to-spectral-point′ ℱ⁻ₛ)) ℱ⁻ₛ ♢
+   ‡ 𝓅 = to-spectral-point-＝'
+          patch-σ𝓓
+          (to-patch-point (to-spectral-point′ 𝓅))
+          𝓅
+          (γ ⁻¹)
     where
-     open Spectral-Point ℱ⁻ₛ renaming (point-fn to F⁻; point to ℱ⁻)
+     open Spectral-Point 𝓅 renaming (point-fn to p⋆; point to 𝓅⋆)
      open FrameHomomorphismProperties (𝒪 (𝟏Loc pe)) (𝒪 patch-σ𝓓)
 
-     ℱ : 𝟏Loc pe ─c→ σ⦅𝓓⦆
-     ℱ = cont-comp (𝟏Loc pe) patch-σ𝓓 σ⦅𝓓⦆ ϵ ℱ⁻
+     𝓅₀ : 𝟏Loc pe ─c→ σ⦅𝓓⦆
+     𝓅₀ = cont-comp (𝟏Loc pe) patch-σ𝓓 σ⦅𝓓⦆ ϵ 𝓅⋆
 
-     F = pr₁ ℱ
+     p₀ = pr₁ 𝓅₀
 
-     𝕤 : is-spectral-map σ⦅𝓓⦆ (𝟏Loc pe) ℱ holds
+     𝕤 : is-spectral-map σ⦅𝓓⦆ (𝟏Loc pe) 𝓅₀ holds
      𝕤 K κ = point-preserves-compactness ‘ K ’ (ϵ-is-a-spectral-map K κ)
 
-     υ : ∃! 𝒻⁻ ꞉ 𝟏Loc pe ─c→ patch-σ𝓓 , ((U : ⟨ 𝒪 σ⦅𝓓⦆ ⟩) → F U  ＝ 𝒻⁻ ⋆∙ ‘ U ’ )
-     υ = patch-ump ℱ 𝕤
+     υ : ∃! 𝓅₀⁻ ꞉ 𝟏Loc pe ─c→ patch-σ𝓓 , ((U : ⟨ 𝒪 σ⦅𝓓⦆ ⟩) → p₀ U  ＝ 𝓅₀⁻ ⋆∙ ‘ U ’ )
+     υ = patch-ump 𝓅₀ 𝕤
 
-     γ : (U : ⟨ 𝒪 patch-σ𝓓 ⟩)
-       → Spectral-Point.point-fn (to-patch-point (to-spectral-point′ ℱ⁻ₛ)) U ＝ F⁻ U
-     γ U = Spectral-Point.point-fn (to-patch-point (to-spectral-point′ ℱ⁻ₛ)) U  ＝⟨ refl ⟩
-           (∃!-witness υ ⋆∙ U)  ＝⟨ {!pr₂ (description υ) !} ⟩
-           F⁻ U    ∎
+     𝓅₀⁻ : 𝟏Loc pe ─c→ patch-σ𝓓
+     𝓅₀⁻ = ∃!-witness υ
 
-     ♢ : Spectral-Point.point-fn (to-patch-point (to-spectral-point′ ℱ⁻ₛ)) ＝ F⁻
-     ♢ = dfunext fe γ
+     foo : (U : ⟨ 𝒪 σ⦅𝓓⦆ ⟩) → p₀ U ＝ p⋆ ‘ U ’
+     foo U = refl
+
+     γ : 𝓅⋆ ＝ 𝓅₀⁻
+     γ = pr₁ (from-Σ-＝ (∃!-uniqueness υ 𝓅⋆ foo)) ⁻¹
 
 \end{code}
