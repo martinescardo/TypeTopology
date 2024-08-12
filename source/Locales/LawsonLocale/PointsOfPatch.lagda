@@ -117,7 +117,7 @@ module points-of-patch-are-spectral-points
 
 \end{code}
 
-We define an abbreviation for `Patch(Scott(𝓓))`
+We define an alias for `Patch(Scott(𝓓))`
 
 \begin{code}
 
@@ -127,36 +127,44 @@ We define an abbreviation for `Patch(Scott(𝓓))`
  Patch⦅Scott⦅𝓓⦆⦆-stoneᴰ : stoneᴰ Patch⦅Scott⦅𝓓⦆⦆
  Patch⦅Scott⦅𝓓⦆⦆-stoneᴰ = patchₛ-is-compact , patchₛ-zero-dimensionalᴰ
 
+\end{code}
+
+We now instantiate to the universal property of `Patch⦅Scott⦅𝓓⦆⦆` to points
+`𝟏 → Scott⦅𝓓⦆`.
+
+\begin{code}
+
  patch-ump : (𝓅 : 𝟏Loc pe ─c→ σ⦅𝓓⦆)
            → is-spectral-map σ⦅𝓓⦆ (𝟏Loc pe) 𝓅 holds
            → ∃! 𝒻⁻ ꞉ 𝟏Loc pe ─c→ Patch⦅Scott⦅𝓓⦆⦆ , ((U : ⟨ 𝒪 σ⦅𝓓⦆ ⟩) → 𝓅 .pr₁ U  ＝ 𝒻⁻ .pr₁ ‘ U ’ )
- patch-ump 𝓅 σ = ump-of-patch
-                  σ⦅𝓓⦆
-                  scott-locale-is-spectral
-                  scott-locale-has-small-𝒦
-                  (𝟏Loc pe)
-                  (𝟏-is-stone pe)
-                  𝓅
-                  σ
+ patch-ump = ump-of-patch
+              σ⦅𝓓⦆
+              scott-locale-is-spectral
+              scott-locale-has-small-𝒦
+              (𝟏Loc pe)
+              (𝟏-is-stone pe)
 
 \end{code}
+
+This universal property immediately gives us a map from the spectral points of
+`Scott⦅𝓓⦆` into the spectral points of `Patch⦅Scott⦅𝓓⦆⦆`.
 
 \begin{code}
 
  to-patch-point : Spectral-Point σ⦅𝓓⦆ → Spectral-Point Patch⦅Scott⦅𝓓⦆⦆
  to-patch-point ℱ = to-spectral-point Patch⦅Scott⦅𝓓⦆⦆ (𝓅 , †)
   where
-   open Spectral-Point ℱ renaming (point to F)
-   open continuous-maps-of-stone-locales (𝟏Loc pe) Patch⦅Scott⦅𝓓⦆⦆ (𝟏-stoneᴰ pe) Patch⦅Scott⦅𝓓⦆⦆-stoneᴰ
-
-   𝕤 : is-spectral-map σ⦅𝓓⦆ (𝟏Loc pe) F holds
-   𝕤 K κ = point-preserves-compactness K κ
+   open Spectral-Point ℱ renaming (point to F; point-preserves-compactness to 𝕤)
+   open continuous-maps-of-stone-locales (𝟏Loc pe) Patch⦅Scott⦅𝓓⦆⦆
 
    𝓅 : 𝟏Loc pe ─c→ Patch⦅Scott⦅𝓓⦆⦆
    𝓅 = ∃!-witness (patch-ump F 𝕤)
 
    † : is-spectral-map Patch⦅Scott⦅𝓓⦆⦆ (𝟏Loc pe) 𝓅 holds
-   † = continuous-maps-between-stone-locales-are-spectral 𝓅
+   † = continuous-maps-between-stone-locales-are-spectral
+        (𝟏-stoneᴰ pe)
+        Patch⦅Scott⦅𝓓⦆⦆-stoneᴰ
+        𝓅
 
 \end{code}
 
@@ -177,8 +185,8 @@ The proof below should be placed in a more appropriate place.
 
 \begin{code}
 
- to-spectral-point′ : Spectral-Point Patch⦅Scott⦅𝓓⦆⦆ → Spectral-Point σ⦅𝓓⦆
- to-spectral-point′ ℱ⁻ₛ = to-spectral-point σ⦅𝓓⦆ (ℱ , 𝕤)
+ to-scott-point : Spectral-Point Patch⦅Scott⦅𝓓⦆⦆ → Spectral-Point σ⦅𝓓⦆
+ to-scott-point ℱ⁻ₛ = to-spectral-point σ⦅𝓓⦆ (ℱ , 𝕤)
   where
    open Spectral-Point ℱ⁻ₛ renaming (point to ℱ⁻)
 
@@ -193,13 +201,13 @@ The proof below should be placed in a more appropriate place.
 \begin{code}
 
  to-patch-point-qinv : qinv to-patch-point
- to-patch-point-qinv = to-spectral-point′ , † , ‡
+ to-patch-point-qinv = to-scott-point , † , ‡
   where
    open ContinuousMaps
    open ContinuousMapNotation (𝟏Loc pe) Patch⦅Scott⦅𝓓⦆⦆
 
-   † : to-spectral-point′ ∘ to-patch-point ∼ id
-   † ℱ = to-spectral-point-＝ σ⦅𝓓⦆ (to-spectral-point′ (to-patch-point ℱ)) ℱ ♢
+   † : to-scott-point ∘ to-patch-point ∼ id
+   † ℱ = to-spectral-point-＝ σ⦅𝓓⦆ (to-scott-point (to-patch-point ℱ)) ℱ ♢
     where
      open Spectral-Point using (point; point-fn; point-preserves-compactness)
      open Spectral-Point ℱ using () renaming (point-fn to F)
@@ -208,16 +216,16 @@ The proof below should be placed in a more appropriate place.
      𝕤 K κ = point-preserves-compactness ℱ K κ
 
      γ : (U : ⟨ 𝒪 σ⦅𝓓⦆ ⟩)
-       → point-fn (to-spectral-point′ (to-patch-point ℱ)) U ＝ F U
+       → point-fn (to-scott-point (to-patch-point ℱ)) U ＝ F U
      γ U = pr₂ (description (patch-ump (point ℱ) 𝕤)) U ⁻¹
 
-     ♢ : point-fn (to-spectral-point′ (to-patch-point ℱ)) ＝ F
+     ♢ : point-fn (to-scott-point (to-patch-point ℱ)) ＝ F
      ♢ = dfunext fe γ
 
-   ‡ : to-patch-point ∘ to-spectral-point′ ∼ id
+   ‡ : to-patch-point ∘ to-scott-point ∼ id
    ‡ 𝓅 = to-spectral-point-＝'
           Patch⦅Scott⦅𝓓⦆⦆
-          (to-patch-point (to-spectral-point′ 𝓅))
+          (to-patch-point (to-scott-point 𝓅))
           𝓅
           (γ ⁻¹)
     where
