@@ -105,15 +105,15 @@ module points-of-patch-are-spectral-points
  zd : zero-dimensionalᴰ {𝓤 ⁺} (𝒪 (𝟏Loc pe))
  zd = 𝟏-zero-dimensionalᴰ pe
 
- open SpectralScottLocaleConstruction₂ 𝓓 ua hl sd dc pe
+ open SpectralScottLocaleConstruction₂ 𝓓 ua hl sd dc pe renaming (σ⦅𝓓⦆ to Scott⦅𝓓⦆)
  open Notion-Of-Spectral-Point
- open SmallPatchConstruction σ⦅𝓓⦆ scott-locale-spectralᴰ
+ open SmallPatchConstruction Scott⦅𝓓⦆ scott-locale-spectralᴰ
  open Preliminaries
- open UniversalProperty σ⦅𝓓⦆ (𝟏Loc pe) scott-locale-spectralᴰ zd 𝟎Frm-is-compact
+ open UniversalProperty Scott⦅𝓓⦆ (𝟏Loc pe) scott-locale-spectralᴰ zd 𝟎Frm-is-compact
  open ContinuousMaps
- open ClosedNucleus σ⦅𝓓⦆ scott-locale-is-spectral
- open Epsilon σ⦅𝓓⦆ scott-locale-spectralᴰ
- open PatchStoneᴰ σ⦅𝓓⦆ scott-locale-spectralᴰ
+ open ClosedNucleus Scott⦅𝓓⦆ scott-locale-is-spectral
+ open Epsilon Scott⦅𝓓⦆ scott-locale-spectralᴰ
+ open PatchStoneᴰ Scott⦅𝓓⦆ scott-locale-spectralᴰ
 
 \end{code}
 
@@ -134,11 +134,11 @@ We now instantiate to the universal property of `Patch⦅Scott⦅𝓓⦆⦆` to 
 
 \begin{code}
 
- patch-ump : (𝓅 : 𝟏Loc pe ─c→ σ⦅𝓓⦆)
-           → is-spectral-map σ⦅𝓓⦆ (𝟏Loc pe) 𝓅 holds
-           → ∃! 𝒻⁻ ꞉ 𝟏Loc pe ─c→ Patch⦅Scott⦅𝓓⦆⦆ , ((U : ⟨ 𝒪 σ⦅𝓓⦆ ⟩) → 𝓅 .pr₁ U  ＝ 𝒻⁻ .pr₁ ‘ U ’ )
+ patch-ump : (𝓅 : 𝟏Loc pe ─c→ Scott⦅𝓓⦆)
+           → is-spectral-map Scott⦅𝓓⦆ (𝟏Loc pe) 𝓅 holds
+           → ∃! 𝒻⁻ ꞉ 𝟏Loc pe ─c→ Patch⦅Scott⦅𝓓⦆⦆ , ((U : ⟨ 𝒪 Scott⦅𝓓⦆ ⟩) → 𝓅 .pr₁ U  ＝ 𝒻⁻ .pr₁ ‘ U ’ )
  patch-ump = ump-of-patch
-              σ⦅𝓓⦆
+              Scott⦅𝓓⦆
               scott-locale-is-spectral
               scott-locale-has-small-𝒦
               (𝟏Loc pe)
@@ -151,7 +151,7 @@ This universal property immediately gives us a map from the spectral points of
 
 \begin{code}
 
- to-patch-point : Spectral-Point σ⦅𝓓⦆ → Spectral-Point Patch⦅Scott⦅𝓓⦆⦆
+ to-patch-point : Spectral-Point Scott⦅𝓓⦆ → Spectral-Point Patch⦅Scott⦅𝓓⦆⦆
  to-patch-point ℱ = to-spectral-point Patch⦅Scott⦅𝓓⦆⦆ (𝓅 , †)
   where
    open Spectral-Point ℱ renaming (point to F; point-preserves-compactness to 𝕤)
@@ -172,12 +172,12 @@ The proof below should be placed in a more appropriate place.
 
 \begin{code}
 
- ϵ-is-a-spectral-map : is-spectral-map σ⦅𝓓⦆ Patch⦅Scott⦅𝓓⦆⦆ ϵ holds
+ ϵ-is-a-spectral-map : is-spectral-map Scott⦅𝓓⦆ Patch⦅Scott⦅𝓓⦆⦆ ϵ holds
  ϵ-is-a-spectral-map =
   perfect-maps-are-spectral
    Patch⦅Scott⦅𝓓⦆⦆
-   σ⦅𝓓⦆
-   ∣ spectralᴰ-implies-basisᴰ σ⦅𝓓⦆ scott-locale-spectralᴰ ∣
+   Scott⦅𝓓⦆
+   ∣ spectralᴰ-implies-basisᴰ Scott⦅𝓓⦆ scott-locale-spectralᴰ ∣
    ϵ
    ϵ-is-a-perfect-map
 
@@ -185,15 +185,15 @@ The proof below should be placed in a more appropriate place.
 
 \begin{code}
 
- to-scott-point : Spectral-Point Patch⦅Scott⦅𝓓⦆⦆ → Spectral-Point σ⦅𝓓⦆
- to-scott-point ℱ⁻ₛ = to-spectral-point σ⦅𝓓⦆ (ℱ , 𝕤)
+ to-scott-point : Spectral-Point Patch⦅Scott⦅𝓓⦆⦆ → Spectral-Point Scott⦅𝓓⦆
+ to-scott-point ℱ⁻ₛ = to-spectral-point Scott⦅𝓓⦆ (ℱ , 𝕤)
   where
    open Spectral-Point ℱ⁻ₛ renaming (point to ℱ⁻)
 
-   ℱ : 𝟏Loc pe ─c→ σ⦅𝓓⦆
-   ℱ = cont-comp (𝟏Loc pe) Patch⦅Scott⦅𝓓⦆⦆ σ⦅𝓓⦆ ϵ ℱ⁻
+   ℱ : 𝟏Loc pe ─c→ Scott⦅𝓓⦆
+   ℱ = cont-comp (𝟏Loc pe) Patch⦅Scott⦅𝓓⦆⦆ Scott⦅𝓓⦆ ϵ ℱ⁻
 
-   𝕤 : is-spectral-map σ⦅𝓓⦆ (𝟏Loc pe) ℱ holds
+   𝕤 : is-spectral-map Scott⦅𝓓⦆ (𝟏Loc pe) ℱ holds
    𝕤 K κ = point-preserves-compactness ‘ K ’ (ϵ-is-a-spectral-map K κ)
 
 \end{code}
@@ -207,15 +207,15 @@ The proof below should be placed in a more appropriate place.
    open ContinuousMapNotation (𝟏Loc pe) Patch⦅Scott⦅𝓓⦆⦆
 
    † : to-scott-point ∘ to-patch-point ∼ id
-   † ℱ = to-spectral-point-＝ σ⦅𝓓⦆ (to-scott-point (to-patch-point ℱ)) ℱ ♢
+   † ℱ = to-spectral-point-＝ Scott⦅𝓓⦆ (to-scott-point (to-patch-point ℱ)) ℱ ♢
     where
      open Spectral-Point using (point; point-fn; point-preserves-compactness)
      open Spectral-Point ℱ using () renaming (point-fn to F)
 
-     𝕤 : is-spectral-map σ⦅𝓓⦆ (𝟏Loc pe) (point ℱ) holds
+     𝕤 : is-spectral-map Scott⦅𝓓⦆ (𝟏Loc pe) (point ℱ) holds
      𝕤 K κ = point-preserves-compactness ℱ K κ
 
-     γ : (U : ⟨ 𝒪 σ⦅𝓓⦆ ⟩)
+     γ : (U : ⟨ 𝒪 Scott⦅𝓓⦆ ⟩)
        → point-fn (to-scott-point (to-patch-point ℱ)) U ＝ F U
      γ U = pr₂ (description (patch-ump (point ℱ) 𝕤)) U ⁻¹
 
@@ -232,21 +232,21 @@ The proof below should be placed in a more appropriate place.
      open Spectral-Point 𝓅 renaming (point-fn to p⋆; point to 𝓅⋆)
      open FrameHomomorphismProperties (𝒪 (𝟏Loc pe)) (𝒪 Patch⦅Scott⦅𝓓⦆⦆)
 
-     𝓅₀ : 𝟏Loc pe ─c→ σ⦅𝓓⦆
-     𝓅₀ = cont-comp (𝟏Loc pe) Patch⦅Scott⦅𝓓⦆⦆ σ⦅𝓓⦆ ϵ 𝓅⋆
+     𝓅₀ : 𝟏Loc pe ─c→ Scott⦅𝓓⦆
+     𝓅₀ = cont-comp (𝟏Loc pe) Patch⦅Scott⦅𝓓⦆⦆ Scott⦅𝓓⦆ ϵ 𝓅⋆
 
      p₀ = pr₁ 𝓅₀
 
-     𝕤 : is-spectral-map σ⦅𝓓⦆ (𝟏Loc pe) 𝓅₀ holds
+     𝕤 : is-spectral-map Scott⦅𝓓⦆ (𝟏Loc pe) 𝓅₀ holds
      𝕤 K κ = point-preserves-compactness ‘ K ’ (ϵ-is-a-spectral-map K κ)
 
-     υ : ∃! 𝓅₀⁻ ꞉ 𝟏Loc pe ─c→ Patch⦅Scott⦅𝓓⦆⦆ , ((U : ⟨ 𝒪 σ⦅𝓓⦆ ⟩) → p₀ U  ＝ 𝓅₀⁻ ⋆∙ ‘ U ’ )
+     υ : ∃! 𝓅₀⁻ ꞉ 𝟏Loc pe ─c→ Patch⦅Scott⦅𝓓⦆⦆ , ((U : ⟨ 𝒪 Scott⦅𝓓⦆ ⟩) → p₀ U  ＝ 𝓅₀⁻ ⋆∙ ‘ U ’ )
      υ = patch-ump 𝓅₀ 𝕤
 
      𝓅₀⁻ : 𝟏Loc pe ─c→ Patch⦅Scott⦅𝓓⦆⦆
      𝓅₀⁻ = ∃!-witness υ
 
-     foo : (U : ⟨ 𝒪 σ⦅𝓓⦆ ⟩) → p₀ U ＝ p⋆ ‘ U ’
+     foo : (U : ⟨ 𝒪 Scott⦅𝓓⦆ ⟩) → p₀ U ＝ p⋆ ‘ U ’
      foo U = refl
 
      γ : 𝓅⋆ ＝ 𝓅₀⁻
