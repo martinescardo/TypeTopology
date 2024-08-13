@@ -5,6 +5,8 @@ date-started:   2024-08-04
 date-completed: 2024-08-13
 ---
 
+Joint work with Martín Escardó.
+
 We prove that the sharp elements of a Scott domain `𝓓` are in bijection with the
 points of `Patch(Scott(𝓓))`.
 
