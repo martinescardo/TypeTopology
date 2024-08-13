@@ -204,69 +204,77 @@ obtain a map `𝟏 → Scott⦅𝓓⦆`. We call this map `to-scott-point`.
 
 We now proceed to show these form a section-retraction pair.
 
+The fact that `to-scott-point` is a retraction of `to-patch-point` follows
+directly from the existence part of the universal property.
+
 \begin{code}
 
  to-scott-point-cancels-to-patch-point : to-scott-point ∘ to-patch-point ∼ id
  to-scott-point-cancels-to-patch-point 𝓅 =
   to-spectral-point-＝ Scott⦅𝓓⦆ (to-scott-point (to-patch-point 𝓅)) 𝓅 †
    where
-    † : {!!} ＝ {!!}
-    † = {!!}
+    open Spectral-Point 𝓅
+     using ()
+     renaming (point to 𝓅⋆; point-fn to p⋆; point-preserves-compactness to 𝕤)
+
+    𝓅′ : Spectral-Point Scott⦅𝓓⦆
+    𝓅′ = to-scott-point (to-patch-point 𝓅)
+
+    open Spectral-Point 𝓅′ using () renaming (point to 𝓅′⋆; point-fn to p′⋆)
+
+    ‡ : p′⋆ ∼ p⋆
+    ‡ U = pr₂ (description (patch-ump 𝓅⋆ 𝕤)) U ⁻¹
+
+    † : p′⋆ ＝ p⋆
+    † = dfunext fe ‡
+
+ to-patch-point-cancels-to-scott-point : to-patch-point ∘ to-scott-point ∼ id
+ to-patch-point-cancels-to-scott-point 𝓅 =
+  to-spectral-point-＝' Patch⦅Scott⦅𝓓⦆⦆ 𝓅′ 𝓅 †
+   where
+    open Spectral-Point 𝓅
+     using ()
+     renaming (point to 𝓅⋆; point-fn to p⋆; point-preserves-compactness to 𝕤)
+    open ContinuousMapNotation (𝟏Loc pe) Patch⦅Scott⦅𝓓⦆⦆
+
+    𝓅′ : Spectral-Point Patch⦅Scott⦅𝓓⦆⦆
+    𝓅′ = to-patch-point (to-scott-point 𝓅)
+
+    𝓅₀ : 𝟏Loc pe ─c→ Scott⦅𝓓⦆
+    𝓅₀ = cont-comp (𝟏Loc pe) Patch⦅Scott⦅𝓓⦆⦆ Scott⦅𝓓⦆ ϵ 𝓅⋆
+
+    p₀ : ⟨ 𝒪 Scott⦅𝓓⦆ ⟩ → ⟨ 𝒪 (𝟏Loc pe) ⟩
+    p₀ = pr₁ 𝓅₀
+
+    𝕤₀ : is-spectral-map Scott⦅𝓓⦆ (𝟏Loc pe) 𝓅₀ holds
+    𝕤₀ K κ = 𝕤 ‘ K ’ (ϵ-is-a-spectral-map K κ)
+
+    open Spectral-Point 𝓅′ using () renaming (point to 𝓅′⋆; point-fn to p′⋆)
+
+    υ : ∃! 𝓅₀⁻ ꞉ 𝟏Loc pe ─c→ Patch⦅Scott⦅𝓓⦆⦆ ,
+         ((U : ⟨ 𝒪 Scott⦅𝓓⦆ ⟩) → p₀ U ＝ 𝓅₀⁻ ⋆∙ ‘ U ’)
+    υ = patch-ump 𝓅₀ 𝕤₀
+
+    r : (U : ⟨ 𝒪 Scott⦅𝓓⦆ ⟩) → p₀ U ＝ p⋆ ‘ U ’
+    r = λ _ → refl
+
+    † : 𝓅′⋆ ＝ 𝓅⋆
+    † = pr₁ (from-Σ-＝ (∃!-uniqueness υ 𝓅⋆ r))
 
 \end{code}
+
+We package these up into a proof that `to-patch-point` has `to-scott-point` as a
+quasi-inverse.
 
 \begin{code}
 
  to-patch-point-qinv : qinv to-patch-point
  to-patch-point-qinv = to-scott-point , † , ‡
   where
-   open ContinuousMaps
-   open ContinuousMapNotation (𝟏Loc pe) Patch⦅Scott⦅𝓓⦆⦆
-
    † : to-scott-point ∘ to-patch-point ∼ id
-   † ℱ = to-spectral-point-＝ Scott⦅𝓓⦆ (to-scott-point (to-patch-point ℱ)) ℱ ♢
-    where
-     open Spectral-Point using (point; point-fn; point-preserves-compactness)
-     open Spectral-Point ℱ using () renaming (point-fn to F)
-
-     𝕤 : is-spectral-map Scott⦅𝓓⦆ (𝟏Loc pe) (point ℱ) holds
-     𝕤 K κ = point-preserves-compactness ℱ K κ
-
-     γ : (U : ⟨ 𝒪 Scott⦅𝓓⦆ ⟩)
-       → point-fn (to-scott-point (to-patch-point ℱ)) U ＝ F U
-     γ U = pr₂ (description (patch-ump (point ℱ) 𝕤)) U ⁻¹
-
-     ♢ : point-fn (to-scott-point (to-patch-point ℱ)) ＝ F
-     ♢ = dfunext fe γ
+   † = to-scott-point-cancels-to-patch-point
 
    ‡ : to-patch-point ∘ to-scott-point ∼ id
-   ‡ 𝓅 = to-spectral-point-＝'
-          Patch⦅Scott⦅𝓓⦆⦆
-          (to-patch-point (to-scott-point 𝓅))
-          𝓅
-          (γ ⁻¹)
-    where
-     open Spectral-Point 𝓅 renaming (point-fn to p⋆; point to 𝓅⋆)
-     open FrameHomomorphismProperties (𝒪 (𝟏Loc pe)) (𝒪 Patch⦅Scott⦅𝓓⦆⦆)
-
-     𝓅₀ : 𝟏Loc pe ─c→ Scott⦅𝓓⦆
-     𝓅₀ = cont-comp (𝟏Loc pe) Patch⦅Scott⦅𝓓⦆⦆ Scott⦅𝓓⦆ ϵ 𝓅⋆
-
-     p₀ = pr₁ 𝓅₀
-
-     𝕤 : is-spectral-map Scott⦅𝓓⦆ (𝟏Loc pe) 𝓅₀ holds
-     𝕤 K κ = point-preserves-compactness ‘ K ’ (ϵ-is-a-spectral-map K κ)
-
-     υ : ∃! 𝓅₀⁻ ꞉ 𝟏Loc pe ─c→ Patch⦅Scott⦅𝓓⦆⦆ , ((U : ⟨ 𝒪 Scott⦅𝓓⦆ ⟩) → p₀ U  ＝ 𝓅₀⁻ ⋆∙ ‘ U ’ )
-     υ = patch-ump 𝓅₀ 𝕤
-
-     𝓅₀⁻ : 𝟏Loc pe ─c→ Patch⦅Scott⦅𝓓⦆⦆
-     𝓅₀⁻ = ∃!-witness υ
-
-     foo : (U : ⟨ 𝒪 Scott⦅𝓓⦆ ⟩) → p₀ U ＝ p⋆ ‘ U ’
-     foo U = refl
-
-     γ : 𝓅⋆ ＝ 𝓅₀⁻
-     γ = pr₁ (from-Σ-＝ (∃!-uniqueness υ 𝓅⋆ foo)) ⁻¹
+   ‡ = to-patch-point-cancels-to-scott-point
 
 \end{code}
