@@ -143,8 +143,8 @@ We define an alias for Patch(Scott(𝓓)).
 
 \end{code}
 
-We now instantiate to the universal property of `Patch⦅Scott⦅𝓓⦆⦆` to points
-`𝟏 → Scott⦅𝓓⦆`.
+We now instantiate the universal property of `Patch⦅Scott⦅𝓓⦆⦆` to points `𝟏 →
+Scott⦅𝓓⦆`.
 
 \begin{code}
 
