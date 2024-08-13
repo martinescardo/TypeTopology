@@ -296,8 +296,8 @@ an equivalence.
 
 \begin{code}
 
- to-patch-point-qinv : qinv to-patch-point
- to-patch-point-qinv = to-scott-point , † , ‡
+ to-patch-point-is-invertible : invertible to-patch-point
+ to-patch-point-is-invertible = to-scott-point , † , ‡
   where
    † : to-scott-point ∘ to-patch-point ∼ id
    † = to-scott-point-cancels-to-patch-point
@@ -308,7 +308,7 @@ an equivalence.
  spectral-points-of-patch-are-equivalent-to-spectral-points-of-scott
   : Spectral-Point Scott⦅𝓓⦆ ≃ Spectral-Point Patch⦅Scott⦅𝓓⦆⦆
  spectral-points-of-patch-are-equivalent-to-spectral-points-of-scott =
-  to-patch-point , qinvs-are-equivs to-patch-point to-patch-point-qinv
+  to-patch-point , qinvs-are-equivs to-patch-point to-patch-point-is-invertible
 
 \end{code}
 
@@ -335,8 +335,8 @@ _automatically_ spectral.
 
  open FrameHomomorphismProperties
 
- forget-spectrality-qinv : qinv forget-spectrality
- forget-spectrality-qinv = to-spectral-point-of-patch , † , ‡
+ forget-spectrality-is-invertible : invertible forget-spectrality
+ forget-spectrality-is-invertible = to-spectral-point-of-patch , † , ‡
   where
    † : to-spectral-point-of-patch ∘ forget-spectrality ∼ id
    † 𝓅ₛ = to-spectral-point-＝ Patch⦅Scott⦅𝓓⦆⦆ 𝓅 𝓅ₛ refl
@@ -354,7 +354,10 @@ _automatically_ spectral.
  spectral-points-of-patch-are-equivalent-to-points-of-patch
   : Spectral-Point Patch⦅Scott⦅𝓓⦆⦆ ≃ Point Patch⦅Scott⦅𝓓⦆⦆
  spectral-points-of-patch-are-equivalent-to-points-of-patch =
-  forget-spectrality , qinvs-are-equivs forget-spectrality forget-spectrality-qinv
+  forget-spectrality , e
+   where
+    e : is-equiv forget-spectrality
+    e = qinvs-are-equivs forget-spectrality forget-spectrality-is-invertible
 
 \end{code}
 
