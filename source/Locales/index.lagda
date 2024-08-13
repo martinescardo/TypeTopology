@@ -132,5 +132,6 @@ import Locales.StoneDuality.ForSpectralLocales
 
 import Locales.LawsonLocale.CompactElementsOfPoint
 import Locales.LawsonLocale.SharpElementsCoincideWithSpectralPoints
+import Locales.LawsonLocale.PointsOfPatch
 
 \end{code}
