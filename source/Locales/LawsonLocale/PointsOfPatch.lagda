@@ -1,7 +1,8 @@
 ---
-title:          Sharp elements and the points of patch
+title:          Equivalence of sharp elements and the points of patch
 author:         Ayberk Tosun
 date-started:   2024-08-04
+date-completed: 2024-08-13
 ---
 
 We prove that the sharp elements of a Scott domain `𝓓` are in bijection with the
@@ -51,6 +52,7 @@ open import Locales.ContinuousMap.FrameHomomorphism-Properties pt fe
 open import Locales.Frame pt fe
 open import Locales.InitialFrame pt fe hiding (_⊑_)
 open import Locales.LawsonLocale.CompactElementsOfPoint 𝓤 fe pe pt sr
+open import Locales.LawsonLocale.SharpElementsCoincideWithSpectralPoints 𝓤 ua pt sr
 open import Locales.PatchLocale pt fe sr
 open import Locales.PatchProperties pt fe sr
 open import Locales.PerfectMaps pt fe
@@ -93,9 +95,12 @@ an equivalence
 Point(Patch(Scott(𝓓))) ≃ Spectral-Point(Patch(Scott(𝓓))) ≃ Spectral-Point(Scott(𝓓))
 ```
 
+We then use this equivalence to show that the sharp elements of `𝓓` are in
+bijection with `Point(Patch(Scott(𝓓)))`.
+
 \begin{code}
 
-module points-of-patch-are-spectral-points
+module sharp-elements-and-points-of-patch
         (𝓓  : DCPO {𝓤 ⁺} {𝓤})
         (hl : has-least (underlying-order 𝓓))
         (sd : is-scott-domain 𝓓 holds)
@@ -106,18 +111,25 @@ module points-of-patch-are-spectral-points
  zd = 𝟏-zero-dimensionalᴰ pe
 
  open SpectralScottLocaleConstruction₂ 𝓓 ua hl sd dc pe renaming (σ⦅𝓓⦆ to Scott⦅𝓓⦆)
- open Notion-Of-Spectral-Point
- open SmallPatchConstruction Scott⦅𝓓⦆ scott-locale-spectralᴰ
- open Preliminaries
- open UniversalProperty Scott⦅𝓓⦆ (𝟏Loc pe) scott-locale-spectralᴰ zd 𝟎Frm-is-compact
- open ContinuousMaps
- open ClosedNucleus Scott⦅𝓓⦆ scott-locale-is-spectral
- open Epsilon Scott⦅𝓓⦆ scott-locale-spectralᴰ
- open PatchStoneᴰ Scott⦅𝓓⦆ scott-locale-spectralᴰ
 
 \end{code}
 
-We define an alias for `Patch(Scott(𝓓))`
+Some more module opening bureaucracy.
+
+\begin{code}
+
+ open ClosedNucleus Scott⦅𝓓⦆ scott-locale-is-spectral
+ open ContinuousMaps
+ open Epsilon Scott⦅𝓓⦆ scott-locale-spectralᴰ
+ open Notion-Of-Spectral-Point
+ open PatchStoneᴰ Scott⦅𝓓⦆ scott-locale-spectralᴰ
+ open Preliminaries
+ open SmallPatchConstruction Scott⦅𝓓⦆ scott-locale-spectralᴰ
+ open UniversalProperty Scott⦅𝓓⦆ (𝟏Loc pe) scott-locale-spectralᴰ zd 𝟎Frm-is-compact
+
+\end{code}
+
+We define an alias for Patch(Scott(𝓓)).
 
 \begin{code}
 
@@ -134,9 +146,13 @@ We now instantiate to the universal property of `Patch⦅Scott⦅𝓓⦆⦆` to 
 
 \begin{code}
 
- patch-ump : (𝓅 : 𝟏Loc pe ─c→ Scott⦅𝓓⦆)
+ patch-ump : (𝓅@(p , _) : 𝟏Loc pe ─c→ Scott⦅𝓓⦆)
            → is-spectral-map Scott⦅𝓓⦆ (𝟏Loc pe) 𝓅 holds
-           → ∃! 𝒻⁻ ꞉ 𝟏Loc pe ─c→ Patch⦅Scott⦅𝓓⦆⦆ , ((U : ⟨ 𝒪 Scott⦅𝓓⦆ ⟩) → 𝓅 .pr₁ U  ＝ 𝒻⁻ .pr₁ ‘ U ’ )
+           → let
+              open ContinuousMapNotation (𝟏Loc pe) Patch⦅Scott⦅𝓓⦆⦆
+             in
+              ∃! 𝒻⁻ ꞉ 𝟏Loc pe ─c→ Patch⦅Scott⦅𝓓⦆⦆ ,
+               ((U : ⟨ 𝒪 Scott⦅𝓓⦆ ⟩) → p U  ＝ 𝒻⁻ ⋆∙ ‘ U ’ )
  patch-ump = ump-of-patch
               Scott⦅𝓓⦆
               scott-locale-is-spectral
@@ -147,7 +163,8 @@ We now instantiate to the universal property of `Patch⦅Scott⦅𝓓⦆⦆` to 
 \end{code}
 
 This universal property immediately gives us a map from the spectral points of
-`Scott⦅𝓓⦆` into the spectral points of `Patch⦅Scott⦅𝓓⦆⦆`.
+`Scott⦅𝓓⦆` into the spectral points of `Patch⦅Scott⦅𝓓⦆⦆`. We call this map
+`to-patch-point`.
 
 \begin{code}
 
@@ -185,7 +202,7 @@ The proof below should be placed in a more appropriate place.
 
 We now define the inverse of `to-patch-point`: given a spectral point `𝟏 →
 Patch⦅Scott⦅𝓓⦆⦆`, we can compose this with `ϵ : Patch⦅Scott⦅𝓓⦆⦆ → Scott⦅𝓓⦆` to
-obtain a map `𝟏 → Scott⦅𝓓⦆`. We call this map `to-scott-point`.
+obtain a spectral point `𝟏 → Scott⦅𝓓⦆`. We call this map `to-scott-point`.
 
 \begin{code}
 
@@ -202,7 +219,7 @@ obtain a map `𝟏 → Scott⦅𝓓⦆`. We call this map `to-scott-point`.
 
 \end{code}
 
-We now proceed to show these form a section-retraction pair.
+We now proceed to show that these maps form a section-retraction pair.
 
 The fact that `to-scott-point` is a retraction of `to-patch-point` follows
 directly from the existence part of the universal property.
@@ -227,6 +244,12 @@ directly from the existence part of the universal property.
 
     † : p′⋆ ＝ p⋆
     † = dfunext fe ‡
+
+\end{code}
+
+The fact that it is a section follows from the uniqueness.
+
+\begin{code}
 
  to-patch-point-cancels-to-scott-point : to-patch-point ∘ to-scott-point ∼ id
  to-patch-point-cancels-to-scott-point 𝓅 =
@@ -263,8 +286,8 @@ directly from the existence part of the universal property.
 
 \end{code}
 
-We package these up into a proof that `to-patch-point` has `to-scott-point` as a
-quasi-inverse.
+We package these up into a proof that `to-patch-point` and `to-scott-point` form
+an equivalence.
 
 \begin{code}
 
@@ -276,5 +299,91 @@ quasi-inverse.
 
    ‡ : to-patch-point ∘ to-scott-point ∼ id
    ‡ = to-patch-point-cancels-to-scott-point
+
+ spectral-points-of-patch-are-equivalent-to-spectral-points-of-scott
+  : Spectral-Point Scott⦅𝓓⦆ ≃ Spectral-Point Patch⦅Scott⦅𝓓⦆⦆
+ spectral-points-of-patch-are-equivalent-to-spectral-points-of-scott =
+  to-patch-point , qinvs-are-equivs to-patch-point to-patch-point-qinv
+
+\end{code}
+
+We now proceed to show that `Point⦅Patch⦅Scott⦅𝓓⦆⦆⦆` is equivalent to
+`Spectral-Point⦅Patch⦅Scott⦅𝓓⦆⦆⦆`, since all points of `Patch⦅Scott⦅𝓓⦆⦆` are
+_automatically_ spectral.
+
+\begin{code}
+
+ forget-spectrality : Spectral-Point Patch⦅Scott⦅𝓓⦆⦆ → Point Patch⦅Scott⦅𝓓⦆⦆
+ forget-spectrality = Spectral-Point.point
+
+ to-spectral-point-of-patch : Point Patch⦅Scott⦅𝓓⦆⦆
+                            → Spectral-Point Patch⦅Scott⦅𝓓⦆⦆
+ to-spectral-point-of-patch 𝓅 = to-spectral-point Patch⦅Scott⦅𝓓⦆⦆ (𝓅 , 𝕤)
+  where
+   open continuous-maps-of-stone-locales (𝟏Loc pe) Patch⦅Scott⦅𝓓⦆⦆
+
+   𝕤 : is-spectral-map Patch⦅Scott⦅𝓓⦆⦆ (𝟏Loc pe) 𝓅 holds
+   𝕤 = continuous-maps-between-stone-locales-are-spectral
+        (𝟏-stoneᴰ pe)
+        Patch⦅Scott⦅𝓓⦆⦆-stoneᴰ
+        𝓅
+
+ open FrameHomomorphismProperties
+
+ forget-spectrality-qinv : qinv forget-spectrality
+ forget-spectrality-qinv = to-spectral-point-of-patch , † , ‡
+  where
+   † : to-spectral-point-of-patch ∘ forget-spectrality ∼ id
+   † 𝓅ₛ = to-spectral-point-＝ Patch⦅Scott⦅𝓓⦆⦆ 𝓅 𝓅ₛ refl
+    where
+     𝓅 : Spectral-Point Patch⦅Scott⦅𝓓⦆⦆
+     𝓅 = to-spectral-point-of-patch (forget-spectrality 𝓅ₛ)
+
+   ‡ : forget-spectrality ∘ to-spectral-point-of-patch  ∼ id
+   ‡ 𝓅 =
+    to-frame-homomorphism-＝ (𝒪 Patch⦅Scott⦅𝓓⦆⦆) (𝒪 (𝟏Loc pe)) 𝓅 𝓅′ (λ _ → refl)
+     where
+      𝓅′ : Point Patch⦅Scott⦅𝓓⦆⦆
+      𝓅′ = forget-spectrality (to-spectral-point-of-patch 𝓅)
+
+ spectral-points-of-patch-are-equivalent-to-points-of-patch
+  : Spectral-Point Patch⦅Scott⦅𝓓⦆⦆ ≃ Point Patch⦅Scott⦅𝓓⦆⦆
+ spectral-points-of-patch-are-equivalent-to-points-of-patch =
+  forget-spectrality , qinvs-are-equivs forget-spectrality forget-spectrality-qinv
+
+\end{code}
+
+We combine these two equivalences to obtain an equivalence between the points of
+`Patch⦅Scott⦅𝓓⦆⦆` and spectral points of `Scott⦅𝓓⦆`.
+
+\begin{code}
+
+ points-of-patch-are-spectral-points-of-scott
+  : Point Patch⦅Scott⦅𝓓⦆⦆ ≃ Spectral-Point Scott⦅𝓓⦆
+ points-of-patch-are-spectral-points-of-scott =
+  Point Patch⦅Scott⦅𝓓⦆⦆              ≃⟨ Ⅰ ⟩
+  Spectral-Point Patch⦅Scott⦅𝓓⦆⦆     ≃⟨ Ⅱ ⟩
+  Spectral-Point Scott⦅𝓓⦆            ■
+   where
+    Ⅰ = ≃-sym spectral-points-of-patch-are-equivalent-to-points-of-patch
+    Ⅱ = ≃-sym spectral-points-of-patch-are-equivalent-to-spectral-points-of-scott
+
+\end{code}
+
+Finally, we combine this equivalence with the equivalence between sharp elements
+and spectral points.
+
+\begin{code}
+
+ open Sharp-Element-Spectral-Point-Equivalence 𝓓 hl sd dc
+
+ points-of-patch-are-the-sharp-elements : ♯𝓓 ≃ Point Patch⦅Scott⦅𝓓⦆⦆
+ points-of-patch-are-the-sharp-elements =
+  ♯𝓓                         ≃⟨ Ⅰ ⟩
+  Spectral-Point Scott⦅𝓓⦆    ≃⟨ Ⅱ ⟩
+  Point Patch⦅Scott⦅𝓓⦆⦆      ■
+   where
+    Ⅰ = ♯𝓓-equivalent-to-spectral-points-of-Scott⦅𝓓⦆
+    Ⅱ = ≃-sym points-of-patch-are-spectral-points-of-scott
 
 \end{code}
