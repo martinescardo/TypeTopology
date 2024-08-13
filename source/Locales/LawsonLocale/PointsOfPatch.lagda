@@ -187,7 +187,8 @@ This universal property immediately gives us a map from the spectral points of
 
 \end{code}
 
-The proof below should be placed in a more appropriate place.
+Recall that the map `ϵ` denotes the continuous map given by the frame
+homomorphism `x ↦ ‘ x ’`.
 
 \begin{code}
 
@@ -201,6 +202,8 @@ The proof below should be placed in a more appropriate place.
    ϵ-is-a-perfect-map
 
 \end{code}
+
+TODO: The proof above should be placed in a more appropriate place.
 
 We now define the inverse of `to-patch-point`: given a spectral point `𝟏 →
 Patch⦅Scott⦅𝓓⦆⦆`, we can compose this with `ϵ : Patch⦅Scott⦅𝓓⦆⦆ → Scott⦅𝓓⦆` to
