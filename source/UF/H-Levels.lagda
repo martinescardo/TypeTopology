@@ -40,9 +40,9 @@ open import Naturals.Order
 
 module UF.H-Levels (fe : Fun-Ext)
                     where
-
-fe' : FunExt
-fe' 𝓤 𝓥 = fe {𝓤} {𝓥}
+private
+ fe' : FunExt
+ fe' 𝓤 𝓥 = fe {𝓤} {𝓥}
 
 _is-of-hlevel_ : 𝓤 ̇ → ℕ → 𝓤 ̇
 X is-of-hlevel zero = is-contr X
@@ -71,17 +71,17 @@ being-prop'-is-prop X = hlevel-relation-is-prop (succ zero) X
 
 is-prop-implies-is-prop' : {X : 𝓤 ̇} → is-prop X → is-prop' X
 is-prop-implies-is-prop' X-is-prop x x' =
-  pointed-props-are-singletons (X-is-prop x x') (props-are-sets X-is-prop)
+ pointed-props-are-singletons (X-is-prop x x') (props-are-sets X-is-prop)
 
 is-prop'-implies-is-prop : {X : 𝓤 ̇} → is-prop' X → is-prop X
 is-prop'-implies-is-prop X-is-prop' x x' = center (X-is-prop' x x')
 
-is-prop-equiv-is-prop' : {𝓤 : Universe} {X :  𝓤 ̇} → is-prop X ≃ is-prop' X
+is-prop-equiv-is-prop' : {X : 𝓤 ̇} → is-prop X ≃ is-prop' X
 is-prop-equiv-is-prop' {𝓤} {X} =
-  logically-equivalent-props-are-equivalent (being-prop-is-prop fe)
-                                            (being-prop'-is-prop X)
-                                            is-prop-implies-is-prop'
-                                            is-prop'-implies-is-prop
+ logically-equivalent-props-are-equivalent (being-prop-is-prop fe)
+                                           (being-prop'-is-prop X)
+                                           is-prop-implies-is-prop'
+                                           is-prop'-implies-is-prop
 
 \end{code}
 
@@ -95,16 +95,15 @@ contr-implies-id-contr = is-prop-implies-is-prop' ∘ singletons-are-props
 hlevels-are-upper-closed : (n : ℕ) (X : 𝓤 ̇)
                          → (X is-of-hlevel n)
                          → (X is-of-hlevel succ n)
-hlevels-are-upper-closed zero X h-level = contr-implies-id-contr h-level
-
+hlevels-are-upper-closed zero X = contr-implies-id-contr
 hlevels-are-upper-closed (succ n) X h-level x x' =
  hlevels-are-upper-closed n (x ＝ x') (h-level x x') 
 
-id-types-are-same-hlevel : {X : 𝓤 ̇ } (n : ℕ)
-                         → X is-of-hlevel n
-                         → (x x' : X) → (x ＝ x') is-of-hlevel n
-id-types-are-same-hlevel zero X-hlev x x' = contr-implies-id-contr X-hlev x x'
-id-types-are-same-hlevel (succ n) X-hlev x x' =
+hlevels-are-closed-under-id : {X : 𝓤 ̇ } (n : ℕ)
+                            → X is-of-hlevel n
+                            → (x x' : X) → (x ＝ x') is-of-hlevel n
+hlevels-are-closed-under-id zero = contr-implies-id-contr
+hlevels-are-closed-under-id (succ n) X-hlev x x' =
   hlevels-are-upper-closed n (x ＝ x') (X-hlev x x')
 
 \end{code}
@@ -161,12 +160,10 @@ hlevel-closed-under-Σ : (n : ℕ)
 hlevel-closed-under-Σ zero Y l m = Σ-is-singleton l m
 hlevel-closed-under-Σ (succ n) Y l m (x , y) (x' , y') =
  hlevel-closed-under-equiv n Σ-＝-≃
-                           (hlevel-closed-under-Σ n
-                                                  (λ p → transport Y p y ＝ y')
-                                                  (l x x')
-                                                  (λ p → m x'
-                                                           (transport Y p y)
-                                                           y'))
+  (hlevel-closed-under-Σ n
+   (λ p → transport Y p y ＝ y')
+   (l x x')
+   (λ p → m x' (transport Y p y) y'))
 
 hlevel-closed-under-Π : (n : ℕ)
                       → {X : 𝓤 ̇ } (Y : X → 𝓥 ̇ )
@@ -175,8 +172,8 @@ hlevel-closed-under-Π : (n : ℕ)
 hlevel-closed-under-Π zero Y m = Π-is-singleton fe m
 hlevel-closed-under-Π (succ n) Y m f g = 
  hlevel-closed-under-equiv n (happly-≃ fe)
-                           (hlevel-closed-under-Π n (λ x → f x ＝ g x)
-                                                  (λ x → m x (f x) (g x)))
+  (hlevel-closed-under-Π n (λ x → f x ＝ g x)
+  (λ x → m x (f x) (g x)))
 
 hlevel-closed-under-→ : {𝓤 𝓥 : Universe}
                       → (n : ℕ)
@@ -196,7 +193,7 @@ The subuniverse of types of hlevel n is defined as follows.
 
 \end{code}
 
-From Univalence we can show that (ℍ n) is of level (n + 1), for all n : ℕ.
+From univalence we can show that (ℍ n) is of level (n + 1), for all n : ℕ.
 
 \begin{code}
 
