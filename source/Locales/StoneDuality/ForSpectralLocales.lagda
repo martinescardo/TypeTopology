@@ -253,4 +253,19 @@ module spec-stone-duality-morphisms
      κ : is-compact-open Y (ι K) holds
      κ = ι-gives-compact-opens K
 
+ to-dlat-map : (𝒦⦅Y⦆⁻ ─d→ 𝒦⦅X⦆⁻) → Spectral-Map X Y
+ to-dlat-map 𝒽 = 𝒻 , 𝕤
+  where
+   f : ⟨ 𝒪 Y ⟩ → ⟨ 𝒪 X ⟩
+   f U = {!!}
+
+   α : {!!}
+   α = {!!}
+
+   𝒻 : X ─c→ Y
+   𝒻 = f , α , {!!}
+
+   𝕤 : is-spectral-map Y X 𝒻 holds
+   𝕤 = {!!}
+
 \end{code}
