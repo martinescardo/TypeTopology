@@ -35,11 +35,13 @@ private
  pe {𝓤} = univalence-gives-propext (ua 𝓤)
 
 open import Locales.Compactness pt fe
+open import Locales.ContinuousMap.Definition pt fe
 open import Locales.ContinuousMap.FrameHomomorphism-Definition pt fe
 open import Locales.ContinuousMap.FrameHomomorphism-Properties pt fe
 open import Locales.ContinuousMap.Homeomorphism-Definition pt fe
 open import Locales.ContinuousMap.Homeomorphism-Properties ua pt sr
 open import Locales.DistributiveLattice.Definition fe pt
+open import Locales.DistributiveLattice.Homomorphism fe pt
 open import Locales.DistributiveLattice.Isomorphism fe pt
 open import Locales.DistributiveLattice.Isomorphism-Properties ua pt sr
 open import Locales.DistributiveLattice.Resizing ua pt sr
@@ -52,6 +54,7 @@ open import Locales.SmallBasis pt fe sr
 open import Locales.Spectrality.LatticeOfCompactOpens ua pt sr
 open import Locales.Spectrality.LatticeOfCompactOpens-Duality ua pt sr
 open import Locales.Spectrality.SpectralLocale pt fe
+open import Locales.Spectrality.SpectralMap pt fe
 open import Slice.Family
 open import UF.Equiv
 open import UF.Logic
@@ -206,5 +209,48 @@ spec-dlat-equivalence 𝓤 = sec , qinvs-are-equivs sec γ
 
   γ : qinv sec
   γ = ret , † , ‡
+
+\end{code}
+
+\section{Morphisms}
+
+\begin{code}
+
+module spec-stone-duality-morphisms
+        (X : Locale (𝓤 ⁺) 𝓤 𝓤)
+        (Y : Locale (𝓤 ⁺) 𝓤 𝓤)
+        (σ₁ : is-spectral-with-small-basis ua X holds)
+        (σ₂ : is-spectral-with-small-basis ua Y holds)
+       where
+
+ open ContinuousMaps
+ open 𝒦-Lattice X σ₁ renaming (𝒦⁻ to 𝒦⁻X)
+ open 𝒦-Lattice Y σ₂ renaming (𝒦⦅X⦆-is-small to 𝒦⦅Y⦆-is-small; 𝒦⦅X⦆ to 𝒦⦅Y⦆; 𝒦⁻ to 𝒦⁻Y)
+
+ e₁ : 𝒦⁻X ≃ 𝒦 X
+ e₁ = resizing-condition 𝒦⦅X⦆-is-small
+
+ r₁ : 𝒦 X → 𝒦⁻X
+ r₁ = ⌜ ≃-sym e₁ ⌝
+
+ e₂ : 𝒦⁻Y ≃ 𝒦 Y
+ e₂ = resizing-condition 𝒦⦅Y⦆-is-small
+
+ s₂ : 𝒦⁻Y → 𝒦 Y
+ s₂ = ⌜ e₂ ⌝
+
+ open DistributiveLatticeResizing 𝒦⦅X⦆ 𝒦⁻X (≃-sym e₁) using () renaming (Lᶜ to 𝒦⦅X⦆⁻)
+ open DistributiveLatticeResizing 𝒦⦅Y⦆ 𝒦⁻Y (≃-sym e₂) using () renaming (Lᶜ to 𝒦⦅Y⦆⁻)
+
+ to-spectral-map : Spectral-Map X Y → (𝒦⦅Y⦆⁻ ─d→ 𝒦⦅X⦆⁻)
+ to-spectral-map ((f , _) , σ) = record { h = h ; h-is-homomorphism = {!!} }
+  where
+   open 𝒦-Duality₁ Y σ₂ using (ι; ι-gives-compact-opens)
+
+   h : 𝒦⁻Y → 𝒦⁻X
+   h K = r₁ (f (ι K) , σ (ι K) κ)
+    where
+     κ : is-compact-open Y (ι K) holds
+     κ = ι-gives-compact-opens K
 
 \end{code}
