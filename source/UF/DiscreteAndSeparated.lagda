@@ -126,14 +126,25 @@ General properties:
 \begin{code}
 
 discrete-types-are-cotransitive : {X : 𝓤 ̇ }
-                                → is-discrete X
-                                → {x y z : X}
-                                → x ≠ y
-                                → (x ≠ z) + (z ≠ y)
+                                 → is-discrete X
+                                 → {x y z : X}
+                                 → x ≠ y
+                                 → (x ≠ z) + (z ≠ y)
 discrete-types-are-cotransitive d {x} {y} {z} φ = f (d x z)
  where
   f : (x ＝ z) + (x ≠ z) → (x ≠ z) + (z ≠ y)
   f (inl r) = inr (λ s → φ (r ∙ s))
+  f (inr γ) = inl γ
+
+discrete-types-are-cotransitive' : {X : 𝓤 ̇ }
+                                 → is-discrete X
+                                 → {x y z : X}
+                                 → x ≠ y
+                                 → (x ≠ z) + (y ≠ z)
+discrete-types-are-cotransitive' d {x} {y} {z} φ = f (d x z)
+ where
+  f : (x ＝ z) + (x ≠ z) → (x ≠ z) + (y ≠ z)
+  f (inl r) = inr (λ s → φ (r ∙ s ⁻¹))
   f (inr γ) = inl γ
 
 retract-is-discrete : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }

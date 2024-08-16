@@ -6,7 +6,6 @@ Martin Escardo, November 2023.
 
 module CoNaturals.Type2Properties where
 
-open import CoNaturals.Cantor
 open import CoNaturals.Type hiding (is-finite')
 open import CoNaturals.GenericConvergentSequence2
 open import CoNaturals.Equivalence
@@ -16,6 +15,7 @@ open import Naturals.Order hiding (max)
 open import Naturals.Properties
 open import Notation.CanonicalMap
 open import Notation.Order
+open import TypeTopology.Cantor
 open import UF.Base
 open import UF.DiscreteAndSeparated
 open import UF.Equiv

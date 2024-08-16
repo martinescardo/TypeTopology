@@ -18,7 +18,6 @@ Notice that the condition on α can be expressed as "is-prop (fiber α ₁)".
 
 module CoNaturals.Equivalence where
 
-open import CoNaturals.Cantor
 open import CoNaturals.GenericConvergentSequence
 open import CoNaturals.GenericConvergentSequence2
 open import MLTT.Spartan
@@ -27,6 +26,7 @@ open import Naturals.Order
 open import Naturals.Properties
 open import Notation.CanonicalMap
 open import Notation.Order
+open import TypeTopology.Cantor
 open import UF.Equiv
 open import UF.FunExt
 open import UF.Subsingletons

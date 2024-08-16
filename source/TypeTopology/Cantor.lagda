@@ -174,15 +174,49 @@ _♯_ : Cantor → Cantor → 𝓤₀ ̇
 
 \end{code}
 
-TODO. It is easy to see that this is a tight apartness relation. Maybe
-implement this here. But this is not needed for our purposes.
-
 We use δ to range over the type α n ≠ β n, and μ to range over the
 minimality condition (i : ℕ) → α i ≠ β i → n ≤ i, for α, β and n
 suitably specialized according to the situation we are considering.
 We also use the letter "a" to range over the apartness type α ♯ β.
 
-As claimed above, the apartness relation is proposition-valued.
+\begin{code}
+
+apartness-criterion : (α β : Cantor) → (Σ n ꞉ ℕ , α n ≠ β n) → α ♯ β
+apartness-criterion α β (n , d) = III II
+ where
+  open import Naturals.RootsTruncation 𝓤₀ 𝟚 ₁ (λ b → 𝟚-is-discrete b ₁)
+
+  γ : Cantor
+  γ n = α n ⊕ β n
+
+  I : γ n ＝ ₁
+  I = Lemma[b≠c→b⊕c＝₁] d
+
+  II : Σ m ꞉ ℕ , ((γ m ＝ ₁) × (m ≤ n) × ((i : ℕ) → i < m → γ i ≠ ₁))
+  II = minimal-root γ n I
+
+  III : type-of II → α ♯ β
+  III (m , e , _ , a) = m , III₀ , III₁
+   where
+    III₀ : α m ≠ β m
+    III₀ = Lemma[b⊕c＝₁→b≠c] e
+
+    III₁ : (i : ℕ) → α i ≠ β i → m ≤ i
+    III₁ i d = not-less-bigger-or-equal m i III₃
+     where
+      III₂ : α i ⊕ β i ＝ ₁
+      III₂ = Lemma[b≠c→b⊕c＝₁] d
+
+      III₃ : ¬ (i < m)
+      III₃ l = a i l III₂
+
+apartness-criterion-converse : (α β : Cantor) → α ♯ β → (Σ n ꞉ ℕ , α n ≠ β n)
+apartness-criterion-converse α β (n , δ , _) = (n , δ)
+
+\end{code}
+
+Hence, in view of the following, the type α ♯ β has the universal
+property of the propositional truncation of the type Σ n ꞉ ℕ , α n ≠ β n.
 
 \begin{code}
 
@@ -199,6 +233,35 @@ As claimed above, the apartness relation is proposition-valued.
 
   III : (n , δ , μ) ＝[ α ♯ β ] (n' , δ' , μ')
   III = to-subtype-＝ I II
+
+\end{code}
+
+The apartness axioms are satisfied, and, moreover, the apartness is tight.
+
+\begin{code}
+
+♯-is-irreflexive : (α : Cantor) → ¬ (α ♯ α)
+♯-is-irreflexive α (n , δ , μ) = ≠-is-irrefl (α n) δ
+
+♯-is-symmetric : (α β : Cantor) → α ♯ β → β ♯ α
+♯-is-symmetric α β (n , δ , μ) = n , (λ e → δ (e ⁻¹)) , λ i d → μ i (≠-sym d)
+
+♯-is-strongly-cotransitive : ∀ α β γ → α ♯ β → (α ♯ γ) + (β ♯ γ)
+♯-is-strongly-cotransitive α β γ (n , δ , μ) = II I
+ where
+  I : (α n ≠ γ n) + (β n ≠ γ n)
+  I = discrete-types-are-cotransitive' 𝟚-is-discrete {α n} {β n} {γ n} δ
+
+  II : type-of I → (α ♯ γ) + (β ♯ γ)
+  II (inl d) = inl (apartness-criterion α γ (n , d))
+  II (inr d) = inr (apartness-criterion β γ (n , d))
+
+♯-is-tight : Fun-Ext → ∀ α β → ¬ (α ♯ β) → α ＝ β
+♯-is-tight fe α β ν = dfunext fe I
+ where
+  I : (n : ℕ) → α n ＝ β n
+  I n = 𝟚-is-¬¬-separated (α n) (β n)
+         (λ (d : α n ≠ β n) → ν (apartness-criterion α β (n , d)))
 
 \end{code}
 

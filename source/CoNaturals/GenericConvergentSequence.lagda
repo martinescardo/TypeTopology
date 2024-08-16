@@ -14,13 +14,13 @@ lemmas. More additions after that date.
 
 module CoNaturals.GenericConvergentSequence where
 
-open import CoNaturals.Cantor
 open import MLTT.Spartan
 open import MLTT.Two-Properties
 open import Naturals.Order hiding (max ; max-idemp)
 open import Notation.CanonicalMap
 open import Notation.Order
 open import Ordinals.Notions
+open import TypeTopology.Cantor
 open import TypeTopology.Density
 open import TypeTopology.TotallySeparated
 open import UF.Base
