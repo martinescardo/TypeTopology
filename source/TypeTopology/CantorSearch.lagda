@@ -19,9 +19,10 @@ open import MLTT.Spartan
 open import MLTT.Two-Properties
 open import Naturals.Order
 open import Notation.Order
-open import UF.FunExt
+open import TypeTopology.Cantor
 open import UF.Base
 open import UF.DiscreteAndSeparated
+open import UF.FunExt
 
 module TypeTopology.CantorSearch where
 
@@ -95,93 +96,7 @@ by checking whether or not p (ε𝟚 p) ＝ ₀. This is what A𝟚 does.
 
 \end{code}
 
-We use this to search over the Cantor type. We first need some
-preliminary definitions and facts.
-
-\begin{code}
-
-Cantor = ℕ → 𝟚
-
-head : Cantor → 𝟚
-head α = α 0
-
-tail : Cantor → Cantor
-tail α = α ∘ succ
-
-cons : 𝟚 → Cantor → Cantor
-cons n α 0        = n
-cons n α (succ i) = α i
-
-head-cons : (n : 𝟚) (α : Cantor) → head (cons n α) ＝ n
-head-cons n α = refl
-
-tail-cons : (n : 𝟚) (α : Cantor) → tail (cons n α) ＝ α
-tail-cons n α = refl
-
-cons-head-tail : (α : Cantor) → α ∼ cons (head α) (tail α)
-cons-head-tail α 0        = refl
-cons-head-tail α (succ i) = refl
-
-\end{code}
-
-Uniform continuity as defined below is data rather than property. This
-is because any number bigger than a modulus of uniform continuity is
-also a modulus.
-
-We first define when two binary sequences α and β agree at the first n
-positions, written α ＝⟦ n ⟧ β.
-
-\begin{code}
-
-_＝⟦_⟧_ : Cantor → ℕ → Cantor → 𝓤₀ ̇
-α ＝⟦ 0      ⟧ β = 𝟙
-α ＝⟦ succ n ⟧ β = (head α ＝ head β) × (tail α ＝⟦ n ⟧ tail β)
-
-\end{code}
-
-We have that (α ＝⟦ n ⟧ β) iff α k ＝ β k for all k < n:
-
-\begin{code}
-
-agreement→ : (α β : Cantor)
-             (n : ℕ)
-           → (α ＝⟦ n ⟧ β)
-           → ((k : ℕ) → k < n → α k ＝ β k)
-agreement→ α β 0        *       k        l = 𝟘-elim l
-agreement→ α β (succ n) (p , e) 0        l = p
-agreement→ α β (succ n) (p , e) (succ k) l = IH k l
- where
-  IH : (k : ℕ) → k < n → α (succ k) ＝ β (succ k)
-  IH = agreement→ (tail α) (tail β) n e
-
-agreement← : (α β : Cantor)
-             (n : ℕ)
-           → ((k : ℕ) → k < n → α k ＝ β k)
-           → (α ＝⟦ n ⟧ β)
-agreement← α β 0        ϕ = ⋆
-agreement← α β (succ n) ϕ = ϕ 0 ⋆ , agreement← (tail α) (tail β) n (ϕ ∘ succ)
-
-\end{code}
-
-A function is Cantor → 𝟚 is uniformly continuous if it has a modulus
-of continuity:
-
-\begin{code}
-
-_is-a-modulus-of-uniform-continuity-of_ : ℕ → (Cantor → 𝟚) → 𝓤₀ ̇
-n is-a-modulus-of-uniform-continuity-of p = (α β : Cantor) → α ＝⟦ n ⟧ β → p α ＝ p β
-
-uniformly-continuous : (Cantor → 𝟚) → 𝓤₀ ̇
-uniformly-continuous p = Σ n ꞉ ℕ , n is-a-modulus-of-uniform-continuity-of p
-
-\end{code}
-
-TODO. Show that
-
- (Σ p ꞉ (Cantor  → 𝟚) , uniformly-continuous p) ≃ (Σ n ꞉ ℕ , Fin (2 ^ n) → 𝟚)
-
-If we define uniform continuity with ∃ rather than Σ, this is no
-longer the case.
+We use this to search over the Cantor type.
 
 Notice that a function has modulus of continuity zero if and only if
 it is constant, and that if a function has modulus of continuity n
@@ -432,7 +347,7 @@ check this file with `false` is less than 2s.
  open import MLTT.Bool
 
  check-large-example : Bool
- check-large-example = true
+ check-large-example = false
 
  large-xor-example : if check-large-example then (xor-example 17 ＝ ₀) else (₀ ＝ ₀)
  large-xor-example = refl

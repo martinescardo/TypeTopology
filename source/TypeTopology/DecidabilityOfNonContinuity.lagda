@@ -284,3 +284,9 @@ https://www.cs.bham.ac.uk/~mhe/papers/negative-axioms.pdf
 
 [2] Andreas Abel. Negative Axioms.
 https://github.com/andreasabel/logrel-mltt/tree/master/Application/NegativeAxioms
+
+Added 16 August 2024.
+
+\begin{code}
+
+\end{code}
