@@ -14,6 +14,7 @@ open import UF.Base
 open import UF.DiscreteAndSeparated hiding (_♯_)
 open import UF.Equiv
 open import UF.FunExt
+open import UF.PropTrunc
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
@@ -117,10 +118,10 @@ of continuity:
 \begin{code}
 
 _is-a-modulus-of-uniform-continuity-of_ : ℕ → (Cantor → 𝟚) → 𝓤₀ ̇
-n is-a-modulus-of-uniform-continuity-of p = (α β : Cantor) → α ＝⟦ n ⟧ β → p α ＝ p β
+m is-a-modulus-of-uniform-continuity-of p = ∀ α β → α ＝⟦ m ⟧ β → p α ＝ p β
 
 uniformly-continuous : (Cantor → 𝟚) → 𝓤₀ ̇
-uniformly-continuous p = Σ n ꞉ ℕ , n is-a-modulus-of-uniform-continuity-of p
+uniformly-continuous p = Σ m ꞉ ℕ , m is-a-modulus-of-uniform-continuity-of p
 
 \end{code}
 
@@ -134,6 +135,27 @@ TODO. Show that
 
 If we define uniform continuity with ∃ rather than Σ, this is no
 longer the case.
+
+\begin{code}
+
+continuous : (Cantor → 𝟚) → 𝓤₀ ̇
+continuous p = ∀ α → Σ m ꞉ ℕ , (∀ β → α ＝⟦ m ⟧ β → p α ＝ p β)
+
+\end{code}
+
+\begin{code}
+
+module notions-of-continuity (pt : propositional-truncations-exist) where
+
+ open PropositionalTruncation pt
+
+ is-uniformly-continuous : (Cantor → 𝟚) → 𝓤₀ ̇
+ is-uniformly-continuous p = ∃ m ꞉ ℕ , m is-a-modulus-of-uniform-continuity-of p
+
+ is-continuous : (Cantor → 𝟚) → 𝓤₀ ̇
+ is-continuous p = ∀ α → ∃ m ꞉ ℕ , (∀ β → α ＝⟦ m ⟧ β → p α ＝ p β)
+
+\end{code}
 
 We now define the canonical apartness relation _♯_ for points of the
 Cantor type. Two sequences are apart if they differ at some index.
