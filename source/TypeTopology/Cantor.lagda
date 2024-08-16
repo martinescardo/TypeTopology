@@ -1,4 +1,4 @@
-Martin Escardo, 20th June 2019.
+Martin Escardo, 20th June 2019 onwards.
 
 The Cantor type of infinite binary sequences.
 
