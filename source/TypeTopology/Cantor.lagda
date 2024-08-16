@@ -111,7 +111,7 @@ agreement← α β (succ n) ϕ = ϕ 0 ⋆ , agreement← (tail α) (tail β) n (
 
 \end{code}
 
-A function is Cantor → 𝟚 is uniformly continuous if it has a modulus
+A function Cantor → 𝟚 is uniformly continuous if it has a modulus
 of continuity:
 
 \begin{code}
