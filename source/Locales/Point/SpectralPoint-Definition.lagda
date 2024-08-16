@@ -154,3 +154,25 @@ underlying functions are equal. We call this lemma `to-spectral-point-＝`.
    Ⅲ = inverses-are-sections' e 𝒢 ⁻¹
 
 \end{code}
+
+Added on 2024-08-12.
+
+\begin{code}
+
+ to-spectral-point-＝' : (ℱ 𝒢 : Spectral-Point) → point ℱ ＝ point 𝒢 → ℱ ＝ 𝒢
+ to-spectral-point-＝' ℱ 𝒢 p =
+  ℱ                                           ＝⟨ Ⅰ ⟩
+  to-spectral-point (to-spectral-point₀ ℱ)    ＝⟨ Ⅱ ⟩
+  to-spectral-point (to-spectral-point₀ 𝒢)    ＝⟨ Ⅲ ⟩
+  𝒢                                           ∎
+   where
+    e = spectral-point-equivalent-to-spectral-map-into-Ω
+
+    † : to-spectral-point₀ ℱ ＝ to-spectral-point₀ 𝒢
+    † = to-subtype-＝ (holds-is-prop ∘ is-spectral-map X (𝟏Loc pe)) p
+
+    Ⅰ = inverses-are-sections' e ℱ
+    Ⅱ = ap to-spectral-point †
+    Ⅲ = inverses-are-sections' e 𝒢 ⁻¹
+
+\end{code}
