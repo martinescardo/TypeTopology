@@ -265,6 +265,9 @@ The apartness axioms are satisfied, and, moreover, the apartness is tight.
 
 \end{code}
 
+We say "strongly cotransitive", as opposed to simply "cotransitive"
+because we have "+" rather than "∨".
+
 If two sequences α and β are apart, they agree before the apartness index n.
 
 \begin{code}

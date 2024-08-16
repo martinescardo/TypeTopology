@@ -285,8 +285,30 @@ https://www.cs.bham.ac.uk/~mhe/papers/negative-axioms.pdf
 [2] Andreas Abel. Negative Axioms.
 https://github.com/andreasabel/logrel-mltt/tree/master/Application/NegativeAxioms
 
+--
+
 Added 16 August 2024.
 
-\begin{code}
+The above definition of continuity is "continuity at the point ∞".
+(And it is also not a proposition.)
 
-\end{code}
+Next I am going to show that this is equivalent to usual continuity,
+as in the module Cantor, using the fact that ℕ∞ is a subspace of the
+Cantor type ℕ → 𝟚
+
+Moreover, in the particular case of the subspace ℕ∞ of the Cantor
+space, continuity of functions ℕ∞ → D, with D discrete, is equivalent
+to uniform continuity, constructively, without the need of Brouwerian
+axioms.
+
+So I will do next is to show that all imaginable notions of (uniform)
+continuity for functions ℕ∞ → D are equivalent, constructively.
+
+Moreover, I will compare typal versus propositional definitions of
+(uniform) continuity.
+
+This could be classified as a TODO, but rather it is something I am
+doing.
+
+One reason I want to do this is work by other people on realizability
+models and light condensed sets models in HoTT/UF.
