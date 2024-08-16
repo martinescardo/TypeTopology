@@ -204,7 +204,7 @@ apartness-criterion α β (n , d) = III II
     III₁ : (i : ℕ) → α i ≠ β i → m ≤ i
     III₁ i d = not-less-bigger-or-equal m i III₃
      where
-      III₂ : α i ⊕ β i ＝ ₁
+      III₂ : γ i ＝ ₁
       III₂ = Lemma[b≠c→b⊕c＝₁] d
 
       III₃ : ¬ (i < m)
