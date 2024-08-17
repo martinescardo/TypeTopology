@@ -189,7 +189,7 @@ apartness-criterion : (α β : Cantor) → (Σ n ꞉ ℕ , α n ≠ β n) → α
 apartness-criterion α β (n , d) = VI
  where
   open import Naturals.RootsTruncation
-  open roots-truncation 𝟚 ₁ (λ b → 𝟚-is-discrete b ₁)
+  open Roots-truncation 𝟚 ₁ (λ b → 𝟚-is-discrete b ₁)
 
   γ : Cantor
   γ n = α n ⊕ β n

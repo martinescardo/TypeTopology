@@ -24,11 +24,12 @@ module Naturals.RootsTruncation where
 open import MLTT.Plus-Properties
 open import Naturals.Order
 open import Notation.Order
-open import UF.Subsingletons
-open import UF.KrausLemma
 open import UF.Hedberg
+open import UF.KrausLemma
+open import UF.PropTrunc
+open import UF.Subsingletons
 
-module roots-truncation
+module Roots-truncation
         {𝓤 : Universe}
         (Z : 𝓤 ̇ )
         (z : Z)
@@ -181,9 +182,7 @@ root truncations using the above technique.
 
 \begin{code}
 
- open import UF.PropTrunc
-
- module ExitRootTruncations (pt : propositional-truncations-exist) where
+ module exit-Roots-truncation (pt : propositional-truncations-exist) where
 
   open PropositionalTruncation pt
 
@@ -202,3 +201,43 @@ root truncations using the above technique.
 \end{code}
 
 This says that if there is a root, then we can find one.
+
+Added 17th August 2024.
+
+\begin{code}
+
+open import NotionsOfDecidability.Complemented
+open import NotionsOfDecidability.Decidable
+
+module exit-truncations (pt : propositional-truncations-exist) where
+
+  open PropositionalTruncation pt
+
+  exit-truncation : (A : ℕ → 𝓤 ̇ )
+                  → is-complemented A
+                  → (∃ n ꞉ ℕ , A n)
+                  → Σ n ꞉ ℕ , A n
+  exit-truncation A A-is-complemented e = IV
+   where
+    open Roots-truncation 𝟚 ₀ (λ b → 𝟚-is-discrete b ₀)
+    open exit-Roots-truncation pt
+
+    α : ℕ → 𝟚
+    α = characteristic-map A A-is-complemented
+
+    I : (Σ n ꞉ ℕ , A n) → Σ n ꞉ ℕ , α n ＝ ₀
+    I (n , a) = n , characteristic-map-property₀-back A A-is-complemented n a
+
+    e' : ∃ n ꞉ ℕ , α n ＝ ₀
+    e' = ∥∥-functor I e
+
+    II : Σ n ꞉ ℕ , α n ＝ ₀
+    II = exit-Root-truncation α e'
+
+    III : (Σ n ꞉ ℕ , α n ＝ ₀) → Σ n ꞉ ℕ , A n
+    III (n , e) = n , characteristic-map-property₀ A A-is-complemented n e
+
+    IV : Σ n ꞉ ℕ , A n
+    IV = III II
+
+\end{code}

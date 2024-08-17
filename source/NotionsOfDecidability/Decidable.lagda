@@ -190,17 +190,6 @@ boolean-value : {A : 𝓤 ̇ }
                         × (b ＝ ₁ → ¬ A)
 boolean-value = which-of
 
-\end{code}
-
-Notice that this b is unique (Agda exercise) and that the converse
-also holds. In classical mathematics it is posited that all
-propositions have binary truth values, irrespective of whether they
-have BHK-style witnesses. And this is precisely the role of the
-principle of excluded middle in classical mathematics.  The following
-requires choice, which holds in BHK-style constructive mathematics:
-
-\begin{code}
-
 module _ {X : 𝓤 ̇ } {A₀ : X → 𝓥 ̇ } {A₁ : X → 𝓦 ̇ }
          (h : (x : X) → A₀ x + A₁ x)
        where
@@ -228,6 +217,49 @@ module _ {X : 𝓤 ̇ } {A₀ : X → 𝓥 ̇ } {A₁ : X → 𝓦 ̇ }
 
  indicator-property₁ : (x : X) → indicator-map x ＝ ₁ → A₁ x
  indicator-property₁ x = pr₂ (indicator-property x)
+
+module _ {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
+         (δ : (x : X) → A x + ¬ A x)
+       where
+
+ private
+  f : (x : X) → is-decidable (A x) → 𝟚
+  f x (inl a) = ₀
+  f x (inr ν) = ₁
+
+  f₀ : (x : X) (d : is-decidable (A x)) → f x d ＝ ₀ → A x
+  f₀ x (inl a) e = a
+  f₀ x (inr ν) e = 𝟘-elim (one-is-not-zero e)
+
+  f₁ : (x : X) (d : is-decidable (A x)) → f x d ＝ ₁ → ¬ A x
+  f₁ x (inl a) e = 𝟘-elim (zero-is-not-one e)
+  f₁ x (inr ν) e = ν
+
+  f₀-back : (x : X) (d : is-decidable (A x)) → A x → f x d ＝ ₀
+  f₀-back x (inl a) a' = refl
+  f₀-back x (inr ν) a' = 𝟘-elim (ν a')
+
+  f₁-back : (x : X) (d : is-decidable (A x)) → ¬ A x → f x d ＝ ₁
+  f₁-back x (inl a) ν' = 𝟘-elim (ν' a)
+  f₁-back x (inr ν) ν' = refl
+
+  χ : X → 𝟚
+  χ x = f x (δ x)
+
+ characteristic-map : X → 𝟚
+ characteristic-map = χ
+
+ characteristic-map-property₀ : (x : X) → χ x ＝ ₀ → A x
+ characteristic-map-property₀ x = f₀ x (δ x)
+
+ characteristic-map-property₁ : (x : X) → χ x ＝ ₁ → ¬ A x
+ characteristic-map-property₁ x = f₁ x (δ x)
+
+ characteristic-map-property₀-back : (x : X) → A x → χ x ＝ ₀
+ characteristic-map-property₀-back x = f₀-back x (δ x)
+
+ characteristic-map-property₁-back : (x : X) → ¬ A x → χ x ＝ ₁
+ characteristic-map-property₁-back x = f₁-back x (δ x)
 
 \end{code}
 
