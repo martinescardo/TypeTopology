@@ -371,9 +371,6 @@ module spec-stone-duality-morphisms
 
      𝒥 = cover-indexₛ Y σᴰ₂ K
 
-     foo : (Ǝ j ꞉ index (cover-indexₛ Y σᴰ₂ K) , (K ≤[ poset-of (𝒪 Y) ] (ℬY [ 𝒥 [ j ]  ])) holds) holds
-     foo = κ T (basisₛ-covers-are-directed Y σᴰ₂ K) (reflexivity+ (poset-of (𝒪 Y)) q)
-
      foo′ : ∃ j ꞉ index (cover-indexₛ Y σᴰ₂ K) , K ＝ ℬY [ 𝒥 [ j ] ]
      foo′ = ∥∥-rec ∃-is-prop † (κ T (basisₛ-covers-are-directed Y σᴰ₂ K) (reflexivity+ (poset-of (𝒪 Y)) q))
       where
@@ -384,42 +381,6 @@ module spec-stone-duality-morphisms
 
          ψ : rel-syntax (poset-of (𝒪 Y)) (T [ j ]) K holds
          ψ = T [ j ] ≤⟨ ⋁[ 𝒪 Y ]-upper T j ⟩ ⋁[ 𝒪 Y ] T ＝⟨ q ⁻¹ ⟩ₚ K 𝒬ℰ𝒟
-
-     -- bar : (Ǝ j ꞉ index (cover-indexₛ Y σᴰ₂ K) , (ι (h (r₂ (K , κ))) ≤[ poset-of (𝒪 X) ] ι (h (ℬYₖ [ 𝒥 [ j ]  ]))) holds) holds
-     -- bar = ∥∥-functor † foo
-     --  where
-     --   open Homomorphismᵈᵣ 𝒽 using (h-is-monotone)
-     --   open Homomorphismᵈᵣ sₕ using () renaming (h-is-monotone to r₂-is-monotone)
-     --   open OperationsOnCompactOpens Y (pr₁ σ₂)
-
-     --   † : Sigma (index (cover-indexₛ Y σᴰ₂ K))
-     --        (λ j → rel-syntax (poset-of (𝒪 Y)) K (ℬY [ 𝒥 [ j ] ]) holds) →
-     --        Sigma (index (cover-indexₛ Y σᴰ₂ K))
-     --        (λ j →
-     --           rel-syntax (poset-of (𝒪 X)) (ι (h (r₂ (K , κ))))
-     --           (ι (h (ℬYₖ [ 𝒥 [ j ] ])))
-     --           holds)
-     --   † (k , φ) = k , ι-is-monotone (h (r₂ (K , κ))) (h (ℬYₖ [ 𝒥 [ k ] ])) (h-is-monotone (r₂ (K , κ) , (ℬYₖ [ 𝒥 [ k ] ])) ψ)
-     --    where
-     --     open PosetReasoning (poset-of (𝒪 Y)) renaming (_■ to _𝒬ℰ𝒟)
-
-     --     ruux : K ＝ ℬY [ 𝒥 [ k ] ]
-     --     ruux = ≤-is-antisymmetric (poset-of (𝒪 Y)) φ (ℬY [ 𝒥 [ k ] ] ≤⟨ ⋁[ 𝒪 Y ]-upper T k ⟩ ⋁[ 𝒪 Y ] T ＝⟨ q ⁻¹ ⟩ₚ K 𝒬ℰ𝒟)
-
-     --     ψ : rel-syntax (poset-ofᵈ 𝒦⦅Y⦆⁻) (r₂ (K , κ)) (ℬYₖ [ 𝒥 [ k ] ]) holds
-     --     ψ = r₂-is-monotone ((K , κ) , ℬY [ 𝒥 [ k ] ] , basisₛ-consists-of-compact-opens Y σᴰ₂ (𝒥 [ k ])) (to-𝒦-＝ Y _ _ final)
-     --      where
-     --       final : K ∧[ 𝒪 Y ] ℬY [ 𝒥 [ k ] ] ＝ K
-     --       final = connecting-lemma₁ (𝒪 Y) φ ⁻¹
-
-     -- baz : (Ǝₚ j ꞉ index (cover-indexₛ Y σᴰ₂ K) , (ι (h (r₂ (K , κ))) ≤[ poset-of (𝒪 X) ] (⋁[ 𝒪 X ] S))) holds
-     -- baz = ∥∥-functor † bar
-     --  where
-     --   open PosetReasoning (poset-of (𝒪 X)) renaming (_■ to _𝒬ℰ𝒟)
-
-     --   † : (Σ j ꞉ index (cover-indexₛ Y σᴰ₂ K) , (ι (h (r₂ (K , κ))) ≤[ poset-of (𝒪 X) ] ι (h (ℬYₖ [ 𝒥 [ j ]  ]))) holds)
-     --      → Σ j ꞉ index (cover-indexₛ Y σᴰ₂ K) , (ι (h (r₂ (K , κ))) ≤[ poset-of (𝒪 X) ] (⋁[ 𝒪 X ] S)) holds
-     --   † (j , φ) = j , (ι (h (r₂ (K , κ))) ≤⟨ φ ⟩ ι (h (ℬYₖ [ 𝒥 [ j ]  ])) ≤⟨ ⋁[ 𝒪 X ]-upper ⁅ ι (h (ℬYₖ [ j ])) ∣ j ε cover-indexₛ Y σᴰ₂ K ⁆ j ⟩ ⋁[ 𝒪 X ] ⁅ ι (h (ℬYₖ [ j ])) ∣ j ε cover-indexₛ Y σᴰ₂ K ⁆ ≤⟨ p ⟩ (⋁[ 𝒪 X ] S) 𝒬ℰ𝒟)
 
      ♠ : Σ (λ j → K ＝ ℬY [ 𝒥 [ j ] ]) → ∃[꞉]-syntax (index S) (λ i → (poset-of (𝒪 X) PosetNotation.≤ pr₁ 𝒻 K) (S [ i ]) holds) holds
      ♠ (j , φ) = ∥∥-rec ∃-is-prop final (κ′ S δ ψ)
@@ -455,27 +416,5 @@ module spec-stone-duality-morphisms
              last′ : rel-syntax (poset-of (𝒪 Y)) (ℬY [ 𝒥 [ k ] ]) (ℬY [ 𝒥 [ j ] ]) holds
              last′ = transport
                       (λ - → rel-syntax (poset-of (𝒪 Y)) (ℬY [ 𝒥 [ k ] ]) - holds) φ (ℬY [ 𝒥 [ k ] ] ≤⟨ ⋁[ 𝒪 Y ]-upper T k ⟩∙ ⋁[ 𝒪 Y ] T ≤⟨ reflexivity+ (poset-of (𝒪 Y)) (q ⁻¹) ⟩∙ K 𝒬ℰ𝒟∙)
-
-     -- goal : (Σ j ꞉ index (cover-indexₛ Y σᴰ₂ K) , (ι (h (r₂ (K , κ))) ≤[ poset-of (𝒪 X) ] (⋁[ 𝒪 X ] S)) holds)
-     --      → ∃ i ꞉ index S , (f K ≤[ poset-of (𝒪 X) ] S [ i ]) holds
-     -- goal (j , φ) = ∥∥-rec ∃-is-prop ‡ (κ′ S δ φ)
-     --  where
-     --   open PosetReasoning (poset-of (𝒪 X)) renaming (_■ to _𝒬ℰ𝒟)
-
-     --   quux : K ＝ ⋁[ 𝒪 Y ] T
-     --   quux = {!!}
-
-     --   κ′ : is-compact-open X (ι (h (r₂ (K , κ)))) holds
-     --   κ′ = ι-gives-compact-opens (h (r₂ (K , κ)))
-
-     --   one-more : (f K ≤[ poset-of (𝒪 X) ] ι (h (r₂ (K , κ)))) holds
-     --   one-more = f K ＝⟨ refl ⟩ₚ ⋁[ 𝒪 X ] ⁅ ι (h (ℬYₖ [ j ])) ∣ j ε cover-indexₛ Y σᴰ₂ K ⁆ ≤⟨ brzzx ⟩ ι (h (r₂ (K , κ))) 𝒬ℰ𝒟
-     --    where
-     --     brzzx : {!!}
-     --     brzzx = {!!}
-
-     --   ‡ : (Σ i ꞉ index S , (ι (h (r₂ (K , κ))) ≤[ poset-of (𝒪 X) ] S [ i ]) holds)
-     --     → ∃ (λ i → rel-syntax (poset-of (𝒪 X)) (f K) (S [ i ]) holds)
-     --   ‡ = {!!}
 
 \end{code}
