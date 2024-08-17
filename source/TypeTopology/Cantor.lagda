@@ -188,7 +188,7 @@ We also use the letter "a" to range over the apartness type α ♯ β.
 apartness-criterion : (α β : Cantor) → (Σ n ꞉ ℕ , α n ≠ β n) → α ♯ β
 apartness-criterion α β (n , d) = V
  where
-  open import Naturals.RootsTruncation 𝓤₀ 𝟚 ₁ (λ b → 𝟚-is-discrete b ₁)
+  open import Naturals.RootsTruncation 𝟚 ₁ (λ b → 𝟚-is-discrete b ₁)
 
   γ : Cantor
   γ n = α n ⊕ β n

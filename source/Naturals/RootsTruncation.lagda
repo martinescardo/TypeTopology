@@ -20,7 +20,7 @@ open import UF.DiscreteAndSeparated
 open import UF.Base
 
 module Naturals.RootsTruncation
-        (𝓤 : Universe)
+        {𝓤 : Universe}
         (Z : 𝓤 ̇ )
         (z : Z)
         (z-is-isolated : is-isolated' z)
