@@ -233,6 +233,20 @@ min𝟚 : 𝟚 → 𝟚 → 𝟚
 min𝟚 ₀ b = ₀
 min𝟚 ₁ b = b
 
+min𝟚-comm : (b c : 𝟚) → min𝟚 b c ＝ min𝟚 c b
+min𝟚-comm ₀ ₀ = refl
+min𝟚-comm ₀ ₁ = refl
+min𝟚-comm ₁ ₀ = refl
+min𝟚-comm ₁ ₁ = refl
+
+min𝟚-idemp : (b : 𝟚) → min𝟚 b b ＝ b
+min𝟚-idemp ₀ = refl
+min𝟚-idemp ₁ = refl
+
+min𝟚-property₀ : (b : 𝟚) → min𝟚 b ₀ ＝ ₀
+min𝟚-property₀ ₀ = refl
+min𝟚-property₀ ₁ = refl
+
 min𝟚-preserves-≤ : {a b a' b' : 𝟚} → a ≤ a' → b ≤ b' → min𝟚 a b ≤ min𝟚 a' b'
 min𝟚-preserves-≤ {₀} {b} {a'} {b'} l m = l
 min𝟚-preserves-≤ {₁} {b} {₁}  {b'} l m = m

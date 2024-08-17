@@ -644,6 +644,23 @@ min (α , r) (β , s) = (λ i → min𝟚 (α i) (β i)) , t
   t : is-decreasing (λ i → min𝟚 (α i) (β i))
   t i = min𝟚-preserves-≤ (r i) (s i)
 
+min∞-property : (u : ℕ∞) → min ∞ u ＝ u
+min∞-property u = refl
+
+min-comm : funext₀ → (u v : ℕ∞) → min u v ＝ min v u
+min-comm fe u v = ℕ∞-to-ℕ→𝟚-lc fe (dfunext fe (λ i → min𝟚-comm (ι u i) (ι v i)))
+
+min-idemp : funext₀ → (u : ℕ∞) → min u u ＝ u
+min-idemp fe₀ u = ℕ∞-to-ℕ→𝟚-lc fe₀ (dfunext fe₀ (λ i → min𝟚-idemp (ι u i)))
+
+min0-property : (u : ℕ∞) → min Zero u ＝ Zero
+min0-property u = refl
+
+min0-property' : funext₀ → (u : ℕ∞) → min u Zero ＝ Zero
+min0-property' fe u = min u Zero ＝⟨ min-comm fe u Zero ⟩
+                      min Zero u ＝⟨ min0-property u ⟩
+                      Zero       ∎
+
 \end{code}
 
 More lemmas about order should be added, but I will do this on demand
