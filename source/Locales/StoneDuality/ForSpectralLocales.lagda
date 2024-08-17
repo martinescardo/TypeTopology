@@ -244,8 +244,8 @@ module spec-stone-duality-morphisms
 
  s₂ = ⌜ e₂ ⌝
 
- open DistributiveLatticeResizing 𝒦⦅X⦆ 𝒦⁻X (≃-sym e₁) using () renaming (Lᶜ to 𝒦⦅X⦆⁻; 𝟏ᶜ to 𝟏⁻X)
- open DistributiveLatticeResizing 𝒦⦅Y⦆ 𝒦⁻Y (≃-sym e₂) using (sₕ) renaming (Lᶜ to 𝒦⦅Y⦆⁻; 𝟏ᶜ to 𝟏⁻𝒦Y)
+ open DistributiveLatticeResizing 𝒦⦅X⦆ 𝒦⁻X (≃-sym e₁) using () renaming (sₕ to sₕ′; rₕ to rₕ′; Lᶜ to 𝒦⦅X⦆⁻; 𝟏ᶜ to 𝟏⁻X)
+ open DistributiveLatticeResizing 𝒦⦅Y⦆ 𝒦⁻Y (≃-sym e₂) using (sₕ; rₕ) renaming (Lᶜ to 𝒦⦅Y⦆⁻; 𝟏ᶜ to 𝟏⁻𝒦Y)
 
 
  to-spectral-map : Spectral-Map X Y → (𝒦⦅Y⦆⁻ ─d→ 𝒦⦅X⦆⁻)
@@ -349,7 +349,7 @@ module spec-stone-duality-morphisms
    α = {!!}
 
    β : preserves-binary-meets (𝒪 Y) (𝒪 X) f holds
-   β U V = {!!} ＝⟨ {!!} ⟩ {!!} ∎
+   β U V = {!!}
 
    γ : {!!}
    γ = {!!}
@@ -358,7 +358,7 @@ module spec-stone-duality-morphisms
    𝒻 = f , α , β , γ
 
    𝕤 : is-spectral-map Y X 𝒻 holds
-   𝕤 K κ S δ p = ∥∥-functor {!!} baz
+   𝕤 K κ S δ p = ∥∥-rec ∃-is-prop ♠ foo′
     where
      T : Fam 𝓤 ⟨ 𝒪 Y ⟩
      T = ⁅ ℬY [ j ] ∣ j ε cover-indexₛ Y σᴰ₂ K ⁆
@@ -374,62 +374,108 @@ module spec-stone-duality-morphisms
      foo : (Ǝ j ꞉ index (cover-indexₛ Y σᴰ₂ K) , (K ≤[ poset-of (𝒪 Y) ] (ℬY [ 𝒥 [ j ]  ])) holds) holds
      foo = κ T (basisₛ-covers-are-directed Y σᴰ₂ K) (reflexivity+ (poset-of (𝒪 Y)) q)
 
-     bar : (Ǝ j ꞉ index (cover-indexₛ Y σᴰ₂ K) , (ι (h (r₂ (K , κ))) ≤[ poset-of (𝒪 X) ] ι (h (ℬYₖ [ 𝒥 [ j ]  ]))) holds) holds
-     bar = ∥∥-functor † foo
+     foo′ : ∃ j ꞉ index (cover-indexₛ Y σᴰ₂ K) , K ＝ ℬY [ 𝒥 [ j ] ]
+     foo′ = ∥∥-rec ∃-is-prop † (κ T (basisₛ-covers-are-directed Y σᴰ₂ K) (reflexivity+ (poset-of (𝒪 Y)) q))
       where
-       open Homomorphismᵈᵣ 𝒽 using (h-is-monotone)
-       open Homomorphismᵈᵣ sₕ using () renaming (h-is-monotone to r₂-is-monotone)
-       open OperationsOnCompactOpens Y (pr₁ σ₂)
-
-       † : Sigma (index (cover-indexₛ Y σᴰ₂ K))
-            (λ j → rel-syntax (poset-of (𝒪 Y)) K (ℬY [ 𝒥 [ j ] ]) holds) →
-            Sigma (index (cover-indexₛ Y σᴰ₂ K))
-            (λ j →
-               rel-syntax (poset-of (𝒪 X)) (ι (h (r₂ (K , κ))))
-               (ι (h (ℬYₖ [ 𝒥 [ j ] ])))
-               holds)
-       † (k , φ) = k , ι-is-monotone (h (r₂ (K , κ))) (h (ℬYₖ [ 𝒥 [ k ] ])) (h-is-monotone (r₂ (K , κ) , (ℬYₖ [ 𝒥 [ k ] ])) ψ)
+       † : Sigma (index T) (λ i → (poset-of (𝒪 Y) PosetNotation.≤ K) (T [ i ]) holds) → ∃ (λ j → K ＝ ℬY [ 𝒥 [ j ] ])
+       † (j , p) = ∣ j , ≤-is-antisymmetric (poset-of (𝒪 Y)) p ψ  ∣
         where
          open PosetReasoning (poset-of (𝒪 Y)) renaming (_■ to _𝒬ℰ𝒟)
 
-         ruux : K ＝ ℬY [ 𝒥 [ k ] ]
-         ruux = ≤-is-antisymmetric (poset-of (𝒪 Y)) φ (ℬY [ 𝒥 [ k ] ] ≤⟨ ⋁[ 𝒪 Y ]-upper T k ⟩ ⋁[ 𝒪 Y ] T ＝⟨ q ⁻¹ ⟩ₚ K 𝒬ℰ𝒟)
+         ψ : rel-syntax (poset-of (𝒪 Y)) (T [ j ]) K holds
+         ψ = T [ j ] ≤⟨ ⋁[ 𝒪 Y ]-upper T j ⟩ ⋁[ 𝒪 Y ] T ＝⟨ q ⁻¹ ⟩ₚ K 𝒬ℰ𝒟
 
-         ψ : rel-syntax (poset-ofᵈ 𝒦⦅Y⦆⁻) (r₂ (K , κ)) (ℬYₖ [ 𝒥 [ k ] ]) holds
-         ψ = r₂-is-monotone ((K , κ) , ℬY [ 𝒥 [ k ] ] , basisₛ-consists-of-compact-opens Y σᴰ₂ (𝒥 [ k ])) (to-𝒦-＝ Y _ _ final)
-          where
-           final : K ∧[ 𝒪 Y ] ℬY [ 𝒥 [ k ] ] ＝ K
-           final = connecting-lemma₁ (𝒪 Y) φ ⁻¹
+     -- bar : (Ǝ j ꞉ index (cover-indexₛ Y σᴰ₂ K) , (ι (h (r₂ (K , κ))) ≤[ poset-of (𝒪 X) ] ι (h (ℬYₖ [ 𝒥 [ j ]  ]))) holds) holds
+     -- bar = ∥∥-functor † foo
+     --  where
+     --   open Homomorphismᵈᵣ 𝒽 using (h-is-monotone)
+     --   open Homomorphismᵈᵣ sₕ using () renaming (h-is-monotone to r₂-is-monotone)
+     --   open OperationsOnCompactOpens Y (pr₁ σ₂)
 
-     baz : (Ǝₚ j ꞉ index (cover-indexₛ Y σᴰ₂ K) , (ι (h (r₂ (K , κ))) ≤[ poset-of (𝒪 X) ] (⋁[ 𝒪 X ] S))) holds
-     baz = ∥∥-functor † bar
+     --   † : Sigma (index (cover-indexₛ Y σᴰ₂ K))
+     --        (λ j → rel-syntax (poset-of (𝒪 Y)) K (ℬY [ 𝒥 [ j ] ]) holds) →
+     --        Sigma (index (cover-indexₛ Y σᴰ₂ K))
+     --        (λ j →
+     --           rel-syntax (poset-of (𝒪 X)) (ι (h (r₂ (K , κ))))
+     --           (ι (h (ℬYₖ [ 𝒥 [ j ] ])))
+     --           holds)
+     --   † (k , φ) = k , ι-is-monotone (h (r₂ (K , κ))) (h (ℬYₖ [ 𝒥 [ k ] ])) (h-is-monotone (r₂ (K , κ) , (ℬYₖ [ 𝒥 [ k ] ])) ψ)
+     --    where
+     --     open PosetReasoning (poset-of (𝒪 Y)) renaming (_■ to _𝒬ℰ𝒟)
+
+     --     ruux : K ＝ ℬY [ 𝒥 [ k ] ]
+     --     ruux = ≤-is-antisymmetric (poset-of (𝒪 Y)) φ (ℬY [ 𝒥 [ k ] ] ≤⟨ ⋁[ 𝒪 Y ]-upper T k ⟩ ⋁[ 𝒪 Y ] T ＝⟨ q ⁻¹ ⟩ₚ K 𝒬ℰ𝒟)
+
+     --     ψ : rel-syntax (poset-ofᵈ 𝒦⦅Y⦆⁻) (r₂ (K , κ)) (ℬYₖ [ 𝒥 [ k ] ]) holds
+     --     ψ = r₂-is-monotone ((K , κ) , ℬY [ 𝒥 [ k ] ] , basisₛ-consists-of-compact-opens Y σᴰ₂ (𝒥 [ k ])) (to-𝒦-＝ Y _ _ final)
+     --      where
+     --       final : K ∧[ 𝒪 Y ] ℬY [ 𝒥 [ k ] ] ＝ K
+     --       final = connecting-lemma₁ (𝒪 Y) φ ⁻¹
+
+     -- baz : (Ǝₚ j ꞉ index (cover-indexₛ Y σᴰ₂ K) , (ι (h (r₂ (K , κ))) ≤[ poset-of (𝒪 X) ] (⋁[ 𝒪 X ] S))) holds
+     -- baz = ∥∥-functor † bar
+     --  where
+     --   open PosetReasoning (poset-of (𝒪 X)) renaming (_■ to _𝒬ℰ𝒟)
+
+     --   † : (Σ j ꞉ index (cover-indexₛ Y σᴰ₂ K) , (ι (h (r₂ (K , κ))) ≤[ poset-of (𝒪 X) ] ι (h (ℬYₖ [ 𝒥 [ j ]  ]))) holds)
+     --      → Σ j ꞉ index (cover-indexₛ Y σᴰ₂ K) , (ι (h (r₂ (K , κ))) ≤[ poset-of (𝒪 X) ] (⋁[ 𝒪 X ] S)) holds
+     --   † (j , φ) = j , (ι (h (r₂ (K , κ))) ≤⟨ φ ⟩ ι (h (ℬYₖ [ 𝒥 [ j ]  ])) ≤⟨ ⋁[ 𝒪 X ]-upper ⁅ ι (h (ℬYₖ [ j ])) ∣ j ε cover-indexₛ Y σᴰ₂ K ⁆ j ⟩ ⋁[ 𝒪 X ] ⁅ ι (h (ℬYₖ [ j ])) ∣ j ε cover-indexₛ Y σᴰ₂ K ⁆ ≤⟨ p ⟩ (⋁[ 𝒪 X ] S) 𝒬ℰ𝒟)
+
+     ♠ : Σ (λ j → K ＝ ℬY [ 𝒥 [ j ] ]) → ∃[꞉]-syntax (index S) (λ i → (poset-of (𝒪 X) PosetNotation.≤ pr₁ 𝒻 K) (S [ i ]) holds) holds
+     ♠ (j , φ) = ∥∥-rec ∃-is-prop final (κ′ S δ ψ)
       where
        open PosetReasoning (poset-of (𝒪 X)) renaming (_■ to _𝒬ℰ𝒟)
 
-       † : (Σ j ꞉ index (cover-indexₛ Y σᴰ₂ K) , (ι (h (r₂ (K , κ))) ≤[ poset-of (𝒪 X) ] ι (h (ℬYₖ [ 𝒥 [ j ]  ]))) holds)
-          → Σ j ꞉ index (cover-indexₛ Y σᴰ₂ K) , (ι (h (r₂ (K , κ))) ≤[ poset-of (𝒪 X) ] (⋁[ 𝒪 X ] S)) holds
-       † (j , φ) = j , (ι (h (r₂ (K , κ))) ≤⟨ φ ⟩ ι (h (ℬYₖ [ 𝒥 [ j ]  ])) ≤⟨ ⋁[ 𝒪 X ]-upper ⁅ ι (h (ℬYₖ [ j ])) ∣ j ε cover-indexₛ Y σᴰ₂ K ⁆ j ⟩ ⋁[ 𝒪 X ] ⁅ ι (h (ℬYₖ [ j ])) ∣ j ε cover-indexₛ Y σᴰ₂ K ⁆ ≤⟨ p ⟩ (⋁[ 𝒪 X ] S) 𝒬ℰ𝒟)
-
-     goal : (Σ j ꞉ index (cover-indexₛ Y σᴰ₂ K) , (ι (h (r₂ (K , κ))) ≤[ poset-of (𝒪 X) ] (⋁[ 𝒪 X ] S)) holds)
-          → ∃ i ꞉ index S , (f K ≤[ poset-of (𝒪 X) ] S [ i ]) holds
-     goal (j , φ) = ∥∥-rec ∃-is-prop ‡ (κ′ S δ φ)
-      where
-       open PosetReasoning (poset-of (𝒪 X)) renaming (_■ to _𝒬ℰ𝒟)
-
-       quux : K ＝ ⋁[ 𝒪 Y ] T
-       quux = {!!}
+       ψ : (poset-of (𝒪 X) PosetNotation.≤ ι (h (r₂ (K , κ)))) (join-of (𝒪 X) S) holds
+       ψ = ι (h (r₂ (K , κ))) ＝⟨ ap (ι ∘ h ∘ r₂) (to-𝒦-＝ Y _ _ φ) ⟩ₚ ι (h (ℬYₖ [ 𝒥 [ j ] ])) ≤⟨ ⋁[ 𝒪 X ]-upper
+                                                                                                   ((fmap-syntax (λ j → ι (h (ℬYₖ [ j ])))) (cover-indexₛ Y σᴰ₂ K)) j ⟩ f K ≤⟨ p ⟩ join-of (𝒪 X) S 𝒬ℰ𝒟
 
        κ′ : is-compact-open X (ι (h (r₂ (K , κ)))) holds
        κ′ = ι-gives-compact-opens (h (r₂ (K , κ)))
 
-       one-more : (f K ≤[ poset-of (𝒪 X) ] ι (h (r₂ (K , κ)))) holds
-       one-more = f K ＝⟨ refl ⟩ₚ ⋁[ 𝒪 X ] ⁅ ι (h (ℬYₖ [ j ])) ∣ j ε cover-indexₛ Y σᴰ₂ K ⁆ ≤⟨ brzzx ⟩ ι (h (r₂ (K , κ))) 𝒬ℰ𝒟
+       final : Sigma (index S) (λ i → (poset-of (𝒪 X) PosetNotation.≤ ι (h (r₂ (K , κ)))) (S [ i ]) holds)
+             → ∃ (λ i → (poset-of (𝒪 X) PosetNotation.≤ pr₁ 𝒻 K) (S [ i ]) holds)
+       final (i , ϑ) = ∣ i , (f K ＝⟨ refl ⟩ₚ ⋁[ 𝒪 X ] ⁅ ι (h (ℬYₖ [ j ])) ∣ j ε cover-indexₛ Y σᴰ₂ K ⁆ ≤⟨ brzzx ⟩ ι (h (ℬYₖ [ 𝒥 [ j ] ])) ＝⟨ ap (ι ∘ h ∘ r₂) (to-𝒦-＝ Y _ _ φ ⁻¹) ⟩ₚ ι (h (r₂ (K , κ))) ≤⟨ ϑ ⟩ S [ i ] 𝒬ℰ𝒟) ∣
         where
-         brzzx : {!!}
-         brzzx = {!!}
+         brzzx : (poset-of (𝒪 X) PosetNotation.≤
+                   join-of (𝒪 X)
+                   (fmap-syntax (λ j₁ → ι (h (ℬYₖ [ j₁ ]))) (cover-indexₛ Y σᴰ₂ K)))
+                  (ι (h (ℬYₖ [ 𝒥 [ j ] ])))
+                  holds
+         brzzx = ⋁[ 𝒪 X ]-least ⁅ ι (h (ℬYₖ [ j ])) ∣ j ε cover-indexₛ Y σᴰ₂ K ⁆ (ι (h (ℬYₖ [ 𝒥 [ j ] ])) , last)
+          where
+           open Homomorphismᵈᵣ 𝒽 using (h-is-monotone)
+           open Homomorphismᵈᵣ sₕ using () renaming (h-is-monotone to r₂-is-monotone)
 
-       ‡ : (Σ i ꞉ index S , (ι (h (r₂ (K , κ))) ≤[ poset-of (𝒪 X) ] S [ i ]) holds)
-         → ∃ (λ i → rel-syntax (poset-of (𝒪 X)) (f K) (S [ i ]) holds)
-       ‡ = {!!}
+           last : (k : index (cover-indexₛ Y σᴰ₂ K)) → (ι (h (ℬYₖ [ 𝒥 [ k ] ])) ≤[ poset-of (𝒪 X) ] ι (h (ℬYₖ [ 𝒥 [ j ] ]))) holds
+           last k = ι-is-monotone (h (ℬYₖ [ 𝒥 [ k ] ])) (h (ℬYₖ [ 𝒥 [ j ] ])) (h-is-monotone (ℬYₖ [ 𝒥 [ k ] ] , ℬYₖ [ 𝒥 [ j ] ]) (r₂-is-monotone _ (to-𝒦-＝ Y _ _ (connecting-lemma₁ (𝒪 Y) last′ ⁻¹))))
+            where
+             open PosetReasoning (poset-of (𝒪 Y)) renaming (_≤⟨_⟩_ to _≤⟨_⟩∙_; _■ to _𝒬ℰ𝒟∙)
+
+             last′ : rel-syntax (poset-of (𝒪 Y)) (ℬY [ 𝒥 [ k ] ]) (ℬY [ 𝒥 [ j ] ]) holds
+             last′ = transport
+                      (λ - → rel-syntax (poset-of (𝒪 Y)) (ℬY [ 𝒥 [ k ] ]) - holds) φ (ℬY [ 𝒥 [ k ] ] ≤⟨ ⋁[ 𝒪 Y ]-upper T k ⟩∙ ⋁[ 𝒪 Y ] T ≤⟨ reflexivity+ (poset-of (𝒪 Y)) (q ⁻¹) ⟩∙ K 𝒬ℰ𝒟∙)
+
+     -- goal : (Σ j ꞉ index (cover-indexₛ Y σᴰ₂ K) , (ι (h (r₂ (K , κ))) ≤[ poset-of (𝒪 X) ] (⋁[ 𝒪 X ] S)) holds)
+     --      → ∃ i ꞉ index S , (f K ≤[ poset-of (𝒪 X) ] S [ i ]) holds
+     -- goal (j , φ) = ∥∥-rec ∃-is-prop ‡ (κ′ S δ φ)
+     --  where
+     --   open PosetReasoning (poset-of (𝒪 X)) renaming (_■ to _𝒬ℰ𝒟)
+
+     --   quux : K ＝ ⋁[ 𝒪 Y ] T
+     --   quux = {!!}
+
+     --   κ′ : is-compact-open X (ι (h (r₂ (K , κ)))) holds
+     --   κ′ = ι-gives-compact-opens (h (r₂ (K , κ)))
+
+     --   one-more : (f K ≤[ poset-of (𝒪 X) ] ι (h (r₂ (K , κ)))) holds
+     --   one-more = f K ＝⟨ refl ⟩ₚ ⋁[ 𝒪 X ] ⁅ ι (h (ℬYₖ [ j ])) ∣ j ε cover-indexₛ Y σᴰ₂ K ⁆ ≤⟨ brzzx ⟩ ι (h (r₂ (K , κ))) 𝒬ℰ𝒟
+     --    where
+     --     brzzx : {!!}
+     --     brzzx = {!!}
+
+     --   ‡ : (Σ i ꞉ index S , (ι (h (r₂ (K , κ))) ≤[ poset-of (𝒪 X) ] S [ i ]) holds)
+     --     → ∃ (λ i → rel-syntax (poset-of (𝒪 X)) (f K) (S [ i ]) holds)
+     --   ‡ = {!!}
 
 \end{code}
