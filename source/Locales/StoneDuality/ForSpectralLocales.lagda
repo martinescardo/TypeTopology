@@ -230,42 +230,130 @@ module spec-stone-duality-morphisms
  e₁ : 𝒦⁻X ≃ 𝒦 X
  e₁ = resizing-condition 𝒦⦅X⦆-is-small
 
+ s₁ : 𝒦⁻X → 𝒦 X
+ s₁ = ⌜ e₁ ⌝
+
  r₁ : 𝒦 X → 𝒦⁻X
  r₁ = ⌜ ≃-sym e₁ ⌝
 
  e₂ : 𝒦⁻Y ≃ 𝒦 Y
  e₂ = resizing-condition 𝒦⦅Y⦆-is-small
 
- s₂ : 𝒦⁻Y → 𝒦 Y
+ r₂ : 𝒦 Y → 𝒦⁻Y
+ r₂ = ⌜ ≃-sym e₂ ⌝
+
  s₂ = ⌜ e₂ ⌝
 
- open DistributiveLatticeResizing 𝒦⦅X⦆ 𝒦⁻X (≃-sym e₁) using () renaming (Lᶜ to 𝒦⦅X⦆⁻)
- open DistributiveLatticeResizing 𝒦⦅Y⦆ 𝒦⁻Y (≃-sym e₂) using () renaming (Lᶜ to 𝒦⦅Y⦆⁻)
+ open DistributiveLatticeResizing 𝒦⦅X⦆ 𝒦⁻X (≃-sym e₁) using () renaming (Lᶜ to 𝒦⦅X⦆⁻; 𝟏ᶜ to 𝟏⁻X)
+ open DistributiveLatticeResizing 𝒦⦅Y⦆ 𝒦⁻Y (≃-sym e₂) using () renaming (Lᶜ to 𝒦⦅Y⦆⁻; 𝟏ᶜ to 𝟏⁻𝒦Y)
+
 
  to-spectral-map : Spectral-Map X Y → (𝒦⦅Y⦆⁻ ─d→ 𝒦⦅X⦆⁻)
- to-spectral-map ((f , _) , σ) = record { h = h ; h-is-homomorphism = {!!} }
-  where
-   open 𝒦-Duality₁ Y σ₂ using (ι; ι-gives-compact-opens)
+ to-spectral-map (𝒻@(f , _) , σ) =
+  record { h = h ; h-is-homomorphism = α , β , {!!} }
+   where
+    open 𝒦-Duality₁ Y σ₂ using (ι; ι-gives-compact-opens; ι-preserves-𝟏)
+    open DistributiveLattice 𝒦⦅X⦆ hiding (X) renaming (𝟏 to 𝟏ₓ; _∧_ to _∧ₓ_)
+    open DistributiveLattice 𝒦⦅Y⦆ hiding (X) renaming (𝟏 to 𝟏y; _∧_ to _∧y_)
+    open PropositionalTruncation pt
 
-   h : 𝒦⁻Y → 𝒦⁻X
-   h K = r₁ (f (ι K) , σ (ι K) κ)
-    where
-     κ : is-compact-open Y (ι K) holds
-     κ = ι-gives-compact-opens K
+    h : 𝒦⁻Y → 𝒦⁻X
+    h K = r₁ (f (ι K) , σ (ι K) κ)
+     where
+      κ : is-compact-open Y (ι K) holds
+      κ = ι-gives-compact-opens K
+
+    α : preserves-𝟏 𝒦⦅Y⦆⁻ 𝒦⦅X⦆⁻ h holds
+    α = h 𝟏⁻𝒦Y      ＝⟨ refl ⟩
+        h (r₂ 𝟏y)   ＝⟨ refl   ⟩
+        r₁ (f (ι (r₂ 𝟏y)) , σ (ι (r₂ 𝟏y)) (ι-gives-compact-opens (r₂ 𝟏y)))   ＝⟨ †   ⟩
+        r₁ 𝟏ₓ       ＝⟨ refl ⟩
+        𝟏⁻X         ∎
+         where
+          p : f (ι (r₂ 𝟏y)) ＝ 𝟏[ 𝒪 X ]
+          p = f (ι (r₂ 𝟏y)) ＝⟨ refl ⟩
+              f (ι 𝟏⁻𝒦Y)    ＝⟨ ap f ι-preserves-𝟏 ⟩
+              f 𝟏[ 𝒪 Y ]    ＝⟨ frame-homomorphisms-preserve-top (𝒪 Y) (𝒪 X) 𝒻  ⟩
+              𝟏[ 𝒪 X ] ∎
+
+          † = ap r₁ (to-𝒦-＝ X (σ (ι (r₂ 𝟏y)) (ι-gives-compact-opens (r₂ 𝟏y))) (𝒦-Lattice.𝟏-is-compact X σ₁) p)
+
+    β : preserves-∧ 𝒦⦅Y⦆⁻ 𝒦⦅X⦆⁻ h holds
+    β x y = h (r₂ (s₂ x ∧y s₂ y))       ＝⟨ {!!} ⟩
+            h {!!}                      ＝⟨ {!!} ⟩
+            r₁ (s₁ (h x) ∧ₓ s₁ (h y))   ∎
+
+ σᴰ₁ : spectralᴰ X
+ σᴰ₁ = ssb-implies-spectralᴰ ua X σ₁
+
+ σᴰ₂ : spectralᴰ Y
+ σᴰ₂ = ssb-implies-spectralᴰ ua Y σ₂
+
+ ℬY : Fam 𝓤 ⟨ 𝒪 Y ⟩
+ ℬY = basisₛ Y σᴰ₂
+
+ ℬYₖ : Fam 𝓤 ∣ 𝒦⦅Y⦆⁻ ∣ᵈ
+ ℬYₖ = index ℬY , λ i → r₂ (ℬY [ i ] , basisₛ-consists-of-compact-opens Y σᴰ₂ i)
 
  to-dlat-map : (𝒦⦅Y⦆⁻ ─d→ 𝒦⦅X⦆⁻) → Spectral-Map X Y
  to-dlat-map 𝒽 = 𝒻 , 𝕤
   where
-   f : ⟨ 𝒪 Y ⟩ → ⟨ 𝒪 X ⟩
-   f U = {!!}
+   open PropositionalTruncation pt
+   open 𝒦-Duality₁ X σ₁ using (ι)
 
-   α : {!!}
+   open Homomorphismᵈᵣ 𝒽 using (h)
+
+   𝒥 = cover-indexₛ Y σᴰ₂
+
+   f : ⟨ 𝒪 Y ⟩ → ⟨ 𝒪 X ⟩
+   f U = ⋁[ 𝒪 X ] ⁅ ι (h (ℬYₖ [ j ])) ∣ j ε cover-indexₛ Y σᴰ₂ U ⁆
+
+
+   lemma : (𝒦@(K , _) : 𝒦 Y) → f K ＝ ι (h (r₂ 𝒦))
+   lemma 𝒦@(K , κ) = ∥∥-rec carrier-of-[ poset-of (𝒪 X) ]-is-set γ †₀
+    where
+     T : Fam 𝓤 ⟨ 𝒪 Y ⟩
+     T = ⁅ ℬY [ j ] ∣ j ε cover-indexₛ Y σᴰ₂ K ⁆
+
+     † : K ＝ ⋁[ 𝒪 Y ] T
+     † = basisₛ-covers-do-cover-eq Y σᴰ₂ K
+
+     †₀ : (Ǝ j ꞉ index (cover-indexₛ Y σᴰ₂ K) , (K ≤[ poset-of (𝒪 Y) ] ℬY [ 𝒥 K [ j ] ]) holds) holds
+     †₀ = κ
+           ⁅ ℬY [ j ] ∣ j ε cover-indexₛ Y σᴰ₂ K ⁆
+           (basisₛ-covers-are-directed Y σᴰ₂ K)
+           (reflexivity+ (poset-of (𝒪 Y)) †)
+
+
+     γ : (Σ j ꞉ index (cover-indexₛ Y σᴰ₂ K) , (K ≤[ poset-of (𝒪 Y) ] ℬY [ 𝒥 K [ j ] ]) holds)
+       → f K ＝ ι (h (r₂ 𝒦))
+     γ (j , q) = f K                   ＝⟨ ap f r ⟩
+                 f (ℬY [ 𝒥 K [ j ] ])  ＝⟨ {!!} ⟩
+                 ι (h (r₂ 𝒦))          ∎
+      where
+       open PosetReasoning (poset-of (𝒪 Y)) renaming (_■ to _𝒬ℰ𝒟)
+
+       q₀ : (ℬY [ 𝒥 K [ j ] ] ≤[ poset-of (𝒪 Y) ] K) holds
+       q₀ = ℬY [ 𝒥 K [ j ] ]    ≤⟨ ⋁[ 𝒪 Y ]-upper T j ⟩
+            ⋁[ 𝒪 Y ] T          ＝⟨ † ⁻¹ ⟩ₚ
+            K                   𝒬ℰ𝒟
+
+       r : K ＝ ℬY [ 𝒥 K [ j ] ]
+       r = ≤-is-antisymmetric (poset-of (𝒪 Y)) q q₀
+
+   α : preserves-top (𝒪 Y) (𝒪 X) f holds
    α = {!!}
 
+   β : {!!}
+   β = {!!}
+
+   γ : {!!}
+   γ = {!!}
+
    𝒻 : X ─c→ Y
-   𝒻 = f , α , {!!}
+   𝒻 = f , α , β , γ
 
    𝕤 : is-spectral-map Y X 𝒻 holds
-   𝕤 = {!!}
+   𝕤 K κ S δ p = {!!}
 
 \end{code}
