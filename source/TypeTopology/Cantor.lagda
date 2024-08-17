@@ -123,6 +123,8 @@ m is-a-modulus-of-uniform-continuity-of p = ∀ α β → α ＝⟦ m ⟧ β →
 uniformly-continuous : (Cantor → 𝟚) → 𝓤₀ ̇
 uniformly-continuous p = Σ m ꞉ ℕ , m is-a-modulus-of-uniform-continuity-of p
 
+uniform-continuity-data = uniformly-continuous
+
 \end{code}
 
 Uniform continuity as defined above is data rather than property. This
@@ -140,6 +142,8 @@ longer the case.
 
 continuous : (Cantor → 𝟚) → 𝓤₀ ̇
 continuous p = ∀ α → Σ m ꞉ ℕ , (∀ β → α ＝⟦ m ⟧ β → p α ＝ p β)
+
+continuity-data = continuous
 
 \end{code}
 

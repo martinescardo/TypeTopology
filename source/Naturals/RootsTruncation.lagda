@@ -109,12 +109,18 @@ roots α = Σ n ꞉ ℕ , α n ＝ z
 μρ-root-is-root : (α : ℕ → Z) (r : roots α) → α (μρ-root α r) ＝ z
 μρ-root-is-root α r = pr₂ (μρ α r)
 
-μρ-root-minimal : (α : ℕ → Z) (m : ℕ) (p : α m ＝ z)
-                → (n : ℕ) → α n ＝ z → μρ-root α (m , p) ≤ n
-μρ-root-minimal α m p n q = not-less-bigger-or-equal (μρ-root α (m , p)) n (f (¬¬-intro q))
+μρ-root-is-minimal : (α : ℕ → Z) (m : ℕ) (p : α m ＝ z)
+                   → (n : ℕ) → α n ＝ z → μρ-root α (m , p) ≤ n
+μρ-root-is-minimal α m p n q = not-less-bigger-or-equal k n g
  where
-  f : ¬ (α n ≠ z) → ¬ (n < μρ-root α (m , p))
-  f = contrapositive (pr₂(pr₂(pr₂ (minimal-root α m p))) n)
+  k : ℕ
+  k = μρ-root α (m , p)
+
+  f : n < k → α n ≠ z
+  f = pr₂ (pr₂ (pr₂ (minimal-root α m p))) n
+
+  g :  ¬ (n < k)
+  g l = f l q
 
 μρ-constant : (α : ℕ → Z) → wconstant (μρ α)
 μρ-constant α (n , p) (n' , p') = r
@@ -124,10 +130,10 @@ roots α = Σ n ꞉ ℕ , α n ＝ z
   m' = μρ-root α (n' , p')
 
   l : m ≤ m'
-  l = μρ-root-minimal α n p m' (μρ-root-is-root α (n' , p'))
+  l = μρ-root-is-minimal α n p m' (μρ-root-is-root α (n' , p'))
 
   l' : m' ≤ m
-  l' = μρ-root-minimal α n' p' m (μρ-root-is-root α (n , p))
+  l' = μρ-root-is-minimal α n' p' m (μρ-root-is-root α (n , p))
 
   q : m ＝ m'
   q = ≤-anti _ _ l l'
