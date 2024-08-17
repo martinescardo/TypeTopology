@@ -186,7 +186,7 @@ We also use the letter "a" to range over the apartness type α ♯ β.
 \begin{code}
 
 apartness-criterion : (α β : Cantor) → (Σ n ꞉ ℕ , α n ≠ β n) → α ♯ β
-apartness-criterion α β (n , d) = V
+apartness-criterion α β (n , d) = VI
  where
   open import Naturals.RootsTruncation 𝟚 ₁ (λ b → 𝟚-is-discrete b ₁)
 
@@ -199,20 +199,20 @@ apartness-criterion α β (n , d) = V
   m : ℕ
   m = μ-root γ (n , I)
 
-  e : γ m ＝ ₁
-  e = μ-root-is-root γ (n , I)
+  II : γ m ＝ ₁
+  II = μ-root-is-root γ (n , I)
 
-  II : (i : ℕ) → γ i ＝ ₁ → m ≤ i
-  II = μ-root-is-minimal γ n I
+  III : (i : ℕ) → γ i ＝ ₁ → m ≤ i
+  III = μ-root-is-minimal γ n I
 
-  III : α m ≠ β m
-  III = Lemma[b⊕c＝₁→b≠c] e
+  IV : α m ≠ β m
+  IV = Lemma[b⊕c＝₁→b≠c] II
 
-  IV : (i : ℕ) → α i ≠ β i → m ≤ i
-  IV i d = II i (Lemma[b≠c→b⊕c＝₁] d)
+  V : (i : ℕ) → α i ≠ β i → m ≤ i
+  V i d = III i (Lemma[b≠c→b⊕c＝₁] d)
 
-  V : α ♯ β
-  V = m , III , IV
+  VI : α ♯ β
+  VI = m , IV , V
 
 apartness-criterion-converse : (α β : Cantor) → α ♯ β → (Σ n ꞉ ℕ , α n ≠ β n)
 apartness-criterion-converse α β (n , δ , _) = (n , δ)
