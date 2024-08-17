@@ -186,7 +186,7 @@ We also use the letter "a" to range over the apartness type α ♯ β.
 \begin{code}
 
 apartness-criterion : (α β : Cantor) → (Σ n ꞉ ℕ , α n ≠ β n) → α ♯ β
-apartness-criterion α β (n , d) = III II
+apartness-criterion α β (n , d) = V
  where
   open import Naturals.RootsTruncation 𝓤₀ 𝟚 ₁ (λ b → 𝟚-is-discrete b ₁)
 
@@ -196,23 +196,23 @@ apartness-criterion α β (n , d) = III II
   I : γ n ＝ ₁
   I = Lemma[b≠c→b⊕c＝₁] d
 
-  II : Σ m ꞉ ℕ , ((γ m ＝ ₁) × (m ≤ n) × ((i : ℕ) → i < m → γ i ≠ ₁))
-  II = minimal-root γ n I
+  m : ℕ
+  m = μ-root γ (n , I)
 
-  III : type-of II → α ♯ β
-  III (m , e , _ , a) = m , III₀ , III₁
-   where
-    III₀ : α m ≠ β m
-    III₀ = Lemma[b⊕c＝₁→b≠c] e
+  e : γ m ＝ ₁
+  e = μ-root-is-root γ (n , I)
 
-    III₁ : (i : ℕ) → α i ≠ β i → m ≤ i
-    III₁ i d = not-less-bigger-or-equal m i III₃
-     where
-      III₂ : γ i ＝ ₁
-      III₂ = Lemma[b≠c→b⊕c＝₁] d
+  II : (i : ℕ) → γ i ＝ ₁ → m ≤ i
+  II = μ-root-is-minimal γ n I
 
-      III₃ : ¬ (i < m)
-      III₃ l = a i l III₂
+  III : α m ≠ β m
+  III = Lemma[b⊕c＝₁→b≠c] e
+
+  IV : (i : ℕ) → α i ≠ β i → m ≤ i
+  IV i d = II i (Lemma[b≠c→b⊕c＝₁] d)
+
+  V : α ♯ β
+  V = m , III , IV
 
 apartness-criterion-converse : (α β : Cantor) → α ♯ β → (Σ n ꞉ ℕ , α n ≠ β n)
 apartness-criterion-converse α β (n , δ , _) = (n , δ)
