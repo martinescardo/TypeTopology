@@ -209,6 +209,41 @@ Added 17th August 2024.
 open import NotionsOfDecidability.Complemented
 open import NotionsOfDecidability.Decidable
 
+minimal-witness : (A : ℕ → 𝓤 ̇ )
+                → is-complemented A
+                → (Σ n ꞉ ℕ , A n)
+                → Σ m ꞉ ℕ , (A m × ((k : ℕ) → A k → m ≤ k))
+minimal-witness A A-is-complemented (n , aₙ) = m , aₘ , m-is-minimal-witness
+ where
+  open Roots-truncation 𝟚 ₀ (λ b → 𝟚-is-discrete b ₀)
+
+  α : ℕ → 𝟚
+  α = characteristic-map A A-is-complemented
+
+  n-is-root : α n ＝ ₀
+  n-is-root = characteristic-map-property₀-back A A-is-complemented n aₙ
+
+  r : Root α
+  r = n , n-is-root
+
+  m : ℕ
+  m = μ-root α r
+
+  m-is-root : α m ＝ ₀
+  m-is-root = μ-root-is-root α r
+
+  aₘ : A m
+  aₘ = characteristic-map-property₀ A A-is-complemented m m-is-root
+
+  m-is-minimal-root : (k : ℕ) → α k ＝ ₀ → m ≤ k
+  m-is-minimal-root = μ-root-is-minimal α n n-is-root
+
+  m-is-minimal-witness : (k : ℕ) → A k → m ≤ k
+  m-is-minimal-witness k aₖ = m-is-minimal-root k k-is-root
+   where
+    k-is-root : α k ＝ ₀
+    k-is-root = characteristic-map-property₀-back A A-is-complemented k aₖ
+
 module exit-truncations (pt : propositional-truncations-exist) where
 
   open PropositionalTruncation pt

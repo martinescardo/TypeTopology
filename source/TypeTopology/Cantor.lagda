@@ -9,7 +9,9 @@ The Cantor type of infinite binary sequences.
 open import MLTT.Spartan
 open import MLTT.Two-Properties
 open import Naturals.Order
+open import Naturals.RootsTruncation
 open import Notation.Order
+open import NotionsOfDecidability.Decidable
 open import UF.Base
 open import UF.DiscreteAndSeparated hiding (_♯_)
 open import UF.Equiv
@@ -186,34 +188,10 @@ We also use the letter "a" to range over the apartness type α ♯ β.
 \begin{code}
 
 apartness-criterion : (α β : Cantor) → (Σ n ꞉ ℕ , α n ≠ β n) → α ♯ β
-apartness-criterion α β (n , d) = VI
- where
-  open import Naturals.RootsTruncation
-  open Roots-truncation 𝟚 ₁ (λ b → 𝟚-is-discrete b ₁)
-
-  γ : Cantor
-  γ n = α n ⊕ β n
-
-  I : γ n ＝ ₁
-  I = Lemma[b≠c→b⊕c＝₁] d
-
-  m : ℕ
-  m = μ-root γ (n , I)
-
-  II : γ m ＝ ₁
-  II = μ-root-is-root γ (n , I)
-
-  III : (i : ℕ) → γ i ＝ ₁ → m ≤ i
-  III = μ-root-is-minimal γ n I
-
-  IV : α m ≠ β m
-  IV = Lemma[b⊕c＝₁→b≠c] II
-
-  V : (i : ℕ) → α i ≠ β i → m ≤ i
-  V i d = III i (Lemma[b≠c→b⊕c＝₁] d)
-
-  VI : α ♯ β
-  VI = m , IV , V
+apartness-criterion α β = minimal-witness
+                           (λ n → α n ≠ β n)
+                           (λ n → ¬-preserves-decidability
+                                   (𝟚-is-discrete (α n) (β n)))
 
 apartness-criterion-converse : (α β : Cantor) → α ♯ β → (Σ n ꞉ ℕ , α n ≠ β n)
 apartness-criterion-converse α β (n , δ , _) = (n , δ)
