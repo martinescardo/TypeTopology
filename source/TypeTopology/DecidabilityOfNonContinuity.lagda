@@ -372,3 +372,112 @@ module continuity-criteria (pt : propositional-truncations-exist) where
     (λ m → A-is-complemented (ι m))
 
 \end{code}
+
+Next, we show that continuity is equivalent to a more familiar notion
+of continuity and also equivalent to the uniform version of the of the
+more familiar version. We first work with the untruncated versions.
+
+\begin{code}
+
+open import TypeTopology.Cantor hiding (continuous)
+
+module _ (f : ℕ∞ → ℕ) where
+
+ traditional-uniform-continuity-data-gives-traditional-continuity-data
+  : (Σ m ꞉ ℕ , ((x y : ℕ∞) → ι x ＝⟦ m ⟧ ι y → f x ＝ f y))
+  → ((x : ℕ∞) → Σ m ꞉ ℕ , ((y : ℕ∞) → ι x ＝⟦ m ⟧ ι y → f x ＝ f y))
+ traditional-uniform-continuity-data-gives-traditional-continuity-data
+  (m , m-property) x = m , m-property x
+
+ traditional-continuity-data-gives-continuity-data
+  : ((x : ℕ∞) → Σ m ꞉ ℕ , ((y : ℕ∞) → ι x ＝⟦ m ⟧ ι y → f x ＝ f y))
+  → continuous f
+ traditional-continuity-data-gives-continuity-data f-cts-traditional = III
+  where
+   m : ℕ
+   m = pr₁ (f-cts-traditional ∞)
+
+   m-property : (y : ℕ∞) → ι ∞ ＝⟦ m ⟧ ι y → f ∞ ＝ f y
+   m-property = pr₂ (f-cts-traditional ∞)
+
+   I : (k : ℕ) (n : ℕ) → ι ∞ ＝⟦ k ⟧ ι (max (ι k) (ι n))
+   I 0        n        = ⋆
+   I (succ k) 0        = refl , I k 0
+   I (succ k) (succ n) = refl , I k n
+
+   II : (n : ℕ) → f (max (ι m) (ι n)) ＝ f ∞
+   II n = (m-property (max (ι m) (ι n)) (I m n))⁻¹
+
+   III : continuous f
+   III = m , II
+
+{- To be completed soon (see informal proof below):
+
+ continuity-data-gives-traditional-uniform-continuity-data
+  : continuous f
+  → Σ m ꞉ ℕ , ((x y : ℕ∞) → ι x ＝⟦ m ⟧ ι y → f x ＝ f y)
+ continuity-data-gives-traditional-uniform-continuity-data
+  (m , m-property) = m , m-property'
+  where
+   have-m-property : (n : ℕ) → f (max (ι m) (ι n)) ＝ f ∞
+   have-m-property = m-property
+
+   m-property' : (x y : ℕ∞) → ι x ＝⟦ m ⟧ ι y → f x ＝ f y
+   m-property' x y e = {!!}
+-}
+\end{code}
+
+To complete the above whole:
+
+If e : ι x ＝⟦ m ⟧ ι y, either the first m positions of x and y are
+all ₁, or else x and y are equal (in which case f x ＝ f y follows
+directly).
+
+If they are all ₁, then we can use density (proved in the module
+GenericConvergentSequence).
+
+Define g , h : ℕ∞ → ℕ by g x = f (max (ι m) x) and h x = f ∞
+(constant). Then g (ι n) = h (ι n) for every n : ℕ by m-property, and
+also it is easy to check that g ∞ ＝ h ∞. So g u = h u for every u by
+density.
+
+Now max (ι m) x ＝ x (because the first m positions of x are ₁), and
+so f (max (ι m) x) ＝ f x, and hence
+
+ f ∞ ＝ h x ＝ g x = f (max (ι m) x) ＝ f x,
+
+and, similarly,
+
+ f ∞ ＝ h y ＝ g y = f (max (ι m) y) ＝ f y,
+
+and so f x ＝ f y, as required.
+
+I'll write this proof down in Agda in the next opportunity.
+
+
+I thought I was going to need the following, but I was wrong. I'll
+keep it for the moment in case it turns out to be useful.
+
+\begin{code}
+
+ technical-lemma : (k : ℕ) (y : ℕ∞) → ι ∞ ＝⟦ k ⟧ ι y → max (ι k) y ＝ y
+ technical-lemma 0        y ⋆       = refl
+ technical-lemma (succ k) y (h , t) = γ
+  where
+   have-h : ₁ ＝ ι y 0
+   have-h = h
+
+   have-t : ι ∞ ＝⟦ k ⟧ ι (Pred y)
+   have-t = t
+
+   IH : max (ι k) (Pred y) ＝ Pred y
+   IH = technical-lemma k (Pred y) t
+
+   δ : ι (max (Succ (ι k)) y) ∼ ι y
+   δ 0        = h
+   δ (succ i) = ap (λ - → ι - i) IH
+
+   γ : max (Succ (ι k)) y ＝ y
+   γ = ℕ∞-to-ℕ→𝟚-lc fe (dfunext fe δ)
+
+\end{code}
