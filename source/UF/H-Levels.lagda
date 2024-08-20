@@ -193,44 +193,43 @@ The subuniverse of types of hlevel n is defined as follows.
 
 \end{code}
 
-From univalence we can show that (ℍ n) is of level (n + 1), for all n : ℕ.
+From univalence we can show that ℍ n is of level (n + 1), for all n : ℕ.
 
 \begin{code}
+
+equiv-preserves-hlevel : (n : ℕ) {X : 𝓤 ̇  } {Y : 𝓥 ̇  }
+                       → X is-of-hlevel n
+                       → Y is-of-hlevel n
+                       → (X ≃ Y) is-of-hlevel n
+equiv-preserves-hlevel zero = ≃-is-singleton fe'
+equiv-preserves-hlevel (succ n) {X} {Y} X-h-lev Y-h-lev =
+ hlevel-closed-under-embedding (succ n) ⋆ e'
+                               (hlevel-closed-under-Π (succ n) (λ _ → Y)
+                                                      (λ _ → Y-h-lev))
+ where
+  e' : (X ≃ Y) ↪ (X → Y)
+  e' = (⌜_⌝ , pr₁-is-embedding (λ f → being-equiv-is-prop fe' f))
 
 ℍ-is-of-next-hlevel : (n : ℕ)
                     → (𝓤 : Universe)
                     → is-univalent 𝓤
                     → (ℍ n 𝓤) is-of-hlevel (succ n)
-ℍ-is-of-next-hlevel zero 𝓤 ua = C
+ℍ-is-of-next-hlevel zero 𝓤 ua (X , X-is-contr) (Y , Y-is-contr) =
+ hlevel-closed-under-equiv zero e
+  (equiv-preserves-hlevel zero X-is-contr Y-is-contr)
  where
-  C : (X X' : ℍ zero 𝓤) → is-contr (X ＝ X')
-  C (X , X-is-contr) (X' , X'-is-contr) =
-    hlevel-closed-under-equiv zero e C'
-   where
-    I = ≃-sym (to-subtype-＝-≃ (λ X → being-singleton-is-prop fe))
-    e = ((X , X-is-contr) ＝ (X' , X'-is-contr)) ≃⟨ I ⟩
-        (X ＝ X')                                ≃⟨ univalence-≃ ua X X' ⟩
-        (X ≃ X')                                 ■
-    P : is-prop (X ≃ X')
-    P = ≃-is-prop fe' (is-prop'-implies-is-prop
-                  (hlevels-are-upper-closed zero X' X'-is-contr))
-    C' : is-contr (X ≃ X')
-    C' = pointed-props-are-singletons (singleton-≃ X-is-contr X'-is-contr) P
+  I = ≃-sym (to-subtype-＝-≃ (λ X → being-singleton-is-prop fe))
+  e = ((X , X-is-contr) ＝ (Y , Y-is-contr)) ≃⟨ I ⟩
+      (X ＝ Y)                               ≃⟨ univalence-≃ ua X Y ⟩
+      (X ≃ Y)                                ■
 ℍ-is-of-next-hlevel (succ n) 𝓤 ua (X , l) (X' , l') =
-  hlevel-closed-under-equiv (succ n) e
-      (hlevel-closed-under-embedding (succ n) ⋆ e'
-                                     (hlevel-closed-under-Π (succ n)
-                                                            (λ _ → X')
-                                                            (λ x x' → l' x')))
-  where
-   II = ≃-sym (to-subtype-＝-≃ λ _ → Π₂-is-prop fe
-               (λ x x' → hlevel-relation-is-prop n (x ＝ x')))
-   e = ((X , l) ＝ (X' , l')) ≃⟨ II ⟩
-       (X ＝ X')              ≃⟨ univalence-≃ ua X X' ⟩
-       (X ≃ X')               ■
-
-   e' : (X ≃ X') ↪ (X → X')
-   e' = (pr₁ , pr₁-is-embedding (λ f → being-equiv-is-prop fe' f))
+ hlevel-closed-under-equiv (succ n) e (equiv-preserves-hlevel (succ n) l l')
+ where
+  II = ≃-sym (to-subtype-＝-≃ λ _ → Π₂-is-prop fe
+             (λ x x' → hlevel-relation-is-prop n (x ＝ x')))
+  e = ((X , l) ＝ (X' , l')) ≃⟨ II ⟩
+      (X ＝ X')              ≃⟨ univalence-≃ ua X X' ⟩
+      (X ≃ X')               ■
 
 \end{code}
 
