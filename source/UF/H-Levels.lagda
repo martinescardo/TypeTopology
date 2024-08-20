@@ -214,22 +214,13 @@ equiv-preserves-hlevel (succ n) {X} {Y} X-h-lev Y-h-lev =
                     → (𝓤 : Universe)
                     → is-univalent 𝓤
                     → (ℍ n 𝓤) is-of-hlevel (succ n)
-ℍ-is-of-next-hlevel zero 𝓤 ua (X , X-is-contr) (Y , Y-is-contr) =
- hlevel-closed-under-equiv zero e
-  (equiv-preserves-hlevel zero X-is-contr Y-is-contr)
+ℍ-is-of-next-hlevel n 𝓤 ua (X , l) (Y , l') =
+ hlevel-closed-under-equiv n II (equiv-preserves-hlevel n l l')
  where
-  I = ≃-sym (to-subtype-＝-≃ (λ X → being-singleton-is-prop fe))
-  e = ((X , X-is-contr) ＝ (Y , Y-is-contr)) ≃⟨ I ⟩
-      (X ＝ Y)                               ≃⟨ univalence-≃ ua X Y ⟩
-      (X ≃ Y)                                ■
-ℍ-is-of-next-hlevel (succ n) 𝓤 ua (X , l) (X' , l') =
- hlevel-closed-under-equiv (succ n) e (equiv-preserves-hlevel (succ n) l l')
- where
-  II = ≃-sym (to-subtype-＝-≃ λ _ → Π₂-is-prop fe
-             (λ x x' → hlevel-relation-is-prop n (x ＝ x')))
-  e = ((X , l) ＝ (X' , l')) ≃⟨ II ⟩
-      (X ＝ X')              ≃⟨ univalence-≃ ua X X' ⟩
-      (X ≃ X')               ■
-
+  I = ≃-sym (to-subtype-＝-≃ (λ - → hlevel-relation-is-prop n -))
+  II = ((X , l) ＝ (Y , l')) ≃⟨ I ⟩
+       (X ＝ Y)              ≃⟨ univalence-≃ ua X Y ⟩
+       (X ≃ Y)               ■
+  
 \end{code}
 
