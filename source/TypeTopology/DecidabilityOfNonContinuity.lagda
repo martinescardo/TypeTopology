@@ -6,7 +6,7 @@ For any function f : ℕ∞ → ℕ, it is decidable whether f is non-continuous
 
 Based on the paper
 
-    Constructive decidability of classical continuity
+[1] Martin Escardo. Constructive decidability of classical continuity.
     Mathematical Structures in Computer Science , Volume 25,
     October 2015 , pp. 1578 - 1589
     https://doi.org/10.1017/S096012951300042X
@@ -27,6 +27,7 @@ open import CoNaturals.Type
 open import MLTT.Two-Properties
 open import Notation.CanonicalMap
 open import NotionsOfDecidability.Decidable
+open import NotionsOfDecidability.SemiDecidable
 open import TypeTopology.ADecidableQuantificationOverTheNaturals fe
 open import UF.DiscreteAndSeparated
 
@@ -90,31 +91,37 @@ choose the latter for convenience.
 continuous : (ℕ∞ → ℕ) → 𝓤₀ ̇
 continuous f = Σ m ꞉ ℕ , ((n : ℕ) → f (max (ι m) (ι n)) ＝ f ∞)
 
-Theorem-3·2 : (f : ℕ∞ → ℕ) → is-decidable (¬ continuous f)
-Theorem-3·2 f = V
- where
-  ncf : 𝓤₀ ̇
-  ncf = (m : ℕ) → ¬ ((n : ℕ) → f (max (ι m) (ι n)) ＝[ℕ] f ∞)
+continuity-data = continuous
 
-  I : ncf → ¬ continuous f
-  I ν (m , a) = ν m (λ n → lr-implication
-                            (＝-agrees-with-＝[ℕ]
-                              (f (max (ι m) (ι n)))
-                              (f ∞))
-                            (a n))
+noncontinuous : (ℕ∞ → ℕ) → 𝓤₀ ̇
+noncontinuous f = (m : ℕ) → ¬ ((n : ℕ) → f (max (ι m) (ι n)) ＝[ℕ] f ∞)
 
-  II : ¬ continuous f → ncf
-  II ν m a = ν (m , (λ n → rl-implication
-                            (＝-agrees-with-＝[ℕ]
-                               (f (max (ι m) (ι n)))
-                               (f ∞))
-                            (a n)))
+module _ (f : ℕ∞ → ℕ) where
 
-  III : is-decidable ncf
-  III = Lemma-3·1 (λ x y → χ＝ (f (max x y)) (f ∞))
+ noncontinuity-is-decidable : is-decidable (noncontinuous f)
+ noncontinuity-is-decidable = Lemma-3·1 (λ x y → χ＝ (f (max x y)) (f ∞))
 
-  V : is-decidable (¬ continuous f)
-  V = map-decidable I II III
+ not-continuous-gives-noncontinuous : ¬ continuous f → noncontinuous f
+ not-continuous-gives-noncontinuous ν m a =
+  ν (m , (λ n → rl-implication
+                 (＝-agrees-with-＝[ℕ]
+                    (f (max (ι m) (ι n)))
+                    (f ∞))
+                 (a n)))
+
+ noncontinuous-gives-not-continuous : noncontinuous f → ¬ continuous f
+ noncontinuous-gives-not-continuous ν (m , a) =
+  ν m (λ n → lr-implication
+              (＝-agrees-with-＝[ℕ]
+                (f (max (ι m) (ι n)))
+                (f ∞))
+              (a n))
+
+ Theorem-3·2 : is-decidable (¬ continuous f)
+ Theorem-3·2 = map-decidable
+                noncontinuous-gives-not-continuous
+                not-continuous-gives-noncontinuous
+                noncontinuity-is-decidable
 
 \end{code}
 
@@ -139,7 +146,8 @@ open import TypeTopology.GenericConvergentSequenceCompactness fe
 noncontinuous-map-gives-WLPO : (f : ℕ∞ → ℕ) → ¬ continuous f → WLPO
 noncontinuous-map-gives-WLPO f f-non-cts = VI
  where
-  g : (u : ℕ∞) → Σ v₀ ꞉ ℕ∞ , (f (max u v₀) ＝ f ∞ → (v : ℕ∞) → f (max u v) ＝ f ∞)
+  g : (u : ℕ∞)
+    → Σ v₀ ꞉ ℕ∞ , (f (max u v₀) ＝ f ∞ → (v : ℕ∞) → f (max u v) ＝ f ∞)
   g u = ℕ∞-Compact∙
          (λ v → f (max u v) ＝ f ∞)
          (λ v → ℕ-is-discrete (f (max u v)) (f ∞))
@@ -312,3 +320,55 @@ doing.
 
 One reason I want to do this is work by other people on realizability
 models and light condensed sets models in HoTT/UF.
+
+Added 20th August. Continuity as property gives continuity data.
+
+\begin{code}
+
+open import Naturals.RootsTruncation
+open import UF.PropTrunc
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
+
+module continuity-criteria (pt : propositional-truncations-exist) where
+
+ open PropositionalTruncation pt
+ open exit-truncations pt
+
+ is-continuous : (ℕ∞ → ℕ) → 𝓤₀ ̇
+ is-continuous f = ∃ m ꞉ ℕ , ((n : ℕ) → f (max (ι m) (ι n)) ＝ f ∞)
+
+ module _ (f : ℕ∞ → ℕ) where
+
+  private
+   A : ℕ∞ → 𝓤₀ ̇
+   A x = (n : ℕ) → f (max x (ι n)) ＝ f ∞
+
+   A-is-prop-valued : (x : ℕ∞) → is-prop (A x)
+   A-is-prop-valued x = Π-is-prop fe (λ n → ℕ-is-set)
+
+   A-is-complemented : (x : ℕ∞) → is-decidable (A x)
+   A-is-complemented x = γ
+    where
+     B : 𝓤₀ ̇
+     B = (n : ℕ) → f (max x (ι n)) ＝[ℕ] f ∞
+
+     B-is-decidable : is-decidable B
+     B-is-decidable = Theorem-8·2 (λ y → χ＝ (f (max x y)) (f ∞))
+
+     γ : is-decidable (A x)
+     γ = map-decidable
+          (λ b n → rl-implication (＝-agrees-with-＝[ℕ] _ _) (b n))
+          (λ a n → lr-implication (＝-agrees-with-＝[ℕ] _ _) (a n))
+          B-is-decidable
+
+  continuity-data-gives-continuity-property : continuity-data f → is-continuous f
+  continuity-data-gives-continuity-property = ∣_∣
+
+  continuity-property-gives-continuity-data : is-continuous f → continuity-data f
+  continuity-property-gives-continuity-data =
+   exit-truncation
+    (λ m → (n : ℕ) → f (max (ι m) (ι n)) ＝ f ∞)
+    (λ m → A-is-complemented (ι m))
+
+\end{code}
