@@ -368,7 +368,7 @@ Notice that ι denotes both the inclusion ℕ → ℕ∞ and the
 inclusion ℕ∞ → (ℕ → 𝟚), where the context has to be used to
 disambiguate.
 
-We firs define when two extended natural numbers x and y agree up to
+We first define when two extended natural numbers x and y agree up to
 precision k, written x ＝⟪ k ⟫ y.
 
 \begin{code}
@@ -418,8 +418,7 @@ module _ (f : ℕ∞ → ℕ) where
 
 \end{code}
 
-We now need to prove some lemmas about the relation x ＝⟪ k ⟫ y
-with x and y ranging over ℕ∞.
+We now need to prove some lemmas about the relation x ＝⟪ k ⟫ y.
 
 \begin{code}
 
