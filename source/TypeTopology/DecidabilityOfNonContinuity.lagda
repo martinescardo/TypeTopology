@@ -368,17 +368,23 @@ Notice that ι denotes both the inclusion ℕ → ℕ∞ and the
 inclusion ℕ∞ → (ℕ → 𝟚), where the context has to be used to
 disambiguate.
 
+We firs define when two extended natural numbers x and y agree up to
+precision k, written x ＝⟪ k ⟫ y.
+
 \begin{code}
 
 open import TypeTopology.Cantor hiding (continuous ; continuity-data)
 
+_＝⟪_⟫_ : ℕ∞ → ℕ → ℕ∞ → 𝓤₀ ̇
+x ＝⟪ k ⟫ y = ι x ＝⟦ k ⟧ ι y
+
 traditional-continuity-data : (ℕ∞ → ℕ) → 𝓤₀ ̇
 traditional-continuity-data f =
- (x : ℕ∞) → Σ m ꞉ ℕ , ((y : ℕ∞) → ι x ＝⟦ m ⟧ ι y → f x ＝ f y)
+ (x : ℕ∞) → Σ m ꞉ ℕ , ((y : ℕ∞) → x ＝⟪ m ⟫ y → f x ＝ f y)
 
 traditional-uniform-continuity-data : (ℕ∞ → ℕ) → 𝓤₀ ̇
 traditional-uniform-continuity-data f =
- Σ m ꞉ ℕ , ((x y : ℕ∞) → ι x ＝⟦ m ⟧ ι y → f x ＝ f y)
+ Σ m ꞉ ℕ , ((x y : ℕ∞) → x ＝⟪ m ⟫ y → f x ＝ f y)
 
 module _ (f : ℕ∞ → ℕ) where
 
@@ -396,10 +402,10 @@ module _ (f : ℕ∞ → ℕ) where
    m : ℕ
    m = pr₁ (f-cts-traditional ∞)
 
-   m-property : (y : ℕ∞) → ι ∞ ＝⟦ m ⟧ ι y → f ∞ ＝ f y
+   m-property : (y : ℕ∞) → ∞ ＝⟪ m ⟫ y → f ∞ ＝ f y
    m-property = pr₂ (f-cts-traditional ∞)
 
-   I : (k : ℕ) (n : ℕ) → ι ∞ ＝⟦ k ⟧ ι (max (ι k) (ι n))
+   I : (k : ℕ) (n : ℕ) → ∞ ＝⟪ k ⟫ (max (ι k) (ι n))
    I 0        n        = ⋆
    I (succ k) 0        = refl , I k 0
    I (succ k) (succ n) = refl , I k n
@@ -412,19 +418,19 @@ module _ (f : ℕ∞ → ℕ) where
 
 \end{code}
 
-We now need to prove some lemmas about the relation ι x ＝⟦ k ⟧ ι y
+We now need to prove some lemmas about the relation x ＝⟪ k ⟫ y
 with x and y ranging over ℕ∞.
 
 \begin{code}
 
- lemma₀ : (k : ℕ) (y : ℕ∞) → ι ∞ ＝⟦ k ⟧ ι y → max (ι k) y ＝ y
+ lemma₀ : (k : ℕ) (y : ℕ∞) → ∞ ＝⟪ k ⟫ y → max (ι k) y ＝ y
  lemma₀ 0        y ⋆       = refl
  lemma₀ (succ k) y (h , t) = γ
   where
    have-h : ₁ ＝ ι y 0
    have-h = h
 
-   have-t : ι ∞ ＝⟦ k ⟧ ι (Pred y)
+   have-t : ∞ ＝⟪ k ⟫ (Pred y)
    have-t = t
 
    IH : max (ι k) (Pred y) ＝ Pred y
@@ -438,12 +444,12 @@ with x and y ranging over ℕ∞.
    γ = ℕ∞-to-ℕ→𝟚-lc fe (dfunext fe δ)
 
  lemma₁ : (x y : ℕ∞) (k : ℕ)
-        → ι x ＝⟦ k ⟧ ι y
-        → (x ＝ y) + (ι ∞ ＝⟦ k ⟧ ι x)
+        → x ＝⟪ k ⟫ y
+        → (x ＝ y) + (∞ ＝⟪ k ⟫ x)
  lemma₁ x y 0        ⋆       = inr ⋆
  lemma₁ x y (succ k) (h , t) = γ
   where
-   IH : (Pred x ＝ Pred y) + (ι ∞ ＝⟦ k ⟧ ι (Pred x))
+   IH : (Pred x ＝ Pred y) + (∞ ＝⟪ k ⟫ (Pred x))
    IH = lemma₁ (Pred x) (Pred y) k t
 
    γl∼ : Pred x ＝ Pred y → ι x ∼ ι y
@@ -453,7 +459,7 @@ with x and y ranging over ℕ∞.
    γl : Pred x ＝ Pred y → x ＝ y
    γl p = ℕ∞-to-ℕ→𝟚-lc fe (dfunext fe (γl∼ p))
 
-   γr : ι ∞ ＝⟦ k ⟧ ι (Pred x) → (x ＝ y) + (ι ∞ ＝⟦ succ k ⟧ ι x)
+   γr : ∞ ＝⟪ k ⟫ (Pred x) → (x ＝ y) + (∞ ＝⟪ succ k ⟫ x)
    γr q = 𝟚-equality-cases
            (λ (p : ι x 0 ＝ ₀)
                  → inl (x    ＝⟨ is-Zero-equal-Zero fe p ⟩
@@ -462,16 +468,16 @@ with x and y ranging over ℕ∞.
            (λ (p : ι x 0 ＝ ₁)
                  → inr ((p ⁻¹) , q))
 
-   γ : (x ＝ y) + (ι ∞ ＝⟦ succ k ⟧ ι x)
+   γ : (x ＝ y) + (∞ ＝⟪ succ k ⟫ x)
    γ = Cases IH (inl ∘ γl) γr
 
  lemma₂ : (x y : ℕ∞) (k : ℕ)
-        → ι x ＝⟦ k ⟧ ι y
+        → x ＝⟪ k ⟫ y
         → (x ＝ y) + (max (ι k) x ＝ x) × (max (ι k) y ＝ y)
  lemma₂ x y k e =
    Cases (lemma₁ x y k e)
     inl
-    (λ (d : ι ∞ ＝⟦ k ⟧ ι x)
+    (λ (d : ∞ ＝⟪ k ⟫ x)
           → inr (lemma₀ k x d ,
                  lemma₀ k y (＝⟦⟧-trans (ι ∞) (ι x) (ι y) k d e)))
 
@@ -497,7 +503,7 @@ with x and y ranging over ℕ∞.
          f (max (ι m) z) ＝⟨ q z ⟩
          f ∞             ∎
 
-   m-property' : (x y : ℕ∞) → ι x ＝⟦ m ⟧ ι y → f x ＝ f y
+   m-property' : (x y : ℕ∞) → x ＝⟪ m ⟫ y → f x ＝ f y
    m-property' x y e =
     Cases (lemma₂ x y m e)
      (λ (p : x ＝ y) → ap f p)
@@ -546,11 +552,11 @@ module more-continuity-criteria (pt : propositional-truncations-exist) where
 
  is-traditionally-continuous : (ℕ∞ → ℕ) → 𝓤₀ ̇
  is-traditionally-continuous f =
-  (x : ℕ∞) → ∃ m ꞉ ℕ , ((y : ℕ∞) → ι x ＝⟦ m ⟧ ι y → f x ＝ f y)
+  (x : ℕ∞) → ∃ m ꞉ ℕ , ((y : ℕ∞) → x ＝⟪ m ⟫ y → f x ＝ f y)
 
  is-traditionally-uniformly-continuous : (ℕ∞ → ℕ) → 𝓤₀ ̇
  is-traditionally-uniformly-continuous f =
-  ∃ m ꞉ ℕ , ((x y : ℕ∞) → ι x ＝⟦ m ⟧ ι y → f x ＝ f y)
+  ∃ m ꞉ ℕ , ((x y : ℕ∞) → x ＝⟪ m ⟫ y → f x ＝ f y)
 
  module _ (f : ℕ∞ → ℕ) where
 
@@ -567,12 +573,12 @@ module more-continuity-criteria (pt : propositional-truncations-exist) where
    = exit-truncation (C x) (C-is-decidable x) (f-cts x)
    where
     C : ℕ∞ → ℕ → 𝓤₀ ̇
-    C x m = (y : ℕ∞) → ι x ＝⟦ m ⟧ ι y → f x ＝ f y
+    C x m = (y : ℕ∞) → x ＝⟪ m ⟫ y → f x ＝ f y
 
     C-is-decidable : (x : ℕ∞) (m : ℕ) → is-decidable (C x m)
     C-is-decidable x m =
      ℕ∞-Π-Compact
-      (λ y → ι x ＝⟦ m ⟧ ι y → f x ＝ f y)
+      (λ y → x ＝⟪ m ⟫ y → f x ＝ f y)
       (λ y → →-preserves-decidability
               (＝⟦⟧-is-decidable (ι x) (ι y) m)
               (ℕ-is-discrete (f x) (f y)))
@@ -590,14 +596,14 @@ module more-continuity-criteria (pt : propositional-truncations-exist) where
    = exit-truncation U U-is-decidable f-uc
    where
     U : ℕ → 𝓤₀ ̇
-    U m = (x y : ℕ∞) → ι x ＝⟦ m ⟧ ι y → f x ＝ f y
+    U m = (x y : ℕ∞) → x ＝⟪ m ⟫ y → f x ＝ f y
 
     U-is-decidable : (m : ℕ) → is-decidable (U m)
     U-is-decidable m =
      ℕ∞-Π-Compact
-      (λ x → (y : ℕ∞) → ι x ＝⟦ m ⟧ ι y → f x ＝ f y)
+      (λ x → (y : ℕ∞) → x ＝⟪ m ⟫ y → f x ＝ f y)
       (λ x → ℕ∞-Π-Compact
-              (λ y → ι x ＝⟦ m ⟧ ι y → f x ＝ f y)
+              (λ y → x ＝⟪ m ⟫ y → f x ＝ f y)
               (λ y → →-preserves-decidability
                       (＝⟦⟧-is-decidable (ι x) (ι y) m)
                       (ℕ-is-discrete (f x) (f y))))
