@@ -377,6 +377,10 @@ Next, we show that continuity is equivalent to a more familiar notion
 of continuity and also equivalent to the uniform version of the of the
 more familiar version. We first work with the untruncated versions.
 
+Notice that ι denotes both the inclusion ℕ → ℕ∞ and the
+inclusion ℕ∞ → (ℕ → 𝟚), where the context has to be used to
+disambiguate.
+
 \begin{code}
 
 open import TypeTopology.Cantor hiding (continuous)
@@ -411,12 +415,70 @@ module _ (f : ℕ∞ → ℕ) where
    III : continuous f
    III = m , II
 
-{- -- To be completed soon:
+\end{code}
 
- lemma : (x y : ℕ∞) (m : ℕ)
-       → ι x ＝⟦ m ⟧ ι y
-       → (x ＝ y) + (max (ι m) x ＝ x) × (max (ι m) y ＝ y)
- lemma x y e = {!!}
+We now need to prove some lemmas about the relation ι x ＝⟦ k ⟧ ι y
+with x and y ranging over ℕ∞.
+
+\begin{code}
+
+ lemma₀ : (k : ℕ) (y : ℕ∞) → ι ∞ ＝⟦ k ⟧ ι y → max (ι k) y ＝ y
+ lemma₀ 0        y ⋆       = refl
+ lemma₀ (succ k) y (h , t) = γ
+  where
+   have-h : ₁ ＝ ι y 0
+   have-h = h
+
+   have-t : ι ∞ ＝⟦ k ⟧ ι (Pred y)
+   have-t = t
+
+   IH : max (ι k) (Pred y) ＝ Pred y
+   IH = lemma₀ k (Pred y) t
+
+   δ : ι (max (Succ (ι k)) y) ∼ ι y
+   δ 0        = h
+   δ (succ i) = ap (λ - → ι - i) IH
+
+   γ : max (Succ (ι k)) y ＝ y
+   γ = ℕ∞-to-ℕ→𝟚-lc fe (dfunext fe δ)
+
+ lemma₁ : (x y : ℕ∞) (k : ℕ)
+        → ι x ＝⟦ k ⟧ ι y
+        → (x ＝ y) + (ι ∞ ＝⟦ k ⟧ ι x)
+ lemma₁ x y 0        ⋆       = inr ⋆
+ lemma₁ x y (succ k) (h , t) = γ
+  where
+   IH : (Pred x ＝ Pred y) + (ι ∞ ＝⟦ k ⟧ ι (Pred x))
+   IH = lemma₁ (Pred x) (Pred y) k t
+
+   γl∼ : Pred x ＝ Pred y → ι x ∼ ι y
+   γl∼ p 0        = h
+   γl∼ p (succ i) = ap (λ - → ι - i) p
+
+   γl : Pred x ＝ Pred y → x ＝ y
+   γl p = ℕ∞-to-ℕ→𝟚-lc fe (dfunext fe (γl∼ p))
+
+   γr : ι ∞ ＝⟦ k ⟧ ι (Pred x) → (x ＝ y) + (ι ∞ ＝⟦ succ k ⟧ ι x)
+   γr q = 𝟚-equality-cases
+           (λ (p : ι x 0 ＝ ₀)
+                 → inl (x    ＝⟨ is-Zero-equal-Zero fe p ⟩
+                        Zero ＝⟨ (is-Zero-equal-Zero fe (h ⁻¹ ∙ p))⁻¹ ⟩
+                        y    ∎))
+           (λ (p : ι x 0 ＝ ₁)
+                 → inr ((p ⁻¹) , q))
+
+   γ : (x ＝ y) + (ι ∞ ＝⟦ succ k ⟧ ι x)
+   γ = Cases IH (inl ∘ γl) γr
+
+ lemma₂ : (x y : ℕ∞) (k : ℕ)
+        → ι x ＝⟦ k ⟧ ι y
+        → (x ＝ y) + (max (ι k) x ＝ x) × (max (ι k) y ＝ y)
+ lemma₂ x y k e =
+   Cases (lemma₁ x y k e)
+    inl
+    (λ (d : ι ∞ ＝⟦ k ⟧ ι x)
+          → inr (lemma₀ k x d ,
+                 lemma₀ k y (＝⟦⟧-trans (ι ∞) (ι x) (ι y) k d e)))
 
  continuity-data-gives-traditional-uniform-continuity-data
   : continuous f
@@ -443,37 +505,10 @@ module _ (f : ℕ∞ → ℕ) where
 
    m-property' : (x y : ℕ∞) → ι x ＝⟦ m ⟧ ι y → f x ＝ f y
    m-property' x y e =
-    Cases (lemma x y m e)
+    Cases (lemma₂ x y m e)
      (λ (p : x ＝ y) → ap f p)
      (λ (q , r) → f x ＝⟨ I x q ⟩
                   f ∞ ＝⟨ I y r ⁻¹ ⟩
                   f y ∎)
--}
-\end{code}
-
-I thought I was going to need the following, but I was wrong. I'll
-keep it for the moment in case it turns out to be useful.
-
-\begin{code}
-
- technical-lemma : (k : ℕ) (y : ℕ∞) → ι ∞ ＝⟦ k ⟧ ι y → max (ι k) y ＝ y
- technical-lemma 0        y ⋆       = refl
- technical-lemma (succ k) y (h , t) = γ
-  where
-   have-h : ₁ ＝ ι y 0
-   have-h = h
-
-   have-t : ι ∞ ＝⟦ k ⟧ ι (Pred y)
-   have-t = t
-
-   IH : max (ι k) (Pred y) ＝ Pred y
-   IH = technical-lemma k (Pred y) t
-
-   δ : ι (max (Succ (ι k)) y) ∼ ι y
-   δ 0        = h
-   δ (succ i) = ap (λ - → ι - i) IH
-
-   γ : max (Succ (ι k)) y ＝ y
-   γ = ℕ∞-to-ℕ→𝟚-lc fe (dfunext fe δ)
 
 \end{code}

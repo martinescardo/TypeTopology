@@ -635,6 +635,9 @@ max (α , r) (β , s) = (λ i → max𝟚 (α i) (β i)) , t
 max-comm : funext₀ → (u v : ℕ∞) → max u v ＝ max v u
 max-comm fe u v = ℕ∞-to-ℕ→𝟚-lc fe (dfunext fe (λ i → max𝟚-comm (ι u i) (ι v i)))
 
+max0-property : (u : ℕ∞) → max Zero u ＝ u
+max0-property u = refl
+
 max∞-property : (u : ℕ∞) → max ∞ u ＝ ∞
 max∞-property u = refl
 
