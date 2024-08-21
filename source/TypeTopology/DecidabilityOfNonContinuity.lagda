@@ -309,14 +309,12 @@ space, continuity of functions ℕ∞ → D, with D discrete, is equivalent
 to uniform continuity, constructively, without the need of Brouwerian
 axioms.
 
-So I will do next is to show that all imaginable notions of (uniform)
-continuity for functions ℕ∞ → D are equivalent, constructively.
+So I what will do next is to show that all imaginable notions of
+(uniform) continuity for functions ℕ∞ → D are equivalent,
+constructively.
 
 Moreover, I will compare typal versus propositional definitions of
 (uniform) continuity.
-
-This could be classified as a TODO, but rather it is something I am
-doing.
 
 One reason I want to do this is work by other people on realizability
 models and light condensed sets models in HoTT/UF.
@@ -498,7 +496,6 @@ with x and y ranging over ℕ∞.
      q : (u : ℕ∞) → f (max (ι m) u) ＝ f ∞
      q = ℕ∞-density fe ℕ-is-¬¬-separated m-property q∞
 
-     γ : f z ＝ f ∞
      γ = f z             ＝⟨ ap f (p ⁻¹) ⟩
          f (max (ι m) z) ＝⟨ q z ⟩
          f ∞             ∎
@@ -512,3 +509,10 @@ with x and y ranging over ℕ∞.
                   f y ∎)
 
 \end{code}
+
+This closes a circle, so that that all notions of continuity data are
+logically equivalent.
+
+TODO. They should also be equivalent as types, but this is not
+important for our purposes, because we are interested in continuity as
+property.
