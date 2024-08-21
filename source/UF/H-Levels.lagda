@@ -215,12 +215,13 @@ equiv-preserves-hlevel (succ n) {X} {Y} X-h-lev Y-h-lev =
                     → is-univalent 𝓤
                     → (ℍ n 𝓤) is-of-hlevel (succ n)
 ℍ-is-of-next-hlevel n 𝓤 ua (X , l) (Y , l') =
- hlevel-closed-under-equiv n II (equiv-preserves-hlevel n l l')
+ hlevel-closed-under-equiv n I (equiv-preserves-hlevel n l l')
  where
-  I = ≃-sym (to-subtype-＝-≃ (λ - → hlevel-relation-is-prop n -))
-  II = ((X , l) ＝ (Y , l')) ≃⟨ I ⟩
+  I = ((X , l) ＝ (Y , l')) ≃⟨ II ⟩
        (X ＝ Y)              ≃⟨ univalence-≃ ua X Y ⟩
        (X ≃ Y)               ■
+   where
+    II = ≃-sym (to-subtype-＝-≃ (λ - → hlevel-relation-is-prop n -))
   
 \end{code}
 
