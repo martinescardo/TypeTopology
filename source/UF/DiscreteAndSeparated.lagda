@@ -213,6 +213,9 @@ discrete-is-¬¬-separated d x y = ¬¬-elim (d x y)
 𝟚-is-¬¬-separated : is-¬¬-separated 𝟚
 𝟚-is-¬¬-separated = discrete-is-¬¬-separated 𝟚-is-discrete
 
+ℕ-is-¬¬-separated : is-¬¬-separated ℕ
+ℕ-is-¬¬-separated = discrete-is-¬¬-separated ℕ-is-discrete
+
 subtype-is-¬¬-separated : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (m : X → Y)
                                      → left-cancellable m
                                      → is-¬¬-separated Y

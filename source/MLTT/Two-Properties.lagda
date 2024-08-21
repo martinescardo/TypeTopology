@@ -291,6 +291,12 @@ max𝟚 : 𝟚 → 𝟚 → 𝟚
 max𝟚 ₀ b = b
 max𝟚 ₁ b = ₁
 
+max𝟚-comm : (b c : 𝟚) → max𝟚 b c ＝ max𝟚 c b
+max𝟚-comm ₀ ₀ = refl
+max𝟚-comm ₀ ₁ = refl
+max𝟚-comm ₁ ₀ = refl
+max𝟚-comm ₁ ₁ = refl
+
 max𝟚-idemp : (b : 𝟚) → max𝟚 b b ＝ b
 max𝟚-idemp ₀ = refl
 max𝟚-idemp ₁ = refl

@@ -411,7 +411,12 @@ module _ (f : ℕ∞ → ℕ) where
    III : continuous f
    III = m , II
 
-{- To be completed soon (see informal proof below):
+{- -- To be completed soon:
+
+ lemma : (x y : ℕ∞) (m : ℕ)
+       → ι x ＝⟦ m ⟧ ι y
+       → (x ＝ y) + (max (ι m) x ＝ x) × (max (ι m) y ＝ y)
+ lemma x y e = {!!}
 
  continuity-data-gives-traditional-uniform-continuity-data
   : continuous f
@@ -422,38 +427,29 @@ module _ (f : ℕ∞ → ℕ) where
    have-m-property : (n : ℕ) → f (max (ι m) (ι n)) ＝ f ∞
    have-m-property = m-property
 
+   I : (z : ℕ∞) → max (ι m) z ＝ z → f z ＝ f ∞
+   I z p = γ
+    where
+     q∞ : f (max (ι m) ∞) ＝ f ∞
+     q∞ = ap f (max∞-property' fe (ι m))
+
+     q : (u : ℕ∞) → f (max (ι m) u) ＝ f ∞
+     q = ℕ∞-density fe ℕ-is-¬¬-separated m-property q∞
+
+     γ : f z ＝ f ∞
+     γ = f z             ＝⟨ ap f (p ⁻¹) ⟩
+         f (max (ι m) z) ＝⟨ q z ⟩
+         f ∞             ∎
+
    m-property' : (x y : ℕ∞) → ι x ＝⟦ m ⟧ ι y → f x ＝ f y
-   m-property' x y e = {!!}
+   m-property' x y e =
+    Cases (lemma x y m e)
+     (λ (p : x ＝ y) → ap f p)
+     (λ (q , r) → f x ＝⟨ I x q ⟩
+                  f ∞ ＝⟨ I y r ⁻¹ ⟩
+                  f y ∎)
 -}
 \end{code}
-
-To complete the above whole:
-
-If e : ι x ＝⟦ m ⟧ ι y, either the first m positions of x and y are
-all ₁, or else x and y are equal (in which case f x ＝ f y follows
-directly).
-
-If they are all ₁, then we can use density (proved in the module
-GenericConvergentSequence).
-
-Define g , h : ℕ∞ → ℕ by g x = f (max (ι m) x) and h x = f ∞
-(constant). Then g (ι n) = h (ι n) for every n : ℕ by m-property, and
-also it is easy to check that g ∞ ＝ h ∞. So g u = h u for every u by
-density.
-
-Now max (ι m) x ＝ x (because the first m positions of x are ₁), and
-so f (max (ι m) x) ＝ f x, and hence
-
- f ∞ ＝ h x ＝ g x = f (max (ι m) x) ＝ f x,
-
-and, similarly,
-
- f ∞ ＝ h y ＝ g y = f (max (ι m) y) ＝ f y,
-
-and so f x ＝ f y, as required.
-
-I'll write this proof down in Agda in the next opportunity.
-
 
 I thought I was going to need the following, but I was wrong. I'll
 keep it for the moment in case it turns out to be useful.
