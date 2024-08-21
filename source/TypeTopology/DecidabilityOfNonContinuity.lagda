@@ -364,7 +364,7 @@ Next, we show that continuity is equivalent to a more familiar notion
 of continuity and also equivalent to the uniform version of the of the
 more familiar version. We first work with the untruncated versions.
 
-Notice that ι denotes both the inclusion ℕ → ℕ∞ and also the inclusion
+Notice that ι denotes the inclusion ℕ → ℕ∞ and also the inclusion
 ℕ∞ → (ℕ → 𝟚), where the context has to be used to disambiguate.
 
 We first define when two extended natural numbers x and y agree up to
