@@ -120,7 +120,7 @@ member-map f x' (_ ∷ xs) (in-tail m) = in-tail (member-map f x' xs m)
 
 member' : {X : 𝓤 ̇ } → X → List X → 𝓤 ̇
 member' y []       = 𝟘
-member' y (x ∷ xs) = (x ＝ y) + member y xs
+member' y (x ∷ xs) = (x ＝ y) + member' y xs
 
 \end{code}
 
@@ -131,7 +131,7 @@ member'-map : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (x : X) (xs : List X)
             → member' x xs
             → member' (f x) (map f xs)
 member'-map f x' (x ∷ xs) (inl p) = inl (ap f p)
-member'-map f x' (x ∷ xs) (inr m) = inr (member-map f x' xs m)
+member'-map f x' (x ∷ xs) (inr m) = inr (member'-map f x' xs m)
 
 listed : 𝓤 ̇  → 𝓤 ̇
 listed X = Σ xs ꞉ List X , ((x : X) → member x xs)

@@ -22,6 +22,7 @@ open import UF.Equiv
 open import UF.FunExt
 open import UF.Hedberg
 open import UF.HedbergApplications
+open import UF.PropTrunc
 open import UF.Retracts
 open import UF.Sets
 open import UF.SubtypeClassifier
@@ -764,5 +765,19 @@ data is-discrete' {𝓤 : Universe} (X : 𝓤 ̇ ) : 𝓤 ̇ where
 
 discrete'-gives-discrete : {X : 𝓤 ̇ } → is-discrete' X → is-discrete X
 discrete'-gives-discrete (discrete-gives-discrete' d) = d
+
+\end{code}
+Added 21th August 2024 by Alice Laroche:
+
+\begin{code}
+
+module _ (pt : propositional-truncations-exist) where
+
+ open PropositionalTruncation pt
+
+ decidable-inhabited-types-are-pointed : {X : 𝓤 ̇} → ∥ X ∥ → is-decidable X → X
+ decidable-inhabited-types-are-pointed ∣x∣ (inl x)  = x
+ decidable-inhabited-types-are-pointed ∣x∣ (inr ¬x) =
+  𝟘-elim (∥∥-rec 𝟘-is-prop ¬x ∣x∣)
 
 \end{code}
