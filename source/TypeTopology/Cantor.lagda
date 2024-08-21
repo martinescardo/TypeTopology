@@ -102,6 +102,17 @@ _＝⟦_⟧_ : Cantor → ℕ → Cantor → 𝓤₀ ̇
 ＝⟦⟧-sym α β 0        ⋆       = ⋆
 ＝⟦⟧-sym α β (succ k) (h , t) = (h ⁻¹) , ＝⟦⟧-sym (tail α) (tail β) k t
 
+＝⟦⟧-is-decidable : (α β : Cantor) (k : ℕ) → is-decidable (α ＝⟦ k ⟧ β)
+＝⟦⟧-is-decidable α β 0        = inl ⋆
+＝⟦⟧-is-decidable α β (succ k) =
+ Cases (𝟚-is-discrete (head α) (head β))
+  (λ (h : head α ＝ head β)
+        → map-decidable
+           (λ (t : tail α ＝⟦ k ⟧ tail β) → h , t)
+           (λ (_ , t) → t)
+           (＝⟦⟧-is-decidable (tail α) (tail β) k))
+  (λ (ν : head α ≠ head β) → inr (λ (h , _) → ν h))
+
 \end{code}
 
 We have that (α ＝⟦ n ⟧ β) iff α k ＝ β k for all k < n:

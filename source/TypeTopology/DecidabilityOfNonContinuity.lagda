@@ -1,4 +1,4 @@
-Martin Escardo, 7 May 2014, with additions 25th July 2024.
+Martin Escardo, 7 May 2014, with additions 25th July 2024 and 16-21st August 2025
 
 For any function f : ℕ∞ → ℕ, it is decidable whether f is non-continuous.
 
@@ -300,24 +300,19 @@ Added 16 August 2024.
 The above definition of continuity is "continuity at the point ∞".
 (And it is also not a proposition.)
 
-Next I am going to show that this is equivalent to usual continuity,
-as in the module Cantor, using the fact that ℕ∞ is a subspace of the
-Cantor type ℕ → 𝟚
+Next we show that this is equivalent to usual continuity, as in the
+module Cantor, using the fact that ℕ∞ is a subspace of the Cantor type
+ℕ → 𝟚
 
 Moreover, in the particular case of the subspace ℕ∞ of the Cantor
-space, continuity of functions ℕ∞ → D, with D discrete, is equivalent
-to uniform continuity, constructively, without the need of Brouwerian
-axioms.
+space, continuity of functions ℕ∞ → ℕ is equivalent to uniform
+continuity, constructively, without the need of Brouwerian axioms.
 
-So I what will do next is to show that all imaginable notions of
-(uniform) continuity for functions ℕ∞ → D are equivalent,
+So what we will do next is to show that all imaginable notions of
+(uniform) continuity for functions ℕ∞ → ℕ are equivalent,
 constructively.
 
-Moreover, I will compare typal versus propositional definitions of
-(uniform) continuity.
-
-One reason I want to do this is work by other people on realizability
-models and light condensed sets models in HoTT/UF.
+Moreover, the truncated and untruncated notions are also equivalent.
 
 Added 20th August. Continuity as property gives continuity data.
 
@@ -338,36 +333,30 @@ module continuity-criteria (pt : propositional-truncations-exist) where
 
  module _ (f : ℕ∞ → ℕ) where
 
-  private
-   A : ℕ∞ → 𝓤₀ ̇
-   A x = (n : ℕ) → f (max x (ι n)) ＝ f ∞
-
-   A-is-prop-valued : (x : ℕ∞) → is-prop (A x)
-   A-is-prop-valued x = Π-is-prop fe (λ n → ℕ-is-set)
-
-   A-is-complemented : (x : ℕ∞) → is-decidable (A x)
-   A-is-complemented x = γ
-    where
-     B : 𝓤₀ ̇
-     B = (n : ℕ) → f (max x (ι n)) ＝[ℕ] f ∞
-
-     B-is-decidable : is-decidable B
-     B-is-decidable = Theorem-8·2 (λ y → χ＝ (f (max x y)) (f ∞))
-
-     γ : is-decidable (A x)
-     γ = map-decidable
-          (λ b n → rl-implication (＝-agrees-with-＝[ℕ] _ _) (b n))
-          (λ a n → lr-implication (＝-agrees-with-＝[ℕ] _ _) (a n))
-          B-is-decidable
-
   continuity-data-gives-continuity-property : continuity-data f → is-continuous f
   continuity-data-gives-continuity-property = ∣_∣
 
   continuity-property-gives-continuity-data : is-continuous f → continuity-data f
   continuity-property-gives-continuity-data =
-   exit-truncation
-    (λ m → (n : ℕ) → f (max (ι m) (ι n)) ＝ f ∞)
-    (λ m → A-is-complemented (ι m))
+   exit-truncation (λ m → A (ι m)) (λ m → A-is-decidable (ι m))
+   where
+    A : ℕ∞ → 𝓤₀ ̇
+    A x = (n : ℕ) → f (max x (ι n)) ＝ f ∞
+
+    A-is-decidable : (x : ℕ∞) → is-decidable (A x)
+    A-is-decidable x = γ
+     where
+      B : 𝓤₀ ̇
+      B = (n : ℕ) → f (max x (ι n)) ＝[ℕ] f ∞
+
+      B-is-decidable : is-decidable B
+      B-is-decidable = Theorem-8·2 (λ y → χ＝ (f (max x y)) (f ∞))
+
+      γ : is-decidable (A x)
+      γ = map-decidable
+           (λ b n → rl-implication (＝-agrees-with-＝[ℕ] _ _) (b n))
+           (λ a n → lr-implication (＝-agrees-with-＝[ℕ] _ _) (a n))
+           B-is-decidable
 
 \end{code}
 
@@ -381,19 +370,27 @@ disambiguate.
 
 \begin{code}
 
-open import TypeTopology.Cantor hiding (continuous)
+open import TypeTopology.Cantor hiding (continuous ; continuity-data)
+
+traditional-continuity-data : (ℕ∞ → ℕ) → 𝓤₀ ̇
+traditional-continuity-data f =
+ (x : ℕ∞) → Σ m ꞉ ℕ , ((y : ℕ∞) → ι x ＝⟦ m ⟧ ι y → f x ＝ f y)
+
+traditional-uniform-continuity-data : (ℕ∞ → ℕ) → 𝓤₀ ̇
+traditional-uniform-continuity-data f =
+ Σ m ꞉ ℕ , ((x y : ℕ∞) → ι x ＝⟦ m ⟧ ι y → f x ＝ f y)
 
 module _ (f : ℕ∞ → ℕ) where
 
  traditional-uniform-continuity-data-gives-traditional-continuity-data
-  : (Σ m ꞉ ℕ , ((x y : ℕ∞) → ι x ＝⟦ m ⟧ ι y → f x ＝ f y))
-  → ((x : ℕ∞) → Σ m ꞉ ℕ , ((y : ℕ∞) → ι x ＝⟦ m ⟧ ι y → f x ＝ f y))
+  : traditional-uniform-continuity-data f
+  → traditional-continuity-data f
  traditional-uniform-continuity-data-gives-traditional-continuity-data
   (m , m-property) x = m , m-property x
 
  traditional-continuity-data-gives-continuity-data
-  : ((x : ℕ∞) → Σ m ꞉ ℕ , ((y : ℕ∞) → ι x ＝⟦ m ⟧ ι y → f x ＝ f y))
-  → continuous f
+  : traditional-continuity-data f
+  → continuity-data f
  traditional-continuity-data-gives-continuity-data f-cts-traditional = III
   where
    m : ℕ
@@ -479,8 +476,8 @@ with x and y ranging over ℕ∞.
                  lemma₀ k y (＝⟦⟧-trans (ι ∞) (ι x) (ι y) k d e)))
 
  continuity-data-gives-traditional-uniform-continuity-data
-  : continuous f
-  → Σ m ꞉ ℕ , ((x y : ℕ∞) → ι x ＝⟦ m ⟧ ι y → f x ＝ f y)
+  : continuity-data f
+  → traditional-uniform-continuity-data f
  continuity-data-gives-traditional-uniform-continuity-data
   (m , m-property) = m , m-property'
   where
@@ -516,3 +513,92 @@ logically equivalent.
 TODO. They should also be equivalent as types, but this is not
 important for our purposes, because we are interested in continuity as
 property.
+
+Added 21 August 2023. We now establish the equivalence with the
+remaining propositional versions of continuity.
+
+So far we know that, for f : ℕ∞ → ℕ,
+
+    continuity-data f                   ↔ is-continuous f
+        ↕
+    traditional-continuity-data
+        ↕
+    traditional-uniform-continuity-data
+
+
+We now complete this to the logical equivalences
+
+    continuity-data f                   ↔ is-continuous f
+        ↕
+    traditional-continuity-data         ↔ is-traditionally-continuous
+        ↕
+    traditional-uniform-continuity-data ↔ is-traditionally-uniformly-continuous
+
+so that all six (truncated and untruncated) notions of (uniform)
+continuity for functions ℕ∞ → ℕ are logically equivalent.
+
+\begin{code}
+
+module more-continuity-criteria (pt : propositional-truncations-exist) where
+
+ open PropositionalTruncation pt
+ open exit-truncations pt
+
+ is-traditionally-continuous : (ℕ∞ → ℕ) → 𝓤₀ ̇
+ is-traditionally-continuous f =
+  (x : ℕ∞) → ∃ m ꞉ ℕ , ((y : ℕ∞) → ι x ＝⟦ m ⟧ ι y → f x ＝ f y)
+
+ is-traditionally-uniformly-continuous : (ℕ∞ → ℕ) → 𝓤₀ ̇
+ is-traditionally-uniformly-continuous f =
+  ∃ m ꞉ ℕ , ((x y : ℕ∞) → ι x ＝⟦ m ⟧ ι y → f x ＝ f y)
+
+ module _ (f : ℕ∞ → ℕ) where
+
+  traditional-continuity-data-gives-traditional-continuity
+   : traditional-continuity-data f
+   → is-traditionally-continuous f
+  traditional-continuity-data-gives-traditional-continuity d x
+   = ∣ d x ∣
+
+  traditional-continuity-gives-traditional-continuity-data
+   : is-traditionally-continuous f
+   → traditional-continuity-data f
+  traditional-continuity-gives-traditional-continuity-data f-cts x
+   = exit-truncation (C x) (C-is-decidable x) (f-cts x)
+   where
+    C : ℕ∞ → ℕ → 𝓤₀ ̇
+    C x m = (y : ℕ∞) → ι x ＝⟦ m ⟧ ι y → f x ＝ f y
+
+    C-is-decidable : (x : ℕ∞) (m : ℕ) → is-decidable (C x m)
+    C-is-decidable x m =
+     ℕ∞-Π-Compact
+      (λ y → ι x ＝⟦ m ⟧ ι y → f x ＝ f y)
+      (λ y → →-preserves-decidability
+              (＝⟦⟧-is-decidable (ι x) (ι y) m)
+              (ℕ-is-discrete (f x) (f y)))
+
+  traditional-uniform-continuity-data-gives-traditional-uniform-continuity
+   : traditional-uniform-continuity-data f
+   → is-traditionally-uniformly-continuous f
+  traditional-uniform-continuity-data-gives-traditional-uniform-continuity d
+   = ∣ d ∣
+
+  traditional-uniform-continuity-gives-traditional-uniform-continuity-data
+   : is-traditionally-uniformly-continuous f
+   → traditional-uniform-continuity-data f
+  traditional-uniform-continuity-gives-traditional-uniform-continuity-data f-uc
+   = exit-truncation U U-is-decidable f-uc
+   where
+    U : ℕ → 𝓤₀ ̇
+    U m = (x y : ℕ∞) → ι x ＝⟦ m ⟧ ι y → f x ＝ f y
+
+    U-is-decidable : (m : ℕ) → is-decidable (U m)
+    U-is-decidable m =
+     ℕ∞-Π-Compact
+      (λ x → (y : ℕ∞) → ι x ＝⟦ m ⟧ ι y → f x ＝ f y)
+      (λ x → ℕ∞-Π-Compact
+              (λ y → ι x ＝⟦ m ⟧ ι y → f x ＝ f y)
+              (λ y → →-preserves-decidability
+                      (＝⟦⟧-is-decidable (ι x) (ι y) m)
+                      (ℕ-is-discrete (f x) (f y))))
+\end{code}

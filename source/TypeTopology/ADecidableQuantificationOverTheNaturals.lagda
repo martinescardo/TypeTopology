@@ -89,7 +89,7 @@ Lemma-8·1 p = cases claim₀ claim₁ claim₂
     q = pr₁ f
 
     g : (Σ y ꞉ ℕ∞ , q y ＝ ₀) + ((y : ℕ∞) → q y ＝ ₁)
-     → (Σ y ꞉ ℕ∞ , p y ≠ p (Succ y)) + ((y : ℕ∞) → p y ＝ p (Succ y))
+      → (Σ y ꞉ ℕ∞ , p y ≠ p (Succ y)) + ((y : ℕ∞) → p y ＝ p (Succ y))
     g (inl (y , r)) = inl (y , (pr₁ (pr₂ f y) r))
     g (inr h ) = inr (λ y → discrete-is-¬¬-separated
                              𝟚-is-discrete
