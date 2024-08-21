@@ -518,8 +518,8 @@ TODO. They should also be equivalent as types, but this is not
 important for our purposes, because we are interested in continuity as
 property.
 
-Added 21 August 2023. We now establish the equivalence with the
-remaining propositional versions of continuity.
+Added 21 August 2023. We now establish the logical equivalence with
+the remaining propositional versions of continuity.
 
 So far we know that, for f : ℕ∞ → ℕ,
 
