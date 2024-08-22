@@ -203,12 +203,8 @@ equiv-preserves-hlevel : (n : ℕ) {X : 𝓤 ̇  } {Y : 𝓥 ̇  }
                        → (X ≃ Y) is-of-hlevel n
 equiv-preserves-hlevel zero = ≃-is-singleton fe'
 equiv-preserves-hlevel (succ n) {X} {Y} X-h-lev Y-h-lev =
- hlevel-closed-under-embedding (succ n) ⋆ e'
-                               (hlevel-closed-under-Π (succ n) (λ _ → Y)
-                                                      (λ _ → Y-h-lev))
- where
-  e' : (X ≃ Y) ↪ (X → Y)
-  e' = (⌜_⌝ , pr₁-is-embedding (λ f → being-equiv-is-prop fe' f))
+ hlevel-closed-under-embedding (succ n) ⋆ (equiv-embeds-into-function fe')
+  (hlevel-closed-under-Π (succ n) (λ _ → Y) (λ _ → Y-h-lev))
 
 ℍ-is-of-next-hlevel : (n : ℕ)
                     → (𝓤 : Universe)
