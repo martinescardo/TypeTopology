@@ -767,7 +767,8 @@ discrete'-gives-discrete : {X : 𝓤 ̇ } → is-discrete' X → is-discrete X
 discrete'-gives-discrete (discrete-gives-discrete' d) = d
 
 \end{code}
-Added 21th August 2024 by Alice Laroche:
+
+Added 21th August 2024 by Alice Laroche.
 
 \begin{code}
 
@@ -781,3 +782,5 @@ module _ (pt : propositional-truncations-exist) where
   𝟘-elim (∥∥-rec 𝟘-is-prop ¬x ∣x∣)
 
 \end{code}
+
+End of addition.

@@ -777,6 +777,9 @@ module Apartness
                      × is-symmetric _♯_
                      × is-cotransitive _♯_
 
+ Apartness : 𝓤 ̇ → (𝓥 : Universe) → 𝓥 ⁺ ⊔ 𝓤 ̇
+ Apartness X 𝓥 = Σ _♯_ ꞉ (X → X → 𝓥 ̇) , is-apartness _♯_
+
  apartness-is-prop-valued : {X : 𝓤 ̇ } (_♯_ : X → X → 𝓥 ̇ )
                           → is-apartness _♯_
                           → is-prop-valued _♯_
@@ -1577,3 +1580,11 @@ TODO.
 
 * The tight reflection of ♯₂ has the universal property of the totally
   separated reflection.
+
+* If a type Y has an apartness with y₀ ♯ y₁, then
+  the function type (X → Y) has an apartness
+
+    f ♯ g := ∃ x ꞉ X , f x ♯ g x
+
+  that tells apart the constant functions with values y₀ and y₁
+  respectively.
