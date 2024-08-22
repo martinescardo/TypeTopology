@@ -6,6 +6,7 @@ The Cantor type of infinite binary sequences.
 
 {-# OPTIONS --safe --without-K #-}
 
+open import Apartness.Definition
 open import MLTT.Spartan
 open import MLTT.Two-Properties
 open import Naturals.Order
@@ -199,6 +200,8 @@ not in the realm of pure Martin-Löf type theory.
 
 \begin{code}
 
+open Apartness
+
 _♯_ : Cantor → Cantor → 𝓤₀ ̇
 α ♯ β = Σ n ꞉ ℕ , (α n ≠ β n)
                 × ((i : ℕ) → α i ≠ β i → n ≤ i)
@@ -228,7 +231,7 @@ property of the propositional truncation of the type Σ n ꞉ ℕ , α n ≠ β 
 
 \begin{code}
 
-♯-is-prop-valued : Fun-Ext → (α β : Cantor) → is-prop (α ♯ β)
+♯-is-prop-valued : Fun-Ext → is-prop-valued _♯_
 ♯-is-prop-valued fe α β (n , δ , μ) (n' , δ' , μ') = III
  where
   I : (n : ℕ) → is-prop ((α n ≠ β n) × ((i : ℕ) → α i ≠ β i → n ≤ i))
@@ -248,14 +251,14 @@ The apartness axioms are satisfied, and, moreover, the apartness is tight.
 
 \begin{code}
 
-♯-is-irreflexive : (α : Cantor) → ¬ (α ♯ α)
+♯-is-irreflexive : is-irreflexive _♯_
 ♯-is-irreflexive α (n , δ , μ) = ≠-is-irrefl (α n) δ
 
-♯-is-symmetric : (α β : Cantor) → α ♯ β → β ♯ α
+♯-is-symmetric : is-symmetric _♯_
 ♯-is-symmetric α β (n , δ , μ) = n , (λ e → δ (e ⁻¹)) , λ i d → μ i (≠-sym d)
 
-♯-is-strongly-cotransitive : ∀ α β γ → α ♯ β → (α ♯ γ) + (β ♯ γ)
-♯-is-strongly-cotransitive α β γ (n , δ , μ) = II I
+♯-strongly-cotransitive : is-strongly-cotransitive _♯_
+♯-strongly-cotransitive α β γ (n , δ , μ) = III
  where
   I : (α n ≠ γ n) + (β n ≠ γ n)
   I = discrete-types-are-cotransitive' 𝟚-is-discrete {α n} {β n} {γ n} δ
@@ -264,7 +267,10 @@ The apartness axioms are satisfied, and, moreover, the apartness is tight.
   II (inl d) = inl (apartness-criterion α γ (n , d))
   II (inr d) = inr (apartness-criterion β γ (n , d))
 
-♯-is-tight : Fun-Ext → ∀ α β → ¬ (α ♯ β) → α ＝ β
+  III : (α ♯ γ) + (β ♯ γ)
+  III = II I
+
+♯-is-tight : Fun-Ext → is-tight _♯_
 ♯-is-tight fe α β ν = dfunext fe I
  where
   I : (n : ℕ) → α n ＝ β n
@@ -272,9 +278,6 @@ The apartness axioms are satisfied, and, moreover, the apartness is tight.
          (λ (d : α n ≠ β n) → ν (apartness-criterion α β (n , d)))
 
 \end{code}
-
-We say "strongly cotransitive", as opposed to simply "cotransitive"
-because we have "+" rather than "∨".
 
 If two sequences α and β are apart, they agree before the apartness index n.
 

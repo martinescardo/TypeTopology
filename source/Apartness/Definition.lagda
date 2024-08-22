@@ -24,23 +24,23 @@ open import UF.Subsingletons-FunExt
 is-prop-valued
  is-irreflexive
  is-symmetric
- strongly-cotransitive
+ is-strongly-cotransitive
  is-tight
- strong-apartness
+ is-strong-apartness
   : {X : 𝓤 ̇ } → (X → X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
 
-is-prop-valued        _♯_ = ∀ x y → is-prop (x ♯ y)
-is-irreflexive        _♯_ = ∀ x → ¬ (x ♯ x)
-is-symmetric          _♯_ = ∀ x y → x ♯ y → y ♯ x
-strongly-cotransitive _♯_ = ∀ x y z → x ♯ y → (x ♯ z) + (y ♯ z)
-is-tight              _♯_ = ∀ x y → ¬ (x ♯ y) → x ＝ y
-strong-apartness      _♯_ = is-prop-valued _♯_
-                          × is-irreflexive _♯_
-                          × is-symmetric _♯_
-                          × strongly-cotransitive _♯_
+is-prop-valued           _♯_ = ∀ x y → is-prop (x ♯ y)
+is-irreflexive           _♯_ = ∀ x → ¬ (x ♯ x)
+is-symmetric             _♯_ = ∀ x y → x ♯ y → y ♯ x
+is-strongly-cotransitive _♯_ = ∀ x y z → x ♯ y → (x ♯ z) + (y ♯ z)
+is-tight                 _♯_ = ∀ x y → ¬ (x ♯ y) → x ＝ y
+is-strong-apartness      _♯_ = is-prop-valued _♯_
+                             × is-irreflexive _♯_
+                             × is-symmetric _♯_
+                             × is-strongly-cotransitive _♯_
 
 Strong-Apartness : 𝓤 ̇ → (𝓥 : Universe) → 𝓥 ⁺ ⊔ 𝓤 ̇
-Strong-Apartness X 𝓥 = Σ _♯_ ꞉ (X → X → 𝓥 ̇) , strong-apartness _♯_
+Strong-Apartness X 𝓥 = Σ _♯_ ꞉ (X → X → 𝓥 ̇) , is-strong-apartness _♯_
 
 \end{code}
 
