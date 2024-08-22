@@ -1,4 +1,4 @@
-Martin Escardo, 7 May 2014, with additions 25th July 2024.
+Martin Escardo, 7 May 2014, with additions 25th July 2024 and 16-21st August 2024
 
 For any function f : ℕ∞ → ℕ, it is decidable whether f is non-continuous.
 
@@ -6,7 +6,7 @@ For any function f : ℕ∞ → ℕ, it is decidable whether f is non-continuous
 
 Based on the paper
 
-    Constructive decidability of classical continuity
+[1] Martin Escardo. Constructive decidability of classical continuity.
     Mathematical Structures in Computer Science , Volume 25,
     October 2015 , pp. 1578 - 1589
     https://doi.org/10.1017/S096012951300042X
@@ -27,6 +27,7 @@ open import CoNaturals.Type
 open import MLTT.Two-Properties
 open import Notation.CanonicalMap
 open import NotionsOfDecidability.Decidable
+open import NotionsOfDecidability.SemiDecidable
 open import TypeTopology.ADecidableQuantificationOverTheNaturals fe
 open import UF.DiscreteAndSeparated
 
@@ -90,31 +91,37 @@ choose the latter for convenience.
 continuous : (ℕ∞ → ℕ) → 𝓤₀ ̇
 continuous f = Σ m ꞉ ℕ , ((n : ℕ) → f (max (ι m) (ι n)) ＝ f ∞)
 
-Theorem-3·2 : (f : ℕ∞ → ℕ) → is-decidable (¬ continuous f)
-Theorem-3·2 f = V
- where
-  ncf : 𝓤₀ ̇
-  ncf = (m : ℕ) → ¬ ((n : ℕ) → f (max (ι m) (ι n)) ＝[ℕ] f ∞)
+continuity-data = continuous
 
-  I : ncf → ¬ continuous f
-  I ν (m , a) = ν m (λ n → lr-implication
-                            (＝-agrees-with-＝[ℕ]
-                              (f (max (ι m) (ι n)))
-                              (f ∞))
-                            (a n))
+noncontinuous : (ℕ∞ → ℕ) → 𝓤₀ ̇
+noncontinuous f = (m : ℕ) → ¬ ((n : ℕ) → f (max (ι m) (ι n)) ＝[ℕ] f ∞)
 
-  II : ¬ continuous f → ncf
-  II ν m a = ν (m , (λ n → rl-implication
-                            (＝-agrees-with-＝[ℕ]
-                               (f (max (ι m) (ι n)))
-                               (f ∞))
-                            (a n)))
+module _ (f : ℕ∞ → ℕ) where
 
-  III : is-decidable ncf
-  III = Lemma-3·1 (λ x y → χ＝ (f (max x y)) (f ∞))
+ noncontinuity-is-decidable : is-decidable (noncontinuous f)
+ noncontinuity-is-decidable = Lemma-3·1 (λ x y → χ＝ (f (max x y)) (f ∞))
 
-  V : is-decidable (¬ continuous f)
-  V = map-decidable I II III
+ not-continuous-gives-noncontinuous : ¬ continuous f → noncontinuous f
+ not-continuous-gives-noncontinuous ν m a =
+  ν (m , (λ n → rl-implication
+                 (＝-agrees-with-＝[ℕ]
+                    (f (max (ι m) (ι n)))
+                    (f ∞))
+                 (a n)))
+
+ noncontinuous-gives-not-continuous : noncontinuous f → ¬ continuous f
+ noncontinuous-gives-not-continuous ν (m , a) =
+  ν m (λ n → lr-implication
+              (＝-agrees-with-＝[ℕ]
+                (f (max (ι m) (ι n)))
+                (f ∞))
+              (a n))
+
+ Theorem-3·2 : is-decidable (¬ continuous f)
+ Theorem-3·2 = map-decidable
+                noncontinuous-gives-not-continuous
+                not-continuous-gives-noncontinuous
+                noncontinuity-is-decidable
 
 \end{code}
 
@@ -139,7 +146,8 @@ open import TypeTopology.GenericConvergentSequenceCompactness fe
 noncontinuous-map-gives-WLPO : (f : ℕ∞ → ℕ) → ¬ continuous f → WLPO
 noncontinuous-map-gives-WLPO f f-non-cts = VI
  where
-  g : (u : ℕ∞) → Σ v₀ ꞉ ℕ∞ , (f (max u v₀) ＝ f ∞ → (v : ℕ∞) → f (max u v) ＝ f ∞)
+  g : (u : ℕ∞)
+    → Σ v₀ ꞉ ℕ∞ , (f (max u v₀) ＝ f ∞ → (v : ℕ∞) → f (max u v) ＝ f ∞)
   g u = ℕ∞-Compact∙
          (λ v → f (max u v) ＝ f ∞)
          (λ v → ℕ-is-discrete (f (max u v)) (f ∞))
@@ -292,23 +300,309 @@ Added 16 August 2024.
 The above definition of continuity is "continuity at the point ∞".
 (And it is also not a proposition.)
 
-Next I am going to show that this is equivalent to usual continuity,
-as in the module Cantor, using the fact that ℕ∞ is a subspace of the
-Cantor type ℕ → 𝟚
+Next we show that this is equivalent to usual continuity, as in the
+module Cantor, using the fact that ℕ∞ is a subspace of the Cantor type
+ℕ → 𝟚
 
 Moreover, in the particular case of the subspace ℕ∞ of the Cantor
-space, continuity of functions ℕ∞ → D, with D discrete, is equivalent
-to uniform continuity, constructively, without the need of Brouwerian
-axioms.
+space, continuity of functions ℕ∞ → ℕ is equivalent to uniform
+continuity, constructively, without the need of Brouwerian axioms.
 
-So I will do next is to show that all imaginable notions of (uniform)
-continuity for functions ℕ∞ → D are equivalent, constructively.
+So what we will do next is to show that all imaginable notions of
+(uniform) continuity for functions ℕ∞ → ℕ are equivalent,
+constructively.
 
-Moreover, I will compare typal versus propositional definitions of
-(uniform) continuity.
+Moreover, the truncated and untruncated notions are also equivalent.
 
-This could be classified as a TODO, but rather it is something I am
-doing.
+Added 20th August. Continuity as property gives continuity data.
 
-One reason I want to do this is work by other people on realizability
-models and light condensed sets models in HoTT/UF.
+\begin{code}
+
+open import Naturals.RootsTruncation
+open import UF.PropTrunc
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
+
+module continuity-criteria (pt : propositional-truncations-exist) where
+
+ open PropositionalTruncation pt
+ open exit-truncations pt
+
+ is-continuous : (ℕ∞ → ℕ) → 𝓤₀ ̇
+ is-continuous f = ∃ m ꞉ ℕ , ((n : ℕ) → f (max (ι m) (ι n)) ＝ f ∞)
+
+ module _ (f : ℕ∞ → ℕ) where
+
+  continuity-data-gives-continuity-property : continuity-data f → is-continuous f
+  continuity-data-gives-continuity-property = ∣_∣
+
+  continuity-property-gives-continuity-data : is-continuous f → continuity-data f
+  continuity-property-gives-continuity-data =
+   exit-truncation (λ m → A (ι m)) (λ m → A-is-decidable (ι m))
+   where
+    A : ℕ∞ → 𝓤₀ ̇
+    A x = (n : ℕ) → f (max x (ι n)) ＝ f ∞
+
+    A-is-decidable : (x : ℕ∞) → is-decidable (A x)
+    A-is-decidable x = γ
+     where
+      B : 𝓤₀ ̇
+      B = (n : ℕ) → f (max x (ι n)) ＝[ℕ] f ∞
+
+      B-is-decidable : is-decidable B
+      B-is-decidable = Theorem-8·2 (λ y → χ＝ (f (max x y)) (f ∞))
+
+      γ : is-decidable (A x)
+      γ = map-decidable
+           (λ b n → rl-implication (＝-agrees-with-＝[ℕ] _ _) (b n))
+           (λ a n → lr-implication (＝-agrees-with-＝[ℕ] _ _) (a n))
+           B-is-decidable
+
+\end{code}
+
+Next, we show that continuity is equivalent to a more familiar notion
+of continuity and also equivalent to the uniform version of the of the
+more familiar version. We first work with the untruncated versions.
+
+Notice that ι denotes the inclusion ℕ → ℕ∞ and also the inclusion
+ℕ∞ → (ℕ → 𝟚), where the context has to be used to disambiguate.
+
+We first define when two extended natural numbers x and y agree up to
+precision k, written x ＝⟪ k ⟫ y.
+
+\begin{code}
+
+open import TypeTopology.Cantor hiding (continuous ; continuity-data)
+
+_＝⟪_⟫_ : ℕ∞ → ℕ → ℕ∞ → 𝓤₀ ̇
+x ＝⟪ k ⟫ y = ι x ＝⟦ k ⟧ ι y
+
+traditional-continuity-data : (ℕ∞ → ℕ) → 𝓤₀ ̇
+traditional-continuity-data f =
+ (x : ℕ∞) → Σ m ꞉ ℕ , ((y : ℕ∞) → x ＝⟪ m ⟫ y → f x ＝ f y)
+
+traditional-uniform-continuity-data : (ℕ∞ → ℕ) → 𝓤₀ ̇
+traditional-uniform-continuity-data f =
+ Σ m ꞉ ℕ , ((x y : ℕ∞) → x ＝⟪ m ⟫ y → f x ＝ f y)
+
+module _ (f : ℕ∞ → ℕ) where
+
+ traditional-uniform-continuity-data-gives-traditional-continuity-data
+  : traditional-uniform-continuity-data f
+  → traditional-continuity-data f
+ traditional-uniform-continuity-data-gives-traditional-continuity-data
+  (m , m-property) x = m , m-property x
+
+ traditional-continuity-data-gives-continuity-data
+  : traditional-continuity-data f
+  → continuity-data f
+ traditional-continuity-data-gives-continuity-data f-cts-traditional = III
+  where
+   m : ℕ
+   m = pr₁ (f-cts-traditional ∞)
+
+   m-property : (y : ℕ∞) → ∞ ＝⟪ m ⟫ y → f ∞ ＝ f y
+   m-property = pr₂ (f-cts-traditional ∞)
+
+   I : (k : ℕ) (n : ℕ) → ∞ ＝⟪ k ⟫ (max (ι k) (ι n))
+   I 0        n        = ⋆
+   I (succ k) 0        = refl , I k 0
+   I (succ k) (succ n) = refl , I k n
+
+   II : (n : ℕ) → f (max (ι m) (ι n)) ＝ f ∞
+   II n = (m-property (max (ι m) (ι n)) (I m n))⁻¹
+
+   III : continuous f
+   III = m , II
+
+\end{code}
+
+We now need to prove some lemmas about the relation x ＝⟪ k ⟫ y.
+
+\begin{code}
+
+ lemma₀ : (k : ℕ) (y : ℕ∞) → ∞ ＝⟪ k ⟫ y → max (ι k) y ＝ y
+ lemma₀ 0        y ⋆       = refl
+ lemma₀ (succ k) y (h , t) = γ
+  where
+   have-h : ₁ ＝ ι y 0
+   have-h = h
+
+   have-t : ∞ ＝⟪ k ⟫ (Pred y)
+   have-t = t
+
+   IH : max (ι k) (Pred y) ＝ Pred y
+   IH = lemma₀ k (Pred y) t
+
+   δ : ι (max (Succ (ι k)) y) ∼ ι y
+   δ 0        = h
+   δ (succ i) = ap (λ - → ι - i) IH
+
+   γ : max (Succ (ι k)) y ＝ y
+   γ = ℕ∞-to-ℕ→𝟚-lc fe (dfunext fe δ)
+
+ lemma₁ : (x y : ℕ∞) (k : ℕ)
+        → x ＝⟪ k ⟫ y
+        → (x ＝ y) + (∞ ＝⟪ k ⟫ x)
+ lemma₁ x y 0        ⋆       = inr ⋆
+ lemma₁ x y (succ k) (h , t) = γ
+  where
+   IH : (Pred x ＝ Pred y) + (∞ ＝⟪ k ⟫ (Pred x))
+   IH = lemma₁ (Pred x) (Pred y) k t
+
+   γl∼ : Pred x ＝ Pred y → ι x ∼ ι y
+   γl∼ p 0        = h
+   γl∼ p (succ i) = ap (λ - → ι - i) p
+
+   γl : Pred x ＝ Pred y → x ＝ y
+   γl p = ℕ∞-to-ℕ→𝟚-lc fe (dfunext fe (γl∼ p))
+
+   γr : ∞ ＝⟪ k ⟫ (Pred x) → (x ＝ y) + (∞ ＝⟪ succ k ⟫ x)
+   γr q = 𝟚-equality-cases
+           (λ (p : ι x 0 ＝ ₀)
+                 → inl (x    ＝⟨ is-Zero-equal-Zero fe p ⟩
+                        Zero ＝⟨ (is-Zero-equal-Zero fe (h ⁻¹ ∙ p))⁻¹ ⟩
+                        y    ∎))
+           (λ (p : ι x 0 ＝ ₁)
+                 → inr ((p ⁻¹) , q))
+
+   γ : (x ＝ y) + (∞ ＝⟪ succ k ⟫ x)
+   γ = Cases IH (inl ∘ γl) γr
+
+ lemma₂ : (x y : ℕ∞) (k : ℕ)
+        → x ＝⟪ k ⟫ y
+        → (x ＝ y) + (max (ι k) x ＝ x) × (max (ι k) y ＝ y)
+ lemma₂ x y k e =
+   Cases (lemma₁ x y k e)
+    inl
+    (λ (d : ∞ ＝⟪ k ⟫ x)
+          → inr (lemma₀ k x d ,
+                 lemma₀ k y (＝⟦⟧-trans (ι ∞) (ι x) (ι y) k d e)))
+
+ continuity-data-gives-traditional-uniform-continuity-data
+  : continuity-data f
+  → traditional-uniform-continuity-data f
+ continuity-data-gives-traditional-uniform-continuity-data
+  (m , m-property) = m , m-property'
+  where
+   have-m-property : (n : ℕ) → f (max (ι m) (ι n)) ＝ f ∞
+   have-m-property = m-property
+
+   I : (z : ℕ∞) → max (ι m) z ＝ z → f z ＝ f ∞
+   I z p = γ
+    where
+     q∞ : f (max (ι m) ∞) ＝ f ∞
+     q∞ = ap f (max∞-property' fe (ι m))
+
+     q : (u : ℕ∞) → f (max (ι m) u) ＝ f ∞
+     q = ℕ∞-density fe ℕ-is-¬¬-separated m-property q∞
+
+     γ = f z             ＝⟨ ap f (p ⁻¹) ⟩
+         f (max (ι m) z) ＝⟨ q z ⟩
+         f ∞             ∎
+
+   m-property' : (x y : ℕ∞) → x ＝⟪ m ⟫ y → f x ＝ f y
+   m-property' x y e =
+    Cases (lemma₂ x y m e)
+     (λ (p : x ＝ y) → ap f p)
+     (λ (q , r) → f x ＝⟨ I x q ⟩
+                  f ∞ ＝⟨ I y r ⁻¹ ⟩
+                  f y ∎)
+
+\end{code}
+
+This closes a circle, so that that all notions of continuity data are
+logically equivalent.
+
+TODO. They should also be equivalent as types, but this is not
+important for our purposes, because we are interested in continuity as
+property.
+
+Added 21 August 2023. We now establish the logical equivalence with
+the remaining propositional versions of continuity.
+
+So far we know that, for f : ℕ∞ → ℕ,
+
+    continuity-data f                   ↔ is-continuous f
+        ↕
+    traditional-continuity-data
+        ↕
+    traditional-uniform-continuity-data
+
+
+We now complete this to the logical equivalences
+
+    continuity-data f                   ↔ is-continuous f
+        ↕
+    traditional-continuity-data         ↔ is-traditionally-continuous
+        ↕
+    traditional-uniform-continuity-data ↔ is-traditionally-uniformly-continuous
+
+so that all six (truncated and untruncated) notions of (uniform)
+continuity for functions ℕ∞ → ℕ are logically equivalent.
+
+\begin{code}
+
+module more-continuity-criteria (pt : propositional-truncations-exist) where
+
+ open PropositionalTruncation pt
+ open exit-truncations pt
+
+ is-traditionally-continuous : (ℕ∞ → ℕ) → 𝓤₀ ̇
+ is-traditionally-continuous f =
+  (x : ℕ∞) → ∃ m ꞉ ℕ , ((y : ℕ∞) → x ＝⟪ m ⟫ y → f x ＝ f y)
+
+ is-traditionally-uniformly-continuous : (ℕ∞ → ℕ) → 𝓤₀ ̇
+ is-traditionally-uniformly-continuous f =
+  ∃ m ꞉ ℕ , ((x y : ℕ∞) → x ＝⟪ m ⟫ y → f x ＝ f y)
+
+ module _ (f : ℕ∞ → ℕ) where
+
+  traditional-continuity-data-gives-traditional-continuity
+   : traditional-continuity-data f
+   → is-traditionally-continuous f
+  traditional-continuity-data-gives-traditional-continuity d x
+   = ∣ d x ∣
+
+  traditional-continuity-gives-traditional-continuity-data
+   : is-traditionally-continuous f
+   → traditional-continuity-data f
+  traditional-continuity-gives-traditional-continuity-data f-cts x
+   = exit-truncation (C x) (C-is-decidable x) (f-cts x)
+   where
+    C : ℕ∞ → ℕ → 𝓤₀ ̇
+    C x m = (y : ℕ∞) → x ＝⟪ m ⟫ y → f x ＝ f y
+
+    C-is-decidable : (x : ℕ∞) (m : ℕ) → is-decidable (C x m)
+    C-is-decidable x m =
+     ℕ∞-Π-Compact
+      (λ y → x ＝⟪ m ⟫ y → f x ＝ f y)
+      (λ y → →-preserves-decidability
+              (＝⟦⟧-is-decidable (ι x) (ι y) m)
+              (ℕ-is-discrete (f x) (f y)))
+
+  traditional-uniform-continuity-data-gives-traditional-uniform-continuity
+   : traditional-uniform-continuity-data f
+   → is-traditionally-uniformly-continuous f
+  traditional-uniform-continuity-data-gives-traditional-uniform-continuity
+   = ∣_∣
+
+  traditional-uniform-continuity-gives-traditional-uniform-continuity-data
+   : is-traditionally-uniformly-continuous f
+   → traditional-uniform-continuity-data f
+  traditional-uniform-continuity-gives-traditional-uniform-continuity-data f-uc
+   = exit-truncation U U-is-decidable f-uc
+   where
+    U : ℕ → 𝓤₀ ̇
+    U m = (x y : ℕ∞) → x ＝⟪ m ⟫ y → f x ＝ f y
+
+    U-is-decidable : (m : ℕ) → is-decidable (U m)
+    U-is-decidable m =
+     ℕ∞-Π-Compact
+      (λ x → (y : ℕ∞) → x ＝⟪ m ⟫ y → f x ＝ f y)
+      (λ x → ℕ∞-Π-Compact
+              (λ y → x ＝⟪ m ⟫ y → f x ＝ f y)
+              (λ y → →-preserves-decidability
+                      (＝⟦⟧-is-decidable (ι x) (ι y) m)
+                      (ℕ-is-discrete (f x) (f y))))
+\end{code}

@@ -163,7 +163,7 @@ universe 𝓤₁.
 \begin{code}
 
 open import DedekindReals.Type fe' pe' pt
-open import DedekindReals.Order fe' pe' pt
+open import DedekindReals.Order fe' pe' pt renaming (_♯_ to _♯ℝ_)
 open import Notation.Order
 
 ℝ-ainjective-gives-Heaviside-function : ainjective-type ℝ 𝓤₁ 𝓤₁
@@ -352,17 +352,23 @@ TODO. We could derive ℝ-ainjective-gives-WEM from the below. (Note the
 
 \begin{code}
 
-open import TypeTopology.TotallySeparated
-open Apartness fe pt
+open import Apartness.Definition
+open Apartness pt
 
-type-with-non-trivial-apartness-injective-gives-WEM : {X : 𝓤 ̇  }
-                                                    → (_♯_ : X → X → 𝓥 ̇  )
-                                                    → is-apartness _♯_
-                                                    → (Σ (x₀ , x₁) ꞉ X × X , x₀ ♯ x₁)
-                                                    → ainjective-type X 𝓣 𝓦
-                                                    → WEM 𝓣
-type-with-non-trivial-apartness-injective-gives-WEM
- {𝓤} {𝓥} {𝓣} {𝓦} {X} _♯_ α ((x₀ , x₁) , points-apart) ainj P P-is-prop = VII
+has-two-points-apart : {X : 𝓤 ̇ } → Apartness X 𝓥 → 𝓥 ⊔ 𝓤 ̇
+has-two-points-apart {𝓤} {𝓥} {X} (_♯_ , α) = Σ (x , y) ꞉ X × X , (x ♯ y)
+
+Nontrivial-Apartness : 𝓤 ̇ → (𝓥 : Universe) → 𝓥 ⁺ ⊔ 𝓤 ̇
+Nontrivial-Apartness X 𝓥 = Σ a ꞉ Apartness X 𝓥 , has-two-points-apart a
+
+ainjective-type-with-non-trivial-apartness-gives-WEM
+ : {X : 𝓤 ̇  }
+ → ainjective-type X 𝓣 𝓦
+ → Nontrivial-Apartness X 𝓥
+ → WEM 𝓣
+ainjective-type-with-non-trivial-apartness-gives-WEM
+ {𝓤} {𝓣} {𝓦} {𝓥} {X} ainj ((_♯_ , α) , ((x₀ , x₁) , points-apart)) P P-is-prop
+ = VII
   where
    X-aflabby : aflabby X 𝓣
    X-aflabby = ainjective-types-are-aflabby _ ainj
@@ -401,38 +407,69 @@ type-with-non-trivial-apartness-injective-gives-WEM
    VII = ∨-elim (decidability-of-prop-is-prop fe' (negations-are-props fe'))
                 (inl ∘ III) (inr ∘ IV) VI
 
+
 \end{code}
 
-Notice that this last theore subsumes all the previous examples: the
-type 𝟚, which is a simple type, the simple types (because they are
-totally separated and hence they have a (tight) apartness), the
-Dedekind reals (with their standard apartness), ℕ∞ (again because it
-is totally separated). TODO. Maybe we can list a few more interesting
-examples?
+TODO. Move the following to the to be created directory Apartness.
 
-TODO.
+\begin{code}
 
- * It also follows that a universe can't have an apartness relation
-   that distinguishes two types, unless weak excluded middle holds. If
-   WEM does hold, then we can define
+WEM-gives-that-type-with-two-distinct-points-has-nontrivial-apartness
+ : {X : 𝓤 ̇  }
+ → has-two-distinct-points X
+ → WEM 𝓤
+ → Nontrivial-Apartness X 𝓤
+WEM-gives-that-type-with-two-distinct-points-has-nontrivial-apartness
+ {𝓤} {X} htdp wem = γ
+ where
+  s : (x y z : X) → x ≠ y → (x ≠ z) + (y ≠ z)
+  s x y z d =
+   Cases (wem (x ≠ z) (negations-are-props fe'))
+    (λ (a : ¬ (x ≠ z))  → inr (λ {refl → a d}))
+    (λ (b : ¬¬ (x ≠ z)) → inl (three-negations-imply-one b))
 
-    X ♯ Y := (¬ X × ¬¬ Y) + (¬¬ X × ¬ Y).
+  c : is-cotransitive _≠_
+  c x y z d = ∣ s x y z d ∣
 
-   Symmetry is clear. For cotransitivity, assume that X ♯ Y and let Z
-   be any type. We use WEM to check which of ¬ Z and ¬¬ Z holds. We
-   have four cases to check, but in practice only two by symmetry. So
-   assume ¬ X and ¬¬ Y w.l.o.g. If ¬ Z, then Z ♯ Y, and if ¬¬ Z, then
-   X ♯ Z. So a universe, being injective, has an apartness relation
-   that distinguishes two types if and only if WEM holds.
+  γ : Nontrivial-Apartness X 𝓤
+  γ = (_≠_ ,
+      ((λ x y → negations-are-props fe') ,
+       ≠-is-irrefl ,
+       (λ x y → ≠-sym) , c)) ,
+      htdp
 
- * More generally, an injective type has an apartness relation that
-   distinguishes two points if and only if WEM holds.
-   Cf. Taboos.Decomposability.
+\end{code}
 
- * Notice also that that if a type Y has an apartness with y₀ ♯ y₁, then
-   the function type (X → Y) has an apartness
+In particular, we have the following.
 
-    f ♯ g := ∃ x ꞉ X , f x ♯ g x
+\begin{code}
 
-   that tells apart the constant functions with values y₀ and y₁
-   respectively.
+non-trivial-apartness-on-universe-gives-WEM
+ : is-univalent (𝓤 ⊔ 𝓥)
+ → Nontrivial-Apartness (𝓤 ⊔ 𝓥 ̇ ) 𝓥
+ → WEM 𝓤
+non-trivial-apartness-on-universe-gives-WEM ua =
+ ainjective-type-with-non-trivial-apartness-gives-WEM
+  (universes-are-ainjective ua)
+
+WEM-gives-non-trivial-apartness-on-universe
+ : WEM (𝓤 ⁺)
+ → Nontrivial-Apartness (𝓤 ̇ ) (𝓤 ⁺)
+WEM-gives-non-trivial-apartness-on-universe =
+ WEM-gives-that-type-with-two-distinct-points-has-nontrivial-apartness
+  ((𝟘 , 𝟙) , 𝟘-is-not-𝟙)
+
+\end{code}
+
+TODO. Notice that the last fact doesn't have the previous one as a converse. However, we can adapt the proof to assume that we are given a large, locally small type, which the universe is under univalence, to get
+
+  non-trivial-apartness-on-universe-iff-WEM
+   : is-univalent 𝓤
+   → Nontrivial-Apartness 𝓤 𝓤 ↔ WEM 𝓤
+
+Notice that ainjective-type-with-non-trivial-apartness-gives-WEM
+subsumes all the previous examples: the type 𝟚, which is a simple
+type, the simple types (because they are totally separated and hence
+they have a (tight) apartness), the Dedekind reals (with their
+standard apartness), ℕ∞ (again because it is totally
+separated). TODO. Maybe we can list a few more interesting examples?

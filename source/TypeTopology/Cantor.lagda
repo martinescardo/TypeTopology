@@ -6,10 +6,13 @@ The Cantor type of infinite binary sequences.
 
 {-# OPTIONS --safe --without-K #-}
 
+open import Apartness.Definition
 open import MLTT.Spartan
 open import MLTT.Two-Properties
 open import Naturals.Order
+open import Naturals.RootsTruncation
 open import Notation.Order
+open import NotionsOfDecidability.Decidable
 open import UF.Base
 open import UF.DiscreteAndSeparated hiding (_♯_)
 open import UF.Equiv
@@ -86,6 +89,31 @@ _＝⟦_⟧_ : Cantor → ℕ → Cantor → 𝓤₀ ̇
 α ＝⟦ 0      ⟧ β = 𝟙
 α ＝⟦ succ n ⟧ β = (head α ＝ head β) × (tail α ＝⟦ n ⟧ tail β)
 
+＝⟦⟧-refl : (α : Cantor) (k : ℕ) → α ＝⟦ k ⟧ α
+＝⟦⟧-refl α 0 = ⋆
+＝⟦⟧-refl α (succ k) = refl , ＝⟦⟧-refl (tail α) k
+
+＝⟦⟧-trans : (α β γ : Cantor) (k : ℕ) → α ＝⟦ k ⟧ β → β ＝⟦ k ⟧ γ → α ＝⟦ k ⟧ γ
+＝⟦⟧-trans α β γ 0 d e = ⋆
+＝⟦⟧-trans α β γ (succ k) (h , t) (h' , t') =
+ (h ∙ h') ,
+ ＝⟦⟧-trans (tail α) (tail β) (tail γ) k t t'
+
+＝⟦⟧-sym : (α β : Cantor) (k : ℕ) → α ＝⟦ k ⟧ β → β ＝⟦ k ⟧ α
+＝⟦⟧-sym α β 0        ⋆       = ⋆
+＝⟦⟧-sym α β (succ k) (h , t) = (h ⁻¹) , ＝⟦⟧-sym (tail α) (tail β) k t
+
+＝⟦⟧-is-decidable : (α β : Cantor) (k : ℕ) → is-decidable (α ＝⟦ k ⟧ β)
+＝⟦⟧-is-decidable α β 0        = inl ⋆
+＝⟦⟧-is-decidable α β (succ k) =
+ Cases (𝟚-is-discrete (head α) (head β))
+  (λ (h : head α ＝ head β)
+        → map-decidable
+           (λ (t : tail α ＝⟦ k ⟧ tail β) → h , t)
+           (λ (_ , t) → t)
+           (＝⟦⟧-is-decidable (tail α) (tail β) k))
+  (λ (ν : head α ≠ head β) → inr (λ (h , _) → ν h))
+
 \end{code}
 
 We have that (α ＝⟦ n ⟧ β) iff α k ＝ β k for all k < n:
@@ -123,6 +151,8 @@ m is-a-modulus-of-uniform-continuity-of p = ∀ α β → α ＝⟦ m ⟧ β →
 uniformly-continuous : (Cantor → 𝟚) → 𝓤₀ ̇
 uniformly-continuous p = Σ m ꞉ ℕ , m is-a-modulus-of-uniform-continuity-of p
 
+uniform-continuity-data = uniformly-continuous
+
 \end{code}
 
 Uniform continuity as defined above is data rather than property. This
@@ -140,6 +170,8 @@ longer the case.
 
 continuous : (Cantor → 𝟚) → 𝓤₀ ̇
 continuous p = ∀ α → Σ m ꞉ ℕ , (∀ β → α ＝⟦ m ⟧ β → p α ＝ p β)
+
+continuity-data = continuous
 
 \end{code}
 
@@ -168,6 +200,8 @@ not in the realm of pure Martin-Löf type theory.
 
 \begin{code}
 
+open Apartness
+
 _♯_ : Cantor → Cantor → 𝓤₀ ̇
 α ♯ β = Σ n ꞉ ℕ , (α n ≠ β n)
                 × ((i : ℕ) → α i ≠ β i → n ≤ i)
@@ -182,33 +216,10 @@ We also use the letter "a" to range over the apartness type α ♯ β.
 \begin{code}
 
 apartness-criterion : (α β : Cantor) → (Σ n ꞉ ℕ , α n ≠ β n) → α ♯ β
-apartness-criterion α β (n , d) = III II
- where
-  open import Naturals.RootsTruncation 𝓤₀ 𝟚 ₁ (λ b → 𝟚-is-discrete b ₁)
-
-  γ : Cantor
-  γ n = α n ⊕ β n
-
-  I : γ n ＝ ₁
-  I = Lemma[b≠c→b⊕c＝₁] d
-
-  II : Σ m ꞉ ℕ , ((γ m ＝ ₁) × (m ≤ n) × ((i : ℕ) → i < m → γ i ≠ ₁))
-  II = minimal-root γ n I
-
-  III : type-of II → α ♯ β
-  III (m , e , _ , a) = m , III₀ , III₁
-   where
-    III₀ : α m ≠ β m
-    III₀ = Lemma[b⊕c＝₁→b≠c] e
-
-    III₁ : (i : ℕ) → α i ≠ β i → m ≤ i
-    III₁ i d = not-less-bigger-or-equal m i III₃
-     where
-      III₂ : γ i ＝ ₁
-      III₂ = Lemma[b≠c→b⊕c＝₁] d
-
-      III₃ : ¬ (i < m)
-      III₃ l = a i l III₂
+apartness-criterion α β = minimal-witness
+                           (λ n → α n ≠ β n)
+                           (λ n → ¬-preserves-decidability
+                                   (𝟚-is-discrete (α n) (β n)))
 
 apartness-criterion-converse : (α β : Cantor) → α ♯ β → (Σ n ꞉ ℕ , α n ≠ β n)
 apartness-criterion-converse α β (n , δ , _) = (n , δ)
@@ -220,7 +231,7 @@ property of the propositional truncation of the type Σ n ꞉ ℕ , α n ≠ β 
 
 \begin{code}
 
-♯-is-prop-valued : Fun-Ext → (α β : Cantor) → is-prop (α ♯ β)
+♯-is-prop-valued : Fun-Ext → is-prop-valued _♯_
 ♯-is-prop-valued fe α β (n , δ , μ) (n' , δ' , μ') = III
  where
   I : (n : ℕ) → is-prop ((α n ≠ β n) × ((i : ℕ) → α i ≠ β i → n ≤ i))
@@ -240,14 +251,14 @@ The apartness axioms are satisfied, and, moreover, the apartness is tight.
 
 \begin{code}
 
-♯-is-irreflexive : (α : Cantor) → ¬ (α ♯ α)
+♯-is-irreflexive : is-irreflexive _♯_
 ♯-is-irreflexive α (n , δ , μ) = ≠-is-irrefl (α n) δ
 
-♯-is-symmetric : (α β : Cantor) → α ♯ β → β ♯ α
+♯-is-symmetric : is-symmetric _♯_
 ♯-is-symmetric α β (n , δ , μ) = n , (λ e → δ (e ⁻¹)) , λ i d → μ i (≠-sym d)
 
-♯-is-strongly-cotransitive : ∀ α β γ → α ♯ β → (α ♯ γ) + (β ♯ γ)
-♯-is-strongly-cotransitive α β γ (n , δ , μ) = II I
+♯-strongly-cotransitive : is-strongly-cotransitive _♯_
+♯-strongly-cotransitive α β γ (n , δ , μ) = III
  where
   I : (α n ≠ γ n) + (β n ≠ γ n)
   I = discrete-types-are-cotransitive' 𝟚-is-discrete {α n} {β n} {γ n} δ
@@ -256,7 +267,10 @@ The apartness axioms are satisfied, and, moreover, the apartness is tight.
   II (inl d) = inl (apartness-criterion α γ (n , d))
   II (inr d) = inr (apartness-criterion β γ (n , d))
 
-♯-is-tight : Fun-Ext → ∀ α β → ¬ (α ♯ β) → α ＝ β
+  III : (α ♯ γ) + (β ♯ γ)
+  III = II I
+
+♯-is-tight : Fun-Ext → is-tight _♯_
 ♯-is-tight fe α β ν = dfunext fe I
  where
   I : (n : ℕ) → α n ＝ β n
@@ -264,9 +278,6 @@ The apartness axioms are satisfied, and, moreover, the apartness is tight.
          (λ (d : α n ≠ β n) → ν (apartness-criterion α β (n , d)))
 
 \end{code}
-
-We say "strongly cotransitive", as opposed to simply "cotransitive"
-because we have "+" rather than "∨".
 
 If two sequences α and β are apart, they agree before the apartness index n.
 

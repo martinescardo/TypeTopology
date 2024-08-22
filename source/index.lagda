@@ -8,7 +8,7 @@
    https://www.cs.bham.ac.uk/~mhe/
    https://github.com/martinescardo/TypeTopology
 
-   Tested with Agda 2.6.4.3
+   Tested with Agda 2.6.4.3 and 2.7.0
 
    * Our main use of this development is as a personal blackboard or
      notepad for our research and that of collaborators. In
@@ -55,8 +55,8 @@
 
      (https://www.cs.bham.ac.uk/~mhe/TypeTopology/AllModulesIndex.html)
 
-   * In our last count, on 2024.08.16, this development has 771 Agda
-     files with 222K lines of code, including comments and blank
+   * In our last count, on 2024.08.22, this development has 777 Agda
+     files with 223K lines of code, including comments and blank
      lines. But we don't update the count frequently.
 
 Philosophy of the repository
@@ -120,6 +120,7 @@ Click at the imported module names to navigate to them:
 
 module index where
 
+import Apartness.index
 import BinarySystems.index
 import CantorSchroederBernstein.index
 import Categories.index

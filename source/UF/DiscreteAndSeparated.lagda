@@ -22,6 +22,7 @@ open import UF.Equiv
 open import UF.FunExt
 open import UF.Hedberg
 open import UF.HedbergApplications
+open import UF.PropTrunc
 open import UF.Retracts
 open import UF.Sets
 open import UF.SubtypeClassifier
@@ -213,6 +214,9 @@ discrete-is-¬¬-separated d x y = ¬¬-elim (d x y)
 𝟚-is-¬¬-separated : is-¬¬-separated 𝟚
 𝟚-is-¬¬-separated = discrete-is-¬¬-separated 𝟚-is-discrete
 
+ℕ-is-¬¬-separated : is-¬¬-separated ℕ
+ℕ-is-¬¬-separated = discrete-is-¬¬-separated ℕ-is-discrete
+
 subtype-is-¬¬-separated : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (m : X → Y)
                                      → left-cancellable m
                                      → is-¬¬-separated Y
@@ -261,7 +265,7 @@ apart-is-cotransitive d f g h (x , φ)  = lemma₁ (lemma₀ φ)
 \end{code}
 
 We now consider two cases which render the apartness relation ♯ tight,
-assuming extensionality:
+assuming function extensionality:
 
 \begin{code}
 
@@ -763,3 +767,20 @@ discrete'-gives-discrete : {X : 𝓤 ̇ } → is-discrete' X → is-discrete X
 discrete'-gives-discrete (discrete-gives-discrete' d) = d
 
 \end{code}
+
+Added 21th August 2024 by Alice Laroche.
+
+\begin{code}
+
+module _ (pt : propositional-truncations-exist) where
+
+ open PropositionalTruncation pt
+
+ decidable-inhabited-types-are-pointed : {X : 𝓤 ̇} → ∥ X ∥ → is-decidable X → X
+ decidable-inhabited-types-are-pointed ∣x∣ (inl x)  = x
+ decidable-inhabited-types-are-pointed ∣x∣ (inr ¬x) =
+  𝟘-elim (∥∥-rec 𝟘-is-prop ¬x ∣x∣)
+
+\end{code}
+
+End of addition.
