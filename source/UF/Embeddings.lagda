@@ -632,6 +632,8 @@ equiv-embeds-into-function fe =
 
 \end{code}
 
+End of addition.
+
 Fixities:
 
 \begin{code}
