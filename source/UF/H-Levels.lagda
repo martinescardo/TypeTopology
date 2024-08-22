@@ -214,8 +214,8 @@ equiv-preserves-hlevel (succ n) {X} {Y} X-h-lev Y-h-lev =
  hlevel-closed-under-equiv n I (equiv-preserves-hlevel n l l')
  where
   I = ((X , l) ＝ (Y , l')) ≃⟨ II ⟩
-       (X ＝ Y)              ≃⟨ univalence-≃ ua X Y ⟩
-       (X ≃ Y)               ■
+       (X ＝ Y)             ≃⟨ univalence-≃ ua X Y ⟩
+       (X ≃ Y)              ■
    where
     II = ≃-sym (to-subtype-＝-≃ (λ - → hlevel-relation-is-prop n -))
   
