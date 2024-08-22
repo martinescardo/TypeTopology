@@ -82,8 +82,38 @@ Id-collapsibles-are-sets pc {x} = Id-collapsibles-are-h-isolated x pc
 
 \end{code}
 
-Here is an example. Any type that admits a prop-valued, reflexive and
-antisymmetric relation is a set.
+We also need the following symmetrical version of local Hedberg, which
+can be proved by reduction to the above (using the fact that
+collapsible types are closed under equivalence), but at this point we
+don't have the machinery at our disposal (which is developed in
+modules that depend on this one), and hence we prove it directly by
+symmetrizing the proof.
+
+\begin{code}
+
+local-hedberg' : {X : 𝓤 ̇ } (x : X)
+               → ((y : X) → collapsible (y ＝ x))
+               → (y : X) → is-prop (y ＝ x)
+local-hedberg' {𝓤} {X} x pc y p q =
+  p                     ＝⟨ c y p ⟩
+  f y p ∙ (f x refl)⁻¹  ＝⟨  ap (λ - → - ∙ (f x refl)⁻¹) (κ y p q) ⟩
+  f y q ∙ (f x refl)⁻¹  ＝⟨ (c y q)⁻¹ ⟩
+  q                     ∎
+ where
+  f : (y : X) → y ＝ x → y ＝ x
+  f y = pr₁ (pc y)
+
+  κ : (y : X) (p q : y ＝ x) → f y p ＝ f y q
+  κ y = pr₂ (pc y)
+
+  c : (y : X) (r : y ＝ x) → r ＝  f y r ∙ (f x refl)⁻¹
+  c _ refl = sym-is-inverse' (f x refl)
+
+\end{code}
+
+Here is an example (added some time after the pandemic, not sure
+when). Any type that admits a prop-valued, reflexive and antisymmetric
+relation is a set.
 
 \begin{code}
 
@@ -115,34 +145,5 @@ type-with-prop-valued-refl-antisym-rel-is-set
 
   γ : is-set X
   γ = Id-collapsibles-are-sets (f , κ)
-
-\end{code}
-
-We also need the following symmetrical version of local Hedberg, which
-can be proved by reduction to the above (using the fact that
-collapsible types are closed under equivalence), but at this point we
-don't have the machinery at our disposal (which is developed in
-modules that depend on this one), and hence we prove it directly by
-symmetrizing the proof.
-
-\begin{code}
-
-local-hedberg' : {X : 𝓤 ̇ } (x : X)
-               → ((y : X) → collapsible (y ＝ x))
-               → (y : X) → is-prop (y ＝ x)
-local-hedberg' {𝓤} {X} x pc y p q =
-  p                     ＝⟨ c y p ⟩
-  f y p ∙ (f x refl)⁻¹  ＝⟨  ap (λ - → - ∙ (f x refl)⁻¹) (κ y p q) ⟩
-  f y q ∙ (f x refl)⁻¹  ＝⟨ (c y q)⁻¹ ⟩
-  q                     ∎
- where
-  f : (y : X) → y ＝ x → y ＝ x
-  f y = pr₁ (pc y)
-
-  κ : (y : X) (p q : y ＝ x) → f y p ＝ f y q
-  κ y = pr₂ (pc y)
-
-  c : (y : X) (r : y ＝ x) → r ＝  f y r ∙ (f x refl)⁻¹
-  c _ refl = sym-is-inverse' (f x refl)
 
 \end{code}
