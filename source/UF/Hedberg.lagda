@@ -1,6 +1,6 @@
-Martin Escardo
+Martin Escardo 2012.
 
-Based on
+Part of
 
  Kraus, N., Escardó, M., Coquand, T., Altenkirch, T.
  Generalizations of Hedberg’s Theorem.
@@ -142,7 +142,7 @@ local-hedberg' {𝓤} {X} x pc y p q =
   κ : (y : X) (p q : y ＝ x) → f y p ＝ f y q
   κ y = pr₂ (pc y)
 
-  c : (y : X) (r : y ＝ x) → r ＝  (f y r) ∙ (f x refl)⁻¹
+  c : (y : X) (r : y ＝ x) → r ＝  f y r ∙ (f x refl)⁻¹
   c _ refl = sym-is-inverse' (f x refl)
 
 \end{code}
