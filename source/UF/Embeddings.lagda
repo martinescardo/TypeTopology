@@ -620,6 +620,17 @@ while the composite
 
 is an embedding, the evaluation map isn't.
 
+Added by Ian Ray 22nd August 2024
+
+\begin{code}
+
+equiv-embeds-into-function : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                           → FunExt
+                           → (X ≃ Y) ↪ (X → Y)
+equiv-embeds-into-function fe =
+ (⌜_⌝ , pr₁-is-embedding (λ f → being-equiv-is-prop fe f))
+
+\end{code}
 
 Fixities:
 
