@@ -120,6 +120,7 @@ Click at the imported module names to navigate to them:
 
 module index where
 
+import Apartness.index
 import BinarySystems.index
 import CantorSchroederBernstein.index
 import Categories.index

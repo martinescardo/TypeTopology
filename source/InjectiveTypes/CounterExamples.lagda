@@ -352,8 +352,8 @@ TODO. We could derive ℝ-ainjective-gives-WEM from the below. (Note the
 
 \begin{code}
 
-open import TypeTopology.TotallySeparated using (module Apartness)
-open Apartness fe pt
+open import Apartness.Definition
+open Apartness pt
 
 has-two-points-apart : {X : 𝓤 ̇ } → Apartness X 𝓥 → 𝓥 ⊔ 𝓤 ̇
 has-two-points-apart {𝓤} {𝓥} {X} (_♯_ , α) = Σ (x , y) ꞉ X × X , (x ♯ y)
