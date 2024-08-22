@@ -569,6 +569,12 @@ consider the image of the map eval X, and this gives the totally
 separated reflection, with the corestriction of eval X to its image as
 its reflector.
 
+TODO (Martin will do it soon). Move the following to two files in a
+new top directory Apartness (one for general things, and the other for
+the tight reflection (which is also general thing)), but keep the
+material for _♯₂_ and its use for characterizing total separatedness
+here.
+
 \begin{code}
 
 module totally-separated-reflection
@@ -859,7 +865,7 @@ apartness relation _♯₂ is tight:
 
  I don't think there is a tight apartness relation on Ω without
  constructive taboos. The natural apartness relation seems to be the
- following, but it isn't contrasitive unless excluded middle holds.
+ following, but it isn't cotransitive unless excluded middle holds.
 
 \begin{code}
 
@@ -888,6 +894,8 @@ apartness relation _♯₂ is tight:
 
 \end{code}
 
+ TODO. Show that *any* apartness relation on Ω gives weak excluded
+ middle.
 
  12 Feb 2018. The following was prompted by the discussion
 

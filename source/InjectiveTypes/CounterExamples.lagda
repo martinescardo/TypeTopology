@@ -403,7 +403,7 @@ type-with-non-trivial-apartness-injective-gives-WEM
 
 \end{code}
 
-Notice that this last theore subsumes all the previous examples: the
+Notice that this last theorem subsumes all the previous examples: the
 type 𝟚, which is a simple type, the simple types (because they are
 totally separated and hence they have a (tight) apartness), the
 Dedekind reals (with their standard apartness), ℕ∞ (again because it

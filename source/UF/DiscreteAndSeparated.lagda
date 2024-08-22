@@ -264,7 +264,7 @@ apart-is-cotransitive d f g h (x , φ)  = lemma₁ (lemma₀ φ)
 \end{code}
 
 We now consider two cases which render the apartness relation ♯ tight,
-assuming extensionality:
+assuming function extensionality:
 
 \begin{code}
 
