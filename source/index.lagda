@@ -112,6 +112,12 @@ Philosophy of the repository
      computational sense (as opposed to constructivity in the sense of
      validity in any (∞-)topos).
 
+   * Although our philosophy is based on HoTT/UF and ∞-toposes, it
+     should be emphasized that much of what we do here also holds in
+     the setoid model. In particular, this model validates function
+     extensionality, the existence of propositional truncationsm and
+     the existence of quotients, and some higher inductive types.
+
 Click at the imported module names to navigate to them:
 
 \begin{code}
