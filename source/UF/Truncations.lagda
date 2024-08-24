@@ -88,7 +88,7 @@ module GeneralTruncations
                 → ((x : X) → f (∣ x ∣[ n ]) ＝ g (∣ x ∣[ n ]))
                 → (s : ∥ X ∥[ n ]) → f s ＝ g s
  ∥∥ₙ-uniqueness {𝓤} {𝓥} {X} {Y} {n} Y-h-lev f g H =
-   ∥∥ₙ-ind (λ s → hlevels-are-closed-under-id n Y-h-lev (f s) (g s)) H
+  ∥∥ₙ-ind (λ s → hlevels-are-closed-under-id n Y-h-lev (f s) (g s)) H
 
  ∥∥ₙ-rec-comp : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {n : ℕ}
               → (m : Y is-of-hlevel n)
@@ -194,7 +194,7 @@ We demonstrate the equivalence of one-truncation and propositional truncation:
 
 We provide the canonical predecessor map and show truncations are closed under
 equivalence and succesive applications of truncation (TODO: other closure
-conditions).
+conditions (?)).
 
 \begin{code}
  canonical-pred-map : {X : 𝓤 ̇} {n : ℕ}
@@ -219,32 +219,31 @@ conditions).
    b : ∥ Y ∥[ n ] → ∥ X ∥[ n ]
    b = ∥∥ₙ-rec (∥∥ₙ-h-level n) (λ y → ∣ (⌜ e ⌝⁻¹ y) ∣[ n ])
    H : b ∘ f ∼ id
-   H = ∥∥ₙ-ind (λ s → hlevels-are-closed-under-id n (∥∥ₙ-h-level n)
-                                               (b (f s)) s)
+   H = ∥∥ₙ-ind (λ s → hlevels-are-closed-under-id n (∥∥ₙ-h-level n) (b (f s)) s)
                H'
     where
      H' : (x : X) → b (f (∣ x ∣[ n ])) ＝ (∣ x ∣[ n ])
-     H' x = b (f (∣ x ∣[ n ]))         ＝⟨ ap b (∥∥ₙ-rec-comp (∥∥ₙ-h-level n)
-                                                (λ x → ∣ (⌜ e ⌝ x) ∣[ n ]) x) ⟩
-            b (∣ ⌜ e ⌝ x ∣[ n ])       ＝⟨ ∥∥ₙ-rec-comp (∥∥ₙ-h-level n)
-                                               (λ y → ∣ (⌜ e ⌝⁻¹ y) ∣[ n ])
-                                               (⌜ e ⌝ x) ⟩
-            (∣ ⌜ e ⌝⁻¹ (⌜ e ⌝ x) ∣[ n ]) ＝⟨ ap (λ x → ∣ x ∣[ n ])
-                                            (inverses-are-retractions' e x) ⟩
-            (∣ x ∣[ n ])                ∎ 
+     H' x = b (f (∣ x ∣[ n ]))           ＝⟨ I ⟩
+            b (∣ ⌜ e ⌝ x ∣[ n ])         ＝⟨ II ⟩
+            (∣ ⌜ e ⌝⁻¹ (⌜ e ⌝ x) ∣[ n ]) ＝⟨ III ⟩
+            (∣ x ∣[ n ])                 ∎
+      where
+       I = ap b (∥∥ₙ-rec-comp (∥∥ₙ-h-level n) (λ x → ∣ (⌜ e ⌝ x) ∣[ n ]) x)
+       II = ∥∥ₙ-rec-comp (∥∥ₙ-h-level n) (λ y → ∣ (⌜ e ⌝⁻¹ y) ∣[ n ]) (⌜ e ⌝ x)
+       III = ap (λ x → ∣ x ∣[ n ]) (inverses-are-retractions' e x)
    G : f ∘ b ∼ id
-   G = ∥∥ₙ-ind (λ s → hlevels-are-closed-under-id n (∥∥ₙ-h-level n)
-                                                  (f (b s)) s)
+   G = ∥∥ₙ-ind (λ s → hlevels-are-closed-under-id n (∥∥ₙ-h-level n) (f (b s)) s)
                G'
     where
      G' : (y : Y) → f (b (∣ y ∣[ n ])) ＝ (∣ y ∣[ n ])
-     G' y = f (b (∣ y ∣[ n ]))         ＝⟨ ap f (∥∥ₙ-rec-comp (∥∥ₙ-h-level n)
-                                              (λ y → ∣ (⌜ e ⌝⁻¹ y) ∣[ n ]) y) ⟩
-            f (∣ (⌜ e ⌝⁻¹ y) ∣[ n ])   ＝⟨ ∥∥ₙ-rec-comp (∥∥ₙ-h-level n)
-                                          (λ x → ∣ ⌜ e ⌝ x ∣[ n ]) (⌜ e ⌝⁻¹ y) ⟩
-            (∣ ⌜ e ⌝ (⌜ e ⌝⁻¹ y) ∣[ n ]) ＝⟨ ap (λ y → ∣ y ∣[ n ])
-                                                (inverses-are-sections' e y) ⟩
-            (∣ y ∣[ n ])               ∎ 
+     G' y = f (b (∣ y ∣[ n ]))           ＝⟨ I ⟩
+            f (∣ (⌜ e ⌝⁻¹ y) ∣[ n ])     ＝⟨ II ⟩
+            (∣ ⌜ e ⌝ (⌜ e ⌝⁻¹ y) ∣[ n ]) ＝⟨ III ⟩
+            (∣ y ∣[ n ])                 ∎
+      where
+       I = ap f (∥∥ₙ-rec-comp (∥∥ₙ-h-level n) (λ y → ∣ (⌜ e ⌝⁻¹ y) ∣[ n ]) y)
+       II = ∥∥ₙ-rec-comp (∥∥ₙ-h-level n) (λ x → ∣ ⌜ e ⌝ x ∣[ n ]) (⌜ e ⌝⁻¹ y)
+       III = ap (λ y → ∣ y ∣[ n ]) (inverses-are-sections' e y)
 
  succesive-truncations-equiv : (X : 𝓤 ̇) (n : ℕ)
                              → (∥ X ∥[ n ]) ≃ (∥ (∥ X ∥[ succ n ]) ∥[ n ])
@@ -255,39 +254,36 @@ conditions).
    b : (∥ (∥ X ∥[ succ n ]) ∥[ n ]) → (∥ X ∥[ n ])
    b = ∥∥ₙ-rec (∥∥ₙ-h-level n) (canonical-pred-map)
    G : f ∘ b ∼ id
-   G = ∥∥ₙ-ind (λ s → hlevels-are-closed-under-id n (∥∥ₙ-h-level n)
-                                                  (f (b s)) s)
+   G = ∥∥ₙ-ind (λ s → hlevels-are-closed-under-id n (∥∥ₙ-h-level n) (f (b s)) s)
                (∥∥ₙ-ind (λ t → hlevels-are-closed-under-id n
                                 (hlevels-are-closed-under-id n
                                 (∥∥ₙ-h-level n) (f (b (∣ t ∣[ n ])))
-                                             ((∣ t ∣[ n ]))))
+                                (∣ t ∣[ n ])))
                          G')
     where
      G' : (x : X)
         → f (b (∣ ∣ x ∣[ succ n ] ∣[ n ])) ＝ (∣ ∣ x ∣[ succ n ] ∣[ n ])
-     G' x = f (b (∣ ∣ x ∣[ succ n ] ∣[ n ]))     ＝⟨ ap f (∥∥ₙ-rec-comp
-                                                        (∥∥ₙ-h-level n)
-                                                        canonical-pred-map
-                                                        (∣ x ∣[ succ n ])) ⟩
-            f (canonical-pred-map (∣ x ∣[ succ n ])) ＝⟨ ap f
-                                                   (canonical-pred-map-comp x) ⟩
-            f (∣ x ∣[ n ])             ＝⟨ ∥∥ₙ-rec-comp
-                                            (∥∥ₙ-h-level n)
-                                            (λ x → ∣ ∣ x ∣[ succ n ] ∣[ n ])
-                                            x ⟩
-            (∣ ∣ x ∣[ succ n ] ∣[ n ])   ∎
+     G' x = f (b (∣ ∣ x ∣[ succ n ] ∣[ n ]))         ＝⟨ I ⟩
+            f (canonical-pred-map (∣ x ∣[ succ n ])) ＝⟨ II ⟩
+            f (∣ x ∣[ n ])                           ＝⟨ III ⟩
+            (∣ ∣ x ∣[ succ n ] ∣[ n ])               ∎
+      where
+       I = ap f (∥∥ₙ-rec-comp (∥∥ₙ-h-level n) canonical-pred-map
+                              (∣ x ∣[ succ n ]))
+       II = ap f (canonical-pred-map-comp x)
+       III = ∥∥ₙ-rec-comp (∥∥ₙ-h-level n) (λ x → ∣ ∣ x ∣[ succ n ] ∣[ n ]) x
    H : b ∘ f ∼ id
-   H = ∥∥ₙ-ind (λ s → hlevels-are-closed-under-id n (∥∥ₙ-h-level n)
-                                                  (b (f s)) s)
+   H = ∥∥ₙ-ind (λ s → hlevels-are-closed-under-id n (∥∥ₙ-h-level n) (b (f s)) s)
                H'
     where
      H' : (x : X) → b (f (∣ x ∣[ n ])) ＝ (∣ x ∣[ n ])
-     H' x = b (f (∣ x ∣[ n ]))       ＝⟨ ap b (∥∥ₙ-rec-comp (∥∥ₙ-h-level n)
-                                           (λ x → ∣ ∣ x ∣[ succ n ] ∣[ n ]) x) ⟩
-            b (∣ ∣ x ∣[ succ n ] ∣[ n ]) ＝⟨ ∥∥ₙ-rec-comp (∥∥ₙ-h-level n)
-                                          canonical-pred-map (∣ x ∣[ succ n ]) ⟩
+     H' x = b (f (∣ x ∣[ n ]))                   ＝⟨ I ⟩
+            b (∣ ∣ x ∣[ succ n ] ∣[ n ])         ＝⟨ II ⟩
             canonical-pred-map (∣ x ∣[ succ n ]) ＝⟨ canonical-pred-map-comp x ⟩
-            (∣ x ∣[ n ])                   ∎
+            (∣ x ∣[ n ])                         ∎
+      where
+       I = ap b (∥∥ₙ-rec-comp (∥∥ₙ-h-level n) (λ x → ∣ ∣ x ∣[ succ n ] ∣[ n ]) x)
+       II = ∥∥ₙ-rec-comp (∥∥ₙ-h-level n) canonical-pred-map (∣ x ∣[ succ n ])
 
 \end{code}
 
