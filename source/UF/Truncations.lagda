@@ -76,7 +76,9 @@ module GeneralTruncations
  open H-level-truncations-exist te
 
  ∥∥ₙ-rec : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {n : ℕ}
-         → Y is-of-hlevel n → (X → Y) → ∥ X ∥[ n ] → Y
+         → Y is-of-hlevel n
+         → (X → Y)
+         → ∥ X ∥[ n ] → Y
  ∥∥ₙ-rec {𝓤} {𝓥} {X} {Y} {n} Y-h-level f s =
   ∥∥ₙ-ind (λ - → Y-h-level) f s
 
@@ -108,13 +110,13 @@ module GeneralTruncations
                → (x : X) → (y : Y)
                → ∥∥ₙ-rec₂ m g ∣ x ∣[ n ] ∣ y ∣[ n ] ＝ g x y
  ∥∥ₙ-rec-comp₂ {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {n} m g x y =
-  ∥∥ₙ-rec₂ m g ∣ x ∣[ n ] ∣ y ∣[ n ] ＝⟨ happly
-                                          (∥∥ₙ-rec-comp
-                                          (hlevel-closed-under-→ n m)
-                                           (λ x → ∥∥ₙ-rec m (λ y → g x y)) x)
-                                           ∣ y ∣[ n ]  ⟩
+  ∥∥ₙ-rec₂ m g ∣ x ∣[ n ] ∣ y ∣[ n ] ＝⟨ I ⟩
   ∥∥ₙ-rec m (λ y → g x y) ∣ y ∣[ n ] ＝⟨ ∥∥ₙ-rec-comp m (λ y → g x y) y ⟩
   g x y                              ∎
+   where
+    I = happly (∥∥ₙ-rec-comp (hlevel-closed-under-→ n m)
+                (λ x → ∥∥ₙ-rec m (λ y → g x y)) x)
+               ∣ y ∣[ n ]
 
  abstract
   ∥∥ₙ-ind₂ : {𝓤 𝓥 𝓦 : Universe} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {n : ℕ}
@@ -135,26 +137,24 @@ module GeneralTruncations
                 → (x : X) → (y : Y)
                 → ∥∥ₙ-ind₂ m g ∣ x ∣[ n ] ∣ y ∣[ n ] ＝ g x y
   ∥∥ₙ-ind-comp₂ {𝓤} {𝓥} {𝓦} {X} {Y} {n} {P} m g x y =
-   ∥∥ₙ-ind₂ m g ∣ x ∣[ n ] ∣ y ∣[ n ] ＝⟨ happly
-                                          (∥∥ₙ-ind-comp
-                                          (λ u → hlevel-closed-under-Π n (P u)
-                                                  (λ v → m u v))
-                                          (λ x' → ∥∥ₙ-ind
-                                                  (λ v → m ∣ x' ∣[ n ] v)
-                                                  (λ y' → g x' y')) x)
-                                                  ∣ y ∣[ n ] ⟩
-   ∥∥ₙ-ind (λ v → m ∣ x ∣[ n ] v)
-           (λ y' → g x y') ∣ y ∣[ n ]  ＝⟨ ∥∥ₙ-ind-comp
-                                            (λ v → m ∣ x ∣[ n ] v)
-                                            (λ y' → g x y') y ⟩
-   g x y                               ∎
+   ∥∥ₙ-ind₂ m g ∣ x ∣[ n ] ∣ y ∣[ n ]                        ＝⟨ I ⟩
+   ∥∥ₙ-ind (λ v → m ∣ x ∣[ n ] v) (λ y' → g x y') ∣ y ∣[ n ] ＝⟨ II ⟩
+   g x y                                                     ∎
+    where
+     I : ∥∥ₙ-ind₂ m g ∣ x ∣[ n ] ∣ y ∣[ n ]
+         ＝ ∥∥ₙ-ind (λ v → m ∣ x ∣[ n ] v) (λ y' → g x y') ∣ y ∣[ n ]
+     I = happly
+          (∥∥ₙ-ind-comp (λ u → hlevel-closed-under-Π n (P u) (λ v → m u v))
+           (λ x' → ∥∥ₙ-ind (λ v → m ∣ x' ∣[ n ] v) (λ y' → g x' y')) x)
+          ∣ y ∣[ n ]
+     II : ∥∥ₙ-ind (λ v → m ∣ x ∣[ n ] v) (λ y' → g x y') ∣ y ∣[ n ]
+          ＝ g x y
+     II = ∥∥ₙ-ind-comp (λ v → m ∣ x ∣[ n ] v) (λ y' → g x y') y
 
 \end{code}
 
 We develop useful results related to general truncations. We characterize the
-first couple levels of truncation (TODO: three-hlevel is a groupoid). We
-provide the canonical predecessor map and show truncations are closed under
-equivalence and succesive applications of truncation.
+first couple levels of truncation (TODO: three-hlevel is a groupoid). 
 
 \begin{code}
 
@@ -168,6 +168,35 @@ equivalence and succesive applications of truncation.
  two-trunc-is-set {𝓤} {X} {x} {y} =
   is-prop'-implies-is-prop (∥∥ₙ-h-level (succ (succ zero)) x y)
 
+\end{code}
+
+We demonstrate the equivalence of one-truncation and propositional truncation:
+  ∥ X ∥₁ ≃ ∥ X ∥
+
+\begin{code}
+
+ open propositional-truncations-exist pt
+
+ one-trunc-to-prop-trunc : {X : 𝓤 ̇} → ∥ X ∥[ 1 ] → ∥ X ∥
+ one-trunc-to-prop-trunc = ∥∥ₙ-rec (is-prop-implies-is-prop' ∥∥-is-prop) ∣_∣
+
+ prop-trunc-to-one-trunc : {X : 𝓤 ̇} → ∥ X ∥ → ∥ X ∥[ 1 ]
+ prop-trunc-to-one-trunc = ∥∥-rec one-trunc-is-prop (λ x → ∣ x ∣[ 1 ])
+
+ one-trunc-≃-prop-trunc : {X : 𝓤 ̇}
+                        → (∥ X ∥[ 1 ]) ≃ ∥ X ∥
+ one-trunc-≃-prop-trunc {𝓤} {X} =
+  logically-equivalent-props-are-equivalent one-trunc-is-prop ∥∥-is-prop
+                                            one-trunc-to-prop-trunc
+                                            prop-trunc-to-one-trunc
+
+\end{code}
+
+We provide the canonical predecessor map and show truncations are closed under
+equivalence and succesive applications of truncation (TODO: other closure
+conditions).
+
+\begin{code}
  canonical-pred-map : {X : 𝓤 ̇} {n : ℕ}
                     → ∥ X ∥[ succ n ] → ∥ X ∥[ n ]
  canonical-pred-map {𝓤} {X} {n} x =
@@ -262,7 +291,8 @@ equivalence and succesive applications of truncation.
 
 \end{code}
 
-We now define an equivalence that characterizes the truncated identity type.
+We now define an equivalence that characterizes the truncated identity type
+under the assumption of univalence.
 
 \begin{code}
 
@@ -291,7 +321,7 @@ We now define an equivalence that characterizes the truncated identity type.
 
   trunc-id-family-computes : (x' : X)
                            → trunc-id-family-type ∣ x' ∣[ succ n ]
-                           ＝ ∥ x ＝ x' ∥[ n ]
+                             ＝ ∥ x ＝ x' ∥[ n ]
   trunc-id-family-computes x' =
     ap pr₁ (∥∥ₙ-rec-comp (ℍ-is-of-next-hlevel n 𝓤 (ua 𝓤))
                          (λ x' → (∥ x ＝ x' ∥[ n ] , (∥∥ₙ-h-level n)))
@@ -400,32 +430,3 @@ We now define an equivalence that characterizes the truncated identity type.
  forth-trunc-id-char ua = ⌜ eliminated-trunc-identity-char ua ⌝
 
 \end{code}
-
-We demonstrate the equivalence of 1-truncation and propositional truncation:
-  ∥ X ∥₁ ≃ ∥ X ∥
-
-\begin{code}
-
-module 1-truncation-propositional-truncation-relationship
-        (te : H-level-truncations-exist)
-         where
-
- open H-level-truncations-exist te
- open GeneralTruncations te 
- open propositional-truncations-exist pt
-
- 1-trunc-to-prop-trunc : {X : 𝓤 ̇} → ∥ X ∥[ 1 ] → ∥ X ∥
- 1-trunc-to-prop-trunc = ∥∥ₙ-rec (is-prop-implies-is-prop' ∥∥-is-prop) ∣_∣
-
- prop-trunc-to-1-trunc : {X : 𝓤 ̇} → ∥ X ∥ → ∥ X ∥[ 1 ]
- prop-trunc-to-1-trunc = ∥∥-rec one-trunc-is-prop (λ x → ∣ x ∣[ 1 ])
-
- 1-trunc-≃-prop-trunc : {X : 𝓤 ̇}
-                      → (∥ X ∥[ 1 ]) ≃ ∥ X ∥
- 1-trunc-≃-prop-trunc {𝓤} {X} =
-  logically-equivalent-props-are-equivalent one-trunc-is-prop ∥∥-is-prop
-                                            1-trunc-to-prop-trunc
-                                            prop-trunc-to-1-trunc
-
-\end{code}
-
