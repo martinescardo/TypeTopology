@@ -108,7 +108,7 @@ module _ (𝒳 𝒴 : hSet 𝓤) where
     prop-y-open x = compact-Y ((λ y → (x , y) ∈ₚ P) , λ y → open-P (x , y))
 
     † : is-open-proposition chained-forall holds
-    † = compact-X ((λ x → prop-y x) , prop-y-open)
+    † = compact-X (prop-y , prop-y-open)
 
 \end{code}
 

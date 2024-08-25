@@ -72,8 +72,7 @@ The type `𝟙` is always overt, regardless of the Sierpinski object.
 
 \end{code}
 
-We prove here, similar to `image-of-compact`, that image of `overt` sets are
-`overt`.
+Binary product of overt sets is overt.
 
 \begin{code}
 
@@ -83,6 +82,41 @@ module _ (𝒳 𝒴 : hSet 𝓤) where
   Y = underlying-set 𝒴
   set-Y = pr₂ 𝒴
   open Equality set-Y
+
+ ×-is-overt : is-overt 𝒳 holds
+              → is-overt 𝒴 holds
+              → is-overt (𝒳 ×ₛ 𝒴)  holds
+ ×-is-overt overt-X overt-Y (P , open-P) =
+  ⇔-open chained-ex tuple-ex (p₁ , p₂) †
+   where
+    tuple-ex : Ω 𝓤
+    tuple-ex = Ǝₚ z ꞉ (X × Y) , z ∈ₚ P
+
+    chained-ex : Ω 𝓤
+    chained-ex = Ǝₚ x ꞉ X , (Ǝₚ y ꞉ Y , (x , y) ∈ₚ P)
+
+    p₁ : (chained-ex ⇒ tuple-ex) holds
+    p₁ = ∥∥-rec ∃-is-prop λ (x , hyp)
+       → ∥∥-rec ∃-is-prop (λ (y , hyp') → ∣ (x , y) , hyp' ∣) hyp
+
+    p₂ : (tuple-ex ⇒ chained-ex) holds
+    p₂ = ∥∥-rec ∃-is-prop λ ((x , y) , hyp) → ∣ x , ∣ y , hyp ∣ ∣
+    
+    prop-y : 𝓟 X
+    prop-y x = Ǝₚ y ꞉ Y , (x , y) ∈ₚ P
+    
+    prop-y-open : (x : X) → is-open-proposition (prop-y x) holds
+    prop-y-open x = overt-Y ((λ y → (x , y) ∈ₚ P) , λ y → open-P (x , y))
+    
+    † : is-open-proposition chained-ex holds
+    † = overt-X (prop-y , prop-y-open)
+
+\end{code}
+
+We prove here, similar to `image-of-compact`, that image of `overt` sets are
+`overt`.
+
+\begin{code}
 
  image-of-overt : (f : X → Y)
                 → is-surjection f
