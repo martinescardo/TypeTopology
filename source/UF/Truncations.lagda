@@ -12,15 +12,21 @@ globally as many important properties hold in the absence of univalence.
 
 {-# OPTIONS --safe --without-K #-}
 
+open import UF.FunExt
+open import UF.PropTrunc 
+
+module UF.Truncations (fe : Fun-Ext)
+                      (pt : propositional-truncations-exist)
+                       where
+
 open import MLTT.Spartan
 open import UF.Base
 open import UF.Embeddings
 open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.Equiv-FunExt
-open import UF.FunExt
+open import UF.H-Levels fe
 open import UF.IdentitySystems
-open import UF.PropTrunc 
 open import UF.Retracts
 open import UF.Sets
 open import UF.Singleton-Properties
@@ -32,12 +38,6 @@ open import UF.UA-FunExt
 open import UF.Yoneda
 open import Naturals.Addition renaming (_+_ to _+'_)
 open import Naturals.Order
-
-module UF.Truncations (fe : Fun-Ext)
-                      (pt : propositional-truncations-exist)
-                       where
-
-open import UF.H-Levels fe 
 
 \end{code}
 
@@ -200,9 +200,15 @@ conditions (?)).
   ∥∥ₙ-rec-comp (hlevels-are-upper-closed n (∥ X ∥[ n ]) (∥∥ₙ-h-level n))
                (λ _ → ∣ _ ∣[ n ]) x
 
- truncation-closed-under-equiv : {𝓤 𝓥 : Universe} {n : ℕ} {X : 𝓤 ̇} {Y : 𝓥 ̇}
+ to-＝-of-maps-with-truncated-codomain : {n : ℕ} {X : 𝓤 ̇} {Y : 𝓥 ̇}
+                                       → (f g : X → ∥ Y ∥[ n ])
+                                       → (x : X) → (f x ＝ g x) is-of-hlevel n
+ to-＝-of-maps-with-truncated-codomain {𝓤} {𝓥} {n} {X} {Y} f g x =
+  hlevels-are-closed-under-id n (∥∥ₙ-h-level n) (f x) (g x)
+
+ truncation-closed-under-equiv : {n : ℕ} {X : 𝓤 ̇} {Y : 𝓥 ̇}
                                → X ≃ Y
-                               → (∥ X ∥[ n ]) ≃ (∥ Y ∥[ n ])
+                               → ∥ X ∥[ n ] ≃ ∥ Y ∥[ n ]
  truncation-closed-under-equiv {𝓤} {𝓥} {n} {X} {Y} e = (f , (b , G) , (b , H))
   where
    f : ∥ X ∥[ n ] → ∥ Y ∥[ n ]
@@ -210,8 +216,7 @@ conditions (?)).
    b : ∥ Y ∥[ n ] → ∥ X ∥[ n ]
    b = ∥∥ₙ-rec (∥∥ₙ-h-level n) (λ y → ∣ ⌜ e ⌝⁻¹ y ∣[ n ])
    H : b ∘ f ∼ id
-   H = ∥∥ₙ-ind (λ s → hlevels-are-closed-under-id n (∥∥ₙ-h-level n) (b (f s)) s)
-               H'
+   H = ∥∥ₙ-ind (to-＝-of-maps-with-truncated-codomain (b ∘ f) id) H'
     where
      H' : (x : X) → b (f (∣ x ∣[ n ])) ＝ (∣ x ∣[ n ])
      H' x = b (f (∣ x ∣[ n ]))           ＝⟨ I ⟩
@@ -223,8 +228,7 @@ conditions (?)).
        II = ∥∥ₙ-rec-comp (∥∥ₙ-h-level n) (λ y → ∣ (⌜ e ⌝⁻¹ y) ∣[ n ]) (⌜ e ⌝ x)
        III = ap (λ x → ∣ x ∣[ n ]) (inverses-are-retractions' e x)
    G : f ∘ b ∼ id
-   G = ∥∥ₙ-ind (λ s → hlevels-are-closed-under-id n (∥∥ₙ-h-level n) (f (b s)) s)
-               G'
+   G = ∥∥ₙ-ind (to-＝-of-maps-with-truncated-codomain (f ∘ b) id) G'
     where
      G' : (y : Y) → f (b (∣ y ∣[ n ])) ＝ (∣ y ∣[ n ])
      G' y = f (b (∣ y ∣[ n ]))           ＝⟨ I ⟩
@@ -279,7 +283,9 @@ conditions (?)).
 \end{code}
 
 We now define an equivalence that characterizes the truncated identity type
-under the assumption of univalence.
+under the assumption of univalence (see the agda unimath library for a more
+complete development:
+https://unimath.github.io/agda-unimath/foundation.truncations).
 
 \begin{code}
 
@@ -343,12 +349,12 @@ under the assumption of univalence.
    where
     I : (x' : X) (p : x ＝ x')
       → (∣ x ∣[ succ n ] , refl-trunc-id-family)
-       ＝[ Σ (trunc-id-family-type) ]
+       ＝[ Σ trunc-id-family-type ]
         (∣ x' ∣[ succ n ] , trunc-id-backward-map x' ∣ p ∣[ n ])
     I x' refl = refl
     II : (x' : X) (q' : ∥ x ＝ x' ∥[ n ])
        → (∣ x ∣[ succ n ] , refl-trunc-id-family)
-        ＝[ Σ (trunc-id-family-type) ]
+        ＝[ Σ trunc-id-family-type ]
          (∣ x' ∣[ succ n ] , trunc-id-backward-map x' q')
     II x' = ∥∥ₙ-ind (λ s → hlevel-closed-under-Σ (succ n)
                             trunc-id-family-type (∥∥ₙ-h-level (succ n))
@@ -360,10 +366,10 @@ under the assumption of univalence.
                      (I x')
     III : (x' : X) (q : trunc-id-family-type ∣ x' ∣[ succ n ])
         → (∣ x ∣[ succ n ] , refl-trunc-id-family)
-          ＝[ Σ (trunc-id-family-type) ]
+          ＝[ Σ trunc-id-family-type ]
           (∣ x' ∣[ succ n ] , q)
     III x' q = transport (λ - → (∣ x ∣[ succ n ] , refl-trunc-id-family)
-                                ＝[ Σ (trunc-id-family-type) ]
+                                ＝[ Σ trunc-id-family-type ]
                                 (∣ x' ∣[ succ n ] , -))
                          (trunc-id-back-is-retraction x' q)
                          (II x' (trunc-id-forward-map x' q))
