@@ -1,12 +1,12 @@
 Ian Ray, 07/23/2024
 
 Using records we define the general truncation of a type which will include
-constructor, induction principle and a computation rule (up to identification).
-We then proceed to develop some machinary derived from the induction principle
-and explore relationships, closure properties and finally characterize the
-identity type of truncations. Note that we explicitly include the assumption of
-univalence for the characterization of idenity types but not globally as many
-important notion hold in the absence of univalence.
+a constructor, an induction principle and a computation rule
+(up to identification). We then proceed to develop some machinery derived from
+the induction principle and explore relationships, closure properties and finally
+characterize the identity type of truncations. Note that we explicitly include
+the assumption of univalence for the characterization of idenity types but not
+globally as many important properties hold in the absence of univalence.
 
 \begin{code}
 
@@ -41,7 +41,7 @@ open import UF.H-Levels fe
 
 \end{code}
 
-We define the notion of a k-truncation using record types.
+We define the notion of a n-truncation using record types.
 
 \begin{code}
 
@@ -63,110 +63,101 @@ record H-level-truncations-exist : 𝓤ω where
 
 \end{code}
 
-We now add some some machinary that will prove usefule: truncation recursion
-and uniqueness, indduction/recursion for two arguments and all associated
+We now add some some machinery that will prove useful: truncation recursion
+and uniqueness, induction/recursion for two arguments and all associated
 computation rules.
 
 \begin{code}
 
-module GeneralTruncations
-        (te : H-level-truncations-exist)
-       where
-
- open H-level-truncations-exist te
-
- ∥∥ₙ-rec : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {n : ℕ}
+ ∥∥ₙ-rec : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {n : ℕ}
          → Y is-of-hlevel n
          → (X → Y)
          → ∥ X ∥[ n ] → Y
  ∥∥ₙ-rec {𝓤} {𝓥} {X} {Y} {n} Y-h-level f s =
   ∥∥ₙ-ind (λ - → Y-h-level) f s
 
- ∥∥ₙ-uniqueness : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {n : ℕ}
+ ∥∥ₙ-uniqueness : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {n : ℕ}
                 → Y is-of-hlevel n
                 → (f g : ∥ X ∥[ n ] → Y)
                 → ((x : X) → f (∣ x ∣[ n ]) ＝ g (∣ x ∣[ n ]))
-                → (s : ∥ X ∥[ n ]) → f s ＝ g s
+                → f ∼ g
  ∥∥ₙ-uniqueness {𝓤} {𝓥} {X} {Y} {n} Y-h-lev f g H =
   ∥∥ₙ-ind (λ s → hlevels-are-closed-under-id n Y-h-lev (f s) (g s)) H
 
- ∥∥ₙ-rec-comp : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {n : ℕ}
+ ∥∥ₙ-rec-comp : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {n : ℕ}
               → (m : Y is-of-hlevel n)
               → (g : X → Y)
               → (x : X) → ∥∥ₙ-rec m g ∣ x ∣[ n ] ＝ g x
  ∥∥ₙ-rec-comp m g = ∥∥ₙ-ind-comp (λ - → m) g
 
- ∥∥ₙ-rec₂ : {𝓤 𝓥 𝓦 : Universe} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {n : ℕ}
+ ∥∥ₙ-rec₂ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {n : ℕ}
           → Z is-of-hlevel n
           → (X → Y → Z)
           → ∥ X ∥[ n ] → ∥ Y ∥[ n ] → Z
  ∥∥ₙ-rec₂ {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {n} Z-h-level g =
   ∥∥ₙ-rec (hlevel-closed-under-→ n Z-h-level)
-          (λ x → ∥∥ₙ-rec Z-h-level (λ y → g x y))
+          (λ x → ∥∥ₙ-rec Z-h-level (g x))
 
- ∥∥ₙ-rec-comp₂ : {𝓤 𝓥 𝓦 : Universe} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {n : ℕ}
+ ∥∥ₙ-rec-comp₂ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {n : ℕ}
                → (m : Z is-of-hlevel n)
                → (g : X → Y → Z)
                → (x : X) → (y : Y)
                → ∥∥ₙ-rec₂ m g ∣ x ∣[ n ] ∣ y ∣[ n ] ＝ g x y
  ∥∥ₙ-rec-comp₂ {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {n} m g x y =
   ∥∥ₙ-rec₂ m g ∣ x ∣[ n ] ∣ y ∣[ n ] ＝⟨ I ⟩
-  ∥∥ₙ-rec m (λ y → g x y) ∣ y ∣[ n ] ＝⟨ ∥∥ₙ-rec-comp m (λ y → g x y) y ⟩
+  ∥∥ₙ-rec m (g x) ∣ y ∣[ n ] ＝⟨ ∥∥ₙ-rec-comp m (g x) y ⟩
   g x y                              ∎
    where
     I = happly (∥∥ₙ-rec-comp (hlevel-closed-under-→ n m)
-                (λ x → ∥∥ₙ-rec m (λ y → g x y)) x)
+                (λ x → ∥∥ₙ-rec m (g x)) x)
                ∣ y ∣[ n ]
 
  abstract
-  ∥∥ₙ-ind₂ : {𝓤 𝓥 𝓦 : Universe} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {n : ℕ}
-             {P : ∥ X ∥[ n ] → ∥ Y ∥[ n ] → 𝓦 ̇ } 
-           → ((u : ∥ X ∥[ n ]) → (v : ∥ Y ∥[ n ])
-           → (P u v) is-of-hlevel n)
+  ∥∥ₙ-ind₂ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {n : ℕ}
+           → (P : ∥ X ∥[ n ] → ∥ Y ∥[ n ] → 𝓦 ̇) 
+           → ((u : ∥ X ∥[ n ]) → (v : ∥ Y ∥[ n ]) → (P u v) is-of-hlevel n)
            → ((x : X) → (y : Y) → P (∣ x ∣[ n ]) (∣ y ∣[ n ]))
            → (u : ∥ X ∥[ n ]) → (v : ∥ Y ∥[ n ]) → P u v
-  ∥∥ₙ-ind₂ {𝓤} {𝓥} {𝓦} {X} {Y} {n} {P} P-h-level f =
-   ∥∥ₙ-ind (λ u → hlevel-closed-under-Π n (P u) (λ v → P-h-level u v))
-           (λ x → ∥∥ₙ-ind (λ v → P-h-level ∣ x ∣[ n ] v) (λ y → f x y))
-
-  ∥∥ₙ-ind-comp₂ : {𝓤 𝓥 𝓦 : Universe} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {n : ℕ}
-                  {P : ∥ X ∥[ n ] → ∥ Y ∥[ n ] → 𝓦 ̇ } 
+  ∥∥ₙ-ind₂ {𝓤} {𝓥} {𝓦} {X} {Y} {n} P P-h-level f =
+   ∥∥ₙ-ind (λ u → hlevel-closed-under-Π n (P u) (P-h-level u))
+           (λ x → ∥∥ₙ-ind (λ v → P-h-level ∣ x ∣[ n ] v) (f x))
+  ∥∥ₙ-ind-comp₂ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {n : ℕ}
+                → (P : ∥ X ∥[ n ] → ∥ Y ∥[ n ] → 𝓦 ̇) 
                 → (m : (u : ∥ X ∥[ n ]) → (v : ∥ Y ∥[ n ])
-                → (P u v) is-of-hlevel n)
+                 → (P u v) is-of-hlevel n)
                 → (g : (x : X) → (y : Y) → P (∣ x ∣[ n ]) (∣ y ∣[ n ]))
                 → (x : X) → (y : Y)
-                → ∥∥ₙ-ind₂ m g ∣ x ∣[ n ] ∣ y ∣[ n ] ＝ g x y
-  ∥∥ₙ-ind-comp₂ {𝓤} {𝓥} {𝓦} {X} {Y} {n} {P} m g x y =
-   ∥∥ₙ-ind₂ m g ∣ x ∣[ n ] ∣ y ∣[ n ]                        ＝⟨ I ⟩
-   ∥∥ₙ-ind (λ v → m ∣ x ∣[ n ] v) (λ y' → g x y') ∣ y ∣[ n ] ＝⟨ II ⟩
-   g x y                                                     ∎
+                → ∥∥ₙ-ind₂ P m g ∣ x ∣[ n ] ∣ y ∣[ n ] ＝ g x y
+  ∥∥ₙ-ind-comp₂ {𝓤} {𝓥} {𝓦} {X} {Y} {n} P m g x y =
+   ∥∥ₙ-ind₂ P m g ∣ x ∣[ n ] ∣ y ∣[ n ]     ＝⟨ I ⟩
+   ∥∥ₙ-ind (m ∣ x ∣[ n ]) (g x) ∣ y ∣[ n ]  ＝⟨ II ⟩
+   g x y                                    ∎
     where
-     I : ∥∥ₙ-ind₂ m g ∣ x ∣[ n ] ∣ y ∣[ n ]
-         ＝ ∥∥ₙ-ind (λ v → m ∣ x ∣[ n ] v) (λ y' → g x y') ∣ y ∣[ n ]
+     I : ∥∥ₙ-ind₂ P m g ∣ x ∣[ n ] ∣ y ∣[ n ]
+       ＝ ∥∥ₙ-ind (m ∣ x ∣[ n ]) (g x) ∣ y ∣[ n ]
      I = happly
-          (∥∥ₙ-ind-comp (λ u → hlevel-closed-under-Π n (P u) (λ v → m u v))
-           (λ x' → ∥∥ₙ-ind (λ v → m ∣ x' ∣[ n ] v) (λ y' → g x' y')) x)
+          (∥∥ₙ-ind-comp (λ u → hlevel-closed-under-Π n (P u) (m u))
+           (λ x' → ∥∥ₙ-ind (m ∣ x' ∣[ n ]) (g x')) x)
           ∣ y ∣[ n ]
-     II : ∥∥ₙ-ind (λ v → m ∣ x ∣[ n ] v) (λ y' → g x y') ∣ y ∣[ n ]
-          ＝ g x y
-     II = ∥∥ₙ-ind-comp (λ v → m ∣ x ∣[ n ] v) (λ y' → g x y') y
+     II : ∥∥ₙ-ind (m ∣ x ∣[ n ]) (g x) ∣ y ∣[ n ] ＝ g x y
+     II = ∥∥ₙ-ind-comp (m ∣ x ∣[ n ]) (g x) y
 
 \end{code}
 
-We develop useful results related to general truncations. We characterize the
-first couple levels of truncation (TODO: three-hlevel is a groupoid). 
+We characterize the first couple levels of truncation (TODO: three-hlevel is a
+groupoid). 
 
 \begin{code}
 
- zero-trunc-is-contr : {X : 𝓤 ̇ } → is-contr (∥ X ∥[ zero ])
- zero-trunc-is-contr = ∥∥ₙ-h-level zero
+ zero-trunc-is-contr : {X : 𝓤 ̇ } → is-contr (∥ X ∥[ 0 ])
+ zero-trunc-is-contr = ∥∥ₙ-h-level 0
 
- one-trunc-is-prop : {X : 𝓤 ̇ } → is-prop (∥ X ∥[ succ zero ])
- one-trunc-is-prop = is-prop'-implies-is-prop (∥∥ₙ-h-level (succ zero))
+ one-trunc-is-prop : {X : 𝓤 ̇ } → is-prop (∥ X ∥[ 1 ])
+ one-trunc-is-prop = is-prop'-implies-is-prop (∥∥ₙ-h-level (1))
 
- two-trunc-is-set : {X : 𝓤 ̇ } → is-set (∥ X ∥[ succ (succ zero) ])
+ two-trunc-is-set : {X : 𝓤 ̇ } → is-set (∥ X ∥[ 2 ])
  two-trunc-is-set {𝓤} {X} {x} {y} =
-  is-prop'-implies-is-prop (∥∥ₙ-h-level (succ (succ zero)) x y)
+  is-prop'-implies-is-prop (∥∥ₙ-h-level (2) x y)
 
 \end{code}
 
@@ -181,7 +172,7 @@ We demonstrate the equivalence of one-truncation and propositional truncation:
  one-trunc-to-prop-trunc = ∥∥ₙ-rec (is-prop-implies-is-prop' ∥∥-is-prop) ∣_∣
 
  prop-trunc-to-one-trunc : {X : 𝓤 ̇} → ∥ X ∥ → ∥ X ∥[ 1 ]
- prop-trunc-to-one-trunc = ∥∥-rec one-trunc-is-prop (λ x → ∣ x ∣[ 1 ])
+ prop-trunc-to-one-trunc = ∥∥-rec one-trunc-is-prop (∣_∣[ 1 ])
 
  one-trunc-≃-prop-trunc : {X : 𝓤 ̇}
                         → (∥ X ∥[ 1 ]) ≃ ∥ X ∥
@@ -193,7 +184,7 @@ We demonstrate the equivalence of one-truncation and propositional truncation:
 \end{code}
 
 We provide the canonical predecessor map and show truncations are closed under
-equivalence and succesive applications of truncation (TODO: other closure
+equivalence and successive applications of truncation (TODO: other closure
 conditions (?)).
 
 \begin{code}
@@ -215,9 +206,9 @@ conditions (?)).
  truncation-closed-under-equiv {𝓤} {𝓥} {n} {X} {Y} e = (f , (b , G) , (b , H))
   where
    f : ∥ X ∥[ n ] → ∥ Y ∥[ n ]
-   f = ∥∥ₙ-rec (∥∥ₙ-h-level n) (λ x → ∣ (⌜ e ⌝ x) ∣[ n ])
+   f = ∥∥ₙ-rec (∥∥ₙ-h-level n) (λ x → ∣ ⌜ e ⌝ x ∣[ n ])
    b : ∥ Y ∥[ n ] → ∥ X ∥[ n ]
-   b = ∥∥ₙ-rec (∥∥ₙ-h-level n) (λ y → ∣ (⌜ e ⌝⁻¹ y) ∣[ n ])
+   b = ∥∥ₙ-rec (∥∥ₙ-h-level n) (λ y → ∣ ⌜ e ⌝⁻¹ y ∣[ n ])
    H : b ∘ f ∼ id
    H = ∥∥ₙ-ind (λ s → hlevels-are-closed-under-id n (∥∥ₙ-h-level n) (b (f s)) s)
                H'
@@ -245,14 +236,14 @@ conditions (?)).
        II = ∥∥ₙ-rec-comp (∥∥ₙ-h-level n) (λ x → ∣ ⌜ e ⌝ x ∣[ n ]) (⌜ e ⌝⁻¹ y)
        III = ap (λ y → ∣ y ∣[ n ]) (inverses-are-sections' e y)
 
- succesive-truncations-equiv : (X : 𝓤 ̇) (n : ℕ)
+ successive-truncations-equiv : (X : 𝓤 ̇) (n : ℕ)
                              → (∥ X ∥[ n ]) ≃ (∥ (∥ X ∥[ succ n ]) ∥[ n ])
- succesive-truncations-equiv X n = (f , (b , G) , (b , H))
+ successive-truncations-equiv X n = (f , (b , G) , (b , H))
   where
-   f : (∥ X ∥[ n ]) → (∥ (∥ X ∥[ succ n ]) ∥[ n ])
+   f : ∥ X ∥[ n ] → ∥ ∥ X ∥[ succ n ] ∥[ n ]
    f = ∥∥ₙ-rec (∥∥ₙ-h-level n) (λ x → ∣ ∣ x ∣[ succ n ] ∣[ n ])
-   b : (∥ (∥ X ∥[ succ n ]) ∥[ n ]) → (∥ X ∥[ n ])
-   b = ∥∥ₙ-rec (∥∥ₙ-h-level n) (canonical-pred-map)
+   b : ∥ ∥ X ∥[ succ n ] ∥[ n ] → ∥ X ∥[ n ]
+   b = ∥∥ₙ-rec (∥∥ₙ-h-level n) canonical-pred-map
    G : f ∘ b ∼ id
    G = ∥∥ₙ-ind (λ s → hlevels-are-closed-under-id n (∥∥ₙ-h-level n) (f (b s)) s)
                (∥∥ₙ-ind (λ t → hlevels-are-closed-under-id n
@@ -300,12 +291,11 @@ under the assumption of univalence.
           (ap (λ x → ∣ x ∣[ (succ n) ]))
 
  module _ {𝓤 : Universe} {X : 𝓤 ̇} {n : ℕ}
-          (ua : Univalence) (x : X) 
+          (ua : is-univalent 𝓤) (x : X) 
            where
 
   trunc-id-family : ∥ X ∥[ succ n ] → ℍ n 𝓤
-  trunc-id-family = ∥∥ₙ-rec {𝓤} {𝓤 ⁺} {X} {ℍ n 𝓤} {succ n}
-                            (ℍ-is-of-next-hlevel n 𝓤 (ua 𝓤))
+  trunc-id-family = ∥∥ₙ-rec (ℍ-is-of-next-hlevel n 𝓤 ua)
                             (λ x' → (∥ x ＝ x' ∥[ n ] , (∥∥ₙ-h-level n)))
 
   trunc-id-family-type : ∥ X ∥[ succ n ] → 𝓤 ̇
@@ -319,7 +309,7 @@ under the assumption of univalence.
                            → trunc-id-family-type ∣ x' ∣[ succ n ]
                              ＝ ∥ x ＝ x' ∥[ n ]
   trunc-id-family-computes x' =
-    ap pr₁ (∥∥ₙ-rec-comp (ℍ-is-of-next-hlevel n 𝓤 (ua 𝓤))
+    ap pr₁ (∥∥ₙ-rec-comp (ℍ-is-of-next-hlevel n 𝓤 ua)
                          (λ x' → (∥ x ＝ x' ∥[ n ] , (∥∥ₙ-h-level n)))
                          x')
 
@@ -347,9 +337,9 @@ under the assumption of univalence.
                               → trunc-id-family-type v
   identity-on-trunc-to-family .(∣ x ∣[ succ n ]) refl = refl-trunc-id-family
 
-  trunc-id-family-is-identity-system : is-contr (Σ (trunc-id-family-type))
+  trunc-id-family-is-identity-system : is-contr (Σ trunc-id-family-type)
   trunc-id-family-is-identity-system =
-   ((∣ x ∣[ succ n ] , refl-trunc-id-family) , center-Q)
+   ((∣ x ∣[ succ n ] , refl-trunc-id-family) , trunc-id-fam-is-central)
    where
     I : (x' : X) (p : x ＝ x')
       → (∣ x ∣[ succ n ] , refl-trunc-id-family)
@@ -396,12 +386,12 @@ under the assumption of univalence.
                                                    , refl-trunc-id-family)
                                                   (s , q)))
              III
-    center-Q : is-central (Σ (trunc-id-family-type))
-                          (∣ x ∣[ succ n ] , refl-trunc-id-family)
-    center-Q (v , q) = IV v q 
+    trunc-id-fam-is-central : is-central (Σ trunc-id-family-type)
+                                         (∣ x ∣[ succ n ] , refl-trunc-id-family)
+    trunc-id-fam-is-central (v , q) = IV v q 
 
- trunc-identity-characterization : {𝓤 : Universe} {X : 𝓤 ̇} {n : ℕ}
-                                 → (ua : Univalence)
+ trunc-identity-characterization : {X : 𝓤 ̇} {n : ℕ}
+                                 → (ua : is-univalent 𝓤)
                                  → (x : X) (v : ∥ X ∥[ succ n ])
                                  → (∣ x ∣[ succ n ] ＝ v)
                                  ≃ trunc-id-family-type ua x v
@@ -410,8 +400,8 @@ under the assumption of univalence.
                                       (identity-on-trunc-to-family ua x)
                                       (trunc-id-family-is-identity-system ua x) v)
 
- eliminated-trunc-identity-char : {𝓤 : Universe} {X : 𝓤 ̇} {x x' : X} {n : ℕ}
-                                → (ua : Univalence)
+ eliminated-trunc-identity-char : {X : 𝓤 ̇} {x x' : X} {n : ℕ}
+                                → (ua : is-univalent 𝓤)
                                 → ∥ x ＝ x' ∥[ n ]
                                 ≃ (∣ x ∣[ succ n ] ＝ ∣ x' ∣[ succ n ])
  eliminated-trunc-identity-char {𝓤} {X} {x} {x'} {n} ua =
@@ -419,8 +409,8 @@ under the assumption of univalence.
                  (trunc-id-family-computes ua x x' ⁻¹))
          (≃-sym (trunc-identity-characterization ua x ∣ x' ∣[ succ n ]))
 
- forth-trunc-id-char : {𝓤 : Universe} {X : 𝓤 ̇} {x x' : X} {n : ℕ}
-                     → (ua : Univalence)
+ forth-trunc-id-char : {X : 𝓤 ̇} {x x' : X} {n : ℕ}
+                     → (ua : is-univalent 𝓤)
                      → ∥ x ＝ x' ∥[ n ]
                      → (∣ x ∣[ succ n ] ＝ ∣ x' ∣[ succ n ])
  forth-trunc-id-char ua = ⌜ eliminated-trunc-identity-char ua ⌝
