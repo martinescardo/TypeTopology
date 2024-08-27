@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -euo pipefail
+
 # Generate html files and deploy them.
 # This is to be run from TypeTopology/source.
 # It assumes that we want to deploy the html pages at ~/public_html.
