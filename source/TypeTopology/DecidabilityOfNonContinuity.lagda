@@ -302,7 +302,7 @@ The above definition of continuity is "continuity at the point ∞".
 
 Next we show that this is equivalent to usual continuity, as in the
 module Cantor, using the fact that ℕ∞ is a subspace of the Cantor type
-ℕ → 𝟚
+ℕ → 𝟚.
 
 Moreover, in the particular case of the subspace ℕ∞ of the Cantor
 space, continuity of functions ℕ∞ → ℕ is equivalent to uniform
@@ -385,6 +385,17 @@ traditional-uniform-continuity-data : (ℕ∞ → ℕ) → 𝓤₀ ̇
 traditional-uniform-continuity-data f =
  Σ m ꞉ ℕ , ((x y : ℕ∞) → x ＝⟪ m ⟫ y → f x ＝ f y)
 
+\end{code}
+
+We now need a lemma about the relation x ＝⟪ k ⟫ y.
+
+\begin{code}
+
+lemma₀ : (k : ℕ) (n : ℕ) → ∞ ＝⟪ k ⟫ (max (ι k) (ι n))
+lemma₀ 0        n        = ⋆
+lemma₀ (succ k) 0        = refl , lemma₀ k 0
+lemma₀ (succ k) (succ n) = refl , lemma₀ k n
+
 module _ (f : ℕ∞ → ℕ) where
 
  traditional-uniform-continuity-data-gives-traditional-continuity-data
@@ -396,7 +407,7 @@ module _ (f : ℕ∞ → ℕ) where
  traditional-continuity-data-gives-continuity-data
   : traditional-continuity-data f
   → continuity-data f
- traditional-continuity-data-gives-continuity-data f-cts-traditional = III
+ traditional-continuity-data-gives-continuity-data f-cts-traditional = II
   where
    m : ℕ
    m = pr₁ (f-cts-traditional ∞)
@@ -404,26 +415,21 @@ module _ (f : ℕ∞ → ℕ) where
    m-property : (y : ℕ∞) → ∞ ＝⟪ m ⟫ y → f ∞ ＝ f y
    m-property = pr₂ (f-cts-traditional ∞)
 
-   I : (k : ℕ) (n : ℕ) → ∞ ＝⟪ k ⟫ (max (ι k) (ι n))
-   I 0        n        = ⋆
-   I (succ k) 0        = refl , I k 0
-   I (succ k) (succ n) = refl , I k n
+   I : (n : ℕ) → f (max (ι m) (ι n)) ＝ f ∞
+   I n = (m-property (max (ι m) (ι n)) (lemma₀ m n))⁻¹
 
-   II : (n : ℕ) → f (max (ι m) (ι n)) ＝ f ∞
-   II n = (m-property (max (ι m) (ι n)) (I m n))⁻¹
-
-   III : continuous f
-   III = m , II
+   II : continuous f
+   II = m , I
 
 \end{code}
 
-We now need to prove some lemmas about the relation x ＝⟪ k ⟫ y.
+We now need more lemmas about the relation x ＝⟪ k ⟫ y.
 
 \begin{code}
 
- lemma₀ : (k : ℕ) (y : ℕ∞) → ∞ ＝⟪ k ⟫ y → max (ι k) y ＝ y
- lemma₀ 0        y ⋆       = refl
- lemma₀ (succ k) y (h , t) = γ
+ lemma₁ : (k : ℕ) (y : ℕ∞) → ∞ ＝⟪ k ⟫ y → max (ι k) y ＝ y
+ lemma₁ 0        y ⋆       = refl
+ lemma₁ (succ k) y (h , t) = γ
   where
    have-h : ₁ ＝ ι y 0
    have-h = h
@@ -432,7 +438,7 @@ We now need to prove some lemmas about the relation x ＝⟪ k ⟫ y.
    have-t = t
 
    IH : max (ι k) (Pred y) ＝ Pred y
-   IH = lemma₀ k (Pred y) t
+   IH = lemma₁ k (Pred y) t
 
    δ : ι (max (Succ (ι k)) y) ∼ ι y
    δ 0        = h
@@ -441,14 +447,14 @@ We now need to prove some lemmas about the relation x ＝⟪ k ⟫ y.
    γ : max (Succ (ι k)) y ＝ y
    γ = ℕ∞-to-ℕ→𝟚-lc fe (dfunext fe δ)
 
- lemma₁ : (x y : ℕ∞) (k : ℕ)
+ lemma₂ : (x y : ℕ∞) (k : ℕ)
         → x ＝⟪ k ⟫ y
         → (x ＝ y) + (∞ ＝⟪ k ⟫ x)
- lemma₁ x y 0        ⋆       = inr ⋆
- lemma₁ x y (succ k) (h , t) = γ
+ lemma₂ x y 0        ⋆       = inr ⋆
+ lemma₂ x y (succ k) (h , t) = γ
   where
    IH : (Pred x ＝ Pred y) + (∞ ＝⟪ k ⟫ (Pred x))
-   IH = lemma₁ (Pred x) (Pred y) k t
+   IH = lemma₂ (Pred x) (Pred y) k t
 
    γl∼ : Pred x ＝ Pred y → ι x ∼ ι y
    γl∼ p 0        = h
@@ -469,15 +475,21 @@ We now need to prove some lemmas about the relation x ＝⟪ k ⟫ y.
    γ : (x ＝ y) + (∞ ＝⟪ succ k ⟫ x)
    γ = Cases IH (inl ∘ γl) γr
 
- lemma₂ : (x y : ℕ∞) (k : ℕ)
+ lemma₃ : (x y : ℕ∞) (k : ℕ)
         → x ＝⟪ k ⟫ y
         → (x ＝ y) + (max (ι k) x ＝ x) × (max (ι k) y ＝ y)
- lemma₂ x y k e =
-   Cases (lemma₁ x y k e)
-    inl
-    (λ (d : ∞ ＝⟪ k ⟫ x)
-          → inr (lemma₀ k x d ,
-                 lemma₀ k y (＝⟦⟧-trans (ι ∞) (ι x) (ι y) k d e)))
+ lemma₃ x y k e = III
+  where
+   I : ∞ ＝⟪ k ⟫ x → ∞ ＝⟪ k ⟫ y
+   I q = ＝⟦⟧-trans (ι ∞) (ι x) (ι y) k q e
+
+   II : (x ＝ y) + (∞ ＝⟪ k ⟫ x)
+      → (x ＝ y) + (max (ι k) x ＝ x) × (max (ι k) y ＝ y)
+   II (inl p) = inl p
+   II (inr q) = inr (lemma₁ k x q , lemma₁ k y (I q))
+
+   III : (x ＝ y) + (max (ι k) x ＝ x) × (max (ι k) y ＝ y)
+   III = II (lemma₂ x y k e)
 
  continuity-data-gives-traditional-uniform-continuity-data
   : continuity-data f
@@ -503,7 +515,7 @@ We now need to prove some lemmas about the relation x ＝⟪ k ⟫ y.
 
    m-property' : (x y : ℕ∞) → x ＝⟪ m ⟫ y → f x ＝ f y
    m-property' x y e =
-    Cases (lemma₂ x y m e)
+    Cases (lemma₃ x y m e)
      (λ (p : x ＝ y) → ap f p)
      (λ (q , r) → f x ＝⟨ I x q ⟩
                   f ∞ ＝⟨ I y r ⁻¹ ⟩
@@ -523,7 +535,7 @@ the remaining propositional versions of continuity.
 
 So far we know that, for f : ℕ∞ → ℕ,
 
-    continuity-data f                   ↔ is-continuous f
+    continuity-data f                    ↔ is-continuous f
         ↕
     traditional-continuity-data
         ↕
