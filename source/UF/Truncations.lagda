@@ -47,9 +47,9 @@ We define the notion of a n-truncation using record types.
 
 record H-level-truncations-exist : 𝓤ω where
  field
-  ∥_∥[_] : {𝓤 : Universe} → 𝓤 ̇ → ℕ → 𝓤 ̇
-  ∥∥ₙ-hlevel : {𝓤 : Universe} {X : 𝓤 ̇ } (n : ℕ) → ∥ X ∥[ n ] is-of-hlevel n
-  ∣_∣[_] :  {𝓤 : Universe} {X : 𝓤 ̇ } → X → (n : ℕ) → ∥ X ∥[ n ]
+  ∥_∥[_] : 𝓤 ̇ → ℕ → 𝓤 ̇
+  ∥∥ₙ-hlevel : {X : 𝓤 ̇ } (n : ℕ) → ∥ X ∥[ n ] is-of-hlevel n
+  ∣_∣[_] :  {X : 𝓤 ̇ } → X → (n : ℕ) → ∥ X ∥[ n ]
   ∥∥ₙ-ind : {X : 𝓤 ̇ } {n : ℕ} {P : ∥ X ∥[ n ] → 𝓥 ̇}
           → ((s : ∥ X ∥[ n ]) → (P s) is-of-hlevel n)
           → ((x : X) → P (∣ x ∣[ n ]))
@@ -73,8 +73,7 @@ computation rules.
          → Y is-of-hlevel n
          → (X → Y)
          → ∥ X ∥[ n ] → Y
- ∥∥ₙ-rec {𝓤} {𝓥} {X} {Y} {n} Y-h-level f s =
-  ∥∥ₙ-ind (λ - → Y-h-level) f s
+ ∥∥ₙ-rec Y-h-level f s = ∥∥ₙ-ind (λ - → Y-h-level) f s
 
  ∥∥ₙ-uniqueness : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {n : ℕ}
                 → Y is-of-hlevel n
@@ -176,7 +175,7 @@ We demonstrate the equivalence of one-truncation and propositional truncation:
 
  one-trunc-≃-prop-trunc : {X : 𝓤 ̇}
                         → (∥ X ∥[ 1 ]) ≃ ∥ X ∥
- one-trunc-≃-prop-trunc {𝓤} {X} =
+ one-trunc-≃-prop-trunc =
   logically-equivalent-props-are-equivalent one-trunc-is-prop ∥∥-is-prop
                                             one-trunc-to-prop-trunc
                                             prop-trunc-to-one-trunc
@@ -200,27 +199,27 @@ conditions (?)).
   ∥∥ₙ-rec-comp (hlevels-are-upper-closed n (∥ X ∥[ n ]) (∥∥ₙ-hlevel n))
                (λ _ → ∣ _ ∣[ n ]) x
 
- to-∼-of-maps-with-truncated-domain : {n : ℕ} {X : 𝓤 ̇} {Y : 𝓥 ̇}
+ to-∼-of-maps-with-truncated-domain : {X : 𝓤 ̇} {Y : 𝓥 ̇} {n : ℕ}
                                      → (f g : ∥ X ∥[ n ] → Y)
                                      → Y is-of-hlevel n
                                      → ((x : X)
                                       → f (∣ x ∣[ n ]) ＝ g (∣ x ∣[ n ]))
                                      → f ∼ g
- to-∼-of-maps-with-truncated-domain {𝓤} {𝓥} {n} {X} {Y} f g Y-hlev H =
+ to-∼-of-maps-with-truncated-domain {𝓤} {𝓥} {X} {Y} {n} f g Y-hlev H =
   ∥∥ₙ-ind (λ - → hlevels-are-closed-under-id n Y-hlev (f -) (g -)) H
 
- to-∼-of-maps-between-truncated-types : {n : ℕ} {X : 𝓤 ̇} {Y : 𝓥 ̇}
+ to-∼-of-maps-between-truncated-types : {X : 𝓤 ̇} {Y : 𝓥 ̇} {n : ℕ}
                                       → (f g : ∥ X ∥[ n ] → ∥ Y ∥[ n ])
                                       → ((x : X)
                                        → f (∣ x ∣[ n ]) ＝ g (∣ x ∣[ n ]))
                                       → f ∼ g
- to-∼-of-maps-between-truncated-types {𝓤} {𝓥} {n} {X} {Y} f g H =
+ to-∼-of-maps-between-truncated-types {𝓤} {𝓥} {X} {Y} {n} f g H =
   to-∼-of-maps-with-truncated-domain f g (∥∥ₙ-hlevel n) H
 
- truncation-closed-under-equiv : {n : ℕ} {X : 𝓤 ̇} {Y : 𝓥 ̇}
+ truncation-closed-under-equiv : {X : 𝓤 ̇} {Y : 𝓥 ̇} {n : ℕ}
                                → X ≃ Y
                                → ∥ X ∥[ n ] ≃ ∥ Y ∥[ n ]
- truncation-closed-under-equiv {𝓤} {𝓥} {n} {X} {Y} e = (f , (b , G) , (b , H))
+ truncation-closed-under-equiv {𝓤} {𝓥} {X} {Y} {n} e = (f , (b , G) , (b , H))
   where
    f : ∥ X ∥[ n ] → ∥ Y ∥[ n ]
    f = ∥∥ₙ-rec (∥∥ₙ-hlevel n) (λ x → ∣ ⌜ e ⌝ x ∣[ n ])
@@ -251,9 +250,9 @@ conditions (?)).
        II = ∥∥ₙ-rec-comp (∥∥ₙ-hlevel n) (λ x → ∣ ⌜ e ⌝ x ∣[ n ]) (⌜ e ⌝⁻¹ y)
        III = ap (λ y → ∣ y ∣[ n ]) (inverses-are-sections' e y)
 
- successive-truncations-equiv : (X : 𝓤 ̇) (n : ℕ)
-                             → (∥ X ∥[ n ]) ≃ (∥ (∥ X ∥[ succ n ]) ∥[ n ])
- successive-truncations-equiv X n = (f , (b , G) , (b , H))
+ successive-truncations-equiv : {X : 𝓤 ̇} {n : ℕ}
+                              → (∥ X ∥[ n ]) ≃ (∥ (∥ X ∥[ succ n ]) ∥[ n ])
+ successive-truncations-equiv {𝓤} {X} {n} = (f , (b , G) , (b , H))
   where
    f : ∥ X ∥[ n ] → ∥ ∥ X ∥[ succ n ] ∥[ n ]
    f = ∥∥ₙ-rec (∥∥ₙ-hlevel n) (λ x → ∣ ∣ x ∣[ succ n ] ∣[ n ])
@@ -300,14 +299,14 @@ for details see: https://unimath.github.io/agda-unimath/foundation.truncations.
 
 \begin{code}
 
- canonical-identity-trunc-map : {𝓤 : Universe} {X : 𝓤 ̇} {x x' : X} {n : ℕ}
+ canonical-identity-trunc-map : {X : 𝓤 ̇} {x x' : X} {n : ℕ}
                               → ∥ x ＝ x' ∥[ n ]
                               → ∣ x ∣[ succ n ] ＝ ∣ x' ∣[ succ n ]
  canonical-identity-trunc-map {𝓤} {X} {x} {x'} {n} =
   ∥∥ₙ-rec (∥∥ₙ-hlevel (succ n) ∣ x ∣[ succ n ] ∣ x' ∣[ succ n ])
           (ap (λ x → ∣ x ∣[ (succ n) ]))
 
- module _ {𝓤 : Universe} {X : 𝓤 ̇} {n : ℕ}
+ module _ {X : 𝓤 ̇} {n : ℕ}
           (ua : is-univalent 𝓤) (x : X) 
            where
 
