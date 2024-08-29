@@ -383,16 +383,19 @@ this file so far.
 irrefutable-props-are-thinly-inhabited-gives-WEM
  : ((P : 𝓤 ̇ ) → is-prop P → ¬¬ P → is-thinly-inhabited P)
  → WEM 𝓤
-irrefutable-props-are-thinly-inhabited-gives-WEM {𝓤} α Q i =
-  thinly-inhabited-wem-lemma Q h
+irrefutable-props-are-thinly-inhabited-gives-WEM {𝓤} α = I
  where
-  P = Q + ¬ Q
+  module _ (Q : 𝓤 ̇ ) (i : is-prop Q) where
+   P = Q + ¬ Q
 
-  ν : ¬¬ P
-  ν ϕ = ϕ (inr (λ q → ϕ (inl q)))
+   ν : ¬¬ P
+   ν ϕ = ϕ (inr (λ q → ϕ (inl q)))
 
-  h : is-thinly-inhabited P
-  h = α P (decidability-of-prop-is-prop fe i) ν
+   h : is-thinly-inhabited P
+   h = α P (decidability-of-prop-is-prop fe i) ν
+
+  I : WEM 𝓤
+  I = WEM'-gives-WEM fe (λ Q i → thinly-inhabited-wem-lemma Q (h Q i))
 
 \end{code}
 

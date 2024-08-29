@@ -79,7 +79,7 @@ Notice that weak excluded middle implies WLPO.
 open import UF.ClassicalLogic
 
 WEM-gives-WLPO : funext₀ → WEM 𝓤₀ → WLPO
-WEM-gives-WLPO fe wem u = Cases (wem (u ＝ ∞) (ℕ∞-is-set fe))
+WEM-gives-WLPO fe wem u = Cases (wem (u ＝ ∞))
                            (λ (p : (u ≠ ∞))
                                  → inr p)
                            (λ (ν : ¬ (u ≠ ∞))

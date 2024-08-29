@@ -68,23 +68,37 @@ EM-gives-LEM em p = em (p holds) (holds-is-prop p)
 LEM-gives-EM : LEM 𝓤 → EM 𝓤
 LEM-gives-EM lem P i = lem (P , i)
 
-WEM : ∀ 𝓤 → 𝓤 ⁺ ̇
-WEM 𝓤 = (P : 𝓤 ̇ ) → is-prop P → ¬ P + ¬¬ P
+\end{code}
+
+Added by Martin Escardo and Tom de Jong 29th August 2024. Originally
+we worked with what is now called WEM'. But it turns out that it is
+not necessary to assume that P is a proposition, and so we now work
+with the new definition WEM, which removes this assumption.
+
+\begin{code}
 
 WEM' : ∀ 𝓤 → 𝓤 ⁺ ̇
-WEM' 𝓤 = (P : 𝓤 ̇ ) → ¬ P + ¬¬ P
+WEM' 𝓤 = (P : 𝓤 ̇ ) → is-prop P → ¬ P + ¬¬ P
 
-WEM-gives-WEM' : funext 𝓤 𝓤₀ → WEM 𝓤 → WEM' 𝓤
-WEM-gives-WEM' fe wem P =
- Cases (wem (¬ P) (negations-are-props fe)) inr (inl ∘ three-negations-imply-one)
+WEM : ∀ 𝓤 → 𝓤 ⁺ ̇
+WEM 𝓤 = (P : 𝓤 ̇ ) → ¬ P + ¬¬ P
 
-WEM'-gives-WEM : WEM' 𝓤 → WEM 𝓤
-WEM'-gives-WEM wem' P P-is-prop = wem' P
+WEM'-gives-WEM : funext 𝓤 𝓤₀ → WEM' 𝓤 → WEM 𝓤
+WEM'-gives-WEM fe wem' P =
+ Cases (wem' (¬ P) (negations-are-props fe)) inr (inl ∘ three-negations-imply-one)
+
+WEM-gives-WEM' : WEM 𝓤 → WEM' 𝓤
+WEM-gives-WEM' wem P P-is-prop = wem P
 
 WEM-is-prop : FunExt → is-prop (WEM 𝓤)
-WEM-is-prop {𝓤} fe = Π₂-is-prop (λ {𝓤} {𝓥} → fe 𝓤 𝓥)
-                      (λ _ _ → decidability-of-prop-is-prop (fe 𝓤 𝓤₀)
-                                (negations-are-props (fe 𝓤 𝓤₀)))
+WEM-is-prop {𝓤} fe = Π-is-prop (fe (𝓤 ⁺) 𝓤)
+                       (λ _ → decidability-of-prop-is-prop (fe 𝓤 𝓤₀)
+                               (negations-are-props (fe 𝓤 𝓤₀)))
+
+WEM'-is-prop : FunExt → is-prop (WEM' 𝓤)
+WEM'-is-prop {𝓤} fe = Π₂-is-prop (λ {𝓥} {𝓦} → fe 𝓥 𝓦)
+                       (λ _ _ → decidability-of-prop-is-prop (fe 𝓤 𝓤₀)
+                                 (negations-are-props (fe 𝓤 𝓤₀)))
 
 \end{code}
 
@@ -134,6 +148,16 @@ fe-and-em-give-propositional-truncations fe em =
   ∥∥-rec       = λ i u φ → EM-gives-DNE em _ i (¬¬-functor u φ)
   }
 
+
+\end{code}
+
+Like WEM, we don't need to assume that P and Q are propositions in the
+definition of De Morgan's Law (added by Martin Escardo and Tom de Jong
+29th August 2024). See below for a proof. But we begin with a
+definition that does.
+
+\begin{code}
+
 De-Morgan : ∀ 𝓤 → 𝓤 ⁺ ̇
 De-Morgan 𝓤 = (P Q : 𝓤 ̇ )
              → is-prop P
@@ -159,18 +183,33 @@ But already weak excluded middle gives De Morgan:
 non-contradiction : {X : 𝓤 ̇ } → ¬ (X × ¬ X)
 non-contradiction (x , ν) = ν x
 
-WEM-gives-De-Morgan : WEM 𝓤 → De-Morgan 𝓤
-WEM-gives-De-Morgan wem A B i j =
+De-Morgan' : ∀ 𝓤 → 𝓤 ⁺ ̇
+De-Morgan' 𝓤 = (P Q : 𝓤 ̇ )
+             → ¬ (P × Q) → ¬ P + ¬ Q
+
+De-Morgan'-gives-De-Morgan : De-Morgan' 𝓤 → De-Morgan 𝓤
+De-Morgan'-gives-De-Morgan d' P Q i j = d' P Q
+
+WEM-gives-De-Morgan' : WEM 𝓤 → De-Morgan' 𝓤
+WEM-gives-De-Morgan' wem A B =
  λ (ν : ¬ (A × B)) →
-      Cases (wem A i)
+      Cases (wem A)
        inl
        (λ (ϕ : ¬¬ A)
-             → Cases (wem B j)
+             → Cases (wem B)
                 inr
                 (λ (γ : ¬¬ B) → 𝟘-elim (ϕ (λ (a : A) → γ (λ (b : B) → ν (a , b))))))
 
+WEM-gives-De-Morgan : WEM 𝓤 → De-Morgan 𝓤
+WEM-gives-De-Morgan = De-Morgan'-gives-De-Morgan ∘ WEM-gives-De-Morgan'
+
 De-Morgan-gives-WEM : funext 𝓤 𝓤₀ → De-Morgan 𝓤 → WEM 𝓤
-De-Morgan-gives-WEM fe d P i = d P (¬ P) i (negations-are-props fe) non-contradiction
+De-Morgan-gives-WEM fe d =
+ WEM'-gives-WEM fe
+  (λ P i → d P (¬ P) i (negations-are-props fe) non-contradiction)
+
+De-Morgan-gives-De-Morgan' : funext 𝓤 𝓤₀ → De-Morgan 𝓤 → De-Morgan' 𝓤
+De-Morgan-gives-De-Morgan' fe = WEM-gives-De-Morgan' ∘ De-Morgan-gives-WEM fe
 
 \end{code}
 
@@ -208,13 +247,13 @@ De-Morgan-is-not-prop {𝓤} fe δ = IV
   g P Q i j ν (inr _) _       _       = δ P Q i j ν
 
   δ' : De-Morgan 𝓤
-  δ' P Q i j ν = g P Q i j ν (wem P i) (wem Q j) (δ P Q i j ν)
+  δ' P Q i j ν = g P Q i j ν (wem P) (wem Q) (δ P Q i j ν) -- !!! i j
 
-  I : (i : is-prop 𝟘) (h : ¬ 𝟘) → wem 𝟘 i ＝ inl h
-  I i h = I₀ (wem 𝟘 i) refl
+  I : (i : is-prop 𝟘) (h : ¬ 𝟘) → wem 𝟘 ＝ inl h -- !!! i
+  I i h = I₀ (wem 𝟘) refl
    where
-    I₀ : (a : ¬ 𝟘 + ¬¬ 𝟘) → wem 𝟘 i ＝ a → wem 𝟘 i ＝ inl h
-    I₀ (inl u) p = transport (λ - → wem 𝟘 i ＝ inl -) (negations-are-props fe u h) p
+    I₀ : (a : ¬ 𝟘 + ¬¬ 𝟘) → wem 𝟘 ＝ a → wem 𝟘 ＝ inl h -- !!! i
+    I₀ (inl u) p = transport (λ - → wem 𝟘 ＝ inl -) (negations-are-props fe u h) p
     I₀ (inr ϕ) p = 𝟘-elim (ϕ h)
 
   ν : ¬ (𝟘 × 𝟘)
@@ -273,8 +312,8 @@ module _ (pt : propositional-truncations-exist) where
  De-Morgan-gives-truncated-De-Morgan : De-Morgan 𝓤 → truncated-De-Morgan 𝓤
  De-Morgan-gives-truncated-De-Morgan d P Q i j ν = ∣ d P Q i j ν ∣
 
- truncated-De-Morgan-gives-WEM : FunExt → truncated-De-Morgan 𝓤 → WEM 𝓤
- truncated-De-Morgan-gives-WEM {𝓤} fe t P i = III
+ truncated-De-Morgan-gives-WEM' : FunExt → truncated-De-Morgan 𝓤 → WEM' 𝓤
+ truncated-De-Morgan-gives-WEM' {𝓤} fe t P i = III
   where
    I : ¬ (P × ¬ P) → ¬ P ∨ ¬¬ P
    I = t P (¬ P) i (negations-are-props (fe 𝓤 𝓤₀))
@@ -287,6 +326,10 @@ module _ (pt : propositional-truncations-exist) where
           (decidability-of-prop-is-prop (fe 𝓤 𝓤₀)
           (negations-are-props (fe 𝓤 𝓤₀)))
           II
+
+ truncated-De-Morgan-gives-WEM : FunExt → truncated-De-Morgan 𝓤 → WEM 𝓤
+ truncated-De-Morgan-gives-WEM {𝓤} fe =
+  WEM'-gives-WEM (fe 𝓤 𝓤₀) ∘ truncated-De-Morgan-gives-WEM' fe
 
  truncated-De-Morgan-gives-De-Morgan : FunExt → truncated-De-Morgan 𝓤 → De-Morgan 𝓤
  truncated-De-Morgan-gives-De-Morgan fe t P Q i j ν =

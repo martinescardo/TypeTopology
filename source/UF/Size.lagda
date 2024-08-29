@@ -1067,7 +1067,7 @@ WEM-gives-that-negated-types-are-small
  → WEM 𝓤
  → (X : 𝓤 ̇ ) → (¬ X) is 𝓥 small
 WEM-gives-that-negated-types-are-small {𝓤} {𝓥} fe wem X =
- Cases (wem (¬ X) (negations-are-props fe)) f g
+ Cases (wem (¬ X)) f g
  where
   f : ¬¬ X → (¬ X) is 𝓥 small
   f h = 𝟘 , ≃-sym (empty-≃-𝟘 h)

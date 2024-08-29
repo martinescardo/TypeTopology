@@ -91,7 +91,7 @@ WEM-gives-𝟚-retract-of-Ω {𝓤} wem = II
   h p (inr _) = ₁
 
   Ω-to-𝟚 : Ω 𝓤 → 𝟚
-  Ω-to-𝟚 p = h p (wem (p holds) (holds-is-prop p))
+  Ω-to-𝟚 p = h p (wem (p holds))
 
   I : (n : 𝟚) (d : is-decidable (¬ (𝟚-to-Ω n holds))) → h (𝟚-to-Ω n) d ＝ n
   I ₀ (inl ϕ) = refl
@@ -100,7 +100,7 @@ WEM-gives-𝟚-retract-of-Ω {𝓤} wem = II
   I ₁ (inr ψ) = refl
 
   d : (p : Ω 𝓤) → is-decidable (¬ (p holds))
-  d p = wem (p holds) (holds-is-prop p)
+  d p = wem (p holds)
 
   II : retract 𝟚 of (Ω 𝓤)
   II = (λ p → h p (d p)) ,
@@ -214,85 +214,87 @@ open import Rationals.Type
 open import Rationals.Order
 
 ℝ-ainjective-gives-WEM : ainjective-type ℝ 𝓤 𝓥 → WEM 𝓤
-ℝ-ainjective-gives-WEM {𝓤} ℝ-ainj P P-is-prop = XI
+ℝ-ainjective-gives-WEM {𝓤} ℝ-ainj = WEM'-gives-WEM fe' XI
  where
-  q : Ω 𝓤
-  q = (P + ¬ P) , decidability-of-prop-is-prop fe' P-is-prop
+  module _ (P : 𝓤 ̇ ) (P-is-prop : is-prop P) where
 
-  ℝ-aflabby : aflabby ℝ 𝓤
-  ℝ-aflabby = ainjective-types-are-aflabby ℝ ℝ-ainj
+   q : Ω 𝓤
+   q = (P + ¬ P) , decidability-of-prop-is-prop fe' P-is-prop
 
-  f : P + ¬ P → ℝ
-  f = cases (λ _ → 0ℝ) (λ _ → 1ℝ)
+   ℝ-aflabby : aflabby ℝ 𝓤
+   ℝ-aflabby = ainjective-types-are-aflabby ℝ ℝ-ainj
 
-  r : ℝ
-  r = aflabby-extension ℝ-aflabby q f
+   f : P + ¬ P → ℝ
+   f = cases (λ _ → 0ℝ) (λ _ → 1ℝ)
 
-  I : P → r ＝ 0ℝ
-  I p = aflabby-extension-property ℝ-aflabby q f (inl p)
+   r : ℝ
+   r = aflabby-extension ℝ-aflabby q f
 
-  II : ¬ P → r ＝ 1ℝ
-  II ν = aflabby-extension-property ℝ-aflabby q f (inr ν)
+   I : P → r ＝ 0ℝ
+   I p = aflabby-extension-property ℝ-aflabby q f (inl p)
 
-  I-II : r ≠ 0ℝ → r ≠ 1ℝ → 𝟘
-  I-II u v = contrapositive II v (contrapositive I u)
+   II : ¬ P → r ＝ 1ℝ
+   II ν = aflabby-extension-property ℝ-aflabby q f (inr ν)
 
-  I-II₀ : r ≠ 1ℝ → r ＝ 0ℝ
-  I-II₀ v = ℝ-is-¬¬-separated r 0ℝ (λ u → I-II u v)
+   I-II : r ≠ 0ℝ → r ≠ 1ℝ → 𝟘
+   I-II u v = contrapositive II v (contrapositive I u)
 
-  I-II₁ : r ≠ 0ℝ → r ＝ 1ℝ
-  I-II₁ u = ℝ-is-¬¬-separated r 1ℝ (I-II u)
+   I-II₀ : r ≠ 1ℝ → r ＝ 0ℝ
+   I-II₀ v = ℝ-is-¬¬-separated r 0ℝ (λ u → I-II u v)
 
-  III : (1/4 < r) ∨ (r < 1/2)
-  III = ℝ-locatedness r 1/4 1/2 1/4<1/2
+   I-II₁ : r ≠ 0ℝ → r ＝ 1ℝ
+   I-II₁ u = ℝ-is-¬¬-separated r 1ℝ (I-II u)
 
-  IV : 1/4 < r → r ＝ 1ℝ
-  IV l = I-II₁ IV₀
-   where
-     IV₀ : r ≠ 0ℝ
-     IV₀ e = ℚ<-irrefl 1/4 IV₂
-      where
-       IV₁ : 1/4 < 0ℝ
-       IV₁ = transport (1/4 <_) e l
-       IV₂ : 1/4 < 1/4
-       IV₂ = ℚ<-trans 1/4 0ℚ 1/4 IV₁ 0<1/4
+   III : (1/4 < r) ∨ (r < 1/2)
+   III = ℝ-locatedness r 1/4 1/2 1/4<1/2
 
-  V : r < 1/2 → r ＝ 0ℝ
-  V l = I-II₀ V₀
-   where
-     V₀ : r ≠ 1ℝ
-     V₀ e = ℚ<-irrefl 1/2 V₂
-      where
-       V₁ : 1ℝ < 1/2
-       V₁ = transport (_< 1/2) e l
-       V₂ : 1/2 < 1/2
-       V₂ = ℚ<-trans 1/2 1ℚ 1/2 1/2<1 V₁
+   IV : 1/4 < r → r ＝ 1ℝ
+   IV l = I-II₁ IV₀
+    where
+      IV₀ : r ≠ 0ℝ
+      IV₀ e = ℚ<-irrefl 1/4 IV₂
+       where
+        IV₁ : 1/4 < 0ℝ
+        IV₁ = transport (1/4 <_) e l
+        IV₂ : 1/4 < 1/4
+        IV₂ = ℚ<-trans 1/4 0ℚ 1/4 IV₁ 0<1/4
 
-  VI : r ＝ 0ℝ → ¬¬ P
-  VI e ν = apartness-gives-inequality 0ℝ 1ℝ
-            ℝ-zero-apart-from-one
-             (0ℝ ＝⟨ e ⁻¹ ⟩
-              r  ＝⟨ II ν ⟩
-              1ℝ ∎)
+   V : r < 1/2 → r ＝ 0ℝ
+   V l = I-II₀ V₀
+    where
+      V₀ : r ≠ 1ℝ
+      V₀ e = ℚ<-irrefl 1/2 V₂
+       where
+        V₁ : 1ℝ < 1/2
+        V₁ = transport (_< 1/2) e l
+        V₂ : 1/2 < 1/2
+        V₂ = ℚ<-trans 1/2 1ℚ 1/2 1/2<1 V₁
 
-  VII : r ＝ 1ℝ → ¬ P
-  VII e p = apartness-gives-inequality 0ℝ 1ℝ
+   VI : r ＝ 0ℝ → ¬¬ P
+   VI e ν = apartness-gives-inequality 0ℝ 1ℝ
              ℝ-zero-apart-from-one
-             (0ℝ ＝⟨ (I p)⁻¹ ⟩
-             r   ＝⟨ e ⟩
-             1ℝ  ∎)
+              (0ℝ ＝⟨ e ⁻¹ ⟩
+               r  ＝⟨ II ν ⟩
+               1ℝ ∎)
 
-  VIII : r < 1/2 → ¬¬ P
-  VIII l = VI (V l)
+   VII : r ＝ 1ℝ → ¬ P
+   VII e p = apartness-gives-inequality 0ℝ 1ℝ
+              ℝ-zero-apart-from-one
+              (0ℝ ＝⟨ (I p)⁻¹ ⟩
+              r   ＝⟨ e ⟩
+              1ℝ  ∎)
 
-  IX :  1/4 ℚ<ℝ r → ¬ P
-  IX l = VII (IV l)
+   VIII : r < 1/2 → ¬¬ P
+   VIII l = VI (V l)
 
-  X : ¬ P ∨ ¬¬ P
-  X = ∨-functor IX VIII III
+   IX :  1/4 ℚ<ℝ r → ¬ P
+   IX l = VII (IV l)
 
-  XI : ¬ P + ¬¬ P
-  XI = exit-∥∥ (decidability-of-prop-is-prop fe' (negations-are-props fe')) X
+   X : ¬ P ∨ ¬¬ P
+   X = ∨-functor IX VIII III
+
+   XI : ¬ P + ¬¬ P
+   XI = exit-∥∥ (decidability-of-prop-is-prop fe' (negations-are-props fe')) X
 
 \end{code}
 
@@ -367,49 +369,51 @@ ainjective-type-with-non-trivial-apartness-gives-WEM
  → Nontrivial-Apartness X 𝓥
  → WEM 𝓣
 ainjective-type-with-non-trivial-apartness-gives-WEM
- {𝓤} {𝓣} {𝓦} {𝓥} {X} ainj ((_♯_ , α) , ((x₀ , x₁) , points-apart)) P P-is-prop
- = VII
+ {𝓤} {𝓣} {𝓦} {𝓥} {X} ainj ((_♯_ , α) , ((x₀ , x₁) , points-apart))
+ = WEM'-gives-WEM fe' VII
   where
-   X-aflabby : aflabby X 𝓣
-   X-aflabby = ainjective-types-are-aflabby _ ainj
+   module _ (P : 𝓣 ̇ ) (P-is-prop : is-prop P) where
 
-   f : (P + ¬ P) → X
-   f = cases (λ _ → x₀) (λ _ → x₁)
+    X-aflabby : aflabby X 𝓣
+    X-aflabby = ainjective-types-are-aflabby _ ainj
 
-   q : Ω 𝓣
-   q = (P + ¬ P) , decidability-of-prop-is-prop fe' P-is-prop
+    f : (P + ¬ P) → X
+    f = cases (λ _ → x₀) (λ _ → x₁)
 
-   x : X
-   x = aflabby-extension X-aflabby q f
+    q : Ω 𝓣
+    q = (P + ¬ P) , decidability-of-prop-is-prop fe' P-is-prop
 
-   I : P → x ＝ x₀
-   I p = aflabby-extension-property X-aflabby q f (inl p)
+    x : X
+    x = aflabby-extension X-aflabby q f
 
-   II : ¬ P → x ＝ x₁
-   II ν = aflabby-extension-property X-aflabby q f (inr ν)
+    I : P → x ＝ x₀
+    I p = aflabby-extension-property X-aflabby q f (inl p)
 
-   III : x ≠ x₀ → ¬ P
-   III = contrapositive I
+    II : ¬ P → x ＝ x₁
+    II ν = aflabby-extension-property X-aflabby q f (inr ν)
 
-   IV : x ≠ x₁ → ¬¬ P
-   IV = contrapositive II
+    III : x ≠ x₀ → ¬ P
+    III = contrapositive I
 
-   V : x₀ ♯ x ∨ x₁ ♯ x
-   V = apartness-is-cotransitive _♯_ α x₀ x₁ x points-apart
+    IV : x ≠ x₁ → ¬¬ P
+    IV = contrapositive II
 
-   VI : (x ≠ x₀) ∨ (x ≠ x₁)
-   VI = ∨-functor ν ν V
-    where
-     ν : {x y : X} → x ♯ y → y ≠ x
-     ν a refl = apartness-is-irreflexive _♯_ α _ a
+    V : x₀ ♯ x ∨ x₁ ♯ x
+    V = apartness-is-cotransitive _♯_ α x₀ x₁ x points-apart
 
-   VII : ¬ P + ¬¬ P
-   VII = ∨-elim (decidability-of-prop-is-prop fe' (negations-are-props fe'))
-                (inl ∘ III) (inr ∘ IV) VI
+    VI : (x ≠ x₀) ∨ (x ≠ x₁)
+    VI = ∨-functor ν ν V
+     where
+      ν : {x y : X} → x ♯ y → y ≠ x
+      ν a refl = apartness-is-irreflexive _♯_ α _ a
+
+    VII : ¬ P + ¬¬ P
+    VII = ∨-elim (decidability-of-prop-is-prop fe' (negations-are-props fe'))
+                 (inl ∘ III) (inr ∘ IV) VI
 
 \end{code}
 
-TODO. Move the following to the to be created directory Apartness.
+TODO. Move the following to the directory Apartness.
 
 \begin{code}
 
@@ -423,7 +427,7 @@ WEM-gives-that-type-with-two-distinct-points-has-nontrivial-apartness
  where
   s : (x y z : X) → x ≠ y → (x ≠ z) + (y ≠ z)
   s x y z d =
-   Cases (wem (x ≠ z) (negations-are-props fe'))
+   Cases (wem (x ≠ z))
     (λ (a : ¬ (x ≠ z))  → inr (λ {refl → a d}))
     (λ (b : ¬¬ (x ≠ z)) → inl (three-negations-imply-one b))
 
@@ -452,7 +456,7 @@ WEM-gives-that-type-with-two-distinct-points-has-nontrivial-apartness⁺
   x ♯ y = x ≠⟦ ls ⟧ y
 
   s : (x y z : X) → x ♯ y → (x ♯ z) + (y ♯ z)
-  s x y z a = Cases (wem (x ♯ z) (negations-are-props fe')) (inr ∘ f) (inl ∘ g)
+  s x y z a = Cases (wem (x ♯ z)) (inr ∘ f) (inl ∘ g)
    where
     f : ¬ (x ♯ z) → y ♯ z
     f = contrapositive
@@ -495,18 +499,14 @@ WEM-gives-non-trivial-apartness-on-universe =
 
 \end{code}
 
-TODO. Notice that the last fact doesn't have the previous one as a converse. However, we can adapt the proof to assume that we are given a large, locally small type, which the universe is under univalence, to get
-
-  non-trivial-apartness-on-universe-iff-WEM
-   : is-univalent 𝓤
-   → Nontrivial-Apartness 𝓤 𝓤 ↔ WEM 𝓤
-
 Notice that ainjective-type-with-non-trivial-apartness-gives-WEM
 subsumes all the previous examples: the type 𝟚, which is a simple
 type, the simple types (because they are totally separated and hence
 they have a (tight) apartness), the Dedekind reals (with their
 standard apartness), ℕ∞ (again because it is totally
-separated). TODO. Maybe we can list a few more interesting examples?
+separated).
+
+TODO. Maybe we can list a few more interesting examples?
 
 \begin{code}
 
