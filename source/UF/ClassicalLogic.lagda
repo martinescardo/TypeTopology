@@ -71,6 +71,16 @@ LEM-gives-EM lem P i = lem (P , i)
 WEM : ∀ 𝓤 → 𝓤 ⁺ ̇
 WEM 𝓤 = (P : 𝓤 ̇ ) → is-prop P → ¬ P + ¬¬ P
 
+WEM' : ∀ 𝓤 → 𝓤 ⁺ ̇
+WEM' 𝓤 = (P : 𝓤 ̇ ) → ¬ P + ¬¬ P
+
+WEM-gives-WEM' : funext 𝓤 𝓤₀ → WEM 𝓤 → WEM' 𝓤
+WEM-gives-WEM' fe wem P =
+ Cases (wem (¬ P) (negations-are-props fe)) inr (inl ∘ three-negations-imply-one)
+
+WEM'-gives-WEM : WEM' 𝓤 → WEM 𝓤
+WEM'-gives-WEM wem' P P-is-prop = wem' P
+
 WEM-is-prop : FunExt → is-prop (WEM 𝓤)
 WEM-is-prop {𝓤} fe = Π₂-is-prop (λ {𝓤} {𝓥} → fe 𝓤 𝓥)
                       (λ _ _ → decidability-of-prop-is-prop (fe 𝓤 𝓤₀)
@@ -363,7 +373,7 @@ Added by Tom de Jong in August 2021.
     γ : ¬¬ (∃ A)
     γ g = f (λ x a → g ∣ x , a ∣)
 
- 
+
 \end{code}
 
 Added by Martin Escardo 26th April 2022.

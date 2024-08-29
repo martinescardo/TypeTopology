@@ -897,6 +897,15 @@ For example, by univalence, universes are locally small, and so is the
 
 \begin{code}
 
+universes-are-locally-small : is-univalent 𝓤 → is-locally-small (𝓤 ̇ )
+universes-are-locally-small ua X Y = (X ≃ Y) , ≃-sym (univalence-≃ ua X Y)
+
+\end{code}
+
+General machinery for dealing with local smallness:
+
+\begin{code}
+
 _＝⟦_⟧_ : {X : 𝓤 ⁺ ̇ } → X → is-locally-small X → X → 𝓤 ̇
 x ＝⟦ ls ⟧ y = resized (x ＝ y) (ls x y)
 
@@ -909,14 +918,17 @@ Id⟦ ls ⟧ x y = x ＝⟦ ls ⟧ y
 ＝-gives-＝⟦_⟧ : {X : 𝓤 ⁺ ̇ } (ls : is-locally-small X) {x y : X} → x ＝ y → x ＝⟦ ls ⟧ y
 ＝-gives-＝⟦ ls ⟧ {x} {y} = ⌜ resizing-condition (ls x y) ⌝⁻¹
 
-⟦_⟧-refl : {X : 𝓤 ⁺ ̇ } (ls : is-locally-small X) {x : X} → x ＝⟦ ls ⟧ x
-⟦ ls ⟧-refl {x} = ⌜ ≃-sym (resizing-condition (ls x x)) ⌝ refl
+＝⟦_⟧-refl : {X : 𝓤 ⁺ ̇ } (ls : is-locally-small X) {x : X} → x ＝⟦ ls ⟧ x
+＝⟦ ls ⟧-refl {x} = ⌜ ≃-sym (resizing-condition (ls x x)) ⌝ refl
 
 ＝⟦_⟧-sym : {X : 𝓤 ⁺ ̇ } (ls : is-locally-small X) → {x y : X} → x ＝⟦ ls ⟧ y → y ＝⟦ ls ⟧ x
 ＝⟦ ls ⟧-sym p = ＝-gives-＝⟦ ls ⟧ (＝⟦ ls ⟧-gives-＝ p ⁻¹)
 
 _≠⟦_⟧_ : {X : 𝓤 ⁺ ̇ } → X → is-locally-small X → X → 𝓤 ̇
 x ≠⟦ ls ⟧ y = ¬ (x ＝⟦ ls ⟧ y)
+
+≠⟦_⟧-irrefl : {X : 𝓤 ⁺ ̇ } (ls : is-locally-small X) {x : X} → ¬ (x ≠⟦ ls ⟧ x)
+≠⟦ ls ⟧-irrefl {x} ν = ν ＝⟦ ls ⟧-refl
 
 ≠⟦_⟧-sym : {X : 𝓤 ⁺ ̇ } (ls : is-locally-small X) → {x y : X} → x ≠⟦ ls ⟧ y → y ≠⟦ ls ⟧ x
 ≠⟦ ls ⟧-sym {x} {y} n = λ (p : y ＝⟦ ls ⟧ x) → n (＝⟦ ls ⟧-sym p)
@@ -1044,4 +1056,27 @@ module _ (pt : propositional-truncations-exist) where
                  → Y is-locally 𝓥 small
                  → is-set Y
                  → image f is (𝓤 ⊔ 𝓥) small
+\end{code}
+
+Added by Martin Escardo and Tom de Jong 29th August 2024.
+
+\begin{code}
+
+WEM-gives-that-negated-types-are-small
+ : funext 𝓤 𝓤₀
+ → WEM 𝓤
+ → (X : 𝓤 ̇ ) → (¬ X) is 𝓥 small
+WEM-gives-that-negated-types-are-small {𝓤} {𝓥} fe wem X =
+ Cases (wem (¬ X) (negations-are-props fe)) f g
+ where
+  f : ¬¬ X → (¬ X) is 𝓥 small
+  f h = 𝟘 , ≃-sym (empty-≃-𝟘 h)
+
+  g : ¬¬¬ X → (¬ X) is 𝓥 small
+  g h = 𝟙 ,
+        singleton-≃-𝟙'
+         (pointed-props-are-singletons
+           (three-negations-imply-one h)
+           (negations-are-props fe))
+
 \end{code}

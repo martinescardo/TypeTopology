@@ -362,7 +362,7 @@ Nontrivial-Apartness : 𝓤 ̇ → (𝓥 : Universe) → 𝓥 ⁺ ⊔ 𝓤 ̇
 Nontrivial-Apartness X 𝓥 = Σ a ꞉ Apartness X 𝓥 , has-two-points-apart a
 
 ainjective-type-with-non-trivial-apartness-gives-WEM
- : {X : 𝓤 ̇  }
+ : {X : 𝓤 ̇ }
  → ainjective-type X 𝓣 𝓦
  → Nontrivial-Apartness X 𝓥
  → WEM 𝓣
@@ -407,7 +407,6 @@ ainjective-type-with-non-trivial-apartness-gives-WEM
    VII = ∨-elim (decidability-of-prop-is-prop fe' (negations-are-props fe'))
                 (inl ∘ III) (inr ∘ IV) VI
 
-
 \end{code}
 
 TODO. Move the following to the to be created directory Apartness.
@@ -415,7 +414,7 @@ TODO. Move the following to the to be created directory Apartness.
 \begin{code}
 
 WEM-gives-that-type-with-two-distinct-points-has-nontrivial-apartness
- : {X : 𝓤 ̇  }
+ : {X : 𝓤 ̇ }
  → has-two-distinct-points X
  → WEM 𝓤
  → Nontrivial-Apartness X 𝓤
@@ -438,6 +437,41 @@ WEM-gives-that-type-with-two-distinct-points-has-nontrivial-apartness
        (λ x y → ≠-sym) , c)) ,
       htdp
 
+open import UF.Size
+
+WEM-gives-that-type-with-two-distinct-points-has-nontrivial-apartness⁺
+ : {X : 𝓤 ⁺ ̇ }
+ → is-locally-small X
+ → has-two-distinct-points X
+ → WEM 𝓤
+ → Nontrivial-Apartness X 𝓤
+WEM-gives-that-type-with-two-distinct-points-has-nontrivial-apartness⁺
+ {𝓤} {X} ls ((x₀ , x₁) , d) wem = γ
+ where
+  _♯_ : X → X → 𝓤 ̇
+  x ♯ y = x ≠⟦ ls ⟧ y
+
+  s : (x y z : X) → x ♯ y → (x ♯ z) + (y ♯ z)
+  s x y z a = Cases (wem (x ♯ z) (negations-are-props fe')) (inr ∘ f) (inl ∘ g)
+   where
+    f : ¬ (x ♯ z) → y ♯ z
+    f = contrapositive
+         (λ (e : y ＝⟦ ls ⟧ z) → transport (x ♯_) (＝⟦ ls ⟧-gives-＝ e) a)
+
+    g : ¬¬ (x ♯ z) → x ♯ z
+    g = three-negations-imply-one
+
+  c : is-cotransitive _♯_
+  c x y z d = ∣ s x y z d ∣
+
+  γ : Nontrivial-Apartness X 𝓤
+  γ = (_♯_ ,
+       (λ x y → negations-are-props fe') ,
+       (λ x → ≠⟦ ls ⟧-irrefl) ,
+       (λ x y → ≠⟦ ls ⟧-sym) ,
+       c) ,
+      (x₀ , x₁) , ≠-gives-≠⟦ ls ⟧ d
+
 \end{code}
 
 In particular, we have the following.
@@ -457,7 +491,7 @@ WEM-gives-non-trivial-apartness-on-universe
  → Nontrivial-Apartness (𝓤 ̇ ) (𝓤 ⁺)
 WEM-gives-non-trivial-apartness-on-universe =
  WEM-gives-that-type-with-two-distinct-points-has-nontrivial-apartness
-  ((𝟘 , 𝟙) , 𝟘-is-not-𝟙)
+  universe-has-two-distinct-points
 
 \end{code}
 
@@ -473,3 +507,20 @@ type, the simple types (because they are totally separated and hence
 they have a (tight) apartness), the Dedekind reals (with their
 standard apartness), ℕ∞ (again because it is totally
 separated). TODO. Maybe we can list a few more interesting examples?
+
+\begin{code}
+
+non-trivial-apartness-on-universe-iff-WEM
+ : is-univalent 𝓤
+ → Nontrivial-Apartness (𝓤 ̇ ) 𝓤 ↔ WEM 𝓤
+non-trivial-apartness-on-universe-iff-WEM {𝓤} ua = f , g
+ where
+  f : Nontrivial-Apartness (𝓤 ̇ ) 𝓤 → WEM 𝓤
+  f = non-trivial-apartness-on-universe-gives-WEM ua
+
+  g : WEM 𝓤 → Nontrivial-Apartness (𝓤 ̇ ) 𝓤
+  g = WEM-gives-that-type-with-two-distinct-points-has-nontrivial-apartness⁺
+       (universes-are-locally-small ua)
+       universe-has-two-distinct-points
+
+\end{code}

@@ -1795,7 +1795,7 @@ Theorem₁[large-free-groups-from-set-quotients] {𝓤} fe pe sq A A-ls =
   open resize-universal-map fe pe pt
         A
         Id⟦ A-ls ⟧
-        (λ _ → ⟦ A-ls ⟧-refl)
+        (λ _ → ＝⟦ A-ls ⟧-refl)
         (λ _ _ → ＝⟦ A-ls ⟧-gives-＝)
         (λ 𝓤 → 𝓤)
         sq
@@ -2049,7 +2049,7 @@ Theorem₂[free-groups-of-large-locally-small-types] {𝓤} pt fe pe A A-ls =
   open resize-free-group fe pe pt
         A
         Id⟦ A-ls ⟧
-        (λ _ → ⟦ A-ls ⟧-refl)
+        (λ _ → ＝⟦ A-ls ⟧-refl)
         (λ _ _ → ＝⟦ A-ls ⟧-gives-＝)
 
 \end{code}

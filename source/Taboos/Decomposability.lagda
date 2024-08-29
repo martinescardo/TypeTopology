@@ -169,7 +169,7 @@ WEM-gives-decomposition-of-two-pointed-types⁺ {𝓤} wem X l ((x₀ , x₁) , 
 
   g₀ : (δ : ¬ (x₀ ≠⟦ l ⟧ x₀) + ¬¬ (x₀ ≠⟦ l ⟧ x₀)) → g x₀ δ ＝ ₀
   g₀ (inl _) = refl
-  g₀ (inr u) = 𝟘-elim (three-negations-imply-one u ⟦ l ⟧-refl)
+  g₀ (inr u) = 𝟘-elim (three-negations-imply-one u ＝⟦ l ⟧-refl)
 
   e₀ : f x₀ ＝ ₀
   e₀ = g₀ (h x₀)
