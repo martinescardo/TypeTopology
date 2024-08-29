@@ -198,7 +198,8 @@ WEM-gives-De-Morgan' wem A B =
        (λ (ϕ : ¬¬ A)
              → Cases (wem B)
                 inr
-                (λ (γ : ¬¬ B) → 𝟘-elim (ϕ (λ (a : A) → γ (λ (b : B) → ν (a , b))))))
+                (λ (γ : ¬¬ B) → 𝟘-elim
+                                 (ϕ (λ (a : A) → γ (λ (b : B) → ν (a , b))))))
 
 WEM-gives-De-Morgan : WEM 𝓤 → De-Morgan 𝓤
 WEM-gives-De-Morgan = De-Morgan'-gives-De-Morgan ∘ WEM-gives-De-Morgan'
@@ -340,7 +341,14 @@ module _ (pt : propositional-truncations-exist) where
 The above shows that weak excluded middle, De Morgan and truncated De
 Morgan are logically equivalent (https://ncatlab.org/nlab/show/De%20Morgan%20laws).
 
+TODO. Show that the following version of De Morgan, which doesn't
+assume that P and Q are propositions, is equivalent to any, and hence
+all, of the above versions of De Morgan.
+
 \begin{code}
+
+ truncated-De-Morgan' : ∀ 𝓤 → 𝓤 ⁺ ̇
+ truncated-De-Morgan' 𝓤 = (P Q : 𝓤 ̇ ) → ¬ (P × Q) → ¬ P ∨ ¬ Q
 
  double-negation-is-truncation-gives-DNE : ((X : 𝓤 ̇ ) → ¬¬ X → ∥ X ∥) → DNE 𝓤
  double-negation-is-truncation-gives-DNE f P i u = exit-∥∥ i (f P u)
@@ -437,4 +445,4 @@ Global-Choice'-gives-Global-Choice gc X = gc (X + ¬ X)
                                              (λ u → u (inr (λ p → u (inl p))))
 \end{code}
 
-Global choice contradicts univalence.
+TODO. Global choice contradicts univalence.
