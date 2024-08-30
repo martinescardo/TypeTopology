@@ -248,12 +248,12 @@ De-Morgan-is-not-prop {𝓤} fe δ = IV
   g P Q i j ν (inr _) _       _       = δ P Q i j ν
 
   δ' : De-Morgan 𝓤
-  δ' P Q i j ν = g P Q i j ν (wem P) (wem Q) (δ P Q i j ν) -- !!! i j
+  δ' P Q i j ν = g P Q i j ν (wem P) (wem Q) (δ P Q i j ν)
 
-  I : (i : is-prop 𝟘) (h : ¬ 𝟘) → wem 𝟘 ＝ inl h -- !!! i
+  I : (i : is-prop 𝟘) (h : ¬ 𝟘) → wem 𝟘 ＝ inl h
   I i h = I₀ (wem 𝟘) refl
    where
-    I₀ : (a : ¬ 𝟘 + ¬¬ 𝟘) → wem 𝟘 ＝ a → wem 𝟘 ＝ inl h -- !!! i
+    I₀ : (a : ¬ 𝟘 + ¬¬ 𝟘) → wem 𝟘 ＝ a → wem 𝟘 ＝ inl h
     I₀ (inl u) p = transport (λ - → wem 𝟘 ＝ inl -) (negations-are-props fe u h) p
     I₀ (inr ϕ) p = 𝟘-elim (ϕ h)
 
