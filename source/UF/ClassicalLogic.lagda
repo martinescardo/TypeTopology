@@ -296,6 +296,12 @@ De-Morgan-is-not-prop {𝓤} fe δ = IV
   IV : ¬ is-prop (De-Morgan 𝓤)
   IV i = III (i δ' δ)
 
+De-Morgan-curiousity : funext 𝓤 𝓤₀
+                     → ¬¬ is-prop (De-Morgan 𝓤)
+                     → is-prop (De-Morgan 𝓤)
+De-Morgan-curiousity fe =
+ De-Morgan-is-prop ∘ contrapositive (De-Morgan-is-not-prop fe)
+
 module _ (pt : propositional-truncations-exist) where
 
  open PropositionalTruncation pt
