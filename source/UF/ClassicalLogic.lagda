@@ -22,10 +22,9 @@ open import UF.Embeddings
 open import UF.Equiv
 open import UF.FunExt
 open import UF.PropTrunc
-
-open import UF.SubtypeClassifier
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
+open import UF.SubtypeClassifier
 open import UF.UniverseEmbedding
 
 \end{code}
@@ -131,15 +130,17 @@ all-props-negative-gives-DNE {𝓤} fe ϕ P P-is-prop = I (ϕ P P-is-prop)
   I : (Σ Q ꞉ 𝓤 ̇ , (P ↔ ¬ Q)) → ¬¬ P → P
   I (Q , f , g) ν = g (three-negations-imply-one (double-contrapositive f ν))
 
-all-props-negative-gives-EM : funext 𝓤 𝓤₀
-                            → ((P : 𝓤 ̇ ) → is-prop P → Σ Q ꞉ 𝓤 ̇ , (P ↔ ¬ Q))
-                            → EM 𝓤
-all-props-negative-gives-EM {𝓤} fe ϕ = DNE-gives-EM fe
-                                        (all-props-negative-gives-DNE fe ϕ)
+all-props-negative-gives-EM
+ : funext 𝓤 𝓤₀
+ → ((P : 𝓤 ̇ ) → is-prop P → Σ Q ꞉ 𝓤 ̇ , (P ↔ ¬ Q))
+ → EM 𝓤
+all-props-negative-gives-EM {𝓤} fe ϕ
+ = DNE-gives-EM fe (all-props-negative-gives-DNE fe ϕ)
 
-fe-and-em-give-propositional-truncations : FunExt
-                                         → Excluded-Middle
-                                         → propositional-truncations-exist
+fe-and-em-give-propositional-truncations
+ : FunExt
+ → Excluded-Middle
+ → propositional-truncations-exist
 fe-and-em-give-propositional-truncations fe em =
  record {
   ∥_∥          = λ X → ¬¬ X ;
@@ -147,7 +148,6 @@ fe-and-em-give-propositional-truncations fe em =
   ∣_∣          = λ x u → u x ;
   ∥∥-rec       = λ i u φ → EM-gives-DNE em _ i (¬¬-functor u φ)
   }
-
 
 \end{code}
 
@@ -184,8 +184,7 @@ non-contradiction : {X : 𝓤 ̇ } → ¬ (X × ¬ X)
 non-contradiction (x , ν) = ν x
 
 De-Morgan' : ∀ 𝓤 → 𝓤 ⁺ ̇
-De-Morgan' 𝓤 = (P Q : 𝓤 ̇ )
-             → ¬ (P × Q) → ¬ P + ¬ Q
+De-Morgan' 𝓤 = (P Q : 𝓤 ̇ ) → ¬ (P × Q) → ¬ P + ¬ Q
 
 De-Morgan'-gives-De-Morgan : De-Morgan' 𝓤 → De-Morgan 𝓤
 De-Morgan'-gives-De-Morgan d' P Q i j = d' P Q
@@ -214,13 +213,14 @@ De-Morgan-gives-De-Morgan' fe = WEM-gives-De-Morgan' ∘ De-Morgan-gives-WEM fe
 
 \end{code}
 
-Is the above De Morgan Law a proposition? If it doesn't hold, it is
-vacuously a proposition. But if it does hold, it is not a
-proposition. We prove this by modifying any given δ : De-Mordan 𝓤 to a
-different δ' : De-Morgan 𝓤. Then we also consider a truncated version
-of De-Morgan that is a proposition and is logically equivalent to
-De-Morgan. So De-Morgan 𝓤 is not necessarily a proposition, but it
-always has split support (it has a proposition as a retract).
+Is the above untruncated De Morgan Law a proposition? Not in
+general. If it doesn't hold, it is vacuously a proposition. But if it
+does hold, it is not a proposition. We prove this by modifying any
+given δ : De-Mordan 𝓤 to a different δ' : De-Morgan 𝓤. Then we also
+consider a truncated version of De-Morgan that is a proposition and is
+logically equivalent to De-Morgan. So De-Morgan 𝓤 is not necessarily a
+proposition, but it always has split support (it has a proposition as
+a retract).
 
 \begin{code}
 
@@ -301,54 +301,95 @@ module _ (pt : propositional-truncations-exist) where
  open PropositionalTruncation pt
 
  truncated-De-Morgan : ∀ 𝓤 → 𝓤 ⁺ ̇
- truncated-De-Morgan 𝓤 = (P Q : 𝓤 ̇ )
-                       → is-prop P
-                       → is-prop Q
-                       → ¬ (P × Q) → ¬ P ∨ ¬ Q
+ truncated-De-Morgan 𝓤 = (P Q : 𝓤 ̇ ) → ¬ (P × Q) → ¬ P ∨ ¬ Q
+
+ truncated-De-Morgan' : ∀ 𝓤 → 𝓤 ⁺ ̇
+ truncated-De-Morgan' 𝓤 = (P Q : 𝓤 ̇ )
+                        → is-prop P
+                        → is-prop Q
+                        → ¬ (P × Q) → ¬ P ∨ ¬ Q
 
  truncated-De-Morgan-is-prop : FunExt → is-prop (truncated-De-Morgan 𝓤)
- truncated-De-Morgan-is-prop fe = Π₅-is-prop (λ {𝓤} {𝓥} → fe 𝓤 𝓥)
-                                   (λ P Q i j ν → ∨-is-prop)
+ truncated-De-Morgan-is-prop fe = Π₃-is-prop (λ {𝓤} {𝓥} → fe 𝓤 𝓥)
+                                   (λ P Q ν → ∨-is-prop)
 
- De-Morgan-gives-truncated-De-Morgan : De-Morgan 𝓤 → truncated-De-Morgan 𝓤
- De-Morgan-gives-truncated-De-Morgan d P Q i j ν = ∣ d P Q i j ν ∣
+ truncated-De-Morgan'-is-prop : FunExt → is-prop (truncated-De-Morgan' 𝓤)
+ truncated-De-Morgan'-is-prop fe = Π₅-is-prop (λ {𝓤} {𝓥} → fe 𝓤 𝓥)
+                                    (λ P Q i j ν → ∨-is-prop)
 
- truncated-De-Morgan-gives-WEM' : FunExt → truncated-De-Morgan 𝓤 → WEM' 𝓤
- truncated-De-Morgan-gives-WEM' {𝓤} fe t P i = III
+ De-Morgan-gives-truncated-De-Morgan' : De-Morgan 𝓤 → truncated-De-Morgan' 𝓤
+ De-Morgan-gives-truncated-De-Morgan' d P Q i j ν = ∣ d P Q i j ν ∣
+
+ truncated-De-Morgan'-gives-WEM' : funext 𝓤 𝓤₀ → truncated-De-Morgan' 𝓤 → WEM' 𝓤
+ truncated-De-Morgan'-gives-WEM' {𝓤} fe t P i = III
   where
    I : ¬ (P × ¬ P) → ¬ P ∨ ¬¬ P
-   I = t P (¬ P) i (negations-are-props (fe 𝓤 𝓤₀))
+   I = t P (¬ P) i (negations-are-props fe)
 
    II : ¬ P ∨ ¬¬ P
    II = I non-contradiction
 
    III : ¬ P + ¬¬ P
    III = exit-∥∥
-          (decidability-of-prop-is-prop (fe 𝓤 𝓤₀)
-          (negations-are-props (fe 𝓤 𝓤₀)))
+          (decidability-of-prop-is-prop fe
+          (negations-are-props fe))
           II
 
- truncated-De-Morgan-gives-WEM : FunExt → truncated-De-Morgan 𝓤 → WEM 𝓤
- truncated-De-Morgan-gives-WEM {𝓤} fe =
-  WEM'-gives-WEM (fe 𝓤 𝓤₀) ∘ truncated-De-Morgan-gives-WEM' fe
+ truncated-De-Morgan'-gives-WEM : funext 𝓤 𝓤₀ → truncated-De-Morgan' 𝓤 → WEM 𝓤
+ truncated-De-Morgan'-gives-WEM {𝓤} fe =
+  WEM'-gives-WEM fe ∘ truncated-De-Morgan'-gives-WEM' fe
 
- truncated-De-Morgan-gives-De-Morgan : FunExt → truncated-De-Morgan 𝓤 → De-Morgan 𝓤
- truncated-De-Morgan-gives-De-Morgan fe t P Q i j ν =
-  WEM-gives-De-Morgan (truncated-De-Morgan-gives-WEM fe t) P Q i j ν
+ truncated-De-Morgan'-gives-De-Morgan : funext 𝓤 𝓤₀ → truncated-De-Morgan' 𝓤 → De-Morgan 𝓤
+ truncated-De-Morgan'-gives-De-Morgan fe t P Q i j ν =
+  WEM-gives-De-Morgan (truncated-De-Morgan'-gives-WEM fe t) P Q i j ν
+
+ truncated-De-Morgan-gives-truncated-De-Morgan'
+  : truncated-De-Morgan 𝓤
+  → truncated-De-Morgan' 𝓤
+ truncated-De-Morgan-gives-truncated-De-Morgan' d P Q i j = d P Q
+
+ truncated-De-Morgan'-gives-truncated-De-Morgan
+  : funext 𝓤 𝓤₀
+  → truncated-De-Morgan' 𝓤
+  → truncated-De-Morgan 𝓤
+ truncated-De-Morgan'-gives-truncated-De-Morgan {𝓤} fe d P Q ν
+  = ∣ WEM-gives-De-Morgan' (truncated-De-Morgan'-gives-WEM fe d) P Q ν ∣
 
 \end{code}
 
 The above shows that weak excluded middle, De Morgan and truncated De
-Morgan are logically equivalent (https://ncatlab.org/nlab/show/De%20Morgan%20laws).
+Morgan are logically equivalent, all in their two (primed and
+unprimed) versions, so in a total of six logically equivalent
+statements.
 
-TODO. Show that the following version of De Morgan, which doesn't
-assume that P and Q are propositions, is equivalent to any, and hence
-all, of the above versions of De Morgan.
+That weak excluded middle and De Morgan are equivalent is long known
+and now part of the folklore. We don't know who proved this first,
+but, for example, it is in Johnstone's papers on topos theory and his
+Elephant two-volume book.
+
+Mike Shulman asked in the HoTT mailing list [1] whether untruncated De
+Morgan implies truncated De Morgan, and Martin Escardo offered a proof
+as an answer [2], which Mike Shulman added to the nLab [3].
+
+[1] Mike Shulman. de Morgan's Law.
+    https://groups.google.com/g/homotopytypetheory/c/Azq6GVU98II/m/qEp8TeInYgAJ
+    1st September 2014.
+
+[3] Martin Escardo. de Morgan's Law.
+    https://groups.google.com/g/homotopytypetheory/c/Azq6GVU98II/m/bXMixO9s1boJ
+    2nd September 2014
+
+[3] Added to the nLab by Mike Shulman.
+    https://ncatlab.org/nlab/show/De%20Morgan%20laws.
+    2nd September 2014
+
+Here we have added, to both WEM and De Morgan, truncated or not, the
+discussion of whether the types in question need to be propositions or
+not for them to be all equivalent, and the answer is that it doesn't
+matter whether we assume that the types in question are all
+propositions.
 
 \begin{code}
-
- truncated-De-Morgan' : ∀ 𝓤 → 𝓤 ⁺ ̇
- truncated-De-Morgan' 𝓤 = (P Q : 𝓤 ̇ ) → ¬ (P × Q) → ¬ P ∨ ¬ Q
 
  double-negation-is-truncation-gives-DNE : ((X : 𝓤 ̇ ) → ¬¬ X → ∥ X ∥) → DNE 𝓤
  double-negation-is-truncation-gives-DNE f P i u = exit-∥∥ i (f P u)
@@ -413,8 +454,6 @@ Added by Tom de Jong in August 2021.
 
 \begin{code}
 
-
-
  not-Π-not-implies-∃ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
                      → EM (𝓤 ⊔ 𝓥)
                      → ¬ ((x : X) → ¬ A x)
@@ -423,7 +462,6 @@ Added by Tom de Jong in August 2021.
    where
     γ : ¬¬ (∃ A)
     γ g = f (λ x a → g ∣ x , a ∣)
-
 
 \end{code}
 
@@ -445,4 +483,5 @@ Global-Choice'-gives-Global-Choice gc X = gc (X + ¬ X)
                                              (λ u → u (inr (λ p → u (inl p))))
 \end{code}
 
-TODO. Global choice contradicts univalence.
+TODO. Global choice contradicts univalence. This is already present in
+the directory MGS.
