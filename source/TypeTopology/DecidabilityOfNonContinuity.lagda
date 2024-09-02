@@ -621,9 +621,8 @@ module more-continuity-criteria (pt : propositional-truncations-exist) where
 
 Added 2nd September 2024.
 
-{-
 \begin{code}
-
+{-
 is-ℕ∞-extendable : (ℕ → ℕ) → 𝓤₀ ̇
 is-ℕ∞-extendable g = Σ f ꞉ (ℕ∞ → ℕ) , f ∘ ι ∼ g
 
@@ -660,11 +659,11 @@ WLPO-gives-that-being-ℕ∞-extendable-is-not-prop
 WLPO-gives-that-being-ℕ∞-extendable-is-not-prop = {!!}
  where
   f f' : ℕ∞ → ℕ
-  f = ?
-  f' = ?
-
-\end{code}
+  f = {!!}
+  f' = {!!}
 -}
+\end{code}
+
 
 TODO. Parametrize this module by a discrete type, rather than use 𝟚 or
 ℕ as the types of values of functions.
