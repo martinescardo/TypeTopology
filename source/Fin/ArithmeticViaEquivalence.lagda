@@ -414,7 +414,7 @@ Geometric definition of the factorial function:
 
 The following are theorems rather than definitions:
 
-\sbegin{code}
+\begin{code}
 
  !-base : 0 ! ＝ 1
  !-base = refl
