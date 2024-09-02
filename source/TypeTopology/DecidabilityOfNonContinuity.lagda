@@ -618,3 +618,53 @@ module more-continuity-criteria (pt : propositional-truncations-exist) where
                       (＝⟦⟧-is-decidable (ι x) (ι y) m)
                       (ℕ-is-discrete (f x) (f y))))
 \end{code}
+
+Added 2nd September 2024.
+
+{-
+\begin{code}
+
+is-ℕ∞-extendable : (ℕ → ℕ) → 𝓤₀ ̇
+is-ℕ∞-extendable g = Σ f ꞉ (ℕ∞ → ℕ) , f ∘ ι ∼ g
+
+¬WLPO-gives-that-being-ℕ∞-extendable-is-prop
+ : funext 𝓤₀ 𝓤₀
+ → ¬ WLPO
+ → (g : ℕ → ℕ) → is-prop (is-ℕ∞-extendable g)
+¬WLPO-gives-that-being-ℕ∞-extendable-is-prop fe nwlpo g  (f , h) (f' , h') = V
+ where
+  I : (n : ℕ) → f (ι n) ＝ f' (ι n)
+  I n = h n ∙ (h' n)⁻¹
+
+  I' :  ¬¬ (f ∞ ＝ f' ∞)
+  I' d = {!!}
+   where
+
+
+  II : f ∞ ＝ f' ∞
+  II = ℕ-is-¬¬-separated (f ∞) (f' ∞) I'
+
+  III : f ∼ f'
+  III = ℕ∞-density fe ℕ-is-¬¬-separated I II
+
+  IV : f ＝ f'
+  IV = dfunext fe III
+
+  V : (f , h) ＝ (f' , h')
+  V = to-subtype-＝ (λ - → Π-is-prop fe (λ n → ℕ-is-set)) IV
+
+WLPO-gives-that-being-ℕ∞-extendable-is-not-prop
+ : funext 𝓤₀ 𝓤₀
+ → WLPO
+ → (g : ℕ → ℕ) → ¬ is-prop (is-ℕ∞-extendable g)
+WLPO-gives-that-being-ℕ∞-extendable-is-not-prop = {!!}
+ where
+  f f' : ℕ∞ → ℕ
+  f = ?
+  f' = ?
+
+\end{code}
+-}
+
+TODO. Parametrize this module by a discrete type, rather than use 𝟚 or
+ℕ as the types of values of functions.
