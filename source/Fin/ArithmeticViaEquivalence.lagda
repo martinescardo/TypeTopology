@@ -495,7 +495,7 @@ spartan MLTT are Π and Σ.
 open import UF.PropIndexedPiSigma
 
 Σ-construction : (n : ℕ) (a : Fin n → ℕ)
-              → Σ k ꞉ ℕ , Fin k ≃ (Σ i ꞉ Fin n , Fin (a i))
+               → Σ k ꞉ ℕ , Fin k ≃ (Σ i ꞉ Fin n , Fin (a i))
 Σ-construction 0 a = 0 , (Fin 0                    ≃⟨ ≃-refl _ ⟩
                          𝟘                        ≃⟨ ≃-sym (prop-indexed-sum-zero id) ⟩
                          (Σ i ꞉ 𝟘 , Fin (a i)) ■)
@@ -611,6 +611,6 @@ natural inductive constructions of ∑ and ∏, it would have been better
 to have defined Fin(succ n) = 𝟙 + Fin n. In retrospect, this
 definition seems more natural in general.
 
-Todo: Corollary. If X is a type and A is an X-indexed family of types,
+TODO: Corollary. If X is a type and A is an X-indexed family of types,
 and if X is finite and A x is finite for every x : X, then the types Σ A
 and Π A are finite.
