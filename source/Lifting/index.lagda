@@ -10,7 +10,7 @@ import Lifting.Algebras
 import Lifting.EmbeddingDirectly
 import Lifting.EmbeddingViaSIP
 import Lifting.IdentityViaSIP
-import Lifting.Lifting
+import Lifting.Construction
 import Lifting.Miscelanea
 import Lifting.Miscelanea-PropExt-FunExt
 import Lifting.Monad

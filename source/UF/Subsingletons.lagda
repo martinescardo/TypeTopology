@@ -4,7 +4,7 @@ In univalent logic, as opposed to Curry-Howard logic, a proposition is
 a subsingleton or a type such that any two of its elements are
 identified.
 
-https://www.newton.ac.uk/files/seminar/20170711100011001-1009756.pdf
+https://www.newton.ac.uk/files/seminar/20170711100011001-1442677.pdf
 https://unimath.github.io/bham2017/uf.pdf
 
 \begin{code}
@@ -234,6 +234,19 @@ sum-of-contradictory-props {𝓤} {𝓥} {𝓦} {P} {Q} i j f = γ
   γ (inr q) (inl p)  = 𝟘-elim (f p q)
   γ (inr q) (inr q') = ap inr (j q q')
 
+sum-of-contradictory-props' : {P : 𝓤 ̇ } {Q : 𝓥 ̇ }
+                            → (is-prop P × is-prop Q × (P → Q → 𝟘 {𝓦}))
+                            → is-prop (P + Q)
+sum-of-contradictory-props' (i , j , f) = sum-of-contradictory-props i j f
+
+sum-of-contradictory-props'-converse : {P : 𝓤 ̇ } {Q : 𝓥 ̇ }
+                                     → is-prop (P + Q)
+                                     → (is-prop P × is-prop Q × (P → Q → 𝟘 {𝓦}))
+sum-of-contradictory-props'-converse k =
+ (λ p p' → inl-lc (k (inl p) (inl p'))) ,
+ (λ q q' → inr-lc (k (inr q) (inr q'))) ,
+ (λ p q → 𝟘-elim (+disjoint (k (inl p) (inr q))))
+
 \end{code}
 
 Without assuming excluded middle, we have that there are no truth
@@ -267,6 +280,9 @@ used in the following construction.
 
 𝟘-is-not-𝟙 : 𝟘 {𝓤} ≠ 𝟙 {𝓤}
 𝟘-is-not-𝟙 p = 𝟘-elim (Idtofun (p ⁻¹) ⋆)
+
+universe-has-two-distinct-points : has-two-distinct-points (𝓤 ̇ )
+universe-has-two-distinct-points = ((𝟘 , 𝟙) , 𝟘-is-not-𝟙)
 
 \end{code}
 

@@ -16,7 +16,7 @@ open import Ordinals.Underlying
 open import UF.DiscreteAndSeparated hiding (𝟚-is-discrete)
 open import UF.Equiv
 open import UF.EquivalenceExamples
-open import UF.ExcludedMiddle
+open import UF.ClassicalLogic
 open import UF.FunExt
 open import UF.PropTrunc
 open import UF.Size

@@ -123,7 +123,8 @@ module classifier-single-universe (𝓤 : Universe) where
 
  classification : is-univalent 𝓤
                 → funext 𝓤 (𝓤 ⁺)
-                → (Y : 𝓤 ̇ ) → 𝓤 / Y ≃ (Y → 𝓤 ̇ )
+                → (Y : 𝓤 ̇ )
+                → 𝓤 / Y ≃ (Y → 𝓤 ̇ )
  classification ua fe Y = χ Y , universes-are-classifiers ua fe Y
 
 module special-classifier-single-universe (𝓤 : Universe) where
@@ -302,7 +303,8 @@ Definition of when the given pair of universes is a classifier,
 
  classification : is-univalent (𝓤 ⊔ 𝓥)
                 → funext 𝓤 ((𝓤 ⊔ 𝓥)⁺)
-                → (Y : 𝓤 ̇ ) → (𝓤 ⊔ 𝓥) / Y ≃ (Y → 𝓤 ⊔ 𝓥 ̇ )
+                → (Y : 𝓤 ̇ )
+                → (𝓤 ⊔ 𝓥) / Y ≃ (Y → 𝓤 ⊔ 𝓥 ̇ )
  classification ua fe Y = χ Y , universes-are-classifiers ua fe Y
 
 \end{code}
@@ -364,7 +366,7 @@ The subtype classifier with general universes:
 Ω-is-subtype-classifier' : is-univalent (𝓤 ⊔ 𝓥)
                          → funext 𝓤 ((𝓤 ⊔ 𝓥)⁺)
                          → (Y : 𝓤 ̇ )
-                         → Subtypes' (𝓤 ⊔ 𝓥) Y ≃ (Y → Ω (𝓤 ⊔ 𝓥))
+                         → Subtype' (𝓤 ⊔ 𝓥) Y ≃ (Y → Ω (𝓤 ⊔ 𝓥))
 Ω-is-subtype-classifier' {𝓤} {𝓥} ua fe = special-classification ua fe
                                           is-subsingleton
  where
@@ -373,10 +375,10 @@ The subtype classifier with general universes:
 Ω-is-subtype-classifier : is-univalent 𝓤
                         → funext 𝓤 (𝓤 ⁺)
                         → (Y : 𝓤 ̇ )
-                        → Subtypes Y ≃ (Y → Ω 𝓤)
+                        → Subtype Y ≃ (Y → Ω 𝓤)
 Ω-is-subtype-classifier {𝓤} = Ω-is-subtype-classifier' {𝓤} {𝓤}
 
-subtypes-form-set : Univalence → (Y : 𝓤 ̇ ) → is-set (Subtypes' (𝓤 ⊔ 𝓥) Y)
+subtypes-form-set : Univalence → (Y : 𝓤 ̇ ) → is-set (Subtype' (𝓤 ⊔ 𝓥) Y)
 subtypes-form-set {𝓤} {𝓥} ua Y =
  equiv-to-set
   (Ω-is-subtype-classifier' {𝓤} {𝓥}

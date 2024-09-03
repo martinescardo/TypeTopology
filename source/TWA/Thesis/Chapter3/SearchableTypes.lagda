@@ -1,190 +1,288 @@
-\begin{code}
+Todd Waugh Ambridge, January 2024
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+# Uniformly continuously searchable closeness spaces
+
+\begin{code}
+{-# OPTIONS --without-K --safe #-}
 
 open import MLTT.Spartan
 open import UF.FunExt
 open import NotionsOfDecidability.Complemented
 open import UF.Subsingletons
+open import UF.SubtypeClassifier
 open import UF.Equiv
+open import UF.DiscreteAndSeparated
+open import MLTT.Two-Properties
+open import Fin.Type
+open import Fin.Bishop
 
 module TWA.Thesis.Chapter3.SearchableTypes (fe : FunExt) where
 
--- Definition 3.1.1
+open import TWA.Thesis.Chapter3.ClosenessSpaces fe
+ hiding (decidable-predicate;decidable-uc-predicate)
+open import TWA.Thesis.Chapter3.ClosenessSpaces-Examples fe
+ using (decidable-𝟚; decidable-𝟚₁; 𝟚-decidable₁)
+\end{code}
+
+## Searchable types
+
+\begin{code}
 decidable-predicate : (𝓦 : Universe) → 𝓤 ̇ → 𝓤 ⊔ 𝓦 ⁺  ̇
 decidable-predicate 𝓦 X
  = Σ p ꞉ (X → Ω 𝓦) , is-complemented (λ x → (p x) holds)
 
--- Definition 3.1.2/3
-searchable : (𝓦 : Universe) → 𝓤 ̇ → 𝓤 ⊔ (𝓦 ⁺)  ̇
-searchable 𝓦 X = Σ 𝓔 ꞉ (decidable-predicate 𝓦 X → X)
+searchable𝓔 : (𝓦 : Universe) → 𝓤 ̇ → 𝓤 ⊔ (𝓦 ⁺)  ̇
+searchable𝓔 𝓦 X = Σ 𝓔 ꞉ (decidable-predicate 𝓦 X → X)
                 , (((p , d) : decidable-predicate 𝓦 X)
                 → (Σ x ꞉ X , (p x holds)) → p (𝓔 (p , d)) holds)
 
--- Lemma 3.1.4
-searchable-inhabited : (𝓦 : Universe) → (X : 𝓤 ̇ )
-                     → searchable 𝓦 X → X
-searchable-inhabited 𝓦 X (𝓔 , S) = 𝓔 ((λ _ → ⊤Ω) , (λ _ → inl ⋆))
+searchable : (𝓦 : Universe) → 𝓤 ̇ → 𝓤 ⊔ (𝓦 ⁺)  ̇
+searchable 𝓦 X
+ = ((p , d) : decidable-predicate 𝓦 X)
+ → Σ x₀ ꞉ X , ((Σ x ꞉ X , (p x holds)) → p x₀ holds)
 
--- Definition 3.1.5-7
-open import TWA.Thesis.Chapter2.FiniteDiscrete
+searchable-pointed
+ : (𝓦 : Universe) → (X : 𝓤 ̇ ) → searchable 𝓦 X → X
+searchable-pointed 𝓦 X Sx = pr₁ (Sx ((λ _ → ⊤) , (λ _ → inl ⋆)))
 
--- Lemma 3.1.8
 𝟙-searchable : searchable 𝓦 (𝟙 {𝓤})
-𝟙-searchable {𝓦} {𝓤} = (λ _ → ⋆) , S
+𝟙-searchable {𝓦} {𝓤} (p , d) = ⋆ , S
  where
-  S : ((p , d) : decidable-predicate 𝓦 𝟙)
-    → (Σ x ꞉ 𝟙 , p x holds) → p ⋆ holds
-  S (p , d) (⋆ , p⋆) = p⋆
+  S : (Σ x ꞉ 𝟙 , p x holds) → p ⋆ holds
+  S  (⋆ , p⋆) = p⋆
 
-+𝟘-searchable : {X : 𝓤 ̇ } → searchable 𝓦 X
-              → searchable 𝓦 (X + 𝟘 {𝓥})
-+𝟘-searchable {𝓤} {𝓦} {𝓥} {X} (𝓔x , Sx) = 𝓔 , S
+𝟘+-searchable
+ : {X : 𝓤 ̇ } → searchable 𝓦 X → searchable 𝓦 (𝟘 {𝓥} + X)
+𝟘+-searchable {𝓤} {𝓦} {𝓥} {X} Sx (p , d)
+ = inr x₀ , γ
  where
-  px→ : decidable-predicate 𝓦 (X + 𝟘 {𝓥})
-      → decidable-predicate 𝓦  X
-  px→ (p , d) = p ∘ inl , d ∘ inl
-  𝓔 : decidable-predicate 𝓦 (X + 𝟘) → X + 𝟘
-  𝓔 = inl ∘ 𝓔x ∘ px→
-  S : ((p , d) : decidable-predicate 𝓦 (X + 𝟘))
-    → (Σ x ꞉ (X + 𝟘) , p x holds) → p (𝓔 (p , d)) holds
-  S (p , d) (inl x , px) = Sx (px→ (p , d)) (x , px)
+  px : decidable-predicate 𝓦 X
+  px = p ∘ inr , d ∘ inr
+  x₀ : X
+  x₀ = pr₁ (Sx px)
+  γx : (Σ x ꞉ X , (pr₁ px x holds)) → pr₁ px x₀ holds
+  γx = pr₂ (Sx px)
+  γ : (Σ x ꞉ 𝟘 + X , (p x holds)) → pr₁ px x₀ holds
+  γ (inr x , pix) = γx (x , pix)
 
--- Lemma 3.1.9
 +-searchable : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-             → searchable 𝓦 X → searchable 𝓦 Y
+             → searchable 𝓦 X
+             → searchable 𝓦 Y
              → searchable 𝓦 (X + Y)
-+-searchable {𝓤} {𝓥} {𝓦} {X} {Y} (𝓔x , Sx) (𝓔y , Sy) = 𝓔 , S
++-searchable {𝓤} {𝓥} {𝓦} {X} {Y} Sx Sy (p , d)
+ = Cases (d (inl x₀))
+     (λ  px₀ → inl x₀ , λ _ → px₀)
+     (λ ¬px₀ → inr y₀ , γ ¬px₀)
  where
-  px→ : decidable-predicate 𝓦 (X + Y) → decidable-predicate 𝓦 X
-  px→ (p , d) = p ∘ inl , d ∘ inl
-  py→ : decidable-predicate 𝓦 (X + Y) → decidable-predicate 𝓦 Y
-  py→ (p , d) = p ∘ inr , d ∘ inr
-  𝓔x→ = 𝓔x ∘ px→ 
-  𝓔y→ = 𝓔y ∘ py→
-  Sx→ = Sx ∘ px→
-  Sy→ = Sy ∘ py→
-  𝓔 : decidable-predicate 𝓦 (X + Y) → X + Y
-  𝓔 (p , d) with d (inl (𝓔x→ (p , d)))
-  ... | inl _ = inl (𝓔x→ (p , d))
-  ... | inr _ = inr (𝓔y→ (p , d))
-  S : ((p , d) : decidable-predicate 𝓦 (X + Y))
-    → (Σ xy ꞉ X + Y , (p xy holds)) → p (𝓔 (p , d)) holds
-  S (p , d) pxy with d (inl (𝓔x→ (p , d))) | pxy
-  ... | inl  px₀ | _ = px₀
-  ... | inr ¬px₀ |(inl x , px)
-   = 𝟘-elim (¬px₀ (Sx→ (p , d) (x , px)))
-  ... | inr ¬px₀ |(inr y , py) = Sy→ (p , d) (y , py)
+  px : decidable-predicate 𝓦 X
+  px = p ∘ inl , d ∘ inl
+  py : decidable-predicate 𝓦 Y
+  py = p ∘ inr , d ∘ inr
+  x₀ : X
+  x₀ = pr₁ (Sx px)
+  γx : Σ x ꞉ X , (pr₁ px x holds) → pr₁ px x₀ holds
+  γx = pr₂ (Sx px)
+  y₀ : Y
+  y₀ = pr₁ (Sy py)
+  γy : Σ y ꞉ Y , (pr₁ py y holds) → pr₁ py y₀ holds
+  γy = pr₂ (Sy py)
+  γ : ¬ (p (inl x₀) holds)
+    → (Σ xy ꞉ (X + Y) , p xy holds)
+    → p (inr y₀) holds
+  γ ¬px₀ (inl x , pix) = 𝟘-elim (¬px₀ (γx (x , pix)))
+  γ ¬px₀ (inr y , piy) = γy (y , piy)
 
--- Lemma 3.1.10
-𝔽-searchable : (n : ℕ) → 𝔽 n → searchable 𝓦 (𝔽 n)
-𝔽-searchable 1 _ = +𝟘-searchable 𝟙-searchable
-𝔽-searchable (succ (succ n)) _
- = +-searchable 𝟙-searchable (𝔽-searchable (succ n) (inl ⋆))
+Fin-searchable : (n : ℕ) → Fin n → searchable 𝓦 (Fin n)
+Fin-searchable 1 _ = 𝟘+-searchable 𝟙-searchable
+Fin-searchable (succ (succ n)) _
+ = +-searchable (Fin-searchable (succ n) 𝟎) 𝟙-searchable
 
--- Lemma 3.3.11
-equivs-preserve-searchability : {X : 𝓤  ̇ } {Y : 𝓥  ̇}
-                              → (f : X → Y) → is-equiv f
-                              → searchable 𝓦 X
-                              → searchable 𝓦 Y
+equivs-preserve-searchability
+ : {X : 𝓤  ̇ } {Y : 𝓥  ̇}
+ → (f : X → Y)
+ → is-equiv f
+ → searchable 𝓦 X
+ → searchable 𝓦 Y
 equivs-preserve-searchability {𝓤} {𝓥} {𝓦} {X} {Y}
- f ((g , η) , _) (𝓔x , Sx) = 𝓔 , S
+ f ((g , η) , _) Sx (p , d) = y₀ , γ
  where
-  px→ : decidable-predicate 𝓦 Y → decidable-predicate 𝓦 X
-  px→ (p , d) = p ∘ f , d ∘ f
-  𝓔x→ = 𝓔x ∘ px→
-  Sx→ = Sx ∘ px→
-  𝓔 : decidable-predicate 𝓦 Y → Y
-  𝓔 (p , d) = f (𝓔x→ (p , d))
-  S : ((p , d) : decidable-predicate 𝓦 Y)
-    → (Σ y ꞉ Y , p y holds) → p (𝓔 (p , d)) holds
-  S (p , d) (y , py)
-   = Sx→ (p , d) (g y , transport (λ - → p - holds) (η y ⁻¹) py)
+  px : decidable-predicate 𝓦 X
+  px = p ∘ f , d ∘ f
+  x₀ : X
+  x₀ = pr₁ (Sx px)
+  γx : Σ x ꞉ X , p (f x) holds → p (f x₀) holds
+  γx = pr₂ (Sx px)
+  y₀ : Y
+  y₀ = f x₀
+  γ : Σ y ꞉ Y , p y holds → p y₀ holds
+  γ (y , py) = γx (g y , transport (λ - → p - holds) (η y ⁻¹) py)
 
-≃-searchable : {X : 𝓤  ̇ } {Y : 𝓥 ̇ }
-             → X ≃ Y → searchable 𝓦 X → searchable 𝓦 Y
+≃-searchable
+ : {X : 𝓤  ̇ } {Y : 𝓥 ̇ } → X ≃ Y → searchable 𝓦 X → searchable 𝓦 Y
 ≃-searchable (f , e) = equivs-preserve-searchability f e
              
--- Lemma 3.1.12
-finite-discrete-searchable : {X : 𝓤 ̇ } → X → finite-discrete X
-                           → searchable 𝓦 X
-finite-discrete-searchable x (0 , _ , (g , _) , _) = 𝟘-elim (g x)
-finite-discrete-searchable x (succ n , e)
- = ≃-searchable e (𝔽-searchable (succ n) (inl ⋆))
+finite-searchable : {X : 𝓤 ̇ }
+                  → finite-linear-order X
+                  → X
+                  → searchable 𝓦 X
+finite-searchable (0 , (g , _)) x = 𝟘-elim (g x)
+finite-searchable (succ n , e) x
+ = ≃-searchable (≃-sym e) (Fin-searchable (succ n) 𝟎) 
 
--- Lemma 3.1.13
--- TODO !!
+×-searchable : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+             → searchable 𝓦 X
+             → searchable 𝓦 Y
+             → searchable 𝓦 (X × Y)
+×-searchable {𝓤} {𝓥} {𝓦} {X} {Y} Sx Sy (p , d)
+ = xy₀ , γ
+ where
+  py→ : X → decidable-predicate 𝓦 Y
+  py→ x = p ∘ (x ,_) , d ∘ (x ,_)
+  y₀ : X → Y
+  y₀ x = pr₁ (Sy (py→ x))
+  γy : (x : X) → Σ y ꞉ Y , p (x , y) holds → p (x , y₀ x) holds
+  γy x = pr₂ (Sy (py→ x))
+  px : decidable-predicate 𝓦 X
+  px = (λ x → p (x , y₀ x)) , (λ x → d (x , y₀ x))
+  x₀ : X
+  x₀ = pr₁ (Sx px)
+  γx : Σ x ꞉ X , p (x , y₀ x) holds → p (x₀ , y₀ x₀) holds
+  γx = pr₂ (Sx px)
+  xy₀ : X × Y
+  xy₀ = x₀ , y₀ x₀
+  γ : Σ (x , y) ꞉ X × Y , p (x , y) holds → p (x₀ , y₀ x₀) holds
+  γ ((x , y) , pxy) = γx (x , (γy x (y , pxy)))
+\end{code}
 
-open import TWA.Thesis.Chapter3.ClosenessSpaces fe
+## Cantor searchability is LPO
 
--- Definition 3.3.4
-decidable-uc-predicate : (𝓦 : Universe) → ClosenessSpace 𝓤
-                       → 𝓤 ⊔ 𝓦 ⁺  ̇
+\begin{code}
+LPO : 𝓤₀  ̇
+LPO = (α : ℕ → 𝟚) → ((n : ℕ) → α n ＝ ₀) + (Σ n ꞉ ℕ , α n ＝ ₁)
+
+no-ones-means-all-zero
+ : (α : ℕ → 𝟚) → ¬ (Σ n ꞉ ℕ , α n ＝ ₁)  → (n : ℕ) → α n ＝ ₀
+no-ones-means-all-zero α f n
+ = Cases (𝟚-possibilities (α n)) id
+     (λ αn＝₁ → 𝟘-elim (f (n , αn＝₁)))
+
+ℕ-searchability-is-taboo : searchable 𝓤₀ ℕ → LPO
+ℕ-searchability-is-taboo S α
+ = Cases (𝟚-possibilities (α n))
+     (λ αn＝₀ → inl (no-ones-means-all-zero α
+                      (λ (i , αi＝₁) → zero-is-not-one
+                                         (αn＝₀ ⁻¹ ∙ γ (i , αi＝₁)))))
+     (λ αn＝₁ → inr (n , αn＝₁))
+ where
+  p : decidable-predicate 𝓤₀ ℕ
+  pr₁ p n = (α n ＝ ₁) , 𝟚-is-set
+  pr₂ p n = 𝟚-is-discrete (α n) ₁
+  n : ℕ
+  n = pr₁ (S p)
+  γ : Σ i ꞉ ℕ , pr₁ p i holds → pr₁ p n holds
+  γ = pr₂ (S p)
+
+decidable-to-𝟚 : {X : 𝓤 ̇ } → is-decidable X
+               → Σ b ꞉ 𝟚 , ((b ＝ ₁ ↔ X) × (b ＝ ₀ ↔ ¬ X))
+decidable-to-𝟚 (inl  x)
+ = ₁ , (((λ _ → x) , (λ _ → refl))
+     , (𝟘-elim ∘ zero-is-not-one ∘ _⁻¹) , (λ ¬x → 𝟘-elim (¬x x)))
+decidable-to-𝟚 (inr ¬x)
+ = ₀ , ((𝟘-elim ∘ zero-is-not-one) , (λ x → 𝟘-elim (¬x x)))
+     , (λ _ → ¬x) , (λ _ → refl)
+     
+LPO-implies-ℕ-searchability : LPO → searchable 𝓦 ℕ
+LPO-implies-ℕ-searchability {𝓦} f (p , d)
+ = Cases (f (λ i → decidable-𝟚 (d i)))
+     (λ α∼₀ → 0 , λ (n , pn) → (𝟘-elim ∘ zero-is-not-one)
+                                 (α∼₀ n ⁻¹ ∙ decidable-𝟚₁ (d n) pn))
+     λ (i , αᵢ=₀) → i , λ _ → 𝟚-decidable₁ (d i) αᵢ=₀
+\end{code}
+
+## Uniformly continuously searchable closeness spaces
+
+\begin{code}
+decidable-uc-predicate-with-mod
+ : (𝓦 : Universe) → ClosenessSpace 𝓤 → ℕ → 𝓤 ⊔ 𝓦 ⁺  ̇
+decidable-uc-predicate-with-mod 𝓦 X δ
+ = Σ (p , d) ꞉ decidable-predicate 𝓦 ⟨ X ⟩
+ , p-ucontinuous-with-mod X p δ
+
+decidable-uc-predicate
+ : (𝓦 : Universe) → ClosenessSpace 𝓤 → 𝓤 ⊔ 𝓦 ⁺  ̇
 decidable-uc-predicate 𝓦 X
  = Σ (p , d) ꞉ decidable-predicate 𝓦 ⟨ X ⟩ , p-ucontinuous X p
 
-get-uc-mod : (X : ClosenessSpace 𝓤)
-           → decidable-uc-predicate 𝓦 X → ℕ
+to-uc-pred : (𝓦 : Universe)
+           → (X : ClosenessSpace 𝓤)
+           → (δ : ℕ)
+           → decidable-uc-predicate-with-mod 𝓦 X δ
+           → decidable-uc-predicate 𝓦 X
+to-uc-pred 𝓦 X δ ((p , d) , ϕ) = (p , d) , δ , ϕ
+
+get-uc-mod : (X : ClosenessSpace 𝓤) → decidable-uc-predicate 𝓦 X → ℕ
 get-uc-mod 𝓦 (_ , δ , _) = δ
 
--- Definition 3.3.5/6
-csearchable : (𝓦 : Universe) → ClosenessSpace 𝓤 → 𝓤 ⊔ (𝓦 ⁺)  ̇
-csearchable 𝓦 X
+csearchable𝓔 : (𝓦 : Universe) → ClosenessSpace 𝓤 → 𝓤 ⊔ (𝓦 ⁺)  ̇
+csearchable𝓔 𝓦 X
  = Σ 𝓔 ꞉ (decidable-uc-predicate 𝓦 X → ⟨ X ⟩)
  , ((((p , d) , ϕ) : decidable-uc-predicate 𝓦 X)
- → (Σ x ꞉ ⟨ X ⟩ , (p x holds)) → p (𝓔 ((p , d) , ϕ)) holds)
+ → (Σ x ꞉ ⟨ X ⟩ , (p x holds))
+ → p (𝓔 ((p , d) , ϕ)) holds)
 
--- Need to decide which to use in the paper TODO
-csearchable' : (𝓦 : Universe) → ClosenessSpace 𝓤 → 𝓤 ⊔ (𝓦 ⁺)  ̇
-csearchable' 𝓦 X
+csearchable : (𝓦 : Universe) → ClosenessSpace 𝓤 → 𝓤 ⊔ (𝓦 ⁺)  ̇
+csearchable 𝓦 X
  = (((p , d) , ϕ) : decidable-uc-predicate 𝓦 X)
  → Σ x₀ ꞉ ⟨ X ⟩ , ((Σ x ꞉ ⟨ X ⟩ , (p x holds)) → p x₀ holds)
 
--- Theorem 3.3.7
--- Should be in paper TODO
-semi-searchable : ClosenessSpace 𝓤 → (𝓥 𝓦 : Universe)
-                → 𝓤 ⊔ (𝓥 ⁺) ⊔ (𝓦 ⁺)  ̇ 
-semi-searchable X 𝓥 𝓦
- = (ϵ : ℕ) → Σ (X' , _) ꞉ (ϵ cover-of X) 𝓥 , searchable 𝓦 X'
+csearchable→csearchable𝓔
+ : (X : ClosenessSpace 𝓤) → csearchable 𝓦 X → csearchable𝓔 𝓦 X
+csearchable→csearchable𝓔 X S = (λ p → pr₁ (S p)) , (λ p → pr₂ (S p))
 
-searchable-covers-csearchable : (X : ClosenessSpace 𝓤)
-                              → semi-searchable X 𝓥 𝓦
-                              → csearchable' 𝓦 X
-searchable-covers-csearchable {𝓤} {𝓥} {𝓦} X S ((p , d) , δ , ϕ)
+csearchable𝓔→csearchable
+ : (X : ClosenessSpace 𝓤) → csearchable𝓔 𝓦 X → csearchable 𝓦 X
+csearchable𝓔→csearchable X (𝓔 , S) p = 𝓔 p , S p
+
+searchable→csearchable : {𝓦 : Universe} (X : ClosenessSpace 𝓤)
+                       →  searchable 𝓦 ⟨ X ⟩
+                       → csearchable 𝓦   X
+searchable→csearchable X S ((p , d) , _) = S (p , d)
+
+csearchable-pointed
+ : (𝓦 : Universe)
+ → (X : ClosenessSpace 𝓤)
+ → csearchable 𝓦 X
+ → ⟨ X ⟩ 
+csearchable-pointed 𝓦 X Sx
+ = pr₁ (Sx (((λ _ → ⊤) , (λ _ → inl ⋆)) , 0 , λ _ _ _ → id))
+
+totally-bounded-csearchable : (X : ClosenessSpace 𝓤)
+                            → ⟨ X ⟩
+                            → (t : totally-bounded X 𝓤')
+                            → csearchable 𝓦 X
+totally-bounded-csearchable {𝓤} {𝓤'} {𝓦} X x t ((p , d) , δ , ϕ)
  = x₀ , γ
  where
-  X' : 𝓥 ̇
-  g  : X' → ⟨ X ⟩
-  η  : (x : ⟨ X ⟩) → Σ x' ꞉ X' , C X δ x (g x')
-  𝓔' : decidable-predicate 𝓦 X' → X'
-  S' : ((p' , d') : decidable-predicate 𝓦 X')
-     → (Σ x' ꞉ X' , p' x' holds) → p' (𝓔' (p' , d')) holds
+  X' : 𝓤'  ̇
+  X' = pr₁ (t δ)
+  g  :   X'  → ⟨ X ⟩
+  g  = pr₁ (pr₁ (pr₂ (t δ)))
+  h  : ⟨ X ⟩ →   X'
+  h  = pr₁ (pr₂ (pr₁ (pr₂ (t δ))))
+  η  : (x : ⟨ X ⟩) → C X δ x (g (h x))
+  η  = pr₂ (pr₂ (pr₁ (pr₂ (t δ))))
+  f  : finite-linear-order X'
+  f  = pr₂ (pr₂ (t δ))
   p' : decidable-predicate 𝓦 X'
   p' = p ∘ g , d ∘ g
+  Sx : searchable 𝓦 X'
+  Sx = finite-searchable f (h x)
+  x'₀ : X'
+  x'₀ = pr₁ (Sx p')
+  γ' : (Σ x' ꞉ X' , p (g x') holds) → p (g x'₀) holds
+  γ' = pr₂ (Sx p')
   x₀  : ⟨ X ⟩
-  x₀  = g (𝓔' p')
+  x₀  = g x'₀
   γ : (Σ x ꞉ ⟨ X ⟩ , p x holds) → p x₀ holds
-  γ (x , px) = S' p' (x' , (ϕ x (g x') η' px))
-   where
-     x' : X'
-     x' = pr₁ (η x)
-     η' : C X δ x (g x')
-     η' = pr₂ (η x)
-  X' = pr₁ (pr₁ (S δ))
-  g  = pr₁ (pr₂ (pr₁ (S δ)))
-  η  = pr₂ (pr₂ (pr₁ (S δ)))
-  𝓔' = pr₁ (pr₂ (S δ))
-  S' = pr₂ (pr₂ (S δ))
-  
--- Corollary 3.3.8
--- Add inhabited assumption
-totally-bounded-csearchable : (X : ClosenessSpace 𝓤)
-                            → (t : totally-bounded X 𝓥)
-                            → ((ϵ : ℕ) → pr₁ (pr₁ (t ϵ)))
-                            → csearchable' 𝓦 X
-totally-bounded-csearchable X t i
- = searchable-covers-csearchable X
-     (λ ϵ → (pr₁ (t ϵ)) , finite-discrete-searchable (i ϵ) (pr₂ (t ϵ)))
-
--- Theorem 3.3.9 [ TODO link to blog post ]
--- in Tychonoff
+  γ (x , px) = γ' (h x , (ϕ x (g (h x)) (η x) px))
+\end{code}

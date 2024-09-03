@@ -26,7 +26,7 @@ open PropositionalTruncation pt
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
-open import Posets.Poset fe
+open import OrderedTypes.Poset fe
 open import DomainTheory.Basics.Dcpo pt fe 𝓥
 open import DomainTheory.Basics.Exponential pt fe 𝓥
 open import DomainTheory.Basics.Miscelanea pt fe 𝓥
@@ -237,7 +237,7 @@ module IfZeroDenotationalSemantics
         (pe : propext 𝓥)
        where
 
- open import Lifting.Lifting 𝓥
+ open import Lifting.Construction 𝓥
  open import Lifting.Miscelanea 𝓥
  open import Lifting.Miscelanea-PropExt-FunExt 𝓥 pe fe
  open import Lifting.Monad 𝓥

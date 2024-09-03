@@ -28,12 +28,13 @@ constructively, well, taboos!
 module Taboos.WLPO where
 
 open import MLTT.Spartan
-open import CoNaturals.GenericConvergentSequence
+open import CoNaturals.Type
+open import UF.DiscreteAndSeparated
+open import UF.FunExt
+open import NotionsOfDecidability.Decidable
 
 WLPO : 𝓤₀ ̇
 WLPO = (u : ℕ∞) → (u ＝ ∞) + (u ≠ ∞)
-
-open import UF.DiscreteAndSeparated
 
 \end{code}
 
@@ -54,15 +55,14 @@ c : ℕ∞ → ℕ∞ → ℕ∞ such that c u v ＝ ∞ ↔ u ＝ v.
 
 \begin{code}
 
-open import UF.FunExt
-
 WLPO-gives-ℕ∞-discrete : FunExt → WLPO → is-discrete ℕ∞
 WLPO-gives-ℕ∞-discrete fe wlpo u v =
  Cases (wlpo (ℕ∞-closeness u v))
   (λ (p : ℕ∞-closeness u v ＝ ∞)
         → inl (ℕ∞-infinitely-close-are-equal u v p))
   (λ (n : ℕ∞-closeness u v ≠ ∞)
-        → inr (contrapositive (λ (q : u ＝ v) → ℕ∞-equal-are-infinitely-close u v q) n))
+        → inr (contrapositive (λ (q : u ＝ v)
+                                    → ℕ∞-equal-are-infinitely-close u v q) n))
  where
   open import TWA.Closeness fe
 
@@ -76,12 +76,78 @@ Notice that weak excluded middle implies WLPO.
 
 \begin{code}
 
-open import UF.ExcludedMiddle
+open import UF.ClassicalLogic
 
-WEM-gives-WLPO : FunExt → WEM 𝓤₀ → WLPO
-WEM-gives-WLPO fe wem u = Cases (wem (u ＝ ∞) (ℕ∞-is-set (fe 𝓤₀ 𝓤₀)))
+WEM-gives-WLPO : funext₀ → WEM 𝓤₀ → WLPO
+WEM-gives-WLPO fe wem u = Cases (wem (u ＝ ∞))
                            (λ (p : (u ≠ ∞))
                                  → inr p)
                            (λ (ν : ¬ (u ≠ ∞))
-                                 → inl (ℕ∞-is-¬¬-separated (fe 𝓤₀ 𝓤₀) u ∞ ν))
+                                 → inl (ℕ∞-is-¬¬-separated fe u ∞ ν))
+\end{code}
+
+Added 15th November 2023.
+
+\begin{code}
+
+open import UF.Base
+
+WLPO-traditional : 𝓤₀ ̇
+WLPO-traditional = (α : ℕ → 𝟚) → is-decidable ((n : ℕ) → α n ＝ ₁)
+
+open import MLTT.Two-Properties
+
+WLPO-gives-WLPO-traditional : Fun-Ext → WLPO → WLPO-traditional
+WLPO-gives-WLPO-traditional fe wlpo α = IV
+ where
+  I : (ℕ→𝟚-to-ℕ∞ α ＝ ∞) + (ℕ→𝟚-to-ℕ∞ α ≠ ∞)
+  I = wlpo (ℕ→𝟚-to-ℕ∞ α)
+
+  II :  ℕ→𝟚-to-ℕ∞ α ＝ ∞ → (n : ℕ) → α n ＝ ₁
+  II p n = II₂
+   where
+    II₀ : ℕ∞-to-ℕ→𝟚 (ℕ→𝟚-to-ℕ∞ α) ＝ ℕ∞-to-ℕ→𝟚 ∞
+    II₀ = ap ℕ∞-to-ℕ→𝟚 p
+
+    II₁ : force-decreasing α n ＝ ₁
+    II₁ = ap (λ - → - n) II₀
+
+    II₂ : α n ＝ ₁
+    II₂ = ≤₂-criterion-converse (force-decreasing-is-smaller α n) II₁
+
+  III : ((n : ℕ) → α n ＝ ₁) → ℕ→𝟚-to-ℕ∞ α ＝ ∞
+  III ϕ = ℕ∞-to-ℕ→𝟚-lc fe (dfunext fe III₁)
+   where
+    III₀ : (n : ℕ) → force-decreasing α n ＝ α n
+    III₀ = force-decreasing-unchanged α
+            (λ i → transport₂ _≤₂_
+                    ((ϕ (succ i))⁻¹)
+                    ((ϕ i)⁻¹)
+                    (≤₂-refl {₁}))
+
+    III₁ : ℕ∞-to-ℕ→𝟚 (ℕ→𝟚-to-ℕ∞ α) ∼ ℕ∞-to-ℕ→𝟚 ∞
+    III₁ n = ℕ∞-to-ℕ→𝟚 (ℕ→𝟚-to-ℕ∞ α) n ＝⟨ refl ⟩
+             force-decreasing α n      ＝⟨ III₀ n ⟩
+             α n                       ＝⟨ ϕ n ⟩
+             ₁                         ＝⟨ refl ⟩
+             ℕ∞-to-ℕ→𝟚 ∞ n             ∎
+
+  IV : is-decidable ((n : ℕ) → α n ＝ ₁)
+  IV = map-decidable II III I
+
+WLPO-traditional-gives-WLPO : funext₀ → WLPO-traditional → WLPO
+WLPO-traditional-gives-WLPO fe wlpot u = IV
+ where
+  I : is-decidable ((n : ℕ) → ℕ∞-to-ℕ→𝟚 u n ＝ ₁)
+  I = wlpot (ℕ∞-to-ℕ→𝟚 u)
+
+  II : ((n : ℕ) → ℕ∞-to-ℕ→𝟚 u n ＝ ₁) → u ＝ ∞
+  II ϕ = ℕ∞-to-ℕ→𝟚-lc fe (dfunext fe ϕ)
+
+  III :  u ＝ ∞ → (n : ℕ) → ℕ∞-to-ℕ→𝟚 u n ＝ ₁
+  III e n = ap (λ - → ℕ∞-to-ℕ→𝟚 - n) e
+
+  IV : (u ＝ ∞) + (u ≠ ∞)
+  IV = map-decidable II III I
+
 \end{code}

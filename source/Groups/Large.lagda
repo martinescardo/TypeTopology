@@ -34,17 +34,8 @@ module Groups.Large
 
 open import Groups.Free
 open import Groups.Type
-open import MLTT.List
-open import Quotient.Large pt fe pe
-open import Quotient.Type
-open import Relations.SRTclosure
-open import UF.Base
-open import UF.Embeddings
-open import UF.Equiv hiding (_≅_)
-open import UF.EquivalenceExamples
 open import UF.Sets
 open import UF.Size
-open import UF.SmallnessProperties
 
 \end{code}
 
@@ -96,14 +87,13 @@ Remarks.
     (i)   The function type 𝓤 → 𝟚.
     (ii)  The function type 𝓤 → Ω 𝓤.
     (iii) The set truncation of 𝓤.
-    (iv)  The type of iterative sets following Leversha, Aczel and Gylterud.
 
    The candidate (i) doesn't work in the absence of classical logic,
    because there is a non-constant function 𝓤 → 𝟚 if and only if de
    Morgan Law holds (which is equivalent to excluded middle for
    negative propositions). https://doi.org/10.1016/j.apal.2016.04.010
 
-   The candidates (ii-iv) may work, but so far we haven't succeeded.
+   The candidates (ii-iii) may work, but so far we haven't succeeded.
 
  * Another question is whether there is a large, discrete set, as this
    would considerably simplify the construction of the free group. One

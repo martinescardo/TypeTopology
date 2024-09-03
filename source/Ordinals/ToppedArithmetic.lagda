@@ -28,7 +28,7 @@ module Ordinals.ToppedArithmetic
 open import UF.Subsingletons
 
 open import MLTT.Spartan
-open import CoNaturals.GenericConvergentSequence
+open import CoNaturals.Type
 open import TypeTopology.SquashedSum fe
 open import Notation.CanonicalMap
 

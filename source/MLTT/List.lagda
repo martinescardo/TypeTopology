@@ -13,6 +13,8 @@ module MLTT.List where
 open import MLTT.Spartan
 open import MLTT.Bool
 open import Naturals.Properties
+open import Naturals.Order hiding (minus)
+open import Notation.Order
 
 data List {𝓤} (X : 𝓤 ̇ ) : 𝓤 ̇  where
  [] : List X
@@ -25,6 +27,14 @@ infixr 3 _∷_
 length : {X : 𝓤 ̇ } → List X → ℕ
 length []       = 0
 length (x ∷ xs) = succ (length xs)
+
+course-of-values-induction-on-length
+ : {X : 𝓤 ̇}
+ → (P : List X → 𝓥 ̇ )
+ → ((xs : List X) → ((ys : List X) → length ys < length xs → P ys) → P xs)
+ → (xs : List X) → P xs
+course-of-values-induction-on-length {𝓤} {𝓥} {X} =
+ course-of-values-induction-on-value-of-function length
 
 Vector' : 𝓤 ̇ → ℕ → 𝓤 ̇
 Vector' X n = (Σ xs ꞉ List X , length xs ＝ n)
@@ -40,7 +50,12 @@ equal-heads refl = refl
 equal-tails : {X : 𝓤 ̇ } {x y : X} {s t : List X}
             → x ∷ s ＝ y ∷ t
             → s ＝ t
-equal-tails {𝓤} {X} refl = refl
+equal-tails refl = refl
+
+equal-head-tail : {X : 𝓤 ̇ } {x : X} {s t : List X}
+                → x ∷ s ＝ t
+                → Σ y ꞉ X , Σ t' ꞉ List X , (t ＝ y ∷ t')
+equal-head-tail {𝓤} {X} {x} {s} {t} refl = x , s , refl
 
 [_] : {X : 𝓤 ̇ } → X → List X
 [ x ] = x ∷ []
@@ -54,7 +69,7 @@ _++_ : {X : 𝓤 ̇ } → List X → List X → List X
 []      ++ t = t
 (x ∷ s) ++ t = x ∷ (s ++ t)
 
-infixr 4 _++_
+infixr 2 _++_
 
 []-right-neutral : {X : 𝓤 ̇ } (s : List X) → s ＝ s ++ []
 []-right-neutral []      = refl
@@ -74,7 +89,22 @@ map f (x ∷ xs) = f x ∷ map f xs
 
 _<$>_ = map
 
-empty : {𝓤 : Universe} {X : 𝓤 ̇ } → List X → Bool
+is-non-empty : {X : 𝓤 ̇ } → List X → 𝓤 ̇
+is-non-empty []       = 𝟘
+is-non-empty (x ∷ xs) = 𝟙
+
+[]-is-empty : {X : 𝓤 ̇ } → ¬ is-non-empty ([] {𝓤} {X})
+[]-is-empty = 𝟘-elim
+
+-- cons-is-non-empty : {X : 𝓤 ̇ } {x : X} {xs : List X} → is-non-empty (x ∷ xs)
+pattern cons-is-non-empty = ⋆
+
+is-non-empty-++ : {X : 𝓤 ̇ } (xs ys : List X)
+                → is-non-empty xs
+                → is-non-empty (xs ++ ys)
+is-non-empty-++ (x ∷ xs) ys ⋆ = ⋆
+
+empty : {X : 𝓤 ̇ } → List X → Bool
 empty []       = true
 empty (x ∷ xs) = false
 
@@ -82,38 +112,43 @@ data member {X : 𝓤 ̇ } : X → List X → 𝓤 ̇  where
  in-head : {x : X}   {xs : List X} → member x (x ∷ xs)
  in-tail : {x y : X} {xs : List X} → member x xs → member x (y ∷ xs)
 
-member-map : {X Y : Type} (f : X → Y) (x : X) (xs : List X)
+member-map : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (x : X) (xs : List X)
            → member x xs
            → member (f x) (map f xs)
 member-map f x' (_ ∷ _)  in-head     = in-head
 member-map f x' (_ ∷ xs) (in-tail m) = in-tail (member-map f x' xs m)
 
-member' : {X : Type} → X → List X → Type
+member' : {X : 𝓤 ̇ } → X → List X → 𝓤 ̇
 member' y []       = 𝟘
-member' y (x ∷ xs) = (x ＝ y) + member y xs
+member' y (x ∷ xs) = (x ＝ y) + member' y xs
 
-member'-map : {X Y : Type} (f : X → Y) (x : X) (xs : List X)
+\end{code}
+
+
+\begin{code}
+
+member'-map : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (x : X) (xs : List X)
             → member' x xs
             → member' (f x) (map f xs)
 member'-map f x' (x ∷ xs) (inl p) = inl (ap f p)
-member'-map f x' (x ∷ xs) (inr m) = inr (member-map f x' xs m)
+member'-map f x' (x ∷ xs) (inr m) = inr (member'-map f x' xs m)
 
-listed : Type → Type
+listed : 𝓤 ̇  → 𝓤 ̇
 listed X = Σ xs ꞉ List X , ((x : X) → member x xs)
 
-listed⁺ : Type → Type
+listed⁺ : 𝓤 ̇  → 𝓤 ̇
 listed⁺ X = X × listed X
 
-type-from-list : {X : Type} → List X → Type
-type-from-list {X} xs = Σ x ꞉ X , member x xs
+type-from-list : {X : 𝓤  ̇} → List X → 𝓤  ̇
+type-from-list {X = X} xs = Σ x ꞉ X , member x xs
 
-type-from-list-is-listed : {X : Type} (xs : List X)
+type-from-list-is-listed : {X : 𝓤 ̇ } (xs : List X)
                          → listed (type-from-list xs)
-type-from-list-is-listed {X} [] = [] , g
+type-from-list-is-listed {𝓤} {X} [] = [] , g
  where
   g : (σ : type-from-list []) → member σ []
   g (x , ())
-type-from-list-is-listed {X} (x ∷ xs) = g
+type-from-list-is-listed {𝓤} {X} (x ∷ xs) = g
  where
   h : (x : X) → type-from-list (x ∷ xs)
   h x = x , in-head
@@ -293,5 +328,101 @@ Remove first occurrence:
          → member x xs
          → Vector' X n
  delete' {n} x (xs , p) m = remove x xs , remove-length x xs m n p
+
+\end{code}
+
+Added by Ayberk Tosun on 2023-10-16.
+
+\begin{code}
+
+right-concatenation-preserves-membership : {X : 𝓤 ̇ } (x : X) (xs ys : List X)
+                                         → member x xs → member x (xs ++ ys)
+right-concatenation-preserves-membership x xs@(x′ ∷ _)   ys in-head = in-head
+right-concatenation-preserves-membership x xs@(x′ ∷ xs′) ys (in-tail p) =
+ in-tail (right-concatenation-preserves-membership x xs′ ys p)
+
+left-concatenation-preserves-membership : {X : 𝓤 ̇ } (x : X) (xs ys : List X)
+                                      → member x xs → member x (ys ++ xs)
+left-concatenation-preserves-membership x xs []       p = p
+left-concatenation-preserves-membership x xs (y ∷ ys) p = †
+ where
+  † : member x (y ∷ (ys ++ xs))
+  † = in-tail (left-concatenation-preserves-membership x xs ys p)
+
+++-membership₁ : {X : 𝓤 ̇ } (x : X) (xs ys : List X)
+               → member x (xs ++ ys) → member x xs + member x ys
+++-membership₁ x []       zs p           = inr p
+++-membership₁ x (x ∷ ys) zs in-head     = inl in-head
+++-membership₁ x (y ∷ ys) zs (in-tail p) = cases † ‡ (++-membership₁ x ys zs p)
+ where
+  † : member x ys → member x (y ∷ ys) + member x zs
+  † p = inl (in-tail p)
+
+  ‡ : member x zs → member x (y ∷ ys) + member x zs
+  ‡ = inr
+
+\end{code}
+
+Added 2nd April 2024 by Martin Escardo and Paulo Oliva. Ingredients
+for the list monad.
+
+\begin{code}
+
+map-++ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+         (f : X → Y)
+         (xs ys : List X)
+       → map f (xs ++ ys) ＝ map f xs ++ map f ys
+map-++ f [] ys       = refl
+map-++ f (x ∷ xs) ys = ap (f x ∷_) (map-++ f xs ys)
+
+concat : {X : 𝓤 ̇ } → List (List X) → List X
+concat []         = []
+concat (xs ∷ xss) = xs ++ concat xss
+
+concat-singletons : {X : 𝓤 ̇ }
+                    (xs : List X) → concat (map [_] xs) ＝ xs
+concat-singletons []       = refl
+concat-singletons (x ∷ xs) = ap (x ∷_) (concat-singletons xs)
+
+concat-++ : {X : 𝓤 ̇ }
+            (xss yss : List (List X))
+          → concat (xss ++ yss) ＝ concat xss ++ concat yss
+concat-++ [] yss = refl
+concat-++ (xs ∷ xss) yss =
+ concat (xs ∷ xss ++ yss)         ＝⟨ refl ⟩
+ xs ++ concat (xss ++ yss)        ＝⟨ I ⟩
+ xs ++ (concat xss ++ concat yss) ＝⟨ II ⟩
+ (xs ++ concat xss) ++ concat yss ＝⟨ refl ⟩
+ concat (xs ∷ xss) ++ concat yss  ∎
+  where
+   I  = ap (xs ++_) (concat-++ xss yss)
+   II = (++-assoc xs (concat xss) (concat yss))⁻¹
+
+\end{code}
+
+The following are the Kleisli extension operation for the list monad and its associativity law.
+
+\begin{code}
+
+ext : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+    → (X → List Y) → (List X → List Y)
+ext f xs = concat (map f xs)
+
+ext-assoc : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+            (g : Y → List Z) (f : X → List Y)
+            (xs : List X)
+          → ext (λ x → ext g (f x)) xs ＝ ext g (ext f xs)
+ext-assoc g f []       = refl
+ext-assoc g f (x ∷ xs) =
+ ext (λ - → ext g (f -)) (x ∷ xs)          ＝⟨ refl ⟩
+ ext g (f x) ++ ext (λ - → ext g (f -)) xs ＝⟨ I ⟩
+ ext g (f x) ++ ext g (ext f xs)           ＝⟨ II ⟩
+ concat (map g (f x) ++ map g (ext f xs))  ＝⟨ III ⟩
+ ext g (f x ++ ext f xs)                   ＝⟨ refl ⟩
+ ext g (ext f (x ∷ xs))                    ∎
+  where
+   I   = ap (ext g (f x) ++_) (ext-assoc g f xs)
+   II  = (concat-++ (map g (f x)) (map g (ext f xs)))⁻¹
+   III = (ap concat (map-++ g (f x) (ext f xs)))⁻¹
 
 \end{code}

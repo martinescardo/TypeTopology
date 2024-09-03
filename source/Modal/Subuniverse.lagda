@@ -1,4 +1,5 @@
 Jon Sterling, started 27th Sep 2022
+Andrew Swan, 7th Februrary 2024, definition of Σ-closed subuniverse added
 
 \begin{code}
 
@@ -83,3 +84,14 @@ univalence-implies-subuniverse-is-replete ua P A B e =
  transport⁻¹
   (subuniverse-contains P)
   (eqtoid ua A B e)
+
+subuniverse-is-sigma-closed
+ : (P : subuniverse 𝓤 𝓥)
+ → 𝓤 ⁺ ⊔ 𝓥  ̇
+subuniverse-is-sigma-closed P =
+ (A : _) →
+ (B : A → _) →
+ pr₁ P A →
+ ((a : A) → pr₁ P (B a)) →
+ pr₁ P (Σ B)
+\end{code}

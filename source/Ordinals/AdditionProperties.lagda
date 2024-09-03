@@ -1,5 +1,7 @@
 Martin Escardo, 18 January 2021.
 
+Small additions by Tom de Jong in May 2024.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K --lossy-unification #-}
@@ -14,7 +16,7 @@ open import UF.Base
 open import UF.Embeddings hiding (⌊_⌋)
 open import UF.Equiv
 open import UF.EquivalenceExamples
-open import UF.ExcludedMiddle
+open import UF.ClassicalLogic
 open import UF.FunExt
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
@@ -181,45 +183,6 @@ open import Ordinals.Underlying
   h : γ ＝ δ
   h = eqtoidₒ (ua 𝓤) fe' γ δ
        (f , f-is-order-preserving , f-is-equiv , g-is-order-preserving)
-
-\end{code}
-
-Added 7 November 2022 by Tom de Jong.
-
-A rather special case of the above is that adding 𝟙 and then taking the initial
-segment capped at inr ⋆ is the same thing as the original ordinal.
-
-It is indeed a special case of the above because (𝟙 ↓ ⋆) ＝ 𝟘ₒ and 𝟘ₒ is right
-neutral, but we give a direct proof instead.
-
-\begin{code}
-
-+ₒ-𝟙ₒ-↓-right : (α : Ordinal 𝓤) → (α +ₒ 𝟙ₒ) ↓ inr ⋆ ＝ α
-+ₒ-𝟙ₒ-↓-right α = eqtoidₒ (ua _) fe' ((α +ₒ 𝟙ₒ) ↓ inr ⋆) α h
- where
-  f : ⟨ (α +ₒ 𝟙ₒ) ↓ inr ⋆ ⟩ → ⟨ α ⟩
-  f (inl x , l) = x
-
-  g : ⟨ α ⟩ → ⟨ (α +ₒ 𝟙ₒ) ↓ inr ⋆ ⟩
-  g x = (inl x , ⋆)
-
-  f-order-preserving : is-order-preserving ((α +ₒ 𝟙ₒ) ↓ inr ⋆) α f
-  f-order-preserving (inl x , _) (inl y , _) l = l
-
-  f-is-equiv : is-equiv f
-  f-is-equiv = qinvs-are-equivs f (g , η , ε)
-   where
-    η : g ∘ f ∼ id
-    η (inl _ , _) = refl
-
-    ε : f ∘ g ∼ id
-    ε _ = refl
-
-  g-order-preserving : is-order-preserving α ((α +ₒ 𝟙ₒ) ↓ inr ⋆) g
-  g-order-preserving x y l = l
-
-  h : ((α +ₒ 𝟙ₒ) ↓ inr ⋆) ≃ₒ α
-  h = f , f-order-preserving , f-is-equiv , g-order-preserving
 
 +ₒ-⊲-left : {α β : Ordinal 𝓤} (a : ⟨ α ⟩)
           → (α ↓ a) ⊲ (α +ₒ β)
@@ -432,6 +395,74 @@ partial ordering:
 
 \end{code}
 
+Added 4th April 2022.
+
+\begin{code}
+
+𝟘ₒ-least-⊴ : (α : Ordinal 𝓤) → 𝟘ₒ {𝓤} ⊴ α
+𝟘ₒ-least-⊴ α = unique-from-𝟘 , (λ x y l → 𝟘-elim x) , (λ x y l → 𝟘-elim x)
+
+𝟘ₒ-least : (α : Ordinal 𝓤) → 𝟘ₒ {𝓤} ≼ α
+𝟘ₒ-least α = ⊴-gives-≼ 𝟘ₒ α (𝟘ₒ-least-⊴ α)
+
+\end{code}
+
+Originally added 21st April 2022 by Martín Escardó.
+Moved up here on 27th May 2024 by Tom de Jong.
+
+\begin{code}
+
+successor-lemma-left : (α : Ordinal 𝓤) (x : ⟨ α ⟩) → ((α +ₒ 𝟙ₒ) ↓ inl x) ⊴ α
+successor-lemma-left α x = III
+   where
+    I : (α ↓ x) ⊴ α
+    I = segment-⊴ α x
+
+    II : (α ↓ x) ＝ ((α +ₒ 𝟙ₒ) ↓ inl x)
+    II = +ₒ-↓-left x
+
+    III : ((α +ₒ 𝟙ₒ) ↓ inl x) ⊴ α
+    III = transport (_⊴ α) II I
+
+successor-lemma-right : (α : Ordinal 𝓤) → (α +ₒ 𝟙ₒ) ↓ inr ⋆ ＝ α
+successor-lemma-right α  = III
+ where
+  I : (𝟙ₒ ↓ ⋆) ⊴ 𝟘ₒ
+  I = (λ x → 𝟘-elim (pr₂ x)) , (λ x → 𝟘-elim (pr₂ x)) , (λ x → 𝟘-elim (pr₂ x))
+
+  II : (𝟙ₒ ↓ ⋆) ＝ 𝟘ₒ
+  II = ⊴-antisym _ _ I (𝟘ₒ-least-⊴ (𝟙ₒ ↓ ⋆))
+
+  III : (α +ₒ 𝟙ₒ) ↓ inr ⋆ ＝ α
+  III = (α +ₒ 𝟙ₒ) ↓ inr ⋆ ＝⟨ (+ₒ-↓-right ⋆)⁻¹ ⟩
+        α +ₒ (𝟙ₒ ↓ ⋆)     ＝⟨ ap (α +ₒ_) II ⟩
+        α +ₒ 𝟘ₒ           ＝⟨ 𝟘ₒ-right-neutral α ⟩
+        α                 ∎
+
+successor-increasing : (α : Ordinal 𝓤) → α ⊲ (α +ₒ 𝟙ₒ)
+successor-increasing α = inr ⋆ , ((successor-lemma-right α)⁻¹)
+
+\end{code}
+
+Added on 24th May 2024 by Tom de Jong.
+
+\begin{code}
+
+upper-bound-of-successors-of-initial-segments :
+ (α : Ordinal 𝓤) (a : ⟨ α ⟩) → ((α ↓ a) +ₒ 𝟙ₒ) ⊴ α
+upper-bound-of-successors-of-initial-segments α a = to-⊴ ((α ↓ a) +ₒ 𝟙ₒ) α I
+ where
+  I : (x : ⟨ (α ↓ a) +ₒ 𝟙ₒ ⟩) → (((α ↓ a) +ₒ 𝟙ₒ) ↓ x) ⊲ α
+  I (inl (b , l)) = b , (((α ↓ a) +ₒ 𝟙ₒ) ↓ inl (b , l) ＝⟨ e₁ ⟩
+                         (α ↓ a) ↓ (b , l)             ＝⟨ e₂ ⟩
+                         α ↓ b                         ∎)
+   where
+    e₁ = (+ₒ-↓-left (b , l)) ⁻¹
+    e₂ = iterated-↓ α a b l
+  I (inr ⋆) = a , successor-lemma-right (α ↓ a)
+
+\end{code}
+
 Classically, if α ≼ β then there is (a necessarily unique) γ with
 α +ₒ γ ＝ β. But this not necessarily the case constructively. For
 that purpose, we first characterize the order of subsingleton
@@ -600,7 +631,7 @@ module _ {𝓤 : Universe} where
  open import UF.DiscreteAndSeparated
 
  ⊴-add-taboo : Ωₒ ⊴ (𝟙ₒ +ₒ Ωₒ) → WEM 𝓤
- ⊴-add-taboo (f , s) = V
+ ⊴-add-taboo (f , s) = VI
   where
    I : is-least (𝟙ₒ +ₒ Ωₒ) (inl ⋆)
    I (inl ⋆) u       l = l
@@ -625,17 +656,9 @@ module _ {𝓤 : Universe} where
                           (λ (u : ¬ P)
                                 → to-subtype-＝ (λ _ → being-prop-is-prop fe')
                                    (empty-types-are-＝-𝟘 fe' (pe 𝓤) u)⁻¹) ν))
-\end{code}
 
-Added 4th April 2022.
-
-\begin{code}
-
-𝟘ₒ-least-⊴ : (α : Ordinal 𝓤) → 𝟘ₒ {𝓤} ⊴ α
-𝟘ₒ-least-⊴ α = unique-from-𝟘 , (λ x y l → 𝟘-elim x) , (λ x y l → 𝟘-elim x)
-
-𝟘ₒ-least : (α : Ordinal 𝓤) → 𝟘ₒ {𝓤} ≼ α
-𝟘ₒ-least α = ⊴-gives-≼ 𝟘ₒ α (𝟘ₒ-least-⊴ α)
+   VI : ∀ P → ¬ P + ¬¬ P
+   VI = WEM'-gives-WEM fe' V
 
 \end{code}
 
@@ -714,51 +737,55 @@ succ-not-necessarily-monotone : ((α β : Ordinal 𝓤)
                                       → α ⊴ β
                                       → (α +ₒ 𝟙ₒ) ⊴ (β +ₒ 𝟙ₒ))
                               → WEM 𝓤
-succ-not-necessarily-monotone {𝓤} ϕ P isp = II I
+succ-not-necessarily-monotone {𝓤} ϕ = XII
  where
-  α : Ordinal 𝓤
-  α = prop-ordinal P isp
+  module _ (P : 𝓤 ̇) (isp : is-prop P) where
+   α : Ordinal 𝓤
+   α = prop-ordinal P isp
 
-  I :  (α +ₒ 𝟙ₒ) ⊴ 𝟚ₒ
-  I = ϕ α 𝟙ₒ l
-   where
-    l : α ⊴ 𝟙ₒ
-    l = unique-to-𝟙 ,
-        (λ x y (l : y ≺⟨ 𝟙ₒ ⟩ ⋆) → 𝟘-elim l) ,
-        (λ x y l → l)
+   I :  (α +ₒ 𝟙ₒ) ⊴ 𝟚ₒ
+   I = ϕ α 𝟙ₒ l
+    where
+     l : α ⊴ 𝟙ₒ
+     l = unique-to-𝟙 ,
+         (λ x y (l : y ≺⟨ 𝟙ₒ ⟩ ⋆) → 𝟘-elim l) ,
+         (λ x y l → l)
 
-  II : type-of I → ¬ P + ¬¬ P
-  II (f , f-is-initial , f-is-order-preserving) = III (f (inr ⋆)) refl
-   where
-    III : (y : ⟨ 𝟚ₒ ⟩) → f (inr ⋆) ＝ y → ¬ P + ¬¬ P
-    III (inl ⋆) e = inl VII
-     where
-      IV : (p : P) → f (inl p) ≺⟨ 𝟚ₒ ⟩ f (inr ⋆)
-      IV p = f-is-order-preserving (inl p) (inr ⋆) ⋆
+   II : type-of I → ¬ P + ¬¬ P
+   II (f , f-is-initial , f-is-order-preserving) = III (f (inr ⋆)) refl
+    where
+     III : (y : ⟨ 𝟚ₒ ⟩) → f (inr ⋆) ＝ y → ¬ P + ¬¬ P
+     III (inl ⋆) e = inl VII
+      where
+       IV : (p : P) → f (inl p) ≺⟨ 𝟚ₒ ⟩ f (inr ⋆)
+       IV p = f-is-order-preserving (inl p) (inr ⋆) ⋆
 
-      V : (p : P) → f (inl p) ≺⟨ 𝟚ₒ ⟩ inl ⋆
-      V p = transport (λ - → f (inl p) ≺⟨ 𝟚ₒ ⟩ -) e (IV p)
+       V : (p : P) → f (inl p) ≺⟨ 𝟚ₒ ⟩ inl ⋆
+       V p = transport (λ - → f (inl p) ≺⟨ 𝟚ₒ ⟩ -) e (IV p)
 
-      VI : (z : ⟨ 𝟚ₒ ⟩) → ¬ (z ≺⟨ 𝟚ₒ ⟩ inl ⋆)
-      VI (inl ⋆) l = 𝟘-elim l
-      VI (inr ⋆) l = 𝟘-elim l
+       VI : (z : ⟨ 𝟚ₒ ⟩) → ¬ (z ≺⟨ 𝟚ₒ ⟩ inl ⋆)
+       VI (inl ⋆) l = 𝟘-elim l
+       VI (inr ⋆) l = 𝟘-elim l
 
-      VII : ¬ P
-      VII p = VI (f (inl p)) (V p)
-    III (inr ⋆) e = inr IX
-     where
-      VIII : Σ x' ꞉ ⟨ α +ₒ 𝟙ₒ ⟩ , (x' ≺⟨ α +ₒ 𝟙ₒ ⟩ inr ⋆) × (f x' ＝ inl ⋆)
-      VIII = f-is-initial (inr ⋆) (inl ⋆) (transport⁻¹ (λ - → inl ⋆ ≺⟨ 𝟚ₒ ⟩ -) e ⋆)
+       VII : ¬ P
+       VII p = VI (f (inl p)) (V p)
+     III (inr ⋆) e = inr IX
+      where
+       VIII : Σ x' ꞉ ⟨ α +ₒ 𝟙ₒ ⟩ , (x' ≺⟨ α +ₒ 𝟙ₒ ⟩ inr ⋆) × (f x' ＝ inl ⋆)
+       VIII = f-is-initial (inr ⋆) (inl ⋆) (transport⁻¹ (λ - → inl ⋆ ≺⟨ 𝟚ₒ ⟩ -) e ⋆)
 
-      IX : ¬¬ P
-      IX u = XI
-       where
-        X : ∀ x' → ¬ (x' ≺⟨ α +ₒ 𝟙ₒ ⟩ inr ⋆)
-        X (inl p) l = u p
-        X (inr ⋆) l = 𝟘-elim l
+       IX : ¬¬ P
+       IX u = XI
+        where
+         X : ∀ x' → ¬ (x' ≺⟨ α +ₒ 𝟙ₒ ⟩ inr ⋆)
+         X (inl p) l = u p
+         X (inr ⋆) l = 𝟘-elim l
 
-        XI : 𝟘
-        XI = X (pr₁ VIII) (pr₁ (pr₂ VIII))
+         XI : 𝟘
+         XI = X (pr₁ VIII) (pr₁ (pr₂ VIII))
+
+  XII : WEM 𝓤
+  XII = WEM'-gives-WEM fe' (λ P isp → II P isp (I P isp))
 
 \end{code}
 
@@ -808,10 +835,10 @@ is-limit-ordinal⁺ {𝓤} α = (β : Ordinal 𝓤)
 
 We give an equivalent definition below.
 
-Recall from another module [say which one] that the existence
-propositional truncations and the set-replacement property are
-together equivalent to the existence of small quotients. With them we
-can construct suprema of families of ordinals.
+Recall from the modules UF.Quotients.FromSetReplacement and
+UF.Quotients.GivesSetReplacement that the existence propositional truncations
+and the set-replacement property are together equivalent to the existence of
+small quotients. With them we can construct suprema of families of ordinals.
 
 \begin{code}
 
@@ -848,33 +875,6 @@ its predecessors:
  is-limit-ordinal-fact α = (λ ℓ → ⊴-antisym _ _ ℓ (⌊⌋-lower-bound α)) ,
                            (λ p → transport (α ⊴_) p (⊴-refl α))
 
- successor-lemma-left : (α : Ordinal 𝓤) (x : ⟨ α ⟩) → ((α +ₒ 𝟙ₒ) ↓ inl x) ⊴ α
- successor-lemma-left α x = III
-    where
-     I : (α ↓ x) ⊴ α
-     I = segment-⊴ α x
-
-     II : (α ↓ x) ＝ ((α +ₒ 𝟙ₒ) ↓ inl x)
-     II = +ₒ-↓-left x
-
-     III : ((α +ₒ 𝟙ₒ) ↓ inl x) ⊴ α
-     III = transport (_⊴ α) II I
-
- successor-lemma-right : (α : Ordinal 𝓤) → (α +ₒ 𝟙ₒ) ↓ inr ⋆ ＝ α
- successor-lemma-right α  = III
-  where
-   I : (𝟙ₒ ↓ ⋆) ⊴ 𝟘ₒ
-   I = (λ x → 𝟘-elim (pr₂ x)) , (λ x → 𝟘-elim (pr₂ x)) , (λ x → 𝟘-elim (pr₂ x))
-
-   II : (𝟙ₒ ↓ ⋆) ＝ 𝟘ₒ
-   II = ⊴-antisym _ _ I (𝟘ₒ-least-⊴ (𝟙ₒ ↓ ⋆))
-
-   III : (α +ₒ 𝟙ₒ) ↓ inr ⋆ ＝ α
-   III = (α +ₒ 𝟙ₒ) ↓ inr ⋆ ＝⟨ (+ₒ-↓-right ⋆)⁻¹ ⟩
-         α +ₒ (𝟙ₒ ↓ ⋆) ＝⟨ ap (α +ₒ_) II ⟩
-         α +ₒ 𝟘ₒ       ＝⟨ 𝟘ₒ-right-neutral α ⟩
-         α             ∎
-
  ⌊⌋-of-successor : (α : Ordinal 𝓤)
                  → ⌊ α +ₒ 𝟙ₒ ⌋ ⊴ α
  ⌊⌋-of-successor α = sup-is-lower-bound-of-upper-bounds _ α h
@@ -895,9 +895,6 @@ its predecessors:
 
    III : ⌊ α +ₒ 𝟙ₒ ⌋ ＝ α
    III = ⊴-antisym _ _ (⌊⌋-of-successor α) II
-
- successor-increasing : (α : Ordinal 𝓤) → α ⊲ (α +ₒ 𝟙ₒ)
- successor-increasing α = inr ⋆ , ((successor-lemma-right α)⁻¹)
 
  successors-are-not-limit-ordinals : (α : Ordinal 𝓤)
                                    → ¬ is-limit-ordinal (α +ₒ 𝟙ₒ)
@@ -941,8 +938,8 @@ also is not a successor ordinal unless LPO holds:
 
 \begin{code}
 
+ open import CoNaturals.Type
  open import Notation.CanonicalMap
- open import CoNaturals.GenericConvergentSequence
  open import Notation.Order
  open import Naturals.Order
 
@@ -1186,5 +1183,55 @@ module _ (pt : propositional-truncations-exist)
 
    b : sup (λ i → α +ₒ β i) ⊴ (α +ₒ sup β)
    b = sup-is-lower-bound-of-upper-bounds (λ i → α +ₒ β i) (α +ₒ sup β) b'
+
+\end{code}
+
+Added 24th May 2024 by Tom de Jong.
+
+Every ordinal is the supremum of the successors of its initial segments.
+
+\begin{code}
+
+ supremum-of-successors-of-initial-segments :
+  (α : Ordinal 𝓤) → α ＝ sup (λ x → (α ↓ x) +ₒ 𝟙ₒ)
+ supremum-of-successors-of-initial-segments {𝓤} α =
+  Antisymmetry (OO 𝓤) α s (to-≼ I) (⊴-gives-≼ s α II)
+   where
+    s : Ordinal 𝓤
+    s = sup (λ x → (α ↓ x) +ₒ 𝟙ₒ)
+    F : ⟨ α ⟩ → Ordinal 𝓤
+    F x = (α ↓ x) +ₒ 𝟙ₒ
+
+    I : (a : ⟨ α ⟩) → (α ↓ a) ⊲ s
+    I a = f (inr ⋆) , ((α ↓ a)         ＝⟨ e₁ ⟩
+                       (F a ↓ inr ⋆)   ＝⟨ e₂ ⟩
+                       (s ↓ f (inr ⋆)) ∎)
+     where
+      f : (y : ⟨ F a ⟩) → ⟨ s ⟩
+      f = [ F a , s ]⟨ sup-is-upper-bound F a ⟩
+      e₁ = (successor-lemma-right (α ↓ a)) ⁻¹
+      e₂ = (initial-segment-of-sup-at-component F a (inr ⋆)) ⁻¹
+
+    II : s ⊴ α
+    II = sup-is-lower-bound-of-upper-bounds F α
+          (upper-bound-of-successors-of-initial-segments α)
+
+\end{code}
+
+Added 2 June 2024 by Tom de Jong.
+
+\begin{code}
+
+no-greatest-ordinal : ¬ (Σ α ꞉ Ordinal 𝓤 , ((β : Ordinal 𝓤) → β ⊴ α))
+no-greatest-ordinal {𝓤} (α , α-greatest) = irrefl (OO 𝓤) α IV
+ where
+  I : (α +ₒ 𝟙ₒ) ⊴ α
+  I = α-greatest (α +ₒ 𝟙ₒ)
+  II : α ⊴ (α +ₒ 𝟙ₒ)
+  II = ⊲-gives-⊴ α (α +ₒ 𝟙ₒ) (successor-increasing α)
+  III : α +ₒ 𝟙ₒ ＝ α
+  III = ⊴-antisym (α +ₒ 𝟙ₒ) α I II
+  IV : α ⊲ α
+  IV = transport (α ⊲_) III (successor-increasing α)
 
 \end{code}

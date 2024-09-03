@@ -14,10 +14,10 @@ be eventually constant (which we don't postulate).
 open import MLTT.Spartan
 open import UF.FunExt
 
-module Taboos.BasicDiscontinuity (fe : FunExt) where
+module Taboos.BasicDiscontinuity (fe : funext₀) where
 
+open import CoNaturals.Type
 
-open import CoNaturals.GenericConvergentSequence
 open import MLTT.Plus-Properties
 open import MLTT.Two-Properties
 open import Notation.CanonicalMap
@@ -26,7 +26,9 @@ open import Taboos.WLPO
 basic-discontinuity : (ℕ∞ → 𝟚) → 𝓤₀ ̇
 basic-discontinuity p = ((n : ℕ) → p (ι n) ＝ ₀) × (p ∞ ＝ ₁)
 
-basic-discontinuity-taboo : (p : ℕ∞ → 𝟚) → basic-discontinuity p → WLPO
+basic-discontinuity-taboo : (p : ℕ∞ → 𝟚)
+                          → basic-discontinuity p
+                          → WLPO
 basic-discontinuity-taboo p (f , r) u = 𝟚-equality-cases lemma₀ lemma₁
  where
   fact₀ : u ＝ ∞ → p u ＝ ₁
@@ -50,7 +52,7 @@ basic-discontinuity-taboo p (f , r) u = 𝟚-equality-cases lemma₀ lemma₁
                                  ₁       ∎)
 
   lemma₁ : p u ＝ ₁ → (u ＝ ∞) + (u ≠ ∞)
-  lemma₁ t = inl (not-finite-is-∞ (fe 𝓤₀ 𝓤₀) (fact₃ t))
+  lemma₁ t = inl (not-finite-is-∞ fe (fact₃ t))
 
 \end{code}
 
@@ -60,7 +62,8 @@ of type ℕ∞ → 𝟚.
 
 \begin{code}
 
-WLPO-is-discontinuous : WLPO → Σ p ꞉ (ℕ∞ → 𝟚), basic-discontinuity p
+WLPO-is-discontinuous : WLPO
+                      → Σ p ꞉ (ℕ∞ → 𝟚), basic-discontinuity p
 WLPO-is-discontinuous f = p , (d , d∞)
  where
   p : ℕ∞ → 𝟚
@@ -97,7 +100,10 @@ at ∞ too, unless WLPO holds:
 
 \begin{code}
 
-disagreement-taboo : (p q : ℕ∞ → 𝟚) → ((n : ℕ) → p (ι n) ＝ q (ι n)) → p ∞ ≠ q ∞ → WLPO
+disagreement-taboo : (p q : ℕ∞ → 𝟚)
+                   → ((n : ℕ) → p (ι n) ＝ q (ι n))
+                   → p ∞ ≠ q ∞
+                   → WLPO
 disagreement-taboo p q f g = basic-discontinuity-taboo r (r-lemma , r-lemma∞)
  where
   r : ℕ∞ → 𝟚
@@ -111,7 +117,10 @@ disagreement-taboo p q f g = basic-discontinuity-taboo r (r-lemma , r-lemma∞)
 
 open import UF.DiscreteAndSeparated
 
-agreement-cotaboo :  ¬ WLPO → (p q : ℕ∞ → 𝟚) → ((n : ℕ) → p (ι n) ＝ q (ι n)) → p ∞ ＝ q ∞
+agreement-cotaboo :  ¬ WLPO
+                  → (p q : ℕ∞ → 𝟚)
+                  → ((n : ℕ) → p (ι n) ＝ q (ι n))
+                  → p ∞ ＝ q ∞
 agreement-cotaboo φ p q f = 𝟚-is-¬¬-separated (p ∞) (q ∞)
                              (contrapositive (disagreement-taboo p q f) φ)
 
@@ -124,7 +133,9 @@ Added 23rd August 2023. Variation.
 basic-discontinuity' : (ℕ∞ → ℕ∞) → 𝓤₀ ̇
 basic-discontinuity' f = ((n : ℕ) → f (ι n) ＝ ι 0) × (f ∞ ＝ ι 1)
 
-basic-discontinuity-taboo' : (f : ℕ∞ → ℕ∞) → basic-discontinuity' f → WLPO
+basic-discontinuity-taboo' : (f : ℕ∞ → ℕ∞)
+                           → basic-discontinuity' f
+                           → WLPO
 basic-discontinuity-taboo' f (f₀ , f₁) = VI
  where
   I : (u : ℕ∞) → f u ＝ ι 0 → u ≠ ∞
@@ -135,7 +146,7 @@ basic-discontinuity-taboo' f (f₀ , f₁) = VI
               ι 1 ∎)
 
   II : (u : ℕ∞) → f u ≠ ι 0 → u ＝ ∞
-  II u ν = not-finite-is-∞ (fe _ _) III
+  II u ν = not-finite-is-∞ fe III
    where
     III : (n : ℕ) → u ≠ ι n
     III n refl = V IV
@@ -147,7 +158,7 @@ basic-discontinuity-taboo' f (f₀ , f₁) = VI
       V = ν
 
   VI : WLPO
-  VI u = Cases (finite-isolated (fe _ _) 0 (f u))
+  VI u = Cases (finite-isolated fe 0 (f u))
           (λ (p : ι 0 ＝ f u) → inr (I u (p ⁻¹)))
           (λ (ν : ι 0 ≠ f u) → inl (II u (≠-sym ν)))
 

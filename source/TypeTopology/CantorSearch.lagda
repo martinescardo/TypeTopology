@@ -6,6 +6,11 @@ This is loosely based on my LICS'2007 paper "Infinite sets that admit
 fast exhaustive search" and my LMCS'2008 paper "Exhaustible sets in
 higher-type computation".
 
+Removed assumption of function extensionality 11th July 2024 by using
+the observation that 𝟚-valued uniformly continuous functions on the
+Cantor type are extensional in the sense that they map pointwise equal
+sequences to equal booleans.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}
@@ -14,11 +19,12 @@ open import MLTT.Spartan
 open import MLTT.Two-Properties
 open import Naturals.Order
 open import Notation.Order
-open import UF.FunExt
+open import TypeTopology.Cantor
 open import UF.Base
 open import UF.DiscreteAndSeparated
+open import UF.FunExt
 
-module TypeTopology.CantorSearch (fe : funext 𝓤₀ 𝓤₀) where
+module TypeTopology.CantorSearch where
 
 \end{code}
 
@@ -65,9 +71,8 @@ A𝟚-property← p ϕ = ϕ (ε𝟚 p)
 
 The function p has a root (that is, there is n with p n ＝ ₀) if and
 only if ε𝟚 p is a root. This follows from A𝟚-property→. So ε𝟚 chooses
-a root if there is some root, and otherwise chooses garbage. But we
-can check whether there is a root by checking whether or not
-p (ε𝟚 p) ＝ ₀. This is what A𝟚 does.
+a root if there is some root, and we can check whether there is a root
+by checking whether or not p (ε𝟚 p) ＝ ₀. This is what A𝟚 does.
 
 \begin{code}
 
@@ -91,99 +96,11 @@ p (ε𝟚 p) ＝ ₀. This is what A𝟚 does.
 
 \end{code}
 
-We use this to search over the Cantor type. We first need some
-preliminary definitions and facts.
+We use this to search over the Cantor type.
 
-\begin{code}
-
-Cantor = ℕ → 𝟚
-
-head : Cantor → 𝟚
-head α = α 0
-
-tail : Cantor → Cantor
-tail α = α ∘ succ
-
-cons : 𝟚 → Cantor → Cantor
-cons n α 0        = n
-cons n α (succ i) = α i
-
-head-cons : (n : 𝟚) (α : Cantor) → head (cons n α) ＝ n
-head-cons n α = refl
-
-tail-cons : (n : 𝟚) (α : Cantor) → tail (cons n α) ＝ α
-tail-cons n α = refl
-
-cons-head-tail : (α : Cantor) → cons (head α) (tail α) ＝ α
-cons-head-tail α = dfunext fe h
- where
-  h : cons (head α) (tail α) ∼ α
-  h zero     = refl
-  h (succ i) = refl
-
-\end{code}
-
-Uniform continuity as defined below is data rather than property. This
-is because any number bigger than a modulus of uniform continuity is
-also a modulus.
-
-We first define when two binary sequences α and β agree at the first n
-positions, written α ＝⟦ n ⟧ β.
-
-\begin{code}
-
-_＝⟦_⟧_ : Cantor → ℕ → Cantor → 𝓤₀ ̇
-α ＝⟦ 0      ⟧ β = 𝟙
-α ＝⟦ succ n ⟧ β = (head α ＝ head β) × (tail α ＝⟦ n ⟧ tail β)
-
-\end{code}
-
-We have that (α ＝⟦ n ⟧ β) iff α k ＝ β k for all k < n:
-
-\begin{code}
-
-agreement→ : (α β : Cantor)
-             (n : ℕ)
-           → (α ＝⟦ n ⟧ β)
-           → ((k : ℕ) → k < n → α k ＝ β k)
-agreement→ α β 0        *       k        l = 𝟘-elim l
-agreement→ α β (succ n) (p , e) 0        l = p
-agreement→ α β (succ n) (p , e) (succ k) l = IH k l
- where
-  IH : (k : ℕ) → k < n → α (succ k) ＝ β (succ k)
-  IH = agreement→ (tail α) (tail β) n e
-
-agreement← : (α β : Cantor)
-             (n : ℕ)
-           → ((k : ℕ) → k < n → α k ＝ β k)
-           → (α ＝⟦ n ⟧ β)
-agreement← α β 0        ϕ = ⋆
-agreement← α β (succ n) ϕ = ϕ 0 ⋆ , agreement← (tail α) (tail β) n (λ k → ϕ (succ k))
-
-\end{code}
-
-A function is Cantor → 𝟚 is uniformly continuous if it has a modulus
-of continuity:
-
-\begin{code}
-
-_is-a-modulus-of-uniform-continuity-of_ : ℕ → (Cantor → 𝟚) → 𝓤₀ ̇
-n is-a-modulus-of-uniform-continuity-of p = (α β : Cantor) → α ＝⟦ n ⟧ β → p α ＝ p β
-
-uniformly-continuous : (Cantor → 𝟚) → 𝓤₀ ̇
-uniformly-continuous p = Σ n ꞉ ℕ , n is-a-modulus-of-uniform-continuity-of p
-
-\end{code}
-
-TODO. Show that
-
- (Σ p ꞉ (Cantor  → 𝟚) , uniformly-continuous p) ≃ (Σ n ꞉ ℕ , Fin (2 ^ n) → 𝟚)
-
-If we define uniform continuity with ∃ rather than Σ, this is no longer the case.
-
-Notice that a function has modulus of continuity zero if and only it
-is constant, and that if a function has modulus of continuity n then
-it has modulus of continuity k for any k > n.
+Notice that a function has modulus of continuity zero if and only if
+it is constant, and that if a function has modulus of continuity n
+then it has modulus of continuity k for any k > n.
 
 \begin{code}
 
@@ -222,6 +139,26 @@ cons-decreases-modulus p n b u α β = III
 
 \end{code}
 
+Added 11th July 2024. Uniformly continuous functions are extensional
+in the following sense. This allows us to remove the assumption of
+function extensionality from previous versions of this file.
+
+\begin{code}
+
+uniform-continuity-gives-extensionality : (p : Cantor → 𝟚)
+                                        → uniformly-continuous p
+                                        → (α β : Cantor) → α ∼ β → p α ＝ p β
+uniform-continuity-gives-extensionality p (n , u) = II
+ where
+  I : (n : ℕ) (α β : Cantor) → α ∼ β → α ＝⟦ n ⟧ β
+  I 0        α β h = ⋆
+  I (succ n) α β h = h 0 , I n (α ∘ succ) (β ∘ succ) (h ∘ succ)
+
+  II : (α β : Cantor) → α ∼ β → p α ＝ p β
+  II α β h = u α β (I n α β h)
+
+\end{code}
+
 We now define search over the Cantor space. The functions A and ε are
 mutually recursively defined. But of course we can consider only ε
 expanding the definition of A in that of ε, because the definition of
@@ -255,8 +192,8 @@ for any decidable predicate p with modulus of uniform continuity n.
 So A is the characteristic function of universal quantification over
 uniformly continuous decidable predicates.
 
-One direction is trivial and doesn't require uniform continuity, but
-we still need to supply a number:
+One direction is direct and doesn't require uniform continuity, but we
+still need to supply a number:
 
 \begin{code}
 
@@ -280,7 +217,7 @@ A-property→ : (p : Cantor → 𝟚)
 A-property→ p 0        u r α = p α  ＝⟨ u α c₀ ⋆ ⟩
                                p c₀ ＝⟨ r ⟩
                                ₁    ∎
-A-property→ p (succ n) u r α = IV
+A-property→ p (succ n) u r α = V
  where
   IH : (b : 𝟚) → A n (p ∘ cons b) ＝ ₁ → (β : Cantor) → p (cons b β) ＝ ₁
   IH b = A-property→ (p ∘ cons b) n (cons-decreases-modulus p n b u)
@@ -303,8 +240,18 @@ A-property→ p (succ n) u r α = IV
   III : p (cons (head α) (tail α)) ＝ ₁
   III = II (head α) (tail α)
 
-  IV : p α ＝ ₁
-  IV = transport (λ - → p - ＝ ₁) (cons-head-tail α) III
+  IV : p α ＝ p (cons (head α) (tail α))
+  IV = uniform-continuity-gives-extensionality
+        p
+        (succ n , u)
+        α
+        (cons (head α) (tail α))
+        (cons-head-tail α)
+
+  V : p α ＝ ₁
+  V =  p α                        ＝⟨ IV ⟩
+       p (cons (head α) (tail α)) ＝⟨ III ⟩
+       ₁                          ∎
 
 \end{code}
 
@@ -317,22 +264,25 @@ Cantor-uniformly-searchable : (p : Cantor → 𝟚)
                             → Σ α₀ ꞉ Cantor , (p α₀ ＝ ₁ → (α : Cantor) → p α ＝ ₁)
 Cantor-uniformly-searchable p (n , u) = ε n p , A-property→ p n u
 
-Δ : (p : Cantor → 𝟚)
-  → uniformly-continuous p
-  → is-decidable (Σ α ꞉ Cantor , p α ＝ ₀)
-Δ p (n , u) = γ (p α) refl
+having-root-is-decidable : (p : Cantor → 𝟚)
+                         → uniformly-continuous p
+                         → is-decidable (Σ α ꞉ Cantor , p α ＝ ₀)
+having-root-is-decidable p (n , u) = γ (p α) refl
  where
   α : Cantor
   α = ε n p
 
   γ : (k : 𝟚) → p α ＝ k → is-decidable (Σ α ꞉ Cantor , p α ＝ ₀)
   γ ₀ r = inl (α  , r)
-  γ ₁ r = inr (λ (β , s) → zero-is-not-one (s ⁻¹ ∙ A-property→ p n u r β))
+  γ ₁ r = inr (λ (β , s) → zero-is-not-one
+                            (₀   ＝⟨ s ⁻¹ ⟩
+                             p β ＝⟨ A-property→ p n u r β ⟩
+                             ₁   ∎))
 
-Δ' : (p : Cantor → 𝟚)
-   → uniformly-continuous p
-   → is-decidable ((α : Cantor) → p α ＝ ₁)
-Δ' p u = γ (Δ p u)
+being-constantly-₁-is-decidable : (p : Cantor → 𝟚)
+                                → uniformly-continuous p
+                                → is-decidable ((α : Cantor) → p α ＝ ₁)
+being-constantly-₁-is-decidable p u = γ (having-root-is-decidable p u)
  where
   γ : is-decidable (Σ α ꞉ Cantor , p α ＝ ₀) → is-decidable ((α : Cantor) → p α ＝ ₁)
   γ (inl (α , r)) = inr (λ ϕ → zero-is-not-one (r ⁻¹ ∙ ϕ α))
@@ -341,7 +291,7 @@ Cantor-uniformly-searchable p (n , u) = ε n p , A-property→ p n u
 \end{code}
 
 Examples that show that A can be fast (in this case linear time) even
-if the supplied modulus of uniform continuity is large:
+if the supplied modulus of uniform continuity is large.
 
 \begin{code}
 
@@ -359,10 +309,10 @@ module examples where
 
  prc-example : ℕ → 𝟚
  prc-example n = A (succ n) (prc n)
-{-
+
  large-prc-example : prc-example 10000 ＝ ₀
  large-prc-example = refl
--}
+
 \end{code}
 
 In the worst case, however, A n p runs in time 2ⁿ.
@@ -385,14 +335,26 @@ In the worst case, however, A n p runs in time 2ⁿ.
 
  xor-example : ℕ → 𝟚
  xor-example n = A n (xor n)
-{-
- large-xor-example : xor-example 17 ＝ ₀
- large-xor-example = refl
--}
+
 \end{code}
 
-The xor example works with n=17 in about 25s in a core-i7 machine.
-The is time 2^n for this example.
+If we set the following to `true` then the type checking of this
+module increases by 17s in a MacBook Air M1, where the total time to
+check this file with `false` is less than 2s.
+
+\begin{code}
+
+ open import MLTT.Bool
+
+ check-large-example : Bool
+ check-large-example = false
+
+ large-xor-example : if check-large-example then (xor-example 17 ＝ ₀) else (₀ ＝ ₀)
+ large-xor-example = refl
+
+\end{code}
+
+The time is 2^n for this example.
 
 Another fast example (linear):
 
@@ -410,8 +372,8 @@ Another fast example (linear):
 
  κ₁-example : ℕ → 𝟚
  κ₁-example n = A (succ n) (κ₁ n)
-{-
+
  large-κ₁-example : κ₁-example 100000 ＝ ₁
  large-κ₁-example = refl
--}
+
 \end{code}

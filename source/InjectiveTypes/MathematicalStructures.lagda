@@ -31,10 +31,10 @@ private
 
 open import InjectiveTypes.Blackboard fe
 open import MLTT.Spartan
-open import Taboos.Decomposability ua
+open import Taboos.Decomposability fe
 open import UF.Base
 open import UF.Equiv
-open import UF.ExcludedMiddle
+open import UF.ClassicalLogic
 open import UF.PropIndexedPiSigma
 open import UF.Sets
 open import UF.Sets-Properties
@@ -443,6 +443,7 @@ decidable property unless weak excluded middle holds.
 decomposition-of-∞-Magma-gives-WEM : decomposition (∞-Magma 𝓤) → WEM 𝓤
 decomposition-of-∞-Magma-gives-WEM {𝓤} =
  decomposition-of-ainjective-type-gives-WEM
+  (univalence-gives-propext (ua 𝓤))
   (∞-Magma 𝓤)
   ainjectivity-of-∞-Magma
 

@@ -9,7 +9,7 @@ the module CompactTypes for the strong notion.
 
 open import MLTT.Spartan
 
-open import CoNaturals.GenericConvergentSequence
+open import CoNaturals.Type
 open import MLTT.Plus-Properties
 open import MLTT.Two-Properties
 open import Notation.Order

@@ -17,7 +17,7 @@ open import UF.FunExt
 
 module TypeTopology.ADecidableQuantificationOverTheNaturals (fe : funext 𝓤₀ 𝓤₀) where
 
-open import CoNaturals.GenericConvergentSequence
+open import CoNaturals.Type
 open import MLTT.Two-Properties
 open import Notation.CanonicalMap
 open import NotionsOfDecidability.Complemented
@@ -89,7 +89,7 @@ Lemma-8·1 p = cases claim₀ claim₁ claim₂
     q = pr₁ f
 
     g : (Σ y ꞉ ℕ∞ , q y ＝ ₀) + ((y : ℕ∞) → q y ＝ ₁)
-     → (Σ y ꞉ ℕ∞ , p y ≠ p (Succ y)) + ((y : ℕ∞) → p y ＝ p (Succ y))
+      → (Σ y ꞉ ℕ∞ , p y ≠ p (Succ y)) + ((y : ℕ∞) → p y ＝ p (Succ y))
     g (inl (y , r)) = inl (y , (pr₁ (pr₂ f y) r))
     g (inr h ) = inr (λ y → discrete-is-¬¬-separated
                              𝟚-is-discrete
@@ -181,7 +181,8 @@ module examples where
     p₄ : ℕ∞ → 𝟚
     p₄ (α , _) = α 5 == α 100
 
-    to-something : (p : ℕ∞ → 𝟚) → is-decidable ((n : ℕ) → p (ι n) ＝ ₁) → (p (ι 17) ＝ ₁) + ℕ
+    to-something : (p : ℕ∞ → 𝟚)
+                 → is-decidable ((n : ℕ) → p (ι n) ＝ ₁) → (p (ι 17) ＝ ₁) + ℕ
     to-something p (inl f) = inl (f 17)
     to-something p (inr _) = inr 1070
 

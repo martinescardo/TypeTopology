@@ -20,14 +20,13 @@ module UF.SIP where
 
 open import MLTT.Spartan
 open import UF.Base
-open import UF.Equiv hiding (_≅_)
-open import UF.Univalence
-open import UF.EquivalenceExamples
-open import UF.Subsingletons
 open import UF.Embeddings
-open import UF.Yoneda
+open import UF.Equiv
+open import UF.EquivalenceExamples
 open import UF.Retracts
-
+open import UF.Subsingletons
+open import UF.Univalence
+open import UF.Yoneda
 
 module sip where
 
@@ -116,22 +115,21 @@ module sip where
 
   when-canonical-map-is-equiv : ((s t : S X) → is-equiv (canonical-map ι ρ s t))
                               ↔ ((s : S X) → ∃! t ꞉ S X , ι (X , s) (X , t) (≃-refl X))
-  when-canonical-map-is-equiv = (λ e s → Yoneda-Theorem-back  s (τ s) (e s)) ,
-                                (λ φ s → Yoneda-Theorem-forth s (τ s) (φ s))
+  when-canonical-map-is-equiv = (λ e s → Yoneda-Theorem-back  s (c s) (e s)) ,
+                                (λ φ s → Yoneda-Theorem-forth s (c s) (φ s))
    where
-    A = λ s t → ι (X , s) (X , t) (≃-refl X)
-    τ = canonical-map ι ρ
+    c = canonical-map ι ρ
 
-  canonical-map-equiv-criterion : ((s t : S X)
-                                → (s ＝ t) ≃ ι (X , s) (X , t) (≃-refl X))
-                                → (s t : S X) → is-equiv (canonical-map ι ρ s t)
+  canonical-map-equiv-criterion :
+    ((s t : S X) → (s ＝ t) ≃ ι (X , s) (X , t) (≃-refl X))
+   → (s t : S X) → is-equiv (canonical-map ι ρ s t)
   canonical-map-equiv-criterion φ s = fiberwise-equiv-criterion'
                                        (λ t → ι (X , s) (X , t) (≃-refl X))
                                        s (φ s) (canonical-map ι ρ s)
 
-  canonical-map-equiv-criterion' : ((s t : S X)
-                                 → ι (X , s) (X , t) (≃-refl X) ◁ (s ＝ t))
-                                 → (s t : S X) → is-equiv (canonical-map ι ρ s t)
+  canonical-map-equiv-criterion' :
+     ((s t : S X) → ι (X , s) (X , t) (≃-refl X) ◁ (s ＝ t))
+    → (s t : S X) → is-equiv (canonical-map ι ρ s t)
   canonical-map-equiv-criterion' φ s = fiberwise-equiv-criterion
                                         (λ t → ι (X , s) (X , t) (≃-refl X))
                                         s (φ s) (canonical-map ι ρ s)
@@ -215,35 +213,35 @@ module sip-join where
  technical-lemma {𝓤} {𝓥} {𝓦} {𝓣} {X} {A} {Y} {B} f g i j (x₀ , y₀) = γ
   where
    module _ ((x₁ , y₁) : X × Y) where
-     r : (x₀ , y₀) ＝ (x₁ , y₁) → A x₀ x₁ × B y₀ y₁
-     r p = f x₀ x₁ (ap pr₁ p) , g y₀ y₁ (ap pr₂ p)
+    r : (x₀ , y₀) ＝ (x₁ , y₁) → A x₀ x₁ × B y₀ y₁
+    r p = f x₀ x₁ (ap pr₁ p) , g y₀ y₁ (ap pr₂ p)
 
-     f' : (a : A x₀ x₁) → x₀ ＝ x₁
-     f' = inverse (f x₀ x₁) (i x₀ x₁)
+    f' : (a : A x₀ x₁) → x₀ ＝ x₁
+    f' = inverse (f x₀ x₁) (i x₀ x₁)
 
-     g' : (b : B y₀ y₁) → y₀ ＝ y₁
-     g' = inverse (g y₀ y₁) (j y₀ y₁)
+    g' : (b : B y₀ y₁) → y₀ ＝ y₁
+    g' = inverse (g y₀ y₁) (j y₀ y₁)
 
-     s : A x₀ x₁ × B y₀ y₁ → (x₀ , y₀) ＝ (x₁ , y₁)
-     s (a , b) = to-×-＝ (f' a) (g' b)
+    s : A x₀ x₁ × B y₀ y₁ → (x₀ , y₀) ＝ (x₁ , y₁)
+    s (a , b) = to-×-＝ (f' a) (g' b)
 
-     η : (c : A x₀ x₁ × B y₀ y₁) → r (s c) ＝ c
-     η (a , b) =
-       r (s (a , b))                               ＝⟨ refl ⟩
-       r (to-×-＝  (f' a) (g' b))                  ＝⟨ refl ⟩
-       (f x₀ x₁ (ap pr₁ (to-×-＝ (f' a) (g' b))) ,
-        g y₀ y₁ (ap pr₂ (to-×-＝ (f' a) (g' b))))  ＝⟨ ii ⟩
-       (f x₀ x₁ (f' a) , g y₀ y₁ (g' b))           ＝⟨ iii ⟩
-       a , b                                       ∎
-      where
-       ii  = ap₂ (λ p q → f x₀ x₁ p , g y₀ y₁ q)
-                 (ap-pr₁-to-×-＝ (f' a) (g' b))
-                 (ap-pr₂-to-×-＝ (f' a) (g' b))
-       iii = to-×-＝ (inverses-are-sections (f x₀ x₁) (i x₀ x₁) a)
-                    (inverses-are-sections (g y₀ y₁) (j y₀ y₁) b)
+    η : (c : A x₀ x₁ × B y₀ y₁) → r (s c) ＝ c
+    η (a , b) =
+      r (s (a , b))                               ＝⟨ refl ⟩
+      r (to-×-＝  (f' a) (g' b))                  ＝⟨ refl ⟩
+      (f x₀ x₁ (ap pr₁ (to-×-＝ (f' a) (g' b))) ,
+       g y₀ y₁ (ap pr₂ (to-×-＝ (f' a) (g' b))))  ＝⟨ ii ⟩
+      (f x₀ x₁ (f' a) , g y₀ y₁ (g' b))           ＝⟨ iii ⟩
+      a , b                                       ∎
+     where
+      ii  = ap₂ (λ p q → f x₀ x₁ p , g y₀ y₁ q)
+                (ap-pr₁-to-×-＝ (f' a) (g' b))
+                (ap-pr₂-to-×-＝ (f' a) (g' b))
+      iii = to-×-＝ (inverses-are-sections (f x₀ x₁) (i x₀ x₁) a)
+                   (inverses-are-sections (g y₀ y₁) (j y₀ y₁) b)
 
-   γ : ∀ z₁ → is-equiv (r z₁)
-   γ = nats-with-sections-are-equivs (x₀ , y₀) r λ z₁ → (s z₁ , η z₁)
+   γ : (z : X × Y) → is-equiv (r z)
+   γ = nats-with-sections-are-equivs (x₀ , y₀) r (λ z → (s z , η z))
 
  variable
   𝓥₀ 𝓥₁ 𝓦₀ 𝓦₁ : Universe
@@ -278,10 +276,10 @@ module sip-join where
    ρ A = (ρ₀ [ A ]₀ , ρ₁ [ A ]₁)
 
    θ : {X : 𝓤 ̇ } (s t : S X) → is-equiv (canonical-map ι ρ s t)
-   θ {X} (s₀ , s₁) (t₀ , t₁) = γ
+   θ {X} s@(s₀ , s₁) t@(t₀ , t₁) = γ
     where
-     c : (p : s₀ , s₁ ＝ t₀ , t₁) → ι₀ (X , s₀) (X , t₀) (≃-refl X)
-                                 × ι₁ (X , s₁) (X , t₁) (≃-refl X)
+     c : (p : s ＝ t) → ι₀ (X , s₀) (X , t₀) (≃-refl X)
+                      × ι₁ (X , s₁) (X , t₁) (≃-refl X)
 
      c p = (canonical-map ι₀ ρ₀ s₀ t₀ (ap pr₁ p) ,
             canonical-map ι₁ ρ₁ s₁ t₁ (ap pr₂ p))
@@ -290,12 +288,12 @@ module sip-join where
      i = technical-lemma
           (canonical-map ι₀ ρ₀)
           (canonical-map ι₁ ρ₁)
-          θ₀ θ₁ (s₀ , s₁) (t₀ , t₁)
+          θ₀ θ₁ s t
 
-     e : canonical-map ι ρ (s₀ , s₁) (t₀ , t₁) ∼ c
-     e (refl {s₀ , s₁}) = 𝓻𝓮𝒻𝓵 (ρ₀ (X , s₀) , ρ₁ (X , s₁))
+     e : canonical-map ι ρ s t ∼ c
+     e (refl {s}) = 𝓻𝓮𝒻𝓵 (ρ₀ (X , s₀) , ρ₁ (X , s₁))
 
-     γ : is-equiv (canonical-map ι ρ (s₀ , s₁) (t₀ , t₁))
+     γ : is-equiv (canonical-map ι ρ s t)
      γ = equiv-closed-under-∼ _ _ i e
 
  _≃⟦_,_⟧_ : {S₀ : 𝓤 ̇ → 𝓥 ̇ } {S₁ : 𝓤 ̇ → 𝓥₁ ̇ }

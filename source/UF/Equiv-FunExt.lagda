@@ -362,6 +362,12 @@ a neutral element for ordinary function composition, definitionally:
   γ : (X ≃ Z) ≃ (Y ≃ Z)
   γ = qinveq ((≃-sym α) ●_) ((α ●_), p , q)
 
+≃-cong-left'' : funext 𝓤 𝓤
+              → {X Y Z : 𝓤 ̇ }
+              → X ≃ Y
+              → (X ≃ Z) ≃ (Y ≃ Z)
+≃-cong-left'' fe = ≃-cong-left' fe fe fe fe fe
+
 ≃-cong-left : FunExt
             → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
             → X ≃ Y

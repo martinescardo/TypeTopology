@@ -33,6 +33,9 @@ DN-funext 𝓤 𝓥 = {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {f g : Π A} → f ∼
 funext : ∀ 𝓤 𝓥 → 𝓤 ⁺ ⊔ 𝓥 ⁺ ̇
 funext 𝓤 𝓥 = {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (f g : Π A) → is-equiv (happly' f g)
 
+funext₀ : 𝓤₁ ̇
+funext₀ = funext 𝓤₀ 𝓤₀
+
 FunExt : 𝓤ω
 FunExt = (𝓤 𝓥 : Universe) → funext 𝓤 𝓥
 
@@ -49,7 +52,7 @@ abstract
 
  happly-funext : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
                  (fe : funext 𝓤 𝓥) (f g : Π A) (h : f ∼ g)
-              → happly (dfunext fe h) ＝ h
+               → happly (dfunext fe h) ＝ h
  happly-funext fe f g = inverses-are-sections happly (fe f g)
 
  funext-happly : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (fe : funext 𝓤 𝓥)
@@ -57,7 +60,10 @@ abstract
                → dfunext fe (happly h) ＝ h
  funext-happly fe f g refl = inverses-are-retractions happly (fe f f) refl
 
-happly-≃ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (fe : funext 𝓤 𝓥) {f g : (x : X) → A x} → (f ＝ g) ≃ f ∼ g
+happly-≃ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+           (fe : funext 𝓤 𝓥)
+           {f g : (x : X) → A x}
+         → (f ＝ g) ≃ f ∼ g
 happly-≃ fe = happly , fe _ _
 
 funext-lc : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
@@ -72,19 +78,18 @@ happly-lc : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
           → left-cancellable (happly' f g)
 happly-lc fe f g = section-lc happly (equivs-are-sections happly (fe f g))
 
-inverse-happly-is-dfunext : {𝓤 𝓥 : Universe}
-                            {A : 𝓤 ̇ } {B : 𝓥 ̇ }
+inverse-happly-is-dfunext : {A : 𝓤 ̇ } {B : 𝓥 ̇ }
                             (fe₀ : funext 𝓤 𝓥)
                             (fe₁ : funext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥))
                             (f g : A → B)
                           → inverse (happly' f g) (fe₀ f g) ＝ dfunext fe₀
 inverse-happly-is-dfunext fe₀ fe₁ f g =
- dfunext fe₁ λ h →
- happly-lc fe₀ f g
-  (happly' f g (inverse (happly' f g) (fe₀ f g) h)
-     ＝⟨ inverses-are-sections _ (fe₀ f g) h ⟩
-   h ＝⟨ happly-funext fe₀ f g h ⁻¹ ⟩
-   happly' f g (dfunext fe₀ h) ∎)
+ dfunext fe₁
+  (λ h → happly-lc fe₀ f g
+          (happly' f g (inverse (happly' f g) (fe₀ f g) h)
+                                       ＝⟨ inverses-are-sections _ (fe₀ f g) h ⟩
+           h                           ＝⟨ happly-funext fe₀ f g h ⁻¹ ⟩
+           happly' f g (dfunext fe₀ h) ∎))
 
 dfunext-refl : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
                (fe : funext 𝓤 𝓥)
@@ -144,20 +149,18 @@ transport-funext : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
                    (x : X)
                  → transport (λ - → (x : X) → P x (- x)) (dfunext fe h) φ x
                  ＝ transport (P x) (h x) (φ x)
-transport-funext A P fe f g φ h x = q ∙ r
+transport-funext A P fe f g φ h x =
+ transport (λ - → ∀ x → P x (- x)) (dfunext fe h) φ x ＝⟨ I ⟩
+ transport (P x) (happly (dfunext fe h) x) (φ x)      ＝⟨ II ⟩
+ transport (P x) (h x) (φ x) ∎
  where
-  l : (f g : Π A) (φ : ∀ x → P x (f x)) (p : f ＝ g)
+  lemma : (f g : Π A) (φ : ∀ x → P x (f x)) (p : f ＝ g)
         → ∀ x → transport (λ - → ∀ x → P x (- x)) p φ x
               ＝ transport (P x) (happly p x) (φ x)
-  l f .f φ refl x = refl
+  lemma f f φ refl x = refl
 
-  q : transport (λ - → ∀ x → P x (- x)) (dfunext fe h) φ x
-    ＝ transport (P x) (happly (dfunext fe h) x) (φ x)
-  q = l f g φ (dfunext fe h) x
-
-  r : transport (P x) (happly (dfunext fe h) x) (φ x)
-    ＝ transport (P x) (h x) (φ x)
-  r = ap (λ - → transport (P x) (- x) (φ x)) (happly-funext fe f g h)
+  I  = lemma f g φ (dfunext fe h) x
+  II = ap (λ - → transport (P x) (- x) (φ x)) (happly-funext fe f g h)
 
 transport-funext' : {X : 𝓤 ̇ } (A : 𝓥 ̇ )
                     (P : X → A → 𝓦 ̇ )

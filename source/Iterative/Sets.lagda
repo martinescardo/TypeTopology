@@ -657,18 +657,25 @@ module _ (pt : propositional-truncations-exist) where
 
     im : 𝓤⁺ ̇
     im = image 𝓐
+
     im-is-small : image 𝓐 is 𝓤 small
     im-is-small = sr 𝓐 (I , ≃-refl I) 𝕍-is-locally-small 𝕍-is-set
+
     im⁻ : 𝓤 ̇
     im⁻ = resized im im-is-small
+
     im⁻-≃-im : im⁻ ≃ im
     im⁻-≃-im = resizing-condition im-is-small
+
     π : im → 𝕍
     π = restriction 𝓐
+
     π⁻ : im⁻ → 𝕍
     π⁻ = π ∘ ⌜ im⁻-≃-im ⌝
+
     π-is-embedding : is-embedding π
     π-is-embedding = restrictions-are-embeddings 𝓐
+
     π⁻-is-embedding : is-embedding π⁻
     π⁻-is-embedding = ∘-is-embedding
                        (equivs-are-embeddings

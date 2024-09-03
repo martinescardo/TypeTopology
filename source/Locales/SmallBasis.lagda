@@ -423,6 +423,13 @@ cover-indexₛ : (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ X)
                 ⟨ 𝒪 X ⟩ → Fam 𝓦 (index ℬ)
 cover-indexₛ X σᴰ U = pr₁ (basisₛ-is-basis X σᴰ U)
 
+covering-familyₛ : (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ X)
+                 → let
+                    ℬ = basisₛ X σᴰ
+                   in
+                    ⟨ 𝒪 X ⟩ → Fam 𝓦 ⟨ 𝒪 X ⟩
+covering-familyₛ X σᴰ U = ⁅ basisₛ X σᴰ [ j ] ∣ j ε cover-indexₛ X σᴰ U ⁆
+
 basisₛ-covers-are-directed : (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ X) (U : ⟨ 𝒪 X ⟩)
                            → let
                               ℬ = basisₛ X σᴰ
@@ -439,6 +446,25 @@ basisₛ-covers-do-cover : (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ X) (
                          in
                           (U is-lub-of ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆) holds
 basisₛ-covers-do-cover X σᴰ U = pr₁ (pr₂ (pr₁ (pr₂ σᴰ) U))
+
+basisₛ-covers-do-cover-eq : (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ X) (U : ⟨ 𝒪 X ⟩)
+                          → let
+                             ℬ = basisₛ X σᴰ
+                             𝒥 = cover-indexₛ X σᴰ U
+                             open Joins (λ U V → U ≤[ poset-of (𝒪 X) ] V)
+                            in
+                             U ＝ ⋁[ 𝒪 X ] ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆
+basisₛ-covers-do-cover-eq X σᴰ U =
+ ⋁[ 𝒪 X ]-unique ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆ U c
+  where
+   open Joins (λ U V → U ≤[ poset-of (𝒪 X) ] V)
+
+   ℬ = basisₛ X σᴰ
+   𝒥 = cover-indexₛ X σᴰ U
+
+   c : (U is-lub-of ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆) holds
+   c = basisₛ-covers-do-cover X σᴰ U
+
 
 basisₛ-is-directed-basis : (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ X)
                          → directed-basis-forᴰ (𝒪 X) (basisₛ X σᴰ)
@@ -687,6 +713,16 @@ is-spectral-with-small-basis {𝓤} {𝓥} ua X =
 
 \begin{code}
 
+ssb-implies-spectral : (ua : Univalence) (X : Locale 𝓤 𝓥 𝓥)
+                     → is-spectral-with-small-basis ua X holds
+                     → is-spectral X holds
+ssb-implies-spectral ua X (σ , _) = σ
+
+smallness-of-𝒦 : (ua : Univalence) (X : Locale 𝓤 𝓥 𝓥)
+               → is-spectral-with-small-basis ua X holds
+               → 𝒦 X is 𝓥 small
+smallness-of-𝒦 ua X (_ , s) = s
+
 ssb-implies-spectralᴰ : (ua : Univalence) (X : Locale 𝓤 𝓥 𝓥)
                       → is-spectral-with-small-basis ua X holds
                       → spectralᴰ X
@@ -708,6 +744,12 @@ truncated-spectralᴰ-implies-spectral ua X p =
   where
    † : spectralᴰ X → is-spectral X holds
    † = pr₁ ∘ spectralᴰ-implies-ssb ua X
+
+\end{code}
+
+The split support result:
+
+\begin{code}
 
 truncated-spectralᴰ-implies-spectralᴰ : (ua : Univalence) (X : Locale 𝓤 𝓥 𝓥)
                                       → ∥ spectralᴰ X ∥ → spectralᴰ X

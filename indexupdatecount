@@ -1,0 +1,17 @@
+#!/bin/bash
+
+root_dir=$(git rev-parse --show-toplevel)
+
+input_file="$root_dir/source/index.lagda"
+
+current_date=$(date +"%Y.%m.%d")
+
+file_count=$(git ls-files $root_dir/source | grep agda | wc -l | xargs)
+line_count=$(git ls-files $root_dir/source | grep agda | xargs cat | wc -l | xargs | awk '{printf "%.0fK\n", $1/1000}')
+
+echo "File count is $file_count."
+echo "Line count is $line_count."
+
+sed -i '' "s/In our last count, on [0-9.]\{1,\},/In our last count, on $current_date,/g" $input_file
+sed -i '' "s/this development has [0-9]\{1,\} Agda/this development has $file_count Agda/g" $input_file
+sed -i '' "s/files with [0-9kK]\{1,\} lines of code/files with $line_count lines of code/g" $input_file

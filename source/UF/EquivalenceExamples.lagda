@@ -279,6 +279,12 @@ An application of Π-cong is the following:
    η (inl x) = refl
    η (inr y) = refl
 
+one-𝟘-only : 𝟘 {𝓤} ≃ 𝟘 {𝓥}
+one-𝟘-only = qinveq 𝟘-elim (𝟘-elim , 𝟘-induction , 𝟘-induction)
+
+one-𝟙-only : {𝓤 𝓥 : Universe} → 𝟙 {𝓤} ≃ 𝟙 {𝓥}
+one-𝟙-only = qinveq unique-to-𝟙 (unique-to-𝟙 , (λ ⋆ → refl) , (λ ⋆ → refl))
+
 𝟘-rneutral : {X : 𝓤 ̇ } → X ≃ X + 𝟘 {𝓥}
 𝟘-rneutral {𝓤} {𝓥} {X} = qinveq f (g , η , ε)
  where
@@ -297,18 +303,21 @@ An application of Π-cong is the following:
    η x = refl
 
 𝟘-rneutral' : {X : 𝓤 ̇ } → X + 𝟘 {𝓥} ≃ X
-𝟘-rneutral' {𝓤} {𝓥} = ≃-sym (𝟘-rneutral {𝓤} {𝓥})
+𝟘-rneutral' = ≃-sym 𝟘-rneutral
 
 𝟘-lneutral : {X : 𝓤 ̇ } → 𝟘 {𝓥} + X ≃ X
 𝟘-lneutral {𝓤} {𝓥} {X} = (𝟘 + X) ≃⟨ +comm ⟩
                          (X + 𝟘) ≃⟨ 𝟘-rneutral' {𝓤} {𝓥} ⟩
                          X       ■
 
-one-𝟘-only : 𝟘 {𝓤} ≃ 𝟘 {𝓥}
-one-𝟘-only = qinveq 𝟘-elim (𝟘-elim , 𝟘-induction , 𝟘-induction)
+𝟘-lneutral' : {X : 𝓤 ̇ } → X ≃ 𝟘 {𝓥} + X
+𝟘-lneutral' = ≃-sym 𝟘-lneutral
 
-one-𝟙-only : (𝓤 𝓥 : Universe) → 𝟙 {𝓤} ≃ 𝟙 {𝓥}
-one-𝟙-only _ _ = qinveq unique-to-𝟙 (unique-to-𝟙 , (λ ⋆ → refl) , (λ ⋆ → refl))
+𝟘-lneutral'' : 𝟙 {𝓤} ≃ 𝟘 {𝓥} + 𝟙 {𝓦}
+𝟘-lneutral'' {𝓤} {𝓥} {𝓦} =
+ 𝟙 {𝓤}           ≃⟨ one-𝟙-only ⟩
+ 𝟙 {𝓦}           ≃⟨ 𝟘-lneutral' ⟩
+ (𝟘 {𝓥} + 𝟙 {𝓦}) ■
 
 +assoc : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
        → (X + Y) + Z ≃ X + (Y + Z)
@@ -835,6 +844,23 @@ complement-is-equiv = qinvs-are-equivs
 complement-≃ : 𝟚 ≃ 𝟚
 complement-≃ = (complement , complement-is-equiv)
 
+𝟚-≃-𝟙+𝟙 : 𝟚 ≃ 𝟙{𝓤} + 𝟙{𝓤}
+𝟚-≃-𝟙+𝟙 = f , qinvs-are-equivs f (g , gf , fg)
+ where
+  f : 𝟚 → 𝟙 + 𝟙
+  f = 𝟚-cases (inl ⋆) (inr ⋆)
+
+  g : 𝟙 + 𝟙 → 𝟚
+  g = cases (λ x → ₀) (λ x → ₁)
+
+  fg : (x : 𝟙 + 𝟙) → f (g x) ＝ x
+  fg (inl ⋆) = refl
+  fg (inr ⋆) = refl
+
+  gf : (x : 𝟚) → g (f x) ＝ x
+  gf ₀ = refl
+  gf ₁ = refl
+
 alternative-× : funext 𝓤₀ 𝓤
               → {A : 𝟚 → 𝓤 ̇ }
               → (Π n ꞉ 𝟚 , A n) ≃ (A ₀ × A ₁)
@@ -1013,6 +1039,40 @@ fiber-of-unique-to-𝟙 {𝓤} {𝓥} {X} ⋆ =
           → (y : Y) → fiber f y ≃ fiber g y
 ∼-fiber-≃ H y = Σ-cong (∼-fiber-identifications-≃ H y)
 
+\end{code}
+
+Added 9 July 2024 by Tom de Jong.
+
+\begin{code}
+
+fiber-of-ap-≃' : {A : 𝓤 ̇  } {B : 𝓥 ̇  } (f : A → B)
+                 {x y : A} (p : f x ＝ f y)
+               → fiber (ap f) p ≃ ((x , refl) ＝[ fiber' f (f x) ] (y , p))
+fiber-of-ap-≃' f {x} {y} p =
+ fiber (ap f) p                                              ≃⟨ ≃-refl _ ⟩
+ (Σ e ꞉ x ＝ y , transport (λ - → (f x ＝ f -)) e refl ＝ p) ≃⟨ ≃-sym Σ-＝-≃ ⟩
+ ((x , refl) ＝ (y , p))                                     ■
+
+fiber-of-ap-≃ : {A : 𝓤 ̇  } {B : 𝓥 ̇  } (f : A → B)
+                {x y : A} (p : f x ＝ f y)
+              → fiber (ap f) p ≃ ((x , p) ＝[ fiber f (f y) ] (y , refl))
+fiber-of-ap-≃ f {x} {y} p =
+ fiber (ap f) p                                              ≃⟨ Σ-cong I ⟩
+ (Σ e ꞉ x ＝ y , transport (λ - → f - ＝ f y) e p ＝ refl)   ≃⟨ ≃-sym Σ-＝-≃ ⟩
+ ((x , p) ＝ (y , refl))                                     ■
+  where
+   I : (e : x ＝ y)
+     → (ap f e ＝ p) ≃ (transport (λ - → f - ＝ f y) e p ＝ refl)
+   I refl = (refl ＝ p)                                   ≃⟨ ＝-flip ⟩
+            (p ＝ refl)                                   ≃⟨ ≃-refl _ ⟩
+            (transport (λ - → f - ＝ f x) refl p ＝ refl) ■
+
+\end{code}
+
+End of addition.
+
+\begin{code}
+
 ∙-is-equiv-left : {X : 𝓤 ̇ } {x y z : X} (p : z ＝ x)
                 → is-equiv (λ (q : x ＝ y) → p ∙ q)
 ∙-is-equiv-left {𝓤} {X} {x} {y} refl =
@@ -1026,7 +1086,7 @@ fiber-of-unique-to-𝟙 {𝓤} {𝓥} {X} ⋆ =
 \end{code}
 
 Added by Tom de Jong, November 2021.
-s
+
 \begin{code}
 
 open import UF.PropTrunc
