@@ -259,12 +259,10 @@ conditions (?)).
    b : ∥ ∥ X ∥[ succ n ] ∥[ n ] → ∥ X ∥[ n ]
    b = ∥∥ₙ-rec (∥∥ₙ-hlevel n) canonical-pred-map
    G : f ∘ b ∼ id
-   G = ∥∥ₙ-ind (λ s → hlevels-are-closed-under-id n (∥∥ₙ-hlevel n) (f (b s)) s)
-               (∥∥ₙ-ind (λ t → hlevels-are-closed-under-id n
-                                (hlevels-are-closed-under-id n
-                                (∥∥ₙ-hlevel n) (f (b (∣ t ∣[ n ])))
-                                (∣ t ∣[ n ])))
-                         G')
+   G = to-∼-of-maps-with-truncated-domain (f ∘ b) id (∥∥ₙ-hlevel n)
+        (to-∼-of-maps-with-truncated-domain (f ∘ b ∘ ∣_∣[ n ]) ∣_∣[ n ]
+         (hlevels-are-upper-closed n ∥ ∥ X ∥[ succ n ] ∥[ n ] (∥∥ₙ-hlevel n))
+          G')
     where
      G' : (x : X)
         → f (b (∣ ∣ x ∣[ succ n ] ∣[ n ])) ＝ (∣ ∣ x ∣[ succ n ] ∣[ n ])
@@ -278,8 +276,7 @@ conditions (?)).
        II = ap f (canonical-pred-map-comp x)
        III = ∥∥ₙ-rec-comp (∥∥ₙ-hlevel n) (λ x → ∣ ∣ x ∣[ succ n ] ∣[ n ]) x
    H : b ∘ f ∼ id
-   H = ∥∥ₙ-ind (λ s → hlevels-are-closed-under-id n (∥∥ₙ-hlevel n) (b (f s)) s)
-               H'
+   H = to-∼-of-maps-with-truncated-domain (b ∘ f) id (∥∥ₙ-hlevel n) H'
     where
      H' : (x : X) → b (f (∣ x ∣[ n ])) ＝ (∣ x ∣[ n ])
      H' x = b (f (∣ x ∣[ n ]))                   ＝⟨ I ⟩
