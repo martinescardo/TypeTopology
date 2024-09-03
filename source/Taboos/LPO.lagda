@@ -28,7 +28,7 @@ GenericConvergentSequence)
 
 open import UF.FunExt
 
-module Taboos.LPO (fe : FunExt) where
+module Taboos.LPO where
 
 open import CoNaturals.Type
 open import MLTT.Spartan
@@ -43,20 +43,17 @@ open import UF.Equiv
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
-private
- fe₀ = fe 𝓤₀ 𝓤₀
-
 LPO : 𝓤₀ ̇
 LPO = (x : ℕ∞) → is-decidable (Σ n ꞉ ℕ , x ＝ ι n)
 
-LPO-is-prop : is-prop LPO
-LPO-is-prop = Π-is-prop fe₀ f
+LPO-is-prop : Fun-Ext → is-prop LPO
+LPO-is-prop fe = Π-is-prop fe f
  where
   a : (x : ℕ∞) → is-prop (Σ n ꞉ ℕ , x ＝ ι n)
-  a x (n , p) (m , q) = to-Σ-＝ (ℕ-to-ℕ∞-lc (p ⁻¹ ∙ q) , ℕ∞-is-set fe₀ _ _)
+  a x (n , p) (m , q) = to-Σ-＝ (ℕ-to-ℕ∞-lc (p ⁻¹ ∙ q) , ℕ∞-is-set fe _ _)
 
   f : (x : ℕ∞) → is-prop (is-decidable (Σ n ꞉ ℕ , x ＝ ι n))
-  f x = decidability-of-prop-is-prop fe₀ (a x)
+  f x = decidability-of-prop-is-prop fe (a x)
 
 \end{code}
 
@@ -67,8 +64,8 @@ sense of UF) to our formulation.
 
 \begin{code}
 
-LPO-gives-compact-ℕ : LPO → is-compact ℕ
-LPO-gives-compact-ℕ ℓ β = γ
+LPO-gives-compact-ℕ : funext 𝓤₀ 𝓤₀ → LPO → is-compact ℕ
+LPO-gives-compact-ℕ fe ℓ β = γ
   where
     A = (Σ n ꞉ ℕ , β n ＝ ₀) + (Π n ꞉ ℕ , β n ＝ ₁)
 
@@ -102,7 +99,7 @@ LPO-gives-compact-ℕ ℓ β = γ
             c = v n
 
             l : x ＝ ∞
-            l = not-finite-is-∞ fe₀ v
+            l = not-finite-is-∞ fe v
 
             e : α n ＝ ₁
             e = ap (λ - → ι - n) l
@@ -110,8 +107,8 @@ LPO-gives-compact-ℕ ℓ β = γ
     γ : A
     γ = cases a b d
 
-compact-ℕ-gives-LPO : is-compact ℕ → LPO
-compact-ℕ-gives-LPO κ x = γ
+compact-ℕ-gives-LPO : funext 𝓤₀ 𝓤₀ → is-compact ℕ → LPO
+compact-ℕ-gives-LPO fe κ x = γ
   where
     A = is-decidable (Σ n ꞉ ℕ , x ＝ ι n)
 
@@ -125,7 +122,7 @@ compact-ℕ-gives-LPO κ x = γ
     a (n , p) = inl (pr₁ g , pr₂(pr₂ g))
       where
         g : Σ m ꞉ ℕ , (m ≤ n) × (x ＝ ι m)
-        g = ℕ-to-ℕ∞-lemma fe₀ x n p
+        g = ℕ-to-ℕ∞-lemma fe x n p
 
     b : (Π n ꞉ ℕ , β n ＝ ₁) → A
     b φ = inr g
@@ -164,17 +161,17 @@ knowing whether LPO holds or not!
 
 open import TypeTopology.PropTychonoff
 
-[LPO→ℕ]-is-compact∙ : is-compact∙ (LPO → ℕ)
-[LPO→ℕ]-is-compact∙ = prop-tychonoff-corollary' fe LPO-is-prop f
+[LPO→ℕ]-is-compact∙ : FunExt → is-compact∙ (LPO → ℕ)
+[LPO→ℕ]-is-compact∙ fe = prop-tychonoff-corollary' fe (LPO-is-prop (fe _ _)) f
  where
    f : LPO → is-compact∙ ℕ
-   f lpo = compact-pointed-types-are-compact∙ (LPO-gives-compact-ℕ lpo) 0
+   f lpo = compact-pointed-types-are-compact∙ (LPO-gives-compact-ℕ (fe 𝓤₀ 𝓤₀) lpo) 0
 
-[LPO→ℕ]-is-compact : is-compact (LPO → ℕ)
-[LPO→ℕ]-is-compact = compact∙-types-are-compact [LPO→ℕ]-is-compact∙
+[LPO→ℕ]-is-compact : FunExt → is-compact (LPO → ℕ)
+[LPO→ℕ]-is-compact fe = compact∙-types-are-compact ([LPO→ℕ]-is-compact∙ fe)
 
-[LPO→ℕ]-is-Compact : is-Compact (LPO → ℕ) {𝓤}
-[LPO→ℕ]-is-Compact = compact-types-are-Compact [LPO→ℕ]-is-compact
+[LPO→ℕ]-is-Compact : FunExt → is-Compact (LPO → ℕ) {𝓤}
+[LPO→ℕ]-is-Compact fe = compact-types-are-Compact ([LPO→ℕ]-is-compact fe)
 
 \end{code}
 
@@ -187,10 +184,13 @@ Feb 2020):
 open import Naturals.Properties
 open import UF.DiscreteAndSeparated
 
-[LPO→ℕ]-discrete-gives-¬LPO-decidable : is-discrete (LPO → ℕ) → is-decidable (¬ LPO)
-[LPO→ℕ]-discrete-gives-¬LPO-decidable =
+[LPO→ℕ]-discrete-gives-¬LPO-decidable
+ : funext 𝓤₀ 𝓤₀
+ → is-discrete (LPO → ℕ)
+ → is-decidable (¬ LPO)
+[LPO→ℕ]-discrete-gives-¬LPO-decidable fe =
   discrete-exponential-has-decidable-emptiness-of-exponent
-   fe₀
+   fe
    (1 , 0 , positive-not-zero 0)
 
 \end{code}
@@ -222,21 +222,38 @@ embedding ι𝟙 : ℕ + 𝟙 → ℕ∞ has a section:
 ι𝟙-inverse .(ι n) (inl (n , refl)) = inl n
 ι𝟙-inverse u (inr g) = inr ⋆
 
-LPO-gives-has-section-ι𝟙 : LPO → Σ s ꞉ (ℕ∞ → ℕ + 𝟙) , ι𝟙 ∘ s ∼ id
-LPO-gives-has-section-ι𝟙 lpo = s , ε
+LPO-gives-has-section-ι𝟙 : funext 𝓤₀ 𝓤₀ → LPO → Σ s ꞉ (ℕ∞ → ℕ + 𝟙) , ι𝟙 ∘ s ∼ id
+LPO-gives-has-section-ι𝟙 fe lpo = s , ε
  where
   s : ℕ∞ → ℕ + 𝟙
   s u = ι𝟙-inverse u (lpo u)
 
   φ : (u : ℕ∞) (d : is-decidable (Σ n ꞉ ℕ , u ＝ ι n)) → ι𝟙 (ι𝟙-inverse u d) ＝ u
   φ .(ι n) (inl (n , refl)) = refl
-  φ u (inr g) = (not-finite-is-∞ fe₀ (curry g))⁻¹
+  φ u (inr g) = (not-finite-is-∞ fe (curry g))⁻¹
 
   ε : ι𝟙 ∘ s ∼ id
   ε u = φ u (lpo u)
 
-LPO-gives-ι𝟙-is-equiv : LPO → is-equiv ι𝟙
-LPO-gives-ι𝟙-is-equiv lpo = embeddings-with-sections-are-equivs ι𝟙
-                             (ι𝟙-is-embedding fe₀)
-                             (LPO-gives-has-section-ι𝟙 lpo)
+LPO-gives-ι𝟙-is-equiv : funext 𝓤₀ 𝓤₀ → LPO → is-equiv ι𝟙
+LPO-gives-ι𝟙-is-equiv fe lpo = embeddings-with-sections-are-equivs ι𝟙
+                               (ι𝟙-is-embedding fe)
+                               (LPO-gives-has-section-ι𝟙 fe lpo)
+\end{code}
+
+Added 3rd September 2024.
+
+\begin{code}
+
+open import Taboos.WLPO
+
+LPO-gives-WLPO : funext 𝓤₀ 𝓤₀ → LPO → WLPO
+LPO-gives-WLPO fe lpo u =
+ Cases (lpo u)
+  (λ (n , p) → inr (λ {refl → ∞-is-not-finite n p}))
+  (λ ν → inl (not-finite-is-∞ fe (λ n p → ν (n , p))))
+
+¬WLPO-gives-¬LPO : funext 𝓤₀ 𝓤₀ → ¬ WLPO → ¬ LPO
+¬WLPO-gives-¬LPO fe = contrapositive (LPO-gives-WLPO fe)
+
 \end{code}
