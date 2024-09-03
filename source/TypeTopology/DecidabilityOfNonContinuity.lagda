@@ -622,6 +622,12 @@ module more-continuity-criteria (pt : propositional-truncations-exist) where
 
 Added 2nd September 2024.
 
+The type `ℕ∞-extension g` is that of all extensions of g : ℕ → ℕ to
+functions ℕ∞ → ℕ.
+
+Our first question is when this type is a proposition (so that it
+could be called ℕ∞-extendability).
+
 \begin{code}
 
 ℕ∞-extension : (ℕ → ℕ) → 𝓤₀ ̇
