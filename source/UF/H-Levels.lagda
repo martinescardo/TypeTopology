@@ -47,12 +47,12 @@ private
  fe' 𝓤 𝓥 = fe {𝓤} {𝓥}
 
 _is-of-hlevel_ : 𝓤 ̇ → ℕ → 𝓤 ̇
-X is-of-hlevel zero = is-contr X
+X is-of-hlevel 0      = is-contr X
 X is-of-hlevel succ n = (x x' : X) → (x ＝ x') is-of-hlevel n
 
 hlevel-relation-is-prop : {𝓤 : Universe} {n : ℕ} {X : 𝓤 ̇ }
                         → is-prop (X is-of-hlevel n)
-hlevel-relation-is-prop {𝓤} {zero} = being-singleton-is-prop fe
+hlevel-relation-is-prop {𝓤} {0} = being-singleton-is-prop fe
 hlevel-relation-is-prop {𝓤} {succ n} =
   Π₂-is-prop fe (λ x x' → hlevel-relation-is-prop)
 
@@ -66,7 +66,7 @@ Being of hlevel one is equivalent to being a proposition.
 \begin{code}
 
 is-prop' : (X : 𝓤 ̇) → 𝓤  ̇
-is-prop' X = X is-of-hlevel (succ zero)
+is-prop' X = X is-of-hlevel 1
 
 being-prop'-is-prop : (X : 𝓤 ̇) → is-prop (is-prop' X)
 being-prop'-is-prop X = hlevel-relation-is-prop
@@ -94,17 +94,17 @@ H-Levels are cumulative.
 contr-implies-id-contr : {X : 𝓤 ̇} → is-contr X → is-prop' X
 contr-implies-id-contr = is-prop-implies-is-prop' ∘ singletons-are-props
 
-hlevels-are-upper-closed : {n : ℕ} {X : 𝓤 ̇  }
+hlevels-are-upper-closed : {n : ℕ} {X : 𝓤 ̇ }
                          → X is-of-hlevel n
                          → X is-of-hlevel succ n
-hlevels-are-upper-closed {𝓤} {zero} {X} = contr-implies-id-contr
-hlevels-are-upper-closed {𝓤} {succ n} {X} h-level x x' =
+hlevels-are-upper-closed {𝓤} {0} = contr-implies-id-contr
+hlevels-are-upper-closed {𝓤} {succ n} h-level x x' =
  hlevels-are-upper-closed (h-level x x')
 
 hlevels-are-closed-under-id : {n : ℕ} {X : 𝓤 ̇ }
                             → X is-of-hlevel n
                             → (x x' : X) → (x ＝ x') is-of-hlevel n
-hlevels-are-closed-under-id {𝓤} {zero} = contr-implies-id-contr
+hlevels-are-closed-under-id {𝓤} {0} = contr-implies-id-contr
 hlevels-are-closed-under-id {𝓤} {succ n} X-hlev x x' =
   hlevels-are-upper-closed (X-hlev x x')
 
@@ -118,7 +118,7 @@ hlevel-closed-under-retract : {n : ℕ} {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                             → retract X of Y
                             → Y is-of-hlevel n
                             → X is-of-hlevel n
-hlevel-closed-under-retract {𝓤} {𝓥} {zero} {X} {Y} X-retract-Y Y-contr =
+hlevel-closed-under-retract {𝓤} {𝓥} {0} {X} {Y} X-retract-Y Y-contr =
  singleton-closed-under-retract X Y X-retract-Y Y-contr
 hlevel-closed-under-retract {𝓤} {𝓥} {succ n} (r , s , H) Y-h-level x x' =
  hlevel-closed-under-retract (＝-retract s (r , H) x x') (Y-h-level (s x) (s x'))
@@ -155,7 +155,7 @@ hlevel-closed-under-Σ : {n : ℕ} {X : 𝓤 ̇ } (Y : X → 𝓥 ̇ )
                       → X is-of-hlevel n
                       → ((x : X) → (Y x) is-of-hlevel n)
                       → (Σ Y) is-of-hlevel n
-hlevel-closed-under-Σ {𝓤} {𝓥} {zero} Y l m = Σ-is-singleton l m
+hlevel-closed-under-Σ {𝓤} {𝓥} {0} Y l m = Σ-is-singleton l m
 hlevel-closed-under-Σ {𝓤} {𝓥} {succ n} Y l m (x , y) (x' , y') =
  hlevel-closed-under-equiv Σ-＝-≃
   (hlevel-closed-under-Σ
@@ -166,7 +166,7 @@ hlevel-closed-under-Σ {𝓤} {𝓥} {succ n} Y l m (x , y) (x' , y') =
 hlevel-closed-under-Π : {n : ℕ} {X : 𝓤 ̇ } (Y : X → 𝓥 ̇ )
                       → ((x : X) → (Y x) is-of-hlevel n)
                       → (Π Y) is-of-hlevel n
-hlevel-closed-under-Π {𝓤} {𝓥} {zero} Y m = Π-is-singleton fe m
+hlevel-closed-under-Π {𝓤} {𝓥} {0} Y m = Π-is-singleton fe m
 hlevel-closed-under-Π {𝓤} {𝓥} {succ n} Y m f g =
  hlevel-closed-under-equiv (happly-≃ fe)
   (hlevel-closed-under-Π (λ x → f x ＝ g x)
@@ -193,11 +193,11 @@ From univalence we can show that ℍ n is of level (n + 1), for all n : ℕ.
 
 \begin{code}
 
-equiv-preserves-hlevel : {n : ℕ} {X : 𝓤 ̇  } {Y : 𝓥 ̇  }
+equiv-preserves-hlevel : {n : ℕ} {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                        → X is-of-hlevel n
                        → Y is-of-hlevel n
                        → (X ≃ Y) is-of-hlevel n
-equiv-preserves-hlevel {𝓤} {𝓥} {zero} = ≃-is-singleton fe'
+equiv-preserves-hlevel {𝓤} {𝓥} {0} = ≃-is-singleton fe'
 equiv-preserves-hlevel {𝓤} {𝓥} {succ n} {X} {Y} X-h-lev Y-h-lev =
  hlevel-closed-under-embedding ⋆ (equiv-embeds-into-function fe')
   (hlevel-closed-under-Π (λ _ → Y) (λ _ → Y-h-lev))
