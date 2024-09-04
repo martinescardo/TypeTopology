@@ -449,7 +449,7 @@ general.
 \begin{code}
 
  modalities-preserve-compact
-  : (A : 𝓤 ̇  )
+  : (A : 𝓤 ̇ )
   → ○ (is-compact∙ A)
   → is-compact∙ (○ A)
  modalities-preserve-compact A c =

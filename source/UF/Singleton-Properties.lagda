@@ -44,7 +44,7 @@ singleton-closed-under-retract X Y (r , s , H) (c , C) = (r c , C')
         a                                ∎
 
 ≃-is-singleton : FunExt
-               → {X : 𝓤 ̇  } {Y : 𝓥 ̇  }
+               → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                → is-singleton X
                → is-singleton Y
                → is-singleton (X ≃ Y)

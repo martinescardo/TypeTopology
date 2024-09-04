@@ -29,7 +29,7 @@ where empty list represent heads.
 
 \begin{code}
 
-data Hydra : 𝓤₀ ̇  where
+data Hydra : 𝓤₀ ̇ where
  Node : List Hydra → Hydra
 
 pattern Head = Node []
@@ -51,13 +51,13 @@ implementing hydra regeneration mechanism.
 
 \begin{code}
 
-data HeadLocation₀ : List Hydra → 𝓤₀ ̇  where
+data HeadLocation₀ : List Hydra → 𝓤₀ ̇ where
  here : {hs : List Hydra}
       → HeadLocation₀ (Head ∷ hs)
  next : {h : Hydra} {hs : List Hydra}
       → HeadLocation₀ hs → HeadLocation₀ (h ∷ hs)
 
-data HeadLocation₁ : List Hydra → 𝓤₀ ̇  where
+data HeadLocation₁ : List Hydra → 𝓤₀ ̇ where
  here₀ : {hs hs' : List Hydra}
        → HeadLocation₀ hs → HeadLocation₁ (Node hs ∷ hs')
  here₁ : {hs hs' : List Hydra}

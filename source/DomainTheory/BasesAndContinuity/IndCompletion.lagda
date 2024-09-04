@@ -45,7 +45,7 @@ module Ind-completion
        where
 
  Ind : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
- Ind = Σ I ꞉ 𝓥 ̇  , Σ α ꞉ (I → ⟨ 𝓓 ⟩) , is-Directed 𝓓 α
+ Ind = Σ I ꞉ 𝓥 ̇ , Σ α ꞉ (I → ⟨ 𝓓 ⟩) , is-Directed 𝓓 α
 
  index-of-underlying-family : Ind → 𝓥 ̇
  index-of-underlying-family = pr₁

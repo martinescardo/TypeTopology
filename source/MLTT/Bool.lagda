@@ -64,7 +64,7 @@ true-right-||-absorptive false = refl
 infixl 10 _||_
 infixl 20 _&&_
 
-record Eq {𝓤} (X : 𝓤 ̇ ) : 𝓤 ̇  where
+record Eq {𝓤} (X : 𝓤 ̇ ) : 𝓤 ̇ where
   field
     _==_    : X → X → Bool
     ==-refl : (x : X) → (x == x) ＝ true

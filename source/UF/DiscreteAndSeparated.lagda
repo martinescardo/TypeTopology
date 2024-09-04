@@ -744,7 +744,7 @@ maps-of-props-into-isolated-points-are-embeddings f i j =
  maps-of-props-into-h-isolated-points-are-embeddings f i
   (λ p → isolated-is-h-isolated (f p) (j p))
 
-global-point-is-embedding : {X : 𝓤 ̇  } (f : 𝟙 {𝓥} → X)
+global-point-is-embedding : {X : 𝓤 ̇ } (f : 𝟙 {𝓥} → X)
                           → is-h-isolated (f ⋆)
                           → is-embedding f
 global-point-is-embedding f h =

@@ -411,7 +411,7 @@ Added 8 August 2024 by Tom de Jong.
 
 \begin{code}
 
-＝-retract : {X : 𝓤 ̇  } {Y : 𝓥 ̇  } (s : X → Y)
+＝-retract : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (s : X → Y)
            → is-section s
            → (x x' : X) → (x ＝ x') ◁ (s x ＝ s x')
 ＝-retract s s-sect x x' = ρ , ap s , η

@@ -23,7 +23,7 @@ data Fin : (n : ℕ) → 𝓤₀ ̇ where
  zero : ∀ {n} → Fin (succ n)
  succ : ∀ {n} → Fin n → Fin (succ n)
 
-data type : 𝓤₀ ̇  where
+data type : 𝓤₀ ̇ where
  ι : type
  _⇒_ : type → type → type
 

@@ -407,7 +407,7 @@ finite joins.
   𝓔-has-finite-joins : has-finite-joins 𝓔
   𝓔-has-finite-joins = sup-complete-dcpo-has-finite-joins 𝓔 𝓔-is-sup-complete
 
-  refined-basis : Σ B ꞉ 𝓥 ̇  , Σ β ꞉ (B → ⟨ 𝓔 ⟩) ,
+  refined-basis : Σ B ꞉ 𝓥 ̇ , Σ β ꞉ (B → ⟨ 𝓔 ⟩) ,
                   Σ p ꞉ is-small-basis 𝓔 β ,
                   basis-has-finite-joins 𝓔 β p 𝓔-has-finite-joins
   refined-basis = refine-basis-to-have-finite-joins 𝓔 βᴱₚᵣₑ
