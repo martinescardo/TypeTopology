@@ -14,11 +14,18 @@ open import Fin.Variation
 open import MLTT.Plus-Properties
 open import MLTT.Spartan
 open import Naturals.Order
+open import Notation.CanonicalMap
 open import Notation.Order
 open import UF.Embeddings
 
 ⟦_⟧ : {n : ℕ} → Fin n → ℕ
 ⟦_⟧ {n} = pr₁ ∘ Fin-prime n
+
+module _ {n : ℕ} where
+
+ instance
+  canonical-map-Fin-ℕ : Canonical-Map (Fin n) ℕ
+  ι {{canonical-map-Fin-ℕ}} = ⟦_⟧ {n}
 
 ⟦⟧-property : {n : ℕ} (k : Fin n) → ⟦ k ⟧ < n
 ⟦⟧-property {n} k = pr₂ (Fin-prime n k)

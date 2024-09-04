@@ -427,6 +427,10 @@ complement-intro₀ {₀} p = refl
 complement-one-gives-argument-not-one : {a : 𝟚} → complement a ＝ ₁ → a ≠ ₁
 complement-one-gives-argument-not-one {₀} _ = zero-is-not-one
 
+argument-not-one-gives-complement-one : {a : 𝟚} → a ≠ ₁ → complement a ＝ ₁
+argument-not-one-gives-complement-one {₀} ν = refl
+argument-not-one-gives-complement-one {₁} ν = 𝟘-elim (ν refl)
+
 complement-intro₁ : {a : 𝟚} → a ＝ ₁ → complement a ＝ ₀
 complement-intro₁ {₁} p = refl
 

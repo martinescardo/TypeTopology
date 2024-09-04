@@ -323,7 +323,7 @@ module _ where
  open import DomainTheory.Basics.Dcpo pt fe 𝓤₀
  open import DomainTheory.Basics.Miscelanea pt fe 𝓤₀
  open import DomainTheory.Taboos.ClassicalLiftingOfNaturalNumbers pt fe
- open import Taboos.LPO (λ 𝓤 𝓥 → fe)
+ open import Taboos.LPO
 
  Proposition-5-1 : is-ω-complete _⊑_ → LPO
  Proposition-5-1 = ℕ⊥-is-ω-complete-gives-LPO

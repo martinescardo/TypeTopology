@@ -27,7 +27,8 @@ open import CoNaturals.Type
 open import MLTT.Two-Properties
 open import Notation.CanonicalMap
 open import NotionsOfDecidability.Decidable
-open import NotionsOfDecidability.SemiDecidable
+open import NotionsOfDecidability.SemiDecidable hiding (LPO)
+open import Taboos.LPO
 open import TypeTopology.ADecidableQuantificationOverTheNaturals fe
 open import UF.DiscreteAndSeparated
 
@@ -621,49 +622,117 @@ module more-continuity-criteria (pt : propositional-truncations-exist) where
 
 Added 2nd September 2024.
 
-\begin{code}
-{-
-is-ℕ∞-extendable : (ℕ → ℕ) → 𝓤₀ ̇
-is-ℕ∞-extendable g = Σ f ꞉ (ℕ∞ → ℕ) , f ∘ ι ∼ g
+The type `ℕ∞-extension g` is that of all extensions of g : ℕ → ℕ to
+functions ℕ∞ → ℕ.
 
-¬WLPO-gives-that-being-ℕ∞-extendable-is-prop
+Our first question is when this type is a proposition (so that it
+could be called ℕ∞-extendability).
+
+\begin{code}
+
+ℕ∞-extension : (ℕ → ℕ) → 𝓤₀ ̇
+ℕ∞-extension g = Σ f ꞉ (ℕ∞ → ℕ) , f ∘ ι ∼ g
+
+¬WLPO-gives-ℕ∞-extension-is-prop
  : funext 𝓤₀ 𝓤₀
+ → (g : ℕ → ℕ)
  → ¬ WLPO
- → (g : ℕ → ℕ) → is-prop (is-ℕ∞-extendable g)
-¬WLPO-gives-that-being-ℕ∞-extendable-is-prop fe nwlpo g  (f , h) (f' , h') = V
+ → is-prop (ℕ∞-extension g)
+¬WLPO-gives-ℕ∞-extension-is-prop fe g nwlpo (f , h) (f' , h') = VI
  where
   I : (n : ℕ) → f (ι n) ＝ f' (ι n)
   I n = h n ∙ (h' n)⁻¹
 
-  I' :  ¬¬ (f ∞ ＝ f' ∞)
-  I' d = {!!}
+  p : ℕ∞ → 𝟚
+  p x = complement (χ＝ (f x) (f' x))
+
+  IIₙ : (n : ℕ) → p (ι n) ＝ ₀
+  IIₙ n = ap complement
+             (lr-implication (＝-agrees-with-＝[ℕ] (f (ι n)) (f' (ι n))) (I n))
+
+  III :  ¬¬ (f ∞ ＝ f' ∞)
+  III d = nwlpo (basic-discontinuity-taboo p (IIₙ , II∞))
    where
+    III₀ : ¬ (χ＝ (f ∞) (f' ∞) ＝ ₁)
+    III₀ = contrapositive (rl-implication (＝-agrees-with-＝[ℕ] (f ∞) (f' ∞))) d
 
+    II∞ : p ∞ ＝ ₁
+    II∞ = argument-not-one-gives-complement-one III₀
 
-  II : f ∞ ＝ f' ∞
-  II = ℕ-is-¬¬-separated (f ∞) (f' ∞) I'
+  IV : f ∞ ＝ f' ∞
+  IV = ℕ-is-¬¬-separated (f ∞) (f' ∞) III
 
-  III : f ∼ f'
-  III = ℕ∞-density fe ℕ-is-¬¬-separated I II
+  V : f ∼ f'
+  V = ℕ∞-density fe ℕ-is-¬¬-separated I IV
 
-  IV : f ＝ f'
-  IV = dfunext fe III
+  VI : (f , h) ＝ (f' , h')
+  VI = to-subtype-＝ (λ - → Π-is-prop fe (λ n → ℕ-is-set)) (dfunext fe V)
 
-  V : (f , h) ＝ (f' , h')
-  V = to-subtype-＝ (λ - → Π-is-prop fe (λ n → ℕ-is-set)) IV
-
-WLPO-gives-that-being-ℕ∞-extendable-is-not-prop
- : funext 𝓤₀ 𝓤₀
- → WLPO
- → (g : ℕ → ℕ) → ¬ is-prop (is-ℕ∞-extendable g)
-WLPO-gives-that-being-ℕ∞-extendable-is-not-prop = {!!}
+LPO-gives-that-being-ℕ∞-extendable-is-not-prop'
+ : FunExt
+ → LPO
+ → (g : ℕ → ℕ)
+ → Σ ((f₀ , h₀) , (f₁ , h₁)) ꞉ ℕ∞-extension g × ℕ∞-extension g , (f₀ ∞ ≠ f₁ ∞)
+LPO-gives-that-being-ℕ∞-extendable-is-not-prop' fe lpo g
+ = ((f 0 , h 0) ,
+    (f 1 , h 1)) ,
+    d
  where
-  f f' : ℕ∞ → ℕ
-  f = {!!}
-  f' = {!!}
--}
-\end{code}
+  F : ℕ → (x : ℕ∞) → is-decidable (Σ n ꞉ ℕ , x ＝ ι n) → ℕ
+  F i x (inl (n , p)) = g n
+  F i x (inr ν)       = i
 
+  f : ℕ → ℕ∞ → ℕ
+  f i x = F i x (lpo x)
+
+  H : (i k : ℕ) (d : is-decidable (Σ n ꞉ ℕ , ι k ＝ ι n))
+    → F i (ι k) d ＝ g k
+  H i k (inl (n , p)) = ap g (ℕ-to-ℕ∞-lc (p ⁻¹))
+  H i k (inr ν)       = 𝟘-elim (ν (k , refl))
+
+  h : (i : ℕ) → f i ∘ ι ∼ g
+  h i k = H i k (lpo (ι k))
+
+  L : (i : ℕ) (d : is-decidable (Σ n ꞉ ℕ , ∞ ＝ ι n))
+    → F i ∞ d ＝ i
+  L i (inl (n , p)) = 𝟘-elim (∞-is-not-finite n p)
+  L i (inr _)       = refl
+
+  d : f 0 ∞ ≠ f 1 ∞
+  d e = zero-not-positive 0
+         (0     ＝⟨ L 0 (lpo ∞) ⁻¹ ⟩
+          f 0 ∞ ＝⟨ e ⟩
+          f 1 ∞ ＝⟨ L 1 (lpo ∞) ⟩
+          1     ∎)
+
+LPO-gives-ℕ∞-extension-is-not-prop
+ : FunExt
+ → (g : ℕ → ℕ)
+ → LPO
+ → ¬ is-prop (ℕ∞-extension g)
+LPO-gives-ℕ∞-extension-is-not-prop fe g lpo i
+  = h I
+ where
+  I : Σ ((f₀ , h₀) , (f₁ , h₁)) ꞉ ℕ∞-extension g × ℕ∞-extension g , (f₀ ∞ ≠ f₁ ∞)
+  I = LPO-gives-that-being-ℕ∞-extendable-is-not-prop' fe lpo g
+
+  h : type-of I → 𝟘
+  h (((f₀ , h₀) , (f₁ , h₁)) , d) =
+   d (f₀ ∞ ＝⟨ ap (λ (- , _) → - ∞) II ⟩
+      f₁ ∞ ∎)
+   where
+    II : f₀ , h₀ ＝ f₁ , h₁
+    II = i (f₀ , h₀) (f₁ , h₁)
+
+ℕ∞-extension-is-prop-gives-¬LPO
+ : FunExt
+ → (g : ℕ → ℕ)
+ → is-prop (ℕ∞-extension g)
+ → ¬ LPO
+ℕ∞-extension-is-prop-gives-¬LPO fe g i lpo =
+ LPO-gives-ℕ∞-extension-is-not-prop fe g lpo i
+
+\end{code}
 
 TODO. Parametrize this module by a discrete type, rather than use 𝟚 or
 ℕ as the types of values of functions.

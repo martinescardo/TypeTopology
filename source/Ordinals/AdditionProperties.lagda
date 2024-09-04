@@ -1038,7 +1038,7 @@ also is not a successor ordinal unless LPO holds:
      VII : f ∞ ≺⟨ ω ⟩ f ∞
      VII = VI (f ∞) V
 
- open import Taboos.LPO fe
+ open import Taboos.LPO
 
  ℕ∞-successor-gives-LPO : (Σ α ꞉ Ordinal 𝓤₀ , (ℕ∞ₒ ＝ (α +ₒ 𝟙ₒ))) → LPO
  ℕ∞-successor-gives-LPO (α , p) = IV
@@ -1060,7 +1060,7 @@ also is not a successor ordinal unless LPO holds:
  open PropositionalTruncation pt
 
  ℕ∞-successor-gives-LPO' : (∃ α ꞉ Ordinal 𝓤₀ , (ℕ∞ₒ ＝ (α +ₒ 𝟙ₒ))) → LPO
- ℕ∞-successor-gives-LPO' = ∥∥-rec LPO-is-prop ℕ∞-successor-gives-LPO
+ ℕ∞-successor-gives-LPO' = ∥∥-rec (LPO-is-prop fe') ℕ∞-successor-gives-LPO
 
  LPO-gives-ℕ∞-successor : LPO → (Σ α ꞉ Ordinal 𝓤₀ , (ℕ∞ₒ ＝ (α +ₒ 𝟙ₒ)))
  LPO-gives-ℕ∞-successor lpo = ω , ℕ∞-is-successor₃ lpo
