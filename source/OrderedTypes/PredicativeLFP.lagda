@@ -1,4 +1,4 @@
-Ian Ray 01/09/2023 -- edited 09/04/2024.
+Ian Ray 1 September 2023 -- edited 9 April 2024
 
 We formalize Curi's notion of abstract inductive definition (in CZF) within
 the context of a sup-lattice L with small basis B (and β : B → L). An abstract
