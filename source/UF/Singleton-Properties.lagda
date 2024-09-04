@@ -1,4 +1,4 @@
-Ian Ray, 07/02/2024
+Ian Ray, 7 February 2024
 
 Singleton Properties. Of course there are alot more we can add to this file.
 For now we will show that singletons are closed under retracts and Σ types.
