@@ -1,4 +1,4 @@
-Martin Escardo and Ian Ray, 2 June 2024
+Ian Ray, 2 June 2024
 
 Minor modifications by Tom de Jong on 4 September 2024
 
