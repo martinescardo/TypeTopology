@@ -638,6 +638,11 @@ max-comm fe u v = ℕ∞-to-ℕ→𝟚-lc fe (dfunext fe (λ i → max𝟚-comm 
 max0-property : (u : ℕ∞) → max Zero u ＝ u
 max0-property u = refl
 
+max0-property' : funext₀ → (u : ℕ∞) → max u Zero ＝ u
+max0-property' fe u = max u Zero ＝⟨ max-comm fe u Zero ⟩
+                      max Zero u ＝⟨ max0-property u ⟩
+                      u       ∎
+
 max∞-property : (u : ℕ∞) → max ∞ u ＝ ∞
 max∞-property u = refl
 
@@ -645,6 +650,28 @@ max∞-property' : funext₀ → (u : ℕ∞) → max u ∞ ＝ ∞
 max∞-property' fe u = max u ∞ ＝⟨ max-comm fe u ∞ ⟩
                       max ∞ u ＝⟨ max∞-property u ⟩
                       ∞       ∎
+
+open import Naturals.Order renaming (max to maxℕ ; max-idemp to maxℕ-idemp)
+
+max-Succ : funext₀ → (u v : ℕ∞) → Succ (max u v) ＝ max (Succ u) (Succ v)
+max-Succ fe u v = ℕ∞-to-ℕ→𝟚-lc fe (dfunext fe f)
+ where
+  f : (i : ℕ)
+    → cons ₁ (λ j → max𝟚 (ι u j) (ι v j)) i
+    ＝ max𝟚 (cons ₁ (ι u) i) (cons ₁ (ι v) i)
+  f 0        = refl
+  f (succ i) = refl
+
+max-fin : funext₀ → (m n : ℕ) → ι (maxℕ m n) ＝ max (ι m) (ι n)
+max-fin fe 0 n = (max0-property (ι n))⁻¹
+max-fin fe (succ m) 0 = max0-property' fe (ι (succ m)) ⁻¹
+max-fin fe (succ m) (succ n) =
+ ι (maxℕ (succ m) (succ n))    ＝⟨ refl ⟩
+ ι (succ (maxℕ m n))           ＝⟨ refl ⟩
+ Succ (ι (maxℕ m n))           ＝⟨ ap Succ (max-fin fe m n) ⟩
+ Succ (max (ι m) (ι n))        ＝⟨ max-Succ fe (ι m) (ι n) ⟩
+ max (Succ (ι m)) (Succ (ι n)) ＝⟨ refl ⟩
+ max (ι (succ m)) (ι (succ n)) ∎
 
 max-idemp : funext₀ → (u : ℕ∞) → max u u ＝ u
 max-idemp fe₀ u = ℕ∞-to-ℕ→𝟚-lc fe₀ (dfunext fe₀ (λ i → max𝟚-idemp (ι u i)))

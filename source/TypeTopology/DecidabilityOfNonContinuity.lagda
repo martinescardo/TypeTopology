@@ -288,7 +288,10 @@ It is shown in [1] that negative consistent axioms can be postulated
 in MLTT without loss of canonicity, and Andreas Abel filled important
 gaps and formalized this in Agda [2] using a logical-relations
 technique. Hence we can, if we wish, postulate ¬ WLPO without loss of
-canonicity, and get a weak continuity axiom for free.
+canonicity, and get a weak continuity axiom for free. But notice that
+we can also postulate ¬¬ WLPO without loss of continuity, to get a
+weak classical axiom for free. Of course, we can't postulate both at
+the same time.
 
 [1] T. Coquand, N.A. Danielsson, M.H. Escardo, U. Norell and Chuangjie Xu.
 Negative consistent axioms can be postulated without loss of canonicity.
@@ -677,69 +680,65 @@ contrapositive, ¬ WLPO is stronger than ¬ LPO:
   VI : (f , h) ＝ (f' , h')
   VI = to-subtype-＝ (λ - → Π-is-prop fe (λ n → ℕ-is-set)) (dfunext fe V)
 
-LPO-gives-that-being-ℕ∞-extendable-is-not-prop'
- : FunExt
+ℕ∞-extension-is-not-prop-gives-¬¬WLPO
+ : funext 𝓤₀ 𝓤₀
  → (g : ℕ → ℕ)
- → LPO
- → Σ ((f₀ , h₀) , (f₁ , h₁)) ꞉ ℕ∞-extension g × ℕ∞-extension g , (f₀ ∞ ≠ f₁ ∞)
-LPO-gives-that-being-ℕ∞-extendable-is-not-prop' fe g lpo
- = ((f 0 , h 0) ,
-    (f 1 , h 1)) ,
-    d
+ → ¬ is-prop (ℕ∞-extension g)
+ → ¬¬ WLPO
+ℕ∞-extension-is-not-prop-gives-¬¬WLPO fe g
+ = contrapositive (¬WLPO-gives-ℕ∞-extension-is-prop fe g)
+
+LPO-gives-ℕ∞-extension
+ : LPO
+ → (g : ℕ → ℕ) (y : ℕ)
+ → Σ (f , h) ꞉ ℕ∞-extension g , f ∞ ＝ y
+LPO-gives-ℕ∞-extension lpo g y
+ = (f , h) , e
  where
-  F : ℕ → (x : ℕ∞) → is-decidable (Σ n ꞉ ℕ , x ＝ ι n) → ℕ
-  F i x (inl (n , p)) = g n
-  F i x (inr ν)       = i
+  F : (x : ℕ∞) → is-decidable (Σ n ꞉ ℕ , x ＝ ι n) → ℕ
+  F x (inl (n , p)) = g n
+  F x (inr ν)       = y
 
-  f : ℕ → ℕ∞ → ℕ
-  f i x = F i x (lpo x)
+  f : ℕ∞ → ℕ
+  f x = F x (lpo x)
 
-  H : (i k : ℕ) (d : is-decidable (Σ n ꞉ ℕ , ι k ＝ ι n))
-    → F i (ι k) d ＝ g k
-  H i k (inl (n , p)) = ap g (ℕ-to-ℕ∞-lc (p ⁻¹))
-  H i k (inr ν)       = 𝟘-elim (ν (k , refl))
+  H : (k : ℕ) (d : is-decidable (Σ n ꞉ ℕ , ι k ＝ ι n)) → F (ι k) d ＝ g k
+  H k (inl (n , p)) = ap g (ℕ-to-ℕ∞-lc (p ⁻¹))
+  H k (inr ν)       = 𝟘-elim (ν (k , refl))
 
-  h : (i : ℕ) → f i ∘ ι ∼ g
-  h i k = H i k (lpo (ι k))
+  h : f ∘ ι ∼ g
+  h k = H k (lpo (ι k))
 
-  L : (i : ℕ) (d : is-decidable (Σ n ꞉ ℕ , ∞ ＝ ι n))
-    → F i ∞ d ＝ i
-  L i (inl (n , p)) = 𝟘-elim (∞-is-not-finite n p)
-  L i (inr _)       = refl
+  L : (d : is-decidable (Σ n ꞉ ℕ , ∞ ＝ ι n)) → F ∞ d ＝ y
+  L (inl (n , p)) = 𝟘-elim (∞-is-not-finite n p)
+  L (inr _)       = refl
 
-  d : f 0 ∞ ≠ f 1 ∞
-  d e = zero-not-positive 0
-         (0     ＝⟨ L 0 (lpo ∞) ⁻¹ ⟩
-          f 0 ∞ ＝⟨ e ⟩
-          f 1 ∞ ＝⟨ L 1 (lpo ∞) ⟩
-          1     ∎)
+  e : f ∞ ＝ y
+  e = L (lpo ∞)
 
 LPO-gives-ℕ∞-extension-is-not-prop
- : FunExt
- → (g : ℕ → ℕ)
+ : (g : ℕ → ℕ)
  → LPO
  → ¬ is-prop (ℕ∞-extension g)
-LPO-gives-ℕ∞-extension-is-not-prop fe g lpo i
-  = h I
+LPO-gives-ℕ∞-extension-is-not-prop g lpo ext-is-prop
+  = I (LPO-gives-ℕ∞-extension lpo g 0) (LPO-gives-ℕ∞-extension lpo g 1)
  where
-  I : Σ ((f₀ , h₀) , (f₁ , h₁)) ꞉ ℕ∞-extension g × ℕ∞-extension g , (f₀ ∞ ≠ f₁ ∞)
-  I = LPO-gives-that-being-ℕ∞-extendable-is-not-prop' fe g lpo
-
-  h : type-of I → 𝟘
-  h (((f₀ , h₀) , (f₁ , h₁)) , d) =
-   d (f₀ ∞ ＝⟨ ap (λ (- , _) → - ∞) II ⟩
-      f₁ ∞ ∎)
-   where
-    II : f₀ , h₀ ＝ f₁ , h₁
-    II = i (f₀ , h₀) (f₁ , h₁)
+  I : (Σ (f  , h ) ꞉ ℕ∞-extension g , f  ∞ ＝ 0)
+    → (Σ (f' , h') ꞉ ℕ∞-extension g , f' ∞ ＝ 1)
+    → 𝟘
+  I ((f , h) , e) ((f' , h') , e') =
+   zero-not-positive 0
+    (0   ＝⟨ e ⁻¹ ⟩
+     f  ∞ ＝⟨ ap ((λ (- , _) → - ∞)) (ext-is-prop (f , h) (f' , h')) ⟩
+     f' ∞ ＝⟨ e' ⟩
+     1    ∎)
 
 ℕ∞-extension-is-prop-gives-¬LPO
- : FunExt
- → (g : ℕ → ℕ)
+ : (g : ℕ → ℕ)
  → is-prop (ℕ∞-extension g)
  → ¬ LPO
-ℕ∞-extension-is-prop-gives-¬LPO fe g i lpo =
- LPO-gives-ℕ∞-extension-is-not-prop fe g lpo i
+ℕ∞-extension-is-prop-gives-¬LPO g i lpo =
+ LPO-gives-ℕ∞-extension-is-not-prop g lpo i
 
 \end{code}
 
@@ -747,11 +746,56 @@ So we have the chain of implications
 
     ¬ WLPO → is-prop (ℕ∞-extension g) → ¬ LPO.
 
-Do we have the chain of implications
+Notice that LPO → WLPO, and so ¬ WLPO → ¬ LPO in any case, and I don't
+know whether the implication ¬ WLPO → ¬ LPO can be reversed in general
+(I would guess not).
 
-    LPO → ¬ is-prop (ℕ∞-extension g) → WLPO?
+We also have the chain of implications
 
-We have already proved the first implication, so the question is
-whether
+    LPO → ¬ is-prop (ℕ∞-extension g) → ¬¬ WLPO.
 
-    ¬ is-prop (ℕ∞-extension g) → WLPO.
+So the type ¬ is-prop (ℕ∞-extension g) sits between two constructive
+taboos and so is an inherently classical statement.
+
+Our next question is when the type `ℕ∞-extension g` is pointed,
+without assuming classical or anticlassical axioms.
+
+\begin{code}
+
+open import Naturals.Order renaming (max to maxℕ ; max-idemp to maxℕ-idemp)
+
+eventually-constant : (ℕ → ℕ) → 𝓤₀ ̇
+eventually-constant g = Σ m ꞉ ℕ , ((n : ℕ) → g (maxℕ m n) ＝ g m)
+
+continuous-extension-gives-eventual-constancy
+ : (g : ℕ → ℕ)
+   ((f , h) : ℕ∞-extension g)
+ → continuous f
+ → eventually-constant g
+continuous-extension-gives-eventual-constancy g (f , h) (m , a)
+ = m , (λ n → g (maxℕ m n)        ＝⟨ (h (maxℕ m n))⁻¹ ⟩
+              f (ι (maxℕ m n))    ＝⟨ ap f (max-fin fe m n) ⟩
+              f (max (ι m) (ι n)) ＝⟨ a n ⟩
+              f ∞                 ＝⟨ (a m)⁻¹ ⟩
+              f (max (ι m) (ι m)) ＝⟨ ap f (max-idemp fe (ι m)) ⟩
+              f (ι m)             ＝⟨ h m ⟩
+              g m                 ∎)
+
+pointed-consequence
+ : (g : ℕ → ℕ)
+ → ℕ∞-extension g
+ → WLPO + ¬¬ eventually-constant g
+pointed-consequence g (f , h) = III
+ where
+  II : is-decidable (¬ continuous f) → WLPO + ¬¬ eventually-constant g
+  II (inl l) = inl (noncontinuous-map-gives-WLPO f l)
+  II (inr r) = inr (¬¬-functor
+                     (continuous-extension-gives-eventual-constancy g (f , h)) r)
+
+  III : WLPO + ¬¬ eventually-constant g
+  III = II (Theorem-3·2 f)
+
+\end{code}
+
+To be continued. We can actually get a much stronger consequence from
+the pointedness of the type of extensions.
