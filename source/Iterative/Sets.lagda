@@ -651,7 +651,7 @@ module _ (pt : propositional-truncations-exist) where
 
   private
    module union-construction
-          {I : 𝓤 ̇  }
+          {I : 𝓤 ̇ }
           (𝓐 : I → 𝕍)
          where
 
@@ -683,12 +683,12 @@ module _ (pt : propositional-truncations-exist) where
                          (⌜⌝-is-equiv im⁻-≃-im))
                        π-is-embedding
 
-  ⋃ : {I : 𝓤 ̇  } (𝓐 : I → 𝕍) → 𝕍
+  ⋃ : {I : 𝓤 ̇ } (𝓐 : I → 𝕍) → 𝕍
   ⋃ {I} 𝓐 = 𝕍-ssup im⁻ π⁻ π⁻-is-embedding
    where
     open union-construction 𝓐
 
-  ⋃-behaviour : {I : 𝓤 ̇  } (𝓐 : I → 𝕍) (B : 𝕍)
+  ⋃-behaviour : {I : 𝓤 ̇ } (𝓐 : I → 𝕍) (B : 𝕍)
               → B ∈ ⋃ 𝓐 ≃ (∃ i ꞉ I , B ＝ 𝓐 i)
   ⋃-behaviour {I} 𝓐 B =
    B ∈ ⋃ 𝓐                                    ≃⟨ ∈-behaviour' B (⋃ 𝓐) ⟩

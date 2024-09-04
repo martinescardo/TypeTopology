@@ -98,15 +98,15 @@ it:
 
 \begin{code}
 
-data structure₁ (S : 𝓤  ̇  → 𝓥 ̇ ) : 𝑻 → 𝓤 ⁺ ⊔ 𝓥 ̇ where
+data structure₁ (S : 𝓤  ̇ → 𝓥 ̇ ) : 𝑻 → 𝓤 ⁺ ⊔ 𝓥 ̇ where
  []  : structure₁ S []
  _∷_ : {X : 𝓤  ̇ } {Xf : X → 𝑻} → S X → ((x : X) → structure₁ S (Xf x)) → structure₁ S (X ∷ Xf)
 
-structure-up : (S : 𝓤 ̇  → 𝓥 ̇ ) (Xt : 𝑻) → structure S Xt → structure₁ S Xt
+structure-up : (S : 𝓤 ̇ → 𝓥 ̇ ) (Xt : 𝑻) → structure S Xt → structure₁ S Xt
 structure-up S []      ⟨⟩         = []
 structure-up S (X ∷ Xf) (s :: sf) = s ∷ (λ x → structure-up S (Xf x) (sf x))
 
-structure-down : (S : 𝓤 ̇  → 𝓥 ̇ ) (Xt : 𝑻) → structure₁ S Xt → structure S Xt
+structure-down : (S : 𝓤 ̇ → 𝓥 ̇ ) (Xt : 𝑻) → structure₁ S Xt → structure S Xt
 structure-down S []      []        = ⟨⟩
 structure-down S (X ∷ Xf) (s ∷ sf) = s :: (λ x → structure-down S (Xf x) (sf x))
 
@@ -121,7 +121,7 @@ _is-hereditarily_ : 𝑻 → (𝓤 ̇ → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥  ̇
 (X ∷ Xf) is-hereditarily P = P X × ((x : X) → Xf x is-hereditarily P)
 
 being-hereditary-is-prop : Fun-Ext
-                         → (P : 𝓤 ̇  → 𝓥 ̇ )
+                         → (P : 𝓤 ̇ → 𝓥 ̇ )
                          → ((X : 𝓤 ̇ ) → is-prop (P X))
                          → (Xt : 𝑻) → is-prop (Xt is-hereditarily P)
 being-hereditary-is-prop fe P P-is-prop-valued [] = 𝟙-is-prop

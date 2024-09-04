@@ -32,11 +32,11 @@ and show that the following are equivalent:
 (1) 𝕀 is injective.
 (2) 𝕀 is a retract of 𝓤.
 (3) All propositions are projective:
-      (P : 𝓤 ̇  ) (Y : P → 𝓤 ̇  ) → is-prop P
+      (P : 𝓤 ̇ ) (Y : P → 𝓤 ̇ ) → is-prop P
                                 → ((p : P) → ∥ Y p ∥)
                                 → ∥ (p : P) → Y p ∥.
 (4) Every type has unspecified split support:
-      (X : 𝓤 ̇  ) → ∥ ∥ X ∥ → X ∥.
+      (X : 𝓤 ̇ ) → ∥ ∥ X ∥ → X ∥.
 
 The equivalence of (3) and (4) was shown in [Theorem 7.7, 1].
 
@@ -124,7 +124,7 @@ For convenience we also write 𝕀 for this type in this file.
 \begin{code}
 
 Inhabited : 𝓤 ⁺ ̇
-Inhabited = Σ X ꞉ 𝓤 ̇  , ∥ X ∥
+Inhabited = Σ X ꞉ 𝓤 ̇ , ∥ X ∥
 
 private
  𝕀 : 𝓤 ⁺ ̇
@@ -141,13 +141,13 @@ top of this file.
 \begin{code}
 
 Propositions-Are-Projective : 𝓤 ⁺ ̇
-Propositions-Are-Projective = (P : 𝓤 ̇  ) (Y : P → 𝓤 ̇  )
+Propositions-Are-Projective = (P : 𝓤 ̇ ) (Y : P → 𝓤 ̇ )
                             → is-prop P
                             → ((p : P) → ∥ Y p ∥)
                             → ∥ ((p : P) → Y p) ∥
 
 Unspecified-Split-Support : 𝓤 ⁺ ̇
-Unspecified-Split-Support = (X : 𝓤 ̇  ) → ∥ (∥ X ∥ → X) ∥
+Unspecified-Split-Support = (X : 𝓤 ̇ ) → ∥ (∥ X ∥ → X) ∥
 
 \end{code}
 
@@ -157,7 +157,7 @@ implications at the end.
 \begin{code}
 
 unspecified-split-support-gives-retract : Unspecified-Split-Support
-                                        → retract 𝕀 of (𝓤 ̇  )
+                                        → retract 𝕀 of (𝓤 ̇ )
 unspecified-split-support-gives-retract uss = ρ , σ , ρσ
  where
   σ : 𝕀 → 𝓤 ̇
@@ -223,8 +223,8 @@ For convenience, we provide a summary of the chain of implications:
 
 \begin{code}
 
-summary : (Unspecified-Split-Support → retract 𝕀 of (𝓤 ̇  ))
-        × (retract 𝕀 of (𝓤 ̇  ) → ainjective-type 𝕀 𝓤 𝓤)
+summary : (Unspecified-Split-Support → retract 𝕀 of (𝓤 ̇ ))
+        × (retract 𝕀 of (𝓤 ̇ ) → ainjective-type 𝕀 𝓤 𝓤)
         × (ainjective-type 𝕀 𝓤 𝓤 → Propositions-Are-Projective)
         × (Propositions-Are-Projective → Unspecified-Split-Support)
 summary = unspecified-split-support-gives-retract
@@ -259,17 +259,17 @@ injective.
 \begin{code}
 
 𝓤∙ : 𝓤 ⁺ ̇
-𝓤∙ = Σ X ꞉ 𝓤 ̇  , X
+𝓤∙ = Σ X ꞉ 𝓤 ̇ , X
 
 𝓤∙-is-injective : ainjective-type 𝓤∙ 𝓤 𝓤
 𝓤∙-is-injective = ainjectivity-of-type-of-pointed-types
 
 𝓤∙-as-Σ-type-over-𝕀 : 𝓤∙ ≃ (Σ I ꞉ 𝕀 , ⟨ I ⟩)
 𝓤∙-as-Σ-type-over-𝕀 = 𝓤∙                      ≃⟨ Σ-cong e ⟩
-                      (Σ X ꞉ 𝓤 ̇  , ∥ X ∥ × X) ≃⟨ ≃-sym Σ-assoc ⟩
+                      (Σ X ꞉ 𝓤 ̇ , ∥ X ∥ × X) ≃⟨ ≃-sym Σ-assoc ⟩
                       (Σ I ꞉ 𝕀 , ⟨ I ⟩)       ■
  where
-  e : (X : 𝓤 ̇  ) → X ≃ ∥ X ∥ × X
+  e : (X : 𝓤 ̇ ) → X ≃ ∥ X ∥ × X
   e X = qinveq f (g , η , ε)
    where
     f : X → ∥ X ∥ × X
@@ -295,9 +295,9 @@ propositional truncation and double negation.
 \begin{code}
 
 Non-Empty : 𝓤 ⁺ ̇
-Non-Empty = Σ X ꞉ 𝓤 ̇  , is-nonempty X
+Non-Empty = Σ X ꞉ 𝓤 ̇ , is-nonempty X
 
-Non-Empty-retract : retract Non-Empty of (𝓤 ̇  )
+Non-Empty-retract : retract Non-Empty of (𝓤 ̇ )
 Non-Empty-retract = ρ , σ , ρσ
  where
   ρ : 𝓤 ̇ → Non-Empty
@@ -325,7 +325,7 @@ Non-Empty-retract = ρ , σ , ρσ
 
 Non-Empty-is-injective : ainjective-type Non-Empty 𝓤 𝓤
 Non-Empty-is-injective =
- retract-of-ainjective Non-Empty (𝓤 ̇  )
+ retract-of-ainjective Non-Empty (𝓤 ̇ )
                        (universes-are-ainjective-Π (ua 𝓤))
                        Non-Empty-retract
 

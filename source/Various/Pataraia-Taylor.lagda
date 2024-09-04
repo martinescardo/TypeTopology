@@ -375,7 +375,7 @@ prove it as follows, using the above module Taylor again.
 \begin{code}
 
  lfp-induction :
-    (P : ⟨ 𝓓 ⟩ → 𝓤 ̇  )
+    (P : ⟨ 𝓓 ⟩ → 𝓤 ̇ )
   → ((x : ⟨ 𝓓 ⟩) → is-prop (P x))
   → P ⊥
   → is-closed-under-directed-sups 𝓓 P
@@ -383,7 +383,7 @@ prove it as follows, using the above module Taylor again.
   → P lfp
 
  module fixed-point-induction
-         (P : ⟨ 𝓓 ⟩ → 𝓤 ̇  )
+         (P : ⟨ 𝓓 ⟩ → 𝓤 ̇ )
          (P-is-prop-valued : (x : ⟨ 𝓓 ⟩) → is-prop (P x))
          (P-holds-at-⊥ : P ⊥)
          (P-is-closed-under-directed-sups : is-closed-under-directed-sups 𝓓 P)

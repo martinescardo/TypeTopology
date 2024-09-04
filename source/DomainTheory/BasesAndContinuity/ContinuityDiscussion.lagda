@@ -10,9 +10,9 @@ Johnstone and André Joyal, we discuss the notions
 (1) and (2) are defined in Continuity.lagda and (3) is defined and examined here.
 The notions (1)-(3) have the following shapes:
 
-(1)   Π (x : D) →   Σ I : 𝓥 ̇  , Σ α : I → D , α is-directed × ... × ...
-(2) ∥ Π (x : D) →   Σ I : 𝓥 ̇  , Σ α : I → D , α is-directed × ... × ... ∥
-(3)   Π (x : D) → ∥ Σ I : 𝓥 ̇  , Σ α : I → D , α is-directed × ... × ... ∥
+(1)   Π (x : D) →   Σ I : 𝓥 ̇ , Σ α : I → D , α is-directed × ... × ...
+(2) ∥ Π (x : D) →   Σ I : 𝓥 ̇ , Σ α : I → D , α is-directed × ... × ... ∥
+(3)   Π (x : D) → ∥ Σ I : 𝓥 ̇ , Σ α : I → D , α is-directed × ... × ... ∥
 
 So (2) and (3) are propositions, but (1) isn't. We illustrate (1)-(3) by
 discussion them in terms of left adjoints. In these discussions, the
@@ -76,7 +76,7 @@ using Σ-types.
 structurally-continuous-Σ : (𝓓 : DCPO {𝓤} {𝓣}) → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
 structurally-continuous-Σ 𝓓 =
    (x : ⟨ 𝓓 ⟩)
- → Σ I ꞉ 𝓥 ̇  , Σ α ꞉ (I → ⟨ 𝓓 ⟩) , (is-way-upperbound 𝓓 x α)
+ → Σ I ꞉ 𝓥 ̇ , Σ α ꞉ (I → ⟨ 𝓓 ⟩) , (is-way-upperbound 𝓓 x α)
                                  × (Σ δ ꞉ is-Directed 𝓓 α , ∐ 𝓓 δ ＝ x)
 
 
@@ -233,7 +233,7 @@ trying to mimick the proof in Continuity.lagda.
 is-pseudocontinuous-dcpo : (𝓓 : DCPO {𝓤} {𝓣}) → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
 is-pseudocontinuous-dcpo 𝓓 =
    (x : ⟨ 𝓓 ⟩)
- → ∥ Σ I ꞉ 𝓥 ̇  , Σ α ꞉ (I → ⟨ 𝓓 ⟩) , (is-way-upperbound 𝓓 x α)
+ → ∥ Σ I ꞉ 𝓥 ̇ , Σ α ꞉ (I → ⟨ 𝓓 ⟩) , (is-way-upperbound 𝓓 x α)
                                    × (Σ δ ꞉ is-Directed 𝓓 α , ∐ 𝓓 δ ＝ x) ∥
 
 being-pseudocontinuous-dcpo-is-prop : (𝓓 : DCPO {𝓤} {𝓣})
@@ -287,7 +287,7 @@ module _
   where
    module construction (x : ⟨ 𝓓 ⟩) where
     str-cont : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
-    str-cont = (Σ I ꞉ 𝓥 ̇  , Σ α ꞉ (I → ⟨ 𝓓 ⟩)
+    str-cont = (Σ I ꞉ 𝓥 ̇ , Σ α ꞉ (I → ⟨ 𝓓 ⟩)
                           , is-way-upperbound 𝓓 x α
                           × (Σ δ ꞉ is-Directed 𝓓 α , ∐ 𝓓 δ ＝ x))
     κ : str-cont → Ind
@@ -354,7 +354,7 @@ module _
   ∥∥-functor lemma (η-is-surjection (L x))
    where
     lemma : (Σ σ ꞉ Ind , η σ ＝ L x)
-          → Σ I ꞉ 𝓥 ̇  , Σ α ꞉ (I → ⟨ 𝓓 ⟩) , is-way-upperbound 𝓓 x α
+          → Σ I ꞉ 𝓥 ̇ , Σ α ꞉ (I → ⟨ 𝓓 ⟩) , is-way-upperbound 𝓓 x α
                                           × (Σ δ ꞉ is-Directed 𝓓 α , ∐ 𝓓 δ ＝ x)
     lemma (σ@(I , α , δ) , e) = I , α , pr₂ approx , (δ , pr₁ approx)
      where

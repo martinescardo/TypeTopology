@@ -16,7 +16,7 @@ open import Naturals.Properties
 open import Naturals.Order hiding (minus)
 open import Notation.Order
 
-data List {𝓤} (X : 𝓤 ̇ ) : 𝓤 ̇  where
+data List {𝓤} (X : 𝓤 ̇ ) : 𝓤 ̇ where
  [] : List X
  _∷_ : X → List X → List X
 
@@ -108,7 +108,7 @@ empty : {X : 𝓤 ̇ } → List X → Bool
 empty []       = true
 empty (x ∷ xs) = false
 
-data member {X : 𝓤 ̇ } : X → List X → 𝓤 ̇  where
+data member {X : 𝓤 ̇ } : X → List X → 𝓤 ̇ where
  in-head : {x : X}   {xs : List X} → member x (x ∷ xs)
  in-tail : {x y : X} {xs : List X} → member x xs → member x (y ∷ xs)
 
@@ -133,10 +133,10 @@ member'-map : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (x : X) (xs : List X)
 member'-map f x' (x ∷ xs) (inl p) = inl (ap f p)
 member'-map f x' (x ∷ xs) (inr m) = inr (member'-map f x' xs m)
 
-listed : 𝓤 ̇  → 𝓤 ̇
+listed : 𝓤 ̇ → 𝓤 ̇
 listed X = Σ xs ꞉ List X , ((x : X) → member x xs)
 
-listed⁺ : 𝓤 ̇  → 𝓤 ̇
+listed⁺ : 𝓤 ̇ → 𝓤 ̇
 listed⁺ X = X × listed X
 
 type-from-list : {X : 𝓤  ̇} → List X → 𝓤  ̇

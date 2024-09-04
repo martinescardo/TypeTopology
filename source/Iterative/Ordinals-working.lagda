@@ -80,7 +80,7 @@ module 𝕍-to-Ord-construction
  𝕍-to-Ord : 𝕍 → Ord
  𝕍-to-Ord = 𝕍-induction (λ _ → Ord) f
   where
-   f : (X : 𝓤 ̇  ) (ϕ : X → 𝕍) (e : is-embedding ϕ)
+   f : (X : 𝓤 ̇ ) (ϕ : X → 𝕍) (e : is-embedding ϕ)
      → ((x : X) → Ord) → Ord
    f X ϕ e r = sup (λ x → r x +ₒ 𝟙ₒ)
 

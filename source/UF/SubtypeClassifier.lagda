@@ -10,6 +10,7 @@ notions and properties are in UF.SubtypeClassifier-Properties.
 module UF.SubtypeClassifier where
 
 open import MLTT.Spartan
+open import Notation.CanonicalMap
 open import UF.Base
 open import UF.Equiv
 open import UF.FunExt
@@ -23,6 +24,11 @@ open import UF.Subsingletons-FunExt
 
 _holds : Ω 𝓤 → 𝓤 ̇
 (P , i) holds = P
+
+module _ {𝓤 : Universe} where
+ instance
+  canonical-map-Ω-𝓤 : Canonical-Map (Ω 𝓤) (𝓤 ̇ )
+  ι {{canonical-map-Ω-𝓤}} = _holds
 
 holds-is-prop : (p : Ω 𝓤) → is-prop (p holds)
 holds-is-prop (P , i) = i

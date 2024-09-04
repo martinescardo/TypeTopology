@@ -14,6 +14,9 @@ Based on the paper
 The title of this paper is a bit misleading. It should probably have
 been called "Decidability of non-continuity".
 
+TODO. Parametrize this module by a discrete type, rather than use 𝟚 or
+ℕ as the types of values of functions.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K --lossy-unification #-}
@@ -628,6 +631,12 @@ functions ℕ∞ → ℕ.
 Our first question is when this type is a proposition (so that it
 could be called ℕ∞-extendability).
 
+Notice that LPO is stronger than WLPO, and hence, by taking the
+contrapositive, ¬ WLPO is stronger than ¬ LPO:
+
+     LPO →  WLPO
+  ¬ WLPO → ¬ LPO
+
 \begin{code}
 
 ℕ∞-extension : (ℕ → ℕ) → 𝓤₀ ̇
@@ -670,10 +679,10 @@ could be called ℕ∞-extendability).
 
 LPO-gives-that-being-ℕ∞-extendable-is-not-prop'
  : FunExt
- → LPO
  → (g : ℕ → ℕ)
+ → LPO
  → Σ ((f₀ , h₀) , (f₁ , h₁)) ꞉ ℕ∞-extension g × ℕ∞-extension g , (f₀ ∞ ≠ f₁ ∞)
-LPO-gives-that-being-ℕ∞-extendable-is-not-prop' fe lpo g
+LPO-gives-that-being-ℕ∞-extendable-is-not-prop' fe g lpo
  = ((f 0 , h 0) ,
     (f 1 , h 1)) ,
     d
@@ -714,7 +723,7 @@ LPO-gives-ℕ∞-extension-is-not-prop fe g lpo i
   = h I
  where
   I : Σ ((f₀ , h₀) , (f₁ , h₁)) ꞉ ℕ∞-extension g × ℕ∞-extension g , (f₀ ∞ ≠ f₁ ∞)
-  I = LPO-gives-that-being-ℕ∞-extendable-is-not-prop' fe lpo g
+  I = LPO-gives-that-being-ℕ∞-extendable-is-not-prop' fe g lpo
 
   h : type-of I → 𝟘
   h (((f₀ , h₀) , (f₁ , h₁)) , d) =
@@ -734,5 +743,15 @@ LPO-gives-ℕ∞-extension-is-not-prop fe g lpo i
 
 \end{code}
 
-TODO. Parametrize this module by a discrete type, rather than use 𝟚 or
-ℕ as the types of values of functions.
+So we have the chain of implications
+
+    ¬ WLPO → is-prop (ℕ∞-extension g) → ¬ LPO.
+
+Do we have the chain of implications
+
+    LPO → ¬ is-prop (ℕ∞-extension g) → WLPO?
+
+We have already proved the first implication, so the question is
+whether
+
+    ¬ is-prop (ℕ∞-extension g) → WLPO.

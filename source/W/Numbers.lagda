@@ -68,7 +68,7 @@ elements of 𝓝, or, equivalently, as a partial element of 𝓝.
 
 \begin{code}
 
- _^_ : 𝓤 ̇  → Ω 𝓥 → 𝓥 ⊔ 𝓤 ̇
+ _^_ : 𝓤 ̇ → Ω 𝓥 → 𝓥 ⊔ 𝓤 ̇
  X ^ p = p holds → X
 
  Suc : (p : Ω 𝓥) → 𝓝 ^ p → 𝓝

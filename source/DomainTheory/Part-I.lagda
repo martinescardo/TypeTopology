@@ -59,18 +59,18 @@ Section 2
 
 \begin{code}
 
-Definition-2-1 : (𝓤 : Universe) (X : 𝓥 ̇  ) → 𝓤 ⁺ ⊔ 𝓥 ̇
+Definition-2-1 : (𝓤 : Universe) (X : 𝓥 ̇ ) → 𝓤 ⁺ ⊔ 𝓥 ̇
 Definition-2-1 𝓤 X = X is 𝓤 small
 
 Definition-2-2 : (𝓤 : Universe) → 𝓤 ⁺ ̇
 Definition-2-2 𝓤 = Ω 𝓤
 
-Definition-2-3 : (𝓥 : Universe) (X : 𝓤 ̇  ) → 𝓥 ⁺ ⊔ 𝓤 ̇
+Definition-2-3 : (𝓥 : Universe) (X : 𝓤 ̇ ) → 𝓥 ⁺ ⊔ 𝓤 ̇
 Definition-2-3 𝓥 X = 𝓟 {𝓥} X
 
-Definition-2-4 : (𝓥 : Universe) (X : 𝓤 ̇  )
-               → (X → 𝓟 {𝓥} X → 𝓥 ̇  )
-               × (𝓟 {𝓥} X → 𝓟 {𝓥} X → 𝓥 ⊔ 𝓤 ̇  )
+Definition-2-4 : (𝓥 : Universe) (X : 𝓤 ̇ )
+               → (X → 𝓟 {𝓥} X → 𝓥 ̇ )
+               × (𝓟 {𝓥} X → 𝓟 {𝓥} X → 𝓥 ⊔ 𝓤 ̇ )
 Definition-2-4 𝓥 X = _∈_ , _⊆_
 
 \end{code}
@@ -80,7 +80,7 @@ Section 3
 \begin{code}
 
 module _
-        (P : 𝓤 ̇  ) (_⊑_ : P → P → 𝓣 ̇  )
+        (P : 𝓤 ̇ ) (_⊑_ : P → P → 𝓣 ̇ )
        where
 
  open PosetAxioms
@@ -102,19 +102,19 @@ module _
  module _ (𝓥 : Universe) where
   open import DomainTheory.Basics.Dcpo pt fe 𝓥
 
-  Definition-3-4 : {I : 𝓥 ̇  } → (I → P) → (𝓥 ⊔ 𝓣 ̇  ) × (𝓥 ⊔ 𝓣 ̇  )
+  Definition-3-4 : {I : 𝓥 ̇ } → (I → P) → (𝓥 ⊔ 𝓣 ̇ ) × (𝓥 ⊔ 𝓣 ̇ )
   Definition-3-4 {I} α = is-semidirected _⊑_ α , is-directed _⊑_ α
 
-  Remark-3-5 : {I : 𝓥 ̇  } (α : I → P)
+  Remark-3-5 : {I : 𝓥 ̇ } (α : I → P)
              → is-directed _⊑_ α
              ＝ ∥ I ∥ × ((i j : I) → ∥ Σ k ꞉ I , (α i ⊑ α k) × (α j ⊑ α k) ∥)
   Remark-3-5 α = refl
 
-  Definition-3-6 : {I : 𝓥 ̇  } → P → (I → P) → (𝓥 ⊔ 𝓣 ̇  ) × (𝓤 ⊔ 𝓥 ⊔ 𝓣 ̇  )
+  Definition-3-6 : {I : 𝓥 ̇ } → P → (I → P) → (𝓥 ⊔ 𝓣 ̇ ) × (𝓤 ⊔ 𝓥 ⊔ 𝓣 ̇ )
   Definition-3-6 {I} x α = (is-upperbound _⊑_ x α) , is-sup _⊑_ x α
 
   Definition-3-6-ad : poset-axioms _⊑_
-                    → {I : 𝓥 ̇  } (α : I → P)
+                    → {I : 𝓥 ̇ } (α : I → P)
                     → {x y : P} → is-sup _⊑_ x α → is-sup _⊑_ y α → x ＝ y
   Definition-3-6-ad pa {I} α = sups-are-unique _⊑_ pa α
 
@@ -126,7 +126,7 @@ module _
   Definition-3-7-ad = ∐
 
   Remark-3-8 : poset-axioms _⊑_
-             → {I : 𝓥 ̇  } (α : I → P)
+             → {I : 𝓥 ̇ } (α : I → P)
              → is-prop (has-sup _⊑_ α)
   Remark-3-8 = having-sup-is-prop _⊑_
 
@@ -158,7 +158,7 @@ module _ (𝓥 : Universe) where
  Example-3-14 = Ω-DCPO⊥
 
  module _
-         (X : 𝓤 ̇  )
+         (X : 𝓤 ̇ )
          (X-is-set : is-set X)
         where
 
@@ -168,7 +168,7 @@ module _ (𝓥 : Universe) where
   Example-3-15 = generalized-𝓟-DCPO⊥ 𝓥
 
  module _
-         (X : 𝓥 ̇  )
+         (X : 𝓥 ̇ )
          (X-is-set : is-set X)
         where
 
@@ -245,7 +245,7 @@ Section 4
  Definition-4-8 𝓓 𝓔 f = is-strict 𝓓 𝓔 f
 
  Lemma-4-9 : (𝓓 : DCPO⊥ {𝓤} {𝓣})
-             {I : 𝓥 ̇  } {α : I → ⟪ 𝓓 ⟫}
+             {I : 𝓥 ̇ } {α : I → ⟪ 𝓓 ⟫}
            → is-semidirected (underlying-order (𝓓 ⁻)) α
            → has-sup (underlying-order (𝓓 ⁻)) α
  Lemma-4-9 = semidirected-complete-if-pointed
@@ -340,19 +340,19 @@ module _ (𝓥 : Universe) where
  open import Lifting.Monad 𝓥
  open import Lifting.Miscelanea-PropExt-FunExt 𝓥 pe fe
 
- Definition-5-3 : (X : 𝓤 ̇  ) → 𝓥 ⁺ ⊔ 𝓤 ̇
+ Definition-5-3 : (X : 𝓤 ̇ ) → 𝓥 ⁺ ⊔ 𝓤 ̇
  Definition-5-3 X = 𝓛 X
 
- Definition-5-4 : {X : 𝓤 ̇  } → X → 𝓛 X
+ Definition-5-4 : {X : 𝓤 ̇ } → X → 𝓛 X
  Definition-5-4 = η
 
- Definition-5-5 : {X : 𝓤 ̇  } → 𝓛 X
+ Definition-5-5 : {X : 𝓤 ̇ } → 𝓛 X
  Definition-5-5 = ⊥𝓛
 
- Definition-5-6 : {X : 𝓤 ̇  } → 𝓛 X → Ω 𝓥
+ Definition-5-6 : {X : 𝓤 ̇ } → 𝓛 X → Ω 𝓥
  Definition-5-6 l = is-defined l , being-defined-is-prop l
 
- Definition-5-6-ad : {X : 𝓤 ̇  } (l : 𝓛 X) → is-defined l → X
+ Definition-5-6-ad : {X : 𝓤 ̇ } (l : 𝓛 X) → is-defined l → X
  Definition-5-6-ad = value
 
  open import UF.ClassicalLogic
@@ -362,7 +362,7 @@ module _ (𝓥 : Universe) where
  Proposition-5-7-ad : ((X : 𝓤 ̇) → 𝓛 X ≃ 𝟙 + X) → EM 𝓥
  Proposition-5-7-ad = classical-lifting-gives-EM
 
- module _ {X : 𝓤 ̇  } where
+ module _ {X : 𝓤 ̇ } where
 
   Lemma-5-8 : {l m : 𝓛 X} → (l ⋍ m → l ＝ m) × (l ＝ m → l ⋍ m)
   Lemma-5-8 = ⋍-to-＝ , ＝-to-⋍
@@ -371,17 +371,17 @@ module _ (𝓥 : Universe) where
              → (l ＝ m) ≃ (l ⋍· m)
   Remark-5-9 ua = 𝓛-Id· ua fe
 
-  Theorem-5-10 : {Y : 𝓦 ̇  } → (f : X → 𝓛 Y) → 𝓛 X → 𝓛 Y
+  Theorem-5-10 : {Y : 𝓦 ̇ } → (f : X → 𝓛 Y) → 𝓛 X → 𝓛 Y
   Theorem-5-10 f = f ♯
 
   Theorem-5-10-i : η ♯ ∼ id {_} {𝓛 X}
   Theorem-5-10-i l = ⋍-to-＝ (Kleisli-Law₀ l)
 
-  Theorem-5-10-ii : {Y : 𝓦 ̇  } (f : X → 𝓛 Y)
+  Theorem-5-10-ii : {Y : 𝓦 ̇ } (f : X → 𝓛 Y)
                   → f ♯ ∘ η ∼ f
   Theorem-5-10-ii f l = ⋍-to-＝ (Kleisli-Law₁ f l)
 
-  Theorem-5-10-iii : {Y : 𝓦 ̇  } {Z : 𝓣 ̇  }
+  Theorem-5-10-iii : {Y : 𝓦 ̇ } {Z : 𝓣 ̇ }
                      (f : X → 𝓛 Y) (g : Y → 𝓛 Z)
                    → (g ♯ ∘ f) ♯ ∼ g ♯ ∘ f ♯
   Theorem-5-10-iii f g l = (⋍-to-＝ (Kleisli-Law₂ f g l)) ⁻¹
@@ -391,11 +391,11 @@ module _ (𝓥 : Universe) where
 
   -- Remark-5-12: Note that we did not to assume that X is a set in the above.
 
-  Definition-5-13 : {Y : 𝓥 ̇  }
+  Definition-5-13 : {Y : 𝓥 ̇ }
                   → (X → Y) → 𝓛 X → 𝓛 Y
   Definition-5-13 f = 𝓛̇ f
 
-  Definition-5-13-ad : {Y : 𝓥 ̇  } (f : X → Y)
+  Definition-5-13-ad : {Y : 𝓥 ̇ } (f : X → Y)
                      → (η ∘ f) ♯ ∼ 𝓛̇ f
   Definition-5-13-ad f = 𝓛̇-♯-∼ f
 
@@ -422,10 +422,10 @@ module _ (𝓥 : Universe) where
  module _ where
   open import DomainTheory.Lifting.LiftingSet pt fe 𝓥 pe
 
-  Proposition-5-15 : {X : 𝓤 ̇  } → is-set X → DCPO⊥ {𝓥 ⁺ ⊔ 𝓤} {𝓥 ⁺ ⊔ 𝓤}
+  Proposition-5-15 : {X : 𝓤 ̇ } → is-set X → DCPO⊥ {𝓥 ⁺ ⊔ 𝓤} {𝓥 ⁺ ⊔ 𝓤}
   Proposition-5-15 = 𝓛-DCPO⊥
 
-  Proposition-5-15-ad : {X : 𝓥 ̇  } (s : is-set X) → is-locally-small (𝓛-DCPO s)
+  Proposition-5-15-ad : {X : 𝓥 ̇ } (s : is-set X) → is-locally-small (𝓛-DCPO s)
   Proposition-5-15-ad {X} s =
    record { _⊑ₛ_ = _⊑_ ;
             ⊑ₛ-≃-⊑ = λ {l m} → logically-equivalent-props-are-equivalent
@@ -437,14 +437,14 @@ module _ (𝓥 : Universe) where
     open import Lifting.UnivalentPrecategory 𝓥 X
 
  module _
-         {X : 𝓤 ̇  }
+         {X : 𝓤 ̇ }
          (s : is-set X)
         where
 
   open import DomainTheory.Lifting.LiftingSet pt fe 𝓥 pe
 
 
-  Proposition-5-16 : {Y : 𝓦 ̇  } (t : is-set Y)
+  Proposition-5-16 : {Y : 𝓦 ̇ } (t : is-set Y)
                      (f : X → 𝓛 Y)
                   → is-continuous (𝓛-DCPO s) (𝓛-DCPO t) (f ♯)
   Proposition-5-16 t f = ♯-is-continuous s t f
@@ -667,8 +667,8 @@ module _ (𝓥 : Universe) where
   -- Example-7-3: See the file
   import DomainTheory.Bilimits.Sequential
 
-  Definition-7-4 : Σ 𝓓∞ ꞉ 𝓥 ⊔ 𝓦 ⊔ 𝓤 ̇  ,
-                   Σ _≼_ ꞉ (𝓓∞ → 𝓓∞ → 𝓥 ⊔ 𝓣 ̇  ) ,
+  Definition-7-4 : Σ 𝓓∞ ꞉ 𝓥 ⊔ 𝓦 ⊔ 𝓤 ̇ ,
+                   Σ _≼_ ꞉ (𝓓∞ → 𝓓∞ → 𝓥 ⊔ 𝓣 ̇ ) ,
                    poset-axioms _≼_
   Definition-7-4 = 𝓓∞-carrier , _≼_  , 𝓓∞-poset-axioms
 

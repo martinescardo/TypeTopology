@@ -255,7 +255,7 @@ module surjection-version (pt : propositional-truncations-exist) where
                               → (X : 𝓤 ̇ ) → existential-fixed-point-property X
  cantor-theorem-for-universes {𝓥} {𝓤} A φ s X f = ∥∥-functor g t
   where
-   t : ∃ B ꞉ 𝓤 ̇  , B ＝ (B → X)
+   t : ∃ B ꞉ 𝓤 ̇ , B ＝ (B → X)
    t = LFPT φ s (λ B → B → X)
 
    g : (Σ B ꞉ 𝓤 ̇ , B ＝ (B → X)) → Σ x ꞉ X , x ＝ f x

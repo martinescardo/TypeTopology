@@ -8,7 +8,7 @@ types are at level n = 0. Alternatively, in book HoTT, truncated types are
 defined so that contractible types are at level k = -2. Of course, the two
 notions are equivalent as they are indexed by equivalent types, that is
 ℕ ≃ ℤ₋₂, but it is important to be aware of the fact that concepts are 'off by
-2' when translating between conventions. 
+2' when translating between conventions.
 
 In this file we will assume function extensionality globally but not univalence.
 The final result of the file will be proved in the local presence of univalence.
@@ -25,7 +25,7 @@ open import UF.EquivalenceExamples
 open import UF.Equiv-FunExt
 open import UF.FunExt
 open import UF.IdentitySystems
-open import UF.PropTrunc 
+open import UF.PropTrunc
 open import UF.Retracts
 open import UF.Sets
 open import UF.Singleton-Properties
@@ -97,7 +97,7 @@ hlevels-are-upper-closed : (n : ℕ) (X : 𝓤 ̇)
                          → (X is-of-hlevel succ n)
 hlevels-are-upper-closed zero X = contr-implies-id-contr
 hlevels-are-upper-closed (succ n) X h-level x x' =
- hlevels-are-upper-closed n (x ＝ x') (h-level x x') 
+ hlevels-are-upper-closed n (x ＝ x') (h-level x x')
 
 hlevels-are-closed-under-id : {X : 𝓤 ̇ } (n : ℕ)
                             → X is-of-hlevel n
@@ -170,7 +170,7 @@ hlevel-closed-under-Π : (n : ℕ)
                       → ((x : X) → (Y x) is-of-hlevel n)
                       → (Π Y) is-of-hlevel n
 hlevel-closed-under-Π zero Y m = Π-is-singleton fe m
-hlevel-closed-under-Π (succ n) Y m f g = 
+hlevel-closed-under-Π (succ n) Y m f g =
  hlevel-closed-under-equiv n (happly-≃ fe)
   (hlevel-closed-under-Π n (λ x → f x ＝ g x)
   (λ x → m x (f x) (g x)))
@@ -197,7 +197,7 @@ From univalence we can show that ℍ n is of level (n + 1), for all n : ℕ.
 
 \begin{code}
 
-equiv-preserves-hlevel : (n : ℕ) {X : 𝓤 ̇  } {Y : 𝓥 ̇  }
+equiv-preserves-hlevel : (n : ℕ) {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                        → X is-of-hlevel n
                        → Y is-of-hlevel n
                        → (X ≃ Y) is-of-hlevel n
@@ -218,6 +218,5 @@ equiv-preserves-hlevel (succ n) {X} {Y} X-h-lev Y-h-lev =
        (X ≃ Y)              ■
    where
     II = ≃-sym (to-subtype-＝-≃ (λ - → hlevel-relation-is-prop n -))
-  
-\end{code}
 
+\end{code}

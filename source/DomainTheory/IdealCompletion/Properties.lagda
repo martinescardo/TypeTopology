@@ -137,7 +137,7 @@ _≺_ takes values in 𝓥.
 
 \begin{code}
 
-record abstract-basis : 𝓥 ⁺ ̇  where
+record abstract-basis : 𝓥 ⁺ ̇ where
  field
   basis-carrier : 𝓥 ̇
   _≺_ : basis-carrier → basis-carrier → 𝓥 ̇
@@ -147,7 +147,7 @@ record abstract-basis : 𝓥 ⁺ ̇  where
   INT₂ : {y₀ y₁ x : basis-carrier} → y₀ ≺ x → y₁ ≺ x
        → ∃ z ꞉ basis-carrier , y₀ ≺ z × y₁ ≺ z × z ≺ x
 
-record reflexive-abstract-basis : 𝓥 ⁺ ̇  where
+record reflexive-abstract-basis : 𝓥 ⁺ ̇ where
  field
   basis-carrier : 𝓥 ̇
   _≺_ : basis-carrier → basis-carrier → 𝓥 ̇

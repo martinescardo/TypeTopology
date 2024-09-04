@@ -210,7 +210,7 @@ The type of ordinals in any universe has Ω-paths between any two points.
 
 \begin{code}
 
-has-Ω-paths : (𝓥 : Universe) → 𝓤 ̇  → 𝓤 ⊔ (𝓥 ⁺) ̇
+has-Ω-paths : (𝓥 : Universe) → 𝓤 ̇ → 𝓤 ⊔ (𝓥 ⁺) ̇
 has-Ω-paths 𝓥 X = (x y : X) → Ω-Path 𝓥 x y
 
 type-of-ordinals-has-Ω-paths : is-univalent 𝓤
