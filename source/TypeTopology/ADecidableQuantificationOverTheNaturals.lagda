@@ -1,12 +1,17 @@
 Chuangjie Xu, 2012.
 
 This is an Agda formalization of Theorem 8.2 of the extended version
-of Escardo's paper "Infinite sets that satisfy the principle of
-omniscience in all varieties of constructive mathematics", Journal of
-Symbolic Logic, volume 78, number 3, September 2013, pages 764-784.
+of [1].
 
 The theorem says that, for any p : ℕ∞ → 𝟚, the proposition
 (n : ℕ) → p (ι n) ＝ ₁ is decidable where ι : ℕ → ∞ is the inclusion.
+
+[1] Martin Escardo. Infinite sets that satisfy the principle of
+    omniscience in all varieties of constructive mathematics, Journal
+    of Symbolic Logic, volume 78, number 3, September 2013, pages
+    764-784.
+
+    https://doi.org/10.2178/jsl.7803040
 
 \begin{code}
 
@@ -95,6 +100,13 @@ Lemma-8·1 p = cases claim₀ claim₁ claim₂
                              𝟚-is-discrete
                              (p y) (p (Succ y))
                              (pr₂ (pr₂ f y) (h y)))
+
+\end{code}
+
+TODO. The name of the following fact is that of the reference [1]
+above. It deserves a better name, or at least a better synonym.
+
+\begin{code}
 
 abstract
  Theorem-8·2 : (p : ℕ∞ → 𝟚) → is-decidable ((n : ℕ) → p (ι n) ＝ ₁)

@@ -1,4 +1,4 @@
-Martin Escardo, 7 May 2014, with additions 25th July 2024 and 16-21st August 2024
+Martin Escardo, 7 May 2014, with many additions in the summer of 2024.
 
 For any function f : ℕ∞ → ℕ, it is decidable whether f is non-continuous.
 
@@ -12,7 +12,8 @@ Based on the paper
     https://doi.org/10.1017/S096012951300042X
 
 The title of this paper is a bit misleading. It should probably have
-been called "Decidability of non-continuity".
+been called "Decidability of non-continuity". In any case, it is not
+wrong.
 
 TODO. Parametrize this module by a discrete type, rather than use 𝟚 or
 ℕ as the types of values of functions.
@@ -34,6 +35,24 @@ open import NotionsOfDecidability.SemiDecidable hiding (LPO)
 open import Taboos.LPO
 open import TypeTopology.ADecidableQuantificationOverTheNaturals fe
 open import UF.DiscreteAndSeparated
+
+\end{code}
+
+TODO. I am not happy about the name of the following fact. It is the
+name given in [1].
+
+In any case, it is an iterated version of Theorem 8.2 of [2], which
+also deserves a better name here, and it is the cricial lemma to prove
+the decidability of non-continuity.
+
+[2] Martin Escardo. Infinite sets that satisfy the principle of
+    omniscience in all varieties of constructive mathematics, Journal
+    of Symbolic Logic, volume 78, number 3, September 2013, pages
+    764-784.
+
+    https://doi.org/10.2178/jsl.7803040
+
+\begin{code}
 
 Lemma-3·1 : (q : ℕ∞ → ℕ∞ → 𝟚)
           → is-decidable ((m : ℕ) → ¬ ((n : ℕ) → q (ι m) (ι n) ＝ ₁))
@@ -69,33 +88,62 @@ Omitting the inclusion function, or coercion,
 
 a map f : ℕ∞ → ℕ is called continuous iff
 
-   ∃ m. ∀ n ≥ m. f n ＝ f ∞,
+   ∃ m : ℕ , ∀ n ≥ m , f n ＝ f ∞,
 
 where m and n range over the natural numbers.
 
-The negation of this statement is equivalent to
+The negation of this statement is (constructively) equivalent to
 
-   ∀ m. ¬ ∀ n ≥ m. f n ＝ f ∞.
+   ∀ m : ℕ , ¬ ∀ n ≥ m , f n ＝ f ∞.
 
-We can implement ∀ y ≥ x. A y as ∀ x. A (max x y), so that the
+We can implement ∀ y ≥ x , A y as ∀ x , A (max x y), so that the
 continuity of f amounts to
 
-   ∃ m. ∀ n. f (max m n) ＝ f ∞,
+   ∃ m : ℕ ,  ∀ n : ℕ , f (max m n) ＝ f ∞,
 
 and its negation to
 
-   ∀ m. ¬ ∀ n. f (max m n) ＝ f ∞.
+   ∀ m : ℕ , ¬ ∀ n : ℕ , f (max m n) ＝ f ∞,
 
-Because we are going to prove facts about the negation of continuity,
-it doesn't matter whether we define the notion with ∃ or Σ, and we
-choose the latter for convenience.
+and it is convenient to do so here.
+
+The above paper [1] mentions that its mathematical development can be
+carried out in a number of foundations, including type theory, but it
+doesn't say what "∃" should be taken to mean in HoTT/UF. It turns out
+(added summer 2024 - see below) that it doesn't matter whether `∃` is
+interpreted to mean `Σ` or the propositional truncation of `Σ`,
+although this is non trivial and is proved below (summer 2024), but
+does follow from what is developed in [1].
+
+For the following, we adopt `∃` to mean the propositional truncation
+of `Σ` (as we generally do in TypeTopology).
+
+For the next few things, because we are going to prove facts about the
+negation of continuity, it doesn't matter whether we define the notion
+with ∃ or Σ, and we choose the latter for convenience.
 
 \begin{code}
 
 continuous : (ℕ∞ → ℕ) → 𝓤₀ ̇
 continuous f = Σ m ꞉ ℕ , ((n : ℕ) → f (max (ι m) (ι n)) ＝ f ∞)
 
+\end{code}
+
+Later we are going to use the terminology `is-continuous f` for the
+propositional truncation of the type `continuous f`, but also it will
+be more appropriate to think of the type `continuous f` as that of
+continuity data for f.
+
+\begin{code}
+
 continuity-data = continuous
+
+\end{code}
+
+It will be convenient to work with the type `noncontinuous f` defined
+below, which is logically equivalent to the type `¬ continuous f`.
+
+\begin{code}
 
 noncontinuous : (ℕ∞ → ℕ) → 𝓤₀ ̇
 noncontinuous f = (m : ℕ) → ¬ ((n : ℕ) → f (max (ι m) (ι n)) ＝[ℕ] f ∞)
@@ -121,15 +169,29 @@ module _ (f : ℕ∞ → ℕ) where
                 (f ∞))
               (a n))
 
- Theorem-3·2 : is-decidable (¬ continuous f)
- Theorem-3·2 = map-decidable
-                noncontinuous-gives-not-continuous
-                not-continuous-gives-noncontinuous
-                noncontinuity-is-decidable
+\end{code}
+
+The following is Theorem 3.2 of [1].
+
+\begin{code}
+
+ private
+  Theorem-3·2 : is-decidable (¬ continuous f)
+  Theorem-3·2 = map-decidable
+                 noncontinuous-gives-not-continuous
+                 not-continuous-gives-noncontinuous
+                 noncontinuity-is-decidable
+\end{code}
+
+For our purposes, the following terminology is better.
+
+\begin{code}
+
+ the-negation-of-continuity-is-decidable = Theorem-3·2
 
 \end{code}
 
-(Maybe) to be continued (see the paper for the moment).
+TODO. The paper [1] also discusses the following.
 
  1. MP gives that continuity and doubly negated continuity agree.
 
@@ -139,7 +201,8 @@ module _ (f : ℕ∞ → ℕ) where
 
  4. If MP and ¬ WLPO then all functions ℕ∞ → ℕ are continuous.
 
-Added 24th July 2024. Still based on the same paper. We write down the proof of (3).
+Added 24th July 2024. Still based on the paper [1]. We write down the
+proofs of (2) and (3).
 
 \begin{code}
 
@@ -224,6 +287,10 @@ In the following fact we can replace Σ by ∃ because WLPO is a
 proposition. Hence WLPO is the propositional truncation of the type
 Σ f ꞉ (ℕ∞ → ℕ) , ¬ continuous f.
 
+TODO. Add this code for this observation.
+
+The following is from [1] with the same proof.
+
 \begin{code}
 
 open import Taboos.BasicDiscontinuity fe
@@ -284,25 +351,24 @@ WLPO-iff-there-is-a-noncontinous-map =
 
 Hence ¬ WLPO can be considered as a (rather weak) continuity principle.
 
-It is shown in [1] that negative consistent axioms can be postulated
+It is shown in [2] that negative consistent axioms can be postulated
 in MLTT without loss of canonicity, and Andreas Abel filled important
-gaps and formalized this in Agda [2] using a logical-relations
+gaps and formalized this in Agda [3] using a logical-relations
 technique. Hence we can, if we wish, postulate ¬ WLPO without loss of
 canonicity, and get a weak continuity axiom for free. But notice that
 we can also postulate ¬¬ WLPO without loss of continuity, to get a
 weak classical axiom for free. Of course, we can't postulate both at
 the same time.
 
-[1] T. Coquand, N.A. Danielsson, M.H. Escardo, U. Norell and Chuangjie Xu.
+[2] T. Coquand, N.A. Danielsson, M.H. Escardo, U. Norell and Chuangjie Xu.
 Negative consistent axioms can be postulated without loss of canonicity.
 https://www.cs.bham.ac.uk/~mhe/papers/negative-axioms.pdf
 
-[2] Andreas Abel. Negative Axioms.
-https://github.com/andreasabel/logrel-mltt/tree/master/Application/NegativeAxioms
+[3] Andreas Abel. Negative Axioms.
+    https://github.com/andreasabel/logrel-mltt/tree/master/Application/NegativeAxioms
 
---
 
-Added 16 August 2024.
+Added 16 August 2024. This is not in [1].
 
 The above definition of continuity is "continuity at the point ∞".
 (And it is also not a proposition.)
@@ -535,7 +601,7 @@ logically equivalent.
 
 TODO. They should also be equivalent as types, but this is not
 important for our purposes, because we are interested in continuity as
-property.
+property. But maybe it would be interesting to code this anyway.
 
 Added 21 August 2023. We now establish the logical equivalence with
 the remaining propositional versions of continuity.
@@ -626,13 +692,13 @@ module more-continuity-criteria (pt : propositional-truncations-exist) where
                       (ℕ-is-discrete (f x) (f y))))
 \end{code}
 
-Added 2nd September 2024.
+Added 2nd September 2024. This is also not in [1].
 
 The type `ℕ∞-extension g` is that of all extensions of g : ℕ → ℕ to
 functions ℕ∞ → ℕ.
 
 Our first question is when this type is a proposition (so that it
-could be called ℕ∞-extendability).
+could be called `ℕ∞-extendable g`).
 
 Notice that LPO is stronger than WLPO, and hence, by taking the
 contrapositive, ¬ WLPO is stronger than ¬ LPO:
@@ -644,6 +710,19 @@ contrapositive, ¬ WLPO is stronger than ¬ LPO:
 
 ℕ∞-extension : (ℕ → ℕ) → 𝓤₀ ̇
 ℕ∞-extension g = Σ f ꞉ (ℕ∞ → ℕ) , f ∘ ι ∼ g
+
+\end{code}
+
+The following says that if all functions ℕ∞ → ℕ are continuous, or,
+more generally, if just ¬ WLPO holds, then the type of ℕ∞-extensions
+of g has at most one element.
+
+(In my view, this is a situation where it would be more sensible to
+use the terminology `is-subsingleton` rather than `is-prop`. In fact,
+I generally prefer the former terminology over the latter, but here we
+try to be consistent with the terminology of the HoTT/UF community.)
+
+\begin{code}
 
 ¬WLPO-gives-ℕ∞-extension-is-prop
  : funext 𝓤₀ 𝓤₀
@@ -680,6 +759,13 @@ contrapositive, ¬ WLPO is stronger than ¬ LPO:
   VI : (f , h) ＝ (f' , h')
   VI = to-subtype-＝ (λ - → Π-is-prop fe (λ n → ℕ-is-set)) (dfunext fe V)
 
+\end{code}
+
+Therefore the non-propositionality of the type `ℕ∞-extension g` gives
+the classical principle ¬¬ WLPO.
+
+\begin{code}
+
 ℕ∞-extension-is-not-prop-gives-¬¬WLPO
  : funext 𝓤₀ 𝓤₀
  → (g : ℕ → ℕ)
@@ -687,6 +773,15 @@ contrapositive, ¬ WLPO is stronger than ¬ LPO:
  → ¬¬ WLPO
 ℕ∞-extension-is-not-prop-gives-¬¬WLPO fe g
  = contrapositive (¬WLPO-gives-ℕ∞-extension-is-prop fe g)
+
+\end{code}
+
+We are unable, at the time of writing (4th September 2024) to
+establish the converse.  However, if we strengthen the classical
+principle ¬¬ WLPO to LPO, we can. We begin with a classical extension
+lemma, which is then applied to prove this claim.
+
+\begin{code}
 
 LPO-gives-ℕ∞-extension
  : LPO
@@ -733,6 +828,13 @@ LPO-gives-ℕ∞-extension-is-not-prop g lpo ext-is-prop
      f' ∞ ＝⟨ e' ⟩
      1    ∎)
 
+\end{code}
+
+It is direct that if there is at most one extension, then LPO can't
+hold.
+
+\begin{code}
+
 ℕ∞-extension-is-prop-gives-¬LPO
  : (g : ℕ → ℕ)
  → is-prop (ℕ∞-extension g)
@@ -746,9 +848,9 @@ So we have the chain of implications
 
     ¬ WLPO → is-prop (ℕ∞-extension g) → ¬ LPO.
 
-Notice that LPO → WLPO, and so ¬ WLPO → ¬ LPO in any case, and I don't
-know whether the implication ¬ WLPO → ¬ LPO can be reversed in general
-(I would guess not).
+Recall that LPO → WLPO, and so ¬ WLPO → ¬ LPO in any case, and we
+don't know whether the implication ¬ WLPO → ¬ LPO can be reversed in
+general (we would guess not).
 
 We also have the chain of implications
 
@@ -756,6 +858,8 @@ We also have the chain of implications
 
 So the type ¬ is-prop (ℕ∞-extension g) sits between two constructive
 taboos and so is an inherently classical statement.
+
+Added 4th September 2024.
 
 Our next question is when the type `ℕ∞-extension g` is pointed,
 without assuming classical or anticlassical axioms.
@@ -793,7 +897,7 @@ pointed-consequence g (f , h) = III
                      (continuous-extension-gives-eventual-constancy g (f , h)) r)
 
   III : WLPO + ¬¬ eventually-constant g
-  III = II (Theorem-3·2 f)
+  III = II (the-negation-of-continuity-is-decidable f)
 
 ¬WLPO-gives-that-non-eventually-constant-functions-have-no-extensions
  : (g : ℕ → ℕ)
@@ -808,4 +912,4 @@ pointed-consequence g (f , h) = III
 \end{code}
 
 To be continued. We can actually get a much stronger consequence from
-the pointedness of the type of extensions.
+the pointedness of the type of extensions, to be coded here soon.
