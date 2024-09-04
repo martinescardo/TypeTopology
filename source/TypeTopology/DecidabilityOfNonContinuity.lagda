@@ -795,6 +795,16 @@ pointed-consequence g (f , h) = III
   III : WLPO + ¬¬ eventually-constant g
   III = II (Theorem-3·2 f)
 
+¬WLPO-gives-that-non-eventually-constant-functions-have-no-extensions
+ : (g : ℕ → ℕ)
+ → ¬ WLPO
+ → ¬ eventually-constant g
+ → ¬ ℕ∞-extension g
+¬WLPO-gives-that-non-eventually-constant-functions-have-no-extensions g nwlpo nec
+ = contrapositive
+    (pointed-consequence g)
+    (cases nwlpo (¬¬-intro nec))
+
 \end{code}
 
 To be continued. We can actually get a much stronger consequence from
