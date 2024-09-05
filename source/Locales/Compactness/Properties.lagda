@@ -603,7 +603,7 @@ The backward implication follows easily from these two lemmas.
 
 \end{code}
 
-Now, the forward implication, which is a bit more involved.
+Now, the forward implication:
 
 \begin{code}
 
@@ -641,3 +641,6 @@ Now, the forward implication, which is a bit more involved.
      r = ≤-is-antisymmetric (poset-of (𝒪 X)) q ♢
 
 \end{code}
+
+In the above proof, I have implemented a simplification suggested by Tom de Jong
+in a code review.
