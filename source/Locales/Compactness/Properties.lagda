@@ -610,76 +610,34 @@ Now, the forward implication, which is a bit more involved.
  compact-open'-implies-compact-open'' : (U : ⟨ 𝒪 X ⟩)
                                       → is-compact-open'  X U holds
                                       → is-compact-open'' X U holds
- compact-open'-implies-compact-open'' U κ S p = ∥∥-functor † (κ S′ c)
+ compact-open'-implies-compact-open'' U κ S p = ∥∥-functor † (κ S c)
   where
    open Joins (λ x y → x ≤ y)
+   open PosetNotation (poset-of (𝒪 X)) renaming (_≤_ to _≤∙_)
 
-   S′ : Fam 𝓦 ⟨ 𝒪 X ⟩
-   S′ = ⁅ U ∧[ 𝒪 X ] S [ i ] ∣ i ∶ index S ⁆
+   c : (U ≤∙ (⋁[ 𝒪 X ] S)) holds
+   c = reflexivity+ (poset-of (𝒪 X)) p
 
-   υ : (U is-an-upper-bound-of S) holds
-   υ = transport
-        (λ - → (- is-an-upper-bound-of S) holds)
-        (p ⁻¹)
-        (⋁[ 𝒪 X ]-upper S)
-
-   φ : cofinal-in (𝒪 X) S S′ holds
-   φ i = ∣ i , ∧[ 𝒪 X ]-greatest U (S [ i ]) (S [ i ]) (υ i) γ ∣
+   † : (Σ F ꞉ SubFam S ,
+         is-Kuratowski-finite (index F)
+         × (U ≤∙ (⋁[ 𝒪 X ] ⁅ S [ F [ j ] ] ∣ j ∶ index F ⁆)) holds)
+     → Σ F ꞉ SubFam S ,
+        is-Kuratowski-finite (index F)
+        × (U ＝ ⋁[ 𝒪 X ] ⁅ S [ F [ j ] ] ∣ j ∶ index F ⁆)
+   † (F , 𝕗 , q) = F , 𝕗 , r
     where
-     γ : (S [ i ] ≤ S [ i ]) holds
-     γ = ≤-is-reflexive (poset-of (𝒪 X)) (S [ i ])
+     ψ : cofinal-in (𝒪 X) ⁅ S [ F [ j ] ] ∣ j ∶ index F ⁆ S holds
+     ψ j = ∣ F [ j ] , ≤-is-reflexive (poset-of (𝒪 X)) (S [ F [ j ] ]) ∣
 
-   ψ : cofinal-in (𝒪 X) S′ S holds
-   ψ i = ∣ i , ∧[ 𝒪 X ]-lower₂ U (S [ i ]) ∣
+     ♢ : ((⋁[ 𝒪 X ] ⁅ S [ F [ j ] ] ∣ j ∶ index F ⁆) ≤∙ U) holds
+     ♢ = ⋁[ 𝒪 X ] ⁅ S [ F [ j ] ] ∣ j ∶ index F ⁆   ≤⟨  Ⅰ ⟩
+         ⋁[ 𝒪 X ] S                                 ＝⟨ Ⅱ ⟩ₚ
+         U                                          ■
+          where
+           Ⅰ = cofinal-implies-join-covered (𝒪 X) _ _ ψ
+           Ⅱ = p ⁻¹
 
-   q : ⋁[ 𝒪 X ] S ＝ ⋁[ 𝒪 X ] S′
-   q = bicofinal-implies-same-join (𝒪 X) S S′ φ ψ
-
-   c : (U ≤ (⋁[ 𝒪 X ] ⁅ U ∧[ 𝒪 X ] S [ i ] ∣ i ∶ index S ⁆)) holds
-   c = reflexivity+
-        (poset-of (𝒪 X))
-        (distribute-inside-cover₂ U S (reflexivity+ (poset-of (𝒪 X)) p))
-
-   † : Σ (J , h) ꞉ SubFam S , is-Kuratowski-finite J
-                            × (U ≤ (⋁[ 𝒪 X ] ⁅ S′ [ h j ] ∣ j ∶ J ⁆)) holds
-     → Σ (J , h) ꞉ SubFam S , is-Kuratowski-finite J
-                            × (U ＝ ⋁[ 𝒪 X ] ⁅ S [ h j ] ∣ j ∶ J ⁆)
-   † ((J , h) , 𝕗 , r) = (J , h) , 𝕗 , ‡
-    where
-     ‡₁ : (U ≤ (⋁[ 𝒪 X ] ⁅ S [ h j ] ∣ j ∶ J ⁆)) holds
-     ‡₁ = U                                 ≤⟨ Ⅰ ⟩
-          ⋁[ 𝒪 X ] ⁅ S′ [ h j ] ∣ j ∶ J ⁆   ≤⟨ Ⅱ ⟩
-          ⋁[ 𝒪 X ] ⁅ S [ h j ] ∣ j ∶ J ⁆    ■
-           where
-            Ⅰ = r
-            Ⅱ = cofinal-implies-join-covered
-                 (𝒪 X)
-                 ⁅ S′ [ h j ] ∣ j ∶ J ⁆
-                 ⁅ S [ h j ] ∣ j ∶ J ⁆
-                 λ j → ∣ j , ∧[ 𝒪 X ]-lower₂ U (S [ h j ]) ∣
-
-     Ⅱ : ((⋁[ 𝒪 X ] ⁅ S′ [ h j ] ∣ j ∶ J ⁆) ≤ U) holds
-     Ⅱ = ⋁[ 𝒪 X ]-least
-          ⁅ S′ [ h j ] ∣ j ∶ J ⁆
-          (U , λ j → ∧[ 𝒪 X ]-lower₁ U (S [ h j ]))
-
-     ♢ : cofinal-in (𝒪 X) ⁅ S [ h j ] ∣ j ∶ J ⁆ ⁅ S′ [ h j ] ∣ j ∶ J ⁆ holds
-     ♢ j = ∣ j , ∧[ 𝒪 X ]-greatest U (S [ h j ]) (S [ h j ]) (υ (h j)) γ ∣
-      where
-       γ : (S [ h j ] ≤ S [ h j ]) holds
-       γ = ≤-is-reflexive (poset-of (𝒪 X)) (S [ h j ])
-
-     Ⅰ = cofinal-implies-join-covered
-          (𝒪 X)
-          ⁅ S [ h j ] ∣ j ∶ J ⁆
-          ⁅ S′ [ h j ] ∣ j ∶ J ⁆
-          ♢
-
-     ‡₂ : ((⋁[ 𝒪 X ] ⁅  S [ h j ] ∣ j ∶ J ⁆) ≤ U) holds
-     ‡₂ = ⋁[ 𝒪 X ] ⁅ S [ h j ] ∣ j ∶ J ⁆     ≤⟨ Ⅰ ⟩
-          ⋁[ 𝒪 X ] ⁅ S′ [ h j ] ∣ j ∶ J ⁆    ≤⟨ Ⅱ ⟩
-          U                                  ■
-
-     ‡ = ≤-is-antisymmetric (poset-of (𝒪 X)) ‡₁ ‡₂
+     r : U ＝ ⋁[ 𝒪 X ] ⁅ S [ F [ j ] ] ∣ j ∶ index F ⁆
+     r = ≤-is-antisymmetric (poset-of (𝒪 X)) q ♢
 
 \end{code}
