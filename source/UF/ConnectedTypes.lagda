@@ -1,4 +1,4 @@
-Ian Ray, 07/23/2024
+Ian Ray, 23rd July 2024
 
 We will define connected types and maps (recall our convetion for H-levels starts
 at 0). We then explore relationships, closure properties and characterizations
@@ -8,15 +8,20 @@ of interest pertaining to the concept of connectedness.
 
 {-# OPTIONS --safe --without-K #-}
 
+open import UF.FunExt
+open import UF.PropTrunc 
+
+module UF.ConnectedTypes (fe : Fun-Ext)
+                         (pt : propositional-truncations-exist)
+                          where
+                          
 open import MLTT.Spartan
 open import UF.Base
 open import UF.Embeddings
 open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.Equiv-FunExt
-open import UF.FunExt
 open import UF.IdentitySystems
-open import UF.PropTrunc 
 open import UF.Retracts
 open import UF.Sets
 open import UF.Singleton-Properties
@@ -27,11 +32,6 @@ open import UF.Univalence
 open import UF.UA-FunExt
 open import Naturals.Addition renaming (_+_ to _+'_)
 open import Naturals.Order
-
-module UF.ConnectedTypes (fe : Fun-Ext)
-                         (pt : propositional-truncations-exist)
-                          where
-
 open import UF.ImageAndSurjection pt
 open import UF.H-Levels fe  
 open import UF.Truncations fe pt
