@@ -342,7 +342,7 @@ subset.
   : (S : Fam 𝓤 ⟨ 𝒪 X ⟩)
   → is-Kuratowski-finite (index S)
   → is-Kuratowski-finite-subset (χ∙ S)
- χ∙-of-Kuratowski-finite-subset-is-Kuratowski-finite S 𝕗 = ∥∥-functor † 𝕗
+ χ∙-of-Kuratowski-finite-subset-is-Kuratowski-finite S = ∥∥-functor †
   where
    † : Σ n ꞉ ℕ , Fin n ↠ index S → Σ n ꞉ ℕ , Fin n ↠ 𝕋 (χ∙ S)
    † (n , h , σ) = n , h′ , φ
