@@ -344,7 +344,7 @@ subset.
   → is-Kuratowski-finite-subset (χ∙ S)
  χ∙-of-Kuratowski-finite-subset-is-Kuratowski-finite S = ∥∥-functor †
   where
-   † : Σ n ꞉ ℕ , Fin n ↠ index S → Σ n ꞉ ℕ , Fin n ↠ 𝕋 (χ∙ S)
+   † : Σ n ꞉ ℕ , Fin n ↠ index S → Σ n ꞉ ℕ , Fin n ↠ image (S [_])
    † (n , h , σ) = n , h′ , φ
     where
      h′ : Fin n → image (S [_])
