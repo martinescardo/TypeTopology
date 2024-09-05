@@ -19,29 +19,26 @@ The final result of the file will be proved in the local presence of univalence.
 
 {-# OPTIONS --safe --without-K #-}
 
+open import UF.FunExt
+
+module UF.H-Levels (fe : Fun-Ext)
+                    where
+
 open import MLTT.Spartan
-open import UF.Base
+
+open import Naturals.Order
+
 open import UF.Embeddings
 open import UF.Equiv
 open import UF.EquivalenceExamples
-open import UF.Equiv-FunExt
-open import UF.FunExt
-open import UF.IdentitySystems
 open import UF.PropTrunc
 open import UF.Retracts
-open import UF.Sets
 open import UF.Singleton-Properties
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.Subsingletons-Properties
 open import UF.Univalence
-open import UF.UA-FunExt
-open import Notation.General
-open import Naturals.Addition renaming (_+_ to _+'_)
-open import Naturals.Order
 
-module UF.H-Levels (fe : Fun-Ext)
-                    where
 private
  fe' : FunExt
  fe' 𝓤 𝓥 = fe {𝓤} {𝓥}
