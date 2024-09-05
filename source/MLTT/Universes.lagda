@@ -117,6 +117,10 @@ version.
 
 to understand this visualization problem and its solution in practice.
 
+Not all web brouwsers exhibit the same problem, though, which is even
+more annoying. The current solution works for all brouwsers I tested
+on 5th September 2024 (Firefox, Chrome, Chromium, Safari).
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}
