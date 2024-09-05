@@ -2036,3 +2036,56 @@ frame-structure-is-set A 𝓥 𝓦 pe {(d₁ , p₁)} {(d₂ , p₂)} =
     σ = carrier-of-[ poset-of (A , (d₁ , p₁)) ]-is-set
 
 \end{code}
+
+Added on 2024-08-18.
+
+\begin{code}
+
+open import UF.Equiv using (_≃_; logically-equivalent-props-are-equivalent)
+open import UF.Size using (_is_small)
+
+local-smallness-of-frame-gives-local-smallness-of-carrier
+ : (F : Frame 𝓤 𝓥 𝓦)
+ → (x y : ⟨ F ⟩)
+ → (x ＝ y) is 𝓥 small
+local-smallness-of-frame-gives-local-smallness-of-carrier F x y =
+ (x ≣[ poset-of F ] y) holds , e
+  where
+   open PosetNotation (poset-of F) using (_≤_)
+
+   s : (x ≣[ poset-of F ] y) holds → x ＝ y
+   s = uncurry (≤-is-antisymmetric (poset-of F))
+
+   r : x ＝ y → (x ≣[ poset-of F ] y) holds
+   r p = reflexivity+ (poset-of F) p , reflexivity+ (poset-of F) (p ⁻¹)
+
+   e : (x ≣[ poset-of F ] y) holds ≃ (x ＝ y)
+   e = logically-equivalent-props-are-equivalent
+        (holds-is-prop (x ≣[ poset-of F ] y))
+        carrier-of-[ poset-of F ]-is-set
+        s
+        r
+
+local-smallness-of-carrier-gives-local-smallness-of-frame
+ : (F : Frame 𝓤 𝓥 𝓦)
+ → (x y : ⟨ F ⟩)
+ → (x ≤[ poset-of F ] y) holds is 𝓤 small
+local-smallness-of-carrier-gives-local-smallness-of-frame F x y =
+ (x ∧[ F ] y ＝ x) , e
+  where
+   open PosetNotation (poset-of F) using (_≤_)
+
+   s : x ∧[ F ] y ＝ x → (x ≤ y) holds
+   s p = connecting-lemma₂ F (p ⁻¹)
+
+   r : (x ≤ y) holds → x ∧[ F ] y ＝ x
+   r p = connecting-lemma₁ F p ⁻¹
+
+   e : (x ∧[ F ] y ＝ x) ≃ (x ≤ y) holds
+   e = logically-equivalent-props-are-equivalent
+        carrier-of-[ poset-of F ]-is-set
+        (holds-is-prop (x ≤ y))
+        s
+        r
+
+\end{code}
