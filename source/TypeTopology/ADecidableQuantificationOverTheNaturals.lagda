@@ -205,3 +205,34 @@ module examples where
 
     Despite the fact that we use function extensionality, eval pi
     evaluates to a numeral for i=0,...,4.
+
+
+Added by Martin Escardo 5th September 2024. The following version is
+more convenient in practice.
+
+\begin{code}
+
+open import MLTT.Plus-Properties
+
+abstract
+ Theorem-8·2' : (A : ℕ∞ → 𝓤 ̇ )
+              → is-complemented A
+              → is-decidable ((n : ℕ) → A (ι n))
+ Theorem-8·2' {𝓤} A δ = IV
+  where
+   p : ℕ∞ → 𝟚
+   p = complement ∘ characteristic-map A δ
+
+   I : is-decidable ((n : ℕ) → p (ι n) ＝ ₁)
+   I = Theorem-8·2 p
+
+   II : ((n : ℕ) → p (ι n) ＝ ₁) → (n : ℕ) → A (ι n)
+   II b n = characteristic-map-property₀ A δ (ι n) (complement₁ (b n))
+
+   III : ((n : ℕ) → A (ι n)) → (n : ℕ) → p (ι n) ＝ ₁
+   III a n = complement₁-back (characteristic-map-property₀-back A δ (ι n) (a n))
+
+   IV : is-decidable ((n : ℕ) → A (ι n))
+   IV = map-decidable II III I
+
+\end{code}

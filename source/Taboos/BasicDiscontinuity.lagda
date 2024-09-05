@@ -95,34 +95,55 @@ WLPO-is-discontinuous f = p , (d , d∞)
 
 \end{code}
 
-If two 𝟚-valued functions defined on ℕ∞ agree at ℕ, they have to agree
-at ∞ too, unless WLPO holds:
+If two discrete-valued functions defined on ℕ∞ agree, they have to
+agree at ∞ too, unless WLPO holds:
 
 \begin{code}
+
+open import NotionsOfDecidability.Decidable
+open import UF.DiscreteAndSeparated
+
+module _ {D : 𝓤 ̇ } (d : is-discrete D) where
+
+ disagreement-taboo' : (p q : ℕ∞ → D)
+                     → ((n : ℕ) → p (ι n) ＝ q (ι n))
+                     → p ∞ ≠ q ∞
+                     → WLPO
+ disagreement-taboo' p q f g = basic-discontinuity-taboo r (r-lemma , r-lemma∞)
+  where
+   A : ℕ∞ → 𝓤 ̇
+   A u = p u ＝ q u
+
+   δ : (u : ℕ∞) → is-decidable (p u ＝ q u)
+   δ u = d (p u) (q u)
+
+   r : ℕ∞ → 𝟚
+   r = characteristic-map A δ
+
+   r-lemma : (n : ℕ) → r (ι n) ＝ ₀
+   r-lemma n = characteristic-map-property₀-back A δ (ι n) (f n)
+
+   r-lemma∞ : r ∞ ＝ ₁
+   r-lemma∞ = characteristic-map-property₁-back A δ ∞ (λ a → g a)
+
+ agreement-cotaboo' : ¬ WLPO
+                    → (p q : ℕ∞ → D)
+                    → ((n : ℕ) → p (ι n) ＝ q (ι n))
+                    → p ∞ ＝ q ∞
+ agreement-cotaboo' φ p q f = discrete-is-¬¬-separated d (p ∞) (q ∞)
+                               (contrapositive (disagreement-taboo' p q f) φ)
 
 disagreement-taboo : (p q : ℕ∞ → 𝟚)
                    → ((n : ℕ) → p (ι n) ＝ q (ι n))
                    → p ∞ ≠ q ∞
                    → WLPO
-disagreement-taboo p q f g = basic-discontinuity-taboo r (r-lemma , r-lemma∞)
- where
-  r : ℕ∞ → 𝟚
-  r u = (p u) ⊕ (q u)
+disagreement-taboo = disagreement-taboo' 𝟚-is-discrete
 
-  r-lemma : (n : ℕ) → r (ι n) ＝ ₀
-  r-lemma n = Lemma[b＝c→b⊕c＝₀] (f n)
-
-  r-lemma∞ : r ∞ ＝ ₁
-  r-lemma∞ = Lemma[b≠c→b⊕c＝₁] g
-
-open import UF.DiscreteAndSeparated
-
-agreement-cotaboo :  ¬ WLPO
+agreement-cotaboo : ¬ WLPO
                   → (p q : ℕ∞ → 𝟚)
                   → ((n : ℕ) → p (ι n) ＝ q (ι n))
                   → p ∞ ＝ q ∞
-agreement-cotaboo φ p q f = 𝟚-is-¬¬-separated (p ∞) (q ∞)
-                             (contrapositive (disagreement-taboo p q f) φ)
+agreement-cotaboo = agreement-cotaboo' 𝟚-is-discrete
 
 \end{code}
 

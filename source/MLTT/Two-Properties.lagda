@@ -368,11 +368,24 @@ Lemma[b≠c→b⊕c＝₁] = different-from-₀-equal-₁ ∘ (contrapositive Le
 Lemma[b⊕c＝₁→b≠c] : {b c : 𝟚} → b ⊕ c ＝ ₁ → b ≠ c
 Lemma[b⊕c＝₁→b≠c] = (contrapositive Lemma[b＝c→b⊕c＝₀]) ∘ equal-₁-different-from-₀
 
+complement₀ : {a : 𝟚} → complement a ＝ ₀ → a ＝ ₁
+complement₀ {₁} refl = refl
+
 complement₁ : {a : 𝟚} → complement a ＝ ₁ → a ＝ ₀
 complement₁ {₀} refl = refl
 
-complement₀ : {a : 𝟚} → complement a ＝ ₀ → a ＝ ₁
-complement₀ {₁} refl = refl
+complement₁-back : {a : 𝟚} → a ＝ ₀ → complement a ＝ ₁
+complement₁-back {₀} refl = refl
+
+complement₀-back : {a : 𝟚} → a ＝ ₁ → complement a ＝ ₀
+complement₀-back {₁} refl = refl
+
+complement-one-gives-argument-not-one : {a : 𝟚} → complement a ＝ ₁ → a ≠ ₁
+complement-one-gives-argument-not-one {₀} _ = zero-is-not-one
+
+argument-not-one-gives-complement-one : {a : 𝟚} → a ≠ ₁ → complement a ＝ ₁
+argument-not-one-gives-complement-one {₀} ν = refl
+argument-not-one-gives-complement-one {₁} ν = 𝟘-elim (ν refl)
 
 complement-left : {b c : 𝟚} → complement b ≤ c → complement c ≤ b
 complement-left {₀} {₁} l = ⋆
@@ -420,19 +433,6 @@ complement-both-right {₁} {₁} l = ⋆
 
 ⊕-intro₁₁ : {a b : 𝟚} → a ＝ ₁ → b ＝ ₁ → a ⊕ b ＝ ₀
 ⊕-intro₁₁ {₁} {₁} p q = refl
-
-complement-intro₀ : {a : 𝟚} → a ＝ ₀ → complement a ＝ ₁
-complement-intro₀ {₀} p = refl
-
-complement-one-gives-argument-not-one : {a : 𝟚} → complement a ＝ ₁ → a ≠ ₁
-complement-one-gives-argument-not-one {₀} _ = zero-is-not-one
-
-argument-not-one-gives-complement-one : {a : 𝟚} → a ≠ ₁ → complement a ＝ ₁
-argument-not-one-gives-complement-one {₀} ν = refl
-argument-not-one-gives-complement-one {₁} ν = 𝟘-elim (ν refl)
-
-complement-intro₁ : {a : 𝟚} → a ＝ ₁ → complement a ＝ ₀
-complement-intro₁ {₁} p = refl
 
 ⊕-₀-right-neutral : {a : 𝟚} → a ⊕ ₀ ＝ a
 ⊕-₀-right-neutral {₀} = refl

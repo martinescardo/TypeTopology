@@ -38,12 +38,12 @@ open import UF.DiscreteAndSeparated
 
 \end{code}
 
-TODO. I am not happy about the name of the following fact. It is the
-name given in [1].
+TODO. Give a more sensible name of the following fact. It is the name
+given in [1].
 
-In any case, it is an iterated version of Theorem 8.2 of [2], which
-also deserves a better name here, and it is the cricial lemma to prove
-the decidability of non-continuity.
+This is an iterated version of Theorem 8.2 of [2], which also deserves
+a better name here, and it is the crucial lemma to prove the
+decidability of non-continuity.
 
 [2] Martin Escardo. Infinite sets that satisfy the principle of
     omniscience in all varieties of constructive mathematics, Journal
@@ -54,31 +54,34 @@ the decidability of non-continuity.
 
 \begin{code}
 
-Lemma-3·1 : (q : ℕ∞ → ℕ∞ → 𝟚)
-          → is-decidable ((m : ℕ) → ¬ ((n : ℕ) → q (ι m) (ι n) ＝ ₁))
-Lemma-3·1 q = claim₄
+Lemma-3·1 : (A : ℕ∞ → ℕ∞ → 𝓤 ̇ )
+          → ((x y : ℕ∞) → is-decidable (A x y))
+          → is-decidable ((m : ℕ) → ¬ ((n : ℕ) → A (ι m) (ι n)))
+Lemma-3·1 {𝓤} A δ = III
  where
-  A : ℕ∞ → 𝓤₀ ̇
-  A u = (n : ℕ) → q u (ι n) ＝ ₁
+  B : ℕ∞ → 𝓤 ̇
+  B u = (n : ℕ) → A u (ι n)
 
-  claim₀ :  (u : ℕ∞) → is-decidable (A u)
-  claim₀ u = Theorem-8·2 (q u)
+  I :  (x : ℕ∞) → is-decidable (B x)
+  I x = Theorem-8·2' (A x) (δ x)
 
-  p : ℕ∞ → 𝟚
-  p = indicator-map claim₀
+  II :  (x : ℕ∞) → is-decidable (¬ B x)
+  II x = ¬-preserves-decidability (I x)
 
-  claim₁ : is-decidable ((n : ℕ) → p (ι n) ＝ ₁)
-  claim₁ = Theorem-8·2 p
+  III : is-decidable ((n : ℕ) → ¬ B (ι n))
+  III = Theorem-8·2' (λ x → ¬ B x) II
 
-  claim₂ : ((n : ℕ) → ¬ A (ι n)) → (n : ℕ) → p (ι n) ＝ ₁
-  claim₂ φ n = different-from-₀-equal-₁
-                (λ v → φ n (indicator-property₀ claim₀ (ι n) v))
+\end{code}
 
-  claim₃ : ((n : ℕ) → p (ι n) ＝ ₁) → (n : ℕ) → ¬ A (ι n)
-  claim₃ f n = indicator-property₁ claim₀ (ι n) (f n)
+The following is the original formulation of the above in [1], which
+we keep nameless as it is not needed for our purposes and in any case
+is just a direct particular case.
 
-  claim₄ : is-decidable ((n : ℕ) → ¬ (A (ι n)))
-  claim₄ = map-decidable claim₃ claim₂ claim₁
+\begin{code}
+
+_ : (q : ℕ∞ → ℕ∞ → 𝟚)
+  → is-decidable ((m : ℕ) → ¬ ((n : ℕ) → q (ι m) (ι n) ＝ ₁))
+_ = λ q → Lemma-3·1 (λ x y → q x y ＝ ₁) (λ x y → 𝟚-is-discrete (q x y) ₁)
 
 \end{code}
 
@@ -140,47 +143,21 @@ continuity-data = continuous
 
 \end{code}
 
-It will be convenient to work with the type `noncontinuous f` defined
-below, which is logically equivalent to the type `¬ continuous f`.
-
-\begin{code}
-
-noncontinuous : (ℕ∞ → ℕ) → 𝓤₀ ̇
-noncontinuous f = (m : ℕ) → ¬ ((n : ℕ) → f (max (ι m) (ι n)) ＝[ℕ] f ∞)
-
-module _ (f : ℕ∞ → ℕ) where
-
- noncontinuity-is-decidable : is-decidable (noncontinuous f)
- noncontinuity-is-decidable = Lemma-3·1 (λ x y → χ＝ (f (max x y)) (f ∞))
-
- not-continuous-gives-noncontinuous : ¬ continuous f → noncontinuous f
- not-continuous-gives-noncontinuous ν m a =
-  ν (m , (λ n → rl-implication
-                 (＝-agrees-with-＝[ℕ]
-                    (f (max (ι m) (ι n)))
-                    (f ∞))
-                 (a n)))
-
- noncontinuous-gives-not-continuous : noncontinuous f → ¬ continuous f
- noncontinuous-gives-not-continuous ν (m , a) =
-  ν m (λ n → lr-implication
-              (＝-agrees-with-＝[ℕ]
-                (f (max (ι m) (ι n)))
-                (f ∞))
-              (a n))
-
-\end{code}
-
 The following is Theorem 3.2 of [1].
 
 \begin{code}
 
+module _ (f : ℕ∞ → ℕ) where
+
  private
   Theorem-3·2 : is-decidable (¬ continuous f)
   Theorem-3·2 = map-decidable
-                 noncontinuous-gives-not-continuous
-                 not-continuous-gives-noncontinuous
-                 noncontinuity-is-decidable
+                 uncurry
+                 curry
+                 (Lemma-3·1
+                   (λ x y → f (max x y) ＝ (f ∞))
+                   (λ x y → ℕ-is-discrete (f (max x y)) (f ∞)))
+
 \end{code}
 
 For our purposes, the following terminology is better.
@@ -195,9 +172,11 @@ TODO. The paper [1] also discusses the following.
 
  1. MP gives that continuity and doubly negated continuity agree.
 
- 2. WLPO is equivalent to the existence of a noncontinuous function ℕ∞ → ℕ.
+ 2. WLPO is equivalent to the existence of a noncontinuous function
+    ℕ∞ → ℕ.
 
- 3. ¬ WLPO is equivalent to the doubly negated continuity of all functions ℕ∞ → ℕ.
+ 3. ¬ WLPO is equivalent to the doubly negated continuity of all
+    functions ℕ∞ → ℕ.
 
  4. If MP and ¬ WLPO then all functions ℕ∞ → ℕ are continuous.
 
@@ -235,7 +214,7 @@ noncontinuous-map-gives-WLPO f f-non-cts = VI
   I : (u : ℕ∞)
     → ¬¬ (Σ v ꞉ ℕ∞ , f (max u v) ≠ f ∞)
     → (Σ v ꞉ ℕ∞ , f (max u v) ≠ f ∞)
-  I u = Σ-Compactness-gives-Markov
+  I u = Σ-Compactness-gives-Complemented-choice
           ℕ∞-Compact
           (λ v → f (max u v) ≠ f ∞)
           (λ v → ¬-preserves-decidability
@@ -417,20 +396,9 @@ module continuity-criteria (pt : propositional-truncations-exist) where
     A x = (n : ℕ) → f (max x (ι n)) ＝ f ∞
 
     A-is-decidable : (x : ℕ∞) → is-decidable (A x)
-    A-is-decidable x = γ
-     where
-      B : 𝓤₀ ̇
-      B = (n : ℕ) → f (max x (ι n)) ＝[ℕ] f ∞
-
-      B-is-decidable : is-decidable B
-      B-is-decidable = Theorem-8·2 (λ y → χ＝ (f (max x y)) (f ∞))
-
-      γ : is-decidable (A x)
-      γ = map-decidable
-           (λ b n → rl-implication (＝-agrees-with-＝[ℕ] _ _) (b n))
-           (λ a n → lr-implication (＝-agrees-with-＝[ℕ] _ _) (a n))
-           B-is-decidable
-
+    A-is-decidable x = Theorem-8·2'
+                        (λ y → f (max x y) ＝ f ∞)
+                        (λ y → ℕ-is-discrete (f (max x y)) (f ∞))
 \end{code}
 
 Next, we show that continuity is equivalent to a more familiar notion
@@ -734,24 +702,8 @@ try to be consistent with the terminology of the HoTT/UF community.)
   I : (n : ℕ) → f (ι n) ＝ f' (ι n)
   I n = h n ∙ (h' n)⁻¹
 
-  p : ℕ∞ → 𝟚
-  p x = complement (χ＝ (f x) (f' x))
-
-  IIₙ : (n : ℕ) → p (ι n) ＝ ₀
-  IIₙ n = ap complement
-             (lr-implication (＝-agrees-with-＝[ℕ] (f (ι n)) (f' (ι n))) (I n))
-
-  III :  ¬¬ (f ∞ ＝ f' ∞)
-  III d = nwlpo (basic-discontinuity-taboo p (IIₙ , II∞))
-   where
-    III₀ : ¬ (χ＝ (f ∞) (f' ∞) ＝ ₁)
-    III₀ = contrapositive (rl-implication (＝-agrees-with-＝[ℕ] (f ∞) (f' ∞))) d
-
-    II∞ : p ∞ ＝ ₁
-    II∞ = argument-not-one-gives-complement-one III₀
-
   IV : f ∞ ＝ f' ∞
-  IV = ℕ-is-¬¬-separated (f ∞) (f' ∞) III
+  IV = agreement-cotaboo' ℕ-is-discrete nwlpo f f' I
 
   V : f ∼ f'
   V = ℕ∞-density fe ℕ-is-¬¬-separated I IV
