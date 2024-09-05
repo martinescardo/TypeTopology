@@ -283,9 +283,9 @@ It follows from this that `is-compact-open` implies `is-compact-open'`.
          Ⅰ = q
          Ⅱ = directify-preserves-joins (𝒪 X) S
 
-   † : (Σ is ꞉ index S↑ , (U ≤[ Xₚ ] S↑ [ is ]) holds)
-     → Σ (J , β) ꞉ SubFam S ,
-        is-Kuratowski-finite J × (U ≤[ Xₚ ] (⋁⟨ j ∶ J ⟩ S [ β j ])) holds
+   † : Σ is ꞉ index S↑ , (U ≤[ Xₚ ] S↑ [ is ]) holds
+     → Σ (J , β) ꞉ SubFam S , is-Kuratowski-finite J
+                            × (U ≤[ Xₚ ] (⋁⟨ j ∶ J ⟩ S [ β j ])) holds
    † = uncurry (finite-subcover-through-directification U S)
 
 \end{code}
