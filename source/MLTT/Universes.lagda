@@ -49,11 +49,12 @@ definitions, to refer to 𝓤), it can be
   foo {𝓤} X = refl {𝓤} {X}
 
 **Important**. We also have the problem of *visualizing* this notation
-in both emacs and the html rendering of our Agda files in web browsers.
+in both emacs and the html rendering of our Agda files in web
+browsers.
 
-First of all, we define upperscript dot as a postfix
-operator. Therefore, it is necessary to write a space between 𝓤 and
-the upperscript dot following it, by the conventions for Agda.
+First of all, we define upperscript dot as a postfix operator.
+Therefore, it is necessary to write a space between 𝓤 and the
+upperscript dot following it, by the conventions adopted by Agda.
 
 Secondly, it is the nature of unicode that upperscript dot is (almost)
 always displayed at the *top* of the previous character, which in our
@@ -66,8 +67,8 @@ but it does have to be typed, as otherwise we get
 
   𝓤̇
 
-both in emacs and the html rendering, which Agda interprets as a single
-token.
+both in emacs and the html rendering, which Agda interprets as a
+single token.
 
 Moreover, Agda doesn't require the upperscript dot to have a space
 when it is followed by a closing bracket. Compare
@@ -91,15 +92,30 @@ and
   open bracket, X, colon, 𝓤, space, upperscript dot, space, close bracket.
 
 You will see that the dot is placed at the top the closing bracket in
-the second example..
+the second example in its html version, but not in its emacs version.
+
+So we always need a space between the upperscript dot and the closing
+bracket.
 
 Another pitfall is that some TypeTopology contributors, including
 yours truly, often end up accidentally writing **two spaces** before
 the closing brackets, to avoid this, which we don't want, due to the
-above weirdness.
+above weirdness. Make sure you type exactly one space after the dot
+and before the closing bracket. More precisely, we want the first
+option, namely
+
+  open bracket, X, colon, 𝓤, space, upperscript dot, close bracket
 
 I really wish Agda had implicit coercions and we could write 𝓤 rather
 than the more cumbersome 𝓤 ̇. We can't really blame unicode here.
+
+If you are a TypeTopology contributor, make sure you read the above
+both in emacs in its agda version and in a web brouwser in its html
+version.
+
+  https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Universes.html
+
+to understand this visualization problem and its solution in practice.
 
 \begin{code}
 
