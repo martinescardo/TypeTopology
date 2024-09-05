@@ -115,7 +115,7 @@ WEM-gives-decomposition-of-two-pointed-types wem X ((x₀ , x₁) , d) = γ
   g x (inr _) = ₁
 
   h : (x : X) → ¬ (x ≠ x₀) + ¬¬ (x ≠ x₀)
-  h x = wem (x ≠ x₀) (negations-are-props fe')
+  h x = wem (x ≠ x₀)
 
   f : X → 𝟚
   f x = g x (h x)
@@ -162,14 +162,14 @@ WEM-gives-decomposition-of-two-pointed-types⁺ {𝓤} wem X l ((x₀ , x₁) , 
   g x (inr _) = ₁
 
   h : (x : X) → ¬ (x ≠⟦ l ⟧ x₀) + ¬¬ (x ≠⟦ l ⟧ x₀)
-  h x = wem (x ≠⟦ l ⟧ x₀) (negations-are-props fe')
+  h x = wem (x ≠⟦ l ⟧ x₀)
 
   f : X → 𝟚
   f x = g x (h x)
 
   g₀ : (δ : ¬ (x₀ ≠⟦ l ⟧ x₀) + ¬¬ (x₀ ≠⟦ l ⟧ x₀)) → g x₀ δ ＝ ₀
   g₀ (inl _) = refl
-  g₀ (inr u) = 𝟘-elim (three-negations-imply-one u ⟦ l ⟧-refl)
+  g₀ (inr u) = 𝟘-elim (three-negations-imply-one u ＝⟦ l ⟧-refl)
 
   e₀ : f x₀ ＝ ₀
   e₀ = g₀ (h x₀)
@@ -210,7 +210,7 @@ The type of ordinals in any universe has Ω-paths between any two points.
 
 \begin{code}
 
-has-Ω-paths : (𝓥 : Universe) → 𝓤 ̇  → 𝓤 ⊔ (𝓥 ⁺) ̇
+has-Ω-paths : (𝓥 : Universe) → 𝓤 ̇ → 𝓤 ⊔ (𝓥 ⁺) ̇
 has-Ω-paths 𝓥 X = (x y : X) → Ω-Path 𝓥 x y
 
 type-of-ordinals-has-Ω-paths : is-univalent 𝓤
@@ -276,7 +276,7 @@ decomposition-of-Ω-gives-WEM : propext 𝓤
                              → decomposition (Ω 𝓤)
                              → WEM 𝓤
 decomposition-of-Ω-gives-WEM
-  {𝓤} pe (f , (p₀@(P₀ , i₀) , e₀) , (p₁@(P₁ , i₁) , e₁)) = IV
+  {𝓤} pe (f , (p₀@(P₀ , i₀) , e₀) , (p₁@(P₁ , i₁) , e₁)) = V
  where
   g : Ω 𝓤 → Ω 𝓤
   g (Q , j) = ((P₀ × Q) + (P₁ × ¬ Q)) , k
@@ -321,8 +321,11 @@ decomposition-of-Ω-gives-WEM
   III₁ : (q : Ω 𝓤) → f (g q) ＝ ₁ → ¬ (q holds) + ¬¬ (q holds)
   III₁ q e = inl (contrapositive (I₀ q) (equal-₁-different-from-₀ e))
 
-  IV : (Q : 𝓤  ̇ )→ is-prop Q → ¬ Q + ¬¬ Q
+  IV : (Q : 𝓤  ̇ ) → is-prop Q → ¬ Q + ¬¬ Q
   IV Q j = 𝟚-equality-cases (III₀ (Q , j)) (III₁ (Q , j))
+
+  V : (Q : 𝓤  ̇ ) → ¬ Q + ¬¬ Q
+  V = WEM'-gives-WEM fe' IV
 
 decomposition-of-type-with-Ω-paths-gives-WEM : propext 𝓥
                                              → {X : 𝓤 ̇ }

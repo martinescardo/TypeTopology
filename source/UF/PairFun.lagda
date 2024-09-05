@@ -164,7 +164,7 @@ pair-fun-embedding (f , i) g = pair-fun f (λ x → ⌊ g x ⌋) ,
 
 
 pair-fun-is-embedding-special : {𝓤 𝓥 𝓦 : Universe}
-                                {X : 𝓤 ̇  } {Y : 𝓥 ̇  } {B : Y → 𝓦 ̇  }
+                                {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {B : Y → 𝓦 ̇ }
                               → (f : X → Y)
                               → (g : (x : X) → B (f x))
                               → is-embedding f

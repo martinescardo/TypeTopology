@@ -18,7 +18,6 @@ Notice that the condition on α can be expressed as "is-prop (fiber α ₁)".
 
 module CoNaturals.Equivalence where
 
-open import CoNaturals.Cantor
 open import CoNaturals.GenericConvergentSequence
 open import CoNaturals.GenericConvergentSequence2
 open import MLTT.Spartan
@@ -27,6 +26,7 @@ open import Naturals.Order
 open import Naturals.Properties
 open import Notation.CanonicalMap
 open import Notation.Order
+open import TypeTopology.Cantor
 open import UF.Equiv
 open import UF.FunExt
 open import UF.Subsingletons
@@ -205,7 +205,7 @@ a suitable induction hypothesis.
 γ-lemma β π n p 0 l = w
  where
   w : complement (β 0) ＝ ₁
-  w = complement-intro₀ (at-most-one-₁-Lemma₁ β π (positive-not-zero n) p)
+  w = complement₁-back (at-most-one-₁-Lemma₁ β π (positive-not-zero n) p)
 
 γ-lemma β π 0 p (succ k) ()
 γ-lemma β π (succ n) p (succ k) l = w

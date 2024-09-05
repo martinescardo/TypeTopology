@@ -23,7 +23,7 @@ private
 
 open import MLTT.Spartan
 open import Notation.CanonicalMap
-open import Taboos.LPO fe
+open import Taboos.LPO
 open import Naturals.Order
 open import Ordinals.Arithmetic fe
 open import Ordinals.OrdinalOfOrdinals ua

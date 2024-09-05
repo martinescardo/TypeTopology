@@ -281,6 +281,9 @@ used in the following construction.
 𝟘-is-not-𝟙 : 𝟘 {𝓤} ≠ 𝟙 {𝓤}
 𝟘-is-not-𝟙 p = 𝟘-elim (Idtofun (p ⁻¹) ⋆)
 
+universe-has-two-distinct-points : has-two-distinct-points (𝓤 ̇ )
+universe-has-two-distinct-points = ((𝟘 , 𝟙) , 𝟘-is-not-𝟙)
+
 \end{code}
 
 Unique existence.

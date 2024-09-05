@@ -51,7 +51,7 @@ but in this case it is convenient to do so:
 
 \begin{code}
 
-data Player : 𝓤₀ ̇  where
+data Player : 𝓤₀ ̇ where
  X O : Player
 
 opponent : Player → Player

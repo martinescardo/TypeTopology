@@ -2,7 +2,7 @@ sSetMartin Escardo, Paulo Oliva, 7-22 June 2023
 
 We relate our game trees to Aczel's W type of CZF sets in various ways.
 
-Peter Aczel. "The ?  ̇  Theoretic Interpretation of Constructive Set
+Peter Aczel. "The Type Theoretic Interpretation of Constructive Set
 Theory". Studies in Logic and the Foundations of Mathematics, Volume
 96, 1978, Pages 55-66.  https://doi.org/10.1016/S0049-237X(08)71989-X
 

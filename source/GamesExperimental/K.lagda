@@ -14,7 +14,7 @@ private
  variable
   𝓦₀ : Universe
 
-𝕂 : 𝓦₀ ̇  → Monad
+𝕂 : 𝓦₀ ̇ → Monad
 𝕂 {𝓦₀} R = record {
        ℓ       = λ 𝓤 → 𝓤 ⊔ 𝓦₀ ;
        functor = λ X → (X → R) → R ;
@@ -27,7 +27,7 @@ private
 
 module K-definitions (R : 𝓦₀ ̇ ) where
 
- K : 𝓤 ̇  → 𝓦₀ ⊔ 𝓤  ̇
+ K : 𝓤 ̇ → 𝓦₀ ⊔ 𝓤  ̇
  K = functor (𝕂 R)
 
  _⊗ᴷ_ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }

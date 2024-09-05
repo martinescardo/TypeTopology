@@ -1746,7 +1746,7 @@ A _locale_ is a type that has a frame of opens.
 
 \begin{code}
 
-record Locale (𝓤 𝓥 𝓦 : Universe) : 𝓤 ⁺ ⊔ 𝓥 ⁺ ⊔ 𝓦 ⁺ ̇  where
+record Locale (𝓤 𝓥 𝓦 : Universe) : 𝓤 ⁺ ⊔ 𝓥 ⁺ ⊔ 𝓦 ⁺ ̇ where
  field
   ⟨_⟩ₗ         : 𝓤 ̇
   frame-str-of : frame-structure 𝓥 𝓦 ⟨_⟩ₗ

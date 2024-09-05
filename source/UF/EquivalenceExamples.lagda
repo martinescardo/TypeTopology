@@ -1045,7 +1045,7 @@ Added 9 July 2024 by Tom de Jong.
 
 \begin{code}
 
-fiber-of-ap-≃' : {A : 𝓤 ̇  } {B : 𝓥 ̇  } (f : A → B)
+fiber-of-ap-≃' : {A : 𝓤 ̇ } {B : 𝓥 ̇ } (f : A → B)
                  {x y : A} (p : f x ＝ f y)
                → fiber (ap f) p ≃ ((x , refl) ＝[ fiber' f (f x) ] (y , p))
 fiber-of-ap-≃' f {x} {y} p =
@@ -1053,7 +1053,7 @@ fiber-of-ap-≃' f {x} {y} p =
  (Σ e ꞉ x ＝ y , transport (λ - → (f x ＝ f -)) e refl ＝ p) ≃⟨ ≃-sym Σ-＝-≃ ⟩
  ((x , refl) ＝ (y , p))                                     ■
 
-fiber-of-ap-≃ : {A : 𝓤 ̇  } {B : 𝓥 ̇  } (f : A → B)
+fiber-of-ap-≃ : {A : 𝓤 ̇ } {B : 𝓥 ̇ } (f : A → B)
                 {x y : A} (p : f x ＝ f y)
               → fiber (ap f) p ≃ ((x , p) ＝[ fiber f (f y) ] (y , refl))
 fiber-of-ap-≃ f {x} {y} p =

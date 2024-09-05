@@ -79,7 +79,7 @@ in a convenient way.
 
 build-GameJ : (r     : R)
               (Board : 𝓥  ̇ )
-              (τ     : Board → R + (Σ M ꞉ 𝓤 ̇  , (M → Board) × J M))
+              (τ     : Board → R + (Σ M ꞉ 𝓤 ̇ , (M → Board) × J M))
               (n     : ℕ)
               (b     : Board)
             → GameJ
@@ -89,7 +89,7 @@ build-GameJ r Board τ n b = h n b
   h 0        b = leaf r
   h (succ n) b = g (τ b)
    where
-    g : (f : R + (Σ M ꞉ 𝓤  ̇  , (M → Board) × J M)) → GameJ
+    g : (f : R + (Σ M ꞉ 𝓤  ̇ , (M → Board) × J M)) → GameJ
     g (inl r)              = leaf r
     g (inr (M , play , ε)) = branch M Xf ε
      where
@@ -98,7 +98,7 @@ build-GameJ r Board τ n b = h n b
 
 build-Game : (r  : R)
              (Board : 𝓥 ̇ )
-             (τ     : Board → R + (Σ M ꞉ 𝓤 ̇  , (M → Board) × J M))
+             (τ     : Board → R + (Σ M ꞉ 𝓤 ̇ , (M → Board) × J M))
              (n     : ℕ)
              (b     : Board)
            → Game

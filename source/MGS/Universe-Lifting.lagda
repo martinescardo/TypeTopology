@@ -14,7 +14,7 @@ module MGS.Universe-Lifting where
 open import MGS.Equivalence-Constructions
 open import MGS.Embeddings public
 
-record Lift {𝓤 : Universe} (𝓥 : Universe) (X : 𝓤 ̇ ) : 𝓤 ⊔ 𝓥 ̇  where
+record Lift {𝓤 : Universe} (𝓥 : Universe) (X : 𝓤 ̇ ) : 𝓤 ⊔ 𝓥 ̇ where
  constructor
   lift
  field

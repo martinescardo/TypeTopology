@@ -1,4 +1,4 @@
-Ian Ray, 07/02/2024
+Ian Ray, 7 February 2024
 
 Singleton Properties. Of course there are alot more we can add to this file.
 For now we will show that singletons are closed under retracts and Σ types.
@@ -9,7 +9,9 @@ For now we will show that singletons are closed under retracts and Σ types.
 
 open import MLTT.Spartan
 open import UF.Equiv
+open import UF.Equiv-FunExt
 open import UF.EquivalenceExamples
+open import UF.FunExt
 open import UF.Retracts
 open import UF.Subsingletons
 
@@ -24,7 +26,7 @@ singleton-closed-under-retract X Y (r , s , H) (c , C) = (r c , C')
   C' : is-central X (r c)
   C' x = r c      ＝⟨ ap r (C (s x)) ⟩
          r (s x)  ＝⟨ H x ⟩
-         x        ∎ 
+         x        ∎
 
 Σ-is-singleton : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
                → is-singleton X
@@ -40,5 +42,14 @@ singleton-closed-under-retract X Y (r , s , H) (c , C) = (r c , C')
                                                      (center (h c))) ⁻¹ ⟩
         center (h x)                     ＝⟨ centrality (h x) a ⟩
         a                                ∎
+
+≃-is-singleton : FunExt
+               → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+               → is-singleton X
+               → is-singleton Y
+               → is-singleton (X ≃ Y)
+≃-is-singleton fe i j = pointed-props-are-singletons
+                         (singleton-≃ i j)
+                         (≃-is-prop fe (singletons-are-props j))
 
 \end{code}
