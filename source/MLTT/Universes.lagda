@@ -110,15 +110,15 @@ I really wish Agda had implicit coercions and we could write 𝓤 rather
 than the more cumbersome 𝓤 ̇. We can't really blame unicode here.
 
 If you are a TypeTopology contributor, make sure you read the above
-both in emacs in its agda version and in a web brouwser in its html
+both in emacs in its agda version and in a web browser in its html
 version.
 
   https://www.cs.bham.ac.uk/~mhe/TypeTopology/MLTT.Universes.html
 
 to understand this visualization problem and its solution in practice.
 
-Not all web brouwsers exhibit the same problem, though, which is even
-more annoying. The current solution works for all brouwsers I tested
+Not all web browsers exhibit the same problem, though, which is even
+more annoying. The current solution works for all browsers I tested
 on 5th September 2024 (Firefox, Chrome, Chromium, Safari).
 
 \begin{code}
