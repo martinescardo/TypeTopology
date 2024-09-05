@@ -12,7 +12,7 @@ we write
 
   X : 𝓤 ̇
 
-although we wish we could use the same notation of the HoTT book. This
+although we wish we could use the same notation as the HoTT book. This
 would be possible if Agda had implicit coercions like other proof
 assistants such as Coq and we declared upperscript dot as an implicit
 coercion.
