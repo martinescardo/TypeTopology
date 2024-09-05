@@ -345,27 +345,13 @@ subset.
  χ∙-of-Kuratowski-finite-subset-is-Kuratowski-finite S 𝕗 = ∥∥-functor † 𝕗
   where
    † : Σ n ꞉ ℕ , Fin n ↠ index S → Σ n ꞉ ℕ , Fin n ↠ 𝕋 (χ∙ S)
-   † (n , h , σ) = n , h′ , σ′
+   † (n , h , σ) = n , h′ , φ
     where
-     h′ : Fin n → 𝕋 (χ∙ S)
-     h′ i = S [ h i ] , ∣ h i , refl ∣
+     h′ : Fin n → image (S [_])
+     h′ = corestriction (S [_]) ∘ h
 
-     σ′ : is-surjection h′
-     σ′ (U , p) = ∥∥-rec ∥∥-is-prop ♢ p
-      where
-       ♢ : Σ x ꞉ index S , S [ x ] ＝ U → ∃ i ꞉ Fin n , (h′ i ＝ U , p)
-       ♢ (i , q) = ∥∥-rec ∃-is-prop ♠ (σ i)
-        where
-         ♠ : Σ (λ x → h x ＝ i) → ∃ (λ j → h′ j ＝ U , p)
-         ♠ (m , r) = ∣ m , to-subtype-＝ (λ _ → ∃-is-prop) ※ ∣
-          where
-           Ⅰ = ap (S [_]) r
-           Ⅱ = q
-
-           ※ : S [ h m ] ＝ U
-           ※ = S [ h m ]   ＝⟨ Ⅰ ⟩
-               S [ i ]     ＝⟨ Ⅱ ⟩
-               U           ∎
+     φ : is-surjection h′
+     φ = ∘-is-surjection σ (corestrictions-are-surjections (S [_]))
 
 \end{code}
 
