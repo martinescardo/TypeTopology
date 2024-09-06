@@ -11,9 +11,10 @@ of interest pertaining to the concept of connectedness.
 open import UF.FunExt
 open import UF.PropTrunc 
 
-module UF.ConnectedTypes (fe : Fun-Ext)
-                         (pt : propositional-truncations-exist)
-                          where
+module UF.ConnectedTypes
+        (fe : Fun-Ext)
+        (pt : propositional-truncations-exist)
+       where
                           
 open import MLTT.Spartan
 open import Naturals.Addition renaming (_+_ to _+'_)
@@ -24,7 +25,7 @@ open import UF.H-Levels fe
 open import UF.ImageAndSurjection pt
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import UF.Truncations fe pt
+open import UF.Truncations fe 
 open import UF.Univalence
 
 open propositional-truncations-exist pt
@@ -38,9 +39,7 @@ In terms of our H-level convetion it will mean 2-connectedness.
 
 \begin{code}
 
-module k-connectedness
-        (te : H-level-truncations-exist)
-       where
+module k-connectedness (te : H-level-truncations-exist) where
 
  open H-level-truncations-exist te
 
@@ -52,8 +51,6 @@ module k-connectedness
 
 \end{code}
 
-(y : codomain f) → (fiber f y) is k connected
-
 We characterize 1-connected types as inhabited types and 1-connected maps as
 surjections.
 
@@ -61,12 +58,12 @@ surjections.
 
  inhabited-if-one-connected : {X : 𝓤 ̇}
                             → X is 1 connected → ∥ X ∥
- inhabited-if-one-connected X-1-conn = one-trunc-to-prop-trunc (center X-1-conn)
+ inhabited-if-one-connected X-1-conn = one-trunc-to-prop-trunc pt (center X-1-conn)
 
  one-connected-if-inhabited : {X : 𝓤 ̇}
                             → ∥ X ∥ → X is 1 connected
  one-connected-if-inhabited x-anon =
-  pointed-props-are-singletons (prop-trunc-to-one-trunc x-anon) one-trunc-is-prop
+  pointed-props-are-singletons (prop-trunc-to-one-trunc pt x-anon) one-trunc-is-prop
 
  one-connected-iff-inhabited : {X : 𝓤 ̇}
                              → X is 1 connected ↔ ∥ X ∥
@@ -103,14 +100,14 @@ useful.
  connectedness-closed-under-equiv e Y-con =
   equiv-to-singleton (truncation-closed-under-equiv e) Y-con
 
- contractible-types-are-connected : {X : 𝓤 ̇} {n : ℕ}
+ contractible-types-are-connected : {X : 𝓤 ̇} {k : ℕ}
                                   → is-contr X
-                                  → X is n connected
- contractible-types-are-connected {𝓤} {X} {n} (c , C) = ((∣ c ∣[ n ]) , C')
+                                  → X is k connected
+ contractible-types-are-connected {𝓤} {X} {k} (c , C) = ((∣ c ∣[ k ]) , C')
   where
-   C' : (s : ∥ X ∥[ n ]) → (∣ c ∣[ n ]) ＝ s
-   C' = ∥∥ₙ-ind (hlevels-are-closed-under-id ∥∥ₙ-hlevel (∣ c ∣[ n ]))
-                (λ x → ap ∣_∣[ n ] (C x))
+   C' : (s : ∥ X ∥[ k ]) → (∣ c ∣[ k ]) ＝ s
+   C' = ∥∥ₙ-ind (hlevels-are-closed-under-id ∥∥ₙ-hlevel (∣ c ∣[ k ]))
+                (λ x → ap ∣_∣[ k ] (C x))
 
  connectedness-is-lower-closed : {X : 𝓤 ̇} {k : ℕ}
                                → X is (succ k) connected
@@ -148,12 +145,10 @@ of the identity type at the level below. We will assume univalence when necessar
 
  inhabited-if-connected : {X : 𝓤 ̇} {k : ℕ}
                         → X is (succ k) connected → ∥ X ∥
- inhabited-if-connected {_} {_} {0} X-conn =
-  center (equiv-to-singleton' one-trunc-≃-prop-trunc X-conn)
- inhabited-if-connected {_} {_} {succ k} X-conn =
-  inhabited-if-connected (connectedness-is-lower-closed X-conn)
+ inhabited-if-connected {_} {_} {k} X-conn =
+  inhabited-if-one-connected (connectedness-is-lower-closed' ⋆ X-conn)
 
- _is-locally_connected : (X : 𝓤 ̇) (n : ℕ) → 𝓤  ̇
+ _is-locally_connected : (X : 𝓤 ̇) (k : ℕ) → 𝓤  ̇
  X is-locally k connected = (x y : X) → (x ＝ y) is k connected
 
  connected-types-are-locally-connected : {X : 𝓤 ̇} {k : ℕ}
@@ -180,7 +175,7 @@ of the identity type at the level below. We will assume univalence when necessar
                                                      → X is (succ k) connected
  inhabited-and-locally-connected-types-are-connected
   {_} {_} {0} ua (anon-x , id-conn) =
-  pointed-props-are-singletons (prop-trunc-to-one-trunc anon-x) one-trunc-is-prop
+  pointed-props-are-singletons (prop-trunc-to-one-trunc pt anon-x) one-trunc-is-prop
  inhabited-and-locally-connected-types-are-connected
   {_} {_} {succ k} ua (anon-x , id-conn) =
   ∥∥-rec (being-singleton-is-prop fe)
