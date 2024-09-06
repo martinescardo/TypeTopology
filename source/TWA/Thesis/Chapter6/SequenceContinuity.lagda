@@ -6,14 +6,11 @@ Todd Waugh Ambridge, January 2024
 {-# OPTIONS --without-K --safe #-}
 
 open import MLTT.Spartan
-open import CoNaturals.Type
- renaming (ℕ-to-ℕ∞ to _↑) hiding (max)
+
 open import Notation.Order
 open import Naturals.Order
 open import UF.DiscreteAndSeparated
-open import UF.Subsingletons
 open import UF.FunExt
-open import UF.Equiv
 
 module TWA.Thesis.Chapter6.SequenceContinuity (fe : FunExt) where
 

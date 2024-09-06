@@ -23,8 +23,12 @@ fi
 
 FILE=$1
 
+# "catch exit status 1" grep wrapper
+# https://stackoverflow.com/questions/6550484/prevent-grep-returning-an-error-when-input-doesnt-match/49627999#49627999
+c1grep() { grep "$@" || test $? = 1; }
+
 # Get all line numbers that have 'open import ...'
-IMPORTS=$(grep -n "open import" $FILE | cut -d ':' -f1)
+IMPORTS=$(c1grep -n "open import" $FILE | cut -d ':' -f1)
 
 # Get the cluster, e.g. 'UF' or 'DomainTheory/Lifting'
 CLUSTER=$(dirname $FILE)
@@ -54,5 +58,6 @@ do
 	    IMPORT=$(${SED_CMD} -n "${i}p" $FILE | cut -d ' ' -f3)
 	    echo "Importing $IMPORT was not necessary"
 	}
+
+    rm $FULLTEMP
 done
-rm $FULLTEMP

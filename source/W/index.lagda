@@ -8,9 +8,9 @@ W-types.
 
 module W.index where
 
-open import W.Type
-open import W.Properties
-open import W.Numbers
-open import W.Paths
+import W.Type
+import W.Properties
+import W.Numbers
+import W.Paths
 
 \end{code}

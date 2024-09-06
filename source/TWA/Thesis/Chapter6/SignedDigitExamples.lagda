@@ -4,7 +4,6 @@ Todd Waugh Ambridge, January 2024
 {-# OPTIONS --without-K --safe #-}
 
 open import MLTT.Spartan
-open import NotionsOfDecidability.Complemented
 open import UF.Subsingletons
 open import UF.FunExt
 open import MLTT.SpartanList hiding (_∷_;⟨_⟩;[_])

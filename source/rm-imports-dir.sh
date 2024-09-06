@@ -19,7 +19,6 @@ DIR=$1
 
 for i in ${DIR}*.lagda
 do
-    echo $i
     ./rm-imports.sh $i
     echo "Done with $(basename ${i})"
 done

@@ -11,8 +11,6 @@ open import Integers.Type
 open import MLTT.Spartan
 open import Unsafe.Haskell
 
-open import TWA.Thesis.Chapter2.Vectors
-open import TWA.Thesis.Chapter2.Sequences
 open import TWA.Thesis.Chapter5.SignedDigit
 
 module TWA.Thesis.Chapter6.Main where
@@ -21,7 +19,6 @@ postulate fe : FunExt
 postulate pe : PropExt
 
 open import TWA.Thesis.Chapter6.SignedDigitSearch fe pe
-open import TWA.Thesis.Chapter6.SignedDigitExamples fe pe
 
 𝟛-to-ℤ : 𝟛 → ℤ
 𝟛-to-ℤ −1 = negsucc 0

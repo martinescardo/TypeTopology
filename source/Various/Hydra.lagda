@@ -19,7 +19,6 @@ module Various.Hydra where
 
 open import MLTT.Spartan
 open import MLTT.List
-open import Naturals.Properties
 open import Ordinals.Notions
 
 \end{code}
