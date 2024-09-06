@@ -1,4 +1,5 @@
-#!/usr/bin/bash
+#!/usr/bin/env bash
+set -Eeuo pipefail
 
 # This script will *remove* unused imports from all files in directory
 #

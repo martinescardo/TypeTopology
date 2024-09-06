@@ -1,4 +1,5 @@
-#!/usr/bin/bash
+#!/usr/bin/env bash
+set -Eeuo pipefail
 
 # This script will *remove* unused imports
 #
@@ -11,6 +12,19 @@
 # This is not great, but at least it detects such duplicates as a side-effect :)
 # I think manually fixing those is the easiest way to handle this (for now).
 
+# See https://stackoverflow.com/questions/4247068/sed-command-with-i-option-failing-on-mac-but-works-on-linux
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  # Require gnu-sed.
+  if ! [ -x "$(command -v gsed)" ]; then
+    echo "Error: 'gsed' is not istalled." >&2
+    echo "If you are using Homebrew, install with 'brew install gnu-sed'." >&2
+    exit 1
+  fi
+  SED_CMD=gsed
+else
+  SED_CMD=sed
+fi
+
 FILE=$1
 
 # Get all line numbers that have 'open import ...'
@@ -20,10 +34,10 @@ IMPORTS=$(grep -n "open import" $FILE | cut -d ':' -f1)
 CLUSTER=$(dirname $FILE)
 
 # And with '.' instead of '/'
-CLUSTERMOD=$(echo $CLUSTER | sed 's/\//./')
+CLUSTERMOD=$(echo $CLUSTER | ${SED_CMD} 's/\//./')
 
 # Get the (relative) module name
-MODNAME=$(basename $FILE | sed 's/.lagda$//')
+MODNAME=$(basename $FILE | ${SED_CMD} 's/.lagda$//')
 
 # Set up a temporary file for testing
 TEMP="UnusedImportTesting"
@@ -33,12 +47,12 @@ UNUSED=()
 
 for i in $IMPORTS;
 do
-    sed "$i s/^/-- /" $FILE > $FULLTEMP # Comment out an import
+    ${SED_CMD} "$i s/^/-- /" $FILE > $FULLTEMP # Comment out an import
 
     # Replace module name to match the temporary file
     OLDMOD="module ${CLUSTERMOD}.${MODNAME}"
     NEWMOD="module ${CLUSTERMOD}.${TEMP}"
-    sed -i "s/${OLDMOD}/${NEWMOD}/" $FULLTEMP
+    ${SED_CMD} -i "s/${OLDMOD}/${NEWMOD}/" $FULLTEMP
 
     # Try to compile and save line numbers of unused imports
     agda $FULLTEMP > /dev/null &&
@@ -49,4 +63,4 @@ done
 rm $FULLTEMP
 
 # Remove unused imports from the file
-sed -i "${UNUSED[*]/%/d;}" $FILE
+${SED_CMD} -i "${UNUSED[*]/%/d;}" $FILE
