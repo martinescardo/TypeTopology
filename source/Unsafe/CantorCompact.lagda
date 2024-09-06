@@ -10,14 +10,16 @@ and other modules.
 
 {-# OPTIONS --without-K #-}
 
-open import MLTT.Spartan
-open import MLTT.Two-Properties
 open import UF.FunExt
 
 module Unsafe.CantorCompact (fe : FunExt) where
 
-open import Unsafe.CountableTychonoff fe
+open import MLTT.Spartan
+open import MLTT.Two-Properties
 
+open import TypeTopology.CompactTypes
+
+open import Unsafe.CountableTychonoff fe
 
 cantor-compact∙ : is-compact∙ (ℕ → 𝟚)
 cantor-compact∙ = countable-Tychonoff (λ i → 𝟚-is-compact∙)
