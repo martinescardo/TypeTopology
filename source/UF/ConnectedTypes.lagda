@@ -1,6 +1,6 @@
 Ian Ray, 23rd July 2024
 
-We will define connected types and maps (recall our convetion for H-levels starts
+We define connected types and maps (recall our convention that H-levels start
 at 0). We then explore relationships, closure properties and characterizations
 of interest pertaining to the concept of connectedness.
 
@@ -16,32 +16,25 @@ module UF.ConnectedTypes (fe : Fun-Ext)
                           where
                           
 open import MLTT.Spartan
-open import UF.Base
-open import UF.Embeddings
-open import UF.Equiv
-open import UF.EquivalenceExamples
-open import UF.Equiv-FunExt
-open import UF.IdentitySystems
-open import UF.Retracts
-open import UF.Sets
-open import UF.Singleton-Properties
-open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
-open import UF.Subsingletons-Properties
-open import UF.Univalence
-open import UF.UA-FunExt
 open import Naturals.Addition renaming (_+_ to _+'_)
 open import Naturals.Order
+open import UF.Equiv
+open import UF.EquivalenceExamples
+open import UF.H-Levels fe
 open import UF.ImageAndSurjection pt
-open import UF.H-Levels fe  
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
 open import UF.Truncations fe pt
+open import UF.Univalence
+
+open propositional-truncations-exist pt
 
 \end{code}
 
 We now define the notion of k-connectedness for types and functions with respect
 to H-levels. TODO: show that connectedness as defined elsewhere is a
 special case of k-connectedness. Connectedness typically means set connectedness.
-In terms of our Hlevel convetion it will mean 2-connectedness.
+In terms of our H-level convetion it will mean 2-connectedness.
 
 \begin{code}
 
@@ -54,54 +47,51 @@ module k-connectedness
  _is_connected : 𝓤 ̇ → ℕ → 𝓤 ̇
  X is k connected = is-contr (∥ X ∥[ k ])
 
- map_is_connected : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (f : X → Y) → ℕ → 𝓤 ⊔ 𝓥 ̇
- map f is k connected = (y : codomain f) → (fiber f y) is k connected
+ _is_connected-map : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (f : X → Y) → ℕ → 𝓤 ⊔ 𝓥 ̇
+ f is k connected-map = each-fiber-of f (λ - → - is k connected)
 
 \end{code}
 
-We now characterize 1-connected types as inhabited types and 1-connected maps
-as surjections.
+(y : codomain f) → (fiber f y) is k connected
+
+We characterize 1-connected types as inhabited types and 1-connected maps as
+surjections.
 
 \begin{code}
 
- open propositional-truncations-exist pt
-
- one-connected-is-inhabited : {X : 𝓤 ̇}
+ inhabited-if-one-connected : {X : 𝓤 ̇}
                             → X is 1 connected → ∥ X ∥
- one-connected-is-inhabited X-1-conn = one-trunc-to-prop-trunc (center X-1-conn)
+ inhabited-if-one-connected X-1-conn = one-trunc-to-prop-trunc (center X-1-conn)
 
- inhabited-is-one-connected : {X : 𝓤 ̇}
+ one-connected-if-inhabited : {X : 𝓤 ̇}
                             → ∥ X ∥ → X is 1 connected
- inhabited-is-one-connected x-anon =
+ one-connected-if-inhabited x-anon =
   pointed-props-are-singletons (prop-trunc-to-one-trunc x-anon) one-trunc-is-prop
 
  one-connected-iff-inhabited : {X : 𝓤 ̇}
-                             → X is 1 connected
-                             ↔ ∥ X ∥
+                             → X is 1 connected ↔ ∥ X ∥
  one-connected-iff-inhabited =
-  (one-connected-is-inhabited , inhabited-is-one-connected)
+  (inhabited-if-one-connected , one-connected-if-inhabited)
 
- one-connected-map-is-surj : {X : 𝓤 ̇} {Y : 𝓥 ̇} {f : X → Y}
-                           → map f is 1 connected
-                           → is-surjection f
- one-connected-map-is-surj f-1-con y = one-connected-is-inhabited (f-1-con y)
+ map-is-surj-if-one-connected : {X : 𝓤 ̇} {Y : 𝓥 ̇} {f : X → Y}
+                              → f is 1 connected-map → is-surjection f
+ map-is-surj-if-one-connected f-1-con y = inhabited-if-one-connected (f-1-con y)
 
- surj-is-one-connected-map : {X : 𝓤 ̇} {Y : 𝓥 ̇} {f : X → Y}
-                           → is-surjection f
-                           → map f is 1 connected
- surj-is-one-connected-map f-is-surj y = inhabited-is-one-connected (f-is-surj y)
+ map-is-one-connected-if-surj : {X : 𝓤 ̇} {Y : 𝓥 ̇} {f : X → Y}
+                              → is-surjection f → f is 1 connected-map
+ map-is-one-connected-if-surj f-is-surj y = one-connected-if-inhabited (f-is-surj y)
 
- one-connected-map-iff-surj : {X : 𝓤 ̇} {Y : 𝓥 ̇} {f : X → Y}
-                            → map f is 1 connected
-                            ↔ is-surjection f
- one-connected-map-iff-surj = (one-connected-map-is-surj , surj-is-one-connected-map)
+ map-is-one-connected-iff-surj : {X : 𝓤 ̇} {Y : 𝓥 ̇} {f : X → Y}
+                               → f is 1 connected-map ↔ is-surjection f
+ map-is-one-connected-iff-surj =
+  (map-is-surj-if-one-connected , map-is-one-connected-if-surj)
 
 \end{code}
 
-We now devlop some closure conditions pertaining to connectedness. Connectedness
+We develop some closure conditions pertaining to connectedness. Connectedness
 is closed under equivalence as expected, but more importantly connectedness
 extends below: more precisely if a type is k connected then it is l connected
-for all l ≤ k. We provide many incarnations of this fact below which may prove
+for all l ≤ k. We provide a few incarnations of this fact below which may prove
 useful. 
 
 \begin{code}
@@ -111,7 +101,7 @@ useful.
                                   → Y is k connected
                                   → X is k connected
  connectedness-closed-under-equiv e Y-con =
-   equiv-to-singleton (truncation-closed-under-equiv e) Y-con
+  equiv-to-singleton (truncation-closed-under-equiv e) Y-con
 
  contractible-types-are-connected : {X : 𝓤 ̇} {n : ℕ}
                                   → is-contr X
@@ -126,29 +116,22 @@ useful.
                                → X is (succ k) connected
                                → X is k connected
  connectedness-is-lower-closed {𝓤} {X} {k} X-succ-con =
-   equiv-to-singleton successive-truncations-equiv 
+  equiv-to-singleton successive-truncations-equiv 
                       (contractible-types-are-connected X-succ-con)
 
- connectedness-extends-to-zero : {X : 𝓤 ̇} {k : ℕ}
-                               → X is k connected
-                               → X is 0 connected
- connectedness-extends-to-zero {𝓤} {X} {0} X-con = X-con
- connectedness-extends-to-zero {𝓤} {X} {succ k} X-con =
-   connectedness-extends-to-zero (connectedness-is-lower-closed X-con)
+ connectedness-is-lower-closed-+ : {X : 𝓤 ̇} {k l : ℕ}
+                                 → X is (l +' k) connected
+                                 → X is l connected
+ connectedness-is-lower-closed-+ {𝓤} {X} {0} {l} X-con = X-con
+ connectedness-is-lower-closed-+ {𝓤} {X} {succ k} {l} X-con =
+  connectedness-is-lower-closed-+ (connectedness-is-lower-closed X-con)
 
- connectedness-step-down : {X : 𝓤 ̇} {k l : ℕ}
-                         → X is (l +' k) connected
-                         → X is l connected
- connectedness-step-down {𝓤} {X} {0} {l} X-con = X-con
- connectedness-step-down {𝓤} {X} {succ k} {l} X-con =
-   connectedness-step-down (connectedness-is-lower-closed X-con)
-
- connectedness-extends-below : {X : 𝓤 ̇} {k l : ℕ}
-                             → (l ≤ℕ k)
-                             → X is k connected
-                             → X is l connected
- connectedness-extends-below {𝓤} {X} {k} {l} o X-con =
-   connectedness-step-down (transport (λ z → X is z connected) p X-con)
+ connectedness-is-lower-closed' : {X : 𝓤 ̇} {k l : ℕ}
+                                → (l ≤ℕ k)
+                                → X is k connected
+                                → X is l connected
+ connectedness-is-lower-closed' {𝓤} {X} {k} {l} o X-con =
+  connectedness-is-lower-closed-+ (transport (λ z → X is z connected) p X-con)
   where
    m : ℕ
    m = pr₁ (subtraction l k o)
@@ -159,65 +142,71 @@ useful.
 \end{code}
 
 We can characterize connected types in terms of inhabitedness and connectedness
-of the identity type at the level below. We will assume univalence when neccesary.
+of the identity type at the level below. We will assume univalence when necessary.
 
 \begin{code}
 
- conn-to-inhabited : {X : 𝓤 ̇} {n : ℕ}
-                   → X is (succ n) connected
-                   → ∥ X ∥
- conn-to-inhabited {_} {_} {0} X-conn =
+ inhabited-if-connected : {X : 𝓤 ̇} {k : ℕ}
+                        → X is (succ k) connected → ∥ X ∥
+ inhabited-if-connected {_} {_} {0} X-conn =
   center (equiv-to-singleton' one-trunc-≃-prop-trunc X-conn)
- conn-to-inhabited {_} {_} {succ n} X-conn =
-  conn-to-inhabited (connectedness-is-lower-closed X-conn)
+ inhabited-if-connected {_} {_} {succ k} X-conn =
+  inhabited-if-connected (connectedness-is-lower-closed X-conn)
 
- conn-to-id-conn : {X : 𝓤 ̇} {n : ℕ}
-                 → (ua : is-univalent 𝓤)
-                 → X is (succ n) connected
-                 → (x y : X) → (x ＝ y) is n connected
- conn-to-id-conn {_} {_} {n} ua X-conn x y =
+ _is-locally_connected : (X : 𝓤 ̇) (n : ℕ) → 𝓤  ̇
+ X is-locally k connected = (x y : X) → (x ＝ y) is k connected
+
+ connected-types-are-locally-connected : {X : 𝓤 ̇} {k : ℕ}
+                                       → is-univalent 𝓤
+                                       → X is (succ k) connected
+                                       → X is-locally k connected
+ connected-types-are-locally-connected {_} {_} {k} ua X-conn x y =
   equiv-to-singleton (eliminated-trunc-identity-char ua)
-                     (is-prop-implies-is-prop' (singletons-are-props X-conn)
-                                               ∣ x ∣[ succ n ]
-                                               ∣ y ∣[ succ n ])
+   (is-prop-implies-is-prop' (singletons-are-props X-conn)
+    ∣ x ∣[ succ k ] ∣ y ∣[ succ k ])
 
- conn-to-inhabited-id-conn : {X : 𝓤 ̇} {n : ℕ}
-                           → (ua : is-univalent 𝓤)
-                           → X is (succ n) connected
-                           → ∥ X ∥ × ((x y : X) → (x ＝ y) is n connected)
- conn-to-inhabited-id-conn ua X-conn =
-  (conn-to-inhabited X-conn , conn-to-id-conn ua X-conn)
+ connected-types-are-inhabited-and-locally-connected : {X : 𝓤 ̇} {k : ℕ}
+                                                     → is-univalent 𝓤
+                                                     → X is (succ k) connected
+                                                     → ∥ X ∥
+                                                      × X is-locally k connected
+ connected-types-are-inhabited-and-locally-connected ua X-conn =
+  (inhabited-if-connected X-conn , connected-types-are-locally-connected ua X-conn)
 
- inhabited-id-conn-to-conn : {X : 𝓤 ̇} {n : ℕ}
-                           → (ua : is-univalent 𝓤)
-                           → ∥ X ∥ × ((x y : X) → (x ＝ y) is n connected)
-                           → X is (succ n) connected
- inhabited-id-conn-to-conn {_} {_} {0} ua (anon-x , id-conn) =
+ inhabited-and-locally-connected-types-are-connected : {X : 𝓤 ̇} {k : ℕ}
+                                                     → is-univalent 𝓤
+                                                     → ∥ X ∥
+                                                      × X is-locally k connected
+                                                     → X is (succ k) connected
+ inhabited-and-locally-connected-types-are-connected
+  {_} {_} {0} ua (anon-x , id-conn) =
   pointed-props-are-singletons (prop-trunc-to-one-trunc anon-x) one-trunc-is-prop
- inhabited-id-conn-to-conn {_} {_} {succ n} ua (anon-x , id-conn) =
+ inhabited-and-locally-connected-types-are-connected
+  {_} {_} {succ k} ua (anon-x , id-conn) =
   ∥∥-rec (being-singleton-is-prop fe)
-         (λ x → (∣ x ∣[ succ (succ n) ]
+         (λ x → (∣ x ∣[ succ (succ k) ]
           , ∥∥ₙ-ind (λ v → hlevels-are-upper-closed
-                            (λ p q → ∥∥ₙ-hlevel ∣ x ∣[ succ (succ n) ] v p q)) 
+                            (λ p q → ∥∥ₙ-hlevel ∣ x ∣[ succ (succ k) ] v p q)) 
                     (λ y → forth-trunc-id-char ua (center (id-conn x y)))))
          anon-x
 
- connected-characterization : {X : 𝓤 ̇} {n : ℕ}
-                            → (ua : is-univalent 𝓤)
-                            → X is (succ n) connected
-                            ↔ ∥ X ∥ × ((x y : X) → (x ＝ y) is n connected)
+ connected-characterization : {X : 𝓤 ̇} {k : ℕ}
+                            → is-univalent 𝓤
+                            → X is (succ k) connected
+                            ↔ ∥ X ∥ × X is-locally k connected
  connected-characterization ua =
-  (conn-to-inhabited-id-conn ua , inhabited-id-conn-to-conn ua)
+  (connected-types-are-inhabited-and-locally-connected ua
+   , inhabited-and-locally-connected-types-are-connected ua)
 
- ap-is-less-connected : {X : 𝓤 ̇} {Y : 𝓥 ̇} {n : ℕ} {x x' : X}
+ ap-is-less-connected : {X : 𝓤 ̇} {Y : 𝓥 ̇} {k : ℕ} 
                       → (ua : is-univalent (𝓤 ⊔ 𝓥))
                       → (f : X → Y)
-                      → map f is (succ n) connected
-                      → map (ap f {x} {x'}) is n connected
- ap-is-less-connected {_} {_} {_} {_} {n} {x} {x'} ua f f-conn p =
+                      → f is (succ k) connected-map
+                      → {x x' : X}
+                      → (ap f {x} {x'}) is k connected-map
+ ap-is-less-connected ua f f-conn {x} {x'} p =
   equiv-to-singleton (truncation-closed-under-equiv (fiber-of-ap-≃ f p))
-                     (conn-to-id-conn ua (f-conn (f x')) (x , p) (x' , refl))
+   (connected-types-are-locally-connected ua (f-conn (f x'))
+    (x , p) (x' , refl))
 
 \end{code}
-
-
