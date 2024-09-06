@@ -72,9 +72,9 @@ our formal framework for search, optimisation and regression.
 https://arxiv.org/pdf/2401.09270.pdf#chapter.2
 
 \begin{code}
-open import TWA.Thesis.Chapter2.Finite
-open import TWA.Thesis.Chapter2.Vectors
-open import TWA.Thesis.Chapter2.Sequences
+import TWA.Thesis.Chapter2.Finite
+import TWA.Thesis.Chapter2.Vectors
+import TWA.Thesis.Chapter2.Sequences
 \end{code}
 
 CHAPTER THREE: Searchability and Continuity
@@ -97,11 +97,11 @@ under countable products.
 https://arxiv.org/pdf/2401.09270.pdf#chapter.3
 
 \begin{code}
-open import TWA.Thesis.Chapter3.ClosenessSpaces
-open import TWA.Thesis.Chapter3.ClosenessSpaces-Examples
-open import TWA.Thesis.Chapter3.SearchableTypes
-open import TWA.Thesis.Chapter3.SearchableTypes-Examples
-open import TWA.Thesis.Chapter3.PredicateEquality
+import TWA.Thesis.Chapter3.ClosenessSpaces
+import TWA.Thesis.Chapter3.ClosenessSpaces-Examples
+import TWA.Thesis.Chapter3.SearchableTypes
+import TWA.Thesis.Chapter3.SearchableTypes-Examples
+import TWA.Thesis.Chapter3.PredicateEquality
 \end{code}
 
 CHAPTER FOUR: Generalised Optimisation and Regression
@@ -119,10 +119,10 @@ have introduced.
 https://arxiv.org/pdf/2401.09270.pdf#chapter.4
 
 \begin{code}
-open import TWA.Thesis.Chapter4.ApproxOrder
-open import TWA.Thesis.Chapter4.ApproxOrder-Examples
-open import TWA.Thesis.Chapter4.GlobalOptimisation
-open import TWA.Thesis.Chapter4.ParametricRegression
+import TWA.Thesis.Chapter4.ApproxOrder
+import TWA.Thesis.Chapter4.ApproxOrder-Examples
+import TWA.Thesis.Chapter4.GlobalOptimisation
+import TWA.Thesis.Chapter4.ParametricRegression
 \end{code}
 
 CHAPTER FIVE: Real Numbers
@@ -141,35 +141,35 @@ structure and show how it yields representations of compact intervals
 that we can then use for search.
 
 \begin{code}
-open import TWA.Thesis.Chapter5.IntervalObject
-open import TWA.Thesis.Chapter5.IntervalObjectApproximation
-open import TWA.Thesis.Chapter5.SignedDigit
-open import TWA.Thesis.Chapter5.SignedDigitIntervalObject
-open import TWA.Thesis.Chapter5.BoehmStructure
-open import TWA.Thesis.Chapter5.BoehmVerification
-open import TWA.Thesis.Chapter5.Integers
+import TWA.Thesis.Chapter5.IntervalObject
+import TWA.Thesis.Chapter5.IntervalObjectApproximation
+import TWA.Thesis.Chapter5.SignedDigit
+import TWA.Thesis.Chapter5.SignedDigitIntervalObject
+import TWA.Thesis.Chapter5.BoehmStructure
+import TWA.Thesis.Chapter5.BoehmVerification
+import TWA.Thesis.Chapter5.Integers
 \end{code}
 
 CHAPTER SIX: Exact Real Search
 
 In Chapter 6, we bring our formal framework full-circle by
-instantiating it on these two types for representing real numbers. 
+instantiating it on these two types for representing real numbers.
 Example evaluations of algorithms for search, optimisation and
 regression --- either extracted from Agda or implemented in Java ---
 are then given to show the use of the framework in practice.
 
 \begin{code}
-open import TWA.Thesis.Chapter6.SequenceContinuity
-open import TWA.Thesis.Chapter6.SignedDigitSearch
-open import TWA.Thesis.Chapter6.SignedDigitOrder
-open import TWA.Thesis.Chapter6.SignedDigitContinuity
-open import TWA.Thesis.Chapter6.SignedDigitExamples
+import TWA.Thesis.Chapter6.SequenceContinuity
+import TWA.Thesis.Chapter6.SignedDigitSearch
+import TWA.Thesis.Chapter6.SignedDigitOrder
+import TWA.Thesis.Chapter6.SignedDigitContinuity
+import TWA.Thesis.Chapter6.SignedDigitExamples
 \end{code}
 
 CHAPTER SEVEN: Conclusion
 
 Finally, in Chapter 7, by way of conclusion we discuss some further
-avenues for this line of work. 
+avenues for this line of work.
 
 SPECIAL THANKS
 
@@ -177,7 +177,6 @@ A special thanks goes to Andrew Sneap, who wrote the following two
 files specifically for the use of the Boehm verification in Chapter 5.
 
 \begin{code}
-open import TWA.Thesis.AndrewSneap.DyadicRationals
-open import TWA.Thesis.AndrewSneap.DyadicReals
+import TWA.Thesis.AndrewSneap.DyadicRationals
+import TWA.Thesis.AndrewSneap.DyadicReals
 \end{code}
-
