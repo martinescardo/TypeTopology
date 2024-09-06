@@ -1,6 +1,6 @@
 Created by Ayberk Tosun, August 2024.
 
-In this module, collect properties of lists.
+In this module, we collect properties of lists.
 
 \begin{code}
 
