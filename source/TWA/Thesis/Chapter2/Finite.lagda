@@ -7,7 +7,6 @@ Todd Waugh Ambridge, January 2024
 
 open import MLTT.Spartan
 open import UF.DiscreteAndSeparated
-open import UF.Subsingletons
 open import UF.Sets
 open import UF.Sets-Properties
 open import UF.Equiv

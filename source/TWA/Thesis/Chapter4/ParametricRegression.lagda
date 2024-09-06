@@ -6,7 +6,6 @@ Todd Waugh Ambridge, January 2024
 {-# OPTIONS --without-K --safe #-}
 
 open import UF.FunExt
-open import UF.Subsingletons
 open import Quotient.Type
   using (is-prop-valued;is-equiv-relation;EqRel)
 open import MLTT.Spartan
@@ -32,7 +31,6 @@ open import TWA.Thesis.Chapter4.ApproxOrder fe
 open import TWA.Thesis.Chapter4.ApproxOrder-Examples fe
 open import TWA.Thesis.Chapter4.GlobalOptimisation fe
 
-open import TWA.Closeness fe hiding (is-ultra;is-closeness)
 \end{code}
 
 ## Regression as maximisation
