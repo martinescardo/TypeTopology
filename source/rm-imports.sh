@@ -1,5 +1,3 @@
-#!/usr/bin/bash
-
 # This script will *remove* unused imports
 #
 # Example usage

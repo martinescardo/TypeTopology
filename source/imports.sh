@@ -1,5 +1,3 @@
-#!/usr/bin/bash
-
 # This script will list unused imports
 #
 # Example usage
