@@ -3,6 +3,7 @@ title:          Properties of compactness
 author:         Ayberk Tosun
 date-started:   2024-07-19
 date-completed: 2024-07-31
+dates-updated:  [2024-09-05]
 ---
 
 We collect properties related to compactness in locale theory in this module.
@@ -60,7 +61,7 @@ Given a family `S`, we denote the type of its subfamilies by `SubFam S`.
 \begin{code}
 
 SubFam : {A : 𝓤  ̇} {𝓦 : Universe} → Fam 𝓦 A → 𝓦 ⁺  ̇
-SubFam {𝓤} {A} {𝓦} (I , α) = Σ J ꞉ 𝓦  ̇ , (J → I)
+SubFam {_} {A} {𝓦} (I , α) = Σ J ꞉ 𝓦  ̇ , (J → I)
 
 \end{code}
 
@@ -92,11 +93,10 @@ is-compact-open' : (X : Locale 𝓤 𝓥 𝓦) → ⟨ 𝒪 X ⟩ → Ω (𝓤 �
 is-compact-open' {𝓤} {𝓥} {𝓦} X U =
  Ɐ S ꞉ Fam 𝓦 ⟨ 𝒪 X ⟩ ,
   U ≤ (⋁[ 𝒪 X ] S) ⇒
-   (Ǝ (J , h) ꞉ SubFam S ,
-       is-Kuratowski-finite J
-     × (U ≤ (⋁[ 𝒪 X ] ⁅  S [ h j ] ∣ j ∶ J ⁆)) holds)
-  where
-   open PosetNotation (poset-of (𝒪 X))
+   (Ǝ (J , h) ꞉ SubFam S , is-Kuratowski-finite J
+                         × (U ≤ (⋁[ 𝒪 X ] ⁅  S [ h j ] ∣ j ∶ J ⁆)) holds)
+   where
+    open PosetNotation (poset-of (𝒪 X))
 
 \end{code}
 
@@ -469,37 +469,36 @@ It easily follows from this that `is-compact-open'` implies `is-compact-open`.
  compact-open'-implies-compact-open : (U : ⟨ 𝒪 X ⟩)
                                     → is-compact-open' X U holds
                                     → is-compact-open  X U holds
- compact-open'-implies-compact-open U κ S δ p =
-  ∥∥-rec ∃-is-prop † (κ S p)
-   where
-    † : Σ (J , h) ꞉ SubFam S , is-Kuratowski-finite J
-                             × (U ≤ (⋁[ 𝒪 X ] ⁅  S [ h j ] ∣ j ∶ J ⁆)) holds
-      → ∃ i ꞉ index S , (U ≤ S [ i ]) holds
-    † ((J , h) , 𝕗 , c) = ∥∥-functor ‡ γ
-     where
-      S′ : Fam 𝓤 ⟨ 𝒪 X ⟩
-      S′ = ⁅  S [ h j ] ∣ j ∶ J ⁆
+ compact-open'-implies-compact-open U κ S δ p = ∥∥-rec ∃-is-prop † (κ S p)
+  where
+   † : Σ (J , h) ꞉ SubFam S , is-Kuratowski-finite J
+                            × (U ≤ (⋁[ 𝒪 X ] ⁅  S [ h j ] ∣ j ∶ J ⁆)) holds
+     → ∃ i ꞉ index S , (U ≤ S [ i ]) holds
+   † ((J , h) , 𝕗 , c) = ∥∥-functor ‡ γ
+    where
+     S′ : Fam 𝓤 ⟨ 𝒪 X ⟩
+     S′ = ⁅  S [ h j ] ∣ j ∶ J ⁆
 
-      ‡ : Upper-Bound-Data (χ∙ S′) S → Σ (λ i → (U ≤ S [ i ]) holds)
-      ‡ (i , q) = i , ♢
-       where
-        φ : ((S [ i ]) is-an-upper-bound-of S′) holds
-        φ j = q (S′ [ j ]) ∣ j , refl ∣
+     ‡ : Upper-Bound-Data (χ∙ S′) S → Σ (λ i → (U ≤ S [ i ]) holds)
+     ‡ (i , q) = i , ♢
+      where
+       φ : ((S [ i ]) is-an-upper-bound-of S′) holds
+       φ j = q (S′ [ j ]) ∣ j , refl ∣
 
-        Ⅰ = c
-        Ⅱ = ⋁[ 𝒪 X ]-least ⁅ S [ h j ] ∣ j ∶ J ⁆ (S [ i ] , φ)
+       Ⅰ = c
+       Ⅱ = ⋁[ 𝒪 X ]-least ⁅ S [ h j ] ∣ j ∶ J ⁆ (S [ i ] , φ)
 
-        ♢ : (U ≤ S [ i ]) holds
-        ♢ = U                                 ≤⟨ Ⅰ ⟩
-            ⋁[ 𝒪 X ] ⁅ S [ h j ] ∣ j ∶ J ⁆    ≤⟨ Ⅱ ⟩
-            S [ i ]                           ■
+       ♢ : (U ≤ S [ i ]) holds
+       ♢ = U                                 ≤⟨ Ⅰ ⟩
+           ⋁[ 𝒪 X ] ⁅ S [ h j ] ∣ j ∶ J ⁆    ≤⟨ Ⅱ ⟩
+           S [ i ]                           ■
 
-      γ : has-upper-bound-in (χ∙ S′) S holds
-      γ = directed-families-have-upper-bounds-of-Kuratowski-finite-subfamilies
-           S
-           δ
-           (J , h)
-           𝕗
+     γ : has-upper-bound-in (χ∙ S′) S holds
+     γ = directed-families-have-upper-bounds-of-Kuratowski-finite-subfamilies
+          S
+          δ
+          (J , h)
+          𝕗
 
 \end{code}
 
@@ -628,5 +627,5 @@ Now, the forward implication:
 
 \end{code}
 
-In the above proof, I have implemented a simplification suggested by Tom de Jong
-in a code review.
+In the above proof, I have implemented a simplification that Tom de Jong
+suggested in a code review.
