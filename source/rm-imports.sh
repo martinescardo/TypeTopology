@@ -34,7 +34,7 @@ IMPORTS=$(grep -n "open import" $FILE | cut -d ':' -f1)
 CLUSTER=$(dirname $FILE)
 
 # And with '.' instead of '/'
-CLUSTERMOD=$(echo $CLUSTER | ${SED_CMD} 's/\//./')
+CLUSTERMOD=$(echo $CLUSTER | ${SED_CMD} 's/\//./g')
 
 # Get the (relative) module name
 MODNAME=$(basename $FILE | ${SED_CMD} 's/.lagda$//')
