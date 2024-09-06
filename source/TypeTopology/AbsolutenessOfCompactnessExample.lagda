@@ -15,9 +15,7 @@ import Modal.SigmaClosedReflectiveSubuniverse
 import TypeTopology.AbsolutenessOfCompactness
 open import TypeTopology.CompactTypes
 
-open import UF.Base
 open import UF.Equiv
-open import UF.Equiv-FunExt
 open import UF.FunExt
 open import UF.PropIndexedPiSigma
 open import UF.Subsingletons
