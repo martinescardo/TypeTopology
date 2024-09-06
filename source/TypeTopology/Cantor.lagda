@@ -13,7 +13,6 @@ open import Naturals.Order
 open import Naturals.RootsTruncation
 open import Notation.Order
 open import NotionsOfDecidability.Decidable
-open import UF.Base
 open import UF.DiscreteAndSeparated hiding (_♯_)
 open import UF.Equiv
 open import UF.FunExt

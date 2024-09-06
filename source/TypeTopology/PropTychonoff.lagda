@@ -46,9 +46,7 @@ module TypeTopology.PropTychonoff (fe : FunExt) where
 
 open import MLTT.Two-Properties
 open import TypeTopology.CompactTypes
-open import UF.Base
 open import UF.Equiv
-open import UF.EquivalenceExamples
 open import UF.PropIndexedPiSigma
 open import UF.Subsingletons
 

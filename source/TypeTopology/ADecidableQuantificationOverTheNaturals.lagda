@@ -27,10 +27,8 @@ open import MLTT.Two-Properties
 open import Notation.CanonicalMap
 open import NotionsOfDecidability.Complemented
 open import NotionsOfDecidability.Decidable
-open import TypeTopology.CompactTypes
 open import TypeTopology.GenericConvergentSequenceCompactness fe
 open import UF.DiscreteAndSeparated
-open import UF.PropTrunc
 
 Lemma-8·1 : (p : ℕ∞ → 𝟚) → (Σ x ꞉ ℕ∞ , (x ≠ ∞) × (p x ＝ ₀))
                          + ((n : ℕ) → p (ι n) ＝ ₁)
@@ -212,7 +210,6 @@ more convenient in practice.
 
 \begin{code}
 
-open import MLTT.Plus-Properties
 
 abstract
  Theorem-8·2' : (A : ℕ∞ → 𝓤 ̇ )

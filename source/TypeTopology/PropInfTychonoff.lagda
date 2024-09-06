@@ -13,13 +13,10 @@ open import UF.FunExt
 module TypeTopology.PropInfTychonoff (fe : FunExt) where
 
 open import MLTT.Two-Properties
-open import TypeTopology.CompactTypes
 open import TypeTopology.InfProperty
-open import UF.Base
 open import UF.Subsingletons
 open import UF.PropIndexedPiSigma
 open import UF.Equiv
-open import UF.EquivalenceExamples
 
 prop-inf-tychonoff : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
                    → is-prop X

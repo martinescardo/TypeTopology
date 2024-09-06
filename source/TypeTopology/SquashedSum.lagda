@@ -32,7 +32,6 @@ open import UF.DiscreteAndSeparated
 open import UF.Embeddings
 open import UF.Equiv
 open import UF.PairFun
-open import UF.Subsingletons
 open import UF.Subsingletons-Properties
 
 \end{code}

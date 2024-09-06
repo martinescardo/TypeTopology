@@ -17,12 +17,8 @@ sequences to equal booleans.
 
 open import MLTT.Spartan
 open import MLTT.Two-Properties
-open import Naturals.Order
-open import Notation.Order
 open import TypeTopology.Cantor
 open import UF.Base
-open import UF.DiscreteAndSeparated
-open import UF.FunExt
 
 module TypeTopology.CantorSearch where
 

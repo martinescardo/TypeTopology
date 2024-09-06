@@ -31,7 +31,6 @@ open import CoNaturals.Type
 open import MLTT.Two-Properties
 open import Notation.CanonicalMap
 open import NotionsOfDecidability.Decidable
-open import NotionsOfDecidability.SemiDecidable hiding (LPO)
 open import Taboos.LPO
 open import TypeTopology.ADecidableQuantificationOverTheNaturals fe
 open import UF.DiscreteAndSeparated
