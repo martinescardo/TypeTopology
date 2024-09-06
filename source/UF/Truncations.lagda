@@ -22,24 +22,14 @@ module UF.Truncations (fe : Fun-Ext)
                        where
 
 open import MLTT.Spartan
+
 open import UF.Base
-open import UF.Embeddings
 open import UF.Equiv
-open import UF.EquivalenceExamples
-open import UF.Equiv-FunExt
 open import UF.H-Levels fe
-open import UF.IdentitySystems
-open import UF.Retracts
 open import UF.Sets
-open import UF.Singleton-Properties
 open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
-open import UF.Subsingletons-Properties
 open import UF.Univalence
-open import UF.UA-FunExt
 open import UF.Yoneda
-open import Naturals.Addition renaming (_+_ to _+'_)
-open import Naturals.Order
 
 \end{code}
 

@@ -676,8 +676,11 @@ contrapositive, ¬ WLPO is stronger than ¬ LPO:
 
 \begin{code}
 
+_extends_ : (ℕ∞ → ℕ) → (ℕ → ℕ) → 𝓤₀ ̇
+f extends g = f ∘ ι ∼ g
+
 ℕ∞-extension : (ℕ → ℕ) → 𝓤₀ ̇
-ℕ∞-extension g = Σ f ꞉ (ℕ∞ → ℕ) , f ∘ ι ∼ g
+ℕ∞-extension g = Σ f ꞉ (ℕ∞ → ℕ) , (f extends g)
 
 \end{code}
 
@@ -738,9 +741,9 @@ lemma, which is then applied to prove this claim.
 LPO-gives-ℕ∞-extension
  : LPO
  → (g : ℕ → ℕ) (y : ℕ)
- → Σ (f , h) ꞉ ℕ∞-extension g , f ∞ ＝ y
+ → Σ f ꞉ (ℕ∞ → ℕ) , (f extends g) × (f ∞ ＝ y)
 LPO-gives-ℕ∞-extension lpo g y
- = (f , h) , e
+ = f , h , e
  where
   F : (x : ℕ∞) → is-decidable (Σ n ꞉ ℕ , x ＝ ι n) → ℕ
   F x (inl (n , p)) = g n
@@ -763,6 +766,7 @@ LPO-gives-ℕ∞-extension lpo g y
   e : f ∞ ＝ y
   e = L (lpo ∞)
 
+
 LPO-gives-ℕ∞-extension-is-not-prop
  : (g : ℕ → ℕ)
  → LPO
@@ -770,12 +774,12 @@ LPO-gives-ℕ∞-extension-is-not-prop
 LPO-gives-ℕ∞-extension-is-not-prop g lpo ext-is-prop
   = I (LPO-gives-ℕ∞-extension lpo g 0) (LPO-gives-ℕ∞-extension lpo g 1)
  where
-  I : (Σ (f  , h ) ꞉ ℕ∞-extension g , f  ∞ ＝ 0)
-    → (Σ (f' , h') ꞉ ℕ∞-extension g , f' ∞ ＝ 1)
+  I : (Σ f  ꞉ (ℕ∞ → ℕ) , (f  extends g) × (f  ∞ ＝ 0))
+    → (Σ f' ꞉ (ℕ∞ → ℕ) , (f' extends g) × (f' ∞ ＝ 1))
     → 𝟘
-  I ((f , h) , e) ((f' , h') , e') =
+  I (f , h , e) (f' , h' , e') =
    zero-not-positive 0
-    (0   ＝⟨ e ⁻¹ ⟩
+    (0    ＝⟨ e ⁻¹ ⟩
      f  ∞ ＝⟨ ap ((λ (- , _) → - ∞)) (ext-is-prop (f , h) (f' , h')) ⟩
      f' ∞ ＝⟨ e' ⟩
      1    ∎)
@@ -800,9 +804,9 @@ So we have the chain of implications
 
     ¬ WLPO → is-prop (ℕ∞-extension g) → ¬ LPO.
 
-Recall that LPO → WLPO, and so ¬ WLPO → ¬ LPO in any case, and we
-don't know whether the implication ¬ WLPO → ¬ LPO can be reversed in
-general (we would guess not).
+Recall that LPO → WLPO, and so ¬ WLPO → ¬ LPO in any case. We don't
+know whether the implication ¬ WLPO → ¬ LPO can be reversed in general
+(we would guess not).
 
 We also have the chain of implications
 

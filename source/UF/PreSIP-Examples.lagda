@@ -9,7 +9,6 @@ Modified from SIP-Examples. Only the examples we need are included for the momen
 module UF.PreSIP-Examples where
 
 open import MLTT.Spartan
-open import Notation.Order
 
 open import UF.Base
 open import UF.PreSIP
