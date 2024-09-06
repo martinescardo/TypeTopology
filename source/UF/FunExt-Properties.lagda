@@ -16,7 +16,6 @@ open import UF.Equiv-FunExt
 open import UF.Yoneda
 open import UF.Subsingletons
 open import UF.Retracts
-open import UF.EquivalenceExamples
 
 \end{code}
 

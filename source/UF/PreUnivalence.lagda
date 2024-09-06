@@ -16,7 +16,6 @@ axiom and the K axiom.
 module UF.PreUnivalence where
 
 open import MLTT.Spartan
-open import UF.Base
 open import UF.Embeddings
 open import UF.Equiv
 open import UF.Sets

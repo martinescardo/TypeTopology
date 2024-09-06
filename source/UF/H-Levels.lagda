@@ -31,7 +31,6 @@ open import Naturals.Order
 open import UF.Embeddings
 open import UF.Equiv
 open import UF.EquivalenceExamples
-open import UF.PropTrunc
 open import UF.Retracts
 open import UF.Singleton-Properties
 open import UF.Subsingletons
