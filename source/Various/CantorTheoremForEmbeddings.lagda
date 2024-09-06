@@ -17,15 +17,11 @@ module Various.CantorTheoremForEmbeddings where
 
 open import MLTT.Spartan
 
-open import MLTT.Two-Properties
-open import Naturals.Properties
 
 open import UF.Base
 open import UF.Embeddings
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import UF.Retracts
-open import UF.Equiv
 open import UF.FunExt
 open import UF.Size
 open import Various.LawvereFPT
