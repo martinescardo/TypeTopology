@@ -35,10 +35,8 @@ Importations of other locale theory modules.
 \begin{code}
 
 open import Locales.AdjointFunctorTheoremForFrames
-open import Locales.Frame            pt fe
-open import Locales.WayBelowRelation.Definition pt fe
-open import Locales.Compactness.Definition pt fe
 open import Locales.Clopen             pt fe sr
+open import Locales.Compactness.Definition pt fe
 open import Locales.Complements      pt fe
 open import Locales.ContinuousMap.Definition pt fe
 open import Locales.Frame            pt fe
