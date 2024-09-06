@@ -25,7 +25,7 @@ open import UF.H-Levels fe
 open import UF.ImageAndSurjection pt
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import UF.Truncations fe 
+open import UF.Truncations fe
 open import UF.Univalence
 
 open propositional-truncations-exist pt

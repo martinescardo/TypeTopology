@@ -17,7 +17,6 @@ open import UF.FunExt
 open import UF.Hedberg
 open import UF.Lower-FunExt
 open import UF.Sets
-open import UF.Sets-Properties
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.SubtypeClassifier

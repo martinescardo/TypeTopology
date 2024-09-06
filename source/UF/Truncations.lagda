@@ -18,28 +18,17 @@ open import UF.FunExt
 open import UF.PropTrunc
 
 module UF.Truncations (fe : Fun-Ext)
-                      (pt : propositional-truncations-exist)
                        where
 
 open import MLTT.Spartan
+
 open import UF.Base
-open import UF.Embeddings
 open import UF.Equiv
-open import UF.EquivalenceExamples
-open import UF.Equiv-FunExt
 open import UF.H-Levels fe
-open import UF.IdentitySystems
-open import UF.Retracts
 open import UF.Sets
-open import UF.Singleton-Properties
 open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
-open import UF.Subsingletons-Properties
 open import UF.Univalence
-open import UF.UA-FunExt
 open import UF.Yoneda
-open import Naturals.Addition renaming (_+_ to _+'_)
-open import Naturals.Order
 
 \end{code}
 
@@ -166,20 +155,23 @@ We demonstrate the equivalence of one-truncation and propositional truncation:
 
 \begin{code}
 
- open propositional-truncations-exist pt
+ module _ (pt : propositional-truncations-exist)
+           where
 
- one-trunc-to-prop-trunc : {X : 𝓤 ̇} → ∥ X ∥[ 1 ] → ∥ X ∥
- one-trunc-to-prop-trunc = ∥∥ₙ-rec (is-prop-implies-is-prop' ∥∥-is-prop) ∣_∣
+  open propositional-truncations-exist pt
 
- prop-trunc-to-one-trunc : {X : 𝓤 ̇} → ∥ X ∥ → ∥ X ∥[ 1 ]
- prop-trunc-to-one-trunc = ∥∥-rec one-trunc-is-prop (∣_∣[ 1 ])
+  one-trunc-to-prop-trunc : {X : 𝓤 ̇} → ∥ X ∥[ 1 ] → ∥ X ∥
+  one-trunc-to-prop-trunc = ∥∥ₙ-rec (is-prop-implies-is-prop' ∥∥-is-prop) ∣_∣
 
- one-trunc-≃-prop-trunc : {X : 𝓤 ̇}
-                        → (∥ X ∥[ 1 ]) ≃ ∥ X ∥
- one-trunc-≃-prop-trunc =
-  logically-equivalent-props-are-equivalent one-trunc-is-prop ∥∥-is-prop
-                                            one-trunc-to-prop-trunc
-                                            prop-trunc-to-one-trunc
+  prop-trunc-to-one-trunc : {X : 𝓤 ̇} → ∥ X ∥ → ∥ X ∥[ 1 ]
+  prop-trunc-to-one-trunc = ∥∥-rec one-trunc-is-prop (∣_∣[ 1 ])
+
+  one-trunc-≃-prop-trunc : {X : 𝓤 ̇}
+                         → (∥ X ∥[ 1 ]) ≃ ∥ X ∥
+  one-trunc-≃-prop-trunc =
+   logically-equivalent-props-are-equivalent one-trunc-is-prop ∥∥-is-prop
+                                             one-trunc-to-prop-trunc
+                                             prop-trunc-to-one-trunc
 
 \end{code}
 
