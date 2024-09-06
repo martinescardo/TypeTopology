@@ -22,6 +22,7 @@ open import UF.Equiv
 open import UF.FunExt
 open import UF.Hedberg
 open import UF.HedbergApplications
+open import UF.PropTrunc
 open import UF.Retracts
 open import UF.Sets
 open import UF.SubtypeClassifier
@@ -126,14 +127,25 @@ General properties:
 \begin{code}
 
 discrete-types-are-cotransitive : {X : 𝓤 ̇ }
-                                → is-discrete X
-                                → {x y z : X}
-                                → x ≠ y
-                                → (x ≠ z) + (z ≠ y)
+                                 → is-discrete X
+                                 → {x y z : X}
+                                 → x ≠ y
+                                 → (x ≠ z) + (z ≠ y)
 discrete-types-are-cotransitive d {x} {y} {z} φ = f (d x z)
  where
   f : (x ＝ z) + (x ≠ z) → (x ≠ z) + (z ≠ y)
   f (inl r) = inr (λ s → φ (r ∙ s))
+  f (inr γ) = inl γ
+
+discrete-types-are-cotransitive' : {X : 𝓤 ̇ }
+                                 → is-discrete X
+                                 → {x y z : X}
+                                 → x ≠ y
+                                 → (x ≠ z) + (y ≠ z)
+discrete-types-are-cotransitive' d {x} {y} {z} φ = f (d x z)
+ where
+  f : (x ＝ z) + (x ≠ z) → (x ≠ z) + (y ≠ z)
+  f (inl r) = inr (λ s → φ (r ∙ s ⁻¹))
   f (inr γ) = inl γ
 
 retract-is-discrete : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
@@ -202,6 +214,9 @@ discrete-is-¬¬-separated d x y = ¬¬-elim (d x y)
 𝟚-is-¬¬-separated : is-¬¬-separated 𝟚
 𝟚-is-¬¬-separated = discrete-is-¬¬-separated 𝟚-is-discrete
 
+ℕ-is-¬¬-separated : is-¬¬-separated ℕ
+ℕ-is-¬¬-separated = discrete-is-¬¬-separated ℕ-is-discrete
+
 subtype-is-¬¬-separated : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (m : X → Y)
                                      → left-cancellable m
                                      → is-¬¬-separated Y
@@ -250,7 +265,7 @@ apart-is-cotransitive d f g h (x , φ)  = lemma₁ (lemma₀ φ)
 \end{code}
 
 We now consider two cases which render the apartness relation ♯ tight,
-assuming extensionality:
+assuming function extensionality:
 
 \begin{code}
 
@@ -462,7 +477,9 @@ Back to old stuff:
 
 \begin{code}
 
-＝-indicator :  (m : ℕ) → Σ p ꞉ (ℕ → 𝟚) , ((n : ℕ) → (p n ＝ ₀ → m ≠ n) × (p n ＝ ₁ → m ＝ n))
+＝-indicator : (m : ℕ)
+            → Σ p ꞉ (ℕ → 𝟚) , ((n : ℕ) → (p n ＝ ₀ → m ≠ n)
+                                       × (p n ＝ ₁ → m ＝ n))
 ＝-indicator m = co-characteristic-function (ℕ-is-discrete m)
 
 χ＝ : ℕ → ℕ → 𝟚
@@ -482,7 +499,8 @@ infix  30 _＝[ℕ]_
  pr₂ (χ＝-spec m n)
 
 ≠-indicator : (m : ℕ)
-            → Σ p ꞉ (ℕ → 𝟚) , ((n : ℕ) → (p n ＝ ₀ → m ＝ n) × (p n ＝ ₁ → m ≠ n))
+            → Σ p ꞉ (ℕ → 𝟚) , ((n : ℕ) → (p n ＝ ₀ → m ＝ n)
+                                       × (p n ＝ ₁ → m ≠ n))
 ≠-indicator m = indicator (ℕ-is-discrete m)
 
 χ≠ : ℕ → ℕ → 𝟚
@@ -726,7 +744,7 @@ maps-of-props-into-isolated-points-are-embeddings f i j =
  maps-of-props-into-h-isolated-points-are-embeddings f i
   (λ p → isolated-is-h-isolated (f p) (j p))
 
-global-point-is-embedding : {X : 𝓤 ̇  } (f : 𝟙 {𝓥} → X)
+global-point-is-embedding : {X : 𝓤 ̇ } (f : 𝟙 {𝓥} → X)
                           → is-h-isolated (f ⋆)
                           → is-embedding f
 global-point-is-embedding f h =
@@ -749,3 +767,20 @@ discrete'-gives-discrete : {X : 𝓤 ̇ } → is-discrete' X → is-discrete X
 discrete'-gives-discrete (discrete-gives-discrete' d) = d
 
 \end{code}
+
+Added 21th August 2024 by Alice Laroche.
+
+\begin{code}
+
+module _ (pt : propositional-truncations-exist) where
+
+ open PropositionalTruncation pt
+
+ decidable-inhabited-types-are-pointed : {X : 𝓤 ̇} → ∥ X ∥ → is-decidable X → X
+ decidable-inhabited-types-are-pointed ∣x∣ (inl x)  = x
+ decidable-inhabited-types-are-pointed ∣x∣ (inr ¬x) =
+  𝟘-elim (∥∥-rec 𝟘-is-prop ¬x ∣x∣)
+
+\end{code}
+
+End of addition.

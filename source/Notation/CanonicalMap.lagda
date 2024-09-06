@@ -11,7 +11,7 @@ module Notation.CanonicalMap where
 
 open import MLTT.Spartan
 
-record Canonical-Map {𝓤} {𝓥} (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) : 𝓤 ⊔ 𝓥 ̇  where
+record Canonical-Map {𝓤} {𝓥} (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) : 𝓤 ⊔ 𝓥 ̇ where
  field
   ι : X → Y
 

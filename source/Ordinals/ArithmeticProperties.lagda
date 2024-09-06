@@ -630,7 +630,7 @@ module _ {𝓤 : Universe} where
  open import UF.DiscreteAndSeparated
 
  ⊴-add-taboo : Ωₒ ⊴ (𝟙ₒ +ₒ Ωₒ) → WEM 𝓤
- ⊴-add-taboo (f , s) = V
+ ⊴-add-taboo (f , s) = VI
   where
    I : is-least (𝟙ₒ +ₒ Ωₒ) (inl ⋆)
    I (inl ⋆) u       l = l
@@ -655,6 +655,10 @@ module _ {𝓤 : Universe} where
                           (λ (u : ¬ P)
                                 → to-subtype-＝ (λ _ → being-prop-is-prop fe')
                                    (empty-types-are-＝-𝟘 fe' (pe 𝓤) u)⁻¹) ν))
+
+   VI : ∀ P → ¬ P + ¬¬ P
+   VI = WEM'-gives-WEM fe' V
+
 \end{code}
 
 Added 5th April 2022.
@@ -732,51 +736,55 @@ succ-not-necessarily-monotone : ((α β : Ordinal 𝓤)
                                       → α ⊴ β
                                       → (α +ₒ 𝟙ₒ) ⊴ (β +ₒ 𝟙ₒ))
                               → WEM 𝓤
-succ-not-necessarily-monotone {𝓤} ϕ P isp = II I
+succ-not-necessarily-monotone {𝓤} ϕ = XII
  where
-  α : Ordinal 𝓤
-  α = prop-ordinal P isp
+  module _ (P : 𝓤 ̇) (isp : is-prop P) where
+   α : Ordinal 𝓤
+   α = prop-ordinal P isp
 
-  I :  (α +ₒ 𝟙ₒ) ⊴ 𝟚ₒ
-  I = ϕ α 𝟙ₒ l
-   where
-    l : α ⊴ 𝟙ₒ
-    l = unique-to-𝟙 ,
-        (λ x y (l : y ≺⟨ 𝟙ₒ ⟩ ⋆) → 𝟘-elim l) ,
-        (λ x y l → l)
+   I :  (α +ₒ 𝟙ₒ) ⊴ 𝟚ₒ
+   I = ϕ α 𝟙ₒ l
+    where
+     l : α ⊴ 𝟙ₒ
+     l = unique-to-𝟙 ,
+         (λ x y (l : y ≺⟨ 𝟙ₒ ⟩ ⋆) → 𝟘-elim l) ,
+         (λ x y l → l)
 
-  II : type-of I → ¬ P + ¬¬ P
-  II (f , f-is-initial , f-is-order-preserving) = III (f (inr ⋆)) refl
-   where
-    III : (y : ⟨ 𝟚ₒ ⟩) → f (inr ⋆) ＝ y → ¬ P + ¬¬ P
-    III (inl ⋆) e = inl VII
-     where
-      IV : (p : P) → f (inl p) ≺⟨ 𝟚ₒ ⟩ f (inr ⋆)
-      IV p = f-is-order-preserving (inl p) (inr ⋆) ⋆
+   II : type-of I → ¬ P + ¬¬ P
+   II (f , f-is-initial , f-is-order-preserving) = III (f (inr ⋆)) refl
+    where
+     III : (y : ⟨ 𝟚ₒ ⟩) → f (inr ⋆) ＝ y → ¬ P + ¬¬ P
+     III (inl ⋆) e = inl VII
+      where
+       IV : (p : P) → f (inl p) ≺⟨ 𝟚ₒ ⟩ f (inr ⋆)
+       IV p = f-is-order-preserving (inl p) (inr ⋆) ⋆
 
-      V : (p : P) → f (inl p) ≺⟨ 𝟚ₒ ⟩ inl ⋆
-      V p = transport (λ - → f (inl p) ≺⟨ 𝟚ₒ ⟩ -) e (IV p)
+       V : (p : P) → f (inl p) ≺⟨ 𝟚ₒ ⟩ inl ⋆
+       V p = transport (λ - → f (inl p) ≺⟨ 𝟚ₒ ⟩ -) e (IV p)
 
-      VI : (z : ⟨ 𝟚ₒ ⟩) → ¬ (z ≺⟨ 𝟚ₒ ⟩ inl ⋆)
-      VI (inl ⋆) l = 𝟘-elim l
-      VI (inr ⋆) l = 𝟘-elim l
+       VI : (z : ⟨ 𝟚ₒ ⟩) → ¬ (z ≺⟨ 𝟚ₒ ⟩ inl ⋆)
+       VI (inl ⋆) l = 𝟘-elim l
+       VI (inr ⋆) l = 𝟘-elim l
 
-      VII : ¬ P
-      VII p = VI (f (inl p)) (V p)
-    III (inr ⋆) e = inr IX
-     where
-      VIII : Σ x' ꞉ ⟨ α +ₒ 𝟙ₒ ⟩ , (x' ≺⟨ α +ₒ 𝟙ₒ ⟩ inr ⋆) × (f x' ＝ inl ⋆)
-      VIII = f-is-initial (inr ⋆) (inl ⋆) (transport⁻¹ (λ - → inl ⋆ ≺⟨ 𝟚ₒ ⟩ -) e ⋆)
+       VII : ¬ P
+       VII p = VI (f (inl p)) (V p)
+     III (inr ⋆) e = inr IX
+      where
+       VIII : Σ x' ꞉ ⟨ α +ₒ 𝟙ₒ ⟩ , (x' ≺⟨ α +ₒ 𝟙ₒ ⟩ inr ⋆) × (f x' ＝ inl ⋆)
+       VIII = f-is-initial (inr ⋆) (inl ⋆) (transport⁻¹ (λ - → inl ⋆ ≺⟨ 𝟚ₒ ⟩ -) e ⋆)
 
-      IX : ¬¬ P
-      IX u = XI
-       where
-        X : ∀ x' → ¬ (x' ≺⟨ α +ₒ 𝟙ₒ ⟩ inr ⋆)
-        X (inl p) l = u p
-        X (inr ⋆) l = 𝟘-elim l
+       IX : ¬¬ P
+       IX u = XI
+        where
+         X : ∀ x' → ¬ (x' ≺⟨ α +ₒ 𝟙ₒ ⟩ inr ⋆)
+         X (inl p) l = u p
+         X (inr ⋆) l = 𝟘-elim l
 
-        XI : 𝟘
-        XI = X (pr₁ VIII) (pr₁ (pr₂ VIII))
+         XI : 𝟘
+         XI = X (pr₁ VIII) (pr₁ (pr₂ VIII))
+
+  XII : WEM 𝓤
+  XII = WEM'-gives-WEM fe' (λ P isp → II P isp (I P isp))
 
 \end{code}
 
@@ -1029,7 +1037,7 @@ also is not a successor ordinal unless LPO holds:
      VII : f ∞ ≺⟨ ω ⟩ f ∞
      VII = VI (f ∞) V
 
- open import Taboos.LPO fe
+ open import Taboos.LPO
 
  ℕ∞-successor-gives-LPO : (Σ α ꞉ Ordinal 𝓤₀ , (ℕ∞ₒ ＝ (α +ₒ 𝟙ₒ))) → LPO
  ℕ∞-successor-gives-LPO (α , p) = IV
@@ -1051,7 +1059,7 @@ also is not a successor ordinal unless LPO holds:
  open PropositionalTruncation pt
 
  ℕ∞-successor-gives-LPO' : (∃ α ꞉ Ordinal 𝓤₀ , (ℕ∞ₒ ＝ (α +ₒ 𝟙ₒ))) → LPO
- ℕ∞-successor-gives-LPO' = ∥∥-rec LPO-is-prop ℕ∞-successor-gives-LPO
+ ℕ∞-successor-gives-LPO' = ∥∥-rec (LPO-is-prop fe') ℕ∞-successor-gives-LPO
 
  LPO-gives-ℕ∞-successor : LPO → (Σ α ꞉ Ordinal 𝓤₀ , (ℕ∞ₒ ＝ (α +ₒ 𝟙ₒ)))
  LPO-gives-ℕ∞-successor lpo = ω , ℕ∞-is-successor₃ lpo

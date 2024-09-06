@@ -115,7 +115,7 @@ WEM-gives-decomposition-of-two-pointed-types wem X ((x₀ , x₁) , d) = γ
   g x (inr _) = ₁
 
   h : (x : X) → ¬ (x ≠ x₀) + ¬¬ (x ≠ x₀)
-  h x = wem (x ≠ x₀) (negations-are-props fe')
+  h x = wem (x ≠ x₀)
 
   f : X → 𝟚
   f x = g x (h x)
@@ -162,14 +162,14 @@ WEM-gives-decomposition-of-two-pointed-types⁺ {𝓤} wem X l ((x₀ , x₁) , 
   g x (inr _) = ₁
 
   h : (x : X) → ¬ (x ≠⟦ l ⟧ x₀) + ¬¬ (x ≠⟦ l ⟧ x₀)
-  h x = wem (x ≠⟦ l ⟧ x₀) (negations-are-props fe')
+  h x = wem (x ≠⟦ l ⟧ x₀)
 
   f : X → 𝟚
   f x = g x (h x)
 
   g₀ : (δ : ¬ (x₀ ≠⟦ l ⟧ x₀) + ¬¬ (x₀ ≠⟦ l ⟧ x₀)) → g x₀ δ ＝ ₀
   g₀ (inl _) = refl
-  g₀ (inr u) = 𝟘-elim (three-negations-imply-one u ⟦ l ⟧-refl)
+  g₀ (inr u) = 𝟘-elim (three-negations-imply-one u ＝⟦ l ⟧-refl)
 
   e₀ : f x₀ ＝ ₀
   e₀ = g₀ (h x₀)
@@ -210,7 +210,7 @@ The type of ordinals in any universe has Ω-paths between any two points.
 
 \begin{code}
 
-has-Ω-paths : (𝓥 : Universe) → 𝓤 ̇  → 𝓤 ⊔ (𝓥 ⁺) ̇
+has-Ω-paths : (𝓥 : Universe) → 𝓤 ̇ → 𝓤 ⊔ (𝓥 ⁺) ̇
 has-Ω-paths 𝓥 X = (x y : X) → Ω-Path 𝓥 x y
 
 type-of-ordinals-has-Ω-paths : is-univalent 𝓤
@@ -276,7 +276,7 @@ decomposition-of-Ω-gives-WEM : propext 𝓤
                              → decomposition (Ω 𝓤)
                              → WEM 𝓤
 decomposition-of-Ω-gives-WEM
-  {𝓤} pe (f , (p₀@(P₀ , i₀) , e₀) , (p₁@(P₁ , i₁) , e₁)) = IV
+  {𝓤} pe (f , (p₀@(P₀ , i₀) , e₀) , (p₁@(P₁ , i₁) , e₁)) = V
  where
   g : Ω 𝓤 → Ω 𝓤
   g (Q , j) = ((P₀ × Q) + (P₁ × ¬ Q)) , k
@@ -321,8 +321,11 @@ decomposition-of-Ω-gives-WEM
   III₁ : (q : Ω 𝓤) → f (g q) ＝ ₁ → ¬ (q holds) + ¬¬ (q holds)
   III₁ q e = inl (contrapositive (I₀ q) (equal-₁-different-from-₀ e))
 
-  IV : (Q : 𝓤  ̇ )→ is-prop Q → ¬ Q + ¬¬ Q
+  IV : (Q : 𝓤  ̇ ) → is-prop Q → ¬ Q + ¬¬ Q
   IV Q j = 𝟚-equality-cases (III₀ (Q , j)) (III₁ (Q , j))
+
+  V : (Q : 𝓤  ̇ ) → ¬ Q + ¬¬ Q
+  V = WEM'-gives-WEM fe' IV
 
 decomposition-of-type-with-Ω-paths-gives-WEM : propext 𝓥
                                              → {X : 𝓤 ̇ }
@@ -401,7 +404,8 @@ types decomposable (Ordinal 𝓤) and WEM are property, we get data out
 of them if we are given a proof of decomposability.
 
 
-Added 9th September 2022 by Tom de Jong.
+Added 9th September 2022 by Tom de Jong (which is subsumed by a remark
+below added 25th July 2024).
 
 After a discussion with Martín on 8th September 2022, we noticed that
 the decomposability theorem can be generalised from Ord 𝓤 to any
@@ -599,6 +603,44 @@ module decomposability-bis (pt : propositional-truncations-exist) where
    (decomposition-of-ainjective-type-gives-WEM pe D D-ainj) ,
   (λ wem → ∣ WEM-gives-decomposition-of-two-pointed-types wem D htdp ∣)
 
+\end{code}
+
+Added 25th July 2024 by Tom de Jong and Martin Escardo.
+
+The previous theorem, however, doesn't capture our examples of injective types. Indeed, the assumption that D : 𝓤 is injective with respect to 𝓤
+and 𝓥 is a bit unnatural, as all known examples of injective types are
+large, e.g. the universe 𝓤 is injective w.r.t 𝓤 and 𝓤, as are the
+ordinals in 𝓤 and the propositions in 𝓤. In fact, in
+InjectiveTypes.Resizing we showed that such injective types are
+necessarily large unless Ω¬¬-resizing holds. Therefore, we now improve
+and generalize the above theorem to a large, but locally small,
+type, so that all known examples are captured.
+
+\begin{code}
+
+ ainjective-type-decomposable-iff-WEM⁺
+  : propext 𝓤
+  → (D : 𝓤 ⁺ ̇ )
+  → is-locally-small D
+  → ainjective-type D 𝓤 𝓥
+  → has-two-distinct-points D
+  → decomposable D ↔ WEM 𝓤
+ ainjective-type-decomposable-iff-WEM⁺ pe D D-ls D-ainj htdp =
+  ∥∥-rec
+   (WEM-is-prop fe)
+   (decomposition-of-ainjective-type-gives-WEM pe D D-ainj) ,
+  (λ wem → ∣ WEM-gives-decomposition-of-two-pointed-types⁺ wem D D-ls htdp ∣)
+
+\end{code}
+
+End of addition.
+
+Notice that the following doesn't mention WEM in its statement, but
+its proof does. Although the proof is constructive, the assumption is
+necessarily non-constructive.
+
+\begin{code}
+
  ainjective-type-decomposability-gives-decomposition
   : propext 𝓤
   → (D : 𝓤 ̇ )
@@ -610,6 +652,27 @@ module decomposability-bis (pt : propositional-truncations-exist) where
   WEM-gives-decomposition-of-two-pointed-types
    (lr-implication (ainjective-type-decomposable-iff-WEM pe D D-ainj htdp) δ)
    D
+   htdp
+
+\end{code}
+
+Also added 25th July 2024 for the same reason given above:
+
+\begin{code}
+
+ ainjective-type-decomposability-gives-decomposition⁺
+  : propext 𝓤
+  → (D : 𝓤 ⁺ ̇ )
+  → is-locally-small D
+  → ainjective-type D 𝓤 𝓥
+  → has-two-distinct-points D
+  → decomposable D
+  → decomposition D
+ ainjective-type-decomposability-gives-decomposition⁺ pe D D-ls D-ainj htdp δ =
+  WEM-gives-decomposition-of-two-pointed-types⁺
+   (lr-implication (ainjective-type-decomposable-iff-WEM⁺ pe D D-ls D-ainj htdp) δ)
+   D
+   D-ls
    htdp
 
 \end{code}

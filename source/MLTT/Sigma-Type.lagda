@@ -6,7 +6,7 @@ module MLTT.Sigma-Type where
 
 open import MLTT.Universes
 
-record Σ {𝓤 𝓥} {X : 𝓤 ̇ } (Y : X → 𝓥 ̇ ) : 𝓤 ⊔ 𝓥 ̇  where
+record Σ {𝓤 𝓥} {X : 𝓤 ̇ } (Y : X → 𝓥 ̇ ) : 𝓤 ⊔ 𝓥 ̇ where
   constructor
    _,_
   field

@@ -10,7 +10,7 @@ open import MLTT.Spartan
 open import MLTT.Athenian
 open import EffectfulForcing.MFPSAndVariations.Continuity
 
-data D (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) (Z : 𝓦 ̇ ) : 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇  where
+data D (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) (Z : 𝓦 ̇ ) : 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇ where
  η : Z → D X Y Z
  β : (Y → D X Y Z) → X → D X Y Z
 
@@ -23,7 +23,7 @@ dialogue (β φ x) α = dialogue (φ(α x)) α
 eloquent : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } → ((X → Y) → Z) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
 eloquent f = Σ d ꞉ D _ _ _ , dialogue d ∼ f
 
-B : 𝓤 ̇  → 𝓤 ̇
+B : 𝓤 ̇ → 𝓤 ̇
 B = D ℕ ℕ
 
 dialogue-continuity : (d : B ℕ) → is-continuous (dialogue d)

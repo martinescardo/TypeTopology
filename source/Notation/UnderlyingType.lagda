@@ -10,7 +10,7 @@ module Notation.UnderlyingType where
 
 open import MLTT.Spartan
 
-record Underlying-Type {𝓤} (X : 𝓤 ̇ ) (𝓥 : Universe) : 𝓤 ⊔ 𝓥 ⁺ ̇  where
+record Underlying-Type {𝓤} (X : 𝓤 ̇ ) (𝓥 : Universe) : 𝓤 ⊔ 𝓥 ⁺ ̇ where
  field
   ⟨_⟩ : X → 𝓥 ̇
 

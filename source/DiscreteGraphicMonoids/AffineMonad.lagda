@@ -96,7 +96,7 @@ module _ {X : 𝓤 ̇ }
        where
         ⦅1⦆ = ap (ι ∘ 𝑓) (·-lemma x xs a)
         ⦅2⦆ = ap ι (homs-preserve-mul (List⁻-DGM X) (List⁻-DGM Y) 𝑓
-                      (extension-is-hom (List⁻-DGM Y) (ι ∘ f)) (η⁻ x) 𝔁𝓼)
+                   (extension-is-hom (List⁻-DGM Y) (ι ∘ f)) (η⁻ x) 𝔁𝓼)
         ⦅3⦆ = ap (λ - → ι (- · 𝑓 𝔁𝓼)) (triangle (List⁻-DGM Y) (ι ∘ f) x)
         ⦅4⦆ = ρ-◦ (ι (f x)) (ι (𝑓 𝔁𝓼))
 
@@ -109,6 +109,13 @@ module _ {X : 𝓤 ̇ }
 
  unit⁻⁺ : (f : X → List⁻⁺ Y) → ext⁻⁺ f ∘ η⁻⁺ ∼ f
  unit⁻⁺ f x = to-List⁻⁺-＝ (unit⁻ (ι ∘ f) x)
+
+module _ {X : 𝓤 ̇ }
+         {{X-is-discrete' : is-discrete' X}}
+       where
+
+ ext-η⁻⁺ : ext⁻⁺ (η⁻⁺ {𝓤} {X}) ∼ 𝑖𝑑 (List⁻⁺ X)
+ ext-η⁻⁺ 𝑥𝑠 = to-List⁻⁺-＝ (ext⁻-η⁻ (underlying-list⁻ 𝑥𝑠))
 
 module _ {X : 𝓤 ̇ }
          {{X-is-discrete' : is-discrete' X}}

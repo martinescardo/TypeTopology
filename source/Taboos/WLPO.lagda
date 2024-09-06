@@ -79,7 +79,7 @@ Notice that weak excluded middle implies WLPO.
 open import UF.ClassicalLogic
 
 WEM-gives-WLPO : funext₀ → WEM 𝓤₀ → WLPO
-WEM-gives-WLPO fe wem u = Cases (wem (u ＝ ∞) (ℕ∞-is-set fe))
+WEM-gives-WLPO fe wem u = Cases (wem (u ＝ ∞))
                            (λ (p : (u ≠ ∞))
                                  → inr p)
                            (λ (ν : ¬ (u ≠ ∞))
@@ -133,7 +133,7 @@ WLPO-gives-WLPO-traditional fe wlpo α = IV
              ℕ∞-to-ℕ→𝟚 ∞ n             ∎
 
   IV : is-decidable ((n : ℕ) → α n ＝ ₁)
-  IV = map-is-decidable II III I
+  IV = map-decidable II III I
 
 WLPO-traditional-gives-WLPO : funext₀ → WLPO-traditional → WLPO
 WLPO-traditional-gives-WLPO fe wlpot u = IV
@@ -148,6 +148,6 @@ WLPO-traditional-gives-WLPO fe wlpot u = IV
   III e n = ap (λ - → ℕ∞-to-ℕ→𝟚 - n) e
 
   IV : (u ＝ ∞) + (u ≠ ∞)
-  IV = map-is-decidable II III I
+  IV = map-decidable II III I
 
 \end{code}

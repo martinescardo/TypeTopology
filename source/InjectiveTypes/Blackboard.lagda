@@ -582,6 +582,10 @@ universes-are-ainjective-Σ : is-univalent (𝓤 ⊔ 𝓥)
 universes-are-ainjective-Σ ua j e f =
  f ∖ j , (λ x → eqtoid ua _ _ (Σ-extension-property f j e x))
 
+universes-are-ainjective : is-univalent (𝓤 ⊔ 𝓥)
+                         → ainjective-type (𝓤 ⊔ 𝓥 ̇ ) 𝓤 𝓥
+universes-are-ainjective = universes-are-ainjective-Π
+
 ainjective-is-retract-of-power-of-universe : (D : 𝓤 ̇ )
                                            → is-univalent 𝓤
                                            → ainjective-type D 𝓤  (𝓤 ⁺)

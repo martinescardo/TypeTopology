@@ -14,7 +14,7 @@ open import GamesExperimental.Monad
 open import UF.Equiv
 open import UF.FunExt
 
-data neList (X : 𝓤 ̇ ) : 𝓤 ̇  where
+data neList (X : 𝓤 ̇ ) : 𝓤 ̇ where
  [_]  : X → neList X
  _::_ : X → neList X → neList X
 

@@ -14,13 +14,13 @@ lemmas. More additions after that date.
 
 module CoNaturals.GenericConvergentSequence where
 
-open import CoNaturals.Cantor
 open import MLTT.Spartan
 open import MLTT.Two-Properties
-open import Naturals.Order hiding (max)
+open import Naturals.Order hiding (max ; max-idemp ; max-comm)
 open import Notation.CanonicalMap
 open import Notation.Order
 open import Ordinals.Notions
+open import TypeTopology.Cantor
 open import TypeTopology.Density
 open import TypeTopology.TotallySeparated
 open import UF.Base
@@ -632,11 +632,72 @@ max (α , r) (β , s) = (λ i → max𝟚 (α i) (β i)) , t
   t : is-decreasing (λ i → max𝟚 (α i) (β i))
   t i = max𝟚-preserves-≤ (r i) (s i)
 
+max-comm : funext₀ → (u v : ℕ∞) → max u v ＝ max v u
+max-comm fe u v = ℕ∞-to-ℕ→𝟚-lc fe (dfunext fe (λ i → max𝟚-comm (ι u i) (ι v i)))
+
+max0-property : (u : ℕ∞) → max Zero u ＝ u
+max0-property u = refl
+
+max0-property' : funext₀ → (u : ℕ∞) → max u Zero ＝ u
+max0-property' fe u = max u Zero ＝⟨ max-comm fe u Zero ⟩
+                      max Zero u ＝⟨ max0-property u ⟩
+                      u       ∎
+
+max∞-property : (u : ℕ∞) → max ∞ u ＝ ∞
+max∞-property u = refl
+
+max∞-property' : funext₀ → (u : ℕ∞) → max u ∞ ＝ ∞
+max∞-property' fe u = max u ∞ ＝⟨ max-comm fe u ∞ ⟩
+                      max ∞ u ＝⟨ max∞-property u ⟩
+                      ∞       ∎
+
+open import Naturals.Order renaming (max to maxℕ ; max-idemp to maxℕ-idemp)
+
+max-Succ : funext₀ → (u v : ℕ∞) → Succ (max u v) ＝ max (Succ u) (Succ v)
+max-Succ fe u v = ℕ∞-to-ℕ→𝟚-lc fe (dfunext fe f)
+ where
+  f : (i : ℕ)
+    → cons ₁ (λ j → max𝟚 (ι u j) (ι v j)) i
+    ＝ max𝟚 (cons ₁ (ι u) i) (cons ₁ (ι v) i)
+  f 0        = refl
+  f (succ i) = refl
+
+max-fin : funext₀ → (m n : ℕ) → ι (maxℕ m n) ＝ max (ι m) (ι n)
+max-fin fe 0 n = (max0-property (ι n))⁻¹
+max-fin fe (succ m) 0 = max0-property' fe (ι (succ m)) ⁻¹
+max-fin fe (succ m) (succ n) =
+ ι (maxℕ (succ m) (succ n))    ＝⟨ refl ⟩
+ ι (succ (maxℕ m n))           ＝⟨ refl ⟩
+ Succ (ι (maxℕ m n))           ＝⟨ ap Succ (max-fin fe m n) ⟩
+ Succ (max (ι m) (ι n))        ＝⟨ max-Succ fe (ι m) (ι n) ⟩
+ max (Succ (ι m)) (Succ (ι n)) ＝⟨ refl ⟩
+ max (ι (succ m)) (ι (succ n)) ∎
+
+max-idemp : funext₀ → (u : ℕ∞) → max u u ＝ u
+max-idemp fe₀ u = ℕ∞-to-ℕ→𝟚-lc fe₀ (dfunext fe₀ (λ i → max𝟚-idemp (ι u i)))
+
 min : ℕ∞ → ℕ∞ → ℕ∞
 min (α , r) (β , s) = (λ i → min𝟚 (α i) (β i)) , t
  where
   t : is-decreasing (λ i → min𝟚 (α i) (β i))
   t i = min𝟚-preserves-≤ (r i) (s i)
+
+min∞-property : (u : ℕ∞) → min ∞ u ＝ u
+min∞-property u = refl
+
+min-comm : funext₀ → (u v : ℕ∞) → min u v ＝ min v u
+min-comm fe u v = ℕ∞-to-ℕ→𝟚-lc fe (dfunext fe (λ i → min𝟚-comm (ι u i) (ι v i)))
+
+min-idemp : funext₀ → (u : ℕ∞) → min u u ＝ u
+min-idemp fe₀ u = ℕ∞-to-ℕ→𝟚-lc fe₀ (dfunext fe₀ (λ i → min𝟚-idemp (ι u i)))
+
+min0-property : (u : ℕ∞) → min Zero u ＝ Zero
+min0-property u = refl
+
+min0-property' : funext₀ → (u : ℕ∞) → min u Zero ＝ Zero
+min0-property' fe u = min u Zero ＝⟨ min-comm fe u Zero ⟩
+                      min Zero u ＝⟨ min0-property u ⟩
+                      Zero       ∎
 
 \end{code}
 

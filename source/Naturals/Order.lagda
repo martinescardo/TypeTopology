@@ -252,6 +252,13 @@ course-of-values-induction-on-value-of-function
 
 TODO. Also add plain induction on the values of a function.
 
+TODO. Notice that this proof of course-of-values induction uses the
+accessibility predicate. From a foundational point of view, this is a
+too powerful tool - an indexed W-type. In fact, this is not
+needed. The course-of-values-induction theorem can be proved in MLTT
+with only natural numbers and without universes, identity types, of W
+types (indexed or not) other than the natural numbers.
+
 \begin{code}
 
 <-is-extensional : is-extensional _<_

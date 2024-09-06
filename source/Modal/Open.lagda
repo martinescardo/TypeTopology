@@ -30,7 +30,7 @@ about open modalities, so we will assume it throughout.
 \begin{code}
 
  (fe : funext 𝓤 𝓤)
- 
+
 \end{code}
 
 There is an open modality for each proposition P. We fix such a
@@ -38,7 +38,7 @@ proposition throughout.
 
 \begin{code}
 
- (P : 𝓤 ̇  )
+ (P : 𝓤 ̇ )
  (P-is-prop : is-prop P)
  where
 
@@ -97,7 +97,7 @@ exponential-is-reflection A B B-modal =
    pr₁ (pr₂ B-modal) (open-unit B (j f))
     ＝⟨ pr₂ (pr₂ B-modal) (j f) ⟩
    j f ∎
- 
+
 open-is-reflective : subuniverse-is-reflective open-subuniverse
 open-is-reflective A =
  (((P → A) , (exponential-is-modal A)) , (open-unit A)) ,
@@ -116,7 +116,7 @@ open-is-replete A B e B-modal =
  ≃-2-out-of-3-left
   (pr₂ (→cong' fe fe e))
   (∘-is-equiv ⌜ e ⌝-is-equiv B-modal)
- 
+
 open-is-sigma-closed : subuniverse-is-sigma-closed open-subuniverse
 open-is-sigma-closed A B A-modal B-modal =
  ≃-2-out-of-3-left

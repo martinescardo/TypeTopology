@@ -103,7 +103,7 @@ prop-tychonoff₂ A A-compact = ΠA-compact
 
 \end{code}
 
-We are given a family of types A : P → 𝓤 ̇  and we aim to apply the
+We are given a family of types A : P → 𝓤 ̇ and we aim to apply the
 non-dependent version above to the product Π A. In order to do this,
 there are two things to check. Firstly, we have to show that P implies
 Π A is compact. This allows us to apply the non-dependent version

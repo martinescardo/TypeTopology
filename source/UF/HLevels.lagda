@@ -1,5 +1,18 @@
 Martin Escardo, January 2019.
 
+--
+This module is deprecated. Instead use UF.H-Level by Ian Ray.
+
+TODO. Remove all uses of this module, and then delete it.
+
+What Ian Ray does is to (1) weaken assumptions of univalence to
+functionality, and (2) add more facts.
+
+For historical reference, we originally needed this for the injective
+types paper published in LMCS, where univalence is needed anyway. We
+wrote here quickly the bare minimum that was needed for that.
+--
+
 Minimal development of hlevels. For simplicity, for the moment we
 assume univalence globally, although it is not necessary. Our
 convention here is that propositions are at level zero (apologies).

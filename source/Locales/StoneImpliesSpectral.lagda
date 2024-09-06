@@ -38,16 +38,20 @@ open import Locales.AdjointFunctorTheoremForFrames
 open import Locales.Frame            pt fe
 open import Locales.WayBelowRelation.Definition pt fe
 open import Locales.Compactness.Definition pt fe
+open import Locales.Clopen             pt fe sr
 open import Locales.Complements      pt fe
+open import Locales.ContinuousMap.Definition pt fe
+open import Locales.Frame            pt fe
 open import Locales.GaloisConnection pt fe
 open import Locales.InitialFrame     pt fe
-open import Locales.Spectrality.SpectralLocale pt fe
-open import Locales.ZeroDimensionality pt fe sr
-open import Locales.Stone              pt fe sr
-open import Locales.SmallBasis         pt fe sr
-open import Locales.Clopen             pt fe sr
-open import Locales.WellInside         pt fe sr
 open import Locales.ScottContinuity    pt fe sr
+open import Locales.SmallBasis         pt fe sr
+open import Locales.Spectrality.SpectralLocale pt fe
+open import Locales.Spectrality.SpectralMap pt fe
+open import Locales.Stone              pt fe sr
+open import Locales.WayBelowRelation.Definition pt fe
+open import Locales.WellInside         pt fe sr
+open import Locales.ZeroDimensionality pt fe sr
 
 open Locale
 
@@ -217,5 +221,63 @@ stone-locales-are-spectral X σ@(κ , ζ) = spectralᴰ-gives-spectrality X σ�
  where
   σᴰ : spectralᴰ X
   σᴰ = stoneᴰ-implies-spectralᴰ X σ
+
+\end{code}
+
+Added on 2024-08-11.
+
+\begin{code}
+
+stoneᴰ-locales-are-compact : (X : Locale 𝓤 𝓥 𝓦)
+                           → stoneᴰ X → is-compact X holds
+stoneᴰ-locales-are-compact X (κ , _) = κ
+
+\end{code}
+
+\begin{code}
+
+module continuous-maps-of-stone-locales
+        (X : Locale 𝓤 𝓥 𝓥)
+        (Y : Locale 𝓤 𝓥 𝓥)
+        (𝕤₁ : stoneᴰ X)
+        (𝕤₂ : stoneᴰ Y)
+       where
+
+ open ContinuousMaps
+
+ κ₁ : is-compact X holds
+ κ₁ = stoneᴰ-locales-are-compact X 𝕤₁
+
+ κ₂ : is-compact Y holds
+ κ₂ = stoneᴰ-locales-are-compact Y 𝕤₂
+
+ zd₂ : zero-dimensionalᴰ (𝒪 Y)
+ zd₂ = pr₂ 𝕤₂
+
+ continuous-maps-between-stone-locales-are-spectral
+  : (f : X ─c→ Y)
+  → is-spectral-map Y X f holds
+ continuous-maps-between-stone-locales-are-spectral 𝒻 K κ =
+  clopens-are-compact-in-compact-locales X κ₁ (𝒻 ⋆∙ K) ϑ
+   where
+    open ContinuousMapNotation X Y
+
+    ψ : is-clopen (𝒪 Y) K holds
+    ψ = compacts-are-clopen-in-zd-locales Y ∣ zd₂ ∣ K κ
+
+    K' : ⟨ 𝒪 Y ⟩
+    K' = pr₁ ψ
+
+    χ : is-boolean-complement-of (𝒪 Y) K' K holds
+    χ = pr₂ ψ
+
+    χ' : is-boolean-complement-of (𝒪 Y) K K' holds
+    χ' = complementation-is-symmetric (𝒪 Y) K' K χ
+
+    † : is-boolean-complement-of (𝒪 X) (𝒻 ⋆∙ K') (𝒻 ⋆∙ K) holds
+    † = frame-homomorphisms-preserve-complements (𝒪 Y) (𝒪 X) (_⋆ 𝒻) χ'
+
+    ϑ : is-clopen (𝒪 X) (𝒻 ⋆∙ K) holds
+    ϑ = 𝒻 ⋆∙ K' , †
 
 \end{code}

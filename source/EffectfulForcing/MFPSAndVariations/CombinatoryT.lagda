@@ -15,11 +15,11 @@ open import EffectfulForcing.MFPSAndVariations.Continuity
 open import EffectfulForcing.MFPSAndVariations.Combinators
 open import UF.Base
 
-data type : 𝓤₀  ̇  where
+data type : 𝓤₀  ̇ where
  ι   : type
  _⇒_ : type → type → type
 
-data T : (σ : type) → 𝓤₀  ̇  where
+data T : (σ : type) → 𝓤₀  ̇ where
  Zero  : T ι
  Succ  : T (ι ⇒ ι)
  Iter  : {σ : type}     → T ((σ ⇒ σ) ⇒ σ ⇒ ι ⇒ σ)
@@ -51,7 +51,7 @@ System T extended with oracles.
 
 \begin{code}
 
-data TΩ : (σ : type) → 𝓤₀ ̇  where
+data TΩ : (σ : type) → 𝓤₀ ̇ where
  Ω     : TΩ (ι ⇒ ι)
  Zero  : TΩ ι
  Succ  : TΩ (ι ⇒ ι)
