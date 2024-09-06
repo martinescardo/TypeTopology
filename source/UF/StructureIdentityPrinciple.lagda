@@ -315,7 +315,6 @@ module ∞-magma (𝓤 : Universe) (ua : is-univalent 𝓤) where
 
  open import UF.FunExt
  open import UF.UA-FunExt
- open import UF.EquivalenceExamples
 
  fe : funext 𝓤 𝓤
  fe = univalence-gives-funext ua

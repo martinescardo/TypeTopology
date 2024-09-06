@@ -15,17 +15,10 @@ module UF.Powerset-Resizing
        where
 
 open import MLTT.Spartan
-open import UF.Equiv
-open import UF.Equiv-FunExt
-open import UF.FunExt
-open import UF.Lower-FunExt
+open import UF.Powerset
 open import UF.PropTrunc
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import UF.UA-FunExt
-open import UF.Univalence
-open import UF.Powerset
-open import UF.PropTrunc
 open import UF.SubtypeClassifier
 
 \end{code}

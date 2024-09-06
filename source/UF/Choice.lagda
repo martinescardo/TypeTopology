@@ -38,14 +38,11 @@ choice where X is a proposition (see https://arxiv.org/abs/1610.03346).
 open import MLTT.Spartan
 open import UF.DiscreteAndSeparated
 open import UF.Base
-open import UF.Equiv
 open import UF.ClassicalLogic
 open import UF.FunExt
-open import UF.Hedberg
 open import UF.LeftCancellable
 open import UF.Powerset
 open import UF.PropTrunc
-open import UF.Retracts
 open import UF.Sets
 open import UF.Sets-Properties
 open import UF.Subsingletons
