@@ -18,9 +18,6 @@ module Unsafe.CantorCompact (fe : FunExt) where
 
 open import Unsafe.CountableTychonoff fe
 
-open import TypeTopology.CompactTypes
-open import TypeTopology.CompactTypes
-open import TypeTopology.WeaklyCompactTypes
 
 cantor-compact∙ : is-compact∙ (ℕ → 𝟚)
 cantor-compact∙ = countable-Tychonoff (λ i → 𝟚-is-compact∙)
