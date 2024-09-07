@@ -181,6 +181,8 @@ The paper [1] also discusses the following.
 
 All of them are proved below, but not in this order.
 
+We first prove (2).
+
 \begin{code}
 
 open import Taboos.WLPO
@@ -260,14 +262,13 @@ noncontinuous-map-gives-WLPO f f-non-cts = VI
 
 \end{code}
 
-Added 7th September 2024. We prove (1) and (4) above. The proofs of
-(2) and (3) come later but were added earlier in time.
+Added 7th September 2024. We now prove (3)(→).
 
 \begin{code}
 
--¬WLPO-gives-all-functions-are-not-not-continuous
+¬WLPO-gives-all-functions-are-not-not-continuous
  : ¬ WLPO → (f : ℕ∞ → ℕ) → ¬¬ continuous f
--¬WLPO-gives-all-functions-are-not-not-continuous nwlpo f
+¬WLPO-gives-all-functions-are-not-not-continuous nwlpo f
  = contrapositive
     (λ (ν : ¬ continuous f) → noncontinuous-map-gives-WLPO f ν)
     nwlpo
@@ -289,6 +290,12 @@ MP {𝓤} = (A : ℕ → 𝓤 ̇ )
        → ¬¬ (Σ n ꞉ ℕ , A n)
        → Σ n ꞉ ℕ , A n
 
+\end{code}
+
+And now we prove (1).
+
+\begin{code}
+
 MP-gives-that-not-not-continuous-functions-are-continuous
  : MP → (f : ℕ∞ → ℕ) → ¬¬ continuous f → continuous f
 MP-gives-that-not-not-continuous-functions-are-continuous mp f
@@ -304,6 +311,8 @@ and so we will not add it in code, even if it turns out to be needed
 in future additions. The following also is an immediate consequence of
 the above, but we choose to record it explicitly.
 
+And now we prove (4).
+
 \begin{code}
 
 MP-and-¬WLPO-gives-all-functions-are-continuous
@@ -312,7 +321,7 @@ MP-and-¬WLPO-gives-all-functions-are-continuous mp nwlpo f
  = MP-gives-that-not-not-continuous-functions-are-continuous
     mp
     f
-    (-¬WLPO-gives-all-functions-are-not-not-continuous nwlpo f)
+    (¬WLPO-gives-all-functions-are-not-not-continuous nwlpo f)
 
 \end{code}
 
@@ -370,6 +379,12 @@ WLPO-iff-there-is-a-noncontinous-map =
                           f (max (ι m) (ι m)) ＝⟨ a m ⟩
                           f ∞                 ∎)
 
+\end{code}
+
+And a corollary is that the negation WLPO is a weak continuity principle.
+
+\begin{code}
+
 ¬WLPO-iff-all-maps-are-¬¬-continuous : ¬ WLPO ↔ ((f : ℕ∞ → ℕ) → ¬¬ continuous f)
 ¬WLPO-iff-all-maps-are-¬¬-continuous =
  (λ nwlpo f f-non-cts
@@ -383,8 +398,6 @@ WLPO-iff-there-is-a-noncontinous-map =
       (λ (f , f-non-cts) → a f f-non-cts))
 
 \end{code}
-
-Hence ¬ WLPO can be considered as a (rather weak) continuity principle.
 
 It is shown in [2] that negative consistent axioms can be postulated
 in MLTT without loss of canonicity, and Andreas Abel filled important
