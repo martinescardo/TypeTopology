@@ -272,17 +272,25 @@ Added 7th September 2024. We prove (1) and (4) above. The proofs of
     (λ (ν : ¬ continuous f) → noncontinuous-map-gives-WLPO f ν)
     nwlpo
 
+\end{code}
+
+TODO. Create a Markov's Principle file somewhere, if it doesn't
+already exist, and prove that it doesn't matter whether we formulate
+it with Σ or ∃ (or whether we formulate with decidable properties or
+boolean-valued functions).
+
+\begin{code}
+
 open import NotionsOfDecidability.Complemented
 
 MP : 𝓤 ⁺ ̇
 MP {𝓤} = (A : ℕ → 𝓤 ̇ )
        → is-complemented A
        → ¬¬ (Σ n ꞉ ℕ , A n)
-       → (Σ n ꞉ ℕ , A n)
+       → Σ n ꞉ ℕ , A n
 
 MP-gives-that-not-not-continuous-functions-are-continuous
- : MP
- → (f : ℕ∞ → ℕ) → ¬¬ continuous f → continuous f
+ : MP → (f : ℕ∞ → ℕ) → ¬¬ continuous f → continuous f
 MP-gives-that-not-not-continuous-functions-are-continuous mp f nnc
  = mp (λ m → (n : ℕ) → f (max (ι m) (ι n)) ＝ f ∞)
       (λ m → Theorem-8·2'
@@ -308,11 +316,6 @@ MP-and-¬WLPO-gives-all-functions-are-continuous mp nwlpo f
     (-¬WLPO-gives-all-functions-are-not-not-continuous nwlpo f)
 
 \end{code}
-
-TODO. Create a Markov's Principle file somewhere, if it doesn't
-already exist, and prove that it doesn't matter whether we formulate
-it with Σ or ∃ (or whether we formulate with decidable properties or
-boolean-valued functions).
 
 End of 7th September 2024 addition.
 
@@ -391,7 +394,7 @@ technique. Hence we can, if we wish, postulate ¬ WLPO without loss of
 canonicity, and get a weak continuity axiom for free. But notice that
 we can also postulate ¬¬ WLPO without loss of continuity, to get a
 weak classical axiom for free. Of course, we can't postulate both at
-the same time.
+the same time while retaining canonicity (and consistency!).
 
 [2] T. Coquand, N.A. Danielsson, M.H. Escardo, U. Norell and Chuangjie Xu.
 Negative consistent axioms can be postulated without loss of canonicity.
