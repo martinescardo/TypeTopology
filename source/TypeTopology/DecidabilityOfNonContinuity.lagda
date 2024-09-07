@@ -167,7 +167,7 @@ For our purposes, the following terminology is better.
 
 \end{code}
 
-TODO. The paper [1] also discusses the following.
+The paper [1] also discusses the following.
 
  1. MP gives that continuity and doubly negated continuity agree.
 
@@ -179,8 +179,7 @@ TODO. The paper [1] also discusses the following.
 
  4. If MP and ¬ WLPO then all functions ℕ∞ → ℕ are continuous.
 
-Added 24th July 2024. Still based on the paper [1]. We write down the
-proofs of (2) and (3).
+All of them are proved below, but not in this order.
 
 \begin{code}
 
@@ -261,11 +260,67 @@ noncontinuous-map-gives-WLPO f f-non-cts = VI
 
 \end{code}
 
+Added 7th September 2024. We prove (1) and (4) above. The proofs of
+(2) and (3) come later but were added earlier in time.
+
+\begin{code}
+
+-¬WLPO-gives-all-functions-are-not-not-continuous
+ : ¬ WLPO → (f : ℕ∞ → ℕ) → ¬¬ continuous f
+-¬WLPO-gives-all-functions-are-not-not-continuous nwlpo f
+ = contrapositive
+    (λ (ν : ¬ continuous f) → noncontinuous-map-gives-WLPO f ν)
+    nwlpo
+
+open import NotionsOfDecidability.Complemented
+
+MP : 𝓤 ⁺ ̇
+MP {𝓤} = (A : ℕ → 𝓤 ̇ )
+       → is-complemented A
+       → ¬¬ (Σ n ꞉ ℕ , A n)
+       → (Σ n ꞉ ℕ , A n)
+
+MP-gives-that-not-not-continuous-functions-are-continuous
+ : MP
+ → (f : ℕ∞ → ℕ) → ¬¬ continuous f → continuous f
+MP-gives-that-not-not-continuous-functions-are-continuous mp f nnc
+ = mp (λ m → (n : ℕ) → f (max (ι m) (ι n)) ＝ f ∞)
+      (λ m → Theorem-8·2'
+              (λ x → f (max (ι m) x) ＝ f ∞)
+              (λ x → ℕ-is-discrete (f (max (ι m) x)) (f ∞)))
+      nnc
+
+\end{code}
+
+THe converse of the above is trivial (double negation introduction)
+and so we will not add it in code, even if it turns out to be needed
+in future additions. The following also is an immediate consequence of
+the above, but we choose to record it explicitly.
+
+\begin{code}
+
+MP-and-¬WLPO-gives-all-functions-are-continuous
+ : MP → ¬ WLPO → (f : ℕ∞ → ℕ) → continuous f
+MP-and-¬WLPO-gives-all-functions-are-continuous mp nwlpo f
+ = MP-gives-that-not-not-continuous-functions-are-continuous
+    mp
+    f
+    (-¬WLPO-gives-all-functions-are-not-not-continuous nwlpo f)
+
+\end{code}
+
+TODO. Create a Markov's Principle file somewhere, if it doesn't
+already exist, and prove that it doesn't matter whether we formulate
+it with Σ or ∃ (or whether we formulate with decidable properties or
+boolean-valued functions).
+
+End of 7th September 2024 addition.
+
 In the following fact we can replace Σ by ∃ because WLPO is a
 proposition. Hence WLPO is the propositional truncation of the type
 Σ f ꞉ (ℕ∞ → ℕ) , ¬ continuous f.
 
-TODO. Add this code for this observation.
+TODO. Add code for this observation.
 
 The following is from [1] with the same proof.
 
