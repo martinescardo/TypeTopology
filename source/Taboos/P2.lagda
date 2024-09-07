@@ -17,7 +17,6 @@ private
  fe' 𝓤 𝓥 = fe {𝓤} {𝓥}
 
 open import MLTT.Spartan
-open import MLTT.Two
 open import MLTT.Two-Properties
 open import UF.Base
 open import UF.ClassicalLogic

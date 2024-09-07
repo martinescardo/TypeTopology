@@ -9,8 +9,6 @@ Lesser Limited Principle of Omniscience.
 module Taboos.LLPO where
 
 open import CoNaturals.BothTypes
-open import CoNaturals.Equivalence
-open import CoNaturals.Type2Properties
 open import MLTT.Plus-Properties
 open import MLTT.Spartan
 open import MLTT.Two-Properties
@@ -19,7 +17,6 @@ open import Naturals.Properties
 open import Notation.CanonicalMap
 open import Taboos.BasicDiscontinuity
 open import Taboos.WLPO
-open import UF.Equiv
 open import UF.FunExt
 open import UF.PropTrunc
 open import UF.Subsingletons
