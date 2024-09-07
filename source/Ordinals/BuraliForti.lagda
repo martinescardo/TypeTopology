@@ -126,11 +126,9 @@ module Ordinals.BuraliForti
        (ua : Univalence)
        where
 
-open import UF.Base
 open import UF.Subsingletons
 open import UF.Retracts
 open import UF.Equiv hiding (_≅_)
-open import UF.EquivalenceExamples
 open import UF.UniverseEmbedding
 open import UF.UA-FunExt
 open import UF.FunExt

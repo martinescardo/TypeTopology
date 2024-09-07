@@ -17,7 +17,6 @@ open import Notation.CanonicalMap
 open import Ordinals.Notions
 open import Ordinals.Type
 open import Ordinals.Underlying
-open import UF.Base
 open import UF.Sets
 open import UF.Subsingletons
 

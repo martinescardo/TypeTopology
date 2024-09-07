@@ -12,7 +12,6 @@ module Ordinals.TrichotomousArithmetic
         (fe : FunExt)
        where
 
-open import UF.Subsingletons
 
 open import MLTT.Spartan
 open import Notation.CanonicalMap

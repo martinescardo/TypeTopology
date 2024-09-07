@@ -85,7 +85,6 @@ open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.FunExt
 open import UF.ImageAndSurjection pt
-open import UF.Sets
 open import UF.Size
 open import UF.SubtypeClassifier
 open import UF.Subsingletons
