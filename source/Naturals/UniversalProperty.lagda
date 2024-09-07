@@ -12,7 +12,6 @@ here from nondependent functions to dependent functions.
 
 module Naturals.UniversalProperty where
 
-open import MLTT.NaturalNumbers
 
 open import MLTT.Spartan
 open import UF.Base
