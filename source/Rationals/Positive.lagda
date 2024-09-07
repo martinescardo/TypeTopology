@@ -8,11 +8,9 @@ This file defines positive rationals, which are useful for metric spaces.
 open import MLTT.Spartan renaming (_+_ to _∔_)
 open import Notation.Order
 open import Rationals.Type
-open import Rationals.Abs
 open import Rationals.Addition renaming (_+_ to _ℚ+_)
 open import Rationals.Multiplication renaming (_*_ to _ℚ*_)
 open import Rationals.Order
-open import UF.Base
 
 module Rationals.Positive where
 
