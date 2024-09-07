@@ -291,12 +291,11 @@ MP {𝓤} = (A : ℕ → 𝓤 ̇ )
 
 MP-gives-that-not-not-continuous-functions-are-continuous
  : MP → (f : ℕ∞ → ℕ) → ¬¬ continuous f → continuous f
-MP-gives-that-not-not-continuous-functions-are-continuous mp f nnc
+MP-gives-that-not-not-continuous-functions-are-continuous mp f
  = mp (λ m → (n : ℕ) → f (max (ι m) (ι n)) ＝ f ∞)
       (λ m → Theorem-8·2'
               (λ x → f (max (ι m) x) ＝ f ∞)
               (λ x → ℕ-is-discrete (f (max (ι m) x)) (f ∞)))
-      nnc
 
 \end{code}
 
