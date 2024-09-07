@@ -10,8 +10,6 @@ order values and 𝓥 for the families which have suprema.
 
 open import MLTT.Spartan
 open import UF.Equiv
-open import UF.Equiv-FunExt
-open import UF.EquivalenceExamples
 open import UF.FunExt
 open import UF.Hedberg
 open import UF.Logic
@@ -19,12 +17,8 @@ open import UF.Powerset-MultiUniverse
 open import UF.PropTrunc
 open import UF.Retracts
 open import UF.Sets
-open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
 open import UF.SubtypeClassifier
 open import UF.Size
-open import UF.SmallnessProperties
-open import UF.UniverseEmbedding
 
 module OrderedTypes.SupLattice
         (pt : propositional-truncations-exist)
