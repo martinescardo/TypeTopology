@@ -292,7 +292,7 @@ MP-gives-that-not-not-continuous-functions-are-continuous mp f nnc
 
 \end{code}
 
-THe converse of the above is trivial (double negation introduction)
+The converse of the above is trivial (double negation introduction)
 and so we will not add it in code, even if it turns out to be needed
 in future additions. The following also is an immediate consequence of
 the above, but we choose to record it explicitly.
