@@ -15,7 +15,6 @@ module PCF.Lambda.ScottModelOfTypes
         (pe : propext 𝓤₀)
        where
 
-open import DomainTheory.Basics.Dcpo pt fe 𝓤₀
 open import DomainTheory.Basics.Exponential pt fe 𝓤₀
 open import DomainTheory.Basics.Pointed pt fe 𝓤₀
 open import DomainTheory.Lifting.LiftingSet pt fe 𝓤₀ pe
