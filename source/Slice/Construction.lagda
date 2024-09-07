@@ -14,7 +14,6 @@ open import UF.Base
 open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.FunExt
-open import UF.Subsingletons
 
 𝓕 : 𝓤 ̇ → 𝓤 ⊔ 𝓣 ⁺ ̇
 𝓕 X = Σ I ꞉ 𝓣 ̇ , (I → X)
@@ -120,8 +119,6 @@ https://ncatlab.org/nlab/show/locally+cartesian+closed+category
   l (τ , H) = (φ ∘ τ , H)
 
 open import UF.Classifiers
-open import UF.Equiv
-open import UF.FunExt
 open import UF.Univalence
 
 𝓕-equiv-particular : is-univalent 𝓣
@@ -131,11 +128,7 @@ open import UF.Univalence
 𝓕-equiv-particular = classifier-single-universe.classification 𝓣
 
 open import UF.Size
-open import UF.Base
-open import UF.Equiv-FunExt
 open import UF.UA-FunExt
-open import UF.UniverseEmbedding
-open import UF.EquivalenceExamples
 
 𝓕-equiv : Univalence → (X : 𝓤 ̇ ) → 𝓕 X ≃ (Σ A ꞉ (X → 𝓣 ⊔ 𝓤 ̇ ), (Σ A) is 𝓣 small)
 𝓕-equiv {𝓤} ua X = qinveq φ (ψ , ψφ , φψ)
