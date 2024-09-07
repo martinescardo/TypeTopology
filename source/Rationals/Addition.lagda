@@ -12,7 +12,6 @@ open import MLTT.Spartan renaming (_+_ to _∔_)
 open import UF.Base hiding (_≈_)
 open import Integers.Type
 open import Integers.Addition renaming (_+_ to _ℤ+_)
-open import Integers.Multiplication
 open import Rationals.Fractions
 open import Rationals.FractionsOperations renaming (_+_ to _𝔽+_)
 open import Rationals.Type

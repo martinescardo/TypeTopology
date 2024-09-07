@@ -434,7 +434,6 @@ constructed in the module UF.PropIndexedPiSigma:
 
 \begin{code}
 
- open import UF.Equiv
  open import UF.PropIndexedPiSigma
 
  private
@@ -823,7 +822,6 @@ module sum-top
 
 \begin{code}
 
-open import UF.DiscreteAndSeparated
 
 module sum-cotransitive
         (fe : FunExt)
@@ -939,7 +937,6 @@ but the constructions still work.
 \begin{code}
 
 open import UF.Embeddings
-open import UF.Equiv
 
 module extension
         (fe : FunExt)

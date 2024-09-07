@@ -15,6 +15,5 @@ This file has been moved to the following location:
 
 module Ordinals.Indecomposable where
 
-open import Taboos.Decomposability using ()
 
 \end{code}

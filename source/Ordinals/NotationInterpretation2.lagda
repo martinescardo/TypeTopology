@@ -63,20 +63,16 @@ open import Ordinals.Underlying
 open import Taboos.LPO
 open import Taboos.WLPO
 open import TypeTopology.CompactTypes
-open import TypeTopology.ConvergentSequenceHasInf
 open import TypeTopology.Density
 open import TypeTopology.InfProperty
 open import TypeTopology.PropInfTychonoff fe
-open import TypeTopology.PropTychonoff fe
 open import TypeTopology.SigmaDiscreteAndTotallySeparated
-open import UF.Base
 open import UF.Embeddings
 open import UF.DiscreteAndSeparated
 open import UF.Equiv
 open import UF.PairFun
 open import UF.Retracts
 open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
 
 \end{code}
 

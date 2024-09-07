@@ -13,7 +13,6 @@ module PCF.Lambda.BigStep (pt : propositional-truncations-exist) where
 open PropositionalTruncation pt
 
 open import MLTT.Spartan
-open import Naturals.Properties hiding (pred-succ)
 open import PCF.Lambda.AbstractSyntax pt
 
 data _⇓'_ : ∀ {n : ℕ} {Γ : Context n} {σ : type} → PCF Γ σ → PCF Γ σ → 𝓤₀ ̇ where

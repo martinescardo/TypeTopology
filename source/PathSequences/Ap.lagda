@@ -13,7 +13,6 @@ library to TypeTopology.
 
 open import MLTT.Spartan
 open import UF.Base
-open import UF.Equiv
 open import PathSequences.Type
 open import PathSequences.Reasoning
 

@@ -11,12 +11,10 @@ open import Notation.Order
 open import UF.Base
 open import UF.Subsingletons
 
-open import Integers.Abs
 open import Integers.Addition renaming (_+_ to _ℤ+_)
 open import Integers.Type
 open import Integers.Multiplication renaming (_*_ to _ℤ*_)
 open import Integers.Order
-open import Naturals.Addition renaming (_+_ to _ℕ+_)
 open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
 open import Rationals.Fractions
 open import Rationals.FractionsOperations
