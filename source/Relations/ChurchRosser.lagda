@@ -17,8 +17,6 @@ module Relations.ChurchRosser
        where
 
 open import Relations.SRTclosure
-open import UF.PropTrunc
-open import UF.Subsingletons
 
 infix 1 _◁▷_
 infix 1 _◁▷[_]_
