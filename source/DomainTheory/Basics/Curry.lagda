@@ -22,7 +22,6 @@ open import DomainTheory.Basics.Dcpo pt fe 𝓥
 open import DomainTheory.Basics.Exponential pt fe 𝓥
 open import DomainTheory.Basics.Miscelanea pt fe 𝓥
 open import DomainTheory.Basics.Pointed pt fe 𝓥
-open import DomainTheory.Basics.FunctionComposition pt fe 𝓥
 open import DomainTheory.Basics.Products pt fe
 open import DomainTheory.Basics.ProductsContinuity pt fe 𝓥
 open import UF.Subsingletons

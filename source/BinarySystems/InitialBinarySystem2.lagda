@@ -773,7 +773,6 @@ We now need to assume function extensionality.
 
 open import UF.Base
 open import UF.FunExt
-open import UF.Subsingletons-FunExt
 
 module _ (fe  : Fun-Ext) where
 

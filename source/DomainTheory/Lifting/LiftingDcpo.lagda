@@ -28,7 +28,6 @@ open PropositionalTruncation pt
 
 open import UF.Equiv
 open import UF.EquivalenceExamples
-open import UF.ImageAndSurjection pt
 open import UF.Sets
 open import UF.Subsingletons-FunExt
 

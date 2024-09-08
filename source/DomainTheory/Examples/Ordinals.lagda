@@ -25,7 +25,6 @@ open PropositionalTruncation pt
 
 open import MLTT.List
 
-open import UF.Base
 open import UF.FunExt
 open import UF.Subsingletons
 open import UF.UA-FunExt

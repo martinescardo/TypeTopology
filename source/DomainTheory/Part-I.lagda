@@ -37,7 +37,6 @@ open PropositionalTruncation pt
 open import MLTT.Spartan
 
 open import Naturals.Order hiding (subtraction')
-open import Naturals.Addition renaming (_+_ to _+'_)
 open import Notation.Order hiding (_⊑_ ; _≼_)
 
 open import UF.Base
@@ -321,7 +320,6 @@ Section 5
 
 module _ where
  open import DomainTheory.Basics.Dcpo pt fe 𝓤₀
- open import DomainTheory.Basics.Miscelanea pt fe 𝓤₀
  open import DomainTheory.Taboos.ClassicalLiftingOfNaturalNumbers pt fe
  open import Taboos.LPO
 
@@ -501,7 +499,6 @@ module _ (𝓥 : Universe) where
 
  open import DomainTheory.Basics.Curry pt fe 𝓥
  open import DomainTheory.Basics.Dcpo pt fe 𝓥
- open import DomainTheory.Basics.FunctionComposition pt fe 𝓥
  open import DomainTheory.Basics.Pointed pt fe 𝓥
  open import DomainTheory.Basics.Products pt fe
  open DcpoProductsGeneral 𝓥
@@ -617,7 +614,6 @@ module _ (𝓥 : Universe) where
 
  open import DomainTheory.Basics.Dcpo pt fe 𝓥
  open import DomainTheory.Basics.Exponential pt fe 𝓥
- open import DomainTheory.Basics.FunctionComposition pt fe 𝓥
  open import DomainTheory.Basics.Miscelanea pt fe 𝓥
 
  Definition-7-1 : (𝓓 : DCPO {𝓤} {𝓣}) → DCPO[ 𝓓 , 𝓓 ] → 𝓤 ⊔ 𝓣 ̇
@@ -766,7 +762,6 @@ open import DomainTheory.Basics.Miscelanea pt fe 𝓤₀
 open import DomainTheory.Basics.Pointed pt fe 𝓤₀
 
 open import DomainTheory.Bilimits.Dinfinity pt fe pe
-open import DomainTheory.Bilimits.Sequential pt fe 𝓤₁ 𝓤₁
 
 Definition-8-1 : (n : ℕ) → DCPO⊥ {𝓤₁} {𝓤₁}
 Definition-8-1 = 𝓓⊥

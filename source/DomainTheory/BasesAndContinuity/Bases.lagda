@@ -37,7 +37,6 @@ module DomainTheory.BasesAndContinuity.Bases
 
 open PropositionalTruncation pt
 
-open import UF.Base
 open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.Size hiding (is-small ; is-locally-small)
