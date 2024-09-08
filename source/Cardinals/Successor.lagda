@@ -11,14 +11,11 @@ holds constructively.
 open import MLTT.Spartan
 open import UF.Base
 open import UF.Equiv
-open import UF.Equiv-FunExt
 open import UF.FunExt
 open import UF.PropTrunc
-open import UF.Retracts
 open import UF.SetTrunc
 open import UF.Size
 open import UF.Subsingletons
-import Various.LawvereFPT as LFTP
 
 module Cardinals.Successor
  (fe : FunExt)

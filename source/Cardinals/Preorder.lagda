@@ -6,14 +6,10 @@ Jon Sterling, 25th March 2023.
 
 open import MLTT.Spartan
 open import UF.Base
-open import UF.Equiv
 open import UF.FunExt
 open import UF.PropTrunc
-open import UF.Retracts
 open import UF.SetTrunc
-open import UF.Size
 open import UF.Subsingletons
-import Various.LawvereFPT as LFTP
 
 module Cardinals.Preorder
  (fe : FunExt)
