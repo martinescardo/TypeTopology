@@ -6,22 +6,17 @@ Martin Escardo and Paulo Oliva, October 2021.
 
 module Fin.ArgMinMax where
 
-open import UF.Subsingletons
 
 open import Fin.Embeddings
 open import Fin.Order
-open import Fin.Properties
 open import Fin.Topology
 open import Fin.Type
-open import MLTT.Plus-Properties
 open import MLTT.Spartan
 open import MLTT.SpartanList
 open import Naturals.Order
 open import Notation.Order
 open import NotionsOfDecidability.Complemented
 open import TypeTopology.CompactTypes
-open import UF.DiscreteAndSeparated
-open import UF.Equiv
 
 \end{code}
 

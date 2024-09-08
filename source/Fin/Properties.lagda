@@ -10,12 +10,8 @@ open import UF.Subsingletons
 
 open import Factorial.PlusOneLC
 open import Fin.Type
-open import MLTT.Plus-Properties
 open import MLTT.Spartan
 open import MLTT.Unit-Properties
-open import Notation.Order
-open import UF.DiscreteAndSeparated
-open import UF.Embeddings
 open import UF.Equiv
 
 \end{code}

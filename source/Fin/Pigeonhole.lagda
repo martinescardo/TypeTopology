@@ -6,7 +6,6 @@ Martin Escardo, November-December 2019
 
 module Fin.Pigeonhole where
 
-open import UF.Subsingletons
 
 open import Factorial.Swap
 open import Fin.Bishop
@@ -23,7 +22,6 @@ open import NotionsOfDecidability.Complemented
 open import NotionsOfDecidability.Decidable
 open import UF.DiscreteAndSeparated
 open import UF.Equiv
-open import UF.EquivalenceExamples
 open import UF.FunExt
 open import UF.LeftCancellable
 open import UF.PropTrunc
