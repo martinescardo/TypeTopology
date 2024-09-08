@@ -29,7 +29,6 @@ module DomainTheory.BasesAndContinuity.IndCompletion
 
 open PropositionalTruncation pt
 
-open import UF.Base hiding (_≈_)
 open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.Subsingletons
