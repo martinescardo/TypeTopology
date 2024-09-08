@@ -46,7 +46,6 @@ open import MLTT.List
                       ++-assoc to ◦-assoc)
 
 open import MLTT.Spartan
-open import MLTT.Two
 open import MLTT.Two-Properties
 open import Quotient.Effectivity
 open import Quotient.FromSetReplacement
