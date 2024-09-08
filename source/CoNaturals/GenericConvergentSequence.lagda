@@ -16,7 +16,6 @@ module CoNaturals.GenericConvergentSequence where
 
 open import MLTT.Spartan
 open import MLTT.Two-Properties
-open import Naturals.Order hiding (max ; max-idemp ; max-comm)
 open import Notation.CanonicalMap
 open import Notation.Order
 open import Ordinals.Notions

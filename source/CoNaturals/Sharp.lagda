@@ -44,7 +44,6 @@ open import NotionsOfDecidability.Decidable
 open import UF.DiscreteAndSeparated
 open import UF.Embeddings
 open import UF.Equiv
-open import UF.FunExt
 open import UF.PropTrunc
 open import UF.Subsingletons-FunExt
 
