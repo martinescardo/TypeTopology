@@ -17,7 +17,6 @@ open import Games.K
 
 module permutations where
 
- open import MLTT.Athenian
 
  no-repetitions : ℕ → Type → 𝑻
  no-repetitions 0        X = []
@@ -72,7 +71,6 @@ module search (fe : Fun-Ext) where
 
 module another-game-representation (R : Type) where
 
- open import Games.FiniteHistoryDependent R
 
  open K-definitions R
 

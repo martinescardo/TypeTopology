@@ -13,10 +13,8 @@ module EffectfulForcing.Internal.Degrees (fe : Fun-Ext) where
 open import MLTT.Spartan
 open import EffectfulForcing.MFPSAndVariations.SystemT
  using (type; ι; _⇒_;〖_〗)
-open import MLTT.NaturalNumbers
 open import Naturals.Order using (max)
 open import EffectfulForcing.Internal.SystemT
-open import EffectfulForcing.Internal.InternalModCont fe
 
 \end{code}
 

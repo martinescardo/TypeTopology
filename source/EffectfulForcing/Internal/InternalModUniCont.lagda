@@ -12,7 +12,6 @@ Continuation of the development in `InternalModCont` towards uniform continuity.
 {-# OPTIONS --safe --without-K --exact-split #-}
 
 open import UF.FunExt
-open import UF.Equiv hiding (⌜_⌝)
 open import UF.Retracts
 
 module EffectfulForcing.Internal.InternalModUniCont (fe : Fun-Ext) where
@@ -24,10 +23,8 @@ open import EffectfulForcing.Internal.External
 open import EffectfulForcing.Internal.Internal
 open import EffectfulForcing.Internal.InternalModCont fe
  using (maxᵀ; maxᵀ-correct)
-open import EffectfulForcing.Internal.Subst
 open import EffectfulForcing.Internal.SystemT
 open import EffectfulForcing.MFPSAndVariations.Church
-open import EffectfulForcing.MFPSAndVariations.Combinators
 open import EffectfulForcing.MFPSAndVariations.Continuity
  using (is-continuous; _＝⟪_⟫_; C-restriction; Cantor; Baire;
         is-uniformly-continuous; _＝⟦_⟧_; BT; embedding-𝟚-ℕ)
@@ -38,7 +35,6 @@ open import EffectfulForcing.MFPSAndVariations.Dialogue
         restriction-is-eloquent; dialogue-UC)
 open import EffectfulForcing.MFPSAndVariations.SystemT
  using (type; ι; _⇒_;〖_〗)
-open import MLTT.List
 open import MLTT.Spartan hiding (rec; _^_)
 open import Naturals.Order using (max)
 

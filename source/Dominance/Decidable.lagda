@@ -8,7 +8,6 @@ module Dominance.Decidable where
 
 open import Dominance.Definition
 open import MLTT.Spartan
-open import NotionsOfDecidability.Complemented
 open import NotionsOfDecidability.Decidable
 open import UF.FunExt
 open import UF.Subsingletons

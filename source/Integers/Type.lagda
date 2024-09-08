@@ -16,7 +16,6 @@ open import MLTT.Unit-Properties
 open import Naturals.Properties
 open import UF.DiscreteAndSeparated
 open import UF.Sets
-open import UF.Subsingletons
 
 module Integers.Type where
 

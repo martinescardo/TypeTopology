@@ -8,7 +8,6 @@ The swap automorphism.
 
 module Factorial.Swap where
 
-open import MLTT.Plus-Properties
 open import MLTT.Spartan
 open import UF.DiscreteAndSeparated
 open import UF.Equiv

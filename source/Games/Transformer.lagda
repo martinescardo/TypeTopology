@@ -35,9 +35,7 @@ open import Games.Monad
 open import Games.J
 open import Games.K
 open import MLTT.Spartan hiding (J)
-open import UF.Base
 open import UF.FunExt
-open import UF.Equiv
 
 module Games.Transformer
         (fe : Fun-Ext)

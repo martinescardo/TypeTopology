@@ -20,7 +20,6 @@ open import UF.Embeddings
 open import UF.Equiv
 open import UF.ClassicalLogic
 open import UF.FunExt
-open import UF.Subsingletons-FunExt
 open import UF.SubtypeClassifier
 
 having-three-distinct-points-covariant : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }

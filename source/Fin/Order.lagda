@@ -15,7 +15,6 @@ open import Notation.Order
 open import NotionsOfDecidability.Decidable
 open import NotionsOfDecidability.Complemented
 open import UF.Base
-open import UF.DiscreteAndSeparated
 open import UF.FunExt
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt

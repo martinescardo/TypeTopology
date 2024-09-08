@@ -55,7 +55,6 @@ open import GamesExperimental.J
 open import GamesExperimental.K
 open import GamesExperimental.TypeTrees {𝓤} public
 open import MLTT.Athenian
-open import MLTT.Fin
 open import UF.FunExt
 
 _≥_ : R → R → 𝓥 ̇
