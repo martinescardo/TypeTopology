@@ -40,7 +40,6 @@ module gist.remove-swap
        where
 
 open import MLTT.List
-open import NotionsOfDecidability.Decidable
 
 \end{code}
 
