@@ -11,6 +11,7 @@ open import UF.Subsingletons
 module Cardinals.Type (st : set-truncations-exist) where
 
 open import UF.Embeddings
+open import UF.Sets
 open import UF.Subsingletons-FunExt
 
 import UF.Logic

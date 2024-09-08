@@ -129,6 +129,7 @@ module index where
 import Apartness.index
 import BinarySystems.index
 import CantorSchroederBernstein.index
+import Cardinals.index
 import Categories.index
 import Circle.index
 import CoNaturals.index
