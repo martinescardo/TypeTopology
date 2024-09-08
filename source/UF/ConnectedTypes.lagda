@@ -9,7 +9,6 @@ of interest pertaining to the concept of connectedness.
 {-# OPTIONS --safe --without-K #-}
 
 open import UF.FunExt
-open import UF.PropTrunc 
 
 module UF.ConnectedTypes
         (fe : Fun-Ext)
@@ -21,6 +20,8 @@ open import Naturals.Order
 open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.H-Levels fe
+
+open import UF.PropTrunc 
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.Truncations fe
