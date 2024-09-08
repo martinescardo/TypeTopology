@@ -27,7 +27,6 @@ open import Locales.DistributiveLattice.Properties fe pt
 open import Locales.Frame pt fe
 open import MLTT.List
 open import MLTT.Spartan
-open import UF.Base
 open import UF.Equiv hiding (_■)
 open import UF.Logic
 open import UF.Powerset-MultiUniverse

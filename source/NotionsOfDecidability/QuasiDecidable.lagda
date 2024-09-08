@@ -238,7 +238,6 @@ open import UF.Yoneda
 open import UF.Embeddings
 open import UF.Powerset
 
-open import NotionsOfDecidability.Decidable
 open import Dominance.Definition
 
 \end{code}
@@ -869,7 +868,6 @@ propositional resizing is available:
 
 \begin{code}
 
-open import UF.Size
 
 module quasidecidability-construction-from-resizing
         (𝓣 𝓚 : Universe)

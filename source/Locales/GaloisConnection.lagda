@@ -17,7 +17,6 @@ module Locales.GaloisConnection
 open import Locales.Frame pt fe
 open import UF.Logic
 open import UF.SubtypeClassifier
-open import UF.SubtypeClassifier-Properties
 open import UF.Subsingletons
 
 open AllCombinators pt fe

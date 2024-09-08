@@ -7,7 +7,6 @@ Properties of the disjoint sum _+_ of types.
 module MLTT.Plus-Properties where
 
 open import MLTT.Plus
-open import MLTT.Universes
 open import MLTT.Negation
 open import MLTT.Id
 open import MLTT.Empty
@@ -57,7 +56,6 @@ Right-fails-gives-left-holds : {P : 𝓤 ̇ } {Q : 𝓥 ̇ } → P + Q → ¬ Q 
 Right-fails-gives-left-holds (inl p) u = p
 Right-fails-gives-left-holds (inr q) u = 𝟘-elim (u q)
 
-open import MLTT.Unit
 open import MLTT.Sigma
 open import Notation.General
 

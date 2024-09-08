@@ -9,7 +9,6 @@ Split out from the now-deprecated `CompactRegular` module.
 open import MLTT.Spartan hiding (𝟚)
 open import UF.PropTrunc
 open import UF.FunExt
-open import UF.UA-FunExt
 open import UF.Size
 
 module Locales.WellInside (pt : propositional-truncations-exist)
@@ -22,13 +21,10 @@ Importation of foundational UF stuff.
 
 \begin{code}
 
-open import Slice.Family
-open import UF.Subsingletons
 open import UF.SubtypeClassifier
 open import UF.Logic
 
 open import Locales.Frame       pt fe
-open import Locales.Complements pt fe
 
 open AllCombinators pt fe
 open PropositionalTruncation pt

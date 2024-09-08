@@ -6,7 +6,6 @@ Negation (and emptiness).
 
 module MLTT.Negation where
 
-open import MLTT.Universes
 open import MLTT.Empty
 open import MLTT.Id
 open import MLTT.Pi

@@ -25,22 +25,12 @@ module Locales.DiscreteLocale.Two-Properties
        where
 
 
-open import Locales.DiscreteLocale.Definition fe pe pt
 open import Locales.DiscreteLocale.Two fe pe pt
-open import Locales.DistributiveLattice.Definition fe pt
 open import Locales.Frame pt fe
-open import Locales.SmallBasis pt fe sr
-open import Locales.Spectrality.SpectralLocale pt fe
-open import Locales.Spectrality.SpectralMap pt fe
-open import Locales.Sierpinski 𝓤 pe pt fe
-open import Locales.Stone pt fe sr
--- open import Locales.PatchProperties pt fe sr
 open import Locales.Compactness pt fe
 open import Slice.Family
-open import UF.DiscreteAndSeparated hiding (𝟚-is-set)
 open import UF.Logic
 open import UF.Powerset
-open import UF.Sets
 open import UF.SubtypeClassifier
 
 open AllCombinators pt fe renaming (_∧_ to _∧ₚ_; _∨_ to _∨ₚ_)

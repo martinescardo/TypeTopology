@@ -12,11 +12,9 @@ will be broken down into smaller modules.
 
 {-# OPTIONS --safe --without-K #-}
 
-open import UF.Base
 open import UF.Sets
 open import UF.Subsingletons
 open import UF.Subsingletons-Properties
-open import UF.Subsingletons-FunExt
 open import UF.PropTrunc
 open import UF.FunExt
 open import MLTT.Spartan

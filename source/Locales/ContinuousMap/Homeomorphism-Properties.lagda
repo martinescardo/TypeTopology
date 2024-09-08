@@ -11,7 +11,6 @@ Some properties of locale homeomorphisms.
 {-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan hiding (𝟚; ₀; ₁)
-open import UF.Base
 open import UF.FunExt
 open import UF.PropTrunc
 open import UF.Size
@@ -32,18 +31,11 @@ private
  pe : Prop-Ext
  pe {𝓤} = univalence-gives-propext (ua 𝓤)
 
-open import Locales.ContinuousMap.Definition pt fe
 open import Locales.ContinuousMap.FrameIsomorphism-Definition pt fe
 open import Locales.ContinuousMap.Homeomorphism-Definition pt fe
 open import Locales.Frame pt fe
 open import Locales.SIP.FrameSIP ua pt sr
-open import Slice.Family
-open import UF.Equiv
-open import UF.Hedberg
 open import UF.Logic
-open import UF.Sets
-open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
 open import UF.SubtypeClassifier
 
 open AllCombinators pt fe

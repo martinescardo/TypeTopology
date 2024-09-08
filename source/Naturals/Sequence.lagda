@@ -9,7 +9,6 @@ open import UF.FunExt
 module Naturals.Sequence (fe : FunExt) where
 
 open import MLTT.Spartan hiding (_+_)
-open import UF.Base
 open import UF.Retracts
 open import Naturals.Addition
 

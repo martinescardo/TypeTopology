@@ -13,7 +13,6 @@ open import MLTT.Spartan renaming (_+_ to _∔_)
 open import Naturals.Addition
 open import Naturals.Properties
 
-open import UF.Base
 
 module Naturals.Multiplication where
 

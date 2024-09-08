@@ -15,10 +15,8 @@ Factored out from the `Locales.Frame` module into this module on 2024-04-10.
 {-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan hiding (𝟚; ₀; ₁)
-open import UF.Base
 open import UF.FunExt
 open import UF.PropTrunc
-open import MLTT.List hiding ([_])
 
 module Locales.ContinuousMap.FrameHomomorphism-Definition
         (pt : propositional-truncations-exist)
@@ -28,11 +26,8 @@ module Locales.ContinuousMap.FrameHomomorphism-Definition
 open import Locales.Frame pt fe
 open import Slice.Family
 open import UF.Equiv
-open import UF.Hedberg
 open import UF.Logic
 open import UF.Sets
-open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
 open import UF.SubtypeClassifier
 
 open AllCombinators pt fe
