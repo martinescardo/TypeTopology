@@ -13,7 +13,6 @@ module Lifting.MonadVariation where
 
 open import UF.Subsingletons
 open import UF.Embeddings
-open import UF.Equiv
 open import UF.FunExt
 
 open import Lifting.Construction
