@@ -54,7 +54,6 @@ open import UF.Size
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import W.Type
-open import W.Properties (𝓤 ̇ ) id
 
 \end{code}
 

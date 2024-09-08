@@ -5,7 +5,6 @@ Alice Laroche , 26th September 2023
 {-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan
-open import MLTT.NaturalNumbers
 open import UF.Base
 open import UF.DiscreteAndSeparated
 open import UF.Embeddings
