@@ -15,10 +15,7 @@ module EffectfulForcing.MFPSAndVariations.Internal where
 
 open import MLTT.Spartan hiding (rec ; _^_) renaming (⋆ to 〈〉)
 open import MLTT.Fin
-open import UF.Base
 open import EffectfulForcing.MFPSAndVariations.Combinators
-open import EffectfulForcing.MFPSAndVariations.Continuity
-open import EffectfulForcing.MFPSAndVariations.Dialogue
 open import EffectfulForcing.MFPSAndVariations.SystemT
 open import EffectfulForcing.MFPSAndVariations.Church
 

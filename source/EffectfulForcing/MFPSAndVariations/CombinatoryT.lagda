@@ -10,7 +10,6 @@ semantics.
 module EffectfulForcing.MFPSAndVariations.CombinatoryT where
 
 open import MLTT.Spartan
-open import MLTT.Athenian
 open import EffectfulForcing.MFPSAndVariations.Continuity
 open import EffectfulForcing.MFPSAndVariations.Combinators
 open import UF.Base

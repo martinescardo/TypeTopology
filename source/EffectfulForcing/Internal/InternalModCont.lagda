@@ -14,12 +14,10 @@ open import UF.FunExt
 module EffectfulForcing.Internal.InternalModCont (fe : Fun-Ext) where
 
 open import MLTT.Spartan hiding (rec; _^_)
-open import MLTT.List
 open import Naturals.Order using (max)
 open import EffectfulForcing.Internal.Internal
 open import EffectfulForcing.MFPSAndVariations.Church
 open import EffectfulForcing.Internal.SystemT
-open import EffectfulForcing.MFPSAndVariations.Combinators
 open import EffectfulForcing.MFPSAndVariations.Dialogue
  using (eloquent; D; dialogue; eloquent-functions-are-continuous;
         dialogue-continuity; generic)
@@ -31,7 +29,6 @@ open import EffectfulForcing.Internal.Correctness
         dialogue-tree-agreement; ⌜dialogue⌝)
 open import EffectfulForcing.Internal.External
  using (eloquence-theorem; dialogue-tree; ⟪⟫; B⟦_⟧; B⟦_⟧₀)
-open import EffectfulForcing.Internal.Subst
 open import EffectfulForcing.Internal.ExtensionalEquality
 open import EffectfulForcing.MFPSAndVariations.SystemT
  using (type; ι; _⇒_;〖_〗)
