@@ -18,14 +18,10 @@ The Haskell code is generated in TypeTopology/source/MAlonzo.
 
 module Games.Main where
 
-open import MLTT.Athenian
-open import MLTT.Spartan
 open import Unsafe.Haskell
 
 
 {-
-open import Games.TicTacToe0
-open import Fin.Type renaming (Fin to Fin')
 
 Fin-to-ℕ : {n : ℕ} → Fin' n → ℕ
 Fin-to-ℕ {succ n} (inl x) = Fin-to-ℕ x

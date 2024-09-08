@@ -63,17 +63,13 @@ there.
 
 \begin{code}
 
-open import Games.TypeTrees using ()
 open import MLTT.Spartan
 open import UF.Base
 open import UF.Equiv
 open import UF.EquivalenceExamples
-open import UF.FunExt
 open import UF.PropIndexedPiSigma
 open import UF.Subsingletons
-open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import UF.UA-FunExt
 open import NotionsOfDecidability.Decidable
 \end{code}
 
@@ -710,7 +706,6 @@ modification needed to use ℍ instead:
 
 module illustration (R : Type) where
 
- open import Games.FiniteHistoryDependent using ()
  open import Games.K
 
  open K-definitions R
@@ -763,7 +758,6 @@ the function Ord-to-𝔸 below.
 
 \begin{code}
 
-open import Ordinals.CumulativeHierarchy using ()
 open import Ordinals.Type
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.Underlying
