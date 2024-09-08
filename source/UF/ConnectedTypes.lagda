@@ -13,7 +13,6 @@ open import UF.PropTrunc
 
 module UF.ConnectedTypes
         (fe : Fun-Ext)
-        (pt : propositional-truncations-exist)
        where
                           
 open import MLTT.Spartan
@@ -22,13 +21,10 @@ open import Naturals.Order
 open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.H-Levels fe
-open import UF.ImageAndSurjection pt
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.Truncations fe
 open import UF.Univalence
-
-open propositional-truncations-exist pt
 
 \end{code}
 
@@ -39,9 +35,14 @@ In terms of our H-level convetion it will mean 2-connectedness.
 
 \begin{code}
 
-module k-connectedness (te : H-level-truncations-exist) where
+module connectedness (te : H-level-truncations-exist) where
 
  open H-level-truncations-exist te
+
+ pt = prop-trunc-follows-from-gen-trunc te
+
+ open propositional-truncations-exist pt
+ open import UF.ImageAndSurjection pt
 
  _is_connected : 𝓤 ̇ → ℕ → 𝓤 ̇
  X is k connected = is-contr (∥ X ∥[ k ])

@@ -15,7 +15,6 @@ globally as many important properties hold in the absence of univalence.
 {-# OPTIONS --safe --without-K #-}
 
 open import UF.FunExt
-open import UF.PropTrunc
 
 module UF.Truncations (fe : Fun-Ext)
                        where
@@ -25,6 +24,7 @@ open import MLTT.Spartan
 open import UF.Base
 open import UF.Equiv
 open import UF.H-Levels fe
+open import UF.PropTrunc
 open import UF.Sets
 open import UF.Subsingletons
 open import UF.Univalence
@@ -147,6 +147,23 @@ groupoid).
  two-trunc-is-set : {X : 𝓤 ̇ } → is-set (∥ X ∥[ 2 ])
  two-trunc-is-set {𝓤} {X} {x} {y} =
   is-prop'-implies-is-prop (∥∥ₙ-hlevel x y)
+
+\end{code}
+
+We show that the existence of propositional truncation follows from the existence
+of general truncations. Notice this implication manifests as a function between
+record types.
+
+\begin{code}
+
+ prop-trunc-follows-from-gen-trunc : H-level-truncations-exist
+                                   → propositional-truncations-exist
+ prop-trunc-follows-from-gen-trunc te = record
+  { ∥_∥        = ∥_∥[ 1 ]
+  ; ∥∥-is-prop = is-prop'-implies-is-prop ∥∥ₙ-hlevel
+  ; ∣_∣        = ∣_∣[ 1 ]
+  ; ∥∥-rec     = λ - → ∥∥ₙ-rec (is-prop-implies-is-prop' -)
+  }
 
 \end{code}
 
