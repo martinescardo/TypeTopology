@@ -11,7 +11,6 @@ open import Integers.Type
 open import Integers.Exponentiation
 open import Integers.Multiplication
 open import Integers.Order
-open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
 open import Notation.Order
 open import UF.Base
 
