@@ -9,7 +9,6 @@ open import Integers.Addition
 open import Integers.Type
 open import Integers.Multiplication
 open import Integers.Negation
-open import Naturals.Addition renaming (_+_ to _ℕ+_)
 open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
 open import Naturals.Parity
 open import Naturals.Properties
