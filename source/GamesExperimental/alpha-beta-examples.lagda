@@ -45,8 +45,6 @@ We now define standard minimax games.
 
 module GamesExperimental.alpha-beta-examples where
 
-open import GamesExperimental.J
-open import GamesExperimental.K
 open import MLTT.Athenian
 open import MLTT.Fin
 open import Naturals.Order
@@ -96,7 +94,6 @@ module example-from-wikipedia where
 
  module _ where
 
-  open import Naturals.Order
   open minimax
 
   wikipedia-G : Game ℕ
@@ -142,7 +139,6 @@ module example-from-wikipedia' where
 
 module example-from-wikipedia' where
 
- open import GamesExperimental.alpha-beta {?} {?} ? ? ?
 
  wikipedia-G⋆ : Game (ℕ × ℕ → ℕ × Path wikipedia-tree)
  wikipedia-G⋆ = G⋆

@@ -23,7 +23,6 @@ open import UF.DiscreteAndSeparated
 𝟛 : 𝓤₀ ̇
 𝟛 = Fin 3
 
-open import GamesExperimental.TypeTrees {𝓤₀}
 open import GamesExperimental.FiniteHistoryDependent {𝓤₀} {𝓤₀} 𝟛
 open import GamesExperimental.Constructor {𝓤₀} {𝓤₀} 𝟛
 open import GamesExperimental.J
