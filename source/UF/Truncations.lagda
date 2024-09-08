@@ -150,23 +150,6 @@ groupoid).
 
 \end{code}
 
-We show that the existence of propositional truncation follows from the existence
-of general truncations. Notice this implication manifests as a function between
-record types.
-
-\begin{code}
-
- prop-trunc-follows-from-gen-trunc : H-level-truncations-exist
-                                   → propositional-truncations-exist
- prop-trunc-follows-from-gen-trunc te = record
-  { ∥_∥        = ∥_∥[ 1 ]
-  ; ∥∥-is-prop = is-prop'-implies-is-prop ∥∥ₙ-hlevel
-  ; ∣_∣        = ∣_∣[ 1 ]
-  ; ∥∥-rec     = λ - → ∥∥ₙ-rec (is-prop-implies-is-prop' -)
-  }
-
-\end{code}
-
 We demonstrate the equivalence of one-truncation and propositional truncation:
  ∥ X ∥₁ ≃ ∥ X ∥
 
@@ -441,5 +424,24 @@ for details see: https://unimath.github.io/agda-unimath/foundation.truncations.
                      → ∥ x ＝ x' ∥[ n ]
                      → (∣ x ∣[ succ n ] ＝ ∣ x' ∣[ succ n ])
  forth-trunc-id-char ua = ⌜ eliminated-trunc-identity-char ua ⌝
+
+\end{code}
+
+We show that the existence of propositional truncation follows from the existence
+of general truncations. Notice this implication manifests as a function between
+record types.
+
+\begin{code}
+
+H-level-truncations-give-propositional-truncations : H-level-truncations-exist
+                                                   → propositional-truncations-exist
+H-level-truncations-give-propositional-truncations te = record
+ { ∥_∥        = ∥_∥[ 1 ]
+ ; ∥∥-is-prop = is-prop'-implies-is-prop ∥∥ₙ-hlevel
+ ; ∣_∣        = ∣_∣[ 1 ]
+ ; ∥∥-rec     = λ - → ∥∥ₙ-rec (is-prop-implies-is-prop' -)
+ }
+ where
+  open H-level-truncations-exist te
 
 \end{code}
