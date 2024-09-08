@@ -20,7 +20,6 @@ open import Naturals.Order
 open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.H-Levels fe
-
 open import UF.PropTrunc 
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
@@ -30,9 +29,8 @@ open import UF.Univalence
 \end{code}
 
 We now define the notion of k-connectedness for types and functions with respect
-to H-levels. TODO: show that connectedness as defined elsewhere is a
-special case of k-connectedness. Connectedness typically means set connectedness.
-In terms of our H-level convetion it will mean 2-connectedness.
+to H-levels. TODO: show that connectedness as defined elsewhere in the library is
+a special case of k-connectedness. Connectedness typically means set connectedness, by our convention it will mean 2-connectedness.
 
 \begin{code}
 
@@ -141,8 +139,8 @@ useful.
 
 \end{code}
 
-We can characterize connected types in terms of inhabitedness and connectedness
-of the identity type at the level below. We will assume univalence when necessary.
+We characterize connected types in terms of inhabitedness and connectedness of
+the identity type at one level below. We will assume univalence only when necessary.
 
 \begin{code}
 
