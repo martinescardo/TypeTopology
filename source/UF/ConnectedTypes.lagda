@@ -30,7 +30,8 @@ open import UF.Univalence
 
 We now define the notion of k-connectedness for types and functions with respect
 to H-levels. TODO: show that connectedness as defined elsewhere in the library is
-a special case of k-connectedness. Connectedness typically means set connectedness, by our convention it will mean 2-connectedness.
+a special case of k-connectedness. Connectedness typically means set connectedness,
+by our convention it will mean 2-connectedness.
 
 \begin{code}
 
