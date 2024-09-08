@@ -11,8 +11,6 @@ open import MLTT.Spartan hiding (𝟚)
 open import UF.Base
 open import UF.FunExt
 open import UF.PropTrunc
-open import UF.UA-FunExt
-open import UF.Univalence
 
 module Locales.CompactRegular
         (pt : propositional-truncations-exist)

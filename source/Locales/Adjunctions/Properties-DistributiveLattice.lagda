@@ -14,7 +14,6 @@ frames.
 {-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
-open import UF.Base
 open import UF.FunExt
 open import UF.PropTrunc
 
@@ -24,7 +23,6 @@ module Locales.Adjunctions.Properties-DistributiveLattice
        where
 
 open import Locales.Adjunctions.Properties pt fe
-open import Locales.ContinuousMap.FrameHomomorphism-Properties pt fe
 open import Locales.DistributiveLattice.Definition fe pt
 open import Locales.Frame pt fe
 open import Locales.GaloisConnection pt fe

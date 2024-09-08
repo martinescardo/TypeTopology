@@ -21,16 +21,13 @@ module Locales.DiscreteLocale.Two
         (pt : propositional-truncations-exist)
        where
 
-open import Locales.DistributiveLattice.Definition fe pt
 open import Locales.DiscreteLocale.Definition fe pe pt
 open import Locales.Frame pt fe
 open import MLTT.Spartan hiding (𝟚)
-open import Slice.Family
 open import UF.Logic
 open import UF.Sets
 open import UF.DiscreteAndSeparated hiding (𝟚-is-set)
 open import UF.Powerset
-open import UF.SubtypeClassifier
 
 open AllCombinators pt fe renaming (_∧_ to _∧ₚ_; _∨_ to _∨ₚ_)
 open PropositionalSubsetInclusionNotation fe

@@ -26,7 +26,6 @@ open import Locales.DistributiveLattice.Definition fe pt
 open import Locales.DistributiveLattice.Ideal pt fe pe
 open import Locales.DistributiveLattice.Properties fe pt
 open import Locales.Frame pt fe hiding (is-directed)
-open import MLTT.Fin hiding (𝟎; 𝟏)
 open import MLTT.List hiding ([_])
 open import MLTT.Spartan
 open import Slice.Family

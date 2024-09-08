@@ -7,20 +7,14 @@ definition of dcpo from the `DomainTheory` development due to Tom de Jong.
 
 {-# OPTIONS --safe --without-K --lossy-unification #-}
 
-open import MLTT.List hiding ([_])
-open import MLTT.Pi
 open import MLTT.Spartan
 open import Slice.Family
-open import UF.Base
-open import UF.EquivalenceExamples
 open import UF.FunExt
 open import UF.Logic
 open import UF.PropTrunc
 open import UF.SubtypeClassifier
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import UF.UA-FunExt
-open import UF.Univalence
 
 \end{code}
 
@@ -58,7 +52,6 @@ by
 
 module DefnOfScottLocale (𝓓 : DCPO {𝓤} {𝓣}) (𝓦 : Universe) (pe : propext 𝓦) where
 
- open import DomainTheory.Lifting.LiftingSet pt fe 𝓦 pe
  open DefnOfScottTopology 𝓓 𝓦
 
 \end{code}

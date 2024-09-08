@@ -2,16 +2,9 @@
 
 {-# OPTIONS --safe --without-K --lossy-unification #-}
 
-open import MLTT.List hiding ([_])
 open import MLTT.Spartan hiding (𝟚)
-open import Slice.Family
-open import UF.Base
-open import UF.Embeddings
-open import UF.Equiv renaming (_■ to _𝔔𝔈𝔇)
 open import UF.FunExt
 open import UF.PropTrunc
-open import UF.PropTrunc
-open import UF.Retracts
 open import UF.Size
 open import UF.SubtypeClassifier
 
@@ -20,7 +13,6 @@ module Locales.HeytingComplementation (pt : propositional-truncations-exist)
                                       (sr : Set-Replacement pt) where
 
 open import Locales.Frame              pt fe
-open import Locales.Compactness        pt fe
 open import Locales.HeytingImplication pt fe
 open import Locales.Complements        pt fe
 open import Locales.Clopen             pt fe sr

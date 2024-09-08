@@ -13,7 +13,6 @@ Factored out from the `Locales.Frame` module on 2024-04-10.
 
 {-# OPTIONS --safe --without-K #-}
 
-open import MLTT.List hiding ([_])
 open import MLTT.Spartan hiding (𝟚; ₀; ₁)
 open import UF.Base
 open import UF.FunExt
@@ -27,11 +26,8 @@ module Locales.ContinuousMap.FrameHomomorphism-Properties
 open import Locales.ContinuousMap.FrameHomomorphism-Definition pt fe
 open import Locales.Frame pt fe
 open import Slice.Family
-open import UF.Hedberg
 open import UF.Logic
-open import UF.Sets
 open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
 open import UF.SubtypeClassifier
 
 open AllCombinators pt fe

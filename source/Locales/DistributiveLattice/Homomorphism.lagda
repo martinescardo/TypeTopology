@@ -14,7 +14,6 @@ homomorphism.
 
 open import UF.FunExt
 open import UF.PropTrunc
-open import UF.Sets
 
 module Locales.DistributiveLattice.Homomorphism
         (fe : Fun-Ext)
@@ -24,9 +23,7 @@ module Locales.DistributiveLattice.Homomorphism
 open import Locales.DistributiveLattice.Definition fe pt
 open import Locales.Frame pt fe
 open import MLTT.Spartan
-open import UF.Base
 open import UF.Logic
-open import UF.Powerset-MultiUniverse
 open import UF.SubtypeClassifier
 
 open AllCombinators pt fe renaming (_∧_ to _∧ₚ_)
