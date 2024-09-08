@@ -12,10 +12,8 @@ module InjectiveTypes.OverSmallMaps (fe : FunExt) where
 
 open import InjectiveTypes.Blackboard fe
 open import MLTT.Spartan
-open import UF.Base
 open import UF.Embeddings
 open import UF.Equiv
-open import UF.EquivalenceExamples
 open import UF.Size
 open import UF.Subsingletons
 

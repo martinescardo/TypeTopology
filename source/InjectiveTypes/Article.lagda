@@ -219,7 +219,6 @@ open import UF.Base
 open import UF.Embeddings
 open import UF.Equiv
 open import UF.Equiv-FunExt
-open import UF.EquivalenceExamples
 open import UF.FunExt
 open import UF.IdEmbedding
 open import UF.PairFun

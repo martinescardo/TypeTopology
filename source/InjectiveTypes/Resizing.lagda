@@ -69,7 +69,6 @@ module InjectiveTypes.Resizing
 open PropositionalTruncation pt
 
 open import MLTT.Spartan
-open import UF.DiscreteAndSeparated
 open import UF.FunExt
 open import UF.NotNotStablePropositions
 open import UF.Retracts
