@@ -38,8 +38,10 @@ In terms of our H-level convetion it will mean 2-connectedness.
 
 module connectedness (te : H-level-truncations-exist) where
 
- pt : propositional-truncations-exist
- pt = H-level-truncations-give-propositional-truncations te
+ private 
+  pt : propositional-truncations-exist
+  pt = H-level-truncations-give-propositional-truncations te
+
  open H-level-truncations-exist te
  open propositional-truncations-exist pt
  open import UF.ImageAndSurjection pt
