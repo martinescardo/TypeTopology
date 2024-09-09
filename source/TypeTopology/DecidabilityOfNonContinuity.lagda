@@ -960,6 +960,16 @@ continuous-extension-gives-eventual-constancy g (f , e) (m , a)
               f (ι m)             ＝⟨ e m ⟩
               g m                 ∎)
 
+\end{code}
+
+Is there a nice necessary and sufficient condition for the
+extendability of any such given g?
+
+A sufficient condition is that either LPO holds of g is eventually
+constant.
+
+\begin{code}
+
 ℕ∞-extension-existence-sufficient-condition
  : (g : ℕ → ℕ)
  → LPO + eventually-constant g
@@ -968,6 +978,13 @@ continuous-extension-gives-eventual-constancy g (f , e) (m , a)
  = pr₁ (LPO-gives-ℕ∞-extension lpo g 0)
 ℕ∞-extension-existence-sufficient-condition g (inr ec)
  = pr₁ (eventual-constancy-gives-continuous-extension g ec)
+
+\end{code}
+
+Its contrapositive says that if g doesn't have an extension, then
+neither LPO holds nor g is eventually constant.
+
+\begin{code}
 
 ℕ∞-extension-nonexistence-gives-¬LPO-and-not-eventual-constancy
  : (g : ℕ → ℕ)
@@ -978,6 +995,13 @@ continuous-extension-gives-eventual-constancy g (f , e) (m , a)
  where
   I : ¬ (LPO + eventually-constant g)
   I = contrapositive (ℕ∞-extension-existence-sufficient-condition g) ν
+
+\end{code}
+
+A necessary condition is that WLPO holds or that g is not-not
+eventually constant.
+
+\begin{code}
 
 ℕ∞-extension-existence-necessary-condition
  : (g : ℕ → ℕ)
@@ -994,6 +1018,13 @@ continuous-extension-gives-eventual-constancy g (f , e) (m , a)
   III : WLPO + ¬¬ eventually-constant g
   III = II (the-negation-of-continuity-is-decidable f)
 
+\end{code}
+
+Its contrapositive says that is WLPO fails and g is not eventually
+constant, then there isn't any extension.
+
+\begin{code}
+
 ¬WLPO-gives-that-non-eventually-constant-functions-have-no-extensions
  : (g : ℕ → ℕ)
  → ¬ WLPO
@@ -1005,6 +1036,11 @@ continuous-extension-gives-eventual-constancy g (f , e) (m , a)
     (cases nwlpo (¬¬-intro nec))
 
 \end{code}
+
+Because LPO implies WLPO and A implies ¬¬ A for any mathematical
+statement A, we have that
+
+  (LPO + eventually-constant g) implies (WLPO + ¬¬ eventually-constant g).
 
 TODO. Is there a nice necessary and sufficient condition for the
       explicit existence of an extension, between the respectively
@@ -1018,16 +1054,18 @@ TODO. Is there a nice necessary and sufficient condition for the
 
 \end{code}
 
-Added 9th September 2023.
+Added 9th September 2023. Another necessary condition for the
+explicit existence of an extension.
 
 Notice that, because the condition
 
   (n : ℕ) → g (maxℕ m n) ＝ g m
 
-is not a priori decidable, the type of eventual constancy data doesn't
-in general have split support.
+is not a priori decidable, as this clearly amounts to WLPO if it holds
+for all g, the type of eventual constancy data doesn't in general have
+split support.
 
-However, if g has an extension to ℕ∞, then this condition becomes
+However, if a particular g has an extension to ℕ∞, then this condition becomes
 decidable, and so in this case this type does have split support.
 
 Notice that this doesn't require the eventual constancy of g. It just
@@ -1035,11 +1073,11 @@ requires that g has some (not necessarily continuous) extension.
 
 \begin{code}
 
-technical-decidability-condition
+another-necessary-condition-for-the-existence-of-an-extension
  : (g : ℕ → ℕ)
  → ℕ∞-extension g
  → (m : ℕ) → is-decidable ((n : ℕ) → g (maxℕ m n) ＝ g m)
-technical-decidability-condition g (f , e) m = IV
+another-necessary-condition-for-the-existence-of-an-extension g (f , e) m = IV
  where
   I : is-decidable ((n : ℕ) → f (max (ι m) (ι n)) ＝ f (ι m))
   I = Theorem-8·2'
@@ -1075,6 +1113,13 @@ module eventual-contancy-under-propositional-truncations
  is-eventually-constant : (ℕ → ℕ) → 𝓤₀ ̇
  is-eventually-constant g = ∃ m ꞉ ℕ , ((n : ℕ) → g (maxℕ m n) ＝ g m)
 
+\end{code}
+
+As promised, any extension of g gives that the type of eventual
+constancy data has split support.
+
+\begin{code}
+
  eventual-constancy-for-extendable-functions-has-split-support
   : (g : ℕ → ℕ)
   → ℕ∞-extension g
@@ -1083,6 +1128,17 @@ module eventual-contancy-under-propositional-truncations
  eventual-constancy-for-extendable-functions-has-split-support  g extension
   = exit-truncation
      (λ m → (n : ℕ) → g (maxℕ m n) ＝ g m)
-     (technical-decidability-condition g extension)
+     (another-necessary-condition-for-the-existence-of-an-extension g extension)
+
+\end{code}
+
+At the moment, we don't have anything intelligent to say about the
+following definition that doesn't follow immediately from the above
+development.
+
+\begin{code}
+
+ is-extendable-to-ℕ∞ : (ℕ → ℕ) → 𝓤₀ ̇
+ is-extendable-to-ℕ∞ g = ∃ f ꞉ (ℕ∞ → ℕ) , f extends g
 
 \end{code}
