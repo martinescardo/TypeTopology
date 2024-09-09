@@ -1017,3 +1017,72 @@ TODO. Is there a nice necessary and sufficient condition for the
         LPO + eventually-constant g?
 
 \end{code}
+
+Added 9th September 2023.
+
+Notice that, because the condition
+
+  (n : ℕ) → g (maxℕ m n) ＝ g m
+
+is not a priori decidable, the type of eventual constancy data doesn't
+in general have split support.
+
+However, if g has an extension to ℕ∞, then this condition becomes
+decidable, and so in this case this type does have split support.
+
+Notice that this doesn't require the eventual constancy of g. It just
+requires that g has some (not necessarily continuous) extension.
+
+\begin{code}
+
+technical-decidability-condition
+ : (g : ℕ → ℕ)
+ → ℕ∞-extension g
+ → (m : ℕ) → is-decidable ((n : ℕ) → g (maxℕ m n) ＝ g m)
+technical-decidability-condition g (f , e) m = IV
+ where
+  I : is-decidable ((n : ℕ) → f (max (ι m) (ι n)) ＝ f (ι m))
+  I = Theorem-8·2'
+       (λ x → f (max (ι m) x) ＝ f (ι m))
+       (λ x → ℕ-is-discrete (f (max (ι m) x)) (f (ι m)))
+
+  II : ((n : ℕ) → f (max (ι m) (ι n)) ＝ f (ι m))
+     → (n : ℕ) → g (maxℕ m n) ＝ g m
+  II a n = g (maxℕ m n)        ＝⟨ e (maxℕ m n) ⁻¹ ⟩
+           f (ι (maxℕ m n))    ＝⟨ ap f (max-fin fe m n) ⟩
+           f (max (ι m) (ι n)) ＝⟨ a n ⟩
+           f (ι m)             ＝⟨ e m ⟩
+           g m                 ∎
+
+  III : ((n : ℕ) → g (maxℕ m n) ＝ g m)
+      → (n : ℕ) → f (max (ι m) (ι n)) ＝ f (ι m)
+  III b n = f (max (ι m) (ι n)) ＝⟨ ap f ((max-fin fe m n)⁻¹) ⟩
+            f (ι (maxℕ m n)) ＝⟨ e (maxℕ m n) ⟩
+            g (maxℕ m n) ＝⟨ b n ⟩
+            g m ＝⟨ e m ⁻¹ ⟩
+            f (ι m) ∎
+
+  IV : is-decidable ((n : ℕ) → g (maxℕ m n) ＝ g m)
+  IV = map-decidable II III I
+
+module eventual-contancy-under-propositional-truncations
+        (pt : propositional-truncations-exist)
+       where
+
+ open PropositionalTruncation pt
+ open exit-truncations pt
+
+ is-eventually-constant : (ℕ → ℕ) → 𝓤₀ ̇
+ is-eventually-constant g = ∃ m ꞉ ℕ , ((n : ℕ) → g (maxℕ m n) ＝ g m)
+
+ eventual-constancy-for-extendable-functions-has-split-support
+  : (g : ℕ → ℕ)
+  → ℕ∞-extension g
+  → is-eventually-constant g
+  → eventual-constancy-data g
+ eventual-constancy-for-extendable-functions-has-split-support  g extension
+  = exit-truncation
+     (λ m → (n : ℕ) → g (maxℕ m n) ＝ g m)
+     (technical-decidability-condition g extension)
+
+\end{code}
