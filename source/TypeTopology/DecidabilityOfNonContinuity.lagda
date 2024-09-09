@@ -888,26 +888,35 @@ open import Naturals.Order renaming (max to maxℕ ; max-idemp to maxℕ-idemp)
 eventually-constant : (ℕ → ℕ) → 𝓤₀ ̇
 eventually-constant g = Σ m ꞉ ℕ , ((n : ℕ) → g (maxℕ m n) ＝ g m)
 
+eventual-constancy-data = eventually-constant
+
 eventual-constancy-gives-continuous-extension
  : (g : ℕ → ℕ)
  → eventually-constant g
- → ℕ∞-extension g
+ → Σ (f , _) ꞉ ℕ∞-extension g , continuous f
 eventual-constancy-gives-continuous-extension g
  = uncurry (h g)
  where
-  h : (g : ℕ → ℕ) → (m : ℕ) → ((n : ℕ) → g (maxℕ m n) ＝ g m) → ℕ∞-extension g
-  h g 0        a = (λ _ → g 0) ,
-                   (λ n →  g 0          ＝⟨ (a n)⁻¹ ⟩
-                           g (maxℕ 0 n) ＝⟨ refl ⟩
-                           g n          ∎)
+  h : (g : ℕ → ℕ)
+      (m : ℕ)
+    → ((n : ℕ) → g (maxℕ m n) ＝ g m)
+    → Σ (f , _) ꞉ ℕ∞-extension g , continuous f
+  h g 0        a = ((λ _ → g 0) ,
+                    (λ n →  g 0          ＝⟨ (a n)⁻¹ ⟩
+                            g (maxℕ 0 n) ＝⟨ refl ⟩
+                            g n          ∎)) ,
+                   0 ,
+                   (λ n → refl)
 
   h g (succ m) a = I IH
    where
-    IH : ℕ∞-extension (g ∘ succ)
+    IH : Σ (f , _) ꞉ ℕ∞-extension (g ∘ succ) , continuous f
     IH = h (g ∘ succ) m (a ∘ succ)
 
-    I : ℕ∞-extension (g ∘ succ) → ℕ∞-extension g
-    I (f , e) = f' , e'
+    I : (Σ (f , _) ꞉ ℕ∞-extension (g ∘ succ) , continuous f)
+      → Σ (f' , _) ꞉ ℕ∞-extension g , continuous f'
+    I ((f , e) , (m , m-property)) = (f' , e') ,
+                                     (succ m , succ-m-property)
      where
       f' : ℕ∞ → ℕ
       f' = ℕ∞-cases fe (g 0) f
@@ -920,6 +929,22 @@ eventual-constancy-gives-continuous-extension g
                     f' (Succ (ι n)) ＝⟨ ℕ∞-cases-Succ fe (g 0) f (ι n) ⟩
                     f (ι n)         ＝⟨ e n ⟩
                     g (succ n)      ∎
+
+      succ-m-property : (n : ℕ) → f' (max (ι (succ m)) (ι n)) ＝ f' ∞
+      succ-m-property 0        = m-property 0
+      succ-m-property (succ n) =
+       f' (max (ι (succ m)) (ι (succ n))) ＝⟨ II ⟩
+       f' (Succ (max (ι m) (ι n)))        ＝⟨ III ⟩
+       f (max (ι m) (ι n))                ＝⟨ IV ⟩
+       f ∞                                ＝⟨ V ⟩
+       f' (Succ ∞)                        ＝⟨ VI ⟩
+       f' ∞ ∎
+        where
+         II  = ap f' ((max-Succ fe (ι m) (ι n))⁻¹)
+         III = ℕ∞-cases-Succ fe (g 0) f (max (ι m) (ι n))
+         IV  = m-property n
+         V   = (ℕ∞-cases-Succ fe (g 0) f ∞)⁻¹
+         VI  = ap f' (Succ-∞-is-∞ fe)
 
 continuous-extension-gives-eventual-constancy
  : (g : ℕ → ℕ)
@@ -942,7 +967,7 @@ continuous-extension-gives-eventual-constancy g (f , e) (m , a)
 ℕ∞-extension-existence-sufficient-condition g (inl lpo)
  = pr₁ (LPO-gives-ℕ∞-extension lpo g 0)
 ℕ∞-extension-existence-sufficient-condition g (inr ec)
- = eventual-constancy-gives-continuous-extension g ec
+ = pr₁ (eventual-constancy-gives-continuous-extension g ec)
 
 ℕ∞-extension-nonexistence-gives-¬LPO-and-not-eventual-constancy
  : (g : ℕ → ℕ)
@@ -990,3 +1015,5 @@ TODO. Is there a nice necessary and sufficient condition for the
       and
 
         LPO + eventually-constant g?
+
+\end{code}
