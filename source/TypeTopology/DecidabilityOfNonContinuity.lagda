@@ -740,7 +740,7 @@ _extends_ : (ℕ∞ → ℕ) → (ℕ → ℕ) → 𝓤₀ ̇
 f extends g = f ∘ ι ∼ g
 
 ℕ∞-extension : (ℕ → ℕ) → 𝓤₀ ̇
-ℕ∞-extension g = Σ f ꞉ (ℕ∞ → ℕ) , (f extends g)
+ℕ∞-extension g = Σ f ꞉ (ℕ∞ → ℕ) , f extends g
 
 \end{code}
 
@@ -951,11 +951,11 @@ continuous-extension-gives-eventual-constancy
    ((f , _) : ℕ∞-extension g)
  → continuous f
  → eventually-constant g
-continuous-extension-gives-eventual-constancy g (f , e) (m , a)
+continuous-extension-gives-eventual-constancy g (f , e) (m , m-property)
  = m , (λ n → g (maxℕ m n)        ＝⟨ (e (maxℕ m n))⁻¹ ⟩
               f (ι (maxℕ m n))    ＝⟨ ap f (max-fin fe m n) ⟩
-              f (max (ι m) (ι n)) ＝⟨ a n ⟩
-              f ∞                 ＝⟨ (a m)⁻¹ ⟩
+              f (max (ι m) (ι n)) ＝⟨ m-property n ⟩
+              f ∞                 ＝⟨ (m-property m)⁻¹ ⟩
               f (max (ι m) (ι m)) ＝⟨ ap f (max-idemp fe (ι m)) ⟩
               f (ι m)             ＝⟨ e m ⟩
               g m                 ∎)
@@ -1003,11 +1003,11 @@ eventually constant.
 
 \begin{code}
 
-ℕ∞-extension-existence-necessary-condition
+ℕ∞-extension-existence-first-necessary-condition
  : (g : ℕ → ℕ)
  → ℕ∞-extension g
  → WLPO + ¬¬ eventually-constant g
-ℕ∞-extension-existence-necessary-condition
+ℕ∞-extension-existence-first-necessary-condition
  g (f , e) = III
  where
   II : is-decidable (¬ continuous f) → WLPO + ¬¬ eventually-constant g
@@ -1020,7 +1020,7 @@ eventually constant.
 
 \end{code}
 
-Its contrapositive says that is WLPO fails and g is not eventually
+Its contrapositive says that if WLPO fails and g is not eventually
 constant, then there isn't any extension.
 
 \begin{code}
@@ -1032,7 +1032,7 @@ constant, then there isn't any extension.
  → ¬ ℕ∞-extension g
 ¬WLPO-gives-that-non-eventually-constant-functions-have-no-extensions g nwlpo nec
  = contrapositive
-    (ℕ∞-extension-existence-necessary-condition g)
+    (ℕ∞-extension-existence-first-necessary-condition g)
     (cases nwlpo (¬¬-intro nec))
 
 \end{code}
@@ -1062,8 +1062,8 @@ Notice that, because the condition
   (n : ℕ) → g (maxℕ m n) ＝ g m
 
 is not a priori decidable, as this clearly amounts to WLPO if it holds
-for all g, the type of eventual constancy data doesn't in general have
-split support.
+for all m and g (TODO), the type of eventual constancy data doesn't in
+general have split support.
 
 However, if a particular g has an extension to ℕ∞, then this condition becomes
 decidable, and so in this case this type does have split support.
@@ -1073,11 +1073,11 @@ requires that g has some (not necessarily continuous) extension.
 
 \begin{code}
 
-another-necessary-condition-for-the-existence-of-an-extension
+second-necessary-condition-for-the-existence-of-an-extension
  : (g : ℕ → ℕ)
  → ℕ∞-extension g
  → (m : ℕ) → is-decidable ((n : ℕ) → g (maxℕ m n) ＝ g m)
-another-necessary-condition-for-the-existence-of-an-extension g (f , e) m = IV
+second-necessary-condition-for-the-existence-of-an-extension g (f , e) m = IV
  where
   I : is-decidable ((n : ℕ) → f (max (ι m) (ι n)) ＝ f (ι m))
   I = Theorem-8·2'
@@ -1128,7 +1128,7 @@ constancy data has split support.
  eventual-constancy-for-extendable-functions-has-split-support  g extension
   = exit-truncation
      (λ m → (n : ℕ) → g (maxℕ m n) ＝ g m)
-     (another-necessary-condition-for-the-existence-of-an-extension g extension)
+     (second-necessary-condition-for-the-existence-of-an-extension g extension)
 
 \end{code}
 
