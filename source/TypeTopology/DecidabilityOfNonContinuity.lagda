@@ -936,13 +936,13 @@ continuous-extension-gives-eventual-constancy g (f , h) (m , a)
               f (ι m)             ＝⟨ h m ⟩
               g m                 ∎)
 
-ℕ∞-extension-existence-criterion
+ℕ∞-extension-existence-sufficient-condition
  : (g : ℕ → ℕ)
  → LPO + eventually-constant g
  → ℕ∞-extension g
-ℕ∞-extension-existence-criterion g (inl lpo)
+ℕ∞-extension-existence-sufficient-condition g (inl lpo)
  = pr₁ (LPO-gives-ℕ∞-extension lpo g 0)
-ℕ∞-extension-existence-criterion g (inr ec)
+ℕ∞-extension-existence-sufficient-condition g (inr ec)
  = eventual-constancy-gives-continuous-extension g ec
 
 ℕ∞-extension-nonexistence-gives-¬LPO-and-not-eventual-constancy
@@ -953,13 +953,13 @@ continuous-extension-gives-eventual-constancy g (f , h) (m , a)
  = I ∘ inl , I ∘ inr
  where
   I : ¬ (LPO + eventually-constant g)
-  I = contrapositive (ℕ∞-extension-existence-criterion g) ν
+  I = contrapositive (ℕ∞-extension-existence-sufficient-condition g) ν
 
-ℕ∞-extension-existence-criterion-weak-converse
+ℕ∞-extension-existence-necessary-condition
  : (g : ℕ → ℕ)
  → ℕ∞-extension g
  → WLPO + ¬¬ eventually-constant g
-ℕ∞-extension-existence-criterion-weak-converse
+ℕ∞-extension-existence-necessary-condition
  g (f , h) = III
  where
   II : is-decidable (¬ continuous f) → WLPO + ¬¬ eventually-constant g
@@ -977,7 +977,7 @@ continuous-extension-gives-eventual-constancy g (f , h) (m , a)
  → ¬ ℕ∞-extension g
 ¬WLPO-gives-that-non-eventually-constant-functions-have-no-extensions g nwlpo nec
  = contrapositive
-    (ℕ∞-extension-existence-criterion-weak-converse g)
+    (ℕ∞-extension-existence-necessary-condition g)
     (cases nwlpo (¬¬-intro nec))
 
 \end{code}
