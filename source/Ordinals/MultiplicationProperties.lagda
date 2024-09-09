@@ -232,57 +232,57 @@ useful when working with simulations between products.
 
 We now prove several useful facts about (bounded) simulations between products.
 
-TODO: Continue code review here.
-
 \begin{code}
 
-×ₒ-increasing-on-right : {α β γ : Ordinal 𝓤}
+×ₒ-increasing-on-right : (α β γ : Ordinal 𝓤)
                        → 𝟘ₒ ⊲ α
                        → β ⊲ γ
                        → (α ×ₒ β) ⊲ (α ×ₒ γ)
-×ₒ-increasing-on-right {α = α} {β} {γ} (a , α↓a=0) (c , r) = (a , c) , eq
+×ₒ-increasing-on-right α β γ (a , p) (c , q) = (a , c) , I
  where
-  eq = α ×ₒ β                    ＝⟨ 𝟘ₒ-right-neutral (α ×ₒ β) ⁻¹ ⟩
-       (α ×ₒ β) +ₒ 𝟘ₒ            ＝⟨ ap₂ (λ - ~ → (α ×ₒ -) +ₒ ~) r α↓a=0 ⟩
-       (α ×ₒ (γ ↓ c)) +ₒ (α ↓ a) ＝⟨ ×ₒ-↓ α γ ⁻¹ ⟩
-       (α ×ₒ γ) ↓ (a , c)        ∎
+  I = α ×ₒ β                    ＝⟨ 𝟘ₒ-right-neutral (α ×ₒ β) ⁻¹ ⟩
+      (α ×ₒ β) +ₒ 𝟘ₒ            ＝⟨ ap₂ (λ -₁ -₂ → (α ×ₒ -₁) +ₒ -₂) q p ⟩
+      (α ×ₒ (γ ↓ c)) +ₒ (α ↓ a) ＝⟨ ×ₒ-↓ α γ ⁻¹ ⟩
+      (α ×ₒ γ) ↓ (a , c)        ∎
 
-×ₒ-right-monotone-⊴ : (α : Ordinal 𝓤)(β γ : Ordinal 𝓥)
+×ₒ-right-monotone-⊴ : (α : Ordinal 𝓤) (β γ : Ordinal 𝓥)
                     → β ⊴ γ
                     → (α ×ₒ β) ⊴ (α ×ₒ γ)
-×ₒ-right-monotone-⊴ α β γ (g , sim-g) = f , f-initial-segment , f-order-preserving
+×ₒ-right-monotone-⊴ α β γ (g , sim-g) = f , f-initial-segment ,
+                                            f-order-preserving
  where
    f : ⟨ α ×ₒ β ⟩ → ⟨ α ×ₒ γ ⟩
    f (a , b) = a , g b
 
    f-initial-segment : is-initial-segment (α ×ₒ β) (α ×ₒ γ) f
-   f-initial-segment (a , b) (a' , c') (inl p) = (a' , c) , inl r , ap (a' ,_) q
+   f-initial-segment (a , b) (a' , c') (inl l) = (a' , b') , inl k , ap (a' ,_) q
     where
-     c  = pr₁ (simulations-are-initial-segments _ _ g sim-g b c' p)
-     r = pr₁ (pr₂ (simulations-are-initial-segments _ _ g sim-g b c' p))
-     q = pr₂ (pr₂ (simulations-are-initial-segments _ _ g sim-g b c' p))
-
-   f-initial-segment (a , b) (a' , .(pr₂ (f (a , b)))) (inr (refl , q)) = (a' , b) , (inr (refl , q) , refl)
+     I : Σ b' ꞉ ⟨ β ⟩ , b' ≺⟨ β ⟩ b × (g b' ＝ c')
+     I = simulations-are-initial-segments β γ g sim-g b c' l
+     b' = pr₁ I
+     k = pr₁ (pr₂ I)
+     q = pr₂ (pr₂ I)
+   f-initial-segment (a , b) (a' , c') (inr (refl , q)) =
+    (a' , b) , inr (refl , q) , refl
 
    f-order-preserving : is-order-preserving (α ×ₒ β) (α ×ₒ γ) f
-   f-order-preserving (a , b) (a' , b') (inl p) = inl (simulations-are-order-preserving β γ g sim-g b b' p)
+   f-order-preserving (a , b) (a' , b') (inl p) =
+    inl (simulations-are-order-preserving β γ g sim-g b b' p)
    f-order-preserving (a , b) (a' , b') (inr (refl , q)) = inr (refl , q)
 
-×ₒ-≼-left : (α : Ordinal 𝓤)(β : Ordinal 𝓥)
-          → {a a' : ⟨ α ⟩}
-          → {b : ⟨ β ⟩}
+×ₒ-≼-left : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
+            {a a' : ⟨ α ⟩} {b : ⟨ β ⟩}
           → a ≼⟨ α ⟩ a'
           → (a , b) ≼⟨ α ×ₒ β ⟩ (a' , b)
-×ₒ-≼-left α β {a} {a'} {b} p (a₀ , b₀) (inl r) = inl r
-×ₒ-≼-left α β {a} {a'} {b} p (a₀ , b₀) (inr (eq , r)) = inr (eq , (p a₀ r))
+×ₒ-≼-left α β p (a₀ , b₀) (inl r) = inl r
+×ₒ-≼-left α β p (a₀ , b₀) (inr (eq , r)) = inr (eq , p a₀ r)
 
 \end{code}
 
-To prove that multiplication is left cancellable, we require the
-following technical lemma: if α > 𝟘, then every simulation from α ×ₒ β
-to α ×ₒ γ decomposes as the identity on the first component, and a
-function from β → γ only on the second component (that is, independent
-of the first component).
+To prove that multiplication is left cancellable, we require the following
+technical lemma: if α > 𝟘, then every simulation from α ×ₒ β to α ×ₒ γ
+decomposes as the identity on the first component and a function β → γ on the
+second component, viz. one that is independent of the first component.
 
 \begin{code}
 
