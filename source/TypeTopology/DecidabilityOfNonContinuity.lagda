@@ -885,8 +885,18 @@ Our next question is when the type `ℕ∞-extension g` is pointed.
 
 open import Naturals.Order renaming (max to maxℕ ; max-idemp to maxℕ-idemp)
 
+is-modulus-of-eventual-constancy : (ℕ → ℕ) → ℕ → 𝓤₀ ̇
+is-modulus-of-eventual-constancy g m = ((n : ℕ) → g (maxℕ m n) ＝ g m)
+
+being-modulus-of-eventual-constancy-is-prop
+ : (g : ℕ → ℕ)
+   (m : ℕ)
+ → is-prop (is-modulus-of-eventual-constancy g m)
+being-modulus-of-eventual-constancy-is-prop g m
+ = Π-is-prop fe (λ n → ℕ-is-set)
+
 eventually-constant : (ℕ → ℕ) → 𝓤₀ ̇
-eventually-constant g = Σ m ꞉ ℕ , ((n : ℕ) → g (maxℕ m n) ＝ g m)
+eventually-constant g = Σ m ꞉ ℕ , is-modulus-of-eventual-constancy g m
 
 eventual-constancy-data = eventually-constant
 
@@ -899,7 +909,7 @@ eventual-constancy-gives-continuous-extension g
  where
   h : (g : ℕ → ℕ)
       (m : ℕ)
-    → ((n : ℕ) → g (maxℕ m n) ＝ g m)
+    → is-modulus-of-eventual-constancy g m
     → Σ (f , _) ꞉ ℕ∞-extension g , continuous f
   h g 0        a = ((λ _ → g 0) ,
                     (λ n →  g 0          ＝⟨ (a n)⁻¹ ⟩
@@ -970,13 +980,13 @@ constant.
 
 \begin{code}
 
-ℕ∞-extension-existence-sufficient-condition
+ℕ∞-extension-explicit-existence-sufficient-condition
  : (g : ℕ → ℕ)
  → LPO + eventually-constant g
  → ℕ∞-extension g
-ℕ∞-extension-existence-sufficient-condition g (inl lpo)
+ℕ∞-extension-explicit-existence-sufficient-condition g (inl lpo)
  = pr₁ (LPO-gives-ℕ∞-extension lpo g 0)
-ℕ∞-extension-existence-sufficient-condition g (inr ec)
+ℕ∞-extension-explicit-existence-sufficient-condition g (inr ec)
  = pr₁ (eventual-constancy-gives-continuous-extension g ec)
 
 \end{code}
@@ -994,7 +1004,7 @@ neither LPO holds nor g is eventually constant.
  = I ∘ inl , I ∘ inr
  where
   I : ¬ (LPO + eventually-constant g)
-  I = contrapositive (ℕ∞-extension-existence-sufficient-condition g) ν
+  I = contrapositive (ℕ∞-extension-explicit-existence-sufficient-condition g) ν
 
 \end{code}
 
@@ -1003,11 +1013,11 @@ eventually constant.
 
 \begin{code}
 
-ℕ∞-extension-existence-first-necessary-condition
+ℕ∞-extension-explicit-existence-first-necessary-condition
  : (g : ℕ → ℕ)
  → ℕ∞-extension g
  → WLPO + ¬¬ eventually-constant g
-ℕ∞-extension-existence-first-necessary-condition
+ℕ∞-extension-explicit-existence-first-necessary-condition
  g (f , e) = III
  where
   II : is-decidable (¬ continuous f) → WLPO + ¬¬ eventually-constant g
@@ -1032,7 +1042,7 @@ constant, then there isn't any extension.
  → ¬ ℕ∞-extension g
 ¬WLPO-gives-that-non-eventually-constant-functions-have-no-extensions g nwlpo nec
  = contrapositive
-    (ℕ∞-extension-existence-first-necessary-condition g)
+    (ℕ∞-extension-explicit-existence-first-necessary-condition g)
     (cases nwlpo (¬¬-intro nec))
 
 \end{code}
@@ -1061,9 +1071,9 @@ Notice that, because the condition
 
   (n : ℕ) → g (maxℕ m n) ＝ g m
 
-is not a priori decidable, as this clearly amounts to WLPO if it holds
-for all m and g (TODO), the type of eventual constancy data doesn't in
-general have split support.
+is not a priori decidable, as this implies WLPO if it holds for all m
+and g, the type of eventual constancy data doesn't in general have
+split support.
 
 However, if a particular g has an extension to ℕ∞, then this condition becomes
 decidable, and so in this case this type does have split support.
@@ -1073,11 +1083,37 @@ requires that g has some (not necessarily continuous) extension.
 
 \begin{code}
 
-second-necessary-condition-for-the-existence-of-an-extension
+eventual-constancy-condition-decidable-for-all-functions-gives-WLPO
+ : ((g : ℕ → ℕ) (m : ℕ)
+       → is-decidable (is-modulus-of-eventual-constancy g m))
+ → WLPO
+eventual-constancy-condition-decidable-for-all-functions-gives-WLPO ϕ
+ = WLPO-traditional-gives-WLPO fe (WLPO-variation-gives-WLPO-traditional I)
+ where
+  I : WLPO-variation
+  I α = I₂
+   where
+    g : ℕ → ℕ
+    g = ι ∘ α
+
+    I₀ : ((n : ℕ) → ι (α (maxℕ 0 n)) ＝ ι (α 0))
+       → (n : ℕ) → α n ＝ α 0
+    I₀ a n = 𝟚-to-ℕ-is-lc (a n)
+
+    I₁ : ((n : ℕ) → α n ＝ α 0)
+       → (n : ℕ) → ι (α (maxℕ 0 n)) ＝ ι (α 0)
+    I₁ b n = ι (α (maxℕ 0 n)) ＝⟨ refl ⟩
+             ι (α n) ＝⟨ ap ι (b n) ⟩
+             ι (α 0) ∎
+
+    I₂ : is-decidable ((n : ℕ) → α n ＝ α 0)
+    I₂ = map-decidable I₀ I₁ (ϕ g 0)
+
+second-necessary-condition-for-the-explicit-existence-of-an-extension
  : (g : ℕ → ℕ)
  → ℕ∞-extension g
- → (m : ℕ) → is-decidable ((n : ℕ) → g (maxℕ m n) ＝ g m)
-second-necessary-condition-for-the-existence-of-an-extension g (f , e) m = IV
+ → (m : ℕ) → is-decidable (is-modulus-of-eventual-constancy g m)
+second-necessary-condition-for-the-explicit-existence-of-an-extension g (f , e) m = IV
  where
   I : is-decidable ((n : ℕ) → f (max (ι m) (ι n)) ＝ f (ι m))
   I = Theorem-8·2'
@@ -1092,7 +1128,7 @@ second-necessary-condition-for-the-existence-of-an-extension g (f , e) m = IV
            f (ι m)             ＝⟨ e m ⟩
            g m                 ∎
 
-  III : ((n : ℕ) → g (maxℕ m n) ＝ g m)
+  III : is-modulus-of-eventual-constancy g m
       → (n : ℕ) → f (max (ι m) (ι n)) ＝ f (ι m)
   III b n = f (max (ι m) (ι n)) ＝⟨ ap f ((max-fin fe m n)⁻¹) ⟩
             f (ι (maxℕ m n)) ＝⟨ e (maxℕ m n) ⟩
@@ -1100,7 +1136,7 @@ second-necessary-condition-for-the-existence-of-an-extension g (f , e) m = IV
             g m ＝⟨ e m ⁻¹ ⟩
             f (ι m) ∎
 
-  IV : is-decidable ((n : ℕ) → g (maxℕ m n) ＝ g m)
+  IV : is-decidable (is-modulus-of-eventual-constancy g m)
   IV = map-decidable II III I
 
 module eventual-contancy-under-propositional-truncations
@@ -1111,7 +1147,7 @@ module eventual-contancy-under-propositional-truncations
  open exit-truncations pt
 
  is-eventually-constant : (ℕ → ℕ) → 𝓤₀ ̇
- is-eventually-constant g = ∃ m ꞉ ℕ , ((n : ℕ) → g (maxℕ m n) ＝ g m)
+ is-eventually-constant g = ∃ m ꞉ ℕ , is-modulus-of-eventual-constancy g m
 
 \end{code}
 
@@ -1128,7 +1164,9 @@ constancy data has split support.
  eventual-constancy-for-extendable-functions-has-split-support  g extension
   = exit-truncation
      (λ m → (n : ℕ) → g (maxℕ m n) ＝ g m)
-     (second-necessary-condition-for-the-existence-of-an-extension g extension)
+     (second-necessary-condition-for-the-explicit-existence-of-an-extension
+       g
+       extension)
 
 \end{code}
 
@@ -1140,5 +1178,16 @@ development.
 
  is-extendable-to-ℕ∞ : (ℕ → ℕ) → 𝓤₀ ̇
  is-extendable-to-ℕ∞ g = ∃ f ꞉ (ℕ∞ → ℕ) , f extends g
+
+ second-necessary-condition-for-the-anonymous-existence-of-an-extension
+  : (g : ℕ → ℕ)
+  → is-extendable-to-ℕ∞ g
+  → (m : ℕ) → is-decidable (is-modulus-of-eventual-constancy g m)
+ second-necessary-condition-for-the-anonymous-existence-of-an-extension g
+  = ∥∥-rec
+     (Π-is-prop fe
+       (λ n → decidability-of-prop-is-prop fe
+               (being-modulus-of-eventual-constancy-is-prop g n)))
+     (second-necessary-condition-for-the-explicit-existence-of-an-extension g)
 
 \end{code}

@@ -12,6 +12,7 @@ module MLTT.Two-Properties where
 open import MLTT.Spartan
 open import MLTT.Unit-Properties
 open import Naturals.Properties
+open import Notation.CanonicalMap
 open import Notation.Order
 open import UF.FunExt
 open import UF.Retracts
@@ -106,6 +107,12 @@ complement-no-fp ₁ p = 𝟘-elim (one-is-not-zero p)
 complement-involutive : (b : 𝟚) → complement (complement b) ＝ b
 complement-involutive ₀ = refl
 complement-involutive ₁ = refl
+
+complement-lc : (b c : 𝟚) → complement b ＝ complement c → b ＝ c
+complement-lc ₀ ₀ refl = refl
+complement-lc ₀ ₁ p    = p ⁻¹
+complement-lc ₁ ₀ p    = p ⁻¹
+complement-lc ₁ ₁ refl = refl
 
 eq𝟚 : 𝟚 → 𝟚 → 𝟚
 eq𝟚 ₀ n = complement n
@@ -466,24 +473,28 @@ Lemma[b≠₁→b＝₀] : {b : 𝟚} → ¬ (b ＝ ₁) → b ＝ ₀
 Lemma[b≠₁→b＝₀] {₀} f = refl
 Lemma[b≠₁→b＝₀] {₁} f = 𝟘-elim (f refl)
 
-𝟚-ℕ-embedding : 𝟚 → ℕ
-𝟚-ℕ-embedding ₀ = 0
-𝟚-ℕ-embedding ₁ = 1
+𝟚-to-ℕ : 𝟚 → ℕ
+𝟚-to-ℕ ₀ = 0
+𝟚-to-ℕ ₁ = 1
 
-𝟚-ℕ-embedding-is-lc : left-cancellable 𝟚-ℕ-embedding
-𝟚-ℕ-embedding-is-lc {₀} {₀} refl = refl
-𝟚-ℕ-embedding-is-lc {₀} {₁} r    = 𝟘-elim (positive-not-zero 0 (r ⁻¹))
-𝟚-ℕ-embedding-is-lc {₁} {₀} r    = 𝟘-elim (positive-not-zero 0 r)
-𝟚-ℕ-embedding-is-lc {₁} {₁} refl = refl
+instance
+ Canonical-Map-𝟚-ℕ : Canonical-Map 𝟚 ℕ
+ ι {{Canonical-Map-𝟚-ℕ}} = 𝟚-to-ℕ
+
+𝟚-to-ℕ-is-lc : left-cancellable 𝟚-to-ℕ
+𝟚-to-ℕ-is-lc {₀} {₀} refl = refl
+𝟚-to-ℕ-is-lc {₀} {₁} r    = 𝟘-elim (positive-not-zero 0 (r ⁻¹))
+𝟚-to-ℕ-is-lc {₁} {₀} r    = 𝟘-elim (positive-not-zero 0 r)
+𝟚-to-ℕ-is-lc {₁} {₁} refl = refl
 
 C-B-embedding : (ℕ → 𝟚) → (ℕ → ℕ)
-C-B-embedding α = 𝟚-ℕ-embedding ∘ α
+C-B-embedding α = 𝟚-to-ℕ ∘ α
 
 C-B-embedding-is-lc : funext 𝓤₀ 𝓤₀ → left-cancellable C-B-embedding
 C-B-embedding-is-lc fe {α} {β} p = dfunext fe h
  where
   h : (n : ℕ) → α n ＝ β n
-  h n = 𝟚-ℕ-embedding-is-lc (ap (λ - → - n) p)
+  h n = 𝟚-to-ℕ-is-lc (ap (λ - → - n) p)
 
 𝟚-retract-of-ℕ : retract 𝟚 of ℕ
 𝟚-retract-of-ℕ = r , s , rs
