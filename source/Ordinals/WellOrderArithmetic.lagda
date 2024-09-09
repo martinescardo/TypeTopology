@@ -224,9 +224,8 @@ module successor
 
 Multiplication. Cartesian product with the lexicographic order.
 
-Fredrik Nordvall Forsberg, 3 November 2023: changed order of
-multiplication to reverse lexicographic order to adhere to the
-standard convention
+Fredrik Nordvall Forsberg, 3 November 2023: Changed order of multiplication to
+reverse lexicographic order to adhere to the standard convention.
 
 \begin{code}
 
@@ -252,10 +251,14 @@ module times
    P : X × Y → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣 ̇
    P = is-accessible _⊏_
 
-   γ : (y : Y) → ((y' : Y) → y' ≺ y → (x' : X) → P (x' , y')) → (x : X) → P (x , y)
+   γ : (y : Y)
+     → ((y' : Y) → y' ≺ y → (x' : X) → P (x' , y'))
+     → (x : X) → P (x , y)
    γ y s = transfinite-induction _<_ w (λ x → P (x , y)) (λ x f → acc (ψ x f))
     where
-     ψ : (x : X) → ((x' : X) → x' < x → P (x' , y)) → (z' : X × Y) → z' ⊏ (x , y) → P z'
+     ψ : (x : X)
+       → ((x' : X) → x' < x → P (x' , y))
+       → (z' : X × Y) → z' ⊏ (x , y) → P z'
      ψ x f (x' , y') (inl l) = s y' l x'
      ψ x f (x' , y') (inr (r , m)) = transport⁻¹ P p α
       where
@@ -286,24 +289,25 @@ module times
              → is-extensional _⊏_
  extensional w w' e e' (a , b) (x , y) f g = to-×-＝ p q
   where
-
    f' : (u : X) → u < a → u < x
    f' u l = Cases (f (u , b) (inr (refl , l)))
              (λ (m : b ≺ y)
-                 → 𝟘-elim (irreflexive _<_ a (w a)
-                            (Cases (g (a , b) (inl m))
-                             (λ (n : b ≺ b) → 𝟘-elim (irreflexive _≺_ b (w' b) n))
-                             (λ (σ : (b ＝ b) × (a < a)) → 𝟘-elim (irreflexive _<_ a (w a) (pr₂ σ))))))
-             (λ (σ : (b ＝ y) × (u < x))
-                 → pr₂ σ)
+                → 𝟘-elim (irreflexive _<_ a (w a)
+                           (Cases (g (a , b) (inl m))
+                             (λ (n : b ≺ b)
+                                → 𝟘-elim (irreflexive _≺_ b (w' b) n))
+                             (λ (σ : (b ＝ b) × (a < a))
+                                → 𝟘-elim (irreflexive _<_ a (w a) (pr₂ σ))))))
+             (λ (σ : (b ＝ y) × (u < x)) → pr₂ σ)
+
    g' : (u : X) → u < x → u < a
    g' u l = Cases (g (u , y) (inr (refl , l)))
              (λ (m : y ≺ b)
                 → Cases (f (x , y) (inl m))
                    (λ (m : y ≺ y) → 𝟘-elim (irreflexive _≺_ y (w' y) m))
-                   (λ (σ : (y ＝ y) × (x < x)) → 𝟘-elim (irreflexive _<_ x (w x) (pr₂ σ))))
-             (λ (σ : (y ＝ b) × (u < a))
-                 → pr₂ σ)
+                   (λ (σ : (y ＝ y) × (x < x))
+                      → 𝟘-elim (irreflexive _<_ x (w x) (pr₂ σ))))
+             (λ (σ : (y ＝ b) × (u < a)) → pr₂ σ)
 
    p : a ＝ x
    p = e a x f' g'
@@ -311,12 +315,14 @@ module times
    f'' : (v : Y) → v ≺ b → v ≺ y
    f'' v l = Cases (f (x , v) (inl l))
               (λ (m : v ≺ y) → m)
-              (λ (σ : (v ＝ y) × (x < x)) → 𝟘-elim (irreflexive _<_ x (w x) (pr₂ σ)))
+              (λ (σ : (v ＝ y) × (x < x))
+                 → 𝟘-elim (irreflexive _<_ x (w x) (pr₂ σ)))
 
    g'' : (v : Y) → v ≺ y → v ≺ b
    g'' v l = Cases (g (a , v) (inl l))
               (λ (m : v ≺ b) → m)
-              (λ (σ : (v ＝ b) × (a < a)) → 𝟘-elim (irreflexive _<_ a (w a) (pr₂ σ)))
+              (λ (σ : (v ＝ b) × (a < a))
+                 → 𝟘-elim (irreflexive _<_ a (w a) (pr₂ σ)))
 
    q : b ＝ y
    q = e' b y f'' g''
@@ -338,7 +344,8 @@ module times
    prop-valued (a , b) (x , y) (inr (r , l)) (inl m) =
      𝟘-elim (irreflexive _≺_ y (w' y) (transport (λ - → - ≺ y) r m))
    prop-valued (a , b) (x , y) (inr (r , l)) (inr (s , m)) =
-     ap inr (to-×-＝ (well-ordered-types-are-sets _≺_ fe (p' , w' , e' , t') r s) (p a x l m))
+     ap inr (to-×-＝ (well-ordered-types-are-sets _≺_ fe
+                       (p' , w' , e' , t') r s) (p a x l m))
 
  top-preservation : has-top _<_ → has-top _≺_ → has-top _⊏_
  top-preservation (x , f) (y , g) = (x , y) , h
