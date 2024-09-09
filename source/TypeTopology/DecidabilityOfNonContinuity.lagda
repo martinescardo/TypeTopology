@@ -879,8 +879,7 @@ taboos and so is an inherently classical statement.
 
 Added 4th September 2024.
 
-Our next question is when the type `ℕ∞-extension g` is pointed,
-without assuming classical or anticlassical axioms.
+Our next question is when the type `ℕ∞-extension g` is pointed.
 
 \begin{code}
 
