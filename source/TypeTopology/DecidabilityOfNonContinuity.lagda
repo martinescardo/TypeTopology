@@ -78,8 +78,7 @@ is just a direct particular case.
 
 \begin{code}
 
-_ : (q : ℕ∞ → ℕ∞ → 𝟚)
-  → is-decidable ((m : ℕ) → ¬ ((n : ℕ) → q (ι m) (ι n) ＝ ₁))
+_ : (q : ℕ∞ → ℕ∞ → 𝟚) → is-decidable ((m : ℕ) → ¬ ((n : ℕ) → q (ι m) (ι n) ＝ ₁))
 _ = λ q → Lemma-3·1 (λ x y → q x y ＝ ₁) (λ x y → 𝟚-is-discrete (q x y) ₁)
 
 \end{code}
@@ -107,22 +106,23 @@ and its negation to
 
    ∀ m : ℕ , ¬ ∀ n : ℕ , f (max m n) ＝ f ∞,
 
-and it is convenient to do so here.
+and it is technically convenient to do so here.
 
 The above paper [1] mentions that its mathematical development can be
 carried out in a number of foundations, including type theory, but it
 doesn't say what "∃" should be taken to mean in HoTT/UF. It turns out
 (added summer 2024 - see below) that it doesn't matter whether `∃` is
 interpreted to mean `Σ` or the propositional truncation of `Σ`,
-although this is non trivial and is proved below (summer 2024), but
-does follow from what is developed in [1].
+although this is non trivial and is proved below, but does follow from
+what is developed in [1].
 
 For the following, we adopt `∃` to mean the propositional truncation
 of `Σ` (as we generally do in TypeTopology).
 
 For the next few things, because we are going to prove facts about the
 negation of continuity, it doesn't matter whether we define the notion
-with ∃ or Σ, and we choose the latter for convenience.
+with ∃ or Σ, because negations are propositions in the presence of
+function extensionality, and we choose the latter for convenience.
 
 \begin{code}
 
@@ -142,7 +142,8 @@ continuity-data = continuous
 
 \end{code}
 
-The following is Theorem 3.2 of [1].
+The following is Theorem 3.2 of [1] and is a direct application of
+Lemma 3.1.
 
 \begin{code}
 
@@ -189,8 +190,8 @@ open import Taboos.WLPO
 open import TypeTopology.CompactTypes
 open import TypeTopology.GenericConvergentSequenceCompactness fe
 
-noncontinuous-map-gives-WLPO : (f : ℕ∞ → ℕ) → ¬ continuous f → WLPO
-noncontinuous-map-gives-WLPO f f-non-cts = VI
+noncontinuous-map-gives-WLPO : (Σ f ꞉ (ℕ∞ → ℕ) , ¬ continuous f) → WLPO
+noncontinuous-map-gives-WLPO (f , f-non-cts) = VI
  where
   g : (u : ℕ∞)
     → Σ v₀ ꞉ ℕ∞ , (f (max u v₀) ＝ f ∞ → (v : ℕ∞) → f (max u v) ＝ f ∞)
@@ -270,7 +271,7 @@ Added 7th September 2024. We now prove (3)(→).
  : ¬ WLPO → (f : ℕ∞ → ℕ) → ¬¬ continuous f
 ¬WLPO-gives-all-functions-are-not-not-continuous nwlpo f
  = contrapositive
-    (λ (ν : ¬ continuous f) → noncontinuous-map-gives-WLPO f ν)
+    (λ (ν : ¬ continuous f) → noncontinuous-map-gives-WLPO (f , ν))
     nwlpo
 
 \end{code}
@@ -340,63 +341,54 @@ The following is from [1] with the same proof.
 open import Taboos.BasicDiscontinuity fe
 open import Naturals.Properties
 
-WLPO-iff-there-is-a-noncontinous-map : WLPO ↔ (Σ f ꞉ (ℕ∞ → ℕ) , ¬ continuous f)
-WLPO-iff-there-is-a-noncontinous-map =
-  I ,
-  (λ (f , ν) → noncontinuous-map-gives-WLPO f ν)
+WLPO-gives-that-there-is-a-noncontinous-map : WLPO → (Σ f ꞉ (ℕ∞ → ℕ) , ¬ continuous f)
+WLPO-gives-that-there-is-a-noncontinous-map wlpo = f , f-non-cts
  where
-  I : WLPO → Σ f ꞉ (ℕ∞ → ℕ) , ¬ continuous f
-  I wlpo = f , f-non-cts
-   where
-    p : ℕ∞ → 𝟚
-    p = pr₁ (WLPO-is-discontinuous wlpo)
+  p : ℕ∞ → 𝟚
+  p = pr₁ (WLPO-is-discontinuous wlpo)
 
-    p-spec : ((n : ℕ) → p (ι n) ＝ ₀) × (p ∞ ＝ ₁)
-    p-spec = pr₂ (WLPO-is-discontinuous wlpo)
+  p-spec : ((n : ℕ) → p (ι n) ＝ ₀) × (p ∞ ＝ ₁)
+  p-spec = pr₂ (WLPO-is-discontinuous wlpo)
 
-    g : 𝟚 → ℕ
-    g ₀ = 0
-    g ₁ = 1
+  g : 𝟚 → ℕ
+  g ₀ = 0
+  g ₁ = 1
 
-    f : ℕ∞ → ℕ
-    f = g ∘ p
+  f : ℕ∞ → ℕ
+  f = g ∘ p
 
-    f₀ : (n : ℕ) → f (ι n) ＝ 0
-    f₀ n =  f (ι n) ＝⟨ ap g (pr₁ p-spec n) ⟩
-            g ₀     ＝⟨ refl ⟩
-            0       ∎
+  f₀ : (n : ℕ) → f (ι n) ＝ 0
+  f₀ n =  f (ι n) ＝⟨ ap g (pr₁ p-spec n) ⟩
+          g ₀     ＝⟨ refl ⟩
+          0       ∎
 
-    f∞ : (n : ℕ) → f (ι n) ≠ f ∞
-    f∞ n e = zero-not-positive 0
-              (0       ＝⟨ f₀ n ⁻¹ ⟩
-               f (ι n) ＝⟨ e ⟩
-               f ∞     ＝⟨ ap g (pr₂ p-spec) ⟩
-               1       ∎)
+  f∞ : (n : ℕ) → f (ι n) ≠ f ∞
+  f∞ n e = zero-not-positive 0
+            (0       ＝⟨ f₀ n ⁻¹ ⟩
+             f (ι n) ＝⟨ e ⟩
+             f ∞     ＝⟨ ap g (pr₂ p-spec) ⟩
+             1       ∎)
 
-    f-non-cts : ¬ continuous f
-    f-non-cts (m , a) = f∞ m
-                         (f (ι m)             ＝⟨ ap f ((max-idemp fe (ι m))⁻¹) ⟩
-                          f (max (ι m) (ι m)) ＝⟨ a m ⟩
-                          f ∞                 ∎)
+  f-non-cts : ¬ continuous f
+  f-non-cts (m , a) = f∞ m
+                       (f (ι m)             ＝⟨ ap f ((max-idemp fe (ι m))⁻¹) ⟩
+                        f (max (ι m) (ι m)) ＝⟨ a m ⟩
+                        f ∞                 ∎)
 
 \end{code}
 
-And a corollary is that the negation of WLPO is a weak continuity
-principle.
+And a corollary is that the negation of WLPO amount to a weak continuity
+principle that says that all functions are not-not continuous.
 
 \begin{code}
 
 ¬WLPO-iff-all-maps-are-¬¬-continuous : ¬ WLPO ↔ ((f : ℕ∞ → ℕ) → ¬¬ continuous f)
 ¬WLPO-iff-all-maps-are-¬¬-continuous =
- (λ nwlpo f f-non-cts
-   → contrapositive
-      (rl-implication WLPO-iff-there-is-a-noncontinous-map)
-      nwlpo
-      (f , f-non-cts)) ,
+ (λ nwlpo → curry (contrapositive noncontinuous-map-gives-WLPO nwlpo)) ,
  (λ (a : (f : ℕ∞ → ℕ) → ¬¬ continuous f)
    → contrapositive
-      (lr-implication WLPO-iff-there-is-a-noncontinous-map)
-      (λ (f , f-non-cts) → a f f-non-cts))
+      WLPO-gives-that-there-is-a-noncontinous-map
+      (uncurry a))
 
 \end{code}
 
@@ -416,11 +408,10 @@ https://www.cs.bham.ac.uk/~mhe/papers/negative-axioms.pdf
 [3] Andreas Abel. Negative Axioms.
     https://github.com/andreasabel/logrel-mltt/tree/master/Application/NegativeAxioms
 
-
 Added 16 August 2024. This is not in [1].
 
-The above definition of continuity is "continuity at the point ∞".
-(And it is also not a proposition.)
+The above definition of continuity is "continuity at the point ∞", and
+also it is not a proposition.
 
 Next we show that this is equivalent to usual continuity, as in the
 module Cantor, using the fact that ℕ∞ is a subspace of the Cantor type
@@ -459,8 +450,7 @@ module continuity-criteria (pt : propositional-truncations-exist) where
   continuity-data-gives-continuity-property = ∣_∣
 
   continuity-property-gives-continuity-data : is-continuous f → continuity-data f
-  continuity-property-gives-continuity-data =
-   exit-truncation (λ m → A (ι m)) (λ m → A-is-decidable (ι m))
+  continuity-property-gives-continuity-data = exit-truncation (A ∘ ι) (A-is-decidable ∘ ι)
    where
     A : ℕ∞ → 𝓤₀ ̇
     A x = (n : ℕ) → f (max x (ι n)) ＝ f ∞
@@ -608,8 +598,8 @@ We now need more lemmas about the relation x ＝⟪ k ⟫ y.
  continuity-data-gives-traditional-uniform-continuity-data
   (m , m-property) = m , m-property'
   where
-   have-m-property : (n : ℕ) → f (max (ι m) (ι n)) ＝ f ∞
-   have-m-property = m-property
+   qₙ : (n : ℕ) → f (max (ι m) (ι n)) ＝ f ∞
+   qₙ = m-property
 
    I : (z : ℕ∞) → max (ι m) z ＝ z → f z ＝ f ∞
    I z p = γ
@@ -618,7 +608,7 @@ We now need more lemmas about the relation x ＝⟪ k ⟫ y.
      q∞ = ap f (max∞-property' fe (ι m))
 
      q : (u : ℕ∞) → f (max (ι m) u) ＝ f ∞
-     q = ℕ∞-density fe ℕ-is-¬¬-separated m-property q∞
+     q = ℕ∞-density fe ℕ-is-¬¬-separated qₙ q∞
 
      γ = f z             ＝⟨ ap f (p ⁻¹) ⟩
          f (max (ι m) z) ＝⟨ q z ⟩
@@ -736,7 +726,7 @@ The type `ℕ∞-extension g` is that of all extensions of g : ℕ → ℕ to
 functions ℕ∞ → ℕ.
 
 Our first question is when this type is a proposition (so that it
-could be called `ℕ∞-extendable g`).
+could be called `is-ℕ∞-extendable g`).
 
 Notice that LPO is stronger than WLPO, and hence, by taking the
 contrapositive, ¬ WLPO is stronger than ¬ LPO:
@@ -773,7 +763,9 @@ try to be consistent with the terminology of the HoTT/UF community.)
 ¬WLPO-gives-ℕ∞-extension-is-prop fe g nwlpo (f , h) (f' , h') = VI
  where
   I : (n : ℕ) → f (ι n) ＝ f' (ι n)
-  I n = h n ∙ (h' n)⁻¹
+  I n = f (ι n)  ＝⟨ h n ⟩
+        g n      ＝⟨ (h' n)⁻¹ ⟩
+        f' (ι n) ∎
 
   IV : f ∞ ＝ f' ∞
   IV = agreement-cotaboo' ℕ-is-discrete nwlpo f f' I
@@ -810,7 +802,8 @@ lemma, which is then applied to prove this claim.
 
 LPO-gives-ℕ∞-extension
  : LPO
- → (g : ℕ → ℕ) (y : ℕ)
+ → (g : ℕ → ℕ)
+   (y : ℕ)
  → Σ f ꞉ (ℕ∞ → ℕ) , (f extends g) × (f ∞ ＝ y)
 LPO-gives-ℕ∞-extension lpo g y
  = f , h , e
@@ -835,7 +828,6 @@ LPO-gives-ℕ∞-extension lpo g y
 
   e : f ∞ ＝ y
   e = L (lpo ∞)
-
 
 LPO-gives-ℕ∞-extension-is-not-prop
  : (g : ℕ → ℕ)
@@ -918,7 +910,7 @@ pointed-consequence
 pointed-consequence g (f , h) = III
  where
   II : is-decidable (¬ continuous f) → WLPO + ¬¬ eventually-constant g
-  II (inl l) = inl (noncontinuous-map-gives-WLPO f l)
+  II (inl l) = inl (noncontinuous-map-gives-WLPO (f , l))
   II (inr r) = inr (¬¬-functor
                      (continuous-extension-gives-eventual-constancy g (f , h)) r)
 
