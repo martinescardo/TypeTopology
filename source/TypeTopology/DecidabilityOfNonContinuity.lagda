@@ -315,9 +315,9 @@ And now we prove (4).
 
 \begin{code}
 
-MP-and-¬WLPO-gives-all-functions-are-continuous
+MP-and-¬WLPO-give-that-all-functions-are-continuous
  : MP → ¬ WLPO → (f : ℕ∞ → ℕ) → continuous f
-MP-and-¬WLPO-gives-all-functions-are-continuous mp nwlpo f
+MP-and-¬WLPO-give-that-all-functions-are-continuous mp nwlpo f
  = MP-gives-that-not-not-continuous-functions-are-continuous
     mp
     f
@@ -381,7 +381,8 @@ WLPO-iff-there-is-a-noncontinous-map =
 
 \end{code}
 
-And a corollary is that the negation WLPO is a weak continuity principle.
+And a corollary is that the negation of WLPO is a weak continuity
+principle.
 
 \begin{code}
 
