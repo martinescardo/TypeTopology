@@ -889,6 +889,14 @@ open import Naturals.Order renaming (max to maxℕ ; max-idemp to maxℕ-idemp)
 eventually-constant : (ℕ → ℕ) → 𝓤₀ ̇
 eventually-constant g = Σ m ꞉ ℕ , ((n : ℕ) → g (maxℕ m n) ＝ g m)
 
+eventual-constancy-gives-continuous-extension
+ : (g : ℕ → ℕ)
+   ((f , h) : ℕ∞-extension g)
+ → eventually-constant g
+ → continuous f
+eventual-constancy-gives-continuous-extension
+ = {!!}
+
 continuous-extension-gives-eventual-constancy
  : (g : ℕ → ℕ)
    ((f , h) : ℕ∞-extension g)
@@ -902,6 +910,12 @@ continuous-extension-gives-eventual-constancy g (f , h) (m , a)
               f (max (ι m) (ι m)) ＝⟨ ap f (max-idemp fe (ι m)) ⟩
               f (ι m)             ＝⟨ h m ⟩
               g m                 ∎)
+
+ℕ∞-extension-existence-criterion
+ : (g : ℕ → ℕ)
+ → LPO + eventually-constant g
+ → ℕ∞-extension g
+ℕ∞-extension-existence-criterion g c = {!!}
 
 pointed-consequence
  : (g : ℕ → ℕ)
@@ -931,3 +945,8 @@ pointed-consequence g (f , h) = III
 
 To be continued. We can actually get a much stronger consequence from
 the pointedness of the type of extensions, to be coded here soon.
+
+\begin{code}
+
+
+\end{code}
