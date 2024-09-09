@@ -804,9 +804,9 @@ LPO-gives-ℕ∞-extension
  : LPO
  → (g : ℕ → ℕ)
    (y : ℕ)
- → Σ f ꞉ (ℕ∞ → ℕ) , (f extends g) × (f ∞ ＝ y)
+ → Σ (f , _) ꞉ ℕ∞-extension g , (f ∞ ＝ y)
 LPO-gives-ℕ∞-extension lpo g y
- = f , h , e
+ = (f , h) , e
  where
   F : (x : ℕ∞) → is-decidable (Σ n ꞉ ℕ , x ＝ ι n) → ℕ
   F x (inl (n , p)) = g n
@@ -836,10 +836,10 @@ LPO-gives-ℕ∞-extension-is-not-prop
 LPO-gives-ℕ∞-extension-is-not-prop g lpo ext-is-prop
   = I (LPO-gives-ℕ∞-extension lpo g 0) (LPO-gives-ℕ∞-extension lpo g 1)
  where
-  I : (Σ f  ꞉ (ℕ∞ → ℕ) , (f  extends g) × (f  ∞ ＝ 0))
-    → (Σ f' ꞉ (ℕ∞ → ℕ) , (f' extends g) × (f' ∞ ＝ 1))
+  I : (Σ (f , _) ꞉ ℕ∞-extension g , (f ∞ ＝ 0))
+    → (Σ (f , _) ꞉ ℕ∞-extension g , (f ∞ ＝ 1))
     → 𝟘
-  I (f , h , e) (f' , h' , e') =
+  I ((f , h) , e) ((f' , h') , e') =
    zero-not-positive 0
     (0    ＝⟨ e ⁻¹ ⟩
      f  ∞ ＝⟨ ap ((λ (- , _) → - ∞)) (ext-is-prop (f , h) (f' , h')) ⟩
@@ -891,11 +891,40 @@ eventually-constant g = Σ m ꞉ ℕ , ((n : ℕ) → g (maxℕ m n) ＝ g m)
 
 eventual-constancy-gives-continuous-extension
  : (g : ℕ → ℕ)
-   ((f , h) : ℕ∞-extension g)
  → eventually-constant g
- → continuous f
-eventual-constancy-gives-continuous-extension
- = {!!}
+ → ℕ∞-extension g
+eventual-constancy-gives-continuous-extension g
+ = uncurry (h g)
+ where
+  h : (g : ℕ → ℕ) → (m : ℕ) → ((n : ℕ) → g (maxℕ m n) ＝ g m) → ℕ∞-extension g
+  h g 0        a = (λ _ → g 0) ,
+                   (λ n →  g 0          ＝⟨ (a n)⁻¹ ⟩
+                           g (maxℕ 0 n) ＝⟨ refl ⟩
+                           g n          ∎)
+
+  h g (succ m) a = I IH
+   where
+    IH : ℕ∞-extension (g ∘ succ)
+    IH = h (g ∘ succ) m (a ∘ succ)
+
+    I : ℕ∞-extension (g ∘ succ) → ℕ∞-extension g
+    I (f , e) = (λ x → φ x (Zero+Succ fe x)) ,
+                (λ n → φ-property n (Zero+Succ fe (ι n)))
+     where
+      φ : (x : ℕ∞) → (x ＝ Zero) + is-Succ x → ℕ
+      φ x (inl _)        = g 0
+      φ x (inr (x' , _)) = f x'
+
+      φ-property : (n : ℕ) (c : (ι n ＝ Zero) + is-Succ (ι n)) → φ (ι n) c ＝ g n
+      φ-property 0        (inl _)       = refl
+      φ-property (succ n) (inl p)       = 𝟘-elim (Succ-not-Zero p)
+      φ-property 0        (inr (x , p)) = 𝟘-elim (Succ-not-Zero (p ⁻¹))
+      φ-property (succ n) (inr (x , p)) =
+       φ (ι (succ n)) (inr (x , p)) ＝⟨ refl ⟩
+       f x                          ＝⟨ ap f (Succ-lc (p ⁻¹)) ⟩
+       f (ι n)                      ＝⟨ e n ⟩
+       g (succ n)                   ∎
+
 
 continuous-extension-gives-eventual-constancy
  : (g : ℕ → ℕ)
@@ -915,13 +944,27 @@ continuous-extension-gives-eventual-constancy g (f , h) (m , a)
  : (g : ℕ → ℕ)
  → LPO + eventually-constant g
  → ℕ∞-extension g
-ℕ∞-extension-existence-criterion g c = {!!}
+ℕ∞-extension-existence-criterion g (inl lpo)
+ = pr₁ (LPO-gives-ℕ∞-extension lpo g 0)
+ℕ∞-extension-existence-criterion g (inr ec)
+ = eventual-constancy-gives-continuous-extension g ec
 
-pointed-consequence
+ℕ∞-extension-nonexistence-gives-¬LPO-and-not-eventual-constancy
+ : (g : ℕ → ℕ)
+ → ¬ ℕ∞-extension g
+ → ¬ LPO × ¬ eventually-constant g
+ℕ∞-extension-nonexistence-gives-¬LPO-and-not-eventual-constancy g ν
+ = I ∘ inl , I ∘ inr
+ where
+  I : ¬ (LPO + eventually-constant g)
+  I = contrapositive (ℕ∞-extension-existence-criterion g) ν
+
+ℕ∞-extension-existence-criterion-weak-converse
  : (g : ℕ → ℕ)
  → ℕ∞-extension g
  → WLPO + ¬¬ eventually-constant g
-pointed-consequence g (f , h) = III
+ℕ∞-extension-existence-criterion-weak-converse
+ g (f , h) = III
  where
   II : is-decidable (¬ continuous f) → WLPO + ¬¬ eventually-constant g
   II (inl l) = inl (noncontinuous-map-gives-WLPO (f , l))
@@ -938,15 +981,7 @@ pointed-consequence g (f , h) = III
  → ¬ ℕ∞-extension g
 ¬WLPO-gives-that-non-eventually-constant-functions-have-no-extensions g nwlpo nec
  = contrapositive
-    (pointed-consequence g)
+    (ℕ∞-extension-existence-criterion-weak-converse g)
     (cases nwlpo (¬¬-intro nec))
-
-\end{code}
-
-To be continued. We can actually get a much stronger consequence from
-the pointedness of the type of extensions, to be coded here soon.
-
-\begin{code}
-
 
 \end{code}
