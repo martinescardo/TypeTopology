@@ -115,7 +115,7 @@ check_imports() {
   else # Report redundant imports
       for i in $unused;
       do
-	import=$(${sed_cmd} -n "${i}p" $file | cut -d ' ' -f3)
+	import=$(${sed_cmd} -n "${i}p" $file | awk -F 'open import ' '{print $2}')
 	echo "Importing $import was not necessary"
       done
   fi
