@@ -1139,6 +1139,14 @@ second-necessary-condition-for-the-explicit-existence-of-an-extension g (f , e) 
   IV : is-decidable (is-modulus-of-eventual-constancy g m)
   IV = map-decidable II III I
 
+\end{code}
+
+So, although a function g that has an extension doesn't need to be
+eventually constant, because classical logic may (or may not) hols, it
+is decidable whether any given m is a modulus of eventual constancy of g.
+
+\begin{code}
+
 module eventual-contancy-under-propositional-truncations
         (pt : propositional-truncations-exist)
        where
