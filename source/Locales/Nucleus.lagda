@@ -7,9 +7,7 @@ Based on `ayberkt/formal-topology-in-UF`.
 {-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
-open import UF.Base
 open import UF.FunExt
-open import UF.PropTrunc
 open import UF.PropTrunc
 
 module Locales.Nucleus
@@ -22,7 +20,6 @@ open import Locales.ContinuousMap.FrameHomomorphism-Properties pt fe
 open import Locales.Frame pt fe
 open import UF.Logic
 open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
 open import UF.SubtypeClassifier
 
 open AllCombinators pt fe

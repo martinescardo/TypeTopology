@@ -8,7 +8,6 @@ Todd Waugh Ambridge, January 2024
 open import MLTT.Spartan
 open import UF.FunExt
 open import NotionsOfDecidability.Complemented
-open import UF.Subsingletons
 open import UF.SubtypeClassifier
 open import UF.Equiv
 open import UF.DiscreteAndSeparated

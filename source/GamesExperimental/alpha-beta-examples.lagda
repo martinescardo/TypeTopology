@@ -45,8 +45,6 @@ We now define standard minimax games.
 
 module GamesExperimental.alpha-beta-examples where
 
-open import GamesExperimental.J
-open import GamesExperimental.K
 open import MLTT.Athenian
 open import MLTT.Fin
 open import Naturals.Order
@@ -96,7 +94,6 @@ module example-from-wikipedia where
 
  module _ where
 
-  open import Naturals.Order
   open minimax
 
   wikipedia-G : Game ℕ
@@ -142,7 +139,6 @@ module example-from-wikipedia' where
 
 module example-from-wikipedia' where
 
- open import GamesExperimental.alpha-beta {?} {?} ? ? ?
 
  wikipedia-G⋆ : Game (ℕ × ℕ → ℕ × Path wikipedia-tree)
  wikipedia-G⋆ = G⋆
@@ -234,7 +230,7 @@ module tic-tac-toe where
   value : Board → R
   value (x , o) = if wins x then 2 else if wins o then 0 else 1
 
-  data Player : 𝓤₀  ̇  where
+  data Player : 𝓤₀  ̇ where
    X O : Player
 
   maximizing-player : Player
@@ -308,7 +304,7 @@ module tic-tac-toe where
   TTT-tree-is-listed⁺ : structure listed⁺ TTT-tree
   TTT-tree-is-listed⁺ = perm-tree-is-listed⁺ all-moves
 
-  data Player : 𝓤₀  ̇  where
+  data Player : 𝓤₀  ̇ where
    X O : Player
 
   opponent : Player → Player

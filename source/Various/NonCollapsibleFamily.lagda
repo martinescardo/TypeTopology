@@ -1,5 +1,10 @@
 Martin Escardo, 1st April 2013
 
+Recall that a type is called collapsible if it has a weakly constant
+endomap. If every type is collapsible then every type has decidable
+equality and hence is a set by Hedberg's Theorem, and global hoice
+holds, because collapsible types have split support.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}
@@ -14,7 +19,8 @@ open import UF.KrausLemma
 open import UF.Subsingletons
 
 decidable-equality-criterion : (X : 𝓤 ̇ )
-                               (a : 𝟚 → X) → ((x : X) → collapsible (Σ i ꞉ 𝟚 , a i ＝ x))
+                               (a : 𝟚 → X)
+                             → ((x : X) → collapsible (Σ i ꞉ 𝟚 , a i ＝ x))
                              → is-decidable(a ₀ ＝ a ₁)
 decidable-equality-criterion {𝓤} X a c = equal-or-different
  where

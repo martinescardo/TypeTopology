@@ -19,7 +19,6 @@ open PropositionalTruncation pt
 
 open import MLTT.Spartan
 open import UF.ClassicalLogic
-open import UF.Subsingletons
 open import UF.SubtypeClassifier
 
 \end{code}

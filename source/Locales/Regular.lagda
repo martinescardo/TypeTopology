@@ -8,7 +8,6 @@ open import MLTT.Spartan hiding (𝟚)
 open import MLTT.List hiding ([_])
 open import UF.PropTrunc
 open import UF.FunExt
-open import UF.UA-FunExt
 open import UF.Size
 
 module Locales.Regular (pt : propositional-truncations-exist)
@@ -22,7 +21,6 @@ Importation of foundational UF stuff.
 \begin{code}
 
 open import Slice.Family
-open import UF.Subsingletons
 open import UF.SubtypeClassifier
 open import UF.Logic
 
@@ -38,14 +36,8 @@ Importations of other locale theory modules.
 open import Locales.Frame                         pt fe
 open import Locales.WayBelowRelation.Definition   pt fe
 open import Locales.Compactness                   pt fe
-open import Locales.Complements                   pt fe
-open import Locales.GaloisConnection              pt fe
-open import Locales.InitialFrame                  pt fe
-open import Locales.Spectrality.SpectralLocale    pt fe
-open import Locales.SmallBasis                    pt fe sr
 open import Locales.Clopen                        pt fe sr
 open import Locales.WellInside                    pt fe sr
-open import Locales.ScottContinuity               pt fe sr
 
 open Locale
 

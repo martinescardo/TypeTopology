@@ -1,4 +1,4 @@
-Martin Escardo, 7 May 2014, with additions 25th July 2024 and 16-21st August 2024
+Martin Escardo, 7 May 2014, with many additions in the summer of 2024.
 
 For any function f : ℕ∞ → ℕ, it is decidable whether f is non-continuous.
 
@@ -12,7 +12,11 @@ Based on the paper
     https://doi.org/10.1017/S096012951300042X
 
 The title of this paper is a bit misleading. It should probably have
-been called "Decidability of non-continuity".
+been called "Decidability of non-continuity". In any case, it is not
+wrong.
+
+TODO. Parametrize this module by a discrete type, rather than use 𝟚 or
+ℕ as the types of values of functions.
 
 \begin{code}
 
@@ -27,36 +31,56 @@ open import CoNaturals.Type
 open import MLTT.Two-Properties
 open import Notation.CanonicalMap
 open import NotionsOfDecidability.Decidable
-open import NotionsOfDecidability.SemiDecidable hiding (LPO)
 open import Taboos.LPO
 open import TypeTopology.ADecidableQuantificationOverTheNaturals fe
 open import UF.DiscreteAndSeparated
 
-Lemma-3·1 : (q : ℕ∞ → ℕ∞ → 𝟚)
-          → is-decidable ((m : ℕ) → ¬ ((n : ℕ) → q (ι m) (ι n) ＝ ₁))
-Lemma-3·1 q = claim₄
+\end{code}
+
+TODO. Give a more sensible name of the following fact. It is the name
+given in [1].
+
+This is an iterated version of Theorem 8.2 of [2], which also deserves
+a better name here, and it is the crucial lemma to prove the
+decidability of non-continuity.
+
+[2] Martin Escardo. Infinite sets that satisfy the principle of
+    omniscience in all varieties of constructive mathematics, Journal
+    of Symbolic Logic, volume 78, number 3, September 2013, pages
+    764-784.
+
+    https://doi.org/10.2178/jsl.7803040
+
+\begin{code}
+
+Lemma-3·1 : (A : ℕ∞ → ℕ∞ → 𝓤 ̇ )
+          → ((x y : ℕ∞) → is-decidable (A x y))
+          → is-decidable ((m : ℕ) → ¬ ((n : ℕ) → A (ι m) (ι n)))
+Lemma-3·1 {𝓤} A δ = III
  where
-  A : ℕ∞ → 𝓤₀ ̇
-  A u = (n : ℕ) → q u (ι n) ＝ ₁
+  B : ℕ∞ → 𝓤 ̇
+  B u = (n : ℕ) → A u (ι n)
 
-  claim₀ :  (u : ℕ∞) → is-decidable (A u)
-  claim₀ u = Theorem-8·2 (q u)
+  I :  (x : ℕ∞) → is-decidable (B x)
+  I x = Theorem-8·2' (A x) (δ x)
 
-  p : ℕ∞ → 𝟚
-  p = indicator-map claim₀
+  II :  (x : ℕ∞) → is-decidable (¬ B x)
+  II x = ¬-preserves-decidability (I x)
 
-  claim₁ : is-decidable ((n : ℕ) → p (ι n) ＝ ₁)
-  claim₁ = Theorem-8·2 p
+  III : is-decidable ((n : ℕ) → ¬ B (ι n))
+  III = Theorem-8·2' (λ x → ¬ B x) II
 
-  claim₂ : ((n : ℕ) → ¬ A (ι n)) → (n : ℕ) → p (ι n) ＝ ₁
-  claim₂ φ n = different-from-₀-equal-₁
-                (λ v → φ n (indicator-property₀ claim₀ (ι n) v))
+\end{code}
 
-  claim₃ : ((n : ℕ) → p (ι n) ＝ ₁) → (n : ℕ) → ¬ A (ι n)
-  claim₃ f n = indicator-property₁ claim₀ (ι n) (f n)
+The following is the original formulation of the above in [1], which
+we keep nameless as it is not needed for our purposes and in any case
+is just a direct particular case.
 
-  claim₄ : is-decidable ((n : ℕ) → ¬ (A (ι n)))
-  claim₄ = map-decidable claim₃ claim₂ claim₁
+\begin{code}
+
+_ : (q : ℕ∞ → ℕ∞ → 𝟚)
+  → is-decidable ((m : ℕ) → ¬ ((n : ℕ) → q (ι m) (ι n) ＝ ₁))
+_ = λ q → Lemma-3·1 (λ x y → q x y ＝ ₁) (λ x y → 𝟚-is-discrete (q x y) ₁)
 
 \end{code}
 
@@ -66,77 +90,98 @@ Omitting the inclusion function, or coercion,
 
 a map f : ℕ∞ → ℕ is called continuous iff
 
-   ∃ m. ∀ n ≥ m. f n ＝ f ∞,
+   ∃ m : ℕ , ∀ n ≥ m , f n ＝ f ∞,
 
 where m and n range over the natural numbers.
 
-The negation of this statement is equivalent to
+The negation of this statement is (constructively) equivalent to
 
-   ∀ m. ¬ ∀ n ≥ m. f n ＝ f ∞.
+   ∀ m : ℕ , ¬ ∀ n ≥ m , f n ＝ f ∞.
 
-We can implement ∀ y ≥ x. A y as ∀ x. A (max x y), so that the
+We can implement ∀ y ≥ x , A y as ∀ x , A (max x y), so that the
 continuity of f amounts to
 
-   ∃ m. ∀ n. f (max m n) ＝ f ∞,
+   ∃ m : ℕ ,  ∀ n : ℕ , f (max m n) ＝ f ∞,
 
 and its negation to
 
-   ∀ m. ¬ ∀ n. f (max m n) ＝ f ∞.
+   ∀ m : ℕ , ¬ ∀ n : ℕ , f (max m n) ＝ f ∞,
 
-Because we are going to prove facts about the negation of continuity,
-it doesn't matter whether we define the notion with ∃ or Σ, and we
-choose the latter for convenience.
+and it is convenient to do so here.
+
+The above paper [1] mentions that its mathematical development can be
+carried out in a number of foundations, including type theory, but it
+doesn't say what "∃" should be taken to mean in HoTT/UF. It turns out
+(added summer 2024 - see below) that it doesn't matter whether `∃` is
+interpreted to mean `Σ` or the propositional truncation of `Σ`,
+although this is non trivial and is proved below (summer 2024), but
+does follow from what is developed in [1].
+
+For the following, we adopt `∃` to mean the propositional truncation
+of `Σ` (as we generally do in TypeTopology).
+
+For the next few things, because we are going to prove facts about the
+negation of continuity, it doesn't matter whether we define the notion
+with ∃ or Σ, and we choose the latter for convenience.
 
 \begin{code}
 
 continuous : (ℕ∞ → ℕ) → 𝓤₀ ̇
 continuous f = Σ m ꞉ ℕ , ((n : ℕ) → f (max (ι m) (ι n)) ＝ f ∞)
 
+\end{code}
+
+Later we are going to use the terminology `is-continuous f` for the
+propositional truncation of the type `continuous f`, but also it will
+be more appropriate to think of the type `continuous f` as that of
+continuity data for f.
+
+\begin{code}
+
 continuity-data = continuous
-
-noncontinuous : (ℕ∞ → ℕ) → 𝓤₀ ̇
-noncontinuous f = (m : ℕ) → ¬ ((n : ℕ) → f (max (ι m) (ι n)) ＝[ℕ] f ∞)
-
-module _ (f : ℕ∞ → ℕ) where
-
- noncontinuity-is-decidable : is-decidable (noncontinuous f)
- noncontinuity-is-decidable = Lemma-3·1 (λ x y → χ＝ (f (max x y)) (f ∞))
-
- not-continuous-gives-noncontinuous : ¬ continuous f → noncontinuous f
- not-continuous-gives-noncontinuous ν m a =
-  ν (m , (λ n → rl-implication
-                 (＝-agrees-with-＝[ℕ]
-                    (f (max (ι m) (ι n)))
-                    (f ∞))
-                 (a n)))
-
- noncontinuous-gives-not-continuous : noncontinuous f → ¬ continuous f
- noncontinuous-gives-not-continuous ν (m , a) =
-  ν m (λ n → lr-implication
-              (＝-agrees-with-＝[ℕ]
-                (f (max (ι m) (ι n)))
-                (f ∞))
-              (a n))
-
- Theorem-3·2 : is-decidable (¬ continuous f)
- Theorem-3·2 = map-decidable
-                noncontinuous-gives-not-continuous
-                not-continuous-gives-noncontinuous
-                noncontinuity-is-decidable
 
 \end{code}
 
-(Maybe) to be continued (see the paper for the moment).
+The following is Theorem 3.2 of [1].
+
+\begin{code}
+
+module _ (f : ℕ∞ → ℕ) where
+
+ private
+  Theorem-3·2 : is-decidable (¬ continuous f)
+  Theorem-3·2 = map-decidable
+                 uncurry
+                 curry
+                 (Lemma-3·1
+                   (λ x y → f (max x y) ＝ (f ∞))
+                   (λ x y → ℕ-is-discrete (f (max x y)) (f ∞)))
+
+\end{code}
+
+For our purposes, the following terminology is better.
+
+\begin{code}
+
+ the-negation-of-continuity-is-decidable = Theorem-3·2
+
+\end{code}
+
+The paper [1] also discusses the following.
 
  1. MP gives that continuity and doubly negated continuity agree.
 
- 2. WLPO is equivalent to the existence of a noncontinuous function ℕ∞ → ℕ.
+ 2. WLPO is equivalent to the existence of a noncontinuous function
+    ℕ∞ → ℕ.
 
- 3. ¬ WLPO is equivalent to the doubly negated continuity of all functions ℕ∞ → ℕ.
+ 3. ¬ WLPO is equivalent to the doubly negated continuity of all
+    functions ℕ∞ → ℕ.
 
  4. If MP and ¬ WLPO then all functions ℕ∞ → ℕ are continuous.
 
-Added 24th July 2024. Still based on the same paper. We write down the proof of (3).
+All of them are proved below, but not in this order.
+
+We first prove (2).
 
 \begin{code}
 
@@ -169,7 +214,7 @@ noncontinuous-map-gives-WLPO f f-non-cts = VI
   I : (u : ℕ∞)
     → ¬¬ (Σ v ꞉ ℕ∞ , f (max u v) ≠ f ∞)
     → (Σ v ꞉ ℕ∞ , f (max u v) ≠ f ∞)
-  I u = Σ-Compactness-gives-Markov
+  I u = Σ-Compactness-gives-Complemented-choice
           ℕ∞-Compact
           (λ v → f (max u v) ≠ f ∞)
           (λ v → ¬-preserves-decidability
@@ -217,9 +262,78 @@ noncontinuous-map-gives-WLPO f f-non-cts = VI
 
 \end{code}
 
+Added 7th September 2024. We now prove (3)(→).
+
+\begin{code}
+
+¬WLPO-gives-all-functions-are-not-not-continuous
+ : ¬ WLPO → (f : ℕ∞ → ℕ) → ¬¬ continuous f
+¬WLPO-gives-all-functions-are-not-not-continuous nwlpo f
+ = contrapositive
+    (λ (ν : ¬ continuous f) → noncontinuous-map-gives-WLPO f ν)
+    nwlpo
+
+\end{code}
+
+TODO. Create a Markov's Principle file somewhere, if it doesn't
+already exist, and prove that it doesn't matter whether we formulate
+it with Σ or ∃ (or whether we formulate with decidable properties or
+boolean-valued functions).
+
+\begin{code}
+
+open import NotionsOfDecidability.Complemented
+
+MP : 𝓤 ⁺ ̇
+MP {𝓤} = (A : ℕ → 𝓤 ̇ )
+       → is-complemented A
+       → ¬¬ (Σ n ꞉ ℕ , A n)
+       → Σ n ꞉ ℕ , A n
+
+\end{code}
+
+And now we prove (1).
+
+\begin{code}
+
+MP-gives-that-not-not-continuous-functions-are-continuous
+ : MP → (f : ℕ∞ → ℕ) → ¬¬ continuous f → continuous f
+MP-gives-that-not-not-continuous-functions-are-continuous mp f
+ = mp (λ m → (n : ℕ) → f (max (ι m) (ι n)) ＝ f ∞)
+      (λ m → Theorem-8·2'
+              (λ x → f (max (ι m) x) ＝ f ∞)
+              (λ x → ℕ-is-discrete (f (max (ι m) x)) (f ∞)))
+
+\end{code}
+
+The converse of the above is trivial (double negation introduction)
+and so we will not add it in code, even if it turns out to be needed
+in future additions. The following also is an immediate consequence of
+the above, but we choose to record it explicitly.
+
+And now we prove (4).
+
+\begin{code}
+
+MP-and-¬WLPO-give-that-all-functions-are-continuous
+ : MP → ¬ WLPO → (f : ℕ∞ → ℕ) → continuous f
+MP-and-¬WLPO-give-that-all-functions-are-continuous mp nwlpo f
+ = MP-gives-that-not-not-continuous-functions-are-continuous
+    mp
+    f
+    (¬WLPO-gives-all-functions-are-not-not-continuous nwlpo f)
+
+\end{code}
+
+End of 7th September 2024 addition.
+
 In the following fact we can replace Σ by ∃ because WLPO is a
 proposition. Hence WLPO is the propositional truncation of the type
 Σ f ꞉ (ℕ∞ → ℕ) , ¬ continuous f.
+
+TODO. Add code for this observation.
+
+The following is from [1] with the same proof.
 
 \begin{code}
 
@@ -265,6 +379,13 @@ WLPO-iff-there-is-a-noncontinous-map =
                           f (max (ι m) (ι m)) ＝⟨ a m ⟩
                           f ∞                 ∎)
 
+\end{code}
+
+And a corollary is that the negation of WLPO is a weak continuity
+principle.
+
+\begin{code}
+
 ¬WLPO-iff-all-maps-are-¬¬-continuous : ¬ WLPO ↔ ((f : ℕ∞ → ℕ) → ¬¬ continuous f)
 ¬WLPO-iff-all-maps-are-¬¬-continuous =
  (λ nwlpo f f-non-cts
@@ -279,24 +400,24 @@ WLPO-iff-there-is-a-noncontinous-map =
 
 \end{code}
 
-Hence ¬ WLPO can be considered as a (rather weak) continuity principle.
-
-It is shown in [1] that negative consistent axioms can be postulated
+It is shown in [2] that negative consistent axioms can be postulated
 in MLTT without loss of canonicity, and Andreas Abel filled important
-gaps and formalized this in Agda [2] using a logical-relations
+gaps and formalized this in Agda [3] using a logical-relations
 technique. Hence we can, if we wish, postulate ¬ WLPO without loss of
-canonicity, and get a weak continuity axiom for free.
+canonicity, and get a weak continuity axiom for free. But notice that
+we can also postulate ¬¬ WLPO without loss of continuity, to get a
+weak classical axiom for free. Of course, we can't postulate both at
+the same time while retaining canonicity (and consistency!).
 
-[1] T. Coquand, N.A. Danielsson, M.H. Escardo, U. Norell and Chuangjie Xu.
+[2] T. Coquand, N.A. Danielsson, M.H. Escardo, U. Norell and Chuangjie Xu.
 Negative consistent axioms can be postulated without loss of canonicity.
 https://www.cs.bham.ac.uk/~mhe/papers/negative-axioms.pdf
 
-[2] Andreas Abel. Negative Axioms.
-https://github.com/andreasabel/logrel-mltt/tree/master/Application/NegativeAxioms
+[3] Andreas Abel. Negative Axioms.
+    https://github.com/andreasabel/logrel-mltt/tree/master/Application/NegativeAxioms
 
---
 
-Added 16 August 2024.
+Added 16 August 2024. This is not in [1].
 
 The above definition of continuity is "continuity at the point ∞".
 (And it is also not a proposition.)
@@ -345,20 +466,9 @@ module continuity-criteria (pt : propositional-truncations-exist) where
     A x = (n : ℕ) → f (max x (ι n)) ＝ f ∞
 
     A-is-decidable : (x : ℕ∞) → is-decidable (A x)
-    A-is-decidable x = γ
-     where
-      B : 𝓤₀ ̇
-      B = (n : ℕ) → f (max x (ι n)) ＝[ℕ] f ∞
-
-      B-is-decidable : is-decidable B
-      B-is-decidable = Theorem-8·2 (λ y → χ＝ (f (max x y)) (f ∞))
-
-      γ : is-decidable (A x)
-      γ = map-decidable
-           (λ b n → rl-implication (＝-agrees-with-＝[ℕ] _ _) (b n))
-           (λ a n → lr-implication (＝-agrees-with-＝[ℕ] _ _) (a n))
-           B-is-decidable
-
+    A-is-decidable x = Theorem-8·2'
+                        (λ y → f (max x y) ＝ f ∞)
+                        (λ y → ℕ-is-discrete (f (max x y)) (f ∞))
 \end{code}
 
 Next, we show that continuity is equivalent to a more familiar notion
@@ -529,7 +639,7 @@ logically equivalent.
 
 TODO. They should also be equivalent as types, but this is not
 important for our purposes, because we are interested in continuity as
-property.
+property. But maybe it would be interesting to code this anyway.
 
 Added 21 August 2023. We now establish the logical equivalence with
 the remaining propositional versions of continuity.
@@ -620,18 +730,40 @@ module more-continuity-criteria (pt : propositional-truncations-exist) where
                       (ℕ-is-discrete (f x) (f y))))
 \end{code}
 
-Added 2nd September 2024.
+Added 2nd September 2024. This is also not in [1].
 
 The type `ℕ∞-extension g` is that of all extensions of g : ℕ → ℕ to
 functions ℕ∞ → ℕ.
 
 Our first question is when this type is a proposition (so that it
-could be called ℕ∞-extendability).
+could be called `ℕ∞-extendable g`).
+
+Notice that LPO is stronger than WLPO, and hence, by taking the
+contrapositive, ¬ WLPO is stronger than ¬ LPO:
+
+     LPO →  WLPO
+  ¬ WLPO → ¬ LPO
 
 \begin{code}
 
+_extends_ : (ℕ∞ → ℕ) → (ℕ → ℕ) → 𝓤₀ ̇
+f extends g = f ∘ ι ∼ g
+
 ℕ∞-extension : (ℕ → ℕ) → 𝓤₀ ̇
-ℕ∞-extension g = Σ f ꞉ (ℕ∞ → ℕ) , f ∘ ι ∼ g
+ℕ∞-extension g = Σ f ꞉ (ℕ∞ → ℕ) , (f extends g)
+
+\end{code}
+
+The following says that if all functions ℕ∞ → ℕ are continuous, or,
+more generally, if just ¬ WLPO holds, then the type of ℕ∞-extensions
+of g has at most one element.
+
+(In my view, this is a situation where it would be more sensible to
+use the terminology `is-subsingleton` rather than `is-prop`. In fact,
+I generally prefer the former terminology over the latter, but here we
+try to be consistent with the terminology of the HoTT/UF community.)
+
+\begin{code}
 
 ¬WLPO-gives-ℕ∞-extension-is-prop
  : funext 𝓤₀ 𝓤₀
@@ -643,24 +775,8 @@ could be called ℕ∞-extendability).
   I : (n : ℕ) → f (ι n) ＝ f' (ι n)
   I n = h n ∙ (h' n)⁻¹
 
-  p : ℕ∞ → 𝟚
-  p x = complement (χ＝ (f x) (f' x))
-
-  IIₙ : (n : ℕ) → p (ι n) ＝ ₀
-  IIₙ n = ap complement
-             (lr-implication (＝-agrees-with-＝[ℕ] (f (ι n)) (f' (ι n))) (I n))
-
-  III :  ¬¬ (f ∞ ＝ f' ∞)
-  III d = nwlpo (basic-discontinuity-taboo p (IIₙ , II∞))
-   where
-    III₀ : ¬ (χ＝ (f ∞) (f' ∞) ＝ ₁)
-    III₀ = contrapositive (rl-implication (＝-agrees-with-＝[ℕ] (f ∞) (f' ∞))) d
-
-    II∞ : p ∞ ＝ ₁
-    II∞ = argument-not-one-gives-complement-one III₀
-
   IV : f ∞ ＝ f' ∞
-  IV = ℕ-is-¬¬-separated (f ∞) (f' ∞) III
+  IV = agreement-cotaboo' ℕ-is-discrete nwlpo f f' I
 
   V : f ∼ f'
   V = ℕ∞-density fe ℕ-is-¬¬-separated I IV
@@ -668,71 +784,158 @@ could be called ℕ∞-extendability).
   VI : (f , h) ＝ (f' , h')
   VI = to-subtype-＝ (λ - → Π-is-prop fe (λ n → ℕ-is-set)) (dfunext fe V)
 
-LPO-gives-that-being-ℕ∞-extendable-is-not-prop'
- : FunExt
- → LPO
+\end{code}
+
+Therefore the non-propositionality of the type `ℕ∞-extension g` gives
+the classical principle ¬¬ WLPO.
+
+\begin{code}
+
+ℕ∞-extension-is-not-prop-gives-¬¬WLPO
+ : funext 𝓤₀ 𝓤₀
  → (g : ℕ → ℕ)
- → Σ ((f₀ , h₀) , (f₁ , h₁)) ꞉ ℕ∞-extension g × ℕ∞-extension g , (f₀ ∞ ≠ f₁ ∞)
-LPO-gives-that-being-ℕ∞-extendable-is-not-prop' fe lpo g
- = ((f 0 , h 0) ,
-    (f 1 , h 1)) ,
-    d
- where
-  F : ℕ → (x : ℕ∞) → is-decidable (Σ n ꞉ ℕ , x ＝ ι n) → ℕ
-  F i x (inl (n , p)) = g n
-  F i x (inr ν)       = i
-
-  f : ℕ → ℕ∞ → ℕ
-  f i x = F i x (lpo x)
-
-  H : (i k : ℕ) (d : is-decidable (Σ n ꞉ ℕ , ι k ＝ ι n))
-    → F i (ι k) d ＝ g k
-  H i k (inl (n , p)) = ap g (ℕ-to-ℕ∞-lc (p ⁻¹))
-  H i k (inr ν)       = 𝟘-elim (ν (k , refl))
-
-  h : (i : ℕ) → f i ∘ ι ∼ g
-  h i k = H i k (lpo (ι k))
-
-  L : (i : ℕ) (d : is-decidable (Σ n ꞉ ℕ , ∞ ＝ ι n))
-    → F i ∞ d ＝ i
-  L i (inl (n , p)) = 𝟘-elim (∞-is-not-finite n p)
-  L i (inr _)       = refl
-
-  d : f 0 ∞ ≠ f 1 ∞
-  d e = zero-not-positive 0
-         (0     ＝⟨ L 0 (lpo ∞) ⁻¹ ⟩
-          f 0 ∞ ＝⟨ e ⟩
-          f 1 ∞ ＝⟨ L 1 (lpo ∞) ⟩
-          1     ∎)
-
-LPO-gives-ℕ∞-extension-is-not-prop
- : FunExt
- → (g : ℕ → ℕ)
- → LPO
  → ¬ is-prop (ℕ∞-extension g)
-LPO-gives-ℕ∞-extension-is-not-prop fe g lpo i
-  = h I
- where
-  I : Σ ((f₀ , h₀) , (f₁ , h₁)) ꞉ ℕ∞-extension g × ℕ∞-extension g , (f₀ ∞ ≠ f₁ ∞)
-  I = LPO-gives-that-being-ℕ∞-extendable-is-not-prop' fe lpo g
-
-  h : type-of I → 𝟘
-  h (((f₀ , h₀) , (f₁ , h₁)) , d) =
-   d (f₀ ∞ ＝⟨ ap (λ (- , _) → - ∞) II ⟩
-      f₁ ∞ ∎)
-   where
-    II : f₀ , h₀ ＝ f₁ , h₁
-    II = i (f₀ , h₀) (f₁ , h₁)
-
-ℕ∞-extension-is-prop-gives-¬LPO
- : FunExt
- → (g : ℕ → ℕ)
- → is-prop (ℕ∞-extension g)
- → ¬ LPO
-ℕ∞-extension-is-prop-gives-¬LPO fe g i lpo =
- LPO-gives-ℕ∞-extension-is-not-prop fe g lpo i
+ → ¬¬ WLPO
+ℕ∞-extension-is-not-prop-gives-¬¬WLPO fe g
+ = contrapositive (¬WLPO-gives-ℕ∞-extension-is-prop fe g)
 
 \end{code}
 
-TODO. Parametrize this module by a discrete type, rather than use 𝟚 or
-ℕ as the types of values of functions.
+We are unable, at the time of writing (4th September 2024) to
+establish the converse.  However, if we strengthen the classical
+principle ¬¬ WLPO to LPO, we can. We begin with a classical extension
+lemma, which is then applied to prove this claim.
+
+\begin{code}
+
+LPO-gives-ℕ∞-extension
+ : LPO
+ → (g : ℕ → ℕ) (y : ℕ)
+ → Σ f ꞉ (ℕ∞ → ℕ) , (f extends g) × (f ∞ ＝ y)
+LPO-gives-ℕ∞-extension lpo g y
+ = f , h , e
+ where
+  F : (x : ℕ∞) → is-decidable (Σ n ꞉ ℕ , x ＝ ι n) → ℕ
+  F x (inl (n , p)) = g n
+  F x (inr ν)       = y
+
+  f : ℕ∞ → ℕ
+  f x = F x (lpo x)
+
+  H : (k : ℕ) (d : is-decidable (Σ n ꞉ ℕ , ι k ＝ ι n)) → F (ι k) d ＝ g k
+  H k (inl (n , p)) = ap g (ℕ-to-ℕ∞-lc (p ⁻¹))
+  H k (inr ν)       = 𝟘-elim (ν (k , refl))
+
+  h : f ∘ ι ∼ g
+  h k = H k (lpo (ι k))
+
+  L : (d : is-decidable (Σ n ꞉ ℕ , ∞ ＝ ι n)) → F ∞ d ＝ y
+  L (inl (n , p)) = 𝟘-elim (∞-is-not-finite n p)
+  L (inr _)       = refl
+
+  e : f ∞ ＝ y
+  e = L (lpo ∞)
+
+
+LPO-gives-ℕ∞-extension-is-not-prop
+ : (g : ℕ → ℕ)
+ → LPO
+ → ¬ is-prop (ℕ∞-extension g)
+LPO-gives-ℕ∞-extension-is-not-prop g lpo ext-is-prop
+  = I (LPO-gives-ℕ∞-extension lpo g 0) (LPO-gives-ℕ∞-extension lpo g 1)
+ where
+  I : (Σ f  ꞉ (ℕ∞ → ℕ) , (f  extends g) × (f  ∞ ＝ 0))
+    → (Σ f' ꞉ (ℕ∞ → ℕ) , (f' extends g) × (f' ∞ ＝ 1))
+    → 𝟘
+  I (f , h , e) (f' , h' , e') =
+   zero-not-positive 0
+    (0    ＝⟨ e ⁻¹ ⟩
+     f  ∞ ＝⟨ ap ((λ (- , _) → - ∞)) (ext-is-prop (f , h) (f' , h')) ⟩
+     f' ∞ ＝⟨ e' ⟩
+     1    ∎)
+
+\end{code}
+
+It is direct that if there is at most one extension, then LPO can't
+hold.
+
+\begin{code}
+
+ℕ∞-extension-is-prop-gives-¬LPO
+ : (g : ℕ → ℕ)
+ → is-prop (ℕ∞-extension g)
+ → ¬ LPO
+ℕ∞-extension-is-prop-gives-¬LPO g i lpo =
+ LPO-gives-ℕ∞-extension-is-not-prop g lpo i
+
+\end{code}
+
+So we have the chain of implications
+
+    ¬ WLPO → is-prop (ℕ∞-extension g) → ¬ LPO.
+
+Recall that LPO → WLPO, and so ¬ WLPO → ¬ LPO in any case. We don't
+know whether the implication ¬ WLPO → ¬ LPO can be reversed in general
+(we would guess not).
+
+We also have the chain of implications
+
+    LPO → ¬ is-prop (ℕ∞-extension g) → ¬¬ WLPO.
+
+So the type ¬ is-prop (ℕ∞-extension g) sits between two constructive
+taboos and so is an inherently classical statement.
+
+Added 4th September 2024.
+
+Our next question is when the type `ℕ∞-extension g` is pointed,
+without assuming classical or anticlassical axioms.
+
+\begin{code}
+
+open import Naturals.Order renaming (max to maxℕ ; max-idemp to maxℕ-idemp)
+
+eventually-constant : (ℕ → ℕ) → 𝓤₀ ̇
+eventually-constant g = Σ m ꞉ ℕ , ((n : ℕ) → g (maxℕ m n) ＝ g m)
+
+continuous-extension-gives-eventual-constancy
+ : (g : ℕ → ℕ)
+   ((f , h) : ℕ∞-extension g)
+ → continuous f
+ → eventually-constant g
+continuous-extension-gives-eventual-constancy g (f , h) (m , a)
+ = m , (λ n → g (maxℕ m n)        ＝⟨ (h (maxℕ m n))⁻¹ ⟩
+              f (ι (maxℕ m n))    ＝⟨ ap f (max-fin fe m n) ⟩
+              f (max (ι m) (ι n)) ＝⟨ a n ⟩
+              f ∞                 ＝⟨ (a m)⁻¹ ⟩
+              f (max (ι m) (ι m)) ＝⟨ ap f (max-idemp fe (ι m)) ⟩
+              f (ι m)             ＝⟨ h m ⟩
+              g m                 ∎)
+
+pointed-consequence
+ : (g : ℕ → ℕ)
+ → ℕ∞-extension g
+ → WLPO + ¬¬ eventually-constant g
+pointed-consequence g (f , h) = III
+ where
+  II : is-decidable (¬ continuous f) → WLPO + ¬¬ eventually-constant g
+  II (inl l) = inl (noncontinuous-map-gives-WLPO f l)
+  II (inr r) = inr (¬¬-functor
+                     (continuous-extension-gives-eventual-constancy g (f , h)) r)
+
+  III : WLPO + ¬¬ eventually-constant g
+  III = II (the-negation-of-continuity-is-decidable f)
+
+¬WLPO-gives-that-non-eventually-constant-functions-have-no-extensions
+ : (g : ℕ → ℕ)
+ → ¬ WLPO
+ → ¬ eventually-constant g
+ → ¬ ℕ∞-extension g
+¬WLPO-gives-that-non-eventually-constant-functions-have-no-extensions g nwlpo nec
+ = contrapositive
+    (pointed-consequence g)
+    (cases nwlpo (¬¬-intro nec))
+
+\end{code}
+
+To be continued. We can actually get a much stronger consequence from
+the pointedness of the type of extensions, to be coded here soon.

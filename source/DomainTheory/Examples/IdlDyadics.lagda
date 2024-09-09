@@ -31,7 +31,6 @@ open import DomainTheory.Basics.WayBelow pt fe 𝓤₀
 open import DomainTheory.BasesAndContinuity.Bases pt fe 𝓤₀
 open import DomainTheory.BasesAndContinuity.Continuity pt fe 𝓤₀
 
-open import DomainTheory.IdealCompletion.IdealCompletion pt fe pe 𝓤₀
 open import DomainTheory.IdealCompletion.Properties pt fe pe 𝓤₀
 
 open Ideals-of-small-abstract-basis

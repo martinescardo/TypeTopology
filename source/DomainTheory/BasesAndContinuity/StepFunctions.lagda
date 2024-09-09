@@ -21,7 +21,6 @@ open import MLTT.Spartan hiding (J)
 open import UF.FunExt
 open import UF.PropTrunc
 
-open import UF.Subsingletons
 
 module DomainTheory.BasesAndContinuity.StepFunctions
         (pt : propositional-truncations-exist)
@@ -31,12 +30,8 @@ module DomainTheory.BasesAndContinuity.StepFunctions
 
 open PropositionalTruncation pt hiding (_∨_)
 
-open import UF.Base hiding (_≈_)
 open import UF.Equiv
-open import UF.EquivalenceExamples
-
 open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
 
 open import DomainTheory.Basics.Dcpo pt fe 𝓥
 open import DomainTheory.BasesAndContinuity.Bases pt fe 𝓥
@@ -407,7 +402,7 @@ finite joins.
   𝓔-has-finite-joins : has-finite-joins 𝓔
   𝓔-has-finite-joins = sup-complete-dcpo-has-finite-joins 𝓔 𝓔-is-sup-complete
 
-  refined-basis : Σ B ꞉ 𝓥 ̇  , Σ β ꞉ (B → ⟨ 𝓔 ⟩) ,
+  refined-basis : Σ B ꞉ 𝓥 ̇ , Σ β ꞉ (B → ⟨ 𝓔 ⟩) ,
                   Σ p ꞉ is-small-basis 𝓔 β ,
                   basis-has-finite-joins 𝓔 β p 𝓔-has-finite-joins
   refined-basis = refine-basis-to-have-finite-joins 𝓔 βᴱₚᵣₑ

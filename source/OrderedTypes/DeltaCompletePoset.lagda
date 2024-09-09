@@ -11,23 +11,9 @@ URL: https://arxiv.org/abs/2301.12405
 
 {-# OPTIONS --safe --without-K --exact-split #-}
 
-open import MLTT.Spartan
-open import MLTT.Two-Properties
 open import UF.FunExt
 open import UF.PropTrunc
-open import UF.Logic
 open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
-open import UF.SubtypeClassifier
-open import UF.Size
-open import UF.Equiv
-open import UF.Retracts
-open import UF.Subsingletons-FunExt
-open import UF.NotNotStablePropositions
-open import UF.Embeddings
-open import UF.Sets
-open import UF.ClassicalLogic
-open import Slice.Family
 
 module OrderedTypes.DeltaCompletePoset
  (pt : propositional-truncations-exist)
@@ -35,8 +21,23 @@ module OrderedTypes.DeltaCompletePoset
  (pe : Prop-Ext)
   where
 
+open import MLTT.Spartan
+open import MLTT.Two-Properties
+
+open import UF.ClassicalLogic
+open import UF.Embeddings
+open import UF.Equiv
+open import UF.Logic
+open import UF.NotNotStablePropositions
+open import UF.Retracts
+open import UF.Size
+open import UF.Subsingletons-FunExt
+open import UF.SubtypeClassifier
+
 open import Locales.Frame pt fe hiding (𝟚; ₀; ₁)
 open import OrderedTypes.TwoElementPoset pt fe
+open import Slice.Family
+
 open AllCombinators pt fe
 
 module δ-complete-poset {𝓤 𝓦 : Universe} (𝓥 : Universe) (A : Poset 𝓤 𝓦) where

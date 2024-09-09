@@ -37,7 +37,6 @@ open import CoNaturals.Type renaming (min to min')
 open import CoNaturals.UniversalProperty fe
 open import Notation.Order
 open import Notation.CanonicalMap
-open import UF.Base
 
 \end{code}
 

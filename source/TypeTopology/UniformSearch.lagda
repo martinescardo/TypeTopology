@@ -14,8 +14,6 @@ uniformly continuous predicates. In this module, we generalise this to types
 {-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
-open import UF.Base
-open import TypeTopology.TotallySeparated
 open import TypeTopology.CompactTypes
 open import UF.FunExt
 

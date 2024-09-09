@@ -33,7 +33,6 @@ open import Locales.DistributiveLattice.Spectrum fe pe pt
 open import Locales.Frame pt fe
 open import Locales.SmallBasis pt fe sr
 open import Locales.Spectrality.SpectralLocale pt fe
-open import MLTT.Fin hiding (𝟎; 𝟏)
 open import MLTT.List hiding ([_])
 open import MLTT.Spartan
 open import Slice.Family

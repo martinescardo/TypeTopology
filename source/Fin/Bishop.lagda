@@ -16,7 +16,6 @@ open import UF.Equiv-FunExt
 open import UF.EquivalenceExamples
 open import UF.FunExt
 open import UF.PropTrunc
-open import UF.Sets-Properties
 open import UF.Subsingletons
 open import UF.UA-FunExt
 open import UF.Univalence

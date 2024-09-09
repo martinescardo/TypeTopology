@@ -26,19 +26,14 @@ module DomainTheory.Examples.Omega
 open PropositionalTruncation pt
 
 open import MLTT.Plus-Properties
-open import NotionsOfDecidability.Decidable
 
 open import UF.Equiv
-open import UF.EquivalenceExamples
 open import UF.ImageAndSurjection pt
 open import UF.Subsingletons-FunExt
 open import UF.SubtypeClassifier renaming (⊥ to ⊥Ω ; ⊤ to ⊤Ω)
 open import UF.SubtypeClassifier-Properties
-open import UF.Sets
-open import OrderedTypes.Poset fe
 
 open import DomainTheory.Basics.Dcpo pt fe 𝓤
-open import DomainTheory.Basics.Miscelanea pt fe 𝓤
 open import DomainTheory.Basics.Pointed pt fe 𝓤
 open import DomainTheory.Basics.WayBelow pt fe 𝓤
 open import DomainTheory.BasesAndContinuity.Bases pt fe 𝓤

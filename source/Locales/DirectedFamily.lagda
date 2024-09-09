@@ -16,7 +16,6 @@ and constructions that involve only the order of a given frame.
 open import MLTT.Spartan
 open import UF.FunExt
 open import UF.PropTrunc
-open import UF.Subsingletons
 open import UF.SubtypeClassifier
 
 module Locales.DirectedFamily
@@ -26,9 +25,7 @@ module Locales.DirectedFamily
         (_≤_ : X → X → Ω 𝓥)
        where
 
-open import Locales.Frame pt fe hiding (is-directed)
 open import Slice.Family
-open import UF.Equiv
 open import UF.Logic
 
 open AllCombinators pt fe

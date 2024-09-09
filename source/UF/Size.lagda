@@ -214,7 +214,7 @@ being-small-is-prop {𝓤} ua X 𝓥 = c
            (≃-sym (Lift-is-universe-embedding 𝓥 X))
     a₁ = ≃-sym (univalence-≃ (ua (𝓤 ⊔ 𝓥)) _ _)
 
-  b : (Σ Y ꞉ 𝓥 ̇ , Y ≃ X) ≃ (Σ Y ꞉ 𝓥 ̇  , Lift 𝓤 Y ＝ Lift 𝓥 X)
+  b : (Σ Y ꞉ 𝓥 ̇ , Y ≃ X) ≃ (Σ Y ꞉ 𝓥 ̇ , Lift 𝓤 Y ＝ Lift 𝓥 X)
   b = Σ-cong a
 
   c : is-prop (Σ Y ꞉ 𝓥 ̇ , Y ≃ X)
@@ -260,7 +260,7 @@ prop-being-small-is-prop {𝓤} pe fe P i {𝓥} = c
     a₁ = ≃-sym (prop-univalent-≃
            (pe (𝓤 ⊔ 𝓥))(fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)) (Lift 𝓤 Y) (Lift 𝓥 P) j)
 
-  b : (Σ Y ꞉ 𝓥 ̇ , Y ≃ P) ≃ (Σ Y ꞉ 𝓥 ̇  , Lift 𝓤 Y ＝ Lift 𝓥 P)
+  b : (Σ Y ꞉ 𝓥 ̇ , Y ≃ P) ≃ (Σ Y ꞉ 𝓥 ̇ , Lift 𝓤 Y ＝ Lift 𝓥 P)
   b = Σ-cong a
 
   c : is-prop (Σ Y ꞉ 𝓥 ̇ , Y ≃ P)
@@ -1043,7 +1043,7 @@ when adding set quotients as higher inductive types).
 
 \begin{code}
 
-_is-locally_small : 𝓤 ̇  → (𝓥 : Universe) → 𝓥 ⁺ ⊔ 𝓤 ̇
+_is-locally_small : 𝓤 ̇ → (𝓥 : Universe) → 𝓥 ⁺ ⊔ 𝓤 ̇
 X is-locally 𝓥 small = (x y : X) → (x ＝ y) is 𝓥 small
 
 module _ (pt : propositional-truncations-exist) where

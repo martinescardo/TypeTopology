@@ -39,7 +39,8 @@ decidability-is-closed-under-≃ : {A : 𝓤 ̇ } {B : 𝓥 ̇ }
 decidability-is-closed-under-≃ (f , e) = map-decidable f (inverse f e)
 
 map-decidable' : {A : 𝓤 ̇ } {B : 𝓥 ̇ }
-               → (A → ¬ B) → (¬ A → B)
+               → (A → ¬ B)
+               → (¬ A → B)
                → is-decidable A
                → is-decidable B
 map-decidable' f g (inl x) = inr (f x)

@@ -22,7 +22,6 @@ module Locales.DiscreteLocale.Definition
         (pt : propositional-truncations-exist)
        where
 
-open import Locales.DistributiveLattice.Definition fe pt
 open import Locales.Frame pt fe
 open import MLTT.Spartan
 open import Slice.Family

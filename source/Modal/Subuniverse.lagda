@@ -9,8 +9,6 @@ module Modal.Subuniverse where
 
 open import MLTT.Spartan
 open import UF.Subsingletons
-open import UF.Base
-open import UF.FunExt
 open import UF.Equiv
 open import UF.Univalence
 

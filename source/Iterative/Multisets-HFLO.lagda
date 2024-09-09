@@ -8,9 +8,7 @@ multisets". Notice that this is data, rather then property.
 {-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan hiding (_^_)
-open import UF.Sets-Properties
 open import UF.Univalence
-open import UF.Universes
 
 module Iterative.Multisets-HFLO
         (ua : Univalence)

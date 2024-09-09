@@ -47,7 +47,6 @@ open import UF.Embeddings
 open import UF.Equiv hiding (_≅_)
 open import UF.EquivalenceExamples
 open import UF.FunExt
-open import UF.Retracts
 open import UF.SIP
 open import UF.Sets
 open import UF.Sets-Properties

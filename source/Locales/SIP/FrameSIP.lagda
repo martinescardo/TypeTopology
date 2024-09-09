@@ -45,8 +45,6 @@ open import UF.Base
 open import UF.Equiv
 open import UF.Logic
 open import UF.SIP
-open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
 open import UF.SubtypeClassifier
 
 open AllCombinators pt fe

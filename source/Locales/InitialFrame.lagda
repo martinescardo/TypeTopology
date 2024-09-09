@@ -6,9 +6,7 @@ Based in part on `ayberkt/formal-topology-in-UF`.
 
 {-# OPTIONS --safe --without-K #-}
 
-open import MLTT.List hiding ([_])
 open import MLTT.Spartan hiding (𝟚)
-open import UF.Base
 open import UF.FunExt
 open import UF.PropTrunc
 
@@ -24,7 +22,6 @@ open import Slice.Family
 open import UF.Logic
 open import UF.Sets
 open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
 open import UF.SubtypeClassifier
 
 open AllCombinators pt fe

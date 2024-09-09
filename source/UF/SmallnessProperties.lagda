@@ -16,12 +16,10 @@ open import NotionsOfDecidability.Decidable
 open import UF.Base
 open import UF.Embeddings
 open import UF.Equiv
-open import UF.Equiv-FunExt
 open import UF.EquivalenceExamples
 open import UF.FunExt
 open import UF.PropTrunc
 open import UF.Size
-open import UF.Subsingletons
 
 smallness-closed-under-≃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                          → X is 𝓦 small

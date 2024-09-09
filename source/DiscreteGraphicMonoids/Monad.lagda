@@ -19,7 +19,6 @@ open import DiscreteGraphicMonoids.LWRDGM fe
 open import DiscreteGraphicMonoids.ListsWithoutRepetitions fe
 open import DiscreteGraphicMonoids.Type
 open import MLTT.Spartan
-open import Notation.CanonicalMap
 open import UF.DiscreteAndSeparated
 
 module _ {X : 𝓤 ̇ }

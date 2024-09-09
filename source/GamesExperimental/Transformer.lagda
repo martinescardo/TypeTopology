@@ -34,9 +34,7 @@ open import GamesExperimental.Monad
 open import GamesExperimental.J
 open import GamesExperimental.K
 open import MLTT.Spartan hiding (J)
-open import UF.Base
 open import UF.FunExt
-open import UF.Equiv
 
 module GamesExperimental.Transformer
         (fe : Fun-Ext)

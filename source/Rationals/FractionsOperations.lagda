@@ -9,7 +9,6 @@ open import MLTT.Spartan renaming (_+_ to _∔_)
 open import Naturals.Addition renaming (_+_ to _ℕ+_)
 open import Naturals.Properties
 open import UF.Base hiding (_≈_)
-open import UF.Subsingletons
 open import Integers.Type hiding (abs)
 open import Integers.Abs
 open import Integers.Addition renaming (_+_ to _ℤ+_)

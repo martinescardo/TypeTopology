@@ -36,10 +36,8 @@ module DomainTheory.Part-II
 open PropositionalTruncation pt
 
 open import MLTT.List
-open import MLTT.Plus-Properties
 open import MLTT.Spartan hiding (J)
 
-open import UF.Base
 open import UF.DiscreteAndSeparated
 open import UF.Equiv
 open import UF.EquivalenceExamples
@@ -105,7 +103,7 @@ module _ (𝓥 : Universe) where
   open import Lifting.Construction 𝓥 renaming (⊥ to ⊥𝓛)
   open import DomainTheory.Lifting.LiftingSet pt fe 𝓥 pe
   open import DomainTheory.Lifting.LiftingSetAlgebraic pt pe fe 𝓥 hiding (κ)
-  Example-2-6 : {X : 𝓥 ̇  } (X-set : is-set X) (l : 𝓛 X)
+  Example-2-6 : {X : 𝓥 ̇ } (X-set : is-set X) (l : 𝓛 X)
               → (is-compact (𝓛-DCPO X-set) l ↔ (l ＝ ⊥𝓛) + (Σ x ꞉ X , η x ＝ l))
               × (is-compact (𝓛-DCPO X-set) l ↔ is-decidable (is-defined l))
   Example-2-6 s l = compact-iff-⊥-or-η s l ,
@@ -118,14 +116,14 @@ module _ (𝓥 : Universe) where
  Lemma-2-7 = binary-join-is-compact
 
 
- Definition-2-8 : (X : 𝓤 ̇  ) → 𝓟-general {𝓣} X → 𝓤 ⊔ 𝓣 ̇
+ Definition-2-8 : (X : 𝓤 ̇ ) → 𝓟-general {𝓣} X → 𝓤 ⊔ 𝓣 ̇
  Definition-2-8 X = 𝕋
 
  Definition-2-9 : {X : 𝓤 ̇} → 𝓟 X → 𝓤 ̇
  Definition-2-9 = is-Kuratowski-finite-subset
 
  module _
-         {X : 𝓤 ̇  }
+         {X : 𝓤 ̇ }
          (X-set : is-set X)
         where
 
@@ -169,7 +167,7 @@ universe as the index types for directed completeness.
 \begin{code}
 
  module _
-         {X : 𝓥 ̇  }
+         {X : 𝓥 ̇ }
          (X-set : is-set X)
         where
 
@@ -247,7 +245,7 @@ Section 3
   Lemma-3-4-ad : (α β : Ind) → α ≲ β → ∐-map α ⊑⟨ 𝓓 ⟩ ∐-map β
   Lemma-3-4-ad = ∐-map-is-monotone
 
-  Definition-3-5 : (x : ⟨ 𝓓 ⟩) (α : Ind) → (𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇  ) × (𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇  )
+  Definition-3-5 : (x : ⟨ 𝓓 ⟩) (α : Ind) → (𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇ ) × (𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇ )
   Definition-3-5 x α = α approximates x , α is-left-adjunct-to x
 
   Remark-3-6 : (L : ⟨ 𝓓 ⟩ → Ind)
@@ -416,13 +414,13 @@ Section 5
 
  open import DomainTheory.BasesAndContinuity.Bases pt fe 𝓥
 
- Definition-5-1 : (𝓓 : DCPO {𝓤} {𝓣}) {B : 𝓥 ̇  } (β : B → ⟨ 𝓓 ⟩)
+ Definition-5-1 : (𝓓 : DCPO {𝓤} {𝓣}) {B : 𝓥 ̇ } (β : B → ⟨ 𝓓 ⟩)
                 → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
  Definition-5-1 = is-small-basis
 
  module _
          (𝓓 : DCPO {𝓤} {𝓣})
-         {B : 𝓥 ̇  }
+         {B : 𝓥 ̇ }
          (β : B → ⟨ 𝓓 ⟩)
          (β-is-small-basis : is-small-basis 𝓓 β)
         where
@@ -444,7 +442,7 @@ Section 5
                is-continuous-dcpo-if-unspecified-small-basis 𝓓
 
  Lemma-5-4 : (𝓓 : DCPO {𝓤} {𝓣})
-             {B : 𝓥 ̇  }
+             {B : 𝓥 ̇ }
              (β : B → ⟨ 𝓓 ⟩)
            → is-small-basis 𝓓 β
            → {x y : ⟨ 𝓓 ⟩}
@@ -466,7 +464,7 @@ Section 5
 
  module _
          (𝓓 : DCPO {𝓤} {𝓣})
-         {B : 𝓥 ̇  }
+         {B : 𝓥 ̇ }
          (β : B → ⟨ 𝓓 ⟩)
          (β-is-small-basis : is-small-basis 𝓓 β)
         where
@@ -501,7 +499,7 @@ Section 5
 
   Theorem-5-10 : (s : DCPO[ 𝓓 , 𝓔 ]) (r : DCPO[ 𝓔 , 𝓓 ])
                → is-continuous-retract 𝓓 𝓔 s r
-               → {B : 𝓥 ̇  } (β : B → ⟨ 𝓔 ⟩)
+               → {B : 𝓥 ̇ } (β : B → ⟨ 𝓔 ⟩)
                → is-small-basis 𝓔 β
                → is-small-basis 𝓓 ([ 𝓔 , 𝓓 ]⟨ r ⟩ ∘ β)
   Theorem-5-10 (s , s-cont) (r , r-cont) s-section-of-r =
@@ -527,13 +525,13 @@ Section 5.1
 
 \begin{code}
 
- Definition-5-12 : (𝓓 : DCPO {𝓤} {𝓣}) {B : 𝓥 ̇  } (β : B → ⟨ 𝓓 ⟩)
+ Definition-5-12 : (𝓓 : DCPO {𝓤} {𝓣}) {B : 𝓥 ̇ } (β : B → ⟨ 𝓓 ⟩)
                  → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
  Definition-5-12 = is-small-compact-basis
 
  module _
          (𝓓 : DCPO {𝓤} {𝓣})
-         {B : 𝓥 ̇  }
+         {B : 𝓥 ̇ }
          (β : B → ⟨ 𝓓 ⟩)
          (β-is-small-compact-basis : is-small-compact-basis 𝓓 β)
         where
@@ -581,18 +579,17 @@ Section 5.2
 
  module _ where
 
-  open import Lifting.Construction 𝓥 renaming (⊥ to ⊥𝓛)
   open import DomainTheory.Lifting.LiftingSet pt fe 𝓥 pe
   open import DomainTheory.Lifting.LiftingSetAlgebraic pt pe fe 𝓥
 
-  Example-5-18 : {X : 𝓥 ̇  } (X-set : is-set X)
+  Example-5-18 : {X : 𝓥 ̇ } (X-set : is-set X)
                → is-small-compact-basis (𝓛-DCPO X-set) (κ X-set)
                × is-algebraic-dcpo (𝓛-DCPO X-set)
   Example-5-18 X-set = κ-is-small-compact-basis X-set ,
                        𝓛-is-algebraic-dcpo X-set
 
  module _
-         {X : 𝓥 ̇  }
+         {X : 𝓥 ̇ }
          (X-set : is-set X)
         where
 
@@ -604,7 +601,7 @@ Section 5.2
   Example-5-19 = κ-is-small-compact-basis , 𝓟-is-algebraic-dcpo
 
  module _
-         (P : 𝓤 ̇  )
+         (P : 𝓤 ̇ )
          (P-is-prop : is-prop P)
         where
 
@@ -691,7 +688,6 @@ Section 6
 
 \begin{code}
 
- open import DomainTheory.IdealCompletion.IdealCompletion pt fe pe 𝓥
  open import DomainTheory.IdealCompletion.Properties pt fe pe 𝓥
 
  Definition-6-1 : 𝓥 ⁺ ̇
@@ -705,13 +701,13 @@ Section 6
   open Ideals-of-small-abstract-basis abs-basis
   open unions-of-small-families pt 𝓥 𝓥 B
 
-  Definition-6-2 : (𝓟 B → 𝓥 ̇  ) × (𝓥 ⁺ ̇  )
+  Definition-6-2 : (𝓟 B → 𝓥 ̇ ) × (𝓥 ⁺ ̇ )
   Definition-6-2 = is-ideal , Idl
 
-  Definition-6-3 : {S : 𝓥 ̇  } → (S → 𝓟 B) → 𝓟 B
+  Definition-6-3 : {S : 𝓥 ̇ } → (S → 𝓟 B) → 𝓟 B
   Definition-6-3 = ⋃
 
-  Lemma-6-4 : {S : 𝓥 ̇  } (𝓘 : S → Idl)
+  Lemma-6-4 : {S : 𝓥 ̇ } (𝓘 : S → Idl)
             → is-directed _⊑_ 𝓘
             → is-ideal (⋃ (carrier ∘ 𝓘))
   Lemma-6-4 𝓘 δ = ideality (Idl-∐ 𝓘 δ)
@@ -755,7 +751,7 @@ Section 6.1
 
 \begin{code}
 
- Lemma-6-12 : (B : 𝓥 ̇  ) (_≺_ : B → B → 𝓥 ̇  )
+ Lemma-6-12 : (B : 𝓥 ̇ ) (_≺_ : B → B → 𝓥 ̇ )
             → is-prop-valued _≺_
             → is-transitive _≺_
             → is-reflexive _≺_
@@ -822,10 +818,9 @@ module _ where
  open import DomainTheory.BasesAndContinuity.Continuity pt fe 𝓤₀
  open import DomainTheory.BasesAndContinuity.Bases pt fe 𝓤₀
  open import DomainTheory.Examples.IdlDyadics pt fe pe
- open import DomainTheory.IdealCompletion.IdealCompletion pt fe pe 𝓤₀
  open import DomainTheory.IdealCompletion.Properties pt fe pe 𝓤₀
 
- Definition-6-17 : (𝓤₀ ̇ ) × (𝔻 → 𝔻 → 𝓤₀ ̇  )
+ Definition-6-17 : (𝓤₀ ̇ ) × (𝔻 → 𝔻 → 𝓤₀ ̇ )
  Definition-6-17 = 𝔻 , _≺_
 
  Lemma-6-18 : is-discrete 𝔻 × is-set 𝔻
@@ -878,13 +873,12 @@ module _ (𝓥 : Universe) where
  open import DomainTheory.Basics.WayBelow pt fe 𝓥
  open import DomainTheory.BasesAndContinuity.Continuity pt fe 𝓥
  open import DomainTheory.BasesAndContinuity.Bases pt fe 𝓥
- open import DomainTheory.IdealCompletion.IdealCompletion pt fe pe 𝓥
  open import DomainTheory.IdealCompletion.Properties pt fe pe 𝓥
  open import DomainTheory.IdealCompletion.Retracts pt fe pe 𝓥
 
  module _
          (𝓓 : DCPO {𝓤} {𝓣})
-         {B : 𝓥 ̇  }
+         {B : 𝓥 ̇ }
          (β : B → ⟨ 𝓓 ⟩)
          (β-is-small-basis : is-small-basis 𝓓 β)
         where
@@ -1046,7 +1040,7 @@ Section 7.1
                ε-id π-id ε-comp π-comp
 
   module _
-          {J : I → 𝓥 ̇  }
+          {J : I → 𝓥 ̇ }
           (α : (i : I) → J i → ⟨ 𝓓 i ⟩)
          where
 
@@ -1150,7 +1144,7 @@ Section 7.2
                   → List I → ⟨ 𝓓 ⟩
   Definition-7-10 = directification
 
-  Lemma-7-11 : {I : 𝓦 ̇  } (α : I → ⟨ 𝓓 ⟩)
+  Lemma-7-11 : {I : 𝓦 ̇ } (α : I → ⟨ 𝓓 ⟩)
              → ((i : I) → is-compact 𝓓 (α i))
              → (l : List I) → is-compact 𝓓 (directification α l)
   Lemma-7-11 = directify-is-compact
@@ -1178,7 +1172,7 @@ Section 7.2
 
  module _
          (𝓓 : DCPO{𝓤} {𝓣})
-         {B : 𝓥 ̇  } (β : B → ⟨ 𝓓 ⟩)
+         {B : 𝓥 ̇ } (β : B → ⟨ 𝓓 ⟩)
          (β-is-small-basis : is-small-basis 𝓓 β)
          (𝓓-is-sup-complete : is-sup-complete 𝓓)
         where
@@ -1193,7 +1187,7 @@ Section 7.2
   Definition-7-13 = basis-has-finite-joins
                      𝓓 β β-is-small-basis 𝓓-has-finite-joins
 
-  Lemma-7-14 : Σ B' ꞉ 𝓥 ̇  , Σ β' ꞉ (B' → ⟨ 𝓓 ⟩) ,
+  Lemma-7-14 : Σ B' ꞉ 𝓥 ̇ , Σ β' ꞉ (B' → ⟨ 𝓓 ⟩) ,
                Σ p ꞉ is-small-basis 𝓓 β' ,
                    basis-has-finite-joins 𝓓 β' p 𝓓-has-finite-joins
   Lemma-7-14 = refine-basis-to-have-finite-joins

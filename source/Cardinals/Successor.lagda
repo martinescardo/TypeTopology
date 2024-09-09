@@ -1,7 +1,7 @@
 Jon Sterling, 25th March 2023.
 
 The HoTT book shows that under excluded middle, there are weak successor
-cardinals.  I show that under suitable propositional resizing assumptions, this
+cardinals. I show that under suitable propositional resizing assumptions, this
 holds constructively.
 
 \begin{code}
@@ -11,14 +11,11 @@ holds constructively.
 open import MLTT.Spartan
 open import UF.Base
 open import UF.Equiv
-open import UF.Equiv-FunExt
 open import UF.FunExt
 open import UF.PropTrunc
-open import UF.Retracts
 open import UF.SetTrunc
 open import UF.Size
 open import UF.Subsingletons
-import Various.LawvereFPT as LFTP
 
 module Cardinals.Successor
  (fe : FunExt)
@@ -29,9 +26,15 @@ module Cardinals.Successor
  where
 
 open import UF.Embeddings
+open import UF.Sets
+open import UF.Sets-Properties
 open import UF.Subsingletons-FunExt
+open import UF.Subsingletons-Properties
+open import UF.SubtypeClassifier
+open import UF.SubtypeClassifier-Properties
 open import Cardinals.Type st
 open import Cardinals.Preorder fe pe st pt
+open import Various.CantorTheoremForEmbeddings
 
 import UF.Logic
 
@@ -114,7 +117,7 @@ pr₂ (pr₂ ([weak-successor] A)) H =
  where
   main : ((underlying-set A → Ω 𝓤) ↪ underlying-set A) → 𝟘
   main ι =
-   LFTP.retract-version.cantor-theorem-for-embeddings fe pe psz
+   cantor-theorem-for-embeddings fe pe psz
     (underlying-set A)
     ι'
     ι'-emb

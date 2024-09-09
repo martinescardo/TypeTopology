@@ -17,7 +17,6 @@ module Ordinals.NotationInterpretation0
         (pt : propositional-truncations-exist)
        where
 
-open import UF.Equiv
 open import UF.FunExt
 open import UF.Subsingletons
 open import UF.UA-FunExt
@@ -35,13 +34,11 @@ private
 open PropositionalTruncation pt
 
 open import CoNaturals.Type
-open import MLTT.Plus-Properties
 open import MLTT.Spartan
 open import Notation.CanonicalMap
 open import Ordinals.Arithmetic fe
 open import Ordinals.AdditionProperties ua
 open import Ordinals.Brouwer
-open import Ordinals.Equivalence
 open import Ordinals.Injectivity
 open import Ordinals.Maps
 open import Ordinals.OrdinalOfOrdinals ua
@@ -53,11 +50,7 @@ open import Ordinals.TrichotomousType fe
 open import Ordinals.Type
 open import Ordinals.Underlying
 open import TypeTopology.CompactTypes
-open import TypeTopology.GenericConvergentSequenceCompactness
-open import TypeTopology.PropTychonoff
 open import TypeTopology.SquashedSum fe
-open import UF.Embeddings
-open import UF.ImageAndSurjection pt
 open import UF.Size
 
 open ordinals-injectivity fe

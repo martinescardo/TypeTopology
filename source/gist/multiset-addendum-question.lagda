@@ -24,7 +24,6 @@ open import UF.Base
 open import UF.Equiv
 open import UF.FunExt
 open import UF.PropTrunc
-open import UF.Subsingletons
 open import UF.Univalence
 open import W.Type
 
@@ -65,24 +64,24 @@ Question𝟘 (Πᴹ , eq) = recurs A (Πᴹ A) (eq A)
     A' x = 𝕄-forest (A x) (Idtofun (pr₁ (from-𝕄-＝ eq')) I x)
 
     II : φ I ＝ ssup
-                (Π x ꞉ 𝟘 , 𝕄-root (A' x)) 
+                (Π x ꞉ 𝟘 , 𝕄-root (A' x))
                 (λ g → Πᴹ (λ x → 𝕄-forest (A' x) (g x)))
     II = happly (pr₂ (from-𝕄-＝ eq')) I
        ∙ (eq A')
- 
+
 Question-is-false : ¬ Question
 Question-is-false Q = Question𝟘 (Q {𝟘})
 
 module _ {X : 𝓤 ̇ } where
 
- data _<_ : (X → 𝕄) → (X → 𝕄) → (𝓤 ⁺) ̇  where
+ data _<_ : (X → 𝕄) → (X → 𝕄) → (𝓤 ⁺) ̇ where
   smaller : {f g : X → 𝕄} → ((x : X) → f x ⁅ g x) → f < g
 
  open import Ordinals.Notions _<_
 
  <-is-well-founded : X → is-well-founded
  <-is-well-founded x f = acc (rec' x f (f x) refl)
-  where 
+  where
    rec' : (x : X) (f : X → 𝕄) (m : 𝕄) → m ＝ f x
       → (g : X → 𝕄) → g < f
       → is-accessible g
@@ -91,7 +90,7 @@ module _ {X : 𝓤 ̇ } where
     where
      I : Σ p ꞉ Y ＝ 𝕄-root (f x) , φ ＝ (𝕄-forest (f x)) ∘ Idtofun p
      I = from-𝕄-＝ (eq ∙ 𝕄-η (f x) ⁻¹)
-     
+
      II : Y
      II = Idtofun⁻¹ (pr₁ I) (pr₁ (p x))
 
@@ -101,7 +100,7 @@ module _ {X : 𝓤 ̇ } where
             (𝕄-forest (f x))
             (swap-Idtofun (pr₁ I) (pr₂ I ⁻¹) ⁻¹)
             (pr₁ (p x))
- 
+
  module without-funext where
 
   QuestionX :
@@ -111,7 +110,7 @@ module _ {X : 𝓤 ̇ } where
                                       (λ g → Πᴹ (λ x → 𝕄-forest (A x) (g x))))
   QuestionX x = Πᴹ'' , eqv
    where
-    I : (A : X → 𝕄) → ((g : X → 𝕄) → g < A → 𝕄) → 𝕄 
+    I : (A : X → 𝕄) → ((g : X → 𝕄) → g < A → 𝕄) → 𝕄
     I A rec = ssup
                (Π x ꞉ X , 𝕄-root (A x))
                (λ g → rec (λ x → 𝕄-forest (A x) (g x))
@@ -126,8 +125,8 @@ module _ {X : 𝓤 ̇ } where
     Πᴹ'' : (A : X → 𝕄) → 𝕄
     Πᴹ'' A = Πᴹ' A (<-is-well-founded x A)
 
-    II : (A : X → 𝕄) (acc₁ : is-accessible A) → Πᴹ' A acc₁ ＝ _ 
-    II A acc₁ =  transfinite-induction'-behaviour (λ - → 𝕄) I A acc₁ 
+    II : (A : X → 𝕄) (acc₁ : is-accessible A) → Πᴹ' A acc₁ ＝ _
+    II A acc₁ =  transfinite-induction'-behaviour (λ - → 𝕄) I A acc₁
 
     III : (A : X → 𝕄)
         → ( (g : X → 𝕄)
@@ -182,7 +181,7 @@ module _ {X : 𝓤 ̇ } where
                                          (λ g → Πᴹ (λ x → 𝕄-forest (A x) (g x))))
   QuestionX x = Πᴹ' , eq
    where
-    I : (A : X → 𝕄) → ((g : X → 𝕄) → g < A → 𝕄) → 𝕄 
+    I : (A : X → 𝕄) → ((g : X → 𝕄) → g < A → 𝕄) → 𝕄
     I A rec = ssup
                (Π x ꞉ X , 𝕄-root (A x))
                (λ g → rec (λ x → 𝕄-forest (A x) (g x))

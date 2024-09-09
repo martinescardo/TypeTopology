@@ -28,7 +28,6 @@ module DedekindReals.Addition
        where
 
 open import DedekindReals.Type fe pe pt
-open import DedekindReals.Order fe pe pt
 open PropositionalTruncation pt
 
 _+_ : ℝ → ℝ → ℝ
@@ -356,7 +355,6 @@ infixl 35 _+_
         III : (a ℚ+ c) < (x + y)
         III = ∣ (a , c) , a<x , c<y , refl ∣
 
-open import Rationals.Multiplication renaming (_*_ to _ℚ*_)
 
 -_ : ℝ → ℝ
 -_ x = (L , R) , inhabited-left-z , inhabited-right-z , rounded-left-z , rounded-right-z , disjoint-z , located-z

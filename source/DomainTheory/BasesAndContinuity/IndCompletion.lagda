@@ -29,7 +29,6 @@ module DomainTheory.BasesAndContinuity.IndCompletion
 
 open PropositionalTruncation pt
 
-open import UF.Base hiding (_≈_)
 open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.Subsingletons
@@ -45,7 +44,7 @@ module Ind-completion
        where
 
  Ind : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
- Ind = Σ I ꞉ 𝓥 ̇  , Σ α ꞉ (I → ⟨ 𝓓 ⟩) , is-Directed 𝓓 α
+ Ind = Σ I ꞉ 𝓥 ̇ , Σ α ꞉ (I → ⟨ 𝓓 ⟩) , is-Directed 𝓓 α
 
  index-of-underlying-family : Ind → 𝓥 ̇
  index-of-underlying-family = pr₁

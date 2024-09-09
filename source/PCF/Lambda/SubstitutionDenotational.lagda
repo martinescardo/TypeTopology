@@ -17,24 +17,18 @@ module PCF.Lambda.SubstitutionDenotational
 
 open PropositionalTruncation pt
 
-open import DomainTheory.Basics.Curry pt fe 𝓤₀
 open import DomainTheory.Basics.Dcpo pt fe 𝓤₀
 open import DomainTheory.Basics.LeastFixedPoint pt fe 𝓤₀
 open import DomainTheory.Basics.Pointed pt fe 𝓤₀
 open import DomainTheory.Basics.Products pt fe
-open import DomainTheory.Basics.ProductsContinuity pt fe 𝓤₀
-open import Lifting.Construction 𝓤₀
-open import Lifting.Miscelanea-PropExt-FunExt 𝓤₀ pe fe
 open import Lifting.Monad 𝓤₀ hiding (μ)
 open import Naturals.Properties
 open import PCF.Combinatory.PCFCombinators pt fe 𝓤₀
 open import PCF.Lambda.AbstractSyntax pt
 open import PCF.Lambda.ScottModelOfContexts pt fe pe
-open import PCF.Lambda.ScottModelOfIfZero pt fe pe
 open import PCF.Lambda.ScottModelOfTerms pt fe pe
 open import PCF.Lambda.ScottModelOfTypes pt fe pe
 open import UF.Base
-open import UF.Subsingletons
 
 open DcpoProductsGeneral 𝓤₀
 open IfZeroDenotationalSemantics pe

@@ -34,7 +34,6 @@ private
  pe : Prop-Ext
  pe {𝓤} = univalence-gives-propext (ua 𝓤)
 
-open import Locales.Compactness pt fe
 open import Locales.ContinuousMap.FrameHomomorphism-Definition pt fe
 open import Locales.ContinuousMap.FrameHomomorphism-Properties pt fe
 open import Locales.ContinuousMap.Homeomorphism-Definition pt fe
@@ -42,7 +41,6 @@ open import Locales.ContinuousMap.Homeomorphism-Properties ua pt sr
 open import Locales.DistributiveLattice.Definition fe pt
 open import Locales.DistributiveLattice.Isomorphism fe pt
 open import Locales.DistributiveLattice.Isomorphism-Properties ua pt sr
-open import Locales.DistributiveLattice.Resizing ua pt sr
 open import Locales.DistributiveLattice.Spectrum fe pe pt
 open import Locales.DistributiveLattice.Spectrum-Properties fe pe pt sr
 open import Locales.Frame pt fe
@@ -51,8 +49,6 @@ open import Locales.SIP.FrameSIP
 open import Locales.SmallBasis pt fe sr
 open import Locales.Spectrality.LatticeOfCompactOpens ua pt sr
 open import Locales.Spectrality.LatticeOfCompactOpens-Duality ua pt sr
-open import Locales.Spectrality.SpectralLocale pt fe
-open import Slice.Family
 open import UF.Equiv
 open import UF.Logic
 open import UF.SubtypeClassifier

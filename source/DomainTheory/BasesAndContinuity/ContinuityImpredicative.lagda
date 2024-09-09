@@ -27,7 +27,6 @@ module DomainTheory.BasesAndContinuity.ContinuityImpredicative
 
 open PropositionalTruncation pt
 
-open import UF.Base hiding (_≈_)
 open import UF.Equiv
 
 open import UF.Size hiding (is-locally-small; is-small)

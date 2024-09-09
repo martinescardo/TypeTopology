@@ -1,4 +1,4 @@
-Ian Ray, 07/02/2024
+Ian Ray, 7 February 2024
 
 Singleton Properties. Of course there are alot more we can add to this file.
 For now we will show that singletons are closed under retracts and Σ types.
@@ -44,7 +44,7 @@ singleton-closed-under-retract X Y (r , s , H) (c , C) = (r c , C')
         a                                ∎
 
 ≃-is-singleton : FunExt
-               → {X : 𝓤 ̇  } {Y : 𝓥 ̇  }
+               → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                → is-singleton X
                → is-singleton Y
                → is-singleton (X ≃ Y)

@@ -10,7 +10,6 @@ open import Notation.Order
 open import Naturals.Order
 open import UF.DiscreteAndSeparated
 open import UF.FunExt
-open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.SubtypeClassifier
 open import Quotient.Type

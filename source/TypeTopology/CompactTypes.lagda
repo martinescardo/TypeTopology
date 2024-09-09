@@ -680,18 +680,15 @@ in the original development:
 is-Σ-Compact : 𝓤 ̇ → {𝓥 : Universe} → 𝓤 ⊔ (𝓥 ⁺) ̇
 is-Σ-Compact X {𝓥} = (A : X → 𝓥 ̇ ) → is-complemented A → is-decidable (Σ A)
 
-Σ-Compactness-gives-Markov : {X : 𝓤 ̇ }
-                           → is-Σ-Compact X {𝓥}
-                           → (A : X → 𝓥 ̇ )
-                           → is-complemented A
-                           → ¬¬ Σ A
-                           → Σ A
-Σ-Compactness-gives-Markov {𝓤} {𝓥} {X} c A δ = ¬¬-elim (c A δ)
-
-is-Compact = is-Σ-Compact
-
 Complemented-choice : 𝓤 ̇ → {𝓥 : Universe} → 𝓤 ⊔ (𝓥 ⁺) ̇
 Complemented-choice X {𝓥} = (A : X → 𝓥 ̇ ) → is-complemented A → ¬¬ Σ A → Σ A
+
+Σ-Compactness-gives-Complemented-choice : {X : 𝓤 ̇ }
+                                        → is-Σ-Compact X {𝓥}
+                                        → Complemented-choice X {𝓥}
+Σ-Compactness-gives-Complemented-choice {𝓤} {𝓥} {X} c A δ = ¬¬-elim (c A δ)
+
+is-Compact = is-Σ-Compact
 
 Compactness-gives-complemented-choice : {X : 𝓤 ̇ }
                                       → is-Compact X
@@ -905,12 +902,13 @@ module CompactTypesPT (pt : propositional-truncations-exist) where
              ∃-is-prop)
 
 
- ∃-Compactness-gives-Markov : {X : 𝓤 ̇ }
-                            → is-∃-Compact X {𝓥}
-                            → (A : X → 𝓥 ̇ )
-                            → is-complemented A
-                            → ¬¬ ∃ A
-                            → ∃ A
+ ∃-Compactness-gives-Markov
+  : {X : 𝓤 ̇ }
+  → is-∃-Compact X {𝓥}
+  → (A : X → 𝓥 ̇ )
+  → is-complemented A
+  → ¬¬ ∃ A
+  → ∃ A
  ∃-Compactness-gives-Markov {𝓤} {𝓥} {X} c A δ = ¬¬-elim (c A δ)
 
  ∥Compact∥-gives-∃-Compact : Fun-Ext
@@ -1142,10 +1140,10 @@ compact-gives-Σ+Π : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ )
 compact-gives-Σ+Π X A B κ q = III II
  where
   p : X → 𝟚
-  p = pr₁ (indicator q)
+  p = indicator-map q
 
   I : (x : X) → (p x ＝ ₀ → A x) × (p x ＝ ₁ → B x)
-  I = pr₂ (indicator q)
+  I = indicator-property q
 
   II : (Σ x ꞉ X , p x ＝ ₀) + (Π x ꞉ X , p x ＝ ₁)
   II = κ p

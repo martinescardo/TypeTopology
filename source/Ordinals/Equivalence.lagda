@@ -22,7 +22,6 @@ open import UF.PreUnivalence
 open import UF.Sets
 open import UF.Size
 open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
 open import UF.Univalence
 open import UF.Yoneda
 

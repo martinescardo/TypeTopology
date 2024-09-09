@@ -5,7 +5,6 @@
 {-# OPTIONS --safe --without-K --lossy-unification #-}
 
 open import MLTT.Spartan
-open import UF.Base
 open import UF.PropTrunc
 open import UF.FunExt
 
@@ -18,7 +17,6 @@ open import Locales.Frame pt fe
 open import Locales.GaloisConnection pt fe
 open import UF.Logic
 open import UF.SubtypeClassifier
-open import UF.Subsingletons
 
 open AllCombinators pt fe
 open PropositionalTruncation pt

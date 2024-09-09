@@ -28,7 +28,6 @@ open import MLTT.Two-Properties
 open import Ordinals.Arithmetic fe
 open import Ordinals.Equivalence
 open import Ordinals.Maps
-open import Ordinals.OrdinalOfOrdinals
 open import Ordinals.Type
 open import Ordinals.Underlying
 open import UF.Base
@@ -38,13 +37,11 @@ open import UF.Equiv
 open import UF.Equiv-FunExt
 open import UF.EquivalenceExamples
 open import UF.PropTrunc
-open import UF.Sets
 open import UF.Size
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.SubtypeClassifier
 open import UF.SubtypeClassifier-Properties
-open import UF.UA-FunExt
 open import UF.Univalence
 
 private
@@ -210,7 +207,7 @@ The type of ordinals in any universe has Ω-paths between any two points.
 
 \begin{code}
 
-has-Ω-paths : (𝓥 : Universe) → 𝓤 ̇  → 𝓤 ⊔ (𝓥 ⁺) ̇
+has-Ω-paths : (𝓥 : Universe) → 𝓤 ̇ → 𝓤 ⊔ (𝓥 ⁺) ̇
 has-Ω-paths 𝓥 X = (x y : X) → Ω-Path 𝓥 x y
 
 type-of-ordinals-has-Ω-paths : is-univalent 𝓤

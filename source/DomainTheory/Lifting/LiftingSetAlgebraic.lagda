@@ -23,7 +23,6 @@ module DomainTheory.Lifting.LiftingSetAlgebraic
 open import UF.Equiv
 open import UF.ImageAndSurjection pt
 open import UF.Sets
-open import UF.Subsingletons-FunExt
 
 open PropositionalTruncation pt
 
@@ -31,7 +30,6 @@ open import Lifting.Construction 𝓤 hiding (⊥)
 open import Lifting.EmbeddingDirectly 𝓤 hiding (κ)
 open import Lifting.Miscelanea 𝓤
 open import Lifting.Miscelanea-PropExt-FunExt 𝓤 pe fe
-open import Lifting.Monad 𝓤
 
 open import DomainTheory.Basics.Dcpo pt fe 𝓤
 open import DomainTheory.Basics.Miscelanea pt fe 𝓤
@@ -43,7 +41,6 @@ open import DomainTheory.BasesAndContinuity.Continuity pt fe 𝓤
 
 open import DomainTheory.Lifting.LiftingSet pt fe 𝓤 pe
 
-open import OrderedTypes.Poset fe
 
 module _
         {X : 𝓤 ̇ }

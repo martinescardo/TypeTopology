@@ -4,14 +4,11 @@ Andrew Sneap, 7 February 2021
 
 {-# OPTIONS --safe --without-K --lossy-unification #-}
 
-open import MLTT.Spartan renaming (_+_ to _∔_)
 
 open import UF.PropTrunc
 open import UF.FunExt
 open import UF.Subsingletons
-open import Notation.Order
 
-open import Field.Axioms
 
 module Field.DedekindReals
          (fe : Fun-Ext)
@@ -19,8 +16,6 @@ module Field.DedekindReals
          (pe : Prop-Ext)
  where
 
-open import DedekindReals.Type fe pe pt
-open import DedekindReals.Order fe pe pt
 
 {-
 DedekindRealsField : Field-structure ℝ { 𝓤₀ }

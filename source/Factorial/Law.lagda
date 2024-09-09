@@ -69,7 +69,6 @@ open import UF.Equiv-FunExt
 open import UF.EquivalenceExamples
 open import UF.Retracts
 open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
 
 \end{code}
 

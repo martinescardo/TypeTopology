@@ -31,17 +31,17 @@ X ^ (succ n) = X ^ n × X
 
 infixr 3 _^_
 
-data Cxt : 𝓤₀ ̇  where
+data Cxt : 𝓤₀ ̇ where
  〈〉 : Cxt
  _,,_ : Cxt → type → Cxt
 
 infixl 6 _,,_
 
-data ∈Cxt (σ : type) : Cxt → 𝓤₀ ̇  where
+data ∈Cxt (σ : type) : Cxt → 𝓤₀ ̇ where
  ∈Cxt0 : (Γ : Cxt) → ∈Cxt σ (Γ ,, σ)
  ∈CxtS : {Γ : Cxt} (τ : type) → ∈Cxt σ Γ → ∈Cxt σ (Γ ,, τ)
 
-data T : (Γ : Cxt) (σ : type) → 𝓤₀ ̇  where
+data T : (Γ : Cxt) (σ : type) → 𝓤₀ ̇ where
  Zero : {Γ : Cxt} → T Γ ι
  Succ : {Γ : Cxt} → T Γ ι → T Γ ι
  Rec  : {Γ : Cxt} {σ : type} → T Γ (ι ⇒ σ ⇒ σ) → T Γ σ → T Γ ι → T Γ σ

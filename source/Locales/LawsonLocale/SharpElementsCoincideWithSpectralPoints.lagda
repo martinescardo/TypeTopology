@@ -40,37 +40,29 @@ private
  pe {𝓤} = univalence-gives-propext (ua 𝓤)
 
 open import DomainTheory.BasesAndContinuity.Bases pt fe 𝓤
-open import DomainTheory.BasesAndContinuity.CompactBasis pt fe 𝓤
 open import DomainTheory.BasesAndContinuity.Continuity pt fe 𝓤
 open import DomainTheory.BasesAndContinuity.ScottDomain pt fe 𝓤
 open import DomainTheory.Basics.Dcpo pt fe 𝓤 renaming (⟨_⟩ to ⟨_⟩∙)
 open import DomainTheory.Basics.WayBelow pt fe 𝓤
 open import DomainTheory.Topology.ScottTopology pt fe 𝓤
 open import DomainTheory.Topology.ScottTopologyProperties pt fe 𝓤
-open import Locales.Clopen pt fe sr
-open import Locales.CompactRegular pt fe using (clopens-are-compact-in-compact-frames)
 open import Locales.Compactness pt fe hiding (is-compact)
 open import Locales.ContinuousMap.FrameHomomorphism-Definition pt fe
 open import Locales.ContinuousMap.FrameHomomorphism-Properties pt fe
 open import Locales.Frame pt fe
 open import Locales.InitialFrame pt fe hiding (_⊑_)
 open import Locales.LawsonLocale.CompactElementsOfPoint 𝓤 fe pe pt sr
-open import Locales.Point.Definition pt fe
 open import Locales.Point.SpectralPoint-Definition pt fe
-open import Locales.ScottLocale.Definition pt fe 𝓤
 open import Locales.ScottLocale.Properties pt fe 𝓤
-open import Locales.ScottLocale.ScottLocalesOfAlgebraicDcpos pt fe 𝓤
 open import Locales.ScottLocale.ScottLocalesOfScottDomains pt fe sr 𝓤
 open import Locales.SmallBasis pt fe sr
 open import Locales.Spectrality.SpectralMap pt fe
 open import Locales.TerminalLocale.Properties pt fe sr
 open import NotionsOfDecidability.Decidable
-open import NotionsOfDecidability.SemiDecidable fe pe pt
 open import Slice.Family
 open import UF.Equiv
 open import UF.Logic
 open import UF.Subsingletons-FunExt
-open import UF.Subsingletons-Properties
 open import UF.SubtypeClassifier renaming (⊥ to ⊥ₚ)
 
 open AllCombinators pt fe

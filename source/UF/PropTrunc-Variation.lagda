@@ -14,7 +14,6 @@ open import MLTT.Spartan
 module UF.PropTrunc-Variation (F : Universe → Universe) where
 
 open import MLTT.Plus-Properties
-open import UF.Base
 open import UF.Subsingletons
 open import UF.FunExt
 open import UF.Subsingletons-FunExt

@@ -1,4 +1,4 @@
-Ian Ray 01/09/2023 -- edited 09/04/2024.
+Ian Ray 1 September 2023 -- edited 9 April 2024
 
 We formalize Curi's notion of abstract inductive definition (in CZF) within
 the context of a sup-lattice L with small basis B (and β : B → L). An abstract
@@ -40,12 +40,9 @@ open import UF.Equiv
 open import UF.Equiv-FunExt
 open import UF.EquivalenceExamples
 open import UF.FunExt
-open import UF.Hedberg
 open import UF.Logic
 open import UF.Powerset-MultiUniverse
 open import UF.PropTrunc
-open import UF.Retracts
-open import UF.Sets
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.SubtypeClassifier

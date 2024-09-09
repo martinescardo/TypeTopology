@@ -12,18 +12,11 @@ Any spectral map `f : X → Y` of spectral locales gives a lattice homomorphism
 
 {-# OPTIONS --safe --without-K --lossy-unification #-}
 
-open import MLTT.List hiding ([_])
-open import MLTT.Pi
 open import MLTT.Spartan
-open import Slice.Family
-open import UF.Base
 open import UF.FunExt
-open import UF.ImageAndSurjection
 open import UF.Logic
 open import UF.PropTrunc
 open import UF.Size
-open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
 open import UF.SubtypeClassifier
 open import UF.UA-FunExt
 open import UF.Univalence
@@ -41,14 +34,12 @@ open import Locales.Compactness pt fe
 open import Locales.ContinuousMap.Definition pt fe
 open import Locales.ContinuousMap.FrameHomomorphism-Definition pt fe
 open import Locales.ContinuousMap.FrameHomomorphism-Properties pt fe
-open import Locales.DistributiveLattice.Definition fe pt
 open import Locales.DistributiveLattice.Homomorphism fe pt
 open import Locales.Frame pt fe
 open import Locales.SmallBasis pt fe sr
 open import Locales.Spectrality.LatticeOfCompactOpens ua pt sr
 open import Locales.Spectrality.SpectralLocale pt fe
 open import Locales.Spectrality.SpectralMap pt fe
-open import UF.EquivalenceExamples
 
 open AllCombinators pt fe
 open ContinuousMaps
