@@ -908,23 +908,19 @@ eventual-constancy-gives-continuous-extension g
     IH = h (g ∘ succ) m (a ∘ succ)
 
     I : ℕ∞-extension (g ∘ succ) → ℕ∞-extension g
-    I (f , e) = (λ x → φ x (Zero+Succ fe x)) ,
-                (λ n → φ-property n (Zero+Succ fe (ι n)))
+    I (f , e) = f' , e'
      where
-      φ : (x : ℕ∞) → (x ＝ Zero) + is-Succ x → ℕ
-      φ x (inl _)        = g 0
-      φ x (inr (x' , _)) = f x'
+      f' : ℕ∞ → ℕ
+      f' = ℕ∞-Cases fe (g 0) f
 
-      φ-property : (n : ℕ) (c : (ι n ＝ Zero) + is-Succ (ι n)) → φ (ι n) c ＝ g n
-      φ-property 0        (inl _)       = refl
-      φ-property (succ n) (inl p)       = 𝟘-elim (Succ-not-Zero p)
-      φ-property 0        (inr (x , p)) = 𝟘-elim (Succ-not-Zero (p ⁻¹))
-      φ-property (succ n) (inr (x , p)) =
-       φ (ι (succ n)) (inr (x , p)) ＝⟨ refl ⟩
-       f x                          ＝⟨ ap f (Succ-lc (p ⁻¹)) ⟩
-       f (ι n)                      ＝⟨ e n ⟩
-       g (succ n)                   ∎
-
+      e' : (n : ℕ) → f' (ι n) ＝ g n
+      e' 0 = f' (ι 0) ＝⟨ refl ⟩
+             f' Zero  ＝⟨ ℕ∞-Cases-Zero fe (g 0) f ⟩
+             g 0      ∎
+      e' (succ n) = f' (ι (succ n)) ＝⟨ refl ⟩
+                    f' (Succ (ι n)) ＝⟨ ℕ∞-Cases-Succ fe (g 0) f (ι n) ⟩
+                    f (ι n)         ＝⟨ e n ⟩
+                    g (succ n)      ∎
 
 continuous-extension-gives-eventual-constancy
  : (g : ℕ → ℕ)
