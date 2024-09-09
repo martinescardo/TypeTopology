@@ -911,14 +911,14 @@ eventual-constancy-gives-continuous-extension g
     I (f , e) = f' , e'
      where
       f' : ℕ∞ → ℕ
-      f' = ℕ∞-Cases fe (g 0) f
+      f' = ℕ∞-cases fe (g 0) f
 
       e' : (n : ℕ) → f' (ι n) ＝ g n
       e' 0 = f' (ι 0) ＝⟨ refl ⟩
-             f' Zero  ＝⟨ ℕ∞-Cases-Zero fe (g 0) f ⟩
+             f' Zero  ＝⟨ ℕ∞-cases-Zero fe (g 0) f ⟩
              g 0      ∎
       e' (succ n) = f' (ι (succ n)) ＝⟨ refl ⟩
-                    f' (Succ (ι n)) ＝⟨ ℕ∞-Cases-Succ fe (g 0) f (ι n) ⟩
+                    f' (Succ (ι n)) ＝⟨ ℕ∞-cases-Succ fe (g 0) f (ι n) ⟩
                     f (ι n)         ＝⟨ e n ⟩
                     g (succ n)      ∎
 
@@ -981,3 +981,13 @@ continuous-extension-gives-eventual-constancy g (f , h) (m , a)
     (cases nwlpo (¬¬-intro nec))
 
 \end{code}
+
+TODO. Is there a nice necessary and sufficient condition for the
+      explicit existence of an extension, between the respectively
+      necessary and sufficient conditions
+
+        WLPO + ¬¬ eventually-constant g
+
+      and
+
+        LPO + eventually-constant g?

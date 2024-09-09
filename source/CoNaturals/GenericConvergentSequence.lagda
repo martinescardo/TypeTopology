@@ -337,22 +337,25 @@ module _ (fe : funext 𝓤₀ 𝓤₀)
   φ x (inl _)        = x₀
   φ x (inr (x' , _)) = f x'
 
-  φ-property-Zero : (c : (Zero ＝ Zero) + is-Succ Zero) → φ Zero c ＝ x₀
+  φ-property-Zero : (c : (Zero ＝ Zero) + is-Succ Zero)
+                  → φ Zero c ＝ x₀
   φ-property-Zero (inl p) = refl
   φ-property-Zero (inr (x , p)) = 𝟘-elim (Succ-not-Zero (p ⁻¹))
 
-  φ-property-Succ : (u : ℕ∞) (c : (Succ u ＝ Zero) + is-Succ (Succ u)) → φ (Succ u) c ＝ f u
+  φ-property-Succ : (u : ℕ∞)
+                    (c : (Succ u ＝ Zero) + is-Succ (Succ u))
+                    → φ (Succ u) c ＝ f u
   φ-property-Succ u (inl p)       = 𝟘-elim (Succ-not-Zero p)
   φ-property-Succ u (inr (x , p)) = ap f (Succ-lc (p ⁻¹))
 
- ℕ∞-Cases : ℕ∞ → X
- ℕ∞-Cases u = φ u (Zero+Succ fe u)
+ ℕ∞-cases : ℕ∞ → X
+ ℕ∞-cases u = φ u (Zero+Succ fe u)
 
- ℕ∞-Cases-Zero : ℕ∞-Cases Zero ＝ x₀
- ℕ∞-Cases-Zero = φ-property-Zero (Zero+Succ fe Zero)
+ ℕ∞-cases-Zero : ℕ∞-cases Zero ＝ x₀
+ ℕ∞-cases-Zero = φ-property-Zero (Zero+Succ fe Zero)
 
- ℕ∞-Cases-Succ : (u : ℕ∞) → ℕ∞-Cases (Succ u) ＝ f u
- ℕ∞-Cases-Succ u = φ-property-Succ u (Zero+Succ fe (Succ u))
+ ℕ∞-cases-Succ : (u : ℕ∞) → ℕ∞-cases (Succ u) ＝ f u
+ ℕ∞-cases-Succ u = φ-property-Succ u (Zero+Succ fe (Succ u))
 
 Succ-criterion : funext₀
                → {u : ℕ∞} {n : ℕ}
