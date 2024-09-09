@@ -760,11 +760,11 @@ try to be consistent with the terminology of the HoTT/UF community.)
  → (g : ℕ → ℕ)
  → ¬ WLPO
  → is-prop (ℕ∞-extension g)
-¬WLPO-gives-ℕ∞-extension-is-prop fe g nwlpo (f , h) (f' , h') = VI
+¬WLPO-gives-ℕ∞-extension-is-prop fe g nwlpo (f , e) (f' , e') = VI
  where
   I : (n : ℕ) → f (ι n) ＝ f' (ι n)
-  I n = f (ι n)  ＝⟨ h n ⟩
-        g n      ＝⟨ (h' n)⁻¹ ⟩
+  I n = f (ι n)  ＝⟨ e n ⟩
+        g n      ＝⟨ (e' n)⁻¹ ⟩
         f' (ι n) ∎
 
   IV : f ∞ ＝ f' ∞
@@ -773,7 +773,7 @@ try to be consistent with the terminology of the HoTT/UF community.)
   V : f ∼ f'
   V = ℕ∞-density fe ℕ-is-¬¬-separated I IV
 
-  VI : (f , h) ＝ (f' , h')
+  VI : (f , e) ＝ (f' , e')
   VI = to-subtype-＝ (λ - → Π-is-prop fe (λ n → ℕ-is-set)) (dfunext fe V)
 
 \end{code}
@@ -806,7 +806,7 @@ LPO-gives-ℕ∞-extension
    (y : ℕ)
  → Σ (f , _) ꞉ ℕ∞-extension g , (f ∞ ＝ y)
 LPO-gives-ℕ∞-extension lpo g y
- = (f , h) , e
+ = (f , e) , p
  where
   F : (x : ℕ∞) → is-decidable (Σ n ꞉ ℕ , x ＝ ι n) → ℕ
   F x (inl (n , p)) = g n
@@ -815,19 +815,19 @@ LPO-gives-ℕ∞-extension lpo g y
   f : ℕ∞ → ℕ
   f x = F x (lpo x)
 
-  H : (k : ℕ) (d : is-decidable (Σ n ꞉ ℕ , ι k ＝ ι n)) → F (ι k) d ＝ g k
-  H k (inl (n , p)) = ap g (ℕ-to-ℕ∞-lc (p ⁻¹))
-  H k (inr ν)       = 𝟘-elim (ν (k , refl))
+  E : (k : ℕ) (d : is-decidable (Σ n ꞉ ℕ , ι k ＝ ι n)) → F (ι k) d ＝ g k
+  E k (inl (n , p)) = ap g (ℕ-to-ℕ∞-lc (p ⁻¹))
+  E k (inr ν)       = 𝟘-elim (ν (k , refl))
 
-  h : f ∘ ι ∼ g
-  h k = H k (lpo (ι k))
+  e : f ∘ ι ∼ g
+  e k = E k (lpo (ι k))
 
   L : (d : is-decidable (Σ n ꞉ ℕ , ∞ ＝ ι n)) → F ∞ d ＝ y
   L (inl (n , p)) = 𝟘-elim (∞-is-not-finite n p)
   L (inr _)       = refl
 
-  e : f ∞ ＝ y
-  e = L (lpo ∞)
+  p : f ∞ ＝ y
+  p = L (lpo ∞)
 
 LPO-gives-ℕ∞-extension-is-not-prop
  : (g : ℕ → ℕ)
@@ -839,11 +839,11 @@ LPO-gives-ℕ∞-extension-is-not-prop g lpo ext-is-prop
   I : (Σ (f , _) ꞉ ℕ∞-extension g , (f ∞ ＝ 0))
     → (Σ (f , _) ꞉ ℕ∞-extension g , (f ∞ ＝ 1))
     → 𝟘
-  I ((f , h) , e) ((f' , h') , e') =
+  I ((f , e) , p) ((f' , e') , p') =
    zero-not-positive 0
-    (0    ＝⟨ e ⁻¹ ⟩
-     f  ∞ ＝⟨ ap ((λ (- , _) → - ∞)) (ext-is-prop (f , h) (f' , h')) ⟩
-     f' ∞ ＝⟨ e' ⟩
+    (0    ＝⟨ p ⁻¹ ⟩
+     f  ∞ ＝⟨ ap ((λ (- , _) → - ∞)) (ext-is-prop (f , e) (f' , e')) ⟩
+     f' ∞ ＝⟨ p' ⟩
      1    ∎)
 
 \end{code}
@@ -924,16 +924,16 @@ eventual-constancy-gives-continuous-extension g
 
 continuous-extension-gives-eventual-constancy
  : (g : ℕ → ℕ)
-   ((f , h) : ℕ∞-extension g)
+   ((f , _) : ℕ∞-extension g)
  → continuous f
  → eventually-constant g
-continuous-extension-gives-eventual-constancy g (f , h) (m , a)
- = m , (λ n → g (maxℕ m n)        ＝⟨ (h (maxℕ m n))⁻¹ ⟩
+continuous-extension-gives-eventual-constancy g (f , e) (m , a)
+ = m , (λ n → g (maxℕ m n)        ＝⟨ (e (maxℕ m n))⁻¹ ⟩
               f (ι (maxℕ m n))    ＝⟨ ap f (max-fin fe m n) ⟩
               f (max (ι m) (ι n)) ＝⟨ a n ⟩
               f ∞                 ＝⟨ (a m)⁻¹ ⟩
               f (max (ι m) (ι m)) ＝⟨ ap f (max-idemp fe (ι m)) ⟩
-              f (ι m)             ＝⟨ h m ⟩
+              f (ι m)             ＝⟨ e m ⟩
               g m                 ∎)
 
 ℕ∞-extension-existence-sufficient-condition
@@ -960,12 +960,12 @@ continuous-extension-gives-eventual-constancy g (f , h) (m , a)
  → ℕ∞-extension g
  → WLPO + ¬¬ eventually-constant g
 ℕ∞-extension-existence-necessary-condition
- g (f , h) = III
+ g (f , e) = III
  where
   II : is-decidable (¬ continuous f) → WLPO + ¬¬ eventually-constant g
   II (inl l) = inl (noncontinuous-map-gives-WLPO (f , l))
   II (inr r) = inr (¬¬-functor
-                     (continuous-extension-gives-eventual-constancy g (f , h)) r)
+                     (continuous-extension-gives-eventual-constancy g (f , e)) r)
 
   III : WLPO + ¬¬ eventually-constant g
   III = II (the-negation-of-continuity-is-decidable f)
