@@ -1128,17 +1128,19 @@ alternative-plus τ₀ τ₁ = eqtoidₒ (ua _) fe' _ _ (alternative-plusₒ τ�
 
 Added 13 November 2023 by Fredrik Nordvall Forsberg.
 
-Addition satisfies the expected recursive equations (which classically
-define addition).
+Addition satisfies the expected recursive equations (which classically define
+addition): zero is the neutral element (this is 𝟘₀-right-neutral above), addition
+commutes with successors and preserves inhabited suprema.
+
+Note that (the index of) the supremum indeed has to be inhabited, because
+preserving the empty supremum would give the false equation
+  α +ₒ 𝟘 ＝ 𝟘
+for any ordinal α.
 
 \begin{code}
 
-+ₒ-zero : (α : Ordinal 𝓤) → α +ₒ 𝟘ₒ ＝ α
-+ₒ-zero = 𝟘ₒ-right-neutral
-
--- +ₒ commutes with successors
-+ₒ-succ : (α β : Ordinal 𝓤) → α +ₒ (β +ₒ 𝟙ₒ) ＝ (α +ₒ β) +ₒ 𝟙ₒ
-+ₒ-succ α β = (+ₒ-assoc α β 𝟙ₒ) ⁻¹
++ₒ-commutes-with-successor : (α β : Ordinal 𝓤) → α +ₒ (β +ₒ 𝟙ₒ) ＝ (α +ₒ β) +ₒ 𝟙ₒ
++ₒ-commutes-with-successor α β = (+ₒ-assoc α β 𝟙ₒ) ⁻¹
 
 module _ (pt : propositional-truncations-exist)
          (sr : Set-Replacement pt)
@@ -1148,40 +1150,42 @@ module _ (pt : propositional-truncations-exist)
  open suprema pt sr
  open PropositionalTruncation pt
 
- -- +ₒ commutes with inhabited suprema
- +ₒ-sup : (α : Ordinal 𝓤){I : 𝓤 ̇ } (β : I → Ordinal 𝓤) → ∥ I ∥ → α +ₒ sup β ＝ sup (λ i → α +ₒ β i)
- +ₒ-sup α {I} β = ∥∥-rec (the-type-of-ordinals-is-a-set (ua _) fe') (λ i₀ → ⊴-antisym _ _ (a i₀) b)
-  where
-   a : I → (α +ₒ sup β) ⊴ sup (λ i → α +ₒ β i)
-   a i₀ = ≼-gives-⊴ _ _ g
-    where
-     g : (u : Ordinal _) → u ⊲ (α +ₒ sup β) → u ⊲ sup (λ i → α +ₒ β i)
-     g u (inl a , r) = transport (λ - → - ⊲ sup (λ i → α +ₒ β i)) (u=α↓a ⁻¹) a↓a<⋁α+β-
-       where
-        u=α↓a : u ＝ α ↓ a
-        u=α↓a = r ∙ +ₒ-↓-left a ⁻¹
+ +ₒ-preserves-inhabited-suprema : (α : Ordinal 𝓤) {I : 𝓤 ̇ } (β : I → Ordinal 𝓤)
+                                → ∥ I ∥
+                                → α +ₒ sup β ＝ sup (λ i → α +ₒ β i)
+ +ₒ-preserves-inhabited-suprema α {I} β =
+  ∥∥-rec (the-type-of-ordinals-is-a-set (ua _) fe')
+         (λ i₀ → ⊴-antisym _ _ (≼-gives-⊴ _ _ (⦅1⦆ i₀)) ⦅2⦆)
+   where
+    ⦅2⦆ : sup (λ i → α +ₒ β i) ⊴ (α +ₒ sup β)
+    ⦅2⦆ = sup-is-lower-bound-of-upper-bounds (λ i → α +ₒ β i) (α +ₒ sup β) ⦅2⦆'
+     where
+      ⦅2⦆' : (i : I) → (α +ₒ β i) ⊴ (α +ₒ sup β)
+      ⦅2⦆' i = ≼-gives-⊴ (α +ₒ β i) (α +ₒ sup β)
+                (+ₒ-right-monotone α (β i) (sup β)
+                 (⊴-gives-≼ _ _ (sup-is-upper-bound β i)))
 
-        a↓a<⋁α+β- : (α ↓ a) ⊲ sup (λ i → α +ₒ β i)
-        a↓a<⋁α+β- = (pr₁ (sup-is-upper-bound (λ i → α +ₒ β i) i₀) (inl a)) ,
-                    (+ₒ-↓-left a ∙ initial-segment-of-sup-at-component (λ i → α +ₒ β i) i₀ (inl a) ⁻¹)
-
-     g u (inr b , r) = transport (λ - → - ⊲ sup (λ i → α +ₒ β i)) (u=α+βi↓b ⁻¹) g''
+    ⦅1⦆ : I → (α +ₒ sup β) ≼ sup (λ i → α +ₒ β i)
+    ⦅1⦆ i₀ _ (inl a , refl) =
+     transport (_⊲ sup (λ i → α +ₒ β i))
+               (+ₒ-↓-left a)
+               (⊲-⊴-gives-⊲ (α ↓ a) (α +ₒ β i₀) (sup (λ i → α +ₒ β i))
+                (inl a , +ₒ-↓-left a)
+                (sup-is-upper-bound (λ i → α +ₒ β i) i₀))
+    ⦅1⦆ i₀ _ (inr s , refl) =
+     transport (_⊲ sup (λ i → α +ₒ β i))
+               (+ₒ-↓-right s)
+               (∥∥-rec (⊲-is-prop-valued _ _) ⦅1⦆'
+                (initial-segment-of-sup-is-initial-segment-of-some-component
+                  β s))
       where
-       u=α+βi↓b : u ＝ α +ₒ (sup β ↓ b)
-       u=α+βi↓b = r ∙ +ₒ-↓-right b ⁻¹
-
-       g' : Σ i ꞉ I , Σ y ꞉ ⟨ β i ⟩ , sup β ↓ b ＝ (β i) ↓ y → (α +ₒ (sup β ↓ b)) ⊲ sup (λ i → α +ₒ β i)
-       g' (i , y , r) = transport (λ - → (α +ₒ -) ⊲ sup (λ j → α +ₒ β j)) (r ⁻¹)
-                         (_ , (+ₒ-↓-right y ∙ initial-segment-of-sup-at-component (λ j → α +ₒ β j) i (inr y) ⁻¹) )
-
-       g'' : (α +ₒ (sup β ↓ b)) ⊲ sup (λ i → α +ₒ β i)
-       g'' = ∥∥-rec (⊲-is-prop-valued _ _) g' (initial-segment-of-sup-is-initial-segment-of-some-component β b)
-
-   b' : (i : I) → (α +ₒ β i) ⊴ (α +ₒ sup β)
-   b' i = ≼-gives-⊴ _ _ (+ₒ-right-monotone α (β i) (sup β) (⊴-gives-≼ _ _ (sup-is-upper-bound β i)))
-
-   b : sup (λ i → α +ₒ β i) ⊴ (α +ₒ sup β)
-   b = sup-is-lower-bound-of-upper-bounds (λ i → α +ₒ β i) (α +ₒ sup β) b'
+       ⦅1⦆' : Σ i ꞉ I , Σ b ꞉ ⟨ β i ⟩ , sup β ↓ s ＝ β i ↓ b
+            → (α +ₒ (sup β ↓ s)) ⊲ sup (λ i → α +ₒ β i)
+       ⦅1⦆' (i , b , p) =
+        transport⁻¹ (λ - → (α +ₒ -) ⊲ sup (λ j → α +ₒ β j)) p
+         (⊲-⊴-gives-⊲ (α +ₒ (β i ↓ b)) (α +ₒ β i) (sup (λ j → α +ₒ β j))
+          (inr b , +ₒ-↓-right b)
+          (sup-is-upper-bound (λ j → α +ₒ β j) i))
 
 \end{code}
 

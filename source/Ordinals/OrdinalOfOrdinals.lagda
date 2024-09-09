@@ -708,6 +708,15 @@ to-⊴ α β ϕ = g
 
 \end{code}
 
+Added 9 September 2024 by Tom de Jong and Fredrik Nordvall Forsberg.
+
+\begin{code}
+
+⊲-⊴-gives-⊲ : (α β γ : Ordinal 𝓤) → α ⊲ β → β ⊴ γ → α ⊲ γ
+⊲-⊴-gives-⊲ α β γ l k = ≼-trans _⊲_ (⊴-gives-≼ β γ k) (≼-refl _⊲_) α l
+
+\end{code}
+
 Transfinite induction on the ordinal of ordinals:
 
 \begin{code}
