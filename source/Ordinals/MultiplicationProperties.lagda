@@ -1,6 +1,11 @@
 Fredrik Nordvall Forsberg, 13 November 2023.
 In collaboration with Tom de Jong, Nicolai Kraus and Chuangjie Xu.
 
+Minor updates 9 September 2024.
+
+We prove several properties of ordinal multiplication, including that it
+preserves suprema of ordinals and that it enjoys a left-cancellation property.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K --lossy-unification #-}
@@ -33,101 +38,105 @@ open import Ordinals.Type
 open import Ordinals.Underlying
 open import Ordinals.AdditionProperties ua
 
-×ₒ-zero-right : (α : Ordinal 𝓤) → α ×ₒ 𝟘ₒ ＝ 𝟘ₒ {𝓤 ⊔ 𝓥}
-×ₒ-zero-right α = ⊴-antisym _ _ α×𝟘⊴𝟘 (𝟘ₒ-least-⊴ (α ×ₒ 𝟘ₒ))
- where
-  α×𝟘⊴𝟘 : (α ×ₒ 𝟘ₒ) ⊴ 𝟘ₒ
-  α×𝟘⊴𝟘 = (λ x → 𝟘-elim (pr₂ x)) , (λ x → 𝟘-elim (pr₂ x)) , λ x → 𝟘-elim (pr₂ x)
+×ₒ-𝟘ₒ-right : (α : Ordinal 𝓤) → α ×ₒ 𝟘ₒ {𝓥} ＝ 𝟘ₒ
+×ₒ-𝟘ₒ-right α = ⊴-antisym _ _
+                 (to-⊴ (α ×ₒ 𝟘ₒ) 𝟘ₒ (λ (a , b) → 𝟘-elim b))
+                 (𝟘ₒ-least-⊴ (α ×ₒ 𝟘ₒ))
 
-×ₒ-zero-left : (α : Ordinal 𝓥) → 𝟘ₒ ×ₒ α ＝ 𝟘ₒ {𝓤 ⊔ 𝓥}
-×ₒ-zero-left α = ⊴-antisym _ _ 𝟘×α⊴𝟘 (𝟘ₒ-least-⊴ (𝟘ₒ ×ₒ α))
- where
-  𝟘×α⊴𝟘 : (𝟘ₒ {𝓤} ×ₒ α) ⊴ 𝟘ₒ {𝓤 ⊔ 𝓥}
-  𝟘×α⊴𝟘 = (λ x → 𝟘-elim (pr₁ x)) , (λ x → 𝟘-elim (pr₁ x)) , λ x → 𝟘-elim (pr₁ x)
+×ₒ-𝟘ₒ-left : (α : Ordinal 𝓤) → 𝟘ₒ {𝓥} ×ₒ α ＝ 𝟘ₒ
+×ₒ-𝟘ₒ-left α = ⊴-antisym _ _
+                (to-⊴ (𝟘ₒ ×ₒ α) 𝟘ₒ (λ (b , a) → 𝟘-elim b))
+                (𝟘ₒ-least-⊴ (𝟘ₒ ×ₒ α))
 
 𝟙ₒ-left-neutral-×ₒ : (α : Ordinal 𝓤) → 𝟙ₒ {𝓤} ×ₒ α ＝ α
-𝟙ₒ-left-neutral-×ₒ {𝓤 = 𝓤} α = eqtoidₒ (ua _) fe' _ _ h
+𝟙ₒ-left-neutral-×ₒ {𝓤} α = eqtoidₒ (ua _) fe' _ _
+                            (f , f-order-preserving ,
+                             f-is-equiv , g-order-preserving)
  where
   f : 𝟙 × ⟨ α ⟩ → ⟨ α ⟩
   f = pr₂
 
   g : ⟨ α ⟩ → 𝟙 × ⟨ α ⟩
-  g = ( _ ,_)
+  g = ( ⋆ ,_)
 
   f-order-preserving : is-order-preserving (𝟙ₒ {𝓤} ×ₒ α) α f
   f-order-preserving x y (inl p) = p
 
   f-is-equiv : is-equiv f
-  f-is-equiv = qinvs-are-equivs f (g , η , ε)
-   where
-    η : g ∘ f ∼ id
-    η x = refl
-
-    ε : f ∘ g ∼ id
-    ε x = refl
+  f-is-equiv = qinvs-are-equivs f (g , (λ _ → refl) , (λ _ → refl))
 
   g-order-preserving : is-order-preserving α (𝟙ₒ {𝓤} ×ₒ α) g
   g-order-preserving x y p = inl p
 
-  h : (𝟙ₒ {𝓤} ×ₒ α) ≃ₒ α
-  h = f , f-order-preserving , f-is-equiv , g-order-preserving
-
 𝟙ₒ-right-neutral-×ₒ : (α : Ordinal 𝓤) → α ×ₒ 𝟙ₒ {𝓤} ＝ α
-𝟙ₒ-right-neutral-×ₒ {𝓤 = 𝓤} α = eqtoidₒ (ua _) fe' _ _ h
+𝟙ₒ-right-neutral-×ₒ {𝓤} α = eqtoidₒ (ua _) fe' _ _
+                             (f , f-order-preserving ,
+                              f-is-equiv , g-order-preserving)
  where
   f : ⟨ α ⟩ × 𝟙 → ⟨ α ⟩
   f = pr₁
 
   g : ⟨ α ⟩ → ⟨ α ⟩ × 𝟙
-  g = (_, _ )
+  g = (_, ⋆ )
 
   f-order-preserving : is-order-preserving (α ×ₒ 𝟙ₒ {𝓤}) α f
   f-order-preserving x y (inr (refl , p)) = p
 
   f-is-equiv : is-equiv f
-  f-is-equiv = qinvs-are-equivs f (g , η , ε)
-   where
-    η : g ∘ f ∼ id
-    η x = refl
-
-    ε : f ∘ g ∼ id
-    ε x = refl
+  f-is-equiv = qinvs-are-equivs f (g , (λ _ → refl) , (λ _ → refl))
 
   g-order-preserving : is-order-preserving α (α ×ₒ 𝟙ₒ {𝓤}) g
   g-order-preserving x y p = inr (refl , p)
 
-  h : (α ×ₒ 𝟙ₒ {𝓤}) ≃ₒ α
-  h = f , f-order-preserving , f-is-equiv , g-order-preserving
+\end{code}
 
-×ₒ-assoc : {𝓤 𝓥 𝓦 : Universe} → (α : Ordinal 𝓤)(β : Ordinal 𝓥)(γ : Ordinal 𝓦) → (α ×ₒ β) ×ₒ γ ＝ α ×ₒ (β ×ₒ γ)
-×ₒ-assoc α β γ = eqtoidₒ (ua _) fe' ((α  ×ₒ β) ×ₒ γ) (α  ×ₒ (β ×ₒ γ)) h
- where
-  f : ⟨ (α ×ₒ β) ×ₒ γ ⟩ → ⟨ α ×ₒ (β ×ₒ γ) ⟩
-  f ((a , b) , c) = (a , (b , c))
+Because we use --lossy-unification to speed up typechecking we have to
+explicitly mention the universes in the lemma below; using them as variables (as
+usual) results in a unification error.
 
-  g : ⟨ α ×ₒ (β ×ₒ γ) ⟩ → ⟨ (α ×ₒ β) ×ₒ γ ⟩
-  g (a , (b , c)) = ((a , b) , c)
+\begin{code}
 
-  f-equiv : is-equiv f
-  f-equiv = qinvs-are-equivs f (g , (λ x → refl) , (λ x → refl))
+×ₒ-assoc : {𝓤 𝓥 𝓦 : Universe}
+           (α : Ordinal 𝓤) (β : Ordinal 𝓥) (γ : Ordinal 𝓦)
+         → (α ×ₒ β) ×ₒ γ ＝ α ×ₒ (β ×ₒ γ)
+×ₒ-assoc α β γ =
+ eqtoidₒ (ua _) fe' ((α  ×ₒ β) ×ₒ γ) (α  ×ₒ (β ×ₒ γ))
+  (f , order-preserving-reflecting-equivs-are-order-equivs
+   ((α  ×ₒ β) ×ₒ γ) (α  ×ₒ (β ×ₒ γ))
+   f f-equiv f-preserves-order f-reflects-order)
+  where
+   f : ⟨ (α ×ₒ β) ×ₒ γ ⟩ → ⟨ α ×ₒ (β ×ₒ γ) ⟩
+   f ((a , b) , c) = (a , (b , c))
 
-  f-preserves-order : is-order-preserving  ((α  ×ₒ β) ×ₒ γ) (α  ×ₒ (β ×ₒ γ)) f
-  f-preserves-order ((a , b) , c) ((a' , b') , c') (inl p) = inl (inl p)
-  f-preserves-order ((a , b) , c) ((a' , b') , c') (inr (r , inl p)) = inl (inr (r , p))
-  f-preserves-order ((a , b) , c) ((a' , b') , c') (inr (r , inr (u , q))) = inr (to-×-＝ u r , q)
+   g : ⟨ α ×ₒ (β ×ₒ γ) ⟩ → ⟨ (α ×ₒ β) ×ₒ γ ⟩
+   g (a , (b , c)) = ((a , b) , c)
 
-  f-reflects-order : is-order-reflecting ((α  ×ₒ β) ×ₒ γ) (α  ×ₒ (β ×ₒ γ)) f
-  f-reflects-order ((a , b) , c) ((a' , b') , c') (inl (inl p)) = inl p
-  f-reflects-order ((a , b) , c) ((a' , b') , c') (inl (inr (r , q))) = inr (r , (inl q))
-  f-reflects-order ((a , b) , c) ((a' , b') , c') (inr (r , q)) = inr (pr₂ (from-×-＝' r) , (inr (pr₁ (from-×-＝' r) , q)))
+   f-equiv : is-equiv f
+   f-equiv = qinvs-are-equivs f (g , (λ x → refl) , (λ x → refl))
 
-  h : ((α  ×ₒ β) ×ₒ γ) ≃ₒ (α  ×ₒ (β ×ₒ γ))
-  h = f , order-preserving-reflecting-equivs-are-order-equivs
-           ((α  ×ₒ β) ×ₒ γ) (α  ×ₒ (β ×ₒ γ))
-           f f-equiv f-preserves-order f-reflects-order
+   f-preserves-order : is-order-preserving  ((α  ×ₒ β) ×ₒ γ) (α  ×ₒ (β ×ₒ γ)) f
+   f-preserves-order _ _ (inl p) = inl (inl p)
+   f-preserves-order _ _ (inr (r , inl p)) = inl (inr (r , p))
+   f-preserves-order _ _ (inr (r , inr (u , q))) = inr (to-×-＝ u r , q)
 
-×ₒ-distributes-+ₒ-right : (α : Ordinal 𝓤)(β γ : Ordinal 𝓥) → α ×ₒ (β +ₒ γ) ＝ (α ×ₒ β) +ₒ (α ×ₒ γ)
-×ₒ-distributes-+ₒ-right α β γ = eqtoidₒ (ua _) fe' _ _ h
+   f-reflects-order : is-order-reflecting ((α  ×ₒ β) ×ₒ γ) (α  ×ₒ (β ×ₒ γ)) f
+   f-reflects-order _ _ (inl (inl p)) = inl p
+   f-reflects-order _ _ (inl (inr (r , q))) = inr (r , (inl q))
+   f-reflects-order _ _ (inr (refl , q)) = inr (refl , (inr (refl , q)))
+
+\end{code}
+
+The lemma below is as general as possible in terms of universe parameters
+because addition requires its arguments to come from the same universe, at least
+at present.
+
+\begin{code}
+
+×ₒ-distributes-+ₒ-right : (α : Ordinal 𝓤) (β γ : Ordinal 𝓥)
+                        → α ×ₒ (β +ₒ γ) ＝ (α ×ₒ β) +ₒ (α ×ₒ γ)
+×ₒ-distributes-+ₒ-right α β γ = eqtoidₒ (ua _) fe' _ _
+                                 (f , f-order-preserving ,
+                                  f-is-equiv , g-order-preserving)
  where
   f : ⟨ α ×ₒ (β +ₒ γ) ⟩ → ⟨ (α ×ₒ β) +ₒ (α ×ₒ γ) ⟩
   f (a , inl b) = inl (a , b)
@@ -157,33 +166,49 @@ open import Ordinals.AdditionProperties ua
 
   g-order-preserving : is-order-preserving _ _ g
   g-order-preserving (inl (a , b)) (inl (a' , b')) (inl p) = inl p
-  g-order-preserving (inl (a , b)) (inl (a' , .b)) (inr (refl , q)) = inr (refl , q)
+  g-order-preserving (inl (a , b)) (inl (a' , .b)) (inr (refl , q)) =
+   inr (refl , q)
   g-order-preserving (inl (a , b)) (inr (a' , c')) p = inl ⋆
   g-order-preserving (inr (a , c)) (inr (a' , c')) (inl p) = inl p
-  g-order-preserving (inr (a , c)) (inr (a' , c')) (inr (refl , q)) = inr (refl , q)
+  g-order-preserving (inr (a , c)) (inr (a' , c')) (inr (refl , q)) =
+   inr (refl , q)
 
-  h : (α ×ₒ (β +ₒ γ)) ≃ₒ ((α ×ₒ β) +ₒ (α ×ₒ γ))
-  h = f , f-order-preserving , f-is-equiv , g-order-preserving
+\end{code}
 
-×ₒ-↓ : (α β : Ordinal 𝓤) → (a : ⟨ α ⟩)(b : ⟨ β ⟩) → (α ×ₒ β) ↓ (a , b) ＝ (α ×ₒ (β ↓ b)) +ₒ (α ↓ a)
-×ₒ-↓ α β a b = eqtoidₒ (ua _) fe' _ _ h
+The following characterizes the initial segments of a product and is rather
+useful when working with simulations between products.
+
+\begin{code}
+
+×ₒ-↓ : (α β : Ordinal 𝓤)
+     → {a : ⟨ α ⟩} {b : ⟨ β ⟩}
+     → (α ×ₒ β) ↓ (a , b) ＝ (α ×ₒ (β ↓ b)) +ₒ (α ↓ a)
+×ₒ-↓ α β {a} {b} = eqtoidₒ (ua _) fe' _ _ (f , f-order-preserving ,
+                                           f-is-equiv , g-order-preserving)
  where
-  f : _
+  f : ⟨ (α ×ₒ β) ↓ (a , b) ⟩ → ⟨ (α ×ₒ (β ↓ b)) +ₒ (α ↓ a) ⟩
   f ((x , y) , inl p) = inl (x , (y , p))
   f ((x , y) , inr (r , q)) = inr (x , q)
 
-  g : _
+  g : ⟨ (α ×ₒ (β ↓ b)) +ₒ (α ↓ a) ⟩ → ⟨ (α ×ₒ β) ↓ (a , b) ⟩
   g (inl (x , y , p)) = (x , y) , inl p
   g (inr (x , q)) = (x , b) , inr (refl , q)
 
   f-order-preserving : is-order-preserving _ _ f
-  f-order-preserving ((x , y) , inl p)       ((x' , y') , inl p')        (inl z) = inl z
-  f-order-preserving ((x , y) , inl p) ((x' , .y) , inl p') (inr (refl , z)) = inr (to-Σ-＝ (refl , Prop-valuedness β _ _ p p') , z)
-  f-order-preserving ((x , y) , inl p)       ((x' , y') , inr (r' , q')) z = ⋆
-  f-order-preserving ((x , y) , inr (refl , q)) ((x' , y') , inl p') (inl z) = 𝟘-elim (irrefl β y (Transitivity β _ _ _ z p'))
-  f-order-preserving ((x , y) , inr (refl , q)) ((x' , .y) , inl p') (inr (refl , z)) = 𝟘-elim (irrefl β y p')
-  f-order-preserving ((x , y) , inr (refl , q)) ((x' , .y) , inr (refl , q')) (inl z) = 𝟘-elim (irrefl β y z)
-  f-order-preserving ((x , y) , inr (refl , q)) ((x' , .y) , inr (refl , q')) (inr (_ , z)) = z
+  f-order-preserving ((x , y) , inl p) ((x' , y') , inl p') (inl l) = inl l
+  f-order-preserving ((x , y) , inl p) ((x' , _)  , inl p') (inr (refl , l)) =
+   inr ((ap (y ,_) (Prop-valuedness β _ _ p p')) , l)
+  f-order-preserving ((x , y) , inl p) ((x' , y') , inr (r' , q')) l = ⋆
+  f-order-preserving ((x , y) , inr (refl , q)) ((x' , y') , inl p') (inl l) =
+   𝟘-elim (irrefl β y (Transitivity β _ _ _ l p'))
+  f-order-preserving ((x , y) , inr (refl , q))
+                     ((x' , _)  , inl p') (inr (refl , l)) = 𝟘-elim
+                                                              (irrefl β y p')
+  f-order-preserving ((x , y) , inr (refl , q))
+                     ((x' , _)  , inr (refl , q')) (inl l) = 𝟘-elim
+                                                              (irrefl β y l)
+  f-order-preserving ((x , y) , inr (refl , q))
+                     ((x' , _)  , inr (refl , q')) (inr (_ , l)) = l
 
   f-is-equiv : is-equiv f
   f-is-equiv = qinvs-are-equivs f (g , η , ε)
@@ -197,13 +222,19 @@ open import Ordinals.AdditionProperties ua
     ε (inr x) = refl
 
   g-order-preserving : is-order-preserving _ _ g
-  g-order-preserving (inl (x , y , p)) (inl (x' , y' , p')) (inl z) = inl z
-  g-order-preserving (inl (x , y , p)) (inl (x' , y' , p')) (inr (refl , z)) = inr (refl , z)
+  g-order-preserving (inl (x , y , p)) (inl (x' , y' , p')) (inl l) = inl l
+  g-order-preserving (inl (x , y , p)) (inl (x' , y' , p')) (inr (refl , l)) =
+   inr (refl , l)
   g-order-preserving (inl (x , y , p)) (inr (x' , q')) _ = inl p
-  g-order-preserving (inr (x , q)) (inr (x' , q')) z = inr (refl , z)
+  g-order-preserving (inr (x , q))     (inr (x' , q')) l = inr (refl , l)
 
-  h : _ ≃ₒ _
-  h = f , f-order-preserving , f-is-equiv , g-order-preserving
+\end{code}
+
+We now prove several useful facts about (bounded) simulations between products.
+
+TODO: Continue code review here.
+
+\begin{code}
 
 ×ₒ-increasing-on-right : {α β γ : Ordinal 𝓤}
                        → 𝟘ₒ ⊲ α
@@ -213,7 +244,7 @@ open import Ordinals.AdditionProperties ua
  where
   eq = α ×ₒ β                    ＝⟨ 𝟘ₒ-right-neutral (α ×ₒ β) ⁻¹ ⟩
        (α ×ₒ β) +ₒ 𝟘ₒ            ＝⟨ ap₂ (λ - ~ → (α ×ₒ -) +ₒ ~) r α↓a=0 ⟩
-       (α ×ₒ (γ ↓ c)) +ₒ (α ↓ a) ＝⟨ ×ₒ-↓ α γ a c ⁻¹ ⟩
+       (α ×ₒ (γ ↓ c)) +ₒ (α ↓ a) ＝⟨ ×ₒ-↓ α γ ⁻¹ ⟩
        (α ×ₒ γ) ↓ (a , c)        ∎
 
 ×ₒ-right-monotone-⊴ : (α : Ordinal 𝓤)(β γ : Ordinal 𝓥)
@@ -377,10 +408,10 @@ is not true for certain objects X and Y in the topos.
       eq : α ×ₒ (β ↓ b) ＝ α ×ₒ (γ ↓ c)
       eq = α ×ₒ (β ↓ b)                ＝⟨ 𝟘ₒ-right-neutral (α ×ₒ (β ↓ b)) ⁻¹ ⟩
            (α ×ₒ (β ↓ b)) +ₒ 𝟘ₒ        ＝⟨ ap ((α ×ₒ (β ↓ b)) +ₒ_) α↓a₀＝𝟘 ⟩
-           (α ×ₒ (β ↓ b)) +ₒ (α ↓ a₀)  ＝⟨ ×ₒ-↓ α β a₀ b ⁻¹ ⟩
+           (α ×ₒ (β ↓ b)) +ₒ (α ↓ a₀)  ＝⟨ ×ₒ-↓ α β ⁻¹ ⟩
            (α ×ₒ β) ↓ (a₀ , b)         ＝⟨ p (α ×ₒ β) (α ×ₒ γ) (a₀ , b) m ⟩
            (α ×ₒ γ) ↓ (a₀' , c)        ＝⟨ ap ((α ×ₒ γ) ↓_) q ⟩
-           (α ×ₒ γ) ↓ (a₀ , c)         ＝⟨ ×ₒ-↓ α γ a₀ c ⟩
+           (α ×ₒ γ) ↓ (a₀ , c)         ＝⟨ ×ₒ-↓ α γ ⟩
            (α ×ₒ (γ ↓ c)) +ₒ (α ↓ a₀)  ＝⟨ ap ((α ×ₒ (γ ↓ c)) +ₒ_) (α↓a₀＝𝟘 ⁻¹) ⟩
            (α ×ₒ (γ ↓ c)) +ₒ 𝟘ₒ        ＝⟨ 𝟘ₒ-right-neutral (α ×ₒ (γ ↓ c)) ⟩
            α ×ₒ (γ ↓ c)                ∎
@@ -398,7 +429,7 @@ Finally, multiplication satisfies the expected recursive equations.
 \begin{code}
 
 ×ₒ-zero : (α : Ordinal 𝓤) → α ×ₒ 𝟘ₒ {𝓤} ＝ 𝟘ₒ
-×ₒ-zero = ×ₒ-zero-right
+×ₒ-zero = ×ₒ-𝟘ₒ-right
 
 -- ×ₒ for successors is repeated addition
 ×ₒ-succ : (α β : Ordinal 𝓤) → α ×ₒ (β +ₒ 𝟙ₒ) ＝ (α ×ₒ β) +ₒ α
@@ -431,9 +462,9 @@ module _ (pt : propositional-truncations-exist)
           g' : Σ i ꞉ I , Σ z ꞉ ⟨ β i ⟩ , sup β ↓ y ＝ (β i) ↓ z → ((α ×ₒ sup β) ↓ (a , y)) ⊲ sup (λ i → α ×ₒ β i)
           g' (i , z , q) = _ , eq where
             eq =
-              (α ×ₒ sup β) ↓ (a , y)        ＝⟨ ×ₒ-↓ α (sup β) a y ⟩
+              (α ×ₒ sup β) ↓ (a , y)        ＝⟨ ×ₒ-↓ α (sup β) ⟩
               (α ×ₒ (sup β ↓ y)) +ₒ (α ↓ a) ＝⟨ ap (λ - → ((α ×ₒ -) +ₒ (α ↓ a))) q ⟩
-              (α ×ₒ (β i ↓ z)) +ₒ (α ↓ a)   ＝⟨ ×ₒ-↓ α (β i) a z ⁻¹ ⟩
+              (α ×ₒ (β i ↓ z)) +ₒ (α ↓ a)   ＝⟨ ×ₒ-↓ α (β i) ⁻¹ ⟩
               (α ×ₒ β i) ↓ (a , z)          ＝⟨ initial-segment-of-sup-at-component (λ j → α ×ₒ β j) i (a , z) ⁻¹ ⟩
               sup (λ i₁ → α ×ₒ β i₁) ↓ _    ∎
 
