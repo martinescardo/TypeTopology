@@ -24,13 +24,6 @@ fi
 c1grep() { grep "$@" || test $? = 1; }
 
 
-# This script will list unused imports
-#
-# Example usage
-## Run from TypeTopology/source
-## ./imports.sh UF/Embeddings.lagda
-## ./imports.sh DomainTheory/Lifting/LiftingDcpo.lagda
-
 print_usage() {
   printf "From TypeTopology/source, run this script as
   ./imports.sh UF/Embeddings.lagda
