@@ -1102,8 +1102,8 @@ being-modulus-of-constancy-decidable-for-all-functions-gives-WLPO ϕ
     I₁ : ((n : ℕ) → α n ＝ α 0)
        → (n : ℕ) → ι (α (maxℕ 0 n)) ＝ ι (α 0)
     I₁ b n = ι (α (maxℕ 0 n)) ＝⟨ refl ⟩
-             ι (α n) ＝⟨ ap ι (b n) ⟩
-             ι (α 0) ∎
+             ι (α n)          ＝⟨ ap ι (b n) ⟩
+             ι (α 0)          ∎
 
     I₂ : is-decidable ((n : ℕ) → α n ＝ α 0)
     I₂ = map-decidable I₀ I₁ (ϕ g 0)
@@ -1143,8 +1143,8 @@ second-necessary-condition-for-the-explicit-existence-of-an-extension g (f , e) 
 
 So, although a function g that has an extension doesn't need to be
 eventually constant, because classical logic may (or may not) hold, it
-is decidable whether any given m is a modulus of eventual constancy of
-g is g has an extension.
+is decidable whether any given m is a modulus of eventual constancy of g
+if g has a given extension.
 
 \begin{code}
 
@@ -1182,7 +1182,7 @@ constancy data has split support.
 
 \end{code}
 
-A the second necessary condition for the explicit existence of an
+The second necessary condition for the explicit existence of an
 extension is also necessary for the anonymous existence.
 
 \begin{code}
