@@ -1232,10 +1232,12 @@ all-maps-have-extensions-gives-WLPO a
        id m                       ＝⟨ (e m)⁻¹ ⟩
        f (ι m)                    ＝⟨ ap f ((max-idemp fe (ι m))⁻¹) ⟩
        f (max (ι m) (ι m))        ＝⟨ m-is-modulus m ⟩
-       f ∞                        ＝⟨  (m-is-modulus (succ m))⁻¹ ⟩
+       f ∞                        ＝⟨ (m-is-modulus (succ m))⁻¹ ⟩
        f (max (ι m) (ι (succ m))) ＝⟨ ap f (max-succ fe m) ⟩
        f (ι (succ m))             ＝⟨ e (succ m) ⟩
        id (succ m)                ＝⟨ refl ⟩
        succ m                     ∎)
 
 \end{code}
+
+Next. We can do better than that.
