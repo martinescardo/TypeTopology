@@ -7,7 +7,6 @@ module MLTT.Fin where
 open import MLTT.Spartan
 open import MLTT.List
 open import MLTT.Bool
-open import Naturals.Properties
 
 
 data Fin : ℕ → 𝓤₀ ̇ where

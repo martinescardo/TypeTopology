@@ -17,10 +17,8 @@ module PCF.Lambda.Substitution
 
 open PropositionalTruncation pt
 
-open import Naturals.Properties
 open import PCF.Lambda.AbstractSyntax pt
 open import UF.Base
-open import UF.Subsingletons
 
 ids : {n : ℕ} {Γ : Context n} {A : type} → Γ ∋ A → PCF Γ A
 ids x = v x

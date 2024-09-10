@@ -10,19 +10,11 @@ open import MLTT.Spartan
 
 module W.Paths where
 
-open import UF.Base
-open import UF.Embeddings
-open import UF.Equiv
-open import UF.EquivalenceExamples
-open import UF.FunExt
 open import UF.Logic
 open import UF.PropTrunc
-open import UF.Retracts
 open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
 open import W.Type
 open import W.Numbers
-open import W.Properties
 
 module _ (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) where
 

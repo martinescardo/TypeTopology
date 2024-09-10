@@ -13,7 +13,6 @@ library to TypeTopology.
 {-# OPTIONS --without-K --safe #-}
 
 open import MLTT.Spartan
-open import UF.Base
 open import PathSequences.Type
 open import PathSequences.Concat
 

@@ -660,7 +660,6 @@ module _
    fe : FunExt
    fe 𝓤 𝓥 = f-e
 
-   open import UF.PropTrunc
    open PropositionalTruncation pt
 
    lem-consequence : is-well-order → (u v : X) → (∃ i ꞉ X , ((i < u) × ¬ (i < v))) + (u ≼ v)
@@ -901,7 +900,6 @@ module _ (fe : Fun-Ext)
 
  module _ (pt : propositional-truncations-exist) where
 
-  open import UF.PropTrunc
   open PropositionalTruncation pt
 
   nonempty-has-minimal : is-well-order

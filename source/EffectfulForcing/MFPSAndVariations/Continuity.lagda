@@ -8,8 +8,6 @@ module EffectfulForcing.MFPSAndVariations.Continuity where
 
 open import MLTT.Spartan
 open import MLTT.Athenian
-open import UF.Retracts
-open import UF.Equiv
 
 Baire : 𝓤₀ ̇
 Baire = ℕ → ℕ

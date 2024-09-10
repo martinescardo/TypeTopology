@@ -20,8 +20,6 @@ open import CoNaturals.Type
   renaming (ℕ-to-ℕ∞ to _↑
          ; Zero-smallest to zero-minimal
          ; ∞-largest to ∞-maximal)
-open import NotionsOfDecidability.Decidable
-open import MLTT.Two-Properties
 open import Fin.Type
 open import Fin.Bishop
 open import UF.PropTrunc
@@ -35,7 +33,6 @@ module TWA.Thesis.Chapter4.ApproxOrder-Examples (fe : FunExt) where
 
 open import TWA.Thesis.Chapter3.ClosenessSpaces fe
 open import TWA.Thesis.Chapter3.ClosenessSpaces-Examples fe
-open import TWA.Thesis.Chapter3.SearchableTypes fe
 open import TWA.Thesis.Chapter4.ApproxOrder fe
 \end{code}
 

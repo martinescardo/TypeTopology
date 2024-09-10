@@ -8,15 +8,9 @@ In this file I define negation of real numbers.
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
 
-open import UF.Base hiding (_≈_)
-open import UF.FunExt
 open import Integers.Type
-open import Integers.Addition renaming (_+_ to _ℤ+_) hiding (_-_)
 open import Integers.Multiplication renaming (_*_ to _ℤ*_)
 open import Integers.Negation renaming (-_ to ℤ-_)
-open import Naturals.Addition renaming (_+_ to _ℕ+_)
-open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
-open import Naturals.Properties
 open import Rationals.Fractions
 open import Rationals.FractionsOperations renaming (-_ to 𝔽-_ ; _+_ to _𝔽+_ ; _*_ to _𝔽*_)
 open import Rationals.Type

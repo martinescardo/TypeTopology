@@ -14,7 +14,6 @@ open import MLTT.Spartan
 open import MLTT.Unit-Properties
 open import UF.DiscreteAndSeparated
 open import UF.Sets
-open import UF.Subsingletons
 
 \end{code}
 

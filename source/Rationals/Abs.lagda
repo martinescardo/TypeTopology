@@ -10,13 +10,10 @@ open import MLTT.Spartan renaming (_+_ to _∔_)
 
 open import Notation.Order
 open import UF.Base hiding (_≈_)
-open import UF.Subsingletons
 open import Integers.Abs
-open import Integers.Addition renaming (_+_ to _ℤ+_) hiding (_-_)
 open import Integers.Type hiding (abs)
 open import Integers.Multiplication renaming (_*_ to _ℤ*_)
 open import Integers.Order
-open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
 open import Rationals.Fractions
 open import Rationals.FractionsOperations renaming (abs to 𝔽-abs) renaming (-_ to 𝔽-_) hiding (_+_) hiding (_*_)
 open import Rationals.Type

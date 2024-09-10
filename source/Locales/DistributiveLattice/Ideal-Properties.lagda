@@ -12,7 +12,6 @@ dates-updated: [2024-03-13, 2024-03-28, 2024-05-03]
 open import UF.FunExt
 open import UF.PropTrunc
 open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
 
 module Locales.DistributiveLattice.Ideal-Properties
         (pt : propositional-truncations-exist)
@@ -22,17 +21,12 @@ module Locales.DistributiveLattice.Ideal-Properties
 
 open import Locales.DistributiveLattice.Definition fe pt
 open import Locales.DistributiveLattice.Ideal pt fe pe
-open import Locales.DistributiveLattice.Properties fe pt
 open import Locales.DistributiveLattice.Spectrum fe pe pt
 open import Locales.Frame pt fe hiding (is-directed)
-open import MLTT.List
 open import MLTT.Spartan
 open import Slice.Family
-open import UF.Base
 open import UF.Classifiers
-open import UF.Equiv hiding (_■)
 open import UF.Logic
-open import UF.Powerset-MultiUniverse hiding (𝕋)
 open import UF.SubtypeClassifier
 
 open AllCombinators pt fe hiding (_∨_)

@@ -20,7 +20,6 @@ Stone spaces.
 
 open import MLTT.List hiding ([_])
 open import MLTT.Spartan hiding (𝟚; ₀; ₁)
-open import UF.Base
 open import UF.FunExt
 open import UF.PropTrunc
 open import UF.Size
@@ -35,7 +34,6 @@ open import Locales.Clopen pt fe sr
 open import Locales.Compactness.Definition pt fe
 open import Locales.Frame pt fe
 open import Locales.InitialFrame pt fe
-open import Locales.SmallBasis pt fe sr
 open import Locales.Spectrality.SpectralityOfOmega pt fe sr
 open import Locales.Stone pt fe sr
 open import Locales.StoneImpliesSpectral pt fe sr
@@ -43,7 +41,6 @@ open import Locales.ZeroDimensionality pt fe sr
 open import Slice.Family
 open import UF.Equiv
 open import UF.Logic
-open import UF.Sets
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.SubtypeClassifier

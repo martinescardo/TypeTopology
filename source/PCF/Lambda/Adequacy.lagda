@@ -22,11 +22,8 @@ open import DomainTheory.Basics.Dcpo pt fe 𝓤₀
 open import DomainTheory.Basics.Exponential pt fe 𝓤₀
 open import DomainTheory.Basics.LeastFixedPoint pt fe 𝓤₀
 open import DomainTheory.Basics.Pointed pt fe 𝓤₀
-open import DomainTheory.Lifting.LiftingDcpo pt fe 𝓤₀ pe
 open import Lifting.Construction 𝓤₀ hiding (⊥)
 open import Lifting.Miscelanea 𝓤₀
-open import Lifting.Miscelanea-PropExt-FunExt 𝓤₀ pe fe
-open import Lifting.Monad 𝓤₀ hiding (μ)
 open import Naturals.Properties hiding (pred-succ)
 open import PCF.Combinatory.PCFCombinators pt fe 𝓤₀
 open import PCF.Lambda.AbstractSyntax pt

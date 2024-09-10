@@ -24,12 +24,10 @@ module Locales.ContinuousMap.FrameIsomorphism-Definition
 open import Locales.ContinuousMap.FrameHomomorphism-Definition pt fe
 open import Locales.ContinuousMap.FrameHomomorphism-Properties pt fe
 open import Locales.Frame pt fe
-open import Slice.Family
 open import UF.Equiv
 open import UF.Equiv-FunExt
 open import UF.Logic
 open import UF.Retracts
-open import UF.SIP
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.SubtypeClassifier

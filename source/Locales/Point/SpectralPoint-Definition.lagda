@@ -15,14 +15,10 @@ is equivalent to the standard definition.
 
 {-# OPTIONS --safe --without-K #-}
 
-open import MLTT.List hiding ([_])
 open import MLTT.Spartan
 open import UF.FunExt
 open import UF.PropTrunc
-open import UF.Size
 open import UF.Subsingletons
-open import UF.UA-FunExt
-open import UF.Univalence
 
 module Locales.Point.SpectralPoint-Definition
         (pt : propositional-truncations-exist)

@@ -24,7 +24,6 @@ module DomainTheory.BasesAndContinuity.Continuity
 
 open PropositionalTruncation pt
 
-open import UF.Base hiding (_≈_)
 open import UF.Equiv
 open import UF.EquivalenceExamples
 

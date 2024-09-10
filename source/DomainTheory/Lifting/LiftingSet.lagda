@@ -27,7 +27,6 @@ module DomainTheory.Lifting.LiftingSet
         (pe : propext 𝓣)
        where
 
-open import UF.Base
 open import UF.Equiv
 open import UF.Hedberg
 open import UF.ImageAndSurjection pt

@@ -20,10 +20,7 @@ open import Locales.ContinuousMap.Definition pt fe
 open import Locales.ContinuousMap.FrameHomomorphism-Definition pt fe
 open import Locales.ContinuousMap.FrameHomomorphism-Properties pt fe
 open import Locales.Frame pt fe
-open import MLTT.List hiding ([_])
 open import MLTT.Spartan
-open import Slice.Family
-open import UF.Base
 open import UF.Logic
 open import UF.SubtypeClassifier
 

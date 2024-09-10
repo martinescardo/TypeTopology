@@ -4,15 +4,13 @@ Ayberk Tosun, 17 August 2023.
 
 {-# OPTIONS --safe --without-K --lossy-unification #-}
 
-open import MLTT.Spartan
-open import UF.Base
-open import UF.PropTrunc
-open import UF.FunExt
-open import UF.FunExt
 open import MLTT.List hiding ([_])
+open import MLTT.Spartan
 open import Slice.Family
-open import UF.SubtypeClassifier
+open import UF.FunExt
+open import UF.PropTrunc
 open import UF.Size
+open import UF.SubtypeClassifier
 
 module Locales.Spectrality.BasisDirectification
         (pt : propositional-truncations-exist)
@@ -20,7 +18,6 @@ module Locales.Spectrality.BasisDirectification
         (sr : Set-Replacement pt) where
 
 open import Locales.Frame pt fe
-open import Locales.Compactness.Definition pt fe
 open import Locales.SmallBasis pt fe sr
 
 open import UF.Logic

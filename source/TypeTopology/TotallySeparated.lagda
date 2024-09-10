@@ -75,7 +75,6 @@ open import UF.Hedberg
 open import UF.LeftCancellable
 open import UF.Lower-FunExt
 open import UF.NotNotStablePropositions
-open import UF.Powerset hiding (𝕋)
 open import UF.PropTrunc
 open import UF.Retracts
 open import UF.Sets

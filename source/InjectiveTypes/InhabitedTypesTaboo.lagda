@@ -89,7 +89,6 @@ module InjectiveTypes.InhabitedTypesTaboo
 
 open PropositionalTruncation pt
 
-open import MLTT.Negation
 
 open import UF.Base
 open import UF.Equiv

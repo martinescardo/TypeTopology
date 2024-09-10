@@ -8,8 +8,6 @@ open import MLTT.Spartan hiding (J)
 
 module GamesExperimental.JK where
 
-open import UF.FunExt
-open import GamesExperimental.Monad
 open import GamesExperimental.J
 open import GamesExperimental.K
 

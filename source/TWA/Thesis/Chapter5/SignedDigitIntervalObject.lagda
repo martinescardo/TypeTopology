@@ -7,7 +7,6 @@ Todd Waugh Ambridge, January 2024
 
 open import MLTT.Spartan
 open import UF.FunExt
-open import Naturals.Addition renaming (_+_ to _+ℕ_)
 
 open import TWA.Thesis.Chapter2.Sequences
 open import TWA.Thesis.Chapter5.SignedDigit

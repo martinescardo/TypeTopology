@@ -28,7 +28,6 @@ module UF.HLevels (ua : Univalence) where
 
 open import UF.EquivalenceExamples
 open import UF.FunExt
-open import UF.Sets
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.Subsingletons-Properties

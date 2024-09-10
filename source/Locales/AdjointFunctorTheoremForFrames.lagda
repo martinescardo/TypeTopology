@@ -12,7 +12,6 @@ Originally part of `ayberkt/formal-topology-in-UF`. Ported to TypeTopology on
 {-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
-open import UF.Base
 open import UF.FunExt
 open import UF.PropTrunc
 
@@ -27,7 +26,6 @@ open import Locales.Frame pt fe
 open import Locales.GaloisConnection pt fe
 open import Slice.Family
 open import UF.Logic
-open import UF.Subsingletons
 
 open AllCombinators pt fe
 open PropositionalTruncation pt

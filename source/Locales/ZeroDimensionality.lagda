@@ -7,7 +7,6 @@ Ayberk Tosun, 11 September 2023
 open import MLTT.Spartan hiding (𝟚)
 open import UF.PropTrunc
 open import UF.FunExt
-open import UF.UA-FunExt
 open import UF.Size
 
 module Locales.ZeroDimensionality (pt : propositional-truncations-exist)
@@ -21,7 +20,6 @@ Importation of foundational UF stuff.
 \begin{code}
 
 open import Slice.Family
-open import UF.Subsingletons
 open import UF.SubtypeClassifier
 open import UF.Logic
 
@@ -34,7 +32,6 @@ Importations of other locale theory modules.
 
 \begin{code}
 
-open import Locales.AdjointFunctorTheoremForFrames
 
 open import Locales.Frame            pt fe           hiding (is-directed-basis)
 open import Locales.WayBelowRelation.Definition pt fe

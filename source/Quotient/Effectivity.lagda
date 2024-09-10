@@ -32,14 +32,7 @@ open import MLTT.Spartan
 open import Quotient.Type
 open import Quotient.Large
 open import Quotient.GivesPropTrunc
-open import UF.Base hiding (_≈_)
-open import UF.Equiv
 open import UF.PropTrunc
-open import UF.Sets
-open import UF.Sets-Properties
-open import UF.SubtypeClassifier
-open import UF.SubtypeClassifier-Properties
-open import UF.Subsingletons-FunExt
 
 effectivity : (sq : set-quotients-exist)
             → are-effective sq

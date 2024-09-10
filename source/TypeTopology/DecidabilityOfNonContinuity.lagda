@@ -31,7 +31,6 @@ open import CoNaturals.Type
 open import MLTT.Two-Properties
 open import Notation.CanonicalMap
 open import NotionsOfDecidability.Decidable
-open import NotionsOfDecidability.SemiDecidable hiding (LPO)
 open import Taboos.LPO
 open import TypeTopology.ADecidableQuantificationOverTheNaturals fe
 open import UF.DiscreteAndSeparated
@@ -79,8 +78,7 @@ is just a direct particular case.
 
 \begin{code}
 
-_ : (q : ℕ∞ → ℕ∞ → 𝟚)
-  → is-decidable ((m : ℕ) → ¬ ((n : ℕ) → q (ι m) (ι n) ＝ ₁))
+_ : (q : ℕ∞ → ℕ∞ → 𝟚) → is-decidable ((m : ℕ) → ¬ ((n : ℕ) → q (ι m) (ι n) ＝ ₁))
 _ = λ q → Lemma-3·1 (λ x y → q x y ＝ ₁) (λ x y → 𝟚-is-discrete (q x y) ₁)
 
 \end{code}
@@ -108,22 +106,23 @@ and its negation to
 
    ∀ m : ℕ , ¬ ∀ n : ℕ , f (max m n) ＝ f ∞,
 
-and it is convenient to do so here.
+and it is technically convenient to do so here.
 
 The above paper [1] mentions that its mathematical development can be
 carried out in a number of foundations, including type theory, but it
 doesn't say what "∃" should be taken to mean in HoTT/UF. It turns out
 (added summer 2024 - see below) that it doesn't matter whether `∃` is
 interpreted to mean `Σ` or the propositional truncation of `Σ`,
-although this is non trivial and is proved below (summer 2024), but
-does follow from what is developed in [1].
+although this is non trivial and is proved below, but does follow from
+what is developed in [1].
 
 For the following, we adopt `∃` to mean the propositional truncation
 of `Σ` (as we generally do in TypeTopology).
 
 For the next few things, because we are going to prove facts about the
 negation of continuity, it doesn't matter whether we define the notion
-with ∃ or Σ, and we choose the latter for convenience.
+with ∃ or Σ, because negations are propositions in the presence of
+function extensionality, and we choose the latter for convenience.
 
 \begin{code}
 
@@ -143,7 +142,8 @@ continuity-data = continuous
 
 \end{code}
 
-The following is Theorem 3.2 of [1].
+The following is Theorem 3.2 of [1] and is a direct application of
+Lemma 3.1.
 
 \begin{code}
 
@@ -168,7 +168,7 @@ For our purposes, the following terminology is better.
 
 \end{code}
 
-TODO. The paper [1] also discusses the following.
+The paper [1] also discusses the following.
 
  1. MP gives that continuity and doubly negated continuity agree.
 
@@ -180,8 +180,9 @@ TODO. The paper [1] also discusses the following.
 
  4. If MP and ¬ WLPO then all functions ℕ∞ → ℕ are continuous.
 
-Added 24th July 2024. Still based on the paper [1]. We write down the
-proofs of (2) and (3).
+All of them are proved below, but not in this order.
+
+We first prove (2).
 
 \begin{code}
 
@@ -189,8 +190,8 @@ open import Taboos.WLPO
 open import TypeTopology.CompactTypes
 open import TypeTopology.GenericConvergentSequenceCompactness fe
 
-noncontinuous-map-gives-WLPO : (f : ℕ∞ → ℕ) → ¬ continuous f → WLPO
-noncontinuous-map-gives-WLPO f f-non-cts = VI
+noncontinuous-map-gives-WLPO : (Σ f ꞉ (ℕ∞ → ℕ) , ¬ continuous f) → WLPO
+noncontinuous-map-gives-WLPO (f , f-non-cts) = VI
  where
   g : (u : ℕ∞)
     → Σ v₀ ꞉ ℕ∞ , (f (max u v₀) ＝ f ∞ → (v : ℕ∞) → f (max u v) ＝ f ∞)
@@ -262,11 +263,76 @@ noncontinuous-map-gives-WLPO f f-non-cts = VI
 
 \end{code}
 
+Added 7th September 2024. We now prove (3)(→).
+
+\begin{code}
+
+¬WLPO-gives-all-functions-are-not-not-continuous
+ : ¬ WLPO → (f : ℕ∞ → ℕ) → ¬¬ continuous f
+¬WLPO-gives-all-functions-are-not-not-continuous nwlpo f
+ = contrapositive
+    (λ (ν : ¬ continuous f) → noncontinuous-map-gives-WLPO (f , ν))
+    nwlpo
+
+\end{code}
+
+TODO. Create a Markov's Principle file somewhere, if it doesn't
+already exist, and prove that it doesn't matter whether we formulate
+it with Σ or ∃ (or whether we formulate with decidable properties or
+boolean-valued functions).
+
+\begin{code}
+
+open import NotionsOfDecidability.Complemented
+
+MP : 𝓤 ⁺ ̇
+MP {𝓤} = (A : ℕ → 𝓤 ̇ )
+       → is-complemented A
+       → ¬¬ (Σ n ꞉ ℕ , A n)
+       → Σ n ꞉ ℕ , A n
+
+\end{code}
+
+And now we prove (1).
+
+\begin{code}
+
+MP-gives-that-not-not-continuous-functions-are-continuous
+ : MP → (f : ℕ∞ → ℕ) → ¬¬ continuous f → continuous f
+MP-gives-that-not-not-continuous-functions-are-continuous mp f
+ = mp (λ m → (n : ℕ) → f (max (ι m) (ι n)) ＝ f ∞)
+      (λ m → Theorem-8·2'
+              (λ x → f (max (ι m) x) ＝ f ∞)
+              (λ x → ℕ-is-discrete (f (max (ι m) x)) (f ∞)))
+
+\end{code}
+
+The converse of the above is trivial (double negation introduction)
+and so we will not add it in code, even if it turns out to be needed
+in future additions. The following also is an immediate consequence of
+the above, but we choose to record it explicitly.
+
+And now we prove (4).
+
+\begin{code}
+
+MP-and-¬WLPO-give-that-all-functions-are-continuous
+ : MP → ¬ WLPO → (f : ℕ∞ → ℕ) → continuous f
+MP-and-¬WLPO-give-that-all-functions-are-continuous mp nwlpo f
+ = MP-gives-that-not-not-continuous-functions-are-continuous
+    mp
+    f
+    (¬WLPO-gives-all-functions-are-not-not-continuous nwlpo f)
+
+\end{code}
+
+End of 7th September 2024 addition.
+
 In the following fact we can replace Σ by ∃ because WLPO is a
 proposition. Hence WLPO is the propositional truncation of the type
 Σ f ꞉ (ℕ∞ → ℕ) , ¬ continuous f.
 
-TODO. Add this code for this observation.
+TODO. Add code for this observation.
 
 The following is from [1] with the same proof.
 
@@ -275,60 +341,56 @@ The following is from [1] with the same proof.
 open import Taboos.BasicDiscontinuity fe
 open import Naturals.Properties
 
-WLPO-iff-there-is-a-noncontinous-map : WLPO ↔ (Σ f ꞉ (ℕ∞ → ℕ) , ¬ continuous f)
-WLPO-iff-there-is-a-noncontinous-map =
-  I ,
-  (λ (f , ν) → noncontinuous-map-gives-WLPO f ν)
+WLPO-gives-that-there-is-a-noncontinous-map : WLPO → (Σ f ꞉ (ℕ∞ → ℕ) , ¬ continuous f)
+WLPO-gives-that-there-is-a-noncontinous-map wlpo = f , f-non-cts
  where
-  I : WLPO → Σ f ꞉ (ℕ∞ → ℕ) , ¬ continuous f
-  I wlpo = f , f-non-cts
-   where
-    p : ℕ∞ → 𝟚
-    p = pr₁ (WLPO-is-discontinuous wlpo)
+  p : ℕ∞ → 𝟚
+  p = pr₁ (WLPO-is-discontinuous wlpo)
 
-    p-spec : ((n : ℕ) → p (ι n) ＝ ₀) × (p ∞ ＝ ₁)
-    p-spec = pr₂ (WLPO-is-discontinuous wlpo)
+  p-spec : ((n : ℕ) → p (ι n) ＝ ₀) × (p ∞ ＝ ₁)
+  p-spec = pr₂ (WLPO-is-discontinuous wlpo)
 
-    g : 𝟚 → ℕ
-    g ₀ = 0
-    g ₁ = 1
+  g : 𝟚 → ℕ
+  g ₀ = 0
+  g ₁ = 1
 
-    f : ℕ∞ → ℕ
-    f = g ∘ p
+  f : ℕ∞ → ℕ
+  f = g ∘ p
 
-    f₀ : (n : ℕ) → f (ι n) ＝ 0
-    f₀ n =  f (ι n) ＝⟨ ap g (pr₁ p-spec n) ⟩
-            g ₀     ＝⟨ refl ⟩
-            0       ∎
+  f₀ : (n : ℕ) → f (ι n) ＝ 0
+  f₀ n =  f (ι n) ＝⟨ ap g (pr₁ p-spec n) ⟩
+          g ₀     ＝⟨ refl ⟩
+          0       ∎
 
-    f∞ : (n : ℕ) → f (ι n) ≠ f ∞
-    f∞ n e = zero-not-positive 0
-              (0       ＝⟨ f₀ n ⁻¹ ⟩
-               f (ι n) ＝⟨ e ⟩
-               f ∞     ＝⟨ ap g (pr₂ p-spec) ⟩
-               1       ∎)
+  f∞ : (n : ℕ) → f (ι n) ≠ f ∞
+  f∞ n e = zero-not-positive 0
+            (0       ＝⟨ f₀ n ⁻¹ ⟩
+             f (ι n) ＝⟨ e ⟩
+             f ∞     ＝⟨ ap g (pr₂ p-spec) ⟩
+             1       ∎)
 
-    f-non-cts : ¬ continuous f
-    f-non-cts (m , a) = f∞ m
-                         (f (ι m)             ＝⟨ ap f ((max-idemp fe (ι m))⁻¹) ⟩
-                          f (max (ι m) (ι m)) ＝⟨ a m ⟩
-                          f ∞                 ∎)
-
-¬WLPO-iff-all-maps-are-¬¬-continuous : ¬ WLPO ↔ ((f : ℕ∞ → ℕ) → ¬¬ continuous f)
-¬WLPO-iff-all-maps-are-¬¬-continuous =
- (λ nwlpo f f-non-cts
-   → contrapositive
-      (rl-implication WLPO-iff-there-is-a-noncontinous-map)
-      nwlpo
-      (f , f-non-cts)) ,
- (λ (a : (f : ℕ∞ → ℕ) → ¬¬ continuous f)
-   → contrapositive
-      (lr-implication WLPO-iff-there-is-a-noncontinous-map)
-      (λ (f , f-non-cts) → a f f-non-cts))
+  f-non-cts : ¬ continuous f
+  f-non-cts (m , a) = f∞ m
+                       (f (ι m)             ＝⟨ ap f ((max-idemp fe (ι m))⁻¹) ⟩
+                        f (max (ι m) (ι m)) ＝⟨ a m ⟩
+                        f ∞                 ∎)
 
 \end{code}
 
-Hence ¬ WLPO can be considered as a (rather weak) continuity principle.
+And a corollary is that the negation of WLPO amount to a weak continuity
+principle that says that all functions are not-not continuous.
+
+\begin{code}
+
+¬WLPO-iff-all-maps-are-¬¬-continuous : ¬ WLPO ↔ ((f : ℕ∞ → ℕ) → ¬¬ continuous f)
+¬WLPO-iff-all-maps-are-¬¬-continuous =
+ (λ nwlpo → curry (contrapositive noncontinuous-map-gives-WLPO nwlpo)) ,
+ (λ (a : (f : ℕ∞ → ℕ) → ¬¬ continuous f)
+   → contrapositive
+      WLPO-gives-that-there-is-a-noncontinous-map
+      (uncurry a))
+
+\end{code}
 
 It is shown in [2] that negative consistent axioms can be postulated
 in MLTT without loss of canonicity, and Andreas Abel filled important
@@ -337,7 +399,7 @@ technique. Hence we can, if we wish, postulate ¬ WLPO without loss of
 canonicity, and get a weak continuity axiom for free. But notice that
 we can also postulate ¬¬ WLPO without loss of continuity, to get a
 weak classical axiom for free. Of course, we can't postulate both at
-the same time.
+the same time while retaining canonicity (and consistency!).
 
 [2] T. Coquand, N.A. Danielsson, M.H. Escardo, U. Norell and Chuangjie Xu.
 Negative consistent axioms can be postulated without loss of canonicity.
@@ -346,11 +408,10 @@ https://www.cs.bham.ac.uk/~mhe/papers/negative-axioms.pdf
 [3] Andreas Abel. Negative Axioms.
     https://github.com/andreasabel/logrel-mltt/tree/master/Application/NegativeAxioms
 
-
 Added 16 August 2024. This is not in [1].
 
-The above definition of continuity is "continuity at the point ∞".
-(And it is also not a proposition.)
+The above definition of continuity is "continuity at the point ∞", and
+also it is not a proposition.
 
 Next we show that this is equivalent to usual continuity, as in the
 module Cantor, using the fact that ℕ∞ is a subspace of the Cantor type
@@ -389,8 +450,7 @@ module continuity-criteria (pt : propositional-truncations-exist) where
   continuity-data-gives-continuity-property = ∣_∣
 
   continuity-property-gives-continuity-data : is-continuous f → continuity-data f
-  continuity-property-gives-continuity-data =
-   exit-truncation (λ m → A (ι m)) (λ m → A-is-decidable (ι m))
+  continuity-property-gives-continuity-data = exit-truncation (A ∘ ι) (A-is-decidable ∘ ι)
    where
     A : ℕ∞ → 𝓤₀ ̇
     A x = (n : ℕ) → f (max x (ι n)) ＝ f ∞
@@ -538,8 +598,8 @@ We now need more lemmas about the relation x ＝⟪ k ⟫ y.
  continuity-data-gives-traditional-uniform-continuity-data
   (m , m-property) = m , m-property'
   where
-   have-m-property : (n : ℕ) → f (max (ι m) (ι n)) ＝ f ∞
-   have-m-property = m-property
+   qₙ : (n : ℕ) → f (max (ι m) (ι n)) ＝ f ∞
+   qₙ = m-property
 
    I : (z : ℕ∞) → max (ι m) z ＝ z → f z ＝ f ∞
    I z p = γ
@@ -548,7 +608,7 @@ We now need more lemmas about the relation x ＝⟪ k ⟫ y.
      q∞ = ap f (max∞-property' fe (ι m))
 
      q : (u : ℕ∞) → f (max (ι m) u) ＝ f ∞
-     q = ℕ∞-density fe ℕ-is-¬¬-separated m-property q∞
+     q = ℕ∞-density fe ℕ-is-¬¬-separated qₙ q∞
 
      γ = f z             ＝⟨ ap f (p ⁻¹) ⟩
          f (max (ι m) z) ＝⟨ q z ⟩
@@ -666,7 +726,7 @@ The type `ℕ∞-extension g` is that of all extensions of g : ℕ → ℕ to
 functions ℕ∞ → ℕ.
 
 Our first question is when this type is a proposition (so that it
-could be called `ℕ∞-extendable g`).
+could be called `is-ℕ∞-extendable g`).
 
 Notice that LPO is stronger than WLPO, and hence, by taking the
 contrapositive, ¬ WLPO is stronger than ¬ LPO:
@@ -680,7 +740,7 @@ _extends_ : (ℕ∞ → ℕ) → (ℕ → ℕ) → 𝓤₀ ̇
 f extends g = f ∘ ι ∼ g
 
 ℕ∞-extension : (ℕ → ℕ) → 𝓤₀ ̇
-ℕ∞-extension g = Σ f ꞉ (ℕ∞ → ℕ) , (f extends g)
+ℕ∞-extension g = Σ f ꞉ (ℕ∞ → ℕ) , f extends g
 
 \end{code}
 
@@ -700,10 +760,12 @@ try to be consistent with the terminology of the HoTT/UF community.)
  → (g : ℕ → ℕ)
  → ¬ WLPO
  → is-prop (ℕ∞-extension g)
-¬WLPO-gives-ℕ∞-extension-is-prop fe g nwlpo (f , h) (f' , h') = VI
+¬WLPO-gives-ℕ∞-extension-is-prop fe g nwlpo (f , e) (f' , e') = VI
  where
   I : (n : ℕ) → f (ι n) ＝ f' (ι n)
-  I n = h n ∙ (h' n)⁻¹
+  I n = f (ι n)  ＝⟨ e n ⟩
+        g n      ＝⟨ (e' n)⁻¹ ⟩
+        f' (ι n) ∎
 
   IV : f ∞ ＝ f' ∞
   IV = agreement-cotaboo' ℕ-is-discrete nwlpo f f' I
@@ -711,7 +773,7 @@ try to be consistent with the terminology of the HoTT/UF community.)
   V : f ∼ f'
   V = ℕ∞-density fe ℕ-is-¬¬-separated I IV
 
-  VI : (f , h) ＝ (f' , h')
+  VI : (f , e) ＝ (f' , e')
   VI = to-subtype-＝ (λ - → Π-is-prop fe (λ n → ℕ-is-set)) (dfunext fe V)
 
 \end{code}
@@ -740,10 +802,11 @@ lemma, which is then applied to prove this claim.
 
 LPO-gives-ℕ∞-extension
  : LPO
- → (g : ℕ → ℕ) (y : ℕ)
- → Σ f ꞉ (ℕ∞ → ℕ) , (f extends g) × (f ∞ ＝ y)
+ → (g : ℕ → ℕ)
+   (y : ℕ)
+ → Σ (f , _) ꞉ ℕ∞-extension g , (f ∞ ＝ y)
 LPO-gives-ℕ∞-extension lpo g y
- = f , h , e
+ = (f , e) , p
  where
   F : (x : ℕ∞) → is-decidable (Σ n ꞉ ℕ , x ＝ ι n) → ℕ
   F x (inl (n , p)) = g n
@@ -752,20 +815,19 @@ LPO-gives-ℕ∞-extension lpo g y
   f : ℕ∞ → ℕ
   f x = F x (lpo x)
 
-  H : (k : ℕ) (d : is-decidable (Σ n ꞉ ℕ , ι k ＝ ι n)) → F (ι k) d ＝ g k
-  H k (inl (n , p)) = ap g (ℕ-to-ℕ∞-lc (p ⁻¹))
-  H k (inr ν)       = 𝟘-elim (ν (k , refl))
+  E : (k : ℕ) (d : is-decidable (Σ n ꞉ ℕ , ι k ＝ ι n)) → F (ι k) d ＝ g k
+  E k (inl (n , p)) = ap g (ℕ-to-ℕ∞-lc (p ⁻¹))
+  E k (inr ν)       = 𝟘-elim (ν (k , refl))
 
-  h : f ∘ ι ∼ g
-  h k = H k (lpo (ι k))
+  e : f ∘ ι ∼ g
+  e k = E k (lpo (ι k))
 
   L : (d : is-decidable (Σ n ꞉ ℕ , ∞ ＝ ι n)) → F ∞ d ＝ y
   L (inl (n , p)) = 𝟘-elim (∞-is-not-finite n p)
   L (inr _)       = refl
 
-  e : f ∞ ＝ y
-  e = L (lpo ∞)
-
+  p : f ∞ ＝ y
+  p = L (lpo ∞)
 
 LPO-gives-ℕ∞-extension-is-not-prop
  : (g : ℕ → ℕ)
@@ -774,14 +836,14 @@ LPO-gives-ℕ∞-extension-is-not-prop
 LPO-gives-ℕ∞-extension-is-not-prop g lpo ext-is-prop
   = I (LPO-gives-ℕ∞-extension lpo g 0) (LPO-gives-ℕ∞-extension lpo g 1)
  where
-  I : (Σ f  ꞉ (ℕ∞ → ℕ) , (f  extends g) × (f  ∞ ＝ 0))
-    → (Σ f' ꞉ (ℕ∞ → ℕ) , (f' extends g) × (f' ∞ ＝ 1))
+  I : (Σ (f , _) ꞉ ℕ∞-extension g , (f ∞ ＝ 0))
+    → (Σ (f , _) ꞉ ℕ∞-extension g , (f ∞ ＝ 1))
     → 𝟘
-  I (f , h , e) (f' , h' , e') =
+  I ((f , e) , p) ((f' , e') , p') =
    zero-not-positive 0
-    (0    ＝⟨ e ⁻¹ ⟩
-     f  ∞ ＝⟨ ap ((λ (- , _) → - ∞)) (ext-is-prop (f , h) (f' , h')) ⟩
-     f' ∞ ＝⟨ e' ⟩
+    (0    ＝⟨ p ⁻¹ ⟩
+     f  ∞ ＝⟨ ap ((λ (- , _) → - ∞)) (ext-is-prop (f , e) (f' , e')) ⟩
+     f' ∞ ＝⟨ p' ⟩
      1    ∎)
 
 \end{code}
@@ -817,43 +879,160 @@ taboos and so is an inherently classical statement.
 
 Added 4th September 2024.
 
-Our next question is when the type `ℕ∞-extension g` is pointed,
-without assuming classical or anticlassical axioms.
+Our next question is when the type `ℕ∞-extension g` is pointed.
 
 \begin{code}
 
 open import Naturals.Order renaming (max to maxℕ ; max-idemp to maxℕ-idemp)
 
+is-modulus-of-eventual-constancy : (ℕ → ℕ) → ℕ → 𝓤₀ ̇
+is-modulus-of-eventual-constancy g m = ((n : ℕ) → g (maxℕ m n) ＝ g m)
+
+being-modulus-of-eventual-constancy-is-prop
+ : (g : ℕ → ℕ)
+   (m : ℕ)
+ → is-prop (is-modulus-of-eventual-constancy g m)
+being-modulus-of-eventual-constancy-is-prop g m
+ = Π-is-prop fe (λ n → ℕ-is-set)
+
 eventually-constant : (ℕ → ℕ) → 𝓤₀ ̇
-eventually-constant g = Σ m ꞉ ℕ , ((n : ℕ) → g (maxℕ m n) ＝ g m)
+eventually-constant g = Σ m ꞉ ℕ , is-modulus-of-eventual-constancy g m
+
+eventual-constancy-data = eventually-constant
+
+eventual-constancy-gives-continuous-extension
+ : (g : ℕ → ℕ)
+ → eventually-constant g
+ → Σ (f , _) ꞉ ℕ∞-extension g , continuous f
+eventual-constancy-gives-continuous-extension g
+ = uncurry (h g)
+ where
+  h : (g : ℕ → ℕ)
+      (m : ℕ)
+    → is-modulus-of-eventual-constancy g m
+    → Σ (f , _) ꞉ ℕ∞-extension g , continuous f
+  h g 0        a = ((λ _ → g 0) ,
+                    (λ n →  g 0          ＝⟨ (a n)⁻¹ ⟩
+                            g (maxℕ 0 n) ＝⟨ refl ⟩
+                            g n          ∎)) ,
+                   0 ,
+                   (λ n → refl)
+
+  h g (succ m) a = I IH
+   where
+    IH : Σ (f , _) ꞉ ℕ∞-extension (g ∘ succ) , continuous f
+    IH = h (g ∘ succ) m (a ∘ succ)
+
+    I : (Σ (f , _) ꞉ ℕ∞-extension (g ∘ succ) , continuous f)
+      → Σ (f' , _) ꞉ ℕ∞-extension g , continuous f'
+    I ((f , e) , (m , m-property)) = (f' , e') ,
+                                     (succ m , succ-m-property)
+     where
+      f' : ℕ∞ → ℕ
+      f' = ℕ∞-cases fe (g 0) f
+
+      e' : (n : ℕ) → f' (ι n) ＝ g n
+      e' 0 = f' (ι 0) ＝⟨ refl ⟩
+             f' Zero  ＝⟨ ℕ∞-cases-Zero fe (g 0) f ⟩
+             g 0      ∎
+      e' (succ n) = f' (ι (succ n)) ＝⟨ refl ⟩
+                    f' (Succ (ι n)) ＝⟨ ℕ∞-cases-Succ fe (g 0) f (ι n) ⟩
+                    f (ι n)         ＝⟨ e n ⟩
+                    g (succ n)      ∎
+
+      succ-m-property : (n : ℕ) → f' (max (ι (succ m)) (ι n)) ＝ f' ∞
+      succ-m-property 0        = m-property 0
+      succ-m-property (succ n) =
+       f' (max (ι (succ m)) (ι (succ n))) ＝⟨ II ⟩
+       f' (Succ (max (ι m) (ι n)))        ＝⟨ III ⟩
+       f (max (ι m) (ι n))                ＝⟨ IV ⟩
+       f ∞                                ＝⟨ V ⟩
+       f' (Succ ∞)                        ＝⟨ VI ⟩
+       f' ∞ ∎
+        where
+         II  = ap f' ((max-Succ fe (ι m) (ι n))⁻¹)
+         III = ℕ∞-cases-Succ fe (g 0) f (max (ι m) (ι n))
+         IV  = m-property n
+         V   = (ℕ∞-cases-Succ fe (g 0) f ∞)⁻¹
+         VI  = ap f' (Succ-∞-is-∞ fe)
 
 continuous-extension-gives-eventual-constancy
  : (g : ℕ → ℕ)
-   ((f , h) : ℕ∞-extension g)
+   ((f , _) : ℕ∞-extension g)
  → continuous f
  → eventually-constant g
-continuous-extension-gives-eventual-constancy g (f , h) (m , a)
- = m , (λ n → g (maxℕ m n)        ＝⟨ (h (maxℕ m n))⁻¹ ⟩
+continuous-extension-gives-eventual-constancy g (f , e) (m , m-property)
+ = m , (λ n → g (maxℕ m n)        ＝⟨ (e (maxℕ m n))⁻¹ ⟩
               f (ι (maxℕ m n))    ＝⟨ ap f (max-fin fe m n) ⟩
-              f (max (ι m) (ι n)) ＝⟨ a n ⟩
-              f ∞                 ＝⟨ (a m)⁻¹ ⟩
+              f (max (ι m) (ι n)) ＝⟨ m-property n ⟩
+              f ∞                 ＝⟨ (m-property m)⁻¹ ⟩
               f (max (ι m) (ι m)) ＝⟨ ap f (max-idemp fe (ι m)) ⟩
-              f (ι m)             ＝⟨ h m ⟩
+              f (ι m)             ＝⟨ e m ⟩
               g m                 ∎)
 
-pointed-consequence
+\end{code}
+
+Is there a nice necessary and sufficient condition for the
+extendability of any such given g?
+
+A sufficient condition is that LPO holds or g is eventually constant.
+
+\begin{code}
+
+ℕ∞-extension-explicit-existence-sufficient-condition
+ : (g : ℕ → ℕ)
+ → LPO + eventually-constant g
+ → ℕ∞-extension g
+ℕ∞-extension-explicit-existence-sufficient-condition g (inl lpo)
+ = pr₁ (LPO-gives-ℕ∞-extension lpo g 0)
+ℕ∞-extension-explicit-existence-sufficient-condition g (inr ec)
+ = pr₁ (eventual-constancy-gives-continuous-extension g ec)
+
+\end{code}
+
+Its contrapositive says that if g doesn't have an extension, then
+neither LPO holds nor g is eventually constant.
+
+\begin{code}
+
+ℕ∞-extension-nonexistence-gives-¬LPO-and-not-eventual-constancy
+ : (g : ℕ → ℕ)
+ → ¬ ℕ∞-extension g
+ → ¬ LPO × ¬ eventually-constant g
+ℕ∞-extension-nonexistence-gives-¬LPO-and-not-eventual-constancy g ν
+ = I ∘ inl , I ∘ inr
+ where
+  I : ¬ (LPO + eventually-constant g)
+  I = contrapositive (ℕ∞-extension-explicit-existence-sufficient-condition g) ν
+
+\end{code}
+
+A necessary condition is that WLPO holds or that g is not-not
+eventually constant.
+
+\begin{code}
+
+ℕ∞-extension-explicit-existence-first-necessary-condition
  : (g : ℕ → ℕ)
  → ℕ∞-extension g
  → WLPO + ¬¬ eventually-constant g
-pointed-consequence g (f , h) = III
+ℕ∞-extension-explicit-existence-first-necessary-condition
+ g (f , e) = III
  where
   II : is-decidable (¬ continuous f) → WLPO + ¬¬ eventually-constant g
-  II (inl l) = inl (noncontinuous-map-gives-WLPO f l)
+  II (inl l) = inl (noncontinuous-map-gives-WLPO (f , l))
   II (inr r) = inr (¬¬-functor
-                     (continuous-extension-gives-eventual-constancy g (f , h)) r)
+                     (continuous-extension-gives-eventual-constancy g (f , e)) r)
 
   III : WLPO + ¬¬ eventually-constant g
   III = II (the-negation-of-continuity-is-decidable f)
+
+\end{code}
+
+Its contrapositive says that if WLPO fails and g is not eventually
+constant, then there isn't any extension.
+
+\begin{code}
 
 ¬WLPO-gives-that-non-eventually-constant-functions-have-no-extensions
  : (g : ℕ → ℕ)
@@ -862,10 +1041,161 @@ pointed-consequence g (f , h) = III
  → ¬ ℕ∞-extension g
 ¬WLPO-gives-that-non-eventually-constant-functions-have-no-extensions g nwlpo nec
  = contrapositive
-    (pointed-consequence g)
+    (ℕ∞-extension-explicit-existence-first-necessary-condition g)
     (cases nwlpo (¬¬-intro nec))
 
 \end{code}
 
-To be continued. We can actually get a much stronger consequence from
-the pointedness of the type of extensions, to be coded here soon.
+Because LPO implies WLPO and A implies ¬¬ A for any mathematical
+statement A, we have that
+
+  (LPO + eventually-constant g) implies (WLPO + ¬¬ eventually-constant g).
+
+TODO. Is there a nice necessary and sufficient condition for the
+      explicit existence of an extension, between the respectively
+      necessary and sufficient conditions
+
+        WLPO + ¬¬ eventually-constant g
+
+      and
+
+        LPO + eventually-constant g?
+
+\end{code}
+
+Added 9th September 2023. A second necessary condition for the
+explicit existence of an extension.
+
+Notice that, because the condition
+
+  (n : ℕ) → g (maxℕ m n) ＝ g m
+
+is not a priori decidable, as this implies WLPO if it holds for all m
+and g, the type of eventual constancy data doesn't in general have
+split support.
+
+However, if a particular g has an extension to ℕ∞, then this condition becomes
+decidable, and so in this case this type does have split support.
+
+Notice that this doesn't require the eventual constancy of g. It just
+requires that g has some (not necessarily continuous) extension.
+
+\begin{code}
+
+being-modulus-of-constancy-decidable-for-all-functions-gives-WLPO
+ : ((g : ℕ → ℕ) (m : ℕ)
+       → is-decidable (is-modulus-of-eventual-constancy g m))
+ → WLPO
+being-modulus-of-constancy-decidable-for-all-functions-gives-WLPO ϕ
+ = WLPO-traditional-gives-WLPO fe (WLPO-variation-gives-WLPO-traditional I)
+ where
+  I : WLPO-variation
+  I α = I₂
+   where
+    g : ℕ → ℕ
+    g = ι ∘ α
+
+    I₀ : ((n : ℕ) → ι (α (maxℕ 0 n)) ＝ ι (α 0))
+       → (n : ℕ) → α n ＝ α 0
+    I₀ a n = 𝟚-to-ℕ-is-lc (a n)
+
+    I₁ : ((n : ℕ) → α n ＝ α 0)
+       → (n : ℕ) → ι (α (maxℕ 0 n)) ＝ ι (α 0)
+    I₁ b n = ι (α (maxℕ 0 n)) ＝⟨ refl ⟩
+             ι (α n)          ＝⟨ ap ι (b n) ⟩
+             ι (α 0)          ∎
+
+    I₂ : is-decidable ((n : ℕ) → α n ＝ α 0)
+    I₂ = map-decidable I₀ I₁ (ϕ g 0)
+
+second-necessary-condition-for-the-explicit-existence-of-an-extension
+ : (g : ℕ → ℕ)
+ → ℕ∞-extension g
+ → (m : ℕ) → is-decidable (is-modulus-of-eventual-constancy g m)
+second-necessary-condition-for-the-explicit-existence-of-an-extension g (f , e) m
+ = IV
+ where
+  I : is-decidable ((n : ℕ) → f (max (ι m) (ι n)) ＝ f (ι m))
+  I = Theorem-8·2'
+       (λ x → f (max (ι m) x) ＝ f (ι m))
+       (λ x → ℕ-is-discrete (f (max (ι m) x)) (f (ι m)))
+
+  II : ((n : ℕ) → f (max (ι m) (ι n)) ＝ f (ι m))
+     → is-modulus-of-eventual-constancy g m
+  II a n = g (maxℕ m n)        ＝⟨ e (maxℕ m n) ⁻¹ ⟩
+           f (ι (maxℕ m n))    ＝⟨ ap f (max-fin fe m n) ⟩
+           f (max (ι m) (ι n)) ＝⟨ a n ⟩
+           f (ι m)             ＝⟨ e m ⟩
+           g m                 ∎
+
+  III : is-modulus-of-eventual-constancy g m
+      → (n : ℕ) → f (max (ι m) (ι n)) ＝ f (ι m)
+  III b n = f (max (ι m) (ι n)) ＝⟨ ap f ((max-fin fe m n)⁻¹) ⟩
+            f (ι (maxℕ m n))    ＝⟨ e (maxℕ m n) ⟩
+            g (maxℕ m n)        ＝⟨ b n ⟩
+            g                   m ＝⟨ e m ⁻¹ ⟩
+            f (ι m)             ∎
+
+  IV : is-decidable (is-modulus-of-eventual-constancy g m)
+  IV = map-decidable II III I
+
+\end{code}
+
+So, although a function g that has an extension doesn't need to be
+eventually constant, because classical logic may (or may not) hold, it
+is decidable whether any given m is a modulus of eventual constancy of g
+if g has a given extension.
+
+\begin{code}
+
+module eventual-contancy-under-propositional-truncations
+        (pt : propositional-truncations-exist)
+       where
+
+ open PropositionalTruncation pt
+ open exit-truncations pt
+
+ is-extendable-to-ℕ∞ : (ℕ → ℕ) → 𝓤₀ ̇
+ is-extendable-to-ℕ∞ g = ∃ f ꞉ (ℕ∞ → ℕ) , f extends g
+
+ is-eventually-constant : (ℕ → ℕ) → 𝓤₀ ̇
+ is-eventually-constant g = ∃ m ꞉ ℕ , is-modulus-of-eventual-constancy g m
+
+\end{code}
+
+As promised, any extension of g gives that the type of eventual
+constancy data has split support.
+
+\begin{code}
+
+ eventual-constancy-data-for-extendable-functions-has-split-support
+  : (g : ℕ → ℕ)
+  → ℕ∞-extension g
+  → is-eventually-constant g
+  → eventual-constancy-data g
+ eventual-constancy-data-for-extendable-functions-has-split-support  g extension
+  = exit-truncation
+     (λ m → (n : ℕ) → g (maxℕ m n) ＝ g m)
+     (second-necessary-condition-for-the-explicit-existence-of-an-extension
+       g
+       extension)
+
+\end{code}
+
+The second necessary condition for the explicit existence of an
+extension is also necessary for the anonymous existence.
+
+\begin{code}
+
+ necessary-condition-for-the-anonymous-existence-of-an-extension
+  : (g : ℕ → ℕ)
+  → is-extendable-to-ℕ∞ g
+  → (m : ℕ) → is-decidable (is-modulus-of-eventual-constancy g m)
+ necessary-condition-for-the-anonymous-existence-of-an-extension g
+  = ∥∥-rec
+     (Π-is-prop fe
+       (λ n → decidability-of-prop-is-prop fe
+               (being-modulus-of-eventual-constancy-is-prop g n)))
+     (second-necessary-condition-for-the-explicit-existence-of-an-extension g)
+
+\end{code}

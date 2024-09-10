@@ -7,10 +7,6 @@ Ayberk Tosun, 13 September 2023
 
 open import UF.PropTrunc
 open import UF.FunExt
-open import MLTT.Spartan
-open import UF.Logic
-open import UF.SubtypeClassifier
-open import Slice.Family
 
 module Locales.NotationalConventions (pt : propositional-truncations-exist)
                                      (fe : Fun-Ext) where

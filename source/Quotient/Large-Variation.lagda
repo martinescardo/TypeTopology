@@ -12,7 +12,6 @@ For more comments and explanations, see the original files.
 open import MLTT.Spartan
 
 open import UF.Base hiding (_≈_)
-open import UF.Equiv
 open import UF.FunExt
 open import UF.Powerset
 open import UF.Sets

@@ -14,6 +14,7 @@ will be broken down into smaller modules.
 
 open import MLTT.Spartan hiding (J)
 open import UF.Base
+open import UF.Classifiers
 open import UF.FunExt
 open import UF.PropTrunc
 open import UF.Sets
@@ -21,7 +22,6 @@ open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.Subsingletons-Properties
 open import UF.SubtypeClassifier
-open import UF.Classifiers
 
 module Locales.Compactness.Definition
         (pt : propositional-truncations-exist)
@@ -35,13 +35,13 @@ open import Locales.WayBelowRelation.Definition  pt fe
 open import MLTT.List using (member; []; _∷_; List; in-head; in-tail; length)
 open import Slice.Family
 open import Taboos.FiniteSubsetTaboo pt fe
-open import UF.ImageAndSurjection pt
-open import UF.Logic
-open import UF.Powerset-MultiUniverse
-open import UF.Powerset-Fin pt hiding (⟨_⟩)
-open import UF.Sets-Properties
 open import UF.Equiv hiding (_■)
 open import UF.EquivalenceExamples
+open import UF.ImageAndSurjection pt
+open import UF.Logic
+open import UF.Powerset-Fin pt hiding (⟨_⟩)
+open import UF.Powerset-MultiUniverse
+open import UF.Sets-Properties
 
 open PropositionalTruncation pt
 open AllCombinators pt fe

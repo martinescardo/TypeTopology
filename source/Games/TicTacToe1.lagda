@@ -25,7 +25,6 @@ open import UF.DiscreteAndSeparated
 𝟛 : Type
 𝟛 = Fin 3
 
-open import Games.TypeTrees
 open import Games.FiniteHistoryDependent 𝟛
 open import Games.Constructor 𝟛
 open import Games.J

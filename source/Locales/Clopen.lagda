@@ -7,32 +7,28 @@ Ayberk Tosun, 11 September 2023
 open import MLTT.Spartan hiding (𝟚)
 open import UF.PropTrunc
 open import UF.FunExt
-open import UF.UA-FunExt
 open import UF.Size
 
 module Locales.Clopen (pt : propositional-truncations-exist)
                       (fe : Fun-Ext)
                       (sr : Set-Replacement pt) where
 
-open import Locales.AdjointFunctorTheoremForFrames
-open import Locales.Frame pt fe
-open import Locales.WayBelowRelation.Definition pt fe
 open import Locales.Compactness.Definition pt fe
 open import Locales.Complements pt fe
+open import Locales.Frame pt fe
+open import Locales.WayBelowRelation.Definition pt fe
 open import Locales.WellInside pt fe sr
+open import MLTT.List hiding ([_])
 open import Slice.Family
+open import UF.Base using (from-Σ-＝)
 open import UF.Logic
 open import UF.Subsingletons
 open import UF.SubtypeClassifier
-open import MLTT.List hiding ([_])
-open import UF.Base using (from-Σ-＝)
 
 open AllCombinators pt fe
 open PropositionalTruncation pt
 
-open import Locales.GaloisConnection pt fe
 
-open import Locales.InitialFrame pt fe
 
 open Locale
 

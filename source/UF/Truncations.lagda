@@ -15,10 +15,8 @@ globally as many important properties hold in the absence of univalence.
 {-# OPTIONS --safe --without-K #-}
 
 open import UF.FunExt
-open import UF.PropTrunc
 
 module UF.Truncations (fe : Fun-Ext)
-                      (pt : propositional-truncations-exist)
                        where
 
 open import MLTT.Spartan
@@ -26,6 +24,7 @@ open import MLTT.Spartan
 open import UF.Base
 open import UF.Equiv
 open import UF.H-Levels fe
+open import UF.PropTrunc
 open import UF.Sets
 open import UF.Subsingletons
 open import UF.Univalence
@@ -156,20 +155,23 @@ We demonstrate the equivalence of one-truncation and propositional truncation:
 
 \begin{code}
 
- open propositional-truncations-exist pt
+ module _ (pt : propositional-truncations-exist)
+           where
 
- one-trunc-to-prop-trunc : {X : 𝓤 ̇} → ∥ X ∥[ 1 ] → ∥ X ∥
- one-trunc-to-prop-trunc = ∥∥ₙ-rec (is-prop-implies-is-prop' ∥∥-is-prop) ∣_∣
+  open propositional-truncations-exist pt
 
- prop-trunc-to-one-trunc : {X : 𝓤 ̇} → ∥ X ∥ → ∥ X ∥[ 1 ]
- prop-trunc-to-one-trunc = ∥∥-rec one-trunc-is-prop (∣_∣[ 1 ])
+  one-trunc-to-prop-trunc : {X : 𝓤 ̇} → ∥ X ∥[ 1 ] → ∥ X ∥
+  one-trunc-to-prop-trunc = ∥∥ₙ-rec (is-prop-implies-is-prop' ∥∥-is-prop) ∣_∣
 
- one-trunc-≃-prop-trunc : {X : 𝓤 ̇}
-                        → (∥ X ∥[ 1 ]) ≃ ∥ X ∥
- one-trunc-≃-prop-trunc =
-  logically-equivalent-props-are-equivalent one-trunc-is-prop ∥∥-is-prop
-                                            one-trunc-to-prop-trunc
-                                            prop-trunc-to-one-trunc
+  prop-trunc-to-one-trunc : {X : 𝓤 ̇} → ∥ X ∥ → ∥ X ∥[ 1 ]
+  prop-trunc-to-one-trunc = ∥∥-rec one-trunc-is-prop (∣_∣[ 1 ])
+
+  one-trunc-≃-prop-trunc : {X : 𝓤 ̇}
+                         → (∥ X ∥[ 1 ]) ≃ ∥ X ∥
+  one-trunc-≃-prop-trunc =
+   logically-equivalent-props-are-equivalent one-trunc-is-prop ∥∥-is-prop
+                                             one-trunc-to-prop-trunc
+                                             prop-trunc-to-one-trunc
 
 \end{code}
 
@@ -422,5 +424,24 @@ for details see: https://unimath.github.io/agda-unimath/foundation.truncations.
                      → ∥ x ＝ x' ∥[ n ]
                      → (∣ x ∣[ succ n ] ＝ ∣ x' ∣[ succ n ])
  forth-trunc-id-char ua = ⌜ eliminated-trunc-identity-char ua ⌝
+
+\end{code}
+
+We show that the existence of propositional truncation follows from the existence
+of general truncations. Notice this implication manifests as a function between
+record types.
+
+\begin{code}
+
+H-level-truncations-give-propositional-truncations : H-level-truncations-exist
+                                                   → propositional-truncations-exist
+H-level-truncations-give-propositional-truncations te = record
+ { ∥_∥        = ∥_∥[ 1 ]
+ ; ∥∥-is-prop = is-prop'-implies-is-prop ∥∥ₙ-hlevel
+ ; ∣_∣        = ∣_∣[ 1 ]
+ ; ∥∥-rec     = λ - → ∥∥ₙ-rec (is-prop-implies-is-prop' -)
+ }
+ where
+  open H-level-truncations-exist te
 
 \end{code}

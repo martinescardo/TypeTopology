@@ -20,9 +20,7 @@ open import MLTT.Two-Properties
 open import Fin.Type
 open import Fin.Bishop
 open import Fin.Embeddings
-open import Fin.ArithmeticViaEquivalence
 open import UF.Equiv
-open import UF.EquivalenceExamples
 open import MLTT.SpartanList hiding (⟨_⟩; _∷_)
 
 module TWA.Thesis.Chapter3.ClosenessSpaces-Examples (fe : FunExt) where
@@ -489,7 +487,6 @@ Least-PseudoClosenessSpace X Y f v
  , Least-clofun X Y v
  , Least-clofun-is-psclofun X Y v
 
-open import MLTT.Two-Properties
 
 close-to-close : (X : ClosenessSpace 𝓤)
                → (Y : ClosenessSpace 𝓥)

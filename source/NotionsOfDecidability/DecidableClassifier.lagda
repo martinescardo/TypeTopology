@@ -15,7 +15,6 @@ module NotionsOfDecidability.DecidableClassifier where
 
 open import MLTT.Spartan
 
-open import MLTT.Plus-Properties
 open import MLTT.Two-Properties
 
 open import UF.DiscreteAndSeparated
@@ -29,7 +28,6 @@ open import UF.Subsingletons-FunExt
 open import UF.SubtypeClassifier
 
 open import NotionsOfDecidability.Decidable
-open import NotionsOfDecidability.Complemented
 
 boolean-value' : {A : 𝓤 ̇ }
                → is-decidable A

@@ -36,10 +36,8 @@ module DomainTheory.Part-II
 open PropositionalTruncation pt
 
 open import MLTT.List
-open import MLTT.Plus-Properties
 open import MLTT.Spartan hiding (J)
 
-open import UF.Base
 open import UF.DiscreteAndSeparated
 open import UF.Equiv
 open import UF.EquivalenceExamples
@@ -581,7 +579,6 @@ Section 5.2
 
  module _ where
 
-  open import Lifting.Construction 𝓥 renaming (⊥ to ⊥𝓛)
   open import DomainTheory.Lifting.LiftingSet pt fe 𝓥 pe
   open import DomainTheory.Lifting.LiftingSetAlgebraic pt pe fe 𝓥
 
@@ -691,7 +688,6 @@ Section 6
 
 \begin{code}
 
- open import DomainTheory.IdealCompletion.IdealCompletion pt fe pe 𝓥
  open import DomainTheory.IdealCompletion.Properties pt fe pe 𝓥
 
  Definition-6-1 : 𝓥 ⁺ ̇
@@ -822,7 +818,6 @@ module _ where
  open import DomainTheory.BasesAndContinuity.Continuity pt fe 𝓤₀
  open import DomainTheory.BasesAndContinuity.Bases pt fe 𝓤₀
  open import DomainTheory.Examples.IdlDyadics pt fe pe
- open import DomainTheory.IdealCompletion.IdealCompletion pt fe pe 𝓤₀
  open import DomainTheory.IdealCompletion.Properties pt fe pe 𝓤₀
 
  Definition-6-17 : (𝓤₀ ̇ ) × (𝔻 → 𝔻 → 𝓤₀ ̇ )
@@ -878,7 +873,6 @@ module _ (𝓥 : Universe) where
  open import DomainTheory.Basics.WayBelow pt fe 𝓥
  open import DomainTheory.BasesAndContinuity.Continuity pt fe 𝓥
  open import DomainTheory.BasesAndContinuity.Bases pt fe 𝓥
- open import DomainTheory.IdealCompletion.IdealCompletion pt fe pe 𝓥
  open import DomainTheory.IdealCompletion.Properties pt fe pe 𝓥
  open import DomainTheory.IdealCompletion.Retracts pt fe pe 𝓥
 

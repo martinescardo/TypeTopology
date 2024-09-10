@@ -15,7 +15,6 @@ In the future, other constructions of the Sierpiński locale might be added here
 {-# OPTIONS --safe --without-K --lossy-unification #-}
 
 open import UF.FunExt
-open import UF.Logic
 open import MLTT.Spartan hiding (𝟚)
 open import UF.PropTrunc
 open import UF.Subsingletons
@@ -39,18 +38,10 @@ open import DomainTheory.Lifting.LiftingSetAlgebraic pt pe fe 𝓤
 open import DomainTheory.Topology.ScottTopology pt fe 𝓤
 open import Lifting.Construction 𝓤 hiding (⊥)
 open import Lifting.Miscelanea-PropExt-FunExt 𝓤 pe fe
-open import Lifting.UnivalentPrecategory 𝓤 (𝟙 {𝓤})
 open import Locales.Frame pt fe hiding (𝟚; is-directed)
-open import Locales.InitialFrame pt fe
-open import Locales.SmallBasis pt fe sr
-open import Locales.Spectrality.SpectralLocale pt fe
-open import Locales.Spectrality.SpectralMap pt fe
-open import Locales.Stone pt fe sr
-open import Slice.Family
 open import UF.DiscreteAndSeparated
 open import UF.Equiv
 open import UF.Subsingletons-FunExt
-open import UF.Subsingletons-Properties
 open import UF.SubtypeClassifier
 
 open Locale

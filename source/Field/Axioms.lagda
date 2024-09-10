@@ -9,7 +9,6 @@ In this file I define the constructive field axioms.
 open import MLTT.Spartan renaming (_+_ to _∔_)
 
 open import UF.Sets
-open import UF.Subsingletons
 
 module Field.Axioms where
 
@@ -103,7 +102,6 @@ addition-associative : {𝓥 𝓦 : Universe} → (F : Ordered-Field 𝓤 { 𝓥
 addition-associative ((F , (_+_ , _*_ , _♯_) , F-is-set , +-assoc , *-assoc , +-comm , *-comm , dist , (e₀ , e₁) , e₀♯e₁ , zln , +-inverse , *-left-neutral , *-inverse) , _<_ , <-respects-additions , <-respects-multiplication) = +-assoc
 
 {-
-open import Rationals.
 
 ArchimedeanOrderedField : (𝓤 : Universe) → {𝓥 𝓦 : Universe} → (𝓤 ⁺) ⊔ (𝓥 ⁺) ⊔ (𝓦 ⁺) ̇
 ArchimedeanOrderedField 𝓤 {𝓥} {𝓦} = Σ (F , (_<_ , ofa)) ꞉ Ordered-Field 𝓤 {𝓥 } { 𝓦 } , ((embedding : (ℚ → ⟨ (F , (_<_ , ofa)) ⟩)) → (∀ x y → ∃ z ꞉ ℚ , (x < embedding z) × (embedding z < y)))

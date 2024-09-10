@@ -40,33 +40,23 @@ module Locales.LawsonLocale.CompactElementsOfPoint
 open import DomainTheory.BasesAndContinuity.Bases pt fe 𝓤
 open import DomainTheory.BasesAndContinuity.ScottDomain      pt fe 𝓤
 open import DomainTheory.Basics.Dcpo pt fe 𝓤 renaming (⟨_⟩ to ⟨_⟩∙)
-open import DomainTheory.Basics.Pointed pt fe 𝓤
 open import DomainTheory.Basics.WayBelow pt fe 𝓤
 open import DomainTheory.Topology.ScottTopology pt fe 𝓤
 open import DomainTheory.Topology.ScottTopologyProperties pt fe 𝓤
-open import Locales.Compactness.Definition pt fe hiding (is-compact)
 open import Locales.ContinuousMap.Definition pt fe
 open import Locales.ContinuousMap.FrameHomomorphism-Definition pt fe
 open import Locales.ContinuousMap.FrameHomomorphism-Properties pt fe
-open import Locales.DistributiveLattice.Definition fe pt
-open import Locales.DistributiveLattice.Ideal pt fe pe hiding (is-inhabited)
-open import Locales.DistributiveLattice.Properties fe pt
 open import Locales.Frame pt fe hiding (is-directed)
 open import Locales.InitialFrame pt fe
 open import Locales.ScottLocale.Definition pt fe 𝓤
 open import Locales.ScottLocale.Properties pt fe 𝓤
-open import Locales.ScottLocale.ScottLocalesOfAlgebraicDcpos pt fe 𝓤
 open import Locales.ScottLocale.ScottLocalesOfScottDomains pt fe sr 𝓤
-open import Locales.SmallBasis pt fe sr
 open import Locales.Point.Definition pt fe
 open import Locales.Point.Properties pt fe 𝓤 pe hiding (𝟏L)
-open import Locales.Spectrality.SpectralMap pt fe
 open import Locales.TerminalLocale.Properties pt fe sr
 open import Slice.Family
 open import UF.Logic
 open import UF.Powerset
-open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
 open import UF.SubtypeClassifier renaming (⊥ to ⊥ₚ)
 open import UF.Univalence
 

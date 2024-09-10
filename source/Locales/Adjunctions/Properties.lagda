@@ -20,7 +20,6 @@ to apply them to distributive lattices, generalizing them has become necessary.
 {-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
-open import UF.Base
 open import UF.FunExt
 open import UF.PropTrunc
 

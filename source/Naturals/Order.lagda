@@ -300,7 +300,6 @@ Added December 2019.
 
 \begin{code}
 
-open import NotionsOfDecidability.Decidable
 open import NotionsOfDecidability.Complemented
 
 ≤-decidable : (m n : ℕ ) → is-decidable (m ≤ n)

@@ -20,15 +20,11 @@ module Locales.DistributiveLattice.Definition-SigmaBased
        where
 
 open import Locales.DistributiveLattice.Definition fe pt
-open import Locales.Frame pt fe
 open import MLTT.Spartan
-open import UF.Base
 open import UF.Equiv
 open import UF.Logic
-open import UF.Powerset-MultiUniverse
 open import UF.Sets-Properties
 open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
 open import UF.Subsingletons-Properties
 open import UF.SubtypeClassifier
 

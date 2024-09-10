@@ -12,7 +12,6 @@ module Games.TicTacToe2 where
 
 open import MLTT.Spartan hiding (J)
 open import MLTT.Fin
-open import MLTT.List
 
 data 𝟛 : Type where
  O-wins draw X-wins : 𝟛
@@ -22,7 +21,6 @@ open import Games.FiniteHistoryDependent 𝟛
 open import Games.TypeTrees
 open import Games.J
 open import MLTT.Athenian
-open import TypeTopology.SigmaDiscreteAndTotallySeparated
 
 open list-util
 
@@ -179,7 +177,6 @@ l₂-test = refl
 
 {- slow
 
-open import Athenian
 
 u₂-test : s₂ ＝ (𝟎 :: refl)
            :: ((𝟒 :: refl)

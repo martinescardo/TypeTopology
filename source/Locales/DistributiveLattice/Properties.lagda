@@ -10,7 +10,6 @@ start-date:  2024-02-14
 
 open import UF.FunExt
 open import UF.PropTrunc
-open import UF.Sets
 
 module Locales.DistributiveLattice.Properties
         (fe : Fun-Ext)
@@ -18,14 +17,10 @@ module Locales.DistributiveLattice.Properties
        where
 
 open import Locales.DistributiveLattice.Definition fe pt
-open import Locales.Frame pt fe
-open import UF.Powerset-MultiUniverse
 open import MLTT.List
 open import MLTT.Spartan
-open import UF.Base
 open import UF.SubtypeClassifier
 open import UF.Logic
-open import UF.Equiv hiding (_■)
 
 open AllCombinators pt fe hiding (_∨_; _∧_)
 

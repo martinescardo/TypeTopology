@@ -14,7 +14,6 @@ isomorphism.
 
 open import UF.FunExt
 open import UF.PropTrunc
-open import UF.Sets
 
 module Locales.DistributiveLattice.Isomorphism
         (fe : Fun-Ext)
@@ -33,11 +32,8 @@ open import UF.Base
 open import UF.Equiv
 open import UF.Equiv-FunExt
 open import UF.Logic
-open import UF.Powerset-MultiUniverse
-open import UF.Retracts
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import UF.Subsingletons-Properties
 open import UF.SubtypeClassifier
 
 open AllCombinators pt fe renaming (_∧_ to _∧ₚ_)

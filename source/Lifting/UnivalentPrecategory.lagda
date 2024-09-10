@@ -22,14 +22,12 @@ module Lifting.UnivalentPrecategory
 open import Lifting.IdentityViaSIP 𝓣
 open import Lifting.Construction 𝓣
 open import UF.Base
-open import UF.Embeddings
 open import UF.Equiv
 open import UF.Equiv-FunExt
 open import UF.EquivalenceExamples
 open import UF.FunExt
 open import UF.Lower-FunExt
 open import UF.Sets
-open import UF.StructureIdentityPrinciple
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.UA-FunExt

@@ -6,7 +6,6 @@ Note that this file is incomplete.
 {-# OPTIONS --without-K --safe  #-}
 
 open import MLTT.Spartan
-open import Notation.CanonicalMap
 open import Notation.Order
 open import UF.FunExt
 open import UF.PropTrunc
@@ -14,7 +13,6 @@ open import UF.Powerset
 open import UF.Subsingletons
 
 open import TWA.Thesis.AndrewSneap.DyadicRationals
-open import TWA.Thesis.Chapter5.Integers
 
 module TWA.Thesis.AndrewSneap.DyadicReals
   (pe : PropExt)

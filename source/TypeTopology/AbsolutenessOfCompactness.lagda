@@ -95,10 +95,8 @@ open import Modal.Subuniverse
 
 open import TypeTopology.CompactTypes
 
-open import UF.Base
 open import UF.Equiv
 open import UF.FunExt
-open import UF.Univalence
 open import UF.UniverseEmbedding
 
 \end{code}
