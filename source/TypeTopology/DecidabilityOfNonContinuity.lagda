@@ -30,6 +30,7 @@ module TypeTopology.DecidabilityOfNonContinuity (fe : funext 𝓤₀ 𝓤₀) wh
 open import CoNaturals.Type
 open import MLTT.Two-Properties
 open import Notation.CanonicalMap
+open import NotionsOfDecidability.Complemented
 open import NotionsOfDecidability.Decidable
 open import Taboos.LPO
 open import TypeTopology.ADecidableQuantificationOverTheNaturals fe
@@ -51,7 +52,15 @@ decidability of non-continuity.
 
     https://doi.org/10.2178/jsl.7803040
 
+For convenience, we first recall the version of Theorem 8.2, which is
+used a number of times in this file.
+
 \begin{code}
+
+_ : (A : ℕ∞ → 𝓤 ̇ )
+  → is-complemented A
+  → is-decidable ((n : ℕ) → A (ι n))
+_ = Theorem-8·2'
 
 Lemma-3·1 : (A : ℕ∞ → ℕ∞ → 𝓤 ̇ )
           → ((x y : ℕ∞) → is-decidable (A x y))
@@ -95,7 +104,9 @@ where m and n range over the natural numbers.
 
 The negation of this statement is (constructively) equivalent to
 
-   ∀ m : ℕ , ¬ ∀ n ≥ m , f n ＝ f ∞.
+   ∀ m : ℕ , ¬ ∀ n ≥ m , f n ＝ f ∞
+
+via currying and uncurrying.
 
 We can implement ∀ y ≥ x , A y as ∀ x , A (max x y), so that the
 continuity of f amounts to
@@ -109,12 +120,12 @@ and its negation to
 and it is technically convenient to do so here.
 
 The above paper [1] mentions that its mathematical development can be
-carried out in a number of foundations, including type theory, but it
-doesn't say what "∃" should be taken to mean in HoTT/UF. It turns out
-(added summer 2024 - see below) that it doesn't matter whether `∃` is
-interpreted to mean `Σ` or the propositional truncation of `Σ`,
-although this is non trivial and is proved below, but does follow from
-what is developed in [1].
+carried out in a number of foundations, including dependent type
+theory, but it doesn't say what "∃" should be taken to mean in
+HoTT/UF. Fortunately, it turns out (added summer 2024 - see below)
+that it doesn't matter whether `∃` is interpreted to mean `Σ` or the
+propositional truncation of `Σ`, although this is nontrivial and is
+proved below, but does follow from what is developed in [1].
 
 For the following, we adopt `∃` to mean the propositional truncation
 of `Σ` (as we generally do in TypeTopology).
@@ -282,8 +293,6 @@ it with Σ or ∃ (or whether we formulate with decidable properties or
 boolean-valued functions).
 
 \begin{code}
-
-open import NotionsOfDecidability.Complemented
 
 MP : 𝓤 ⁺ ̇
 MP {𝓤} = (A : ℕ → 𝓤 ̇ )
@@ -760,21 +769,21 @@ try to be consistent with the terminology of the HoTT/UF community.)
  → (g : ℕ → ℕ)
  → ¬ WLPO
  → is-prop (ℕ∞-extension g)
-¬WLPO-gives-ℕ∞-extension-is-prop fe g nwlpo (f , e) (f' , e') = VI
+¬WLPO-gives-ℕ∞-extension-is-prop fe g nwlpo (f , e) (f' , e') = IV
  where
   I : (n : ℕ) → f (ι n) ＝ f' (ι n)
   I n = f (ι n)  ＝⟨ e n ⟩
         g n      ＝⟨ (e' n)⁻¹ ⟩
         f' (ι n) ∎
 
-  IV : f ∞ ＝ f' ∞
-  IV = agreement-cotaboo' ℕ-is-discrete nwlpo f f' I
+  II : f ∞ ＝ f' ∞
+  II = agreement-cotaboo' ℕ-is-discrete nwlpo f f' I
 
-  V : f ∼ f'
-  V = ℕ∞-density fe ℕ-is-¬¬-separated I IV
+  III : f ∼ f'
+  III = ℕ∞-density fe ℕ-is-¬¬-separated I II
 
-  VI : (f , e) ＝ (f' , e')
-  VI = to-subtype-＝ (λ - → Π-is-prop fe (λ n → ℕ-is-set)) (dfunext fe V)
+  IV : (f , e) ＝ (f' , e')
+  IV = to-subtype-＝ (λ - → Π-is-prop fe (λ n → ℕ-is-set)) (dfunext fe III)
 
 \end{code}
 
