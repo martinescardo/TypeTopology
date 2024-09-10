@@ -975,8 +975,7 @@ continuous-extension-gives-eventual-constancy g (f , e) (m , m-property)
 Is there a nice necessary and sufficient condition for the
 extendability of any such given g?
 
-A sufficient condition is that either LPO holds of g is eventually
-constant.
+A sufficient condition is that LPO holds or g is eventually constant.
 
 \begin{code}
 
@@ -1083,11 +1082,11 @@ requires that g has some (not necessarily continuous) extension.
 
 \begin{code}
 
-eventual-constancy-condition-decidable-for-all-functions-gives-WLPO
+being-modulus-of-constancy-decidable-for-all-functions-gives-WLPO
  : ((g : ℕ → ℕ) (m : ℕ)
        → is-decidable (is-modulus-of-eventual-constancy g m))
  → WLPO
-eventual-constancy-condition-decidable-for-all-functions-gives-WLPO ϕ
+being-modulus-of-constancy-decidable-for-all-functions-gives-WLPO ϕ
  = WLPO-traditional-gives-WLPO fe (WLPO-variation-gives-WLPO-traditional I)
  where
   I : WLPO-variation
