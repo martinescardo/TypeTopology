@@ -1072,7 +1072,7 @@ TODO. Is there a nice necessary and sufficient condition for the
 
       Notice the following. Assuming MP, we have that WLPO → LPO, as
       is well known. But the assumption of MP doesn't give, as far as
-      we know, the implication
+      we can see, the implication
 
         ¬¬ eventually-constant g → eventually-constant g.
 
