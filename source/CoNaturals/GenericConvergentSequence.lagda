@@ -692,6 +692,14 @@ max-Succ fe u v = ℕ∞-to-ℕ→𝟚-lc fe (dfunext fe f)
   f 0        = refl
   f (succ i) = refl
 
+max-succ : funext₀ → (m : ℕ) → max (ι m) (ι (succ m)) ＝ ι (succ m)
+max-succ fe 0        = refl
+max-succ fe (succ m) =
+ max (ι (succ m)) (ι (succ (succ m))) ＝⟨ (max-Succ fe (ι m) (ι (succ m)))⁻¹ ⟩
+ Succ (max (ι m) (ι (succ m)))        ＝⟨ ap Succ (max-succ fe m) ⟩
+ Succ (ι (succ m))                    ＝⟨ refl ⟩
+ ι (succ (succ m))                    ∎
+
 max-fin : funext₀ → (m n : ℕ) → ι (maxℕ m n) ＝ max (ι m) (ι n)
 max-fin fe 0 n = (max0-property (ι n))⁻¹
 max-fin fe (succ m) 0 = max0-property' fe (ι (succ m)) ⁻¹

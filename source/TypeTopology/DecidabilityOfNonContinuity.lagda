@@ -350,8 +350,8 @@ The following is from [1] with the same proof.
 open import Taboos.BasicDiscontinuity fe
 open import Naturals.Properties
 
-WLPO-gives-that-there-is-a-noncontinous-map : WLPO → (Σ f ꞉ (ℕ∞ → ℕ) , ¬ continuous f)
-WLPO-gives-that-there-is-a-noncontinous-map wlpo = f , f-non-cts
+WLPO-gives-noncontinous-map : WLPO → (Σ f ꞉ (ℕ∞ → ℕ) , ¬ continuous f)
+WLPO-gives-noncontinous-map wlpo = f , f-non-cts
  where
   p : ℕ∞ → 𝟚
   p = pr₁ (WLPO-is-discontinuous wlpo)
@@ -396,7 +396,7 @@ principle that says that all functions are not-not continuous.
  (λ nwlpo → curry (contrapositive noncontinuous-map-gives-WLPO nwlpo)) ,
  (λ (a : (f : ℕ∞ → ℕ) → ¬¬ continuous f)
    → contrapositive
-      WLPO-gives-that-there-is-a-noncontinous-map
+      WLPO-gives-noncontinous-map
       (uncurry a))
 
 \end{code}
@@ -512,7 +512,7 @@ module _ (f : ℕ∞ → ℕ) where
   : traditional-uniform-continuity-data f
   → traditional-continuity-data f
  traditional-uniform-continuity-data-gives-traditional-continuity-data
-  (m , m-property) x = m , m-property x
+  (m , m-is-modulus) x = m , m-is-modulus x
 
  traditional-continuity-data-gives-continuity-data
   : traditional-continuity-data f
@@ -522,11 +522,11 @@ module _ (f : ℕ∞ → ℕ) where
    m : ℕ
    m = pr₁ (f-cts-traditional ∞)
 
-   m-property : (y : ℕ∞) → ∞ ＝⟪ m ⟫ y → f ∞ ＝ f y
-   m-property = pr₂ (f-cts-traditional ∞)
+   m-is-modulus : (y : ℕ∞) → ∞ ＝⟪ m ⟫ y → f ∞ ＝ f y
+   m-is-modulus = pr₂ (f-cts-traditional ∞)
 
    I : (n : ℕ) → f (max (ι m) (ι n)) ＝ f ∞
-   I n = (m-property (max (ι m) (ι n)) (lemma₀ m n))⁻¹
+   I n = (m-is-modulus (max (ι m) (ι n)) (lemma₀ m n))⁻¹
 
    II : continuous f
    II = m , I
@@ -605,10 +605,10 @@ We now need more lemmas about the relation x ＝⟪ k ⟫ y.
   : continuity-data f
   → traditional-uniform-continuity-data f
  continuity-data-gives-traditional-uniform-continuity-data
-  (m , m-property) = m , m-property'
+  (m , m-is-modulus) = m , m-is-modulus'
   where
    qₙ : (n : ℕ) → f (max (ι m) (ι n)) ＝ f ∞
-   qₙ = m-property
+   qₙ = m-is-modulus
 
    I : (z : ℕ∞) → max (ι m) z ＝ z → f z ＝ f ∞
    I z p = γ
@@ -623,8 +623,8 @@ We now need more lemmas about the relation x ＝⟪ k ⟫ y.
          f (max (ι m) z) ＝⟨ q z ⟩
          f ∞             ∎
 
-   m-property' : (x y : ℕ∞) → x ＝⟪ m ⟫ y → f x ＝ f y
-   m-property' x y e =
+   m-is-modulus' : (x y : ℕ∞) → x ＝⟪ m ⟫ y → f x ＝ f y
+   m-is-modulus' x y e =
     Cases (lemma₃ x y m e)
      (λ (p : x ＝ y) → ap f p)
      (λ (q , r) → f x ＝⟨ I x q ⟩
@@ -831,12 +831,12 @@ LPO-gives-ℕ∞-extension lpo g y
   e : f ∘ ι ∼ g
   e k = E k (lpo (ι k))
 
-  L : (d : is-decidable (Σ n ꞉ ℕ , ∞ ＝ ι n)) → F ∞ d ＝ y
-  L (inl (n , p)) = 𝟘-elim (∞-is-not-finite n p)
-  L (inr _)       = refl
+  P : (d : is-decidable (Σ n ꞉ ℕ , ∞ ＝ ι n)) → F ∞ d ＝ y
+  P (inl (n , p)) = 𝟘-elim (∞-is-not-finite n p)
+  P (inr _)       = refl
 
   p : f ∞ ＝ y
-  p = L (lpo ∞)
+  p = P (lpo ∞)
 
 LPO-gives-ℕ∞-extension-is-not-prop
  : (g : ℕ → ℕ)
@@ -934,8 +934,8 @@ eventual-constancy-gives-continuous-extension g
 
     I : (Σ (f , _) ꞉ ℕ∞-extension (g ∘ succ) , continuous f)
       → Σ (f' , _) ꞉ ℕ∞-extension g , continuous f'
-    I ((f , e) , (m , m-property)) = (f' , e') ,
-                                     (succ m , succ-m-property)
+    I ((f , e) , (m , m-is-modulus)) = (f' , e') ,
+                                     (succ m , succ-m-is-modulus)
      where
       f' : ℕ∞ → ℕ
       f' = ℕ∞-cases fe (g 0) f
@@ -949,9 +949,9 @@ eventual-constancy-gives-continuous-extension g
                     f (ι n)         ＝⟨ e n ⟩
                     g (succ n)      ∎
 
-      succ-m-property : (n : ℕ) → f' (max (ι (succ m)) (ι n)) ＝ f' ∞
-      succ-m-property 0        = m-property 0
-      succ-m-property (succ n) =
+      succ-m-is-modulus : (n : ℕ) → f' (max (ι (succ m)) (ι n)) ＝ f' ∞
+      succ-m-is-modulus 0        = m-is-modulus 0
+      succ-m-is-modulus (succ n) =
        f' (max (ι (succ m)) (ι (succ n))) ＝⟨ II ⟩
        f' (Succ (max (ι m) (ι n)))        ＝⟨ III ⟩
        f (max (ι m) (ι n))                ＝⟨ IV ⟩
@@ -961,7 +961,7 @@ eventual-constancy-gives-continuous-extension g
         where
          II  = ap f' ((max-Succ fe (ι m) (ι n))⁻¹)
          III = ℕ∞-cases-Succ fe (g 0) f (max (ι m) (ι n))
-         IV  = m-property n
+         IV  = m-is-modulus n
          V   = (ℕ∞-cases-Succ fe (g 0) f ∞)⁻¹
          VI  = ap f' (Succ-∞-is-∞ fe)
 
@@ -970,11 +970,11 @@ continuous-extension-gives-eventual-constancy
    ((f , _) : ℕ∞-extension g)
  → continuous f
  → eventually-constant g
-continuous-extension-gives-eventual-constancy g (f , e) (m , m-property)
+continuous-extension-gives-eventual-constancy g (f , e) (m , m-is-modulus)
  = m , (λ n → g (maxℕ m n)        ＝⟨ (e (maxℕ m n))⁻¹ ⟩
               f (ι (maxℕ m n))    ＝⟨ ap f (max-fin fe m n) ⟩
-              f (max (ι m) (ι n)) ＝⟨ m-property n ⟩
-              f ∞                 ＝⟨ (m-property m)⁻¹ ⟩
+              f (max (ι m) (ι n)) ＝⟨ m-is-modulus n ⟩
+              f ∞                 ＝⟨ (m-is-modulus m)⁻¹ ⟩
               f (max (ι m) (ι m)) ＝⟨ ap f (max-idemp fe (ι m)) ⟩
               f (ι m)             ＝⟨ e m ⟩
               g m                 ∎)
@@ -1206,5 +1206,36 @@ extension is also necessary for the anonymous existence.
        (λ n → decidability-of-prop-is-prop fe
                (being-modulus-of-eventual-constancy-is-prop g n)))
      (second-necessary-condition-for-the-explicit-existence-of-an-extension g)
+
+\end{code}
+
+Added 10th September 2024. We should have added this immediate
+consequence earlier. If all maps ℕ → ℕ can be extended to ℕ∞, then
+WLPO holds. Just consider the identity function, which can't have any
+continuous extension, and so deduce WLPO.
+
+\begin{code}
+
+all-maps-have-extensions-gives-WLPO
+ : ((g : ℕ → ℕ) → ℕ∞-extension g)
+ → WLPO
+all-maps-have-extensions-gives-WLPO a
+ = I (a id)
+ where
+  I : ℕ∞-extension id → WLPO
+  I (f , e) = noncontinuous-map-gives-WLPO (f , ν)
+   where
+    ν : ¬ continuous f
+    ν (m , m-is-modulus) =
+     succ-no-fp m
+      (m                          ＝⟨ refl ⟩
+       id m                       ＝⟨ (e m)⁻¹ ⟩
+       f (ι m)                    ＝⟨ ap f ((max-idemp fe (ι m))⁻¹) ⟩
+       f (max (ι m) (ι m))        ＝⟨ m-is-modulus m ⟩
+       f ∞                        ＝⟨  (m-is-modulus (succ m))⁻¹ ⟩
+       f (max (ι m) (ι (succ m))) ＝⟨ ap f (max-succ fe m) ⟩
+       f (ι (succ m))             ＝⟨ e (succ m) ⟩
+       id (succ m)                ＝⟨ refl ⟩
+       succ m                     ∎)
 
 \end{code}
