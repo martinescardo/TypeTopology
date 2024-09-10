@@ -1070,6 +1070,21 @@ TODO. Is there a nice necessary and sufficient condition for the
 
         LPO + eventually-constant g?
 
+      Notice the following. Assuming MP, we have that WLPO → LPO, as
+      is well known. But the assumption of MP doesn't give, as far as
+      we know, the implication
+
+        ¬¬ eventually-constant g → eventually-constant g.
+
+      If it did, then we would have a necessary and sufficient
+      condition under the assumption of MP.
+
+      We show below that if g does have an extension, then it is
+      decidable whether a given m is a modulus of eventual constancy
+      of g, and so the above implication does hold if we assume MP
+      *and* g has an extension. But the whole point here is to find a
+      (tight) sufficient condition for g to have an extension.
+
 \end{code}
 
 Added 9th September 2023. A second necessary condition for the
@@ -1239,5 +1254,3 @@ all-maps-have-extensions-gives-WLPO a
        succ m                     ∎)
 
 \end{code}
-
-Next. We can do better than that.

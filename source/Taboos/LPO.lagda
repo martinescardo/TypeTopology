@@ -46,6 +46,24 @@ open import UF.Subsingletons-FunExt
 LPO : 𝓤₀ ̇
 LPO = (x : ℕ∞) → is-decidable (Σ n ꞉ ℕ , x ＝ ι n)
 
+\end{code}
+
+Added 10th September 2024. In retrospect, it would have been better if
+we had equivalently defined
+
+  LPO = (x : ℕ∞) → is-decidable (Σ n ꞉ ℕ , ι n ＝ ℕ)
+
+because we have
+
+  fiber ι x = Σ n ꞉ ℕ , ι n ＝ ℕ
+
+by definition and ι is an embedding, so that e.g. the following would
+require a proof given our definition of embedding.
+
+End of addition.
+
+\begin{code}
+
 LPO-is-prop : Fun-Ext → is-prop LPO
 LPO-is-prop fe = Π-is-prop fe f
  where
@@ -257,3 +275,6 @@ LPO-gives-WLPO fe lpo u =
 ¬WLPO-gives-¬LPO fe = contrapositive (LPO-gives-WLPO fe)
 
 \end{code}
+
+TODO. Define the traditional version of LPO and prove that it is
+equivalent to our definition.
