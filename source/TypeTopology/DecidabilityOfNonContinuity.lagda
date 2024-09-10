@@ -1064,7 +1064,7 @@ TODO. Is there a nice necessary and sufficient condition for the
 
 \end{code}
 
-Added 9th September 2023. Another necessary condition for the
+Added 9th September 2023. A second necessary condition for the
 explicit existence of an extension.
 
 Notice that, because the condition
@@ -1113,7 +1113,8 @@ second-necessary-condition-for-the-explicit-existence-of-an-extension
  : (g : ℕ → ℕ)
  → ℕ∞-extension g
  → (m : ℕ) → is-decidable (is-modulus-of-eventual-constancy g m)
-second-necessary-condition-for-the-explicit-existence-of-an-extension g (f , e) m = IV
+second-necessary-condition-for-the-explicit-existence-of-an-extension g (f , e) m
+ = IV
  where
   I : is-decidable ((n : ℕ) → f (max (ι m) (ι n)) ＝ f (ι m))
   I = Theorem-8·2'
@@ -1121,7 +1122,7 @@ second-necessary-condition-for-the-explicit-existence-of-an-extension g (f , e) 
        (λ x → ℕ-is-discrete (f (max (ι m) x)) (f (ι m)))
 
   II : ((n : ℕ) → f (max (ι m) (ι n)) ＝ f (ι m))
-     → (n : ℕ) → g (maxℕ m n) ＝ g m
+     → is-modulus-of-eventual-constancy g m
   II a n = g (maxℕ m n)        ＝⟨ e (maxℕ m n) ⁻¹ ⟩
            f (ι (maxℕ m n))    ＝⟨ ap f (max-fin fe m n) ⟩
            f (max (ι m) (ι n)) ＝⟨ a n ⟩
@@ -1131,10 +1132,10 @@ second-necessary-condition-for-the-explicit-existence-of-an-extension g (f , e) 
   III : is-modulus-of-eventual-constancy g m
       → (n : ℕ) → f (max (ι m) (ι n)) ＝ f (ι m)
   III b n = f (max (ι m) (ι n)) ＝⟨ ap f ((max-fin fe m n)⁻¹) ⟩
-            f (ι (maxℕ m n)) ＝⟨ e (maxℕ m n) ⟩
-            g (maxℕ m n) ＝⟨ b n ⟩
-            g m ＝⟨ e m ⁻¹ ⟩
-            f (ι m) ∎
+            f (ι (maxℕ m n))    ＝⟨ e (maxℕ m n) ⟩
+            g (maxℕ m n)        ＝⟨ b n ⟩
+            g                   m ＝⟨ e m ⁻¹ ⟩
+            f (ι m)             ∎
 
   IV : is-decidable (is-modulus-of-eventual-constancy g m)
   IV = map-decidable II III I
@@ -1142,8 +1143,9 @@ second-necessary-condition-for-the-explicit-existence-of-an-extension g (f , e) 
 \end{code}
 
 So, although a function g that has an extension doesn't need to be
-eventually constant, because classical logic may (or may not) hols, it
-is decidable whether any given m is a modulus of eventual constancy of g.
+eventually constant, because classical logic may (or may not) hold, it
+is decidable whether any given m is a modulus of eventual constancy of
+g is g has an extension.
 
 \begin{code}
 
@@ -1153,6 +1155,9 @@ module eventual-contancy-under-propositional-truncations
 
  open PropositionalTruncation pt
  open exit-truncations pt
+
+ is-extendable-to-ℕ∞ : (ℕ → ℕ) → 𝓤₀ ̇
+ is-extendable-to-ℕ∞ g = ∃ f ꞉ (ℕ∞ → ℕ) , f extends g
 
  is-eventually-constant : (ℕ → ℕ) → 𝓤₀ ̇
  is-eventually-constant g = ∃ m ꞉ ℕ , is-modulus-of-eventual-constancy g m
@@ -1164,12 +1169,12 @@ constancy data has split support.
 
 \begin{code}
 
- eventual-constancy-for-extendable-functions-has-split-support
+ eventual-constancy-data-for-extendable-functions-has-split-support
   : (g : ℕ → ℕ)
   → ℕ∞-extension g
   → is-eventually-constant g
   → eventual-constancy-data g
- eventual-constancy-for-extendable-functions-has-split-support  g extension
+ eventual-constancy-data-for-extendable-functions-has-split-support  g extension
   = exit-truncation
      (λ m → (n : ℕ) → g (maxℕ m n) ＝ g m)
      (second-necessary-condition-for-the-explicit-existence-of-an-extension
@@ -1178,20 +1183,16 @@ constancy data has split support.
 
 \end{code}
 
-At the moment, we don't have anything intelligent to say about the
-following definition that doesn't follow immediately from the above
-development.
+A the second necessary condition for the explicit existence of an
+extension is also necessary for the anonymous existence.
 
 \begin{code}
 
- is-extendable-to-ℕ∞ : (ℕ → ℕ) → 𝓤₀ ̇
- is-extendable-to-ℕ∞ g = ∃ f ꞉ (ℕ∞ → ℕ) , f extends g
-
- second-necessary-condition-for-the-anonymous-existence-of-an-extension
+ necessary-condition-for-the-anonymous-existence-of-an-extension
   : (g : ℕ → ℕ)
   → is-extendable-to-ℕ∞ g
   → (m : ℕ) → is-decidable (is-modulus-of-eventual-constancy g m)
- second-necessary-condition-for-the-anonymous-existence-of-an-extension g
+ necessary-condition-for-the-anonymous-existence-of-an-extension g
   = ∥∥-rec
      (Π-is-prop fe
        (λ n → decidability-of-prop-is-prop fe
