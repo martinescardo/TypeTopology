@@ -4,7 +4,6 @@ Ayberk Tosun, 11 September 2023
 
 {-# OPTIONS --safe --without-K --lossy-unification #-}
 
-open import MLTT.Spartan hiding (𝟚)
 open import UF.FunExt
 open import UF.PropTrunc
 
@@ -14,6 +13,7 @@ module Locales.Complements (pt : propositional-truncations-exist)
 open import Locales.ContinuousMap.FrameHomomorphism-Definition pt fe
 open import Locales.ContinuousMap.FrameHomomorphism-Properties pt fe
 open import Locales.Frame pt fe
+open import MLTT.Spartan hiding (𝟚)
 open import UF.Logic
 open import UF.SubtypeClassifier
 

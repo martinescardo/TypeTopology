@@ -42,7 +42,7 @@ open import DomainTheory.Basics.Dcpo                         pt fe 𝓤
 open import DomainTheory.Basics.WayBelow                     pt fe 𝓤
 open import DomainTheory.Topology.ScottTopology              pt fe 𝓤
 open import DomainTheory.Topology.ScottTopologyProperties    pt fe 𝓤
-open import Locales.Compactness                              pt fe
+open import Locales.Compactness.Definition                              pt fe
  hiding (is-compact)
 open import Locales.Frame                                    pt fe
  hiding (∅)

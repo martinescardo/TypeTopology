@@ -31,7 +31,7 @@ module Locales.TerminalLocale.Properties
        where
 
 open import Locales.Clopen pt fe sr
-open import Locales.Compactness pt fe
+open import Locales.Compactness.Definition pt fe
 open import Locales.Frame pt fe
 open import Locales.InitialFrame pt fe
 open import Locales.Spectrality.SpectralityOfOmega pt fe sr

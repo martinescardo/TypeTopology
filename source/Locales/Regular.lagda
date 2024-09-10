@@ -33,11 +33,12 @@ Importations of other locale theory modules.
 
 \begin{code}
 
-open import Locales.Frame                         pt fe
-open import Locales.WayBelowRelation.Definition   pt fe
-open import Locales.Compactness                   pt fe
-open import Locales.Clopen                        pt fe sr
-open import Locales.WellInside                    pt fe sr
+open import Locales.Clopen                      pt fe sr
+open import Locales.Compactness.Definition      pt fe
+open import Locales.Frame                       pt fe
+open import Locales.GaloisConnection            pt fe
+open import Locales.WayBelowRelation.Definition pt fe
+open import Locales.WellInside                  pt fe sr
 
 open Locale
 
