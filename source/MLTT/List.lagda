@@ -400,7 +400,8 @@ concat-++ (xs ∷ xss) yss =
 
 \end{code}
 
-The following are the Kleisli extension operation for the list monad and its associativity law.
+The following are the Kleisli extension operations for the list monad
+and its associativity law.
 
 \begin{code}
 
