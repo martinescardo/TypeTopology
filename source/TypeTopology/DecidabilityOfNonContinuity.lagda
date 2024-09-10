@@ -1083,7 +1083,9 @@ TODO. Is there a nice necessary and sufficient condition for the
       decidable whether a given m is a modulus of eventual constancy
       of g, and so the above implication does hold if we assume MP
       *and* g has an extension. But the whole point here is to find a
-      (tight) sufficient condition for g to have an extension.
+      (tight) sufficient condition for g to have an extension, and so
+      the assumption of MP doesn't seem to be useful to help to answer
+      the question.
 
 \end{code}
 
