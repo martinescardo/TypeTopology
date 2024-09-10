@@ -25,12 +25,20 @@ open import UF.Subsingletons
 𝟚-equality-cases {𝓤} {A} {₀} f₀ f₁ = f₀ refl
 𝟚-equality-cases {𝓤} {A} {₁} f₀ f₁ = f₁ refl
 
-𝟚-equality-cases₀ : {A : 𝓤 ̇ } {b : 𝟚} {f₀ : b ＝ ₀ → A} {f₁ : b ＝ ₁ → A}
-                  → (p : b ＝ ₀) → 𝟚-equality-cases {𝓤} {A} {b} f₀ f₁ ＝ f₀ p
-𝟚-equality-cases₀ {𝓤} {A} {.₀} refl = refl
+𝟚-equality-cases₀ : {A : 𝓤 ̇ }
+                    {b : 𝟚}
+                    {f₀ : b ＝ ₀ → A}
+                    {f₁ : b ＝ ₁ → A}
+                    (p : b ＝ ₀)
+                  → 𝟚-equality-cases {𝓤} {A} {b} f₀ f₁ ＝ f₀ p
+𝟚-equality-cases₀ {𝓤} {A} {₀} refl = refl
 
-𝟚-equality-cases₁ : {A : 𝓤 ̇ } {b : 𝟚} {f₀ : b ＝ ₀ → A} {f₁ : b ＝ ₁ → A}
-                  → (p : b ＝ ₁) → 𝟚-equality-cases {𝓤} {A} {b} f₀ f₁ ＝ f₁ p
+𝟚-equality-cases₁ : {A : 𝓤 ̇ }
+                    {b : 𝟚}
+                    {f₀ : b ＝ ₀ → A}
+                    {f₁ : b ＝ ₁ → A}
+                    (p : b ＝ ₁)
+                  → 𝟚-equality-cases {𝓤} {A} {b} f₀ f₁ ＝ f₁ p
 𝟚-equality-cases₁ {𝓤} {A} {.₁} refl = refl
 
 𝟚-equality-cases' : {A₀ A₁ : 𝓤 ̇ } {b : 𝟚} → (b ＝ ₀ → A₀) → (b ＝ ₁ → A₁) → A₀ + A₁
