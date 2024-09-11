@@ -97,7 +97,7 @@ WLPO-traditional = (α : ℕ → 𝟚) → is-decidable ((n : ℕ) → α n ＝ 
 
 open import MLTT.Two-Properties
 
-WLPO-gives-WLPO-traditional : Fun-Ext → WLPO → WLPO-traditional
+WLPO-gives-WLPO-traditional : funext 𝓤₀ 𝓤₀ → WLPO → WLPO-traditional
 WLPO-gives-WLPO-traditional fe wlpo α = IV
  where
   I : (ℕ→𝟚-to-ℕ∞ α ＝ ∞) + (ℕ→𝟚-to-ℕ∞ α ≠ ∞)
