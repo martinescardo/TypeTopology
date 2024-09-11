@@ -57,7 +57,7 @@ Basic definitions and facts.
 \begin{code}
 
 _≤ℕ₋₂_ : ℕ₋₂ → ℕ₋₂ → 𝓤₀ ̇
-minus2 m ≤ℕ₋₂ minus2 n = m ≤ℕ n
+minus2 m ≤ℕ₋₂ minus2 n = m ≤ n
 
 instance
  Order-ℕ₋₂-ℕ₋₂ : Order ℕ₋₂ ℕ₋₂
