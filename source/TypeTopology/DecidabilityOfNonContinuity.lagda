@@ -1280,7 +1280,7 @@ all-maps-have-extensions-gives-WLPO a
 
 Added 11th September 2024. Another immediate consequence of the above
 is that, under Markov's Principle, a map ℕ → ℕ has an extension ℕ∞ → ℕ
-if and only if LPO holds of g is eventually constant.
+if and only if LPO holds or g is eventually constant.
 
 \begin{code}
 
