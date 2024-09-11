@@ -63,10 +63,12 @@ _ : (A : ℕ∞ → 𝓤 ̇ )
   → is-decidable ((n : ℕ) → A (ι n))
 _ = Theorem-8·2'
 
-Lemma-3·1 : (A : ℕ∞ → ℕ∞ → 𝓤 ̇ )
-          → ((x y : ℕ∞) → is-decidable (A x y))
-          → is-decidable ((m : ℕ) → ¬ ((n : ℕ) → A (ι m) (ι n)))
-Lemma-3·1 {𝓤} A δ = III
+Lemma-3·1
+ : (A : ℕ∞ → ℕ∞ → 𝓤 ̇ )
+ → ((x y : ℕ∞) → is-decidable (A x y))
+ → is-decidable ((m : ℕ) → ¬ ((n : ℕ) → A (ι m) (ι n)))
+Lemma-3·1 {𝓤} A δ
+ = III
  where
   B : ℕ∞ → 𝓤 ̇
   B u = (n : ℕ) → A u (ι n)
@@ -159,16 +161,17 @@ Lemma 3.1.
 
 \begin{code}
 
-module _ (f : ℕ∞ → ℕ) where
-
- private
-  Theorem-3·2 : is-decidable (¬ continuous f)
-  Theorem-3·2 = map-decidable
-                 uncurry
-                 curry
-                 (Lemma-3·1
-                   (λ x y → f (max x y) ＝ (f ∞))
-                   (λ x y → ℕ-is-discrete (f (max x y)) (f ∞)))
+private
+ Theorem-3·2
+  : (f : ℕ∞ → ℕ)
+  → is-decidable (¬ continuous f)
+ Theorem-3·2 f
+  = map-decidable
+     uncurry
+     curry
+     (Lemma-3·1
+       (λ x y → f (max x y) ＝ (f ∞))
+       (λ x y → ℕ-is-discrete (f (max x y)) (f ∞)))
 
 \end{code}
 
@@ -176,7 +179,7 @@ For our purposes, the following terminology is better.
 
 \begin{code}
 
- the-negation-of-continuity-is-decidable = Theorem-3·2
+the-negation-of-continuity-is-decidable = Theorem-3·2
 
 \end{code}
 
@@ -202,8 +205,11 @@ open import Taboos.WLPO
 open import TypeTopology.CompactTypes
 open import TypeTopology.GenericConvergentSequenceCompactness fe
 
-noncontinuous-map-gives-WLPO : (Σ f ꞉ (ℕ∞ → ℕ) , ¬ continuous f) → WLPO
-noncontinuous-map-gives-WLPO (f , f-non-cts) = VI
+noncontinuous-map-gives-WLPO
+ : (Σ f ꞉ (ℕ∞ → ℕ) , ¬ continuous f)
+ → WLPO
+noncontinuous-map-gives-WLPO (f , f-non-cts)
+ = VI
  where
   g : (u : ℕ∞)
     → Σ v₀ ꞉ ℕ∞ , (f (max u v₀) ＝ f ∞ → (v : ℕ∞) → f (max u v) ＝ f ∞)
@@ -344,8 +350,11 @@ The following is from [1] with the same proof.
 open import Taboos.BasicDiscontinuity fe
 open import Naturals.Properties
 
-WLPO-gives-noncontinous-map : WLPO → (Σ f ꞉ (ℕ∞ → ℕ) , ¬ continuous f)
-WLPO-gives-noncontinous-map wlpo = f , f-non-cts
+WLPO-gives-noncontinous-map
+ : WLPO
+ → (Σ f ꞉ (ℕ∞ → ℕ) , ¬ continuous f)
+WLPO-gives-noncontinous-map wlpo
+ = f , f-non-cts
  where
   p : ℕ∞ → 𝟚
   p = pr₁ (WLPO-is-discontinuous wlpo)
@@ -385,13 +394,14 @@ principle that says that all functions are not-not continuous.
 
 \begin{code}
 
-¬WLPO-iff-all-maps-are-¬¬-continuous : ¬ WLPO ↔ ((f : ℕ∞ → ℕ) → ¬¬ continuous f)
-¬WLPO-iff-all-maps-are-¬¬-continuous =
- (λ nwlpo → curry (contrapositive noncontinuous-map-gives-WLPO nwlpo)) ,
- (λ (a : (f : ℕ∞ → ℕ) → ¬¬ continuous f)
-   → contrapositive
-      WLPO-gives-noncontinous-map
-      (uncurry a))
+¬WLPO-iff-all-maps-are-¬¬-continuous
+ : ¬ WLPO ↔ ((f : ℕ∞ → ℕ) → ¬¬ continuous f)
+¬WLPO-iff-all-maps-are-¬¬-continuous
+ = (λ nwlpo → curry (contrapositive noncontinuous-map-gives-WLPO nwlpo)) ,
+   (λ (a : (f : ℕ∞ → ℕ) → ¬¬ continuous f)
+     → contrapositive
+        WLPO-gives-noncontinous-map
+        (uncurry a))
 
 \end{code}
 
@@ -449,11 +459,16 @@ module continuity-criteria (pt : propositional-truncations-exist) where
 
  module _ (f : ℕ∞ → ℕ) where
 
-  continuity-data-gives-continuity-property : continuity-data f → is-continuous f
-  continuity-data-gives-continuity-property = ∣_∣
+  continuity-data-gives-continuity-property
+   : continuity-data f → is-continuous f
+  continuity-data-gives-continuity-property
+   = ∣_∣
 
-  continuity-property-gives-continuity-data : is-continuous f → continuity-data f
-  continuity-property-gives-continuity-data = exit-truncation (A ∘ ι) (A-is-decidable ∘ ι)
+  continuity-property-gives-continuity-data
+   : is-continuous f
+   → continuity-data f
+  continuity-property-gives-continuity-data
+   = exit-truncation (A ∘ ι) (A-is-decidable ∘ ι)
    where
     A : ℕ∞ → 𝓤₀ ̇
     A x = (n : ℕ) → f (max x (ι n)) ＝ f ∞
@@ -481,13 +496,15 @@ open import TypeTopology.Cantor hiding (continuous ; continuity-data)
 _＝⟪_⟫_ : ℕ∞ → ℕ → ℕ∞ → 𝓤₀ ̇
 x ＝⟪ k ⟫ y = ι x ＝⟦ k ⟧ ι y
 
-traditional-continuity-data : (ℕ∞ → ℕ) → 𝓤₀ ̇
-traditional-continuity-data f =
- (x : ℕ∞) → Σ m ꞉ ℕ , ((y : ℕ∞) → x ＝⟪ m ⟫ y → f x ＝ f y)
+traditional-continuity-data
+ : (ℕ∞ → ℕ) → 𝓤₀ ̇
+traditional-continuity-data f
+ = (x : ℕ∞) → Σ m ꞉ ℕ , ((y : ℕ∞) → x ＝⟪ m ⟫ y → f x ＝ f y)
 
-traditional-uniform-continuity-data : (ℕ∞ → ℕ) → 𝓤₀ ̇
-traditional-uniform-continuity-data f =
- Σ m ꞉ ℕ , ((x y : ℕ∞) → x ＝⟪ m ⟫ y → f x ＝ f y)
+traditional-uniform-continuity-data
+ : (ℕ∞ → ℕ) → 𝓤₀ ̇
+traditional-uniform-continuity-data f
+ = Σ m ꞉ ℕ , ((x y : ℕ∞) → x ＝⟪ m ⟫ y → f x ＝ f y)
 
 \end{code}
 
@@ -495,7 +512,10 @@ We now need a lemma about the relation x ＝⟪ k ⟫ y.
 
 \begin{code}
 
-lemma₀ : (k : ℕ) (n : ℕ) → ∞ ＝⟪ k ⟫ (max (ι k) (ι n))
+lemma₀
+ : (k : ℕ)
+   (n : ℕ)
+ → ∞ ＝⟪ k ⟫ (max (ι k) (ι n))
 lemma₀ 0        n        = ⋆
 lemma₀ (succ k) 0        = refl , lemma₀ k 0
 lemma₀ (succ k) (succ n) = refl , lemma₀ k n
@@ -511,7 +531,8 @@ module _ (f : ℕ∞ → ℕ) where
  traditional-continuity-data-gives-continuity-data
   : traditional-continuity-data f
   → continuity-data f
- traditional-continuity-data-gives-continuity-data f-cts-traditional = II
+ traditional-continuity-data-gives-continuity-data f-cts-traditional
+  = II
   where
    m : ℕ
    m = pr₁ (f-cts-traditional ∞)
@@ -531,7 +552,11 @@ We now need more lemmas about the relation x ＝⟪ k ⟫ y.
 
 \begin{code}
 
- lemma₁ : (k : ℕ) (y : ℕ∞) → ∞ ＝⟪ k ⟫ y → max (ι k) y ＝ y
+ lemma₁
+  : (k : ℕ)
+    (y : ℕ∞)
+  → ∞ ＝⟪ k ⟫ y
+  → max (ι k) y ＝ y
  lemma₁ 0        y ⋆       = refl
  lemma₁ (succ k) y (h , t) = γ
   where
@@ -551,9 +576,11 @@ We now need more lemmas about the relation x ＝⟪ k ⟫ y.
    γ : max (Succ (ι k)) y ＝ y
    γ = ℕ∞-to-ℕ→𝟚-lc fe (dfunext fe δ)
 
- lemma₂ : (x y : ℕ∞) (k : ℕ)
-        → x ＝⟪ k ⟫ y
-        → (x ＝ y) + (∞ ＝⟪ k ⟫ x)
+ lemma₂
+  : (x y : ℕ∞)
+    (k : ℕ)
+  → x ＝⟪ k ⟫ y
+  → (x ＝ y) + (∞ ＝⟪ k ⟫ x)
  lemma₂ x y 0        ⋆       = inr ⋆
  lemma₂ x y (succ k) (h , t) = γ
   where
@@ -579,10 +606,13 @@ We now need more lemmas about the relation x ＝⟪ k ⟫ y.
    γ : (x ＝ y) + (∞ ＝⟪ succ k ⟫ x)
    γ = Cases IH (inl ∘ γl) γr
 
- lemma₃ : (x y : ℕ∞) (k : ℕ)
-        → x ＝⟪ k ⟫ y
-        → (x ＝ y) + (max (ι k) x ＝ x) × (max (ι k) y ＝ y)
- lemma₃ x y k e = III
+ lemma₃
+  : (x y : ℕ∞)
+    (k : ℕ)
+  → x ＝⟪ k ⟫ y
+  → (x ＝ y) + (max (ι k) x ＝ x) × (max (ι k) y ＝ y)
+ lemma₃ x y k e
+  = III
   where
    I : ∞ ＝⟪ k ⟫ x → ∞ ＝⟪ k ⟫ y
    I q = ＝⟦⟧-trans (ι ∞) (ι x) (ι y) k q e
@@ -664,13 +694,15 @@ module more-continuity-criteria (pt : propositional-truncations-exist) where
  open PropositionalTruncation pt
  open exit-truncations pt
 
- is-traditionally-continuous : (ℕ∞ → ℕ) → 𝓤₀ ̇
- is-traditionally-continuous f =
-  (x : ℕ∞) → ∃ m ꞉ ℕ , ((y : ℕ∞) → x ＝⟪ m ⟫ y → f x ＝ f y)
+ is-traditionally-continuous
+  : (ℕ∞ → ℕ) → 𝓤₀ ̇
+ is-traditionally-continuous f
+  = (x : ℕ∞) → ∃ m ꞉ ℕ , ((y : ℕ∞) → x ＝⟪ m ⟫ y → f x ＝ f y)
 
- is-traditionally-uniformly-continuous : (ℕ∞ → ℕ) → 𝓤₀ ̇
- is-traditionally-uniformly-continuous f =
-  ∃ m ꞉ ℕ , ((x y : ℕ∞) → x ＝⟪ m ⟫ y → f x ＝ f y)
+ is-traditionally-uniformly-continuous
+  : (ℕ∞ → ℕ) → 𝓤₀ ̇
+ is-traditionally-uniformly-continuous f
+  = ∃ m ꞉ ℕ , ((x y : ℕ∞) → x ＝⟪ m ⟫ y → f x ＝ f y)
 
  module _ (f : ℕ∞ → ℕ) where
 
@@ -763,7 +795,8 @@ try to be consistent with the terminology of the HoTT/UF community.)
  → (g : ℕ → ℕ)
  → ¬ WLPO
  → is-prop (ℕ∞-extension g)
-¬WLPO-gives-ℕ∞-extension-is-prop fe g nwlpo (f , e) (f' , e') = IV
+¬WLPO-gives-ℕ∞-extension-is-prop fe g nwlpo (f , e) (f' , e')
+ = IV
  where
   I : (n : ℕ) → f (ι n) ＝ f' (ι n)
   I n = f (ι n)  ＝⟨ e n ⟩
@@ -860,8 +893,8 @@ hold.
  : (g : ℕ → ℕ)
  → is-prop (ℕ∞-extension g)
  → ¬ LPO
-ℕ∞-extension-is-prop-gives-¬LPO g i lpo =
- LPO-gives-ℕ∞-extension-is-not-prop g lpo i
+ℕ∞-extension-is-prop-gives-¬LPO g i lpo
+ = LPO-gives-ℕ∞-extension-is-not-prop g lpo i
 
 \end{code}
 
@@ -888,8 +921,10 @@ Our next question is when the type `ℕ∞-extension g` is pointed.
 
 open import Naturals.Order renaming (max to maxℕ ; max-idemp to maxℕ-idemp)
 
-is-modulus-of-eventual-constancy : (ℕ → ℕ) → ℕ → 𝓤₀ ̇
-is-modulus-of-eventual-constancy g m = ((n : ℕ) → g (maxℕ m n) ＝ g m)
+is-modulus-of-eventual-constancy
+ : (ℕ → ℕ) → ℕ → 𝓤₀ ̇
+is-modulus-of-eventual-constancy g m
+ = ((n : ℕ) → g (maxℕ m n) ＝ g m)
 
 being-modulus-of-eventual-constancy-is-prop
  : (g : ℕ → ℕ)
@@ -899,7 +934,8 @@ being-modulus-of-eventual-constancy-is-prop g m
  = Π-is-prop fe (λ n → ℕ-is-set)
 
 eventually-constant : (ℕ → ℕ) → 𝓤₀ ̇
-eventually-constant g = Σ m ꞉ ℕ , is-modulus-of-eventual-constancy g m
+eventually-constant g
+ = Σ m ꞉ ℕ , is-modulus-of-eventual-constancy g m
 
 eventual-constancy-data = eventually-constant
 
@@ -1162,11 +1198,15 @@ module eventual-constancy-under-propositional-truncations
  open PropositionalTruncation pt
  open exit-truncations pt
 
- is-extendable-to-ℕ∞ : (ℕ → ℕ) → 𝓤₀ ̇
- is-extendable-to-ℕ∞ g = ∃ f ꞉ (ℕ∞ → ℕ) , f extends g
+ is-extendable-to-ℕ∞
+  : (ℕ → ℕ) → 𝓤₀ ̇
+ is-extendable-to-ℕ∞ g
+  = ∃ f ꞉ (ℕ∞ → ℕ) , f extends g
 
- is-eventually-constant : (ℕ → ℕ) → 𝓤₀ ̇
- is-eventually-constant g = ∃ m ꞉ ℕ , is-modulus-of-eventual-constancy g m
+ is-eventually-constant
+  : (ℕ → ℕ) → 𝓤₀ ̇
+ is-eventually-constant g
+  = ∃ m ꞉ ℕ , is-modulus-of-eventual-constancy g m
 
 \end{code}
 
@@ -1180,7 +1220,7 @@ constancy data has split support.
   → ℕ∞-extension g
   → is-eventually-constant g
   → eventual-constancy-data g
- eventual-constancy-data-for-extendable-functions-has-split-support  g extension
+ eventual-constancy-data-for-extendable-functions-has-split-support g extension
   = exit-truncation
      (λ m → (n : ℕ) → g (maxℕ m n) ＝ g m)
      (second-necessary-condition-for-the-explicit-existence-of-an-extension
@@ -1249,7 +1289,8 @@ sufficient-condition-is-necessary-under-MP
  → (g : ℕ → ℕ)
  → ℕ∞-extension g
  → LPO + eventually-constant g
-sufficient-condition-is-necessary-under-MP mp g ext = II
+sufficient-condition-is-necessary-under-MP mp g ext
+ = II
  where
   I : WLPO + ¬¬ eventually-constant g → LPO + eventually-constant g
   I (inl wlpo) = inl (MP-and-WLPO-give-LPO fe mp wlpo)
