@@ -1,7 +1,7 @@
 Fredrik Nordvall Forsberg, 13 November 2023.
 In collaboration with Tom de Jong, Nicolai Kraus and Chuangjie Xu.
 
-Minor updates 9 September 2024.
+Minor updates 9 and 11 September 2024.
 
 We prove several properties of ordinal multiplication, including that it
 preserves suprema of ordinals and that it enjoys a left-cancellation property.
@@ -289,11 +289,10 @@ second component, viz. one that is independent of the first component.
 simulation-product-decomposition
  : (α : Ordinal 𝓤) (β γ : Ordinal 𝓥)
    ((a₀ , a₀-least) : 𝟘ₒ ⊲ α)
-   (f : ⟨ α ×ₒ β ⟩ → ⟨ α ×ₒ γ ⟩)
- → is-simulation (α ×ₒ β) (α ×ₒ γ) f
+   ((f , _) : (α ×ₒ β) ⊴ (α ×ₒ γ))
  → (a : ⟨ α ⟩) (b : ⟨ β ⟩) → f (a , b) ＝ (a , pr₂ (f (a₀ , b)))
 simulation-product-decomposition {𝓤} {𝓥} α β γ (a₀ , a₀-least)
-                                 f sim@(init-seg , order-pres) a b = I
+                                 (f , sim@(init-seg , order-pres)) a b = I
  where
   f' : ⟨ α ×ₒ β ⟩ → ⟨ α ×ₒ γ ⟩
   f' (a , b) = (a , pr₂ (f (a₀ , b)))
@@ -334,7 +333,7 @@ simulation-product-decomposition {𝓤} {𝓥} α β γ (a₀ , a₀-least)
           ih : (f (a₀' , b')) ＝ f' (a₀' , b')
           ih = IH (a₀' , b') (inl q)
 
-          h : f (a₀' , b') ≺⟨ α ×ₒ γ ⟩ f (a₀ , b)
+          h : f  (a₀' , b') ≺⟨ α ×ₒ γ ⟩ f  (a₀ , b)
             → f' (a'' , b') ≺⟨ α ×ₒ γ ⟩ f' (a , b)
           h (inl r) = inl (transport (λ - → - ≺⟨ γ ⟩ pr₂ (f (a₀ , b)))
                                      (ap pr₂ ih) r)
@@ -381,66 +380,61 @@ is not true for certain objects X and Y in the topos.
                     → 𝟘ₒ ⊲ α
                     → (α ×ₒ β) ＝ (α ×ₒ γ)
                     → β ＝ γ
-×ₒ-left-cancellable {𝓤} α β γ (a₀ , α↓a₀＝𝟘) m = transfinite-induction-on-OO P g β γ m
- where
-  P : Ordinal 𝓤 → 𝓤 ⁺ ̇
-  P β = (γ : Ordinal 𝓤) → (α ×ₒ β) ＝ (α ×ₒ γ) → β ＝ γ
+×ₒ-left-cancellable {𝓤} α β γ (a₀ , a₀-least) =
+ transfinite-induction-on-OO P II β γ
+  where
+   P : Ordinal 𝓤 → 𝓤 ⁺ ̇
+   P β = (γ : Ordinal 𝓤) → (α ×ₒ β) ＝ (α ×ₒ γ) → β ＝ γ
 
-  g : (β : Ordinal 𝓤) → ((b : ⟨ β ⟩) → P (β ↓ b)) → P β
-  g β ih γ m = Extensionality (OO 𝓤) β γ (to-≼ u₀) (to-≼ u₁)
-   where
-    u : (β γ : Ordinal 𝓤) → (α ×ₒ β) ＝ (α ×ₒ γ)
-      → (b : ⟨ β ⟩) → Σ c ꞉ ⟨ γ ⟩ , (α ×ₒ (β ↓ b) ＝ α ×ₒ (γ ↓ c))
-    u β γ m b = c , eq
-     where
-      f : ⟨ α ×ₒ β ⟩ → ⟨ α ×ₒ γ ⟩
-      f = ≃ₒ-to-fun _ _ (idtoeqₒ _ _ m)
+   I : (β γ : Ordinal 𝓤)
+     → (α ×ₒ β) ＝ (α ×ₒ γ)
+     → (b : ⟨ β ⟩) → Σ c ꞉ ⟨ γ ⟩ , (α ×ₒ (β ↓ b) ＝ α ×ₒ (γ ↓ c))
+   I β γ e b = c , eq
+    where
+     𝕗 : (α ×ₒ β) ⊴ (α ×ₒ γ)
+     𝕗 = ≃ₒ-to-⊴ (α ×ₒ β) (α ×ₒ γ) (idtoeqₒ _ _ e)
+     f : ⟨ α ×ₒ β ⟩ → ⟨ α ×ₒ γ ⟩
+     f = [ α ×ₒ β , α ×ₒ γ ]⟨ 𝕗 ⟩
 
-      p : (α β : Ordinal 𝓤)
-        → (a : ⟨ α ⟩)
-        → (e : α ＝ β)
-        → (α ↓ a) ＝ (β ↓ (≃ₒ-to-fun _ _ (idtoeqₒ _ _ e)) a)
-      p α α a refl = refl
+     c : ⟨ γ ⟩
+     c = pr₂ (f (a₀ , b))
 
-      a₀' : ⟨ α ⟩
-      a₀' = pr₁ (f (a₀ , b))
-      c : ⟨ γ ⟩
-      c = pr₂ (f (a₀ , b))
+     eq = α ×ₒ (β ↓ b)                ＝⟨ 𝟘ₒ-right-neutral (α ×ₒ (β ↓ b)) ⁻¹ ⟩
+          (α ×ₒ (β ↓ b)) +ₒ 𝟘ₒ        ＝⟨ ap ((α ×ₒ (β ↓ b)) +ₒ_) a₀-least ⟩
+          (α ×ₒ (β ↓ b)) +ₒ (α ↓ a₀)  ＝⟨ ×ₒ-↓ α β ⁻¹ ⟩
+          (α ×ₒ β) ↓ (a₀ , b)         ＝⟨ eq₁ ⟩
+          (α ×ₒ γ) ↓ (a₀' , c)        ＝⟨ eq₂ ⟩
+          (α ×ₒ γ) ↓ (a₀ , c)         ＝⟨ ×ₒ-↓ α γ ⟩
+          (α ×ₒ (γ ↓ c)) +ₒ (α ↓ a₀)  ＝⟨ ap ((α ×ₒ (γ ↓ c)) +ₒ_) (a₀-least ⁻¹) ⟩
+          (α ×ₒ (γ ↓ c)) +ₒ 𝟘ₒ        ＝⟨ 𝟘ₒ-right-neutral (α ×ₒ (γ ↓ c)) ⟩
+          α ×ₒ (γ ↓ c)                ∎
+      where
+       a₀' : ⟨ α ⟩
+       a₀' = pr₁ (f (a₀ , b))
 
-      q : (a₀' , c) ＝ (a₀ , c)
-      q = simulation-product-decomposition α β γ (a₀ , α↓a₀＝𝟘)
-            f (order-equivs-are-simulations _ _ f
-                   (≃ₒ-to-fun-is-order-equiv _ _ (idtoeqₒ _ _ m))) a₀ b
+       eq₁ = simulations-preserve-↓ (α ×ₒ β) (α ×ₒ γ) 𝕗 (a₀ , b)
+       eq₂ = ap ((α ×ₒ γ) ↓_)
+                (simulation-product-decomposition α β γ (a₀ , a₀-least) 𝕗 a₀ b)
 
-      eq : α ×ₒ (β ↓ b) ＝ α ×ₒ (γ ↓ c)
-      eq = α ×ₒ (β ↓ b)                ＝⟨ 𝟘ₒ-right-neutral (α ×ₒ (β ↓ b)) ⁻¹ ⟩
-           (α ×ₒ (β ↓ b)) +ₒ 𝟘ₒ        ＝⟨ ap ((α ×ₒ (β ↓ b)) +ₒ_) α↓a₀＝𝟘 ⟩
-           (α ×ₒ (β ↓ b)) +ₒ (α ↓ a₀)  ＝⟨ ×ₒ-↓ α β ⁻¹ ⟩
-           (α ×ₒ β) ↓ (a₀ , b)         ＝⟨ p (α ×ₒ β) (α ×ₒ γ) (a₀ , b) m ⟩
-           (α ×ₒ γ) ↓ (a₀' , c)        ＝⟨ ap ((α ×ₒ γ) ↓_) q ⟩
-           (α ×ₒ γ) ↓ (a₀ , c)         ＝⟨ ×ₒ-↓ α γ ⟩
-           (α ×ₒ (γ ↓ c)) +ₒ (α ↓ a₀)  ＝⟨ ap ((α ×ₒ (γ ↓ c)) +ₒ_) (α↓a₀＝𝟘 ⁻¹) ⟩
-           (α ×ₒ (γ ↓ c)) +ₒ 𝟘ₒ        ＝⟨ 𝟘ₒ-right-neutral (α ×ₒ (γ ↓ c)) ⟩
-           α ×ₒ (γ ↓ c)                ∎
-
-    u₀ : (b : ⟨ β ⟩) → (β ↓ b) ⊲ γ
-    u₀ b = let (c , eq) = u β γ m b in (c , ih b (γ ↓ c) eq)
-
-    u₁ : (c : ⟨ γ ⟩) → (γ ↓ c) ⊲ β
-    u₁ c = let (b , eq) = u γ β (m ⁻¹) c in b , (ih b (γ ↓ c) (eq ⁻¹) ⁻¹)
+   II : (β : Ordinal 𝓤) → ((b : ⟨ β ⟩) → P (β ↓ b)) → P β
+   II β IH γ e = Extensionality (OO 𝓤) β γ (to-≼ III) (to-≼ IV)
+    where
+     III : (b : ⟨ β ⟩) → (β ↓ b) ⊲ γ
+     III b = let (c , eq) = I β γ  e     b in (c , IH b (γ ↓ c) eq)
+     IV  : (c : ⟨ γ ⟩) → (γ ↓ c) ⊲ β
+     IV  c = let (b , eq) = I γ β (e ⁻¹) c in (b , (IH b (γ ↓ c) (eq ⁻¹) ⁻¹))
 
 \end{code}
 
-Finally, multiplication satisfies the expected recursive equations.
+Finally, multiplication satisfies the expected recursive equations (which
+classically define ordinal multiplication): zero is fixed by multiplication
+(this is ×ₒ-𝟘ₒ-right above), multiplication for successors is repeated addition
+and multiplication preserves suprema.
 
 \begin{code}
 
-×ₒ-zero : (α : Ordinal 𝓤) → α ×ₒ 𝟘ₒ {𝓤} ＝ 𝟘ₒ
-×ₒ-zero = ×ₒ-𝟘ₒ-right
-
--- ×ₒ for successors is repeated addition
-×ₒ-succ : (α β : Ordinal 𝓤) → α ×ₒ (β +ₒ 𝟙ₒ) ＝ (α ×ₒ β) +ₒ α
-×ₒ-succ α β =
+×ₒ-successor : (α β : Ordinal 𝓤) → α ×ₒ (β +ₒ 𝟙ₒ) ＝ (α ×ₒ β) +ₒ α
+×ₒ-successor α β =
   α ×ₒ (β +ₒ 𝟙ₒ)          ＝⟨ ×ₒ-distributes-+ₒ-right α β 𝟙ₒ ⟩
   ((α ×ₒ β) +ₒ (α ×ₒ 𝟙ₒ)) ＝⟨ ap ((α ×ₒ β) +ₒ_) (𝟙ₒ-right-neutral-×ₒ α)  ⟩
   (α ×ₒ β) +ₒ α           ∎
@@ -456,32 +450,40 @@ module _ (pt : propositional-truncations-exist)
  open suprema pt sr
  open PropositionalTruncation pt
 
- -- ×ₒ commutes with suprema
- ×ₒ-sup : (α : Ordinal 𝓤){I : 𝓤 ̇ } (β : I → Ordinal 𝓤) → α ×ₒ sup β ＝ sup (λ i → α ×ₒ β i)
- ×ₒ-sup α {I} β = ⊴-antisym _ _ a b
-   where
-     a : (α ×ₒ sup β) ⊴ sup (λ i → α ×ₒ β i)
-     a = ≼-gives-⊴ _ _ h
-       where
-        h : (u : Ordinal _) → u ⊲ (α ×ₒ sup β) → u ⊲ sup (λ i → α ×ₒ β i)
-        h u ((a , y) , r) = transport (λ - → - ⊲ sup (λ i → α ×ₒ β i)) (r ⁻¹) g''
-         where
-          g' : Σ i ꞉ I , Σ z ꞉ ⟨ β i ⟩ , sup β ↓ y ＝ (β i) ↓ z → ((α ×ₒ sup β) ↓ (a , y)) ⊲ sup (λ i → α ×ₒ β i)
-          g' (i , z , q) = _ , eq where
-            eq =
-              (α ×ₒ sup β) ↓ (a , y)        ＝⟨ ×ₒ-↓ α (sup β) ⟩
-              (α ×ₒ (sup β ↓ y)) +ₒ (α ↓ a) ＝⟨ ap (λ - → ((α ×ₒ -) +ₒ (α ↓ a))) q ⟩
-              (α ×ₒ (β i ↓ z)) +ₒ (α ↓ a)   ＝⟨ ×ₒ-↓ α (β i) ⁻¹ ⟩
-              (α ×ₒ β i) ↓ (a , z)          ＝⟨ initial-segment-of-sup-at-component (λ j → α ×ₒ β j) i (a , z) ⁻¹ ⟩
-              sup (λ i₁ → α ×ₒ β i₁) ↓ _    ∎
+ ×ₒ-preserves-suprema : (α : Ordinal 𝓤) {I : 𝓤 ̇ } (β : I → Ordinal 𝓤)
+                      → α ×ₒ sup β ＝ sup (λ i → α ×ₒ β i)
+ ×ₒ-preserves-suprema {𝓤} α {I} β = ⊴-antisym (α ×ₒ sup β) (sup (λ i → α ×ₒ β i)) ⦅1⦆ ⦅2⦆
+  where
+   ⦅2⦆ : sup (λ i → α ×ₒ β i) ⊴ (α ×ₒ sup β)
+   ⦅2⦆ = sup-is-lower-bound-of-upper-bounds (λ i → α ×ₒ β i) (α ×ₒ sup β)
+          (λ i → ×ₒ-right-monotone-⊴ α (β i) (sup β) (sup-is-upper-bound β i))
 
-          g'' : ((α ×ₒ sup β) ↓ (a , y)) ⊲ sup (λ i → α ×ₒ β i)
-          g'' = ∥∥-rec (⊲-is-prop-valued _ _) g' (initial-segment-of-sup-is-initial-segment-of-some-component β y)
+   ⦅1⦆ : (α ×ₒ sup β) ⊴ sup (λ i → α ×ₒ β i)
+   ⦅1⦆ = ≼-gives-⊴ (α ×ₒ sup β) (sup (λ i → α ×ₒ β i)) ⦅1⦆-I
+    where
+     ⦅1⦆-I : (γ : Ordinal 𝓤) → γ ⊲ (α ×ₒ sup β) → γ ⊲ sup (λ i → α ×ₒ β i)
+     ⦅1⦆-I _ ((a , y) , refl) = ⦅1⦆-III
+      where
+       ⦅1⦆-II : (Σ i ꞉ I , Σ b ꞉ ⟨ β i ⟩ , sup β ↓ y ＝ (β i) ↓ b)
+              → ((α ×ₒ sup β) ↓ (a , y)) ⊲ sup (λ j → α ×ₒ β j)
+       ⦅1⦆-II (i , b , e) = σ (a , b) , eq
+        where
+         σ : ⟨ α ×ₒ β i ⟩ → ⟨ sup (λ j → α ×ₒ β j) ⟩
+         σ = [ α ×ₒ β i , sup (λ j → α ×ₒ β j) ]⟨ sup-is-upper-bound _ i ⟩
 
-     b' : (i : I) → (α ×ₒ β i) ⊴ (α ×ₒ sup β)
-     b' i = ×ₒ-right-monotone-⊴ α (β i) (sup β) (sup-is-upper-bound β i)
+         eq = (α ×ₒ sup β) ↓ (a , y)           ＝⟨ ×ₒ-↓ α (sup β) ⟩
+              (α ×ₒ (sup β ↓ y)) +ₒ (α ↓ a)    ＝⟨ eq₁ ⟩
+              (α ×ₒ (β i ↓ b)) +ₒ (α ↓ a)      ＝⟨ ×ₒ-↓ α (β i) ⁻¹ ⟩
+              (α ×ₒ β i) ↓ (a , b)             ＝⟨ eq₂ ⟩
+              sup (λ j → α ×ₒ β j) ↓ σ (a , b) ∎
+          where
+           eq₁ = ap (λ - → ((α ×ₒ -) +ₒ (α ↓ a))) e
+           eq₂ = (initial-segment-of-sup-at-component
+                  (λ j → α ×ₒ β j) i (a , b)) ⁻¹
 
-     b : sup (λ i → α ×ₒ β i) ⊴ (α ×ₒ sup β)
-     b = sup-is-lower-bound-of-upper-bounds (λ i → α ×ₒ β i) (α ×ₒ sup β) b'
+       ⦅1⦆-III : ((α ×ₒ sup β) ↓ (a , y)) ⊲ sup (λ i → α ×ₒ β i)
+       ⦅1⦆-III = ∥∥-rec (⊲-is-prop-valued _ _) ⦅1⦆-II
+                  (initial-segment-of-sup-is-initial-segment-of-some-component
+                    β y)
 
 \end{code}

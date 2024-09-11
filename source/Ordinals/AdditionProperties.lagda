@@ -1130,7 +1130,7 @@ Added 13 November 2023 by Fredrik Nordvall Forsberg.
 
 Addition satisfies the expected recursive equations (which classically define
 addition): zero is the neutral element (this is 𝟘₀-right-neutral above), addition
-commutes with successors and preserves inhabited suprema.
+commutes with successors and addition preserves inhabited suprema.
 
 Note that (the index of) the supremum indeed has to be inhabited, because
 preserving the empty supremum would give the false equation
