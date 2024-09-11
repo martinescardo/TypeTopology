@@ -1279,7 +1279,7 @@ all-maps-have-extensions-gives-WLPO a
 \end{code}
 
 Added 11th September 2024. Another immediate consequence of the above
-is that, under Markov Principle, a given g : ℕ → ℕ has an extension if
+is that, under Markov's Principle, a given g : ℕ → ℕ has an extension if
 and only if LPO holds of g is eventually constant.
 
 \begin{code}
