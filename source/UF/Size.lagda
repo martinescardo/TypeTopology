@@ -1064,14 +1064,14 @@ If X is 𝓥-small then it is locally 𝓥-small.
 
 \begin{code}
 
-open import MLTT.Spartan
-
 small-implies-locally-small : (X : 𝓤 ̇) → (𝓥 : Universe)
                             → X is 𝓥 small
                             → X is-locally 𝓥 small
 small-implies-locally-small X 𝓥 (Y , e) x x' =
- ((⌜ e ⌝⁻¹ x ＝ ⌜ e ⌝⁻¹ x')
-  , ≃-sym (ap ⌜ e ⌝⁻¹ , ap-is-equiv ⌜ e ⌝⁻¹ (⌜⌝⁻¹-is-equiv e)))
+ ((⌜ e ⌝⁻¹ x ＝ ⌜ e ⌝⁻¹ x') , path-resized)
+ where
+  path-resized : (⌜ e ⌝⁻¹ x ＝ ⌜ e ⌝⁻¹ x') ≃ (x ＝ x')
+  path-resized = ≃-sym (ap ⌜ e ⌝⁻¹ , ap-is-equiv ⌜ e ⌝⁻¹ (⌜⌝⁻¹-is-equiv e))
 
 \end{code}
 
