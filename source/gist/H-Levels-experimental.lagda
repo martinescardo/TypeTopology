@@ -67,7 +67,7 @@ Being of hlevel one is equivalent to being a proposition.
 \begin{code}
 
 is-prop' : (X : 𝓤 ̇) → 𝓤  ̇
-is-prop' X = X is-of-hlevel 1
+is-prop' X = X is-of-hlevel −1
 
 being-prop'-is-prop : (X : 𝓤 ̇) → is-prop (is-prop' X)
 being-prop'-is-prop X = hlevel-relation-is-prop
@@ -137,7 +137,7 @@ We can prove closure under embeddings as a consequence of the previous result.
 \begin{code}
 
 hlevel-closed-under-embedding : {n : ℕ₋₂}
-                              → 1 ≤ℕ₋₂ n
+                              → −1 ≤ℕ₋₂ n
                               → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                               → X ↪ Y
                               → Y is-of-hlevel n

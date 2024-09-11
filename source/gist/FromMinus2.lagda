@@ -21,44 +21,35 @@ record ℕ₋₂ : 𝓤₀ ̇ where
 
 open ℕ₋₂ public
 
-\end{code}
-
-If we try to define
-
-    {-# BUILTIN FROMNAT minus2 #-}
-
-we get te error message
-
-    "The argument to BUILTIN FROMNAT must be a defined name
-    when scope checking the declaration
-      {-# BUILTIN FROMNAT _−2 #-}".
-
-So we instead do
-
-\begin{code}
-
-from-ℕ : ℕ → ℕ₋₂
-from-ℕ = minus2
-
-{-# BUILTIN FROMNAT from-ℕ #-}
-
-\end{code}
-
-and this works.
-
-\begin{code}
-
 suc : ℕ₋₂ → ℕ₋₂
 suc (minus2 n) = minus2 (succ n)
 
-pattern minus1 n = minus2 (succ n)
 pattern −2       = minus2 0
 pattern −1       = minus2 1
+pattern minus1 n = minus2 (succ n)
 
 \end{code}
 
 Type "−2" as "\minus 2" (and not as "-2").
 Type "−1" as "\minus 1" (and not as "-1").
+
+The following allows us to write e.g. 3 as an element of ℕ₋₂.
+
+\begin{code}
+
+from-ℕ : ℕ → ℕ₋₂
+from-ℕ n = suc (suc (minus2 n))
+
+{-# BUILTIN FROMNAT from-ℕ #-}
+
+private
+ example : ℕ₋₂
+ example = 3
+
+ another-example : suc (suc −2) ＝ 0
+ another-example = refl
+
+\end{code}
 
 Basic definitions and facts.
 
