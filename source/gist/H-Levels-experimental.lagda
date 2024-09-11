@@ -51,12 +51,12 @@ private
 
 _is-of-hlevel_ : 𝓤 ̇ → ℕ₋₂ → 𝓤 ̇
 X is-of-hlevel −2       = is-contr X
-X is-of-hlevel minus1 n = (x x' : X) → (x ＝ x') is-of-hlevel minus2 n
+X is-of-hlevel pred n = (x x' : X) → (x ＝ x') is-of-hlevel pred² n
 
 hlevel-relation-is-prop : {𝓤 : Universe} {n : ℕ₋₂} {X : 𝓤 ̇ }
                         → is-prop (X is-of-hlevel n)
 hlevel-relation-is-prop {𝓤} {−2}       = being-singleton-is-prop fe
-hlevel-relation-is-prop {𝓤} {minus1 n} =
+hlevel-relation-is-prop {𝓤} {pred n} =
   Π₂-is-prop fe (λ x x' → hlevel-relation-is-prop)
 
 map_is-of-hlevel_ : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (f : X → Y) → ℕ₋₂ → 𝓤 ⊔ 𝓥 ̇
@@ -101,14 +101,14 @@ hlevels-are-upper-closed : {n : ℕ₋₂} {X : 𝓤 ̇ }
                          → X is-of-hlevel n
                          → X is-of-hlevel (suc n)
 hlevels-are-upper-closed {𝓤} {−2} = contr-implies-id-contr
-hlevels-are-upper-closed {𝓤} {minus1 n} h-level x x' =
+hlevels-are-upper-closed {𝓤} {pred n} h-level x x' =
  hlevels-are-upper-closed (h-level x x')
 
 hlevels-are-closed-under-id : {n : ℕ₋₂} {X : 𝓤 ̇ }
                             → X is-of-hlevel n
                             → (x x' : X) → (x ＝ x') is-of-hlevel n
 hlevels-are-closed-under-id {𝓤} {−2} = contr-implies-id-contr
-hlevels-are-closed-under-id {𝓤} {minus1 n} X-hlev x x' =
+hlevels-are-closed-under-id {𝓤} {pred n} X-hlev x x' =
   hlevels-are-upper-closed (X-hlev x x')
 
 \end{code}
@@ -123,7 +123,7 @@ hlevel-closed-under-retract : {n : ℕ₋₂} {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                             → X is-of-hlevel n
 hlevel-closed-under-retract {𝓤} {𝓥} {−2} {X} {Y} X-retract-Y Y-contr =
  singleton-closed-under-retract X Y X-retract-Y Y-contr
-hlevel-closed-under-retract {𝓤} {𝓥} {minus1 n} (r , s , H) Y-h-level x x' =
+hlevel-closed-under-retract {𝓤} {𝓥} {pred n} (r , s , H) Y-h-level x x' =
  hlevel-closed-under-retract (＝-retract s (r , H) x x') (Y-h-level (s x) (s x'))
 
 hlevel-closed-under-equiv : {n : ℕ₋₂} {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
@@ -144,7 +144,7 @@ hlevel-closed-under-embedding : {n : ℕ₋₂}
                               → X ↪ Y
                               → Y is-of-hlevel n
                               → X is-of-hlevel n
-hlevel-closed-under-embedding {𝓤} {𝓥} {minus1 n} _ (e , is-emb) Y-h-level x x' =
+hlevel-closed-under-embedding {𝓤} {𝓥} {pred n} _ (e , is-emb) Y-h-level x x' =
  hlevel-closed-under-equiv (ap e , embedding-gives-embedding' e is-emb x x')
                            (Y-h-level (e x) (e x'))
 
@@ -159,7 +159,7 @@ hlevel-closed-under-Σ : {n : ℕ₋₂} {X : 𝓤 ̇ } (Y : X → 𝓥 ̇ )
                       → ((x : X) → (Y x) is-of-hlevel n)
                       → (Σ Y) is-of-hlevel n
 hlevel-closed-under-Σ {𝓤} {𝓥} {−2} Y l m = Σ-is-singleton l m
-hlevel-closed-under-Σ {𝓤} {𝓥} {minus1 n} Y l m (x , y) (x' , y') =
+hlevel-closed-under-Σ {𝓤} {𝓥} {pred n} Y l m (x , y) (x' , y') =
  hlevel-closed-under-equiv Σ-＝-≃
   (hlevel-closed-under-Σ
    (λ p → transport Y p y ＝ y')
@@ -170,7 +170,7 @@ hlevel-closed-under-Π : {n : ℕ₋₂} {X : 𝓤 ̇ } (Y : X → 𝓥 ̇ )
                       → ((x : X) → (Y x) is-of-hlevel n)
                       → (Π Y) is-of-hlevel n
 hlevel-closed-under-Π {𝓤} {𝓥} {−2} Y m = Π-is-singleton fe m
-hlevel-closed-under-Π {𝓤} {𝓥} {minus1 n} Y m f g =
+hlevel-closed-under-Π {𝓤} {𝓥} {pred n} Y m f g =
  hlevel-closed-under-equiv (happly-≃ fe)
   (hlevel-closed-under-Π (λ x → f x ＝ g x)
   (λ x → m x (f x) (g x)))
@@ -201,7 +201,7 @@ equiv-preserves-hlevel : {n : ℕ₋₂} {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                        → Y is-of-hlevel n
                        → (X ≃ Y) is-of-hlevel n
 equiv-preserves-hlevel {𝓤} {𝓥} {−2} = ≃-is-singleton fe'
-equiv-preserves-hlevel {𝓤} {𝓥} {minus1 n} {X} {Y} X-h-lev Y-h-lev =
+equiv-preserves-hlevel {𝓤} {𝓥} {pred n} {X} {Y} X-h-lev Y-h-lev =
  hlevel-closed-under-embedding ⋆ (equiv-embeds-into-function fe')
   (hlevel-closed-under-Π (λ _ → Y) (λ _ → Y-h-lev))
 
