@@ -286,13 +286,14 @@ second component, viz. one that is independent of the first component.
 
 \begin{code}
 
-simulation-product-decomposition : (α : Ordinal 𝓤)(β γ : Ordinal 𝓥)
-                                 → (p : 𝟘ₒ ⊲ α)
-                                 → (f : ⟨ α ×ₒ β ⟩ → ⟨ α ×ₒ γ ⟩)
-                                 → is-simulation (α ×ₒ β) (α ×ₒ γ) f
-                                 → (a : ⟨ α ⟩)(b : ⟨ β ⟩)
-                                 →  f (a , b) ＝ (a , pr₂ (f (pr₁ p , b)))
-simulation-product-decomposition {𝓤} {𝓥} α β γ (a₀ , α↓a₀＝𝟘) f (sim , op) a b = Transfinite-induction (α ×ₒ β) P g (a , b)
+simulation-product-decomposition
+ : (α : Ordinal 𝓤) (β γ : Ordinal 𝓥)
+   ((a₀ , a₀-least) : 𝟘ₒ ⊲ α)
+   (f : ⟨ α ×ₒ β ⟩ → ⟨ α ×ₒ γ ⟩)
+ → is-simulation (α ×ₒ β) (α ×ₒ γ) f
+ → (a : ⟨ α ⟩) (b : ⟨ β ⟩) → f (a , b) ＝ (a , pr₂ (f (a₀ , b)))
+simulation-product-decomposition {𝓤} {𝓥} α β γ (a₀ , a₀-least)
+                                 f sim@(init-seg , order-pres) a b = I
  where
   f' : ⟨ α ×ₒ β ⟩ → ⟨ α ×ₒ γ ⟩
   f' (a , b) = (a , pr₂ (f (a₀ , b)))
@@ -300,57 +301,63 @@ simulation-product-decomposition {𝓤} {𝓥} α β γ (a₀ , α↓a₀＝𝟘
   P : ⟨ α ×ₒ β ⟩ → 𝓤 ⊔ 𝓥 ̇
   P (a , b) = (f (a , b)) ＝ f' (a , b)
 
-  g : (ab : ⟨ α ×ₒ β ⟩) → ((ab' : ⟨ α ×ₒ β ⟩) → ab' ≺⟨ α ×ₒ β ⟩ ab → P ab') → P ab
-  g (a , b) ih = Extensionality (α ×ₒ γ) _ _ h₀ h₁
+  I : P (a , b)
+  I = Transfinite-induction (α ×ₒ β) P II (a , b)
    where
-    h₀ : (a'c' : ⟨ α ×ₒ γ ⟩) → a'c' ≺⟨ α ×ₒ γ ⟩ f (a , b) → a'c' ≺⟨ α ×ₒ γ ⟩ f' (a , b)
-    h₀ (a' , c') p = transport (λ - → - ≺⟨ α ×ₒ γ ⟩ f' (a , b)) e goal
+    II : (x : ⟨ α ×ₒ β ⟩)
+       → ((y : ⟨ α ×ₒ β ⟩) → y ≺⟨ α ×ₒ β ⟩ x → P y)
+       → P x
+    II (a , b) IH = Extensionality (α ×ₒ γ) (f (a , b)) (f' (a , b)) III IV
      where
-      a₁ : ⟨ α ⟩
-      a₁ = pr₁ (pr₁ (sim (a , b) (a' , c') p))
-      b₁ : ⟨ β ⟩
-      b₁ = pr₂ (pr₁ (sim (a , b) (a' , c') p))
-      p' : (a₁ , b₁) ≺⟨ α ×ₒ β ⟩ (a , b)
-      p' = pr₁ (pr₂ (sim (a , b) (a' , c') p))
-      eq : f (a₁ , b₁) ＝ (a' , c')
-      eq = pr₂ (pr₂ (sim (a , b) (a' , c') p))
+      III : (u : ⟨ α ×ₒ γ ⟩) → u ≺⟨ α ×ₒ γ ⟩ f (a , b) → u ≺⟨ α ×ₒ γ ⟩ f' (a , b)
+      III (a' , c') p = transport (λ - → - ≺⟨ α ×ₒ γ ⟩ f' (a , b)) III₂ (III₃ p')
+       where
+        III₁ : Σ (a'' , b') ꞉ ⟨ α ×ₒ β ⟩ , (a'' , b') ≺⟨ α ×ₒ β ⟩ (a , b)
+                                         × (f (a'' , b') ＝ a' , c')
+        III₁ = init-seg (a , b) (a' , c') p
+        a'' = pr₁ (pr₁ III₁)
+        b' = pr₂ (pr₁ III₁)
+        p' = pr₁ (pr₂ III₁)
+        eq : f (a'' , b') ＝ (a' , c')
+        eq = pr₂ (pr₂ III₁)
 
-      e : f' (a₁ , b₁) ＝ (a' , c')
-      e = ih (a₁ , b₁) p' ⁻¹ ∙ eq
+        III₂ : f' (a'' , b') ＝ (a' , c')
+        III₂ = IH (a'' , b') p' ⁻¹ ∙ eq
 
-      a₀' : ⟨ α ⟩
-      a₀' = pr₁ (f (a₀ , b))
-      goal : (a₁ , pr₂ (f (a₀ , b₁))) ≺⟨ α ×ₒ γ ⟩  (a , pr₂ (f (a₀ , b)))
-      goal = Cases p'
-               (λ (r : b₁ ≺⟨ β ⟩ b)
-                  → Cases (op (a₀' , b₁) (a₀ , b) (inl r))
-                      (λ (rr : (pr₂ (f (a₀' , b₁)) ≺⟨ γ ⟩ pr₂ (f (a₀ , b))))
-                              → inl (transport (λ - → - ≺⟨ γ ⟩ pr₂ (f (a₀ , b)))
-                                               (ap pr₂ (ih (a₀' , b₁) (inl r)))
-                                               rr))
-                      (λ (rr : (pr₂ (f (a₀' , b₁)) ＝ pr₂ (f (a₀ , b))) × (pr₁ (f (a₀' , b₁))) ≺⟨ α ⟩ a₀')
-                             → 𝟘-elim (irrefl α a₀' (transport (λ - → - ≺⟨ α ⟩ a₀')
-                                                               (ap pr₁ (ih (a₀' , b₁) (inl r)))
-                                                               (pr₂ rr)))))
-               (λ (r : (b₁ ＝ b) × (a₁ ≺⟨ α ⟩ a)) → inr (ap (λ - → pr₂ (f (a₀ , -))) (pr₁ r) , pr₂ r))
+        III₃ : (a'' , b') ≺⟨ α ×ₒ β ⟩ (a , b)
+             → f' (a'' , b') ≺⟨ α ×ₒ γ ⟩ f' (a , b)
+        III₃ (inl q) = h (order-pres (a₀' , b') (a₀ , b) (inl q))
+         where
+          a₀' : ⟨ α ⟩
+          a₀' = pr₁ (f (a₀ , b))
 
-    h₁ : (u : ⟨ α ×ₒ γ ⟩) → u ≺⟨ α ×ₒ γ ⟩ f' (a , b) → u ≺⟨ α ×ₒ γ ⟩ f  (a , b)
-    h₁ (a' , c') (inl p) = q (a' , c') (inl p)
-     where
-      a₀≼a : a₀ ≼⟨ α ⟩ a
-      a₀≼a x p = 𝟘-elim (transport ⟨_⟩ (α↓a₀＝𝟘 ⁻¹) (x , p))
+          ih : (f (a₀' , b')) ＝ f' (a₀' , b')
+          ih = IH (a₀' , b') (inl q)
 
-      q : f (a₀ , b) ≼⟨ α ×ₒ γ ⟩ f (a , b)
-      q = simulations-are-monotone _ _ f (sim , op) (a₀ , b) (a , b) (×ₒ-≼-left α β a₀≼a)
+          h : f (a₀' , b') ≺⟨ α ×ₒ γ ⟩ f (a₀ , b)
+            → f' (a'' , b') ≺⟨ α ×ₒ γ ⟩ f' (a , b)
+          h (inl r) = inl (transport (λ - → - ≺⟨ γ ⟩ pr₂ (f (a₀ , b)))
+                                     (ap pr₂ ih) r)
+          h (inr (_ , r)) = 𝟘-elim (irrefl α a₀' (transport (λ - → - ≺⟨ α ⟩ a₀')
+                                                            (ap pr₁ ih) r))
+        III₃ (inr (e , q)) = inr (ap (λ - → pr₂ (f (a₀ , -))) e , q)
 
-    h₁ (a' , c') (inr (r , q)) = transport⁻¹ (λ - → - ≺⟨ α ×ₒ γ ⟩ f  (a , b)) eq
-                                             (op (a' , b) (a , b) (inr (refl , q)))
-     where
-      eq : (a' , c') ＝ f (a' , b)
-      eq = (a' , c')               ＝⟨ ap (a' ,_) r ⟩
-           (a' , pr₂ (f (a₀ , b))) ＝⟨ refl ⟩
-           f' (a' , b)             ＝⟨ ih (a' , b) (inr (refl , q)) ⁻¹ ⟩
-           f  (a' , b)             ∎
+      IV : (u : ⟨ α ×ₒ γ ⟩) → u ≺⟨ α ×ₒ γ ⟩ f' (a , b) → u ≺⟨ α ×ₒ γ ⟩ f  (a , b)
+      IV (a' , c') (inl p) = l₂ (a' , c') (inl p)
+       where
+        l₁ : a₀ ≼⟨ α ⟩ a
+        l₁ x p = 𝟘-elim (transport ⟨_⟩ (a₀-least ⁻¹) (x , p))
+        l₂ : f (a₀ , b) ≼⟨ α ×ₒ γ ⟩ f (a , b)
+        l₂ = simulations-are-monotone _ _
+              f sim (a₀ , b) (a , b) (×ₒ-≼-left α β l₁)
+      IV (a' , c') (inr (r , q)) =
+       transport (λ - → - ≺⟨ α ×ₒ γ ⟩ f  (a , b)) eq
+                 (order-pres (a' , b) (a , b) (inr (refl , q)))
+        where
+         eq = f  (a' , b)             ＝⟨ IH (a' , b) (inr (refl , q)) ⟩
+              f' (a' , b)             ＝⟨ refl ⟩
+              (a' , pr₂ (f (a₀ , b))) ＝⟨ ap (a' ,_) (r ⁻¹) ⟩
+              (a' , c')               ∎
 
 \end{code}
 
@@ -359,7 +366,7 @@ cancelled on the left. Interestingly, Andrew Swan [Swa18] proved that
 the corresponding result for mere sets is not provable constructively
 already for α = 𝟚: there are toposes where the statement
 
-𝟚 × X ≃ 𝟚 × Y → X ≃ Y
+  𝟚 × X ≃ 𝟚 × Y → X ≃ Y
 
 is not true for certain objects X and Y in the topos.
 
