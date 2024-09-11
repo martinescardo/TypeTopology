@@ -41,7 +41,9 @@ open import UF.Subsingletons-FunExt
 open import UF.Subsingletons-Properties
 open import UF.Univalence
 
+
 open import gist.FromMinus2
+open import Notation.Order
 
 private
  fe' : FunExt
@@ -137,7 +139,7 @@ We can prove closure under embeddings as a consequence of the previous result.
 \begin{code}
 
 hlevel-closed-under-embedding : {n : ℕ₋₂}
-                              → −1 ≤ℕ₋₂ n
+                              → −1 ≤ n
                               → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                               → X ↪ Y
                               → Y is-of-hlevel n

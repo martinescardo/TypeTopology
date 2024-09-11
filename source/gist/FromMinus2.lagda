@@ -12,6 +12,7 @@ module gist.FromMinus2 where
 
 open import MLTT.Spartan
 open import Naturals.Order
+open import Notation.Order
 
 record ℕ₋₂ : 𝓤₀ ̇ where
  constructor
@@ -57,6 +58,10 @@ Basic definitions and facts.
 
 _≤ℕ₋₂_ : ℕ₋₂ → ℕ₋₂ → 𝓤₀ ̇
 minus2 m ≤ℕ₋₂ minus2 n = m ≤ℕ n
+
+instance
+ Order-ℕ₋₂-ℕ₋₂ : Order ℕ₋₂ ℕ₋₂
+ _≤_ {{Order-ℕ₋₂-ℕ₋₂}} = _≤ℕ₋₂_
 
 subtract-and-add-2-is-identity : (n : ℕ) → plus2 (minus2 n)＝ n
 subtract-and-add-2-is-identity n = refl
