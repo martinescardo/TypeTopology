@@ -360,10 +360,10 @@ simulation-product-decomposition {𝓤} {𝓥} α β γ (a₀ , a₀-least)
 
 \end{code}
 
-The following result states that multiplication for ordinals can be
-cancelled on the left. Interestingly, Andrew Swan [Swa18] proved that
-the corresponding result for mere sets is not provable constructively
-already for α = 𝟚: there are toposes where the statement
+The following result states that multiplication for ordinals can be cancelled on
+the left. Interestingly, Andrew Swan [Swa18] proved that the corresponding
+result for sets is not provable constructively already for α = 𝟚: there are
+toposes where the statement
 
   𝟚 × X ≃ 𝟚 × Y → X ≃ Y
 
