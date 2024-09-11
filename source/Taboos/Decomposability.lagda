@@ -225,7 +225,7 @@ type-of-ordinals-has-Ω-paths {𝓤} ua α β = f , γ⊥ , γ⊤
     u (inl (x , a)) = a
 
     o : is-order-preserving (f ⊥) α u
-    o (inl (x , a)) (inl (x , b)) (inr (refl , l)) = l
+    o (inl (x , a)) (inl (y , b)) (inl l) = l
 
     v : ⟨ α ⟩ → ⟨ f ⊥ ⟩
     v a = inl (𝟘-elim , a)
@@ -240,7 +240,7 @@ type-of-ordinals-has-Ω-paths {𝓤} ua α β = f , γ⊥ , γ⊤
     e = qinvs-are-equivs u (v , vu , uv)
 
     p : is-order-preserving α (f ⊥) v
-    p a b l = inr (refl , l)
+    p a b l = inl l
 
   γ⊤ : f ⊤ ＝ β
   γ⊤ = eqtoidₒ ua fe' (f ⊤) β (u , o , e , p)
@@ -251,7 +251,7 @@ type-of-ordinals-has-Ω-paths {𝓤} ua α β = f , γ⊥ , γ⊤
 
     o : is-order-preserving (f ⊤) β u
     o (inl (f , _)) y l = 𝟘-elim (f ⋆)
-    o (inr (⋆ , _)) (inr (⋆ , _)) (inr (_ , l)) = l
+    o (inr (⋆ , _)) (inr (⋆ , _)) (inl l) = l
 
     v : ⟨ β ⟩ → ⟨ f ⊤ ⟩
     v b = inr (⋆ , b)
@@ -267,7 +267,7 @@ type-of-ordinals-has-Ω-paths {𝓤} ua α β = f , γ⊥ , γ⊤
     e = qinvs-are-equivs u (v , vu , uv)
 
     p : is-order-preserving β (f ⊤) v
-    p b c l = inr (refl , l)
+    p b c l = inl l
 
 decomposition-of-Ω-gives-WEM : propext 𝓤
                              → decomposition (Ω 𝓤)
