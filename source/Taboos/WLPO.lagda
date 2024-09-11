@@ -151,3 +151,40 @@ WLPO-traditional-gives-WLPO fe wlpot u = IV
   IV = map-decidable II III I
 
 \end{code}
+
+Added 9th September 2024. WLPO amounts to saying that the constancy of
+a binary sequence is decidable.
+
+\begin{code}
+
+WLPO-variation : 𝓤₀ ̇
+WLPO-variation = (α : ℕ → 𝟚) → is-decidable ((n : ℕ) → α n ＝ α 0)
+
+WLPO-variation-gives-WLPO-traditional
+ : WLPO-variation
+ → WLPO-traditional
+WLPO-variation-gives-WLPO-traditional wlpov α
+ = 𝟚-equality-cases I II
+ where
+  I : α 0 ＝ ₀ → ((n : ℕ) → α n ＝ ₁) + ¬ ((n : ℕ) → α n ＝ ₁)
+  I p = inr (λ (ϕ : (n : ℕ) → α n ＝ ₁)
+               → zero-is-not-one
+                  (₀   ＝⟨ p ⁻¹ ⟩
+                   α 0 ＝⟨ ϕ 0 ⟩
+                   ₁   ∎))
+
+  II : α 0 ＝ ₁ → ((n : ℕ) → α n ＝ ₁) + ¬ ((n : ℕ) → α n ＝ ₁)
+  II p = map-decidable
+          (λ (ϕ : (n : ℕ) → α n ＝ α 0) (n : ℕ)
+             → α n ＝⟨ ϕ n ⟩
+               α 0 ＝⟨ p ⟩
+               ₁   ∎)
+          (λ (γ : (n : ℕ) → α n ＝ ₁) (n : ℕ)
+             → α n ＝⟨ γ n ⟩
+               ₁   ＝⟨ p ⁻¹ ⟩
+               α 0 ∎)
+          (wlpov α)
+
+\end{code}
+
+TODO. The converse.
