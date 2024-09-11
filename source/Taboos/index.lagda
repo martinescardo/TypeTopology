@@ -14,6 +14,7 @@ import Taboos.DrinkerParadox
 import Taboos.FiniteSubsetTaboo    -- by Ayberk Tosun
 import Taboos.LLPO
 import Taboos.LPO
+import Taboos.MarkovsPrinciple
 import Taboos.P2
 import Taboos.WLPO
 

@@ -76,9 +76,10 @@ LPO-is-prop fe = Π-is-prop fe f
 \end{code}
 
 We now show that LPO is logically equivalent to its traditional
-formulation by Bishop. However, the traditional formulation is not a
-univalent proposition in general, and not type equivalent (in the
-sense of UF) to our formulation.
+formulation by Bishop, which here amounts the compactness of ℕ.
+However, the traditional formulation is not a univalent proposition in
+general, and not type equivalent (in the sense of UF) to our
+formulation.
 
 \begin{code}
 
@@ -275,6 +276,3 @@ LPO-gives-WLPO fe lpo u =
 ¬WLPO-gives-¬LPO fe = contrapositive (LPO-gives-WLPO fe)
 
 \end{code}
-
-TODO. Define the traditional version of LPO and prove that it is
-equivalent to our definition.

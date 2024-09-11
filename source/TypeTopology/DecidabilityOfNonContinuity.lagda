@@ -33,6 +33,7 @@ open import Notation.CanonicalMap
 open import NotionsOfDecidability.Complemented
 open import NotionsOfDecidability.Decidable
 open import Taboos.LPO
+open import Taboos.MarkovsPrinciple
 open import TypeTopology.ADecidableQuantificationOverTheNaturals fe
 open import UF.DiscreteAndSeparated
 
@@ -279,26 +280,13 @@ Added 7th September 2024. We now prove (3)(→).
 \begin{code}
 
 ¬WLPO-gives-all-functions-are-not-not-continuous
- : ¬ WLPO → (f : ℕ∞ → ℕ) → ¬¬ continuous f
+ : ¬ WLPO
+ → (f : ℕ∞ → ℕ)
+ → ¬¬ continuous f
 ¬WLPO-gives-all-functions-are-not-not-continuous nwlpo f
  = contrapositive
     (λ (ν : ¬ continuous f) → noncontinuous-map-gives-WLPO (f , ν))
     nwlpo
-
-\end{code}
-
-TODO. Create a Markov's Principle file somewhere, if it doesn't
-already exist, and prove that it doesn't matter whether we formulate
-it with Σ or ∃ (or whether we formulate with decidable properties or
-boolean-valued functions).
-
-\begin{code}
-
-MP : 𝓤 ⁺ ̇
-MP {𝓤} = (A : ℕ → 𝓤 ̇ )
-       → is-complemented A
-       → ¬¬ (Σ n ꞉ ℕ , A n)
-       → Σ n ꞉ ℕ , A n
 
 \end{code}
 
@@ -307,7 +295,10 @@ And now we prove (1).
 \begin{code}
 
 MP-gives-that-not-not-continuous-functions-are-continuous
- : MP → (f : ℕ∞ → ℕ) → ¬¬ continuous f → continuous f
+ : MP 𝓤₀
+ → (f : ℕ∞ → ℕ)
+ → ¬¬ continuous f
+ → continuous f
 MP-gives-that-not-not-continuous-functions-are-continuous mp f
  = mp (λ m → (n : ℕ) → f (max (ι m) (ι n)) ＝ f ∞)
       (λ m → Theorem-8·2'
@@ -326,7 +317,10 @@ And now we prove (4).
 \begin{code}
 
 MP-and-¬WLPO-give-that-all-functions-are-continuous
- : MP → ¬ WLPO → (f : ℕ∞ → ℕ) → continuous f
+ : MP 𝓤₀
+ → ¬ WLPO
+ → (f : ℕ∞ → ℕ)
+ → continuous f
 MP-and-¬WLPO-give-that-all-functions-are-continuous mp nwlpo f
  = MP-gives-that-not-not-continuous-functions-are-continuous
     mp
@@ -1070,22 +1064,9 @@ TODO. Is there a nice necessary and sufficient condition for the
 
         LPO + eventually-constant g?
 
-      Notice the following. Assuming MP, we have that WLPO → LPO, as
-      is well known. But the assumption of MP doesn't give, as far as
-      we can see, the implication
-
-        ¬¬ eventually-constant g → eventually-constant g.
-
-      If it did, then we would have a necessary and sufficient
-      condition under the assumption of MP.
-
-      We show below that if g does have an extension, then it is
-      decidable whether a given m is a modulus of eventual constancy
-      of g, and so the above implication does hold if we assume MP
-      *and* g has an extension. But the whole point here is to find a
-      (tight) sufficient condition for g to have an extension, and so
-      the assumption of MP doesn't seem to be useful to help to answer
-      the question.
+      We leave this open. However, we show below that, under Markov's
+      Principle, the latter is a necessry and sufficient for g to have
+      an extension.
 
 \end{code}
 
@@ -1174,7 +1155,7 @@ if g has a given extension.
 
 \begin{code}
 
-module eventual-contancy-under-propositional-truncations
+module eventual-constancy-under-propositional-truncations
         (pt : propositional-truncations-exist)
        where
 
@@ -1256,3 +1237,42 @@ all-maps-have-extensions-gives-WLPO a
        succ m                     ∎)
 
 \end{code}
+
+Added 11th September 2024. Another immediate consequence of the above
+is that, under Markov Principle, a given g : ℕ → ℕ has an extension if
+and only if LPO holds of g is eventually constant.
+
+\begin{code}
+
+sufficient-condition-is-necessary-under-MP
+ : MP 𝓤₀
+ → (g : ℕ → ℕ)
+ → ℕ∞-extension g
+ → LPO + eventually-constant g
+sufficient-condition-is-necessary-under-MP mp g ext = II
+ where
+  I : WLPO + ¬¬ eventually-constant g → LPO + eventually-constant g
+  I (inl wlpo) = inl (MP-and-WLPO-give-LPO fe mp wlpo)
+  I (inr nnec) =
+   inr (mp
+         (is-modulus-of-eventual-constancy g)
+         (second-necessary-condition-for-the-explicit-existence-of-an-extension
+           g
+           ext)
+         nnec)
+
+  II : LPO + eventually-constant g
+  II = I (ℕ∞-extension-explicit-existence-first-necessary-condition g ext)
+
+necessary-and-sufficient-condition-for-explicit-extension-under-MP
+ : MP 𝓤₀
+ → (g : ℕ → ℕ)
+ → ℕ∞-extension g ↔ LPO + eventually-constant g
+necessary-and-sufficient-condition-for-explicit-extension-under-MP mp g
+ = sufficient-condition-is-necessary-under-MP mp g ,
+   ℕ∞-extension-explicit-existence-sufficient-condition g
+
+\end{code}
+
+TODO. Find a necessary and sufficient condition without assuming
+Markov's Principle. We leave this as an open problem.
