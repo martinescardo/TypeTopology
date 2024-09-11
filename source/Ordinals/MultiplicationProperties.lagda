@@ -19,6 +19,8 @@ module Ordinals.MultiplicationProperties
 open import UF.Base
 open import UF.Equiv
 open import UF.FunExt
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
 open import UF.UA-FunExt
 
 private
@@ -29,7 +31,7 @@ private
  fe' {𝓤} {𝓥} = fe 𝓤 𝓥
 
 open import MLTT.Spartan
-open import MLTT.Sigma
+
 open import Ordinals.Arithmetic fe
 open import Ordinals.Equivalence
 open import Ordinals.Maps
@@ -487,3 +489,88 @@ module _ (pt : propositional-truncations-exist)
                     β y)
 
 \end{code}
+
+11 September 2024, added by Tom de Jong following a question by Martin Escardo.
+
+The equations for successor and suprema uniquely specify the multiplication
+operation even though they are not constructively sufficient to define it.
+
+\begin{code}
+
+ private
+  successor-equation : (Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) → 𝓤 ⁺ ̇
+  successor-equation {𝓤} _⊗_ =
+   (α β : Ordinal 𝓤) → α ⊗ (β +ₒ 𝟙ₒ) ＝ (α ⊗ β) +ₒ α
+
+  suprema-equation : (Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) → 𝓤 ⁺ ̇
+  suprema-equation {𝓤} _⊗_ =
+   (α : Ordinal 𝓤) (I : 𝓤 ̇  ) (β : I → Ordinal 𝓤)
+    → α ⊗ (sup β) ＝ sup (λ i → α ⊗ β i)
+
+  recursive-equation : (Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) → 𝓤 ⁺ ̇
+  recursive-equation {𝓤} _⊗_ =
+   (α β : Ordinal 𝓤) → α ⊗ β ＝ sup (λ b → (α ⊗ (β ↓ b)) +ₒ α)
+
+  successor-and-suprema-equations-give-recursive-equation
+   : (_⊗_ : Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤)
+   → successor-equation _⊗_
+   → suprema-equation _⊗_
+   → recursive-equation _⊗_
+  successor-and-suprema-equations-give-recursive-equation
+   _⊗_ ⊗-succ ⊗-sup α β = α ⊗ β                           ＝⟨ I   ⟩
+                          (α ⊗ sup (λ b → (β ↓ b) +ₒ 𝟙ₒ)) ＝⟨ II  ⟩
+                          sup (λ b → α ⊗ ((β ↓ b) +ₒ 𝟙ₒ)) ＝⟨ III ⟩
+                          sup (λ b → (α ⊗ (β ↓ b)) +ₒ α)  ∎
+    where
+     I   = ap (α ⊗_) (supremum-of-successors-of-initial-segments pt sr β)
+     II  = ⊗-sup α ⟨ β ⟩ (λ b → (β ↓ b) +ₒ 𝟙ₒ)
+     III = ap sup (dfunext fe' (λ b → ⊗-succ α (β ↓ b)))
+
+ ×ₒ-recursive-equation : recursive-equation {𝓤} _×ₒ_
+ ×ₒ-recursive-equation =
+  successor-and-suprema-equations-give-recursive-equation
+    _×ₒ_ ×ₒ-successor (λ α _ β → ×ₒ-preserves-suprema α β)
+
+ ×ₒ-is-uniquely-specified'
+  : (_⊗_ : Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤)
+  → recursive-equation _⊗_
+  → (α β : Ordinal 𝓤) → α ⊗ β ＝ α ×ₒ β
+ ×ₒ-is-uniquely-specified' {𝓤} _⊗_ ⊗-rec α =
+  transfinite-induction-on-OO (λ - → (α ⊗ -) ＝ (α ×ₒ -)) I
+   where
+    I : (β : Ordinal 𝓤)
+      → ((b : ⟨ β ⟩) → (α ⊗ (β ↓ b)) ＝ (α ×ₒ (β ↓ b)))
+      → (α ⊗ β) ＝ (α ×ₒ β)
+    I β IH = α ⊗ β                            ＝⟨ II  ⟩
+             sup (λ b → (α ⊗ (β ↓ b)) +ₒ α)   ＝⟨ III ⟩
+             sup (λ b → (α ×ₒ (β ↓ b)) +ₒ α)  ＝⟨ IV  ⟩
+             α ×ₒ β                           ∎
+     where
+      II  = ⊗-rec α β
+      III = ap sup (dfunext fe' (λ b → ap (_+ₒ α) (IH b)))
+      IV  = ×ₒ-recursive-equation α β ⁻¹
+
+ ×ₒ-is-uniquely-specified
+  : ∃! _⊗_ ꞉ (Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) ,
+     (successor-equation _⊗_) × (suprema-equation _⊗_)
+ ×ₒ-is-uniquely-specified {𝓤} =
+  (_×ₒ_ , (×ₒ-successor , (λ α _ β → ×ₒ-preserves-suprema α β))) ,
+  (λ (_⊗_ , ⊗-succ , ⊗-sup) →
+   to-subtype-＝
+    (λ F → ×-is-prop (Π₂-is-prop fe'
+                       (λ _ _ → underlying-type-is-set fe (OO 𝓤)))
+                     (Π₃-is-prop fe'
+                       (λ _ _ _ → underlying-type-is-set fe (OO 𝓤))))
+    (dfunext fe'
+      (λ α → dfunext fe'
+       (λ β →
+        (×ₒ-is-uniquely-specified' _⊗_
+          (successor-and-suprema-equations-give-recursive-equation
+            _⊗_ ⊗-succ ⊗-sup)
+        α β) ⁻¹))))
+
+\end{code}
+
+The above should be contrasted to the situation for addition where we do not
+know how to prove such a result since only *inhabited* suprema are preserved by
+addition.
