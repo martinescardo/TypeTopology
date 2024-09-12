@@ -29,6 +29,7 @@ module TypeTopology.DecidabilityOfNonContinuity (fe : funext 𝓤₀ 𝓤₀) wh
 
 open import CoNaturals.Type
 open import MLTT.Two-Properties
+open import MLTT.Plus-Properties
 open import Notation.CanonicalMap
 open import NotionsOfDecidability.Complemented
 open import NotionsOfDecidability.Decidable
@@ -1302,16 +1303,14 @@ sufficient-condition-is-necessary-under-MP mp g ext
  = II
  where
   I : WLPO + ¬¬ eventually-constant g → LPO + eventually-constant g
-  I (inl wlpo) =
-   inl (MP-and-WLPO-give-LPO fe mp wlpo)
-  I (inr nnec) =
-   inr (decidability-of-modulus-of-constancy-gives-eventual-constancy-¬¬-stable
+  I = +functor
+       (MP-and-WLPO-give-LPO fe mp)
+       (decidability-of-modulus-of-constancy-gives-eventual-constancy-¬¬-stable
          mp
          g
          (second-necessary-condition-for-the-explicit-existence-of-an-extension
            g
-           ext)
-         nnec)
+           ext))
 
   II : LPO + eventually-constant g
   II = I (ℕ∞-extension-explicit-existence-first-necessary-condition g ext)
