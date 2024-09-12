@@ -55,7 +55,7 @@ f is n truncated-map = each-fiber-of f (λ - → - is n truncated)
 
 \end{code}
 
-Being of hlevel one is equivalent to being a proposition.
+Being -1-truncated equivalent to being a proposition.
 
 \begin{code}
 
@@ -81,7 +81,7 @@ is-prop-equiv-is-prop' {𝓤} {X} =
 
 \end{code}
 
-H-Levels are cumulative.
+Truncation levels are upper closed.
 
 \begin{code}
 
@@ -104,7 +104,7 @@ truncation-levels-closed-under-Id {𝓤} {succ n} t x x' =
 
 \end{code}
 
-We will now give some closure results about H-levels.
+We will now give some closure results about truncation levels.
 
 \begin{code}
 
@@ -128,7 +128,8 @@ truncated-types-closed-under-equiv e =
 
 \end{code}
 
-We can prove closure under embeddings as a consequence of the previous result.
+We can prove closure under embeddings as a consequence of the previous
+result.
 
 \begin{code}
 
@@ -194,7 +195,8 @@ The subuniverse of types of n truncated types is defined as follows.
 
 \end{code}
 
-From univalence we can show that 𝕋 n is of level (succ n), for all n : ℕ₋₂.
+From univalence we can show that 𝕋 n is n + 1 truncated,
+for all n : ℕ₋₂.
 
 \begin{code}
 
