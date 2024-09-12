@@ -24,6 +24,7 @@ module gist.H-Levels-experimental-Variation
 open import MLTT.Spartan
 
 open import Naturals.Order
+open import Notation.Order
 open import UF.Embeddings
 open import UF.Equiv
 open import UF.EquivalenceExamples
@@ -32,11 +33,8 @@ open import UF.Singleton-Properties
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.Subsingletons-Properties
+open import UF.TruncationLevels
 open import UF.Univalence
-
-
-open import gist.FromMinus2-Variation
-open import Notation.Order
 
 private
  fe' : FunExt
