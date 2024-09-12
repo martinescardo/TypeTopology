@@ -44,6 +44,7 @@ open import UF.Embeddings
 open import UF.ClassicalLogic
 open import UF.FunExt
 open import UF.Retracts
+open import UF.Size
 open import UF.SubtypeClassifier
 open import UF.SubtypeClassifier-Properties
 open import UF.Subsingletons
@@ -355,13 +356,8 @@ TODO. We could derive ℝ-ainjective-gives-WEM from the below. (Note the
 \begin{code}
 
 open import Apartness.Definition
+open import Apartness.Properties pt
 open Apartness pt
-
-has-two-points-apart : {X : 𝓤 ̇ } → Apartness X 𝓥 → 𝓥 ⊔ 𝓤 ̇
-has-two-points-apart {𝓤} {𝓥} {X} (_♯_ , α) = Σ (x , y) ꞉ X × X , (x ♯ y)
-
-Nontrivial-Apartness : 𝓤 ̇ → (𝓥 : Universe) → 𝓥 ⁺ ⊔ 𝓤 ̇
-Nontrivial-Apartness X 𝓥 = Σ a ꞉ Apartness X 𝓥 , has-two-points-apart a
 
 ainjective-type-with-non-trivial-apartness-gives-WEM
  : {X : 𝓤 ̇ }
@@ -413,71 +409,6 @@ ainjective-type-with-non-trivial-apartness-gives-WEM
 
 \end{code}
 
-TODO. Move the following to the directory Apartness.
-
-\begin{code}
-
-WEM-gives-that-type-with-two-distinct-points-has-nontrivial-apartness
- : {X : 𝓤 ̇ }
- → has-two-distinct-points X
- → WEM 𝓤
- → Nontrivial-Apartness X 𝓤
-WEM-gives-that-type-with-two-distinct-points-has-nontrivial-apartness
- {𝓤} {X} htdp wem = γ
- where
-  s : (x y z : X) → x ≠ y → (x ≠ z) + (y ≠ z)
-  s x y z d =
-   Cases (wem (x ≠ z))
-    (λ (a : ¬ (x ≠ z))  → inr (λ {refl → a d}))
-    (λ (b : ¬¬ (x ≠ z)) → inl (three-negations-imply-one b))
-
-  c : is-cotransitive _≠_
-  c x y z d = ∣ s x y z d ∣
-
-  γ : Nontrivial-Apartness X 𝓤
-  γ = (_≠_ ,
-      ((λ x y → negations-are-props fe') ,
-       ≠-is-irrefl ,
-       (λ x y → ≠-sym) , c)) ,
-      htdp
-
-open import UF.Size
-
-WEM-gives-that-type-with-two-distinct-points-has-nontrivial-apartness⁺
- : {X : 𝓤 ⁺ ̇ }
- → is-locally-small X
- → has-two-distinct-points X
- → WEM 𝓤
- → Nontrivial-Apartness X 𝓤
-WEM-gives-that-type-with-two-distinct-points-has-nontrivial-apartness⁺
- {𝓤} {X} ls ((x₀ , x₁) , d) wem = γ
- where
-  _♯_ : X → X → 𝓤 ̇
-  x ♯ y = x ≠⟦ ls ⟧ y
-
-  s : (x y z : X) → x ♯ y → (x ♯ z) + (y ♯ z)
-  s x y z a = Cases (wem (x ♯ z)) (inr ∘ f) (inl ∘ g)
-   where
-    f : ¬ (x ♯ z) → y ♯ z
-    f = contrapositive
-         (λ (e : y ＝⟦ ls ⟧ z) → transport (x ♯_) (＝⟦ ls ⟧-gives-＝ e) a)
-
-    g : ¬¬ (x ♯ z) → x ♯ z
-    g = three-negations-imply-one
-
-  c : is-cotransitive _♯_
-  c x y z d = ∣ s x y z d ∣
-
-  γ : Nontrivial-Apartness X 𝓤
-  γ = (_♯_ ,
-       (λ x y → negations-are-props fe') ,
-       (λ x → ≠⟦ ls ⟧-irrefl) ,
-       (λ x y → ≠⟦ ls ⟧-sym) ,
-       c) ,
-      (x₀ , x₁) , ≠-gives-≠⟦ ls ⟧ d
-
-\end{code}
-
 In particular, we have the following.
 
 \begin{code}
@@ -490,12 +421,19 @@ non-trivial-apartness-on-universe-gives-WEM ua =
  ainjective-type-with-non-trivial-apartness-gives-WEM
   (universes-are-ainjective ua)
 
-WEM-gives-non-trivial-apartness-on-universe
- : WEM (𝓤 ⁺)
- → Nontrivial-Apartness (𝓤 ̇ ) (𝓤 ⁺)
-WEM-gives-non-trivial-apartness-on-universe =
- WEM-gives-that-type-with-two-distinct-points-has-nontrivial-apartness
-  universe-has-two-distinct-points
+non-trivial-apartness-on-universe-iff-WEM
+ : is-univalent 𝓤
+ → Nontrivial-Apartness (𝓤 ̇ ) 𝓤 ↔ WEM 𝓤
+non-trivial-apartness-on-universe-iff-WEM {𝓤} ua = f , g
+ where
+  f : Nontrivial-Apartness (𝓤 ̇ ) 𝓤 → WEM 𝓤
+  f = non-trivial-apartness-on-universe-gives-WEM ua
+
+  g : WEM 𝓤 → Nontrivial-Apartness (𝓤 ̇ ) 𝓤
+  g = WEM-gives-that-type-with-two-distinct-points-has-nontrivial-apartness⁺
+       fe'
+       (universes-are-locally-small ua)
+       universe-has-two-distinct-points
 
 \end{code}
 
@@ -507,20 +445,3 @@ standard apartness), ℕ∞ (again because it is totally
 separated).
 
 TODO. Maybe we can list a few more interesting examples?
-
-\begin{code}
-
-non-trivial-apartness-on-universe-iff-WEM
- : is-univalent 𝓤
- → Nontrivial-Apartness (𝓤 ̇ ) 𝓤 ↔ WEM 𝓤
-non-trivial-apartness-on-universe-iff-WEM {𝓤} ua = f , g
- where
-  f : Nontrivial-Apartness (𝓤 ̇ ) 𝓤 → WEM 𝓤
-  f = non-trivial-apartness-on-universe-gives-WEM ua
-
-  g : WEM 𝓤 → Nontrivial-Apartness (𝓤 ̇ ) 𝓤
-  g = WEM-gives-that-type-with-two-distinct-points-has-nontrivial-apartness⁺
-       (universes-are-locally-small ua)
-       universe-has-two-distinct-points
-
-\end{code}

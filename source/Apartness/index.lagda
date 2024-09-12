@@ -10,9 +10,10 @@ the following modules.
 module Apartness.index where
 
 import Apartness.Definition
-import Apartness.Morphisms
 import Apartness.Examples
+import Apartness.Morphisms
 import Apartness.NegationOfApartness
+import Apartness.Properties
 import Apartness.TightReflection
 
 \end{code}
