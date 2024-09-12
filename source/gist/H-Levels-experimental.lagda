@@ -1,21 +1,15 @@
 Ian Ray, 2 June 2024
 
-Experimental modification by Martin Escardo 11 September 2024
+Experimental modification by Martin Escardo and Tom de Jong 12th
+September 2024.
 
 Minor modifications by Tom de Jong on 4 September 2024
 
-We develop H-levels (a la Voevodsky). In Homotopy Type Theory there is a
-natural stratification of types defined inductively; with contractible
-types as the base and saying an (n+1)-type is a type whose identity types
-are all n-types. Voevodsky introduced the notion of H-level where contractible
-types are at level n = 0. Alternatively, in book HoTT, truncated types are
-defined so that contractible types are at level k = -2. Of course, the two
-notions are equivalent as they are indexed by equivalent types, that is
-ℕ ≃ ℤ₋₂, but it is important to be aware of the fact that concepts are 'off by
-2' when translating between conventions.
+We develop n-types, or n-truncated types, as defined in the HoTT book.
 
-In this file we will assume function extensionality globally but not univalence.
-The final result of the file will be proved in the local presence of univalence.
+In this file we will assume function extensionality globally but not
+univalence.  The final result of the file will be proved in the local
+presence of univalence.
 
 \begin{code}
 
@@ -27,10 +21,10 @@ module gist.H-Levels-experimental
         (fe : Fun-Ext)
        where
 
-open import MLTT.Spartan
+open import MLTT.Spartan hiding (_+_)
 
 open import Naturals.Order
-
+open import Notation.Order
 open import UF.Embeddings
 open import UF.Equiv
 open import UF.EquivalenceExamples
@@ -39,40 +33,37 @@ open import UF.Singleton-Properties
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.Subsingletons-Properties
+open import UF.TruncationLevels
 open import UF.Univalence
-
-
-open import gist.FromMinus2
-open import Notation.Order
 
 private
  fe' : FunExt
  fe' 𝓤 𝓥 = fe {𝓤} {𝓥}
 
-_is-of-hlevel_ : 𝓤 ̇ → ℕ₋₂ → 𝓤 ̇
-X is-of-hlevel −2       = is-contr X
-X is-of-hlevel pred n = (x x' : X) → (x ＝ x') is-of-hlevel pred² n
+_is_truncated : 𝓤 ̇ → ℕ₋₂ → 𝓤 ̇
+X is −2 truncated       = is-contr X
+X is (succ n) truncated = (x x' : X) → (x ＝ x') is n truncated
 
-hlevel-relation-is-prop : {𝓤 : Universe} {n : ℕ₋₂} {X : 𝓤 ̇ }
-                        → is-prop (X is-of-hlevel n)
-hlevel-relation-is-prop {𝓤} {−2}       = being-singleton-is-prop fe
-hlevel-relation-is-prop {𝓤} {pred n} =
-  Π₂-is-prop fe (λ x x' → hlevel-relation-is-prop)
+being-truncated-is-prop : {𝓤 : Universe} {n : ℕ₋₂} {X : 𝓤 ̇ }
+                        → is-prop (X is n truncated)
+being-truncated-is-prop {𝓤} {−2}       = being-singleton-is-prop fe
+being-truncated-is-prop {𝓤} {succ n} =
+  Π₂-is-prop fe (λ x x' → being-truncated-is-prop)
 
-map_is-of-hlevel_ : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (f : X → Y) → ℕ₋₂ → 𝓤 ⊔ 𝓥 ̇
-map f is-of-hlevel n = each-fiber-of f (λ - → - is-of-hlevel n)
+_is_truncated-map : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (f : X → Y) → ℕ₋₂ → 𝓤 ⊔ 𝓥 ̇
+f is n truncated-map = each-fiber-of f (λ - → - is n truncated)
 
 \end{code}
 
-Being of hlevel one is equivalent to being a proposition.
+Being -1-truncated equivalent to being a proposition.
 
 \begin{code}
 
 is-prop' : (X : 𝓤 ̇) → 𝓤  ̇
-is-prop' X = X is-of-hlevel −1
+is-prop' X = X is −1 truncated
 
 being-prop'-is-prop : (X : 𝓤 ̇) → is-prop (is-prop' X)
-being-prop'-is-prop X = hlevel-relation-is-prop
+being-prop'-is-prop X = being-truncated-is-prop
 
 is-prop-implies-is-prop' : {X : 𝓤 ̇} → is-prop X → is-prop' X
 is-prop-implies-is-prop' X-is-prop x x' =
@@ -90,63 +81,75 @@ is-prop-equiv-is-prop' {𝓤} {X} =
 
 \end{code}
 
-H-Levels are cumulative.
+Truncation levels are upper closed.
 
 \begin{code}
 
-contr-implies-id-contr : {X : 𝓤 ̇} → is-contr X → is-prop' X
-contr-implies-id-contr = is-prop-implies-is-prop' ∘ singletons-are-props
+contractible-types-are-props' : {X : 𝓤 ̇} → is-contr X → is-prop' X
+contractible-types-are-props' = is-prop-implies-is-prop' ∘ singletons-are-props
 
-hlevels-are-upper-closed : {n : ℕ₋₂} {X : 𝓤 ̇ }
-                         → X is-of-hlevel n
-                         → X is-of-hlevel (suc n)
-hlevels-are-upper-closed {𝓤} {−2} = contr-implies-id-contr
-hlevels-are-upper-closed {𝓤} {pred n} h-level x x' =
- hlevels-are-upper-closed (h-level x x')
+truncation-levels-are-upper-closed : {n : ℕ₋₂} {X : 𝓤 ̇ }
+                                   → X is n truncated
+                                   → X is (n + 1) truncated
+truncation-levels-are-upper-closed {𝓤} {−2} = contractible-types-are-props'
+truncation-levels-are-upper-closed {𝓤} {succ n} t x x' =
+ truncation-levels-are-upper-closed (t x x')
 
-hlevels-are-closed-under-id : {n : ℕ₋₂} {X : 𝓤 ̇ }
-                            → X is-of-hlevel n
-                            → (x x' : X) → (x ＝ x') is-of-hlevel n
-hlevels-are-closed-under-id {𝓤} {−2} = contr-implies-id-contr
-hlevels-are-closed-under-id {𝓤} {pred n} X-hlev x x' =
-  hlevels-are-upper-closed (X-hlev x x')
+truncation-levels-closed-under-Id : {n : ℕ₋₂} {X : 𝓤 ̇ }
+                                  → X is n truncated
+                                  → (x x' : X) → (x ＝ x') is n truncated
+truncation-levels-closed-under-Id {𝓤} {−2} = contractible-types-are-props'
+truncation-levels-closed-under-Id {𝓤} {succ n} t x x' =
+  truncation-levels-are-upper-closed (t x x')
 
 \end{code}
 
-We will now give some closure results about H-levels.
+We will now give some closure results about truncation levels.
 
 \begin{code}
 
-hlevel-closed-under-retract : {n : ℕ₋₂} {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-                            → retract X of Y
-                            → Y is-of-hlevel n
-                            → X is-of-hlevel n
-hlevel-closed-under-retract {𝓤} {𝓥} {−2} {X} {Y} X-retract-Y Y-contr =
- singleton-closed-under-retract X Y X-retract-Y Y-contr
-hlevel-closed-under-retract {𝓤} {𝓥} {pred n} (r , s , H) Y-h-level x x' =
- hlevel-closed-under-retract (＝-retract s (r , H) x x') (Y-h-level (s x) (s x'))
+truncated-types-are-closed-under-retracts : {n : ℕ₋₂} {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                                          → retract X of Y
+                                          → Y is n truncated
+                                          → X is n truncated
+truncated-types-are-closed-under-retracts {𝓤} {𝓥} {−2} {X} {Y} =
+ singleton-closed-under-retract X Y
+truncated-types-are-closed-under-retracts {𝓤} {𝓥} {succ n} (r , s , H) t x x' =
+ truncated-types-are-closed-under-retracts
+  (＝-retract s (r , H) x x')
+  (t (s x) (s x'))
 
-hlevel-closed-under-equiv : {n : ℕ₋₂} {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-                          → X ≃ Y
-                          → Y is-of-hlevel n
-                          → X is-of-hlevel n
-hlevel-closed-under-equiv e = hlevel-closed-under-retract (≃-gives-◁ e)
+truncated-types-closed-under-equiv : {n : ℕ₋₂} {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                                   → X ≃ Y
+                                   → Y is n truncated
+                                   → X is n truncated
+truncated-types-closed-under-equiv e =
+ truncated-types-are-closed-under-retracts (≃-gives-◁ e)
 
 \end{code}
 
-We can prove closure under embeddings as a consequence of the previous result.
+We can prove closure under embeddings as a consequence of the previous
+result.
 
 \begin{code}
 
-hlevel-closed-under-embedding : {n : ℕ₋₂}
-                              → −1 ≤ n
-                              → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-                              → X ↪ Y
-                              → Y is-of-hlevel n
-                              → X is-of-hlevel n
-hlevel-closed-under-embedding {𝓤} {𝓥} {pred n} _ (e , is-emb) Y-h-level x x' =
- hlevel-closed-under-equiv (ap e , embedding-gives-embedding' e is-emb x x')
-                           (Y-h-level (e x) (e x'))
+truncated-types-closed-under-embedding⁺ : {n : ℕ₋₂} {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                                        → X ↪ Y
+                                        → Y is (n + 1) truncated
+                                        → X is (n + 1) truncated
+truncated-types-closed-under-embedding⁺ {𝓤} {𝓥} (e , is-emb) t x x' =
+ truncated-types-closed-under-equiv
+  (ap e , embedding-gives-embedding' e is-emb x x')
+  (t (e x) (e x'))
+
+truncated-types-closed-under-embedding : {n : ℕ₋₂}
+                                       → n ≥ −1
+                                       → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                                       → X ↪ Y
+                                       → Y is n truncated
+                                       → X is n truncated
+truncated-types-closed-under-embedding {𝓤} {𝓥} {succ n} _ =
+ truncated-types-closed-under-embedding⁺
 
 \end{code}
 
@@ -154,67 +157,74 @@ Using closure under equivalence we can show closure under Σ and Π.
 
 \begin{code}
 
-hlevel-closed-under-Σ : {n : ℕ₋₂} {X : 𝓤 ̇ } (Y : X → 𝓥 ̇ )
-                      → X is-of-hlevel n
-                      → ((x : X) → (Y x) is-of-hlevel n)
-                      → (Σ Y) is-of-hlevel n
-hlevel-closed-under-Σ {𝓤} {𝓥} {−2} Y l m = Σ-is-singleton l m
-hlevel-closed-under-Σ {𝓤} {𝓥} {pred n} Y l m (x , y) (x' , y') =
- hlevel-closed-under-equiv Σ-＝-≃
-  (hlevel-closed-under-Σ
+truncated-types-closed-under-Σ : {n : ℕ₋₂} {X : 𝓤 ̇ } (Y : X → 𝓥 ̇ )
+                               → X is n truncated
+                               → ((x : X) → (Y x) is n truncated)
+                               → (Σ Y) is n truncated
+truncated-types-closed-under-Σ {𝓤} {𝓥} {−2} Y = Σ-is-singleton
+truncated-types-closed-under-Σ {𝓤} {𝓥} {succ n} Y l m (x , y) (x' , y') =
+ truncated-types-closed-under-equiv Σ-＝-≃
+  (truncated-types-closed-under-Σ
    (λ p → transport Y p y ＝ y')
    (l x x')
    (λ p → m x' (transport Y p y) y'))
 
-hlevel-closed-under-Π : {n : ℕ₋₂} {X : 𝓤 ̇ } (Y : X → 𝓥 ̇ )
-                      → ((x : X) → (Y x) is-of-hlevel n)
-                      → (Π Y) is-of-hlevel n
-hlevel-closed-under-Π {𝓤} {𝓥} {−2} Y m = Π-is-singleton fe m
-hlevel-closed-under-Π {𝓤} {𝓥} {pred n} Y m f g =
- hlevel-closed-under-equiv (happly-≃ fe)
-  (hlevel-closed-under-Π (λ x → f x ＝ g x)
+truncated-types-closed-under-Π : {n : ℕ₋₂} {X : 𝓤 ̇ } (Y : X → 𝓥 ̇ )
+                               → ((x : X) → (Y x) is n truncated)
+                               → (Π Y) is n truncated
+truncated-types-closed-under-Π {𝓤} {𝓥} {−2} Y = Π-is-singleton fe
+truncated-types-closed-under-Π {𝓤} {𝓥} {succ n} Y m f g =
+ truncated-types-closed-under-equiv (happly-≃ fe)
+  (truncated-types-closed-under-Π (λ x → f x ＝ g x)
   (λ x → m x (f x) (g x)))
 
-hlevel-closed-under-→ : {n : ℕ₋₂} {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-                      → Y is-of-hlevel n
-                      → (X → Y) is-of-hlevel n
-hlevel-closed-under-→ {𝓤} {𝓥} {n} {X} {Y} m =
- hlevel-closed-under-Π (λ - → Y) (λ - → m)
+truncated-types-closed-under-→ : {n : ℕ₋₂} {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                               → Y is n truncated
+                               → (X → Y) is n truncated
+truncated-types-closed-under-→ {𝓤} {𝓥} {n} {X} {Y} m =
+ truncated-types-closed-under-Π (λ - → Y) (λ - → m)
 
 \end{code}
 
-The subuniverse of types of hlevel n is defined as follows.
+The subuniverse of types of n truncated types is defined as follows.
 
 \begin{code}
 
-ℍ : ℕ₋₂ → (𝓤 : Universe) → 𝓤 ⁺ ̇
-ℍ n 𝓤 = Σ X ꞉ 𝓤 ̇ , X is-of-hlevel n
+𝕋 : ℕ₋₂ → (𝓤 : Universe) → 𝓤 ⁺ ̇
+𝕋 n 𝓤 = Σ X ꞉ 𝓤 ̇ , X is n truncated
 
 \end{code}
 
-From univalence we can show that ℍ n is of level (n + 1), for all n : ℕ₋₂.
+From univalence we can show that 𝕋 n is n + 1 truncated,
+for all n : ℕ₋₂.
 
 \begin{code}
 
-equiv-preserves-hlevel : {n : ℕ₋₂} {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-                       → X is-of-hlevel n
-                       → Y is-of-hlevel n
-                       → (X ≃ Y) is-of-hlevel n
-equiv-preserves-hlevel {𝓤} {𝓥} {−2} = ≃-is-singleton fe'
-equiv-preserves-hlevel {𝓤} {𝓥} {pred n} {X} {Y} X-h-lev Y-h-lev =
- hlevel-closed-under-embedding ⋆ (equiv-embeds-into-function fe')
-  (hlevel-closed-under-Π (λ _ → Y) (λ _ → Y-h-lev))
+truncation-levels-closed-under-≃⁺ : {n : ℕ₋₂} {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                                  → Y is (n + 1) truncated
+                                  → (X ≃ Y) is (succ n) truncated
+truncation-levels-closed-under-≃⁺ {𝓤} {𝓥} {n} {X} {Y} tY =
+ truncated-types-closed-under-embedding ⋆ (equiv-embeds-into-function fe')
+  (truncated-types-closed-under-Π (λ _ → Y) (λ _ → tY))
 
-ℍ-is-of-next-hlevel : {n : ℕ₋₂} {𝓤 : Universe}
+truncation-levels-closed-under-≃ : {n : ℕ₋₂} {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                                 → X is n truncated
+                                 → Y is n truncated
+                                 → (X ≃ Y) is n truncated
+truncation-levels-closed-under-≃ {𝓤} {𝓥} {−2} = ≃-is-singleton fe'
+truncation-levels-closed-under-≃ {𝓤} {𝓥} {succ n} tX =
+ truncation-levels-closed-under-≃⁺
+
+𝕋-is-of-next-hlevel : {n : ℕ₋₂} {𝓤 : Universe}
                     → is-univalent 𝓤
-                    → (ℍ n 𝓤) is-of-hlevel suc n
-ℍ-is-of-next-hlevel ua (X , l) (Y , l') =
- hlevel-closed-under-equiv I (equiv-preserves-hlevel l l')
+                    → (𝕋 n 𝓤) is (n + 1) truncated
+𝕋-is-of-next-hlevel ua (X , l) (Y , l') =
+ truncated-types-closed-under-equiv I (truncation-levels-closed-under-≃ l l')
  where
   I = ((X , l) ＝ (Y , l')) ≃⟨ II ⟩
        (X ＝ Y)             ≃⟨ univalence-≃ ua X Y ⟩
        (X ≃ Y)              ■
    where
-    II = ≃-sym (to-subtype-＝-≃ (λ _ → hlevel-relation-is-prop))
+    II = ≃-sym (to-subtype-＝-≃ (λ _ → being-truncated-is-prop))
 
 \end{code}
