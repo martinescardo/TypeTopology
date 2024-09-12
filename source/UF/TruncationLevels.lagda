@@ -33,7 +33,7 @@ The following allows us to write e.g. 3 as an element of ℕ₋₂.
 \begin{code}
 
 ℕ-to-ℕ₋₂ : (n : ℕ) {{_ : No-Constraint}} → ℕ₋₂
-ℕ-to-ℕ₋₂ 0             = succ (succ −2)
+ℕ-to-ℕ₋₂ 0              = succ (succ −2)
 ℕ-to-ℕ₋₂ (succ n) {{c}} = succ (ℕ-to-ℕ₋₂ n {{c}})
 
 instance
@@ -89,7 +89,7 @@ module _ (n : ℕ) where
 
 \end{code}
 
-Basic definitions and facts.
+Order.
 
 \begin{code}
 
