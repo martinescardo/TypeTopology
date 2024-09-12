@@ -21,7 +21,7 @@ module gist.H-Levels-experimental-Variation
         (fe : Fun-Ext)
        where
 
-open import MLTT.Spartan
+open import MLTT.Spartan hiding (_+_)
 
 open import Naturals.Order
 open import Notation.Order
@@ -90,7 +90,7 @@ contractible-types-are-props' = is-prop-implies-is-prop' ∘ singletons-are-prop
 
 truncation-levels-are-upper-closed : {n : ℕ₋₂} {X : 𝓤 ̇ }
                                    → X is n truncated
-                                   → X is (succ n) truncated
+                                   → X is (n + 1) truncated
 truncation-levels-are-upper-closed {𝓤} {−2} = contractible-types-are-props'
 truncation-levels-are-upper-closed {𝓤} {succ n} t x x' =
  truncation-levels-are-upper-closed (t x x')
@@ -135,8 +135,8 @@ result.
 
 truncated-types-closed-under-embedding⁺ : {n : ℕ₋₂} {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                                         → X ↪ Y
-                                        → Y is (succ n) truncated
-                                        → X is (succ n) truncated
+                                        → Y is (n + 1) truncated
+                                        → X is (n + 1) truncated
 truncated-types-closed-under-embedding⁺ {𝓤} {𝓥} (e , is-emb) t x x' =
  truncated-types-closed-under-equiv
   (ap e , embedding-gives-embedding' e is-emb x x')
@@ -201,7 +201,7 @@ for all n : ℕ₋₂.
 \begin{code}
 
 truncation-levels-closed-under-≃⁺ : {n : ℕ₋₂} {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-                                  → Y is (succ n) truncated
+                                  → Y is (n + 1) truncated
                                   → (X ≃ Y) is (succ n) truncated
 truncation-levels-closed-under-≃⁺ {𝓤} {𝓥} {n} {X} {Y} tY =
  truncated-types-closed-under-embedding ⋆ (equiv-embeds-into-function fe')
@@ -217,7 +217,7 @@ truncation-levels-closed-under-≃ {𝓤} {𝓥} {succ n} tX =
 
 𝕋-is-of-next-hlevel : {n : ℕ₋₂} {𝓤 : Universe}
                     → is-univalent 𝓤
-                    → (𝕋 n 𝓤) is (succ n) truncated
+                    → (𝕋 n 𝓤) is (n + 1) truncated
 𝕋-is-of-next-hlevel ua (X , l) (Y , l') =
  truncated-types-closed-under-equiv I (truncation-levels-closed-under-≃ l l')
  where

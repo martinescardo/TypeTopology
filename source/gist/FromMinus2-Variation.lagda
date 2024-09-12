@@ -13,6 +13,7 @@ module gist.FromMinus2-Variation where
 open import MLTT.Spartan hiding (_+_)
 open import Naturals.Order
 open import Notation.Order
+open import Notation.Decimal
 
 data ℕ₋₂ : 𝓤₀ ̇ where
  −2   : ℕ₋₂
@@ -31,33 +32,60 @@ The following allows us to write e.g. 3 as an element of ℕ₋₂.
 
 \begin{code}
 
-from-ℕ : ℕ → ℕ₋₂
-from-ℕ 0        = succ (succ −2)
-from-ℕ (succ n) = succ (from-ℕ n)
+ℕ-to-ℕ₋₂ : (n : ℕ) {{_ : No-Constraint}} → ℕ₋₂
+ℕ-to-ℕ₋₂ 0             = succ (succ −2)
+ℕ-to-ℕ₋₂ (succ n) {{c}} = succ (ℕ-to-ℕ₋₂ n {{c}})
 
-{-# BUILTIN FROMNAT from-ℕ #-}
+instance
+ Decimal-ℕ-to-ℕ₋₂ : Decimal ℕ₋₂
+ Decimal-ℕ-to-ℕ₋₂ = make-decimal-with-no-constraint ℕ-to-ℕ₋₂
 
-private
- example₀ : ℕ₋₂
- example₀ = 3
+\end{code}
 
- example₁ : succ (succ −2) ＝ 0
- example₁ = refl
+Examples.
 
- example₂ : succ −2 ＝ −1
- example₂ = refl
+\begin{code}
+
+_ : ℕ₋₂
+_ = 3
+
+_ : succ (succ −2) ＝ 0
+_ = refl
+
+_ : succ −2 ＝ −1
+_ = refl
+
+\end{code}
+
+Addition of a natural number to a number ≥ -2.
+
+\begin{code}
 
 _+_ : ℕ₋₂ → ℕ → ℕ₋₂
 n + 0        = n
 n + (succ m) = succ (n + m)
 
-{- Doesn't type check, because Agda no longer
-   converts 1 to a natural number when it should.
-   This can be solved using a type class. We will do this later.
+\end{code}
+
+More examples.
+
+\begin{code}
+
+_ : ℕ₋₂
+_ = −2 + 1
+
 private
- example₃ : ℕ₋₂
- example₃ = −2 + 1
--}
+ abstract
+  the-answer-to-life-the-universe-and-everything : ℕ
+  the-answer-to-life-the-universe-and-everything = 42
+
+_ : ℕ₋₂
+_ = −2 + the-answer-to-life-the-universe-and-everything
+
+module _ (n : ℕ) where
+
+ _ : ℕ₋₂
+ _ = −2 + n
 
 \end{code}
 

@@ -1,5 +1,7 @@
 Martin Escardo 11th September 2024
 
+Experimental file for use with hlevels.
+
 The type ℕ₋₂ of integers from -2.
 
 \begin{code}
@@ -8,9 +10,10 @@ The type ℕ₋₂ of integers from -2.
 
 module UF.TruncationLevels where
 
-open import MLTT.Spartan
+open import MLTT.Spartan hiding (_+_)
 open import Naturals.Order
 open import Notation.Order
+open import Notation.Decimal
 
 data ℕ₋₂ : 𝓤₀ ̇ where
  −2   : ℕ₋₂
@@ -29,21 +32,60 @@ The following allows us to write e.g. 3 as an element of ℕ₋₂.
 
 \begin{code}
 
-from-ℕ : ℕ → ℕ₋₂
-from-ℕ 0        = succ (succ −2)
-from-ℕ (succ n) = succ (from-ℕ n)
+ℕ-to-ℕ₋₂ : (n : ℕ) {{_ : No-Constraint}} → ℕ₋₂
+ℕ-to-ℕ₋₂ 0             = succ (succ −2)
+ℕ-to-ℕ₋₂ (succ n) {{c}} = succ (ℕ-to-ℕ₋₂ n {{c}})
 
-{-# BUILTIN FROMNAT from-ℕ #-}
+instance
+ Decimal-ℕ-to-ℕ₋₂ : Decimal ℕ₋₂
+ Decimal-ℕ-to-ℕ₋₂ = make-decimal-with-no-constraint ℕ-to-ℕ₋₂
+
+\end{code}
+
+Examples.
+
+\begin{code}
+
+_ : ℕ₋₂
+_ = 3
+
+_ : succ (succ −2) ＝ 0
+_ = refl
+
+_ : succ −2 ＝ −1
+_ = refl
+
+\end{code}
+
+Addition of a natural number to a number ≥ -2.
+
+\begin{code}
+
+_+_ : ℕ₋₂ → ℕ → ℕ₋₂
+n + 0        = n
+n + (succ m) = succ (n + m)
+
+\end{code}
+
+More examples.
+
+\begin{code}
+
+_ : ℕ₋₂
+_ = −2 + 1
 
 private
- example₀ : ℕ₋₂
- example₀ = 3
+ abstract
+  the-answer-to-life-the-universe-and-everything : ℕ
+  the-answer-to-life-the-universe-and-everything = 42
 
- example₁ : succ (succ −2) ＝ 0
- example₁ = refl
+_ : ℕ₋₂
+_ = −2 + the-answer-to-life-the-universe-and-everything
 
- example₂ : succ −2 ＝ −1
- example₂ = refl
+module _ (n : ℕ) where
+
+ _ : ℕ₋₂
+ _ = −2 + n
 
 \end{code}
 
