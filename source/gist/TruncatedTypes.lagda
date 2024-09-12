@@ -17,7 +17,7 @@ presence of univalence.
 
 open import UF.FunExt
 
-module gist.H-Levels-experimental
+module gist.TruncatedTypes
         (fe : Fun-Ext)
        where
 
