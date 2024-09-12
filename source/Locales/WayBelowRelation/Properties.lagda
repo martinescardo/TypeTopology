@@ -28,7 +28,7 @@ open Locale
 
 \end{code}
 
-`𝟎` is way below anything.
+The bottom open `𝟎` is way below anything.
 
 \begin{code}
 
