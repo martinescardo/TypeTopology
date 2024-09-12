@@ -1,8 +1,6 @@
 Martin Escardo 11th September 2024
 
-Experimental file for use with hlevels.
-
-The type ℕ₋₂ of integers from -2.
+The type ℕ₋₂ of integers ≥ -2, used for truncation levels.
 
 \begin{code}
 
