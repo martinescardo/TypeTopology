@@ -1,4 +1,9 @@
-Ayberk Tosun, 19 August 2023
+---
+title:         Properties of the way-below relation
+author:        Ayberk Tosun
+date-started:  2023-08-19
+dates-updated: [2024-09-12]
+---
 
 The module contains properties of the way below relation defined in
 `Locales.WayBelowRelation.Definition`.
