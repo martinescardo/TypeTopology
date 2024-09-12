@@ -68,6 +68,7 @@ import UF.Subsingletons-FunExt
 import UF.Subsingletons-Properties
 import UF.SubtypeClassifier
 import UF.SubtypeClassifier-Properties
+import UF.TruncationLevels
 import UF.Truncations                -- by [2]
 import UF.UA-FunExt
 import UF.Univalence
