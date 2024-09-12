@@ -1284,13 +1284,13 @@ if and only if LPO holds or g is eventually constant.
 
 \begin{code}
 
-decidability-of-modulus-of-constancy-gives-¬¬-eventual-constancy-elim
+decidability-of-modulus-of-constancy-gives-eventual-constancy-¬¬-stable
  : MP 𝓤₀
  → (g : ℕ → ℕ)
  → ((m : ℕ) → is-decidable (is-modulus-of-eventual-constancy g m))
  → ¬¬ eventually-constant g
  → eventually-constant g
-decidability-of-modulus-of-constancy-gives-¬¬-eventual-constancy-elim mp g
+decidability-of-modulus-of-constancy-gives-eventual-constancy-¬¬-stable mp g
  =  mp (is-modulus-of-eventual-constancy g)
 
 sufficient-condition-is-necessary-under-MP
@@ -1305,7 +1305,7 @@ sufficient-condition-is-necessary-under-MP mp g ext
   I (inl wlpo) =
    inl (MP-and-WLPO-give-LPO fe mp wlpo)
   I (inr nnec) =
-   inr (decidability-of-modulus-of-constancy-gives-¬¬-eventual-constancy-elim
+   inr (decidability-of-modulus-of-constancy-gives-eventual-constancy-¬¬-stable
          mp
          g
          (second-necessary-condition-for-the-explicit-existence-of-an-extension
