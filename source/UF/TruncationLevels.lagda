@@ -65,28 +65,6 @@ n + (succ m) = succ (n + m)
 
 \end{code}
 
-More examples.
-
-\begin{code}
-
-_ : ℕ₋₂
-_ = −2 + 1
-
-private
- abstract
-  the-answer-to-life-the-universe-and-everything : ℕ
-  the-answer-to-life-the-universe-and-everything = 42
-
-_ : ℕ₋₂
-_ = −2 + the-answer-to-life-the-universe-and-everything
-
-module _ (n : ℕ) where
-
- _ : ℕ₋₂
- _ = −2 + n
-
-\end{code}
-
 Order.
 
 \begin{code}
