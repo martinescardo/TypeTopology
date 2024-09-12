@@ -55,7 +55,7 @@ _ = refl
 
 \end{code}
 
-Addition of a natural number to a number ≥ -2.
+Addition of a natural number to an integer ≥ -2.
 
 \begin{code}
 
