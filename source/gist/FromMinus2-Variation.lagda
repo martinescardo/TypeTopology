@@ -10,7 +10,7 @@ The type ℕ₋₂ of integers from -2.
 
 module gist.FromMinus2-Variation where
 
-open import MLTT.Spartan
+open import MLTT.Spartan hiding (_+_)
 open import Naturals.Order
 open import Notation.Order
 
@@ -47,6 +47,18 @@ private
  example₂ : succ −2 ＝ −1
  example₂ = refl
 
+_+_ : ℕ₋₂ → ℕ → ℕ₋₂
+n + 0        = n
+n + (succ m) = succ (n + m)
+
+{- Doesn't type check, because Agda no longer
+   converts 1 to a natural number when it should.
+   This can be solved using a type class. We will do this later.
+private
+ example₃ : ℕ₋₂
+ example₃ = −2 + 1
+-}
+
 \end{code}
 
 Basic definitions and facts.
@@ -61,6 +73,5 @@ succ m ≤ℕ₋₂ succ n = m ≤ℕ₋₂ n
 instance
  Order-ℕ₋₂-ℕ₋₂ : Order ℕ₋₂ ℕ₋₂
  _≤_ {{Order-ℕ₋₂-ℕ₋₂}} = _≤ℕ₋₂_
-
 
 \end{code}
