@@ -1189,8 +1189,23 @@ module _ (pt : propositional-truncations-exist)
 
 \end{code}
 
-Added 24th May 2024 by Tom de Jong.
+Constructively, these equations do not fully characterize ordinal addition, at
+least not as far as we know. If addition preserved *all* suprema, then,
+expressing the ordinal β as a supremum via the result given below, we would have
+the recursive equation
+  α +ₒ β ＝ α +ₒ sup (λ b → (B ↓ b) +ₒ 𝟙ₒ)
+         ＝ sup (λ b → α +ₒ ((B ↓ b) +ₒ 𝟙ₒ))
+         ＝ sup (λ b → (α +ₒ (B ↓ b)) +ₒ 𝟙ₒ)
+which would ensure that there is at most one operation satisfying the above
+equations for successors and suprema. The problem is that constructively we
+cannot, in general, make a case distinction on whether β is zero or not.
 
+In contrast, multiplication behaves differently and is unique characterized by
+similar equations since it does preserve all suprema, see
+MultiplicationProperties.
+
+
+Added 24th May 2024 by Tom de Jong.
 Every ordinal is the supremum of the successors of its initial segments.
 
 \begin{code}
