@@ -292,34 +292,6 @@ Added 16 September 2024 by Tom de jong.
 
 \begin{code}
 
--- TODO: Get this by merging upstream
-⊲-⊴-gives-⊲ : (α β γ : Ordinal 𝓤) → α ⊲ β → β ⊴ γ → α ⊲ γ
-⊲-⊴-gives-⊲ α β γ l k = ≼-trans _⊲_ (⊴-gives-≼ β γ k) (≼-refl _⊲_) α l
-
-{-
-exp-+-distributes-lemma : (α : Ordinal 𝓤) (β γ : Ordinal 𝓥)
-                        → ((exp α β) ×ₒ (exp α γ)) ⊴ exp α (β +ₒ γ)
-exp-+-distributes-lemma α β γ = to-⊴ (exp α β ×ₒ exp α γ) (exp α (β +ₒ γ)) I
- where
-  I : (z : ⟨ exp α β ×ₒ exp α γ ⟩)
-    → ((exp α β ×ₒ exp α γ) ↓ z) ⊲ exp α (β +ₒ γ)
-  I (x , y) = ⊲-⊴-gives-⊲
-               ((exp α β ×ₒ exp α γ) ↓ (x , y))
-               ((exp α β ×ₒ (exp α γ ↓ y)) +ₒ exp α β)
-               (exp α (β +ₒ γ))
-               II
-               III
-   where
-    II : ((exp α β ×ₒ exp α γ) ↓ (x , y))
-       ⊲ ((exp α β ×ₒ (exp α γ ↓ y)) +ₒ exp α β)
-    II = transport⁻¹ (_⊲ ((exp α β ×ₒ (exp α γ ↓ y)) +ₒ exp α β))
-          (×ₒ-↓ (exp α β) (exp α γ) x y)
-          (+ₒ-increasing-on-right (x , refl))
-    III : ((exp α β ×ₒ (exp α γ ↓ y)) +ₒ exp α β)
-        ⊴ exp α (β +ₒ γ)
-    III = {!×ₒ-monotone-right-⊴!}
--}
-
 -- TODO: Move up this basic fact
 exp-component-⊴ : (α : Ordinal 𝓤) (β : Ordinal 𝓥) {b : ⟨ β ⟩}
                 → (exp α (β ↓ b) ×ₒ α) ⊴ exp α β
@@ -393,6 +365,11 @@ exp-+-distributes {𝓤} α β =
        h (inr c) = exp α β ×ₒ (exp α (γ ↓ c) ×ₒ α) ＝⟨ ×ₒ-assoc (exp α β) (exp α (γ ↓ c)) α ⁻¹ ⟩
                    (exp α β ×ₒ exp α (γ ↓ c)) ×ₒ α ＝⟨ ap (_×ₒ α) ((IH c) ⁻¹) ⟩
                    exp α (β +ₒ (γ ↓ c)) ×ₒ α       ∎
+
+exp-satisfies-succ-specification' : (α β : Ordinal 𝓤) → 𝟙ₒ {𝓤} ⊴ α
+                                  → exp α (β +ₒ 𝟙ₒ) ＝ (exp α β) ×ₒ α
+exp-satisfies-succ-specification' α β l =
+ exp-+-distributes α β 𝟙ₒ ∙ ap (exp α β ×ₒ_) (exp-power-one-is-identity α l)
 
 iterated-exp-is-exp-by-×ₒ : (α β γ : Ordinal 𝓤)
                           → exp (exp α β) γ ＝ exp α (β ×ₒ γ)
