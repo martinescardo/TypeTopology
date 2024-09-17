@@ -617,6 +617,18 @@ retract-Ω-of-Ordinal {𝓤} = r , s , η
 
 \end{code}
 
+Added 17 September 2024 by Fredrik Nordvall Forsberg.
+
+\begin{code}
+
+left-preserves-least : (α β : Ordinal 𝓤)
+                     → (a₀ : ⟨ α ⟩) → is-least α a₀ → is-least (α +ₒ β) (inl a₀)
+left-preserves-least α β a₀ a₀-least (inl x) (inl u) l = a₀-least x u l
+left-preserves-least α β a₀ a₀-least (inr x) (inl u) l = ⋆
+
+\end{code}
+
+
 Added 29 March 2022.
 
 It is not the case in general that β ≼ α +ₒ β. We work with the
@@ -634,9 +646,7 @@ module _ {𝓤 : Universe} where
  ⊴-add-taboo (f , s) = VI
   where
    I : is-least (𝟙ₒ +ₒ Ωₒ) (inl ⋆)
-   I (inl ⋆) u       l = l
-   I (inr x) (inl ⋆) l = 𝟘-elim l
-   I (inr x) (inr y) l = 𝟘-elim l
+   I = left-preserves-least 𝟙ₒ Ωₒ ⋆ (λ ⋆ ⋆ ())
 
    II : f ⊥ ＝ inl ⋆
    II = simulations-preserve-least Ωₒ (𝟙ₒ +ₒ Ωₒ) ⊥ (inl ⋆) f s ⊥-is-least I
@@ -1253,3 +1263,4 @@ no-greatest-ordinal {𝓤} (α , α-greatest) = irrefl (OO 𝓤) α IV
   IV = transport (α ⊲_) III (successor-increasing α)
 
 \end{code}
+

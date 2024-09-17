@@ -158,6 +158,12 @@ having-least-is-prop fe α (⊥ , l) (⊥' , l') =
     (being-least-is-prop fe α)
     (at-most-one-least α ⊥ ⊥' l l')
 
+is-minimal : (α : Ordinal 𝓤) → ⟨ α ⟩ → 𝓤 ̇
+is-minimal α x = (y : ⟨ α ⟩) → ¬ (y ≺⟨ α ⟩ x)
+
+minimal-is-least : (α : Ordinal 𝓤) → (x : ⟨ α ⟩) → is-minimal α x → is-least α x
+minimal-is-least α x minimal y u l = 𝟘-elim (minimal u l)
+
 is-largest : (α : Ordinal 𝓤) → ⟨ α ⟩ → 𝓤 ̇
 is-largest α x = (y : ⟨ α ⟩) → y ≼⟨ α ⟩ x
 
@@ -192,4 +198,7 @@ irrefl α x = irreflexive (underlying-order α) x (Well-foundedness α x)
 ≼-gives-≾ : (α : Ordinal 𝓤) (x y : ⟨ α ⟩) → x ≼⟨ α ⟩ y → x ≾⟨ α ⟩ y
 ≼-gives-≾ {𝓤} α x y = ≼-coarser-than-≾ (underlying-order α)
                        y (Well-foundedness α y) x
+
+≺-≼-gives-≺ : (α : Ordinal 𝓤) → (x y z : ⟨ α ⟩) → x ≺⟨ α ⟩ y → y ≼⟨ α ⟩ z  → x ≺⟨ α ⟩ z
+≺-≼-gives-≺ α x y z p q = q x p
 \end{code}
