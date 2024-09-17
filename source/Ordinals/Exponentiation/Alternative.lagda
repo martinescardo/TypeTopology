@@ -445,3 +445,56 @@ iterated-exp-is-exp-by-×ₒ {𝓤} α β =
                        (exp-component-⊴ α β)
 
 \end{code}
+
+Added 17 September 2024 by Tom de Jong.
+
+\begin{code}
+
+exp-strictly-monotone : (α β γ : Ordinal 𝓤)
+                      → 𝟙ₒ ⊲ α → β ⊲ γ → exp α β ⊲ exp α γ
+exp-strictly-monotone {𝓤} α β γ (a₀ , e) (c , refl) =
+ x , (eq' ⁻¹ ∙ eq)
+  where
+   ⊥ : ⟨ exp α (γ ↓ c) ⟩
+   ⊥ = pr₁ (𝟘ₒ-initial-segment-of-exp α (γ ↓ c))
+
+   ⊥-is-least : (exp α (γ ↓ c) ↓ ⊥) ＝ 𝟘ₒ
+   ⊥-is-least = (pr₂ (𝟘ₒ-initial-segment-of-exp α (γ ↓ c))) ⁻¹
+
+   s : Ordinal 𝓤
+   s = sup (cases (λ _ → 𝟙ₒ) (λ c' → exp α (γ ↓ c') ×ₒ α))
+
+   x' : ⟨ s ⟩
+   x' = [ exp α (γ ↓ c) ×ₒ α , s ]⟨ sup-is-upper-bound _ (inr c) ⟩ (⊥ , a₀)
+
+   eq' : s ↓ x' ＝ exp α (γ ↓ c)
+   eq' = s ↓ x' ＝⟨ initial-segment-of-sup-at-component _ (inr c) (⊥ , a₀) ⟩
+         (exp α (γ ↓ c) ×ₒ α) ↓ (⊥ , a₀) ＝⟨ ×ₒ-↓ (exp α (γ ↓ c)) α ⟩
+         (exp α (γ ↓ c) ×ₒ (α ↓ a₀)) +ₒ (exp α (γ ↓ c) ↓ ⊥) ＝⟨ ap ((exp α (γ ↓ c) ×ₒ (α ↓ a₀)) +ₒ_) ⊥-is-least ⟩
+         (exp α (γ ↓ c) ×ₒ (α ↓ a₀)) +ₒ 𝟘ₒ ＝⟨ 𝟘ₒ-right-neutral (exp α (γ ↓ c) ×ₒ (α ↓ a₀)) ⟩
+         exp α (γ ↓ c) ×ₒ (α ↓ a₀) ＝⟨ ap (exp α (γ ↓ c) ×ₒ_) (e ⁻¹) ⟩
+         exp α (γ ↓ c) ×ₒ 𝟙ₒ ＝⟨ 𝟙ₒ-right-neutral-×ₒ (exp α (γ ↓ c)) ⟩
+         exp α (γ ↓ c) ∎
+
+   x : ⟨ exp α γ ⟩
+   x = idtofun' (ap ⟨_⟩ (exp-behaviour α γ ⁻¹)) x'
+
+   eq : s ↓ x' ＝ exp α γ ↓ x
+   eq = lemma s (exp α γ) (exp-behaviour α γ ⁻¹)
+    where
+     -- TODO: Upstream
+     lemma : (α' β' : Ordinal 𝓤) (e : α' ＝ β') {a : ⟨ α' ⟩}
+           → α' ↓ a ＝ β' ↓ idtofun' (ap ⟨_⟩ e) a
+     lemma α' β' refl = refl
+
+{-
+exp-order-reflecting-exponent : (α β γ : Ordinal 𝓤)
+                              → exp α β ⊲ exp α γ → β ⊲ γ
+exp-order-reflecting-exponent = ?
+
+exp-cancellable-exponent : (α β γ : Ordinal 𝓤)
+                         → 𝟙ₒ ⊲ α → exp α β ＝ exp α γ → β ＝ γ
+exp-cancellable-exponent = ?
+-}
+
+\end{code}
