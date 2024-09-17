@@ -71,7 +71,6 @@ module TypeTopology.RicesTheoremForTheUniverse (fe : FunExt) where
 open import MLTT.Spartan
 
 open import UF.Equiv
-open import UF.EquivalenceExamples
 open import TypeTopology.TheTopologyOfTheUniverse fe
 open import CoNaturals.Type
 open import Taboos.WLPO

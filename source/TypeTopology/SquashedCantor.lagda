@@ -31,11 +31,8 @@ open import Naturals.Sequence fe
 open import Notation.CanonicalMap
 open import TypeTopology.SquashedSum fe
 open import UF.Base
-open import UF.Embeddings
-open import UF.Equiv
 open import UF.Retracts
 open import UF.Retracts-FunExt
-open import UF.Subsingletons
 
 private
  fe' : Fun-Ext
@@ -596,7 +593,6 @@ Snoc α = (Head α , Tail α)
 Snoc-Cons : (d : D Cantor) → Snoc (Cons d) ＝ d
 Snoc-Cons (u , π) = to-Σ-＝ (Head-Cons u π , Tail-Cons' u π)
 
-open import UF.Retracts
 
 D-Cantor-retract-of-Cantor : retract (D Cantor) of Cantor
 D-Cantor-retract-of-Cantor = Snoc , Cons , Snoc-Cons

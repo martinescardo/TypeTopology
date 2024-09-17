@@ -1,9 +1,9 @@
---------------------------------------------------------------------------------
+---
 title:          Properties of the locale of spectra
 author:         Ayberk Tosun
 date-started:   2024-03-01
-dates-updated:  [2024-03-27, 2024-04-08, 2024-04-09]
---------------------------------------------------------------------------------
+dates-updated:  [2024-03-27, 2024-04-08, 2024-04-09, 2024-06-05]
+---
 
 We define the spectrum locale over a distributive lattice `L`, the defining
 frame of which is the frame of ideals over `L`.
@@ -24,16 +24,15 @@ module Locales.DistributiveLattice.Spectrum-Properties
         (sr : Set-Replacement pt)
        where
 
-open import Locales.Compactness pt fe
+open import Locales.Compactness.Definition pt fe
 open import Locales.DistributiveLattice.Definition fe pt
 open import Locales.DistributiveLattice.Ideal pt fe pe
 open import Locales.DistributiveLattice.Ideal-Properties pt fe pe
-open import Locales.DistributiveLattice.Spectrum fe pe pt
 open import Locales.DistributiveLattice.Properties fe pt
+open import Locales.DistributiveLattice.Spectrum fe pe pt
 open import Locales.Frame pt fe
 open import Locales.SmallBasis pt fe sr
 open import Locales.Spectrality.SpectralLocale pt fe
-open import MLTT.Fin hiding (𝟎; 𝟏)
 open import MLTT.List hiding ([_])
 open import MLTT.Spartan
 open import Slice.Family
@@ -51,7 +50,7 @@ open PropositionalTruncation pt hiding (_∨_)
 
 \end{code}
 
-We work with a fixed distributive lattice `L` in this module.
+We work with a fixed distributive 𝓤-lattice `L` in this module.
 
 \begin{code}
 
@@ -64,16 +63,17 @@ module Spectrality (L : DistributiveLattice 𝓤) where
 
 \end{code}
 
-We abbreviate `spectrum` to `spec-L`.
+We abbreviate the `spectrum` of `L` to `spec-L`.
 
 \begin{code}
 
- spec-L : Locale (𝓤 ⁺) 𝓤 𝓤
- spec-L = spectrum
+ private
+  spec-L : Locale (𝓤 ⁺) 𝓤 𝓤
+  spec-L = spectrum
 
 \end{code}
 
-The spectrum is a compact locale.
+The locale `spec-L` is a compact locale.
 
 \begin{code}
 
@@ -97,8 +97,8 @@ The spectrum is a compact locale.
 Added on 2024-03-13.
 
 Every ideal `I` is the join of its principal ideals. We call this join the
-_factorization_ of `I` into its join of principal ideals, and we denote function
-implementing this `factorization`.
+_factorization_ of `I` into its join of principal ideals, and we denote by
+`factorization` the function implementing this.
 
 \begin{code}
 
@@ -166,6 +166,17 @@ spectra.
 
 \end{code}
 
+Added on 2024-06-05.
+
+\begin{code}
+
+ ↓ₖ_ : ∣ L ∣ᵈ → Σ I ꞉ Ideal L , (is-compact-open spec-L I holds)
+ ↓ₖ_ x = ↓ x , principal-ideal-is-compact x
+
+\end{code}
+
+End of addition.
+
 Added on 2024-03-13.
 
 Every ideal has a directed covering family consisting of compact opens.
@@ -175,16 +186,17 @@ Every ideal has a directed covering family consisting of compact opens.
  ideal-has-directed-cover-of-compact-opens
   : (I : Ideal L)
   → has-a-directed-cover-of-compact-opens spec-L I holds
- ideal-has-directed-cover-of-compact-opens I = ∣ principal-ideals-of I , κ , δ , eq ∣
-  where
-   κ : consists-of-compact-opens spec-L (principal-ideals-of I) holds
-   κ (x , _) =  principal-ideal-is-compact x
+ ideal-has-directed-cover-of-compact-opens I =
+  ∣ principal-ideals-of I , κ , δ , eq ∣
+   where
+    κ : consists-of-compact-opens spec-L (principal-ideals-of I) holds
+    κ (x , _) =  principal-ideal-is-compact x
 
-   δ : is-directed (𝒪 spec-L) (principal-ideals-of I) holds
-   δ = principal-ideals-of-ideal-form-a-directed-family I
+    δ : is-directed (𝒪 spec-L) (principal-ideals-of I) holds
+    δ = principal-ideals-of-ideal-form-a-directed-family I
 
-   eq : I ＝ ⋁[ 𝒪 spec-L ] principal-ideals-of I
-   eq = ideal-equal-to-factorization I
+    eq : I ＝ ⋁[ 𝒪 spec-L ] principal-ideals-of I
+    eq = ideal-equal-to-factorization I
 
 \end{code}
 
@@ -254,6 +266,30 @@ The map `↓(-) : L → Idl(L)` preserves meets.
     ‡ = ∧-is-greatest L x y
 
 \end{code}
+
+Added on 2024-06-05.
+
+This has probably been written down somewhere else before.
+
+\begin{code}
+
+ principal-ideal-preserves-top : ↓ 𝟏 ＝ 𝟏[ 𝒪 spec-L ]
+ principal-ideal-preserves-top = only-𝟏-is-above-𝟏 (𝒪 spec-L) (↓ 𝟏) (λ _ → id)
+
+ principal-ideal-preserves-bottom : ↓ 𝟎 ＝ 𝟎[ 𝒪 spec-L ]
+ principal-ideal-preserves-bottom = only-𝟎-is-below-𝟎 (𝒪 spec-L) (↓ 𝟎) †
+  where
+   † : (↓ 𝟎 ≤[ poset-of (𝒪 spec-L) ] 𝟎[ 𝒪 spectrum ]) holds
+   † x μ = transport (λ - → - ∈ⁱ 𝟎[ 𝒪 spectrum ]) (p ⁻¹) ideal-𝟎-contains-𝟎
+    where
+     open Ideal 𝟎[ 𝒪 spectrum ] renaming (I-contains-𝟎 to ideal-𝟎-contains-𝟎)
+
+     p : x ＝ 𝟎
+     p = only-𝟎-is-below-𝟎ᵈ L x μ
+
+\end{code}
+
+End of addition
 
 Added on 2024-04-08.
 

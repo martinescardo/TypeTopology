@@ -6,7 +6,53 @@ Ayberk Tosun.
 
 module Locales.index where
 
+\end{code}
+
+\section{Basics}
+
+Basics of frames and quite a bit of order theory.
+
+\begin{code}
+
+import Locales.Frame
+
+\end{code}
+
+The `ContinuousMap` subdirectory contains:
+
+  1. Definition of the notion of frame homomorphism.
+  2. Properties of frame homomorphisms.
+  3. Definition of continuous maps of locales
+  4. Properties of continuous maps.
+  5. Definition of locale homeomorphisms.
+  6. Properties of homeomorphisms, including the characterization of the
+     identity type for locales.
+
+\begin{code}
+
+import Locales.ContinuousMap.FrameHomomorphism-Definition -- (1)
+import Locales.ContinuousMap.FrameHomomorphism-Properties -- (2)
+import Locales.ContinuousMap.Definition                   -- (3)
+import Locales.ContinuousMap.Properties                   -- (4)
+import Locales.ContinuousMap.Homeomorphism-Definition     -- (5)
+import Locales.ContinuousMap.Homeomorphism-Properties     -- (6)
+
+\end{code}
+
+Compact opens.
+
+\begin{code}
+
+import Locales.Compactness.Definition
+import Locales.Compactness.Properties
+
+\end{code}
+
+\begin{code}
+
 import Locales.AdjointFunctorTheoremForFrames    -- (1)
+import Locales.Adjunctions.Properties
+import Locales.Adjunctions.Properties-DistributiveLattice
 
 import Locales.BooleanAlgebra                    -- (2)
 
@@ -20,21 +66,22 @@ import Locales.Clopen                            -- (5)
 import Locales.CompactRegular                    -- (6)
 -- ↑ DEPRECATED DO NOT USE ↑ --
 
-import Locales.Compactness                       -- (7)
+import Locales.Compactness.Definition            -- (7)
 
 import Locales.Complements                       -- (8)
 
 -- Distributive lattices
 import Locales.DistributiveLattice.Definition
+import Locales.DistributiveLattice.Definition-SigmaBased
 import Locales.DistributiveLattice.Homomorphism
 import Locales.DistributiveLattice.Ideal
+import Locales.DistributiveLattice.Isomorphism
+import Locales.DistributiveLattice.Isomorphism-Properties
+import Locales.DistributiveLattice.Properties
+import Locales.DistributiveLattice.Resizing
 import Locales.DistributiveLattice.Spectrum
 import Locales.DistributiveLattice.Spectrum-Properties
-import Locales.DistributiveLattice.Properties
-import Locales.DistributiveLattice.Isomorphism
-import Locales.DistributiveLattice.Resizing
 
-import Locales.Frame                             -- (9)
 
 import Locales.GaloisConnection                  -- (10)
 
@@ -98,6 +145,7 @@ import Locales.UniversalPropertyOfPatch          -- (34)
 import Locales.Spectrality.BasisDirectification  -- (35)
 
 import Locales.Spectrality.LatticeOfCompactOpens
+import Locales.Spectrality.LatticeOfCompactOpens-Duality
 import Locales.Spectrality.SpectralMapToLatticeHomomorphism
 
 import Locales.Point.Definition                  -- (36)
@@ -111,14 +159,8 @@ import Locales.DiscreteLocale.Definition
 import Locales.DiscreteLocale.Two
 import Locales.DiscreteLocale.Two-Properties
 
-import Locales.ContinuousMap.FrameHomomorphism-Definition
-import Locales.ContinuousMap.FrameHomomorphism-Properties
-import Locales.ContinuousMap.Definition
-import Locales.ContinuousMap.Properties
-import Locales.ContinuousMap.Homeomorphism-Definition
-import Locales.ContinuousMap.Homeomorphism-Properties
-
 import Locales.SIP.FrameSIP
+import Locales.SIP.DistributiveLatticeSIP
 
 import Locales.DirectedFamily-Poset
 
@@ -126,5 +168,6 @@ import Locales.StoneDuality.ForSpectralLocales
 
 import Locales.LawsonLocale.CompactElementsOfPoint
 import Locales.LawsonLocale.SharpElementsCoincideWithSpectralPoints
+import Locales.LawsonLocale.PointsOfPatch
 
 \end{code}

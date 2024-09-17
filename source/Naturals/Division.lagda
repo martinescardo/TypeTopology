@@ -15,7 +15,6 @@ open import Naturals.Multiplication
 open import Naturals.Properties
 open import Naturals.Order
 open import Notation.Order
-open import UF.Base
 open import UF.DiscreteAndSeparated
 open import UF.Subsingletons
 

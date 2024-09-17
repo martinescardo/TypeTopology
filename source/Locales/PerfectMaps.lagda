@@ -11,13 +11,11 @@ module Locales.PerfectMaps (pt : propositional-truncations-exist)
                            (fe : Fun-Ext)                           where
 
 open import Locales.AdjointFunctorTheoremForFrames
-open import Locales.Compactness pt fe
+open import Locales.Compactness.Definition pt fe
 open import Locales.ContinuousMap.Definition pt fe
-open import Locales.ContinuousMap.FrameHomomorphism-Definition pt fe
 open import Locales.ContinuousMap.FrameHomomorphism-Properties pt fe
 open import Locales.Frame pt fe
 open import Locales.GaloisConnection pt fe
-open import Locales.InitialFrame pt fe
 open import Locales.Spectrality.Properties     pt fe
 open import Locales.Spectrality.SpectralLocale pt fe
 open import Locales.WayBelowRelation.Definition pt fe

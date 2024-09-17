@@ -60,23 +60,19 @@ open import Ordinals.ToppedArithmetic fe
 open import Ordinals.ToppedType fe
 open import Ordinals.Type
 open import Ordinals.Underlying
-open import Taboos.LPO fe
+open import Taboos.LPO
 open import Taboos.WLPO
 open import TypeTopology.CompactTypes
-open import TypeTopology.ConvergentSequenceHasInf
 open import TypeTopology.Density
 open import TypeTopology.InfProperty
 open import TypeTopology.PropInfTychonoff fe
-open import TypeTopology.PropTychonoff fe
 open import TypeTopology.SigmaDiscreteAndTotallySeparated
-open import UF.Base
 open import UF.Embeddings
 open import UF.DiscreteAndSeparated
 open import UF.Equiv
 open import UF.PairFun
 open import UF.Retracts
 open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
 
 \end{code}
 
@@ -584,7 +580,7 @@ We conclude with some impossibility results.
 LPO-gives-ι-is-equiv : LPO
                      → (ν : E) → is-equiv (ι ν)
 LPO-gives-ι-is-equiv lpo ⌜𝟙⌝         = id-is-equiv 𝟙
-LPO-gives-ι-is-equiv lpo ⌜ω+𝟙⌝       = LPO-gives-ι𝟙-is-equiv lpo
+LPO-gives-ι-is-equiv lpo ⌜ω+𝟙⌝       = LPO-gives-ι𝟙-is-equiv fe₀ lpo
 LPO-gives-ι-is-equiv lpo (ν₀ ⌜+⌝ ν₁) = pair-fun-is-equiv
                                           id
                                           (dep-cases (λ _ → ι ν₀) (λ _ → ι ν₁))

@@ -18,14 +18,11 @@ module Lifting.Monad
         (𝓣 : Universe)
        where
 
-open import UF.Base
 open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
 open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.FunExt
 open import UF.Univalence
-open import UF.UA-FunExt
 
 open import Lifting.Construction 𝓣
 open import Lifting.IdentityViaSIP 𝓣
@@ -169,7 +166,7 @@ Kleisli-Law₀ (P , φ) = 𝟙-rneutral , refl
 Kleisli-Law₁ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → 𝓛 Y) (x : X) → (f ♯) (η x) ⋍ f x
 Kleisli-Law₁ f x = 𝟙-lneutral , refl
 
-Kleisli-Law₂ : {X : 𝓥 ̇ } {Y : 𝓦 ̇ } {Z : 𝓣 ̇ } (f : X → 𝓛 Y) (g : Y → 𝓛 Z) (l : 𝓛 X)
+Kleisli-Law₂ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → 𝓛 Y) (g : Y → 𝓛 Z) (l : 𝓛 X)
              → (g ♯ ∘ f ♯) l ⋍ ((g ♯ ∘ f)♯) l
 Kleisli-Law₂ f g l = Σ-assoc , refl
 

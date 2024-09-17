@@ -15,7 +15,6 @@ library to TypeTopology.
 module PathSequences.Type where
 
 open import MLTT.Spartan
-open import UF.Base
 
 \end{code}
 

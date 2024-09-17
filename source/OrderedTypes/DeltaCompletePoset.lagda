@@ -11,23 +11,9 @@ URL: https://arxiv.org/abs/2301.12405
 
 {-# OPTIONS --safe --without-K --exact-split #-}
 
-open import MLTT.Spartan
-open import MLTT.Two-Properties
 open import UF.FunExt
 open import UF.PropTrunc
-open import UF.Logic
 open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
-open import UF.SubtypeClassifier
-open import UF.Size
-open import UF.Equiv
-open import UF.Retracts
-open import UF.Subsingletons-FunExt
-open import UF.NotNotStablePropositions
-open import UF.Embeddings
-open import UF.Sets
-open import UF.ClassicalLogic
-open import Slice.Family
 
 module OrderedTypes.DeltaCompletePoset
  (pt : propositional-truncations-exist)
@@ -35,8 +21,23 @@ module OrderedTypes.DeltaCompletePoset
  (pe : Prop-Ext)
   where
 
+open import MLTT.Spartan
+open import MLTT.Two-Properties
+
+open import UF.ClassicalLogic
+open import UF.Embeddings
+open import UF.Equiv
+open import UF.Logic
+open import UF.NotNotStablePropositions
+open import UF.Retracts
+open import UF.Size
+open import UF.Subsingletons-FunExt
+open import UF.SubtypeClassifier
+
 open import Locales.Frame pt fe hiding (𝟚; ₀; ₁)
 open import OrderedTypes.TwoElementPoset pt fe
+open import Slice.Family
+
 open AllCombinators pt fe
 
 module δ-complete-poset {𝓤 𝓦 : Universe} (𝓥 : Universe) (A : Poset 𝓤 𝓦) where
@@ -206,26 +207,28 @@ We now show that the two element poset is δ complete only if WEM holds.
 2-is-δ-complete-gives-WEM : {𝓥 : Universe}
                           → δ-complete-poset.is-δ-complete {𝓤₀} {𝓤₀} 𝓥 2-Poset
                           → WEM 𝓥
-2-is-δ-complete-gives-WEM {𝓥} i P P-is-prop = wem
+2-is-δ-complete-gives-WEM {𝓥} i = WEM'-gives-WEM fe wem'
  where
   open Joins (rel-syntax 2-Poset)
   open δ-complete-poset 𝓥 2-Poset
   open non-trivial-posets 2-Poset
 
-  sup-from-δ-completeness : Σ s ꞉ ∣ 2-Poset ∣ₚ ,
-                          (s is-lub-of (δ-fam ₀ ₁ (P , P-is-prop))) holds
-  sup-from-δ-completeness = i ₀ ₁ ⋆ (P , P-is-prop)
+  module _ (P : 𝓥 ̇ ) (P-is-prop : is-prop P) where
 
-  sup-gives-wem : Σ s ꞉ ∣ 2-Poset ∣ₚ ,
+   sup-from-δ-completeness : Σ s ꞉ ∣ 2-Poset ∣ₚ ,
                            (s is-lub-of (δ-fam ₀ ₁ (P , P-is-prop))) holds
-                         → ¬ P + ¬ (¬ P)
-  sup-gives-wem (₀ , sup) =
-    inl (x-is-lub-gives-not-P 𝓥 2-is-non-trivial (P , P-is-prop) sup)
-  sup-gives-wem (₁ , sup) =
-    inr (y-is-lub-gives-not-not-P 𝓥 2-is-non-trivial (P , P-is-prop) sup)
+   sup-from-δ-completeness = i ₀ ₁ ⋆ (P , P-is-prop)
 
-  wem : ¬ P + ¬ (¬ P)
-  wem = sup-gives-wem sup-from-δ-completeness
+   sup-gives-wem : Σ s ꞉ ∣ 2-Poset ∣ₚ ,
+                            (s is-lub-of (δ-fam ₀ ₁ (P , P-is-prop))) holds
+                          → ¬ P + ¬ (¬ P)
+   sup-gives-wem (₀ , sup) =
+     inl (x-is-lub-gives-not-P 𝓥 2-is-non-trivial (P , P-is-prop) sup)
+   sup-gives-wem (₁ , sup) =
+     inr (y-is-lub-gives-not-not-P 𝓥 2-is-non-trivial (P , P-is-prop) sup)
+
+   wem' : ¬ P + ¬ (¬ P)
+   wem' = sup-gives-wem sup-from-δ-completeness
 
 \end{code}
 

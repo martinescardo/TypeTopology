@@ -33,11 +33,8 @@ open import UF.Equiv
 open import UF.ImageAndSurjection pt
 open import UF.Powerset
 open import UF.Powerset-Fin pt
-open import UF.Subsingletons-FunExt
 open import UF.SubtypeClassifier
-open import UF.SubtypeClassifier-Properties
 
-open import OrderedTypes.Poset fe
 
 open binary-unions-of-subsets pt
 open canonical-map-from-lists-to-subsets X-is-set

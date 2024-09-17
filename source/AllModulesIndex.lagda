@@ -4,16 +4,16 @@
    constructive univalent mathematics
    written in Agda
 
-   Tested with Agda 2.6.4.3
+   Tested with Agda 2.6.4.3 and 2.7.0
 
    Martin Escardo and collaborators, 2010--2024--∞
    Continuously evolving.
 
-   https://githubn.com/martinescardo/TypeTopology
+   https://github.com/martinescardo/TypeTopology
 
 \begin{code}
 
-{-# OPTIONS --without-K --no-level-universe #-}
+{-# OPTIONS --without-K --type-in-type --no-level-universe --no-termination-check #-}
 
 import index                    -- Of --safe modules using --level-universe.
 import GamesExperimental.index  -- With --safe but --no-level-universe.

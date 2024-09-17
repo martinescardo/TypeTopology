@@ -133,6 +133,12 @@ Corollaries:
 ℕ∞-Compact : is-Compact ℕ∞ {𝓤}
 ℕ∞-Compact = compact-types-are-Compact ℕ∞-compact
 
+ℕ∞-Π-Compact : is-Π-Compact ℕ∞ {𝓤}
+ℕ∞-Π-Compact = Σ-Compact-types-are-Π-Compact ℕ∞ ℕ∞-Compact
+
+ℕ∞-Compact∙ : is-Compact∙ ℕ∞ {𝓤}
+ℕ∞-Compact∙ = Compact-pointed-gives-Compact∙ ℕ∞-Compact ∞
+
 ℕ∞→ℕ-is-discrete : is-discrete (ℕ∞ → ℕ)
 ℕ∞→ℕ-is-discrete = discrete-to-power-compact-is-discrete fe ℕ∞-compact (λ u → ℕ-is-discrete)
 

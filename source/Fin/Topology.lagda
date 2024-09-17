@@ -14,10 +14,8 @@ module Fin.Topology where
 open import Fin.Bishop
 open import Fin.Properties
 open import Fin.Type
-open import MLTT.Plus-Properties
 open import MLTT.Spartan
 open import MLTT.SpartanList
-open import Notation.Order
 open import TypeTopology.CompactTypes
 open import UF.DiscreteAndSeparated
 open import UF.Equiv

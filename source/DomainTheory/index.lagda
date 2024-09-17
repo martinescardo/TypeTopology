@@ -4,6 +4,8 @@ Updated 12 and 14 June 2022
 Updated 30 October 2023 (by Ayberk Tosun)
 Updated 6 November 2023 (by Ayberk Tosun)
 Updated 31 May 2024 (by Tom de Jong)
+Updated 23 June 2024 (by Tom de Jong)
+Updated 3 and 8 July 2024 (by Tom de Jong)
 
 Index for the formalization of domain theory, briefly describing the contents of
 each directory, ordered almost¹ alphabetically by directory name.
@@ -44,6 +46,9 @@ module DomainTheory.index where
 6. Useful facts about sup-complete dcpos, e.g. the directification of families
 7. Definitions and basic properties of the way-below relation, including
    compactness
+
+(B1)─(B4) These files are due to Brendan Hart and were ported to TypeTopology by
+          Martín Escardó, cf. PCF.Lambda.index.lagda.
 -}
 
 import DomainTheory.Basics.Dcpo            -- (1)
@@ -53,6 +58,12 @@ import DomainTheory.Basics.Miscelanea      -- (4)
 import DomainTheory.Basics.Pointed         -- (5)
 import DomainTheory.Basics.SupComplete     -- (6)
 import DomainTheory.Basics.WayBelow        -- (7)
+
+import DomainTheory.Basics.Curry               -- (B1)
+import DomainTheory.Basics.FunctionComposition -- (B2)
+import DomainTheory.Basics.Products            -- (B3)
+import DomainTheory.Basics.ProductsContinuity  -- (B4)
+
 
 {- BasesAndContinuity
 
@@ -95,19 +106,22 @@ import DomainTheory.Bilimits.Dinfinity  -- (3)
 1. The ideal completion of the dyadics is a nice example of a continuous dcpo
    (with a small basis) that cannot be algebraic as it has no compact elements
    at all.
-2. The type Ω of propositions is an example of a pointed algebraic dcpo with
+2. The lifting of a large proposition P is an algebraic dcpo that has a small
+   (compact) basis if and only if P is suitably small.
+3. The type Ω of propositions is an example of a pointed algebraic dcpo with
    the booleans giving a small compact basis
-3. The large poset of small ordinals is an example of an algebraic dcpo with no
+4. The large poset of small ordinals is an example of an algebraic dcpo with no
    small compact basis
    [Added 31 May 2024]
-4. The powerset is an examples of a pointed algebraic dcpo with lists giving a
+5. The powerset is an examples of a pointed algebraic dcpo with lists giving a
    small compact basis (through Kuratowski finite subsets)
 -}
 
-import DomainTheory.Examples.IdlDyadics -- (1)
-import DomainTheory.Examples.Omega      -- (2)
-import DomainTheory.Examples.Ordinals   -- (3)
-import DomainTheory.Examples.Powerset   -- (4)
+import DomainTheory.Examples.IdlDyadics              -- (1)
+import DomainTheory.Examples.LiftingLargeProposition -- (2)
+import DomainTheory.Examples.Omega                   -- (3)
+import DomainTheory.Examples.Ordinals                -- (4)
+import DomainTheory.Examples.Powerset                -- (5)
 
 {- IdealCompletion
 
@@ -143,6 +157,14 @@ import DomainTheory.ScottModelOfPCF.PCF             -- (0)
 import DomainTheory.ScottModelOfPCF.PCFCombinators  -- (1)
 import DomainTheory.ScottModelOfPCF.ScottModelOfPCF -- (2)
 
+{- Taboos (added 23 June 2024)
+
+1. If the flat poset with carrier 𝟙 + ℕ is ω-complete/directed complete, then
+   LPO holds.
+-}
+
+import DomainTheory.Taboos.ClassicalLiftingOfNaturalNumbers
+
 {- Topology (by Ayberk Tosun)
 
 0. The definition of the Scott topology of a dcpo
@@ -164,6 +186,11 @@ import DomainTheory.Topology.ScottTopologyProperties -- (1)
   directory `Locales/ScottLocale`. The proof of spectrality is in the module
   `Locales.ScottLocale.ScottLocalesOfScottDomains`.
 -}
+
+{- Index files for papers -}
+
+import DomainTheory.Part-I
+import DomainTheory.Part-II
 
 \end{code}
 

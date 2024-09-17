@@ -24,9 +24,7 @@ module PCF.Combinatory.PCFCombinators
 open PropositionalTruncation pt
 
 open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
 
-open import OrderedTypes.Poset fe
 open import DomainTheory.Basics.Dcpo pt fe 𝓥
 open import DomainTheory.Basics.Exponential pt fe 𝓥
 open import DomainTheory.Basics.Miscelanea pt fe 𝓥

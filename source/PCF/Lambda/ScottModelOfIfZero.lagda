@@ -18,17 +18,13 @@ module PCF.Lambda.ScottModelOfIfZero
 open PropositionalTruncation pt
 
 open import DomainTheory.Basics.Curry pt fe 𝓤₀
-open import DomainTheory.Basics.Dcpo pt fe 𝓤₀
 open import DomainTheory.Basics.Exponential pt fe 𝓤₀
 open import DomainTheory.Basics.FunctionComposition pt fe 𝓤₀
 open import DomainTheory.Basics.Pointed pt fe 𝓤₀
 open import DomainTheory.Basics.Products pt fe
-open import DomainTheory.Lifting.LiftingSet pt fe 𝓤₀ pe
 open import PCF.Combinatory.PCFCombinators pt fe 𝓤₀
 open import PCF.Lambda.AbstractSyntax pt
 open import PCF.Lambda.ScottModelOfContexts pt fe pe
-open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
 
 open DcpoProductsGeneral 𝓤₀
 open IfZeroDenotationalSemantics pe

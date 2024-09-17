@@ -139,26 +139,21 @@ Some examples:
   rs ₀ = refl
   rs ₁ = refl
 
-types-with-isolated-point-different-from-another-point-are-disconnected :
+types-with-isolated-point-different-from-another-point-are-disconnected
+ : {Y : 𝓥 ̇ }
+ → (Σ y₀ ꞉ Y , Σ y₁ ꞉ Y , (y₀ ≠ y₁) × is-isolated y₀ )
+ → is-disconnected Y
+types-with-isolated-point-different-from-another-point-are-disconnected
+ (y₀ , y₁ , ne , i) = 𝟚-retract-of-non-trivial-type-with-isolated-point ne i
 
-    {Y : 𝓥 ̇ }
-  → (Σ y₀ ꞉ Y , Σ y₁ ꞉ Y , (y₀ ≠ y₁) × is-isolated y₀ )
-  → is-disconnected Y
-
-types-with-isolated-point-different-from-another-point-are-disconnected (y₀ , y₁ , ne , i) =
-  𝟚-retract-of-non-trivial-type-with-isolated-point ne i
-
-discrete-types-with-two-different-points-are-disconnected :
-
-    {Y : 𝓥 ̇ }
-  → (Σ y₀ ꞉ Y , Σ y₁ ꞉ Y , y₀ ≠ y₁)
-  → is-discrete Y
-  → is-disconnected Y
-
+discrete-types-with-two-different-points-are-disconnected
+ : {Y : 𝓥 ̇ }
+ → (Σ y₀ ꞉ Y , Σ y₁ ꞉ Y , y₀ ≠ y₁)
+ → is-discrete Y
+ → is-disconnected Y
 discrete-types-with-two-different-points-are-disconnected (y₀ , y₁ , ne) d =
   types-with-isolated-point-different-from-another-point-are-disconnected
    (y₀ , y₁ , ne , d y₀)
-
 
 ℕ-is-disconnected' : is-disconnected ℕ
 ℕ-is-disconnected' = discrete-types-with-two-different-points-are-disconnected
@@ -182,7 +177,6 @@ various equivalent ways.
 \begin{code}
 
 open import TypeTopology.TotallySeparated
-open import UF.Base
 open import UF.FunExt
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
@@ -191,20 +185,19 @@ is-connected₀ : 𝓤 ̇ → 𝓤 ̇
 is-connected₀ X = (f : X → 𝟚) → wconstant f
 
 is-connected₁ : 𝓤 ̇ → 𝓤 ̇
-is-connected₁ X = (x y : X) → x ＝₂ y
+is-connected₁ X = ¬ is-disconnected X
 
 is-connected₂ : 𝓤 ̇ → 𝓤 ̇
-is-connected₂ X = ¬ is-disconnected X
-
-
-connected₀-types-are-connected₁ : {X : 𝓤 ̇ } → is-connected₀ X → is-connected₁ X
-connected₀-types-are-connected₁ i x y p = i p x y
-
-connected₁-types-are-connected₀ : {X : 𝓤 ̇ } → is-connected₁ X → is-connected₀ X
-connected₁-types-are-connected₀ ϕ f x y = ϕ x y f
+is-connected₂ X = (x y : X) → x ＝₂ y
 
 connected₀-types-are-connected₂ : {X : 𝓤 ̇ } → is-connected₀ X → is-connected₂ X
-connected₀-types-are-connected₂ c (r , s , rs) = n (c r)
+connected₀-types-are-connected₂ i x y p = i p x y
+
+connected₂-types-are-connected₀ : {X : 𝓤 ̇ } → is-connected₂ X → is-connected₀ X
+connected₂-types-are-connected₀ ϕ f x y = ϕ x y f
+
+connected₀-types-are-connected₁ : {X : 𝓤 ̇ } → is-connected₀ X → is-connected₁ X
+connected₀-types-are-connected₁ c (r , s , rs) = n (c r)
  where
   n : ¬ wconstant r
   n κ = zero-is-not-one (₀       ＝⟨ (rs ₀)⁻¹ ⟩
@@ -215,12 +208,12 @@ connected₀-types-are-connected₂ c (r , s , rs) = n (c r)
 disconnected-types-are-not-connected : {X : 𝓤 ̇ }
                                      → is-disconnected X
                                      → ¬ is-connected₀ X
-disconnected-types-are-not-connected c d = connected₀-types-are-connected₂ d c
+disconnected-types-are-not-connected c d = connected₀-types-are-connected₁ d c
 
-connected₂-types-are-is-connected₀ : {X : 𝓤 ̇ }
-                                   → is-connected₂ X
+connected₁-types-are-is-connected₀ : {X : 𝓤 ̇ }
+                                   → is-connected₁ X
                                    → is-connected₀ X
-connected₂-types-are-is-connected₀ {𝓤} {X} n f x y =
+connected₁-types-are-is-connected₀ {𝓤} {X} n f x y =
  𝟚-is-¬¬-separated (f x) (f y) ϕ
  where
   ϕ : ¬¬ (f x ＝ f y)

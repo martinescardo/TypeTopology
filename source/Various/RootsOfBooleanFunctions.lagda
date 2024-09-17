@@ -477,12 +477,9 @@ there is a formula for a putative root of any n-ary boolean function:
 
 \begin{code}
 
-putative-root-formula-theorem :
-
- (n : ℕ) → Σ es ꞉ E n ^ n , ((f : 𝟚 ^ n → 𝟚) → is-putative-root (evals f es) f)
-
-putative-root-formula-theorem n = ε-formula n ,
-                                  ε-formula-theorem n
+putative-root-formula-theorem
+ : (n : ℕ) → Σ es ꞉ E n ^ n , ((f : 𝟚 ^ n → 𝟚) → is-putative-root (evals f es) f)
+putative-root-formula-theorem n = ε-formula n , ε-formula-theorem n
 
 \end{code}
 
@@ -553,8 +550,8 @@ Added by Alice Laroche, 1st June 2023.
 We show that both definitions are equivalent, and from that deduce the
 correctness of ε-formula'.
 
-We first define another pair of auxilliary constructions that will be used
-to reason about εᵉ.
+We first define another pair of auxiliary constructions that will be
+used to reason about εᵉ.
 
 \begin{code}
 
@@ -608,8 +605,8 @@ Notice that 𝕔𝕠𝕟𝕤 and 𝕔𝕠𝕟𝕤 are more refined versions of �
 
 \end{code}
 
-Using the addition flexibility given by those function we can show how
-to unroll the compositions that happen in εᵉ.
+Using the additional flexibility given by those functions we can show
+how to unroll the compositions that happen in εᵉ.
 
 \begin{code}
 
@@ -632,7 +629,7 @@ unroll-εᵉ-lemma {succ n} {k} f = γ
                 𝕞𝕒𝕡 f (𝕞𝕒𝕡 (cons O) (𝕗 (εᵉ 𝕗)))               ＝⟨ refl ⟩
                 𝕞𝕒𝕡 f ((𝕗 ∘ cons O) ((𝕞𝕒𝕡s (cons O) (εᵉ 𝕗)))) ＝⟨ III ⟩
                 𝕞𝕒𝕡 f ((𝕗 ∘ cons O) (εᵉ (𝕗 ∘ cons O)))        ＝⟨ refl ⟩
-                𝕞𝕒𝕡 f c₁ ∎
+                𝕞𝕒𝕡 f c₁                                      ∎
    where
      I = ap (𝕗 ∘ f ∘ cons O) (unroll-εᵉ-lemma (f ∘ cons O))
      II = 𝕞𝕒𝕡-𝕞𝕒𝕡 f O (𝕗 (εᵉ 𝕗)) ⁻¹
@@ -646,12 +643,12 @@ unroll-εᵉ-lemma {succ n} {k} f = γ
       𝕞𝕒𝕡 f c₁ , 𝕞𝕒𝕡s f (𝕞𝕒𝕡s (cons c₁) (εᵉ 𝕗))    ＝⟨ IV ⟩
       𝕞𝕒𝕡 f c₁ , 𝕞𝕒𝕡s f (εᵉ (𝕗 ∘ cons c₁))         ＝⟨ refl ⟩
       𝕞𝕒𝕡s f (c₁ , (εᵉ (𝕗 ∘ cons c₁)))             ＝⟨ refl ⟩
-      𝕞𝕒𝕡s f (εᵉ 𝕗) ∎
+      𝕞𝕒𝕡s f (εᵉ 𝕗)                                ∎
    where
-    I = ap (λ x → x , (εᵉ (𝕗 ∘ f ∘ cons x))) c₀-property
-    II = ap (𝕞𝕒𝕡 f c₁ ,_) (unroll-εᵉ-lemma (f ∘ cons (𝕞𝕒𝕡 f c₁)))
+    I   = ap (λ x → x , (εᵉ (𝕗 ∘ f ∘ cons x))) c₀-property
+    II  = ap (𝕞𝕒𝕡 f c₁ ,_) (unroll-εᵉ-lemma (f ∘ cons (𝕞𝕒𝕡 f c₁)))
     III = ap (𝕞𝕒𝕡 f c₁ ,_) (𝕞𝕒𝕡-𝕞𝕒𝕡s f c₁ (εᵉ 𝕗) ⁻¹)
-    IV = ap (λ x → 𝕞𝕒𝕡 f c₁ , 𝕞𝕒𝕡s f x) (unroll-εᵉ-lemma (cons c₁) ⁻¹)
+    IV  = ap (λ x → 𝕞𝕒𝕡 f c₁ , 𝕞𝕒𝕡s f x) (unroll-εᵉ-lemma (cons c₁) ⁻¹)
 
 unroll-εᵉ : {n : ℕ}
             (e₀ : E (succ n))
@@ -676,8 +673,8 @@ formulas-are-equal (succ n) = γ
   c₁ = (𝕗 ∘ cons O) (𝕔𝕠𝕟𝕤s O (ε-formula n))
 
   c₀-property : c₀ ＝ c₁
-  c₀-property = (𝕗 ∘ cons O) (εᵉ (𝕗 ∘ cons O))  ＝⟨ I ⟩
-                (𝕗 ∘ cons O) (𝕔𝕠𝕟𝕤s O (εᵉ 𝕗))   ＝⟨ II ⟩
+  c₀-property = (𝕗 ∘ cons O) (εᵉ (𝕗 ∘ cons O))       ＝⟨ I ⟩
+                (𝕗 ∘ cons O) (𝕔𝕠𝕟𝕤s O (εᵉ 𝕗))        ＝⟨ II ⟩
                 (𝕗 ∘ cons O) (𝕔𝕠𝕟𝕤s O (ε-formula n)) ∎
    where
     I = ap (𝕗 ∘ cons O) (unroll-εᵉ O)
@@ -693,8 +690,8 @@ formulas-are-equal (succ n) = γ
       c₁ , (𝕔𝕠𝕟𝕤s c₁ (ε-formula n))  ＝⟨ refl ⟩
       ε-formula (succ n) ∎
    where
-    I = ap (c₀ ,_) (unroll-εᵉ c₀)
-    II = ap (λ x → c₀ , (𝕔𝕠𝕟𝕤s c₀ x)) (formulas-are-equal n)
+    I   = ap (c₀ ,_) (unroll-εᵉ c₀)
+    II  = ap (λ x → c₀ , (𝕔𝕠𝕟𝕤s c₀ x)) (formulas-are-equal n)
     III = ap (λ x → x , (𝕔𝕠𝕟𝕤s x (ε-formula n))) c₀-property
 \end{code}
 
@@ -703,16 +700,16 @@ It then follows immediately by transport that ε-formula' is correct.
 \begin{code}
 
 ε-formula'-theorem : (n : ℕ) (f : 𝟚 ^ n → 𝟚)
-                  → is-putative-root (evals f (ε-formula' n)) f
+                   → is-putative-root (evals f (ε-formula' n)) f
 ε-formula'-theorem n f = transport (λ x → is-putative-root (evals f x) f)
                                    (formulas-are-equal n ⁻¹)
                                    (ε-formula-theorem n f)
 
 \end{code}
 
-Added by Alice Laroche, 5th june 2023
+Added by Alice Laroche, 5th june 2023.
 
-We prove that ε f computes in fact the infimum of the set of roots
+We prove that ε f indeed computes the infimum of the set of roots
 ordered by the lexicographical order.
 
 \begin{code}
@@ -721,7 +718,8 @@ open import Notation.Order
 
 lex-order : {X : 𝓤 ̇ } {n : ℕ} → (X → X →  𝓥 ̇ ) → (X ^ n → X ^ n → 𝓤 ⊔ 𝓥 ̇ )
 lex-order {n = 0}      _≤_ _        _        = 𝟙
-lex-order {n = succ n} _≤_ (x , xs) (y , ys) = (x ≤ y) × ((x ＝ y) → lex-order _≤_ xs ys)
+lex-order {n = succ n} _≤_ (x , xs) (y , ys) = (x ≤ y)
+                                             × ((x ＝ y) → lex-order _≤_ xs ys)
 
 _≤₂ₗₑₓ_ : {n : ℕ} (xs ys : 𝟚 ^ n) → 𝓤₀ ̇
 _≤₂ₗₑₓ_ = lex-order _≤₂_
@@ -731,21 +729,21 @@ open import TypeTopology.InfProperty
 ε-is-roots-lower-bound : {n : ℕ}
                         (f : 𝟚 ^ n → 𝟚)
                       → is-roots-lower-bound _≤₂ₗₑₓ_ f (ε f)
-ε-is-roots-lower-bound {0}      f _        fxs=₀ = ⋆
-ε-is-roots-lower-bound {succ n} f (x , xs) fxs=₀ = γ (x , xs) fxs=₀
+ε-is-roots-lower-bound {0}      f _        p = ⋆
+ε-is-roots-lower-bound {succ n} f (x , xs) p = γ (x , xs) p
  where
   b₀ : 𝟚
   b₀ = ε𝟚 (b ↦ A (f ∘ cons b))
 
   b₀-property : (xs : 𝟚 ^ n) → f (₀ , xs) ＝ ₀ → b₀ ＝ ₀
-  b₀-property xs f₀xs=₀ = ε-gives-putative-root (f ∘ cons ₀) (xs , f₀xs=₀)
+  b₀-property xs p = ε-gives-putative-root (f ∘ cons ₀) (xs , p)
 
   δ : (b : 𝟚) (xs : 𝟚 ^ n) → f (b , xs) ＝ ₀ → b₀ ＝ b → ε (f ∘ cons b₀) ≤₂ₗₑₓ xs
-  δ b xs fbxs=₀ refl = ε-is-roots-lower-bound (f ∘ cons b₀) xs fbxs=₀
+  δ b xs p refl = ε-is-roots-lower-bound (f ∘ cons b₀) xs p
 
   γ : (xs : 𝟚 ^ (succ n)) → f xs ＝ ₀ → ε f ≤₂ₗₑₓ  xs
-  γ (₀ , xs) f₀xs=₀ = ₀-minimal-converse (b₀-property xs f₀xs=₀) , δ ₀ xs f₀xs=₀
-  γ (₁ , xs) f₁xs=₀ = ₁-top , δ ₁ xs f₁xs=₀
+  γ (₀ , xs) p = ₀-minimal-converse (b₀-property xs p) , δ ₀ xs p
+  γ (₁ , xs) p = ₁-top , δ ₁ xs p
 
 lower-bound-property : {n : ℕ}
                        (f : 𝟚 ^ (succ n) → 𝟚)
@@ -753,7 +751,7 @@ lower-bound-property : {n : ℕ}
                        (xs : 𝟚 ^ n)
                      → is-roots-lower-bound _≤₂ₗₑₓ_ f (b , xs)
                      → is-roots-lower-bound _≤₂ₗₑₓ_ (f ∘ cons b) xs
-lower-bound-property f b xs lower-bound ys fbys=₀ = pr₂ (lower-bound (b , ys) fbys=₀) refl
+lower-bound-property f b xs lower-bound ys p = pr₂ (lower-bound (b , ys) p) refl
 
 ε-is-upper-bound-of-roots-lower-bounds : {n : ℕ}
                                          (f : 𝟚 ^ n → 𝟚)
@@ -769,7 +767,8 @@ lower-bound-property f b xs lower-bound ys fbys=₀ = pr₂ (lower-bound (b , ys
               → is-roots-lower-bound _≤₂ₗₑₓ_ f (₁ , xs)
               → (b : 𝟚) → b ＝ b₀ → ₁ ≤ b₀
   b₀-property xs lower-bound ₀ eq = transport (₁ ≤_) eq
-                                     (pr₁ (lower-bound (₀ , ε (f ∘ cons ₀)) (eq ⁻¹)))
+                                     (pr₁ (lower-bound (₀ , ε (f ∘ cons ₀))
+                                                       (eq ⁻¹)))
   b₀-property xs lower-bound ₁ eq = transport (₁ ≤_) eq ⋆
 
   δ : (b : 𝟚) (xs : 𝟚 ^ n)
@@ -781,17 +780,19 @@ lower-bound-property f b xs lower-bound ys fbys=₀ = pr₂ (lower-bound (b , ys
                              (lower-bound-property f b₀ xs lower-bound)
 
   γ : (xs : 𝟚 ^ (succ n)) → is-roots-lower-bound _≤₂ₗₑₓ_ f xs → xs ≤₂ₗₑₓ ε f
-  γ (₀ , xs) lower-bound = ⋆                                  , δ ₀ xs lower-bound
-  γ (₁ , xs) lower-bound = b₀-property xs lower-bound b₀ refl , δ ₁ xs lower-bound
+  γ (₀ , xs) lower-bound = ⋆ ,
+                           δ ₀ xs lower-bound
+  γ (₁ , xs) lower-bound = b₀-property xs lower-bound b₀ refl ,
+                           δ ₁ xs lower-bound
 
 ε-is-roots-infimum : {n : ℕ} (f : 𝟚 ^ n → 𝟚) → is-roots-infimum _≤₂ₗₑₓ_ f (ε f)
 ε-is-roots-infimum f = ε-is-roots-lower-bound f ,
                        ε-is-upper-bound-of-roots-lower-bounds f
 
 𝟚^n-has-inf : {n : ℕ} → has-inf {X = 𝟚 ^ n} _≤₂ₗₑₓ_
-𝟚^n-has-inf p =  ε p ,
-                 ε-gives-putative-root p ,
-                 ε-is-roots-infimum p
+𝟚^n-has-inf f =  ε f ,
+                 ε-gives-putative-root f ,
+                 ε-is-roots-infimum f
 
 \end{code}
 

@@ -7,13 +7,10 @@ Constructing the two element poset.
 {-# OPTIONS --safe --without-K --exact-split #-}
 
 open import MLTT.Spartan
-open import MLTT.Two-Properties
 open import UF.FunExt
 open import UF.PropTrunc
-open import UF.Logic
 
 open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
 open import UF.SubtypeClassifier
 
 module OrderedTypes.TwoElementPoset

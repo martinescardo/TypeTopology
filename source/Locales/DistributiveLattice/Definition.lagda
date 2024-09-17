@@ -1,7 +1,7 @@
 ---
-title:       Distributive lattices
-author:      Ayberk Tosun
-start-date:  2024-02-14
+title:         Distributive lattices
+author:        Ayberk Tosun
+date-started:  2024-02-14
 ---
 
 \begin{code}
@@ -19,9 +19,7 @@ module Locales.DistributiveLattice.Definition
 
 open import Locales.Frame pt fe
 open import MLTT.Spartan
-open import UF.Base
 open import UF.Logic
-open import UF.Powerset-MultiUniverse
 open import UF.SubtypeClassifier
 
 open Implication fe
@@ -331,22 +329,22 @@ module _ (L : DistributiveLattice 𝓤) where
 
  ∨-is-least : (x y z : ∣ L ∣ᵈ) → (z is-an-upper-bound-of₂ (x , y) ⇒ (x ∨ y) ≤ᵈ[ L ] z) holds
  ∨-is-least x y z (p₁ , p₂) = orderᵈ-∨-implies-orderᵈ L †
-   where
-    q₂ : y ∨ z ＝ z
-    q₂ = orderᵈ-implies-orderᵈ-∨ L p₂
+  where
+   q₂ : y ∨ z ＝ z
+   q₂ = orderᵈ-implies-orderᵈ-∨ L p₂
 
-    q₁ : x ∨ z ＝ z
-    q₁ = orderᵈ-implies-orderᵈ-∨ L p₁
+   q₁ : x ∨ z ＝ z
+   q₁ = orderᵈ-implies-orderᵈ-∨ L p₁
 
-    Ⅰ = ∨-associative x y z ⁻¹
-    Ⅱ = ap (x ∨_) q₂
-    Ⅲ = q₁
+   Ⅰ = ∨-associative x y z ⁻¹
+   Ⅱ = ap (x ∨_) q₂
+   Ⅲ = q₁
 
-    † : (x ∨ y) ∨ z ＝ z
-    † = (x ∨ y) ∨ z   ＝⟨ Ⅰ ⟩
-        x ∨ (y ∨ z)   ＝⟨ Ⅱ ⟩
-        x ∨ z         ＝⟨ Ⅲ ⟩
-        z ∎
+   † : (x ∨ y) ∨ z ＝ z
+   † = (x ∨ y) ∨ z   ＝⟨ Ⅰ ⟩
+       x ∨ (y ∨ z)   ＝⟨ Ⅱ ⟩
+       x ∨ z         ＝⟨ Ⅲ ⟩
+       z ∎
 
  ∨-is-lub : (x y : ∣ L ∣ᵈ) → ((x ∨ y) is-lub-of₂ (x , y)) holds
  ∨-is-lub x y = (∨-is-an-upper-bound₁ x y , ∨-is-an-upper-bound₂ x y)

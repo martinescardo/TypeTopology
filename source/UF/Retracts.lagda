@@ -25,6 +25,19 @@ section-equation r (s , rs) = rs
 is-section : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 is-section s = Σ r ꞉ (codomain s → domain s), r ∘ s ∼ id
 
+has-retraction : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
+has-retraction = is-section
+
+retraction-of : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (r : X → Y)
+              → has-retraction r
+              → (Y → X)
+retraction-of s (r , rs) = r
+
+retraction-equation : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (s : X → Y)
+                    → (h : has-retraction s)
+                    → retraction-of s h ∘ s ∼ id
+retraction-equation s (r , rs) = rs
+
 sections-are-lc : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (s : X → Y)
                 → is-section s
                 → left-cancellable s
@@ -391,6 +404,22 @@ ap-of-section-is-section {𝓤} {𝓥} {X} {Y} s (r , rs) x x' = ρ , ρap
 
      ρσ : (p : g x ＝ y) → ρ (σ p) ＝ p
      ρσ = pr₂ (ap-of-section-is-section s ((r , rs)) (g x) y)
+
+\end{code}
+
+Added 8 August 2024 by Tom de Jong.
+
+\begin{code}
+
+＝-retract : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (s : X → Y)
+           → is-section s
+           → (x x' : X) → (x ＝ x') ◁ (s x ＝ s x')
+＝-retract s s-sect x x' = ρ , ap s , η
+ where
+  ρ : s x ＝ s x' → x ＝ x'
+  ρ = retraction-of (ap s) (ap-of-section-is-section s s-sect x x')
+  η : ρ ∘ ap s ∼ id
+  η = retraction-equation (ap s) (ap-of-section-is-section s s-sect x x')
 
 \end{code}
 

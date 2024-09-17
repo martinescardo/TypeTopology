@@ -25,7 +25,6 @@ open PropositionalTruncation pt
 
 open import MLTT.List
 
-open import UF.Base
 open import UF.FunExt
 open import UF.Subsingletons
 open import UF.UA-FunExt
@@ -50,7 +49,7 @@ open import DomainTheory.BasesAndContinuity.Bases pt fe 𝓤
 open import DomainTheory.BasesAndContinuity.Continuity pt fe 𝓤
 
 open import Ordinals.Arithmetic fe'
-open import Ordinals.ArithmeticProperties ua
+open import Ordinals.AdditionProperties ua
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.OrdinalOfOrdinalsSuprema ua
 open import Ordinals.Type
@@ -135,7 +134,7 @@ Ordinals-DCPO-is-algebraic' =
      where
       II = (supremum-of-successors-of-initial-segments pt sr α) ⁻¹
       I = sups-are-unique _⊴_
-           (pr₁ (axioms-of-dcpo Ordinals-DCPO)) (family α)
+           (poset-axioms-of-dcpo Ordinals-DCPO) (family α)
            (directify-sup' (family α)
              (∐ Ordinals-DCPO δ) (∐-is-sup Ordinals-DCPO δ))
            (sup-is-least-upper-bound (family α))

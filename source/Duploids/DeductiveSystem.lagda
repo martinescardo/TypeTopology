@@ -16,16 +16,11 @@ open import UF.FunExt
 
 module Duploids.DeductiveSystem (fe : Fun-Ext) where
 
-open import UF.Base
 open import UF.Equiv
-open import UF.PropTrunc
 
 open import MLTT.Spartan
-open import UF.Base
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import UF.Logic
-open import UF.Lower-FunExt
 
 open import Categories.Category fe
 

@@ -14,8 +14,6 @@ the ``oracle'' α.
 module EffectfulForcing.MFPSAndVariations.WithoutOracle where
 
 open import MLTT.Spartan
-open import MLTT.Athenian
-open import UF.Base
 open import EffectfulForcing.MFPSAndVariations.Combinators
 open import EffectfulForcing.MFPSAndVariations.Continuity
 open import EffectfulForcing.MFPSAndVariations.Dialogue

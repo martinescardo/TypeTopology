@@ -19,7 +19,6 @@ open PropositionalTruncation pt
 
 open import MLTT.Spartan
 open import UF.ClassicalLogic
-open import UF.Subsingletons
 open import UF.SubtypeClassifier
 
 \end{code}
@@ -71,7 +70,7 @@ DP-gives-EM dp = DNE-gives-EM fe (DP-gives-DNE dp)
 
 \end{code}
 
-As indicated in the above proof, it doesn't matter whet "drinks" is
+As indicated in the above proof, it doesn't matter what "drinks" is
 taken to be. Any drinking predicate will do.
 
 Conversely, excluded middle gives DP.

@@ -8,7 +8,6 @@ module ContinuityAxiom.Preliminaries where
 
 open import MLTT.Plus-Properties
 open import MLTT.Spartan
-open import NotionsOfDecidability.Decidable
 open import UF.Subsingletons
 
 \end{code}

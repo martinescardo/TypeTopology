@@ -15,14 +15,10 @@ is equivalent to the standard definition.
 
 {-# OPTIONS --safe --without-K #-}
 
-open import MLTT.List hiding ([_])
 open import MLTT.Spartan
 open import UF.FunExt
 open import UF.PropTrunc
-open import UF.Size
 open import UF.Subsingletons
-open import UF.UA-FunExt
-open import UF.Univalence
 
 module Locales.Point.SpectralPoint-Definition
         (pt : propositional-truncations-exist)
@@ -30,7 +26,7 @@ module Locales.Point.SpectralPoint-Definition
         (pe : Prop-Ext)
        where
 
-open import Locales.Compactness pt fe
+open import Locales.Compactness.Definition pt fe
 open import Locales.ContinuousMap.Definition pt fe
 open import Locales.ContinuousMap.FrameHomomorphism-Definition pt fe
 open import Locales.Frame pt fe
@@ -152,5 +148,27 @@ underlying functions are equal. We call this lemma `to-spectral-point-＝`.
    Ⅰ = inverses-are-sections' e ℱ
    Ⅱ = ap to-spectral-point †
    Ⅲ = inverses-are-sections' e 𝒢 ⁻¹
+
+\end{code}
+
+Added on 2024-08-12.
+
+\begin{code}
+
+ to-spectral-point-＝' : (ℱ 𝒢 : Spectral-Point) → point ℱ ＝ point 𝒢 → ℱ ＝ 𝒢
+ to-spectral-point-＝' ℱ 𝒢 p =
+  ℱ                                           ＝⟨ Ⅰ ⟩
+  to-spectral-point (to-spectral-point₀ ℱ)    ＝⟨ Ⅱ ⟩
+  to-spectral-point (to-spectral-point₀ 𝒢)    ＝⟨ Ⅲ ⟩
+  𝒢                                           ∎
+   where
+    e = spectral-point-equivalent-to-spectral-map-into-Ω
+
+    † : to-spectral-point₀ ℱ ＝ to-spectral-point₀ 𝒢
+    † = to-subtype-＝ (holds-is-prop ∘ is-spectral-map X (𝟏Loc pe)) p
+
+    Ⅰ = inverses-are-sections' e ℱ
+    Ⅱ = ap to-spectral-point †
+    Ⅲ = inverses-are-sections' e 𝒢 ⁻¹
 
 \end{code}

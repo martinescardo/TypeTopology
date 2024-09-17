@@ -40,37 +40,29 @@ private
  pe {𝓤} = univalence-gives-propext (ua 𝓤)
 
 open import DomainTheory.BasesAndContinuity.Bases pt fe 𝓤
-open import DomainTheory.BasesAndContinuity.CompactBasis pt fe 𝓤
 open import DomainTheory.BasesAndContinuity.Continuity pt fe 𝓤
 open import DomainTheory.BasesAndContinuity.ScottDomain pt fe 𝓤
 open import DomainTheory.Basics.Dcpo pt fe 𝓤 renaming (⟨_⟩ to ⟨_⟩∙)
 open import DomainTheory.Basics.WayBelow pt fe 𝓤
 open import DomainTheory.Topology.ScottTopology pt fe 𝓤
 open import DomainTheory.Topology.ScottTopologyProperties pt fe 𝓤
-open import Locales.Clopen pt fe sr
-open import Locales.CompactRegular pt fe using (clopens-are-compact-in-compact-frames)
-open import Locales.Compactness pt fe hiding (is-compact)
+open import Locales.Compactness.Definition pt fe hiding (is-compact)
 open import Locales.ContinuousMap.FrameHomomorphism-Definition pt fe
 open import Locales.ContinuousMap.FrameHomomorphism-Properties pt fe
 open import Locales.Frame pt fe
 open import Locales.InitialFrame pt fe hiding (_⊑_)
 open import Locales.LawsonLocale.CompactElementsOfPoint 𝓤 fe pe pt sr
-open import Locales.Point.Definition pt fe
 open import Locales.Point.SpectralPoint-Definition pt fe
-open import Locales.ScottLocale.Definition pt fe 𝓤
 open import Locales.ScottLocale.Properties pt fe 𝓤
-open import Locales.ScottLocale.ScottLocalesOfAlgebraicDcpos pt fe 𝓤
 open import Locales.ScottLocale.ScottLocalesOfScottDomains pt fe sr 𝓤
 open import Locales.SmallBasis pt fe sr
 open import Locales.Spectrality.SpectralMap pt fe
 open import Locales.TerminalLocale.Properties pt fe sr
 open import NotionsOfDecidability.Decidable
-open import NotionsOfDecidability.SemiDecidable fe pe pt
 open import Slice.Family
 open import UF.Equiv
 open import UF.Logic
 open import UF.Subsingletons-FunExt
-open import UF.Subsingletons-Properties
 open import UF.SubtypeClassifier renaming (⊥ to ⊥ₚ)
 
 open AllCombinators pt fe
@@ -339,46 +331,6 @@ compact Scott opens are _exactly_ the sharp elements.
    ‡ = sharp-implies-admits-decidable-membership-in-compact-scott-opens x
 
 \end{code}
-
-\subsection{A corollary of the characterization}
-
-Because clopens are compact in compact frames, we can also prove that admitting
-decidable membership in Scott clopens is a necessary condition for an element of
-the domain to be sharp.
-
-We do not need this result for the main result in this module, but we note it
-down regardless as it is a potentially useful observation.
-
-\begin{code}
-
- admits-decidable-membership-in-scott-clopens : ⟨ 𝓓 ⟩∙ → Ω (𝓤 ⁺)
- admits-decidable-membership-in-scott-clopens x =
-  Ɐ 𝒦 ꞉ ⟨ 𝒪 Scott⦅𝓓⦆ ⟩ , is-clopen (𝒪 Scott⦅𝓓⦆) 𝒦 ⇒ is-decidableₚ (x ∈ₛ 𝒦)
-
- sharp-implies-admits-decidable-membership-in-scott-clopens
-  : (x : ⟨ 𝓓 ⟩∙)
-  → is-sharp x holds
-  → admits-decidable-membership-in-scott-clopens x holds
- sharp-implies-admits-decidable-membership-in-scott-clopens x 𝓈𝒽 K χ =
-  ψ K κ
-   where
-    ψ : admits-decidable-membership-in-compact-scott-opens x holds
-    ψ = sharp-implies-admits-decidable-membership-in-compact-scott-opens x 𝓈𝒽
-
-    κ : is-compact-open Scott⦅𝓓⦆ K holds
-    κ = clopens-are-compact-in-compact-frames
-         (𝒪 Scott⦅𝓓⦆)
-         Scott⦅𝓓⦆-is-compact
-         K
-         χ
-
-\end{code}
-
-What can be said about the converse of this implication? In other words, what is
-the meaning of the set of elements that admit decidable membership in Scott
-clopens. I do not know the answer yet.
-
-TODO: think more about this.
 
 \section{The equivalence}
 

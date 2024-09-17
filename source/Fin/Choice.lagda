@@ -10,19 +10,13 @@ existence.
 module Fin.Choice where
 
 open import Fin.Order
-open import Fin.Properties
 open import Fin.Type
-open import MLTT.Plus-Properties
 open import MLTT.Spartan
-open import Notation.Order
 open import NotionsOfDecidability.Complemented
 open import NotionsOfDecidability.Decidable
-open import UF.DiscreteAndSeparated
-open import UF.Equiv
 open import UF.FunExt
 open import UF.PropTrunc
 open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
 
 module _ (pt : propositional-truncations-exist) where
 

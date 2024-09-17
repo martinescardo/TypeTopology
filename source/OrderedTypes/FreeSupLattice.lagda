@@ -13,7 +13,6 @@ open import UF.Lower-FunExt
 open import UF.Powerset
 open import UF.PropTrunc
 open import UF.Sets
-open import UF.SubtypeClassifier-Properties
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 

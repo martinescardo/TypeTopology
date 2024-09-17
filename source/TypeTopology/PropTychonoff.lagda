@@ -46,9 +46,7 @@ module TypeTopology.PropTychonoff (fe : FunExt) where
 
 open import MLTT.Two-Properties
 open import TypeTopology.CompactTypes
-open import UF.Base
 open import UF.Equiv
-open import UF.EquivalenceExamples
 open import UF.PropIndexedPiSigma
 open import UF.Subsingletons
 
@@ -295,12 +293,12 @@ proposition P, which is weak excluded middle, which is not provable.
 
 open import UF.ClassicalLogic
 
-compact-prop-tychonoff-gives-WEM : ((X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ )
-                                       → is-prop X
-                                       → ((x : X) → is-compact (Y x))
-                                       → is-compact (Π Y))
-                                 → WEM 𝓤
-compact-prop-tychonoff-gives-WEM {𝓤} {𝓥} τ X X-is-prop = δ γ
+compact-prop-tychonoff-gives-WEM' : ((X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ )
+                                        → is-prop X
+                                        → ((x : X) → is-compact (Y x))
+                                        → is-compact (Π Y))
+                                  → WEM' 𝓤
+compact-prop-tychonoff-gives-WEM' {𝓤} {𝓥} τ X X-is-prop = δ γ
  where
   Y : X → 𝓥 ̇
   Y x = 𝟘
@@ -316,3 +314,6 @@ compact-prop-tychonoff-gives-WEM {𝓤} {𝓥} τ X X-is-prop = δ γ
   δ (inr ϕ) = inr (contrapositive (λ f → 𝟘-elim ∘ f) ϕ)
 
 \end{code}
+
+If we further assume function extensionality, we get WEM from WEM',
+and hence we can replace the conclusion of the above fact by WEM.

@@ -19,8 +19,6 @@ open PropositionalTruncation pt
 open import DomainTheory.Basics.Dcpo pt fe 𝓥
 open import DomainTheory.Basics.Miscelanea pt fe 𝓥
 open import DomainTheory.Basics.Products pt fe
-open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
 
 open DcpoProductsGeneral 𝓥
 

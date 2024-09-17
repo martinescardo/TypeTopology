@@ -2,7 +2,7 @@ Ian Ray, started: 2023-09-12 - updated: 2024-02-05.
 
 A Sup Lattice L is a set with a partial order ≤ that has suprema of 'small'
 types. We will use three universe parameters: 𝓤 for the carrier, 𝓦 for the
-order values and 𝓥 for the families which have suprema. 
+order values and 𝓥 for the families which have suprema.
 
 \begin{code}
 
@@ -10,8 +10,6 @@ order values and 𝓥 for the families which have suprema.
 
 open import MLTT.Spartan
 open import UF.Equiv
-open import UF.Equiv-FunExt
-open import UF.EquivalenceExamples
 open import UF.FunExt
 open import UF.Hedberg
 open import UF.Logic
@@ -19,12 +17,8 @@ open import UF.Powerset-MultiUniverse
 open import UF.PropTrunc
 open import UF.Retracts
 open import UF.Sets
-open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
 open import UF.SubtypeClassifier
 open import UF.Size
-open import UF.SmallnessProperties
-open import UF.UniverseEmbedding
 
 module OrderedTypes.SupLattice
         (pt : propositional-truncations-exist)
@@ -40,7 +34,7 @@ open PropositionalTruncation pt
 
 \end{code}
 
-We commence by defining sup lattices. 
+We commence by defining sup lattices.
 
 \begin{code}
 
@@ -48,8 +42,8 @@ module _ (𝓤 𝓣 𝓥 : Universe) where
 
  sup-lattice-data : 𝓤  ̇ → 𝓤 ⊔ 𝓣 ⁺ ⊔ 𝓥 ⁺  ̇
  sup-lattice-data A = (A → A → Ω 𝓣) × (Fam 𝓥 A → A)
- 
- is-sup-lattice : {A : 𝓤  ̇} → sup-lattice-data A → 𝓤 ⊔ 𝓣 ⊔ 𝓥 ⁺  ̇  
+
+ is-sup-lattice : {A : 𝓤  ̇} → sup-lattice-data A → 𝓤 ⊔ 𝓣 ⊔ 𝓥 ⁺  ̇
  is-sup-lattice {A} (_≤_ , ⋁_) = is-partial-order A _≤_ × suprema
   where
    open Joins _≤_
@@ -88,7 +82,7 @@ partial-orderedness-of (A , (_≤_ , ⋁_) , order , is-lub-of) = order
 reflexivity-of : (L : Sup-Lattice 𝓤 𝓣 𝓥) → is-reflexive (order-of L) holds
 reflexivity-of L = pr₁ (pr₁ (partial-orderedness-of L))
 
-antisymmetry-of : (L : Sup-Lattice 𝓤 𝓣 𝓥) → is-antisymmetric (order-of L) 
+antisymmetry-of : (L : Sup-Lattice 𝓤 𝓣 𝓥) → is-antisymmetric (order-of L)
 antisymmetry-of L = pr₂ (partial-orderedness-of L)
 
 transitivity-of : (L : Sup-Lattice 𝓤 𝓣 𝓥) → is-transitive (order-of L) holds
@@ -145,7 +139,7 @@ module _ where
 \end{code}
 
 We now show that when one subset contains another the join of their total
-spaces are ordered as expected. 
+spaces are ordered as expected.
 
 \begin{code}
 
@@ -181,7 +175,7 @@ module _
         (m : T → ⟨ L ⟩)
         (T-is-small : T is 𝓥 small)
        where
- private 
+ private
   T' : 𝓥  ̇
   T' = (resized T) T-is-small
 
@@ -190,7 +184,7 @@ module _
 
   T'-to-T : T' → T
   T'-to-T = ⌜ T'-≃-T ⌝
- 
+
   T'-to-T-is-equiv : is-equiv T'-to-T
   T'-to-T-is-equiv = ⌜ T'-≃-T ⌝-is-equiv
 
@@ -223,7 +217,7 @@ module _
    I : (s is-an-upper-bound-of (T , m)) holds
    I t = II
     where
-     II : (m t ≤⟨ L ⟩ s) holds 
+     II : (m t ≤⟨ L ⟩ s) holds
      II = transport (λ - → (m - ≤⟨ L ⟩ s) holds)
                     (section-T'-to-T t)
                     (join-is-upper-bound-of L (T' , T'-inclusion) (T-to-T' t))

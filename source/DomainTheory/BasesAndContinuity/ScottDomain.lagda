@@ -17,7 +17,6 @@ open import UF.FunExt
 open import UF.Logic
 open import UF.PropTrunc
 open import UF.SubtypeClassifier
-open import UF.Subsingletons
 
 module DomainTheory.BasesAndContinuity.ScottDomain
         (pt : propositional-truncations-exist)
@@ -28,7 +27,6 @@ module DomainTheory.BasesAndContinuity.ScottDomain
 open import Slice.Family
 
 open import DomainTheory.Basics.Dcpo                   pt fe 𝓥
-open import DomainTheory.BasesAndContinuity.Continuity pt fe 𝓥
 open import DomainTheory.BasesAndContinuity.Bases      pt fe 𝓥
 
 open import Locales.Frame hiding (⟨_⟩)

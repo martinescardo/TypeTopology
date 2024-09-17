@@ -21,7 +21,6 @@ open import MLTT.Spartan
 open import Naturals.Order
 open import Notation.CanonicalMap
 open import Notation.Order
-open import NotionsOfDecidability.Decidable
 open import UF.Base
 open import UF.DiscreteAndSeparated
 open import UF.Embeddings

@@ -7,7 +7,7 @@ Martin Escardo
 module Ordinals.index where
 
 import Ordinals.Arithmetic
-import Ordinals.ArithmeticProperties
+import Ordinals.AdditionProperties
 import Ordinals.Brouwer
 import Ordinals.BuraliForti                   -- by Bezem, Coquand, Dybjer and Escardo.
 import Ordinals.Closure
@@ -20,6 +20,7 @@ import Ordinals.Indecomposable
 import Ordinals.Injectivity
 import Ordinals.LexicographicOrder
 import Ordinals.Maps
+import Ordinals.MultiplicationProperties      -- by de Jong, Kraus, Nordvall Forsberg, and Xu.
 import Ordinals.NotationInterpretation
 import Ordinals.NotationInterpretation0
 import Ordinals.NotationInterpretation1

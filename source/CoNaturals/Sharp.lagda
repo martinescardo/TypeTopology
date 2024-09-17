@@ -44,7 +44,6 @@ open import NotionsOfDecidability.Decidable
 open import UF.DiscreteAndSeparated
 open import UF.Embeddings
 open import UF.Equiv
-open import UF.FunExt
 open import UF.PropTrunc
 open import UF.Subsingletons-FunExt
 
@@ -313,10 +312,10 @@ only-sharp-is-sharp y@(P , φ , P-is-prop) y-is-sharp = V
   α = indicator-map y-is-sharp'
 
   α-property₀ : (n : ℕ) → α n ＝ ₀ → ¬ (ι n ⊑ y)
-  α-property₀ = indicator₀ y-is-sharp'
+  α-property₀ = indicator-property₀ y-is-sharp'
 
   α-property₁ : (n : ℕ) → α n ＝ ₁ → ι n ⊑ y
-  α-property₁ = indicator₁ y-is-sharp'
+  α-property₁ = indicator-property₁ y-is-sharp'
 
   α-property : (n n' : ℕ) → α n ＝ ₁ → α n' ＝ ₁ → n ＝ n'
   α-property n n' e e' = η-bounded y n n' (α-property₁ n e) (α-property₁ n' e')

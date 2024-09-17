@@ -200,6 +200,21 @@ embedding-gives-embedding' {𝓤} {𝓥} {X} {Y} f ise = g
          (center (c x))
          (centrality (c x)))
 
+\end{code}
+
+Added 27 June 2024.
+It follows that if f is an equivalence, then so is ap f.
+It is added here, rather than in UF.EquivalenceExamples, to avoid cyclic module
+dependencies.
+
+\begin{code}
+
+ap-is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+            → is-equiv f
+            → {x x' : X} → is-equiv (ap f {x} {x'})
+ap-is-equiv f e {x} {x'} =
+ embedding-gives-embedding' f (equivs-are-embeddings f e) x x'
+
 embedding-criterion-converse' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                              → is-embedding f
                              → (x' x : X)
@@ -605,6 +620,19 @@ while the composite
 
 is an embedding, the evaluation map isn't.
 
+Added by Ian Ray 22nd August 2024
+
+\begin{code}
+
+equiv-embeds-into-function : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                           → FunExt
+                           → (X ≃ Y) ↪ (X → Y)
+equiv-embeds-into-function fe =
+ (⌜_⌝ , pr₁-is-embedding (λ f → being-equiv-is-prop fe f))
+
+\end{code}
+
+End of addition.
 
 Fixities:
 

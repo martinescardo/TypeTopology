@@ -16,9 +16,7 @@ depend on univalence.
 module UF.UA-FunExt where
 
 open import MLTT.Spartan
-open import UF.Base
 open import UF.Equiv
-open import UF.Equiv-FunExt
 open import UF.FunExt
 open import UF.FunExt-Properties
 open import UF.LeftCancellable
@@ -104,7 +102,6 @@ funext-from-successive-univalence : ∀ 𝓤
 funext-from-successive-univalence 𝓤 = univalence-gives-funext' 𝓤 (𝓤 ⁺)
 
 open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
 
 Ω-ext-from-univalence : is-univalent 𝓤
                       → {p q : Ω 𝓤}

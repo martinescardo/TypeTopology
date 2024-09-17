@@ -18,7 +18,6 @@ open import UF.PropTrunc
 open import Rationals.Type
 open import Rationals.Addition
 open import Rationals.Abs
-open import Rationals.MinMax hiding (min ; max)
 open import Rationals.Multiplication
 open import Rationals.Negation
 open import Rationals.Order
@@ -42,7 +41,6 @@ module Rationals.Limits
  where
 
 open import MetricSpaces.Rationals fe pe pt
-open import MetricSpaces.Type fe pe pt
 
 _⟶_ : (f : ℕ → ℚ) → (L : ℚ) → 𝓤₀ ̇
 f ⟶ L = (ε₊@(ε , _) : ℚ₊) → Σ N ꞉ ℕ , ((n : ℕ) → N ≤ n → abs (f n - L) < ε)

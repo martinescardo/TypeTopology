@@ -15,11 +15,8 @@ satisfies a certain decidability condition).
 {-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
 
 open import MLTT.List hiding ([_])
-open import MLTT.Negation
 open import MLTT.Spartan hiding (𝟚)
 open import Slice.Family
-open import UF.Classifiers
-open import UF.Embeddings
 open import UF.EquivalenceExamples
 open import UF.FunExt
 open import UF.Logic
@@ -27,7 +24,6 @@ open import UF.Powerset-MultiUniverse
 open import UF.PropTrunc
 open import UF.Size
 open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
 open import UF.SubtypeClassifier
 open import UF.Univalence
 
@@ -43,12 +39,10 @@ open import DomainTheory.BasesAndContinuity.Continuity       pt fe 𝓤
 open import DomainTheory.BasesAndContinuity.ScottDomain      pt fe 𝓤
 open import DomainTheory.Basics.Dcpo                         pt fe 𝓤
  renaming (⟨_⟩ to ⟨_⟩∙) hiding   (is-directed)
-open import DomainTheory.Basics.Pointed                      pt fe 𝓤
- renaming (⊥ to ⊥d)
 open import DomainTheory.Basics.WayBelow                     pt fe 𝓤
 open import DomainTheory.Topology.ScottTopology              pt fe 𝓤
 open import DomainTheory.Topology.ScottTopologyProperties    pt fe 𝓤
-open import Locales.Compactness                              pt fe
+open import Locales.Compactness.Definition                              pt fe
  hiding (is-compact)
 open import Locales.Frame                                    pt fe
  hiding (∅)

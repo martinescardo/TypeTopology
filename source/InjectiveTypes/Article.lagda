@@ -219,7 +219,6 @@ open import UF.Base
 open import UF.Embeddings
 open import UF.Equiv
 open import UF.Equiv-FunExt
-open import UF.EquivalenceExamples
 open import UF.FunExt
 open import UF.IdEmbedding
 open import UF.PairFun
@@ -1358,7 +1357,7 @@ ainjective-ntype-characterization : Propositional-resizing
                                   → D is-of-hlevel (succ n)
                                   → ainjective-type D 𝓤 𝓤
                                   ↔ (Σ X ꞉ 𝓤 ̇ , retract D of
-                                                 (X → Σ X ꞉ 𝓤 ̇  , X is-of-hlevel n))
+                                                 (X → Σ X ꞉ 𝓤 ̇ , X is-of-hlevel n))
 ainjective-ntype-characterization {𝓤} R D n h = (a , b)
  where
   a : ainjective-type D 𝓤 𝓤 → Σ X ꞉ 𝓤 ̇ , retract D of (X → ℍ n 𝓤 )

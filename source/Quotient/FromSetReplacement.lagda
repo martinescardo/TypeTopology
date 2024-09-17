@@ -19,12 +19,7 @@ replacement assumption (again, see UF.Size.lagda for details).
 {-# OPTIONS --safe --without-K #-}
 
 open import UF.FunExt
-open import UF.Powerset
 open import UF.PropTrunc
-open import UF.Sets
-open import UF.Sets-Properties
-open import UF.SubtypeClassifier
-open import UF.SubtypeClassifier-Properties
 open import UF.Subsingletons
 
 module Quotient.FromSetReplacement
@@ -35,14 +30,18 @@ module Quotient.FromSetReplacement
 
 open import MLTT.Spartan
 
-open import UF.Base hiding (_≈_)
-open import UF.Subsingletons-FunExt
-open import UF.ImageAndSurjection
 open import UF.Equiv
+open import UF.EquivalenceExamples
+open import UF.Powerset
+open import UF.Sets
+open import UF.Sets-Properties
+open import UF.Size
+open import UF.Subsingletons-FunExt
+open import UF.SubtypeClassifier
+open import UF.SubtypeClassifier-Properties
 
 open import Quotient.Large pt fe pe
 open import Quotient.Type -- using (set-quotients-exist ; is-effective ; EqRel)
-open import UF.Size
 
 open general-set-quotients-exist large-set-quotients
 
@@ -51,9 +50,6 @@ module _
         {X : 𝓤 ̇ }
         (≋@(_≈_ , ≈p , ≈r , ≈s , ≈t) : EqRel {𝓤} {𝓥} X)
        where
-
- open import UF.Equiv
- open import UF.EquivalenceExamples
 
  abstract
   resize-set-quotient : (X / ≋) is (𝓤 ⊔ 𝓥) small

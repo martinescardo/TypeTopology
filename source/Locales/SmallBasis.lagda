@@ -21,7 +21,7 @@ module Locales.SmallBasis (pt : propositional-truncations-exist)
                           (sr : Set-Replacement pt) where
 
 open import Locales.Frame       pt fe hiding (has-directed-basis₀)
-open import Locales.Compactness pt fe
+open import Locales.Compactness.Definition pt fe
 open import Locales.Spectrality.SpectralLocale pt fe
 open import Slice.Family
 open import UF.SubtypeClassifier
@@ -29,8 +29,6 @@ open import UF.ImageAndSurjection pt
 open import UF.Equiv renaming (_■ to _𝒬ℰ𝒟)
 open import MLTT.List using (List; map; _<$>_; []; _∷_)
 open import UF.Univalence using (Univalence)
-open import UF.Sets using (is-set)
-open import UF.Subsingletons-FunExt
 open import Locales.Spectrality.Properties pt fe
 
 open PropositionalTruncation pt

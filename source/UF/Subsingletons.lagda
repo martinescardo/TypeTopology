@@ -4,7 +4,7 @@ In univalent logic, as opposed to Curry-Howard logic, a proposition is
 a subsingleton or a type such that any two of its elements are
 identified.
 
-https://www.newton.ac.uk/files/seminar/20170711100011001-1009756.pdf
+https://www.newton.ac.uk/files/seminar/20170711100011001-1442677.pdf
 https://unimath.github.io/bham2017/uf.pdf
 
 \begin{code}
@@ -280,6 +280,9 @@ used in the following construction.
 
 𝟘-is-not-𝟙 : 𝟘 {𝓤} ≠ 𝟙 {𝓤}
 𝟘-is-not-𝟙 p = 𝟘-elim (Idtofun (p ⁻¹) ⋆)
+
+universe-has-two-distinct-points : has-two-distinct-points (𝓤 ̇ )
+universe-has-two-distinct-points = ((𝟘 , 𝟙) , 𝟘-is-not-𝟙)
 
 \end{code}
 

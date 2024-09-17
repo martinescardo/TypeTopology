@@ -15,7 +15,6 @@ the type of integers.
 {-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
-open import UF.Base
 
 module Circle.Integers where
 

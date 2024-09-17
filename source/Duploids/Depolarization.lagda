@@ -20,8 +20,6 @@ open import MLTT.Spartan
 open import UF.Base
 open import UF.Equiv
 open import UF.PropTrunc
-open import UF.Retracts
-open import UF.HLevels
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 

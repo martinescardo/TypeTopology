@@ -2,7 +2,7 @@ sSetMartin Escardo, Paulo Oliva, 7-22 June 2023
 
 We relate our game trees to Aczel's W type of CZF sets in various ways.
 
-Peter Aczel. "The ?  ̇  Theoretic Interpretation of Constructive Set
+Peter Aczel. "The Type Theoretic Interpretation of Constructive Set
 Theory". Studies in Logic and the Foundations of Mathematics, Volume
 96, 1978, Pages 55-66.  https://doi.org/10.1016/S0049-237X(08)71989-X
 
@@ -70,17 +70,14 @@ there.
 
 \begin{code}
 
-open import Games.TypeTrees using ()
 open import UF.Base
 open import UF.Equiv
 open import UF.EquivalenceExamples
-open import UF.FunExt
 open import UF.PropIndexedPiSigma
 open import UF.Subsingletons
-open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import UF.UA-FunExt
 open import NotionsOfDecidability.Decidable
+
 \end{code}
 
 The following is the type of type trees, whose nodes X represent the
@@ -716,7 +713,6 @@ modification needed to use ℍ instead:
 
 module illustration (R : 𝓤  ̇ ) where
 
- open import GamesExperimental.FiniteHistoryDependent using ()
  open import GamesExperimental.K
 
  open K-definitions R
@@ -769,7 +765,6 @@ the function Ord-to-𝔸 below.
 
 \begin{code}
 
-open import Ordinals.CumulativeHierarchy using ()
 open import Ordinals.Type
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.Underlying
@@ -822,7 +817,7 @@ hereditarily-decidable→ = transfinite-induction-on-OO _ ϕ
     I : (a : ⟨ α ⟩)
         ((b , l) : ⟨ α ↓ a ⟩)
       → is-decidable (∃ (x , m) ꞉ ⟨ α ↓ a ⟩ , x ≺⟨ α ⟩ b )
-    I a (b , l) = map-is-decidable (∥∥-functor (g a b l)) (∥∥-functor (h a b)) (e b)
+    I a (b , l) = map-decidable (∥∥-functor (g a b l)) (∥∥-functor (h a b)) (e b)
 
     II : (a : ⟨ α ⟩) → is-hereditarily-decidable (Ord-to-𝔸 (α ↓ a))
     II a = f a (e a , I a)

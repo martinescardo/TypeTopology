@@ -8,7 +8,6 @@ module UF.SetTrunc where
 
 open import MLTT.Spartan
 open import UF.Sets
-open import UF.Subsingletons
 
 \end{code}
 

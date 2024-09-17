@@ -18,7 +18,6 @@ open import Circle.Integers
 open import Circle.Integers-Properties
 
 open import MLTT.Spartan
-open import UF.Base
 open import UF.Embeddings
 open import UF.Equiv
 open import UF.EquivalenceExamples

@@ -21,6 +21,7 @@ open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.SubtypeClassifier
 open import UF.SubtypeClassifier-Properties
+open import UF.Sets
 
 \end{code}
 
@@ -78,7 +79,7 @@ End of addition.
 
 module Universal (fe : Fun-Ext) where
 
- ∀[꞉]-syntax : (I : 𝓤 ̇ )→ (I → Ω 𝓥) → Ω (𝓤 ⊔ 𝓥)
+ ∀[꞉]-syntax : (I : 𝓤 ̇ ) → (I → Ω 𝓥) → Ω (𝓤 ⊔ 𝓥)
  ∀[꞉]-syntax I P = ((i : I) → P i holds) , γ
   where
    γ : is-prop ((i : I) → P i holds)
@@ -93,6 +94,23 @@ module Universal (fe : Fun-Ext) where
 
  syntax ∀[꞉]-syntax I (λ i → e) = Ɐ i ꞉ I , e
  syntax ∀[]-syntax    (λ i → e) = Ɐ i , e
+
+ ∀₂[꞉]-syntax : (I : 𝓤 ̇ )→ (I → I → Ω 𝓥) → Ω (𝓤 ⊔ 𝓥)
+ ∀₂[꞉]-syntax I P = ((i j : I) → P i j holds) , γ
+  where
+   γ : is-prop ((i j : I) → P i j holds)
+   γ = Π₂-is-prop fe λ i j → holds-is-prop (P i j)
+
+ infixr -1 ∀₂[꞉]-syntax
+
+ syntax ∀₂[꞉]-syntax I (λ i j → e) = Ɐ i j ꞉ I , e
+
+ ∀₃[꞉]-syntax : (I : 𝓤 ̇ )→ (I → I → I → Ω 𝓥) → Ω (𝓤 ⊔ 𝓥)
+ ∀₃[꞉]-syntax I P = Ɐ i ꞉ I , Ɐ j ꞉ I , Ɐ k ꞉ I , P i j k
+
+ infixr -1 ∀₃[꞉]-syntax
+
+ syntax ∀₃[꞉]-syntax I (λ i j k → e) = Ɐ i j k ꞉ I , e
 
 \end{code}
 
@@ -230,7 +248,7 @@ module Truncation (pt : propositional-truncations-exist) where
 
   open PropositionalTruncation pt
 
-  ∥_∥Ω : 𝓤 ̇  → Ω 𝓤
+  ∥_∥Ω : 𝓤 ̇ → Ω 𝓤
   ∥ A ∥Ω = ∥ A ∥ , ∥∥-is-prop
 
   ∥∥Ω-rec : {X : 𝓤  ̇} {P : Ω 𝓥} → (X → P holds) → ∥ X ∥ → P holds
@@ -274,6 +292,23 @@ module Negation-of-equality (fe : Fun-Ext) where
  x ≢ y = (x ≠ y) , Π-is-prop fe (λ _ → 𝟘-is-prop)
 
 \end{code}
+
+\section{Equality}
+
+The following was added by Ayberk Tosun on 2024-05-16.
+
+\begin{code}
+
+module Equality {X : 𝓤  ̇} (s : is-set X) where
+
+ _＝ₚ_ : X → X → Ω 𝓤
+ _＝ₚ_ x y = (x ＝ y) , s
+
+ infix 0 _＝ₚ_
+
+\end{code}
+
+End of addition.
 
 \section{A module for importing all combinators}
 
