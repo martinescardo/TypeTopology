@@ -41,9 +41,10 @@ open import MLTT.Sigma
 open import MLTT.List
 
 open import Ordinals.Arithmetic fe
-open import Ordinals.ArithmeticProperties ua
+open import Ordinals.AdditionProperties ua
 open import Ordinals.Equivalence
 open import Ordinals.Maps
+open import Ordinals.MultiplicationProperties ua
 open import Ordinals.Notions
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.Type
@@ -1189,7 +1190,7 @@ And conversely...
                            ((λ _ → ⋆) , λ _ → (≃ₒ-refl 𝟘ₒ))
 
 𝟘^-succ-spec : (β : Ordinal 𝓤) → 𝟘^ (β +ₒ 𝟙ₒ) ＝ (𝟘^ β) ×ₒ 𝟘ₒ {𝓤}
-𝟘^-succ-spec {𝓤} β = eq ∙ ×ₒ-zero-right (𝟘^ β) ⁻¹
+𝟘^-succ-spec {𝓤} β = eq ∙ ×ₒ-𝟘ₒ-right (𝟘^ β) ⁻¹
     where
        f : (β +ₒ 𝟙ₒ) ≃ₒ 𝟘ₒ → 𝟘
        f e = ≃ₒ-to-fun (β +ₒ 𝟙ₒ) 𝟘ₒ e (inr ⋆)

@@ -44,9 +44,10 @@ open import MLTT.Sigma
 open import MLTT.List
 
 open import Ordinals.Arithmetic fe
-open import Ordinals.ArithmeticProperties ua
+open import Ordinals.AdditionProperties ua
 open import Ordinals.Equivalence
 open import Ordinals.Maps
+open import Ordinals.MultiplicationProperties ua
 open import Ordinals.Notions
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.Type
@@ -355,7 +356,7 @@ exp-+-distributes {𝓤} α β =
                        (sup-is-upper-bound _ (inr (inr c)))
 
      II = exp α β ×ₒ exp α γ ＝⟨ ap (exp α β ×ₒ_) (exp-behaviour α γ) ⟩
-          exp α β ×ₒ (sup (cases (λ _ → 𝟙ₒ) (λ c → exp α (γ ↓ c) ×ₒ α))) ＝⟨ ×ₒ-sup pt sr (exp α β) _ ⟩
+          exp α β ×ₒ (sup (cases (λ _ → 𝟙ₒ) (λ c → exp α (γ ↓ c) ×ₒ α))) ＝⟨ ×ₒ-preserves-suprema pt sr (exp α β) _ ⟩
           sup (λ i → exp α β ×ₒ (cases (λ _ → 𝟙ₒ) (λ c → exp α (γ ↓ c) ×ₒ α)) i) ＝⟨ ap sup (dfunext fe' h) ⟩
           sup (cases (λ _ → exp α β) (λ c → exp α (β +ₒ (γ ↓ c)) ×ₒ α)) ∎
       where
@@ -403,7 +404,7 @@ iterated-exp-is-exp-by-×ₒ {𝓤} α β =
           where
            eq = exp (exp α β) (γ ↓ c) ×ₒ exp α β ＝⟨ ap (_×ₒ exp α β) (IH c) ⟩
                 exp α (β ×ₒ (γ ↓ c)) ×ₒ exp α β  ＝⟨ (exp-+-distributes α (β ×ₒ (γ ↓ c)) β) ⁻¹ ⟩
-                exp α ((β ×ₒ (γ ↓ c)) +ₒ β)      ＝⟨ ap (exp α) ((×ₒ-succ β (γ ↓ c)) ⁻¹) ⟩
+                exp α ((β ×ₒ (γ ↓ c)) +ₒ β)      ＝⟨ ap (exp α) ((×ₒ-successor β (γ ↓ c)) ⁻¹) ⟩
                 exp α (β ×ₒ ((γ ↓ c) +ₒ 𝟙ₒ))     ∎
      III : exp α (β ×ₒ γ) ⊴ exp (exp α β) γ
      III = transport⁻¹ (_⊴ exp (exp α β) γ) (exp-behaviour α (β ×ₒ γ)) III'
@@ -418,7 +419,7 @@ iterated-exp-is-exp-by-×ₒ {𝓤} α β =
          ub (inl ⋆)       = exp-has-least-element (exp α β) γ
          ub (inr (b , c)) = transport⁻¹ (_⊴ exp (exp α β) γ) eq IV
           where
-           eq = exp α ((β ×ₒ γ) ↓ (b , c)) ×ₒ α                 ＝⟨ ap (λ - → exp α - ×ₒ α) (×ₒ-↓ β γ b c) ⟩
+           eq = exp α ((β ×ₒ γ) ↓ (b , c)) ×ₒ α                 ＝⟨ ap (λ - → exp α - ×ₒ α) (×ₒ-↓ β γ) ⟩
                 exp α ((β ×ₒ (γ ↓ c)) +ₒ (β ↓ b)) ×ₒ α          ＝⟨ ap (_×ₒ α) (exp-+-distributes α (β ×ₒ (γ ↓ c)) (β ↓ b)) ⟩
                 ((exp α (β ×ₒ (γ ↓ c))) ×ₒ exp α (β ↓ b)) ×ₒ α  ＝⟨ ap (λ - → (- ×ₒ exp α (β ↓ b)) ×ₒ α) ((IH c) ⁻¹) ⟩
                 (exp (exp α β) (γ ↓ c) ×ₒ exp α (β ↓ b)) ×ₒ α   ＝⟨ ×ₒ-assoc (exp (exp α β) (γ ↓ c)) (exp α (β ↓ b)) α ⟩

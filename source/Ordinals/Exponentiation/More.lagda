@@ -45,9 +45,7 @@ private
 open import MLTT.Plus-Properties
 open import MLTT.Spartan hiding (cases ; Cases)
 open import MLTT.Sigma
--- open import Notation.CanonicalMap
 open import Ordinals.Arithmetic fe
-open import Ordinals.ArithmeticProperties ua
 open import Ordinals.ConvergentSequence ua
 open import Ordinals.Equivalence
 open import Ordinals.Maps
