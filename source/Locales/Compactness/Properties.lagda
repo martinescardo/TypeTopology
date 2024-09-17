@@ -44,7 +44,7 @@ open import UF.Equiv hiding (_■)
 open import UF.EquivalenceExamples
 open import UF.ImageAndSurjection pt
 open import UF.Logic
-open import UF.Powerset-Fin pt hiding (⟨_⟩)
+open import UF.Powerset-Fin pt
 open import UF.Powerset-MultiUniverse
 open import UF.Sets-Properties
 
@@ -370,8 +370,7 @@ contains at least one upper bound of every Kuratowski-finite subset.
   → (P ⊆ χ∙ S)
   → is-Kuratowski-finite-subset P
   → has-upper-bound-in P S holds
- directed-families-have-upper-bounds-of-Kuratowski-finite-subsets S (ι , υ) P ψ 𝕗 =
-  Kuratowski-finite-subset-induction pe fe ⟨ 𝒪 X ⟩ σ R i β γ δ (P , 𝕗) (⊆-refl P)
+ directed-families-have-upper-bounds-of-Kuratowski-finite-subsets S (ι , υ) P ψ 𝕗 = II
    where
     R : 𝓚 ⟨ 𝒪 X ⟩ → 𝓤 ⁺  ̇
     R (Q , φ) = (Q ⊆ P) → has-upper-bound-in Q S holds
@@ -427,6 +426,12 @@ contains at least one upper bound of every Kuratowski-finite subset.
              ♠ (inr μ) = U         ≤⟨ ξ U μ ⟩
                          S [ j ]   ≤⟨ p₂    ⟩
                          S [ k ]   ■
+
+    I : (A : 𝓚 ⟨ 𝒪 X ⟩) → R A
+    I = Kuratowski-finite-subset-induction pe fe ⟨ 𝒪 X ⟩ σ R i β γ δ
+
+    II : has-upper-bound-in P S holds
+    II = I (P , 𝕗) (⊆-refl P)
 
 \end{code}
 

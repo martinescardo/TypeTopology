@@ -1177,7 +1177,7 @@ second-necessary-condition-for-the-explicit-existence-of-an-extension g (f , e) 
   III b n = f (max (ι m) (ι n)) ＝⟨ ap f ((max-fin fe m n)⁻¹) ⟩
             f (ι (maxℕ m n))    ＝⟨ e (maxℕ m n) ⟩
             g (maxℕ m n)        ＝⟨ b n ⟩
-            g                   m ＝⟨ e m ⁻¹ ⟩
+            g m                 ＝⟨ e m ⁻¹ ⟩
             f (ι m)             ∎
 
   IV : is-decidable (is-modulus-of-eventual-constancy g m)
