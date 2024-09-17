@@ -300,3 +300,85 @@ all-types-are-¬¬-decidable X h = claim₂ claim₁
 ¬¬-stable-if-decidable X (inr nx) = λ h → 𝟘-elim (h nx)
 
 \end{code}
+
+Added by Martin Escardo 17th September 2024. The propositional
+truncation of a decidable type can be constructed no assumptions and
+it has split support.
+
+\begin{code}
+
+∥_∥⟨_⟩ : (X : 𝓤 ̇) → is-decidable X → 𝓤₀ ̇
+∥ X ∥⟨ inl x ⟩ = 𝟙
+∥ X ∥⟨ inr ν ⟩ = 𝟘
+
+∥∥⟨⟩-is-prop : {X : 𝓤 ̇ } (δ : is-decidable X) → is-prop ∥ X ∥⟨ δ ⟩
+∥∥⟨⟩-is-prop (inl x) = 𝟙-is-prop
+∥∥⟨⟩-is-prop (inr ν) = 𝟘-is-prop
+
+∣_∣⟨_⟩ : {X : 𝓤 ̇ } → X → (δ : is-decidable X) → ∥ X ∥⟨ δ ⟩
+∣ x ∣⟨ inl _ ⟩ = ⋆
+∣ x ∣⟨ inr ν ⟩ = ν x
+
+\end{code}
+
+Notice that induction principle doesn't require the family A to be
+prop-valued.
+
+\begin{code}
+
+∥∥⟨⟩-induction : {X : 𝓤 ̇ } (δ : is-decidable X)
+                 (A : ∥ X ∥⟨ δ ⟩ → 𝓥 ̇ )
+               → ((x : X) → A ∣ x ∣⟨ δ ⟩)
+               → (s : ∥ X ∥⟨ δ ⟩) → A s
+∥∥⟨⟩-induction (inl x) A f ⋆ = f x
+∥∥⟨⟩-induction (inr ν) A f s = 𝟘-elim s
+
+\end{code}
+
+But the induction equation does.
+
+\begin{code}
+
+∥∥⟨⟩-induction-equation : {X : 𝓤 ̇ }
+                          (δ : is-decidable X)
+                          (A : ∥ X ∥⟨ δ ⟩ → 𝓥 ̇ )
+                        → ((s : ∥ X ∥⟨ δ ⟩) → is-prop (A s))
+                        → (f : (x : X) → A ∣ x ∣⟨ δ ⟩)
+                          (x : X)
+                        → ∥∥⟨⟩-induction δ A f ∣ x ∣⟨ δ ⟩ ＝ f x
+∥∥⟨⟩-induction-equation (inl x) A A-is-prop f x' = A-is-prop ⋆ (f x) (f x')
+∥∥⟨⟩-induction-equation (inr ν) A A-is-prop f x  = 𝟘-elim (ν x)
+
+∥∥⟨⟩-rec : {X : 𝓤 ̇ } (δ : is-decidable X) {A : 𝓥 ̇ }
+         → (X → A) → ∥ X ∥⟨ δ ⟩ → A
+∥∥⟨⟩-rec δ {A} = ∥∥⟨⟩-induction δ (λ _ → A)
+
+∣∣⟨⟩-exit : {X : 𝓤 ̇} (δ : is-decidable X) → ∥ X ∥⟨ δ ⟩ → X
+∣∣⟨⟩-exit δ = ∥∥⟨⟩-rec δ id
+
+∣∣⟨⟩-exit-is-section : {X : 𝓤 ̇} (δ : is-decidable X)
+                     → (s : ∥ X ∥⟨ δ ⟩) → ∣ ∣∣⟨⟩-exit δ s ∣⟨ δ ⟩ ＝ s
+∣∣⟨⟩-exit-is-section (inl x) ⋆ = refl
+∣∣⟨⟩-exit-is-section (inr ν) s = 𝟘-elim s
+
+infix 0 ∥_∥⟨_⟩
+infix 0 ∣_∣⟨_⟩
+
+module propositional-truncation-of-decidable-type
+        (pt : propositional-truncations-exist)
+       where
+
+ open propositional-truncations-exist pt public
+
+ module _ {X : 𝓤 ̇ } (δ : is-decidable X) where
+
+  ∥∥⟨⟩-to-∥∥ : ∥ X ∥⟨ δ ⟩ → ∥ X ∥
+  ∥∥⟨⟩-to-∥∥ = ∥∥⟨⟩-rec δ ∣_∣
+
+  ∥∥-to-∥∥⟨⟩ : ∥ X ∥ → ∥ X ∥⟨ δ ⟩
+  ∥∥-to-∥∥⟨⟩ = ∥∥-rec (∥∥⟨⟩-is-prop δ) ∣_∣⟨ δ ⟩
+
+  decidable-types-have-split-support : ∥ X ∥ → X
+  decidable-types-have-split-support s = ∣∣⟨⟩-exit δ (∥∥-to-∥∥⟨⟩ s)
+
+\end{code}
