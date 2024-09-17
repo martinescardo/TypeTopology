@@ -22,6 +22,7 @@ open import UF.FunExt
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.UA-FunExt
+open import UF.ClassicalLogic
 
 private
  fe : FunExt
@@ -31,6 +32,7 @@ private
  fe' {𝓤} {𝓥} = fe 𝓤 𝓥
 
 open import MLTT.Spartan
+open import MLTT.Plus-Properties
 
 open import Ordinals.Arithmetic fe
 open import Ordinals.Equivalence
@@ -574,3 +576,93 @@ operation even though they are not constructively sufficient to define it.
 The above should be contrasted to the situation for addition where we do not
 know how to prove such a result since only *inhabited* suprema are preserved by
 addition.
+
+Added 17 September 2024 by Fredrik Nordvall Forsberg:
+
+Multiplication being monotone in the left argument is a constructive taboo.
+
+\begin{code}
+
+×ₒ-minimal : (α : Ordinal 𝓤)(β : Ordinal 𝓥)
+                   → (a₀ : ⟨ α ⟩) → (b₀ : ⟨ β ⟩)
+                   → is-least α a₀ → is-least β b₀
+                   → is-minimal (α ×ₒ β) (a₀ , b₀)
+×ₒ-minimal α β a₀ b₀ a₀-least b₀-least (a , b) (inl l)
+ = irrefl β b (b₀-least b b l)
+×ₒ-minimal α β a₀ b₀ a₀-least b₀-least (a , b) (inr (refl , l))
+ = irrefl α a (a₀-least a a l)
+
+×ₒ-left-monotonicity-implies-LEM
+  : ((α β : Ordinal 𝓤)(γ : Ordinal 𝓥) → α ⊴ β → (α ×ₒ γ) ⊴ (β ×ₒ γ))
+  → EM 𝓤
+×ₒ-left-monotonicity-implies-LEM hyp P isprop-P = III (f (⋆ , inr ⋆)) refl
+ where
+  α = 𝟙ₒ
+  β = 𝟙ₒ +ₒ prop-ordinal P isprop-P
+  γ = 𝟚ₒ
+
+  I : α ⊴ β
+  I = ≼-gives-⊴ α β (transport (_≼ β)
+                               (𝟘ₒ-right-neutral 𝟙ₒ)
+                               (+ₒ-right-monotone 𝟙ₒ 𝟘ₒ (prop-ordinal P isprop-P)
+                                 (𝟘ₒ-least _)))
+
+  II : (α ×ₒ γ) ⊴ (β ×ₒ γ)
+  II = hyp α β γ I
+  f = pr₁ II
+  f-sim = pr₂ II
+  f-initial-segment = pr₁ f-sim
+
+  f-preserves-least : f (⋆ , inl ⋆) ＝ (inl ⋆ , inl ⋆)
+  f-preserves-least = initial-segments-preserve-least (α ×ₒ γ) (β ×ₒ γ)
+                        (⋆ , inl ⋆)
+                        (inl ⋆ , inl ⋆)
+                        f f-initial-segment
+                        (minimal-is-least _ _
+                          (×ₒ-minimal α γ ⋆ (inl ⋆)
+                            ⋆-least
+                            (left-preserves-least 𝟙ₒ 𝟙ₒ ⋆ ⋆-least)))
+                        (minimal-is-least _ _
+                          (×ₒ-minimal β γ (inl ⋆) (inl ⋆)
+                            (left-preserves-least 𝟙ₒ (prop-ordinal P isprop-P)
+                                                  ⋆ ⋆-least)
+                            (left-preserves-least 𝟙ₒ 𝟙ₒ ⋆ ⋆-least)))
+   where
+    ⋆-least : is-least (𝟙ₒ {𝓤}) ⋆
+    ⋆-least ⋆ ⋆ = 𝟘-elim
+
+  III : (x : ⟨ β ×ₒ γ ⟩) → f (⋆ , inr ⋆) ＝ x → P + ¬ P
+  III (inl ⋆ , inl ⋆) r = 𝟘-elim (+disjoint' III₂)
+   where
+    III₁ = f (⋆ , inr ⋆)   ＝⟨ r ⟩
+           (inl ⋆ , inl ⋆) ＝⟨ f-preserves-least ⁻¹ ⟩
+           f (⋆ , inl ⋆)   ∎
+    III₂ : inr ⋆ ＝ inl ⋆
+    III₂ = ap pr₂ (simulations-are-lc _ _ f f-sim III₁)
+
+  III (inl ⋆ , inr ⋆) r = inr (λ p → 𝟘-elim (+disjoint (III₆ p)))
+   where
+    III₃ : (p : P)
+         → Σ x ꞉ ⟨ 𝟙ₒ ×ₒ 𝟚ₒ ⟩ ,
+             (x ≺⟨ 𝟙ₒ ×ₒ 𝟚ₒ ⟩ (⋆ , inr ⋆)) × (f x ＝ (inr p , inl ⋆))
+    III₃ p = f-initial-segment
+               (⋆ , inr ⋆) (inr p , inl ⋆)
+               (transport⁻¹ (λ - → (inr p , inl ⋆) ≺⟨ β ×ₒ γ ⟩ - ) r (inl ⋆))
+    III₄ : (p : P)
+         → Σ x ꞉ ⟨ 𝟙ₒ ×ₒ 𝟚ₒ ⟩ ,
+             (x ≺⟨ 𝟙ₒ ×ₒ 𝟚ₒ ⟩ (⋆ , inr ⋆)) × (f x ＝ (inr p , inl ⋆))
+         → f (⋆ , inl ⋆) ＝ (inr p , inl ⋆)
+    III₄ p ((⋆ , inl ⋆) , l , q) = q
+    III₄ p ((⋆ , inr ⋆) , l , q) = 𝟘-elim (irrefl (𝟙ₒ ×ₒ 𝟚ₒ) (⋆ , inr ⋆) l)
+
+    III₅ : (p : P) → (inl ⋆ , inl ⋆) ＝ (inr p , inl ⋆)
+    III₅ p = (inl ⋆ , inl ⋆) ＝⟨ f-preserves-least ⁻¹ ⟩
+             f (⋆ , inl ⋆)   ＝⟨ III₄ p (III₃ p) ⟩
+             (inr p , inl ⋆) ∎
+
+    III₆ : (p : P) → inl ⋆ ＝ inr p
+    III₆ p = ap pr₁ (III₅ p)
+
+  III (inr p , c) r = inl p
+
+\end{code}
