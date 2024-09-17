@@ -592,8 +592,9 @@ Multiplication being monotone in the left argument is a constructive taboo.
 ×ₒ-minimal α β a₀ b₀ a₀-least b₀-least (a , b) (inr (refl , l))
  = irrefl α a (a₀-least a a l)
 
-×ₒ-left-monotonicity-implies-LEM : ((α β : Ordinal 𝓤)(γ : Ordinal 𝓥)
-                                 → α ⊴ β → (α ×ₒ γ) ⊴ (β ×ₒ γ)) → EM 𝓤
+×ₒ-left-monotonicity-implies-LEM
+  : ((α β : Ordinal 𝓤)(γ : Ordinal 𝓥) → α ⊴ β → (α ×ₒ γ) ⊴ (β ×ₒ γ))
+  → EM 𝓤
 ×ₒ-left-monotonicity-implies-LEM hyp P isprop-P = III (f (⋆ , inr ⋆)) refl
  where
   α = 𝟙ₒ
