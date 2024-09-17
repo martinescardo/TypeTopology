@@ -302,8 +302,8 @@ all-types-are-¬¬-decidable X h = claim₂ claim₁
 \end{code}
 
 Added by Martin Escardo 17th September 2024. The propositional
-truncation of a decidable type can be constructed no assumptions and
-it has split support.
+truncation of a decidable type can be constructed with no assumptions
+and it has split support.
 
 \begin{code}
 
