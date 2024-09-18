@@ -1350,8 +1350,9 @@ function extensionality, the above specializes to
 The above characterizes the type "ℕ-extension g" up to logical
 equivalence, under th assumption of Markov's Principle.
 
-TODO. Is there a nice characterization "Nice g" of the type "ℕ-extension g",
-preferably without assuming MP, such that
+TODO. Is there a nice characterization "Nice g" of the type
+"ℕ-extension g", preferably without assuming MP, up to type
+equivalence, rather than just logical equivalence, such that
 
  (ℕ∞ → ℕ) ≃ Σ g ꞉ (ℕ → ℕ) , Nice g?
 
