@@ -355,3 +355,8 @@ module exit-truncations' (pt : propositional-truncations-exist) where
    (minimal-pair A δ , minimal-pair-wconstant A δ A-prop-valued)
 
 \end{code}
+
+This is not quite a generalization of the previous result, because the
+previous result doesn't have the assumption that A is prop-valued.
+
+TODO. Can we remove the prop-valuedness assumption?
