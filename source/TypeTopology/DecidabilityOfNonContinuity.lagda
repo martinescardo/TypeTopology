@@ -1327,3 +1327,33 @@ necessary-and-sufficient-condition-for-explicit-extension-under-MP mp g
 
 TODO. Find a necessary and sufficient condition without assuming
 Markov's Principle. We leave this as an open problem.
+
+Added 18th September 2024. There is another way of looking at the
+above development, which gives rise to a further question.
+
+We have the restriction map r : (ℕ → ℕ∞) → (ℕ → ℕ) defined by r f ＝ f ∘ ι.
+
+For any map f : X → Y we have that
+
+ X ≃ Σ y ꞉ Y , Σ x ꞉ X , f x ＝ y
+   ＝ Σ y ꞉ Y , fiber f y.
+
+With X = (ℕ → ℕ∞) and Y = (ℕ → ℕ) and f = r, the definition of
+_extends_, together with the fact that _∼_ coincides with _＝_ under
+function extensionality, the above specializes to
+
+ (ℕ∞ → ℕ) ≃ Σ g ꞉ (ℕ → ℕ) , Σ f ꞉ (ℕ∞ → ℕ) , f ∘ ι ＝ g
+          ≃ Σ g ꞉ (ℕ → ℕ) , Σ f ꞉ (ℕ∞ → ℕ) , f ∘ ι ∼ g
+          ≃ Σ g ꞉ (ℕ → ℕ) , Σ f ꞉ (ℕ∞ → ℕ) , f extends g
+          ≃ Σ g ꞉ (ℕ → ℕ) , ℕ-extension g
+
+The above characterizes the type "ℕ-extension g" up to logical
+equivalence, under th assumption of Markov's Principle.
+
+TODO. Is there a nice characterization "Nice g" of the type "ℕ-extension g",
+preferably without assuming MP, such that
+
+ (ℕ∞ → ℕ) ≃ Σ g ꞉ (ℕ → ℕ) , Nice g?
+
+The idea is that such a nice characterization should not mention ℕ∞,
+and in some sense should be an "intrinsic" property of g.
