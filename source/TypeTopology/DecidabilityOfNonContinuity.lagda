@@ -1357,4 +1357,4 @@ equivalence, rather than just logical equivalence, such that
  (ℕ∞ → ℕ) ≃ Σ g ꞉ (ℕ → ℕ) , Nice g?
 
 The idea is that such a nice characterization should not mention ℕ∞,
-and in some sense should be an "intrinsic" property of g.
+and in some sense should be an "intrinsic" property of / data for g.
