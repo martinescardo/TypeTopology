@@ -56,6 +56,17 @@ open PropositionalTruncation pt
 
 \section{Preliminaries}
 
+We define a frame instance of the `Underlying-Type` typeclass to avoid name
+clashes.
+
+\begin{code}
+
+instance
+ underlying-type-of-frame : Underlying-Type (Frame 𝓤 𝓥 𝓦) (𝓤  ̇)
+ ⟨_⟩ {{underlying-type-of-frame}} (A , _) = A
+
+\end{code}
+
 Given a family `S`, we denote the type of its subfamilies by `SubFam S`.
 
 \begin{code}
