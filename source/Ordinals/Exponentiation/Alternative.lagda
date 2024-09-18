@@ -450,51 +450,100 @@ Added 17 September 2024 by Tom de Jong.
 
 \begin{code}
 
+exp-⊲-lemma : (α β : Ordinal 𝓤)
+            → 𝟙ₒ ⊲ α
+            → {b : ⟨ β ⟩} → exp α (β ↓ b) ⊲ exp α β
+exp-⊲-lemma {𝓤} α β (a₀ , e) {b} = x , (eq' ⁻¹ ∙ eq)
+ where
+  ⊥ : ⟨ exp α (β ↓ b) ⟩
+  ⊥ = pr₁ (𝟘ₒ-initial-segment-of-exp α (β ↓ b))
+
+  ⊥-is-least : (exp α (β ↓ b) ↓ ⊥) ＝ 𝟘ₒ
+  ⊥-is-least = (pr₂ (𝟘ₒ-initial-segment-of-exp α (β ↓ b))) ⁻¹
+
+  s : Ordinal 𝓤
+  s = sup (cases (λ _ → 𝟙ₒ) (λ b' → exp α (β ↓ b') ×ₒ α))
+
+  x' : ⟨ s ⟩
+  x' = [ exp α (β ↓ b) ×ₒ α , s ]⟨ sup-is-upper-bound _ (inr b) ⟩ (⊥ , a₀)
+
+  eq' : s ↓ x' ＝ exp α (β ↓ b)
+  eq' = s ↓ x' ＝⟨ initial-segment-of-sup-at-component _ (inr b) (⊥ , a₀) ⟩
+        (exp α (β ↓ b) ×ₒ α) ↓ (⊥ , a₀) ＝⟨ ×ₒ-↓ (exp α (β ↓ b)) α ⟩
+        (exp α (β ↓ b) ×ₒ (α ↓ a₀)) +ₒ (exp α (β ↓ b) ↓ ⊥) ＝⟨ ap ((exp α (β ↓ b) ×ₒ (α ↓ a₀)) +ₒ_) ⊥-is-least ⟩
+        (exp α (β ↓ b) ×ₒ (α ↓ a₀)) +ₒ 𝟘ₒ ＝⟨ 𝟘ₒ-right-neutral (exp α (β ↓ b) ×ₒ (α ↓ a₀)) ⟩
+        exp α (β ↓ b) ×ₒ (α ↓ a₀) ＝⟨ ap (exp α (β ↓ b) ×ₒ_) (e ⁻¹) ⟩
+        exp α (β ↓ b) ×ₒ 𝟙ₒ ＝⟨ 𝟙ₒ-right-neutral-×ₒ (exp α (β ↓ b)) ⟩
+        exp α (β ↓ b) ∎
+
+  x : ⟨ exp α β ⟩
+  x = idtofun' (ap ⟨_⟩ (exp-behaviour α β ⁻¹)) x'
+
+  eq : s ↓ x' ＝ exp α β ↓ x
+  eq = lemma s (exp α β) (exp-behaviour α β ⁻¹)
+   where
+    -- TODO: Upstream
+    lemma : (α' β' : Ordinal 𝓤) (e : α' ＝ β') {a : ⟨ α' ⟩}
+          → α' ↓ a ＝ β' ↓ idtofun' (ap ⟨_⟩ e) a
+    lemma α' β' refl = refl
+
 exp-strictly-monotone : (α β γ : Ordinal 𝓤)
                       → 𝟙ₒ ⊲ α → β ⊲ γ → exp α β ⊲ exp α γ
-exp-strictly-monotone {𝓤} α β γ (a₀ , e) (c , refl) =
- x , (eq' ⁻¹ ∙ eq)
-  where
-   ⊥ : ⟨ exp α (γ ↓ c) ⟩
-   ⊥ = pr₁ (𝟘ₒ-initial-segment-of-exp α (γ ↓ c))
-
-   ⊥-is-least : (exp α (γ ↓ c) ↓ ⊥) ＝ 𝟘ₒ
-   ⊥-is-least = (pr₂ (𝟘ₒ-initial-segment-of-exp α (γ ↓ c))) ⁻¹
-
-   s : Ordinal 𝓤
-   s = sup (cases (λ _ → 𝟙ₒ) (λ c' → exp α (γ ↓ c') ×ₒ α))
-
-   x' : ⟨ s ⟩
-   x' = [ exp α (γ ↓ c) ×ₒ α , s ]⟨ sup-is-upper-bound _ (inr c) ⟩ (⊥ , a₀)
-
-   eq' : s ↓ x' ＝ exp α (γ ↓ c)
-   eq' = s ↓ x' ＝⟨ initial-segment-of-sup-at-component _ (inr c) (⊥ , a₀) ⟩
-         (exp α (γ ↓ c) ×ₒ α) ↓ (⊥ , a₀) ＝⟨ ×ₒ-↓ (exp α (γ ↓ c)) α ⟩
-         (exp α (γ ↓ c) ×ₒ (α ↓ a₀)) +ₒ (exp α (γ ↓ c) ↓ ⊥) ＝⟨ ap ((exp α (γ ↓ c) ×ₒ (α ↓ a₀)) +ₒ_) ⊥-is-least ⟩
-         (exp α (γ ↓ c) ×ₒ (α ↓ a₀)) +ₒ 𝟘ₒ ＝⟨ 𝟘ₒ-right-neutral (exp α (γ ↓ c) ×ₒ (α ↓ a₀)) ⟩
-         exp α (γ ↓ c) ×ₒ (α ↓ a₀) ＝⟨ ap (exp α (γ ↓ c) ×ₒ_) (e ⁻¹) ⟩
-         exp α (γ ↓ c) ×ₒ 𝟙ₒ ＝⟨ 𝟙ₒ-right-neutral-×ₒ (exp α (γ ↓ c)) ⟩
-         exp α (γ ↓ c) ∎
-
-   x : ⟨ exp α γ ⟩
-   x = idtofun' (ap ⟨_⟩ (exp-behaviour α γ ⁻¹)) x'
-
-   eq : s ↓ x' ＝ exp α γ ↓ x
-   eq = lemma s (exp α γ) (exp-behaviour α γ ⁻¹)
-    where
-     -- TODO: Upstream
-     lemma : (α' β' : Ordinal 𝓤) (e : α' ＝ β') {a : ⟨ α' ⟩}
-           → α' ↓ a ＝ β' ↓ idtofun' (ap ⟨_⟩ e) a
-     lemma α' β' refl = refl
+exp-strictly-monotone {𝓤} α β γ h (c , refl) = exp-⊲-lemma α γ h
 
 {-
-exp-order-reflecting-exponent : (α β γ : Ordinal 𝓤)
-                              → exp α β ⊲ exp α γ → β ⊲ γ
-exp-order-reflecting-exponent = ?
+For proving the following we should maybe follow a strategy similar to the one
+we had for proving left cancellability of multiplication. The idea/hope would be
+that
+  if 𝟙 ＝ α ↓ a₀, then a simulation f : exp α β ⊴ exp α γ
+  satisfies f [b , ⊥ , a₀] = [c , ⊥ , a₀] for some c : γ
+  (or maybe more generally for any a : α?)
+Via the construction of exp-⊲-lemma, this should give
+  exp α (β ↓ b) ⊴ exp α (γ ↓ c)
+and so
+  (β ↓ b) ⊴ (γ ↓ c) by induction
+and hence
+  β ⊴ γ.
 
 exp-cancellable-exponent : (α β γ : Ordinal 𝓤)
                          → 𝟙ₒ ⊲ α → exp α β ＝ exp α γ → β ＝ γ
 exp-cancellable-exponent = ?
 -}
+
+-- Some failed attemps
+
+{-
+exp-order-reflecting-exponent : (α β γ : Ordinal 𝓤)
+                              → 𝟙ₒ ⊲ α → exp α β ⊲ exp α γ → β ⊲ γ
+exp-order-reflecting-exponent {𝓤} α = transfinite-induction-on-OO _ I
+ where
+  I : (β : Ordinal 𝓤)
+    → ((b : ⟨ β ⟩ ) (γ : Ordinal 𝓤) → 𝟙ₒ ⊲ α → exp α (β ↓ b) ⊲ exp α γ → (β ↓ b) ⊲ γ)
+    → (γ : Ordinal 𝓤) → 𝟙ₒ ⊲ α → exp α β ⊲ exp α γ → β ⊲ γ
+  I β IH γ h l = {!!}
+   where
+    II : (b : ⟨ β ⟩) → exp α (β ↓ b) ⊲ exp α γ
+    II b = ⊲-is-transitive (exp α (β ↓ b)) (exp α β) (exp α γ) (exp-strictly-monotone α (β ↓ b) β h (b , refl)) l
+    III : (b : ⟨ β ⟩) → (β ↓ b) ⊲ γ
+    III b = IH b γ h (II b)
+
+exp-weak-order-reflecting-exponent : (α β γ : Ordinal 𝓤)
+                                   → 𝟙ₒ ⊲ α → exp α β ⊴ exp α γ → β ⊴ γ
+exp-weak-order-reflecting-exponent {𝓤} α = transfinite-induction-on-OO _ I
+ where
+  I : (β : Ordinal 𝓤)
+    → ((b : ⟨ β ⟩) (γ : Ordinal 𝓤) → 𝟙ₒ ⊲ α → exp α (β ↓ b) ⊴ exp α γ → (β ↓ b) ⊴ γ)
+    → (γ : Ordinal 𝓤) → 𝟙ₒ ⊲ α → exp α β ⊴ exp α γ → β ⊴ γ
+  I β IH γ (a₀ , e) l = to-⊴ β γ II
+   where
+    IV : (b : ⟨ β ⟩) → (β ↓ b) ⊴ {!!}
+    IV b = IH b {!!} (a₀ , e) {!!}
+    III : (b : ⟨ β ⟩) → exp α (β ↓ b) ⊲ exp α γ
+    III b = ⊲-⊴-gives-⊲ (exp α (β ↓ b)) (exp α β) (exp α γ) (exp-strictly-monotone α (β ↓ b) β (a₀ , e) (b , refl)) l
+    II : (b : ⟨ β ⟩) → (β ↓ b) ⊲ γ
+    II b = {!!}
+-}
+
+
 
 \end{code}
