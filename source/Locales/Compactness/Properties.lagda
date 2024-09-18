@@ -34,7 +34,7 @@ module Locales.Compactness.Properties
 open import Fin.Kuratowski pt
 open import Fin.Type
 open import Locales.Compactness.Definition pt fe
-open import Locales.Frame pt fe
+open import Locales.Frame pt fe renaming (⟨_⟩ to ⟨_⟩∙) hiding (∅)
 open import Locales.WayBelowRelation.Definition  pt fe
 open import MLTT.List using (member; []; _∷_; List; in-head; in-tail; length)
 open import MLTT.List-Properties
@@ -47,6 +47,7 @@ open import UF.Logic
 open import UF.Powerset-Fin pt
 open import UF.Powerset-MultiUniverse
 open import UF.Sets-Properties
+open import Notation.UnderlyingType
 
 open AllCombinators pt fe
 open Locale
