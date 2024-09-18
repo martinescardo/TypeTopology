@@ -11,7 +11,7 @@ open import UF.Embeddings
 module TypeTopology.ExtendedSumCompact (fe : FunExt) where
 
 open import TypeTopology.CompactTypes
-open import TypeTopology.PropTychonoff fe
+open import TypeTopology.PropTychonoff
 
 open import InjectiveTypes.Blackboard fe
 
@@ -23,6 +23,7 @@ extended-sum-compact∙ : {X : 𝓤 ̇ }
                       → ((x : X) → is-compact∙ (Y x))
                       → is-compact∙ K
                       → is-compact∙ (Σ (Y / j))
-extended-sum-compact∙ j e ε δ = Σ-is-compact∙ δ (λ k → prop-tychonoff (e k) (ε ∘ pr₁))
+extended-sum-compact∙ {𝓤} {𝓥} {𝓦} j e ε δ =
+ Σ-is-compact∙ δ (λ k → prop-tychonoff (fe (𝓤 ⊔ 𝓥) 𝓦) (e k) (ε ∘ pr₁))
 
 \end{code}

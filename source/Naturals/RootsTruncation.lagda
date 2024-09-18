@@ -346,11 +346,11 @@ module exit-truncations' (pt : propositional-truncations-exist) where
  open PropositionalTruncation pt
  open split-support-and-collapsibility pt
 
- exit-truncation' : (A : ℕ → 𝓤 ̇ )
+ exit-truncation⁺ : (A : ℕ → 𝓤 ̇ )
                   → is-prop-valued-family A
                   → ((n : ℕ) → A n → (k : ℕ) → k < n → is-decidable (A k))
                   → ∥ Σ A ∥ → Σ A
- exit-truncation' {𝓤} A A-prop-valued δ =
+ exit-truncation⁺ A A-prop-valued δ =
   collapsible-gives-split-support
    (minimal-pair A δ , minimal-pair-wconstant A δ A-prop-valued)
 

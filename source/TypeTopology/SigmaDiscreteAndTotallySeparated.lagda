@@ -160,10 +160,7 @@ separated types are closed under Σ.
 
 \begin{code}
 
-module _ (fe : FunExt) where
-
- private
-  fe₀ = fe 𝓤₀ 𝓤₀
+module _ (fe₀ : funext 𝓤₀ 𝓤₀) where
 
  Σ-totally-separated-taboo :
 
@@ -211,7 +208,7 @@ Even compact totally separated types fail to be closed under Σ:
     (τ ℕ∞ (λ u → u ＝ ∞ → 𝟚)
        (ℕ∞-compact fe₀)
        (λ _ → compact∙-types-are-compact
-               (prop-tychonoff fe (ℕ∞-is-set fe₀) (λ _ → 𝟚-is-compact∙)))
+               (prop-tychonoff fe₀ (ℕ∞-is-set fe₀) (λ _ → 𝟚-is-compact∙)))
        (ℕ∞-is-totally-separated fe₀)
           (λ u → Π-is-totally-separated fe₀ (λ _ → 𝟚-is-totally-separated)))
 
