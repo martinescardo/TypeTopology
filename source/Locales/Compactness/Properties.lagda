@@ -372,78 +372,75 @@ contains at least one upper bound of every Kuratowski-finite subset.
 
 \begin{code}
 
- open singleton-Kuratowski-finite-subsets
  open binary-unions-of-subsets pt
 
  directed-families-have-upper-bounds-of-Kuratowski-finite-subsets
   : (S : Fam 𝓤 ⟨ 𝒪 X ⟩)
   → is-directed (𝒪 X) S holds
-  → (P : 𝓟 {𝓤 ⁺} ⟨ 𝒪 X ⟩)
-  → (P ⊆ χ∙ S)
-  → is-Kuratowski-finite-subset P
-  → has-upper-bound-in P S holds
- directed-families-have-upper-bounds-of-Kuratowski-finite-subsets S (ι , υ) P ψ 𝕗 = II
+  → (P : 𝓚 ⟨ 𝒪 X ⟩)
+  → (⟨ P ⟩ ⊆ χ∙ S)
+  → has-upper-bound-in ⟨ P ⟩ S holds
+ directed-families-have-upper-bounds-of-Kuratowski-finite-subsets S 𝒹 (P , 𝕗) φ =
+  Kuratowski-finite-subset-induction pe fe ⟨ 𝒪 X ⟩ σ R i β γ δ (P , 𝕗) φ
    where
     R : 𝓚 ⟨ 𝒪 X ⟩ → 𝓤 ⁺  ̇
-    R (Q , φ) = (Q ⊆ P) → has-upper-bound-in Q S holds
+    R Q = ⟨ Q ⟩ ⊆ χ∙ S → has-upper-bound-in ⟨ Q ⟩ S holds
 
-    i : (A : 𝓚 ⟨ 𝒪 X ⟩) → is-prop (R A)
-    i (A , _) = Π-is-prop fe (λ q → holds-is-prop (has-upper-bound-in A S))
+    i : (Q : 𝓚 ⟨ 𝒪 X ⟩) → is-prop (R Q)
+    i Q = Π-is-prop fe λ _ → holds-is-prop (has-upper-bound-in ⟨ Q ⟩ S)
 
     σ : is-set ⟨ 𝒪 X ⟩
     σ = carrier-of-[ poset-of (𝒪 X) ]-is-set
 
-    β : R ∅[𝓚]
-    β _ = ∥∥-functor (λ i → i , λ _ ()) ι
+    open singleton-Kuratowski-finite-subsets σ
 
-    γ : (U : ⟨ 𝒪 X ⟩) → R (❴ σ ❵[𝓚] U)
-    γ U μ = ∥∥-functor † (ψ U (μ U refl))
+    β : R ∅[𝓚]
+    β _ = ∥∥-functor
+           (λ i → i , λ _ → 𝟘-elim)
+           (directedness-entails-inhabitation (𝒪 X) S 𝒹)
+
+    γ : (U : ⟨ 𝒪 X ⟩) → R ❴ U ❵[𝓚]
+    γ U μ = ∥∥-functor † (μ U refl)
      where
       † : Σ i ꞉ index S , S [ i ] ＝ U
-        → Σ i ꞉ index S , ((V : ⟨ 𝒪 X ⟩) → U ＝ V → (V ≤ S [ i ]) holds)
-      † (i , p) = i , ϑ
+        → Upper-Bound-Data ⟨ ❴ U ❵[𝓚] ⟩ S
+      † (i , q) = i , ϑ
        where
-        ϑ : (V : ⟨ 𝒪 X ⟩) → U ＝ V → (V ≤ S [ i ]) holds
-        ϑ V q = V        ＝⟨ q ⁻¹ ⟩ₚ
-                U        ＝⟨ p ⁻¹ ⟩ₚ
-                S [ i ]  ■
+        ϑ : (V : ⟨ 𝒪 X ⟩ ) → U ＝ V → (V ≤ S [ i ]) holds
+        ϑ V p = V          ＝⟨ p ⁻¹ ⟩ₚ
+                U          ＝⟨ q ⁻¹ ⟩ₚ
+                S [ i ]    ■
 
     δ : (𝒜 ℬ : 𝓚 ⟨ 𝒪 X ⟩) → R 𝒜 → R ℬ → R (𝒜 ∪[𝓚] ℬ)
-    δ 𝒜@(A , _) ℬ@(B , _) φ ψ h =
-     ∥∥-rec₂ (holds-is-prop (has-upper-bound-in (A ∪ B) S)) † (φ i₁) (ψ i₂)
+    δ 𝒜@(A , _) ℬ@(B , _) ψ ϑ ι =
+     ∥∥-rec₂ (holds-is-prop (has-upper-bound-in (A ∪ B) S)) † (ψ ι₁) (ϑ ι₂)
       where
-       i₁ : A ⊆ P
-       i₁ = ⊆-trans A (A ∪ B) P (∪-is-upperbound₁ A B) h
+       ι₁ : A ⊆ χ∙ S
+       ι₁ V μ = ι V ∣ inl μ ∣
 
-       i₂ : B ⊆ P
-       i₂ = ⊆-trans B (A ∪ B) P (∪-is-upperbound₂ A B) h
+       ι₂ : B ⊆ χ∙ S
+       ι₂ V μ = ι V ∣ inr μ ∣
 
        † : Upper-Bound-Data A S
          → Upper-Bound-Data B S
          → has-upper-bound-in (A ∪ B) S holds
-       † (i , ζ) (j , ξ) = ∥∥-functor ‡ (υ i j)
+       † (i , ξ) (j , ζ) = ∥∥-functor ‡ (pr₂ 𝒹 i j)
         where
-         ‡ : (Σ k ꞉ index S ,
-               ((S [ k ]) is-an-upper-bound-of₂ (S [ i ] , S [ j ])) holds)
-           → Σ k ꞉ index S , ((U : ⟨ 𝒪 X ⟩) → U ∈ (A ∪ B) → (U ≤ S [ k ]) holds)
-         ‡ (k , p₁ , p₂) = k , ♢
+         ‡ : (Σ k ꞉ index S , (S [ i ] ≤[ poset-of (𝒪 X) ] S [ k ]) holds
+                            × (S [ j ] ≤[ poset-of (𝒪 X) ] S [ k ]) holds)
+           → Upper-Bound-Data (A ∪ B) S
+         ‡ (k , p , q) = k , ♢
           where
            ♢ : (U : ⟨ 𝒪 X ⟩) → U ∈ (A ∪ B) → (U ≤ S [ k ]) holds
-           ♢ U μ = ∥∥-rec (holds-is-prop (U ≤ S [ k ])) ♠ μ
+           ♢ U = ∥∥-rec (holds-is-prop (U ≤ S [ k ])) ♠
             where
              ♠ : A U holds + B U holds → (U ≤ S [ k ]) holds
-             ♠ (inl μ) = U         ≤⟨ ζ U μ ⟩
-                         S [ i ]   ≤⟨ p₁    ⟩
-                         S [ k ]   ■
-             ♠ (inr μ) = U         ≤⟨ ξ U μ ⟩
-                         S [ j ]   ≤⟨ p₂    ⟩
-                         S [ k ]   ■
-
-    I : (A : 𝓚 ⟨ 𝒪 X ⟩) → R A
-    I = Kuratowski-finite-subset-induction pe fe ⟨ 𝒪 X ⟩ σ R i β γ δ
-
-    II : has-upper-bound-in P S holds
-    II = I (P , 𝕗) (⊆-refl P)
+             ♠ (inl μ) = U           ≤⟨ ξ U μ ⟩
+                         S [ i ]     ≤⟨ p     ⟩
+                         S [ k ]     ■
+             ♠ (inr μ) = U           ≤⟨ ζ U μ ⟩
+                         S [ j ]     ≤⟨ q     ⟩
+                         S [ k ]     ■
 
 \end{code}
 
@@ -462,9 +459,8 @@ their Kuratowski-finite subfamilies.
   directed-families-have-upper-bounds-of-Kuratowski-finite-subsets
    S
    𝒹
-   (χ∙ ⁅ S [ 𝒥 [ j ] ] ∣ j ∶ index 𝒥 ⁆)
+   (χ∙ ⁅ S [ 𝒥 [ j ] ] ∣ j ∶ index 𝒥 ⁆ , 𝕗′)
    †
-   𝕗′
     where
      𝕗′ : is-Kuratowski-finite-subset (χ∙ ⁅ S [ 𝒥 [ j ] ] ∣ j ∶ index 𝒥 ⁆)
      𝕗′ = χ∙-of-Kuratowski-finite-subset-is-Kuratowski-finite
