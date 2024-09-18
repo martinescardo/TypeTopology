@@ -315,6 +315,10 @@ and it has split support.
 ∥∥⟨⟩-is-prop (inl x) = 𝟙-is-prop
 ∥∥⟨⟩-is-prop (inr ν) = 𝟘-is-prop
 
+∥∥⟨⟩-is-decidable : {X : 𝓤 ̇ } (δ : is-decidable X) → is-decidable ∥ X ∥⟨ δ ⟩
+∥∥⟨⟩-is-decidable (inl x) = 𝟙-is-decidable
+∥∥⟨⟩-is-decidable (inr ν) = 𝟘-is-decidable
+
 ∣_∣⟨_⟩ : {X : 𝓤 ̇ } → X → (δ : is-decidable X) → ∥ X ∥⟨ δ ⟩
 ∣ x ∣⟨ inl _ ⟩ = ⋆
 ∣ x ∣⟨ inr ν ⟩ = ν x
