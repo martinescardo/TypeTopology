@@ -26,6 +26,7 @@ open import Naturals.Order
 open import Notation.Order
 open import UF.Hedberg
 open import UF.KrausLemma
+open import UF.KrausLemma
 open import UF.PropTrunc
 open import UF.Subsingletons
 
@@ -145,7 +146,8 @@ be empty, and still the function is well defined.
    r = to-Σ-＝ (q , isolated-Id-is-prop z z-is-isolated _ _ _)
 
  Root-has-prop-truncation : (α : ℕ → Z) → ∀ 𝓥 → has-prop-truncation 𝓥 (Root α)
- Root-has-prop-truncation α = collapsible-has-prop-truncation (μρ α , μρ-constant α)
+ Root-has-prop-truncation α = collapsible-has-prop-truncation
+                               (μρ α , μρ-constant α)
 
 \end{code}
 
@@ -185,18 +187,10 @@ root truncations using the above technique.
  module exit-Roots-truncation (pt : propositional-truncations-exist) where
 
   open PropositionalTruncation pt
+  open split-support-and-collapsibility pt
 
   exit-Root-truncation : (α : ℕ → Z) → (∃ n ꞉ ℕ , α n ＝ z) → Σ n ꞉ ℕ , α n ＝ z
-  exit-Root-truncation α = h ∘ g
-   where
-    f : (Σ n ꞉ ℕ , α n ＝ z) → fix (μρ α)
-    f = to-fix (μρ α) (μρ-constant α)
-
-    g : ∥(Σ n ꞉ ℕ , α n ＝ z)∥ → fix (μρ α)
-    g = ∥∥-rec (fix-is-prop (μρ α) (μρ-constant α)) f
-
-    h : fix (μρ α) → Σ n ꞉ ℕ , α n ＝ z
-    h = from-fix (μρ α)
+  exit-Root-truncation α = collapsible-gives-split-support (μρ α , μρ-constant α)
 
 \end{code}
 
@@ -246,33 +240,118 @@ minimal-witness A A-is-complemented (n , aₙ) = m , aₘ , m-is-minimal-witness
 
 module exit-truncations (pt : propositional-truncations-exist) where
 
-  open PropositionalTruncation pt
+ open PropositionalTruncation pt
 
-  exit-truncation : (A : ℕ → 𝓤 ̇ )
-                  → is-complemented A
-                  → (∃ n ꞉ ℕ , A n)
-                  → Σ n ꞉ ℕ , A n
-  exit-truncation A A-is-complemented e = IV
+ exit-truncation : (A : ℕ → 𝓤 ̇ )
+                 → is-complemented A
+                 → (∃ n ꞉ ℕ , A n)
+                 → Σ n ꞉ ℕ , A n
+ exit-truncation A A-is-complemented e = IV
+  where
+   open Roots-truncation 𝟚 ₀ (λ b → 𝟚-is-discrete b ₀)
+   open exit-Roots-truncation pt
+
+   α : ℕ → 𝟚
+   α = characteristic-map A A-is-complemented
+
+   I : (Σ n ꞉ ℕ , A n) → Σ n ꞉ ℕ , α n ＝ ₀
+   I (n , a) = n , characteristic-map-property₀-back A A-is-complemented n a
+
+   e' : ∃ n ꞉ ℕ , α n ＝ ₀
+   e' = ∥∥-functor I e
+
+   II : Σ n ꞉ ℕ , α n ＝ ₀
+   II = exit-Root-truncation α e'
+
+   III : (Σ n ꞉ ℕ , α n ＝ ₀) → Σ n ꞉ ℕ , A n
+   III (n , e) = n , characteristic-map-property₀ A A-is-complemented n e
+
+   IV : Σ n ꞉ ℕ , A n
+   IV = III II
+
+\end{code}
+
+Added 18th September 2024. The following "exit-truncation lemma"
+generalizes the above development with a simpler proof. But this
+result was already known in
+
+   Martín H. Escardó and Chuangjie Xu. The inconsistency of a
+   Brouwerian continuity principle with the Curry-Howard
+   interpretation. 13th International Conference on Typed Lambda
+   Calculi and Applications (TLCA 2015).
+
+   https://drops.dagstuhl.de/opus/portals/lipics/index.php?semnr=15006
+   https://doi.org/10.4230/LIPIcs.TLCA.2015.153
+
+although it was presented with a different proof that assumes function
+extensionlity.
+
+\begin{code}
+
+private
+ abstract
+  minimal-pair' : (A : ℕ → 𝓤 ̇ )
+                → ((n : ℕ) → A n → (k : ℕ) → k < n → is-decidable (A k))
+                → (n : ℕ)
+                → A n
+                → Σ (k , aₖ) ꞉ Σ A , ((i : ℕ) → A i → k ≤ i)
+  minimal-pair' A δ 0        a₀   = (0 , a₀) , (λ i aᵢ → zero-least i)
+  minimal-pair' A δ (succ n) aₙ₊₁ = II
    where
-    open Roots-truncation 𝟚 ₀ (λ b → 𝟚-is-discrete b ₀)
-    open exit-Roots-truncation pt
+    IH : Σ (j , aⱼ₊₁) ꞉ Σ (A ∘ succ) , ((i : ℕ) → A (succ i) → j ≤ i)
+    IH = minimal-pair' (A ∘ succ) (λ n aₙ₊₁ j → δ (succ n) aₙ₊₁ (succ j)) n aₙ₊₁
 
-    α : ℕ → 𝟚
-    α = characteristic-map A A-is-complemented
+    I : type-of IH
+      → Σ (k , aₖ) ꞉ Σ A , ((i : ℕ) → A i → k ≤ i)
+    I ((j , aⱼ₊₁) , b) =
+     Cases (δ (succ n) aₙ₊₁ 0 (zero-least j))
+      (λ (a₀ :    A 0) → (0 , a₀)        , (λ i aᵢ → zero-least i))
+      (λ (ν₀  : ¬ A 0) → (succ j , aⱼ₊₁) , I₀ ν₀)
+       where
+        I₀ : ¬ A 0 → (i : ℕ) (aᵢ : A i) → j < i
+        I₀ ν₀ 0        a₀   = 𝟘-elim (ν₀ a₀)
+        I₀ ν₀ (succ i) aᵢ₊₁ = b i aᵢ₊₁
 
-    I : (Σ n ꞉ ℕ , A n) → Σ n ꞉ ℕ , α n ＝ ₀
-    I (n , a) = n , characteristic-map-property₀-back A A-is-complemented n a
+    II : Σ (k , aⱼ) ꞉ Σ A , ((i : ℕ) → A i → k ≤ i)
+    II = I IH
 
-    e' : ∃ n ꞉ ℕ , α n ＝ ₀
-    e' = ∥∥-functor I e
+module _ (A : ℕ → 𝓤 ̇ )
+         (δ : (n : ℕ) → A n → (k : ℕ) → k < n → is-decidable (A k))
+       where
 
-    II : Σ n ꞉ ℕ , α n ＝ ₀
-    II = exit-Root-truncation α e'
+ minimal-pair : Σ A → Σ A
+ minimal-pair (n , aₙ) = pr₁ (minimal-pair' A δ n aₙ)
 
-    III : (Σ n ꞉ ℕ , α n ＝ ₀) → Σ n ꞉ ℕ , A n
-    III (n , e) = n , characteristic-map-property₀ A A-is-complemented n e
+ minimal-number : Σ A → ℕ
+ minimal-number = pr₁ ∘ minimal-pair
 
-    IV : Σ n ꞉ ℕ , A n
-    IV = III II
+ minimal-number-requirement : (σ : Σ A) → A (minimal-number σ)
+ minimal-number-requirement = pr₂ ∘ minimal-pair
+
+ minimality : (σ : Σ A) → (i : ℕ) → A i → minimal-number σ ≤ i
+ minimality (n , aₙ) = pr₂ (minimal-pair' A δ n aₙ)
+
+ minimal-pair-wconstant : is-prop-valued-family A → wconstant minimal-pair
+ minimal-pair-wconstant A-prop-valued σ σ' =
+  to-subtype-＝ A-prop-valued
+   (need
+     minimal-number σ ＝ minimal-number σ'
+    which-is-given-by
+     ≤-anti _ _
+      (minimality σ  (minimal-number σ') (minimal-number-requirement σ'))
+      (minimality σ' (minimal-number σ)  (minimal-number-requirement σ)))
+
+module exit-truncations' (pt : propositional-truncations-exist) where
+
+ open PropositionalTruncation pt
+ open split-support-and-collapsibility pt
+
+ exit-truncation' : (A : ℕ → 𝓤 ̇ )
+                  → is-prop-valued-family A
+                  → ((n : ℕ) → A n → (k : ℕ) → k < n → is-decidable (A k))
+                  → ∥ Σ A ∥ → Σ A
+ exit-truncation' {𝓤} A A-prop-valued δ =
+  collapsible-gives-split-support
+   (minimal-pair A δ , minimal-pair-wconstant A δ A-prop-valued)
 
 \end{code}
