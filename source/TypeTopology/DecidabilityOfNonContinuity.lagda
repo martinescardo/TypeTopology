@@ -1331,14 +1331,14 @@ Markov's Principle. We leave this as an open problem.
 Added 18th September 2024. There is another way of looking at the
 above development, which gives rise to a further question.
 
-We have the restriction map r : (ℕ → ℕ∞) → (ℕ → ℕ) defined by r f ＝ f ∘ ι.
+We have the restriction map r : (ℕ∞ → ℕ) → (ℕ → ℕ) defined by r f ＝ f ∘ ι.
 
 For any map f : X → Y we have that
 
  X ≃ Σ y ꞉ Y , Σ x ꞉ X , f x ＝ y
    ＝ Σ y ꞉ Y , fiber f y.
 
-With X = (ℕ → ℕ∞) and Y = (ℕ → ℕ) and f = r, the definition of
+With X = (ℕ∞ → ℕ) and Y = (ℕ → ℕ) and f = r, the definition of
 _extends_, together with the fact that _∼_ coincides with _＝_ under
 function extensionality, the above specializes to
 
