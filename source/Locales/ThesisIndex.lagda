@@ -1,5 +1,5 @@
 ---
-title:          Frame homomorphisms
+title:          Thesis Index
 author:         Ayberk Tosun
 date-started:   2024-09-19
 ---
