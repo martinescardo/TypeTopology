@@ -405,25 +405,26 @@ and its associativity law.
 
 \begin{code}
 
-ext : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-    → (X → List Y) → (List X → List Y)
-ext f xs = concat (map f xs)
+List-ext : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+         → (X → List Y) → (List X → List Y)
+List-ext f xs = concat (map f xs)
 
-ext-assoc : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
-            (g : Y → List Z) (f : X → List Y)
-            (xs : List X)
-          → ext (λ x → ext g (f x)) xs ＝ ext g (ext f xs)
-ext-assoc g f []       = refl
-ext-assoc g f (x ∷ xs) =
- ext (λ - → ext g (f -)) (x ∷ xs)          ＝⟨ refl ⟩
- ext g (f x) ++ ext (λ - → ext g (f -)) xs ＝⟨ I ⟩
- ext g (f x) ++ ext g (ext f xs)           ＝⟨ II ⟩
- concat (map g (f x) ++ map g (ext f xs))  ＝⟨ III ⟩
- ext g (f x ++ ext f xs)                   ＝⟨ refl ⟩
- ext g (ext f (x ∷ xs))                    ∎
+List-ext-assoc
+ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+   (g : Y → List Z) (f : X → List Y)
+   (xs : List X)
+ → List-ext (λ x → List-ext g (f x)) xs ＝ List-ext g (List-ext f xs)
+List-ext-assoc g f []       = refl
+List-ext-assoc g f (x ∷ xs) =
+ List-ext (λ - → List-ext g (f -)) (x ∷ xs)               ＝⟨ refl ⟩
+ List-ext g (f x) ++ List-ext (λ - → List-ext g (f -)) xs ＝⟨ I ⟩
+ List-ext g (f x) ++ List-ext g (List-ext f xs)           ＝⟨ II ⟩
+ concat (map g (f x) ++ map g (List-ext f xs))            ＝⟨ III ⟩
+ List-ext g (f x ++ List-ext f xs)                        ＝⟨ refl ⟩
+ List-ext g (List-ext f (x ∷ xs))                         ∎
   where
-   I   = ap (ext g (f x) ++_) (ext-assoc g f xs)
-   II  = (concat-++ (map g (f x)) (map g (ext f xs)))⁻¹
-   III = (ap concat (map-++ g (f x) (ext f xs)))⁻¹
+   I   = ap (List-ext g (f x) ++_) (List-ext-assoc g f xs)
+   II  = (concat-++ (map g (f x)) (map g (List-ext f xs)))⁻¹
+   III = (ap concat (map-++ g (f x) (List-ext f xs)))⁻¹
 
 \end{code}
