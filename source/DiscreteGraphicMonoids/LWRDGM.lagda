@@ -31,7 +31,7 @@ module _
 
  private
   d : is-discrete X
-  d = discrete'-gives-discrete d'
+  d = discrete'-gives-discrete
 
  graphical⁻ : graphical (_·_ {𝓤} {X})
  graphical⁻ (xs , a) (ys , b) =

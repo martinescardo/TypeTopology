@@ -33,7 +33,7 @@ module _
 
  private
   d : is-discrete X
-  d = discrete'-gives-discrete d'
+  d = discrete'-gives-discrete
 
 \end{code}
 
@@ -394,7 +394,7 @@ module _ {X : 𝓤 ̇ }
 
  private
   d : is-discrete X
-  d = discrete'-gives-discrete d'
+  d = discrete'-gives-discrete
 
  η⁻ : X → List⁻ X
  η⁻ x = (x • []) , refl
@@ -607,7 +607,7 @@ module _ {X : 𝓤 ̇ }
  δ-map : (z : X) (xs : List X)
        → δ (f z) (map f (δ z xs)) ＝ δ (f z) (map f xs)
  δ-map z [] = refl
- δ-map z (x • xs) = h (discrete'-gives-discrete X-is-discrete' z x)
+ δ-map z (x • xs) = h (discrete'-gives-discrete z x)
   where
    h : is-decidable (z ＝ x)
      → δ (f z) (map f (δ z (x • xs))) ＝ δ (f z) (map f (x • xs))
@@ -629,7 +629,7 @@ module _ {X : 𝓤 ̇ }
     δ (f z) (map f (x • xs))       ∎
      where
       I = ap (λ - → δ (f z) (map f -)) (δ-≠ z x xs u)
-      II = g (discrete'-gives-discrete Y-is-discrete' (f z) (f x))
+      II = g (discrete'-gives-discrete (f z) (f x))
        where
         g : is-decidable (f z ＝ f x)
           → δ (f z) (f x • map f (δ z xs)) ＝ δ (f z) (f x • map f xs)
