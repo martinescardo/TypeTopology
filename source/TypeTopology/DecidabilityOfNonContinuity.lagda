@@ -28,9 +28,10 @@ open import UF.FunExt
 module TypeTopology.DecidabilityOfNonContinuity (fe : funext 𝓤₀ 𝓤₀) where
 
 open import CoNaturals.Type
-open import MLTT.Two-Properties
 open import MLTT.Plus-Properties
+open import MLTT.Two-Properties
 open import Notation.CanonicalMap
+open import Notation.Order
 open import NotionsOfDecidability.Complemented
 open import NotionsOfDecidability.Decidable
 open import Taboos.LPO
@@ -920,7 +921,10 @@ Our next question is when the type `ℕ∞-extension g` is pointed.
 
 \begin{code}
 
-open import Naturals.Order renaming (max to maxℕ ; max-idemp to maxℕ-idemp)
+open import Naturals.Order renaming
+                            (max to maxℕ ;
+                             max-idemp to maxℕ-idemp ;
+                             max-comm to maxℕ-comm)
 
 is-modulus-of-eventual-constancy
  : (ℕ → ℕ) → ℕ → 𝓤₀ ̇
@@ -1358,3 +1362,113 @@ equivalence, rather than just logical equivalence, such that
 
 The idea is that such a nice characterization should not mention ℕ∞,
 and in some sense should be an "intrinsic" property of / data for g.
+
+Added 19th September 2024. Before doing anything about the above
+remark and question, we improve part of the above development
+following a discussion and contributions at mathstodon by various
+people
+
+https://mathstodon.xyz/deck/@MartinEscardo/113024154634637479
+
+\begin{code}
+
+module eventual-constancy-under-propositional-truncations⁺
+        (pt : propositional-truncations-exist)
+       where
+
+ open eventual-constancy-under-propositional-truncations pt
+ open PropositionalTruncation pt
+ open exit-truncations⁺ pt
+
+ modulus-down
+  : (g : ℕ → ℕ)
+    (n : ℕ)
+  → is-modulus-of-eventual-constancy g (succ n)
+  → is-decidable (is-modulus-of-eventual-constancy g n)
+ modulus-down g 0 μ = III
+   where
+    I : g 1 ＝ g 0 → (m : ℕ) → g m ＝ g 0
+    I e 0        = refl
+    I e (succ n) = g (succ n)          ＝⟨ refl ⟩
+                   g (maxℕ 1 (succ n)) ＝⟨ μ (succ n) ⟩
+                   g 1                 ＝⟨ e ⟩
+                   g 0                 ∎
+
+    II : ((m : ℕ) → g m ＝ g 0) → g 1 ＝ g 0
+    II a = a 1
+
+    III : is-decidable ((m : ℕ) → g m ＝ g 0)
+    III = map-decidable I II (ℕ-is-discrete (g 1) (g 0))
+ modulus-down g (succ n) μ = III
+  where
+   IH : is-decidable (is-modulus-of-eventual-constancy (g ∘ succ) n)
+   IH = modulus-down (g ∘ succ) n (μ ∘ succ)
+
+   I : ((m : ℕ) → g (succ (maxℕ n m)) ＝ g (succ n))
+     →  (m : ℕ) → g (maxℕ (succ n) m) ＝ g (succ n)
+   I a 0        = refl
+   I a (succ m) = a m
+
+   II : ((m : ℕ) → g (maxℕ (succ n) m) ＝ g (succ n))
+       → (m : ℕ) → g (succ (maxℕ n m)) ＝ g (succ n)
+   II b m = b (succ m)
+
+   III : is-decidable (is-modulus-of-eventual-constancy g (succ n))
+   III = map-decidable I II IH
+
+\end{code}
+
+The proof of the following is direct and doesn't use induction. What
+is obvious doesn't need to have a short proof. (And in many other
+situations short proofs may not be obvious.)
+
+\begin{code}
+
+ modulus-up : (g : ℕ → ℕ)
+              (n : ℕ)
+            → is-modulus-of-eventual-constancy g n
+            → is-modulus-of-eventual-constancy g (succ n)
+ modulus-up g n μ m =
+  g (maxℕ (succ n) m)          ＝⟨ ap g obviously ⟩
+  g (maxℕ n (maxℕ (succ n) m)) ＝⟨ μ (maxℕ (succ n) m) ⟩
+  g n                          ＝⟨ (μ (succ n))⁻¹ ⟩
+  g (maxℕ n (succ n))          ＝⟨ ap g (max-ord→ n (succ n) (≤-succ n)) ⟩
+  g (succ n)                   ∎
+   where
+    obviously : maxℕ (succ n) m ＝ maxℕ n (maxℕ (succ n) m)
+    obviously =
+     (max-ord→ n _
+        (≤-trans _ (succ n) _
+          (≤-succ n)
+          (max-ord← _ _
+            (maxℕ (succ n) (maxℕ (succ n) m) ＝⟨ I ⟩
+             maxℕ (maxℕ (succ n) (succ n)) m ＝⟨ II ⟩
+             maxℕ (succ n) m                 ∎))))⁻¹
+              where
+               I  = (max-assoc (succ n) (succ n) m)⁻¹
+               II = ap (λ - → maxℕ - m) (maxℕ-idemp (succ n))
+
+ conditional-decidability-of-being-modulus-of-constancy
+  : (g : ℕ → ℕ)
+    (n : ℕ)
+  → is-modulus-of-eventual-constancy g n
+  → (k : ℕ)
+  → k < n
+  → is-decidable (is-modulus-of-eventual-constancy g k)
+ conditional-decidability-of-being-modulus-of-constancy g
+  = regression-lemma
+     (is-modulus-of-eventual-constancy g)
+     (modulus-down g)
+     (modulus-up g)
+
+ eventual-constancy-data-has-split-support
+  : (g : ℕ → ℕ)
+  → is-eventually-constant g
+  → eventual-constancy-data g
+ eventual-constancy-data-has-split-support g
+  = exit-truncation⁺
+    (is-modulus-of-eventual-constancy g)
+    (being-modulus-of-eventual-constancy-is-prop g)
+    (conditional-decidability-of-being-modulus-of-constancy g)
+
+\end{code}
