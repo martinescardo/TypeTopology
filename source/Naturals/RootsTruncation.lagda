@@ -341,7 +341,7 @@ module _ (A : ℕ → 𝓤 ̇ )
       (minimality σ  (minimal-number σ') (minimal-number-requirement σ'))
       (minimality σ' (minimal-number σ)  (minimal-number-requirement σ)))
 
-module exit-truncations' (pt : propositional-truncations-exist) where
+module exit-truncations⁺ (pt : propositional-truncations-exist) where
 
  open PropositionalTruncation pt
  open split-support-and-collapsibility pt
@@ -360,3 +360,53 @@ This is not quite a generalization of the previous result, because the
 previous result doesn't have the assumption that A is prop-valued.
 
 TODO. Can we remove the prop-valuedness assumption?
+
+Added 19th September 2024.
+
+The following is useful in practice to fulfill a hypothesis of
+exit-truncation⁺.
+
+\begin{code}
+
+regression-lemma₀
+ : (A : ℕ → 𝓤 ̇ )
+ → ((n : ℕ) → A (succ n) → is-decidable (A n))
+ → ((n : ℕ) → A n → A (succ n))
+ → (n : ℕ) → A (succ n) → is-decidable (A 0)
+regression-lemma₀ A f g 0        = f 0
+regression-lemma₀ A f g (succ n) = I
+ where
+  IH : A (succ (succ n)) → is-decidable (A 1)
+  IH = regression-lemma₀ (A ∘ succ) (f ∘ succ) (g ∘ succ) n
+
+  I : A (succ (succ n)) → is-decidable (A 0)
+  I a = Cases (IH a)
+         (λ (a₁ :   A 1) → f 0 a₁)
+         (λ (ν  : ¬ A 1) → inr (contrapositive (g 0) ν))
+
+regression-lemma
+ : (A : ℕ → 𝓤 ̇ )
+ → ((n : ℕ) → A (succ n) → is-decidable (A n))
+ → ((n : ℕ) → A n → A (succ n))
+ → (n : ℕ) → A n → (k : ℕ) → k < n → is-decidable (A k)
+regression-lemma A f g 0        a k        l = 𝟘-elim l
+regression-lemma A f g (succ n) a 0        l = regression-lemma₀ A f g n a
+regression-lemma A f g (succ n) a (succ k) l = regression-lemma
+                                                (A ∘ succ)
+                                                (f ∘ succ)
+                                                (g ∘ succ)
+                                                n a k l
+\end{code}
+
+Notice that these functions don't actually use the full force of the
+assumption
+
+ (n : ℕ) → A n → A (succ n)
+
+but only its contrapositive. So there is a more general result that
+assumes
+
+ (n : ℕ) → ¬ A (succ n) → ¬ A n
+
+instead, although I don't think this will ever be needed. If it is, we
+can come back here and do a little bit of refactoring.
