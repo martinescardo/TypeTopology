@@ -154,7 +154,7 @@ groupoid).
 \end{code}
 
 We demonstrate the equivalence of one-truncation and propositional truncation:
- ∥ X ∥₁ ≃ ∥ X ∥
+ ∥ X ∥[ −1 ] ≃ ∥ X ∥
 
 \begin{code}
 
