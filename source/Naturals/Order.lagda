@@ -160,8 +160,8 @@ not-less-than-itself 0    l = l
 not-less-than-itself (succ n) l = not-less-than-itself n l
 
 not-less-bigger-or-equal : (m n : ℕ) → ¬ (n < m) → n ≥ m
-not-less-bigger-or-equal 0    n u = zero-least n
-not-less-bigger-or-equal (succ m) 0    = ¬¬-intro (zero-least m)
+not-less-bigger-or-equal 0        n        = λ _ → zero-least n
+not-less-bigger-or-equal (succ m) 0        = ¬¬-intro (zero-least m)
 not-less-bigger-or-equal (succ m) (succ n) = not-less-bigger-or-equal m n
 
 bigger-or-equal-not-less : (m n : ℕ) → n ≥ m → ¬ (n < m)

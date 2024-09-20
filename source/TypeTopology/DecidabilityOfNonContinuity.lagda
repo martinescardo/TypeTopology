@@ -1380,73 +1380,62 @@ module eventual-constancy-under-propositional-truncations⁺
  open PropositionalTruncation pt
  open exit-truncations⁺ pt
 
- modulus-down
-  : (g : ℕ → ℕ)
-    (n : ℕ)
-  → is-modulus-of-eventual-constancy g (succ n)
-  → is-decidable (is-modulus-of-eventual-constancy g n)
- modulus-down g 0 μ = III
-   where
-    I : g 1 ＝ g 0 → (m : ℕ) → g m ＝ g 0
-    I e 0        = refl
-    I e (succ n) = g (succ n)          ＝⟨ refl ⟩
-                   g (maxℕ 1 (succ n)) ＝⟨ μ (succ n) ⟩
-                   g 1                 ＝⟨ e ⟩
-                   g 0                 ∎
-
-    II : ((m : ℕ) → g m ＝ g 0) → g 1 ＝ g 0
-    II a = a 1
-
-    III : is-decidable ((m : ℕ) → g m ＝ g 0)
-    III = map-decidable I II (ℕ-is-discrete (g 1) (g 0))
- modulus-down g (succ n) μ = III
-  where
-   IH : is-decidable (is-modulus-of-eventual-constancy (g ∘ succ) n)
-   IH = modulus-down (g ∘ succ) n (μ ∘ succ)
-
-   I : ((m : ℕ) → g (succ (maxℕ n m)) ＝ g (succ n))
-     →  (m : ℕ) → g (maxℕ (succ n) m) ＝ g (succ n)
-   I a 0        = refl
-   I a (succ m) = a m
-
-   II : ((m : ℕ) → g (maxℕ (succ n) m) ＝ g (succ n))
-       → (m : ℕ) → g (succ (maxℕ n m)) ＝ g (succ n)
-   II b m = b (succ m)
-
-   III : is-decidable (is-modulus-of-eventual-constancy g (succ n))
-   III = map-decidable I II IH
-
 \end{code}
 
-The proof of the following is direct and doesn't use induction. What
-is obvious doesn't need to have a short proof. (And in many other
-situations short proofs may not be obvious.)
+Notice that the proofs of modulus-down and modulus-up are not by
+induction.
 
 \begin{code}
 
- modulus-up : (g : ℕ → ℕ)
-              (n : ℕ)
-            → is-modulus-of-eventual-constancy g n
-            → is-modulus-of-eventual-constancy g (succ n)
- modulus-up g n μ m =
-  g (maxℕ (succ n) m)          ＝⟨ ap g obviously ⟩
-  g (maxℕ n (maxℕ (succ n) m)) ＝⟨ μ (maxℕ (succ n) m) ⟩
-  g n                          ＝⟨ (μ (succ n))⁻¹ ⟩
-  g (maxℕ n (succ n))          ＝⟨ ap g (max-ord→ n (succ n) (≤-succ n)) ⟩
-  g (succ n)                   ∎
+ module _ (g : ℕ → ℕ) (n : ℕ) where
+
+  modulus-down
+   : is-modulus-of-eventual-constancy g (succ n)
+   → is-decidable (is-modulus-of-eventual-constancy g n)
+  modulus-down μ = III
    where
-    obviously : maxℕ (succ n) m ＝ maxℕ n (maxℕ (succ n) m)
-    obviously =
-     (max-ord→ n _
-        (≤-trans _ (succ n) _
-          (≤-succ n)
-          (max-ord← _ _
-            (maxℕ (succ n) (maxℕ (succ n) m) ＝⟨ I ⟩
-             maxℕ (maxℕ (succ n) (succ n)) m ＝⟨ II ⟩
-             maxℕ (succ n) m                 ∎))))⁻¹
-              where
-               I  = (max-assoc (succ n) (succ n) m)⁻¹
-               II = ap (λ - → maxℕ - m) (maxℕ-idemp (succ n))
+    I : g (succ n) ＝ g n → is-modulus-of-eventual-constancy g n
+    I e m =
+     Cases (order-split n m)
+      (λ (l : n < m)
+      → g (maxℕ n m)        ＝⟨ ap g (max-ord→ n m (≤-trans _ _ _ (≤-succ n) l)) ⟩
+        g m                 ＝⟨ ap g ((max-ord→ (succ n) m l)⁻¹) ⟩
+        g (maxℕ (succ n) m) ＝⟨ μ m ⟩
+        g (succ n)          ＝⟨ e ⟩
+        g n                 ∎)
+      (λ (l : m ≤ n)
+      → g (maxℕ n m) ＝⟨ ap g (maxℕ-comm n m) ⟩
+        g (maxℕ m n) ＝⟨ ap g (max-ord→ m n l) ⟩
+        g n          ∎)
+
+    II : is-modulus-of-eventual-constancy g n → g (succ n) ＝ g n
+    II a = g (succ n)          ＝⟨ ap g ((max-ord→ n (succ n) (≤-succ n))⁻¹) ⟩
+           g (maxℕ n (succ n)) ＝⟨ a (succ n) ⟩
+           g n                 ∎
+
+    III : is-decidable (is-modulus-of-eventual-constancy g n)
+    III = map-decidable I II (ℕ-is-discrete (g (succ n)) (g n))
+
+  modulus-up : is-modulus-of-eventual-constancy g n
+             → is-modulus-of-eventual-constancy g (succ n)
+  modulus-up μ m =
+   g (maxℕ (succ n) m)          ＝⟨ ap g I ⟩
+   g (maxℕ n (maxℕ (succ n) m)) ＝⟨ μ (maxℕ (succ n) m) ⟩
+   g n                          ＝⟨ (μ (succ n))⁻¹ ⟩
+   g (maxℕ n (succ n))          ＝⟨ ap g (max-ord→ n (succ n) (≤-succ n)) ⟩
+   g (succ n)                   ∎
+   where
+    I : maxℕ (succ n) m ＝ maxℕ n (maxℕ (succ n) m)
+    I = (max-ord→ n _
+          (≤-trans _ _ _
+            (≤-succ n)
+            (max-ord← _ _
+              (maxℕ (succ n) (maxℕ (succ n) m) ＝⟨ II ⟩
+               maxℕ (maxℕ (succ n) (succ n)) m ＝⟨ III ⟩
+               maxℕ (succ n) m                 ∎))))⁻¹
+                where
+                 II  = (max-assoc (succ n) (succ n) m)⁻¹
+                 III = ap (λ - → maxℕ - m) (maxℕ-idemp (succ n))
 
  conditional-decidability-of-being-modulus-of-constancy
   : (g : ℕ → ℕ)
