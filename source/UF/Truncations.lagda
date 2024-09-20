@@ -16,17 +16,19 @@ globally as many important properties hold in the absence of univalence.
 
 open import UF.FunExt
 
-module UF.Truncations (fe : Fun-Ext)
-                       where
+module UF.Truncations
+        (fe : Fun-Ext)
+       where
 
 open import MLTT.Spartan
 
 open import UF.Base
 open import UF.Equiv
-open import UF.H-Levels fe
 open import UF.PropTrunc
 open import UF.Sets
 open import UF.Subsingletons
+open import UF.TruncationLevels
+open import UF.TruncatedTypes fe
 open import UF.Univalence
 open import UF.Yoneda
 
@@ -36,17 +38,17 @@ We define the notion of a n-truncation using record types.
 
 \begin{code}
 
-record H-level-truncations-exist : 𝓤ω where
+record general-truncations-exist : 𝓤ω where
  field
-  ∥_∥[_] : 𝓤 ̇ → ℕ → 𝓤 ̇
-  ∥∥ₙ-hlevel : {X : 𝓤 ̇ } {n : ℕ} → ∥ X ∥[ n ] is-of-hlevel n
-  ∣_∣[_] :  {X : 𝓤 ̇ } → X → (n : ℕ) → ∥ X ∥[ n ]
-  ∥∥ₙ-ind : {X : 𝓤 ̇ } {n : ℕ} {P : ∥ X ∥[ n ] → 𝓥 ̇}
-          → ((s : ∥ X ∥[ n ]) → (P s) is-of-hlevel n)
+  ∥_∥[_] : 𝓤 ̇ → ℕ₋₂ → 𝓤 ̇
+  ∥∥ₙ-is-truncated : {X : 𝓤 ̇ } {n : ℕ₋₂} → ∥ X ∥[ n ] is n truncated
+  ∣_∣[_] :  {X : 𝓤 ̇ } → X → (n : ℕ₋₂) → ∥ X ∥[ n ]
+  ∥∥ₙ-ind : {X : 𝓤 ̇ } {n : ℕ₋₂} {P : ∥ X ∥[ n ] → 𝓥 ̇}
+          → ((s : ∥ X ∥[ n ]) → (P s) is n truncated)
           → ((x : X) → P (∣ x ∣[ n ]))
           → (s : ∥ X ∥[ n ]) → P s
-  ∥∥ₙ-ind-comp : {X : 𝓤 ̇ } {n : ℕ} {P : ∥ X ∥[ n ] → 𝓥 ̇ }
-               → (m : (s : ∥ X ∥[ n ]) → (P s) is-of-hlevel n)
+  ∥∥ₙ-ind-comp : {X : 𝓤 ̇ } {n : ℕ₋₂} {P : ∥ X ∥[ n ] → 𝓥 ̇ }
+               → (m : (s : ∥ X ∥[ n ]) → (P s) is n truncated)
                → (g : (x : X) → P (∣ x ∣[ n ]))
                → (x : X) → ∥∥ₙ-ind m g (∣ x ∣[ n ]) ＝ g x
  infix 0 ∥_∥[_]
@@ -60,60 +62,61 @@ computation rules.
 
 \begin{code}
 
- ∥∥ₙ-rec : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {n : ℕ}
-         → Y is-of-hlevel n
+ ∥∥ₙ-rec : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {n : ℕ₋₂}
+         → Y is n truncated
          → (X → Y)
          → ∥ X ∥[ n ] → Y
- ∥∥ₙ-rec Y-h-level f s = ∥∥ₙ-ind (λ - → Y-h-level) f s
+ ∥∥ₙ-rec m f s = ∥∥ₙ-ind (λ - → m) f s
 
- ∥∥ₙ-uniqueness : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {n : ℕ}
-                → Y is-of-hlevel n
+ ∥∥ₙ-uniqueness : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {n : ℕ₋₂}
+                → Y is n truncated
                 → (f g : ∥ X ∥[ n ] → Y)
                 → ((x : X) → f (∣ x ∣[ n ]) ＝ g (∣ x ∣[ n ]))
                 → f ∼ g
- ∥∥ₙ-uniqueness Y-h-lev f g =
-  ∥∥ₙ-ind (λ s → hlevels-are-closed-under-id Y-h-lev (f s) (g s))
+ ∥∥ₙ-uniqueness m f g =
+  ∥∥ₙ-ind (λ s → truncation-levels-closed-under-Id m (f s) (g s))
 
- ∥∥ₙ-rec-comp : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {n : ℕ}
-              → (m : Y is-of-hlevel n)
+ ∥∥ₙ-rec-comp : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {n : ℕ₋₂}
+              → (m : Y is n truncated)
               → (g : X → Y)
               → (x : X) → ∥∥ₙ-rec m g ∣ x ∣[ n ] ＝ g x
  ∥∥ₙ-rec-comp m = ∥∥ₙ-ind-comp (λ - → m)
 
- ∥∥ₙ-rec₂ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {n : ℕ}
-          → Z is-of-hlevel n
+ ∥∥ₙ-rec₂ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {n : ℕ₋₂}
+          → Z is n truncated
           → (X → Y → Z)
           → ∥ X ∥[ n ] → ∥ Y ∥[ n ] → Z
- ∥∥ₙ-rec₂ Z-h-level g = ∥∥ₙ-rec (hlevel-closed-under-→ Z-h-level)
-                                (λ x → ∥∥ₙ-rec Z-h-level (g x))
+ ∥∥ₙ-rec₂ m g = ∥∥ₙ-rec (truncated-types-closed-under-→ m)
+                        (λ x → ∥∥ₙ-rec m (g x))
 
- ∥∥ₙ-rec-comp₂ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {n : ℕ}
-               → (m : Z is-of-hlevel n)
+ ∥∥ₙ-rec-comp₂ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {n : ℕ₋₂}
+               → (m : Z is n truncated)
                → (g : X → Y → Z)
                → (x : X) → (y : Y)
                → ∥∥ₙ-rec₂ m g ∣ x ∣[ n ] ∣ y ∣[ n ] ＝ g x y
  ∥∥ₙ-rec-comp₂ {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {n} m g x y =
   ∥∥ₙ-rec₂ m g ∣ x ∣[ n ] ∣ y ∣[ n ] ＝⟨ I ⟩
-  ∥∥ₙ-rec m (g x) ∣ y ∣[ n ] ＝⟨ ∥∥ₙ-rec-comp m (g x) y ⟩
+  ∥∥ₙ-rec m (g x) ∣ y ∣[ n ]         ＝⟨ ∥∥ₙ-rec-comp m (g x) y ⟩
   g x y                              ∎
    where
-    I = happly (∥∥ₙ-rec-comp (hlevel-closed-under-→ m)
+    I = happly (∥∥ₙ-rec-comp (truncated-types-closed-under-→ m)
                 (λ x → ∥∥ₙ-rec m (g x)) x)
                ∣ y ∣[ n ]
 
  abstract
-  ∥∥ₙ-ind₂ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {n : ℕ}
+  ∥∥ₙ-ind₂ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {n : ℕ₋₂}
            → (P : ∥ X ∥[ n ] → ∥ Y ∥[ n ] → 𝓦 ̇)
-           → ((u : ∥ X ∥[ n ]) → (v : ∥ Y ∥[ n ]) → (P u v) is-of-hlevel n)
+           → ((u : ∥ X ∥[ n ]) → (v : ∥ Y ∥[ n ]) → (P u v) is n truncated)
            → ((x : X) → (y : Y) → P (∣ x ∣[ n ]) (∣ y ∣[ n ]))
            → (u : ∥ X ∥[ n ]) → (v : ∥ Y ∥[ n ]) → P u v
-  ∥∥ₙ-ind₂ {𝓤} {𝓥} {𝓦} {X} {Y} {n} P P-h-level f =
-   ∥∥ₙ-ind (λ u → hlevel-closed-under-Π (P u) (P-h-level u))
-           (λ x → ∥∥ₙ-ind (λ v → P-h-level ∣ x ∣[ n ] v) (f x))
-  ∥∥ₙ-ind-comp₂ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {n : ℕ}
+  ∥∥ₙ-ind₂ {𝓤} {𝓥} {𝓦} {X} {Y} {n} P m f =
+   ∥∥ₙ-ind (λ u → truncated-types-closed-under-Π (P u) (m u))
+           (λ x → ∥∥ₙ-ind (λ v → m ∣ x ∣[ n ] v) (f x))
+           
+  ∥∥ₙ-ind-comp₂ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {n : ℕ₋₂}
                 → (P : ∥ X ∥[ n ] → ∥ Y ∥[ n ] → 𝓦 ̇)
                 → (m : (u : ∥ X ∥[ n ]) → (v : ∥ Y ∥[ n ])
-                 → (P u v) is-of-hlevel n)
+                 → (P u v) is n truncated)
                 → (g : (x : X) → (y : Y) → P (∣ x ∣[ n ]) (∣ y ∣[ n ]))
                 → (x : X) → (y : Y)
                 → ∥∥ₙ-ind₂ P m g ∣ x ∣[ n ] ∣ y ∣[ n ] ＝ g x y
@@ -125,7 +128,7 @@ computation rules.
      I : ∥∥ₙ-ind₂ P m g ∣ x ∣[ n ] ∣ y ∣[ n ]
        ＝ ∥∥ₙ-ind (m ∣ x ∣[ n ]) (g x) ∣ y ∣[ n ]
      I = happly
-          (∥∥ₙ-ind-comp (λ u → hlevel-closed-under-Π (P u) (m u))
+          (∥∥ₙ-ind-comp (λ u → truncated-types-closed-under-Π (P u) (m u))
            (λ x' → ∥∥ₙ-ind (m ∣ x' ∣[ n ]) (g x')) x)
           ∣ y ∣[ n ]
      II : ∥∥ₙ-ind (m ∣ x ∣[ n ]) (g x) ∣ y ∣[ n ] ＝ g x y
@@ -138,15 +141,15 @@ groupoid).
 
 \begin{code}
 
- zero-trunc-is-contr : {X : 𝓤 ̇ } → is-contr (∥ X ∥[ 0 ])
- zero-trunc-is-contr = ∥∥ₙ-hlevel
+ zero-trunc-is-contr : {X : 𝓤 ̇ } → is-contr (∥ X ∥[ −2 ])
+ zero-trunc-is-contr = ∥∥ₙ-is-truncated
 
- one-trunc-is-prop : {X : 𝓤 ̇ } → is-prop (∥ X ∥[ 1 ])
- one-trunc-is-prop = is-prop'-implies-is-prop ∥∥ₙ-hlevel
+ one-trunc-is-prop : {X : 𝓤 ̇ } → is-prop (∥ X ∥[ −1 ])
+ one-trunc-is-prop = is-prop'-implies-is-prop ∥∥ₙ-is-truncated
 
- two-trunc-is-set : {X : 𝓤 ̇ } → is-set (∥ X ∥[ 2 ])
+ two-trunc-is-set : {X : 𝓤 ̇ } → is-set (∥ X ∥[ succ −1 ])
  two-trunc-is-set {𝓤} {X} {x} {y} =
-  is-prop'-implies-is-prop (∥∥ₙ-hlevel x y)
+  is-prop'-implies-is-prop (∥∥ₙ-is-truncated x y)
 
 \end{code}
 
@@ -160,14 +163,14 @@ We demonstrate the equivalence of one-truncation and propositional truncation:
 
   open propositional-truncations-exist pt
 
-  one-trunc-to-prop-trunc : {X : 𝓤 ̇} → ∥ X ∥[ 1 ] → ∥ X ∥
+  one-trunc-to-prop-trunc : {X : 𝓤 ̇} → ∥ X ∥[ −1 ] → ∥ X ∥
   one-trunc-to-prop-trunc = ∥∥ₙ-rec (is-prop-implies-is-prop' ∥∥-is-prop) ∣_∣
 
-  prop-trunc-to-one-trunc : {X : 𝓤 ̇} → ∥ X ∥ → ∥ X ∥[ 1 ]
-  prop-trunc-to-one-trunc = ∥∥-rec one-trunc-is-prop (∣_∣[ 1 ])
+  prop-trunc-to-one-trunc : {X : 𝓤 ̇} → ∥ X ∥ → ∥ X ∥[ −1 ]
+  prop-trunc-to-one-trunc = ∥∥-rec one-trunc-is-prop (∣_∣[ −1 ])
 
   one-trunc-≃-prop-trunc : {X : 𝓤 ̇}
-                         → (∥ X ∥[ 1 ]) ≃ ∥ X ∥
+                         → (∥ X ∥[ −1 ]) ≃ ∥ X ∥
   one-trunc-≃-prop-trunc =
    logically-equivalent-props-are-equivalent one-trunc-is-prop ∥∥-is-prop
                                              one-trunc-to-prop-trunc
@@ -180,44 +183,44 @@ equivalence and successive applications of truncation (TODO: other closure
 conditions (?)).
 
 \begin{code}
- canonical-pred-map : {X : 𝓤 ̇} {n : ℕ}
+ canonical-pred-map : {X : 𝓤 ̇} {n : ℕ₋₂}
                     → ∥ X ∥[ succ n ] → ∥ X ∥[ n ]
  canonical-pred-map {𝓤} {X} {n} x =
-  ∥∥ₙ-rec (hlevels-are-upper-closed ∥∥ₙ-hlevel)
-          (λ x → ∣ x ∣[ n ]) x
+  ∥∥ₙ-rec (truncation-levels-are-upper-closed ∥∥ₙ-is-truncated)
+          ∣_∣[ n ] x
 
- canonical-pred-map-comp : {X : 𝓤 ̇} {n : ℕ} (x : X)
+ canonical-pred-map-comp : {X : 𝓤 ̇} {n : ℕ₋₂} (x : X)
                          → canonical-pred-map (∣ x ∣[ succ n ]) ＝ (∣ x ∣[ n ])
  canonical-pred-map-comp {𝓤} {X} {n} x =
-  ∥∥ₙ-rec-comp (hlevels-are-upper-closed ∥∥ₙ-hlevel)
-               (λ _ → ∣ _ ∣[ n ]) x
+  ∥∥ₙ-rec-comp (truncation-levels-are-upper-closed ∥∥ₙ-is-truncated)
+               ∣_∣[ n ] x
 
- to-∼-of-maps-with-truncated-domain : {X : 𝓤 ̇} {Y : 𝓥 ̇} {n : ℕ}
+ to-∼-of-maps-with-truncated-domain : {X : 𝓤 ̇} {Y : 𝓥 ̇} {n : ℕ₋₂}
                                     → (f g : ∥ X ∥[ n ] → Y)
-                                    → Y is-of-hlevel n
+                                    → Y is n truncated
                                     → ((x : X)
                                           → f (∣ x ∣[ n ]) ＝ g (∣ x ∣[ n ]))
                                     → f ∼ g
- to-∼-of-maps-with-truncated-domain f g Y-hlev =
-  ∥∥ₙ-ind (λ - → hlevels-are-closed-under-id Y-hlev (f -) (g -))
+ to-∼-of-maps-with-truncated-domain f g m =
+  ∥∥ₙ-ind (λ - → truncation-levels-closed-under-Id m (f -) (g -))
 
- to-∼-of-maps-between-truncated-types : {X : 𝓤 ̇} {Y : 𝓥 ̇} {n : ℕ}
+ to-∼-of-maps-between-truncated-types : {X : 𝓤 ̇} {Y : 𝓥 ̇} {n : ℕ₋₂}
                                       → (f g : ∥ X ∥[ n ] → ∥ Y ∥[ n ])
                                       → ((x : X)
                                             → f (∣ x ∣[ n ]) ＝ g (∣ x ∣[ n ]))
                                       → f ∼ g
  to-∼-of-maps-between-truncated-types {𝓤} {𝓥} {X} {Y} {n} f g =
-  to-∼-of-maps-with-truncated-domain f g ∥∥ₙ-hlevel
+  to-∼-of-maps-with-truncated-domain f g ∥∥ₙ-is-truncated
 
- truncation-closed-under-equiv : {X : 𝓤 ̇} {Y : 𝓥 ̇} {n : ℕ}
+ truncation-closed-under-equiv : {X : 𝓤 ̇} {Y : 𝓥 ̇} {n : ℕ₋₂}
                                → X ≃ Y
                                → ∥ X ∥[ n ] ≃ ∥ Y ∥[ n ]
  truncation-closed-under-equiv {𝓤} {𝓥} {X} {Y} {n} e = (f , (b , G) , (b , H))
   where
    f : ∥ X ∥[ n ] → ∥ Y ∥[ n ]
-   f = ∥∥ₙ-rec ∥∥ₙ-hlevel (λ x → ∣ ⌜ e ⌝ x ∣[ n ])
+   f = ∥∥ₙ-rec ∥∥ₙ-is-truncated (λ x → ∣ ⌜ e ⌝ x ∣[ n ])
    b : ∥ Y ∥[ n ] → ∥ X ∥[ n ]
-   b = ∥∥ₙ-rec ∥∥ₙ-hlevel (λ y → ∣ ⌜ e ⌝⁻¹ y ∣[ n ])
+   b = ∥∥ₙ-rec ∥∥ₙ-is-truncated (λ y → ∣ ⌜ e ⌝⁻¹ y ∣[ n ])
    H : b ∘ f ∼ id
    H = to-∼-of-maps-between-truncated-types (b ∘ f) id H'
     where
@@ -227,8 +230,8 @@ conditions (?)).
             (∣ ⌜ e ⌝⁻¹ (⌜ e ⌝ x) ∣[ n ]) ＝⟨ III ⟩
             (∣ x ∣[ n ])                 ∎
       where
-       I = ap b (∥∥ₙ-rec-comp ∥∥ₙ-hlevel (λ x → ∣ (⌜ e ⌝ x) ∣[ n ]) x)
-       II = ∥∥ₙ-rec-comp ∥∥ₙ-hlevel (λ y → ∣ (⌜ e ⌝⁻¹ y) ∣[ n ]) (⌜ e ⌝ x)
+       I = ap b (∥∥ₙ-rec-comp ∥∥ₙ-is-truncated (λ x → ∣ (⌜ e ⌝ x) ∣[ n ]) x)
+       II = ∥∥ₙ-rec-comp ∥∥ₙ-is-truncated (λ y → ∣ (⌜ e ⌝⁻¹ y) ∣[ n ]) (⌜ e ⌝ x)
        III = ap (λ x → ∣ x ∣[ n ]) (inverses-are-retractions' e x)
    G : f ∘ b ∼ id
    G = to-∼-of-maps-between-truncated-types (f ∘ b) id G'
@@ -239,24 +242,24 @@ conditions (?)).
             (∣ ⌜ e ⌝ (⌜ e ⌝⁻¹ y) ∣[ n ]) ＝⟨ III ⟩
             (∣ y ∣[ n ])                 ∎
       where
-       I = ap f (∥∥ₙ-rec-comp ∥∥ₙ-hlevel (λ y → ∣ (⌜ e ⌝⁻¹ y) ∣[ n ]) y)
-       II = ∥∥ₙ-rec-comp ∥∥ₙ-hlevel (λ x → ∣ ⌜ e ⌝ x ∣[ n ]) (⌜ e ⌝⁻¹ y)
-       III = ap (λ y → ∣ y ∣[ n ]) (inverses-are-sections' e y)
+       I = ap f (∥∥ₙ-rec-comp ∥∥ₙ-is-truncated (λ y → ∣ (⌜ e ⌝⁻¹ y) ∣[ n ]) y)
+       II = ∥∥ₙ-rec-comp ∥∥ₙ-is-truncated (λ x → ∣ ⌜ e ⌝ x ∣[ n ]) (⌜ e ⌝⁻¹ y)
+       III = ap ∣_∣[ n ] (inverses-are-sections' e y)
 
- successive-truncations-equiv : {X : 𝓤 ̇} {n : ℕ}
+ successive-truncations-equiv : {X : 𝓤 ̇} {n : ℕ₋₂}
                               → (∥ X ∥[ n ]) ≃ (∥ (∥ X ∥[ succ n ]) ∥[ n ])
  successive-truncations-equiv {𝓤} {X} {n} = (f , (b , G) , (b , H))
   where
    f : ∥ X ∥[ n ] → ∥ ∥ X ∥[ succ n ] ∥[ n ]
-   f = ∥∥ₙ-rec ∥∥ₙ-hlevel (λ x → ∣ ∣ x ∣[ succ n ] ∣[ n ])
+   f = ∥∥ₙ-rec ∥∥ₙ-is-truncated (λ _ → ∣ ∣ _ ∣[ succ n ] ∣[ n ])
    b : ∥ ∥ X ∥[ succ n ] ∥[ n ] → ∥ X ∥[ n ]
-   b = ∥∥ₙ-rec ∥∥ₙ-hlevel canonical-pred-map
+   b = ∥∥ₙ-rec ∥∥ₙ-is-truncated canonical-pred-map
    G : f ∘ b ∼ id
-   G = to-∼-of-maps-with-truncated-domain (f ∘ b) id ∥∥ₙ-hlevel
+   G = to-∼-of-maps-with-truncated-domain (f ∘ b) id ∥∥ₙ-is-truncated
         (to-∼-of-maps-with-truncated-domain
           (f ∘ b ∘ ∣_∣[ n ])
           ∣_∣[ n ]
-          (hlevels-are-upper-closed ∥∥ₙ-hlevel)
+          (truncation-levels-are-upper-closed ∥∥ₙ-is-truncated)
           G')
     where
      G' : (x : X)
@@ -266,12 +269,12 @@ conditions (?)).
             f (∣ x ∣[ n ])                           ＝⟨ III ⟩
             (∣ ∣ x ∣[ succ n ] ∣[ n ])               ∎
       where
-       I = ap f (∥∥ₙ-rec-comp ∥∥ₙ-hlevel canonical-pred-map
+       I = ap f (∥∥ₙ-rec-comp ∥∥ₙ-is-truncated canonical-pred-map
                               (∣ x ∣[ succ n ]))
        II = ap f (canonical-pred-map-comp x)
-       III = ∥∥ₙ-rec-comp ∥∥ₙ-hlevel (λ x → ∣ ∣ x ∣[ succ n ] ∣[ n ]) x
+       III = ∥∥ₙ-rec-comp ∥∥ₙ-is-truncated (λ _ → ∣ ∣ _ ∣[ succ n ] ∣[ n ]) x
    H : b ∘ f ∼ id
-   H = to-∼-of-maps-with-truncated-domain (b ∘ f) id ∥∥ₙ-hlevel H'
+   H = to-∼-of-maps-with-truncated-domain (b ∘ f) id ∥∥ₙ-is-truncated H'
     where
      H' : (x : X) → b (f (∣ x ∣[ n ])) ＝ (∣ x ∣[ n ])
      H' x = b (f (∣ x ∣[ n ]))                   ＝⟨ I ⟩
@@ -279,8 +282,8 @@ conditions (?)).
             canonical-pred-map (∣ x ∣[ succ n ]) ＝⟨ canonical-pred-map-comp x ⟩
             (∣ x ∣[ n ])                         ∎
       where
-       I = ap b (∥∥ₙ-rec-comp ∥∥ₙ-hlevel (λ - → ∣ ∣ - ∣[ succ n ] ∣[ n ]) x)
-       II = ∥∥ₙ-rec-comp ∥∥ₙ-hlevel canonical-pred-map (∣ x ∣[ succ n ])
+       I = ap b (∥∥ₙ-rec-comp ∥∥ₙ-is-truncated (λ _ → ∣ ∣ _ ∣[ succ n ] ∣[ n ]) x)
+       II = ∥∥ₙ-rec-comp ∥∥ₙ-is-truncated canonical-pred-map (∣ x ∣[ succ n ])
 
 \end{code}
 
@@ -291,34 +294,34 @@ for details see: https://unimath.github.io/agda-unimath/foundation.truncations.
 
 \begin{code}
 
- canonical-identity-trunc-map : {X : 𝓤 ̇} {x x' : X} {n : ℕ}
+ canonical-identity-trunc-map : {X : 𝓤 ̇} {x x' : X} {n : ℕ₋₂}
                               → ∥ x ＝ x' ∥[ n ]
                               → ∣ x ∣[ succ n ] ＝ ∣ x' ∣[ succ n ]
  canonical-identity-trunc-map {𝓤} {X} {x} {x'} {n} =
-  ∥∥ₙ-rec (∥∥ₙ-hlevel ∣ x ∣[ succ n ] ∣ x' ∣[ succ n ])
-          (ap (λ x → ∣ x ∣[ (succ n) ]))
+  ∥∥ₙ-rec (∥∥ₙ-is-truncated ∣ x ∣[ succ n ] ∣ x' ∣[ succ n ])
+          (ap ∣_∣[ (succ n) ])
 
- module _ {X : 𝓤 ̇} {n : ℕ}
+ module _ {X : 𝓤 ̇} {n : ℕ₋₂}
           (ua : is-univalent 𝓤) (x : X)
            where
 
-  trunc-id-family : ∥ X ∥[ succ n ] → ℍ n 𝓤
-  trunc-id-family = ∥∥ₙ-rec (ℍ-is-of-next-hlevel ua)
-                            (λ x' → (∥ x ＝ x' ∥[ n ] , ∥∥ₙ-hlevel))
+  trunc-id-family : ∥ X ∥[ succ n ] → 𝕋 n 𝓤
+  trunc-id-family = ∥∥ₙ-rec (𝕋-is-of-next-hlevel ua)
+                            (λ x' → (∥ x ＝ x' ∥[ n ] , ∥∥ₙ-is-truncated))
 
   trunc-id-family-type : ∥ X ∥[ succ n ] → 𝓤 ̇
   trunc-id-family-type = pr₁ ∘ trunc-id-family
 
   trunc-id-family-level : (v : ∥ X ∥[ succ n ])
-                        → (trunc-id-family-type v) is-of-hlevel n
+                        → (trunc-id-family-type v) is n truncated
   trunc-id-family-level = pr₂ ∘ trunc-id-family
 
   trunc-id-family-computes : (x' : X)
                            → trunc-id-family-type ∣ x' ∣[ succ n ]
                              ＝ ∥ x ＝ x' ∥[ n ]
   trunc-id-family-computes x' =
-    ap pr₁ (∥∥ₙ-rec-comp (ℍ-is-of-next-hlevel ua)
-                         (λ x' → (∥ x ＝ x' ∥[ n ] , ∥∥ₙ-hlevel))
+    ap pr₁ (∥∥ₙ-rec-comp (𝕋-is-of-next-hlevel ua)
+                         (λ x' → (∥ x ＝ x' ∥[ n ] , ∥∥ₙ-is-truncated))
                          x')
 
   trunc-id-forward-map : (x' : X)
@@ -359,10 +362,10 @@ for details see: https://unimath.github.io/agda-unimath/foundation.truncations.
        → (∣ x ∣[ succ n ] , refl-trunc-id-family)
         ＝[ Σ trunc-id-family-type ]
          (∣ x' ∣[ succ n ] , trunc-id-backward-map x' q')
-    II x' = ∥∥ₙ-ind (λ s → hlevel-closed-under-Σ
+    II x' = ∥∥ₙ-ind (λ s → truncated-types-closed-under-Σ
                             trunc-id-family-type
-                            ∥∥ₙ-hlevel
-                            (λ v → hlevels-are-upper-closed
+                            ∥∥ₙ-is-truncated
+                            (λ v → truncation-levels-are-upper-closed
                                     (trunc-id-family-level v))
                             (∣ x ∣[ succ n ] , refl-trunc-id-family)
                             (∣ x' ∣[ succ n ] , trunc-id-backward-map x' s))
@@ -382,13 +385,13 @@ for details see: https://unimath.github.io/agda-unimath/foundation.truncations.
        → (∣ x ∣[ succ n ] , refl-trunc-id-family) ＝ (v , q)
     IV =
      ∥∥ₙ-ind
-      (λ s → hlevel-closed-under-Π
+      (λ s → truncated-types-closed-under-Π
               (λ q → (∣ x ∣[ succ n ] , refl-trunc-id-family) ＝ (s , q))
-              (λ q → hlevel-closed-under-Σ
+              (λ q → truncated-types-closed-under-Σ
                       trunc-id-family-type
-                       (hlevels-are-upper-closed ∥∥ₙ-hlevel)
-                       (λ v → hlevels-are-upper-closed
-                               (hlevels-are-upper-closed
+                       (truncation-levels-are-upper-closed ∥∥ₙ-is-truncated)
+                       (λ v → truncation-levels-are-upper-closed
+                               (truncation-levels-are-upper-closed
                                  (trunc-id-family-level v)))
                        (∣ x ∣[ succ n ] , refl-trunc-id-family)
                        (s , q)))
@@ -398,7 +401,7 @@ for details see: https://unimath.github.io/agda-unimath/foundation.truncations.
                                          (∣ x ∣[ succ n ] , refl-trunc-id-family)
     trunc-id-fam-is-central (v , q) = IV v q
 
- trunc-identity-characterization : {X : 𝓤 ̇} {n : ℕ}
+ trunc-identity-characterization : {X : 𝓤 ̇} {n : ℕ₋₂}
                                  → (ua : is-univalent 𝓤)
                                  → (x : X) (v : ∥ X ∥[ succ n ])
                                  → (∣ x ∣[ succ n ] ＝ v)
@@ -409,7 +412,7 @@ for details see: https://unimath.github.io/agda-unimath/foundation.truncations.
     (identity-on-trunc-to-family ua x)
     (trunc-id-family-is-identity-system ua x) v)
 
- eliminated-trunc-identity-char : {X : 𝓤 ̇} {x x' : X} {n : ℕ}
+ eliminated-trunc-identity-char : {X : 𝓤 ̇} {x x' : X} {n : ℕ₋₂}
                                 → (ua : is-univalent 𝓤)
                                 → ∥ x ＝ x' ∥[ n ]
                                 ≃ (∣ x ∣[ succ n ] ＝ ∣ x' ∣[ succ n ])
@@ -419,7 +422,7 @@ for details see: https://unimath.github.io/agda-unimath/foundation.truncations.
                  (trunc-id-family-computes ua x x' ⁻¹))
          (≃-sym (trunc-identity-characterization ua x ∣ x' ∣[ succ n ]))
 
- forth-trunc-id-char : {X : 𝓤 ̇} {x x' : X} {n : ℕ}
+ forth-trunc-id-char : {X : 𝓤 ̇} {x x' : X} {n : ℕ₋₂}
                      → (ua : is-univalent 𝓤)
                      → ∥ x ＝ x' ∥[ n ]
                      → (∣ x ∣[ succ n ] ＝ ∣ x' ∣[ succ n ])
@@ -433,15 +436,15 @@ record types.
 
 \begin{code}
 
-H-level-truncations-give-propositional-truncations : H-level-truncations-exist
+H-level-truncations-give-propositional-truncations : general-truncations-exist
                                                    → propositional-truncations-exist
 H-level-truncations-give-propositional-truncations te = record
- { ∥_∥        = ∥_∥[ 1 ]
- ; ∥∥-is-prop = is-prop'-implies-is-prop ∥∥ₙ-hlevel
- ; ∣_∣        = ∣_∣[ 1 ]
+ { ∥_∥        = ∥_∥[ −1 ]
+ ; ∥∥-is-prop = is-prop'-implies-is-prop ∥∥ₙ-is-truncated
+ ; ∣_∣        = ∣_∣[ −1 ]
  ; ∥∥-rec     = λ - → ∥∥ₙ-rec (is-prop-implies-is-prop' -)
  }
  where
-  open H-level-truncations-exist te
+  open general-truncations-exist te
 
 \end{code}
