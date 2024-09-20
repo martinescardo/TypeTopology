@@ -31,6 +31,7 @@ open import UF.TruncationLevels
 open import UF.TruncatedTypes fe
 open import UF.Univalence
 open import UF.Yoneda
+open import Notation.Decimal
 
 \end{code}
 
@@ -141,14 +142,14 @@ groupoid).
 
 \begin{code}
 
- zero-trunc-is-contr : {X : 𝓤 ̇ } → is-contr (∥ X ∥[ −2 ])
- zero-trunc-is-contr = ∥∥ₙ-is-truncated
+ −2-trunc-is-contr : {X : 𝓤 ̇ } → is-contr (∥ X ∥[ −2 ])
+ −2-trunc-is-contr = ∥∥ₙ-is-truncated
 
- one-trunc-is-prop : {X : 𝓤 ̇ } → is-prop (∥ X ∥[ −1 ])
- one-trunc-is-prop = is-prop'-implies-is-prop ∥∥ₙ-is-truncated
+ −1-trunc-is-prop : {X : 𝓤 ̇ } → is-prop (∥ X ∥[ −1 ])
+ −1-trunc-is-prop = is-prop'-implies-is-prop ∥∥ₙ-is-truncated
 
- two-trunc-is-set : {X : 𝓤 ̇ } → is-set (∥ X ∥[ succ −1 ])
- two-trunc-is-set {𝓤} {X} {x} {y} =
+ 0-trunc-is-set : {X : 𝓤 ̇ } → is-set (∥ X ∥[ 0 ])
+ 0-trunc-is-set {𝓤} {X} {x} {y} =
   is-prop'-implies-is-prop (∥∥ₙ-is-truncated x y)
 
 \end{code}
@@ -163,18 +164,18 @@ We demonstrate the equivalence of one-truncation and propositional truncation:
 
   open propositional-truncations-exist pt
 
-  one-trunc-to-prop-trunc : {X : 𝓤 ̇} → ∥ X ∥[ −1 ] → ∥ X ∥
-  one-trunc-to-prop-trunc = ∥∥ₙ-rec (is-prop-implies-is-prop' ∥∥-is-prop) ∣_∣
+  −1-trunc-to-prop-trunc : {X : 𝓤 ̇} → ∥ X ∥[ −1 ] → ∥ X ∥
+  −1-trunc-to-prop-trunc = ∥∥ₙ-rec (is-prop-implies-is-prop' ∥∥-is-prop) ∣_∣
 
-  prop-trunc-to-one-trunc : {X : 𝓤 ̇} → ∥ X ∥ → ∥ X ∥[ −1 ]
-  prop-trunc-to-one-trunc = ∥∥-rec one-trunc-is-prop (∣_∣[ −1 ])
+  prop-trunc-to-−1-trunc : {X : 𝓤 ̇} → ∥ X ∥ → ∥ X ∥[ −1 ]
+  prop-trunc-to-−1-trunc = ∥∥-rec −1-trunc-is-prop (∣_∣[ −1 ])
 
-  one-trunc-≃-prop-trunc : {X : 𝓤 ̇}
+  −1-trunc-≃-prop-trunc : {X : 𝓤 ̇}
                          → (∥ X ∥[ −1 ]) ≃ ∥ X ∥
-  one-trunc-≃-prop-trunc =
-   logically-equivalent-props-are-equivalent one-trunc-is-prop ∥∥-is-prop
-                                             one-trunc-to-prop-trunc
-                                             prop-trunc-to-one-trunc
+  −1-trunc-≃-prop-trunc =
+   logically-equivalent-props-are-equivalent −1-trunc-is-prop ∥∥-is-prop
+                                             −1-trunc-to-prop-trunc
+                                             prop-trunc-to-−1-trunc
 
 \end{code}
 
@@ -436,9 +437,9 @@ record types.
 
 \begin{code}
 
-H-level-truncations-give-propositional-truncations : general-truncations-exist
+general-truncations-give-propositional-truncations : general-truncations-exist
                                                    → propositional-truncations-exist
-H-level-truncations-give-propositional-truncations te = record
+general-truncations-give-propositional-truncations te = record
  { ∥_∥        = ∥_∥[ −1 ]
  ; ∥∥-is-prop = is-prop'-implies-is-prop ∥∥ₙ-is-truncated
  ; ∣_∣        = ∣_∣[ −1 ]
