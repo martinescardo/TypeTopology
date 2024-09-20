@@ -290,16 +290,16 @@ extensionlity.
 
 private
  abstract
-  minimal-pair' : (A : ℕ → 𝓤 ̇ )
+  minimal-pair⁺ : (A : ℕ → 𝓤 ̇ )
                 → ((n : ℕ) → A n → (k : ℕ) → k < n → is-decidable (A k))
                 → (n : ℕ)
                 → A n
                 → Σ (k , aₖ) ꞉ Σ A , ((i : ℕ) → A i → k ≤ i)
-  minimal-pair' A δ 0        a₀   = (0 , a₀) , (λ i aᵢ → zero-least i)
-  minimal-pair' A δ (succ n) aₙ₊₁ = II
+  minimal-pair⁺ A δ 0        a₀   = (0 , a₀) , (λ i aᵢ → zero-least i)
+  minimal-pair⁺ A δ (succ n) aₙ₊₁ = II
    where
     IH : Σ (j , aⱼ₊₁) ꞉ Σ (A ∘ succ) , ((i : ℕ) → A (succ i) → j ≤ i)
-    IH = minimal-pair' (A ∘ succ) (λ n aₙ₊₁ j → δ (succ n) aₙ₊₁ (succ j)) n aₙ₊₁
+    IH = minimal-pair⁺ (A ∘ succ) (λ n aₙ₊₁ j → δ (succ n) aₙ₊₁ (succ j)) n aₙ₊₁
 
     I : type-of IH
       → Σ (k , aₖ) ꞉ Σ A , ((i : ℕ) → A i → k ≤ i)
@@ -320,7 +320,7 @@ module _ (A : ℕ → 𝓤 ̇ )
        where
 
  minimal-pair : Σ A → Σ A
- minimal-pair (n , aₙ) = pr₁ (minimal-pair' A δ n aₙ)
+ minimal-pair (n , aₙ) = pr₁ (minimal-pair⁺ A δ n aₙ)
 
  minimal-number : Σ A → ℕ
  minimal-number = pr₁ ∘ minimal-pair
@@ -329,7 +329,7 @@ module _ (A : ℕ → 𝓤 ̇ )
  minimal-number-requirement = pr₂ ∘ minimal-pair
 
  minimality : (σ : Σ A) → (i : ℕ) → A i → minimal-number σ ≤ i
- minimality (n , aₙ) = pr₂ (minimal-pair' A δ n aₙ)
+ minimality (n , aₙ) = pr₂ (minimal-pair⁺ A δ n aₙ)
 
  minimal-pair-wconstant : is-prop-valued-family A → wconstant minimal-pair
  minimal-pair-wconstant A-prop-valued σ σ' =

@@ -142,8 +142,11 @@ function extensionality, and we choose the latter for convenience.
 
 \begin{code}
 
+is-modulus-of-continuity : (ℕ∞ → ℕ) → ℕ → 𝓤₀ ̇
+is-modulus-of-continuity f m = (n : ℕ) → f (max (ι m) (ι n)) ＝ f ∞
+
 continuous : (ℕ∞ → ℕ) → 𝓤₀ ̇
-continuous f = Σ m ꞉ ℕ , ((n : ℕ) → f (max (ι m) (ι n)) ＝ f ∞)
+continuous f = Σ m ꞉ ℕ , is-modulus-of-continuity f m
 
 \end{code}
 
@@ -773,8 +776,11 @@ contrapositive, ¬ WLPO is stronger than ¬ LPO:
 
 \begin{code}
 
+restriction : (ℕ∞ → ℕ) → (ℕ → ℕ)
+restriction f = f ∘ ι
+
 _extends_ : (ℕ∞ → ℕ) → (ℕ → ℕ) → 𝓤₀ ̇
-f extends g = f ∘ ι ∼ g
+f extends g = restriction f ∼ g
 
 ℕ∞-extension : (ℕ → ℕ) → 𝓤₀ ̇
 ℕ∞-extension g = Σ f ꞉ (ℕ∞ → ℕ) , f extends g
@@ -857,7 +863,7 @@ LPO-gives-ℕ∞-extension lpo g y
   E k (inl (n , p)) = ap g (ℕ-to-ℕ∞-lc (p ⁻¹))
   E k (inr ν)       = 𝟘-elim (ν (k , refl))
 
-  e : f ∘ ι ∼ g
+  e : restriction f ∼ g
   e k = E k (lpo (ι k))
 
   P : (d : is-decidable (Σ n ꞉ ℕ , ∞ ＝ ι n)) → F ∞ d ＝ y
@@ -926,10 +932,8 @@ open import Naturals.Order renaming
                              max-idemp to maxℕ-idemp ;
                              max-comm to maxℕ-comm)
 
-is-modulus-of-eventual-constancy
- : (ℕ → ℕ) → ℕ → 𝓤₀ ̇
-is-modulus-of-eventual-constancy g m
- = ((n : ℕ) → g (maxℕ m n) ＝ g m)
+is-modulus-of-eventual-constancy : (ℕ → ℕ) → ℕ → 𝓤₀ ̇
+is-modulus-of-eventual-constancy g m = ((n : ℕ) → g (maxℕ m n) ＝ g m)
 
 being-modulus-of-eventual-constancy-is-prop
  : (g : ℕ → ℕ)
@@ -939,38 +943,35 @@ being-modulus-of-eventual-constancy-is-prop g m
  = Π-is-prop fe (λ n → ℕ-is-set)
 
 eventually-constant : (ℕ → ℕ) → 𝓤₀ ̇
-eventually-constant g
- = Σ m ꞉ ℕ , is-modulus-of-eventual-constancy g m
+eventually-constant g = Σ m ꞉ ℕ , is-modulus-of-eventual-constancy g m
 
 eventual-constancy-data = eventually-constant
 
 eventual-constancy-gives-continuous-extension
  : (g : ℕ → ℕ)
- → eventually-constant g
- → Σ (f , _) ꞉ ℕ∞-extension g , continuous f
-eventual-constancy-gives-continuous-extension g
- = uncurry (h g)
+   ((m , _) : eventually-constant g)
+ → Σ (f , _) ꞉ ℕ∞-extension g , is-modulus-of-continuity f m
+eventual-constancy-gives-continuous-extension g (m , a)
+ = h g m a
  where
   h : (g : ℕ → ℕ)
       (m : ℕ)
     → is-modulus-of-eventual-constancy g m
-    → Σ (f , _) ꞉ ℕ∞-extension g , continuous f
+    → Σ (f , _) ꞉ ℕ∞-extension g , is-modulus-of-continuity f m
   h g 0        a = ((λ _ → g 0) ,
                     (λ n →  g 0          ＝⟨ (a n)⁻¹ ⟩
                             g (maxℕ 0 n) ＝⟨ refl ⟩
                             g n          ∎)) ,
-                   0 ,
                    (λ n → refl)
-
   h g (succ m) a = I IH
    where
-    IH : Σ (f , _) ꞉ ℕ∞-extension (g ∘ succ) , continuous f
+    IH : Σ (f , _) ꞉ ℕ∞-extension (g ∘ succ) , is-modulus-of-continuity f m
     IH = h (g ∘ succ) m (a ∘ succ)
 
-    I : (Σ (f , _) ꞉ ℕ∞-extension (g ∘ succ) , continuous f)
-      → Σ (f' , _) ꞉ ℕ∞-extension g , continuous f'
-    I ((f , e) , (m , m-is-modulus)) = (f' , e') ,
-                                     (succ m , succ-m-is-modulus)
+    I : type-of IH
+      → Σ (f' , _) ꞉ ℕ∞-extension g , is-modulus-of-continuity f' (succ m)
+    I ((f , e) , m-is-modulus)
+     = (f' , e') , succ-m-is-modulus
      where
       f' : ℕ∞ → ℕ
       f' = ℕ∞-cases fe (g 0) f
@@ -992,7 +993,7 @@ eventual-constancy-gives-continuous-extension g
        f (max (ι m) (ι n))                ＝⟨ IV ⟩
        f ∞                                ＝⟨ V ⟩
        f' (Succ ∞)                        ＝⟨ VI ⟩
-       f' ∞ ∎
+       f' ∞                               ∎
         where
          II  = ap f' ((max-Succ fe (ι m) (ι n))⁻¹)
          III = ℕ∞-cases-Succ fe (g 0) f (max (ι m) (ι n))
@@ -1000,19 +1001,81 @@ eventual-constancy-gives-continuous-extension g
          V   = (ℕ∞-cases-Succ fe (g 0) f ∞)⁻¹
          VI  = ap f' (Succ-∞-is-∞ fe)
 
-continuous-extension-gives-eventual-constancy
+\end{code}
+
+It will be convenient name various projections of the construction above.
+
+\begin{code}
+
+evc-extension
+ : (g : ℕ → ℕ)
+ → eventually-constant g
+ → ℕ∞ → ℕ
+evc-extension g c
+ = pr₁ (pr₁ (eventual-constancy-gives-continuous-extension g c))
+
+evc-extension-property
+ : (g : ℕ → ℕ)
+   (c : eventually-constant g)
+ → (evc-extension g c) extends g
+evc-extension-property g c
+ = pr₂ (pr₁ (eventual-constancy-gives-continuous-extension g c))
+
+evc-extension-modulus-of-continuity
+ : (g : ℕ → ℕ)
+   (c@(m , _) : eventually-constant g)
+ → is-modulus-of-continuity (evc-extension g c) m
+evc-extension-modulus-of-continuity g c@(m , _)
+ = pr₂ (eventual-constancy-gives-continuous-extension g c)
+
+evc-extension-continuity
+ : (g : ℕ → ℕ)
+   (c : eventually-constant g)
+ → continuous (evc-extension g c)
+evc-extension-continuity g c@(m , _)
+ = m , evc-extension-modulus-of-continuity g c
+
+evc-extension-∞
+ : (g : ℕ → ℕ)
+   (c@(m , _) : eventually-constant g)
+ → evc-extension g c ∞ ＝ g m
+evc-extension-∞ g c@(m , a)
+ = f ∞                 ＝⟨ (evc-extension-modulus-of-continuity g c m)⁻¹ ⟩
+   f (max (ι m) (ι m)) ＝⟨ ap f (max-idemp fe (ι m)) ⟩
+   f (ι m)             ＝⟨ evc-extension-property g c m ⟩
+   g m                 ∎
+ where
+  f : ℕ∞ → ℕ
+  f = evc-extension g c
+
+\end{code}
+
+The converse of the above.
+
+\begin{code}
+
+continuous-extension-gives-eventual-constancy'
  : (g : ℕ → ℕ)
    ((f , _) : ℕ∞-extension g)
- → continuous f
- → eventually-constant g
-continuous-extension-gives-eventual-constancy g (f , e) (m , m-is-modulus)
- = m , (λ n → g (maxℕ m n)        ＝⟨ (e (maxℕ m n))⁻¹ ⟩
+   (m : ℕ)
+ → is-modulus-of-continuity f m
+ → is-modulus-of-eventual-constancy g m
+continuous-extension-gives-eventual-constancy' g (f , e) m  m-is-modulus
+ = (λ n → g (maxℕ m n)        ＝⟨ (e (maxℕ m n))⁻¹ ⟩
               f (ι (maxℕ m n))    ＝⟨ ap f (max-fin fe m n) ⟩
               f (max (ι m) (ι n)) ＝⟨ m-is-modulus n ⟩
               f ∞                 ＝⟨ (m-is-modulus m)⁻¹ ⟩
               f (max (ι m) (ι m)) ＝⟨ ap f (max-idemp fe (ι m)) ⟩
               f (ι m)             ＝⟨ e m ⟩
               g m                 ∎)
+
+continuous-extension-gives-eventual-constancy
+ : (g : ℕ → ℕ)
+   ((f , _) : ℕ∞-extension g)
+ → continuous f
+ → eventually-constant g
+continuous-extension-gives-eventual-constancy g ext (m , m-is-modulus)
+ = m , continuous-extension-gives-eventual-constancy' g ext m m-is-modulus
 
 \end{code}
 
@@ -1234,6 +1297,9 @@ constancy data has split support.
 
 \end{code}
 
+A more general result is proved below, which doesn't assume that g has
+an extension.
+
 The second necessary condition for the explicit existence of an
 extension is also necessary for the anonymous existence.
 
@@ -1249,6 +1315,32 @@ extension is also necessary for the anonymous existence.
        (λ n → decidability-of-prop-is-prop fe
                (being-modulus-of-eventual-constancy-is-prop g n)))
      (second-necessary-condition-for-the-explicit-existence-of-an-extension g)
+
+\end{code}
+
+The following is immediate, and we need its reformulation given after
+it.
+
+\begin{code}
+
+ open continuity-criteria pt
+
+ is-continuous-extension-gives-is-eventually-constant
+  : (g : ℕ → ℕ)
+    ((f , _) : ℕ∞-extension g)
+  → is-continuous f
+  → is-eventually-constant g
+ is-continuous-extension-gives-is-eventually-constant  g e
+  = ∥∥-functor (continuous-extension-gives-eventual-constancy g e)
+
+ restriction-of-continuous-function-is-eventually-constant
+  : (f : ℕ∞ → ℕ)
+  → is-continuous f
+  → is-eventually-constant (restriction f)
+ restriction-of-continuous-function-is-eventually-constant f
+  = is-continuous-extension-gives-is-eventually-constant
+     (restriction f)
+     (f , (λ x → refl))
 
 \end{code}
 
@@ -1335,19 +1427,20 @@ Markov's Principle. We leave this as an open problem.
 Added 18th September 2024. There is another way of looking at the
 above development, which gives rise to a further question.
 
-We have the restriction map r : (ℕ∞ → ℕ) → (ℕ → ℕ) defined by r f ＝ f ∘ ι.
+We have the restriction map (ℕ∞ → ℕ) → (ℕ → ℕ) defined above
+as restriction f ＝ f ∘ ι.
 
 For any map f : X → Y we have that
 
  X ≃ Σ y ꞉ Y , Σ x ꞉ X , f x ＝ y
    ＝ Σ y ꞉ Y , fiber f y.
 
-With X = (ℕ∞ → ℕ) and Y = (ℕ → ℕ) and f = r, the definition of
-_extends_, together with the fact that _∼_ coincides with _＝_ under
-function extensionality, the above specializes to
+With X = (ℕ∞ → ℕ) and Y = (ℕ → ℕ) and f = restriction, the definition
+of _extends_, together with the fact that _∼_ coincides with _＝_
+under function extensionality, the above specializes to
 
  (ℕ∞ → ℕ) ≃ Σ g ꞉ (ℕ → ℕ) , Σ f ꞉ (ℕ∞ → ℕ) , f ∘ ι ＝ g
-          ≃ Σ g ꞉ (ℕ → ℕ) , Σ f ꞉ (ℕ∞ → ℕ) , f ∘ ι ∼ g
+          ≃ Σ g ꞉ (ℕ → ℕ) , Σ f ꞉ (ℕ∞ → ℕ) , restriction f ∼ g
           ≃ Σ g ꞉ (ℕ → ℕ) , Σ f ꞉ (ℕ∞ → ℕ) , f extends g
           ≃ Σ g ꞉ (ℕ → ℕ) , ℕ-extension g
 
@@ -1387,55 +1480,58 @@ induction.
 
 \begin{code}
 
- module _ (g : ℕ → ℕ) (n : ℕ) where
+ modulus-down
+  : (g : ℕ → ℕ)
+    (n : ℕ)
+  → is-modulus-of-eventual-constancy g (succ n)
+  → is-decidable (is-modulus-of-eventual-constancy g n)
+ modulus-down g n μ = III
+  where
+   I : g (succ n) ＝ g n → is-modulus-of-eventual-constancy g n
+   I e m =
+    Cases (order-split n m)
+     (λ (l : n < m)
+     → g (maxℕ n m)        ＝⟨ ap g (max-ord→ n m (≤-trans _ _ _ (≤-succ n) l)) ⟩
+       g m                 ＝⟨ ap g ((max-ord→ (succ n) m l)⁻¹) ⟩
+       g (maxℕ (succ n) m) ＝⟨ μ m ⟩
+       g (succ n)          ＝⟨ e ⟩
+       g n                 ∎)
+     (λ (l : m ≤ n)
+     → g (maxℕ n m) ＝⟨ ap g (maxℕ-comm n m) ⟩
+       g (maxℕ m n) ＝⟨ ap g (max-ord→ m n l) ⟩
+       g n          ∎)
 
-  modulus-down
-   : is-modulus-of-eventual-constancy g (succ n)
-   → is-decidable (is-modulus-of-eventual-constancy g n)
-  modulus-down μ = III
-   where
-    I : g (succ n) ＝ g n → is-modulus-of-eventual-constancy g n
-    I e m =
-     Cases (order-split n m)
-      (λ (l : n < m)
-      → g (maxℕ n m)        ＝⟨ ap g (max-ord→ n m (≤-trans _ _ _ (≤-succ n) l)) ⟩
-        g m                 ＝⟨ ap g ((max-ord→ (succ n) m l)⁻¹) ⟩
-        g (maxℕ (succ n) m) ＝⟨ μ m ⟩
-        g (succ n)          ＝⟨ e ⟩
-        g n                 ∎)
-      (λ (l : m ≤ n)
-      → g (maxℕ n m) ＝⟨ ap g (maxℕ-comm n m) ⟩
-        g (maxℕ m n) ＝⟨ ap g (max-ord→ m n l) ⟩
-        g n          ∎)
+   II : is-modulus-of-eventual-constancy g n → g (succ n) ＝ g n
+   II a = g (succ n)          ＝⟨ ap g ((max-ord→ n (succ n) (≤-succ n))⁻¹) ⟩
+          g (maxℕ n (succ n)) ＝⟨ a (succ n) ⟩
+          g n                 ∎
 
-    II : is-modulus-of-eventual-constancy g n → g (succ n) ＝ g n
-    II a = g (succ n)          ＝⟨ ap g ((max-ord→ n (succ n) (≤-succ n))⁻¹) ⟩
-           g (maxℕ n (succ n)) ＝⟨ a (succ n) ⟩
-           g n                 ∎
+   III : is-decidable (is-modulus-of-eventual-constancy g n)
+   III = map-decidable I II (ℕ-is-discrete (g (succ n)) (g n))
 
-    III : is-decidable (is-modulus-of-eventual-constancy g n)
-    III = map-decidable I II (ℕ-is-discrete (g (succ n)) (g n))
-
-  modulus-up : is-modulus-of-eventual-constancy g n
-             → is-modulus-of-eventual-constancy g (succ n)
-  modulus-up μ m =
-   g (maxℕ (succ n) m)          ＝⟨ ap g I ⟩
-   g (maxℕ n (maxℕ (succ n) m)) ＝⟨ μ (maxℕ (succ n) m) ⟩
-   g n                          ＝⟨ (μ (succ n))⁻¹ ⟩
-   g (maxℕ n (succ n))          ＝⟨ ap g (max-ord→ n (succ n) (≤-succ n)) ⟩
-   g (succ n)                   ∎
-   where
-    I : maxℕ (succ n) m ＝ maxℕ n (maxℕ (succ n) m)
-    I = (max-ord→ n _
-          (≤-trans _ _ _
-            (≤-succ n)
-            (max-ord← _ _
-              (maxℕ (succ n) (maxℕ (succ n) m) ＝⟨ II ⟩
-               maxℕ (maxℕ (succ n) (succ n)) m ＝⟨ III ⟩
-               maxℕ (succ n) m                 ∎))))⁻¹
-                where
-                 II  = (max-assoc (succ n) (succ n) m)⁻¹
-                 III = ap (λ - → maxℕ - m) (maxℕ-idemp (succ n))
+ modulus-up
+   : (g : ℕ → ℕ)
+     (n : ℕ)
+   → is-modulus-of-eventual-constancy g n
+   → is-modulus-of-eventual-constancy g (succ n)
+ modulus-up g n μ m =
+  g (maxℕ (succ n) m)          ＝⟨ ap g I ⟩
+  g (maxℕ n (maxℕ (succ n) m)) ＝⟨ μ (maxℕ (succ n) m) ⟩
+  g n                          ＝⟨ (μ (succ n))⁻¹ ⟩
+  g (maxℕ n (succ n))          ＝⟨ ap g (max-ord→ n (succ n) (≤-succ n)) ⟩
+  g (succ n)                   ∎
+  where
+   I : maxℕ (succ n) m ＝ maxℕ n (maxℕ (succ n) m)
+   I = (max-ord→ n _
+         (≤-trans _ _ _
+           (≤-succ n)
+           (max-ord← _ _
+             (maxℕ (succ n) (maxℕ (succ n) m) ＝⟨ II ⟩
+              maxℕ (maxℕ (succ n) (succ n)) m ＝⟨ III ⟩
+              maxℕ (succ n) m                 ∎))))⁻¹
+               where
+                II  = (max-assoc (succ n) (succ n) m)⁻¹
+                III = ap (λ - → maxℕ - m) (maxℕ-idemp (succ n))
 
  conditional-decidability-of-being-modulus-of-constancy
   : (g : ℕ → ℕ)
@@ -1450,14 +1546,85 @@ induction.
      (modulus-down g)
      (modulus-up g)
 
- eventual-constancy-data-has-split-support
+ eventual-constancy-property-gives-eventual-constancy-data
   : (g : ℕ → ℕ)
   → is-eventually-constant g
   → eventual-constancy-data g
- eventual-constancy-data-has-split-support g
+ eventual-constancy-property-gives-eventual-constancy-data g
   = exit-truncation⁺
     (is-modulus-of-eventual-constancy g)
     (being-modulus-of-eventual-constancy-is-prop g)
     (conditional-decidability-of-being-modulus-of-constancy g)
+
+ open import UF.Equiv
+ open continuity-criteria pt
+
+ private
+  ϕ : (Σ f ꞉ (ℕ∞ → ℕ) , is-continuous f)
+    → (Σ g ꞉ (ℕ → ℕ), is-eventually-constant g)
+  ϕ (f , f-cts) = restriction f ,
+                  restriction-of-continuous-function-is-eventually-constant f f-cts
+
+  γ : (Σ g ꞉ (ℕ → ℕ), is-eventually-constant g)
+    → (Σ f ꞉ (ℕ∞ → ℕ) , is-continuous f)
+  γ (g , g-evc) =
+   evc-extension g (eventual-constancy-property-gives-eventual-constancy-data g g-evc) ,
+   ∣ evc-extension-continuity g (eventual-constancy-property-gives-eventual-constancy-data g g-evc) ∣
+   where
+    c : eventual-constancy-data g
+    c = eventual-constancy-property-gives-eventual-constancy-data g g-evc
+
+{-
+  γϕ : γ ∘ ϕ ∼ id
+  γϕ (f , f-cts) = to-subtype-＝
+                    (λ _ → ∃-is-prop)
+                    (dfunext fe III)
+   where
+    c : eventual-constancy-data (restriction f)
+    c = eventual-constancy-property-gives-eventual-constancy-data
+         (restriction f)
+         (restriction-of-continuous-function-is-eventually-constant f f-cts)
+
+    I : (n : ℕ) → evc-extension (restriction f) c (ι n) ＝ f (ι n)
+    I = evc-extension-property (restriction f) c
+
+    m : ℕ
+    m = pr₁ c
+
+-- To fill the the remaining need to prove a couple of lemmas that are
+-- worth having anyway. Next time.
+
+    gap : is-modulus-of-continuity f m
+    gap = {!!}
+
+    II
+     = evc-extension (restriction f) c ∞ ＝⟨ evc-extension-∞ (restriction f) c ⟩
+       restriction f m                   ＝⟨ refl ⟩
+       f (ι m)                           ＝⟨ ap f ((max-idemp fe (ι m))⁻¹) ⟩
+       f (max (ι m) (ι m))               ＝⟨ gap m ⟩
+       f ∞ ∎
+
+    III : (x : ℕ∞) → evc-extension (restriction f) c x ＝ f x
+    III = ℕ∞-density fe ℕ-is-¬¬-separated I II
+
+  ϕγ : ϕ ∘ γ ∼ id
+  ϕγ (g , g-evc) =
+   to-subtype-＝
+    (λ _ → ∃-is-prop)
+    (dfunext fe
+      (λ n → evc-extension-property
+              g
+              (eventual-constancy-property-gives-eventual-constancy-data g g-evc)
+              n))
+
+  ϕ-is-equiv : is-equiv ϕ
+  ϕ-is-equiv = qinvs-are-equivs ϕ (γ , γϕ , ϕγ)
+
+ characterization-of-type-of-continuous-functions-≃
+  : (Σ f ꞉ (ℕ∞ → ℕ) , is-continuous f)
+  ≃ (Σ g ꞉ (ℕ → ℕ), is-eventually-constant g)
+ characterization-of-type-of-continuous-functions-≃
+  = ϕ , ϕ-is-equiv
+-}
 
 \end{code}
