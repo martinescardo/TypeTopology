@@ -1628,3 +1628,28 @@ induction.
 -}
 
 \end{code}
+
+Added 20th September 2024.
+
+I think, in retrospect, it would have been a better idea to work with
+minimal moduli of continuity and eventual constancy. In this way, we
+never need to use propositional truncations, because the explicit
+existence of minimal moduli, of continuity or eventual constancy, is
+property rather than data (or property-like data, if you wish).
+
+In any case, if we want to keep this development as it is, it is
+enough to use
+
+  exit-truncation⁺-minimality
+   : (A : ℕ → 𝓤 ̇ )
+   → is-prop-valued-family A)
+   → ((n : ℕ) → A n → (k : ℕ) → k < n → is-decidable (A k))
+   → (s : ∥ Σ A ∥) → ((i : ℕ) → A i → pr₁ (exit-truncation⁺ s) ≤ i)
+
+This holds because exit-truncation⁺ does produce, by construction, a
+minimal witness.
+
+One possible idea is to do both, but instead take the primary
+definitions of `is-continuous` and of `is-eventually-constant` using
+minimality rather than propositional truncaion, and then show that the
+definitions using minimality are (logically and typally) equivalent.
