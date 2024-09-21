@@ -8,6 +8,14 @@ module Locales.index where
 
 \end{code}
 
+There is a separate index file for the thesis:
+
+\begin{code}
+
+import Locales.ThesisIndex
+
+\end{code}
+
 \section{Basics}
 
 Basics of frames and quite a bit of order theory.
