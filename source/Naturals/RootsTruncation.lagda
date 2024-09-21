@@ -203,71 +203,42 @@ Added 17th August 2024.
 open import NotionsOfDecidability.Complemented
 open import NotionsOfDecidability.Decidable
 
-minimal-witness : (A : ℕ → 𝓤 ̇ )
-                → is-complemented A
-                → (Σ n ꞉ ℕ , A n)
-                → Σ m ꞉ ℕ , (A m × ((k : ℕ) → A k → m ≤ k))
-minimal-witness A A-is-complemented (n , aₙ) = m , aₘ , m-is-minimal-witness
- where
-  open Roots-truncation 𝟚 ₀ (λ b → 𝟚-is-discrete b ₀)
+module _ (A : ℕ → 𝓤 ̇ )
+         (δ : is-complemented A)
+      where
 
-  α : ℕ → 𝟚
-  α = characteristic-map A A-is-complemented
-
-  n-is-root : α n ＝ ₀
-  n-is-root = characteristic-map-property₀-back A A-is-complemented n aₙ
-
-  r : Root α
-  r = n , n-is-root
-
-  m : ℕ
-  m = μ-root α r
-
-  m-is-root : α m ＝ ₀
-  m-is-root = μ-root-is-root α r
-
-  aₘ : A m
-  aₘ = characteristic-map-property₀ A A-is-complemented m m-is-root
-
-  m-is-minimal-root : (k : ℕ) → α k ＝ ₀ → m ≤ k
-  m-is-minimal-root = μ-root-is-minimal α n n-is-root
-
-  m-is-minimal-witness : (k : ℕ) → A k → m ≤ k
-  m-is-minimal-witness k aₖ = m-is-minimal-root k k-is-root
-   where
-    k-is-root : α k ＝ ₀
-    k-is-root = characteristic-map-property₀-back A A-is-complemented k aₖ
-
-module exit-truncations (pt : propositional-truncations-exist) where
-
- open PropositionalTruncation pt
-
- exit-truncation : (A : ℕ → 𝓤 ̇ )
-                 → is-complemented A
-                 → (∃ n ꞉ ℕ , A n)
-                 → Σ n ꞉ ℕ , A n
- exit-truncation A A-is-complemented e = IV
+ minimal-witness : (Σ n ꞉ ℕ , A n)
+                 → Σ m ꞉ ℕ , (A m × ((k : ℕ) → A k → m ≤ k))
+ minimal-witness (n , aₙ) = m , aₘ , m-is-minimal-witness
   where
    open Roots-truncation 𝟚 ₀ (λ b → 𝟚-is-discrete b ₀)
-   open exit-Roots-truncation pt
 
    α : ℕ → 𝟚
-   α = characteristic-map A A-is-complemented
+   α = characteristic-map A δ
 
-   I : (Σ n ꞉ ℕ , A n) → Σ n ꞉ ℕ , α n ＝ ₀
-   I (n , a) = n , characteristic-map-property₀-back A A-is-complemented n a
+   n-is-root : α n ＝ ₀
+   n-is-root = characteristic-map-property₀-back A δ n aₙ
 
-   e' : ∃ n ꞉ ℕ , α n ＝ ₀
-   e' = ∥∥-functor I e
+   r : Root α
+   r = n , n-is-root
 
-   II : Σ n ꞉ ℕ , α n ＝ ₀
-   II = exit-Root-truncation α e'
+   m : ℕ
+   m = μ-root α r
 
-   III : (Σ n ꞉ ℕ , α n ＝ ₀) → Σ n ꞉ ℕ , A n
-   III (n , e) = n , characteristic-map-property₀ A A-is-complemented n e
+   m-is-root : α m ＝ ₀
+   m-is-root = μ-root-is-root α r
 
-   IV : Σ n ꞉ ℕ , A n
-   IV = III II
+   aₘ : A m
+   aₘ = characteristic-map-property₀ A δ m m-is-root
+
+   m-is-minimal-root : (k : ℕ) → α k ＝ ₀ → m ≤ k
+   m-is-minimal-root = μ-root-is-minimal α n n-is-root
+
+   m-is-minimal-witness : (k : ℕ) → A k → m ≤ k
+   m-is-minimal-witness k aₖ = m-is-minimal-root k k-is-root
+    where
+     k-is-root : α k ＝ ₀
+     k-is-root = characteristic-map-property₀-back A δ k aₖ
 
 \end{code}
 
@@ -341,7 +312,7 @@ module _ (A : ℕ → 𝓤 ̇ )
       (minimality σ  (minimal-number σ') (minimal-number-requirement σ'))
       (minimality σ' (minimal-number σ)  (minimal-number-requirement σ)))
 
-module exit-truncations⁺ (pt : propositional-truncations-exist) where
+module exit-truncations (pt : propositional-truncations-exist) where
 
  open PropositionalTruncation pt
  open split-support-and-collapsibility pt
@@ -356,8 +327,8 @@ module exit-truncations⁺ (pt : propositional-truncations-exist) where
                       (minimal-pair A δ ,
                        minimal-pair-wconstant A δ A-is-prop-valued)
 
-  exit-truncation⁺-minimality : (s : ∥ Σ A ∥)
-                              → (i : ℕ) → A i → pr₁ (exit-truncation⁺ s) ≤ i
+  exit-truncation⁺-minimality
+   : (s : ∥ Σ A ∥) (i : ℕ) → A i → pr₁ (exit-truncation⁺ s) ≤ i
   exit-truncation⁺-minimality s = IV
    where
     I : minimal-pair A δ (exit-truncation⁺ s) ＝ exit-truncation⁺ s
@@ -381,6 +352,47 @@ This is not quite a generalization of the previous result, because the
 previous result doesn't have the assumption that A is prop-valued.
 
 TODO. Can we remove the prop-valuedness assumption?
+
+In the following particular case of interest, the prop-valuedness
+assumption can be removed.
+
+\begin{code}
+
+ module _ (B : ℕ → 𝓤 ̇ )
+          (d : (n : ℕ) → is-decidable (B n))
+        where
+
+  private
+    A : ℕ → 𝓤₀ ̇
+    A n = ∥ B n ∥⟨ d n ⟩
+
+    A-is-prop-valued : is-prop-valued-family A
+    A-is-prop-valued n = ∥∥⟨⟩-is-prop (d n)
+
+    δ : (n : ℕ) → A n → (k : ℕ) → k < n → is-decidable (A k)
+    δ n aₙ k l = ∥∥⟨⟩-is-decidable (d k)
+
+    f : Σ B → Σ A
+    f (n , bₙ) = n , ∣ bₙ ∣⟨ d n ⟩
+
+    g : Σ A → Σ B
+    g (n , aₙ) = (n , ∣∣⟨⟩-exit (d n) aₙ)
+
+  exit-truncation : ∥ Σ B ∥ → Σ B
+  exit-truncation t = g (exit-truncation⁺ A A-is-prop-valued δ (∥∥-functor f t))
+
+  exit-truncation-minimality
+   : (t : ∥ Σ B ∥) (i : ℕ) → B i → pr₁ (exit-truncation t) ≤ i
+  exit-truncation-minimality t i b =
+   exit-truncation⁺-minimality
+    A
+    A-is-prop-valued
+    δ
+    (∥∥-functor f t)
+    i
+    ∣ b ∣⟨ d i ⟩
+
+\end{code}
 
 Added 19th September 2024.
 

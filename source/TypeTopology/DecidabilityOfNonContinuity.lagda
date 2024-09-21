@@ -1471,7 +1471,7 @@ module eventual-constancy-under-propositional-truncations⁺
 
  open eventual-constancy-under-propositional-truncations pt
  open PropositionalTruncation pt
- open exit-truncations⁺ pt
+ open exit-truncations pt
 
 \end{code}
 
