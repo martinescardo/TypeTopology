@@ -32,20 +32,22 @@ key-insight : {X Y : 𝓤 ̇ } (f : X → Y)
             → {x : X} (p : x ＝ x) → ap f p ＝ refl
 key-insight f g p = key-lemma f g p ∙ (sym-is-inverse (g _ _))⁻¹
 
-transport-ids-along-ids : {X Y : 𝓤 ̇ }
-                          {x y : X}
-                          (p : x ＝ y)
-                          (h k : X → Y)
-                          (q : h x ＝ k x)
-                        → transport (λ - → h - ＝ k -) p q ＝ (ap h p)⁻¹ ∙ q ∙ ap k p
+transport-ids-along-ids
+ : {X Y : 𝓤 ̇ }
+   {x y : X}
+   (p : x ＝ y)
+   (h k : X → Y)
+   (q : h x ＝ k x)
+ → transport (λ - → h - ＝ k -) p q ＝ (ap h p)⁻¹ ∙ q ∙ ap k p
 transport-ids-along-ids refl h k q = refl-left-neutral ⁻¹
 
-transport-ids-along-ids' : {X : 𝓤 ̇ }
-                           {x : X}
-                           (p : x ＝ x)
-                           (f : X → X)
-                           (q : x ＝ f x)
-                         → transport (λ - → - ＝ f -) p q ＝ (p ⁻¹ ∙ q) ∙ ap f p
+transport-ids-along-ids'
+ : {X : 𝓤 ̇ }
+   {x : X}
+   (p : x ＝ x)
+   (f : X → X)
+   (q : x ＝ f x)
+ → transport (λ - → - ＝ f -) p q ＝ (p ⁻¹ ∙ q) ∙ ap f p
 transport-ids-along-ids' {𝓤} {X} {x} p f q = γ
  where
   g : x ＝ x → x ＝ f x
@@ -84,18 +86,27 @@ fix-is-prop {𝓤} {X} f g (x , p) (y , q) =
      q' = transport (λ - → - ＝ f -) s p'
 
      t : q' ＝ q
-     t = q'                        ＝⟨ transport-ids-along-ids' s f p' ⟩
-         (s ⁻¹ ∙ p') ∙ ap f s      ＝⟨ ∙assoc (s ⁻¹) p' (ap f s) ⟩
-         s ⁻¹ ∙ (p' ∙ ap f s)      ＝⟨ ap (λ - → s ⁻¹ ∙ (p' ∙ -)) (key-insight f g s) ⟩
-         s ⁻¹ ∙ (p' ∙ refl)        ＝⟨ ap (λ - → s ⁻¹ ∙ -) ((refl-right-neutral p')⁻¹) ⟩
+     t = q'                        ＝⟨ I ⟩
+         (s ⁻¹ ∙ p') ∙ ap f s      ＝⟨ II ⟩
+         s ⁻¹ ∙ (p' ∙ ap f s)      ＝⟨ III ⟩
+         s ⁻¹ ∙ (p' ∙ refl)        ＝⟨ IV ⟩
          s ⁻¹ ∙ p'                 ＝⟨ refl ⟩
-        (p' ∙ (q ⁻¹))⁻¹ ∙ p'       ＝⟨ ap (λ - → - ∙ p') ((⁻¹-contravariant p' (q ⁻¹))⁻¹) ⟩
-        ((q ⁻¹)⁻¹ ∙ (p' ⁻¹)) ∙ p'  ＝⟨ ap (λ - → (- ∙ (p' ⁻¹)) ∙ p') (⁻¹-involutive q) ⟩
-        (q ∙ (p' ⁻¹)) ∙ p'         ＝⟨ ∙assoc q (p' ⁻¹) p' ⟩
-         q ∙ ((p' ⁻¹) ∙ p')        ＝⟨ ap (λ - → q ∙ -) ((sym-is-inverse p')⁻¹) ⟩
-         q ∙ refl                  ＝⟨ (refl-right-neutral q)⁻¹ ⟩
+        (p' ∙ (q ⁻¹))⁻¹ ∙ p'       ＝⟨ V ⟩
+        ((q ⁻¹)⁻¹ ∙ (p' ⁻¹)) ∙ p'  ＝⟨ VI ⟩
+        (q ∙ (p' ⁻¹)) ∙ p'         ＝⟨ VII ⟩
+         q ∙ ((p' ⁻¹) ∙ p')        ＝⟨ VIII ⟩
+         q ∙ refl                  ＝⟨ IX ⟩
          q                         ∎
-
+          where
+           I    = transport-ids-along-ids' s f p'
+           II   = ∙assoc (s ⁻¹) p' (ap f s)
+           III  = ap (λ - → s ⁻¹ ∙ (p' ∙ -)) (key-insight f g s)
+           IV   = ap (λ - → s ⁻¹ ∙ -) ((refl-right-neutral p')⁻¹)
+           V    = ap (λ - → - ∙ p') ((⁻¹-contravariant p' (q ⁻¹))⁻¹)
+           VI   = ap (λ - → (- ∙ (p' ⁻¹)) ∙ p') (⁻¹-involutive q)
+           VII  = ∙assoc q (p' ⁻¹) p'
+           VIII = ap (λ - → q ∙ -) ((sym-is-inverse p')⁻¹)
+           IX   = (refl-right-neutral q)⁻¹
 \end{code}
 
 A main application is to show that, in pure spartan MLTT, if a type
@@ -105,6 +116,10 @@ has a wconstant endfunction then it has a propositional truncation.
 
 from-fix : {X : 𝓤 ̇ } (f : X → X) → fix f → X
 from-fix f = pr₁
+
+from-fix-is-fixed : {X : 𝓤 ̇ } (f : X → X) (φ : fix f)
+                  → from-fix f φ ＝ f (from-fix f φ)
+from-fix-is-fixed f = pr₂
 
 to-fix : {X : 𝓤 ̇ } (f : X → X) → wconstant f → X → fix f
 to-fix f g x = (f x , g x (f x))
@@ -170,6 +185,20 @@ equivalence?
 
    x : X
    x = from-fix f (g s)
+
+ exit-prop-trunc : {X : 𝓤 ̇ }
+                 → (f : X → X)
+                 → wconstant f
+                 → ∥ X ∥ → X
+ exit-prop-trunc f κ = collapsible-gives-split-support (f , κ)
+
+ exit-prop-trunc-is-fixed : {X : 𝓤 ̇ }
+                            (f : X → X)
+                            (κ : wconstant f)
+                            (s : ∥ X ∥)
+                          → f (exit-prop-trunc f κ s) ＝ exit-prop-trunc f κ s
+ exit-prop-trunc-is-fixed f κ s =
+  (from-fix-is-fixed f (∥∥-rec (fix-is-prop f κ) (to-fix f κ) s))⁻¹
 
  split-support-gives-collapsible : {X : 𝓤 ̇ }
                                  → has-split-support X

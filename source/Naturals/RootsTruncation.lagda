@@ -346,13 +346,34 @@ module exit-truncations⁺ (pt : propositional-truncations-exist) where
  open PropositionalTruncation pt
  open split-support-and-collapsibility pt
 
- exit-truncation⁺ : (A : ℕ → 𝓤 ̇ )
-                  → is-prop-valued-family A
-                  → ((n : ℕ) → A n → (k : ℕ) → k < n → is-decidable (A k))
-                  → ∥ Σ A ∥ → Σ A
- exit-truncation⁺ A A-prop-valued δ =
-  collapsible-gives-split-support
-   (minimal-pair A δ , minimal-pair-wconstant A δ A-prop-valued)
+ module _ (A : ℕ → 𝓤 ̇ )
+          (A-is-prop-valued : is-prop-valued-family A)
+          (δ : (n : ℕ) → A n → (k : ℕ) → k < n → is-decidable (A k))
+        where
+
+  exit-truncation⁺ : ∥ Σ A ∥ → Σ A
+  exit-truncation⁺ = collapsible-gives-split-support
+                      (minimal-pair A δ ,
+                       minimal-pair-wconstant A δ A-is-prop-valued)
+
+  exit-truncation⁺-minimality : (s : ∥ Σ A ∥)
+                              → (i : ℕ) → A i → pr₁ (exit-truncation⁺ s) ≤ i
+  exit-truncation⁺-minimality s = IV
+   where
+    I : minimal-pair A δ (exit-truncation⁺ s) ＝ exit-truncation⁺ s
+    I = exit-prop-trunc-is-fixed
+         (minimal-pair A δ)
+         (minimal-pair-wconstant A δ A-is-prop-valued)
+         s
+
+    II : minimal-number A δ (exit-truncation⁺ s) ＝ pr₁ (exit-truncation⁺ s)
+    II = ap pr₁ I
+
+    III : (i : ℕ) → A i → minimal-number A δ (exit-truncation⁺ s) ≤ i
+    III = minimality A δ (exit-truncation⁺ s)
+
+    IV : (i : ℕ) → A i → pr₁ (exit-truncation⁺ s) ≤ i
+    IV = transport (λ - → (i : ℕ) → A i → - ≤ i) II III
 
 \end{code}
 
