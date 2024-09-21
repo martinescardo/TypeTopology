@@ -300,10 +300,10 @@ Added on 2024-08-10.
 \begin{code}
 
  𝟏-stoneᴰ : stoneᴰ (𝟏Loc pe)
- 𝟏-stoneᴰ = 𝟎Frm-is-compact 𝓤 pe
-           , 𝟏-zero-dimensionalᴰ
+ 𝟏-stoneᴰ = 𝟎Frm-is-compact 𝓤 pe , 𝟏-zero-dimensionalᴰ
 
  𝟏-is-stone : is-stone (𝟏Loc pe) holds
- 𝟏-is-stone = 𝟎Frm-is-compact 𝓤 pe , ∣ 𝟏-zero-dimensionalᴰ ∣
+ 𝟏-is-stone = 𝟎Frm-is-compact 𝓤 pe
+            , ∣ 𝟏-zero-dimensionalᴰ ∣
 
 \end{code}
