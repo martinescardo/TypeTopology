@@ -46,7 +46,7 @@ jobs:
       uses: actions/cache/save@v4
       with:
         path: _build
-        key: ${{ runner.os }}-agdai-cache-${{ github.ref_name }}-${{ github.sha }}
+        key: ${{ runner.os }}-agdai-cache-${{ github.ref_name }}-${{ github.after }}
 
     - name: Upload HTML
       id: html-upload
