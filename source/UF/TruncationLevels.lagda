@@ -79,3 +79,45 @@ instance
  _≤_ {{Order-ℕ₋₂-ℕ₋₂}} = _≤ℕ₋₂_
 
 \end{code}
+
+Added by Ian Ray 22nd September, 2024.
+
+TODO: Show ℕ₋₂ ≃ ℕ.
+
+\begin{code}
+
+ℕ₋₂-to-ℕ : ℕ₋₂ → ℕ
+ℕ₋₂-to-ℕ −2 = 0
+ℕ₋₂-to-ℕ (succ x) = succ (ℕ₋₂-to-ℕ x)
+
+ℕ₋₂-to-ℕ' : ℕ₋₂ → ℕ
+ℕ₋₂-to-ℕ' −2 = 0
+ℕ₋₂-to-ℕ' (succ −2) = 0
+ℕ₋₂-to-ℕ' (succ (succ −2)) = 0
+ℕ₋₂-to-ℕ' (succ (succ (succ x))) = succ (ℕ₋₂-to-ℕ' (succ (succ x)))
+
+ℕ₋₂-to-ℕ'-is-identity : (m : ℕ₋₂) → 0 ≤ℕ₋₂ m → Σ n ꞉ ℕ , ℕ₋₂-to-ℕ' m ＝ n
+ℕ₋₂-to-ℕ'-is-identity (succ (succ m)) o = (ℕ₋₂-to-ℕ' (succ (succ m)) , refl)
+
+telescoping-+2 : (n : ℕ₋₂) → (−2 + ℕ₋₂-to-ℕ' (succ (succ n))) ＝ n
+telescoping-+2 −2 = refl
+telescoping-+2 (succ n) = ap succ (telescoping-+2 n)
+
+assoc-ℕ₋₂-+1 : (m : ℕ₋₂) (n : ℕ) → succ m + n ＝ succ(m + n)
+assoc-ℕ₋₂-+1 m zero = refl
+assoc-ℕ₋₂-+1 m (succ n) = ap succ (assoc-ℕ₋₂-+1 m n)
+
+subtraction-ℕ₋₂ : (m n : ℕ₋₂) → m ≤ℕ₋₂ n → Σ k ꞉ ℕ , m + k ＝ n
+subtraction-ℕ₋₂ −2 n o = (ℕ₋₂-to-ℕ' (n + 2) , telescoping-+2 n)
+subtraction-ℕ₋₂ (succ m) (succ n) o = (k , p)
+ where
+  IH : Σ k ꞉ ℕ , m + k ＝ n
+  IH = subtraction-ℕ₋₂ m n o
+  k = pr₁ IH
+  q = pr₂ IH 
+  p : (succ m + k) ＝ succ n
+  p = succ m + k ＝⟨ assoc-ℕ₋₂-+1 m k ⟩
+      succ(m + k)＝⟨ ap succ q ⟩
+      succ n     ∎
+
+\end{code}
