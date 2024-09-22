@@ -37,7 +37,6 @@ module DomainTheory.BasesAndContinuity.Bases
 
 open PropositionalTruncation pt
 
-open import UF.Base
 open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.Size hiding (is-small ; is-locally-small)
@@ -71,7 +70,7 @@ module _
  ↡-inclusion : (x : ⟨ 𝓓 ⟩) → ↡ᴮ x → ⟨ 𝓓 ⟩
  ↡-inclusion x = β ∘ pr₁
 
- record is-small-basis : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇  where
+ record is-small-basis : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇ where
   field
    ≪ᴮ-is-small : (x : ⟨ 𝓓 ⟩) (b : B) → is-small (β b ≪⟨ 𝓓 ⟩ x)
    ↡ᴮ-is-directed : (x : ⟨ 𝓓 ⟩) → is-Directed 𝓓 (↡-inclusion x)
@@ -200,7 +199,7 @@ module _
        where
 
  has-specified-small-basis : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
- has-specified-small-basis = Σ B ꞉ 𝓥 ̇  , Σ β ꞉ (B → ⟨ 𝓓 ⟩) , is-small-basis 𝓓 β
+ has-specified-small-basis = Σ B ꞉ 𝓥 ̇ , Σ β ꞉ (B → ⟨ 𝓓 ⟩) , is-small-basis 𝓓 β
 
  has-unspecified-small-basis : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
  has-unspecified-small-basis = ∥ has-specified-small-basis ∥
@@ -351,7 +350,7 @@ module _
  ↓-inclusion : (x : ⟨ 𝓓 ⟩) → ↓ᴮ x → ⟨ 𝓓 ⟩
  ↓-inclusion x = β ∘ pr₁
 
- record is-small-compact-basis : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇  where
+ record is-small-compact-basis : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇ where
   field
    basis-is-compact : (b : B) → is-compact 𝓓 (β b)
    ⊑ᴮ-is-small : (x : ⟨ 𝓓 ⟩) (b : B) → is-small (β b ⊑⟨ 𝓓 ⟩ x)
@@ -829,7 +828,7 @@ We can refine a small basis to be closed under finite joins.
 
 module _
         (𝓓 : DCPO{𝓤} {𝓣})
-        {B : 𝓥 ̇  }
+        {B : 𝓥 ̇ }
         (β : B → ⟨ 𝓓 ⟩)
         (β-is-basis : is-small-basis 𝓓 β)
         (𝓓-has-finite-joins : has-finite-joins 𝓓)
@@ -837,7 +836,7 @@ module _
 
  open has-finite-joins 𝓓-has-finite-joins
 
- record basis-has-finite-joins : 𝓥 ⊔ 𝓤 ̇  where
+ record basis-has-finite-joins : 𝓥 ⊔ 𝓤 ̇ where
   field
    ⊥ᴮ : B
    _∨ᴮ_ : B → B → B
@@ -866,7 +865,7 @@ module _
 
 module _
         (𝓓 : DCPO{𝓤} {𝓣})
-        {B : 𝓥 ̇  }
+        {B : 𝓥 ̇ }
         (β : B → ⟨ 𝓓 ⟩)
         (β-is-basis : is-small-basis 𝓓 β)
         (𝓓-has-finite-joins : has-finite-joins 𝓓)
@@ -877,7 +876,7 @@ module _
  open has-finite-joins 𝓓-has-finite-joins
 
  refine-basis-to-have-finite-joins :
-  Σ B' ꞉ 𝓥 ̇  , Σ β' ꞉ (B' → ⟨ 𝓓 ⟩) ,
+  Σ B' ꞉ 𝓥 ̇ , Σ β' ꞉ (B' → ⟨ 𝓓 ⟩) ,
   Σ p ꞉ is-small-basis 𝓓 β' , basis-has-finite-joins 𝓓 β' p 𝓓-has-finite-joins
  refine-basis-to-have-finite-joins = B' , β' , p , j
   where

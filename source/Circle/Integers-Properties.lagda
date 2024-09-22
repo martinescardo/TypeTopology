@@ -9,7 +9,6 @@ Earlier version: 18 September 2020
 open import Circle.Integers
 
 open import MLTT.Spartan
-open import UF.Base
 open import UF.DiscreteAndSeparated
 open import UF.Equiv
 open import UF.Sets

@@ -24,7 +24,7 @@ module Locales.DistributiveLattice.Spectrum-Properties
         (sr : Set-Replacement pt)
        where
 
-open import Locales.Compactness pt fe
+open import Locales.Compactness.Definition pt fe
 open import Locales.DistributiveLattice.Definition fe pt
 open import Locales.DistributiveLattice.Ideal pt fe pe
 open import Locales.DistributiveLattice.Ideal-Properties pt fe pe
@@ -33,7 +33,6 @@ open import Locales.DistributiveLattice.Spectrum fe pe pt
 open import Locales.Frame pt fe
 open import Locales.SmallBasis pt fe sr
 open import Locales.Spectrality.SpectralLocale pt fe
-open import MLTT.Fin hiding (𝟎; 𝟏)
 open import MLTT.List hiding ([_])
 open import MLTT.Spartan
 open import Slice.Family

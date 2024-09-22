@@ -36,7 +36,6 @@ See also the discussion at https://twitter.com/EscardoMartin/status/147339326101
 
 {-# OPTIONS --safe --without-K --lossy-unification #-}
 
-open import MLTT.Plus-Properties
 open import MLTT.Spartan
 open import Naturals.Order hiding (<-≤-trans)
 open import Notation.CanonicalMap
@@ -52,7 +51,6 @@ open import UF.Sets
 open import UF.Sets-Properties
 open import UF.Size
 open import UF.SubtypeClassifier
-open import UF.SubtypeClassifier-Properties
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 

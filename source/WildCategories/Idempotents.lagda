@@ -6,8 +6,6 @@ Jon Sterling and Mike Shulman, September 2023.
 module WildCategories.Idempotents where
 
 open import MLTT.Spartan
-open import UF.Base
-open import UF.Subsingletons
 
 open import WildCategories.Base
 

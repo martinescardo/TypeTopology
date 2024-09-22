@@ -24,7 +24,6 @@ module DomainTheory.BasesAndContinuity.Continuity
 
 open PropositionalTruncation pt
 
-open import UF.Base hiding (_≈_)
 open import UF.Equiv
 open import UF.EquivalenceExamples
 
@@ -51,7 +50,7 @@ having to add them as boilerplate.
 
 \begin{code}
 
-record continuity-data  (𝓓 : DCPO {𝓤} {𝓣}) : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇  where
+record continuity-data  (𝓓 : DCPO {𝓤} {𝓣}) : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇ where
  field
   index-of-approximating-family : ⟨ 𝓓 ⟩ → 𝓥 ̇
   approximating-family : (x : ⟨ 𝓓 ⟩)
@@ -107,7 +106,7 @@ approximating family is required to consist of compact elements.
 
 \begin{code}
 
-record algebraicity-data (𝓓 : DCPO {𝓤} {𝓣}) : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇  where
+record algebraicity-data (𝓓 : DCPO {𝓤} {𝓣}) : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇ where
  field
   index-of-compact-family : ⟨ 𝓓 ⟩ → 𝓥 ̇
   compact-family : (x : ⟨ 𝓓 ⟩) → (index-of-compact-family x) → ⟨ 𝓓 ⟩

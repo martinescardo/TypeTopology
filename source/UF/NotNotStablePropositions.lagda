@@ -8,11 +8,6 @@ module UF.NotNotStablePropositions where
 
 open import MLTT.Spartan
 
-open import MLTT.Plus-Properties
-open import MLTT.Two-Properties
-open import Naturals.Properties
-open import NotionsOfDecidability.Complemented
-open import NotionsOfDecidability.Decidable
 open import UF.Base
 open import UF.DiscreteAndSeparated
 open import UF.Embeddings
@@ -79,8 +74,6 @@ Added 25 August 2023 by Martin Escardo from the former file UF.Miscelanea.
 
 \begin{code}
 
-open import UF.DiscreteAndSeparated
-open import UF.SubtypeClassifier
 
 decidable-types-are-¬¬-stable : {X : 𝓤 ̇ } → is-decidable X → ¬¬-stable X
 decidable-types-are-¬¬-stable (inl x) φ = x

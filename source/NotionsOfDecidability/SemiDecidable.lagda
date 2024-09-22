@@ -385,7 +385,7 @@ instance
  ι {{canonical-map-Ω¬¬-to-Ω}} = Ω¬¬-to-Ω
 
 Ωˢᵈ : (𝓤 : Universe) → 𝓤 ⁺ ̇
-Ωˢᵈ 𝓤 = Σ X ꞉ 𝓤 ̇  , is-semidecidable X
+Ωˢᵈ 𝓤 = Σ X ꞉ 𝓤 ̇ , is-semidecidable X
 
 Ωˢᵈ-to-Ω : Ωˢᵈ 𝓤 → Ω 𝓤
 Ωˢᵈ-to-Ω (X , σ) = (X , prop-if-semidecidable σ)

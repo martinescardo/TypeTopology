@@ -10,7 +10,6 @@ the module CompactTypes for the strong notion.
 open import MLTT.Spartan
 
 open import CoNaturals.Type
-open import MLTT.Plus-Properties
 open import MLTT.Two-Properties
 open import Notation.Order
 open import Taboos.WLPO
@@ -37,7 +36,6 @@ private
  fe' {𝓤} {𝓥} = fe 𝓤 𝓥
 
 open PropositionalTruncation pt
-open import NotionsOfDecidability.Decidable
 open import NotionsOfDecidability.Complemented
 
 is-∃-compact : 𝓤 ̇ → 𝓤 ̇

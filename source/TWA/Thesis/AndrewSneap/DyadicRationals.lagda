@@ -19,7 +19,6 @@ open import UF.Base
 open import UF.FunExt
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import UF.Sets
 open import UF.DiscreteAndSeparated
 
 open import TWA.Thesis.Chapter5.Integers

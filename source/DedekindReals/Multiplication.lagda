@@ -3,16 +3,11 @@ Andrew Sneap
 \begin{code}
 {-# OPTIONS --safe --without-K #-}
 
-open import MLTT.Spartan renaming (_+_ to _∔_)
 
-open import Notation.Order
 open import UF.PropTrunc
 open import UF.Subsingletons
 open import UF.FunExt
-open import UF.Powerset
 
-open import Rationals.Type
-open import Rationals.Order
 
 module DedekindReals.Multiplication
          (fe : Fun-Ext)
@@ -20,9 +15,6 @@ module DedekindReals.Multiplication
          (pt : propositional-truncations-exist)
        where
 
-open import Rationals.Multiplication renaming (_*_ to _ℚ*_)
-open import Rationals.MinMax
-open import DedekindReals.Type fe pe pt
 open PropositionalTruncation pt
 
 

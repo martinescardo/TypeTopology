@@ -6,7 +6,6 @@ One-element type properties.
 
 module MLTT.Unit-Properties where
 
-open import MLTT.Universes
 open import MLTT.Unit
 open import MLTT.Empty
 open import MLTT.Id

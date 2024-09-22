@@ -202,13 +202,13 @@ viz. 𝓛 X ≃ 𝟙 + X.
 lifting-of-𝟙-is-Ω : 𝓛 (𝟙{𝓤}) ≃ Ω 𝓣
 lifting-of-𝟙-is-Ω =
  𝓛 𝟙                         ≃⟨ Σ-cong (λ P → ×-cong (→𝟙 fe) 𝕚𝕕) ⟩
- (Σ P ꞉ 𝓣 ̇  , 𝟙 × is-prop P) ≃⟨ Σ-cong (λ P → 𝟙-lneutral) ⟩
+ (Σ P ꞉ 𝓣 ̇ , 𝟙 × is-prop P) ≃⟨ Σ-cong (λ P → 𝟙-lneutral) ⟩
  Ω 𝓣                         ■
 
-EM-gives-classical-lifting : (X : 𝓤 ̇  ) → EM 𝓣 → 𝓛 X ≃ (𝟙{𝓤} + X)
+EM-gives-classical-lifting : (X : 𝓤 ̇ ) → EM 𝓣 → 𝓛 X ≃ (𝟙{𝓤} + X)
 EM-gives-classical-lifting {𝓤} X em =
  𝓛 X                                 ≃⟨ I   ⟩
- (Σ P ꞉ 𝓣 ̇  , is-prop P × (P → X))   ≃⟨ II  ⟩
+ (Σ P ꞉ 𝓣 ̇ , is-prop P × (P → X))   ≃⟨ II  ⟩
  (Σ P ꞉ Ω 𝓣 , (P holds → X))         ≃⟨ III ⟩
  (Σ b ꞉ 𝟚 , (ι b holds → X))         ≃⟨ IV  ⟩
  (Σ b ꞉ 𝟙 + 𝟙 , (ι (e b) holds → X)) ≃⟨ V   ⟩
@@ -239,7 +239,7 @@ classical-lifting-of-𝟙-gives-EM e =
        𝓛 𝟙   ≃⟨ lifting-of-𝟙-is-Ω ⟩
        Ω 𝓣   ■
 
-classical-lifting-gives-EM : ((X : 𝓤 ̇  ) → 𝓛 X ≃ 𝟙{𝓤} + X) → EM 𝓣
+classical-lifting-gives-EM : ((X : 𝓤 ̇ ) → 𝓛 X ≃ 𝟙{𝓤} + X) → EM 𝓣
 classical-lifting-gives-EM h = classical-lifting-of-𝟙-gives-EM (h 𝟙)
 
 \end{code}

@@ -7,13 +7,11 @@ Much of this file is based on the proofs from Egbert Rijke's PhD thesis.
 {-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
-open import UF.Subsingletons
 open import UF.Base
 open import UF.FunExt
 open import UF.Equiv
 open import UF.Retracts
 open import UF.Embeddings
-open import UF.EquivalenceExamples
 import UF.PairFun as PairFun
 import Slice.Construction as Slice
 

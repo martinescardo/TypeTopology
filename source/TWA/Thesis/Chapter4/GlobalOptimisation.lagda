@@ -10,7 +10,6 @@ open import UF.FunExt
 open import Fin.Type
 open import Fin.Bishop
 
-open import TWA.Thesis.Chapter2.Finite
 
 module TWA.Thesis.Chapter4.GlobalOptimisation (fe : FunExt) where
 

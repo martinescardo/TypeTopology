@@ -260,7 +260,7 @@ module Truncation (pt : propositional-truncations-exist) where
 
   open PropositionalTruncation pt
 
-  ∥_∥Ω : 𝓤 ̇  → Ω 𝓤
+  ∥_∥Ω : 𝓤 ̇ → Ω 𝓤
   ∥ A ∥Ω = ∥ A ∥ , ∥∥-is-prop
 
   ∥∥Ω-rec : {X : 𝓤  ̇} {P : Ω 𝓥} → (X → P holds) → ∥ X ∥ → P holds

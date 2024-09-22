@@ -23,7 +23,6 @@ open import UF.DiscreteAndSeparated
 𝟛 : 𝓤₀ ̇
 𝟛 = Fin 3
 
-open import GamesExperimental.TypeTrees {𝓤₀}
 open import GamesExperimental.FiniteHistoryDependent {𝓤₀} {𝓤₀} 𝟛
 open import GamesExperimental.Constructor {𝓤₀} {𝓤₀} 𝟛
 open import GamesExperimental.J
@@ -31,7 +30,7 @@ open import GamesExperimental.J
 tic-tac-toe₁ : Game
 tic-tac-toe₁ = build-Game draw Board transition 9 board₀
  where
-  data Player : 𝓤₀ ̇  where
+  data Player : 𝓤₀ ̇ where
    X O : Player
 
   opponent : Player → Player
@@ -124,12 +123,12 @@ Convention: in a board (p , A), p is the opponent of the the current player.
   play : (b : Board) → Move b → Board
   play (p , A) m = opponent p , update p A m
 
-  transition : Board → 𝟛 + (Σ M ꞉ 𝓤₀ ̇  , (M → Board) × J M)
+  transition : Board → 𝟛 + (Σ M ꞉ 𝓤₀ ̇ , (M → Board) × J M)
   transition b@(p , A) = f b (wins p A)
    where
     f : (b : Board)
       → Bool
-      → 𝟛 + (Σ M ꞉ 𝓤₀ ̇  , (M → Board) × J M)
+      → 𝟛 + (Σ M ꞉ 𝓤₀ ̇ , (M → Board) × J M)
     f (p , A) true  = inl (value p)
     f b       false = Cases (Move-decidable b)
                        (λ (m : Move b)

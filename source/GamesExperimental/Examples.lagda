@@ -17,9 +17,8 @@ open import GamesExperimental.K
 
 module permutations where
 
- open import MLTT.Athenian
 
- no-repetitions : ℕ → 𝓤 ̇  → 𝑻 {𝓤}
+ no-repetitions : ℕ → 𝓤 ̇ → 𝑻 {𝓤}
  no-repetitions 0        X = []
  no-repetitions (succ n) X = X ∷ λ (x : X) → no-repetitions n (Σ y ꞉ X , y ≠ x)
 
@@ -72,7 +71,6 @@ module search (fe : Fun-Ext) where
 
 module another-game-representation {𝓤 𝓦₀ : Universe} (R : 𝓦₀ ̇ ) where
 
- open import GamesExperimental.FiniteHistoryDependent {𝓤} {𝓦₀} R
 
  open K-definitions R
 

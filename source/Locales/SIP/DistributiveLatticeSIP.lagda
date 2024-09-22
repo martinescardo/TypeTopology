@@ -34,13 +34,10 @@ open import Locales.DistributiveLattice.Definition-SigmaBased fe pt
 open import Locales.DistributiveLattice.Homomorphism fe pt
 open import Locales.DistributiveLattice.Isomorphism fe pt
 open import Locales.Frame pt fe
-open import Slice.Family
 open import UF.Base
 open import UF.Equiv
 open import UF.Logic
 open import UF.SIP
-open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
 open import UF.SubtypeClassifier
 
 open AllCombinators pt fe

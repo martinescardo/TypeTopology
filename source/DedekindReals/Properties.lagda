@@ -9,16 +9,11 @@ In this file, I prove that the Reals are arithmetically located.
 open import MLTT.Spartan renaming (_+_ to _∔_)
 
 open import Notation.Order
-open import UF.Base
 open import UF.PropTrunc
 open import UF.FunExt
 open import UF.Powerset
 open import UF.Subsingletons
-open import Naturals.Properties
-open import Naturals.Order
 open import Rationals.Type
-open import Rationals.Abs
-open import Rationals.Addition
 open import Rationals.Multiplication
 open import Rationals.Negation
 open import Rationals.Order
@@ -30,7 +25,6 @@ module DedekindReals.Properties
   (pt : propositional-truncations-exist)
  where
 open import DedekindReals.Type fe pe pt
-open import MetricSpaces.Rationals fe pe pt
 open import Rationals.Limits fe pe pt
 
 open PropositionalTruncation pt

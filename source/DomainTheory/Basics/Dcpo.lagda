@@ -30,7 +30,6 @@ open PropositionalTruncation pt
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
-open import Naturals.Properties
 open import Naturals.Addition renaming (_+_ to _+'_)
 open import Naturals.Order
 open import Notation.Order

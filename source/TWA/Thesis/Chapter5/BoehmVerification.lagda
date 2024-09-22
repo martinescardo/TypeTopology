@@ -10,7 +10,6 @@ open import Integers.Negation renaming (-_ to ℤ-_ )
 open import Integers.Order
 open import Integers.Type
 open import MLTT.Spartan
-open import MLTT.Two-Properties
 open import Notation.Order
 open import UF.FunExt
 open import UF.Powerset hiding (𝕋)

@@ -14,7 +14,6 @@ their defining frames, however, we give a different name to this notion.
 {-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan hiding (𝟚; ₀; ₁)
-open import UF.Base
 open import UF.FunExt
 open import UF.PropTrunc
 
@@ -23,17 +22,9 @@ module Locales.ContinuousMap.Homeomorphism-Definition
         (fe : Fun-Ext)
        where
 
-open import Locales.ContinuousMap.Definition pt fe
 open import Locales.ContinuousMap.FrameIsomorphism-Definition pt fe
 open import Locales.Frame pt fe
-open import Slice.Family
-open import UF.Equiv
-open import UF.Hedberg
 open import UF.Logic
-open import UF.Sets
-open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
-open import UF.SubtypeClassifier
 
 open AllCombinators pt fe
 open Locale

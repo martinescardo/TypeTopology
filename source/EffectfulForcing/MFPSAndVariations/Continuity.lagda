@@ -8,13 +8,11 @@ module EffectfulForcing.MFPSAndVariations.Continuity where
 
 open import MLTT.Spartan
 open import MLTT.Athenian
-open import UF.Retracts
-open import UF.Equiv
 
 Baire : 𝓤₀ ̇
 Baire = ℕ → ℕ
 
-data _＝⟪_⟫_ {X : 𝓤₀ ̇ } : (ℕ → X) → List ℕ → (ℕ → X) → 𝓤₀ ̇  where
+data _＝⟪_⟫_ {X : 𝓤₀ ̇ } : (ℕ → X) → List ℕ → (ℕ → X) → 𝓤₀ ̇ where
  []  : {α α' : ℕ → X} → α ＝⟪ [] ⟫ α'
  _∷_ : {α α' : ℕ → X} {i : ℕ} {s : List ℕ}
      → α i ＝ α' i
@@ -40,11 +38,11 @@ continuity-extensional f g t c α = (pr₁ (c α) ,
 Cantor : 𝓤₀ ̇
 Cantor = ℕ → 𝟚
 
-data BT (X : 𝓤₀ ̇ ) : 𝓤₀ ̇  where
+data BT (X : 𝓤₀ ̇ ) : 𝓤₀ ̇ where
   []   : BT X
   _∷_ : X → (𝟚 → BT X) → BT X
 
-data _＝⟦_⟧_ {X : 𝓤₀ ̇ } : (ℕ → X) → BT ℕ → (ℕ → X) → 𝓤₀ ̇  where
+data _＝⟦_⟧_ {X : 𝓤₀ ̇ } : (ℕ → X) → BT ℕ → (ℕ → X) → 𝓤₀ ̇ where
   []  : {α α' : ℕ → X} → α ＝⟦ [] ⟧ α'
   _∷_ : {α α' : ℕ → X}{i : ℕ}{s : 𝟚 → BT ℕ}
       → α i ＝ α' i

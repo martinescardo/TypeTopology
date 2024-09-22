@@ -21,7 +21,6 @@ open import UF.Powerset
 open import UF.PropTrunc
 open import UF.Sets
 open import UF.Sets-Properties
-open import UF.SubtypeClassifier-Properties
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.Subsingletons-Properties
@@ -179,7 +178,6 @@ disjoint-from-real ((L , R) , _ , _ , _ , _ , disjoint , _) = disjoint
 ℚ-rounded-right₂ : (y : ℚ) (x : ℚ) → Σ q ꞉ ℚ , (q < x) × (y < q) → y < x
 ℚ-rounded-right₂ y x (q , l₁ , l₂) = ℚ<-trans y q x l₂ l₁
 
-open import Notation.Order
 
 _ℚ<ℝ_  : ℚ → ℝ → 𝓤₀ ̇
 p ℚ<ℝ x = p ∈ lower-cut-of x

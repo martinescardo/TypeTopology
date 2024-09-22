@@ -10,9 +10,6 @@ module Slice.Algebras
         (𝓣 : Universe)
        where
 
-open import UF.Base
-open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
 open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.FunExt
@@ -20,7 +17,6 @@ open import UF.Univalence
 open import UF.UA-FunExt
 
 open import Slice.Construction 𝓣
-open import Slice.IdentityViaSIP 𝓣
 open import Slice.Monad 𝓣
 
 double-𝓕-charac : (X : 𝓤 ̇ )

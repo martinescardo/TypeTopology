@@ -8,7 +8,7 @@ Small additions by Tom de Jong in May 2024.
 
 open import UF.Univalence
 
-module Ordinals.ArithmeticProperties
+module Ordinals.AdditionProperties
        (ua : Univalence)
        where
 
@@ -34,6 +34,7 @@ private
 
 open import MLTT.Plus-Properties
 open import MLTT.Spartan
+open import MLTT.Sigma
 open import Notation.CanonicalMap
 open import Ordinals.Arithmetic fe
 open import Ordinals.ConvergentSequence ua
@@ -630,7 +631,7 @@ module _ {𝓤 : Universe} where
  open import UF.DiscreteAndSeparated
 
  ⊴-add-taboo : Ωₒ ⊴ (𝟙ₒ +ₒ Ωₒ) → WEM 𝓤
- ⊴-add-taboo (f , s) = V
+ ⊴-add-taboo (f , s) = VI
   where
    I : is-least (𝟙ₒ +ₒ Ωₒ) (inl ⋆)
    I (inl ⋆) u       l = l
@@ -655,6 +656,10 @@ module _ {𝓤 : Universe} where
                           (λ (u : ¬ P)
                                 → to-subtype-＝ (λ _ → being-prop-is-prop fe')
                                    (empty-types-are-＝-𝟘 fe' (pe 𝓤) u)⁻¹) ν))
+
+   VI : ∀ P → ¬ P + ¬¬ P
+   VI = WEM'-gives-WEM fe' V
+
 \end{code}
 
 Added 5th April 2022.
@@ -732,51 +737,55 @@ succ-not-necessarily-monotone : ((α β : Ordinal 𝓤)
                                       → α ⊴ β
                                       → (α +ₒ 𝟙ₒ) ⊴ (β +ₒ 𝟙ₒ))
                               → WEM 𝓤
-succ-not-necessarily-monotone {𝓤} ϕ P isp = II I
+succ-not-necessarily-monotone {𝓤} ϕ = XII
  where
-  α : Ordinal 𝓤
-  α = prop-ordinal P isp
+  module _ (P : 𝓤 ̇) (isp : is-prop P) where
+   α : Ordinal 𝓤
+   α = prop-ordinal P isp
 
-  I :  (α +ₒ 𝟙ₒ) ⊴ 𝟚ₒ
-  I = ϕ α 𝟙ₒ l
-   where
-    l : α ⊴ 𝟙ₒ
-    l = unique-to-𝟙 ,
-        (λ x y (l : y ≺⟨ 𝟙ₒ ⟩ ⋆) → 𝟘-elim l) ,
-        (λ x y l → l)
+   I :  (α +ₒ 𝟙ₒ) ⊴ 𝟚ₒ
+   I = ϕ α 𝟙ₒ l
+    where
+     l : α ⊴ 𝟙ₒ
+     l = unique-to-𝟙 ,
+         (λ x y (l : y ≺⟨ 𝟙ₒ ⟩ ⋆) → 𝟘-elim l) ,
+         (λ x y l → l)
 
-  II : type-of I → ¬ P + ¬¬ P
-  II (f , f-is-initial , f-is-order-preserving) = III (f (inr ⋆)) refl
-   where
-    III : (y : ⟨ 𝟚ₒ ⟩) → f (inr ⋆) ＝ y → ¬ P + ¬¬ P
-    III (inl ⋆) e = inl VII
-     where
-      IV : (p : P) → f (inl p) ≺⟨ 𝟚ₒ ⟩ f (inr ⋆)
-      IV p = f-is-order-preserving (inl p) (inr ⋆) ⋆
+   II : type-of I → ¬ P + ¬¬ P
+   II (f , f-is-initial , f-is-order-preserving) = III (f (inr ⋆)) refl
+    where
+     III : (y : ⟨ 𝟚ₒ ⟩) → f (inr ⋆) ＝ y → ¬ P + ¬¬ P
+     III (inl ⋆) e = inl VII
+      where
+       IV : (p : P) → f (inl p) ≺⟨ 𝟚ₒ ⟩ f (inr ⋆)
+       IV p = f-is-order-preserving (inl p) (inr ⋆) ⋆
 
-      V : (p : P) → f (inl p) ≺⟨ 𝟚ₒ ⟩ inl ⋆
-      V p = transport (λ - → f (inl p) ≺⟨ 𝟚ₒ ⟩ -) e (IV p)
+       V : (p : P) → f (inl p) ≺⟨ 𝟚ₒ ⟩ inl ⋆
+       V p = transport (λ - → f (inl p) ≺⟨ 𝟚ₒ ⟩ -) e (IV p)
 
-      VI : (z : ⟨ 𝟚ₒ ⟩) → ¬ (z ≺⟨ 𝟚ₒ ⟩ inl ⋆)
-      VI (inl ⋆) l = 𝟘-elim l
-      VI (inr ⋆) l = 𝟘-elim l
+       VI : (z : ⟨ 𝟚ₒ ⟩) → ¬ (z ≺⟨ 𝟚ₒ ⟩ inl ⋆)
+       VI (inl ⋆) l = 𝟘-elim l
+       VI (inr ⋆) l = 𝟘-elim l
 
-      VII : ¬ P
-      VII p = VI (f (inl p)) (V p)
-    III (inr ⋆) e = inr IX
-     where
-      VIII : Σ x' ꞉ ⟨ α +ₒ 𝟙ₒ ⟩ , (x' ≺⟨ α +ₒ 𝟙ₒ ⟩ inr ⋆) × (f x' ＝ inl ⋆)
-      VIII = f-is-initial (inr ⋆) (inl ⋆) (transport⁻¹ (λ - → inl ⋆ ≺⟨ 𝟚ₒ ⟩ -) e ⋆)
+       VII : ¬ P
+       VII p = VI (f (inl p)) (V p)
+     III (inr ⋆) e = inr IX
+      where
+       VIII : Σ x' ꞉ ⟨ α +ₒ 𝟙ₒ ⟩ , (x' ≺⟨ α +ₒ 𝟙ₒ ⟩ inr ⋆) × (f x' ＝ inl ⋆)
+       VIII = f-is-initial (inr ⋆) (inl ⋆) (transport⁻¹ (λ - → inl ⋆ ≺⟨ 𝟚ₒ ⟩ -) e ⋆)
 
-      IX : ¬¬ P
-      IX u = XI
-       where
-        X : ∀ x' → ¬ (x' ≺⟨ α +ₒ 𝟙ₒ ⟩ inr ⋆)
-        X (inl p) l = u p
-        X (inr ⋆) l = 𝟘-elim l
+       IX : ¬¬ P
+       IX u = XI
+        where
+         X : ∀ x' → ¬ (x' ≺⟨ α +ₒ 𝟙ₒ ⟩ inr ⋆)
+         X (inl p) l = u p
+         X (inr ⋆) l = 𝟘-elim l
 
-        XI : 𝟘
-        XI = X (pr₁ VIII) (pr₁ (pr₂ VIII))
+         XI : 𝟘
+         XI = X (pr₁ VIII) (pr₁ (pr₂ VIII))
+
+  XII : WEM 𝓤
+  XII = WEM'-gives-WEM fe' (λ P isp → II P isp (I P isp))
 
 \end{code}
 
@@ -930,7 +939,6 @@ also is not a successor ordinal unless LPO holds:
 \begin{code}
 
  open import CoNaturals.Type
- open import Notation.CanonicalMap
  open import Notation.Order
  open import Naturals.Order
 
@@ -1029,7 +1037,7 @@ also is not a successor ordinal unless LPO holds:
      VII : f ∞ ≺⟨ ω ⟩ f ∞
      VII = VI (f ∞) V
 
- open import Taboos.LPO fe
+ open import Taboos.LPO
 
  ℕ∞-successor-gives-LPO : (Σ α ꞉ Ordinal 𝓤₀ , (ℕ∞ₒ ＝ (α +ₒ 𝟙ₒ))) → LPO
  ℕ∞-successor-gives-LPO (α , p) = IV
@@ -1051,7 +1059,7 @@ also is not a successor ordinal unless LPO holds:
  open PropositionalTruncation pt
 
  ℕ∞-successor-gives-LPO' : (∃ α ꞉ Ordinal 𝓤₀ , (ℕ∞ₒ ＝ (α +ₒ 𝟙ₒ))) → LPO
- ℕ∞-successor-gives-LPO' = ∥∥-rec LPO-is-prop ℕ∞-successor-gives-LPO
+ ℕ∞-successor-gives-LPO' = ∥∥-rec (LPO-is-prop fe') ℕ∞-successor-gives-LPO
 
  LPO-gives-ℕ∞-successor : LPO → (Σ α ꞉ Ordinal 𝓤₀ , (ℕ∞ₒ ＝ (α +ₒ 𝟙ₒ)))
  LPO-gives-ℕ∞-successor lpo = ω , ℕ∞-is-successor₃ lpo
@@ -1062,7 +1070,7 @@ Therefore, constructively, it is not necessarily the case that every
 ordinal is either a successor or a limit.
 
 TODO (1st June 2023). A classically equivalently definition of limit
-ordinal α is that there is some β < α, and for evert β < α there is γ
+ordinal α is that there is some β < α, and for every β < α there is γ
 with β < γ < α. We have that ℕ∞ is a limit ordinal in this sense.
 
 Added 4th May 2022.
@@ -1118,11 +1126,21 @@ alternative-plus τ₀ τ₁ = eqtoidₒ (ua _) fe' _ _ (alternative-plusₒ τ�
 
 \end{code}
 
-Added 24th May 2024 by Tom de Jong.
+Added 13 November 2023 by Fredrik Nordvall Forsberg.
 
-Every ordinal is the supremum of the successors of its initial segments.
+Addition satisfies the expected recursive equations (which classically define
+addition): zero is the neutral element (this is 𝟘₀-right-neutral above), addition
+commutes with successors and addition preserves inhabited suprema.
+
+Note that (the index of) the supremum indeed has to be inhabited, because
+preserving the empty supremum would give the false equation
+  α +ₒ 𝟘 ＝ 𝟘
+for any ordinal α.
 
 \begin{code}
+
++ₒ-commutes-with-successor : (α β : Ordinal 𝓤) → α +ₒ (β +ₒ 𝟙ₒ) ＝ (α +ₒ β) +ₒ 𝟙ₒ
++ₒ-commutes-with-successor α β = (+ₒ-assoc α β 𝟙ₒ) ⁻¹
 
 module _ (pt : propositional-truncations-exist)
          (sr : Set-Replacement pt)
@@ -1130,6 +1148,67 @@ module _ (pt : propositional-truncations-exist)
 
  open import Ordinals.OrdinalOfOrdinalsSuprema ua
  open suprema pt sr
+ open PropositionalTruncation pt
+
+ +ₒ-preserves-inhabited-suprema : (α : Ordinal 𝓤) {I : 𝓤 ̇ } (β : I → Ordinal 𝓤)
+                                → ∥ I ∥
+                                → α +ₒ sup β ＝ sup (λ i → α +ₒ β i)
+ +ₒ-preserves-inhabited-suprema α {I} β =
+  ∥∥-rec (the-type-of-ordinals-is-a-set (ua _) fe')
+         (λ i₀ → ⊴-antisym _ _ (≼-gives-⊴ _ _ (⦅1⦆ i₀)) ⦅2⦆)
+   where
+    ⦅2⦆ : sup (λ i → α +ₒ β i) ⊴ (α +ₒ sup β)
+    ⦅2⦆ = sup-is-lower-bound-of-upper-bounds (λ i → α +ₒ β i) (α +ₒ sup β) ⦅2⦆'
+     where
+      ⦅2⦆' : (i : I) → (α +ₒ β i) ⊴ (α +ₒ sup β)
+      ⦅2⦆' i = ≼-gives-⊴ (α +ₒ β i) (α +ₒ sup β)
+                (+ₒ-right-monotone α (β i) (sup β)
+                 (⊴-gives-≼ _ _ (sup-is-upper-bound β i)))
+
+    ⦅1⦆ : I → (α +ₒ sup β) ≼ sup (λ i → α +ₒ β i)
+    ⦅1⦆ i₀ _ (inl a , refl) =
+     transport (_⊲ sup (λ i → α +ₒ β i))
+               (+ₒ-↓-left a)
+               (⊲-⊴-gives-⊲ (α ↓ a) (α +ₒ β i₀) (sup (λ i → α +ₒ β i))
+                (inl a , +ₒ-↓-left a)
+                (sup-is-upper-bound (λ i → α +ₒ β i) i₀))
+    ⦅1⦆ i₀ _ (inr s , refl) =
+     transport (_⊲ sup (λ i → α +ₒ β i))
+               (+ₒ-↓-right s)
+               (∥∥-rec (⊲-is-prop-valued _ _) ⦅1⦆'
+                (initial-segment-of-sup-is-initial-segment-of-some-component
+                  β s))
+      where
+       ⦅1⦆' : Σ i ꞉ I , Σ b ꞉ ⟨ β i ⟩ , sup β ↓ s ＝ β i ↓ b
+            → (α +ₒ (sup β ↓ s)) ⊲ sup (λ i → α +ₒ β i)
+       ⦅1⦆' (i , b , p) =
+        transport⁻¹ (λ - → (α +ₒ -) ⊲ sup (λ j → α +ₒ β j)) p
+         (⊲-⊴-gives-⊲ (α +ₒ (β i ↓ b)) (α +ₒ β i) (sup (λ j → α +ₒ β j))
+          (inr b , +ₒ-↓-right b)
+          (sup-is-upper-bound (λ j → α +ₒ β j) i))
+
+\end{code}
+
+Constructively, these equations do not fully characterize ordinal addition, at
+least not as far as we know. If addition preserved *all* suprema, then,
+expressing the ordinal β as a supremum via the result given below, we would have
+the recursive equation
+  α +ₒ β ＝ α +ₒ sup (λ b → (B ↓ b) +ₒ 𝟙ₒ)
+         ＝ sup (λ b → α +ₒ ((B ↓ b) +ₒ 𝟙ₒ))
+         ＝ sup (λ b → (α +ₒ (B ↓ b)) +ₒ 𝟙ₒ)
+which would ensure that there is at most one operation satisfying the above
+equations for successors and suprema. The problem is that constructively we
+cannot, in general, make a case distinction on whether β is zero or not.
+
+In contrast, multiplication behaves differently and is unique characterized by
+similar equations since it does preserve all suprema, see
+MultiplicationProperties.
+
+
+Added 24th May 2024 by Tom de Jong.
+Every ordinal is the supremum of the successors of its initial segments.
+
+\begin{code}
 
  supremum-of-successors-of-initial-segments :
   (α : Ordinal 𝓤) → α ＝ sup (λ x → (α ↓ x) +ₒ 𝟙ₒ)

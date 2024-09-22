@@ -24,7 +24,6 @@ module Locales.DirectedFamily-Poset (pt : propositional-truncations-exist)
 open import Locales.Frame pt fe hiding (is-directed)
 open import MLTT.Spartan
 open import UF.Logic
-open import UF.Subsingletons
 
 open AllCombinators pt fe
 open PropositionalTruncation pt

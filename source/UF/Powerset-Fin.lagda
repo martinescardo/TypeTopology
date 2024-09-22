@@ -22,22 +22,19 @@ open import Fin.Type
 open import Fin.Kuratowski pt
 
 open import MLTT.List
+open import Notation.UnderlyingType
 open import OrderedTypes.JoinSemiLattices
 
 open import UF.Base
 open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.FunExt
-open import UF.Classifiers
 open import UF.Lower-FunExt
 open import UF.ImageAndSurjection pt
 open import UF.Powerset
 open import UF.Sets
 open import UF.Sets-Properties
 open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
-open import UF.SubtypeClassifier
-open import UF.SubtypeClassifier-Properties
 
 open binary-unions-of-subsets pt
 
@@ -161,8 +158,9 @@ module _
         {X : 𝓤 ̇ }
        where
 
- ⟨_⟩ : 𝓚 X → 𝓟 X
- ⟨_⟩ = pr₁
+ instance
+  underlying-type-of-𝓚 : Underlying-Type (𝓚 X) (𝓟 X)
+  ⟨_⟩ {{underlying-type-of-𝓚}} (A , _) = A
 
  ⟨_⟩₂ : (A : 𝓚 X) → is-Kuratowski-finite-subset ⟨ A ⟩
  ⟨_⟩₂ = pr₂

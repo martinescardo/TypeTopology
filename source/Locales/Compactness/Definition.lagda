@@ -12,27 +12,39 @@ will be broken down into smaller modules.
 
 {-# OPTIONS --safe --without-K #-}
 
+open import MLTT.Spartan hiding (J)
 open import UF.Base
+open import UF.Classifiers
+open import UF.FunExt
+open import UF.PropTrunc
 open import UF.Sets
 open import UF.Subsingletons
-open import UF.Subsingletons-Properties
 open import UF.Subsingletons-FunExt
-open import UF.PropTrunc
-open import UF.FunExt
-open import MLTT.Spartan
+open import UF.Subsingletons-Properties
 open import UF.SubtypeClassifier
 
-module Locales.Compactness (pt : propositional-truncations-exist)
-                           (fe : Fun-Ext)                          where
+module Locales.Compactness.Definition
+        (pt : propositional-truncations-exist)
+        (fe : Fun-Ext)
+       where
 
+open import Fin.Kuratowski pt
+open import Fin.Type
 open import Locales.Frame     pt fe
 open import Locales.WayBelowRelation.Definition  pt fe
-open import UF.Logic
+open import MLTT.List using (member; []; _∷_; List; in-head; in-tail; length)
 open import Slice.Family
+open import Taboos.FiniteSubsetTaboo pt fe
+open import UF.Equiv hiding (_■)
+open import UF.EquivalenceExamples
+open import UF.ImageAndSurjection pt
+open import UF.Logic
+open import UF.Powerset-Fin pt
+open import UF.Powerset-MultiUniverse
 open import UF.Sets-Properties
 
 open PropositionalTruncation pt
-open Existential pt
+open AllCombinators pt fe
 
 open Locale
 

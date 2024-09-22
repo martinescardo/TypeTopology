@@ -11,7 +11,6 @@ completely prime filters.
 {-# OPTIONS --safe --without-K --lossy-unification #-}
 
 open import MLTT.Spartan
-open import UF.Base
 open import UF.PropTrunc
 open import UF.FunExt
 open import UF.Logic

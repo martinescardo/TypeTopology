@@ -11,8 +11,9 @@ https://grossack.site/tags/life-in-the-topological-topos/
 module TypeTopology.index where
 
 import TypeTopology.ADecidableQuantificationOverTheNaturals
-import TypeTopology.AbsolutenessOfCompactness
-import TypeTopology.AbsolutenessOfCompactnessExample
+import TypeTopology.AbsolutenessOfCompactness -- by Andrew Swan
+import TypeTopology.AbsolutenessOfCompactnessExample -- by Andrew Swan
+import TypeTopology.Cantor
 import TypeTopology.CantorMinusPoint
 import TypeTopology.CantorSearch
 import TypeTopology.CompactTypes

@@ -26,13 +26,11 @@ module DomainTheory.Taboos.ClassicalLiftingOfNaturalNumbers
 open PropositionalTruncation pt
 
 open import DomainTheory.Basics.Dcpo pt fe 𝓤₀
-open import DomainTheory.Basics.Miscelanea pt fe 𝓤₀
 
 open import CoNaturals.Type renaming (ℕ∞-to-ℕ→𝟚 to ε)
 open import MLTT.Two-Properties
 open import MLTT.Plus-Properties
-open import Notation.CanonicalMap
-open import Taboos.LPO (λ 𝓤 𝓥 → fe)
+open import Taboos.LPO
 
 \end{code}
 

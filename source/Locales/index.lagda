@@ -6,6 +6,76 @@ Ayberk Tosun.
 
 module Locales.index where
 
+\end{code}
+
+There is a separate index file for the thesis:
+
+\begin{code}
+
+import Locales.ThesisIndex
+
+\end{code}
+
+\section{Basics}
+
+Basics of frames and quite a bit of order theory.
+
+\begin{code}
+
+import Locales.Frame
+
+\end{code}
+
+The `ContinuousMap` subdirectory contains:
+
+  1. Definition of the notion of frame homomorphism.
+  2. Properties of frame homomorphisms.
+  3. Definition of continuous maps of locales
+  4. Properties of continuous maps.
+  5. Definition of locale homeomorphisms.
+  6. Properties of homeomorphisms, including the characterization of the
+     identity type for locales.
+
+\begin{code}
+
+import Locales.ContinuousMap.FrameHomomorphism-Definition -- (1)
+import Locales.ContinuousMap.FrameHomomorphism-Properties -- (2)
+import Locales.ContinuousMap.Definition                   -- (3)
+import Locales.ContinuousMap.Properties                   -- (4)
+import Locales.ContinuousMap.Homeomorphism-Definition     -- (5)
+import Locales.ContinuousMap.Homeomorphism-Properties     -- (6)
+
+\end{code}
+
+Compact opens.
+
+\begin{code}
+
+import Locales.Compactness.Definition
+import Locales.Compactness.Properties
+
+\end{code}
+
+\section{The discrete locale}
+
+The `DiscreteLocale` directory contains
+
+  1. Definition of the discrete locale over a set.
+  2. Construction of a directed basis for the discrete locale.
+  3. The discrete locale on the type of Booleans.
+  4. Properties of the discrete locale on the type of Booleans.
+
+\begin{code}
+
+import Locales.DiscreteLocale.Basis
+import Locales.DiscreteLocale.Definition
+import Locales.DiscreteLocale.Two
+import Locales.DiscreteLocale.Two-Properties
+
+\end{code}
+
+\begin{code}
+
 import Locales.AdjointFunctorTheoremForFrames    -- (1)
 import Locales.Adjunctions.Properties
 import Locales.Adjunctions.Properties-DistributiveLattice
@@ -22,7 +92,7 @@ import Locales.Clopen                            -- (5)
 import Locales.CompactRegular                    -- (6)
 -- ↑ DEPRECATED DO NOT USE ↑ --
 
-import Locales.Compactness                       -- (7)
+import Locales.Compactness.Definition            -- (7)
 
 import Locales.Complements                       -- (8)
 
@@ -38,7 +108,6 @@ import Locales.DistributiveLattice.Resizing
 import Locales.DistributiveLattice.Spectrum
 import Locales.DistributiveLattice.Spectrum-Properties
 
-import Locales.Frame                             -- (9)
 
 import Locales.GaloisConnection                  -- (10)
 
@@ -111,18 +180,6 @@ import Locales.Point.SpectralPoint-Definition
 
 import Locales.TerminalLocale.Properties
 
-import Locales.DiscreteLocale.Definition
-
-import Locales.DiscreteLocale.Two
-import Locales.DiscreteLocale.Two-Properties
-
-import Locales.ContinuousMap.FrameHomomorphism-Definition
-import Locales.ContinuousMap.FrameHomomorphism-Properties
-import Locales.ContinuousMap.Definition
-import Locales.ContinuousMap.Properties
-import Locales.ContinuousMap.Homeomorphism-Definition
-import Locales.ContinuousMap.Homeomorphism-Properties
-
 import Locales.SIP.FrameSIP
 import Locales.SIP.DistributiveLatticeSIP
 
@@ -132,5 +189,6 @@ import Locales.StoneDuality.ForSpectralLocales
 
 import Locales.LawsonLocale.CompactElementsOfPoint
 import Locales.LawsonLocale.SharpElementsCoincideWithSpectralPoints
+import Locales.LawsonLocale.PointsOfPatch
 
 \end{code}

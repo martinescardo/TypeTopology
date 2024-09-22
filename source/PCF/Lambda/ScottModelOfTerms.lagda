@@ -18,7 +18,6 @@ module PCF.Lambda.ScottModelOfTerms
 open PropositionalTruncation pt
 
 open import DomainTheory.Basics.Curry pt fe 𝓤₀
-open import DomainTheory.Basics.Dcpo pt fe 𝓤₀
 open import DomainTheory.Basics.FunctionComposition pt fe 𝓤₀
 open import DomainTheory.Basics.LeastFixedPoint pt fe 𝓤₀
 open import DomainTheory.Basics.Miscelanea pt fe 𝓤₀

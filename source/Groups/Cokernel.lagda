@@ -23,12 +23,8 @@ TODO: adapt to use (small) quotients defined in UF-Quotient
 
 open import MLTT.Spartan
 open import Quotient.Type
-open import UF.Base hiding (_≈_)
 open import UF.Subsingletons
 open import UF.Equiv
-open import UF.EquivalenceExamples
-open import UF.Retracts
-open import UF.Embeddings
 open import UF.FunExt
 open import UF.PropTrunc
 
@@ -42,8 +38,6 @@ module Groups.Cokernel
 open general-set-quotients-exist sq
 
 open import Groups.Homomorphisms
-open import Groups.Image
-open import Groups.Kernel
 open import Groups.Quotient pt fe sq
 open import Groups.Triv
 open import Groups.Type renaming (_≅_ to _≣_)

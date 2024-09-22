@@ -167,7 +167,6 @@ module CantorSchroederBernstein.CSB-TheoryLabLunch where
 open import CoNaturals.Type
 open import MLTT.Plus-Properties
 open import MLTT.Spartan
-open import NotionsOfDecidability.Decidable
 open import TypeTopology.CompactTypes
 open import TypeTopology.GenericConvergentSequenceCompactness
 open import UF.Embeddings

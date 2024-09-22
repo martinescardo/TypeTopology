@@ -29,7 +29,6 @@ module Ordinals.SupSum
 
 open import MLTT.Spartan
 open import Notation.CanonicalMap
-open import Ordinals.Equivalence
 open import Ordinals.Maps
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.OrdinalOfOrdinalsSuprema ua
@@ -142,7 +141,7 @@ module _ {𝓤 : Universe}
   where
    open import Ordinals.OrdinalOfTruthValues fe 𝓤 (pe 𝓤)
    open Omega (pe 𝓤)
-   open import Ordinals.ArithmeticProperties ua
+   open import Ordinals.AdditionProperties ua
 
    τ = 𝟚ᵒ
 

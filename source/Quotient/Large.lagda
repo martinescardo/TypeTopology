@@ -35,9 +35,7 @@ open import MLTT.Spartan
 
 open import Quotient.Type
 open import UF.Base hiding (_≈_)
-open import UF.Equiv
 open import UF.FunExt
-open import UF.Hedberg
 open import UF.Powerset
 open import UF.PropTrunc
 open import UF.Sets

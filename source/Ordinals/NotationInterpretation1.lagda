@@ -449,7 +449,6 @@ Added 4th April 2022. A third interpretation of ordinal expressions.
 
 open import UF.PropTrunc
 open import UF.Univalence
-open import UF.Equiv
 open import UF.Size
 
 open import CoNaturals.Type
@@ -468,12 +467,9 @@ module _ (pt : propositional-truncations-exist)
  pe : Prop-Ext
  pe = Univalence-gives-Prop-Ext ua
 
- open import Ordinals.OrdinalOfOrdinals ua
  open import Ordinals.OrdinalOfOrdinalsSuprema ua
  open import Ordinals.Injectivity
- open import Ordinals.ArithmeticProperties ua
 
- open import UF.ImageAndSurjection pt
  open ordinals-injectivity fe
 
  module _ (sr : Set-Replacement pt) where
@@ -499,7 +495,7 @@ module _ (pt : propositional-truncations-exist)
                            (sum-to-sup-is-surjection (extension (𝓢 ∘ ν)))
                            (Σ-is-compact∙
                              (ℕ∞-compact∙ fe₀)
-                             (λ u → prop-tychonoff fe
+                             (λ u → prop-tychonoff (fe 𝓤₀ 𝓤₀)
                                      (ℕ-to-ℕ∞-is-embedding fe₀ u)
                                      (λ (i , _) → 𝓢-compact∙ (ν i))))
   σ : (ν : OE) → ⟨ Κ ν ⟩ → ⟨ 𝓢 ν ⟩

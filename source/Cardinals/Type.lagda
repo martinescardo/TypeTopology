@@ -6,12 +6,10 @@ Jon Sterling, 25th March 2023.
 
 open import MLTT.Spartan
 open import UF.SetTrunc
-open import UF.Subsingletons
 
 module Cardinals.Type (st : set-truncations-exist) where
 
-open import UF.Embeddings
-open import UF.Subsingletons-FunExt
+open import UF.Sets
 
 import UF.Logic
 

@@ -18,7 +18,7 @@ module DomainTheory.Examples.LiftingLargeProposition
         (fe : Fun-Ext)
         (pe : Prop-Ext)
         (𝓥 𝓤 : Universe)
-        (P : 𝓤 ̇  )
+        (P : 𝓤 ̇ )
         (P-is-prop : is-prop P)
        where
 

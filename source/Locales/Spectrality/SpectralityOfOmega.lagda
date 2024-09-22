@@ -27,7 +27,7 @@ module Locales.Spectrality.SpectralityOfOmega
 
 open import Locales.InitialFrame pt fe
 open import Locales.Frame        pt fe
-open import Locales.Compactness  pt fe
+open import Locales.Compactness.Definition pt fe
 open import Slice.Family
 open import Locales.Spectrality.SpectralLocale pt fe
 open import Locales.Spectrality.BasisDirectification pt fe sr
@@ -110,21 +110,16 @@ and₂-lemma₃ (inr ⋆) y (z , p₁ , p₂) = p₂
        , (pr₂ (pr₁ ℬ𝟎-is-directed-basis-for-𝟎 U)
        , pr₂ ℬ𝟎-is-directed-basis-for-𝟎 U)
 
-𝟎-𝔽𝕣𝕞-is-spectral : is-spectral 𝟏-loc holds
-𝟎-𝔽𝕣𝕞-is-spectral =
- spectralᴰ-gives-spectrality
-  𝟏-loc
-  (ℬ𝟎↑ , pr₂ ℬ𝟎↑-directed-basisᴰ , ℬ𝟎↑-consists-of-compact-opens , γ)
-  where
-   κ : consists-of-compact-opens 𝟏-loc ℬ𝟎↑ holds
-   κ []       = 𝟎-is-compact 𝟏-loc
-   κ (i ∷ is) = compact-opens-are-closed-under-∨
-                 𝟏-loc
-                 (ℬ𝟎 [ i ])
-                 (ℬ𝟎↑ [ is ])
-                 (ℬ𝟎-consists-of-compact-opens i)
-                 (κ is)
+\end{code}
 
+The result below was cleaned up and refactored on 2024-08-05.
+
+\begin{code}
+
+𝟎-𝔽𝕣𝕞-spectralᴰ : spectralᴰ 𝟏-loc
+𝟎-𝔽𝕣𝕞-spectralᴰ =
+ pr₁ Σ-assoc (ℬ𝟎↑-directed-basisᴰ , ℬ𝟎↑-consists-of-compact-opens , γ)
+  where
    t : is-top (𝟎-𝔽𝕣𝕞 pe) (𝟏[ 𝟎-𝔽𝕣𝕞 pe ] ∨[ 𝟎-𝔽𝕣𝕞 pe ] 𝟎[ 𝟎-𝔽𝕣𝕞 pe ]) holds
    t = transport
         (λ - → is-top (𝟎-𝔽𝕣𝕞 pe) - holds)
@@ -140,5 +135,12 @@ and₂-lemma₃ (inr ⋆) y (z , p₁ , p₂) = p₂
 
    γ : closed-under-finite-meets (𝟎-𝔽𝕣𝕞 pe) ℬ𝟎↑ holds
    γ = ∣ (inr ⋆ ∷ []) , t ∣ , c
+
+\end{code}
+
+\begin{code}
+
+𝟎-𝔽𝕣𝕞-is-spectral : is-spectral 𝟏-loc holds
+𝟎-𝔽𝕣𝕞-is-spectral = spectralᴰ-gives-spectrality 𝟏-loc 𝟎-𝔽𝕣𝕞-spectralᴰ
 
 \end{code}

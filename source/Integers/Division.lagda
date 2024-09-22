@@ -15,7 +15,6 @@ open import UF.Subsingletons
 
 open import Integers.Addition
 open import Integers.Type
-open import Integers.Abs
 open import Integers.Negation
 open import Integers.Order
 open import Integers.Multiplication renaming (_*_ to _ℤ*_)

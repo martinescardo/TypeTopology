@@ -44,7 +44,7 @@ with no small copy.
 
 \begin{code}
 
-large-group-with-no-small-copy : (Σ A ꞉ 𝓤 ⁺ ̇  , is-set A
+large-group-with-no-small-copy : (Σ A ꞉ 𝓤 ⁺ ̇ , is-set A
                                               × is-large A
                                               × is-locally-small A)
                                → Σ 𝓕 ꞉ Group (𝓤 ⁺) , ((𝓖 : Group 𝓤) → ¬ (𝓖 ≅ 𝓕))

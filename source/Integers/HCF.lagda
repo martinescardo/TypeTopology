@@ -23,7 +23,6 @@ open import Integers.Addition
 open import Integers.Negation
 open import Integers.Division
 open import Integers.Multiplication
-open import Integers.Abs
 open import Naturals.Division renaming (_∣_ to _ℕ∣_)
 open import Naturals.Multiplication renaming (_*_ to _ℕ*_)
 open import Naturals.HCF

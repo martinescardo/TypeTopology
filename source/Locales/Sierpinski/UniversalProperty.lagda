@@ -32,30 +32,20 @@ module Locales.Sierpinski.UniversalProperty
         (sr : Set-Replacement pt)
        where
 
-open import DomainTheory.Basics.Dcpo pt fe 𝓤 renaming (⟨_⟩ to ⟨_⟩∙)
-open import DomainTheory.Basics.Pointed pt fe 𝓤
 open import DomainTheory.Topology.ScottTopology pt fe 𝓤
 open import DomainTheory.Topology.ScottTopologyProperties pt fe
 open import Locales.ContinuousMap.Definition pt fe
 open import Locales.ContinuousMap.FrameHomomorphism-Definition pt fe
 open import Locales.ContinuousMap.FrameHomomorphism-Properties pt fe
-open import Locales.DistributiveLattice.Definition fe pt
-open import Locales.DistributiveLattice.Ideal pt fe pe
-open import Locales.DistributiveLattice.Properties fe pt
 open import Locales.Frame pt fe hiding (is-directed)
 open import Locales.ScottLocale.Definition pt fe 𝓤
 open import Locales.ScottLocale.Properties pt fe 𝓤
 open import Locales.ScottLocale.ScottLocalesOfAlgebraicDcpos pt fe 𝓤
-open import Locales.ScottLocale.ScottLocalesOfScottDomains pt fe sr 𝓤
 open import Locales.Sierpinski.Definition 𝓤 pe pt fe sr
 open import Locales.Sierpinski.Properties 𝓤 pe pt fe sr
 open import Locales.SmallBasis pt fe sr
-open import MLTT.Fin hiding (𝟎; 𝟏)
-open import MLTT.List hiding ([_])
 open import Slice.Family
 open import UF.Logic
-open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
 open import UF.SubtypeClassifier
 
 open AllCombinators pt fe renaming (_∧_ to _∧ₚ_; _∨_ to _∨ₚ_)

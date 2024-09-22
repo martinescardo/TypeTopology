@@ -3,7 +3,6 @@
 {-# OPTIONS --safe --without-K --lossy-unification #-}
 
 open import UF.FunExt
-open import UF.Logic
 open import MLTT.Spartan hiding (𝟚)
 open import UF.PropTrunc
 open import UF.Subsingletons
@@ -20,9 +19,7 @@ open import DomainTheory.Basics.Pointed pt fe 𝓤
 open import DomainTheory.Lifting.LiftingSet pt fe
 open import DomainTheory.Lifting.LiftingSetAlgebraic pt pe fe
 open import Locales.Frame pt fe hiding (𝟚)
-open import Slice.Family
 
-open import UF.SubtypeClassifier
 open import UF.Subsingletons-Properties
 
 \end{code}
@@ -48,7 +45,6 @@ open import Locales.ScottLocale.Definition pt fe 𝓤
 
 open DefnOfScottLocale (𝕊-dcpo ⁻) 𝓤 pe
 open Locale
-open import Lifting.Construction (𝓤 ⁺)
 
 𝕊 : Locale (𝓤 ⁺) (𝓤 ⁺) 𝓤
 𝕊 = ScottLocale

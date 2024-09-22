@@ -43,7 +43,7 @@ all (small) suprema.
 module _
         (𝓓 : DCPO {𝓤} {𝓣})
        where
- record is-sup-complete : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇  where
+ record is-sup-complete : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇ where
   field
    ⋁ : {I : 𝓥 ̇ } (α : I → ⟨ 𝓓 ⟩) → ⟨ 𝓓 ⟩
    ⋁-is-sup : {I : 𝓥 ̇ } (α : I → ⟨ 𝓓 ⟩) → is-sup (underlying-order 𝓓) (⋁ α) α
@@ -72,7 +72,7 @@ module _
  ∨-family x y (inl _) = x
  ∨-family x y (inr _) = y
 
- record has-finite-joins : 𝓤 ⊔ 𝓣 ⊔ 𝓥 ̇  where
+ record has-finite-joins : 𝓤 ⊔ 𝓣 ⊔ 𝓥 ̇ where
   field
    ⊥ : ⟨ 𝓓 ⟩
    ⊥-is-least : is-least (underlying-order 𝓓) ⊥

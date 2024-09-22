@@ -82,6 +82,6 @@ distinct points can be injective without Ω¬¬-resizing.
 
 \begin{code}
 
-open import InjectiveTypes.Resizing
+import InjectiveTypes.Resizing
 
 \end{code}

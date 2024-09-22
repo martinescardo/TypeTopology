@@ -130,13 +130,11 @@ Added 11th May 2022.
 
 \begin{code}
 
-open import UF.Univalence
 
 module ordinals-injectivity-order (ua : Univalence) where
 
  open import Ordinals.OrdinalOfOrdinals ua
  open import UF.UA-FunExt
- open import UF.Subsingletons
 
  fe : FunExt
  fe = Univalence-gives-FunExt ua
@@ -228,7 +226,6 @@ module topped-ordinals-injectivity-order (ua : Univalence) where
 
  open import Ordinals.ToppedType fe
  open import Ordinals.OrdinalOfOrdinals ua
- open import UF.Subsingletons
 
  open topped-ordinals-injectivity fe
 

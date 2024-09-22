@@ -13,14 +13,12 @@ Revision July 1, 2022
 
 open import MLTT.Spartan hiding ( ₀ ; ₁)
 open import UF.PropTrunc
-open import UF.ImageAndSurjection
 open import UF.FunExt
 open import UF.Subsingletons
 
 open import Groups.Type
 open import Groups.Homomorphisms
 open import Groups.Kernel
-open import Groups.Image
 open import Groups.Cokernel
 
 open import Quotient.Type

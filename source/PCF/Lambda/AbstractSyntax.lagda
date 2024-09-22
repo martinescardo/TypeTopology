@@ -13,7 +13,6 @@ module PCF.Lambda.AbstractSyntax (pt : propositional-truncations-exist) where
 open PropositionalTruncation pt
 
 open import MLTT.Spartan
-open import Naturals.Properties hiding (pred-succ)
 
 data Vec (X : 𝓤₀ ̇) : ℕ → 𝓤₀ ̇ where
  ⟨⟩  : Vec X zero
@@ -23,7 +22,7 @@ data Fin : (n : ℕ) → 𝓤₀ ̇ where
  zero : ∀ {n} → Fin (succ n)
  succ : ∀ {n} → Fin n → Fin (succ n)
 
-data type : 𝓤₀ ̇  where
+data type : 𝓤₀ ̇ where
  ι : type
  _⇒_ : type → type → type
 

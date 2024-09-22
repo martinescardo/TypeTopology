@@ -15,15 +15,12 @@ open import UF.PropTrunc
 module Locales.Spectrality.SpectralMap (pt : propositional-truncations-exist)
                                        (fe : Fun-Ext) where
 
-open import Locales.Compactness pt fe
+open import Locales.Compactness.Definition pt fe
 open import Locales.ContinuousMap.Definition pt fe
 open import Locales.ContinuousMap.FrameHomomorphism-Definition pt fe
 open import Locales.ContinuousMap.FrameHomomorphism-Properties pt fe
 open import Locales.Frame pt fe
-open import MLTT.List hiding ([_])
 open import MLTT.Spartan
-open import Slice.Family
-open import UF.Base
 open import UF.Logic
 open import UF.SubtypeClassifier
 

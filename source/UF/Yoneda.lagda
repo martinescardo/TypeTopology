@@ -1,7 +1,22 @@
-Martin Escardo
+Martin Escardo, before 2018.
 
 A better version is in MGS.Yoneda, but currently we are using this
 one.
+
+We consider "natural transformations" Nat A B (defined elsewhere) and
+the Yoneda-machinery for them as discussed in
+http://www.cs.bham.ac.uk/~mhe/yoneda/yoneda.html (2015).
+
+See also
+
+[1] Egbert Rijke, Introduction to Homotopy Type Theory, 2022.
+    https://doi.org/10.48550/arXiv.2212.11082
+
+[2] Egbert Rijke, Introduction to Homotopy Type Theory, 2012. Master Thesis.
+    https://hottheory.files.wordpress.com/2012/08/hott2.pdf (Section 2.8).
+
+[3] Egbert Rijke, A type-theoretical Yoneda Lemma, 2012.
+    http://homotopytypetheory.org/2012/05/02/a-type-theoretical-yoneda-lemma/
 
 \begin{code}
 
@@ -20,10 +35,6 @@ open import UF.Equiv-FunExt
 open import UF.EquivalenceExamples
 
 \end{code}
-
-We now consider "natural transformations" Nat A B (defined elsewhere)
-and the Yoneda-machinery for them as discussed in
-http://www.cs.bham.ac.uk/~mhe/yoneda/yoneda.html
 
 The Yoneda element induced by a natural transformation:
 
@@ -135,8 +146,8 @@ Yoneda-equivalence = yoneda-equivalence
 
 \end{code}
 
-Next we observe that "only elements", or centers of contraction, are
-universal elements in the sense of category theory.
+Next we observe that centers of contraction are universal elements in
+the sense of category theory.
 
 \begin{code}
 
@@ -384,8 +395,10 @@ equiv-universality : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
                    → is-universal-element-of A (x , a)
 equiv-universality x a φ = section-universality x a (λ y → pr₁ (φ y))
 
-Yoneda-Theorem-forth : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (x : X) (η : Nat (Id x) A)
-                     → ∃! A → is-fiberwise-equiv η
+Yoneda-Theorem-forth : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+                       (x : X) (η : Nat (Id x) A)
+                     → ∃! A
+                     → is-fiberwise-equiv η
 Yoneda-Theorem-forth x η i = nats-with-sections-are-equivs x η
                               (Yoneda-section-forth x η i)
 
@@ -396,7 +409,8 @@ Here is another proof, from the MGS'2019 lecture notes
 
 \begin{code}
 
-Yoneda-Theorem-forth' : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (x : X) (η : Nat (Id x) A)
+Yoneda-Theorem-forth' : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
+                        (x : X) (η : Nat (Id x) A)
                       → ∃! A
                       → is-fiberwise-equiv η
 Yoneda-Theorem-forth' {𝓤} {𝓥} {X} A x η u = γ
@@ -434,7 +448,7 @@ fiberwise-equiv-criterion' A x e = fiberwise-equiv-criterion A x
 
 \end{code}
 
-This says that is there is any fiberwise equivalence whatsoever (or
+This says that if there is any fiberwise equivalence whatsoever (or
 even just a fiberwise retraction), then any natural transformation is
 a fiberwise equivalence.
 
@@ -447,6 +461,10 @@ Yoneda-Theorem-back : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
 Yoneda-Theorem-back x η φ = Yoneda-section-back x η (λ y → pr₁(φ y))
 
 \end{code}
+
+Egbert Rijke, in his book [1], refers to Yoneda-Theorem-forth and
+Yoneda-Theorem-back as "the fundamental theorem of identity types".
+See also his master thesis [2] and his blog post [3].
 
 Next we conclude that a presheaf A is representable iff Σ A is a
 singleton.
@@ -465,8 +483,7 @@ singleton-representable : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
 singleton-representable {𝓤} {𝓥} {X} {A} ((x , a) , cc) =
   x ,
   yoneda-nat x A a ,
-  Yoneda-Theorem-forth x (yoneda-nat x A a) ((x , a) ,
-  cc)
+  Yoneda-Theorem-forth x (yoneda-nat x A a) ((x , a) , cc)
 
 representable-singleton : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
                         → is-representable A
@@ -490,11 +507,12 @@ is-vv-equiv-has-adj' g φ = pr₁ γ ,
   γ : has-adj g
   γ = is-vv-equiv-has-adj g φ
 
-has-adj-is-vv-equiv' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (g : Y → X)
-                     → (Σ f ꞉ (X → Y) , ((x : X) (y : Y) → (f x ＝ y) ≃ (g y ＝ x)))
-                     → is-vv-equiv g
+has-adj-is-vv-equiv'
+ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (g : Y → X)
+ → (Σ f ꞉ (X → Y) , ((x : X) (y : Y) → (f x ＝ y) ≃ (g y ＝ x)))
+ → is-vv-equiv g
 has-adj-is-vv-equiv' g (f , ψ) =
- has-adj-is-vv-equiv g (f , (λ x y → pr₁(ψ x y)) , (λ x y → pr₁(pr₂(ψ x y))))
+ has-adj-is-vv-equiv g (f , (λ x y → pr₁ (ψ x y)) , (λ x y → pr₁ (pr₂(ψ x y))))
 
 \end{code}
 
@@ -504,10 +522,10 @@ extensionality holds (happly is an equivalence).
 
 \begin{code}
 
-funext-via-singletons :
-    ((X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ )
-  → ((x : X) → is-singleton (Y x)) → is-singleton (Π Y))
-  → funext 𝓤 𝓥
+funext-via-singletons
+ : ((X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ )
+ → ((x : X) → is-singleton (Y x)) → is-singleton (Π Y))
+ → funext 𝓤 𝓥
 funext-via-singletons {𝓤} {𝓥} φ {X} {Y} f = γ
  where
   c : is-singleton (Π x ꞉ X , Σ y ꞉ Y x , f x ＝ y)
@@ -546,17 +564,17 @@ and the proof given here via Yoneda was announced on 12th May 2015
 
 open import UF.Univalence
 
-univalence-via-singletons→ : is-univalent 𝓤 → (X : 𝓤 ̇ ) → ∃! Y ꞉ 𝓤 ̇  , X ≃ Y
+univalence-via-singletons→ : is-univalent 𝓤 → (X : 𝓤 ̇ ) → ∃! Y ꞉ 𝓤 ̇ , X ≃ Y
 univalence-via-singletons→ ua X = representable-singleton (X , (idtoeq X , ua X))
 
-univalence-via-singletons← : ((X : 𝓤 ̇ ) → ∃! Y ꞉ 𝓤 ̇  , X ≃ Y) → is-univalent 𝓤
+univalence-via-singletons← : ((X : 𝓤 ̇ ) → ∃! Y ꞉ 𝓤 ̇ , X ≃ Y) → is-univalent 𝓤
 univalence-via-singletons← φ X = universality-equiv X (≃-refl X)
                                   (central-point-is-universal
                                     (X ≃_)
                                     (X , ≃-refl X)
                                     (singletons-are-props (φ X) (X , ≃-refl X)))
 
-univalence-via-singletons : is-univalent 𝓤 ↔ ((X : 𝓤 ̇ ) → ∃! Y ꞉ 𝓤 ̇  , X ≃ Y)
+univalence-via-singletons : is-univalent 𝓤 ↔ ((X : 𝓤 ̇ ) → ∃! Y ꞉ 𝓤 ̇ , X ≃ Y)
 univalence-via-singletons = (univalence-via-singletons→ , univalence-via-singletons←)
 
 \end{code}
@@ -663,9 +681,8 @@ Yoneda-const = yoneda-const
 \end{code}
 
 The following is traditionally proved by induction on the identity
-type (as articulated by Jbased or J in the module UF.MLTT.Spartan), but
-here we use the Yoneda machinery instead, again for the sake of
-illustration.
+type (as articulated by Jbased or J), but here we use the Yoneda
+machinery instead, again for the sake of illustration.
 
 \begin{code}
 

@@ -28,7 +28,6 @@ open import MLTT.Spartan
 open import UF.Base
 open import UF.FunExt
 open import UF.Subsingletons
-open import Naturals.Order using (course-of-values-induction)
 \end{code}
 
 For any P : ℕ → U and n : ℕ, if P(m) is decidable for all m ≤ n, then

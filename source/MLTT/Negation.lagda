@@ -6,7 +6,6 @@ Negation (and emptiness).
 
 module MLTT.Negation where
 
-open import MLTT.Universes
 open import MLTT.Empty
 open import MLTT.Id
 open import MLTT.Pi
@@ -74,6 +73,9 @@ double-contrapositive = contrapositive ∘ contrapositive
 ¬¬-intro : {A : 𝓤 ̇ } → A → ¬¬ A
 ¬¬-intro x u = u x
 
+≠-is-irrefl : {X : 𝓤 ̇ } (x : X) → ¬ (x ≠ x)
+≠-is-irrefl x = ¬¬-intro refl
+
 three-negations-imply-one : {A : 𝓤 ̇ } → ¬¬¬ A → ¬ A
 three-negations-imply-one = contrapositive ¬¬-intro
 
@@ -83,7 +85,9 @@ dne' f h ϕ = h (λ g → ϕ (λ a → g (f a)))
 dne : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → (A → ¬ B) → ¬¬ A → ¬ B
 dne f ϕ b = ϕ (λ a → f a b)
 
-double-negation-unshift : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } → ¬¬ ((x : X) → A x) → (x : X) → ¬¬ (A x)
+double-negation-unshift : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+                        → ¬¬ ((x : X) → A x)
+                        → (x : X) → ¬¬ (A x)
 double-negation-unshift f x g = f (λ h → g (h x))
 
 dnu : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → ¬¬ (A × B) → ¬¬ A × ¬¬ B

@@ -23,7 +23,7 @@ open import Locales.AdjointFunctorTheoremForFrames pt fe
 open import Locales.CharacterisationOfContinuity pt fe
 open import Locales.Clopen      pt fe sr
 open import Locales.CompactRegular pt fe using (∨-is-scott-continuous)
-open import Locales.Compactness pt fe
+open import Locales.Compactness.Definition pt fe
 open import Locales.Complements pt fe
 open import Locales.ContinuousMap.Definition pt fe
 open import Locales.ContinuousMap.FrameHomomorphism-Definition pt fe

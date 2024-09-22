@@ -73,7 +73,7 @@ module free-discrete-graphic-monoid-development
        where
 
  M-is-discrete : is-discrete M
- M-is-discrete = discrete'-gives-discrete M-is-discrete'
+ M-is-discrete = discrete'-gives-discrete
 
  f' : List X → M
  f' []       = e

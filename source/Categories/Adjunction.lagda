@@ -9,12 +9,7 @@ open import UF.FunExt
 module Categories.Adjunction (fe : Fun-Ext) where
 
 open import MLTT.Spartan
-open import UF.Base
-open import UF.Equiv
-open import UF.Retracts
 open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
-open import UF.Equiv-FunExt
 
 open import Categories.Category fe
 open import Categories.Functor fe

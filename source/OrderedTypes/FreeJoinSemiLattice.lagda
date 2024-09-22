@@ -20,6 +20,7 @@ open import Fin.ArithmeticViaEquivalence
 open import Fin.Kuratowski pt
 open import Fin.Type
 open import MLTT.Spartan
+open import Notation.UnderlyingType
 open import OrderedTypes.JoinSemiLattices
 open import UF.Base
 open import UF.Equiv

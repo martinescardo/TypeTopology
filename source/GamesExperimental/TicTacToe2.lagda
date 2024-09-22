@@ -12,7 +12,6 @@ module GamesExperimental.TicTacToe2 where
 
 open import MLTT.Spartan hiding (J)
 open import MLTT.Fin
-open import MLTT.List
 
 data 𝟛 : Type where
  O-wins draw X-wins : 𝟛
@@ -22,7 +21,6 @@ open import GamesExperimental.FiniteHistoryDependent {𝓤₀} {𝓤₀} 𝟛
 open import GamesExperimental.TypeTrees {𝓤₀}
 open import GamesExperimental.J
 open import MLTT.Athenian
-open import TypeTopology.SigmaDiscreteAndTotallySeparated
 
 open list-util
 
@@ -34,12 +32,12 @@ tic-tac-toe₂J = build-GameJ draw Board transition 9 board₀
   flip draw   = draw
   flip X-wins = O-wins
 
-  data Player : 𝓤₀ ̇  where
+  data Player : 𝓤₀ ̇ where
    O X : Player
 
   Cell = Fin 9
 
-  record Board : 𝓤₀ ̇  where
+  record Board : 𝓤₀ ̇ where
    pattern
    constructor board
    field
@@ -140,7 +138,7 @@ predicate q:
   play (board X as xs os) (c , e) = board O (remove c as) (insert c xs) os
   play (board O as xs os) (c , e) = board X (remove c as) xs            (insert c os)
 
-  transition : Board → 𝟛 + (Σ M ꞉ 𝓤₀ ̇  , (M → Board) × J M)
+  transition : Board → 𝟛 + (Σ M ꞉ 𝓤₀ ̇ , (M → Board) × J M)
   transition b@(board next as xs os) =
    if wins b
    then inl (opponent-wins next)
@@ -179,7 +177,6 @@ l₂-test = refl
 
 {- slow
 
-open import Athenian
 
 u₂-test : s₂ ＝ (𝟎 :: refl)
            :: ((𝟒 :: refl)

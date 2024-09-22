@@ -79,7 +79,7 @@ Notice that weak excluded middle implies WLPO.
 open import UF.ClassicalLogic
 
 WEM-gives-WLPO : funext₀ → WEM 𝓤₀ → WLPO
-WEM-gives-WLPO fe wem u = Cases (wem (u ＝ ∞) (ℕ∞-is-set fe))
+WEM-gives-WLPO fe wem u = Cases (wem (u ＝ ∞))
                            (λ (p : (u ≠ ∞))
                                  → inr p)
                            (λ (ν : ¬ (u ≠ ∞))
@@ -97,7 +97,7 @@ WLPO-traditional = (α : ℕ → 𝟚) → is-decidable ((n : ℕ) → α n ＝ 
 
 open import MLTT.Two-Properties
 
-WLPO-gives-WLPO-traditional : Fun-Ext → WLPO → WLPO-traditional
+WLPO-gives-WLPO-traditional : funext 𝓤₀ 𝓤₀ → WLPO → WLPO-traditional
 WLPO-gives-WLPO-traditional fe wlpo α = IV
  where
   I : (ℕ→𝟚-to-ℕ∞ α ＝ ∞) + (ℕ→𝟚-to-ℕ∞ α ≠ ∞)
@@ -133,7 +133,7 @@ WLPO-gives-WLPO-traditional fe wlpo α = IV
              ℕ∞-to-ℕ→𝟚 ∞ n             ∎
 
   IV : is-decidable ((n : ℕ) → α n ＝ ₁)
-  IV = map-is-decidable II III I
+  IV = map-decidable II III I
 
 WLPO-traditional-gives-WLPO : funext₀ → WLPO-traditional → WLPO
 WLPO-traditional-gives-WLPO fe wlpot u = IV
@@ -148,6 +148,43 @@ WLPO-traditional-gives-WLPO fe wlpot u = IV
   III e n = ap (λ - → ℕ∞-to-ℕ→𝟚 - n) e
 
   IV : (u ＝ ∞) + (u ≠ ∞)
-  IV = map-is-decidable II III I
+  IV = map-decidable II III I
 
 \end{code}
+
+Added 9th September 2024. WLPO amounts to saying that the constancy of
+a binary sequence is decidable.
+
+\begin{code}
+
+WLPO-variation : 𝓤₀ ̇
+WLPO-variation = (α : ℕ → 𝟚) → is-decidable ((n : ℕ) → α n ＝ α 0)
+
+WLPO-variation-gives-WLPO-traditional
+ : WLPO-variation
+ → WLPO-traditional
+WLPO-variation-gives-WLPO-traditional wlpov α
+ = 𝟚-equality-cases I II
+ where
+  I : α 0 ＝ ₀ → ((n : ℕ) → α n ＝ ₁) + ¬ ((n : ℕ) → α n ＝ ₁)
+  I p = inr (λ (ϕ : (n : ℕ) → α n ＝ ₁)
+               → zero-is-not-one
+                  (₀   ＝⟨ p ⁻¹ ⟩
+                   α 0 ＝⟨ ϕ 0 ⟩
+                   ₁   ∎))
+
+  II : α 0 ＝ ₁ → ((n : ℕ) → α n ＝ ₁) + ¬ ((n : ℕ) → α n ＝ ₁)
+  II p = map-decidable
+          (λ (ϕ : (n : ℕ) → α n ＝ α 0) (n : ℕ)
+             → α n ＝⟨ ϕ n ⟩
+               α 0 ＝⟨ p ⟩
+               ₁   ∎)
+          (λ (γ : (n : ℕ) → α n ＝ ₁) (n : ℕ)
+             → α n ＝⟨ γ n ⟩
+               ₁   ＝⟨ p ⁻¹ ⟩
+               α 0 ∎)
+          (wlpov α)
+
+\end{code}
+
+TODO. The converse.

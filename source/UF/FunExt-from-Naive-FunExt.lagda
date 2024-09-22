@@ -23,7 +23,6 @@ open import MLTT.Spartan
 open import UF.Base
 open import UF.FunExt
 open import UF.Equiv
-open import UF.EquivalenceExamples
 open import UF.Equiv-FunExt
 open import UF.Yoneda
 open import UF.Subsingletons

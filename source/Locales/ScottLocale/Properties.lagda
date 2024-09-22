@@ -9,20 +9,13 @@ dates-updated: [2024-03-16]
 
 {-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
 
-open import MLTT.List hiding ([_])
-open import MLTT.Pi
 open import MLTT.Spartan
 open import Slice.Family
-open import UF.Base
-open import UF.EquivalenceExamples
 open import UF.FunExt
 open import UF.Logic
 open import UF.PropTrunc
 open import UF.SubtypeClassifier
 open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
-open import UF.UA-FunExt
-open import UF.Univalence
 
 \end{code}
 
@@ -36,15 +29,12 @@ module Locales.ScottLocale.Properties (pt : propositional-truncations-exist)
                                       (𝓤  : Universe) where
 
 open import DomainTheory.BasesAndContinuity.Bases            pt fe 𝓤
-open import DomainTheory.BasesAndContinuity.Continuity       pt fe 𝓤
 open import DomainTheory.Basics.Dcpo                         pt fe 𝓤
  renaming (⟨_⟩ to ⟨_⟩∙) hiding   (is-directed)
-open import DomainTheory.Basics.Pointed                      pt fe 𝓤
- renaming (⊥ to ⊥d)
 open import DomainTheory.Basics.WayBelow                     pt fe 𝓤
 open import DomainTheory.Topology.ScottTopology              pt fe 𝓤
 open import DomainTheory.Topology.ScottTopologyProperties    pt fe 𝓤
-open import Locales.Compactness                              pt fe
+open import Locales.Compactness.Definition                              pt fe
  hiding (is-compact)
 open import Locales.Frame                                    pt fe
 open import Locales.ScottLocale.Definition                   pt fe 𝓤

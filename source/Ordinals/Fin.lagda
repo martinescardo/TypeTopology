@@ -15,7 +15,6 @@ open import MLTT.Spartan
 open import Notation.Order
 open import Ordinals.Type
 open import Ordinals.Notions
-open import UF.Embeddings
 
 import Naturals.Order as ℕ
 

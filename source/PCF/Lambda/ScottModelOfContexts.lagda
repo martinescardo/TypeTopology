@@ -17,12 +17,10 @@ module PCF.Lambda.ScottModelOfContexts
 
 open PropositionalTruncation pt
 
-open import DomainTheory.Basics.Curry pt fe 𝓤₀
 open import DomainTheory.Basics.Dcpo pt fe 𝓤₀
 open import DomainTheory.Basics.FunctionComposition pt fe 𝓤₀
 open import DomainTheory.Basics.Pointed pt fe 𝓤₀
 open import DomainTheory.Basics.Products pt fe
-open import DomainTheory.Lifting.LiftingSet pt fe 𝓤₀ pe
 open import PCF.Lambda.AbstractSyntax pt
 open import PCF.Lambda.ScottModelOfTypes pt fe pe
 open import OrderedTypes.Poset fe

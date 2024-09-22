@@ -11,8 +11,6 @@ open import MLTT.Spartan hiding (J)
 module Games.NonEmptyList where
 
 open import Games.Monad
-open import UF.Equiv
-open import UF.FunExt
 
 data neList (X : Type) : Type where
  [_]  : X → neList X

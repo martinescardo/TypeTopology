@@ -19,7 +19,6 @@ module Taboos.FiniteSubsetTaboo (pt : propositional-truncations-exist)
 
 open import Fin.Kuratowski pt
 open import Fin.Type
-open import MLTT.Negation
 open import MLTT.Spartan
 open import Naturals.Order
 open import Notation.Order

@@ -10,7 +10,7 @@ module GamesExperimental.Reader where
 
 open import GamesExperimental.Monad
 
-Reader : {𝓦₀ : Universe} → 𝓦₀ ̇  → Monad
+Reader : {𝓦₀ : Universe} → 𝓦₀ ̇ → Monad
 Reader {𝓦₀} A = record {
             ℓ       = λ 𝓤 → 𝓤 ⊔ 𝓦₀ ;
             functor = λ X → A → X ;

@@ -9,7 +9,6 @@ Split out from the `CompactRegular` module.
 open import MLTT.Spartan hiding (𝟚)
 open import UF.PropTrunc
 open import UF.FunExt
-open import UF.UA-FunExt
 open import UF.Size
 
 module Locales.ScottContinuity (pt : propositional-truncations-exist)
@@ -19,15 +18,12 @@ module Locales.ScottContinuity (pt : propositional-truncations-exist)
 open import Locales.Frame pt fe
 open import Slice.Family
 open import UF.SubtypeClassifier
-open import UF.Subsingletons
 
 open import UF.Logic
 
 open AllCombinators pt fe
 open PropositionalTruncation pt
-open import Locales.GaloisConnection pt fe
 
-open import Locales.InitialFrame pt fe
 
 \end{code}
 

@@ -40,23 +40,21 @@ The point is that
 
 open import MLTT.Spartan
 
-open import UF.FunExt
-
-module TypeTopology.PropTychonoff (fe : FunExt) where
+module TypeTopology.PropTychonoff where
 
 open import MLTT.Two-Properties
 open import TypeTopology.CompactTypes
-open import UF.Base
 open import UF.Equiv
-open import UF.EquivalenceExamples
+open import UF.FunExt
 open import UF.PropIndexedPiSigma
 open import UF.Subsingletons
 
-prop-tychonoff : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
+prop-tychonoff : funext 𝓤 𝓥
+               → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
                → is-prop X
                → ((x : X) → is-compact∙ (Y x))
                → is-compact∙ (Π Y)
-prop-tychonoff {𝓤} {𝓥} {X} {Y} X-is-prop ε p = γ
+prop-tychonoff {𝓤} {𝓥} fe {X} {Y} X-is-prop ε p = γ
  where
   have-ε : (x : X) → is-compact∙ (Y x)
   have-ε = ε
@@ -65,7 +63,7 @@ prop-tychonoff {𝓤} {𝓥} {X} {Y} X-is-prop ε p = γ
   have-p = p
 
   𝕗 : (x : X) → Π Y ≃ Y x
-  𝕗 = prop-indexed-product (fe 𝓤 𝓥) X-is-prop
+  𝕗 = prop-indexed-product fe X-is-prop
 
 \end{code}
 
@@ -180,7 +178,7 @@ We get the same conclusion if X is empty:
   φ₀-is-universal-witness-assuming-X-empty
    : (X → 𝟘) → p φ₀ ＝ ₁ → (φ : Π Y) → p φ ＝ ₁
   φ₀-is-universal-witness-assuming-X-empty u r φ =
-   p φ  ＝⟨ ap p (dfunext (fe 𝓤 𝓥) (λ x → unique-from-𝟘 (u x))) ⟩
+   p φ  ＝⟨ ap p (dfunext fe (λ x → unique-from-𝟘 (u x))) ⟩
    p φ₀ ＝⟨ r ⟩
    ₁    ∎
 
@@ -257,11 +255,12 @@ A particular case is the following:
 
 \begin{code}
 
-prop-tychonoff-corollary : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+prop-tychonoff-corollary : funext 𝓤 𝓥
+                         → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                          → is-prop X
                          → is-compact∙ Y
                          → is-compact∙ (X → Y)
-prop-tychonoff-corollary X-is-prop ε = prop-tychonoff X-is-prop (λ x → ε)
+prop-tychonoff-corollary fe X-is-prop ε = prop-tychonoff fe X-is-prop (λ x → ε)
 
 \end{code}
 
@@ -273,11 +272,12 @@ Better (9 Sep 2015):
 
 \begin{code}
 
-prop-tychonoff-corollary' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+prop-tychonoff-corollary' : funext 𝓤 𝓥
+                          → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                           → is-prop X
                           → (X → is-compact∙ Y)
                           → is-compact∙ (X → Y)
-prop-tychonoff-corollary' = prop-tychonoff
+prop-tychonoff-corollary' fe = prop-tychonoff fe
 
 \end{code}
 
@@ -295,12 +295,12 @@ proposition P, which is weak excluded middle, which is not provable.
 
 open import UF.ClassicalLogic
 
-compact-prop-tychonoff-gives-WEM : ((X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ )
-                                       → is-prop X
-                                       → ((x : X) → is-compact (Y x))
-                                       → is-compact (Π Y))
-                                 → WEM 𝓤
-compact-prop-tychonoff-gives-WEM {𝓤} {𝓥} τ X X-is-prop = δ γ
+compact-prop-tychonoff-gives-WEM' : ((X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ )
+                                        → is-prop X
+                                        → ((x : X) → is-compact (Y x))
+                                        → is-compact (Π Y))
+                                  → WEM' 𝓤
+compact-prop-tychonoff-gives-WEM' {𝓤} {𝓥} τ X X-is-prop = δ γ
  where
   Y : X → 𝓥 ̇
   Y x = 𝟘
@@ -316,3 +316,6 @@ compact-prop-tychonoff-gives-WEM {𝓤} {𝓥} τ X X-is-prop = δ γ
   δ (inr ϕ) = inr (contrapositive (λ f → 𝟘-elim ∘ f) ϕ)
 
 \end{code}
+
+If we further assume function extensionality, we get WEM from WEM',
+and hence we can replace the conclusion of the above fact by WEM.

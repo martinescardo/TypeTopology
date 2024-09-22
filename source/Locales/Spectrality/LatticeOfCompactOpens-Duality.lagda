@@ -45,7 +45,7 @@ private
  pe {𝓤} = univalence-gives-propext (ua 𝓤)
 
 open import Locales.AdjointFunctorTheoremForFrames pt fe
-open import Locales.Compactness pt fe
+open import Locales.Compactness.Definition pt fe
 open import Locales.ContinuousMap.Definition pt fe
 open import Locales.ContinuousMap.FrameHomomorphism-Definition pt fe
 open import Locales.ContinuousMap.FrameIsomorphism-Definition pt fe
@@ -57,17 +57,14 @@ open import Locales.DistributiveLattice.Homomorphism fe pt
 open import Locales.DistributiveLattice.Ideal pt fe pe
 open import Locales.DistributiveLattice.Ideal-Properties pt fe pe
 open import Locales.DistributiveLattice.Isomorphism fe pt
-open import Locales.DistributiveLattice.Isomorphism-Properties ua pt sr
 open import Locales.DistributiveLattice.Resizing ua pt sr
 open import Locales.DistributiveLattice.Spectrum fe pe pt
 open import Locales.DistributiveLattice.Spectrum-Properties fe pe pt sr
 open import Locales.Frame pt fe
 open import Locales.GaloisConnection pt fe
-open import Locales.SIP.DistributiveLatticeSIP ua pt sr
 open import Locales.SmallBasis pt fe sr
 open import Locales.Spectrality.LatticeOfCompactOpens ua pt sr
 open import Locales.Spectrality.SpectralLocale pt fe
-open import Locales.Spectrality.SpectralMap pt fe
 open import Slice.Family
 open import UF.Classifiers
 open import UF.Equiv hiding (_■)

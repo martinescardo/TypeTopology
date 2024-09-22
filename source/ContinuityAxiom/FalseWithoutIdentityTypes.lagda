@@ -14,7 +14,6 @@ module ContinuityAxiom.FalseWithoutIdentityTypes where
 
 open import MLTT.Sigma
 open import MLTT.NaturalNumbers
-open import MLTT.Universes
 open import MLTT.Unit
 open import MLTT.Empty
 

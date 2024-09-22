@@ -160,8 +160,8 @@ not-less-than-itself 0    l = l
 not-less-than-itself (succ n) l = not-less-than-itself n l
 
 not-less-bigger-or-equal : (m n : ℕ) → ¬ (n < m) → n ≥ m
-not-less-bigger-or-equal 0    n u = zero-least n
-not-less-bigger-or-equal (succ m) 0    = ¬¬-intro (zero-least m)
+not-less-bigger-or-equal 0        n        = λ _ → zero-least n
+not-less-bigger-or-equal (succ m) 0        = ¬¬-intro (zero-least m)
 not-less-bigger-or-equal (succ m) (succ n) = not-less-bigger-or-equal m n
 
 bigger-or-equal-not-less : (m n : ℕ) → n ≥ m → ¬ (n < m)
@@ -252,6 +252,13 @@ course-of-values-induction-on-value-of-function
 
 TODO. Also add plain induction on the values of a function.
 
+TODO. Notice that this proof of course-of-values induction uses the
+accessibility predicate. From a foundational point of view, this is a
+too powerful tool - an indexed W-type. In fact, this is not
+needed. The course-of-values-induction theorem can be proved in MLTT
+with only natural numbers and without universes, identity types, of W
+types (indexed or not) other than the natural numbers.
+
 \begin{code}
 
 <-is-extensional : is-extensional _<_
@@ -293,7 +300,6 @@ Added December 2019.
 
 \begin{code}
 
-open import NotionsOfDecidability.Decidable
 open import NotionsOfDecidability.Complemented
 
 ≤-decidable : (m n : ℕ ) → is-decidable (m ≤ n)

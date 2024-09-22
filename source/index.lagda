@@ -8,7 +8,7 @@
    https://www.cs.bham.ac.uk/~mhe/
    https://github.com/martinescardo/TypeTopology
 
-   Tested with Agda 2.6.4.3
+   Tested with Agda 2.6.4.3 and 2.7.0
 
    * Our main use of this development is as a personal blackboard or
      notepad for our research and that of collaborators. In
@@ -112,6 +112,12 @@ Philosophy of the repository
      computational sense (as opposed to constructivity in the sense of
      validity in any (∞-)topos).
 
+   * Although our philosophy is based on HoTT/UF and ∞-toposes, it
+     should be emphasized that much of what we do here also holds in
+     the setoid model. In particular, this model validates function
+     extensionality, the existence of propositional truncationsm and
+     the existence of quotients, and some higher inductive types.
+
 Click at the imported module names to navigate to them:
 
 \begin{code}
@@ -120,8 +126,10 @@ Click at the imported module names to navigate to them:
 
 module index where
 
+import Apartness.index
 import BinarySystems.index
 import CantorSchroederBernstein.index
+import Cardinals.index
 import Categories.index
 import Circle.index
 import CoNaturals.index

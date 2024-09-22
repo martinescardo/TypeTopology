@@ -12,7 +12,7 @@ module Ordinals.Underlying where
 open import MLTT.Spartan
 open import Ordinals.Notions
 
-record Underlying {𝓤} (O : 𝓤 ⁺ ̇ ) : 𝓤 ⁺ ̇  where
+record Underlying {𝓤} (O : 𝓤 ⁺ ̇ ) : 𝓤 ⁺ ̇ where
  field
   ⟨_⟩              : O → 𝓤 ̇
   underlying-order : (α : O) → ⟨ α ⟩ → ⟨ α ⟩ → 𝓤 ̇

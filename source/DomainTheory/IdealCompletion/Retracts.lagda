@@ -53,7 +53,6 @@ open import DomainTheory.Basics.WayBelow pt fe 𝓥
 open import DomainTheory.BasesAndContinuity.Bases pt fe 𝓥
 open import DomainTheory.BasesAndContinuity.Continuity pt fe 𝓥
 
-open import DomainTheory.IdealCompletion.IdealCompletion pt fe pe 𝓥
 open import DomainTheory.IdealCompletion.Properties pt fe pe 𝓥
 
 open PropositionalTruncation pt

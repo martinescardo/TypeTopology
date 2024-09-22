@@ -8,13 +8,11 @@ Cauchy and convergent sequences.
 
 open import MLTT.Spartan renaming (_+_ to _∔_)
 
-open import Naturals.Addition renaming (_+_ to _ℕ+_)
 open import Naturals.Order
 open import Notation.Order
 open import UF.FunExt
 open import UF.PropTrunc
 open import UF.Subsingletons
-open import Rationals.Type
 open import Rationals.Positive
 
 module MetricSpaces.Type

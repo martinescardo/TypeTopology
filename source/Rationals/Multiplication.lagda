@@ -12,7 +12,6 @@ open import MLTT.Spartan renaming (_+_ to _∔_)
 
 open import UF.Base hiding (_≈_)
 open import Naturals.Properties
-open import Integers.Abs
 open import Integers.Type
 open import Integers.Multiplication renaming (_*_ to _ℤ*_)
 open import Naturals.Multiplication renaming (_*_ to _ℕ*_)

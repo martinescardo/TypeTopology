@@ -10,20 +10,14 @@ open import MLTT.Spartan
 open import UF.FunExt
 open import Notation.Order
 open import Naturals.Order
-open import UF.DiscreteAndSeparated
-open import CoNaturals.Type
- hiding (max)
- renaming (ℕ-to-ℕ∞ to _↑)
 
 open import TWA.Thesis.Chapter2.Sequences
-open import TWA.Thesis.Chapter2.Vectors
 open import TWA.Thesis.Chapter5.SignedDigit
 
 module TWA.Thesis.Chapter6.SignedDigitContinuity (fe : FunExt) where
 
 open import TWA.Thesis.Chapter3.ClosenessSpaces fe
 open import TWA.Thesis.Chapter3.ClosenessSpaces-Examples fe
-open import TWA.Thesis.Chapter3.SearchableTypes fe
 open import TWA.Thesis.Chapter6.SequenceContinuity fe
 \end{code}
 

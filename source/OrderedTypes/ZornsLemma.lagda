@@ -9,13 +9,11 @@ relevant definitions.
 
 open import MLTT.Spartan
 open import Ordinals.Equivalence
-open import Ordinals.Notions
 open import Ordinals.Type
 open import Ordinals.Underlying
 open import UF.Base
 open import UF.Choice
 open import UF.ClassicalLogic
-open import UF.DiscreteAndSeparated
 open import UF.Embeddings
 open import UF.Equiv
 open import UF.EquivalenceExamples
@@ -23,7 +21,6 @@ open import UF.FunExt
 open import UF.Logic
 open import UF.Powerset-MultiUniverse
 open import UF.PropTrunc
-open import UF.Sets
 open import UF.Size
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
@@ -60,7 +57,6 @@ open UF.Choice.choice-functions pt pe' fe
 open UF.Logic.Existential pt
 open UF.Logic.Universal fe'
 open import OrderedTypes.Poset fe'
-open import Ordinals.Arithmetic fe
 open import Ordinals.WellOrderingTaboo fe' pe
 open inhabited-subsets pt
 

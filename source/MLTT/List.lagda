@@ -16,7 +16,7 @@ open import Naturals.Properties
 open import Naturals.Order hiding (minus)
 open import Notation.Order
 
-data List {𝓤} (X : 𝓤 ̇ ) : 𝓤 ̇  where
+data List {𝓤} (X : 𝓤 ̇ ) : 𝓤 ̇ where
  [] : List X
  _∷_ : X → List X → List X
 
@@ -108,7 +108,7 @@ empty : {X : 𝓤 ̇ } → List X → Bool
 empty []       = true
 empty (x ∷ xs) = false
 
-data member {X : 𝓤 ̇ } : X → List X → 𝓤 ̇  where
+data member {X : 𝓤 ̇ } : X → List X → 𝓤 ̇ where
  in-head : {x : X}   {xs : List X} → member x (x ∷ xs)
  in-tail : {x y : X} {xs : List X} → member x xs → member x (y ∷ xs)
 
@@ -120,7 +120,7 @@ member-map f x' (_ ∷ xs) (in-tail m) = in-tail (member-map f x' xs m)
 
 member' : {X : 𝓤 ̇ } → X → List X → 𝓤 ̇
 member' y []       = 𝟘
-member' y (x ∷ xs) = (x ＝ y) + member y xs
+member' y (x ∷ xs) = (x ＝ y) + member' y xs
 
 \end{code}
 
@@ -131,12 +131,12 @@ member'-map : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (x : X) (xs : List X)
             → member' x xs
             → member' (f x) (map f xs)
 member'-map f x' (x ∷ xs) (inl p) = inl (ap f p)
-member'-map f x' (x ∷ xs) (inr m) = inr (member-map f x' xs m)
+member'-map f x' (x ∷ xs) (inr m) = inr (member'-map f x' xs m)
 
-listed : 𝓤 ̇  → 𝓤 ̇
+listed : 𝓤 ̇ → 𝓤 ̇
 listed X = Σ xs ꞉ List X , ((x : X) → member x xs)
 
-listed⁺ : 𝓤 ̇  → 𝓤 ̇
+listed⁺ : 𝓤 ̇ → 𝓤 ̇
 listed⁺ X = X × listed X
 
 type-from-list : {X : 𝓤  ̇} → List X → 𝓤  ̇
@@ -400,29 +400,31 @@ concat-++ (xs ∷ xss) yss =
 
 \end{code}
 
-The following are the Kleisli extension operation for the list monad and its associativity law.
+The following are the Kleisli extension operations for the list monad
+and its associativity law.
 
 \begin{code}
 
-ext : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-    → (X → List Y) → (List X → List Y)
-ext f xs = concat (map f xs)
+List-ext : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+         → (X → List Y) → (List X → List Y)
+List-ext f xs = concat (map f xs)
 
-ext-assoc : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
-            (g : Y → List Z) (f : X → List Y)
-            (xs : List X)
-          → ext (λ x → ext g (f x)) xs ＝ ext g (ext f xs)
-ext-assoc g f []       = refl
-ext-assoc g f (x ∷ xs) =
- ext (λ - → ext g (f -)) (x ∷ xs)          ＝⟨ refl ⟩
- ext g (f x) ++ ext (λ - → ext g (f -)) xs ＝⟨ I ⟩
- ext g (f x) ++ ext g (ext f xs)           ＝⟨ II ⟩
- concat (map g (f x) ++ map g (ext f xs))  ＝⟨ III ⟩
- ext g (f x ++ ext f xs)                   ＝⟨ refl ⟩
- ext g (ext f (x ∷ xs))                    ∎
+List-ext-assoc
+ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+   (g : Y → List Z) (f : X → List Y)
+   (xs : List X)
+ → List-ext (λ x → List-ext g (f x)) xs ＝ List-ext g (List-ext f xs)
+List-ext-assoc g f []       = refl
+List-ext-assoc g f (x ∷ xs) =
+ List-ext (λ - → List-ext g (f -)) (x ∷ xs)               ＝⟨ refl ⟩
+ List-ext g (f x) ++ List-ext (λ - → List-ext g (f -)) xs ＝⟨ I ⟩
+ List-ext g (f x) ++ List-ext g (List-ext f xs)           ＝⟨ II ⟩
+ concat (map g (f x) ++ map g (List-ext f xs))            ＝⟨ III ⟩
+ List-ext g (f x ++ List-ext f xs)                        ＝⟨ refl ⟩
+ List-ext g (List-ext f (x ∷ xs))                         ∎
   where
-   I   = ap (ext g (f x) ++_) (ext-assoc g f xs)
-   II  = (concat-++ (map g (f x)) (map g (ext f xs)))⁻¹
-   III = (ap concat (map-++ g (f x) (ext f xs)))⁻¹
+   I   = ap (List-ext g (f x) ++_) (List-ext-assoc g f xs)
+   II  = (concat-++ (map g (f x)) (map g (List-ext f xs)))⁻¹
+   III = (ap concat (map-++ g (f x) (List-ext f xs)))⁻¹
 
 \end{code}
