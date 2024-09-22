@@ -15,12 +15,12 @@ jobs:
     - name: "Clone repository"
       uses: actions/checkout@v4
 
-    - name: "Print some stuff"
+    - name: "Print environment information"
       shell: bash
       run: |
-        echo "branch = ${{ github.ref_name }}"
-        echo "head_sha = ${{ github.sha }}"
-        echo "head_prec_sha = ${{ github.event.before }}"
+        echo "github.ref_name = ${{ github.ref_name }}"
+        echo "github.sha = ${{ github.sha }}"
+        echo "github.event.before = ${{ github.event.before }}"
 
     - name: "Restore cached .agdai files"
       id: cache-agdai-restore
