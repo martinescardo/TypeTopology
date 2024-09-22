@@ -19,7 +19,7 @@ jobs:
       shell: bash
       run: |
         echo "branch = ${{ github.ref_name }}"
-        echo "head_sha = ${{ github.event.base_ref }}"
+        echo "head_sha = ${{ github.sha }}"
         echo "head_prec_sha = ${{ github.event.before }}"
 
     - name: "Restore cached .agdai files"
