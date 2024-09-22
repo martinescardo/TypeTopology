@@ -19,7 +19,7 @@ jobs:
       shell: bash
       run: |
         echo "branch = ${{ github.ref_name }}"
-        echo "head_sha = ${{ github.ref }}"
+        echo "head_sha = ${{ github.sha }}"
         echo "head_prec_sha = ${{ github.event.before }}"
 
     - name: "Restore cached .agdai files"
@@ -42,7 +42,7 @@ jobs:
       uses: actions/cache/save@v4
       with:
         path: _build
-        key: ${{ runner.os }}-agdai-cache-${{ github.ref_name }}-${{ github.ref }}
+        key: ${{ runner.os }}-agdai-cache-${{ github.ref_name }}-${{ github.sha }}
 
     - name: Upload HTML
       id: html-upload
