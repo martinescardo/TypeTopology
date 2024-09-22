@@ -19,7 +19,7 @@ jobs:
       shell: bash
       run: |
         echo "head_sha=$(git log -1 --format=%h)" >> "$GITHUB_ENV"
-        echo "head_prec_sha=$(git log -2 --format=%h | tail -1)" >> "$GITHUB_ENV"
+        echo "head_prec_sha=$(git log -3 --format=%h | tail -1)" >> "$GITHUB_ENV"
 
     - name: "Print declared variables"
       shell: bash
