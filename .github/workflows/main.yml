@@ -21,6 +21,8 @@ jobs:
         echo "github.ref_name = ${{ github.ref_name }}"
         echo "github.sha = ${{ github.sha }}"
         echo "github.event.before = ${{ github.event.before }}"
+        echo "github.event.after = ${{ github.event.after }}"
+        echo "github.event.pull_request.head.sha = ${{ github.event.pull_request.head.sha }}"
 
     - name: "Restore cached .agdai files"
       id: cache-agdai-restore
@@ -28,6 +30,8 @@ jobs:
       with:
         path: _build
         key: ${{ runner.os }}-agdai-cache-${{ github.ref_name }}-${{ github.event.before }}
+        restore-keys: |
+          ${{ runner.os }}-agdai-cache-${{ github.ref_name }}-
 
     - name: Run Agda
       id: typecheck
