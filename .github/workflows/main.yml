@@ -15,6 +15,18 @@ jobs:
     - name: "Clone repository"
       uses: actions/checkout@v4
 
+    - name: "Save hashes of HEAD and HEAD~ into environment variables"
+      shell: bash
+      run: |
+        echo "head_sha=$(git log -1 --format=%h)" >> "$GITHUB_ENV"
+        echo "head_prec_sha=$(git log -2 --format=%h | tail -1)" >> "$GITHUB_ENV"
+
+    - name: "Print declared variables"
+      shell: bash
+      run: |
+        echo "head_sha = ${{ env.head_sha }}"
+        echo "head_prec_sha = ${{ env.head_prec_sha }}"
+
     - name: "Restore cached .agdai files"
       id: cache-agdai-restore
       uses: actions/cache/restore@v4
