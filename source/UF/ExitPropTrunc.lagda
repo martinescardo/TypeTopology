@@ -172,3 +172,6 @@ module propositional-truncation-of-decidable-type
   collapsible-types-have-split-support s = ∣∣⌜ c ⌝-exit (∥∥-to-∥∥⌜_⌝ s)
 
 \end{code}
+
+TODO. Perhaps rewrite all uses of this file to use the new notation,
+and get rid of the original old notation.
