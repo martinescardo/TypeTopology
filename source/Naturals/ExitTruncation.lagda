@@ -33,7 +33,8 @@ Moreover, we can construct the propositional truncation of the type
 truncations exist in general, by considering the type of fixed points
 of a minimization endomap of Σ n ꞉ ℕ , A n. See the module UF.ExitPropTrunc.
 
-1. Martin Escardo. Message to the IAS Univalent Foundations mailing list.
+1. Martin Escardo. 2013/03/13 message to the IAS Univalent Foundations
+   mailing list.
    https://groups.google.com/g/univalent-foundations/c/SA0dzenV1G4/m/d5iIGdKKNxMJ
 
 2. Nicolai Kraus, Martín Escardó, Thierry Coquand & Thorsten Altenkirch.
