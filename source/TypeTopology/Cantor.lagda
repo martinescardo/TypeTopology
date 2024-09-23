@@ -10,7 +10,7 @@ open import Apartness.Definition
 open import MLTT.Spartan
 open import MLTT.Two-Properties
 open import Naturals.Order
-open import Naturals.RootsTruncation
+open import Naturals.ExitTruncation
 open import Notation.Order
 open import NotionsOfDecidability.Decidable
 open import UF.DiscreteAndSeparated hiding (_♯_)

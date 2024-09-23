@@ -8,6 +8,7 @@ import Naturals.AbsoluteDifference
 import Naturals.Addition
 import Naturals.Binary
 import Naturals.Division
+import Naturals.ExitTruncation
 import Naturals.Exponentiation
 import Naturals.HCF
 import Naturals.Multiplication

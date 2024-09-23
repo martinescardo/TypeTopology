@@ -449,7 +449,7 @@ Added 20th August. Continuity as property gives continuity data.
 
 \begin{code}
 
-open import Naturals.RootsTruncation
+open import Naturals.ExitTruncation
 open import UF.PropTrunc
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
