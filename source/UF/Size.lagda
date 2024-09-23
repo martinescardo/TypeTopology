@@ -39,6 +39,7 @@ open import UF.ClassicalLogic
 open import UF.FunExt
 open import UF.Hedberg
 open import UF.KrausLemma
+open import UF.ExitPropTrunc
 open import UF.PropIndexedPiSigma
 open import UF.PropTrunc
 open import UF.Retracts

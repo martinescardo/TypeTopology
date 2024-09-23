@@ -311,13 +311,13 @@ and it has split support.
 ∥ X ∥⟨ inl x ⟩ = 𝟙
 ∥ X ∥⟨ inr ν ⟩ = 𝟘
 
-∥∥⟨⟩-is-prop : {X : 𝓤 ̇ } (δ : is-decidable X) → is-prop ∥ X ∥⟨ δ ⟩
-∥∥⟨⟩-is-prop (inl x) = 𝟙-is-prop
-∥∥⟨⟩-is-prop (inr ν) = 𝟘-is-prop
+∥∥⟨_⟩-is-prop : {X : 𝓤 ̇ } (δ : is-decidable X) → is-prop ∥ X ∥⟨ δ ⟩
+∥∥⟨ inl x ⟩-is-prop = 𝟙-is-prop
+∥∥⟨ inr ν ⟩-is-prop = 𝟘-is-prop
 
-∥∥⟨⟩-is-decidable : {X : 𝓤 ̇ } (δ : is-decidable X) → is-decidable ∥ X ∥⟨ δ ⟩
-∥∥⟨⟩-is-decidable (inl x) = 𝟙-is-decidable
-∥∥⟨⟩-is-decidable (inr ν) = 𝟘-is-decidable
+∥∥⟨_⟩-is-decidable : {X : 𝓤 ̇ } (δ : is-decidable X) → is-decidable ∥ X ∥⟨ δ ⟩
+∥∥⟨ inl x ⟩-is-decidable = 𝟙-is-decidable
+∥∥⟨ inr ν ⟩-is-decidable = 𝟘-is-decidable
 
 ∣_∣⟨_⟩ : {X : 𝓤 ̇ } → X → (δ : is-decidable X) → ∥ X ∥⟨ δ ⟩
 ∣ x ∣⟨ inl _ ⟩ = ⋆
@@ -325,17 +325,17 @@ and it has split support.
 
 \end{code}
 
-Notice that induction principle doesn't require the family A to be
+Notice that the induction principle doesn't require the family A to be
 prop-valued.
 
 \begin{code}
 
-∥∥⟨⟩-induction : {X : 𝓤 ̇ } (δ : is-decidable X)
+∥∥⟨_⟩-induction : {X : 𝓤 ̇ } (δ : is-decidable X)
                  (A : ∥ X ∥⟨ δ ⟩ → 𝓥 ̇ )
                → ((x : X) → A ∣ x ∣⟨ δ ⟩)
                → (s : ∥ X ∥⟨ δ ⟩) → A s
-∥∥⟨⟩-induction (inl x) A f ⋆ = f x
-∥∥⟨⟩-induction (inr ν) A f s = 𝟘-elim s
+∥∥⟨ inl x ⟩-induction A f ⋆ = f x
+∥∥⟨ inr ν ⟩-induction A f s = 𝟘-elim s
 
 \end{code}
 
@@ -343,27 +343,27 @@ But the induction equation does.
 
 \begin{code}
 
-∥∥⟨⟩-induction-equation : {X : 𝓤 ̇ }
+∥∥⟨_⟩-induction-equation : {X : 𝓤 ̇ }
                           (δ : is-decidable X)
                           (A : ∥ X ∥⟨ δ ⟩ → 𝓥 ̇ )
                         → ((s : ∥ X ∥⟨ δ ⟩) → is-prop (A s))
                         → (f : (x : X) → A ∣ x ∣⟨ δ ⟩)
                           (x : X)
-                        → ∥∥⟨⟩-induction δ A f ∣ x ∣⟨ δ ⟩ ＝ f x
-∥∥⟨⟩-induction-equation (inl x) A A-is-prop f x' = A-is-prop ⋆ (f x) (f x')
-∥∥⟨⟩-induction-equation (inr ν) A A-is-prop f x  = 𝟘-elim (ν x)
+                        → ∥∥⟨ δ ⟩-induction A f ∣ x ∣⟨ δ ⟩ ＝ f x
+∥∥⟨ inl x ⟩-induction-equation A A-is-prop f x' = A-is-prop ⋆ (f x) (f x')
+∥∥⟨ inr ν ⟩-induction-equation A A-is-prop f x  = 𝟘-elim (ν x)
 
-∥∥⟨⟩-rec : {X : 𝓤 ̇ } (δ : is-decidable X) {A : 𝓥 ̇ }
-         → (X → A) → ∥ X ∥⟨ δ ⟩ → A
-∥∥⟨⟩-rec δ {A} = ∥∥⟨⟩-induction δ (λ _ → A)
+∥∥⟨_⟩-rec : {X : 𝓤 ̇ } (δ : is-decidable X) {A : 𝓥 ̇ }
+          → (X → A) → ∥ X ∥⟨ δ ⟩ → A
+∥∥⟨ δ ⟩-rec {A} = ∥∥⟨ δ ⟩-induction (λ _ → A)
 
-∣∣⟨⟩-exit : {X : 𝓤 ̇} (δ : is-decidable X) → ∥ X ∥⟨ δ ⟩ → X
-∣∣⟨⟩-exit δ = ∥∥⟨⟩-rec δ id
+∣∣⟨_⟩-exit : {X : 𝓤 ̇} (δ : is-decidable X) → ∥ X ∥⟨ δ ⟩ → X
+∣∣⟨ δ ⟩-exit = ∥∥⟨ δ ⟩-rec id
 
-∣∣⟨⟩-exit-is-section : {X : 𝓤 ̇} (δ : is-decidable X)
-                     → (s : ∥ X ∥⟨ δ ⟩) → ∣ ∣∣⟨⟩-exit δ s ∣⟨ δ ⟩ ＝ s
-∣∣⟨⟩-exit-is-section (inl x) ⋆ = refl
-∣∣⟨⟩-exit-is-section (inr ν) s = 𝟘-elim s
+∣∣⟨_⟩-exit-is-section : {X : 𝓤 ̇} (δ : is-decidable X) (s : ∥ X ∥⟨ δ ⟩)
+                     → ∣ ∣∣⟨ δ ⟩-exit s ∣⟨ δ ⟩ ＝ s
+∣∣⟨ inl x ⟩-exit-is-section ⋆ = refl
+∣∣⟨ inr ν ⟩-exit-is-section s = 𝟘-elim s
 
 infix 0 ∥_∥⟨_⟩
 infix 0 ∣_∣⟨_⟩
@@ -376,13 +376,13 @@ module propositional-truncation-of-decidable-type
 
  module _ {X : 𝓤 ̇ } (δ : is-decidable X) where
 
-  ∥∥⟨⟩-to-∥∥ : ∥ X ∥⟨ δ ⟩ → ∥ X ∥
-  ∥∥⟨⟩-to-∥∥ = ∥∥⟨⟩-rec δ ∣_∣
+  ∥∥⟨_⟩-to-∥∥ : ∥ X ∥⟨ δ ⟩ → ∥ X ∥
+  ∥∥⟨_⟩-to-∥∥ = ∥∥⟨ δ ⟩-rec ∣_∣
 
-  ∥∥-to-∥∥⟨⟩ : ∥ X ∥ → ∥ X ∥⟨ δ ⟩
-  ∥∥-to-∥∥⟨⟩ = ∥∥-rec (∥∥⟨⟩-is-prop δ) ∣_∣⟨ δ ⟩
+  ∥∥-to-∥∥⟨_⟩ : ∥ X ∥ → ∥ X ∥⟨ δ ⟩
+  ∥∥-to-∥∥⟨_⟩ = ∥∥-rec (∥∥⟨ δ ⟩-is-prop) ∣_∣⟨ δ ⟩
 
   decidable-types-have-split-support : ∥ X ∥ → X
-  decidable-types-have-split-support s = ∣∣⟨⟩-exit δ (∥∥-to-∥∥⟨⟩ s)
+  decidable-types-have-split-support s = ∣∣⟨ δ ⟩-exit (∥∥-to-∥∥⟨_⟩ s)
 
 \end{code}
