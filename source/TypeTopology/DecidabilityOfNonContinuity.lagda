@@ -1639,7 +1639,7 @@ data.
         f (max (ι n) (ι m))               ＝⟨ n-is-modulus-of-continuity m ⟩
         f ∞                               ∎
 
-   III : (x : ℕ∞) → evc-extension (restriction f) c x ＝ f x
+   III : evc-extension (restriction f) c ∼ f
    III = ℕ∞-density fe ℕ-is-¬¬-separated I II
 
  open import UF.Equiv
@@ -1672,19 +1672,19 @@ data.
     d : continuity-data f
     d = cty-data f f-cts
 
-    I : (x : ℕ∞) → evc-extension (restriction f) c x ＝ f x
+    I : evc-extension (restriction f) c ∼ f
     I = evc-extension-restriction f d c
 
-
   ϕγ : ϕ ∘ γ ∼ id
-  ϕγ (g , g-evc) =
-   to-subtype-＝
-    (λ _ → ∃-is-prop)
-    (dfunext fe
-      (λ n → evc-extension-property
-              g
-              (eventual-constancy-property-gives-eventual-constancy-data g g-evc)
-              n))
+  ϕγ (g , g-evc) = to-subtype-＝
+                    (λ _ → ∃-is-prop)
+                    (dfunext fe I)
+   where
+    c : eventual-constancy-data g
+    c = evc-data g g-evc
+
+    I : restriction (evc-extension g c) ∼ g
+    I = evc-extension-property g c
 
   ϕ-is-equiv : is-equiv ϕ
   ϕ-is-equiv = qinvs-are-equivs ϕ (γ , γϕ , ϕγ)
