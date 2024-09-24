@@ -44,6 +44,7 @@ open import Taboos.LPO
 open import Taboos.MarkovsPrinciple
 open import TypeTopology.ADecidableQuantificationOverTheNaturals fe
 open import UF.DiscreteAndSeparated
+open import UF.Equiv
 
 \end{code}
 
@@ -1694,7 +1695,6 @@ data.
    III : evc-extension (restriction f) c ∼ f
    III = ℕ∞-density fe ℕ-is-¬¬-separated I II
 
- open import UF.Equiv
  open continuity-criteria pt
 
  private
@@ -1746,6 +1746,45 @@ data.
   ≃ (Σ g ꞉ (ℕ → ℕ), is-eventually-constant g)
  characterization-of-type-of-continuous-functions-≃
   = ϕ , ϕ-is-equiv
+
+\end{code}
+
+Added 24th September 2024. Perhaps the untruncated version of this is
+even easier, and also gives an easier version of the truncated
+version. Both are of interest, in any case.
+
+\begin{code}
+
+{- Added 24th September 2024.
+   The following is definitely the case. The question is whether the
+   proof strategy works. I will try another day when I have time.
+
+open import UF.PairFun
+
+characterization-of-type-of-untruncated-continuous-functions-≃
+  : (Σ f ꞉ (ℕ∞ → ℕ) , continuous f)
+  ≃ (Σ g ꞉ (ℕ → ℕ), eventually-constant g)
+characterization-of-type-of-untruncated-continuous-functions-≃
+  = ϕ , ϕ-is-equiv
+  where
+    I : (f : ℕ∞ → ℕ) → continuous f → eventually-constant (restriction f)
+    I f = continuous-extension-gives-eventual-constancy
+           (restriction f)
+           (f , (λ x → refl))
+
+    II : is-equiv (λ (f : ℕ∞ → ℕ) → f ∘ ι)
+    II = {!!}
+
+    III : (f : ℕ∞ → ℕ) → is-equiv (I f)
+    III = {!!}
+
+    ϕ : (Σ f ꞉ (ℕ∞ → ℕ) , continuous f)
+      → (Σ g ꞉ (ℕ → ℕ), eventually-constant g)
+    ϕ = pair-fun restriction I
+
+    ϕ-is-equiv : is-equiv ϕ
+    ϕ-is-equiv = pair-fun-is-equiv restriction I II III
+-}
 
 \end{code}
 
