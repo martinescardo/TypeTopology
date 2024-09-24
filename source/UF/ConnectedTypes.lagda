@@ -30,13 +30,14 @@ open import UF.Univalence
 \end{code}
 
 We now define the notion of k-connectedness for types and functions with respect
-to H-levels. TODO: show that connectedness as defined elsewhere in the library is
-a special case of k-connectedness. Connectedness typically means set connectedness,
-by our convention it will mean 0-connectedness.
+to truncation levels.
+TODO: show that connectedness as defined elsewhere in the library is
+a special case of k-connectedness. Connectedness typically means set
+connectedness, by our convention it will mean 0-connectedness.
 
 \begin{code}
 
-module connectedness (te : general-truncations-exist) where
+module _ (te : general-truncations-exist) where
 
  private 
   pt : propositional-truncations-exist
@@ -134,8 +135,8 @@ useful.
   connectedness-is-lower-closed-+ (transport (λ z → X is z connected) p X-con)
   where
    m : ℕ
-   m = pr₁ (subtraction-ℕ₋₂ l k o)
-   p = k        ＝⟨ pr₂ (subtraction-ℕ₋₂ l k o) ⁻¹ ⟩
+   m = subtraction-ℕ₋₂-term l k o
+   p = k        ＝⟨ subtraction-ℕ₋₂-identification l k o ⁻¹ ⟩
        l +' m   ∎
 
 \end{code}

@@ -12,6 +12,7 @@ open import MLTT.Spartan hiding (_+_)
 open import Naturals.Order
 open import Notation.Order
 open import Notation.Decimal
+open import UF.Equiv
 
 data ℕ₋₂ : 𝓤₀ ̇ where
  −2   : ℕ₋₂
@@ -82,7 +83,8 @@ instance
 
 Added by Ian Ray 22nd September, 2024.
 
-TODO: Show ℕ₋₂ ≃ ℕ.
+We show
+ ℕ₋₂ ≃ ℕ
 
 \begin{code}
 
@@ -90,25 +92,43 @@ TODO: Show ℕ₋₂ ≃ ℕ.
 ℕ₋₂-to-ℕ −2 = 0
 ℕ₋₂-to-ℕ (succ x) = succ (ℕ₋₂-to-ℕ x)
 
+ℕ-to-ℕ₋₂' : ℕ → ℕ₋₂
+ℕ-to-ℕ₋₂' 0 = −2
+ℕ-to-ℕ₋₂' (succ x) = succ (ℕ-to-ℕ₋₂' x)
+
+ℕ₋₂-ℕ-equivalence : ℕ₋₂ ≃ ℕ
+ℕ₋₂-ℕ-equivalence =
+ (ℕ₋₂-to-ℕ , qinvs-are-equivs ℕ₋₂-to-ℕ (ℕ-to-ℕ₋₂' , H , G))
+ where
+  H : ℕ-to-ℕ₋₂' ∘ ℕ₋₂-to-ℕ  ∼ id
+  H −2 = refl
+  H (succ x) = ap succ (H x)
+  G : ℕ₋₂-to-ℕ ∘ ℕ-to-ℕ₋₂' ∼ id
+  G 0 = refl
+  G (succ x) = ap succ (G x)
+
+\end{code}
+
+We demonstrate a analogous notion of 'subtraction' in ℕ₋₂.
+
+\begin{code}
+
 ℕ₋₂-to-ℕ' : ℕ₋₂ → ℕ
 ℕ₋₂-to-ℕ' −2 = 0
 ℕ₋₂-to-ℕ' (succ −2) = 0
 ℕ₋₂-to-ℕ' (succ (succ −2)) = 0
 ℕ₋₂-to-ℕ' (succ (succ (succ x))) = succ (ℕ₋₂-to-ℕ' (succ (succ x)))
 
-ℕ₋₂-to-ℕ'-is-identity : (m : ℕ₋₂) → 0 ≤ℕ₋₂ m → Σ n ꞉ ℕ , ℕ₋₂-to-ℕ' m ＝ n
-ℕ₋₂-to-ℕ'-is-identity (succ (succ m)) o = (ℕ₋₂-to-ℕ' (succ (succ m)) , refl)
+telescoping-sum-2 : (n : ℕ₋₂) → (−2 + ℕ₋₂-to-ℕ' (succ (succ n))) ＝ n
+telescoping-sum-2 −2 = refl
+telescoping-sum-2 (succ n) = ap succ (telescoping-sum-2 n)
 
-telescoping-+2 : (n : ℕ₋₂) → (−2 + ℕ₋₂-to-ℕ' (succ (succ n))) ＝ n
-telescoping-+2 −2 = refl
-telescoping-+2 (succ n) = ap succ (telescoping-+2 n)
-
-assoc-ℕ₋₂-+1 : (m : ℕ₋₂) (n : ℕ) → succ m + n ＝ succ(m + n)
-assoc-ℕ₋₂-+1 m zero = refl
-assoc-ℕ₋₂-+1 m (succ n) = ap succ (assoc-ℕ₋₂-+1 m n)
+succ-ℕ₋₂-assoc : (m : ℕ₋₂) (n : ℕ) → succ m + n ＝ succ(m + n)
+succ-ℕ₋₂-assoc m 0 = refl
+succ-ℕ₋₂-assoc m (succ n) = ap succ (succ-ℕ₋₂-assoc m n)
 
 subtraction-ℕ₋₂ : (m n : ℕ₋₂) → m ≤ℕ₋₂ n → Σ k ꞉ ℕ , m + k ＝ n
-subtraction-ℕ₋₂ −2 n o = (ℕ₋₂-to-ℕ' (n + 2) , telescoping-+2 n)
+subtraction-ℕ₋₂ −2 n o = (ℕ₋₂-to-ℕ' (n + 2) , telescoping-sum-2 n)
 subtraction-ℕ₋₂ (succ m) (succ n) o = (k , p)
  where
   IH : Σ k ꞉ ℕ , m + k ＝ n
@@ -116,8 +136,16 @@ subtraction-ℕ₋₂ (succ m) (succ n) o = (k , p)
   k = pr₁ IH
   q = pr₂ IH 
   p : (succ m + k) ＝ succ n
-  p = succ m + k ＝⟨ assoc-ℕ₋₂-+1 m k ⟩
+  p = succ m + k ＝⟨ succ-ℕ₋₂-assoc m k ⟩
       succ(m + k)＝⟨ ap succ q ⟩
       succ n     ∎
+
+subtraction-ℕ₋₂-term : (m n : ℕ₋₂) → m ≤ℕ₋₂ n → ℕ
+subtraction-ℕ₋₂-term m n o = pr₁ (subtraction-ℕ₋₂ m n o)
+
+subtraction-ℕ₋₂-identification : (m n : ℕ₋₂)
+                               → (o : m ≤ℕ₋₂ n)
+                               → m + subtraction-ℕ₋₂-term m n o ＝ n
+subtraction-ℕ₋₂-identification m n o = pr₂ (subtraction-ℕ₋₂ m n o)
 
 \end{code}
