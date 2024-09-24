@@ -109,7 +109,7 @@ We show
 
 \end{code}
 
-We demonstrate a analogous notion of 'subtraction' in ℕ₋₂.
+We demonstrate an analogous notion of 'subtraction' in ℕ₋₂.
 
 \begin{code}
 

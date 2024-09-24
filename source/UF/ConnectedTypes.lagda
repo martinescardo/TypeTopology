@@ -14,9 +14,7 @@ module UF.ConnectedTypes
         (fe : Fun-Ext)
        where
                           
-open import MLTT.Spartan
-open import Naturals.Addition 
-open import Naturals.Order
+open import MLTT.Spartan hiding (_+_)
 open import Notation.Order
 open import UF.Equiv
 open import UF.EquivalenceExamples
@@ -24,7 +22,7 @@ open import UF.PropTrunc
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.Truncations fe
-open import UF.TruncationLevels renaming (_+_ to _+'_)
+open import UF.TruncationLevels
 open import UF.TruncatedTypes fe
 open import UF.Univalence
 
@@ -32,6 +30,7 @@ open import UF.Univalence
 
 We now define the notion of k-connectedness for types and functions with respect
 to truncation levels.
+
 TODO: show that connectedness as defined elsewhere in the library is
 a special case of k-connectedness. Connectedness typically means set
 connectedness, by our convention it will mean 0-connectedness.
@@ -122,7 +121,7 @@ useful.
                      (contractible-types-are-connected X-succ-con)
 
  connectedness-is-lower-closed-+ : {X : 𝓤 ̇} {l : ℕ₋₂} {k : ℕ}
-                                 → X is (l +' k) connected
+                                 → X is (l + k) connected
                                  → X is l connected
  connectedness-is-lower-closed-+ {𝓤} {X} {l} {0} X-con = X-con
  connectedness-is-lower-closed-+ {𝓤} {X} {l} {succ k} X-con =
@@ -138,7 +137,7 @@ useful.
    m : ℕ
    m = subtraction-ℕ₋₂-term l k o
    p = k        ＝⟨ subtraction-ℕ₋₂-identification l k o ⁻¹ ⟩
-       l +' m   ∎
+       l + m   ∎
 
 \end{code}
 
