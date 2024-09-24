@@ -501,13 +501,13 @@ Abbreviation.
 
 \begin{code}
 
-  c-data = continuity-property-gives-continuity-data
+  cty-data = continuity-property-gives-continuity-data
 
   continuity-data-minimality
    : (c : is-continuous f)
      (m : ℕ)
    → is-modulus-of-continuity f m
-   → modulus-of-continuity (c-data c) ≤ m
+   → modulus-of-continuity (cty-data c) ≤ m
   continuity-data-minimality
    = exit-truncation-minimality (is-modulus-of-continuity f) δ
 
@@ -1609,6 +1609,39 @@ Abbreviation.
      (being-modulus-of-constancy-is-prop g)
      (conditional-decidability-of-being-modulus-of-constancy g)
 
+\end{code}
+
+We now record the fact that the type of continuous functions ℕ∞ → ℕ is
+equivalent to the type of eventually constant functions ℕ → ℕ, where
+continuity and eventual constant are formulated as property. But we
+start with a lemma that works with continuity and eventual constancy
+data.
+
+\begin{code}
+
+ evc-extension-restriction
+  : (f : ℕ∞ → ℕ)
+    (d : continuity-data f)
+    (c : eventual-constancy-data (restriction f))
+  → evc-extension (restriction f) c ∼ f
+ evc-extension-restriction f
+                           d@(n , n-is-modulus-of-continuity)
+                           c@(m , m-is-modulus-of-constancy)
+  = III
+  where
+   I : (n : ℕ) → evc-extension (restriction f) c (ι n) ＝ f (ι n)
+   I = evc-extension-property (restriction f) c
+
+   II = evc-extension (restriction f) c ∞ ＝⟨ evc-extension-∞ (restriction f) c ⟩
+        f (ι m)                           ＝⟨ (m-is-modulus-of-constancy n)⁻¹ ⟩
+        f (ι (maxℕ m n))                  ＝⟨ ap (f ∘ ι) (maxℕ-comm m n) ⟩
+        f (ι (maxℕ n m))                  ＝⟨ ap f (max-fin fe n m) ⟩
+        f (max (ι n) (ι m))               ＝⟨ n-is-modulus-of-continuity m ⟩
+        f ∞                               ∎
+
+   III : (x : ℕ∞) → evc-extension (restriction f) c x ＝ f x
+   III = ℕ∞-density fe ℕ-is-¬¬-separated I II
+
  open import UF.Equiv
  open continuity-criteria pt
 
@@ -1624,46 +1657,24 @@ Abbreviation.
   γ (g , g-evc) = evc-extension g c , ∣ evc-extension-continuity g c ∣
    where
     c : eventual-constancy-data g
-    c = eventual-constancy-property-gives-eventual-constancy-data g g-evc
+    c = evc-data g g-evc
 
   γϕ : γ ∘ ϕ ∼ id
   γϕ (f , f-cts) = to-subtype-＝
                     (λ _ → ∃-is-prop)
-                    (dfunext fe III)
+                    (dfunext fe I)
    where
     c : eventual-constancy-data (restriction f)
     c = evc-data
          (restriction f)
          (restriction-of-continuous-function-is-eventually-constant f f-cts)
 
-    I : (n : ℕ) → evc-extension (restriction f) c (ι n) ＝ f (ι n)
-    I = evc-extension-property (restriction f) c
-
-    m : ℕ
-    m = modulus-of-constancy c
-
-    m-is-modulus-of-constancy : (i : ℕ) → f (ι (maxℕ m i)) ＝ f (ι m)
-    m-is-modulus-of-constancy = modulus-of-constancy-property c
-
     d : continuity-data f
-    d = c-data f f-cts
+    d = cty-data f f-cts
 
-    n : ℕ
-    n = modulus-of-continuity d
+    I : (x : ℕ∞) → evc-extension (restriction f) c x ＝ f x
+    I = evc-extension-restriction f d c
 
-    n-is-modulus-of-continuity : (i : ℕ) → f (max (ι n) (ι i)) ＝ f ∞
-    n-is-modulus-of-continuity = modulus-of-continuity-property d
-
-    II
-     = evc-extension (restriction f) c ∞ ＝⟨ evc-extension-∞ (restriction f) c ⟩
-       f (ι m)                           ＝⟨ (m-is-modulus-of-constancy n)⁻¹ ⟩
-       f (ι (maxℕ m n))                  ＝⟨ ap (f ∘ ι) (maxℕ-comm m n) ⟩
-       f (ι (maxℕ n m))                  ＝⟨ ap f (max-fin fe n m) ⟩
-       f (max (ι n) (ι m))               ＝⟨ n-is-modulus-of-continuity m ⟩
-       f ∞                               ∎
-
-    III : (x : ℕ∞) → evc-extension (restriction f) c x ＝ f x
-    III = ℕ∞-density fe ℕ-is-¬¬-separated I II
 
   ϕγ : ϕ ∘ γ ∼ id
   ϕγ (g , g-evc) =
