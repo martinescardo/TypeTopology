@@ -387,7 +387,7 @@ iterated-exp-is-exp-by-×ₒ {𝓤} α β =
      II : exp (exp α β) γ ⊴ exp α (β ×ₒ γ)
      II = transport⁻¹ (_⊴ exp α (β ×ₒ γ)) (exp-behaviour (exp α β) γ) II'
       where
-       II' : sup (cases (λ _ → 𝟙ₒ) (λ b → exp (exp α β) (γ ↓ b) ×ₒ exp α β))
+       II' : sup (cases (λ _ → 𝟙ₒ) (λ c → exp (exp α β) (γ ↓ c) ×ₒ exp α β))
            ⊴ exp α (β ×ₒ γ)
        II' = sup-is-lower-bound-of-upper-bounds _ _ ub
         where
@@ -409,7 +409,7 @@ iterated-exp-is-exp-by-×ₒ {𝓤} α β =
      III : exp α (β ×ₒ γ) ⊴ exp (exp α β) γ
      III = transport⁻¹ (_⊴ exp (exp α β) γ) (exp-behaviour α (β ×ₒ γ)) III'
       where
-       III' : sup (cases (λ _ → 𝟙ₒ) (λ b → exp α ((β ×ₒ γ) ↓ b) ×ₒ α))
+       III' : sup (cases (λ _ → 𝟙ₒ) (λ x → exp α ((β ×ₒ γ) ↓ x) ×ₒ α))
             ⊴ exp (exp α β) γ
        III' = sup-is-lower-bound-of-upper-bounds _ _ ub
         where
@@ -432,7 +432,7 @@ iterated-exp-is-exp-by-×ₒ {𝓤} α β =
              IV' = ⊴-trans
                     (exp (exp α β) (γ ↓ c) ×ₒ (exp α (β ↓ b) ×ₒ α))
                     (exp (exp α β) (γ ↓ c) ×ₒ exp α β)
-                    (sup (cases (λ _ → 𝟙ₒ) (λ c₁ → exp (exp α β) (γ ↓ c₁) ×ₒ exp α β)))
+                    (sup (cases (λ _ → 𝟙ₒ) (λ c' → exp (exp α β) (γ ↓ c') ×ₒ exp α β)))
                     IV''
                     (sup-is-upper-bound _ (inr c))
               where
@@ -492,6 +492,32 @@ exp-strictly-monotone : (α β γ : Ordinal 𝓤)
 exp-strictly-monotone {𝓤} α β γ h (c , refl) = exp-⊲-lemma α γ h
 
 {-
+exp-simulation-lemma : (α β γ : Ordinal 𝓤)
+                       (f : ⟨ exp α β ⟩ → ⟨ exp α γ ⟩)
+                     → is-simulation (exp α β) (exp α γ) f
+                     → (b : ⟨ β ⟩) (e : ⟨ exp α (β ↓ b) ⟩) (a : ⟨ α ⟩)
+                     → Σ c ꞉ ⟨ γ ⟩ , Σ e' ꞉ ⟨ exp α (γ ↓ c) ⟩ ,
+                       Σ p ꞉ (exp α (β ↓ b) ＝ exp α (γ ↓ c)) , (idtofun' (ap ⟨_⟩ p) e ＝ e') × -- Maybe ask for p : (β ↓ b) ＝ (γ ↓ c)?
+                           (f ((pr₁ (exp-component-⊴ α β)) (e , a)) ＝ pr₁ (exp-component-⊴ α γ) (e' , a))
+exp-simulation-lemma α β γ f f-sim b e a = {!!}
+
+f [b , e , a] : exp α γ
+
+* f [b , e , a] = [inl ⋆ , ⋆] <- needs assumptions on e and/or a to dispell this case
+* f [b , e , a] = [c , e' , a']
+
+  (exp α (β ↓ b) × α) ↓ (e , a) ＝ (exp α (γ ↓ c) × α) ↓ (e' , a')
+          ||
+  (exp α (β ↓ b) × (α ↓ a)) + ((exp α (β ↓ b)) ↓ e)
+
+
+In the special case where (e , a) ＝ (⊥ , a₀), the LHS is
+  exp α (β ↓ b)
+
+Does f give a simulation exp α (β ↓ b) × α ⊴ exp α (γ ↓ c) × α for some c : γ
+-}
+
+{-
 For proving the following we should maybe follow a strategy similar to the one
 we had for proving left cancellability of multiplication. The idea/hope would be
 that
@@ -502,8 +528,13 @@ Via the construction of exp-⊲-lemma, this should give
   exp α (β ↓ b) ⊴ exp α (γ ↓ c)
 and so
   (β ↓ b) ⊴ (γ ↓ c) by induction
-and hence
+and hence (maybe with ＝ instead??)
   β ⊴ γ.
+
+(⊥ , a₀) : exp α (β ↓ b) ×ₒ α
+
+(exp α (β ↓ b) ×ₒ α) ↓ (⊥ , a₀) ＝ exp α (β ↓ b)
+
 
 exp-cancellable-exponent : (α β γ : Ordinal 𝓤)
                          → 𝟙ₒ ⊲ α → exp α β ＝ exp α γ → β ＝ γ
