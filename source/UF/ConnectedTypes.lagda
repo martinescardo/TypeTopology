@@ -17,6 +17,7 @@ module UF.ConnectedTypes
 open import MLTT.Spartan
 open import Naturals.Addition 
 open import Naturals.Order
+open import Notation.Order
 open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.PropTrunc 
@@ -118,7 +119,7 @@ useful.
                                → X is k connected
  connectedness-is-lower-closed {𝓤} {X} {k} X-succ-con =
   equiv-to-singleton successive-truncations-equiv 
-                      (contractible-types-are-connected X-succ-con)
+                     (contractible-types-are-connected X-succ-con)
 
  connectedness-is-lower-closed-+ : {X : 𝓤 ̇} {l : ℕ₋₂} {k : ℕ}
                                  → X is (l +' k) connected
@@ -128,7 +129,7 @@ useful.
   connectedness-is-lower-closed-+ (connectedness-is-lower-closed X-con)
 
  connectedness-is-lower-closed' : {X : 𝓤 ̇} {k l : ℕ₋₂}
-                                → (l ≤ℕ₋₂ k)
+                                → (l ≤ k)
                                 → X is k connected
                                 → X is l connected
  connectedness-is-lower-closed' {𝓤} {X} {k} {l} o X-con =
