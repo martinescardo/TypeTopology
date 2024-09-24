@@ -15,6 +15,8 @@ The title of this paper is a bit misleading. It should probably have
 been called "Decidability of non-continuity". In any case, it is not
 wrong.
 
+The summer 2024 additions give some applications of this.
+
 TODO. Parametrize this module by a discrete type, rather than use 𝟚 or
 ℕ as the types of values of functions.
 
@@ -68,6 +70,17 @@ _ : (A : ℕ∞ → 𝓤 ̇ )
   → is-complemented A
   → is-decidable ((n : ℕ) → A (ι n))
 _ = Theorem-8·2'
+
+\end{code}
+
+Notice that A is defined on ℕ∞, but the decidability condition
+quantifies over ℕ. So this gives an instance of WLPO that holds in
+constructive mathematics.
+
+The following, which is an iteration of the above, uses the numbering
+of the paper [1].
+
+\begin{code}
 
 Lemma-3·1
  : (A : ℕ∞ → ℕ∞ → 𝓤 ̇ )
@@ -146,19 +159,19 @@ function extensionality, and we choose the latter for convenience.
 
 \begin{code}
 
-is-modulus-of-continuity : (ℕ∞ → ℕ) → ℕ → 𝓤₀ ̇
-is-modulus-of-continuity f m = (n : ℕ) → f (max (ι m) (ι n)) ＝ f ∞
+_is-modulus-of-continuity-of_ : ℕ → (ℕ∞ → ℕ) → 𝓤₀ ̇
+m is-modulus-of-continuity-of f = (n : ℕ) → f (max (ι m) (ι n)) ＝ f ∞
 
 continuous : (ℕ∞ → ℕ) → 𝓤₀ ̇
-continuous f = Σ m ꞉ ℕ , is-modulus-of-continuity f m
+continuous f = Σ m ꞉ ℕ , m is-modulus-of-continuity-of f
 
-modulus-of-continuity : {f : ℕ∞ → ℕ} → continuous f → ℕ
-modulus-of-continuity = pr₁
+modulus-of-continuity-of : (f : ℕ∞ → ℕ) → continuous f → ℕ
+modulus-of-continuity-of f = pr₁
 
 modulus-of-continuity-property
  : {f : ℕ∞ → ℕ}
    (c : continuous f)
- → is-modulus-of-continuity f (modulus-of-continuity c)
+ → (modulus-of-continuity-of f c) is-modulus-of-continuity-of f
 modulus-of-continuity-property = pr₂
 
 \end{code}
@@ -407,8 +420,9 @@ WLPO-gives-noncontinous-map wlpo
 
 \end{code}
 
-And a corollary is that the negation of WLPO amount to a weak continuity
-principle that says that all functions are not-not continuous.
+And a corollary is that the negation of WLPO amounts to a weak
+continuity principle that says that all functions are not-not
+continuous.
 
 \begin{code}
 
@@ -473,7 +487,7 @@ module continuity-criteria (pt : propositional-truncations-exist) where
  open exit-truncations pt
 
  is-continuous : (ℕ∞ → ℕ) → 𝓤₀ ̇
- is-continuous f = ∃ m ꞉ ℕ , ((n : ℕ) → f (max (ι m) (ι n)) ＝ f ∞)
+ is-continuous f = ∃ m ꞉ ℕ , m is-modulus-of-continuity-of f
 
  module _ (f : ℕ∞ → ℕ) where
 
@@ -481,7 +495,6 @@ module continuity-criteria (pt : propositional-truncations-exist) where
    : continuity-data f → is-continuous f
   continuity-data-gives-continuity-property
    = ∣_∣
-
 
   private
    δ : (m : ℕ) → is-decidable ((n : ℕ) → f (max (ι m) (ι n)) ＝ f ∞)
@@ -493,7 +506,7 @@ module continuity-criteria (pt : propositional-truncations-exist) where
    : is-continuous f
    → continuity-data f
   continuity-property-gives-continuity-data
-   = exit-truncation (is-modulus-of-continuity f) δ
+   = exit-truncation (_is-modulus-of-continuity-of f) δ
 
 \end{code}
 
@@ -503,13 +516,20 @@ Abbreviation.
 
   cty-data = continuity-property-gives-continuity-data
 
+\end{code}
+
+The continuity data calculated above gives the minimal modulus of
+continuity.
+
+\begin{code}
+
   continuity-data-minimality
    : (c : is-continuous f)
      (m : ℕ)
-   → is-modulus-of-continuity f m
-   → modulus-of-continuity (cty-data c) ≤ m
+   → m is-modulus-of-continuity-of f
+   → modulus-of-continuity-of f (cty-data c) ≤ m
   continuity-data-minimality
-   = exit-truncation-minimality (is-modulus-of-continuity f) δ
+   = exit-truncation-minimality (_is-modulus-of-continuity-of f) δ
 
 \end{code}
 
@@ -956,41 +976,41 @@ Our next question is when the type `ℕ∞-extension g` is pointed.
 
 \begin{code}
 
-is-modulus-of-constancy : (ℕ → ℕ) → ℕ → 𝓤₀ ̇
-is-modulus-of-constancy g m = ((n : ℕ) → g (maxℕ m n) ＝ g m)
+_is-modulus-of-constancy-of_ : ℕ → (ℕ → ℕ) → 𝓤₀ ̇
+m is-modulus-of-constancy-of g = (n : ℕ) → g (maxℕ m n) ＝ g m
 
 being-modulus-of-constancy-is-prop
  : (g : ℕ → ℕ)
    (m : ℕ)
- → is-prop (is-modulus-of-constancy g m)
+ → is-prop (m is-modulus-of-constancy-of g)
 being-modulus-of-constancy-is-prop g m
  = Π-is-prop fe (λ n → ℕ-is-set)
 
 eventually-constant : (ℕ → ℕ) → 𝓤₀ ̇
-eventually-constant g = Σ m ꞉ ℕ , is-modulus-of-constancy g m
+eventually-constant g = Σ m ꞉ ℕ , m is-modulus-of-constancy-of g
 
 eventual-constancy-data = eventually-constant
 
-modulus-of-constancy : {g : ℕ → ℕ} → eventually-constant g → ℕ
-modulus-of-constancy = pr₁
+mod-const-of : (g : ℕ → ℕ) → eventually-constant g → ℕ
+mod-const-of g = pr₁
 
 modulus-of-constancy-property
  : {g : ℕ → ℕ}
    (c : eventually-constant g)
- → is-modulus-of-constancy g (modulus-of-constancy c)
+ → (mod-const-of g c) is-modulus-of-constancy-of g
 modulus-of-constancy-property = pr₂
 
 eventual-constancy-gives-continuous-extension
  : (g : ℕ → ℕ)
    ((m , _) : eventually-constant g)
- → Σ (f , _) ꞉ ℕ∞-extension g , is-modulus-of-continuity f m
+ → Σ (f , _) ꞉ ℕ∞-extension g , m is-modulus-of-continuity-of f
 eventual-constancy-gives-continuous-extension g (m , a)
  = h g m a
  where
   h : (g : ℕ → ℕ)
       (m : ℕ)
-    → is-modulus-of-constancy g m
-    → Σ (f , _) ꞉ ℕ∞-extension g , is-modulus-of-continuity f m
+    → m is-modulus-of-constancy-of g
+    → Σ (f , _) ꞉ ℕ∞-extension g , m is-modulus-of-continuity-of f
   h g 0        a = ((λ _ → g 0) ,
                     (λ n →  g 0          ＝⟨ (a n)⁻¹ ⟩
                             g (maxℕ 0 n) ＝⟨ refl ⟩
@@ -998,11 +1018,11 @@ eventual-constancy-gives-continuous-extension g (m , a)
                    (λ n → refl)
   h g (succ m) a = I IH
    where
-    IH : Σ (f , _) ꞉ ℕ∞-extension (g ∘ succ) , is-modulus-of-continuity f m
+    IH : Σ (f , _) ꞉ ℕ∞-extension (g ∘ succ) , m is-modulus-of-continuity-of f
     IH = h (g ∘ succ) m (a ∘ succ)
 
     I : type-of IH
-      → Σ (f' , _) ꞉ ℕ∞-extension g , is-modulus-of-continuity f' (succ m)
+      → Σ (f' , _) ꞉ ℕ∞-extension g , (succ m) is-modulus-of-continuity-of f'
     I ((f , e) , m-is-modulus)
      = (f' , e') , succ-m-is-modulus
      where
@@ -1057,7 +1077,7 @@ evc-extension-property g c
 evc-extension-modulus-of-continuity
  : (g : ℕ → ℕ)
    (c@(m , _) : eventually-constant g)
- → is-modulus-of-continuity (evc-extension g c) m
+ → m is-modulus-of-continuity-of (evc-extension g c)
 evc-extension-modulus-of-continuity g c@(m , _)
  = pr₂ (eventual-constancy-gives-continuous-extension g c)
 
@@ -1091,8 +1111,8 @@ continuous-extension-gives-eventual-constancy'
  : (g : ℕ → ℕ)
    ((f , _) : ℕ∞-extension g)
    (m : ℕ)
- → is-modulus-of-continuity f m
- → is-modulus-of-constancy g m
+ → m is-modulus-of-continuity-of f
+ → m is-modulus-of-constancy-of g
 continuous-extension-gives-eventual-constancy' g (f , e) m  m-is-modulus
  = (λ n → g (maxℕ m n)        ＝⟨ (e (maxℕ m n))⁻¹ ⟩
               f (ι (maxℕ m n))    ＝⟨ ap f (max-fin fe m n) ⟩
@@ -1218,8 +1238,9 @@ is not a priori decidable, as this implies WLPO if it holds for all m
 and g, the type of eventual constancy data doesn't in general have
 split support.
 
-However, if a particular g has an extension to ℕ∞, then this condition becomes
-decidable, and so in this case this type does have split support.
+However, if a particular g has an extension to ℕ∞, then this condition
+becomes decidable, and so in this case this type does have split
+support.
 
 Notice that this doesn't require the eventual constancy of g. It just
 requires that g has some (not necessarily continuous) extension.
@@ -1228,7 +1249,7 @@ requires that g has some (not necessarily continuous) extension.
 
 being-modulus-of-constancy-decidable-for-all-functions-gives-WLPO
  : ((g : ℕ → ℕ) (m : ℕ)
-       → is-decidable (is-modulus-of-constancy g m))
+       → is-decidable (m is-modulus-of-constancy-of g))
  → WLPO
 being-modulus-of-constancy-decidable-for-all-functions-gives-WLPO ϕ
  = WLPO-traditional-gives-WLPO fe (WLPO-variation-gives-WLPO-traditional I)
@@ -1252,10 +1273,18 @@ being-modulus-of-constancy-decidable-for-all-functions-gives-WLPO ϕ
     I₂ : is-decidable ((n : ℕ) → α n ＝ α 0)
     I₂ = map-decidable I₀ I₁ (ϕ g 0)
 
+\end{code}
+
+Although it is not decidable in general whether m is a modulus of
+(eventual) constancy of g, this is decidable if g has some given
+extension (regardless of whether this extension is continuous or not)
+
+\begin{code}
+
 second-necessary-condition-for-the-explicit-existence-of-an-extension
  : (g : ℕ → ℕ)
  → ℕ∞-extension g
- → (m : ℕ) → is-decidable (is-modulus-of-constancy g m)
+ → (m : ℕ) → is-decidable (m is-modulus-of-constancy-of g)
 second-necessary-condition-for-the-explicit-existence-of-an-extension g (f , e) m
  = IV
  where
@@ -1265,14 +1294,14 @@ second-necessary-condition-for-the-explicit-existence-of-an-extension g (f , e) 
        (λ x → ℕ-is-discrete (f (max (ι m) x)) (f (ι m)))
 
   II : ((n : ℕ) → f (max (ι m) (ι n)) ＝ f (ι m))
-     → is-modulus-of-constancy g m
+     → m is-modulus-of-constancy-of g
   II a n = g (maxℕ m n)        ＝⟨ e (maxℕ m n) ⁻¹ ⟩
            f (ι (maxℕ m n))    ＝⟨ ap f (max-fin fe m n) ⟩
            f (max (ι m) (ι n)) ＝⟨ a n ⟩
            f (ι m)             ＝⟨ e m ⟩
            g m                 ∎
 
-  III : is-modulus-of-constancy g m
+  III : m is-modulus-of-constancy-of g
       → (n : ℕ) → f (max (ι m) (ι n)) ＝ f (ι m)
   III b n = f (max (ι m) (ι n)) ＝⟨ ap f ((max-fin fe m n)⁻¹) ⟩
             f (ι (maxℕ m n))    ＝⟨ e (maxℕ m n) ⟩
@@ -1280,7 +1309,7 @@ second-necessary-condition-for-the-explicit-existence-of-an-extension g (f , e) 
             g m                 ＝⟨ e m ⁻¹ ⟩
             f (ι m)             ∎
 
-  IV : is-decidable (is-modulus-of-constancy g m)
+  IV : is-decidable (m is-modulus-of-constancy-of g)
   IV = map-decidable II III I
 
 \end{code}
@@ -1307,7 +1336,7 @@ module eventual-constancy-under-propositional-truncations
  is-eventually-constant
   : (ℕ → ℕ) → 𝓤₀ ̇
  is-eventually-constant g
-  = ∃ m ꞉ ℕ , is-modulus-of-constancy g m
+  = ∃ m ꞉ ℕ , m is-modulus-of-constancy-of g
 
 \end{code}
 
@@ -1341,7 +1370,7 @@ extension is also necessary for the anonymous existence.
  necessary-condition-for-the-anonymous-existence-of-an-extension
   : (g : ℕ → ℕ)
   → is-extendable-to-ℕ∞ g
-  → (m : ℕ) → is-decidable (is-modulus-of-constancy g m)
+  → (m : ℕ) → is-decidable (m is-modulus-of-constancy-of g)
  necessary-condition-for-the-anonymous-existence-of-an-extension g
   = ∥∥-rec
      (Π-is-prop fe
@@ -1417,11 +1446,11 @@ if and only if LPO holds or g is eventually constant.
 decidability-of-modulus-of-constancy-gives-eventual-constancy-¬¬-stable
  : MP 𝓤₀
  → (g : ℕ → ℕ)
- → ((m : ℕ) → is-decidable (is-modulus-of-constancy g m))
+ → ((m : ℕ) → is-decidable (m is-modulus-of-constancy-of g))
  → ¬¬ eventually-constant g
  → eventually-constant g
 decidability-of-modulus-of-constancy-gives-eventual-constancy-¬¬-stable mp g
- =  mp (is-modulus-of-constancy g)
+ =  mp (_is-modulus-of-constancy-of g)
 
 sufficient-condition-is-necessary-under-MP
  : MP 𝓤₀
@@ -1516,11 +1545,11 @@ induction.
  modulus-down
   : (g : ℕ → ℕ)
     (n : ℕ)
-  → is-modulus-of-constancy g (succ n)
-  → is-decidable (is-modulus-of-constancy g n)
+  → (succ n) is-modulus-of-constancy-of g
+  → is-decidable (n is-modulus-of-constancy-of g)
  modulus-down g n μ = III
   where
-   I : g (succ n) ＝ g n → is-modulus-of-constancy g n
+   I : g (succ n) ＝ g n → n is-modulus-of-constancy-of g
    I e m =
     Cases (order-split n m)
      (λ (l : n < m)
@@ -1534,19 +1563,19 @@ induction.
        g (maxℕ m n) ＝⟨ ap g (max-ord→ m n l) ⟩
        g n          ∎)
 
-   II : is-modulus-of-constancy g n → g (succ n) ＝ g n
+   II : n is-modulus-of-constancy-of g → g (succ n) ＝ g n
    II a = g (succ n)          ＝⟨ ap g ((max-ord→ n (succ n) (≤-succ n))⁻¹) ⟩
           g (maxℕ n (succ n)) ＝⟨ a (succ n) ⟩
           g n                 ∎
 
-   III : is-decidable (is-modulus-of-constancy g n)
+   III : is-decidable (n is-modulus-of-constancy-of g)
    III = map-decidable I II (ℕ-is-discrete (g (succ n)) (g n))
 
  modulus-up
    : (g : ℕ → ℕ)
      (n : ℕ)
-   → is-modulus-of-constancy g n
-   → is-modulus-of-constancy g (succ n)
+   → n is-modulus-of-constancy-of g
+   → (succ n) is-modulus-of-constancy-of g
  modulus-up g n μ m =
   g (maxℕ (succ n) m)          ＝⟨ ap g I ⟩
   g (maxℕ n (maxℕ (succ n) m)) ＝⟨ μ (maxℕ (succ n) m) ⟩
@@ -1566,18 +1595,34 @@ induction.
                 II  = (max-assoc (succ n) (succ n) m)⁻¹
                 III = ap (λ - → maxℕ - m) (maxℕ-idemp (succ n))
 
+\end{code}
+
+Although, as proved above, it is not decidable in general whether a
+given n is a modulus of constancy of an arbitrary function g : ℕ → ℕ,
+if we know that n is a modulus of continuity of g, then for any k < n
+we have that it is decidable whether k is a modulus of constancy of g.
+
+\begin{code}
+
  conditional-decidability-of-being-modulus-of-constancy
   : (g : ℕ → ℕ)
     (n : ℕ)
-  → is-modulus-of-constancy g n
+  → n is-modulus-of-constancy-of g
   → (k : ℕ)
   → k < n
-  → is-decidable (is-modulus-of-constancy g k)
+  → is-decidable (k is-modulus-of-constancy-of g)
  conditional-decidability-of-being-modulus-of-constancy g
   = regression-lemma
-     (is-modulus-of-constancy g)
+     (_is-modulus-of-constancy-of g)
      (modulus-down g)
      (modulus-up g)
+
+\end{code}
+
+A corollary of this is that the eventual constancy property gives
+eventual constancy data.
+
+\begin{code}
 
  eventual-constancy-property-gives-eventual-constancy-data
   : (g : ℕ → ℕ)
@@ -1585,7 +1630,7 @@ induction.
   → eventual-constancy-data g
  eventual-constancy-property-gives-eventual-constancy-data g
   = exit-truncation⁺
-    (is-modulus-of-constancy g)
+    (_is-modulus-of-constancy-of g)
     (being-modulus-of-constancy-is-prop g)
     (conditional-decidability-of-being-modulus-of-constancy g)
 
@@ -1597,15 +1642,22 @@ Abbreviation.
 
  evc-data = eventual-constancy-property-gives-eventual-constancy-data
 
+\end{code}
+
+Moreover, the eventual constancy data calculated above gives the
+minimal modulus of (eventual) constancy.
+
+\begin{code}
+
  eventual-constancy-data-minimality
   : (g : ℕ → ℕ)
     (s : is-eventually-constant g)
     (m : ℕ)
-  → is-modulus-of-constancy g m
-  → modulus-of-constancy (evc-data g s) ≤ m
+  → m is-modulus-of-constancy-of g
+  → mod-const-of g (evc-data g s) ≤ m
  eventual-constancy-data-minimality g
   = exit-truncation⁺-minimality
-     (is-modulus-of-constancy g)
+     (_is-modulus-of-constancy-of g)
      (being-modulus-of-constancy-is-prop g)
      (conditional-decidability-of-being-modulus-of-constancy g)
 
@@ -1613,7 +1665,7 @@ Abbreviation.
 
 We now record the fact that the type of continuous functions ℕ∞ → ℕ is
 equivalent to the type of eventually constant functions ℕ → ℕ, where
-continuity and eventual constant are formulated as property. But we
+continuity and eventual constancy are formulated as property. But we
 start with a lemma that works with continuity and eventual constancy
 data.
 
