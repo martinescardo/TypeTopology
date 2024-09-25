@@ -2,12 +2,12 @@ Ian Ray, 23 July 2024
 
 Minor modifications by Tom de Jong on 4 September 2024
 
-Using records we define the general truncation of a type which will include
+Using records we define the general truncation of a type; this will include
 a constructor, an induction principle and a computation rule
 (up to identification). We then proceed to develop some machinery derived from
-the induction principle and explore relationships, closure properties and finally
-characterize the identity type of truncations. Note that we explicitly include
-the assumption of univalence for the characterization of idenity types but not
+the induction principle and explore relationships, closure properties and
+finally characterize the identity type of truncations. We explicitly assume
+univalence locally for the characterization of idenity types but not
 globally as many important properties hold in the absence of univalence.
 
 \begin{code}
@@ -35,7 +35,7 @@ open import Notation.Decimal
 
 \end{code}
 
-We define the notion of a n-truncation using record types.
+We define the general notion of truncations using record types.
 
 \begin{code}
 
@@ -137,8 +137,9 @@ computation rules.
 
 \end{code}
 
-We characterize the first couple levels of truncation (TODO: three-hlevel is a
-groupoid).
+We characterize the first couple levels of truncation.
+
+(TODO: 1-type is a groupoid).
 
 \begin{code}
 
@@ -163,7 +164,7 @@ We demonstrate the equivalence of one-truncation and propositional truncation:
            where
 
   open propositional-truncations-exist pt
-
+  
   −1-trunc-to-prop-trunc : {X : 𝓤 ̇} → ∥ X ∥[ −1 ] → ∥ X ∥
   −1-trunc-to-prop-trunc = ∥∥ₙ-rec (is-prop-implies-is-prop' ∥∥-is-prop) ∣_∣
 
