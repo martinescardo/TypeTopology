@@ -45,6 +45,8 @@ open import Taboos.MarkovsPrinciple
 open import TypeTopology.ADecidableQuantificationOverTheNaturals fe
 open import UF.DiscreteAndSeparated
 open import UF.Equiv
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
 
 \end{code}
 
@@ -162,6 +164,13 @@ function extensionality, and we choose the latter for convenience.
 
 _is-modulus-of-continuity-of_ : ℕ → (ℕ∞ → ℕ) → 𝓤₀ ̇
 m is-modulus-of-continuity-of f = (n : ℕ) → f (max (ι m) (ι n)) ＝ f ∞
+
+being-modulus-of-continuity-is-prop
+ : (f : ℕ∞ → ℕ)
+   (m : ℕ)
+ → is-prop (m is-modulus-of-continuity-of f)
+being-modulus-of-continuity-is-prop f m
+ = Π-is-prop fe (λ n → ℕ-is-set)
 
 continuous : (ℕ∞ → ℕ) → 𝓤₀ ̇
 continuous f = Σ m ꞉ ℕ , m is-modulus-of-continuity-of f
@@ -479,8 +488,6 @@ Added 20th August. Continuity as property gives continuity data.
 
 open import Naturals.ExitTruncation
 open import UF.PropTrunc
-open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
 
 module continuity-criteria (pt : propositional-truncations-exist) where
 
@@ -1104,7 +1111,40 @@ evc-extension-∞ g c@(m , a)
 
 \end{code}
 
-The converse of the above.
+The extension of the restriction of a function equipped with
+continuity data is the original function. Notice that, in the
+following, c can be derived from d, but, in uses of this, it will be
+convenient to have them both given, as they are obtained separately.
+
+\begin{code}
+
+evc-extension-restriction
+ : (f : ℕ∞ → ℕ)
+   (d : continuity-data f)
+   (c : eventual-constancy-data (restriction f))
+ → evc-extension (restriction f) c ∼ f
+evc-extension-restriction f
+                          d@(n , n-is-modulus-of-continuity)
+                          c@(m , m-is-modulus-of-constancy)
+ = III
+ where
+  I : (n : ℕ) → evc-extension (restriction f) c (ι n) ＝ f (ι n)
+  I = evc-extension-property (restriction f) c
+
+  II = evc-extension (restriction f) c ∞ ＝⟨ evc-extension-∞ (restriction f) c ⟩
+       f (ι m)                           ＝⟨ (m-is-modulus-of-constancy n)⁻¹ ⟩
+       f (ι (maxℕ m n))                  ＝⟨ ap (f ∘ ι) (maxℕ-comm m n) ⟩
+       f (ι (maxℕ n m))                  ＝⟨ ap f (max-fin fe n m) ⟩
+       f (max (ι n) (ι m))               ＝⟨ n-is-modulus-of-continuity m ⟩
+       f ∞                               ∎
+
+  III : evc-extension (restriction f) c ∼ f
+  III = ℕ∞-density fe ℕ-is-¬¬-separated I II
+
+\end{code}
+
+Conversely, a modulus of continuity of an extension is a modulus of
+constancy of the orginal function.
 
 \begin{code}
 
@@ -1116,12 +1156,22 @@ continuous-extension-gives-eventual-constancy'
  → m is-modulus-of-constancy-of g
 continuous-extension-gives-eventual-constancy' g (f , e) m  m-is-modulus
  = (λ n → g (maxℕ m n)        ＝⟨ (e (maxℕ m n))⁻¹ ⟩
-              f (ι (maxℕ m n))    ＝⟨ ap f (max-fin fe m n) ⟩
-              f (max (ι m) (ι n)) ＝⟨ m-is-modulus n ⟩
-              f ∞                 ＝⟨ (m-is-modulus m)⁻¹ ⟩
-              f (max (ι m) (ι m)) ＝⟨ ap f (max-idemp fe (ι m)) ⟩
-              f (ι m)             ＝⟨ e m ⟩
-              g m                 ∎)
+          f (ι (maxℕ m n))    ＝⟨ ap f (max-fin fe m n) ⟩
+          f (max (ι m) (ι n)) ＝⟨ m-is-modulus n ⟩
+          f ∞                 ＝⟨ (m-is-modulus m)⁻¹ ⟩
+          f (max (ι m) (ι m)) ＝⟨ ap f (max-idemp fe (ι m)) ⟩
+          f (ι m)             ＝⟨ e m ⟩
+          g m                 ∎)
+
+restriction-modulus
+ : (f : ℕ∞ → ℕ)
+   (m : ℕ)
+ → m is-modulus-of-continuity-of f
+ → m is-modulus-of-constancy-of (restriction f)
+restriction-modulus f
+ = continuous-extension-gives-eventual-constancy'
+    (restriction f)
+    (f , (λ x → refl))
 
 continuous-extension-gives-eventual-constancy
  : (g : ℕ → ℕ)
@@ -1130,6 +1180,15 @@ continuous-extension-gives-eventual-constancy
  → eventually-constant g
 continuous-extension-gives-eventual-constancy g ext (m , m-is-modulus)
  = m , continuous-extension-gives-eventual-constancy' g ext m m-is-modulus
+
+restriction-of-continuous-function-has-evc-data
+ : (f : ℕ∞ → ℕ)
+ → continuous f
+ → eventually-constant (restriction f)
+restriction-of-continuous-function-has-evc-data f
+ = continuous-extension-gives-eventual-constancy
+    (restriction f)
+    (f , (λ x → refl))
 
 \end{code}
 
@@ -1401,9 +1460,7 @@ it.
   → is-continuous f
   → is-eventually-constant (restriction f)
  restriction-of-continuous-function-is-eventually-constant f
-  = is-continuous-extension-gives-is-eventually-constant
-     (restriction f)
-     (f , (λ x → refl))
+  = ∥∥-functor (restriction-of-continuous-function-has-evc-data f)
 
 \end{code}
 
@@ -1519,8 +1576,67 @@ equivalence, rather than just logical equivalence, such that
 The idea is that such a nice characterization should not mention ℕ∞,
 and in some sense should be an "intrinsic" property of / data for g.
 
-Added 19th September 2024. Before doing anything about the above
-remark and question, we improve part of the above development
+Added 25th September 2024. We now record the fact that
+
+          (Σ f ꞉ (ℕ∞ → ℕ) , continuous f)
+        ≃ (Σ g ꞉ (ℕ → ℕ)  , eventually-constant g).
+
+\begin{code}
+
+open import UF.Base
+open import UF.EquivalenceExamples
+
+characterization-of-type-of-untruncated-continuous-functions-≃
+  : (Σ f ꞉ (ℕ∞ → ℕ) , continuous f)
+  ≃ (Σ g ꞉ (ℕ → ℕ)  , eventually-constant g)
+characterization-of-type-of-untruncated-continuous-functions-≃
+  = II
+  where
+    I : (m : ℕ)
+      → (Σ f ꞉ (ℕ∞ → ℕ) , m is-modulus-of-continuity-of f)
+      ≃ (Σ g ꞉ (ℕ → ℕ)  , m is-modulus-of-constancy-of  g)
+    I m = ϕ , ϕ-is-equiv
+     where
+      ϕ : (Σ f ꞉ (ℕ∞ → ℕ) , m is-modulus-of-continuity-of f)
+        → (Σ g ꞉ (ℕ → ℕ)  , m is-modulus-of-constancy-of  g)
+      ϕ (f , mod-cty) = restriction f ,
+                        restriction-modulus f m mod-cty
+
+      γ : (Σ g ꞉ (ℕ → ℕ)  , m is-modulus-of-constancy-of  g)
+        → (Σ f ꞉ (ℕ∞ → ℕ) , m is-modulus-of-continuity-of f)
+      γ (g , mod-const) = evc-extension g (m , mod-const) ,
+                          evc-extension-modulus-of-continuity g (m , mod-const)
+
+      γϕ : γ ∘ ϕ ∼ id
+      γϕ (f , mod-cty) = to-subtype-＝
+                          (λ (- : ℕ∞ → ℕ) → being-modulus-of-continuity-is-prop - m)
+                         (dfunext fe (evc-extension-restriction f d c))
+       where
+        c : eventual-constancy-data (restriction f)
+        c = m , restriction-modulus f m mod-cty
+
+        d : continuity-data f
+        d = m , mod-cty
+
+      ϕγ : ϕ ∘ γ ∼ id
+      ϕγ (g , mod-const) = to-subtype-＝
+                            (λ (- : ℕ → ℕ) → being-modulus-of-constancy-is-prop - m)
+                            (dfunext fe (evc-extension-property g (m , mod-const)))
+
+      ϕ-is-equiv : is-equiv ϕ
+      ϕ-is-equiv = qinvs-are-equivs ϕ (γ , γϕ , ϕγ)
+
+    II =
+     (Σ f ꞉ (ℕ∞ → ℕ) , continuous f)                              ≃⟨ ≃-refl _ ⟩
+     (Σ f ꞉ (ℕ∞ → ℕ) , Σ m ꞉ ℕ , m is-modulus-of-continuity-of f) ≃⟨ Σ-flip ⟩
+     (Σ m ꞉ ℕ , Σ f ꞉ (ℕ∞ → ℕ) , m is-modulus-of-continuity-of f) ≃⟨ Σ-cong I ⟩
+     (Σ m ꞉ ℕ , Σ g ꞉ (ℕ → ℕ) , m is-modulus-of-constancy-of g)   ≃⟨ Σ-flip ⟩
+     (Σ g ꞉ (ℕ → ℕ) , Σ m ꞉ ℕ , m is-modulus-of-constancy-of g)   ≃⟨ ≃-refl _ ⟩
+     (Σ g ꞉ (ℕ → ℕ), eventually-constant g)                       ■
+
+\end{code}
+
+Added 19th September 2024. We improve part of the above development
 following a discussion and contributions at mathstodon by various
 people
 
@@ -1670,93 +1786,67 @@ continuity and eventual constancy are formulated as property. But we
 start with a lemma that works with continuity and eventual constancy
 data.
 
+TODO. Can we derive the following from the equivalence
+
+          (Σ f ꞉ (ℕ∞ → ℕ) , continuous f)
+        ≃ (Σ g ꞉ (ℕ → ℕ)  , eventually-constant g)
+
+given above, instead of proving it directly?
+
 \begin{code}
-
- evc-extension-restriction
-  : (f : ℕ∞ → ℕ)
-    (d : continuity-data f)
-    (c : eventual-constancy-data (restriction f))
-  → evc-extension (restriction f) c ∼ f
- evc-extension-restriction f
-                           d@(n , n-is-modulus-of-continuity)
-                           c@(m , m-is-modulus-of-constancy)
-  = III
-  where
-   I : (n : ℕ) → evc-extension (restriction f) c (ι n) ＝ f (ι n)
-   I = evc-extension-property (restriction f) c
-
-   II = evc-extension (restriction f) c ∞ ＝⟨ evc-extension-∞ (restriction f) c ⟩
-        f (ι m)                           ＝⟨ (m-is-modulus-of-constancy n)⁻¹ ⟩
-        f (ι (maxℕ m n))                  ＝⟨ ap (f ∘ ι) (maxℕ-comm m n) ⟩
-        f (ι (maxℕ n m))                  ＝⟨ ap f (max-fin fe n m) ⟩
-        f (max (ι n) (ι m))               ＝⟨ n-is-modulus-of-continuity m ⟩
-        f ∞                               ∎
-
-   III : evc-extension (restriction f) c ∼ f
-   III = ℕ∞-density fe ℕ-is-¬¬-separated I II
 
  open continuity-criteria pt
 
- private
-  ϕ : (Σ f ꞉ (ℕ∞ → ℕ) , is-continuous f)
-    → (Σ g ꞉ (ℕ → ℕ), is-eventually-constant g)
-  ϕ (f , f-cts) =
-   restriction f ,
-   restriction-of-continuous-function-is-eventually-constant f f-cts
-
-  γ : (Σ g ꞉ (ℕ → ℕ), is-eventually-constant g)
-    → (Σ f ꞉ (ℕ∞ → ℕ) , is-continuous f)
-  γ (g , g-evc) = evc-extension g c , ∣ evc-extension-continuity g c ∣
-   where
-    c : eventual-constancy-data g
-    c = evc-data g g-evc
-
-  γϕ : γ ∘ ϕ ∼ id
-  γϕ (f , f-cts) = to-subtype-＝
-                    (λ _ → ∃-is-prop)
-                    (dfunext fe I)
-   where
-    c : eventual-constancy-data (restriction f)
-    c = evc-data
-         (restriction f)
-         (restriction-of-continuous-function-is-eventually-constant f f-cts)
-
-    d : continuity-data f
-    d = cty-data f f-cts
-
-    I : evc-extension (restriction f) c ∼ f
-    I = evc-extension-restriction f d c
-
-  ϕγ : ϕ ∘ γ ∼ id
-  ϕγ (g , g-evc) = to-subtype-＝
-                    (λ _ → ∃-is-prop)
-                    (dfunext fe I)
-   where
-    c : eventual-constancy-data g
-    c = evc-data g g-evc
-
-    I : restriction (evc-extension g c) ∼ g
-    I = evc-extension-property g c
-
-  ϕ-is-equiv : is-equiv ϕ
-  ϕ-is-equiv = qinvs-are-equivs ϕ (γ , γϕ , ϕγ)
-
- characterization-of-type-of-continuous-functions-≃
+ characterization-of-type-of-continuous-functions-≃'
   : (Σ f ꞉ (ℕ∞ → ℕ) , is-continuous f)
   ≃ (Σ g ꞉ (ℕ → ℕ), is-eventually-constant g)
- characterization-of-type-of-continuous-functions-≃
+ characterization-of-type-of-continuous-functions-≃'
   = ϕ , ϕ-is-equiv
+  where
+   ϕ : (Σ f ꞉ (ℕ∞ → ℕ) , is-continuous f)
+     → (Σ g ꞉ (ℕ → ℕ), is-eventually-constant g)
+   ϕ (f , f-cts) =
+    restriction f ,
+    restriction-of-continuous-function-is-eventually-constant f f-cts
+
+   γ : (Σ g ꞉ (ℕ → ℕ), is-eventually-constant g)
+     → (Σ f ꞉ (ℕ∞ → ℕ) , is-continuous f)
+   γ (g , g-evc) = evc-extension g c , ∣ evc-extension-continuity g c ∣
+    where
+     c : eventual-constancy-data g
+     c = evc-data g g-evc
+
+   γϕ : γ ∘ ϕ ∼ id
+   γϕ (f , f-cts) = to-subtype-＝
+                     (λ _ → ∃-is-prop)
+                     (dfunext fe I)
+    where
+     c : eventual-constancy-data (restriction f)
+     c = evc-data
+          (restriction f)
+          (restriction-of-continuous-function-is-eventually-constant f f-cts)
+
+     d : continuity-data f
+     d = cty-data f f-cts
+
+     I : evc-extension (restriction f) c ∼ f
+     I = evc-extension-restriction f d c
+
+   ϕγ : ϕ ∘ γ ∼ id
+   ϕγ (g , g-evc) = to-subtype-＝
+                     (λ _ → ∃-is-prop)
+                     (dfunext fe I)
+    where
+     c : eventual-constancy-data g
+     c = evc-data g g-evc
+
+     I : restriction (evc-extension g c) ∼ g
+     I = evc-extension-property g c
+
+   ϕ-is-equiv : is-equiv ϕ
+   ϕ-is-equiv = qinvs-are-equivs ϕ (γ , γϕ , ϕγ)
 
 \end{code}
-
-Added 24th September 2024. Perhaps the untruncated version of this is
-even easier, and also gives an easier version of the truncated
-version. Both are of interest, in any case.
-
-TODO. Prove
-
-          (Σ f ꞉ (ℕ∞ → ℕ) , continuous f)
-        ≃ (Σ g ꞉ (ℕ → ℕ), eventually-constant g).
 
 Added 20th September 2024.
 
