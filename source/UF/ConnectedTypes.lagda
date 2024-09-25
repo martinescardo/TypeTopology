@@ -28,7 +28,7 @@ open import UF.Univalence
 
 \end{code}
 
-We now define the notion of k-connectedness for types and functions with respect
+We now define the notion of connectedness for types and functions with respect
 to truncation levels.
 
 TODO: show that connectedness as defined elsewhere in the library is
@@ -55,36 +55,36 @@ module _ (te : general-truncations-exist) where
 
 \end{code}
 
-We characterize 1-connected types as inhabited types and 1-connected maps as
+We characterize −1-connected types as inhabited types and −1-connected maps as
 surjections.
 
 \begin{code}
 
  inhabited-if-−1-connected : {X : 𝓤 ̇}
-                            → X is −1 connected → ∥ X ∥
+                           → X is −1 connected → ∥ X ∥
  inhabited-if-−1-connected X-1-conn = −1-trunc-to-prop-trunc pt (center X-1-conn)
 
  −1-connected-if-inhabited : {X : 𝓤 ̇}
-                            → ∥ X ∥ → X is −1 connected
+                           → ∥ X ∥ → X is −1 connected
  −1-connected-if-inhabited x-anon =
   pointed-props-are-singletons (prop-trunc-to-−1-trunc pt x-anon) −1-trunc-is-prop
 
  −1-connected-iff-inhabited : {X : 𝓤 ̇}
-                             → X is −1 connected ↔ ∥ X ∥
+                            → X is −1 connected ↔ ∥ X ∥
  −1-connected-iff-inhabited =
   (inhabited-if-−1-connected , −1-connected-if-inhabited)
 
  map-is-surj-if-−1-connected : {X : 𝓤 ̇} {Y : 𝓥 ̇} {f : X → Y}
-                              → f is −1 connected-map → is-surjection f
+                             → f is −1 connected-map → is-surjection f
  map-is-surj-if-−1-connected m y = inhabited-if-−1-connected (m y)
 
  map-is-−1-connected-if-surj : {X : 𝓤 ̇} {Y : 𝓥 ̇} {f : X → Y}
-                              → is-surjection f → f is −1 connected-map
+                             → is-surjection f → f is −1 connected-map
  map-is-−1-connected-if-surj f-is-surj y = −1-connected-if-inhabited (f-is-surj y)
 
- map-is-one-connected-iff-surj : {X : 𝓤 ̇} {Y : 𝓥 ̇} {f : X → Y}
-                               → f is −1 connected-map ↔ is-surjection f
- map-is-one-connected-iff-surj =
+ map-is-−1-connected-iff-surj : {X : 𝓤 ̇} {Y : 𝓥 ̇} {f : X → Y}
+                              → f is −1 connected-map ↔ is-surjection f
+ map-is-−1-connected-iff-surj =
   (map-is-surj-if-−1-connected , map-is-−1-connected-if-surj)
 
 \end{code}
@@ -136,7 +136,7 @@ useful.
   where
    m : ℕ
    m = subtraction-ℕ₋₂-term l k o
-   p = k        ＝⟨ subtraction-ℕ₋₂-identification l k o ⁻¹ ⟩
+   p = k       ＝⟨ subtraction-ℕ₋₂-identification l k o ⁻¹ ⟩
        l + m   ∎
 
 \end{code}
@@ -184,8 +184,8 @@ the identity type at one level below. We will assume univalence only when necess
   ∥∥-rec (being-singleton-is-prop fe)
          (λ x → (∣ x ∣[ succ (succ k) ]
           , ∥∥ₙ-ind (λ v → truncation-levels-are-upper-closed
-                            (λ p q → ∥∥ₙ-is-truncated ∣ x ∣[ succ (succ k) ] v p q)) 
-                    (λ y → forth-trunc-id-char ua (center (id-conn x y)))))
+           (λ p q → ∥∥ₙ-is-truncated ∣ x ∣[ succ (succ k) ] v p q)) 
+            (λ y → forth-trunc-id-char ua (center (id-conn x y)))))
          anon-x
 
  connected-characterization : {X : 𝓤 ̇} {k : ℕ₋₂}
