@@ -17,9 +17,6 @@ wrong.
 
 The summer 2024 additions give some applications of this.
 
-TODO. Parametrize this module by a discrete type, rather than use 𝟚 or
-ℕ as the types of values of functions.
-
 \begin{code}
 
 {-# OPTIONS --safe --without-K --lossy-unification #-}
