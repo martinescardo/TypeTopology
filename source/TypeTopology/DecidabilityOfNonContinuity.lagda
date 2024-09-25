@@ -47,12 +47,9 @@ open import UF.Subsingletons-FunExt
 
 \end{code}
 
-TODO. Give a more sensible name of the following fact. It is the name
-given in [1].
-
-This is an iterated version of Theorem 8.2 of [2], which also deserves
-a better name here, and it is the crucial lemma to prove the
-decidability of non-continuity.
+For convenience, we first recall the version of Theorem 8.2 of [1],
+which is used a number of times in this file, in a slighly
+reformulated way which is convenient for our purposes.
 
 [2] Martin Escardo. Infinite sets that satisfy the principle of
     omniscience in all varieties of constructive mathematics, Journal
@@ -60,9 +57,6 @@ decidability of non-continuity.
     764-784.
 
     https://doi.org/10.2178/jsl.7803040
-
-For convenience, we first recall the version of Theorem 8.2, which is
-used a number of times in this file.
 
 \begin{code}
 
@@ -78,7 +72,11 @@ quantifies over ℕ. So this gives an instance of WLPO that holds in
 constructive mathematics.
 
 The following, which is an iteration of the above, uses the numbering
-of the paper [1].
+of the paper [1], again in a slightly reformulated way, which is more
+convenient for our purposes.
+
+But notice that it isn't a simple iteration, because a negation is
+inserted in the inner step.
 
 \begin{code}
 
@@ -139,7 +137,8 @@ and its negation to
 
    ∀ m : ℕ , ¬ ∀ n : ℕ , f (max m n) ＝ f ∞,
 
-and it is technically convenient to do so here.
+and it is technically convenient to do so here, in particular because
+in proofs we may want to generalize the range of m or n from ℕ to ℕ∞.
 
 The above paper [1] mentions that its mathematical development can be
 carried out in a number of foundations, including dependent type
@@ -147,15 +146,11 @@ theory, but it doesn't say what "∃" should be taken to mean in
 HoTT/UF. Fortunately, it turns out (added summer 2024 - see below)
 that it doesn't matter whether `∃` is interpreted to mean `Σ` or the
 propositional truncation of `Σ`, although this is nontrivial and is
-proved below, but does follow from what is developed in [1].
+proved below, but does follow more or less immediately from what is
+developed in [1].
 
-For the following, we adopt `∃` to mean the propositional truncation
-of `Σ` (as we generally do in TypeTopology).
-
-For the next few things, because we are going to prove facts about the
-negation of continuity, it doesn't matter whether we define the notion
-with ∃ or Σ, because negations are propositions in the presence of
-function extensionality, and we choose the latter for convenience.
+We start with the Σ formulation of existence for the definition of
+continuity.
 
 \begin{code}
 
@@ -195,7 +190,7 @@ continuity-data = continuous
 \end{code}
 
 The following is Theorem 3.2 of [1] and is a direct application of
-Lemma 3.1.
+Lemma 3.1, if perhaps not obvious at first sight.
 
 \begin{code}
 
@@ -356,7 +351,8 @@ and so we will not add it in code, even if it turns out to be needed
 in future additions. The following also is an immediate consequence of
 the above, but we choose to record it explicitly.
 
-And now we prove (4).
+And now we prove (4). Assuming MP and ¬ WLPO, all functions ℕ∞ → ℕ are
+continuous.
 
 \begin{code}
 
@@ -376,8 +372,8 @@ MP-and-¬WLPO-give-that-all-functions-are-continuous mp nwlpo f
 End of 7th September 2024 addition.
 
 In the following fact we can replace Σ by ∃ because WLPO is a
-proposition. Hence WLPO is the propositional truncation of the type
-Σ f ꞉ (ℕ∞ → ℕ) , ¬ continuous f.
+proposition. Hence WLPO is the propositional truncation of the type Σ
+f ꞉ (ℕ∞ → ℕ) , ¬ continuous f.
 
 TODO. Add code for this observation.
 
@@ -444,26 +440,26 @@ continuous.
 
 \end{code}
 
-It is shown in [2] that negative consistent axioms can be postulated
+It is shown in [3] that negative consistent axioms can be postulated
 in MLTT without loss of canonicity, and Andreas Abel filled important
-gaps and formalized this in Agda [3] using a logical-relations
+gaps and formalized this in Agda [4] using a logical-relations
 technique. Hence we can, if we wish, postulate ¬ WLPO without loss of
 canonicity, and get a weak continuity axiom for free. But notice that
 we can also postulate ¬¬ WLPO without loss of continuity, to get a
 weak classical axiom for free. Of course, we can't postulate both at
 the same time while retaining canonicity (and consistency!).
 
-[2] T. Coquand, N.A. Danielsson, M.H. Escardo, U. Norell and Chuangjie Xu.
+[3] T. Coquand, N.A. Danielsson, M.H. Escardo, U. Norell and Chuangjie Xu.
 Negative consistent axioms can be postulated without loss of canonicity.
 https://www.cs.bham.ac.uk/~mhe/papers/negative-axioms.pdf
 
-[3] Andreas Abel. Negative Axioms.
+[4] Andreas Abel. Negative Axioms.
     https://github.com/andreasabel/logrel-mltt/tree/master/Application/NegativeAxioms
 
 Added 16 August 2024. This is not in [1].
 
 The above definition of continuity is "continuity at the point ∞", and
-also it is not a proposition.
+also it is not a proposition but rather data.
 
 Next we show that this is equivalent to usual continuity, as in the
 module Cantor, using the fact that ℕ∞ is a subspace of the Cantor type
@@ -719,10 +715,6 @@ We now need more lemmas about the relation x ＝⟪ k ⟫ y.
 This closes a circle, so that that all notions of continuity data are
 logically equivalent.
 
-TODO. They should also be equivalent as types, but this is not
-important for our purposes, because we are interested in continuity as
-property. But maybe it would be interesting to code this anyway.
-
 Added 21 August 2023. We now establish the logical equivalence with
 the remaining propositional versions of continuity.
 
@@ -816,11 +808,11 @@ module more-continuity-criteria (pt : propositional-truncations-exist) where
 
 Added 2nd September 2024. This is also not in [1].
 
-The type `ℕ∞-extension g` is that of all extensions of g : ℕ → ℕ to
-functions ℕ∞ → ℕ.
+The type `ℕ∞-extensions-of g`, formally defined below, is that of all
+extensions of g : ℕ → ℕ to functions ℕ∞ → ℕ.
 
-Our first question is when this type is a proposition (so that it
-could be called `is-ℕ∞-extendable g`).
+Our first question is when this type is a proposition, so that it
+could be called `is-ℕ∞-extendable g`.
 
 Notice that LPO is stronger than WLPO, and hence, by taking the
 contrapositive, ¬ WLPO is stronger than ¬ LPO:
@@ -836,8 +828,8 @@ restriction f = f ∘ ι
 _extends_ : (ℕ∞ → ℕ) → (ℕ → ℕ) → 𝓤₀ ̇
 f extends g = restriction f ∼ g
 
-ℕ∞-extension : (ℕ → ℕ) → 𝓤₀ ̇
-ℕ∞-extension g = Σ f ꞉ (ℕ∞ → ℕ) , f extends g
+ℕ∞-extensions-of : (ℕ → ℕ) → 𝓤₀ ̇
+ℕ∞-extensions-of g = Σ f ꞉ (ℕ∞ → ℕ) , f extends g
 
 \end{code}
 
@@ -852,12 +844,12 @@ try to be consistent with the terminology of the HoTT/UF community.)
 
 \begin{code}
 
-¬WLPO-gives-ℕ∞-extension-is-prop
+¬WLPO-gives-ℕ∞-extensions-is-prop
  : funext 𝓤₀ 𝓤₀
  → (g : ℕ → ℕ)
  → ¬ WLPO
- → is-prop (ℕ∞-extension g)
-¬WLPO-gives-ℕ∞-extension-is-prop fe g nwlpo (f , e) (f' , e')
+ → is-prop (ℕ∞-extensions-of g)
+¬WLPO-gives-ℕ∞-extensions-is-prop fe g nwlpo (f , e) (f' , e')
  = IV
  where
   I : (n : ℕ) → f (ι n) ＝ f' (ι n)
@@ -876,18 +868,18 @@ try to be consistent with the terminology of the HoTT/UF community.)
 
 \end{code}
 
-Therefore the non-propositionality of the type `ℕ∞-extension g` gives
-the classical principle ¬¬ WLPO.
+Therefore the non-propositionality of the type `ℕ∞-extensions-of g`
+gives the classical principle ¬¬ WLPO.
 
 \begin{code}
 
-ℕ∞-extension-is-not-prop-gives-¬¬WLPO
+the-type-of-ℕ∞-extensions-is-not-prop-gives-¬¬WLPO
  : funext 𝓤₀ 𝓤₀
  → (g : ℕ → ℕ)
- → ¬ is-prop (ℕ∞-extension g)
+ → ¬ is-prop (ℕ∞-extensions-of g)
  → ¬¬ WLPO
-ℕ∞-extension-is-not-prop-gives-¬¬WLPO fe g
- = contrapositive (¬WLPO-gives-ℕ∞-extension-is-prop fe g)
+the-type-of-ℕ∞-extensions-is-not-prop-gives-¬¬WLPO fe g
+ = contrapositive (¬WLPO-gives-ℕ∞-extensions-is-prop fe g)
 
 \end{code}
 
@@ -896,13 +888,16 @@ establish the converse.  However, if we strengthen the classical
 principle ¬¬ WLPO to LPO, we can. We begin with a classical extension
 lemma, which is then applied to prove this claim.
 
+If LPO holds, then for any g : ℕ → ℕ and y : ℕ there is an extension
+f : ℕ∞ → ℕ of g that maps ∞ to y.
+
 \begin{code}
 
 LPO-gives-ℕ∞-extension
  : LPO
  → (g : ℕ → ℕ)
    (y : ℕ)
- → Σ (f , _) ꞉ ℕ∞-extension g , (f ∞ ＝ y)
+ → Σ (f , _) ꞉ ℕ∞-extensions-of g , (f ∞ ＝ y)
 LPO-gives-ℕ∞-extension lpo g y
  = (f , e) , p
  where
@@ -927,15 +922,21 @@ LPO-gives-ℕ∞-extension lpo g y
   p : f ∞ ＝ y
   p = P (lpo ∞)
 
-LPO-gives-ℕ∞-extension-is-not-prop
+\end{code}
+
+If LPO holds, a function g : ℕ → ℕ can have many extensions to ℕ∞.
+
+\begin{code}
+
+LPO-gives-that-the-type-of-ℕ∞-extension-is-not-prop
  : (g : ℕ → ℕ)
  → LPO
- → ¬ is-prop (ℕ∞-extension g)
-LPO-gives-ℕ∞-extension-is-not-prop g lpo ext-is-prop
+ → ¬ is-prop (ℕ∞-extensions-of g)
+LPO-gives-that-the-type-of-ℕ∞-extension-is-not-prop g lpo ext-is-prop
   = I (LPO-gives-ℕ∞-extension lpo g 0) (LPO-gives-ℕ∞-extension lpo g 1)
  where
-  I : (Σ (f , _) ꞉ ℕ∞-extension g , (f ∞ ＝ 0))
-    → (Σ (f , _) ꞉ ℕ∞-extension g , (f ∞ ＝ 1))
+  I : (Σ (f , _) ꞉ ℕ∞-extensions-of g , (f ∞ ＝ 0))
+    → (Σ (f , _) ꞉ ℕ∞-extensions-of g , (f ∞ ＝ 1))
     → 𝟘
   I ((f , e) , p) ((f' , e') , p') =
    zero-not-positive 0
@@ -951,18 +952,18 @@ hold.
 
 \begin{code}
 
-ℕ∞-extension-is-prop-gives-¬LPO
+type-of-ℕ∞-extensions-is-prop-gives-¬LPO
  : (g : ℕ → ℕ)
- → is-prop (ℕ∞-extension g)
+ → is-prop (ℕ∞-extensions-of g)
  → ¬ LPO
-ℕ∞-extension-is-prop-gives-¬LPO g i lpo
- = LPO-gives-ℕ∞-extension-is-not-prop g lpo i
+type-of-ℕ∞-extensions-is-prop-gives-¬LPO g i lpo
+ = LPO-gives-that-the-type-of-ℕ∞-extension-is-not-prop g lpo i
 
 \end{code}
 
 So we have the chain of implications
 
-    ¬ WLPO → is-prop (ℕ∞-extension g) → ¬ LPO.
+    ¬ WLPO → is-prop (ℕ∞-extensions-of g) → ¬ LPO.
 
 Recall that LPO → WLPO, and so ¬ WLPO → ¬ LPO in any case. We don't
 know whether the implication ¬ WLPO → ¬ LPO can be reversed in general
@@ -970,14 +971,17 @@ know whether the implication ¬ WLPO → ¬ LPO can be reversed in general
 
 We also have the chain of implications
 
-    LPO → ¬ is-prop (ℕ∞-extension g) → ¬¬ WLPO.
+    LPO → ¬ is-prop (ℕ∞-extensions-of g) → ¬¬ WLPO.
 
-So the type ¬ is-prop (ℕ∞-extension g) sits between two constructive
-taboos and so is an inherently classical statement.
+So the type ¬ is-prop (ℕ∞-extensions-of g) sits between two
+constructive taboos and so is an inherently classical statement.
 
 Added 4th September 2024.
 
-Our next question is when the type `ℕ∞-extension g` is pointed.
+Our next question is when the type `ℕ∞-extensions-of g` is pointed.
+
+For this purpose, we consider the notion of eventually constant
+function ℕ → ℕ.
 
 \begin{code}
 
@@ -994,7 +998,20 @@ being-modulus-of-constancy-is-prop g m
 eventually-constant : (ℕ → ℕ) → 𝓤₀ ̇
 eventually-constant g = Σ m ꞉ ℕ , m is-modulus-of-constancy-of g
 
+\end{code}
+
+The above is not really property of g but actually data for g, and
+sometimes it will be useful to emphasize the distinction in the code.
+
+\begin{code}
+
 eventual-constancy-data = eventually-constant
+
+\end{code}
+
+It will be convenient to give readable names for the projections.
+
+\begin{code}
 
 mod-const-of : (g : ℕ → ℕ) → eventually-constant g → ℕ
 mod-const-of g = pr₁
@@ -1005,17 +1022,24 @@ modulus-of-constancy-property
  → (mod-const-of g c) is-modulus-of-constancy-of g
 modulus-of-constancy-property = pr₂
 
-eventual-constancy-gives-continuous-extension
+\end{code}
+
+Any modulus of constancy of a function g : ℕ → ℕ is a modulus of
+continuity of a continuous extension f : ℕ∞ → ℕ of g.
+
+\begin{code}
+
+eventual-constancy-data-gives-continuous-extension-data
  : (g : ℕ → ℕ)
    ((m , _) : eventually-constant g)
- → Σ (f , _) ꞉ ℕ∞-extension g , m is-modulus-of-continuity-of f
-eventual-constancy-gives-continuous-extension g (m , a)
+ → Σ (f , _) ꞉ ℕ∞-extensions-of g , m is-modulus-of-continuity-of f
+eventual-constancy-data-gives-continuous-extension-data g (m , a)
  = h g m a
  where
   h : (g : ℕ → ℕ)
       (m : ℕ)
     → m is-modulus-of-constancy-of g
-    → Σ (f , _) ꞉ ℕ∞-extension g , m is-modulus-of-continuity-of f
+    → Σ (f , _) ꞉ ℕ∞-extensions-of g , m is-modulus-of-continuity-of f
   h g 0        a = ((λ _ → g 0) ,
                     (λ n →  g 0          ＝⟨ (a n)⁻¹ ⟩
                             g (maxℕ 0 n) ＝⟨ refl ⟩
@@ -1023,11 +1047,11 @@ eventual-constancy-gives-continuous-extension g (m , a)
                    (λ n → refl)
   h g (succ m) a = I IH
    where
-    IH : Σ (f , _) ꞉ ℕ∞-extension (g ∘ succ) , m is-modulus-of-continuity-of f
+    IH : Σ (f , _) ꞉ ℕ∞-extensions-of (g ∘ succ) , m is-modulus-of-continuity-of f
     IH = h (g ∘ succ) m (a ∘ succ)
 
     I : type-of IH
-      → Σ (f' , _) ꞉ ℕ∞-extension g , (succ m) is-modulus-of-continuity-of f'
+      → Σ (f' , _) ꞉ ℕ∞-extensions-of g , (succ m) is-modulus-of-continuity-of f'
     I ((f , e) , m-is-modulus)
      = (f' , e') , succ-m-is-modulus
      where
@@ -1061,7 +1085,8 @@ eventual-constancy-gives-continuous-extension g (m , a)
 
 \end{code}
 
-It will be convenient name various projections of the construction above.
+It will be convenient name various projections of the above
+construction.
 
 \begin{code}
 
@@ -1070,21 +1095,28 @@ evc-extension
  → eventually-constant g
  → ℕ∞ → ℕ
 evc-extension g c
- = pr₁ (pr₁ (eventual-constancy-gives-continuous-extension g c))
+ = pr₁ (pr₁ (eventual-constancy-data-gives-continuous-extension-data g c))
 
 evc-extension-property
  : (g : ℕ → ℕ)
    (c : eventually-constant g)
  → (evc-extension g c) extends g
 evc-extension-property g c
- = pr₂ (pr₁ (eventual-constancy-gives-continuous-extension g c))
+ = pr₂ (pr₁ (eventual-constancy-data-gives-continuous-extension-data g c))
 
 evc-extension-modulus-of-continuity
  : (g : ℕ → ℕ)
    (c@(m , _) : eventually-constant g)
  → m is-modulus-of-continuity-of (evc-extension g c)
 evc-extension-modulus-of-continuity g c@(m , _)
- = pr₂ (eventual-constancy-gives-continuous-extension g c)
+ = pr₂ (eventual-constancy-data-gives-continuous-extension-data g c)
+
+\end{code}
+
+With this notation, we have that the above extension of any eventually
+constant function ℕ → ℕ is continuous.
+
+\begin{code}
 
 evc-extension-continuity
  : (g : ℕ → ℕ)
@@ -1092,6 +1124,13 @@ evc-extension-continuity
  → continuous (evc-extension g c)
 evc-extension-continuity g c@(m , _)
  = m , evc-extension-modulus-of-continuity g c
+
+\end{code}
+
+Later we will need the fact that the value of the extension at ∞ is
+g m, where m is the modulus of constancy of g.
+
+\begin{code}
 
 evc-extension-∞
  : (g : ℕ → ℕ)
@@ -1109,9 +1148,14 @@ evc-extension-∞ g c@(m , a)
 \end{code}
 
 The extension of the restriction of a function equipped with
-continuity data is the original function. Notice that, in the
-following, c can be derived from d, but, in uses of this, it will be
-convenient to have them both given, as they are obtained separately.
+continuity data is the original function.
+
+Notice that, in the following, c can be derived from d, but, in uses
+of this, it will be convenient to have them both given, as they are
+obtained separately.
+
+Notice also that this is not entirely trivial. It uses a density lemma
+proved in another module.
 
 \begin{code}
 
@@ -1147,7 +1191,7 @@ constancy of the orginal function.
 
 continuous-extension-gives-eventual-constancy'
  : (g : ℕ → ℕ)
-   ((f , _) : ℕ∞-extension g)
+   ((f , _) : ℕ∞-extensions-of g)
    (m : ℕ)
  → m is-modulus-of-continuity-of f
  → m is-modulus-of-constancy-of g
@@ -1160,6 +1204,13 @@ continuous-extension-gives-eventual-constancy' g (f , e) m  m-is-modulus
           f (ι m)             ＝⟨ e m ⟩
           g m                 ∎)
 
+\end{code}
+
+In other words, any modulus of continuity of a function ℕ∞ → ℕ is a
+modulus of constancy of its restriction ℕ → ℕ.
+
+\begin{code}
+
 restriction-modulus
  : (f : ℕ∞ → ℕ)
    (m : ℕ)
@@ -1170,9 +1221,16 @@ restriction-modulus f
     (restriction f)
     (f , (λ x → refl))
 
+\end{code}
+
+And so continuity data for the extension gives eventual constancy data
+for the original function, which can be formulated in two ways.
+
+\begin{code}
+
 continuous-extension-gives-eventual-constancy
  : (g : ℕ → ℕ)
-   ((f , _) : ℕ∞-extension g)
+   ((f , _) : ℕ∞-extensions-of g)
  → continuous f
  → eventually-constant g
 continuous-extension-gives-eventual-constancy g ext (m , m-is-modulus)
@@ -1199,11 +1257,11 @@ A sufficient condition is that LPO holds or g is eventually constant.
 ℕ∞-extension-explicit-existence-sufficient-condition
  : (g : ℕ → ℕ)
  → LPO + eventually-constant g
- → ℕ∞-extension g
+ → ℕ∞-extensions-of g
 ℕ∞-extension-explicit-existence-sufficient-condition g (inl lpo)
  = pr₁ (LPO-gives-ℕ∞-extension lpo g 0)
 ℕ∞-extension-explicit-existence-sufficient-condition g (inr ec)
- = pr₁ (eventual-constancy-gives-continuous-extension g ec)
+ = pr₁ (eventual-constancy-data-gives-continuous-extension-data g ec)
 
 \end{code}
 
@@ -1214,7 +1272,7 @@ neither LPO holds nor g is eventually constant.
 
 ℕ∞-extension-nonexistence-gives-¬LPO-and-not-eventual-constancy
  : (g : ℕ → ℕ)
- → ¬ ℕ∞-extension g
+ → ¬ ℕ∞-extensions-of g
  → ¬ LPO × ¬ eventually-constant g
 ℕ∞-extension-nonexistence-gives-¬LPO-and-not-eventual-constancy g ν
  = I ∘ inl , I ∘ inr
@@ -1231,7 +1289,7 @@ eventually constant.
 
 ℕ∞-extension-explicit-existence-first-necessary-condition
  : (g : ℕ → ℕ)
- → ℕ∞-extension g
+ → ℕ∞-extensions-of g
  → WLPO + ¬¬ eventually-constant g
 ℕ∞-extension-explicit-existence-first-necessary-condition
  g (f , e) = III
@@ -1255,7 +1313,7 @@ constant, then there isn't any extension.
  : (g : ℕ → ℕ)
  → ¬ WLPO
  → ¬ eventually-constant g
- → ¬ ℕ∞-extension g
+ → ¬ ℕ∞-extensions-of g
 ¬WLPO-gives-that-non-eventually-constant-functions-have-no-extensions g nwlpo nec
  = contrapositive
     (ℕ∞-extension-explicit-existence-first-necessary-condition g)
@@ -1279,8 +1337,8 @@ TODO. Is there a nice necessary and sufficient condition for the
         LPO + eventually-constant g?
 
       We leave this open. However, we show below that, under Markov's
-      Principle, the latter is a necessry and sufficient for g to have
-      an extension.
+      Principle, the latter is a necessary and sufficient for g to
+      have an extension.
 
 \end{code}
 
@@ -1304,11 +1362,11 @@ requires that g has some (not necessarily continuous) extension.
 
 \begin{code}
 
-being-modulus-of-constancy-decidable-for-all-functions-gives-WLPO
+being-modulus-of-constancy-is-decidable-for-all-functions-gives-WLPO
  : ((g : ℕ → ℕ) (m : ℕ)
        → is-decidable (m is-modulus-of-constancy-of g))
  → WLPO
-being-modulus-of-constancy-decidable-for-all-functions-gives-WLPO ϕ
+being-modulus-of-constancy-is-decidable-for-all-functions-gives-WLPO ϕ
  = WLPO-traditional-gives-WLPO fe (WLPO-variation-gives-WLPO-traditional I)
  where
   I : WLPO-variation
@@ -1332,15 +1390,16 @@ being-modulus-of-constancy-decidable-for-all-functions-gives-WLPO ϕ
 
 \end{code}
 
-Although it is not decidable in general whether m is a modulus of
-(eventual) constancy of g, this is decidable if g has some given
-extension (regardless of whether this extension is continuous or not)
+Although it is not decidable in general whether a given m : ℕ is a
+modulus of (eventual) constancy of g, this is decidable if g has some
+given extension (regardless of whether this extension is continuous or
+not)
 
 \begin{code}
 
 second-necessary-condition-for-the-explicit-existence-of-an-extension
  : (g : ℕ → ℕ)
- → ℕ∞-extension g
+ → ℕ∞-extensions-of g
  → (m : ℕ) → is-decidable (m is-modulus-of-constancy-of g)
 second-necessary-condition-for-the-explicit-existence-of-an-extension g (f , e) m
  = IV
@@ -1376,6 +1435,8 @@ eventually constant, because classical logic may (or may not) hold, it
 is decidable whether any given m is a modulus of eventual constancy of g
 if g has a given extension.
 
+We now discuss extendability as property rather than data.
+
 \begin{code}
 
 module eventual-constancy-under-propositional-truncations
@@ -1398,13 +1459,14 @@ module eventual-constancy-under-propositional-truncations
 \end{code}
 
 As promised, any extension of g gives that the type of eventual
-constancy data has split support.
+constancy data has split support if g has at least one explicitly
+given extension.
 
 \begin{code}
 
  eventual-constancy-data-for-extendable-functions-has-split-support
   : (g : ℕ → ℕ)
-  → ℕ∞-extension g
+  → ℕ∞-extensions-of g
   → is-eventually-constant g
   → eventual-constancy-data g
  eventual-constancy-data-for-extendable-functions-has-split-support g extension
@@ -1446,7 +1508,7 @@ it.
 
  is-continuous-extension-gives-is-eventually-constant
   : (g : ℕ → ℕ)
-    ((f , _) : ℕ∞-extension g)
+    ((f , _) : ℕ∞-extensions-of g)
   → is-continuous f
   → is-eventually-constant g
  is-continuous-extension-gives-is-eventually-constant  g e
@@ -1469,12 +1531,12 @@ continuous extension, and so deduce WLPO.
 \begin{code}
 
 all-maps-have-extensions-gives-WLPO
- : ((g : ℕ → ℕ) → ℕ∞-extension g)
+ : ((g : ℕ → ℕ) → ℕ∞-extensions-of g)
  → WLPO
 all-maps-have-extensions-gives-WLPO a
  = I (a id)
  where
-  I : ℕ∞-extension id → WLPO
+  I : ℕ∞-extensions-of id → WLPO
   I (f , e) = noncontinuous-map-gives-WLPO (f , ν)
    where
     ν : ¬ continuous f
@@ -1510,7 +1572,7 @@ decidability-of-modulus-of-constancy-gives-eventual-constancy-¬¬-stable mp g
 sufficient-condition-is-necessary-under-MP
  : MP 𝓤₀
  → (g : ℕ → ℕ)
- → ℕ∞-extension g
+ → ℕ∞-extensions-of g
  → LPO + eventually-constant g
 sufficient-condition-is-necessary-under-MP mp g ext
  = II
@@ -1531,7 +1593,7 @@ sufficient-condition-is-necessary-under-MP mp g ext
 necessary-and-sufficient-condition-for-explicit-extension-under-MP
  : MP 𝓤₀
  → (g : ℕ → ℕ)
- → ℕ∞-extension g ↔ LPO + eventually-constant g
+ → ℕ∞-extensions-of g ↔ LPO + eventually-constant g
 necessary-and-sufficient-condition-for-explicit-extension-under-MP mp g
  = sufficient-condition-is-necessary-under-MP mp g ,
    ℕ∞-extension-explicit-existence-sufficient-condition g
@@ -1651,7 +1713,7 @@ module eventual-constancy-under-propositional-truncations⁺
 
 \end{code}
 
-Notice that the proofs of modulus-down and modulus-up are not by
+Notice that the proofs below of modulus-down and modulus-up are not by
 induction.
 
 \begin{code}
@@ -1711,10 +1773,11 @@ induction.
 
 \end{code}
 
-Although, as proved above, it is not decidable in general whether a
-given n is a modulus of constancy of an arbitrary function g : ℕ → ℕ,
-if we know that n is a modulus of continuity of g, then for any k < n
-we have that it is decidable whether k is a modulus of constancy of g.
+Using this, although, as proved above, it is not decidable in general
+whether a given n is a modulus of constancy of an arbitrary function
+g : ℕ → ℕ, if we know that n is a modulus of continuity of g, then for
+any k < n we have that it is decidable whether k is a modulus of
+constancy of g.
 
 \begin{code}
 
@@ -1779,9 +1842,8 @@ minimal modulus of (eventual) constancy.
 
 We now record the fact that the type of continuous functions ℕ∞ → ℕ is
 equivalent to the type of eventually constant functions ℕ → ℕ, where
-continuity and eventual constancy are formulated as property. But we
-start with a lemma that works with continuity and eventual constancy
-data.
+continuity and eventual constancy are formulated as property, rather
+than data, as above.
 
 TODO. Can we derive the following from the equivalence
 
@@ -1847,9 +1909,9 @@ given above, instead of proving it directly?
 
 Added 20th September 2024.
 
-I think, in retrospect, it would have been a better idea to work with
-minimal moduli of continuity and eventual constancy. In this way, we
-never need to use propositional truncations, because the explicit
+I think that, in retrospect, it would have been a better idea to work
+with minimal moduli of continuity and eventual constancy. In this way,
+we never need to use propositional truncations, because the explicit
 existence of minimal moduli, of continuity or eventual constancy, is
 property rather than data (or property-like data, if you wish).
 
