@@ -6,6 +6,7 @@ module UF.index where
 
 import UF.Base
 import UF.Choice
+import UF.ClassicalLogic
 import UF.Classifiers
 import UF.Classifiers-Old
 import UF.Connected
@@ -17,7 +18,7 @@ import UF.Embeddings
 import UF.Equiv
 import UF.Equiv-FunExt
 import UF.EquivalenceExamples
-import UF.ClassicalLogic
+import UF.ExitPropTrunc
 import UF.FunExt
 import UF.FunExt-Properties
 import UF.FunExt-from-Naive-FunExt

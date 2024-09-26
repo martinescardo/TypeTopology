@@ -52,7 +52,7 @@ open PropositionalTruncation pt
 open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.ImageAndSurjection pt
-open import UF.KrausLemma
+open import UF.ExitPropTrunc
 open import UF.Sets
 open import UF.Sets-Properties
 open import UF.Size hiding (is-small ; is-locally-small)

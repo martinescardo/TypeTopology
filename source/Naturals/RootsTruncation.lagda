@@ -10,6 +10,8 @@ z taken as an abstract zero, including ℕ and 𝟚 with any of its
 points. Recall that a point of a type is called isolated if its
 equality with any other point of the type is decidable.
 
+This file is superseded by the file Naturals.ExitTruncation.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}
@@ -22,6 +24,7 @@ open import Naturals.Order
 open import Notation.Order
 open import UF.Base
 open import UF.DiscreteAndSeparated
+open import UF.ExitPropTrunc
 open import UF.Hedberg
 open import UF.KrausLemma
 open import UF.PropTrunc

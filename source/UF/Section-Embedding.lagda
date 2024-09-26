@@ -17,6 +17,7 @@ open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.Hedberg
 open import UF.KrausLemma
+open import UF.ExitPropTrunc
 open import UF.PropTrunc
 open import UF.Subsingletons
 

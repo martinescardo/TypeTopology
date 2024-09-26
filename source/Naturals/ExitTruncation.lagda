@@ -1,74 +1,53 @@
 Martin Escardo, 17th August 2024 and 18th September 2024.
 
-A result from 2013/03/13 first advertised in the IAS Univalent
-Foundations mailing list inresponse to a question by Andrej Baur,
-recorded in the Homotopy Theory mailing list on 2014/08/14:
-https://groups.google.com/g/homotopytypetheory/c/Z-IuiYcjvTw/m/hv5SytiT-lwJ
+A develop and generalize a result from 2013/03/13 first advertised in
+the IAS Univalent Foundations mailing list in response to a question
+by Andrej Bauer [1]:
 
-\begin{code}
+If A : ℕ → 𝓤 is a family of decidable types,
+then
 
-{-# OPTIONS --safe --without-K #-}
+   ∥ Σ n ꞉ ℕ , A n ∥ → Σ n : ℕ , A n.
 
-module Naturals.ExitTruncation where
+This may seem surprising at first sight. The original proof in [1]
+uses function extensionality and the assumption that A is
+proposition-valued to show that the type
 
-open import MLTT.Spartan
-open import Naturals.Order
-open import Notation.Order
-open import Naturals.RootsTruncation -- temporarily
+  A m × ((k : ℕ) → A k → m ≤ k
 
-open import NotionsOfDecidability.Complemented
-open import NotionsOfDecidability.Decidable
-open import UF.DiscreteAndSeparated
-open import UF.Subsingletons
-open import UF.KrausLemma
-open import UF.Hedberg
-open import UF.PropTrunc
+is a proposition for any m. But, using the results of [2] (or its
+extended version [3]), we can remove both assumptions.
 
+Moreover, in [4] we show that, more generally, if A : ℕ → 𝓤 is a
+family of propositions such that A (n + 1) implies that A n is
+decidable, then
 
-module _ (A : ℕ → 𝓤 ̇ )
-         (δ : is-complemented A)
-      where
+   ∥ Σ n ꞉ ℕ , A n ∥ → Σ n : ℕ , A n,
 
- minimal-witness : (Σ n ꞉ ℕ , A n)
-                 → Σ m ꞉ ℕ , (A m × ((k : ℕ) → A k → m ≤ k))
- minimal-witness (n , aₙ) = m , aₘ , m-is-minimal-witness
-  where
-   open Roots-truncation 𝟚 ₀ (λ b → 𝟚-is-discrete b ₀)
+again with a proof that assumes function extensionality. Here, using
+[2], we are able to remove the assumption of function extensionlity,
+but not that assumption that A is proposition-valued.
 
-   α : ℕ → 𝟚
-   α = characteristic-map A δ
+Moreover, we can construct the propositional truncation of the type
+Σ n ꞉ ℕ , A n in pure Spartan MLTT without assuming that propositional
+truncations exist in general, by considering the type of fixed points
+of a minimization endomap of Σ n ꞉ ℕ , A n. See the module UF.ExitPropTrunc.
 
-   n-is-root : α n ＝ ₀
-   n-is-root = characteristic-map-property₀-back A δ n aₙ
+1. Martin Escardo. 2013/03/13 message to the IAS Univalent Foundations
+   mailing list.
+   https://groups.google.com/g/univalent-foundations/c/SA0dzenV1G4/m/d5iIGdKKNxMJ
 
-   r : Root α
-   r = n , n-is-root
+2. Nicolai Kraus, Martín Escardó, Thierry Coquand & Thorsten Altenkirch.
+   Generalizations of Hedberg’s Theorem.
+   TLCA 2013
+   https://doi.org/10.1007/978-3-642-38946-7_14
 
-   m : ℕ
-   m = μ-root α r
+3. Nicolai Kraus, Martín Escardó, Thierry Coquand & Thorsten Altenkirch.
+   Notions of Anonymous Existence in Martin-Löf Type Theory.
+   Logical Methods in Computer Science, March 24, 2017, Volume 13, Issue 1.
+   https://doi.org/10.23638/LMCS-13(1:15)2017
 
-   m-is-root : α m ＝ ₀
-   m-is-root = μ-root-is-root α r
-
-   aₘ : A m
-   aₘ = characteristic-map-property₀ A δ m m-is-root
-
-   m-is-minimal-root : (k : ℕ) → α k ＝ ₀ → m ≤ k
-   m-is-minimal-root = μ-root-is-minimal α n n-is-root
-
-   m-is-minimal-witness : (k : ℕ) → A k → m ≤ k
-   m-is-minimal-witness k aₖ = m-is-minimal-root k k-is-root
-    where
-     k-is-root : α k ＝ ₀
-     k-is-root = characteristic-map-property₀-back A δ k aₖ
-
-\end{code}
-
-Added 18th September 2024. The following "exit-truncation lemma"
-generalizes the above development with a simpler proof. But this
-result was already known in
-
-   Martín H. Escardó and Chuangjie Xu. The inconsistency of a
+4. Martín H. Escardó and Chuangjie Xu. The inconsistency of a
    Brouwerian continuity principle with the Curry-Howard
    interpretation. 13th International Conference on Typed Lambda
    Calculi and Applications (TLCA 2015).
@@ -81,48 +60,72 @@ extensionlity.
 
 \begin{code}
 
-private
- abstract
-  minimal-pair⁺ : (A : ℕ → 𝓤 ̇ )
-                → ((n : ℕ) → A n → (k : ℕ) → k < n → is-decidable (A k))
-                → (n : ℕ)
-                → A n
-                → Σ (k , aₖ) ꞉ Σ A , ((i : ℕ) → A i → k ≤ i)
-  minimal-pair⁺ A δ 0        a₀   = (0 , a₀) , (λ i aᵢ → zero-least i)
-  minimal-pair⁺ A δ (succ n) aₙ₊₁ = II
-   where
-    IH : Σ (j , aⱼ₊₁) ꞉ Σ (A ∘ succ) , ((i : ℕ) → A (succ i) → j ≤ i)
-    IH = minimal-pair⁺ (A ∘ succ) (λ n aₙ₊₁ j → δ (succ n) aₙ₊₁ (succ j)) n aₙ₊₁
+{-# OPTIONS --safe --without-K #-}
 
-    I : type-of IH
-      → Σ (k , aₖ) ꞉ Σ A , ((i : ℕ) → A i → k ≤ i)
-    I ((j , aⱼ₊₁) , b) =
-     Cases (δ (succ n) aₙ₊₁ 0 (zero-least j))
-      (λ (a₀ :    A 0) → (0 , a₀)        , (λ i aᵢ → zero-least i))
-      (λ (ν₀  : ¬ A 0) → (succ j , aⱼ₊₁) , I₀ ν₀)
-       where
-        I₀ : ¬ A 0 → (i : ℕ) (aᵢ : A i) → j < i
-        I₀ ν₀ 0        a₀   = 𝟘-elim (ν₀ a₀)
-        I₀ ν₀ (succ i) aᵢ₊₁ = b i aᵢ₊₁
+module Naturals.ExitTruncation where
 
-    II : Σ (k , aⱼ) ꞉ Σ A , ((i : ℕ) → A i → k ≤ i)
-    II = I IH
+open import MLTT.Spartan
+open import Naturals.Order
+open import Notation.Order
+open import NotionsOfDecidability.Complemented
+open import NotionsOfDecidability.Decidable
+open import UF.DiscreteAndSeparated
+open import UF.Hedberg
+open import UF.KrausLemma
+open import UF.ExitPropTrunc
+open import UF.PropTrunc
+open import UF.Subsingletons
 
 module _ (A : ℕ → 𝓤 ̇ )
          (δ : (n : ℕ) → A n → (k : ℕ) → k < n → is-decidable (A k))
        where
 
- minimal-pair : Σ A → Σ A
- minimal-pair (n , aₙ) = pr₁ (minimal-pair⁺ A δ n aₙ)
+ minimal-witness⁺ : (Σ n ꞉ ℕ , A n)
+                  → Σ k ꞉ ℕ , (A k × ((i : ℕ) → A i → k ≤ i))
+ minimal-witness⁺ = uncurry (μ A δ)
+  where
+   μ : (A : ℕ → 𝓤 ̇ )
+     → ((n : ℕ) → A n → (k : ℕ) → k < n → is-decidable (A k))
+     → (n : ℕ)
+     → A n
+     → Σ k ꞉ ℕ , (A k × ((i : ℕ) → A i → k ≤ i))
+   μ A δ 0        a₀   = 0 , a₀ , (λ i aᵢ → zero-least i)
+   μ A δ (succ n) aₙ₊₁ = II
+    where
+     IH : Σ j ꞉ ℕ , ((A (succ j) × ((i : ℕ) → A (succ i) → j ≤ i)))
+     IH = μ (A ∘ succ) (λ n aₙ₊₁ j → δ (succ n) aₙ₊₁ (succ j)) n aₙ₊₁
+
+     I : type-of IH
+       → Σ k ꞉ ℕ , A k × ((i : ℕ) → A i → k ≤ i)
+     I (j , aⱼ₊₁ , b) =
+      Cases (δ (succ n) aₙ₊₁ 0 (zero-least j))
+       (λ (a₀ :    A 0) → (0      , a₀   , (λ i aᵢ → zero-least i)))
+       (λ (ν₀  : ¬ A 0) → (succ j , aⱼ₊₁ , I₀ ν₀))
+        where
+         I₀ : ¬ A 0 → (i : ℕ) (aᵢ : A i) → j < i
+         I₀ ν₀ 0        a₀   = 𝟘-elim (ν₀ a₀)
+         I₀ ν₀ (succ i) aᵢ₊₁ = b i aᵢ₊₁
+
+     II : Σ k ꞉ ℕ , (A k ×  ((i : ℕ) → A i → k ≤ i))
+     II = I IH
+
+\end{code}
+
+We name the projections for convenience..
+
+\begin{code}
 
  minimal-number : Σ A → ℕ
- minimal-number = pr₁ ∘ minimal-pair
+ minimal-number σ = pr₁ (minimal-witness⁺ σ)
 
  minimal-number-requirement : (σ : Σ A) → A (minimal-number σ)
- minimal-number-requirement = pr₂ ∘ minimal-pair
+ minimal-number-requirement σ = pr₁ (pr₂ (minimal-witness⁺ σ))
 
  minimality : (σ : Σ A) → (i : ℕ) → A i → minimal-number σ ≤ i
- minimality (n , aₙ) = pr₂ (minimal-pair⁺ A δ n aₙ)
+ minimality σ = pr₂ (pr₂ (minimal-witness⁺ σ))
+
+ minimal-pair : Σ A → Σ A
+ minimal-pair σ = minimal-number σ , minimal-number-requirement σ
 
  minimal-pair-wconstant : is-prop-valued-family A → wconstant minimal-pair
  minimal-pair-wconstant A-prop-valued σ σ' =
@@ -133,6 +136,24 @@ module _ (A : ℕ → 𝓤 ̇ )
      ≤-anti _ _
       (minimality σ  (minimal-number σ') (minimal-number-requirement σ'))
       (minimality σ' (minimal-number σ)  (minimal-number-requirement σ)))
+
+\end{code}
+
+A particular case.
+
+\begin{code}
+
+minimal-witness : (A : ℕ → 𝓤 ̇ )
+                → ((n : ℕ) → is-decidable (A n))
+                → (Σ n ꞉ ℕ , A n)
+                → Σ m ꞉ ℕ , (A m × ((k : ℕ) → A k → m ≤ k))
+minimal-witness A δ = minimal-witness⁺ A (λ n aₙ k l → δ k)
+
+\end{code}
+
+We apply the above to exit truncations.
+
+\begin{code}
 
 module exit-truncations (pt : propositional-truncations-exist) where
 
@@ -148,6 +169,12 @@ module exit-truncations (pt : propositional-truncations-exist) where
   exit-truncation⁺ = collapsible-gives-split-support
                       (minimal-pair A δ ,
                        minimal-pair-wconstant A δ A-is-prop-valued)
+\end{code}
+
+Not only can be exit the truncation, but also we can say that the
+result is minimal.
+
+\begin{code}
 
   exit-truncation⁺-minimality
    : (s : ∥ Σ A ∥) (i : ℕ) → A i → pr₁ (exit-truncation⁺ s) ≤ i
@@ -170,51 +197,48 @@ module exit-truncations (pt : propositional-truncations-exist) where
 
 \end{code}
 
-This is not quite a generalization of the previous result, because the
-previous result doesn't have the assumption that A is prop-valued.
-
-TODO. Can we remove the prop-valuedness assumption?
-
 In the following particular case of interest, the prop-valuedness
 assumption can be removed.
 
 \begin{code}
 
- module _ (B : ℕ → 𝓤 ̇ )
-          (d : (n : ℕ) → is-decidable (B n))
+ module _ (A : ℕ → 𝓤 ̇ )
+          (d : (n : ℕ) → is-decidable (A n))
         where
 
   private
-    A : ℕ → 𝓤₀ ̇
-    A n = ∥ B n ∥⟨ d n ⟩
+    B : ℕ → 𝓤₀ ̇
+    B n = ∥ A n ∥⟨ d n ⟩
 
-    A-is-prop-valued : is-prop-valued-family A
-    A-is-prop-valued n = ∥∥⟨⟩-is-prop (d n)
+    B-is-prop-valued : is-prop-valued-family B
+    B-is-prop-valued n = ∥∥⟨ d n ⟩-is-prop
 
-    δ : (n : ℕ) → A n → (k : ℕ) → k < n → is-decidable (A k)
-    δ n aₙ k l = ∥∥⟨⟩-is-decidable (d k)
+    δ : (n : ℕ) → B n → (k : ℕ) → k < n → is-decidable (B k)
+    δ n bₙ k l = ∥∥⟨ d k ⟩-is-decidable
 
-    f : Σ B → Σ A
-    f (n , bₙ) = n , ∣ bₙ ∣⟨ d n ⟩
+    f : Σ A → Σ B
+    f (n , aₙ) = n , ∣ aₙ ∣⟨ d n ⟩
 
-    g : Σ A → Σ B
-    g (n , aₙ) = (n , ∣∣⟨⟩-exit (d n) aₙ)
+    g : Σ B → Σ A
+    g (n , bₙ) = (n , ∣∣⟨ d n ⟩-exit bₙ)
 
-  exit-truncation : ∥ Σ B ∥ → Σ B
-  exit-truncation t = g (exit-truncation⁺ A A-is-prop-valued δ (∥∥-functor f t))
+  exit-truncation : ∥ Σ A ∥ → Σ A
+  exit-truncation t = g (exit-truncation⁺ B B-is-prop-valued δ (∥∥-functor f t))
 
   exit-truncation-minimality
-   : (t : ∥ Σ B ∥) (i : ℕ) → B i → pr₁ (exit-truncation t) ≤ i
-  exit-truncation-minimality t i b =
+   : (t : ∥ Σ A ∥) (i : ℕ) → A i → pr₁ (exit-truncation t) ≤ i
+  exit-truncation-minimality t i a =
    exit-truncation⁺-minimality
-    A
-    A-is-prop-valued
+    B
+    B-is-prop-valued
     δ
     (∥∥-functor f t)
     i
-    ∣ b ∣⟨ d i ⟩
+    ∣ a ∣⟨ d i ⟩
 
 \end{code}
+
+TODO. Can we remove the prop-valuedness assumption in general?
 
 Added 19th September 2024.
 
