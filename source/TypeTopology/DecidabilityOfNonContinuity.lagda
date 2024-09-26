@@ -1869,7 +1869,7 @@ result from general reasons, it does hold:
 
  characterization-of-type-of-continuous-functions-≃'
   : (Σ f ꞉ (ℕ∞ → ℕ) , is-continuous f)
-  ≃ (Σ g ꞉ (ℕ → ℕ), is-eventually-constant g)
+  ≃ (Σ g ꞉ (ℕ → ℕ)  , is-eventually-constant g)
  characterization-of-type-of-continuous-functions-≃'
   = ϕ , ϕ-is-equiv
   where
