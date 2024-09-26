@@ -493,7 +493,8 @@ module continuity-criteria (pt : propositional-truncations-exist) where
  module _ (f : ℕ∞ → ℕ) where
 
   continuity-data-gives-continuity-property
-   : continuity-data f → is-continuous f
+   : continuity-data f
+   → is-continuous f
   continuity-data-gives-continuity-property
    = ∣_∣
 
@@ -1844,13 +1845,6 @@ We now record the fact that the type of continuous functions ℕ∞ → ℕ is
 equivalent to the type of eventually constant functions ℕ → ℕ, where
 continuity and eventual constancy are formulated as property, rather
 than data, as above.
-
-TODO. Can we derive the following from the equivalence
-
-          (Σ f ꞉ (ℕ∞ → ℕ) , continuous f)
-        ≃ (Σ g ꞉ (ℕ → ℕ)  , eventually-constant g)
-
-given above, instead of proving it directly?
 
 \begin{code}
 
