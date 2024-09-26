@@ -1846,6 +1846,23 @@ equivalent to the type of eventually constant functions ℕ → ℕ, where
 continuity and eventual constancy are formulated as property, rather
 than data, as above.
 
+We have shown above that
+
+          (Σ f ꞉ (ℕ∞ → ℕ) , continuous f)
+        ≃ (Σ g ꞉ (ℕ → ℕ)  , eventually-constant g).
+
+It doesn't follow from general reasons that
+
+          (Σ f ꞉ (ℕ∞ → ℕ) , ∥ continuous f ∥ )
+        ≃ (Σ g ꞉ (ℕ → ℕ)  , ∥ eventually-constant g ∥).
+
+In fact, for example, we have that 𝟚 × 𝟛 ≃ 𝟛 × 𝟚, but we don't have
+that 𝟚 × ∥ 𝟛 ∥ ≃ 𝟛 × ∥ 𝟚 ∥, because ∥ 𝟛 ∥ ≃ 𝟙 ≃ ∥ 𝟚 ∥ and certainly it
+isn't the case that 𝟚 × 𝟙 ≃ 𝟛 × 𝟙.
+
+Nevertheless, although the above doesn't follow from the previous
+result from general reasons, it does hold:
+
 \begin{code}
 
  open continuity-criteria pt
