@@ -213,8 +213,10 @@ We demonstrate the equivalence of -1-truncation and propositional truncation:
 \end{code}
 
 We provide the canonical predecessor map and show truncations are closed under
-equivalence and successive applications of truncation (TODO: other closure
-conditions (?)).
+equivalence and successive applications of truncation
+
+TODO: closure under retracts, embeddings, etc. Additionally, functoriality of
+∥⟨_⟩∥ₙ allows us to simplify closure proofs.
 
 \begin{code}
  canonical-pred-map : {X : 𝓤 ̇} {n : ℕ₋₂}
