@@ -1,7 +1,6 @@
 Ian Ray, 2 June 2024
 
-Experimental modification by Martin Escardo and Tom de Jong 12th
-September 2024.
+Modification by Martin Escardo and Tom de Jong 12th September 2024.
 
 Minor modifications by Tom de Jong on 4 September 2024
 
@@ -215,10 +214,10 @@ truncation-levels-closed-under-≃ {𝓤} {𝓥} {−2} = ≃-is-singleton fe'
 truncation-levels-closed-under-≃ {𝓤} {𝓥} {succ n} tX =
  truncation-levels-closed-under-≃⁺
 
-𝕋-is-of-next-hlevel : {n : ℕ₋₂} {𝓤 : Universe}
-                    → is-univalent 𝓤
-                    → (𝕋 n 𝓤) is (n + 1) truncated
-𝕋-is-of-next-hlevel ua (X , l) (Y , l') =
+𝕋-is-of-next-truncation-level : {n : ℕ₋₂} {𝓤 : Universe}
+                              → is-univalent 𝓤
+                              → (𝕋 n 𝓤) is (n + 1) truncated
+𝕋-is-of-next-truncation-level ua (X , l) (Y , l') =
  truncated-types-closed-under-equiv I (truncation-levels-closed-under-≃ l l')
  where
   I = ((X , l) ＝ (Y , l')) ≃⟨ II ⟩

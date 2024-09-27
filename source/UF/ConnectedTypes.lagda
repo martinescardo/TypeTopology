@@ -1,5 +1,7 @@
 Ian Ray, 23rd July 2024
 
+Modifactions made on 26th September 2024
+
 We define connected types and maps. We then explore relationships, closure
 properties and characterizations of interest pertaining to the concept of
 connectedness.
@@ -167,20 +169,20 @@ the identity type at one level below. We will assume univalence only when necess
                                                      → is-univalent 𝓤
                                                      → X is (succ k) connected
                                                      → ∥ X ∥
-                                                      × X is-locally k connected
+                                                     × X is-locally k connected
  connected-types-are-inhabited-and-locally-connected ua X-conn =
   (inhabited-if-connected X-conn , connected-types-are-locally-connected ua X-conn)
 
  inhabited-and-locally-connected-types-are-connected : {X : 𝓤 ̇} {k : ℕ₋₂}
                                                      → is-univalent 𝓤
                                                      → ∥ X ∥
-                                                      × X is-locally k connected
+                                                     → X is-locally k connected
                                                      → X is (succ k) connected
  inhabited-and-locally-connected-types-are-connected
-  {_} {_} {−2} ua (anon-x , id-conn) =
+  {_} {_} {−2} ua anon-x id-conn =
   pointed-props-are-singletons (prop-trunc-to-−1-trunc pt anon-x) −1-trunc-is-prop
  inhabited-and-locally-connected-types-are-connected
-  {_} {_} {succ k} ua (anon-x , id-conn) =
+  {_} {_} {succ k} ua anon-x id-conn =
   ∥∥-rec (being-singleton-is-prop fe)
          (λ x → (∣ x ∣[ succ (succ k) ]
           , ∥∥ₙ-ind (λ v → truncation-levels-are-upper-closed
@@ -194,7 +196,7 @@ the identity type at one level below. We will assume univalence only when necess
                             ↔ ∥ X ∥ × X is-locally k connected
  connected-characterization ua =
   (connected-types-are-inhabited-and-locally-connected ua
-   , inhabited-and-locally-connected-types-are-connected ua)
+   , uncurry (inhabited-and-locally-connected-types-are-connected ua))
 
  ap-is-less-connected : {X : 𝓤 ̇} {Y : 𝓥 ̇} {k : ℕ₋₂} 
                       → (ua : is-univalent (𝓤 ⊔ 𝓥))

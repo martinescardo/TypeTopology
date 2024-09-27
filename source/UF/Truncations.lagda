@@ -2,6 +2,8 @@ Ian Ray, 23 July 2024
 
 Minor modifications by Tom de Jong on 4 September 2024
 
+Modifactions made by Ian Ray on 26th September 2024.
+
 Using records we define the general truncation of a type; this will include
 a constructor, an induction principle and a computation rule
 (up to identification). We then proceed to develop some machinery derived from
@@ -35,7 +37,7 @@ open import Notation.Decimal
 
 \end{code}
 
-We define the general notion of truncations using record types.
+We define the general notion of truncation using record types.
 
 \begin{code}
 
@@ -68,6 +70,11 @@ computation rules.
          → (X → Y)
          → ∥ X ∥[ n ] → Y
  ∥∥ₙ-rec m f s = ∥∥ₙ-ind (λ - → m) f s
+
+ ∥⟨_⟩∥ₙ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {n : ℕ₋₂}
+        → (f : X → Y)
+        → ∥ X ∥[ n ] → ∥ Y ∥[ n ]
+ ∥⟨_⟩∥ₙ {_} {_} {_} {_} {n} f = ∥∥ₙ-rec ∥∥ₙ-is-truncated (∣_∣[ n ] ∘ f)
 
  ∥∥ₙ-uniqueness : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {n : ℕ₋₂}
                 → Y is n truncated
@@ -135,7 +142,7 @@ computation rules.
      II : ∥∥ₙ-ind (m ∣ x ∣[ n ]) (g x) ∣ y ∣[ n ] ＝ g x y
      II = ∥∥ₙ-ind-comp (m ∣ x ∣[ n ]) (g x) y
 
-\end{code}
+\end{code} 
 
 We characterize the first couple levels of truncation.
 
@@ -155,7 +162,7 @@ We characterize the first couple levels of truncation.
 
 \end{code}
 
-We demonstrate the equivalence of one-truncation and propositional truncation:
+We demonstrate the equivalence of -1-truncation and propositional truncation:
  ∥ X ∥[ −1 ] ≃ ∥ X ∥
 
 \begin{code}
@@ -308,7 +315,7 @@ for details see: https://unimath.github.io/agda-unimath/foundation.truncations.
            where
 
   trunc-id-family : ∥ X ∥[ succ n ] → 𝕋 n 𝓤
-  trunc-id-family = ∥∥ₙ-rec (𝕋-is-of-next-hlevel ua)
+  trunc-id-family = ∥∥ₙ-rec (𝕋-is-of-next-truncation-level ua)
                             (λ x' → (∥ x ＝ x' ∥[ n ] , ∥∥ₙ-is-truncated))
 
   trunc-id-family-type : ∥ X ∥[ succ n ] → 𝓤 ̇
@@ -322,7 +329,7 @@ for details see: https://unimath.github.io/agda-unimath/foundation.truncations.
                            → trunc-id-family-type ∣ x' ∣[ succ n ]
                              ＝ ∥ x ＝ x' ∥[ n ]
   trunc-id-family-computes x' =
-    ap pr₁ (∥∥ₙ-rec-comp (𝕋-is-of-next-hlevel ua)
+    ap pr₁ (∥∥ₙ-rec-comp (𝕋-is-of-next-truncation-level ua)
                          (λ x' → (∥ x ＝ x' ∥[ n ] , ∥∥ₙ-is-truncated))
                          x')
 
