@@ -90,19 +90,19 @@ computation rules.
       → ∥ X ∥[ n ] → ∥ Y ∥[ n ]
  ∥_∥ₙ {_} {_} {_} {_} {n} f = ∥∥ₙ-rec ∥∥ₙ-is-truncated (∣_∣[ n ] ∘ f)
 
- ∥∥ₙ-functorial-id : {X : 𝓤 ̇ } {n : ℕ₋₂}
+ ∥∥ₙ-id-functorial : {X : 𝓤 ̇ } {n : ℕ₋₂}
                    → ∥ id ∥ₙ ∼ id
- ∥∥ₙ-functorial-id {_} {X} {n} =
+ ∥∥ₙ-id-functorial {_} {X} {n} =
   ∥∥ₙ-uniqueness ∥∥ₙ-is-truncated ∥ id ∥ₙ id H
   where
    H : (x : X) → ∥ id ∥ₙ ∣ x ∣[ n ] ＝ ∣ x ∣[ n ]
    H = ∥∥ₙ-rec-comp ∥∥ₙ-is-truncated ∣_∣[ n ]
 
- ∥∥ₙ-functorial-comp : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {n : ℕ₋₂}
-                     → (f : X → Y)
-                     → (g : Y → Z)
-                     → ∥ g ∘ f ∥ₙ ∼ ∥ g ∥ₙ ∘ ∥ f ∥ₙ
- ∥∥ₙ-functorial-comp {_} {_} {_} {X} {_} {_} {n} f g =
+ ∥∥ₙ-composition-functorial : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {n : ℕ₋₂}
+                            → (f : X → Y)
+                            → (g : Y → Z)
+                            → ∥ g ∘ f ∥ₙ ∼ ∥ g ∥ₙ ∘ ∥ f ∥ₙ
+ ∥∥ₙ-composition-functorial {_} {_} {_} {X} {_} {_} {n} f g =
   ∥∥ₙ-uniqueness ∥∥ₙ-is-truncated ∥ g ∘ f ∥ₙ (∥ g ∥ₙ ∘ ∥ f ∥ₙ) H
   where
    H : (x : X) → ∥ g ∘ f ∥ₙ ∣ x ∣[ n ] ＝ ∥ g ∥ₙ (∥ f ∥ₙ ∣ x ∣[ n ])
