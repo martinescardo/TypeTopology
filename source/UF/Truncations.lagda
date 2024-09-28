@@ -27,6 +27,7 @@ open import MLTT.Spartan
 open import UF.Base
 open import UF.Equiv
 open import UF.PropTrunc
+open import UF.Retracts
 open import UF.Sets
 open import UF.Subsingletons
 open import UF.TruncationLevels
@@ -249,6 +250,32 @@ TODO: closure under retracts, embeddings, etc. Note that functoriality of
 ∥_∥ₙ allows us to simplify existing closure proofs.
 
 \begin{code}
+
+ truncation-closed-under-retract : {X : 𝓤 ̇} {Y : 𝓥 ̇} {n : ℕ₋₂}
+                                 → retract Y of X
+                                 → retract ∥ Y ∥[ n ] of ∥ X ∥[ n ]
+ truncation-closed-under-retract {_} {_} {X} {Y} {n} (r , s , H) =
+  (∥ r ∥ₙ , ∥ s ∥ₙ , G)
+  where
+   G' : (y : Y) → ∥ r ∘ s ∥ₙ ∣ y ∣[ n ] ＝ ∥ id ∥ₙ ∣ y ∣[ n ]
+   G' y = ∥ r ∘ s ∥ₙ ∣ y ∣[ n ]    ＝⟨ I ⟩
+          ∣ r (s y) ∣[ n ]         ＝⟨ II ⟩
+          ∣ y ∣[ n ]               ＝⟨ III ⟩
+          ∥ id ∥ₙ ∣ y ∣[ n ]       ∎
+    where
+     I = ∥∥ₙ-rec-comp ∥∥ₙ-is-truncated ∣ r ∘ s ∣ₙ y
+     II = ap ∣_∣[ n ] (H y)
+     III = ∥∥ₙ-id-functorial ∣ y ∣[ n ] ⁻¹
+   G : ∥ r ∥ₙ ∘ ∥ s ∥ₙ ∼ id
+   G y = (∥ r ∥ₙ ∘ ∥ s ∥ₙ) y ＝⟨ I ⟩
+         ∥ r ∘ s ∥ₙ y        ＝⟨ II ⟩
+         ∥ id ∥ₙ y           ＝⟨ III ⟩
+         y                   ∎
+     where
+      I = ∥∥ₙ-composition-functorial s r y ⁻¹
+      II = ∥∥ₙ-uniqueness ∥∥ₙ-is-truncated ∥ r ∘ s ∥ₙ ∥ id ∥ₙ G' y
+      III = ∥∥ₙ-id-functorial y
+
 
  truncation-closed-under-equiv : {X : 𝓤 ̇} {Y : 𝓥 ̇} {n : ℕ₋₂}
                                → X ≃ Y
