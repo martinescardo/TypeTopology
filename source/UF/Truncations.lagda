@@ -85,35 +85,35 @@ computation rules.
               → (x : X) → ∥∥ₙ-rec m g ∣ x ∣[ n ] ＝ g x
  ∥∥ₙ-rec-comp m = ∥∥ₙ-ind-comp (λ - → m)
 
- ∥⟨_⟩∥ₙ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {n : ℕ₋₂}
-        → (f : X → Y)
-        → ∥ X ∥[ n ] → ∥ Y ∥[ n ]
- ∥⟨_⟩∥ₙ {_} {_} {_} {_} {n} f = ∥∥ₙ-rec ∥∥ₙ-is-truncated (∣_∣[ n ] ∘ f)
+ ∥_∥ₙ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {n : ℕ₋₂}
+      → (f : X → Y)
+      → ∥ X ∥[ n ] → ∥ Y ∥[ n ]
+ ∥_∥ₙ {_} {_} {_} {_} {n} f = ∥∥ₙ-rec ∥∥ₙ-is-truncated (∣_∣[ n ] ∘ f)
 
  ∥∥ₙ-functorial-id : {X : 𝓤 ̇ } {n : ℕ₋₂}
-                   → ∥⟨ id ⟩∥ₙ ∼ id
+                   → ∥ id ∥ₙ ∼ id
  ∥∥ₙ-functorial-id {_} {X} {n} =
-  ∥∥ₙ-uniqueness ∥∥ₙ-is-truncated ∥⟨ id ⟩∥ₙ id H
+  ∥∥ₙ-uniqueness ∥∥ₙ-is-truncated ∥ id ∥ₙ id H
   where
-   H : (x : X) → ∥⟨ id ⟩∥ₙ ∣ x ∣[ n ] ＝ ∣ x ∣[ n ]
-   H = ∥∥ₙ-rec-comp ∥∥ₙ-is-truncated ∣_∣[ n ]      
+   H : (x : X) → ∥ id ∥ₙ ∣ x ∣[ n ] ＝ ∣ x ∣[ n ]
+   H = ∥∥ₙ-rec-comp ∥∥ₙ-is-truncated ∣_∣[ n ]
 
  ∥∥ₙ-functorial-comp : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {n : ℕ₋₂}
                      → (f : X → Y)
                      → (g : Y → Z)
-                     → ∥⟨ g ∘ f ⟩∥ₙ ∼ ∥⟨ g ⟩∥ₙ ∘ ∥⟨ f ⟩∥ₙ
+                     → ∥ g ∘ f ∥ₙ ∼ ∥ g ∥ₙ ∘ ∥ f ∥ₙ
  ∥∥ₙ-functorial-comp {_} {_} {_} {X} {_} {_} {n} f g =
-  ∥∥ₙ-uniqueness ∥∥ₙ-is-truncated ∥⟨ g ∘ f ⟩∥ₙ (∥⟨ g ⟩∥ₙ ∘ ∥⟨ f ⟩∥ₙ) H
+  ∥∥ₙ-uniqueness ∥∥ₙ-is-truncated ∥ g ∘ f ∥ₙ (∥ g ∥ₙ ∘ ∥ f ∥ₙ) H
   where
-   H : (x : X) → ∥⟨ g ∘ f ⟩∥ₙ ∣ x ∣[ n ] ＝ ∥⟨ g ⟩∥ₙ (∥⟨ f ⟩∥ₙ ∣ x ∣[ n ])
-   H x = ∥⟨ g ∘ f ⟩∥ₙ ∣ x ∣[ n ]         ＝⟨ I ⟩
-         ∣ g (f x) ∣[ n ]                ＝⟨ II ⟩
-         ∥⟨ g ⟩∥ₙ ∣ f x ∣[ n ]           ＝⟨ III ⟩
-         ∥⟨ g ⟩∥ₙ (∥⟨ f ⟩∥ₙ ∣ x ∣[ n ])  ∎ 
+   H : (x : X) → ∥ g ∘ f ∥ₙ ∣ x ∣[ n ] ＝ ∥ g ∥ₙ (∥ f ∥ₙ ∣ x ∣[ n ])
+   H x = ∥ g ∘ f ∥ₙ ∣ x ∣[ n ]         ＝⟨ I ⟩
+         ∣ g (f x) ∣[ n ]              ＝⟨ II ⟩
+         ∥ g ∥ₙ ∣ f x ∣[ n ]           ＝⟨ III ⟩
+         ∥ g ∥ₙ (∥ f ∥ₙ ∣ x ∣[ n ])    ∎ 
     where
      I = ∥∥ₙ-rec-comp ∥∥ₙ-is-truncated (∣_∣[ n ] ∘ g ∘ f) x
      II = ∥∥ₙ-rec-comp ∥∥ₙ-is-truncated (∣_∣[ n ] ∘ g) (f x) ⁻¹
-     III = ap ∥⟨ g ⟩∥ₙ (∥∥ₙ-rec-comp ∥∥ₙ-is-truncated (∣_∣[ n ] ∘ f) x) ⁻¹
+     III = ap ∥ g ∥ₙ (∥∥ₙ-rec-comp ∥∥ₙ-is-truncated (∣_∣[ n ] ∘ f) x) ⁻¹
 
  ∥∥ₙ-rec₂ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {n : ℕ₋₂}
           → Z is n truncated
@@ -215,8 +215,8 @@ We demonstrate the equivalence of -1-truncation and propositional truncation:
 We provide the canonical predecessor map and show truncations are closed under
 equivalence and successive applications of truncation
 
-TODO: closure under retracts, embeddings, etc. Additionally, functoriality of
-∥⟨_⟩∥ₙ allows us to simplify closure proofs.
+TODO: closure under retracts, embeddings, etc. Note that functoriality of
+∥_∥ₙ allows us to simplify existing closure proofs.
 
 \begin{code}
  canonical-pred-map : {X : 𝓤 ̇} {n : ℕ₋₂}
