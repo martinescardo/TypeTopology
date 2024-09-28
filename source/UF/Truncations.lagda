@@ -79,6 +79,14 @@ computation rules.
  ∥∥ₙ-uniqueness m f g =
   ∥∥ₙ-ind (λ s → truncation-levels-closed-under-Id m (f s) (g s))
 
+ to-∼-of-maps-between-truncated-types : {X : 𝓤 ̇} {Y : 𝓥 ̇} {n : ℕ₋₂}
+                                      → (f g : ∥ X ∥[ n ] → ∥ Y ∥[ n ])
+                                      → ((x : X)
+                                            → f (∣ x ∣[ n ]) ＝ g (∣ x ∣[ n ]))
+                                      → f ∼ g
+ to-∼-of-maps-between-truncated-types {𝓤} {𝓥} {X} {Y} {n} f g =
+  ∥∥ₙ-uniqueness ∥∥ₙ-is-truncated f g
+
  ∥∥ₙ-rec-comp : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {n : ℕ₋₂}
               → (m : Y is n truncated)
               → (g : X → Y)
@@ -217,11 +225,7 @@ We demonstrate the equivalence of -1-truncation and propositional truncation:
 
 \end{code}
 
-We provide the canonical predecessor map and show truncations are closed under
-equivalence and successive applications of truncation
-
-TODO: closure under retracts, embeddings, etc. Note that functoriality of
-∥_∥ₙ allows us to simplify existing closure proofs.
+We define the canonical predecessor map and give a computation rule.
 
 \begin{code}
  canonical-pred-map : {X : 𝓤 ̇} {n : ℕ₋₂}
@@ -236,22 +240,15 @@ TODO: closure under retracts, embeddings, etc. Note that functoriality of
   ∥∥ₙ-rec-comp (truncation-levels-are-upper-closed ∥∥ₙ-is-truncated)
                ∣_∣[ n ] x
 
- to-∼-of-maps-with-truncated-domain : {X : 𝓤 ̇} {Y : 𝓥 ̇} {n : ℕ₋₂}
-                                    → (f g : ∥ X ∥[ n ] → Y)
-                                    → Y is n truncated
-                                    → ((x : X)
-                                          → f (∣ x ∣[ n ]) ＝ g (∣ x ∣[ n ]))
-                                    → f ∼ g
- to-∼-of-maps-with-truncated-domain f g m =
-  ∥∥ₙ-ind (λ - → truncation-levels-closed-under-Id m (f -) (g -))
+\end{code}
 
- to-∼-of-maps-between-truncated-types : {X : 𝓤 ̇} {Y : 𝓥 ̇} {n : ℕ₋₂}
-                                      → (f g : ∥ X ∥[ n ] → ∥ Y ∥[ n ])
-                                      → ((x : X)
-                                            → f (∣ x ∣[ n ]) ＝ g (∣ x ∣[ n ]))
-                                      → f ∼ g
- to-∼-of-maps-between-truncated-types {𝓤} {𝓥} {X} {Y} {n} f g =
-  to-∼-of-maps-with-truncated-domain f g ∥∥ₙ-is-truncated
+We show truncations are closed under equivalence and successive applications
+of truncation.
+
+TODO: closure under retracts, embeddings, etc. Note that functoriality of
+∥_∥ₙ allows us to simplify existing closure proofs.
+
+\begin{code}
 
  truncation-closed-under-equiv : {X : 𝓤 ̇} {Y : 𝓥 ̇} {n : ℕ₋₂}
                                → X ≃ Y
@@ -296,11 +293,11 @@ TODO: closure under retracts, embeddings, etc. Note that functoriality of
    b : ∥ ∥ X ∥[ succ n ] ∥[ n ] → ∥ X ∥[ n ]
    b = ∥∥ₙ-rec ∥∥ₙ-is-truncated canonical-pred-map
    G : f ∘ b ∼ id
-   G = to-∼-of-maps-with-truncated-domain (f ∘ b) id ∥∥ₙ-is-truncated
-        (to-∼-of-maps-with-truncated-domain
+   G = ∥∥ₙ-uniqueness ∥∥ₙ-is-truncated (f ∘ b) id 
+        (∥∥ₙ-uniqueness
+          (truncation-levels-are-upper-closed ∥∥ₙ-is-truncated)
           (f ∘ b ∘ ∣_∣[ n ])
           ∣_∣[ n ]
-          (truncation-levels-are-upper-closed ∥∥ₙ-is-truncated)
           G')
     where
      G' : (x : X)
@@ -315,7 +312,7 @@ TODO: closure under retracts, embeddings, etc. Note that functoriality of
        II = ap f (canonical-pred-map-comp x)
        III = ∥∥ₙ-rec-comp ∥∥ₙ-is-truncated (λ _ → ∣ ∣ _ ∣[ succ n ] ∣[ n ]) x
    H : b ∘ f ∼ id
-   H = to-∼-of-maps-with-truncated-domain (b ∘ f) id ∥∥ₙ-is-truncated H'
+   H = ∥∥ₙ-uniqueness ∥∥ₙ-is-truncated (b ∘ f) id H'
     where
      H' : (x : X) → b (f (∣ x ∣[ n ])) ＝ (∣ x ∣[ n ])
      H' x = b (f (∣ x ∣[ n ]))                   ＝⟨ I ⟩
