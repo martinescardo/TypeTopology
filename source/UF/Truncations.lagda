@@ -128,24 +128,30 @@ computation rules.
      I = ∥∥ₙ-rec-comp ∥∥ₙ-is-truncated ∣ g ∘ f ∣ₙ x
      II = ∥∥ₙ-rec-comp ∥∥ₙ-is-truncated ∣ g ∣ₙ (f x) ⁻¹
      III = ap ∥ g ∥ₙ (∥∥ₙ-rec-comp ∥∥ₙ-is-truncated ∣ f ∣ₙ x) ⁻¹
-
+ 
+ ∥∥ₙ-preserves-homotopy' : {X : 𝓤 ̇} {Y : 𝓥 ̇} {n : ℕ₋₂}
+                        → (f g : X → Y)
+                        → f ∼ g
+                        → (x : X) → ∥ f ∥ₙ ∣ x ∣[ n ] ＝ ∥ g ∥ₙ ∣ x ∣[ n ]
+ ∥∥ₙ-preserves-homotopy' {_} {_} {X} {_} {n} f g H x =
+  ∥ f ∥ₙ ∣ x ∣[ n ]         ＝⟨ I ⟩
+  ∣ f x ∣[ n ]              ＝⟨ II ⟩
+  ∣ g x ∣[ n ]              ＝⟨ III ⟩
+  ∥ g ∥ₙ ∣ x ∣[ n ]         ∎
+  where
+   I = ∥∥ₙ-rec-comp ∥∥ₙ-is-truncated ∣ f ∣ₙ x
+   II = ap ∣_∣[ n ] (H x)
+   III = ∥∥ₙ-rec-comp ∥∥ₙ-is-truncated ∣ g ∣ₙ x ⁻¹
+   
  ∥∥ₙ-preserves-homotopy : {X : 𝓤 ̇} {Y : 𝓥 ̇} {n : ℕ₋₂}
                         → (f g : X → Y)
                         → f ∼ g
                         → ∥ f ∥ₙ ∼ ∥ g ∥ₙ
- ∥∥ₙ-preserves-homotopy {_} {_} {X} {_} {n} f g H = G'
+ ∥∥ₙ-preserves-homotopy {_} {_} {X} {_} {n} f g H = G
   where
-   G : (x : X) → ∥ f ∥ₙ ∣ x ∣[ n ] ＝ ∥ g ∥ₙ ∣ x ∣[ n ]
-   G x = ∥ f ∥ₙ ∣ x ∣[ n ]         ＝⟨ I ⟩
-         ∣ f x ∣[ n ]              ＝⟨ II ⟩
-         ∣ g x ∣[ n ]              ＝⟨ III ⟩
-         ∥ g ∥ₙ ∣ x ∣[ n ]         ∎
-    where
-     I = ∥∥ₙ-rec-comp ∥∥ₙ-is-truncated ∣ f ∣ₙ x
-     II = ap ∣_∣[ n ] (H x)
-     III = ∥∥ₙ-rec-comp ∥∥ₙ-is-truncated ∣ g ∣ₙ x ⁻¹
-   G' : (x : ∥ X ∥[ n ]) → ∥ f ∥ₙ x ＝ ∥ g ∥ₙ x
-   G' = ∥∥ₙ-uniqueness ∥∥ₙ-is-truncated ∥ f ∥ₙ ∥ g ∥ₙ G
+   G : (x : ∥ X ∥[ n ]) → ∥ f ∥ₙ x ＝ ∥ g ∥ₙ x
+   G = ∥∥ₙ-uniqueness ∥∥ₙ-is-truncated ∥ f ∥ₙ ∥ g ∥ₙ
+                      (∥∥ₙ-preserves-homotopy' f g H)
  
  ∥∥ₙ-rec₂ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {n : ℕ₋₂}
           → Z is n truncated
@@ -275,15 +281,6 @@ TODO: closure under retracts, embeddings, etc. Note that functoriality of
  truncation-closed-under-retract {_} {_} {X} {Y} {n} (r , s , H) =
   (∥ r ∥ₙ , ∥ s ∥ₙ , G)
   where
-   G' : (y : Y) → ∥ r ∘ s ∥ₙ ∣ y ∣[ n ] ＝ ∥ id ∥ₙ ∣ y ∣[ n ]
-   G' y = ∥ r ∘ s ∥ₙ ∣ y ∣[ n ]    ＝⟨ I ⟩
-          ∣ r (s y) ∣[ n ]         ＝⟨ II ⟩
-          ∣ y ∣[ n ]               ＝⟨ III ⟩
-          ∥ id ∥ₙ ∣ y ∣[ n ]       ∎
-    where
-     I = ∥∥ₙ-rec-comp ∥∥ₙ-is-truncated ∣ r ∘ s ∣ₙ y
-     II = ap ∣_∣[ n ] (H y)
-     III = ∥∥ₙ-id-functorial ∣ y ∣[ n ] ⁻¹
    G : ∥ r ∥ₙ ∘ ∥ s ∥ₙ ∼ id
    G y = (∥ r ∥ₙ ∘ ∥ s ∥ₙ) y ＝⟨ I ⟩
          ∥ r ∘ s ∥ₙ y        ＝⟨ II ⟩
