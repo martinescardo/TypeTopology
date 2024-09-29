@@ -129,6 +129,24 @@ computation rules.
      II = ∥∥ₙ-rec-comp ∥∥ₙ-is-truncated ∣ g ∣ₙ (f x) ⁻¹
      III = ap ∥ g ∥ₙ (∥∥ₙ-rec-comp ∥∥ₙ-is-truncated ∣ f ∣ₙ x) ⁻¹
 
+ ∥∥ₙ-preserves-homotopy : {X : 𝓤 ̇} {Y : 𝓥 ̇} {n : ℕ₋₂}
+                        → (f g : X → Y)
+                        → f ∼ g
+                        → ∥ f ∥ₙ ∼ ∥ g ∥ₙ
+ ∥∥ₙ-preserves-homotopy {_} {_} {X} {_} {n} f g H = G'
+  where
+   G : (x : X) → ∥ f ∥ₙ ∣ x ∣[ n ] ＝ ∥ g ∥ₙ ∣ x ∣[ n ]
+   G x = ∥ f ∥ₙ ∣ x ∣[ n ]         ＝⟨ I ⟩
+         ∣ f x ∣[ n ]              ＝⟨ II ⟩
+         ∣ g x ∣[ n ]              ＝⟨ III ⟩
+         ∥ g ∥ₙ ∣ x ∣[ n ]         ∎
+    where
+     I = ∥∥ₙ-rec-comp ∥∥ₙ-is-truncated ∣ f ∣ₙ x
+     II = ap ∣_∣[ n ] (H x)
+     III = ∥∥ₙ-rec-comp ∥∥ₙ-is-truncated ∣ g ∣ₙ x ⁻¹
+   G' : (x : ∥ X ∥[ n ]) → ∥ f ∥ₙ x ＝ ∥ g ∥ₙ x
+   G' = ∥∥ₙ-uniqueness ∥∥ₙ-is-truncated ∥ f ∥ₙ ∥ g ∥ₙ G
+ 
  ∥∥ₙ-rec₂ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {n : ℕ₋₂}
           → Z is n truncated
           → (X → Y → Z)
@@ -271,11 +289,10 @@ TODO: closure under retracts, embeddings, etc. Note that functoriality of
          ∥ r ∘ s ∥ₙ y        ＝⟨ II ⟩
          ∥ id ∥ₙ y           ＝⟨ III ⟩
          y                   ∎
-     where
-      I = ∥∥ₙ-composition-functorial s r y ⁻¹
-      II = ∥∥ₙ-uniqueness ∥∥ₙ-is-truncated ∥ r ∘ s ∥ₙ ∥ id ∥ₙ G' y
-      III = ∥∥ₙ-id-functorial y
-
+    where
+     I = ∥∥ₙ-composition-functorial s r y ⁻¹
+     II = ∥∥ₙ-preserves-homotopy (r ∘ s) id H y
+     III = ∥∥ₙ-id-functorial y
 
  truncation-closed-under-equiv : {X : 𝓤 ̇} {Y : 𝓥 ̇} {n : ℕ₋₂}
                                → X ≃ Y
