@@ -135,10 +135,10 @@ subtraction-ℕ₋₂ (succ m) (succ n) o = (k , p)
   IH = subtraction-ℕ₋₂ m n o
   k = pr₁ IH
   q = pr₂ IH 
-  p : (succ m + k) ＝ succ n
-  p = succ m + k ＝⟨ succ-ℕ₋₂-assoc m k ⟩
-      succ(m + k)＝⟨ ap succ q ⟩
-      succ n     ∎
+  p : (m + 1) + k ＝ n + 1
+  p = (m + 1) + k ＝⟨ succ-ℕ₋₂-assoc m k ⟩
+      (m + k) + 1 ＝⟨ ap succ q ⟩
+      n + 1       ∎
 
 subtraction-ℕ₋₂-term : (m n : ℕ₋₂) → m ≤ℕ₋₂ n → ℕ
 subtraction-ℕ₋₂-term m n o = pr₁ (subtraction-ℕ₋₂ m n o)
