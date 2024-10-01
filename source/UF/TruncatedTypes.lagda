@@ -54,7 +54,7 @@ f is n truncated-map = each-fiber-of f (λ - → - is n truncated)
 
 \end{code}
 
-Being -1-truncated equivalent to being a proposition.
+Being -1-truncated is equivalent to being a proposition.
 
 \begin{code}
 
@@ -201,7 +201,7 @@ for all n : ℕ₋₂.
 
 truncation-levels-closed-under-≃⁺ : {n : ℕ₋₂} {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                                   → Y is (n + 1) truncated
-                                  → (X ≃ Y) is (succ n) truncated
+                                  → (X ≃ Y) is (n + 1) truncated
 truncation-levels-closed-under-≃⁺ {𝓤} {𝓥} {n} {X} {Y} tY =
  truncated-types-closed-under-embedding ⋆ (equiv-embeds-into-function fe')
   (truncated-types-closed-under-Π (λ _ → Y) (λ _ → tY))

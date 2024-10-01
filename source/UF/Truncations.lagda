@@ -207,7 +207,7 @@ computation rules.
 
 \end{code} 
 
-We characterize the first couple levels of truncation.
+We characterize the first couple truncation levels.
 
 (TODO: 1-type is a groupoid).
 
@@ -395,7 +395,7 @@ for details see: https://unimath.github.io/agda-unimath/foundation.truncations.
 
   trunc-id-family-computes : (x' : X)
                            → trunc-id-family-type ∣ x' ∣[ n + 1 ]
-                             ＝ ∥ x ＝ x' ∥[ n ]
+                           ＝ ∥ x ＝ x' ∥[ n ]
   trunc-id-family-computes x' =
     ap pr₁ (∥∥ₙ-rec-comp (𝕋-is-of-next-truncation-level ua)
                          (λ x' → (∥ x ＝ x' ∥[ n ] , ∥∥ₙ-is-truncated))

@@ -33,10 +33,6 @@ open import UF.Univalence
 We now define the notion of connectedness for types and functions with respect
 to truncation levels.
 
-TODO: show that connectedness as defined elsewhere in the library is
-a special case of k-connectedness. Connectedness typically means set
-connectedness, by our convention it will mean 0-connectedness.
-
 \begin{code}
 
 module _ (te : general-truncations-exist) where
@@ -56,6 +52,10 @@ module _ (te : general-truncations-exist) where
  f is k connected-map = each-fiber-of f (λ - → - is k connected)
 
 \end{code}
+
+TODO: show that connectedness as defined elsewhere in the library is
+a special case of k-connectedness. Connectedness typically means set
+connectedness, by our convention it will mean 0-connectedness.
 
 We characterize −1-connected types as inhabited types and −1-connected maps as
 surjections.
@@ -116,7 +116,7 @@ useful.
                 (λ x → ap ∣_∣[ k ] (C x))
 
  connectedness-is-lower-closed : {X : 𝓤 ̇} {k : ℕ₋₂}
-                               → X is k + 1 connected
+                               → X is (k + 1) connected
                                → X is k connected
  connectedness-is-lower-closed {𝓤} {X} {k} X-succ-con =
   equiv-to-singleton successive-truncations-equiv 
@@ -149,7 +149,7 @@ the identity type at one level below. We will assume univalence only when necess
 \begin{code}
 
  inhabited-if-connected : {X : 𝓤 ̇} {k : ℕ₋₂}
-                        → X is k + 1 connected → ∥ X ∥
+                        → X is (k + 1) connected → ∥ X ∥
  inhabited-if-connected {_} {_} {k} X-conn =
   inhabited-if-−1-connected (connectedness-is-lower-closed' ⋆ X-conn)
 
@@ -158,7 +158,7 @@ the identity type at one level below. We will assume univalence only when necess
 
  connected-types-are-locally-connected : {X : 𝓤 ̇} {k : ℕ₋₂}
                                        → is-univalent 𝓤
-                                       → X is k + 1 connected
+                                       → X is (k + 1) connected
                                        → X is-locally k connected
  connected-types-are-locally-connected {_} {_} {k} ua X-conn x y =
   equiv-to-singleton (eliminated-trunc-identity-char ua)
@@ -167,7 +167,7 @@ the identity type at one level below. We will assume univalence only when necess
 
  connected-types-are-inhabited-and-locally-connected : {X : 𝓤 ̇} {k : ℕ₋₂}
                                                      → is-univalent 𝓤
-                                                     → X is k + 1 connected
+                                                     → X is (k + 1) connected
                                                      → ∥ X ∥
                                                      × X is-locally k connected
  connected-types-are-inhabited-and-locally-connected ua X-conn =
@@ -177,7 +177,7 @@ the identity type at one level below. We will assume univalence only when necess
                                                      → is-univalent 𝓤
                                                      → ∥ X ∥
                                                      → X is-locally k connected
-                                                     → X is k + 1 connected
+                                                     → X is (k + 1) connected
  inhabited-and-locally-connected-types-are-connected
   {_} {_} {−2} ua anon-x id-conn =
   pointed-props-are-singletons (prop-trunc-to-−1-trunc pt anon-x) −1-trunc-is-prop
@@ -192,7 +192,7 @@ the identity type at one level below. We will assume univalence only when necess
 
  connected-characterization : {X : 𝓤 ̇} {k : ℕ₋₂}
                             → is-univalent 𝓤
-                            → X is k + 1 connected
+                            → X is (k + 1) connected
                             ↔ ∥ X ∥ × X is-locally k connected
  connected-characterization ua =
   (connected-types-are-inhabited-and-locally-connected ua
@@ -201,7 +201,7 @@ the identity type at one level below. We will assume univalence only when necess
  ap-is-less-connected : {X : 𝓤 ̇} {Y : 𝓥 ̇} {k : ℕ₋₂} 
                       → (ua : is-univalent (𝓤 ⊔ 𝓥))
                       → (f : X → Y)
-                      → f is k + 1 connected-map
+                      → f is (k + 1) connected-map
                       → {x x' : X}
                       → (ap f {x} {x'}) is k connected-map
  ap-is-less-connected ua f f-conn {x} {x'} p =
