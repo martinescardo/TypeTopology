@@ -78,7 +78,7 @@ open import UF.Subsingletons
 
 We define E and Δ by simultaneous induction. The type Ordᵀ is that of
 ordinals with a top element (classically, successor ordinals). Recall
-that ⟪ α ⟫ is the underlying type of α : Ordᵀ.
+that ⟨ α ⟩ is the underlying type of α : Ordᵀ.
 
 \begin{code}
 
