@@ -127,7 +127,7 @@ succ-ℕ₋₂-assoc : (m : ℕ₋₂) (n : ℕ) → succ m + n ＝ succ(m + n)
 succ-ℕ₋₂-assoc m 0 = refl
 succ-ℕ₋₂-assoc m (succ n) = ap succ (succ-ℕ₋₂-assoc m n)
 
-subtraction-ℕ₋₂ : (m n : ℕ₋₂) → m ≤ℕ₋₂ n → Σ k ꞉ ℕ , m + k ＝ n
+subtraction-ℕ₋₂ : (m n : ℕ₋₂) → m ≤ n → Σ k ꞉ ℕ , m + k ＝ n
 subtraction-ℕ₋₂ −2 n o = (ℕ₋₂-to-ℕ' (n + 2) , telescoping-sum-2 n)
 subtraction-ℕ₋₂ (succ m) (succ n) o = (k , p)
  where
@@ -140,11 +140,11 @@ subtraction-ℕ₋₂ (succ m) (succ n) o = (k , p)
       (m + k) + 1 ＝⟨ ap succ q ⟩
       n + 1       ∎
 
-subtraction-ℕ₋₂-term : (m n : ℕ₋₂) → m ≤ℕ₋₂ n → ℕ
+subtraction-ℕ₋₂-term : (m n : ℕ₋₂) → m ≤ n → ℕ
 subtraction-ℕ₋₂-term m n o = pr₁ (subtraction-ℕ₋₂ m n o)
 
 subtraction-ℕ₋₂-identification : (m n : ℕ₋₂)
-                               → (o : m ≤ℕ₋₂ n)
+                               → (o : m ≤ n)
                                → m + subtraction-ℕ₋₂-term m n o ＝ n
 subtraction-ℕ₋₂-identification m n o = pr₂ (subtraction-ℕ₋₂ m n o)
 
