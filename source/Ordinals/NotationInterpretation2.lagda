@@ -582,22 +582,22 @@ LPO-gives-ι-is-equiv : LPO
 LPO-gives-ι-is-equiv lpo ⌜𝟙⌝         = id-is-equiv 𝟙
 LPO-gives-ι-is-equiv lpo ⌜ω+𝟙⌝       = LPO-gives-ι𝟙-is-equiv fe₀ lpo
 LPO-gives-ι-is-equiv lpo (ν₀ ⌜+⌝ ν₁) = pair-fun-is-equiv
-                                          id
-                                          (dep-cases (λ _ → ι ν₀) (λ _ → ι ν₁))
-                                          (id-is-equiv (𝟙 + 𝟙))
-                                          (dep-cases
-                                            (λ _ → LPO-gives-ι-is-equiv lpo ν₀)
-                                            (λ _ → LPO-gives-ι-is-equiv lpo ν₁))
+                                        id
+                                        (dep-cases (λ _ → ι ν₀) (λ _ → ι ν₁))
+                                        (id-is-equiv (𝟙 + 𝟙))
+                                        (dep-cases
+                                          (λ _ → LPO-gives-ι-is-equiv lpo ν₀)
+                                          (λ _ → LPO-gives-ι-is-equiv lpo ν₁))
 LPO-gives-ι-is-equiv lpo (ν₀ ⌜×⌝ ν₁) = pair-fun-is-equiv _ _
-                                          (LPO-gives-ι-is-equiv lpo ν₀)
-                                          (λ _ → LPO-gives-ι-is-equiv lpo ν₁)
+                                        (LPO-gives-ι-is-equiv lpo ν₀)
+                                        (λ _ → LPO-gives-ι-is-equiv lpo ν₁)
 LPO-gives-ι-is-equiv lpo (⌜Σ⌝ ν A)   = pair-fun-is-equiv
-                                          (ι ν)
-                                          (λ x → γ x ∘ ι (A x))
-                                          (LPO-gives-ι-is-equiv lpo ν)
-                                          (λ x → ∘-is-equiv
-                                                  (LPO-gives-ι-is-equiv lpo (A x))
-                                                  (γ-is-equiv x))
+                                        (ι ν)
+                                        (λ x → γ x ∘ ι (A x))
+                                        (LPO-gives-ι-is-equiv lpo ν)
+                                        (λ x → ∘-is-equiv
+                                                (LPO-gives-ι-is-equiv lpo (A x))
+                                                (γ-is-equiv x))
  where
   open Κ-extension ν A
 
@@ -612,8 +612,8 @@ We also have the following:
 
 ι-has-section-gives-Κ-discrete : (ν : E) → has-section (ι ν) → is-discrete ⟨ Κ ν ⟩
 ι-has-section-gives-Κ-discrete ν (θ , ιθ) = lc-maps-reflect-discreteness θ
-                                              (sections-are-lc θ (ι ν , ιθ))
-                                              (Δ-is-discrete ν)
+                                             (sections-are-lc θ (ι ν , ιθ))
+                                             (Δ-is-discrete ν)
 
 ι-is-equiv-gives-Κ-discrete : (ν : E) → is-equiv (ι ν) → is-discrete ⟨ Κ ν ⟩
 ι-is-equiv-gives-Κ-discrete ν e = ι-has-section-gives-Κ-discrete ν
