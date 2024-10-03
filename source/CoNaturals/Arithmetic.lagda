@@ -419,15 +419,16 @@ And here are their constructions:
 
 min-Zero u v r = h (Zero+Succ fe₀ u) (Zero+Succ fe₀ v)
  where
-  h : (u ＝ Zero) + (Σ w ꞉ ℕ∞ , u ＝ Succ w) → (v ＝ Zero) + (Σ t ꞉ ℕ∞ , v ＝ Succ t) → _
+  h : (u ＝ Zero) + (Σ w ꞉ ℕ∞ , u ＝ Succ w) → (v ＝ Zero) + (Σ t ꞉ ℕ∞ , v ＝ Succ t)
+    → (u ＝ Zero) + (v ＝ Zero)
   h (inl refl) _ = inl refl
   h (inr (w , refl)) (inl refl) = inr refl
   h (inr (w , refl)) (inr (t , refl)) = 𝟘-elim (Zero-not-Succ (r ⁻¹ ∙ min-eq₂ w t))
 
-
 min-Succ u v x r = h (Zero+Succ fe₀ u) (Zero+Succ fe₀ v)
  where
-  h : (u ＝ Zero) + (Σ w ꞉ ℕ∞ , u ＝ Succ w) → (v ＝ Zero) + (Σ t ꞉ ℕ∞ , v ＝ Succ t) → _
+  h : (u ＝ Zero) + (Σ w ꞉ ℕ∞ , u ＝ Succ w) → (v ＝ Zero) + (Σ t ꞉ ℕ∞ , v ＝ Succ t)
+    → (u ＝ Succ (Pred u)) × (v ＝ Succ (Pred v)) × (x ＝ min (Pred u , Pred v))
   h (inl refl) _ =
     𝟘-elim (Zero-not-Succ (Zero           ＝⟨ (min-eq₀ v)⁻¹ ⟩
                            min (Zero , v) ＝⟨ r ⟩
