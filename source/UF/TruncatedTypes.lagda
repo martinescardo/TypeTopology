@@ -45,7 +45,7 @@ X is (succ n) truncated = (x x' : X) → (x ＝ x') is n truncated
 
 being-truncated-is-prop : {𝓤 : Universe} {n : ℕ₋₂} {X : 𝓤 ̇ }
                         → is-prop (X is n truncated)
-being-truncated-is-prop {𝓤} {−2}       = being-singleton-is-prop fe
+being-truncated-is-prop {𝓤} {−2}     = being-singleton-is-prop fe
 being-truncated-is-prop {𝓤} {succ n} =
  Π₂-is-prop fe (λ x x' → being-truncated-is-prop)
 
