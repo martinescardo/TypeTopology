@@ -25,7 +25,7 @@ There is an embedding ι : Δ ν → Κ ν which is order preserving and
 reflecting, and whose image has empty complement. The assumption that
 it is a bijection implies LPO.
 
-This extends and generalizes OrdinalNotationInterpretation1.lagda, for
+This extends and generalizes OrdinalNotationInterpretation1, for
 which slides for a talk are available at
 https://www.cs.bham.ac.uk/~mhe/.talks/csl2022.pdf which may well serve
 as an introduction to this file. The main difference is that the
@@ -186,7 +186,7 @@ See the files ToppedOrdinalArithmetic and InjectiveTypes for details.
 open topped-ordinals-injectivity fe
 
 𝓚 : (ν : E) → (⟨ Δ ν ⟩ → E) → ⟨ Κ ν ⟩ → Ordᵀ
-𝓚 ν A = (Κ ∘ A) ↗ (ι ν , ι-is-embedding ν)
+𝓚 ν A = (Κ ∘ A) ↗ j ν
 
 \end{code}
 
@@ -251,7 +251,9 @@ module Κ-extension (ν : E) (A : ⟨ Δ ν ⟩ → E) where
                               (ι-is-embedding ν)
                               (λ x → ∘-is-embedding
                                       (ι-is-embedding (A x))
-                                      (equivs-are-embeddings (γ x) (γ-is-equiv x)))
+                                      (equivs-are-embeddings
+                                        (γ x)
+                                        (γ-is-equiv x)))
  where
   open Κ-extension ν A
 
@@ -314,7 +316,8 @@ the image of Κ are compact:
 
  𝓚-Compact : {𝓥 : Universe} (ν : E) (A : ⟨ Δ ν ⟩ → E) (x : ⟨ Κ ν ⟩)
             → is-Compact ⟨ 𝓚 ν A x ⟩ {𝓥}
- 𝓚-Compact ν A x = has-inf-gives-Compact _ (𝓚-has-infs-of-complemented-subsets ν A x)
+ 𝓚-Compact ν A x = has-inf-gives-Compact _
+                     (𝓚-has-infs-of-complemented-subsets ν A x)
 
 \end{code}
 
@@ -368,8 +371,12 @@ complement):
   f : (x : ⟨ Δ ν ⟩) (y z : ⟨ Δ (A x) ⟩)
     → ι (A x) y        ≺⟨ Κ (A x) ⟩        ι (A x) z
     →  γ x (ι (A x) y) ≺⟨ 𝓚 ν A (ι ν x) ⟩ γ x (ι (A x) z)
-  f x y z = inverses-of-order-equivs-are-order-preserving [ 𝓚 ν A (ι ν x) ] [ Κ (A x) ]
-             (≃ₒ-to-fun-is-order-equiv [ 𝓚 ν A (ι ν x) ] [ Κ (A x) ] (ϕ x)) _ _
+  f x y z = inverses-of-order-equivs-are-order-preserving
+             [ 𝓚 ν A (ι ν x) ]
+             [ Κ (A x) ]
+             (≃ₒ-to-fun-is-order-equiv [ 𝓚 ν A (ι ν x) ] [ Κ (A x) ] (ϕ x))
+             (ι (A x) y)
+             (ι (A x) z)
 
   g : (x : ⟨ Δ ν ⟩) (y z : ⟨ Δ (A x) ⟩)
     → y               ≺⟨ Δ (A x) ⟩        z
@@ -424,8 +431,12 @@ complement):
   f : (x : ⟨ Δ ν ⟩) (y z : ⟨ Δ (A x) ⟩)
     → γ x (ι (A x) y) ≺⟨ 𝓚 ν A (ι ν x) ⟩ γ x (ι (A x) z)
     → ι (A x) y       ≺⟨ Κ (A x)   ⟩      ι (A x) z
-  f x y z = inverses-of-order-equivs-are-order-reflecting [ 𝓚 ν A (ι ν x) ] [ Κ (A x) ]
-             (≃ₒ-to-fun-is-order-equiv [ 𝓚 ν A (ι ν x) ] [ Κ (A x) ] (ϕ x)) _ _
+  f x y z = inverses-of-order-equivs-are-order-reflecting
+             [ 𝓚 ν A (ι ν x) ]
+             [ Κ (A x) ]
+             (≃ₒ-to-fun-is-order-equiv [ 𝓚 ν A (ι ν x) ] [ Κ (A x) ] (ϕ x))
+             (ι (A x) y)
+             (ι (A x) z)
 
   g : (x : ⟨ Δ ν ⟩) (y z : ⟨ Δ (A x) ⟩)
     → γ x (ι (A x) y) ≺⟨ 𝓚 ν A (ι ν x) ⟩ γ x (ι (A x) z)
@@ -458,14 +469,20 @@ complement):
 
 \end{code}
 
-We define limit points as follows:
+Recall the notion of isolated point:
 
 \begin{code}
 
 private
- recall-notion-of-isolatedness  : {X : 𝓤 ̇ } (x : X)
-                                → is-isolated x ＝ ((y : X) → is-decidable (x ＝ y))
- recall-notion-of-isolatedness x = refl
+ _ : {X : 𝓤 ̇ } {x : X}
+   → is-isolated x ＝ ((y : X) → is-decidable (x ＝ y))
+ _ = refl
+
+\end{code}
+
+We define limit points as follows:
+
+\begin{code}
 
 is-limit-point : {X : 𝓤 ̇ } → X → 𝓤 ̇
 is-limit-point x = is-isolated x → WLPO
@@ -531,10 +548,12 @@ module _ (pe : propext 𝓤₀) where
  ℓ-limit ⌜ω+𝟙⌝       (inr ⋆)      p i = is-isolated-gives-is-isolated' ∞ i
  ℓ-limit (ν₀ ⌜+⌝ ν₁) (inl ⋆ , x₀) p i = ℓ-limit ν₀ x₀ p
                                          (Σ-isolated-right
-                                           (underlying-type-is-setᵀ fe 𝟚ᵒ) i)
+                                           (underlying-type-is-setᵀ fe 𝟚ᵒ)
+                                           i)
  ℓ-limit (ν₀ ⌜+⌝ ν₁) (inr ⋆ , x₁) p i = ℓ-limit ν₁ x₁ p
                                          (Σ-isolated-right
-                                           (underlying-type-is-setᵀ fe 𝟚ᵒ) i)
+                                           (underlying-type-is-setᵀ fe 𝟚ᵒ)
+                                           i)
  ℓ-limit (ν₀ ⌜×⌝ ν₁) (x₀ , x₁)    p i =
    Cases (max𝟚-lemma p)
     (λ (p₀ : ℓ ν₀ x₀ ＝ ₁) → ℓ-limit ν₀ x₀ p₀ (×-isolated-left i))
