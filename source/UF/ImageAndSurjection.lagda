@@ -365,9 +365,7 @@ factor-through-image fe f  B-is-set g g-respects-f =
 
 \end{code}
 
-The following was marked as a TODO by Martin:
-  A map is an embedding iff its corestriction is an equivalence.
-It was done by Tom de Jong on 4 December 2020.
+Added by Tom de Jong on 4 December 2020.
 
 \begin{code}
 

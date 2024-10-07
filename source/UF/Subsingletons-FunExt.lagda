@@ -169,9 +169,10 @@ type nameless:
 
 \begin{code}
 
-𝟙-is-true-props-center : funext 𝓤 𝓤
-                       → propext 𝓤
-                       → (σ : Σ P ꞉ 𝓤 ̇ , is-prop P × P) → (𝟙 , 𝟙-is-prop , ⋆) ＝ σ
+𝟙-is-true-props-center
+ : funext 𝓤 𝓤
+ → propext 𝓤
+ → (σ : Σ P ꞉ 𝓤 ̇ , is-prop P × P) → (𝟙 , 𝟙-is-prop , ⋆) ＝ σ
 𝟙-is-true-props-center fe pe = γ
  where
   φ : ∀ P → is-prop (is-prop P × P)
@@ -202,52 +203,110 @@ boiler-plate code.)
 
 \begin{code}
 
-Π₂-is-prop : Fun-Ext
-           → {X : 𝓤 ̇ }
-             {Y : X → 𝓥 ̇ }
-             {Z : (x : X) → Y x → 𝓦 ̇ }
-           → ((x : X) (y : Y x) → is-prop (Z x y))
-           → is-prop ((x : X) (y : Y x) → Z x y)
+Π₂-is-prop
+ : Fun-Ext
+ → {X : 𝓤 ̇ }
+   {Y : X → 𝓥 ̇ }
+   {Z : (x : X) → Y x → 𝓦 ̇ }
+ → ((x : X) (y : Y x) → is-prop (Z x y))
+ → is-prop ((x : X) (y : Y x) → Z x y)
 Π₂-is-prop fe i = Π-is-prop fe (λ x → Π-is-prop fe (i x))
 
-Π₃-is-prop : Fun-Ext
-           → {X : 𝓤 ̇ }
-             {Y : X → 𝓥 ̇ }
-             {Z : (x : X) → Y x → 𝓦 ̇ }
-             {T : (x : X) (y : Y x) → Z x y → 𝓣 ̇ }
-           → ((x : X) (y : Y x) (z : Z x y) → is-prop (T x y z))
-           → is-prop ((x : X) (y : Y x) (z : Z x y) → T x y z)
+Π₃-is-prop
+ : Fun-Ext
+ → {X : 𝓤 ̇ }
+   {Y : X → 𝓥 ̇ }
+   {Z : (x : X) → Y x → 𝓦 ̇ }
+   {T : (x : X) (y : Y x) → Z x y → 𝓣 ̇ }
+ → ((x : X) (y : Y x) (z : Z x y) → is-prop (T x y z))
+ → is-prop ((x : X) (y : Y x) (z : Z x y) → T x y z)
 Π₃-is-prop fe i = Π-is-prop fe (λ x → Π₂-is-prop fe (i x))
 
-Π₄-is-prop : Fun-Ext
-           → {𝓥₀ 𝓥₁ 𝓥₂ 𝓥₃ : Universe}
-             {A : 𝓤 ̇ }
-             {B : A → 𝓥₀ ̇ }
-             {C : (a : A) → B a → 𝓥₁ ̇ }
-             {D : (a : A) (b : B a) → C a b → 𝓥₂ ̇ }
-             {E : (a : A) (b : B a) (c : C a b) → D a b c → 𝓥₃ ̇ }
-           → ((a : A) (b : B a) (c : C a b) (d : D a b c) → is-prop (E a b c d))
-           → is-prop ((a : A) (b : B a) (c : C a b) (d : D a b c) → E a b c d)
+Π₄-is-prop
+ : Fun-Ext
+ → {𝓥₀ 𝓥₁ 𝓥₂ 𝓥₃ : Universe}
+   {A : 𝓤 ̇ }
+   {B : A → 𝓥₀ ̇ }
+   {C : (a : A) → B a → 𝓥₁ ̇ }
+   {D : (a : A) (b : B a) → C a b → 𝓥₂ ̇ }
+   {E : (a : A) (b : B a) (c : C a b) → D a b c → 𝓥₃ ̇ }
+ → ((a : A) (b : B a) (c : C a b) (d : D a b c) → is-prop (E a b c d))
+ → is-prop ((a : A) (b : B a) (c : C a b) (d : D a b c) → E a b c d)
 Π₄-is-prop fe i = Π-is-prop fe (λ x → Π₃-is-prop fe (i x))
 
-Π₅-is-prop : Fun-Ext
-           → {𝓥₀ 𝓥₁ 𝓥₂ 𝓥₃ 𝓥₄ : Universe}
-             {A : 𝓤 ̇ }
-             {B : A → 𝓥₀ ̇ }
-             {C : (a : A) → B a → 𝓥₁ ̇ }
-             {D : (a : A) (b : B a) → C a b → 𝓥₂ ̇ }
-             {E : (a : A) (b : B a) (c : C a b) → D a b c → 𝓥₃ ̇ }
-             {F : (a : A) (b : B a) (c : C a b) (d : D a b c) → E a b c d → 𝓥₄ ̇ }
-           → ((a : A) (b : B a) (c : C a b) (d : D a b c) (e : E a b c d) → is-prop (F a b c d e))
-           → is-prop ((a : A) (b : B a) (c : C a b) (d : D a b c) (e : E a b c d) → F a b c d e)
+Π₅-is-prop
+ : Fun-Ext
+ → {𝓥₀ 𝓥₁ 𝓥₂ 𝓥₃ 𝓥₄ : Universe}
+   {A : 𝓤 ̇ }
+   {B : A → 𝓥₀ ̇ }
+   {C : (a : A) → B a → 𝓥₁ ̇ }
+   {D : (a : A) (b : B a) → C a b → 𝓥₂ ̇ }
+   {E : (a : A) (b : B a) (c : C a b) → D a b c → 𝓥₃ ̇ }
+   {F : (a : A) (b : B a) (c : C a b) (d : D a b c) → E a b c d → 𝓥₄ ̇ }
+ → ((a : A) (b : B a) (c : C a b) (d : D a b c) (e : E a b c d)
+       → is-prop (F a b c d e))
+ → is-prop ((a : A)
+            (b : B a)
+            (c : C a b)
+            (d : D a b c)
+            (e : E a b c d)
+               → F a b c d e)
 Π₅-is-prop fe i = Π-is-prop fe (λ x → Π₄-is-prop fe (i x))
 
+Π₆-is-prop
+ : Fun-Ext
+ → {𝓥₀ 𝓥₁ 𝓥₂ 𝓥₃ 𝓥₄ 𝓥₅  : Universe}
+   {A : 𝓤 ̇ }
+   {B : A → 𝓥₀ ̇ }
+   {C : (a : A) → B a → 𝓥₁ ̇ }
+   {D : (a : A) (b : B a) → C a b → 𝓥₂ ̇ }
+   {E : (a : A) (b : B a) (c : C a b) → D a b c → 𝓥₃ ̇ }
+   {F : (a : A) (b : B a) (c : C a b) (d : D a b c) → E a b c d → 𝓥₄ ̇ }
+   {G : (a : A) (b : B a) (c : C a b) (d : D a b c) (e : E a b c d)
+      → F a b c d e → 𝓥₅ ̇ }
+ → ((a : A) (b : B a) (c : C a b) (d : D a b c) (e : E a b c d) (f : F a b c d e)
+       → is-prop (G a b c d e f))
+ → is-prop ((a : A)
+            (b : B a)
+            (c : C a b)
+            (d : D a b c)
+            (e : E a b c d)
+            (f : F a b c d e)
+               → G a b c d e f)
+Π₆-is-prop fe i = Π-is-prop fe (λ x → Π₅-is-prop fe (i x))
+
+Π₇-is-prop
+ : Fun-Ext
+ → {𝓥₀ 𝓥₁ 𝓥₂ 𝓥₃ 𝓥₄ 𝓥₅ 𝓥₆ : Universe}
+   {A : 𝓤 ̇ }
+   {B : A → 𝓥₀ ̇ }
+   {C : (a : A) → B a → 𝓥₁ ̇ }
+   {D : (a : A) (b : B a) → C a b → 𝓥₂ ̇ }
+   {E : (a : A) (b : B a) (c : C a b) → D a b c → 𝓥₃ ̇ }
+   {F : (a : A) (b : B a) (c : C a b) (d : D a b c) → E a b c d → 𝓥₄ ̇ }
+   {G : (a : A) (b : B a) (c : C a b) (d : D a b c) (e : E a b c d)
+      → F a b c d e → 𝓥₅ ̇ }
+   {H : (a : A) (b : B a) (c : C a b) (d : D a b c) (e : E a b c d)
+        (f : F a b c d e) → G a b c d e f → 𝓥₆ ̇ }
+ → ((a : A) (b : B a) (c : C a b) (d : D a b c) (e : E a b c d)
+    (f : F a b c d e) (g : G a b c d e f)
+       → is-prop (H a b c d e f g))
+ → is-prop ((a : A)
+            (b : B a)
+            (c : C a b)
+            (d : D a b c)
+            (e : E a b c d)
+            (f : F a b c d e)
+            (g : G a b c d e f)
+               → H a b c d e f g)
+Π₇-is-prop fe i = Π-is-prop fe (λ x → Π₆-is-prop fe (i x))
+
 Π₂-is-prop' : Fun-Ext
-           → {X : 𝓤 ̇ }
-             {Y : X → 𝓥 ̇ }
-             {Z : (x : X) → Y x → 𝓦 ̇ }
-           → ((x : X) (y : Y x) → is-prop (Z x y))
-           → is-prop ({x : X} {y : Y x} → Z x y)
+            → {X : 𝓤 ̇ }
+              {Y : X → 𝓥 ̇ }
+              {Z : (x : X) → Y x → 𝓦 ̇ }
+            → ((x : X) (y : Y x) → is-prop (Z x y))
+            → is-prop ({x : X} {y : Y x} → Z x y)
 Π₂-is-prop' fe i = Π-is-prop' fe (λ x → Π-is-prop' fe (i x))
 
 \end{code}

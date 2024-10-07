@@ -491,7 +491,7 @@ identifications-in-fibers : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                             (y : Y) (x x' : X) (p : f x ＝ y) (p' : f x' ＝ y)
                           → (Σ γ ꞉ x ＝ x' , ap f γ ∙ p' ＝ p)
                           → (x , p) ＝ (x' , p')
-identifications-in-fibers f . (f x) x x refl p' (refl , r) = g
+identifications-in-fibers f .(f x) x x refl p' (refl , r) = g
  where
   g : x , refl ＝ x , p'
   g = ap (λ - → (x , -)) (r ⁻¹ ∙ refl-left-neutral)

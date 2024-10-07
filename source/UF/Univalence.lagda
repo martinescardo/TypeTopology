@@ -176,7 +176,7 @@ for Mathematics in Bonn.
 The following is an adaptation of an 'improvement method' I learned
 from Peter Lumsdaine, 7 July 2017, when we were both visiting the
 Newton Institute. His original version translated to Agda is here:
-http://www.cs.bham.ac.uk/~mhe/TypeTopology/Lumsdaine.html
+http://www.cs.bham.ac.uk/~mhe/TypeTopology/Various/Lumsdaine.html
 
 Unfortunately, we couldn't use his result off-the-shelf. The main
 difference is that Peter works with a global identity system on all
@@ -193,16 +193,18 @@ MGS'2019 lecture notes (included here in the folder MGS).
 
 \begin{code}
 
-JEq-improve : ∀ {𝓤 𝓥}
-            → (jeq' : ≃-induction 𝓤 𝓥)
-            → Σ jeq ꞉ ≃-induction 𝓤 𝓥
-                    , ((X : 𝓤 ̇ ) (A : (Y : 𝓤 ̇ ) → X ≃ Y → 𝓥 ̇ ) (b : A X (≃-refl X))
-                      → jeq X A b X (≃-refl X) ＝ b)
+JEq-improve
+ : ∀ {𝓤 𝓥}
+ → (jeq' : ≃-induction 𝓤 𝓥)
+ → Σ jeq ꞉ ≃-induction 𝓤 𝓥
+         , ((X : 𝓤 ̇ ) (A : (Y : 𝓤 ̇ ) → X ≃ Y → 𝓥 ̇ ) (b : A X (≃-refl X))
+               → jeq X A b X (≃-refl X) ＝ b)
 JEq-improve {𝓤} {𝓥} jeq' = jeq , jeq-comp
  where
   module _ (X : 𝓤 ̇ ) (A : (Y : 𝓤 ̇ ) → X ≃ Y → 𝓥 ̇ ) where
    abstract
-    g : {Y Z : 𝓤 ̇ } (p : X ≃ Y) (q : X ≃ Z) → Σ f ꞉ (A Y p → A Z q) , left-cancellable f
+    g : {Y Z : 𝓤 ̇ } (p : X ≃ Y) (q : X ≃ Z)
+      → Σ f ꞉ (A Y p → A Z q) , left-cancellable f
     g {Y} {Z} p q = jeq' X B b Z q
      where
       B : (T : 𝓤 ̇ ) → X ≃ T → 𝓥 ̇
@@ -298,7 +300,10 @@ MGS-Equivalence-induction.
 
 ≃-induction' : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
 ≃-induction' 𝓤  𝓥 = (A : (X Y : 𝓤 ̇ ) → X ≃ Y → 𝓥 ̇ )
-                 → ((X : 𝓤 ̇ ) → A X X (≃-refl X)) → (X Y : 𝓤 ̇ ) (e : X ≃ Y) → A X Y e
+                  → ((X : 𝓤 ̇ ) → A X X (≃-refl X))
+                  → (X Y : 𝓤 ̇ )
+                    (e : X ≃ Y)
+                  → A X Y e
 
 JEqUnbased : is-univalent 𝓤 → ∀ {𝓥} → ≃-induction' 𝓤 𝓥
 JEqUnbased ua A f X = JEq ua X (λ Y → A X Y) (f X)
@@ -309,7 +314,8 @@ The following technical lemma is needed elsewhere.
 
 \begin{code}
 
-is-univalent-idtoeq-lc : is-univalent 𝓤 → (X Y : 𝓤 ̇ ) → left-cancellable(idtoeq X Y)
+is-univalent-idtoeq-lc : is-univalent 𝓤 → (X Y : 𝓤 ̇ )
+                       → left-cancellable(idtoeq X Y)
 is-univalent-idtoeq-lc ua X Y = section-lc (idtoeq X Y) (pr₂ (ua X Y))
 
 \end{code}
@@ -362,7 +368,10 @@ equiv-induction : is-univalent 𝓤
                → (X : 𝓤 ̇ )
                → (P : (Y : 𝓤 ̇ ) → (X → Y) → 𝓥 ̇ )
                → P X id
-               → (Y : 𝓤 ̇ ) (f : X → Y) → is-equiv f → P Y f
+               → (Y : 𝓤 ̇ )
+                 (f : X → Y)
+               → is-equiv f
+               → P Y f
 equiv-induction {𝓤} {𝓥} ua X P b Y f e = JEq ua X A b Y (f , e)
  where
   A : (Y : 𝓤 ̇ ) → X ≃ Y → 𝓥 ̇

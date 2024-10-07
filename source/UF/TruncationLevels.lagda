@@ -83,8 +83,7 @@ instance
 
 Added by Ian Ray 22nd September, 2024.
 
-We show
- ℕ₋₂ ≃ ℕ
+We show that ℕ₋₂ ≃ ℕ.
 
 \begin{code}
 
@@ -123,7 +122,7 @@ telescoping-sum-2 : (n : ℕ₋₂) → (−2 + ℕ₋₂-to-ℕ' (succ (succ n)
 telescoping-sum-2 −2 = refl
 telescoping-sum-2 (succ n) = ap succ (telescoping-sum-2 n)
 
-succ-ℕ₋₂-assoc : (m : ℕ₋₂) (n : ℕ) → succ m + n ＝ succ(m + n)
+succ-ℕ₋₂-assoc : (m : ℕ₋₂) (n : ℕ) → succ m + n ＝ succ (m + n)
 succ-ℕ₋₂-assoc m 0 = refl
 succ-ℕ₋₂-assoc m (succ n) = ap succ (succ-ℕ₋₂-assoc m n)
 
@@ -134,7 +133,7 @@ subtraction-ℕ₋₂ (succ m) (succ n) o = (k , p)
   IH : Σ k ꞉ ℕ , m + k ＝ n
   IH = subtraction-ℕ₋₂ m n o
   k = pr₁ IH
-  q = pr₂ IH 
+  q = pr₂ IH
   p : (m + 1) + k ＝ n + 1
   p = (m + 1) + k ＝⟨ succ-ℕ₋₂-assoc m k ⟩
       (m + k) + 1 ＝⟨ ap succ q ⟩

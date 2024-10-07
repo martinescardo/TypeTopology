@@ -1,7 +1,7 @@
 Tom de Jong, 24 January 2022
 (Based on code from FreeJoinSemiLattice.lagda written 18-24 December 2020.)
 
-TODO: Comment
+TODO. Comment.
 
 \begin{code}
 
@@ -68,7 +68,7 @@ module _
 
 \end{code}
 
-We proceed by that Kuratowski finite subsets are closed under binary unions.
+We proceed to show that Kuratowski finite subsets are closed under binary unions.
 
 \begin{code}
 

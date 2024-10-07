@@ -134,8 +134,9 @@ The type of Sigma notions of identity, ranged over by δ = (ι , ρ , θ).
    canonical-map-charac s t p =
     (yoneda-lemma s (λ t → ι (x , s) (x , t) refl) (c s) t p)⁻¹
 
-   when-canonical-map-is-equiv : ((s t : S x) → is-equiv (c s t))
-                               ↔ ((s : S x) → ∃! t ꞉ S x , ι (x , s) (x , t) refl)
+   when-canonical-map-is-equiv
+    : ((s t : S x) → is-equiv (c s t))
+    ↔ ((s : S x) → ∃! t ꞉ S x , ι (x , s) (x , t) refl)
    when-canonical-map-is-equiv = (λ e s → Yoneda-Theorem-back  s (c s) (e s)) ,
                                  (λ φ s → Yoneda-Theorem-forth s (c s) (φ s))
 \end{code}
@@ -181,7 +182,8 @@ extensionality) in this file.
    ρ : (σ : Σ S) → ι σ σ refl
    ρ (x , s) = refl
 
-   canonical-map-is-equiv : {x : X} (s t : S x) → is-equiv (canonical-map ι ρ s t)
+   canonical-map-is-equiv : {x : X} (s t : S x)
+                          → is-equiv (canonical-map ι ρ s t)
    canonical-map-is-equiv {x} s t = (canonical-map⁻¹ , η) ,
                                     (canonical-map⁻¹ , ε)
     where

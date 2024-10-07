@@ -242,7 +242,8 @@ a neutral element for ordinary function composition, definitionally:
              → funext 𝓤 𝓤
              → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (α : X ≃ Y)
              → ≃-refl X ● α ＝ α
-≃-refl-left' fe₀ fe₁ fe₂ α = to-Σ-＝' (being-equiv-is-prop' fe₀ fe₁ fe₂ fe₀ _ _ _)
+≃-refl-left' fe₀ fe₁ fe₂ α =
+ to-Σ-＝' (being-equiv-is-prop' fe₀ fe₁ fe₂ fe₀ _ _ _)
 
 ≃-refl-right' : funext 𝓥 𝓤
               → funext 𝓥 𝓥
@@ -250,7 +251,8 @@ a neutral element for ordinary function composition, definitionally:
               → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                 (α : X ≃ Y)
               → α ● ≃-refl Y ＝ α
-≃-refl-right' fe₀ fe₁ fe₂  α = to-Σ-＝' (being-equiv-is-prop' fe₀ fe₁ fe₂ fe₀ _ _ _)
+≃-refl-right' fe₀ fe₁ fe₂  α =
+ to-Σ-＝' (being-equiv-is-prop' fe₀ fe₁ fe₂ fe₀ _ _ _)
 
 ≃-sym-involutive' : funext 𝓥 𝓤
                   → funext 𝓥 𝓥
@@ -258,9 +260,10 @@ a neutral element for ordinary function composition, definitionally:
                   → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                     (α : X ≃ Y)
                   → ≃-sym (≃-sym α) ＝ α
-≃-sym-involutive' fe₀ fe₁ fe₂ (f , a) = to-Σ-＝
-                                         (inversion-involutive f a ,
-                                          being-equiv-is-prop' fe₀ fe₁ fe₂ fe₀ f _ a)
+≃-sym-involutive' fe₀ fe₁ fe₂ (f , a) =
+ to-Σ-＝
+  (inversion-involutive f a ,
+   being-equiv-is-prop' fe₀ fe₁ fe₂ fe₀ f _ a)
 
 ≃-Sym' : funext 𝓥 𝓤
        → funext 𝓥 𝓥

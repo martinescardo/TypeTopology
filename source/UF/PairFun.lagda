@@ -1,4 +1,6 @@
-Martin Escardo 2011, extended 2018 with more properties of the function pair-fun.
+Martin Escardo 2011.
+
+Extended 2018 with more properties of the function pair-fun.
 
 Combining two functions to get a function Σ A → Σ B, and properties of
 the resulting function.

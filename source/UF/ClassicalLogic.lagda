@@ -100,6 +100,8 @@ WEM'-is-prop {𝓤} fe = Π₂-is-prop (λ {𝓥} {𝓦} → fe 𝓥 𝓦)
 
 \end{code}
 
+End of addition.
+
 Double negation elimination is equivalent to excluded middle.
 
 \begin{code}
@@ -253,7 +255,9 @@ De-Morgan-is-not-prop {𝓤} fe δ = IV
   I i h = I₀ (wem 𝟘) refl
    where
     I₀ : (a : ¬ 𝟘 + ¬¬ 𝟘) → wem 𝟘 ＝ a → wem 𝟘 ＝ inl h
-    I₀ (inl u) p = transport (λ - → wem 𝟘 ＝ inl -) (negations-are-props fe u h) p
+    I₀ (inl u) = transport
+                  (λ - → wem 𝟘 ＝ inl -)
+                  (negations-are-props fe u h)
     I₀ (inr ϕ) p = 𝟘-elim (ϕ h)
 
   ν : ¬ (𝟘 × 𝟘)
@@ -407,7 +411,10 @@ propositions.
    (λ (u : ¬ ∥ X ∥)
          → 𝟘-elim (φ (contrapositive ∣_∣ u))) (em ∥ X ∥ ∥∥-is-prop)
 
- ¬¬Σ→∃ : {𝓤 𝓣 : Universe} {X : 𝓤 ̇ } → {A : X → 𝓣  ̇} → DNE (𝓤 ⊔ 𝓣) → ¬¬ (Σ x ꞉ X , A x ) → (∃ x ꞉ X , A x)
+ ¬¬Σ→∃ : {𝓤 𝓣 : Universe} {X : 𝓤 ̇ } → {A : X → 𝓣  ̇}
+       → DNE (𝓤 ⊔ 𝓣)
+       → ¬¬ (Σ x ꞉ X , A x )
+       → (∃ x ꞉ X , A x)
  ¬¬Σ→∃ {𝓤} {A} {X} {A₁} dn ¬¬Σ = dn _ ∥∥-is-prop (¬¬-functor ∣_∣ ¬¬Σ)
 
  ∃-not+Π : EM (𝓤 ⊔ 𝓥)
@@ -446,10 +453,10 @@ propositions.
    id
    (λ (u : ¬ E)
          → 𝟘-elim (f (λ (x : X) → EM-gives-DNE
-                                    (lower-EM 𝓤 em)
-                                    (A x)
-                                    (i x)
-                                    (λ (v : ¬ A x) → u ∣ x , v ∣))))
+                                   (lower-EM 𝓤 em)
+                                   (A x)
+                                   (i x)
+                                   (λ (v : ¬ A x) → u ∣ x , v ∣))))
   where
    E = ∃ x ꞉ X , ¬ A x
 

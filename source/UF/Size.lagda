@@ -31,25 +31,25 @@ module UF.Size where
 
 open import MLTT.Spartan
 open import UF.Base
+open import UF.ClassicalLogic
 open import UF.Embeddings
 open import UF.Equiv
 open import UF.Equiv-FunExt
 open import UF.EquivalenceExamples
-open import UF.ClassicalLogic
+open import UF.ExitPropTrunc
 open import UF.FunExt
 open import UF.Hedberg
 open import UF.KrausLemma
-open import UF.ExitPropTrunc
 open import UF.PropIndexedPiSigma
 open import UF.PropTrunc
 open import UF.Retracts
 open import UF.Section-Embedding
 open import UF.Sets
 open import UF.Sets-Properties
-open import UF.SubtypeClassifier
-open import UF.SubtypeClassifier-Properties
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
+open import UF.SubtypeClassifier
+open import UF.SubtypeClassifier-Properties
 open import UF.UA-FunExt
 open import UF.Univalence
 open import UF.UniverseEmbedding
@@ -425,7 +425,8 @@ universes:
                            → propext 𝓤
                            → funext 𝓤 𝓤
                            → Ω-resizing₀ 𝓤
-Ω-resizing₀-from-em-pe-fe₀ {𝓤} em pe fe = Ω-global-resizing-from-em-pe-fe em pe fe 𝓤₀
+Ω-resizing₀-from-em-pe-fe₀ {𝓤} em pe fe =
+ Ω-global-resizing-from-em-pe-fe em pe fe 𝓤₀
 
 \end{code}
 
@@ -542,7 +543,7 @@ A more conceptual version of the above construction is in the module
 InjectiveTypes (which was discovered first - this is just an unfolding
 of that construction).
 
-Question. If we assume that we have such a retraction, does weak
+TODO. If we assume that we have such a retraction, does weak
 propositional resizing follow?
 
 The following construction is due to Voevodsky, but we use the
@@ -664,13 +665,15 @@ deJong-resizing-implies-propositional-resizing : (ua : Univalence)
 deJong-resizing-implies-propositional-resizing ua 𝓤 𝓥 r P i =
  being-small-is-idempotent ua 𝓤 𝓥 P i (r P)
 
-being-small-is-idempotent-converse : (ua : Univalence) (𝓤 𝓥 : Universe) (Y : 𝓤 ̇ )
-                                   → Y is 𝓥 small
-                                   → (Y is 𝓥 small) is 𝓥 small
+being-small-is-idempotent-converse
+ : (ua : Univalence) (𝓤 𝓥 : Universe) (Y : 𝓤 ̇ )
+ → Y is 𝓥 small
+ → (Y is 𝓥 small) is 𝓥 small
 being-small-is-idempotent-converse ua 𝓤 𝓥 Y r = 𝟙{𝓥} , γ
  where
   γ : 𝟙{𝓥} ≃ (Y is 𝓥 small)
-  γ = singleton-≃-𝟙' (pointed-props-are-singletons r (being-small-is-prop ua Y 𝓥))
+  γ = singleton-≃-𝟙'
+       (pointed-props-are-singletons r (being-small-is-prop ua Y 𝓥))
 
 being-small-is-idempotent-≃ : (ua : Univalence) (𝓤 𝓥 : Universe) (Y : 𝓤 ̇ )
                             → is-prop Y
@@ -695,6 +698,10 @@ being-small-is-idempotent-＝ ua 𝓤 𝓥 Y i =
 
 Added 26th January 2021. The following is based on joint work of Tom
 de Jong with Martin Escardo.
+
+TODO. Maybe "is-small" should be "is-essentially-small" and "is-large"
+should also be renamed, for conformance with the (category-theoretic)
+literature.
 
 \begin{code}
 
@@ -832,7 +839,8 @@ section-embedding-size-contravariance : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (s : X →
                                       → is-section s
                                       → Y is 𝓦 small
                                       → X is 𝓦 small
-section-embedding-size-contravariance {𝓤} {𝓥} {𝓦} {X} {Y} s e (g , η) (Y' , h , i) = γ
+section-embedding-size-contravariance
+ {𝓤} {𝓥} {𝓦} {X} {Y} s e (g , η) (Y' , h , i) = γ
  where
   h⁻¹ : Y → Y'
   h⁻¹ = inverse h i
@@ -913,16 +921,20 @@ x ＝⟦ ls ⟧ y = resized (x ＝ y) (ls x y)
 Id⟦_⟧ : {X : 𝓤 ⁺ ̇ } → is-locally-small X → X → X → 𝓤 ̇
 Id⟦ ls ⟧ x y = x ＝⟦ ls ⟧ y
 
-＝⟦_⟧-gives-＝ : {X : 𝓤 ⁺ ̇ } (ls : is-locally-small X) {x y : X} → x ＝⟦ ls ⟧ y → x ＝ y
+＝⟦_⟧-gives-＝ : {X : 𝓤 ⁺ ̇ } (ls : is-locally-small X) {x y : X}
+               → x ＝⟦ ls ⟧ y → x ＝ y
 ＝⟦ ls ⟧-gives-＝ {x} {y} = ⌜ resizing-condition (ls x y) ⌝
 
-＝-gives-＝⟦_⟧ : {X : 𝓤 ⁺ ̇ } (ls : is-locally-small X) {x y : X} → x ＝ y → x ＝⟦ ls ⟧ y
+＝-gives-＝⟦_⟧ : {X : 𝓤 ⁺ ̇ } (ls : is-locally-small X) {x y : X}
+               → x ＝ y → x ＝⟦ ls ⟧ y
 ＝-gives-＝⟦ ls ⟧ {x} {y} = ⌜ resizing-condition (ls x y) ⌝⁻¹
 
 ＝⟦_⟧-refl : {X : 𝓤 ⁺ ̇ } (ls : is-locally-small X) {x : X} → x ＝⟦ ls ⟧ x
 ＝⟦ ls ⟧-refl {x} = ⌜ ≃-sym (resizing-condition (ls x x)) ⌝ refl
 
-＝⟦_⟧-sym : {X : 𝓤 ⁺ ̇ } (ls : is-locally-small X) → {x y : X} → x ＝⟦ ls ⟧ y → y ＝⟦ ls ⟧ x
+＝⟦_⟧-sym : {X : 𝓤 ⁺ ̇ } (ls : is-locally-small X) {x y : X}
+          → x ＝⟦ ls ⟧ y
+          → y ＝⟦ ls ⟧ x
 ＝⟦ ls ⟧-sym p = ＝-gives-＝⟦ ls ⟧ (＝⟦ ls ⟧-gives-＝ p ⁻¹)
 
 _≠⟦_⟧_ : {X : 𝓤 ⁺ ̇ } → X → is-locally-small X → X → 𝓤 ̇
@@ -931,13 +943,18 @@ x ≠⟦ ls ⟧ y = ¬ (x ＝⟦ ls ⟧ y)
 ≠⟦_⟧-irrefl : {X : 𝓤 ⁺ ̇ } (ls : is-locally-small X) {x : X} → ¬ (x ≠⟦ ls ⟧ x)
 ≠⟦ ls ⟧-irrefl {x} ν = ν ＝⟦ ls ⟧-refl
 
-≠⟦_⟧-sym : {X : 𝓤 ⁺ ̇ } (ls : is-locally-small X) → {x y : X} → x ≠⟦ ls ⟧ y → y ≠⟦ ls ⟧ x
+≠⟦_⟧-sym : {X : 𝓤 ⁺ ̇ } (ls : is-locally-small X) {x y : X}
+         → x ≠⟦ ls ⟧ y
+         → y ≠⟦ ls ⟧ x
 ≠⟦ ls ⟧-sym {x} {y} n = λ (p : y ＝⟦ ls ⟧ x) → n (＝⟦ ls ⟧-sym p)
 
-≠-gives-≠⟦_⟧ : {X : 𝓤 ⁺ ̇ } (ls : is-locally-small X) {x y : X} → x ≠ y → x ≠⟦ ls ⟧ y
+≠-gives-≠⟦_⟧ : {X : 𝓤 ⁺ ̇ } (ls : is-locally-small X) {x y : X}
+             → x ≠ y
+             → x ≠⟦ ls ⟧ y
 ≠-gives-≠⟦ ls ⟧ = contrapositive ＝⟦ ls ⟧-gives-＝
 
-≠⟦_⟧-gives-≠ : {X : 𝓤 ⁺ ̇ } (ls : is-locally-small X) {x y : X} → x ≠⟦ ls ⟧ y → x ≠ y
+≠⟦_⟧-gives-≠ : {X : 𝓤 ⁺ ̇ } (ls : is-locally-small X) {x y : X}
+             → x ≠⟦ ls ⟧ y → x ≠ y
 ≠⟦ ls ⟧-gives-≠ = contrapositive ＝-gives-＝⟦ ls ⟧
 
 \end{code}
