@@ -777,19 +777,43 @@ m * succ k ≤ n * succ k, or by definitional equality m + m * k ≤ n + n * k.
 By the inductive hypothesis, m * k ≤ n * k, and we have that m ≤ n, so we
 can use the result which says we can combine two order relations into one.
 
+We also prove that the same is true when multiplying on the left side, then
+use both proofs to show that if m ≤ n and x ≤ y, then m * x ≤ n * y.
+
 \begin{code}
 
 open import Naturals.Multiplication
 
-multiplication-preserves-order : (m n k : ℕ) → m ≤ n → m * k ≤ n * k
-multiplication-preserves-order m n 0        l = zero-least 0
-multiplication-preserves-order m n (succ k) l = γ
+multiplication-preserves-order-right : (m n k : ℕ) → m ≤ n → m * k ≤ n * k
+multiplication-preserves-order-right m n 0        l = zero-least 0
+multiplication-preserves-order-right m n (succ k) l = γ
  where
   IH : m * k ≤ n * k
-  IH = multiplication-preserves-order m n k l
+  IH = multiplication-preserves-order-right m n k l
 
   γ : m * (succ k) ≤ n * (succ k)
   γ = ≤-adding m n (m * k) (n * k) l IH
+
+multiplication-preserves-order-left : (k m n : ℕ) → m ≤ n → k * m ≤ k * n
+multiplication-preserves-order-left k m n l = transport₂ _≤_ γ₁ γ₂ γ₃
+ where
+  γ₁ : m * k ＝ k * m
+  γ₁ = mult-commutativity m k
+
+  γ₂ : n * k ＝ k * n
+  γ₂ = mult-commutativity n k
+
+  γ₃ : m * k ≤ n * k
+  γ₃ = multiplication-preserves-order-right m n k l
+
+≤-multiplying : (m n x y : ℕ) → m ≤ n → x ≤ y → m * x ≤ n * y
+≤-multiplying m n x y l₁ l₂ = ≤-trans (m * x) (n * x) (n * y) γ₁ γ₂
+ where
+  γ₁ : m * x ≤ n * x
+  γ₁ = multiplication-preserves-order-right m n x l₁ 
+
+  γ₂ : n * x ≤ n * y
+  γ₂ = multiplication-preserves-order-left n x y l₂
 
 \end{code}
 
@@ -798,19 +822,62 @@ greater than 0.  Again by induction, the base case is trivial since we
 are multiplying by 1.  The inductive case is similar to the above
 proof.
 
+As above, we prove that the same is true when multiplying on the left
+side, then use both proofs to show that if m < n and x < y,
+then m * x < n * y.
+
 \begin{code}
 
-multiplication-preserves-strict-order : (m n k : ℕ)
+multiplication-preserves-strict-order-right : (m n k : ℕ)
                                       → m < n
                                       → m * succ k < n * succ k
-multiplication-preserves-strict-order m n 0        l = l
-multiplication-preserves-strict-order m n (succ k) l = γ
+multiplication-preserves-strict-order-right m n 0        l = l
+multiplication-preserves-strict-order-right m n (succ k) l = γ
  where
   IH : m * succ k < n * succ k
-  IH = multiplication-preserves-strict-order m n k l
+  IH = multiplication-preserves-strict-order-right m n k l
 
   γ : m * succ (succ k) < n * succ (succ k)
   γ = <-adding m n (m * succ k) (n * succ k) l IH
+
+multiplication-preserves-strict-order-left : (k m n : ℕ)
+                                           → m < n
+                                           → succ k * m < succ k * n
+multiplication-preserves-strict-order-left k m n l = transport₂ _<_ γ₁ γ₂ γ₃
+ where
+  γ₁ : m * succ k ＝ succ k * m
+  γ₁ = mult-commutativity m (succ k)
+
+  γ₂ : n * succ k ＝ succ k * n
+  γ₂ = mult-commutativity n (succ k)
+
+  γ₃ : m * succ k < n * succ k
+  γ₃ = multiplication-preserves-strict-order-right m n k l
+
+<-multiplying : (m n x y : ℕ) → m < n → x < y
+              → m * x < n * y
+<-multiplying m (succ n) 0 (succ y) l₁ l₂ = γ₃
+ where
+  γ₁ : ¬ ((succ n) * (succ y) ＝ 0)
+  γ₁ = ℕ-positive-multiplication-not-zero n y
+
+  γ₂ : ¬ ((succ n * succ y) ≤ 0)
+  γ₂ l = γ₁ (zero-least'' (succ n * succ y) l)
+
+  γ₃ : m * 0 < succ n * succ y
+  γ₃ = not-less-or-equal-is-bigger (succ n * succ y) 0 γ₂
+
+<-multiplying m (succ n) (succ x) (succ y) l₁ l₂ = γ₃
+ where
+  γ₁ : m * succ x < succ n * succ x
+  γ₁ = multiplication-preserves-strict-order-right m (succ n) x l₁
+
+  γ₂ : succ n * succ x < succ n * succ y
+  γ₂ = multiplication-preserves-strict-order-left n (succ x) (succ y) l₂
+
+  γ₃ : m * succ x < succ n * succ y
+  γ₃ = <-trans (m * succ x) (succ n * succ x) (succ n * succ y) γ₁ γ₂
+
 
 \end{code}
 
