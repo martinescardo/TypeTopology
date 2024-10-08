@@ -32,7 +32,8 @@ is-isolated x = ∀ y → is-decidable (x ＝ y)
 \end{code}
 
 Notice that there is a different notion of being homotopy isolated
-(abbreviated is-h-isolated) in the module UF.Sets.
+(abbreviated is-h-isolated) in the module UF.Sets. We show below that
+isolated points are h-isolated.
 
 A type is perfect if it has no isolated points.
 
