@@ -9,7 +9,7 @@ a constructor, an induction principle and a computation rule
 (up to identification). We then proceed to develop some machinery derived from
 the induction principle and explore relationships, closure properties and
 finally characterize the identity type of truncations. We explicitly assume
-univalence locally for the characterization of idenity types but not
+univalence locally for the characterization of identity types but not
 globally as many important properties hold in the absence of univalence.
 
 \begin{code}
@@ -123,12 +123,12 @@ computation rules.
    H x = ∥ g ∘ f ∥ₙ ∣ x ∣[ n ]         ＝⟨ I ⟩
          ∣ g (f x) ∣[ n ]              ＝⟨ II ⟩
          ∥ g ∥ₙ ∣ f x ∣[ n ]           ＝⟨ III ⟩
-         ∥ g ∥ₙ (∥ f ∥ₙ ∣ x ∣[ n ])    ∎ 
+         ∥ g ∥ₙ (∥ f ∥ₙ ∣ x ∣[ n ])    ∎
     where
      I = ∥∥ₙ-rec-comp ∥∥ₙ-is-truncated ∣ g ∘ f ∣ₙ x
      II = ∥∥ₙ-rec-comp ∥∥ₙ-is-truncated ∣ g ∣ₙ (f x) ⁻¹
      III = ap ∥ g ∥ₙ (∥∥ₙ-rec-comp ∥∥ₙ-is-truncated ∣ f ∣ₙ x) ⁻¹
- 
+
  ∥∥ₙ-preserves-homotopy' : {X : 𝓤 ̇} {Y : 𝓥 ̇} {n : ℕ₋₂}
                         → (f g : X → Y)
                         → f ∼ g
@@ -142,7 +142,7 @@ computation rules.
    I = ∥∥ₙ-rec-comp ∥∥ₙ-is-truncated ∣ f ∣ₙ x
    II = ap ∣_∣[ n ] (H x)
    III = ∥∥ₙ-rec-comp ∥∥ₙ-is-truncated ∣ g ∣ₙ x ⁻¹
-   
+
  ∥∥ₙ-preserves-homotopy : {X : 𝓤 ̇} {Y : 𝓥 ̇} {n : ℕ₋₂}
                         → (f g : X → Y)
                         → f ∼ g
@@ -152,7 +152,7 @@ computation rules.
    G : (x : ∥ X ∥[ n ]) → ∥ f ∥ₙ x ＝ ∥ g ∥ₙ x
    G = ∥∥ₙ-uniqueness ∥∥ₙ-is-truncated ∥ f ∥ₙ ∥ g ∥ₙ
                       (∥∥ₙ-preserves-homotopy' f g H)
- 
+
  ∥∥ₙ-rec₂ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {n : ℕ₋₂}
           → Z is n truncated
           → (X → Y → Z)
@@ -183,7 +183,7 @@ computation rules.
   ∥∥ₙ-ind₂ {𝓤} {𝓥} {𝓦} {X} {Y} {n} P m f =
    ∥∥ₙ-ind (λ u → truncated-types-closed-under-Π (P u) (m u))
            (λ x → ∥∥ₙ-ind (λ v → m ∣ x ∣[ n ] v) (f x))
-           
+
   ∥∥ₙ-ind-comp₂ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {n : ℕ₋₂}
                 → (P : ∥ X ∥[ n ] → ∥ Y ∥[ n ] → 𝓦 ̇)
                 → (m : (u : ∥ X ∥[ n ]) → (v : ∥ Y ∥[ n ])
@@ -205,7 +205,7 @@ computation rules.
      II : ∥∥ₙ-ind (m ∣ x ∣[ n ]) (g x) ∣ y ∣[ n ] ＝ g x y
      II = ∥∥ₙ-ind-comp (m ∣ x ∣[ n ]) (g x) y
 
-\end{code} 
+\end{code}
 
 We characterize the first couple truncation levels.
 
@@ -234,7 +234,7 @@ We demonstrate the equivalence of -1-truncation and propositional truncation:
            where
 
   open propositional-truncations-exist pt
-  
+
   −1-trunc-to-prop-trunc : {X : 𝓤 ̇} → ∥ X ∥[ −1 ] → ∥ X ∥
   −1-trunc-to-prop-trunc = ∥∥ₙ-rec (is-prop-implies-is-prop' ∥∥-is-prop) ∣_∣
 
@@ -332,7 +332,7 @@ can be refactored to use closure under retracts.
    b : ∥ ∥ X ∥[ succ n ] ∥[ n ] → ∥ X ∥[ n ]
    b = ∥∥ₙ-rec ∥∥ₙ-is-truncated canonical-pred-map
    G : f ∘ b ∼ id
-   G = ∥∥ₙ-uniqueness ∥∥ₙ-is-truncated (f ∘ b) id 
+   G = ∥∥ₙ-uniqueness ∥∥ₙ-is-truncated (f ∘ b) id
         (∥∥ₙ-uniqueness
           (truncation-levels-are-upper-closed ∥∥ₙ-is-truncated)
           (f ∘ b ∘ ∣_∣[ n ])

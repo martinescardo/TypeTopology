@@ -23,7 +23,6 @@ import UF.FunExt
 import UF.FunExt-Properties
 import UF.FunExt-from-Naive-FunExt
 import UF.Groupoids
-import UF.H-Levels                          -- by [2]
 import UF.HLevels
 import UF.Hedberg
 import UF.HedbergApplications
@@ -71,6 +70,7 @@ import UF.SubtypeClassifier
 import UF.SubtypeClassifier-Properties
 import UF.TruncationLevels
 import UF.Truncations                -- by [2]
+import UF.TruncatedTypes             -- by [2]
 import UF.UA-FunExt
 import UF.Univalence
 import UF.UniverseEmbedding

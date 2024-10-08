@@ -24,7 +24,7 @@ open import Locales.ContinuousMap.FrameHomomorphism-Properties pt fe
 open import Locales.Frame pt fe hiding (is-directed)
 open import Locales.InitialFrame pt fe
 open import Slice.Family
-open import UF.Equiv using (_≃_; logically-equivalent-props-give-is-equiv)
+open import UF.Equiv using (_≃_; logical-equivs-of-props-are-equivs)
 open import UF.Logic
 open import UF.Subsingletons
 open import UF.SubtypeClassifier
@@ -433,8 +433,8 @@ is-clopen : (F : Frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → Ω 𝓤
 is-clopen F U = is-clopen₀ F U , is-clopen₀-is-prop F U
 
 clopen-implies-well-inside-itself : (F : Frame 𝓤 𝓥 𝓦)
-                                   → (U : ⟨ F ⟩)
-                                   → (is-clopen F U ⇒ U ⋜[ F ] U) holds
+                                  → (U : ⟨ F ⟩)
+                                  → (is-clopen F U ⇒ U ⋜[ F ] U) holds
 clopen-implies-well-inside-itself F U = ∣_∣
 
 well-inside-itself-implies-clopen : (F : Frame 𝓤 𝓥 𝓦)
@@ -444,12 +444,12 @@ well-inside-itself-implies-clopen F U =
  ∥∥-rec (holds-is-prop (is-clopen F U)) id
 
 clopenness-equivalent-to-well-inside-itself : (F : Frame 𝓤 𝓥 𝓦)
-                                             → (U : ⟨ F ⟩)
-                                             → (U ⋜[ F ] U) holds
-                                             ≃ is-clopen F U holds
+                                            → (U : ⟨ F ⟩)
+                                            → (U ⋜[ F ] U) holds
+                                            ≃ is-clopen F U holds
 clopenness-equivalent-to-well-inside-itself F U =
    well-inside-itself-implies-clopen F U
- , logically-equivalent-props-give-is-equiv
+ , logical-equivs-of-props-are-equivs
     (holds-is-prop (U ⋜[ F ] U))
     (holds-is-prop (is-clopen F U))
     (well-inside-itself-implies-clopen F U)

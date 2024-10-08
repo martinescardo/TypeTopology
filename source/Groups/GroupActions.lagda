@@ -251,7 +251,7 @@ structures.
                      is-equivariant 𝕏 𝕐 (idtofun ⟨ 𝕏 ⟩ ⟨ 𝕐 ⟩ p)
   pr₁ (＝-is-equivariant fe (X , as) (.X , .as) refl) refl = λ g x → refl
   pr₂ (＝-is-equivariant fe (X , as) (.X , as') refl) =
-    logically-equivalent-props-give-is-equiv
+    logical-equivs-of-props-are-equivs
       is (is-equivariant-is-prop fe ((X , as)) (X , as') id)
         (pr₁ (＝-is-equivariant fe (X , as) (X , as') refl))
         λ i → to-Σ-＝ ((γ i) , (action-axioms-is-prop fe X _·'_ _ _))
