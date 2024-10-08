@@ -232,14 +232,14 @@ open import Notation.CanonicalMap hiding ([_])
   ϕ₁ : (q : ℕ∞ → 𝟚) → q u ＝ q v
   ϕ₁ q = ϕ (λ (w , _) → q w)
 
-  I : u ＝ v
-  I = ℕ∞-is-totally-separated fe₀ ϕ₁
+  I₀ : u ＝ v
+  I₀ = ℕ∞-is-totally-separated fe₀ ϕ₁
 
   a' : A v
-  a' = transport A I a
+  a' = transport A I₀ a
 
-  a-fact : (u , a) ＝[ Σ A ] (v , a')
-  a-fact = to-Σ-＝ (I , refl)
+  I : (u , a) ＝[ Σ A ] (v , a')
+  I = to-Σ-＝ (I₀ , refl)
 
   II : (r : A v → 𝟚) → r a' ＝ r b
   II r = II₃
@@ -253,11 +253,11 @@ open import Notation.CanonicalMap hiding ([_])
 
       p'-property : ((w , c) : Σ A) (d d' : is-decidable (ι n ＝ w))
                   → p' (w , c) d ＝ p' (w , c) d'
-      p'-property (w , c) (inl e) (inl e')  = ap (λ - → r (transport⁻¹ A - c))
+      p'-property (w , c) (inl e) (inl e') = ap (λ - → r (transport⁻¹ A - c))
                                                  (ℕ∞-is-set fe₀ e e')
-      p'-property (w , c) (inl e) (inr ν')  = 𝟘-elim (ν' e)
-      p'-property (w , c) (inr ν) (inl e')  = 𝟘-elim (ν e')
-      p'-property (w , c) (inr ν) (inr ν')  = refl
+      p'-property (w , c) (inl e) (inr ν') = 𝟘-elim (ν' e)
+      p'-property (w , c) (inr ν) (inl e') = 𝟘-elim (ν e')
+      p'-property (w , c) (inr ν) (inr ν') = refl
 
       p : Σ A → 𝟚
       p (w , c) = p' (w , c) (finite-isolated fe₀ n w)
@@ -271,7 +271,7 @@ open import Notation.CanonicalMap hiding ([_])
           r b                    ∎
            where
             e₀ = p'-property (v , a') (inl refl) (finite-isolated fe₀ n v)
-            e₁ = ap p (a-fact ⁻¹)
+            e₁ = ap p (I ⁻¹)
             e₂ = ϕ p
             e₃ = (p'-property (v , b) (inl refl) (finite-isolated fe₀ n v))⁻¹
 
@@ -294,7 +294,7 @@ open import Notation.CanonicalMap hiding ([_])
   III = A-is-ts v II
 
   IV : (u , a) ＝[ Σ A ] (v , b)
-  IV = to-Σ-＝ (I , III)
+  IV = to-Σ-＝ (I₀ , III)
 
 \end{code}
 

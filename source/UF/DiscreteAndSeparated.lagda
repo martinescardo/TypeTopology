@@ -586,7 +586,8 @@ being-discrete-is-prop : FunExt → {X : 𝓤 ̇ } → is-prop (is-discrete X)
 being-discrete-is-prop {𝓤} fe = Π-is-prop (fe 𝓤 𝓤) (being-isolated-is-prop fe)
 
 isolated-points-are-h-isolated : {X : 𝓤 ̇ } (x : X)
-                               → is-isolated x → is-h-isolated x
+                               → is-isolated x
+                               → is-h-isolated x
 isolated-points-are-h-isolated {𝓤} {X} x i {y} = local-hedberg x (λ y → γ y (i y)) y
  where
   γ : (y : X) → is-decidable (x ＝ y) → Σ f ꞉ (x ＝ y → x ＝ y) , wconstant f
@@ -619,7 +620,10 @@ The following variation of the above doesn't require function extensionality:
 \begin{code}
 
 isolated-inr' : {X : 𝓤 ̇ }
-                (x : X) (i : is-isolated x) (y : X) (n : x ≠ y)
+                (x : X)
+                (i : is-isolated x)
+                (y : X)
+                (n : x ≠ y)
               → Σ m ꞉ x ≠ y , i y ＝ inr m
 isolated-inr' x i y n =
   equality-cases (i y)
@@ -628,11 +632,17 @@ isolated-inr' x i y n =
    (λ (m : x ≠ y) (q : i y ＝ inr m)
       → m , q)
 
-discrete-inl : {X : 𝓤 ̇ } (d : is-discrete X) (x y : X) (r : x ＝ y)
+discrete-inl : {X : 𝓤 ̇ }
+               (d : is-discrete X)
+               (x y : X)
+               (r : x ＝ y)
              → d x y ＝ inl r
 discrete-inl d x = isolated-inl x (d x)
 
-discrete-inl-refl : {X : 𝓤 ̇ } (d : is-discrete X) (x : X) → d x x ＝ inl refl
+discrete-inl-refl : {X : 𝓤 ̇ }
+                    (d : is-discrete X)
+                    (x : X)
+                  → d x x ＝ inl refl
 discrete-inl-refl {𝓤} {X} d x = discrete-inl d x x refl
 
 discrete-inr : funext 𝓤 𝓤₀
