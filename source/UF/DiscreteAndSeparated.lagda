@@ -1,8 +1,5 @@
 Martin Escardo 2011.
 
-(Totally separated types moved to the module TotallySeparated January
-2018, and extended.)
-
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}
@@ -32,6 +29,15 @@ open import UF.Subsingletons-FunExt
 is-isolated : {X : 𝓤 ̇ } → X → 𝓤 ̇
 is-isolated x = ∀ y → is-decidable (x ＝ y)
 
+\end{code}
+
+Notice that there is a different notion of being homotopy isolated
+(abbreviated is-h-isolated) in the module UF.Sets.
+
+A type is perfect if it has no isolated points.
+
+\begin{code}
+
 is-perfect : 𝓤 ̇ → 𝓤 ̇
 is-perfect X = is-empty (Σ x ꞉ X , is-isolated x)
 
@@ -45,10 +51,14 @@ is-decidable-eq-sym x y = cases
                            (λ (p : x ＝ y) → inl (p ⁻¹))
                            (λ (n : ¬ (x ＝ y)) → inr (λ (q : y ＝ x) → n (q ⁻¹)))
 
-is-isolated'-gives-is-isolated : {X : 𝓤 ̇ } (x : X) → is-isolated' x → is-isolated x
+is-isolated'-gives-is-isolated : {X : 𝓤 ̇ } (x : X)
+                               → is-isolated' x
+                               → is-isolated x
 is-isolated'-gives-is-isolated x i' y = is-decidable-eq-sym y x (i' y)
 
-is-isolated-gives-is-isolated' : {X : 𝓤 ̇ } (x : X) → is-isolated x → is-isolated' x
+is-isolated-gives-is-isolated' : {X : 𝓤 ̇ } (x : X)
+                               → is-isolated x
+                               → is-isolated' x
 is-isolated-gives-is-isolated' x i y = is-decidable-eq-sym x y (i y)
 
 is-discrete : 𝓤 ̇ → 𝓤 ̇
@@ -119,8 +129,8 @@ inr-is-isolated {𝓤} {𝓥} {X} {Y} y i = γ
 \end{code}
 
 The closure of discrete types under Σ is proved in the module
-UF.Miscelanea (as this requires to first prove that discrete types
-are sets).
+TypeTopology.SigmaDiscreteAndTotallySeparated (as this requires to
+first prove that discrete types are sets).
 
 General properties:
 
@@ -149,7 +159,9 @@ discrete-types-are-cotransitive' d {x} {y} {z} φ = f (d x z)
   f (inr γ) = inl γ
 
 retract-is-discrete : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-                    → retract Y of X → is-discrete X → is-discrete Y
+                    → retract Y of X
+                    → is-discrete X
+                    → is-discrete Y
 retract-is-discrete (f , (s , φ)) d y y' = g (d (s y) (s y'))
  where
   g : is-decidable (s y ＝ s y') → is-decidable (y ＝ y')
@@ -167,11 +179,14 @@ retract-is-discrete (f , (s , φ)) d y y' = g (d (s y) (s y'))
  where
   r : X → 𝟚
   r = pr₁ (characteristic-function d)
+
   φ : (x : X) → (r x ＝ ₀ → x₀ ＝ x) × (r x ＝ ₁ → ¬ (x₀ ＝ x))
   φ = pr₂ (characteristic-function d)
+
   s : 𝟚 → X
   s ₀ = x₀
   s ₁ = x₁
+
   rs : (n : 𝟚) → r (s n) ＝ n
   rs ₀ = different-from-₁-equal-₀ (λ p → pr₂ (φ x₀) p refl)
   rs ₁ = different-from-₀-equal-₁ λ p → 𝟘-elim (ne (pr₁ (φ x₁) p))
@@ -307,8 +322,10 @@ binary-product-is-¬¬-separated s t (x , y) (x' , y') φ =
  where
   lemma₀ : ¬¬ ((x , y) ＝ (x' , y')) → x ＝ x'
   lemma₀ = (s x x') ∘ ¬¬-functor (ap pr₁)
+
   lemma₁ : ¬¬ ((x , y) ＝ (x' , y')) → y ＝ y'
   lemma₁ = (t y y') ∘ ¬¬-functor (ap pr₂)
+
   lemma : x ＝ x' → y ＝ y' → (x , y) ＝ (x' , y')
   lemma = ap₂ (_,_)
 
@@ -448,20 +465,26 @@ equality-of-¬¬stable-propositions fe pe p q f g a = γ
 
 \end{code}
 
-21 March 2018
+21 March 2018.
 
 \begin{code}
 
-qinvs-preserve-isolatedness : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) → qinv f
-                            → (x : X) → is-isolated x → is-isolated (f x)
+qinvs-preserve-isolatedness : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                            → qinv f
+                            → (x : X)
+                            → is-isolated x
+                            → is-isolated (f x)
 qinvs-preserve-isolatedness {𝓤} {𝓥} {X} {Y} f (g , ε , η) x i y = h (i (g y))
  where
   h : is-decidable (x ＝ g y) → is-decidable (f x ＝ y)
   h (inl p) = inl (ap f p ∙ η y)
   h (inr u) = inr (contrapositive (λ (q : f x ＝ y) → (ε x)⁻¹ ∙ ap g q) u)
 
-equivs-preserve-isolatedness : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) → is-equiv f
-                             → (x : X) → is-isolated x → is-isolated (f x)
+equivs-preserve-isolatedness : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                             → is-equiv f
+                             → (x : X)
+                             → is-isolated x
+                             → is-isolated (f x)
 equivs-preserve-isolatedness f e = qinvs-preserve-isolatedness f (equivs-are-qinvs f e)
 
 new-point-is-isolated : {X : 𝓤 ̇ } → is-isolated {𝓤 ⊔ 𝓥} {X + 𝟙 {𝓥}} (inr ⋆)
@@ -542,7 +565,8 @@ being-isolated-is-prop {𝓤} fe x = prop-criterion γ
   γ : is-isolated x → is-prop (is-isolated x)
   γ i = Π-is-prop (fe 𝓤 𝓤)
          (λ x → sum-of-contradictory-props
-                 (local-hedberg _ (λ y → decidable-types-are-collapsible (i y)) x)
+                 (local-hedberg _
+                   (λ y → decidable-types-are-collapsible (i y)) x)
                  (negations-are-props (fe 𝓤 𝓤₀))
                  (λ p n → n p))
 
@@ -620,7 +644,8 @@ discrete-inr fe d x = isolated-inr fe x (d x)
 isolated-Id-is-prop : {X : 𝓤 ̇ } (x : X)
                     → is-isolated' x
                     → (y : X) → is-prop (y ＝ x)
-isolated-Id-is-prop x i = local-hedberg' x (λ y → decidable-types-are-collapsible (i y))
+isolated-Id-is-prop x i =
+ local-hedberg' x (λ y → decidable-types-are-collapsible (i y))
 
 lc-maps-reflect-isolatedness : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                              → left-cancellable f
@@ -685,7 +710,6 @@ equiv-to-discrete (f , e) = equivs-preserve-discreteness f e
 
 \end{code}
 
-
 Added 14th Feb 2020:
 
 \begin{code}
@@ -693,11 +717,11 @@ Added 14th Feb 2020:
 discrete-exponential-has-decidable-emptiness-of-exponent
  : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
  → funext 𝓤 𝓥
- → (Σ y₀ ꞉ Y , Σ y₁ ꞉ Y , y₀ ≠ y₁)
+ → has-two-distinct-points Y
  → is-discrete (X → Y)
  → is-decidable (is-empty X)
 discrete-exponential-has-decidable-emptiness-of-exponent
-  {𝓤} {𝓥} {X} {Y} fe (y₀ , y₁ , ne) d = γ
+  {𝓤} {𝓥} {X} {Y} fe ((y₀ , y₁) , ne) d = γ
  where
   a : is-decidable ((λ _ → y₀) ＝ (λ _ → y₁))
   a = d (λ _ → y₀) (λ _ → y₁)
@@ -725,13 +749,11 @@ Added 19th Feb 2020:
 
 \begin{code}
 
-maps-of-props-into-h-isolated-points-are-embeddings :
-
-   {P : 𝓤 ̇ } {X : 𝓥 ̇ } (f : P → X)
+maps-of-props-into-h-isolated-points-are-embeddings
+ : {P : 𝓤 ̇ } {X : 𝓥 ̇ } (f : P → X)
  → is-prop P
  → ((p : P) → is-h-isolated (f p))
  → is-embedding f
-
 maps-of-props-into-h-isolated-points-are-embeddings f i j q (p , s) (p' , s') =
  to-Σ-＝ (i p p' , j p' _ s')
 

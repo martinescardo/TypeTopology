@@ -210,7 +210,7 @@ open import UF.DiscreteAndSeparated
 [LPO→ℕ]-discrete-gives-¬LPO-decidable fe =
   discrete-exponential-has-decidable-emptiness-of-exponent
    fe
-   (1 , 0 , positive-not-zero 0)
+   ((1 , 0) , positive-not-zero 0)
 
 \end{code}
 

@@ -126,8 +126,7 @@ curry-uncurry {𝓤} {𝓥} {𝓦} fe = curry-uncurry' (fe 𝓤 (𝓥 ⊔ 𝓦))
   gf (x , y) = to-Σ-＝' (inverses-are-retractions ⌜ φ x ⌝ ⌜ φ x ⌝-is-equiv y)
 
 ΠΣ-distr-≃ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {P : (x : X) → A x → 𝓦 ̇ }
-           → (Π x ꞉ X , Σ a ꞉ A x , P x a)
-           ≃ (Σ f ꞉ Π A , Π x ꞉ X , P x (f x))
+           → (Π x ꞉ X , Σ a ꞉ A x , P x a) ≃ (Σ f ꞉ Π A , Π x ꞉ X , P x (f x))
 ΠΣ-distr-≃ = qinveq ΠΣ-distr (ΠΣ-distr⁻¹ , (λ _ → refl) , (λ _ → refl))
 
 Π×-distr : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X → 𝓦 ̇ }
@@ -492,7 +491,7 @@ Ap+ {𝓤} {𝓥} {𝓦} {X} {Y} Z f =
 
 +→ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
    → funext (𝓤 ⊔ 𝓥) 𝓦
-   → ((X + Y) → Z) ≃ (X → Z) × (Y → Z)
+   → (X + Y → Z) ≃ (X → Z) × (Y → Z)
 +→ fe = ≃-sym (Π×+ fe)
 
 →× : {A : 𝓤 ̇ } {X : A → 𝓥 ̇ } {Y : A → 𝓦 ̇ }
@@ -901,8 +900,9 @@ alternative-+ {𝓤} {A} = qinveq ϕ (ψ , η , ε)
 domain-is-total-fiber : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) → X ≃ Σ (fiber f)
 domain-is-total-fiber {𝓤} {𝓥} {X} {Y} f =
  X                             ≃⟨ ≃-sym (𝟙-rneutral {𝓤} {𝓤}) ⟩
- X × 𝟙                         ≃⟨ Σ-cong (λ x → singleton-≃ 𝟙-is-singleton
-                                         (singleton-types-are-singletons (f x))) ⟩
+ X × 𝟙                         ≃⟨ Σ-cong
+                                   (λ x → singleton-≃ 𝟙-is-singleton
+                                   (singleton-types-are-singletons (f x))) ⟩
  (Σ x ꞉ X , Σ y ꞉ Y , f x ＝ y) ≃⟨ Σ-flip ⟩
  (Σ y ꞉ Y , Σ x ꞉ X , f x ＝ y) ■
 
@@ -945,11 +945,12 @@ warrant their place here.
 
 \begin{code}
 
-precomposition-with-equiv-does-not-change-fibers : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
-                                                   (e : Z ≃ X) (f : X → Y) (y : Y)
-                                                 → fiber (f ∘ ⌜ e ⌝) y ≃ fiber f y
+precomposition-with-equiv-does-not-change-fibers
+ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+   (e : Z ≃ X) (f : X → Y) (y : Y)
+ → fiber (f ∘ ⌜ e ⌝) y ≃ fiber f y
 precomposition-with-equiv-does-not-change-fibers (g , i) f y =
- Σ-change-of-variable (λ x → f x ＝ y) g i
+ Σ-change-of-variable (λ - → f - ＝ y) g i
 
 retract-pointed-fibers : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {r : Y → X}
                        → has-section r ≃ (Π x ꞉ X , fiber r x)

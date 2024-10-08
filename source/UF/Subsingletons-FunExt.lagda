@@ -120,7 +120,7 @@ being-singleton-is-prop fe {X} (x , φ) (y , γ) = δ
            → is-prop (∃! A)
 ∃!-is-prop fe = being-singleton-is-prop fe
 
-negations-are-props : {X : 𝓤 ̇ } → funext 𝓤 𝓤₀ → is-prop (¬ X)
+negations-are-props : {X : 𝓤 ̇ } → funext 𝓤 𝓥 → is-prop (X → 𝟘 {𝓥})
 negations-are-props fe = Π-is-prop fe (λ x → 𝟘-is-prop)
 
 decidability-of-prop-is-prop : funext 𝓤 𝓤₀
@@ -132,13 +132,17 @@ decidability-of-prop-is-prop fe₀ i = sum-of-contradictory-props
                                       (negations-are-props fe₀)
                                       (λ p u → u p)
 
-empty-types-are-props : {X : 𝓤 ̇ } → ¬ X → is-prop X
+empty-types-are-props : {X : 𝓤 ̇ } → (X → 𝟘 {𝓥}) → is-prop X
 empty-types-are-props f x = 𝟘-elim (f x)
 
-equal-𝟘-is-empty : {X : 𝓤 ̇ } → X ＝ 𝟘 → ¬ X
+equal-𝟘-is-empty : {X : 𝓤 ̇ } → X ＝ 𝟘 → X → 𝟘 {𝓦}
 equal-𝟘-is-empty e x = 𝟘-elim (transport id e x)
 
-empty-types-are-＝-𝟘 : funext 𝓤 𝓤₀ → propext 𝓤 → {X : 𝓤 ̇ } → ¬ X → X ＝ 𝟘
+empty-types-are-＝-𝟘 : funext 𝓤 𝓤₀
+                    → propext 𝓤
+                    → {X : 𝓤 ̇ }
+                    → (X → 𝟘 {𝓥})
+                    → X ＝ 𝟘
 empty-types-are-＝-𝟘 fe pe f = pe (empty-types-are-props f)
                                 𝟘-is-prop
                                 (λ x → 𝟘-elim (f x))
@@ -150,29 +154,34 @@ holds-gives-equal-𝟙 pe P i p = pe i 𝟙-is-prop unique-to-𝟙 (λ _ → p)
 equal-𝟙-gives-holds : (P : 𝓤 ̇ ) → P ＝ 𝟙 → P
 equal-𝟙-gives-holds P r = Idtofun (r ⁻¹) ⋆
 
-not-𝟘-is-𝟙 : funext 𝓤 𝓤₀
-           → propext 𝓤
-           → (¬ 𝟘) ＝ 𝟙
-not-𝟘-is-𝟙 fe pe = pe (negations-are-props fe)
+not-𝟘-is-𝟙' : funext 𝓤 𝓥
+           → propext (𝓤 ⊔ 𝓥)
+           → (𝟘 {𝓤} → 𝟘 {𝓥}) ＝ 𝟙 {𝓤 ⊔ 𝓥}
+not-𝟘-is-𝟙' fe pe = pe (negations-are-props fe)
                       𝟙-is-prop
                       (λ _ → ⋆)
                       (λ _ z → 𝟘-elim z)
 
+not-𝟘-is-𝟙 : funext 𝓤 𝓤₀
+           → propext 𝓤
+           → (¬ 𝟘) ＝ 𝟙
+not-𝟘-is-𝟙 = not-𝟘-is-𝟙'
+
 \end{code}
 
-In the above and in the following, 𝟘-elim is used to coerce from 𝟘 {𝓤}
-to 𝟘 {𝓤₀} as this is where negations take values in.
-
-Sometimes it is convenient to work with the type of true propositions,
-which is a singleton and hence a subsingleton. But we will leave this
-type nameless:
+Sometimes it is convenient to work with the type T of true propositions,
+which is a singleton and hence a subsingleton.
 
 \begin{code}
+
+private
+  T : 𝓤 ⁺ ̇
+  T {𝓤} = Σ P ꞉ 𝓤 ̇ , is-prop P × P
 
 𝟙-is-true-props-center
  : funext 𝓤 𝓤
  → propext 𝓤
- → (σ : Σ P ꞉ 𝓤 ̇ , is-prop P × P) → (𝟙 , 𝟙-is-prop , ⋆) ＝ σ
+ → (σ : T) → (𝟙 , 𝟙-is-prop , ⋆) ＝ σ
 𝟙-is-true-props-center fe pe = γ
  where
   φ : ∀ P → is-prop (is-prop P × P)
@@ -186,13 +195,13 @@ type nameless:
 
 the-true-props-form-a-singleton-type : funext 𝓤 𝓤
                                      → propext 𝓤
-                                     → is-singleton (Σ P ꞉ 𝓤 ̇ , is-prop P × P)
+                                     → is-singleton T
 the-true-props-form-a-singleton-type fe pe = (𝟙 , 𝟙-is-prop , ⋆) ,
                                              𝟙-is-true-props-center fe pe
 
 the-true-props-form-a-prop : funext 𝓤 𝓤
                            → propext 𝓤
-                           → is-prop (Σ P ꞉ 𝓤 ̇ , is-prop P × P)
+                           → is-prop T
 the-true-props-form-a-prop fe pe =
  singletons-are-props (the-true-props-form-a-singleton-type fe pe)
 

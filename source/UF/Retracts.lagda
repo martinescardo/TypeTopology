@@ -46,6 +46,14 @@ sections-are-lc s (r , rs) {x} {x'} p = (rs x)⁻¹ ∙ ap r p ∙ rs x'
 retract_of_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
 retract Y of X = Σ r ꞉ (X → Y) , has-section r
 
+\end{code}
+
+Below we introduce the synonym "Y ◁ X" for "retract Y of X" and
+convenient notation for working with chains of compositions of
+retractions.
+
+\begin{code}
+
 retraction : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → retract X of Y → (Y → X)
 retraction (r , s , rs) = r
 

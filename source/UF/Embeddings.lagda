@@ -7,7 +7,6 @@ Martin Escardo
 module UF.Embeddings where
 
 open import MLTT.Spartan
-
 open import MLTT.Plus-Properties
 open import UF.Base
 open import UF.Equiv
@@ -51,7 +50,10 @@ id-is-embedding = singleton-types'-are-props
   T z = Σ (y , _) ꞉ fiber g z , fiber f y
 
   T-is-prop : (z : Z) → is-prop (T z)
-  T-is-prop z = subtypes-of-props-are-props' pr₁ (pr₁-lc (λ {t} → e (pr₁ t))) (d z)
+  T-is-prop z = subtypes-of-props-are-props'
+                 pr₁
+                 (pr₁-lc (λ {t} → e (pr₁ t)))
+                 (d z)
 
   φ : (z : Z) → fiber (g ∘ f) z → T z
   φ z (x , p) = (f x , p) , x , refl
@@ -79,7 +81,6 @@ _∘↪_ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
      → X ↪ Y
      → X ↪ Z
 (g , j) ∘↪ (f , i) = g ∘ f , ∘-is-embedding i j
-
 
 ⌊_⌋ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X ↪ Y → X → Y
 ⌊ f , _ ⌋     = f
@@ -160,7 +161,8 @@ equivs-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X ≃ Y → X ↪ Y
 equivs-embedding e = ⌜ e ⌝ , equivs-are-embeddings ⌜ e ⌝ (⌜⌝-is-equiv e)
 
 embeddings-are-lc : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                  → is-embedding f → left-cancellable f
+                  → is-embedding f
+                  → left-cancellable f
 embeddings-are-lc f e {x} {x'} p = ap pr₁ (e (f x) (x , refl) (x' , (p ⁻¹)))
 
 subtypes-of-props-are-props : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (e : X → Y)
@@ -202,10 +204,9 @@ embedding-gives-embedding' {𝓤} {𝓥} {X} {Y} f ise = g
 
 \end{code}
 
-Added 27 June 2024.
-It follows that if f is an equivalence, then so is ap f.
-It is added here, rather than in UF.EquivalenceExamples, to avoid cyclic module
-dependencies.
+Added 27 June 2024.  It follows that if f is an equivalence, then so
+is ap f.  It is added here, rather than in UF.EquivalenceExamples, to
+avoid cyclic module dependencies.
 
 \begin{code}
 
@@ -226,7 +227,8 @@ embedding-criterion-converse : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                              → is-embedding f
                              → (x' x : X)
                              → (f x' ＝ f x) ≃ (x' ＝ x)
-embedding-criterion-converse f e x' x = ≃-sym (embedding-criterion-converse' f e x' x)
+embedding-criterion-converse f e x' x =
+ ≃-sym (embedding-criterion-converse' f e x' x)
 
 embedding'-gives-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                              (f : X → Y)
@@ -272,8 +274,11 @@ to-subtype-＝-≃ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
                 → {x y : X} {a : A x} {b : A y}
                 → (x ＝ y) ≃ ((x , a) ＝ (y , b))
 to-subtype-＝-≃ A-is-prop-valued {x} {y} {a} {b} =
- embedding-criterion-converse pr₁ (pr₁-is-embedding A-is-prop-valued) (x , a) (y , b)
-
+ embedding-criterion-converse
+  pr₁
+  (pr₁-is-embedding A-is-prop-valued)
+  (x , a)
+  (y , b)
 
 pr₁-lc-bis : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
            → ({x : X} → is-prop (Y x))
@@ -318,7 +323,8 @@ lc-maps-into-sets-are-embeddings : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                                  → left-cancellable f
                                  → is-set Y
                                  → is-embedding f
-lc-maps-into-sets-are-embeddings {𝓤} {𝓥} {X} {Y} f f-lc iss y (x , p) (x' , p') = γ
+lc-maps-into-sets-are-embeddings
+ {𝓤} {𝓥} {X} {Y} f f-lc iss y (x , p) (x' , p') = γ
  where
    r : x ＝ x'
    r = f-lc (p ∙ (p' ⁻¹))
@@ -398,7 +404,10 @@ postcomp-is-embedding {𝓤} {𝓥} {𝓦} fe {X} {Y} {A} f i = γ
   γ : is-embedding (f ∘_)
   γ = embedding-criterion' (f ∘_) k
 
-disjoint-images : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } → (X → A) → (Y → A) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
+disjoint-images : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ }
+                → (X → A)
+                → (Y → A)
+                → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
 disjoint-images f g = ∀ x y → f x ≠ g y
 
 disjoint-cases-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ }
@@ -440,7 +449,8 @@ disjoint-cases-embedding {𝓤} {𝓥} {𝓦} {X} {Y} {A} f g ef eg d = γ
 
 TODO.
   (1) f : X → Y is an embedding iff fiber f (f x) is a singleton for every x : X.
-  (2) f : X → Y is an embedding iff its corestriction to its image is an equivalence.
+  (2) f : X → Y is an embedding iff its corestriction to its image is an
+      equivalence.
 
 This can be deduced directly from Yoneda.
 
@@ -588,7 +598,8 @@ Idtofun-is-embedding ua fe {X} {Y} =
   (dfunext fe (idtofun-agreement X Y))
   (idtofun-is-embedding ua)
 
-unique-from-𝟘-is-embedding : {X : 𝓤 ̇ } → is-embedding (unique-from-𝟘 {𝓤} {𝓥} {X})
+unique-from-𝟘-is-embedding : {X : 𝓤 ̇ }
+                           → is-embedding (unique-from-𝟘 {𝓤} {𝓥} {X})
 unique-from-𝟘-is-embedding x (y , p) = 𝟘-elim y
 
 \end{code}
@@ -641,6 +652,5 @@ Fixities:
 infix  0 _↪_
 infix  1 _□
 infixr 0 _↪⟨_⟩_
-
 
 \end{code}
