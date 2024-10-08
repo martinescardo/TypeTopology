@@ -167,7 +167,7 @@ econstruction {𝓤} {𝓥} {X} P x₀ s j i k d' lc = econstruction' P z s i h 
   z p = x₀
 
   h : (p : P) → is-h-isolated (z p)
-  h p = isolated-is-h-isolated x₀ k
+  h p = isolated-points-are-h-isolated x₀ k
 
   d : disjoint-images z s
   d p = d'

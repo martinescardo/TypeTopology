@@ -35,29 +35,26 @@ open import UF.Subsingletons
 Σ-isolated {𝓤} {𝓥} {X} {Y} {x} {y} d e (x' , y') = g (d x')
  where
   g : is-decidable (x ＝ x') → is-decidable ((x , y) ＝ (x' , y'))
-  g (inl p) = f (e' y')
+  g (inl refl) = f (e y')
    where
-    e' : is-isolated (transport Y p y)
-    e' = equivs-preserve-isolatedness (transport Y p) (transports-are-equivs p) y e
-
-    f : is-decidable (transport Y p y ＝ y') → is-decidable ((x , y) ＝ (x' , y'))
-    f (inl q) = inl (to-Σ-＝ (p , q))
-    f (inr ψ) = inr c
+    f : is-decidable (y ＝ y') → is-decidable ((x , y) ＝[ Σ Y ] (x' , y'))
+    f (inl refl) = inl refl
+    f (inr ψ)    = inr c
      where
       c : x , y ＝ x' , y' → 𝟘
-      c r = ψ q
+      c r = ψ t
        where
-        p' : x ＝ x'
-        p' = ap pr₁ r
-
-        q' : transport Y p' y ＝ y'
-        q' = from-Σ-＝' r
-
-        s : p' ＝ p
-        s = isolated-is-h-isolated x d p' p
+        p : x ＝ x'
+        p = ap pr₁ r
 
         q : transport Y p y ＝ y'
-        q = transport (λ - → transport Y - y ＝ y') s q'
+        q = from-Σ-＝' r
+
+        s : p ＝ refl
+        s = isolated-points-are-h-isolated x d p refl
+
+        t : y ＝ y'
+        t = transport (λ - → transport Y - y ＝ y') s q
 
   g (inr φ) = inr (λ q → φ (ap pr₁ q))
 
@@ -105,17 +102,20 @@ open import UF.Subsingletons
 Σ-isolated-right {𝓤} {𝓥} {X} {Y} {x} {y} s i y' = γ (i (x , y'))
  where
   γ : is-decidable ((x , y) ＝ (x , y')) → is-decidable (y ＝ y')
-  γ (inl p) =
-    inl (y                               ＝⟨ refl ⟩
-         transport Y refl y              ＝⟨ ap (λ - → transport Y - y) (s refl (ap pr₁ p)) ⟩
-         transport Y (ap pr₁ p) y        ＝⟨ (transport-ap Y pr₁ p)⁻¹ ⟩
-         transport (λ - → Y (pr₁ -)) p y ＝⟨ apd pr₂ p ⟩
-         y'                              ∎)
+  γ (inl p) = inl (y                               ＝⟨ refl ⟩
+                   transport Y refl y              ＝⟨ I ⟩
+                   transport Y (ap pr₁ p) y        ＝⟨ II ⟩
+                   transport (λ - → Y (pr₁ -)) p y ＝⟨ III ⟩
+                   y'                              ∎)
+                    where
+                     I   = ap (λ - → transport Y - y) (s refl (ap pr₁ p))
+                     II  = (transport-ap Y pr₁ p)⁻¹
+                     III = apd pr₂ p
   γ (inr ν) = inr (contrapositive (ap (x ,_)) ν)
 
 \end{code}
 
-Here we need a compactness assumption:
+For the "left" version we need a compactness assumption.
 
 \begin{code}
 
@@ -135,8 +135,8 @@ Here we need a compactness assumption:
    δ = σ x' A d
 
    γ : is-decidable (Σ A) → is-decidable (x ＝ x')
-   γ (inl (y' , p)) = inl (ap pr₁ p)
-   γ (inr ν)        = inr (λ (q : x ＝ x') → ν (transport Y q y , to-Σ-＝ (q , refl)))
+   γ (inl (y' , refl)) = inl refl
+   γ (inr ν)           = inr (λ {refl → ν (y , refl)})
 
 \end{code}
 
@@ -146,12 +146,11 @@ Recall that we proved the following:
 
 \begin{code}
 
-private
- recall : (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ )
-        → is-discrete X
-        → ((x : X) → is-totally-separated (Y x))
-        → is-totally-separated (Σ Y)
- recall = Σ-is-totally-separated-if-index-type-is-discrete
+_ : (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ )
+  → is-discrete X
+  → ((x : X) → is-totally-separated (Y x))
+  → is-totally-separated (Σ Y)
+_ = Σ-is-totally-separated-if-index-type-is-discrete
 
 \end{code}
 
@@ -162,15 +161,12 @@ separated types are closed under Σ.
 
 module _ (fe₀ : funext 𝓤₀ 𝓤₀) where
 
- Σ-totally-separated-taboo :
-
-      (∀ {𝓤} {𝓥} (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ )
+ Σ-totally-separated-taboo
+  : (∀ {𝓤} {𝓥} (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ )
           → is-totally-separated X
           → ((x : X) → is-totally-separated (Y x))
           → is-totally-separated (Σ Y))
-    →
-      ¬¬ WLPO
-
+  → ¬¬ WLPO
  Σ-totally-separated-taboo τ =
    ℕ∞₂-is-not-totally-separated-in-general fe₀
     (τ ℕ∞ (λ u → u ＝ ∞ → 𝟚)
@@ -188,21 +184,20 @@ negatation is not provable. See
   Topological and Logical Foundations Part 1 , October 2015 , pp. 1578-1589
   https://doi.org/10.1017/S096012951300042X
 
+and the module TypeTopology.DecidabilityOfNonContinuity.
+
 Even compact totally separated types fail to be closed under Σ:
 
 \begin{code}
 
- Σ-totally-separated-stronger-taboo :
-
-      (∀ {𝓤} {𝓥} (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ )
+ Σ-totally-separated-stronger-taboo
+  : (∀ {𝓤} {𝓥} (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ )
           → is-compact X
           → ((x : X) → is-compact (Y x))
           → is-totally-separated X
           → ((x : X) → is-totally-separated (Y x))
           → is-totally-separated (Σ Y))
-   →
-      ¬¬ WLPO
-
+   → ¬¬ WLPO
  Σ-totally-separated-stronger-taboo τ =
    ℕ∞₂-is-not-totally-separated-in-general fe₀
     (τ ℕ∞ (λ u → u ＝ ∞ → 𝟚)
@@ -231,8 +226,8 @@ open import Notation.CanonicalMap hiding ([_])
 Σ-indexed-by-ℕ∞-is-totally-separated-if-family-at-∞-is-prop
  fe₀ A A-is-ts A∞-is-prop {u , a} {v , b} ϕ = IV
  where
-  have-ϕ : (p : Σ A → 𝟚) → p (u , a) ＝ p (v , b)
-  have-ϕ = ϕ
+  _ : (p : Σ A → 𝟚) → p (u , a) ＝ p (v , b)
+  _ = ϕ
 
   ϕ₁ : (q : ℕ∞ → 𝟚) → q u ＝ q v
   ϕ₁ q = ϕ (λ (w , _) → q w)
@@ -318,8 +313,8 @@ subtype-is-totally-separated''
   → is-totally-separated X
 subtype-is-totally-separated'' {𝓤} {𝓥} {X} {Y} f Y-is-ts f-lc {x} {x'} ϕ = II
  where
-  have-ϕ : (p : X → 𝟚) → p x ＝ p x'
-  have-ϕ = ϕ
+  _ : (p : X → 𝟚) → p x ＝ p x'
+  _ = ϕ
 
   ϕ₁ : (q : Y → 𝟚) → q (f x) ＝ q (f x')
   ϕ₁ q = ϕ (q ∘ f)

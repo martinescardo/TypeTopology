@@ -585,8 +585,9 @@ being-isolated'-is-prop {𝓤} fe x = prop-criterion γ
 being-discrete-is-prop : FunExt → {X : 𝓤 ̇ } → is-prop (is-discrete X)
 being-discrete-is-prop {𝓤} fe = Π-is-prop (fe 𝓤 𝓤) (being-isolated-is-prop fe)
 
-isolated-is-h-isolated : {X : 𝓤 ̇ } (x : X) → is-isolated x → is-h-isolated x
-isolated-is-h-isolated {𝓤} {X} x i {y} = local-hedberg x (λ y → γ y (i y)) y
+isolated-points-are-h-isolated : {X : 𝓤 ̇ } (x : X)
+                               → is-isolated x → is-h-isolated x
+isolated-points-are-h-isolated {𝓤} {X} x i {y} = local-hedberg x (λ y → γ y (i y)) y
  where
   γ : (y : X) → is-decidable (x ＝ y) → Σ f ꞉ (x ＝ y → x ＝ y) , wconstant f
   γ y (inl p) = (λ _ → p) , (λ q r → refl)
@@ -597,7 +598,7 @@ isolated-inl : {X : 𝓤 ̇ } (x : X) (i : is-isolated x) (y : X) (r : x ＝ y)
 isolated-inl x i y r =
   equality-cases (i y)
    (λ (p : x ＝ y) (q : i y ＝ inl p)
-      → q ∙ ap inl (isolated-is-h-isolated x i p r))
+      → q ∙ ap inl (isolated-points-are-h-isolated x i p r))
    (λ (h : x ≠ y) (q : i y ＝ inr h)
       → 𝟘-elim(h r))
 
@@ -765,7 +766,7 @@ maps-of-props-into-isolated-points-are-embeddings : {P : 𝓤 ̇ } {X : 𝓥 ̇ 
                                                   → is-embedding f
 maps-of-props-into-isolated-points-are-embeddings f i j =
  maps-of-props-into-h-isolated-points-are-embeddings f i
-  (λ p → isolated-is-h-isolated (f p) (j p))
+  (λ p → isolated-points-are-h-isolated (f p) (j p))
 
 global-point-is-embedding : {X : 𝓤 ̇ } (f : 𝟙 {𝓥} → X)
                           → is-h-isolated (f ⋆)
