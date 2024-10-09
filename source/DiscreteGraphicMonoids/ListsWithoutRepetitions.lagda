@@ -41,12 +41,17 @@ We first define a conditional `cons` operation, and then we use it to
 define the function δ that deletes all occurences of an element from a
 list.
 
+The function ccons can be made abstract, and this was useful during
+the development of this file to get better goals, but it also
+complicates some proofs for users of this module, so we are removing
+it.
+
+
 \begin{code}
 
- abstract
-  ccons : ({x} y : X) → is-decidable (x ＝ y) → List X → List X
-  ccons y (inl e) ys = ys
-  ccons y (inr u) ys = y • ys
+ ccons : ({x} y : X) → is-decidable (x ＝ y) → List X → List X
+ ccons y (inl e) ys = ys
+ ccons y (inr u) ys = y • ys
 
  δ : X → List X → List X
  δ x []       = []
@@ -58,11 +63,13 @@ The following function δ' is used only during development to prevent δ
 from reducing in more complicated expressions, and, so far, doesn't
 occur in production code.
 
+The following was also made abstract during development (see comment
+above).
+
 \begin{code}
 
- abstract
-  δ' : X → List X → List X
-  δ' = δ
+ δ' : X → List X → List X
+ δ' = δ
 
 \end{code}
 
@@ -70,30 +77,32 @@ The following two facts are the specification of δ, together with the
 equation δ x [] = []. We never use the definition of `ccons` other
 than in the proof of these two facts.
 
+The function δ-＝ and δ-≠ were made abstract during development (see
+comments above).
+
 \begin{code}
 
  module _ (x y : X) (zs : List X) where
 
-  abstract
-   δ-＝ : x ＝ y → δ x (y • zs) ＝ δ x zs
-   δ-＝ e =
-    δ x (y • zs)             ＝⟨ refl ⟩
-    ccons y (d x y) (δ x zs) ＝⟨ ap (λ - → ccons y - (δ x zs)) I ⟩
-    ccons y (inl e) (δ x zs) ＝⟨ refl ⟩
-    δ x zs                   ∎
-     where
-      I : d x y ＝ inl e
-      I = discrete-inl d x y e
+  δ-＝ : x ＝ y → δ x (y • zs) ＝ δ x zs
+  δ-＝ e =
+   δ x (y • zs)             ＝⟨ refl ⟩
+   ccons y (d x y) (δ x zs) ＝⟨ ap (λ - → ccons y - (δ x zs)) I ⟩
+   ccons y (inl e) (δ x zs) ＝⟨ refl ⟩
+   δ x zs                   ∎
+    where
+     I : d x y ＝ inl e
+     I = discrete-inl d x y e
 
-   δ-≠ : x ≠ y → δ x (y • zs) ＝ y • δ x zs
-   δ-≠ u =
-    δ x (y • zs)             ＝⟨ refl ⟩
-    ccons y (d x y) (δ x zs) ＝⟨ ap (λ - → ccons y - (δ x zs)) I ⟩
-    ccons y (inr u) (δ x zs) ＝⟨ refl ⟩
-    y • δ x zs               ∎
-     where
-      I : d x y ＝ inr u
-      I = discrete-inr fe d x y u
+  δ-≠ : x ≠ y → δ x (y • zs) ＝ y • δ x zs
+  δ-≠ u =
+   δ x (y • zs)             ＝⟨ refl ⟩
+   ccons y (d x y) (δ x zs) ＝⟨ ap (λ - → ccons y - (δ x zs)) I ⟩
+   ccons y (inr u) (δ x zs) ＝⟨ refl ⟩
+   y • δ x zs               ∎
+    where
+     I : d x y ＝ inr u
+     I = discrete-inr fe d x y u
 
 \end{code}
 
