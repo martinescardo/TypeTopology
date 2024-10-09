@@ -283,154 +283,7 @@ We now prove several useful facts about (bounded) simulations between products.
 
 \end{code}
 
-To prove that multiplication is left cancellable, we require the following
-technical lemma: if α > 𝟘, then every simulation from α ×ₒ β to α ×ₒ γ
-decomposes as the identity on the first component and a function β → γ on the
-second component, viz. one that is independent of the first component.
-
-\begin{code}
-
-simulation-product-decomposition
- : (α : Ordinal 𝓤) (β γ : Ordinal 𝓥)
-   ((a₀ , a₀-least) : 𝟘ₒ ⊲ α)
-   ((f , _) : (α ×ₒ β) ⊴ (α ×ₒ γ))
- → (a : ⟨ α ⟩) (b : ⟨ β ⟩) → f (a , b) ＝ (a , pr₂ (f (a₀ , b)))
-simulation-product-decomposition {𝓤} {𝓥} α β γ (a₀ , a₀-least)
-                                 (f , sim@(init-seg , order-pres)) a b = I
- where
-  f' : ⟨ α ×ₒ β ⟩ → ⟨ α ×ₒ γ ⟩
-  f' (a , b) = (a , pr₂ (f (a₀ , b)))
-
-  P : ⟨ α ×ₒ β ⟩ → 𝓤 ⊔ 𝓥 ̇
-  P (a , b) = (f (a , b)) ＝ f' (a , b)
-
-  I : P (a , b)
-  I = Transfinite-induction (α ×ₒ β) P II (a , b)
-   where
-    II : (x : ⟨ α ×ₒ β ⟩)
-       → ((y : ⟨ α ×ₒ β ⟩) → y ≺⟨ α ×ₒ β ⟩ x → P y)
-       → P x
-    II (a , b) IH = Extensionality (α ×ₒ γ) (f (a , b)) (f' (a , b)) III IV
-     where
-      III : (u : ⟨ α ×ₒ γ ⟩) → u ≺⟨ α ×ₒ γ ⟩ f (a , b) → u ≺⟨ α ×ₒ γ ⟩ f' (a , b)
-      III (a' , c') p = transport (λ - → - ≺⟨ α ×ₒ γ ⟩ f' (a , b)) III₂ (III₃ p')
-       where
-        III₁ : Σ (a'' , b') ꞉ ⟨ α ×ₒ β ⟩ , (a'' , b') ≺⟨ α ×ₒ β ⟩ (a , b)
-                                         × (f (a'' , b') ＝ a' , c')
-        III₁ = init-seg (a , b) (a' , c') p
-        a'' = pr₁ (pr₁ III₁)
-        b' = pr₂ (pr₁ III₁)
-        p' = pr₁ (pr₂ III₁)
-        eq : f (a'' , b') ＝ (a' , c')
-        eq = pr₂ (pr₂ III₁)
-
-        III₂ : f' (a'' , b') ＝ (a' , c')
-        III₂ = IH (a'' , b') p' ⁻¹ ∙ eq
-
-        III₃ : (a'' , b') ≺⟨ α ×ₒ β ⟩ (a , b)
-             → f' (a'' , b') ≺⟨ α ×ₒ γ ⟩ f' (a , b)
-        III₃ (inl q) = h (order-pres (a₀' , b') (a₀ , b) (inl q))
-         where
-          a₀' : ⟨ α ⟩
-          a₀' = pr₁ (f (a₀ , b))
-
-          ih : (f (a₀' , b')) ＝ f' (a₀' , b')
-          ih = IH (a₀' , b') (inl q)
-
-          h : f  (a₀' , b') ≺⟨ α ×ₒ γ ⟩ f  (a₀ , b)
-            → f' (a'' , b') ≺⟨ α ×ₒ γ ⟩ f' (a , b)
-          h (inl r) = inl (transport (λ - → - ≺⟨ γ ⟩ pr₂ (f (a₀ , b)))
-                                     (ap pr₂ ih) r)
-          h (inr (_ , r)) = 𝟘-elim (irrefl α a₀' (transport (λ - → - ≺⟨ α ⟩ a₀')
-                                                            (ap pr₁ ih) r))
-        III₃ (inr (e , q)) = inr (ap (λ - → pr₂ (f (a₀ , -))) e , q)
-
-      IV : (u : ⟨ α ×ₒ γ ⟩) → u ≺⟨ α ×ₒ γ ⟩ f' (a , b) → u ≺⟨ α ×ₒ γ ⟩ f  (a , b)
-      IV (a' , c') (inl p) = l₂ (a' , c') (inl p)
-       where
-        l₁ : a₀ ≼⟨ α ⟩ a
-        l₁ x p = 𝟘-elim (transport ⟨_⟩ (a₀-least ⁻¹) (x , p))
-        l₂ : f (a₀ , b) ≼⟨ α ×ₒ γ ⟩ f (a , b)
-        l₂ = simulations-are-monotone _ _
-              f sim (a₀ , b) (a , b) (×ₒ-≼-left α β l₁)
-      IV (a' , c') (inr (r , q)) =
-       transport (λ - → - ≺⟨ α ×ₒ γ ⟩ f  (a , b)) eq
-                 (order-pres (a' , b) (a , b) (inr (refl , q)))
-        where
-         eq = f  (a' , b)             ＝⟨ IH (a' , b) (inr (refl , q)) ⟩
-              f' (a' , b)             ＝⟨ refl ⟩
-              (a' , pr₂ (f (a₀ , b))) ＝⟨ ap (a' ,_) (r ⁻¹) ⟩
-              (a' , c')               ∎
-
-\end{code}
-
-The following result states that multiplication for ordinals can be cancelled on
-the left. Interestingly, Andrew Swan [Swa18] proved that the corresponding
-result for sets is not provable constructively already for α = 𝟚: there are
-toposes where the statement
-
-  𝟚 × X ≃ 𝟚 × Y → X ≃ Y
-
-is not true for certain objects X and Y in the topos.
-
-[Swa18] Andrew Swan
-        On Dividing by Two in Constructive Mathematics
-        2018
-        https://arxiv.org/abs/1804.04490
-
-\begin{code}
-
-×ₒ-left-cancellable : (α β γ : Ordinal 𝓤)
-                    → 𝟘ₒ ⊲ α
-                    → (α ×ₒ β) ＝ (α ×ₒ γ)
-                    → β ＝ γ
-×ₒ-left-cancellable {𝓤} α β γ (a₀ , a₀-least) =
- transfinite-induction-on-OO P II β γ
-  where
-   P : Ordinal 𝓤 → 𝓤 ⁺ ̇
-   P β = (γ : Ordinal 𝓤) → (α ×ₒ β) ＝ (α ×ₒ γ) → β ＝ γ
-
-   I : (β γ : Ordinal 𝓤)
-     → (α ×ₒ β) ＝ (α ×ₒ γ)
-     → (b : ⟨ β ⟩) → Σ c ꞉ ⟨ γ ⟩ , (α ×ₒ (β ↓ b) ＝ α ×ₒ (γ ↓ c))
-   I β γ e b = c , eq
-    where
-     𝕗 : (α ×ₒ β) ⊴ (α ×ₒ γ)
-     𝕗 = ≃ₒ-to-⊴ (α ×ₒ β) (α ×ₒ γ) (idtoeqₒ _ _ e)
-     f : ⟨ α ×ₒ β ⟩ → ⟨ α ×ₒ γ ⟩
-     f = [ α ×ₒ β , α ×ₒ γ ]⟨ 𝕗 ⟩
-
-     c : ⟨ γ ⟩
-     c = pr₂ (f (a₀ , b))
-
-     eq = α ×ₒ (β ↓ b)                ＝⟨ 𝟘ₒ-right-neutral (α ×ₒ (β ↓ b)) ⁻¹ ⟩
-          (α ×ₒ (β ↓ b)) +ₒ 𝟘ₒ        ＝⟨ ap ((α ×ₒ (β ↓ b)) +ₒ_) a₀-least ⟩
-          (α ×ₒ (β ↓ b)) +ₒ (α ↓ a₀)  ＝⟨ ×ₒ-↓ α β ⁻¹ ⟩
-          (α ×ₒ β) ↓ (a₀ , b)         ＝⟨ eq₁ ⟩
-          (α ×ₒ γ) ↓ (a₀' , c)        ＝⟨ eq₂ ⟩
-          (α ×ₒ γ) ↓ (a₀ , c)         ＝⟨ ×ₒ-↓ α γ ⟩
-          (α ×ₒ (γ ↓ c)) +ₒ (α ↓ a₀)  ＝⟨ ap ((α ×ₒ (γ ↓ c)) +ₒ_) (a₀-least ⁻¹) ⟩
-          (α ×ₒ (γ ↓ c)) +ₒ 𝟘ₒ        ＝⟨ 𝟘ₒ-right-neutral (α ×ₒ (γ ↓ c)) ⟩
-          α ×ₒ (γ ↓ c)                ∎
-      where
-       a₀' : ⟨ α ⟩
-       a₀' = pr₁ (f (a₀ , b))
-
-       eq₁ = simulations-preserve-↓ (α ×ₒ β) (α ×ₒ γ) 𝕗 (a₀ , b)
-       eq₂ = ap ((α ×ₒ γ) ↓_)
-                (simulation-product-decomposition α β γ (a₀ , a₀-least) 𝕗 a₀ b)
-
-   II : (β : Ordinal 𝓤) → ((b : ⟨ β ⟩) → P (β ↓ b)) → P β
-   II β IH γ e = Extensionality (OO 𝓤) β γ (to-≼ III) (to-≼ IV)
-    where
-     III : (b : ⟨ β ⟩) → (β ↓ b) ⊲ γ
-     III b = let (c , eq) = I β γ  e     b in (c , IH b (γ ↓ c) eq)
-     IV  : (c : ⟨ γ ⟩) → (γ ↓ c) ⊲ β
-     IV  c = let (b , eq) = I γ β (e ⁻¹) c in (b , (IH b (γ ↓ c) (eq ⁻¹) ⁻¹))
-
-\end{code}
-
-Finally, multiplication satisfies the expected recursive equations (which
+Multiplication satisfies the expected recursive equations (which
 classically define ordinal multiplication): zero is fixed by multiplication
 (this is ×ₒ-𝟘ₒ-right above), multiplication for successors is repeated addition
 and multiplication preserves suprema.
@@ -665,4 +518,337 @@ Multiplication being monotone in the left argument is a constructive taboo.
 
   III (inr p , c) r = inl p
 
+\end{code}
+
+To prove that multiplication is left cancellable, we require the following
+technical lemma: if α > 𝟘, then every simulation from α ×ₒ β to α ×ₒ γ + α ↓ a₁
+firstly never hits the second summand, and secondly, in the first component, it
+decomposes as the identity on the first component and a function β → γ on the
+second component, viz. one that is independent of the first component.
+
+\begin{code}
+
+simulation-product-decomposition-generalised
+ : (α β γ : Ordinal 𝓤)
+   ((a₀ , a₀-least) : 𝟘ₒ ⊲ α)
+   (a₁ : ⟨ α ⟩)
+   ((f , _) : (α ×ₒ β) ⊴ ((α ×ₒ γ) +ₒ (α ↓ a₁)))
+ → Σ g ꞉ (⟨ β ⟩ → ⟨ γ ⟩) , ((a : ⟨ α ⟩) (b : ⟨ β ⟩) → f (a , b) ＝ inl (a , g b))
+simulation-product-decomposition-generalised {𝓤 = 𝓤} α β γ (a₀ , a₀-least) a₁ 𝕗@(f , f-sim) = g , g-satisfies-equation
+ where
+  P : Ordinal 𝓤 →  (𝓤 ⁺) ̇
+  P β = (a₁ : ⟨ α ⟩)(γ : Ordinal 𝓤) → ((f , _) : (α ×ₒ β) ⊴ ((α ×ₒ γ) +ₒ (α ↓ a₁)))
+      → (b : ⟨ β ⟩) → Σ c ꞉ ⟨ γ ⟩ , ((a : ⟨ α ⟩) → f (a , b) ＝ inl (a , c))
+  P₀ : Ordinal 𝓤 →  (𝓤 ⁺) ̇
+  P₀ β = (a₁ : ⟨ α ⟩)(γ : Ordinal 𝓤) → ((f , _) : (α ×ₒ β) ⊴ ((α ×ₒ γ) +ₒ (α ↓ a₁)))
+       → (b : ⟨ β ⟩) → (x : ⟨ (α ×ₒ γ) +ₒ (α ↓ a₁) ⟩) → f (a₀ , b) ＝ x → Σ c ꞉ ⟨ γ ⟩ , f (a₀ , b) ＝ inl (a₀ , c)
+  g' : (β : Ordinal 𝓤) → (ih : (b : ⟨ β ⟩) → P (β ↓ b)) → P₀ β
+  g' β ih a₁ γ 𝕗@(f , f-sim) b (inl (a' , c)) e = c , (e ∙ ap (λ - → inl (- , c)) p)
+   where
+    p : a' ＝ a₀
+    p = Extensionality α a' a₀ (λ x l → 𝟘-elim (II x l)) (λ x l → 𝟘-elim (transport⁻¹ ⟨_⟩ a₀-least (x , l)))
+     where
+      I = (α ×ₒ (β ↓ b)) ＝⟨ 𝟘ₒ-right-neutral (α ×ₒ (β ↓ b)) ⁻¹ ∙ ap ((α ×ₒ (β ↓ b)) +ₒ_) a₀-least ⟩
+          ((α ×ₒ (β ↓ b)) +ₒ (α ↓ a₀)) ＝⟨ ×ₒ-↓ α β ⁻¹ ⟩
+          (α ×ₒ β) ↓ (a₀ , b) ＝⟨ simulations-preserve-↓ _ _ 𝕗 (a₀ , b) ⟩
+          ((α ×ₒ γ) +ₒ (α ↓ a₁)) ↓ f (a₀ , b) ＝⟨ ap (((α ×ₒ γ) +ₒ (α ↓ a₁)) ↓_) e  ⟩
+          ((α ×ₒ γ) +ₒ (α ↓ a₁)) ↓ inl (a' , c) ＝⟨ +ₒ-↓-left (a' , c) ⁻¹ ⟩
+          ((α ×ₒ γ) ↓ (a' , c)) ＝⟨ ×ₒ-↓ α γ ⟩
+          ((α ×ₒ (γ ↓ c)) +ₒ (α ↓ a')) ∎
+      II : (x : ⟨ α ⟩) → ¬ (x ≺⟨ α ⟩ a')
+      II x l = +disjoint III
+       where
+        f' : (α ×ₒ (β ↓ b)) ⊴ ((α ×ₒ (γ ↓ c)) +ₒ (α ↓ a'))
+        f' = ≃ₒ-to-⊴ _ _ (idtoeqₒ _ _ I)
+
+        f'⁻¹ : ((α ×ₒ (γ ↓ c)) +ₒ (α ↓ a')) ⊴ (α ×ₒ (β ↓ b))
+        f'⁻¹ = ≃ₒ-to-⊴ _ _ (idtoeqₒ _ _ (I ⁻¹))
+
+        equiv : (α β : Ordinal 𝓤) → (eq : α ＝ β) (x : ⟨ β ⟩)
+              → [ α , β ]⟨ ≃ₒ-to-⊴ α β (idtoeqₒ α β eq) ⟩ ([ β , α ]⟨ ≃ₒ-to-⊴ β α (idtoeqₒ β α (eq ⁻¹)) ⟩ x) ＝ x
+        equiv α β refl x = refl
+
+        x' : ⟨ α ×ₒ (β ↓ b) ⟩
+        x' = [ _ , _ ]⟨ f'⁻¹ ⟩ (inr (x , l))
+        xₐ = pr₁ x'
+        x₂ = pr₂ x'
+
+        x'' = pr₁ (ih b a' (γ ↓ c) f' x₂)
+        x''-is-left : [ _ , _ ]⟨ f' ⟩ x' ＝ inl (xₐ , x'')
+        x''-is-left = pr₂ (ih b a' (γ ↓ c) f' x₂) xₐ
+        III = inl (xₐ , x'') ＝⟨ x''-is-left ⁻¹ ⟩
+              [ _ , _ ]⟨ f' ⟩ ([ _ , _ ]⟨ f'⁻¹ ⟩ (inr (x , l))) ＝⟨ equiv _ _ I (inr (x , l)) ⟩
+              (inr (x , l)) ∎
+
+  g' β _ a₁ γ 𝕗@(f , f-sim) b (inr (x , p)) e = 𝟘-elim ((order-preserving-gives-not-⊲ α (α ↓ a₁) (h , h-order-preserving) (a₁ , refl)))
+   where
+    I = α ×ₒ (β ↓ b)                         ＝⟨ 𝟘ₒ-right-neutral (α ×ₒ (β ↓ b)) ⁻¹ ∙ ap ((α ×ₒ (β ↓ b)) +ₒ_) a₀-least ⟩
+        (α ×ₒ (β ↓ b)) +ₒ (α ↓ a₀)           ＝⟨ ×ₒ-↓ α β ⁻¹ ⟩
+        (α ×ₒ β) ↓ (a₀ , b)                  ＝⟨ simulations-preserve-↓ _ _ 𝕗 (a₀ , b) ⟩
+        ((α ×ₒ γ) +ₒ (α ↓ a₁)) ↓ f (a₀ , b)  ＝⟨ ap (((α ×ₒ γ) +ₒ (α ↓ a₁)) ↓_) e ⟩
+        ((α ×ₒ γ) +ₒ (α ↓ a₁)) ↓ inr (x , p) ＝⟨ +ₒ-↓-right (x , p) ⁻¹ ⟩
+        (α ×ₒ γ)  +ₒ ((α ↓ a₁) ↓ (x , p))    ＝⟨ ap ((α ×ₒ γ) +ₒ_) (iterated-↓  α a₁ x p) ⟩
+        (α ×ₒ γ)  +ₒ (α ↓ x)                 ∎
+    I' = ((α ×ₒ γ) +ₒ ((α ↓ x) +ₒ α)) ＝⟨ +ₒ-assoc (α ×ₒ γ) (α ↓ x) α ⁻¹ ⟩
+         ((α ×ₒ γ) +ₒ (α ↓ x)) +ₒ α   ＝⟨ ap (_+ₒ α) I ⁻¹ ⟩
+         (α ×ₒ (β ↓ b)) +ₒ α            ＝⟨ ×ₒ-successor α (β ↓ b) ⁻¹ ⟩
+         α ×ₒ ((β ↓ b) +ₒ 𝟙ₒ)          ∎
+    II : ((α ×ₒ γ) +ₒ ((α ↓ x) +ₒ α)) ⊴ ((α ×ₒ γ) +ₒ (α ↓ a₁))
+    II = transport⁻¹ (λ - → - ⊴ ((α ×ₒ γ) +ₒ (α ↓ a₁))) I'
+                     (⊴-trans (α ×ₒ ((β ↓ b) +ₒ 𝟙ₒ)) (α ×ₒ β) ((α ×ₒ γ) +ₒ (α ↓ a₁))
+                              (×ₒ-right-monotone-⊴ α ((β ↓ b) +ₒ 𝟙ₒ) β
+                                (upper-bound-of-successors-of-initial-segments β b))
+                              𝕗)
+    III : ((α ↓ x) +ₒ α) ⊴ (α ↓ a₁)
+    III = ≼-gives-⊴ _ _ (+ₒ-left-reflects-≼ (α ×ₒ γ) ((α ↓ x) +ₒ α) (α ↓ a₁) (⊴-gives-≼ _ _ II))
+    III₀ = pr₁ III
+    III₀-order-preserving : is-order-preserving ((α ↓ x) +ₒ α) (α ↓ a₁) III₀
+    III₀-order-preserving = pr₂ (pr₂ III)
+    h : ⟨ α ⟩ → ⟨ α ↓ a₁ ⟩
+    h a = III₀ (inr a)
+    h-order-preserving : is-order-preserving α (α ↓ a₁) h
+    h-order-preserving x y l = III₀-order-preserving (inr x) (inr y) l
+  g'' : (β : Ordinal 𝓤) → (ih : (b : ⟨ β ⟩) → P (β ↓ b)) →  P β
+  g'' β ih a₁ γ 𝕗@(f , f-sim) b = c , c-satisfies-equation
+   where
+    c = pr₁ (g' β ih a₁ γ 𝕗 b (f (a₀ , b)) refl)
+    c-spec : f (a₀ , b) ＝ inl (a₀ , c)
+    c-spec = pr₂ (g' β ih a₁ γ 𝕗 b (f (a₀ , b)) refl)
+    c-satisfies-equation : (a : ⟨ α ⟩) → f (a , b) ＝ inl (a , c)
+    c-satisfies-equation a = ↓-lc ((α ×ₒ γ) +ₒ (α ↓ a₁)) (f (a , b)) (inl (a , c)) II
+     where
+      I = (α ×ₒ (β ↓ b)) ＝⟨ 𝟘ₒ-right-neutral (α ×ₒ (β ↓ b)) ⁻¹ ∙ ap ((α ×ₒ (β ↓ b)) +ₒ_) a₀-least ⟩
+          (α ×ₒ (β ↓ b)) +ₒ (α ↓ a₀) ＝⟨ ×ₒ-↓ α β ⁻¹ ⟩
+          (α ×ₒ β) ↓ (a₀ , b) ＝⟨ simulations-preserve-↓ _ _ 𝕗 (a₀ , b) ⟩
+          ((α ×ₒ γ) +ₒ (α ↓ a₁)) ↓ f (a₀ , b) ＝⟨ ap (((α ×ₒ γ) +ₒ (α ↓ a₁)) ↓_) c-spec ⟩
+          ((α ×ₒ γ) +ₒ (α ↓ a₁)) ↓ inl (a₀ , c) ＝⟨ +ₒ-↓-left (a₀ , c) ⁻¹ ⟩
+          ((α ×ₒ γ) ↓ (a₀ , c)) ＝⟨ ×ₒ-↓ α γ ⟩
+          (α ×ₒ (γ ↓ c)) +ₒ (α ↓ a₀) ＝⟨ ap ((α ×ₒ (γ ↓ c)) +ₒ_) a₀-least ⁻¹ ∙ 𝟘ₒ-right-neutral (α ×ₒ (γ ↓ c)) ⟩
+          (α ×ₒ (γ ↓ c)) ∎
+
+      II = ((α ×ₒ γ) +ₒ (α ↓ a₁)) ↓ f (a , b) ＝⟨ simulations-preserve-↓ _ _ 𝕗 (a , b) ⁻¹ ⟩
+           (α ×ₒ β) ↓ (a , b) ＝⟨ ×ₒ-↓ α β ⟩
+           (α ×ₒ (β ↓ b)) +ₒ (α ↓ a) ＝⟨ ap (_+ₒ (α ↓ a)) I ⟩
+           ((α ×ₒ (γ ↓ c)) +ₒ (α ↓ a)) ＝⟨ ×ₒ-↓ α γ ⁻¹ ⟩
+           ((α ×ₒ γ) ↓ (a , c)) ＝⟨ +ₒ-↓-left (a , c) ⟩
+           ((α ×ₒ γ) +ₒ (α ↓ a₁)) ↓ inl (a , c) ∎
+  g''' : (b : ⟨ β ⟩) → Σ c ꞉ ⟨ γ ⟩ , ((a : ⟨ α ⟩) → f (a , b) ＝ inl (a , c))
+  g''' b = transfinite-induction-on-OO P g'' β a₁ γ 𝕗 b
+  g : ⟨ β ⟩ → ⟨ γ ⟩
+  g b = pr₁ (g''' b)
+  g-satisfies-equation : (a : ⟨ α ⟩)(b : ⟨ β ⟩) → f (a , b) ＝ inl (a , g b)
+  g-satisfies-equation a b = pr₂ (g''' b) a
+
+×ₒ-left-cancellable-⊴-generalised : (α β γ : Ordinal 𝓤)(a₁ : ⟨ α ⟩)
+                      → 𝟘ₒ ⊲ α
+                      → (α ×ₒ β) ⊴ ((α ×ₒ γ) +ₒ (α ↓ a₁))
+                      → β ⊴ γ
+×ₒ-left-cancellable-⊴-generalised α β γ a₁ p@(a₀ , a₀-least) 𝕗@(f , f-initial , f-order-pres) =
+ (g , g-is-initial-segment , g-is-order-preserving)
+ where
+  g : ⟨ β ⟩ → ⟨ γ ⟩
+  g = pr₁ (simulation-product-decomposition-generalised α β γ p a₁ 𝕗)
+
+  g-property :  (a : ⟨ α ⟩)(b : ⟨ β ⟩) → f (a , b) ＝ inl (a , g b)
+  g-property = pr₂ (simulation-product-decomposition-generalised α β γ p a₁ 𝕗)
+
+  g-is-initial-segment : is-initial-segment β γ g
+  g-is-initial-segment b c l = b' , k' k , e'
+   where
+    l' : inl (a₀ , c) ≺⟨ ((α ×ₒ γ) +ₒ (α ↓ a₁)) ⟩ inl (a₀ , g b)
+    l' = inl l
+    l'' : inl (a₀ , c) ≺⟨ ((α ×ₒ γ) +ₒ (α ↓ a₁)) ⟩ f (a₀ , b)
+    l'' = transport⁻¹ (λ - → inl (a₀ , c) ≺⟨ ((α ×ₒ γ) +ₒ (α ↓ a₁))⟩ -) (g-property a₀ b) l'
+    x : Σ y ꞉ ⟨ α ×ₒ β ⟩ , (y ≺⟨ α ×ₒ β ⟩ (a₀ , b)) × (f y ＝ (inl (a₀ , c)))
+    x = f-initial (a₀ , b) (inl (a₀ , c)) l''
+    a' = pr₁ (pr₁ x)
+    b' = pr₂ (pr₁ x)
+    k = pr₁ (pr₂ x)
+    e = pr₂ (pr₂ x)
+
+    k' : (a' , b') ≺⟨ α ×ₒ β ⟩ (a₀ , b) → b' ≺⟨ β ⟩ b
+    k' (inl p) = p
+    k' (inr (r , q)) = 𝟘-elim (transport⁻¹ ⟨_⟩ a₀-least (a' , q))
+
+    e' : g b' ＝ c
+    e' = ap pr₂ (inl-lc (g-property a' b' ⁻¹ ∙ e))
+
+  g-is-order-preserving : is-order-preserving β γ g
+  g-is-order-preserving b b' l = l''' l''
+   where
+    l' : f (a₀ , b) ≺⟨ ((α ×ₒ γ) +ₒ (α ↓ a₁)) ⟩ f (a₀ , b')
+    l' = f-order-pres (a₀ , b) (a₀ , b') (inl l)
+    l'' : inl (a₀ , g b) ≺⟨ ((α ×ₒ γ) +ₒ (α ↓ a₁)) ⟩ inl (a₀ , g b')
+    l'' = transport₂ (λ x y → x ≺⟨ ((α ×ₒ γ) +ₒ (α ↓ a₁))⟩ y)
+                     (g-property a₀ b)
+                     (g-property a₀ b')
+                     l'
+    l''' : (a₀ , g b) ≺⟨ (α ×ₒ γ) ⟩ (a₀ , g b') → g b ≺⟨ γ ⟩ g b'
+    l''' (inl p) = p
+    l''' (inr (r , q)) = 𝟘-elim (irrefl α a₀ q)
+
+×ₒ-left-cancellable-⊴ : (α β γ : Ordinal 𝓤)
+                      → 𝟘ₒ ⊲ α
+                      → (α ×ₒ β) ⊴ (α ×ₒ γ)
+                      → β ⊴ γ
+×ₒ-left-cancellable-⊴ α β γ p@(a₀ , a₀-least) 𝕗@(f , f-sim) =
+  ×ₒ-left-cancellable-⊴-generalised α β γ a₀ p
+                                    (transport (λ - → (α ×ₒ β) ⊴ -)
+                                               (𝟘ₒ-right-neutral (α ×ₒ γ) ⁻¹ ∙ ap ((α ×ₒ γ) +ₒ_) a₀-least) 𝕗)
+
+{-
+simulation-product-decomposition
+ : (α : Ordinal 𝓤) (β γ : Ordinal 𝓥)
+   ((a₀ , a₀-least) : 𝟘ₒ ⊲ α)
+   ((f , _) : (α ×ₒ β) ⊴ (α ×ₒ γ))
+ → (a : ⟨ α ⟩) (b : ⟨ β ⟩) → f (a , b) ＝ (a , pr₂ (f (a₀ , b)))
+simulation-product-decomposition {𝓤} {𝓥} α β γ (a₀ , a₀-least)
+                                 (f , sim@(init-seg , order-pres)) a b = I
+ where
+  f' : ⟨ α ×ₒ β ⟩ → ⟨ α ×ₒ γ ⟩
+  f' (a , b) = (a , pr₂ (f (a₀ , b)))
+
+  P : ⟨ α ×ₒ β ⟩ → 𝓤 ⊔ 𝓥 ̇
+  P (a , b) = (f (a , b)) ＝ f' (a , b)
+
+  I : P (a , b)
+  I = Transfinite-induction (α ×ₒ β) P II (a , b)
+   where
+    II : (x : ⟨ α ×ₒ β ⟩)
+       → ((y : ⟨ α ×ₒ β ⟩) → y ≺⟨ α ×ₒ β ⟩ x → P y)
+       → P x
+    II (a , b) IH = Extensionality (α ×ₒ γ) (f (a , b)) (f' (a , b)) III IV
+     where
+      III : (u : ⟨ α ×ₒ γ ⟩) → u ≺⟨ α ×ₒ γ ⟩ f (a , b) → u ≺⟨ α ×ₒ γ ⟩ f' (a , b)
+      III (a' , c') p = transport (λ - → - ≺⟨ α ×ₒ γ ⟩ f' (a , b)) III₂ (III₃ p')
+       where
+        III₁ : Σ (a'' , b') ꞉ ⟨ α ×ₒ β ⟩ , (a'' , b') ≺⟨ α ×ₒ β ⟩ (a , b)
+                                         × (f (a'' , b') ＝ a' , c')
+        III₁ = init-seg (a , b) (a' , c') p
+        a'' = pr₁ (pr₁ III₁)
+        b' = pr₂ (pr₁ III₁)
+        p' = pr₁ (pr₂ III₁)
+        eq : f (a'' , b') ＝ (a' , c')
+        eq = pr₂ (pr₂ III₁)
+
+        III₂ : f' (a'' , b') ＝ (a' , c')
+        III₂ = IH (a'' , b') p' ⁻¹ ∙ eq
+
+        III₃ : (a'' , b') ≺⟨ α ×ₒ β ⟩ (a , b)
+             → f' (a'' , b') ≺⟨ α ×ₒ γ ⟩ f' (a , b)
+        III₃ (inl q) = h (order-pres (a₀' , b') (a₀ , b) (inl q))
+         where
+          a₀' : ⟨ α ⟩
+          a₀' = pr₁ (f (a₀ , b))
+
+          ih : (f (a₀' , b')) ＝ f' (a₀' , b')
+          ih = IH (a₀' , b') (inl q)
+
+          h : f  (a₀' , b') ≺⟨ α ×ₒ γ ⟩ f  (a₀ , b)
+            → f' (a'' , b') ≺⟨ α ×ₒ γ ⟩ f' (a , b)
+          h (inl r) = inl (transport (λ - → - ≺⟨ γ ⟩ pr₂ (f (a₀ , b)))
+                                     (ap pr₂ ih) r)
+          h (inr (_ , r)) = 𝟘-elim (irrefl α a₀' (transport (λ - → - ≺⟨ α ⟩ a₀')
+                                                            (ap pr₁ ih) r))
+        III₃ (inr (e , q)) = inr (ap (λ - → pr₂ (f (a₀ , -))) e , q)
+
+      IV : (u : ⟨ α ×ₒ γ ⟩) → u ≺⟨ α ×ₒ γ ⟩ f' (a , b) → u ≺⟨ α ×ₒ γ ⟩ f  (a , b)
+      IV (a' , c') (inl p) = l₂ (a' , c') (inl p)
+       where
+        l₁ : a₀ ≼⟨ α ⟩ a
+        l₁ x p = 𝟘-elim (transport ⟨_⟩ (a₀-least ⁻¹) (x , p))
+        l₂ : f (a₀ , b) ≼⟨ α ×ₒ γ ⟩ f (a , b)
+        l₂ = simulations-are-monotone _ _
+              f sim (a₀ , b) (a , b) (×ₒ-≼-left α β l₁)
+      IV (a' , c') (inr (r , q)) =
+       transport (λ - → - ≺⟨ α ×ₒ γ ⟩ f  (a , b)) eq
+                 (order-pres (a' , b) (a , b) (inr (refl , q)))
+        where
+         eq = f  (a' , b)             ＝⟨ IH (a' , b) (inr (refl , q)) ⟩
+              f' (a' , b)             ＝⟨ refl ⟩
+              (a' , pr₂ (f (a₀ , b))) ＝⟨ ap (a' ,_) (r ⁻¹) ⟩
+              (a' , c')               ∎
+-}
+\end{code}
+
+The following result states that multiplication for ordinals can be cancelled on
+the left. Interestingly, Andrew Swan [Swa18] proved that the corresponding
+result for sets is not provable constructively already for α = 𝟚: there are
+toposes where the statement
+
+  𝟚 × X ≃ 𝟚 × Y → X ≃ Y
+
+is not true for certain objects X and Y in the topos.
+
+[Swa18] Andrew Swan
+        On Dividing by Two in Constructive Mathematics
+        2018
+        https://arxiv.org/abs/1804.04490
+
+\begin{code}
+
+×ₒ-left-cancellable : (α β γ : Ordinal 𝓤)
+                    → 𝟘ₒ ⊲ α
+                    → (α ×ₒ β) ＝ (α ×ₒ γ)
+                    → β ＝ γ
+×ₒ-left-cancellable {𝓤 = 𝓤} α β γ p e = ⊴-antisym β γ (f β γ e) (f γ β (e ⁻¹))
+ where
+  f : (β γ : Ordinal 𝓤) → (α ×ₒ β) ＝ (α ×ₒ γ) → β ⊴ γ
+  f β γ e = ×ₒ-left-cancellable-⊴ α β γ p (≃ₒ-to-⊴
+                                            (α ×ₒ β)
+                                            (α ×ₒ γ)
+                                            (idtoeqₒ
+                                              (α ×ₒ β)
+                                              (α ×ₒ γ)
+                                              e))
+
+{-
+×ₒ-left-cancellable : (α β γ : Ordinal 𝓤)
+                    → 𝟘ₒ ⊲ α
+                    → (α ×ₒ β) ＝ (α ×ₒ γ)
+                    → β ＝ γ
+×ₒ-left-cancellable {𝓤} α β γ (a₀ , a₀-least) =
+ transfinite-induction-on-OO P II β γ
+  where
+   P : Ordinal 𝓤 → 𝓤 ⁺ ̇
+   P β = (γ : Ordinal 𝓤) → (α ×ₒ β) ＝ (α ×ₒ γ) → β ＝ γ
+
+   I : (β γ : Ordinal 𝓤)
+     → (α ×ₒ β) ＝ (α ×ₒ γ)
+     → (b : ⟨ β ⟩) → Σ c ꞉ ⟨ γ ⟩ , (α ×ₒ (β ↓ b) ＝ α ×ₒ (γ ↓ c))
+   I β γ e b = c , eq
+    where
+     𝕗 : (α ×ₒ β) ⊴ (α ×ₒ γ)
+     𝕗 = ≃ₒ-to-⊴ (α ×ₒ β) (α ×ₒ γ) (idtoeqₒ _ _ e)
+     f : ⟨ α ×ₒ β ⟩ → ⟨ α ×ₒ γ ⟩
+     f = [ α ×ₒ β , α ×ₒ γ ]⟨ 𝕗 ⟩
+
+     c : ⟨ γ ⟩
+     c = pr₂ (f (a₀ , b))
+
+     eq = α ×ₒ (β ↓ b)                ＝⟨ 𝟘ₒ-right-neutral (α ×ₒ (β ↓ b)) ⁻¹ ⟩
+          (α ×ₒ (β ↓ b)) +ₒ 𝟘ₒ        ＝⟨ ap ((α ×ₒ (β ↓ b)) +ₒ_) a₀-least ⟩
+          (α ×ₒ (β ↓ b)) +ₒ (α ↓ a₀)  ＝⟨ ×ₒ-↓ α β ⁻¹ ⟩
+          (α ×ₒ β) ↓ (a₀ , b)         ＝⟨ eq₁ ⟩
+          (α ×ₒ γ) ↓ (a₀' , c)        ＝⟨ eq₂ ⟩
+          (α ×ₒ γ) ↓ (a₀ , c)         ＝⟨ ×ₒ-↓ α γ ⟩
+          (α ×ₒ (γ ↓ c)) +ₒ (α ↓ a₀)  ＝⟨ ap ((α ×ₒ (γ ↓ c)) +ₒ_) (a₀-least ⁻¹) ⟩
+          (α ×ₒ (γ ↓ c)) +ₒ 𝟘ₒ        ＝⟨ 𝟘ₒ-right-neutral (α ×ₒ (γ ↓ c)) ⟩
+          α ×ₒ (γ ↓ c)                ∎
+      where
+       a₀' : ⟨ α ⟩
+       a₀' = pr₁ (f (a₀ , b))
+
+       eq₁ = simulations-preserve-↓ (α ×ₒ β) (α ×ₒ γ) 𝕗 (a₀ , b)
+       eq₂ = ap ((α ×ₒ γ) ↓_)
+                (simulation-product-decomposition α β γ (a₀ , a₀-least) 𝕗 a₀ b)
+
+   II : (β : Ordinal 𝓤) → ((b : ⟨ β ⟩) → P (β ↓ b)) → P β
+   II β IH γ e = Extensionality (OO 𝓤) β γ (to-≼ III) (to-≼ IV)
+    where
+     III : (b : ⟨ β ⟩) → (β ↓ b) ⊲ γ
+     III b = let (c , eq) = I β γ  e     b in (c , IH b (γ ↓ c) eq)
+     IV  : (c : ⟨ γ ⟩) → (γ ↓ c) ⊲ β
+     IV  c = let (b , eq) = I γ β (e ⁻¹) c in (b , (IH b (γ ↓ c) (eq ⁻¹) ⁻¹))
+-}
 \end{code}
