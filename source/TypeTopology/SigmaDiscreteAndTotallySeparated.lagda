@@ -123,7 +123,7 @@ For the "left" version we need a compactness assumption.
                 → ((x : X) → is-Compact (Y x))
                 → is-isolated (x , y)
                 → is-isolated x
-Σ-isolated-left {𝓤} {𝓥} {X} {Y} {x} {y} σ i x' = γ δ
+Σ-isolated-left {𝓤} {𝓥} {X} {Y} {x} {y} κ i x' = γ δ
  where
    A : (y' : Y x') → 𝓤 ⊔ 𝓥 ̇
    A y' = (x , y) ＝ (x' , y')
@@ -132,7 +132,7 @@ For the "left" version we need a compactness assumption.
    d y' = i (x' , y')
 
    δ : is-decidable (Σ A)
-   δ = σ x' A d
+   δ = κ x' A d
 
    γ : is-decidable (Σ A) → is-decidable (x ＝ x')
    γ (inl (y' , refl)) = inl refl
@@ -205,7 +205,7 @@ Even compact totally separated types fail to be closed under Σ:
        (λ _ → compact∙-types-are-compact
                (prop-tychonoff fe₀ (ℕ∞-is-set fe₀) (λ _ → 𝟚-is-compact∙)))
        (ℕ∞-is-totally-separated fe₀)
-          (λ u → Π-is-totally-separated fe₀ (λ _ → 𝟚-is-totally-separated)))
+       (λ u → Π-is-totally-separated fe₀ (λ _ → 𝟚-is-totally-separated)))
 
 \end{code}
 
