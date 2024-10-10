@@ -184,35 +184,6 @@ weakly isolated, and keep all the other original points unchanged.
 is-weakly-isolated : {X : 𝓤 ̇ } (x : X) → 𝓤 ̇
 is-weakly-isolated x = ∀ x' → is-decidable (x' ≠ x)
 
-isolated-gives-weakly-isolated : {X : 𝓤 ̇ } (x : X)
-                               → is-isolated x
-                               → is-weakly-isolated x
-isolated-gives-weakly-isolated x i y =
- Cases (i y)
-  (λ (e : x ＝ y) → inr (λ (d : y ≠ x) → d (e ⁻¹)))
-  (λ (d : x ≠ y) → inl (λ (e : y ＝ x) → d (e ⁻¹)))
-
-open import UF.Equiv
-
-weakly-isolated-closed-under-≃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-                                 (f : X ≃ Y)
-                               → (x : X)
-                               → is-weakly-isolated x
-                               → is-weakly-isolated (⌜ f ⌝ x)
-weakly-isolated-closed-under-≃ f x i y =
- Cases (i (⌜ f ⌝⁻¹ y))
-  (λ (a : ⌜ f ⌝⁻¹ y ≠ x)
-     → inl (λ (e : y ＝ ⌜ f ⌝ x)
-            → a (⌜ f ⌝⁻¹ y         ＝⟨ ap ⌜ f ⌝⁻¹ e ⟩
-                 ⌜ f ⌝⁻¹ (⌜ f ⌝ x) ＝⟨ inverses-are-retractions' f x ⟩
-                 x                 ∎)))
-  (λ (b : ¬ (⌜ f ⌝⁻¹ y ≠ x))
-     → inr (λ (d : y ≠ ⌜ f ⌝ x)
-            → b (λ (e : ⌜ f ⌝⁻¹ y ＝ x)
-                 → d (y                 ＝⟨ (inverses-are-sections' f y)⁻¹ ⟩
-                      ⌜ f ⌝ (⌜ f ⌝⁻¹ y) ＝⟨ ap ⌜ f ⌝ e ⟩
-                      ⌜ f ⌝ x           ∎))))
-
 module general-example
         (fe : FunExt)
         (𝓤 : Universe)
@@ -325,6 +296,35 @@ non-isolated point or weakly-non-isolated of a set without assuming an
 anticlassical principle such as ¬ WLPO.
 
 \begin{code}
+
+isolated-gives-weakly-isolated : {X : 𝓤 ̇ } (x : X)
+                               → is-isolated x
+                               → is-weakly-isolated x
+isolated-gives-weakly-isolated x i y =
+ Cases (i y)
+  (λ (e : x ＝ y) → inr (λ (d : y ≠ x) → d (e ⁻¹)))
+  (λ (d : x ≠ y) → inl (λ (e : y ＝ x) → d (e ⁻¹)))
+
+open import UF.Equiv
+
+weakly-isolated-closed-under-≃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                                 (f : X ≃ Y)
+                               → (x : X)
+                               → is-weakly-isolated x
+                               → is-weakly-isolated (⌜ f ⌝ x)
+weakly-isolated-closed-under-≃ f x i y =
+ Cases (i (⌜ f ⌝⁻¹ y))
+  (λ (a : ⌜ f ⌝⁻¹ y ≠ x)
+     → inl (λ (e : y ＝ ⌜ f ⌝ x)
+            → a (⌜ f ⌝⁻¹ y         ＝⟨ ap ⌜ f ⌝⁻¹ e ⟩
+                 ⌜ f ⌝⁻¹ (⌜ f ⌝ x) ＝⟨ inverses-are-retractions' f x ⟩
+                 x                 ∎)))
+  (λ (b : ¬ (⌜ f ⌝⁻¹ y ≠ x))
+     → inr (λ (d : y ≠ ⌜ f ⌝ x)
+            → b (λ (e : ⌜ f ⌝⁻¹ y ＝ x)
+                 → d (y                 ＝⟨ (inverses-are-sections' f y)⁻¹ ⟩
+                      ⌜ f ⌝ (⌜ f ⌝⁻¹ y) ＝⟨ ap ⌜ f ⌝ e ⟩
+                      ⌜ f ⌝ x           ∎))))
 
 ∞-is-weakly-isolated-gives-WLPO : is-weakly-isolated ∞ → WLPO
 ∞-is-weakly-isolated-gives-WLPO w u =
