@@ -41,12 +41,12 @@ module TypeTopology.FailureOfTotalSeparatedness (fe₀ : funext₀) where
 
 open import MLTT.Spartan
 
-open import MLTT.Two-Properties
 open import CoNaturals.Type
+open import MLTT.Two-Properties
+open import Notation.CanonicalMap
 open import Taboos.BasicDiscontinuity fe₀
 open import Taboos.WLPO
 open import UF.Base
-open import Notation.CanonicalMap
 
 \end{code}
 
@@ -314,6 +314,8 @@ extensionality. (Cf. the module DiscreteAndSeparated.)
 
 \end{code}
 
+Added 10th October 2024.
+
 Examples. As discussed in the module DecidabilityOfNonContinuity, we
 have that ¬ WPO is a weak continuity principle. Using this, we get
 explicit examples of non weakly isolated points. Notice that, because
@@ -377,5 +379,8 @@ module examples-of-non-weakly-isolated-points (nwlpo : ¬ WLPO) where
   contrapositive
    (isolated-gives-weakly-isolated α)
    (Cantor-has-no-weakly-isolated-points α)
+
+ Cantor-is-perfect : is-perfect Cantor
+ Cantor-is-perfect (α , i) = Cantor-has-no-isolated-points α i
 
 \end{code}
