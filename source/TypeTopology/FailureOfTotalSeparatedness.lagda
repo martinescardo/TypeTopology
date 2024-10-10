@@ -384,3 +384,33 @@ module examples-of-non-weakly-isolated-points (nwlpo : ¬ WLPO) where
  Cantor-is-perfect (α , i) = Cantor-has-no-isolated-points α i
 
 \end{code}
+
+In the module Ordinals.Notation interpretation, which currently (as of
+10th October 2024) imports this module indirectly) we define the
+notion of limit point by
+
+  is-limit-point : {X : 𝓤 ̇ } → X → 𝓤 ̇
+  is-limit-point x = is-isolated x → WLPO
+
+motivated by considerations discussed above.
+
+But perhaps the following, stronger, definition is more appropriate.
+
+\begin{code}
+
+is-limit-point⁺ : {X : 𝓤 ̇ } → X → 𝓤 ̇
+is-limit-point⁺ x = is-weakly-isolated x → WLPO
+
+\end{code}
+
+With this terminology, the above amount to the following.
+
+\begin{code}
+
+∞-is-limit-point⁺ : is-limit-point⁺ ∞
+∞-is-limit-point⁺ = ∞-is-weakly-isolated-gives-WLPO
+
+every-point-of-the-Cantor-type-is-a-limit-point⁺ : (α : Cantor) → is-limit-point⁺ α
+every-point-of-the-Cantor-type-is-a-limit-point⁺ = weakly-isolated-point-of-Cantor-gives-WLPO
+
+\end{code}

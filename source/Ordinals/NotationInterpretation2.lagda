@@ -489,6 +489,12 @@ is-limit-point x = is-isolated x → WLPO
 
 \end{code}
 
+TODO added 10th October 2024. Can we work instead with the stronger
+notion of limit point defined in the module
+FailureOfTotalSeparatedness (indirectly imported by this module).
+
+Back to the past.
+
 The characteristic function of limit points:
 
 \begin{code}
