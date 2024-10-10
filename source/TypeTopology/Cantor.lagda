@@ -335,7 +335,7 @@ module _ (fe : funext₀) (α β : Cantor) where
  Cantor-swap-≃ = Cantor-swap ,
                  involutions-are-equivs Cantor-swap Cantor-swap-involutive
 
-Cantor-homogeneous : Fun-Ext
+Cantor-homogeneous : funext₀
                    → (α β : Cantor)
                    → Σ f ꞉ Cantor ≃ Cantor , (⌜ f ⌝ α ＝ β)
 Cantor-homogeneous fe α β = Cantor-swap-≃ fe α β , Cantor-swap-swaps fe α β
