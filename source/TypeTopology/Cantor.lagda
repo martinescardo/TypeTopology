@@ -306,7 +306,7 @@ The Cantor type is homogeneous.
 
 \begin{code}
 
-module _ (fe : Fun-Ext) (α β : Cantor) where
+module _ (fe : funext₀) (α β : Cantor) where
 
  Cantor-swap : Cantor → Cantor
  Cantor-swap γ i = (β i ⊕ α i) ⊕ γ i
