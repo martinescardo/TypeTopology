@@ -386,7 +386,7 @@ module examples-of-non-weakly-isolated-points (nwlpo : ¬ WLPO) where
 \end{code}
 
 In the module Ordinals.NotationInterpretation2, which currently (as of
-10th October 2024) imports this module indirectly) we define the
+10th October 2024) imports this module indirectly, we define the
 notion of limit point by
 
   is-limit-point : {X : 𝓤 ̇ } → X → 𝓤 ̇
