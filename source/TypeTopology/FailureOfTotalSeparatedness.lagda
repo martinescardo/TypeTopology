@@ -385,7 +385,7 @@ module examples-of-non-weakly-isolated-points (nwlpo : ¬ WLPO) where
 
 \end{code}
 
-In the module Ordinals.Notation interpretation, which currently (as of
+In the module Ordinals.NotationInterpretation2, which currently (as of
 10th October 2024) imports this module indirectly) we define the
 notion of limit point by
 
@@ -407,10 +407,11 @@ With this terminology, the above amount to the following.
 
 \begin{code}
 
-∞-is-limit-point⁺ : is-limit-point⁺ ∞
-∞-is-limit-point⁺ = ∞-is-weakly-isolated-gives-WLPO
+∞-is-a-limit-point⁺-of-ℕ∞ : is-limit-point⁺ ∞
+∞-is-a-limit-point⁺-of-ℕ∞ = ∞-is-weakly-isolated-gives-WLPO
 
-every-point-of-the-Cantor-type-is-a-limit-point⁺ : (α : Cantor) → is-limit-point⁺ α
+every-point-of-the-Cantor-type-is-a-limit-point⁺
+ : (α : Cantor) → is-limit-point⁺ α
 every-point-of-the-Cantor-type-is-a-limit-point⁺ = weakly-isolated-point-of-Cantor-gives-WLPO
 
 \end{code}
