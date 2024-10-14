@@ -709,3 +709,5 @@ the component 𝟙ₒ to x.
 
 TODO. Suprema of compact ordinals are compact. (This follows directly
 from the constructions in the file OrdinalOfOrdinalsSupremum.)
+
+TODO. Are the ordinals in the image of K totally separated?
