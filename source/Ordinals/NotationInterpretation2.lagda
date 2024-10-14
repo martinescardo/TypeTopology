@@ -581,13 +581,13 @@ limit point holds.
  ℓ-limit⁺ : (ν : E) (x : ⟨ Δ ν ⟩) → ℓ ν x ＝ ₁ → is-limit-point⁺ (ι ν x)
  ℓ-limit⁺ ⌜ω+𝟙⌝ (inr x) p i = ∞-is-a-limit-point⁺-of-ℕ∞ fe₀ i
  ℓ-limit⁺ (ν₀ ⌜+⌝ ν₁) (inl ⋆ , x₀) p i = ℓ-limit⁺ ν₀ x₀ p
-                                         (Σ-weakly-isolated-right
-                                           (underlying-type-is-setᵀ fe 𝟚ᵒ)
-                                           i)
+                                          (Σ-weakly-isolated-right
+                                            (underlying-type-is-setᵀ fe 𝟚ᵒ)
+                                            i)
  ℓ-limit⁺ (ν₀ ⌜+⌝ ν₁) (inr ⋆ , x₁) p i = ℓ-limit⁺ ν₁ x₁ p
-                                         (Σ-weakly-isolated-right
-                                           (underlying-type-is-setᵀ fe 𝟚ᵒ)
-                                           i)
+                                          (Σ-weakly-isolated-right
+                                            (underlying-type-is-setᵀ fe 𝟚ᵒ)
+                                            i)
  ℓ-limit⁺ (ν₀ ⌜×⌝ ν₁) (x₀ , x₁)    p i =
    Cases (max𝟚-lemma p)
     (λ (p₀ : ℓ ν₀ x₀ ＝ ₁) → ℓ-limit⁺ ν₀ x₀ p₀ (×-weakly-isolated-left i))
