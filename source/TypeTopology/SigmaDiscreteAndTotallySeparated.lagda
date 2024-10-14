@@ -350,9 +350,9 @@ replacing isolatedness by weak isolatedness.
 \begin{code}
 
 Σ-weakly-isolated-right : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {x : X} {y : Y x}
-                → is-set X
-                → is-weakly-isolated {_} {Σ Y} (x , y)
-                → is-weakly-isolated y
+                        → is-set X
+                        → is-weakly-isolated {_} {Σ Y} (x , y)
+                        → is-weakly-isolated y
 Σ-weakly-isolated-right {𝓤} {𝓥} {X} {Y} {x} {y} s i y' = γ δ
  where
   δ : is-decidable ((x , y') ≠ (x , y))
@@ -362,18 +362,18 @@ replacing isolatedness by weak isolatedness.
   γ (inl a) = inl (λ {refl → a refl})
   γ (inr b) = inr (λ (d : y' ≠ y) → b (λ (p : x , y' ＝ x , y)
    → d (y'                               ＝⟨ refl ⟩
-     transport Y refl y'              ＝⟨ I p ⟩
-     transport Y (ap pr₁ p) y'        ＝⟨ II p ⟩
-     transport (λ - → Y (pr₁ -)) p y' ＝⟨ III p ⟩
-     y                                ∎)))
+        transport Y refl y'              ＝⟨ I p ⟩
+        transport Y (ap pr₁ p) y'        ＝⟨ II p ⟩
+        transport (λ - → Y (pr₁ -)) p y' ＝⟨ III p ⟩
+        y                                ∎)))
     where
      I   = λ p → ap (λ - → transport Y - y') (s refl (ap pr₁ p))
      II  = λ p → (transport-ap Y pr₁ p)⁻¹
      III = λ p → apd pr₂ p
 
 ×-weakly-isolated-left : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {x : X} {y : Y}
-                → is-weakly-isolated (x , y)
-                → is-weakly-isolated x
+                       → is-weakly-isolated (x , y)
+                       → is-weakly-isolated x
 ×-weakly-isolated-left {𝓤} {𝓥} {X} {Y} {x} {y} i x' = γ δ
  where
   δ : is-decidable ((x' , y) ≠ (x , y))
@@ -386,8 +386,8 @@ replacing isolatedness by weak isolatedness.
                         → c (ap pr₁ e)))
 
 ×-weakly-isolated-right : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {x : X} {y : Y}
-                 → is-weakly-isolated (x , y)
-                 → is-weakly-isolated y
+                        → is-weakly-isolated (x , y)
+                        → is-weakly-isolated y
 ×-weakly-isolated-right {𝓤} {𝓥} {X} {Y} {x} {y} i y' = γ δ
  where
   δ : is-decidable (x , y' ≠ x , y)
@@ -416,7 +416,7 @@ replacing isolatedness by weak isolatedness.
   γ (inl a) = inl (λ {refl → a y refl})
   γ (inr ν) = inr (λ (d : x' ≠ x)
                    → ν (λ (y' : Y x') (e : (x' , y') ＝ (x , y))
-                     → d (ap pr₁ e)))
+                        → d (ap pr₁ e)))
 
 Σ-weakly-isolated-left : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {x : X} {y : Y x}
                        → ((x : X) → is-Compact (Y x))
