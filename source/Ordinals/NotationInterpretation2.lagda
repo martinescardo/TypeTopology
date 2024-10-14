@@ -197,9 +197,9 @@ the file InjectiveTypes:
 
 \begin{code}
 
-underlying-set-of-𝓚 : (ν : E) (A : ⟨ Δ ν ⟩ → E) (y : ⟨ Κ ν ⟩)
-                    → ⟨ 𝓚 ν A y ⟩ ＝ (Π (x , _) ꞉ fiber (ι ν) y , ⟨ Κ (A x) ⟩)
-underlying-set-of-𝓚 ν A y = refl
+_ : (ν : E) (A : ⟨ Δ ν ⟩ → E) (y : ⟨ Κ ν ⟩)
+  → ⟨ 𝓚 ν A y ⟩ ＝ (Π (x , _) ꞉ fiber (ι ν) y , ⟨ Κ (A x) ⟩)
+_ = λ ν A y → refl
 
 \end{code}
 
@@ -256,9 +256,7 @@ module Κ-extension (ν : E) (A : ⟨ Δ ν ⟩ → E) where
                               (ι-is-embedding ν)
                               (λ x → ∘-is-embedding
                                       (ι-is-embedding (A x))
-                                      (equivs-are-embeddings
-                                        (γ x)
-                                        (γ-is-equiv x)))
+                                      (equivs-are-embeddings' (Γ x)))
  where
   open Κ-extension ν A
 
@@ -267,8 +265,9 @@ module Κ-extension (ν : E) (A : ⟨ Δ ν ⟩ → E) where
 This completes the definitions of Κ, ι and ι-is-embedding.
 
 The important fact about the Κ interpretation is that the ordinals in
-its image have the least element property for complemented subsets, and,
-in particular, they are compact.
+its image have the least element property for non-empty complemented
+subsets, and, in particular, they are compact, and more generally infs
+for arbitrary subsets.
 
 \begin{code}
 
@@ -301,7 +300,6 @@ module _ (pe : propext 𝓤₀) where
    ∑-has-infs-of-complemented-subsets pe (Κ ν) (𝓚 ν A)
      (K-has-infs-of-complemented-subsets ν)
      (𝓚-has-infs-of-complemented-subsets ν A)
-
  𝓚-has-infs-of-complemented-subsets ν A x =
    prop-inf-tychonoff
     (ι-is-embedding ν x)
@@ -684,7 +682,13 @@ It doesn't seem to be possible to reverse any of the implications (0)
 and (1), so that the proposition "(P -> 2) has decidable equality"
 seems to be strictly between "P is decidable" and "¬P is decidable".
 
-This is discussed in the file Taboos.P2.
+This is discussed in the following module.
+
+\begin{code}
+
+import Taboos.P2
+
+\end{code}
 
 TODO. Do we have (ν : E) → [ Δ ν ] ⊴ [ Κ ν ]? Notice that we do have
 (ω +ₒ 𝟙ₒ) ⊴ ℕ∞ₒ, proved in OrdinalOfOrdinals, submodule ℕ∞-in-Ord.
