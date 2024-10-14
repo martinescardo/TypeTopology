@@ -301,6 +301,23 @@ all-types-are-¬¬-decidable X h = claim₂ claim₁
 
 \end{code}
 
+Added 21th August 2024 by Alice Laroche.
+
+\begin{code}
+
+module _ (pt : propositional-truncations-exist) where
+
+ open PropositionalTruncation pt
+
+ decidable-inhabited-types-are-pointed : {X : 𝓤 ̇} → ∥ X ∥ → is-decidable X → X
+ decidable-inhabited-types-are-pointed ∣x∣ (inl x)  = x
+ decidable-inhabited-types-are-pointed ∣x∣ (inr ¬x) =
+  𝟘-elim (∥∥-rec 𝟘-is-prop ¬x ∣x∣)
+
+\end{code}
+
+End of addition.
+
 Added by Martin Escardo 17th September 2024. The propositional
 truncation of a decidable type can be constructed with no assumptions
 and it has split support.

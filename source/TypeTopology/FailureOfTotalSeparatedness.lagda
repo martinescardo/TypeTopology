@@ -179,10 +179,12 @@ a is weakly isolated. The idea is to "explode" the point a into two
 different copies, which cannot be distinguished unless the point a is
 weakly isolated, and keep all the other original points unchanged.
 
+Recall that the notion of weakly isolated point is defined as follows.
+
 \begin{code}
 
-is-weakly-isolated : {X : 𝓤 ̇ } (x : X) → 𝓤 ̇
-is-weakly-isolated x = ∀ x' → is-decidable (x' ≠ x)
+_ : {X : 𝓤 ̇ } (x : X) → is-weakly-isolated x ＝ ∀ x' → is-decidable (x' ≠ x)
+_ = λ x → refl
 
 module general-example
         (fe : FunExt)
@@ -297,34 +299,7 @@ anticlassical principle such as ¬ WLPO.
 
 \begin{code}
 
-isolated-gives-weakly-isolated : {X : 𝓤 ̇ } (x : X)
-                               → is-isolated x
-                               → is-weakly-isolated x
-isolated-gives-weakly-isolated x i y =
- Cases (i y)
-  (λ (e : x ＝ y) → inr (λ (d : y ≠ x) → d (e ⁻¹)))
-  (λ (d : x ≠ y) → inl (λ (e : y ＝ x) → d (e ⁻¹)))
-
 open import UF.Equiv
-
-weakly-isolated-closed-under-≃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-                                 (f : X ≃ Y)
-                               → (x : X)
-                               → is-weakly-isolated x
-                               → is-weakly-isolated (⌜ f ⌝ x)
-weakly-isolated-closed-under-≃ f x i y =
- Cases (i (⌜ f ⌝⁻¹ y))
-  (λ (a : ⌜ f ⌝⁻¹ y ≠ x)
-     → inl (λ (e : y ＝ ⌜ f ⌝ x)
-            → a (⌜ f ⌝⁻¹ y         ＝⟨ ap ⌜ f ⌝⁻¹ e ⟩
-                 ⌜ f ⌝⁻¹ (⌜ f ⌝ x) ＝⟨ inverses-are-retractions' f x ⟩
-                 x                 ∎)))
-  (λ (b : ¬ (⌜ f ⌝⁻¹ y ≠ x))
-     → inr (λ (d : y ≠ ⌜ f ⌝ x)
-            → b (λ (e : ⌜ f ⌝⁻¹ y ＝ x)
-                 → d (y                 ＝⟨ (inverses-are-sections' f y)⁻¹ ⟩
-                      ⌜ f ⌝ (⌜ f ⌝⁻¹ y) ＝⟨ ap ⌜ f ⌝ e ⟩
-                      ⌜ f ⌝ x           ∎))))
 
 ∞-is-weakly-isolated-gives-WLPO : is-weakly-isolated ∞ → WLPO
 ∞-is-weakly-isolated-gives-WLPO w u =
@@ -350,7 +325,7 @@ weakly-isolated-point-of-Cantor-gives-WLPO = III
   II α i = I b
    where
     a : is-weakly-isolated (⌜ Cantor-swap-≃ fe₀ α 𝟏 ⌝ α)
-    a = weakly-isolated-closed-under-≃ (Cantor-swap-≃ fe₀ α 𝟏) α i
+    a = equivs-preserve-weak-isolatedness (Cantor-swap-≃ fe₀ α 𝟏) α i
 
     b : is-weakly-isolated 𝟏
     b = transport is-weakly-isolated (Cantor-swap-swaps fe₀ α 𝟏) a
@@ -385,33 +360,19 @@ module examples-of-non-weakly-isolated-points (nwlpo : ¬ WLPO) where
 
 \end{code}
 
-In the module Ordinals.NotationInterpretation2, which currently (as of
-10th October 2024) imports this module indirectly, we define the
-notion of limit point by
-
-  is-limit-point : {X : 𝓤 ̇ } → X → 𝓤 ̇
-  is-limit-point x = is-isolated x → WLPO
-
-motivated by considerations discussed above.
-
-But perhaps the following, stronger, definition is more appropriate.
+Using the terminology of the module imported below, the above amount
+to the following.
 
 \begin{code}
 
-is-limit-point⁺ : {X : 𝓤 ̇ } → X → 𝓤 ̇
-is-limit-point⁺ x = is-weakly-isolated x → WLPO
-
-\end{code}
-
-With this terminology, the above amount to the following.
-
-\begin{code}
+open import TypeTopology.LimitPoints
 
 ∞-is-a-limit-point⁺-of-ℕ∞ : is-limit-point⁺ ∞
 ∞-is-a-limit-point⁺-of-ℕ∞ = ∞-is-weakly-isolated-gives-WLPO
 
 every-point-of-the-Cantor-type-is-a-limit-point⁺
  : (α : Cantor) → is-limit-point⁺ α
-every-point-of-the-Cantor-type-is-a-limit-point⁺ = weakly-isolated-point-of-Cantor-gives-WLPO
+every-point-of-the-Cantor-type-is-a-limit-point⁺ =
+ weakly-isolated-point-of-Cantor-gives-WLPO
 
 \end{code}

@@ -804,19 +804,58 @@ open is-discrete' {{...}} public
 
 \end{code}
 
-Added 21th August 2024 by Alice Laroche.
+Added 14th October 2024. We move the notion of weakly isolated point
+from its original place FailureOfTotalSeparatedness (added there some
+time in 2013 for a paper with Thomas Streicher on the indiscreteness
+of the universe and related things). Then we add further properties of
+this notion, used both in the module FailureOfTotalSeparatedness and
+the module Ordinals.NotationInterpretation.
 
 \begin{code}
 
-module _ (pt : propositional-truncations-exist) where
+is-weakly-isolated : {X : 𝓤 ̇ } (x : X) → 𝓤 ̇
+is-weakly-isolated x = ∀ x' → is-decidable (x' ≠ x)
 
- open PropositionalTruncation pt
+isolated-gives-weakly-isolated : {X : 𝓤 ̇ } (x : X)
+                               → is-isolated x
+                               → is-weakly-isolated x
+isolated-gives-weakly-isolated x i y =
+ Cases (i y)
+  (λ (e : x ＝ y) → inr (λ (d : y ≠ x) → d (e ⁻¹)))
+  (λ (d : x ≠ y) → inl (λ (e : y ＝ x) → d (e ⁻¹)))
 
- decidable-inhabited-types-are-pointed : {X : 𝓤 ̇} → ∥ X ∥ → is-decidable X → X
- decidable-inhabited-types-are-pointed ∣x∣ (inl x)  = x
- decidable-inhabited-types-are-pointed ∣x∣ (inr ¬x) =
-  𝟘-elim (∥∥-rec 𝟘-is-prop ¬x ∣x∣)
+equivs-preserve-weak-isolatedness : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                                    (f : X ≃ Y)
+                                  → (x : X)
+                                  → is-weakly-isolated x
+                                  → is-weakly-isolated (⌜ f ⌝ x)
+equivs-preserve-weak-isolatedness f x i y =
+ Cases (i (⌜ f ⌝⁻¹ y))
+  (λ (a : ⌜ f ⌝⁻¹ y ≠ x)
+     → inl (λ (e : y ＝ ⌜ f ⌝ x)
+            → a (⌜ f ⌝⁻¹ y         ＝⟨ ap ⌜ f ⌝⁻¹ e ⟩
+                 ⌜ f ⌝⁻¹ (⌜ f ⌝ x) ＝⟨ inverses-are-retractions' f x ⟩
+                 x                 ∎)))
+  (λ (b : ¬ (⌜ f ⌝⁻¹ y ≠ x))
+     → inr (λ (d : y ≠ ⌜ f ⌝ x)
+            → b (λ (e : ⌜ f ⌝⁻¹ y ＝ x)
+                 → d (y                 ＝⟨ (inverses-are-sections' f y)⁻¹ ⟩
+                      ⌜ f ⌝ (⌜ f ⌝⁻¹ y) ＝⟨ ap ⌜ f ⌝ e ⟩
+                      ⌜ f ⌝ x           ∎))))
+
+equivs-reflect-weak-isolatedness : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                                 → (f : X ≃ Y)
+                                 → (x : X) → is-weakly-isolated (⌜ f ⌝ x)
+                                 → is-weakly-isolated x
+equivs-reflect-weak-isolatedness f x i = II
+ where
+  I : is-weakly-isolated (⌜ f ⌝⁻¹ (⌜ f ⌝ x))
+  I = equivs-preserve-weak-isolatedness (≃-sym f) (⌜ f ⌝ x) i
+
+  II : is-weakly-isolated x
+  II = transport is-weakly-isolated (inverses-are-retractions' f x) I
 
 \end{code}
 
-End of addition.
+TODO (in another module). More generally, if an equivalence preserve
+some property, it also reflects it.

@@ -64,7 +64,9 @@ open import Taboos.LPO
 open import Taboos.WLPO
 open import TypeTopology.CompactTypes
 open import TypeTopology.Density
+open import TypeTopology.FailureOfTotalSeparatedness
 open import TypeTopology.InfProperty
+open import TypeTopology.LimitPoints
 open import TypeTopology.PropInfTychonoff fe
 open import TypeTopology.SigmaDiscreteAndTotallySeparated
 open import UF.Embeddings
@@ -221,6 +223,9 @@ module Κ-extension (ν : E) (A : ⟨ Δ ν ⟩ → E) where
 
  γ-is-equiv : (x : ⟨ Δ ν ⟩) → is-equiv (γ x)
  γ-is-equiv x = ≃ₒ-to-fun⁻¹-is-equiv [ 𝓚 ν A (ι ν x) ] [ Κ (A x) ] (ϕ x)
+
+ Γ : (x : ⟨ Δ ν ⟩) → ⟨ Κ (A x) ⟩ ≃ ⟨ 𝓚 ν A (ι ν x) ⟩
+ Γ x = γ x , γ-is-equiv x
 
 Κ ⌜𝟙⌝         = 𝟙ᵒ
 Κ ⌜ω+𝟙⌝       = ℕ∞ᵒ
@@ -469,32 +474,6 @@ complement):
 
 \end{code}
 
-Recall the notion of isolated point:
-
-\begin{code}
-
-private
- _ : {X : 𝓤 ̇ } {x : X}
-   → is-isolated x ＝ ((y : X) → is-decidable (x ＝ y))
- _ = refl
-
-\end{code}
-
-We define limit points as follows:
-
-\begin{code}
-
-is-limit-point : {X : 𝓤 ̇ } → X → 𝓤 ̇
-is-limit-point x = is-isolated x → WLPO
-
-\end{code}
-
-TODO added 10th October 2024. Can we work instead with the stronger
-notion of limit point defined in the module
-FailureOfTotalSeparatedness (indirectly imported by this module).
-
-Back to the past.
-
 The characteristic function of limit points:
 
 \begin{code}
@@ -593,6 +572,43 @@ module _ (pe : propext 𝓤₀) where
     (λ (g : is-isolated (ι ν x) → WLPO)  → inr (contrapositive g f))
 
 \end{code}
+
+Added 14th October 2024. Actually we have that a stronger property of
+limit point holds.
+
+\begin{code}
+
+ ℓ-limit⁺ : (ν : E) (x : ⟨ Δ ν ⟩) → ℓ ν x ＝ ₁ → is-limit-point⁺ (ι ν x)
+ ℓ-limit⁺ ⌜ω+𝟙⌝ (inr x) p i = ∞-is-a-limit-point⁺-of-ℕ∞ fe₀ i
+ ℓ-limit⁺ (ν₀ ⌜+⌝ ν₁) (inl ⋆ , x₀) p i = ℓ-limit⁺ ν₀ x₀ p
+                                         (Σ-weakly-isolated-right
+                                           (underlying-type-is-setᵀ fe 𝟚ᵒ)
+                                           i)
+ ℓ-limit⁺ (ν₀ ⌜+⌝ ν₁) (inr ⋆ , x₁) p i = ℓ-limit⁺ ν₁ x₁ p
+                                         (Σ-weakly-isolated-right
+                                           (underlying-type-is-setᵀ fe 𝟚ᵒ)
+                                           i)
+ ℓ-limit⁺ (ν₀ ⌜×⌝ ν₁) (x₀ , x₁)    p i =
+   Cases (max𝟚-lemma p)
+    (λ (p₀ : ℓ ν₀ x₀ ＝ ₁) → ℓ-limit⁺ ν₀ x₀ p₀ (×-weakly-isolated-left i))
+    (λ (p₁ : ℓ ν₁ x₁ ＝ ₁) → ℓ-limit⁺ ν₁ x₁ p₁ (×-weakly-isolated-right i))
+ ℓ-limit⁺ (⌜Σ⌝ ν A)   (x , y)      p i =
+   Cases (max𝟚-lemma p)
+    (λ (p₀ : ℓ ν x ＝ ₁)
+           → ℓ-limit⁺ ν x p₀ (Σ-weakly-isolated-left (𝓚-Compact pe ν A) i))
+    (λ (p₁ : ℓ (A x) y ＝ ₁)
+           → ℓ-limit⁺ (A x) y p₁
+              (equivs-reflect-weak-isolatedness
+                (Γ x)
+                (ι (A x) y)
+                (Σ-weakly-isolated-right
+                  (underlying-type-is-setᵀ fe (Κ ν)) i)))
+  where
+   open Κ-extension ν A
+
+\end{code}
+
+End of addition and back to the past.
 
 We conclude with some impossibility results.
 

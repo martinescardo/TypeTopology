@@ -26,6 +26,7 @@ import TypeTopology.FailureOfTotalSeparatedness
 import TypeTopology.GenericConvergentSequenceCompactness
 import TypeTopology.InfProperty
 import TypeTopology.LexicographicCompactness
+import TypeTopology.LimitPoints
 import TypeTopology.PropInfTychonoff
 import TypeTopology.PropTychonoff
 import TypeTopology.RicesTheoremForTheUniverse

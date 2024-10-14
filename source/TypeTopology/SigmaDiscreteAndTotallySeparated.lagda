@@ -343,3 +343,86 @@ subtype-is-totally-separated A X-is-ts A-is-prop-valued =
  subtype-is-totally-separated'' pr₁ X-is-ts (pr₁-lc (λ {x} → A-is-prop-valued x))
 
 \end{code}
+
+Added 14th October 2024. We reprove some of the above theorems
+replacing isolatedness by weak isolatedness.
+
+\begin{code}
+
+Σ-weakly-isolated-right : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {x : X} {y : Y x}
+                → is-set X
+                → is-weakly-isolated {_} {Σ Y} (x , y)
+                → is-weakly-isolated y
+Σ-weakly-isolated-right {𝓤} {𝓥} {X} {Y} {x} {y} s i y' = γ δ
+ where
+  δ : is-decidable ((x , y') ≠ (x , y))
+  δ = i (x , y')
+
+  γ : is-decidable ((x , y') ≠ (x , y)) → is-decidable (y' ≠ y)
+  γ (inl a) = inl (λ {refl → a refl})
+  γ (inr b) = inr (λ (d : y' ≠ y) → b (λ (p : x , y' ＝ x , y)
+   → d (y'                               ＝⟨ refl ⟩
+     transport Y refl y'              ＝⟨ I p ⟩
+     transport Y (ap pr₁ p) y'        ＝⟨ II p ⟩
+     transport (λ - → Y (pr₁ -)) p y' ＝⟨ III p ⟩
+     y                                ∎)))
+    where
+     I   = λ p → ap (λ - → transport Y - y') (s refl (ap pr₁ p))
+     II  = λ p → (transport-ap Y pr₁ p)⁻¹
+     III = λ p → apd pr₂ p
+
+×-weakly-isolated-left : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {x : X} {y : Y}
+                → is-weakly-isolated (x , y)
+                → is-weakly-isolated x
+×-weakly-isolated-left {𝓤} {𝓥} {X} {Y} {x} {y} i x' = γ δ
+ where
+  δ : is-decidable ((x' , y) ≠ (x , y))
+  δ = i (x' , y)
+
+  γ : is-decidable ((x' , y) ≠ (x , y)) → is-decidable (x' ≠ x)
+  γ (inl a) = inl (λ {refl → a refl})
+  γ (inr b) = inr (λ (c : x' ≠ x)
+                   → b (λ (e : (x' , y) ＝ (x , y))
+                        → c (ap pr₁ e)))
+
+×-weakly-isolated-right : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {x : X} {y : Y}
+                 → is-weakly-isolated (x , y)
+                 → is-weakly-isolated y
+×-weakly-isolated-right {𝓤} {𝓥} {X} {Y} {x} {y} i y' = γ δ
+ where
+  δ : is-decidable (x , y' ≠ x , y)
+  δ = i (x , y')
+
+  γ : is-decidable (x , y' ≠ x , y) → is-decidable (y' ≠ y)
+  γ (inl a) = inl (λ {refl → a refl})
+  γ (inr b) = inr (λ (d : y' ≠ y) → b (λ (e : x , y' ＝ x , y) → d (ap pr₂ e)))
+
+Σ-weakly-isolated-left' : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {x : X} {y : Y x}
+                        → ((x : X) → is-Π-Compact (Y x))
+                        → is-weakly-isolated (x , y)
+                        → is-weakly-isolated x
+Σ-weakly-isolated-left' {𝓤} {𝓥} {X} {Y} {x} {y} κ i x' = γ δ
+ where
+  A : (y' : Y x') → 𝓤 ⊔ 𝓥 ̇
+  A y' = (x' , y') ≠ (x , y)
+
+  c : is-complemented A
+  c y' = i (x' , y')
+
+  δ : is-decidable (Π A)
+  δ = κ x' A c
+
+  γ : is-decidable (Π A) → is-decidable (x' ≠ x)
+  γ (inl a) = inl (λ {refl → a y refl})
+  γ (inr ν) = inr (λ (d : x' ≠ x)
+                   → ν (λ (y' : Y x') (e : (x' , y') ＝ (x , y))
+                     → d (ap pr₁ e)))
+
+Σ-weakly-isolated-left : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {x : X} {y : Y x}
+                       → ((x : X) → is-Compact (Y x))
+                       → is-weakly-isolated (x , y)
+                       → is-weakly-isolated x
+Σ-weakly-isolated-left {𝓤} {𝓥} {X} {Y} {x} {y} κ =
+ Σ-weakly-isolated-left' (λ x → Σ-Compact-types-are-Π-Compact (Y x) (κ x))
+
+\end{code}
