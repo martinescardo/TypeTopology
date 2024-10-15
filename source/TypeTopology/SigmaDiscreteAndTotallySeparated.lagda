@@ -23,7 +23,6 @@ open import TypeTopology.PropTychonoff
 open import TypeTopology.TotallySeparated
 open import UF.Base
 open import UF.DiscreteAndSeparated
-open import UF.Equiv
 open import UF.FunExt
 open import UF.Sets
 open import UF.Subsingletons

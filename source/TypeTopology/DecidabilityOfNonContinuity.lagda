@@ -1643,7 +1643,6 @@ Added 25th September 2024. We now record the fact that
 
 \begin{code}
 
-open import UF.Base
 open import UF.EquivalenceExamples
 
 characterization-of-type-of-untruncated-continuous-functions-≃

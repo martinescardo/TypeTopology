@@ -38,7 +38,6 @@ open import Ordinals.Arithmetic fe
 open import Ordinals.ConvergentSequence ua
 open import Ordinals.Equivalence
 open import Ordinals.Maps
-open import Ordinals.Notions
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.OrdinalOfOrdinalsSuprema ua
 open import Ordinals.Type
