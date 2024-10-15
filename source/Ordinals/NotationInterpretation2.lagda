@@ -669,6 +669,8 @@ LPO-gives-Κ-discrete lpo ν = ι-is-equiv-gives-Κ-discrete ν
 
 \end{code}
 
+We close with some open problems.
+
 TODO. Can we close the gap between the last two facts? The difficulty
 that arises here is similar to the following.
 
@@ -691,7 +693,13 @@ import Taboos.P2
 \end{code}
 
 TODO. Do we have (ν : E) → [ Δ ν ] ⊴ [ Κ ν ]? Notice that we do have
-(ω +ₒ 𝟙ₒ) ⊴ ℕ∞ₒ, proved in OrdinalOfOrdinals, submodule ℕ∞-in-Ord.
+(ω +ₒ 𝟙ₒ) ⊴ ℕ∞ₒ, proved in the following module.
+
+\begin{code}
+
+import Ordinals.ConvergentSequence
+
+\end{code}
 
 TODO. Define an element x of an ordinal to be trisolated if for every
 y we have that y ≺ x or x ＝ y or x ≺ y.  Notice that trisolated
