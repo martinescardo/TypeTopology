@@ -25,12 +25,9 @@ ordinal is a set (or satisfies the K axiom), which is proved in the
 module OrdinalNotions. This seems to be a new observation about the
 univalent notion of ordinal (as introduced in the HoTT Book).
 
-A dependency graph of this module is available at
-https://www.cs.bham.ac.uk/~mhe/TypeTopology/OrdinalNotationInterpretation.pdf
-
 \begin{code}
 
-{-# OPTIONS --safe --without-K --lossy-unification #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
 open import UF.FunExt
@@ -77,8 +74,8 @@ crucial for compactness purposes, as dicussed below.
     functions into 𝟚 separate the points.
 
     And not only the Κ ordinals are searchable, they are also
-    inf-compact, which means that any detachable subset has an
-    infimum, which belongs to the subset iff and only if the subset is
+    inf-compact, which means that any complemented subset has an
+    infimum, which belongs to the subset if and only if the subset is
     non-empty (with non-emptiness expressed by a double negation).
 
     The discrete ordinals, being retracts of ℕ, cannot be retracts of
@@ -182,10 +179,10 @@ compact∙-ε₀-ub               : is-compact∙ ⟨ ε₀-upper-bound ⟩
 \end{code}
 
 The interpretation function is the following, with values on topped
-ordinals, where an ordinal is a type equipped with a
-prop-valued, well-founded, transitive and extensional relation
-(and such a type is automatically a set). "Topped" means that there is
-a top element in the order
+ordinals, where an ordinal is a type equipped with a prop-valued,
+well-founded, transitive and extensional relation (and such a type is
+automatically a set). "Topped" means that there is a top element in
+the order.
 
 This version of the function is from 1st July 2018 (the original
 version considered only the underlying set of the ordinal and didn't
@@ -200,7 +197,7 @@ construct the order as this was work in progress):
 
 \end{code}
 
-The underlying sets  of such ordinals are compact∙:
+The underlying sets of such ordinals are compact∙:
 
 \begin{code}
 
@@ -238,10 +235,13 @@ And hence they are totally separated:
 \end{code}
 
 Without total separatedness (enough functions into the type 𝟚 of
-booleans), compactness wouldn't be an interesting property. It is
-not possible to prove total separatedness directly, because this
-property is not closed under Σ, which is used to define +ᵒ, ×ᵒ and Σ₁,
-as shown in the module FailureOfTotalSeparatedness.
+booleans), compactness wouldn't be an interesting property. It is not
+possible to prove total separatedness directly, because this property
+is not closed under Σ, which is used to define +ᵒ, ×ᵒ and Σ₁, as shown
+in the module FailureOfTotalSeparatedness. (Added 15th October
+2024. This is actually possible. See the module
+TypeTopology.SigmaDiscreteAndTotallySeparated , which shows that this
+is possible in the particular case we are interested in.)
 
 Classically, the squashed sum is the ordinal sum plus 1, and now we
 give an alternative semantics of ordinal codes with this
@@ -264,8 +264,8 @@ many interesting properties, formulated above and proved below.
                            (λ _ → Δ-is-discrete μ))
 Δ-is-discrete (Mul ν μ) = Σ-is-discrete (Δ-is-discrete ν) (λ _ → Δ-is-discrete μ)
 Δ-is-discrete (L ν)     = Σ₁-is-discrete
-                            (λ n → ⟨ Δ (ν n) ⟩)
-                            (λ i → Δ-is-discrete (ν i))
+                           (λ n → ⟨ Δ (ν n) ⟩)
+                           (λ i → Δ-is-discrete (ν i))
 \end{code}
 
 Completed 27 July 2018. There is a dense embedding ι of the discrete
@@ -338,16 +338,16 @@ order preserving and reflecting (28 July 2018).
 
 ι-is-order-reflecting One       = λ x y l → l
 ι-is-order-reflecting (Add ν μ) = pair-fun-is-order-reflecting
-                                    𝟚ᵒ
-                                    𝟚ᵒ
-                                    (cases (λ _ → Δ ν) (λ _ → Δ μ))
-                                    (cases (λ _ → Κ ν) (λ _ → Κ μ))
-                                    id
-                                    (dep-cases (λ _ → ι {ν}) (λ _ → ι {μ}))
-                                    (λ x y l → l)
-                                    id-is-embedding
-                                    (dep-cases (λ _ → ι-is-order-reflecting ν)
-                                               (λ _ → ι-is-order-reflecting μ))
+                                   𝟚ᵒ
+                                   𝟚ᵒ
+                                   (cases (λ _ → Δ ν) (λ _ → Δ μ))
+                                   (cases (λ _ → Κ ν) (λ _ → Κ μ))
+                                   id
+                                   (dep-cases (λ _ → ι {ν}) (λ _ → ι {μ}))
+                                   (λ x y l → l)
+                                   id-is-embedding
+                                   (dep-cases (λ _ → ι-is-order-reflecting ν)
+                                              (λ _ → ι-is-order-reflecting μ))
 ι-is-order-reflecting (Mul ν μ) = pair-fun-is-order-reflecting
                                    (Δ ν)
                                    (Κ ν)
@@ -359,10 +359,10 @@ order preserving and reflecting (28 July 2018).
                                    (ι-is-embedding ν)
                                    (λ _ → ι-is-order-reflecting μ)
 ι-is-order-reflecting (L ν)     = ∑↑-is-order-reflecting
-                                    (Δ ∘ ν)
-                                    (Κ ∘ ν)
-                                    (λ n → ι {ν n})
-                                    (λ i → ι-is-order-reflecting (ν i))
+                                   (Δ ∘ ν)
+                                   (Κ ∘ ν)
+                                   (λ n → ι {ν n})
+                                   (λ i → ι-is-order-reflecting (ν i))
 \end{code}
 
 As discussed in the module Ordinals, propositional extensionality in
@@ -389,9 +389,9 @@ much easier (given the mathematics we have already developed).
   (λ _ → Κ-has-infs-of-complemented-subsets pe μ)
 Κ-has-infs-of-complemented-subsets pe (L ν) =
  ∑₁-has-infs-of-complemented-subsets
-   pe
-   (Κ ∘ ν)
-   (λ i → Κ-has-infs-of-complemented-subsets pe (ν i))
+  pe
+  (Κ ∘ ν)
+  (λ i → Κ-has-infs-of-complemented-subsets pe (ν i))
 
 \end{code}
 
@@ -491,13 +491,14 @@ module _ (pt : propositional-truncations-exist)
   𝓢-compact∙ (Add ν μ) = +-is-compact∙ (𝓢-compact∙ ν) (𝓢-compact∙ μ)
   𝓢-compact∙ (Mul ν μ) = ×-is-compact∙ (𝓢-compact∙ ν) (𝓢-compact∙ μ)
   𝓢-compact∙ (L ν)     = codomain-of-surjection-is-compact∙ pt
-                           (sum-to-sup (extension (𝓢 ∘ ν)))
-                           (sum-to-sup-is-surjection (extension (𝓢 ∘ ν)))
-                           (Σ-is-compact∙
-                             (ℕ∞-compact∙ fe₀)
-                             (λ u → prop-tychonoff (fe 𝓤₀ 𝓤₀)
-                                     (ℕ-to-ℕ∞-is-embedding fe₀ u)
-                                     (λ (i , _) → 𝓢-compact∙ (ν i))))
+                          (sum-to-sup (extension (𝓢 ∘ ν)))
+                          (sum-to-sup-is-surjection (extension (𝓢 ∘ ν)))
+                          (Σ-is-compact∙
+                            (ℕ∞-compact∙ fe₀)
+                            (λ u → prop-tychonoff (fe 𝓤₀ 𝓤₀)
+                                    (ℕ-to-ℕ∞-is-embedding fe₀ u)
+                                    (λ (i , _) → 𝓢-compact∙ (ν i))))
+
   σ : (ν : OE) → ⟨ Κ ν ⟩ → ⟨ 𝓢 ν ⟩
   σ One       x           = x
   σ (Add ν μ) (inl ⋆ , x) = inl (σ ν x)
@@ -510,4 +511,4 @@ module _ (pt : propositional-truncations-exist)
 
 \end{code}
 
-More can be said about this.
+More can be said about this, which we do in NotationInterpretation2.
