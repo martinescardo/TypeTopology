@@ -19,6 +19,7 @@ import Ordinals.Equivalence
 import Ordinals.Indecomposable
 import Ordinals.Injectivity
 import Ordinals.LexicographicOrder
+import Ordinals.Limit
 import Ordinals.Maps
 import Ordinals.MultiplicationProperties      -- by de Jong, Kraus, Nordvall Forsberg, and Xu.
 import Ordinals.NotationInterpretation

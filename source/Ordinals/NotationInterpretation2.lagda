@@ -112,8 +112,9 @@ The underlying sets of all ordinals in the image of Δ are retracts of
 Δ-retract-of-ℕ ⌜ω+𝟙⌝       = ≃-gives-◁ ℕ-plus-𝟙
 Δ-retract-of-ℕ (ν₀ ⌜+⌝ ν₁) = Σ-retract-of-ℕ
                               retract-𝟙+𝟙-of-ℕ
-                              (dep-cases (λ _ → Δ-retract-of-ℕ ν₀)
-                                         (λ _ → Δ-retract-of-ℕ ν₁))
+                              (dep-cases
+                                (λ _ → Δ-retract-of-ℕ ν₀)
+                                (λ _ → Δ-retract-of-ℕ ν₁))
 Δ-retract-of-ℕ (ν₀ ⌜×⌝ ν₁) = Σ-retract-of-ℕ
                               (Δ-retract-of-ℕ ν₀)
                               (λ _ → Δ-retract-of-ℕ ν₁)
@@ -141,11 +142,11 @@ trichotomous:
 Δ-is-trichotomous ⌜𝟙⌝         = 𝟙ₒ-is-trichotomous
 Δ-is-trichotomous ⌜ω+𝟙⌝       = succₒ-is-trichotomous ω ω-is-trichotomous
 Δ-is-trichotomous (ν₀ ⌜+⌝ ν₁) = +ᵒ-is-trichotomous (Δ ν₀) (Δ ν₁)
-                                  (Δ-is-trichotomous ν₀)
-                                  (Δ-is-trichotomous ν₁)
+                                 (Δ-is-trichotomous ν₀)
+                                 (Δ-is-trichotomous ν₁)
 Δ-is-trichotomous (ν₀ ⌜×⌝ ν₁) = ×ᵒ-is-trichotomous (Δ ν₀) (Δ ν₁)
-                                  (Δ-is-trichotomous ν₀)
-                                  (Δ-is-trichotomous ν₁)
+                                 (Δ-is-trichotomous ν₀)
+                                 (Δ-is-trichotomous ν₁)
 Δ-is-trichotomous (⌜Σ⌝ ν A)   = ∑-is-trichotomous (Δ ν) (Δ ∘ A)
                                  (Δ-is-trichotomous ν)
                                  (Δ-is-trichotomous ∘ A)
@@ -346,8 +347,9 @@ complement).
                                      id
                                      (dep-cases (λ _ → ι ν₀) (λ _ → ι ν₁))
                                      (λ x y l → l)
-                                     (dep-cases (λ _ → ι-is-order-preserving ν₀)
-                                                (λ _ → ι-is-order-preserving ν₁))
+                                     (dep-cases
+                                       (λ _ → ι-is-order-preserving ν₀)
+                                       (λ _ → ι-is-order-preserving ν₁))
 ι-is-order-preserving (ν₀ ⌜×⌝ ν₁) = pair-fun-is-order-preserving
                                      (Δ ν₀)
                                      (Κ ν₀)
