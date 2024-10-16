@@ -1011,15 +1011,15 @@ module investigate-this-in-the-future-in-some-other-file where
 
 \end{code}
 
-Needed 28 July 2018:
+Added 28 July 2018:
 
 \begin{code}
 
 ≼-is-prop-valued : funext₀ → (u v : ℕ∞) → is-prop (u ≼ v)
 ≼-is-prop-valued fe u v = Π-is-prop fe (λ n → Π-is-prop fe (λ l → 𝟚-is-set))
 
-≼-not-≺ : (u v : ℕ∞) → u ≼ v → ¬ (v ≺ u)
-≼-not-≺ u v l (n , (p , m)) = zero-is-not-one (e ⁻¹ ∙ d)
+≼-gives-not-≺ : (u v : ℕ∞) → u ≼ v → ¬ (v ≺ u)
+≼-gives-not-≺ u v l (n , (p , m)) = zero-is-not-one (e ⁻¹ ∙ d)
  where
   a : v ≺ u
   a = transport (λ - → - ≺ u) (p ⁻¹) (⊏-gives-≺ n u m)
@@ -1039,8 +1039,8 @@ Needed 28 July 2018:
   e : ι (ι k) k ＝ ₀
   e = ℕ-to-ℕ∞-diagonal₀ k
 
-not-≺-≼ : funext₀ → (u v : ℕ∞) → ¬ (v ≺ u) → u ≼ v
-not-≺-≼ fe u v φ n l = 𝟚-equality-cases f g
+not-≺-gives-≼ : funext₀ → (u v : ℕ∞) → ¬ (v ≺ u) → u ≼ v
+not-≺-gives-≼ fe u v φ n l = 𝟚-equality-cases f g
  where
   f : v ⊑ n → n ⊏ v
   f m = 𝟘-elim (φ (k , (p , b)))

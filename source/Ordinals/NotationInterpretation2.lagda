@@ -55,6 +55,7 @@ open import Notation.CanonicalMap hiding (ι)
 open import Ordinals.Arithmetic fe
 open import Ordinals.Closure fe
 open import Ordinals.Equivalence
+open import Ordinals.InfProperty
 open import Ordinals.Injectivity
 open import Ordinals.ToppedArithmetic fe
 open import Ordinals.ToppedType fe
@@ -65,12 +66,11 @@ open import Taboos.WLPO
 open import TypeTopology.CompactTypes
 open import TypeTopology.Density
 open import TypeTopology.FailureOfTotalSeparatedness
-open import TypeTopology.InfProperty
 open import TypeTopology.LimitPoints
 open import TypeTopology.PropInfTychonoff fe
 open import TypeTopology.SigmaDiscreteAndTotallySeparated
-open import UF.Embeddings
 open import UF.DiscreteAndSeparated
+open import UF.Embeddings
 open import UF.Equiv
 open import UF.PairFun
 open import UF.Retracts

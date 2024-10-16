@@ -1,7 +1,8 @@
 Martin Escardo 28 July 2018
 
-Adapted from the module PropTychnoff to take order into account. The
-file PropTychonoff has many comments, but this one doesn't.
+Adapted from the module TypeTopology.PropTychnoff to take order into
+account. The file PropTychonoff has many comments, but this one
+doesn't.
 
 \begin{code}
 
@@ -13,7 +14,7 @@ open import UF.FunExt
 module TypeTopology.PropInfTychonoff (fe : FunExt) where
 
 open import MLTT.Two-Properties
-open import TypeTopology.InfProperty
+open import Ordinals.InfProperty
 open import UF.Subsingletons
 open import UF.PropIndexedPiSigma
 open import UF.Equiv
@@ -35,8 +36,8 @@ prop-inf-tychonoff {𝓤} {𝓥} {𝓦} {X} {Y} X-is-prop _≺_ ε p =
   𝕗 : (x : X) → Π Y ≃ Y x
   𝕗 = prop-indexed-product (fe 𝓤 𝓥) X-is-prop
 
-  NB : (x : X) (φ : Π Y) → ⌜ 𝕗 x ⌝ φ ＝ φ x
-  NB x φ = refl
+  _ : (x : X) (φ : Π Y) → ⌜ 𝕗 x ⌝ φ ＝ φ x
+  _ = λ x φ → refl
 
   f⁻¹ : (x : X) → Y x → Π Y
   f⁻¹ x = ⌜ 𝕗 x ⌝⁻¹
@@ -44,7 +45,8 @@ prop-inf-tychonoff {𝓤} {𝓥} {𝓦} {X} {Y} X-is-prop _≺_ ε p =
   q : (x : X) → Y x → 𝟚
   q x y = p (f⁻¹ x y)
 
-  I : (x : X) → Σ y ꞉ Y x , is-conditional-root _≼_ (q x) y × is-roots-infimum _≼_ (q x) y
+  I : (x : X)
+    → Σ y ꞉ Y x , is-conditional-root _≼_ (q x) y × is-roots-infimum _≼_ (q x) y
   I x = ε x (q x)
 
   φ₀ : Π Y
@@ -64,11 +66,15 @@ prop-inf-tychonoff {𝓤} {𝓥} {𝓦} {X} {Y} X-is-prop _≺_ ε p =
 
   φ₀-is-conditional-root-assuming-X : X → (Σ φ ꞉ Π Y , p φ ＝ ₀) → p φ₀ ＝ ₀
   φ₀-is-conditional-root-assuming-X x (φ , r) =
-    p φ₀             ＝⟨ ap p ((inverses-are-retractions' (𝕗 x) φ₀)⁻¹) ⟩
-    p (f⁻¹ x (φ₀ x)) ＝⟨ II' x (φ , (ap p (inverses-are-retractions' (𝕗 x) φ) ∙ r)) ⟩
+    p φ₀             ＝⟨ a ⟩
+    p (f⁻¹ x (φ₀ x)) ＝⟨ b ⟩
     ₀                ∎
+     where
+      a = ap p ((inverses-are-retractions' (𝕗 x) φ₀)⁻¹)
+      b = II' x (φ , (ap p (inverses-are-retractions' (𝕗 x) φ) ∙ r))
 
-  φ₀-is-conditional-root-assuming-X-empty : ¬ X → (Σ φ ꞉ Π Y , p φ ＝ ₀) → p φ₀ ＝ ₀
+  φ₀-is-conditional-root-assuming-X-empty
+   : ¬ X → (Σ φ ꞉ Π Y , p φ ＝ ₀) → p φ₀ ＝ ₀
   φ₀-is-conditional-root-assuming-X-empty u (φ , r) =
    p φ₀ ＝⟨ ap p (dfunext (fe 𝓤 𝓥) (λ x → unique-from-𝟘 (u x))) ⟩
    p φ  ＝⟨ r ⟩
