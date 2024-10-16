@@ -166,6 +166,12 @@ is-Zero u = u ⊑ 0
 is-positive : ℕ∞ → 𝓤₀ ̇
 is-positive u = 0 ⊏ u
 
+Zero-is-not-positive : (u : ℕ∞) → is-Zero u → ¬ is-positive u
+Zero-is-not-positive u z p = zero-is-not-one
+                              (₀     ＝⟨ z ⁻¹ ⟩
+                               ι u 0 ＝⟨ p ⟩
+                               ₁     ∎)
+
 positivity : ℕ∞ → 𝟚
 positivity u = ι u 0
 
