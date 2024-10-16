@@ -35,7 +35,7 @@ jobs:
 
     - name: Run Agda
       id: typecheck
-      uses: ayberkt/agda-github-action@v3.4
+      uses: ayberkt/agda-github-action@v4.0
       with:
         main-file: AllModulesIndex.lagda
         source-dir: source
