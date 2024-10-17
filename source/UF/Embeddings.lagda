@@ -383,6 +383,10 @@ is-essential f 𝓦 = (Z : 𝓦 ̇) (g : codomain f → Z)
                  → is-embedding (g ∘ f)
                  → is-embedding g
 
+is-essential-embedding
+ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → (𝓦 : Universe) → 𝓤 ⊔ 𝓥 ⊔ (𝓦 ⁺) ̇
+is-essential-embedding f 𝓦 = is-essential f 𝓦 × is-embedding f
+
 postcomp-is-embedding : FunExt
                       → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } (f : X → Y)
                       → is-embedding f

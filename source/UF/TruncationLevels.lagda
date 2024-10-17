@@ -31,13 +31,13 @@ The following allows us to write e.g. 3 as an element of ℕ₋₂.
 
 \begin{code}
 
-ℕ-to-ℕ₋₂ : (n : ℕ) {{_ : No-Constraint}} → ℕ₋₂
-ℕ-to-ℕ₋₂ 0              = succ −1
-ℕ-to-ℕ₋₂ (succ n) {{c}} = succ (ℕ-to-ℕ₋₂ n {{c}})
-
 instance
  Decimal-ℕ-to-ℕ₋₂ : Decimal ℕ₋₂
  Decimal-ℕ-to-ℕ₋₂ = make-decimal-with-no-constraint ℕ-to-ℕ₋₂
+  where
+   ℕ-to-ℕ₋₂ : (n : ℕ) {{_ : No-Constraint}} → ℕ₋₂
+   ℕ-to-ℕ₋₂ 0              = succ −1
+   ℕ-to-ℕ₋₂ (succ n) {{c}} = succ (ℕ-to-ℕ₋₂ n {{c}})
 
 \end{code}
 
@@ -91,18 +91,18 @@ We show that ℕ₋₂ ≃ ℕ.
 ℕ₋₂-to-ℕ −2 = 0
 ℕ₋₂-to-ℕ (succ x) = succ (ℕ₋₂-to-ℕ x)
 
-ℕ-to-ℕ₋₂' : ℕ → ℕ₋₂
-ℕ-to-ℕ₋₂' 0 = −2
-ℕ-to-ℕ₋₂' (succ x) = succ (ℕ-to-ℕ₋₂' x)
+ℕ-to-ℕ₋₂ : ℕ → ℕ₋₂
+ℕ-to-ℕ₋₂ 0 = −2
+ℕ-to-ℕ₋₂ (succ x) = succ (ℕ-to-ℕ₋₂ x)
 
 ℕ₋₂-ℕ-equivalence : ℕ₋₂ ≃ ℕ
 ℕ₋₂-ℕ-equivalence =
- (ℕ₋₂-to-ℕ , qinvs-are-equivs ℕ₋₂-to-ℕ (ℕ-to-ℕ₋₂' , H , G))
+ (ℕ₋₂-to-ℕ , qinvs-are-equivs ℕ₋₂-to-ℕ (ℕ-to-ℕ₋₂ , H , G))
  where
-  H : ℕ-to-ℕ₋₂' ∘ ℕ₋₂-to-ℕ  ∼ id
+  H : ℕ-to-ℕ₋₂ ∘ ℕ₋₂-to-ℕ  ∼ id
   H −2 = refl
   H (succ x) = ap succ (H x)
-  G : ℕ₋₂-to-ℕ ∘ ℕ-to-ℕ₋₂' ∼ id
+  G : ℕ₋₂-to-ℕ ∘ ℕ-to-ℕ₋₂ ∼ id
   G 0 = refl
   G (succ x) = ap succ (G x)
 
@@ -146,5 +146,19 @@ subtraction-ℕ₋₂-identification : (m n : ℕ₋₂)
                                → (o : m ≤ n)
                                → m + subtraction-ℕ₋₂-term m n o ＝ n
 subtraction-ℕ₋₂-identification m n o = pr₂ (subtraction-ℕ₋₂ m n o)
+
+\end{code}
+
+Added by Martin Escardo 17th August 2024. Declare ℕ-to-ℕ₋₂ as a
+canonical map so that we can use the ι notation for it. Modules that
+use this must import Notation.CanonicalMap.
+
+\begin{code}
+
+open import Notation.CanonicalMap
+
+instance
+ canonical-map-ℕ-to-ℕ₋₂ : Canonical-Map ℕ ℕ₋₂
+ ι {{canonical-map-ℕ-to-ℕ₋₂}} = ℕ-to-ℕ₋₂
 
 \end{code}
