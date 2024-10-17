@@ -161,4 +161,8 @@ instance
  canonical-map-ℕ-to-ℕ₋₂ : Canonical-Map ℕ ℕ₋₂
  ι {{canonical-map-ℕ-to-ℕ₋₂}} = ℕ-to-ℕ₋₂
 
+instance
+ canonical-map-ℕ₋₂-to-ℕ : Canonical-Map ℕ₋₂ ℕ
+ ι {{canonical-map-ℕ₋₂-to-ℕ}} = ℕ₋₂-to-ℕ'
+
 \end{code}
