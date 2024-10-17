@@ -30,8 +30,6 @@ particular, is well-suited to discuss the distinction between data and
 property. The univalence axiom is not used anywhere here, but we
 mention it in some discussions.
 
-See also the discussion at https://twitter.com/EscardoMartin/status/1473393261012295681
-
 \begin{code}
 
 {-# OPTIONS --safe --without-K --lossy-unification #-}
