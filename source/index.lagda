@@ -8,7 +8,7 @@
    https://www.cs.bham.ac.uk/~mhe/
    https://github.com/martinescardo/TypeTopology
 
-   Tested with Agda 2.7.0.1. (It may still work with Agda 2.6.4.3)
+   Tested with Agda 2.7.0.1. (It may still work with Agda 2.6.4.3.)
 
    * Our main use of this development is as a personal blackboard or
      notepad for our research and that of collaborators. In
