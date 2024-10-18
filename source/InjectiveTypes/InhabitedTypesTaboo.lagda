@@ -302,8 +302,8 @@ and record that 𝓤∙ is equivalent to the Σ-type
 
 which is indexed over the "non"-injective type Inh.
 
-Hence this gives an example of an injective Σ-type whose indexing
-type is "not" injective.
+Hence this gives an example of an injective Σ-type whose indexing type
+is not necessarily injective.
 
 \begin{code}
 
