@@ -440,7 +440,7 @@ negation of the (universally quantified) principle of excluded middle.
 In the presence of propositional extensionality, the axiom of choice
 is equivalent to the conjunction of the principle of excluded middle
 and the double negation shift for set-valued (rather than prop-valued)
-predicates:
+predicates, which seems to be a new result:
 
 \begin{code}
 
