@@ -23,14 +23,14 @@ assumptions are made.
 
 ────────────────────────────────────────────────────────────────────────────────
 
-Here we consider the type 𝕀  of inhabited types defined by
+Here we consider the type Inh  of inhabited types defined by
 
- 𝕀 = Σ X ꞉ 𝓤 ̇ , ∥ X ∥
+ Inh = Σ X ꞉ 𝓤 ̇ , ∥ X ∥
 
 and show that the following are equivalent:
 
-(1) 𝕀 is injective.
-(2) 𝕀 is a retract of 𝓤.
+(1) Inh is injective.
+(2) Inh is a retract of 𝓤.
 (3) All propositions are projective:
       (P : 𝓤 ̇ ) (Y : P → 𝓤 ̇ ) → is-prop P
                                 → ((p : P) → ∥ Y p ∥)
@@ -52,8 +52,8 @@ type is "not" injective, as follows: The type of pointed types
   𝓤∙ = Σ X ꞉ 𝓤 ̇ , X
 is injective, as proved in InjectiveTypes.MathematicalStructures, and is
 (equivalent) to the Σ-type
-  Σ I ꞉ 𝕀 , pr₁ 𝕀,
-indexed over the "non"-injective type 𝕀.
+  Σ I ꞉ Inh , pr₁ Inh,
+indexed over the "non"-injective type Inh.
 
 
 To illustrate the constructive differences between the propositional truncation
@@ -118,7 +118,7 @@ open import InjectiveTypes.MathematicalStructures ua
 \end{code}
 
 We define the type of inhabited of types (in a fixed, but arbitrary universe 𝓤).
-For convenience we also write 𝕀 for this type in this file.
+For convenience we also write Inh for this type in this file.
 
 \begin{code}
 
