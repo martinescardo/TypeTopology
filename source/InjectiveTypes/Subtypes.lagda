@@ -38,7 +38,10 @@ module _ (D : 𝓤 ̇ )
    r = retraction ρ
 
    s : Σ P → D
-   s = pr₁
+   s = section ρ
+
+   _ : s ＝ pr₁
+   _ = refl
 
    rs : r ∘ s ∼ id
    rs = retract-condition ρ
