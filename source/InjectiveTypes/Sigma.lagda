@@ -140,6 +140,9 @@ InjectiveTypes.MathematicalStructures.
 
 \end{code}
 
+NB. Notice that our compatibility condition is data rather than
+property. TODO. Should we call it compatibility data?
+
 That this compatibility condition is sufficient but not necessary is
 illustrated in the file InjectiveTypes.InhabitednessTaboo, with the
 type of pointed types (which is injective) shown to be equivalent to a
