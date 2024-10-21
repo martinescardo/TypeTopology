@@ -1,31 +1,24 @@
 Martin Escardo 21st October 2024
 
 A necessary and sufficient condition for the injectivity of a subtype
-of an injective type.s
+of an injective type.
 
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}
 
-open import MLTT.Spartan
-open import UF.Univalence
+open import UF.FunExt
 
 module InjectiveTypes.Subtypes
-        (ua : Univalence)
-        (𝓤 : Universe)
+        (fe : FunExt)
        where
 
+open import InjectiveTypes.Blackboard fe
+open import MLTT.Spartan
 open import UF.Embeddings
-open import UF.FunExt
 open import UF.Retracts
 open import UF.Subsingletons
 open import UF.UA-FunExt
-
-private
- fe : FunExt
- fe = Univalence-gives-FunExt ua
-
-open import InjectiveTypes.Blackboard fe
 
 module _ (D : 𝓤 ̇ )
          (P : D → 𝓥 ̇ )

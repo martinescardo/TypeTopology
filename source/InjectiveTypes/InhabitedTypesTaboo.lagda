@@ -265,13 +265,7 @@ Non-Empty-retract : retract Non-Empty of (𝓤 ̇ )
 Non-Empty-retract = ρ , σ , ρσ
  where
   ρ : 𝓤 ̇ → Non-Empty
-  ρ X = (¬¬ X → X) , p
-   where
-    p : ¬¬ (¬¬ X → X)
-    p = double-negation-of-implication→ q
-     where
-      q : ¬ (¬¬ (¬¬ X) × ¬ X)
-      q (h₁ , h₂) = h₁ (¬¬-intro h₂)
+  ρ X = (¬¬ X → X) , double-negation-elimination-inside-double-negation X
   σ : Non-Empty → 𝓤 ̇
   σ = pr₁
   ρσ : ρ ∘ σ ∼ id

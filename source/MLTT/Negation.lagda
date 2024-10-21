@@ -150,6 +150,14 @@ double-negation-of-implication← = Double-negation-of-implication←
 double-negation-of-implication→ : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → ¬ (¬¬ A × ¬ B) → ¬¬ (A → B)
 double-negation-of-implication→ f g = Double-negation-of-implication→ (𝟘 {𝓤₀}) 𝟘-elim f g
 
+double-negation-elimination-inside-double-negation
+ : (X : 𝓤 ̇ ) → ¬¬ (¬¬ X → X)
+double-negation-elimination-inside-double-negation X
+ = double-negation-of-implication→ I
+ where
+  I : ¬ (¬¬ (¬¬ X) × ¬ X)
+  I (h₁ , h₂) = h₁ (¬¬-intro h₂)
+
 not-equivalent-to-own-negation' : {A : 𝓤 ̇ } {R : 𝓥 ̇ } → (A ↔ (A → R)) → R
 not-equivalent-to-own-negation' (f , g) = f (g (λ a → f a a)) (g (λ a → f a a))
 
