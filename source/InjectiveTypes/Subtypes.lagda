@@ -1,4 +1,4 @@
-Martin Escardo 21st October 2024
+Martin Escardo, 21st October 2024
 
 A necessary and sufficient condition for the injectivity of a subtype
 of an injective type.
@@ -75,9 +75,16 @@ module _ (D : 𝓤 ̇ )
                 f d , g d     ＝⟨ to-subtype-＝ P-is-prop-valued (h d p) ⟩
                 d , p         ∎
 
+ change-subtype-injectivity-universes
+  : ainjective-type (Σ P) (𝓤 ⊔ 𝓥) 𝓤
+  → ainjective-type (Σ P) 𝓦 𝓣
+ change-subtype-injectivity-universes Σ-ainj
+  = sufficient-condition-for-injectivity-of-subtype
+     (necessary-condition-for-injectivity-of-subtype Σ-ainj)
+
 \end{code}
 
-The following choice of universes makes the condition trully
+The following choice of universes makes the condition truly
 sufficient and necessary.
 
 \begin{code}
@@ -96,6 +103,9 @@ module _ (D : 𝓤 ̇ )
     sufficient-condition-for-injectivity-of-subtype D P P-is-prop-valued D-ainj
 
 \end{code}
+
+TODO. Can the above logically equivalence be made into a type
+equivalence?
 
 TODO. Perhaps using aflabbiness we would get more general universe
 levels.
