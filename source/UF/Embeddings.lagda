@@ -612,6 +612,9 @@ Added by Martin Escardo and Tom de Jong 10th October 2023.
 
 \begin{code}
 
+id-is-essential : {X : 𝓤 ̇ } → is-essential (id {𝓤} {X}) 𝓥
+id-is-essential {𝓤} {X} Z g = id
+
 ∘-is-essential : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
                  {f : X → Y} {g : Y → Z}
                → is-essential f 𝓣

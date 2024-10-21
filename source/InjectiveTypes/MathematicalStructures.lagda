@@ -5,7 +5,7 @@ such as pointed types, ∞-magmas, monoids, groups, etc. to be
 algebraically injective. We use algebraic flabbiness as our main tool.
 
 This file is subsumed by [1] and [2], but it is still important for
-both the sake of motivation and the fact that is includes useful
+both the sake of motivation and the fact that it includes useful
 discussion, which probably should be read before reading [1] and [2].
 
 [1] InjectiveTypes.Sigma
@@ -113,8 +113,8 @@ for any proposition P and any type family A of types indexed by P.
 With this assumption, we can let the element s be the inverse of ρ
 applied to B.
 
-Remark. With regards to the discussion in the introduction of this
-file, it is actually enough to require that ρ is has a section.
+Remark. Regarding the discussion in the introduction of this file, it
+is actually enough to require that ρ is has a section.
 
 \begin{code}
 
