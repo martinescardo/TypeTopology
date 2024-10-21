@@ -60,6 +60,13 @@ retraction (r , s , rs) = r
 section : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → retract X of Y → (X → Y)
 section (r , s , rs) = s
 
+retraction-idempotency : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                       → (ρ : retract Y of X)
+                       → idempotent-map (section ρ ∘ retraction ρ)
+retraction-idempotency (r , s , rs) x =
+ s (r (s (r x))) ＝⟨ ap s (rs (r x)) ⟩
+ s (r x)         ∎
+
 section-is-section : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                    → (ρ : retract X of Y)
                    → is-section (section ρ)

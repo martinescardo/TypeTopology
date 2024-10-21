@@ -72,6 +72,7 @@ import InjectiveTypes.MathematicalStructures
 import InjectiveTypes.Sigma
 import InjectiveTypes.MathematicalStructuresMoreGeneral
 import InjectiveTypes.PointedDcpos
+import InjectiveTypes.Subtypes
 
 \end{code}
 
