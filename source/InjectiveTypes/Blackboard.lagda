@@ -556,7 +556,7 @@ retract-of-ainjective : (D' : 𝓦' ̇ ) (D : 𝓦 ̇ )
                       → ainjective-type D 𝓤 𝓥
                       → retract D' of D
                       → ainjective-type D' 𝓤 𝓥
-retract-of-ainjective D' D i (r , (s , rs)) {X} {Y} j e f = φ a
+retract-of-ainjective D' D i (r , s , rs) {X} {Y} j e f = φ a
   where
    a : Σ f' ꞉ (Y → D) , f' ∘ j ∼ s ∘ f
    a = i j e (s ∘ f)
@@ -1776,6 +1776,35 @@ Here are some corollaries:
 
    e : P + ¬ P
    e =  ∥∥-rec (decidability-of-prop-is-prop (fe 𝓤 𝓤₀) i) id d
+
+\end{code}
+
+Added 21st October 2024.
+
+\begin{code}
+
+aflabby-embedding-retract : (D : 𝓤 ̇ ) (Y : 𝓥 ̇ ) (j : D → Y)
+                          → is-embedding j
+                          → aflabby D (𝓤 ⊔ 𝓥)
+                          → retract D of Y
+aflabby-embedding-retract D Y j e a =
+ embedding-retract D Y j e (aflabby-types-are-ainjective D a)
+
+retract-of-aflabby : (D : 𝓤 ̇ ) (E : 𝓥 ̇ )
+                   → aflabby D 𝓣
+                   → retract E of D
+                   → aflabby E 𝓣
+retract-of-aflabby D E D-aflabby (r , s , rs) P P-is-prop f
+ = r d ,
+   (λ (p : P) → r d         ＝⟨ ap r (I p) ⟩
+                r (s (f p)) ＝⟨ rs (f p) ⟩
+                f p         ∎)
+  where
+   d : D
+   d = aflabby-extension D-aflabby (P , P-is-prop) (s ∘ f)
+
+   I : (p : P) → d ＝ s (f p)
+   I = aflabby-extension-property D-aflabby (P , P-is-prop) (s ∘ f)
 
 \end{code}
 

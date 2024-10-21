@@ -106,6 +106,3 @@ module _ (D : 𝓤 ̇ )
 
 TODO. Can the above logically equivalence be made into a type
 equivalence?
-
-TODO. Perhaps using aflabbiness we would get more general universe
-levels.
