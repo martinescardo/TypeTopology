@@ -8,7 +8,7 @@ set -euxo pipefail
 
 rm -rf html
 agda --highlight-occurrences --html AllModulesIndex.lagda
-rm ~/public_html/TypeTopology/*.html # do not delete Agda.css, as it is a modified version
+rm -f ~/public_html/TypeTopology/*.html # do not delete Agda.css, as it is a modified version
 mv html/*.html ~/public_html/TypeTopology/
 chmod a+r ~/public_html/TypeTopology/*.html
 
