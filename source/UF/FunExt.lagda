@@ -201,24 +201,31 @@ module _ {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } where
  ∼-gives-∼ᵢ : (f g : Π A) → f ∼ g → implicit f ∼ᵢ implicit g
  ∼-gives-∼ᵢ f g h x = h x
 
+ implicit-η-rule : (f : Πᵢ A) → (λ {x} → f {x}) ＝ f
+ implicit-η-rule f = refl
+
 \end{code}
 
 Agda gets confused when we try to write f ＝ g for f g : Πᵢ A, because
 it thinks that an implicit argument is implicitly applied to f and g,
 but then it is not able to infer it. To prevent this from happening,
-we write (λ {x} → f {x}) ＝ g, which is ugly, but amounts to f = g.
+can write (λ {x} → f {x}) ＝ g, which is ugly, but amounts to the
+equality f = g. Our solution is to instead write f ＝[ Πᵢ A ] g. We
+use a similar trick for _∼ᵢ_.
 
 ("Implicit arguments are inserted eagerly in left-hand sides" https://agda.readthedocs.io/en/latest/language/implicit-arguments.html)
 
 \begin{code}
 
- implicit-η-rule : (f : Πᵢ A) → (λ {x} → f {x}) ＝ f
- implicit-η-rule f = refl
+-∼ᵢ : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) → Πᵢ A → Πᵢ A → 𝓤 ⊔ 𝓥 ̇
+-∼ᵢ A f g = ∀ x → f {x} ＝ g {x}
+
+syntax -∼ᵢ A f g = f ∼ᵢ[ A ] g
 
 implicit-DN-funext : ∀ 𝓤 𝓥 → (𝓤 ⊔ 𝓥)⁺ ̇
 implicit-DN-funext 𝓤 𝓥 = {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {f g : Πᵢ A}
-                        → (λ {x} → f {x}) ∼ᵢ g
-                        → (λ {x} → f {x}) ＝ g
+                        → f ∼ᵢ[ A ] g
+                        → f ＝[ Πᵢ A ] g
 
 implicit-dfunext : funext 𝓤 𝓥 → implicit-DN-funext 𝓤 𝓥
 implicit-dfunext fe {X} {A} {f} {g} h = ap implicit (dfunext fe (∼ᵢ-gives-∼ f g h))
