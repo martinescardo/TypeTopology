@@ -1124,14 +1124,17 @@ aflabby-types-are-ainjective : (D : 𝓦 ̇ )
                              → ainjective-type D 𝓤 𝓥
 aflabby-types-are-ainjective D φ {X} {Y} j e f = f' , p
  where
+  g : (y : Y) → fiber j y → D
+  g y (x , p) = f x
+
   f' : Y → D
-  f' y = pr₁ (φ (fiber j y) (e y) (f ∘ pr₁))
+  f' y = aflabby-extension φ (fiber j y , e y) (g y)
 
   p : (x : X) → f' (j x) ＝ f x
   p x = q (x , refl)
    where
     q : (w : fiber j (j x)) → f' (j x) ＝ f (pr₁ w)
-    q = pr₂ (φ (fiber j (j x)) (e (j x)) (f ∘ pr₁))
+    q = aflabby-extension-property φ (fiber j (j x) , e (j x)) (g (j x))
 
 \end{code}
 
@@ -1355,7 +1358,7 @@ universe-retract : Univalence
                  → Propositional-resizing
                  → (𝓤 𝓥 : Universe)
                  → Σ ρ ꞉ retract 𝓤 ̇ of (𝓤 ⊔ 𝓥 ̇ ), is-embedding (section ρ)
-universe-retract ua R 𝓤 𝓥 = ρ , (Lift-is-embedding ua)
+universe-retract ua R 𝓤 𝓥 = ρ , Lift-is-embedding ua
  where
   a : ainjective-type (𝓤 ̇ ) 𝓤 𝓤
   a = universes-are-ainjective-Π {𝓤} {𝓤} (ua 𝓤)
@@ -1513,7 +1516,6 @@ module injective (pt : propositional-truncations-exist) where
                        → is-embedding j
                        → (f : X → D)
                        → ∃ g ꞉ (Y → D), g ∘ j ∼ f
-
 
  injectivity-is-prop : (D : 𝓦 ̇ ) (𝓤 𝓥 : Universe)
                      → is-prop (injective-type D 𝓤 𝓥)
