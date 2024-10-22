@@ -1133,7 +1133,7 @@ aflabby-types-are-ainjective D φ {X} {Y} j e f = f' , p
   p : (x : X) → f' (j x) ＝ f x
   p x = q (x , refl)
    where
-    q : (w : fiber j (j x)) → f' (j x) ＝ f (pr₁ w)
+    q : (w : fiber j (j x)) → f' (j x) ＝ g (j x) w
     q = aflabby-extension-property φ (fiber j (j x) , e (j x)) (g (j x))
 
 \end{code}
