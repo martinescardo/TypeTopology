@@ -174,3 +174,53 @@ transport-funext' : {X : 𝓤 ̇ } (A : 𝓥 ̇ )
 transport-funext' A P = transport-funext (λ _ → A) P
 
 \end{code}
+
+Added 22nd October 2024. Implicit DN-funext.
+
+\begin{code}
+
+Πᵢ : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
+Πᵢ {𝓤} {𝓥} {X} A = {x : X} → A x
+
+module _ {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } where
+
+ infix  4 _∼ᵢ_
+
+ _∼ᵢ_ :  Πᵢ A → Πᵢ A → 𝓤 ⊔ 𝓥 ̇
+ f ∼ᵢ g = ∀ x → f {x} ＝ g {x}
+
+ explicit : Πᵢ A → Π A
+ explicit f x = f {x}
+
+ implicit : Π A → Πᵢ A
+ implicit f {x} = f x
+
+ ∼ᵢ-gives-∼ : (f g : Πᵢ A) → f ∼ᵢ g → explicit f ∼ explicit g
+ ∼ᵢ-gives-∼ f g h x = h x
+
+ ∼-gives-∼ᵢ : (f g : Π A) → f ∼ g → implicit f ∼ᵢ implicit g
+ ∼-gives-∼ᵢ f g h x = h x
+
+\end{code}
+
+Agda gets confused when we try to write f ＝ g for f g : Πᵢ A, because
+it thinks that an implicit argument is implicitly applied to f and g,
+but then it is not able to infer it. To prevent this from happening,
+we write (λ {x} → f {x}) ＝ g, which is ugly, but amounts to f = g.
+
+("Implicit arguments are inserted eagerly in left-hand sides" https://agda.readthedocs.io/en/latest/language/implicit-arguments.html)
+
+\begin{code}
+
+ implicit-η-rule : (f : Πᵢ A) → (λ {x} → f {x}) ＝ f
+ implicit-η-rule f = refl
+
+implicit-DN-funext : ∀ 𝓤 𝓥 → (𝓤 ⊔ 𝓥)⁺ ̇
+implicit-DN-funext 𝓤 𝓥 = {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {f g : Πᵢ A}
+                        → (λ {x} → f {x}) ∼ᵢ g
+                        → (λ {x} → f {x}) ＝ g
+
+implicit-dfunext : funext 𝓤 𝓥 → implicit-DN-funext 𝓤 𝓥
+implicit-dfunext fe {X} {A} {f} {g} h = ap implicit (dfunext fe (∼ᵢ-gives-∼ f g h))
+
+\end{code}
