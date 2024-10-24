@@ -20,7 +20,8 @@ open import MLTT.Spartan hiding (_+_)
 open import Notation.Order
 open import UF.Equiv
 open import UF.EquivalenceExamples
-open import UF.PropTrunc 
+open import UF.PropTrunc
+open import UF.Retracts
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.Truncations fe
@@ -35,7 +36,7 @@ to truncation levels.
 
 \begin{code}
 
-module _ (te : general-truncations-exist) where
+module connectedness-results (te : general-truncations-exist) where
 
  private 
   pt : propositional-truncations-exist
@@ -82,7 +83,8 @@ surjections.
 
  map-is-−1-connected-if-surj : {X : 𝓤 ̇} {Y : 𝓥 ̇} {f : X → Y}
                              → is-surjection f → f is −1 connected-map
- map-is-−1-connected-if-surj f-is-surj y = −1-connected-if-inhabited (f-is-surj y)
+ map-is-−1-connected-if-surj f-is-surj y =
+  −1-connected-if-inhabited (f-is-surj y)
 
  map-is-−1-connected-iff-surj : {X : 𝓤 ̇} {Y : 𝓥 ̇} {f : X → Y}
                               → f is −1 connected-map ↔ is-surjection f
@@ -92,12 +94,19 @@ surjections.
 \end{code}
 
 We develop some closure conditions pertaining to connectedness. Connectedness
-is closed under equivalence as expected, but more importantly connectedness
-extends below: more precisely if a type is k connected then it is l connected
-for all l ≤ k. We provide a few incarnations of this fact below which may prove
-useful. 
+is closed under retracts and equivalence as expected, but more importantly
+connectedness extends below:
+more precisely if a type is k connected then it is l connected for all l ≤ k.
+We provide a few incarnations of this fact below which may prove useful. 
 
 \begin{code}
+
+ connectedness-is-closed-under-retract : {X : 𝓤 ̇} {Y : 𝓥 ̇} {k : ℕ₋₂}
+                                       → retract Y of X
+                                       → X is k connected
+                                       → Y is k connected
+ connectedness-is-closed-under-retract R X-conn =
+  retract-of-singleton (truncation-closed-under-retract R) X-conn
 
  connectedness-closed-under-equiv : {X : 𝓤 ̇} {Y : 𝓥 ̇} {k : ℕ₋₂}
                                   → X ≃ Y
@@ -140,6 +149,13 @@ useful.
    m = subtraction-ℕ₋₂-term l k o
    p = k       ＝⟨ subtraction-ℕ₋₂-identification l k o ⁻¹ ⟩
        l + m   ∎
+
+ map-connectedness-is-lower-closed : {X : 𝓤 ̇} {Y : 𝓥 ̇} {f : X → Y} {k l : ℕ₋₂}
+                                   → (l ≤ k)
+                                   → f is k connected-map
+                                   → f is l connected-map
+ map-connectedness-is-lower-closed o f-k-con y =
+  connectedness-is-lower-closed' o (f-k-con y)
 
 \end{code}
 
@@ -209,4 +225,18 @@ the identity type at one level below. We will assume univalence only when necess
    (connected-types-are-locally-connected ua (f-conn (f x'))
     (x , p) (x' , refl))
 
+\end{code}
+
+We postulate a results from 7.5. of the HoTT book.
+
+TODO: Formalize this.
+
+\begin{code}
+
+ basepoint-map-is-less-connected-result : {𝓤 : Universe} → (𝓤 ⁺)  ̇
+ basepoint-map-is-less-connected-result {𝓤} = {X : 𝓤 ̇} {n : ℕ₋₂}
+                                            → (x₀ : 𝟙 {𝓤} → X)
+                                            → X is (n + 1) connected
+                                            → x₀ is n connected-map
+                                 
 \end{code}
