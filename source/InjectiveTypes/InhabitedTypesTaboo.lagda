@@ -233,7 +233,7 @@ summary = unspecified-split-support-gives-retract
 
 \end{code}
 
-Oberve that the concatenation of the first three implications yields an
+Observe that the concatenation of the first three implications yields an
 alternative (w.r.t. [1]), non-direct proof of the following:
 
 \begin{code}
@@ -247,10 +247,11 @@ unspecified-split-support-gives-projective-propositions uss =
 
 \end{code}
 
-In contrast to the fact that the type of inhabited types is "not" injective, the
-type of non-empty types *is* injective. Notice how we prove this by establishing
-Non-Empty as a retract of the universe without having to take recourse to a
-choice principle like we did in the construction
+In contrast to the fact that the type of inhabited types is not in
+general injective, the type of non-empty types *is* always
+injective. Notice how we prove this by establishing Non-Empty as a
+retract of the universe without having to take recourse to a choice
+principle like we did in the construction
 unspecified-split-support-gives-retract.
 
 This also serves to highlight the (constructive) difference(s) between
@@ -284,7 +285,7 @@ Non-Empty-retract = ρ , σ , ρσ
 Non-Empty-is-injective : ainjective-type Non-Empty 𝓤 𝓤
 Non-Empty-is-injective =
  retract-of-ainjective Non-Empty (𝓤 ̇ )
-                       (universes-are-ainjective-Π (ua 𝓤))
+                       (universes-are-ainjective (ua 𝓤))
                        Non-Empty-retract
 
 \end{code}

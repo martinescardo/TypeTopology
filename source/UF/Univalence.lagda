@@ -98,8 +98,10 @@ the folder MGS).
 \begin{code}
 
 ≃-induction : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
-≃-induction 𝓤 𝓥 = (X : 𝓤 ̇ ) (A : (Y : 𝓤 ̇ ) → X ≃ Y → 𝓥 ̇ )
-                 → A X (≃-refl X) → (Y : 𝓤 ̇ ) (e : X ≃ Y) → A Y e
+≃-induction 𝓤 𝓥 = (X : 𝓤 ̇ )
+                   (A : (Y : 𝓤 ̇ ) → X ≃ Y → 𝓥 ̇ )
+                 → A X (≃-refl X)
+                 → (Y : 𝓤 ̇ ) (e : X ≃ Y) → A Y e
 
 private
  JEq' : is-univalent 𝓤 → ∀ {𝓥} → ≃-induction 𝓤 𝓥

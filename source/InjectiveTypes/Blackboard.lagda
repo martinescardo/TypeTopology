@@ -620,6 +620,15 @@ power-of-ainjective : {A : 𝓣 ̇ } {D : 𝓦 ̇ }
                     → ainjective-type (A → D) 𝓤 𝓥
 power-of-ainjective i = Π-ainjective (λ a → i)
 
+every-type-can-be-embedded-into-an-ainjective-type
+ : is-univalent (𝓤 ⊔ 𝓥)
+ → (X : 𝓤 ⊔ 𝓥 ̇ )
+ → Σ D ꞉ (𝓤 ⊔ 𝓥)⁺ ̇ , Σ e ꞉ X ↪ D , ainjective-type D 𝓤 𝓥
+every-type-can-be-embedded-into-an-ainjective-type {𝓤} {𝓥} ua X
+ = (X → 𝓤 ⊔ 𝓥 ̇) ,
+   (Id , UA-Id-embedding ua fe) ,
+   power-of-ainjective (universes-are-ainjective ua)
+
 \end{code}
 
 The following is the first of a number of injectivity resizing

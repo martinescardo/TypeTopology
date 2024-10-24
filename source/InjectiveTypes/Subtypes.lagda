@@ -23,7 +23,6 @@ open import UF.UA-FunExt
 module _ (D : 𝓤 ̇ )
          (P : D → 𝓥 ̇ )
          (P-is-prop-valued : (d : D) → is-prop (P d))
-         (D-ainj : ainjective-type D 𝓦 𝓣)
        where
 
  necessary-condition-for-injectivity-of-subtype
@@ -61,9 +60,10 @@ module _ (D : 𝓤 ̇ )
    h d p = ap pr₁ (fg d p)
 
  sufficient-condition-for-injectivity-of-subtype
-  : (Σ f ꞉ (D → D) , ((d : D) → P (f d)) × ((d : D) → P d → f d ＝ d))
+  : ainjective-type D 𝓦 𝓣
+  →  (Σ f ꞉ (D → D) , ((d : D) → P (f d)) × ((d : D) → P d → f d ＝ d))
   → ainjective-type (Σ P) 𝓦 𝓣
- sufficient-condition-for-injectivity-of-subtype (f , g , h)
+ sufficient-condition-for-injectivity-of-subtype D-ainj (f , g , h)
   = retract-of-ainjective (Σ P) D D-ainj (r , s , rs)
   where
    r : D → Σ P
@@ -79,10 +79,11 @@ module _ (D : 𝓤 ̇ )
                 d , p         ∎
 
  change-subtype-injectivity-universes
-  : ainjective-type (Σ P) (𝓤 ⊔ 𝓥) 𝓤
+  : ainjective-type D 𝓦 𝓣
+  → ainjective-type (Σ P) (𝓤 ⊔ 𝓥) 𝓤
   → ainjective-type (Σ P) 𝓦 𝓣
- change-subtype-injectivity-universes Σ-ainj
-  = sufficient-condition-for-injectivity-of-subtype
+ change-subtype-injectivity-universes D-ainj Σ-ainj
+  = sufficient-condition-for-injectivity-of-subtype D-ainj
      (necessary-condition-for-injectivity-of-subtype Σ-ainj)
 
 \end{code}
@@ -102,10 +103,34 @@ module _ (D : 𝓤 ̇ )
   : ainjective-type (Σ P) (𝓤 ⊔ 𝓥) 𝓤
   ↔ (Σ f ꞉ (D → D) , ((d : D) → P (f d)) × ((d : D) → P d → f d ＝ d))
  necessary-and-sufficient-condition-for-injectivity-of-subtype
-  = necessary-condition-for-injectivity-of-subtype D P P-is-prop-valued D-ainj ,
+  = necessary-condition-for-injectivity-of-subtype D P P-is-prop-valued ,
     sufficient-condition-for-injectivity-of-subtype D P P-is-prop-valued D-ainj
 
 \end{code}
 
-TODO. Can the above logically equivalence be made into a type
+TODO. Can the above logical equivalence be made into a type
 equivalence?
+
+\begin{code}
+
+open import UF.Univalence
+
+module _ (𝓤 : Universe)
+         (ua : is-univalent 𝓤)
+       where
+
+ open import InjectiveTypes.InhabitedTypesTaboo {!!} {!!} 𝓤
+ open import UF.Subsingletons-FunExt
+
+ Non-Empty-is-injective' : ainjective-type Non-Empty {!!} {!!}
+ Non-Empty-is-injective' =
+  sufficient-condition-for-injectivity-of-subtype
+   (𝓤 ̇)
+   is-nonempty
+   (λ X → negations-are-props (fe 𝓤 𝓤₀))
+   (universes-are-ainjective ua)
+   ((λ X → ¬¬ X → X) ,
+    double-negation-elimination-inside-double-negation ,
+    {!λ X → ?!})
+
+\end{code}
