@@ -110,27 +110,3 @@ module _ (D : 𝓤 ̇ )
 
 TODO. Can the above logical equivalence be made into a type
 equivalence?
-
-\begin{code}
-
-open import UF.Univalence
-
-module _ (𝓤 : Universe)
-         (ua : is-univalent 𝓤)
-       where
-
- open import InjectiveTypes.InhabitedTypesTaboo {!!} {!!} 𝓤
- open import UF.Subsingletons-FunExt
-
- Non-Empty-is-injective' : ainjective-type Non-Empty {!!} {!!}
- Non-Empty-is-injective' =
-  sufficient-condition-for-injectivity-of-subtype
-   (𝓤 ̇)
-   is-nonempty
-   (λ X → negations-are-props (fe 𝓤 𝓤₀))
-   (universes-are-ainjective ua)
-   ((λ X → ¬¬ X → X) ,
-    double-negation-elimination-inside-double-negation ,
-    (λ X → {!!}))
-
-\end{code}
