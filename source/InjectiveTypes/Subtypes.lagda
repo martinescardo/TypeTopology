@@ -131,6 +131,6 @@ module _ (𝓤 : Universe)
    (universes-are-ainjective ua)
    ((λ X → ¬¬ X → X) ,
     double-negation-elimination-inside-double-negation ,
-    {!λ X → ?!})
+    (λ X → {!!}))
 
 \end{code}

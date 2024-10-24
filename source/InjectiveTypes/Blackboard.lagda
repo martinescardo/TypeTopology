@@ -1579,8 +1579,8 @@ so we need a new proof, with new universe assumptions.
 \begin{code}
 
  power-of-injective : {A : 𝓣 ̇ } {D : 𝓣 ⊔ 𝓦 ̇ }
-                     → injective-type D       (𝓤 ⊔ 𝓣) (𝓥 ⊔ 𝓣)
-                     → injective-type (A → D) (𝓤 ⊔ 𝓣) (𝓥 ⊔ 𝓣)
+                    → injective-type D       (𝓤 ⊔ 𝓣) (𝓥 ⊔ 𝓣)
+                    → injective-type (A → D) (𝓤 ⊔ 𝓣) (𝓥 ⊔ 𝓣)
  power-of-injective {𝓣} {𝓦} {𝓤} {𝓥} {A} {D} i {X} {Y} j e f = γ
   where
    g : X × A → D
@@ -1638,10 +1638,10 @@ injectivity.
 \begin{code}
 
  injectivity-in-terms-of-ainjectivity' : is-univalent 𝓤
-                                      → propositional-resizing (𝓤 ⁺) 𝓤
-                                      → (D : 𝓤  ̇ )
-                                      → injective-type D 𝓤 (𝓤 ⁺)
-                                        ↔ ∥ ainjective-type D 𝓤 (𝓤 ⁺) ∥
+                                       → propositional-resizing (𝓤 ⁺) 𝓤
+                                       → (D : 𝓤  ̇ )
+                                       → injective-type D 𝓤 (𝓤 ⁺)
+                                         ↔ ∥ ainjective-type D 𝓤 (𝓤 ⁺) ∥
  injectivity-in-terms-of-ainjectivity' {𝓤} ua R D = a , b
   where
    a : injective-type D 𝓤 (𝓤 ⁺) → ∥ ainjective-type D 𝓤 (𝓤 ⁺) ∥
@@ -1675,7 +1675,7 @@ The reason is that the embedding Id : D → (D → 𝓤) factors through
 
  set-injectivity-in-terms-of-ainjectivity : Ω-resizing₀ 𝓤
                                           → PropExt
-                                          → (D  : 𝓤 ̇ ) (i  : is-set D)
+                                          → (D  : 𝓤 ̇ ) (i : is-set D)
                                           → injective-type D 𝓤 𝓤
                                             ↔ ∥ ainjective-type D 𝓤 𝓤 ∥
  set-injectivity-in-terms-of-ainjectivity {𝓤} (Ω₀ , e₀) pe D i =
