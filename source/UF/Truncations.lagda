@@ -29,6 +29,7 @@ open import UF.Equiv
 open import UF.PropTrunc
 open import UF.Retracts
 open import UF.Sets
+open import UF.Size
 open import UF.Subsingletons
 open import UF.TruncationLevels
 open import UF.TruncatedTypes fe
@@ -322,6 +323,12 @@ can be refactored to use closure under retracts.
        I = ap f (∥∥ₙ-rec-comp ∥∥ₙ-is-truncated (λ y → ∣ (⌜ e ⌝⁻¹ y) ∣[ n ]) y)
        II = ∥∥ₙ-rec-comp ∥∥ₙ-is-truncated (λ x → ∣ ⌜ e ⌝ x ∣[ n ]) (⌜ e ⌝⁻¹ y)
        III = ap ∣_∣[ n ] (inverses-are-sections' e y)
+
+ size-closed-under-truncation : {X : 𝓤 ̇} {n : ℕ₋₂}
+                              → X is 𝓥 small
+                              → ∥ X ∥[ n ] is 𝓥 small
+ size-closed-under-truncation {𝓤} {𝓥} {X} {n} (Y , e) =
+  (∥ Y ∥[ n ] , truncation-closed-under-equiv e)
 
  successive-truncations-equiv : {X : 𝓤 ̇} {n : ℕ₋₂}
                               → (∥ X ∥[ n ]) ≃ (∥ (∥ X ∥[ n + 1 ]) ∥[ n ])
