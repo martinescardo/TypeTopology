@@ -96,9 +96,12 @@ TODO: Add other closure properties and maybe move this to size file(?).
 
 \end{code}
 
-We will now begin proving some of the results of the paper. We will attempt to
-avoid any unnecesay use of propositional resizing. Theorem numbers will be
-provided for easy reference.
+Lemma 2.2. and Lemma 2.5. follow from a result in Egbert Rijke's
+"The Join Construction". Unfortunately, these results have yet to be
+implemented in the TypeTopology library. We will state the join
+construction result below and explicilty assume it when necessary.
+
+TODO: Implement the join construction.
 
 \begin{code}
 
@@ -115,10 +118,9 @@ provided for easy reference.
 
 \end{code}
 
-The inductive step of Lemma 2.2. follows from a result in Egbert Rijke's
-"The Join Construction". Unfortunately, these results have yet to be
-implemented in the TypeTopology library. We will explicity assume the Join
-Construction for now.
+We will now begin proving some of the results of the paper. We will attempt to
+avoid any unnecesay use of propositional resizing. Theorem numbers will be
+provided for easy reference.
 
 Prop 2.2.
 
@@ -156,11 +158,6 @@ Prop 2.2.
             (f-is-surj x')
 \end{code}
 
-The inductive step of Lemma 2.2. follows from a result in Egbert Rijke's
-"The Join Construction". Unfortunately, these results have yet to be
-implemented in the TypeTopology library. For now we maintain that the following
-result follows from Egbert's result.
-
 Lemma 2.3.
 
 \begin{code}
@@ -185,7 +182,7 @@ Lemma 2.4.
            → f is (n + 1) truncated-map
            → Y is ι (n + 2) locally-small
            → X is ι (n + 2) locally-small
- Lemma-2-4 {_} {_} {_} {_} {f} {n} pr f-trunc Y-loc-small =
+ Lemma-2-4 {_} {_} {_} {_} {f} {_} pr f-trunc Y-loc-small =
   locally-small-≃-closed (total-fiber-is-domain f)
    (locally-small-Σ-closed Y-loc-small (λ y → Lemma-2-3 pr (f-trunc y)))
 
@@ -203,7 +200,7 @@ Lemma 2.5.
            → Y is ι (n + 2) locally-small
            → X is (n + 1) connected
            → X is 𝓥 small
- Lemma-2-5 {𝓤} {𝓦} {X} {Y} {f} {n} j pr bp f-trunc Y-loc-small X-conn =
+ Lemma-2-5 {𝓤} {_} {X} {_} {_} {n} j pr bp f-trunc Y-loc-small X-conn =
   ∥∥-rec (being-small-is-prop ua X 𝓥)
    X-inhabited-implies-small (center X-−1-conn)
   where
