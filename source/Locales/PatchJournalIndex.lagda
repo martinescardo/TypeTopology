@@ -36,10 +36,8 @@ definition-1 = _is_small
 
 \begin{code}
 
-lemma-2 : {𝓤 : Universe}
-        → ((X : 𝓤 ̇) → is-subsingleton (-Σ (𝓤 ̇) (_≃_ X)))
-        → is-univalent 𝓤
-lemma-2 = →univalence
+lemma-2-⦅1⇒2⦆ = →univalence
+lemma-2-⦅2⇒1⦆ = univalence→
 
 \end{code}
 
@@ -52,8 +50,8 @@ definition-3 = is-locally-small
 
 \begin{code}
 
-definition-4 : {𝓤 : Universe} → 𝓤  ̇ → (𝓥 : Universe) → (𝓥 ⁺) ⊔ 𝓤 ̇
-definition-4 = _is_small
+definition-4 : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥) ⁺  ̇
+definition-4 𝓤 𝓥 = propositional-resizing 𝓤 𝓥
 
 \end{code}
 
