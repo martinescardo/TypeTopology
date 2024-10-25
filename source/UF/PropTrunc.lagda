@@ -43,7 +43,6 @@ module PropositionalTruncation (pt : propositional-truncations-exist) where
              → ((s : ∥ X ∥) → is-prop (P s))
              → ((x : X) → P ∣ x ∣)
              → (s : ∥ X ∥) → P s
-
  ∥∥-induction {𝓤} {𝓥} {X} {P} i f s = φ' s
   where
    φ : X → P s
@@ -51,12 +50,12 @@ module PropositionalTruncation (pt : propositional-truncations-exist) where
    φ' : ∥ X ∥ → P s
    φ' = ∥∥-rec (i s) φ
 
-
  is-singleton'-is-prop : {X : 𝓤 ̇ } → funext 𝓤 𝓤 → is-prop (is-prop X × ∥ X ∥)
  is-singleton'-is-prop fe = Σ-is-prop (being-prop-is-prop fe) (λ _ → ∥∥-is-prop)
 
- the-singletons-are-the-inhabited-propositions : {X : 𝓤 ̇ }
-                                               → is-singleton X ↔ is-prop X × ∥ X ∥
+ the-singletons-are-the-inhabited-propositions
+  : {X : 𝓤 ̇ }
+  → is-singleton X ↔ is-prop X × ∥ X ∥
  the-singletons-are-the-inhabited-propositions {𝓤} {X} = f , g
   where
    f : is-singleton X → is-prop X × ∥ X ∥
@@ -159,7 +158,10 @@ module PropositionalTruncation (pt : propositional-truncations-exist) where
  empty-is-uninhabited v = ∥∥-rec 𝟘-is-prop v
 
  binary-choice : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → ∥ X ∥ → ∥ Y ∥ → ∥ X × Y ∥
- binary-choice s t = ∥∥-rec ∥∥-is-prop (λ x → ∥∥-rec ∥∥-is-prop (λ y → ∣ x , y ∣) t) s
+ binary-choice s t = ∥∥-rec
+                      ∥∥-is-prop
+                      (λ x → ∥∥-rec ∥∥-is-prop (λ y → ∣ x , y ∣) t)
+                      s
 
  prop-is-equivalent-to-its-truncation : {X : 𝓤 ̇ } → is-prop X → ∥ X ∥ ≃ X
  prop-is-equivalent-to-its-truncation i =

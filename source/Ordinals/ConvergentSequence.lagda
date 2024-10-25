@@ -23,14 +23,14 @@ private
 
 open import MLTT.Spartan
 open import Notation.CanonicalMap
-open import Taboos.LPO fe
+open import Taboos.LPO
 open import Naturals.Order
 open import Ordinals.Arithmetic fe
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.Type
 open import Ordinals.Equivalence
 open import Ordinals.Underlying
-open import CoNaturals.GenericConvergentSequence
+open import CoNaturals.Type
 open import UF.Equiv
 
 ω+𝟙-is-⊴-ℕ∞ : (ω +ₒ 𝟙ₒ) ⊴ ℕ∞ₒ

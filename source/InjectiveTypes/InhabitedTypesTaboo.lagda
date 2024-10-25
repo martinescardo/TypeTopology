@@ -7,38 +7,36 @@ As explained in InjectiveTypes.CounterExamples:
 
 ────────────────────────────────────────────────────────────────────────────────
 
-We already know that if excluded middle holds then all pointed types
-are algebraically injective, and that the converse also holds.
+We already know that if excluded middle holds then all pointed types are
+algebraically injective, and that the converse also holds.
 
-So we can't really give an example of any type which is not
-algebraicxally injective, other than the empty type. The best we can
-hope for is to derive a constructive taboo, rather than a
-contradiction, from the assumption that a type of interest would be
-injective.
+So we can't really give an example of any type which is not algebraicxally
+injective, other than the empty type. The best we can hope for is to derive a
+constructive taboo, rather than a contradiction, from the assumption that a type
+of interest would be injective.
 
-Most types one encounters in practice are "not" injective in the above
-sense. We can also say "not all types are injective in general". We
-can also say "not all types are injective in general", as there are
-some ∞-toposes which do satisfy excluded middle, as well as some
-∞-toposes which don't, and we intend TypeTopology to apply to all
-∞-toposes, except when special assumptions are made.
+Most types one encounters in practice are "not" injective in the above sense. We
+can also say "not all types are injective in general", as there are some
+∞-toposes which do satisfy excluded middle, as well as some ∞-toposes which
+don't, and we intend TypeTopology to apply to all ∞-toposes, except when special
+assumptions are made.
 
 ────────────────────────────────────────────────────────────────────────────────
 
-Here we consider the type 𝕀  of inhabited types defined by
+Here we consider the type Inh  of inhabited types defined by
 
- 𝕀 = Σ X ꞉ 𝓤 ̇ , ∥ X ∥
+ Inh = Σ X ꞉ 𝓤 ̇ , ∥ X ∥
 
 and show that the following are equivalent:
 
-(1) 𝕀 is injective.
-(2) 𝕀 is a retract of 𝓤.
+(1) Inh is injective.
+(2) Inh is a retract of 𝓤.
 (3) All propositions are projective:
-      (P : 𝓤 ̇  ) (Y : P → 𝓤 ̇  ) → is-prop P
+      (P : 𝓤 ̇ ) (Y : P → 𝓤 ̇ ) → is-prop P
                                 → ((p : P) → ∥ Y p ∥)
                                 → ∥ (p : P) → Y p ∥.
 (4) Every type has unspecified split support:
-      (X : 𝓤 ̇  ) → ∥ ∥ X ∥ → X ∥.
+      (X : 𝓤 ̇ ) → ∥ ∥ X ∥ → X ∥.
 
 The equivalence of (3) and (4) was shown in [Theorem 7.7, 1].
 
@@ -54,8 +52,8 @@ type is "not" injective, as follows: The type of pointed types
   𝓤∙ = Σ X ꞉ 𝓤 ̇ , X
 is injective, as proved in InjectiveTypes.MathematicalStructures, and is
 (equivalent) to the Σ-type
-  Σ I ꞉ 𝕀 , pr₁ 𝕀,
-indexed over the "non"-injective type 𝕀.
+  Σ I ꞉ Inh , pr₁ Inh,
+indexed over the "non"-injective type Inh.
 
 
 To illustrate the constructive differences between the propositional truncation
@@ -91,7 +89,6 @@ module InjectiveTypes.InhabitedTypesTaboo
 
 open PropositionalTruncation pt
 
-open import MLTT.Negation
 
 open import UF.Base
 open import UF.Equiv
@@ -121,18 +118,18 @@ open import InjectiveTypes.MathematicalStructures ua
 \end{code}
 
 We define the type of inhabited of types (in a fixed, but arbitrary universe 𝓤).
-For convenience we also write 𝕀 for this type in this file.
+For convenience we also write Inh for this type in this file.
 
 \begin{code}
 
 Inhabited : 𝓤 ⁺ ̇
-Inhabited = Σ X ꞉ 𝓤 ̇  , ∥ X ∥
+Inhabited = Σ X ꞉ 𝓤 ̇ , ∥ X ∥
 
 private
- 𝕀 : 𝓤 ⁺ ̇
- 𝕀 = Inhabited
+ Inh : 𝓤 ⁺ ̇
+ Inh = Inhabited
 
-⟨_⟩ : 𝕀 → 𝓤 ̇
+⟨_⟩ : Inh → 𝓤 ̇
 ⟨_⟩ = pr₁
 
 \end{code}
@@ -143,13 +140,13 @@ top of this file.
 \begin{code}
 
 Propositions-Are-Projective : 𝓤 ⁺ ̇
-Propositions-Are-Projective = (P : 𝓤 ̇  ) (Y : P → 𝓤 ̇  )
+Propositions-Are-Projective = (P : 𝓤 ̇ ) (Y : P → 𝓤 ̇ )
                             → is-prop P
                             → ((p : P) → ∥ Y p ∥)
                             → ∥ ((p : P) → Y p) ∥
 
 Unspecified-Split-Support : 𝓤 ⁺ ̇
-Unspecified-Split-Support = (X : 𝓤 ̇  ) → ∥ (∥ X ∥ → X) ∥
+Unspecified-Split-Support = (X : 𝓤 ̇ ) → ∥ (∥ X ∥ → X) ∥
 
 \end{code}
 
@@ -159,12 +156,12 @@ implications at the end.
 \begin{code}
 
 unspecified-split-support-gives-retract : Unspecified-Split-Support
-                                        → retract 𝕀 of (𝓤 ̇  )
+                                        → retract Inh of (𝓤 ̇ )
 unspecified-split-support-gives-retract uss = ρ , σ , ρσ
  where
-  σ : 𝕀 → 𝓤 ̇
+  σ : Inh → 𝓤 ̇
   σ = ⟨_⟩
-  ρ  : 𝓤 ̇ → 𝕀
+  ρ  : 𝓤 ̇ → Inh
   ρ X = (∥ X ∥ → X) , uss X
   ρσ : ρ ∘ σ ∼ id
   ρσ (X , s) = to-subtype-＝ (λ Y → ∥∥-is-prop)
@@ -179,20 +176,20 @@ unspecified-split-support-gives-retract uss = ρ , σ , ρσ
         II : ∥ X ∥ ＝ 𝟙
         II = holds-gives-equal-𝟙 pe' ∥ X ∥ ∥∥-is-prop s
 
-retract-gives-injectivity : retract 𝕀 of (𝓤 ̇ )
-                          → ainjective-type 𝕀 𝓤 𝓤
-retract-gives-injectivity ret = retract-of-ainjective 𝕀 (𝓤 ̇ ) inj ret
+retract-gives-injectivity : retract Inh of (𝓤 ̇ )
+                          → ainjective-type Inh 𝓤 𝓤
+retract-gives-injectivity ret = retract-of-ainjective Inh (𝓤 ̇ ) inj ret
  where
   inj : ainjective-type (𝓤 ̇ ) 𝓤 𝓤
   inj = universes-are-ainjective-Π (ua 𝓤)
 
-flabbiness-gives-projective-propositions : aflabby 𝕀 𝓤
+flabbiness-gives-projective-propositions : aflabby Inh 𝓤
                                          → Propositions-Are-Projective
 flabbiness-gives-projective-propositions ϕ P Y P-is-prop Y-inh = I
  where
-  f : P → 𝕀
+  f : P → Inh
   f p = (Y p , Y-inh p)
-  ext : Σ X ꞉ 𝕀 , ((p : P) → X ＝ f p)
+  ext : Σ X ꞉ Inh , ((p : P) → X ＝ f p)
   ext = ϕ P P-is-prop f
   X : 𝓤 ̇
   X = pr₁ (pr₁ ext)
@@ -209,10 +206,10 @@ flabbiness-gives-projective-propositions ϕ P Y P-is-prop Y-inh = I
   I : ∥ ((p : P) → Y p) ∥
   I = ∥∥-functor II s
 
-injectivity-gives-projective-propositions : ainjective-type 𝕀 𝓤 𝓤
+injectivity-gives-projective-propositions : ainjective-type Inh 𝓤 𝓤
                                           → Propositions-Are-Projective
 injectivity-gives-projective-propositions inj =
- flabbiness-gives-projective-propositions (ainjective-types-are-aflabby 𝕀 inj)
+ flabbiness-gives-projective-propositions (ainjective-types-are-aflabby Inh inj)
 
 projective-propositions-gives-unspecified-split-support :
  Propositions-Are-Projective → Unspecified-Split-Support
@@ -225,9 +222,9 @@ For convenience, we provide a summary of the chain of implications:
 
 \begin{code}
 
-summary : (Unspecified-Split-Support → retract 𝕀 of (𝓤 ̇  ))
-        × (retract 𝕀 of (𝓤 ̇  ) → ainjective-type 𝕀 𝓤 𝓤)
-        × (ainjective-type 𝕀 𝓤 𝓤 → Propositions-Are-Projective)
+summary : (Unspecified-Split-Support → retract Inh of (𝓤 ̇ ))
+        × (retract Inh of (𝓤 ̇ ) → ainjective-type Inh 𝓤 𝓤)
+        × (ainjective-type Inh 𝓤 𝓤 → Propositions-Are-Projective)
         × (Propositions-Are-Projective → Unspecified-Split-Support)
 summary = unspecified-split-support-gives-retract
         , retract-gives-injectivity
@@ -236,7 +233,7 @@ summary = unspecified-split-support-gives-retract
 
 \end{code}
 
-Oberve that the concatenation of the first three implications yields an
+Observe that the concatenation of the first three implications yields an
 alternative (w.r.t. [1]), non-direct proof of the following:
 
 \begin{code}
@@ -250,45 +247,11 @@ unspecified-split-support-gives-projective-propositions uss =
 
 \end{code}
 
-Finally, we recall that the type 𝓤∙ of pointed types *is* injective and record
-that 𝓤∙ is equivalent to the Σ-type
-  Σ I ꞉ 𝕀 , pr₁ 𝕀,
-which is indexed over the "non"-injective type 𝕀.
-
-Hence, this gives an example of an injective Σ-type whose indexing type is "not"
-injective.
-
-\begin{code}
-
-𝓤∙ : 𝓤 ⁺ ̇
-𝓤∙ = Σ X ꞉ 𝓤 ̇  , X
-
-𝓤∙-is-injective : ainjective-type 𝓤∙ 𝓤 𝓤
-𝓤∙-is-injective = ainjectivity-of-type-of-pointed-types
-
-𝓤∙-as-Σ-type-over-𝕀 : 𝓤∙ ≃ (Σ I ꞉ 𝕀 , ⟨ I ⟩)
-𝓤∙-as-Σ-type-over-𝕀 = 𝓤∙                      ≃⟨ Σ-cong e ⟩
-                      (Σ X ꞉ 𝓤 ̇  , ∥ X ∥ × X) ≃⟨ ≃-sym Σ-assoc ⟩
-                      (Σ I ꞉ 𝕀 , ⟨ I ⟩)       ■
- where
-  e : (X : 𝓤 ̇  ) → X ≃ ∥ X ∥ × X
-  e X = qinveq f (g , η , ε)
-   where
-    f : X → ∥ X ∥ × X
-    f x = ∣ x ∣ , x
-    g : ∥ X ∥ × X → X
-    g = pr₂
-    η : g ∘ f ∼ id
-    η x = refl
-    ε : f ∘ g ∼ id
-    ε (s , x) = to-×-＝ (∥∥-is-prop ∣ x ∣ s) refl
-
-\end{code}
-
-In contrast to the fact that the type of inhabited types is "not" injective, the
-type of non-empty types *is* injective. Notice how we prove this by establishing
-Non-Empty as a retract of the universe without having to take recourse to a
-choice principle like we did in the construction
+In contrast to the fact that the type of inhabited types is not in
+general injective, the type of non-empty types *is* always
+injective. Notice how we prove this by establishing Non-Empty as a
+retract of the universe without having to take recourse to a choice
+principle like we did in the construction
 unspecified-split-support-gives-retract.
 
 This also serves to highlight the (constructive) difference(s) between
@@ -297,19 +260,13 @@ propositional truncation and double negation.
 \begin{code}
 
 Non-Empty : 𝓤 ⁺ ̇
-Non-Empty = Σ X ꞉ 𝓤 ̇  , is-nonempty X
+Non-Empty = Σ X ꞉ 𝓤 ̇ , is-nonempty X
 
-Non-Empty-retract : retract Non-Empty of (𝓤 ̇  )
+Non-Empty-retract : retract Non-Empty of (𝓤 ̇ )
 Non-Empty-retract = ρ , σ , ρσ
  where
   ρ : 𝓤 ̇ → Non-Empty
-  ρ X = (¬¬ X → X) , p
-   where
-    p : ¬¬ (¬¬ X → X)
-    p = double-negation-of-implication→ q
-     where
-      q : ¬ (¬¬ (¬¬ X) × ¬ X)
-      q (h₁ , h₂) = h₁ (¬¬-intro h₂)
+  ρ X = (¬¬ X → X) , double-negation-elimination-inside-double-negation X
   σ : Non-Empty → 𝓤 ̇
   σ = pr₁
   ρσ : ρ ∘ σ ∼ id
@@ -327,8 +284,63 @@ Non-Empty-retract = ρ , σ , ρσ
 
 Non-Empty-is-injective : ainjective-type Non-Empty 𝓤 𝓤
 Non-Empty-is-injective =
- retract-of-ainjective Non-Empty (𝓤 ̇  )
-                       (universes-are-ainjective-Π (ua 𝓤))
+ retract-of-ainjective Non-Empty (𝓤 ̇ )
+                       (universes-are-ainjective (ua 𝓤))
                        Non-Empty-retract
+
+\end{code}
+
+Finally, we recall that the type 𝓤∙ of pointed types *is* injective
+and record that 𝓤∙ is equivalent to the Σ-type
+
+  Σ I ꞉ Inh , ⟨ I ⟩,
+
+which is indexed over the "non"-injective type Inh.
+
+Hence this gives an example of an injective Σ-type whose indexing type
+is not necessarily injective.
+
+\begin{code}
+
+private
+ 𝓤∙ : 𝓤 ⁺ ̇
+ 𝓤∙ = Σ X ꞉ 𝓤 ̇ , X
+
+𝓤∙-is-injective : ainjective-type 𝓤∙ 𝓤 𝓤
+𝓤∙-is-injective = ainjectivity-of-type-of-pointed-types
+
+𝓤∙-as-Σ-type-over-Inh : 𝓤∙ ≃ (Σ I ꞉ Inh , ⟨ I ⟩)
+𝓤∙-as-Σ-type-over-Inh = 𝓤∙                    ≃⟨ Σ-cong e ⟩
+                        (Σ X ꞉ 𝓤 ̇ , ∥ X ∥ × X) ≃⟨ ≃-sym Σ-assoc ⟩
+                        (Σ I ꞉ Inh , ⟨ I ⟩)    ■
+ where
+  e : (X : 𝓤 ̇ ) → X ≃ ∥ X ∥ × X
+  e X = qinveq f (g , η , ε)
+   where
+    f : X → ∥ X ∥ × X
+    f x = ∣ x ∣ , x
+    g : ∥ X ∥ × X → X
+    g = pr₂
+    η : g ∘ f ∼ id
+    η x = refl
+    ε : f ∘ g ∼ id
+    ε (s , x) = to-×-＝ (∥∥-is-prop ∣ x ∣ s) refl
+
+example-of-injective-sum-whose-index-type-may-not-be-injective
+ : Σ X ꞉ (𝓤 ⁺) ̇
+ , Σ Y ꞉ (X → 𝓤 ̇ )
+ , ainjective-type (Σ Y) 𝓤 𝓤
+ × (ainjective-type X 𝓤 𝓤 → Propositions-Are-Projective)
+example-of-injective-sum-whose-index-type-may-not-be-injective
+ = Inh , ⟨_⟩ , A-ainj , injectivity-gives-projective-propositions
+ where
+  A = Σ I ꞉ Inh , ⟨ I ⟩
+
+  A-ainj : ainjective-type A 𝓤 𝓤
+  A-ainj = equiv-to-ainjective
+            A
+            𝓤∙
+            𝓤∙-is-injective
+            (≃-sym 𝓤∙-as-Σ-type-over-Inh)
 
 \end{code}

@@ -15,7 +15,6 @@ the type of integers.
 {-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
-open import UF.Base
 
 module Circle.Integers where
 
@@ -45,12 +44,12 @@ pattern neg i = inr (inr i)
   P₊ : ℕ → 𝓤 ̇
   P₊ = P ∘ ℕ-to-ℤ₊
   h : (n : ℕ) → P₊ n
-  h = induction p₀ p₊
+  h = ℕ-induction p₀ p₊
 ℤ-induction {𝓤} P p₀ p₊ p₋ (neg i) = h (succ i)
  where
   P₋ : ℕ → 𝓤 ̇
   P₋ = P ∘ ℕ-to-ℤ₋
   h : (n : ℕ) → P₋ n
-  h = induction p₀ p₋
+  h = ℕ-induction p₀ p₋
 
 \end{code}

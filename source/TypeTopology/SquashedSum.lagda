@@ -1,4 +1,4 @@
-Martin Escardo, 2 May 2014.
+Martin Escardo, 2 May 2014, based on an idea from 2011.
 
 Squashed sum.
 
@@ -11,13 +11,13 @@ See remarks below for an explanation.
 open import MLTT.Spartan
 open import UF.FunExt
 
-module TypeTopology.SquashedSum (fe : FunExt) where -- move this to compact types
+module TypeTopology.SquashedSum (fe : FunExt) where
 
 private
  fe₀ : funext 𝓤₀ 𝓤₀
  fe₀ = fe 𝓤₀ 𝓤₀
 
-open import CoNaturals.GenericConvergentSequence
+open import CoNaturals.Type
 open import InjectiveTypes.Blackboard fe
 open import MLTT.Plus-Properties
 open import MLTT.Two-Properties
@@ -32,7 +32,6 @@ open import UF.DiscreteAndSeparated
 open import UF.Embeddings
 open import UF.Equiv
 open import UF.PairFun
-open import UF.Subsingletons
 open import UF.Subsingletons-Properties
 
 \end{code}

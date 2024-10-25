@@ -1,31 +1,30 @@
-Ayberk Tosun.
+--------------------------------------------------------------------------------
+author:         Ayberk Tosun
+date-started:   2023-10-07
+date-completed: 2023-12-30
+dates-updated:  [2024-03-12]
+--------------------------------------------------------------------------------
 
 Continuation of the development in `InternalModCont` towards uniform continuity.
-
-Started on 2023-10-07.
-Finished on 2023-12-30.
 
 \begin{code}
 
 {-# OPTIONS --safe --without-K --exact-split #-}
 
 open import UF.FunExt
-open import UF.Equiv hiding (⌜_⌝)
 open import UF.Retracts
 
 module EffectfulForcing.Internal.InternalModUniCont (fe : Fun-Ext) where
 
 open import EffectfulForcing.Internal.Correctness
- using (Rnorm; Rnorm-generic; Rnorm-lemma₀; extβ; is-dialogue-for)
+ using (Rnorm; Rnorm-generic; Rnorm-lemma₀; is-dialogue-for)
 open import EffectfulForcing.Internal.External
  using (B⟦_⟧; B⟦_⟧₀; dialogue-tree; eloquence-theorem; ⟪⟫)
 open import EffectfulForcing.Internal.Internal
 open import EffectfulForcing.Internal.InternalModCont fe
  using (maxᵀ; maxᵀ-correct)
-open import EffectfulForcing.Internal.Subst
 open import EffectfulForcing.Internal.SystemT
 open import EffectfulForcing.MFPSAndVariations.Church
-open import EffectfulForcing.MFPSAndVariations.Combinators
 open import EffectfulForcing.MFPSAndVariations.Continuity
  using (is-continuous; _＝⟪_⟫_; C-restriction; Cantor; Baire;
         is-uniformly-continuous; _＝⟦_⟧_; BT; embedding-𝟚-ℕ)
@@ -36,7 +35,6 @@ open import EffectfulForcing.MFPSAndVariations.Dialogue
         restriction-is-eloquent; dialogue-UC)
 open import EffectfulForcing.MFPSAndVariations.SystemT
  using (type; ι; _⇒_;〖_〗)
-open import MLTT.List
 open import MLTT.Spartan hiding (rec; _^_)
 open import Naturals.Order using (max)
 
@@ -251,19 +249,20 @@ main-lemma t =
    † : Rnorm (B⟦ t ⟧₀ generic) (⌜ t ⌝ · ⌜generic⌝)
    † = Rnorm-lemma₀ t generic ⌜generic⌝ Rnorm-generic
 
-   ext : extβ (λ g x → max x (max (g 0) (g 1)))
-   ext f g m n p φ =
-    max m (max (f 0) (f 1))   ＝⟨ १ ⟩
-    max m (max (g 0) (f 1))   ＝⟨ २ ⟩
-    max m (max (g 0) (g 1))   ＝⟨ ३ ⟩
-    max n (max (g 0) (g 1))   ∎
-     where
-      १ = ap (λ - → max m (max - (f 1))) (φ 0)
-      २ = ap (λ - → max m (max (g 0) -)) (φ 1)
-      ३ = ap (λ - → max - (max (g 0) (g 1))) p
+   γ : (f : ℕ → ℕ) (g : ℕ → ℕ)
+     → ({m n : ℕ} → m ＝ n → f m ＝ g n)
+     → {m n : ℕ} → m ＝ n → max m (max (f 0) (f 1)) ＝ max n (max (g 0) (g 1))
+   γ f g φ {m} {n} p = max m (max (f 0) (f 1)) ＝⟨ Ⅰ ⟩
+                         max n (max (f 0) (f 1)) ＝⟨ Ⅱ ⟩
+                         max n (max (g 0) (f 1)) ＝⟨ Ⅲ ⟩
+                         max n (max (g 0) (g 1)) ∎
+                          where
+                           Ⅰ = ap (λ - → max - (max (f 0) (f 1))) p
+                           Ⅱ = ap (λ - → max n (max - (f 1))) (φ refl)
+                           Ⅲ = ap (λ - → max n (max (g 0) -)) (φ refl)
 
    Ⅰ = max-boolean-questionᵀ-agreement (⌜dialogue-tree⌝ t)
-   Ⅱ = † ι (λ _ → 0) (λ g x → max x (max (g 0) (g 1))) (λ _ → refl) ext
+   Ⅱ = † (λ _ → refl) (λ {f} {g} → γ f g)
    Ⅲ = max-boolean-question⋆-agreement (dialogue-tree t) ⁻¹
 
 \end{code}

@@ -7,12 +7,9 @@ Martin Escardo, Vincent Rahli, Bruno da Rocha Paiva, Ayberk Tosun 20 May 2023
 module EffectfulForcing.Internal.FurtherThoughts where
 
 open import MLTT.Spartan hiding (rec ; _^_) renaming (⋆ to 〈〉)
-open import EffectfulForcing.MFPSAndVariations.Combinators
 open import EffectfulForcing.MFPSAndVariations.Continuity
 open import EffectfulForcing.MFPSAndVariations.Dialogue
 open import EffectfulForcing.MFPSAndVariations.SystemT using (type ; ι ; _⇒_ ; 〖_〗)
-open import EffectfulForcing.MFPSAndVariations.LambdaCalculusVersionOfMFPS
-                              using (B〖_〗 ; Kleisli-extension ; zero' ; succ' ; rec')
 open import EffectfulForcing.MFPSAndVariations.Church
                               hiding (B⋆【_】 ; ⟪⟫⋆ ; _‚‚⋆_ ; B⋆⟦_⟧ ; dialogue-tree⋆)
 open import EffectfulForcing.Internal.Internal hiding (B⋆⟦_⟧ ; dialogue-tree⋆)
@@ -20,7 +17,6 @@ open import EffectfulForcing.Internal.External
 open import EffectfulForcing.Internal.SystemT
 open import EffectfulForcing.Internal.Subst
 open import EffectfulForcing.Internal.Correctness
-open import UF.Base using (transport₂ ; transport₃ ; ap₂ ; ap₃)
 
 \end{code}
 
@@ -115,17 +111,17 @@ R⋆-main-lemma-ι : (t : T₀ ι)
                  (α : Baire)
                → R⋆ α ⟦ t ⟧₀ ⌜ t ⌝
 R⋆-main-lemma-ι t α =
- ⟦ t ⟧₀
-  ＝⟨ main-lemma t α ⟨⟩ ⟪⟫ (λ ()) ⟩
- dialogue B⟦ t ⟧₀ α
-  ＝⟨ dialogues-agreement B⟦ t ⟧₀ α ⟩
- dialogue⋆ (church-encode B⟦ t ⟧₀) α
-  ＝⟨ ≡-sym (Rnorm-lemmaι t α _ _ e) ⟩
- dialogue⋆ ⟦ ⌜ t ⌝ ⟧₀ α
-  ∎
+ ⟦ t ⟧₀                              ＝⟨ Ⅰ ⟩
+ dialogue B⟦ t ⟧₀ α                  ＝⟨ Ⅱ ⟩
+ dialogue⋆ (church-encode B⟦ t ⟧₀) α ＝⟨ Ⅲ ⟩
+ dialogue⋆ ⟦ ⌜ t ⌝ ⟧₀ α ∎
  where
   e : (a b : ℕ) → a ＝ b → α a ＝ α b
   e a .a refl = refl
+
+  Ⅰ = main-lemma t α ⟨⟩ ⟪⟫ (λ ())
+  Ⅱ = dialogues-agreement B⟦ t ⟧₀ α
+  Ⅲ = ≡-symm (Rnorm-lemmaι t (e _ _))
 
 {-
 

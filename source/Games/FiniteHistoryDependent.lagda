@@ -1,8 +1,12 @@
 Martin Escardo, Paulo Oliva, 2-27 July 2021
 
-A paper based on this file is available at
-https://doi.org/10.48550/arXiv.2212.07735
-To appear in TCS.
+The following paper is based on this file:
+
+  [0] Martin Escardo and Paulo Oliva. Higher-order games with
+      dependent types.  Theoretical Computer Science, Volume 974, 29
+      September 2023, 114111.
+      https://doi.org/10.48550/arXiv.2212.07735
+      https://doi.org/10.1016/j.tcs.2023.114111
 
 We study finite, history dependent games of perfect information using
 selection functions and dependent-type trees.
@@ -135,7 +139,7 @@ Definition 4 of [1]:
 
 \begin{code}
 
-Strategy : 𝑻 -> Type
+Strategy : 𝑻 → Type
 Strategy = structure id
 
 remark-Strategy : {X : Type} {Xf : X → 𝑻}

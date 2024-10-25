@@ -16,7 +16,7 @@ open import Ordinals.Underlying
 open import UF.DiscreteAndSeparated hiding (𝟚-is-discrete)
 open import UF.Equiv
 open import UF.EquivalenceExamples
-open import UF.ExcludedMiddle
+open import UF.ClassicalLogic
 open import UF.FunExt
 open import UF.PropTrunc
 open import UF.Size
@@ -237,8 +237,6 @@ module _
   fe = Univalence-gives-FunExt ua
 
  open import NotionsOfDecidability.Decidable
- open import NotionsOfDecidability.DecidableClassifier
- open import NotionsOfDecidability.Complemented
 
  open import Ordinals.Arithmetic fe
  open import Ordinals.OrdinalOfOrdinals ua

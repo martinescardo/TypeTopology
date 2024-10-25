@@ -21,8 +21,6 @@ open import ContinuityAxiom.ExitingTruncations
 open import ContinuityAxiom.Preliminaries
 open import MLTT.Spartan
 open import MLTT.Two-Properties
-open import Naturals.Properties
-open import NotionsOfDecidability.Decidable
 open import UF.DiscreteAndSeparated
 open import UF.FunExt
 open import UF.Subsingletons
@@ -32,7 +30,7 @@ open import UF.Subsingletons
 If function extensionality is available, then for any f : ₂ℕ → ℕ,
 the type
 
-  UC(f) = Σ \(n : ℕ) → ∀(α β : ₂ℕ) → α ＝⟦ n ] β → f α ＝ f β
+  UC(f) = Σ n : ℕ , ∀(α β : ₂ℕ) → α ＝⟦ n ] β → f α ＝ f β
 
 has a propositional truncation, using the main lemma, because the
 type family A(f) : ℕ → Set, defined by

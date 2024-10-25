@@ -4,8 +4,6 @@ Ayberk Tosun, 11 September 2023
 
 {-# OPTIONS --safe --without-K #-}
 
-open import UF.Base
-open import UF.Subsingletons
 open import UF.PropTrunc
 open import UF.FunExt
 open import MLTT.Spartan
@@ -15,10 +13,9 @@ module Locales.CharacterisationOfContinuity (pt : propositional-truncations-exis
                                             (fe : Fun-Ext)                          where
 
 open import Locales.Frame               pt fe
-open import Locales.WayBelowRelation.Definition pt fe
 open import UF.Logic
 open import Slice.Family
-open import Locales.Compactness pt fe
+open import Locales.Compactness.Definition pt fe
 open import Locales.Spectrality.SpectralLocale pt fe
 open import Locales.Spectrality.Properties     pt fe
 

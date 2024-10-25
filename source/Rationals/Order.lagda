@@ -15,7 +15,6 @@ open import Naturals.Addition renaming (_+_ to _ℕ+_)
 open import MLTT.Plus-Properties
 open import UF.Base hiding (_≈_)
 open import UF.Subsingletons
-open import Integers.Abs
 open import Integers.Addition renaming (_+_ to _ℤ+_) hiding (_-_)
 open import Integers.Type
 open import Integers.Multiplication renaming (_*_ to _ℤ*_)

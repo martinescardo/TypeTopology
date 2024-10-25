@@ -174,11 +174,11 @@ The examples are obtained by specialising to a specific property green:
 
  * A type is green exactly if it is inhabited.
    Then a map is green exactly if it is a surjection.
-   (Σ X ꞉ 𝓤 ̇ , (Σ f ꞉ X → Y , is-surjection f )) ≃ (Y → (Σ X ꞉ 𝓤 ̇  , ∥ X ∥))
+   (Σ X ꞉ 𝓤 ̇ , (Σ f ꞉ X → Y , is-surjection f )) ≃ (Y → (Σ X ꞉ 𝓤 ̇ , ∥ X ∥))
 
  * A type is green exactly if it is pointed.
    Then a map is green exactly if it is a retraction.
-   (Σ X ꞉ 𝓤 ̇ , Y ◁ X) ≃ (Y → (Σ X ꞉ 𝓤 ̇  , X))
+   (Σ X ꞉ 𝓤 ̇ , Y ◁ X) ≃ (Y → (Σ X ꞉ 𝓤 ̇ , X))
 
 \begin{code}
 
@@ -500,7 +500,7 @@ module pointed-classifier
  open general-classifier (univalence-gives-funext ua) fe' ua Y (λ (X : 𝓤 ̇ ) → X)
 
  pointed-classification-equivalence :
-  (Σ X ꞉ 𝓤 ̇ , Y ◁ X) ≃ (Y → (Σ X ꞉ 𝓤 ̇  , X))
+  (Σ X ꞉ 𝓤 ̇ , Y ◁ X) ≃ (Y → (Σ X ꞉ 𝓤 ̇ , X))
  pointed-classification-equivalence =
   (Σ X ꞉ 𝓤 ̇ , Y ◁ X)                                  ≃⟨ i ⟩
   (Σ X ꞉ 𝓤 ̇ , (Σ f ꞉ (X → Y) , ((y : Y) → fiber f y))) ≃⟨ ii ⟩

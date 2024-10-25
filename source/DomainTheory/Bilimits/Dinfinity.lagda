@@ -221,6 +221,7 @@ open SequentialDiagram
       ε-section-of-π
       ε-is-continuous
       π-is-continuous
+     public
 
 π-exp-to-succ : (n : ℕ) → ⟨ 𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞ ⟩ → ⟨ 𝓓 (succ n) ⟩
 π-exp-to-succ n f = DCPO-∘₃ (𝓓 n) 𝓓∞ 𝓓∞ (𝓓 n) (ε∞' n) f (π∞' n)
@@ -941,10 +942,9 @@ open import DomainTheory.Lifting.LiftingSetAlgebraic pt pe fe 𝓤₀
   γ zero     = 𝓛-has-specified-small-compact-basis (props-are-sets 𝟙-is-prop)
   γ (succ n) = exponential-has-specified-small-compact-basis
                 (𝓓 n) (𝓓⊥ n)
-                (locally-small-if-small-compact-basis
-                  (𝓓 n) β β-is-compact-small-basis)
+                (𝓓s-are-sup-complete n)
                 B B β β β-is-compact-small-basis β-is-compact-small-basis
-                (𝓓s-are-sup-complete n) pe
+                pe
    where
     IH : has-specified-small-compact-basis (𝓓 n)
     IH = γ n

@@ -39,7 +39,7 @@ open import UF.Base hiding (_≈_)
 open import UF.DiscreteAndSeparated
 open import UF.Equiv
 open import UF.EquivalenceExamples
-open import UF.ExcludedMiddle
+open import UF.ClassicalLogic
 open import UF.FunExt
 open import UF.PropTrunc
 open import UF.Sets
@@ -310,7 +310,6 @@ module swan'
 
  open import Quotient.Type
  open import Quotient.Large pt fe pe
- open import UF.ImageAndSurjection pt
 
  open general-set-quotients-exist large-set-quotients
 
@@ -773,7 +772,6 @@ module _
         (pt : propositional-truncations-exist)
        where
 
- open import UF.Retracts
  open import UF.Choice
 
  open Univalent-Choice (λ _ _ → fe) pt

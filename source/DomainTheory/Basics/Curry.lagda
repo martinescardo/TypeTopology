@@ -1,5 +1,7 @@
 Brendan Hart 2019-2020
 
+Addition by Tom de Jong in July 2024.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}
@@ -20,7 +22,6 @@ open import DomainTheory.Basics.Dcpo pt fe 𝓥
 open import DomainTheory.Basics.Exponential pt fe 𝓥
 open import DomainTheory.Basics.Miscelanea pt fe 𝓥
 open import DomainTheory.Basics.Pointed pt fe 𝓥
-open import DomainTheory.Basics.FunctionComposition pt fe 𝓥
 open import DomainTheory.Basics.Products pt fe
 open import DomainTheory.Basics.ProductsContinuity pt fe 𝓥
 open import UF.Subsingletons
@@ -210,6 +211,47 @@ module _ (𝓓 : DCPO {𝓤} {𝓤'})
                (image-is-directed 𝓓 𝓔 (monotone-if-continuous 𝓓 𝓔 g) δ)
                y
                p
+
+\end{code}
+
+Added 3 July 2024 by Tom de Jong.
+
+We introduce two abbreviations for readability.
+
+\begin{code}
+
+ private
+  𝓔ᴰ = 𝓓 ⟹ᵈᶜᵖᵒ 𝓔
+  ev = underlying-function (𝓔ᴰ ×ᵈᶜᵖᵒ 𝓓) 𝓔 eval
+
+ ⟹ᵈᶜᵖᵒ-is-exponential : (𝓓' : DCPO {𝓦} {𝓦'})
+                          (f : ⟨ 𝓓' ×ᵈᶜᵖᵒ 𝓓 ⟩ → ⟨ 𝓔 ⟩)
+                        → is-continuous (𝓓' ×ᵈᶜᵖᵒ 𝓓) 𝓔 f
+                        → ∃! f̅ ꞉ (⟨ 𝓓' ⟩ → ⟨ 𝓔ᴰ ⟩) ,
+                                 is-continuous 𝓓' 𝓔ᴰ f̅
+                               × ev ∘ (λ (d' , d) → f̅ d' , d) ∼ f
+ ⟹ᵈᶜᵖᵒ-is-exponential 𝓓' f cf =
+  (f̅ , f̅-is-continuous , ∼-refl) , f̅-is-unique
+   where
+    C : DCPO[ 𝓓' , 𝓔ᴰ ]
+    C = curryᵈᶜᵖᵒ 𝓓' 𝓓 𝓔 (f , cf)
+    f̅ = pr₁ C
+    f̅-is-continuous : is-continuous 𝓓' 𝓔ᴰ f̅
+    f̅-is-continuous = pr₂ C
+    f̅-is-unique : is-central _ (f̅ , f̅-is-continuous , ∼-refl)
+    f̅-is-unique (g , g-cont , g-eq) =
+     to-subtype-＝ (λ h → ×-is-prop
+                          (being-continuous-is-prop 𝓓' 𝓔ᴰ h)
+                          (Π-is-prop fe (λ _ → sethood 𝓔)))
+                   (dfunext fe
+                            (λ d' → to-continuous-function-＝ 𝓓 𝓔
+                                     (λ d → g-eq (d' , d)) ⁻¹))
+
+\end{code}
+
+End of addition
+
+\begin{code}
 
 module _ (𝓓 : DCPO⊥ {𝓤} {𝓤'})
          (𝓔 : DCPO⊥ {𝓣} {𝓣'})

@@ -25,7 +25,6 @@ J : {X : 𝓤 ̇ } (A : (x y : X) → x ＝ y → 𝓥 ̇ )
   → ((x : X) → A x x refl) → {x y : X} (r : x ＝ y) → A x y r
 J A f {x} {y} = Jbased x (A x) (f x) y
 
-
 private
 
  transport' : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) {x y : X}
@@ -73,6 +72,11 @@ module _ {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } where
 
  ∼-ap : {E : 𝓦 ̇ } (F : E → Π A) {e e' : E} → e ＝ e' → F e ∼ F e'
  ∼-ap F p x = ap (λ - → F - x) p
+
+∼-ap-∘ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+         {f g : X → Y} (h : Y → Z)
+       → f ∼ g → h ∘ f ∼ h ∘ g
+∼-ap-∘ h p x = ap h (p x)
 
 \end{code}
 

@@ -62,7 +62,7 @@ homotopy-precomp-by-embedding-is-equiv fe0 fe1 fe2 fe3 f g i precomp-i-is-emb =
     aux : (h : f ∼ g) → ap (_∘ i) (inverse _ (fe0 f g) h) ＝ dfunext fe1 (h ∘ i)
     aux h =
      ap (_∘ i) (inverse (happly' f g) (fe0 f g) h)
-      ＝⟨ ap (λ - → ap (_∘ i) (- h)) (inverse-happly-is-dfunext fe0 fe3 f g) ⟩
+      ＝⟨ ap (λ - → ap (_∘ i) (- h)) (inverse-of-happly-is-dfunext fe0 fe3 f g) ⟩
      ap (_∘ i) (dfunext fe0 h)
       ＝⟨ ap-precomp-funext _ _ i h fe0 fe1 ⟩
      dfunext fe1 (h ∘ i) ∎

@@ -79,6 +79,9 @@ module _ {𝓤 𝓥} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } where
  equivs-are-dense : (f : X → Y) → is-equiv f → is-dense f
  equivs-are-dense f e = retraction-is-dense f (equivs-have-sections f e)
 
+ equivs-are-dense' : (f : X ≃ Y) → is-dense ⌜ f ⌝
+ equivs-are-dense' (f , e) = equivs-are-dense f e
+
  equiv-dense-embedding : X ≃ Y → X ↪ᵈ Y
  equiv-dense-embedding e = ⌜ e ⌝ ,
                            equivs-are-embeddings ⌜ e ⌝ (⌜⌝-is-equiv e),

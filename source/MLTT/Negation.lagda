@@ -6,7 +6,6 @@ Negation (and emptiness).
 
 module MLTT.Negation where
 
-open import MLTT.Universes
 open import MLTT.Empty
 open import MLTT.Id
 open import MLTT.Pi
@@ -39,7 +38,8 @@ has-two-distinct-points : 𝓤 ̇ → 𝓤 ̇
 has-two-distinct-points X = Σ (x , y) ꞉ X × X , (x ≠ y)
 
 has-three-distinct-points : 𝓤 ̇ → 𝓤 ̇
-has-three-distinct-points X = Σ (x , y , z) ꞉ X × X × X , (x ≠ y) × (y ≠ z) × (z ≠ x)
+has-three-distinct-points X = Σ (x , y , z) ꞉ X × X × X
+                            , (x ≠ y) × (y ≠ z) × (z ≠ x)
 
 ≠-sym : {X : 𝓤 ̇ } → {x y : X} → x ≠ y → y ≠ x
 ≠-sym u r = u (r ⁻¹)
@@ -74,6 +74,9 @@ double-contrapositive = contrapositive ∘ contrapositive
 ¬¬-intro : {A : 𝓤 ̇ } → A → ¬¬ A
 ¬¬-intro x u = u x
 
+≠-is-irrefl : {X : 𝓤 ̇ } (x : X) → ¬ (x ≠ x)
+≠-is-irrefl x = ¬¬-intro refl
+
 three-negations-imply-one : {A : 𝓤 ̇ } → ¬¬¬ A → ¬ A
 three-negations-imply-one = contrapositive ¬¬-intro
 
@@ -83,7 +86,9 @@ dne' f h ϕ = h (λ g → ϕ (λ a → g (f a)))
 dne : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → (A → ¬ B) → ¬¬ A → ¬ B
 dne f ϕ b = ϕ (λ a → f a b)
 
-double-negation-unshift : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } → ¬¬ ((x : X) → A x) → (x : X) → ¬¬ (A x)
+double-negation-unshift : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+                        → ¬¬ ((x : X) → A x)
+                        → (x : X) → ¬¬ (A x)
 double-negation-unshift f x g = f (λ h → g (h x))
 
 dnu : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → ¬¬ (A × B) → ¬¬ A × ¬¬ B
@@ -140,11 +145,25 @@ Double-negation-of-implication→ : {A : 𝓤 ̇ } {B : 𝓥 ̇ }
 Double-negation-of-implication→ R k f g = f ((λ h → g (λ a → k (h a))) ,
                                              (λ b → g (λ a → b)))
 
-double-negation-of-implication← : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → ¬¬ (A → B) → ¬ (¬¬ A × ¬ B)
+double-negation-of-implication← : {A : 𝓤 ̇ } {B : 𝓥 ̇ }
+                                → ¬¬ (A → B)
+                                → ¬ (¬¬ A × ¬ B)
 double-negation-of-implication← = Double-negation-of-implication←
 
-double-negation-of-implication→ : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → ¬ (¬¬ A × ¬ B) → ¬¬ (A → B)
-double-negation-of-implication→ f g = Double-negation-of-implication→ (𝟘 {𝓤₀}) 𝟘-elim f g
+double-negation-of-implication→ : {A : 𝓤 ̇ } {B : 𝓥 ̇ }
+                                → ¬ (¬¬ A × ¬ B)
+                                → ¬¬ (A → B)
+double-negation-of-implication→ f g =
+ Double-negation-of-implication→ (𝟘 {𝓤₀}) 𝟘-elim f g
+
+double-negation-elimination-inside-double-negation : (X : 𝓤 ̇ ) → ¬¬ (¬¬ X → X)
+double-negation-elimination-inside-double-negation X = II
+ where
+  I : ¬ (¬¬ (¬¬ X) × ¬ X)
+  I (h₁ , h₂) = h₁ (¬¬-intro h₂)
+
+  II : ¬¬ (¬¬ X → X)
+  II = double-negation-of-implication→ I
 
 not-equivalent-to-own-negation' : {A : 𝓤 ̇ } {R : 𝓥 ̇ } → (A ↔ (A → R)) → R
 not-equivalent-to-own-negation' (f , g) = f (g (λ a → f a a)) (g (λ a → f a a))

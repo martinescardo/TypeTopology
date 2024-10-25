@@ -1,4 +1,4 @@
-.Tom de Jong, 4 & 5 April 2022.
+Tom de Jong, 4 & 5 April 2022.
 
 Assuming set quotients, we derive propositional truncations in the
 presence of function extensionality.
@@ -30,7 +30,7 @@ module _ (sq : set-quotients-exist) where
    ≋ : EqRel X
    ≋ = _≈_ , (λ x y → 𝟙-is-prop) , (λ x → ⋆) , (λ x y _ → ⋆) , (λ x y z _ _ → ⋆)
 
-  ∥_∥ : 𝓤 ̇  → 𝓤 ̇
+  ∥_∥ : 𝓤 ̇ → 𝓤 ̇
   ∥_∥ X = X / ≋
 
   ∣_∣ : {X : 𝓤 ̇ } → X → ∥ X ∥

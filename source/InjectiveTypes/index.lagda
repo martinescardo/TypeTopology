@@ -71,6 +71,8 @@ import Iterative.Ordinals
 import InjectiveTypes.MathematicalStructures
 import InjectiveTypes.Sigma
 import InjectiveTypes.MathematicalStructuresMoreGeneral
+import InjectiveTypes.PointedDcpos
+import InjectiveTypes.Subtypes
 
 \end{code}
 
@@ -81,6 +83,6 @@ distinct points can be injective without Ω¬¬-resizing.
 
 \begin{code}
 
-open import InjectiveTypes.Resizing
+import InjectiveTypes.Resizing
 
 \end{code}

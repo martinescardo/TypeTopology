@@ -20,6 +20,7 @@ open import Fin.ArithmeticViaEquivalence
 open import Fin.Kuratowski pt
 open import Fin.Type
 open import MLTT.Spartan
+open import Notation.UnderlyingType
 open import OrderedTypes.JoinSemiLattices
 open import UF.Base
 open import UF.Equiv
@@ -440,13 +441,13 @@ module _
  𝓚-is-equivalent-to-𝓚' : (X : 𝓤 ̇ ) →  𝓚 X ≃ 𝓚' X
  𝓚-is-equivalent-to-𝓚' X = γ
   where
-   φ : Subtypes X ≃ 𝓟 X
+   φ : Subtype X ≃ 𝓟 X
    φ = Ω-is-subtype-classifier ua fe X
    κ : 𝓤 ̇ → 𝓤 ̇
    κ = is-Kuratowski-finite
    γ = 𝓚 X                                                ≃⟨ ≃-refl _ ⟩
        (Σ A ꞉ 𝓟 X , κ (𝕋 A))                              ≃⟨ I        ⟩
-       (Σ S ꞉ Subtypes X , κ (𝕋 (⌜ φ ⌝ S)))               ≃⟨ Σ-assoc  ⟩
+       (Σ S ꞉ Subtype X , κ (𝕋 (⌜ φ ⌝ S)))                ≃⟨ Σ-assoc  ⟩
        (Σ A ꞉ 𝓤 ̇ , Σ e ꞉ (A ↪ X) , κ (𝕋 (⌜ φ ⌝ (A , e)))) ≃⟨ II       ⟩
        (Σ A ꞉ 𝓤 ̇ , Σ e ꞉ (A ↪ X) , κ A)                   ≃⟨ ≃-refl _ ⟩
        (Σ A ꞉ 𝓤 ̇ , (A ↪ X) × κ A)                         ≃⟨ ≃-refl _ ⟩

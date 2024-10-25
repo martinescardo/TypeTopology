@@ -7,8 +7,6 @@ Based on `ayberkt/formal-topology-in-UF`.
 {-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
-open import UF.Base
-open import UF.PropTrunc
 open import UF.FunExt
 open import UF.PropTrunc
 
@@ -17,14 +15,17 @@ module Locales.Nucleus
         (fe : Fun-Ext)
        where
 
-open import UF.Logic
-open import UF.SubtypeClassifier
-open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
-
+open import Locales.ContinuousMap.FrameHomomorphism-Definition pt fe
+open import Locales.ContinuousMap.FrameHomomorphism-Properties pt fe
 open import Locales.Frame pt fe
+open import UF.Logic
+open import UF.Subsingletons
+open import UF.SubtypeClassifier
 
 open AllCombinators pt fe
+open FrameHomomorphismProperties
+open FrameHomomorphisms
+open Locale
 
 \end{code}
 
@@ -198,6 +199,9 @@ prenucleus-property₂ L (j , ζj , _) (k , _) x = ζj (k x)
 ∨-is-nucleus L x = ∨-is-inflationary L x
                  , ∨-is-idempotent L x
                  , ∨-preserves-binary-meets L x
+
+closed-nucleus : (X : Locale 𝓤 𝓥 𝓦) (U : ⟨ 𝒪 X ⟩) → Nucleus (𝒪 X)
+closed-nucleus X U = (λ - → U ∨[ 𝒪 X ] -) , ∨-is-nucleus (𝒪 X) U
 
 \end{code}
 

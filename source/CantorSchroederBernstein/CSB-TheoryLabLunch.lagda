@@ -164,15 +164,14 @@ The Pradic-Brown argument rendered in HoTT/UF
 
 module CantorSchroederBernstein.CSB-TheoryLabLunch where
 
-open import CoNaturals.GenericConvergentSequence
+open import CoNaturals.Type
 open import MLTT.Plus-Properties
 open import MLTT.Spartan
-open import NotionsOfDecidability.Decidable
 open import TypeTopology.CompactTypes
 open import TypeTopology.GenericConvergentSequenceCompactness
 open import UF.Embeddings
 open import UF.Equiv
-open import UF.ExcludedMiddle
+open import UF.ClassicalLogic
 open import UF.FunExt
 open import UF.Retracts
 open import UF.Subsingletons

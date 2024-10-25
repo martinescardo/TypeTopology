@@ -27,38 +27,40 @@ module Locales.UniversalPropertyOfPatch
         (sr : Set-Replacement pt)
        where
 
-open import UF.Logic
-open import UF.SubtypeClassifier
-open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
-
-open AllCombinators pt fe
-open import UF.ImageAndSurjection
-
 open import Locales.AdjointFunctorTheoremForFrames pt fe
--- open import Locales.CompactRegular pt fe
+open import Locales.Clopen                     pt fe sr
+open import Locales.Compactness.Definition                pt fe
+open import Locales.Complements                pt fe
+open import Locales.ContinuousMap.Definition pt fe
+open import Locales.ContinuousMap.FrameHomomorphism-Definition pt fe
+open import Locales.ContinuousMap.FrameHomomorphism-Properties pt fe
 open import Locales.Frame                      pt fe
 open import Locales.GaloisConnection           pt fe
+open import Locales.HeytingComplementation     pt fe sr
 open import Locales.HeytingImplication         pt fe
 open import Locales.Nucleus                    pt fe
-open import Locales.Spectrality.SpectralLocale pt fe
-open import Locales.Spectrality.SpectralMap    pt fe
-open import Locales.PerfectMaps                pt fe
-open import Locales.Spectrality.Properties     pt fe
-open import Locales.Compactness                pt fe
-open import Locales.Complements                pt fe
-
-open import Locales.SmallBasis                 pt fe sr
-open import Locales.ZeroDimensionality         pt fe sr
-open import Locales.Stone                      pt fe sr
-open import Locales.StoneImpliesSpectral       pt fe sr
-open import Locales.ScottContinuity            pt fe sr
-open import Locales.Clopen                     pt fe sr
-open import Locales.HeytingComplementation     pt fe sr
 open import Locales.PatchLocale                pt fe sr
 open import Locales.PatchProperties            pt fe sr
+open import Locales.PerfectMaps                pt fe
+open import Locales.ScottContinuity            pt fe sr
+open import Locales.SmallBasis                 pt fe sr
+open import Locales.Spectrality.Properties     pt fe
+open import Locales.Spectrality.SpectralLocale pt fe
+open import Locales.Spectrality.SpectralMap    pt fe
+open import Locales.Stone                      pt fe sr
+open import Locales.StoneImpliesSpectral       pt fe sr
+open import Locales.ZeroDimensionality         pt fe sr
+open import UF.ImageAndSurjection
+open import UF.Logic
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
+open import UF.SubtypeClassifier
 
+open ContinuousMaps
+open FrameHomomorphismProperties
+open FrameHomomorphisms hiding (fun; fun-syntax)
 open PropositionalTruncation pt
+open AllCombinators pt fe
 
 \end{code}
 
@@ -375,11 +377,7 @@ equivalence of the two is quite important and is used in the proofs below.
             (covers (𝒪 A) (Bₐ , βₐ) β-is-basis-for-A (j (βₐ n)))
        Ⅱ = ap
             (λ - → - ∧[ 𝒪 X ] ¬𝒻⋆ (βₐ n))
-            (frame-homomorphisms-preserve-all-joins
-              (𝒪 A)
-              (𝒪 X)
-              𝒻
-              ⁅ βₐ i ∣ i ε 𝒥 ⁆)
+            (frame-homomorphisms-preserve-all-joins′ (𝒪 A) (𝒪 X) 𝒻 ⁅ βₐ i ∣ i ε 𝒥 ⁆)
        Ⅲ = distributivity′-right (𝒪 X) (¬𝒻⋆ (βₐ n)) ⁅ 𝒻 ⋆∙ (βₐ i) ∣ i ε 𝒥 ⁆
        Ⅳ = ⋁[ 𝒪 X ]-least ⁅ 𝒻 ⋆∙ (βₐ i) ∧ₓ ¬𝒻⋆ (βₐ n) ∣ i ε 𝒥 ⁆ ((⋁[ 𝒪 X ] S) , ♠)
 
@@ -927,7 +925,7 @@ As mentioned previously, `closed-image U` is a perfect nucleus for any `U :
          (𝒪 A)
          (𝒪 X)
          (𝒻 ⋆∙_)
-         (frame-homomorphisms-preserve-all-joins (𝒪 A) (𝒪 X) 𝒻)
+         (frame-homomorphisms-preserve-all-joins′ (𝒪 A) (𝒪 X) 𝒻)
 
 \end{code}
 
@@ -1240,7 +1238,7 @@ prove that `𝒻⁻` makes the diagram commute.
      f⁻⁺ ‘ U ’                         ■
       where
        Ⅰ = ap (𝒻 ⋆∙_) ℒ-covers-U
-       Ⅱ = frame-homomorphisms-preserve-all-joins (𝒪 A) (𝒪 X) 𝒻 ⁅ βₐ l ∣ l ε ℒ ⁆
+       Ⅱ = frame-homomorphisms-preserve-all-joins′ (𝒪 A) (𝒪 X) 𝒻 ⁅ βₐ l ∣ l ε ℒ ⁆
 
    ‡ : (f⁻⁺ ‘ U ’ ≤[ poset-of (𝒪 X) ] 𝒻 ⋆∙ U) holds
    ‡ = f⁻⁺  ‘ U ’  ＝⟨ f⁻⁺₂-equiv-f⁻⁺₁ ‘ U ’ ⟩ₚ
@@ -1360,7 +1358,7 @@ proof.
            𝒻⁻₀
            (𝔠 k)
            (𝔬 l) ⁻¹ } )
-    Ⅸ = frame-homomorphisms-preserve-all-joins
+    Ⅸ = frame-homomorphisms-preserve-all-joins′
          (𝒪 Patchₛ-A)
          (𝒪 X)
          𝒻⁻₀

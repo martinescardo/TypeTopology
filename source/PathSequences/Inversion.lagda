@@ -15,7 +15,6 @@ Inversion of path sequences.
 
 open import MLTT.Spartan
 open import UF.Base
-open import UF.Equiv
 open import PathSequences.Type
 open import PathSequences.Concat
 open import PathSequences.Reasoning

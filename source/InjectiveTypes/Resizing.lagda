@@ -69,7 +69,6 @@ module InjectiveTypes.Resizing
 open PropositionalTruncation pt
 
 open import MLTT.Spartan
-open import UF.DiscreteAndSeparated
 open import UF.FunExt
 open import UF.NotNotStablePropositions
 open import UF.Retracts
@@ -145,7 +144,7 @@ small-ainjective-type-with-two-distinct-points-gives-Ω¬¬-resizing
   f ₁ = x₁
 
   I : Σ s ꞉ (Ω¬¬ 𝓤 → D) , s ∘ 𝟚-to-Ω¬¬ ∼ f
-  I = ainjectivity-over-small-maps {𝓤} {𝓤₀} {𝓤 ⁺} {𝓤} {𝓥} {𝓦}
+  I = ainjectivity-over-small-maps {𝓤₀} {𝓤 ⁺} {𝓤} {𝓤} {𝓥} {𝓦}
        D
        D-ainj
        𝟚-to-Ω¬¬

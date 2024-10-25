@@ -1,5 +1,7 @@
 Martin Escardo, 2015, formalized December 2017.
 
+My MGS'2019 have a better development of this.
+
 Id : X → (X → U) is an embedding assuming functional extensionality,
 and either univalence or K, in fact the Yoneda Embedding.
 

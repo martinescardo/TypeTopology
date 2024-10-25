@@ -23,14 +23,13 @@ module DomainTheory.Lifting.LiftingSetAlgebraic
 open import UF.Equiv
 open import UF.ImageAndSurjection pt
 open import UF.Sets
-open import UF.Subsingletons-FunExt
 
 open PropositionalTruncation pt
 
-open import Lifting.Lifting 𝓤 hiding (⊥)
+open import Lifting.Construction 𝓤 hiding (⊥)
+open import Lifting.EmbeddingDirectly 𝓤 hiding (κ)
 open import Lifting.Miscelanea 𝓤
 open import Lifting.Miscelanea-PropExt-FunExt 𝓤 pe fe
-open import Lifting.Monad 𝓤
 
 open import DomainTheory.Basics.Dcpo pt fe 𝓤
 open import DomainTheory.Basics.Miscelanea pt fe 𝓤
@@ -42,7 +41,6 @@ open import DomainTheory.BasesAndContinuity.Continuity pt fe 𝓤
 
 open import DomainTheory.Lifting.LiftingSet pt fe 𝓤 pe
 
-open import OrderedTypes.Poset fe
 
 module _
         {X : 𝓤 ̇ }
@@ -205,3 +203,53 @@ A small compact basis for 𝓛 X will be given by [⊥ , η] : 𝟙 + X → 𝓛
 TODO: Show that freely adding a least element to a dcpo gives an algebraic dcpo
       with a small compact basis if the original dcpo had a small compact basis.
       (Do so in another file, e.g. LiftingDcpoAlgebraic.lagda).
+
+Added 5 July 2024 for clarity.
+
+\begin{code}
+
+ compact-iff-⊥-or-η : (l : 𝓛 X)
+                    → is-compact (𝓛-DCPO X-is-set) l
+                    ↔ ((l ＝ ⊥ (𝓛-DCPO⊥ X-is-set)) + (Σ x ꞉ X , η x ＝ l))
+ compact-iff-⊥-or-η l = I , II
+  where
+   I : is-compact (𝓛-DCPO X-is-set) l
+     → (l ＝ ⊥ (𝓛-DCPO⊥ X-is-set)) + (Σ x ꞉ X , η x ＝ l)
+   I c = ∥∥-rec (+-is-prop (sethood (𝓛-DCPO X-is-set))
+                           (η-is-embedding pe fe fe fe l)
+                           I₁)
+                  I₂
+                  (in-image-of-κ-if-compact l c)
+    where
+     I₁ : l ＝ ⊥ (𝓛-DCPO⊥ X-is-set) → ¬ (Σ x ꞉ X , η x ＝ l)
+     I₁ refl (x , e) = ⊥-is-not-η x (e ⁻¹)
+     I₂ : (Σ b ꞉ 𝟙 + X , κ b ＝ l)
+        → (l ＝ ⊥ (𝓛-DCPO⊥ X-is-set)) + (Σ x ꞉ X , η x ＝ l)
+     I₂ (inl ⋆ , refl) = inl refl
+     I₂ (inr x , refl) = inr (x , refl)
+   II : ((l ＝ ⊥ (𝓛-DCPO⊥ X-is-set)) + (Σ x ꞉ X , η x ＝ l))
+      → is-compact (𝓛-DCPO X-is-set) l
+   II (inl refl)       = ⊥-is-compact (𝓛-DCPO⊥ X-is-set)
+   II (inr (x , refl)) = ηs-are-compact x
+
+ compact-iff-is-defined-decidable : (l : 𝓛 X)
+                                  → is-compact (𝓛-DCPO X-is-set) l
+                                  ↔ is-decidable (is-defined l)
+ compact-iff-is-defined-decidable l = I , II
+  where
+   I : is-compact (𝓛-DCPO X-is-set) l → is-decidable (is-defined l)
+   I c = h (lr-implication (compact-iff-⊥-or-η l) c)
+    where
+     h : (l ＝ ⊥ (𝓛-DCPO⊥ X-is-set)) + (Σ x ꞉ X , η x ＝ l)
+       → is-decidable (is-defined l)
+     h (inl refl)       = inr 𝟘-elim
+     h (inr (x , refl)) = inl ⋆
+   II : is-decidable (is-defined l) → is-compact (𝓛-DCPO X-is-set) l
+   II d = rl-implication (compact-iff-⊥-or-η l) (h d)
+    where
+     h : is-decidable (is-defined l)
+       → (l ＝ ⊥ (𝓛-DCPO⊥ X-is-set)) + (Σ x ꞉ X , η x ＝ l)
+     h (inl  p) = inr ((value l p) , ((is-defined-η-＝ p) ⁻¹))
+     h (inr np) = inl (not-defined-⊥-＝ np)
+
+\end{code}

@@ -12,7 +12,6 @@ here from nondependent functions to dependent functions.
 
 module Naturals.UniversalProperty where
 
-open import MLTT.NaturalNumbers
 
 open import MLTT.Spartan
 open import UF.Base
@@ -25,32 +24,32 @@ open import UF.Subsingletons
                     → (Y : ℕ → 𝓤 ̇ ) (y₀ : Y 0) (g : (n : ℕ) → Y n → Y (succ n))
                     → (Σ h ꞉ (Π Y) , (h 0 ＝ y₀) ×
                                      ((n : ℕ) → h (succ n) ＝ g n (h n)))
-                    ◁ (Σ h ꞉ (Π Y) , h ＝ induction y₀ g)
+                    ◁ (Σ h ꞉ (Π Y) , h ＝ ℕ-induction y₀ g)
 ℕ-induction-retract fe Y y₀ g = Σ-retract _ _ γ
  where
   γ : (h : Π Y)
     → (h 0 ＝ y₀) × ((n : ℕ) → h (succ n) ＝ g n (h n))
-    ◁ (h ＝ induction y₀ g)
+    ◁ (h ＝ ℕ-induction y₀ g)
   γ h =  (h 0 ＝ y₀) × ((n : ℕ) → h (succ n) ＝ g n (h n)) ◁⟨ i  ⟩
-         (h ∼ induction y₀ g)                            ◁⟨ ii ⟩
-         (h ＝ induction y₀ g)                            ◀
+         (h ∼ ℕ-induction y₀ g)                            ◁⟨ ii ⟩
+         (h ＝ ℕ-induction y₀ g)                            ◀
    where
-    ii = ≃-gives-◁ (≃-sym (≃-funext fe h (induction y₀ g)))
+    ii = ≃-gives-◁ (≃-sym (≃-funext fe h (ℕ-induction y₀ g)))
     i  = r , s , η
      where
-      r : h ∼ induction y₀ g
+      r : h ∼ ℕ-induction y₀ g
         → (h 0 ＝ y₀) × ((n : ℕ) → h (succ n) ＝ g n (h n))
       r H = H 0 , (λ n → h (succ n)              ＝⟨ H (succ n)          ⟩
-                         induction y₀ g (succ n) ＝⟨ refl                ⟩
-                         g n (induction y₀ g n)  ＝⟨ ap (g n) ((H n) ⁻¹) ⟩
+                         ℕ-induction y₀ g (succ n) ＝⟨ refl                ⟩
+                         g n (ℕ-induction y₀ g n)  ＝⟨ ap (g n) ((H n) ⁻¹) ⟩
                          g n (h n)               ∎)
       s : (h 0 ＝ y₀) × ((n : ℕ) → h (succ n) ＝ g n (h n))
-        → h ∼ induction y₀ g
+        → h ∼ ℕ-induction y₀ g
       s (p , K) 0 = p
       s (p , K) (succ n) = h (succ n)              ＝⟨ K n                    ⟩
                            g n (h n)               ＝⟨ ap (g n) (s (p , K) n) ⟩
-                           g n (induction y₀ g n)  ＝⟨ refl                   ⟩
-                           induction y₀ g (succ n) ∎
+                           g n (ℕ-induction y₀ g n)  ＝⟨ refl                   ⟩
+                           ℕ-induction y₀ g (succ n) ∎
       η : r ∘ s ∼ id
       η (p , K) =
        r (s (p , K))                                      ＝⟨ refl ⟩
@@ -96,7 +95,7 @@ open import UF.Subsingletons
   γ : is-singleton
        (Σ h ꞉ (Π Y) , (h 0 ＝ y₀) × ((n : ℕ) → h (succ n) ＝ g n (h n)))
   γ = retract-of-singleton (ℕ-induction-retract fe Y y₀ g)
-       (singleton-types'-are-singletons (induction {𝓤} {Y} y₀ g))
+       (singleton-types'-are-singletons (ℕ-induction {𝓤} {Y} y₀ g))
 
 
 \end{code}

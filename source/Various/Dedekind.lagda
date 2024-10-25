@@ -30,13 +30,10 @@ particular, is well-suited to discuss the distinction between data and
 property. The univalence axiom is not used anywhere here, but we
 mention it in some discussions.
 
-See also the discussion at https://twitter.com/EscardoMartin/status/1473393261012295681
-
 \begin{code}
 
 {-# OPTIONS --safe --without-K --lossy-unification #-}
 
-open import MLTT.Plus-Properties
 open import MLTT.Spartan
 open import Naturals.Order hiding (<-≤-trans)
 open import Notation.CanonicalMap
@@ -52,7 +49,6 @@ open import UF.Sets
 open import UF.Sets-Properties
 open import UF.Size
 open import UF.SubtypeClassifier
-open import UF.SubtypeClassifier-Properties
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
@@ -1987,7 +1983,7 @@ Limits of sequences, but using the topological, rather than metric, structure of
                  → x∞ ∈ ⦅ p , q ⦆
                  → ∃ n ꞉ ℕ , ((k : ℕ) → k ≥ n → x k ∈ ⦅ p , q ⦆)
 
- open import CoNaturals.GenericConvergentSequence
+ open import CoNaturals.Type
 
  is-continuous-ℕ∞-ℝ : (ℕ∞ → ℝ) → 𝓤 ̇
  is-continuous-ℕ∞-ℝ x = (𝓃 : ℕ∞) (p q : ℚ)

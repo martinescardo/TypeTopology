@@ -4,7 +4,7 @@ More about injectivity.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K  #-}
+{-# OPTIONS --safe --without-K --lossy-unification #-}
 
 open import UF.FunExt
 
@@ -12,10 +12,8 @@ module InjectiveTypes.OverSmallMaps (fe : FunExt) where
 
 open import InjectiveTypes.Blackboard fe
 open import MLTT.Spartan
-open import UF.Base
 open import UF.Embeddings
 open import UF.Equiv
-open import UF.EquivalenceExamples
 open import UF.Size
 open import UF.Subsingletons
 
@@ -31,10 +29,10 @@ axioms. An application is in Taboos.Decomposability.
 
 \begin{code}
 
-module _ (D : 𝓤 ̇ )
+module _ (D : 𝓦 ̇ )
          (D-is-flabby : aflabby D 𝓣)
-         {X : 𝓥 ̇ }
-         {Y : 𝓦 ̇ }
+         {X : 𝓤 ̇ }
+         {Y : 𝓥 ̇ }
          (j : X → Y)
          (j-is-embedding : is-embedding j)
          (j-small : j is 𝓣 small-map)
@@ -81,15 +79,34 @@ and less general embeddings.
 \begin{code}
 
 ainjectivity-over-small-maps : {𝓤 𝓥 𝓦 𝓣₀ 𝓣₁ 𝓣₂ : Universe}
-                             → (D : 𝓤 ̇ )
+                             → (D : 𝓦 ̇ )
                              → ainjective-type D (𝓣₀ ⊔ 𝓣₁) 𝓣₂
-                             → {X : 𝓥 ̇ } {Y : 𝓦 ̇ }
+                             → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                                (j : X → Y)
                              → is-embedding j
                              → j is 𝓣₀ small-map
                              → (f : X → D) → Σ f' ꞉ (Y → D) , f' ∘ j ∼ f
 ainjectivity-over-small-maps {𝓤} {𝓥} {𝓦} {𝓣₀} {𝓣₁} {𝓣₂} D D-ainj =
  aflabbiness-gives-injectivity-over-small-maps D
-  (aflabbiness-resizing₁ {𝓤} {𝓣₀} {𝓣₁} D (ainjective-types-are-aflabby D D-ainj))
+  (aflabbiness-resizing₁ {𝓦} {𝓣₀} {𝓣₁} D (ainjective-types-are-aflabby D D-ainj))
+
+\end{code}
+
+Added by Martin Escardo and Tom de Jong 24th October 2024.
+
+\begin{code}
+
+open import UF.Retracts
+
+embedding-retract' : {𝓤 𝓥 𝓦 𝓣 𝓣' : Universe}
+                   → (D : 𝓤 ̇ ) (Y : 𝓥 ̇ ) (j : D → Y)
+                   → is-embedding j
+                   → j is 𝓣 small-map
+                   → ainjective-type D (𝓣 ⊔ 𝓣') 𝓦
+                   → retract D of Y
+embedding-retract' {𝓤} {𝓥} {𝓦} {𝓣} {𝓣'} D Y j e s i = pr₁ a , j , pr₂ a
+ where
+  a : Σ f' ꞉ (Y → D) , f' ∘ j ∼ id
+  a = ainjectivity-over-small-maps {𝓤} {𝓥} {𝓤} {𝓣} {𝓣'} {𝓦} D i j e s id
 
 \end{code}

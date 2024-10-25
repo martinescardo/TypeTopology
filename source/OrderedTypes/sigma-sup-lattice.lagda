@@ -13,13 +13,10 @@ open import UF.Subsingletons
 
 module OrderedTypes.sigma-sup-lattice (fe : Fun-Ext) where
 
-open import UF.Base
-open import UF.Equiv hiding (_≅_)
 open import UF.Hedberg
 open import UF.SIP
 open import UF.Sets
 open import UF.Subsingletons-FunExt
-open import UF.Univalence
 
 σ-suplat-structure : 𝓤 ̇ → 𝓤 ̇
 σ-suplat-structure X = X × ((ℕ → X) → X)

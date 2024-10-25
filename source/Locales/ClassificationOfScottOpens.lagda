@@ -22,19 +22,16 @@ open Implication fe
 open Existential pt
 open Conjunction
 
-open import Locales.Frame pt fe
 open import DomainTheory.Basics.Dcpo pt fe 𝓤 renaming (⟨_⟩ to ⟨_⟩∙)
 open import DomainTheory.Topology.ScottTopology pt fe 𝓤
 open import DomainTheory.Basics.Pointed pt fe 𝓤
 open import DomainTheory.Lifting.LiftingSet pt fe
 open import DomainTheory.Basics.Miscelanea pt fe 𝓤
-open import Lifting.Lifting 𝓤
-open import UF.PropTrunc
+open import Lifting.Construction 𝓤
 open import UF.SubtypeClassifier
 open import UF.Subsingletons-Properties
 open import Slice.Family
 open import UF.Equiv
-open import UF.HLevels
 open PropositionalTruncation pt
 
 \end{code}

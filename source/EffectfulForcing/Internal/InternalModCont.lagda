@@ -14,12 +14,10 @@ open import UF.FunExt
 module EffectfulForcing.Internal.InternalModCont (fe : Fun-Ext) where
 
 open import MLTT.Spartan hiding (rec; _^_)
-open import MLTT.List
 open import Naturals.Order using (max)
 open import EffectfulForcing.Internal.Internal
 open import EffectfulForcing.MFPSAndVariations.Church
 open import EffectfulForcing.Internal.SystemT
-open import EffectfulForcing.MFPSAndVariations.Combinators
 open import EffectfulForcing.MFPSAndVariations.Dialogue
  using (eloquent; D; dialogue; eloquent-functions-are-continuous;
         dialogue-continuity; generic)
@@ -27,10 +25,11 @@ open import EffectfulForcing.MFPSAndVariations.Continuity
  using (is-continuous; _＝⟪_⟫_)
 open import EffectfulForcing.MFPSAndVariations.ContinuityProperties fe
 open import EffectfulForcing.Internal.Correctness
- using (Rnorm-generic; is-dialogue-for; extβ; Rnorm-lemma₀; Rnorm)
+ using (Rnorm-generic; is-dialogue-for; Rnorm-lemma₀; Rnorm;
+        dialogue-tree-agreement; ⌜dialogue⌝)
 open import EffectfulForcing.Internal.External
  using (eloquence-theorem; dialogue-tree; ⟪⟫; B⟦_⟧; B⟦_⟧₀)
-open import EffectfulForcing.Internal.Subst
+open import EffectfulForcing.Internal.ExtensionalEquality
 open import EffectfulForcing.MFPSAndVariations.SystemT
  using (type; ι; _⇒_;〖_〗)
 
@@ -180,14 +179,16 @@ max-question⋆-agreement (D.β φ n) α = †
     ＝ church-encode (D.β φ n) (λ _ → 0) (λ g x → max x (g (α x)))
   † = ap (max n) IH
 
-max-questionᵀ-agreement-with-max-question⋆ : (d : 〈〉 ⊢ ⌜D⋆⌝ ι ι ι ι) (α : ℕ → ℕ)
-                                           → ⟦ max-questionᵀ · d ⟧₀ α
-                                             ＝ max-question⋆ ⟦ d ⟧₀ α
-max-questionᵀ-agreement-with-max-question⋆ d α =
- ap
-  (⟦ d ⟧₀ (λ _ → 0))
-  (dfunext fe λ g → dfunext fe λ x → maxᵀ-correct x (g (α x)))
-
+-- Re-factored to avoid using function extensionality together with Bruno Paiva.
+max-questionᵀ-agreement-with-max-question⋆ : ⟦ max-questionᵀ ⟧₀ ≡ max-question⋆
+max-questionᵀ-agreement-with-max-question⋆ q {α} {β} eq = q (λ _ → refl) ‡
+ where
+  ‡ : {f g : ℕ → ℕ}
+    → (k : f ≡ g) {i j : ℕ} → i ＝ j → ⟦ maxᵀ ⟧₀ i (f (α i)) ＝ max j (g (β j))
+  ‡ {f} {g} φ {i} {_} refl = transport
+                              (λ - → ⟦ maxᵀ ⟧₀ i - ＝ max i (g (β i)))
+                              (φ (eq refl) ⁻¹)
+                              (maxᵀ-correct i (g (β i)))
 
 \end{code}
 
@@ -207,10 +208,11 @@ modulus d α = succ (max-question d α)
 modulus₀ : (d : D ℕ ℕ ℕ) → (ℕ → ℕ) → ℕ
 modulus₀ d α = succ (max-question₀ d α)
 
-modulusᵀ : {Γ : Cxt}
-         → Γ ⊢ baire ⇒ ι
-         → B-context【 Γ 】 ι ⊢ (ι ⇒ ι) ⇒ ι
-modulusᵀ t = comp · Succ' · (max-questionᵀ · ⌜dialogue-tree⌝ t)
+modulus⋆ : D⋆ ℕ ℕ ℕ ℕ → (ℕ → ℕ) → ℕ
+modulus⋆ d α = succ (max-question⋆ d α)
+
+modulusᵀ : 〈〉 ⊢ ⌜B⌝ ι ι ⇒ (ι ⇒ ι) ⇒ ι
+modulusᵀ = ƛ (ƛ (Succ' · (max-questionᵀ · ν₁ · ν₀)))
 
 \end{code}
 
@@ -225,28 +227,23 @@ main-lemma : (t : 〈〉 ⊢ (baire ⇒ ι)) (α : ℕ → ℕ)
            → ⟦ max-questionᵀ · (⌜dialogue-tree⌝ t) ⟧₀ α
              ＝ max-question₀ (dialogue-tree t) α
 main-lemma t α =
- ⟦ max-questionᵀ · ⌜dialogue-tree⌝ t ⟧₀ α           ＝⟨ Ⅰ ⟩
- max-question⋆ ⟦ ⌜dialogue-tree⌝ t ⟧₀ α             ＝⟨ Ⅱ ⟩
- max-question⋆ (church-encode (dialogue-tree t)) α  ＝⟨ Ⅲ ⟩
- max-question  (dialogue-tree t) α                  ＝⟨ Ⅳ ⟩
- max-question₀ (dialogue-tree t) α                  ∎
+ ⟦ max-questionᵀ · ⌜dialogue-tree⌝ t ⟧₀ α                 ＝⟨ refl ⟩
+ ⟦ max-questionᵀ ⟧₀ ⟦ ⌜dialogue-tree⌝ t ⟧₀ α              ＝⟨ Ⅰ    ⟩
+ max-question⋆ (church-encode (dialogue-tree t)) α        ＝⟨ Ⅱ    ⟩
+ max-question  (dialogue-tree t) α                        ＝⟨ Ⅲ    ⟩
+ max-question₀ (dialogue-tree t) α                        ∎
   where
    † : Rnorm (B⟦ t ⟧₀ generic) (⌜ t ⌝ · ⌜generic⌝)
    † = Rnorm-lemma₀ t generic ⌜generic⌝ Rnorm-generic
 
-   ext : extβ (λ g x → max x (g (α x)))
-   ext f g m n p φ =
-    max m (f (α m)) ＝⟨ ap (λ - → max - (f (α -))) p ⟩
-    max n (f (α n)) ＝⟨ ap (max n) (φ (α n))         ⟩
-    max n (g (α n)) ∎
-
-   Ⅰ = max-questionᵀ-agreement-with-max-question⋆ (⌜dialogue-tree⌝ t) α
-   Ⅱ = † ι (λ _ → 0) (λ g x → max x (g (α x))) (λ _ → refl) ext
-   Ⅲ = max-question⋆-agreement (dialogue-tree t) α ⁻¹
-   Ⅳ = max-question₀-agreement (dialogue-tree t) α
+   Ⅰ = max-questionᵀ-agreement-with-max-question⋆
+        (dialogue-tree-agreement t)
+        (ap α)
+   Ⅱ = max-question⋆-agreement (dialogue-tree t) α ⁻¹
+   Ⅲ = max-question₀-agreement (dialogue-tree t) α
 
 internal-mod-cont-correct : (t : 〈〉 ⊢ (baire ⇒ ι)) (α β : 〈〉 ⊢ baire)
-                          → ⟦ α ⟧₀ ＝⦅ ⟦ modulusᵀ t · α ⟧₀ ⦆ ⟦ β ⟧₀
+                          → ⟦ α ⟧₀ ＝⦅ ⟦ modulusᵀ · (⌜dialogue-tree⌝ t) · α ⟧₀ ⦆ ⟦ β ⟧₀
                           → ⟦ t · α ⟧₀ ＝ ⟦ t ·  β ⟧₀
 internal-mod-cont-correct t α β p = †
  where
@@ -262,7 +259,7 @@ internal-mod-cont-correct t α β p = †
   m₀ : ℕ
   m₀ = succ (max-question₀ (dialogue-tree t) ⟦ α ⟧₀)
 
-  q : ⟦ modulusᵀ t · α ⟧₀ ＝ m₀
+  q : ⟦ modulusᵀ · (⌜dialogue-tree⌝ t) · α ⟧₀ ＝ m₀
   q = ap succ (main-lemma t ⟦ α ⟧₀)
 
   ‡ : ⟦ α ⟧₀ ＝⦅ m₀ ⦆ ⟦ β ⟧₀
@@ -277,17 +274,21 @@ While I was working on the proof, I wrote down the following fact, which turned
 out not to be necessary for the proof. However, I am not taking it out of this
 file as it might be useful in the future.
 
+Update: the fact has now been commented out, because it was something
+non-essential that required function extensionality and I have not removed the
+use of function extensionality from it yet.
+
 \begin{code}
 
-church-encode-to-D-rec : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {A : 𝓣  ̇}
-                     → (d : D X Y Z)
-                     → (η′ : Z → A)
-                     → (β′ : (Y → A) → X → A)
-                     → church-encode d η′ β′ ＝ D-rec η′ β′ d
-church-encode-to-D-rec (D.η _)   η′ β′ = refl
-church-encode-to-D-rec {Y = Y} (D.β φ x) η′ β′ = ap (λ - → β′ - x) (dfunext fe †)
- where
-  † : (y : Y) → church-encode (φ y) η′ β′ ＝ D-rec η′ β′ (φ y)
-  † y = church-encode-to-D-rec (φ y) η′ β′
+-- church-encode-to-D-rec : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {A : 𝓣  ̇}
+--                      → (d : D X Y Z)
+--                      → (η′ : Z → A)
+--                      → (β′ : (Y → A) → X → A)
+--                      → church-encode d η′ β′ ＝ D-rec η′ β′ d
+-- church-encode-to-D-rec (D.η _)   η′ β′ = refl
+-- church-encode-to-D-rec {Y = Y} (D.β φ x) η′ β′ = ap (λ - → β′ - x) {!!} -- (dfunext fe †)
+--  where
+--   † : (y : Y) → church-encode (φ y) η′ β′ ＝ D-rec η′ β′ (φ y)
+--   † y = church-encode-to-D-rec (φ y) η′ β′
 
 \end{code}

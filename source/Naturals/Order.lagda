@@ -83,7 +83,7 @@ https://github.com/agda/agda/issues/6815
 
 \begin{code}
 
-≤-induction : (P : (m n : ℕ) (l : m ≤ n) → 𝓤 ̇ )
+≤-induction : (P : (m n : ℕ) (l : m ≤ℕ n) → 𝓤 ̇ )
             → ((n : ℕ) → P 0 n (zero-least n))
             → ((m n : ℕ) (l : m ≤ n)
                     → P m n l
@@ -160,8 +160,8 @@ not-less-than-itself 0    l = l
 not-less-than-itself (succ n) l = not-less-than-itself n l
 
 not-less-bigger-or-equal : (m n : ℕ) → ¬ (n < m) → n ≥ m
-not-less-bigger-or-equal 0    n u = zero-least n
-not-less-bigger-or-equal (succ m) 0    = ¬¬-intro (zero-least m)
+not-less-bigger-or-equal 0        n        = λ _ → zero-least n
+not-less-bigger-or-equal (succ m) 0        = ¬¬-intro (zero-least m)
 not-less-bigger-or-equal (succ m) (succ n) = not-less-bigger-or-equal m n
 
 bigger-or-equal-not-less : (m n : ℕ) → n ≥ m → ¬ (n < m)
@@ -230,6 +230,37 @@ course-of-values-induction : (P : ℕ → 𝓤 ̇ )
                            → (n : ℕ) → P n
 course-of-values-induction = transfinite-induction _<_ <-is-well-founded
 
+course-of-values-induction-on-value-of-function
+ : {X : 𝓤 ̇}
+   (f : X → ℕ)
+   (P : X → 𝓥 ̇ )
+ → ((x : X) → ((y : X) → f y < f x → P y) → P x)
+ → (x : X) → P x
+course-of-values-induction-on-value-of-function
+ {𝓤} {𝓥} {X} f P h x = II (f x) x refl
+ where
+  A : ℕ → 𝓤 ⊔ 𝓥 ̇
+  A n = (x : X) → f x ＝ n → P x
+
+  I : (n : ℕ) → ((m : ℕ) → m < n → A m) → A n
+  I .(f x) g x refl = h x (λ y l → g (f y) l y refl)
+
+  II : (n : ℕ) → A n
+  II = course-of-values-induction A I
+
+\end{code}
+
+TODO. Also add plain induction on the values of a function.
+
+TODO. Notice that this proof of course-of-values induction uses the
+accessibility predicate. From a foundational point of view, this is a
+too powerful tool - an indexed W-type. In fact, this is not
+needed. The course-of-values-induction theorem can be proved in MLTT
+with only natural numbers and without universes, identity types, of W
+types (indexed or not) other than the natural numbers.
+
+\begin{code}
+
 <-is-extensional : is-extensional _<_
 <-is-extensional 0        0        f g = refl
 <-is-extensional 0        (succ n) f g = unique-from-𝟘 (g 0    (zero-least n))
@@ -269,7 +300,6 @@ Added December 2019.
 
 \begin{code}
 
-open import NotionsOfDecidability.Decidable
 open import NotionsOfDecidability.Complemented
 
 ≤-decidable : (m n : ℕ ) → is-decidable (m ≤ n)

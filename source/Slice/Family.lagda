@@ -5,6 +5,7 @@
 module Slice.Family where
 
 open import MLTT.Spartan
+open import UF.Powerset-MultiUniverse
 open import UF.Size
 
 \end{code}
@@ -71,3 +72,28 @@ resize-family : {A : 𝓤  ̇}
 resize-family S (A₀ , s , e) = A₀ , (λ x → S [ s x ])
 
 \end{code}
+
+For increased readability we will now add mechanisms for turning subsets into
+families.
+
+\begin{code}
+
+module _
+        {B : 𝓥  ̇}
+        {A : 𝓤  ̇}
+        (m : B → A)
+       where
+
+ subset-to-family : 𝓟 {𝓣} B → Fam (𝓣 ⊔ 𝓥) A
+ subset-to-family S = (𝕋 S , m ∘ 𝕋-to-carrier S)
+
+ syntax subset-to-family m S = 【 m , S 】   
+
+module _ {A : 𝓤 ̇} where 
+
+ subset-to-family' : 𝓟 {𝓣} A → Fam (𝓣 ⊔ 𝓤) A
+ subset-to-family' S = subset-to-family id S
+ 
+
+\end{code}
+

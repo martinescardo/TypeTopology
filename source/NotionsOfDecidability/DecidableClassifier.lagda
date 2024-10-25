@@ -5,6 +5,8 @@ We show that 𝟚 classifies decidable subsets.
 We start by defining the type Ωᵈ 𝓤 of decidable propositions in a type
 universe 𝓤 and we show that 𝟚 ≃ Ωᵈ 𝓤 (for any universe 𝓤).
 
+Added 22 June 2024: 𝟚 ≃ Ω 𝓤 if and only if excluded middle (EM) holds in 𝓤.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}
@@ -13,13 +15,19 @@ module NotionsOfDecidability.DecidableClassifier where
 
 open import MLTT.Spartan
 
-open import MLTT.Plus-Properties
 open import MLTT.Two-Properties
+
+open import UF.DiscreteAndSeparated
+open import UF.Equiv
+open import UF.EquivalenceExamples
+open import UF.FunExt
+open import UF.Lower-FunExt
+open import UF.Powerset
 open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
 open import UF.SubtypeClassifier
 
 open import NotionsOfDecidability.Decidable
-open import NotionsOfDecidability.Complemented
 
 boolean-value' : {A : 𝓤 ̇ }
                → is-decidable A
@@ -40,17 +48,29 @@ boolean-value' {𝓤} {A} (inr na) = ₀ , ϕ , ψ
   ψ = (λ p → 𝟘-elim (zero-is-not-one p))
     , (λ a → 𝟘-elim (na a))
 
+inclusion-of-booleans : 𝟚 → Ω 𝓤
+inclusion-of-booleans ₀ = 𝟘 , 𝟘-is-prop
+inclusion-of-booleans ₁ = 𝟙 , 𝟙-is-prop
+
 private
  Ωᵈ : (𝓤 : Universe) → 𝓤 ⁺ ̇
  Ωᵈ 𝓤 = Σ P ꞉ Ω 𝓤 , is-decidable (P holds)
 
+ inclusion-of-decidable-props : Ωᵈ 𝓤 → Ω 𝓤
+ inclusion-of-decidable-props = pr₁
+
  ⟨_⟩ : Ωᵈ 𝓤 → 𝓤 ̇
  ⟨ (P , i) , δ ⟩ = P
 
-open import UF.Equiv
-open import UF.Subsingletons-FunExt
-open import UF.FunExt
-open import UF.Lower-FunExt
+inclusion-of-booleans-into-decidable-props : 𝟚 → Ωᵈ 𝓤
+inclusion-of-booleans-into-decidable-props ₀ = (𝟘 , 𝟘-is-prop) , 𝟘-is-decidable
+inclusion-of-booleans-into-decidable-props ₁ = (𝟙 , 𝟙-is-prop) , 𝟙-is-decidable
+
+inclusion-of-booleans-∼ :
+ inclusion-of-booleans {𝓤} ∼
+ inclusion-of-decidable-props ∘ inclusion-of-booleans-into-decidable-props
+inclusion-of-booleans-∼ ₀ = refl
+inclusion-of-booleans-∼ ₁ = refl
 
 module _
         {𝓤 : Universe}
@@ -58,11 +78,11 @@ module _
         (pe : propext 𝓤)
        where
 
- to-Ωᵈ-equality : (P Q : Ωᵈ 𝓤)
-                → (⟨ P ⟩ → ⟨ Q ⟩)
-                → (⟨ Q ⟩ → ⟨ P ⟩)
-                → P ＝ Q
- to-Ωᵈ-equality ((P , i) , δ) ((Q , j) , ε) α β =
+ to-Ωᵈ-＝ : (P Q : Ωᵈ 𝓤)
+          → (⟨ P ⟩ → ⟨ Q ⟩)
+          → (⟨ Q ⟩ → ⟨ P ⟩)
+          → P ＝ Q
+ to-Ωᵈ-＝ ((P , i) , δ) ((Q , j) , ε) α β =
   to-subtype-＝ σ (to-subtype-＝ τ (pe i j α β))
   where
    σ : (P : Ω 𝓤) → is-prop (is-decidable (P holds))
@@ -74,8 +94,7 @@ module _
  𝟚-is-the-type-of-decidable-propositions = qinveq f (g , η , ε)
   where
    f : 𝟚 → Ωᵈ 𝓤
-   f ₀ = ((𝟘 , 𝟘-is-prop) , inr 𝟘-elim)
-   f ₁ = ((𝟙 , 𝟙-is-prop) , inl ⋆)
+   f = inclusion-of-booleans-into-decidable-props
    g : Ωᵈ 𝓤 → 𝟚
    g (P , δ) = pr₁ (boolean-value' δ)
    η : g ∘ f ∼ id
@@ -89,12 +108,12 @@ module _
      lemma = pr₂ (boolean-value' (pr₂ P))
      ε₀ : g P ＝ ₀
         → (f ∘ g) P ＝ P
-     ε₀ e = to-Ωᵈ-equality (f (g P)) P
+     ε₀ e = to-Ωᵈ-＝ (f (g P)) P
              (λ (q : ⟨ f (g P) ⟩) → 𝟘-elim (transport (λ b → ⟨ f b ⟩) e q))
              (λ (p : ⟨ P ⟩) → 𝟘-elim (lr-implication (pr₁ lemma) e p))
      ε₁ : g P ＝ ₁
         → (f ∘ g) P ＝ P
-     ε₁ e = to-Ωᵈ-equality (f (g P)) P
+     ε₁ e = to-Ωᵈ-＝ (f (g P)) P
              (λ _ → lr-implication (pr₂ lemma) e)
              (λ _ → transport⁻¹ (λ (b : 𝟚) → ⟨ f b ⟩) e ⋆)
 
@@ -107,9 +126,6 @@ equivalences.
 "type-theoretic axiom of choice".)
 
 \begin{code}
-
-open import UF.Powerset
-open import UF.EquivalenceExamples
 
 is-complemented-subset : {X : 𝓤 ̇ } → (X → Ω 𝓣) → 𝓤 ⊔ 𝓣 ̇
 is-complemented-subset {𝓤} {𝓣} {X} A = (x : X) → is-decidable (x ∈ A)
@@ -148,39 +164,93 @@ module _
 
 \end{code}
 
-Added by Tom de Jong, November 2021.
+Added 22 June 2024.
+
+We record that Ω is equivalent to 𝟚 precisely when EM holds.
 
 \begin{code}
 
-decidable-↔ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-            → X ↔ Y
-            → is-decidable X
-            → is-decidable Y
-decidable-↔ {𝓤} {𝓥} {X} {Y} (f , g) (inl  x) = inl (f x)
-decidable-↔ {𝓤} {𝓥} {X} {Y} (f , g) (inr nx) = inr (nx ∘ g)
+open import UF.ClassicalLogic
 
-decidable-cong : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-               → X ≃ Y
-               → is-decidable X
-               → is-decidable Y
-decidable-cong e = decidable-↔ (⌜ e ⌝ , ⌜ e ⌝⁻¹)
+module _
+        {𝓤 : Universe}
+        (fe : funext 𝓤 𝓤)
+        (pe : propext 𝓤)
+       where
 
 \end{code}
 
-Added by Tom de Jong in January 2022.
+Firstly, EM holds if and only if the inclusion Ωᵈ ↪ Ω of decidable propositions
+into all propositions is an equivalence.
+
+\begin{code}
+ EM-gives-inclusion-of-decidable-props-is-equiv :
+  EM 𝓤 → is-equiv (inclusion-of-decidable-props)
+ EM-gives-inclusion-of-decidable-props-is-equiv em =
+  qinvs-are-equivs
+   inclusion-of-decidable-props
+   ((λ 𝕡@(P , i) → 𝕡 , em P i) ,
+    (λ P → to-Ωᵈ-＝ fe pe _ P id id) ,
+    λ _ → refl)
+
+ inclusion-of-decidable-props-is-equiv-gives-EM :
+  is-equiv (inclusion-of-decidable-props) → EM 𝓤
+ inclusion-of-decidable-props-is-equiv-gives-EM e P i = ℙ-is-decidable
+  where
+   f : Ω 𝓤 → Ωᵈ 𝓤
+   f = inverse inclusion-of-decidable-props e
+   ℙ : Ω 𝓤
+   ℙ = (P , i)
+   ℙ' : Ω 𝓤
+   ℙ' = inclusion-of-decidable-props (f ℙ)
+   ℙ'-is-decidable : is-decidable (ℙ' holds)
+   ℙ'-is-decidable = pr₂ (f ℙ)
+   ℙ-is-decidable : is-decidable (ℙ holds)
+   ℙ-is-decidable =
+    transport (λ - → is-decidable (- holds))
+              (inverses-are-sections inclusion-of-decidable-props e ℙ)
+              ℙ'-is-decidable
+
+\end{code}
+
+Since 𝟚 is equivalent to Ωᵈ, we get that EM holds if and only if the inclusion
+𝟚 ↪ Ω of the booleans into all propositions is an equivalence.
 
 \begin{code}
 
-all-types-are-¬¬-decidable : (X : 𝓤 ̇ ) → ¬¬ (is-decidable X)
-all-types-are-¬¬-decidable X h = claim₂ claim₁
- where
-  claim₁ : ¬ X
-  claim₁ x = h (inl x)
-  claim₂ : ¬¬ X
-  claim₂ nx = h (inr nx)
+ EM-gives-inclusion-of-booleans-is-equiv :
+  EM 𝓤 → is-equiv (inclusion-of-booleans)
+ EM-gives-inclusion-of-booleans-is-equiv em =
+  equiv-closed-under-∼
+   (inclusion-of-decidable-props ∘ inclusion-of-booleans-into-decidable-props)
+   inclusion-of-booleans
+   (∘-is-equiv
+    (⌜⌝-is-equiv (𝟚-is-the-type-of-decidable-propositions fe pe))
+    (EM-gives-inclusion-of-decidable-props-is-equiv em))
+   inclusion-of-booleans-∼
 
-¬¬-stable-if-decidable : (X : 𝓤 ̇ ) → is-decidable X → ¬¬-stable X
-¬¬-stable-if-decidable X (inl  x) = λ _ → x
-¬¬-stable-if-decidable X (inr nx) = λ h → 𝟘-elim (h nx)
+ inclusion-of-booleans-is-equiv-gives-EM :
+  is-equiv (inclusion-of-booleans) → EM 𝓤
+ inclusion-of-booleans-is-equiv-gives-EM e =
+  inclusion-of-decidable-props-is-equiv-gives-EM
+   (≃-2-out-of-3-right
+    (⌜⌝-is-equiv (𝟚-is-the-type-of-decidable-propositions fe pe))
+    (equiv-closed-under-∼ _ _ e (∼-sym inclusion-of-booleans-∼)))
+
+\end{code}
+
+In fact, EM holds if and only if we have any equivalence between 𝟚 and Ω,
+because any such equivalence would prove that Ω is discrete which is equivalent
+to EM.
+
+\begin{code}
+
+ EM-gives-𝟚-is-the-type-of-propositions : EM 𝓤 → 𝟚 ≃ Ω 𝓤
+ EM-gives-𝟚-is-the-type-of-propositions em =
+  inclusion-of-booleans , EM-gives-inclusion-of-booleans-is-equiv em
+
+ 𝟚-is-the-type-of-propositions-gives-EM : 𝟚 ≃ Ω 𝓤 → EM 𝓤
+ 𝟚-is-the-type-of-propositions-gives-EM e =
+  Ω-discrete-gives-EM fe pe (equiv-to-discrete e 𝟚-is-discrete)
 
 \end{code}

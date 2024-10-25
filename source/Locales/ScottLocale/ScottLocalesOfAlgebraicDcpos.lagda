@@ -23,8 +23,6 @@ open import UF.Logic
 open import UF.PropTrunc
 open import UF.SubtypeClassifier
 open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
-open import UF.Powerset-MultiUniverse
 
 \end{code}
 
@@ -75,7 +73,6 @@ module ScottLocaleConstruction (𝓓    : DCPO {𝓤 ⁺} {𝓤})
                                (hscb : has-specified-small-compact-basis 𝓓)
                                (pe   : propext 𝓤)                          where
 
- open import DomainTheory.Lifting.LiftingSet pt fe 𝓤 pe
  open DefnOfScottTopology 𝓓 𝓤
  open DefnOfScottLocale 𝓓 𝓤 pe using (𝒪ₛ-equality; _⊆ₛ_; ⊆ₛ-is-reflexive;
                                       ⊆ₛ-is-transitive; ⊆ₛ-is-antisymmetric;
@@ -100,8 +97,9 @@ function.
 
 \begin{code}
 
- I = index-of-compact-basis 𝓓 hscb
- β = family-of-basic-opens  𝓓 hscb
+ private
+  I = index-of-compact-basis     𝓓 hscb
+  β = family-of-compact-elements 𝓓 hscb
 
 \end{code}
 
@@ -173,6 +171,10 @@ the basic opens. The order `_⊆ₛ_` is the large version.
 
  ⊆ₖ-is-partial-order : is-partial-order 𝒪ₛ _⊆ₖ_
  ⊆ₖ-is-partial-order = (⊆ₖ-is-reflexive , ⊆ₖ-is-transitive) , ⊆ₖ-is-antisymmetric
+
+ poset-of-scott-opensₛ : Poset (𝓤 ⁺) (𝓤 ⁺)
+ poset-of-scott-opensₛ =
+  𝒪ₛ , _⊆ₛ_ , (⊆ₛ-is-reflexive , ⊆ₛ-is-transitive) , ⊆ₛ-is-antisymmetric
 
 \end{code}
 

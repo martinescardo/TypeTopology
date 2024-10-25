@@ -4,30 +4,24 @@ Ayberk Tosun, 11 September 2023
 
 {-# OPTIONS --safe --without-K --lossy-unification #-}
 
-open import MLTT.Spartan hiding (𝟚)
-open import UF.PropTrunc
 open import UF.FunExt
-open import UF.UA-FunExt
+open import UF.PropTrunc
 
 module Locales.Complements (pt : propositional-truncations-exist)
                            (fe : Fun-Ext)                           where
 
-open import Locales.AdjointFunctorTheoremForFrames
+open import Locales.ContinuousMap.FrameHomomorphism-Definition pt fe
+open import Locales.ContinuousMap.FrameHomomorphism-Properties pt fe
 open import Locales.Frame pt fe
-open import Locales.WayBelowRelation.Definition pt fe
-open import Locales.Compactness pt fe
-open import Slice.Family
+open import MLTT.Spartan hiding (𝟚)
 open import UF.Logic
 open import UF.SubtypeClassifier
-open import UF.Base using (from-Σ-＝)
 
 open AllCombinators pt fe
-open PropositionalTruncation pt
-
-open import Locales.GaloisConnection pt fe
-open import Locales.InitialFrame     pt fe
-
+open FrameHomomorphismProperties
+open FrameHomomorphisms
 open Locale
+open PropositionalTruncation pt
 
 \end{code}
 

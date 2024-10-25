@@ -9,10 +9,12 @@ module Various.index where
 import Various.CantorTheoremForEmbeddings -- by Jon Sterling
 import Various.Dedekind
 import Various.DummettDisjunction
-import Various.Hydra
+import Various.Hydra                      -- by Alice Laroche
 import Various.LawvereFPT
 import Various.Lumsdaine
 import Various.NonCollapsibleFamily
+import Various.Pataraia
+import Various.Pataraia-Taylor
 import Various.RootsOfBooleanFunctions
 import Various.Types2019
 import Various.UnivalenceFromScratch

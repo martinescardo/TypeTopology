@@ -17,7 +17,6 @@ open import Notation.CanonicalMap
 open import Ordinals.Notions
 open import Ordinals.Type
 open import Ordinals.Underlying
-open import UF.Base
 open import UF.Sets
 open import UF.Subsingletons
 
@@ -43,7 +42,8 @@ instance
 instance
  underlying-type-of-topped-ordinal : Underlying (Ordinalᵀ 𝓤)
  ⟨_⟩ {{underlying-type-of-topped-ordinal}} (α , _) = ⟨ α ⟩
- underlying-order {{underlying-type-of-topped-ordinal}} (α , _) = underlying-order α
+ underlying-order {{underlying-type-of-topped-ordinal}} (α , _) =
+  underlying-order α
 
 underlying-type-is-setᵀ : FunExt
                         → (β : Ordinalᵀ 𝓤)
@@ -74,7 +74,7 @@ top (α , (x , i)) = x
 top-is-top : (τ : Ordinalᵀ 𝓤) → is-top (underlying-order τ) (top τ)
 top-is-top (α , (x , i)) = i
 
-open import TypeTopology.InfProperty
+open import Ordinals.InfProperty
 
 has-infs-of-complemented-subsets : Ordinalᵀ 𝓤 → 𝓤 ̇
 has-infs-of-complemented-subsets τ = has-inf (underlying-weak-order τ)

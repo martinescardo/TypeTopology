@@ -62,7 +62,6 @@ open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.Type hiding (Ord)
 open import Ordinals.Underlying
 open import Ordinals.WellOrderTransport
-open import UF.Equiv-FunExt
 open import UF.Base
 open import UF.Embeddings
 open import UF.Equiv

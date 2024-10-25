@@ -1,6 +1,6 @@
-Martin Escardo
+Martin Escardo 2012.
 
-Based on
+Part of
 
  Kraus, N., Escardó, M., Coquand, T., Altenkirch, T.
  Generalizations of Hedberg’s Theorem.
@@ -82,42 +82,6 @@ Id-collapsibles-are-sets pc {x} = Id-collapsibles-are-h-isolated x pc
 
 \end{code}
 
-Here is an example. Any type that admits a prop-valued, reflexive and
-antisymmetric relation is a set.
-
-\begin{code}
-
-type-with-prop-valued-refl-antisym-rel-is-set : {X : 𝓤 ̇ }
-                                              → (_≤_ : X → X → 𝓥 ̇ )
-                                              → ((x y : X) → is-prop (x ≤ y))
-                                              → ((x : X) → x ≤ x)
-                                              → ((x y : X) → x ≤ y → y ≤ x → x ＝ y)
-                                              → is-set X
-type-with-prop-valued-refl-antisym-rel-is-set
- {𝓤} {𝓥} {X} _≤_ ≤-prop-valued ≤-refl ≤-anti = γ
- where
-  α : ∀ {x y} (l l' : x ≤ y) (m m' : y ≤ x) → ≤-anti x y l m ＝ ≤-anti x y l' m'
-  α {x} {y} l l' m m' = ap₂ (≤-anti x y)
-                            (≤-prop-valued x y l l')
-                            (≤-prop-valued y x m m')
-
-  g : ∀ {x y} → x ＝ y → x ≤ y
-  g {x} p = transport (x ≤_) p (≤-refl x)
-
-  h : ∀ {x y} → x ＝ y → y ≤ x
-  h p = g (p ⁻¹)
-
-  f : ∀ {x y} → x ＝ y → x ＝ y
-  f {x} {y} p = ≤-anti x y (g p) (h p)
-
-  κ : ∀ {x y} p q → f {x} {y} p ＝ f {x} {y} q
-  κ p q = α (g p) (g q) (h p) (h q)
-
-  γ : is-set X
-  γ = Id-collapsibles-are-sets (f , κ)
-
-\end{code}
-
 We also need the following symmetrical version of local Hedberg, which
 can be proved by reduction to the above (using the fact that
 collapsible types are closed under equivalence), but at this point we
@@ -142,7 +106,45 @@ local-hedberg' {𝓤} {X} x pc y p q =
   κ : (y : X) (p q : y ＝ x) → f y p ＝ f y q
   κ y = pr₂ (pc y)
 
-  c : (y : X) (r : y ＝ x) → r ＝  (f y r) ∙ (f x refl)⁻¹
+  c : (y : X) (r : y ＝ x) → r ＝  f y r ∙ (f x refl)⁻¹
   c _ refl = sym-is-inverse' (f x refl)
+
+\end{code}
+
+Here is an example (added some time after the pandemic, not sure
+when). Any type that admits a prop-valued, reflexive and antisymmetric
+relation is a set.
+
+\begin{code}
+
+type-with-prop-valued-refl-antisym-rel-is-set
+ : {X : 𝓤 ̇ }
+ → (_≤_ : X → X → 𝓥 ̇ )
+ → ((x y : X) → is-prop (x ≤ y))
+ → ((x : X) → x ≤ x)
+ → ((x y : X) → x ≤ y → y ≤ x → x ＝ y)
+ → is-set X
+type-with-prop-valued-refl-antisym-rel-is-set
+ {𝓤} {𝓥} {X} _≤_ ≤-prop-valued ≤-refl ≤-anti = γ
+ where
+  α : ∀ {x y} (l l' : x ≤ y) (m m' : y ≤ x) → ≤-anti x y l m ＝ ≤-anti x y l' m'
+  α {x} {y} l l' m m' = ap₂ (≤-anti x y)
+                            (≤-prop-valued x y l l')
+                            (≤-prop-valued y x m m')
+
+  g : ∀ {x y} → x ＝ y → x ≤ y
+  g {x} p = transport (x ≤_) p (≤-refl x)
+
+  h : ∀ {x y} → x ＝ y → y ≤ x
+  h p = g (p ⁻¹)
+
+  f : ∀ {x y} → x ＝ y → x ＝ y
+  f {x} {y} p = ≤-anti x y (g p) (h p)
+
+  κ : ∀ {x y} p q → f {x} {y} p ＝ f {x} {y} q
+  κ p q = α (g p) (g q) (h p) (h q)
+
+  γ : is-set X
+  γ = Id-collapsibles-are-sets (f , κ)
 
 \end{code}

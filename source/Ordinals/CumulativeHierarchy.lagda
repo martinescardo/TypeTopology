@@ -400,7 +400,7 @@ an arbitrary well founded order) also appears at the bottom of [Acz77, p. 743].
 \begin{code}
 
  open import Ordinals.Arithmetic fe'
- open import Ordinals.ArithmeticProperties ua
+ open import Ordinals.AdditionProperties ua
  open import Ordinals.OrdinalOfOrdinalsSuprema ua
 
  open import Quotient.Type hiding (is-prop-valued)
@@ -518,7 +518,7 @@ ordinals is crucial in proving one of the inequalities.
                       f a ∎
             where
              ⦅e⦆ : c a ↓ inr ⋆ ＝ 𝕍-to-Ord (f a)
-             ⦅e⦆ = +ₒ-𝟙ₒ-↓-right (𝕍-to-Ord (f a))
+             ⦅e⦆ = successor-lemma-right (𝕍-to-Ord (f a))
 
            lemma₂ : (a : A) → Ord-to-𝕍 (s ↓ u a (inr ⋆)) ＝ f a
            lemma₂ a = Ord-to-𝕍 (s ↓ u a (inr ⋆)) ＝⟨ ap Ord-to-𝕍 ⦅e⦆ ⟩

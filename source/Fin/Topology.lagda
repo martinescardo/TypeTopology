@@ -14,15 +14,13 @@ module Fin.Topology where
 open import Fin.Bishop
 open import Fin.Properties
 open import Fin.Type
-open import MLTT.Plus-Properties
 open import MLTT.Spartan
 open import MLTT.SpartanList
-open import Notation.Order
 open import TypeTopology.CompactTypes
 open import UF.DiscreteAndSeparated
 open import UF.Equiv
 open import UF.EquivalenceExamples
-open import UF.ExcludedMiddle
+open import UF.ClassicalLogic
 open import UF.FunExt
 open import UF.PropTrunc
 open import UF.Sets

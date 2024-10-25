@@ -30,7 +30,6 @@ open import UF.Powerset
 open import UF.Sets
 open import UF.Sets-Properties
 open import UF.SubtypeClassifier
-open import UF.SubtypeClassifier-Properties
 open import UF.Subsingletons-FunExt
 
 open PosetAxioms
@@ -103,6 +102,16 @@ module Ideals
  ideals-are-directed-sets : (I : P → Ω (𝓥 ⊔ 𝓣))
                           → is-ideal I → is-directed-set I
  ideals-are-directed-sets I = pr₂
+
+ ideals-are-inhabited : (I : P → Ω (𝓥 ⊔ 𝓣))
+                      → is-ideal I → is-inhabited-set I
+ ideals-are-inhabited I ι =
+  directed-sets-are-inhabited I (ideals-are-directed-sets I ι)
+
+ ideals-are-semidirected : (I : P → Ω (𝓥 ⊔ 𝓣))
+                         → is-ideal I → is-semidirected-set I
+ ideals-are-semidirected I ι =
+  directed-sets-are-semidirected I (ideals-are-directed-sets I ι)
 
  Idl : 𝓥 ⁺ ⊔ 𝓣 ⁺ ⊔ 𝓤 ̇
  Idl = Σ I ꞉ (P → Ω (𝓥 ⊔ 𝓣)) , is-ideal I

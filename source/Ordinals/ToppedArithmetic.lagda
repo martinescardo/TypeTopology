@@ -28,7 +28,7 @@ module Ordinals.ToppedArithmetic
 open import UF.Subsingletons
 
 open import MLTT.Spartan
-open import CoNaturals.GenericConvergentSequence
+open import CoNaturals.Type
 open import TypeTopology.SquashedSum fe
 open import Notation.CanonicalMap
 
@@ -146,7 +146,6 @@ module Omega {𝓤} (pe : propext 𝓤) where
 
  open import Ordinals.OrdinalOfTruthValues fe 𝓤 pe
  open import Ordinals.Notions
- open import UF.Subsingletons-FunExt
  open import UF.SubtypeClassifier
 
  Ωᵒ : Ordinalᵀ (𝓤 ⁺)

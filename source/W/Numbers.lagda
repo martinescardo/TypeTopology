@@ -21,7 +21,7 @@ open import UF.DiscreteAndSeparated
 open import UF.Embeddings
 open import UF.Equiv
 open import UF.EquivalenceExamples
-open import UF.ExcludedMiddle
+open import UF.ClassicalLogic
 open import UF.FunExt
 open import UF.PropIndexedPiSigma
 open import UF.PropTrunc
@@ -68,7 +68,7 @@ elements of 𝓝, or, equivalently, as a partial element of 𝓝.
 
 \begin{code}
 
- _^_ : 𝓤 ̇  → Ω 𝓥 → 𝓥 ⊔ 𝓤 ̇
+ _^_ : 𝓤 ̇ → Ω 𝓥 → 𝓥 ⊔ 𝓤 ̇
  X ^ p = p holds → X
 
  Suc : (p : Ω 𝓥) → 𝓝 ^ p → 𝓝

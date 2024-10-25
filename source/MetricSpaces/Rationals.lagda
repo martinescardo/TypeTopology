@@ -11,7 +11,6 @@ open import MLTT.Spartan renaming (_+_ to _∔_)
 
 open import Notation.Order
 open import UF.FunExt
-open import UF.Base
 open import UF.Subsingletons
 open import UF.PropTrunc
 open import Rationals.Type
@@ -27,7 +26,6 @@ module MetricSpaces.Rationals
   (pt : propositional-truncations-exist)
  where
 
-open import Rationals.MinMax
 open import MetricSpaces.Type fe pe pt
 
 ℚ-zero-dist : (q : ℚ) → abs (q - q) ＝ 0ℚ

@@ -31,12 +31,16 @@ module ordinals-injectivity (fe : FunExt) where
      → (I → Ordinal 𝓦)
      → (I ↪ J)
      → (J → Ordinal (𝓤 ⊔ 𝓥 ⊔ 𝓦))
- α ↗ (e , e-is-embedding) = λ j → ((a / e) j  ,
-                                   Extension.order j ,
-                                   Extension.well-order j (λ i → is-well-ordered (α i)))
+ α ↗ (e , e-is-embedding) =
+  λ j → ((a / e) j  ,
+         Extension.order j ,
+         Extension.well-order j (λ i → is-well-ordered (α i)))
   where
    a = λ i → ⟨ α i ⟩
-   module Extension = extension fe a e e-is-embedding (λ {i} → underlying-order (α i))
+
+   module Extension = extension fe a e
+                       e-is-embedding
+                       (λ {i} → underlying-order (α i))
 
  ↗-propertyₒ : {I : 𝓤  ̇ } {J : 𝓥 ̇ }
               (α : I → Ordinal 𝓦)
@@ -92,8 +96,9 @@ module ordinals-injectivity (fe : FunExt) where
 
  Ordinal-is-ainjective : is-univalent (𝓤 ⊔ 𝓥)
                        → ainjective-type (Ordinal (𝓤 ⊔ 𝓥)) 𝓤 𝓥
- Ordinal-is-ainjective ua e e-is-embedding α = (α ↗ (e , e-is-embedding)) ,
-                                               ↗-property ua α (e , e-is-embedding)
+ Ordinal-is-ainjective ua e e-is-embedding α =
+  (α ↗ (e , e-is-embedding)) ,
+  ↗-property ua α (e , e-is-embedding)
 
 module topped-ordinals-injectivity (fe : FunExt) where
 
@@ -104,13 +109,16 @@ module topped-ordinals-injectivity (fe : FunExt) where
      → (I → Ordinalᵀ 𝓦)
      → (I ↪ J)
      → (J → Ordinalᵀ (𝓤 ⊔ 𝓥 ⊔ 𝓦))
- τ ↗ (e , e-is-embedding) = λ j → ((t / e) j ,
-                                   Extension.order j ,
-                                   Extension.well-order j (λ i → tis-well-ordered (τ i))) ,
-                                   Extension.top-preservation j (λ i → topped (τ i))
+ τ ↗ (e , e-is-embedding) =
+  λ j → ((t / e) j ,
+         Extension.order j ,
+         Extension.well-order j (λ i → tis-well-ordered (τ i))) ,
+         Extension.top-preservation j (λ i → topped (τ i))
   where
    t = λ x → ⟨ τ x ⟩
-   module Extension = extension fe t e e-is-embedding (λ {i} → underlying-order (τ i))
+   module Extension = extension fe t e
+                       e-is-embedding
+                       (λ {i} → underlying-order (τ i))
 
  ↗-propertyₒ : {I : 𝓤  ̇ } {J : 𝓥 ̇ }
                (α : I → Ordinalᵀ 𝓦)
@@ -130,13 +138,10 @@ Added 11th May 2022.
 
 \begin{code}
 
-open import UF.Univalence
-
 module ordinals-injectivity-order (ua : Univalence) where
 
  open import Ordinals.OrdinalOfOrdinals ua
  open import UF.UA-FunExt
- open import UF.Subsingletons
 
  fe : FunExt
  fe = Univalence-gives-FunExt ua
@@ -165,7 +170,8 @@ module ordinals-injectivity-order (ua : Univalence) where
    fi ϕ γ ((i , refl) , m) = ⦅b⦆ ⦅a⦆
     where
      g⁻¹ : ⟨ α i ⟩ → ⟨ (α ↗ 𝓮) (e i) ⟩
-     g⁻¹ = case (↗-propertyₒ α 𝓮 i) of (λ (g , gop , geq , g⁻¹op) → inverse g geq)
+     g⁻¹ = case (↗-propertyₒ α 𝓮 i) of
+            (λ (g , gop , geq , g⁻¹op) → inverse g geq)
 
      w : fiber e (e i)
      w = (i , refl)
@@ -218,7 +224,6 @@ module ordinals-injectivity-order (ua : Univalence) where
    fop : is-order-preserving ((α ↗ 𝓮) j) ((β ↗ 𝓮) j) f
    fop ϕ γ ((i , refl) , m) = (i , refl) , hop i (ϕ (i , refl)) (γ (i , refl)) m
 
-
 module topped-ordinals-injectivity-order (ua : Univalence) where
 
  open import UF.UA-FunExt
@@ -228,7 +233,6 @@ module topped-ordinals-injectivity-order (ua : Univalence) where
 
  open import Ordinals.ToppedType fe
  open import Ordinals.OrdinalOfOrdinals ua
- open import UF.Subsingletons
 
  open topped-ordinals-injectivity fe
 

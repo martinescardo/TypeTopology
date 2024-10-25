@@ -13,10 +13,9 @@ module Lifting.MonadVariation where
 
 open import UF.Subsingletons
 open import UF.Embeddings
-open import UF.Equiv
 open import UF.FunExt
 
-open import Lifting.Lifting
+open import Lifting.Construction
 open import Lifting.EmbeddingDirectly
 
 𝓛* : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) → is-embedding f → 𝓛 𝓣 Y → 𝓛 (𝓤 ⊔ 𝓥 ⊔ 𝓣) X

@@ -21,7 +21,7 @@ open import UF.FunExt
 
 module TypeTopology.GenericConvergentSequenceCompactness (fe : funext 𝓤₀ 𝓤₀) where
 
-open import CoNaturals.GenericConvergentSequence
+open import CoNaturals.Type
 open import MLTT.Two-Properties
 open import Notation.CanonicalMap
 open import TypeTopology.CompactTypes
@@ -37,8 +37,8 @@ We recall the main notions defined in the above imported modules:
 private
  module recall {X : 𝓤 ̇ } where
 
-  recall₀ : is-compact∙ X    ＝ (Π p ꞉ (X → 𝟚) , Σ x₀ ꞉ X , (p x₀ ＝ ₁ → Π x ꞉ X , p x ＝ ₁))
-  recall₁ : is-compact  X    ＝ (Π p ꞉ (X → 𝟚) , (Σ x ꞉ X , p x ＝ ₀) + (Π x ꞉ X , p x ＝ ₁))
+  recall₀ : is-compact∙ X ＝ (Π p ꞉ (X → 𝟚) , Σ x₀ ꞉ X , (p x₀ ＝ ₁ → Π x ꞉ X , p x ＝ ₁))
+  recall₁ : is-compact  X ＝ (Π p ꞉ (X → 𝟚) , (Σ x ꞉ X , p x ＝ ₀) + (Π x ꞉ X , p x ＝ ₁))
   recall₂ : is-discrete X ＝ ((x y : X) → (x ＝ y) + (x ≠ y))
 
   recall₀ = by-definition
@@ -69,7 +69,6 @@ This is the main theorem proved in this module.
                  α 0       ＝⟨ ap (λ - → ι - 0) r ⟩
                  ι (ι 0) 0 ＝⟨ refl ⟩
                  ₀         ∎
-
   Dagger₀ (succ n) r = p (ι (succ n))          ＝⟨ w ⁻¹ ⟩
                        α (succ n)              ＝⟨ ap (λ - → ι - (succ n)) r ⟩
                        ι (ι (succ n)) (succ n) ＝⟨ ℕ-to-ℕ∞-diagonal₀ n ⟩
@@ -96,7 +95,6 @@ This is the main theorem proved in this module.
     s : α n ＝ ₁
     s = ap (λ - → ι - n) r
 
-    w : α (succ n) ＝ p (ι (succ n))
     w = α (succ n)              ＝⟨ ap (λ - → min𝟚 - (p (ι (succ n)))) s ⟩
         min𝟚 ₁ (p (ι (succ n))) ＝⟨ refl ⟩
         p (ι (succ n))          ∎
@@ -134,6 +132,12 @@ Corollaries:
 
 ℕ∞-Compact : is-Compact ℕ∞ {𝓤}
 ℕ∞-Compact = compact-types-are-Compact ℕ∞-compact
+
+ℕ∞-Π-Compact : is-Π-Compact ℕ∞ {𝓤}
+ℕ∞-Π-Compact = Σ-Compact-types-are-Π-Compact ℕ∞ ℕ∞-Compact
+
+ℕ∞-Compact∙ : is-Compact∙ ℕ∞ {𝓤}
+ℕ∞-Compact∙ = Compact-pointed-gives-Compact∙ ℕ∞-Compact ∞
 
 ℕ∞→ℕ-is-discrete : is-discrete (ℕ∞ → ℕ)
 ℕ∞→ℕ-is-discrete = discrete-to-power-compact-is-discrete fe ℕ∞-compact (λ u → ℕ-is-discrete)

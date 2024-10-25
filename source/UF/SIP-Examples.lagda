@@ -24,7 +24,7 @@ Each example is in a submodule:
   * contrived example
   * generalized functor algebra
   * type-valued preorder
-  * type-valued preorder with- xioms
+  * type-valued preorder with axioms
   * category
 
 We also consider the following, which are not in the above lecture
@@ -47,7 +47,6 @@ open import UF.Embeddings
 open import UF.Equiv hiding (_≅_)
 open import UF.EquivalenceExamples
 open import UF.FunExt
-open import UF.Retracts
 open import UF.SIP
 open import UF.Sets
 open import UF.Sets-Properties
@@ -87,25 +86,20 @@ module ∞-magma {𝓤 : Universe} where
    θ _·_ _*_ = equiv-closed-under-∼ _ _ (id-is-equiv (_·_ ＝ _*_)) h
 
  _≅_ : ∞-Magma → ∞-Magma → 𝓤 ̇
-
  (X , _·_) ≅ (Y , _*_) =
-
            Σ f ꞉ (X → Y) , is-equiv f
                          × ((λ x x' → f (x · x')) ＝ (λ x x' → f x * f x'))
 
- characterization-of-∞-Magma-＝ : is-univalent 𝓤 → (A B : ∞-Magma) → (A ＝ B) ≃ (A ≅ B)
+ characterization-of-∞-Magma-＝ : is-univalent 𝓤
+                               → (A B : ∞-Magma)
+                               → (A ＝ B) ≃ (A ≅ B)
  characterization-of-∞-Magma-＝ ua = characterization-of-＝ ua sns-data
 
- characterization-of-characterization-of-∞-Magma-＝ :
-
-    (ua : is-univalent 𝓤) (A : ∞-Magma)
-  →
-    ⌜ characterization-of-∞-Magma-＝ ua A A ⌝ (𝓻𝓮𝒻𝓵 A)
-  ＝
-    (-id ⟨ A ⟩ , id-is-equiv ⟨ A ⟩ , refl)
-
+ characterization-of-characterization-of-∞-Magma-＝
+  : (ua : is-univalent 𝓤) (A : ∞-Magma)
+  → ⌜ characterization-of-∞-Magma-＝ ua A A ⌝ (𝓻𝓮𝒻𝓵 A)
+  ＝ (-id ⟨ A ⟩ , id-is-equiv ⟨ A ⟩ , refl)
  characterization-of-characterization-of-∞-Magma-＝ ua A = refl
-
 
 module magma {𝓤 : Universe} where
 
@@ -117,11 +111,12 @@ module magma {𝓤 : Universe} where
  _≅_ : Magma → Magma → 𝓤 ̇
 
  (X , _·_ , _) ≅ (Y , _*_ , _) =
-
                Σ f ꞉ (X → Y), is-equiv f
                             × ((λ x x' → f (x · x')) ＝ (λ x x' → f x * f x'))
 
- characterization-of-Magma-＝ : is-univalent 𝓤 → (A B : Magma ) → (A ＝ B) ≃ (A ≅ B)
+ characterization-of-Magma-＝ : is-univalent 𝓤
+                             → (A B : Magma )
+                             → (A ＝ B) ≃ (A ≅ B)
  characterization-of-Magma-＝ ua =
    characterization-of-＝-with-axioms ua
      ∞-magma.sns-data
@@ -154,9 +149,7 @@ module pointed-type {𝓤 : Universe} where
 
  characterization-of-pointed-type-＝ : is-univalent 𝓤
                                     → (A B : Σ Pointed)
-
                                     → (A ＝ B) ≃ (A ≅ B)
-
  characterization-of-pointed-type-＝ ua = characterization-of-＝ ua sns-data
 
 module pointed-∞-magma {𝓤 : Universe} where
@@ -167,18 +160,14 @@ module pointed-∞-magma {𝓤 : Universe} where
  ∞-Magma· = Σ X ꞉ 𝓤 ̇ , (X → X → X) × X
 
  _≅_ : ∞-Magma· → ∞-Magma· → 𝓤 ̇
-
  (X ,  _·_ , x₀) ≅ (Y ,  _*_ , y₀) =
-
                  Σ f ꞉ (X → Y), is-equiv f
                               × ((λ x x' → f (x · x')) ＝ (λ x x' → f x * f x'))
                               × (f x₀ ＝ y₀)
 
  characterization-of-pointed-magma-＝ : is-univalent 𝓤
                                      → (A B : ∞-Magma·)
-
                                      → (A ＝ B) ≃ (A ≅ B)
-
  characterization-of-pointed-magma-＝ ua = characterization-of-join-＝ ua
                                             ∞-magma.sns-data
                                             pointed-type.sns-data
@@ -211,18 +200,14 @@ module monoid {𝓤 : Universe} where
    i = pr₁ s
 
    γ : is-prop (monoid-axioms X (_·_ , e))
-   γ = ×-is-prop
-         (being-set-is-prop fe)
-      (×-is-prop
-         (Π-is-prop fe
-           (λ x → i {e · x} {x}))
-      (×-is-prop
-         (Π-is-prop fe
-           (λ x → i {x · e} {x}))
-         (Π-is-prop fe
-           (λ x → Π-is-prop fe
-           (λ y → Π-is-prop fe
-           (λ z → i {(x · y) · z} {x · (y · z)}))))))
+   γ = ×₄-is-prop
+        (being-set-is-prop fe)
+        (Π-is-prop fe (λ x → i {e · x} {x}))
+        (Π-is-prop fe (λ x → i {x · e} {x}))
+        (Π-is-prop fe
+          (λ x → Π-is-prop fe
+          (λ y → Π-is-prop fe
+          (λ z → i {(x · y) · z} {x · (y · z)}))))
 
  sns-data : funext 𝓤 𝓤
           → SNS (λ X → Σ s ꞉ monoid-structure X , monoid-axioms X s) 𝓤
@@ -233,18 +218,14 @@ module monoid {𝓤 : Universe} where
                    pointed-type.sns-data)
 
  _≅_ : Monoid → Monoid → 𝓤 ̇
-
  (X , (_·_ , d) , _) ≅ (Y , (_*_ , e) , _) =
-
-                     Σ f ꞉ (X → Y), is-equiv f
-                                  × ((λ x x' → f (x · x')) ＝ (λ x x' → f x * f x'))
-                                  × (f d ＝ e)
+    Σ f ꞉ (X → Y), is-equiv f
+                 × ((λ x x' → f (x · x')) ＝ (λ x x' → f x * f x'))
+                 × (f d ＝ e)
 
  characterization-of-monoid-＝ : is-univalent 𝓤
                               → (A B : Monoid)
-
                               → (A ＝ B) ≃ (A ≅ B)
-
  characterization-of-monoid-＝ ua = characterization-of-＝ ua
                                     (sns-data (univalence-gives-funext ua))
 
@@ -269,7 +250,6 @@ module associative-∞-magma
  respect-assoc : {X A : 𝓤 ̇ } (_·_ : X → X → X) (_*_ : A → A → A)
                → associative _·_ → associative _*_
                → (f : X → A) → homomorphic _·_ _*_ f → 𝓤 ̇
-
  respect-assoc _·_ _*_ α β f h  =  fα ＝ βf
   where
    l = λ x y z → f ((x · y) · z)   ＝⟨ ap (λ - → - (x · y) z) h ⟩
@@ -287,7 +267,6 @@ module associative-∞-magma
  remark : {X : 𝓤 ̇ } (_·_ : X → X → X) (α β : associative _·_ )
         → respect-assoc _·_ _·_ α β id (𝓻𝓮𝒻𝓵 _·_)
         ＝ ((λ x y z → 𝓻𝓮𝒻𝓵 ((x · y) · z) ∙ ap id (α x y z)) ＝ β)
-
  remark _·_ α β = refl
 
  open sip hiding (homomorphic)
@@ -311,19 +290,23 @@ module associative-∞-magma
      p : (λ x y z → 𝓻𝓮𝒻𝓵 ((x · y) · z) ∙ ap id (α x y z)) ＝ α
      p =  dfunext fe (λ x → dfunext fe (λ y → dfunext fe (λ z → q x y z)))
 
-   u : (X : 𝓤 ̇ ) → ∀ s → ∃! t ꞉ ∞-amagma-structure X , ι (X , s) (X , t) (≃-refl X)
+   u : (X : 𝓤 ̇ )
+     → ∀ s
+     → ∃! t ꞉ ∞-amagma-structure X , ι (X , s) (X , t) (≃-refl X)
    u X (_·_ , α) = c , φ
     where
      c : Σ t ꞉ ∞-amagma-structure X , ι (X , _·_ , α) (X , t) (≃-refl X)
      c = (_·_ , α) , ρ (X , _·_ , α)
 
-     φ : (σ : Σ t ꞉ ∞-amagma-structure X , ι (X , _·_ , α) (X , t) (≃-refl X)) → c ＝ σ
+     φ : (σ : Σ t ꞉ ∞-amagma-structure X , ι (X , _·_ , α) (X , t) (≃-refl X))
+       → c ＝ σ
      φ ((_·_ , β) , refl {_·_} , k) = γ
       where
        a : associative _·_
        a x y z = 𝓻𝓮𝒻𝓵 ((x · y) · z) ∙ ap id (α x y z)
 
-       g : singleton-type a → Σ t ꞉ ∞-amagma-structure X , ι (X , _·_ , α) (X , t) (≃-refl X)
+       g : singleton-type a
+         → Σ t ꞉ ∞-amagma-structure X , ι (X , _·_ , α) (X , t) (≃-refl X)
        g (β , k) = (_·_ , β) , (𝓻𝓮𝒻𝓵 _·_) , k
 
        i : is-prop (singleton-type a)
@@ -359,7 +342,8 @@ module group {𝓤 : Universe} where
  group-axiom X (_·_ , e) = (x : X) → Σ x' ꞉ X , (x · x' ＝ e) × (x' · x ＝ e)
 
  Group : 𝓤 ⁺ ̇
- Group = Σ X ꞉ 𝓤 ̇ , Σ ((_·_ , e) , a) ꞉ group-structure X , group-axiom X (_·_ , e)
+ Group = Σ X ꞉ 𝓤 ̇
+       , Σ ((_·_ , e) , a) ꞉ group-structure X , group-axiom X (_·_ , e)
 
  inv-lemma : (X : 𝓤 ̇ ) (_·_ : X → X → X) (e : X)
            → monoid-axioms X (_·_ , e)
@@ -367,9 +351,7 @@ module group {𝓤 : Universe} where
            → (y · x) ＝ e
            → (x · z) ＝ e
            → y ＝ z
-
  inv-lemma X _·_  e (s , l , r , a) x y z q p =
-
     y             ＝⟨ (r y)⁻¹ ⟩
     (y · e)       ＝⟨ ap (y ·_) (p ⁻¹) ⟩
     (y · (x · z)) ＝⟨ (a y x z)⁻¹ ⟩
@@ -381,7 +363,6 @@ module group {𝓤 : Universe} where
                      → (X : 𝓤 ̇ )
                      → (s : group-structure X)
                      → is-prop (group-axiom X (pr₁ s))
-
  group-axiom-is-prop fe X ((_·_ , e) , (s , l , r , a)) = γ
   where
    i : (x : X) → is-prop (Σ x' ꞉ X , (x · x' ＝ e) × (x' · x ＝ e))
@@ -403,26 +384,25 @@ module group {𝓤 : Universe} where
                 (monoid.sns-data fe)
 
  _≅_ : Group → Group → 𝓤 ̇
-
  (X , ((_·_ , d) , _) , _) ≅ (Y , ((_*_ , e) , _) , _) =
+    Σ f ꞉ (X → Y), is-equiv f
+                 × ((λ x x' → f (x · x')) ＝ (λ x x' → f x * f x'))
+                 × (f d ＝ e)
 
-            Σ f ꞉ (X → Y), is-equiv f
-                         × ((λ x x' → f (x · x')) ＝ (λ x x' → f x * f x'))
-                         × (f d ＝ e)
-
- characterization-of-group-＝ : is-univalent 𝓤 → (A B : Group) → (A ＝ B) ≃ (A ≅ B)
+ characterization-of-group-＝ : is-univalent 𝓤
+                             → (A B : Group)
+                             → (A ＝ B) ≃ (A ≅ B)
  characterization-of-group-＝ ua = characterization-of-＝ ua
                                    (sns-data (univalence-gives-funext ua))
 
  _≅'_ : Group → Group → 𝓤 ̇
-
  (X , ((_·_ , d) , _) , _) ≅' (Y , ((_*_ , e) , _) , _) =
-
-            Σ f ꞉ (X → Y), is-equiv f
-                         × ((λ x x' → f (x · x')) ＝ (λ x x' → f x * f x'))
+    Σ f ꞉ (X → Y), is-equiv f
+                 × ((λ x x' → f (x · x')) ＝ (λ x x' → f x * f x'))
 
  group-structure-of : (G : Group) → group-structure ⟨ G ⟩
- group-structure-of (X , ((_·_ , e) , i , l , r , a) , γ) = (_·_ , e) , i , l , r , a
+ group-structure-of (X , ((_·_ , e) , i , l , r , a) , γ) =
+  (_·_ , e) , i , l , r , a
 
  monoid-structure-of : (G : Group) → monoid-structure ⟨ G ⟩
  monoid-structure-of (X , ((_·_ , e) , i , l , r , a) , γ) = (_·_ , e)
@@ -440,22 +420,18 @@ module group {𝓤 : Universe} where
 
  group-is-set : (G : Group)
               → is-set ⟨ G ⟩
-
  group-is-set (X , ((_·_ , e) , i , l , r , a) , γ) = i
 
  unit-left : (G : Group) (x : ⟨ G ⟩)
            → unit G ·⟨ G ⟩ x ＝ x
-
  unit-left (X , ((_·_ , e) , i , l , r , a) , γ) x = l x
 
  unit-right : (G : Group) (x : ⟨ G ⟩)
             → x ·⟨ G ⟩ unit G ＝ x
-
  unit-right (X , ((_·_ , e) , i , l , r , a) , γ) x = r x
 
  assoc : (G : Group) (x y z : ⟨ G ⟩)
        → (x ·⟨ G ⟩ y) ·⟨ G ⟩ z ＝ x ·⟨ G ⟩ (y ·⟨ G ⟩ z)
-
  assoc (X , ((_·_ , e) , i , l , r , a) , γ) = a
 
  inv : (G : Group) → ⟨ G ⟩ → ⟨ G ⟩
@@ -463,7 +439,6 @@ module group {𝓤 : Universe} where
 
  inv-left : (G : Group) (x : ⟨ G ⟩)
           → inv G x ·⟨ G ⟩ x ＝ unit G
-
  inv-left (X , ((_·_ , e) , i , l , r , a) , γ) x = pr₂ (pr₂ (γ x))
 
  inv-right : (G : Group) (x : ⟨ G ⟩)
@@ -481,7 +456,6 @@ module group {𝓤 : Universe} where
  idempotent-is-unit : (G : Group) (x : ⟨ G ⟩)
                     → x ·⟨ G ⟩ x ＝ x
                     → x ＝ unit G
-
  idempotent-is-unit G x p = γ
   where
    x' = inv G x
@@ -495,7 +469,6 @@ module group {𝓤 : Universe} where
  unit-preservation-lemma : (G H : Group) (f : ⟨ G ⟩ → ⟨ H ⟩)
                          → preserves-multiplication G H f
                          → preserves-unit G H f
-
  unit-preservation-lemma G H f m = idempotent-is-unit H e p
   where
    e  = f (unit G)
@@ -508,19 +481,16 @@ module group {𝓤 : Universe} where
            → (y ·⟨ G ⟩ x) ＝ unit G
            → (x ·⟨ G ⟩ z) ＝ unit G
            → y ＝ z
-
  inv-Lemma G = inv-lemma ⟨ G ⟩ (multiplication G) (unit G) (monoid-axioms-of G)
 
  one-left-inv : (G : Group) (x x' : ⟨ G ⟩)
               → (x' ·⟨ G ⟩ x) ＝ unit G
               → x' ＝ inv G x
-
  one-left-inv G x x' p = inv-Lemma G x x' (inv G x) p (inv-right G x)
 
  one-right-inv : (G : Group) (x x' : ⟨ G ⟩)
                → (x ·⟨ G ⟩ x') ＝ unit G
                → x' ＝ inv G x
-
  one-right-inv G x x' p = (inv-Lemma G x (inv G x) x' (inv-left G x) p)⁻¹
 
  preserves-inv : (G H : Group) → (⟨ G ⟩ → ⟨ H ⟩) → 𝓤 ̇
@@ -529,7 +499,6 @@ module group {𝓤 : Universe} where
  inv-preservation-lemma : (G H : Group) (f : ⟨ G ⟩ → ⟨ H ⟩)
                         → preserves-multiplication G H f
                         → preserves-inv G H f
-
  inv-preservation-lemma G H f m x = γ
   where
    p = f (inv G x) ·⟨ H ⟩ f x ＝⟨ (ap (λ - → - (inv G x) x) m)⁻¹ ⟩
@@ -567,7 +536,6 @@ module group {𝓤 : Universe} where
                                → (G H : Group) (f : ⟨ G ⟩ → ⟨ H ⟩)
                                → is-homomorphism G H f
                                ≃ preserves-multiplication G H f
-
  notions-of-homomorphism-agree fe G H f = γ
   where
    α : is-homomorphism G H f → preserves-multiplication G H f
@@ -596,7 +564,6 @@ module group {𝓤 : Universe} where
  forget-unit-preservation-is-equiv : funext 𝓤 𝓤
                                    → (G H : Group)
                                    → is-equiv (forget-unit-preservation G H)
-
  forget-unit-preservation-is-equiv fe G H = ⌜⌝-is-equiv (≅-agreement fe G H)
 
 module subgroup
@@ -610,6 +577,7 @@ module subgroup
  open sip
  open monoid {𝓤} hiding (sns-data ; _≅_)
  open group {𝓤}
+
  open import UF.Powerset
  open import UF.Classifiers
 
@@ -633,17 +601,11 @@ module subgroup
 
   being-group-closed-subset-is-prop : (A : 𝓟 ⟨ G ⟩)
                                     → is-prop (group-closed (_∈ A))
-  being-group-closed-subset-is-prop A = ×-is-prop
-                                            (∈-is-prop A (unit G))
-                                         (×-is-prop
-                                            (Π-is-prop fe
-                                               (λ x → Π-is-prop fe
-                                               (λ y → Π-is-prop fe
-                                               (λ _ → Π-is-prop fe
-                                               (λ _ → ∈-is-prop A (x · y))))))
-                                            (Π-is-prop fe
-                                               (λ x → Π-is-prop fe
-                                               (λ _ → ∈-is-prop A (inv G x)))))
+  being-group-closed-subset-is-prop A =
+   ×₃-is-prop
+    (∈-is-prop A (unit G))
+    (Π₄-is-prop fe (λ x y _ _ → ∈-is-prop A (x · y)))
+    (Π₂-is-prop fe (λ x _ → ∈-is-prop A (inv G x)))
 
   ⟪⟫-is-embedding : is-embedding ⟪_⟫
   ⟪⟫-is-embedding = pr₁-is-embedding being-group-closed-subset-is-prop
@@ -662,7 +624,6 @@ module subgroup
   subgroup-equality : (S T : Subgroups)
                     → (S ＝ T)
                     ≃ ((x : ⟨ G ⟩) → (x ∈ ⟪ S ⟫) ↔ (x ∈ ⟪ T ⟫))
-
   subgroup-equality S T = γ
    where
     f : S ＝ T → (x : ⟨ G ⟩) → x ∈ ⟪ S ⟫ ↔ x ∈ ⟪ T ⟫
@@ -718,9 +679,10 @@ module subgroup
      i' = (pmult' , punit')
 
      p : _*_ ＝ _*'_
-     p = dfunext fe (λ x → dfunext fe (λ y → h-lc (h (x * y)  ＝⟨  ap (λ - → - x y) pmult ⟩
-                                                   h x · h y  ＝⟨ (ap (λ - → - x y) pmult')⁻¹ ⟩
-                                                   h (x *' y) ∎)))
+     p = dfunext fe (λ x → dfunext fe (λ y →
+          h-lc (h (x * y)  ＝⟨  ap (λ - → - x y) pmult ⟩
+                h x · h y  ＝⟨ (ap (λ - → - x y) pmult')⁻¹ ⟩
+                h (x *' y) ∎)))
      q : unitH ＝ unitH'
      q = h-lc (h unitH  ＝⟨  punit ⟩
                unit G   ＝⟨  punit' ⁻¹ ⟩
@@ -737,11 +699,12 @@ module subgroup
      γ : (τ  , i) ＝ (τ' , i')
      γ = to-subtype-＝ (λ τ → being-homomorphism-is-prop fe (X , τ) G h) δ
 
-   group-closed-fiber-gives-homomorphic-structure : funext 𝓤 𝓤
-                                                  → group-closed (fiber h)
-                                                  → (Σ τ ꞉ T X , is-homomorphism (X , τ) G h)
-
-   group-closed-fiber-gives-homomorphic-structure fe (unitc , mulc , invc) = τ , i
+   group-closed-fiber-gives-homomorphic-structure
+    : funext 𝓤 𝓤
+    → group-closed (fiber h)
+    → (Σ τ ꞉ T X , is-homomorphism (X , τ) G h)
+   group-closed-fiber-gives-homomorphic-structure fe (unitc , mulc , invc) =
+    τ , i
     where
      φ : (x : X) → fiber h (h x)
      φ x = (x , 𝓻𝓮𝒻𝓵 (h x))
@@ -808,9 +771,9 @@ module subgroup
      i : is-homomorphism (X , τ) G h
      i = dfunext fe (λ x → dfunext fe (pmul x)) , punit
 
-   homomorphic-structure-gives-group-closed-fiber : (Σ τ ꞉ T X , is-homomorphism (X , τ) G h)
-                                                  → group-closed (fiber h)
-
+   homomorphic-structure-gives-group-closed-fiber
+    : (Σ τ ꞉ T X , is-homomorphism (X , τ) G h)
+    → group-closed (fiber h)
    homomorphic-structure-gives-group-closed-fiber
        ((((_*_ , unitH) , maxioms) , gaxiom) , (pmult , punit))
      = (unitc , mulc , invc)
@@ -836,33 +799,39 @@ module subgroup
    fiber-structure-lemma : funext 𝓤 𝓤
                          → group-closed (fiber h)
                          ≃ (Σ τ ꞉ T X , is-homomorphism (X , τ) G h)
+   fiber-structure-lemma fe =
+    logically-equivalent-props-are-equivalent
+     having-group-closed-fiber-is-prop
+     at-most-one-homomorphic-structure
+     (group-closed-fiber-gives-homomorphic-structure fe)
+     homomorphic-structure-gives-group-closed-fiber
 
-   fiber-structure-lemma fe = logically-equivalent-props-are-equivalent
-                               having-group-closed-fiber-is-prop
-                               at-most-one-homomorphic-structure
-                               (group-closed-fiber-gives-homomorphic-structure fe)
-                               homomorphic-structure-gives-group-closed-fiber
+\end{code}
 
-  characterization-of-the-type-of-subgroups : Subgroups ≃ (Σ H ꞉ Group
-                                                         , Σ h ꞉ (⟨ H ⟩ → ⟨ G ⟩)
-                                                         , is-embedding h
-                                                         × is-homomorphism H G h)
+TODO. I don't see how to respect the 80-character limit per line in
+the following.
+
+\begin{code}
+
+  characterization-of-the-type-of-subgroups
+   : Subgroups ≃ (Σ H ꞉ Group
+                , Σ h ꞉ (⟨ H ⟩ → ⟨ G ⟩)
+                , is-embedding h
+                × is-homomorphism H G h)
   characterization-of-the-type-of-subgroups =
-
    Subgroups                                                                                       ≃⟨ i ⟩
    (Σ A ꞉ 𝓟 ⟨ G ⟩ , group-closed (_∈ A))                                                           ≃⟨ ii ⟩
-   (Σ (X , h , e) ꞉ Subtypes ⟨ G ⟩ , group-closed (fiber h))                                       ≃⟨ iii ⟩
+   (Σ (X , h , e) ꞉ Subtype ⟨ G ⟩ , group-closed (fiber h))                                       ≃⟨ iii ⟩
    (Σ X ꞉ 𝓤 ̇ , Σ (h , e) ꞉ X ↪ ⟨ G ⟩ , group-closed (fiber h))                                     ≃⟨ iv ⟩
    (Σ X ꞉ 𝓤 ̇ , Σ (h , e) ꞉ X ↪ ⟨ G ⟩ , Σ τ ꞉ T X , is-homomorphism (X , τ) G h)                    ≃⟨ v ⟩
    (Σ X ꞉ 𝓤 ̇ , Σ h ꞉ (X → ⟨ G ⟩) , Σ e ꞉ is-embedding h , Σ τ ꞉ T X , is-homomorphism (X , τ) G h) ≃⟨ vi ⟩
    (Σ X ꞉ 𝓤 ̇ , Σ h ꞉ (X → ⟨ G ⟩) , Σ τ ꞉ T X , Σ e ꞉ is-embedding h , is-homomorphism (X , τ) G h) ≃⟨ vii ⟩
    (Σ X ꞉ 𝓤 ̇ , Σ τ ꞉ T X , Σ h ꞉ (X → ⟨ G ⟩) , is-embedding h × is-homomorphism (X , τ) G h)       ≃⟨ viii ⟩
    (Σ H ꞉ Group , Σ h ꞉ (⟨ H ⟩ → ⟨ G ⟩) , is-embedding h × is-homomorphism H G h)                  ■
-
       where
        open special-classifier-single-universe 𝓤
 
-       φ : Subtypes ⟨ G ⟩ → 𝓟 ⟨ G ⟩
+       φ : Subtype ⟨ G ⟩ → 𝓟 ⟨ G ⟩
        φ = χ-special is-prop ⟨ G ⟩
 
        j : is-equiv φ
@@ -907,7 +876,6 @@ module ring {𝓤 : Universe} (ua : Univalence) where
 
  rng-axioms-is-prop : (R : 𝓤 ̇ ) (s : rng-structure R)
                     → is-prop (rng-axioms R s)
-
  rng-axioms-is-prop R (_+_ , _·_) = prop-criterion δ
   where
    δ : rng-axioms R (_+_ , _·_) → is-prop (rng-axioms R (_+_ , _·_))
@@ -955,33 +923,19 @@ module ring {𝓤 : Universe} (ua : Univalence) where
        e = to-subtype-＝ d (a O O' f f')
 
      γ : is-prop (rng-axioms R (_+_ , _·_))
-     γ = ×-is-prop
-           (being-set-is-prop fe)
-        (×-is-prop
-           (Π-is-prop fe
-           (λ x → Π-is-prop fe
-           (λ y → Π-is-prop fe
-           λ z → i {(x + y) + z} {x + (y + z)})))
-        (×-is-prop
-           (Π-is-prop fe
-           (λ x → Π-is-prop fe
-           (λ y → i {x + y} {y + x})))
-        (×-is-prop
-           IV-is-prop
-        (×-is-prop
-           (Π-is-prop fe
-           (λ x → Π-is-prop fe
-           (λ y → Π-is-prop fe
-           (λ z → i {(x · y) · z} {x · (y · z)}))))
-        (×-is-prop
-           (Π-is-prop fe
-           (λ x → Π-is-prop fe
-           (λ y → Π-is-prop fe
-           (λ z → i {x · (y + z)} {(x · y) + (x · z)}))))
-           (Π-is-prop fe
-           (λ x → Π-is-prop fe
-           (λ y → Π-is-prop fe
-           (λ z → i {(y + z) · x} {(y · x) + (z · x)})))))))))
+     γ = ×₇-is-prop
+          (being-set-is-prop fe)
+          (Π₃-is-prop fe
+           (λ x y z → i {(x + y) + z} {x + (y + z)}))
+          (Π₂-is-prop fe
+            (λ x y → i {x + y} {y + x}))
+          IV-is-prop
+          (Π₃-is-prop fe
+           (λ x y z → i {(x · y) · z} {x · (y · z)}))
+          (Π₃-is-prop fe
+           (λ x y z → i {x · (y + z)} {(x · y) + (x · z)}))
+          (Π₃-is-prop fe
+           (λ x y z → i {(y + z) · x} {(y · x) + (z · x)}))
 
  _≅[Rng]_ : Rng → Rng → 𝓤 ̇
 
@@ -1014,8 +968,8 @@ module ring {𝓤 : Universe} (ua : Univalence) where
 
  ring-axioms-is-prop : (R : 𝓤 ̇ ) (s : ring-structure R)
                              → is-prop (ring-axioms R s)
-
- ring-axioms-is-prop R (𝟏 , _+_ , _·_) ((i , ii-vii) , viii) = γ ((i , ii-vii) , viii)
+ ring-axioms-is-prop R (𝟏 , _+_ , _·_) ((i , ii-vii) , viii) =
+  γ ((i , ii-vii) , viii)
   where
    γ : is-prop (ring-axioms R (𝟏 , _+_ , _·_))
    γ = ×-is-prop
@@ -1051,10 +1005,7 @@ module ring {𝓤 : Universe} (ua : Univalence) where
 
  being-commutative-is-prop : (𝓡 : Rng) → is-prop (is-commutative 𝓡)
  being-commutative-is-prop (R , (_+_ , _·_) , i , ii-vii) =
-
-   Π-is-prop fe
-   (λ x → Π-is-prop fe
-   (λ y → i {x · y} {y · x}))
+   Π₂-is-prop fe (λ x y → i {x · y} {y · x})
 
  open import UF.Powerset
 
@@ -1064,7 +1015,10 @@ module ring {𝓤 : Universe} (ua : Univalence) where
                                               × (y ∈ I → (x · y) ∈ I)
 
  is-local : Rng → 𝓤 ⁺ ̇
- is-local 𝓡 = ∃! I ꞉ 𝓟 ⟨ 𝓡 ⟩ , (is-ideal 𝓡 I → (J : 𝓟 ⟨ 𝓡 ⟩) → is-ideal 𝓡 J → J ⊆ I)
+ is-local 𝓡 = ∃! I ꞉ 𝓟 ⟨ 𝓡 ⟩ , (is-ideal 𝓡 I
+                               → (J : 𝓟 ⟨ 𝓡 ⟩)
+                               → is-ideal 𝓡 J
+                               → J ⊆ I)
 
  being-local-is-prop : (𝓡 : Rng) → is-prop (is-local 𝓡)
  being-local-is-prop 𝓡 = ∃!-is-prop fe
@@ -1087,11 +1041,7 @@ module ring {𝓤 : Universe} (ua : Univalence) where
   NoetherianRng = Σ 𝓡 ꞉ Rng , is-noetherian 𝓡
 
   being-noetherian-is-prop : (𝓡 : Rng) → is-prop (is-noetherian 𝓡)
-
-  being-noetherian-is-prop 𝓡 = Π-is-prop fe
-                                (λ I → Π-is-prop fe
-                                (λ _ → Π-is-prop fe
-                                (λ _ → ∃-is-prop)))
+  being-noetherian-is-prop 𝓡 = Π₃-is-prop fe (λ I _ _ → ∃-is-prop)
 
   forget-Noether : NoetherianRng → Rng
   forget-Noether (𝓡 , _) = 𝓡
@@ -1100,38 +1050,34 @@ module ring {𝓤 : Universe} (ua : Univalence) where
   forget-Noether-is-embedding = pr₁-is-embedding being-noetherian-is-prop
 
   _≅[NoetherianRng]_ : NoetherianRng → NoetherianRng → 𝓤 ̇
-
   ((R , (_+_ , _·_) , _) , _) ≅[NoetherianRng] ((R' , (_+'_ , _·'_) , _) , _) =
-
-                              Σ f ꞉ (R → R')
-                                  , is-equiv f
-                                  × ((λ x y → f (x + y)) ＝ (λ x y → f x +' f y))
-                                  × ((λ x y → f (x · y)) ＝ (λ x y → f x ·' f y))
+      Σ f ꞉ (R → R')
+          , is-equiv f
+          × ((λ x y → f (x + y)) ＝ (λ x y → f x +' f y))
+          × ((λ x y → f (x · y)) ＝ (λ x y → f x ·' f y))
 
   NB : (𝓡 𝓡' : NoetherianRng)
      → (𝓡 ≅[NoetherianRng] 𝓡') ＝ (forget-Noether 𝓡 ≅[Rng] forget-Noether 𝓡')
-
   NB 𝓡 𝓡' = refl
 
   characterization-of-nrng-＝ : (𝓡 𝓡' : NoetherianRng)
                              → (𝓡 ＝ 𝓡') ≃ (𝓡 ≅[NoetherianRng] 𝓡')
-
   characterization-of-nrng-＝ 𝓡 𝓡' =
 
     (𝓡 ＝ 𝓡')                               ≃⟨ i ⟩
     (forget-Noether 𝓡 ＝ forget-Noether 𝓡') ≃⟨ ii ⟩
     (𝓡 ≅[NoetherianRng] 𝓡')                ■
-
     where
      i = ≃-sym (embedding-criterion-converse forget-Noether
                   forget-Noether-is-embedding 𝓡 𝓡')
      ii = characterization-of-rng-＝ (forget-Noether 𝓡) (forget-Noether 𝓡')
 
-  isomorphic-NoetherianRng-transport :
-
-      (A : NoetherianRng → 𝓥 ̇ )
-    → (𝓡 𝓡' : NoetherianRng) → 𝓡 ≅[NoetherianRng] 𝓡' → A 𝓡 → A 𝓡'
-
+  isomorphic-NoetherianRng-transport
+   : (A : NoetherianRng → 𝓥 ̇ )
+     (𝓡 𝓡' : NoetherianRng)
+   → 𝓡 ≅[NoetherianRng] 𝓡'
+   → A 𝓡
+   → A 𝓡'
   isomorphic-NoetherianRng-transport A 𝓡 𝓡' i a = a'
    where
     p : 𝓡 ＝ 𝓡'
@@ -1150,10 +1096,10 @@ module ring {𝓤 : Universe} (ua : Univalence) where
 
   being-CNL-is-prop : (𝓡 : Ring) → is-prop (is-CNL 𝓡)
   being-CNL-is-prop (R , (𝟏 , _+_ , _·_) , i-vii , viii) =
-
-     ×-is-prop (being-commutative-is-prop 𝓡)
-    (×-is-prop (being-noetherian-is-prop 𝓡)
-                       (being-local-is-prop 𝓡))
+     ×₃-is-prop
+      (being-commutative-is-prop 𝓡)
+      (being-noetherian-is-prop 𝓡)
+      (being-local-is-prop 𝓡)
    where
     𝓡 : Rng
     𝓡 = (R , (_+_ , _·_) , i-vii)
@@ -1179,28 +1125,25 @@ module ring {𝓤 : Universe} (ua : Univalence) where
 
   NB' : (𝓡 𝓡' : CNL-Ring)
       → (𝓡 ≅[CNL] 𝓡') ＝ (forget-CNL 𝓡 ≅[Ring] forget-CNL 𝓡')
-
   NB' 𝓡 𝓡' = refl
 
   characterization-of-CNL-ring-＝ : (𝓡 𝓡' : CNL-Ring)
                                  → (𝓡 ＝ 𝓡') ≃ (𝓡 ≅[CNL] 𝓡')
-
   characterization-of-CNL-ring-＝ 𝓡 𝓡' =
-
      (𝓡 ＝ 𝓡')                               ≃⟨ i ⟩
      (forget-CNL 𝓡 ＝ forget-CNL 𝓡')         ≃⟨ ii ⟩
      (𝓡 ≅[CNL] 𝓡')                          ■
-
      where
       i = ≃-sym (embedding-criterion-converse forget-CNL
                    forget-CNL-is-embedding 𝓡 𝓡')
       ii = characterization-of-ring-＝ (forget-CNL 𝓡) (forget-CNL 𝓡')
 
-  isomorphic-CNL-Ring-transport :
-
-      (A : CNL-Ring → 𝓥 ̇ )
-    → (𝓡 𝓡' : CNL-Ring) → 𝓡 ≅[CNL] 𝓡' → A 𝓡 → A 𝓡'
-
+  isomorphic-CNL-Ring-transport
+   : (A : CNL-Ring → 𝓥 ̇ )
+     (𝓡 𝓡' : CNL-Ring)
+   → 𝓡 ≅[CNL] 𝓡'
+   → A 𝓡
+   → A 𝓡'
   isomorphic-CNL-Ring-transport A 𝓡 𝓡' i a = a'
    where
     p : 𝓡 ＝ 𝓡'
@@ -1232,7 +1175,11 @@ module slice
    k (refl {g}) = 𝓻𝓮𝒻𝓵 (𝓻𝓮𝒻𝓵 g)
 
    θ : {X : 𝓤 ̇ } (g h : S X) → is-equiv (canonical-map ι ρ g h)
-   θ g h = equiv-closed-under-∼ id (canonical-map ι ρ g h) (id-is-equiv (g ＝ h)) k
+   θ g h = equiv-closed-under-∼
+            id
+            (canonical-map ι ρ g h)
+            (id-is-equiv (g ＝ h))
+            k
 
  _/_ : (𝓤 : Universe) → 𝓥 ̇ → 𝓤 ⁺ ⊔ 𝓥 ̇
  𝓤 / Y = Σ X ꞉ 𝓤 ̇ , (X → Y)
@@ -1293,7 +1240,8 @@ module universe-a-la-tarski
 
  characterization-of-Tarski-＝ : (A B : TarskiUniverse 𝓤 𝓥)
                               → (A ＝ B) ≃ (A ≅ B)
- characterization-of-Tarski-＝ = slice-variation.characterization-of-/-＝ (𝓥 ̇ ) ua fe
+ characterization-of-Tarski-＝ =
+  slice-variation.characterization-of-/-＝ (𝓥 ̇ ) ua fe
 
 module universe-a-la-tarski-hSet-example
         (𝓤 : Universe)
@@ -1311,7 +1259,6 @@ module universe-a-la-tarski-hSet-example
  example : (X : 𝓤 ⁺ ̇ ) (T : X → 𝓤 ̇ )
          → ((X , T) ＝ hset) ≃ (Σ f ꞉ (X → hSet 𝓤) , is-equiv f
                                                   × ((x : X) → T x ＝ pr₁ (f x)))
-
  example X T = characterization-of-Tarski-＝ (X , T) hset
 
 module generalized-metric-space
@@ -1340,7 +1287,11 @@ module generalized-metric-space
    h (refl {d}) = 𝓻𝓮𝒻𝓵 (𝓻𝓮𝒻𝓵 d)
 
    θ : {X : 𝓤 ̇ } (d e : S X) → is-equiv (canonical-map ι ρ d e)
-   θ d e = equiv-closed-under-∼ id (canonical-map ι ρ d e) (id-is-equiv (d ＝ e)) h
+   θ d e = equiv-closed-under-∼
+            id
+            (canonical-map ι ρ d e)
+            (id-is-equiv (d ＝ e))
+            h
 
  M : 𝓤 ⁺ ⊔ 𝓥 ⊔ 𝓦 ̇
  M = Σ X ꞉ 𝓤 ̇ , Σ d ꞉ (X → X → R) , axioms X d
@@ -1351,9 +1302,7 @@ module generalized-metric-space
 
  characterization-of-M-＝ : is-univalent 𝓤
                          → (A B : M)
-
                          → (A ＝ B) ≃ (A ≅ B)
-
  characterization-of-M-＝ ua = characterization-of-＝-with-axioms ua
                                 sns-data
                                 axioms
@@ -1365,14 +1314,12 @@ module generalized-metric-space
                             × ((x x' : X) → d x x' ＝ e (f x) (f x'))
 
 
- characterization-of-M-＝' :
-
-     Univalence
-   → ((X , d , a) (Y , e , b) : M)
-   → ((X , d , a) ＝ (Y , e , b))
-                  ≃  (Σ f ꞉ (X → Y), is-equiv f
-                                   × ((x x' : X) → d x x' ＝ e (f x) (f x')))
-
+ characterization-of-M-＝'
+  : Univalence
+  → ((X , d , a) (Y , e , b) : M)
+  → ((X , d , a) ＝ (Y , e , b))
+                 ≃  (Σ f ꞉ (X → Y), is-equiv f
+                                  × ((x x' : X) → d x x' ＝ e (f x) (f x')))
  characterization-of-M-＝' ua (X , d , a) (Y , e , b) =
      characterization-of-M-＝ (ua 𝓤) (X , d , a) (Y , e , b)
    ● Σ-cong (λ f → ×-cong (≃-refl (is-equiv f))
@@ -1380,7 +1327,6 @@ module generalized-metric-space
                                     (Univalence-gives-FunExt ua 𝓤 𝓥)
                                     (λ x y → d x y)
                                     (λ x x' → e (f x) (f x'))))
-
 
 module generalized-topological-space
         (𝓤 𝓥 : Universe)
@@ -1423,7 +1369,6 @@ module generalized-topological-space
    θ {X} 𝓞 𝓞' = equiv-closed-under-∼ id (canonical-map ι ρ 𝓞 𝓞') (id-is-equiv (𝓞 ＝ 𝓞')) h
 
  _≅_  : Space → Space → 𝓤 ⊔ 𝓥 ̇
-
  (X , 𝓞X , _) ≅ (Y , 𝓞Y , _) =
 
               Σ f ꞉ (X → Y), is-equiv f
@@ -1431,24 +1376,18 @@ module generalized-topological-space
 
  characterization-of-Space-＝ : is-univalent 𝓤
                              → (A B : Space)
-
                              → (A ＝ B) ≃ (A ≅ B)
-
  characterization-of-Space-＝ ua = characterization-of-＝-with-axioms ua
                                    sns-data axioms axiomss
 
  _≅'_  : Space → Space → 𝓤 ⊔ 𝓥 ̇
-
  (X , F , _) ≅' (Y , G , _) =
-
              Σ f ꞉ (X → Y), is-equiv f
                           × ((λ (v : Y → R) → F (v ∘ f)) ＝ G)
 
  characterization-of-Space-＝' : is-univalent 𝓤
                               → (A B : Space)
-
                               → (A ＝ B) ≃ (A ≅' B)
-
  characterization-of-Space-＝' = characterization-of-Space-＝
 
 module selection-space
@@ -1486,33 +1425,26 @@ module selection-space
      γ = equiv-closed-under-∼ id (canonical-map ι ρ ε δ) (id-is-equiv (ε ＝ δ)) h
 
  _≅_  :  SelectionSpace → SelectionSpace → 𝓤 ⊔ 𝓥 ̇
-
  (X , ε , _) ≅ (Y , δ , _) =
-
              Σ f ꞉ (X → Y), is-equiv f
                           × ((λ (q : Y → R) → f (ε (q ∘ f))) ＝ δ)
 
  characterization-of-selection-space-＝ : is-univalent 𝓤
                                        → (A B : SelectionSpace)
-
                                        → (A ＝ B) ≃ (A ≅ B)
-
- characterization-of-selection-space-＝ ua = characterization-of-＝-with-axioms ua
-                                             sns-data
-                                             axioms axiomss
+ characterization-of-selection-space-＝ ua =
+  characterization-of-＝-with-axioms ua sns-data axioms axiomss
 
 module contrived-example (𝓤 : Universe) where
 
  open sip
 
- contrived-＝ : is-univalent 𝓤 →
-
-    (X Y : 𝓤 ̇ ) (φ : (X → X) → X) (γ : (Y → Y) → Y)
-  →
-    ((X , φ) ＝ (Y , γ)) ≃ (Σ f ꞉ (X → Y)
-                         , Σ i ꞉ is-equiv f
-                         , (λ (g : Y → Y) → f (φ (inverse f i ∘ g ∘ f))) ＝ γ)
-
+ contrived-＝
+  : is-univalent 𝓤
+  → (X Y : 𝓤 ̇ ) (φ : (X → X) → X) (γ : (Y → Y) → Y)
+  → ((X , φ) ＝ (Y , γ)) ≃ (Σ f ꞉ (X → Y)
+                          , Σ i ꞉ is-equiv f
+                          , (λ (g : Y → Y) → f (φ (inverse f i ∘ g ∘ f))) ＝ γ)
  contrived-＝ ua X Y φ γ =
    characterization-of-＝ ua
     ((λ (X , φ) (Y , γ) (f , i) → (λ (g : Y → Y) → f (φ (inverse f i ∘ g ∘ f))) ＝ γ) ,
@@ -1558,11 +1490,10 @@ module generalized-functor-algebra
      γ : is-equiv (canonical-map ι ρ α β)
      γ = equiv-closed-under-∼ c (canonical-map ι ρ α β) i h
 
- characterization-of-functor-algebra-＝ : is-univalent 𝓤
-   → (X Y : 𝓤 ̇ ) (α : F X → X) (β : F Y → Y)
-
-   → ((X , α) ＝ (Y , β))  ≃  (Σ f ꞉ (X → Y), is-equiv f × (f ∘ α ＝ β ∘ 𝓕 f))
-
+ characterization-of-functor-algebra-＝
+  : is-univalent 𝓤
+  → (X Y : 𝓤 ̇ ) (α : F X → X) (β : F Y → Y)
+  → ((X , α) ＝ (Y , β)) ≃ (Σ f ꞉ (X → Y), is-equiv f × (f ∘ α ＝ β ∘ 𝓕 f))
  characterization-of-functor-algebra-＝ ua X Y α β =
    characterization-of-＝ ua sns-data (X , α) (Y , β)
 
@@ -1700,20 +1631,16 @@ module type-valued-preorder
      vii  = Σ-change-of-variable _ ⌜ e ⌝ (⌜⌝-is-equiv e)
      viii = Σ-assoc
 
- characterization-of-type-valued-preorder-＝ :
-
-      (𝓧 𝓐 : Σ S)
-    →
-      (𝓧 ＝ 𝓐)
-    ≃
-      (Σ F ꞉ (Ob 𝓧 → Ob 𝓐)
-           , is-equiv F
-           × (Σ 𝓕 ꞉ ((x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
-                  , (∀ x y → is-equiv (𝓕 x y))
-                  × functorial 𝓧 𝓐 F 𝓕))
+ characterization-of-type-valued-preorder-＝
+  : (𝓧 𝓐 : Σ S)
+  → (𝓧 ＝ 𝓐)
+  ≃ (Σ F ꞉ (Ob 𝓧 → Ob 𝓐)
+         , is-equiv F
+         × (Σ 𝓕 ꞉ ((x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
+                , (∀ x y → is-equiv (𝓕 x y))
+                × functorial 𝓧 𝓐 F 𝓕))
 
  characterization-of-type-valued-preorder-＝ 𝓧 𝓐 =
-
    (𝓧 ＝ 𝓐)                                                              ≃⟨ i ⟩
    (Σ F ꞉ (Ob 𝓧 → Ob 𝓐)
         , is-equiv F
@@ -1733,7 +1660,9 @@ module type-valued-preorder-with-axioms
         (𝓤 𝓥 𝓦 : Universe)
         (ua : Univalence)
         (axioms  : (X : 𝓤 ̇ ) → type-valued-preorder-S {𝓤} {𝓥} X → 𝓦 ̇ )
-        (axiomss : (X : 𝓤 ̇ ) (s : type-valued-preorder-S X) → is-prop (axioms X s))
+        (axiomss : (X : 𝓤 ̇ )
+                   (s : type-valued-preorder-S X)
+                 → is-prop (axioms X s))
        where
 
  open sip
@@ -1746,24 +1675,20 @@ module type-valued-preorder-with-axioms
  sns-data' : SNS S' (𝓤 ⊔ (𝓥 ⁺))
  sns-data' = add-axioms axioms axiomss sns-data
 
- characterization-of-type-valued-preorder-＝-with-axioms :
-
-      (𝓧' 𝓐' : Σ S')
-    →
-      (𝓧' ＝ 𝓐')
-    ≃
-      (Σ F ꞉ (Ob [ 𝓧' ] → Ob [ 𝓐' ])
-           , is-equiv F
-           × (Σ 𝓕 ꞉ ((x y : Ob [ 𝓧' ]) → hom [ 𝓧' ] x y → hom [ 𝓐' ] (F x) (F y))
-                    , (∀ x y → is-equiv (𝓕 x y))
-                    × functorial [ 𝓧' ] [ 𝓐' ] F 𝓕))
-
+ characterization-of-type-valued-preorder-＝-with-axioms
+  : (𝓧' 𝓐' : Σ S')
+  →
+    (𝓧' ＝ 𝓐')
+  ≃
+    (Σ F ꞉ (Ob [ 𝓧' ] → Ob [ 𝓐' ])
+         , is-equiv F
+         × (Σ 𝓕 ꞉ ((x y : Ob [ 𝓧' ]) → hom [ 𝓧' ] x y → hom [ 𝓐' ] (F x) (F y))
+                , (∀ x y → is-equiv (𝓕 x y))
+                × functorial [ 𝓧' ] [ 𝓐' ] F 𝓕))
  characterization-of-type-valued-preorder-＝-with-axioms 𝓧' 𝓐' =
-
   (𝓧' ＝ 𝓐')                     ≃⟨ i ⟩
   ([ 𝓧' ] ≃[ sns-data ] [ 𝓐' ]) ≃⟨ ii ⟩
   _                              ■
-
   where
    i  = characterization-of-＝-with-axioms (ua 𝓤) sns-data axioms axiomss 𝓧' 𝓐'
    ii = Σ-cong (λ F → Σ-cong (λ _ → lemma [ 𝓧' ] [ 𝓐' ] F))
@@ -1782,7 +1707,8 @@ module category
  S = type-valued-preorder-S {𝓤} {𝓥}
 
  category-axioms : (X : 𝓤 ̇ ) → S X → 𝓤 ⊔ 𝓥 ̇
- category-axioms X (homX , idX , compX) = hom-sets × identityl × identityr × associativity
+ category-axioms X (homX , idX , compX) =
+  hom-sets × identityl × identityr × associativity
   where
    _o_ : {x y z : X} → homX y z → homX x y → homX x z
    g o f = compX _ _ _ f g
@@ -1803,30 +1729,11 @@ module category
    i = pr₁ ca
 
    γ : is-prop (category-axioms X (homX , idX , compX))
-   γ = ×-is-prop ss (×-is-prop ls (×-is-prop rs as))
-    where
-     ss = Π-is-prop fe
-           (λ x → Π-is-prop fe
-           (λ y → being-set-is-prop fe))
-
-     ls = Π-is-prop fe
-           (λ x → Π-is-prop fe
-           (λ y → Π-is-prop fe
-           (λ f → i x y)))
-
-     rs = Π-is-prop fe
-           (λ x → Π-is-prop fe
-           (λ y → Π-is-prop fe
-           (λ f → i x y)))
-
-     as = Π-is-prop fe
-           (λ x → Π-is-prop fe
-           (λ y → Π-is-prop fe
-           (λ z → Π-is-prop fe
-           (λ t → Π-is-prop fe
-           (λ f → Π-is-prop fe
-           (λ g → Π-is-prop fe
-           (λ h → i x t)))))))
+   γ = ×₄-is-prop
+        (Π₂-is-prop fe (λ x y → being-set-is-prop fe))
+        (Π₃-is-prop fe (λ x y f → i x y))
+        (Π₃-is-prop fe (λ x y f → i x y))
+        (Π₇-is-prop fe (λ x y z t f g h → i x t))
 
  Cat : (𝓤 ⊔ 𝓥)⁺ ̇
  Cat = Σ X ꞉ 𝓤 ̇ , Σ s ꞉ S X , category-axioms X s
@@ -1881,8 +1788,10 @@ module category
                               𝓻𝓮𝒻𝓵 (comp 𝓧)
 
  characterization-of-category-＝ : (𝓧 𝓐 : Cat) → (𝓧 ＝ 𝓐) ≃ (𝓧 ⋍ 𝓐)
- characterization-of-category-＝ = characterization-of-type-valued-preorder-＝-with-axioms
-                                   category-axioms category-axioms-prop
+ characterization-of-category-＝ =
+  characterization-of-type-valued-preorder-＝-with-axioms
+   category-axioms
+   category-axioms-prop
 
  idtoeqCat-is-equiv : (𝓧 𝓐 : Cat) → is-equiv (idtoeqCat 𝓧 𝓐)
  idtoeqCat-is-equiv 𝓧 𝓐 = equiv-closed-under-∼ _ _
@@ -1913,7 +1822,8 @@ module ∞-bigmagma {𝓤 𝓥 : Universe} (I : 𝓥 ̇ ) where
  sns-data = (ι , ρ , θ)
   where
    ι : (𝓐 𝓐' : ∞-Bigmagma) → ⟨ 𝓐 ⟩ ≃ ⟨ 𝓐' ⟩ → 𝓤 ⊔ 𝓥 ̇
-   ι (A , sup) (A' , sup') (f , _) = (λ 𝕒 → f (sup 𝕒)) ＝ (λ 𝕒 → sup' (n ↦ f (𝕒 n)))
+   ι (A , sup) (A' , sup') (f , _) =
+    (λ 𝕒 → f (sup 𝕒)) ＝ (λ 𝕒 → sup' (n ↦ f (𝕒 n)))
 
    ρ : (𝓐 : ∞-Bigmagma) → ι 𝓐 𝓐 (≃-refl ⟨ 𝓐 ⟩)
    ρ (A , sup) = 𝓻𝓮𝒻𝓵 sup
@@ -1962,7 +1872,8 @@ module ∞-hugemagma {𝓤 𝓥 : Universe} where
  sns-data = (ι , ρ , θ)
   where
    ι : (𝓐 𝓐' : ∞-Hugemagma) → ⟨ 𝓐 ⟩ ≃ ⟨ 𝓐' ⟩ → 𝓤 ⊔ (𝓥 ⁺) ̇
-   ι (A , sup) (A' , sup') (f , _) = (λ {N} (𝕒 : N → A) → f (sup 𝕒)) ＝ (λ {N} 𝕒 → sup' (i ↦ f (𝕒 i)))
+   ι (A , sup) (A' , sup') (f , _) =
+    (λ {N} (𝕒 : N → A) → f (sup 𝕒)) ＝ (λ {N} 𝕒 → sup' (i ↦ f (𝕒 i)))
 
    ρ : (𝓐 : ∞-Hugemagma) → ι 𝓐 𝓐 (≃-refl ⟨ 𝓐 ⟩)
    ρ (A , sup) = refl
@@ -1979,9 +1890,9 @@ module ∞-hugemagma {𝓤 𝓥 : Universe} where
 
  _≅[∞-Hugemagma]_ : ∞-Hugemagma → ∞-Hugemagma → 𝓤 ⊔ (𝓥 ⁺) ̇
  (A , sup) ≅[∞-Hugemagma] (A' , sup') =
-
-           Σ f ꞉ (A → A'), is-equiv f
-                         × ((λ {N} (𝕒 : N → A) → f (sup 𝕒)) ＝ (λ {N} (𝕒 : N → A) → sup' (i ↦ f (𝕒 i))))
+   Σ f ꞉ (A → A'), is-equiv f
+                 × ((λ {N} (𝕒 : N → A) → f (sup 𝕒))
+                 ＝ (λ {N} (𝕒 : N → A) → sup' (i ↦ f (𝕒 i))))
 
  characterization-of-∞-Hugemagma-＝ : is-univalent 𝓤
                                    → (A B : ∞-Hugemagma)

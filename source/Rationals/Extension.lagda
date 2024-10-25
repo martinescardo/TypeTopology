@@ -18,7 +18,6 @@ open import UF.FunExt
 open import UF.PropTrunc
 open import UF.Powerset
 open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
 open import Rationals.Type
 open import Rationals.Addition
 open import Rationals.Negation

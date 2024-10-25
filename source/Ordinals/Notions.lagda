@@ -12,7 +12,7 @@ open import MLTT.Plus-Properties using (+-commutative)
 open import MLTT.Spartan
 open import UF.Base
 open import UF.DiscreteAndSeparated
-open import UF.ExcludedMiddle
+open import UF.ClassicalLogic
 open import UF.FunExt
 open import UF.Hedberg
 open import UF.PropTrunc
@@ -183,6 +183,9 @@ extensional-po-is-prop-valued fe isp x y =
 
 ≼-refl : {x : X} → x ≼ x
 ≼-refl u l = l
+
+≼-refl-＝ : {x y : X} → x ＝ y → x ≼ y
+≼-refl-＝ refl = ≼-refl
 
 ≼-trans : {x y z : X} → x ≼ y → y ≼ z → x ≼ z
 ≼-trans f g u l = g u (f u l)
@@ -657,7 +660,6 @@ module _
    fe : FunExt
    fe 𝓤 𝓥 = f-e
 
-   open import UF.PropTrunc
    open PropositionalTruncation pt
 
    lem-consequence : is-well-order → (u v : X) → (∃ i ꞉ X , ((i < u) × ¬ (i < v))) + (u ≼ v)
@@ -898,7 +900,6 @@ module _ (fe : Fun-Ext)
 
  module _ (pt : propositional-truncations-exist) where
 
-  open import UF.PropTrunc
   open PropositionalTruncation pt
 
   nonempty-has-minimal : is-well-order

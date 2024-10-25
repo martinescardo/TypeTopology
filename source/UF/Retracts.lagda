@@ -25,6 +25,19 @@ section-equation r (s , rs) = rs
 is-section : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 is-section s = Σ r ꞉ (codomain s → domain s), r ∘ s ∼ id
 
+has-retraction : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
+has-retraction = is-section
+
+retraction-of : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (r : X → Y)
+              → has-retraction r
+              → (Y → X)
+retraction-of s (r , rs) = r
+
+retraction-equation : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (s : X → Y)
+                    → (h : has-retraction s)
+                    → retraction-of s h ∘ s ∼ id
+retraction-equation s (r , rs) = rs
+
 sections-are-lc : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (s : X → Y)
                 → is-section s
                 → left-cancellable s
@@ -33,11 +46,26 @@ sections-are-lc s (r , rs) {x} {x'} p = (rs x)⁻¹ ∙ ap r p ∙ rs x'
 retract_of_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
 retract Y of X = Σ r ꞉ (X → Y) , has-section r
 
+\end{code}
+
+Below we introduce the synonym "Y ◁ X" for "retract Y of X" and
+convenient notation for working with chains of compositions of
+retractions.
+
+\begin{code}
+
 retraction : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → retract X of Y → (Y → X)
 retraction (r , s , rs) = r
 
 section : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → retract X of Y → (X → Y)
 section (r , s , rs) = s
+
+retraction-idempotency : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                       → (ρ : retract Y of X)
+                       → idempotent-map (section ρ ∘ retraction ρ)
+retraction-idempotency (r , s , rs) x =
+ s (r (s (r x))) ＝⟨ ap s (rs (r x)) ⟩
+ s (r x)         ∎
 
 section-is-section : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                    → (ρ : retract X of Y)
@@ -106,7 +134,7 @@ Surjection expressed in Curry-Howard logic amounts to retraction.
 \begin{code}
 
 has-section' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) → 𝓤 ⊔ 𝓥 ̇
-has-section' f = (y : codomain f) → Σ x ꞉ domain f , f x ＝ y
+has-section' f = (y : codomain f) → fiber f y
 
 retract_Of_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
 retract Y Of X = Σ f ꞉ (X → Y) , has-section' f
@@ -140,7 +168,8 @@ retracts-compose (r , s , rs) (r' , s' , rs') =
           → retract X of A
           → retract Y of B
           → retract (X × Y) of (A × B)
-×-retract {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} {A} {B} (r , s , rs) (t , u , tu) = f , g , fg
+×-retract {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} {A} {B} (r , s , rs) (t , u , tu) =
+ f , g , fg
  where
   f : A × B → X × Y
   f (a , b) = (r a , t b)
@@ -391,6 +420,22 @@ ap-of-section-is-section {𝓤} {𝓥} {X} {Y} s (r , rs) x x' = ρ , ρap
 
      ρσ : (p : g x ＝ y) → ρ (σ p) ＝ p
      ρσ = pr₂ (ap-of-section-is-section s ((r , rs)) (g x) y)
+
+\end{code}
+
+Added 8 August 2024 by Tom de Jong.
+
+\begin{code}
+
+＝-retract : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (s : X → Y)
+           → is-section s
+           → (x x' : X) → (x ＝ x') ◁ (s x ＝ s x')
+＝-retract s s-sect x x' = ρ , ap s , η
+ where
+  ρ : s x ＝ s x' → x ＝ x'
+  ρ = retraction-of (ap s) (ap-of-section-is-section s s-sect x x')
+  η : ρ ∘ ap s ∼ id
+  η = retraction-equation (ap s) (ap-of-section-is-section s s-sect x x')
 
 \end{code}
 

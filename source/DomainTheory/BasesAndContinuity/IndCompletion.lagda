@@ -29,7 +29,6 @@ module DomainTheory.BasesAndContinuity.IndCompletion
 
 open PropositionalTruncation pt
 
-open import UF.Base hiding (_≈_)
 open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.Subsingletons
@@ -45,7 +44,7 @@ module Ind-completion
        where
 
  Ind : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
- Ind = Σ I ꞉ 𝓥 ̇  , Σ α ꞉ (I → ⟨ 𝓓 ⟩) , is-Directed 𝓓 α
+ Ind = Σ I ꞉ 𝓥 ̇ , Σ α ꞉ (I → ⟨ 𝓓 ⟩) , is-Directed 𝓓 α
 
  index-of-underlying-family : Ind → 𝓥 ̇
  index-of-underlying-family = pr₁
@@ -223,6 +222,16 @@ and the way-below relation.
 
  _approximates_ : Ind → ⟨ 𝓓 ⟩ → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
  (I , α , δ) approximates x = (∐ 𝓓 δ ＝ x) × ((i : I) → α i ≪⟨ 𝓓 ⟩ x)
+
+ approximates-to-∐-＝ : {(I , α , δ) : Ind} {x : ⟨ 𝓓 ⟩}
+                      → (I , α , δ) approximates x
+                      → ∐ 𝓓 δ ＝ x
+ approximates-to-∐-＝ = pr₁
+
+ approximates-to-≪ : {(I , α , δ) : Ind} {x : ⟨ 𝓓 ⟩}
+                   → (I , α , δ) approximates x
+                   → ((i : I) → α i ≪⟨ 𝓓 ⟩ x)
+ approximates-to-≪ = pr₂
 
  approximates-is-prop : (σ : Ind) (x : ⟨ 𝓓 ⟩) → is-prop (σ approximates x)
  approximates-is-prop σ x =

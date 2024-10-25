@@ -23,13 +23,8 @@ open import Naturals.Order
 open import Naturals.Properties using (succ-no-fp; zero-not-positive)
 open import UF.Embeddings
 open import UF.Equiv
-open import UF.Logic
-open import UF.Retracts
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import UF.SubtypeClassifier
-
-open Implication fe
 
 \end{code}
 

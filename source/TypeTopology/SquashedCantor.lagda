@@ -1,4 +1,4 @@
-\%Martin Escardo, back-of-the-envelope 2011, done July 2018
+Martin Escardo, back-of-the-envelope 2011, done July 2018
 
 The main application of this module is to show that the compact
 ordinals we construct in other modules are totally separated. This is
@@ -20,7 +20,7 @@ open import UF.FunExt
 
 module TypeTopology.SquashedCantor (fe : FunExt) where
 
-open import CoNaturals.GenericConvergentSequence
+open import CoNaturals.Type
 open import CoNaturals.UniversalProperty fe
 open import InjectiveTypes.Blackboard fe
 open import MLTT.Spartan
@@ -31,11 +31,8 @@ open import Naturals.Sequence fe
 open import Notation.CanonicalMap
 open import TypeTopology.SquashedSum fe
 open import UF.Base
-open import UF.Embeddings
-open import UF.Equiv
 open import UF.Retracts
 open import UF.Retracts-FunExt
-open import UF.Subsingletons
 
 private
  fe' : Fun-Ext
@@ -596,7 +593,6 @@ Snoc α = (Head α , Tail α)
 Snoc-Cons : (d : D Cantor) → Snoc (Cons d) ＝ d
 Snoc-Cons (u , π) = to-Σ-＝ (Head-Cons u π , Tail-Cons' u π)
 
-open import UF.Retracts
 
 D-Cantor-retract-of-Cantor : retract (D Cantor) of Cantor
 D-Cantor-retract-of-Cantor = Snoc , Cons , Snoc-Cons
@@ -813,5 +809,63 @@ from-D-＝ : {X : 𝓤 ̇ }
           → (u , π) ＝[ D X ] (u' , π')
           → Σ p ꞉ u ＝ u' , (π ＝ π' ∘ transport is-finite p)
 from-D-＝ {𝓤} {X} u u π π refl = (refl , refl)
+
+\end{code}
+
+This is something I am thinking about:
+
+\begin{code}
+{-
+is-D-coalgebra-map : {A : 𝓤 ̇ } {B : 𝓥 ̇ }
+                     (a : A → D A)
+                     (b : B → D B)
+                   → (A → B)
+                   → 𝓤 ⊔ 𝓥 ̇
+is-D-coalgebra-map {𝓤} {𝓥} {A} {B} α β f = β ∘ f ∼ D-functor f ∘ α
+ where
+  headᵃ : A → ℕ∞
+  headᵃ = pr₁ ∘ α
+
+  tailᵃ : (a : A) → is-finite (headᵃ a) → A
+  tailᵃ = pr₂ ∘ α
+
+  headᵇ : B → ℕ∞
+  headᵇ = pr₁ ∘ β
+
+  tailᵇ : (b : B) → is-finite (headᵇ b) → B
+  tailᵇ = pr₂ ∘ β
+
+  module _ {u v : ℕ∞}
+         where
+
+   t : u ＝ v → is-finite u → is-finite v
+   t = transport is-finite
+
+   s : u ＝ v → is-finite u → is-finite v
+   s p (n , e) = n , (e ∙ p)
+
+   ts : (p : u ＝ v) (φ : is-finite u) → t p φ ＝ s p φ
+   ts refl (n , refl) = refl
+
+  module _ (a : A)
+           (p₁ : headᵃ a ＝ headᵇ (f a))
+           (h₂ : (n : ℕ)
+                 (q : ι n ＝ headᵃ a)
+               → f (tailᵃ a (n , q)) ＝ tailᵇ (f a) (n , (q ∙ p₁)))
+         where
+
+   p₂ : f ∘ tailᵃ a ＝ tailᵇ (f a) ∘ transport is-finite p₁
+   p₂ = dfunext fe' (λ (n , q) →
+         (f ∘ tailᵃ a) (n , q) ＝⟨ h₂ n q ⟩
+         tailᵇ (f a) (n , (q ∙ p₁)) ＝⟨ ap (tailᵇ (f a)) ((ts p₁ (n , q))⁻¹) ⟩
+         (tailᵇ (f a) ∘ transport is-finite p₁) (n , q) ∎)
+
+   I = D-functor f (α a) ＝⟨ refl ⟩
+       (headᵃ a , f ∘ tailᵃ a) ＝⟨ I₀ ⟩
+       (headᵇ (f a) , tailᵇ (f a)) ＝⟨ refl ⟩
+       β (f a) ∎
+        where
+         I₀ = to-D-＝ (headᵃ a) (headᵇ (f a)) (f ∘ tailᵃ a) (tailᵇ (f a)) (p₁ , p₂)
+-}
 
 \end{code}

@@ -17,7 +17,6 @@ module Ordinals.NotationInterpretation0
         (pt : propositional-truncations-exist)
        where
 
-open import UF.Equiv
 open import UF.FunExt
 open import UF.Subsingletons
 open import UF.UA-FunExt
@@ -34,14 +33,12 @@ private
 
 open PropositionalTruncation pt
 
-open import CoNaturals.GenericConvergentSequence
-open import MLTT.Plus-Properties
+open import CoNaturals.Type
 open import MLTT.Spartan
 open import Notation.CanonicalMap
+open import Ordinals.AdditionProperties ua
 open import Ordinals.Arithmetic fe
-open import Ordinals.ArithmeticProperties ua
 open import Ordinals.Brouwer
-open import Ordinals.Equivalence
 open import Ordinals.Injectivity
 open import Ordinals.Maps
 open import Ordinals.OrdinalOfOrdinals ua
@@ -53,11 +50,7 @@ open import Ordinals.TrichotomousType fe
 open import Ordinals.Type
 open import Ordinals.Underlying
 open import TypeTopology.CompactTypes
-open import TypeTopology.GenericConvergentSequenceCompactness
-open import TypeTopology.PropTychonoff
 open import TypeTopology.SquashedSum fe
-open import UF.Embeddings
-open import UF.ImageAndSurjection pt
 open import UF.Size
 
 open ordinals-injectivity fe
@@ -165,7 +158,7 @@ is if excluded middle holds.
 
 \begin{code}
 
- open import UF.ExcludedMiddle
+ open import UF.ClassicalLogic
  open import Ordinals.SupSum ua
 
  comparison₀₃ : Excluded-Middle → (b : B) → ⟦ b ⟧₀ ⊴ [ ⟦ b ⟧₃ ]
@@ -202,8 +195,10 @@ is if excluded middle holds.
    IV : sup (λ i → ⟦ b i ⟧₀) ⊴ sup (extension (λ i → ⟦ b i ⟧₂) ∘ ℕ-to-ℕ∞)
    IV = sup-monotone _ _ III
 
-   V : sup (extension (λ i → ⟦ b i ⟧₂) ∘ ℕ-to-ℕ∞) ⊴ sup (extension (λ i → ⟦ b i ⟧₂))
-   V = sup-is-lower-bound-of-upper-bounds _ _ (λ n → sup-is-upper-bound _ (ℕ-to-ℕ∞ n))
+   V : sup (extension (λ i → ⟦ b i ⟧₂) ∘ ℕ-to-ℕ∞)
+     ⊴ sup (extension (λ i → ⟦ b i ⟧₂))
+   V = sup-is-lower-bound-of-upper-bounds _ _
+        (λ n → sup-is-upper-bound _ (ℕ-to-ℕ∞ n))
 
    VI : sup (λ i → ⟦ b i ⟧₀) ⊴ sup (extension (λ i → ⟦ b i ⟧₂))
    VI = ⊴-trans _ _ _ IV V
@@ -230,7 +225,9 @@ is if excluded middle holds.
    β = extension (λ i → [ ⟦ b i ⟧₁ ])
 
    τ : ℕ∞ → Ordinalᵀ 𝓤₀
-   τ = topped-ordinals-injectivity._↗_ fe (λ i → ⟦ b i ⟧₁) (embedding-ℕ-to-ℕ∞ fe')
+   τ = topped-ordinals-injectivity._↗_ fe
+        (λ i → ⟦ b i ⟧₁)
+        (embedding-ℕ-to-ℕ∞ fe')
 
    I : (i : ℕ) →  ⟦ b i ⟧₂ ⊴ [ ⟦ b i ⟧₁ ]
    I i = comparison₂₁ em (b i)
@@ -256,7 +253,8 @@ is if excluded middle holds.
    f : ((j , p) : fiber ℕ-to-ℕ∞ (ℕ-to-ℕ∞ i)) → ⟨ ⟦ b j ⟧₁ ⟩
    f (j , p) = transport⁻¹ (λ - → ⟨ ⟦ b - ⟧₁ ⟩) (ℕ-to-ℕ∞-lc p) (map₃₁ (b i) x)
 
- map₃₁-is-order-preserving : (b : B) → is-order-preserving [ ⟦ b ⟧₃ ] [ ⟦ b ⟧₁ ] (map₃₁ b)
+ map₃₁-is-order-preserving : (b : B)
+                           → is-order-preserving [ ⟦ b ⟧₃ ] [ ⟦ b ⟧₁ ] (map₃₁ b)
  map₃₁-is-order-preserving (S b) (inl x) (inl y) l =
   inr (refl , (map₃₁-is-order-preserving b x y l))
  map₃₁-is-order-preserving (S b) (inl x) (inr y) ⋆ = inl ⋆
@@ -268,7 +266,8 @@ is if excluded middle holds.
    IH : map₃₁ (b i) x ≺⟨ ⟦ b i ⟧₁ ⟩ map₃₁ (b i) y
    IH = map₃₁-is-order-preserving (b i) x y m
 
-   γ : transport⁻¹ (λ - → ⟨ ⟦ b - ⟧₁ ⟩) (ℕ-to-ℕ∞-lc refl) (map₃₁ (b i) x) ≺⟨ ⟦ b i ⟧₁ ⟩
+   γ : transport⁻¹ (λ - → ⟨ ⟦ b - ⟧₁ ⟩) (ℕ-to-ℕ∞-lc refl) (map₃₁ (b i) x)
+     ≺⟨ ⟦ b i ⟧₁ ⟩
        transport⁻¹ (λ - → ⟨ ⟦ b - ⟧₁ ⟩) (ℕ-to-ℕ∞-lc refl) (map₃₁ (b i) y)
    γ = transport⁻¹
         (λ r → transport⁻¹ (λ - → ⟨ ⟦ b - ⟧₁ ⟩) r (map₃₁ (b i) x) ≺⟨ ⟦ b i ⟧₁ ⟩
@@ -301,4 +300,4 @@ We also have:
 
 \end{code}
 
-Question. Is the function map₁₂ a surjection?
+TODO. Is the function map₁₂ a surjection?

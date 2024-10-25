@@ -6,26 +6,19 @@ Various maps of ordinals, including equivalences.
 
 {-# OPTIONS --safe --without-K #-}
 
-open import UF.Univalence
 
 module Ordinals.Maps where
 
 open import MLTT.Spartan
-open import Notation.CanonicalMap
 open import Ordinals.Notions
 open import Ordinals.Type
 open import Ordinals.Underlying
 open import UF.Base
 open import UF.Embeddings
 open import UF.Equiv
-open import UF.Equiv-FunExt
-open import UF.EquivalenceExamples
 open import UF.FunExt
-open import UF.Size
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
-open import UF.UA-FunExt
-open import UF.Yoneda
 
 \end{code}
 
@@ -227,7 +220,7 @@ being-simulation-is-prop fe α β f =
   (being-initial-segment-is-prop fe α β f ,
    (λ _ → being-order-preserving-is-prop fe α β f))
 
-lc-initial-segments-are-order-reflecting : (α β : Ordinal 𝓤)
+lc-initial-segments-are-order-reflecting : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
                                            (f : ⟨ α ⟩ → ⟨ β ⟩)
                                          → is-initial-segment α β f
                                          → left-cancellable f
@@ -240,7 +233,7 @@ lc-initial-segments-are-order-reflecting α β f i c x y l = m
   m : x ≺⟨ α ⟩ y
   m = transport (λ - → - ≺⟨ α ⟩ y) (c (pr₂ (pr₂ a))) (pr₁ (pr₂ a))
 
-simulations-are-order-reflecting : (α β : Ordinal 𝓤)
+simulations-are-order-reflecting : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
                                    (f : ⟨ α ⟩ → ⟨ β ⟩)
                                  → is-simulation α β f
                                  → is-order-reflecting α β f
@@ -248,7 +241,7 @@ simulations-are-order-reflecting α β f (i , p) =
  lc-initial-segments-are-order-reflecting α β f i
   (simulations-are-lc α β f (i , p))
 
-order-embeddings-are-lc : (α β : Ordinal 𝓤) (f : ⟨ α ⟩ → ⟨ β ⟩)
+order-embeddings-are-lc : (α : Ordinal 𝓤) (β : Ordinal 𝓥) (f : ⟨ α ⟩ → ⟨ β ⟩)
                         → is-order-embedding α β f
                         → left-cancellable f
 order-embeddings-are-lc α β f (p , r) {x} {y} s = γ
@@ -277,7 +270,7 @@ order-embeddings-are-lc α β f (p , r) {x} {y} s = γ
   γ = Extensionality α x y a b
 
 order-embedings-are-embeddings : FunExt
-                               → (α β : Ordinal 𝓤)
+                               → (α : Ordinal 𝓤) (β : Ordinal 𝓥)
                                  (f : ⟨ α ⟩ → ⟨ β ⟩)
                                → is-order-embedding α β f
                                → is-embedding f
@@ -286,7 +279,7 @@ order-embedings-are-embeddings fe α β f (p , r) =
    (order-embeddings-are-lc α β f (p , r))
    (underlying-type-is-set fe β)
 
-simulations-are-monotone : (α β : Ordinal 𝓤)
+simulations-are-monotone : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
                            (f : ⟨ α ⟩ → ⟨ β ⟩)
                          → is-simulation α β f
                          → is-monotone α β f

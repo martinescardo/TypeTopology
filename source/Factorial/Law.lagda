@@ -69,7 +69,6 @@ open import UF.Equiv-FunExt
 open import UF.EquivalenceExamples
 open import UF.Retracts
 open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
 
 \end{code}
 
@@ -250,7 +249,7 @@ function, f : X+𝟙 → Y+𝟙, then f (inl x) is of the form inl y
    ε : φ ∘ γ ∼ id
    ε ((f , i) , p) = to-Σ-＝
                       (to-subtype-＝ (being-equiv-is-prop fe) r ,
-                      isolated-is-h-isolated (f (inr ⋆))
+                      isolated-points-are-h-isolated (f (inr ⋆))
                        (equivs-preserve-isolatedness f i (inr ⋆) new-point-is-isolated) _ p)
     where
      s : f ∼ pr₁ (pr₁ ((φ ∘ γ) ((f , i) , p)))
@@ -351,7 +350,7 @@ function, f : X+𝟙 → Y+𝟙, then f (inl x) is of the form inl y
      m = equivs-preserve-isolatedness f j (inr ⋆) new-point-is-isolated
 
      n : {t : Y+𝟙} → is-prop (f (inr ⋆) ＝ t)
-     n = isolated-is-h-isolated (f (inr ⋆)) m
+     n = isolated-points-are-h-isolated (f (inr ⋆)) m
 
      o : f' , j' ＝ f , j
      o = to-subtype-＝ (being-equiv-is-prop fe) (dfunext (fe _ _) h)

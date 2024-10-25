@@ -6,7 +6,7 @@ Martin Escardo
 
 module Slice.index where
 
-import Slice.Slice
+import Slice.Construction
 import Slice.Algebras
 import Slice.Embedding
 import Slice.IdentityViaSIP

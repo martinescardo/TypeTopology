@@ -1,6 +1,19 @@
 Martin Escardo, January 2019.
 
-Minimal development of hlevels. For simplicity, for the moment we
+--
+This module is deprecated. Instead use UF.Truncations by Ian Ray.
+
+TODO. Remove all uses of this module, and then delete it.
+
+What Ian Ray does is to (1) weaken assumptions of univalence to
+functionality, and (2) add more facts.
+
+For historical reference, we originally needed this for the injective
+types paper published in LMCS, where univalence is needed anyway. We
+wrote here quickly the bare minimum that was needed for that.
+--
+
+Minimal development of h-levels. For simplicity, for the moment we
 assume univalence globally, although it is not necessary. Our
 convention here is that propositions are at level zero (apologies).
 
@@ -15,7 +28,6 @@ module UF.HLevels (ua : Univalence) where
 
 open import UF.EquivalenceExamples
 open import UF.FunExt
-open import UF.Sets
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.Subsingletons-Properties
@@ -75,7 +87,9 @@ hlevels-closed-under-Π {𝓤} (succ n) X Y m = γ
     a : (f ＝ g) ＝ (f ∼ g)
     a = eqtoid (ua 𝓤) (f ＝ g) (f ∼ g) (≃-funext (fe 𝓤 𝓤) f g)
     IH : (f ∼ g) is-of-hlevel n
-    IH = hlevels-closed-under-Π {𝓤} n X (λ x → f x ＝ g x) (λ x → m x (f x) (g x))
+    IH = hlevels-closed-under-Π {𝓤} n X
+          (λ x → f x ＝ g x)
+          (λ x → m x (f x) (g x))
 
 \end{code}
 

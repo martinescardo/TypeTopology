@@ -16,7 +16,7 @@ CantorSchroederBernstein.lagda for more on BKS⁺.)
 
 Moreover, we formalize [Theorem 3, EK2017] which says that the semidecidable
 propositions are closed under Σ if and only if a certain weak choice principle,
-called Escardo Knapp Choice here, holds.
+called Escardo-Knapp Choice here, holds.
 
 The table of contents is as follows:
 
@@ -28,7 +28,7 @@ The table of contents is as follows:
 ∗ Part III LPO, MP, BKS⁺ and closure properties of the type of semidecidable
            propositions.
 
-∗ Part IV  Escardo Knapp Choice, the dominance axiom and closure under Σ
+∗ Part IV  Escardo-Knapp Choice, the dominance axiom and closure under Σ
            (Formalization of some results by Escardó and Knapp [EK2017])
 
 ∗ Part V   (Subsingleton) Countable choice and closure under (subsingleton)
@@ -218,7 +218,8 @@ types and all decidable propositions.
 𝟘-is-semidecidable : is-semidecidable (𝟘 {𝓤})
 𝟘-is-semidecidable = ∣ 𝟘-has-semidecidability-structure ∣
 
-empty-types-have-semidecidability-structure : {X : 𝓤 ̇ } → is-empty X
+empty-types-have-semidecidability-structure : {X : 𝓤 ̇ }
+                                            → is-empty X
                                             → semidecidability-structure X
 empty-types-have-semidecidability-structure e =
  semidecidability-structure-cong
@@ -243,7 +244,8 @@ empty-types-are-semidecidable e =
 𝟙-is-semidecidable : is-semidecidable (𝟙 {𝓤})
 𝟙-is-semidecidable = ∣ 𝟙-has-semidecidability-structure ∣
 
-singletons-have-semidecidability-structure : {X : 𝓤 ̇ } → is-singleton X
+singletons-have-semidecidability-structure : {X : 𝓤 ̇ }
+                                           → is-singleton X
                                            → semidecidability-structure X
 singletons-have-semidecidability-structure {𝓤} i =
  semidecidability-structure-cong
@@ -383,7 +385,7 @@ instance
  ι {{canonical-map-Ω¬¬-to-Ω}} = Ω¬¬-to-Ω
 
 Ωˢᵈ : (𝓤 : Universe) → 𝓤 ⁺ ̇
-Ωˢᵈ 𝓤 = Σ X ꞉ 𝓤 ̇  , is-semidecidable X
+Ωˢᵈ 𝓤 = Σ X ꞉ 𝓤 ̇ , is-semidecidable X
 
 Ωˢᵈ-to-Ω : Ωˢᵈ 𝓤 → Ω 𝓤
 Ωˢᵈ-to-Ω (X , σ) = (X , prop-if-semidecidable σ)
@@ -569,7 +571,7 @@ MP'-is-prop = Π₃-is-prop fe (λ X σ h → prop-if-semidecidable σ)
 
 MP-equivalence : MP ≃ MP' 𝓤
 MP-equivalence {𝓤} = logically-equivalent-props-are-equivalent
-                           MP-is-prop MP'-is-prop f g
+                       MP-is-prop MP'-is-prop f g
  where
   f : MP → MP' 𝓤
   f mp X σ nnX = ∥∥-rec (prop-if-semidecidable σ) γ σ
@@ -701,7 +703,7 @@ fact that EM ≃ BKS⁺ × MP.
 LPO→MP : LPO → MP
 LPO→MP lpo α = ¬¬-stable-if-decidable (∃ n ꞉ ℕ , α n ＝ ₁) (lpo α)
 
-open import UF.ExcludedMiddle
+open import UF.ClassicalLogic
 
 BKS⁺→LPO→EM : BKS⁺ 𝓤 → LPO' 𝓤 → EM 𝓤
 BKS⁺→LPO→EM {𝓤} bks lpo X X-is-prop = lpo X (bks X X-is-prop)
@@ -880,7 +882,7 @@ all-joins-implies-BKS⁺ j =
 
 \end{code}
 
-Part IV: Escardo Knapp Choice, the dominance axiom and closure under Σ
+Part IV: Escardo-Knapp Choice, the dominance axiom and closure under Σ
 
 We start by formulating:
 ∗ that the semidecidable types are closed under Σ;
@@ -946,9 +948,9 @@ dominance-axiom-if-closure-under-Σ scus P ρ Q σ = scus P ρ (λ _ → Q) σ
 
 \end{code}
 
-Next, we introduce the choice principle from [EK2017] - we call it Escardo Knapp
+Next, we introduce the choice principle from [EK2017] - we call it Escardo-Knapp
 Choice (EKC) - and formalize [Theorem 3, EK2017] which says that the
-semidecidable types are closed under Σ if and only if Escardo Knapp Choice holds.
+semidecidable types are closed under Σ if and only if Escardo-Knapp Choice holds.
 
 \begin{code}
 
@@ -1082,12 +1084,11 @@ Part V: (Subsingleton) Countable choice and closure under (subsingleton)
         countable joins
 
 We investigate the connections between
-(1) closure of semidecidable propositions under (particular kinds of) countable joins
-and
+(1) closure of semidecidable propositions under (particular kinds of)
+    countable joins, and
 (2) instances of countable choice.
 
 Our findings are summarized at the end in a diagram of implications.
-
 
 We start by proving that if we have a countable family Xₙ and each Xₙ has
 semidecidability structure, then so does ∃ X.
@@ -1143,7 +1144,6 @@ CSC-implies-semidecidable-closed-under-countable-joins {𝓤} csc X σ =
 We were not able to prove that the above implication can be reversed, i.e. that
 CSC is necessary for the semidecidable propositions to be closed under countable
 joins.
-
 
 However, for a particular kind of families Xₙ we can find another (weak)
 instance of countable choice and prove it equivalent to closure under these
@@ -1218,16 +1218,16 @@ Before starting the formalized proof, we explain the proof strategy here.
 
 (2) Using Ψ and the equivalence above, we construct P : ℕ → ℕ → 𝓤 such that for
     every n : ℕ we have
-      (X n) ≃ (∃ k ꞉ ℕ , P n k), witnessed by f, say.
+      (X n) ≃ (∃ k ꞉ ℕ , P n k),
+    witnessed by f, say.
 
     Explicitly, P is given by
        P n m = (Σ p ꞉ (Ψ m ＝ ₁) , pr₁ (f ∣ m , p ∣) ＝ n).
 
-(3) We prove that each P n is complemented and subsingleton-valued, i.e. that each
-    P n is a decidable subset of ℕ.
+(3) We prove that each P n is complemented and subsingleton-valued,
+    i.e. that each P n is a decidable subset of ℕ.
 
 This equips every X n with semidecidability structure.
-
 
 In developing the proof, we found it easier to consider the more general setting
 where we replace ℕ by any type X, the family X : ℕ → 𝓤 by a family Y : X → 𝓥 and
@@ -1507,7 +1507,7 @@ conditions:
 Recall that
 ∗  CSC =              Countable Semidecidable Choice
 ∗ SCSS = Subsingleton Countable Semidecidable Choice
-∗  EKC = Escardo Knapp Choice
+∗  EKC = Escardo-Knapp Choice
 
 
         EKC ⟵⟶ Rosolini's Dominance Axiom
@@ -1525,7 +1525,6 @@ Recall that
         CSC  ⟶ Semidecidable closed under
                             countable joins
 
-
 The conjecture is that semidecidable propositions are closed under countable
 joins if and only if some form of countable choice holds. But it is not clear
 what form this is.
@@ -1538,9 +1537,7 @@ SCSC, so we do have (Semidecidable closed under countable joins) ⟶ SCSC, which
 shows that having closure under countable joins does imply some weak countable
 choice principle.
 
-
-
-Finally, two closing remarks regarding BSK⁺, SCSC and Escardo Knapp Choice.
+Finally, two closing remarks regarding BSK⁺, SCSC and Escardo-Knapp Choice.
 
 \begin{code}
 
@@ -1554,7 +1551,7 @@ BKS⁺-implies-SCSC {𝓤} bks =
 
 \end{code}
 
-Hence, BKS⁺ implies Escardo Knapp Choice. But we can also easily give a direct
+Hence, BKS⁺ implies Escardo-Knapp Choice. But we can also easily give a direct
 proof of this fact.
 
 \begin{code}

@@ -13,14 +13,41 @@ jobs:
     if: github.event.pull_request.draft == false
     steps:
     - name: "Clone repository"
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
+
+    - name: "Print environment information"
+      shell: bash
+      run: |
+        echo "github.ref_name = ${{ github.ref_name }}"
+        echo "github.sha = ${{ github.sha }}"
+        echo "github.event.before = ${{ github.event.before }}"
+        echo "github.event.after = ${{ github.event.after }}"
+        echo "github.event.pull_request.head.sha = ${{ github.event.pull_request.head.sha }}"
+
+    - name: "Restore cached .agdai files"
+      id: cache-agdai-restore
+      uses: actions/cache/restore@v4
+      with:
+        path: _build
+        key: ${{ runner.os }}-agdai-cache-${{ github.ref_name }}-${{ github.event.before }}
+        restore-keys: |
+          ${{ runner.os }}-agdai-cache-${{ github.ref_name }}-
+
     - name: Run Agda
       id: typecheck
-      uses: ayberkt/agda-github-action@v3.4
+      uses: ayberkt/agda-github-action@v4.0
       with:
         main-file: AllModulesIndex.lagda
         source-dir: source
         unsafe: true
+
+    - name: "Save .agdai files"
+      id: cache-agdai-save
+      uses: actions/cache/save@v4
+      with:
+        path: _build
+        key: ${{ runner.os }}-agdai-cache-${{ github.ref_name }}-${{ github.event.after }}
+
     - name: Upload HTML
       id: html-upload
       if: github.ref == 'refs/heads/master'

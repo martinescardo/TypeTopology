@@ -11,14 +11,12 @@ without higher-inductive types other than propositional truncation.
 open import MLTT.Spartan
 
 module Relations.ChurchRosser
-         {𝓤 𝓥 : Universe}
+         {𝓤 : Universe}
          {X : 𝓤 ̇ }
          (_▷_ : X → X → 𝓤 ̇ )
        where
 
 open import Relations.SRTclosure
-open import UF.PropTrunc
-open import UF.Subsingletons
 
 infix 1 _◁▷_
 infix 1 _◁▷[_]_

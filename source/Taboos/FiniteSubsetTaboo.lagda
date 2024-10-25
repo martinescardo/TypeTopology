@@ -19,12 +19,11 @@ module Taboos.FiniteSubsetTaboo (pt : propositional-truncations-exist)
 
 open import Fin.Kuratowski pt
 open import Fin.Type
-open import MLTT.Negation
 open import MLTT.Spartan
 open import Naturals.Order
 open import Notation.Order
 open import UF.DiscreteAndSeparated
-open import UF.ExcludedMiddle
+open import UF.ClassicalLogic
 open import UF.ImageAndSurjection pt
 open import UF.Logic
 open import UF.Powerset

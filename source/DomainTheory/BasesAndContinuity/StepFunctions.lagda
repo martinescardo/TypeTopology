@@ -1,4 +1,5 @@
 Tom de Jong, late February, early March 2022.
+Updated 27 June 2024.
 
 We use single step functions to construct a small compact basis on the
 exponential of dcpos Eᴰ where D and E have small compact bases and E is
@@ -20,7 +21,6 @@ open import MLTT.Spartan hiding (J)
 open import UF.FunExt
 open import UF.PropTrunc
 
-open import UF.Subsingletons
 
 module DomainTheory.BasesAndContinuity.StepFunctions
         (pt : propositional-truncations-exist)
@@ -30,12 +30,8 @@ module DomainTheory.BasesAndContinuity.StepFunctions
 
 open PropositionalTruncation pt hiding (_∨_)
 
-open import UF.Base hiding (_≈_)
 open import UF.Equiv
-open import UF.EquivalenceExamples
-
 open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
 
 open import DomainTheory.Basics.Dcpo pt fe 𝓥
 open import DomainTheory.BasesAndContinuity.Bases pt fe 𝓥
@@ -62,7 +58,7 @@ single step functions using subsingleton suprema instead.
 
 \begin{code}
 
-module _
+module single-step-function-def
         (𝓓 : DCPO {𝓤}  {𝓣})
         (𝓔 : DCPO⊥ {𝓤'} {𝓣'})
         (𝓓-is-locally-small : is-locally-small 𝓓)
@@ -181,7 +177,7 @@ later directify by taking finite joins.
 
 \begin{code}
 
- module _
+ module single-step-functions-bases
          (Bᴰ Bᴱ : 𝓥 ̇ )
          (βᴰ : Bᴰ → ⟨ 𝓓 ⟩)
          (βᴱ : Bᴱ → ⟪ 𝓔 ⟫)
@@ -194,79 +190,84 @@ later directify by taking finite joins.
    where
     open is-small-compact-basis κᴰ
 
-  module _
+  module single-step-functions-into-sup-complete-dcpo
           (𝓔-is-sup-complete : is-sup-complete (𝓔 ⁻))
-          (f : ⟨ 𝓓 ⟩ → ⟪ 𝓔 ⟫)
-          (f-is-continuous : is-continuous 𝓓 (𝓔 ⁻) f)
          where
 
-   𝕗 : DCPO[ 𝓓 , 𝓔 ⁻ ]
-   𝕗 = f , f-is-continuous
-
-   open is-sup-complete 𝓔-is-sup-complete
-
-   single-step-functions-below-function :
-      (Σ p ꞉ (Bᴰ × Bᴱ) , single-step-functions p ⊑⟨ 𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻) ⟩ 𝕗)
-    → DCPO[ 𝓓 , 𝓔 ⁻ ]
-   single-step-functions-below-function = single-step-functions ∘ pr₁
-
-   single-step-functions-below-function-sup :
-    is-sup (underlying-order (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻))) 𝕗
-           single-step-functions-below-function
-   single-step-functions-below-function-sup = (ub , lb-of-ubs)
-    where
-     ub : is-upperbound (underlying-order (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻))) 𝕗
-           single-step-functions-below-function
-     ub = pr₂
-     lb-of-ubs :
-      is-lowerbound-of-upperbounds (underlying-order (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻))) 𝕗
-       single-step-functions-below-function
-     lb-of-ubs 𝕘@(g , _) g-is-ub x = fx-below-gx
-      where
-       module _ where
-        open is-small-compact-basis κᴱ
-        claim₁ : (d : Bᴰ) (e : Bᴱ) → e ⊑ᴮₛ f (βᴰ d) → βᴱ e ⊑⟪ 𝓔 ⟫ g (βᴰ d)
-        claim₁ d e u =
-         lr-implication (below-single-step-function-criterion (βᴰ d) (βᴱ e)
-                          (is-small-compact-basis.basis-is-compact κᴰ d) 𝕘)
-                          (g-is-ub ((d , e) , v))
+   module _
+           (𝕗 : DCPO[ 𝓓 , 𝓔 ⁻ ])
           where
-           v : single-step-functions (d , e) ⊑⟨ 𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻) ⟩ 𝕗
-           v = rl-implication
-                (below-single-step-function-criterion (βᴰ d) (βᴱ e)
-                  (is-small-compact-basis.basis-is-compact κᴰ d) 𝕗)
-                (⊑ᴮₛ-to-⊑ᴮ u)
-        claim₂ : (d : Bᴰ) → f (βᴰ d) ⊑⟪ 𝓔 ⟫ g (βᴰ d)
-        claim₂ d = f (βᴰ d)                             ⊑⟪ 𝓔 ⟫[ ⦅1⦆ ]
-                   ∐ (𝓔 ⁻) (↓ᴮₛ-is-directed (f (βᴰ d))) ⊑⟪ 𝓔 ⟫[ ⦅2⦆ ]
-                   g (βᴰ d)                             ∎⟪ 𝓔 ⟫
+
+    private
+     f : ⟨ 𝓓 ⟩ → ⟪ 𝓔 ⟫
+     f = [ 𝓓 , 𝓔 ⁻ ]⟨ 𝕗 ⟩
+     f-is-continuous : is-continuous 𝓓 (𝓔 ⁻) f
+     f-is-continuous = continuity-of-function 𝓓 (𝓔 ⁻) 𝕗
+
+    open is-sup-complete 𝓔-is-sup-complete
+
+    single-step-functions-below-function :
+       (Σ p ꞉ (Bᴰ × Bᴱ) , single-step-functions p ⊑⟨ 𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻) ⟩ 𝕗)
+     → DCPO[ 𝓓 , 𝓔 ⁻ ]
+    single-step-functions-below-function = single-step-functions ∘ pr₁
+
+    single-step-functions-below-function-sup :
+     is-sup (underlying-order (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻))) 𝕗
+            single-step-functions-below-function
+    single-step-functions-below-function-sup = (ub , lb-of-ubs)
+     where
+      ub : is-upperbound (underlying-order (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻))) 𝕗
+            single-step-functions-below-function
+      ub = pr₂
+      lb-of-ubs :
+       is-lowerbound-of-upperbounds (underlying-order (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻))) 𝕗
+        single-step-functions-below-function
+      lb-of-ubs 𝕘@(g , _) g-is-ub x = fx-below-gx
+       where
+        module _ where
+         open is-small-compact-basis κᴱ
+         claim₁ : (d : Bᴰ) (e : Bᴱ) → e ⊑ᴮₛ f (βᴰ d) → βᴱ e ⊑⟪ 𝓔 ⟫ g (βᴰ d)
+         claim₁ d e u =
+          lr-implication (below-single-step-function-criterion (βᴰ d) (βᴱ e)
+                           (is-small-compact-basis.basis-is-compact κᴰ d) 𝕘)
+                           (g-is-ub ((d , e) , v))
+           where
+            v : single-step-functions (d , e) ⊑⟨ 𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻) ⟩ 𝕗
+            v = rl-implication
+                 (below-single-step-function-criterion (βᴰ d) (βᴱ e)
+                   (is-small-compact-basis.basis-is-compact κᴰ d) 𝕗)
+                 (⊑ᴮₛ-to-⊑ᴮ u)
+         claim₂ : (d : Bᴰ) → f (βᴰ d) ⊑⟪ 𝓔 ⟫ g (βᴰ d)
+         claim₂ d = f (βᴰ d)                             ⊑⟪ 𝓔 ⟫[ ⦅1⦆ ]
+                    ∐ (𝓔 ⁻) (↓ᴮₛ-is-directed (f (βᴰ d))) ⊑⟪ 𝓔 ⟫[ ⦅2⦆ ]
+                    g (βᴰ d)                             ∎⟪ 𝓔 ⟫
+          where
+           ⦅1⦆ = ↓ᴮₛ-∐-⊒ (f (βᴰ d))
+           ⦅2⦆ = ∐-is-lowerbound-of-upperbounds (𝓔 ⁻) (↓ᴮₛ-is-directed (f (βᴰ d)))
+                  (g (βᴰ d)) (λ (e , v) → claim₁ d e v)
+
+        open is-small-compact-basis κᴰ
+        δ : is-Directed 𝓓 (↓-inclusionₛ x)
+        δ = ↓ᴮₛ-is-directed x
+        ε : is-Directed (𝓔 ⁻) (f ∘ ↓-inclusionₛ x)
+        ε = image-is-directed' 𝓓 (𝓔 ⁻) 𝕗 δ
+
+        fx-below-gx : f x ⊑⟪ 𝓔 ⟫ g x
+        fx-below-gx = f x       ⊑⟪ 𝓔 ⟫[ ⦅1⦆ ]
+                      f (∐ 𝓓 δ) ⊑⟪ 𝓔 ⟫[ ⦅2⦆ ]
+                      ∐ (𝓔 ⁻) ε ⊑⟪ 𝓔 ⟫[ ⦅3⦆ ]
+                      g x       ∎⟪ 𝓔 ⟫
          where
-          ⦅1⦆ = ↓ᴮₛ-∐-⊒ (f (βᴰ d))
-          ⦅2⦆ = ∐-is-lowerbound-of-upperbounds (𝓔 ⁻) (↓ᴮₛ-is-directed (f (βᴰ d)))
-                 (g (βᴰ d)) (λ (e , v) → claim₁ d e v)
-
-       open is-small-compact-basis κᴰ
-       δ : is-Directed 𝓓 (↓-inclusionₛ x)
-       δ = ↓ᴮₛ-is-directed x
-       ε : is-Directed (𝓔 ⁻) (f ∘ ↓-inclusionₛ x)
-       ε = image-is-directed' 𝓓 (𝓔 ⁻) 𝕗 δ
-
-       fx-below-gx : f x ⊑⟪ 𝓔 ⟫ g x
-       fx-below-gx = f x       ⊑⟪ 𝓔 ⟫[ ⦅1⦆ ]
-                     f (∐ 𝓓 δ) ⊑⟪ 𝓔 ⟫[ ⦅2⦆ ]
-                     ∐ (𝓔 ⁻) ε ⊑⟪ 𝓔 ⟫[ ⦅3⦆ ]
-                     g x       ∎⟪ 𝓔 ⟫
-        where
-         ⦅1⦆ = ＝-to-⊒ (𝓔 ⁻) (ap f (↓ᴮₛ-∐-＝ x))
-         ⦅2⦆ = continuous-∐-⊑ 𝓓 (𝓔 ⁻) 𝕗 δ
-         ⦅3⦆ = ∐-is-lowerbound-of-upperbounds (𝓔 ⁻) ε (g x) γ
-          where
-           γ : is-upperbound (underlying-order (𝓔 ⁻)) (g x) (f ∘ ↓-inclusionₛ x)
-           γ (d , u) = f (βᴰ d) ⊑⟪ 𝓔 ⟫[ claim₂ d ]
-                       g (βᴰ d) ⊑⟪ 𝓔 ⟫[ v        ]
-                       g x      ∎⟪ 𝓔 ⟫
-            where
-             v = monotone-if-continuous 𝓓 (𝓔 ⁻) 𝕘 (βᴰ d) x (⊑ᴮₛ-to-⊑ᴮ u)
+          ⦅1⦆ = ＝-to-⊒ (𝓔 ⁻) (ap f (↓ᴮₛ-∐-＝ x))
+          ⦅2⦆ = continuous-∐-⊑ 𝓓 (𝓔 ⁻) 𝕗 δ
+          ⦅3⦆ = ∐-is-lowerbound-of-upperbounds (𝓔 ⁻) ε (g x) γ
+           where
+            γ : is-upperbound (underlying-order (𝓔 ⁻)) (g x) (f ∘ ↓-inclusionₛ x)
+            γ (d , u) = f (βᴰ d) ⊑⟪ 𝓔 ⟫[ claim₂ d ]
+                        g (βᴰ d) ⊑⟪ 𝓔 ⟫[ v        ]
+                        g x      ∎⟪ 𝓔 ⟫
+             where
+              v = monotone-if-continuous 𝓓 (𝓔 ⁻) 𝕘 (βᴰ d) x (⊑ᴮₛ-to-⊑ᴮ u)
 
 \end{code}
 
@@ -274,71 +275,81 @@ Now we are in position to show that the exponential has a small compact basis.
 
 \begin{code}
 
-  module _
-          (𝓔-is-sup-complete : is-sup-complete (𝓔 ⁻))
-         where
-
-   private
-    exp-is-sup-complete : is-sup-complete (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻))
-    exp-is-sup-complete = exponential-is-sup-complete 𝓓 (𝓔 ⁻) 𝓔-is-sup-complete
-
-   open sup-complete-dcpo (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻)) exp-is-sup-complete
-
-   private
-    B : 𝓥 ̇
-    B = domain (directify single-step-functions)
-    β : B → DCPO[ 𝓓 , 𝓔 ⁻ ]
-    β = directify single-step-functions
-
-   exponential-has-small-compact-basis : Prop-Ext
-                                       → is-small-compact-basis (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻)) β
-   exponential-has-small-compact-basis pe =
-    record
-     { basis-is-compact = ⦅1⦆
-     ; ⊑ᴮ-is-small      = ⦅2⦆
-     ; ↓ᴮ-is-directed   = ⦅3⦆
-     ; ↓ᴮ-is-sup        = ⦅4⦆
-     }
-     where
-      ⦅1⦆ : (b : B) → is-compact (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻)) (β b)
-      ⦅1⦆ = directify-is-compact single-step-functions
-            (λ (d , e) → single-step-function-is-compact (βᴰ d) (βᴱ e)
-                          (is-small-compact-basis.basis-is-compact κᴰ d)
-                          (is-small-compact-basis.basis-is-compact κᴱ e))
-      ⦅2⦆ : (f : ⟨ 𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻) ⟩) (b : B)
-          → is-small (β b ⊑⟨ 𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻) ⟩ f)
-      ⦅2⦆ f b = ⌜ local-smallness-equivalent-definitions (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻)) ⌝
-                 exp-is-locally-small (β b) f
+module _
+        (𝓓 : DCPO {𝓤} {𝓣})
+        (𝓔 : DCPO⊥ {𝓤'} {𝓣'})
+        (𝓔-is-sup-complete : is-sup-complete (𝓔 ⁻))
+        (Bᴰ Bᴱ : 𝓥 ̇ )
+        (βᴰ : Bᴰ → ⟨ 𝓓 ⟩)
+        (βᴱ : Bᴱ → ⟪ 𝓔 ⟫)
+        (κᴰ : is-small-compact-basis 𝓓     βᴰ)
+        (κᴱ : is-small-compact-basis (𝓔 ⁻) βᴱ)
        where
-        exp-is-locally-small : is-locally-small (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻))
-        exp-is-locally-small =
-         locally-small-exponential-criterion pe 𝓓 (𝓔 ⁻)
-          ∣ Bᴰ , βᴰ , compact-basis-is-basis 𝓓 βᴰ κᴰ ∣
-          (locally-small-if-small-compact-basis (𝓔 ⁻) βᴱ κᴱ)
-      ⦅3⦆ : (f : ⟨ 𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻) ⟩)
-          → is-Directed (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻)) (↓-inclusion (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻)) β f)
-      ⦅3⦆ f = directify-↓-is-directed single-step-functions {f}
-      ⦅4⦆ : (f : ⟨ 𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻) ⟩)
-          → is-sup (underlying-order (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻))) f
-             (↓-inclusion (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻)) β f)
-      ⦅4⦆ (f , f-is-cts) =
-       directify-↓-sup single-step-functions {f , f-is-cts}
-        (single-step-functions-below-function-sup 𝓔-is-sup-complete
-        f f-is-cts)
 
-   exponential-has-specified-small-compact-basis : Prop-Ext
-    → has-specified-small-compact-basis (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻))
-   exponential-has-specified-small-compact-basis pe =
-    (B , β , exponential-has-small-compact-basis pe)
+ private
+  exp-is-sup-complete : is-sup-complete (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻))
+  exp-is-sup-complete = exponential-is-sup-complete 𝓓 (𝓔 ⁻) 𝓔-is-sup-complete
 
-   exponential-is-structurally-algebraic : Prop-Ext
-                                         → structurally-algebraic (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻))
-   exponential-is-structurally-algebraic pe =
-    structurally-algebraic-if-specified-small-compact-basis (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻))
-     (exponential-has-specified-small-compact-basis pe)
+ open sup-complete-dcpo (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻)) exp-is-sup-complete
+ open single-step-function-def 𝓓 𝓔 (locally-small-if-small-compact-basis 𝓓 βᴰ κᴰ)
+ open single-step-functions-bases Bᴰ Bᴱ βᴰ βᴱ κᴰ κᴱ
 
-   exponential-is-algebraic : Prop-Ext → is-algebraic-dcpo (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻))
-   exponential-is-algebraic pe = ∣ exponential-is-structurally-algebraic pe ∣
+ private
+  B : 𝓥 ̇
+  B = domain (directify single-step-functions)
+  β : B → DCPO[ 𝓓 , 𝓔 ⁻ ]
+  β = directify single-step-functions
+
+ exponential-has-small-compact-basis : Prop-Ext
+                                     → is-small-compact-basis (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻)) β
+ exponential-has-small-compact-basis pe =
+  record
+   { basis-is-compact = ⦅1⦆
+   ; ⊑ᴮ-is-small      = ⦅2⦆
+   ; ↓ᴮ-is-directed   = ⦅3⦆
+   ; ↓ᴮ-is-sup        = ⦅4⦆
+   }
+   where
+    ⦅1⦆ : (b : B) → is-compact (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻)) (β b)
+    ⦅1⦆ = directify-is-compact single-step-functions
+          (λ (d , e) → single-step-function-is-compact (βᴰ d) (βᴱ e)
+                        (is-small-compact-basis.basis-is-compact κᴰ d)
+                        (is-small-compact-basis.basis-is-compact κᴱ e))
+    ⦅2⦆ : (f : ⟨ 𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻) ⟩) (b : B)
+        → is-small (β b ⊑⟨ 𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻) ⟩ f)
+    ⦅2⦆ f b = ⌜ local-smallness-equivalent-definitions (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻)) ⌝
+               exp-is-locally-small (β b) f
+     where
+      exp-is-locally-small : is-locally-small (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻))
+      exp-is-locally-small =
+       locally-small-exponential-criterion pe 𝓓 (𝓔 ⁻)
+        ∣ Bᴰ , βᴰ , compact-basis-is-basis 𝓓 βᴰ κᴰ ∣
+        (locally-small-if-small-compact-basis (𝓔 ⁻) βᴱ κᴱ)
+    ⦅3⦆ : (f : ⟨ 𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻) ⟩)
+        → is-Directed (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻)) (↓-inclusion (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻)) β f)
+    ⦅3⦆ f = directify-↓-is-directed single-step-functions {f}
+    ⦅4⦆ : (f : ⟨ 𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻) ⟩)
+        → is-sup (underlying-order (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻))) f
+           (↓-inclusion (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻)) β f)
+    ⦅4⦆ (f , f-is-cts) =
+     directify-↓-sup single-step-functions {f , f-is-cts}
+      (single-step-functions-below-function-sup (f , f-is-cts))
+        where
+         open single-step-functions-into-sup-complete-dcpo 𝓔-is-sup-complete
+
+ exponential-has-specified-small-compact-basis : Prop-Ext
+  → has-specified-small-compact-basis (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻))
+ exponential-has-specified-small-compact-basis pe =
+  (B , β , exponential-has-small-compact-basis pe)
+
+ exponential-is-structurally-algebraic : Prop-Ext
+                                       → structurally-algebraic (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻))
+ exponential-is-structurally-algebraic pe =
+  structurally-algebraic-if-specified-small-compact-basis (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻))
+   (exponential-has-specified-small-compact-basis pe)
+
+ exponential-is-algebraic : Prop-Ext → is-algebraic-dcpo (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻))
+ exponential-is-algebraic pe = ∣ exponential-is-structurally-algebraic pe ∣
 
 \end{code}
 
@@ -359,11 +370,10 @@ can use the continuous retract to give a small basis on (𝓓 ⟹ᵈᶜᵖᵒ �
 
 NB: The above proof outline depends on the fact that 𝓔' and (hence)
 (𝓓' ⟹ᵈᶜᵖᵒ 𝓔') are sup-complete. This can be shown by using the concrete
-definition of 𝓔' as the ideal completion of βᴱ. This step has not been
-formalized (yet), but all the other steps in the outline have.
-
-TODO: Formalize the proof that Idl(βᴱ,⊑) is is sup-complete. It looks like it
-will be helpful to prove separately that we can close bases under finite joins.
+definition of 𝓔' as the ideal completion of βᴱ and by ensuring that the basis βᴱ
+is closed under finite joins to begin with.
+This was formalized on 27 June 2024. Prior to this, the sup-completeness of 𝓔'
+was an assumption to an anonymous module.
 
 \begin{code}
 
@@ -371,17 +381,50 @@ module _
         (pe : Prop-Ext)
         (𝓓 : DCPO {𝓤} {𝓣})
         (𝓔 : DCPO {𝓤'} {𝓣'})
-        {Bᴰ Bᴱ : 𝓥 ̇ }
+        {Bᴰ Bᴱₚᵣₑ : 𝓥 ̇ }
         (βᴰ : Bᴰ → ⟨ 𝓓 ⟩)
-        (βᴱ : Bᴱ → ⟨ 𝓔 ⟩)
+        (βᴱₚᵣₑ : Bᴱₚᵣₑ → ⟨ 𝓔 ⟩)
         (βᴰ-is-small-basis : is-small-basis 𝓓 βᴰ)
-        (βᴱ-is-small-basis : is-small-basis 𝓔 βᴱ)
+        (βᴱₚᵣₑ-is-small-basis : is-small-basis 𝓔 βᴱₚᵣₑ)
         (𝓔-is-sup-complete : is-sup-complete 𝓔)
        where
 
  open import DomainTheory.IdealCompletion.Retracts pt fe pe 𝓥
 
+\end{code}
+
+As a first step, we construct a new basis of 𝓔 which is guaranteed to have
+finite joins.
+
+\begin{code}
+
  private
+  𝓔-has-finite-joins : has-finite-joins 𝓔
+  𝓔-has-finite-joins = sup-complete-dcpo-has-finite-joins 𝓔 𝓔-is-sup-complete
+
+  refined-basis : Σ B ꞉ 𝓥 ̇ , Σ β ꞉ (B → ⟨ 𝓔 ⟩) ,
+                  Σ p ꞉ is-small-basis 𝓔 β ,
+                  basis-has-finite-joins 𝓔 β p 𝓔-has-finite-joins
+  refined-basis = refine-basis-to-have-finite-joins 𝓔 βᴱₚᵣₑ
+                                                    βᴱₚᵣₑ-is-small-basis
+                                                    𝓔-has-finite-joins
+
+  Bᴱ : 𝓥 ̇
+  Bᴱ = pr₁ refined-basis
+  βᴱ : Bᴱ → ⟨ 𝓔 ⟩
+  βᴱ = pr₁ (pr₂ refined-basis)
+  βᴱ-is-small-basis : is-small-basis 𝓔 βᴱ
+  βᴱ-is-small-basis = pr₁ (pr₂ (pr₂ refined-basis))
+  βᴱ-has-finite-joins : basis-has-finite-joins 𝓔 βᴱ βᴱ-is-small-basis
+                                                    𝓔-has-finite-joins
+  βᴱ-has-finite-joins = pr₂ (pr₂ (pr₂ (refined-basis)))
+
+\end{code}
+
+We now proceed with the proof as outlined above.
+
+\begin{code}
+
   module _ where
    open Idl-continuous-retract-of-algebraic 𝓓 βᴰ βᴰ-is-small-basis
    𝓓' : DCPO {𝓥 ⁺} {𝓥}
@@ -394,13 +437,17 @@ module _
    𝓔' = Idl-DCPO
    𝓔-continuous-retract-of-𝓔' : 𝓔 continuous-retract-of 𝓔'
    𝓔-continuous-retract-of-𝓔' = Idl-continuous-retract
+   𝓔'-is-sup-complete : is-sup-complete 𝓔'
+   𝓔'-is-sup-complete =
+    Idl-is-sup-complete-if-basis-has-finite-joins 𝓔-is-sup-complete
+                                                  βᴱ-has-finite-joins
 
   exp-continuous-retract : (𝓓 ⟹ᵈᶜᵖᵒ 𝓔) continuous-retract-of (𝓓' ⟹ᵈᶜᵖᵒ 𝓔')
   exp-continuous-retract =
    record
     { s               = s
     ; r               = r
-    ; s-section-of-r    = s-section-of-r
+    ; s-section-of-r  = s-section-of-r
     ; s-is-continuous = s-is-cts
     ; r-is-continuous = r-is-cts
     }
@@ -437,64 +484,43 @@ module _
      r-is-cts = DCPO-∘₃-is-continuous₂ 𝓓 𝓓' 𝓔' 𝓔
                  (sᴰ , sᴰ-is-cts) (rᴱ , rᴱ-is-cts)
 
-\end{code}
+  open sup-complete-dcpo 𝓔' 𝓔'-is-sup-complete
+  open has-finite-joins (sup-complete-dcpo-has-finite-joins 𝓔' 𝓔'-is-sup-complete)
 
-Sup-completeness of 𝓔' is the only remaining hole in the formalization of the
-argument outlined above.
+  exp-has-small-compact-basis : has-specified-small-compact-basis (𝓓' ⟹ᵈᶜᵖᵒ 𝓔')
+  exp-has-small-compact-basis =
+   exponential-has-specified-small-compact-basis
+    𝓓' (𝓔' , ⊥ , ⊥-is-least)
+    𝓔'-is-sup-complete
+    Bᴰ' Bᴱ' βᴰ' βᴱ' κᴰ' κᴱ' pe
+     where
+      module _ where
+       open Idl-continuous-retract-of-algebraic 𝓓 βᴰ βᴰ-is-small-basis
+       small-compact-basisᴰ' : has-specified-small-compact-basis 𝓓'
+       small-compact-basisᴰ' = Idl-has-specified-small-compact-basis
+                                (λ _ → ⊑ᴮ-is-reflexive)
+       Bᴰ' : 𝓥 ̇
+       Bᴰ' = pr₁ small-compact-basisᴰ'
+       βᴰ' : Bᴰ' → ⟨ 𝓓' ⟩
+       βᴰ' = pr₁ (pr₂ small-compact-basisᴰ')
+       κᴰ' : is-small-compact-basis 𝓓' βᴰ'
+       κᴰ' = pr₂ (pr₂ small-compact-basisᴰ')
+      module _ where
+       open Idl-continuous-retract-of-algebraic 𝓔 βᴱ βᴱ-is-small-basis
+       small-compact-basisᴱ' : has-specified-small-compact-basis 𝓔'
+       small-compact-basisᴱ' = Idl-has-specified-small-compact-basis
+                                (λ _ → ⊑ᴮ-is-reflexive)
+       Bᴱ' : 𝓥 ̇
+       Bᴱ' = pr₁ small-compact-basisᴱ'
+       βᴱ' : Bᴱ' → ⟨ 𝓔' ⟩
+       βᴱ' = pr₁ (pr₂ small-compact-basisᴱ')
+       κᴱ' : is-small-compact-basis 𝓔' βᴱ'
+       κᴱ' = pr₂ (pr₂ small-compact-basisᴱ')
 
-\begin{code}
-
-{- TODO
-  𝓔'-is-sup-complete : is-sup-complete 𝓔'
-  𝓔'-is-sup-complete = {!!}
--}
-
-\end{code}
-
-We assume sup-completeness of 𝓔' here to illustrate that the remainder of the
-argument is fully formalized.
-
-\begin{code}
-
-  module _
-          (𝓔'-is-sup-complete : is-sup-complete 𝓔')
-         where
-
-   open sup-complete-dcpo 𝓔' 𝓔'-is-sup-complete
-
-   exp-has-small-compact-basis : has-specified-small-compact-basis (𝓓' ⟹ᵈᶜᵖᵒ 𝓔')
-   exp-has-small-compact-basis =
-    exponential-has-specified-small-compact-basis 𝓓' (𝓔' , ⊥ , ⊥-is-least)
-     (locally-small-if-small-compact-basis 𝓓' βᴰ' κᴰ')
-     Bᴰ' Bᴱ' βᴰ' βᴱ' κᴰ' κᴱ' 𝓔'-is-sup-complete pe
-      where
-       module _ where
-        open Idl-continuous-retract-of-algebraic 𝓓 βᴰ βᴰ-is-small-basis
-        small-compact-basisᴰ' : has-specified-small-compact-basis 𝓓'
-        small-compact-basisᴰ' = Idl-has-specified-small-compact-basis
-                                 (λ _ → ⊑ᴮ-is-reflexive)
-        Bᴰ' : 𝓥 ̇
-        Bᴰ' = pr₁ small-compact-basisᴰ'
-        βᴰ' : Bᴰ' → ⟨ 𝓓' ⟩
-        βᴰ' = pr₁ (pr₂ small-compact-basisᴰ')
-        κᴰ' : is-small-compact-basis 𝓓' βᴰ'
-        κᴰ' = pr₂ (pr₂ small-compact-basisᴰ')
-       module _ where
-        open Idl-continuous-retract-of-algebraic 𝓔 βᴱ βᴱ-is-small-basis
-        small-compact-basisᴱ' : has-specified-small-compact-basis 𝓔'
-        small-compact-basisᴱ' = Idl-has-specified-small-compact-basis
-                                 (λ _ → ⊑ᴮ-is-reflexive)
-        Bᴱ' : 𝓥 ̇
-        Bᴱ' = pr₁ small-compact-basisᴱ'
-        βᴱ' : Bᴱ' → ⟨ 𝓔' ⟩
-        βᴱ' = pr₁ (pr₂ small-compact-basisᴱ')
-        κᴱ' : is-small-compact-basis 𝓔' βᴱ'
-        κᴱ' = pr₂ (pr₂ small-compact-basisᴱ')
-
-   exponential-has-small-basis : has-specified-small-basis (𝓓 ⟹ᵈᶜᵖᵒ 𝓔)
-   exponential-has-small-basis = B , r ∘ β ,
-    small-basis-from-continuous-retract (𝓓 ⟹ᵈᶜᵖᵒ 𝓔) (𝓓' ⟹ᵈᶜᵖᵒ 𝓔')
-     exp-continuous-retract pe β (compact-basis-is-basis (𝓓' ⟹ᵈᶜᵖᵒ 𝓔') β κ)
+ exponential-has-specified-small-basis : has-specified-small-basis (𝓓 ⟹ᵈᶜᵖᵒ 𝓔)
+ exponential-has-specified-small-basis = B , r ∘ β ,
+  small-basis-from-continuous-retract pe (𝓓 ⟹ᵈᶜᵖᵒ 𝓔) (𝓓' ⟹ᵈᶜᵖᵒ 𝓔')
+   exp-continuous-retract β (compact-basis-is-basis (𝓓' ⟹ᵈᶜᵖᵒ 𝓔') β κ)
     where
      open _continuous-retract-of_ exp-continuous-retract
      exp-small-compact-basis : has-specified-small-compact-basis (𝓓' ⟹ᵈᶜᵖᵒ 𝓔')

@@ -8,7 +8,6 @@ module UF.SetTrunc where
 
 open import MLTT.Spartan
 open import UF.Sets
-open import UF.Subsingletons
 
 \end{code}
 
@@ -35,8 +34,6 @@ record set-truncations-exist : 𝓤ω where
    → (h : (x : X) → Y (set-trunc-in x))
    → (x : X)
    → set-trunc-ind Y Y-set h (set-trunc-in x) ＝ h x
-
-
 
  set-trunc-rec
   : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } (Y : 𝓥 ̇ )

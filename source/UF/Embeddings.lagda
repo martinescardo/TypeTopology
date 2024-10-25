@@ -7,7 +7,6 @@ Martin Escardo
 module UF.Embeddings where
 
 open import MLTT.Spartan
-
 open import MLTT.Plus-Properties
 open import UF.Base
 open import UF.Equiv
@@ -51,7 +50,10 @@ id-is-embedding = singleton-types'-are-props
   T z = Σ (y , _) ꞉ fiber g z , fiber f y
 
   T-is-prop : (z : Z) → is-prop (T z)
-  T-is-prop z = subtypes-of-props-are-props' pr₁ (pr₁-lc (λ {t} → e (pr₁ t))) (d z)
+  T-is-prop z = subtypes-of-props-are-props'
+                 pr₁
+                 (pr₁-lc (λ {t} → e (pr₁ t)))
+                 (d z)
 
   φ : (z : Z) → fiber (g ∘ f) z → T z
   φ z (x , p) = (f x , p) , x , refl
@@ -79,7 +81,6 @@ _∘↪_ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
      → X ↪ Y
      → X ↪ Z
 (g , j) ∘↪ (f , i) = g ∘ f , ∘-is-embedding i j
-
 
 ⌊_⌋ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X ↪ Y → X → Y
 ⌊ f , _ ⌋     = f
@@ -142,11 +143,11 @@ embeddings-with-sections-are-equivs : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y
 embeddings-with-sections-are-equivs f i h =
  vv-equivs-are-equivs f (embeddings-with-sections-are-vv-equivs f i h)
 
-Subtypes' : (𝓤 {𝓥} : Universe) → 𝓥 ̇ → 𝓤 ⁺ ⊔ 𝓥 ̇
-Subtypes' 𝓤 {𝓥} Y = Σ X ꞉ 𝓤 ̇ , X ↪ Y
+Subtype' : (𝓤 {𝓥} : Universe) → 𝓥 ̇ → 𝓤 ⁺ ⊔ 𝓥 ̇
+Subtype' 𝓤 {𝓥} Y = Σ X ꞉ 𝓤 ̇ , X ↪ Y
 
-Subtypes : 𝓤 ̇ → 𝓤 ⁺ ̇
-Subtypes {𝓤} Y = Subtypes' 𝓤 Y
+Subtype : 𝓤 ̇ → 𝓤 ⁺ ̇
+Subtype {𝓤} Y = Subtype' 𝓤 Y
 
 etofun : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X ↪ Y) → (X → Y)
 etofun = pr₁
@@ -160,7 +161,8 @@ equivs-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X ≃ Y → X ↪ Y
 equivs-embedding e = ⌜ e ⌝ , equivs-are-embeddings ⌜ e ⌝ (⌜⌝-is-equiv e)
 
 embeddings-are-lc : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                  → is-embedding f → left-cancellable f
+                  → is-embedding f
+                  → left-cancellable f
 embeddings-are-lc f e {x} {x'} p = ap pr₁ (e (f x) (x , refl) (x' , (p ⁻¹)))
 
 subtypes-of-props-are-props : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (e : X → Y)
@@ -200,6 +202,20 @@ embedding-gives-embedding' {𝓤} {𝓥} {X} {Y} f ise = g
          (center (c x))
          (centrality (c x)))
 
+\end{code}
+
+Added 27 June 2024.  It follows that if f is an equivalence, then so
+is ap f.  It is added here, rather than in UF.EquivalenceExamples, to
+avoid cyclic module dependencies.
+
+\begin{code}
+
+ap-is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+            → is-equiv f
+            → {x x' : X} → is-equiv (ap f {x} {x'})
+ap-is-equiv f e {x} {x'} =
+ embedding-gives-embedding' f (equivs-are-embeddings f e) x x'
+
 embedding-criterion-converse' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                              → is-embedding f
                              → (x' x : X)
@@ -211,7 +227,8 @@ embedding-criterion-converse : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                              → is-embedding f
                              → (x' x : X)
                              → (f x' ＝ f x) ≃ (x' ＝ x)
-embedding-criterion-converse f e x' x = ≃-sym (embedding-criterion-converse' f e x' x)
+embedding-criterion-converse f e x' x =
+ ≃-sym (embedding-criterion-converse' f e x' x)
 
 embedding'-gives-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                              (f : X → Y)
@@ -257,8 +274,11 @@ to-subtype-＝-≃ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
                 → {x y : X} {a : A x} {b : A y}
                 → (x ＝ y) ≃ ((x , a) ＝ (y , b))
 to-subtype-＝-≃ A-is-prop-valued {x} {y} {a} {b} =
- embedding-criterion-converse pr₁ (pr₁-is-embedding A-is-prop-valued) (x , a) (y , b)
-
+ embedding-criterion-converse
+  pr₁
+  (pr₁-is-embedding A-is-prop-valued)
+  (x , a)
+  (y , b)
 
 pr₁-lc-bis : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
            → ({x : X} → is-prop (Y x))
@@ -303,7 +323,8 @@ lc-maps-into-sets-are-embeddings : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                                  → left-cancellable f
                                  → is-set Y
                                  → is-embedding f
-lc-maps-into-sets-are-embeddings {𝓤} {𝓥} {X} {Y} f f-lc iss y (x , p) (x' , p') = γ
+lc-maps-into-sets-are-embeddings
+ {𝓤} {𝓥} {X} {Y} f f-lc iss y (x , p) (x' , p') = γ
  where
    r : x ＝ x'
    r = f-lc (p ∙ (p' ⁻¹))
@@ -362,6 +383,10 @@ is-essential f 𝓦 = (Z : 𝓦 ̇) (g : codomain f → Z)
                  → is-embedding (g ∘ f)
                  → is-embedding g
 
+is-essential-embedding
+ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → (𝓦 : Universe) → 𝓤 ⊔ 𝓥 ⊔ (𝓦 ⁺) ̇
+is-essential-embedding f 𝓦 = is-essential f 𝓦 × is-embedding f
+
 postcomp-is-embedding : FunExt
                       → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } (f : X → Y)
                       → is-embedding f
@@ -383,7 +408,10 @@ postcomp-is-embedding {𝓤} {𝓥} {𝓦} fe {X} {Y} {A} f i = γ
   γ : is-embedding (f ∘_)
   γ = embedding-criterion' (f ∘_) k
 
-disjoint-images : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } → (X → A) → (Y → A) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
+disjoint-images : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ }
+                → (X → A)
+                → (Y → A)
+                → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
 disjoint-images f g = ∀ x y → f x ≠ g y
 
 disjoint-cases-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ }
@@ -425,7 +453,8 @@ disjoint-cases-embedding {𝓤} {𝓥} {𝓦} {X} {Y} {A} f g ef eg d = γ
 
 TODO.
   (1) f : X → Y is an embedding iff fiber f (f x) is a singleton for every x : X.
-  (2) f : X → Y is an embedding iff its corestriction to its image is an equivalence.
+  (2) f : X → Y is an embedding iff its corestriction to its image is an
+      equivalence.
 
 This can be deduced directly from Yoneda.
 
@@ -573,7 +602,8 @@ Idtofun-is-embedding ua fe {X} {Y} =
   (dfunext fe (idtofun-agreement X Y))
   (idtofun-is-embedding ua)
 
-unique-from-𝟘-is-embedding : {X : 𝓤 ̇ } → is-embedding (unique-from-𝟘 {𝓤} {𝓥} {X})
+unique-from-𝟘-is-embedding : {X : 𝓤 ̇ }
+                           → is-embedding (unique-from-𝟘 {𝓤} {𝓥} {X})
 unique-from-𝟘-is-embedding x (y , p) = 𝟘-elim y
 
 \end{code}
@@ -581,6 +611,9 @@ unique-from-𝟘-is-embedding x (y , p) = 𝟘-elim y
 Added by Martin Escardo and Tom de Jong 10th October 2023.
 
 \begin{code}
+
+id-is-essential : {X : 𝓤 ̇ } → is-essential (id {𝓤} {X}) 𝓥
+id-is-essential {𝓤} {X} Z g = id
 
 ∘-is-essential : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
                  {f : X → Y} {g : Y → Z}
@@ -605,6 +638,19 @@ while the composite
 
 is an embedding, the evaluation map isn't.
 
+Added by Ian Ray 22nd August 2024
+
+\begin{code}
+
+equiv-embeds-into-function : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                           → FunExt
+                           → (X ≃ Y) ↪ (X → Y)
+equiv-embeds-into-function fe =
+ (⌜_⌝ , pr₁-is-embedding (λ f → being-equiv-is-prop fe f))
+
+\end{code}
+
+End of addition.
 
 Fixities:
 
@@ -613,6 +659,5 @@ Fixities:
 infix  0 _↪_
 infix  1 _□
 infixr 0 _↪⟨_⟩_
-
 
 \end{code}

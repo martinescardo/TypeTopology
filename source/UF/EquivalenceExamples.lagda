@@ -15,7 +15,6 @@ open import UF.FunExt
 open import UF.Lower-FunExt
 open import UF.PropIndexedPiSigma
 open import UF.Retracts
-open import UF.SubtypeClassifier
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.Subsingletons-Properties
@@ -127,8 +126,7 @@ curry-uncurry {𝓤} {𝓥} {𝓦} fe = curry-uncurry' (fe 𝓤 (𝓥 ⊔ 𝓦))
   gf (x , y) = to-Σ-＝' (inverses-are-retractions ⌜ φ x ⌝ ⌜ φ x ⌝-is-equiv y)
 
 ΠΣ-distr-≃ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {P : (x : X) → A x → 𝓦 ̇ }
-           → (Π x ꞉ X , Σ a ꞉ A x , P x a)
-           ≃ (Σ f ꞉ Π A , Π x ꞉ X , P x (f x))
+           → (Π x ꞉ X , Σ a ꞉ A x , P x a) ≃ (Σ f ꞉ Π A , Π x ꞉ X , P x (f x))
 ΠΣ-distr-≃ = qinveq ΠΣ-distr (ΠΣ-distr⁻¹ , (λ _ → refl) , (λ _ → refl))
 
 Π×-distr : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X → 𝓦 ̇ }
@@ -493,7 +491,7 @@ Ap+ {𝓤} {𝓥} {𝓦} {X} {Y} Z f =
 
 +→ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
    → funext (𝓤 ⊔ 𝓥) 𝓦
-   → ((X + Y) → Z) ≃ (X → Z) × (Y → Z)
+   → (X + Y → Z) ≃ (X → Z) × (Y → Z)
 +→ fe = ≃-sym (Π×+ fe)
 
 →× : {A : 𝓤 ̇ } {X : A → 𝓥 ̇ } {Y : A → 𝓦 ̇ }
@@ -844,6 +842,23 @@ complement-is-equiv = qinvs-are-equivs
 complement-≃ : 𝟚 ≃ 𝟚
 complement-≃ = (complement , complement-is-equiv)
 
+𝟚-≃-𝟙+𝟙 : 𝟚 ≃ 𝟙{𝓤} + 𝟙{𝓤}
+𝟚-≃-𝟙+𝟙 = f , qinvs-are-equivs f (g , gf , fg)
+ where
+  f : 𝟚 → 𝟙 + 𝟙
+  f = 𝟚-cases (inl ⋆) (inr ⋆)
+
+  g : 𝟙 + 𝟙 → 𝟚
+  g = cases (λ x → ₀) (λ x → ₁)
+
+  fg : (x : 𝟙 + 𝟙) → f (g x) ＝ x
+  fg (inl ⋆) = refl
+  fg (inr ⋆) = refl
+
+  gf : (x : 𝟚) → g (f x) ＝ x
+  gf ₀ = refl
+  gf ₁ = refl
+
 alternative-× : funext 𝓤₀ 𝓤
               → {A : 𝟚 → 𝓤 ̇ }
               → (Π n ꞉ 𝟚 , A n) ≃ (A ₀ × A ₁)
@@ -885,8 +900,9 @@ alternative-+ {𝓤} {A} = qinveq ϕ (ψ , η , ε)
 domain-is-total-fiber : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) → X ≃ Σ (fiber f)
 domain-is-total-fiber {𝓤} {𝓥} {X} {Y} f =
  X                             ≃⟨ ≃-sym (𝟙-rneutral {𝓤} {𝓤}) ⟩
- X × 𝟙                         ≃⟨ Σ-cong (λ x → singleton-≃ 𝟙-is-singleton
-                                         (singleton-types-are-singletons (f x))) ⟩
+ X × 𝟙                         ≃⟨ Σ-cong
+                                   (λ x → singleton-≃ 𝟙-is-singleton
+                                   (singleton-types-are-singletons (f x))) ⟩
  (Σ x ꞉ X , Σ y ꞉ Y , f x ＝ y) ≃⟨ Σ-flip ⟩
  (Σ y ꞉ Y , Σ x ꞉ X , f x ＝ y) ■
 
@@ -929,11 +945,12 @@ warrant their place here.
 
 \begin{code}
 
-precomposition-with-equiv-does-not-change-fibers : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
-                                                   (e : Z ≃ X) (f : X → Y) (y : Y)
-                                                 → fiber (f ∘ ⌜ e ⌝) y ≃ fiber f y
+precomposition-with-equiv-does-not-change-fibers
+ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+   (e : Z ≃ X) (f : X → Y) (y : Y)
+ → fiber (f ∘ ⌜ e ⌝) y ≃ fiber f y
 precomposition-with-equiv-does-not-change-fibers (g , i) f y =
- Σ-change-of-variable (λ x → f x ＝ y) g i
+ Σ-change-of-variable (λ - → f - ＝ y) g i
 
 retract-pointed-fibers : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {r : Y → X}
                        → has-section r ≃ (Π x ꞉ X , fiber r x)
@@ -1022,6 +1039,34 @@ fiber-of-unique-to-𝟙 {𝓤} {𝓥} {X} ⋆ =
           → (y : Y) → fiber f y ≃ fiber g y
 ∼-fiber-≃ H y = Σ-cong (∼-fiber-identifications-≃ H y)
 
+\end{code}
+
+Added 9 July 2024 by Tom de Jong.
+
+\begin{code}
+
+fiber-of-ap-≃' : {A : 𝓤 ̇ } {B : 𝓥 ̇ } (f : A → B)
+                 {x y : A} (p : f x ＝ f y)
+               → fiber (ap f) p ≃ ((x , refl) ＝[ fiber' f (f x) ] (y , p))
+fiber-of-ap-≃' f {x} {y} p =
+ fiber (ap f) p                                              ≃⟨ ≃-refl _ ⟩
+ (Σ e ꞉ x ＝ y , transport (λ - → (f x ＝ f -)) e refl ＝ p) ≃⟨ ≃-sym Σ-＝-≃ ⟩
+ ((x , refl) ＝ (y , p))                                     ■
+
+fiber-of-ap-≃ : {A : 𝓤 ̇ } {B : 𝓥 ̇ } (f : A → B)
+                {x y : A} (p : f x ＝ f y)
+              → fiber (ap f) p ≃ ((x , p) ＝[ fiber f (f y) ] (y , refl))
+fiber-of-ap-≃ f {x} {y} p =
+ fiber (ap f) p                                              ≃⟨ Σ-cong I ⟩
+ (Σ e ꞉ x ＝ y , transport (λ - → f - ＝ f y) e p ＝ refl)   ≃⟨ ≃-sym Σ-＝-≃ ⟩
+ ((x , p) ＝ (y , refl))                                     ■
+  where
+   I : (e : x ＝ y)
+     → (ap f e ＝ p) ≃ (transport (λ - → f - ＝ f y) e p ＝ refl)
+   I refl = (refl ＝ p)                                   ≃⟨ ＝-flip ⟩
+            (p ＝ refl)                                   ≃⟨ ≃-refl _ ⟩
+            (transport (λ - → f - ＝ f x) refl p ＝ refl) ■
+
 ∙-is-equiv-left : {X : 𝓤 ̇ } {x y z : X} (p : z ＝ x)
                 → is-equiv (λ (q : x ＝ y) → p ∙ q)
 ∙-is-equiv-left {𝓤} {X} {x} {y} refl =
@@ -1035,7 +1080,7 @@ fiber-of-unique-to-𝟙 {𝓤} {𝓥} {X} ⋆ =
 \end{code}
 
 Added by Tom de Jong, November 2021.
-s
+
 \begin{code}
 
 open import UF.PropTrunc

@@ -18,7 +18,6 @@ open import UF.PropTrunc
 open import Rationals.Type
 open import Rationals.Addition
 open import Rationals.Abs
-open import Rationals.MinMax hiding (min ; max)
 open import Rationals.Multiplication
 open import Rationals.Negation
 open import Rationals.Order
@@ -42,7 +41,6 @@ module Rationals.Limits
  where
 
 open import MetricSpaces.Rationals fe pe pt
-open import MetricSpaces.Type fe pe pt
 
 _⟶_ : (f : ℕ → ℚ) → (L : ℚ) → 𝓤₀ ̇
 f ⟶ L = (ε₊@(ε , _) : ℚ₊) → Σ N ꞉ ℕ , ((n : ℕ) → N ≤ n → abs (f n - L) < ε)
@@ -336,7 +334,7 @@ constant-sequence-converges q (ε , 0<ε) = 0 , γ
   γ = transport (_≤ ⟨1/sn⟩ n+3) VIII VII
 
 ⟨1/sn⟩-bounds-⟨2/3⟩ : (n : ℕ) → (⟨2/3⟩^ n) ≤ ⟨1/sn⟩ n
-⟨1/sn⟩-bounds-⟨2/3⟩ = induction base step
+⟨1/sn⟩-bounds-⟨2/3⟩ = ℕ-induction base step
  where
   base : 1ℚ ≤ 1ℚ
   base = 0 , refl

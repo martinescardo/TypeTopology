@@ -21,13 +21,12 @@ module Iterative.Multisets-Addendum
 
 open import Iterative.Multisets 𝓤
 open import Iterative.Sets ua 𝓤
-open import Taboos.Decomposability ua
 open import UF.Base
 open import UF.DiscreteAndSeparated
 open import UF.Embeddings
 open import UF.Equiv
 open import UF.EquivalenceExamples
-open import UF.ExcludedMiddle
+open import UF.ClassicalLogic
 open import UF.FunExt
 open import UF.HedbergApplications
 open import UF.PropIndexedPiSigma
@@ -48,6 +47,7 @@ private
  fe' : FunExt
  fe' 𝓤 𝓥 = fe {𝓤} {𝓥}
 
+open import Taboos.Decomposability fe'
 open import InjectiveTypes.Blackboard fe'
 
 \end{code}
@@ -91,7 +91,7 @@ universe-to-𝕄-is-section X = refl
 universe-is-retract-of-𝕄 : retract (𝓤 ̇ ) of 𝕄
 universe-is-retract-of-𝕄 = 𝕄-root , universe-to-𝕄 , universe-to-𝕄-is-section
 
-𝕄-is-not-set : ¬ (is-set 𝕄)
+𝕄-is-not-set : ¬ is-set 𝕄
 𝕄-is-not-set i = universes-are-not-sets (ua 𝓤)
                   (retract-of-set universe-is-retract-of-𝕄 i)
 
@@ -226,7 +226,7 @@ However, this proof, when expanded, is essentially the same as
 that of Russell's paradox.
 
 The type of multisets is algebraically injective, which is a new
-result.
+result. We give two constructions, using Σᴹ and Πᴹ defined below.
 
 \begin{code}
 
@@ -265,6 +265,12 @@ prop-indexed-sumᴹ {X} {A} i x₀ = IV
        ssup (𝕄-root (A x₀)) (𝕄-forest (A x₀)) ＝⟨ 𝕄-η (A x₀) ⟩
        A x₀                                    ∎
 
+𝕄-is-aflabby-Σ : aflabby 𝕄 𝓤
+𝕄-is-aflabby-Σ P P-is-prop f = Σᴹ f , prop-indexed-sumᴹ P-is-prop
+
+𝕄-is-ainjective-Σ : ainjective-type 𝕄 𝓤 𝓤
+𝕄-is-ainjective-Σ = aflabby-types-are-ainjective 𝕄 𝕄-is-aflabby-Σ
+
 \end{code}
 
 Notice that we use Σᴹ (as well as Π) in the following definition of Πᴹ.
@@ -285,6 +291,8 @@ Question. Is there a function Πᴹ of the above type that satisfies the
 following equation? It seems that this possible for finite X. We guess
 there isn't such a function for general X, including X = ℕ.
 
+This question is answered in gist.multiset-addendum-question
+
 \begin{code}
 
 Question =
@@ -301,13 +309,6 @@ Here is the answer for X = 𝟚, up to equivalence:
 
 _×ᴹ'_ : 𝕄 → 𝕄 → 𝕄
 (ssup X φ) ×ᴹ' (ssup Y γ) = ssup (X × Y) (λ (x , y) → (φ x) ×ᴹ' (γ y))
-
-\end{code}
-
-Our main reason to consider Σᴹ and Πᴹ is to establish, into different
-ways, the algebraic injectivity of the type of iterative multisets.
-
-\begin{code}
 
 prop-indexed-productᴹ : {X : 𝓤 ̇ } {A : X → 𝕄}
                       → is-prop X
@@ -343,36 +344,11 @@ prop-indexed-productᴹ {X} {A} i x₀ = IV
        ssup (𝕄-root (A x₀)) (𝕄-forest (A x₀)) ＝⟨ 𝕄-η (A x₀) ⟩
        A x₀                                   ∎
 
-_∖ᴹ_ : {X Y : 𝓤 ̇ } → (X → 𝕄) → (X → Y) → (Y → 𝕄)
-(f ∖ᴹ j) y = Σᴹ (λ ((x , _) : fiber j y) → f x)
-
-∖ᴹ-is-extension : {X Y : 𝓤 ̇ } (f : X → 𝕄) (j : X → Y)
-               → is-embedding j
-               → f ∖ᴹ j ∘ j ∼ f
-∖ᴹ-is-extension f j j-emb x = prop-indexed-sumᴹ
-                              {fiber j (j x)} {f ∘ pr₁} (j-emb (j x)) (x , refl)
-
-𝕄-is-ainjective-Σ : ainjective-type 𝕄 𝓤 𝓤
-𝕄-is-ainjective-Σ {X} {Y} j j-emb f = (f ∖ᴹ j) , ∖ᴹ-is-extension f j j-emb
-
-\end{code}
-
-TODO. Split the following as above.
-
-\begin{code}
+𝕄-is-aflabby-Π : aflabby 𝕄 𝓤
+𝕄-is-aflabby-Π P P-is-prop f = Πᴹ f , prop-indexed-productᴹ P-is-prop
 
 𝕄-is-ainjective-Π : ainjective-type 𝕄 𝓤 𝓤
-𝕄-is-ainjective-Π {X} {Y} j j-emb f = f/j , f/j-ext
- where
-  A : (y : Y) → fiber j y → 𝕄
-  A y (x , _) = f x
-
-  f/j : Y → 𝕄
-  f/j y = Πᴹ (A y)
-
-  f/j-ext : f/j ∘ j ∼ f
-  f/j-ext x = prop-indexed-productᴹ
-               {fiber j (j x)} {A (j x)} (j-emb (j x)) (x , refl)
+𝕄-is-ainjective-Π = aflabby-types-are-ainjective 𝕄 𝕄-is-aflabby-Π
 
 𝕄-is-ainjective : ainjective-type 𝕄 𝓤 𝓤
 𝕄-is-ainjective = 𝕄-is-ainjective-Σ
@@ -387,6 +363,7 @@ excluded middle holds, which also seems to be a new result.
 decomposition-of-𝕄-gives-WEM : decomposition 𝕄 → WEM 𝓤
 decomposition-of-𝕄-gives-WEM =
  decomposition-of-ainjective-type-gives-WEM
+  (univalence-gives-propext (ua 𝓤))
   𝕄
   𝕄-is-ainjective
 

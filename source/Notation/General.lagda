@@ -40,6 +40,16 @@ each-fiber-of : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
               → 𝓥 ⊔ 𝓦 ̇
 each-fiber-of f P = ∀ y → P (fiber f y)
 
+fix : {X : 𝓤 ̇ } → (f : X → X) → 𝓤 ̇
+fix f = Σ x ꞉ domain f , x ＝ f x
+
+from-fix : {X : 𝓤 ̇ } (f : X → X) → fix f → X
+from-fix f = pr₁
+
+from-fix-is-fixed : {X : 𝓤 ̇ } (f : X → X) (φ : fix f)
+                  → from-fix f φ ＝ f (from-fix f φ)
+from-fix-is-fixed f = pr₂
+
 reflexive : {X : 𝓤 ̇ } → (X → X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
 reflexive R = ∀ x → R x x
 
@@ -66,6 +76,9 @@ right-neutral e _·_ = ∀ x → x · e ＝ x
 
 associative : {X : 𝓤 ̇ } → (X → X → X) → 𝓤 ̇
 associative _·_ = ∀ x y z → (x · y) · z ＝ x · (y · z)
+
+associative' : {X : 𝓤 ̇ } → (X → X → X) → 𝓤 ̇
+associative' _·_ = ∀ x y z → x · (y · z) ＝ (x · y) · z
 
 commutative : {X : 𝓤 ̇ } → (X → X → X) → 𝓤 ̇
 commutative _·_ = ∀ x y → (x · y) ＝ (y · x)

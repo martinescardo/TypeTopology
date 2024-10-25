@@ -12,8 +12,10 @@ following the following papers:
 
 module Modal.index where
 
+import Modal.Open
 import Modal.Subuniverse
 import Modal.ReflectiveSubuniverse
+import Modal.SigmaClosedReflectiveSubuniverse
 import Modal.Homotopy
 
 \end{code}

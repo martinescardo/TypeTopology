@@ -10,10 +10,10 @@ notions and properties are in UF.SubtypeClassifier-Properties.
 module UF.SubtypeClassifier where
 
 open import MLTT.Spartan
+open import Notation.CanonicalMap
 open import UF.Base
 open import UF.Equiv
 open import UF.FunExt
-open import UF.Subsingletons
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
@@ -24,6 +24,11 @@ open import UF.Subsingletons-FunExt
 
 _holds : Ω 𝓤 → 𝓤 ̇
 (P , i) holds = P
+
+module _ {𝓤 : Universe} where
+ instance
+  canonical-map-Ω-𝓤 : Canonical-Map (Ω 𝓤) (𝓤 ̇ )
+  ι {{canonical-map-Ω-𝓤}} = _holds
 
 holds-is-prop : (p : Ω 𝓤) → is-prop (p holds)
 holds-is-prop (P , i) = i
@@ -40,6 +45,14 @@ from-Ω-＝ : {P Q : 𝓤 ̇ }
           → (P , i) ＝[ Ω 𝓤 ] (Q , j)
           → P ＝ Q
 from-Ω-＝ = ap _holds
+
+SigmaΩ : {𝓤 𝓥 : Universe} (p : Ω 𝓤) (q : p holds → Ω 𝓥) → Ω (𝓤 ⊔ 𝓥)
+SigmaΩ p q = (Σ h ꞉ p holds , q h holds) ,
+             Σ-is-prop (holds-is-prop p) (λ (h : p holds) → holds-is-prop (q h))
+
+syntax SigmaΩ p (λ x → q) = ΣΩ x ꞉ p , q
+
+infixr -1 SigmaΩ
 
 ⊥ ⊤ : Ω 𝓤
 ⊥ = 𝟘 , 𝟘-is-prop   -- false
@@ -286,9 +299,10 @@ Added 3rd September 2023.
 
 \begin{code}
 
-no-three-distinct-propositions' : funext 𝓤 𝓤
-                                → propext 𝓤
-                                → (p₀ p₁ q : Ω 𝓤) → p₀ ≠ q → p₁ ≠ q → ¬ (p₀ ≠ p₁)
+no-three-distinct-propositions'
+ : funext 𝓤 𝓤
+ → propext 𝓤
+ → (p₀ p₁ q : Ω 𝓤) → p₀ ≠ q → p₁ ≠ q → ¬ (p₀ ≠ p₁)
 no-three-distinct-propositions' fe pe p₀ p₁ q ν₀ ν₁ ν =
  no-three-distinct-propositions fe pe ((p₀ , q , p₁) , (ν₀ , ≠-sym ν₁ , ≠-sym ν))
 

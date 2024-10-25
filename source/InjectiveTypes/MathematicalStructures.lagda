@@ -5,7 +5,7 @@ such as pointed types, ∞-magmas, monoids, groups, etc. to be
 algebraically injective. We use algebraic flabbiness as our main tool.
 
 This file is subsumed by [1] and [2], but it is still important for
-both the sake of motivation and the fact that is includes useful
+both the sake of motivation and the fact that it includes useful
 discussion, which probably should be read before reading [1] and [2].
 
 [1] InjectiveTypes.Sigma
@@ -31,10 +31,10 @@ private
 
 open import InjectiveTypes.Blackboard fe
 open import MLTT.Spartan
-open import Taboos.Decomposability ua
+open import Taboos.Decomposability fe
 open import UF.Base
 open import UF.Equiv
-open import UF.ExcludedMiddle
+open import UF.ClassicalLogic
 open import UF.PropIndexedPiSigma
 open import UF.Sets
 open import UF.Sets-Properties
@@ -113,8 +113,8 @@ for any proposition P and any type family A of types indexed by P.
 With this assumption, we can let the element s be the inverse of ρ
 applied to B.
 
-Remark. With regards to the discussion in the introduction of this
-file, it is actually enough to require that ρ is has a section.
+Remark. Regarding the discussion in the introduction of this file, it
+is actually enough to require that ρ is has a section.
 
 \begin{code}
 
@@ -443,6 +443,7 @@ decidable property unless weak excluded middle holds.
 decomposition-of-∞-Magma-gives-WEM : decomposition (∞-Magma 𝓤) → WEM 𝓤
 decomposition-of-∞-Magma-gives-WEM {𝓤} =
  decomposition-of-ainjective-type-gives-WEM
+  (univalence-gives-propext (ua 𝓤))
   (∞-Magma 𝓤)
   ainjectivity-of-∞-Magma
 

@@ -4,7 +4,7 @@ In univalent logic, as opposed to Curry-Howard logic, a proposition is
 a subsingleton or a type such that any two of its elements are
 identified.
 
-https://www.newton.ac.uk/files/seminar/20170711100011001-1009756.pdf
+https://www.newton.ac.uk/files/seminar/20170711100011001-1442677.pdf
 https://unimath.github.io/bham2017/uf.pdf
 
 \begin{code}
@@ -126,14 +126,18 @@ singleton-types-are-singletons'' {𝓤} {X} = J A (λ x → refl)
 
 singleton-types-are-singletons : {X : 𝓤 ̇ } (x₀ : X)
                                → is-singleton (singleton-type x₀)
-singleton-types-are-singletons x₀ = singleton-center x₀ , (λ t → singleton-types-are-singletons'' (pr₂ t))
+singleton-types-are-singletons x₀ =
+ singleton-center x₀ ,
+ (λ t → singleton-types-are-singletons'' (pr₂ t))
 
-singleton-types-are-singletons' : {X : 𝓤 ̇ } {x : X}
-                                → is-central (singleton-type x) (x , refl)
+singleton-types-are-singletons'
+ : {X : 𝓤 ̇ } {x : X}
+ → is-central (singleton-type x) (singleton-center x)
 singleton-types-are-singletons' {𝓤} {X} (y , refl) = refl
 
 singleton-types-are-props : {X : 𝓤 ̇ } (x : X) → is-prop (singleton-type x)
-singleton-types-are-props x = singletons-are-props (singleton-types-are-singletons x)
+singleton-types-are-props x =
+ singletons-are-props (singleton-types-are-singletons x)
 
 singleton-type' : {X : 𝓤 ̇ } → X → 𝓤 ̇
 singleton-type' x = Σ y ꞉ type-of x , y ＝ x
@@ -142,12 +146,14 @@ singleton'-center : {X : 𝓤 ̇ } (x : X) → singleton-type' x
 singleton'-center x = (x , refl)
 
 ×-prop-criterion-necessity : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-                           → is-prop (X × Y) → (Y → is-prop X) × (X → is-prop Y)
+                           → is-prop (X × Y)
+                           → (Y → is-prop X) × (X → is-prop Y)
 ×-prop-criterion-necessity i = (λ y x x' → ap pr₁ (i (x , y) (x' , y ))) ,
                                (λ x y y' → ap pr₂ (i (x , y) (x  , y')))
 
 ×-prop-criterion : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-                 → (Y → is-prop X) × (X → is-prop Y) → is-prop (X × Y)
+                 → (Y → is-prop X) × (X → is-prop Y)
+                 → is-prop (X × Y)
 ×-prop-criterion (i , j) (x , y) (x' , y') = to-Σ-＝ (i y x x' , j x _ _)
 
 ×-𝟘-is-prop : {X : 𝓤 ̇ } → is-prop (X × 𝟘 {𝓥})
@@ -185,7 +191,8 @@ subsets-of-props-are-props : (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ )
                          → is-prop X
                          → ({x : X} → is-prop (Y x))
                          → is-prop (Σ x ꞉ X , Y x)
-subsets-of-props-are-props X Y h p = subtypes-of-props-are-props' pr₁ (pr₁-lc p) h
+subsets-of-props-are-props X Y h p =
+ subtypes-of-props-are-props' pr₁ (pr₁-lc p) h
 
 inl-lc-is-section : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                     {x x' : X}
@@ -197,21 +204,6 @@ inr-lc-is-section : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {y y' : Y}
                     (p : inr {𝓤} {𝓥} {X} {Y} y ＝ inr y')
                   → p ＝ ap inr (inr-lc p)
 inr-lc-is-section refl = refl
-
-\end{code}
-
-Formulation of propositional extensionality:
-
-\begin{code}
-
-propext : ∀ 𝓤 → 𝓤 ⁺ ̇
-propext 𝓤 = {P Q : 𝓤 ̇ } → is-prop P → is-prop Q → (P → Q) → (Q → P) → P ＝ Q
-
-PropExt : 𝓤ω
-PropExt = ∀ 𝓤 → propext 𝓤
-
-Prop-Ext : 𝓤ω
-Prop-Ext = ∀ {𝓤} → propext 𝓤
 
 \end{code}
 
@@ -249,12 +241,28 @@ sum-of-contradictory-props'-converse k =
 
 \end{code}
 
+Formulation of propositional extensionality:
+
+\begin{code}
+
+propext : ∀ 𝓤 → 𝓤 ⁺ ̇
+propext 𝓤 = {P Q : 𝓤 ̇ } → is-prop P → is-prop Q → (P → Q) → (Q → P) → P ＝ Q
+
+PropExt : 𝓤ω
+PropExt = ∀ 𝓤 → propext 𝓤
+
+Prop-Ext : 𝓤ω
+Prop-Ext = ∀ {𝓤} → propext 𝓤
+
+\end{code}
+
 Without assuming excluded middle, we have that there are no truth
 values other than 𝟘 and 𝟙:
 
 \begin{code}
 
-no-props-other-than-𝟘-or-𝟙 : propext 𝓤 → ¬ (Σ P ꞉ 𝓤 ̇ , is-prop P × (P ≠ 𝟘) × (P ≠ 𝟙))
+no-props-other-than-𝟘-or-𝟙 : propext 𝓤
+                           → ¬ (Σ P ꞉ 𝓤 ̇ , is-prop P × (P ≠ 𝟘) × (P ≠ 𝟙))
 no-props-other-than-𝟘-or-𝟙 pe (P , i , f , g) = 𝟘-elim (φ u)
  where
   u : ¬ P
@@ -280,6 +288,9 @@ used in the following construction.
 
 𝟘-is-not-𝟙 : 𝟘 {𝓤} ≠ 𝟙 {𝓤}
 𝟘-is-not-𝟙 p = 𝟘-elim (Idtofun (p ⁻¹) ⋆)
+
+universe-has-two-distinct-points : has-two-distinct-points (𝓤 ̇ )
+universe-has-two-distinct-points = ((𝟘 , 𝟙) , 𝟘-is-not-𝟙)
 
 \end{code}
 
@@ -348,10 +359,7 @@ Added 5 March 2020 by Tom de Jong.
           → is-prop Y
           → (X → ¬ Y)
           → is-prop (X + Y)
-+-is-prop i j f (inl x) (inl x') = ap inl (i x x')
-+-is-prop i j f (inl x) (inr y) = 𝟘-induction (f x y)
-+-is-prop i j f (inr y) (inl x) = 𝟘-induction (f x y)
-+-is-prop i j f (inr y) (inr y') = ap inr (j y y')
++-is-prop = sum-of-contradictory-props
 
 +-is-prop' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
            → is-prop X
@@ -368,31 +376,51 @@ ago to avoid boiler-plate code.)
 \begin{code}
 
 ×₃-is-prop : {𝓥₀ 𝓥₁ 𝓥₂ : Universe}
-             {X₀ : 𝓥₀ ̇ } {X₁ : 𝓥₁ ̇ } {X₂ : 𝓥₂ ̇ }
-           → is-prop X₀ → is-prop X₁ → is-prop X₂ → is-prop (X₀ × X₁ × X₂)
-×₃-is-prop i₀ i₁ i₂ = ×-is-prop i₀ (×-is-prop i₁ i₂)
+             {X₀ : 𝓥₀ ̇ }
+             {X₁ : 𝓥₁ ̇ }
+             {X₂ : 𝓥₂ ̇ }
+           → is-prop X₀
+           → is-prop X₁
+           → is-prop X₂
+           → is-prop (X₀ × X₁ × X₂)
+×₃-is-prop i₀ i₁ i₂ =
+ ×-is-prop i₀ (×-is-prop i₁ i₂)
 
 ×₄-is-prop : {𝓥₀ 𝓥₁ 𝓥₂ 𝓥₃ : Universe}
-             {X₀ : 𝓥₀ ̇ } {X₁ : 𝓥₁ ̇ } {X₂ : 𝓥₂ ̇ } {X₃ : 𝓥₃ ̇ }
+             {X₀ : 𝓥₀ ̇ }
+             {X₁ : 𝓥₁ ̇ }
+             {X₂ : 𝓥₂ ̇ }
+             {X₃ : 𝓥₃ ̇ }
            → is-prop X₀
            → is-prop X₁
            → is-prop X₂
            → is-prop X₃
            → is-prop (X₀ × X₁ × X₂ × X₃)
-×₄-is-prop i₀ i₁ i₂ i₃ = ×-is-prop i₀ (×₃-is-prop i₁ i₂ i₃)
+×₄-is-prop i₀ i₁ i₂ i₃ =
+ ×-is-prop i₀ (×₃-is-prop i₁ i₂ i₃)
 
 ×₅-is-prop : {𝓥₀ 𝓥₁ 𝓥₂ 𝓥₃ 𝓥₄ : Universe}
-             {X₀ : 𝓥₀ ̇ } {X₁ : 𝓥₁ ̇ } {X₂ : 𝓥₂ ̇ } {X₃ : 𝓥₃ ̇ } {X₄ : 𝓥₄ ̇ }
+             {X₀ : 𝓥₀ ̇ }
+             {X₁ : 𝓥₁ ̇ }
+             {X₂ : 𝓥₂ ̇ }
+             {X₃ : 𝓥₃ ̇ }
+             {X₄ : 𝓥₄ ̇ }
            → is-prop X₀
            → is-prop X₁
            → is-prop X₂
            → is-prop X₃
            → is-prop X₄
            → is-prop (X₀ × X₁ × X₂ × X₃ × X₄)
-×₅-is-prop i₀ i₁ i₂ i₃ i₄ = ×-is-prop i₀ (×₄-is-prop i₁ i₂ i₃ i₄)
+×₅-is-prop i₀ i₁ i₂ i₃ i₄ =
+ ×-is-prop i₀ (×₄-is-prop i₁ i₂ i₃ i₄)
 
 ×₆-is-prop : {𝓥₀ 𝓥₁ 𝓥₂ 𝓥₃ 𝓥₄ 𝓥₅ : Universe}
-             {X₀ : 𝓥₀ ̇ } {X₁ : 𝓥₁ ̇ } {X₂ : 𝓥₂ ̇ } {X₃ : 𝓥₃ ̇ } {X₄ : 𝓥₄ ̇ } {X₅ : 𝓥₅ ̇ }
+             {X₀ : 𝓥₀ ̇ }
+             {X₁ : 𝓥₁ ̇ }
+             {X₂ : 𝓥₂ ̇ }
+             {X₃ : 𝓥₃ ̇ }
+             {X₄ : 𝓥₄ ̇ }
+             {X₅ : 𝓥₅ ̇ }
            → is-prop X₀
            → is-prop X₁
            → is-prop X₂
@@ -400,10 +428,17 @@ ago to avoid boiler-plate code.)
            → is-prop X₄
            → is-prop X₅
            → is-prop (X₀ × X₁ × X₂ × X₃ × X₄ × X₅)
-×₆-is-prop i₀ i₁ i₂ i₃ i₄ i₅ = ×-is-prop i₀ (×₅-is-prop i₁ i₂ i₃ i₄ i₅)
+×₆-is-prop i₀ i₁ i₂ i₃ i₄ i₅ =
+ ×-is-prop i₀ (×₅-is-prop i₁ i₂ i₃ i₄ i₅)
 
 ×₇-is-prop : {𝓥₀ 𝓥₁ 𝓥₂ 𝓥₃ 𝓥₄ 𝓥₅ 𝓥₆ : Universe}
-             {X₀ : 𝓥₀ ̇ } {X₁ : 𝓥₁ ̇ } {X₂ : 𝓥₂ ̇ } {X₃ : 𝓥₃ ̇ } {X₄ : 𝓥₄ ̇ } {X₅ : 𝓥₅ ̇ } {X₆ : 𝓥₆ ̇ }
+             {X₀ : 𝓥₀ ̇ }
+             {X₁ : 𝓥₁ ̇ }
+             {X₂ : 𝓥₂ ̇ }
+             {X₃ : 𝓥₃ ̇ }
+             {X₄ : 𝓥₄ ̇ }
+             {X₅ : 𝓥₅ ̇ }
+             {X₆ : 𝓥₆ ̇ }
            → is-prop X₀
            → is-prop X₁
            → is-prop X₂
@@ -412,10 +447,18 @@ ago to avoid boiler-plate code.)
            → is-prop X₅
            → is-prop X₆
            → is-prop (X₀ × X₁ × X₂ × X₃ × X₄ × X₅ × X₆)
-×₇-is-prop i₀ i₁ i₂ i₃ i₄ i₅ i₆ = ×-is-prop i₀ (×₆-is-prop i₁ i₂ i₃ i₄ i₅ i₆)
+×₇-is-prop i₀ i₁ i₂ i₃ i₄ i₅ i₆ =
+ ×-is-prop i₀ (×₆-is-prop i₁ i₂ i₃ i₄ i₅ i₆)
 
 ×₈-is-prop : {𝓥₀ 𝓥₁ 𝓥₂ 𝓥₃ 𝓥₄ 𝓥₅ 𝓥₆ 𝓥₇ : Universe}
-             {X₀ : 𝓥₀ ̇ } {X₁ : 𝓥₁ ̇ } {X₂ : 𝓥₂ ̇ } {X₃ : 𝓥₃ ̇ } {X₄ : 𝓥₄ ̇ } {X₅ : 𝓥₅ ̇ } {X₆ : 𝓥₆ ̇ } {X₇ : 𝓥₇ ̇ }
+             {X₀ : 𝓥₀ ̇ }
+             {X₁ : 𝓥₁ ̇ }
+             {X₂ : 𝓥₂ ̇ }
+             {X₃ : 𝓥₃ ̇ }
+             {X₄ : 𝓥₄ ̇ }
+             {X₅ : 𝓥₅ ̇ }
+             {X₆ : 𝓥₆ ̇ }
+             {X₇ : 𝓥₇ ̇ }
            → is-prop X₀
            → is-prop X₁
            → is-prop X₂
@@ -424,6 +467,7 @@ ago to avoid boiler-plate code.)
            → is-prop X₅
            → is-prop X₆
            → is-prop X₇ → is-prop (X₀ × X₁ × X₂ × X₃ × X₄ × X₅ × X₆ × X₇)
-×₈-is-prop i₀ i₁ i₂ i₃ i₄ i₅ i₆ i₇ = ×-is-prop i₀ (×₇-is-prop i₁ i₂ i₃ i₄ i₅ i₆ i₇)
+×₈-is-prop i₀ i₁ i₂ i₃ i₄ i₅ i₆ i₇ =
+ ×-is-prop i₀ (×₇-is-prop i₁ i₂ i₃ i₄ i₅ i₆ i₇)
 
 \end{code}

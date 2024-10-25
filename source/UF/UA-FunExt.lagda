@@ -16,9 +16,7 @@ depend on univalence.
 module UF.UA-FunExt where
 
 open import MLTT.Spartan
-open import UF.Base
 open import UF.Equiv
-open import UF.Equiv-FunExt
 open import UF.FunExt
 open import UF.FunExt-Properties
 open import UF.LeftCancellable
@@ -92,7 +90,9 @@ univalence-gives-funext' 𝓤 𝓥 ua ua' = naive-funext-gives-funext'
                                        (naive-univalence-gives-funext ua)
 
 Univalence-gives-FunExt : Univalence → FunExt
-Univalence-gives-FunExt ua 𝓤 𝓥 = univalence-gives-funext' 𝓤 𝓥 (ua 𝓤) (ua (𝓤 ⊔ 𝓥))
+Univalence-gives-FunExt ua 𝓤 𝓥 = univalence-gives-funext' 𝓤 𝓥
+                                  (ua 𝓤)
+                                  (ua (𝓤 ⊔ 𝓥))
 
 Univalence-gives-Fun-Ext : Univalence → Fun-Ext
 Univalence-gives-Fun-Ext ua {𝓤} {𝓥} = Univalence-gives-FunExt ua 𝓤 𝓥
@@ -104,7 +104,6 @@ funext-from-successive-univalence : ∀ 𝓤
 funext-from-successive-univalence 𝓤 = univalence-gives-funext' 𝓤 (𝓤 ⁺)
 
 open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
 
 Ω-ext-from-univalence : is-univalent 𝓤
                       → {p q : Ω 𝓤}
@@ -187,11 +186,9 @@ prop-precomp-is-equiv' {𝓤} pu X Y Z i f ise =
    j : is-prop X
    j = equiv-to-prop (f , ise) i
 
-propositional-univalence-gives-naive-prop-valued-funext :
-
-   propositional-univalence 𝓤
+propositional-univalence-gives-naive-prop-valued-funext
+ : propositional-univalence 𝓤
  → naive-prop-valued-funext 𝓥 𝓤
-
 propositional-univalence-gives-naive-prop-valued-funext
  {𝓤} {𝓥} pu X Y Y-is-prop f₀ f₁ = γ
  where
@@ -229,12 +226,14 @@ propositional-univalence-gives-naive-prop-valued-funext
   γ : f₀ ＝ f₁
   γ = f₀                              ＝⟨ refl ⟩
       (λ x → f₀ x)                    ＝⟨ refl ⟩
-      (λ x → π₀ (f₀ x , f₁ x , h x))  ＝⟨ ap (λ π x → π (f₀ x , f₁ x , h x)) π₀-equals-π₁ ⟩
+      (λ x → π₀ (f₀ x , f₁ x , h x))  ＝⟨ I ⟩
       (λ x → π₁ (f₀ x , f₁ x , h x))  ＝⟨ refl ⟩
       (λ x → f₁ x)                    ＝⟨ refl ⟩
       f₁                              ∎
    where
     h : (x : X) → f₀ x ＝ f₁ x
     h x = Y-is-prop (f₀ x) (f₁ x)
+
+    I = ap (λ π x → π (f₀ x , f₁ x , h x)) π₀-equals-π₁
 
 \end{code}

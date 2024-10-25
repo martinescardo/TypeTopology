@@ -16,7 +16,8 @@ open import UF.FunExt
 
 module Taboos.BasicDiscontinuity (fe : funext₀) where
 
-open import CoNaturals.GenericConvergentSequence
+open import CoNaturals.Type
+
 open import MLTT.Plus-Properties
 open import MLTT.Two-Properties
 open import Notation.CanonicalMap
@@ -25,7 +26,9 @@ open import Taboos.WLPO
 basic-discontinuity : (ℕ∞ → 𝟚) → 𝓤₀ ̇
 basic-discontinuity p = ((n : ℕ) → p (ι n) ＝ ₀) × (p ∞ ＝ ₁)
 
-basic-discontinuity-taboo : (p : ℕ∞ → 𝟚) → basic-discontinuity p → WLPO
+basic-discontinuity-taboo : (p : ℕ∞ → 𝟚)
+                          → basic-discontinuity p
+                          → WLPO
 basic-discontinuity-taboo p (f , r) u = 𝟚-equality-cases lemma₀ lemma₁
  where
   fact₀ : u ＝ ∞ → p u ＝ ₁
@@ -59,7 +62,8 @@ of type ℕ∞ → 𝟚.
 
 \begin{code}
 
-WLPO-is-discontinuous : WLPO → Σ p ꞉ (ℕ∞ → 𝟚), basic-discontinuity p
+WLPO-is-discontinuous : WLPO
+                      → Σ p ꞉ (ℕ∞ → 𝟚), basic-discontinuity p
 WLPO-is-discontinuous f = p , (d , d∞)
  where
   p : ℕ∞ → 𝟚
@@ -91,28 +95,55 @@ WLPO-is-discontinuous f = p , (d , d∞)
 
 \end{code}
 
-If two 𝟚-valued functions defined on ℕ∞ agree at ℕ, they have to agree
-at ∞ too, unless WLPO holds:
+If two discrete-valued functions defined on ℕ∞ agree, they have to
+agree at ∞ too, unless WLPO holds:
 
 \begin{code}
 
-disagreement-taboo : (p q : ℕ∞ → 𝟚) → ((n : ℕ) → p (ι n) ＝ q (ι n)) → p ∞ ≠ q ∞ → WLPO
-disagreement-taboo p q f g = basic-discontinuity-taboo r (r-lemma , r-lemma∞)
- where
-  r : ℕ∞ → 𝟚
-  r u = (p u) ⊕ (q u)
-
-  r-lemma : (n : ℕ) → r (ι n) ＝ ₀
-  r-lemma n = Lemma[b＝c→b⊕c＝₀] (f n)
-
-  r-lemma∞ : r ∞ ＝ ₁
-  r-lemma∞ = Lemma[b≠c→b⊕c＝₁] g
-
+open import NotionsOfDecidability.Decidable
 open import UF.DiscreteAndSeparated
 
-agreement-cotaboo :  ¬ WLPO → (p q : ℕ∞ → 𝟚) → ((n : ℕ) → p (ι n) ＝ q (ι n)) → p ∞ ＝ q ∞
-agreement-cotaboo φ p q f = 𝟚-is-¬¬-separated (p ∞) (q ∞)
-                             (contrapositive (disagreement-taboo p q f) φ)
+module _ {D : 𝓤 ̇ } (d : is-discrete D) where
+
+ disagreement-taboo' : (p q : ℕ∞ → D)
+                     → ((n : ℕ) → p (ι n) ＝ q (ι n))
+                     → p ∞ ≠ q ∞
+                     → WLPO
+ disagreement-taboo' p q f g = basic-discontinuity-taboo r (r-lemma , r-lemma∞)
+  where
+   A : ℕ∞ → 𝓤 ̇
+   A u = p u ＝ q u
+
+   δ : (u : ℕ∞) → is-decidable (p u ＝ q u)
+   δ u = d (p u) (q u)
+
+   r : ℕ∞ → 𝟚
+   r = characteristic-map A δ
+
+   r-lemma : (n : ℕ) → r (ι n) ＝ ₀
+   r-lemma n = characteristic-map-property₀-back A δ (ι n) (f n)
+
+   r-lemma∞ : r ∞ ＝ ₁
+   r-lemma∞ = characteristic-map-property₁-back A δ ∞ (λ a → g a)
+
+ agreement-cotaboo' : ¬ WLPO
+                    → (p q : ℕ∞ → D)
+                    → ((n : ℕ) → p (ι n) ＝ q (ι n))
+                    → p ∞ ＝ q ∞
+ agreement-cotaboo' φ p q f = discrete-is-¬¬-separated d (p ∞) (q ∞)
+                               (contrapositive (disagreement-taboo' p q f) φ)
+
+disagreement-taboo : (p q : ℕ∞ → 𝟚)
+                   → ((n : ℕ) → p (ι n) ＝ q (ι n))
+                   → p ∞ ≠ q ∞
+                   → WLPO
+disagreement-taboo = disagreement-taboo' 𝟚-is-discrete
+
+agreement-cotaboo : ¬ WLPO
+                  → (p q : ℕ∞ → 𝟚)
+                  → ((n : ℕ) → p (ι n) ＝ q (ι n))
+                  → p ∞ ＝ q ∞
+agreement-cotaboo = agreement-cotaboo' 𝟚-is-discrete
 
 \end{code}
 
@@ -123,7 +154,9 @@ Added 23rd August 2023. Variation.
 basic-discontinuity' : (ℕ∞ → ℕ∞) → 𝓤₀ ̇
 basic-discontinuity' f = ((n : ℕ) → f (ι n) ＝ ι 0) × (f ∞ ＝ ι 1)
 
-basic-discontinuity-taboo' : (f : ℕ∞ → ℕ∞) → basic-discontinuity' f → WLPO
+basic-discontinuity-taboo' : (f : ℕ∞ → ℕ∞)
+                           → basic-discontinuity' f
+                           → WLPO
 basic-discontinuity-taboo' f (f₀ , f₁) = VI
  where
   I : (u : ℕ∞) → f u ＝ ι 0 → u ≠ ∞
@@ -174,13 +207,13 @@ open import Notation.Order
    where
     a : (d : (ι n ≼ ∞) + (∞ ≼ ι n)) → g (ι n) ∞ d ＝ ₀
     a (inl _) = refl
-    a (inr ℓ) = 𝟘-elim (≼-not-≺ ∞ (ι n) ℓ (∞-≺-largest n))
+    a (inr ℓ) = 𝟘-elim (≼-gives-not-≺ ∞ (ι n) ℓ (∞-≺-largest n))
 
   I₁ : (n : ℕ) → f ∞ (ι n) ＝ ₁
   I₁ n = b (δ ∞ (ι n))
    where
     b : (d : (∞ ≼ ι n) + (ι n ≼ ∞)) → g ∞ (ι n) d ＝ ₁
-    b (inl ℓ) = 𝟘-elim (≼-not-≺ ∞ (ι n) ℓ (∞-≺-largest n))
+    b (inl ℓ) = 𝟘-elim (≼-gives-not-≺ ∞ (ι n) ℓ (∞-≺-largest n))
     b (inr _) = refl
 
   II : (b : 𝟚) → f ∞ ∞ ＝ b → WLPO

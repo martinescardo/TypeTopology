@@ -26,7 +26,6 @@ module WildCategories.Cones where
 
 open import MLTT.Spartan
 open import UF.Base
-open import UF.Subsingletons
 
 open import WildCategories.Base
 open import WildCategories.Idempotents

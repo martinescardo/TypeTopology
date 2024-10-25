@@ -20,10 +20,7 @@ open import UF.FunExt
 open import UF.Powerset
 open import UF.PropTrunc
 open import UF.Subsingletons
-open import Naturals.Addition renaming (_+_ to _ℕ+_)
-open import Naturals.Order renaming ( max to ℕmax
-                                    ; max-comm to ℕmax-comm
-                                    ; max-assoc to ℕmax-assoc)
+open import Naturals.Order renaming (max to ℕmax)
 open import Rationals.Addition
 open import Rationals.Type
 open import Rationals.Abs
@@ -41,12 +38,10 @@ module MetricSpaces.DedekindReals
 
 open PropositionalTruncation pt
 
-open import Rationals.Limits fe pe pt
 open import MetricSpaces.Type fe pe pt
 open import MetricSpaces.Rationals fe pe pt
 open import DedekindReals.Type fe pe pt
 open import DedekindReals.Properties fe pe pt
-open import DedekindReals.Order fe pe pt
 
 \end{code}
 

@@ -11,7 +11,6 @@ completely prime filters.
 {-# OPTIONS --safe --without-K --lossy-unification #-}
 
 open import MLTT.Spartan
-open import UF.Base
 open import UF.PropTrunc
 open import UF.FunExt
 open import UF.Logic
@@ -24,23 +23,25 @@ module Locales.Point.Properties (pt : propositional-truncations-exist)
                                 (pe : propext 𝓤)
                                  where
 
-open import Slice.Family
-open import UF.Powerset-MultiUniverse
-open import UF.SubtypeClassifier
-open import UF.Sets
-open import UF.Equiv
-
+open import Locales.ContinuousMap.Definition pt fe
+open import Locales.ContinuousMap.FrameHomomorphism-Definition pt fe
+open import Locales.ContinuousMap.FrameHomomorphism-Properties pt fe
 open import Locales.Frame            pt fe
-open import Locales.Point.Definition pt fe
 open import Locales.InitialFrame     pt fe
-
-open PropositionalTruncation pt
-
-open DefnOfCPF
-
-open Locale
+open import Locales.Point.Definition pt fe
+open import Slice.Family
+open import UF.Equiv
+open import UF.Powerset-MultiUniverse
+open import UF.Sets
+open import UF.SubtypeClassifier
 
 open AllCombinators pt fe
+open ContinuousMaps
+open DefnOfCPF
+open FrameHomomorphismProperties
+open FrameHomomorphisms
+open Locale
+open PropositionalTruncation pt
 
 \end{code}
 
@@ -165,7 +166,7 @@ open DefnOfCPF
     ς : is-set ⟨ 𝒪 𝟏L ⟩
     ς = carrier-of-[ poset-of (𝒪 𝟏L) ]-is-set
 
-    Ⅰ = frame-homomorphisms-preserve-all-joins (𝒪 X) (𝒪 𝟏L) 𝒻 S ⁻¹
+    Ⅰ = frame-homomorphisms-preserve-all-joins′ (𝒪 X) (𝒪 𝟏L) 𝒻 S ⁻¹
     Ⅱ = holds-gives-equal-⊤ pe fe (𝒻 ⋆∙ (⋁[ 𝒪 X ] S)) p
 
     p′ : 𝒻 ⋆∙ (⋁[ 𝒪 X ] S) ＝ ⊤
@@ -199,7 +200,7 @@ cpf-equiv-continuous-map-into-Ω : (X : Locale (𝓤 ⁺) 𝓤 𝓤) → Point X
 cpf-equiv-continuous-map-into-Ω X = 𝔯 X , † , ‡
  where
   sec : (𝔯 X ∘ 𝔰 X) ∼ id
-  sec 𝒻 = continuous-map-equality (𝒪 X) (𝒪 𝟏L) (𝔯 X (𝔰 X 𝒻)) 𝒻 λ _ → refl
+  sec 𝒻 = to-frame-homomorphism-＝ (𝒪 X) (𝒪 𝟏L) (𝔯 X (𝔰 X 𝒻)) 𝒻 λ _ → refl
 
   ret : (𝔰 X ∘ 𝔯 X) ∼ id
   ret 𝓍 = to-subtype-＝ (holds-is-prop ∘ is-cpf X) (dfunext fe λ _ → refl)

@@ -15,7 +15,6 @@ open import Naturals.Multiplication
 open import Naturals.Properties
 open import Naturals.Order
 open import Notation.Order
-open import UF.Base
 open import UF.DiscreteAndSeparated
 open import UF.Subsingletons
 
@@ -265,7 +264,7 @@ follows from the inductive hypothesis and r ＝ d.
 \begin{code}
 
 division : (a d : ℕ) → division-theorem a d
-division a d = induction base step a
+division a d = ℕ-induction base step a
  where
   base : Σ q ꞉ ℕ , Σ r ꞉ ℕ , (0 ＝ q * succ d + r) × (r < succ d)
   base = 0 , (0 , (I , II))

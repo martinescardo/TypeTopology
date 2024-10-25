@@ -6,13 +6,11 @@ Based on `ayberkt/formal-topology-in-UF`.
 
 {-# OPTIONS --safe --without-K --lossy-unification #-}
 
+open import MLTT.List hiding ([_])
 open import MLTT.Spartan hiding (𝟚)
 open import UF.Base
-open import UF.PropTrunc
 open import UF.FunExt
-open import UF.Univalence
-open import UF.UA-FunExt
-open import MLTT.List hiding ([_])
+open import UF.PropTrunc
 
 module Locales.CompactRegular
         (pt : propositional-truncations-exist)
@@ -20,18 +18,20 @@ module Locales.CompactRegular
        where
 
 open import Locales.AdjointFunctorTheoremForFrames
+open import Locales.ContinuousMap.Definition pt fe
+open import Locales.ContinuousMap.FrameHomomorphism-Definition pt fe
+open import Locales.ContinuousMap.FrameHomomorphism-Properties pt fe
 open import Locales.Frame pt fe hiding (is-directed)
+open import Locales.InitialFrame pt fe
 open import Slice.Family
-open import UF.Equiv using (_≃_; logically-equivalent-props-give-is-equiv)
+open import UF.Equiv using (_≃_; logical-equivs-of-props-are-equivs)
 open import UF.Logic
-open import UF.SubtypeClassifier
 open import UF.Subsingletons
+open import UF.SubtypeClassifier
 
 open AllCombinators pt fe
 open PropositionalTruncation pt
 open import Locales.GaloisConnection pt fe
-
-open import Locales.InitialFrame pt fe
 
 \end{code}
 
@@ -433,8 +433,8 @@ is-clopen : (F : Frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → Ω 𝓤
 is-clopen F U = is-clopen₀ F U , is-clopen₀-is-prop F U
 
 clopen-implies-well-inside-itself : (F : Frame 𝓤 𝓥 𝓦)
-                                   → (U : ⟨ F ⟩)
-                                   → (is-clopen F U ⇒ U ⋜[ F ] U) holds
+                                  → (U : ⟨ F ⟩)
+                                  → (is-clopen F U ⇒ U ⋜[ F ] U) holds
 clopen-implies-well-inside-itself F U = ∣_∣
 
 well-inside-itself-implies-clopen : (F : Frame 𝓤 𝓥 𝓦)
@@ -444,12 +444,12 @@ well-inside-itself-implies-clopen F U =
  ∥∥-rec (holds-is-prop (is-clopen F U)) id
 
 clopenness-equivalent-to-well-inside-itself : (F : Frame 𝓤 𝓥 𝓦)
-                                             → (U : ⟨ F ⟩)
-                                             → (U ⋜[ F ] U) holds
-                                             ≃ is-clopen F U holds
+                                            → (U : ⟨ F ⟩)
+                                            → (U ⋜[ F ] U) holds
+                                            ≃ is-clopen F U holds
 clopenness-equivalent-to-well-inside-itself F U =
    well-inside-itself-implies-clopen F U
- , logically-equivalent-props-give-is-equiv
+ , logical-equivs-of-props-are-equivs
     (holds-is-prop (U ⋜[ F ] U))
     (holds-is-prop (is-clopen F U))
     (well-inside-itself-implies-clopen F U)
@@ -557,6 +557,9 @@ well-inside-is-join-stable F {U₁} {U₂} {V} =
 \end{code}
 
 \begin{code}
+
+open FrameHomomorphisms
+open FrameHomomorphismProperties
 
 frame-homomorphisms-preserve-complements : (F G : Frame 𝓤 𝓥 𝓦)
                                          → (h : F ─f→ G)
@@ -1304,6 +1307,8 @@ A continuous map `f : X → Y` is called *perfect* if its right adjoint is
 Scott-continuous.
 
 \begin{code}
+
+ open ContinuousMaps
 
  is-perfect-map : (X ─c→ Y) → Ω (𝓤 ⊔ 𝓤' ⊔ 𝓥 ⁺)
  is-perfect-map f = is-scott-continuous (𝒪 X) (𝒪 Y) (pr₁ (right-adjoint-of f))
