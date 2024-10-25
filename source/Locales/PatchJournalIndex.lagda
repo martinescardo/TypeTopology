@@ -10,13 +10,14 @@ module Locales.PatchJournalIndex (pt : propositional-truncations-exist)
 
 open import Locales.Frame pt fe
 open import Locales.Nucleus pt fe
+open import MGS.Equivalence-Induction
 open import MLTT.Spartan hiding (𝟚)
 open import UF.Embeddings
-open import UF.Size
-open import UF.SubtypeClassifier
 open import UF.KrausLemma
-open import UF.Univalence
-open import UF.Subsingletons
+open import UF.Size
+open import UF.Subsingletons hiding (is-subsingleton)
+open import UF.SubtypeClassifier
+open import UF.Univalence hiding (is-univalent)
 
 open Locale
 
@@ -35,15 +36,17 @@ definition-1 = _is_small
 
 \begin{code}
 
-lemma-2 : {𝓤 : Universe} → 𝓤  ̇ → (𝓥 : Universe) → (𝓥 ⁺) ⊔ 𝓤 ̇
-lemma-2 = _is_small
+lemma-2 : {𝓤 : Universe}
+        → ((X : 𝓤 ̇) → is-subsingleton (-Σ (𝓤 ̇) (_≃_ X)))
+        → is-univalent 𝓤
+lemma-2 = →univalence
 
 \end{code}
 
 \begin{code}
 
-definition-3 : {𝓤 : Universe} → 𝓤  ̇ → (𝓥 : Universe) → (𝓥 ⁺) ⊔ 𝓤 ̇
-definition-3 = _is_small
+definition-3 : {𝓤 : Universe} → 𝓤 ⁺  ̇ → 𝓤 ⁺  ̇
+definition-3 = is-locally-small
 
 \end{code}
 
