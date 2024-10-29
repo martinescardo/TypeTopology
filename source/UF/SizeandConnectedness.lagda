@@ -238,7 +238,8 @@ Theorem 2.6.
     (locally-small-from-small X-small , size-closed-under-truncation X-small)
    backward : X is ι (n + 2) locally-small × ∥ X ∥[ n + 1 ] is 𝓥 small
             → X is 𝓥 small
-   backward = {!!}
+   backward (X-loc-small , trunc-X-small) =
+    smallness-closed-under-≃' {!!} {!equiv-trunc-path-space!}
 
 \end{code}
 

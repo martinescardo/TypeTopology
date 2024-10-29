@@ -26,6 +26,7 @@ open import MLTT.Spartan hiding (_+_)
 
 open import UF.Base
 open import UF.Equiv
+open import UF.EquivalenceExamples
 open import UF.PropTrunc
 open import UF.Retracts
 open import UF.Sets
@@ -263,6 +264,30 @@ We define the canonical predecessor map and give a computation rule.
                          → canonical-pred-map (∣ x ∣[ n + 1 ]) ＝ (∣ x ∣[ n ])
  canonical-pred-map-comp {𝓤} {X} {n} =
   ∥∥ₙ-rec-comp (truncation-levels-are-upper-closed ∥∥ₙ-is-truncated) ∣_∣[ n ]
+
+\end{code}
+
+We will show that any type X is equivalent to the sigma over a path space
+with one truncated endpoint and one free endpoint.
+
+\begin{code}
+
+ equiv-trunc-path-space : {X : 𝓤 ̇} {n : ℕ₋₂}
+                        → X ≃ (Σ y ꞉ ∥ X ∥[ n ] , Σ x ꞉ X , ∣ x ∣[ n ] ＝ y)
+ equiv-trunc-path-space {_} {X} {n} = equiv-chain
+  where
+   is-singleton-type : (x : X)
+                     → is-singleton (Σ y ꞉ ∥ X ∥[ n ] , ∣ x ∣[ n ] ＝ y)
+   is-singleton-type x = singleton-types-are-singletons ∣ x ∣[ n ]
+   equiv-chain : X ≃ (Σ y ꞉ ∥ X ∥[ n ] , Σ x ꞉ X , ∣ x ∣[ n ] ＝ y)
+   equiv-chain = X                                              ≃⟨ p ⟩
+                 (Σ x ꞉ X , Σ y ꞉ ∥ X ∥[ n ] , ∣ x ∣[ n ] ＝ y) ≃⟨ Σ-flip ⟩
+                 (Σ y ꞉ ∥ X ∥[ n ] , Σ x ꞉ X , ∣ x ∣[ n ] ＝ y) ■
+    where
+     p = ≃-sym (pr₁-≃ X
+               (λ - → Σ y ꞉ ∥ X ∥[ n ] , ∣ - ∣[ n ] ＝ y)
+               is-singleton-type)
+   
 
 \end{code}
 
