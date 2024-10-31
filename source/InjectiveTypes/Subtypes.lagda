@@ -139,8 +139,12 @@ module _ (D : 𝓤 ⁺ ̇ )
   : ainjective-type (Σ P) 𝓤 𝓤
   ↔ (Σ f ꞉ (D → D) , ((d : D) → P (f d)) × ((d : D) → P d → f d ＝ d))
  necessary-and-sufficient-condition-for-injectivity-of-subtype-single-universe
-  = necessary-condition-for-injectivity-of-subtype D P P-is-prop-valued {𝓤} ,
-    sufficient-condition-for-injectivity-of-subtype D P P-is-prop-valued D-ainj
+  = necessary-and-sufficient-condition-for-injectivity-of-subtype
+     {𝓤 ⁺} {𝓤} {𝓤} {𝓤}
+     D
+     P
+     P-is-prop-valued
+     D-ainj
 
 \end{code}
 
