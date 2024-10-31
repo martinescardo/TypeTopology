@@ -860,7 +860,7 @@ ainjective-types-are-aflabby : (D : 𝓦 ̇ ) → ainjective-type D 𝓤 𝓥 �
 ainjective-types-are-aflabby {𝓦} {𝓤} {𝓥} D i P h f = pr₁ s ⋆ , pr₂ s
  where
   s : Σ f' ꞉ (𝟙 → D), f' ∘ unique-to-𝟙 ∼ f
-  s = i unique-to-𝟙 (prop-embedding P h 𝓥) f
+  s = i unique-to-𝟙 (unique-to-𝟙-is-embedding P h 𝓥) f
 
 \end{code}
 

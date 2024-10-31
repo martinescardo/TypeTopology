@@ -1124,9 +1124,10 @@ aflabby-pointed D φ = pr₁ (φ 𝟘 𝟘-is-prop unique-from-𝟘)
 ainjective-types-are-aflabby : (D : 𝓦 ̇ )
                              → ainjective-type D 𝓤 𝓥
                              → aflabby D 𝓤
-ainjective-types-are-aflabby {𝓦} {𝓤} {𝓥} D i P isp f =
-  pr₁ (i (λ p → ⋆) (prop-embedding P isp 𝓥) f) ⋆ ,
-  pr₂ (i (λ p → ⋆) (prop-embedding P isp 𝓥) f)
+ainjective-types-are-aflabby {𝓦} {𝓤} {𝓥} D i P isp f = pr₁ I ⋆ , pr₂ I
+ where
+  I : Σ f' ꞉ (𝟙 → D) , f' ∘ unique-to-𝟙 ∼ f
+  I = i unique-to-𝟙 (unique-to-𝟙-is-embedding P isp 𝓥) f
 
 aflabby-types-are-ainjective : (D : 𝓦 ̇ )
                              → aflabby D (𝓤 ⊔ 𝓥)

@@ -542,12 +542,19 @@ For any proposition P, the unique map P → 𝟙 is an embedding:
 
 \begin{code}
 
-prop-embedding : (P : 𝓤 ̇ )
-               → is-prop P
-               → ∀ 𝓥 → is-embedding (unique-to-𝟙 {𝓤} {𝓥})
-prop-embedding P i 𝓥 * (p , r) (p' , r') = to-×-＝
-                                             (i p p')
-                                             (props-are-sets 𝟙-is-prop r r')
+unique-to-𝟙-is-embedding : (P : 𝓤 ̇ )
+                         → is-prop P
+                         → ∀ 𝓥 → is-embedding (unique-to-𝟙 {𝓤} {𝓥})
+unique-to-𝟙-is-embedding P i 𝓥 * (p , r) (p' , r') =
+ to-×-＝ (i p p') (props-are-sets 𝟙-is-prop r r')
+
+embedding-into-𝟙 : (P : 𝓤 ̇ )
+                 → is-prop P
+                 → P ↪ 𝟙 {𝓥}
+embedding-into-𝟙 {𝓤} {𝓥} P P-is-prop =
+ unique-to-𝟙 ,
+ unique-to-𝟙-is-embedding P P-is-prop 𝓥
+
 \end{code}
 
 Added by Tom de Jong.
@@ -556,23 +563,12 @@ If a type X embeds into a proposition, then X is itself a proposition.
 
 \begin{code}
 
-embedding-into-prop : {X : 𝓤 ̇ } {P : 𝓥 ̇ }
-                    → is-prop P
-                    → X ↪ P
-                    → is-prop X
-embedding-into-prop i (f , e) x y = d
- where
-   a : x ＝ y → f x ＝ f y
-   a = ap f {x} {y}
-
-   b : is-equiv a
-   b = embedding-gives-embedding' f e x y
-
-   c : f x ＝ f y
-   c = i (f x) (f y)
-
-   d : x ＝ y
-   d = inverse a b c
+subtypes-of-props-are-props'' : {X : 𝓤 ̇ } {P : 𝓥 ̇ }
+                              → is-prop P
+                              → X ↪ P
+                              → is-prop X
+subtypes-of-props-are-props'' P-is-prop (f , f-emb) =
+ subtypes-of-props-are-props f f-emb P-is-prop
 
 \end{code}
 
