@@ -751,6 +751,10 @@ The above should not be used anymore, but should be kept here.
 
 \begin{code}
 
+pr₁-is-small-map : {X : 𝓤 ̇} {Y : X → 𝓥 ̇}
+                 → (λ (σ : Σ Y) → pr₁ σ) is 𝓥 small-map
+pr₁-is-small-map {𝓤} {𝓥} {X} {Y} x = Y x , ≃-sym (pr₁-fiber-equiv x)
+
 𝟚-to-Ω-is-small-map : funext 𝓤 𝓤
                     → propext 𝓤
                     → (𝟚-to-Ω {𝓤}) is 𝓤 small-map

@@ -3,6 +3,9 @@ Martin Escardo, 21st October 2024
 A necessary and sufficient condition for the injectivity of a subtype
 of an injective type.
 
+Modified by Martin Escardo and Tom de Jong 31st October 2024 to
+improve the universe levels.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}
@@ -14,32 +17,44 @@ module InjectiveTypes.Subtypes
        where
 
 open import InjectiveTypes.Blackboard fe
+open import InjectiveTypes.OverSmallMaps fe
 open import MLTT.Spartan
 open import UF.Embeddings
 open import UF.Retracts
 open import UF.Subsingletons
 open import UF.UA-FunExt
+open import UF.Size
+
+open import UF.Equiv
+open import UF.EquivalenceExamples
 
 module _ (D : 𝓤 ̇ )
          (P : D → 𝓥 ̇ )
          (P-is-prop-valued : (d : D) → is-prop (P d))
        where
 
+ private
+  s : Σ P → D
+  s = pr₁
+
  necessary-condition-for-injectivity-of-subtype
-  : ainjective-type (Σ P) (𝓤 ⊔ 𝓥) 𝓤
+  : ainjective-type (Σ P) (𝓥 ⊔ 𝓦) 𝓣
   → Σ f ꞉ (D → D) , ((d : D) → P (f d)) × ((d : D) → P d → f d ＝ d)
- necessary-condition-for-injectivity-of-subtype Σ-ainj = f , g , h
+ necessary-condition-for-injectivity-of-subtype {𝓦} {𝓣} Σ-ainj = f , g , h
   where
    ρ : retract Σ P of D
-   ρ = embedding-retract (Σ P) D pr₁ (pr₁-is-embedding P-is-prop-valued) Σ-ainj
+   ρ = embedding-retract' {𝓤 ⊔ 𝓥} {𝓤} {𝓣} {𝓥} {𝓦}
+        (Σ P)
+        D
+        s
+        (pr₁-is-embedding P-is-prop-valued)
+        pr₁-is-small-map
+        Σ-ainj
 
    r : D → Σ P
    r = retraction ρ
 
-   s : Σ P → D
-   s = section ρ
-
-   _ : s ＝ pr₁
+   _ : s ＝ section ρ
    _ = refl
 
    rs : r ∘ s ∼ id
@@ -57,7 +72,7 @@ module _ (D : 𝓤 ̇ )
             (d , p)       ∎
 
    h : (d : D) → P d → f d ＝ d
-   h d p = ap pr₁ (fg d p)
+   h d p = ap s (fg d p)
 
  sufficient-condition-for-injectivity-of-subtype
   : ainjective-type D 𝓦 𝓣
@@ -69,22 +84,27 @@ module _ (D : 𝓤 ̇ )
    r : D → Σ P
    r d = f d , g d
 
-   s : Σ P → D
-   s = pr₁
-
    rs : r ∘ s ∼ id
    rs (d , p) = r (s (d , p)) ＝⟨ refl ⟩
                 r d           ＝⟨ refl ⟩
                 f d , g d     ＝⟨ to-subtype-＝ P-is-prop-valued (h d p) ⟩
                 d , p         ∎
 
- change-subtype-injectivity-universes
-  : ainjective-type D 𝓦 𝓣
-  → ainjective-type (Σ P) (𝓤 ⊔ 𝓥) 𝓤
+\end{code}
+
+By composing the necessary and sufficient conditions, we get the
+following resizing theorem as a corollary.
+
+\begin{code}
+
+ subtype-injectivity-resizing
+  : ({𝓦 𝓣 𝓣'} 𝓥' : Universe)
+  → ainjective-type D 𝓦 𝓣
+  → ainjective-type (Σ P) (𝓥 ⊔ 𝓥') 𝓣'
   → ainjective-type (Σ P) 𝓦 𝓣
- change-subtype-injectivity-universes D-ainj Σ-ainj
+ subtype-injectivity-resizing 𝓥' D-ainj Σ-ainj
   = sufficient-condition-for-injectivity-of-subtype D-ainj
-     (necessary-condition-for-injectivity-of-subtype Σ-ainj)
+     (necessary-condition-for-injectivity-of-subtype {𝓥'} Σ-ainj)
 
 \end{code}
 
@@ -96,17 +116,37 @@ sufficient and necessary.
 module _ (D : 𝓤 ̇ )
          (P : D → 𝓥 ̇ )
          (P-is-prop-valued : (d : D) → is-prop (P d))
-         (D-ainj : ainjective-type D (𝓤 ⊔ 𝓥) 𝓤)
+         (D-ainj : ainjective-type D (𝓥 ⊔ 𝓦) 𝓣)
        where
 
  necessary-and-sufficient-condition-for-injectivity-of-subtype
-  : ainjective-type (Σ P) (𝓤 ⊔ 𝓥) 𝓤
+  : ainjective-type (Σ P) (𝓥 ⊔ 𝓦) 𝓣
   ↔ (Σ f ꞉ (D → D) , ((d : D) → P (f d)) × ((d : D) → P d → f d ＝ d))
  necessary-and-sufficient-condition-for-injectivity-of-subtype
-  = necessary-condition-for-injectivity-of-subtype D P P-is-prop-valued ,
+  = necessary-condition-for-injectivity-of-subtype D P P-is-prop-valued {𝓦} ,
     sufficient-condition-for-injectivity-of-subtype D P P-is-prop-valued D-ainj
 
 \end{code}
 
-TODO. Can the above logical equivalence be made into a type
-equivalence?
+Because there are no small injective types unless Ω¬¬-resizing holds,
+the following particular case is of interest.
+
+\begin{code}
+
+module _ (D : 𝓤 ⁺ ̇ )
+         (P : D → 𝓤 ̇ )
+         (P-is-prop-valued : (d : D) → is-prop (P d))
+         (D-ainj : ainjective-type D 𝓤 𝓤)
+       where
+
+ necessary-and-sufficient-condition-for-injectivity-of-subtype-single-universe
+  : ainjective-type (Σ P) 𝓤 𝓤
+  ↔ (Σ f ꞉ (D → D) , ((d : D) → P (f d)) × ((d : D) → P d → f d ＝ d))
+ necessary-and-sufficient-condition-for-injectivity-of-subtype-single-universe
+  = necessary-condition-for-injectivity-of-subtype D P P-is-prop-valued {𝓤} ,
+    sufficient-condition-for-injectivity-of-subtype D P P-is-prop-valued D-ainj
+
+\end{code}
+
+TODO. Can the above logical equivalences be made into a type
+equivalences?

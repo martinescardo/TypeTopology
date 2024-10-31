@@ -4,7 +4,7 @@ More about injectivity.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --lossy-unification #-}
+{-# OPTIONS --safe --without-K #-}
 
 open import UF.FunExt
 
