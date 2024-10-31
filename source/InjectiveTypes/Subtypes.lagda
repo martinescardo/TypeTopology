@@ -21,12 +21,8 @@ open import InjectiveTypes.OverSmallMaps fe
 open import MLTT.Spartan
 open import UF.Embeddings
 open import UF.Retracts
-open import UF.Subsingletons
-open import UF.UA-FunExt
 open import UF.Size
-
-open import UF.Equiv
-open import UF.EquivalenceExamples
+open import UF.Subsingletons
 
 module _ (D : 𝓤 ̇ )
          (P : D → 𝓥 ̇ )
