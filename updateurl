@@ -12,49 +12,50 @@ rm -f ~/public_html/TypeTopology/*.html # do not delete Agda.css, as it is a mod
 mv html/*.html ~/public_html/TypeTopology/
 chmod a+r ~/public_html/TypeTopology/*.html
 
-# Now create symlinks for files that have been moved to other places
+# Now create copies for files that have been moved to other places
 # but are linked from published papers, blogs etc.
+# Symbolic links don't work any more, so we replace "ln -s" by "cp -a"
 
 cd ~/public_html/TypeTopology/
 
-ln -s CantorSchroederBernstein.CSB.html CantorSchroederBernstein.html
-ln -s CoNaturals.GenericConvergentSequence.html GenericConvergentSequence.html
-ln -s DomainTheory.ScottModelOfPCF.ScottModelOfPCF.html PCFModules.html
-ln -s Factorial.Law.html UF-Factorial.html
-ln -s Fin.ArithmeticViaEquivalence.html ArithmeticViaEquivalence.html
-ln -s Fin.index.html Fin-Properties.html
-ln -s Fin.Type.html Fin.html
-ln -s Fin.UniverseInvariance.html UF-Finiteness-Universe-Invariance.html
-ln -s Games.FiniteHistoryDependent.html FiniteHistoryDependentGames.html
-ln -s Groups.Free.html FreeGroup.html
-ln -s Groups.FreeOverLargeLocallySmallSet.html FreeGroupOfLargeLocallySmallSet.html
-ln -s Locales.AdjointFunctorTheoremForFrames.html AdjointFunctorTheoremForFrames.html
-ln -s Locales.CompactRegular.html CompactRegular.html
-ln -s Locales.Frame.html Frame.html
-ln -s Locales.GaloisConnection.html GaloisConnection.html
-ln -s Locales.HeytingImplication.html HeytingImplication.html
-ln -s NotionsOfDecidability.SemiDecidable.html SemiDecidable.html
-ln -s Ordinals.ArithmeticProperties.html OrdinalArithmetic-Properties.html
-ln -s Ordinals.BuraliForti.html BuraliForti.html
-ln -s Ordinals.Notions.html Ordinal-Notions.html
-ln -s Ordinals.OrdinalOfOrdinals.html OrdinalOfOrdinals.html
-ln -s Ordinals.WellOrderTransport.html OrdinalsWellOrderTransport.html
-ln -s Ordinals.index.html Ordinals.html
-ln -s Various.Types2019.html Types2019.html
-ln -s Slice.Slice.html Slice.html
-ln -s TypeTopology.ADecidableQuantificationOverTheNaturals.html ADecidableQuantificationOverTheNaturals.html
-ln -s TypeTopology.DiscreteAndSeparated.html DiscreteAndSeparated.html
-ln -s TypeTopology.GenericConvergentSequenceCompactness.html ConvergentSequenceCompac.html
-ln -s UF.Choice.html UF-Choice.html
-ln -s UF.Size.html UF-Size.html
-ln -s UF.UniverseEmbedding.html UniverseEmbedding.html
-ln -s UF.Yoneda.html UF-Yoneda.html
-ln -s UF.index.html UF.html
-ln -s UF.HiggsInvolutionTheorem.html Various.HiggsInvolutionTheorem.html
-ln -s Various.Dedekind.html Dedekind.html
-ln -s Various.HiggsInvolutionTheorem.html HiggsInvolutionTheorem.html
-ln -s Various.LawvereFPT.html LawvereFPT.html
-ln -s Various.UnivalenceFromScratch.html UnivalenceFromScratch.html
+cp -a CantorSchroederBernstein.CSB.html CantorSchroederBernstein.html
+cp -a CoNaturals.GenericConvergentSequence.html GenericConvergentSequence.html
+cp -a DomainTheory.ScottModelOfPCF.ScottModelOfPCF.html PCFModules.html
+cp -a Factorial.Law.html UF-Factorial.html
+cp -a Fin.ArithmeticViaEquivalence.html ArithmeticViaEquivalence.html
+cp -a Fin.index.html Fin-Properties.html
+cp -a Fin.Type.html Fin.html
+cp -a Fin.UniverseInvariance.html UF-Finiteness-Universe-Invariance.html
+cp -a Games.FiniteHistoryDependent.html FiniteHistoryDependentGames.html
+cp -a Groups.Free.html FreeGroup.html
+cp -a Groups.FreeOverLargeLocallySmallSet.html FreeGroupOfLargeLocallySmallSet.html
+cp -a Locales.AdjointFunctorTheoremForFrames.html AdjointFunctorTheoremForFrames.html
+cp -a Locales.CompactRegular.html CompactRegular.html
+cp -a Locales.Frame.html Frame.html
+cp -a Locales.GaloisConnection.html GaloisConnection.html
+cp -a Locales.HeytingImplication.html HeytingImplication.html
+cp -a NotionsOfDecidability.SemiDecidable.html SemiDecidable.html
+cp -a Ordinals.ArithmeticProperties.html OrdinalArithmetic-Properties.html
+cp -a Ordinals.BuraliForti.html BuraliForti.html
+cp -a Ordinals.Notions.html Ordinal-Notions.html
+cp -a Ordinals.OrdinalOfOrdinals.html OrdinalOfOrdinals.html
+cp -a Ordinals.WellOrderTransport.html OrdinalsWellOrderTransport.html
+cp -a Ordinals.index.html Ordinals.html
+cp -a Various.Types2019.html Types2019.html
+cp -a Slice.Slice.html Slice.html
+cp -a TypeTopology.ADecidableQuantificationOverTheNaturals.html ADecidableQuantificationOverTheNaturals.html
+cp -a TypeTopology.DiscreteAndSeparated.html DiscreteAndSeparated.html
+cp -a TypeTopology.GenericConvergentSequenceCompactness.html ConvergentSequenceCompac.html
+cp -a UF.Choice.html UF-Choice.html
+cp -a UF.Size.html UF-Size.html
+cp -a UF.UniverseEmbedding.html UniverseEmbedding.html
+cp -a UF.Yoneda.html UF-Yoneda.html
+cp -a UF.index.html UF.html
+cp -a UF.HiggsInvolutionTheorem.html Various.HiggsInvolutionTheorem.html
+cp -a Various.Dedekind.html Dedekind.html
+cp -a Various.HiggsInvolutionTheorem.html HiggsInvolutionTheorem.html
+cp -a Various.LawvereFPT.html LawvereFPT.html
+cp -a Various.UnivalenceFromScratch.html UnivalenceFromScratch.html
 
 # From now on (12th Jan 2023), published things should go to
 # ~/public_html/TypeTopology/Published.* Use symlinks as above to
@@ -63,30 +64,30 @@ ln -s Various.UnivalenceFromScratch.html UnivalenceFromScratch.html
 
 # These are linked to in Tom de Jong's PhD thesis (2022) and duplicates some of
 # the above for consistency.
-ln -s DomainTheory.index.html Published.DomainTheory.index.html
-ln -s DomainTheory.Bilimits.Dinfinity.html Published.DomainTheory.Bilimits.Dinfinity.html
-ln -s DomainTheory.ScottModelOfPCF.ScottModelOfPCF.html Published.DomainTheory.ScottModelOfPCF.ScottModelOfPCF.html
-ln -s Lifting.IdentityViaSIP.html Published.Lifting.IdentityViaSIP.html
-ln -s NotionsOfDecidability.SemiDecidable.html Published.NotionsOfDecidability.SemiDecidable.html
-ln -s Slice.Slice.html Published.Slice.Slice.html
-ln -s Ordinals.BuraliForti.html Published.Ordinals.BuraliForti.html
-ln -s Ordinals.OrdinalOfOrdinals.html Published.Ordinals.OrdinalOfOrdinals.html
-ln -s Ordinals.OrdinalOfOrdinalsSuprema.html Published.Ordinals.OrdinalOfOrdinalsSuprema.html
-ln -s Ordinals.Type.html Published.Ordinals.Type.html
-ln -s TypeTopology.CompactTypes.html Published.TypeTopology.CompactTypes.html
-ln -s TypeTopology.Density.html Published.TypeTopology.Density.html
-ln -s TypeTopology.DiscreteAndSeparated.html Published.TypeTopology.DiscreteAndSeparated.html
-ln -s TypeTopology.SimpleTypes.html Published.TypeTopology.SimpleTypes.html
-ln -s Quotient.Large-Variation.html Published.UF.Quotient-F.html
-ln -s Quotient.index.html Published.UF.Quotient.html
-ln -s Quotient.index.html Published.UF.Quotient-Replacement.html
-ln -s Quotient.Large.html Published.UF.Large-Quotient.html
-ln -s Various.Dedekind.html Published.Various.Dedekind.html
+cp -a DomainTheory.index.html Published.DomainTheory.index.html
+cp -a DomainTheory.Bilimits.Dinfinity.html Published.DomainTheory.Bilimits.Dinfinity.html
+cp -a DomainTheory.ScottModelOfPCF.ScottModelOfPCF.html Published.DomainTheory.ScottModelOfPCF.ScottModelOfPCF.html
+cp -a Lifting.IdentityViaSIP.html Published.Lifting.IdentityViaSIP.html
+cp -a NotionsOfDecidability.SemiDecidable.html Published.NotionsOfDecidability.SemiDecidable.html
+cp -a Slice.Slice.html Published.Slice.Slice.html
+cp -a Ordinals.BuraliForti.html Published.Ordinals.BuraliForti.html
+cp -a Ordinals.OrdinalOfOrdinals.html Published.Ordinals.OrdinalOfOrdinals.html
+cp -a Ordinals.OrdinalOfOrdinalsSuprema.html Published.Ordinals.OrdinalOfOrdinalsSuprema.html
+cp -a Ordinals.Type.html Published.Ordinals.Type.html
+cp -a TypeTopology.CompactTypes.html Published.TypeTopology.CompactTypes.html
+cp -a TypeTopology.Density.html Published.TypeTopology.Density.html
+cp -a TypeTopology.DiscreteAndSeparated.html Published.TypeTopology.DiscreteAndSeparated.html
+cp -a TypeTopology.SimpleTypes.html Published.TypeTopology.SimpleTypes.html
+cp -a Quotient.Large-Variation.html Published.UF.Quotient-F.html
+cp -a Quotient.index.html Published.UF.Quotient.html
+cp -a Quotient.index.html Published.UF.Quotient-Replacement.html
+cp -a Quotient.Large.html Published.UF.Large-Quotient.html
+cp -a Various.Dedekind.html Published.Various.Dedekind.html
 
 # Further links using the Published.* scheme
 # Added by Tom de Jong - 31 March 2023, 18 April 2023
-ln -s UF.Size.html Published.UF.Size.html
-ln -s UF.ImageAndSurjection.html Published.UF.ImageAndSurjection.html
+cp -a UF.Size.html Published.UF.Size.html
+cp -a UF.ImageAndSurjection.html Published.UF.ImageAndSurjection.html
 
 # Added by Tom de Jong on 3 October 2023.
-ln -s PCF.Lambda.index.html Published.PCF.Lambda.index.html
+cp -a PCF.Lambda.index.html Published.PCF.Lambda.index.html
