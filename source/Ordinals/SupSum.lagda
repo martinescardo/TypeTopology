@@ -1,6 +1,7 @@
 Martin Escardo, 2-4 May 2022
 
-Roughly, we show that, for any family β of ordinals indexed by ordinals,
+Roughly, we show the following chain of implications, for any family β
+of ordinals indexed by ordinals,
 
     EM → sup β ⊴ ∑ β → WEM
 
@@ -106,7 +107,8 @@ universe 𝓤, that is, the ordinals that have a largest element.
  open import Ordinals.ToppedType fe
  open import Ordinals.ToppedArithmetic fe renaming (∑ to ∑ᵀ)
 
- sup-bounded-by-sumᵀ : (τ : Ordinalᵀ 𝓤) (υ : ⟨ τ ⟩ → Ordinalᵀ 𝓤)
+ sup-bounded-by-sumᵀ : (τ : Ordinalᵀ 𝓤)
+                       (υ : ⟨ τ ⟩ → Ordinalᵀ 𝓤)
                      → sup (λ x → [ υ x ]) ⊴ [ ∑ᵀ τ υ ]
  sup-bounded-by-sumᵀ τ υ = sup-bounded-by-sum [ τ ] (λ x → [ υ x ])
 
@@ -133,9 +135,9 @@ module _ {𝓤 : Universe}
  open import Ordinals.ToppedArithmetic fe
  open suprema pt sr
 
- sup-bounded-by-sum-gives-WEM :
-    ({𝓤 : Universe} (τ : Ordinalᵀ 𝓤) (υ : ⟨ τ ⟩ → Ordinalᵀ 𝓤)
-        → sup (λ x → [ υ x ]) ⊴ [ ∑ τ υ ])
+ sup-bounded-by-sum-gives-WEM
+  : ({𝓤 : Universe} (τ : Ordinalᵀ 𝓤) (υ : ⟨ τ ⟩ → Ordinalᵀ 𝓤)
+         → sup (λ x → [ υ x ]) ⊴ [ ∑ τ υ ])
   → {𝓤 : Universe} → WEM 𝓤
  sup-bounded-by-sum-gives-WEM ϕ {𝓤} = γ
   where

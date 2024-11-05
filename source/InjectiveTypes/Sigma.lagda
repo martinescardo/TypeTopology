@@ -16,7 +16,7 @@ Two major improvements here are that
  2. We don't restrict to a particular flabiness structure, whereas in [1]
     we use the Π-flabbiness structure.
 
-We have rewritten [1] in [2] to exploit this.
+We have rewritten [1] as [2] to exploit this.
 
 [1] InjectiveTypes.MathematicalStructures.
 [2] InjectiveTypes.MathematicalStructuresMoreGeneral.
@@ -139,6 +139,9 @@ InjectiveTypes.MathematicalStructures.
                          → has-section (ρ p f)
 
 \end{code}
+
+NB. Notice that our compatibility condition is data rather than
+property. TODO. Should we call it compatibility data?
 
 That this compatibility condition is sufficient but not necessary is
 illustrated in the file InjectiveTypes.InhabitednessTaboo, with the

@@ -116,7 +116,7 @@ module
           (being-equiv-is-prop' 𝓣-fe 𝓣-fe 𝓣-fe 𝓣-fe f)
           (Π-is-prop 𝓣-fe (λ _ → u↓-is-prop))
           (inverse f)
-          (logically-equivalent-props-give-is-equiv
+          (logical-equivs-of-props-are-equivs
            u↓-is-prop
            v↓-is-prop
            f))

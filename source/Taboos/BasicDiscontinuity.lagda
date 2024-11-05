@@ -207,13 +207,13 @@ open import Notation.Order
    where
     a : (d : (ι n ≼ ∞) + (∞ ≼ ι n)) → g (ι n) ∞ d ＝ ₀
     a (inl _) = refl
-    a (inr ℓ) = 𝟘-elim (≼-not-≺ ∞ (ι n) ℓ (∞-≺-largest n))
+    a (inr ℓ) = 𝟘-elim (≼-gives-not-≺ ∞ (ι n) ℓ (∞-≺-largest n))
 
   I₁ : (n : ℕ) → f ∞ (ι n) ＝ ₁
   I₁ n = b (δ ∞ (ι n))
    where
     b : (d : (∞ ≼ ι n) + (ι n ≼ ∞)) → g ∞ (ι n) d ＝ ₁
-    b (inl ℓ) = 𝟘-elim (≼-not-≺ ∞ (ι n) ℓ (∞-≺-largest n))
+    b (inl ℓ) = 𝟘-elim (≼-gives-not-≺ ∞ (ι n) ℓ (∞-≺-largest n))
     b (inr _) = refl
 
   II : (b : 𝟚) → f ∞ ∞ ＝ b → WLPO

@@ -25,12 +25,12 @@ smallness-closed-under-≃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                          → X is 𝓦 small
                          → X ≃ Y
                          → Y is 𝓦 small
-smallness-closed-under-≃ (X' , 𝕗) 𝕘 = (X' , (𝕗 ● 𝕘))
+smallness-closed-under-≃ (X' , 𝕗) 𝕘 = X' , (𝕗 ● 𝕘)
 
 smallness-closed-under-≃' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-                         → X is 𝓦 small
-                         → Y ≃ X
-                         → Y is 𝓦 small
+                          → X is 𝓦 small
+                          → Y ≃ X
+                          → Y is 𝓦 small
 smallness-closed-under-≃' s 𝕘 = smallness-closed-under-≃ s (≃-sym 𝕘)
 
 Σ-is-small : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
@@ -46,8 +46,7 @@ smallness-closed-under-≃' s 𝕘 = smallness-closed-under-≃ s (≃-sym 𝕘)
   𝕘 x = resizing-condition (σ x)
 
   γ : (Σ A) is 𝓤' ⊔ 𝓥' small
-  γ = (Σ (A' ∘ ⌜ 𝕗 ⌝)) ,
-      Σ-bicong (A' ∘ ⌜ 𝕗 ⌝) A 𝕗 (λ x → 𝕘 (⌜ 𝕗 ⌝ x))
+  γ = (Σ (A' ∘ ⌜ 𝕗 ⌝)) , Σ-bicong (A' ∘ ⌜ 𝕗 ⌝) A 𝕗 (λ x → 𝕘 (⌜ 𝕗 ⌝ x))
 
 Π-is-small : FunExt
            → {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
@@ -74,7 +73,7 @@ decidable-embeddings-have-any-size : (𝓦 : Universe)
 decidable-embeddings-have-any-size 𝓦 {X} {Y} {f} e δ y =
  decidable-propositions-have-any-size (fiber f y) (e y) (δ y)
 
-id-has-any-size : (𝓦 : Universe) {X : 𝓤 ̇ } → (id {𝓤} {X}) is 𝓦 small-map
+id-has-any-size : (𝓦 : Universe) {X : 𝓤 ̇ } → id {𝓤} {X} is 𝓦 small-map
 id-has-any-size 𝓦 {𝓤} = equivs-have-any-size id (id-is-equiv 𝓤)
 
 ∘-decidable-embeddings : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
@@ -172,7 +171,6 @@ pair₀-has-any-size 𝓦 = decidable-embeddings-have-any-size 𝓦
 
 []-is-embedding : {X : 𝓤 ̇ } → is-embedding (λ (x : X) → [ x ])
 []-is-embedding (x ∷ []) (x , refl) (x , refl) = refl
-
 
 []-is-decidable : {X : 𝓤 ̇ } → each-fiber-of (λ (x : X) → [ x ]) is-decidable
 []-is-decidable {𝓤} {X} [] =

@@ -29,10 +29,10 @@ The point is that
 
     (2) This also holds for dependent products:
 
-        Π x : X , Y x is compact∙ if X is a proposition and Y x is
-        compact∙ for every x : X.
+        The type Π x : X , Y x is compact∙ if X is a proposition and
+        the type Y x is compact∙ for every x : X.
 
-        (This product is also written (x : X) → Y x or Π Y in Agda.)
+        (This product is also written (x : X) → Y x or Π Y.)
 
 \begin{code}
 
@@ -40,30 +40,30 @@ The point is that
 
 open import MLTT.Spartan
 
-open import UF.FunExt
-
-module TypeTopology.PropTychonoff (fe : FunExt) where
+module TypeTopology.PropTychonoff where
 
 open import MLTT.Two-Properties
 open import TypeTopology.CompactTypes
 open import UF.Equiv
+open import UF.FunExt
 open import UF.PropIndexedPiSigma
 open import UF.Subsingletons
 
-prop-tychonoff : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
+prop-tychonoff : funext 𝓤 𝓥
+               → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
                → is-prop X
                → ((x : X) → is-compact∙ (Y x))
                → is-compact∙ (Π Y)
-prop-tychonoff {𝓤} {𝓥} {X} {Y} X-is-prop ε p = γ
+prop-tychonoff {𝓤} {𝓥} fe {X} {Y} X-is-prop ε p = γ
  where
-  have-ε : (x : X) → is-compact∙ (Y x)
-  have-ε = ε
+  _ : (x : X) → is-compact∙ (Y x)
+  _ = ε
 
-  have-p : Π Y → 𝟚
-  have-p = p
+  _ : Π Y → 𝟚
+  _ = p
 
   𝕗 : (x : X) → Π Y ≃ Y x
-  𝕗 = prop-indexed-product (fe 𝓤 𝓥) X-is-prop
+  𝕗 = prop-indexed-product fe X-is-prop
 
 \end{code}
 
@@ -84,8 +84,8 @@ instead proceed as follows. We first introduct some abbreviations.
   f : (x : X) → Π Y → Y x
   f x = ⌜ 𝕗 x ⌝
 
-  f-explicitly : (x : X) (φ : Π Y) → f x φ ＝ φ x
-  f-explicitly x φ = refl
+  _ : (x : X) (φ : Π Y) → f x φ ＝ φ x
+  _ = λ x φ → refl
 
   f⁻¹ : (x : X) → Y x → Π Y
   f⁻¹ x = ⌜ 𝕗 x ⌝⁻¹
@@ -176,18 +176,18 @@ We get the same conclusion if X is empty:
 \begin{code}
 
   φ₀-is-universal-witness-assuming-X-empty
-   : (X → 𝟘) → p φ₀ ＝ ₁ → (φ : Π Y) → p φ ＝ ₁
+   : is-empty X → p φ₀ ＝ ₁ → (φ : Π Y) → p φ ＝ ₁
   φ₀-is-universal-witness-assuming-X-empty u r φ =
-   p φ  ＝⟨ ap p (dfunext (fe 𝓤 𝓥) (λ x → unique-from-𝟘 (u x))) ⟩
+   p φ  ＝⟨ ap p (dfunext fe (λ x → unique-from-𝟘 (u x))) ⟩
    p φ₀ ＝⟨ r ⟩
    ₁    ∎
 
 \end{code}
 
 So we would get what we want if we had excluded middle, because X is a
-proposition and the above shows that both X and X → 𝟘 give the desired
-conclusion that φ₀ is a universal witness. But excluded middle is not
-needed.
+proposition and the above shows that both X and is-empty X := X → 𝟘
+give the desired conclusion that φ₀ is a universal witness. But
+excluded middle is not needed.
 
 We shuffle the arguments of φ₀-is-universal-witness-assuming-X:
 
@@ -229,7 +229,8 @@ Combining the two last claims, we get:
 
 \end{code}
 
-Finally, we do case analysis on the value of p φ:
+Finally, we do case analysis on the value of p φ to get the desired
+conclusion:
 
 \begin{code}
 
@@ -255,27 +256,29 @@ A particular case is the following:
 
 \begin{code}
 
-prop-tychonoff-corollary : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+prop-tychonoff-corollary : funext 𝓤 𝓥
+                         → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                          → is-prop X
                          → is-compact∙ Y
                          → is-compact∙ (X → Y)
-prop-tychonoff-corollary X-is-prop ε = prop-tychonoff X-is-prop (λ x → ε)
+prop-tychonoff-corollary fe X-is-prop ε = prop-tychonoff fe X-is-prop (λ x → ε)
 
 \end{code}
 
 This holds even for undecided X (such as X = LPO), or when we have no
-idea whether X or (X → 𝟘), and hence whether (X → Y) is 𝟙 or Y (or
-none, if this is undecided)!
+idea whether X or (X → 𝟘) hold, and hence whether (X → Y) is 𝟙 or Y
+(or none, if this is undecided)!
 
 Better (9 Sep 2015):
 
 \begin{code}
 
-prop-tychonoff-corollary' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+prop-tychonoff-corollary' : funext 𝓤 𝓥
+                          → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                           → is-prop X
                           → (X → is-compact∙ Y)
                           → is-compact∙ (X → Y)
-prop-tychonoff-corollary' = prop-tychonoff
+prop-tychonoff-corollary' fe = prop-tychonoff fe
 
 \end{code}
 
@@ -283,11 +286,12 @@ So the function type (LPO → ℕ) is compact! (See the module LPO for a
 proof.)
 
 The Tychonoff theorem for prop-indexed products of compact types
-doesn't hold. To see this, first notice that a proposition is
-compact iff it is decidable. Now, the empty type 𝟘 is compact
-(but not compact‌∙), and if 𝟘^P, that is, ¬P, where compact for a
-proposition P, this would imply that ¬P is decidable for every
-proposition P, which is weak excluded middle, which is not provable.
+doesn't hold. To see this, first notice that a proposition is compact
+iff it is decidable. Now, the empty type 𝟘 is compact (but not
+compact‌∙), and if 𝟘^P, that is, ¬ P, where compact for a proposition
+P, this would imply that ¬ P is decidable for every proposition P,
+which is weak excluded middle, which is not provable and doesn't hold
+in all models.
 
 \begin{code}
 

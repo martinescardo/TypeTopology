@@ -10,20 +10,21 @@ z taken as an abstract zero, including ℕ and 𝟚 with any of its
 points. Recall that a point of a type is called isolated if its
 equality with any other point of the type is decidable.
 
+This file is superseded by the file Naturals.ExitTruncation.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}
 
-open import MLTT.Spartan
-
-open import UF.DiscreteAndSeparated
-open import UF.Base
-
 module Naturals.RootsTruncation where
 
 open import MLTT.Plus-Properties
+open import MLTT.Spartan
 open import Naturals.Order
 open import Notation.Order
+open import UF.Base
+open import UF.DiscreteAndSeparated
+open import UF.ExitPropTrunc
 open import UF.Hedberg
 open import UF.KrausLemma
 open import UF.PropTrunc
@@ -65,7 +66,7 @@ extensionality here.
 \begin{code}
 
  fpo : ∀ k α → FPO k α
- fpo zero α = inr (λ n p → 𝟘-elim p)
+ fpo 0 α = inr (λ n p → 𝟘-elim p)
  fpo (succ k) α = cases f g (fpo k α)
   where
    f : α has-a-minimal-root< k → FPO (succ k) α
@@ -145,7 +146,8 @@ be empty, and still the function is well defined.
    r = to-Σ-＝ (q , isolated-Id-is-prop z z-is-isolated _ _ _)
 
  Root-has-prop-truncation : (α : ℕ → Z) → ∀ 𝓥 → has-prop-truncation 𝓥 (Root α)
- Root-has-prop-truncation α = collapsible-has-prop-truncation (μρ α , μρ-constant α)
+ Root-has-prop-truncation α = collapsible-has-prop-truncation
+                               (μρ α , μρ-constant α)
 
 \end{code}
 
@@ -185,94 +187,11 @@ root truncations using the above technique.
  module exit-Roots-truncation (pt : propositional-truncations-exist) where
 
   open PropositionalTruncation pt
+  open split-support-and-collapsibility pt
 
   exit-Root-truncation : (α : ℕ → Z) → (∃ n ꞉ ℕ , α n ＝ z) → Σ n ꞉ ℕ , α n ＝ z
-  exit-Root-truncation α = h ∘ g
-   where
-    f : (Σ n ꞉ ℕ , α n ＝ z) → fix (μρ α)
-    f = to-fix (μρ α) (μρ-constant α)
-
-    g : ∥(Σ n ꞉ ℕ , α n ＝ z)∥ → fix (μρ α)
-    g = ∥∥-rec (fix-is-prop (μρ α) (μρ-constant α)) f
-
-    h : fix (μρ α) → Σ n ꞉ ℕ , α n ＝ z
-    h = from-fix (μρ α)
+  exit-Root-truncation α = collapsible-gives-split-support (μρ α , μρ-constant α)
 
 \end{code}
 
 This says that if there is a root, then we can find one.
-
-Added 17th August 2024.
-
-\begin{code}
-
-open import NotionsOfDecidability.Complemented
-open import NotionsOfDecidability.Decidable
-
-minimal-witness : (A : ℕ → 𝓤 ̇ )
-                → is-complemented A
-                → (Σ n ꞉ ℕ , A n)
-                → Σ m ꞉ ℕ , (A m × ((k : ℕ) → A k → m ≤ k))
-minimal-witness A A-is-complemented (n , aₙ) = m , aₘ , m-is-minimal-witness
- where
-  open Roots-truncation 𝟚 ₀ (λ b → 𝟚-is-discrete b ₀)
-
-  α : ℕ → 𝟚
-  α = characteristic-map A A-is-complemented
-
-  n-is-root : α n ＝ ₀
-  n-is-root = characteristic-map-property₀-back A A-is-complemented n aₙ
-
-  r : Root α
-  r = n , n-is-root
-
-  m : ℕ
-  m = μ-root α r
-
-  m-is-root : α m ＝ ₀
-  m-is-root = μ-root-is-root α r
-
-  aₘ : A m
-  aₘ = characteristic-map-property₀ A A-is-complemented m m-is-root
-
-  m-is-minimal-root : (k : ℕ) → α k ＝ ₀ → m ≤ k
-  m-is-minimal-root = μ-root-is-minimal α n n-is-root
-
-  m-is-minimal-witness : (k : ℕ) → A k → m ≤ k
-  m-is-minimal-witness k aₖ = m-is-minimal-root k k-is-root
-   where
-    k-is-root : α k ＝ ₀
-    k-is-root = characteristic-map-property₀-back A A-is-complemented k aₖ
-
-module exit-truncations (pt : propositional-truncations-exist) where
-
-  open PropositionalTruncation pt
-
-  exit-truncation : (A : ℕ → 𝓤 ̇ )
-                  → is-complemented A
-                  → (∃ n ꞉ ℕ , A n)
-                  → Σ n ꞉ ℕ , A n
-  exit-truncation A A-is-complemented e = IV
-   where
-    open Roots-truncation 𝟚 ₀ (λ b → 𝟚-is-discrete b ₀)
-    open exit-Roots-truncation pt
-
-    α : ℕ → 𝟚
-    α = characteristic-map A A-is-complemented
-
-    I : (Σ n ꞉ ℕ , A n) → Σ n ꞉ ℕ , α n ＝ ₀
-    I (n , a) = n , characteristic-map-property₀-back A A-is-complemented n a
-
-    e' : ∃ n ꞉ ℕ , α n ＝ ₀
-    e' = ∥∥-functor I e
-
-    II : Σ n ꞉ ℕ , α n ＝ ₀
-    II = exit-Root-truncation α e'
-
-    III : (Σ n ꞉ ℕ , α n ＝ ₀) → Σ n ꞉ ℕ , A n
-    III (n , e) = n , characteristic-map-property₀ A A-is-complemented n e
-
-    IV : Σ n ꞉ ℕ , A n
-    IV = III II
-
-\end{code}

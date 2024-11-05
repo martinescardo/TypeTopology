@@ -17,6 +17,7 @@ open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.Hedberg
 open import UF.KrausLemma
+open import UF.ExitPropTrunc
 open import UF.PropTrunc
 open import UF.Subsingletons
 
@@ -131,26 +132,32 @@ module _ (pe : propositional-truncations-exist) where
  open PropositionalTruncation pe
  open split-support-and-collapsibility pe
 
- split-via-embedding-gives-split-support : {X : 𝓤 ̇ } (f : X → X)
-                                         → ((A , r , s , η , h) : splits f 𝓥)
-                                         → is-embedding s
-                                         → (x : X) → has-split-support (f x ＝ x)
+ split-via-embedding-gives-split-support
+  : {X : 𝓤 ̇ } (f : X → X)
+  → ((A , r , s , η , h) : splits f 𝓥)
+  → is-embedding s
+  → (x : X) → has-split-support (f x ＝ x)
  split-via-embedding-gives-split-support f σ e x =
   collapsible-gives-split-support (split-via-embedding-gives-collapsible f σ e x)
 
 
- split-support-gives-split-via-embedding : {X : 𝓤 ̇ } (f : X → X)
-                                         → idempotent-map f
-                                         → ((x : X) → has-split-support (f x ＝ x))
-                                         → Σ (A , r , s , η , h) ꞉ splits f 𝓤
-                                                                 , is-embedding s
+ split-support-gives-split-via-embedding
+  : {X : 𝓤 ̇ } (f : X → X)
+  → idempotent-map f
+  → ((x : X) → has-split-support (f x ＝ x))
+  → Σ (A , r , s , η , h) ꞉ splits f 𝓤
+                          , is-embedding s
  split-support-gives-split-via-embedding f i g =
-  collapsible-gives-split-via-embedding f i (λ x → split-support-gives-collapsible (g x))
+  collapsible-gives-split-via-embedding
+   f
+   i
+   (λ x → split-support-gives-collapsible (g x))
 
- section-embedding-gives-split-support : {X : 𝓤 ̇ } {A : 𝓥 ̇ }
-                                         (r : X → A) (s : A → X) (η : r ∘ s ∼ id)
-                                       → is-embedding s
-                                       → (x : X) → has-split-support (s (r x) ＝ x)
+ section-embedding-gives-split-support
+  : {X : 𝓤 ̇ } {A : 𝓥 ̇ }
+    (r : X → A) (s : A → X) (η : r ∘ s ∼ id)
+  → is-embedding s
+  → (x : X) → has-split-support (s (r x) ＝ x)
  section-embedding-gives-split-support r s η e x =
   collapsible-gives-split-support (section-embedding-gives-collapsible r s η e x)
 

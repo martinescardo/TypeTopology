@@ -8,7 +8,7 @@ open import MLTT.Spartan
 open import MLTT.Two-Properties
 open import TypeTopology.CompactTypes
 
-module TypeTopology.InfProperty {𝓤 𝓥} {X : 𝓤 ̇ } (_≤_ : X → X → 𝓥 ̇ ) where
+module Ordinals.InfProperty {𝓤 𝓥} {X : 𝓤 ̇ } (_≤_ : X → X → 𝓥 ̇ ) where
 
 is-conditional-root : (X → 𝟚) → X → 𝓤 ̇
 is-conditional-root p x₀ = (Σ x ꞉ X , p x ＝ ₀) → p x₀ ＝ ₀

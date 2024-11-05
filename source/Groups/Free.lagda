@@ -251,7 +251,7 @@ Theorem₁[large-free-groups-from-set-quotients]
 
 \end{code}
 
-The proof is posponed. But we mention that it relies on reducing the
+The proof is postponed. But we mention that it relies on reducing the
 size of the equivalence relation on words, in the sense that the
 original relation has values on 𝓤⁺, and we get an equivalent
 equivalence relation with values on 𝓤, exploiting the local smallness

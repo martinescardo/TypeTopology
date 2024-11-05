@@ -1,3 +1,5 @@
+Martin Escardo
+
 Properties of equivalences depending on function extensionality.
 
 (Not included in UF.Equiv because the module UF.funext defines function
@@ -101,8 +103,8 @@ retractions-have-at-most-one-section' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                                       → (f : X → Y)
                                       → is-section f
                                       → is-prop (has-section f)
-retractions-have-at-most-one-section' {𝓤} {𝓥} {X} {Y} fe fe' f (g , gf) (h , fh) =
- singletons-are-props c (h , fh)
+retractions-have-at-most-one-section'
+ {𝓤} {𝓥} {X} {Y} fe fe' f (g , gf) (h , fh) = singletons-are-props c (h , fh)
  where
   a : qinv f
   a = equivs-are-qinvs f ((h , fh) , g , gf)
@@ -131,7 +133,8 @@ sections-have-at-most-one-retraction' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                                       → (f : X → Y)
                                       → has-section f
                                       → is-prop (is-section f)
-sections-have-at-most-one-retraction' {𝓤} {𝓥} {X} {Y} fe fe' f (g , fg) (h , hf) =
+sections-have-at-most-one-retraction'
+ {𝓤} {𝓥} {X} {Y} fe fe' f (g , fg) (h , hf) =
  singletons-are-props c (h , hf)
  where
   a : qinv f
@@ -214,6 +217,12 @@ being-equiv-is-prop'' fe = being-equiv-is-prop' fe fe fe fe
   q : transport is-equiv p d ＝ e
   q = being-equiv-is-prop' fe₀ f₁ f₂ fe₀ (h ∘ g ∘ f) _ _
 
+≃-assoc : FunExt
+        → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {T : 𝓣 ̇ }
+          (α : X ≃ Y) (β : Y ≃ Z) (γ : Z ≃ T)
+        → α ● (β ● γ) ＝ (α ● β) ● γ
+≃-assoc fe = ≃-assoc' (fe _ _) (fe _ _) (fe _ _)
+
 to-≃-＝ : {X : 𝓤 ̇ } {Y : 𝓥 ̇}
         → Fun-Ext
         → {f g : X → Y} {i : is-equiv f} {j : is-equiv g}
@@ -222,12 +231,6 @@ to-≃-＝ : {X : 𝓤 ̇ } {Y : 𝓥 ̇}
 to-≃-＝ fe h = to-subtype-＝
                (being-equiv-is-prop' fe fe fe fe)
                         (dfunext fe h)
-
-≃-assoc : FunExt
-        → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {T : 𝓣 ̇ }
-          (α : X ≃ Y) (β : Y ≃ Z) (γ : Z ≃ T)
-        → α ● (β ● γ) ＝ (α ● β) ● γ
-≃-assoc fe = ≃-assoc' (fe _ _) (fe _ _) (fe _ _)
 
 \end{code}
 
@@ -242,7 +245,8 @@ a neutral element for ordinary function composition, definitionally:
              → funext 𝓤 𝓤
              → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (α : X ≃ Y)
              → ≃-refl X ● α ＝ α
-≃-refl-left' fe₀ fe₁ fe₂ α = to-Σ-＝' (being-equiv-is-prop' fe₀ fe₁ fe₂ fe₀ _ _ _)
+≃-refl-left' fe₀ fe₁ fe₂ α =
+ to-Σ-＝' (being-equiv-is-prop' fe₀ fe₁ fe₂ fe₀ _ _ _)
 
 ≃-refl-right' : funext 𝓥 𝓤
               → funext 𝓥 𝓥
@@ -250,7 +254,8 @@ a neutral element for ordinary function composition, definitionally:
               → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                 (α : X ≃ Y)
               → α ● ≃-refl Y ＝ α
-≃-refl-right' fe₀ fe₁ fe₂  α = to-Σ-＝' (being-equiv-is-prop' fe₀ fe₁ fe₂ fe₀ _ _ _)
+≃-refl-right' fe₀ fe₁ fe₂  α =
+ to-Σ-＝' (being-equiv-is-prop' fe₀ fe₁ fe₂ fe₀ _ _ _)
 
 ≃-sym-involutive' : funext 𝓥 𝓤
                   → funext 𝓥 𝓥
@@ -258,9 +263,16 @@ a neutral element for ordinary function composition, definitionally:
                   → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                     (α : X ≃ Y)
                   → ≃-sym (≃-sym α) ＝ α
-≃-sym-involutive' fe₀ fe₁ fe₂ (f , a) = to-Σ-＝
-                                         (inversion-involutive f a ,
-                                          being-equiv-is-prop' fe₀ fe₁ fe₂ fe₀ f _ a)
+≃-sym-involutive' fe₀ fe₁ fe₂ (f , a) =
+ to-Σ-＝
+  (inversion-involutive f a ,
+   being-equiv-is-prop' fe₀ fe₁ fe₂ fe₀ f _ a)
+
+≃-sym-involutive : FunExt
+                 → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                   (α : X ≃ Y)
+                 → ≃-sym (≃-sym α) ＝ α
+≃-sym-involutive {𝓤} {𝓥} fe = ≃-sym-involutive' (fe 𝓥 𝓤) (fe 𝓥 𝓥) (fe 𝓤 𝓤)
 
 ≃-Sym' : funext 𝓥 𝓤
        → funext 𝓥 𝓥
@@ -294,12 +306,6 @@ a neutral element for ordinary function composition, definitionally:
                (α : X ≃ Y)
              → α ● ≃-refl Y ＝ α
 ≃-refl-right fe = ≃-refl-right' (fe _ _) (fe _ _) (fe _ _)
-
-≃-sym-involutive : FunExt
-                 → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-                   (α : X ≃ Y)
-                 → ≃-sym (≃-sym α) ＝ α
-≃-sym-involutive {𝓤} {𝓥} fe = ≃-sym-involutive' (fe 𝓥 𝓤) (fe 𝓥 𝓥) (fe 𝓤 𝓤)
 
 ≃-sym-left-inverse' : funext 𝓥 𝓥
                     → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
@@ -437,7 +443,12 @@ propext-funext-give-prop-ua {𝓤} pe fe X P i = (eqtoid , η) , (eqtoid , ε)
   η e = m (idtoeq X P (eqtoid e)) e
 
   ε : (q : X ＝ P) → eqtoid (idtoeq X P q) ＝ q
-  ε q = identifications-with-props-are-props pe fe P i X (eqtoid (idtoeq X P q)) q
+  ε q = identifications-with-props-are-props pe fe
+         P
+         i
+         X
+         (eqtoid (idtoeq X P q))
+         q
 
 prop-univalent-≃ : propext 𝓤
                  → funext 𝓤 𝓤

@@ -299,9 +299,10 @@ Added 3rd September 2023.
 
 \begin{code}
 
-no-three-distinct-propositions' : funext 𝓤 𝓤
-                                → propext 𝓤
-                                → (p₀ p₁ q : Ω 𝓤) → p₀ ≠ q → p₁ ≠ q → ¬ (p₀ ≠ p₁)
+no-three-distinct-propositions'
+ : funext 𝓤 𝓤
+ → propext 𝓤
+ → (p₀ p₁ q : Ω 𝓤) → p₀ ≠ q → p₁ ≠ q → ¬ (p₀ ≠ p₁)
 no-three-distinct-propositions' fe pe p₀ p₁ q ν₀ ν₁ ν =
  no-three-distinct-propositions fe pe ((p₀ , q , p₁) , (ν₀ , ≠-sym ν₁ , ≠-sym ν))
 

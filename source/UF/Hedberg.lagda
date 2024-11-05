@@ -117,12 +117,13 @@ relation is a set.
 
 \begin{code}
 
-type-with-prop-valued-refl-antisym-rel-is-set : {X : 𝓤 ̇ }
-                                              → (_≤_ : X → X → 𝓥 ̇ )
-                                              → ((x y : X) → is-prop (x ≤ y))
-                                              → ((x : X) → x ≤ x)
-                                              → ((x y : X) → x ≤ y → y ≤ x → x ＝ y)
-                                              → is-set X
+type-with-prop-valued-refl-antisym-rel-is-set
+ : {X : 𝓤 ̇ }
+ → (_≤_ : X → X → 𝓥 ̇ )
+ → ((x y : X) → is-prop (x ≤ y))
+ → ((x : X) → x ≤ x)
+ → ((x y : X) → x ≤ y → y ≤ x → x ＝ y)
+ → is-set X
 type-with-prop-valued-refl-antisym-rel-is-set
  {𝓤} {𝓥} {X} _≤_ ≤-prop-valued ≤-refl ≤-anti = γ
  where

@@ -43,13 +43,10 @@ open import Locales.ZeroDimensionality pt fe sr
 open import MLTT.List hiding ([_])
 open import MLTT.Spartan hiding (𝟚)
 open import Slice.Family
-open import UF.Base
-open import UF.Equiv using (_≃_; logically-equivalent-props-give-is-equiv)
 open import UF.EquivalenceExamples
 open import UF.Logic
 open import UF.Subsingletons
 open import UF.SubtypeClassifier
-open import UF.Univalence
 
 open AllCombinators pt fe
 open ContinuousMaps

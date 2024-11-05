@@ -724,7 +724,7 @@ lex-order {n = succ n} _≤_ (x , xs) (y , ys) = (x ≤ y)
 _≤₂ₗₑₓ_ : {n : ℕ} (xs ys : 𝟚 ^ n) → 𝓤₀ ̇
 _≤₂ₗₑₓ_ = lex-order _≤₂_
 
-open import TypeTopology.InfProperty
+open import Ordinals.InfProperty
 
 ε-is-roots-lower-bound : {n : ℕ}
                         (f : 𝟚 ^ n → 𝟚)

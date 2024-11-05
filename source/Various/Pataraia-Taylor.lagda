@@ -1,4 +1,4 @@
-Martin Escardo, Tom de Jong, 16 & 22 Feb 2023
+Martin Escardo, Tom de Jong, 16 & 22 Feb 2024
 
 In this module Various.Pataraia-Taylor we implement a predicative
 version of Pataraia's fixed point theorem:

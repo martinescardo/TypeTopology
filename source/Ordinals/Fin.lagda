@@ -10,7 +10,6 @@ module Ordinals.Fin where
 
 open import Fin.Embeddings
 open import Fin.Type
-open import Fin.Order
 open import MLTT.Spartan
 open import Notation.Order
 open import Ordinals.Type

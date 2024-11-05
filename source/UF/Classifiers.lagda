@@ -191,9 +191,9 @@ module retraction-classifier (𝓤 : Universe) where
  retraction-classifier : Univalence
                        → (Y : 𝓤 ̇ ) → retractions-into Y ≃ (Y → pointed-types 𝓤)
  retraction-classifier ua Y =
-  retractions-into Y                                              ≃⟨ i ⟩
-  ((𝓤 /[ id ] Y))                                                 ≃⟨ ii ⟩
-  (Y → pointed-types 𝓤)                                           ■
+  retractions-into Y     ≃⟨ i ⟩
+  ((𝓤 /[ id ] Y))        ≃⟨ ii ⟩
+  (Y → pointed-types 𝓤)  ■
   where
    i  = ≃-sym (Σ-cong (λ X → Σ-cong (λ f → ΠΣ-distr-≃)))
    ii = special-classification (ua 𝓤)

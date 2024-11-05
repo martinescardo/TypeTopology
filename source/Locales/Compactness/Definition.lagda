@@ -39,7 +39,7 @@ open import UF.Equiv hiding (_■)
 open import UF.EquivalenceExamples
 open import UF.ImageAndSurjection pt
 open import UF.Logic
-open import UF.Powerset-Fin pt hiding (⟨_⟩)
+open import UF.Powerset-Fin pt
 open import UF.Powerset-MultiUniverse
 open import UF.Sets-Properties
 

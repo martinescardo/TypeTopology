@@ -1,7 +1,6 @@
 Ian Ray, 2 June 2024
 
-Experimental modification by Martin Escardo and Tom de Jong 12th
-September 2024.
+Modification by Martin Escardo and Tom de Jong 12th September 2024.
 
 Minor modifications by Tom de Jong on 4 September 2024
 
@@ -17,7 +16,7 @@ presence of univalence.
 
 open import UF.FunExt
 
-module gist.TruncatedTypes
+module UF.TruncatedTypes
         (fe : Fun-Ext)
        where
 
@@ -46,16 +45,16 @@ X is (succ n) truncated = (x x' : X) → (x ＝ x') is n truncated
 
 being-truncated-is-prop : {𝓤 : Universe} {n : ℕ₋₂} {X : 𝓤 ̇ }
                         → is-prop (X is n truncated)
-being-truncated-is-prop {𝓤} {−2}       = being-singleton-is-prop fe
+being-truncated-is-prop {𝓤} {−2}     = being-singleton-is-prop fe
 being-truncated-is-prop {𝓤} {succ n} =
-  Π₂-is-prop fe (λ x x' → being-truncated-is-prop)
+ Π₂-is-prop fe (λ x x' → being-truncated-is-prop)
 
 _is_truncated-map : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (f : X → Y) → ℕ₋₂ → 𝓤 ⊔ 𝓥 ̇
 f is n truncated-map = each-fiber-of f (λ - → - is n truncated)
 
 \end{code}
 
-Being -1-truncated equivalent to being a proposition.
+Being -1-truncated is equivalent to being a proposition.
 
 \begin{code}
 
@@ -100,7 +99,7 @@ truncation-levels-closed-under-Id : {n : ℕ₋₂} {X : 𝓤 ̇ }
                                   → (x x' : X) → (x ＝ x') is n truncated
 truncation-levels-closed-under-Id {𝓤} {−2} = contractible-types-are-props'
 truncation-levels-closed-under-Id {𝓤} {succ n} t x x' =
-  truncation-levels-are-upper-closed (t x x')
+ truncation-levels-are-upper-closed (t x x')
 
 \end{code}
 
@@ -202,7 +201,7 @@ for all n : ℕ₋₂.
 
 truncation-levels-closed-under-≃⁺ : {n : ℕ₋₂} {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                                   → Y is (n + 1) truncated
-                                  → (X ≃ Y) is (succ n) truncated
+                                  → (X ≃ Y) is (n + 1) truncated
 truncation-levels-closed-under-≃⁺ {𝓤} {𝓥} {n} {X} {Y} tY =
  truncated-types-closed-under-embedding ⋆ (equiv-embeds-into-function fe')
   (truncated-types-closed-under-Π (λ _ → Y) (λ _ → tY))
@@ -215,10 +214,10 @@ truncation-levels-closed-under-≃ {𝓤} {𝓥} {−2} = ≃-is-singleton fe'
 truncation-levels-closed-under-≃ {𝓤} {𝓥} {succ n} tX =
  truncation-levels-closed-under-≃⁺
 
-𝕋-is-of-next-hlevel : {n : ℕ₋₂} {𝓤 : Universe}
-                    → is-univalent 𝓤
-                    → (𝕋 n 𝓤) is (n + 1) truncated
-𝕋-is-of-next-hlevel ua (X , l) (Y , l') =
+𝕋-is-of-next-truncation-level : {n : ℕ₋₂} {𝓤 : Universe}
+                              → is-univalent 𝓤
+                              → (𝕋 n 𝓤) is (n + 1) truncated
+𝕋-is-of-next-truncation-level ua (X , l) (Y , l') =
  truncated-types-closed-under-equiv I (truncation-levels-closed-under-≃ l l')
  where
   I = ((X , l) ＝ (Y , l')) ≃⟨ II ⟩

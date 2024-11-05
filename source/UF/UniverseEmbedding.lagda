@@ -99,8 +99,8 @@ Lift'-≃ : (𝓥 : Universe) (X : 𝓤 ̇ ) → Lift' 𝓥 X ≃ X
 Lift'-≃ 𝓥 X = 𝟘-rneutral'
 
 Lift'-is-embedding : Univalence → is-embedding (Lift' {𝓤} 𝓥)
-Lift'-is-embedding {𝓤} {𝓥} ua = universe-embeddings-are-embeddings ua 𝓤 (𝓤 ⊔ 𝓥)
-                                  (Lift' 𝓥) (Lift'-≃ 𝓥)
+Lift'-is-embedding {𝓤} {𝓥} ua =
+ universe-embeddings-are-embeddings ua 𝓤 (𝓤 ⊔ 𝓥) (Lift' 𝓥) (Lift'-≃ 𝓥)
 \end{code}
 
 The following embedding has better definitional properties:
@@ -187,7 +187,8 @@ prop-fiber-Lift : PropExt
                 → is-prop Q
                 → is-prop (fiber (Lift 𝓥) Q)
 prop-fiber-Lift {𝓤} {𝓥} pe fe = prop-fiber-criterion pe fe 𝓤 (𝓤 ⊔ 𝓥)
-                                  (Lift {𝓤} 𝓥) (Lift-is-universe-embedding 𝓥)
+                                  (Lift {𝓤} 𝓥)
+                                  (Lift-is-universe-embedding 𝓥)
 \end{code}
 
 Taken from the MGS'2019 lecture notes (22 December 2020):
@@ -265,10 +266,11 @@ Lift-hSet 𝓥 = pair-fun (Lift 𝓥) (Lift-is-set 𝓥)
 Lift-is-set-is-embedding : funext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
                          → (X : 𝓤 ̇ )
                          → is-embedding (Lift-is-set 𝓥 X)
-Lift-is-set-is-embedding {𝓤} {𝓥} fe X = maps-of-props-are-embeddings
-                                         (Lift-is-set 𝓥 X)
-                                         (being-set-is-prop (lower-funext 𝓥 𝓥 fe))
-                                         (being-set-is-prop fe)
+Lift-is-set-is-embedding {𝓤} {𝓥} fe X =
+ maps-of-props-are-embeddings
+ (Lift-is-set 𝓥 X)
+ (being-set-is-prop (lower-funext 𝓥 𝓥 fe))
+ (being-set-is-prop fe)
 
 Lift-hSet-is-embedding : Univalence → is-embedding (Lift-hSet {𝓤} 𝓥)
 Lift-hSet-is-embedding {𝓤} {𝓥} ua =

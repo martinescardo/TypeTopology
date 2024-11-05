@@ -38,7 +38,8 @@ has-two-distinct-points : 𝓤 ̇ → 𝓤 ̇
 has-two-distinct-points X = Σ (x , y) ꞉ X × X , (x ≠ y)
 
 has-three-distinct-points : 𝓤 ̇ → 𝓤 ̇
-has-three-distinct-points X = Σ (x , y , z) ꞉ X × X × X , (x ≠ y) × (y ≠ z) × (z ≠ x)
+has-three-distinct-points X = Σ (x , y , z) ꞉ X × X × X
+                            , (x ≠ y) × (y ≠ z) × (z ≠ x)
 
 ≠-sym : {X : 𝓤 ̇ } → {x y : X} → x ≠ y → y ≠ x
 ≠-sym u r = u (r ⁻¹)
@@ -144,11 +145,25 @@ Double-negation-of-implication→ : {A : 𝓤 ̇ } {B : 𝓥 ̇ }
 Double-negation-of-implication→ R k f g = f ((λ h → g (λ a → k (h a))) ,
                                              (λ b → g (λ a → b)))
 
-double-negation-of-implication← : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → ¬¬ (A → B) → ¬ (¬¬ A × ¬ B)
+double-negation-of-implication← : {A : 𝓤 ̇ } {B : 𝓥 ̇ }
+                                → ¬¬ (A → B)
+                                → ¬ (¬¬ A × ¬ B)
 double-negation-of-implication← = Double-negation-of-implication←
 
-double-negation-of-implication→ : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → ¬ (¬¬ A × ¬ B) → ¬¬ (A → B)
-double-negation-of-implication→ f g = Double-negation-of-implication→ (𝟘 {𝓤₀}) 𝟘-elim f g
+double-negation-of-implication→ : {A : 𝓤 ̇ } {B : 𝓥 ̇ }
+                                → ¬ (¬¬ A × ¬ B)
+                                → ¬¬ (A → B)
+double-negation-of-implication→ f g =
+ Double-negation-of-implication→ (𝟘 {𝓤₀}) 𝟘-elim f g
+
+double-negation-elimination-inside-double-negation : (X : 𝓤 ̇ ) → ¬¬ (¬¬ X → X)
+double-negation-elimination-inside-double-negation X = II
+ where
+  I : ¬ (¬¬ (¬¬ X) × ¬ X)
+  I (h₁ , h₂) = h₁ (¬¬-intro h₂)
+
+  II : ¬¬ (¬¬ X → X)
+  II = double-negation-of-implication→ I
 
 not-equivalent-to-own-negation' : {A : 𝓤 ̇ } {R : 𝓥 ̇ } → (A ↔ (A → R)) → R
 not-equivalent-to-own-negation' (f , g) = f (g (λ a → f a a)) (g (λ a → f a a))

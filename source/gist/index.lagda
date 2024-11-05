@@ -10,6 +10,5 @@ module gist.index where
 
 import gist.multiset-addendum-question
 import gist.remove-swap
-import gist.TruncatedTypes
 
 \end{code}

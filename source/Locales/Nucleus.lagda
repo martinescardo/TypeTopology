@@ -25,6 +25,7 @@ open import UF.SubtypeClassifier
 open AllCombinators pt fe
 open FrameHomomorphismProperties
 open FrameHomomorphisms
+open Locale
 
 \end{code}
 
@@ -198,6 +199,9 @@ prenucleus-property₂ L (j , ζj , _) (k , _) x = ζj (k x)
 ∨-is-nucleus L x = ∨-is-inflationary L x
                  , ∨-is-idempotent L x
                  , ∨-preserves-binary-meets L x
+
+closed-nucleus : (X : Locale 𝓤 𝓥 𝓦) (U : ⟨ 𝒪 X ⟩) → Nucleus (𝒪 X)
+closed-nucleus X U = (λ - → U ∨[ 𝒪 X ] -) , ∨-is-nucleus (𝒪 X) U
 
 \end{code}
 

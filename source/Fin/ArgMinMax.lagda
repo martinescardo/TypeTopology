@@ -11,7 +11,7 @@ open import Fin.Embeddings
 open import Fin.Order
 open import Fin.Topology
 open import Fin.Type
-open import MLTT.Spartan
+open import MLTT.Spartan hiding (_+_)
 open import MLTT.SpartanList
 open import Naturals.Order
 open import Notation.Order
@@ -278,4 +278,79 @@ argmax'-correct {succ a} p y = h y
     l : p (suc x) ≤ p γ
     l = {!!}
 -}
+
+\end{code}
+
+Added 11th September 2024. Simplified and more efficient version for
+the boolean-valued case.
+
+\begin{code}
+
+open import MLTT.Two-Properties
+open import Naturals.Addition
+
+Min₂ : (i : ℕ) → (Fin (i + 1) → 𝟚) → 𝟚
+Min₂ 0        p = p 𝟎
+Min₂ (succ i) p = min𝟚 (p 𝟎) (Min₂ i (p ∘ suc))
+
+Max₂ : (i : ℕ) → (Fin (i + 1) → 𝟚) → 𝟚
+Max₂ 0        p = p 𝟎
+Max₂ (succ i) p = max𝟚 (p 𝟎) (Max₂ i (p ∘ suc))
+
+argMin₂ : (i : ℕ) → (Fin (i + 1) → 𝟚) → Fin (i + 1)
+argMin₂ 0        p = 𝟎
+argMin₂ (succ i) p =
+ 𝟚-equality-cases
+  (λ (_ : p 𝟎 ＝ ₀) → 𝟎)
+  (λ (_ : p 𝟎 ＝ ₁) → suc (argMin₂ i (p ∘ suc)))
+
+argMax₂ : (i : ℕ) → (Fin (i + 1) → 𝟚) → Fin (i + 1)
+argMax₂ 0        p = 𝟎
+argMax₂ (succ i) p =
+ 𝟚-equality-cases
+  (λ (_ : p 𝟎 ＝ ₀) → suc (argMax₂ i (p ∘ suc)))
+  (λ (_ : p 𝟎 ＝ ₁) → 𝟎)
+
+argMin₂-is-selection-for-Min₂ : (i : ℕ)
+                                (p : Fin (i + 1) → 𝟚)
+                              → p (argMin₂ i p) ＝ Min₂ i p
+argMin₂-is-selection-for-Min₂ 0        p = refl
+argMin₂-is-selection-for-Min₂ (succ i) p =
+ 𝟚-equality-cases
+  (λ (e : p 𝟎 ＝ ₀)
+     → p (argMin₂ (succ i) p)        ＝⟨ ap p (𝟚-equality-cases₀ e) ⟩
+       p 𝟎                          ＝⟨ e ⟩
+       ₀                            ＝⟨ refl ⟩
+       min𝟚 ₀ (Min₂ i (p ∘ suc))     ＝⟨ ap (λ - → min𝟚 - (Min₂ i (p ∘ suc))) (e ⁻¹) ⟩
+       min𝟚 (p 𝟎) (Min₂ i (p ∘ suc)) ＝⟨ refl ⟩
+       Min₂ (succ i) p               ∎)
+  (λ (e : p 𝟎 ＝ ₁)
+    → p (argMin₂ (succ i) p)        ＝⟨ ap p (𝟚-equality-cases₁ e) ⟩
+      p (suc (argMin₂ i (p ∘ suc))) ＝⟨ argMin₂-is-selection-for-Min₂ i (p ∘ suc) ⟩
+      Min₂ i (p ∘ suc)              ＝⟨ refl ⟩
+      min𝟚 ₁ (Min₂ i (p ∘ suc))     ＝⟨ ap (λ - → min𝟚 - (Min₂ i (p ∘ suc))) (e ⁻¹) ⟩
+      min𝟚 (p 𝟎) (Min₂ i (p ∘ suc)) ＝⟨ refl ⟩
+      Min₂ (succ i) p               ∎)
+
+argMax₂-is-selection-for-Max₂ : (i : ℕ)
+                                (p : Fin (i + 1) → 𝟚)
+                              → p (argMax₂ i p) ＝ Max₂ i p
+argMax₂-is-selection-for-Max₂ 0        p = refl
+argMax₂-is-selection-for-Max₂ (succ i) p =
+ 𝟚-equality-cases
+  (λ (e : p 𝟎 ＝ ₀)
+    → p (argMax₂ (succ i) p)        ＝⟨ ap p (𝟚-equality-cases₀ e) ⟩
+      p (suc (argMax₂ i (p ∘ suc))) ＝⟨ argMax₂-is-selection-for-Max₂ i (p ∘ suc) ⟩
+      Max₂ i (p ∘ suc)              ＝⟨ refl ⟩
+      max𝟚 ₀ (Max₂ i (p ∘ suc))     ＝⟨ ap (λ - → max𝟚 - (Max₂ i (p ∘ suc))) (e ⁻¹) ⟩
+      max𝟚 (p 𝟎) (Max₂ i (p ∘ suc)) ＝⟨ refl ⟩
+      Max₂ (succ i) p               ∎)
+  (λ (e : p 𝟎 ＝ ₁)
+     → p (argMax₂ (succ i) p)        ＝⟨ ap p (𝟚-equality-cases₁ e) ⟩
+       p 𝟎                          ＝⟨ e ⟩
+       ₁                            ＝⟨ refl ⟩
+       max𝟚 ₁ (Max₂ i (p ∘ suc))     ＝⟨ ap (λ - → max𝟚 - (Max₂ i (p ∘ suc))) (e ⁻¹) ⟩
+       max𝟚 (p 𝟎) (Max₂ i (p ∘ suc)) ＝⟨ refl ⟩
+       Max₂ (succ i) p               ∎)
+
 \end{code}

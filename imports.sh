@@ -26,17 +26,17 @@ c1grep() { grep "$@" || test $? = 1; }
 
 print_usage() {
   printf "From TypeTopology/source, run this script as
-  ./imports.sh UF/Embeddings.lagda
+  ../imports.sh UF/Embeddings.lagda
 to report redundant imports in UF/Embeddings.lagda.
 
 Alternatively, use the -d (directory) flag to report redundant
 imports in all .lagda files in the UF/ directory, e.g.
-  ./imports.sh -d UF/
+  ../imports.sh -d UF/
 NB: The forward slash at the end of the directory is important.
 
 Use the -r flag to remove redundant imports (without reporting them), e.g.
-  ./imports.sh -d -r UF/
-  ./imports.sh -r UF/Embeddings.lagda
+  ../imports.sh -d -r UF/
+  ../imports.sh -r UF/Embeddings.lagda
 
 Wrong flags, or the -h (help) flag, displays this message.
 "

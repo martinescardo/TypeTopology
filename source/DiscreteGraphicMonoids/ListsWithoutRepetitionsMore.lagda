@@ -32,7 +32,7 @@ module _
 
  private
   d : is-discrete X
-  d = discrete'-gives-discrete d'
+  d = discrete'-gives-discrete
 
  _∉_ _∈_ : X → List X → 𝓤 ̇
  x ∉ xs = ρ (x • xs) ＝ x • ρ xs

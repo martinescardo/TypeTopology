@@ -176,8 +176,10 @@ p : x ＝ y,
 
 \begin{code}
 
-≾-naturality : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ ) (τ : A ≾ B)
-             → {x y : X} (p : x ＝ y) → τ y ∘ transport A p ＝ transport B p ∘ τ x
+≾-naturality : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ )
+               (τ : A ≾ B)
+               {x y : X} (p : x ＝ y)
+             → τ y ∘ transport A p ＝ transport B p ∘ τ x
 ≾-naturality = Nats-are-natural
 
 \end{code}
@@ -202,7 +204,8 @@ module _ {X : 𝓤 ̇ }
    f∖j = Σ-extension
 
   Σ→Π : is-embedding j → f∖j ≾ f/j
-  Σ→Π e y ((x , p) , B) (x' , p') = transport f (embeddings-are-lc j e (p ∙ p' ⁻¹)) B
+  Σ→Π e y ((x , p) , B) (x' , p') =
+   transport f (embeddings-are-lc j e (p ∙ p' ⁻¹)) B
 
 \end{code}
 
@@ -293,16 +296,20 @@ module _ {X : 𝓤 ̇ }
     (e (j x))
     (x , refl)
 
-  Π-extension-equivalence : is-embedding j → (x : X) → is-equiv (Π-proj (x , refl))
+  Π-extension-equivalence : is-embedding j
+                          → (x : X) → is-equiv (Π-proj (x , refl))
   Π-extension-equivalence e x = pr₂ (Π-extension-property e x)
 
-  Π-extension-out-of-range : ∀ {𝓦} (y : Y) → ((x : X) → j x ≠ y) → f/j (y) ≃ 𝟙 {𝓦}
-  Π-extension-out-of-range y φ = prop-indexed-product-one (fe (𝓤 ⊔ 𝓥) 𝓦) (uncurry φ)
+  Π-extension-out-of-range : {𝓦 : Universe} (y : Y)
+                           → ((x : X) → j x ≠ y) → f/j (y) ≃ 𝟙 {𝓦}
+  Π-extension-out-of-range y φ =
+   prop-indexed-product-one (fe (𝓤 ⊔ 𝓥) 𝓦) (uncurry φ)
 
   Σ-extension-property : is-embedding j → (x : X) → f∖j (j x) ≃ f x
   Σ-extension-property e x = prop-indexed-sum (e (j x)) (x , refl)
 
-  Σ-extension-out-of-range : (y : Y) → ((x : X) → j x ≠ y) → f∖j (y) ≃ 𝟘 {𝓦}
+  Σ-extension-out-of-range : {𝓦 : Universe} (y : Y)
+                           → ((x : X) → j x ≠ y) → f∖j (y) ≃ 𝟘 {𝓦}
   Σ-extension-out-of-range y φ = prop-indexed-sum-zero (uncurry φ)
 
 \end{code}
@@ -359,7 +366,8 @@ respectively:
       FG' ψ x (_ , refl) = refl
 
       FG : (ψ : Π f/j) → F (G ψ) ＝ ψ
-      FG ψ = dfunext (fe 𝓥 (𝓤 ⊔ 𝓥 ⊔ 𝓦)) (λ y → dfunext (fe (𝓤 ⊔ 𝓥) 𝓦) (FG' ψ y))
+      FG ψ = dfunext (fe 𝓥 (𝓤 ⊔ 𝓥 ⊔ 𝓦)) (λ y →
+             dfunext (fe (𝓤 ⊔ 𝓥) 𝓦) (FG' ψ y))
 
       GF : (φ : Π f) → G (F φ) ＝ φ
       GF φ = refl
@@ -556,7 +564,7 @@ retract-of-ainjective : (D' : 𝓦' ̇ ) (D : 𝓦 ̇ )
                       → ainjective-type D 𝓤 𝓥
                       → retract D' of D
                       → ainjective-type D' 𝓤 𝓥
-retract-of-ainjective D' D i (r , (s , rs)) {X} {Y} j e f = φ a
+retract-of-ainjective D' D i (r , s , rs) {X} {Y} j e f = φ a
   where
    a : Σ f' ꞉ (Y → D) , f' ∘ j ∼ s ∘ f
    a = i j e (s ∘ f)
@@ -612,6 +620,15 @@ power-of-ainjective : {A : 𝓣 ̇ } {D : 𝓦 ̇ }
                     → ainjective-type (A → D) 𝓤 𝓥
 power-of-ainjective i = Π-ainjective (λ a → i)
 
+every-type-can-be-embedded-into-an-ainjective-type
+ : is-univalent (𝓤 ⊔ 𝓥)
+ → (X : 𝓤 ⊔ 𝓥 ̇ )
+ → Σ D ꞉ (𝓤 ⊔ 𝓥)⁺ ̇ , Σ e ꞉ X ↪ D , ainjective-type D 𝓤 𝓥
+every-type-can-be-embedded-into-an-ainjective-type {𝓤} {𝓥} ua X
+ = (X → 𝓤 ⊔ 𝓥 ̇) ,
+   (Id , UA-Id-embedding ua fe) ,
+   power-of-ainjective (universes-are-ainjective ua)
+
 \end{code}
 
 The following is the first of a number of injectivity resizing
@@ -640,7 +657,9 @@ to be an embedding and that the proof is completely routine.
 
 \begin{code}
 
-retract-extension : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : X → 𝓦 ̇ ) (B : X → 𝓣 ̇ ) (e : X → Y)
+retract-extension : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                    (A : X → 𝓦 ̇ ) (B : X → 𝓣 ̇ )
+                    (e : X → Y)
                   → ((x : X) → retract (A x) of (B x))
                   → ((y : Y) → retract ((A / e) y) of ((B / e) y))
 retract-extension {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} A B e ρ y = r , s , rs
@@ -1031,7 +1050,8 @@ module ∖-extension-is-embedding
         t : (x x' : X) (u : x' ＝ x) (p : j x' ＝ j x) (C : f x')
           → ap j u ＝ p
           →  ((x' , p)    , (x' , refl) , C)
-          ＝ (((x  , refl) , (x' , p)    , C) ∶ (Σ (x , _) ꞉  fiber j (j x) , r (s f) x))
+          ＝[ Σ (x , _) ꞉  fiber j (j x) , r (s f) x ]
+             ((x  , refl) , (x' , p)    , C)
         t x x refl p C refl = refl
 
         ej' : ∀ x x' → qinv (ap j {x} {x'})
@@ -1065,8 +1085,8 @@ module ∖-extension-is-embedding
 
  ψ-is-embedding : is-embedding ψ
  ψ-is-embedding = pr₁-is-embedding
-                     (λ g → Π-is-prop feuu
-                             (λ y → being-equiv-is-prop'' feuu (κ g y)))
+                   (λ g → Π-is-prop feuu
+                           (λ y → being-equiv-is-prop'' feuu (κ g y)))
 
  s-is-comp : s ＝ ψ ∘ φ
  s-is-comp = refl
@@ -1101,24 +1121,30 @@ aflabby-extension-property  ϕ (P , P-is-prop) f = pr₂ (ϕ P P-is-prop f)
 aflabby-pointed : (D : 𝓦 ̇ ) → aflabby D 𝓤 → D
 aflabby-pointed D φ = pr₁ (φ 𝟘 𝟘-is-prop unique-from-𝟘)
 
-ainjective-types-are-aflabby : (D : 𝓦 ̇ ) → ainjective-type D 𝓤 𝓥 → aflabby D 𝓤
-ainjective-types-are-aflabby {𝓦} {𝓤} {𝓥} D i P isp f =
-  pr₁ (i (λ p → ⋆) (prop-embedding P isp 𝓥) f) ⋆ ,
-  pr₂ (i (λ p → ⋆) (prop-embedding P isp 𝓥) f)
+ainjective-types-are-aflabby : (D : 𝓦 ̇ )
+                             → ainjective-type D 𝓤 𝓥
+                             → aflabby D 𝓤
+ainjective-types-are-aflabby {𝓦} {𝓤} {𝓥} D i P isp f = pr₁ I ⋆ , pr₂ I
+ where
+  I : Σ f' ꞉ (𝟙 → D) , f' ∘ unique-to-𝟙 ∼ f
+  I = i unique-to-𝟙 (unique-to-𝟙-is-embedding P isp 𝓥) f
 
 aflabby-types-are-ainjective : (D : 𝓦 ̇ )
                              → aflabby D (𝓤 ⊔ 𝓥)
                              → ainjective-type D 𝓤 𝓥
 aflabby-types-are-ainjective D φ {X} {Y} j e f = f' , p
  where
+  g : (y : Y) → fiber j y → D
+  g y (x , p) = f x
+
   f' : Y → D
-  f' y = pr₁ (φ (fiber j y) (e y) (f ∘ pr₁))
+  f' y = aflabby-extension φ (fiber j y , e y) (g y)
 
   p : (x : X) → f' (j x) ＝ f x
   p x = q (x , refl)
    where
-    q : (w : fiber j (j x)) → f' (j x) ＝ f (pr₁ w)
-    q = pr₂ (φ (fiber j (j x)) (e (j x)) (f ∘ pr₁))
+    q : (w : fiber j (j x)) → f' (j x) ＝ g (j x) w
+    q = aflabby-extension-property φ (fiber j (j x) , e (j x)) (g (j x))
 
 \end{code}
 
@@ -1321,8 +1347,12 @@ ainjective-resizing : ∀ {𝓤 𝓥 𝓤' 𝓥' 𝓦}
                     → ainjective-type D 𝓤 𝓥
                     → ainjective-type D 𝓤' 𝓥'
 ainjective-resizing {𝓤} {𝓥} {𝓤'} {𝓥'} {𝓦} R D i j e f =
- aflabby-types-are-ainjective D
-  (aflabbiness-resizing D (𝓤' ⊔ 𝓥') 𝓤 R (ainjective-types-are-aflabby D i)) j e f
+ aflabby-types-are-ainjective
+  D
+  (aflabbiness-resizing D (𝓤' ⊔ 𝓥') 𝓤 R (ainjective-types-are-aflabby D i))
+  j
+  e
+  f
 
 \end{code}
 
@@ -1338,7 +1368,7 @@ universe-retract : Univalence
                  → Propositional-resizing
                  → (𝓤 𝓥 : Universe)
                  → Σ ρ ꞉ retract 𝓤 ̇ of (𝓤 ⊔ 𝓥 ̇ ), is-embedding (section ρ)
-universe-retract ua R 𝓤 𝓥 = ρ , (Lift-is-embedding ua)
+universe-retract ua R 𝓤 𝓥 = ρ , Lift-is-embedding ua
  where
   a : ainjective-type (𝓤 ̇ ) 𝓤 𝓤
   a = universes-are-ainjective-Π {𝓤} {𝓤} (ua 𝓤)
@@ -1431,12 +1461,14 @@ free 𝓛-algebras are injective.
  free-𝓛-algebra-ainjective : is-univalent 𝓤
                            → funext 𝓤 (𝓤 ⁺)
                            → (X : 𝓤 ̇ ) → ainjective-type (𝓛 X) 𝓤 𝓤
- free-𝓛-algebra-ainjective ua fe X = 𝓛-alg-ainjective
-                                      (univalence-gives-propext ua)
-                                      (univalence-gives-funext ua)
-                                      fe
-                                      (𝓛 X)
-                                      (𝓛-algebra-gives-alg (free-𝓛-algebra ua X))
+ free-𝓛-algebra-ainjective ua fe X =
+  𝓛-alg-ainjective
+   (univalence-gives-propext ua)
+   (univalence-gives-funext ua)
+   fe
+   (𝓛 X)
+   (𝓛-algebra-gives-alg (free-𝓛-algebra ua X))
+
 \end{code}
 
 Because the unit of the Lifting monad is an embedding, it follows that
@@ -1472,7 +1504,11 @@ monad:
          ainjective-is-retract-of-free-𝓛-algebra D ua (ainjective-resizing R D i)
 
    b : (Σ X ꞉ 𝓤 ̇ , retract D of (𝓛 X)) → ainjective-type D 𝓤 𝓤
-   b (X , r) = retract-of-ainjective D (𝓛 X) (free-𝓛-algebra-ainjective ua fe X) r
+   b (X , r) = retract-of-ainjective
+                D
+                (𝓛 X)
+                (free-𝓛-algebra-ainjective ua fe X)
+                r
 
 \end{code}
 
@@ -1490,7 +1526,6 @@ module injective (pt : propositional-truncations-exist) where
                        → is-embedding j
                        → (f : X → D)
                        → ∃ g ꞉ (Y → D), g ∘ j ∼ f
-
 
  injectivity-is-prop : (D : 𝓦 ̇ ) (𝓤 𝓥 : Universe)
                      → is-prop (injective-type D 𝓤 𝓥)
@@ -1545,8 +1580,8 @@ so we need a new proof, with new universe assumptions.
 \begin{code}
 
  power-of-injective : {A : 𝓣 ̇ } {D : 𝓣 ⊔ 𝓦 ̇ }
-                     → injective-type D       (𝓤 ⊔ 𝓣) (𝓥 ⊔ 𝓣)
-                     → injective-type (A → D) (𝓤 ⊔ 𝓣) (𝓥 ⊔ 𝓣)
+                    → injective-type D       (𝓤 ⊔ 𝓣) (𝓥 ⊔ 𝓣)
+                    → injective-type (A → D) (𝓤 ⊔ 𝓣) (𝓥 ⊔ 𝓣)
  power-of-injective {𝓣} {𝓦} {𝓤} {𝓥} {A} {D} i {X} {Y} j e f = γ
   where
    g : X × A → D
@@ -1604,10 +1639,10 @@ injectivity.
 \begin{code}
 
  injectivity-in-terms-of-ainjectivity' : is-univalent 𝓤
-                                      → propositional-resizing (𝓤 ⁺) 𝓤
-                                      → (D : 𝓤  ̇ )
-                                      → injective-type D 𝓤 (𝓤 ⁺)
-                                        ↔ ∥ ainjective-type D 𝓤 (𝓤 ⁺) ∥
+                                       → propositional-resizing (𝓤 ⁺) 𝓤
+                                       → (D : 𝓤  ̇ )
+                                       → injective-type D 𝓤 (𝓤 ⁺)
+                                         ↔ ∥ ainjective-type D 𝓤 (𝓤 ⁺) ∥
  injectivity-in-terms-of-ainjectivity' {𝓤} ua R D = a , b
   where
    a : injective-type D 𝓤 (𝓤 ⁺) → ∥ ainjective-type D 𝓤 (𝓤 ⁺) ∥
@@ -1641,7 +1676,7 @@ The reason is that the embedding Id : D → (D → 𝓤) factors through
 
  set-injectivity-in-terms-of-ainjectivity : Ω-resizing₀ 𝓤
                                           → PropExt
-                                          → (D  : 𝓤 ̇ ) (i  : is-set D)
+                                          → (D  : 𝓤 ̇ ) (i : is-set D)
                                           → injective-type D 𝓤 𝓤
                                             ↔ ∥ ainjective-type D 𝓤 𝓤 ∥
  set-injectivity-in-terms-of-ainjectivity {𝓤} (Ω₀ , e₀) pe D i =
@@ -1776,6 +1811,35 @@ Here are some corollaries:
 
    e : P + ¬ P
    e =  ∥∥-rec (decidability-of-prop-is-prop (fe 𝓤 𝓤₀) i) id d
+
+\end{code}
+
+Added 21st October 2024.
+
+\begin{code}
+
+aflabby-embedding-retract : (D : 𝓤 ̇ ) (Y : 𝓥 ̇ ) (j : D → Y)
+                          → is-embedding j
+                          → aflabby D (𝓤 ⊔ 𝓥)
+                          → retract D of Y
+aflabby-embedding-retract D Y j e a =
+ embedding-retract D Y j e (aflabby-types-are-ainjective D a)
+
+retract-of-aflabby : (D : 𝓤 ̇ ) (E : 𝓥 ̇ )
+                   → aflabby D 𝓣
+                   → retract E of D
+                   → aflabby E 𝓣
+retract-of-aflabby D E D-aflabby (r , s , rs) P P-is-prop f
+ = r d ,
+   (λ (p : P) → r d         ＝⟨ ap r (I p) ⟩
+                r (s (f p)) ＝⟨ rs (f p) ⟩
+                f p         ∎)
+  where
+   d : D
+   d = aflabby-extension D-aflabby (P , P-is-prop) (s ∘ f)
+
+   I : (p : P) → d ＝ s (f p)
+   I = aflabby-extension-property D-aflabby (P , P-is-prop) (s ∘ f)
 
 \end{code}
 

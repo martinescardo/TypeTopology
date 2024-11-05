@@ -108,13 +108,19 @@ module sip where
           {X : 𝓤 ̇ }
         where
 
-  canonical-map-charac : (s t : S X) (p : s ＝ t)
-                       → canonical-map ι ρ s t p
-                       ＝ transport (λ - → ι (X , s) (X , -) (≃-refl X)) p (ρ (X , s))
-  canonical-map-charac s t p = (yoneda-lemma s (λ t → ι (X , s) (X , t) (≃-refl X)) (canonical-map ι ρ s) t p)⁻¹
+  canonical-map-charac
+   : (s t : S X) (p : s ＝ t)
+   → canonical-map ι ρ s t p
+   ＝ transport (λ - → ι (X , s) (X , -) (≃-refl X)) p (ρ (X , s))
+  canonical-map-charac s t p =
+   (yoneda-lemma
+    s
+    (λ t → ι (X , s) (X , t) (≃-refl X))
+    (canonical-map ι ρ s) t p)⁻¹
 
-  when-canonical-map-is-equiv : ((s t : S X) → is-equiv (canonical-map ι ρ s t))
-                              ↔ ((s : S X) → ∃! t ꞉ S X , ι (X , s) (X , t) (≃-refl X))
+  when-canonical-map-is-equiv
+   : ((s t : S X) → is-equiv (canonical-map ι ρ s t))
+   ↔ ((s : S X) → ∃! t ꞉ S X , ι (X , s) (X , t) (≃-refl X))
   when-canonical-map-is-equiv = (λ e s → Yoneda-Theorem-back  s (c s) (e s)) ,
                                 (λ φ s → Yoneda-Theorem-forth s (c s) (φ s))
    where
@@ -185,13 +191,14 @@ module sip-with-axioms where
      γ : is-equiv (canonical-map ι' ρ' (s , a) (t , b))
      γ = equiv-closed-under-∼ _ _ e l
 
- characterization-of-＝-with-axioms : is-univalent 𝓤
-                                    → {S : 𝓤 ̇ → 𝓥 ̇ }
-                                      (σ : SNS S 𝓣)
-                                      (axioms : (X : 𝓤 ̇ ) → S X → 𝓦 ̇ )
-                                    → ((X : 𝓤 ̇ ) (s : S X) → is-prop (axioms X s))
-                                    → (A B : Σ X ꞉ 𝓤 ̇ , Σ s ꞉ S X , axioms X s)
-                                    → (A ＝ B) ≃ ([ A ] ≃[ σ ] [ B ])
+ characterization-of-＝-with-axioms
+  : is-univalent 𝓤
+  → {S : 𝓤 ̇ → 𝓥 ̇ }
+    (σ : SNS S 𝓣)
+    (axioms : (X : 𝓤 ̇ ) → S X → 𝓦 ̇ )
+  → ((X : 𝓤 ̇ ) (s : S X) → is-prop (axioms X s))
+  → (A B : Σ X ꞉ 𝓤 ̇ , Σ s ꞉ S X , axioms X s)
+  → (A ＝ B) ≃ ([ A ] ≃[ σ ] [ B ])
  characterization-of-＝-with-axioms ua σ axioms i =
   characterization-of-＝ ua (add-axioms axioms i σ)
 
@@ -209,7 +216,6 @@ module sip-join where
    → ((x₀ , y₀) (x₁ , y₁) : X × Y) →
    is-equiv (λ (p : (x₀ , y₀) ＝ (x₁ , y₁)) → f x₀ x₁ (ap pr₁ p) ,
                                               g y₀ y₁ (ap pr₂ p))
-
  technical-lemma {𝓤} {𝓥} {𝓦} {𝓣} {X} {A} {Y} {B} f g i j (x₀ , y₀) = γ
   where
    module _ ((x₁ , y₁) : X × Y) where
@@ -264,7 +270,8 @@ module sip-join where
       → SNS S₀ 𝓦₀
       → SNS S₁ 𝓦₁
       → SNS (λ X → S₀ X × S₁ X) (𝓦₀ ⊔ 𝓦₁)
- join {𝓤} {𝓥₀} {𝓥₁} {𝓦₀} {𝓦₁} {S₀} {S₁} (ι₀ , ρ₀ , θ₀) (ι₁ , ρ₁ , θ₁) = ι , ρ , θ
+ join {𝓤} {𝓥₀} {𝓥₁} {𝓦₀} {𝓦₁} {S₀} {S₁} (ι₀ , ρ₀ , θ₀) (ι₁ , ρ₁ , θ₁) =
+  ι , ρ , θ
   where
    S : 𝓤 ̇ → 𝓥₀ ⊔ 𝓥₁ ̇
    S X = S₀ X × S₁ X
@@ -280,7 +287,6 @@ module sip-join where
     where
      c : (p : s ＝ t) → ι₀ (X , s₀) (X , t₀) (≃-refl X)
                       × ι₁ (X , s₁) (X , t₁) (≃-refl X)
-
      c p = (canonical-map ι₀ ρ₀ s₀ t₀ (ap pr₁ p) ,
             canonical-map ι₁ ρ₁ s₁ t₁ (ap pr₂ p))
 

@@ -1,7 +1,7 @@
 Tom de Jong, 24 January 2022
 (Based on code from FreeJoinSemiLattice.lagda written 18-24 December 2020.)
 
-TODO: Comment
+TODO. Comment.
 
 \begin{code}
 
@@ -22,6 +22,7 @@ open import Fin.Type
 open import Fin.Kuratowski pt
 
 open import MLTT.List
+open import Notation.UnderlyingType
 open import OrderedTypes.JoinSemiLattices
 
 open import UF.Base
@@ -67,7 +68,7 @@ module _
 
 \end{code}
 
-We proceed by that Kuratowski finite subsets are closed under binary unions.
+We proceed to show that Kuratowski finite subsets are closed under binary unions.
 
 \begin{code}
 
@@ -157,8 +158,9 @@ module _
         {X : 𝓤 ̇ }
        where
 
- ⟨_⟩ : 𝓚 X → 𝓟 X
- ⟨_⟩ = pr₁
+ instance
+  underlying-type-of-𝓚 : Underlying-Type (𝓚 X) (𝓟 X)
+  ⟨_⟩ {{underlying-type-of-𝓚}} (A , _) = A
 
  ⟨_⟩₂ : (A : 𝓚 X) → is-Kuratowski-finite-subset ⟨ A ⟩
  ⟨_⟩₂ = pr₂

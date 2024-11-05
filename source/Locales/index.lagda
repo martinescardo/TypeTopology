@@ -8,6 +8,14 @@ module Locales.index where
 
 \end{code}
 
+There is a separate index file for the thesis:
+
+\begin{code}
+
+import Locales.ThesisIndex
+
+\end{code}
+
 \section{Basics}
 
 Basics of frames and quite a bit of order theory.
@@ -45,6 +53,24 @@ Compact opens.
 
 import Locales.Compactness.Definition
 import Locales.Compactness.Properties
+
+\end{code}
+
+\section{The discrete locale}
+
+The `DiscreteLocale` directory contains
+
+  1. Definition of the discrete locale over a set.
+  2. Construction of a directed basis for the discrete locale.
+  3. The discrete locale on the type of Booleans.
+  4. Properties of the discrete locale on the type of Booleans.
+
+\begin{code}
+
+import Locales.DiscreteLocale.Basis
+import Locales.DiscreteLocale.Definition
+import Locales.DiscreteLocale.Two
+import Locales.DiscreteLocale.Two-Properties
 
 \end{code}
 
@@ -153,11 +179,6 @@ import Locales.Point.Properties                  -- (37)
 import Locales.Point.SpectralPoint-Definition
 
 import Locales.TerminalLocale.Properties
-
-import Locales.DiscreteLocale.Definition
-
-import Locales.DiscreteLocale.Two
-import Locales.DiscreteLocale.Two-Properties
 
 import Locales.SIP.FrameSIP
 import Locales.SIP.DistributiveLatticeSIP

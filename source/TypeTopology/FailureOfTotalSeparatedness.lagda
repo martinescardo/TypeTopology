@@ -41,21 +41,21 @@ module TypeTopology.FailureOfTotalSeparatedness (fe₀ : funext₀) where
 
 open import MLTT.Spartan
 
-open import MLTT.Two-Properties
 open import CoNaturals.Type
+open import MLTT.Two-Properties
+open import Notation.CanonicalMap
 open import Taboos.BasicDiscontinuity fe₀
 open import Taboos.WLPO
 open import UF.Base
-open import Notation.CanonicalMap
 
 \end{code}
 
 The idea of the following construction is to replace ∞ in ℕ∞ by two
 copies ∞₀ and ∞₁, which are different but not distinguishable by maps
-into 𝟚, unless WLPO holds. (We can use the Cantor space (ℕ→𝟚) or the
-Baire space (ℕ→ℕ), or many other types instead of ℕ∞, with ∞ replaced
+into 𝟚, unless WLPO holds. (We can use the Cantor type (ℕ → 𝟚) or the
+Baire type (ℕ → ℕ), or many other types instead of ℕ∞, with ∞ replaced
 by any fixed element. But I think the proposed construction gives a
-more transparent and conceptual argument.)
+more transparent and conceptual argument. See more below.)
 
 \begin{code}
 
@@ -74,7 +74,7 @@ The elements ∞₀ and ∞₁ look different:
 
 \begin{code}
 
-naive : (pr₂ ∞₀ refl ＝ ₀)  ×  (pr₂ ∞₁ refl ＝ ₁)
+naive : (pr₂ ∞₀ refl ＝ ₀) × (pr₂ ∞₁ refl ＝ ₁)
 naive = refl , refl
 
 \end{code}
@@ -87,7 +87,7 @@ not to refl. In fact, the definition
    p : ℕ∞₂ → 𝟚
    p x = pr₂ x refl
 
-doesn't type check (Agda says: " (pr₁ (pr₁ x) x) != ₁ of type 𝟚 when
+doesn't type check (Agda says: "(pr₁ (pr₁ x) x) != ₁ of type 𝟚 when
 checking that the expression refl has type pr₁ x ＝ ∞"), and hence we
 haven't distinguished ∞₀ and ∞₁ by applying the same function to
 them. This is clearly seen when enough implicit arguments are made
@@ -173,14 +173,18 @@ open import TypeTopology.TotallySeparated
 
 We can generalize this as follows, without using ℕ∞.
 
-From an arbitrary given type X and distinguished element a : X, we
-construct a new type Y, which will fail to be totally separated unless
-the point a is weakly isolated. The idea is to "explode" the point a
-into two different copies, which cannot be distinguished unless point
-a is weakly isolated, and keep all the other original points
-unchanged.
+From an arbitrary type X and distinguished element a : X, we construct
+a new type Y, which will fail to be totally separated unless the point
+a is weakly isolated. The idea is to "explode" the point a into two
+different copies, which cannot be distinguished unless the point a is
+weakly isolated, and keep all the other original points unchanged.
+
+Recall that the notion of weakly isolated point is defined as follows.
 
 \begin{code}
+
+_ : {X : 𝓤 ̇ } (x : X) → is-weakly-isolated x ＝ ∀ x' → is-decidable (x' ≠ x)
+_ = λ x → refl
 
 module general-example
         (fe : FunExt)
@@ -249,10 +253,7 @@ extensionality. (Cf. the module DiscreteAndSeparated.)
 
 \begin{code}
 
- weakly-isolated : {X : 𝓤 ̇ } (x : X) → 𝓤 ̇
- weakly-isolated x = ∀ x' → is-decidable (x' ≠ x)
-
- Theorem : (Σ g ꞉ (Y → 𝟚), g a₀ ≠ g a₁) → weakly-isolated a
+ Theorem : (Σ g ꞉ (Y → 𝟚), g a₀ ≠ g a₁) → is-weakly-isolated a
  Theorem (g , d) x = 𝟚-equality-cases' (claim₀' x) (claim₁' x)
   where
    f : X → 𝟚
@@ -275,5 +276,103 @@ extensionality. (Cf. the module DiscreteAndSeparated.)
     where
      fact : f x ＝ ₀
      fact = claim₁ x φ
+
+ Theorem' : ¬ is-weakly-isolated a → (g : Y → 𝟚) → g a₀ ＝ g a₁
+ Theorem' nw g = 𝟚-is-¬¬-separated
+                  (g a₀)
+                  (g a₁)
+                  (contrapositive
+                    (λ (d : g a₀ ≠ g a₁) → Theorem (g , d))
+                    nw)
+
+\end{code}
+
+Added 10th October 2024.
+
+Examples. As discussed in the module DecidabilityOfNonContinuity, we
+have that ¬ WPO is a weak continuity principle. Using this, we get
+explicit examples of non weakly isolated points. Notice that, because
+excluded middle is consistent, it is consistent that every point of
+every set is (weakly) isolated. So we can't give any example of a
+non-isolated point or weakly-non-isolated of a set without assuming an
+anticlassical principle such as ¬ WLPO.
+
+\begin{code}
+
+open import UF.Equiv
+
+∞-is-weakly-isolated-gives-WLPO : is-weakly-isolated ∞ → WLPO
+∞-is-weakly-isolated-gives-WLPO w u =
+ Cases (w u)
+  (λ (a : u ≠ ∞) → inr a)
+  (λ (b : ¬ (u ≠ ∞)) → inl (ℕ∞-is-¬¬-separated fe₀ u ∞ b))
+
+open import TypeTopology.Cantor
+
+weakly-isolated-point-of-Cantor-gives-WLPO : (α : Cantor)
+                                           → is-weakly-isolated α
+                                           → WLPO
+weakly-isolated-point-of-Cantor-gives-WLPO = III
+ where
+  I : is-weakly-isolated 𝟏 → WLPO-traditional
+  I i α = Cases (i α)
+           (λ (d : α ≠ 𝟏)
+                 → inr (λ (a : (n : ℕ) → α n ＝ ₁) → d (dfunext fe₀ a)))
+           (λ (e : ¬ (α ≠ 𝟏))
+                 → inl (λ n → happly (Cantor-is-¬¬-separated fe₀ α 𝟏 e) n))
+
+  II : (α : Cantor) → is-weakly-isolated α → WLPO-traditional
+  II α i = I b
+   where
+    a : is-weakly-isolated (⌜ Cantor-swap-≃ fe₀ α 𝟏 ⌝ α)
+    a = equivs-preserve-weak-isolatedness (Cantor-swap-≃ fe₀ α 𝟏) α i
+
+    b : is-weakly-isolated 𝟏
+    b = transport is-weakly-isolated (Cantor-swap-swaps fe₀ α 𝟏) a
+
+  III : (α : Cantor) → is-weakly-isolated α → WLPO
+  III α i = WLPO-traditional-gives-WLPO fe₀ (II α i)
+
+module examples-of-non-weakly-isolated-points (nwlpo : ¬ WLPO) where
+
+ ∞-is-not-weakly-isolated : ¬ is-weakly-isolated ∞
+ ∞-is-not-weakly-isolated =
+  contrapositive ∞-is-weakly-isolated-gives-WLPO nwlpo
+
+ ∞-is-not-isolated : ¬ is-isolated ∞
+ ∞-is-not-isolated =
+  contrapositive
+   (isolated-gives-weakly-isolated ∞)
+   ∞-is-not-weakly-isolated
+
+ Cantor-has-no-weakly-isolated-points : (α : Cantor) → ¬ is-weakly-isolated α
+ Cantor-has-no-weakly-isolated-points α =
+  contrapositive (weakly-isolated-point-of-Cantor-gives-WLPO α) nwlpo
+
+ Cantor-has-no-isolated-points : (α : Cantor) → ¬ is-isolated α
+ Cantor-has-no-isolated-points α =
+  contrapositive
+   (isolated-gives-weakly-isolated α)
+   (Cantor-has-no-weakly-isolated-points α)
+
+ Cantor-is-perfect : is-perfect Cantor
+ Cantor-is-perfect (α , i) = Cantor-has-no-isolated-points α i
+
+\end{code}
+
+Using the terminology of the module imported below, the above amount
+to the following.
+
+\begin{code}
+
+open import TypeTopology.LimitPoints
+
+∞-is-a-limit-point⁺-of-ℕ∞ : is-limit-point⁺ ∞
+∞-is-a-limit-point⁺-of-ℕ∞ = ∞-is-weakly-isolated-gives-WLPO
+
+every-point-of-the-Cantor-type-is-a-limit-point⁺
+ : (α : Cantor) → is-limit-point⁺ α
+every-point-of-the-Cantor-type-is-a-limit-point⁺ =
+ weakly-isolated-point-of-Cantor-gives-WLPO
 
 \end{code}

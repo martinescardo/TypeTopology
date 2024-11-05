@@ -42,7 +42,7 @@ open import UF.DiscreteAndSeparated
 open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.ImageAndSurjection pt
-open import UF.Powerset-Fin pt hiding (⟨_⟩)
+open import UF.Powerset-Fin pt
 open import UF.Powerset-MultiUniverse renaming (𝓟 to 𝓟-general)
 open import UF.Powerset
 open import UF.Sets

@@ -13,7 +13,8 @@ retract-variance : ∀ {𝓣} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {X' : 𝓦 ̇ } {Y' 
                  → retract X of X'
                  → retract Y' of Y
                  → retract (X → Y') of (X' → Y)
-retract-variance {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} {X'} {Y'} fe (rx , sx , rsx) (ry , sy , rsy) = γ
+retract-variance
+ {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} {X'} {Y'} fe (rx , sx , rsx) (ry , sy , rsy) = γ
  where
   r : (X' → Y) → X → Y'
   r f x = ry (f (sx x))
@@ -63,10 +64,3 @@ retracts-of-closed-under-exponentials {𝓤} {𝓥} {𝓦} {X} {Y} {B} fe x rbx 
   ii = retracts-compose i (codomain-is-retract-of-function-space-with-pointed-domain (pr₁ rbx x))
 
 \end{code}
-
-TODO. Several retractions here are actually equivalences. So some code
-should be generalized and moved to an equivalences module. Similarly,
-some retracts proved here are also shown as equivalences in other
-modules, and hence there is some amount of repetition that should be
-removed. This is the result of (1) merging initially independent
-developments, and (2) work over many years with uncontrolled growth.

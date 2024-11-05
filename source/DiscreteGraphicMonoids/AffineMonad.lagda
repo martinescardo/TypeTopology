@@ -65,6 +65,15 @@ module _ {X : 𝓤 ̇ }
  to-List⁻⁺-＝ : {𝑥𝑠 𝑦𝑠 : List⁻⁺ X} → ι 𝑥𝑠 ＝ ι 𝑦𝑠 → 𝑥𝑠 ＝ 𝑦𝑠
  to-List⁻⁺-＝ = to-subtype-＝ (being-non-empty-is-prop ∘ ι)
 
+ List⁻⁺-is-discrete : is-discrete (List⁻⁺ X)
+ List⁻⁺-is-discrete (𝔁𝓼 , _) (𝔂𝓼 , _) with List⁻-is-discrete 𝔁𝓼 𝔂𝓼
+ ... | inl e = inl (to-List⁻⁺-＝ e)
+ ... | inr u = inr (λ (e : (𝔁𝓼 , _) ＝ (𝔂𝓼 , _)) → u (ap ι e))
+
+ instance
+  List⁻⁺-is-discrete' : is-discrete' (List⁻⁺ X)
+  List⁻⁺-is-discrete' = discrete-gives-discrete' List⁻⁺-is-discrete
+
 module _ {X : 𝓤 ̇ }
          {{X-is-discrete' : is-discrete' X}}
          {Y : 𝓥 ̇ }

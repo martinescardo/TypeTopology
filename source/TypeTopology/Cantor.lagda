@@ -10,7 +10,7 @@ open import Apartness.Definition
 open import MLTT.Spartan
 open import MLTT.Two-Properties
 open import Naturals.Order
-open import Naturals.RootsTruncation
+open import Naturals.ExitTruncation
 open import Notation.Order
 open import NotionsOfDecidability.Decidable
 open import UF.DiscreteAndSeparated hiding (_♯_)
@@ -306,7 +306,7 @@ The Cantor type is homogeneous.
 
 \begin{code}
 
-module _ (fe : Fun-Ext) (α β : Cantor) where
+module _ (fe : funext₀) (α β : Cantor) where
 
  Cantor-swap : Cantor → Cantor
  Cantor-swap γ i = (β i ⊕ α i) ⊕ γ i
@@ -335,7 +335,7 @@ module _ (fe : Fun-Ext) (α β : Cantor) where
  Cantor-swap-≃ = Cantor-swap ,
                  involutions-are-equivs Cantor-swap Cantor-swap-involutive
 
-Cantor-homogeneous : Fun-Ext
+Cantor-homogeneous : funext₀
                    → (α β : Cantor)
                    → Σ f ꞉ Cantor ≃ Cantor , (⌜ f ⌝ α ＝ β)
 Cantor-homogeneous fe α β = Cantor-swap-≃ fe α β , Cantor-swap-swaps fe α β

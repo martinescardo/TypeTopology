@@ -117,7 +117,7 @@ We work with hypothetical T and T-refl with the following types.
 
 \begin{code}
 
- module _ (T      : {X Y : 𝓤 ̇ } → (X ≃ Y) → S X → S Y)
+ module _ (T      : {X Y : 𝓤 ̇ } → X ≃ Y → S X → S Y)
           (T-refl : {X : 𝓤 ̇ } → T (≃-refl X) ∼ id)
         where
 

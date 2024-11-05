@@ -29,7 +29,7 @@ open import UF.EquivalenceExamples
 open import UF.Subsingletons
 
 Nothing-is-h-isolated : {A : 𝓤 ̇ } (x : Maybe A) → is-prop (Nothing ＝ x)
-Nothing-is-h-isolated x = isolated-is-h-isolated Nothing Nothing-is-isolated
+Nothing-is-h-isolated x = isolated-points-are-h-isolated Nothing Nothing-is-isolated
 
 Nothing-is-h-isolated' : {A : 𝓤 ̇ } (x : Maybe A) → is-prop (x ＝ Nothing)
 Nothing-is-h-isolated' x = equiv-to-prop ＝-flip (Nothing-is-h-isolated x)

@@ -1,3 +1,3 @@
 name: TypeTopology
 include: source
-flags: --without-K  --level-universe --auto-inline --exact-split --keep-pattern-variables --no-sized-types --no-guardedness --no-rewriting --no-two-level --no-erasure  --no-prop --no-cumulativity --no-cohesion --no-print-pattern-synonyms --no-save-metas
+flags: --without-K --auto-inline --exact-split --keep-pattern-variables --no-sized-types --no-guardedness --no-rewriting --no-two-level --no-erasure  --no-prop --no-cumulativity --no-cohesion --no-print-pattern-synonyms --no-save-metas --level-universe

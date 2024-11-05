@@ -1,9 +1,9 @@
---------------------------------------------------------------------------------
+---
 title:          The discrete locale
 author:         Ayberk Tosun
 date-started:   2024-03-04
 date-completed: 2024-03-04
---------------------------------------------------------------------------------
+---
 
 We define the discrete locale (i.e. the frame of opens of the discrete topology)
 over a set `X`.

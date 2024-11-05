@@ -35,8 +35,6 @@ record set-truncations-exist : 𝓤ω where
    → (x : X)
    → set-trunc-ind Y Y-set h (set-trunc-in x) ＝ h x
 
-
-
  set-trunc-rec
   : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } (Y : 𝓥 ̇ )
   → is-set Y
