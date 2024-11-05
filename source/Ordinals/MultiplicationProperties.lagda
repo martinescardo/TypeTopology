@@ -1,7 +1,7 @@
 Fredrik Nordvall Forsberg, 13 November 2023.
 In collaboration with Tom de Jong, Nicolai Kraus and Chuangjie Xu.
 
-Minor updates 9 and 11 September 2024.
+Minor updates 9 and 11 September, and 1 November 2024.
 
 We prove several properties of ordinal multiplication, including that it
 preserves suprema of ordinals and that it enjoys a left-cancellation property.
@@ -851,4 +851,75 @@ is not true for certain objects X and Y in the topos.
      IV  : (c : ⟨ γ ⟩) → (γ ↓ c) ⊲ β
      IV  c = let (b , eq) = I γ β (e ⁻¹) c in (b , (IH b (γ ↓ c) (eq ⁻¹) ⁻¹))
 -}
+\end{code}
+
+Using similar techniques, we can also prove that multiplication is
+left cancellable with respect to ⊲.
+
+\begin{code}
+
+simulation-product-decomposition-leftover-empty
+ : (α β γ : Ordinal 𝓤)
+ → 𝟘ₒ ⊲ α
+ → (a : ⟨ α ⟩)
+ → (α ×ₒ β) ＝ ((α ×ₒ γ) +ₒ (α ↓ a))
+ → (α ×ₒ β) ＝ (α ×ₒ γ)
+simulation-product-decomposition-leftover-empty α β γ (a₀ , p) a e = eq
+ where
+  a-least : (x : ⟨ α ⟩) → ¬ (x ≺⟨ α ⟩ a)
+  a-least x l = +disjoint (inr-is-inl ⁻¹)
+   where
+    𝕗 : (α ×ₒ β) ⊴ ((α ×ₒ γ) +ₒ (α ↓ a))
+    𝕗 = ≃ₒ-to-⊴ _ _ (idtoeqₒ _ _ e)
+    f = pr₁ 𝕗
+
+    𝕗⁻¹ : ((α ×ₒ γ) +ₒ (α ↓ a)) ⊴ (α ×ₒ β)
+    𝕗⁻¹ = ≃ₒ-to-⊴ _ _ (idtoeqₒ _ _ (e ⁻¹))
+    f⁻¹ = pr₁ 𝕗⁻¹
+
+    f-decomposition : Σ g ꞉ (⟨ β ⟩ → ⟨ γ ⟩) ,
+                        ((a : ⟨ α ⟩)(b : ⟨ β ⟩) → f (a , b) ＝ inl (a , g b) )
+    f-decomposition =
+      simulation-product-decomposition-generalised α β γ (a₀ , p) a 𝕗
+    g = pr₁ f-decomposition
+
+    inr-is-inl = (inr (x , l)) ＝⟨ equiv _ _ e (inr (x , l)) ⟩
+                 f (f⁻¹ (inr (x , l))) ＝⟨ pr₂ f-decomposition _ _ ⟩
+                 inl (pr₁ (f⁻¹ (inr (x , l))) , g (pr₂ (f⁻¹ (inr (x , l))))) ∎
+     where
+      equiv : (α β : Ordinal 𝓤) → (eq : α ＝ β) (x : ⟨ β ⟩)
+            → x ＝ [ α , β ]⟨ ≃ₒ-to-⊴ α β (idtoeqₒ α β eq) ⟩
+                     ([ β , α ]⟨ ≃ₒ-to-⊴ β α (idtoeqₒ β α (eq ⁻¹)) ⟩ x)
+      equiv α β refl x = refl
+
+
+  a-is-a₀ : a ＝ a₀
+  a-is-a₀ = Extensionality α a a₀ (λ x l → 𝟘-elim (a-least x l))
+                                  (λ x l → 𝟘-elim (transport⁻¹ ⟨_⟩ p (x , l)))
+
+  leftover-empty =
+       (α ↓ a) ＝⟨ ap (α ↓_) a-is-a₀ ⟩
+       (α ↓ a₀) ＝⟨ p ⁻¹ ⟩
+       𝟘ₒ ∎
+
+  eq = (α ×ₒ β) ＝⟨ e ⟩
+       (α ×ₒ γ) +ₒ (α ↓ a) ＝⟨ ap ((α ×ₒ γ) +ₒ_) leftover-empty ⟩
+       (α ×ₒ γ) +ₒ 𝟘ₒ ＝⟨ 𝟘ₒ-right-neutral (α ×ₒ γ) ⟩
+       (α ×ₒ γ) ∎
+
+×ₒ-left-cancellable-⊲ : (α β γ : Ordinal 𝓤)
+                      → 𝟘ₒ ⊲ α
+                      → (α ×ₒ β) ⊲ (α ×ₒ γ)
+                      → β ⊲ γ
+×ₒ-left-cancellable-⊲ α β γ α-positive ((a , c) , p) = c , III
+ where
+  I : (α ×ₒ β) ＝ (α ×ₒ (γ ↓ c)) +ₒ (α ↓ a)
+  I = p ∙ ×ₒ-↓ α γ
+
+  II : (α ×ₒ β) ＝ (α ×ₒ (γ ↓ c))
+  II = simulation-product-decomposition-leftover-empty α β (γ ↓ c) α-positive a I
+
+  III : β ＝ (γ ↓ c)
+  III = ×ₒ-left-cancellable α β (γ ↓ c) α-positive II
+
 \end{code}
