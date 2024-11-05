@@ -491,6 +491,81 @@ exp-strictly-monotone : (α β γ : Ordinal 𝓤)
                       → 𝟙ₒ ⊲ α → β ⊲ γ → exp α β ⊲ exp α γ
 exp-strictly-monotone {𝓤} α β γ h (c , refl) = exp-⊲-lemma α γ h
 
+-- This attempt got stuck and likely implies a constructive taboo...
+{-
+induced-⊴-on-×ₒ : (α β γ δ : Ordinal 𝓤)
+                → α ⊴ γ → β ⊴ δ
+                → (α ×ₒ β) ⊴ (γ ×ₒ δ)
+induced-⊴-on-×ₒ α β γ δ (f , f-sim) (g , g-sim) = h , h-init-seg , h-order-pres
+ where
+  h : ⟨ α ×ₒ β ⟩ → ⟨ γ ×ₒ δ ⟩
+  h (a , b) = f a , g b
+  h-init-seg : is-initial-segment (α ×ₒ β) (γ ×ₒ δ) h
+  h-init-seg (a , b) (c , d) (inl l) = (a , pr₁ I) , inl (pr₁ (pr₂ I)) , {!!}
+   where
+    I : Σ b' ꞉ ⟨ β ⟩ , b' ≺⟨ β ⟩ b × (g b' ＝ d)
+    I = simulations-are-initial-segments β δ g g-sim b d l
+  h-init-seg (a , b) (c , d) (inr (refl , k)) = {!!}
+  h-order-pres : is-order-preserving (α ×ₒ β) (γ ×ₒ δ) h
+  h-order-pres (a , b) (a' , b') (inl l) =
+   inl (simulations-are-order-preserving β δ g g-sim b b' l)
+  h-order-pres (a , b) (a' , b') (inr (refl , k)) =
+   inr (refl , (simulations-are-order-preserving α γ f f-sim a a' k))
+
+induced-⊴-on-×ₒ : (α β γ δ : Ordinal 𝓤)
+                → α ⊴ γ → β ⊲ δ
+                → (α ×ₒ β) ⊴ (γ ×ₒ δ)
+induced-⊴-on-×ₒ α β γ δ (f , f-sim) (d₀ , refl) = h , h-init-seg , h-order-pres
+ where
+  h : ⟨ α ×ₒ β ⟩ → ⟨ γ ×ₒ δ ⟩
+  h (a , (d , _)) = f a , d
+  h-init-seg : is-initial-segment (α ×ₒ β) (γ ×ₒ δ) h
+  h-init-seg (a , b) (c , d) (inl l) = (a , {!!}) , {!!}
+  {- (a , pr₁ I) , inl (pr₁ (pr₂ I)) , {!!}
+   where
+    I : Σ b' ꞉ ⟨ β ⟩ , b' ≺⟨ β ⟩ b × (g b' ＝ d)
+    I = simulations-are-initial-segments β δ g g-sim b d l -}
+  h-init-seg (a , b) (c , d) (inr (refl , k)) = {!!} , {!!} , {!!}
+  h-order-pres : is-order-preserving (α ×ₒ β) (γ ×ₒ δ) h
+  h-order-pres (a , b) (a' , b') (inl l) =
+   {!!}
+   -- inl (simulations-are-order-preserving β δ g g-sim b b' l)
+  h-order-pres (a , b) (a' , b') (inr (refl , k)) =
+   inr (refl , (simulations-are-order-preserving α γ f f-sim a a' k))
+
+exp-monotone-in-base⁺ : (α β : Ordinal 𝓤)
+                      → α ⊴ β
+                      → (γ : Ordinal 𝓤) → (exp α γ ⊴ exp β γ)
+                                        × ((exp α γ ×ₒ α) ⊴ (exp β γ ×ₒ β))
+exp-monotone-in-base⁺ {𝓤} α β f = transfinite-induction-on-OO _ I
+ where
+  I : (γ : Ordinal 𝓤)
+         → ((c : ⟨ γ ⟩) → (exp α (γ ↓ c) ⊴ exp β (γ ↓ c))
+                        × ((exp α (γ ↓ c) ×ₒ α) ⊴ (exp β (γ ↓ c) ×ₒ β)))
+    → (exp α γ ⊴ exp β γ) × ((exp α γ ×ₒ α) ⊴ (exp β γ ×ₒ β))
+  I γ IH = II , III
+   where
+    II : exp α γ ⊴ exp β γ
+    II = transport₂⁻¹ _⊴_ (exp-behaviour α γ) (exp-behaviour β γ)
+          (sup-monotone
+            (cases (λ _ → 𝟙ₒ) (λ c → exp α (γ ↓ c) ×ₒ α))
+            (cases (λ _ → 𝟙ₒ) (λ c → exp β (γ ↓ c) ×ₒ β))
+            κ)
+     where
+      κ : (i : 𝟙 + ⟨ γ ⟩)
+        → cases (λ _ → 𝟙ₒ) (λ c → exp α (γ ↓ c) ×ₒ α) i
+        ⊴ cases (λ _ → 𝟙ₒ) (λ c → exp β (γ ↓ c) ×ₒ β) i
+      κ (inl ⋆) = ⊴-refl 𝟙ₒ
+      κ (inr c) = pr₂ (IH c)
+
+    III : (exp α γ ×ₒ α) ⊴ (exp β γ ×ₒ β)
+    III = {!!} -- induced-⊴-on-×ₒ (exp α γ) α (exp β γ) β II f
+
+exp-monotone-in-base : (α β γ : Ordinal 𝓤)
+                     → α ⊴ β → (exp α γ ⊴ exp β γ)
+exp-monotone-in-base α β γ f = pr₁ (exp-monotone-in-base⁺ α β f γ)
+-}
+
 {-
 exp-simulation-lemma : (α β γ : Ordinal 𝓤)
                        (f : ⟨ exp α β ⟩ → ⟨ exp α γ ⟩)
