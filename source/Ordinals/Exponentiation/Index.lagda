@@ -11,6 +11,6 @@ module Ordinals.Exponentiation.Index where
 import Ordinals.Exponentiation.DecreasingList
 import Ordinals.Exponentiation.More
 import Ordinals.Exponentiation.Alternative
-import Ordinals.Specification
+import Ordinals.Exponentiation.Specification
 
 \end{code}
