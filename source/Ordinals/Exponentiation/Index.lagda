@@ -8,8 +8,9 @@ Tom de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg, Chuangjie Xu,
 
 module Ordinals.Exponentiation.Index where
 
-open import Ordinals.Exponentiation.DecreasingList
-open import Ordinals.Exponentiation.More
-open import Ordinals.Exponentiation.Alternative
+import Ordinals.Exponentiation.DecreasingList
+import Ordinals.Exponentiation.More
+import Ordinals.Exponentiation.Alternative
+import Ordinals.Specification
 
 \end{code}

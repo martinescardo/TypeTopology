@@ -57,6 +57,8 @@ open import Ordinals.OrdinalOfOrdinalsSuprema ua
 
 open import Ordinals.Exponentiation.DecreasingList ua pt sr hiding (exp-+-distributes)
 
+open import Ordinals.Exponentiation.Specification ua pt sr
+
 open PropositionalTruncation pt
 
 open suprema pt sr
@@ -122,8 +124,8 @@ exp-has-least-element {𝓤} α β = transport⁻¹ (𝟙ₒ ⊴_) (exp-behaviou
     q : 𝟙ₒ ⊴ sup (cases (λ _ → 𝟙ₒ) (λ b → exp α (β ↓ b) ×ₒ α))
     q = sup-is-upper-bound (cases (λ _ → 𝟙ₒ) (λ b → exp α (β ↓ b) ×ₒ α)) (inl ⋆)
 
-exp-satisfies-zero-specification : (α : Ordinal 𝓤) → exp α (𝟘ₒ {𝓥}) ＝ 𝟙ₒ
-exp-satisfies-zero-specification α = ⊴-antisym (exp α 𝟘ₒ) 𝟙ₒ II III
+exp-satisfies-zero-specification : (α : Ordinal 𝓤) → exp-specification-zero α (exp α)
+exp-satisfies-zero-specification {𝓥} α = ⊴-antisym (exp α (𝟘ₒ {𝓥})) 𝟙ₒ II III
   where
     I : (i : 𝟙 + 𝟘) → cases (λ _ → 𝟙ₒ) (λ b → exp α (𝟘ₒ ↓ b) ×ₒ α) i ⊴ 𝟙ₒ
     I (inl _) = ⊴-refl 𝟙ₒ
@@ -134,9 +136,9 @@ exp-satisfies-zero-specification α = ⊴-antisym (exp α 𝟘ₒ) 𝟙ₒ II II
     III : 𝟙ₒ ⊴ exp α 𝟘ₒ
     III = exp-has-least-element α 𝟘ₒ
 
-exp-satisfies-succ-specification : (α β : Ordinal 𝓤) → 𝟙ₒ {𝓤} ⊴ α
-                                 → exp α (β +ₒ 𝟙ₒ) ＝ (exp α β) ×ₒ α
-exp-satisfies-succ-specification {𝓤} α β p = transport⁻¹ (λ - → - ＝ (exp α β) ×ₒ α) (exp-behaviour α (β +ₒ 𝟙ₒ) ∙ ap sup eq')
+exp-satisfies-succ-specification : (α : Ordinal 𝓤) → 𝟙ₒ {𝓤} ⊴ α
+                                 → exp-specification-succ α (exp α)
+exp-satisfies-succ-specification {𝓤} α p β = transport⁻¹ (λ - → - ＝ (exp α β) ×ₒ α) (exp-behaviour α (β +ₒ 𝟙ₒ) ∙ ap sup eq')
                                                      (⊴-antisym _ _ (sup-is-lower-bound-of-upper-bounds F _ upper-bound) (sup-is-upper-bound F (inr (inr ⋆))))
   where
    F : 𝟙 + (⟨ β ⟩ + 𝟙) → Ordinal 𝓤
@@ -162,11 +164,10 @@ exp-satisfies-succ-specification {𝓤} α β p = transport⁻¹ (λ - → - ＝
    eq' : (cases (λ _ → 𝟙ₒ) (λ b → exp α ((β +ₒ 𝟙ₒ) ↓ b) ×ₒ α)) ＝ F
    eq' = dfunext fe' eq
 
-
 exp-power-one-is-identity : (α : Ordinal 𝓤) → 𝟙ₒ {𝓤} ⊴ α → exp α (𝟙ₒ {𝓤}) ＝ α
 exp-power-one-is-identity {𝓤} α p =
   exp α (𝟙ₒ {𝓤})      ＝⟨ ap (exp α) (𝟘ₒ-left-neutral 𝟙ₒ ⁻¹)  ⟩
-  exp α (𝟘ₒ +ₒ 𝟙ₒ)     ＝⟨ exp-satisfies-succ-specification α 𝟘ₒ p ⟩
+  exp α (𝟘ₒ +ₒ 𝟙ₒ)     ＝⟨ exp-satisfies-succ-specification α p 𝟘ₒ ⟩
   exp α (𝟘ₒ {𝓤}) ×ₒ α ＝⟨ ap (_×ₒ α) (exp-satisfies-zero-specification α) ⟩
   𝟙ₒ ×ₒ α              ＝⟨ 𝟙ₒ-left-neutral-×ₒ α ⟩
   α ∎
@@ -244,9 +245,7 @@ curiosity {𝓤} P pp = transport⁻¹ (λ - → - ＝ 𝟙ₒ +ₒ (prop-ordina
   g-is-simulation : is-simulation (𝟙ₒ +ₒ prop-ordinal P pp) (sup F) g
   g-is-simulation = g-is-initial-segment , g-is-order-preserving
 
-exp-satisfies-sup-specification : (α : Ordinal 𝓤) → 𝟙ₒ {𝓤} ⊴ α
-                                → {I : 𝓤 ̇ } → ∥ I ∥ → (F : I → Ordinal 𝓤)
-                                → exp α (sup F) ＝ sup (λ i → exp α (F i))
+exp-satisfies-sup-specification : (α : Ordinal 𝓤) → exp-specification-sup α (exp α)
 exp-satisfies-sup-specification {𝓤} α p {I} i₀ F =
   ∥∥-rec (the-type-of-ordinals-is-a-set (ua _) fe')
          (λ i₀ → transport⁻¹ (λ - → - ＝ sup (λ i → exp α (F i)))
@@ -289,7 +288,7 @@ initial-segment-of-𝟙ₒ-is-𝟘ₒ =
 
 \end{code}
 
-Added 16 September 2024 by Tom de jong.
+Added 16 September 2024 by Tom de Jong.
 
 \begin{code}
 
