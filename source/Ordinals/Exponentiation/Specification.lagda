@@ -33,7 +33,15 @@ open import Ordinals.Type
 open PropositionalTruncation pt
 open suprema pt sr
 
--- TODO: Explain in a comment what F is supposed to represent (exponentation with base α)
+\end{code}
+
+In what follows F should be thought of as implementing ordinal exponentation
+with base α, i.e. F β produces the ordinal α^β.
+
+The three requirements below, together with 𝟘ₒ^β ＝ 𝟘₀ for β ≠ 𝟘₀, classically
+*define* ordinal exponentation.
+
+\begin{code}
 
 module _
         (α : Ordinal 𝓤)
@@ -52,7 +60,22 @@ module _
 
  exp-specification-sup-generalized : (𝓤 ⊔ 𝓥) ⁺ ̇
  exp-specification-sup-generalized {𝓥} =
-   𝟙ₒ{𝓤} ⊴ α → {I : 𝓥 ̇  } (β : I → Ordinal 𝓥) → ∥ I ∥
+   𝟙ₒ{𝓤} ⊴ α → {I : 𝓥 ̇  } → ∥ I ∥ → (β : I → Ordinal 𝓥)
              → F (sup β) ＝ sup (λ (i : Lift 𝓤 I) → F (β (lower i)))
+
+ exp-specification-sup-from-generalized : exp-specification-sup-generalized {𝓤}
+                                        → exp-specification-sup
+ exp-specification-sup-from-generalized σ l {I} I-inh β = σ l I-inh β ∙ e
+  where
+   e : sup (λ i → F (β (lower i))) ＝ sup (λ i → F (β i))
+   e = ⊴-antisym _ _
+        (sup-is-lower-bound-of-upper-bounds
+          (F ∘ β ∘ lower)
+          (sup (F ∘ β))
+          (λ i → sup-is-upper-bound (F ∘ β) (lower i)))
+        (sup-is-lower-bound-of-upper-bounds
+          (F ∘ β)
+          (sup (F ∘ β ∘ lower))
+          (λ i → sup-is-upper-bound (F ∘ β ∘ lower) (lift 𝓤 i)))
 
 \end{code}
