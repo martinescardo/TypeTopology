@@ -8,15 +8,15 @@ set -euxo pipefail
 
 rm -rf html
 agda --highlight-occurrences --html AllModulesIndex.lagda
-rm -f ~/public_html/TypeTopology/*.html # do not delete Agda.css, as it is a modified version
-mv html/*.html ~/public_html/TypeTopology/
-chmod a+r ~/public_html/TypeTopology/*.html
+rm -f ~/martinescardo.github.io/TypeTopology/*.html # do not delete Agda.css, as it is a modified version
+mv html/*.html ~/martinescardo.github.io/TypeTopology/
+chmod a+r ~/martinescardo.github.io/TypeTopology/*.html
 
 # Now create copies for files that have been moved to other places
 # but are linked from published papers, blogs etc.
 # Symbolic links don't work any more, so we replace "ln -s" by "cp -a"
 
-cd ~/public_html/TypeTopology/
+cd ~/martinescardo.github.io/TypeTopology/
 
 cp -a CantorSchroederBernstein.CSB.html CantorSchroederBernstein.html
 cp -a CoNaturals.GenericConvergentSequence.html GenericConvergentSequence.html
@@ -28,24 +28,24 @@ cp -a Fin.Type.html Fin.html
 cp -a Fin.UniverseInvariance.html UF-Finiteness-Universe-Invariance.html
 cp -a Games.FiniteHistoryDependent.html FiniteHistoryDependentGames.html
 cp -a Groups.Free.html FreeGroup.html
-cp -a Groups.FreeOverLargeLocallySmallSet.html FreeGroupOfLargeLocallySmallSet.html
+cp -a Groups.Free.html FreeGroupOfLargeLocallySmallSet.html
 cp -a Locales.AdjointFunctorTheoremForFrames.html AdjointFunctorTheoremForFrames.html
 cp -a Locales.CompactRegular.html CompactRegular.html
 cp -a Locales.Frame.html Frame.html
 cp -a Locales.GaloisConnection.html GaloisConnection.html
 cp -a Locales.HeytingImplication.html HeytingImplication.html
 cp -a NotionsOfDecidability.SemiDecidable.html SemiDecidable.html
-cp -a Ordinals.ArithmeticProperties.html OrdinalArithmetic-Properties.html
+cp -a Ordinals.AdditionProperties.html OrdinalArithmetic-Properties.html
 cp -a Ordinals.BuraliForti.html BuraliForti.html
 cp -a Ordinals.Notions.html Ordinal-Notions.html
 cp -a Ordinals.OrdinalOfOrdinals.html OrdinalOfOrdinals.html
 cp -a Ordinals.WellOrderTransport.html OrdinalsWellOrderTransport.html
 cp -a Ordinals.index.html Ordinals.html
 cp -a Various.Types2019.html Types2019.html
-cp -a Slice.Slice.html Slice.html
+cp -a Slice.Construction.html Slice.html
 cp -a TypeTopology.ADecidableQuantificationOverTheNaturals.html ADecidableQuantificationOverTheNaturals.html
-cp -a TypeTopology.DiscreteAndSeparated.html DiscreteAndSeparated.html
-cp -a TypeTopology.GenericConvergentSequenceCompactness.html ConvergentSequenceCompac.html
+cp -a UF.DiscreteAndSeparated.html DiscreteAndSeparated.html
+cp -a TypeTopology.GenericConvergentSequenceCompactness.html ConvergentSequenceCompactness.html
 cp -a UF.Choice.html UF-Choice.html
 cp -a UF.Size.html UF-Size.html
 cp -a UF.UniverseEmbedding.html UniverseEmbedding.html
@@ -58,7 +58,7 @@ cp -a Various.LawvereFPT.html LawvereFPT.html
 cp -a Various.UnivalenceFromScratch.html UnivalenceFromScratch.html
 
 # From now on (12th Jan 2023), published things should go to
-# ~/public_html/TypeTopology/Published.* Use symlinks as above to
+# ~/martinescardo.github.io/TypeTopology/Published.* Use symlinks as above to
 # create them. NB. Don't use subdirectories because the links in the
 # symlinked html files may break.
 
@@ -69,14 +69,14 @@ cp -a DomainTheory.Bilimits.Dinfinity.html Published.DomainTheory.Bilimits.Dinfi
 cp -a DomainTheory.ScottModelOfPCF.ScottModelOfPCF.html Published.DomainTheory.ScottModelOfPCF.ScottModelOfPCF.html
 cp -a Lifting.IdentityViaSIP.html Published.Lifting.IdentityViaSIP.html
 cp -a NotionsOfDecidability.SemiDecidable.html Published.NotionsOfDecidability.SemiDecidable.html
-cp -a Slice.Slice.html Published.Slice.Slice.html
+cp -a Slice.Construction.html Published.Slice.Slice.html
 cp -a Ordinals.BuraliForti.html Published.Ordinals.BuraliForti.html
 cp -a Ordinals.OrdinalOfOrdinals.html Published.Ordinals.OrdinalOfOrdinals.html
 cp -a Ordinals.OrdinalOfOrdinalsSuprema.html Published.Ordinals.OrdinalOfOrdinalsSuprema.html
 cp -a Ordinals.Type.html Published.Ordinals.Type.html
 cp -a TypeTopology.CompactTypes.html Published.TypeTopology.CompactTypes.html
 cp -a TypeTopology.Density.html Published.TypeTopology.Density.html
-cp -a TypeTopology.DiscreteAndSeparated.html Published.TypeTopology.DiscreteAndSeparated.html
+cp -a UF.DiscreteAndSeparated.html Published.TypeTopology.DiscreteAndSeparated.html
 cp -a TypeTopology.SimpleTypes.html Published.TypeTopology.SimpleTypes.html
 cp -a Quotient.Large-Variation.html Published.UF.Quotient-F.html
 cp -a Quotient.index.html Published.UF.Quotient.html
