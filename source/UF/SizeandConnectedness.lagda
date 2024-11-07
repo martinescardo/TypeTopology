@@ -227,19 +227,49 @@ Theorem 2.6.
 
 \begin{code}
 
+ small-path-space-lemma : {X : 𝓤 ̇} {n : ℕ₋₂}
+                         → Join-Construction-Result {𝓤} {𝓤}
+                        → X is ι (n + 2) locally-small
+                         × ∥ X ∥[ n + 1 ] is 𝓥 small
+                        → (Σ y ꞉ ∥ X ∥[ n + 1 ] , Σ x ꞉ X , ∣ x ∣[ n + 1 ] ＝ y)
+                         is 𝓥 small
+ small-path-space-lemma {_} {X} {n} j (X-loc-small , trunc-X-small) =
+  Σ-is-small trunc-X-small fiber-path-space-small
+  where
+   trunc-ind-helper : (x' : X)
+                    → (Σ x ꞉ X , ∣ x ∣[ n + 1 ] ＝ ∣ x' ∣[ n + 1 ]) is 𝓥 small
+   trunc-ind-helper x' = Prop-2-2 j {!!} {!𝟙-is-small!} {!!}
+    where
+     f : 𝟙 {𝓤} → Σ x ꞉ X , ∣ x ∣[ n + 1 ] ＝ ∣ x' ∣[ n + 1 ]
+     f ⋆ = (x' , refl)
+     𝟙-is-small : 𝟙 {𝓤} is 𝓥 small
+     𝟙-is-small = (𝟙 {𝓥} , one-𝟙-only)
+   fiber-path-space-small : (y : ∥ X ∥[ n + 1 ])
+                          → (Σ x ꞉ X , ∣ x ∣[ n + 1 ] ＝ y) is 𝓥 small
+   fiber-path-space-small =
+    ∥∥ₙ-ind (λ - → is-trunc-from-is-prop pt
+                    (being-small-is-prop ua (Σ x ꞉ X , ∣ x ∣[ n + 1 ] ＝ -) 𝓥))
+            trunc-ind-helper
+
+ small-from-locally-and-trunc-small : {X : 𝓤 ̇} {n : ℕ₋₂}
+                                    → Join-Construction-Result {𝓤} {𝓤}
+                                    → X is ι (n + 2) locally-small
+                                     × ∥ X ∥[ n + 1 ] is 𝓥 small
+                                    → X is 𝓥 small
+ small-from-locally-and-trunc-small {_} {X} {n} j small-hyp =
+  smallness-closed-under-≃' (small-path-space-lemma j small-hyp)
+                            equiv-trunc-path-space
+
  Theorem-2-6 : {X : 𝓤 ̇} {n : ℕ₋₂}
+             → Join-Construction-Result {𝓤} {𝓤}
              → X is 𝓥 small
              ↔ X is ι (n + 2) locally-small × ∥ X ∥[ n + 1 ] is 𝓥 small 
- Theorem-2-6 {_} {X} {n} = (foreward , backward)
+ Theorem-2-6 {_} {X} {n} j = (foreward , small-from-locally-and-trunc-small j)
   where
    foreward : X is 𝓥 small
             → X is ι (n + 2) locally-small × ∥ X ∥[ n + 1 ] is 𝓥 small
    foreward X-small =
     (locally-small-from-small X-small , size-closed-under-truncation X-small)
-   backward : X is ι (n + 2) locally-small × ∥ X ∥[ n + 1 ] is 𝓥 small
-            → X is 𝓥 small
-   backward (X-loc-small , trunc-X-small) =
-    smallness-closed-under-≃' {!!} {!equiv-trunc-path-space!}
 
 \end{code}
 

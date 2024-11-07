@@ -250,6 +250,14 @@ We demonstrate the equivalence of -1-truncation and propositional truncation:
                                              −1-trunc-to-prop-trunc
                                              prop-trunc-to-−1-trunc
 
+  is-trunc-from-is-prop : {X : 𝓤 ̇} {n : ℕ₋₂}
+                        → is-prop X 
+                        → X is (n + 1) truncated
+  is-trunc-from-is-prop {_} {_} {−2} = is-prop-implies-is-prop'
+  is-trunc-from-is-prop {_} {_} {succ n} X-is-prop =
+   truncation-levels-are-upper-closed
+    (λ x x' → is-trunc-from-is-prop X-is-prop x x')
+
 \end{code}
 
 We define the canonical predecessor map and give a computation rule.
@@ -393,6 +401,57 @@ can be refactored to use closure under retracts.
       where
        I = ap b (∥∥ₙ-rec-comp ∥∥ₙ-is-truncated (λ _ → ∣ ∣ _ ∣[ n + 1 ] ∣[ n ]) x)
        II = ∥∥ₙ-rec-comp ∥∥ₙ-is-truncated canonical-pred-map (∣ x ∣[ n + 1 ])
+
+ truncated-sigma-equiv : {X : 𝓤 ̇} {P : X → 𝓦 ̇} {n : ℕ₋₂}
+                       → ∥ Σ x ꞉ X , ∥ P x ∥[ n ] ∥[ n ] ≃ ∥ Σ x ꞉ X , P x ∥[ n ]
+ truncated-sigma-equiv {_} {_} {X} {P} {n} = (f , (b , G) , (b , H))
+  where
+   f : ∥ Σ x ꞉ X , ∥ P x ∥[ n ] ∥[ n ] → ∥ Σ x ꞉ X , P x ∥[ n ]
+   f = ∥∥ₙ-rec ∥∥ₙ-is-truncated
+               (uncurry (λ x → ∥∥ₙ-rec ∥∥ₙ-is-truncated (λ p → ∣ (x , p) ∣[ n ])))
+   b : ∥ Σ x ꞉ X , P x ∥[ n ] → ∥ Σ x ꞉ X , ∥ P x ∥[ n ] ∥[ n ]
+   b = ∥∥ₙ-rec ∥∥ₙ-is-truncated (λ (x , p) → ∣ (x , ∣ p ∣[ n ] ) ∣[ n ])
+   G : f ∘ b ∼ id
+   G = ∥∥ₙ-uniqueness ∥∥ₙ-is-truncated (f ∘ b) id G'
+    where
+     G' : (z : Σ x ꞉ X , P x) → f (b ∣ z ∣[ n ]) ＝ ∣ z ∣[ n ]
+     G' (x , p) = f (b ∣ (x , p) ∣[ n ])       ＝⟨ I ⟩
+                  f ∣ (x , ∣ p ∣[ n ] ) ∣[ n ] ＝⟨ II ⟩
+                  f' (x , ∣ p ∣[ n ])          ＝⟨ III ⟩
+                  ∣ (x , p) ∣[ n ]             ∎
+      where
+       I = ap f (∥∥ₙ-rec-comp ∥∥ₙ-is-truncated
+                              (λ (x , p) → ∣ (x , ∣ p ∣[ n ] ) ∣[ n ])
+                              (x , p))
+       f' = uncurry (λ x → ∥∥ₙ-rec ∥∥ₙ-is-truncated (λ p → ∣ x , p ∣[ n ]))
+       II = ∥∥ₙ-rec-comp ∥∥ₙ-is-truncated f' (x , ∣ p ∣[ n ])
+       III = ∥∥ₙ-rec-comp ∥∥ₙ-is-truncated (λ p → ∣ (x , p) ∣[ n ]) p
+       
+   H : b ∘ f ∼ id
+   H = ∥∥ₙ-uniqueness ∥∥ₙ-is-truncated (b ∘ f) id H'
+    where
+     H'' : (x : X)
+         → (p : P x)
+         → b (f ∣ (x , ∣ p ∣[ n ]) ∣[ n ]) ＝ ∣ (x , ∣ p ∣[ n ]) ∣[ n ]
+     H'' x p = b (f ∣ (x , ∣ p ∣[ n ]) ∣[ n ]) ＝⟨ I ⟩
+               b (f' (x , ∣ p ∣[ n ]))         ＝⟨ II ⟩
+               b ∣ (x , p) ∣[ n ]              ＝⟨ III ⟩
+               ∣ (x , ∣ p ∣[ n ]) ∣[ n ]       ∎
+      where
+       f' = uncurry (λ x → ∥∥ₙ-rec ∥∥ₙ-is-truncated (λ p → ∣ x , p ∣[ n ]))
+       I = ap b (∥∥ₙ-rec-comp ∥∥ₙ-is-truncated f' (x , ∣ p ∣[ n ]))
+       II = ap b (∥∥ₙ-rec-comp ∥∥ₙ-is-truncated (λ p → ∣ x , p ∣[ n ]) p)
+       III = ∥∥ₙ-rec-comp ∥∥ₙ-is-truncated
+                          (λ (x , p) → ∣ (x , ∣ p ∣[ n ] ) ∣[ n ])
+                          (x , p)
+     H''' : (x : X)
+          → (p : ∥ P x ∥[ n ])
+          → b (f ∣ (x , p) ∣[ n ]) ＝ ∣ (x , p) ∣[ n ]
+     H''' x = ∥∥ₙ-ind (λ p → truncation-levels-closed-under-Id ∥∥ₙ-is-truncated
+                              (b (f ∣ (x , p) ∣[ n ])) ∣ (x , p) ∣[ n ])
+                      (H'' x)
+     H' : (z : Σ x ꞉ X , ∥ P x ∥[ n ]) → b (f ∣ z ∣[ n ]) ＝ ∣ z ∣[ n ]
+     H' (x , p) = H''' x p
 
 \end{code}
 

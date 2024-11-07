@@ -52,11 +52,82 @@ module connectedness-results (te : general-truncations-exist) where
  _is_connected-map : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (f : X → Y) → ℕ₋₂ → 𝓤 ⊔ 𝓥 ̇
  f is k connected-map = each-fiber-of f (λ - → - is k connected)
 
+ being-connected-is-prop : {k : ℕ₋₂} {X : 𝓤 ̇} 
+                         → is-prop (X is k connected) 
+ being-connected-is-prop = being-truncated-is-prop
+
+ being-connected-map-is-prop : {k : ℕ₋₂} {X : 𝓤 ̇} {Y : 𝓥 ̇} {f : X → Y}
+                             → is-prop (f is k connected-map)
+ being-connected-map-is-prop = Π-is-prop fe (λ y → being-connected-is-prop)
+
 \end{code}
 
 TODO: show that connectedness as defined elsewhere in the library is
 a special case of k-connectedness. Connectedness typically means set
 connectedness, by our convention it will mean 0-connectedness.
+
+We will now prove a very general result from the HoTT book the characterizes when
+a map is connected (see Lemma 7.5.7.)
+
+\begin{code}
+
+ dep-pre-comp : {X : 𝓤 ̇} {Y : 𝓥 ̇}
+              → (f : X → Y)
+              → (P : Y → 𝓦 ̇)
+              → ((y : Y) → P y)
+              → (x : X) → P (f x)
+ dep-pre-comp f P s = s ∘ f
+
+ Lemma7-5-7-i : {X : 𝓤 ̇} {Y : 𝓥 ̇} {f : X → Y} {P : Y → 𝓦 ̇} {n : ℕ₋₂} 
+              → ((y : Y) → (P y) is n truncated)
+              → f is n connected-map
+              → is-equiv (dep-pre-comp f P)
+ Lemma7-5-7-i = {!!}
+
+ Lemma7-5-7-ii : {X : 𝓤 ̇} {Y : 𝓥 ̇} {f : X → Y} {P : Y → 𝓦 ̇} {n : ℕ₋₂} 
+               → ((y : Y) → (P y) is n truncated)
+               → is-equiv (dep-pre-comp f P)
+               → has-section (dep-pre-comp f P)
+ Lemma7-5-7-ii = {!!}
+
+ Lemma7-5-7-iii : {X : 𝓤 ̇} {Y : 𝓥 ̇} {f : X → Y} {P : Y → 𝓦 ̇} {n : ℕ₋₂} 
+                → ((y : Y) → (P y) is n truncated)
+                → has-section (dep-pre-comp f P)
+                → f is n connected-map
+ Lemma7-5-7-iii = {!!}
+
+\end{code}
+
+We show that the canonical n-truncation map is n-connected (in the presence
+of univalence ?).
+
+\begin{code}
+
+ connected-if-contr : {X : 𝓤 ̇} {k : ℕ₋₂}
+                    → is-contr X
+                    → X is k connected
+ connected-if-contr {_} {X} {−2} X-is-contr = −2-trunc-is-contr
+ connected-if-contr {_} {X} {succ k} (c , C) = (∣ c ∣[ k + 1 ] , C')
+  where
+   C'' : (x : X) → ∣ c ∣[ k + 1 ] ＝ ∣ x ∣[ k + 1 ]
+   C'' x = canonical-identity-trunc-map ∣ C x ∣[ k ]
+   C' : is-central ∥ X ∥[ k + 1 ] ∣ c ∣[ k + 1 ]
+   C' = ∥∥ₙ-ind (λ v → λ p q → truncation-levels-closed-under-Id
+                 (∥∥ₙ-is-truncated ∣ c ∣[ succ k ] v) p q) C''
+
+ trunc-map-is-connected : {X : 𝓤 ̇} {n : ℕ₋₂}
+                        → ∣_∣[ n ] is n connected-map
+ trunc-map-is-connected {𝓤} {X} {n} =
+  ∥∥ₙ-ind (λ - → truncation-levels-are-upper-closed' ⋆ ∥∥ₙ-is-truncated) H
+  where
+   H : (x' : X)
+     → fiber ∣_∣[ n ] ∣ x' ∣[ n ] is n connected
+   H x' = {!!}
+    where
+     e₁ : (Σ x ꞉ X , ∣ x ∣[ n ] ＝ ∣ x' ∣[ n ]) ≃ (Σ x ꞉ X , ∥ x ＝ x' ∥[ n ])
+     e₁ = {!!}
+
+\end{code}
 
 We characterize −1-connected types as inhabited types and −1-connected maps as
 surjections.

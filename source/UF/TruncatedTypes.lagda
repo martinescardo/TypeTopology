@@ -43,14 +43,18 @@ _is_truncated : 𝓤 ̇ → ℕ₋₂ → 𝓤 ̇
 X is −2 truncated       = is-contr X
 X is (succ n) truncated = (x x' : X) → (x ＝ x') is n truncated
 
-being-truncated-is-prop : {𝓤 : Universe} {n : ℕ₋₂} {X : 𝓤 ̇ }
-                        → is-prop (X is n truncated)
-being-truncated-is-prop {𝓤} {−2}     = being-singleton-is-prop fe
-being-truncated-is-prop {𝓤} {succ n} =
- Π₂-is-prop fe (λ x x' → being-truncated-is-prop)
-
 _is_truncated-map : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (f : X → Y) → ℕ₋₂ → 𝓤 ⊔ 𝓥 ̇
 f is n truncated-map = each-fiber-of f (λ - → - is n truncated)
+
+being-truncated-is-prop : {n : ℕ₋₂} {X : 𝓤 ̇ }
+                        → is-prop (X is n truncated)
+being-truncated-is-prop {_} {−2} = being-singleton-is-prop fe
+being-truncated-is-prop {_} {succ n} =
+ Π₂-is-prop fe (λ x x' → being-truncated-is-prop)
+
+being-truncated-map-is-prop : {n : ℕ₋₂} {X : 𝓤 ̇ } {Y : 𝓥 ̇} {f : X → Y}
+                            → is-prop (f is n truncated-map)
+being-truncated-map-is-prop = Π-is-prop fe (λ y → being-truncated-is-prop)
 
 \end{code}
 
@@ -93,6 +97,27 @@ truncation-levels-are-upper-closed : {n : ℕ₋₂} {X : 𝓤 ̇ }
 truncation-levels-are-upper-closed {𝓤} {−2} = contractible-types-are-props'
 truncation-levels-are-upper-closed {𝓤} {succ n} t x x' =
  truncation-levels-are-upper-closed (t x x')
+
+truncation-levels-are-upper-closed-+ : {n : ℕ₋₂} {l : ℕ} {X : 𝓤 ̇ }
+                                    → X is n truncated
+                                    → X is n + l truncated
+truncation-levels-are-upper-closed-+ {_} {n} {zero} {X} X-n-trunc = X-n-trunc
+truncation-levels-are-upper-closed-+ {_} {n} {succ l} {X} X-n-trunc =
+ truncation-levels-are-upper-closed
+  (truncation-levels-are-upper-closed-+ X-n-trunc)
+
+truncation-levels-are-upper-closed' : {n n' : ℕ₋₂} {X : 𝓤 ̇ }
+                                    → n ≤ n'
+                                    → X is n truncated
+                                    → X is n' truncated
+truncation-levels-are-upper-closed' {_} {n} {n'} {X} o X-n-trunc =
+ transport (λ - → X is - truncated) p
+           (truncation-levels-are-upper-closed-+ X-n-trunc) 
+ where
+  m : ℕ
+  m = subtraction-ℕ₋₂-term n n' o
+  p = n + m   ＝⟨ subtraction-ℕ₋₂-identification n n' o ⟩
+      n'      ∎ 
 
 truncation-levels-closed-under-Id : {n : ℕ₋₂} {X : 𝓤 ̇ }
                                   → X is n truncated
