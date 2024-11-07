@@ -137,7 +137,7 @@ module ainjectivity-of-Lifting'
  open import UF.UA-FunExt
  open import UF.EquivalenceExamples
 
- η-is-small-map : {X : 𝓤 ̇} → (η ∶ (X → 𝓛 X)) is 𝓣 small-map
+ η-is-small-map : {X : 𝓤 ̇ } → (η ∶ (X → 𝓛 X)) is 𝓣 small-map
  η-is-small-map {𝓤} {X} l = is-defined l ,
                             ≃-sym (η-fiber-same-as-is-defined X pe fe' fe' fe' l)
 
