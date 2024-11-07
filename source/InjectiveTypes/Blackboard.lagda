@@ -1427,7 +1427,7 @@ Added 23rd January 2019:
 module ainjectivity-of-Lifting (𝓤 : Universe) where
 
  open import Lifting.Construction 𝓤 public
- open import Lifting.Algebras 𝓤
+ open import Lifting.Algebras 𝓤 public
  open import Lifting.EmbeddingViaSIP 𝓤 public
 
 \end{code}
@@ -1439,33 +1439,26 @@ free 𝓛-algebras are injective.
 \begin{code}
 
  𝓛-alg-aflabby : propext 𝓤
-               → funext 𝓤 𝓤
-               → funext 𝓤 𝓥
                → {A : 𝓥 ̇ }
                → 𝓛-alg A
                → aflabby A 𝓤
- 𝓛-alg-aflabby pe fe fe' (∐ , κ , ι) P i f = ∐ i f , γ
+ 𝓛-alg-aflabby pe (∐ , κ , ι) P i f = ∐ i f , γ
   where
    γ : (p : P) → ∐ i f ＝ f p
-   γ p = 𝓛-alg-Law₀-gives₀' pe fe fe' ∐ κ P i f p
+   γ p = 𝓛-alg-Law₀-gives₀' pe fe' fe' ∐ κ P i f p
 
  𝓛-alg-ainjective : propext 𝓤
-                  → funext 𝓤 𝓤
-                  → funext 𝓤 𝓥
                   → (A : 𝓥 ̇ )
                   → 𝓛-alg A
                   → ainjective-type A 𝓤 𝓤
- 𝓛-alg-ainjective pe fe fe' A α = aflabby-types-are-ainjective A
-                                    (𝓛-alg-aflabby pe fe fe' α)
+ 𝓛-alg-ainjective pe A α = aflabby-types-are-ainjective A
+                            (𝓛-alg-aflabby pe α)
 
  free-𝓛-algebra-ainjective : is-univalent 𝓤
-                           → funext 𝓤 (𝓤 ⁺)
-                           → (X : 𝓤 ̇ ) → ainjective-type (𝓛 X) 𝓤 𝓤
- free-𝓛-algebra-ainjective ua fe X =
+                           → (X : 𝓥 ̇ ) → ainjective-type (𝓛 X) 𝓤 𝓤
+ free-𝓛-algebra-ainjective ua X =
   𝓛-alg-ainjective
    (univalence-gives-propext ua)
-   (univalence-gives-funext ua)
-   fe
    (𝓛 X)
    (𝓛-algebra-gives-alg (free-𝓛-algebra ua X))
 
@@ -1507,7 +1500,7 @@ monad:
    b (X , r) = retract-of-ainjective
                 D
                 (𝓛 X)
-                (free-𝓛-algebra-ainjective ua fe X)
+                (free-𝓛-algebra-ainjective ua X)
                 r
 
 \end{code}
@@ -1755,7 +1748,7 @@ Added 8th Feb. Solves a problem formulated above.
 
    L-injective : ainjective-type L 𝓤 𝓤
    L-injective = equiv-to-ainjective L (𝓛 D)
-                   (free-𝓛-algebra-ainjective ua (fe 𝓤 (𝓤 ⁺)) D) (≃-sym e)
+                   (free-𝓛-algebra-ainjective ua D) (≃-sym e)
 
    γ : injective-type D 𝓤 𝓤 → ∥ ainjective-type D 𝓤 𝓤 ∥
    γ j = ∥∥-functor φ (injective-retract-of-L j)
