@@ -19,7 +19,8 @@ chmod a+r ~/martinescardo.github.io/TypeTopology/*.html
 cd ~/martinescardo.github.io/
 
 
-# Deprecated:
+# Deprecated - agda-new should not be offered as a public link any more,
+# for some years now:
 cp -a TypeTopology agda-new
 
 cd ~/martinescardo.github.io/TypeTopology/
