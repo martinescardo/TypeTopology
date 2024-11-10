@@ -18,6 +18,8 @@ chmod a+r ~/martinescardo.github.io/TypeTopology/*.html
 
 cd ~/martinescardo.github.io/
 
+
+# Deprecated:
 cp -a TypeTopology agda-new
 
 cd ~/martinescardo.github.io/TypeTopology/
