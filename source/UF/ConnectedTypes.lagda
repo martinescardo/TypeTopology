@@ -18,6 +18,7 @@ module UF.ConnectedTypes
                           
 open import MLTT.Spartan hiding (_+_)
 open import Notation.Order
+open import UF.Base
 open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.PropTrunc
@@ -66,6 +67,68 @@ TODO: show that connectedness as defined elsewhere in the library is
 a special case of k-connectedness. Connectedness typically means set
 connectedness, by our convention it will mean 0-connectedness.
 
+We directly prove a characterization of connectedness from the HoTT book
+(see Corollary 7.5.9.)
+
+\begin{code}
+
+ consts : {X : 𝓤 ̇} {Y : 𝓥 ̇}
+        → Y → (X → Y)
+ consts y x = y
+
+ maps-from-conn-to-trunc-const : {X : 𝓤 ̇} {Y : 𝓥 ̇} {n : ℕ₋₂}
+                               → X is n connected
+                               → Y is n truncated
+                               → Y ≃ (X → Y)
+ maps-from-conn-to-trunc-const {𝓤} {_} {X} {Y} {n} X-conn Y-trunc = e
+  where
+   e : Y ≃ (X → Y)
+   e = Y                ≃⟨ 𝟙→ fe ⟩
+       (𝟙 {𝓤} → Y)      ≃⟨ →cong'' fe fe I ⟩
+       (∥ X ∥[ n ] → Y) ≃⟨ ∥∥ₙ-universal-property Y-trunc ⟩
+       (X → Y)          ■
+    where
+     I : 𝟙 {𝓤} ≃ ∥ X ∥[ n ]
+     I = singleton-≃-𝟙' X-conn
+   observation : consts ＝ ⌜ e ⌝
+   observation = refl
+
+ Cor-7-5-9i : {X : 𝓤 ̇} {n : ℕ₋₂}
+            → X is n connected
+            → (Y : 𝓥 ̇)
+            → Y is n truncated
+            → is-equiv consts
+ Cor-7-5-9i X-conn Y Y-trunc =
+  ⌜⌝-is-equiv (maps-from-conn-to-trunc-const X-conn Y-trunc)
+
+ Cor-7-5-9ii : {X : 𝓤 ̇} {n : ℕ₋₂}
+             → ({𝓥 : Universe} (Y : 𝓥 ̇)
+               → Y is n truncated
+               → is-equiv {𝓥} {𝓤 ⊔ 𝓥} {Y} {X → Y} consts)
+             → X is n connected
+ Cor-7-5-9ii {𝓤} {X} {n} is-equiv-from-trunc = (c , G)
+  where
+   s : (X → ∥ X ∥[ n ]) → ∥ X ∥[ n ]
+   s = section-of consts (equivs-have-sections consts
+        (is-equiv-from-trunc ∥ X ∥[ n ] ∥∥ₙ-is-truncated))
+   H : consts ∘ s ∼ id
+   H = section-equation consts (equivs-have-sections consts
+        (is-equiv-from-trunc ∥ X ∥[ n ] ∥∥ₙ-is-truncated))
+   c : ∥ X ∥[ n ]
+   c = s ∣_∣[ n ]
+   H' : consts c ＝ ∣_∣[ n ]
+   H' = H ∣_∣[ n ]
+   G : (v : ∥ X ∥[ n ]) → c ＝ v
+   G = ∥∥ₙ-ind (λ - → truncation-levels-are-upper-closed ∥∥ₙ-is-truncated c -)
+               (λ x → happly H' x)
+
+ Cor-7-5-9 : {X : 𝓤 ̇} {n : ℕ₋₂}
+           → X is n connected
+           ↔ ((Y : 𝓥 ̇) → Y is n truncated → is-equiv consts)
+ Cor-7-5-9 {_} {_} {X} {n} = ({!!} , {!!})
+
+\end{code}
+
 We will now prove a very general result from the HoTT book the characterizes when
 a map is connected (see Lemma 7.5.7.)
 
@@ -82,13 +145,27 @@ a map is connected (see Lemma 7.5.7.)
               → ((y : Y) → (P y) is n truncated)
               → f is n connected-map
               → is-equiv (dep-pre-comp f P)
- Lemma7-5-7-i = {!!}
+ Lemma7-5-7-i {_} {_} {_} {X} {Y} {f} {P} {n} P-trunc f-conn =
+  ((inv , G) , (inv , H))
+  where
+   inv : ((x : X) → P (f x))
+       → (y : Y) → P y
+   inv g y = h c
+    where
+     c : ∥ fiber f y ∥[ n ]
+     c = center (f-conn y)
+     h : ∥ fiber f y ∥[ n ] → P y
+     h = ∥∥ₙ-rec (P-trunc y) (λ (x , p) → transport P p (g x))
+   H : inv ∘ (dep-pre-comp f P) ∼ id
+   H = {!!}
+   G : (dep-pre-comp f P) ∘ inv ∼ id
+   G = {!!}
 
- Lemma7-5-7-ii : {X : 𝓤 ̇} {Y : 𝓥 ̇} {f : X → Y} {P : Y → 𝓦 ̇} {n : ℕ₋₂} 
-               → ((y : Y) → (P y) is n truncated)
+ Lemma7-5-7-ii : {X : 𝓤 ̇} {Y : 𝓥 ̇} {f : X → Y} {P : Y → 𝓦 ̇} 
                → is-equiv (dep-pre-comp f P)
                → has-section (dep-pre-comp f P)
- Lemma7-5-7-ii = {!!}
+ Lemma7-5-7-ii {_} {_} {_} {_} {_} {f} {P} =
+  equivs-have-sections (dep-pre-comp f P)
 
  Lemma7-5-7-iii : {X : 𝓤 ̇} {Y : 𝓥 ̇} {f : X → Y} {P : Y → 𝓦 ̇} {n : ℕ₋₂} 
                 → ((y : Y) → (P y) is n truncated)

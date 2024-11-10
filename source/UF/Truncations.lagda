@@ -82,6 +82,27 @@ computation rules.
  ∥∥ₙ-uniqueness m f g =
   ∥∥ₙ-ind (λ s → truncation-levels-closed-under-Id m (f s) (g s))
 
+ ∥∥ₙ-universal-property : {X : 𝓤 ̇} {Y : 𝓥 ̇} {n : ℕ₋₂}
+                        → Y is n truncated
+                        → (∥ X ∥[ n ] → Y) ≃ (X → Y)
+ ∥∥ₙ-universal-property {_} {_} {X} {Y} {n} Y-trunc =
+  (foreward , qinvs-are-equivs foreward (backward , H , G))
+  where
+   foreward : (∥ X ∥[ n ] → Y) → (X → Y)
+   foreward g = g ∘ ∣_∣[ n ]
+   backward : (X → Y) → (∥ X ∥[ n ] → Y)
+   backward = ∥∥ₙ-rec Y-trunc
+   H : backward ∘ foreward ∼ id
+   H g = dfunext fe (∥∥ₙ-ind (λ - → truncation-levels-are-upper-closed Y-trunc
+                              ((backward ∘ foreward) g -) (g -))
+                             H')
+    where
+     H' : (x : X)
+        → backward (foreward (g)) ∣ x ∣[ n ]  ＝ g ∣ x ∣[ n ]
+     H' = ∥∥ₙ-ind-comp (λ - → Y-trunc) (g ∘ ∣_∣[ n ])
+   G : foreward ∘ backward ∼ id
+   G f = dfunext fe (∥∥ₙ-ind-comp (λ - → Y-trunc) f)
+
  to-∼-of-maps-between-truncated-types : {X : 𝓤 ̇} {Y : 𝓥 ̇} {n : ℕ₋₂}
                                       → (f g : ∥ X ∥[ n ] → ∥ Y ∥[ n ])
                                       → ((x : X)
@@ -296,7 +317,6 @@ with one truncated endpoint and one free endpoint.
                (λ - → Σ y ꞉ ∥ X ∥[ n ] , ∣ - ∣[ n ] ＝ y)
                is-singleton-type)
    
-
 \end{code}
 
 We show truncations are closed under equivalence and successive applications
