@@ -16,6 +16,10 @@ chmod a+r ~/martinescardo.github.io/TypeTopology/*.html
 # but are linked from published papers, blogs etc.
 # Symbolic links don't work any more, so we replace "ln -s" by "cp -a"
 
+cd ~/martinescardo.github.io/
+
+cp -a TypeTopology agda-new
+
 cd ~/martinescardo.github.io/TypeTopology/
 
 cp -a CantorSchroederBernstein.CSB.html CantorSchroederBernstein.html
