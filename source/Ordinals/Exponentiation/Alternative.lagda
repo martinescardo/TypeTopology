@@ -586,9 +586,10 @@ exp-monotone-in-base-implies-EM' {𝓤} m P P-is-prop = {!!}
   -- TODO: Continue
 
 exp-monotone-in-base-implies-EM :
-   ((α β γ : Ordinal 𝓤) → 𝟙ₒ{𝓤} ⊴ α → α ⊲ β → (exp α γ ⊴ exp β γ))
+   ((α β γ : Ordinal 𝓤) → 𝟙ₒ{𝓤} ⊴ α → α ⊴ β → (exp α γ ⊴ exp β γ))
  → EM 𝓤
-exp-monotone-in-base-implies-EM = {!!}
+exp-monotone-in-base-implies-EM m =
+ exp-monotone-in-base-implies-EM' (λ α β γ l i → m α β γ l (⊲-gives-⊴ α β i))
 
 -- This attempt got stuck and likely implies a constructive taboo...
 {-
