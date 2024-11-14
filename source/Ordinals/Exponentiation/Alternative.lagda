@@ -540,11 +540,11 @@ holds-gives-equal-𝟙ₒ {𝓤} {P} i p = eqtoidₒ (ua 𝓤) fe' (prop-ordinal
   f : P → 𝟙
   f _ = ⋆
 
--- TODO: Think about a better name
-exp-monotone-in-base-implies-EM' :
+-- TODO: Think about a better name?
+exp-weakly-monotone-in-base-implies-EM :
    ((α β γ : Ordinal 𝓤) → 𝟙ₒ{𝓤} ⊴ α → α ⊲ β → (exp α γ ⊴ exp β γ))
  → EM 𝓤
-exp-monotone-in-base-implies-EM' {𝓤} m P P-is-prop = {!!}
+exp-weakly-monotone-in-base-implies-EM {𝓤} assumption P P-is-prop = VI (f x) refl
  where
   α β γ Pₒ : Ordinal 𝓤
   α = [ 2 ]ₒ
@@ -562,7 +562,7 @@ exp-monotone-in-base-implies-EM' {𝓤} m P P-is-prop = {!!}
   β-ineq = ⊴-trans 𝟙ₒ α β α-ineq (⊲-gives-⊴ α β I)
 
   II : exp α γ ⊴ exp β γ
-  II = m α β γ α-ineq I
+  II = assumption α β γ α-ineq I
 
   III : exp α γ ＝ α ×ₒ α
   III = exp-power-two-is-multiplication α α-ineq
@@ -573,23 +573,79 @@ exp-monotone-in-base-implies-EM' {𝓤} m P P-is-prop = {!!}
   x : ⟨ α ×ₒ α ⟩
   x = (inr ⋆ , inr ⋆)
 
+  𝕗 : (α ×ₒ α) ⊴ (β ×ₒ β)
+  𝕗 = ⊴-trans _ _ _ (≃ₒ-to-⊴ _ _ (idtoeqₒ _ _ (III ⁻¹)))
+                    (⊴-trans _ _ _ II (≃ₒ-to-⊴ _ _ (idtoeqₒ _ _ IV)))
+
   f : ⟨ α ×ₒ α ⟩ → ⟨ β ×ₒ β ⟩
-  f = [ α ×ₒ α , β ×ₒ β ]⟨ ⊴-trans _ _ _ (≃ₒ-to-⊴ _ _ (idtoeqₒ _ _ (III ⁻¹)))
-                           (⊴-trans _ _ _ II (≃ₒ-to-⊴ _ _ (idtoeqₒ _ _ IV))) ⟩
+  f = [ α ×ₒ α , β ×ₒ β ]⟨ 𝕗 ⟩
 
-  ⊥β : ⟨ β ⟩
-  ⊥β = inl (inl (inl ⋆))
+  pattern ⊥β = inl (inl (inl ⋆))
 
-  V : (p : P) → β ＝ [ 4 ]ₒ
-  V p = ap ([ 3 ]ₒ +ₒ_) (holds-gives-equal-𝟙ₒ P-is-prop p)
+  f' : P → ⟨ α ×ₒ α ⟩ → ⟨ β ×ₒ β ⟩
+  f' p (inl ⋆ , inl ⋆) = (⊥β , ⊥β)
+  f' p (inr ⋆ , inl ⋆) = (inl (inl (inr ⋆)) , ⊥β)
+  f' p (inl ⋆ , inr ⋆) = (inl (inr ⋆) , ⊥β)
+  f' p (inr ⋆ , inr ⋆) = (inr p , ⊥β)
 
-  -- TODO: Continue
+  f'-simulation : (p : P) → is-simulation (α ×ₒ α) (β ×ₒ β) (f' p)
+  f'-simulation p = f'-initial-seg , f'-order-pres
+   where
+    f'-initial-seg : is-initial-segment (α ×ₒ α) (β ×ₒ β) (f' p)
+    f'-initial-seg (inr ⋆ , inl ⋆) (inl (inl (inl ⋆)) , .⊥β) (inr (refl , l))
+     = (inl ⋆ , inl ⋆) , inr (refl , l) , refl
+    f'-initial-seg (inl ⋆ , inr ⋆) (inl (inl (inl ⋆)) , .⊥β) (inr (refl , l))
+     = (inl ⋆ , inl ⋆) , inl ⋆ , refl
+    f'-initial-seg (inl ⋆ , inr ⋆) (inl (inl (inr ⋆)) , .⊥β) (inr (refl , l))
+     = (inr ⋆ , inl ⋆) , inl ⋆ , refl
+    f'-initial-seg (inr ⋆ , inr ⋆) (inl (inl (inl ⋆)) , .⊥β) (inr (refl , l))
+     = (inl ⋆ , inl ⋆) , inl ⋆ , refl
+    f'-initial-seg (inr ⋆ , inr ⋆) (inl (inl (inr ⋆)) , .⊥β) (inr (refl , l))
+     = (inr ⋆ , inl ⋆) , inl ⋆ , refl
+    f'-initial-seg (inr ⋆ , inr ⋆) (inl (inr ⋆) , .⊥β)       (inr (refl , l))
+     = (inl ⋆ , inr ⋆) , inr (refl , l) , refl
+    f'-initial-seg (inl ⋆ , inl ⋆) (inl (inl (inl ⋆)) , .⊥β) (inr (refl , l))
+     = 𝟘-elim l
+    f'-initial-seg (inl ⋆ , inl ⋆) (inl (inl (inr ⋆)) , .⊥β) (inr (refl , l))
+     = 𝟘-elim l
+    f'-initial-seg (inl ⋆ , inl ⋆) (y , inl (inl (inl ⋆))) (inl l) = 𝟘-elim l
+    f'-initial-seg (inl ⋆ , inl ⋆) (y , inl (inl (inr ⋆))) (inl l) = 𝟘-elim l
+    f'-initial-seg (inl ⋆ , inr ⋆) (y , inl (inl (inl ⋆))) (inl l) = 𝟘-elim l
+    f'-initial-seg (inl ⋆ , inr ⋆) (y , inl (inl (inr ⋆))) (inl l) = 𝟘-elim l
+    f'-initial-seg (inr ⋆ , inl ⋆) (y , inl (inl (inl ⋆))) (inl l) = 𝟘-elim l
+    f'-initial-seg (inr ⋆ , inl ⋆) (y , inl (inl (inr ⋆))) (inl l) = 𝟘-elim l
+    f'-initial-seg (inr ⋆ , inr ⋆) (y , inl (inl (inl ⋆))) (inl l) = 𝟘-elim l
+    f'-initial-seg (inr ⋆ , inr ⋆) (y , inl (inl (inr ⋆))) (inl l) = 𝟘-elim l
+
+    f'-order-pres : is-order-preserving (α ×ₒ α) (β ×ₒ β) (f' p)
+    f'-order-pres (inl ⋆ , inl ⋆) (inl ⋆ , inr ⋆) (inl l) = inr (refl , l)
+    f'-order-pres (inl ⋆ , inl ⋆) (inr ⋆ , inr ⋆) (inl l) = inr (refl , l)
+    f'-order-pres (inr ⋆ , inl ⋆) (inl ⋆ , inr ⋆) (inl l) = inr (refl , l)
+    f'-order-pres (inr ⋆ , inl ⋆) (inr ⋆ , inr ⋆) (inl l) = inr (refl , l)
+    f'-order-pres (x , inr ⋆) (y , inl ⋆) (inl l) = 𝟘-elim l
+    f'-order-pres (x , inr ⋆) (y , inr ⋆) (inl l) = 𝟘-elim l
+    f'-order-pres (inl ⋆ , inl ⋆) (inr ⋆ , x') (inr (refl , l)) = inr (refl , l)
+    f'-order-pres (inl ⋆ , inr ⋆) (inr ⋆ , x') (inr (refl , l)) = inr (refl , l)
+    f'-order-pres (inr ⋆ , x') (inl ⋆ , x') (inr (refl , l)) = 𝟘-elim l
+    f'-order-pres (inr ⋆ , x') (inr ⋆ , x') (inr (refl , l)) = 𝟘-elim l
+
+  V : (p : P) → f ∼ f' p
+  V p = at-most-one-simulation (α ×ₒ α) (β ×ₒ β) f (f' p) (pr₂ 𝕗) (f'-simulation p)
+
+  VI : (y : ⟨ β ×ₒ β ⟩) → f x ＝ y → P + ¬ P
+  VI (inl y , y') r = inr (λ p → +disjoint (ap pr₁ (VII p)))
+   where
+    VII : (p : P) → (inl y , y') ＝ (inr p , ⊥β)
+    VII p = (inl y , y') ＝⟨ r ⁻¹ ⟩
+            f x          ＝⟨ V p x ⟩
+            (inr p , ⊥β) ∎
+  VI (inr p , y') r = inl p
 
 exp-monotone-in-base-implies-EM :
    ((α β γ : Ordinal 𝓤) → 𝟙ₒ{𝓤} ⊴ α → α ⊴ β → (exp α γ ⊴ exp β γ))
  → EM 𝓤
 exp-monotone-in-base-implies-EM m =
- exp-monotone-in-base-implies-EM' (λ α β γ l i → m α β γ l (⊲-gives-⊴ α β i))
+ exp-weakly-monotone-in-base-implies-EM (λ α β γ l i → m α β γ l (⊲-gives-⊴ α β i))
 
 -- This attempt got stuck and likely implies a constructive taboo...
 {-
