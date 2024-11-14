@@ -78,7 +78,8 @@ and less general embeddings.
 
 \begin{code}
 
-ainjectivity-over-small-maps : {𝓤 𝓥 𝓦 𝓣₀ 𝓣₁ 𝓣₂ : Universe}
+ainjectivity-over-small-maps : {𝓤 𝓥 𝓦 𝓣₀ 𝓣₂ : Universe}
+                             → (𝓣₁ : Universe)
                              → (D : 𝓦 ̇ )
                              → ainjective-type D (𝓣₀ ⊔ 𝓣₁) 𝓣₂
                              → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
@@ -86,7 +87,7 @@ ainjectivity-over-small-maps : {𝓤 𝓥 𝓦 𝓣₀ 𝓣₁ 𝓣₂ : Univers
                              → is-embedding j
                              → j is 𝓣₀ small-map
                              → (f : X → D) → Σ f' ꞉ (Y → D) , f' ∘ j ∼ f
-ainjectivity-over-small-maps {𝓤} {𝓥} {𝓦} {𝓣₀} {𝓣₁} {𝓣₂} D D-ainj =
+ainjectivity-over-small-maps {𝓤} {𝓥} {𝓦} {𝓣₀} {𝓣₂} 𝓣₁ D D-ainj =
  aflabbiness-gives-injectivity-over-small-maps D
   (aflabbiness-resizing₁ {𝓦} {𝓣₀} {𝓣₁} D (ainjective-types-are-aflabby D D-ainj))
 
@@ -101,16 +102,17 @@ levels.
 
 open import UF.Retracts
 
-embedding-retract' : {𝓤 𝓥 𝓦 𝓣 𝓣' : Universe}
+embedding-retract' : {𝓤 𝓥 𝓦 𝓣 : Universe}
+                   → (𝓣' : Universe)
                    → (D : 𝓤 ̇ ) (Y : 𝓥 ̇ ) (j : D → Y)
                    → is-embedding j
                    → j is 𝓣 small-map
                    → ainjective-type D (𝓣 ⊔ 𝓣') 𝓦
                    → retract D of Y
-embedding-retract' {𝓤} {𝓥} {𝓦} {𝓣} {𝓣'} D Y j e s i = pr₁ a , j , pr₂ a
+embedding-retract' 𝓣' D Y j e s i = pr₁ a , j , pr₂ a
  where
   a : Σ f' ꞉ (Y → D) , f' ∘ j ∼ id
-  a = ainjectivity-over-small-maps {𝓤} {𝓥} {𝓤} {𝓣} {𝓣'} {𝓦} D i j e s id
+  a = ainjectivity-over-small-maps 𝓣' D i j e s id
 
 \end{code}
 
@@ -145,7 +147,7 @@ module ainjectivity-of-Lifting'
                                           → ainjective-type D (𝓣 ⊔ 𝓥) 𝓦
                                           → retract D of (𝓛 D)
  ainjective-is-retract-of-free-𝓛-algebra' {𝓤} {𝓥} {𝓦} D =
-  embedding-retract' {𝓤} {𝓣 ⁺ ⊔ 𝓤} {𝓦} {𝓣} {𝓥} D (𝓛 D) η
+  embedding-retract' 𝓥 D (𝓛 D) η
    (η-is-embedding' 𝓤 D ua fe')
    η-is-small-map
 
@@ -167,7 +169,8 @@ A particular case of interest that arises in practice is the following.
 
  ainjectives-in-terms-of-free-𝓛-algebras⁺
   : (D : 𝓣 ⁺ ̇ ) → ainjective-type D 𝓣 𝓣 ↔ (Σ X ꞉ 𝓣 ⁺ ̇ , retract D of (𝓛 X))
- ainjectives-in-terms-of-free-𝓛-algebras⁺ =  ainjectives-in-terms-of-free-𝓛-algebras'
+ ainjectives-in-terms-of-free-𝓛-algebras⁺
+  = ainjectives-in-terms-of-free-𝓛-algebras'
 
  _ : {X : 𝓣 ⁺ ̇ } → type-of (𝓛 X) ＝ 𝓣 ⁺ ̇
  _ = refl
