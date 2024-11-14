@@ -13,6 +13,7 @@ connectedness.
 open import UF.FunExt
 
 module UF.ConnectedTypes
+        (fe' : FunExt)
         (fe : Fun-Ext)
        where
                           
@@ -29,6 +30,7 @@ open import UF.Truncations fe
 open import UF.TruncationLevels
 open import UF.TruncatedTypes fe
 open import UF.Univalence
+open import UF.Yoneda
 
 \end{code}
 
@@ -68,19 +70,24 @@ a special case of k-connectedness. Connectedness typically means set
 connectedness, by our convention it will mean 0-connectedness.
 
 We directly prove a characterization of connectedness from the HoTT book
-(see Corollary 7.5.9.)
+(see Corollary 7.5.9.).
+
+NOTE: We will NOT state the corallary as an iff statement due to a large
+quantification issue.
 
 \begin{code}
 
- consts : {X : 𝓤 ̇} {Y : 𝓥 ̇}
-        → Y → (X → Y)
- consts y x = y
+ private
+  consts : {X : 𝓤 ̇} {Y : 𝓥 ̇}
+         → Y → (X → Y)
+  consts y x = y
 
- maps-from-conn-to-trunc-const : {X : 𝓤 ̇} {Y : 𝓥 ̇} {n : ℕ₋₂}
-                               → X is n connected
-                               → Y is n truncated
-                               → Y ≃ (X → Y)
- maps-from-conn-to-trunc-const {𝓤} {_} {X} {Y} {n} X-conn Y-trunc = e
+ maps-from-connected-type-to-truncated-type-const : {X : 𝓤 ̇} {Y : 𝓥 ̇} {n : ℕ₋₂}
+                                                  → X is n connected
+                                                  → Y is n truncated
+                                                  → Y ≃ (X → Y)
+ maps-from-connected-type-to-truncated-type-const {𝓤} {_} {X} {Y} {n}
+  X-conn Y-trunc = e
   where
    e : Y ≃ (X → Y)
    e = Y                ≃⟨ 𝟙→ fe ⟩
@@ -99,7 +106,7 @@ We directly prove a characterization of connectedness from the HoTT book
             → Y is n truncated
             → is-equiv consts
  Cor-7-5-9i X-conn Y Y-trunc =
-  ⌜⌝-is-equiv (maps-from-conn-to-trunc-const X-conn Y-trunc)
+  ⌜⌝-is-equiv (maps-from-connected-type-to-truncated-type-const X-conn Y-trunc)
 
  Cor-7-5-9ii : {X : 𝓤 ̇} {n : ℕ₋₂}
              → ({𝓥 : Universe} (Y : 𝓥 ̇)
@@ -122,61 +129,81 @@ We directly prove a characterization of connectedness from the HoTT book
    G = ∥∥ₙ-ind (λ - → truncation-levels-are-upper-closed ∥∥ₙ-is-truncated c -)
                (λ x → happly H' x)
 
- Cor-7-5-9 : {X : 𝓤 ̇} {n : ℕ₋₂}
-           → X is n connected
-           ↔ ((Y : 𝓥 ̇) → Y is n truncated → is-equiv consts)
- Cor-7-5-9 {_} {_} {X} {n} = ({!!} , {!!})
-
 \end{code}
 
-We will now prove a very general result from the HoTT book the characterizes when
+We will now prove a general result from the HoTT book the characterizes when
 a map is connected (see Lemma 7.5.7.)
 
 \begin{code}
 
- dep-pre-comp : {X : 𝓤 ̇} {Y : 𝓥 ̇}
-              → (f : X → Y)
-              → (P : Y → 𝓦 ̇)
-              → ((y : Y) → P y)
-              → (x : X) → P (f x)
- dep-pre-comp f P s = s ∘ f
+ dependent-equiv-from-truncated-fam-connected-map : {X : 𝓤 ̇} {Y : 𝓥 ̇} {f : X → Y}
+                                                    {P : Y → 𝓦 ̇} {n : ℕ₋₂} 
+                                                  → ((y : Y)
+                                                   → (P y) is n truncated)
+                                                  → f is n connected-map
+                                                  → ((y : Y) → P y)
+                                                   ≃ ((x : X) → P (f x))
+ dependent-equiv-from-truncated-fam-connected-map {_} {_} {𝓦} {X} {Y} {f} {P} {n}
+  P-trunc f-conn = e
+  where
+   e : ((y : Y) → P y) ≃ ((x : X) → P (f x))
+   e = ((y : Y) → P y)                                         ≃⟨ I ⟩
+       ((y : Y) → (fiber f y → P y))                           ≃⟨ II ⟩
+       ((y : Y) → (x : X) → (p : f x ＝ y) → P y)              ≃⟨ Π-flip' ⟩
+       ((x : X) → (y : Y) → (p : f x ＝ y) → P y)              ≃⟨ III ⟩
+       ((x : X) → P (f x))                                     ■
+    where
+     I = Π-cong fe fe (λ - → maps-from-connected-type-to-truncated-type-const
+                       (f-conn -) (P-trunc -))
+     II = Π-cong fe fe (λ - → curry-uncurry' fe fe)
+     III = Π-cong fe fe (λ - → ≃-sym (Yoneda-equivalence fe' (f -) P))
+   observation : ⌜ e ⌝ ＝ dprecomp P f
+   observation = refl
 
  Lemma7-5-7-i : {X : 𝓤 ̇} {Y : 𝓥 ̇} {f : X → Y} {P : Y → 𝓦 ̇} {n : ℕ₋₂} 
               → ((y : Y) → (P y) is n truncated)
               → f is n connected-map
-              → is-equiv (dep-pre-comp f P)
+              → is-equiv (dprecomp P f)
  Lemma7-5-7-i {_} {_} {_} {X} {Y} {f} {P} {n} P-trunc f-conn =
-  ((inv , G) , (inv , H))
-  where
-   inv : ((x : X) → P (f x))
-       → (y : Y) → P y
-   inv g y = h c
-    where
-     c : ∥ fiber f y ∥[ n ]
-     c = center (f-conn y)
-     h : ∥ fiber f y ∥[ n ] → P y
-     h = ∥∥ₙ-rec (P-trunc y) (λ (x , p) → transport P p (g x))
-   H : inv ∘ (dep-pre-comp f P) ∼ id
-   H = {!!}
-   G : (dep-pre-comp f P) ∘ inv ∼ id
-   G = {!!}
+  ⌜⌝-is-equiv (dependent-equiv-from-truncated-fam-connected-map P-trunc f-conn)
 
  Lemma7-5-7-ii : {X : 𝓤 ̇} {Y : 𝓥 ̇} {f : X → Y} {P : Y → 𝓦 ̇} 
-               → is-equiv (dep-pre-comp f P)
-               → has-section (dep-pre-comp f P)
+               → is-equiv (dprecomp P f)
+               → has-section (dprecomp P f)
  Lemma7-5-7-ii {_} {_} {_} {_} {_} {f} {P} =
-  equivs-have-sections (dep-pre-comp f P)
+  equivs-have-sections (dprecomp P f)
 
- Lemma7-5-7-iii : {X : 𝓤 ̇} {Y : 𝓥 ̇} {f : X → Y} {P : Y → 𝓦 ̇} {n : ℕ₋₂} 
-                → ((y : Y) → (P y) is n truncated)
-                → has-section (dep-pre-comp f P)
+ Lemma7-5-7-iii : {X : 𝓤 ̇} {Y : 𝓥 ̇} {f : X → Y} {n : ℕ₋₂} 
+                → ({𝓦 : Universe} {P : Y → 𝓦 ̇}
+                  → ((y : Y) → (P y) is n truncated)
+                  → has-section (dprecomp P f))
                 → f is n connected-map
- Lemma7-5-7-iii = {!!}
+ Lemma7-5-7-iii {𝓤} {𝓥} {X} {Y} {f} {n} sec-from-trunc y = (c y , C)
+  where
+   Q : Y → 𝓤 ⊔ 𝓥 ̇
+   Q y = ∥ fiber f y ∥[ n ]
+   c' : ((x : X) → ∥ fiber f (f x) ∥[ n ])
+      → ((y : Y) → ∥ fiber f y ∥[ n ])
+   c' = section-of (dprecomp Q f) (sec-from-trunc (λ - → ∥∥ₙ-is-truncated))
+   c : (y : Y) → ∥ fiber f y ∥[ n ]
+   c = c' (λ - → ∣ (- , refl) ∣[ n ])
+   H' : (dprecomp Q f) ∘ c' ∼ id
+   H' = section-equation (dprecomp Q f)
+                         (sec-from-trunc (λ - → ∥∥ₙ-is-truncated))
+   H : (x : X) → c (f x) ＝ ∣ (x , refl) ∣[ n ]
+   H = happly' ((dprecomp Q f ∘ c') (λ - → ∣ (- , refl) ∣[ n ]))
+               (λ - → ∣ (- , refl) ∣[ n ]) (H' (λ - → ∣ (- , refl) ∣[ n ]))
+   C : (w : ∥ fiber f y ∥[ n ]) → c y ＝ w
+   C = ∥∥ₙ-ind (λ - → truncation-levels-are-upper-closed ∥∥ₙ-is-truncated (c y) -)
+               C'
+    where
+     C' : ((x , p) : fiber f y) → c y ＝ ∣ (x , p) ∣[ n ]
+     C' (x , refl) = H x
+                
 
 \end{code}
 
-We show that the canonical n-truncation map is n-connected (in the presence
-of univalence ?).
+We show that the canonical n-truncation map is n-connected.
 
 \begin{code}
 
@@ -192,17 +219,21 @@ of univalence ?).
    C' = ∥∥ₙ-ind (λ v → λ p q → truncation-levels-closed-under-Id
                  (∥∥ₙ-is-truncated ∣ c ∣[ succ k ] v) p q) C''
 
- trunc-map-is-connected : {X : 𝓤 ̇} {n : ℕ₋₂}
-                        → ∣_∣[ n ] is n connected-map
- trunc-map-is-connected {𝓤} {X} {n} =
-  ∥∥ₙ-ind (λ - → truncation-levels-are-upper-closed' ⋆ ∥∥ₙ-is-truncated) H
+ canonical-trunc-map-is-connected : {X : 𝓤 ̇} {n : ℕ₋₂}
+                                  → ∣_∣[ n ] is n connected-map
+ canonical-trunc-map-is-connected {_} {X} {n} = Lemma7-5-7-iii has-sec
   where
-   H : (x' : X)
-     → fiber ∣_∣[ n ] ∣ x' ∣[ n ] is n connected
-   H x' = {!!}
+   has-sec : {𝓦 : Universe} {P : ∥ X ∥[ n ] → 𝓦 ̇}
+           → ((v : ∥ X ∥[ n ]) → P v is n truncated)
+           → has-section (dprecomp P ∣_∣[ n ])
+   has-sec {_} {P} P-trunc = (∥∥ₙ-ind P-trunc , comp-rule)
     where
-     e₁ : (Σ x ꞉ X , ∣ x ∣[ n ] ＝ ∣ x' ∣[ n ]) ≃ (Σ x ꞉ X , ∥ x ＝ x' ∥[ n ])
-     e₁ = {!!}
+     comp-rule : dprecomp P ∣_∣[ n ] ∘ ∥∥ₙ-ind P-trunc ∼ id
+     comp-rule h = (dprecomp P ∣_∣[ n ]) (∥∥ₙ-ind P-trunc h) ＝⟨ refl ⟩
+                   (∥∥ₙ-ind P-trunc h) ∘ ∣_∣[ n ]            ＝⟨ I ⟩
+                   h                                         ∎
+      where
+       I = dfunext fe (∥∥ₙ-ind-comp P-trunc h)
 
 \end{code}
 
