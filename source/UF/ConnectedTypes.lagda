@@ -13,7 +13,6 @@ connectedness.
 open import UF.FunExt
 
 module UF.ConnectedTypes
-        (fe' : FunExt)
         (fe : Fun-Ext)
        where
                           
@@ -38,6 +37,10 @@ We now define the notion of connectedness for types and functions with respect
 to truncation levels.
 
 \begin{code}
+
+private
+ fe' : FunExt
+ fe' 𝓤 𝓥 = fe {𝓤} {𝓥}
 
 module connectedness-results (te : general-truncations-exist) where
 
