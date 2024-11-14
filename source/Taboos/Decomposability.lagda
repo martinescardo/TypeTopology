@@ -529,7 +529,7 @@ ainjective-types-have-Ω-Paths {𝓥} {𝓤} {𝓦} pe D D-ainj x₀ x₁ = II I
   f ₁ = x₁
 
   I : Σ g ꞉ (Ω 𝓥 → D) , g ∘ 𝟚-to-Ω ∼ f
-  I = ainjectivity-over-small-maps {𝓤₀} {𝓥 ⁺} {𝓤} {𝓥} {𝓥} {𝓦}
+  I = ainjectivity-over-small-maps 𝓥
        D
        D-ainj
        𝟚-to-Ω

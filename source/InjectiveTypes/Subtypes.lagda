@@ -39,7 +39,7 @@ module _ (D : 𝓤 ̇ )
  necessary-condition-for-injectivity-of-subtype {𝓦} {𝓣} Σ-ainj = f , g , h
   where
    ρ : retract Σ P of D
-   ρ = embedding-retract' {𝓤 ⊔ 𝓥} {𝓤} {𝓣} {𝓥} {𝓦}
+   ρ = embedding-retract' 𝓦
         (Σ P)
         D
         s

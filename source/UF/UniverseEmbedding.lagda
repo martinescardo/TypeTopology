@@ -160,6 +160,9 @@ prop-fiber-criterion : PropExt
                      → is-prop (fiber f Q)
 prop-fiber-criterion pe fe 𝓤 𝓥 f i Q j (P , r) = d (P , r)
  where
+  _ : f P ＝ Q
+  _ = r
+
   k : is-prop (f P)
   k = transport⁻¹ is-prop r j
 
