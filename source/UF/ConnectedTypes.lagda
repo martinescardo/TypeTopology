@@ -66,6 +66,18 @@ module connectedness-results (te : general-truncations-exist) where
                              → is-prop (f is k connected-map)
  being-connected-map-is-prop = Π-is-prop fe (λ y → being-connected-is-prop)
 
+ connected-if-contr : {X : 𝓤 ̇} {k : ℕ₋₂}
+                    → is-contr X
+                    → X is k connected
+ connected-if-contr {_} {X} {−2} X-is-contr = −2-trunc-is-contr
+ connected-if-contr {_} {X} {succ k} (c , C) = (∣ c ∣[ k + 1 ] , C')
+  where
+   C'' : (x : X) → ∣ c ∣[ k + 1 ] ＝ ∣ x ∣[ k + 1 ]
+   C'' x = canonical-identity-trunc-map ∣ C x ∣[ k ]
+   C' : is-central ∥ X ∥[ k + 1 ] ∣ c ∣[ k + 1 ]
+   C' = ∥∥ₙ-ind (λ v → λ p q → truncation-levels-closed-under-Id
+                 (∥∥ₙ-is-truncated ∣ c ∣[ succ k ] v) p q) C''
+
 \end{code}
 
 TODO: show that connectedness as defined elsewhere in the library is
@@ -209,18 +221,6 @@ a map is connected (see Lemma 7.5.7.)
 We show that the canonical n-truncation map is n-connected.
 
 \begin{code}
-
- connected-if-contr : {X : 𝓤 ̇} {k : ℕ₋₂}
-                    → is-contr X
-                    → X is k connected
- connected-if-contr {_} {X} {−2} X-is-contr = −2-trunc-is-contr
- connected-if-contr {_} {X} {succ k} (c , C) = (∣ c ∣[ k + 1 ] , C')
-  where
-   C'' : (x : X) → ∣ c ∣[ k + 1 ] ＝ ∣ x ∣[ k + 1 ]
-   C'' x = canonical-identity-trunc-map ∣ C x ∣[ k ]
-   C' : is-central ∥ X ∥[ k + 1 ] ∣ c ∣[ k + 1 ]
-   C' = ∥∥ₙ-ind (λ v → λ p q → truncation-levels-closed-under-Id
-                 (∥∥ₙ-is-truncated ∣ c ∣[ succ k ] v) p q) C''
 
  canonical-trunc-map-is-connected : {X : 𝓤 ̇} {n : ℕ₋₂}
                                   → ∣_∣[ n ] is n connected-map
