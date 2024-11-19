@@ -51,6 +51,10 @@ _⊴_ : Ordinal 𝓤 → Ordinal 𝓥 → 𝓤 ⊔ 𝓥 ̇
 [_,_]⟨_⟩ : (α : Ordinal 𝓤) (β : Ordinal 𝓥) → α ⊴ β → ⟨ α ⟩ → ⟨ β ⟩
 [ α , β ]⟨ f ⟩ = pr₁ f
 
+[_,_]⟨_⟩-is-simulation : (α : Ordinal 𝓤) (β : Ordinal 𝓥) (f : α ⊴ β)
+                       → is-simulation α β [ α , β ]⟨ f ⟩
+[_,_]⟨_⟩-is-simulation α β f = pr₂ f
+
 ⊴-gives-↪ : (α : Ordinal 𝓤)
             (β : Ordinal 𝓥)
           → α ⊴ β
@@ -839,6 +843,58 @@ order-preserving-gives-≼ em α β σ = δ
 
   δ : α ≼ β
   δ = γ (≼-or-> _⊲_ fe' em ⊲-is-well-order α β)
+
+\end{code}
+
+Added 19 November 2024 by Nicolai Kraus, Fredrik Nordvall Forsberg, Chuangjie Xu
+and Tom de Jong.
+
+In the above, EM 𝓤 would be sufficient if we redeveloped it with the resized
+strict order ⊲⁻ instead of ⊲ and with equivalence of ordinals ≃ₒ instead of
+equality as the former is 𝓤-valued for ordinals in 𝓤.
+
+We leave this as a TODO and show the converse now.
+
+\begin{code}
+
+order-preserving-gives-≼-implies-EM :
+   ((α β : Ordinal 𝓤)
+         → Σ f ꞉ (⟨ α ⟩ → ⟨ β ⟩) , is-order-preserving α β f
+         → α ≼ β)
+ → EM 𝓤
+order-preserving-gives-≼-implies-EM h P P-is-prop = II (g ⋆) refl
+ where
+  open import Ordinals.Arithmetic fe
+  open import MLTT.Plus-Properties
+
+  α = 𝟙ₒ
+  Pₒ = prop-ordinal P P-is-prop
+  β = Pₒ +ₒ 𝟙ₒ
+
+  f : ⟨ α ⟩ → ⟨ β ⟩
+  f ⋆ = inr ⋆
+
+  f-is-order-preserving : is-order-preserving α β f
+  f-is-order-preserving ⋆ ⋆ = 𝟘-elim
+
+  𝕘 : α ⊴ β
+  𝕘 = ≼-gives-⊴ α β (h α β (f , f-is-order-preserving))
+  g = [ α , β ]⟨ 𝕘 ⟩
+
+  inl-p-is-least : (p : P) → is-least β (inl p)
+  inl-p-is-least p (inl _) (inl _) l = l
+  inl-p-is-least p (inl _) (inr _) l = l
+  inl-p-is-least p (inr _) (inl _) l = ⋆
+  inl-p-is-least p (inr _) (inr _) l = l
+
+  I : (p : P) → g ⋆ ＝ inl p
+  I p = simulations-preserve-least α β ⋆ (inl p)
+         g ([ α , β ]⟨ 𝕘 ⟩-is-simulation)
+         (λ ⋆ ⋆ → 𝟘-elim) (inl-p-is-least p)
+
+  II : (y : ⟨ β ⟩) → g ⋆ ＝ y → P + ¬ P
+  II (inl p) e = inl p
+  II (inr ⋆) e = inr (λ p → +disjoint ((I p) ⁻¹ ∙ e))
 
 \end{code}
 
