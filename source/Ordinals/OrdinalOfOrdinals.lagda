@@ -280,7 +280,6 @@ _⊲⁻_ : Ordinal 𝓤 → Ordinal 𝓥 → 𝓤 ⊔ 𝓥 ̇
 
 ⊲-is-equivalent-to-⊲⁻ : (α β : Ordinal 𝓤) → (α ⊲ β) ≃ (α ⊲⁻ β)
 ⊲-is-equivalent-to-⊲⁻ α β = Σ-cong (λ (b : ⟨ β ⟩) → UAₒ-≃ (ua _) fe' α (β ↓ b))
-
 \end{code}
 
 Back to the past.
@@ -473,6 +472,40 @@ It remains to show that _⊲_ is a well-order:
                   ⊲-is-well-founded ,
                   ⊲-is-extensional ,
                   ⊲-is-transitive
+\end{code}
+
+Added 19 November 2024 by Fredrik Nordvall Forsberg.
+
+_⊲_ being a well order translates to _⊲⁻_ being a well order, but with
+slightly better universe bounds.
+
+\begin{code}
+
+⊲⁻-is-well-order : is-well-order {𝓤 ⁺} {𝓤} _⊲⁻_
+⊲⁻-is-well-order {𝓤} = p , w , e , t
+ where
+  p : is-prop-valued _⊲⁻_
+  p α β = equiv-to-prop (≃-sym (⊲-is-equivalent-to-⊲⁻ α β))
+                        (prop-valuedness _⊲_ ⊲-is-well-order α β)
+
+  w : is-well-founded _⊲⁻_
+  w α = a α (well-foundedness _⊲_ ⊲-is-well-order α)
+   where
+    a : (α : Ordinal 𝓤) → is-accessible _⊲_ α → is-accessible _⊲⁻_ α
+    a α (acc p) = acc (λ β l → a  β (p β (⌜ ⊲-is-equivalent-to-⊲⁻ β α ⌝⁻¹ l)))
+
+  e : is-extensional _⊲⁻_
+  e α β r l = extensionality _⊲_ ⊲-is-well-order α β
+                             (λ γ p → ⌜ ⊲-is-equivalent-to-⊲⁻ γ β ⌝⁻¹
+                                       (r γ (⌜ ⊲-is-equivalent-to-⊲⁻ γ α ⌝ p)))
+                             (λ γ p → ⌜ ⊲-is-equivalent-to-⊲⁻ γ α ⌝⁻¹
+                                       (l γ (⌜ ⊲-is-equivalent-to-⊲⁻ γ β ⌝ p)))
+
+  t : is-transitive _⊲⁻_
+  t α β γ p q = ⌜ ⊲-is-equivalent-to-⊲⁻ α γ ⌝
+                  (transitivity _⊲_ ⊲-is-well-order α β γ
+                                (⌜ ⊲-is-equivalent-to-⊲⁻ α β ⌝⁻¹ p)
+                                (⌜ ⊲-is-equivalent-to-⊲⁻ β γ ⌝⁻¹ q))
 \end{code}
 
 We denote the ordinal of ordinals in the universe 𝓤 by OO 𝓤. It lives
@@ -831,29 +864,25 @@ order-preserving-gives-not-⊲ {𝓤} α β σ (x₀ , refl) = γ σ
 
 open import UF.ClassicalLogic
 
-order-preserving-gives-≼ : EM (𝓤 ⁺)
+EM-implies-order-preserving-gives-≼ : EM 𝓤
                          → (α β : Ordinal 𝓤)
                          → (Σ f ꞉ (⟨ α ⟩ → ⟨ β ⟩) , is-order-preserving α β f)
                          → α ≼ β
-order-preserving-gives-≼ em α β σ = δ
+EM-implies-order-preserving-gives-≼ em α β σ = δ
  where
-  γ : (α ≼ β) + (β ⊲ α) → α ≼ β
-  γ (inl l) = l
-  γ (inr m) = 𝟘-elim (order-preserving-gives-not-⊲ α β σ m)
+  γ : (∀ u → u ⊲⁻ α → u ⊲⁻ β) + (β ⊲⁻ α) → α ≼ β
+  γ (inl l) γ p = ⌜ ⊲-is-equivalent-to-⊲⁻ γ β ⌝⁻¹ (l γ (⌜ ⊲-is-equivalent-to-⊲⁻ γ α ⌝ p))
+  γ (inr m) = 𝟘-elim (order-preserving-gives-not-⊲ α β σ (⌜ ⊲-is-equivalent-to-⊲⁻ β α ⌝⁻¹ m))
 
   δ : α ≼ β
-  δ = γ (≼-or-> _⊲_ fe' em ⊲-is-well-order α β)
-
+  δ = γ (≼-or-> _⊲⁻_ fe' em ⊲⁻-is-well-order α β)
 \end{code}
 
 Added 19 November 2024 by Nicolai Kraus, Fredrik Nordvall Forsberg, Chuangjie Xu
 and Tom de Jong.
 
-In the above, EM 𝓤 would be sufficient if we redeveloped it with the resized
-strict order ⊲⁻ instead of ⊲ and with equivalence of ordinals ≃ₒ instead of
-equality as the former is 𝓤-valued for ordinals in 𝓤.
-
-We leave this as a TODO and show the converse now.
+In fact order preserving maps can be upgraded to inequalities if and
+only if excluded middle holds.
 
 \begin{code}
 

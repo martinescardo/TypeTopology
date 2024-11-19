@@ -799,10 +799,10 @@ not-<-gives-≼ fe em wo@(p , w , e , t) x y = γ (trichotomy fe em wo x y)
   γ (inr (inr m)) ν = <-gives-≼ t m
 
 ≼-or-> : funext (𝓤 ⊔ 𝓥) 𝓤₀
-       → excluded-middle (𝓤 ⊔ 𝓥)
+       → excluded-middle 𝓥
        → is-well-order
        → (x y : X) → (x ≼ y) + y < x
-≼-or-> fe em wo@(p , w , e , t) x y = γ (trichotomy fe em wo x y)
+≼-or-> fe em wo@(p , w , e , t) x y = γ (trichotomy₃ em wo x y)
  where
   γ : (x < y) + (x ＝ y) + (y < x) → (x ≼ y) + (y < x)
   γ (inl l)       = inl (<-gives-≼ t l)

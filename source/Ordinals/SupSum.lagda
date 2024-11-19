@@ -94,7 +94,7 @@ module sup-bounded-by-sum-under-em
      fop y z l = inr (refl , l)
 
      m : β x ≼ ∑ α β
-     m = order-preserving-gives-≼ em (β x) (∑ α β) (f , fop)
+     m = EM-implies-order-preserving-gives-≼ em (β x) (∑ α β) (f , fop)
 
 \end{code}
 
@@ -205,7 +205,7 @@ module _ {𝓤 : Universe}
      fop y z l = inr (refl , l)
 
      m : [ υ x ] ≼ [ ∑ τ υ ]
-     m = order-preserving-gives-≼ em [ υ x ] [ ∑ τ υ ] (f , fop)
+     m = EM-implies-order-preserving-gives-≼ em [ υ x ] [ ∑ τ υ ] (f , fop)
 
    γ : sup (λ x → [ υ x ]) ⊴ [ ∑ τ υ ]
    γ = sup-is-lower-bound-of-upper-bounds (λ x → [ υ x ]) [ ∑ τ υ ] bound
@@ -227,7 +227,7 @@ module _ {𝓤 : Universe}
      fop y z l = inr (refl , l)
 
      m : [ υ x ] ≼ [ ∑³ τ υ ]
-     m = order-preserving-gives-≼ em [ υ x ] [ ∑³ τ υ ] (f , fop)
+     m = EM-implies-order-preserving-gives-≼ em [ υ x ] [ ∑³ τ υ ] (f , fop)
 
    γ : sup (λ x → [ υ x ]) ⊴ [ ∑³ τ υ ]
    γ = sup-is-lower-bound-of-upper-bounds (λ x → [ υ x ]) [ ∑³ τ υ ] bound
