@@ -511,6 +511,8 @@ module _ {𝓤 : Universe}
  [ 1 ]ₒ = 𝟙ₒ
  [ succ n ]ₒ = [ n ]ₒ +ₒ 𝟙ₒ
 
+ -- TODO: Upstream(?)
+ {-
  open import Naturals.Addition renaming (_+_ to _+ℕ_)
  open import Naturals.Multiplication
  []ₒ-preserves-addition : {n m : ℕ} → [ n ]ₒ +ₒ [ m ]ₒ ＝ [ n +ℕ m ]ₒ
@@ -532,6 +534,7 @@ module _ {𝓤 : Universe}
   [ n * m' +ℕ n ]ₒ              ＝⟨ ap [_]ₒ (addition-commutativity (n * m') n) ⟩
   [ n +ℕ (n * m') ]ₒ            ＝⟨ refl ⟩
   [ n * succ m' ]ₒ              ∎
+ -}
 
 -- TODO: Upstream and clean
 holds-gives-equal-𝟙ₒ : {P : 𝓤 ̇ } (i : is-prop P) → P → prop-ordinal P i ＝ 𝟙ₒ
@@ -647,7 +650,7 @@ exp-monotone-in-base-implies-EM :
 exp-monotone-in-base-implies-EM m =
  exp-weakly-monotone-in-base-implies-EM (λ α β γ l i → m α β γ l (⊲-gives-⊴ α β i))
 
--- This attempt got stuck and likely implies a constructive taboo...
+-- This attempt got stuck and implies a constructive taboo...
 {-
 induced-⊴-on-×ₒ : (α β γ δ : Ordinal 𝓤)
                 → α ⊴ γ → β ⊴ δ
@@ -667,6 +670,15 @@ induced-⊴-on-×ₒ α β γ δ (f , f-sim) (g , g-sim) = h , h-init-seg , h-or
    inl (simulations-are-order-preserving β δ g g-sim b b' l)
   h-order-pres (a , b) (a' , b') (inr (refl , k)) =
    inr (refl , (simulations-are-order-preserving α γ f f-sim a a' k))
+
+--
+α = 𝟙
+γ = 𝟙 + P
+β = 𝟚
+δ = 𝟛
+
+α × β = 𝟚
+γ × δ = (𝟙 + P) × 𝟛 = (𝟙 + P) + 𝟙 + ...
 
 induced-⊴-on-×ₒ : (α β γ δ : Ordinal 𝓤)
                 → α ⊴ γ → β ⊲ δ
