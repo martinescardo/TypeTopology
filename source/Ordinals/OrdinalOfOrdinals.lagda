@@ -24,6 +24,7 @@ open import Ordinals.Maps
 open import Ordinals.Notions
 open import Ordinals.Type
 open import Ordinals.Underlying
+open import Ordinals.WellOrderTransport
 open import UF.Base
 open import UF.Embeddings
 open import UF.Equiv
@@ -474,43 +475,6 @@ It remains to show that _⊲_ is a well-order:
                   ⊲-is-transitive
 \end{code}
 
-Added 19 November 2024 by Fredrik Nordvall Forsberg.
-
-_⊲_ being a well order translates to _⊲⁻_ being a well order, but with
-slightly better universe bounds. Note that one cannot simply use the
-univalence axiom to directly deduce this result, as that route would
-only let us conclude that _⊲⁻_ is a well order as a 𝓤⁺-valued
-relation, rather than as a 𝓤-valued one.
-
-\begin{code}
-
-⊲⁻-is-well-order : is-well-order {𝓤 ⁺} {𝓤} _⊲⁻_
-⊲⁻-is-well-order {𝓤} = p , w , e , t
- where
-  p : is-prop-valued _⊲⁻_
-  p α β = equiv-to-prop (≃-sym (⊲-is-equivalent-to-⊲⁻ α β))
-                        (prop-valuedness _⊲_ ⊲-is-well-order α β)
-
-  w : is-well-founded _⊲⁻_
-  w α = a α (well-foundedness _⊲_ ⊲-is-well-order α)
-   where
-    a : (α : Ordinal 𝓤) → is-accessible _⊲_ α → is-accessible _⊲⁻_ α
-    a α (acc p) = acc (λ β l → a  β (p β (⌜ ⊲-is-equivalent-to-⊲⁻ β α ⌝⁻¹ l)))
-
-  e : is-extensional _⊲⁻_
-  e α β r l = extensionality _⊲_ ⊲-is-well-order α β
-                             (λ γ p → ⌜ ⊲-is-equivalent-to-⊲⁻ γ β ⌝⁻¹
-                                       (r γ (⌜ ⊲-is-equivalent-to-⊲⁻ γ α ⌝ p)))
-                             (λ γ p → ⌜ ⊲-is-equivalent-to-⊲⁻ γ α ⌝⁻¹
-                                       (l γ (⌜ ⊲-is-equivalent-to-⊲⁻ γ β ⌝ p)))
-
-  t : is-transitive _⊲⁻_
-  t α β γ p q = ⌜ ⊲-is-equivalent-to-⊲⁻ α γ ⌝
-                  (transitivity _⊲_ ⊲-is-well-order α β γ
-                                (⌜ ⊲-is-equivalent-to-⊲⁻ α β ⌝⁻¹ p)
-                                (⌜ ⊲-is-equivalent-to-⊲⁻ β γ ⌝⁻¹ q))
-\end{code}
-
 We denote the ordinal of ordinals in the universe 𝓤 by OO 𝓤. It lives
 in the next universe 𝓤 ⁺.
 
@@ -876,6 +840,11 @@ EM-implies-order-preserving-gives-≼ em α β σ = δ
   γ : (∀ u → u ⊲⁻ α → u ⊲⁻ β) + (β ⊲⁻ α) → α ≼ β
   γ (inl l) γ p = ⌜ ⊲-is-equivalent-to-⊲⁻ γ β ⌝⁻¹ (l γ (⌜ ⊲-is-equivalent-to-⊲⁻ γ α ⌝ p))
   γ (inr m) = 𝟘-elim (order-preserving-gives-not-⊲ α β σ (⌜ ⊲-is-equivalent-to-⊲⁻ β α ⌝⁻¹ m))
+
+  ⊲⁻-is-well-order : is-well-order {𝓤 ⁺} {𝓤} _⊲⁻_
+  ⊲⁻-is-well-order {𝓤} = order-transfer-lemma₃.well-order→ fe (Ordinal 𝓤) _⊲_ _⊲⁻_
+                                                           ⊲-is-equivalent-to-⊲⁻
+                                                           ⊲-is-well-order
 
   δ : α ≼ β
   δ = γ (≼-or-> _⊲⁻_ fe' em ⊲⁻-is-well-order α β)
