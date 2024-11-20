@@ -3,7 +3,7 @@ Ian Ray, 4th Febuary 2024.
 Modifications made by Ian Ray on 14 October 2024.
 
 We develop some results that relate size, truncation and connectedness from
-a paper by Dan Chirstensen (see https://browse.arxiv.org/abs/2109.06670).
+a paper by Dan Christensen (see https://browse.arxiv.org/abs/2109.06670).
 
 \begin{code}
 
@@ -55,9 +55,22 @@ We begin by giving some definitions that Dan uses in his paper. We will use
  X is zero locally-small = X is 𝓥 small
  X is (succ n) locally-small = (x x' : X) → (x ＝ x') is n locally-small
 
+ locally-small-is-prop : {X : 𝓤 ̇} {n : ℕ}
+                       → is-prop (X is n locally-small)
+ locally-small-is-prop {_} {X} {zero} = being-small-is-prop ua X 𝓥
+ locally-small-is-prop {_} {X} {succ n} =
+  Π₂-is-prop fe (λ x y → locally-small-is-prop)
+
+ locally-small-is-upper-closed : {X : 𝓤 ̇} {n : ℕ}
+                               → X is n locally-small
+                               → X is (succ n) locally-small
+ locally-small-is-upper-closed {_} {X} {zero} = small-implies-locally-small X 𝓥
+ locally-small-is-upper-closed {_} {X} {succ n} X-loc-small x x' =
+  locally-small-is-upper-closed (X-loc-small x x')
+
 \end{code}
 
-Local smallness is closed under Sigma for each n : ℕ.
+Local smallness is closed under sigma and equivalence for each n : ℕ.
 
 TODO: Add other closure properties and maybe move this to size file(?).
 
@@ -94,6 +107,20 @@ TODO: Add other closure properties and maybe move this to size file(?).
  locally-small-from-small {_} {X} {succ n} X-small x x' =
   locally-small-from-small (small-implies-locally-small X 𝓥 X-small x x')
 
+ open general-truncations-exist te
+
+ trunc-loc-small-from-loc-small : {X : 𝓤 ̇} {n : ℕ₋₂}
+                                → X is ι (n + 2) locally-small
+                                → ∥ X ∥[ n ] is ι (n + 2) locally-small
+ trunc-loc-small-from-loc-small {_} {X} {−2} = size-closed-under-truncation
+ trunc-loc-small-from-loc-small {_} {X} {succ n} X-loc-small =
+  ∥∥ₙ-ind₂ (λ u v → (u ＝ v) is ι (n + 2) locally-small)
+           (λ u v → truncation-levels-are-upper-closed' ⋆
+                     (is-prop-implies-is-prop' locally-small-is-prop))
+           (λ x y → locally-small-≃-closed
+                     (eliminated-trunc-identity-char (ua _))
+                    (trunc-loc-small-from-loc-small (X-loc-small x y)))
+
 \end{code}
 
 Lemma 2.2. and Lemma 2.5. follow from a result in Egbert Rijke's
@@ -105,7 +132,6 @@ TODO: Implement the join construction.
 
 \begin{code}
 
- open general-truncations-exist te
  open connectedness-results te
  open PropositionalTruncation pt
 
@@ -195,12 +221,11 @@ Lemma 2.5.
  Lemma-2-5 : {X : 𝓤 ̇} {Y : 𝓦 ̇} {f : X → Y} {n : ℕ₋₂}
            → Join-Construction-Result {𝓤} {𝓤}
            → Propositional-Resizing
-           → basepoint-map-is-less-connected-result {𝓤}
            → f is (n + 1) truncated-map
            → Y is ι (n + 2) locally-small
            → X is (n + 1) connected
            → X is 𝓥 small
- Lemma-2-5 {𝓤} {_} {X} {_} {_} {n} j pr bp f-trunc Y-loc-small X-conn =
+ Lemma-2-5 {𝓤} {_} {X} {_} {_} {n} j pr f-trunc Y-loc-small X-conn =
   ∥∥-rec (being-small-is-prop ua X 𝓥)
    X-inhabited-implies-small (center X-−1-conn)
   where
@@ -211,7 +236,7 @@ Lemma 2.5.
    X-point : X → 𝟙 {𝓤} → X
    X-point x ⋆ = x
    X-point-n-conn : (x : X) → (X-point x) is n connected-map
-   X-point-n-conn x = bp (X-point x) X-conn
+   X-point-n-conn x = basepoint-map-is-less-connected (ua 𝓤) (X-point x) X-conn
    𝟙-is-small : 𝟙 {𝓤} is 𝓥 small
    𝟙-is-small = pr 𝟙 𝟙-is-prop
    X-inhabited-implies-small : X → X is 𝓥 small
@@ -221,14 +246,14 @@ Lemma 2.5.
 \end{code}
 
 We shall follow Dan's updated result and prove the following in the absence of
-resizing.
+propositional resizing.
 
 Theorem 2.6.
 
 \begin{code}
 
  small-path-space-lemma : {X : 𝓤 ̇} {n : ℕ₋₂}
-                         → Join-Construction-Result {𝓤} {𝓤}
+                        → Join-Construction-Result {𝓤} {𝓤}
                         → X is ι (n + 2) locally-small
                          × ∥ X ∥[ n + 1 ] is 𝓥 small
                         → (Σ y ꞉ ∥ X ∥[ n + 1 ] , Σ x ꞉ X , ∣ x ∣[ n + 1 ] ＝ y)
@@ -238,12 +263,32 @@ Theorem 2.6.
   where
    trunc-ind-helper : (x' : X)
                     → (Σ x ꞉ X , ∣ x ∣[ n + 1 ] ＝ ∣ x' ∣[ n + 1 ]) is 𝓥 small
-   trunc-ind-helper x' = Prop-2-2 j {!!} {!𝟙-is-small!} {!!}
+   trunc-ind-helper x' = Prop-2-2 j f-con 𝟙-is-small cod-locally-small
     where
      f : 𝟙 {𝓤} → Σ x ꞉ X , ∣ x ∣[ n + 1 ] ＝ ∣ x' ∣[ n + 1 ]
      f ⋆ = (x' , refl)
+     cod-con : (Σ x ꞉ X , ∣ x ∣[ n + 1 ] ＝ ∣ x' ∣[ n + 1 ]) is (n + 1)
+                connected
+     cod-con = canonical-trunc-map-is-connected ∣ x' ∣[ n + 1 ]
+     f-con : f is n connected-map
+     f-con = basepoint-map-is-less-connected (ua _) f cod-con
      𝟙-is-small : 𝟙 {𝓤} is 𝓥 small
      𝟙-is-small = (𝟙 {𝓥} , one-𝟙-only)
+     cod-locally-small : (Σ x ꞉ X , ∣ x ∣[ n + 1 ] ＝ ∣ x' ∣[ n + 1 ]) is
+                          ι (n + 2) locally-small
+     cod-locally-small = locally-small-Σ-closed X-loc-small path-locally-small
+      where
+       path-locally-small : (x : X)
+                          → (∣ x ∣[ succ n ] ＝ ∣ x' ∣[ succ n ]) is
+                           ι (n + 2) locally-small
+       path-locally-small x =
+        locally-small-≃-closed (eliminated-trunc-identity-char (ua _))
+                               path-char-locally-small
+         where
+          path-char-locally-small : ∥ x ＝ x' ∥[ n ] is ι (n + 2) locally-small
+          path-char-locally-small =
+           trunc-loc-small-from-loc-small (locally-small-is-upper-closed
+            X-loc-small x x')
    fiber-path-space-small : (y : ∥ X ∥[ n + 1 ])
                           → (Σ x ꞉ X , ∣ x ∣[ n + 1 ] ＝ y) is 𝓥 small
    fiber-path-space-small =
@@ -264,7 +309,8 @@ Theorem 2.6.
              → Join-Construction-Result {𝓤} {𝓤}
              → X is 𝓥 small
              ↔ X is ι (n + 2) locally-small × ∥ X ∥[ n + 1 ] is 𝓥 small 
- Theorem-2-6 {_} {X} {n} j = (foreward , small-from-locally-and-trunc-small j)
+ Theorem-2-6 {_} {X} {n} j =
+  (foreward , small-from-locally-and-trunc-small j)
   where
    foreward : X is 𝓥 small
             → X is ι (n + 2) locally-small × ∥ X ∥[ n + 1 ] is 𝓥 small
@@ -278,12 +324,15 @@ Corollary 2.7.
 \begin{code}
 
  Corollary-2-7 : {X : 𝓤 ̇} {Y : 𝓦 ̇} {f : X → Y} {n : ℕ₋₂}
+               → Join-Construction-Result {𝓤} {𝓤}
                → Propositional-Resizing
-               → f is n truncated-map
+               → f is (n + 1) truncated-map
                → Y is ι (n + 2) locally-small
-               → ∥ X ∥[ n + 2 ] is 𝓥 small
+               → ∥ X ∥[ n + 1 ] is 𝓥 small
                → X is 𝓥 small
- Corollary-2-7 = {!!}
+ Corollary-2-7 j pr f-trunc Y-loc-small trunc-X-small =
+  small-from-locally-and-trunc-small j
+   (Lemma-2-4 pr f-trunc Y-loc-small , trunc-X-small)
 
 \end{code}
 
