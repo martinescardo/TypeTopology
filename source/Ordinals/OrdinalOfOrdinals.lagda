@@ -477,7 +477,10 @@ It remains to show that _⊲_ is a well-order:
 Added 19 November 2024 by Fredrik Nordvall Forsberg.
 
 _⊲_ being a well order translates to _⊲⁻_ being a well order, but with
-slightly better universe bounds.
+slightly better universe bounds. Note that one cannot simply use the
+univalence axiom to directly deduce this result, as that route would
+only let us conclude that _⊲⁻_ is a well order as a 𝓤⁺-valued
+relation, rather than as a 𝓤-valued one.
 
 \begin{code}
 
