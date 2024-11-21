@@ -10,6 +10,8 @@ open import MLTT.Spartan
 open import Ordinals.Brouwer
 open import Ordinals.BrouwerArithmetic
 open import Ordinals.BrouwerOrdering
+open import UF.Equiv
+open import UF.FunExt
 
 module Ordinals.BrouwerArithmeticProperties where
 
@@ -17,8 +19,7 @@ module Ordinals.BrouwerArithmeticProperties where
 
 \section{Properties of Addition}
 
-First we see how to extend paths of a single summand to paths of the
-sum of two ordinals.
+First we see how to get strict subtrees of the sum of two ordinals.
 
 The geometric picture is as follows: given ordinals α and β like
 
@@ -34,33 +35,23 @@ their sum will consist of a copy of α followed by a copy of β like
  α + β = (*  *  *  * ...)  (&  &  &  &  &  & ...)
 ```
 
-Hence, we can get paths in α + β from either
- - a path in α by skipping the copy of β
- - a path in β (which will never reach the the copy of α)
+Hence, we can get subtrees in α + β from either
+ - a subtree in α
+ - a subtree in β by pasting α at the leaf nodes
 
 \begin{code}
 
-extend-path-left-+B : (b c : B) → PathThroughS b → PathThroughS (b +B c)
-extend-path-left-+B b Z     p = p
-extend-path-left-+B b (S c) p = continue (extend-path-left-+B b c p)
-extend-path-left-+B b (L ϕ) p = pick (λ z → b +B ϕ z) zero (extend-path-left-+B b (ϕ zero) p)
+subtree-of-+B-left : (c d b : B) → b ◂ c → b ◂ (c +B d)
+subtree-of-+B-left c Z     b h = h
+subtree-of-+B-left c (S d) b h = ◂-continue (subtree-of-+B-left c d b h)
+subtree-of-+B-left c (L ϕ) b h = ◂-pick (λ i → c +B ϕ i) 0 (subtree-of-+B-left c (ϕ 0) b h)
 
-extend-path-left-+B-correct : (b c : B) (p : PathThroughS b)
-                            → Path-to-ordinal p ＝ Path-to-ordinal (extend-path-left-+B b c p)
-extend-path-left-+B-correct b Z     p = refl
-extend-path-left-+B-correct b (S c) p = extend-path-left-+B-correct b c p
-extend-path-left-+B-correct b (L x) p = extend-path-left-+B-correct b (x zero) p
-
-extend-path-right-+B : (b c : B) → PathThroughS c → PathThroughS (b +B c)
-extend-path-right-+B b (S c) (stop c)     = stop (b +B c)
-extend-path-right-+B b (S c) (continue p) = continue (extend-path-right-+B b c p)
-extend-path-right-+B b (L ϕ) (pick ϕ n p) = pick (λ i → b +B ϕ i) n (extend-path-right-+B b (ϕ n) p)
-
-extend-path-right-+B-correct : (b c : B) (p : PathThroughS c)
-                             → b +B Path-to-ordinal p ＝ Path-to-ordinal (extend-path-right-+B b c p)
-extend-path-right-+B-correct b (S c) (stop c)     = refl
-extend-path-right-+B-correct b (S c) (continue p) = extend-path-right-+B-correct b c p
-extend-path-right-+B-correct b (L ϕ) (pick ϕ n p) = extend-path-right-+B-correct b (ϕ n) p
+subtree-of-+B-right : (c d b : B) → b ◂ d → (c +B b) ◂ (c +B d)
+subtree-of-+B-right c (S d) b (◂-stop h) = ◂-stop (+B-respects-≈-right c b d h)
+subtree-of-+B-right c (S d) b (◂-continue h) =
+ ◂-continue (subtree-of-+B-right c d b h)
+subtree-of-+B-right c (L ϕ) b (◂-pick ϕ n h) =
+ ◂-pick (λ z → c +B ϕ z) n (subtree-of-+B-right c (ϕ n) b h)
 
 \end{code}
 
@@ -71,7 +62,8 @@ and monotonic in both arguments
 
 +B-inflationary-right : (b c : B) → c ⊑ b +B c
 +B-inflationary-right b Z     = Z-⊑ _
-+B-inflationary-right b (S c) = S-⊑ _ _ (stop (b +B c)) (+B-inflationary-right b c)
++B-inflationary-right b (S c) =
+ S-⊑ c (b +B c) (S (b +B c)) (+B-inflationary-right b c) (◂-stop (≈-refl (b +B c)))
 +B-inflationary-right b (L ϕ) =
  L-⊑ _ _ (λ i → ⊑-trans _ _ _
                  (L-is-upper-bound ϕ i)
@@ -79,25 +71,36 @@ and monotonic in both arguments
 
 +B-inflationary-left : (b c : B) → b ⊑ b +B c
 +B-inflationary-left b c =
- sufficient-path-condition-for-⊑ b (b +B c)
-  (λ p → extend-path-left-+B b c p , extend-path-left-+B-correct b c p)
+ share-subtrees-implies-⊑ b (b +B c) (subtree-of-+B-left b c)
 
 +B-monotonic-right : (b c d : B) → c ⊑ d → b +B c ⊑ b +B d
 +B-monotonic-right b Z d h = +B-inflationary-left b d
-+B-monotonic-right b (S c) d (S-⊑ c d p h) =
- S-⊑ (b +B c) (b +B d) (extend-path-right-+B b d p)
-  (transport ((b +B c) ⊑_)
-   (extend-path-right-+B-correct b d p)
-   (+B-monotonic-right b c (Path-to-ordinal p) h))
++B-monotonic-right b (S c) d (S-⊑ c e d h l) =
+ S-⊑ (b +B c) (b +B e) (b +B d)
+  (+B-monotonic-right b c e h)
+  (subtree-of-+B-right b d e l)
 +B-monotonic-right b (L ϕ) d h =
- L-⊑ (λ i → b +B ϕ i) (b +B d) (λ i → +B-monotonic-right b (ϕ i) d
-   (⊑-trans (ϕ i) (L ϕ) d (L-is-upper-bound ϕ i) h))
+ L-⊑ (λ i → b +B ϕ i) (b +B d)
+  λ i → +B-monotonic-right b (ϕ i) d
+         (⊑-trans (ϕ i) (L ϕ) d (L-is-upper-bound ϕ i) h)
 
 +B-monotonic-left : (b c d : B) → b ⊑ d → b +B c ⊑ d +B c
 +B-monotonic-left b Z     d h = h
 +B-monotonic-left b (S c) d h = S-is-monotonic (b +B c) (d +B c) (+B-monotonic-left b c d h)
 +B-monotonic-left b (L ϕ) d h = L-is-monotonic (λ i → b +B ϕ i) (λ i → d +B ϕ i)
  (λ i → +B-monotonic-left b (ϕ i) d h)
+
++B-preserves-⊒⊑-right : (b c d : B)
+                     → c ⊒⊑ d
+                     → b +B c ⊒⊑ b +B d
++B-preserves-⊒⊑-right b c d (h , l) = +B-monotonic-right b c d h ,
+                                      +B-monotonic-right b d c l
+
++B-preserves-⊒⊑-left : (b c d : B)
+                     → b ⊒⊑ d
+                     → b +B c ⊒⊑ d +B c
++B-preserves-⊒⊑-left b c d (h , l) = +B-monotonic-left b c d h ,
+                                     +B-monotonic-left d c b l
 
 \end{code}
 
@@ -110,9 +113,8 @@ The equivalent statement for the right is not true: for example, the sum
 \begin{code}
 
 +B-strictly-inflationary-left : (b c : B) → Z ⊏ c → b ⊏ b +B c
-+B-strictly-inflationary-left b c (p , _) =
- extend-path-right-+B b c p ,
- transport (b ⊑_) (extend-path-right-+B-correct b c p) (+B-inflationary-left b (Path-to-ordinal p))
++B-strictly-inflationary-left b c (d , h , l) =
+ b +B d , +B-inflationary-left b d , subtree-of-+B-right b c d l
 
 \end{code}
 
@@ -122,11 +124,8 @@ the right, but not on the left.
 \begin{code}
 
 +B-strictly-monotonic-right : (b c d : B) → c ⊏ d → b +B c ⊏ b +B d
-+B-strictly-monotonic-right b c d (p , h) =
- extend-path-right-+B b d p ,
- transport ((b +B c) ⊑_)
-  (extend-path-right-+B-correct b d p)
-  (+B-monotonic-right b c (Path-to-ordinal p) h)
++B-strictly-monotonic-right b c d (e , h , l) =
+ b +B e , +B-monotonic-right b c e h , subtree-of-+B-right b d e l
 
 \end{code}
 
@@ -138,20 +137,40 @@ not strictly inflationary fixing the left summand.
 
 1+ω-less-than-ω+1 : S Z +B ω ⊏ ω +B S Z
 1+ω-less-than-ω+1 =
-  stop ω ,
-  L-⊑ (λ i → S Z +B finite i) ω
-   (λ n → transport (_⊑ ω) (aux n) (L-is-upper-bound finite (succ n)))
+ ω ,
+ L-⊑ (λ i → S Z +B finite i) ω
+  (λ n → ⊑-trans _ _ _ (aux n) (L-is-upper-bound finite (succ n))) ,
+ ◂-stop (≈-refl ω)
  where
-  aux : (n : ℕ) → finite (succ n) ＝ S Z +B finite n
-  aux zero     = refl
-  aux (succ n) = ap S (aux n)
+  aux : (n : ℕ) → S Z +B finite n ⊑ finite (succ n)
+  aux zero     = S-⊑ Z Z (S Z) (Z-⊑ Z) (◂-stop Z≈)
+  aux (succ n) = S-⊑ (S Z +B finite n) (S (finite n)) (S (S (finite n)))
+                  (aux n)
+                  (◂-stop (S≈ (≈-refl (finite n))))
 
 \end{code}
 
 \section{Properties of Multiplication}
 
-We can build paths from the product of two ordinals from two paths through
-each factor.
+TODO write something
+
+\begin{code}
+
+0-left-zero-×B : (b : B) → Z ×B b ⊒⊑ Z
+0-left-zero-×B Z     = Z-⊑ Z , Z-⊑ Z
+0-left-zero-×B (S b) = 0-left-zero-×B b
+0-left-zero-×B (L ϕ) = L-⊑ (λ i → Z ×B ϕ i) Z (λ i → pr₁ (0-left-zero-×B (ϕ i))) ,
+                       Z-⊑ (L (λ i → Z ×B ϕ i))
+
+1-left-unit-×B : (b : B) → b ≈ S Z ×B b
+1-left-unit-×B Z     = Z≈
+1-left-unit-×B (S b) = S≈ (1-left-unit-×B b)
+1-left-unit-×B (L ϕ) = L≈ ϕ (λ i → S Z ×B ϕ i) (λ n → 1-left-unit-×B (ϕ n))
+
+\end{code}
+
+We can build strict subtrees of the product of two ordinals from
+a subtree of each factor.
 
 The geometric picture is as follows: given ordinals α and β like
 
@@ -168,27 +187,20 @@ their product will consist of a copy of α for each point of β like
  α × β = (*  *  *  * ...)  (*  *  *  * ...) (*  *  *  * ...)
 ```
 
-Hence we can use a path from β to reach a copy of α, and from there use
-a path from α.
+Hence we can use a subtree of β to reach a copy of α, and from there use
+the subtree of α.
 
 \begin{code}
 
-join-paths-×B : {b c : B} → PathThroughS b → PathThroughS c  → PathThroughS (b ×B c)
-join-paths-×B {b} {S c} p (stop c)     = extend-path-right-+B (b ×B c) b p
-join-paths-×B {b} {S c} p (continue q) = extend-path-left-+B (b ×B c) b (join-paths-×B p q)
-join-paths-×B {b} {L ϕ} p (pick ϕ n q) = pick (λ i → b ×B ϕ i) n (join-paths-×B p q)
-
-join-paths-×B-correct : {b c : B} (p : PathThroughS b) (q : PathThroughS c)
-                      → (b ×B Path-to-ordinal q) +B Path-to-ordinal p ＝ Path-to-ordinal (join-paths-×B p q)
-join-paths-×B-correct {b} {S c} p (stop c)     = extend-path-right-+B-correct (b ×B c) b p
-join-paths-×B-correct {b} {S c} p (continue q) =
- (b ×B Path-to-ordinal q) +B Path-to-ordinal p
-  ＝⟨ join-paths-×B-correct p q ⟩
- Path-to-ordinal (join-paths-×B p q)
-  ＝⟨ extend-path-left-+B-correct (b ×B c) b (join-paths-×B p q) ⟩
- Path-to-ordinal (extend-path-left-+B (b ×B c) b (join-paths-×B p q))
-  ∎
-join-paths-×B-correct {b} {L ϕ} p (pick ϕ n q) = join-paths-×B-correct p q
+subtree-of-×B : (b c d e : B) → d ◂ b → e ◂ c → ((b ×B e) +B d) ◂ (b ×B c)
+subtree-of-×B b (S c) d e h (◂-stop l) =
+ ≈-preserves-◂-right
+  (subtree-of-+B-right (b ×B e) b d h)
+  (+B-respects-≈-left (b ×B e) b (b ×B c) (×B-respects-≈-right b e c l))
+subtree-of-×B b (S c) d e h (◂-continue l) =
+ subtree-of-+B-left (b ×B c) b ((b ×B e) +B d) (subtree-of-×B b c d e h l)
+subtree-of-×B b (L ϕ) d e h (◂-pick ϕ n l) =
+ ◂-pick (λ i → b ×B ϕ i) n (subtree-of-×B b (ϕ n) d e h l)
 
 \end{code}
 
@@ -199,44 +211,39 @@ strictly greater than zero.
 \begin{code}
 
 ×B-inflationary-right : (b c : B) → Z ⊏ b → c ⊑ b ×B c
-×B-inflationary-right b Z     (q , h) = Z-⊑ Z
-×B-inflationary-right b (S c) (q , h) = ⊑-trans _ _ _ I II
+×B-inflationary-right b Z h = Z-⊑ Z
+×B-inflationary-right b (S c) (d , h , l) = ⊑-trans _ _ _ I II
  where
   I : S c ⊑ c +B b
-  I = +B-monotonic-right c (S Z) b (S-⊑ Z b q h)
+  I = +B-monotonic-right c (S Z) b (S-⊑ Z d b (Z-⊑ d) l)
 
   II : c +B b ⊑ (b ×B c) +B b
-  II = +B-monotonic-left c b (b ×B c) (×B-inflationary-right b c (q , h))
-×B-inflationary-right b (L ϕ) (q , h) =
- L-is-monotonic ϕ (λ i → b ×B ϕ i) (λ i → ×B-inflationary-right b (ϕ i) (q , h))
-
+  II = +B-monotonic-left c b (b ×B c) (×B-inflationary-right b c (d , h , l))
+×B-inflationary-right b (L ϕ) h =
+ L-is-monotonic ϕ (λ i → b ×B ϕ i) (λ i → ×B-inflationary-right b (ϕ i) h)
 
 ×B-inflationary-left : (b c : B) → Z ⊏ c → b ⊑ b ×B c
-×B-inflationary-left b c (q , _) = simulation-implies-⊑ b (b ×B c) aux
+×B-inflationary-left b c (d , _ , h) = simulation-implies-⊑ b (b ×B c) sim
  where
-  aux : (p : PathThroughS b)
-      → Σ q ꞉ PathThroughS (b ×B c) , Path-to-ordinal p ⊑ Path-to-ordinal q
-  aux p = join-paths-×B p q ,
-          transport (Path-to-ordinal p ⊑_)
-           (join-paths-×B-correct p q)
-           (+B-inflationary-right (b ×B Path-to-ordinal q) (Path-to-ordinal p))
+  sim : b simulates (b ×B c)
+  sim e l = (b ×B d) +B e ,
+            subtree-of-×B b c e d l h ,
+            +B-inflationary-right (b ×B d) e
 
 ×B-monotonic-right : (b c d : B) → c ⊑ d → b ×B c ⊑ b ×B d
 ×B-monotonic-right b Z d h = Z-⊑ (b ×B d)
-×B-monotonic-right b (S c) (S d) (S-⊑ c (S d) (stop d)     h) =
- +B-monotonic-left (b ×B c) b (b ×B d) (×B-monotonic-right b c d h)
-×B-monotonic-right b (S c) (S d) (S-⊑ c (S d) (continue p) h) =
+×B-monotonic-right b (S c) (S d) (S-⊑ c e (S d) h (◂-stop l)) =
  +B-monotonic-left (b ×B c) b (b ×B d)
-  (×B-monotonic-right b c d
-   (⊑-trans c (Path-to-ordinal p) d h (path-to-ordinal-⊑ p)))
-×B-monotonic-right b (S c) (L ϕ) (S-⊑ c (L ϕ) (pick ϕ n p) h) =
-  ⊑-trans _ _ _ I II
- where
-  I : (b ×B c) +B b ⊑ b ×B ϕ n
-  I = ×B-monotonic-right b (S c) (ϕ n) (S-⊑ c (ϕ n) p h)
-
-  II : b ×B ϕ n ⊑ L (λ i → b ×B ϕ i)
-  II = L-is-upper-bound (λ i → b ×B ϕ i) n
+  (≈-preserves-⊑-right
+   (×B-monotonic-right b c e h)
+   (×B-respects-≈-right b e d l))
+×B-monotonic-right b (S c) (S d) (S-⊑ c e (S d) h (◂-continue l)) =
+ +B-monotonic-left (b ×B c) b (b ×B d)
+  (×B-monotonic-right b c d (⊑-trans _ _ _ h (◂-implies-⊑ l)))
+×B-monotonic-right b (S c) (L ϕ) (S-⊑ c e (L ϕ) h (◂-pick ϕ n l)) =
+  ⊑-trans ((b ×B c) +B b) (b ×B ϕ n) (L (λ i → b ×B ϕ i))
+   (×B-monotonic-right b (S c) (ϕ n) (S-⊑ c e (ϕ n) h l))
+   (L-is-upper-bound (λ i → b ×B ϕ i) n)
 ×B-monotonic-right b (L ϕ) d (L-⊑ ϕ d h) =
  L-⊑ (λ i → b ×B ϕ i) (b ×B d) (λ i → ×B-monotonic-right b (ϕ i) d (h i))
 
@@ -253,43 +260,50 @@ strictly greater than zero.
  L-is-monotonic (λ i → b ×B ϕ i) (λ i → d ×B ϕ i)
   (λ i → ×B-monotonic-left b (ϕ i) d h)
 
+×B-preserves-⊒⊑-right : (b c d : B)
+                     → c ⊒⊑ d
+                     → b ×B c ⊒⊑ b ×B d
+×B-preserves-⊒⊑-right b c d (h , l) = ×B-monotonic-right b c d h ,
+                                      ×B-monotonic-right b d c l
+
+×B-preserves-⊒⊑-left : (b c d : B)
+                     → b ⊒⊑ d
+                     → b ×B c ⊒⊑ d ×B c
+×B-preserves-⊒⊑-left b c d (h , l) = ×B-monotonic-left b c d h ,
+                                     ×B-monotonic-left d c b l
 \end{code}
 
-Similarly to addition, fixing the left factor to be greater than 1 makes
-multiplication a strictly inflationary function.
+Similarly to addition, fixing the right factor to be greater than 1 makes
+multiplication a strictly inflationary function for inputs greater than 0.
 
 \begin{code}
 
 ×B-strictly-inflationary-left : (b c : B) → Z ⊏ b → S Z ⊏ c → b ⊏ b ×B c
-×B-strictly-inflationary-left b c (p , _) (q , S-⊑ Z _ r h) =
-  join-paths-×B p q ,
-  transport (b ⊑_) (join-paths-×B-correct p q) (⊑-trans _ _ _ I II)
+×B-strictly-inflationary-left b c (d , _ , h) (e , S-⊑ Z f e r l , m) =
+  (b ×B e) +B d , ⊑-trans _ _ _ I II , subtree-of-×B b c d e h m
  where
-  I : b ⊑ b ×B Path-to-ordinal q
-  I = ×B-inflationary-left b (Path-to-ordinal q) (r , h)
+  I : b ⊑ b ×B e
+  I = ×B-inflationary-left b e (f , Z-⊑ f , l)
 
-  II : b ×B Path-to-ordinal q ⊑ (b ×B Path-to-ordinal q) +B Path-to-ordinal p
-  II = +B-inflationary-left (b ×B Path-to-ordinal q) (Path-to-ordinal p)
+  II : b ×B e ⊑ (b ×B e) +B d
+  II = +B-inflationary-left (b ×B e) d
 
 \end{code}
 
-And fixing the right factor to be greater than 1 turns multiplication into a
+And fixing the right factor to be greater than 0 turns multiplication into a
 strictly monotonic function.
 
 \begin{code}
 
-×B-strictly-monotonic-right : (b c d : B) → S Z ⊏ b → c ⊏ d → (b ×B c) ⊏ (b ×B d)
-×B-strictly-monotonic-right b c d (p , S-⊑ _ _ q _) (r , l) =
-  join-paths-×B p r ,
-  transport (b ×B c ⊑_)
-   (join-paths-×B-correct p r)
-   (⊑-trans _ _ _ I II)
+×B-strictly-monotonic-right : (b c d : B) → Z ⊏ b → c ⊏ d → (b ×B c) ⊏ (b ×B d)
+×B-strictly-monotonic-right b c d (e , _ , m) (g , n , o) =
+  (b ×B g) +B e , ⊑-trans _ _ _ I II , subtree-of-×B b d e g m o
  where
-  I : b ×B c ⊑ b ×B Path-to-ordinal r
-  I = ×B-monotonic-right b c (Path-to-ordinal r) l
+  I : b ×B c ⊑ b ×B g
+  I = ×B-monotonic-right b c g n
 
-  II : b ×B Path-to-ordinal r ⊑ (b ×B Path-to-ordinal r) +B Path-to-ordinal p
-  II = +B-inflationary-left (b ×B Path-to-ordinal r) (Path-to-ordinal p)
+  II : b ×B g ⊑ (b ×B g) +B e
+  II = +B-inflationary-left (b ×B g) e
 
 \end{code}
 
@@ -297,53 +311,25 @@ TODO talk about linking multiplication and addition
 
 \begin{code}
 
--- b and c both at least 2
---+B-⊑-×B : (b c : B) → S Z ⊏ b → S Z ⊏ c → b +B c ⊑ b ×B c
---+B-⊑-×B b (S Z) h r = 𝟘-elim (⊏-irrefl (S Z) r)
---+B-⊑-×B b (S (S Z)) (p , S-⊑ _ _ q _) r =
--- S-⊑ (S b) ((Z +B b) +B b)
---  (extend-path-right-+B (Z +B b) b p)
---  (S-⊑ b (Path-to-ordinal (extend-path-right-+B (Z +B b) b p))
---   (transport PathThroughS
---    (extend-path-right-+B-correct (Z +B b) b p)
---    (extend-path-right-+B (Z +B b) (Path-to-ordinal p) q))
---   (transport (b ⊑_) (aux (Z +B b) b p q) (⊑-trans _ _ _ I II)))
--- where
---  aux : (a b : B)
---        (p : PathThroughS b)
---        (q : PathThroughS (Path-to-ordinal p))
---      → a +B Path-to-ordinal q ＝
---         Path-to-ordinal (transport PathThroughS (extend-path-right-+B-correct a b p) (extend-path-right-+B a (Path-to-ordinal p) q))
---  aux a (S b) (stop b)     q = extend-path-right-+B-correct a b q
---  aux a (S b) (continue p) q = aux a b p q
---  aux a (L ϕ) (pick ϕ n p) q = aux a (ϕ n) p q
---
---  I : b ⊑ Z +B b
---  I = +B-inflationary-right Z b
---
---  II : Z +B b ⊑ (Z +B b) +B Path-to-ordinal q
---  II = +B-inflationary-left (Z +B b) (Path-to-ordinal q)
---+B-⊑-×B b (S (S (S c))) h r =
--- ⊑-trans _ _ _ (+B-monotonic-left (S (S (b +B c))) (S Z) (((b ×B c) +B b) +B b) (+B-⊑-×B b (S (S c)) h (stop (S c) , S-⊑ Z (S c) (stop c) (Z-⊑ c)))) II
--- where
---  IH : S (S (b +B c)) ⊑ ((b ×B c) +B b) +B b
---  IH = +B-⊑-×B b (S (S c)) h (stop (S c) , S-⊑ Z (S c) (stop c) (Z-⊑ c))
---
---  I : S (S (b +B c)) +B S Z ⊑ (((b ×B c) +B b) +B b) +B S Z
---  I = +B-monotonic-left (S (S (b +B c))) (S Z) (((b ×B c) +B b) +B b) IH
---
---  II :  (((b ×B c) +B b) +B b) +B S Z ⊑ (((b ×B c) +B b) +B b) +B b
---  II = +B-monotonic-right _ _ _ (⊏-implies-⊑ _ _ h)
---+B-⊑-×B b (S (S (L ϕ))) h (p , S-⊑ _ _ q _) = {!!}
--- where
---  goal : ((L (λ i → b +B ϕ i)) +B b) +B b ⊑ (L (λ i → b ×B ϕ i) +B b) +B b
---  goal = {!!}
---  --I : (b +B c) +B S Z ⊑ (b +B c) +B b
---  --I = +B-monotonic-right (b +B c) (S Z) b (S-⊑ Z b p (Z-⊑ (Path-to-ordinal p)))
---  --II : {!!}
---  --II = +B-monotonic-left (b +B c) b (b ×B c) (+B-⊑-×B {b} {c} (p , S-⊑ Z (Path-to-ordinal p) q h) {!!})
---+B-⊑-×B b (S (L ϕ)) (p , S-⊑ _ _ q h) (r , S-⊑ _ _ s l) = {!!}
---+B-⊑-×B b (L ϕ) (p , S-⊑ _ _ q h) (r , S-⊑ _ _ s l) = {!!}
+increment-⊑-×B : (b c : B)
+               → Z ⊏ b
+               → S Z ⊏ c
+               → S b ⊑ b ×B c
+increment-⊑-×B b (S c) h l = ⊑-trans _ _ _ I II
+ where
+  I : S b ⊑ S (b ×B c)
+  I = S-is-monotonic b (b ×B c) (×B-inflationary-left b c (S-reflects-⊏ Z c l))
+
+  II : S (b ×B c) ⊑ (b ×B c) +B b
+  II = +B-monotonic-right (b ×B c) (S Z) b (⊏-implies-S-⊑ Z b h)
+increment-⊑-×B b (L ϕ) h (e , m , ◂-pick ϕ i n) =
+  ⊑-trans _ _ _ I II
+ where
+  I : S b ⊑ b ×B ϕ i
+  I = increment-⊑-×B b (ϕ i) h (e , m , n)
+
+  II : b ×B ϕ i ⊑ L (λ i → b ×B ϕ i)
+  II = L-is-upper-bound (λ i → b ×B ϕ i) i
 
 \end{code}
 
@@ -353,50 +339,99 @@ TODO talk about results
 
 \begin{code}
 
--- TODO results about exponentiation go here
+0-powers-are-1 : (b : B) → S Z ≈ b ^B Z
+0-powers-are-1 Z     = S≈ Z≈
+0-powers-are-1 (S b) = 0-powers-are-1 b
+0-powers-are-1 (L ϕ) = 0-powers-are-1 (ϕ zero)
 
-data PathThroughS_Over_ : B → B → 𝓤₀ ̇ where
+foo : (b c : B) → Z ⊒⊑ c → S Z ⊒⊑ b ^B c
+foo b Z     h = S-⊑ Z Z (S Z) (Z-⊑ Z) (◂-stop Z≈) , S-⊑ Z Z (S Z) (pr₁ h) (◂-stop Z≈)
+foo b (S c) h = 𝟘-elim ?
+foo b (L ϕ) h = {!!}
 
- 1-path : {b : B}
-        → PathThroughS b
-        → PathThroughS b Over (S Z)
+data SubtreeOf_IndexedBy_ (b : B) : B → 𝓤₀ ̇ where
+ 1-tree : (c : B)
+        → c ◂ b
+        → SubtreeOf b IndexedBy (S Z)
 
- S-path : {b c : B}
-        → PathThroughS b Over c
-        → PathThroughS b
-        → PathThroughS b Over (S c)
+ S-tree : {c : B} (d : B)
+        → SubtreeOf b IndexedBy c
+        → d ◂ b
+        → SubtreeOf b IndexedBy (S c)
 
- L-path : {b : B}
-          (ϕ : ℕ → B)
-        → (n : ℕ)
-        → PathThroughS b Over (ϕ n)
-        → PathThroughS b
-        → PathThroughS b Over (L ϕ)
+ L-tree : (ϕ : ℕ → B)
+          (n : ℕ)
+        → SubtreeOf b IndexedBy (ϕ n)
+        → SubtreeOf b IndexedBy (L ϕ)
 
-join-paths-^B : (b : B) {c : B}
-              → PathThroughS b Over c
-              → PathThroughS (b ^B c)
-join-paths-^B b (1-path p)        = join-paths-×B (stop Z) p
-join-paths-^B b (S-path ps p)     = join-paths-×B (join-paths-^B b ps) p
-join-paths-^B b (L-path ϕ n ps p) = pick (λ i → b ^B ϕ i) n (join-paths-^B b ps)
+join-subtrees : {b c : B} → SubtreeOf b IndexedBy c → B
+join-subtrees {b}       (1-tree d h)    = d
+join-subtrees {b} {S c} (S-tree d ds h) = ((b ^B c) ×B d) +B join-subtrees ds
+join-subtrees {b}       (L-tree ϕ n ts) = join-subtrees ts
 
+join-subtrees-⊏-^B : {b c : B}
+                   → (ts : SubtreeOf b IndexedBy c)
+                   → join-subtrees ts ◂ (b ^B c)
+join-subtrees-⊏-^B {b} (1-tree c h) = ≈-preserves-◂-right h (1-left-unit-×B b)
+join-subtrees-⊏-^B {b} {S c} (S-tree d ds h) =
+ subtree-of-×B (b ^B c) b (join-subtrees ds) d (join-subtrees-⊏-^B ds) h
+join-subtrees-⊏-^B (L-tree ϕ n ts) =
+ ◂-pick _ n (join-subtrees-⊏-^B ts)
 
---^B-inflationary-right : (b c : B) → S Z ⊏ b → c ⊑ b ^B c
---^B-inflationary-right b Z     h = Z-⊑ (S Z)
---^B-inflationary-right b (S c) (p , S-⊑ _ _ q h) =
---  {!!}
--- where
---  I : c +B S Z ⊑ c ×B b
---  I = {!!}
+0⊏-is-decidable : B → 𝓤₀ ̇
+0⊏-is-decidable b = (c : B) → c ◂ b → Z ⊏ c + Z ⊒⊑ c
+
+^B-inflationary-right : (b c : B)
+                      → 0⊏-is-decidable c
+                      → S Z ⊏ b
+                      → c ⊑ b ^B c
+^B-inflationary-right b Z     h l = Z-⊑ (S Z)
+^B-inflationary-right b (S c) h l =
+  cases
+   (λ m → ⊑-trans _ _ _ (I1 m) II1)
+   {!!}
+   (h c (◂-stop (≈-refl c)))
+ where
+  h' : 0⊏-is-decidable c
+  h' c m = h c (◂-continue m)
+
+  I1 : Z ⊏ c → S c ⊑ c ×B b
+  I1 m = increment-⊑-×B c b m l
+
+  II1 : c ×B b ⊑ (b ^B c) ×B b
+  II1 = ×B-monotonic-left c b (b ^B c)
+         (^B-inflationary-right b c h' l)
+
+  I2 : Z ⊒⊑ c → S c ⊑ (b ^B c) ×B b
+  I2 m = {!!}
+   where
+    I : S c ⊑ S Z
+    I = S-is-monotonic _ _ (pr₂ m)
+
+    II : S Z ⊑ b
+    II = ⊏-implies-⊑ _ _ l
+
+    III : b ⊑ S Z ×B b
+    III = ≈-preserves-⊑-left (⊑-refl (S Z ×B b)) (≈-sym (1-left-unit-×B b))
+
+    IV : S Z ×B b ⊑ (b ^B c) ×B b
+    IV = ×B-monotonic-left (S Z) b (b ^B c)
+          (⊑-trans _ _ _ {!!} {!!})
+
+^B-inflationary-right b (L ϕ) h l =
+  L-⊑ ϕ (L (λ i → b ^B ϕ i))
+   (λ i → ⊑-trans _ _ _
+    (^B-inflationary-right b (ϕ i) (h' i) l)
+    (L-is-upper-bound (λ i → b ^B ϕ i) i))
+ where
+  h' : (i : ℕ) → 0⊏-is-decidable (ϕ i)
+  h' i d m = h d (◂-pick ϕ i m)
+
+-- IDEA: define "subtype" of brouwer trees with only limits of strictly
+-- increasing trees. All arithmetic operations should preserve this. So namely
+-- all towers of ω will obey this and this might help in proofs.
 --
---  II : c ×B b ⊑ (b ^B c) ×B b
---  II = ×B-monotonic-left c b (b ^B c)
---        (^B-inflationary-right b c (p , S-⊑ Z (Path-to-ordinal p) q h))
---^B-inflationary-right b (L ϕ) h =
--- L-⊑ ϕ (L (λ i → b ^B ϕ i))
---  (λ i → ⊑-trans _ _ _
---   (^B-inflationary-right b (ϕ i) h)
---   (L-is-upper-bound (λ i → b ^B ϕ i) i))
+-- (due to Nicolai Kraus)
 
 \end{code}
 

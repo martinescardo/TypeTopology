@@ -101,19 +101,19 @@ hereditarily-smaller-than-ε₀ {σ ⇒ τ} f =
 \begin{code}
 
 zero-is-less-than-one : 𝐙 ⊏ 𝐒 𝐙
-zero-is-less-than-one = stop 𝐙 , ⊑-refl 𝐙
+zero-is-less-than-one = 𝐙 , Z-⊑ 𝐙 , ◂-stop Z≈
 
 zero-is-less-than-any-successor : (b : Brw) → 𝐙 ⊏ 𝐒 b
-zero-is-less-than-any-successor b = stop b , Z-⊑ b
+zero-is-less-than-any-successor b = b , (Z-⊑ b) , ◂-stop (≈-refl b)
 
 is-strictly-increasing : (ℕ → Brw) → 𝓤₀  ̇
 is-strictly-increasing f = (n : ℕ) → f n ⊏ f (succ n)
 
 zero-is-below-ω : 𝐙 ⊏ ω
-zero-is-below-ω = pick finite 1 (stop 𝐙) , ⊑-refl 𝐙
+zero-is-below-ω = 𝐙 , Z-⊑ 𝐙 , ◂-pick finite 1 (◂-stop Z≈)
 
 zero-is-below-ε₀ : 𝐙 ⊏ ε₀
-zero-is-below-ε₀ = (pick ω-tower 0 (pr₁ (zero-is-below-ω))) , ⊑-refl 𝐙
+zero-is-below-ε₀ = 𝐙 , Z-⊑ 𝐙 , ◂-pick ω-tower zero (◂-pick finite 1 (◂-stop Z≈))
 
 zero-is-hereditarily-smaller-than-ε₀ : hereditarily-smaller-than-ε₀ zero'
 zero-is-hereditarily-smaller-than-ε₀ = zero-is-below-ε₀

@@ -26,7 +26,29 @@ u +B Z   = u
 u +B S v = S (u +B v)
 u +B L ϕ = L (λ i → u +B ϕ i)
 
-infixr 4 _+B_
+infixr 6 _+B_
+
++B-respects-≈-left : (b c d : B)
+                   → b ≈ d
+                   → b +B c ≈ d +B c
++B-respects-≈-left b Z     d h = h
++B-respects-≈-left b (S c) d h = S≈ (+B-respects-≈-left b c d h)
++B-respects-≈-left b (L ϕ) d h = L≈ _ _ (λ n → +B-respects-≈-left b (ϕ n) d h)
+
++B-respects-≈-right : (b c d : B)
+                    → c ≈ d
+                    → b +B c ≈ b +B d
++B-respects-≈-right b Z     Z     Z≈         = ≈-refl b
++B-respects-≈-right b (S c) (S d) (S≈ h)     = S≈ (+B-respects-≈-right b c d h)
++B-respects-≈-right b (L ϕ) (L ψ) (L≈ ϕ ψ x) =
+ L≈ _ _ (λ n → +B-respects-≈-right b (ϕ n) (ψ n) (x n))
+
++B-respects-≈ : {b c d e : B}
+              → b ≈ c
+              → d ≈ e
+              → b +B d ≈ c +B e
++B-respects-≈ {b} {c} {d} {e} h l =
+ ≈-trans (+B-respects-≈-left b d c h) (+B-respects-≈-right c d e l)
 
 \end{code}
 
@@ -39,7 +61,30 @@ u ×B Z   = Z
 u ×B S v = (u ×B v) +B u
 u ×B L ϕ = L (λ i → u ×B ϕ i)
 
-infixr 3 _×B_
+infixr 5 _×B_
+
+×B-respects-≈-left : (b c d : B)
+                   → b ≈ d
+                   → b ×B c ≈ d ×B c
+×B-respects-≈-left b Z     d h = Z≈
+×B-respects-≈-left b (S c) d h = +B-respects-≈ (×B-respects-≈-left b c d h) h
+×B-respects-≈-left b (L ϕ) d h = L≈ _ _ (λ n → ×B-respects-≈-left b (ϕ n) d h)
+
+×B-respects-≈-right : (b c d : B)
+                    → c ≈ d
+                    → b ×B c ≈ b ×B d
+×B-respects-≈-right b Z Z Z≈ = Z≈
+×B-respects-≈-right b (S c) (S d) (S≈ h) =
+ +B-respects-≈-left (b ×B c) b (b ×B d) (×B-respects-≈-right b c d h)
+×B-respects-≈-right b (L ϕ) (L ψ) (L≈ ϕ ψ x) =
+ L≈ _ _ (λ n → ×B-respects-≈-right b (ϕ n) (ψ n) (x n))
+
+×B-respects-≈ : {b c d e : B}
+              → b ≈ c
+              → d ≈ e
+              → b ×B d ≈ c ×B e
+×B-respects-≈ {b} {c} {d} {e} h l =
+ ≈-trans (×B-respects-≈-left b d c h) (×B-respects-≈-right c d e l)
 
 \end{code}
 
@@ -52,7 +97,30 @@ u ^B  Z     = S Z
 u ^B  (S v) = (u ^B v) ×B u
 u ^B  (L ϕ) = L (λ i → u ^B ϕ i)
 
-infixr 2 _^B_
+^B-respects-≈-left : (b c d : B)
+                   → b ≈ d
+                   → b ^B c ≈ d ^B c
+^B-respects-≈-left b Z     d h = S≈ Z≈
+^B-respects-≈-left b (S c) d h = ×B-respects-≈ (^B-respects-≈-left b c d h) h
+^B-respects-≈-left b (L ϕ) d h = L≈ _ _ (λ n → ^B-respects-≈-left b (ϕ n) d h)
+
+^B-respects-≈-right : (b c d : B)
+                    → c ≈ d
+                    → b ^B c ≈ b ^B d
+^B-respects-≈-right b Z Z Z≈ = S≈ Z≈
+^B-respects-≈-right b (S c) (S d) (S≈ h) =
+ ×B-respects-≈-left (b ^B c) b (b ^B d) (^B-respects-≈-right b c d h)
+^B-respects-≈-right b (L ϕ) (L ψ) (L≈ ϕ ψ x) =
+ L≈ _ _ (λ n → ^B-respects-≈-right b (ϕ n) (ψ n) (x n))
+
+^B-respects-≈ : {b c d e : B}
+              → b ≈ c
+              → d ≈ e
+              → b ^B d ≈ c ^B e
+^B-respects-≈ {b} {c} {d} {e} h l =
+ ≈-trans (^B-respects-≈-left b d c h) (^B-respects-≈-right c d e l)
+
+infixr 4 _^B_
 
 \end{code}
 
