@@ -607,7 +607,7 @@ ainjective-is-retract-of-power-of-universe {𝓤} D ua =
 Π-ainjective {𝓣}  {𝓦} {𝓤} {𝓥} {A} {D} i {X} {Y} j e f = f' , g
  where
   l : (a : A) → Σ h ꞉ (Y → D a) , h ∘ j ∼ (λ x → f x a)
-  l a = (i a) j e (λ x → f x a)
+  l a = i a j e (λ x → f x a)
 
   f' : Y → (a : A) → D a
   f' y a = pr₁ (l a) y

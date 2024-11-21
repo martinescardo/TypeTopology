@@ -1,6 +1,6 @@
 Martin Escardo, August 2023
 
-More about injectivity.
+Algebraic injectivity over small maps.
 
 \begin{code}
 
@@ -94,9 +94,12 @@ ainjectivity-over-small-maps {𝓤} {𝓥} {𝓦} {𝓣₀} {𝓣₂} 𝓣₁ D 
 \end{code}
 
 Added by Martin Escardo and Tom de Jong 24th October 2024. As an
-application of the above, we get the following version of
-embedding-retract from InjectiveTypes/Blackboard with better universe
-levels.
+application of the above, we improve the universe levels of Lemma 14
+of [1], which corresponds to `embedding-retract` from
+InjectiveTypes/Blackboard.
+
+[1] M.H. Escardó. Injective type in univalent mathematics.
+    https://doi.org/10.1017/S0960129520000225
 
 \begin{code}
 
@@ -143,10 +146,17 @@ module ainjectivity-of-Lifting'
  η-is-small-map {𝓤} {X} l = is-defined l ,
                             ≃-sym (η-fiber-same-as-is-defined X pe fe' fe' fe' l)
 
- ainjective-is-retract-of-free-𝓛-algebra' : (D : 𝓤 ̇ )
+\end{code}
+
+The following improves the universe levels of Lemma 50 of [1].
+
+\begin{code}
+
+ ainjective-is-retract-of-free-𝓛-algebra' : ({𝓤} 𝓥 {𝓦} : Universe)
+                                            (D : 𝓤 ̇ )
                                           → ainjective-type D (𝓣 ⊔ 𝓥) 𝓦
                                           → retract D of (𝓛 D)
- ainjective-is-retract-of-free-𝓛-algebra' {𝓤} {𝓥} {𝓦} D =
+ ainjective-is-retract-of-free-𝓛-algebra' {𝓤} 𝓥 D =
   embedding-retract' 𝓥 D (𝓛 D) η
    (η-is-embedding' 𝓤 D ua fe')
    η-is-small-map
@@ -156,7 +166,7 @@ module ainjectivity-of-Lifting'
  ainjectives-in-terms-of-free-𝓛-algebras' {𝓤} D = a , b
   where
    a : ainjective-type D 𝓣 𝓣 → Σ X ꞉ 𝓤 ̇ , retract D of (𝓛 X)
-   a i = D , ainjective-is-retract-of-free-𝓛-algebra' {𝓤} {𝓣} {𝓣} D i
+   a i = D , ainjective-is-retract-of-free-𝓛-algebra' 𝓣 D i
 
    b : (Σ X ꞉ 𝓤 ̇ , retract D of (𝓛 X)) → ainjective-type D 𝓣 𝓣
    b (X , r) = retract-of-ainjective D (𝓛 X) (free-𝓛-algebra-ainjective ua X) r
@@ -174,5 +184,34 @@ A particular case of interest that arises in practice is the following.
 
  _ : {X : 𝓣 ⁺ ̇ } → type-of (𝓛 X) ＝ 𝓣 ⁺ ̇
  _ = refl
+
+\end{code}
+
+Added by Martin Escardo and Tom de Jong 21st November 2024.  The
+following removes the resizing assumption of Theorem 51 of [1].
+
+\begin{code}
+
+ ainjectives-in-terms-of-𝓛-algebras
+  : (D : 𝓤 ̇ ) → ainjective-type D 𝓣 𝓣 ↔ (Σ A ꞉ 𝓣 ⁺ ⊔ 𝓤 ̇ , 𝓛-alg A × retract D of A)
+ ainjectives-in-terms-of-𝓛-algebras {𝓤} D = a , b
+  where
+   a : ainjective-type D 𝓣 𝓣 → (Σ A ꞉ 𝓣 ⁺ ⊔ 𝓤 ̇ , 𝓛-alg A × retract D of A)
+   a i = 𝓛 D ,
+         𝓛-algebra-gives-alg (free-𝓛-algebra ua D) ,
+         ainjective-is-retract-of-free-𝓛-algebra' 𝓣 D i
+
+   b : (Σ A ꞉ 𝓣 ⁺ ⊔ 𝓤 ̇ , 𝓛-alg A × retract D of A) → ainjective-type D 𝓣 𝓣
+   b (A , α , ρ) = retract-of-ainjective D A (𝓛-alg-ainjective pe A α) ρ
+
+\end{code}
+
+Particular case of interest:
+
+\begin{code}
+
+ ainjectives-in-terms-of-𝓛-algebras⁺
+  : (D : 𝓣 ⁺ ̇ ) → ainjective-type D 𝓣 𝓣 ↔ (Σ A ꞉ 𝓣 ⁺ ̇ , 𝓛-alg A × retract D of A)
+ ainjectives-in-terms-of-𝓛-algebras⁺ = ainjectives-in-terms-of-𝓛-algebras
 
 \end{code}
