@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# run from ~/TypeTopology/source
+
 set -euxo pipefail
 
 # Generate html files and deploy them.
@@ -10,19 +12,19 @@ rm -rf html
 agda --highlight-occurrences --html AllModulesIndex.lagda
 rm -f ~/martinescardo.github.io/TypeTopology/*.html # do not delete Agda.css, as it is a modified version
 mv html/*.html ~/martinescardo.github.io/TypeTopology/
-git add ~/martinescardo.github.io/TypeTopology/*.html
-chmod a+r ~/martinescardo.github.io/TypeTopology/*.html
+cd ~/martinescardo.github.io/
+chmod a+r TypeTopology/*.html
+git add TypeTopology
 
 # Now create copies for files that have been moved to other places
 # but are linked from published papers, blogs etc.
 # Symbolic links don't work any more, so we replace "ln -s" by "cp -a"
 
-cd ~/martinescardo.github.io/
-
-
 # Deprecated - agda-new should not be offered as a public link any more,
 # for some years now:
 cp -a TypeTopology agda-new
+chmod a+r agda-new/*.html
+git add agda-new
 
 cd ~/martinescardo.github.io/TypeTopology/
 
