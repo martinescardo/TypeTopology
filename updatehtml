@@ -10,6 +10,7 @@ rm -rf html
 agda --highlight-occurrences --html AllModulesIndex.lagda
 rm -f ~/martinescardo.github.io/TypeTopology/*.html # do not delete Agda.css, as it is a modified version
 mv html/*.html ~/martinescardo.github.io/TypeTopology/
+git add ~/martinescardo.github.io/TypeTopology/*.html
 chmod a+r ~/martinescardo.github.io/TypeTopology/*.html
 
 # Now create copies for files that have been moved to other places
