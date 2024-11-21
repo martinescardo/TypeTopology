@@ -13,8 +13,6 @@ agda --highlight-occurrences --html AllModulesIndex.lagda
 rm -f ~/martinescardo.github.io/TypeTopology/*.html # do not delete Agda.css, as it is a modified version
 mv html/*.html ~/martinescardo.github.io/TypeTopology/
 cd ~/martinescardo.github.io/
-chmod a+r TypeTopology/*.html
-git add TypeTopology
 
 # Now create copies for files that have been moved to other places
 # but are linked from published papers, blogs etc.
@@ -101,3 +99,8 @@ cp -a UF.ImageAndSurjection.html Published.UF.ImageAndSurjection.html
 
 # Added by Tom de Jong on 3 October 2023.
 cp -a PCF.Lambda.index.html Published.PCF.Lambda.index.html
+
+# git add the above files
+cd ..
+chmod a+r TypeTopology/*
+git add TypeTopology
