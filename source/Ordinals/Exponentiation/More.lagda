@@ -498,23 +498,22 @@ open import TypeTopology.SigmaDiscreteAndTotallySeparated using (×-is-discrete)
                            → is-trichotomous α
                            → is-trichotomous β
                            → is-trichotomous ([𝟙+ α ]^ β)
-[𝟙+]^-preserves-trichotomy α β tri-α tri-β l@(xs , p) l'@(ys , q) = κ (tri xs ys p q)
+[𝟙+]^-preserves-trichotomy α β tri-α tri-β l@(xs , _) l'@(ys , _) =
+ κ (tri xs ys)
  where
   tri : (xs ys : List ⟨  α ×ₒ β ⟩)
-      → is-decreasing-pr₂ α β xs
-      → is-decreasing-pr₂ α β ys
       → xs ≺⟨List (α ×ₒ β) ⟩ ys + (xs ＝ ys) + ys ≺⟨List (α ×ₒ β) ⟩ xs
-  tri [] [] ps qs = inr (inl refl)
-  tri [] (x ∷ ys) ps qs = inl []-lex
-  tri (x ∷ xs) [] ps qs = inr (inr []-lex)
-  tri ((a , b) ∷ xs) ((a' , b') ∷ ys) ps qs =
-   ϕ (×ₒ-is-trichotomous α β tri-α tri-β (a , b) (a' , b'))
-     (tri xs ys (is-decreasing-tail (underlying-order β) ps)
-                (is-decreasing-tail (underlying-order β) qs))
+  tri [] [] = inr (inl refl)
+  tri [] (x ∷ ys) = inl []-lex
+  tri (x ∷ xs) [] = inr (inr []-lex)
+  tri ((a , b) ∷ xs) ((a' , b') ∷ ys) =
+   ϕ (×ₒ-is-trichotomous α β tri-α tri-β (a , b) (a' , b')) (tri xs ys)
    where
     ϕ : in-trichotomy (underlying-order (α ×ₒ β)) (a , b) (a' , b')
       → in-trichotomy (λ l l' → l ≺⟨List (α ×ₒ β) ⟩ l') xs ys
-      → in-trichotomy (λ l l' → l ≺⟨List (α ×ₒ β) ⟩ l') ((a , b) ∷ xs) ((a' , b') ∷ ys)
+      → in-trichotomy (λ l l' → l ≺⟨List (α ×ₒ β) ⟩ l')
+                      ((a , b) ∷ xs)
+                      ((a' , b') ∷ ys)
     ϕ (inl p)       _              = inl (head-lex p)
     ϕ (inr (inl r)) (inl ps)       = inl (tail-lex r ps)
     ϕ (inr (inl r)) (inr (inl rs)) = inr (inl (ap₂ _∷_ r rs))
