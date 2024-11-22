@@ -470,3 +470,61 @@ simulation-equality-lemma-converse α β γ f g a b eq =
          (≼-refl-＝ (underlying-order γ) (eq ⁻¹))
 
 \end{code}
+
+The type [𝟙+ α ]^ β inherits decidability properties from α and β.
+
+\begin{code}
+
+open import DiscreteGraphicMonoids.ListsWithoutRepetitions fe' using (List-is-discrete)
+open import TypeTopology.SigmaDiscreteAndTotallySeparated using (×-is-discrete)
+
+[𝟙+]^-preserves-discrete : (α : Ordinal 𝓤)(β : Ordinal 𝓥)
+                         → is-discrete ⟨ α ⟩
+                         → is-discrete ⟨ β ⟩
+                         → is-discrete ⟨ [𝟙+ α ]^ β ⟩
+[𝟙+]^-preserves-discrete α β dec-α dec-β l@(xs , _) l'@(ys , _) = III II
+ where
+  I : is-discrete (⟨ α ⟩ × ⟨ β ⟩)
+  I = ×-is-discrete dec-α dec-β
+
+  II : is-decidable (xs ＝ ys)
+  II = List-is-discrete ⦃ discrete-gives-discrete' I ⦄ xs ys
+
+  III : is-decidable (xs ＝ ys) → is-decidable (l ＝ l')
+  III (inl eq) = inl (to-exponential-＝ α β eq)
+  III (inr neq) = inr (λ p → neq (ap pr₁ p))
+
+[𝟙+]^-preserves-trichotomy : (α : Ordinal 𝓤)(β : Ordinal 𝓥)
+                           → is-trichotomous α
+                           → is-trichotomous β
+                           → is-trichotomous ([𝟙+ α ]^ β)
+[𝟙+]^-preserves-trichotomy α β tri-α tri-β l@(xs , p) l'@(ys , q) = κ (tri xs ys p q)
+ where
+  tri : (xs ys : List ⟨  α ×ₒ β ⟩)
+      → is-decreasing-pr₂ α β xs
+      → is-decreasing-pr₂ α β ys
+      → xs ≺⟨List (α ×ₒ β) ⟩ ys + (xs ＝ ys) + ys ≺⟨List (α ×ₒ β) ⟩ xs
+  tri [] [] ps qs = inr (inl refl)
+  tri [] (x ∷ ys) ps qs = inl []-lex
+  tri (x ∷ xs) [] ps qs = inr (inr []-lex)
+  tri ((a , b) ∷ xs) ((a' , b') ∷ ys) ps qs =
+   ϕ (×ₒ-is-trichotomous α β tri-α tri-β (a , b) (a' , b'))
+     (tri xs ys (is-decreasing-tail (underlying-order β) ps)
+                (is-decreasing-tail (underlying-order β) qs))
+   where
+    ϕ : in-trichotomy (underlying-order (α ×ₒ β)) (a , b) (a' , b')
+      → in-trichotomy (λ l l' → l ≺⟨List (α ×ₒ β) ⟩ l') xs ys
+      → in-trichotomy (λ l l' → l ≺⟨List (α ×ₒ β) ⟩ l') ((a , b) ∷ xs) ((a' , b') ∷ ys)
+    ϕ (inl p)       _              = inl (head-lex p)
+    ϕ (inr (inl r)) (inl ps)       = inl (tail-lex r ps)
+    ϕ (inr (inl r)) (inr (inl rs)) = inr (inl (ap₂ _∷_ r rs))
+    ϕ (inr (inl r)) (inr (inr qs)) = inr (inr (tail-lex (r ⁻¹) qs))
+    ϕ (inr (inr q)) _              = inr (inr (head-lex q))
+
+  κ : xs ≺⟨List (α ×ₒ β) ⟩ ys + (xs ＝ ys) + ys ≺⟨List (α ×ₒ β) ⟩ xs
+    → l ≺⟨ [𝟙+ α ]^ β ⟩ l' + (l ＝ l') + l' ≺⟨ [𝟙+ α ]^ β ⟩ l
+  κ (inl p) = inl p
+  κ (inr (inl e)) = inr (inl (to-exponential-＝ α β e))
+  κ (inr (inr q)) = inr (inr q)
+
+\end{code}
