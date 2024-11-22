@@ -434,6 +434,9 @@ Added 17 September 2024 by Fredrik Nordvall Forsberg:
 
 Multiplication being monotone in the left argument is a constructive taboo.
 
+Addition 22 November 2024: monotonicity in the left argument is
+equivalent to Excluded Middle.
+
 \begin{code}
 
 ×ₒ-minimal : (α : Ordinal 𝓤)(β : Ordinal 𝓥)
@@ -445,10 +448,10 @@ Multiplication being monotone in the left argument is a constructive taboo.
 ×ₒ-minimal α β a₀ b₀ a₀-least b₀-least (a , b) (inr (refl , l))
  = irrefl α a (a₀-least a a l)
 
-×ₒ-left-monotonicity-implies-LEM
+×ₒ-left-monotonicity-implies-EM
   : ((α β : Ordinal 𝓤)(γ : Ordinal 𝓥) → α ⊴ β → (α ×ₒ γ) ⊴ (β ×ₒ γ))
   → EM 𝓤
-×ₒ-left-monotonicity-implies-LEM hyp P isprop-P = III (f (⋆ , inr ⋆)) refl
+×ₒ-left-monotonicity-implies-EM hyp P isprop-P = III (f (⋆ , inr ⋆)) refl
  where
   α = 𝟙ₒ
   β = 𝟙ₒ +ₒ prop-ordinal P isprop-P
@@ -518,6 +521,29 @@ Multiplication being monotone in the left argument is a constructive taboo.
 
   III (inr p , c) r = inl p
 
+EM-implies-×ₒ-left-monotonicity : EM (𝓤 ⊔ 𝓥)
+  → ((α β : Ordinal 𝓤)(γ : Ordinal 𝓥) → α ⊴ β → (α ×ₒ γ) ⊴ (β ×ₒ γ))
+EM-implies-×ₒ-left-monotonicity em α β γ (g , g-sim)
+ = ≼-gives-⊴ (α ×ₒ γ) (β ×ₒ γ)
+             (EM-implies-order-preserving-gives-≼ em (α ×ₒ γ)
+                                                     (β ×ₒ γ)
+                                                     (f , f-order-preserving))
+  where
+   f : ⟨  α ×ₒ γ ⟩ → ⟨ β ×ₒ γ ⟩
+   f (a , c) = (g a , c)
+   f-order-preserving : is-order-preserving (α ×ₒ γ) (β ×ₒ γ) f
+   f-order-preserving (a , c) (a' , c') (inl l) = inl l
+   f-order-preserving (a , c) (a' , c) (inr (refl , l))
+    = inr (refl , simulations-are-order-preserving α β g g-sim a a' l)
+
+EM-implies-induced-⊴-on-×ₒ : EM 𝓤
+                           → (α β γ δ : Ordinal 𝓤)
+                           → α ⊴ γ → β ⊴ δ
+                           → (α ×ₒ β) ⊴ (γ ×ₒ δ)
+EM-implies-induced-⊴-on-×ₒ em α β γ δ 𝕗 𝕘 =
+ ⊴-trans (α ×ₒ β) (α ×ₒ δ) (γ ×ₒ δ)
+         (×ₒ-right-monotone-⊴ α β δ 𝕘)
+         (EM-implies-×ₒ-left-monotonicity em α γ δ 𝕗)
 \end{code}
 
 To prove that multiplication is left cancellable, we require the following
