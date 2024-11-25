@@ -1385,10 +1385,8 @@ full-spec-gives-Has-least-or-is-zero {𝓤} (exp , exp-spec) = EM-gives-Has-leas
 \end{code}
 
 \begin{code}
-
 monotone-in-exponent : ∀ {𝓤} (α : Ordinal 𝓤)
                      → is-monotone (OO 𝓤) (OO 𝓤) [𝟙+ α ]^_
-monotone-in-exponent α =
- is-monotone-if-continuous ([𝟙+ α ]^_) (λ i γ → (exp-sup-spec α i γ) ⁻¹)
+monotone-in-exponent α = is-monotone-if-continuous ([𝟙+ α ]^_) (λ i γ → (exp-sup-spec α i γ) ⁻¹)
 
 \end{code}

@@ -323,7 +323,7 @@ amazing {𝓤} α = transfinite-induction-on-OO _ I
         foo = (exp (𝟙ₒ +ₒ α) β ↓ e) ＝⟨ ↓-eq-lemma (exp (𝟙ₒ +ₒ α) β) (sup (cases (λ _ → 𝟙ₒ) (λ b₁ → exp (𝟙ₒ +ₒ α) (β ↓ b₁) ×ₒ (𝟙ₒ +ₒ α)))) e (exp-behaviour (𝟙ₒ +ₒ α) β) ⟩
               (sup (cases (λ _ → 𝟙ₒ) (λ b₁ → exp (𝟙ₒ +ₒ α) (β ↓ b₁) ×ₒ (𝟙ₒ +ₒ α))) ↓ x) ＝⟨ fact ⟩
               (sup (cases (λ _ → 𝟙ₒ) (λ b₁ → exp (𝟙ₒ +ₒ α) (β ↓ b₁) ×ₒ (𝟙ₒ +ₒ α))) ↓ y) ＝⟨ initial-segment-of-sup-at-component _ (inl ⋆) ⋆ ⟩
-              (𝟙ₒ ↓ ⋆) ＝⟨ initial-segment-of-𝟙ₒ-is-𝟘ₒ ⟩
+              (𝟙ₒ ↓ ⋆) ＝⟨ prop-ordinal-↓ 𝟙 𝟙-is-prop ⋆ ⟩
               𝟘ₒ ＝⟨ [𝟙+α]^β-has-least' α β []-decr ⟩
               (([𝟙+ α ]^ β) ↓ ([] , []-decr)) ∎
          where
@@ -359,7 +359,7 @@ amazing {𝓤} α = transfinite-induction-on-OO _ I
           σ = ≼-gives-⊴ ([𝟙+ α ]^ (β ↓ b)) ([𝟙+ α ]^ β) (monotone-in-exponent α (β ↓ b) β (⊲-gives-≼ (β ↓ b) β (b , refl)))
           fact' = simulations-preserve-↓ ([𝟙+ α ]^ (β ↓ b)) ([𝟙+ α ]^ β) σ e''
           calc = ap (_+ₒ (exp (𝟙ₒ +ₒ α) (β ↓ b) ↓ e'))
-                    (ap ((exp (𝟙ₒ +ₒ α) (β ↓ b)) ×ₒ_) ((+ₒ-↓-left ⋆) ⁻¹ ∙ initial-segment-of-𝟙ₒ-is-𝟘ₒ)
+                    (ap ((exp (𝟙ₒ +ₒ α) (β ↓ b)) ×ₒ_) ((+ₒ-↓-left ⋆) ⁻¹ ∙ prop-ordinal-↓ 𝟙 𝟙-is-prop ⋆)
                                                                         ∙ ×ₒ-𝟘ₒ-right (exp (𝟙ₒ +ₒ α) (β ↓ b)))
       the-real-thing (inr b , (e' , inr a) , p) = _ , foo
        where
@@ -383,7 +383,13 @@ amazing {𝓤} α = transfinite-induction-on-OO _ I
           l = Idtofun (ap (λ v → pr₁ v) (IH b)) e'
           calc = ap (_+ₒ (exp (𝟙ₒ +ₒ α) (β ↓ b) ↓ e')) (ap ((exp (𝟙ₒ +ₒ α) (β ↓ b)) ×ₒ_) ((+ₒ-↓-right a) ⁻¹))
     III : (γ : Ordinal 𝓤) → γ ⊲ ([𝟙+ α ]^ β) → γ ⊲ exp (𝟙ₒ +ₒ α) β
-    III _ (([] , δ) , refl) = transport (_⊲ exp (𝟙ₒ +ₒ α) β) ([𝟙+α]^β-has-least' α β δ) (𝟘ₒ-initial-segment-of-exp (𝟙ₒ +ₒ α) β) -- 𝟘 ⊲ exp (𝟙ₒ +ₒ α) β (easy)
+    III _ (([] , δ) , refl) = transport (_⊲ exp (𝟙ₒ +ₒ α) β) ([𝟙+α]^β-has-least' α β δ) (𝟘ₒ-initial-segment-of-exp (𝟙ₒ +ₒ α) β)
+     where
+      𝟘ₒ-initial-segment-of-exp : (α : Ordinal 𝓤) (β : Ordinal 𝓥) → 𝟘ₒ ⊲ exp α β
+      𝟘ₒ-initial-segment-of-exp α β =
+       transport (_⊲ exp α β) (prop-ordinal-↓ 𝟙 𝟙-is-prop ⋆)
+                 (from-≼ (⊴-gives-≼ 𝟙ₒ (exp α β)
+                   (exp-has-least-element α β)) ⋆)
     III _ ((((a , b) ∷ l) , δ) , refl) = _ , foo
      where
       foo = (([𝟙+ α ]^ β) ↓ ((a , b ∷ l) , δ)) ＝⟨ eqtoidₒ (ua 𝓤) fe' _ _ ([𝟙+]^-↓-lemma α β a b l δ) ⟩
@@ -497,7 +503,9 @@ amazing {𝓤} α = transfinite-induction-on-OO _ I
 
 -- \end{code}
 
+\end{code}
 
+\begin{code}
 
 to-alternative : (α : Ordinal 𝓤) (β : Ordinal 𝓥) → ⟨[𝟙+ α ]^ β ⟩ → ⟨ exp α β ⟩
 to-alternative α = transfinite-induction-on-OO (λ β → ⟨[𝟙+ α ]^ β ⟩ → ⟨ exp α β ⟩) g
