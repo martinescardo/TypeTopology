@@ -9,7 +9,7 @@ open import UF.Univalence
 open import UF.PropTrunc
 open import UF.Size
 
-module Ordinals.Exponentiation.Alternative
+module Ordinals.Exponentiation.Supremum
        (ua : Univalence)
        (pt : propositional-truncations-exist)
        (sr : Set-Replacement pt)

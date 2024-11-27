@@ -9,7 +9,7 @@ open import UF.Univalence
 open import UF.PropTrunc
 open import UF.Size
 
-module Ordinals.Exponentiation.ComparingDescendingListAndAlternative
+module Ordinals.Exponentiation.Equivalence
        (ua : Univalence)
        (pt : propositional-truncations-exist)
        (sr : Set-Replacement pt)
@@ -56,7 +56,7 @@ open import Ordinals.OrdinalOfOrdinalsSuprema ua
 open import Ordinals.Taboos
 
 open import Ordinals.Exponentiation.DecreasingList ua pt sr
-open import Ordinals.Exponentiation.Alternative ua pt sr
+open import Ordinals.Exponentiation.Supremum ua pt sr
 
 open PropositionalTruncation pt
 open suprema pt sr
