@@ -99,6 +99,9 @@ _×ₒ_ : Ordinal 𝓤 → Ordinal 𝓥 → Ordinal (𝓤 ⊔ 𝓥)
                                  times.order _<_ _≺_ ,
                                  times.well-order _<_ _≺_ fe o p
 
+infixl 6 _+ₒ_
+infixl 7 _×ₒ_
+
 ×ₒ-is-trichotomous : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
                    → is-trichotomous α
                    → is-trichotomous β
