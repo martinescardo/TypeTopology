@@ -24,19 +24,19 @@ open import MLTT.List hiding (map)
 
 module List-definitions where
 
- _⊗ᴸ⁺_ : {X : Type} {Y : X → Type}
+ _⊗ᴸ_ : {X : Type} {Y : X → Type}
       → List X
       → ((x : X) → List (Y x))
       → List (Σ x ꞉ X , Y x)
- _⊗ᴸ⁺_ = _⊗_ 𝕃
+ _⊗ᴸ_ = _⊗_ 𝕃
 
- ηᴸ⁺ : {X : Type} → X → List X
- ηᴸ⁺ = η 𝕃
+ ηᴸ : {X : Type} → X → List X
+ ηᴸ = η 𝕃
 
- extᴸ⁺ : {X Y : Type} → (X → List Y) → List X → List Y
- extᴸ⁺ = ext 𝕃
+ extᴸ : {X Y : Type} → (X → List Y) → List X → List Y
+ extᴸ = ext 𝕃
 
- mapᴸ⁺ : {X Y : Type} → (X → Y) → List X → List Y
- mapᴸ⁺ = map 𝕃
+ mapᴸ : {X Y : Type} → (X → Y) → List X → List Y
+ mapᴸ = map 𝕃
 
 \end{code}
