@@ -409,6 +409,11 @@ List-ext : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
          → (X → List Y) → (List X → List Y)
 List-ext f xs = concat (map f xs)
 
+List-ext-unit : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                (f : X → List Y) (x : X)
+              → f x ++ [] ＝ f x
+List-ext-unit f x = ([]-right-neutral (f x))⁻¹
+
 List-ext-assoc
  : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
    (g : Y → List Z) (f : X → List Y)

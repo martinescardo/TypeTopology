@@ -17,8 +17,9 @@ import Games.J                       -- Selection monad.
 import Games.K                       -- Continuation (or quantifier) monad.
 import Games.JK                      -- Relationship between the two mondas.
 import Games.Monad                   -- (Automatically strong, wild) monads on types.
-import Games.Reader
-import Games.NonEmptyList
+import Games.Reader                  -- Reader monad.
+import Games.List                    -- List monad.
+import Games.NonEmptyList            -- Non-empty list monad.
 import Games.TicTacToe0
 import Games.TicTacToe1              -- Like TicTacToe0 but using Games.Constructor.
 import Games.TicTacToe2              -- More efficient and less elegant version.
