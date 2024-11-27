@@ -130,59 +130,32 @@ abstract
   private
    ι : (x : 𝟙 + ⟨ β ⟩) → ⟨ κ x ⟩ → ⟨ α ^ₒ β ⟩
    ι x = [ κ x , α ^ₒ β ]⟨ ^ₒ-is-upper-bound x ⟩
-    {- Idtofun ((ap ⟨_⟩ (^ₒ-behaviour α β)) ⁻¹)
-         ∘ pr₁ (sup-is-upper-bound _ x) -}
 
    ι-is-jointly-surjective : (e : ⟨ α ^ₒ β ⟩)
                            → ∃ x ꞉ 𝟙 + ⟨ β ⟩ , Σ y ꞉ ⟨ κ x ⟩ , ι x y ＝ e
-   ι-is-jointly-surjective e = ∥∥-functor II I
+   ι-is-jointly-surjective e = ∥∥-functor I II
     where
+     σ = λ (x : 𝟙 + ⟨ β ⟩) → [ κ x , sup κ ]⟨ sup-is-upper-bound κ x ⟩
+     module _
+      {γ : Ordinal (𝓤 ⊔ 𝓥)}
+      (e : ⟨ γ ⟩)
+      where
+       III : (p : γ ＝ sup κ) {x : 𝟙 + ⟨ β ⟩} {y : ⟨ κ x ⟩}
+           → σ x y ＝ Idtofun (ap ⟨_⟩ p) e
+           → [ κ x , γ ]⟨ transport⁻¹ (κ x ⊴_) p (sup-is-upper-bound κ x) ⟩ y
+             ＝ e
+       III refl = id
+
      p = ^ₒ-behaviour α β
      q = ap ⟨_⟩ p
-
-     σ = λ (x : 𝟙 + ⟨ β ⟩) → [ κ x , sup κ ]⟨ sup-is-upper-bound κ x ⟩
-
-     e' : ⟨ sup κ ⟩
      e' = Idtofun q e
 
-     module _ (x : 𝟙 + ⟨ β ⟩) where
-      _ : ι x ＝ [ κ x , α ^ₒ β ]⟨ transport⁻¹ (κ x ⊴_) p (sup-is-upper-bound κ x) ⟩
-      _ = refl
-      -- TODO: Clean
-      help : ι x -- [ κ x , α ^ₒ β ]⟨ transport⁻¹ (κ x ⊴_) p (sup-is-upper-bound κ x) ⟩
-             ＝ transport⁻¹ (λ - → ⟨ κ x ⟩ → -) q (σ x)
-      help = {!!} -- nat-transport ? (p ⁻¹) + transport-const ???
+     I : (Σ x ꞉ 𝟙 + ⟨ β ⟩ , Σ y ꞉ ⟨ κ x ⟩ , σ x y ＝ e')
+       → (Σ x ꞉ 𝟙 + ⟨ β ⟩ , Σ y ꞉ ⟨ κ x ⟩ , ι x y ＝ e)
+     I (x , y , eq) = x , y , III e p eq
 
-     I : ∃ x ꞉ 𝟙 + ⟨ β ⟩ , Σ y ꞉ ⟨ κ x ⟩ , σ x y ＝ e'
-     I = sup-is-upper-bound-jointly-surjective κ e'
-     II : (Σ x ꞉ 𝟙 + ⟨ β ⟩ , Σ y ꞉ ⟨ κ x ⟩ , σ x y ＝ e')
-        → (Σ x ꞉ 𝟙 + ⟨ β ⟩ , Σ y ꞉ ⟨ κ x ⟩ , ι x y ＝ e)
-     II (x , y , eq) = x , y ,
-      (ι x y ＝⟨ happly (help x) y ⟩
-       transport⁻¹ (λ - → ⟨ κ x ⟩ → -) q (σ x) y ＝⟨ {!!} ⟩
-       {!!} ＝⟨ {!!} ⟩
-       e ∎)
-
-{-
-     σ = λ (x : 𝟙 + ⟨ β ⟩) → [ κ x , sup κ ]⟨ sup-is-upper-bound κ x ⟩
-
-     e' : ⟨ sup κ ⟩
-     e' = Idtofun (ap ⟨_⟩ q) e
-
-     I : ∃ x ꞉ 𝟙 + ⟨ β ⟩ , Σ y ꞉ ⟨ κ x ⟩ , σ x y ＝ e'
-     I = sup-is-upper-bound-jointly-surjective κ e'
-     II : (Σ x ꞉ 𝟙 + ⟨ β ⟩ , Σ y ꞉ ⟨ κ x ⟩ , σ x y ＝ e')
-        → (Σ x ꞉ 𝟙 + ⟨ β ⟩ , Σ y ꞉ ⟨ κ x ⟩ , ι x y ＝ e)
-     II (x , y , p) =
-      x ,
-      y ,
-      (ι x y ＝⟨ refl ⟩
-       Idtofun ((ap ⟨_⟩ q) ⁻¹) (σ x y)                ＝⟨ II₁ ⟩
-       Idtofun ((ap ⟨_⟩ q) ⁻¹) (Idtofun (ap ⟨_⟩ q) e) ＝⟨ II₂ ⟩
-       e                                              ∎)
-        where
-         II₁ = ap (Idtofun ((ap ⟨_⟩ q) ⁻¹)) p
-         II₂ = Idtofun-section (ap ⟨_⟩ q) e -}
+     II : ∃ x ꞉ 𝟙 + ⟨ β ⟩ , Σ y ꞉ ⟨ κ x ⟩ , σ x y ＝ e'
+     II = sup-is-upper-bound-jointly-surjective κ (Idtofun q e)
 
   ^ₒ-induction : {𝓦 : Universe} (P : ⟨ α ^ₒ β ⟩ → 𝓦 ̇  )
                → ((e : ⟨ α ^ₒ β ⟩) → is-prop (P e))
@@ -192,14 +165,16 @@ abstract
   ^ₒ-induction P P-is-prop-valued P-⊥ P-component =
    surjection-induction σ σ-is-surjection P P-is-prop-valued ρ
     where
-     σ : ((x , y) : (Σ x ꞉ 𝟙 + ⟨ β ⟩ , ⟨ κ x ⟩)) → ⟨ α ^ₒ β ⟩
+     σ : (Σ x ꞉ 𝟙 + ⟨ β ⟩ , ⟨ κ x ⟩) → ⟨ α ^ₒ β ⟩
      σ (x , y) = ι x y
+
      σ-is-surjection : is-surjection σ
      σ-is-surjection e =
       ∥∥-functor
        (λ (x , y , p) → (x , y) , p)
        (ι-is-jointly-surjective e)
-     ρ : ((x , y) : (Σ x ꞉ 𝟙 + ⟨ β ⟩ , ⟨ κ x ⟩)) → P (ι x y)
+
+     ρ : ((x , y) : domain σ) → P (ι x y)
      ρ (inl ⋆ , ⋆) = P-⊥
      ρ (inr b , y) = P-component b y
 
