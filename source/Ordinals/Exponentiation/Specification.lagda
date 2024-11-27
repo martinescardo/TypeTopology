@@ -17,7 +17,6 @@ module Ordinals.Exponentiation.Specification
 
 open import MLTT.Spartan
 open import UF.FunExt
-open import UF.ImageAndSurjection pt
 open import UF.UA-FunExt
 open import UF.UniverseEmbedding
 

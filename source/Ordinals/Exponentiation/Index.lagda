@@ -9,10 +9,10 @@ Tom de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg, Chuangjie Xu,
 module Ordinals.Exponentiation.Index where
 
 import Ordinals.Exponentiation.DecreasingList
+import Ordinals.Exponentiation.Equivalence
 import Ordinals.Exponentiation.More
-import Ordinals.Exponentiation.Alternative
-import Ordinals.Exponentiation.ComparingDescendingListAndAlternative
 import Ordinals.Exponentiation.Specification
+import Ordinals.Exponentiation.Supremum
 
 
 \end{code}

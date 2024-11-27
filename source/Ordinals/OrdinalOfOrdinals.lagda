@@ -49,6 +49,8 @@ The simulations make the ordinals into a poset:
 _⊴_ : Ordinal 𝓤 → Ordinal 𝓥 → 𝓤 ⊔ 𝓥 ̇
 α ⊴ β = Σ f ꞉ (⟨ α ⟩ → ⟨ β ⟩) , is-simulation α β f
 
+infixl 4 _⊴_
+
 [_,_]⟨_⟩ : (α : Ordinal 𝓤) (β : Ordinal 𝓥) → α ⊴ β → ⟨ α ⟩ → ⟨ β ⟩
 [ α , β ]⟨ f ⟩ = pr₁ f
 
@@ -919,28 +921,36 @@ for use in other constructions.
 
 \begin{code}
 
-transfinite-induction-on-OO-behaviour :
-   (P : Ordinal 𝓤 → 𝓥 ̇ )
- → (f : (α : Ordinal 𝓤) → ((a : ⟨ α ⟩) → P (α ↓ a)) → P α)
- → (α : Ordinal 𝓤)
- → transfinite-induction-on-OO P f α
-   ＝ f α (λ a → transfinite-induction-on-OO P f (α ↓ a))
-transfinite-induction-on-OO-behaviour {𝓤} {𝓥} P f =
- Transfinite-induction-behaviour fe (OO 𝓤) P f'
-  where
-   f' : (α : Ordinal 𝓤)
-      → ((α' : Ordinal 𝓤) → α' ⊲ α → P α')
-      → P α
-   f' α g = f α (λ a → g (α ↓ a) (a , refl))
+abstract
+ transfinite-induction-on-OO-behaviour :
+    (P : Ordinal 𝓤 → 𝓥 ̇ )
+  → (f : (α : Ordinal 𝓤) → ((a : ⟨ α ⟩) → P (α ↓ a)) → P α)
+  → (α : Ordinal 𝓤)
+  → transfinite-induction-on-OO P f α
+    ＝ f α (λ a → transfinite-induction-on-OO P f (α ↓ a))
+ transfinite-induction-on-OO-behaviour {𝓤} {𝓥} P f =
+  Transfinite-induction-behaviour fe (OO 𝓤) P f'
+   where
+    f' : (α : Ordinal 𝓤)
+       → ((α' : Ordinal 𝓤) → α' ⊲ α → P α')
+       → P α
+    f' α g = f α (λ a → g (α ↓ a) (a , refl))
 
-transfinite-recursion-on-OO-behaviour :
-   (X : 𝓥 ̇ )
- → (f : (α : Ordinal 𝓤) → (⟨ α ⟩ → X) → X)
- → (α : Ordinal 𝓤)
- → transfinite-recursion-on-OO X f α
-   ＝ f α (λ a → transfinite-recursion-on-OO X f (α ↓ a))
-transfinite-recursion-on-OO-behaviour X f =
- transfinite-induction-on-OO-behaviour (λ _ → X) f
+ transfinite-recursion-on-OO-behaviour :
+    (X : 𝓥 ̇ )
+  → (f : (α : Ordinal 𝓤) → (⟨ α ⟩ → X) → X)
+  → (α : Ordinal 𝓤)
+  → transfinite-recursion-on-OO X f α
+    ＝ f α (λ a → transfinite-recursion-on-OO X f (α ↓ a))
+ transfinite-recursion-on-OO-behaviour X f =
+  transfinite-induction-on-OO-behaviour (λ _ → X) f
+
+ transfinite-recursion-on-OO-bundled :
+    (X : 𝓥 ̇ )
+  → (f : (α : Ordinal 𝓤) → (⟨ α ⟩ → X) → X)
+  → Σ r ꞉ (Ordinal 𝓤 → X) , ((α : Ordinal 𝓤) → r α ＝ f α (λ a → r (α ↓ a)))
+ transfinite-recursion-on-OO-bundled X f =
+  transfinite-recursion-on-OO X f , transfinite-recursion-on-OO-behaviour X f
 
 \end{code}
 
