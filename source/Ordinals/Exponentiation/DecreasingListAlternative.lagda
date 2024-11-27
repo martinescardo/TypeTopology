@@ -60,29 +60,17 @@ open suprema pt sr
 
 \end{code}
 
-Detachable least element
+If α is an ordinal with a least element a₀ such that x ＝ a₀ or a₀ ≺ x for all x,
+and a₀ is detachable, then the subtype of elements greater than a₀ forms an ordinal.
 
 \begin{code}
 
 has-a-detachable-least-element : Ordinal 𝓤 → 𝓤 ̇
-has-a-detachable-least-element α = Σ a₀ ꞉ ⟨ α ⟩ , ((x : ⟨ α ⟩) → is-decidable (x ＝ a₀)) ×
-                                                  ((x : ⟨ α ⟩) → ¬ (x ＝ a₀) → a₀ ≺⟨ α ⟩ x)
-
-has-a-detachable-least-element' : Ordinal 𝓤 → 𝓤 ̇
-has-a-detachable-least-element' α = Σ a₀ ꞉ ⟨ α ⟩ , ((x : ⟨ α ⟩) → is-decidable (x ＝ a₀)) ×
-                                                   is-minimal α a₀
-                                                -- ((x : ⟨ α ⟩) → ¬ (x ≺⟨ α ⟩ a₀))
-
-has-a-detachable-least-element'' : Ordinal 𝓤 → 𝓤 ̇
-has-a-detachable-least-element'' α = (x : ⟨ α ⟩)
-                                   → is-decidable ((y : ⟨ α ⟩) → ¬ (y ＝ x) → x ≺⟨ α ⟩ y)
-
-has-a-detachable-least-element''' : Ordinal 𝓤 → 𝓤 ̇
-has-a-detachable-least-element''' α = (x : ⟨ α ⟩) → is-decidable (is-minimal α x)
-
+has-a-detachable-least-element α = Σ a₀ ꞉ ⟨ α ⟩ , ((x : ⟨ α ⟩) → (x ＝ a₀) + (a₀ ≺⟨ α ⟩ x)) ×
+                                                  ((x : ⟨ α ⟩) → is-decidable (x ＝ a₀))
 
 positive-sub-oridnal : (α : Ordinal 𝓤) → has-a-detachable-least-element α → Ordinal 𝓤
-positive-sub-oridnal α (a₀ , a₀-dec , a₀-least) =
+positive-sub-oridnal α (a₀ , a₀-least , a₀-dec) =
   ⟨α'⟩ , _<'_ , <'-propvalued , <'-wellfounded , <'-extensional , <'-transitive
  where
   ⟨α'⟩ = Σ a ꞉ ⟨ α ⟩ , a₀ ≺⟨ α ⟩ a
@@ -103,29 +91,35 @@ positive-sub-oridnal α (a₀ , a₀-dec , a₀-least) =
     u : (z : ⟨ α ⟩) → z ≺⟨ α ⟩ x → z ≺⟨ α ⟩ y
     u z r with a₀-dec z
     ... | inl refl = q
-    ... | inr s = f (z , a₀-least z s) r
+    ... | inr s = f (z , Left-fails-gives-right-holds (a₀-least z) s) r
     v : (z : ⟨ α ⟩) → z ≺⟨ α ⟩ y → z ≺⟨ α ⟩ x
     v z r with a₀-dec z
     ... | inl refl = p
-    ... | inr s = g (z , a₀-least z s) r
+    ... | inr s = g (z , Left-fails-gives-right-holds (a₀-least z) s) r
 
   <'-transitive : is-transitive _<'_
   <'-transitive = subtype-order-transitive α (λ - → a₀ ≺⟨ α ⟩ -)
 
-
 _⁺[_] : (α : Ordinal 𝓤) → has-a-detachable-least-element α → Ordinal 𝓤
 α ⁺[ d⊥ ] = positive-sub-oridnal α d⊥
 
+\end{code}
 
-has-a-detachable-least-element-lemma : (α : Ordinal 𝓤) (d⊥ : has-a-detachable-least-element α)
+Moreover, the ordinal with a detachable least element can be expressed as
+the sum of 𝟙ₒ and the sub-ordinal consisting of elements greater than the least one.
+
+\begin{code}
+
+has-a-detachable-least-element-is-one-plus :
+      (α : Ordinal 𝓤) (d⊥ : has-a-detachable-least-element α)
     → α ＝ 𝟙ₒ +ₒ (α ⁺[ d⊥ ])
-has-a-detachable-least-element-lemma α d⊥@(a₀ , a₀-dec , a₀-least) = eq
+has-a-detachable-least-element-is-one-plus α d⊥@(a₀ , a₀-least , a₀-dec) = eq
  where
   α' = α ⁺[ d⊥ ]
 
   f' : (x : ⟨ α ⟩) → is-decidable (x ＝ a₀) → 𝟙 + ⟨ α' ⟩
   f' x (inl _) = inl ⋆
-  f' x (inr q) = inr (x , a₀-least x q)
+  f' x (inr q) = inr (x , Left-fails-gives-right-holds (a₀-least x) q)
 
   f : ⟨ α ⟩ → 𝟙 + ⟨ α' ⟩
   f x = f' x (a₀-dec x)
@@ -146,7 +140,7 @@ has-a-detachable-least-element-lemma α d⊥@(a₀ , a₀-dec , a₀-least) = eq
     f'-order-preserving x .a₀ (inr p) (inl refl) r = 𝟘-elim (irrefl α x x<x)
      where
       x<x : x ≺⟨ α ⟩ x
-      x<x = Transitivity α x a₀ x r (a₀-least x p)
+      x<x = Transitivity α x a₀ x r (Left-fails-gives-right-holds (a₀-least x) p)
     f'-order-preserving x y (inr p) (inr q) r = r
     f-order-preserving : is-order-preserving α (𝟙ₒ +ₒ α') f
     f-order-preserving x y = f'-order-preserving x y (a₀-dec x) (a₀-dec y)
@@ -171,7 +165,25 @@ has-a-detachable-least-element-lemma α d⊥@(a₀ , a₀-dec , a₀-least) = eq
 
 \end{code}
 
-Exponentiation whose base is an ordinal with a detachable least element
+On the other hand, the sum of 𝟙ₒ and any ordinal always has a detachable least element.
+
+\begin{code}
+
+one-plus-has-a-detachable-least-element : (α : Ordinal 𝓤)
+    → has-a-detachable-least-element (𝟙ₒ +ₒ α)
+one-plus-has-a-detachable-least-element α = inl ⋆ , least , dec
+ where
+  least : (x : ⟨ 𝟙ₒ +ₒ α ⟩) → (x ＝ inl ⋆) + (inl ⋆ ≺⟨ 𝟙ₒ +ₒ α ⟩ x)
+  least (inl ⋆) = inl (refl)
+  least (inr a) = inr ⋆
+  dec : (x : ⟨ 𝟙ₒ +ₒ α ⟩) → is-decidable (x ＝ inl ⋆)
+  dec (inl ⋆) = inl refl
+  dec (inr a) = inr λ ()
+
+\end{code}
+
+For any ordinal α that has a detachable least element, and for any arbitrary ordinal β,
+we can define the eponentaital α^β.
 
 \begin{code}
 
@@ -190,7 +202,7 @@ exp-dle-succ-spec α d⊥ β = goal
   fact : exp α _ (β +ₒ 𝟙ₒ) ＝ exp α _ β ×ₒ (𝟙ₒ +ₒ (α ⁺[ d⊥ ]))
   fact = exp-succ-spec (α ⁺[ d⊥ ]) β
   eq : α ＝ 𝟙ₒ +ₒ (α ⁺[ d⊥ ])
-  eq = has-a-detachable-least-element-lemma α d⊥
+  eq = has-a-detachable-least-element-is-one-plus α d⊥
   goal : exp α _ (β +ₒ 𝟙ₒ) ＝ exp α _ β ×ₒ α
   goal = transport (λ x → exp α d⊥ (β +ₒ 𝟙ₒ) ＝ exp α d⊥ β ×ₒ x) (eq ⁻¹) fact
 
