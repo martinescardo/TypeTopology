@@ -1096,9 +1096,9 @@ module suprema
     q-surj : (y : ⟨ sup ⟩) → ∃ i ꞉ I , Σ x ꞉ ⟨ α i ⟩ , q i x ＝ y
     q-surj = α⁻-is-upper-bound-surjectivity sr
 
-   -- TODO: Notation for underlying map of simulations
    sup-is-upper-bound-jointly-surjective :
-    (y : ⟨ sup ⟩) → ∃ i ꞉ I , Σ x ꞉ ⟨ α i ⟩ , pr₁ (sup-is-upper-bound i) x ＝ y
+      (y : ⟨ sup ⟩)
+    → ∃ i ꞉ I , Σ x ꞉ ⟨ α i ⟩ , [ α i , sup ]⟨ sup-is-upper-bound i ⟩ x ＝ y
    sup-is-upper-bound-jointly-surjective = q-surj
 
    sup-is-lower-bound-of-upper-bounds : (β : Ordinal 𝓤)
@@ -1109,7 +1109,8 @@ module suprema
    sup-is-lower-bound-of-upper-bounds-lemma :
     (β : Ordinal 𝓤) (f : (i : I) → α i ⊴ β)
     (i : I) (x : ⟨ α i ⟩)
-    → pr₁ (sup-is-lower-bound-of-upper-bounds β f) (q i x) ＝ pr₁ (f i) x
+    → [ sup , β ]⟨ sup-is-lower-bound-of-upper-bounds β f ⟩ (q i x)
+      ＝ [ α i , β ]⟨ f i ⟩ x
    sup-is-lower-bound-of-upper-bounds-lemma =
     α⁻-is-lower-bound-of-upper-bounds-behaviour sr
 
@@ -1119,9 +1120,10 @@ TODO: Clean up
 
 \begin{code}
 
-   surjectivity-lemma : (β : Ordinal 𝓤) (f : (i : I) → α i ⊴ β)
-                      → ((y : ⟨ β ⟩) → ∃ i ꞉ I , Σ x ꞉ ⟨ α i ⟩ , pr₁ (f i) x ＝ y)
-                      → is-surjection (pr₁ (sup-is-lower-bound-of-upper-bounds β f))
+   surjectivity-lemma :
+      (β : Ordinal 𝓤) (f : (i : I) → α i ⊴ β)
+    → ((y : ⟨ β ⟩) → ∃ i ꞉ I , Σ x ꞉ ⟨ α i ⟩ , [ α i , β ]⟨ f i ⟩ x ＝ y)
+    → is-surjection ([ sup , β ]⟨ sup-is-lower-bound-of-upper-bounds β f ⟩)
    surjectivity-lemma β f s y =
     ∥∥-functor (λ (i , x , p) → (q i x) , (sup-is-lower-bound-of-upper-bounds-lemma β f i x ∙ p)) (s y)
 
@@ -1149,7 +1151,8 @@ TODO: Clean up
    sup-is-image-of-sum = sum-to-sup , sum-to-sup-is-surjection
 
    initial-segment-of-sup-at-component :
-     (i : I) (x : ⟨ α i ⟩) → sup ↓ pr₁ (sup-is-upper-bound i) x ＝ α i ↓ x
+      (i : I) (x : ⟨ α i ⟩)
+    → sup ↓ [ α i , sup ]⟨ sup-is-upper-bound i ⟩ x ＝ α i ↓ x
    initial-segment-of-sup-at-component i x =
     (simulations-preserve-↓ (α i) sup (sup-is-upper-bound i) x) ⁻¹
 
@@ -1158,7 +1161,7 @@ TODO: Clean up
    initial-segment-of-sup-is-initial-segment-of-some-component y =
     ∥∥-functor h (α⁻-is-upper-bound-surjectivity sr y)
      where
-      h : (Σ i ꞉ I , Σ x ꞉ ⟨ α i ⟩ , pr₁ (sup-is-upper-bound i) x ＝ y)
+      h : (Σ i ꞉ I , Σ x ꞉ ⟨ α i ⟩ , [ α i , sup ]⟨ sup-is-upper-bound i ⟩ x ＝ y)
         → Σ i ꞉ I , Σ x ꞉ ⟨ α i ⟩ , sup ↓ y ＝ α i ↓ x
       h (i , x , e) = (i , x , e')
        where
@@ -1168,7 +1171,7 @@ TODO: Clean up
              α i ↓ x  ∎
          where
           y' : ⟨ sup ⟩
-          y' = pr₁ (sup-is-upper-bound i) x
+          y' = [ α i , sup ]⟨ sup-is-upper-bound i ⟩ x
 
 \end{code}
 
@@ -1219,13 +1222,22 @@ TODO: Clean up & rename
 
 \begin{code}
 
+ sup-composition-⊴ : {I J : 𝓤 ̇  } (ρ : I → J) (α : J → Ordinal 𝓤)
+                   → sup (α ∘ ρ) ⊴ sup α
+ sup-composition-⊴ ρ α =
+  sup-is-lower-bound-of-upper-bounds
+   (α ∘ ρ)
+   (sup α)
+   (λ i → sup-is-upper-bound α (ρ i))
+
  sup-monotone : {I : 𝓤 ̇ } (α β : I → Ordinal 𝓤)
               → ((i : I) → α i ⊴ β i)
               → sup α ⊴ sup β
  sup-monotone α β l = sup-is-lower-bound-of-upper-bounds α (sup β)
                        (λ i → ⊴-trans
-                                (α i) (β i) (sup β)
-                                (l i) (sup-is-upper-bound β i))
+                               (α i) (β i) (sup β)
+                               (l i) (sup-is-upper-bound β i))
+
 \end{code}
 
 Conjecture (Martin Escardo, August 2018 originally in the file

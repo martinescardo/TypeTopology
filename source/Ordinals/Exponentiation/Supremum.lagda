@@ -3,7 +3,7 @@ Tom de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg, Chuangjie Xu,
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --no-exact-split --lossy-unification #-}
+{-# OPTIONS --safe --without-K --no-exact-split #-}
 
 open import UF.Univalence
 open import UF.PropTrunc
@@ -97,16 +97,21 @@ abstract
   (β : Ordinal 𝓥)
   where
 
-  private
-   κ : (x : 𝟙 {𝓤} + ⟨ β ⟩) → Ordinal (𝓤 ⊔ 𝓥)
-   κ = cases (λ _ → 𝟙ₒ) (λ b → α ^ₒ (β ↓ b) ×ₒ α)
+  ^ₒ-family : 𝟙 {𝓤} + ⟨ β ⟩ → Ordinal (𝓤 ⊔ 𝓥)
+  ^ₒ-family = cases (λ _ → 𝟙ₒ) (λ b → α ^ₒ (β ↓ b) ×ₒ α)
 
-  ^ₒ-is-upper-bound : (x : 𝟙 + ⟨ β ⟩) → κ x ⊴ α ^ₒ β
+  ^ₒ-is-upper-bound : (x : 𝟙 + ⟨ β ⟩) → ^ₒ-family x ⊴ α ^ₒ β
   ^ₒ-is-upper-bound x =
-   transport⁻¹ (κ x ⊴_) (^ₒ-behaviour α β) (sup-is-upper-bound κ x)
+   transport⁻¹
+    (^ₒ-family x ⊴_)
+    (^ₒ-behaviour α β)
+    (sup-is-upper-bound ^ₒ-family x)
 
   ^ₒ-is-upper-bound₁ : 𝟙ₒ ⊴ α ^ₒ β
   ^ₒ-is-upper-bound₁ = ^ₒ-is-upper-bound (inl ⋆)
+
+  ^ₒ-has-least-element : 𝟙ₒ ⊴ α ^ₒ β
+  ^ₒ-has-least-element = ^ₒ-is-upper-bound₁
 
   ^ₒ-is-upper-bound₂ : {b : ⟨ β ⟩} → α ^ₒ (β ↓ b) ×ₒ α ⊴ α ^ₒ β
   ^ₒ-is-upper-bound₂ {b} = ^ₒ-is-upper-bound (inr b)
@@ -119,7 +124,8 @@ abstract
   ^∘-is-lower-bound-of-upper-bounds γ l₁ l₂ =
    transport⁻¹ (_⊴ γ)
     (^ₒ-behaviour α β)
-    (sup-is-lower-bound-of-upper-bounds κ γ (dep-cases (λ _ → l₁) l₂))
+    (sup-is-lower-bound-of-upper-bounds
+      ^ₒ-family γ (dep-cases (λ _ → l₁) l₂))
 
   ^ₒ-⊥ : ⟨ α ^ₒ β ⟩
   ^ₒ-⊥ = [ 𝟙ₒ , α ^ₒ β ]⟨ ^ₒ-is-upper-bound₁ ⟩ ⋆
@@ -128,34 +134,38 @@ abstract
   ×ₒ-to-^ₒ {b} = [ α ^ₒ (β ↓ b) ×ₒ α , α ^ₒ β ]⟨ ^ₒ-is-upper-bound₂ ⟩
 
   private
-   ι : (x : 𝟙 + ⟨ β ⟩) → ⟨ κ x ⟩ → ⟨ α ^ₒ β ⟩
-   ι x = [ κ x , α ^ₒ β ]⟨ ^ₒ-is-upper-bound x ⟩
+   ι : (x : 𝟙 + ⟨ β ⟩) → ⟨ ^ₒ-family x ⟩ → ⟨ α ^ₒ β ⟩
+   ι x = [ ^ₒ-family x , α ^ₒ β ]⟨ ^ₒ-is-upper-bound x ⟩
 
-   ι-is-jointly-surjective : (e : ⟨ α ^ₒ β ⟩)
-                           → ∃ x ꞉ 𝟙 + ⟨ β ⟩ , Σ y ꞉ ⟨ κ x ⟩ , ι x y ＝ e
+   ι-is-jointly-surjective :
+      (e : ⟨ α ^ₒ β ⟩)
+     → ∃ x ꞉ 𝟙 + ⟨ β ⟩ , Σ y ꞉ ⟨ ^ₒ-family x ⟩ , ι x y ＝ e
    ι-is-jointly-surjective e = ∥∥-functor I II
     where
-     σ = λ (x : 𝟙 + ⟨ β ⟩) → [ κ x , sup κ ]⟨ sup-is-upper-bound κ x ⟩
+     σ = λ (x : 𝟙 + ⟨ β ⟩)
+           → [ ^ₒ-family x , sup ^ₒ-family ]⟨ sup-is-upper-bound ^ₒ-family x ⟩
      module _
       {γ : Ordinal (𝓤 ⊔ 𝓥)}
       (e : ⟨ γ ⟩)
       where
-       III : (p : γ ＝ sup κ) {x : 𝟙 + ⟨ β ⟩} {y : ⟨ κ x ⟩}
-           → σ x y ＝ Idtofun (ap ⟨_⟩ p) e
-           → [ κ x , γ ]⟨ transport⁻¹ (κ x ⊴_) p (sup-is-upper-bound κ x) ⟩ y
-             ＝ e
+       III :
+          (p : γ ＝ sup ^ₒ-family) {x : 𝟙 + ⟨ β ⟩} {y : ⟨ ^ₒ-family x ⟩}
+        → σ x y ＝ Idtofun (ap ⟨_⟩ p) e
+        → [ ^ₒ-family x , γ ]⟨
+            transport⁻¹ (^ₒ-family x ⊴_) p (sup-is-upper-bound ^ₒ-family x) ⟩ y
+          ＝ e
        III refl = id
 
      p = ^ₒ-behaviour α β
      q = ap ⟨_⟩ p
      e' = Idtofun q e
 
-     I : (Σ x ꞉ 𝟙 + ⟨ β ⟩ , Σ y ꞉ ⟨ κ x ⟩ , σ x y ＝ e')
-       → (Σ x ꞉ 𝟙 + ⟨ β ⟩ , Σ y ꞉ ⟨ κ x ⟩ , ι x y ＝ e)
+     I : (Σ x ꞉ 𝟙 + ⟨ β ⟩ , Σ y ꞉ ⟨ ^ₒ-family x ⟩ , σ x y ＝ e')
+       → (Σ x ꞉ 𝟙 + ⟨ β ⟩ , Σ y ꞉ ⟨ ^ₒ-family x ⟩ , ι x y ＝ e)
      I (x , y , eq) = x , y , III e p eq
 
-     II : ∃ x ꞉ 𝟙 + ⟨ β ⟩ , Σ y ꞉ ⟨ κ x ⟩ , σ x y ＝ e'
-     II = sup-is-upper-bound-jointly-surjective κ (Idtofun q e)
+     II : ∃ x ꞉ 𝟙 + ⟨ β ⟩ , Σ y ꞉ ⟨ ^ₒ-family x ⟩ , σ x y ＝ e'
+     II = sup-is-upper-bound-jointly-surjective ^ₒ-family (Idtofun q e)
 
   ^ₒ-induction : {𝓦 : Universe} (P : ⟨ α ^ₒ β ⟩ → 𝓦 ̇  )
                → ((e : ⟨ α ^ₒ β ⟩) → is-prop (P e))
@@ -165,7 +175,7 @@ abstract
   ^ₒ-induction P P-is-prop-valued P-⊥ P-component =
    surjection-induction σ σ-is-surjection P P-is-prop-valued ρ
     where
-     σ : (Σ x ꞉ 𝟙 + ⟨ β ⟩ , ⟨ κ x ⟩) → ⟨ α ^ₒ β ⟩
+     σ : (Σ x ꞉ 𝟙 + ⟨ β ⟩ , ⟨ ^ₒ-family x ⟩) → ⟨ α ^ₒ β ⟩
      σ (x , y) = ι x y
 
      σ-is-surjection : is-surjection σ
@@ -178,49 +188,36 @@ abstract
      ρ (inl ⋆ , ⋆) = P-⊥
      ρ (inr b , y) = P-component b y
 
-{-
-exp⊥ : (α : Ordinal 𝓤) (β : Ordinal 𝓥) → ⟨ α ^ₒ β ⟩
-exp⊥ α β = idtofun {!sup!} {!!} {!!} {!!}
+\end{code}
 
-abstract
- exp-induction : (α : Ordinal 𝓤) (β : Ordinal 𝓥) (P : ⟨ α ^ₒ β ⟩ → 𝓦 ̇  )
-               → ((e : ⟨ α ^ₒ β ⟩) → is-prop (P e))
-               → {!!}
- exp-induction = {!!}
--}
+\begin{code}
 
--- sup-composition : {B : 𝓤 ̇ }{C : 𝓤 ̇ } → (f : B → C) → (F : C → Ordinal 𝓤) → sup (F ∘ f) ⊴ sup F
--- sup-composition f F = sup-is-lower-bound-of-upper-bounds (F ∘ f) (sup F) (λ i → sup-is-upper-bound F (f i))
+exp-monotone-in-exponent : (α : Ordinal 𝓤) → (β γ : Ordinal 𝓥)
+                         → β ⊴ γ → α ^ₒ β ⊴ α ^ₒ γ
+exp-monotone-in-exponent {𝓤} {𝓥} α β γ l@(f , _) =
+ transport₂⁻¹ _⊴_
+  (^ₒ-behaviour α β) (^ₒ-behaviour α γ)
+  (transport (λ - → sup - ⊴ sup G) I (sup-composition-⊴ f' G))
+  where
+   F = ^ₒ-family α β
+   G = ^ₒ-family α γ
 
--- exp-monotone-in-exponent : (α : Ordinal 𝓤) → (β γ : Ordinal 𝓥)
---                          → β ⊴ γ → α ^ₒ β ⊴ α ^ₒ γ
--- exp-monotone-in-exponent α β γ p = transport₂⁻¹ _⊴_ (exp-behaviour α β) (exp-behaviour α γ) (transport (λ - → sup -  ⊴ sup F) claim' (sup-composition f F))
---   where
---     F : 𝟙 {𝓤} + ⟨ γ ⟩ → Ordinal _
---     F  = cases (λ _ → 𝟙ₒ) (λ c → α ^ₒ (γ ↓ c) ×ₒ α)
+   f' : 𝟙 + ⟨ β ⟩ → 𝟙 + ⟨ γ ⟩
+   f' = cases (λ _ → inl ⋆) (λ b → inr (f b))
 
---     f : 𝟙 {𝓤} + ⟨ β ⟩ → 𝟙 {𝓤} + ⟨ γ ⟩
---     f (inl x) = inl x
---     f (inr b) = inr (pr₁ p b)
+   initial-segments-agree : (b : ⟨ β ⟩) → β ↓ b ＝ γ ↓ f b
+   initial-segments-agree b = simulations-preserve-↓ β γ l b
 
---     F' : 𝟙 {𝓤} + ⟨ β ⟩ → Ordinal _
---     F' = cases (λ _ → 𝟙ₒ) (λ b → α ^ₒ (β ↓ b) ×ₒ α)
+   I : G ∘ f' ＝ F
+   I = dfunext fe' II
+    where
+     II : (x : 𝟙 + ⟨ β ⟩) → G (f' x) ＝ F x
+     II (inl ⋆) = refl
+     II (inr b) = ap (λ - → α ^ₒ - ×ₒ α) (initial-segments-agree b ⁻¹)
 
---     initial-segments-agree : (b : ⟨ β ⟩) → β ↓ b ＝ γ ↓ (pr₁ p b)
---     initial-segments-agree b = pr₂ (from-≼ (⊴-gives-≼ β γ p) b)
+\end{code}
 
---     claim : (i : 𝟙 {𝓤} + ⟨ β ⟩) → F (f i) ＝ F' i
---     claim (inl x) = refl
---     claim (inr b) = ap (λ - → α ^ₒ - ×ₒ α) (initial-segments-agree b ⁻¹)
-
---     claim' : F ∘ f ＝ F'
---     claim' = dfunext fe' claim
-
--- exp-has-least-element : (α : Ordinal 𝓤) → (β : Ordinal 𝓥) → 𝟙ₒ {𝓤 ⊔ 𝓥} ⊴ α ^ₒ β
--- exp-has-least-element {𝓤} α β = transport⁻¹ (𝟙ₒ ⊴_) (exp-behaviour α β) q
---   where
---     q : 𝟙ₒ ⊴ sup (cases (λ _ → 𝟙ₒ) (λ b → α ^ₒ (β ↓ b) ×ₒ α))
---     q = sup-is-upper-bound (cases (λ _ → 𝟙ₒ) (λ b → α ^ₒ (β ↓ b) ×ₒ α)) (inl ⋆)
+\begin{code}
 
 -- exp-satisfies-zero-specification : (α : Ordinal 𝓤) → exp-specification-zero α (α ^ₒ)
 -- exp-satisfies-zero-specification {𝓥} α = ⊴-antisym (α ^ₒ (𝟘ₒ {𝓥})) 𝟙ₒ II III
