@@ -37,14 +37,19 @@ import Ordinals.index
 
 \end{code}
 
-The following has applications to (in)decomposability.  Injective
+The following has an application to (in)decomposability.  Injective
 types have non-trivial decidable properties if and only if weak
 excluded middle (the decidability of all negative propositions) holds.
+
+It also has an application to get a characterization of the
+algebraically injective types as the restracts of the algebras of the
+lifting monad (also known as the partial-map classifier monad).
 
 \begin{code}
 
 import InjectiveTypes.OverSmallMaps
 import Taboos.Decomposability
+import InjectiveTypes.CharacterizationViaLifting
 
 \end{code}
 
