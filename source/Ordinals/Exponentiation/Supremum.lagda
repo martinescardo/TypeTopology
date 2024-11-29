@@ -219,17 +219,15 @@ exp-monotone-in-exponent {𝓤} {𝓥} α β γ l@(f , _) =
 
 \begin{code}
 
--- exp-satisfies-zero-specification : (α : Ordinal 𝓤) → exp-specification-zero α (α ^ₒ)
--- exp-satisfies-zero-specification {𝓥} α = ⊴-antisym (α ^ₒ (𝟘ₒ {𝓥})) 𝟙ₒ II III
---   where
---     I : (i : 𝟙 + 𝟘) → cases (λ _ → 𝟙ₒ) (λ b → α ^ₒ (𝟘ₒ ↓ b) ×ₒ α) i ⊴ 𝟙ₒ
---     I (inl _) = ⊴-refl 𝟙ₒ
+exp-satisfies-zero-specification : {𝓤 𝓥 : Universe} (α : Ordinal 𝓤)
+                                 → exp-specification-zero {𝓤} {𝓥} α (α ^ₒ_)
+exp-satisfies-zero-specification {𝓤} {𝓥} α = ⊴-antisym (α ^ₒ 𝟘ₒ) 𝟙ₒ I II
+ where
+  I : α ^ₒ 𝟘ₒ ⊴ 𝟙ₒ
+  I = ^∘-is-lower-bound-of-upper-bounds α 𝟘ₒ 𝟙ₒ (⊴-refl 𝟙ₒ) 𝟘-induction
 
---     II : α ^ₒ 𝟘ₒ ⊴ 𝟙ₒ
---     II = transport⁻¹ (_⊴ 𝟙ₒ) (exp-behaviour α 𝟘ₒ) (sup-is-lower-bound-of-upper-bounds (cases (λ _ → 𝟙ₒ) (λ b → α ^ₒ (𝟘ₒ ↓ b) ×ₒ α)) 𝟙ₒ I)
-
---     III : 𝟙ₒ ⊴ α ^ₒ 𝟘ₒ
---     III = exp-has-least-element α 𝟘ₒ
+  II : 𝟙ₒ ⊴ α ^ₒ 𝟘ₒ
+  II = ^ₒ-has-least-element α 𝟘ₒ
 
 -- exp-satisfies-succ-specification : (α : Ordinal 𝓤) → 𝟙ₒ {𝓤} ⊴ α
 --                                  → exp-specification-succ α (α ^ₒ)

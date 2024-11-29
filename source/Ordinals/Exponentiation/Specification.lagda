@@ -43,26 +43,33 @@ The three requirements below, together with 𝟘ₒ^β ＝ 𝟘₀ for β ≠ �
 \begin{code}
 
 module _
+        {𝓤 𝓥 : Universe}
         (α : Ordinal 𝓤)
-        (F : {𝓥 : Universe} → Ordinal 𝓥 → Ordinal (𝓤 ⊔ 𝓥))
+        (F : Ordinal 𝓥 → Ordinal (𝓤 ⊔ 𝓥))
        where
 
  exp-specification-zero : (𝓤 ⊔ 𝓥) ⁺ ̇
- exp-specification-zero {𝓥} = F (𝟘ₒ {𝓥}) ＝ 𝟙ₒ
+ exp-specification-zero = F (𝟘ₒ {𝓥}) ＝ 𝟙ₒ
 
  exp-specification-succ : (𝓤 ⊔ 𝓥) ⁺ ̇
- exp-specification-succ {𝓥} = (β : Ordinal 𝓥) → F (β +ₒ 𝟙ₒ) ＝ (F β ×ₒ α)
+ exp-specification-succ = (β : Ordinal 𝓥) → F (β +ₒ 𝟙ₒ) ＝ (F β ×ₒ α)
+
+ exp-specification-sup-generalized : (𝓤 ⊔ 𝓥) ⁺ ̇
+ exp-specification-sup-generalized =
+  𝟙ₒ{𝓤} ⊴ α → {I : 𝓥 ̇  } → ∥ I ∥ → (β : I → Ordinal 𝓥)
+            → F (sup β) ＝ sup (λ (i : Lift 𝓤 I) → F (β (lower i)))
+
+module _
+        (α : Ordinal 𝓤)
+        (F : Ordinal 𝓤 → Ordinal 𝓤)
+       where
 
  exp-specification-sup : 𝓤 ⁺ ̇
  exp-specification-sup =
-   𝟙ₒ{𝓤} ⊴ α → {I : 𝓤 ̇  } → ∥ I ∥ → (β : I → Ordinal 𝓤) → F (sup β) ＝ sup (F ∘ β)
+     𝟙ₒ {𝓤} ⊴ α → {I : 𝓤 ̇  } → ∥ I ∥ → (β : I → Ordinal 𝓤)
+                → F (sup β) ＝ sup (F ∘ β)
 
- exp-specification-sup-generalized : (𝓤 ⊔ 𝓥) ⁺ ̇
- exp-specification-sup-generalized {𝓥} =
-   𝟙ₒ{𝓤} ⊴ α → {I : 𝓥 ̇  } → ∥ I ∥ → (β : I → Ordinal 𝓥)
-             → F (sup β) ＝ sup (λ (i : Lift 𝓤 I) → F (β (lower i)))
-
- exp-specification-sup-from-generalized : exp-specification-sup-generalized {𝓤}
+ exp-specification-sup-from-generalized : exp-specification-sup-generalized α F
                                         → exp-specification-sup
  exp-specification-sup-from-generalized σ l {I} I-inh β = σ l I-inh β ∙ e
   where
