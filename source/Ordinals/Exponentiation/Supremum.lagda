@@ -22,6 +22,7 @@ open import UF.FunExt
 open import UF.Sets
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
+open import UF.UniverseEmbedding
 open import UF.UA-FunExt
 open import UF.ImageAndSurjection pt
 
@@ -50,13 +51,13 @@ open import Ordinals.Maps
 open import Ordinals.MultiplicationProperties ua
 open import Ordinals.Notions
 open import Ordinals.OrdinalOfOrdinals ua
+open import Ordinals.Propositions ua
 open import Ordinals.Type
 open import Ordinals.Underlying
 open import Ordinals.WellOrderingTaboo
 open import Ordinals.OrdinalOfOrdinalsSuprema ua
 
 open import Ordinals.Exponentiation.DecreasingList ua pt sr hiding (exp-+-distributes)
-
 open import Ordinals.Exponentiation.Specification ua pt sr
 
 open PropositionalTruncation pt
@@ -110,18 +111,15 @@ abstract
   ^ₒ-is-upper-bound₁ : 𝟙ₒ ⊴ α ^ₒ β
   ^ₒ-is-upper-bound₁ = ^ₒ-is-upper-bound (inl ⋆)
 
-  ^ₒ-has-least-element : 𝟙ₒ ⊴ α ^ₒ β
-  ^ₒ-has-least-element = ^ₒ-is-upper-bound₁
-
   ^ₒ-is-upper-bound₂ : {b : ⟨ β ⟩} → α ^ₒ (β ↓ b) ×ₒ α ⊴ α ^ₒ β
   ^ₒ-is-upper-bound₂ {b} = ^ₒ-is-upper-bound (inr b)
 
-  ^∘-is-lower-bound-of-upper-bounds :
+  ^ₒ-is-lower-bound-of-upper-bounds :
      (γ : Ordinal (𝓤 ⊔ 𝓥))
    → 𝟙ₒ ⊴ γ
    → ((b : ⟨ β ⟩) → α ^ₒ (β ↓ b) ×ₒ α ⊴ γ)
    → α ^ₒ β ⊴ γ
-  ^∘-is-lower-bound-of-upper-bounds γ l₁ l₂ =
+  ^ₒ-is-lower-bound-of-upper-bounds γ l₁ l₂ =
    transport⁻¹ (_⊴ γ)
     (^ₒ-behaviour α β)
     (sup-is-lower-bound-of-upper-bounds
@@ -192,9 +190,16 @@ abstract
 
 \begin{code}
 
-exp-monotone-in-exponent : (α : Ordinal 𝓤) → (β γ : Ordinal 𝓥)
-                         → β ⊴ γ → α ^ₒ β ⊴ α ^ₒ γ
-exp-monotone-in-exponent {𝓤} {𝓥} α β γ l@(f , _) =
+^ₒ-has-least-element : (α : Ordinal 𝓤) (β : Ordinal 𝓥) → 𝟙ₒ ⊴ α ^ₒ β
+^ₒ-has-least-element = ^ₒ-is-upper-bound₁
+
+^ₒ-is-positive : (α : Ordinal 𝓤) (β : Ordinal 𝓥) → 𝟘ₒ ⊲ α ^ₒ β
+^ₒ-is-positive α β =
+ ⊲-⊴-gives-⊲ 𝟘ₒ 𝟙ₒ (α ^ₒ β) 𝟘ₒ-⊲-𝟙ₒ (^ₒ-has-least-element α β)
+
+^ₒ-monotone-in-exponent : (α : Ordinal 𝓤) → (β γ : Ordinal 𝓥)
+                        → β ⊴ γ → α ^ₒ β ⊴ α ^ₒ γ
+^ₒ-monotone-in-exponent {𝓤} {𝓥} α β γ 𝕗@(f , _) =
  transport₂⁻¹ _⊴_
   (^ₒ-behaviour α β) (^ₒ-behaviour α γ)
   (transport (λ - → sup - ⊴ sup G) I (sup-composition-⊴ f' G))
@@ -206,7 +211,7 @@ exp-monotone-in-exponent {𝓤} {𝓥} α β γ l@(f , _) =
    f' = cases (λ _ → inl ⋆) (λ b → inr (f b))
 
    initial-segments-agree : (b : ⟨ β ⟩) → β ↓ b ＝ γ ↓ f b
-   initial-segments-agree b = simulations-preserve-↓ β γ l b
+   initial-segments-agree b = simulations-preserve-↓ β γ 𝕗 b
 
    I : G ∘ f' ＝ F
    I = dfunext fe' II
@@ -219,383 +224,405 @@ exp-monotone-in-exponent {𝓤} {𝓥} α β γ l@(f , _) =
 
 \begin{code}
 
-exp-satisfies-zero-specification : {𝓤 𝓥 : Universe} (α : Ordinal 𝓤)
-                                 → exp-specification-zero {𝓤} {𝓥} α (α ^ₒ_)
-exp-satisfies-zero-specification {𝓤} {𝓥} α = ⊴-antisym (α ^ₒ 𝟘ₒ) 𝟙ₒ I II
+^ₒ-satisfies-zero-specification : {𝓤 𝓥 : Universe} (α : Ordinal 𝓤)
+                                → exp-specification-zero {𝓤} {𝓥} α (α ^ₒ_)
+^ₒ-satisfies-zero-specification {𝓤} {𝓥} α = ⊴-antisym (α ^ₒ 𝟘ₒ) 𝟙ₒ I II
  where
   I : α ^ₒ 𝟘ₒ ⊴ 𝟙ₒ
-  I = ^∘-is-lower-bound-of-upper-bounds α 𝟘ₒ 𝟙ₒ (⊴-refl 𝟙ₒ) 𝟘-induction
+  I = ^ₒ-is-lower-bound-of-upper-bounds α 𝟘ₒ 𝟙ₒ (⊴-refl 𝟙ₒ) 𝟘-induction
 
   II : 𝟙ₒ ⊴ α ^ₒ 𝟘ₒ
   II = ^ₒ-has-least-element α 𝟘ₒ
 
--- exp-satisfies-succ-specification : (α : Ordinal 𝓤) → 𝟙ₒ {𝓤} ⊴ α
---                                  → exp-specification-succ α (α ^ₒ)
--- exp-satisfies-succ-specification {𝓤} α p β = transport⁻¹ (λ - → - ＝ (α ^ₒ β) ×ₒ α) (exp-behaviour α (β +ₒ 𝟙ₒ) ∙ ap sup eq')
---                                                      (⊴-antisym _ _ (sup-is-lower-bound-of-upper-bounds F _ upper-bound) (sup-is-upper-bound F (inr (inr ⋆))))
+\end{code}
+
+\begin{code}
+
+^ₒ-⊴-×ₒ-base : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
+             → 𝟙ₒ {𝓦} ⊴ α
+             → α ^ₒ β ⊴ α ^ₒ β ×ₒ α
+^ₒ-⊴-×ₒ-base α β l =
+ ⊴-trans (α ^ₒ β) (α ^ₒ β ×ₒ 𝟙ₒ) (α ^ₒ β ×ₒ α)
+  (＝-to-⊴ (α ^ₒ β) (α ^ₒ β ×ₒ 𝟙ₒ) ((𝟙ₒ-right-neutral-×ₒ (α ^ₒ β)) ⁻¹))
+  (×ₒ-right-monotone-⊴ (α ^ₒ β) 𝟙ₒ α (𝟙ₒ-⊴-shift α l))
+
+^ₒ-satisifies-succ-specification : {𝓤 𝓥 : Universe} (α : Ordinal 𝓤) → 𝟙ₒ {𝓤} ⊴ α
+                                 → exp-specification-succ {𝓤} {𝓥} α (α ^ₒ_)
+^ₒ-satisifies-succ-specification {𝓤} {𝓥} α l β =
+ ⊴-antisym (α ^ₒ (β +ₒ 𝟙ₒ)) (α ^ₒ β ×ₒ α) I II
+  where
+   I : α ^ₒ (β +ₒ 𝟙ₒ) ⊴ α ^ₒ β ×ₒ α
+   I = ^ₒ-is-lower-bound-of-upper-bounds α (β +ₒ 𝟙ₒ) (α ^ₒ β ×ₒ α) I₁ I₂
+    where
+     I₁ : 𝟙ₒ ⊴ α ^ₒ β ×ₒ α
+     I₁ = ⊴-trans 𝟙ₒ (α ^ₒ β) (α ^ₒ β ×ₒ α)
+           (^ₒ-is-upper-bound₁ α β)
+           (^ₒ-⊴-×ₒ-base α β l)
+     I₂ : (x : ⟨ β +ₒ 𝟙ₒ ⟩) → α ^ₒ ((β +ₒ 𝟙ₒ) ↓ x) ×ₒ α ⊴ α ^ₒ β ×ₒ α
+     I₂ (inl b) = ⊴-trans
+                   (α ^ₒ ((β +ₒ 𝟙ₒ) ↓ inl b) ×ₒ α)
+                   (α ^ₒ β)
+                   (α ^ₒ β ×ₒ α)
+                   (transport (_⊴ α ^ₒ β)
+                     (ap (λ - → α ^ₒ - ×ₒ α) (+ₒ-↓-left b))
+                     (^ₒ-is-upper-bound₂ α β))
+                   (^ₒ-⊴-×ₒ-base α β l)
+     I₂ (inr ⋆) = ＝-to-⊴
+                   (α ^ₒ ((β +ₒ 𝟙ₒ) ↓ inr ⋆) ×ₒ α)
+                   (α ^ₒ β ×ₒ α)
+                   (ap (λ - → α ^ₒ - ×ₒ α) (successor-lemma-right β))
+   II : α ^ₒ β ×ₒ α ⊴ α ^ₒ (β +ₒ 𝟙ₒ)
+   II = transport
+         (_⊴ α ^ₒ (β +ₒ 𝟙ₒ))
+         (ap (λ - → α ^ₒ - ×ₒ α) (successor-lemma-right β))
+         (^ₒ-is-upper-bound₂ α (β +ₒ 𝟙ₒ))
+
+\end{code}
+
+\begin{code}
+
+^ₒ-𝟙ₒ-is-neutral : (α : Ordinal 𝓤) → 𝟙ₒ ⊴ α → α ^ₒ 𝟙ₒ ＝ α
+^ₒ-𝟙ₒ-is-neutral {𝓤} α l =
+ α ^ₒ 𝟙ₒ             ＝⟨ ap (α ^ₒ_) (𝟘ₒ-left-neutral 𝟙ₒ ⁻¹)  ⟩
+ α ^ₒ (𝟘ₒ {𝓤} +ₒ 𝟙ₒ) ＝⟨ ^ₒ-satisifies-succ-specification α l 𝟘ₒ ⟩
+ α ^ₒ (𝟘ₒ) ×ₒ α      ＝⟨ ap (_×ₒ α) (^ₒ-satisfies-zero-specification α) ⟩
+ 𝟙ₒ ×ₒ α             ＝⟨ 𝟙ₒ-left-neutral-×ₒ α ⟩
+ α                   ∎
+
+^ₒ-𝟚ₒ-is-×ₒ : (α : Ordinal 𝓤) → 𝟙ₒ ⊴ α → α ^ₒ 𝟚ₒ ＝ α ×ₒ α
+^ₒ-𝟚ₒ-is-×ₒ α p =
+ α ^ₒ (𝟙ₒ +ₒ 𝟙ₒ) ＝⟨ ^ₒ-satisifies-succ-specification α p 𝟙ₒ ⟩
+ α ^ₒ 𝟙ₒ ×ₒ α    ＝⟨ ap (_×ₒ α) (^ₒ-𝟙ₒ-is-neutral α p) ⟩
+ α ×ₒ α          ∎
+
+\end{code}
+
+\begin{code}
+
+^ₒ-satisfies-sup-specification-generalized :
+   {𝓤 𝓥 : Universe} (α : Ordinal 𝓤)
+ → exp-specification-sup-generalized {𝓤} {𝓥} α (α ^ₒ_)
+^ₒ-satisfies-sup-specification-generalized {𝓤} {𝓥} α p {S} S-inh F =
+ ⊴-antisym (α ^ₒ sup F) (sup (λ - → α ^ₒ F (lower -))) I II
+  where
+   II : sup (λ - → α ^ₒ F (lower -)) ⊴ α ^ₒ sup F
+   II = sup-is-lower-bound-of-upper-bounds
+         (λ - → α ^ₒ F (lower -))
+         (α ^ₒ sup F)
+         (λ i → ^ₒ-monotone-in-exponent α (F (lower i)) (sup F)
+                 (sup-is-upper-bound F (lower i)))
+
+   I : α ^ₒ sup F ⊴ sup (λ - → α ^ₒ F (lower -))
+   I = ^ₒ-is-lower-bound-of-upper-bounds
+        α
+        (sup F)
+        (sup (λ - → α ^ₒ F (lower -)))
+        I₁
+        I₂
+    where
+     I₁ : 𝟙ₒ ⊴ sup (λ - → α ^ₒ F (lower -))
+     I₁ = ∥∥-rec (⊴-is-prop-valued 𝟙ₒ (sup (λ - → α ^ₒ F (lower -)))) I₁' S-inh
+      where
+       I₁' : S → 𝟙ₒ ⊴ sup (λ - → α ^ₒ F (lower -))
+       I₁' s₀ = ⊴-trans
+                 𝟙ₒ
+                 (α ^ₒ (F s₀))
+                 (sup (λ - → α ^ₒ F (lower -)))
+                 (^ₒ-is-upper-bound₁ α (F s₀))
+                 (sup-is-upper-bound (λ - → α ^ₒ F (lower -)) (lift 𝓤 s₀))
+     I₂ : (y : ⟨ sup F ⟩)
+        → α ^ₒ (sup F ↓ y) ×ₒ α ⊴ sup (λ - → α ^ₒ F (lower -))
+     I₂ y = ∥∥-rec
+             (⊴-is-prop-valued (α ^ₒ (sup F ↓ y) ×ₒ α) (sup (λ - → α ^ₒ F (lower -))))
+             I₂'
+             (initial-segment-of-sup-is-initial-segment-of-some-component F y)
+      where
+       I₂' : (Σ s ꞉ S , Σ x ꞉ ⟨ F s ⟩ , sup F ↓ y ＝ F s ↓ x)
+           → α ^ₒ (sup F ↓ y) ×ₒ α ⊴ sup (λ - → α ^ₒ F (lower -))
+       I₂' (s , x , p) =
+        transport⁻¹
+         (_⊴ sup (λ - → α ^ₒ F (lower -)))
+         (ap (λ - → α ^ₒ - ×ₒ α) p)
+         (⊴-trans (α ^ₒ (F s ↓ x) ×ₒ α) (α ^ₒ F s) (sup (λ - → α ^ₒ (F (lower -))))
+          (^ₒ-is-upper-bound₂ α (F s))
+          (sup-is-upper-bound (λ - → α ^ₒ (F (lower -))) (lift 𝓤 s)))
+
+^ₒ-satisfies-sup-specification : (α : Ordinal 𝓤) → exp-specification-sup α (α ^ₒ_)
+^ₒ-satisfies-sup-specification α =
+ exp-specification-sup-from-generalized
+  α (α ^ₒ_) (^ₒ-satisfies-sup-specification-generalized α)
+
+-- curiosity : (P : 𝓤 ̇ ) → (pp : is-prop P) → exp {𝓤} 𝟚ₒ (prop-ordinal P pp) ＝ 𝟙ₒ +ₒ prop-ordinal P pp
+-- curiosity {𝓤} P pp = transport⁻¹ (λ - → - ＝ 𝟙ₒ +ₒ (prop-ordinal P pp))
+--                                  (^ₒ-behaviour 𝟚ₒ (prop-ordinal P pp) ∙ ap sup (dfunext fe' eq))
+--                                  (⊴-antisym (sup F) (𝟙ₒ +ₒ prop-ordinal P pp)
+--                                             (sup-is-lower-bound-of-upper-bounds F _ upper-bound)
+--                                             (g , g-is-simulation))
+--  where
+--   F : 𝟙 + P → Ordinal 𝓤
+--   F (inl _) = 𝟙ₒ
+--   F (inr p) = 𝟚ₒ
+
+--   eq : (i : 𝟙 + P) → (cases (λ _ → 𝟙ₒ) (λ b → exp 𝟚ₒ (prop-ordinal P pp ↓ b) ×ₒ 𝟚ₒ)) i ＝ F i
+--   eq (inl _) = refl
+--   eq (inr p) = exp 𝟚ₒ (prop-ordinal P pp ↓ p) ×ₒ 𝟚ₒ ＝⟨ ap (λ z → exp 𝟚ₒ z ×ₒ 𝟚ₒ) (prop-ordinal-↓ P pp p) ⟩
+--                exp 𝟚ₒ 𝟘ₒ ×ₒ 𝟚ₒ                      ＝⟨ ap (_×ₒ 𝟚ₒ) (^ₒ-satisfies-zero-specification 𝟚ₒ) ⟩
+--                𝟙ₒ ×ₒ 𝟚ₒ                             ＝⟨ 𝟙ₒ-left-neutral-×ₒ 𝟚ₒ ⟩
+--                𝟚ₒ ∎
+
+--   upper-bound : (i : 𝟙 + P) → F i ⊴ (𝟙ₒ +ₒ prop-ordinal P pp)
+--   upper-bound (inl _) = (λ _ → inl _) , (λ x → dep-cases (λ _ → 𝟘-elim) (λ p → 𝟘-elim)) , (λ _ _ q → 𝟘-elim q)
+--   upper-bound (inr p) = cases inl (λ _ → inr p) , (λ { (inr p') (inl _) _ → (inl _) , (⋆ , refl)
+--                                                      ; (inl _) (inr p') q → 𝟘-elim q
+--                                                      ; (inr p') (inr p'') q → 𝟘-elim q})
+--                                                 , (λ { (inl _) (inr p') q → ⋆
+--                                                      ; (inl _) (inl _) q → 𝟘-elim q})
+
+--   f : (i : ⟨ 𝟙ₒ +ₒ prop-ordinal P pp ⟩) → ⟨ F i ⟩
+--   f (inl _) = ⋆
+--   f (inr p) = inr ⋆
+
+--   g : (i : ⟨ 𝟙ₒ +ₒ prop-ordinal P pp ⟩) → ⟨ sup F ⟩
+--   g i = pr₁ (sup-is-upper-bound F i) (f i)
+
+--   g-is-initial-segment : is-initial-segment (𝟙ₒ +ₒ prop-ordinal P pp) (sup F) g
+--   g-is-initial-segment (inl _) y q = inl ⋆ , pr₂ (pr₁ (pr₂ (sup-is-upper-bound F (inl _))) ⋆ y q)
+--   g-is-initial-segment (inr p) y q with pr₁ (pr₂ (sup-is-upper-bound F (inr p))) (inr ⋆) y q
+--   ... | inl _ , _ , refl = inl ⋆ , ⋆ , ↓-lc (sup F)
+--                                             (pr₁ (sup-is-upper-bound F (inl ⋆)) ⋆)
+--                                             (pr₁ (sup-is-upper-bound F (inr p)) (inl ⋆))
+--                                             e
+--    where
+--     e = (sup F ↓ pr₁ (sup-is-upper-bound F (inl ⋆)) ⋆)
+--           ＝⟨ initial-segment-of-sup-at-component F (inl ⋆) ⋆ ⟩
+--         (𝟙ₒ ↓ ⋆)
+--           ＝⟨ +ₒ-↓-left ⋆ ⟩
+--         (𝟚ₒ ↓ inl ⋆)
+--           ＝⟨ initial-segment-of-sup-at-component F (inr p) (inl ⋆) ⁻¹ ⟩
+--         (sup F ↓ pr₁ (sup-is-upper-bound F (inr p)) (inl ⋆))
+--           ∎
+
+--   g-is-order-preserving : is-order-preserving (𝟙ₒ +ₒ prop-ordinal P pp) (sup F) g
+--   g-is-order-preserving (inl _) (inr p) _ = ↓-reflects-order (sup F) (g (inl _)) (g (inr p)) q
+--    where
+--     eq₁ = sup F ↓ pr₁ (sup-is-upper-bound F (inl ⋆)) ⋆
+--             ＝⟨ initial-segment-of-sup-at-component F (inl ⋆) ⋆ ⟩
+--           𝟙ₒ ↓ ⋆
+--             ＝⟨ prop-ordinal-↓ 𝟙 𝟙-is-prop ⋆ ⟩
+--           𝟘ₒ
+--             ∎
+--     eq₂ = sup F ↓ pr₁ (sup-is-upper-bound F (inr p)) (inr ⋆)
+--             ＝⟨ initial-segment-of-sup-at-component F (inr p) (inr ⋆) ⟩
+--           (𝟚ₒ ↓ inr ⋆)
+--             ＝⟨ successor-lemma-right 𝟙ₒ ⟩
+--           𝟙ₒ
+--             ∎
+--     q : (sup F ↓ pr₁ (sup-is-upper-bound F (inl ⋆)) ⋆) ⊲ (sup F ↓ pr₁ (sup-is-upper-bound F (inr p)) (inr ⋆))
+--     q = transport₂⁻¹ _⊲_ eq₁ eq₂ (⋆ , (prop-ordinal-↓ 𝟙 𝟙-is-prop ⋆ ⁻¹))
+--   g-is-order-preserving (inl _) (inl _) q = 𝟘-elim q
+
+--   g-is-simulation : is-simulation (𝟙ₒ +ₒ prop-ordinal P pp) (sup F) g
+--   g-is-simulation = g-is-initial-segment , g-is-order-preserving
+
+
+
+-- \end{code}
+
+-- Added 16 September 2024 by Tom de Jong.
+
+-- \begin{code}
+
+-- exp-+-distributes : {𝓤 : Universe} (α β γ : Ordinal 𝓤)
+--                   → α ^ₒ (β +ₒ γ) ＝ α ^ₒ β ×ₒ α ^ₒ γ
+-- exp-+-distributes {𝓤} α β =
+--  transfinite-induction-on-OO (λ γ → α ^ₒ (β +ₒ γ) ＝ α ^ₒ β ×ₒ α ^ₒ γ) I
 --   where
---    F : 𝟙 + (⟨ β ⟩ + 𝟙) → Ordinal 𝓤
---    F (inl _) = 𝟙ₒ
---    F (inr (inl b)) = α ^ₒ (β ↓ b) ×ₒ α
---    F (inr (inr _)) = α ^ₒ β ×ₒ α
+--    I : (γ : Ordinal 𝓤)
+--      → ((c : ⟨ γ ⟩) → α ^ₒ (β +ₒ (γ ↓ c)) ＝ α ^ₒ β ×ₒ α ^ₒ (γ ↓ c))
+--      → α ^ₒ (β +ₒ γ) ＝ α ^ₒ β ×ₒ α ^ₒ γ
+--    I γ IH = ^ₒ-behaviour α (β +ₒ γ) ∙ III ∙ II ⁻¹
+--     where
+--      III : sup (cases (λ _ → 𝟙ₒ) (λ x → α ^ₒ ((β +ₒ γ) ↓ x) ×ₒ α))
+--          ＝ sup (cases (λ _ → α ^ₒ β) (λ c → α ^ₒ (β +ₒ (γ ↓ c)) ×ₒ α))
+--      III = ⊴-antisym _ _ III₁ III₂
+--       where
+--        III₁ : sup (cases (λ _ → 𝟙ₒ) (λ x → α ^ₒ ((β +ₒ γ) ↓ x) ×ₒ α))
+--             ⊴ sup (cases (λ _ → α ^ₒ β) (λ c → α ^ₒ (β +ₒ (γ ↓ c)) ×ₒ α))
+--        III₁ = sup-is-lower-bound-of-upper-bounds _ _ ub
+--         where
+--          ub : (i : 𝟙 + ⟨ β +ₒ γ ⟩)
+--             → cases (λ _ → 𝟙ₒ) (λ x → α ^ₒ ((β +ₒ γ) ↓ x) ×ₒ α) i
+--             ⊴ sup (cases (λ _ → α ^ₒ β) (λ c → α ^ₒ (β +ₒ (γ ↓ c)) ×ₒ α))
+--          ub (inl ⋆) = ⊴-trans 𝟙ₒ (α ^ₒ β) _ (exp-has-least-element α β) (sup-is-upper-bound _ (inl ⋆))
+--          ub (inr (inl b)) = ⊴-trans _ (α ^ₒ β) _
+--                              (transport⁻¹ (_⊴ α ^ₒ β) (ap (λ - → α ^ₒ - ×ₒ α) ((+ₒ-↓-left b) ⁻¹)) (exp-component-⊴ α β))
+--                              (sup-is-upper-bound _ (inl ⋆))
+--          ub (inr (inr c)) = transport⁻¹
+--                              (_⊴ sup {_} {𝟙{𝓤} + ⟨ γ ⟩} (cases (λ _ → α ^ₒ β) (λ c → α ^ₒ (β +ₒ (γ ↓ c)) ×ₒ α)))
+--                              (ap (λ - → α ^ₒ - ×ₒ α) ((+ₒ-↓-right c) ⁻¹))
+--                              (sup-is-upper-bound _ (inr c))
+--        III₂ : sup (cases (λ _ → α ^ₒ β) (λ c → α ^ₒ (β +ₒ (γ ↓ c)) ×ₒ α))
+--             ⊴ sup (cases (λ _ → 𝟙ₒ) (λ x → α ^ₒ ((β +ₒ γ) ↓ x) ×ₒ α))
+--        III₂ = sup-is-lower-bound-of-upper-bounds _ _ ub
+--         where
+--          ub : (i : 𝟙 + ⟨ γ ⟩)
+--             → cases (λ _ → α ^ₒ β) (λ c → α ^ₒ (β +ₒ (γ ↓ c)) ×ₒ α) i
+--             ⊴ sup (cases (λ _ → 𝟙ₒ) (λ x → α ^ₒ ((β +ₒ γ) ↓ x) ×ₒ α))
+--          ub (inl ⋆) = transport⁻¹
+--                        (_⊴ sup {_} {𝟙{𝓤} + ⟨ β +ₒ γ ⟩} (cases (λ _ → 𝟙ₒ) (λ x → α ^ₒ ((β +ₒ γ) ↓ x) ×ₒ α)))
+--                        (^ₒ-behaviour α β)
+--                        (sup-is-lower-bound-of-upper-bounds _ _ h)
+--           where
+--            h : (j : 𝟙 + ⟨ β ⟩)
+--              → cases (λ _ → 𝟙ₒ) (λ b → α ^ₒ (β ↓ b) ×ₒ α) j
+--              ⊴ sup (cases (λ _ → 𝟙ₒ) (λ x → α ^ₒ ((β +ₒ γ) ↓ x) ×ₒ α))
+--            h (inl ⋆) = sup-is-upper-bound _ (inl ⋆)
+--            h (inr b) = transport⁻¹
+--                          (_⊴ sup {_} {𝟙 + ⟨ β +ₒ γ ⟩} (cases (λ _ → 𝟙ₒ) (λ x → α ^ₒ ((β +ₒ γ) ↓ x) ×ₒ α)))
+--                          (ap (λ - → α ^ₒ - ×ₒ α) (+ₒ-↓-left b))
+--                          (sup-is-upper-bound _ (inr (inl b)))
+--          ub (inr c) = transport⁻¹
+--                        (_⊴ sup {_} {𝟙{𝓤} + ⟨ β +ₒ γ ⟩} (cases (λ _ → 𝟙ₒ) (λ x → α ^ₒ ((β +ₒ γ) ↓ x) ×ₒ α)))
+--                        (ap (λ - → α ^ₒ - ×ₒ α) (+ₒ-↓-right c))
+--                        (sup-is-upper-bound _ (inr (inr c)))
 
---    right-add-α : α ^ₒ β ⊴ (α ^ₒ β ×ₒ α)
---    right-add-α = (transport (_⊴ (α ^ₒ β ×ₒ α)) (𝟙ₒ-right-neutral-×ₒ (α ^ₒ β)) (×ₒ-right-monotone-⊴ (α ^ₒ β) 𝟙ₒ α p))
+--      II = α ^ₒ β ×ₒ α ^ₒ γ ＝⟨ ap (α ^ₒ β ×ₒ_) (^ₒ-behaviour α γ) ⟩
+--           α ^ₒ β ×ₒ (sup (cases (λ _ → 𝟙ₒ) (λ c → α ^ₒ (γ ↓ c) ×ₒ α))) ＝⟨ ×ₒ-preserves-suprema pt sr (α ^ₒ β) _ ⟩
+--           sup (λ i → α ^ₒ β ×ₒ (cases (λ _ → 𝟙ₒ) (λ c → α ^ₒ (γ ↓ c) ×ₒ α)) i) ＝⟨ ap sup (dfunext fe' h) ⟩
+--           sup (cases (λ _ → α ^ₒ β) (λ c → α ^ₒ (β +ₒ (γ ↓ c)) ×ₒ α)) ∎
+--       where
+--        h : (λ i → α ^ₒ β ×ₒ cases (λ _ → 𝟙ₒ) (λ c → α ^ₒ (γ ↓ c) ×ₒ α) i)
+--          ∼ cases (λ _ → α ^ₒ β) (λ c → α ^ₒ (β +ₒ (γ ↓ c)) ×ₒ α)
+--        h (inl ⋆) = 𝟙ₒ-right-neutral-×ₒ (α ^ₒ β)
+--        h (inr c) = α ^ₒ β ×ₒ (α ^ₒ (γ ↓ c) ×ₒ α) ＝⟨ ×ₒ-assoc (α ^ₒ β) (α ^ₒ (γ ↓ c)) α ⁻¹ ⟩
+--                    (α ^ₒ β ×ₒ α ^ₒ (γ ↓ c)) ×ₒ α ＝⟨ ap (_×ₒ α) ((IH c) ⁻¹) ⟩
+--                    α ^ₒ (β +ₒ (γ ↓ c)) ×ₒ α       ∎
 
---    upper-bound : (i : 𝟙 + (⟨ β ⟩ + 𝟙)) → F i ⊴ (α ^ₒ β ×ₒ α)
---    upper-bound (inl _) = ⊴-trans 𝟙ₒ (α ^ₒ β) (α ^ₒ β ×ₒ α) (exp-has-least-element α β) right-add-α
---    upper-bound (inr (inl b)) = ⊴-trans (α ^ₒ (β ↓ b) ×ₒ α) (α ^ₒ β) (α ^ₒ β ×ₒ α)
---                                        (transport ((α ^ₒ (β ↓ b) ×ₒ α) ⊴_) (exp-behaviour α β ⁻¹) (sup-is-upper-bound (cases (λ _ → 𝟙ₒ) (λ b → α ^ₒ (β ↓ b) ×ₒ α)) (inr b)))
---                                        right-add-α
---    upper-bound (inr (inr _)) = ⊴-refl (α ^ₒ β ×ₒ α)
+-- ^ₒ-satisifies-succ-specification' : (α β : Ordinal 𝓤) → 𝟙ₒ {𝓤} ⊴ α
+--                                   → α ^ₒ (β +ₒ 𝟙ₒ) ＝ (α ^ₒ β) ×ₒ α
+-- ^ₒ-satisifies-succ-specification' α β l =
+--  exp-+-distributes α β 𝟙ₒ ∙ ap (α ^ₒ β ×ₒ_) (exp-power-one-is-identity α l)
 
---    eq : (i : 𝟙 + (⟨ β ⟩ + 𝟙)) → (cases (λ _ → 𝟙ₒ) (λ b → α ^ₒ ((β +ₒ 𝟙ₒ) ↓ b) ×ₒ α)) i ＝ F i
---    eq (inl _) = refl
---    eq (inr (inl b)) = ap (λ z → α ^ₒ z ×ₒ α) (+ₒ-↓-left b ⁻¹)
---    eq (inr (inr _)) = ap (λ z → α ^ₒ z ×ₒ α) (successor-lemma-right β)
+-- iterated-exp-is-exp-by-×ₒ : (α β γ : Ordinal 𝓤)
+--                           → exp (α ^ₒ β) γ ＝ α ^ₒ (β ×ₒ γ)
+-- iterated-exp-is-exp-by-×ₒ {𝓤} α β =
+--  transfinite-induction-on-OO
+--   (λ γ → exp (α ^ₒ β) γ ＝ α ^ₒ (β ×ₒ γ))
+--   I
+--   where
+--    I : (γ : Ordinal 𝓤)
+--      → ((c : ⟨ γ ⟩) → exp (α ^ₒ β) (γ ↓ c) ＝ α ^ₒ (β ×ₒ (γ ↓ c)))
+--      → exp (α ^ₒ β) γ ＝ α ^ₒ (β ×ₒ γ)
+--    I γ IH = ⊴-antisym (exp (α ^ₒ β) γ) (α ^ₒ (β ×ₒ γ)) II III
+--     where
+--      II : exp (α ^ₒ β) γ ⊴ α ^ₒ (β ×ₒ γ)
+--      II = transport⁻¹ (_⊴ α ^ₒ (β ×ₒ γ)) (^ₒ-behaviour (α ^ₒ β) γ) II'
+--       where
+--        II' : sup (cases (λ _ → 𝟙ₒ) (λ c → exp (α ^ₒ β) (γ ↓ c) ×ₒ α ^ₒ β))
+--            ⊴ α ^ₒ (β ×ₒ γ)
+--        II' = sup-is-lower-bound-of-upper-bounds _ _ ub
+--         where
+--          ub : (i : 𝟙 + ⟨ γ ⟩)
+--             → cases (λ _ → 𝟙ₒ) (λ b → exp (α ^ₒ β) (γ ↓ b) ×ₒ α ^ₒ β) i
+--               ⊴ α ^ₒ (β ×ₒ γ)
+--          ub (inl ⋆) = exp-has-least-element α (β ×ₒ γ)
+--          ub (inr c) = transport⁻¹ (_⊴ α ^ₒ (β ×ₒ γ))
+--                        eq
+--                        (^ₒ-monotone-in-exponent α
+--                          (β ×ₒ ((γ ↓ c) +ₒ 𝟙ₒ)) (β ×ₒ γ)
+--                          (×ₒ-right-monotone-⊴ β ((γ ↓ c) +ₒ 𝟙ₒ) γ
+--                            (upper-bound-of-successors-of-initial-segments γ c)))
+--           where
+--            eq = exp (α ^ₒ β) (γ ↓ c) ×ₒ α ^ₒ β ＝⟨ ap (_×ₒ α ^ₒ β) (IH c) ⟩
+--                 α ^ₒ (β ×ₒ (γ ↓ c)) ×ₒ α ^ₒ β  ＝⟨ (exp-+-distributes α (β ×ₒ (γ ↓ c)) β) ⁻¹ ⟩
+--                 α ^ₒ ((β ×ₒ (γ ↓ c)) +ₒ β)      ＝⟨ ap (α ^ₒ) ((×ₒ-successor β (γ ↓ c)) ⁻¹) ⟩
+--                 α ^ₒ (β ×ₒ ((γ ↓ c) +ₒ 𝟙ₒ))     ∎
+--      III : α ^ₒ (β ×ₒ γ) ⊴ exp (α ^ₒ β) γ
+--      III = transport⁻¹ (_⊴ exp (α ^ₒ β) γ) (^ₒ-behaviour α (β ×ₒ γ)) III'
+--       where
+--        III' : sup (cases (λ _ → 𝟙ₒ) (λ x → α ^ₒ ((β ×ₒ γ) ↓ x) ×ₒ α))
+--             ⊴ exp (α ^ₒ β) γ
+--        III' = sup-is-lower-bound-of-upper-bounds _ _ ub
+--         where
+--          ub : (i : 𝟙 + ⟨ β ×ₒ γ ⟩)
+--             → cases (λ _ → 𝟙ₒ) (λ b → α ^ₒ ((β ×ₒ γ) ↓ b) ×ₒ α) i
+--               ⊴ exp (α ^ₒ β) γ
+--          ub (inl ⋆)       = exp-has-least-element (α ^ₒ β) γ
+--          ub (inr (b , c)) = transport⁻¹ (_⊴ exp (α ^ₒ β) γ) eq IV
+--           where
+--            eq = α ^ₒ ((β ×ₒ γ) ↓ (b , c)) ×ₒ α                 ＝⟨ ap (λ - → α ^ₒ - ×ₒ α) (×ₒ-↓ β γ) ⟩
+--                 α ^ₒ ((β ×ₒ (γ ↓ c)) +ₒ (β ↓ b)) ×ₒ α          ＝⟨ ap (_×ₒ α) (exp-+-distributes α (β ×ₒ (γ ↓ c)) (β ↓ b)) ⟩
+--                 ((α ^ₒ (β ×ₒ (γ ↓ c))) ×ₒ α ^ₒ (β ↓ b)) ×ₒ α  ＝⟨ ap (λ - → (- ×ₒ α ^ₒ (β ↓ b)) ×ₒ α) ((IH c) ⁻¹) ⟩
+--                 (exp (α ^ₒ β) (γ ↓ c) ×ₒ α ^ₒ (β ↓ b)) ×ₒ α   ＝⟨ ×ₒ-assoc (exp (α ^ₒ β) (γ ↓ c)) (α ^ₒ (β ↓ b)) α ⟩
+--                 (exp (α ^ₒ β) (γ ↓ c) ×ₒ (α ^ₒ (β ↓ b) ×ₒ α)) ∎
+--            IV : (exp (α ^ₒ β) (γ ↓ c) ×ₒ (α ^ₒ (β ↓ b) ×ₒ α)) ⊴ exp (α ^ₒ β) γ
+--            IV = transport⁻¹ ((exp (α ^ₒ β) (γ ↓ c) ×ₒ (α ^ₒ (β ↓ b) ×ₒ α)) ⊴_) (^ₒ-behaviour (α ^ₒ β) γ) IV'
+--             where
+--              IV' : (exp (α ^ₒ β) (γ ↓ c) ×ₒ (α ^ₒ (β ↓ b) ×ₒ α))
+--                  ⊴ sup (cases (λ _ → 𝟙ₒ) (λ c → exp (α ^ₒ β) (γ ↓ c) ×ₒ α ^ₒ β))
+--              IV' = ⊴-trans
+--                     (exp (α ^ₒ β) (γ ↓ c) ×ₒ (α ^ₒ (β ↓ b) ×ₒ α))
+--                     (exp (α ^ₒ β) (γ ↓ c) ×ₒ α ^ₒ β)
+--                     (sup (cases (λ _ → 𝟙ₒ) (λ c' → exp (α ^ₒ β) (γ ↓ c') ×ₒ α ^ₒ β)))
+--                     IV''
+--                     (sup-is-upper-bound _ (inr c))
+--               where
+--                IV'' : (exp (α ^ₒ β) (γ ↓ c) ×ₒ (α ^ₒ (β ↓ b) ×ₒ α))
+--                     ⊴ (exp (α ^ₒ β) (γ ↓ c) ×ₒ α ^ₒ β)
+--                IV'' = ×ₒ-right-monotone-⊴
+--                        (exp (α ^ₒ β) (γ ↓ c))
+--                        (α ^ₒ (β ↓ b) ×ₒ α)
+--                        (α ^ₒ β)
+--                        (exp-component-⊴ α β)
 
---    eq' : (cases (λ _ → 𝟙ₒ) (λ b → α ^ₒ ((β +ₒ 𝟙ₒ) ↓ b) ×ₒ α)) ＝ F
---    eq' = dfunext fe' eq
+-- \end{code}
 
--- exp-power-one-is-identity : (α : Ordinal 𝓤) → 𝟙ₒ {𝓤} ⊴ α → α ^ₒ (𝟙ₒ {𝓤}) ＝ α
--- exp-power-one-is-identity {𝓤} α p =
---   α ^ₒ (𝟙ₒ {𝓤})      ＝⟨ ap (α ^ₒ) (𝟘ₒ-left-neutral 𝟙ₒ ⁻¹)  ⟩
---   α ^ₒ (𝟘ₒ +ₒ 𝟙ₒ)     ＝⟨ exp-satisfies-succ-specification α p 𝟘ₒ ⟩
---   α ^ₒ (𝟘ₒ {𝓤}) ×ₒ α ＝⟨ ap (_×ₒ α) (exp-satisfies-zero-specification α) ⟩
---   𝟙ₒ ×ₒ α              ＝⟨ 𝟙ₒ-left-neutral-×ₒ α ⟩
---   α ∎
+-- Added 17 September 2024 by Tom de Jong.
 
--- exp-power-two-is-multiplication : (α : Ordinal 𝓤)
---                                 → 𝟙ₒ ⊴ α → α ^ₒ (𝟙ₒ +ₒ 𝟙ₒ) ＝ α ×ₒ α
--- exp-power-two-is-multiplication α p =
---  α ^ₒ (𝟙ₒ +ₒ 𝟙ₒ) ＝⟨ exp-satisfies-succ-specification α p 𝟙ₒ ⟩
---  α ^ₒ 𝟙ₒ ×ₒ α    ＝⟨ ap (_×ₒ α) (exp-power-one-is-identity α p) ⟩
---  α ×ₒ α           ∎
+-- \begin{code}
 
--- -- curiosity : (P : 𝓤 ̇ ) → (pp : is-prop P) → exp {𝓤} 𝟚ₒ (prop-ordinal P pp) ＝ 𝟙ₒ +ₒ prop-ordinal P pp
--- -- curiosity {𝓤} P pp = transport⁻¹ (λ - → - ＝ 𝟙ₒ +ₒ (prop-ordinal P pp))
--- --                                  (exp-behaviour 𝟚ₒ (prop-ordinal P pp) ∙ ap sup (dfunext fe' eq))
--- --                                  (⊴-antisym (sup F) (𝟙ₒ +ₒ prop-ordinal P pp)
--- --                                             (sup-is-lower-bound-of-upper-bounds F _ upper-bound)
--- --                                             (g , g-is-simulation))
--- --  where
--- --   F : 𝟙 + P → Ordinal 𝓤
--- --   F (inl _) = 𝟙ₒ
--- --   F (inr p) = 𝟚ₒ
+-- exp-⊲-lemma : (α β : Ordinal 𝓤)
+--             → 𝟙ₒ ⊲ α
+--             → {b : ⟨ β ⟩} → α ^ₒ (β ↓ b) ⊲ α ^ₒ β
+-- exp-⊲-lemma {𝓤} α β (a₀ , e) {b} = x , (eq' ⁻¹ ∙ eq)
+--  where
+--   ⊥ : ⟨ α ^ₒ (β ↓ b) ⟩
+--   ⊥ = pr₁ (𝟘ₒ-initial-segment-of-α ^ₒ (β ↓ b))
 
--- --   eq : (i : 𝟙 + P) → (cases (λ _ → 𝟙ₒ) (λ b → exp 𝟚ₒ (prop-ordinal P pp ↓ b) ×ₒ 𝟚ₒ)) i ＝ F i
--- --   eq (inl _) = refl
--- --   eq (inr p) = exp 𝟚ₒ (prop-ordinal P pp ↓ p) ×ₒ 𝟚ₒ ＝⟨ ap (λ z → exp 𝟚ₒ z ×ₒ 𝟚ₒ) (prop-ordinal-↓ P pp p) ⟩
--- --                exp 𝟚ₒ 𝟘ₒ ×ₒ 𝟚ₒ                      ＝⟨ ap (_×ₒ 𝟚ₒ) (exp-satisfies-zero-specification 𝟚ₒ) ⟩
--- --                𝟙ₒ ×ₒ 𝟚ₒ                             ＝⟨ 𝟙ₒ-left-neutral-×ₒ 𝟚ₒ ⟩
--- --                𝟚ₒ ∎
+--   ⊥-is-least : (α ^ₒ (β ↓ b) ↓ ⊥) ＝ 𝟘ₒ
+--   ⊥-is-least = (pr₂ (𝟘ₒ-initial-segment-of-α ^ₒ (β ↓ b))) ⁻¹
 
--- --   upper-bound : (i : 𝟙 + P) → F i ⊴ (𝟙ₒ +ₒ prop-ordinal P pp)
--- --   upper-bound (inl _) = (λ _ → inl _) , (λ x → dep-cases (λ _ → 𝟘-elim) (λ p → 𝟘-elim)) , (λ _ _ q → 𝟘-elim q)
--- --   upper-bound (inr p) = cases inl (λ _ → inr p) , (λ { (inr p') (inl _) _ → (inl _) , (⋆ , refl)
--- --                                                      ; (inl _) (inr p') q → 𝟘-elim q
--- --                                                      ; (inr p') (inr p'') q → 𝟘-elim q})
--- --                                                 , (λ { (inl _) (inr p') q → ⋆
--- --                                                      ; (inl _) (inl _) q → 𝟘-elim q})
+--   s : Ordinal 𝓤
+--   s = sup (cases (λ _ → 𝟙ₒ) (λ b' → α ^ₒ (β ↓ b') ×ₒ α))
 
--- --   f : (i : ⟨ 𝟙ₒ +ₒ prop-ordinal P pp ⟩) → ⟨ F i ⟩
--- --   f (inl _) = ⋆
--- --   f (inr p) = inr ⋆
+--   x' : ⟨ s ⟩
+--   x' = [ α ^ₒ (β ↓ b) ×ₒ α , s ]⟨ sup-is-upper-bound _ (inr b) ⟩ (⊥ , a₀)
 
--- --   g : (i : ⟨ 𝟙ₒ +ₒ prop-ordinal P pp ⟩) → ⟨ sup F ⟩
--- --   g i = pr₁ (sup-is-upper-bound F i) (f i)
+--   eq' : s ↓ x' ＝ α ^ₒ (β ↓ b)
+--   eq' = s ↓ x' ＝⟨ initial-segment-of-sup-at-component _ (inr b) (⊥ , a₀) ⟩
+--         (α ^ₒ (β ↓ b) ×ₒ α) ↓ (⊥ , a₀) ＝⟨ ×ₒ-↓ (α ^ₒ (β ↓ b)) α ⟩
+--         (α ^ₒ (β ↓ b) ×ₒ (α ↓ a₀)) +ₒ (α ^ₒ (β ↓ b) ↓ ⊥) ＝⟨ ap ((α ^ₒ (β ↓ b) ×ₒ (α ↓ a₀)) +ₒ_) ⊥-is-least ⟩
+--         (α ^ₒ (β ↓ b) ×ₒ (α ↓ a₀)) +ₒ 𝟘ₒ ＝⟨ 𝟘ₒ-right-neutral (α ^ₒ (β ↓ b) ×ₒ (α ↓ a₀)) ⟩
+--         α ^ₒ (β ↓ b) ×ₒ (α ↓ a₀) ＝⟨ ap (α ^ₒ (β ↓ b) ×ₒ_) (e ⁻¹) ⟩
+--         α ^ₒ (β ↓ b) ×ₒ 𝟙ₒ ＝⟨ 𝟙ₒ-right-neutral-×ₒ (α ^ₒ (β ↓ b)) ⟩
+--         α ^ₒ (β ↓ b) ∎
 
--- --   g-is-initial-segment : is-initial-segment (𝟙ₒ +ₒ prop-ordinal P pp) (sup F) g
--- --   g-is-initial-segment (inl _) y q = inl ⋆ , pr₂ (pr₁ (pr₂ (sup-is-upper-bound F (inl _))) ⋆ y q)
--- --   g-is-initial-segment (inr p) y q with pr₁ (pr₂ (sup-is-upper-bound F (inr p))) (inr ⋆) y q
--- --   ... | inl _ , _ , refl = inl ⋆ , ⋆ , ↓-lc (sup F)
--- --                                             (pr₁ (sup-is-upper-bound F (inl ⋆)) ⋆)
--- --                                             (pr₁ (sup-is-upper-bound F (inr p)) (inl ⋆))
--- --                                             e
--- --    where
--- --     e = (sup F ↓ pr₁ (sup-is-upper-bound F (inl ⋆)) ⋆)
--- --           ＝⟨ initial-segment-of-sup-at-component F (inl ⋆) ⋆ ⟩
--- --         (𝟙ₒ ↓ ⋆)
--- --           ＝⟨ +ₒ-↓-left ⋆ ⟩
--- --         (𝟚ₒ ↓ inl ⋆)
--- --           ＝⟨ initial-segment-of-sup-at-component F (inr p) (inl ⋆) ⁻¹ ⟩
--- --         (sup F ↓ pr₁ (sup-is-upper-bound F (inr p)) (inl ⋆))
--- --           ∎
+--   x : ⟨ α ^ₒ β ⟩
+--   x = Idtofun (ap ⟨_⟩ (^ₒ-behaviour α β ⁻¹)) x'
 
--- --   g-is-order-preserving : is-order-preserving (𝟙ₒ +ₒ prop-ordinal P pp) (sup F) g
--- --   g-is-order-preserving (inl _) (inr p) _ = ↓-reflects-order (sup F) (g (inl _)) (g (inr p)) q
--- --    where
--- --     eq₁ = sup F ↓ pr₁ (sup-is-upper-bound F (inl ⋆)) ⋆
--- --             ＝⟨ initial-segment-of-sup-at-component F (inl ⋆) ⋆ ⟩
--- --           𝟙ₒ ↓ ⋆
--- --             ＝⟨ prop-ordinal-↓ 𝟙 𝟙-is-prop ⋆ ⟩
--- --           𝟘ₒ
--- --             ∎
--- --     eq₂ = sup F ↓ pr₁ (sup-is-upper-bound F (inr p)) (inr ⋆)
--- --             ＝⟨ initial-segment-of-sup-at-component F (inr p) (inr ⋆) ⟩
--- --           (𝟚ₒ ↓ inr ⋆)
--- --             ＝⟨ successor-lemma-right 𝟙ₒ ⟩
--- --           𝟙ₒ
--- --             ∎
--- --     q : (sup F ↓ pr₁ (sup-is-upper-bound F (inl ⋆)) ⋆) ⊲ (sup F ↓ pr₁ (sup-is-upper-bound F (inr p)) (inr ⋆))
--- --     q = transport₂⁻¹ _⊲_ eq₁ eq₂ (⋆ , (prop-ordinal-↓ 𝟙 𝟙-is-prop ⋆ ⁻¹))
--- --   g-is-order-preserving (inl _) (inl _) q = 𝟘-elim q
+--   eq : s ↓ x' ＝ α ^ₒ β ↓ x
+--   eq = lemma s (α ^ₒ β) (^ₒ-behaviour α β ⁻¹)
+--    where
+--     -- TODO: Upstream
+--     lemma : (α' β' : Ordinal 𝓤) (e : α' ＝ β') {a : ⟨ α' ⟩}
+--           → α' ↓ a ＝ β' ↓ Idtofun (ap ⟨_⟩ e) a
+--     lemma α' β' refl = refl
 
--- --   g-is-simulation : is-simulation (𝟙ₒ +ₒ prop-ordinal P pp) (sup F) g
--- --   g-is-simulation = g-is-initial-segment , g-is-order-preserving
+-- exp-strictly-monotone : (α β γ : Ordinal 𝓤)
+--                       → 𝟙ₒ ⊲ α → β ⊲ γ → α ^ₒ β ⊲ α ^ₒ γ
+-- exp-strictly-monotone {𝓤} α β γ h (c , refl) = exp-⊲-lemma α γ h
 
--- -- exp-satisfies-sup-specification-generalized : (α : Ordinal 𝓤) {𝓥 : Universe}
--- --                                             → exp-specification-sup-generalized α (α ^ₒ) {𝓥}
--- -- exp-satisfies-sup-specification-generalized {𝓤} α p {I} i₀ F =
--- --   ∥∥-rec (the-type-of-ordinals-is-a-set (ua _) fe')
--- --          (λ i₀ → transport⁻¹ (λ - → - ＝ sup (λ i → α ^ₒ (F (lower i))))
--- --                              (exp-behaviour α (sup F))
--- --                              (⊴-antisym _ _ (sup-is-lower-bound-of-upper-bounds _ _ (left-to-right i₀))
--- --                              (sup-is-lower-bound-of-upper-bounds _ _ right-to-left)))
--- --          i₀
--- --  where
--- --   open import UF.UniverseEmbedding
--- --   left-to-right : I → (x : 𝟙 + ⟨ sup F ⟩) → (cases (λ _ → 𝟙ₒ) (λ b → α ^ₒ (sup F ↓ b) ×ₒ α)) x ⊴ sup (λ i → α ^ₒ (F (lower i)))
--- --   left-to-right i₀ (inl _) = ⊴-trans 𝟙ₒ (α ^ₒ (F i₀)) (sup (λ i → α ^ₒ (F (lower i)))) (exp-has-least-element α (F i₀)) (sup-is-upper-bound _ (lift 𝓤 i₀))
--- --   left-to-right i₀ (inr y) = ∥∥-rec (⊴-is-prop-valued _ _) (λ (j , y' , eq) → transport⁻¹ (λ - → (α ^ₒ - ×ₒ α) ⊴ sup (λ i → α ^ₒ (F (lower i)))) eq (claim j y')) (initial-segment-of-sup-is-initial-segment-of-some-component F y)
--- --    where
--- --     claim : (j : I) → (y' : ⟨ F j ⟩) → (α ^ₒ (F j ↓ y') ×ₒ α) ⊴ sup (λ i → α ^ₒ (F (lower i)))
--- --     claim j y' = ⊴-trans (α ^ₒ (F j ↓ y') ×ₒ α) (α ^ₒ (F j)) (sup (λ i → α ^ₒ (F (lower i))))
--- --                          (transport⁻¹ ((α ^ₒ (F j ↓ y') ×ₒ α) ⊴_) (exp-behaviour α (F j)) (sup-is-upper-bound _ (inr y')))
--- --                          (sup-is-upper-bound (λ i → α ^ₒ (F (lower i))) (lift 𝓤 j))
--- --   right-to-left : (i : Lift 𝓤 I) → α ^ₒ (F (lower i)) ⊴ sup (cases (λ _ → 𝟙ₒ) (λ b → α ^ₒ (sup F ↓ b) ×ₒ α))
--- --   right-to-left (i , _) = transport⁻¹ (_⊴ sup (cases (λ _ → 𝟙ₒ) (λ b → α ^ₒ (sup F ↓ b) ×ₒ α))) (exp-behaviour α (F i)) (sup-is-lower-bound-of-upper-bounds _ _ right-to-left')
--- --    where
--- --     right-to-left' : (x : 𝟙 + ⟨ F i ⟩) → (cases (λ _ → 𝟙ₒ) (λ y → α ^ₒ (F i ↓ y) ×ₒ α)) x ⊴ sup (cases {𝓤} {X = 𝟙} (λ _ → 𝟙ₒ) (λ b → α ^ₒ (sup F ↓ b) ×ₒ α))
--- --     right-to-left' (inl _) = sup-is-upper-bound (cases {X = 𝟙} (λ _ → 𝟙ₒ) (λ b → α ^ₒ (sup F ↓ b) ×ₒ α)) (inl ⋆)
--- --     right-to-left' (inr y) = transport (_⊴ sup (cases {X = 𝟙} (λ _ → 𝟙ₒ) (λ b → α ^ₒ (sup F ↓ b) ×ₒ α))) eq (sup-is-upper-bound (cases (λ _ → 𝟙ₒ) (λ b → α ^ₒ (sup F ↓ b) ×ₒ α)) (inr y'))
--- --      where
--- --       y' : ⟨ sup F ⟩
--- --       y' = pr₁ (sup-is-upper-bound F i) y
--- --       eq : α ^ₒ (sup F ↓ y') ×ₒ α ＝ α ^ₒ (F i ↓ y) ×ₒ α
--- --       eq = ap (λ - → α ^ₒ - ×ₒ α) (initial-segment-of-sup-at-component F i y)
-
--- -- exp-satisfies-sup-specification : (α : Ordinal 𝓤) → exp-specification-sup α (α ^ₒ)
--- -- exp-satisfies-sup-specification α =
--- --  exp-specification-sup-from-generalized
--- --   α (α ^ₒ) (exp-satisfies-sup-specification-generalized α)
-
--- -- -- TODO: Move elsewhere & generalize
--- -- initial-segment-of-𝟙ₒ-is-𝟘ₒ : 𝟙ₒ{𝓤} ↓ ⋆ ＝ 𝟘ₒ
--- -- initial-segment-of-𝟙ₒ-is-𝟘ₒ =
--- --  ⊲-is-extensional (𝟙ₒ ↓ ⋆) 𝟘ₒ (to-≼ (λ (⋆ , u) → 𝟘-elim (irrefl 𝟙ₒ ⋆ u))) (𝟘ₒ-least (𝟙ₒ ↓ ⋆))
-
--- -- 𝟘ₒ-initial-segment-of-exp : (α : Ordinal 𝓤) (β : Ordinal 𝓥) → 𝟘ₒ ⊲ α ^ₒ β
--- -- 𝟘ₒ-initial-segment-of-α ^ₒ β =
--- --  transport (_⊲ α ^ₒ β) initial-segment-of-𝟙ₒ-is-𝟘ₒ
--- --            (from-≼ (⊴-gives-≼ 𝟙ₒ (α ^ₒ β)
--- --                    (exp-has-least-element α β)) ⋆)
-
--- -- \end{code}
-
--- -- Added 16 September 2024 by Tom de Jong.
-
--- -- \begin{code}
-
--- -- -- TODO: Move up this basic fact
--- -- exp-component-⊴ : (α : Ordinal 𝓤) (β : Ordinal 𝓥) {b : ⟨ β ⟩}
--- --                 → (α ^ₒ (β ↓ b) ×ₒ α) ⊴ α ^ₒ β
--- -- exp-component-⊴ α β {b} = transport⁻¹
--- --                            ((α ^ₒ (β ↓ b) ×ₒ α) ⊴_)
--- --                            (exp-behaviour α β)
--- --                            (sup-is-upper-bound _ (inr b))
-
--- -- exp-+-distributes : {𝓤 : Universe} (α β γ : Ordinal 𝓤)
--- --                   → α ^ₒ (β +ₒ γ) ＝ α ^ₒ β ×ₒ α ^ₒ γ
--- -- exp-+-distributes {𝓤} α β =
--- --  transfinite-induction-on-OO (λ γ → α ^ₒ (β +ₒ γ) ＝ α ^ₒ β ×ₒ α ^ₒ γ) I
--- --   where
--- --    I : (γ : Ordinal 𝓤)
--- --      → ((c : ⟨ γ ⟩) → α ^ₒ (β +ₒ (γ ↓ c)) ＝ α ^ₒ β ×ₒ α ^ₒ (γ ↓ c))
--- --      → α ^ₒ (β +ₒ γ) ＝ α ^ₒ β ×ₒ α ^ₒ γ
--- --    I γ IH = exp-behaviour α (β +ₒ γ) ∙ III ∙ II ⁻¹
--- --     where
--- --      III : sup (cases (λ _ → 𝟙ₒ) (λ x → α ^ₒ ((β +ₒ γ) ↓ x) ×ₒ α))
--- --          ＝ sup (cases (λ _ → α ^ₒ β) (λ c → α ^ₒ (β +ₒ (γ ↓ c)) ×ₒ α))
--- --      III = ⊴-antisym _ _ III₁ III₂
--- --       where
--- --        III₁ : sup (cases (λ _ → 𝟙ₒ) (λ x → α ^ₒ ((β +ₒ γ) ↓ x) ×ₒ α))
--- --             ⊴ sup (cases (λ _ → α ^ₒ β) (λ c → α ^ₒ (β +ₒ (γ ↓ c)) ×ₒ α))
--- --        III₁ = sup-is-lower-bound-of-upper-bounds _ _ ub
--- --         where
--- --          ub : (i : 𝟙 + ⟨ β +ₒ γ ⟩)
--- --             → cases (λ _ → 𝟙ₒ) (λ x → α ^ₒ ((β +ₒ γ) ↓ x) ×ₒ α) i
--- --             ⊴ sup (cases (λ _ → α ^ₒ β) (λ c → α ^ₒ (β +ₒ (γ ↓ c)) ×ₒ α))
--- --          ub (inl ⋆) = ⊴-trans 𝟙ₒ (α ^ₒ β) _ (exp-has-least-element α β) (sup-is-upper-bound _ (inl ⋆))
--- --          ub (inr (inl b)) = ⊴-trans _ (α ^ₒ β) _
--- --                              (transport⁻¹ (_⊴ α ^ₒ β) (ap (λ - → α ^ₒ - ×ₒ α) ((+ₒ-↓-left b) ⁻¹)) (exp-component-⊴ α β))
--- --                              (sup-is-upper-bound _ (inl ⋆))
--- --          ub (inr (inr c)) = transport⁻¹
--- --                              (_⊴ sup {_} {𝟙{𝓤} + ⟨ γ ⟩} (cases (λ _ → α ^ₒ β) (λ c → α ^ₒ (β +ₒ (γ ↓ c)) ×ₒ α)))
--- --                              (ap (λ - → α ^ₒ - ×ₒ α) ((+ₒ-↓-right c) ⁻¹))
--- --                              (sup-is-upper-bound _ (inr c))
--- --        III₂ : sup (cases (λ _ → α ^ₒ β) (λ c → α ^ₒ (β +ₒ (γ ↓ c)) ×ₒ α))
--- --             ⊴ sup (cases (λ _ → 𝟙ₒ) (λ x → α ^ₒ ((β +ₒ γ) ↓ x) ×ₒ α))
--- --        III₂ = sup-is-lower-bound-of-upper-bounds _ _ ub
--- --         where
--- --          ub : (i : 𝟙 + ⟨ γ ⟩)
--- --             → cases (λ _ → α ^ₒ β) (λ c → α ^ₒ (β +ₒ (γ ↓ c)) ×ₒ α) i
--- --             ⊴ sup (cases (λ _ → 𝟙ₒ) (λ x → α ^ₒ ((β +ₒ γ) ↓ x) ×ₒ α))
--- --          ub (inl ⋆) = transport⁻¹
--- --                        (_⊴ sup {_} {𝟙{𝓤} + ⟨ β +ₒ γ ⟩} (cases (λ _ → 𝟙ₒ) (λ x → α ^ₒ ((β +ₒ γ) ↓ x) ×ₒ α)))
--- --                        (exp-behaviour α β)
--- --                        (sup-is-lower-bound-of-upper-bounds _ _ h)
--- --           where
--- --            h : (j : 𝟙 + ⟨ β ⟩)
--- --              → cases (λ _ → 𝟙ₒ) (λ b → α ^ₒ (β ↓ b) ×ₒ α) j
--- --              ⊴ sup (cases (λ _ → 𝟙ₒ) (λ x → α ^ₒ ((β +ₒ γ) ↓ x) ×ₒ α))
--- --            h (inl ⋆) = sup-is-upper-bound _ (inl ⋆)
--- --            h (inr b) = transport⁻¹
--- --                          (_⊴ sup {_} {𝟙 + ⟨ β +ₒ γ ⟩} (cases (λ _ → 𝟙ₒ) (λ x → α ^ₒ ((β +ₒ γ) ↓ x) ×ₒ α)))
--- --                          (ap (λ - → α ^ₒ - ×ₒ α) (+ₒ-↓-left b))
--- --                          (sup-is-upper-bound _ (inr (inl b)))
--- --          ub (inr c) = transport⁻¹
--- --                        (_⊴ sup {_} {𝟙{𝓤} + ⟨ β +ₒ γ ⟩} (cases (λ _ → 𝟙ₒ) (λ x → α ^ₒ ((β +ₒ γ) ↓ x) ×ₒ α)))
--- --                        (ap (λ - → α ^ₒ - ×ₒ α) (+ₒ-↓-right c))
--- --                        (sup-is-upper-bound _ (inr (inr c)))
-
--- --      II = α ^ₒ β ×ₒ α ^ₒ γ ＝⟨ ap (α ^ₒ β ×ₒ_) (exp-behaviour α γ) ⟩
--- --           α ^ₒ β ×ₒ (sup (cases (λ _ → 𝟙ₒ) (λ c → α ^ₒ (γ ↓ c) ×ₒ α))) ＝⟨ ×ₒ-preserves-suprema pt sr (α ^ₒ β) _ ⟩
--- --           sup (λ i → α ^ₒ β ×ₒ (cases (λ _ → 𝟙ₒ) (λ c → α ^ₒ (γ ↓ c) ×ₒ α)) i) ＝⟨ ap sup (dfunext fe' h) ⟩
--- --           sup (cases (λ _ → α ^ₒ β) (λ c → α ^ₒ (β +ₒ (γ ↓ c)) ×ₒ α)) ∎
--- --       where
--- --        h : (λ i → α ^ₒ β ×ₒ cases (λ _ → 𝟙ₒ) (λ c → α ^ₒ (γ ↓ c) ×ₒ α) i)
--- --          ∼ cases (λ _ → α ^ₒ β) (λ c → α ^ₒ (β +ₒ (γ ↓ c)) ×ₒ α)
--- --        h (inl ⋆) = 𝟙ₒ-right-neutral-×ₒ (α ^ₒ β)
--- --        h (inr c) = α ^ₒ β ×ₒ (α ^ₒ (γ ↓ c) ×ₒ α) ＝⟨ ×ₒ-assoc (α ^ₒ β) (α ^ₒ (γ ↓ c)) α ⁻¹ ⟩
--- --                    (α ^ₒ β ×ₒ α ^ₒ (γ ↓ c)) ×ₒ α ＝⟨ ap (_×ₒ α) ((IH c) ⁻¹) ⟩
--- --                    α ^ₒ (β +ₒ (γ ↓ c)) ×ₒ α       ∎
-
--- -- exp-satisfies-succ-specification' : (α β : Ordinal 𝓤) → 𝟙ₒ {𝓤} ⊴ α
--- --                                   → α ^ₒ (β +ₒ 𝟙ₒ) ＝ (α ^ₒ β) ×ₒ α
--- -- exp-satisfies-succ-specification' α β l =
--- --  exp-+-distributes α β 𝟙ₒ ∙ ap (α ^ₒ β ×ₒ_) (exp-power-one-is-identity α l)
-
--- -- iterated-exp-is-exp-by-×ₒ : (α β γ : Ordinal 𝓤)
--- --                           → exp (α ^ₒ β) γ ＝ α ^ₒ (β ×ₒ γ)
--- -- iterated-exp-is-exp-by-×ₒ {𝓤} α β =
--- --  transfinite-induction-on-OO
--- --   (λ γ → exp (α ^ₒ β) γ ＝ α ^ₒ (β ×ₒ γ))
--- --   I
--- --   where
--- --    I : (γ : Ordinal 𝓤)
--- --      → ((c : ⟨ γ ⟩) → exp (α ^ₒ β) (γ ↓ c) ＝ α ^ₒ (β ×ₒ (γ ↓ c)))
--- --      → exp (α ^ₒ β) γ ＝ α ^ₒ (β ×ₒ γ)
--- --    I γ IH = ⊴-antisym (exp (α ^ₒ β) γ) (α ^ₒ (β ×ₒ γ)) II III
--- --     where
--- --      II : exp (α ^ₒ β) γ ⊴ α ^ₒ (β ×ₒ γ)
--- --      II = transport⁻¹ (_⊴ α ^ₒ (β ×ₒ γ)) (exp-behaviour (α ^ₒ β) γ) II'
--- --       where
--- --        II' : sup (cases (λ _ → 𝟙ₒ) (λ c → exp (α ^ₒ β) (γ ↓ c) ×ₒ α ^ₒ β))
--- --            ⊴ α ^ₒ (β ×ₒ γ)
--- --        II' = sup-is-lower-bound-of-upper-bounds _ _ ub
--- --         where
--- --          ub : (i : 𝟙 + ⟨ γ ⟩)
--- --             → cases (λ _ → 𝟙ₒ) (λ b → exp (α ^ₒ β) (γ ↓ b) ×ₒ α ^ₒ β) i
--- --               ⊴ α ^ₒ (β ×ₒ γ)
--- --          ub (inl ⋆) = exp-has-least-element α (β ×ₒ γ)
--- --          ub (inr c) = transport⁻¹ (_⊴ α ^ₒ (β ×ₒ γ))
--- --                        eq
--- --                        (exp-monotone-in-exponent α
--- --                          (β ×ₒ ((γ ↓ c) +ₒ 𝟙ₒ)) (β ×ₒ γ)
--- --                          (×ₒ-right-monotone-⊴ β ((γ ↓ c) +ₒ 𝟙ₒ) γ
--- --                            (upper-bound-of-successors-of-initial-segments γ c)))
--- --           where
--- --            eq = exp (α ^ₒ β) (γ ↓ c) ×ₒ α ^ₒ β ＝⟨ ap (_×ₒ α ^ₒ β) (IH c) ⟩
--- --                 α ^ₒ (β ×ₒ (γ ↓ c)) ×ₒ α ^ₒ β  ＝⟨ (exp-+-distributes α (β ×ₒ (γ ↓ c)) β) ⁻¹ ⟩
--- --                 α ^ₒ ((β ×ₒ (γ ↓ c)) +ₒ β)      ＝⟨ ap (α ^ₒ) ((×ₒ-successor β (γ ↓ c)) ⁻¹) ⟩
--- --                 α ^ₒ (β ×ₒ ((γ ↓ c) +ₒ 𝟙ₒ))     ∎
--- --      III : α ^ₒ (β ×ₒ γ) ⊴ exp (α ^ₒ β) γ
--- --      III = transport⁻¹ (_⊴ exp (α ^ₒ β) γ) (exp-behaviour α (β ×ₒ γ)) III'
--- --       where
--- --        III' : sup (cases (λ _ → 𝟙ₒ) (λ x → α ^ₒ ((β ×ₒ γ) ↓ x) ×ₒ α))
--- --             ⊴ exp (α ^ₒ β) γ
--- --        III' = sup-is-lower-bound-of-upper-bounds _ _ ub
--- --         where
--- --          ub : (i : 𝟙 + ⟨ β ×ₒ γ ⟩)
--- --             → cases (λ _ → 𝟙ₒ) (λ b → α ^ₒ ((β ×ₒ γ) ↓ b) ×ₒ α) i
--- --               ⊴ exp (α ^ₒ β) γ
--- --          ub (inl ⋆)       = exp-has-least-element (α ^ₒ β) γ
--- --          ub (inr (b , c)) = transport⁻¹ (_⊴ exp (α ^ₒ β) γ) eq IV
--- --           where
--- --            eq = α ^ₒ ((β ×ₒ γ) ↓ (b , c)) ×ₒ α                 ＝⟨ ap (λ - → α ^ₒ - ×ₒ α) (×ₒ-↓ β γ) ⟩
--- --                 α ^ₒ ((β ×ₒ (γ ↓ c)) +ₒ (β ↓ b)) ×ₒ α          ＝⟨ ap (_×ₒ α) (exp-+-distributes α (β ×ₒ (γ ↓ c)) (β ↓ b)) ⟩
--- --                 ((α ^ₒ (β ×ₒ (γ ↓ c))) ×ₒ α ^ₒ (β ↓ b)) ×ₒ α  ＝⟨ ap (λ - → (- ×ₒ α ^ₒ (β ↓ b)) ×ₒ α) ((IH c) ⁻¹) ⟩
--- --                 (exp (α ^ₒ β) (γ ↓ c) ×ₒ α ^ₒ (β ↓ b)) ×ₒ α   ＝⟨ ×ₒ-assoc (exp (α ^ₒ β) (γ ↓ c)) (α ^ₒ (β ↓ b)) α ⟩
--- --                 (exp (α ^ₒ β) (γ ↓ c) ×ₒ (α ^ₒ (β ↓ b) ×ₒ α)) ∎
--- --            IV : (exp (α ^ₒ β) (γ ↓ c) ×ₒ (α ^ₒ (β ↓ b) ×ₒ α)) ⊴ exp (α ^ₒ β) γ
--- --            IV = transport⁻¹ ((exp (α ^ₒ β) (γ ↓ c) ×ₒ (α ^ₒ (β ↓ b) ×ₒ α)) ⊴_) (exp-behaviour (α ^ₒ β) γ) IV'
--- --             where
--- --              IV' : (exp (α ^ₒ β) (γ ↓ c) ×ₒ (α ^ₒ (β ↓ b) ×ₒ α))
--- --                  ⊴ sup (cases (λ _ → 𝟙ₒ) (λ c → exp (α ^ₒ β) (γ ↓ c) ×ₒ α ^ₒ β))
--- --              IV' = ⊴-trans
--- --                     (exp (α ^ₒ β) (γ ↓ c) ×ₒ (α ^ₒ (β ↓ b) ×ₒ α))
--- --                     (exp (α ^ₒ β) (γ ↓ c) ×ₒ α ^ₒ β)
--- --                     (sup (cases (λ _ → 𝟙ₒ) (λ c' → exp (α ^ₒ β) (γ ↓ c') ×ₒ α ^ₒ β)))
--- --                     IV''
--- --                     (sup-is-upper-bound _ (inr c))
--- --               where
--- --                IV'' : (exp (α ^ₒ β) (γ ↓ c) ×ₒ (α ^ₒ (β ↓ b) ×ₒ α))
--- --                     ⊴ (exp (α ^ₒ β) (γ ↓ c) ×ₒ α ^ₒ β)
--- --                IV'' = ×ₒ-right-monotone-⊴
--- --                        (exp (α ^ₒ β) (γ ↓ c))
--- --                        (α ^ₒ (β ↓ b) ×ₒ α)
--- --                        (α ^ₒ β)
--- --                        (exp-component-⊴ α β)
-
--- -- \end{code}
-
--- -- Added 17 September 2024 by Tom de Jong.
-
--- -- \begin{code}
-
--- -- exp-⊲-lemma : (α β : Ordinal 𝓤)
--- --             → 𝟙ₒ ⊲ α
--- --             → {b : ⟨ β ⟩} → α ^ₒ (β ↓ b) ⊲ α ^ₒ β
--- -- exp-⊲-lemma {𝓤} α β (a₀ , e) {b} = x , (eq' ⁻¹ ∙ eq)
--- --  where
--- --   ⊥ : ⟨ α ^ₒ (β ↓ b) ⟩
--- --   ⊥ = pr₁ (𝟘ₒ-initial-segment-of-α ^ₒ (β ↓ b))
-
--- --   ⊥-is-least : (α ^ₒ (β ↓ b) ↓ ⊥) ＝ 𝟘ₒ
--- --   ⊥-is-least = (pr₂ (𝟘ₒ-initial-segment-of-α ^ₒ (β ↓ b))) ⁻¹
-
--- --   s : Ordinal 𝓤
--- --   s = sup (cases (λ _ → 𝟙ₒ) (λ b' → α ^ₒ (β ↓ b') ×ₒ α))
-
--- --   x' : ⟨ s ⟩
--- --   x' = [ α ^ₒ (β ↓ b) ×ₒ α , s ]⟨ sup-is-upper-bound _ (inr b) ⟩ (⊥ , a₀)
-
--- --   eq' : s ↓ x' ＝ α ^ₒ (β ↓ b)
--- --   eq' = s ↓ x' ＝⟨ initial-segment-of-sup-at-component _ (inr b) (⊥ , a₀) ⟩
--- --         (α ^ₒ (β ↓ b) ×ₒ α) ↓ (⊥ , a₀) ＝⟨ ×ₒ-↓ (α ^ₒ (β ↓ b)) α ⟩
--- --         (α ^ₒ (β ↓ b) ×ₒ (α ↓ a₀)) +ₒ (α ^ₒ (β ↓ b) ↓ ⊥) ＝⟨ ap ((α ^ₒ (β ↓ b) ×ₒ (α ↓ a₀)) +ₒ_) ⊥-is-least ⟩
--- --         (α ^ₒ (β ↓ b) ×ₒ (α ↓ a₀)) +ₒ 𝟘ₒ ＝⟨ 𝟘ₒ-right-neutral (α ^ₒ (β ↓ b) ×ₒ (α ↓ a₀)) ⟩
--- --         α ^ₒ (β ↓ b) ×ₒ (α ↓ a₀) ＝⟨ ap (α ^ₒ (β ↓ b) ×ₒ_) (e ⁻¹) ⟩
--- --         α ^ₒ (β ↓ b) ×ₒ 𝟙ₒ ＝⟨ 𝟙ₒ-right-neutral-×ₒ (α ^ₒ (β ↓ b)) ⟩
--- --         α ^ₒ (β ↓ b) ∎
-
--- --   x : ⟨ α ^ₒ β ⟩
--- --   x = Idtofun (ap ⟨_⟩ (exp-behaviour α β ⁻¹)) x'
-
--- --   eq : s ↓ x' ＝ α ^ₒ β ↓ x
--- --   eq = lemma s (α ^ₒ β) (exp-behaviour α β ⁻¹)
--- --    where
--- --     -- TODO: Upstream
--- --     lemma : (α' β' : Ordinal 𝓤) (e : α' ＝ β') {a : ⟨ α' ⟩}
--- --           → α' ↓ a ＝ β' ↓ Idtofun (ap ⟨_⟩ e) a
--- --     lemma α' β' refl = refl
-
--- -- exp-strictly-monotone : (α β γ : Ordinal 𝓤)
--- --                       → 𝟙ₒ ⊲ α → β ⊲ γ → α ^ₒ β ⊲ α ^ₒ γ
--- -- exp-strictly-monotone {𝓤} α β γ h (c , refl) = exp-⊲-lemma α γ h
-
--- -- Added 12 November 2024.
+-- Added 12 November 2024.
 -- module _ {𝓤 : Universe}
 --  where
 
@@ -638,7 +665,7 @@ exp-satisfies-zero-specification {𝓤} {𝓥} α = ⊴-antisym (α ^ₒ 𝟘ₒ
 
 -- -- TODO: Think about a better name?
 -- exp-weakly-monotone-in-base-implies-EM :
---    ((α β γ : Ordinal 𝓤) → 𝟙ₒ{𝓤} ⊴ α → α ⊲ β → (α ^ₒ γ ⊴ exp β γ))
+--    ((α β γ : Ordinal 𝓤) → 𝟙ₒ{𝓤} ⊴ α → α ⊲ β → (α ^ₒ γ ⊴ β ^ₒ γ))
 --  → EM 𝓤
 -- exp-weakly-monotone-in-base-implies-EM {𝓤} assumption P P-is-prop = VI (f x) refl
 --  where
@@ -657,14 +684,14 @@ exp-satisfies-zero-specification {𝓤} {𝓥} α = ⊴-antisym (α ^ₒ 𝟘ₒ
 --   β-ineq : 𝟙ₒ ⊴ β
 --   β-ineq = ⊴-trans 𝟙ₒ α β α-ineq (⊲-gives-⊴ α β I)
 
---   II : α ^ₒ γ ⊴ exp β γ
+--   II : α ^ₒ γ ⊴ β ^ₒ γ
 --   II = assumption α β γ α-ineq I
 
 --   III : α ^ₒ γ ＝ α ×ₒ α
---   III = exp-power-two-is-multiplication α α-ineq
+--   III = ^ₒ-𝟚ₒ-is-×ₒ α α-ineq
 
---   IV : exp β γ ＝ (β ×ₒ β)
---   IV = exp-power-two-is-multiplication β β-ineq
+--   IV : β ^ₒ γ ＝ (β ×ₒ β)
+--   IV = ^ₒ-𝟚ₒ-is-×ₒ β β-ineq
 
 --   x : ⟨ α ×ₒ α ⟩
 --   x = (inr ⋆ , inr ⋆)
@@ -738,30 +765,30 @@ exp-satisfies-zero-specification {𝓤} {𝓥} α = ⊴-antisym (α ^ₒ 𝟘ₒ
 --   VI (inr p , y') r = inl p
 
 -- exp-monotone-in-base-implies-EM :
---    ((α β γ : Ordinal 𝓤) → 𝟙ₒ{𝓤} ⊴ α → α ⊴ β → (α ^ₒ γ ⊴ exp β γ))
+--    ((α β γ : Ordinal 𝓤) → 𝟙ₒ{𝓤} ⊴ α → α ⊴ β → (α ^ₒ γ ⊴ β ^ₒ γ))
 --  → EM 𝓤
 -- exp-monotone-in-base-implies-EM m =
 --  exp-weakly-monotone-in-base-implies-EM (λ α β γ l i → m α β γ l (⊲-gives-⊴ α β i))
 
 -- EM-implies-exp-monotone-in-base : EM 𝓤
---  → (α β γ : Ordinal 𝓤) → α ⊴ β → (α ^ₒ γ ⊴ exp β γ)
+--  → (α β γ : Ordinal 𝓤) → α ⊴ β → (α ^ₒ γ ⊴ β ^ₒ γ)
 -- EM-implies-exp-monotone-in-base {𝓤} em α β γ l =
 --  transfinite-induction-on-OO _ I γ
 --  where
---   I : (γ : Ordinal 𝓤) → ((c : ⟨ γ ⟩) → (α ^ₒ (γ ↓ c) ⊴ exp β (γ ↓ c)))
---     → (α ^ₒ γ ⊴ exp β γ)
---   I γ IH = transport₂⁻¹ _⊴_ (exp-behaviour α γ) (exp-behaviour β γ)
+--   I : (γ : Ordinal 𝓤) → ((c : ⟨ γ ⟩) → (α ^ₒ (γ ↓ c) ⊴ β ^ₒ (γ ↓ c)))
+--     → (α ^ₒ γ ⊴ β ^ₒ γ)
+--   I γ IH = transport₂⁻¹ _⊴_ (^ₒ-behaviour α γ) (^ₒ-behaviour β γ)
 --             (sup-monotone
 --              (cases (λ _ → 𝟙ₒ) (λ c → α ^ₒ (γ ↓ c) ×ₒ α))
---              (cases (λ _ → 𝟙ₒ) (λ c → exp β (γ ↓ c) ×ₒ β))
+--              (cases (λ _ → 𝟙ₒ) (λ c → β ^ₒ (γ ↓ c) ×ₒ β))
 --              κ)
 --    where
 --     κ : (i : 𝟙 + ⟨ γ ⟩)
 --       → cases (λ _ → 𝟙ₒ) (λ c → α ^ₒ (γ ↓ c) ×ₒ α) i
---       ⊴ cases (λ _ → 𝟙ₒ) (λ c → exp β (γ ↓ c) ×ₒ β) i
+--       ⊴ cases (λ _ → 𝟙ₒ) (λ c → β ^ₒ (γ ↓ c) ×ₒ β) i
 --     κ (inl ⋆) = ⊴-refl 𝟙ₒ
 --     κ (inr c) = EM-implies-induced-⊴-on-×ₒ em (α ^ₒ (γ ↓ c)) α
---                                               (exp β (γ ↓ c)) β
+--                                               (β ^ₒ (γ ↓ c)) β
 --                                               (IH c) l
 
 

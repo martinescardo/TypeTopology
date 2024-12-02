@@ -40,6 +40,8 @@ private
  fe' : Fun-Ext
  fe' {𝓤} {𝓥} = fe 𝓤 𝓥
 
+open import Ordinals.Arithmetic fe
+
 \end{code}
 
 The simulations make the ordinals into a poset:
@@ -48,8 +50,6 @@ The simulations make the ordinals into a poset:
 
 _⊴_ : Ordinal 𝓤 → Ordinal 𝓥 → 𝓤 ⊔ 𝓥 ̇
 α ⊴ β = Σ f ꞉ (⟨ α ⟩ → ⟨ β ⟩) , is-simulation α β f
-
-infixl 4 _⊴_
 
 [_,_]⟨_⟩ : (α : Ordinal 𝓤) (β : Ordinal 𝓥) → α ⊴ β → ⟨ α ⟩ → ⟨ β ⟩
 [ α , β ]⟨ f ⟩ = pr₁ f
@@ -74,6 +74,9 @@ infixl 4 _⊴_
 ⊴-refl α = id ,
            (λ x z l → z , l , refl) ,
            (λ x y l → l)
+
+＝-to-⊴ : (α β : Ordinal 𝓤) → α ＝ β → α ⊴ β
+＝-to-⊴ α β refl = ⊴-refl α
 
 ⊴-trans : (α : Ordinal 𝓤) (β : Ordinal 𝓥) (γ : Ordinal 𝓦)
         → α ⊴ β → β ⊴ γ → α ⊴ γ
@@ -867,7 +870,6 @@ order-preserving-gives-≼-implies-EM :
  → EM 𝓤
 order-preserving-gives-≼-implies-EM h P P-is-prop = II (g ⋆) refl
  where
-  open import Ordinals.Arithmetic fe
   open import MLTT.Plus-Properties
 
   α = 𝟙ₒ
@@ -1162,5 +1164,15 @@ simulations-pointwise-equal-gives-isomorphic-initial-segments α β γ f g a b e
    II : (β ↓ b) ⊴ (α ↓ a)
    II = simulations-pointwise-≼-gives-initial-segments-⊴ β α γ g f b a
          (≼-refl-＝ (underlying-order γ) (eq ⁻¹))
+
+\end{code}
+
+Fixities and precedences
+
+\begin{code}
+
+infix 4 _⊲_
+infix 4 _⊴_
+infixl 5 _↓_
 
 \end{code}

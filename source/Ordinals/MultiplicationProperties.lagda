@@ -249,7 +249,7 @@ We now prove several useful facts about (bounded) simulations between products.
       (α ×ₒ (γ ↓ c)) +ₒ (α ↓ a) ＝⟨ ×ₒ-↓ α γ ⁻¹ ⟩
       (α ×ₒ γ) ↓ (a , c)        ∎
 
-×ₒ-right-monotone-⊴ : (α : Ordinal 𝓤) (β γ : Ordinal 𝓥)
+×ₒ-right-monotone-⊴ : (α : Ordinal 𝓤) (β : Ordinal 𝓥) (γ : Ordinal 𝓦)
                     → β ⊴ γ
                     → (α ×ₒ β) ⊴ (α ×ₒ γ)
 ×ₒ-right-monotone-⊴ α β γ (g , sim-g) = f , f-initial-segment ,

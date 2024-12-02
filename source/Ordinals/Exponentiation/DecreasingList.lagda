@@ -47,6 +47,7 @@ open import Ordinals.Maps
 open import Ordinals.MultiplicationProperties ua
 open import Ordinals.Notions
 open import Ordinals.OrdinalOfOrdinals ua
+open import Ordinals.Propositions ua
 open import Ordinals.Type
 open import Ordinals.Underlying
 open import Ordinals.WellOrderingTaboo
@@ -154,16 +155,6 @@ order-reflecting-and-partial-inverse-is-initial-segment α β f p i a b m = a' ,
 
 \begin{code}
 
-prop-ordinal-＝ : (P Q : 𝓤 ̇ ) → (pp : is-prop P) → (pq : is-prop Q)
-                → P ↔ Q → prop-ordinal P pp ＝ prop-ordinal Q pq
-prop-ordinal-＝ P Q pp pq (f , g) =
-  ⊴-antisym (prop-ordinal P pp) (prop-ordinal Q pq)
-            (simulation P Q pp pq f) (simulation Q P pq pp g)
-  where
-    simulation : (P Q : 𝓤 ̇ ) → (pp : is-prop P) → (pq : is-prop Q) → (P → Q) →
-                 prop-ordinal P pp ⊴ prop-ordinal Q pq
-    simulation P Q pp pq f = f , (λ x y e → 𝟘-elim e) , (λ x y e → 𝟘-elim e)
-
 sup-preserves-prop : {I : 𝓤 ̇ } → (γ : I → 𝓤 ̇ ) → (γ-is-prop : (i : I) → is-prop (γ i))
                    → sup (λ i → prop-ordinal (γ i) (γ-is-prop i)) ＝ prop-ordinal (∃ i ꞉ I , γ i) ∥∥-is-prop
 sup-preserves-prop {𝓤} {I = I} γ γ-is-prop = surjective-simulation-gives-equality (sup β) α
@@ -179,14 +170,6 @@ sup-preserves-prop {𝓤} {I = I} γ γ-is-prop = surjective-simulation-gives-eq
    f i = (λ b → ∣ i , b ∣) , (λ x y e → 𝟘-elim e) , (λ x y e → 𝟘-elim e)
    f-surjective : (y : ⟨ α ⟩) → ∃ i ꞉ I , Σ b ꞉ ⟨ β i ⟩ , pr₁ (f i) b ＝ y
    f-surjective = ∥∥-induction (λ x → ∥∥-is-prop) λ (i , b) → ∣ i , b , refl ∣
-
-prop-ordinal-↓ : (P : 𝓤 ̇ ) → (P-is-prop : is-prop P) → (x : P) → (prop-ordinal P P-is-prop ↓ x) ＝ 𝟘ₒ
-prop-ordinal-↓ P P-is-prop x = ⊴-antisym (prop-ordinal P P-is-prop ↓ x) 𝟘ₒ
-                                         nothing-below-x
-                                         (𝟘ₒ-least-⊴ (prop-ordinal P P-is-prop ↓ x))
- where
-  nothing-below-x : (prop-ordinal P P-is-prop ↓ x) ⊴ 𝟘ₒ
-  nothing-below-x = (λ (y , p) → 𝟘-elim p) , (λ (x , p) → 𝟘-elim p) , (λ (x , p) → 𝟘-elim p)
 
 \end{code}
 
@@ -1185,9 +1168,9 @@ And conversely...
 𝟘^_ {𝓤} β = prop-ordinal (β ≃ₒ 𝟘ₒ{𝓤}) (≃ₒ-is-prop-valued fe' β 𝟘ₒ)
 
 𝟘^-zero-spec : 𝟘^ 𝟘ₒ {𝓤} ＝ 𝟙ₒ
-𝟘^-zero-spec {𝓤} = prop-ordinal-＝ (𝟘ₒ ≃ₒ 𝟘ₒ{𝓤}) 𝟙
+𝟘^-zero-spec {𝓤} = prop-ordinal-＝
                            (≃ₒ-is-prop-valued fe' 𝟘ₒ 𝟘ₒ) 𝟙-is-prop
-                           ((λ _ → ⋆) , λ _ → (≃ₒ-refl 𝟘ₒ))
+                           (λ _ → ⋆) (λ _ → (≃ₒ-refl 𝟘ₒ))
 
 𝟘^-succ-spec : (β : Ordinal 𝓤) → 𝟘^ (β +ₒ 𝟙ₒ) ＝ (𝟘^ β) ×ₒ 𝟘ₒ {𝓤}
 𝟘^-succ-spec {𝓤} β = eq ∙ ×ₒ-𝟘ₒ-right (𝟘^ β) ⁻¹
@@ -1196,15 +1179,15 @@ And conversely...
        f e = ≃ₒ-to-fun (β +ₒ 𝟙ₒ) 𝟘ₒ e (inr ⋆)
 
        eq :  𝟘^ (β +ₒ 𝟙ₒ) ＝ 𝟘ₒ
-       eq = prop-ordinal-＝ ((β +ₒ 𝟙ₒ) ≃ₒ 𝟘ₒ{𝓤}) 𝟘
+       eq = prop-ordinal-＝
                     (≃ₒ-is-prop-valued fe' (β +ₒ 𝟙ₒ) 𝟘ₒ) 𝟘-is-prop
-                    (f , 𝟘-elim)
+                    f 𝟘-elim
 
 𝟘^-sup-spec : (β : Ordinal 𝓤) → ¬ (β ＝ 𝟘ₒ) → (𝟘^ β) ＝ 𝟘ₒ
 𝟘^-sup-spec β β-not-zero =
-   prop-ordinal-＝ (β ≃ₒ 𝟘ₒ) 𝟘
+   prop-ordinal-＝
            (≃ₒ-is-prop-valued fe' β 𝟘ₒ) 𝟘-is-prop
-           ((λ e → 𝟘-elim (β-not-zero (eqtoidₒ (ua _) fe' _ _ e))) , 𝟘-elim)
+           (λ e → 𝟘-elim (β-not-zero (eqtoidₒ (ua _) fe' _ _ e))) 𝟘-elim
 
 private
   case : (α : Ordinal 𝓤) → 𝓤 ⁺ ̇
