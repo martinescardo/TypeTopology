@@ -141,6 +141,9 @@ open import Ordinals.Underlying
   h = eqtoidₒ (ua 𝓤) fe' γ δ
        (f , f-is-order-preserving , f-is-equiv , g-is-order-preserving)
 
++ₒ-left-⊴ : (α β : Ordinal 𝓤)
+          → α ⊴ α +ₒ β
++ₒ-left-⊴ α β = to-⊴ α (α +ₒ β) (λ a → inl a , +ₒ-↓-left a)
 
 +ₒ-↓-right : {α β : Ordinal 𝓤} (b : ⟨ β ⟩)
            → (α +ₒ (β ↓ b)) ＝ ((α +ₒ β) ↓ inr b)
@@ -1021,4 +1024,3 @@ no-greatest-ordinal {𝓤} (α , α-greatest) = irrefl (OO 𝓤) α IV
   IV = transport (α ⊲_) III (successor-increasing α)
 
 \end{code}
-
