@@ -47,6 +47,7 @@ open import Ordinals.Maps
 open import Ordinals.MultiplicationProperties ua
 open import Ordinals.Notions
 open import Ordinals.OrdinalOfOrdinals ua
+open import Ordinals.Propositions ua
 open import Ordinals.Type
 open import Ordinals.Underlying
 open import Ordinals.WellOrderingTaboo
@@ -67,10 +68,18 @@ trichotomous in α.
 \begin{code}
 
 is-locally-trichotomous-at : (α : Ordinal 𝓤) → ⟨ α ⟩ → 𝓤 ̇
-is-locally-trichotomous-at α x = (y : ⟨ α ⟩) → (y ≺⟨ α ⟩ x) + (x ＝ y) + (x ≺⟨ α ⟩ y)
+is-locally-trichotomous-at α x =
+ (y : ⟨ α ⟩) → in-trichotomy (underlying-order α) y x
 
 syntax is-locally-trichotomous-at α x = x is-trichotomous-in α
 
+locally-trichotomous-at-is-prop : (α : Ordinal 𝓤) → (x : ⟨ α ⟩)
+                                → is-prop (is-locally-trichotomous-at α x)
+locally-trichotomous-at-is-prop α x =
+ Π-is-prop fe' (λ y → in-trichotomy-is-prop (underlying-order α)
+                                            fe
+                                            (is-well-ordered α)
+                                            y x)
 \end{code}
 
 We say x is isolated in α if there is an e: α = β + 𝟙 + γ for some
@@ -83,6 +92,40 @@ is-decomposed-at {𝓤} α x =
   Σ β ꞉ Ordinal 𝓤 , Σ γ ꞉ Ordinal 𝓤 , Σ e ꞉ α ≃ₒ (β +ₒ (𝟙ₒ +ₒ γ)) , ≃ₒ-to-fun _ _ e x ＝ inr (inl ⋆)
 
 syntax is-decomposed-at α x = x is-isolated-in α
+
+is-decomposed-at-is-prop : (α : Ordinal 𝓤) → (x : ⟨ α ⟩)
+                         → is-prop (is-decomposed-at α x)
+is-decomposed-at-is-prop {𝓤} α x (β , γ , e , p) (β' , γ' , e' , p') =
+ to-subtype-＝
+  (λ β (γ , e , p) (γ' , e' , p') →
+    to-subtype-＝ (λ γ → Σ-is-prop
+                          (≃ₒ-is-prop-valued fe' α (β +ₒ (𝟙ₒ +ₒ γ)))
+                          (λ e → underlying-type-is-set fe (β +ₒ (𝟙ₒ +ₒ γ))))
+                  (III β γ γ' ( eqtoidₒ (ua 𝓤) fe' _ _ e ⁻¹
+                              ∙ eqtoidₒ (ua 𝓤) fe' _ _ e')))
+    II
+ where
+  I : (δ ε : Ordinal 𝓥) → δ +ₒ (𝟙ₒ +ₒ ε) ↓ inr (inl ⋆) ＝ δ
+  I δ ε = δ +ₒ (𝟙ₒ +ₒ ε) ↓ inr (inl ⋆) ＝⟨ +ₒ-↓-right (inl ⋆) ⁻¹ ⟩
+          δ +ₒ (𝟙ₒ +ₒ ε ↓ inl ⋆)       ＝⟨ ap (δ +ₒ_) (+ₒ-↓-left ⋆) ⁻¹ ⟩
+          δ +ₒ (𝟙ₒ ↓ ⋆)                ＝⟨ ap (δ +ₒ_)
+                                              (prop-ordinal-↓ 𝟙-is-prop ⋆) ⟩
+          δ +ₒ 𝟘ₒ                      ＝⟨ 𝟘ₒ-right-neutral δ ⟩
+          δ                            ∎
+  II = β ＝⟨ I β γ ⁻¹ ⟩
+       β +ₒ (𝟙ₒ +ₒ γ) ↓ inr (inl ⋆)   ＝⟨ ap (β +ₒ (𝟙ₒ +ₒ γ) ↓_) p ⁻¹ ⟩
+       β +ₒ (𝟙ₒ +ₒ γ) ↓ pr₁ e x       ＝⟨ simulations-preserve-↓ _ _ (≃ₒ-to-⊴ _ _ e) x ⁻¹ ⟩
+      α ↓ x                          ＝⟨ simulations-preserve-↓ _ _ (≃ₒ-to-⊴ _ _ e') x ⟩
+       β' +ₒ (𝟙ₒ +ₒ γ') ↓ pr₁ e' x    ＝⟨ ap (β' +ₒ (𝟙ₒ +ₒ γ') ↓_) p' ⟩
+       β' +ₒ (𝟙ₒ +ₒ γ') ↓ inr (inl ⋆) ＝⟨ I β' γ' ⟩
+       β' ∎
+  III : (β γ γ' : Ordinal 𝓤) → β +ₒ (𝟙ₒ +ₒ γ) ＝ β +ₒ (𝟙ₒ +ₒ γ') → γ ＝ γ'
+  III β γ γ' r = +ₒ-left-cancellable (β +ₒ 𝟙ₒ) γ γ' r'
+   where
+    r' = (β +ₒ 𝟙ₒ) +ₒ γ   ＝⟨ +ₒ-assoc β 𝟙ₒ γ ⟩
+          β +ₒ (𝟙ₒ +ₒ γ)  ＝⟨ r ⟩
+          β +ₒ (𝟙ₒ +ₒ γ') ＝⟨ +ₒ-assoc β 𝟙ₒ γ' ⁻¹ ⟩
+         (β +ₒ 𝟙ₒ) +ₒ γ'  ∎
 
 \end{code}
 
@@ -133,14 +176,14 @@ trichotomoy-to-isolation {𝓤} α x tri = β , γ , e , e-spec
     u : (a : ⟨ α ⟩) → a < y → a < z
     u a a-lt-y = u' (tri a)
      where
-      u' : (a < x) + (x ＝ a) + (x < a) → a < z
+      u' : (a < x) + (a ＝ x) + (x < a) → a < z
       u' (inl a-lt-x) = Transitivity α a x z a-lt-x x-lt-z
       u' (inr (inl refl)) = x-lt-z
       u' (inr (inr x-lt-a)) = f (a , x-lt-a) a-lt-y
     v : (a : ⟨ α ⟩) → a < z → a < y
     v a a-lt-z = v' (tri a)
      where
-      v' : (a < x) + (x ＝ a) + (x < a) → a < y
+      v' : (a < x) + (a ＝ x) + (x < a) → a < y
       v' (inl a-lt-x) = Transitivity α a x y a-lt-x x-lt-y
       v' (inr (inl refl)) = x-lt-y
       v' (inr (inr x-lt-a)) = g (a , x-lt-a) a-lt-z
@@ -149,7 +192,7 @@ trichotomoy-to-isolation {𝓤} α x tri = β , γ , e , e-spec
   γ : Ordinal 𝓤
   γ = ⟨γ⟩ , _<″_ , <″-propvalued , <″-wellfounded , <″-extensional , <″-transitive
 
-  f' : (a : ⟨ α ⟩) → (a < x) + (x ＝ a) + (x < a) → ⟨ β +ₒ (𝟙ₒ +ₒ γ) ⟩
+  f' : (a : ⟨ α ⟩) → (a < x) + (a ＝ x) + (x < a) → ⟨ β +ₒ (𝟙ₒ +ₒ γ) ⟩
   f' a (inl a-lt-x) = inl (a , a-lt-x)
   f' a (inr (inl e)) = inr (inl ⋆)
   f' a (inr (inr x-lt-a)) = inr (inr (a , x-lt-a))
@@ -165,8 +208,8 @@ trichotomoy-to-isolation {𝓤} α x tri = β , γ , e , e-spec
   f-equiv = f-order-preserving , (qinvs-are-equivs f (g , η , ϵ)) , g-order-preserving
    where
     f-order-preserving' : (a b : ⟨ α ⟩)
-                        → (tri-a : (a < x) + (x ＝ a) + (x < a))
-                        → (tri-b : (b < x) + (x ＝ b) + (x < b))
+                        → (tri-a : (a < x) + (a ＝ x) + (x < a))
+                        → (tri-b : (b < x) + (b ＝ x) + (x < b))
                         → a < b → f' a tri-a ≺⟨ β +ₒ (𝟙ₒ +ₒ γ) ⟩ f' b tri-b
     f-order-preserving' a b (inl a-lt-x)       (inl b-lt-x)       a-lt-b = a-lt-b
     f-order-preserving' a _ (inl a-lt-x)       (inr (inl refl))   a-lt-_ = ⋆
@@ -197,14 +240,14 @@ trichotomoy-to-isolation {𝓤} α x tri = β , γ , e , e-spec
       a-lt-b = Transitivity α a x b a-lt-x x-lt-b
     g-order-preserving (inr (inl ⋆))            (inr (inr (b , x-lt-b))) ⋆      = x-lt-b
     g-order-preserving (inr (inr (a , a-lt-x))) (inr (inr (b , x-lt-b))) a-lt-b = a-lt-b
-    η' : (a : ⟨ α ⟩) → (tri-a : (a < x) + (x ＝ a) + (x < a))
+    η' : (a : ⟨ α ⟩) → (tri-a : (a < x) + (a ＝ x) + (x < a))
        → g (f' a tri-a) ＝ a
     η' a (inl a-lt-x)       = refl
     η' _ (inr (inl refl))   = refl
     η' a (inr (inr x-lt-a)) = refl
     η : (a : ⟨ α ⟩) → g (f a) ＝ a
     η a = η' a (tri a)
-    ϵ' : (w : ⟨ β +ₒ (𝟙ₒ +ₒ γ) ⟩) → (tri-gw : (g w < x) + (x ＝ g w) + (x < g w))
+    ϵ' : (w : ⟨ β +ₒ (𝟙ₒ +ₒ γ) ⟩) → (tri-gw : (g w < x) + (g w ＝ x) + (x < g w))
       → f' (g w) tri-gw ＝ w
     ϵ' (inl (a , a-lt-x)) (inl a-lt-x') = ap inl (to-subtype-＝ ((λ z → Prop-valuedness α z x)) refl)
     ϵ' (inl (_ , x-lt-x)) (inr (inl refl)) = 𝟘-elim (irrefl α x x-lt-x)
@@ -247,17 +290,17 @@ isolation-to-trichotomy α x (β , γ , (f , f-equiv) , p) y = goal
   f-left-cancellable = equivs-are-lc f (pr₁ (pr₂ f-equiv))
   u : f y ≺⟨ β +ₒ (𝟙ₒ +ₒ γ) ⟩ f x → y ≺⟨ α ⟩ x
   u = f-order-reflecting y x
-  v : f x ＝ f y → x ＝ y
+  v : f y ＝ f x → y ＝ x
   v = f-left-cancellable
   w : f x ≺⟨ β +ₒ (𝟙ₒ +ₒ γ) ⟩ f y → x ≺⟨ α ⟩ y
   w = f-order-reflecting x y
   tri-⋆ : (inr (inl ⋆)) is-trichotomous-in (β +ₒ (𝟙ₒ +ₒ γ))
   tri-⋆ (inl β) = inl ⋆
-  tri-⋆ (inr (inl ⋆)) = (inr (inl refl))
-  tri-⋆ (inr (inr γ)) = (inr (inr ⋆))
+  tri-⋆ (inr (inl ⋆)) = inr (inl refl)
+  tri-⋆ (inr (inr γ)) = inr (inr ⋆)
   tri-fx : (f x) is-trichotomous-in (β +ₒ (𝟙ₒ +ₒ γ))
   tri-fx = transport (λ w → w is-trichotomous-in (β +ₒ (𝟙ₒ +ₒ γ))) (p ⁻¹) tri-⋆
-  goal : (y ≺⟨ α ⟩ x) + (x ＝ y) + (x ≺⟨ α ⟩ y)
+  goal : (y ≺⟨ α ⟩ x) + (y ＝ x) + (x ≺⟨ α ⟩ y)
   goal = +functor u (+functor v w) (tri-fx (f y))
 
 \end{code}
