@@ -14,6 +14,6 @@ import Ordinals.Exponentiation.Equivalence
 import Ordinals.Exponentiation.More
 import Ordinals.Exponentiation.Specification
 import Ordinals.Exponentiation.Supremum
-
+import Ordinals.Exponentiation.Taboos
 
 \end{code}

@@ -186,3 +186,15 @@ inhabited ordinal. In fact, consider the ordinal P + 𝟙 where P is a
 proposition. Then if we can find a least element of this ordinal, we
 can decide whether P or ¬ P. Similarly, we can't find a top element,
 unless excluded middle holds, by considering the ordinal 𝟙 + P.
+
+Added 12 November 2024 by Tom de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg
+and Chuangjie Xu.
+
+\begin{code}
+
+[_]ₒ : (n : ℕ) → Ordinal 𝓤
+[ 0 ]ₒ = 𝟘ₒ
+[ 1 ]ₒ = 𝟙ₒ
+[ succ n@(succ m) ]ₒ = [ n ]ₒ +ₒ 𝟙ₒ
+
+\end{code}

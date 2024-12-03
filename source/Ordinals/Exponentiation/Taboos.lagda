@@ -17,6 +17,189 @@ module Ordinals.Exponentiation.Taboos
        (sr : Set-Replacement pt)
        where
 
+open import UF.FunExt
+open import UF.UA-FunExt
+
+private
+ fe : FunExt
+ fe = Univalence-gives-FunExt ua
+
+ fe' : Fun-Ext
+ fe' {𝓤} {𝓥} = fe 𝓤 𝓥
+
+open import MLTT.Spartan
+open import MLTT.Plus-Properties
+open import Ordinals.AdditionProperties ua
+open import Ordinals.Arithmetic fe
+open import Ordinals.Equivalence
+open import Ordinals.Exponentiation.Supremum ua pt sr
+open import Ordinals.OrdinalOfOrdinals ua
+open import Ordinals.OrdinalOfOrdinalsSuprema ua
+open import Ordinals.Maps
+open import Ordinals.MultiplicationProperties ua
+open import Ordinals.Type
+open import Ordinals.Underlying
+open import UF.Base
+open import UF.ClassicalLogic
+
+open suprema pt sr
+
+\end{code}
+
+\begin{code}
+
+×ₒ-weakly-monotone-in-both-arguments-implies-EM :
+   ((α β : Ordinal 𝓤) → 𝟙ₒ {𝓤} ⊴ α → α ⊲ β → α ×ₒ α ⊴ β ×ₒ β)
+ → EM 𝓤
+×ₒ-weakly-monotone-in-both-arguments-implies-EM {𝓤} assumption P P-is-prop =
+ IV (f x) refl
+  where
+   α β Pₒ : Ordinal 𝓤
+   α = [ 2 ]ₒ
+   Pₒ = prop-ordinal P P-is-prop
+   β = [ 3 ]ₒ +ₒ Pₒ
+
+   I : α ⊲ β
+   I = inl (inr ⋆) , ((successor-lemma-right α) ⁻¹ ∙ +ₒ-↓-left (inr ⋆))
+
+   α-ineq : 𝟙ₒ ⊴ α
+   α-ineq = ⊲-gives-⊴ 𝟙ₒ α (successor-increasing 𝟙ₒ)
+
+   II : α ×ₒ α ⊴ β ×ₒ β
+   II = assumption α β α-ineq I
+
+   x : ⟨ α ×ₒ α ⟩
+   x = (inr ⋆ , inr ⋆)
+
+   f : ⟨ α ×ₒ α ⟩ → ⟨ β ×ₒ β ⟩
+   f = [ α ×ₒ α , β ×ₒ β ]⟨ II ⟩
+
+   pattern ⊥β = inl (inl (inl ⋆))
+   pattern ₀α = (inl ⋆ , inl ⋆)
+   pattern ₁α = (inr ⋆ , inl ⋆)
+   pattern ₂α = (inl ⋆ , inr ⋆)
+   pattern ₃α = (inr ⋆ , inr ⋆)
+
+   f' : P → ⟨ α ×ₒ α ⟩ → ⟨ β ×ₒ β ⟩
+   f' p ₀α = (⊥β , ⊥β)
+   f' p ₁α = (inl (inl (inr ⋆)) , ⊥β)
+   f' p ₂α = (inl (inr ⋆) , ⊥β)
+   f' p ₃α = (inr p , ⊥β)
+
+   f'-simulation : (p : P) → is-simulation (α ×ₒ α) (β ×ₒ β) (f' p)
+   f'-simulation p = f'-initial-seg , f'-order-pres
+    where
+     f'-initial-seg : is-initial-segment (α ×ₒ α) (β ×ₒ β) (f' p)
+     f'-initial-seg ₁α (inl (inl (inl ⋆)) , .⊥β) (inr (refl , l))
+      = ₀α , inr (refl , l) , refl
+     f'-initial-seg ₂α (inl (inl (inl ⋆)) , .⊥β) (inr (refl , l))
+      = ₀α , inl ⋆ , refl
+     f'-initial-seg ₂α (inl (inl (inr ⋆)) , .⊥β) (inr (refl , l))
+      = ₁α , inl ⋆ , refl
+     f'-initial-seg ₃α (inl (inl (inl ⋆)) , .⊥β) (inr (refl , l))
+      = ₀α , inl ⋆ , refl
+     f'-initial-seg ₃α (inl (inl (inr ⋆)) , .⊥β) (inr (refl , l))
+      = ₁α , inl ⋆ , refl
+     f'-initial-seg ₃α (inl (inr ⋆) , .⊥β)       (inr (refl , l))
+      = ₂α , inr (refl , l) , refl
+     f'-initial-seg ₀α (inl (inl (inl ⋆)) , .⊥β) (inr (refl , l))
+      = 𝟘-elim l
+     f'-initial-seg ₀α (inl (inl (inr ⋆)) , .⊥β) (inr (refl , l))
+      = 𝟘-elim l
+     f'-initial-seg ₀α (y , inl (inl (inl ⋆))) (inl l) = 𝟘-elim l
+     f'-initial-seg ₀α (y , inl (inl (inr ⋆))) (inl l) = 𝟘-elim l
+     f'-initial-seg ₂α (y , inl (inl (inl ⋆))) (inl l) = 𝟘-elim l
+     f'-initial-seg ₂α (y , inl (inl (inr ⋆))) (inl l) = 𝟘-elim l
+     f'-initial-seg ₁α (y , inl (inl (inl ⋆))) (inl l) = 𝟘-elim l
+     f'-initial-seg ₁α (y , inl (inl (inr ⋆))) (inl l) = 𝟘-elim l
+     f'-initial-seg ₃α (y , inl (inl (inl ⋆))) (inl l) = 𝟘-elim l
+     f'-initial-seg ₃α (y , inl (inl (inr ⋆))) (inl l) = 𝟘-elim l
+
+     f'-order-pres : is-order-preserving (α ×ₒ α) (β ×ₒ β) (f' p)
+     f'-order-pres ₀α ₂α (inl l) = inr (refl , l)
+     f'-order-pres ₀α ₃α (inl l) = inr (refl , l)
+     f'-order-pres ₁α ₂α (inl l) = inr (refl , l)
+     f'-order-pres ₁α ₃α (inl l) = inr (refl , l)
+     f'-order-pres (_ , inr ⋆) (_ , inl ⋆) (inl l) = 𝟘-elim l
+     f'-order-pres (_ , inr ⋆) (_ , inr ⋆) (inl l) = 𝟘-elim l
+     f'-order-pres ₀α (inr ⋆ , x') (inr (refl , l)) = inr (refl , l)
+     f'-order-pres ₂α (inr ⋆ , x') (inr (refl , l)) = inr (refl , l)
+     f'-order-pres (inr ⋆ , x') (inl ⋆ , x') (inr (refl , l)) = 𝟘-elim l
+     f'-order-pres (inr ⋆ , x') (inr ⋆ , x') (inr (refl , l)) = 𝟘-elim l
+
+   III : (p : P) → f ∼ f' p
+   III p = at-most-one-simulation (α ×ₒ α) (β ×ₒ β)
+            f (f' p)
+            [ α ×ₒ α , β ×ₒ β ]⟨ II ⟩-is-simulation
+            (f'-simulation p)
+
+   IV : (y : ⟨ β ×ₒ β ⟩) → f x ＝ y → P + ¬ P
+   IV (inl y , y') r = inr (λ p → +disjoint (ap pr₁ (V p)))
+    where
+     V : (p : P) → (inl y , y') ＝ (inr p , ⊥β)
+     V p = (inl y , y') ＝⟨ r ⁻¹ ⟩
+             f x          ＝⟨ III p x ⟩
+             (inr p , ⊥β) ∎
+   IV (inr p , y') r = inl p
+
+\end{code}
+
+\begin{code}
+
+^ₒ-weakly-monotone-in-base-implies-EM :
+   ((α β γ : Ordinal 𝓤) → 𝟙ₒ {𝓤} ⊴ α → α ⊲ β → (α ^ₒ γ ⊴ β ^ₒ γ))
+ → EM 𝓤
+^ₒ-weakly-monotone-in-base-implies-EM {𝓤} assumption =
+ ×ₒ-weakly-monotone-in-both-arguments-implies-EM I
+  where
+   I : (α β : Ordinal 𝓤) → 𝟙ₒ ⊴ α → α ⊲ β → α ×ₒ α ⊴ β ×ₒ β
+   I α β l s = transport₂ _⊴_ II III (assumption α β 𝟚ₒ l s)
+    where
+     II : α ^ₒ 𝟚ₒ ＝ α ×ₒ α
+     II = ^ₒ-𝟚ₒ-is-×ₒ α l
+     III : β ^ₒ 𝟚ₒ ＝ β ×ₒ β
+     III = ^ₒ-𝟚ₒ-is-×ₒ β (⊴-trans 𝟙ₒ α β l (⊲-gives-⊴ α β s))
+
+^ₒ-monotone-in-base-implies-EM :
+   ((α β γ : Ordinal 𝓤) → 𝟙ₒ{𝓤} ⊴ α → α ⊴ β → (α ^ₒ γ ⊴ β ^ₒ γ))
+ → EM 𝓤
+^ₒ-monotone-in-base-implies-EM m =
+ ^ₒ-weakly-monotone-in-base-implies-EM
+  (λ α β γ l i → m α β γ l (⊲-gives-⊴ α β i))
+
+\end{code}
+
+\begin{code}
+
+EM-implies-exp-monotone-in-base : EM 𝓤
+ → (α β γ : Ordinal 𝓤) → α ⊴ β → (α ^ₒ γ ⊴ β ^ₒ γ)
+EM-implies-exp-monotone-in-base {𝓤} em α β γ l =
+ transfinite-induction-on-OO _ I γ
+ where
+  I : (γ : Ordinal 𝓤)
+    → ((c : ⟨ γ ⟩) → (α ^ₒ (γ ↓ c) ⊴ β ^ₒ (γ ↓ c)))
+    → (α ^ₒ γ ⊴ β ^ₒ γ)
+  I γ IH = transport₂⁻¹ _⊴_ (^ₒ-behaviour α γ) (^ₒ-behaviour β γ)
+            (sup-monotone
+             (cases (λ _ → 𝟙ₒ) (λ c → α ^ₒ (γ ↓ c) ×ₒ α))
+             (cases (λ _ → 𝟙ₒ) (λ c → β ^ₒ (γ ↓ c) ×ₒ β))
+             κ)
+   where
+    κ : (i : 𝟙 + ⟨ γ ⟩)
+      → cases (λ _ → 𝟙ₒ) (λ c → α ^ₒ (γ ↓ c) ×ₒ α) i
+      ⊴ cases (λ _ → 𝟙ₒ) (λ c → β ^ₒ (γ ↓ c) ×ₒ β) i
+    κ (inl ⋆) = ⊴-refl 𝟙ₒ
+    κ (inr c) = EM-implies-induced-⊴-on-×ₒ em (α ^ₒ (γ ↓ c)) α
+                                              (β ^ₒ (γ ↓ c)) β
+                                              (IH c) l
+
+\end{code}
+
+The following is not used at the moment, but may come in useful in the future
+when aiming to derive a constructive taboo.
+
+\begin{code}
+
 -- curiosity : (P : 𝓤 ̇ ) → (pp : is-prop P) → exp {𝓤} 𝟚ₒ (prop-ordinal P pp) ＝ 𝟙ₒ +ₒ prop-ordinal P pp
 -- curiosity {𝓤} P pp = transport⁻¹ (λ - → - ＝ 𝟙ₒ +ₒ (prop-ordinal P pp))
 --                                  (^ₒ-behaviour 𝟚ₒ (prop-ordinal P pp) ∙ ap sup (dfunext fe' eq))
@@ -91,175 +274,3 @@ module Ordinals.Exponentiation.Taboos
 
 
 -- \end{code}
-
--- \begin{code}
-
-
--- Added 12 November 2024.
--- module _ {𝓤 : Universe}
---  where
-
---  [_]ₒ : (n : ℕ) → Ordinal 𝓤
---  [ 0 ]ₒ = 𝟘ₒ
---  [ 1 ]ₒ = 𝟙ₒ
---  [ succ n ]ₒ = [ n ]ₒ +ₒ 𝟙ₒ
-
---  -- TODO: Upstream(?)
---  {-
---  open import Naturals.Addition renaming (_+_ to _+ℕ_)
---  open import Naturals.Multiplication
---  []ₒ-preserves-addition : {n m : ℕ} → [ n ]ₒ +ₒ [ m ]ₒ ＝ [ n +ℕ m ]ₒ
---  []ₒ-preserves-addition {n} {0} = 𝟘ₒ-right-neutral [ n ]ₒ
---  []ₒ-preserves-addition {0} {1} = 𝟘ₒ-left-neutral 𝟙ₒ
---  []ₒ-preserves-addition {succ n} {1} = refl
---  []ₒ-preserves-addition {n} {succ (m'@(succ m))} =
---   ([ n ]ₒ +ₒ ([ m' ]ₒ +ₒ 𝟙ₒ)) ＝⟨ (+ₒ-assoc [ n ]ₒ [ m' ]ₒ 𝟙ₒ) ⁻¹ ⟩
---   (([ n ]ₒ +ₒ [ m' ]ₒ) +ₒ 𝟙ₒ) ＝⟨ ap (_+ₒ 𝟙ₒ) []ₒ-preserves-addition ⟩
---   ([ n +ℕ m' ]ₒ +ₒ 𝟙ₒ)        ∎
-
---  []ₒ-preserves-multiplication : {n m : ℕ} → [ n ]ₒ ×ₒ [ m ]ₒ ＝ [ n * m ]ₒ
---  []ₒ-preserves-multiplication {n} {0} = ×ₒ-𝟘ₒ-right [ n ]ₒ
---  []ₒ-preserves-multiplication {n} {1} = 𝟙ₒ-right-neutral-×ₒ [ n ]ₒ
---  []ₒ-preserves-multiplication {n} {succ (m'@(succ m))} =
---   [ n ]ₒ ×ₒ ([ m' ]ₒ +ₒ 𝟙ₒ)     ＝⟨ ×ₒ-successor [ n ]ₒ [ m' ]ₒ ⟩
---   ([ n ]ₒ ×ₒ [ m' ]ₒ) +ₒ [ n ]ₒ ＝⟨ ap (_+ₒ [ n ]ₒ) []ₒ-preserves-multiplication ⟩
---   [ n * m' ]ₒ +ₒ [ n ]ₒ         ＝⟨ []ₒ-preserves-addition ⟩
---   [ n * m' +ℕ n ]ₒ              ＝⟨ ap [_]ₒ (addition-commutativity (n * m') n) ⟩
---   [ n +ℕ (n * m') ]ₒ            ＝⟨ refl ⟩
---   [ n * succ m' ]ₒ              ∎
---  -}
-
--- -- TODO: Upstream and clean
--- holds-gives-equal-𝟙ₒ : {P : 𝓤 ̇ } (i : is-prop P) → P → prop-ordinal P i ＝ 𝟙ₒ
--- holds-gives-equal-𝟙ₒ {𝓤} {P} i p = eqtoidₒ (ua 𝓤) fe' (prop-ordinal P i) 𝟙ₒ (f , order-preserving-reflecting-equivs-are-order-equivs (prop-ordinal P i) 𝟙ₒ f (qinvs-are-equivs f ((λ _ → p) , (i p , 𝟙-is-prop ⋆))) (λ _ _ → 𝟘-elim) λ _ _ → 𝟘-elim)
---  where
---   f : P → 𝟙
---   f _ = ⋆
-
--- -- TODO: Think about a better name?
--- exp-weakly-monotone-in-base-implies-EM :
---    ((α β γ : Ordinal 𝓤) → 𝟙ₒ{𝓤} ⊴ α → α ⊲ β → (α ^ₒ γ ⊴ β ^ₒ γ))
---  → EM 𝓤
--- exp-weakly-monotone-in-base-implies-EM {𝓤} assumption P P-is-prop = VI (f x) refl
---  where
---   α β γ Pₒ : Ordinal 𝓤
---   α = [ 2 ]ₒ
---   Pₒ = prop-ordinal P P-is-prop
---   β = [ 3 ]ₒ +ₒ Pₒ
---   γ = [ 2 ]ₒ
-
---   I : α ⊲ β
---   I = (inl (inr ⋆) , ((successor-lemma-right α) ⁻¹ ∙ +ₒ-↓-left (inr ⋆)))
-
---   α-ineq : 𝟙ₒ ⊴ α
---   α-ineq = ⊲-gives-⊴ 𝟙ₒ α (successor-increasing 𝟙ₒ)
-
---   β-ineq : 𝟙ₒ ⊴ β
---   β-ineq = ⊴-trans 𝟙ₒ α β α-ineq (⊲-gives-⊴ α β I)
-
---   II : α ^ₒ γ ⊴ β ^ₒ γ
---   II = assumption α β γ α-ineq I
-
---   III : α ^ₒ γ ＝ α ×ₒ α
---   III = ^ₒ-𝟚ₒ-is-×ₒ α α-ineq
-
---   IV : β ^ₒ γ ＝ (β ×ₒ β)
---   IV = ^ₒ-𝟚ₒ-is-×ₒ β β-ineq
-
---   x : ⟨ α ×ₒ α ⟩
---   x = (inr ⋆ , inr ⋆)
-
---   𝕗 : (α ×ₒ α) ⊴ (β ×ₒ β)
---   𝕗 = ⊴-trans _ _ _ (≃ₒ-to-⊴ _ _ (idtoeqₒ _ _ (III ⁻¹)))
---                     (⊴-trans _ _ _ II (≃ₒ-to-⊴ _ _ (idtoeqₒ _ _ IV)))
-
---   f : ⟨ α ×ₒ α ⟩ → ⟨ β ×ₒ β ⟩
---   f = [ α ×ₒ α , β ×ₒ β ]⟨ 𝕗 ⟩
-
---   pattern ⊥β = inl (inl (inl ⋆))
-
---   f' : P → ⟨ α ×ₒ α ⟩ → ⟨ β ×ₒ β ⟩
---   f' p (inl ⋆ , inl ⋆) = (⊥β , ⊥β)
---   f' p (inr ⋆ , inl ⋆) = (inl (inl (inr ⋆)) , ⊥β)
---   f' p (inl ⋆ , inr ⋆) = (inl (inr ⋆) , ⊥β)
---   f' p (inr ⋆ , inr ⋆) = (inr p , ⊥β)
-
---   f'-simulation : (p : P) → is-simulation (α ×ₒ α) (β ×ₒ β) (f' p)
---   f'-simulation p = f'-initial-seg , f'-order-pres
---    where
---     f'-initial-seg : is-initial-segment (α ×ₒ α) (β ×ₒ β) (f' p)
---     f'-initial-seg (inr ⋆ , inl ⋆) (inl (inl (inl ⋆)) , .⊥β) (inr (refl , l))
---      = (inl ⋆ , inl ⋆) , inr (refl , l) , refl
---     f'-initial-seg (inl ⋆ , inr ⋆) (inl (inl (inl ⋆)) , .⊥β) (inr (refl , l))
---      = (inl ⋆ , inl ⋆) , inl ⋆ , refl
---     f'-initial-seg (inl ⋆ , inr ⋆) (inl (inl (inr ⋆)) , .⊥β) (inr (refl , l))
---      = (inr ⋆ , inl ⋆) , inl ⋆ , refl
---     f'-initial-seg (inr ⋆ , inr ⋆) (inl (inl (inl ⋆)) , .⊥β) (inr (refl , l))
---      = (inl ⋆ , inl ⋆) , inl ⋆ , refl
---     f'-initial-seg (inr ⋆ , inr ⋆) (inl (inl (inr ⋆)) , .⊥β) (inr (refl , l))
---      = (inr ⋆ , inl ⋆) , inl ⋆ , refl
---     f'-initial-seg (inr ⋆ , inr ⋆) (inl (inr ⋆) , .⊥β)       (inr (refl , l))
---      = (inl ⋆ , inr ⋆) , inr (refl , l) , refl
---     f'-initial-seg (inl ⋆ , inl ⋆) (inl (inl (inl ⋆)) , .⊥β) (inr (refl , l))
---      = 𝟘-elim l
---     f'-initial-seg (inl ⋆ , inl ⋆) (inl (inl (inr ⋆)) , .⊥β) (inr (refl , l))
---      = 𝟘-elim l
---     f'-initial-seg (inl ⋆ , inl ⋆) (y , inl (inl (inl ⋆))) (inl l) = 𝟘-elim l
---     f'-initial-seg (inl ⋆ , inl ⋆) (y , inl (inl (inr ⋆))) (inl l) = 𝟘-elim l
---     f'-initial-seg (inl ⋆ , inr ⋆) (y , inl (inl (inl ⋆))) (inl l) = 𝟘-elim l
---     f'-initial-seg (inl ⋆ , inr ⋆) (y , inl (inl (inr ⋆))) (inl l) = 𝟘-elim l
---     f'-initial-seg (inr ⋆ , inl ⋆) (y , inl (inl (inl ⋆))) (inl l) = 𝟘-elim l
---     f'-initial-seg (inr ⋆ , inl ⋆) (y , inl (inl (inr ⋆))) (inl l) = 𝟘-elim l
---     f'-initial-seg (inr ⋆ , inr ⋆) (y , inl (inl (inl ⋆))) (inl l) = 𝟘-elim l
---     f'-initial-seg (inr ⋆ , inr ⋆) (y , inl (inl (inr ⋆))) (inl l) = 𝟘-elim l
-
---     f'-order-pres : is-order-preserving (α ×ₒ α) (β ×ₒ β) (f' p)
---     f'-order-pres (inl ⋆ , inl ⋆) (inl ⋆ , inr ⋆) (inl l) = inr (refl , l)
---     f'-order-pres (inl ⋆ , inl ⋆) (inr ⋆ , inr ⋆) (inl l) = inr (refl , l)
---     f'-order-pres (inr ⋆ , inl ⋆) (inl ⋆ , inr ⋆) (inl l) = inr (refl , l)
---     f'-order-pres (inr ⋆ , inl ⋆) (inr ⋆ , inr ⋆) (inl l) = inr (refl , l)
---     f'-order-pres (x , inr ⋆) (y , inl ⋆) (inl l) = 𝟘-elim l
---     f'-order-pres (x , inr ⋆) (y , inr ⋆) (inl l) = 𝟘-elim l
---     f'-order-pres (inl ⋆ , inl ⋆) (inr ⋆ , x') (inr (refl , l)) = inr (refl , l)
---     f'-order-pres (inl ⋆ , inr ⋆) (inr ⋆ , x') (inr (refl , l)) = inr (refl , l)
---     f'-order-pres (inr ⋆ , x') (inl ⋆ , x') (inr (refl , l)) = 𝟘-elim l
---     f'-order-pres (inr ⋆ , x') (inr ⋆ , x') (inr (refl , l)) = 𝟘-elim l
-
---   V : (p : P) → f ∼ f' p
---   V p = at-most-one-simulation (α ×ₒ α) (β ×ₒ β) f (f' p) (pr₂ 𝕗) (f'-simulation p)
-
---   VI : (y : ⟨ β ×ₒ β ⟩) → f x ＝ y → P + ¬ P
---   VI (inl y , y') r = inr (λ p → +disjoint (ap pr₁ (VII p)))
---    where
---     VII : (p : P) → (inl y , y') ＝ (inr p , ⊥β)
---     VII p = (inl y , y') ＝⟨ r ⁻¹ ⟩
---             f x          ＝⟨ V p x ⟩
---             (inr p , ⊥β) ∎
---   VI (inr p , y') r = inl p
-
--- exp-monotone-in-base-implies-EM :
---    ((α β γ : Ordinal 𝓤) → 𝟙ₒ{𝓤} ⊴ α → α ⊴ β → (α ^ₒ γ ⊴ β ^ₒ γ))
---  → EM 𝓤
--- exp-monotone-in-base-implies-EM m =
---  exp-weakly-monotone-in-base-implies-EM (λ α β γ l i → m α β γ l (⊲-gives-⊴ α β i))
-
--- EM-implies-exp-monotone-in-base : EM 𝓤
---  → (α β γ : Ordinal 𝓤) → α ⊴ β → (α ^ₒ γ ⊴ β ^ₒ γ)
--- EM-implies-exp-monotone-in-base {𝓤} em α β γ l =
---  transfinite-induction-on-OO _ I γ
---  where
---   I : (γ : Ordinal 𝓤) → ((c : ⟨ γ ⟩) → (α ^ₒ (γ ↓ c) ⊴ β ^ₒ (γ ↓ c)))
---     → (α ^ₒ γ ⊴ β ^ₒ γ)
---   I γ IH = transport₂⁻¹ _⊴_ (^ₒ-behaviour α γ) (^ₒ-behaviour β γ)
---             (sup-monotone
---              (cases (λ _ → 𝟙ₒ) (λ c → α ^ₒ (γ ↓ c) ×ₒ α))
---              (cases (λ _ → 𝟙ₒ) (λ c → β ^ₒ (γ ↓ c) ×ₒ β))
---              κ)
---    where
---     κ : (i : 𝟙 + ⟨ γ ⟩)
---       → cases (λ _ → 𝟙ₒ) (λ c → α ^ₒ (γ ↓ c) ×ₒ α) i
---       ⊴ cases (λ _ → 𝟙ₒ) (λ c → β ^ₒ (γ ↓ c) ×ₒ β) i
---     κ (inl ⋆) = ⊴-refl 𝟙ₒ
---     κ (inr c) = EM-implies-induced-⊴-on-×ₒ em (α ^ₒ (γ ↓ c)) α
---                                               (β ^ₒ (γ ↓ c)) β
---                                               (IH c) l
