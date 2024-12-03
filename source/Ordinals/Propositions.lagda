@@ -22,7 +22,6 @@ private
  fe' = Univalence-gives-Fun-Ext ua
 
 open import MLTT.Spartan
-open import Ordinals.AdditionProperties ua
 open import Ordinals.Arithmetic fe
 open import Ordinals.Equivalence
 open import Ordinals.OrdinalOfOrdinals ua
