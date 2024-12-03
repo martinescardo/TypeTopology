@@ -62,6 +62,12 @@ prop-ordinal-↓ : {P : 𝓤 ̇  } (i : is-prop P) (p : P)
 prop-ordinal-↓ i p =
  eqtoidₒ (ua _) fe' (prop-ordinal _ i ↓ p) 𝟘ₒ (prop-ordinal-↓-≃ₒ i p)
 
+𝟙ₒ-↓ : {x : 𝟙 {𝓤}} → 𝟙ₒ ↓ x ＝ 𝟘ₒ
+𝟙ₒ-↓ {𝓤} {x} = prop-ordinal-↓ 𝟙-is-prop x
+
+𝟙ₒ-↓-≃ₒ : {x : 𝟙 {𝓤}} → (𝟙ₒ ↓ x) ≃ₒ 𝟘ₒ {𝓥}
+𝟙ₒ-↓-≃ₒ {𝓤} {𝓥} {x} = prop-ordinal-↓-≃ₒ 𝟙-is-prop x
+
 only-one-𝟙ₒ-⊴ : 𝟙ₒ {𝓤} ⊴ 𝟙ₒ {𝓥}
 only-one-𝟙ₒ-⊴ = prop-ordinal-⊴ 𝟙-is-prop 𝟙-is-prop (λ _ → ⋆)
 
