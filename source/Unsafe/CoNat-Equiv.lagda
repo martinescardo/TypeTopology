@@ -40,23 +40,23 @@ open CoNat public
 pattern cozero = inl ⋆
 pattern cosuc n = inr n
 
-record _≈C_ (x y : CoNat) : Set
-data _≈C'_ (x y : CoNat') : Set
-_≈C''_ : CoNat' → CoNat' → Set
+record _＝C_ (x y : CoNat) : Set
+data _＝C'_ (x y : CoNat') : Set
+_＝C''_ : CoNat' → CoNat' → Set
 
-cozero  ≈C'' cozero  = 𝟙
-cozero  ≈C'' cosuc y = 𝟘
-cosuc x ≈C'' cozero  = 𝟘
-cosuc x ≈C'' cosuc y = x ≈C y
+cozero  ＝C'' cozero  = 𝟙
+cozero  ＝C'' cosuc y = 𝟘
+cosuc x ＝C'' cozero  = 𝟘
+cosuc x ＝C'' cosuc y = x ＝C y
 
-data _≈C'_  x y where
-    con : x ≈C'' y → x ≈C' y
+data _＝C'_  x y where
+    con : x ＝C'' y → x ＝C' y
     
-record _≈C_ x y where
+record _＝C_ x y where
  coinductive
  field
-  prove : force x ≈C' force y
-open _≈C_
+  prove : force x ＝C' force y
+open _＝C_
 
 f : ℕ∞ → CoNat
 f' : 𝟚 → ℕ∞ → CoNat'
@@ -88,10 +88,10 @@ g x = CoNat-to-ℕ→𝟚 x , is-decreasing-CoNat-to-ℕ→𝟚 x
 
 CoNat-equality-criterion : (x y : CoNat)
                          → ((n : ℕ) → CoNat-to-ℕ→𝟚 x n ＝ CoNat-to-ℕ→𝟚 y n)
-                         → x ≈C y
+                         → x ＝C y
 CoNat-equality-criterion' : (x y : CoNat')
                           → ((n : ℕ) → CoNat'-to-ℕ→𝟚 x n ＝ CoNat'-to-ℕ→𝟚 y n)
-                          → x ≈C' y
+                          → x ＝C' y
 
 CoNat-equality-criterion x y f .prove =
  CoNat-equality-criterion' (x .force) (y .force) f
@@ -106,7 +106,7 @@ CoNat-equality-criterion' (cosuc x) (cosuc y) f =
  con (CoNat-equality-criterion x y (f ∘ succ))
 
 CoNat≈ℕ∞ : funext₀
-         → (bisim : ∀ x y → x ≈C y → x ＝ y)
+         → (bisim : ∀ x y → x ＝C y → x ＝ y)
          → ℕ∞ ≃ CoNat
 CoNat≈ℕ∞ fe bisim = f , (g , λ - → bisim _ _ (f∘g∼id -)) , (g , g∘f∼id)
  where
@@ -126,7 +126,7 @@ CoNat≈ℕ∞ fe bisim = f , (g , λ - → bisim _ _ (f∘g∼id -)) , (g , g�
     I x ₁ eq (succ n) = ap (λ - → ℕ∞-to-ℕ→𝟚 (g (conat (f' - x))) (succ n)) eq ⁻¹
                       ∙ I (Pred x) _ refl n
 
-  f∘g∼id : (x : CoNat) → f (g x) ≈C x
+  f∘g∼id : (x : CoNat) → f (g x) ＝C x
   f∘g∼id x = CoNat-equality-criterion _ _ (I (x .force))
    where
     I : (x : CoNat')
