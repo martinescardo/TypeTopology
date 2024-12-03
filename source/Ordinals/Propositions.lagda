@@ -79,4 +79,7 @@ only-one-𝟙ₒ-⊴ = prop-ordinal-⊴ 𝟙-is-prop 𝟙-is-prop (λ _ → ⋆)
 𝟘ₒ-⊲-𝟙ₒ : 𝟘ₒ {𝓤} ⊲ 𝟙ₒ {𝓤}
 𝟘ₒ-⊲-𝟙ₒ = ⌜ ⊲-is-equivalent-to-⊲⁻ 𝟘ₒ 𝟙ₒ ⌝⁻¹ 𝟘ₒ-⊲⁻-𝟙ₒ
 
+holds-gives-equal-𝟙ₒ : {P : 𝓤 ̇  } (i : is-prop P) → P → prop-ordinal P i ＝ 𝟙ₒ
+holds-gives-equal-𝟙ₒ i p = prop-ordinal-＝ i 𝟙-is-prop (λ _ → ⋆) (λ _ → p)
+
 \end{code}

@@ -3,6 +3,8 @@ December 2024 (with results potentially going back to November 2023)
 
 Taboos involving ordinal exponentation.
 
+TODO: Add some comments in between the code blocks.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K --no-exact-split #-}
@@ -28,20 +30,21 @@ private
  fe' {𝓤} {𝓥} = fe 𝓤 𝓥
 
 open import MLTT.Spartan
+
 open import MLTT.Plus-Properties
 open import Ordinals.AdditionProperties ua
 open import Ordinals.Arithmetic fe
-open import Ordinals.Equivalence
 open import Ordinals.Exponentiation.Supremum ua pt sr
-open import Ordinals.OrdinalOfOrdinals ua
-open import Ordinals.OrdinalOfOrdinalsSuprema ua
 open import Ordinals.Maps
 open import Ordinals.MultiplicationProperties ua
+open import Ordinals.OrdinalOfOrdinals ua
+open import Ordinals.OrdinalOfOrdinalsSuprema ua
+open import Ordinals.Propositions ua
 open import Ordinals.Type
 open import Ordinals.Underlying
 open import UF.Base
 open import UF.ClassicalLogic
-
+open import UF.Subsingletons
 open suprema pt sr
 
 \end{code}
@@ -129,18 +132,19 @@ open suprema pt sr
 
    III : (p : P) → f ∼ f' p
    III p = at-most-one-simulation (α ×ₒ α) (β ×ₒ β)
-            f (f' p)
+            f
+            (f' p)
             [ α ×ₒ α , β ×ₒ β ]⟨ II ⟩-is-simulation
             (f'-simulation p)
 
    IV : (y : ⟨ β ×ₒ β ⟩) → f x ＝ y → P + ¬ P
+   IV (inr p , y') r = inl p
    IV (inl y , y') r = inr (λ p → +disjoint (ap pr₁ (V p)))
     where
      V : (p : P) → (inl y , y') ＝ (inr p , ⊥β)
      V p = (inl y , y') ＝⟨ r ⁻¹ ⟩
-             f x          ＝⟨ III p x ⟩
-             (inr p , ⊥β) ∎
-   IV (inr p , y') r = inl p
+           f x          ＝⟨ III p x ⟩
+           (inr p , ⊥β) ∎
 
 \end{code}
 
@@ -200,77 +204,62 @@ when aiming to derive a constructive taboo.
 
 \begin{code}
 
--- curiosity : (P : 𝓤 ̇ ) → (pp : is-prop P) → exp {𝓤} 𝟚ₒ (prop-ordinal P pp) ＝ 𝟙ₒ +ₒ prop-ordinal P pp
--- curiosity {𝓤} P pp = transport⁻¹ (λ - → - ＝ 𝟙ₒ +ₒ (prop-ordinal P pp))
---                                  (^ₒ-behaviour 𝟚ₒ (prop-ordinal P pp) ∙ ap sup (dfunext fe' eq))
---                                  (⊴-antisym (sup F) (𝟙ₒ +ₒ prop-ordinal P pp)
---                                             (sup-is-lower-bound-of-upper-bounds F _ upper-bound)
---                                             (g , g-is-simulation))
---  where
---   F : 𝟙 + P → Ordinal 𝓤
---   F (inl _) = 𝟙ₒ
---   F (inr p) = 𝟚ₒ
+^ₒ-𝟚ₒ-by-prop : (P : 𝓤 ̇  ) (i : is-prop P)
+              → 𝟚ₒ {𝓤} ^ₒ (prop-ordinal P i) ＝ 𝟙ₒ +ₒ prop-ordinal P i
+^ₒ-𝟚ₒ-by-prop {𝓤} P i = I ∙ ⊴-antisym (sup F) (𝟙ₒ +ₒ Pₒ) III V
+ where
+  F : 𝟙 {𝓤} + P → Ordinal 𝓤
+  F (inl _) = 𝟙ₒ
+  F (inr _) = 𝟚ₒ
 
---   eq : (i : 𝟙 + P) → (cases (λ _ → 𝟙ₒ) (λ b → exp 𝟚ₒ (prop-ordinal P pp ↓ b) ×ₒ 𝟚ₒ)) i ＝ F i
---   eq (inl _) = refl
---   eq (inr p) = exp 𝟚ₒ (prop-ordinal P pp ↓ p) ×ₒ 𝟚ₒ ＝⟨ ap (λ z → exp 𝟚ₒ z ×ₒ 𝟚ₒ) (prop-ordinal-↓ P pp p) ⟩
---                exp 𝟚ₒ 𝟘ₒ ×ₒ 𝟚ₒ                      ＝⟨ ap (_×ₒ 𝟚ₒ) (^ₒ-satisfies-zero-specification 𝟚ₒ) ⟩
---                𝟙ₒ ×ₒ 𝟚ₒ                             ＝⟨ 𝟙ₒ-left-neutral-×ₒ 𝟚ₒ ⟩
---                𝟚ₒ ∎
+  Pₒ = prop-ordinal P i
 
---   upper-bound : (i : 𝟙 + P) → F i ⊴ (𝟙ₒ +ₒ prop-ordinal P pp)
---   upper-bound (inl _) = (λ _ → inl _) , (λ x → dep-cases (λ _ → 𝟘-elim) (λ p → 𝟘-elim)) , (λ _ _ q → 𝟘-elim q)
---   upper-bound (inr p) = cases inl (λ _ → inr p) , (λ { (inr p') (inl _) _ → (inl _) , (⋆ , refl)
---                                                      ; (inl _) (inr p') q → 𝟘-elim q
---                                                      ; (inr p') (inr p'') q → 𝟘-elim q})
---                                                 , (λ { (inl _) (inr p') q → ⋆
---                                                      ; (inl _) (inl _) q → 𝟘-elim q})
+  I : 𝟚ₒ ^ₒ Pₒ ＝ sup F
+  I = transport⁻¹ (_＝ sup F) (^ₒ-behaviour 𝟚ₒ Pₒ) (ap sup (dfunext fe' e))
+   where
+    e : ^ₒ-family 𝟚ₒ Pₒ ∼ F
+    e (inl ⋆) = refl
+    e (inr p) = 𝟚ₒ ^ₒ (Pₒ ↓ p) ×ₒ 𝟚ₒ ＝⟨ e₁ ⟩
+                𝟚ₒ ^ₒ 𝟘ₒ ×ₒ 𝟚ₒ       ＝⟨ e₂ ⟩
+                𝟙ₒ ×ₒ 𝟚ₒ             ＝⟨ 𝟙ₒ-left-neutral-×ₒ 𝟚ₒ ⟩
+                𝟚ₒ                   ∎
+     where
+      e₁ = ap (λ - → 𝟚ₒ ^ₒ - ×ₒ 𝟚ₒ) (prop-ordinal-↓ i p)
+      e₂ = ap (_×ₒ 𝟚ₒ) (^ₒ-satisfies-zero-specification 𝟚ₒ)
 
---   f : (i : ⟨ 𝟙ₒ +ₒ prop-ordinal P pp ⟩) → ⟨ F i ⟩
---   f (inl _) = ⋆
---   f (inr p) = inr ⋆
+  II : (p : P) → 𝟙ₒ +ₒ Pₒ ＝ 𝟚ₒ
+  II p = ap (𝟙ₒ +ₒ_) (holds-gives-equal-𝟙ₒ i p)
 
---   g : (i : ⟨ 𝟙ₒ +ₒ prop-ordinal P pp ⟩) → ⟨ sup F ⟩
---   g i = pr₁ (sup-is-upper-bound F i) (f i)
+  III : sup F ⊴ 𝟙ₒ +ₒ Pₒ
+  III = sup-is-lower-bound-of-upper-bounds F (𝟙ₒ +ₒ Pₒ) III'
+   where
+    III' : (x : 𝟙 + P) → F x ⊴ 𝟙ₒ +ₒ Pₒ
+    III' (inl _) = +ₒ-left-⊴ 𝟙ₒ Pₒ
+    III' (inr p) = ＝-to-⊴ 𝟚ₒ (𝟙ₒ +ₒ Pₒ) (II p ⁻¹)
 
---   g-is-initial-segment : is-initial-segment (𝟙ₒ +ₒ prop-ordinal P pp) (sup F) g
---   g-is-initial-segment (inl _) y q = inl ⋆ , pr₂ (pr₁ (pr₂ (sup-is-upper-bound F (inl _))) ⋆ y q)
---   g-is-initial-segment (inr p) y q with pr₁ (pr₂ (sup-is-upper-bound F (inr p))) (inr ⋆) y q
---   ... | inl _ , _ , refl = inl ⋆ , ⋆ , ↓-lc (sup F)
---                                             (pr₁ (sup-is-upper-bound F (inl ⋆)) ⋆)
---                                             (pr₁ (sup-is-upper-bound F (inr p)) (inl ⋆))
---                                             e
---    where
---     e = (sup F ↓ pr₁ (sup-is-upper-bound F (inl ⋆)) ⋆)
---           ＝⟨ initial-segment-of-sup-at-component F (inl ⋆) ⋆ ⟩
---         (𝟙ₒ ↓ ⋆)
---           ＝⟨ +ₒ-↓-left ⋆ ⟩
---         (𝟚ₒ ↓ inl ⋆)
---           ＝⟨ initial-segment-of-sup-at-component F (inr p) (inl ⋆) ⁻¹ ⟩
---         (sup F ↓ pr₁ (sup-is-upper-bound F (inr p)) (inl ⋆))
---           ∎
+  IV : (x : 𝟙 + P ) → 𝟙ₒ +ₒ Pₒ ↓ x ⊲ sup F
+  IV (inl ⋆) =
+   ([ 𝟙ₒ , sup F ]⟨ f₁ ⟩ ⋆) ,
+    (𝟙ₒ +ₒ Pₒ ↓ inl ⋆               ＝⟨ (+ₒ-↓-left ⋆) ⁻¹ ⟩
+     𝟙ₒ ↓ ⋆                         ＝⟨ simulations-preserve-↓ 𝟙ₒ _ f₁ ⋆ ⟩
+     sup F ↓ [ 𝟙ₒ , sup F ]⟨ f₁ ⟩ ⋆ ∎)
+   where
+    f₁ : 𝟙ₒ ⊴ sup F
+    f₁ = sup-is-upper-bound F (inl ⋆)
+  IV (inr p) =
+   ([ 𝟚ₒ , sup F ]⟨ f₂ ⟩ (inr ⋆)) ,
+    (𝟙ₒ +ₒ Pₒ ↓ inr p                     ＝⟨ (+ₒ-↓-right p) ⁻¹ ⟩
+     𝟙ₒ +ₒ (Pₒ ↓ p)                       ＝⟨ ap (𝟙ₒ +ₒ_) (prop-ordinal-↓ i p) ⟩
+     𝟙ₒ +ₒ 𝟘ₒ                             ＝⟨ ap (𝟙ₒ +ₒ_) (𝟙ₒ-↓ ⁻¹) ⟩
+     𝟙ₒ +ₒ (𝟙ₒ ↓ ⋆)                       ＝⟨ +ₒ-↓-right ⋆ ⟩
+     𝟚ₒ ↓ inr ⋆                           ＝⟨ simulations-preserve-↓ 𝟚ₒ (sup F)
+                                               f₂ (inr ⋆) ⟩
+     sup F ↓ [ 𝟚ₒ , sup F ]⟨ f₂ ⟩ (inr ⋆) ∎)
+   where
+    f₂ : 𝟚ₒ ⊴ sup F
+    f₂ = sup-is-upper-bound F (inr p)
 
---   g-is-order-preserving : is-order-preserving (𝟙ₒ +ₒ prop-ordinal P pp) (sup F) g
---   g-is-order-preserving (inl _) (inr p) _ = ↓-reflects-order (sup F) (g (inl _)) (g (inr p)) q
---    where
---     eq₁ = sup F ↓ pr₁ (sup-is-upper-bound F (inl ⋆)) ⋆
---             ＝⟨ initial-segment-of-sup-at-component F (inl ⋆) ⋆ ⟩
---           𝟙ₒ ↓ ⋆
---             ＝⟨ prop-ordinal-↓ 𝟙 𝟙-is-prop ⋆ ⟩
---           𝟘ₒ
---             ∎
---     eq₂ = sup F ↓ pr₁ (sup-is-upper-bound F (inr p)) (inr ⋆)
---             ＝⟨ initial-segment-of-sup-at-component F (inr p) (inr ⋆) ⟩
---           (𝟚ₒ ↓ inr ⋆)
---             ＝⟨ successor-lemma-right 𝟙ₒ ⟩
---           𝟙ₒ
---             ∎
---     q : (sup F ↓ pr₁ (sup-is-upper-bound F (inl ⋆)) ⋆) ⊲ (sup F ↓ pr₁ (sup-is-upper-bound F (inr p)) (inr ⋆))
---     q = transport₂⁻¹ _⊲_ eq₁ eq₂ (⋆ , (prop-ordinal-↓ 𝟙 𝟙-is-prop ⋆ ⁻¹))
---   g-is-order-preserving (inl _) (inl _) q = 𝟘-elim q
+  V : 𝟙ₒ +ₒ Pₒ ⊴ sup F
+  V = to-⊴ (𝟙ₒ +ₒ Pₒ) (sup F) IV
 
---   g-is-simulation : is-simulation (𝟙ₒ +ₒ prop-ordinal P pp) (sup F) g
---   g-is-simulation = g-is-initial-segment , g-is-order-preserving
-
-
--- \end{code}
+\end{code}
