@@ -112,6 +112,14 @@ data member {X : 𝓤 ̇ } : X → List X → 𝓤 ̇ where
  in-head : {x : X}   {xs : List X} → member x (x ∷ xs)
  in-tail : {x y : X} {xs : List X} → member x xs → member x (y ∷ xs)
 
+lists-with-members-are-non-empty : {X : 𝓤 ̇ }
+                                   {y : X}
+                                   {xs : List X}
+                                 → member y xs
+                                 → is-non-empty xs
+lists-with-members-are-non-empty in-head     = cons-is-non-empty
+lists-with-members-are-non-empty (in-tail m) = cons-is-non-empty
+
 member-map : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (x : X) (xs : List X)
            → member x xs
            → member (f x) (map f xs)
@@ -167,7 +175,7 @@ filter-property← {𝓤} {𝓥} {X} p δ y (x ∷ xs) = h x xs (δ x)
     → p y
     → member y (x ∷ xs)
     → member y (filter-helper p x d (filter p δ xs))
-  h x xs (inl l) py in-head = in-head
+  h x xs (inl _) py in-head = in-head
   h x (x' ∷ xs) (inl _) py (in-tail m) = in-tail (h x' xs (δ x') py m)
   h x xs (inr r) py in-head = 𝟘-elim (r py)
   h x xs (inr _) py (in-tail m) = filter-property← p δ y xs py m
