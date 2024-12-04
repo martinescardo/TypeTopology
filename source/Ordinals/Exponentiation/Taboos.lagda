@@ -3,8 +3,6 @@ December 2024 (with results potentially going back to November 2023)
 
 Taboos involving ordinal exponentation.
 
-TODO: Add some comments in between the code blocks.
-
 \begin{code}
 
 {-# OPTIONS --safe --without-K --no-exact-split #-}
@@ -48,6 +46,27 @@ open import UF.Subsingletons
 open suprema pt sr
 
 \end{code}
+
+We will show that, constructively, exponentation is not in general monotone in
+the base. More precisely, the statement
+  α ⊴ β → α ^ₒ γ ⊴ α ^ₒ γ (for all ordinals α, β and γ)
+implies excluded middle.
+
+Moreover, we can even strengthen the hypothesis to have a strict inequality,
+i.e. the weaker statement
+  α ⊲ β → α ^ₒ γ ⊴ α ^ₒ γ (for all ordinals α, β and γ)
+already implies excluded middle.
+
+Since exponentation is only constructively well defined (see TODO) for 𝟙ₒ ⊴ α,
+we further add this assumption to the statement (and still derive excluded
+middle from it).
+
+Furthermore, we can actually fix γ := 𝟚ₒ in the statement.
+Since α ^ₒ 𝟚ₒ ＝ α ×ₒ α for any (reasonable) notion of ordinal exponentation, we
+see that the taboo applies to any such notion.
+
+In particular we can reduce the derivation of excluded middle from a statement
+about multiplication:
 
 \begin{code}
 
@@ -148,6 +167,9 @@ open suprema pt sr
 
 \end{code}
 
+As announced, we get excluded middle from (weak) monotonicity of exponentation
+in the base.
+
 \begin{code}
 
 ^ₒ-weakly-monotone-in-base-implies-EM :
@@ -172,6 +194,8 @@ open suprema pt sr
   (λ α β γ l i → m α β γ l (⊲-gives-⊴ α β i))
 
 \end{code}
+
+Classically, exponentation is of course monotone in the base.
 
 \begin{code}
 
