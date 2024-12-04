@@ -20,6 +20,7 @@ import Games.Monad                   -- (Automatically strong, wild) monads on t
 import Games.Reader                  -- Reader monad.
 import Games.List                    -- List monad.
 import Games.NonEmptyList            -- Non-empty list monad.
+import Games.NonEmptyListOriginal    -- Non-empty list monad, original version.
 import Games.TicTacToe0
 import Games.TicTacToe1              -- Like TicTacToe0 but using Games.Constructor.
 import Games.TicTacToe2              -- More efficient and less elegant version.

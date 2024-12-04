@@ -118,14 +118,63 @@ member-map : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (x : X) (xs : List X)
 member-map f x' (_ ∷ _)  in-head     = in-head
 member-map f x' (_ ∷ xs) (in-tail m) = in-tail (member-map f x' xs m)
 
+private
+ filter-helper : {X : 𝓤 ̇ } (p : X → 𝓥 ̇ )
+               → (x : X)
+               → p x + ¬ p x
+               → List X
+               → List X
+ filter-helper p x (inl _) xs = x ∷ xs
+ filter-helper p x (inr _) xs = xs
+
+filter : {X : 𝓤 ̇ } (p : X → 𝓥 ̇ ) → ((x : X) → p x + ¬ p x) → List X → List X
+filter p δ []       = []
+filter p δ (x ∷ xs) = filter-helper p x (δ x) (filter p δ xs)
+
+open import MLTT.Plus-Properties
+
+filter-property→ : {X : 𝓤 ̇ }
+                   (p : X → 𝓥 ̇ )
+                   (δ : (x : X) → p x + ¬ p x)
+                   (y : X)
+                   (xs : List X)
+                 → member y (filter p δ xs)
+                 → p y
+filter-property→ {𝓤} {𝓥} {X} p δ y (x ∷ xs) = h x xs (δ x)
+ where
+  h : (x : X)
+      (xs : List X)
+    → (d : p x + ¬ p x)
+    → member y (filter-helper p x d (filter p δ xs))
+    → p y
+  h x xs        (inl l) in-head     = l
+  h x xs        (inl _) (in-tail m) = filter-property→ p δ y xs m
+  h x (x' ∷ xs) (inr _) m           = h x' xs (δ x') m
+
+filter-property← : {X : 𝓤 ̇ }
+                   (p : X → 𝓥 ̇ )
+                   (δ : (x : X) → p x + ¬ p x)
+                   (y : X)
+                   (xs : List X)
+                 → p y
+                 → member y xs
+                 → member y (filter p δ xs)
+filter-property← {𝓤} {𝓥} {X} p δ y (x ∷ xs) = h x xs (δ x)
+ where
+  h : (x : X)
+      (xs : List X)
+    → (d : p x + ¬ p x)
+    → p y
+    → member y (x ∷ xs)
+    → member y (filter-helper p x d (filter p δ xs))
+  h x xs (inl l) py in-head = in-head
+  h x (x' ∷ xs) (inl _) py (in-tail m) = in-tail (h x' xs (δ x') py m)
+  h x xs (inr r) py in-head = 𝟘-elim (r py)
+  h x xs (inr _) py (in-tail m) = filter-property← p δ y xs py m
+
 member' : {X : 𝓤 ̇ } → X → List X → 𝓤 ̇
 member' y []       = 𝟘
 member' y (x ∷ xs) = (x ＝ y) + member' y xs
-
-\end{code}
-
-
-\begin{code}
 
 member'-map : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (x : X) (xs : List X)
             → member' x xs
