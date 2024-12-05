@@ -1,9 +1,7 @@
 Tom de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg, Chuangjie Xu,
-23 April 2023.
+April 2024.
 
-TODO: Update dates
-TODO: Order and group results in a logical fashion
-TOOD: Write comments between code blocks
+With major additions and refactorings in September—December 2024.
 
 \begin{code}
 
@@ -354,7 +352,8 @@ The proof relies on the following monotonicity property of the exponentiation.
 
 \end{code}
 
-Exponentiating
+Exponentiating by 𝟙ₒ and 𝟚ₒ behaves as expected (and this behaviour follows
+abstractly from the zero and successor specifications).
 
 \begin{code}
 
@@ -370,22 +369,33 @@ Exponentiating
 
 \end{code}
 
+More generally, we have
+  α ^ₒ (β +ₒ γ) ＝ α ^ₒ β ×ₒ α ^ₒ γ,
+the proof of which makes use of the following general lemma which folds the
+product into the supremum.
+
 \begin{code}
 
 ×ₒ-^ₒ-lemma :
    (α : Ordinal 𝓤) (β : Ordinal 𝓥) (γ : Ordinal (𝓤 ⊔ 𝓥))
  → γ ×ₒ α ^ₒ β
    ＝ sup (cases (λ (_ : 𝟙  {𝓤}) → γ) (λ (b : ⟨ β ⟩) → γ ×ₒ α ^ₒ (β ↓ b) ×ₒ α))
-×ₒ-^ₒ-lemma α β γ =
- γ ×ₒ α ^ₒ β                        ＝⟨ ap (γ ×ₒ_) (^ₒ-behaviour α β) ⟩
- γ ×ₒ sup (^ₒ-family α β)           ＝⟨ ×ₒ-preserves-suprema pt sr γ (^ₒ-family α β) ⟩
- sup (λ x → γ ×ₒ (^ₒ-family α β x)) ＝⟨ ap sup (dfunext fe' I) ⟩
- sup (cases (λ _ → γ) (λ b → γ ×ₒ α ^ₒ (β ↓ b) ×ₒ α)) ∎
+×ₒ-^ₒ-lemma {𝓤} {𝓥} α β γ =
+ γ ×ₒ α ^ₒ β                        ＝⟨ I   ⟩
+ γ ×ₒ sup (^ₒ-family α β)           ＝⟨ II  ⟩
+ sup (λ - → γ ×ₒ (^ₒ-family α β -)) ＝⟨ III ⟩
+ sup F                              ∎
   where
-   I : (λ x → γ ×ₒ ^ₒ-family α β x)
-     ∼ cases (λ _ → γ) (λ b → γ ×ₒ α ^ₒ (β ↓ b) ×ₒ α)
-   I (inl ⋆) = 𝟙ₒ-right-neutral-×ₒ γ
-   I (inr b) = (×ₒ-assoc γ (α ^ₒ (β ↓ b)) α) ⁻¹
+   F : 𝟙 + ⟨ β ⟩ → Ordinal (𝓤 ⊔ 𝓥)
+   F = cases (λ _ → γ) (λ b → γ ×ₒ α ^ₒ (β ↓ b) ×ₒ α)
+
+   I   = ap (γ ×ₒ_) (^ₒ-behaviour α β)
+   II  = ×ₒ-preserves-suprema pt sr γ (^ₒ-family α β)
+   III = ap sup (dfunext fe' h)
+    where
+     h : (λ - → γ ×ₒ ^ₒ-family α β -) ∼ F
+     h (inl ⋆) = 𝟙ₒ-right-neutral-×ₒ γ
+     h (inr b) = (×ₒ-assoc γ (α ^ₒ (β ↓ b)) α) ⁻¹
 
 ^ₒ-by-+ₒ : (α : Ordinal 𝓤) (β γ : Ordinal 𝓥)
          → α ^ₒ (β +ₒ γ) ＝ α ^ₒ β ×ₒ α ^ₒ γ
@@ -395,50 +405,57 @@ Exponentiating
    I : (γ : Ordinal 𝓥)
      → ((c : ⟨ γ ⟩) → α ^ₒ (β +ₒ (γ ↓ c)) ＝ α ^ₒ β ×ₒ α ^ₒ (γ ↓ c))
      → α ^ₒ (β +ₒ γ) ＝ α ^ₒ β ×ₒ α ^ₒ γ
-   I γ IH = II ∙ (×ₒ-^ₒ-lemma α γ (α ^ₒ β)) ⁻¹
+   I γ IH = α ^ₒ (β +ₒ γ)    ＝⟨ ⊴-antisym (α ^ₒ (β +ₒ γ)) (sup F) II III ⟩
+            sup F            ＝⟨ (×ₒ-^ₒ-lemma α γ (α ^ₒ β)) ⁻¹ ⟩
+            α ^ₒ β ×ₒ α ^ₒ γ ∎
     where
      F : 𝟙 + ⟨ γ ⟩ → Ordinal (𝓤 ⊔ 𝓥)
      F = cases (λ _ → α ^ₒ β) (λ c → α ^ₒ β ×ₒ α ^ₒ (γ ↓ c) ×ₒ α)
 
-     II : α ^ₒ (β +ₒ γ) ＝ sup F
-     II = ⊴-antisym (α ^ₒ (β +ₒ γ)) (sup F) III IV
+     eq : (c : ⟨ γ ⟩)
+        → α ^ₒ β ×ₒ α ^ₒ (γ ↓ c) ×ₒ α ＝ α ^ₒ ((β +ₒ γ) ↓ inr c) ×ₒ α
+     eq c = α ^ₒ β ×ₒ α ^ₒ (γ ↓ c) ×ₒ α  ＝⟨ e₁ ⟩
+            α ^ₒ (β +ₒ (γ ↓ c)) ×ₒ α     ＝⟨ e₂ ⟩
+            α ^ₒ ((β +ₒ γ) ↓ inr c) ×ₒ α ∎
       where
-       eq : (c : ⟨ γ ⟩)
-          → α ^ₒ β ×ₒ α ^ₒ (γ ↓ c) ×ₒ α ＝ α ^ₒ ((β +ₒ γ) ↓ inr c) ×ₒ α
-       eq c = α ^ₒ β ×ₒ α ^ₒ (γ ↓ c) ×ₒ α  ＝⟨ e₁ ⟩
-              α ^ₒ (β +ₒ (γ ↓ c)) ×ₒ α     ＝⟨ e₂ ⟩
-              α ^ₒ ((β +ₒ γ) ↓ inr c) ×ₒ α ∎
-        where
-         e₁ = ap (_×ₒ α) ((IH c) ⁻¹)
-         e₂ = ap (λ - → α ^ₒ - ×ₒ α) (+ₒ-↓-right c)
+       e₁ = ap (_×ₒ α) ((IH c) ⁻¹)
+       e₂ = ap (λ - → α ^ₒ - ×ₒ α) (+ₒ-↓-right c)
 
-       III : α ^ₒ (β +ₒ γ) ⊴ sup F
-       III = ^ₒ-is-lower-bound-of-upper-bounds α (β +ₒ γ) (sup F)
-              III₁ III₂
-         where
-          III₁ : 𝟙ₒ ⊴ sup F
-          III₁ = ⊴-trans 𝟙ₒ (α ^ₒ β) (sup F)
-                  (^ₒ-has-least-element α β)
-                  (sup-is-upper-bound _ (inl ⋆))
-          III₂ : (x : ⟨ β +ₒ γ ⟩) → α ^ₒ (β +ₒ γ ↓ x) ×ₒ α ⊴ sup F
-          III₂ (inl b) = transport
-                          (_⊴ sup F)
-                          (ap (λ - → α ^ₒ - ×ₒ α) (+ₒ-↓-left b))
-                          (⊴-trans (α ^ₒ (β ↓ b) ×ₒ α) (α ^ₒ β) (sup F)
-                            (^ₒ-is-upper-bound₂ α β)
-                            (sup-is-upper-bound F (inl ⋆)))
-          III₂ (inr c) =
-           transport (_⊴ sup F) (eq c) (sup-is-upper-bound F (inr c))
+     II : α ^ₒ (β +ₒ γ) ⊴ sup F
+     II = ^ₒ-is-lower-bound-of-upper-bounds α (β +ₒ γ) (sup F)
+            II₁ II₂
+       where
+        II₁ : 𝟙ₒ ⊴ sup F
+        II₁ = ⊴-trans 𝟙ₒ (α ^ₒ β) (sup F)
+               (^ₒ-has-least-element α β)
+               (sup-is-upper-bound _ (inl ⋆))
+        II₂ : (x : ⟨ β +ₒ γ ⟩) → α ^ₒ (β +ₒ γ ↓ x) ×ₒ α ⊴ sup F
+        II₂ (inl b) = transport
+                       (_⊴ sup F)
+                       (ap (λ - → α ^ₒ - ×ₒ α) (+ₒ-↓-left b))
+                       (⊴-trans (α ^ₒ (β ↓ b) ×ₒ α) (α ^ₒ β) (sup F)
+                         (^ₒ-is-upper-bound₂ α β)
+                         (sup-is-upper-bound F (inl ⋆)))
+        II₂ (inr c) =
+         transport (_⊴ sup F) (eq c) (sup-is-upper-bound F (inr c))
 
-       IV : sup F ⊴ α ^ₒ (β +ₒ γ)
-       IV = sup-is-lower-bound-of-upper-bounds _ (α ^ₒ (β +ₒ γ)) IV'
-        where
-         IV' : (x : 𝟙 + ⟨ γ ⟩) → F x ⊴ α ^ₒ (β +ₒ γ)
-         IV' (inl ⋆) = ^ₒ-monotone-in-exponent α β (β +ₒ γ) (+ₒ-left-⊴ β γ)
-         IV' (inr c) =
-          transport⁻¹ (_⊴ α ^ₒ (β +ₒ γ)) (eq c) (^ₒ-is-upper-bound₂ α (β +ₒ γ))
+     III : sup F ⊴ α ^ₒ (β +ₒ γ)
+     III = sup-is-lower-bound-of-upper-bounds _ (α ^ₒ (β +ₒ γ)) III'
+      where
+       III' : (x : 𝟙 + ⟨ γ ⟩) → F x ⊴ α ^ₒ (β +ₒ γ)
+       III' (inl ⋆) = ^ₒ-monotone-in-exponent α β (β +ₒ γ) (+ₒ-left-⊴ β γ)
+       III' (inr c) =
+        transport⁻¹ (_⊴ α ^ₒ (β +ₒ γ)) (eq c) (^ₒ-is-upper-bound₂ α (β +ₒ γ))
 
 \end{code}
+
+The general lemma
+  α ^ₒ (β +ₒ γ) ＝ α ^ₒ β ×ₒ α ^ₒ γ
+has the successor specification
+  α ^ₒ (β +ₒ 𝟙ₒ) = α ^ₒ β ×ₒ α
+as a special case, but deriving it like this forces the universe parameters to
+be less general compared to the direct proof given above in
+^ₒ-satisifies-succ-specification.
 
 \begin{code}
 
@@ -451,6 +468,8 @@ Exponentiating
  α ^ₒ β ×ₒ α       ∎
 
 \end{code}
+
+Exponentiating by a product is iterated exponentiation:
 
 \begin{code}
 
@@ -517,6 +536,8 @@ Exponentiating
 
 \end{code}
 
+The following characterizes initial segments of exponentiated ordinals.
+
 \begin{code}
 
 ^ₒ-↓-⊥ : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
@@ -561,6 +582,10 @@ Exponentiating
           α ^ₒ β ↓ x ＝ α ^ₒ (β ↓ b) ×ₒ (α ↓ a) +ₒ (α ^ₒ (β ↓ b) ↓ e))
 
 \end{code}
+
+Finally, using the above characterization of initial segments, we show that ^ₒ
+is (stricly) order preserving in the exponent (provided that the base is
+strictly greater than 𝟙ₒ).
 
 \begin{code}
 
