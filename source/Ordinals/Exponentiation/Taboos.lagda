@@ -59,8 +59,8 @@ i.e. the weaker statement
 already implies excluded middle.
 
 Since our exponentiation is only well defined for base α ⊵ 𝟙ₒ (see also
-exp-defined-everywhere-implies-EM), we further add this assumption to the
-statement (and still derive excluded middle from it).
+exponentiation-defined-everywhere-implies-EM), we further add this assumption to
+the statement (and still derive excluded middle from it).
 
 Furthermore, we can actually fix γ := 𝟚ₒ in the statement.
 Since α ^ₒ 𝟚ₒ ＝ α ×ₒ α for any (reasonable) notion of ordinal exponentiation, we
@@ -239,18 +239,23 @@ EM-implies-exp-monotone-in-base {𝓤} em α β γ l =
 
 \end{code}
 
-TODO: WRITE A COMMENT
+The below shows that constructively we cannot expect to have an operation
+  exp : Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤
+that behaves like exponentiation for *all* bases α and exponents β.
+
+In Ordinals.Exponentiation.Suprema we construct an operation _^ₒ_ that is well
+behaved for all bases α ⊵ 𝟙₀ and all exponents β.
 
 \begin{code}
 
 module _ (exp : Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) where
 
- exp-defined-everywhere-implies-EM' :
+ exponentiation-defined-everywhere-implies-EM' :
     ((α : Ordinal 𝓤) → exp-specification-zero α (exp α))
   → ((α : Ordinal 𝓤) → exp-specification-succ α (exp α))
   → ((α : Ordinal 𝓤) → α ≠ 𝟘ₒ → is-monotone (OO 𝓤) (OO 𝓤) (exp α))
   → EM 𝓤
- exp-defined-everywhere-implies-EM' exp-zero exp-succ exp-mon P P-is-prop =
+ exponentiation-defined-everywhere-implies-EM' exp-zero exp-succ exp-mon P P-is-prop =
   III (f ⋆ , refl)
    where
     α : Ordinal 𝓤
@@ -284,13 +289,13 @@ module _ (exp : Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) where
              (inl p)
              (transport⁻¹ (λ - → inl p ≺⟨ α ⟩ -) r ⋆)
 
- exp-defined-everywhere-implies-EM :
+ exponentiation-defined-everywhere-implies-EM :
     ((α : Ordinal 𝓤) → exp-specification-zero α (exp α))
   → ((α : Ordinal 𝓤) → exp-specification-succ α (exp α))
   → ((α : Ordinal 𝓤) → exp-specification-sup α (exp α))
   → EM 𝓤
- exp-defined-everywhere-implies-EM exp-zero exp-succ exp-sup =
-  exp-defined-everywhere-implies-EM'
+ exponentiation-defined-everywhere-implies-EM exp-zero exp-succ exp-sup =
+  exponentiation-defined-everywhere-implies-EM'
    exp-zero
    exp-succ
    (λ α ν → is-monotone-if-continuous (exp α) (exp-sup α ν))
