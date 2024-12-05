@@ -113,7 +113,7 @@ check_imports() {
   if $rem_flag; then
       ${sed_cmd} -i "${unused[*]/%/d;}" $file # Remove redundant imports
   else # Report redundant imports
-      for i in $unused;
+      for i in ${unused[@]};
       do
 	import=$(${sed_cmd} -n "${i}p" $file | awk -F 'open import ' '{print $2}')
 	echo "Importing $import was not necessary"
