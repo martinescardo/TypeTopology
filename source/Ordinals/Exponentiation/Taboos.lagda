@@ -1,7 +1,7 @@
 Tom de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg, Chuangjie Xu
 December 2024 (with results potentially going back to November 2023)
 
-Taboos involving ordinal exponentation.
+Taboos involving ordinal exponentiation.
 
 \begin{code}
 
@@ -48,7 +48,7 @@ open suprema pt sr
 
 \end{code}
 
-We will show that, constructively, exponentation is not in general monotone in
+We will show that, constructively, exponentiation is not in general monotone in
 the base. More precisely, the statement
   α ⊴ β → α ^ₒ γ ⊴ α ^ₒ γ (for all ordinals α, β and γ)
 implies excluded middle.
@@ -58,14 +58,14 @@ i.e. the weaker statement
   α ⊲ β → α ^ₒ γ ⊴ α ^ₒ γ (for all ordinals α, β and γ)
 already implies excluded middle.
 
-Since our exponentation is only well defined for base α ⊵ 𝟙ₒ (see also
+Since our exponentiation is only well defined for base α ⊵ 𝟙ₒ (see also
 exp-defined-everywhere-implies-EM), we further add this assumption to the
 statement (and still derive excluded middle from it).
 
 Furthermore, we can actually fix γ := 𝟚ₒ in the statement.
-Since α ^ₒ 𝟚ₒ ＝ α ×ₒ α for any (reasonable) notion of ordinal exponentation, we
+Since α ^ₒ 𝟚ₒ ＝ α ×ₒ α for any (reasonable) notion of ordinal exponentiation, we
 see that the taboo applies to any such notion and we formalize this as
-exponentation-weakly-monotone-in-base-implies-EM below.
+exponentiation-weakly-monotone-in-base-implies-EM below.
 
 In particular we can reduce the derivation of excluded middle from a statement
 about multiplication:
@@ -169,18 +169,18 @@ about multiplication:
 
 \end{code}
 
-As announced, we get excluded middle from (weak) monotonicity of exponentation
+As announced, we get excluded middle from (weak) monotonicity of exponentiation
 in the base.
 
 \begin{code}
 
-exponentation-weakly-monotone-in-base-implies-EM :
+exponentiation-weakly-monotone-in-base-implies-EM :
    (exp : Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤)
  → ((α : Ordinal 𝓤) → 𝟙ₒ {𝓤} ⊴ α → exp-specification-zero α (exp α))
  → ((α : Ordinal 𝓤) → 𝟙ₒ {𝓤} ⊴ α → exp-specification-succ α (exp α))
  → ((α β γ : Ordinal 𝓤) → 𝟙ₒ {𝓤} ⊴ α → α ⊲ β → (exp α γ ⊴ exp β γ))
  → EM 𝓤
-exponentation-weakly-monotone-in-base-implies-EM {𝓤} exp exp-zero exp-succ h =
+exponentiation-weakly-monotone-in-base-implies-EM {𝓤} exp exp-zero exp-succ h =
  ×ₒ-weakly-monotone-in-both-arguments-implies-EM I
   where
    I : (α β : Ordinal 𝓤) → 𝟙ₒ ⊴ α → α ⊲ β → α ×ₒ α ⊴ β ×ₒ β
@@ -198,7 +198,7 @@ exponentation-weakly-monotone-in-base-implies-EM {𝓤} exp exp-zero exp-succ h 
    ((α β γ : Ordinal 𝓤) → 𝟙ₒ {𝓤} ⊴ α → α ⊲ β → (α ^ₒ γ ⊴ β ^ₒ γ))
  → EM 𝓤
 ^ₒ-weakly-monotone-in-base-implies-EM {𝓤} =
- exponentation-weakly-monotone-in-base-implies-EM _^ₒ_
+ exponentiation-weakly-monotone-in-base-implies-EM _^ₒ_
   (λ α l → ^ₒ-satisfies-zero-specification α)
   (λ α l → ^ₒ-satisfies-succ-specification α l)
 
@@ -211,7 +211,7 @@ exponentation-weakly-monotone-in-base-implies-EM {𝓤} exp exp-zero exp-succ h 
 
 \end{code}
 
-Classically, exponentation is of course monotone in the base.
+Classically, exponentiation is of course monotone in the base.
 
 \begin{code}
 

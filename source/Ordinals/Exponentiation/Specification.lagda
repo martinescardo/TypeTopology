@@ -37,11 +37,11 @@ open suprema pt sr
 
 \end{code}
 
-In what follows F should be thought of as implementing ordinal exponentation
+In what follows F should be thought of as implementing ordinal exponentiation
 with base α, i.e. F β produces the ordinal α^β.
 
 The three requirements below, together with 𝟘ₒ^β ＝ 𝟘₀ for β ≠ 𝟘₀, classically
-*define* ordinal exponentation.
+*define* ordinal exponentiation.
 
 \begin{code}
 

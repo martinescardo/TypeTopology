@@ -1097,7 +1097,7 @@ exp-sup-spec α i β = ∥∥-rec (the-type-of-ordinals-is-a-set (ua _) fe') (λ
 
 \end{code}
 
-And conversely... (EM gives full exponentation)
+And conversely... (EM gives full exponentiation)
 
 \begin{code}
 

@@ -51,8 +51,13 @@ open suprema pt sr
 
 \end{code}
 
-We define `α ^ₒ β = sup_{1 + ⟨ β ⟩} (inl _ ↦ 𝟙ₒ; inr b ↦ α ^ₒ (β ↓ b) ×ₒ α)
+We define
+  α ^ₒ β = sup {1 + ⟨ β ⟩} (inl _ ↦ 𝟙ₒ; inr b ↦ α ^ₒ (β ↓ b) ×ₒ α)
 by transfinite recursion on β.
+
+As we will show, this gives a well defined ordinal exponentiation function
+whenever α ⊵ 𝟙ₒ. Moreover, many desirable properties also hold in the absence of
+this assumption)
 
 \begin{code}
 
@@ -110,6 +115,13 @@ abstract
     (sup-is-lower-bound-of-upper-bounds
       ^ₒ-family γ (dep-cases (λ _ → l₁) l₂))
 
+\end{code}
+
+Since ^ₒ is defined as a supremum which in turn can be realized as a quotient,
+it enjoyes an induction principle which we formulate and prove below.
+
+\begin{code}
+
   ^ₒ-⊥ : ⟨ α ^ₒ β ⟩
   ^ₒ-⊥ = [ 𝟙ₒ , α ^ₒ β ]⟨ ^ₒ-is-upper-bound₁ ⟩ ⋆
 
@@ -123,32 +135,29 @@ abstract
    ι-is-jointly-surjective :
       (e : ⟨ α ^ₒ β ⟩)
      → ∃ x ꞉ 𝟙 + ⟨ β ⟩ , Σ y ꞉ ⟨ ^ₒ-family x ⟩ , ι x y ＝ e
-   ι-is-jointly-surjective e = ∥∥-functor I II
+   ι-is-jointly-surjective e = ∥∥-functor II III
     where
      σ = λ (x : 𝟙 + ⟨ β ⟩)
            → [ ^ₒ-family x , sup ^ₒ-family ]⟨ sup-is-upper-bound ^ₒ-family x ⟩
-     module _
-      {γ : Ordinal (𝓤 ⊔ 𝓥)}
-      (e : ⟨ γ ⟩)
-      where
-       III :
-          (p : γ ＝ sup ^ₒ-family) {x : 𝟙 + ⟨ β ⟩} {y : ⟨ ^ₒ-family x ⟩}
-        → σ x y ＝ Idtofun (ap ⟨_⟩ p) e
-        → [ ^ₒ-family x , γ ]⟨
+
+     I : {γ : Ordinal (𝓤 ⊔ 𝓥)} (e : ⟨ γ ⟩)
+         (p : γ ＝ sup ^ₒ-family) {x : 𝟙 + ⟨ β ⟩} {y : ⟨ ^ₒ-family x ⟩}
+       → σ x y ＝ Idtofun (ap ⟨_⟩ p) e
+       → [ ^ₒ-family x , γ ]⟨
             transport⁻¹ (^ₒ-family x ⊴_) p (sup-is-upper-bound ^ₒ-family x) ⟩ y
-          ＝ e
-       III refl = id
+         ＝ e
+     I _ refl = id
 
      p = ^ₒ-behaviour α β
      q = ap ⟨_⟩ p
      e' = Idtofun q e
 
-     I : (Σ x ꞉ 𝟙 + ⟨ β ⟩ , Σ y ꞉ ⟨ ^ₒ-family x ⟩ , σ x y ＝ e')
-       → (Σ x ꞉ 𝟙 + ⟨ β ⟩ , Σ y ꞉ ⟨ ^ₒ-family x ⟩ , ι x y ＝ e)
-     I (x , y , eq) = x , y , III e p eq
+     II : (Σ x ꞉ 𝟙 + ⟨ β ⟩ , Σ y ꞉ ⟨ ^ₒ-family x ⟩ , σ x y ＝ e')
+        → (Σ x ꞉ 𝟙 + ⟨ β ⟩ , Σ y ꞉ ⟨ ^ₒ-family x ⟩ , ι x y ＝ e)
+     II (x , y , eq) = x , y , I e p eq
 
-     II : ∃ x ꞉ 𝟙 + ⟨ β ⟩ , Σ y ꞉ ⟨ ^ₒ-family x ⟩ , σ x y ＝ e'
-     II = sup-is-upper-bound-jointly-surjective ^ₒ-family (Idtofun q e)
+     III : ∃ x ꞉ 𝟙 + ⟨ β ⟩ , Σ y ꞉ ⟨ ^ₒ-family x ⟩ , σ x y ＝ e'
+     III = sup-is-upper-bound-jointly-surjective ^ₒ-family (Idtofun q e)
 
   ^ₒ-induction : {𝓦 : Universe} (P : ⟨ α ^ₒ β ⟩ → 𝓦 ̇  )
                → ((e : ⟨ α ^ₒ β ⟩) → is-prop (P e))
@@ -173,6 +182,10 @@ abstract
 
 \end{code}
 
+We introduce a more descriptive name for the fact that our exponentiation
+function is always at least 𝟙ₒ and derive the corollary that 𝟘ₒ is strictly
+below any exponentiated ordinal.
+
 \begin{code}
 
 ^ₒ-has-least-element : (α : Ordinal 𝓤) (β : Ordinal 𝓥) → 𝟙ₒ ⊴ α ^ₒ β
@@ -182,30 +195,10 @@ abstract
 ^ₒ-is-positive α β =
  ⊲-⊴-gives-⊲ 𝟘ₒ 𝟙ₒ (α ^ₒ β) 𝟘ₒ-⊲-𝟙ₒ (^ₒ-has-least-element α β)
 
-^ₒ-monotone-in-exponent : (α : Ordinal 𝓤) → (β γ : Ordinal 𝓥)
-                        → β ⊴ γ → α ^ₒ β ⊴ α ^ₒ γ
-^ₒ-monotone-in-exponent {𝓤} {𝓥} α β γ 𝕗@(f , _) =
- transport₂⁻¹ _⊴_
-  (^ₒ-behaviour α β) (^ₒ-behaviour α γ)
-  (transport (λ - → sup - ⊴ sup G) I (sup-composition-⊴ f' G))
-  where
-   F = ^ₒ-family α β
-   G = ^ₒ-family α γ
-
-   f' : 𝟙 + ⟨ β ⟩ → 𝟙 + ⟨ γ ⟩
-   f' = cases (λ _ → inl ⋆) (λ b → inr (f b))
-
-   initial-segments-agree : (b : ⟨ β ⟩) → β ↓ b ＝ γ ↓ f b
-   initial-segments-agree b = simulations-preserve-↓ β γ 𝕗 b
-
-   I : G ∘ f' ＝ F
-   I = dfunext fe' II
-    where
-     II : (x : 𝟙 + ⟨ β ⟩) → G (f' x) ＝ F x
-     II (inl ⋆) = refl
-     II (inr b) = ap (λ - → α ^ₒ - ×ₒ α) (initial-segments-agree b ⁻¹)
-
 \end{code}
+
+The exponentiation function meets the zero specification as formulated in
+Ordinals.Exponentiation.Specification.
 
 \begin{code}
 
@@ -221,6 +214,11 @@ abstract
 
 \end{code}
 
+The exponentiation function meets the successor specification (as formulated in
+Ordinals.Exponentiation.Specification) for base ordinals α ⊵ 𝟙ₒ.
+
+The proof relies on the following general lemma.
+
 \begin{code}
 
 ^ₒ-×ₒ-right-⊴ : (α : Ordinal 𝓤) (β : Ordinal 𝓥) (γ : Ordinal 𝓦)
@@ -231,7 +229,8 @@ abstract
   (＝-to-⊴ (α ^ₒ β) (α ^ₒ β ×ₒ 𝟙ₒ) ((𝟙ₒ-right-neutral-×ₒ (α ^ₒ β)) ⁻¹))
   (×ₒ-right-monotone-⊴ (α ^ₒ β) 𝟙ₒ γ (𝟙ₒ-⊴-shift γ l))
 
-^ₒ-satisfies-succ-specification : {𝓤 𝓥 : Universe} (α : Ordinal 𝓤) → 𝟙ₒ {𝓤} ⊴ α
+^ₒ-satisfies-succ-specification : {𝓤 𝓥 : Universe} (α : Ordinal 𝓤)
+                                → 𝟙ₒ {𝓤} ⊴ α
                                 → exp-specification-succ {𝓤} {𝓥} α (α ^ₒ_)
 ^ₒ-satisfies-succ-specification {𝓤} {𝓥} α l β =
  ⊴-antisym (α ^ₒ (β +ₒ 𝟙ₒ)) (α ^ₒ β ×ₒ α) I II
@@ -264,7 +263,35 @@ abstract
 
 \end{code}
 
+The exponentiation function meets the supremum specification (as formulated in
+Ordinals.Exponentiation.Specification).
+
+The proof relies on the following monotonicity property of the exponentiation.
+
 \begin{code}
+
+^ₒ-monotone-in-exponent : (α : Ordinal 𝓤) (β γ : Ordinal 𝓥)
+                        → β ⊴ γ → α ^ₒ β ⊴ α ^ₒ γ
+^ₒ-monotone-in-exponent {𝓤} {𝓥} α β γ 𝕗@(f , _) =
+ transport₂⁻¹ _⊴_
+  (^ₒ-behaviour α β) (^ₒ-behaviour α γ)
+  (transport (λ - → sup - ⊴ sup G) I (sup-composition-⊴ f' G))
+  where
+   F = ^ₒ-family α β
+   G = ^ₒ-family α γ
+
+   f' : 𝟙 + ⟨ β ⟩ → 𝟙 + ⟨ γ ⟩
+   f' = cases (λ _ → inl ⋆) (λ b → inr (f b))
+
+   initial-segments-agree : (b : ⟨ β ⟩) → β ↓ b ＝ γ ↓ f b
+   initial-segments-agree b = simulations-preserve-↓ β γ 𝕗 b
+
+   I : G ∘ f' ＝ F
+   I = dfunext fe' II
+    where
+     II : (x : 𝟙 + ⟨ β ⟩) → G (f' x) ＝ F x
+     II (inl ⋆) = refl
+     II (inr b) = ap (λ - → α ^ₒ - ×ₒ α) (initial-segments-agree b ⁻¹)
 
 ^ₒ-satisfies-sup-specification-generalized :
    {𝓤 𝓥 : Universe} (α : Ordinal 𝓤)
@@ -300,7 +327,9 @@ abstract
      I₂ : (y : ⟨ sup F ⟩)
         → α ^ₒ (sup F ↓ y) ×ₒ α ⊴ sup (λ - → α ^ₒ F (lower -))
      I₂ y = ∥∥-rec
-             (⊴-is-prop-valued (α ^ₒ (sup F ↓ y) ×ₒ α) (sup (λ - → α ^ₒ F (lower -))))
+             (⊴-is-prop-valued
+               (α ^ₒ (sup F ↓ y) ×ₒ α)
+               (sup (λ - → α ^ₒ F (lower -))))
              I₂'
              (initial-segment-of-sup-is-initial-segment-of-some-component F y)
       where
@@ -310,34 +339,22 @@ abstract
         transport⁻¹
          (_⊴ sup (λ - → α ^ₒ F (lower -)))
          (ap (λ - → α ^ₒ - ×ₒ α) p)
-         (⊴-trans (α ^ₒ (F s ↓ x) ×ₒ α) (α ^ₒ F s) (sup (λ - → α ^ₒ (F (lower -))))
+         (⊴-trans
+          (α ^ₒ (F s ↓ x) ×ₒ α)
+          (α ^ₒ F s)
+          (sup (λ - → α ^ₒ (F (lower -))))
           (^ₒ-is-upper-bound₂ α (F s))
           (sup-is-upper-bound (λ - → α ^ₒ (F (lower -))) (lift 𝓤 s)))
 
-^ₒ-satisfies-sup-specification : (α : Ordinal 𝓤) → exp-specification-sup α (α ^ₒ_)
+^ₒ-satisfies-sup-specification : (α : Ordinal 𝓤)
+                               → exp-specification-sup α (α ^ₒ_)
 ^ₒ-satisfies-sup-specification α =
  exp-specification-sup-from-generalized
   α (α ^ₒ_) (^ₒ-satisfies-sup-specification-generalized α)
 
 \end{code}
 
-\begin{code}
-
-^ₒ-monotone-in-exponent' : (α : Ordinal 𝓤)
-                         → α ≠ 𝟘ₒ
-                         → (β γ : Ordinal 𝓥)
-                         → β ⊴ γ → α ^ₒ β ⊴ α ^ₒ γ
-^ₒ-monotone-in-exponent' {𝓤} {𝓥} α ν β γ l =
- ≼-gives-⊴ (α ^ₒ β) (α ^ₒ γ)
-  (exp-is-monotone-in-exponent α
-    (α ^ₒ_)
-    ν
-    (^ₒ-satisfies-sup-specification-generalized α)
-    β
-    γ
-    (⊴-gives-≼ β γ l))
-
-\end{code}
+Exponentiating
 
 \begin{code}
 
@@ -437,51 +454,6 @@ abstract
 
 \begin{code}
 
-^ₒ-↓-⊥ : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
-       → α ^ₒ β ↓ ^ₒ-⊥ α β ＝ 𝟘ₒ
-^ₒ-↓-⊥ α β = α ^ₒ β ↓ ^ₒ-⊥ α β ＝⟨ I ⟩
-             𝟙ₒ ↓ ⋆            ＝⟨ 𝟙ₒ-↓ ⟩
-             𝟘ₒ                ∎
- where
-  I = (simulations-preserve-↓ 𝟙ₒ (α ^ₒ β) (^ₒ-is-upper-bound₁ α β) ⋆) ⁻¹
-
-^ₒ-↓-×ₒ-to-^ₒ : (α β : Ordinal 𝓤)
-                {b : ⟨ β ⟩} {e : ⟨ α ^ₒ (β ↓ b) ⟩} {a : ⟨ α ⟩}
-              → α ^ₒ β ↓ ×ₒ-to-^ₒ α β (e , a)
-                ＝ α ^ₒ (β ↓ b) ×ₒ (α ↓ a) +ₒ (α ^ₒ (β ↓ b) ↓ e)
-^ₒ-↓-×ₒ-to-^ₒ α β {b} {e} {a} =
- α ^ₒ β ↓ ×ₒ-to-^ₒ α β (e , a)                 ＝⟨ I ⟩
- α ^ₒ (β ↓ b) ×ₒ α ↓ (e , a)                   ＝⟨ II ⟩
- α ^ₒ (β ↓ b) ×ₒ (α ↓ a) +ₒ (α ^ₒ (β ↓ b) ↓ e) ∎
-  where
-   I = (simulations-preserve-↓
-         (α ^ₒ (β ↓ b) ×ₒ α)
-         (α ^ₒ β)
-         (^ₒ-is-upper-bound₂ α β)
-         (e , a)) ⁻¹
-   II = ×ₒ-↓ (α ^ₒ (β ↓ b)) α
-
-^ₒ-↓ :
-   (α β : Ordinal 𝓤) {x : ⟨ α ^ₒ β ⟩}
- → (α ^ₒ β ↓ x ＝ 𝟘ₒ)
- ∨ (Σ b ꞉ ⟨ β ⟩ , Σ e ꞉ ⟨ α ^ₒ (β ↓ b) ⟩ , Σ a ꞉ ⟨ α ⟩ ,
-     α ^ₒ β ↓ x ＝ α ^ₒ (β ↓ b) ×ₒ (α ↓ a) +ₒ (α ^ₒ (β ↓ b) ↓ e))
-^ₒ-↓ {𝓤} α β {x} =
- ^ₒ-induction α β P
-  (λ _ → ∥∥-is-prop)
-  (∣ inl (^ₒ-↓-⊥ α β) ∣)
-  (λ b (e , a) → ∣ inr (b , e , a , ^ₒ-↓-×ₒ-to-^ₒ α β) ∣)
-  x
- where
-  P : (x : ⟨ α ^ₒ β ⟩) → 𝓤 ⁺ ̇
-  P x = (α ^ₒ β ↓ x ＝ 𝟘ₒ)
-      ∨ (Σ b ꞉ ⟨ β ⟩ , Σ e ꞉ ⟨ α ^ₒ (β ↓ b) ⟩ , Σ a ꞉ ⟨ α ⟩ ,
-          α ^ₒ β ↓ x ＝ α ^ₒ (β ↓ b) ×ₒ (α ↓ a) +ₒ (α ^ₒ (β ↓ b) ↓ e))
-
-\end{code}
-
-\begin{code}
-
 ^ₒ-by-×ₒ : (α : Ordinal 𝓤) (β γ : Ordinal 𝓥)
          → α ^ₒ (β ×ₒ γ) ＝ (α ^ₒ β) ^ₒ γ
 ^ₒ-by-×ₒ {𝓤} {𝓥} α β =
@@ -542,6 +514,51 @@ abstract
            e₁ = ap (_×ₒ α ^ₒ β) ((IH c) ⁻¹)
            e₂ = (^ₒ-by-+ₒ α (β ×ₒ (γ ↓ c)) β) ⁻¹
            e₃ = ap (α ^ₒ_) (×ₒ-successor β (γ ↓ c) ⁻¹)
+
+\end{code}
+
+\begin{code}
+
+^ₒ-↓-⊥ : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
+       → α ^ₒ β ↓ ^ₒ-⊥ α β ＝ 𝟘ₒ
+^ₒ-↓-⊥ α β = α ^ₒ β ↓ ^ₒ-⊥ α β ＝⟨ I ⟩
+             𝟙ₒ ↓ ⋆            ＝⟨ 𝟙ₒ-↓ ⟩
+             𝟘ₒ                ∎
+ where
+  I = (simulations-preserve-↓ 𝟙ₒ (α ^ₒ β) (^ₒ-is-upper-bound₁ α β) ⋆) ⁻¹
+
+^ₒ-↓-×ₒ-to-^ₒ : (α β : Ordinal 𝓤)
+                {b : ⟨ β ⟩} {e : ⟨ α ^ₒ (β ↓ b) ⟩} {a : ⟨ α ⟩}
+              → α ^ₒ β ↓ ×ₒ-to-^ₒ α β (e , a)
+                ＝ α ^ₒ (β ↓ b) ×ₒ (α ↓ a) +ₒ (α ^ₒ (β ↓ b) ↓ e)
+^ₒ-↓-×ₒ-to-^ₒ α β {b} {e} {a} =
+ α ^ₒ β ↓ ×ₒ-to-^ₒ α β (e , a)                 ＝⟨ I ⟩
+ α ^ₒ (β ↓ b) ×ₒ α ↓ (e , a)                   ＝⟨ II ⟩
+ α ^ₒ (β ↓ b) ×ₒ (α ↓ a) +ₒ (α ^ₒ (β ↓ b) ↓ e) ∎
+  where
+   I = (simulations-preserve-↓
+         (α ^ₒ (β ↓ b) ×ₒ α)
+         (α ^ₒ β)
+         (^ₒ-is-upper-bound₂ α β)
+         (e , a)) ⁻¹
+   II = ×ₒ-↓ (α ^ₒ (β ↓ b)) α
+
+^ₒ-↓ :
+   (α β : Ordinal 𝓤) {x : ⟨ α ^ₒ β ⟩}
+ → (α ^ₒ β ↓ x ＝ 𝟘ₒ)
+ ∨ (Σ b ꞉ ⟨ β ⟩ , Σ e ꞉ ⟨ α ^ₒ (β ↓ b) ⟩ , Σ a ꞉ ⟨ α ⟩ ,
+     α ^ₒ β ↓ x ＝ α ^ₒ (β ↓ b) ×ₒ (α ↓ a) +ₒ (α ^ₒ (β ↓ b) ↓ e))
+^ₒ-↓ {𝓤} α β {x} =
+ ^ₒ-induction α β P
+  (λ _ → ∥∥-is-prop)
+  (∣ inl (^ₒ-↓-⊥ α β) ∣)
+  (λ b (e , a) → ∣ inr (b , e , a , ^ₒ-↓-×ₒ-to-^ₒ α β) ∣)
+  x
+ where
+  P : (x : ⟨ α ^ₒ β ⟩) → 𝓤 ⁺ ̇
+  P x = (α ^ₒ β ↓ x ＝ 𝟘ₒ)
+      ∨ (Σ b ꞉ ⟨ β ⟩ , Σ e ꞉ ⟨ α ^ₒ (β ↓ b) ⟩ , Σ a ꞉ ⟨ α ⟩ ,
+          α ^ₒ β ↓ x ＝ α ^ₒ (β ↓ b) ×ₒ (α ↓ a) +ₒ (α ^ₒ (β ↓ b) ↓ e))
 
 \end{code}
 
