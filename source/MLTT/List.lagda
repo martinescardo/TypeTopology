@@ -141,14 +141,14 @@ filter p δ (x ∷ xs) = filter-helper p x (δ x) (filter p δ xs)
 
 open import MLTT.Plus-Properties
 
-filter-property→ : {X : 𝓤 ̇ }
-                   (p : X → 𝓥 ̇ )
-                   (δ : (x : X) → p x + ¬ p x)
-                   (y : X)
-                   (xs : List X)
-                 → member y (filter p δ xs)
-                 → p y
-filter-property→ {𝓤} {𝓥} {X} p δ y (x ∷ xs) = h x xs (δ x)
+filter-member→ : {X : 𝓤 ̇ }
+                 (p : X → 𝓥 ̇ )
+                 (δ : (x : X) → p x + ¬ p x)
+                 (y : X)
+                 (xs : List X)
+               → member y (filter p δ xs)
+               → p y
+filter-member→ {𝓤} {𝓥} {X} p δ y (x ∷ xs) = h x xs (δ x)
  where
   h : (x : X)
       (xs : List X)
@@ -156,18 +156,18 @@ filter-property→ {𝓤} {𝓥} {X} p δ y (x ∷ xs) = h x xs (δ x)
     → member y (filter-helper p x d (filter p δ xs))
     → p y
   h x xs        (inl l) in-head     = l
-  h x xs        (inl _) (in-tail m) = filter-property→ p δ y xs m
+  h x xs        (inl _) (in-tail m) = filter-member→ p δ y xs m
   h x (x' ∷ xs) (inr _) m           = h x' xs (δ x') m
 
-filter-property← : {X : 𝓤 ̇ }
-                   (p : X → 𝓥 ̇ )
-                   (δ : (x : X) → p x + ¬ p x)
-                   (y : X)
-                   (xs : List X)
-                 → p y
-                 → member y xs
-                 → member y (filter p δ xs)
-filter-property← {𝓤} {𝓥} {X} p δ y (x ∷ xs) = h x xs (δ x)
+filter-member← : {X : 𝓤 ̇ }
+                 (p : X → 𝓥 ̇ )
+                 (δ : (x : X) → p x + ¬ p x)
+                 (y : X)
+                 (xs : List X)
+               → p y
+               → member y xs
+               → member y (filter p δ xs)
+filter-member← {𝓤} {𝓥} {X} p δ y (x ∷ xs) = h x xs (δ x)
  where
   h : (x : X)
       (xs : List X)
@@ -178,7 +178,7 @@ filter-property← {𝓤} {𝓥} {X} p δ y (x ∷ xs) = h x xs (δ x)
   h x xs (inl _) py in-head = in-head
   h x (x' ∷ xs) (inl _) py (in-tail m) = in-tail (h x' xs (δ x') py m)
   h x xs (inr r) py in-head = 𝟘-elim (r py)
-  h x xs (inr _) py (in-tail m) = filter-property← p δ y xs py m
+  h x xs (inr _) py (in-tail m) = filter-member← p δ y xs py m
 
 member' : {X : 𝓤 ̇ } → X → List X → 𝓤 ̇
 member' y []       = 𝟘
