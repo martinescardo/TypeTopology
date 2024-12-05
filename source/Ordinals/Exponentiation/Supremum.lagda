@@ -231,9 +231,9 @@ abstract
   (＝-to-⊴ (α ^ₒ β) (α ^ₒ β ×ₒ 𝟙ₒ) ((𝟙ₒ-right-neutral-×ₒ (α ^ₒ β)) ⁻¹))
   (×ₒ-right-monotone-⊴ (α ^ₒ β) 𝟙ₒ γ (𝟙ₒ-⊴-shift γ l))
 
-^ₒ-satisifies-succ-specification : {𝓤 𝓥 : Universe} (α : Ordinal 𝓤) → 𝟙ₒ {𝓤} ⊴ α
-                                 → exp-specification-succ {𝓤} {𝓥} α (α ^ₒ_)
-^ₒ-satisifies-succ-specification {𝓤} {𝓥} α l β =
+^ₒ-satisfies-succ-specification : {𝓤 𝓥 : Universe} (α : Ordinal 𝓤) → 𝟙ₒ {𝓤} ⊴ α
+                                → exp-specification-succ {𝓤} {𝓥} α (α ^ₒ_)
+^ₒ-satisfies-succ-specification {𝓤} {𝓥} α l β =
  ⊴-antisym (α ^ₒ (β +ₒ 𝟙ₒ)) (α ^ₒ β ×ₒ α) I II
   where
    I : α ^ₒ (β +ₒ 𝟙ₒ) ⊴ α ^ₒ β ×ₒ α
@@ -266,28 +266,10 @@ abstract
 
 \begin{code}
 
-𝟙ₒ-neutral-^ₒ : (α : Ordinal 𝓤) → 𝟙ₒ ⊴ α → α ^ₒ 𝟙ₒ ＝ α
-𝟙ₒ-neutral-^ₒ {𝓤} α l =
- α ^ₒ 𝟙ₒ             ＝⟨ ap (α ^ₒ_) (𝟘ₒ-left-neutral 𝟙ₒ ⁻¹)  ⟩
- α ^ₒ (𝟘ₒ {𝓤} +ₒ 𝟙ₒ) ＝⟨ ^ₒ-satisifies-succ-specification α l 𝟘ₒ ⟩
- α ^ₒ (𝟘ₒ) ×ₒ α      ＝⟨ ap (_×ₒ α) (^ₒ-satisfies-zero-specification α) ⟩
- 𝟙ₒ ×ₒ α             ＝⟨ 𝟙ₒ-left-neutral-×ₒ α ⟩
- α                   ∎
-
-^ₒ-𝟚ₒ-is-×ₒ : (α : Ordinal 𝓤) → 𝟙ₒ ⊴ α → α ^ₒ 𝟚ₒ ＝ α ×ₒ α
-^ₒ-𝟚ₒ-is-×ₒ α p =
- α ^ₒ (𝟙ₒ +ₒ 𝟙ₒ) ＝⟨ ^ₒ-satisifies-succ-specification α p 𝟙ₒ ⟩
- α ^ₒ 𝟙ₒ ×ₒ α    ＝⟨ ap (_×ₒ α) (𝟙ₒ-neutral-^ₒ α p) ⟩
- α ×ₒ α          ∎
-
-\end{code}
-
-\begin{code}
-
 ^ₒ-satisfies-sup-specification-generalized :
    {𝓤 𝓥 : Universe} (α : Ordinal 𝓤)
  → exp-specification-sup-generalized {𝓤} {𝓥} α (α ^ₒ_)
-^ₒ-satisfies-sup-specification-generalized {𝓤} {𝓥} α p {S} S-inh F =
+^ₒ-satisfies-sup-specification-generalized {𝓤} {𝓥} α _ {S} S-inh F =
  ⊴-antisym (α ^ₒ sup F) (sup (λ - → α ^ₒ F (lower -))) I II
   where
    II : sup (λ - → α ^ₒ F (lower -)) ⊴ α ^ₒ sup F
@@ -336,6 +318,38 @@ abstract
 ^ₒ-satisfies-sup-specification α =
  exp-specification-sup-from-generalized
   α (α ^ₒ_) (^ₒ-satisfies-sup-specification-generalized α)
+
+\end{code}
+
+\begin{code}
+
+^ₒ-monotone-in-exponent' : (α : Ordinal 𝓤)
+                         → α ≠ 𝟘ₒ
+                         → (β γ : Ordinal 𝓥)
+                         → β ⊴ γ → α ^ₒ β ⊴ α ^ₒ γ
+^ₒ-monotone-in-exponent' {𝓤} {𝓥} α ν β γ l =
+ ≼-gives-⊴ (α ^ₒ β) (α ^ₒ γ)
+  (exp-is-monotone-in-exponent α
+    (α ^ₒ_)
+    ν
+    (^ₒ-satisfies-sup-specification-generalized α)
+    β
+    γ
+    (⊴-gives-≼ β γ l))
+
+\end{code}
+
+\begin{code}
+
+𝟙ₒ-neutral-^ₒ : (α : Ordinal 𝓤) → 𝟙ₒ ⊴ α → α ^ₒ 𝟙ₒ ＝ α
+𝟙ₒ-neutral-^ₒ α l = 𝟙ₒ-neutral-exp α (α ^ₒ_)
+                     (^ₒ-satisfies-zero-specification α)
+                     (^ₒ-satisfies-succ-specification α l)
+
+^ₒ-𝟚ₒ-is-×ₒ : (α : Ordinal 𝓤) → 𝟙ₒ ⊴ α → α ^ₒ 𝟚ₒ ＝ α ×ₒ α
+^ₒ-𝟚ₒ-is-×ₒ α l = exp-𝟚ₒ-is-×ₒ α (α ^ₒ_)
+                   (^ₒ-satisfies-zero-specification α)
+                   (^ₒ-satisfies-succ-specification α l)
 
 \end{code}
 

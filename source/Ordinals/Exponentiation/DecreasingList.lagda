@@ -175,31 +175,6 @@ sup-preserves-prop {𝓤} {I = I} γ γ-is-prop = surjective-simulation-gives-eq
 
 \begin{code}
 
-is-continuous : (Ordinal 𝓤 → Ordinal 𝓤) → 𝓤 ⁺ ̇
-is-continuous {𝓤} F = {I : 𝓤 ̇  } → ∥ I ∥ → (γ : I → Ordinal 𝓤) → F (sup γ) ＝ sup (F ∘ γ)
-
-is-monotone-if-continuous : (F : Ordinal 𝓤 → Ordinal 𝓤)
-                          → is-continuous F
-                          → is-monotone (OO 𝓤) (OO 𝓤) F
-is-monotone-if-continuous {𝓤} F F-cont α β α-less-than-β = conclusion
- where
-  γ : 𝟙{𝓤} + 𝟙{𝓤} → Ordinal 𝓤
-  γ (inl _) = α
-  γ (inr _) = β
-  eq : F (sup γ) ＝ sup (F ∘ γ)
-  eq = F-cont ∣ inl ⋆ ∣ γ
-  β-is-upper-bound : (i : 𝟙 + 𝟙) → γ i ⊴ β
-  β-is-upper-bound (inl _) = ≼-gives-⊴ α β α-less-than-β
-  β-is-upper-bound (inr _) = ⊴-refl β
-  I : sup γ ＝ β
-  I = ⊴-antisym (sup γ) β (sup-is-lower-bound-of-upper-bounds γ β β-is-upper-bound) (sup-is-upper-bound γ (inr ⋆))
-  ineq : F α ⊴ sup (F ∘ γ)
-  ineq = sup-is-upper-bound (F ∘ γ) (inl ⋆)
-  conclusion : F α ≼ F β
-  conclusion = ⊴-gives-≼ (F α) (F β) (transport (F α ⊴_) (eq ⁻¹ ∙ ap F I) ineq)
-
-
-
 
 is-irreflexive : {X : 𝓤 ̇  } (R : X → X → 𝓥 ̇  ) → 𝓤 ⊔ 𝓥 ̇
 is-irreflexive R = ∀ x → ¬ (R x x)
@@ -1122,45 +1097,7 @@ exp-sup-spec α i β = ∥∥-rec (the-type-of-ordinals-is-a-set (ua _) fe') (λ
 
 \end{code}
 
-\begin{code}
-
-module _ (exp : Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) where
-
-  exp-is-monotone-gives-EM : exponentiation-specification-zero exp
-                           → exponentiation-specification-succ exp
-                           → ((α : Ordinal 𝓤) → ¬ (α ＝ 𝟘ₒ) → is-monotone (OO 𝓤) (OO 𝓤) (exp α))
-                           → EM 𝓤
-  exp-is-monotone-gives-EM spec₀ specₛ mon P P-is-prop = P-is-decidable (pr₁ ineq' ⋆ , refl)
-   where
-    α : Ordinal 𝓤
-    α = prop-ordinal P P-is-prop +ₒ 𝟙ₒ
-    α-not-zero : ¬ (α ＝ 𝟘ₒ)
-    α-not-zero p = 𝟘-elim (≃ₒ-to-fun α 𝟘ₒ (idtoeqₒ α 𝟘ₒ p) (inr ⋆))
-    ineq : exp α 𝟘ₒ ⊴ exp α 𝟙ₒ
-    ineq = ≼-gives-⊴ (exp α 𝟘ₒ) (exp α 𝟙ₒ) (mon α α-not-zero 𝟘ₒ 𝟙ₒ (𝟘ₒ-least 𝟙ₒ))
-    eq₁ : exp α 𝟘ₒ ＝ 𝟙ₒ
-    eq₁ = spec₀ α
-    eq₂ : exp α 𝟙ₒ ＝ α
-    eq₂ = exp α 𝟙ₒ ＝⟨ ap (exp α) ((𝟘ₒ-left-neutral 𝟙ₒ) ⁻¹) ⟩
-          exp α (𝟘ₒ +ₒ 𝟙ₒ) ＝⟨ specₛ α 𝟘ₒ ⟩
-          (exp α 𝟘ₒ ×ₒ α) ＝⟨ ap (_×ₒ α) eq₁ ⟩
-          𝟙ₒ ×ₒ α ＝⟨ 𝟙ₒ-left-neutral-×ₒ α ⟩
-          α ∎
-    ineq' : 𝟙ₒ ⊴ α
-    ineq' = transport₂ _⊴_ eq₁ eq₂ ineq
-    P-is-decidable : Σ a ꞉ ⟨ α ⟩ , (pr₁ ineq' ⋆ ＝ a) → P + ¬ P
-    P-is-decidable (inl p , _) = inl p
-    P-is-decidable (inr ⋆ , r) = inr (λ p → 𝟘-elim (pr₁ (pr₂ (pr₁ (pr₂ ineq') ⋆ (inl p) (transport⁻¹ (λ - → inl p ≺⟨ α ⟩ -) r ⋆ )))))
-
-  exp-full-spec-gives-EM : exponentiation-specification exp → EM 𝓤
-  exp-full-spec-gives-EM (spec₀ , specₛ , specₗ) =
-   exp-is-monotone-gives-EM spec₀ specₛ
-    (λ α α-not-zero → is-monotone-if-continuous (exp α) (pr₁ (specₗ α) α-not-zero))
-
-
-\end{code}
-
-And conversely...
+And conversely... (EM gives full exponentation)
 
 \begin{code}
 
@@ -1362,8 +1299,8 @@ Has-least-or-is-zero-gives-full-spec {𝓤} cs = exp , exp-spec'
 EM-gives-full-spec : EM 𝓤 → Σ exp ꞉ (Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) , exponentiation-specification exp
 EM-gives-full-spec em = Has-least-or-is-zero-gives-full-spec (EM-gives-Has-least-or-is-zero em)
 
-full-spec-gives-Has-least-or-is-zero : Σ exp ꞉ (Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) , exponentiation-specification exp → Has-least-or-is-zero {𝓤}
-full-spec-gives-Has-least-or-is-zero {𝓤} (exp , exp-spec) = EM-gives-Has-least-or-is-zero (exp-full-spec-gives-EM exp exp-spec)
+-- full-spec-gives-Has-least-or-is-zero : Σ exp ꞉ (Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) , exponentiation-specification exp → Has-least-or-is-zero {𝓤}
+-- full-spec-gives-Has-least-or-is-zero {𝓤} (exp , exp-spec) = EM-gives-Has-least-or-is-zero (exp-full-spec-gives-EM exp exp-spec)
 
 \end{code}
 

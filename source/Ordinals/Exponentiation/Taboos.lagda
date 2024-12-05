@@ -32,6 +32,7 @@ open import MLTT.Spartan
 open import MLTT.Plus-Properties
 open import Ordinals.AdditionProperties ua
 open import Ordinals.Arithmetic fe
+open import Ordinals.Exponentiation.Specification ua pt sr
 open import Ordinals.Exponentiation.Supremum ua pt sr
 open import Ordinals.Maps
 open import Ordinals.MultiplicationProperties ua
@@ -57,13 +58,14 @@ i.e. the weaker statement
   α ⊲ β → α ^ₒ γ ⊴ α ^ₒ γ (for all ordinals α, β and γ)
 already implies excluded middle.
 
-Since exponentation is only constructively well defined (see TODO) for 𝟙ₒ ⊴ α,
-we further add this assumption to the statement (and still derive excluded
-middle from it).
+Since our exponentation is only well defined for base α ⊵ 𝟙ₒ (see also
+exp-defined-everywhere-implies-EM), we further add this assumption to the
+statement (and still derive excluded middle from it).
 
 Furthermore, we can actually fix γ := 𝟚ₒ in the statement.
 Since α ^ₒ 𝟚ₒ ＝ α ×ₒ α for any (reasonable) notion of ordinal exponentation, we
-see that the taboo applies to any such notion.
+see that the taboo applies to any such notion and we formalize this as
+exponentation-weakly-monotone-in-base-implies-EM below.
 
 In particular we can reduce the derivation of excluded middle from a statement
 about multiplication:
@@ -172,19 +174,33 @@ in the base.
 
 \begin{code}
 
-^ₒ-weakly-monotone-in-base-implies-EM :
-   ((α β γ : Ordinal 𝓤) → 𝟙ₒ {𝓤} ⊴ α → α ⊲ β → (α ^ₒ γ ⊴ β ^ₒ γ))
+exponentation-weakly-monotone-in-base-implies-EM :
+   (exp : Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤)
+ → ((α : Ordinal 𝓤) → 𝟙ₒ {𝓤} ⊴ α → exp-specification-zero α (exp α))
+ → ((α : Ordinal 𝓤) → 𝟙ₒ {𝓤} ⊴ α → exp-specification-succ α (exp α))
+ → ((α β γ : Ordinal 𝓤) → 𝟙ₒ {𝓤} ⊴ α → α ⊲ β → (exp α γ ⊴ exp β γ))
  → EM 𝓤
-^ₒ-weakly-monotone-in-base-implies-EM {𝓤} assumption =
+exponentation-weakly-monotone-in-base-implies-EM {𝓤} exp exp-zero exp-succ h =
  ×ₒ-weakly-monotone-in-both-arguments-implies-EM I
   where
    I : (α β : Ordinal 𝓤) → 𝟙ₒ ⊴ α → α ⊲ β → α ×ₒ α ⊴ β ×ₒ β
-   I α β l s = transport₂ _⊴_ II III (assumption α β 𝟚ₒ l s)
+   I α β l s = transport₂ _⊴_ II III (h α β 𝟚ₒ l s)
     where
-     II : α ^ₒ 𝟚ₒ ＝ α ×ₒ α
-     II = ^ₒ-𝟚ₒ-is-×ₒ α l
-     III : β ^ₒ 𝟚ₒ ＝ β ×ₒ β
-     III = ^ₒ-𝟚ₒ-is-×ₒ β (⊴-trans 𝟙ₒ α β l (⊲-gives-⊴ α β s))
+     II : exp α 𝟚ₒ ＝ α ×ₒ α
+     II = exp-𝟚ₒ-is-×ₒ α (exp α) (exp-zero α l) (exp-succ α l)
+     III : exp β 𝟚ₒ ＝ β ×ₒ β
+     III = exp-𝟚ₒ-is-×ₒ β (exp β) (exp-zero β l') (exp-succ β l')
+      where
+       l' : 𝟙ₒ ⊴ β
+       l' = ⊴-trans 𝟙ₒ α β l (⊲-gives-⊴ α β s)
+
+^ₒ-weakly-monotone-in-base-implies-EM :
+   ((α β γ : Ordinal 𝓤) → 𝟙ₒ {𝓤} ⊴ α → α ⊲ β → (α ^ₒ γ ⊴ β ^ₒ γ))
+ → EM 𝓤
+^ₒ-weakly-monotone-in-base-implies-EM {𝓤} =
+ exponentation-weakly-monotone-in-base-implies-EM _^ₒ_
+  (λ α l → ^ₒ-satisfies-zero-specification α)
+  (λ α l → ^ₒ-satisfies-succ-specification α l)
 
 ^ₒ-monotone-in-base-implies-EM :
    ((α β γ : Ordinal 𝓤) → 𝟙ₒ{𝓤} ⊴ α → α ⊴ β → (α ^ₒ γ ⊴ β ^ₒ γ))
@@ -220,6 +236,64 @@ EM-implies-exp-monotone-in-base {𝓤} em α β γ l =
     κ (inr c) = EM-implies-induced-⊴-on-×ₒ em (α ^ₒ (γ ↓ c)) α
                                               (β ^ₒ (γ ↓ c)) β
                                               (IH c) l
+
+\end{code}
+
+TODO: WRITE A COMMENT
+
+\begin{code}
+
+module _ (exp : Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) where
+
+ exp-defined-everywhere-implies-EM' :
+    ((α : Ordinal 𝓤) → exp-specification-zero α (exp α))
+  → ((α : Ordinal 𝓤) → exp-specification-succ α (exp α))
+  → ((α : Ordinal 𝓤) → α ≠ 𝟘ₒ → is-monotone (OO 𝓤) (OO 𝓤) (exp α))
+  → EM 𝓤
+ exp-defined-everywhere-implies-EM' exp-zero exp-succ exp-mon P P-is-prop =
+  III (f ⋆ , refl)
+   where
+    α : Ordinal 𝓤
+    α = prop-ordinal P P-is-prop +ₒ 𝟙ₒ
+
+    α-not-zero : ¬ (α ＝ 𝟘ₒ)
+    α-not-zero e = 𝟘-elim (Idtofun (ap ⟨_⟩ e) (inr ⋆))
+
+    eq₁ : exp α 𝟘ₒ ＝ 𝟙ₒ
+    eq₁ = exp-zero α
+    eq₂ : exp α 𝟙ₒ ＝ α
+    eq₂ = 𝟙ₒ-neutral-exp α (exp α) (exp-zero α) (exp-succ α)
+
+    I : exp α 𝟘ₒ ⊴ exp α 𝟙ₒ
+    I = ≼-gives-⊴ (exp α 𝟘ₒ) (exp α 𝟙ₒ) (exp-mon α α-not-zero 𝟘ₒ 𝟙ₒ (𝟘ₒ-least 𝟙ₒ))
+
+    II : 𝟙ₒ ⊴ α
+    II = transport₂ _⊴_ eq₁ eq₂ I
+
+    f = [ 𝟙ₒ , α ]⟨ II ⟩
+
+    III : Σ a ꞉ ⟨ α ⟩ , (f ⋆ ＝ a) → P + ¬ P
+    III (inl p , _) = inl p
+    III (inr ⋆ , r) = inr (λ p → 𝟘-elim (pr₁ (pr₂ (h p))))
+     where
+      h : (p : P) → Σ u ꞉ 𝟙 , u ≺⟨ 𝟙ₒ ⟩ ⋆ × (f u ＝ inl p)
+      h p = simulations-are-initial-segments 𝟙ₒ α
+             f
+             [ 𝟙ₒ , α ]⟨ II ⟩-is-simulation
+             ⋆
+             (inl p)
+             (transport⁻¹ (λ - → inl p ≺⟨ α ⟩ -) r ⋆)
+
+ exp-defined-everywhere-implies-EM :
+    ((α : Ordinal 𝓤) → exp-specification-zero α (exp α))
+  → ((α : Ordinal 𝓤) → exp-specification-succ α (exp α))
+  → ((α : Ordinal 𝓤) → exp-specification-sup α (exp α))
+  → EM 𝓤
+ exp-defined-everywhere-implies-EM exp-zero exp-succ exp-sup =
+  exp-defined-everywhere-implies-EM'
+   exp-zero
+   exp-succ
+   (λ α ν → is-monotone-if-continuous (exp α) (exp-sup α ν))
 
 \end{code}
 

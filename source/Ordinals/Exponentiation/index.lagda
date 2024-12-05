@@ -1,7 +1,5 @@
 Tom de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg, Chuangjie Xu,
-09 May 2024.
-
-TODO: Update date
+November 2023 — December 2024
 
 \begin{code}
 
