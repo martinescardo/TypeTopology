@@ -58,6 +58,8 @@ open PropositionalTruncation pt
 
 open suprema pt sr
 
+open import Ordinals.Exponentiation.TrichotomyAndIsolation ua pt sr
+
 \end{code}
 
 Let α be an ordinal. Its order relation ≺ is locally trichotomous at
@@ -88,13 +90,12 @@ having-a-trichotomous-least-element-is-prop-valued : (α : Ordinal 𝓤)
     → is-prop (has-a-trichotomous-least-element α)
 having-a-trichotomous-least-element-is-prop-valued α (x , p) (y , q) = goal
  where
-  eq : x ＝ y
-  eq with (p y) with (q x)
-  eq | inl e | _ = e
-  eq | inr u | inl e = e ⁻¹
-  eq | inr u | inr v = 𝟘-elim (irrefl α x (Transitivity α x y x u v))
+  eq : ((x ＝ y) + (x ≺⟨ α ⟩ y)) → ((y ＝ x) + (y ≺⟨ α ⟩ x)) → x ＝ y
+  eq (inl e) q' = e
+  eq (inr u) (inl e) = e ⁻¹
+  eq (inr u) (inr v) = 𝟘-elim (irrefl α x (Transitivity α x y x u v))
   goal : (x , p) ＝ (y , q)
-  goal = to-Σ-＝ (eq , being-trichotomous-least-is-prop-valued α y _ _)
+  goal = to-Σ-＝ (eq (p y) (q x) , being-trichotomous-least-is-prop-valued α y _ _)
 
 \end{code}
 
@@ -139,13 +140,13 @@ trichotomous-least-to-decomposible {𝓤} α (a₀ , a₀-least) = α' , eq
                                                      (Extensionality α x y u v)
    where
     u : (z : ⟨ α ⟩) → z ≺⟨ α ⟩ x → z ≺⟨ α ⟩ y
-    u z r with a₀-least z
-    ... | inl refl = q
-    ... | inr s = f (z , s) r
+    u z r = cases (λ { refl → q })
+                  (λ s → f (z , s) r)
+                  (a₀-least z)
     v : (z : ⟨ α ⟩) → z ≺⟨ α ⟩ y → z ≺⟨ α ⟩ x
-    v z r with a₀-least z
-    ... | inl refl = p
-    ... | inr s = g (z , s) r
+    v z r = cases (λ { refl → p })
+                  (λ s → g (z , s) r)
+                  (a₀-least z)
 
   <'-transitive : is-transitive _<'_
   <'-transitive = subtype-order-transitive α (λ - → a₀ ≺⟨ α ⟩ -)
@@ -204,16 +205,123 @@ decomposible-to-trichotomous-least α (α' , e) = {!!}
 
 \end{code}
 
+The above is a special case of decomposability for locally
+trichotomous and least elements. Firstly, being trichotomous least is
+equivalent to being trichotomous and least, as expected.
+
+\begin{code}
+
+is-trichotomous-least-implies-is-least : (α : Ordinal 𝓤) → (x : ⟨ α ⟩)
+                                       → is-trichotomous-least α x
+                                       → is-least α x
+is-trichotomous-least-implies-is-least α x tri-least y z l = I (tri-least z)
+ where
+  I : (x ＝ z) + (x ≺⟨ α ⟩ z) → z ≺⟨ α ⟩ y
+  I (inl refl) = 𝟘-elim (irrefl α x l)
+  I (inr u) = 𝟘-elim (irrefl α x (Transitivity α x z x u l))
+
+is-trichotomous-least-implies-is-locally-trichotomous
+  : (α : Ordinal 𝓤) → (x : ⟨ α ⟩)
+  → is-trichotomous-least α x
+  → is-locally-trichotomous-at α x
+is-trichotomous-least-implies-is-locally-trichotomous α x tri-least y =
+ I (tri-least y)
+  where
+   I : (x ＝ y) + (x ≺⟨ α ⟩ y) → in-trichotomy (underlying-order α) y x
+   I (inl e) = inr (inl (e ⁻¹))
+   I (inr u) = inr (inr u)
+
+is-trichotomous-and-least-implies-is-trichotomous-least
+  : (α : Ordinal 𝓤) → (x : ⟨ α ⟩)
+  → is-locally-trichotomous-at α x
+  → is-least α x
+  → is-trichotomous-least α x
+is-trichotomous-and-least-implies-is-trichotomous-least α x tri least y =
+ I (tri y)
+  where
+   I : (y ≺⟨ α ⟩ x) + (y ＝ x) + (x ≺⟨ α ⟩ y) → (x ＝ y) + (x ≺⟨ α ⟩ y)
+   I (inl u) = 𝟘-elim (irrefl α y (least y y u))
+   I (inr (inl e)) = inl (e ⁻¹)
+   I (inr (inr u)) = inr u
+\end{code}
+
+
+\begin{code}
+is-least-and-decomposable-implies-nothing-below
+ : (α : Ordinal 𝓤) → (x : ⟨ α ⟩)
+ → is-least α x
+ → (β : Ordinal 𝓤)(γ : Ordinal 𝓤)
+ → Σ e ꞉ α ≃ₒ (β +ₒ (𝟙ₒ +ₒ γ)) , ≃ₒ-to-fun _ _ e x ＝ inr (inl ⋆)
+ → β ＝ 𝟘ₒ
+is-least-and-decomposable-implies-nothing-below α x least β γ (e , p) =
+ ⊴-antisym β 𝟘ₒ (≼-gives-⊴ β 𝟘ₒ II) (≼-gives-⊴ 𝟘ₒ β (𝟘ₒ-least β))
+  where
+   e-sim : is-simulation α (β +ₒ (𝟙ₒ +ₒ γ)) (≃ₒ-to-fun _ _ e)
+   e-sim = order-equivs-are-simulations α
+                                        (β +ₒ (𝟙ₒ +ₒ γ))
+                                        (≃ₒ-to-fun α (β +ₒ (𝟙ₒ +ₒ γ)) e)
+                                        (≃ₒ-to-fun-is-order-equiv α (β +ₒ (𝟙ₒ +ₒ γ)) e)
+
+   I : ¬ ⟨ β ⟩
+   I b = irrefl (β +ₒ (𝟙ₒ +ₒ γ)) (inl b) u''
+    where
+     u : x ≼⟨ α ⟩ (≃ₒ-to-fun⁻¹ _ _ e (inl b))
+     u = least (≃ₒ-to-fun⁻¹ _ _ e (inl b))
+
+     u' : inr (inl ⋆) ≼⟨ β +ₒ (𝟙ₒ +ₒ γ) ⟩ (inl b)
+     u' = transport₂ (λ - -' → - ≼⟨ β +ₒ (𝟙ₒ +ₒ γ) ⟩ -')
+                     p
+                     (inverses-are-sections _ (≃ₒ-to-fun-is-equiv _ _ e) (inl b))
+                     (simulations-are-monotone _ _ (≃ₒ-to-fun _ _ e) e-sim _ _ u)
+
+     u'' : inl b ≺⟨ β +ₒ (𝟙ₒ +ₒ γ) ⟩ inl b
+     u'' = ≺-≼-gives-≺ (β +ₒ (𝟙ₒ +ₒ γ)) (inl b) (inr (inl ⋆)) (inl b) ⋆ u'
+
+   II : β ≼ 𝟘ₒ
+   II = to-≼ (λ b → 𝟘-elim (I b))
+
+trichotomous-least-to-decomposible' : (α : Ordinal 𝓤)
+    → has-a-trichotomous-least-element α → Σ α' ꞉ Ordinal 𝓤 , α ＝ 𝟙ₒ +ₒ α'
+trichotomous-least-to-decomposible' α (x , tri-least) = (γ , III)
+ where
+  tri : is-locally-trichotomous-at α x
+  tri = is-trichotomous-least-implies-is-locally-trichotomous α x tri-least
+  least : is-least α x
+  least = is-trichotomous-least-implies-is-least α x tri-least
+
+  I : is-decomposed-at α x
+  I = trichotomoy-to-isolation α x tri
+  β = pr₁ I
+  γ = pr₁ (pr₂ I)
+  e = pr₁ (pr₂ (pr₂ I))
+  p = pr₂ (pr₂ (pr₂ I))
+
+  II : β ＝ 𝟘ₒ
+  II = is-least-and-decomposable-implies-nothing-below α x least β γ (e , p)
+
+  III = α               ＝⟨ eqtoidₒ (ua _) fe' α (β +ₒ (𝟙ₒ +ₒ γ)) e ⟩
+        β +ₒ (𝟙ₒ +ₒ γ)  ＝⟨ ap (_+ₒ (𝟙ₒ +ₒ γ)) II ⟩
+        𝟘ₒ +ₒ (𝟙ₒ +ₒ γ) ＝⟨ 𝟘ₒ-left-neutral (𝟙ₒ +ₒ γ) ⟩
+        𝟙ₒ +ₒ γ         ∎
+
+\end{code}
+
+
+For any ordinal α that has a trichotomous least element, and for an
+arbitrary ordinal β, we can define the exponential α^β. We first use
+the trichotomous least element to decompose α.
 
 \begin{code}
 
 _⁺[_] : (α : Ordinal 𝓤) → has-a-trichotomous-least-element α → Ordinal 𝓤
 α ⁺[ d⊥ ] = pr₁ (trichotomous-least-to-decomposible α d⊥)
 
+_⁺[_]-part-of-decomposition : (α : Ordinal 𝓤)
+                            → (d⊥ : has-a-trichotomous-least-element α)
+                            → α ＝ 𝟙ₒ +ₒ α ⁺[ d⊥ ]
+α ⁺[ d⊥ ]-part-of-decomposition = pr₂ (trichotomous-least-to-decomposible α d⊥)
 \end{code}
 
-For any ordinal α that has a trichotomous least element, and for any
-arbitrary ordinal β, we can define the eponentaital α^β.
 
 \begin{code}
 
@@ -232,7 +340,7 @@ exp-dle-succ-spec α d⊥ β = goal
   fact : exp α _ (β +ₒ 𝟙ₒ) ＝ exp α _ β ×ₒ (𝟙ₒ +ₒ (α ⁺[ d⊥ ]))
   fact = exp-succ-spec (α ⁺[ d⊥ ]) β
   eq : α ＝ 𝟙ₒ +ₒ (α ⁺[ d⊥ ])
-  eq = pr₂ (trichotomous-least-to-decomposible α d⊥)
+  eq = α ⁺[ d⊥ ]-part-of-decomposition
   goal : exp α _ (β +ₒ 𝟙ₒ) ＝ exp α _ β ×ₒ α
   goal = transport (λ x → exp α d⊥ (β +ₒ 𝟙ₒ) ＝ exp α d⊥ β ×ₒ x) (eq ⁻¹) fact
 
@@ -242,3 +350,4 @@ exp-dle-sup-spec : (α : Ordinal 𝓤) (d⊥ : has-a-trichotomous-least-element 
 exp-dle-sup-spec α d⊥ = exp-sup-spec (α ⁺[ d⊥ ])
 
 \end{code}
+
