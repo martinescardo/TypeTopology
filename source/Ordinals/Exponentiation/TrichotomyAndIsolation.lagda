@@ -112,13 +112,15 @@ is-decomposed-at-is-prop {𝓤} α x (β , γ , e , p) (β' , γ' , e' , p') =
                                               (prop-ordinal-↓ 𝟙-is-prop ⋆) ⟩
           δ +ₒ 𝟘ₒ                      ＝⟨ 𝟘ₒ-right-neutral δ ⟩
           δ                            ∎
-  II = β ＝⟨ I β γ ⁻¹ ⟩
+
+  II = β                              ＝⟨ I β γ ⁻¹ ⟩
        β +ₒ (𝟙ₒ +ₒ γ) ↓ inr (inl ⋆)   ＝⟨ ap (β +ₒ (𝟙ₒ +ₒ γ) ↓_) p ⁻¹ ⟩
        β +ₒ (𝟙ₒ +ₒ γ) ↓ pr₁ e x       ＝⟨ simulations-preserve-↓ _ _ (≃ₒ-to-⊴ _ _ e) x ⁻¹ ⟩
-      α ↓ x                          ＝⟨ simulations-preserve-↓ _ _ (≃ₒ-to-⊴ _ _ e') x ⟩
+      α ↓ x                           ＝⟨ simulations-preserve-↓ _ _ (≃ₒ-to-⊴ _ _ e') x ⟩
        β' +ₒ (𝟙ₒ +ₒ γ') ↓ pr₁ e' x    ＝⟨ ap (β' +ₒ (𝟙ₒ +ₒ γ') ↓_) p' ⟩
        β' +ₒ (𝟙ₒ +ₒ γ') ↓ inr (inl ⋆) ＝⟨ I β' γ' ⟩
-       β' ∎
+       β'                             ∎
+
   III : (β γ γ' : Ordinal 𝓤) → β +ₒ (𝟙ₒ +ₒ γ) ＝ β +ₒ (𝟙ₒ +ₒ γ') → γ ＝ γ'
   III β γ γ' r = +ₒ-left-cancellable (β +ₒ 𝟙ₒ) γ γ' r'
    where
@@ -133,9 +135,9 @@ An element x is trichotomous in ordinal α iff it is isolated in α.
 
 \begin{code}
 
-trichotomoy-to-isolation : (α : Ordinal 𝓤) (x : ⟨ α ⟩)
+trichotomy-to-isolation : (α : Ordinal 𝓤) (x : ⟨ α ⟩)
     → x is-trichotomous-in α → x is-isolated-in α
-trichotomoy-to-isolation {𝓤} α x tri = β , γ , e , e-spec
+trichotomy-to-isolation {𝓤} α x tri = β , γ , e , e-spec
  where
   _<_ = underlying-order α
 

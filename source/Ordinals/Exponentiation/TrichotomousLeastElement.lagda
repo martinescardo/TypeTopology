@@ -290,7 +290,7 @@ trichotomous-least-to-decomposible' α (x , tri-least) = (γ , III)
   least = is-trichotomous-least-implies-is-least α x tri-least
 
   I : is-decomposed-at α x
-  I = trichotomoy-to-isolation α x tri
+  I = trichotomy-to-isolation α x tri
   β = pr₁ I
   γ = pr₁ (pr₂ I)
   e = pr₁ (pr₂ (pr₂ I))
