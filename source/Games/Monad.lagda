@@ -38,6 +38,13 @@ record Monad : Type₁ where
      → functor (Σ x ꞉ X , Y x)
  t ⊗ f = ext (λ x → map (λ y → x , y) (f x)) t
 
+ η-natural : {X Y : Type} (f : X → Y)
+           → map f ∘ η ∼ η ∘ f
+ η-natural f x =
+  map f (η x)               ＝⟨ refl ⟩
+  ext (λ x → η (f x)) (η x) ＝⟨ unit (λ x → η (f x)) x ⟩
+  η (f x)                   ∎
+
 open Monad public
 
 tensor : (𝕋 : Monad) → {X : Type} {Y : X → Type}
@@ -93,6 +100,11 @@ module T-definitions (𝕋 : Monad) where
 
  mapᵀ : {X Y : Type} → (X → Y) → T X → T Y
  mapᵀ = map 𝕋
+
+ ηᵀ-natural : {X Y : Type} (f : X → Y)
+           → mapᵀ f ∘ ηᵀ ∼ ηᵀ ∘ f
+ ηᵀ-natural = η-natural 𝕋
+
 
  μᵀ : {X : Type} → T (T X) → T X
  μᵀ = μ 𝕋
@@ -243,8 +255,20 @@ module α-definitions
  α-assocᵀ : α ∘ extᵀ (ηᵀ ∘ α) ∼ α ∘ extᵀ id
  α-assocᵀ = assoc 𝓐
 
+ α-assocᵀ' : (t : T (T R)) → α (extᵀ {T R} {R} (λ x → ηᵀ (α x)) t) ＝ (α ∘ extᵀ id) t
+ α-assocᵀ' = assoc 𝓐
+
  α-extᵀ : {A : Type} → (A → R) → T A → R
  α-extᵀ q = α ∘ mapᵀ q
+
+ α-extᵀ-unit : {X : Type}
+               (p : X → R)
+             → α-extᵀ p ∘ ηᵀ ∼ p
+ α-extᵀ-unit p x =
+  α-extᵀ p (ηᵀ x)          ＝⟨ refl ⟩
+  α (extᵀ (ηᵀ ∘ p) (ηᵀ x)) ＝⟨ ap α (unitᵀ (ηᵀ ∘ p) x) ⟩
+  α (ηᵀ (p x))             ＝⟨ α-unitᵀ (p x) ⟩
+  p x                      ∎
 
  α-curryᵀ : {X : Type} {Y : X → Type}
           → ((Σ x ꞉ X , Y x) → R)
