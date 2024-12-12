@@ -37,6 +37,7 @@ open import UF.Equiv
 open import UF.Equiv-FunExt
 open import UF.EquivalenceExamples
 open import UF.PropTrunc
+open import UF.Retracts
 open import UF.Size
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
@@ -100,6 +101,16 @@ decompositions-agree {𝓤} ua X =
  where
   I  = Σ-change-of-variable-≃ _ (≃-sym (decomposition-lemma ua X))
   II = Σ-assoc
+
+decompositions-as-retracts : (X : 𝓤 ̇  ) → decomposition X ≃ retract 𝟚 of X
+decompositions-as-retracts X = Σ-cong I
+ where
+  I : (f : X → 𝟚) → fiber f ₀ × fiber f ₁ ≃ has-section f
+  I f =
+   fiber f ₀ × fiber f ₁                           ≃⟨ ≃-refl _ ⟩
+   (Σ x₀ ꞉ X , f x₀ ＝ ₀) × (Σ x₁ ꞉ X , f x₁ ＝ ₁) ≃⟨ ≃-sym (alternative-× fe') ⟩
+   (Π n ꞉ 𝟚 , Σ x ꞉ X , f x ＝ n)                  ≃⟨ ΠΣ-distr-≃ ⟩
+   has-section f                                   ■
 
 WEM-gives-decomposition-of-two-pointed-types : WEM 𝓤
                                              → (X : 𝓤 ̇ )
