@@ -10,6 +10,7 @@ ordinals with a top element.
 open import MLTT.Spartan
 open import Ordinals.Notions
 open import Ordinals.Underlying
+open import UF.ClassicalLogic
 open import UF.FunExt
 open import UF.Sets
 open import UF.Subsingletons
@@ -237,5 +238,18 @@ module _
 
  subtype-order-is-transitive : is-transitive subtype-order
  subtype-order-is-transitive (x , _) (y , _) (z , _) = Transitivity α x y z
+
+ EM-implies-subtype-order-is-extensional
+  : EM 𝓤 → ((x : ⟨ α ⟩) → is-prop (P x)) → is-extensional subtype-order
+ EM-implies-subtype-order-is-extensional em P-is-Prop (z , l) (y , l') h h' =
+  to-subtype-＝ P-is-Prop (I (II z y))
+    where
+     I : in-trichotomy (underlying-order α) z y → z ＝ y
+     I (inl u) = 𝟘-elim (irrefl α z (h' (z , l) u))
+     I (inr (inl e)) = e
+     I (inr (inr u)) = 𝟘-elim (irrefl α y (h (y , l') u))
+
+     II : is-trichotomous-order (underlying-order α)
+     II = trichotomy₃ (underlying-order α) em (is-well-ordered α)
 
 \end{code}
