@@ -69,32 +69,34 @@ LEM-gives-EM lem P i = lem (P , i)
 \end{code}
 
 Added by Martin Escardo and Tom de Jong 29th August 2024. Originally
-we worked with what is now called WEM'. But it turns out that it is
-not necessary to assume that P is a proposition, and so we now work
-with the new definition WEM, which removes this assumption.
+we worked with WEM. But it turns out that it is not necessary to
+assume that P is a proposition, and so we now work with the new
+definition typal-WEM, which removes this assumption.
 
 \begin{code}
 
-WEM' : ∀ 𝓤 → 𝓤 ⁺ ̇
-WEM' 𝓤 = (P : 𝓤 ̇ ) → is-prop P → ¬ P + ¬¬ P
-
 WEM : ∀ 𝓤 → 𝓤 ⁺ ̇
-WEM 𝓤 = (P : 𝓤 ̇ ) → ¬ P + ¬¬ P
+WEM 𝓤 = (P : 𝓤 ̇ ) → is-prop P → ¬ P + ¬¬ P
 
-WEM'-gives-WEM : funext 𝓤 𝓤₀ → WEM' 𝓤 → WEM 𝓤
-WEM'-gives-WEM fe wem' P =
- Cases (wem' (¬ P) (negations-are-props fe)) inr (inl ∘ three-negations-imply-one)
+typal-WEM : ∀ 𝓤 → 𝓤 ⁺ ̇
+typal-WEM 𝓤 = (P : 𝓤 ̇ ) → ¬ P + ¬¬ P
 
-WEM-gives-WEM' : WEM 𝓤 → WEM' 𝓤
-WEM-gives-WEM' wem P P-is-prop = wem P
+WEM-gives-typal-WEM : funext 𝓤 𝓤₀ → WEM 𝓤 → typal-WEM 𝓤
+WEM-gives-typal-WEM fe wem' P =
+ Cases (wem' (¬ P) (negations-are-props fe))
+  inr
+  (inl ∘ three-negations-imply-one)
+
+typal-WEM-gives-WEM : typal-WEM 𝓤 → WEM 𝓤
+typal-WEM-gives-WEM wem P P-is-prop = wem P
+
+typal-WEM-is-prop : FunExt → is-prop (typal-WEM 𝓤)
+typal-WEM-is-prop {𝓤} fe = Π-is-prop (fe (𝓤 ⁺) 𝓤)
+                            (λ _ → decidability-of-prop-is-prop (fe 𝓤 𝓤₀)
+                                    (negations-are-props (fe 𝓤 𝓤₀)))
 
 WEM-is-prop : FunExt → is-prop (WEM 𝓤)
-WEM-is-prop {𝓤} fe = Π-is-prop (fe (𝓤 ⁺) 𝓤)
-                       (λ _ → decidability-of-prop-is-prop (fe 𝓤 𝓤₀)
-                               (negations-are-props (fe 𝓤 𝓤₀)))
-
-WEM'-is-prop : FunExt → is-prop (WEM' 𝓤)
-WEM'-is-prop {𝓤} fe = Π₂-is-prop (λ {𝓥} {𝓦} → fe 𝓥 𝓦)
+WEM-is-prop {𝓤} fe = Π₂-is-prop (λ {𝓥} {𝓦} → fe 𝓥 𝓦)
                        (λ _ _ → decidability-of-prop-is-prop (fe 𝓤 𝓤₀)
                                  (negations-are-props (fe 𝓤 𝓤₀)))
 
@@ -152,22 +154,20 @@ fe-and-em-give-propositional-truncations fe em =
 
 \end{code}
 
-Like WEM, we don't need to assume that P and Q are propositions in the
-definition of De Morgan's Law (added by Martin Escardo and Tom de Jong
-29th August 2024). See below for a proof. But we begin with a
-definition that does.
+We now consider various logically equivalent formulations of De Morgan
+Law.
 
 \begin{code}
 
-De-Morgan : ∀ 𝓤 → 𝓤 ⁺ ̇
-De-Morgan 𝓤 = (P Q : 𝓤 ̇ )
-             → is-prop P
-             → is-prop Q
-             → ¬ (P × Q) → ¬ P + ¬ Q
+untruncated-De-Morgan : ∀ 𝓤 → 𝓤 ⁺ ̇
+untruncated-De-Morgan 𝓤 = (P Q : 𝓤 ̇ )
+                        → is-prop P
+                        → is-prop Q
+                        → ¬ (P × Q) → ¬ P + ¬ Q
 
-EM-gives-De-Morgan : EM 𝓤
-                   → De-Morgan 𝓤
-EM-gives-De-Morgan em A B i j =
+EM-gives-untruncated-De-Morgan : EM 𝓤
+                               → untruncated-De-Morgan 𝓤
+EM-gives-untruncated-De-Morgan em A B i j =
  λ (ν : ¬ (A × B)) →
       Cases (em A i)
        (λ (a : A) → Cases (em B j)
@@ -177,21 +177,25 @@ EM-gives-De-Morgan em A B i j =
 
 \end{code}
 
-But already weak excluded middle gives De Morgan:
+But already weak excluded middle gives De Morgan.
+
+Added by Martin Escardo and Tom de Jong 29th August 2024. A typal version of De Morgan.
 
 \begin{code}
 
 non-contradiction : {X : 𝓤 ̇ } → ¬ (X × ¬ X)
 non-contradiction (x , ν) = ν x
 
-De-Morgan' : ∀ 𝓤 → 𝓤 ⁺ ̇
-De-Morgan' 𝓤 = (P Q : 𝓤 ̇ ) → ¬ (P × Q) → ¬ P + ¬ Q
+untruncated-typal-De-Morgan : ∀ 𝓤 → 𝓤 ⁺ ̇
+untruncated-typal-De-Morgan 𝓤 = (P Q : 𝓤 ̇ ) → ¬ (P × Q) → ¬ P + ¬ Q
 
-De-Morgan'-gives-De-Morgan : De-Morgan' 𝓤 → De-Morgan 𝓤
-De-Morgan'-gives-De-Morgan d' P Q i j = d' P Q
+untruncated-typal-De-Morgan-gives-untruncated-De-Morgan
+ : untruncated-typal-De-Morgan 𝓤
+ → untruncated-De-Morgan 𝓤
+untruncated-typal-De-Morgan-gives-untruncated-De-Morgan d' P Q i j = d' P Q
 
-WEM-gives-De-Morgan' : WEM 𝓤 → De-Morgan' 𝓤
-WEM-gives-De-Morgan' wem A B =
+typal-WEM-gives-untruncated-typal-De-Morgan : typal-WEM 𝓤 → untruncated-typal-De-Morgan 𝓤
+typal-WEM-gives-untruncated-typal-De-Morgan wem A B =
  λ (ν : ¬ (A × B)) →
       Cases (wem A)
        inl
@@ -201,40 +205,54 @@ WEM-gives-De-Morgan' wem A B =
                 (λ (γ : ¬¬ B) → 𝟘-elim
                                  (ϕ (λ (a : A) → γ (λ (b : B) → ν (a , b))))))
 
-WEM-gives-De-Morgan : WEM 𝓤 → De-Morgan 𝓤
-WEM-gives-De-Morgan = De-Morgan'-gives-De-Morgan ∘ WEM-gives-De-Morgan'
+typal-WEM-gives-untruncated-De-Morgan : typal-WEM 𝓤 → untruncated-De-Morgan 𝓤
+typal-WEM-gives-untruncated-De-Morgan =
+ untruncated-typal-De-Morgan-gives-untruncated-De-Morgan
+ ∘ typal-WEM-gives-untruncated-typal-De-Morgan
 
-De-Morgan-gives-WEM : funext 𝓤 𝓤₀ → De-Morgan 𝓤 → WEM 𝓤
-De-Morgan-gives-WEM fe d =
- WEM'-gives-WEM fe
+untruncated-De-Morgan-gives-typal-WEM : funext 𝓤 𝓤₀ → untruncated-De-Morgan 𝓤 → typal-WEM 𝓤
+untruncated-De-Morgan-gives-typal-WEM fe d =
+ WEM-gives-typal-WEM fe
   (λ P i → d P (¬ P) i (negations-are-props fe) non-contradiction)
 
-De-Morgan-gives-De-Morgan' : funext 𝓤 𝓤₀ → De-Morgan 𝓤 → De-Morgan' 𝓤
-De-Morgan-gives-De-Morgan' fe = WEM-gives-De-Morgan' ∘ De-Morgan-gives-WEM fe
+untruncated-De-Morgan-gives-untruncated-typal-De-Morgan
+ : funext 𝓤 𝓤₀
+ → untruncated-De-Morgan 𝓤
+ → untruncated-typal-De-Morgan 𝓤
+untruncated-De-Morgan-gives-untruncated-typal-De-Morgan fe =
+ typal-WEM-gives-untruncated-typal-De-Morgan
+ ∘ untruncated-De-Morgan-gives-typal-WEM fe
 
 \end{code}
+
+End of addition.
 
 Is the above untruncated De Morgan Law a proposition? Not in
 general. If it doesn't hold, it is vacuously a proposition. But if it
 does hold, it is not a proposition. We prove this by modifying any
-given δ : De-Mordan 𝓤 to a different δ' : De-Morgan 𝓤. Then we also
-consider a truncated version of De-Morgan that is a proposition and is
-logically equivalent to De-Morgan. So De-Morgan 𝓤 is not necessarily a
+given δ : De-Mordan 𝓤 to a different δ' : untruncated-De-Morgan
+𝓤. Then we also consider a truncated version of untruncated-De-Morgan
+that is a proposition and is logically equivalent to
+untruncated-De-Morgan. So untruncated-De-Morgan 𝓤 is not necessarily a
 proposition, but it always has split support (it has a proposition as
 a retract).
 
 \begin{code}
 
-De-Morgan-is-prop : ¬ De-Morgan 𝓤 → is-prop (De-Morgan 𝓤)
-De-Morgan-is-prop ν δ = 𝟘-elim (ν δ)
+untruncated-De-Morgan-is-prop
+ : ¬ untruncated-De-Morgan 𝓤
+ → is-prop (untruncated-De-Morgan 𝓤)
+untruncated-De-Morgan-is-prop ν δ = 𝟘-elim (ν δ)
 
-De-Morgan-is-not-prop : funext 𝓤 𝓤₀ → De-Morgan 𝓤 → ¬ is-prop (De-Morgan 𝓤)
-De-Morgan-is-not-prop {𝓤} fe δ = IV
+untruncated-De-Morgan-is-not-prop⁺
+ : funext 𝓤 𝓤₀
+ → (δ : untruncated-De-Morgan 𝓤) → Σ δ' ꞉ untruncated-De-Morgan 𝓤 , δ' ≠ δ
+untruncated-De-Morgan-is-not-prop⁺ {𝓤} fe δ = (δ' , III)
  where
   open import MLTT.Plus-Properties
 
-  wem : WEM 𝓤
-  wem = De-Morgan-gives-WEM fe δ
+  wem : typal-WEM 𝓤
+  wem = untruncated-De-Morgan-gives-typal-WEM fe δ
 
   g : (P Q : 𝓤 ̇ )
       (i : is-prop P) (j : is-prop Q)
@@ -248,7 +266,7 @@ De-Morgan-is-not-prop {𝓤} fe δ = IV
   g P Q i j ν (inl _) (inr _) _       = δ P Q i j ν
   g P Q i j ν (inr _) _       _       = δ P Q i j ν
 
-  δ' : De-Morgan 𝓤
+  δ' : untruncated-De-Morgan 𝓤
   δ' P Q i j ν = g P Q i j ν (wem P) (wem Q) (δ P Q i j ν)
 
   I : (i : is-prop 𝟘) (h : ¬ 𝟘) → wem 𝟘 ＝ inl h
@@ -296,41 +314,53 @@ De-Morgan-is-not-prop {𝓤} fe δ = IV
     III₀ : δ' 𝟘 𝟘 𝟘-is-prop 𝟘-is-prop ν ＝ δ 𝟘 𝟘 𝟘-is-prop 𝟘-is-prop ν
     III₀ = ap (λ - → - 𝟘 𝟘 𝟘-is-prop 𝟘-is-prop ν) e
 
-  IV : ¬ is-prop (De-Morgan 𝓤)
-  IV i = III (i δ' δ)
+untruncated-De-Morgan-is-not-prop
+ : funext 𝓤 𝓤₀
+ → untruncated-De-Morgan 𝓤
+ → ¬ is-prop (untruncated-De-Morgan 𝓤)
+untruncated-De-Morgan-is-not-prop {𝓤} fe δ
+ = IV (untruncated-De-Morgan-is-not-prop⁺ fe δ)
+ where
+  IV : (Σ δ' ꞉ untruncated-De-Morgan 𝓤 , δ' ≠ δ)
+    → ¬ is-prop (untruncated-De-Morgan 𝓤)
+  IV (δ' , III) i = III (i δ' δ)
 
-De-Morgan-curiousity : funext 𝓤 𝓤₀
-                     → ¬¬ is-prop (De-Morgan 𝓤)
-                     → is-prop (De-Morgan 𝓤)
-De-Morgan-curiousity fe =
- De-Morgan-is-prop ∘ contrapositive (De-Morgan-is-not-prop fe)
+untruncated-De-Morgan-curiousity : funext 𝓤 𝓤₀
+                                 → ¬¬ is-prop (untruncated-De-Morgan 𝓤)
+                                 → is-prop (untruncated-De-Morgan 𝓤)
+untruncated-De-Morgan-curiousity fe =
+ untruncated-De-Morgan-is-prop
+ ∘ contrapositive (untruncated-De-Morgan-is-not-prop fe)
 
 module _ (pt : propositional-truncations-exist) where
 
  open PropositionalTruncation pt
 
- truncated-De-Morgan : ∀ 𝓤 → 𝓤 ⁺ ̇
- truncated-De-Morgan 𝓤 = (P Q : 𝓤 ̇ ) → ¬ (P × Q) → ¬ P ∨ ¬ Q
+ truncated-typal-De-Morgan : ∀ 𝓤 → 𝓤 ⁺ ̇
+ truncated-typal-De-Morgan 𝓤 = (P Q : 𝓤 ̇ ) → ¬ (P × Q) → ¬ P ∨ ¬ Q
 
- truncated-De-Morgan' : ∀ 𝓤 → 𝓤 ⁺ ̇
- truncated-De-Morgan' 𝓤 = (P Q : 𝓤 ̇ )
-                        → is-prop P
-                        → is-prop Q
-                        → ¬ (P × Q) → ¬ P ∨ ¬ Q
+ De-Morgan : ∀ 𝓤 → 𝓤 ⁺ ̇
+ De-Morgan 𝓤 = (P Q : 𝓤 ̇ )
+             → is-prop P
+             → is-prop Q
+             → ¬ (P × Q) → ¬ P ∨ ¬ Q
 
- truncated-De-Morgan-is-prop : FunExt → is-prop (truncated-De-Morgan 𝓤)
- truncated-De-Morgan-is-prop fe = Π₃-is-prop (λ {𝓤} {𝓥} → fe 𝓤 𝓥)
-                                   (λ P Q ν → ∨-is-prop)
+ truncated-typal-De-Morgan-is-prop : FunExt
+                                   → is-prop (truncated-typal-De-Morgan 𝓤)
+ truncated-typal-De-Morgan-is-prop fe = Π₃-is-prop (λ {𝓤} {𝓥} → fe 𝓤 𝓥)
+                                         (λ P Q ν → ∨-is-prop)
 
- truncated-De-Morgan'-is-prop : FunExt → is-prop (truncated-De-Morgan' 𝓤)
- truncated-De-Morgan'-is-prop fe = Π₅-is-prop (λ {𝓤} {𝓥} → fe 𝓤 𝓥)
-                                    (λ P Q i j ν → ∨-is-prop)
+ De-Morgan-is-prop : FunExt → is-prop (De-Morgan 𝓤)
+ De-Morgan-is-prop fe = Π₅-is-prop (λ {𝓤} {𝓥} → fe 𝓤 𝓥)
+                                   (λ P Q i j ν → ∨-is-prop)
 
- De-Morgan-gives-truncated-De-Morgan' : De-Morgan 𝓤 → truncated-De-Morgan' 𝓤
- De-Morgan-gives-truncated-De-Morgan' d P Q i j ν = ∣ d P Q i j ν ∣
+ untruncated-De-Morgan-gives-De-Morgan : untruncated-De-Morgan 𝓤
+                                       → De-Morgan 𝓤
+ untruncated-De-Morgan-gives-De-Morgan d P Q i j ν = ∣ d P Q i j ν ∣
 
- truncated-De-Morgan'-gives-WEM' : funext 𝓤 𝓤₀ → truncated-De-Morgan' 𝓤 → WEM' 𝓤
- truncated-De-Morgan'-gives-WEM' {𝓤} fe t P i = III
+ De-Morgan-gives-WEM : funext 𝓤 𝓤₀
+                     → De-Morgan 𝓤 → WEM 𝓤
+ De-Morgan-gives-WEM {𝓤} fe t P i = III
   where
    I : ¬ (P × ¬ P) → ¬ P ∨ ¬¬ P
    I = t P (¬ P) i (negations-are-props fe)
@@ -344,32 +374,35 @@ module _ (pt : propositional-truncations-exist) where
           (negations-are-props fe))
           II
 
- truncated-De-Morgan'-gives-WEM : funext 𝓤 𝓤₀ → truncated-De-Morgan' 𝓤 → WEM 𝓤
- truncated-De-Morgan'-gives-WEM {𝓤} fe =
-  WEM'-gives-WEM fe ∘ truncated-De-Morgan'-gives-WEM' fe
+ De-Morgan-gives-typal-WEM : funext 𝓤 𝓤₀ → De-Morgan 𝓤 → typal-WEM 𝓤
+ De-Morgan-gives-typal-WEM {𝓤} fe =
+  WEM-gives-typal-WEM fe ∘ De-Morgan-gives-WEM fe
 
- truncated-De-Morgan'-gives-De-Morgan : funext 𝓤 𝓤₀ → truncated-De-Morgan' 𝓤 → De-Morgan 𝓤
- truncated-De-Morgan'-gives-De-Morgan fe t P Q i j ν =
-  WEM-gives-De-Morgan (truncated-De-Morgan'-gives-WEM fe t) P Q i j ν
+ De-Morgan-gives-untruncated-De-Morgan : funext 𝓤 𝓤₀
+                                       → De-Morgan 𝓤
+                                       → untruncated-De-Morgan 𝓤
+ De-Morgan-gives-untruncated-De-Morgan fe t P Q i j ν =
+  typal-WEM-gives-untruncated-De-Morgan
+   (De-Morgan-gives-typal-WEM fe t)
+   P Q i j ν
 
- truncated-De-Morgan-gives-truncated-De-Morgan'
-  : truncated-De-Morgan 𝓤
-  → truncated-De-Morgan' 𝓤
- truncated-De-Morgan-gives-truncated-De-Morgan' d P Q i j = d P Q
+ truncated-typal-De-Morgan-gives-De-Morgan : truncated-typal-De-Morgan 𝓤
+                                           → De-Morgan 𝓤
+ truncated-typal-De-Morgan-gives-De-Morgan d P Q i j = d P Q
 
- truncated-De-Morgan'-gives-truncated-De-Morgan
-  : funext 𝓤 𝓤₀
-  → truncated-De-Morgan' 𝓤
-  → truncated-De-Morgan 𝓤
- truncated-De-Morgan'-gives-truncated-De-Morgan {𝓤} fe d P Q ν
-  = ∣ WEM-gives-De-Morgan' (truncated-De-Morgan'-gives-WEM fe d) P Q ν ∣
+ De-Morgan-gives-truncated-typal-De-Morgan : funext 𝓤 𝓤₀
+                                           → De-Morgan 𝓤
+                                           → truncated-typal-De-Morgan 𝓤
+ De-Morgan-gives-truncated-typal-De-Morgan {𝓤} fe d P Q ν =
+  ∣ typal-WEM-gives-untruncated-typal-De-Morgan
+    (De-Morgan-gives-typal-WEM fe d)
+    P Q ν ∣
 
 \end{code}
 
 The above shows that weak excluded middle, De Morgan and truncated De
-Morgan are logically equivalent, all in their two (primed and
-unprimed) versions, so in a total of six logically equivalent
-statements.
+Morgan are logically equivalent, all in their two (proposional and
+typal) versions, so in a total of six logically equivalent statements.
 
 That weak excluded middle and De Morgan are equivalent is long known
 and now part of the folklore. We don't know who proved this first,
@@ -392,7 +425,7 @@ as an answer [2], which Mike Shulman added to the nLab [3].
     https://ncatlab.org/nlab/show/De%20Morgan%20laws.
     2nd September 2014
 
-Here we have added, to both WEM and De Morgan, truncated or not, the
+Here we have added, to both typal-WEM and De Morgan, truncated or not, the
 discussion of whether the types in question need to be propositions or
 not for them to be all equivalent, and the answer is that it doesn't
 matter whether we assume that the types in question are all

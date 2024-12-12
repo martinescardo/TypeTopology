@@ -75,16 +75,16 @@ injective if and only if weak excluded middle holds.
 
 \begin{code}
 
-𝟚-ainjective-gives-WEM : ainjective-type 𝟚 𝓤 𝓥 → WEM 𝓤
+𝟚-ainjective-gives-WEM : ainjective-type 𝟚 𝓤 𝓥 → typal-WEM 𝓤
 𝟚-ainjective-gives-WEM {𝓤} 𝟚-ainj = I
  where
   d : decomposition 𝟚
   d = id , (₀ , refl) , (₁ , refl)
 
-  I : WEM 𝓤
+  I : typal-WEM 𝓤
   I = decomposition-of-ainjective-type-gives-WEM pe' 𝟚 𝟚-ainj d
 
-WEM-gives-𝟚-retract-of-Ω : WEM 𝓤 → retract 𝟚 of Ω 𝓤
+WEM-gives-𝟚-retract-of-Ω : typal-WEM 𝓤 → retract 𝟚 of Ω 𝓤
 WEM-gives-𝟚-retract-of-Ω {𝓤} wem = II
  where
   h : (p : Ω 𝓤) → is-decidable (¬ (p holds)) → 𝟚
@@ -108,11 +108,11 @@ WEM-gives-𝟚-retract-of-Ω {𝓤} wem = II
        𝟚-to-Ω ,
        (λ n → I n (d (𝟚-to-Ω n)))
 
-WEM-gives-𝟚-ainjective : WEM 𝓤 → ainjective-type 𝟚 𝓤 𝓤
+WEM-gives-𝟚-ainjective : typal-WEM 𝓤 → ainjective-type 𝟚 𝓤 𝓤
 WEM-gives-𝟚-ainjective {𝓤} wem =
  retract-of-ainjective 𝟚 (Ω 𝓤) (Ω-ainjective pe') (WEM-gives-𝟚-retract-of-Ω wem)
 
-WEM-gives-𝟚-aflabby : WEM 𝓤 → aflabby 𝟚 𝓤
+WEM-gives-𝟚-aflabby : typal-WEM 𝓤 → aflabby 𝟚 𝓤
 WEM-gives-𝟚-aflabby wem = ainjective-types-are-aflabby 𝟚 (WEM-gives-𝟚-ainjective wem)
 
 \end{code}
@@ -127,19 +127,19 @@ conclusion.
 simple-type₂-injective-gives-WEM : (X : 𝓤₀ ̇)
                                  → simple-type₂ X
                                  → ainjective-type X 𝓤 𝓤
-                                 → WEM 𝓤
+                                 → typal-WEM 𝓤
 simple-type₂-injective-gives-WEM X s X-ainj =
  𝟚-ainjective-gives-WEM
   (retract-of-ainjective 𝟚 X X-ainj
   (simple-types₂-disconnected s))
 
 simple-type₂-injective-gives-WEM-examples
- : (ainjective-type ℕ                   𝓤 𝓤 → WEM 𝓤)
- × (ainjective-type (ℕ → ℕ)             𝓤 𝓤 → WEM 𝓤)
- × (ainjective-type (ℕ → 𝟚)             𝓤 𝓤 → WEM 𝓤)
- × (ainjective-type ((ℕ → ℕ) → ℕ)       𝓤 𝓤 → WEM 𝓤)
- × (ainjective-type ((ℕ → 𝟚) → ℕ)       𝓤 𝓤 → WEM 𝓤)
- × (ainjective-type (((ℕ → ℕ) → ℕ) → ℕ) 𝓤 𝓤 → WEM 𝓤)
+ : (ainjective-type ℕ                   𝓤 𝓤 → typal-WEM 𝓤)
+ × (ainjective-type (ℕ → ℕ)             𝓤 𝓤 → typal-WEM 𝓤)
+ × (ainjective-type (ℕ → 𝟚)             𝓤 𝓤 → typal-WEM 𝓤)
+ × (ainjective-type ((ℕ → ℕ) → ℕ)       𝓤 𝓤 → typal-WEM 𝓤)
+ × (ainjective-type ((ℕ → 𝟚) → ℕ)       𝓤 𝓤 → typal-WEM 𝓤)
+ × (ainjective-type (((ℕ → ℕ) → ℕ) → ℕ) 𝓤 𝓤 → typal-WEM 𝓤)
 simple-type₂-injective-gives-WEM-examples =
  simple-type₂-injective-gives-WEM _ base ,
  simple-type₂-injective-gives-WEM _ (step base base) ,
@@ -214,8 +214,8 @@ the injectivity of ℝ.
 open import Rationals.Type
 open import Rationals.Order
 
-ℝ-ainjective-gives-WEM : ainjective-type ℝ 𝓤 𝓥 → WEM 𝓤
-ℝ-ainjective-gives-WEM {𝓤} ℝ-ainj = WEM'-gives-WEM fe' XI
+ℝ-ainjective-gives-WEM : ainjective-type ℝ 𝓤 𝓥 → typal-WEM 𝓤
+ℝ-ainjective-gives-WEM {𝓤} ℝ-ainj = WEM-gives-typal-WEM fe' XI
  where
   module _ (P : 𝓤 ̇ ) (P-is-prop : is-prop P) where
 
@@ -339,7 +339,7 @@ conclusion with a weaker assumption and a simpler proof.
 
 \begin{code}
 
-ℕ∞-injective-gives-WEM : ainjective-type ℕ∞ 𝓤 𝓥 → WEM 𝓤
+ℕ∞-injective-gives-WEM : ainjective-type ℕ∞ 𝓤 𝓥 → typal-WEM 𝓤
 ℕ∞-injective-gives-WEM ℕ∞-ainj =
  𝟚-ainjective-gives-WEM (retract-of-ainjective 𝟚 ℕ∞ ℕ∞-ainj 𝟚-retract-of-ℕ∞)
 
@@ -363,10 +363,10 @@ ainjective-type-with-non-trivial-apartness-gives-WEM
  : {X : 𝓤 ̇ }
  → ainjective-type X 𝓣 𝓦
  → Nontrivial-Apartness X 𝓥
- → WEM 𝓣
+ → typal-WEM 𝓣
 ainjective-type-with-non-trivial-apartness-gives-WEM
  {𝓤} {𝓣} {𝓦} {𝓥} {X} ainj ((_♯_ , α) , ((x₀ , x₁) , points-apart))
- = WEM'-gives-WEM fe' VII
+ = WEM-gives-typal-WEM fe' VII
   where
    module _ (P : 𝓣 ̇ ) (P-is-prop : is-prop P) where
 
@@ -416,20 +416,20 @@ In particular, we have the following.
 non-trivial-apartness-on-universe-gives-WEM
  : is-univalent (𝓤 ⊔ 𝓥)
  → Nontrivial-Apartness (𝓤 ⊔ 𝓥 ̇ ) 𝓥
- → WEM 𝓤
+ → typal-WEM 𝓤
 non-trivial-apartness-on-universe-gives-WEM ua =
  ainjective-type-with-non-trivial-apartness-gives-WEM
   (universes-are-ainjective ua)
 
 non-trivial-apartness-on-universe-iff-WEM
  : is-univalent 𝓤
- → Nontrivial-Apartness (𝓤 ̇ ) 𝓤 ↔ WEM 𝓤
+ → Nontrivial-Apartness (𝓤 ̇ ) 𝓤 ↔ typal-WEM 𝓤
 non-trivial-apartness-on-universe-iff-WEM {𝓤} ua = f , g
  where
-  f : Nontrivial-Apartness (𝓤 ̇ ) 𝓤 → WEM 𝓤
+  f : Nontrivial-Apartness (𝓤 ̇ ) 𝓤 → typal-WEM 𝓤
   f = non-trivial-apartness-on-universe-gives-WEM ua
 
-  g : WEM 𝓤 → Nontrivial-Apartness (𝓤 ̇ ) 𝓤
+  g : typal-WEM 𝓤 → Nontrivial-Apartness (𝓤 ̇ ) 𝓤
   g = WEM-gives-that-type-with-two-distinct-points-has-nontrivial-apartness⁺
        fe'
        (universes-are-locally-small ua)

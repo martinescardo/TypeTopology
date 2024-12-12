@@ -162,7 +162,7 @@ excluded middle holds.
 
 \begin{code}
 
- decomposition-of-𝕍-gives-WEM : decomposition 𝕍 → WEM 𝓤
+ decomposition-of-𝕍-gives-WEM : decomposition 𝕍 → typal-WEM 𝓤
  decomposition-of-𝕍-gives-WEM =
   decomposition-of-ainjective-type-gives-WEM
    (univalence-gives-propext (ua 𝓤))

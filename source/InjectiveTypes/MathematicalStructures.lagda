@@ -440,7 +440,7 @@ decidable property unless weak excluded middle holds.
 
 \begin{code}
 
-decomposition-of-∞-Magma-gives-WEM : decomposition (∞-Magma 𝓤) → WEM 𝓤
+decomposition-of-∞-Magma-gives-WEM : decomposition (∞-Magma 𝓤) → typal-WEM 𝓤
 decomposition-of-∞-Magma-gives-WEM {𝓤} =
  decomposition-of-ainjective-type-gives-WEM
   (univalence-gives-propext (ua 𝓤))

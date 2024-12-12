@@ -301,7 +301,7 @@ compact-prop-tychonoff-gives-WEM' : ((X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ )
                                         → is-prop X
                                         → ((x : X) → is-compact (Y x))
                                         → is-compact (Π Y))
-                                  → WEM' 𝓤
+                                  → WEM 𝓤
 compact-prop-tychonoff-gives-WEM' {𝓤} {𝓥} τ X X-is-prop = δ γ
  where
   Y : X → 𝓥 ̇

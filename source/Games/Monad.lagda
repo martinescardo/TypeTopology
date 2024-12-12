@@ -38,16 +38,32 @@ record Monad : Type₁ where
      → functor (Σ x ꞉ X , Y x)
  t ⊗ f = ext (λ x → map (λ y → x , y) (f x)) t
 
- η-natural : {X Y : Type} (f : X → Y)
-           → map f ∘ η ∼ η ∘ f
- η-natural f x =
-  map f (η x)               ＝⟨ refl ⟩
-  ext (λ x → η (f x)) (η x) ＝⟨ unit (λ x → η (f x)) x ⟩
-  η (f x)                   ∎
+ η-natural : {X Y : Type} (h : X → Y)
+           → map h ∘ η {X} ∼ η {Y} ∘ h
+ η-natural h x =
+  map h (η x)               ＝⟨ refl ⟩
+  ext (λ x → η (h x)) (η x) ＝⟨ unit (λ x → η (h x)) x ⟩
+  η (h x)                   ∎
+
+ μ-natural : funext₀
+           → {X Y : Type} (h : X → Y)
+           → map h ∘ μ {X}  ∼ μ {Y} ∘ map (map h)
+ μ-natural fe h tt =
+  (map h ∘ μ) tt                            ＝⟨ refl ⟩
+  ext (η ∘ h) (ext id tt)                   ＝⟨ by-assoc ⁻¹ ⟩
+  ext (ext (η ∘ h)) tt                      ＝⟨ by-unit ⁻¹ ⟩
+  ext (λ t → ext id (η (ext (η ∘ h) t))) tt ＝⟨ again-by-assoc ⟩
+  ext id (ext (λ t → η (ext (η ∘ h) t)) tt) ＝⟨ refl ⟩
+  (μ ∘ map (map h)) tt                      ∎
+   where
+    by-assoc       = assoc (λ x → η (h x)) id tt
+    by-unit        = ap (λ - → ext - tt)
+                        (dfunext fe (λ t → unit id (ext (η ∘ h) t)))
+    again-by-assoc = assoc id (λ x → η (ext (η ∘ h) x)) tt
 
 open Monad public
 
-tensor : (𝕋 : Monad) → {X : Type} {Y : X → Type}
+tensor : (𝕋 : Monad) {X : Type} {Y : X → Type}
        → functor 𝕋 X
        → ((x : X) → functor 𝕋 (Y x))
        → functor 𝕋 (Σ x ꞉ X , Y x)
@@ -105,9 +121,13 @@ module T-definitions (𝕋 : Monad) where
            → mapᵀ f ∘ ηᵀ ∼ ηᵀ ∘ f
  ηᵀ-natural = η-natural 𝕋
 
-
  μᵀ : {X : Type} → T (T X) → T X
  μᵀ = μ 𝕋
+
+ μᵀ-natural : funext₀
+            → {X Y : Type} (h : X → Y)
+            → mapᵀ h ∘ μᵀ {X}  ∼ μᵀ {Y} ∘ mapᵀ (mapᵀ h)
+ μᵀ-natural = μ-natural 𝕋
 
  _⊗ᵀ_ : {X : Type} {Y : X → Type}
       → T X
@@ -228,7 +248,8 @@ record Algebra (𝕋 : Monad) (A : Type) : Type₁ where
  field
   structure-map : functor 𝕋 A → A
   unit          : structure-map ∘ η 𝕋 ∼ id
-  assoc         : structure-map ∘ ext 𝕋 (η 𝕋 ∘ structure-map) ∼ structure-map ∘ ext 𝕋 id
+  assoc         : structure-map ∘ ext 𝕋 (η 𝕋 ∘ structure-map)
+                ∼ structure-map ∘ ext 𝕋 id
 
 open Algebra public
 
