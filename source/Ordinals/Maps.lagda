@@ -515,3 +515,28 @@ module _ (pt : propositional-truncations-exist)
        ⦅2⦆ : z ＝ z'
        ⦅2⦆ = simulations-are-lc' α β f (i , p) (e ∙ e' ⁻¹)
 \end{code}
+
+Added 11 December 2024 by Tom de Jong.
+
+\begin{code}
+
+order-preserving-and-reflecting-partial-surjections-are-simulations :
+   (α : Ordinal 𝓤) (β : Ordinal 𝓥) (f : ⟨ α ⟩ → ⟨ β ⟩)
+ → is-order-preserving α β f
+ → is-order-reflecting α β f
+ → ((a : ⟨ α ⟩) (b : ⟨ β ⟩) → b ≺⟨ β ⟩ f a → Σ a' ꞉ ⟨ α ⟩ , f a' ＝ b)
+ → is-simulation α β f
+order-preserving-and-reflecting-partial-surjections-are-simulations
+ α β f f-order-pres f-order-reflec σ = I , f-order-pres
+  where
+   I : is-initial-segment α β f
+   I a b l = pr₁ (σ a b l) , II , pr₂ (σ a b l)
+    where
+     a' : ⟨ α ⟩
+     a' = pr₁ (σ a b l)
+     e : f a' ＝ b
+     e = pr₂ (σ a b l)
+     II : a' ≺⟨ α ⟩ a
+     II = f-order-reflec a' a (transport⁻¹ (λ - → - ≺⟨ β ⟩ f a) e l)
+
+\end{code}

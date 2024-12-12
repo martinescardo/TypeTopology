@@ -207,6 +207,13 @@ segment-⊴ : (α : Ordinal 𝓤) (a : ⟨ α ⟩)
           → (α ↓ a) ⊴ α
 segment-⊴ α a = segment-inclusion α a , segment-inclusion-is-simulation α a
 
+segment-inclusion-lc : (α : Ordinal 𝓤) {a : ⟨ α ⟩}
+                     → left-cancellable (segment-inclusion α a)
+segment-inclusion-lc α {a} =
+ simulations-are-lc (α ↓ a) α
+  (segment-inclusion α a)
+  (segment-inclusion-is-simulation α a)
+
 ↓-⊴-lc : (α : Ordinal 𝓤) (a b : ⟨ α ⟩)
        → (α ↓ a) ⊴ (α ↓ b )
        → a ≼⟨ α ⟩ b
@@ -913,6 +920,11 @@ preserves initial segments in the following sense:
 simulations-preserve-↓ : (α β : Ordinal 𝓤) ((f , _) : α ⊴ β)
                        → ((a : ⟨ α ⟩) → α ↓ a ＝ β ↓ f a)
 simulations-preserve-↓ α β 𝕗 a = pr₂ (from-≼ (⊴-gives-≼ α β 𝕗) a)
+
+Idtofunₒ-↓-lemma : {α β : Ordinal 𝓤} {a : ⟨ α ⟩}
+                   (e : α ＝ β)
+                 → α ↓ a ＝ β ↓ Idtofunₒ e a
+Idtofunₒ-↓-lemma refl = refl
 
 \end{code}
 

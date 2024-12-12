@@ -3,13 +3,15 @@ November 2023 — December 2024
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --no-exact-split #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 module Ordinals.Exponentiation.index where
 
 import Ordinals.Exponentiation.DecreasingList
+import Ordinals.Exponentiation.DecreasingListProperties
+import Ordinals.Exponentiation.DecreasingListProperties-Concrete
 import Ordinals.Exponentiation.Equivalence
-import Ordinals.Exponentiation.More
+-- import Ordinals.Exponentiation.More [Should be deleted]
 import Ordinals.Exponentiation.Specification
 import Ordinals.Exponentiation.Supremum
 import Ordinals.Exponentiation.Taboos

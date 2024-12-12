@@ -3,9 +3,11 @@ December 2024 (with results potentially going back to November 2023)
 
 Taboos involving ordinal exponentiation.
 
+TODO: SEE END
+
 \begin{code}
 
-{-# OPTIONS --safe --without-K --no-exact-split #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import UF.Univalence
 open import UF.PropTrunc
@@ -114,42 +116,47 @@ about multiplication:
    f'-simulation p = f'-initial-seg , f'-order-pres
     where
      f'-initial-seg : is-initial-segment (α ×ₒ α) (β ×ₒ β) (f' p)
-     f'-initial-seg ₁α (inl (inl (inl ⋆)) , .⊥β) (inr (refl , l))
-      = ₀α , inr (refl , l) , refl
-     f'-initial-seg ₂α (inl (inl (inl ⋆)) , .⊥β) (inr (refl , l))
-      = ₀α , inl ⋆ , refl
-     f'-initial-seg ₂α (inl (inl (inr ⋆)) , .⊥β) (inr (refl , l))
-      = ₁α , inl ⋆ , refl
-     f'-initial-seg ₃α (inl (inl (inl ⋆)) , .⊥β) (inr (refl , l))
-      = ₀α , inl ⋆ , refl
-     f'-initial-seg ₃α (inl (inl (inr ⋆)) , .⊥β) (inr (refl , l))
-      = ₁α , inl ⋆ , refl
-     f'-initial-seg ₃α (inl (inr ⋆) , .⊥β)       (inr (refl , l))
-      = ₂α , inr (refl , l) , refl
-     f'-initial-seg ₀α (inl (inl (inl ⋆)) , .⊥β) (inr (refl , l))
-      = 𝟘-elim l
-     f'-initial-seg ₀α (inl (inl (inr ⋆)) , .⊥β) (inr (refl , l))
-      = 𝟘-elim l
      f'-initial-seg ₀α (y , inl (inl (inl ⋆))) (inl l) = 𝟘-elim l
      f'-initial-seg ₀α (y , inl (inl (inr ⋆))) (inl l) = 𝟘-elim l
-     f'-initial-seg ₂α (y , inl (inl (inl ⋆))) (inl l) = 𝟘-elim l
-     f'-initial-seg ₂α (y , inl (inl (inr ⋆))) (inl l) = 𝟘-elim l
+     f'-initial-seg ₀α (inl (inl (inl ⋆)) , _) (inr (refl , l)) = 𝟘-elim l
+     f'-initial-seg ₀α (inl (inl (inr ⋆)) , _) (inr (refl , l)) = 𝟘-elim l
      f'-initial-seg ₁α (y , inl (inl (inl ⋆))) (inl l) = 𝟘-elim l
      f'-initial-seg ₁α (y , inl (inl (inr ⋆))) (inl l) = 𝟘-elim l
+     f'-initial-seg ₁α (inl (inl (inl ⋆)) , z) (inr (refl , l)) =
+      ₀α , inr (refl , ⋆) , refl
+     f'-initial-seg ₂α (y , inl (inl (inl ⋆))) (inl l) = 𝟘-elim l
+     f'-initial-seg ₂α (y , inl (inl (inr ⋆))) (inl l) = 𝟘-elim l
+     f'-initial-seg ₂α (inl (inl (inl ⋆)) , z) (inr (refl , l)) =
+      ₀α , inl ⋆ , refl
+     f'-initial-seg ₂α (inl (inl (inr ⋆)) , z) (inr (refl , l)) =
+      ₁α , inl ⋆ , refl
      f'-initial-seg ₃α (y , inl (inl (inl ⋆))) (inl l) = 𝟘-elim l
      f'-initial-seg ₃α (y , inl (inl (inr ⋆))) (inl l) = 𝟘-elim l
+     f'-initial-seg ₃α (inl (inl (inl ⋆)) , z) (inr (refl , l)) =
+      ₀α , inl ⋆ , refl
+     f'-initial-seg ₃α (inl (inl (inr ⋆)) , z) (inr (refl , l)) =
+      ₁α , inl ⋆ , refl
+     f'-initial-seg ₃α (inl (inr ⋆) , z) (inr (refl , l)) =
+      ₂α , inr (refl , ⋆) , refl
 
      f'-order-pres : is-order-preserving (α ×ₒ α) (β ×ₒ β) (f' p)
-     f'-order-pres ₀α ₂α (inl l) = inr (refl , l)
-     f'-order-pres ₀α ₃α (inl l) = inr (refl , l)
-     f'-order-pres ₁α ₂α (inl l) = inr (refl , l)
-     f'-order-pres ₁α ₃α (inl l) = inr (refl , l)
-     f'-order-pres (_ , inr ⋆) (_ , inl ⋆) (inl l) = 𝟘-elim l
-     f'-order-pres (_ , inr ⋆) (_ , inr ⋆) (inl l) = 𝟘-elim l
-     f'-order-pres ₀α (inr ⋆ , x') (inr (refl , l)) = inr (refl , l)
-     f'-order-pres ₂α (inr ⋆ , x') (inr (refl , l)) = inr (refl , l)
-     f'-order-pres (inr ⋆ , x') (inl ⋆ , x') (inr (refl , l)) = 𝟘-elim l
-     f'-order-pres (inr ⋆ , x') (inr ⋆ , x') (inr (refl , l)) = 𝟘-elim l
+     f'-order-pres ₀α ₀α l = 𝟘-elim (cases id pr₂ l)
+     f'-order-pres ₀α ₁α l = inr (refl , ⋆)
+     f'-order-pres ₀α ₂α l = inr (refl , ⋆)
+     f'-order-pres ₀α ₃α l = inr (refl , ⋆)
+     f'-order-pres ₁α ₀α l = 𝟘-elim (cases id pr₂ l)
+     f'-order-pres ₁α ₁α l = 𝟘-elim (cases id pr₂ l)
+     f'-order-pres ₁α ₂α l = inr (refl , ⋆)
+     f'-order-pres ₁α ₃α l = inr (refl , ⋆)
+     f'-order-pres ₂α ₀α l = 𝟘-elim (cases id pr₂ l)
+     f'-order-pres ₂α ₁α (inl l) = 𝟘-elim l
+     f'-order-pres ₂α ₁α (inr (e , l)) = 𝟘-elim (+disjoint (e ⁻¹))
+     f'-order-pres ₂α ₂α l = 𝟘-elim (cases id pr₂ l)
+     f'-order-pres ₂α ₃α l = inr (refl , ⋆)
+     f'-order-pres ₃α ₀α l = 𝟘-elim (cases id pr₂ l)
+     f'-order-pres ₃α ₁α l = 𝟘-elim (cases id pr₂ l)
+     f'-order-pres ₃α ₂α l = 𝟘-elim (cases id pr₂ l)
+     f'-order-pres ₃α ₃α l = 𝟘-elim (cases id pr₂ l)
 
    III : (p : P) → f ∼ f' p
    III p = at-most-one-simulation (α ×ₒ α) (β ×ₒ β)
@@ -364,5 +371,216 @@ when aiming to derive a constructive taboo.
 
   V : 𝟙ₒ +ₒ Pₒ ⊴ sup F
   V = to-⊴ (𝟙ₒ +ₒ Pₒ) (sup F) IV
+
+\end{code}
+
+TODO: REFACTOR
+And conversely... (EM gives full exponentiation)
+
+\begin{code}
+
+{-
+𝟘^_ : Ordinal 𝓤 → Ordinal 𝓤
+𝟘^_ {𝓤} β = prop-ordinal (β ≃ₒ 𝟘ₒ{𝓤}) (≃ₒ-is-prop-valued fe' β 𝟘ₒ)
+
+𝟘^-zero-spec : 𝟘^ 𝟘ₒ {𝓤} ＝ 𝟙ₒ
+𝟘^-zero-spec {𝓤} = prop-ordinal-＝
+                           (≃ₒ-is-prop-valued fe' 𝟘ₒ 𝟘ₒ) 𝟙-is-prop
+                           (λ _ → ⋆) (λ _ → (≃ₒ-refl 𝟘ₒ))
+
+𝟘^-succ-spec : (β : Ordinal 𝓤) → 𝟘^ (β +ₒ 𝟙ₒ) ＝ (𝟘^ β) ×ₒ 𝟘ₒ {𝓤}
+𝟘^-succ-spec {𝓤} β = eq ∙ ×ₒ-𝟘ₒ-right (𝟘^ β) ⁻¹
+    where
+       f : (β +ₒ 𝟙ₒ) ≃ₒ 𝟘ₒ → 𝟘
+       f e = ≃ₒ-to-fun (β +ₒ 𝟙ₒ) 𝟘ₒ e (inr ⋆)
+
+       eq :  𝟘^ (β +ₒ 𝟙ₒ) ＝ 𝟘ₒ
+       eq = prop-ordinal-＝
+                    (≃ₒ-is-prop-valued fe' (β +ₒ 𝟙ₒ) 𝟘ₒ) 𝟘-is-prop
+                    f 𝟘-elim
+
+𝟘^-sup-spec : (β : Ordinal 𝓤) → ¬ (β ＝ 𝟘ₒ) → (𝟘^ β) ＝ 𝟘ₒ
+𝟘^-sup-spec β β-not-zero =
+   prop-ordinal-＝
+           (≃ₒ-is-prop-valued fe' β 𝟘ₒ) 𝟘-is-prop
+           (λ e → 𝟘-elim (β-not-zero (eqtoidₒ (ua _) fe' _ _ e))) 𝟘-elim
+
+private
+  case : (α : Ordinal 𝓤) → 𝓤 ⁺ ̇
+  case {𝓤} α = (Σ α' ꞉ Ordinal 𝓤 , α ＝ 𝟙ₒ +ₒ α')
+
+  has-least-or-is-zero : (α : Ordinal 𝓤) → 𝓤 ⁺ ̇
+  has-least-or-is-zero α = case α + (α ＝ 𝟘ₒ)
+
+  Has-least-or-is-zero : 𝓤 ⁺ ̇
+  Has-least-or-is-zero {𝓤} = (α : Ordinal 𝓤) → has-least-or-is-zero α
+
+  open ClassicalWellOrder fe' (Univalence-gives-Prop-Ext ua) pt
+
+  EM-gives-Has-least-or-is-zero : EM 𝓤 → Has-least-or-is-zero {𝓤}
+  EM-gives-Has-least-or-is-zero em α = +functor α-inhabited-gives-least underlying-zero-unique α-inhabited-or-zero
+   where
+    α-inhabited-or-not : ∥ ⟨ α ⟩ ∥ + ¬ ∥ ⟨ α ⟩ ∥
+    α-inhabited-or-not = em ∥ ⟨ α ⟩ ∥ ∥∥-is-prop
+
+    α-inhabited-or-zero : ∥ ⟨ α ⟩ ∥ + (⟨ α ⟩ ＝ 𝟘)
+    α-inhabited-or-zero = +functor id (λ ni → empty-types-are-＝-𝟘 fe' (Univalence-gives-Prop-Ext ua) (uninhabited-is-empty ni) ) α-inhabited-or-not
+
+    underlying-zero-unique : (⟨ α ⟩ ＝ 𝟘) → α ＝ 𝟘ₒ
+    underlying-zero-unique refl = ⊴-antisym α 𝟘ₒ sim sim'
+     where
+      sim : (𝟘 , _) ⊴ 𝟘ₒ
+      sim = (𝟘-elim , (λ x → 𝟘-elim x) , λ x → 𝟘-elim x)
+      sim' : 𝟘ₒ ⊴ (𝟘 , _)
+      sim' = (𝟘-elim , (λ x → 𝟘-elim x) , λ x → 𝟘-elim x)
+
+    α-inhabited-gives-least : ∥ ⟨ α ⟩ ∥ → case α
+    α-inhabited-gives-least inh = α' , eq
+     where
+       least-element' : Σ a ꞉ ⟨ α ⟩ , 𝟙 × ((y : ⟨ α ⟩) → 𝟙 → ¬ (y ≺⟨ α ⟩ a))
+       least-element' = well-order-gives-minimal (underlying-order α) em (is-well-ordered α) (λ _ → 𝟙) (λ _ → 𝟙-is-prop) (∥∥-functor (λ a → (a , ⋆)) inh)
+
+       a₀ : ⟨ α ⟩
+       a₀ = pr₁ least-element'
+
+       a₀-least : ((y : ⟨ α ⟩) → ¬ (y ≺⟨ α ⟩ a₀))
+       a₀-least y = pr₂ (pr₂ least-element') y ⋆
+
+       ⟨α'⟩ = Σ x ꞉ ⟨ α ⟩ , a₀ ≺⟨ α ⟩ x
+
+       _<'_ : ⟨α'⟩ → ⟨α'⟩ → _
+       _<'_ = subtype-order α (λ - → a₀ ≺⟨ α ⟩ -)
+
+       <'-propvalued : is-prop-valued _<'_
+       <'-propvalued = subtype-order-is-prop-valued α (λ - → a₀ ≺⟨ α ⟩ -)
+
+       <'-wellfounded : is-well-founded _<'_
+       <'-wellfounded = subtype-order-wellfounded α (λ - → a₀ ≺⟨ α ⟩ -)
+
+       <-trichotomy  : is-trichotomous-order (underlying-order α)
+       <-trichotomy = trichotomy (underlying-order α) fe' em (is-well-ordered α)
+
+       <'-extensional : is-extensional _<'_
+       <'-extensional (x , p) (y , q) f g = to-subtype-＝ (λ x → Prop-valuedness α a₀ x)
+                                                         (Extensionality α x y
+                                                           (λ u p → f' u (<-trichotomy u a₀) p)
+                                                           λ u p → g' u (<-trichotomy u a₀) p)
+        where
+         f' : (u : ⟨ α ⟩) → in-trichotomy (underlying-order α) u a₀ → u ≺⟨ α ⟩ x → u ≺⟨ α ⟩ y
+         f' u (inl q) r = 𝟘-elim (a₀-least u q)
+         f' u (inr (inl refl)) r = q
+         f' u (inr (inr q)) r = f (u , q) r
+
+         g' : (u : ⟨ α ⟩) → in-trichotomy (underlying-order α) u a₀ → u ≺⟨ α ⟩ y → u ≺⟨ α ⟩ x
+         g' u (inl q) r = 𝟘-elim (a₀-least u q)
+         g' u (inr (inl refl)) r = p
+         g' u (inr (inr q)) r = g (u , q) r
+
+
+       <'-transitive : is-transitive _<'_
+       <'-transitive = subtype-order-transitive α (λ - → a₀ ≺⟨ α ⟩ -)
+
+       α' : Ordinal _
+       α' = ⟨α'⟩ , _<'_ , <'-propvalued , <'-wellfounded , <'-extensional , <'-transitive
+
+       f' : (x : ⟨ α ⟩) → in-trichotomy (underlying-order α) x a₀ → 𝟙 + ⟨ α' ⟩
+       f' x (inl q) = 𝟘-elim (a₀-least x q)
+       f' x (inr (inl r)) = inl ⋆
+       f' x (inr (inr q)) = inr (x , q)
+
+       f : ⟨ α ⟩ → 𝟙 + ⟨ α' ⟩
+       f x = f' x (<-trichotomy x a₀)
+
+       g : 𝟙 + ⟨ α' ⟩ → ⟨ α ⟩
+       g (inl ⋆) = a₀
+       g (inr (x , q)) = x
+
+       f-equiv : is-order-equiv α (𝟙ₒ +ₒ α') f
+       f-equiv = f-order-preserving , (qinvs-are-equivs f (g , η , ϵ)) , g-order-preserving
+        where
+         f'-order-preserving : (x y : ⟨ α ⟩)
+                             → (tx : in-trichotomy (underlying-order α) x a₀)
+                             → (ty : in-trichotomy (underlying-order α) y a₀)
+                             → x ≺⟨ α ⟩ y → f' x tx ≺⟨ 𝟙ₒ +ₒ α' ⟩ f' y ty
+         f'-order-preserving x y (inl q) ty p = 𝟘-elim (a₀-least x q)
+         f'-order-preserving x y (inr (inl r)) (inl q) p = 𝟘-elim (a₀-least y q)
+         f'-order-preserving .a₀ .a₀ (inr (inl refl)) (inr (inl refl)) p = 𝟘-elim (irrefl α a₀ p)
+         f'-order-preserving .a₀ y (inr (inl refl)) (inr (inr q)) p = ⋆
+         f'-order-preserving x y (inr (inr q)) (inl q') p = 𝟘-elim (a₀-least y q')
+         f'-order-preserving x .a₀ (inr (inr q)) (inr (inl refl)) p = 𝟘-elim (a₀-least x p)
+         f'-order-preserving x y (inr (inr q)) (inr (inr q')) p = p
+
+         f-order-preserving : is-order-preserving α (𝟙ₒ +ₒ α') f
+         f-order-preserving x y p = f'-order-preserving x y (<-trichotomy x a₀) (<-trichotomy y a₀) p
+
+         g-order-preserving : is-order-preserving (𝟙ₒ +ₒ α') α g
+         g-order-preserving (inl ⋆) (inr (x , q)) p = q
+         g-order-preserving (inr (x , q)) (inr (y , q')) p = p
+
+         η' : (x : ⟨ α ⟩) → (t : in-trichotomy (underlying-order α) x a₀) → g (f' x t) ＝ x
+         η' x (inl q) = 𝟘-elim (a₀-least x q)
+         η' x (inr (inl refl)) = refl
+         η' x (inr (inr q)) = refl
+
+         η : (x : ⟨ α ⟩) → g (f x) ＝ x
+         η x = η' x (<-trichotomy x a₀)
+
+         ϵ' : (y : 𝟙 + ⟨ α' ⟩) → (t : in-trichotomy (underlying-order α) (g y) a₀) → f' (g y) t ＝ y
+         ϵ' (inl ⋆) (inl q) = 𝟘-elim (a₀-least a₀ q)
+         ϵ' (inl ⋆) (inr (inl r)) = refl
+         ϵ' (inl ⋆) (inr (inr q)) = 𝟘-elim (irrefl α a₀ q)
+         ϵ' (inr (x , p)) (inl q) = 𝟘-elim (a₀-least x q)
+         ϵ' (inr (.a₀ , p)) (inr (inl refl)) = 𝟘-elim (irrefl α a₀ p)
+         ϵ' (inr (x , p)) (inr (inr q)) = ap inr (to-subtype-＝  ((λ x → Prop-valuedness α a₀ x)) refl)
+
+         ϵ : (y : 𝟙 + ⟨ α' ⟩) → f (g y) ＝ y
+         ϵ y = ϵ' y (<-trichotomy (g y) a₀)
+
+       eq : α ＝ 𝟙ₒ +ₒ α'
+       eq = eqtoidₒ (ua _) fe' α (𝟙ₒ +ₒ α') (f , f-equiv)
+
+Has-least-or-is-zero-gives-full-spec : Has-least-or-is-zero → Σ exp ꞉ (Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) , exponentiation-specification exp
+Has-least-or-is-zero-gives-full-spec {𝓤} cs = exp , exp-spec'
+  where
+   exp-aux : (α : Ordinal 𝓤)
+           → has-least-or-is-zero α
+           → Ordinal 𝓤 → Ordinal 𝓤
+   exp-aux α (inl (α' , _)) β = [𝟙+ α' ]^ β
+   exp-aux α (inr _) β = 𝟘^ β
+   exp : Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤
+   exp α = exp-aux α (cs α)
+
+   spec₀-aux : (α : Ordinal 𝓤) → (cs : has-least-or-is-zero α) → exp-aux α cs 𝟘ₒ ＝ 𝟙ₒ
+   spec₀-aux α (inl (α' , refl)) = exp-0-spec α'
+   spec₀-aux α (inr refl) = 𝟘^-zero-spec
+
+   specₛ-aux : (α : Ordinal 𝓤) → (cs : has-least-or-is-zero α) → (β : Ordinal 𝓤)
+             → exp-aux α cs (β +ₒ 𝟙ₒ) ＝ (exp-aux α cs β ×ₒ α)
+   specₛ-aux α (inl (α' , refl)) = exp-succ-spec α'
+   specₛ-aux α (inr refl) = 𝟘^-succ-spec
+
+   specₗ-aux-nonzero : (α : Ordinal 𝓤) → (cs : has-least-or-is-zero α) → ¬ (α ＝ 𝟘ₒ) → {I : 𝓤 ̇ } → ∥ I ∥ → (γ : I → Ordinal 𝓤)
+                     →  exp-aux α cs (sup γ) ＝ sup (λ i → exp-aux α cs (γ i))
+   specₗ-aux-nonzero α (inl (α' , refl)) α-not-zero i γ = exp-sup-spec α' i γ
+   specₗ-aux-nonzero α (inr r) α-not-zero = 𝟘-elim (α-not-zero r)
+
+   specₗ-aux-zero : (α : Ordinal 𝓤) → (cs : has-least-or-is-zero α) → α ＝ 𝟘ₒ → (β : Ordinal 𝓤) → ¬ (β ＝ 𝟘ₒ)
+                  → exp-aux α cs β ＝ 𝟘ₒ
+   specₗ-aux-zero α (inl (α' , r)) α-zero β β-not-zero = 𝟘-elim (zero-no-element (α-zero ⁻¹ ∙ r) )
+     where
+       zero-no-element : (𝟘ₒ ＝ (𝟙ₒ +ₒ α')) → 𝟘
+       zero-no-element p = Idtofun ((ap ⟨_⟩ p) ⁻¹) (inl ⋆)
+   specₗ-aux-zero α (inr refl) _ = 𝟘^-sup-spec
+
+   exp-spec' : exponentiation-specification exp
+   exp-spec' = (λ α → spec₀-aux α (cs α)) , (λ α → specₛ-aux α (cs α)) , (λ α → specₗ-aux-nonzero α (cs α) , specₗ-aux-zero α (cs α))
+
+EM-gives-full-spec : EM 𝓤 → Σ exp ꞉ (Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) , exponentiation-specification exp
+EM-gives-full-spec em = Has-least-or-is-zero-gives-full-spec (EM-gives-Has-least-or-is-zero em)
+
+-- full-spec-gives-Has-least-or-is-zero : Σ exp ꞉ (Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) , exponentiation-specification exp → Has-least-or-is-zero {𝓤}
+-- full-spec-gives-Has-least-or-is-zero {𝓤} (exp , exp-spec) = EM-gives-Has-least-or-is-zero (exp-full-spec-gives-EM exp exp-spec)
+
+-}
 
 \end{code}

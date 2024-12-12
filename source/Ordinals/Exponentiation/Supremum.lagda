@@ -5,7 +5,7 @@ With major additions and refactorings in September—December 2024.
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --no-exact-split #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import UF.Univalence
 open import UF.PropTrunc

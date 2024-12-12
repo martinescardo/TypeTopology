@@ -201,4 +201,41 @@ irrefl α x = irreflexive (underlying-order α) x (Well-foundedness α x)
 
 ≺-≼-gives-≺ : (α : Ordinal 𝓤) → (x y z : ⟨ α ⟩) → x ≺⟨ α ⟩ y → y ≼⟨ α ⟩ z  → x ≺⟨ α ⟩ z
 ≺-≼-gives-≺ α x y z p q = q x p
+
+\end{code}
+
+Added here on 12 December 2024 by Tom de Jong, but developed earlier in
+collaboration with Nicolai Kraus, Fredrik Nordvall Forsberg and Chuangjie Xu.
+
+Given an ordinal α and a type family P, subtype of elements satisfying P
+inherits an order from α.  This order also inherits wellfoundedness and
+transitivity from the order on α, but not necessarily extensionality
+constructively (see Ordinals.ShulmanTaboo).
+
+\begin{code}
+
+module _
+        (α : Ordinal 𝓤)
+        (P : ⟨ α ⟩ → 𝓥 ̇  )
+       where
+
+ subtype-order : (Σ x ꞉ ⟨ α ⟩ , P x) → (Σ x ꞉ ⟨ α ⟩ , P x) → 𝓤 ̇
+ subtype-order (x , _) (y , _) = x ≺⟨ α ⟩ y
+
+ subtype-order-is-prop-valued : is-prop-valued subtype-order
+ subtype-order-is-prop-valued (x , _) (y , _) = Prop-valuedness α x y
+
+ subtype-order-is-wellfounded : is-well-founded subtype-order
+ subtype-order-is-wellfounded (a , p) =
+  subtype-order-accessible (a , p) (Well-foundedness α a)
+   where
+    subtype-order-accessible
+     : ((x , p) : Σ x ꞉ ⟨ α ⟩ , P x)
+     → is-accessible (underlying-order α) x → is-accessible subtype-order (x , p)
+    subtype-order-accessible (x , p) (acc step) =
+     acc (λ (x' , p') l → subtype-order-accessible (x' , p') (step x' l))
+
+ subtype-order-is-transitive : is-transitive subtype-order
+ subtype-order-is-transitive (x , _) (y , _) (z , _) = Transitivity α x y z
+
 \end{code}

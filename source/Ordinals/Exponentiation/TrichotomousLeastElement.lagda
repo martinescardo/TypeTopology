@@ -1,18 +1,16 @@
 Tom de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg, Chuangjie Xu,
 26 November and 11 December 2024.
 
+TODO: Avoid --lossy-unification(?)
+
 \begin{code}
 
-{-# OPTIONS --safe --without-K --no-exact-split --lossy-unification #-}
+{-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
 
 open import UF.Univalence
-open import UF.PropTrunc
-open import UF.Size
 
 module Ordinals.Exponentiation.TrichotomousLeastElement
        (ua : Univalence)
-       (pt : propositional-truncations-exist)
-       (sr : Set-Replacement pt)
        where
 
 open import UF.Base
@@ -22,7 +20,6 @@ open import UF.Sets
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 open import UF.UA-FunExt
-open import UF.ImageAndSurjection pt
 
 private
  fe : FunExt
@@ -33,7 +30,6 @@ private
 
 open import MLTT.Plus-Properties
 open import MLTT.Spartan
-open import MLTT.Sigma
 
 open import Ordinals.Arithmetic fe
 open import Ordinals.AdditionProperties ua
@@ -44,13 +40,7 @@ open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.Propositions ua
 open import Ordinals.Type
 open import Ordinals.Underlying
-open import Ordinals.OrdinalOfOrdinalsSuprema ua
 
-open import Ordinals.Exponentiation.Specification ua pt sr
-open import Ordinals.Exponentiation.DecreasingList ua pt sr
-
-open PropositionalTruncation pt
-open suprema pt sr
 
 \end{code}
 
@@ -186,11 +176,11 @@ trichotomy-to-decomposed-at {𝓤} α x tri = β , γ , p , p-spec
     _<'_ : ⟨β⟩ → ⟨β⟩ → 𝓤 ̇
     _<'_ = subtype-order α (λ - → - < x)
     <'-propvalued : is-prop-valued _<'_
-    <'-propvalued = subtype-order-propositional α (λ - → - < x)
+    <'-propvalued = subtype-order-is-prop-valued α (λ - → - < x)
     <'-wellfounded : is-well-founded _<'_
-    <'-wellfounded = subtype-order-wellfounded α (λ - → - < x)
+    <'-wellfounded = subtype-order-is-wellfounded α (λ - → - < x)
     <'-transitive : is-transitive _<'_
-    <'-transitive = subtype-order-transitive α (λ - → - < x)
+    <'-transitive = subtype-order-is-transitive α (λ - → - < x)
     <'-extensional : is-extensional _<'_
     <'-extensional (y , k) (y' , k') f g =
      to-subtype-＝ (λ a → Prop-valuedness α a x) (Extensionality α y y' u v)
@@ -209,11 +199,11 @@ trichotomy-to-decomposed-at {𝓤} α x tri = β , γ , p , p-spec
     _<″_ : ⟨γ⟩ → ⟨γ⟩ → 𝓤 ̇
     _<″_ = subtype-order α (λ - → x < -)
     <″-propvalued : is-prop-valued _<″_
-    <″-propvalued = subtype-order-propositional α (λ - → x < -)
+    <″-propvalued = subtype-order-is-prop-valued α (λ - → x < -)
     <″-wellfounded : is-well-founded _<″_
-    <″-wellfounded = subtype-order-wellfounded α (λ - → x < -)
+    <″-wellfounded = subtype-order-is-wellfounded α (λ - → x < -)
     <″-transitive : is-transitive _<″_
-    <″-transitive = subtype-order-transitive α (λ - → x < -)
+    <″-transitive = subtype-order-is-transitive α (λ - → x < -)
     <″-extensional : is-extensional _<″_
     <″-extensional (y , k) (y' , k') f g =
      to-subtype-＝ (Prop-valuedness α x) (Extensionality α y y' u v)
@@ -396,8 +386,8 @@ to α being decomposable as α = 𝟙 + α' for some ordinal α'.
 is-decomposable-into-one-plus : Ordinal 𝓤 → 𝓤 ⁺ ̇
 is-decomposable-into-one-plus {𝓤} α = Σ α' ꞉ Ordinal 𝓤 , α ＝ 𝟙ₒ +ₒ α'
 
-has-a-trichotomous-least-element : Ordinal 𝓤 → 𝓤 ̇
-has-a-trichotomous-least-element α = Σ x ꞉ ⟨ α ⟩ , is-trichotomous-least α x
+has-trichotomous-least-element : Ordinal 𝓤 → 𝓤 ̇
+has-trichotomous-least-element α = Σ x ꞉ ⟨ α ⟩ , is-trichotomous-least α x
 
 being-decomposable-into-one-plus-is-prop-valued
  : (α : Ordinal 𝓤) → is-prop (is-decomposable-into-one-plus α)
@@ -409,9 +399,9 @@ being-decomposable-into-one-plus-is-prop-valued {𝓤} α (α' , p) (α″ , q) 
   II : (α' , p) ＝ (α″ , q)
   II = to-subtype-＝ (λ γ → the-type-of-ordinals-is-a-set (ua 𝓤) fe') I
 
-having-a-trichotomous-least-element-is-prop-valued
- : (α : Ordinal 𝓤) → is-prop (has-a-trichotomous-least-element α)
-having-a-trichotomous-least-element-is-prop-valued α (x , p) (y , q) = II
+having-trichotomous-least-element-is-prop-valued
+ : (α : Ordinal 𝓤) → is-prop (has-trichotomous-least-element α)
+having-trichotomous-least-element-is-prop-valued α (x , p) (y , q) = II
  where
   I : ((x ＝ y) + (x ≺⟨ α ⟩ y)) → ((y ＝ x) + (y ≺⟨ α ⟩ x)) → x ＝ y
   I (inl e) q' = e
@@ -424,7 +414,7 @@ having-a-trichotomous-least-element-is-prop-valued α (x , p) (y , q) = II
 decomposable-to-trichotomous-least
   : (α : Ordinal 𝓤)
   → is-decomposable-into-one-plus α
-  → has-a-trichotomous-least-element α
+  → has-trichotomous-least-element α
 decomposable-to-trichotomous-least α (γ , refl) = (inl ⋆ , III)
  where
   I : is-least (𝟙ₒ +ₒ γ) (inl ⋆)
@@ -512,7 +502,7 @@ is-least-and-decomposable-implies-nothing-below α x least (β , γ , e , p) =
 
 trichotomous-least-to-decomposable
   : (α : Ordinal 𝓤)
-  → has-a-trichotomous-least-element α
+  → has-trichotomous-least-element α
   → is-decomposable-into-one-plus α
 trichotomous-least-to-decomposable α (x , tri-least) = (γ , III)
  where
@@ -538,6 +528,7 @@ trichotomous-least-to-decomposable α (x , tri-least) = (γ , III)
 
 \end{code}
 
+TODO: UPDATE COMMENT
 
 For any ordinal α that has a trichotomous least element, and for an
 arbitrary ordinal β, we can define the exponential α^β. We first use
@@ -545,48 +536,12 @@ the trichotomous least element to decompose α.
 
 \begin{code}
 
-_⁺[_] : (α : Ordinal 𝓤) → has-a-trichotomous-least-element α → Ordinal 𝓤
+_⁺[_] : (α : Ordinal 𝓤) → has-trichotomous-least-element α → Ordinal 𝓤
 α ⁺[ d⊥ ] = pr₁ (trichotomous-least-to-decomposable α d⊥)
 
 _⁺[_]-part-of-decomposition : (α : Ordinal 𝓤)
-                            → (d⊥ : has-a-trichotomous-least-element α)
+                            → (d⊥ : has-trichotomous-least-element α)
                             → α ＝ 𝟙ₒ +ₒ α ⁺[ d⊥ ]
 α ⁺[ d⊥ ]-part-of-decomposition = pr₂ (trichotomous-least-to-decomposable α d⊥)
 
 \end{code}
-
-
-\begin{code}
-
-exp : (α : Ordinal 𝓤)
-    → has-a-trichotomous-least-element α
-    → Ordinal 𝓥
-    → Ordinal (𝓤 ⊔ 𝓥)
-exp α d⊥ β = [𝟙+ (α ⁺[ d⊥ ]) ]^ β
-
-exp-dle-0-spec : (α : Ordinal 𝓤)
-               → (d⊥ : has-a-trichotomous-least-element α)
-               → exp-specification-zero {𝓤} {𝓥} α (exp α d⊥)
-exp-dle-0-spec α d⊥ = exp-0-spec (α ⁺[ d⊥ ])
-
-exp-dle-succ-spec : (α : Ordinal 𝓤)
-                  → (d⊥ : has-a-trichotomous-least-element α)
-                  → exp-specification-succ α (exp α d⊥)
-exp-dle-succ-spec α d⊥ β = III
- where
-  I : exp α _ (β +ₒ 𝟙ₒ) ＝ exp α _ β ×ₒ (𝟙ₒ +ₒ (α ⁺[ d⊥ ]))
-  I = exp-succ-spec (α ⁺[ d⊥ ]) β
-
-  II : α ＝ 𝟙ₒ +ₒ (α ⁺[ d⊥ ])
-  II = α ⁺[ d⊥ ]-part-of-decomposition
-
-  III : exp α _ (β +ₒ 𝟙ₒ) ＝ exp α _ β ×ₒ α
-  III = transport (λ - → exp α d⊥ (β +ₒ 𝟙ₒ) ＝ exp α d⊥ β ×ₒ -) (II ⁻¹) I
-
-exp-dle-sup-spec : (α : Ordinal 𝓤)
-                 → (d⊥ : has-a-trichotomous-least-element α)
-                 → exp-specification-sup α (exp α d⊥)
-exp-dle-sup-spec α d⊥ _ = exp-sup-spec (α ⁺[ d⊥ ])
-
-\end{code}
-

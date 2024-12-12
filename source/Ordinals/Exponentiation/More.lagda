@@ -1,34 +1,21 @@
 Tom de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg, Chuangjie Xu,
 13 November 2023.
 
-TEMPORARILY SPLIT UP TO SPEED UP TYPECHECKING
+Kept around for now, but this should just be deleted at the end...
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --no-exact-split  --lossy-unification #-}
+{-# OPTIONS --safe --without-K --exact-split #-}
 
 open import UF.Univalence
-open import UF.PropTrunc
-open import UF.Size
-
 
 module Ordinals.Exponentiation.More
        (ua : Univalence)
-       (pt : propositional-truncations-exist)
-       (sr : Set-Replacement pt)
        where
 
-open import UF.Base
-open import UF.ClassicalLogic
-open import UF.Embeddings hiding (⌊_⌋)
 open import UF.Equiv
-open import UF.EquivalenceExamples
 open import UF.FunExt
-open import UF.PropTrunc
-open import UF.Sets
-open import UF.Size
 open import UF.Subsingletons
-open import UF.Subsingletons-FunExt
 open import UF.UA-FunExt
 open import UF.DiscreteAndSeparated
 
@@ -42,23 +29,17 @@ private
  pe : PropExt
  pe = Univalence-gives-PropExt ua
 
-open import MLTT.Plus-Properties
-open import MLTT.Spartan hiding (cases ; Cases)
-open import MLTT.Sigma
+open import MLTT.List
+open import MLTT.Spartan
+
 open import Ordinals.Arithmetic fe
-open import Ordinals.ConvergentSequence ua
 open import Ordinals.Equivalence
 open import Ordinals.Maps
 open import Ordinals.Notions
-open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.Type
 open import Ordinals.Underlying
 
--- our imports
-open import MLTT.List
-open import Ordinals.Exponentiation.DecreasingList ua pt sr
-
-open import Ordinals.WellOrderingTaboo
+open import Ordinals.Exponentiation.DecreasingList ua
 
 \end{code}
 
@@ -68,10 +49,10 @@ trimmed-ordinal' : (α : Ordinal 𝓤) (x₀ : ⟨ α ⟩)
                  → ((x : ⟨ α ⟩) → in-trichotomy (underlying-order α) x₀ x)
                  → Ordinal 𝓤
 trimmed-ordinal' {𝓤} α x₀ τ = α' , _≺'_
-                                 , subtype-order-propositional α (λ - → x₀ ≺⟨ α ⟩ -)
-                                 , subtype-order-wellfounded α (λ - → x₀ ≺⟨ α ⟩ -)
+                                 , subtype-order-is-prop-valued α (λ - → x₀ ≺⟨ α ⟩ -)
+                                 , subtype-order-is-wellfounded α (λ - → x₀ ≺⟨ α ⟩ -)
                                  , ≺'-extensional
-                                 , subtype-order-transitive α (λ - → x₀ ≺⟨ α ⟩ -)
+                                 , subtype-order-is-transitive α (λ - → x₀ ≺⟨ α ⟩ -)
  where
    α' : 𝓤 ̇
    α' = Σ x ꞉ ⟨ α ⟩ , x₀ ≺⟨ α ⟩ x
@@ -314,216 +295,4 @@ exp-×-distributes α β γ = {!!}
     IH₂ : is-decreasing-pr₂ γ' γ (pr₁ IH)
     IH₂ = pr₂ IH
 -}
-\end{code}
-
-Wikipedia:
-* γ > 1 => γ^(-) is order preserving
-* α^(β + γ) = α^β × α^γ              [ exp-+-distributes ]
-* α^(β × γ) = (α^β)^γ
-
-
-
-
-Added 4 June 2024.
-
-Given a (necessarily commutative) diagram of ordinals and simulations
-  f : α ⊴ γ and g : β ⊴ γ
-like this
-
-  α ↓ a   ≃ₒ   β ↓ b
-    ⊴           ⊴
-    α           β
-      ⊴ᶠ     ᵍ⊵
-          γ
-
-we have f a ＝ g b.
-
-\begin{code}
-
-simulation-inequality-lemma : (α : Ordinal 𝓤) (β : Ordinal 𝓥) (γ : Ordinal 𝓦)
-                              (f : α ⊴ γ) (g : β ⊴ γ)
-                              (a : ⟨ α ⟩) (b : ⟨ β ⟩)
-                            → (α ↓ a) ⊴ (β ↓ b)
-                            → (pr₁ f) a ≼⟨ γ ⟩ (pr₁ g) b
-simulation-inequality-lemma α β γ 𝕗@(f , f-sim) 𝕘@(g , g-sim)
-                            a b 𝕖@(e , e-sim) c c-below-fa = V
- where
-  I : Σ x ꞉ ⟨ α ⟩ , x ≺⟨ α ⟩ a × (f x ＝ c)
-  I = simulations-are-initial-segments α γ f f-sim a c c-below-fa
-  x : ⟨ α ⟩
-  x = pr₁ I
-  x-below-a : x ≺⟨ α ⟩ a
-  x-below-a = pr₁ (pr₂ I)
-  fx-equals-c : f x ＝ c
-  fx-equals-c = pr₂ (pr₂ I)
-
-  II : ⟨ β ↓ b ⟩
-  II = e (x , x-below-a)
-  y : ⟨ β ⟩
-  y = pr₁ II
-  y-below-b : y ≺⟨ β ⟩ b
-  y-below-b = pr₂ II
-
-  III : f x ＝ g y
-  III = ap (λ - → pr₁ - (x , x-below-a)) sim-commute
-   where
-    sim-commute :
-        ⊴-trans _ _ _ (segment-⊴ α a) 𝕗
-     ＝ ⊴-trans _ _ _ 𝕖 (⊴-trans _ _ _ (segment-⊴ β b) 𝕘)
-    sim-commute =
-     ⊴-is-prop-valued _ _ (⊴-trans _ _ _ (segment-⊴ α a) 𝕗)
-                          (⊴-trans _ _ _ 𝕖 (⊴-trans _ _ _ (segment-⊴ β b) 𝕘))
-
-  IV : c ＝ g y
-  IV = fx-equals-c ⁻¹ ∙ III
-
-  V : c ≺⟨ γ ⟩ g b
-  V = transport⁻¹ (λ - → - ≺⟨ γ ⟩ g b) IV
-                  (simulations-are-order-preserving β γ g g-sim y b y-below-b)
-
-simulation-equality-lemma : (α : Ordinal 𝓤) (β : Ordinal 𝓥) (γ : Ordinal 𝓦)
-                            (f : α ⊴ γ) (g : β ⊴ γ)
-                            (a : ⟨ α ⟩) (b : ⟨ β ⟩)
-                          → (α ↓ a) ≃ₒ (β ↓ b)
-                          → (pr₁ f) a ＝ (pr₁ g) b
-simulation-equality-lemma α β γ f g a b e = Extensionality γ (pr₁ f a) (pr₁ g b) I II
- where
-  I : pr₁ f a ≼⟨ γ ⟩ pr₁ g b
-  I = simulation-inequality-lemma α β γ f g a b (≃ₒ-to-⊴ _ _ e)
-  II : pr₁ g b ≼⟨ γ ⟩ pr₁ f a
-  II = simulation-inequality-lemma β α γ g f b a (≃ₒ-to-⊴ _ _ (≃ₒ-sym _ _ e))
-
-simulation-inequality-lemma-converse : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
-                                       (γ : Ordinal 𝓦)
-                                       (f : α ⊴ γ) (g : β ⊴ γ)
-                                       (a : ⟨ α ⟩) (b : ⟨ β ⟩)
-                                     → (pr₁ f) a ≼⟨ γ ⟩ (pr₁ g) b
-                                     → (α ↓ a) ⊴ (β ↓ b)
-simulation-inequality-lemma-converse α β γ 𝕗@(f , f-sim) 𝕘@(g , g-sim)
-                                     a b fa-below-gb =
- h , h-intial-segment , h-order-preserving
-  where
-   h-prelim : (x : ⟨ α ⟩)
-            → x ≺⟨ α ⟩ a
-            → Σ y ꞉ ⟨ β ⟩ , (y ≺⟨ β ⟩ b) × (g y ＝ f x)
-   h-prelim x l = simulations-are-initial-segments β γ g g-sim b (f x) l'
-    where
-     l' : f x ≺⟨ γ ⟩ g b
-     l' = fa-below-gb (f x) (simulations-are-order-preserving α γ f f-sim x a l)
-
-   h : ⟨ α ↓ a ⟩ → ⟨ β ↓ b ⟩
-   h (x , l) = (pr₁ (h-prelim x l) , pr₁ (pr₂ (h-prelim x l)))
-   h̅ : ⟨ α ↓ a ⟩ → ⟨ β ⟩
-   h̅ = segment-inclusion _ _ ∘ h
-
-   h-eq : (x : ⟨ α ⟩) (l : x ≺⟨ α ⟩ a)
-        → g (h̅ (x , l)) ＝ f x
-   h-eq x l = pr₂ (pr₂ (h-prelim x l))
-
-   h-order-preserving : is-order-preserving (α ↓ a) (β ↓ b) h
-   h-order-preserving (x , l) (y , k) x-below-y = III
-    where
-     I : f x ≺⟨ γ ⟩ f y
-     I = simulations-are-order-preserving α γ f f-sim x y x-below-y
-     II : g (h̅ (x , l)) ≺⟨ γ ⟩ g (h̅ (y , k))
-     II = transport₂⁻¹ (underlying-order γ) (h-eq x l) (h-eq y k) I
-     III : h̅ (x , l) ≺⟨ β ⟩ h̅ (y , k)
-     III = simulations-are-order-reflecting β γ g g-sim
-                                            (h̅ (x , l)) (h̅ (y , k)) II
-
-   h-intial-segment : is-initial-segment (α ↓ a) (β ↓ b) h
-   h-intial-segment (x , l) (y , k) y-below-hx = (x' , IV) , x'-below-x , V
-    where
-     I : g y ≺⟨ γ ⟩ g (h̅ (x , l))
-     I = simulations-are-order-preserving β γ g g-sim y (h̅ (x , l)) y-below-hx
-     II : g y ≺⟨ γ ⟩ f x
-     II = transport (λ - → g y ≺⟨ γ ⟩ -) (h-eq x l) I
-     III : Σ x' ꞉ ⟨ α ⟩ , x' ≺⟨ α ⟩ x × (f x' ＝ g y)
-     III = simulations-are-initial-segments α γ f f-sim x (g y) II
-     x' : ⟨ α ⟩
-     x' = pr₁ III
-     x'-below-x : x' ≺⟨ α ⟩ x
-     x'-below-x = pr₁ (pr₂ III)
-     IV : x' ≺⟨ α ⟩ a
-     IV = Transitivity α x' x a x'-below-x l
-     V : h (x' , IV) ＝ y , k
-     V = to-subtype-＝ (λ _ → Prop-valuedness β _ b)
-                       (simulations-are-lc β γ g g-sim
-                                           (g (h̅ (x' , IV)) ＝⟨ h-eq x' IV ⟩
-                                            f x'            ＝⟨ pr₂ (pr₂ III) ⟩
-                                            g y             ∎))
-
-simulation-equality-lemma-converse : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
-                                     (γ : Ordinal 𝓦)
-                                     (f : α ⊴ γ) (g : β ⊴ γ)
-                                     (a : ⟨ α ⟩) (b : ⟨ β ⟩)
-                                   → (pr₁ f) a ＝ (pr₁ g) b
-                                   → (α ↓ a) ≃ₒ (β ↓ b)
-simulation-equality-lemma-converse α β γ f g a b eq =
- bisimilarity-gives-ordinal-equiv (α ↓ a) (β ↓ b) I II
-  where
-   I : (α ↓ a) ⊴ (β ↓ b)
-   I = simulation-inequality-lemma-converse α β γ f g a b
-        (≼-refl-＝ (underlying-order γ) eq)
-   II : (β ↓ b) ⊴ (α ↓ a)
-   II = simulation-inequality-lemma-converse β α γ g f b a
-         (≼-refl-＝ (underlying-order γ) (eq ⁻¹))
-
-\end{code}
-
-The type [𝟙+ α ]^ β inherits decidability properties from α and β.
-
-\begin{code}
-
-open import DiscreteGraphicMonoids.ListsWithoutRepetitions fe' using (List-is-discrete)
-open import TypeTopology.SigmaDiscreteAndTotallySeparated using (×-is-discrete)
-
-[𝟙+]^-preserves-discrete : (α : Ordinal 𝓤)(β : Ordinal 𝓥)
-                         → is-discrete ⟨ α ⟩
-                         → is-discrete ⟨ β ⟩
-                         → is-discrete ⟨ [𝟙+ α ]^ β ⟩
-[𝟙+]^-preserves-discrete α β dec-α dec-β l@(xs , _) l'@(ys , _) = III II
- where
-  I : is-discrete (⟨ α ⟩ × ⟨ β ⟩)
-  I = ×-is-discrete dec-α dec-β
-
-  II : is-decidable (xs ＝ ys)
-  II = List-is-discrete ⦃ discrete-gives-discrete' I ⦄ xs ys
-
-  III : is-decidable (xs ＝ ys) → is-decidable (l ＝ l')
-  III (inl eq) = inl (to-exponential-＝ α β eq)
-  III (inr neq) = inr (λ p → neq (ap pr₁ p))
-
-[𝟙+]^-preserves-trichotomy : (α : Ordinal 𝓤)(β : Ordinal 𝓥)
-                           → is-trichotomous α
-                           → is-trichotomous β
-                           → is-trichotomous ([𝟙+ α ]^ β)
-[𝟙+]^-preserves-trichotomy α β tri-α tri-β l@(xs , _) l'@(ys , _) =
- κ (tri xs ys)
- where
-  tri : (xs ys : List ⟨  α ×ₒ β ⟩)
-      → xs ≺⟨List (α ×ₒ β) ⟩ ys + (xs ＝ ys) + ys ≺⟨List (α ×ₒ β) ⟩ xs
-  tri [] [] = inr (inl refl)
-  tri [] (x ∷ ys) = inl []-lex
-  tri (x ∷ xs) [] = inr (inr []-lex)
-  tri ((a , b) ∷ xs) ((a' , b') ∷ ys) =
-   ϕ (×ₒ-is-trichotomous α β tri-α tri-β (a , b) (a' , b')) (tri xs ys)
-   where
-    ϕ : in-trichotomy (underlying-order (α ×ₒ β)) (a , b) (a' , b')
-      → in-trichotomy (λ l l' → l ≺⟨List (α ×ₒ β) ⟩ l') xs ys
-      → in-trichotomy (λ l l' → l ≺⟨List (α ×ₒ β) ⟩ l')
-                      ((a , b) ∷ xs)
-                      ((a' , b') ∷ ys)
-    ϕ (inl p)       _              = inl (head-lex p)
-    ϕ (inr (inl r)) (inl ps)       = inl (tail-lex r ps)
-    ϕ (inr (inl r)) (inr (inl rs)) = inr (inl (ap₂ _∷_ r rs))
-    ϕ (inr (inl r)) (inr (inr qs)) = inr (inr (tail-lex (r ⁻¹) qs))
-    ϕ (inr (inr q)) _              = inr (inr (head-lex q))
-
-  κ : xs ≺⟨List (α ×ₒ β) ⟩ ys + (xs ＝ ys) + ys ≺⟨List (α ×ₒ β) ⟩ xs
-    → l ≺⟨ [𝟙+ α ]^ β ⟩ l' + (l ＝ l') + l' ≺⟨ [𝟙+ α ]^ β ⟩ l
-  κ (inl p) = inl p
-  κ (inr (inl e)) = inr (inl (to-exponential-＝ α β e))
-  κ (inr (inr q)) = inr (inr q)
-
 \end{code}
