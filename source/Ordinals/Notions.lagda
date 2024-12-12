@@ -169,6 +169,9 @@ End of addition.
 is-transitive : 𝓤 ⊔ 𝓥 ̇
 is-transitive = (x y z : X) → x < y → y < z → x < z
 
+is-irreflexive : 𝓤 ⊔ 𝓥 ̇
+is-irreflexive = (x : X) → ¬ (x < x)
+
 private
   _≼_ : X → X → 𝓤 ⊔ 𝓥 ̇
   x ≼ y = ∀ u → u < x → u < y
