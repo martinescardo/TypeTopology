@@ -938,7 +938,7 @@ Next, we resize α⁺ using:
   private
    small-image : is-small (image σ)
    small-image = replacement σ ((Σ i ꞉ I , ⟨ α i ⟩) , ≃-refl _)
-                               (λ β γ → β ≃ₒ γ , ≃-sym (UAₒ-≃ (ua 𝓤) fe' β γ))
+                               (λ β γ → (β ≃ₒ γ) , ≃-sym (UAₒ-≃ (ua 𝓤) fe' β γ))
                                (the-type-of-ordinals-is-a-set (ua 𝓤) fe')
    α⁻ : 𝓤 ̇
    α⁻ = pr₁ small-image
