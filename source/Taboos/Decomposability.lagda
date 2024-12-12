@@ -102,7 +102,7 @@ decompositions-agree {𝓤} ua X =
   I  = Σ-change-of-variable-≃ _ (≃-sym (decomposition-lemma ua X))
   II = Σ-assoc
 
-decompositions-as-retracts : (X : 𝓤 ̇  ) → decomposition X ≃ retract 𝟚 of X
+decompositions-as-retracts : (X : 𝓤 ̇ ) → decomposition X ≃ retract 𝟚 of X
 decompositions-as-retracts X = Σ-cong I
  where
   I : (f : X → 𝟚) → fiber f ₀ × fiber f ₁ ≃ has-section f

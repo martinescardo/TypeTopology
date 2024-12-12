@@ -21,22 +21,47 @@ record Monad : Type₁ where
   functor : Type → Type
   η       : {X : Type} → X → functor X
   ext     : {X Y : Type} → (X → functor Y) → functor X → functor Y
-  ext-η   : {X : Type} → ext (η {X}) ∼ 𝑖𝑑 (functor X)
-  unit    : {X Y : Type} (f : X → functor Y) (x : X) → ext f (η x) ＝ f x
-  assoc   : {X Y Z : Type} (g : Y → functor Z) (f : X → functor Y) (t : functor X)
-          → ext (λ x → ext g (f x)) t ＝ ext g (ext f t)
+  ext-η   : {X : Type}
+          → ext (η {X}) ∼ 𝑖𝑑 (functor X)
+  unit    : {X Y : Type} (f : X → functor Y)
+          → ext f ∘ η ∼ f
+  assoc   : {X Y Z : Type} (g : Y → functor Z) (f : X → functor Y)
+          → ext (ext g ∘ f) ∼ ext g ∘ ext f
 
  map : {X Y : Type} → (X → Y) → functor X → functor Y
  map f = ext (η ∘ f)
 
+ map-id : {X : Type} → map (𝑖𝑑 X) ∼ 𝑖𝑑 (functor X)
+ map-id = ext-η
+
+ map-∘ : funext₀
+       → {X Y Z : Type} (f : X → Y) (g : Y → Z)
+       → map (g ∘ f) ∼ map g ∘ map f
+ map-∘ fe f g t =
+  map (g ∘ f) t                               ＝⟨ refl ⟩
+  ext (λ x → η (g (f x))) t                   ＝⟨ by-unit ⟩
+  ext (λ x → ext (λ y → η (g y)) (η (f x))) t ＝⟨ by-assoc ⟩
+  ext (λ x → η (g x)) (ext (λ x → η (f x)) t) ＝⟨ refl ⟩
+  (map g ∘ map f) t                           ∎
+   where
+    by-unit  = ap (λ - → ext - t)
+                  (dfunext fe (λ x → (unit (λ y → η (g y)) (f x))⁻¹))
+    by-assoc = assoc (λ x → η (g x)) (λ x → η (f x)) t
+
+ map-∘₃ : funext₀
+       → {X Y Z T : Type} (f : X → Y) (g : Y → Z) (h : Z → T)
+       → map (h ∘ g ∘ f) ∼ map h ∘ map g ∘ map f
+ map-∘₃ fe f g h t =
+  map (h ∘ g ∘ f) t         ＝⟨ I ⟩
+  (map (h ∘ g) ∘ map f) t   ＝⟨ II ⟩
+  (map h ∘ map g) (map f t) ＝⟨ refl ⟩
+  (map h ∘ map g ∘ map f) t ∎
+   where
+    I  = map-∘ fe f (h ∘ g) t
+    II = ap (λ - → (- ∘ map f) t) (dfunext fe (map-∘ fe g h))
+
  μ : {X : Type} → functor (functor X) → functor X
  μ = ext id
-
- _⊗_ : {X : Type} {Y : X → Type}
-     → functor X
-     → ((x : X) → functor (Y x))
-     → functor (Σ x ꞉ X , Y x)
- t ⊗ f = ext (λ x → map (λ y → x , y) (f x)) t
 
  η-natural : {X Y : Type} (h : X → Y)
            → map h ∘ η {X} ∼ η {Y} ∘ h
@@ -60,6 +85,30 @@ record Monad : Type₁ where
     by-unit        = ap (λ - → ext - tt)
                         (dfunext fe (λ t → unit id (ext (η ∘ h) t)))
     again-by-assoc = assoc id (λ x → η (ext (η ∘ h) x)) tt
+
+ μη : {X : Type} (t : functor X) → μ (η t) ＝ t
+ μη t = μ (η t)      ＝⟨ refl ⟩
+        ext id (η t) ＝⟨ unit id t ⟩
+        t            ∎
+
+ μ-map-η : funext₀
+         → {X : Type} (t : functor X) → μ (map η t) ＝ t
+ μ-map-η fe t =
+  μ (map η t)                    ＝⟨ refl ⟩
+  ext id (ext (η ∘ η) t)         ＝⟨ I ⟩
+  ext (λ x → ext id (η (η x))) t ＝⟨ II ⟩
+  ext η t                        ＝⟨ III ⟩
+  t ∎
+   where
+    I   = (assoc id (λ x → η (η x)) t)⁻¹
+    II  = ap (λ - → ext - t) (dfunext fe (λ x → unit id (η x)))
+    III = ext-η t
+
+ _⊗_ : {X : Type} {Y : X → Type}
+     → functor X
+     → ((x : X) → functor (Y x))
+     → functor (Σ x ꞉ X , Y x)
+ t ⊗ f = ext (λ x → map (λ y → x , y) (f x)) t
 
 open Monad public
 
@@ -116,6 +165,14 @@ module T-definitions (𝕋 : Monad) where
 
  mapᵀ : {X Y : Type} → (X → Y) → T X → T Y
  mapᵀ = map 𝕋
+
+ mapᵀ-id : {X : Type} → mapᵀ (𝑖𝑑 X) ∼ 𝑖𝑑 (T X)
+ mapᵀ-id = map-id 𝕋
+
+ mapᵀ-∘ : funext₀
+        → {X Y Z : Type} (f : X → Y) (g : Y → Z)
+        → mapᵀ (g ∘ f) ∼ mapᵀ g ∘ mapᵀ f
+ mapᵀ-∘ = map-∘ 𝕋
 
  ηᵀ-natural : {X Y : Type} (f : X → Y)
            → mapᵀ f ∘ ηᵀ ∼ ηᵀ ∘ f
@@ -276,20 +333,20 @@ module α-definitions
  α-assocᵀ : α ∘ extᵀ (ηᵀ ∘ α) ∼ α ∘ extᵀ id
  α-assocᵀ = assoc 𝓐
 
- α-assocᵀ' : (t : T (T R)) → α (extᵀ {T R} {R} (λ x → ηᵀ (α x)) t) ＝ (α ∘ extᵀ id) t
- α-assocᵀ' = assoc 𝓐
+ α-assocᵀ' : α ∘ mapᵀ α ∼ α ∘ μᵀ
+ α-assocᵀ' = α-assocᵀ
 
- α-extᵀ : {A : Type} → (A → R) → T A → R
- α-extᵀ q = α ∘ mapᵀ q
+ α-extᵀ : {X : Type} → (X → R) → T X → R
+ α-extᵀ f = α ∘ mapᵀ f
 
  α-extᵀ-unit : {X : Type}
-               (p : X → R)
-             → α-extᵀ p ∘ ηᵀ ∼ p
- α-extᵀ-unit p x =
-  α-extᵀ p (ηᵀ x)          ＝⟨ refl ⟩
-  α (extᵀ (ηᵀ ∘ p) (ηᵀ x)) ＝⟨ ap α (unitᵀ (ηᵀ ∘ p) x) ⟩
-  α (ηᵀ (p x))             ＝⟨ α-unitᵀ (p x) ⟩
-  p x                      ∎
+               (f : X → R)
+             → α-extᵀ f ∘ ηᵀ ∼ f
+ α-extᵀ-unit f x =
+  α-extᵀ f (ηᵀ x)          ＝⟨ refl ⟩
+  α (extᵀ (ηᵀ ∘ f) (ηᵀ x)) ＝⟨ ap α (unitᵀ (ηᵀ ∘ f) x) ⟩
+  α (ηᵀ (f x))             ＝⟨ α-unitᵀ (f x) ⟩
+  f x                      ∎
 
  α-curryᵀ : {X : Type} {Y : X → Type}
           → ((Σ x ꞉ X , Y x) → R)
