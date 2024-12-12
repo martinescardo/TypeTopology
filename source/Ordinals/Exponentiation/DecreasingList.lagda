@@ -1092,8 +1092,8 @@ module _ {I : 𝓤 ̇  }
                (pr₂ exp-sup-simulation)
                exp-sup-simulation-surjective
 
-exp-sup-spec : (α : Ordinal 𝓤) {I : 𝓤 ̇  } → ∥ I ∥ → (β : I → Ordinal 𝓤) → sup (λ i → ([𝟙+ α ]^ (β i))) ＝ ([𝟙+ α ]^ (sup β))
-exp-sup-spec α i β = ∥∥-rec (the-type-of-ordinals-is-a-set (ua _) fe') (λ i₀ → sup-spec i₀ β α) i
+exp-sup-spec : (α : Ordinal 𝓤) {I : 𝓤 ̇  } → ∥ I ∥ → (β : I → Ordinal 𝓤) → ([𝟙+ α ]^ (sup β)) ＝ sup (λ i → ([𝟙+ α ]^ (β i)))
+exp-sup-spec α i β = ∥∥-rec (the-type-of-ordinals-is-a-set (ua _) fe') (λ i₀ → sup-spec i₀ β α ⁻¹) i
 
 \end{code}
 
@@ -1282,7 +1282,7 @@ Has-least-or-is-zero-gives-full-spec {𝓤} cs = exp , exp-spec'
 
    specₗ-aux-nonzero : (α : Ordinal 𝓤) → (cs : has-least-or-is-zero α) → ¬ (α ＝ 𝟘ₒ) → {I : 𝓤 ̇ } → ∥ I ∥ → (γ : I → Ordinal 𝓤)
                      →  exp-aux α cs (sup γ) ＝ sup (λ i → exp-aux α cs (γ i))
-   specₗ-aux-nonzero α (inl (α' , refl)) α-not-zero i γ = exp-sup-spec α' i γ ⁻¹
+   specₗ-aux-nonzero α (inl (α' , refl)) α-not-zero i γ = exp-sup-spec α' i γ
    specₗ-aux-nonzero α (inr r) α-not-zero = 𝟘-elim (α-not-zero r)
 
    specₗ-aux-zero : (α : Ordinal 𝓤) → (cs : has-least-or-is-zero α) → α ＝ 𝟘ₒ → (β : Ordinal 𝓤) → ¬ (β ＝ 𝟘ₒ)
@@ -1307,6 +1307,6 @@ EM-gives-full-spec em = Has-least-or-is-zero-gives-full-spec (EM-gives-Has-least
 \begin{code}
 monotone-in-exponent : ∀ {𝓤} (α : Ordinal 𝓤)
                      → is-monotone (OO 𝓤) (OO 𝓤) [𝟙+ α ]^_
-monotone-in-exponent α = is-monotone-if-continuous ([𝟙+ α ]^_) (λ i γ → (exp-sup-spec α i γ) ⁻¹)
+monotone-in-exponent α = is-monotone-if-continuous ([𝟙+ α ]^_) (exp-sup-spec α)
 
 \end{code}
