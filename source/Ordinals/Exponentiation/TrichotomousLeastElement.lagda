@@ -1,5 +1,5 @@
 Tom de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg, Chuangjie Xu,
-26 November 2024.
+26 November and 11 December 2024.
 
 \begin{code}
 
@@ -16,7 +16,6 @@ module Ordinals.Exponentiation.TrichotomousLeastElement
        where
 
 open import UF.Base
-open import UF.ClassicalLogic
 open import UF.Equiv
 open import UF.FunExt
 open import UF.Sets
@@ -32,182 +31,325 @@ private
  fe' : Fun-Ext
  fe' {𝓤} {𝓥} = fe 𝓤 𝓥
 
- pe : PropExt
- pe = Univalence-gives-PropExt ua
-
 open import MLTT.Plus-Properties
 open import MLTT.Spartan
 open import MLTT.Sigma
-open import MLTT.List
 
 open import Ordinals.Arithmetic fe
 open import Ordinals.AdditionProperties ua
 open import Ordinals.Equivalence
 open import Ordinals.Maps
-open import Ordinals.MultiplicationProperties ua
 open import Ordinals.Notions
 open import Ordinals.OrdinalOfOrdinals ua
+open import Ordinals.Propositions ua
 open import Ordinals.Type
 open import Ordinals.Underlying
-open import Ordinals.WellOrderingTaboo
 open import Ordinals.OrdinalOfOrdinalsSuprema ua
 
+open import Ordinals.Exponentiation.Specification ua pt sr
 open import Ordinals.Exponentiation.DecreasingList ua pt sr
 
 open PropositionalTruncation pt
-
 open suprema pt sr
-
-open import Ordinals.Exponentiation.TrichotomyAndIsolation ua pt sr
 
 \end{code}
 
 Let α be an ordinal. Its order relation ≺ is locally trichotomous at
-an element x if y ≺ x or x = y or x ≺ y for all y : α, and we say x is
-trichotomous. Furthermore, x is called a trichotomous least element if
-x = y or x ≺ y for all y : α.
+an element x if x ≺ y or x = y or y ≺ x for all y : α. Abusing
+terminology, we will also say that x is trichotomous in α.
+
+\begin{code}
+
+is-locally-trichotomous-at : (α : Ordinal 𝓤) → ⟨ α ⟩ → 𝓤 ̇
+is-locally-trichotomous-at α x = is-trichotomous-element (underlying-order α) x
+
+locally-trichotomous-at-is-prop : (α : Ordinal 𝓤) → (x : ⟨ α ⟩)
+                                → is-prop (is-locally-trichotomous-at α x)
+locally-trichotomous-at-is-prop α x =
+ Π-is-prop fe' (in-trichotomy-is-prop (underlying-order α) fe
+                                      (is-well-ordered α)
+                                      x)
+\end{code}
+
+We say α is decomposed at x if there is an e: α = β + 𝟙 + γ for some
+ordinals β and γ such that e maps x to in(⋆). Since such β and γ are
+necessarily unique, if they exist, there is no difference between
+formulating this property using Σ or ∃. We use Σ, for convenience.
+
+\begin{code}
+
+is-decomposed-at : (α : Ordinal 𝓤) → ⟨ α ⟩ → 𝓤 ⁺ ̇
+is-decomposed-at {𝓤} α x =
+  Σ β ꞉ Ordinal 𝓤 ,
+  Σ γ ꞉ Ordinal 𝓤 ,
+  Σ e ꞉ α ＝ (β +ₒ (𝟙ₒ +ₒ γ)) , Idtofunₒ e x ＝ inr (inl ⋆)
+
+is-decomposed-at-is-prop : (α : Ordinal 𝓤) → (x : ⟨ α ⟩)
+                         → is-prop (is-decomposed-at α x)
+is-decomposed-at-is-prop {𝓤} α x (β , γ , e , p) (β' , γ' , e' , p') =
+ to-subtype-＝
+  (λ β (γ , e , p) (γ' , e' , p') →
+    to-subtype-＝ (λ γ → Σ-is-prop
+                          (the-type-of-ordinals-is-a-set (ua 𝓤) fe')
+                          (λ e → underlying-type-is-set fe (β +ₒ (𝟙ₒ +ₒ γ))))
+                  (III β γ γ' (e ⁻¹ ∙ e')))
+    II
+ where
+  I : (δ ε : Ordinal 𝓥) → δ +ₒ (𝟙ₒ +ₒ ε) ↓ inr (inl ⋆) ＝ δ
+  I δ ε = δ +ₒ (𝟙ₒ +ₒ ε) ↓ inr (inl ⋆) ＝⟨ +ₒ-↓-right (inl ⋆) ⁻¹ ⟩
+          δ +ₒ (𝟙ₒ +ₒ ε ↓ inl ⋆)       ＝⟨ ap (δ +ₒ_) (+ₒ-↓-left ⋆) ⁻¹ ⟩
+          δ +ₒ (𝟙ₒ ↓ ⋆)                ＝⟨ ap (δ +ₒ_)
+                                              (prop-ordinal-↓ 𝟙-is-prop ⋆) ⟩
+          δ +ₒ 𝟘ₒ                      ＝⟨ 𝟘ₒ-right-neutral δ ⟩
+          δ                            ∎
+
+  II = β                                ＝⟨ I β γ ⁻¹ ⟩
+       β +ₒ (𝟙ₒ +ₒ γ) ↓ inr (inl ⋆)     ＝⟨ ap (β +ₒ (𝟙ₒ +ₒ γ) ↓_) p ⁻¹ ⟩
+       β +ₒ (𝟙ₒ +ₒ γ) ↓ Idtofunₒ e x    ＝⟨ II₀ ⁻¹ ⟩
+       α ↓ x                            ＝⟨ II₁ ⟩
+       β' +ₒ (𝟙ₒ +ₒ γ') ↓ Idtofunₒ e' x ＝⟨ ap (β' +ₒ (𝟙ₒ +ₒ γ') ↓_) p' ⟩
+       β' +ₒ (𝟙ₒ +ₒ γ') ↓ inr (inl ⋆)   ＝⟨ I β' γ' ⟩
+       β'                               ∎
+   where
+    II₀ = simulations-preserve-↓
+            α
+            (β +ₒ (𝟙ₒ +ₒ γ))
+            (Idtofunₒ e ,
+             order-equivs-are-simulations α
+                                          (β +ₒ (𝟙ₒ +ₒ γ))
+                                          (Idtofunₒ e)
+                                          (Idtofunₒ-is-order-equiv e)) x
+    II₁ = simulations-preserve-↓
+            α
+            (β' +ₒ (𝟙ₒ +ₒ γ'))
+            (Idtofunₒ e' ,
+             order-equivs-are-simulations α
+                                          (β' +ₒ (𝟙ₒ +ₒ γ'))
+                                          (Idtofunₒ e')
+                                          (Idtofunₒ-is-order-equiv e')) x
+
+
+  III : (β γ γ' : Ordinal 𝓤) → β +ₒ (𝟙ₒ +ₒ γ) ＝ β +ₒ (𝟙ₒ +ₒ γ') → γ ＝ γ'
+  III β γ γ' r = +ₒ-left-cancellable (β +ₒ 𝟙ₒ) γ γ' r'
+   where
+    r' = (β +ₒ 𝟙ₒ) +ₒ γ   ＝⟨ +ₒ-assoc β 𝟙ₒ γ ⟩
+          β +ₒ (𝟙ₒ +ₒ γ)  ＝⟨ r ⟩
+          β +ₒ (𝟙ₒ +ₒ γ') ＝⟨ +ₒ-assoc β 𝟙ₒ γ' ⁻¹ ⟩
+         (β +ₒ 𝟙ₒ) +ₒ γ'  ∎
+
+\end{code}
+
+An element x is trichotomous in ordinal α iff α is decomposed at x.
+
+\begin{code}
+
+decomposed-at-to-trichotomy : (α : Ordinal 𝓤) (x : ⟨ α ⟩)
+    → is-decomposed-at α x → is-locally-trichotomous-at α x
+decomposed-at-to-trichotomy α x (β , γ , e , p) y = III (II (f y))
+ where
+  f = Idtofunₒ e
+  f-equiv = Idtofunₒ-is-order-equiv e
+
+  I : is-locally-trichotomous-at (β +ₒ (𝟙ₒ +ₒ γ)) (inr (inl ⋆))
+  I (inl b) = inr (inr ⋆)
+  I (inr (inl ⋆)) = inr (inl refl)
+  I (inr (inr c)) = inl ⋆
+
+  II : is-locally-trichotomous-at (β +ₒ (𝟙ₒ +ₒ γ)) (f x)
+  II = transport (is-locally-trichotomous-at (β +ₒ (𝟙ₒ +ₒ γ))) (p ⁻¹) I
+
+  III : in-trichotomy (underlying-order (β +ₒ (𝟙ₒ +ₒ γ))) (f x) (f y)
+      → in-trichotomy (underlying-order α) x y
+  III = +functor (f-order-reflecting x y)
+                 (+functor f-lc (f-order-reflecting y x))
+   where
+    f-order-reflecting : is-order-reflecting α (β +ₒ (𝟙ₒ +ₒ γ)) f
+    f-order-reflecting = order-equivs-are-order-reflecting α (β +ₒ (𝟙ₒ +ₒ γ))
+                                                           f f-equiv
+
+    f-lc : left-cancellable f
+    f-lc = equivs-are-lc f (order-equivs-are-equivs α (β +ₒ (𝟙ₒ +ₒ γ)) f-equiv)
+
+
+trichotomy-to-decomposed-at : (α : Ordinal 𝓤) (x : ⟨ α ⟩)
+    → is-locally-trichotomous-at α x → is-decomposed-at α x
+trichotomy-to-decomposed-at {𝓤} α x tri = β , γ , p , p-spec
+ where
+  _<_ = underlying-order α
+
+  β : Ordinal 𝓤
+  β = ⟨β⟩ , _<'_ ,
+      <'-propvalued , <'-wellfounded , <'-extensional , <'-transitive
+   where
+    ⟨β⟩ : 𝓤 ̇
+    ⟨β⟩ = Σ y ꞉ ⟨ α ⟩ , y < x
+    _<'_ : ⟨β⟩ → ⟨β⟩ → 𝓤 ̇
+    _<'_ = subtype-order α (λ - → - < x)
+    <'-propvalued : is-prop-valued _<'_
+    <'-propvalued = subtype-order-propositional α (λ - → - < x)
+    <'-wellfounded : is-well-founded _<'_
+    <'-wellfounded = subtype-order-wellfounded α (λ - → - < x)
+    <'-transitive : is-transitive _<'_
+    <'-transitive = subtype-order-transitive α (λ - → - < x)
+    <'-extensional : is-extensional _<'_
+    <'-extensional (y , k) (y' , k') f g =
+     to-subtype-＝ (λ a → Prop-valuedness α a x) (Extensionality α y y' u v)
+      where
+       u : (a : ⟨ α ⟩) → a < y → a < y'
+       u a l = f (a , Transitivity α a y x l k) l
+       v : (a : ⟨ α ⟩) → a < y' → a < y
+       v a l = g (a , Transitivity α a y' x l k') l
+
+  γ : Ordinal 𝓤
+  γ = ⟨γ⟩ , _<″_ ,
+      <″-propvalued , <″-wellfounded , <″-extensional , <″-transitive
+   where
+    ⟨γ⟩ : 𝓤 ̇
+    ⟨γ⟩ = Σ y ꞉ ⟨ α ⟩ , x < y
+    _<″_ : ⟨γ⟩ → ⟨γ⟩ → 𝓤 ̇
+    _<″_ = subtype-order α (λ - → x < -)
+    <″-propvalued : is-prop-valued _<″_
+    <″-propvalued = subtype-order-propositional α (λ - → x < -)
+    <″-wellfounded : is-well-founded _<″_
+    <″-wellfounded = subtype-order-wellfounded α (λ - → x < -)
+    <″-transitive : is-transitive _<″_
+    <″-transitive = subtype-order-transitive α (λ - → x < -)
+    <″-extensional : is-extensional _<″_
+    <″-extensional (y , k) (y' , k') f g =
+     to-subtype-＝ (Prop-valuedness α x) (Extensionality α y y' u v)
+      where
+       u : (a : ⟨ α ⟩) → a < y → a < y'
+       u a l = u' (tri a)
+        where
+         u' : (x < a) + (x ＝ a) + (a < x) → a < y'
+         u' (inl v) = f (a , v) l
+         u' (inr (inl refl)) = k'
+         u' (inr (inr v)) = Transitivity α a x y' v k'
+       v : (a : ⟨ α ⟩) → a < y' → a < y
+       v a l = v' (tri a)
+        where
+         v' : (x < a) + (x ＝ a) + (a < x) → a < y
+         v' (inl u) = g (a , u) l
+         v' (inr (inl refl)) = k
+         v' (inr (inr u)) = Transitivity α a x y u k
+
+  f' : (a : ⟨ α ⟩) → (x < a) + (x ＝ a) + (a < x) → ⟨ β +ₒ (𝟙ₒ +ₒ γ) ⟩
+  f' a (inl l) = inr (inr (a , l))
+  f' a (inr (inl e)) = inr (inl ⋆)
+  f' a (inr (inr l)) = inl (a , l)
+  f : ⟨ α ⟩ → ⟨ β +ₒ (𝟙ₒ +ₒ γ) ⟩
+  f a = f' a (tri a)
+
+  g : ⟨ β +ₒ (𝟙ₒ +ₒ γ) ⟩ → ⟨ α ⟩
+  g (inl (a , _)) = a
+  g (inr (inl ⋆)) = x
+  g (inr (inr (a , _))) = a
+
+  f-equiv : is-order-equiv α (β +ₒ (𝟙ₒ +ₒ γ)) f
+  f-equiv = f-order-preserving ,
+            (qinvs-are-equivs f (g , η , ϵ)) ,
+            g-order-preserving
+   where
+    f-order-preserving : is-order-preserving α (β +ₒ (𝟙ₒ +ₒ γ)) f
+    f-order-preserving a b = f-order-preserving' a b (tri a) (tri b)
+     where
+      f-order-preserving' : (a b : ⟨ α ⟩)
+                          → (tri-a : (x < a) + (x ＝ a) + (a < x))
+                          → (tri-b : (x < b) + (x ＝ b) + (b < x))
+                          → a < b → f' a tri-a ≺⟨ β +ₒ (𝟙ₒ +ₒ γ) ⟩ f' b tri-b
+      f-order-preserving' a b (inl l)          (inl u)          v = v
+      f-order-preserving' a _ (inl l)          (inr (inl refl)) v =
+       𝟘-elim (irrefl α a (Transitivity α a x a v l))
+      f-order-preserving' a b (inl l)          (inr (inr u))    v =
+       𝟘-elim (irrefl α a (Transitivity α a x a (Transitivity α a b x v u) l))
+      f-order-preserving' _ b (inr (inl refl)) (inl u)          v = ⋆
+      f-order-preserving' _ _ (inr (inl refl)) (inr (inl refl)) v =
+       𝟘-elim (irrefl α x v)
+      f-order-preserving' a b (inr (inl refl)) (inr (inr u))    v =
+       𝟘-elim (irrefl α a (Transitivity α a b a v u))
+      f-order-preserving' a b (inr (inr l))    (inl u)          v = ⋆
+      f-order-preserving' a _ (inr (inr l))    (inr (inl refl)) v = ⋆
+      f-order-preserving' a b (inr (inr l))    (inr (inr u))    v = v
+
+    g-order-preserving : is-order-preserving (β +ₒ (𝟙ₒ +ₒ γ)) α g
+    g-order-preserving (inl (a , _))       (inl (b , _))       v = v
+    g-order-preserving (inl (a , l))       (inr (inl ⋆))       _ = l
+    g-order-preserving (inl (a , l))       (inr (inr (b , u))) _ =
+     Transitivity α a x b l u
+    g-order-preserving (inr (inl _))       (inr (inr (b , u))) _ = u
+    g-order-preserving (inr (inr (a , _))) (inr (inr (b , _))) v = v
+
+    η : (a : ⟨ α ⟩) → g (f a) ＝ a
+    η a = η' a (tri a)
+     where
+      η' : (a : ⟨ α ⟩)
+         → (tri-a : (x < a) + (x ＝ a) + (a < x))
+         → g (f' a tri-a) ＝ a
+      η' a (inl u) = refl
+      η' a (inr (inl refl)) = refl
+      η' a (inr (inr u)) = refl
+
+    ϵ : (w : ⟨ β +ₒ (𝟙ₒ +ₒ γ) ⟩) → f (g w) ＝ w
+    ϵ w = ϵ' w (tri (g w))
+     where
+      ϵ' : (w : ⟨ β +ₒ (𝟙ₒ +ₒ γ) ⟩)
+         → (tri-gw : (x < g w) + (x ＝ g w) + (g w < x))
+         → f' (g w) tri-gw ＝ w
+      ϵ' (inl (a , u)) (inl v) = 𝟘-elim (irrefl α x (Transitivity α x a x v u))
+      ϵ' (inl (a , u)) (inr (inl refl)) = 𝟘-elim (irrefl α x u)
+      ϵ' (inl (a , u)) (inr (inr v)) =
+       ap inl (to-subtype-＝ (λ z → Prop-valuedness α z x) refl)
+      ϵ' (inr (inl ⋆)) (inl v) = 𝟘-elim (irrefl α x v)
+      ϵ' (inr (inl ⋆)) (inr (inl _)) = refl
+      ϵ' (inr (inl ⋆)) (inr (inr v)) = 𝟘-elim (irrefl α x v)
+      ϵ' (inr (inr (b , u))) (inl v) =
+       ap (inr ∘ inr) (to-subtype-＝ (Prop-valuedness α x) refl)
+      ϵ' (inr (inr (_ , u))) (inr (inl refl)) = 𝟘-elim (irrefl α x u)
+      ϵ' (inr (inr (b , u))) (inr (inr v)) =
+       𝟘-elim (irrefl α x (Transitivity α x b x u v))
+
+  e : α ≃ₒ (β +ₒ (𝟙ₒ +ₒ γ))
+  e = (f , f-equiv)
+  p : α ＝ (β +ₒ (𝟙ₒ +ₒ γ))
+  p = eqtoidₒ (ua 𝓤) fe' α (β +ₒ (𝟙ₒ +ₒ γ)) e
+
+  e-spec : f x ＝ inr (inl ⋆)
+  e-spec = e-spec' (tri x)
+   where
+    e-spec' : (tri-x : (x < x) + (x ＝ x) + (x < x)) → f' x tri-x ＝ inr (inl ⋆)
+    e-spec' (inl l) = 𝟘-elim (irrefl α x l)
+    e-spec' (inr (inl _)) = refl
+    e-spec' (inr (inr l)) = 𝟘-elim (irrefl α x l)
+  p-spec = Idtofunₒ p x ＝⟨ happly (Idtofunₒ-eqtoidₒ (ua 𝓤) fe'  e) x ⟩
+           f x          ＝⟨ e-spec ⟩
+           inr (inl ⋆)  ∎
+
+\end{code}
+
+Now we are interested in elements x of α which are both trichotomous
+and the least element of α. These two properties can be combined into
+a single property as follows: for each y : α, either x ＝ y or x ≺ y.
 
 \begin{code}
 
 is-trichotomous-least : (α : Ordinal 𝓤) → ⟨ α ⟩ → 𝓤 ̇
 is-trichotomous-least α x = (y : ⟨ α ⟩) → (x ＝ y) + (x ≺⟨ α ⟩ y)
 
-has-a-trichotomous-least-element : Ordinal 𝓤 → 𝓤 ̇
-has-a-trichotomous-least-element α = Σ x ꞉ ⟨ α ⟩ , is-trichotomous-least α x
+being-trichotomous-least-is-prop-valued
+ : (α : Ordinal 𝓤) → (x : ⟨ α ⟩) → is-prop (is-trichotomous-least α x)
+being-trichotomous-least-is-prop-valued α x =
+ Π-is-prop (fe _ _) λ y → +-is-prop I (Prop-valuedness α x y) (II y)
+  where
+   I : is-set ⟨ α ⟩
+   I = underlying-type-is-set fe α
 
-being-trichotomous-least-is-prop-valued : (α : Ordinal 𝓤) (x : ⟨ α ⟩)
-    → is-prop (is-trichotomous-least α x)
-being-trichotomous-least-is-prop-valued α x = Π-is-prop (fe _ _) in-trichotomous-least-is-prop
- where
-  ⟨α⟩-is-set : is-set ⟨ α ⟩
-  ⟨α⟩-is-set = well-ordered-types-are-sets (underlying-order α) fe (is-well-ordered α)
-  irrefl-fact : (y : ⟨ α ⟩) → x ＝ y → ¬ (x ≺⟨ α ⟩ y)
-  irrefl-fact .x refl = irrefl α x
-  in-trichotomous-least-is-prop : (y : ⟨ α ⟩) → is-prop ((x ＝ y) + (x ≺⟨ α ⟩ y))
-  in-trichotomous-least-is-prop y = +-is-prop ⟨α⟩-is-set (Prop-valuedness α x y) (irrefl-fact y)
-
-having-a-trichotomous-least-element-is-prop-valued : (α : Ordinal 𝓤)
-    → is-prop (has-a-trichotomous-least-element α)
-having-a-trichotomous-least-element-is-prop-valued α (x , p) (y , q) = goal
- where
-  eq : ((x ＝ y) + (x ≺⟨ α ⟩ y)) → ((y ＝ x) + (y ≺⟨ α ⟩ x)) → x ＝ y
-  eq (inl e) q' = e
-  eq (inr u) (inl e) = e ⁻¹
-  eq (inr u) (inr v) = 𝟘-elim (irrefl α x (Transitivity α x y x u v))
-  goal : (x , p) ＝ (y , q)
-  goal = to-Σ-＝ (eq (p y) (q x) , being-trichotomous-least-is-prop-valued α y _ _)
+   II : (y : ⟨ α ⟩) → x ＝ y → ¬ (x ≺⟨ α ⟩ y)
+   II .x refl = irrefl α x
 
 \end{code}
 
-An ordinal α having a trichotomous least element is equivalent to
-being decomposable as α = 𝟙 + α' for some ordinal α'.
-
-\begin{code}
-
-is-decomposable-into-one-plus : Ordinal 𝓤 → 𝓤 ⁺ ̇
-is-decomposable-into-one-plus {𝓤} α = Σ α' ꞉ Ordinal 𝓤 , α ＝ 𝟙ₒ +ₒ α'
-
-being-decomposable-into-one-plus-is-prop-valued : (α : Ordinal 𝓤)
-    → is-prop (is-decomposable-into-one-plus α)
-being-decomposable-into-one-plus-is-prop-valued {𝓤} α (α' , p) (α″ , q) = goal
- where
-  eq : α' ＝ α″
-  eq = +ₒ-left-cancellable 𝟙ₒ α' α″ (p ⁻¹ ∙ q)
-  Ordinal-is-set : is-set (Ordinal 𝓤)
-  Ordinal-is-set = well-ordered-types-are-sets _⊲_ fe ⊲-is-well-order
-  goal : (α' , p) ＝ (α″ , q)
-  goal = to-Σ-＝ (eq , Ordinal-is-set _ _)
-
-
-trichotomous-least-to-decomposible : (α : Ordinal 𝓤)
-    → has-a-trichotomous-least-element α → Σ α' ꞉ Ordinal 𝓤 , α ＝ 𝟙ₒ +ₒ α'
-trichotomous-least-to-decomposible {𝓤} α (a₀ , a₀-least) = α' , eq
- where
-  ⟨α'⟩ : 𝓤 ̇
-  ⟨α'⟩ = Σ a ꞉ ⟨ α ⟩ , a₀ ≺⟨ α ⟩ a
-
-  _<'_ : ⟨α'⟩ → ⟨α'⟩ → _
-  _<'_ = subtype-order α (λ - → a₀ ≺⟨ α ⟩ -)
-
-  <'-propvalued : is-prop-valued _<'_
-  <'-propvalued = subtype-order-propositional α (λ - → a₀ ≺⟨ α ⟩ -)
-
-  <'-wellfounded : is-well-founded _<'_
-  <'-wellfounded = subtype-order-wellfounded α (λ - → a₀ ≺⟨ α ⟩ -)
-
-  <'-extensional : is-extensional _<'_
-  <'-extensional (x , p) (y , q) f g = to-subtype-＝ (Prop-valuedness α a₀)
-                                                     (Extensionality α x y u v)
-   where
-    u : (z : ⟨ α ⟩) → z ≺⟨ α ⟩ x → z ≺⟨ α ⟩ y
-    u z r = cases (λ { refl → q })
-                  (λ s → f (z , s) r)
-                  (a₀-least z)
-    v : (z : ⟨ α ⟩) → z ≺⟨ α ⟩ y → z ≺⟨ α ⟩ x
-    v z r = cases (λ { refl → p })
-                  (λ s → g (z , s) r)
-                  (a₀-least z)
-
-  <'-transitive : is-transitive _<'_
-  <'-transitive = subtype-order-transitive α (λ - → a₀ ≺⟨ α ⟩ -)
-
-  α' : Ordinal 𝓤
-  α' = ⟨α'⟩ , _<'_ , <'-propvalued , <'-wellfounded , <'-extensional , <'-transitive
-
-  f' : (x : ⟨ α ⟩) → (a₀ ＝ x) + (a₀ ≺⟨ α ⟩ x) → 𝟙 + ⟨ α' ⟩
-  f' x (inl _) = inl ⋆
-  f' x (inr q) = inr (x , q)
-
-  f : ⟨ α ⟩ → 𝟙 + ⟨ α' ⟩
-  f x = f' x (a₀-least x)
-
-  g : 𝟙 + ⟨ α' ⟩ → ⟨ α ⟩
-  g (inl ⋆) = a₀
-  g (inr (x , _)) = x
-
-  f-equiv : is-order-equiv α (𝟙ₒ +ₒ α') f
-  f-equiv = f-order-preserving , (qinvs-are-equivs f (g , η , ϵ)) , g-order-preserving
-   where
-    f'-order-preserving : (x y : ⟨ α ⟩)
-                        → (dx : (a₀ ＝ x) + (a₀ ≺⟨ α ⟩ x))
-                        → (dy : (a₀ ＝ y) + (a₀ ≺⟨ α ⟩ y))
-                        → x ≺⟨ α ⟩ y → f' x dx ≺⟨ 𝟙ₒ +ₒ α' ⟩ f' y dy
-    f'-order-preserving .a₀ .a₀ (inl refl) (inl refl) r = 𝟘-elim (irrefl α a₀ r)
-    f'-order-preserving .a₀ y (inl refl) (inr q) r = ⋆
-    f'-order-preserving x .a₀ (inr p) (inl refl) r = 𝟘-elim (irrefl α x (Transitivity α x a₀ x r p))
-    f'-order-preserving x y (inr p) (inr q) r = r
-    f-order-preserving : is-order-preserving α (𝟙ₒ +ₒ α') f
-    f-order-preserving x y = f'-order-preserving x y (a₀-least x) (a₀-least y)
-    g-order-preserving : is-order-preserving (𝟙ₒ +ₒ α') α g
-    g-order-preserving (inl ⋆) (inr (y , p)) q = p
-    g-order-preserving (inr x) (inr (y , p)) q = q
-    η' : (x : ⟨ α ⟩) → (d : (a₀ ＝ x) + (a₀ ≺⟨ α ⟩ x)) → g (f' x d) ＝ x
-    η' .a₀ (inl refl) = refl
-    η' x (inr p) = refl
-    η : (x : ⟨ α ⟩) → g (f x) ＝ x
-    η x = η' x (a₀-least x)
-    ϵ' : (y : 𝟙 + ⟨ α' ⟩) → (d : (a₀ ＝ g y) + (a₀ ≺⟨ α ⟩ g y)) → f' (g y) d ＝ y
-    ϵ' (inl ⋆) (inl e) = refl
-    ϵ' (inl ⋆) (inr q) = 𝟘-elim (irrefl α a₀ q)
-    ϵ' (inr (.a₀ , p)) (inl refl) = 𝟘-elim (irrefl α a₀ p)
-    ϵ' (inr (x , p)) (inr q) = ap inr (to-subtype-＝ ((λ x → Prop-valuedness α a₀ x)) refl)
-    ϵ : (y : 𝟙 + ⟨ α' ⟩) → f (g y) ＝ y
-    ϵ y = ϵ' y (a₀-least (g y))
-
-  eq : α ＝ 𝟙ₒ +ₒ α'
-  eq = eqtoidₒ (ua _) fe' α (𝟙ₒ +ₒ α') (f , f-equiv)
-
-{-
-decomposible-to-trichotomous-least : (α : Ordinal 𝓤)
-    → (Σ α' ꞉ Ordinal 𝓤 , α ＝ 𝟙ₒ +ₒ α') → has-a-trichotomous-least-element α
-decomposible-to-trichotomous-least α (α' , e) = {!!}
--}
-
-\end{code}
-
-The above is a special case of decomposability for locally
-trichotomous and least elements. Firstly, being trichotomous least is
-equivalent to being trichotomous and least, as expected.
+We prove that indeed being trichotomous least is equivalent to being
+trichotomous and least.
 
 \begin{code}
 
@@ -227,9 +369,9 @@ is-trichotomous-least-implies-is-locally-trichotomous
 is-trichotomous-least-implies-is-locally-trichotomous α x tri-least y =
  I (tri-least y)
   where
-   I : (x ＝ y) + (x ≺⟨ α ⟩ y) → in-trichotomy (underlying-order α) y x
-   I (inl e) = inr (inl (e ⁻¹))
-   I (inr u) = inr (inr u)
+   I : (x ＝ y) + (x ≺⟨ α ⟩ y) → in-trichotomy (underlying-order α) x y
+   I (inl e) = inr (inl e)
+   I (inr u) = inl u
 
 is-trichotomous-and-least-implies-is-trichotomous-least
   : (α : Ordinal 𝓤) → (x : ⟨ α ⟩)
@@ -239,50 +381,140 @@ is-trichotomous-and-least-implies-is-trichotomous-least
 is-trichotomous-and-least-implies-is-trichotomous-least α x tri least y =
  I (tri y)
   where
-   I : (y ≺⟨ α ⟩ x) + (y ＝ x) + (x ≺⟨ α ⟩ y) → (x ＝ y) + (x ≺⟨ α ⟩ y)
-   I (inl u) = 𝟘-elim (irrefl α y (least y y u))
-   I (inr (inl e)) = inl (e ⁻¹)
-   I (inr (inr u)) = inr u
+   I : (x ≺⟨ α ⟩ y) + (x ＝ y) + (y ≺⟨ α ⟩ x) → (x ＝ y) + (x ≺⟨ α ⟩ y)
+   I (inl u) = inr u
+   I (inr (inl e)) = inl e
+   I (inr (inr u)) = 𝟘-elim (irrefl α y (least y y u))
+
 \end{code}
 
+We now show that α having a trichotomous least element is equivalent
+to α being decomposable as α = 𝟙 + α' for some ordinal α'.
 
 \begin{code}
+
+is-decomposable-into-one-plus : Ordinal 𝓤 → 𝓤 ⁺ ̇
+is-decomposable-into-one-plus {𝓤} α = Σ α' ꞉ Ordinal 𝓤 , α ＝ 𝟙ₒ +ₒ α'
+
+has-a-trichotomous-least-element : Ordinal 𝓤 → 𝓤 ̇
+has-a-trichotomous-least-element α = Σ x ꞉ ⟨ α ⟩ , is-trichotomous-least α x
+
+being-decomposable-into-one-plus-is-prop-valued
+ : (α : Ordinal 𝓤) → is-prop (is-decomposable-into-one-plus α)
+being-decomposable-into-one-plus-is-prop-valued {𝓤} α (α' , p) (α″ , q) = II
+ where
+  I : α' ＝ α″
+  I = +ₒ-left-cancellable 𝟙ₒ α' α″ (p ⁻¹ ∙ q)
+
+  II : (α' , p) ＝ (α″ , q)
+  II = to-subtype-＝ (λ γ → the-type-of-ordinals-is-a-set (ua 𝓤) fe') I
+
+having-a-trichotomous-least-element-is-prop-valued
+ : (α : Ordinal 𝓤) → is-prop (has-a-trichotomous-least-element α)
+having-a-trichotomous-least-element-is-prop-valued α (x , p) (y , q) = II
+ where
+  I : ((x ＝ y) + (x ≺⟨ α ⟩ y)) → ((y ＝ x) + (y ≺⟨ α ⟩ x)) → x ＝ y
+  I (inl e) q' = e
+  I (inr u) (inl e) = e ⁻¹
+  I (inr u) (inr v) = 𝟘-elim (irrefl α x (Transitivity α x y x u v))
+
+  II : (x , p) ＝ (y , q)
+  II = to-Σ-＝ (I (p y) (q x) , being-trichotomous-least-is-prop-valued α y _ _)
+
+decomposable-to-trichotomous-least
+  : (α : Ordinal 𝓤)
+  → is-decomposable-into-one-plus α
+  → has-a-trichotomous-least-element α
+decomposable-to-trichotomous-least α (γ , refl) = (inl ⋆ , III)
+ where
+  I : is-least (𝟙ₒ +ₒ γ) (inl ⋆)
+  I _ (inl ✯) l = 𝟘-elim l
+  I _ (inr c) l = 𝟘-elim l
+
+  II : is-locally-trichotomous-at (𝟙ₒ +ₒ γ) (inl ⋆)
+  II = decomposed-at-to-trichotomy α (inl ⋆) (𝟘ₒ , γ , p , p-spec)
+   where
+    e : ⟨ 𝟙ₒ +ₒ γ ⟩ → ⟨ 𝟘ₒ +ₒ (𝟙ₒ +ₒ γ) ⟩
+    e = inr
+    e-equiv : is-order-equiv (𝟙ₒ +ₒ γ) (𝟘ₒ +ₒ (𝟙ₒ +ₒ γ)) e
+    e-equiv = (λ x x' → id) ,
+              (qinvs-are-equivs e (e⁻¹ , η , ϵ)) ,
+              e⁻¹-order-pres
+     where
+      e⁻¹ : ⟨ 𝟘ₒ +ₒ (𝟙ₒ +ₒ γ) ⟩ → ⟨ 𝟙ₒ +ₒ γ ⟩
+      e⁻¹ = cases 𝟘-elim id
+
+      e⁻¹-order-pres : is-order-preserving (𝟘ₒ +ₒ (𝟙ₒ +ₒ γ)) (𝟙ₒ +ₒ γ) e⁻¹
+      e⁻¹-order-pres (inr x) (inr y) l = l
+
+      η : (e⁻¹ ∘ inr) ∼ id
+      η x = refl
+
+      ϵ : (inr ∘ e⁻¹) ∼ id
+      ϵ (inr x) = refl
+    p : 𝟙ₒ +ₒ γ ＝ 𝟘ₒ +ₒ (𝟙ₒ +ₒ γ)
+    p = eqtoidₒ (ua _) fe' _ _ (e , e-equiv)
+
+    p-spec : Idtofunₒ p (inl ⋆) ＝ inr (inl ⋆)
+    p-spec = happly (Idtofunₒ-eqtoidₒ (ua _) fe' (e , e-equiv)) (inl ⋆)
+
+  III : is-trichotomous-least (𝟙ₒ +ₒ γ) (inl ⋆)
+  III = is-trichotomous-and-least-implies-is-trichotomous-least α (inl ⋆) II I
+
+\end{code}
+
+In the converse direction, our strategy is to reuse our previous
+result that trichotomous elements x : α decomposes α as α = β + 𝟙 + γ;
+we show that if x is also least, then in fact β = 𝟘.
+
+\begin{code}
+
 is-least-and-decomposable-implies-nothing-below
  : (α : Ordinal 𝓤) → (x : ⟨ α ⟩)
  → is-least α x
- → (β : Ordinal 𝓤)(γ : Ordinal 𝓤)
- → Σ e ꞉ α ≃ₒ (β +ₒ (𝟙ₒ +ₒ γ)) , ≃ₒ-to-fun _ _ e x ＝ inr (inl ⋆)
+ → ((β , γ , e , p) : is-decomposed-at α x)
  → β ＝ 𝟘ₒ
-is-least-and-decomposable-implies-nothing-below α x least β γ (e , p) =
+is-least-and-decomposable-implies-nothing-below α x least (β , γ , e , p) =
  ⊴-antisym β 𝟘ₒ (≼-gives-⊴ β 𝟘ₒ II) (≼-gives-⊴ 𝟘ₒ β (𝟘ₒ-least β))
   where
-   e-sim : is-simulation α (β +ₒ (𝟙ₒ +ₒ γ)) (≃ₒ-to-fun _ _ e)
+   e-sim : is-simulation α (β +ₒ (𝟙ₒ +ₒ γ)) (Idtofunₒ e)
    e-sim = order-equivs-are-simulations α
                                         (β +ₒ (𝟙ₒ +ₒ γ))
-                                        (≃ₒ-to-fun α (β +ₒ (𝟙ₒ +ₒ γ)) e)
-                                        (≃ₒ-to-fun-is-order-equiv α (β +ₒ (𝟙ₒ +ₒ γ)) e)
+                                        (Idtofunₒ e)
+                                        (Idtofunₒ-is-order-equiv e)
+   e-equiv : is-equiv (Idtofunₒ e)
+   e-equiv = order-equivs-are-equivs α (β +ₒ (𝟙ₒ +ₒ γ))
+                                     (Idtofunₒ-is-order-equiv e)
+   e⁻¹ : ⟨ β +ₒ (𝟙ₒ +ₒ γ) ⟩ → ⟨ α ⟩
+   e⁻¹ = inverse (Idtofunₒ e) e-equiv
+
 
    I : ¬ ⟨ β ⟩
-   I b = irrefl (β +ₒ (𝟙ₒ +ₒ γ)) (inl b) u''
+   I b = irrefl (β +ₒ (𝟙ₒ +ₒ γ)) (inl b) u'''
     where
-     u : x ≼⟨ α ⟩ (≃ₒ-to-fun⁻¹ _ _ e (inl b))
-     u = least (≃ₒ-to-fun⁻¹ _ _ e (inl b))
+     u : x ≼⟨ α ⟩ e⁻¹ (inl b)
+     u = least (e⁻¹ (inl b))
 
-     u' : inr (inl ⋆) ≼⟨ β +ₒ (𝟙ₒ +ₒ γ) ⟩ (inl b)
-     u' = transport₂ (λ - -' → - ≼⟨ β +ₒ (𝟙ₒ +ₒ γ) ⟩ -')
-                     p
-                     (inverses-are-sections _ (≃ₒ-to-fun-is-equiv _ _ e) (inl b))
-                     (simulations-are-monotone _ _ (≃ₒ-to-fun _ _ e) e-sim _ _ u)
+     u' : Idtofunₒ e x ≼⟨ β +ₒ (𝟙ₒ +ₒ γ) ⟩ Idtofunₒ e (e⁻¹ (inl b))
+     u' = simulations-are-monotone _ _ (Idtofunₒ e) e-sim x (e⁻¹ (inl b)) u
 
-     u'' : inl b ≺⟨ β +ₒ (𝟙ₒ +ₒ γ) ⟩ inl b
-     u'' = ≺-≼-gives-≺ (β +ₒ (𝟙ₒ +ₒ γ)) (inl b) (inr (inl ⋆)) (inl b) ⋆ u'
+     u'' : inr (inl ⋆) ≼⟨ β +ₒ (𝟙ₒ +ₒ γ) ⟩ (inl b)
+     u'' = transport₂ (λ - -' → - ≼⟨ β +ₒ (𝟙ₒ +ₒ γ) ⟩ -')
+                      p
+                      (inverses-are-sections (Idtofunₒ e) e-equiv (inl b))
+                      u'
+
+     u''' : inl b ≺⟨ β +ₒ (𝟙ₒ +ₒ γ) ⟩ inl b
+     u''' = ≺-≼-gives-≺ (β +ₒ (𝟙ₒ +ₒ γ)) (inl b) (inr (inl ⋆)) (inl b) ⋆ u''
 
    II : β ≼ 𝟘ₒ
    II = to-≼ (λ b → 𝟘-elim (I b))
 
-trichotomous-least-to-decomposible' : (α : Ordinal 𝓤)
-    → has-a-trichotomous-least-element α → Σ α' ꞉ Ordinal 𝓤 , α ＝ 𝟙ₒ +ₒ α'
-trichotomous-least-to-decomposible' α (x , tri-least) = (γ , III)
+trichotomous-least-to-decomposable
+  : (α : Ordinal 𝓤)
+  → has-a-trichotomous-least-element α
+  → is-decomposable-into-one-plus α
+trichotomous-least-to-decomposable α (x , tri-least) = (γ , III)
  where
   tri : is-locally-trichotomous-at α x
   tri = is-trichotomous-least-implies-is-locally-trichotomous α x tri-least
@@ -290,16 +522,16 @@ trichotomous-least-to-decomposible' α (x , tri-least) = (γ , III)
   least = is-trichotomous-least-implies-is-least α x tri-least
 
   I : is-decomposed-at α x
-  I = trichotomy-to-isolation α x tri
+  I = trichotomy-to-decomposed-at α x tri
   β = pr₁ I
   γ = pr₁ (pr₂ I)
   e = pr₁ (pr₂ (pr₂ I))
   p = pr₂ (pr₂ (pr₂ I))
 
   II : β ＝ 𝟘ₒ
-  II = is-least-and-decomposable-implies-nothing-below α x least β γ (e , p)
+  II = is-least-and-decomposable-implies-nothing-below α x least I
 
-  III = α               ＝⟨ eqtoidₒ (ua _) fe' α (β +ₒ (𝟙ₒ +ₒ γ)) e ⟩
+  III = α               ＝⟨ e ⟩
         β +ₒ (𝟙ₒ +ₒ γ)  ＝⟨ ap (_+ₒ (𝟙ₒ +ₒ γ)) II ⟩
         𝟘ₒ +ₒ (𝟙ₒ +ₒ γ) ＝⟨ 𝟘ₒ-left-neutral (𝟙ₒ +ₒ γ) ⟩
         𝟙ₒ +ₒ γ         ∎
@@ -314,40 +546,47 @@ the trichotomous least element to decompose α.
 \begin{code}
 
 _⁺[_] : (α : Ordinal 𝓤) → has-a-trichotomous-least-element α → Ordinal 𝓤
-α ⁺[ d⊥ ] = pr₁ (trichotomous-least-to-decomposible α d⊥)
+α ⁺[ d⊥ ] = pr₁ (trichotomous-least-to-decomposable α d⊥)
 
 _⁺[_]-part-of-decomposition : (α : Ordinal 𝓤)
                             → (d⊥ : has-a-trichotomous-least-element α)
                             → α ＝ 𝟙ₒ +ₒ α ⁺[ d⊥ ]
-α ⁺[ d⊥ ]-part-of-decomposition = pr₂ (trichotomous-least-to-decomposible α d⊥)
+α ⁺[ d⊥ ]-part-of-decomposition = pr₂ (trichotomous-least-to-decomposable α d⊥)
+
 \end{code}
 
 
 \begin{code}
 
-exp : (α : Ordinal 𝓤) → has-a-trichotomous-least-element α → Ordinal 𝓥 → Ordinal (𝓤 ⊔ 𝓥)
+exp : (α : Ordinal 𝓤)
+    → has-a-trichotomous-least-element α
+    → Ordinal 𝓥
+    → Ordinal (𝓤 ⊔ 𝓥)
 exp α d⊥ β = [𝟙+ (α ⁺[ d⊥ ]) ]^ β
 
-exp-dle-0-spec : (α : Ordinal 𝓤) (d⊥ : has-a-trichotomous-least-element α)
-    → exp α _ (𝟘ₒ {𝓥}) ＝ 𝟙ₒ
+exp-dle-0-spec : (α : Ordinal 𝓤)
+               → (d⊥ : has-a-trichotomous-least-element α)
+               → exp-specification-zero {𝓤} {𝓥} α (exp α d⊥)
 exp-dle-0-spec α d⊥ = exp-0-spec (α ⁺[ d⊥ ])
 
-exp-dle-succ-spec : (α : Ordinal 𝓤) (d⊥ : has-a-trichotomous-least-element α)
-    → (β : Ordinal 𝓤)
-    → exp α _ (β +ₒ 𝟙ₒ) ＝ exp α _ β ×ₒ α
-exp-dle-succ-spec α d⊥ β = goal
+exp-dle-succ-spec : (α : Ordinal 𝓤)
+                  → (d⊥ : has-a-trichotomous-least-element α)
+                  → exp-specification-succ α (exp α d⊥)
+exp-dle-succ-spec α d⊥ β = III
  where
-  fact : exp α _ (β +ₒ 𝟙ₒ) ＝ exp α _ β ×ₒ (𝟙ₒ +ₒ (α ⁺[ d⊥ ]))
-  fact = exp-succ-spec (α ⁺[ d⊥ ]) β
-  eq : α ＝ 𝟙ₒ +ₒ (α ⁺[ d⊥ ])
-  eq = α ⁺[ d⊥ ]-part-of-decomposition
-  goal : exp α _ (β +ₒ 𝟙ₒ) ＝ exp α _ β ×ₒ α
-  goal = transport (λ x → exp α d⊥ (β +ₒ 𝟙ₒ) ＝ exp α d⊥ β ×ₒ x) (eq ⁻¹) fact
+  I : exp α _ (β +ₒ 𝟙ₒ) ＝ exp α _ β ×ₒ (𝟙ₒ +ₒ (α ⁺[ d⊥ ]))
+  I = exp-succ-spec (α ⁺[ d⊥ ]) β
 
-exp-dle-sup-spec : (α : Ordinal 𝓤) (d⊥ : has-a-trichotomous-least-element α)
-    → {I : 𝓤 ̇} → ∥ I ∥ → (β : I → Ordinal 𝓤)
-    → sup (λ i → exp α _ (β i)) ＝ exp α _ (sup β)
-exp-dle-sup-spec α d⊥ = exp-sup-spec (α ⁺[ d⊥ ])
+  II : α ＝ 𝟙ₒ +ₒ (α ⁺[ d⊥ ])
+  II = α ⁺[ d⊥ ]-part-of-decomposition
+
+  III : exp α _ (β +ₒ 𝟙ₒ) ＝ exp α _ β ×ₒ α
+  III = transport (λ - → exp α d⊥ (β +ₒ 𝟙ₒ) ＝ exp α d⊥ β ×ₒ -) (II ⁻¹) I
+
+exp-dle-sup-spec : (α : Ordinal 𝓤)
+                 → (d⊥ : has-a-trichotomous-least-element α)
+                 → exp-specification-sup α (exp α d⊥)
+exp-dle-sup-spec α d⊥ _ = exp-sup-spec (α ⁺[ d⊥ ])
 
 \end{code}
 

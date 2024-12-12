@@ -13,5 +13,6 @@ import Ordinals.Exponentiation.More
 import Ordinals.Exponentiation.Specification
 import Ordinals.Exponentiation.Supremum
 import Ordinals.Exponentiation.Taboos
+import Ordinals.Exponentiation.TrichotomousLeastElement
 
 \end{code}

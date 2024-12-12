@@ -263,6 +263,39 @@ UAₒ {𝓤} ua fe α = nats-with-sections-are-equivs α
     → idtoeqₒ α β (eqtoidₒ ua fe α β e) ＝ e
   η β e = ≃ₒ-is-prop-valued fe α β (idtoeqₒ α β (eqtoidₒ ua fe α β e)) e
 
+idtoeqₒ-eqtoidₒ : (ua : is-univalent 𝓤)
+                 → (fe : Fun-Ext)
+                 → (α β : Ordinal 𝓤) → (e : α ≃ₒ β)
+                 → idtoeqₒ α β (eqtoidₒ ua fe α β e) ＝ e
+idtoeqₒ-eqtoidₒ ua fe α β =
+ inverses-are-sections (idtoeqₒ α β) (UAₒ ua fe α β)
+
+eqtoidₒ-idtoeqₒ : (ua : is-univalent 𝓤)
+                 → (fe : Fun-Ext)
+                 → (α β : Ordinal 𝓤) → (p : α ＝ β)
+                 → eqtoidₒ ua fe α β (idtoeqₒ α β p) ＝ p
+eqtoidₒ-idtoeqₒ ua fe α β =
+ inverses-are-retractions (idtoeqₒ α β) (UAₒ ua fe α β)
+
+order-equiv-induction : is-univalent 𝓤
+                      → Fun-Ext
+                      → (α : Ordinal 𝓤)
+                      → (P : (β : Ordinal 𝓤) → (α ≃ₒ β) → 𝓥 ̇ )
+                      → P α (≃ₒ-refl α)
+                      → (β : Ordinal 𝓤)
+                      → (e : α ≃ₒ β)
+                      → P β e
+order-equiv-induction {𝓤} ua fe α P m β e = III
+ where
+  I : (β : Ordinal 𝓤) → (e : α ＝ β) → P β (idtoeqₒ α β e)
+  I = Jbased α (λ β e → P β (idtoeqₒ α β e)) m
+
+  II : P β (idtoeqₒ α β (eqtoidₒ ua fe α β e))
+  II = I β (eqtoidₒ ua fe α β e)
+
+  III : P β e
+  III = transport (P β) (idtoeqₒ-eqtoidₒ ua fe α β e) II
+
 the-type-of-ordinals-is-a-set : is-univalent 𝓤
                               → Fun-Ext
                               → is-set (Ordinal 𝓤)
@@ -427,6 +460,41 @@ idtoeqₒ-embedding-really-is-idtoeqₒ' : (pua : is-preunivalent 𝓤)
                                      ＝ idtoeqₒ α β
 idtoeqₒ-embedding-really-is-idtoeqₒ' pua fe α β =
  dfunext (fe _ _) (idtoeqₒ-embedding-really-is-idtoeqₒ pua fe α β)
+
+\end{code}
+
+For convenience, we add the special case of Idtofun for ordinals.
+
+Added 11 December 2024 by Fredrik Nordvall Forsberg and Tom de Jong.
+
+\begin{code}
+
+Idtofunₒ : {α β : Ordinal 𝓤} → α ＝ β → ⟨ α ⟩ → ⟨ β ⟩
+Idtofunₒ = transport ⟨_⟩
+
+Idtofunₒ-is-order-equiv : {α β : Ordinal 𝓤} → (e : α ＝ β)
+                        → is-order-equiv α β (Idtofunₒ e)
+Idtofunₒ-is-order-equiv {α = α} refl =
+ id-order-preserving , (id-is-equiv ⟨ α ⟩ , id-order-preserving)
+  where
+   id-order-preserving : is-order-preserving α α id
+   id-order-preserving x y l = l
+
+Idtofunₒ-eqtoidₒ : (ua : is-univalent 𝓤)
+                 → (fe : Fun-Ext)
+                 → {α β : Ordinal 𝓤} (e : α ≃ₒ β)
+                 → Idtofunₒ (eqtoidₒ ua fe α β e) ＝ ≃ₒ-to-fun α β e
+Idtofunₒ-eqtoidₒ {𝓤} ua fe {α} {β} e = order-equiv-induction ua fe α P m β e
+ where
+  P : (β : Ordinal 𝓤) → α ≃ₒ β → 𝓤 ̇
+  P β e = Idtofunₒ (eqtoidₒ ua fe α β e) ＝ ≃ₒ-to-fun α β e
+
+  m : P α (≃ₒ-refl α)
+  m = Idtofunₒ (eqtoidₒ ua fe α α (≃ₒ-refl α)) ＝⟨ I ⟩
+      Idtofunₒ {α = α} refl                    ＝⟨ refl ⟩
+      ≃ₒ-to-fun α α (≃ₒ-refl α)                ∎
+   where
+    I = ap Idtofunₒ (eqtoidₒ-idtoeqₒ ua fe α α refl
 
 \end{code}
 
