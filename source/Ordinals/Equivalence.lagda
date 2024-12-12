@@ -472,7 +472,7 @@ Added 11 December 2024 by Fredrik Nordvall Forsberg and Tom de Jong.
 Idtofunₒ : {α β : Ordinal 𝓤} → α ＝ β → ⟨ α ⟩ → ⟨ β ⟩
 Idtofunₒ = transport ⟨_⟩
 
-Idtofunₒ-is-order-equiv : {α β : Ordinal 𝓤} → (e : α ＝ β)
+Idtofunₒ-is-order-equiv : {α β : Ordinal 𝓤} (e : α ＝ β)
                         → is-order-equiv α β (Idtofunₒ e)
 Idtofunₒ-is-order-equiv {α = α} refl =
  id-order-preserving , (id-is-equiv ⟨ α ⟩ , id-order-preserving)
@@ -494,7 +494,7 @@ Idtofunₒ-eqtoidₒ {𝓤} ua fe {α} {β} e = order-equiv-induction ua fe α P
       Idtofunₒ {α = α} refl                    ＝⟨ refl ⟩
       ≃ₒ-to-fun α α (≃ₒ-refl α)                ∎
    where
-    I = ap Idtofunₒ (eqtoidₒ-idtoeqₒ ua fe α α refl
+    I = ap Idtofunₒ (eqtoidₒ-idtoeqₒ ua fe α α refl)
 
 \end{code}
 
