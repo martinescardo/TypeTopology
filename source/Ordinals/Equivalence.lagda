@@ -429,3 +429,11 @@ idtoeqₒ-embedding-really-is-idtoeqₒ' pua fe α β =
  dfunext (fe _ _) (idtoeqₒ-embedding-really-is-idtoeqₒ pua fe α β)
 
 \end{code}
+
+Associativities and precedences.
+
+\begin{code}
+
+infix 0 _≃ₒ_
+
+\end{code}
