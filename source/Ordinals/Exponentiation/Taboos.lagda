@@ -7,7 +7,7 @@ TODO: SEE END
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
 
 open import UF.Univalence
 open import UF.PropTrunc
@@ -21,6 +21,7 @@ module Ordinals.Exponentiation.Taboos
 
 open import UF.FunExt
 open import UF.UA-FunExt
+open import UF.Subsingletons
 
 private
  fe : FunExt
@@ -29,14 +30,19 @@ private
  fe' : Fun-Ext
  fe' {𝓤} {𝓥} = fe 𝓤 𝓥
 
+ pe : Prop-Ext
+ pe = Univalence-gives-Prop-Ext ua
+
 open import MLTT.Spartan
 
 open import MLTT.Plus-Properties
 open import Ordinals.AdditionProperties ua
 open import Ordinals.Arithmetic fe
+open import Ordinals.Equivalence
 open import Ordinals.Exponentiation.Specification ua pt sr
 open import Ordinals.Exponentiation.Supremum ua pt sr
 open import Ordinals.Maps
+open import Ordinals.Notions
 open import Ordinals.MultiplicationProperties ua
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.OrdinalOfOrdinalsSuprema ua
@@ -45,7 +51,10 @@ open import Ordinals.Type
 open import Ordinals.Underlying
 open import UF.Base
 open import UF.ClassicalLogic
+open import UF.Equiv
 open import UF.Subsingletons
+open import UF.SubtypeClassifier
+
 open suprema pt sr
 
 \end{code}
@@ -582,5 +591,94 @@ EM-gives-full-spec em = Has-least-or-is-zero-gives-full-spec (EM-gives-Has-least
 -- full-spec-gives-Has-least-or-is-zero {𝓤} (exp , exp-spec) = EM-gives-Has-least-or-is-zero (exp-full-spec-gives-EM exp exp-spec)
 
 -}
+
+\end{code}
+
+Our development of a concrete representation of exponentials only work
+for base α which has a trichotomous least element, in which case the
+subtype of positive elements again is an ordinal. Here we show that
+one cannot avoid the restriction to a *trichotomous* least element
+constructively: if the subtype of positive elements of α were an
+ordinal for every (very large) ordinal α, then excluded middle would
+hold. To derive the taboo, we consider the very large ordinal of large
+ordinals OO (𝓤 ⁺), which has a least element 𝟘ₒ. The two (large)
+ordinals Ωₒ and 𝟚ₒ are positive in OO (𝓤 ⁺), and have the same
+positive predecessors. Hence if the subtype of positive elements would
+have an extensional order relation, we would have Ωₒ ＝ 𝟚ₒ, which is
+equivalent to excluded middle.
+
+\begin{code}
+
+subtype-of-positive-elements-an-ordinal-implies-EM
+ : ((α : Ordinal (𝓤 ⁺⁺))(x : ⟨ α ⟩)
+    → is-least α x
+    → is-well-order (subtype-order α (λ - → x ≺⟨ α ⟩ -)))
+ → EM 𝓤
+subtype-of-positive-elements-an-ordinal-implies-EM {𝓤} hyp = III
+ where
+  open import Ordinals.OrdinalOfTruthValues fe 𝓤 pe
+
+  _<_ = (subtype-order (OO (𝓤 ⁺)) (λ - → 𝟘ₒ ≺⟨ OO (𝓤 ⁺) ⟩ -))
+
+  hyp' : is-extensional' _<_
+  hyp' = extensional-gives-extensional' _<_
+          (extensionality _<_ (hyp (OO (𝓤 ⁺)) 𝟘ₒ 𝟘ₒ-least))
+
+  Ωₚ : Σ α ꞉ Ordinal (𝓤 ⁺) , 𝟘ₒ ⊲ α
+  Ωₚ = Ωₒ , ⊥ , eqtoidₒ (ua (𝓤 ⁺)) fe' _ _ (≃ₒ-trans 𝟘ₒ 𝟘ₒ (Ωₒ ↓ ⊥) II I)
+   where
+    I : 𝟘ₒ ≃ₒ Ωₒ ↓ ⊥
+    I = (≃ₒ-sym (Ωₒ ↓ ⊥) 𝟘ₒ (Ωₒ↓-is-id ua ⊥))
+
+    II : 𝟘ₒ {𝓤 ⁺} ≃ₒ 𝟘ₒ {𝓤}
+    II = 𝟘-elim ,
+         𝟘-elim ,
+         ((𝟘-elim , 𝟘-induction) , (𝟘-elim , 𝟘-induction)) ,
+         𝟘-elim
+
+  𝟚ₚ : Σ α ꞉ Ordinal (𝓤 ⁺) , 𝟘ₒ ⊲ α
+  𝟚ₚ = 𝟚ₒ , inl ⋆ , (prop-ordinal-↓ 𝟙-is-prop ⋆ ⁻¹ ∙ +ₒ-↓-left ⋆)
+
+  I : (γ : Σ α ꞉ Ordinal (𝓤 ⁺) , 𝟘ₒ ⊲ α) → (γ < Ωₚ ↔ γ < 𝟚ₚ)
+  I (γ , u@(c , _)) = I₀ , I₃
+   where
+    I₀ : ((γ , u) < Ωₚ) → ((γ , u) < 𝟚ₚ)
+    I₀ (P , refl) =
+     inr ⋆ , eqtoidₒ (ua (𝓤 ⁺)) fe' _ _ (≃ₒ-trans (Ωₒ ↓ P) Pₒ (𝟚ₒ ↓ inr ⋆) I₁ I₂)
+      where
+       Pₒ = prop-ordinal (P holds) (holds-is-prop P)
+
+       I₁ : (Ωₒ ↓ P) ≃ₒ Pₒ
+       I₁ = Ωₒ↓-is-id ua P
+
+       I₂ : Pₒ ≃ₒ 𝟚ₒ ↓ inr ⋆
+       I₂ = transport⁻¹ (Pₒ ≃ₒ_) (successor-lemma-right 𝟙ₒ)
+                        (prop-ordinal-≃ₒ (holds-is-prop P) 𝟙-is-prop
+                                         (λ _ → ⋆)
+                                         (λ _ → ≃ₒ-to-fun (Ωₒ ↓ P) Pₒ I₁ c))
+
+    I₃ : ((γ , u) < 𝟚ₚ) → ((γ , u) < Ωₚ)
+    I₃ l = ⊲-⊴-gives-⊲ γ 𝟚ₒ Ωₒ l (𝟚ₒ-leq-Ωₒ ua)
+
+  II : Ω 𝓤 ＝ ⟨ 𝟚ₒ ⟩
+  II = ap (⟨_⟩ ∘ pr₁) (hyp' Ωₚ 𝟚ₚ I)
+
+  III : EM 𝓤
+  III = Ω-discrete-gives-EM (fe 𝓤 𝓤) pe IV
+   where
+    IV : (p q : Ω 𝓤) → is-decidable (p ＝ q)
+    IV p q = IV' (f p) refl (f q) refl
+     where
+      f : Ω 𝓤 → ⟨ 𝟚ₒ ⟩
+      f = ⌜ idtoeq (Ω 𝓤) ⟨ 𝟚ₒ ⟩ II ⌝
+      f-is-equiv = ⌜ idtoeq (Ω 𝓤) ⟨ 𝟚ₒ ⟩ II ⌝-is-equiv
+
+      IV' : (x : 𝟙 + 𝟙) → x ＝ f p
+          → (y : 𝟙 + 𝟙) → y ＝ f q
+          → is-decidable (p ＝ q)
+      IV' (inl ⋆) r (inl ⋆) r' = inl (equivs-are-lc f f-is-equiv (r ⁻¹ ∙ r'))
+      IV' (inl ⋆) r (inr ⋆) r' = inr (λ{ refl → +disjoint (r ∙ r' ⁻¹)})
+      IV' (inr ⋆) r (inl ⋆) r' = inr (λ{ refl → +disjoint (r' ∙ r ⁻¹)})
+      IV' (inr ⋆) r (inr ⋆) r' = inl (equivs-are-lc f f-is-equiv (r ⁻¹ ∙ r'))
 
 \end{code}
