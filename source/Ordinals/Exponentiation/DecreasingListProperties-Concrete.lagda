@@ -160,12 +160,7 @@ exp-0-spec' α = f , f-monotone , qinvs-are-equivs f f-qinv , g-monotone
   f : ⟨ [𝟙+ α ]^ 𝟘ₒ ⟩ → 𝟙
   f _ = ⋆
   f-monotone : is-order-preserving ([𝟙+ α ]^ 𝟘ₒ) 𝟙ₒ (λ _ → ⋆)
-  f-monotone ([] , δ) ([] , ε) u =
-    𝟘-elim
-     (irreflexive
-      (exponential-order α 𝟘ₒ)
-      ([] , δ)
-      (exponential-order-wellfounded α 𝟘ₒ _) u)
+  f-monotone ([] , δ) ([] , ε) u = 𝟘-elim (Irreflexivity (expᴸ α 𝟘ₒ) ([] , δ) u)
   g : 𝟙 → ⟨ [𝟙+ α ]^ 𝟘ₒ ⟩
   g _ = [] , []-decr
   g-monotone : is-order-preserving 𝟙ₒ ([𝟙+ α ]^ 𝟘ₒ) g
@@ -246,7 +241,7 @@ exp-+-distributes' α β γ = f , f-monotone , qinvs-are-equivs f f-qinv , g-mon
       → underlying-order (([𝟙+ α ]^ β) ×ₒ ([𝟙+ α ]^ γ)) (f (((a , inl b) ∷ xs) , δ)) (f (((a , inl b) ∷ ys) , ε))
     h (inl p) = 𝟘-elim (irrefl ([𝟙+ α ]^ γ)
                                ([] , []-decr)
-                               (transport₂ (exponential-order α γ)
+                               (transport₂ (expᴸ-order α γ)
                                            {x = f₁₀ xs , f₁₁ xs (tail-is-decreasing (underlying-order (β +ₒ γ)) δ)}
                                            {x' = [] , []-decr}
                                            {y = f₁₀ ys , f₁₁ ys (tail-is-decreasing (underlying-order (β +ₒ γ)) ε)}

@@ -37,7 +37,7 @@ open import Ordinals.AdditionProperties ua
 open import Ordinals.Equivalence
 open import Ordinals.Maps
 open import Ordinals.Notions
-open import Ordinals.OrdinalOfOrdinals ua
+open import Ordinals.OrdinalOfOrdinals ua hiding (_≼_)
 open import Ordinals.Type
 open import Ordinals.Underlying
 
@@ -114,7 +114,7 @@ We now consider the subtype of decreasing lists.
             → is-decreasing (y ∷ l)
             → is-decreasing (x ∷ y ∷ l)
 
- is-decreasing-is-prop : ((x y : X) → is-prop (R x y))
+ is-decreasing-is-prop : is-prop-valued R
                        → (l : List X) → is-prop (is-decreasing l)
  is-decreasing-is-prop pR [] []-decr []-decr = refl
  is-decreasing-is-prop pR (x ∷ []) sing-decr sing-decr = refl
@@ -135,7 +135,7 @@ We now consider the subtype of decreasing lists.
                           → R x y
                           → is-decreasing (x ∷ l)
                           → is-decreasing (y ∷ l)
- is-decreasing-swap-heads τ {y} {x} {[]}     r δ = sing-decr
+ is-decreasing-swap-heads τ {y} {x} {[]}    r δ = sing-decr
  is-decreasing-swap-heads τ {y} {x} {z ∷ l} r δ =
   many-decr (τ z x y (heads-are-decreasing δ) r) (tail-is-decreasing δ)
 
@@ -143,8 +143,8 @@ We now consider the subtype of decreasing lists.
                     → {x x' : X} {l : List X}
                     → is-decreasing (x ∷ x' ∷ l)
                     → is-decreasing (x ∷ l)
- is-decreasing-skip τ d =
-  is-decreasing-swap-heads τ (heads-are-decreasing d) (tail-is-decreasing d)
+ is-decreasing-skip τ δ =
+  is-decreasing-swap-heads τ (heads-are-decreasing δ) (tail-is-decreasing δ)
 
  DecreasingList : 𝓤 ⊔ 𝓥 ̇
  DecreasingList = Σ l ꞉ List X , is-decreasing l
@@ -279,186 +279,187 @@ module _ (α : Ordinal 𝓤) (β : Ordinal 𝓥) where
   → is-decreasing (underlying-order (α ×ₒ β)) (expᴸ-list l)
  expᴸ-list-is-decreasing (l , δ) = is-decreasing-if-decreasing-pr₂ l δ
 
--- TODO: CONTINUE HERE (12 DEC)
- exponential-order : ⟨expᴸ⟩ → ⟨expᴸ⟩ → 𝓤 ⊔ 𝓥 ̇
- exponential-order (xs , _) (ys , _) = xs ≺⟨List (α ×ₒ β) ⟩ ys
+ expᴸ-order : ⟨expᴸ⟩ → ⟨expᴸ⟩ → 𝓤 ⊔ 𝓥 ̇
+ expᴸ-order (l , _) (l' , _) = l ≺⟨List (α ×ₒ β) ⟩ l'
 
- exponential-order-prop-valued : is-prop-valued exponential-order
- exponential-order-prop-valued (xs , _) (ys , _)
-   = lex-prop-valued _ (underlying-type-is-set fe (α ×ₒ β))
-                       (Prop-valuedness (α ×ₒ β))
-                       (irrefl (α ×ₒ β))
-                       xs
-                       ys
+ expᴸ-order-is-prop-valued : is-prop-valued expᴸ-order
+ expᴸ-order-is-prop-valued (l , _) (l' , _) =
+  lex-prop-valued
+   (underlying-order (α ×ₒ β))
+   (underlying-type-is-set fe (α ×ₒ β))
+   (Prop-valuedness (α ×ₒ β))
+   (irrefl (α ×ₒ β))
+   l
+   l'
 
- exponential-order-wellfounded : is-well-founded exponential-order
- exponential-order-wellfounded (xs , δ) =
-  acc-lex-decr-to-acc-exponential xs δ (lex-wellfounded (underlying-order (α ×ₒ β)) (Transitivity (α ×ₒ β)) (Well-foundedness (α ×ₒ β)) _)
+\end{code}
+
+\begin{code}
+
+ expᴸ-order-is-transitive : is-transitive expᴸ-order
+ expᴸ-order-is-transitive (l , _) (l' , _) (l'' , _) p q =
+  lex-transitive (underlying-order (α ×ₒ β)) (Transitivity (α ×ₒ β)) l l' l'' p q
+
+ expᴸ-order-is-wellfounded : is-well-founded expᴸ-order
+ expᴸ-order-is-wellfounded (l , δ) =
+  acc-lex-decr-to-acc-exponential l δ
+   (lex-wellfounded (underlying-order (α ×ₒ β))
+                    (Transitivity (α ×ₒ β))
+                    (Well-foundedness (α ×ₒ β))
+                    (expᴸ-list (l , δ) , expᴸ-list-is-decreasing (l , δ)))
   where
-   acc-lex-decr-to-acc-exponential : (xs : List ⟨ α ×ₒ β ⟩)
-                                   → (δ : is-decreasing-pr₂ xs)
-                                   → is-accessible (lex-decr (underlying-order (α ×ₒ β))) ((xs , expᴸ-list-is-decreasing (xs , δ)))
-                                   → is-accessible exponential-order (xs , δ)
-   acc-lex-decr-to-acc-exponential xs δ (acc h) =
-    acc λ (ys , ε) ys<xs → acc-lex-decr-to-acc-exponential ys ε (h (ys ,  expᴸ-list-is-decreasing (ys , ε)) ys<xs)
+   acc-lex-decr-to-acc-exponential
+    : (l : List ⟨ α ×ₒ β ⟩)
+    → (δ : is-decreasing-pr₂ l)
+    → is-accessible (lex-decr (underlying-order (α ×ₒ β)))
+                    ((l , expᴸ-list-is-decreasing (l , δ)))
+    → is-accessible expᴸ-order (l , δ)
+   acc-lex-decr-to-acc-exponential l δ (acc h) =
+    acc (λ (l' , ε) u → acc-lex-decr-to-acc-exponential l' ε
+                         (h (l' ,  expᴸ-list-is-decreasing (l' , ε)) u))
+
+\end{code}
+
+\begin{code}
 
  private
   R = underlying-order (α ×ₒ β)
+  _≼_ = extensional-po expᴸ-order
 
- -- TODO: CLEAN UP
- -- TODO: Rename
- lemma-extensionality' : (xs ys : List ⟨ α ×ₒ β ⟩) (x : ⟨ α ×ₒ β ⟩)
-                       → is-decreasing-pr₂ (x ∷ xs)
-                       → is-decreasing-pr₂ ys
-                       → lex R ys xs
-                       → is-decreasing-pr₂ (x ∷ ys)
- lemma-extensionality' (x' ∷ xs) ys x (many-decr u δ) ε []-lex = sing-decr
- lemma-extensionality' (x' ∷ xs) (y ∷ ys) x (many-decr u δ) ε (head-lex (inl l)) = many-decr (Transitivity β (pr₂ y) (pr₂ x') (pr₂ x) l u) ε
- lemma-extensionality' (x' ∷ xs) (y ∷ ys) x 𝕕@(many-decr u δ) ε (head-lex (inr (refl , l))) = many-decr (heads-are-decreasing (underlying-order β) 𝕕) ε
- lemma-extensionality' (x' ∷ xs) (y ∷ ys) x 𝕕@(many-decr u δ) ε (tail-lex refl l) = many-decr (heads-are-decreasing (underlying-order β) 𝕕) ε
+ is-decreasing-pr₂-swap-tails
+  : (l l' : List ⟨ α ×ₒ β ⟩) (x : ⟨ α ×ₒ β ⟩)
+  → is-decreasing-pr₂ (x ∷ l)
+  → is-decreasing-pr₂ l'
+  → lex R l' l
+  → is-decreasing-pr₂ (x ∷ l')
+ is-decreasing-pr₂-swap-tails l l' x δ ε []-lex = sing-decr
+ is-decreasing-pr₂-swap-tails ((a , b) ∷ l) ((a' , b') ∷ l') (a₀ , b₀) δ ε
+  (head-lex (inl u)) = many-decr (Transitivity β b' b b₀ u
+                                   (heads-are-decreasing-pr₂ a₀ a δ))
+                                 ε
+ is-decreasing-pr₂-swap-tails ((a , b) ∷ l) ((a' , b') ∷ l') (a₀ , b₀) δ ε
+  (head-lex (inr (refl , u))) = many-decr (heads-are-decreasing-pr₂ a₀ a δ) ε
+ is-decreasing-pr₂-swap-tails ((a , b) ∷ l) ((a' , b') ∷ l') (a₀ , b₀) δ ε
+  (tail-lex refl u) = many-decr (heads-are-decreasing-pr₂ a₀ a δ) ε
 
- -- TODO: Rename
- lemma-extensionality : (xs ys : List ⟨ α ×ₒ β ⟩) (x : ⟨ α ×ₒ β ⟩)
-                      → is-decreasing-pr₂ (x ∷ xs) → is-decreasing-pr₂ (x ∷ ys)
-                      → ((zs : List ⟨ α ×ₒ β ⟩)
-                             → is-decreasing-pr₂ zs
-                             → lex R zs (x ∷ xs) → lex R zs (x ∷ ys)) -- TODO: Use ≤
-                      → ((zs : List ⟨ α ×ₒ β ⟩)
-                             → is-decreasing-pr₂ zs
-                             → lex R zs xs → lex R zs ys) -- TODO: Use ≤
- lemma-extensionality xs ys x δ ε h zs ε' l = g hₓ
-  where
-   hₓ : lex R (x ∷ zs) (x ∷ ys)
-   hₓ = h (x ∷ zs) lem (tail-lex refl l)
-    where
-     lem : is-decreasing-pr₂ (x ∷ zs)
-     lem = lemma-extensionality' xs zs x δ ε' l
-   g : lex R (x ∷ zs) (x ∷ ys) → lex R zs ys
-   g (head-lex r) = 𝟘-elim (irreflexive R x (Well-foundedness (α ×ₒ β) x) r)
-   g (tail-lex _ k) = k
+ private
+  no-≼-[] : (x : ⟨ α ×ₒ β ⟩) (l : List ⟨ α ×ₒ β ⟩)
+            (δ : is-decreasing-pr₂ (x ∷ l))
+          → ¬ (((x ∷ l) , δ) ≼ ([] , []-decr))
+  no-≼-[] x l δ h =
+   𝟘-elim
+    (lex-irreflexive R (Irreflexivity (α ×ₒ β)) [] (h ([] , []-decr) []-lex))
 
+  tails-≼
+   : (l l' : List ⟨ α ×ₒ β ⟩) (x : ⟨ α ×ₒ β ⟩)
+     (δ : is-decreasing-pr₂ (x ∷ l))
+     (ε : is-decreasing-pr₂ (x ∷ l'))
+   → ((x ∷ l) , δ) ≼ ((x ∷ l') , ε)
+   → (l , tail-is-decreasing-pr₂ x δ) ≼ (l' , tail-is-decreasing-pr₂ x ε)
+  tails-≼ l l' x δ ε h (l₀ , δ₀) u = g hₓ
+   where
+    hₓ : lex R (x ∷ l₀) (x ∷ l')
+    hₓ = h ((x ∷ l₀) , is-decreasing-pr₂-swap-tails l l₀ x δ δ₀ u)
+           (tail-lex refl u)
+    g : lex R (x ∷ l₀) (x ∷ l') → lex R l₀ l'
+    g (head-lex   r) = 𝟘-elim (Irreflexivity (α ×ₒ β) x r)
+    g (tail-lex _ k) = k
 
- exponential-order-extensional : is-extensional exponential-order
- exponential-order-extensional (xs , δ) (ys , ε) p q =
-  to-expᴸ-＝ (exponential-order-extensional' xs δ ys ε (λ zs ε' → p (zs , ε')) (λ zs ε' → q (zs , ε')))
-  where
-   exponential-order-extensional' : (xs : List ⟨ α ×ₒ β ⟩)
-                                  → (δ : is-decreasing-pr₂ xs)
-                                  → (ys : List ⟨ α ×ₒ β ⟩)
-                                  → (ε : is-decreasing-pr₂ ys)
-                                  → ((zs : List ⟨ α ×ₒ β ⟩) → is-decreasing-pr₂ zs → lex R zs xs → lex R zs ys )
-                                  → ((zs : List ⟨ α ×ₒ β ⟩) → is-decreasing-pr₂ zs → lex R zs ys → lex R zs xs )
-                                  → xs ＝ ys
-   exponential-order-extensional' [] δ [] ε p q = refl
-   exponential-order-extensional' [] δ (y ∷ ys) ε p q =
-    𝟘-elim ([]-lex-bot _ [] (q [] δ []-lex))
-   exponential-order-extensional' (x ∷ xs) δ [] ε p q =
-    𝟘-elim ([]-lex-bot _ [] (p [] ε []-lex))
-   exponential-order-extensional' (x ∷ []) δ (y ∷ []) ε p q =
-     ap [_] (Extensionality (α ×ₒ β) x y e₁ e₂)
-      where
-       e₁ : ∀ z → R z x → R z y
-       e₁ z r = h p'
-        where
-         h : lex R [ z ] [ y ] → R z y
-         h (head-lex r') = r'
-         p' : lex R [ z ] [ y ]
-         p' = p [ z ] sing-decr (head-lex r)
-       e₂ : ∀ z → R z y → R z x
-       e₂ z r = h q'
-        where
-         h : lex R [ z ] [ x ] → R z x
-         h (head-lex r') = r'
-         q' : lex R [ z ] [ x ]
-         q' = q [ z ] sing-decr (head-lex r)
-   exponential-order-extensional' (x ∷ []) δ (y ∷ y' ∷ ys) ε p q = V
-    where
-     I : lex R [ y ] (y ∷ y' ∷ ys)
-     I = tail-lex refl []-lex
-     II : R y x
-     II = h q'
-      where
-       h : lex R [ y ] [ x ] → R y x
-       h (head-lex r) = r
-       q' : lex R [ y ] [ x ]
-       q' = q [ y ] sing-decr I
-     III : lex R (y ∷ y' ∷ ys) [ x ]
-     III = head-lex II
-     IV : lex R (y ∷ y' ∷ ys) (y ∷ y' ∷ ys)
-     IV = p (y ∷ y' ∷ ys) ε III
-     V : [ x ] ＝ y ∷ y' ∷ ys
-     V = 𝟘-elim
-          (lex-irreflexive R
-            (λ x → irreflexive R x (Well-foundedness (α ×ₒ β) x))
-           (y ∷ y' ∷ ys) IV)
-   exponential-order-extensional' (x ∷ x' ∷ xs) δ (y ∷ []) ε p q = V -- TODO: Factor out
-    where
-     I : lex R [ x ] (x ∷ x' ∷ xs)
-     I = tail-lex refl []-lex
-     II : R x y
-     II = h p'
-      where
-       h : lex R [ x ] [ y ] → R x y
-       h (head-lex r) = r
-       p' : lex R [ x ] [ y ]
-       p' = p [ x ] sing-decr I
-     III : lex R (x ∷ x' ∷ xs) [ y ]
-     III = head-lex II
-     IV : lex R (x ∷ x' ∷ xs) (x ∷ x' ∷ xs)
-     IV = q (x ∷ x' ∷ xs) δ III
-     V : x ∷ x' ∷ xs ＝ [ y ]
-     V = 𝟘-elim
-          (lex-irreflexive R
-            (λ y → irreflexive R y (Well-foundedness (α ×ₒ β) y))
-           (x ∷ x' ∷ xs) IV)
-   exponential-order-extensional' (x ∷ x' ∷ xs) δ (y ∷ y' ∷ ys) ε p q =
-    ap₂ _∷_ e
-            (exponential-order-extensional'
-             (x' ∷ xs) (tail-is-decreasing (underlying-order β) δ)
-             (y' ∷ ys) (tail-is-decreasing (underlying-order β) ε)
-             (p' e) (q' e))
+ expᴸ-order-is-extensional' : (l₁ l₂ : List ⟨ α ×ₒ β ⟩)
+                              (δ₁ : is-decreasing-pr₂ l₁)
+                              (δ₂ : is-decreasing-pr₂ l₂)
+                            → (l₁ , δ₁) ≼ (l₂ , δ₂)
+                            → (l₂ , δ₂) ≼ (l₁ , δ₁)
+                            → l₁ ＝ l₂
+ expᴸ-order-is-extensional' [] [] δ₁ δ₂ u v = refl
+ expᴸ-order-is-extensional' [] (y ∷ l₂) δ₁ δ₂ u h₂ =
+  𝟘-elim (no-≼-[] y l₂ δ₂ h₂)
+ expᴸ-order-is-extensional' (x ∷ l₁) [] δ₁ δ₂ h₁ h₂ =
+  𝟘-elim (no-≼-[] x l₁ δ₁ h₁)
+ expᴸ-order-is-extensional' (x ∷ []) (y ∷ []) δ₁ δ₂ h₁ h₂ =
+  ap [_] (Extensionality (α ×ₒ β) x y I₁ I₂)
+   where
+    I₁ : x ≼⟨ α ×ₒ β ⟩ y
+    I₁ z u = κ c
      where
-      e : x ＝ y
-      e = g II II'
-       where
-        I : lex R [ x ] (x ∷ x' ∷ xs)
-        I = tail-lex refl []-lex
-        II : lex R [ x ] (y ∷ y' ∷ ys)
-        II = p [ x ] sing-decr I
-        I' : lex R [ y ] (y ∷ y' ∷ ys)
-        I' = tail-lex refl []-lex
-        II' : lex R [ y ] (x ∷ x' ∷ xs)
-        II' = q [ y ] sing-decr I'
-        g : lex R [ x ] (y ∷ y' ∷ ys)
-          → lex R [ y ] (x ∷ x' ∷ xs)
-          → x ＝ y
-        g (head-lex r) (head-lex r') =
-         𝟘-elim (irreflexive R x (Well-foundedness (α ×ₒ β) x) (Transitivity (α ×ₒ β) x y x r r'))
-        g (head-lex _) (tail-lex eq _) = eq ⁻¹
-        g (tail-lex eq _) _ = eq
-      p' : (x ＝ y) → (zs : List ⟨ α ×ₒ β ⟩)
-         → is-decreasing-pr₂ zs
-         → lex R zs (x' ∷ xs)
-         → lex R zs (y' ∷ ys)
-      p' refl = lemma-extensionality (x' ∷ xs) (y' ∷ ys) x δ ε p
-      q' : (x ＝ y) → (zs : List ⟨ α ×ₒ β ⟩)
-         → is-decreasing-pr₂ zs
-         → lex R zs (y' ∷ ys)
-         → lex R zs (x' ∷ xs)
-      q' refl = lemma-extensionality (y' ∷ ys) (x' ∷ xs) y ε δ q
+      c : [ z ] ≺⟨List (α ×ₒ β) ⟩ [ y ]
+      c = h₁ ([ z ] , sing-decr) (head-lex u)
+      κ : [ z ] ≺⟨List (α ×ₒ β) ⟩ [ y ] → z ≺⟨ α ×ₒ β ⟩ y
+      κ (head-lex v) = v
+    I₂ : y ≼⟨ α ×ₒ β ⟩ x
+    I₂ z u = κ c
+     where
+      c : [ z ] ≺⟨List (α ×ₒ β) ⟩ [ x ]
+      c = h₂ ([ z ] , sing-decr) (head-lex u)
+      κ : [ z ] ≺⟨List (α ×ₒ β) ⟩ [ x ] → z ≺⟨ α ×ₒ β ⟩ x
+      κ (head-lex v) = v
+ expᴸ-order-is-extensional' (x ∷ []) (y ∷ y' ∷ l₂) δ₁ δ₂ h₁ h₂ =
+  𝟘-elim (lex-irreflexive R (Irreflexivity (α ×ₒ β)) (y ∷ y' ∷ l₂) III)
+   where
+    I : y ≺⟨ α ×ₒ β ⟩ x
+    I = κ (h₂ ([ y ] , sing-decr) (tail-lex refl []-lex))
+     where
+      κ :  [ y ] ≺⟨List (α ×ₒ β) ⟩ [ x ] → y ≺⟨ α ×ₒ β ⟩ x
+      κ (head-lex u) = u
+    II : (y ∷ y' ∷ l₂) ≺⟨List (α ×ₒ β) ⟩ [ x ]
+    II = head-lex I
+    III : (y ∷ y' ∷ l₂) ≺⟨List (α ×ₒ β) ⟩ (y ∷ y' ∷ l₂)
+    III = h₁ ((y ∷ y' ∷ l₂) , δ₂) II
+ expᴸ-order-is-extensional' (x ∷ x' ∷ l₁) (y ∷ []) δ₁ δ₂ h₁ h₂ =
+  𝟘-elim (lex-irreflexive R (Irreflexivity (α ×ₒ β)) (x ∷ x' ∷ l₁) III)
+   where
+    I : x ≺⟨ α ×ₒ β ⟩ y
+    I = κ (h₁ ([ x ] , sing-decr) (tail-lex refl []-lex))
+     where
+      κ :  [ x ] ≺⟨List (α ×ₒ β) ⟩ [ y ] → x ≺⟨ α ×ₒ β ⟩ y
+      κ (head-lex u) = u
+    II : (x ∷ x' ∷ l₁) ≺⟨List (α ×ₒ β) ⟩ [ y ]
+    II = head-lex I
+    III : (x ∷ x' ∷ l₁) ≺⟨List (α ×ₒ β) ⟩ (x ∷ x' ∷ l₁)
+    III = h₂ ((x ∷ x' ∷ l₁) , δ₁) II
+ expᴸ-order-is-extensional' (x ∷ x' ∷ l₁) (y ∷ y' ∷ l₂) δ₁ δ₂ h₁ h₂ =
+  ap₂ _∷_ I
+   (expᴸ-order-is-extensional'
+     (x' ∷ l₁) (y' ∷ l₂)
+     (tail-is-decreasing-pr₂ x {x' ∷ l₁} δ₁)
+     (tail-is-decreasing-pr₂ y {y' ∷ l₂} δ₂)
+     (k₁ I)
+     (k₂ I))
+  where
+   I : x ＝ y
+   I = κ (h₁ ([ x ] , sing-decr) (tail-lex refl []-lex))
+         (h₂ ([ y ] , sing-decr) (tail-lex refl []-lex))
+    where
+     κ : [ x ] ≺⟨List (α ×ₒ β) ⟩ (y ∷ y' ∷ l₂)
+       → [ y ] ≺⟨List (α ×ₒ β) ⟩ (x ∷ x' ∷ l₁)
+       → x ＝ y
+     κ (head-lex u) (head-lex v) =
+      𝟘-elim (Irreflexivity (α ×ₒ β) x (Transitivity (α ×ₒ β) x y x u v))
+     κ (head-lex u) (tail-lex refl v) = refl
+     κ (tail-lex refl u) (head-lex v) = refl
+     κ (tail-lex refl u) (tail-lex e v) = refl
+   k₁ : x ＝ y
+     → ((x' ∷ l₁) , tail-is-decreasing-pr₂ x {x' ∷ l₁} δ₁)
+       ≼ ((y' ∷ l₂) , tail-is-decreasing-pr₂ y {y' ∷ l₂} δ₂)
+   k₁ refl = tails-≼ (x' ∷ l₁) (y' ∷ l₂) x δ₁ δ₂ h₁
+   k₂ : x ＝ y
+     → ((y' ∷ l₂) , tail-is-decreasing-pr₂ y {y' ∷ l₂} δ₂)
+       ≼ ((x' ∷ l₁) , tail-is-decreasing-pr₂ x {x' ∷ l₁} δ₁)
+   k₂ refl = tails-≼ (y' ∷ l₂) (x' ∷ l₁) x δ₂ δ₁ h₂
 
+ expᴸ-order-is-extensional : is-extensional expᴸ-order
+ expᴸ-order-is-extensional (l₁ , δ₁) (l₂ , δ₂) u v =
+  to-expᴸ-＝ (expᴸ-order-is-extensional' l₁ l₂ δ₁ δ₂ u v)
 
- exponential-order-transitive : is-transitive exponential-order
- exponential-order-transitive (xs , _) (ys , _) (zs , _) p q =
-  lex-transitive (underlying-order (α ×ₒ β)) (Transitivity (α ×ₒ β)) xs ys zs p q
+-- TODO: CONTINUE HERE (13 DEC)
 
 [𝟙+_]^_ : Ordinal 𝓤 → Ordinal 𝓥 → Ordinal (𝓤 ⊔ 𝓥)
 [𝟙+ α ]^ β = ⟨expᴸ⟩ α β
-           , exponential-order α β
-           , exponential-order-prop-valued α β
-           , exponential-order-wellfounded α β
-           , exponential-order-extensional α β
-           , exponential-order-transitive α β
+           , expᴸ-order α β
+           , expᴸ-order-is-prop-valued α β
+           , expᴸ-order-is-wellfounded α β
+           , expᴸ-order-is-extensional α β
+           , expᴸ-order-is-transitive α β
 
 \end{code}
 
@@ -480,17 +481,31 @@ module _ (α : Ordinal 𝓤) (β : Ordinal 𝓥) where
 
 \end{code}
 
-Characterizing initial segments of expᴸ α β
+TODO: MERGE PROPERLY
 
 \begin{code}
 
 expᴸ : Ordinal 𝓤 → Ordinal 𝓥 → Ordinal (𝓤 ⊔ 𝓥)
 expᴸ α β = [𝟙+ α ]^ β
 
-module _
-        (α : Ordinal 𝓤)
-        (β : Ordinal 𝓥)
-       where
+exponentiationᴸ : (α : Ordinal 𝓤)
+                → has-trichotomous-least-element α
+                → Ordinal 𝓥
+                → Ordinal (𝓤 ⊔ 𝓥)
+exponentiationᴸ α h = expᴸ (α ⁺[ h ])
+
+expᴸ-⊥ : (α : Ordinal 𝓤) (β : Ordinal 𝓥) → ⟨ expᴸ α β ⟩
+expᴸ-⊥ α β = [] , []-decr
+
+expᴸ-↓-⊥ : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
+         → expᴸ α β ↓ expᴸ-⊥ α β ＝ 𝟘ₒ
+expᴸ-↓-⊥ α β = ([𝟙+α]^β-has-least' α β []-decr) ⁻¹
+
+\end{code}
+
+Characterizing initial segments of expᴸ α β
+
+\begin{code}
 
 module _
         (α : Ordinal 𝓤)
@@ -915,6 +930,10 @@ expᴸ-↓-cons-≃ₒ {𝓤} {𝓥} α β a b l δ =
                         (((a₂ , b₂ ∷ l₂) , δ₂) , tail-lex refl v) (tail-lex e w) =
    expᴸ-tail-is-order-preserving α β a₁ b₁ δ₁ δ₂ w
 
+\end{code}
+
+\begin{code}
+
 expᴸ-↓-cons-≃ₒ'
  : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
    (a : ⟨ α ⟩) (b : ⟨ β ⟩) (l : ⟨ expᴸ α (β ↓ b) ⟩)
@@ -939,6 +958,10 @@ expᴸ-↓-cons-≃ₒ' α β a b (l , δ) =
                 +ₒ (expᴸ α (β ↓ b) ↓ expᴸ-tail α β a b l' ε)
     II = expᴸ-↓-cons-≃ₒ α β a b (expᴸ-segment-inclusion-list α β b l) ε
 
+\end{code}
+
+\begin{code}
+
 expᴸ-↓-cons
  : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
    (a : ⟨ α ⟩) (b : ⟨ β ⟩) (l : List ⟨ α ×ₒ β ⟩)
@@ -954,54 +977,5 @@ expᴸ-↓-cons'
  → expᴸ α β ↓ extended-expᴸ-segment-inclusion α β b l a
    ＝ expᴸ α (β ↓ b) ×ₒ (𝟙ₒ +ₒ (α ↓ a)) +ₒ (expᴸ α (β ↓ b) ↓ l)
 expᴸ-↓-cons' α β a b l = eqtoidₒ (ua _) fe' _ _ (expᴸ-↓-cons-≃ₒ' α β a b l)
-
-\end{code}
-
-\begin{code}
-
--- TODO: MERGE PROPERLY
-
-expᴸ-⊥ : (α : Ordinal 𝓤) (β : Ordinal 𝓥) → ⟨ expᴸ α β ⟩
-expᴸ-⊥ α β = [] , []-decr
-
-expᴸ-↓-⊥ : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
-         → expᴸ α β ↓ expᴸ-⊥ α β ＝ 𝟘ₒ
-expᴸ-↓-⊥ α β = ([𝟙+α]^β-has-least' α β []-decr) ⁻¹
-
-\end{code}
-
-\begin{code}
-
-exponentiationᴸ : (α : Ordinal 𝓤)
-                → has-trichotomous-least-element α
-                → Ordinal 𝓥
-                → Ordinal (𝓤 ⊔ 𝓥)
-exponentiationᴸ α d⊥ = expᴸ (α ⁺[ d⊥ ])
-
-{-
-exp-dle-0-spec : (α : Ordinal 𝓤)
-               → (d⊥ : has-a-trichotomous-least-element α)
-               → exp-specification-zero {𝓤} {𝓥} α (exp α d⊥)
-exp-dle-0-spec α d⊥ = exp-0-spec (α ⁺[ d⊥ ])
-
-exp-dle-succ-spec : (α : Ordinal 𝓤)
-                  → (d⊥ : has-a-trichotomous-least-element α)
-                  → exp-specification-succ α (exp α d⊥)
-exp-dle-succ-spec α d⊥ β = III
- where
-  I : exp α _ (β +ₒ 𝟙ₒ) ＝ exp α _ β ×ₒ (𝟙ₒ +ₒ (α ⁺[ d⊥ ]))
-  I = exp-succ-spec (α ⁺[ d⊥ ]) β
-
-  II : α ＝ 𝟙ₒ +ₒ (α ⁺[ d⊥ ])
-  II = α ⁺[ d⊥ ]-part-of-decomposition
-
-  III : exp α _ (β +ₒ 𝟙ₒ) ＝ exp α _ β ×ₒ α
-  III = transport (λ - → exp α d⊥ (β +ₒ 𝟙ₒ) ＝ exp α d⊥ β ×ₒ -) (II ⁻¹) I
-
-exp-dle-sup-spec : (α : Ordinal 𝓤)
-                 → (d⊥ : has-a-trichotomous-least-element α)
-                 → exp-specification-sup α (exp α d⊥)
-exp-dle-sup-spec α d⊥ _ = exp-sup-spec (α ⁺[ d⊥ ])
--}
 
 \end{code}

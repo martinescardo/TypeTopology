@@ -72,6 +72,9 @@ Transitivity α = transitivity (underlying-order α) (is-well-ordered α)
 Well-foundedness : (α : Ordinal 𝓤) (x : ⟨ α ⟩) → is-accessible (underlying-order α) x
 Well-foundedness α = well-foundedness (underlying-order α) (is-well-ordered α)
 
+Irreflexivity : (α : Ordinal 𝓤) → is-irreflexive (underlying-order α)
+Irreflexivity α x = irreflexive (underlying-order α) x (Well-foundedness α x)
+
 Transfinite-induction : (α : Ordinal 𝓤)
                       → (P : ⟨ α ⟩ → 𝓦 ̇ )
                       → ((x : ⟨ α ⟩)
