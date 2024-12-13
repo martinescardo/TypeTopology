@@ -94,7 +94,7 @@ expᴸ-preserves-trichotomy α β tri-α tri-β l@(xs , _) l'@(ys , _) =
     ϕ (inr (inr q)) _              = inr (inr (head-lex q))
 
   κ : (xs ≺⟨List (α ×ₒ β) ⟩ ys) + (xs ＝ ys) + (ys ≺⟨List (α ×ₒ β) ⟩ xs)
-    → (l ≺⟨ [𝟙+ α ]^ β ⟩ l') + (l ＝ l') + (l' ≺⟨ [𝟙+ α ]^ β ⟩ l)
+    → (l ≺⟨ expᴸ α β ⟩ l') + (l ＝ l') + (l' ≺⟨ expᴸ α β ⟩ l)
   κ (inl p) = inl p
   κ (inr (inl e)) = inr (inl (to-expᴸ-＝ α β e))
   κ (inr (inr q)) = inr (inr q)

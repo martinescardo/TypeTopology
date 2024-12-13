@@ -1,7 +1,7 @@
 Tom de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg, Chuangjie Xu,
 Started November 2023. Refactored December 2024.
 
-TODO: REFACTOR AND COMMENT
+TODO: Comment in between the code blocks
 
 \begin{code}
 
@@ -37,7 +37,8 @@ open import Ordinals.AdditionProperties ua
 open import Ordinals.Equivalence
 open import Ordinals.Maps
 open import Ordinals.Notions
-open import Ordinals.OrdinalOfOrdinals ua hiding (_≼_)
+open import Ordinals.OrdinalOfOrdinals ua renaming (_≼_ to _≼OO_)
+open import Ordinals.Propositions ua
 open import Ordinals.Type
 open import Ordinals.Underlying
 
@@ -451,42 +452,17 @@ module _ (α : Ordinal 𝓤) (β : Ordinal 𝓥) where
  expᴸ-order-is-extensional (l₁ , δ₁) (l₂ , δ₂) u v =
   to-expᴸ-＝ (expᴸ-order-is-extensional' l₁ l₂ δ₁ δ₂ u v)
 
--- TODO: CONTINUE HERE (13 DEC)
+\end{code}
 
-[𝟙+_]^_ : Ordinal 𝓤 → Ordinal 𝓥 → Ordinal (𝓤 ⊔ 𝓥)
-[𝟙+ α ]^ β = ⟨expᴸ⟩ α β
+\begin{code}
+
+expᴸ : Ordinal 𝓤 → Ordinal 𝓥 → Ordinal (𝓤 ⊔ 𝓥)
+expᴸ α β = ⟨expᴸ⟩ α β
            , expᴸ-order α β
            , expᴸ-order-is-prop-valued α β
            , expᴸ-order-is-wellfounded α β
            , expᴸ-order-is-extensional α β
            , expᴸ-order-is-transitive α β
-
-\end{code}
-
-\begin{code}
-
-[𝟙+α]^β-has-least : (α : Ordinal 𝓤) → (β : Ordinal 𝓥) → 𝟙ₒ {𝓦} ⊴ ([𝟙+ α ]^ β)
-[𝟙+α]^β-has-least α β = (λ _ → [] , []-decr) , (λ xs _ p → 𝟘-elim ([]-lex-bot _ _ p)) , (λ x y p → 𝟘-elim p)
-
-[𝟙+α]^β-has-least' : (α : Ordinal 𝓤) (β : Ordinal 𝓥) (δ : is-decreasing-pr₂ α β [])
-                   → 𝟘ₒ ＝ ([𝟙+ α ]^ β) ↓ ([] , δ)
-[𝟙+α]^β-has-least' α β δ =
- ⊲-is-extensional 𝟘ₒ (([𝟙+ α ]^ β) ↓ ([] , δ))
-                  (𝟘ₒ-least (([𝟙+ α ]^ β) ↓ ([] , δ)))
-                  (to-≼ {_} {[𝟙+ α ]^ β ↓ ([] , δ)} {𝟘ₒ} h)
-  where
-   h : (l : ⟨ (([𝟙+ α ]^ β) ↓ ([] , δ)) ⟩)
-     → ((([𝟙+ α ]^ β) ↓ ([] , δ)) ↓ l) ⊲ 𝟘ₒ
-   h ((l , δ) , ())
-
-\end{code}
-
-TODO: MERGE PROPERLY
-
-\begin{code}
-
-expᴸ : Ordinal 𝓤 → Ordinal 𝓥 → Ordinal (𝓤 ⊔ 𝓥)
-expᴸ α β = [𝟙+ α ]^ β
 
 exponentiationᴸ : (α : Ordinal 𝓤)
                 → has-trichotomous-least-element α
@@ -494,12 +470,42 @@ exponentiationᴸ : (α : Ordinal 𝓤)
                 → Ordinal (𝓤 ⊔ 𝓥)
 exponentiationᴸ α h = expᴸ (α ⁺[ h ])
 
-expᴸ-⊥ : (α : Ordinal 𝓤) (β : Ordinal 𝓥) → ⟨ expᴸ α β ⟩
-expᴸ-⊥ α β = [] , []-decr
+\end{code}
 
-expᴸ-↓-⊥ : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
-         → expᴸ α β ↓ expᴸ-⊥ α β ＝ 𝟘ₒ
-expᴸ-↓-⊥ α β = ([𝟙+α]^β-has-least' α β []-decr) ⁻¹
+\begin{code}
+
+module _
+        (α : Ordinal 𝓤)
+        (β : Ordinal 𝓥)
+       where
+
+ expᴸ-⊥ : ⟨ expᴸ α β ⟩
+ expᴸ-⊥ = [] , []-decr
+
+ expᴸ-↓-⊥ : expᴸ α β ↓ expᴸ-⊥ ＝ 𝟘ₒ
+ expᴸ-↓-⊥ = ⊲-is-extensional (expᴸ α β ↓ expᴸ-⊥) 𝟘ₒ I II
+  where
+   I : (expᴸ α β ↓ expᴸ-⊥) ≼OO 𝟘ₒ
+   I = to-≼ {_} {expᴸ α β ↓ expᴸ-⊥} {𝟘ₒ} h
+    where
+     h : (l : ⟨ expᴸ α β ↓ expᴸ-⊥ ⟩)
+       → ((expᴸ α β ↓ expᴸ-⊥) ↓ l) ⊲ 𝟘ₒ
+     h ()
+   II : 𝟘ₒ ≼OO (expᴸ α β ↓ expᴸ-⊥)
+   II = 𝟘ₒ-least (expᴸ α β ↓ expᴸ-⊥)
+
+ expᴸ-↓-⊥' : {δ : is-decreasing-pr₂ α β []}
+           → expᴸ α β ↓ ([] , δ) ＝ 𝟘ₒ
+ expᴸ-↓-⊥' {δ} = expᴸ α β ↓ ([] , δ) ＝⟨ ap (expᴸ α β ↓_) (to-expᴸ-＝ α β refl) ⟩
+                 expᴸ α β ↓ expᴸ-⊥   ＝⟨ expᴸ-↓-⊥ ⟩
+                 𝟘ₒ                  ∎
+
+ expᴸ-is-positive : 𝟘ₒ ⊲ expᴸ α β
+ expᴸ-is-positive = expᴸ-⊥ , (expᴸ-↓-⊥ ⁻¹)
+
+ expᴸ-has-least : 𝟙ₒ ⊴ expᴸ α β
+ expᴸ-has-least =
+  to-⊴ 𝟙ₒ (expᴸ α β) (λ ⋆ → transport⁻¹ (_⊲ expᴸ α β) 𝟙ₒ-↓ expᴸ-is-positive)
 
 \end{code}
 
@@ -539,12 +545,6 @@ module _
    u
    (expᴸ-segment-inclusion-list-preserves-decreasing-pr₂ (a , b , u ∷ l) δ)
 
- extended-expᴸ-segment-inclusion : (l : ⟨ expᴸ α (β ↓ b₀) ⟩) (a₀ : ⟨ α ⟩)
-                                 → ⟨ expᴸ α β ⟩
- extended-expᴸ-segment-inclusion (l , δ) a₀ =
-  ((a₀ , b₀) ∷ expᴸ-segment-inclusion-list l) ,
-  extended-expᴸ-segment-inclusion-is-decreasing-pr₂ l a₀ δ
-
  predecessor-of-expᴸ-segment-inclusion-lemma :
     (a : ⟨ α ⟩) {b : ⟨ β ⟩}
     {l₁ : List ⟨ α ×ₒ β ⟩}
@@ -569,6 +569,16 @@ module _
  expᴸ-segment-inclusion (l , δ) =
   expᴸ-segment-inclusion-list l ,
   expᴸ-segment-inclusion-list-preserves-decreasing-pr₂ l δ
+
+ extended-expᴸ-segment-inclusion : (l : ⟨ expᴸ α (β ↓ b₀) ⟩) (a₀ : ⟨ α ⟩)
+                                 → ⟨ expᴸ α β ⟩
+ extended-expᴸ-segment-inclusion (l , δ) a₀ =
+  ((a₀ , b₀) ∷ expᴸ-segment-inclusion-list l) ,
+  extended-expᴸ-segment-inclusion-is-decreasing-pr₂ l a₀ δ
+
+\end{code}
+
+\begin{code}
 
  expᴸ-segment-inclusion-list-is-order-preserving :
     (l l' : List ⟨ α ×ₒ (β ↓ b₀) ⟩)
@@ -611,6 +621,10 @@ module _
   is-order-reflecting (expᴸ α (β ↓ b₀)) (expᴸ α β) expᴸ-segment-inclusion
  expᴸ-segment-inclusion-is-order-reflecting (l , δ) (l' , δ') =
   expᴸ-segment-inclusion-list-is-order-reflecting l l'
+
+\end{code}
+
+\begin{code}
 
 module _
         (α : Ordinal 𝓤)
@@ -710,6 +724,10 @@ module _
  expᴸ-segment-inclusion-section-of-expᴸ-tail l δ =
   to-expᴸ-＝ α (β ↓ b₀) (expᴸ-segment-inclusion-section-of-expᴸ-tail' l δ)
 
+\end{code}
+
+\begin{code}
+
 expᴸ-segment-inclusion-is-simulation :
    (α : Ordinal 𝓤) (β : Ordinal 𝓥) (b₀ : ⟨ β ⟩)
  → is-simulation (expᴸ α (β ↓ b₀)) (expᴸ α β) (expᴸ-segment-inclusion α β b₀)
@@ -737,6 +755,10 @@ expᴸ-segment-inclusion-⊴ : (α : Ordinal 𝓤) (β : Ordinal 𝓥) (b₀ : �
                          → expᴸ α (β ↓ b₀) ⊴ expᴸ α β
 expᴸ-segment-inclusion-⊴ α β b₀ = expᴸ-segment-inclusion α β b₀ ,
                                   expᴸ-segment-inclusion-is-simulation α β b₀
+
+\end{code}
+
+\begin{code}
 
 expᴸ-↓-cons-≃ₒ
  : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
