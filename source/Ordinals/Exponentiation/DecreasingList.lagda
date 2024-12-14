@@ -509,6 +509,17 @@ module _
 
 \end{code}
 
+\begin{code}
+
+ expᴸ-is-trichotomous-least : is-trichotomous-least (expᴸ α β) expᴸ-⊥
+ expᴸ-is-trichotomous-least ([] , []-decr) = inl refl
+ expᴸ-is-trichotomous-least ((x ∷ l) , δ) = inr []-lex
+
+ expᴸ-has-trichotomous-least-element : has-trichotomous-least-element (expᴸ α β)
+ expᴸ-has-trichotomous-least-element = expᴸ-⊥ , expᴸ-is-trichotomous-least
+
+\end{code}
+
 Characterizing initial segments of expᴸ α β
 
 \begin{code}
