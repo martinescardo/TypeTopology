@@ -544,4 +544,26 @@ _⁺[_]-part-of-decomposition : (α : Ordinal 𝓤)
                             → α ＝ 𝟙ₒ +ₒ α ⁺[ d⊥ ]
 α ⁺[ d⊥ ]-part-of-decomposition = pr₂ (trichotomous-least-to-decomposable α d⊥)
 
+trichotomous-least-element-gives-𝟙ₒ-⊴ : (α : Ordinal 𝓤)
+                                      → has-trichotomous-least-element α
+                                      → 𝟙ₒ ⊴ α
+trichotomous-least-element-gives-𝟙ₒ-⊴ α h =
+ transport⁻¹ (𝟙ₒ ⊴_) (α ⁺[ h ]-part-of-decomposition) (+ₒ-left-⊴ 𝟙ₒ (α ⁺[ h ]))
+
+module _
+        (α : Ordinal 𝓤)
+        (h@(⊥ , _) : has-trichotomous-least-element α)
+       where
+
+ ⁺-is-subtype-of-positive-elements : ⟨ α ⁺[ h ] ⟩ ＝ (Σ a ꞉ ⟨ α ⟩ , ⊥ ≺⟨ α ⟩ a)
+ ⁺-is-subtype-of-positive-elements = refl
+
+ ⁺-underlying-element : ⟨ α ⁺[ h ] ⟩ → ⟨ α ⟩
+ ⁺-underlying-element = pr₁
+
+ to-⁺-＝ : {x y : ⟨ α ⁺[ h ] ⟩}
+         → ⁺-underlying-element x ＝ ⁺-underlying-element y
+         → x ＝ y
+ to-⁺-＝ e = to-subtype-＝ (Prop-valuedness α ⊥) e
+
 \end{code}

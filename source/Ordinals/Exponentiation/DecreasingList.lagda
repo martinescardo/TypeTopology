@@ -518,6 +518,12 @@ module _
  expᴸ-has-trichotomous-least-element : has-trichotomous-least-element (expᴸ α β)
  expᴸ-has-trichotomous-least-element = expᴸ-⊥ , expᴸ-is-trichotomous-least
 
+exponentiationᴸ-has-trichotomous-least-element
+ : (α : Ordinal 𝓤) (h : has-trichotomous-least-element α) (β : Ordinal 𝓥)
+ → has-trichotomous-least-element (exponentiationᴸ α h β)
+exponentiationᴸ-has-trichotomous-least-element α h β =
+ expᴸ-has-trichotomous-least-element (α ⁺[ h ]) β
+
 \end{code}
 
 Characterizing initial segments of expᴸ α β

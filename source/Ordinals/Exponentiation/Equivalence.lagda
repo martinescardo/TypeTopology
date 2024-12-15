@@ -47,9 +47,9 @@ open import Ordinals.Exponentiation.TrichotomousLeastElement ua
 open PropositionalTruncation pt
 open suprema pt sr
 
-equivalence-of-exponentiation-constructions' : (α β : Ordinal 𝓤)
+exponentiation-constructions-agree' : (α β : Ordinal 𝓤)
                                              → (𝟙ₒ +ₒ α) ^ₒ β ＝ expᴸ α β
-equivalence-of-exponentiation-constructions' {𝓤} α =
+exponentiation-constructions-agree' {𝓤} α =
  transfinite-induction-on-OO (λ β → α⁺ ^ₒ β ＝ expᴸ α β) I
   where
    α⁺ = 𝟙ₒ +ₒ α
@@ -141,17 +141,17 @@ equivalence-of-exponentiation-constructions' {𝓤} α =
          IV₃ = ap (λ - → - ×ₒ (𝟙ₒ +ₒ (α ↓ a)) +ₒ (expᴸ α (β ↓ b) ↓ l₁)) (IH b)
          IV₄ = expᴸ-↓-cons' α β a b l₁ ⁻¹
 
-equivalence-of-exponentiation-constructions
+exponentiation-constructions-agree
  : (α β : Ordinal 𝓤) (h : has-trichotomous-least-element α)
  → exponentiationᴸ α h β ＝ α ^ₒ β
-equivalence-of-exponentiation-constructions α β h =
+exponentiation-constructions-agree α β h =
  exponentiationᴸ α h β ＝⟨ refl ⟩
  expᴸ α⁺ β             ＝⟨ I ⟩
  (𝟙ₒ +ₒ α⁺) ^ₒ β       ＝⟨ II ⟩
  α ^ₒ β                ∎
   where
    α⁺ = α ⁺[ h ]
-   I = (equivalence-of-exponentiation-constructions' α⁺ β) ⁻¹
+   I = (exponentiation-constructions-agree' α⁺ β) ⁻¹
    II = ap (_^ₒ β) ((α ⁺[ h ]-part-of-decomposition) ⁻¹)
 
 \end{code}
