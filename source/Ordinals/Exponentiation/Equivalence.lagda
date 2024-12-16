@@ -317,7 +317,7 @@ Looking at ⟦⟧'-behaviour-cons, one may wonder about the case where we don't 
 following observation, which corresponds to the fact that if an ordinal γ has a
 trichotomous (in particular, detachable) least element then elements of
 DecrList₂ γ β can be "normalized" by removing entries which list the least
-element of α.
+element of α (see the end of this file).
 
 \begin{code}
 
@@ -338,10 +338,6 @@ element of α.
      III = ap (λ - → α' ^ₒ (β ↓ b) ×ₒ - +ₒ (α' ^ₒ (β ↓ b) ↓ e)) 𝟙ₒ-↓
      IV  = ap (_+ₒ (α' ^ₒ (β ↓ b) ↓ e)) (×ₒ-𝟘ₒ-right (α' ^ₒ (β ↓ b)))
      V   = 𝟘ₒ-left-neutral (α' ^ₒ (β ↓ b) ↓ e)
-
-\end{code}
-
-\begin{code}
 
  induced-simulation : (β : Ordinal 𝓤) → expᴸ[𝟙+ α ] β ⊴ α' ^ₒ β
  induced-simulation β =
@@ -406,5 +402,90 @@ element of α.
           e₆ = (^ₒ-↓-×ₒ-to-^ₒ α' β) ⁻¹
           e₇ = ap (λ - → α' ^ₒ β ↓ ×ₒ-to-^ₒ α' β (- , inr a)) (IH b ℓ)
           e₈ = ap (α' ^ₒ β ↓_) ((⟦⟧'-behaviour-cons β a b l δ) ⁻¹)
+
+\end{code}
+
+Indeed, the denotation maps are related via a normalization function.
+
+\begin{code}
+
+module _
+        (α : Ordinal 𝓤)
+        (β : Ordinal 𝓥)
+       where
+
+ private
+  α' = 𝟙ₒ +ₒ α
+
+ normalize-list : List ⟨ α' ×ₒ β ⟩ → List ⟨ α ×ₒ β ⟩
+ normalize-list []                = []
+ normalize-list ((inl ⋆ , b) ∷ l) = normalize-list l
+ normalize-list ((inr a , b) ∷ l) = (a , b) ∷ normalize-list l
+
+ normalize-list-preserves-decreasing-pr₂
+  : (l : List ⟨ α' ×ₒ β ⟩)
+  → is-decreasing-pr₂ α' β l
+  → is-decreasing-pr₂ α β (normalize-list l)
+ normalize-list-preserves-decreasing-pr₂ =
+  course-of-values-induction-on-length
+   (λ l → is-decreasing-pr₂ α' β l → is-decreasing-pr₂ α β (normalize-list l))
+   ind
+    where
+     open import Naturals.Order
+     open import Notation.Order
+     ind : (l : List ⟨ α' ×ₒ β ⟩)
+       → ((l' : List ⟨ α' ×ₒ β ⟩)
+             → length l' < length l
+             → is-decreasing-pr₂ α' β l'
+             → is-decreasing-pr₂ α β (normalize-list l'))
+       → is-decreasing-pr₂ α' β l
+       → is-decreasing-pr₂ α β (normalize-list l)
+     ind [] IH δ = []-decr
+     ind ((inl ⋆ , b) ∷ l) IH δ =
+      IH l (<-succ (length l))
+           (tail-is-decreasing-pr₂ α' β (inl ⋆ , b) δ)
+     ind ((inr a , b) ∷ []) IH δ = sing-decr
+     ind ((inr a , b) ∷ (inl ⋆  , b') ∷ l) IH δ =
+      IH ((inr a , b) ∷ l)
+         (<-succ (length l))
+         (is-decreasing-pr₂-skip α' β (inr a , b) (inl ⋆ , b') δ)
+     ind ((inr a , b) ∷ (inr a' , b') ∷ l) IH 𝕕@(many-decr u δ) =
+      many-decr u
+       (IH (inr a' , b' ∷ l)
+           (<-succ (length l))
+           (tail-is-decreasing-pr₂ α' β (inr a , b) 𝕕))
+
+
+ normalize : DecrList₂ α' β → DecrList₂ α β
+ normalize (l , δ) = normalize-list l ,
+                     normalize-list-preserves-decreasing-pr₂ l δ
+
+{-
+denotations-are-related-via-normalization
+ : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
+ → denotation (𝟙ₒ +ₒ α) β ∼ denotation' α β ∘ normalize α β
+denotations-are-related-via-normalization {𝓤} {𝓥} α =
+ transfinite-induction-on-OO
+  (λ β → denotation (𝟙ₒ +ₒ α) β ∼ denotation' α β ∘ normalize α β)
+  ind
+   where
+    ind : (β : Ordinal 𝓥)
+        → ((b : ⟨ β ⟩) → denotation (𝟙ₒ +ₒ α) (β ↓ b)
+                         ∼ denotation' α (β ↓ b) ∘ normalize α (β ↓ b))
+        → denotation (𝟙ₒ +ₒ α) β ∼ denotation' α β ∘ normalize α β
+    ind β IH ([] , []-decr) = ⟦⟧-behaviour-[] (𝟙ₒ +ₒ α) β
+                              ∙ (⟦⟧'-behaviour-[] α β) ⁻¹
+    ind β IH ((inl ⋆ , b ∷ l) , δ) = {!!}
+    ind β IH ((inr a , b ∷ l) , δ) =
+     denotation (𝟙ₒ +ₒ α) β ((inr a , b ∷ l) , δ) ＝⟨ ⟦⟧-behaviour-cons (𝟙ₒ +ₒ α) β (inr a) b l δ ⟩
+     ×ₒ-to-^ₒ (𝟙ₒ +ₒ α) β
+      (denotation (𝟙ₒ +ₒ α) (β ↓ b) (expᴸ-tail (𝟙ₒ +ₒ α) β (inr a) b l δ) , inr a) ＝⟨ ap (λ - → ×ₒ-to-^ₒ (𝟙ₒ +ₒ α) β (- , inr a)) (IH b (expᴸ-tail (𝟙ₒ +ₒ α) β (inr a) b l δ)) ⟩
+     ×ₒ-to-^ₒ (𝟙ₒ +ₒ α) β
+       ((denotation' α (β ↓ b) ∘ normalize α (β ↓ b))
+        (expᴸ-tail (𝟙ₒ +ₒ α) β (inr a) b l δ)
+        , inr a) ＝⟨ {!!} ⟩
+     denotation' α β (normalize-list α β (inr a , b ∷ l) , normalize-list-preserves-decreasing-pr₂ α β (inr a , b ∷ l) δ) ＝⟨ refl ⟩
+     denotation' α β (normalize α β ((inr a , b ∷ l) , δ)) ∎
+-}
 
 \end{code}
