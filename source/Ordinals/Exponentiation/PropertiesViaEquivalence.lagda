@@ -236,8 +236,7 @@ module _
    h' = exponentiationᴸ-has-trichotomous-least-element α h β
 
   exponentiationᴸ-by-×ₒ
-   : exponentiationᴸ α h (β ×ₒ γ)
-     ＝ exponentiationᴸ (exponentiationᴸ α h β) h' γ
+   : exponentiationᴸ α h (β ×ₒ γ) ＝ exponentiationᴸ (exponentiationᴸ α h β) h' γ
   exponentiationᴸ-by-×ₒ =
    transport₂
     _＝_
