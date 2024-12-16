@@ -59,7 +59,7 @@ The exponentiation constructions inherit decidability properties from α and β.
 expᴸ-preserves-discreteness : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
                             → is-discrete ⟨ α ⟩
                             → is-discrete ⟨ β ⟩
-                            → is-discrete ⟨ expᴸ α β ⟩
+                            → is-discrete ⟨ expᴸ[𝟙+ α ] β ⟩
 expᴸ-preserves-discreteness α β α-is-disc β-is-disc l@(xs , _) l'@(ys , _) =
  III II
   where
@@ -100,7 +100,7 @@ exponentiationᴸ-preserves-discreteness α β h@(⊥ , _) α-is-discrete β-is-
 expᴸ-preserves-trichotomy : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
                           → is-trichotomous α
                           → is-trichotomous β
-                          → is-trichotomous (expᴸ α β)
+                          → is-trichotomous (expᴸ[𝟙+ α ] β)
 expᴸ-preserves-trichotomy α β tri-α tri-β l@(xs , _) l'@(ys , _) =
  κ (tri xs ys)
  where
@@ -124,26 +124,37 @@ expᴸ-preserves-trichotomy α β tri-α tri-β l@(xs , _) l'@(ys , _) =
     ϕ (inr (inr q)) _              = inr (inr (head-lex q))
 
   κ : (xs ≺⟨List (α ×ₒ β) ⟩ ys) + (xs ＝ ys) + (ys ≺⟨List (α ×ₒ β) ⟩ xs)
-    → (l ≺⟨ expᴸ α β ⟩ l') + (l ＝ l') + (l' ≺⟨ expᴸ α β ⟩ l)
+    → (l ≺⟨ expᴸ[𝟙+ α ] β ⟩ l') + (l ＝ l') + (l' ≺⟨ expᴸ[𝟙+ α ] β ⟩ l)
   κ (inl p) = inl p
   κ (inr (inl e)) = inr (inl (to-expᴸ-＝ α β e))
   κ (inr (inr q)) = inr (inr q)
 
-exponentiationᴸ-preserves-trichotomy : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
-                                       (h : has-trichotomous-least-element α)
-                                     → is-trichotomous α
-                                     → is-trichotomous β
-                                     → is-trichotomous (exponentiationᴸ α h β)
+private
+ tri-least : (α : Ordinal 𝓤)
+           → has-least α
+           → is-trichotomous α
+           → has-trichotomous-least-element α
+ tri-least α (⊥ , ⊥-is-least) t =
+  ⊥ , is-trichotomous-and-least-implies-is-trichotomous-least α ⊥ (t ⊥) ⊥-is-least
+
+exponentiationᴸ-preserves-trichotomy
+ : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
+ → (h : has-least α)
+ → (t : is-trichotomous α)
+ → is-trichotomous β
+ → is-trichotomous (exponentiationᴸ α (tri-least α h t) β)
 exponentiationᴸ-preserves-trichotomy α β h tri-α tri-β =
- expᴸ-preserves-trichotomy (α ⁺[ h ]) β tri-α⁺ tri-β
+ expᴸ-preserves-trichotomy (α ⁺[ h' ]) β tri-α⁺ tri-β
   where
-   tri-α⁺ : is-trichotomous (α ⁺[ h ])
+   h' : has-trichotomous-least-element α
+   h' = tri-least α h tri-α
+   tri-α⁺ : is-trichotomous (α ⁺[ h' ])
    tri-α⁺ (x , p) (y , q) = κ (tri-α x y)
     where
      κ : in-trichotomy (underlying-order α) x y
-       → in-trichotomy (underlying-order (α ⁺[ h ])) (x , p) (y , q)
+       → in-trichotomy (underlying-order (α ⁺[ h' ])) (x , p) (y , q)
      κ (inl l)       = inl l
-     κ (inr (inl e)) = inr (inl (to-⁺-＝ α h e))
+     κ (inr (inl e)) = inr (inl (to-⁺-＝ α h' e))
      κ (inr (inr k)) = inr (inr k)
 
 ^ₒ-preserves-trichotomy-for-basis-with-trichotomous-least-element
@@ -153,9 +164,13 @@ exponentiationᴸ-preserves-trichotomy α β h tri-α tri-β =
  → is-trichotomous β
  → is-trichotomous (α ^ₒ β)
 ^ₒ-preserves-trichotomy-for-basis-with-trichotomous-least-element
- α β h tri-α tri-β = transport is-trichotomous
-                      (exponentiation-constructions-agree α β h)
-                      (exponentiationᴸ-preserves-trichotomy α β h tri-α tri-β)
+ α β h@(⊥ , p) tri-α tri-β =
+  transport is-trichotomous
+   (exponentiation-constructions-agree α β h)
+   (exponentiationᴸ-preserves-trichotomy α β
+     (⊥ , is-trichotomous-least-implies-is-least α ⊥ p)
+     tri-α
+     tri-β)
 
 \end{code}
 

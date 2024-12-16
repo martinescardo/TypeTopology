@@ -252,19 +252,19 @@ module _ (α : Ordinal 𝓤) (β : Ordinal 𝓥) where
  is-decreasing-pr₂-skip x y = is-decreasing-skip (underlying-order β)
                                                  (Transitivity β)
 
- ⟨expᴸ⟩ : 𝓤 ⊔ 𝓥 ̇
- ⟨expᴸ⟩ = Σ l ꞉ List ⟨ α ×ₒ β ⟩ , is-decreasing-pr₂ l
+ DecrList₂ : 𝓤 ⊔ 𝓥 ̇
+ DecrList₂ = Σ l ꞉ List ⟨ α ×ₒ β ⟩ , is-decreasing-pr₂ l
 
- expᴸ-list : ⟨expᴸ⟩ → List ⟨ α ×ₒ β ⟩
+ expᴸ-list : DecrList₂ → List ⟨ α ×ₒ β ⟩
  expᴸ-list = pr₁
 
- to-expᴸ-＝ : {l l' : ⟨expᴸ⟩} → expᴸ-list l ＝ expᴸ-list l' → l ＝ l'
+ to-expᴸ-＝ : {l l' : DecrList₂} → expᴸ-list l ＝ expᴸ-list l' → l ＝ l'
  to-expᴸ-＝ = to-subtype-＝ (λ l → is-decreasing-is-prop
                                     (underlying-order β)
                                     (Prop-valuedness β)
                                     (map pr₂ l))
 
- expᴸ-list-is-decreasing-pr₂ : (l : ⟨expᴸ⟩) → is-decreasing-pr₂ (expᴸ-list l)
+ expᴸ-list-is-decreasing-pr₂ : (l : DecrList₂) → is-decreasing-pr₂ (expᴸ-list l)
  expᴸ-list-is-decreasing-pr₂ = pr₂
 
  is-decreasing-if-decreasing-pr₂ : (l : List ⟨ α ×ₒ β ⟩)
@@ -276,11 +276,11 @@ module _ (α : Ordinal 𝓤) (β : Ordinal 𝓥) where
   = many-decr (inl p) (is-decreasing-if-decreasing-pr₂ (x' ∷ l) δ)
 
  expᴸ-list-is-decreasing
-  : (l : ⟨expᴸ⟩)
+  : (l : DecrList₂)
   → is-decreasing (underlying-order (α ×ₒ β)) (expᴸ-list l)
  expᴸ-list-is-decreasing (l , δ) = is-decreasing-if-decreasing-pr₂ l δ
 
- expᴸ-order : ⟨expᴸ⟩ → ⟨expᴸ⟩ → 𝓤 ⊔ 𝓥 ̇
+ expᴸ-order : DecrList₂ → DecrList₂ → 𝓤 ⊔ 𝓥 ̇
  expᴸ-order (l , _) (l' , _) = l ≺⟨List (α ×ₒ β) ⟩ l'
 
  expᴸ-order-is-prop-valued : is-prop-valued expᴸ-order
@@ -456,19 +456,21 @@ module _ (α : Ordinal 𝓤) (β : Ordinal 𝓥) where
 
 \begin{code}
 
-expᴸ : Ordinal 𝓤 → Ordinal 𝓥 → Ordinal (𝓤 ⊔ 𝓥)
-expᴸ α β = ⟨expᴸ⟩ α β
-           , expᴸ-order α β
-           , expᴸ-order-is-prop-valued α β
-           , expᴸ-order-is-wellfounded α β
-           , expᴸ-order-is-extensional α β
-           , expᴸ-order-is-transitive α β
+expᴸ[𝟙+_] : Ordinal 𝓤 → Ordinal 𝓥 → Ordinal (𝓤 ⊔ 𝓥)
+expᴸ[𝟙+_] α β = DecrList₂ α β
+                , expᴸ-order α β
+                , expᴸ-order-is-prop-valued α β
+                , expᴸ-order-is-wellfounded α β
+                , expᴸ-order-is-extensional α β
+                , expᴸ-order-is-transitive α β
 
 exponentiationᴸ : (α : Ordinal 𝓤)
                 → has-trichotomous-least-element α
                 → Ordinal 𝓥
                 → Ordinal (𝓤 ⊔ 𝓥)
-exponentiationᴸ α h = expᴸ (α ⁺[ h ])
+exponentiationᴸ α h = expᴸ[𝟙+ α ⁺[ h ] ]
+
+DecreasingList₂ = expᴸ[𝟙+_]
 
 \end{code}
 
@@ -479,43 +481,45 @@ module _
         (β : Ordinal 𝓥)
        where
 
- expᴸ-⊥ : ⟨ expᴸ α β ⟩
+ expᴸ-⊥ : ⟨ expᴸ[𝟙+ α ] β ⟩
  expᴸ-⊥ = [] , []-decr
 
- expᴸ-↓-⊥ : expᴸ α β ↓ expᴸ-⊥ ＝ 𝟘ₒ
- expᴸ-↓-⊥ = ⊲-is-extensional (expᴸ α β ↓ expᴸ-⊥) 𝟘ₒ I II
+ expᴸ-↓-⊥ : expᴸ[𝟙+ α ] β ↓ expᴸ-⊥ ＝ 𝟘ₒ
+ expᴸ-↓-⊥ = ⊲-is-extensional (expᴸ[𝟙+ α ] β ↓ expᴸ-⊥) 𝟘ₒ I II
   where
-   I : (expᴸ α β ↓ expᴸ-⊥) ≼OO 𝟘ₒ
-   I = to-≼ {_} {expᴸ α β ↓ expᴸ-⊥} {𝟘ₒ} h
+   I : (expᴸ[𝟙+ α ] β ↓ expᴸ-⊥) ≼OO 𝟘ₒ
+   I = to-≼ {_} {expᴸ[𝟙+ α ] β ↓ expᴸ-⊥} {𝟘ₒ} h
     where
-     h : (l : ⟨ expᴸ α β ↓ expᴸ-⊥ ⟩)
-       → ((expᴸ α β ↓ expᴸ-⊥) ↓ l) ⊲ 𝟘ₒ
+     h : (l : ⟨ expᴸ[𝟙+ α ] β ↓ expᴸ-⊥ ⟩)
+       → ((expᴸ[𝟙+ α ] β ↓ expᴸ-⊥) ↓ l) ⊲ 𝟘ₒ
      h ()
-   II : 𝟘ₒ ≼OO (expᴸ α β ↓ expᴸ-⊥)
-   II = 𝟘ₒ-least (expᴸ α β ↓ expᴸ-⊥)
+   II : 𝟘ₒ ≼OO (expᴸ[𝟙+ α ] β ↓ expᴸ-⊥)
+   II = 𝟘ₒ-least (expᴸ[𝟙+ α ] β ↓ expᴸ-⊥)
 
  expᴸ-↓-⊥' : {δ : is-decreasing-pr₂ α β []}
-           → expᴸ α β ↓ ([] , δ) ＝ 𝟘ₒ
- expᴸ-↓-⊥' {δ} = expᴸ α β ↓ ([] , δ) ＝⟨ ap (expᴸ α β ↓_) (to-expᴸ-＝ α β refl) ⟩
-                 expᴸ α β ↓ expᴸ-⊥   ＝⟨ expᴸ-↓-⊥ ⟩
-                 𝟘ₒ                  ∎
+           → expᴸ[𝟙+ α ] β ↓ ([] , δ) ＝ 𝟘ₒ
+ expᴸ-↓-⊥' {δ} = expᴸ[𝟙+ α ] β ↓ ([] , δ) ＝⟨ ap (expᴸ[𝟙+ α ] β ↓_)
+                                                 (to-expᴸ-＝ α β refl) ⟩
+                 expᴸ[𝟙+ α ] β ↓ expᴸ-⊥   ＝⟨ expᴸ-↓-⊥ ⟩
+                 𝟘ₒ                       ∎
 
- expᴸ-is-positive : 𝟘ₒ ⊲ expᴸ α β
+ expᴸ-is-positive : 𝟘ₒ ⊲ expᴸ[𝟙+ α ] β
  expᴸ-is-positive = expᴸ-⊥ , (expᴸ-↓-⊥ ⁻¹)
 
- expᴸ-has-least : 𝟙ₒ ⊴ expᴸ α β
+ expᴸ-has-least : 𝟙ₒ ⊴ expᴸ[𝟙+ α ] β
  expᴸ-has-least =
-  to-⊴ 𝟙ₒ (expᴸ α β) (λ ⋆ → transport⁻¹ (_⊲ expᴸ α β) 𝟙ₒ-↓ expᴸ-is-positive)
+  to-⊴ 𝟙ₒ (expᴸ[𝟙+ α ] β) (λ ⋆ → transport⁻¹ (_⊲ expᴸ[𝟙+ α ] β) 𝟙ₒ-↓ expᴸ-is-positive)
 
 \end{code}
 
 \begin{code}
 
- expᴸ-is-trichotomous-least : is-trichotomous-least (expᴸ α β) expᴸ-⊥
+ expᴸ-is-trichotomous-least : is-trichotomous-least (expᴸ[𝟙+ α ] β) expᴸ-⊥
  expᴸ-is-trichotomous-least ([] , []-decr) = inl refl
  expᴸ-is-trichotomous-least ((x ∷ l) , δ) = inr []-lex
 
- expᴸ-has-trichotomous-least-element : has-trichotomous-least-element (expᴸ α β)
+ expᴸ-has-trichotomous-least-element
+  : has-trichotomous-least-element (expᴸ[𝟙+ α ] β)
  expᴸ-has-trichotomous-least-element = expᴸ-⊥ , expᴸ-is-trichotomous-least
 
 exponentiationᴸ-has-trichotomous-least-element
@@ -582,13 +586,13 @@ module _
  expᴸ-segment-inclusion-list-lex {[]} = []-lex
  expᴸ-segment-inclusion-list-lex {((a' , (b' , u)) ∷ l₁)} = head-lex (inl u)
 
- expᴸ-segment-inclusion : ⟨ expᴸ α (β ↓ b₀) ⟩ → ⟨ expᴸ α β ⟩
+ expᴸ-segment-inclusion : ⟨ expᴸ[𝟙+ α ] (β ↓ b₀) ⟩ → ⟨ expᴸ[𝟙+ α ] β ⟩
  expᴸ-segment-inclusion (l , δ) =
   expᴸ-segment-inclusion-list l ,
   expᴸ-segment-inclusion-list-preserves-decreasing-pr₂ l δ
 
- extended-expᴸ-segment-inclusion : (l : ⟨ expᴸ α (β ↓ b₀) ⟩) (a₀ : ⟨ α ⟩)
-                                 → ⟨ expᴸ α β ⟩
+ extended-expᴸ-segment-inclusion : (l : ⟨ expᴸ[𝟙+ α ] (β ↓ b₀) ⟩) (a₀ : ⟨ α ⟩)
+                                 → ⟨ expᴸ[𝟙+ α ] β ⟩
  extended-expᴸ-segment-inclusion (l , δ) a₀ =
   ((a₀ , b₀) ∷ expᴸ-segment-inclusion-list l) ,
   extended-expᴸ-segment-inclusion-is-decreasing-pr₂ l a₀ δ
@@ -630,12 +634,18 @@ module _
     (expᴸ-segment-inclusion-list-is-order-reflecting l l' u)
 
  expᴸ-segment-inclusion-is-order-preserving :
-  is-order-preserving (expᴸ α (β ↓ b₀)) (expᴸ α β) expᴸ-segment-inclusion
+  is-order-preserving
+   (expᴸ[𝟙+ α ] (β ↓ b₀))
+   (expᴸ[𝟙+ α ] β)
+   expᴸ-segment-inclusion
  expᴸ-segment-inclusion-is-order-preserving (l , δ) (l' , δ') =
   expᴸ-segment-inclusion-list-is-order-preserving l l'
 
  expᴸ-segment-inclusion-is-order-reflecting :
-  is-order-reflecting (expᴸ α (β ↓ b₀)) (expᴸ α β) expᴸ-segment-inclusion
+  is-order-reflecting
+   (expᴸ[𝟙+ α ] (β ↓ b₀))
+   (expᴸ[𝟙+ α ] β)
+   expᴸ-segment-inclusion
  expᴸ-segment-inclusion-is-order-reflecting (l , δ) (l' , δ') =
   expᴸ-segment-inclusion-list-is-order-reflecting l l'
 
@@ -678,7 +688,7 @@ module _
 
  expᴸ-tail : (l : List ⟨ α ×ₒ β ⟩)
            → is-decreasing-pr₂ α β ((a₀ , b₀) ∷ l)
-           → ⟨ expᴸ α (β ↓ b₀) ⟩
+           → ⟨ expᴸ[𝟙+ α ] (β ↓ b₀) ⟩
  expᴸ-tail l δ = expᴸ-tail-list l δ ,
                  (expᴸ-tail-list-preserves-decreasing-pr₂ l δ)
 
@@ -687,7 +697,7 @@ module _
     (δ₁ : is-decreasing-pr₂ α β ((a₀ , b₀) ∷ l₁))
     (δ₂ : is-decreasing-pr₂ α β ((a₀ , b₀) ∷ l₂))
   → l₁ ≺⟨List (α ×ₒ β) ⟩ l₂
-  → expᴸ-tail l₁ δ₁ ≺⟨ expᴸ α (β ↓ b₀) ⟩ expᴸ-tail l₂ δ₂
+  → expᴸ-tail l₁ δ₁ ≺⟨ expᴸ[𝟙+ α ] (β ↓ b₀) ⟩ expᴸ-tail l₂ δ₂
  expᴸ-tail-is-order-preserving {[]} {(_ ∷ l₂)} δ₁ δ₂ _ = []-lex
  expᴸ-tail-is-order-preserving {((a , b) ∷ l₁)} {((a' , b') ∷ l₂)} δ₁ δ₂
   (head-lex (inl u)) = head-lex (inl u)
@@ -747,19 +757,20 @@ module _
 
 expᴸ-segment-inclusion-is-simulation :
    (α : Ordinal 𝓤) (β : Ordinal 𝓥) (b₀ : ⟨ β ⟩)
- → is-simulation (expᴸ α (β ↓ b₀)) (expᴸ α β) (expᴸ-segment-inclusion α β b₀)
+ → is-simulation (expᴸ[𝟙+ α ] (β ↓ b₀)) (expᴸ[𝟙+ α ] β)
+    (expᴸ-segment-inclusion α β b₀)
 expᴸ-segment-inclusion-is-simulation α β b₀ =
  order-preserving-and-reflecting-partial-surjections-are-simulations
-  (expᴸ α (β ↓ b₀))
-  (expᴸ α β)
+  (expᴸ[𝟙+ α ] (β ↓ b₀))
+  (expᴸ[𝟙+ α ] β)
   (expᴸ-segment-inclusion α β b₀)
   (expᴸ-segment-inclusion-is-order-preserving α β b₀)
   (expᴸ-segment-inclusion-is-order-reflecting α β b₀)
   I
   where
-   I : (x : ⟨ expᴸ α (β ↓ b₀) ⟩) (y : ⟨ expᴸ α β ⟩)
-     → y ≺⟨ expᴸ α β ⟩ expᴸ-segment-inclusion α β b₀ x
-     → Σ x' ꞉ ⟨ expᴸ α (β ↓ b₀) ⟩ , expᴸ-segment-inclusion α β b₀ x' ＝ y
+   I : (x : ⟨ expᴸ[𝟙+ α ] (β ↓ b₀) ⟩) (y : ⟨ expᴸ[𝟙+ α ] β ⟩)
+     → y ≺⟨ expᴸ[𝟙+ α ] β ⟩ expᴸ-segment-inclusion α β b₀ x
+     → Σ x' ꞉ ⟨ expᴸ[𝟙+ α ] (β ↓ b₀) ⟩ , expᴸ-segment-inclusion α β b₀ x' ＝ y
    I _ ([] , []-decr) _ = ([] , []-decr) , refl
    I _ (((a , b) ∷ l) , δ) u =
     expᴸ-tail α β a b₀ (a , b ∷ l) ε ,
@@ -769,7 +780,7 @@ expᴸ-segment-inclusion-is-simulation α β b₀ =
       ε = many-decr (predecessor-of-expᴸ-segment-inclusion-lemma α β b₀ a u) δ
 
 expᴸ-segment-inclusion-⊴ : (α : Ordinal 𝓤) (β : Ordinal 𝓥) (b₀ : ⟨ β ⟩)
-                         → expᴸ α (β ↓ b₀) ⊴ expᴸ α β
+                         → expᴸ[𝟙+ α ] (β ↓ b₀) ⊴ expᴸ[𝟙+ α ] β
 expᴸ-segment-inclusion-⊴ α β b₀ = expᴸ-segment-inclusion α β b₀ ,
                                   expᴸ-segment-inclusion-is-simulation α β b₀
 
@@ -781,18 +792,18 @@ expᴸ-↓-cons-≃ₒ
  : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
    (a : ⟨ α ⟩) (b : ⟨ β ⟩) (l : List ⟨ α ×ₒ β ⟩)
    (δ : is-decreasing-pr₂ α β ((a , b) ∷ l))
- → expᴸ α β ↓ (((a , b) ∷ l) , δ)
-   ≃ₒ expᴸ α (β ↓ b) ×ₒ (𝟙ₒ +ₒ (α ↓ a))
-      +ₒ (expᴸ α (β ↓ b) ↓ expᴸ-tail α β a b l δ)
+ → expᴸ[𝟙+ α ] β ↓ (((a , b) ∷ l) , δ)
+   ≃ₒ expᴸ[𝟙+ α ] (β ↓ b) ×ₒ (𝟙ₒ +ₒ (α ↓ a))
+      +ₒ (expᴸ[𝟙+ α ] (β ↓ b) ↓ expᴸ-tail α β a b l δ)
 expᴸ-↓-cons-≃ₒ {𝓤} {𝓥} α β a b l δ =
  f , f-is-order-preserving ,
      (qinvs-are-equivs f (g , gf-is-id , fg-is-id) ,
       g-is-order-preserving)
  where
   LHS RHS : Ordinal (𝓤 ⊔ 𝓥)
-  LHS = expᴸ α β ↓ (((a , b) ∷ l) , δ)
-  RHS = expᴸ α (β ↓ b) ×ₒ (𝟙ₒ +ₒ (α ↓ a))
-        +ₒ (expᴸ α (β ↓ b) ↓ expᴸ-tail α β a b l δ)
+  LHS = expᴸ[𝟙+ α ] β ↓ (((a , b) ∷ l) , δ)
+  RHS = expᴸ[𝟙+ α ] (β ↓ b) ×ₒ (𝟙ₒ +ₒ (α ↓ a))
+        +ₒ (expᴸ[𝟙+ α ] (β ↓ b) ↓ expᴸ-tail α β a b l δ)
 
   f : ⟨ LHS ⟩ → ⟨ RHS ⟩
   f (([]               , _) , u) =
@@ -837,7 +848,7 @@ expᴸ-↓-cons-≃ₒ {𝓤} {𝓥} α β a b l δ =
       (expᴸ-segment-inclusion-section-of-expᴸ-tail α β a b l' ε)
   fg-is-id (inr ((l' , ε) , w)) =
    ap inr (segment-inclusion-lc
-            (expᴸ α (β ↓ b))
+            (expᴸ[𝟙+ α ] (β ↓ b))
             {expᴸ-tail α β a b l δ}
             (expᴸ-segment-inclusion-section-of-expᴸ-tail α β a b l' ε))
 
@@ -845,19 +856,19 @@ expᴸ-↓-cons-≃ₒ {𝓤} {𝓥} α β a b l δ =
   gf-is-id (([] , []-decr) , []-lex) = refl
   gf-is-id ((((a' , b') ∷ l') , ε) , head-lex (inl u)) =
    segment-inclusion-lc
-    (expᴸ α β)
+    (expᴸ[𝟙+ α ] β)
     {(a , b ∷ l) , δ}
     (expᴸ-tail-section-of-expᴸ-segment-inclusion α β a b (a' , b' ∷ l'))
   gf-is-id ((((a' , b) ∷ l') , ε) , head-lex (inr (refl , u))) =
    segment-inclusion-lc
-    (expᴸ α β)
+    (expᴸ[𝟙+ α ] β)
     {(a , b ∷ l) , δ}
     (to-expᴸ-＝ α β
       (ap ((a' , b) ∷_)
           (expᴸ-tail-section-of-expᴸ-segment-inclusion' α β a b l' ε)))
   gf-is-id ((((a , b) ∷ l') , ε) , tail-lex refl u) =
    segment-inclusion-lc
-    (expᴸ α β)
+    (expᴸ[𝟙+ α ] β)
     {(a , b ∷ l) , δ}
     (to-expᴸ-＝ α β
       (ap ((a , b) ∷_)
@@ -975,16 +986,17 @@ expᴸ-↓-cons-≃ₒ {𝓤} {𝓥} α β a b l δ =
 
 expᴸ-↓-cons-≃ₒ'
  : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
-   (a : ⟨ α ⟩) (b : ⟨ β ⟩) (l : ⟨ expᴸ α (β ↓ b) ⟩)
- → expᴸ α β ↓ extended-expᴸ-segment-inclusion α β b l a
-   ≃ₒ expᴸ α (β ↓ b) ×ₒ (𝟙ₒ +ₒ (α ↓ a)) +ₒ (expᴸ α (β ↓ b) ↓ l)
+   (a : ⟨ α ⟩) (b : ⟨ β ⟩) (l : ⟨ expᴸ[𝟙+ α ] (β ↓ b) ⟩)
+ → expᴸ[𝟙+ α ] β ↓ extended-expᴸ-segment-inclusion α β b l a
+   ≃ₒ expᴸ[𝟙+ α ] (β ↓ b) ×ₒ (𝟙ₒ +ₒ (α ↓ a)) +ₒ (expᴸ[𝟙+ α ] (β ↓ b) ↓ l)
 expᴸ-↓-cons-≃ₒ' α β a b (l , δ) =
  transport
-  (λ - → LHS ≃ₒ expᴸ α (β ↓ b) ×ₒ (𝟙ₒ +ₒ (α ↓ a)) +ₒ (expᴸ α (β ↓ b) ↓ -))
+  (λ - → LHS ≃ₒ expᴸ[𝟙+ α ] (β ↓ b) ×ₒ (𝟙ₒ +ₒ (α ↓ a))
+                +ₒ (expᴸ[𝟙+ α ] (β ↓ b) ↓ -))
   I
   II
    where
-    LHS = expᴸ α β ↓ extended-expᴸ-segment-inclusion α β b (l , δ) a
+    LHS = expᴸ[𝟙+ α ] β ↓ extended-expᴸ-segment-inclusion α β b (l , δ) a
     ε : is-decreasing-pr₂ α β (a , b ∷ expᴸ-segment-inclusion-list α β b l)
     ε = extended-expᴸ-segment-inclusion-is-decreasing-pr₂ α β b l a δ
     l' : List ⟨ α ×ₒ β ⟩
@@ -993,8 +1005,8 @@ expᴸ-↓-cons-≃ₒ' α β a b (l , δ) =
     I : expᴸ-tail α β a b l' ε ＝ (l , δ)
     I = expᴸ-segment-inclusion-section-of-expᴸ-tail α β a b l δ
 
-    II : LHS ≃ₒ expᴸ α (β ↓ b) ×ₒ (𝟙ₒ +ₒ (α ↓ a))
-                +ₒ (expᴸ α (β ↓ b) ↓ expᴸ-tail α β a b l' ε)
+    II : LHS ≃ₒ expᴸ[𝟙+ α ] (β ↓ b) ×ₒ (𝟙ₒ +ₒ (α ↓ a))
+                +ₒ (expᴸ[𝟙+ α ] (β ↓ b) ↓ expᴸ-tail α β a b l' ε)
     II = expᴸ-↓-cons-≃ₒ α β a b (expᴸ-segment-inclusion-list α β b l) ε
 
 \end{code}
@@ -1005,16 +1017,16 @@ expᴸ-↓-cons
  : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
    (a : ⟨ α ⟩) (b : ⟨ β ⟩) (l : List ⟨ α ×ₒ β ⟩)
    (δ : is-decreasing-pr₂ α β ((a , b) ∷ l))
- → expᴸ α β ↓ (((a , b) ∷ l) , δ)
-   ＝ expᴸ α (β ↓ b) ×ₒ (𝟙ₒ +ₒ (α ↓ a))
-      +ₒ (expᴸ α (β ↓ b) ↓ expᴸ-tail α β a b l δ)
+ → expᴸ[𝟙+ α ] β ↓ (((a , b) ∷ l) , δ)
+   ＝ expᴸ[𝟙+ α ] (β ↓ b) ×ₒ (𝟙ₒ +ₒ (α ↓ a))
+      +ₒ (expᴸ[𝟙+ α ] (β ↓ b) ↓ expᴸ-tail α β a b l δ)
 expᴸ-↓-cons α β a b l δ = eqtoidₒ (ua _) fe' _ _ (expᴸ-↓-cons-≃ₒ α β a b l δ)
 
 expᴸ-↓-cons'
  : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
-   (a : ⟨ α ⟩) (b : ⟨ β ⟩) (l : ⟨ expᴸ α (β ↓ b) ⟩)
- → expᴸ α β ↓ extended-expᴸ-segment-inclusion α β b l a
-   ＝ expᴸ α (β ↓ b) ×ₒ (𝟙ₒ +ₒ (α ↓ a)) +ₒ (expᴸ α (β ↓ b) ↓ l)
+   (a : ⟨ α ⟩) (b : ⟨ β ⟩) (l : ⟨ expᴸ[𝟙+ α ] (β ↓ b) ⟩)
+ → expᴸ[𝟙+ α ] β ↓ extended-expᴸ-segment-inclusion α β b l a
+   ＝ expᴸ[𝟙+ α ] (β ↓ b) ×ₒ (𝟙ₒ +ₒ (α ↓ a)) +ₒ (expᴸ[𝟙+ α ] (β ↓ b) ↓ l)
 expᴸ-↓-cons' α β a b l = eqtoidₒ (ua _) fe' _ _ (expᴸ-↓-cons-≃ₒ' α β a b l)
 
 \end{code}

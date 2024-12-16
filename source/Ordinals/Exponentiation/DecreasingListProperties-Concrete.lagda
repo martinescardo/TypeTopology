@@ -154,16 +154,16 @@ exponentiation (𝟙 + α) ^ β.
 
 \begin{code}
 
-exp-0-spec' : (α : Ordinal 𝓤) → (expᴸ α (𝟘ₒ {𝓥})) ≃ₒ 𝟙ₒ {𝓤 ⊔ 𝓥}
+exp-0-spec' : (α : Ordinal 𝓤) → (expᴸ[𝟙+ α ] (𝟘ₒ {𝓥})) ≃ₒ 𝟙ₒ {𝓤 ⊔ 𝓥}
 exp-0-spec' α = f , f-monotone , qinvs-are-equivs f f-qinv , g-monotone
  where
-  f : ⟨ expᴸ α 𝟘ₒ ⟩ → 𝟙
+  f : ⟨ expᴸ[𝟙+ α ] 𝟘ₒ ⟩ → 𝟙
   f _ = ⋆
-  f-monotone : is-order-preserving (expᴸ α 𝟘ₒ) 𝟙ₒ (λ _ → ⋆)
-  f-monotone ([] , δ) ([] , ε) u = 𝟘-elim (Irreflexivity (expᴸ α 𝟘ₒ) ([] , δ) u)
-  g : 𝟙 → ⟨ expᴸ α 𝟘ₒ ⟩
+  f-monotone : is-order-preserving (expᴸ[𝟙+ α ] 𝟘ₒ) 𝟙ₒ (λ _ → ⋆)
+  f-monotone ([] , δ) ([] , ε) u = 𝟘-elim (Irreflexivity (expᴸ[𝟙+ α ] 𝟘ₒ) ([] , δ) u)
+  g : 𝟙 → ⟨ expᴸ[𝟙+ α ] 𝟘ₒ ⟩
   g _ = [] , []-decr
-  g-monotone : is-order-preserving 𝟙ₒ (expᴸ α 𝟘ₒ) g
+  g-monotone : is-order-preserving 𝟙ₒ (expᴸ[𝟙+ α ] 𝟘ₒ) g
   g-monotone ⋆ ⋆ u = 𝟘-elim u
   f-qinv : qinv f
   f-qinv = g , p , q
@@ -173,11 +173,11 @@ exp-0-spec' α = f , f-monotone , qinvs-are-equivs f f-qinv , g-monotone
     q : (λ x → ⋆) ∼ id
     q ⋆ = refl
 
-exp-0-spec : (α : Ordinal 𝓤) → expᴸ α (𝟘ₒ {𝓥}) ＝ 𝟙ₒ
-exp-0-spec {𝓤} {𝓥} α = eqtoidₒ (ua (𝓤 ⊔ 𝓥)) fe' (expᴸ α 𝟘ₒ) 𝟙ₒ (exp-0-spec' α)
+exp-0-spec : (α : Ordinal 𝓤) → expᴸ[𝟙+ α ] (𝟘ₒ {𝓥}) ＝ 𝟙ₒ
+exp-0-spec {𝓤} {𝓥} α = eqtoidₒ (ua (𝓤 ⊔ 𝓥)) fe' (expᴸ[𝟙+ α ] 𝟘ₒ) 𝟙ₒ (exp-0-spec' α)
 
 exp-+-distributes' : (α : Ordinal 𝓤) (β γ : Ordinal 𝓥)
-                   → (expᴸ α (β +ₒ γ)) ≃ₒ ((expᴸ α β) ×ₒ (expᴸ α γ))
+                   → (expᴸ[𝟙+ α ] (β +ₒ γ)) ≃ₒ ((expᴸ[𝟙+ α ] β) ×ₒ (expᴸ[𝟙+ α ] γ))
 exp-+-distributes' α β γ = f , f-monotone , qinvs-are-equivs f f-qinv , g-monotone
  where
 
@@ -217,17 +217,17 @@ exp-+-distributes' α β γ = f , f-monotone , qinvs-are-equivs f f-qinv , g-mon
    transport⁻¹ (λ z → is-decreasing-pr₂ α γ ((a , c) ∷ z)) (no-swapping-lemma xs a b δ) sing-decr
   f₁₁ ((a , inr c) ∷ (a' , inr c') ∷ xs) (many-decr p δ) = many-decr p (f₁₁ ((a' , inr c') ∷ xs) δ)
 
-  f₀ : ⟨ expᴸ α (β +ₒ γ) ⟩ → ⟨ expᴸ α β ⟩
+  f₀ : ⟨ expᴸ[𝟙+ α ] (β +ₒ γ) ⟩ → ⟨ expᴸ[𝟙+ α ] β ⟩
   f₀ (xs , δ) = (f₀₀ xs) , (f₀₁ xs δ)
 
-  f₁ : ⟨ expᴸ α (β +ₒ γ) ⟩ → ⟨ expᴸ α γ ⟩
+  f₁ : ⟨ expᴸ[𝟙+ α ] (β +ₒ γ) ⟩ → ⟨ expᴸ[𝟙+ α ] γ ⟩
   f₁ (xs , δ) = (f₁₀ xs) , (f₁₁ xs δ)
 
-  f : ⟨ expᴸ α (β +ₒ γ) ⟩ → ⟨ (expᴸ α β) ×ₒ (expᴸ α γ) ⟩
+  f : ⟨ expᴸ[𝟙+ α ] (β +ₒ γ) ⟩ → ⟨ (expᴸ[𝟙+ α ] β) ×ₒ (expᴸ[𝟙+ α ] γ) ⟩
   f (xs , δ) = (f₀ (xs , δ) , f₁ (xs , δ))
 
 
-  f-monotone : is-order-preserving (expᴸ α (β +ₒ γ)) ((expᴸ α β) ×ₒ (expᴸ α γ)) f
+  f-monotone : is-order-preserving (expᴸ[𝟙+ α ] (β +ₒ γ)) ((expᴸ[𝟙+ α ] β) ×ₒ (expᴸ[𝟙+ α ] γ)) f
   f-monotone ([] , δ) (((a , inl b) ∷ ys) , ε) []-lex = inr (to-expᴸ-＝ α γ (no-swapping-lemma ys a b ε ⁻¹) , []-lex)
   f-monotone ([] , δ) (((a , inr c) ∷ ys) , ε) []-lex = inl []-lex
   f-monotone (((a , inl b) ∷ xs) , δ) (((a' , inl b') ∷ ys) , ε) (head-lex (inl p)) =
@@ -237,9 +237,9 @@ exp-+-distributes' α β γ = f , f-monotone , qinvs-are-equivs f f-qinv , g-mon
   f-monotone (((a , inl b) ∷ xs) , δ) (((a , inl b) ∷ ys) , ε) (tail-lex refl ps) =
     h (f-monotone (xs , tail-is-decreasing (underlying-order (β +ₒ γ)) δ) (ys , tail-is-decreasing (underlying-order (β +ₒ γ)) ε) ps)
    where
-    h : underlying-order ((expᴸ α β) ×ₒ (expᴸ α γ)) (f (xs , tail-is-decreasing _ δ)) (f (ys , tail-is-decreasing _ ε))
-      → underlying-order ((expᴸ α β) ×ₒ (expᴸ α γ)) (f (((a , inl b) ∷ xs) , δ)) (f (((a , inl b) ∷ ys) , ε))
-    h (inl p) = 𝟘-elim (irrefl (expᴸ α γ)
+    h : underlying-order ((expᴸ[𝟙+ α ] β) ×ₒ (expᴸ[𝟙+ α ] γ)) (f (xs , tail-is-decreasing _ δ)) (f (ys , tail-is-decreasing _ ε))
+      → underlying-order ((expᴸ[𝟙+ α ] β) ×ₒ (expᴸ[𝟙+ α ] γ)) (f (((a , inl b) ∷ xs) , δ)) (f (((a , inl b) ∷ ys) , ε))
+    h (inl p) = 𝟘-elim (irrefl (expᴸ[𝟙+ α ] γ)
                                ([] , []-decr)
                                (transport₂ (expᴸ-order α γ)
                                            {x = f₁₀ xs , f₁₁ xs (tail-is-decreasing (underlying-order (β +ₒ γ)) δ)}
@@ -254,8 +254,8 @@ exp-+-distributes' α β γ = f , f-monotone , qinvs-are-equivs f f-qinv , g-mon
   f-monotone (((a , inr c) ∷ xs) , δ) (((a , inr c) ∷ ys) , ε) (tail-lex refl ps) =
    h (f-monotone (xs , tail-is-decreasing (underlying-order (β +ₒ γ)) δ) (ys , tail-is-decreasing (underlying-order (β +ₒ γ)) ε) ps)
    where
-    h : underlying-order ((expᴸ α β) ×ₒ (expᴸ α γ)) (f (xs , tail-is-decreasing _ δ)) (f (ys , tail-is-decreasing _ ε))
-      → underlying-order ((expᴸ α β) ×ₒ (expᴸ α γ)) (f (((a , inr c) ∷ xs) , δ)) (f (((a , inr c) ∷ ys) , ε))
+    h : underlying-order ((expᴸ[𝟙+ α ] β) ×ₒ (expᴸ[𝟙+ α ] γ)) (f (xs , tail-is-decreasing _ δ)) (f (ys , tail-is-decreasing _ ε))
+      → underlying-order ((expᴸ[𝟙+ α ] β) ×ₒ (expᴸ[𝟙+ α ] γ)) (f (((a , inr c) ∷ xs) , δ)) (f (((a , inr c) ∷ ys) , ε))
     h (inl p) = inl (tail-lex refl p)
     h (inr (r , p)) = inr (to-expᴸ-＝ α γ (ap ((a , c) ∷_) (ap pr₁ r)) , p)
   f-monotone (((a , inl b) ∷ xs) , δ) (((a' , inr c') ∷ ys) , ε) (head-lex (inl ⋆)) =
@@ -283,7 +283,7 @@ exp-+-distributes' α β γ = f , f-monotone , qinvs-are-equivs f f-qinv , g-mon
    many-decr (heads-are-decreasing (underlying-order β) δ)
              (g₁ ((a' , b') ∷ bs) (tail-is-decreasing (underlying-order β) δ) [] ε)
 
-  g : ⟨ (expᴸ α β) ×ₒ (expᴸ α γ) ⟩ → ⟨ expᴸ α (β +ₒ γ) ⟩
+  g : ⟨ (expᴸ[𝟙+ α ] β) ×ₒ (expᴸ[𝟙+ α ] γ) ⟩ → ⟨ expᴸ[𝟙+ α ] (β +ₒ γ) ⟩
   g ((bs , δ) , (cs , ε)) = g₀ bs cs , g₁ bs δ cs ε
 
   g₀-monotone : (bs : List ⟨ α ×ₒ β ⟩) → (δ : is-decreasing-pr₂ α β bs)
@@ -292,11 +292,11 @@ exp-+-distributes' α β γ = f , f-monotone , qinvs-are-equivs f f-qinv , g-mon
               → (cs' : List ⟨ α ×ₒ γ ⟩) → (ε' : is-decreasing-pr₂ α γ cs')
               → lex (underlying-order (α ×ₒ γ)) cs cs' + (((cs , ε) ＝ (cs' , ε')) × lex (underlying-order (α ×ₒ β)) bs bs')
               → g₀ bs cs ≺⟨List (α ×ₒ (β +ₒ γ)) ⟩ g₀ bs' cs'
-  g₀-monotone [] δ [] ε [] δ' [] ε' (inl p) = 𝟘-elim (irrefl (expᴸ α γ) ([] , []-decr) p)
-  g₀-monotone [] δ [] ε [] δ' [] ε' (inr (r , p)) = 𝟘-elim (irrefl (expᴸ α β) ([] , []-decr) p)
+  g₀-monotone [] δ [] ε [] δ' [] ε' (inl p) = 𝟘-elim (irrefl (expᴸ[𝟙+ α ] γ) ([] , []-decr) p)
+  g₀-monotone [] δ [] ε [] δ' [] ε' (inr (r , p)) = 𝟘-elim (irrefl (expᴸ[𝟙+ α ] β) ([] , []-decr) p)
   g₀-monotone [] δ [] ε ((a' , b') ∷ bs') δ' [] ε' p = []-lex
   g₀-monotone [] δ [] ε bs' δ' ((a' , c') ∷ cs') ε' p = []-lex
-  g₀-monotone [] δ (a , c ∷ cs) ε [] δ' [] ε' (inr (r , p)) = 𝟘-elim (irrefl (expᴸ α β) ([] , []-decr) p)
+  g₀-monotone [] δ (a , c ∷ cs) ε [] δ' [] ε' (inr (r , p)) = 𝟘-elim (irrefl (expᴸ[𝟙+ α ] β) ([] , []-decr) p)
   g₀-monotone [] δ (a , c ∷ cs) ε (a' , b' ∷ bs') δ' [] ε' (inr (r , p)) = 𝟘-elim ([]-is-not-cons (a , c) cs (ap pr₁ r ⁻¹ ))
   g₀-monotone [] δ (a , c ∷ cs) ε bs' δ' (a' , c' ∷ cs') ε' (inl (head-lex (inl p))) = head-lex (inl p)
   g₀-monotone [] δ (a , c ∷ cs) ε bs' δ' (a' , c' ∷ cs') ε' (inl (head-lex (inr (r , p)))) = head-lex (inr ((ap inr r) , p))
@@ -304,7 +304,7 @@ exp-+-distributes' α β γ = f , f-monotone , qinvs-are-equivs f f-qinv , g-mon
    tail-lex refl (g₀-monotone [] δ cs (tail-is-decreasing (underlying-order γ) ε) bs' δ' cs' (tail-is-decreasing (underlying-order γ) ε') (inl ps))
   g₀-monotone [] δ (a , c ∷ cs) ε bs' δ' (a , c ∷ cs) ε (inr (refl , p)) =
    tail-lex refl (g₀-monotone [] δ cs (tail-is-decreasing (underlying-order γ) ε) bs' δ' cs (tail-is-decreasing (underlying-order γ) ε) (inr (refl , p)))
-  g₀-monotone (a , b ∷ bs) δ [] ε [] δ' [] ε' (inl p) = 𝟘-elim (irrefl (expᴸ α  γ) ([] , []-decr) p)
+  g₀-monotone (a , b ∷ bs) δ [] ε [] δ' [] ε' (inl p) = 𝟘-elim (irrefl (expᴸ[𝟙+ α ]  γ) ([] , []-decr) p)
   g₀-monotone (a , b ∷ bs) δ [] ε (a' , b' ∷ bs') δ' [] ε' (inr (_ , head-lex (inl p))) = head-lex (inl p)
   g₀-monotone (a , b ∷ bs) δ [] ε (a' , b ∷ bs') δ' [] ε' (inr (_ , head-lex (inr (refl , p)))) = head-lex (inr (refl , p))
   g₀-monotone (a , b ∷ bs) δ [] ε (a , b ∷ bs') δ' [] ε' (inr (_ , tail-lex refl ps)) =
@@ -319,7 +319,7 @@ exp-+-distributes' α β γ = f , f-monotone , qinvs-are-equivs f f-qinv , g-mon
   g₀-monotone (a , b ∷ bs) δ (a' , c ∷ cs) ε bs' δ' (a' , c ∷ cs) ε (inr (refl , p)) =
    tail-lex refl (g₀-monotone ((a , b) ∷ bs) δ cs (tail-is-decreasing (underlying-order γ) ε) bs' δ' cs (tail-is-decreasing (underlying-order γ) ε) (inr (refl , p)))
 
-  g-monotone : is-order-preserving ((expᴸ α β) ×ₒ (expᴸ α γ)) (expᴸ α (β +ₒ γ)) g
+  g-monotone : is-order-preserving ((expᴸ[𝟙+ α ] β) ×ₒ (expᴸ[𝟙+ α ] γ)) (expᴸ[𝟙+ α ] (β +ₒ γ)) g
   g-monotone ((bs , δ) , (cs , ε)) ((bs' , δ') , (cs' , ε')) p = g₀-monotone bs δ cs ε bs' δ' cs' ε' p
 
   f-qinv : qinv f
@@ -359,28 +359,28 @@ exp-+-distributes' α β γ = f , f-monotone , qinvs-are-equivs f f-qinv , g-mon
     q ((bs , δ) , (cs , ε)) = to-×-＝ (to-expᴸ-＝ α β (q₀₀ bs cs)) (to-expᴸ-＝ α γ (q₁₀ bs cs))
 
 exp-+-distributes : ∀ {𝓤 𝓥} → (α : Ordinal 𝓤) (β γ : Ordinal 𝓥)
-                  → (expᴸ α (β +ₒ γ)) ＝ ((expᴸ α β) ×ₒ (expᴸ α γ))
+                  → (expᴸ[𝟙+ α ] (β +ₒ γ)) ＝ ((expᴸ[𝟙+ α ] β) ×ₒ (expᴸ[𝟙+ α ] γ))
 exp-+-distributes {𝓤} {𝓥} α β γ =
- eqtoidₒ (ua (𝓤 ⊔ 𝓥)) fe' (expᴸ α (β +ₒ γ)) ((expᴸ α β) ×ₒ (expᴸ α γ)) (exp-+-distributes' α β γ)
+ eqtoidₒ (ua (𝓤 ⊔ 𝓥)) fe' (expᴸ[𝟙+ α ] (β +ₒ γ)) ((expᴸ[𝟙+ α ] β) ×ₒ (expᴸ[𝟙+ α ] γ)) (exp-+-distributes' α β γ)
 
-exp-power-1' : (α : Ordinal 𝓤) → (expᴸ α (𝟙ₒ {𝓥})) ≃ₒ (𝟙ₒ +ₒ α)
+exp-power-1' : (α : Ordinal 𝓤) → (expᴸ[𝟙+ α ] (𝟙ₒ {𝓥})) ≃ₒ (𝟙ₒ +ₒ α)
 exp-power-1' α = f , f-monotone , qinvs-are-equivs f f-qinv , g-monotone
  where
-  f : ⟨ expᴸ α (𝟙ₒ {𝓤}) ⟩ → ⟨ 𝟙ₒ +ₒ α ⟩
+  f : ⟨ expᴸ[𝟙+ α ] (𝟙ₒ {𝓤}) ⟩ → ⟨ 𝟙ₒ +ₒ α ⟩
   f ([] , δ) = inl ⋆
   f (((a , ⋆) ∷ []) , δ) = inr a
   f (((a , ⋆) ∷ (a' , ⋆) ∷ xs) , many-decr p δ) = 𝟘-elim (irrefl 𝟙ₒ ⋆ p)
-  f-monotone : is-order-preserving (expᴸ α (𝟙ₒ {𝓤})) (𝟙ₒ +ₒ α) f
-  f-monotone ([] , δ) ([] , ε) q = 𝟘-elim (irrefl (expᴸ α 𝟙ₒ) ([] , δ) q)
+  f-monotone : is-order-preserving (expᴸ[𝟙+ α ] (𝟙ₒ {𝓤})) (𝟙ₒ +ₒ α) f
+  f-monotone ([] , δ) ([] , ε) q = 𝟘-elim (irrefl (expᴸ[𝟙+ α ] 𝟙ₒ) ([] , δ) q)
   f-monotone ([] , δ) ((y ∷ []) , ε) q = ⋆
   f-monotone ([] , δ) (((a , ⋆) ∷ (a' , ⋆) ∷ ys) , many-decr p ε) q = 𝟘-elim (irrefl 𝟙ₒ ⋆ p)
   f-monotone (((a , ⋆) ∷ []) , δ) (((a' , ⋆) ∷ []) , ε) (head-lex (inr (r , q))) = q
   f-monotone (((a , ⋆) ∷ []) , δ) (((a' , ⋆) ∷ (a'' , ⋆) ∷ ys) , many-decr p ε) q = 𝟘-elim (irrefl 𝟙ₒ ⋆ p)
   f-monotone (((a , ⋆) ∷ (a' , ⋆) ∷ xs) , many-decr p δ) (ys , ε) q = 𝟘-elim (irrefl 𝟙ₒ ⋆ p)
-  g : ⟨ 𝟙ₒ +ₒ α ⟩ → ⟨ expᴸ α (𝟙ₒ {𝓤}) ⟩
+  g : ⟨ 𝟙ₒ +ₒ α ⟩ → ⟨ expᴸ[𝟙+ α ] (𝟙ₒ {𝓤}) ⟩
   g (inl ⋆) = ([] , []-decr)
   g (inr a) = ([ a , ⋆ ] , sing-decr)
-  g-monotone : is-order-preserving (𝟙ₒ +ₒ α) (expᴸ α (𝟙ₒ {𝓤})) g
+  g-monotone : is-order-preserving (𝟙ₒ +ₒ α) (expᴸ[𝟙+ α ] (𝟙ₒ {𝓤})) g
   g-monotone (inl ⋆) (inr a) ⋆ = []-lex
   g-monotone (inr a) (inr a') p = head-lex (inr (refl , p))
   f-qinv : qinv f
@@ -394,17 +394,17 @@ exp-power-1' α = f , f-monotone , qinvs-are-equivs f f-qinv , g-monotone
     q (inl ⋆) = refl
     q (inr a) = refl
 
-exp-power-1 : {𝓤 : Universe} → (α : Ordinal 𝓤) → (expᴸ α 𝟙ₒ) ＝ 𝟙ₒ +ₒ α
-exp-power-1 {𝓤} α = eqtoidₒ (ua 𝓤) fe' (expᴸ α (𝟙ₒ {𝓤})) (𝟙ₒ +ₒ α) (exp-power-1' α)
+exp-power-1 : {𝓤 : Universe} → (α : Ordinal 𝓤) → (expᴸ[𝟙+ α ] 𝟙ₒ) ＝ 𝟙ₒ +ₒ α
+exp-power-1 {𝓤} α = eqtoidₒ (ua 𝓤) fe' (expᴸ[𝟙+ α ] (𝟙ₒ {𝓤})) (𝟙ₒ +ₒ α) (exp-power-1' α)
 
 exp-succ-spec : (α : Ordinal 𝓤) (β : Ordinal 𝓤)
-              → (expᴸ α (β +ₒ 𝟙ₒ)) ＝ ((expᴸ α β) ×ₒ (𝟙ₒ +ₒ α))
+              → (expᴸ[𝟙+ α ] (β +ₒ 𝟙ₒ)) ＝ ((expᴸ[𝟙+ α ] β) ×ₒ (𝟙ₒ +ₒ α))
 exp-succ-spec {𝓤} α β =
-  expᴸ α (β +ₒ 𝟙ₒ)
+  expᴸ[𝟙+ α ] (β +ₒ 𝟙ₒ)
    ＝⟨ exp-+-distributes α β 𝟙ₒ ⟩
-  (expᴸ α β) ×ₒ (expᴸ α 𝟙ₒ)
-   ＝⟨ ap (λ z → (expᴸ α β) ×ₒ z) (exp-power-1 α) ⟩
-  (expᴸ α β) ×ₒ (𝟙ₒ +ₒ α)
+  (expᴸ[𝟙+ α ] β) ×ₒ (expᴸ[𝟙+ α ] 𝟙ₒ)
+   ＝⟨ ap (λ z → (expᴸ[𝟙+ α ] β) ×ₒ z) (exp-power-1 α) ⟩
+  (expᴸ[𝟙+ α ] β) ×ₒ (𝟙ₒ +ₒ α)
    ∎
 
 \end{code}
@@ -420,7 +420,7 @@ module _ {I : 𝓤 ̇  }
 
   private
    γ : I → Ordinal 𝓤
-   γ i = expᴸ α (β i)
+   γ i = expᴸ[𝟙+ α ] (β i)
 
    ι : (ζ : I → Ordinal 𝓤) → {i : I} → ⟨ ζ i ⟩ → ⟨ sup ζ ⟩
    ι ζ {i} = pr₁ (sup-is-upper-bound ζ i)
@@ -473,7 +473,7 @@ module _ {I : 𝓤 ̇  }
                   (ι β)
                   (pr₂ (sup-is-upper-bound β i)) b' b p)
                 (f₂ (a' , b' ∷ l) δ)
-    f : ⟨ γ i ⟩ → ⟨ expᴸ α (sup β) ⟩
+    f : ⟨ γ i ⟩ → ⟨ expᴸ[𝟙+ α ] (sup β) ⟩
     f (l , δ) = f₁ l , f₂ l δ
 
    f₁-surj-lemma : (a : ⟨ α ⟩) (i : I) (b : ⟨ β i ⟩) (l : List (⟨ α ×ₒ sup β ⟩))
@@ -522,7 +522,7 @@ module _ {I : 𝓤 ̇  }
                                       × (a , ι β b ∷ l ＝ f₁ i (a , b ∷ l'))
        lem = f₁-surj-lemma a i b l δ
 
-   f-surj : (y : ⟨ expᴸ α (sup β) ⟩) → ∃ i ꞉ I , Σ x ꞉ ⟨ γ i ⟩ , f i x ＝ y
+   f-surj : (y : ⟨ expᴸ[𝟙+ α ] (sup β) ⟩) → ∃ i ꞉ I , Σ x ꞉ ⟨ γ i ⟩ , f i x ＝ y
    f-surj (l , δ) = ∥∥-functor h (f₁-surj l δ)
     where
      h : (Σ i ꞉ I , Σ l' ꞉ List (⟨ α ×ₒ β i ⟩) , is-decreasing-pr₂ α (β i) l'
@@ -530,14 +530,14 @@ module _ {I : 𝓤 ̇  }
        → Σ i ꞉ I , Σ x ꞉ ⟨ γ i ⟩ , (f i x ＝ l , δ)
      h (i , l' , δ , refl) = i , (l' , δ) , to-expᴸ-＝ α (sup β) refl
 
-   f-is-order-preserving : (i : I) → is-order-preserving (γ i) (expᴸ α (sup β)) (f i)
+   f-is-order-preserving : (i : I) → is-order-preserving (γ i) (expᴸ[𝟙+ α ] (sup β)) (f i)
    f-is-order-preserving i ([] , δ) (_ , ε) []-lex = []-lex
    f-is-order-preserving i ((a , b ∷ l) , δ) ((a' , b' ∷ l') , ε) (head-lex (inl m)) = head-lex (inl (ι-is-order-preserving β b b' m))
    f-is-order-preserving i ((a , b ∷ l) , δ) ((a' , b' ∷ l') , ε) (head-lex (inr (refl , m))) = head-lex (inr (refl , m))
    f-is-order-preserving i ((_ ∷ l) , δ) ((_ ∷ l') , ε) (tail-lex refl m) =
      tail-lex refl (f-is-order-preserving i (l , tail-is-decreasing (underlying-order (β i)) δ) (l' , tail-is-decreasing (underlying-order (β i)) ε) m)
 
-   f-is-order-reflecting : (i : I) → is-order-reflecting (γ i) (expᴸ α (sup β)) (f i)
+   f-is-order-reflecting : (i : I) → is-order-reflecting (γ i) (expᴸ[𝟙+ α ] (sup β)) (f i)
    f-is-order-reflecting i ([] , δ) ((a , b ∷ l) , ε) []-lex = []-lex
    f-is-order-reflecting i ((a , b ∷ l) , δ) ((a' , b' ∷ l') , ε) (head-lex (inl m)) = head-lex (inl (ι-is-order-reflecting β b b' m))
    f-is-order-reflecting i ((a , b ∷ l) , δ) ((a' , b' ∷ l') , ε) (head-lex (inr (e , m))) = head-lex (inr (ι-is-lc β e , m))
@@ -558,7 +558,7 @@ module _ {I : 𝓤 ̇  }
    f-is-partially-invertible : (i : I)
                              → (xs : List ⟨ α ×ₒ β i ⟩) → (δ : is-decreasing-pr₂ α (β i) xs)
                              → (ys : List ⟨ α ×ₒ sup β ⟩) → (ε : is-decreasing-pr₂ α (sup β) ys)
-                             → (ys , ε) ≺⟨ expᴸ α (sup β) ⟩ f i (xs , δ)
+                             → (ys , ε) ≺⟨ expᴸ[𝟙+ α ] (sup β) ⟩ f i (xs , δ)
                              → Σ xs' ꞉ ⟨ γ i ⟩ , f i xs' ＝ (ys , ε)
    f-is-partially-invertible i xs δ [] []-decr p = ([] , []-decr) , refl
    f-is-partially-invertible i ((a , b) ∷ xs) δ ((a' , b') ∷ []) ε (head-lex (inl m)) = ((a' , pr₁ ι-sim ∷ []) , sing-decr) , (to-expᴸ-＝ α (sup β) (ap (λ - → (a' , -) ∷ []) (pr₂ (pr₂ ι-sim))))
@@ -585,30 +585,30 @@ module _ {I : 𝓤 ̇  }
                                                                   (transport⁻¹ (λ - → is-decreasing-pr₂ α (sup β) ((a , ι β b) ∷ -)) (ap pr₁ (pr₂ IH)) ε))
        , to-expᴸ-＝ α (sup β) (ap ((a , ι β b) ∷_) (ap pr₁ (pr₂ IH)))
 
-   f-is-initial-segment : (i : I) → is-initial-segment (γ i) (expᴸ α (sup β)) (f i)
-   f-is-initial-segment i = order-reflecting-and-partial-inverse-is-initial-segment (γ i) (expᴸ α (sup β)) (f i) (f-is-order-reflecting i) g
+   f-is-initial-segment : (i : I) → is-initial-segment (γ i) (expᴸ[𝟙+ α ] (sup β)) (f i)
+   f-is-initial-segment i = order-reflecting-and-partial-inverse-is-initial-segment (γ i) (expᴸ[𝟙+ α ] (sup β)) (f i) (f-is-order-reflecting i) g
      where
-       g : (xs : ⟨ γ i ⟩) → (ys : ⟨ expᴸ α (sup β) ⟩) → ys ≺⟨ expᴸ α (sup β) ⟩ f i xs → Σ xs' ꞉ ⟨ γ i ⟩ , f i xs' ＝ ys
+       g : (xs : ⟨ γ i ⟩) → (ys : ⟨ expᴸ[𝟙+ α ] (sup β) ⟩) → ys ≺⟨ expᴸ[𝟙+ α ] (sup β) ⟩ f i xs → Σ xs' ꞉ ⟨ γ i ⟩ , f i xs' ＝ ys
        g (xs , δ) (ys , ε) = f-is-partially-invertible i xs δ ys ε
 
-  exp-sup-is-upper-bound : (i : I) → γ i ⊴ (expᴸ α (sup β))
+  exp-sup-is-upper-bound : (i : I) → γ i ⊴ (expᴸ[𝟙+ α ] (sup β))
   exp-sup-is-upper-bound i = f i , f-is-initial-segment i , f-is-order-preserving i
 
-  exp-sup-simulation : sup (λ i → (expᴸ α (β i))) ⊴ (expᴸ α (sup β))
-  exp-sup-simulation = sup-is-lower-bound-of-upper-bounds (λ i → (expᴸ α (β i))) (expᴸ α (sup β)) exp-sup-is-upper-bound
+  exp-sup-simulation : sup (λ i → (expᴸ[𝟙+ α ] (β i))) ⊴ (expᴸ[𝟙+ α ] (sup β))
+  exp-sup-simulation = sup-is-lower-bound-of-upper-bounds (λ i → (expᴸ[𝟙+ α ] (β i))) (expᴸ[𝟙+ α ] (sup β)) exp-sup-is-upper-bound
 
   exp-sup-simulation-surjective : is-surjection (pr₁ exp-sup-simulation)
-  exp-sup-simulation-surjective = surjectivity-lemma γ (expᴸ α (sup β)) exp-sup-is-upper-bound f-surj
+  exp-sup-simulation-surjective = surjectivity-lemma γ (expᴸ[𝟙+ α ] (sup β)) exp-sup-is-upper-bound f-surj
 
-  sup-spec : sup (λ i → (expᴸ α (β i))) ＝ (expᴸ α (sup β))
+  sup-spec : sup (λ i → (expᴸ[𝟙+ α ] (β i))) ＝ (expᴸ[𝟙+ α ] (sup β))
   sup-spec = surjective-simulation-gives-equality
-               (sup (λ i → (expᴸ α (β i))))
-               (expᴸ α (sup β))
+               (sup (λ i → (expᴸ[𝟙+ α ] (β i))))
+               (expᴸ[𝟙+ α ] (sup β))
                (pr₁ exp-sup-simulation)
                (pr₂ exp-sup-simulation)
                exp-sup-simulation-surjective
 
-exp-sup-spec : (α : Ordinal 𝓤) {I : 𝓤 ̇  } → ∥ I ∥ → (β : I → Ordinal 𝓤) → (expᴸ α (sup β)) ＝ sup (λ i → (expᴸ α (β i)))
+exp-sup-spec : (α : Ordinal 𝓤) {I : 𝓤 ̇  } → ∥ I ∥ → (β : I → Ordinal 𝓤) → (expᴸ[𝟙+ α ] (sup β)) ＝ sup (λ i → (expᴸ[𝟙+ α ] (β i)))
 exp-sup-spec α i β = ∥∥-rec (the-type-of-ordinals-is-a-set (ua _) fe') (λ i₀ → sup-spec i₀ β α ⁻¹) i
 
 \end{code}
@@ -619,7 +619,7 @@ exp-sup-spec α i β = ∥∥-rec (the-type-of-ordinals-is-a-set (ua _) fe') (λ
 
 \begin{code}
 monotone-in-exponent : ∀ {𝓤} (α : Ordinal 𝓤)
-                     → is-monotone (OO 𝓤) (OO 𝓤) (expᴸ α)
-monotone-in-exponent α = is-monotone-if-continuous (expᴸ α) (exp-sup-spec α)
+                     → is-monotone (OO 𝓤) (OO 𝓤) (expᴸ[𝟙+ α ])
+monotone-in-exponent α = is-monotone-if-continuous (expᴸ[𝟙+ α ]) (exp-sup-spec α)
 
 \end{code}
