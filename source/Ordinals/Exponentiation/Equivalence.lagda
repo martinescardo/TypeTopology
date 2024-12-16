@@ -1,11 +1,11 @@
 Tom de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg, Chuangjie Xu,
-23 May 2023.
+23 May 2024 with additions and refactorings in December 2024.
 
 TODO: COMMENT
 
 \begin{code}
 
-{-# OPTIONS --safe --without-K --exact-split #-}
+{-# OPTIONS --safe --without-K --exact-split --lossy-unification #-}
 
 open import UF.Univalence
 open import UF.PropTrunc
@@ -29,10 +29,13 @@ private
 
 open import MLTT.List
 open import MLTT.Spartan
+open import UF.Base
+open import UF.ImageAndSurjection pt
 
 open import Ordinals.AdditionProperties ua
 open import Ordinals.Arithmetic fe
 open import Ordinals.Equivalence
+open import Ordinals.Maps
 open import Ordinals.MultiplicationProperties ua
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.OrdinalOfOrdinalsSuprema ua
@@ -156,115 +159,252 @@ exponentiation-constructions-agree α β h =
 
 \end{code}
 
-TODO: Clean up and rename
-TODO: 80 char limit
+There is a canonical function f_β : DecrList₂ α β → α ^ₒ β defined by
+transfinite induction on β as
 
-TODO: Implement commented code below
+  f_β []            := ⊥
+  f_β ((a , b) ∷ l) := [inr b , f_{β ↓ b} l' , a]
+
+where
+  l' : DecrList₂ α (β ↓ b)
+is obtained from l and the fact that the list (a , b) ∷ l is decreasing in the
+second component.
+
+We show that this map is a surjection, which motivates and allows us to think of
+lists in DecrList₂ α β as concrete representations of (abstract) elements of
+α ^ₒ β. Put differently, such a list denotes the abstract element.
 
 \begin{code}
 
-{-
--- Define alias DL for expᴸ
-
- f : (α β : Ordinal 𝓤)
-   → ((b : ⟨ β ⟩) → ⟨ DL α (β ↓ b) ⟩ → ⟨ α ^ₒ (β ↓ b) ⟩)
-   → ⟨ DL α β ⟩ → ⟨ α ^ₒ β ⟩
- f α β r ([] , δ) = ^ₒ-⊥ α β
- f α β r (((a , b) ∷ l) , δ) = ×ₒ-to-^ₒ α β (r b (expᴸ-tail α β a b l δ) , a)
-
- F : (α β : Ordinal 𝓤) → ⟨ DL α β ⟩ → ⟨ α ^ₒ β ⟩
- F {𝓤} α = transfinite-induction-on-OO (λ β → ⟨ expᴸ[𝟙+ α ] β ⟩ → ⟨ α ^ₒ β ⟩) (f α)
-
- F-is-surjective?
-
- (f (ℓ : (𝟙 + α) ^ₒ (β ↓ b)) , inl ⋆) ＝ f ℓ
--}
-
-abstract
- f : (α β : Ordinal 𝓤)
-   → ((b : ⟨ β ⟩) → ⟨ expᴸ[𝟙+ α ] (β ↓ b) ⟩ → ⟨ (𝟙ₒ +ₒ α) ^ₒ (β ↓ b) ⟩)
-   → ⟨ expᴸ[𝟙+ α ] β ⟩ → ⟨ (𝟙ₒ +ₒ α) ^ₒ β ⟩
- f α β r ([] , δ) = ^ₒ-⊥ (𝟙ₒ +ₒ α) β
- f α β r (((a , b) ∷ l) , δ) = ×ₒ-to-^ₒ (𝟙ₒ +ₒ α) β (r b (expᴸ-tail α β a b l δ) , inr a)
-
- F : (α β : Ordinal 𝓤) → ⟨ expᴸ[𝟙+ α ] β ⟩ → ⟨ (𝟙ₒ +ₒ α) ^ₒ β ⟩
- F {𝓤} α = transfinite-induction-on-OO (λ β → ⟨ expᴸ[𝟙+ α ] β ⟩ → ⟨ (𝟙ₒ +ₒ α) ^ₒ β ⟩) (f α)
-
- open import UF.Base
- open import Ordinals.Maps
-
- F-behaviour : (α β : Ordinal 𝓤) → F α β ＝ f α β (λ b → F α (β ↓ b))
- F-behaviour α β =
-  transfinite-induction-on-OO-behaviour (λ β → ⟨ expᴸ[𝟙+ α ] β ⟩ → ⟨ (𝟙ₒ +ₒ α) ^ₒ β ⟩) (f α) β
-
- F-behaviour-cons : (α β : Ordinal 𝓤)
-                    (a : ⟨ α ⟩) (b : ⟨ β ⟩)
-                    (l : List ⟨ α ×ₒ β ⟩) (δ : is-decreasing-pr₂ α β ((a , b) ∷ l))
-                  → F α β (((a , b) ∷ l) , δ)
-                    ＝ ×ₒ-to-^ₒ (𝟙ₒ +ₒ α) β (F α (β ↓ b) (expᴸ-tail α β a b l δ) , inr a)
- F-behaviour-cons α β a b l δ = happly (F-behaviour α β) (((a , b) ∷ l) , δ)
-
- F-behaviour-[] : (α β : Ordinal 𝓤) → F α β ([] , []-decr) ＝ ^ₒ-⊥ (𝟙ₒ +ₒ α) β
- F-behaviour-[] α β = happly (F-behaviour α β) ([] , []-decr)
-
- G-⊴ : (α β : Ordinal 𝓤) → expᴸ[𝟙+ α ] β ⊴ (𝟙ₒ +ₒ α) ^ₒ β
- G-⊴ α β = ＝-to-⊴ (expᴸ[𝟙+ α ] β) ((𝟙ₒ +ₒ α) ^ₒ β) (exponentiation-constructions-agree' α β)
-
-G : (α β : Ordinal 𝓤) → ⟨ expᴸ[𝟙+ α ] β ⟩ → ⟨ (𝟙ₒ +ₒ α) ^ₒ β ⟩
-G α β = [ expᴸ[𝟙+ α ] β , (𝟙ₒ +ₒ α) ^ₒ β ]⟨ G-⊴ α β ⟩
-
-G-sim : (α β : Ordinal 𝓤) → is-simulation (expᴸ[𝟙+ α ] β) ((𝟙ₒ +ₒ α) ^ₒ β) (G α β)
-G-sim α β = [ expᴸ[𝟙+ α ] β , (𝟙ₒ +ₒ α) ^ₒ β ]⟨ G-⊴ α β ⟩-is-simulation
-
-fact : (α β : Ordinal 𝓤) → G α β ∼ F α β
-fact {𝓤} α = transfinite-induction-on-OO (λ β → G α β ∼ F α β) I
- where
-  α' = 𝟙ₒ +ₒ α
-  I : (β : Ordinal 𝓤)
-    → ((b : ⟨ β ⟩) → G α (β ↓ b) ∼ F α (β ↓ b))
-    → G α β ∼ F α β
-  I β IH ([] , []-decr) =
-   ↓-lc (α' ^ₒ β) (G α β ([] , []-decr)) (F α β ([] , []-decr)) II
-    where
-     II = α' ^ₒ β ↓ G α β ([] , []-decr) ＝⟨ e₁ ⟩
-          expᴸ[𝟙+ α ] β ↓ ([] , []-decr) ＝⟨ expᴸ-↓-⊥ α β ⟩
-          𝟘ₒ                             ＝⟨ (^ₒ-↓-⊥ α' β) ⁻¹ ⟩
-          α' ^ₒ β ↓ ^ₒ-⊥ α' β            ＝⟨ e₂ ⟩
-          α' ^ₒ β ↓ F α β ([] , []-decr) ∎
-      where
-       e₁ = (simulations-preserve-↓ (expᴸ[𝟙+ α ] β) (α' ^ₒ β)
-              (G-⊴ α β)
-              ([] , []-decr)) ⁻¹
-       e₂ = ap (α' ^ₒ β ↓_) ((F-behaviour-[] α β) ⁻¹)
-  I β IH (((a , b) ∷ l) , δ) =
-   ↓-lc (α' ^ₒ β) (G α β ((a , b ∷ l) , δ)) (F α β ((a , b ∷ l) , δ)) II
-    where
-     II =
-      α' ^ₒ β ↓ G α β (((a , b) ∷ l) , δ)                                 ＝⟨ e₁ ⟩
-      expᴸ[𝟙+ α ] β ↓ (((a , b) ∷ l) , δ)                                 ＝⟨ e₂ ⟩
-      expᴸ[𝟙+ α ] (β ↓ b) ×ₒ (𝟙ₒ +ₒ (α ↓ a)) +ₒ (expᴸ[𝟙+ α ] (β ↓ b) ↓ ℓ) ＝⟨ e₃ ⟩
-      α' ^ₒ (β ↓ b) ×ₒ (𝟙ₒ +ₒ (α ↓ a)) +ₒ (expᴸ[𝟙+ α ] (β ↓ b) ↓ ℓ)       ＝⟨ e₄ ⟩
-      α' ^ₒ (β ↓ b) ×ₒ (𝟙ₒ +ₒ (α ↓ a)) +ₒ (α' ^ₒ (β ↓ b) ↓ G α (β ↓ b) ℓ) ＝⟨ e₅ ⟩
-      α' ^ₒ (β ↓ b) ×ₒ (α' ↓ inr a) +ₒ (α' ^ₒ (β ↓ b) ↓ G α (β ↓ b) ℓ)    ＝⟨ e₆ ⟩
-      α' ^ₒ β ↓ ×ₒ-to-^ₒ α' β (G α (β ↓ b) ℓ , inr a)                     ＝⟨ e₇ ⟩
-      α' ^ₒ β ↓ ×ₒ-to-^ₒ α' β (F α (β ↓ b) ℓ , inr a)                     ＝⟨ e₈ ⟩
-      α' ^ₒ β ↓ F α β (((a , b) ∷ l) , δ)                                 ∎
+module _
+        (α : Ordinal 𝓤)
        where
-        ℓ = expᴸ-tail α β a b l δ
-        e₁ = (simulations-preserve-↓ (expᴸ[𝟙+ α ] β) (α' ^ₒ β)
-               (G-⊴ α β)
-               (((a , b) ∷ l) , δ)) ⁻¹
-        e₂ = expᴸ-↓-cons α β a b l δ
-        e₃ = ap (λ - → - ×ₒ (𝟙ₒ +ₒ (α ↓ a)) +ₒ (expᴸ[𝟙+ α ] (β ↓ b) ↓ ℓ))
-                (exponentiation-constructions-agree' α (β ↓ b))
-        e₄ = ap (α' ^ₒ (β ↓ b) ×ₒ (𝟙ₒ +ₒ (α ↓ a)) +ₒ_)
-                (simulations-preserve-↓ (expᴸ[𝟙+ α ] (β ↓ b)) (α' ^ₒ (β ↓ b))
-                  (G-⊴ α (β ↓ b))
-                  ℓ)
-        e₅ = ap (λ - → α' ^ₒ (β ↓ b) ×ₒ - +ₒ (α' ^ₒ (β ↓ b) ↓ G α (β ↓ b) ℓ))
-                (+ₒ-↓-right a)
-        e₆ = (^ₒ-↓-×ₒ-to-^ₒ α' β) ⁻¹
-        e₇ = ap (λ - → α' ^ₒ β ↓ ×ₒ-to-^ₒ α' β (- , inr a)) (IH b ℓ)
-        e₈ = ap (α' ^ₒ β ↓_) ((F-behaviour-cons α β a b l δ) ⁻¹)
+
+ abstract
+  private
+   denotation-body : (β : Ordinal 𝓥)
+                   → ((b : ⟨ β ⟩) → DecrList₂ α (β ↓ b) → ⟨ α ^ₒ (β ↓ b) ⟩)
+                   → DecrList₂ α β → ⟨ α ^ₒ β ⟩
+   denotation-body β r ([] , δ) = ^ₒ-⊥ α β
+   denotation-body β r (((a , b) ∷ l) , δ) = ×ₒ-to-^ₒ α β
+                                              (r b (expᴸ-tail α β a b l δ) , a)
+
+  denotation : (β : Ordinal 𝓥) → DecrList₂ α β → ⟨ α ^ₒ β ⟩
+  denotation =
+   transfinite-induction-on-OO (λ β → DecrList₂ α β → ⟨ α ^ₒ β ⟩) denotation-body
+
+  syntax denotation β l = ⟦ l ⟧⟨ β ⟩
+
+  denotation-behaviour
+   : (β : Ordinal 𝓥)
+   → denotation β ＝ denotation-body β (λ b → denotation (β ↓ b))
+  denotation-behaviour =
+   transfinite-induction-on-OO-behaviour
+    (λ β → DecrList₂ α β → ⟨ α ^ₒ β ⟩)
+    denotation-body
+
+  ⟦⟧-behaviour-cons : (β : Ordinal 𝓥)
+                      (a : ⟨ α ⟩) (b : ⟨ β ⟩)
+                      (l : List ⟨ α ×ₒ β ⟩)
+                      (δ : is-decreasing-pr₂ α β ((a , b) ∷ l))
+                    → ⟦ ((a , b) ∷ l) , δ ⟧⟨ β ⟩
+                      ＝ ×ₒ-to-^ₒ α β (⟦ expᴸ-tail α β a b l δ ⟧⟨ β ↓ b ⟩ , a)
+  ⟦⟧-behaviour-cons β a b l δ =
+   happly (denotation-behaviour β) (((a , b) ∷ l) , δ)
+
+  ⟦⟧-behaviour-[] : (β : Ordinal 𝓥) → ⟦ [] , []-decr ⟧⟨ β ⟩ ＝ ^ₒ-⊥ α β
+  ⟦⟧-behaviour-[] β = happly (denotation-behaviour β) ([] , []-decr)
+
+ ⟦⟧-is-surjection : (β : Ordinal 𝓥) → is-surjection (denotation β)
+ ⟦⟧-is-surjection =
+  transfinite-induction-on-OO (λ β → is-surjection (denotation β)) I
+  where
+   I : (β : Ordinal 𝓥)
+     → ((b : ⟨ β ⟩) → is-surjection (denotation (β ↓ b)))
+     → is-surjection (denotation β)
+   I β IH =
+    ^ₒ-induction α β
+     (λ (e : ⟨ α ^ₒ β ⟩) → ∃ l ꞉ DecrList₂ α β , ⟦ l ⟧⟨ β ⟩ ＝ e)
+     (λ e → ∃-is-prop)
+     ∣ ([] , []-decr) , ⟦⟧-behaviour-[] β ∣
+     II
+      where
+       II : (b : ⟨ β ⟩) (y : ⟨ α ^ₒ (β ↓ b) ×ₒ α ⟩)
+         → ×ₒ-to-^ₒ α β y ∈image (denotation β)
+       II b (e , a) = ∥∥-functor III (IH b e)
+        where
+         III : (Σ ℓ ꞉ DecrList₂ α (β ↓ b) , ⟦ ℓ ⟧⟨ β ↓ b ⟩ ＝ e)
+             → Σ l ꞉ DecrList₂ α β , ⟦ l ⟧⟨ β ⟩ ＝ ×ₒ-to-^ₒ α β (e , a)
+         III ((ℓ , δ) , refl) = (((a , b) ∷ ℓ') , ε) , IV
+          where
+           ℓ' : List ⟨ α ×ₒ β ⟩
+           ℓ' = expᴸ-segment-inclusion-list α β b ℓ
+           ε : is-decreasing-pr₂ α β ((a , b) ∷ ℓ')
+           ε = extended-expᴸ-segment-inclusion-is-decreasing-pr₂ α β b ℓ a δ
+           IV = ⟦ ((a , b) ∷ ℓ') , ε ⟧⟨ β ⟩                            ＝⟨ IV₁ ⟩
+                ×ₒ-to-^ₒ α β (⟦ expᴸ-tail α β a b ℓ' ε ⟧⟨ β ↓ b ⟩ , a) ＝⟨ IV₂ ⟩
+                ×ₒ-to-^ₒ α β (⟦ ℓ , δ ⟧⟨ β ↓ b ⟩ , a)                  ∎
+            where
+             IV₁ = ⟦⟧-behaviour-cons β a b ℓ' ε
+             IV₂ = ap (λ - → ×ₒ-to-^ₒ α β (denotation (β ↓ b) - , a))
+                      (expᴸ-segment-inclusion-section-of-expᴸ-tail α β a b ℓ δ)
+
+\end{code}
+
+The equality exponentiationᴸ α β ＝ α ^ₒ β, for α decomposable as α = 𝟙ₒ +ₒ α⁺,
+induces a simulation, and in particular a map
+
+  g_β : DecrList α⁺ β → α ^ₒ β.
+
+Equivalently, writing α' = 𝟙ₒ +ₒ α, we obtain a map
+
+  g_β : DecrList α β → α' ^ₒ β
+
+We now show that this function is closely related to the above denotation
+function, although this requires a new denotation function which has codomain
+α' ^ₒ β.
+
+\begin{code}
+
+module _
+        (α : Ordinal 𝓤)
+       where
+
+ private
+  α' : Ordinal 𝓤
+  α' = 𝟙ₒ +ₒ α
+
+ abstract
+  private
+   denotation-body' : (β : Ordinal 𝓥)
+                    → ((b : ⟨ β ⟩) → DecrList₂ α (β ↓ b) → ⟨ α' ^ₒ (β ↓ b) ⟩)
+                    → DecrList₂ α β → ⟨ α' ^ₒ β ⟩
+   denotation-body' β r ([] , δ) = ^ₒ-⊥ α' β
+   denotation-body' β r (((a , b) ∷ l) , δ) = ×ₒ-to-^ₒ α' β
+                                               (r b (expᴸ-tail α β a b l δ) , inr a)
+
+  denotation' : (β : Ordinal 𝓥) → DecrList₂ α β → ⟨ α' ^ₒ β ⟩
+  denotation' =
+   transfinite-induction-on-OO (λ β → DecrList₂ α β → ⟨ α' ^ₒ β ⟩) denotation-body'
+
+  syntax denotation' β l = ⟦ l ⟧'⟨ β ⟩
+
+  denotation'-behaviour
+   : (β : Ordinal 𝓥)
+   → denotation' β ＝ denotation-body' β (λ b → denotation' (β ↓ b))
+  denotation'-behaviour =
+   transfinite-induction-on-OO-behaviour
+    (λ β → DecrList₂ α β → ⟨ α' ^ₒ β ⟩)
+    denotation-body'
+
+  ⟦⟧'-behaviour-cons
+   : (β : Ordinal 𝓥)
+     (a : ⟨ α ⟩) (b : ⟨ β ⟩)
+     (l : List ⟨ α ×ₒ β ⟩)
+     (δ : is-decreasing-pr₂ α β ((a , b) ∷ l))
+   → ⟦ ((a , b) ∷ l) , δ ⟧'⟨ β ⟩
+     ＝ ×ₒ-to-^ₒ α' β (⟦ expᴸ-tail α β a b l δ ⟧'⟨ β ↓ b ⟩ , inr a)
+  ⟦⟧'-behaviour-cons β a b l δ =
+   happly (denotation'-behaviour β) (((a , b) ∷ l) , δ)
+
+  ⟦⟧'-behaviour-[] : (β : Ordinal 𝓥) → ⟦ [] , []-decr ⟧'⟨ β ⟩ ＝ ^ₒ-⊥ α' β
+  ⟦⟧'-behaviour-[] β = happly (denotation'-behaviour β) ([] , []-decr)
+
+\end{code}
+
+Looking at ⟦⟧'-behaviour-cons, one may wonder about the case where we don't have
+(inr a) in the right component, but rather (inl ⋆). This is handled via the
+following observation, which corresponds to the fact that if an ordinal γ has a
+trichotomous (in particular, detachable) least element then elements of
+DecrList₂ γ β can be "normalized" by removing entries which list the least
+element of α.
+
+\begin{code}
+
+ private
+  NB : (β : Ordinal 𝓤) (b : ⟨ β ⟩) (e : ⟨ α' ^ₒ (β ↓ b ) ⟩)
+     → α' ^ₒ β ↓ ×ₒ-to-^ₒ α' β (e , inl ⋆) ＝ α' ^ₒ (β ↓ b) ↓ e
+  NB β b e =
+   α' ^ₒ β ↓ ×ₒ-to-^ₒ α' β (e , inl ⋆)                       ＝⟨ I   ⟩
+   α' ^ₒ (β ↓ b) ×ₒ (𝟙ₒ +ₒ α ↓ inl ⋆) +ₒ (α' ^ₒ (β ↓ b) ↓ e) ＝⟨ II  ⟩
+   α' ^ₒ (β ↓ b) ×ₒ (𝟙ₒ ↓ ⋆) +ₒ (α' ^ₒ (β ↓ b) ↓ e)          ＝⟨ III ⟩
+   α' ^ₒ (β ↓ b) ×ₒ 𝟘ₒ +ₒ (α' ^ₒ (β ↓ b) ↓ e)                ＝⟨ IV  ⟩
+   𝟘ₒ +ₒ (α' ^ₒ (β ↓ b) ↓ e)                                 ＝⟨ V   ⟩
+   α' ^ₒ (β ↓ b) ↓ e                                         ∎
+    where
+     I   = ^ₒ-↓-×ₒ-to-^ₒ α' β
+     II  = ap (λ - → α' ^ₒ (β ↓ b) ×ₒ - +ₒ (α' ^ₒ (β ↓ b) ↓ e))
+              ((+ₒ-↓-left ⋆) ⁻¹)
+     III = ap (λ - → α' ^ₒ (β ↓ b) ×ₒ - +ₒ (α' ^ₒ (β ↓ b) ↓ e)) 𝟙ₒ-↓
+     IV  = ap (_+ₒ (α' ^ₒ (β ↓ b) ↓ e)) (×ₒ-𝟘ₒ-right (α' ^ₒ (β ↓ b)))
+     V   = 𝟘ₒ-left-neutral (α' ^ₒ (β ↓ b) ↓ e)
+
+\end{code}
+
+\begin{code}
+
+ induced-simulation : (β : Ordinal 𝓤) → expᴸ[𝟙+ α ] β ⊴ α' ^ₒ β
+ induced-simulation β =
+  ＝-to-⊴ (expᴸ[𝟙+ α ] β) (α' ^ₒ β) (exponentiation-constructions-agree' α β)
+
+ induced-map : (β : Ordinal 𝓤) → ⟨ expᴸ[𝟙+ α ] β ⟩ → ⟨ α' ^ₒ β ⟩
+ induced-map β = [ expᴸ[𝟙+ α ] β , α' ^ₒ β ]⟨ induced-simulation β ⟩
+
+ private
+  NB' : (β : Ordinal 𝓥) → ⟨ expᴸ[𝟙+ α ] β ⟩ ＝ DecrList₂ α β
+  NB' β = refl
+
+ induced-map-is-denotation' : (β : Ordinal 𝓤) → induced-map β ∼ denotation' β
+ induced-map-is-denotation' =
+  transfinite-induction-on-OO (λ β → f β ∼ denotation' β) I
+   where
+    f = induced-map
+
+    I : (β : Ordinal 𝓤)
+      → ((b : ⟨ β ⟩) → f (β ↓ b) ∼ denotation' (β ↓ b))
+      → f β ∼ denotation' β
+    I β IH ([] , []-decr) =
+     ↓-lc (α' ^ₒ β) (f β ([] , []-decr)) (⟦ [] , []-decr ⟧'⟨ β ⟩) II
+      where
+       II = α' ^ₒ β ↓ f β ([] , []-decr)     ＝⟨ e₁ ⟩
+            expᴸ[𝟙+ α ] β ↓ ([] , []-decr)   ＝⟨ expᴸ-↓-⊥ α β ⟩
+            𝟘ₒ                               ＝⟨ (^ₒ-↓-⊥ α' β) ⁻¹ ⟩
+            α' ^ₒ β ↓ ^ₒ-⊥ α' β              ＝⟨ e₂ ⟩
+            α' ^ₒ β ↓ ⟦ [] , []-decr ⟧'⟨ β ⟩ ∎
+        where
+         e₁ = (simulations-preserve-↓ (expᴸ[𝟙+ α ] β) (α' ^ₒ β)
+                (induced-simulation β)
+                ([] , []-decr)) ⁻¹
+         e₂ = ap (α' ^ₒ β ↓_) ((⟦⟧'-behaviour-[] β) ⁻¹)
+    I β IH (((a , b) ∷ l) , δ) =
+     ↓-lc (α' ^ₒ β) (f β ((a , b ∷ l) , δ)) (⟦ (a , b ∷ l) , δ ⟧'⟨ β ⟩) II
+      where
+       II =
+        α' ^ₒ β ↓ f β (((a , b) ∷ l) , δ)                                   ＝⟨ e₁ ⟩
+        expᴸ[𝟙+ α ] β ↓ (((a , b) ∷ l) , δ)                                 ＝⟨ e₂ ⟩
+        expᴸ[𝟙+ α ] (β ↓ b) ×ₒ (𝟙ₒ +ₒ (α ↓ a)) +ₒ (expᴸ[𝟙+ α ] (β ↓ b) ↓ ℓ) ＝⟨ e₃ ⟩
+        α' ^ₒ (β ↓ b) ×ₒ (𝟙ₒ +ₒ (α ↓ a)) +ₒ (expᴸ[𝟙+ α ] (β ↓ b) ↓ ℓ)       ＝⟨ e₄ ⟩
+        α' ^ₒ (β ↓ b) ×ₒ (𝟙ₒ +ₒ (α ↓ a)) +ₒ (α' ^ₒ (β ↓ b) ↓ f (β ↓ b) ℓ)   ＝⟨ e₅ ⟩
+        α' ^ₒ (β ↓ b) ×ₒ (α' ↓ inr a) +ₒ (α' ^ₒ (β ↓ b) ↓ f (β ↓ b) ℓ)      ＝⟨ e₆ ⟩
+        α' ^ₒ β ↓ ×ₒ-to-^ₒ α' β (f (β ↓ b) ℓ , inr a)                       ＝⟨ e₇ ⟩
+        α' ^ₒ β ↓ ×ₒ-to-^ₒ α' β (⟦ ℓ ⟧'⟨ β ↓ b ⟩ , inr a)                   ＝⟨ e₈ ⟩
+        α' ^ₒ β ↓ ⟦ ((a , b) ∷ l) , δ ⟧'⟨ β ⟩                               ∎
+         where
+          ℓ = expᴸ-tail α β a b l δ
+          e₁ = (simulations-preserve-↓ (expᴸ[𝟙+ α ] β) (α' ^ₒ β)
+                 (induced-simulation β)
+                 (((a , b) ∷ l) , δ)) ⁻¹
+          e₂ = expᴸ-↓-cons α β a b l δ
+          e₃ = ap (λ - → - ×ₒ (𝟙ₒ +ₒ (α ↓ a)) +ₒ (expᴸ[𝟙+ α ] (β ↓ b) ↓ ℓ))
+                  (exponentiation-constructions-agree' α (β ↓ b))
+          e₄ = ap (α' ^ₒ (β ↓ b) ×ₒ (𝟙ₒ +ₒ (α ↓ a)) +ₒ_)
+                  (simulations-preserve-↓ (expᴸ[𝟙+ α ] (β ↓ b)) (α' ^ₒ (β ↓ b))
+                    (induced-simulation (β ↓ b))
+                    ℓ)
+          e₅ = ap (λ - → α' ^ₒ (β ↓ b) ×ₒ - +ₒ (α' ^ₒ (β ↓ b) ↓ f (β ↓ b) ℓ))
+                  (+ₒ-↓-right a)
+          e₆ = (^ₒ-↓-×ₒ-to-^ₒ α' β) ⁻¹
+          e₇ = ap (λ - → α' ^ₒ β ↓ ×ₒ-to-^ₒ α' β (- , inr a)) (IH b ℓ)
+          e₈ = ap (α' ^ₒ β ↓_) ((⟦⟧'-behaviour-cons β a b l δ) ⁻¹)
 
 \end{code}

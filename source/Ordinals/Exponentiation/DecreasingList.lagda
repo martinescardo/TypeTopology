@@ -470,8 +470,6 @@ exponentiationᴸ : (α : Ordinal 𝓤)
                 → Ordinal (𝓤 ⊔ 𝓥)
 exponentiationᴸ α h = expᴸ[𝟙+ α ⁺[ h ] ]
 
-DecreasingList₂ = expᴸ[𝟙+_]
-
 \end{code}
 
 \begin{code}
