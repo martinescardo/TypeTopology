@@ -460,32 +460,69 @@ module _
  normalize (l , δ) = normalize-list l ,
                      normalize-list-preserves-decreasing-pr₂ l δ
 
+\end{code}
+
+\begin{code}
+
+-- TODO: Clean up and fill final hole...
+
 {-
 denotations-are-related-via-normalization
- : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
+ : (α β : Ordinal 𝓤)
  → denotation (𝟙ₒ +ₒ α) β ∼ denotation' α β ∘ normalize α β
-denotations-are-related-via-normalization {𝓤} {𝓥} α =
+denotations-are-related-via-normalization {𝓤} α =
  transfinite-induction-on-OO
   (λ β → denotation (𝟙ₒ +ₒ α) β ∼ denotation' α β ∘ normalize α β)
-  ind
+  (λ β IH (l , δ) → ind β IH l δ)
    where
-    ind : (β : Ordinal 𝓥)
-        → ((b : ⟨ β ⟩) → denotation (𝟙ₒ +ₒ α) (β ↓ b)
+    α' = 𝟙ₒ +ₒ α
+
+    ind : (β : Ordinal 𝓤)
+        → ((b : ⟨ β ⟩) → denotation α' (β ↓ b)
                          ∼ denotation' α (β ↓ b) ∘ normalize α (β ↓ b))
-        → denotation (𝟙ₒ +ₒ α) β ∼ denotation' α β ∘ normalize α β
-    ind β IH ([] , []-decr) = ⟦⟧-behaviour-[] (𝟙ₒ +ₒ α) β
+        → (l : List ⟨ α' ×ₒ β ⟩)
+          (δ : is-decreasing-pr₂ α' β l)
+        → denotation α' β (l , δ) ＝ denotation' α β (normalize α β (l , δ))
+    ind β IH [] []-decr = ⟦⟧-behaviour-[] α' β
                               ∙ (⟦⟧'-behaviour-[] α β) ⁻¹
-    ind β IH ((inl ⋆ , b ∷ l) , δ) = {!!}
-    ind β IH ((inr a , b ∷ l) , δ) =
-     denotation (𝟙ₒ +ₒ α) β ((inr a , b ∷ l) , δ) ＝⟨ ⟦⟧-behaviour-cons (𝟙ₒ +ₒ α) β (inr a) b l δ ⟩
-     ×ₒ-to-^ₒ (𝟙ₒ +ₒ α) β
-      (denotation (𝟙ₒ +ₒ α) (β ↓ b) (expᴸ-tail (𝟙ₒ +ₒ α) β (inr a) b l δ) , inr a) ＝⟨ ap (λ - → ×ₒ-to-^ₒ (𝟙ₒ +ₒ α) β (- , inr a)) (IH b (expᴸ-tail (𝟙ₒ +ₒ α) β (inr a) b l δ)) ⟩
-     ×ₒ-to-^ₒ (𝟙ₒ +ₒ α) β
-       ((denotation' α (β ↓ b) ∘ normalize α (β ↓ b))
-        (expᴸ-tail (𝟙ₒ +ₒ α) β (inr a) b l δ)
-        , inr a) ＝⟨ {!!} ⟩
-     denotation' α β (normalize-list α β (inr a , b ∷ l) , normalize-list-preserves-decreasing-pr₂ α β (inr a , b ∷ l) δ) ＝⟨ refl ⟩
+    ind β IH ((inl ⋆ , b) ∷ l) δ =
+     denotation α' β (((inl ⋆ , b) ∷ l) , δ) ＝⟨ bar ⟩
+     denotation α' β (l , tail-is-decreasing-pr₂ α' β (inl ⋆ , b) δ) ＝⟨ baz ⟩
+     denotation' α β (normalize α β (l , tail-is-decreasing-pr₂ α' β (inl ⋆ , b) δ)) ＝⟨ ap (denotation' α β) (foo ⁻¹) ⟩
+     denotation' α β (normalize α β ((inl ⋆ , b ∷ l) , δ)) ∎
+      where
+       baz : denotation α' β (l , _) ＝ (denotation' α β ∘ normalize α β) (l , _)
+       baz = ind β IH l (tail-is-decreasing-pr₂ α' β (inl ⋆ , b) δ)
+       foo : normalize α β ((inl ⋆ , b ∷ l) , δ)
+             ＝ normalize α β (l , tail-is-decreasing-pr₂ α' β (inl ⋆ , b) δ)
+       foo = to-expᴸ-＝ α β refl
+       bar : denotation α' β ((inl ⋆ , b ∷ l) , δ)
+             ＝ denotation α' β (l , tail-is-decreasing-pr₂ α' β (inl ⋆ , b) δ)
+       bar = {!!}
+    ind β IH ((inr a , b) ∷ l) δ =
+     denotation α' β (((inr a , b) ∷ l) , δ) ＝⟨ ⟦⟧-behaviour-cons α' β (inr a) b l δ ⟩
+     ×ₒ-to-^ₒ α' β (denotation α' (β ↓ b) (expᴸ-tail α' β (inr a) b l δ) , inr a) ＝⟨ ap (λ - → ×ₒ-to-^ₒ α' β (- , inr a)) (IH b (expᴸ-tail α' β (inr a) b l δ)) ⟩
+     ×ₒ-to-^ₒ α' β (denotation' α (β ↓ b) (normalize α (β ↓ b) (expᴸ-tail α' β (inr a) b l δ)) , inr a) ＝⟨ ap (λ - → ×ₒ-to-^ₒ α' β (denotation' α (β ↓ b) - , inr a)) lem ⟩
+     ×ₒ-to-^ₒ α' β (denotation' α (β ↓ b) (expᴸ-tail α β a b (normalize-list α β l) (normalize-list-preserves-decreasing-pr₂ α β (inr a , b ∷ l) δ)) , inr a) ＝⟨ (⟦⟧'-behaviour-cons α β a b (normalize-list α β l) (normalize-list-preserves-decreasing-pr₂ α β (inr a , b ∷ l) δ)) ⁻¹ ⟩
      denotation' α β (normalize α β ((inr a , b ∷ l) , δ)) ∎
+      where
+       lem : normalize α (β ↓ b) (expᴸ-tail α' β (inr a) b l δ)
+             ＝ expᴸ-tail α β a b (normalize-list α β l) (normalize-list-preserves-decreasing-pr₂ α β (inr a , b ∷ l) δ)
+       lem = to-expᴸ-＝ α (β ↓ b) (lem' l δ (normalize-list-preserves-decreasing-pr₂ α β (inr a , b ∷ l) δ))
+        where
+         lem' : (l : List ⟨ α' ×ₒ β ⟩)
+                (δ : is-decreasing-pr₂ α' β (inr a , b ∷ l))
+                (ε : is-decreasing-pr₂ α β (a , b ∷ normalize-list α β l))
+              → normalize-list α (β ↓ b) (expᴸ-tail-list α' β (inr a) b l δ)
+                ＝ expᴸ-tail-list α β a b (normalize-list α β l) ε
+         lem' [] δ ε = refl
+         lem' (inl ⋆  , b' ∷ l) δ ε = lem' l (is-decreasing-pr₂-skip α' β (inr a , b) (inl ⋆ , b') δ) ε
+         lem' (inr a' , b' ∷ l) δ ε =
+          ap₂ _∷_
+              (ap (a' ,_) (segment-inclusion-lc β refl))
+              (lem' l
+                (is-decreasing-pr₂-skip α' β (inr a , b) (inr a' , b') δ)
+                (is-decreasing-pr₂-skip α β (a , b) (a' , b') ε))
 -}
 
 \end{code}
