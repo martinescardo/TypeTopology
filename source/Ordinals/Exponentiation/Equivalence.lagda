@@ -256,7 +256,8 @@ induces a simulation, and in particular a map
 
   g_β : DecrList α⁺ β → α ^ₒ β.
 
-Equivalently, writing α' = 𝟙ₒ +ₒ α, we obtain a map
+Put differently, for an arbitrary ordinal α, and writing α' = 𝟙ₒ +ₒ α, we obtain
+a map
 
   g_β : DecrList α β → α' ^ₒ β
 
