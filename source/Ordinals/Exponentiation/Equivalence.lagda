@@ -407,7 +407,10 @@ element of α (see the end of this file).
  denotation'-is-simulation β =
   transport (is-simulation (expᴸ[𝟙+ α ] β) (α' ^ₒ β))
             (dfunext fe' (induced-map-is-denotation' β))
-            [ _ , _ ]⟨ induced-simulation β ⟩-is-simulation
+            [ expᴸ[𝟙+ α ] β , α' ^ₒ β ]⟨ induced-simulation β ⟩-is-simulation
+
+ denotation'-⊴ : (β : Ordinal 𝓤) → expᴸ[𝟙+ α ] β ⊴ α' ^ₒ β
+ denotation'-⊴ β = denotation' β , denotation'-is-simulation β
 
 \end{code}
 
@@ -468,6 +471,8 @@ module _
 
 \end{code}
 
+TODO: Update comment
+
 Below, we need the following technical lemma: we get the same result
 if we compute the normal form of the decreasing list (inl ⋆ , b) ∷ l
 directly in DecrList₂ α β as when we compute the normal form of l in
@@ -475,15 +480,38 @@ DecrList₂ α (β ↓ b), and then include the result back into DecrList₂ α 
 
 \begin{code}
 
+normalize-expᴸ-tail
+ : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
+   {a : ⟨ α ⟩} {b : ⟨ β ⟩} {l : List ⟨ (𝟙ₒ +ₒ α) ×ₒ β ⟩}
+   {δ : is-decreasing-pr₂ (𝟙ₒ +ₒ α) β ((inr a , b) ∷ l)}
+ → normalize α (β ↓ b) (expᴸ-tail (𝟙ₒ +ₒ α) β (inr a) b l δ)
+   ＝ expᴸ-tail α β a b
+       (normalize-list α β l)
+       (normalize-list-preserves-decreasing-pr₂ α β (inr a , b ∷ l) δ)
+normalize-expᴸ-tail α β {a} {b} {l} = to-expᴸ-＝ α (β ↓ b) (lemma l)
+  where
+   α' = 𝟙ₒ +ₒ α
+
+   lemma : (l : List ⟨ α' ×ₒ β ⟩)
+           {δ : is-decreasing-pr₂ α' β (inr a , b ∷ l)}
+           {ε : is-decreasing-pr₂ α β (a , b ∷ normalize-list α β l)}
+         → normalize-list α (β ↓ b) (expᴸ-tail-list α' β (inr a) b l δ)
+           ＝ expᴸ-tail-list α β a b (normalize-list α β l) ε
+   lemma [] = refl
+   lemma (inl ⋆  , b' ∷ l) = lemma l
+   lemma (inr a' , b' ∷ l) = ap₂ _∷_
+                                 (ap (a' ,_) (segment-inclusion-lc β refl))
+                                 (lemma l)
+
 normalize-expᴸ-segment-inclusion
- : (α β : Ordinal 𝓤)
-   {b : ⟨ β ⟩} {l : List ⟨ (𝟙ₒ +ₒ α) ×ₒ β ⟩ }
-   (δ : is-decreasing-pr₂ (𝟙ₒ +ₒ α) β ((inl ⋆) , b ∷ l))
- → normalize α β (((inl ⋆ , b) ∷ l) , δ) ＝
-    expᴸ-segment-inclusion α β b
-     (normalize α (β ↓ b)
-      (expᴸ-tail (𝟙ₒ +ₒ α) β (inl ⋆) b l δ))
-normalize-expᴸ-segment-inclusion α β {b} {l} δ = to-expᴸ-＝ α β (lemma l)
+ : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
+   {b : ⟨ β ⟩} {l : List ⟨ (𝟙ₒ +ₒ α) ×ₒ β ⟩}
+   {δ : is-decreasing-pr₂ (𝟙ₒ +ₒ α) β ((inl ⋆) , b ∷ l)}
+ → normalize α β (((inl ⋆ , b) ∷ l) , δ)
+   ＝ expᴸ-segment-inclusion α β b
+       (normalize α (β ↓ b)
+       (expᴸ-tail (𝟙ₒ +ₒ α) β (inl ⋆) b l δ))
+normalize-expᴸ-segment-inclusion α β {b} {l} = to-expᴸ-＝ α β (lemma l)
  where
    α' = 𝟙ₒ +ₒ α
 
@@ -531,13 +559,11 @@ denotations-are-related-via-normalization {𝓤} α =
        III = α' ^ₒ (β ↓ b) ↓ denotation α' (β ↓ b) (expᴸ-tail α' β (inl ⋆) b l δ)
               ＝⟨ ap (α' ^ₒ (β ↓ b) ↓_) (IH b (expᴸ-tail α' β (inl ⋆) b l δ)) ⟩
              α' ^ₒ (β ↓ b) ↓ denotation' α (β ↓ b) (normalize α (β ↓ b) (expᴸ-tail α' β (inl ⋆) b l δ))
-              ＝⟨ simulations-preserve-↓ _ _ (denotation-⊴  (β ↓ b)) (normalize α (β ↓ b) (expᴸ-tail α' β (inl ⋆) b l δ)) ⁻¹ ⟩
+              ＝⟨ simulations-preserve-↓ _ _ (denotation'-⊴  α (β ↓ b)) (normalize α (β ↓ b) (expᴸ-tail α' β (inl ⋆) b l δ)) ⁻¹ ⟩
              expᴸ[𝟙+ α ] (β ↓ b) ↓ normalize α (β ↓ b) (expᴸ-tail (𝟙ₒ +ₒ α) β (inl ⋆) b l δ)
-              ＝⟨ simulations-preserve-↓ _ _ (⊴-trans _ _ _ (expᴸ-segment-inclusion-⊴ α β b) (denotation-⊴ β)) (normalize α (β ↓ b) (expᴸ-tail (𝟙ₒ +ₒ α) β (inl ⋆) b l δ)) ⟩
+              ＝⟨ simulations-preserve-↓ _ _ (⊴-trans _ _ _ (expᴸ-segment-inclusion-⊴ α β b) (denotation'-⊴ α β)) (normalize α (β ↓ b) (expᴸ-tail (𝟙ₒ +ₒ α) β (inl ⋆) b l δ)) ⟩
              α' ^ₒ β ↓ denotation' α β (expᴸ-segment-inclusion α β b (normalize α (β ↓ b) (expᴸ-tail (𝟙ₒ +ₒ α) β (inl ⋆) b l δ))) ∎
-              where
-               denotation-⊴ = λ β → denotation' α β , denotation'-is-simulation α β
-       IV = ap (denotation' α β) (normalize-expᴸ-segment-inclusion α β δ ⁻¹)
+       IV = ap (denotation' α β) (normalize-expᴸ-segment-inclusion α β ⁻¹)
     ind β IH ((inr a , b) ∷ l) δ =
      denotation α' β (((inr a , b) ∷ l) , δ) ＝⟨ ⟦⟧-behaviour-cons α' β (inr a) b l δ ⟩
      ×ₒ-to-^ₒ α' β (denotation α' (β ↓ b) (expᴸ-tail α' β (inr a) b l δ) , inr a) ＝⟨ ap (λ - → ×ₒ-to-^ₒ α' β (- , inr a)) (IH b (expᴸ-tail α' β (inr a) b l δ)) ⟩
@@ -545,22 +571,6 @@ denotations-are-related-via-normalization {𝓤} α =
      ×ₒ-to-^ₒ α' β (denotation' α (β ↓ b) (expᴸ-tail α β a b (normalize-list α β l) (normalize-list-preserves-decreasing-pr₂ α β (inr a , b ∷ l) δ)) , inr a) ＝⟨ (⟦⟧'-behaviour-cons α β a b (normalize-list α β l) (normalize-list-preserves-decreasing-pr₂ α β (inr a , b ∷ l) δ)) ⁻¹ ⟩
      denotation' α β (normalize α β ((inr a , b ∷ l) , δ)) ∎
       where
-       lem : normalize α (β ↓ b) (expᴸ-tail α' β (inr a) b l δ)
-             ＝ expᴸ-tail α β a b (normalize-list α β l) (normalize-list-preserves-decreasing-pr₂ α β (inr a , b ∷ l) δ)
-       lem = to-expᴸ-＝ α (β ↓ b) (lem' l δ (normalize-list-preserves-decreasing-pr₂ α β (inr a , b ∷ l) δ))
-        where
-         lem' : (l : List ⟨ α' ×ₒ β ⟩)
-                (δ : is-decreasing-pr₂ α' β (inr a , b ∷ l))
-                (ε : is-decreasing-pr₂ α β (a , b ∷ normalize-list α β l))
-              → normalize-list α (β ↓ b) (expᴸ-tail-list α' β (inr a) b l δ)
-                ＝ expᴸ-tail-list α β a b (normalize-list α β l) ε
-         lem' [] δ ε = refl
-         lem' (inl ⋆  , b' ∷ l) δ ε = lem' l (is-decreasing-pr₂-skip α' β (inr a , b) (inl ⋆ , b') δ) ε
-         lem' (inr a' , b' ∷ l) δ ε =
-          ap₂ _∷_
-              (ap (a' ,_) (segment-inclusion-lc β refl))
-              (lem' l
-                (is-decreasing-pr₂-skip α' β (inr a , b) (inr a' , b') δ)
-                (is-decreasing-pr₂-skip α β (a , b) (a' , b') ε))
+       lem = normalize-expᴸ-tail α β
 
 \end{code}
