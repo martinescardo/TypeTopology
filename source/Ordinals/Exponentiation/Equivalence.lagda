@@ -471,12 +471,11 @@ module _
 
 \end{code}
 
-TODO: Update comment
-
-Below, we need the following technical lemma: we get the same result
-if we compute the normal form of the decreasing list (inl ⋆ , b) ∷ l
-directly in DecrList₂ α β as when we compute the normal form of l in
-DecrList₂ α (β ↓ b), and then include the result back into DecrList₂ α β.
+Below, we need the following technical lemmas which say that normalization
+commutes with the expᴸ-tail and expᴸ-segment-inclusion functions.
+For expᴸ-tail, this means that the normalization of the decreasing list
+(inl ⋆ , b) ∷ l in DecrList₂ α β then it coincides with the normalization of l
+in DecrList₂ α (β ↓ b) after embedding it back into DecrList₂ α β.
 
 \begin{code}
 
@@ -526,9 +525,10 @@ normalize-expᴸ-segment-inclusion α β {b} {l} = to-expᴸ-＝ α β (lemma l)
 
 \end{code}
 
-\begin{code}
+We are now ready to prove that the denotation functions are related via
+normalization.
 
--- TODO: Clean up
+\begin{code}
 
 denotations-are-related-via-normalization
  : (α β : Ordinal 𝓤)
@@ -543,34 +543,60 @@ denotations-are-related-via-normalization {𝓤} α =
     ind : (β : Ordinal 𝓤)
         → ((b : ⟨ β ⟩) → denotation α' (β ↓ b)
                          ∼ denotation' α (β ↓ b) ∘ normalize α (β ↓ b))
-        → (l : List ⟨ α' ×ₒ β ⟩)
-          (δ : is-decreasing-pr₂ α' β l)
+        → (l : List ⟨ α' ×ₒ β ⟩) (δ : is-decreasing-pr₂ α' β l)
         → denotation α' β (l , δ) ＝ denotation' α β (normalize α β (l , δ))
-    ind β IH [] []-decr = ⟦⟧-behaviour-[] α' β
-                              ∙ (⟦⟧'-behaviour-[] α β) ⁻¹
+    ind β IH [] []-decr =
+     denotation α' β ([] , []-decr)                 ＝⟨ I  ⟩
+     ^ₒ-⊥ α' β                                      ＝⟨ II ⟩
+     denotation' α β (normalize α β ([] , []-decr)) ∎
+      where
+       I  = ⟦⟧-behaviour-[] α' β
+       II = (⟦⟧'-behaviour-[] α β) ⁻¹
     ind β IH ((inl ⋆ , b) ∷ l) δ =
-     denotation α' β (((inl ⋆ , b) ∷ l) , δ) ＝⟨ I ⟩
-     ×ₒ-to-^ₒ α' β (denotation α' (β ↓ b) (expᴸ-tail α' β (inl ⋆) b l δ) , inl ⋆) ＝⟨ ↓-lc (α' ^ₒ β) _ _ (II ∙ III) ⟩
-     denotation' α β (expᴸ-segment-inclusion α β b (normalize α (β ↓ b) (expᴸ-tail (𝟙ₒ +ₒ α) β (inl ⋆) b l δ))) ＝⟨ IV ⟩
+     denotation α' β (((inl ⋆ , b) ∷ l) , δ)               ＝⟨ I   ⟩
+     ×ₒ-to-^ₒ α' β (denotation α' (β ↓ b) ℓ , inl ⋆)       ＝⟨ II  ⟩
+     denotation' α β (ι (normalize α (β ↓ b) ℓ))           ＝⟨ III ⟩
      denotation' α β (normalize α β ((inl ⋆ , b ∷ l) , δ)) ∎
       where
-       I = ⟦⟧-behaviour-cons α' β  (inl ⋆) b l δ
-       II = ^ₒ-skip-least α β b (denotation α' (β ↓ b) (expᴸ-tail α' β (inl ⋆) b l δ))
-       III = α' ^ₒ (β ↓ b) ↓ denotation α' (β ↓ b) (expᴸ-tail α' β (inl ⋆) b l δ)
-              ＝⟨ ap (α' ^ₒ (β ↓ b) ↓_) (IH b (expᴸ-tail α' β (inl ⋆) b l δ)) ⟩
-             α' ^ₒ (β ↓ b) ↓ denotation' α (β ↓ b) (normalize α (β ↓ b) (expᴸ-tail α' β (inl ⋆) b l δ))
-              ＝⟨ simulations-preserve-↓ _ _ (denotation'-⊴  α (β ↓ b)) (normalize α (β ↓ b) (expᴸ-tail α' β (inl ⋆) b l δ)) ⁻¹ ⟩
-             expᴸ[𝟙+ α ] (β ↓ b) ↓ normalize α (β ↓ b) (expᴸ-tail (𝟙ₒ +ₒ α) β (inl ⋆) b l δ)
-              ＝⟨ simulations-preserve-↓ _ _ (⊴-trans _ _ _ (expᴸ-segment-inclusion-⊴ α β b) (denotation'-⊴ α β)) (normalize α (β ↓ b) (expᴸ-tail (𝟙ₒ +ₒ α) β (inl ⋆) b l δ)) ⟩
-             α' ^ₒ β ↓ denotation' α β (expᴸ-segment-inclusion α β b (normalize α (β ↓ b) (expᴸ-tail (𝟙ₒ +ₒ α) β (inl ⋆) b l δ))) ∎
-       IV = ap (denotation' α β) (normalize-expᴸ-segment-inclusion α β ⁻¹)
+       ℓ = expᴸ-tail α' β (inl ⋆) b l δ
+       ι = expᴸ-segment-inclusion α β b
+
+       I   = ⟦⟧-behaviour-cons α' β  (inl ⋆) b l δ
+       III = ap (denotation' α β) (normalize-expᴸ-segment-inclusion α β ⁻¹)
+       II  = ↓-lc (α' ^ₒ β) _ _ II'
+        where
+         II' =
+          α' ^ₒ β ↓ ×ₒ-to-^ₒ α' β (denotation α' (β ↓ b) ℓ , inl ⋆)     ＝⟨ II₁ ⟩
+          α' ^ₒ (β ↓ b) ↓ denotation α' (β ↓ b) ℓ                       ＝⟨ II₂ ⟩
+          α' ^ₒ (β ↓ b) ↓ denotation' α (β ↓ b) (normalize α (β ↓ b) ℓ) ＝⟨ II₃ ⟩
+          expᴸ[𝟙+ α ] (β ↓ b) ↓ normalize α (β ↓ b) ℓ                   ＝⟨ II₄ ⟩
+          α' ^ₒ β ↓ denotation' α β (ι (normalize α (β ↓ b) ℓ))         ∎
+           where
+            II₁ = ^ₒ-skip-least α β b (denotation α' (β ↓ b) ℓ)
+            II₂ = ap (α' ^ₒ (β ↓ b) ↓_) (IH b ℓ)
+            II₃ = (simulations-preserve-↓ (expᴸ[𝟙+ α ] (β ↓ b)) (α' ^ₒ (β ↓ b))
+                    (denotation'-⊴  α (β ↓ b))
+                    (normalize α (β ↓ b) ℓ)) ⁻¹
+            II₄ = simulations-preserve-↓ (expᴸ[𝟙+ α ] (β ↓ b)) (α' ^ₒ β)
+                   (⊴-trans (expᴸ[𝟙+ α ] (β ↓ b)) (expᴸ[𝟙+ α ] β) (α' ^ₒ β)
+                     (expᴸ-segment-inclusion-⊴ α β b)
+                     (denotation'-⊴ α β))
+                   (normalize α (β ↓ b) ℓ)
     ind β IH ((inr a , b) ∷ l) δ =
-     denotation α' β (((inr a , b) ∷ l) , δ) ＝⟨ ⟦⟧-behaviour-cons α' β (inr a) b l δ ⟩
-     ×ₒ-to-^ₒ α' β (denotation α' (β ↓ b) (expᴸ-tail α' β (inr a) b l δ) , inr a) ＝⟨ ap (λ - → ×ₒ-to-^ₒ α' β (- , inr a)) (IH b (expᴸ-tail α' β (inr a) b l δ)) ⟩
-     ×ₒ-to-^ₒ α' β (denotation' α (β ↓ b) (normalize α (β ↓ b) (expᴸ-tail α' β (inr a) b l δ)) , inr a) ＝⟨ ap (λ - → ×ₒ-to-^ₒ α' β (denotation' α (β ↓ b) - , inr a)) lem ⟩
-     ×ₒ-to-^ₒ α' β (denotation' α (β ↓ b) (expᴸ-tail α β a b (normalize-list α β l) (normalize-list-preserves-decreasing-pr₂ α β (inr a , b ∷ l) δ)) , inr a) ＝⟨ (⟦⟧'-behaviour-cons α β a b (normalize-list α β l) (normalize-list-preserves-decreasing-pr₂ α β (inr a , b ∷ l) δ)) ⁻¹ ⟩
-     denotation' α β (normalize α β ((inr a , b ∷ l) , δ)) ∎
+     denotation α' β (((inr a , b) ∷ l) , δ)                               ＝⟨ I   ⟩
+     ×ₒ-to-^ₒ α' β (denotation α' (β ↓ b) ℓ , inr a)                       ＝⟨ II  ⟩
+     ×ₒ-to-^ₒ α' β (denotation' α (β ↓ b) (normalize α (β ↓ b) ℓ) , inr a) ＝⟨ III ⟩
+     ×ₒ-to-^ₒ α' β (denotation' α (β ↓ b) ℓ' , inr a)                      ＝⟨ IV  ⟩
+     denotation' α β (normalize α β ((inr a , b ∷ l) , δ))                 ∎
       where
-       lem = normalize-expᴸ-tail α β
+       ε = normalize-list-preserves-decreasing-pr₂ α β (inr a , b ∷ l) δ
+       ℓ  = expᴸ-tail α' β (inr a) b l δ
+       ℓ' = expᴸ-tail α β a b (normalize-list α β l) ε
+
+       I   = ⟦⟧-behaviour-cons α' β (inr a) b l δ
+       II  = ap (λ - → ×ₒ-to-^ₒ α' β (- , inr a)) (IH b ℓ)
+       III = ap (λ - → ×ₒ-to-^ₒ α' β (denotation' α (β ↓ b) - , inr a))
+                (normalize-expᴸ-tail α β)
+       IV  = (⟦⟧'-behaviour-cons α β a b (normalize-list α β l) ε) ⁻¹
 
 \end{code}
