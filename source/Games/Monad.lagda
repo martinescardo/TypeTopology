@@ -1,8 +1,6 @@
-Martin Escardo, Paulo Oliva, 2023
+Martin Escardo, Paulo Oliva, 2023 with many additions Decemnber 2024
 
 (Strong, wild) monads on types.
-
-TODO. We should also use this in FiniteHistoryDependentMonadic.
 
 \begin{code}
 
@@ -28,10 +26,13 @@ record Monad : Type₁ where
   assoc   : {X Y Z : Type} (g : Y → functor Z) (f : X → functor Y)
           → ext (ext g ∘ f) ∼ ext g ∘ ext f
 
- map : {X Y : Type} → (X → Y) → functor X → functor Y
+ private
+  T = functor
+
+ map : {X Y : Type} → (X → Y) → T X → T Y
  map f = ext (η ∘ f)
 
- map-id : {X : Type} → map (𝑖𝑑 X) ∼ 𝑖𝑑 (functor X)
+ map-id : {X : Type} → map (𝑖𝑑 X) ∼ 𝑖𝑑 (T X)
  map-id = ext-η
 
  map-∘ : funext₀
@@ -52,16 +53,38 @@ record Monad : Type₁ where
        → {X Y Z T : Type} (f : X → Y) (g : Y → Z) (h : Z → T)
        → map (h ∘ g ∘ f) ∼ map h ∘ map g ∘ map f
  map-∘₃ fe f g h t =
-  map (h ∘ g ∘ f) t         ＝⟨ I ⟩
-  (map (h ∘ g) ∘ map f) t   ＝⟨ II ⟩
+  map (h ∘ g ∘ f) t         ＝⟨ by-functoriality ⟩
+  (map (h ∘ g) ∘ map f) t   ＝⟨ again-by-functoriality ⟩
   (map h ∘ map g) (map f t) ＝⟨ refl ⟩
   (map h ∘ map g ∘ map f) t ∎
    where
-    I  = map-∘ fe f (h ∘ g) t
-    II = ap (λ - → (- ∘ map f) t) (dfunext fe (map-∘ fe g h))
+    by-functoriality  = map-∘ fe f (h ∘ g) t
+    again-by-functoriality = ap (λ - → (- ∘ map f) t) (dfunext fe (map-∘ fe g h))
 
- μ : {X : Type} → functor (functor X) → functor X
+ μ : {X : Type} → T (T X) → T X
  μ = ext id
+
+ ext-is-μ-map : funext₀
+              → {X Y : Type} (f : X → T Y)
+              → ext f ∼ μ ∘ map f
+ ext-is-μ-map fe f tt =
+  ext f tt                  ＝⟨ by-unit ⁻¹ ⟩
+  ext (ext id ∘ η ∘ f) tt   ＝⟨ by-assoc ⟩
+  (ext id ∘ ext (η ∘ f)) tt ＝⟨ refl ⟩
+  (μ ∘ map f) tt            ∎
+   where
+    by-unit  = ap (λ - → ext (- ∘ f) tt) (dfunext fe (unit id))
+    by-assoc = assoc id (η ∘ f) tt
+
+ μ-assoc : funext₀
+         → {X : Type}
+         → μ {X} ∘ map (μ {X}) ∼ μ {X} ∘ μ {T X}
+ μ-assoc fe ttt =
+  (μ ∘ map μ) ttt       ＝⟨ (ext-is-μ-map fe μ ttt)⁻¹ ⟩
+  ext μ ttt             ＝⟨ refl ⟩
+  ext (ext id ∘ id) ttt ＝⟨ assoc id id ttt ⟩
+  ext id (ext id ttt)   ＝⟨ refl ⟩
+  (μ ∘ μ) ttt           ∎
 
  η-natural : {X Y : Type} (h : X → Y)
            → map h ∘ η {X} ∼ η {Y} ∘ h
@@ -86,28 +109,27 @@ record Monad : Type₁ where
                         (dfunext fe (λ t → unit id (ext (η ∘ h) t)))
     again-by-assoc = assoc id (λ x → η (ext (η ∘ h) x)) tt
 
- μη : {X : Type} (t : functor X) → μ (η t) ＝ t
- μη t = μ (η t)      ＝⟨ refl ⟩
-        ext id (η t) ＝⟨ unit id t ⟩
-        t            ∎
+ η-unit₀ : {X : Type} → μ {X} ∘ η {T X} ∼ id
+ η-unit₀ t = μ (η t)      ＝⟨ refl ⟩
+             ext id (η t) ＝⟨ unit id t ⟩
+             t            ∎
 
- μ-map-η : funext₀
-         → {X : Type} (t : functor X) → μ (map η t) ＝ t
- μ-map-η fe t =
+ η-unit₁ : funext₀
+         → {X : Type} → μ {X} ∘ map (η {X}) ∼ id
+ η-unit₁ fe t =
   μ (map η t)                    ＝⟨ refl ⟩
-  ext id (ext (η ∘ η) t)         ＝⟨ I ⟩
-  ext (λ x → ext id (η (η x))) t ＝⟨ II ⟩
-  ext η t                        ＝⟨ III ⟩
-  t ∎
+  ext id (ext (η ∘ η) t)         ＝⟨ by-assoc ⟩
+  ext (λ x → ext id (η (η x))) t ＝⟨ by-unit ⟩
+  ext η t                        ＝⟨ ext-η t ⟩
+  t                              ∎
    where
-    I   = (assoc id (λ x → η (η x)) t)⁻¹
-    II  = ap (λ - → ext - t) (dfunext fe (λ x → unit id (η x)))
-    III = ext-η t
+    by-assoc = (assoc id (λ x → η (η x)) t)⁻¹
+    by-unit  = ap (λ - → ext - t) (dfunext fe (λ x → unit id (η x)))
 
  _⊗_ : {X : Type} {Y : X → Type}
-     → functor X
-     → ((x : X) → functor (Y x))
-     → functor (Σ x ꞉ X , Y x)
+     → T X
+     → ((x : X) → T (Y x))
+     → T (Σ x ꞉ X , Y x)
  t ⊗ f = ext (λ x → map (λ y → x , y) (f x)) t
 
 open Monad public
@@ -185,6 +207,13 @@ module T-definitions (𝕋 : Monad) where
             → {X Y : Type} (h : X → Y)
             → mapᵀ h ∘ μᵀ {X}  ∼ μᵀ {Y} ∘ mapᵀ (mapᵀ h)
  μᵀ-natural = μ-natural 𝕋
+
+ ηᵀ-unit₀ : {X : Type} → μᵀ {X} ∘ ηᵀ {T X} ∼ id
+ ηᵀ-unit₀ = η-unit₀ 𝕋
+
+ ηᵀ-unit₁ : funext₀
+         → {X : Type} → μᵀ {X} ∘ mapᵀ (ηᵀ {X}) ∼ id
+ ηᵀ-unit₁ = η-unit₁ 𝕋
 
  _⊗ᵀ_ : {X : Type} {Y : X → Type}
       → T X
@@ -304,53 +333,208 @@ Monad algebras.
 record Algebra (𝕋 : Monad) (A : Type) : Type₁ where
  field
   structure-map : functor 𝕋 A → A
-  unit          : structure-map ∘ η 𝕋 ∼ id
-  assoc         : structure-map ∘ ext 𝕋 (η 𝕋 ∘ structure-map)
+  aunit         : structure-map ∘ η 𝕋 ∼ id
+  aassoc        : structure-map ∘ ext 𝕋 (η 𝕋 ∘ structure-map)
                 ∼ structure-map ∘ ext 𝕋 id
+
+ open T-definitions 𝕋
+
+ private
+  α = structure-map
+
+ extension : {X : Type} → (X → A) → T X → A
+ extension f = α ∘ mapᵀ f
+
+ _extends_ : {X : Type} → (T X → A) → (X → A) → Type
+ g extends f = g ∘ ηᵀ ∼ f
+
+ extension-property : {X : Type} (f : X → A)
+                    → (extension f) extends f
+ extension-property f x =
+  (extension f ∘ ηᵀ) x ＝⟨ refl ⟩
+  α (mapᵀ f (ηᵀ x))    ＝⟨ ap α (ηᵀ-natural f x) ⟩
+  α (ηᵀ (f x))         ＝⟨ aunit (f x) ⟩
+  f x                  ∎
+
+ is-hom-from-free : {X : Type} → (T X → A) → Type
+ is-hom-from-free h = h ∘ μᵀ ∼ α ∘ mapᵀ h
+
+ extension-is-hom : funext₀
+                  → {X : Type} (f : X → A)
+                  → is-hom-from-free (extension f)
+ extension-is-hom fe f tt =
+  (extension f ∘ μᵀ) tt           ＝⟨ refl ⟩
+  (α ∘ mapᵀ f ∘ μᵀ) tt            ＝⟨ ap α (μᵀ-natural fe f tt) ⟩
+  (α ∘ μᵀ ∘ mapᵀ (mapᵀ f)) tt     ＝⟨ (aassoc (mapᵀ (mapᵀ f) tt))⁻¹ ⟩
+  (α ∘ mapᵀ α ∘ mapᵀ (mapᵀ f)) tt ＝⟨ ap α ((mapᵀ-∘ fe (mapᵀ f) α tt)⁻¹) ⟩
+  (α ∘ mapᵀ (α ∘ mapᵀ f)) tt      ＝⟨ refl ⟩
+  (α ∘ mapᵀ (extension f)) tt     ∎
+
+ at-most-one-extension : funext₀
+                      → {X : Type} (g h : T X → A)
+                      → g ∘ ηᵀ ∼ h ∘ ηᵀ
+                      → is-hom-from-free g
+                      → is-hom-from-free h
+                      → g ∼ h
+ at-most-one-extension fe g h g-h-agreement g-is-hom h-is-hom tt =
+  g tt                      ＝⟨ refl ⟩
+  (g ∘ id) tt               ＝⟨ by-unit₁ ⁻¹ ⟩
+  (g ∘ μᵀ ∘ mapᵀ ηᵀ) tt     ＝⟨ by-g-is-hom ⟩
+  (α ∘ mapᵀ g ∘ mapᵀ ηᵀ) tt ＝⟨ by-functoriality ⁻¹ ⟩
+  (α ∘ mapᵀ (g ∘ ηᵀ)) tt    ＝⟨ by-agreement ⟩
+  (α ∘ mapᵀ (h ∘ ηᵀ)) tt    ＝⟨ by-functoriality-again ⟩
+  (α ∘ mapᵀ h ∘ mapᵀ ηᵀ) tt ＝⟨ by-h-is-hom ⁻¹ ⟩
+  (h ∘ μᵀ ∘ mapᵀ ηᵀ) tt     ＝⟨ by-unit₁-again ⟩
+  h tt                      ∎
+   where
+    by-unit₁ = ap g (ηᵀ-unit₁ fe tt)
+    by-g-is-hom = g-is-hom (mapᵀ ηᵀ tt)
+    by-functoriality = ap α (mapᵀ-∘ fe ηᵀ g tt)
+    by-agreement = ap (λ - → (α ∘ mapᵀ -) tt) (dfunext fe g-h-agreement)
+    by-functoriality-again = ap α (mapᵀ-∘ fe ηᵀ h tt)
+    by-h-is-hom = h-is-hom (mapᵀ ηᵀ tt)
+    by-unit₁-again = ap h (ηᵀ-unit₁ fe tt)
+
+ extension-uniqueness : funext₀
+                      → {X : Type} (f : X → A) (h : T X → A)
+                      → h extends f
+                      → is-hom-from-free h
+                      → extension f ∼ h
+ extension-uniqueness fe f h h-extends-f h-is-hom =
+  at-most-one-extension fe (extension f) h e (extension-is-hom fe f) h-is-hom
+  where
+   e : extension f ∘ ηᵀ ∼ h ∘ ηᵀ
+   e tt = (extension f ∘ ηᵀ) tt ＝⟨ extension-property f tt ⟩
+          f tt                  ＝⟨ (h-extends-f tt)⁻¹ ⟩
+          (h ∘ ηᵀ) tt           ∎
 
 open Algebra public
 
+module _ (𝕋 : Monad) where
+
+ open T-definitions 𝕋
+
+ free : funext₀ → (X : Type) → Algebra 𝕋 (T X)
+ free fe X =
+  record {
+   structure-map = μᵀ ;
+   aunit         = ηᵀ-unit₀ ;
+   aassoc        = μ-assoc 𝕋 fe
+  }
+
+ is-hom : {A B : Type}
+          (𝓐 : Algebra 𝕋 A)
+          (𝓑 : Algebra 𝕋 B)
+        → (A → B)
+        → Type
+ is-hom 𝓐 𝓑 h = h ∘ α ∼ β ∘ mapᵀ h
+  where
+   α = structure-map 𝓐
+   β = structure-map 𝓑
+
+ monad-extension-is-hom : (fe : funext₀)
+                          {X Y : Type}
+                          (f : X → T Y)
+                        → is-hom (free fe X) (free fe Y) (extᵀ f)
+ monad-extension-is-hom fe {X} {Y} f tt =
+  (extᵀ f ∘ μᵀ) tt             ＝⟨ by-ext-is-μ-map ⟩
+  (μᵀ ∘ mapᵀ f ∘ μᵀ) tt        ＝⟨ extension-is-hom (free fe Y) fe f tt ⟩
+  (μᵀ ∘ mapᵀ (μᵀ ∘ mapᵀ f)) tt ＝⟨ again-by-ext-is-μ-map ⁻¹ ⟩
+  (μᵀ ∘ mapᵀ (extᵀ f)) tt      ∎
+   where
+    by-ext-is-μ-map = ext-is-μ-map 𝕋 fe f (μᵀ tt)
+    again-by-ext-is-μ-map = ap (λ - → (μᵀ ∘ mapᵀ -) tt)
+                               (dfunext fe (ext-is-μ-map 𝕋 fe f))
+
+ hom-∘ : funext₀
+       → {A B C : Type}
+         (𝓐 : Algebra 𝕋 A)
+         (𝓑 : Algebra 𝕋 B)
+         (𝓒 : Algebra 𝕋 C)
+       → (f : A → B)
+       → (g : B → C)
+       → is-hom 𝓐 𝓑 f
+       → is-hom 𝓑 𝓒 g
+       → is-hom 𝓐 𝓒 (g ∘ f)
+ hom-∘ fe 𝓐 𝓑 𝓒 f g f-is-hom g-is-hom t =
+  g (f (α t))           ＝⟨ ap g (f-is-hom t) ⟩
+  g (β (mapᵀ f t))      ＝⟨ g-is-hom (mapᵀ f t) ⟩
+  γ (mapᵀ g (mapᵀ f t)) ＝⟨ ap γ ((mapᵀ-∘ fe f g t)⁻¹) ⟩
+  γ (mapᵀ (g ∘ f) t)    ∎
+   where
+    α = structure-map 𝓐
+    β = structure-map 𝓑
+    γ = structure-map 𝓒
+
+ extension-assoc : {A : Type}
+                   (𝓐 : Algebra 𝕋 A)
+                 → funext₀
+                 → {X Y : Type}
+                   (g : Y → A) (f : X → T Y)
+                 → extension 𝓐 (extension 𝓐 g ∘ f) ∼ extension 𝓐 g ∘ extᵀ f
+ extension-assoc {A} 𝓐 fe {X} {Y} g f =
+  extension-uniqueness 𝓐 fe ϕ h h-extends-ϕ h-is-hom
+  where
+   ϕ : X → A
+   ϕ = extension 𝓐 g ∘ f
+
+   h : T X → A
+   h = extension 𝓐 g ∘ extᵀ f
+
+   h-extends-ϕ : h ∘ ηᵀ ∼ ϕ
+   h-extends-ϕ x =
+    (h ∘ ηᵀ) x                      ＝⟨ refl ⟩
+    (extension 𝓐 g ∘ extᵀ f ∘ ηᵀ) x ＝⟨ ap (extension 𝓐 g) (unitᵀ f x) ⟩
+    (extension 𝓐 g ∘ f) x           ＝⟨ refl ⟩
+    ϕ x                             ∎
+
+   h-is-hom : is-hom (free fe X) 𝓐 h
+   h-is-hom = hom-∘ fe
+               (free fe X) (free fe Y) 𝓐
+               (extᵀ f) (extension 𝓐 g)
+               (monad-extension-is-hom fe f) (extension-is-hom 𝓐 fe g)
 \end{code}
 
-If we want to call an algebra (literally) α, we can used this module:
+If we want to call an algebra (literally) α, we can use this module:
 
 \begin{code}
 
 module α-definitions
         (𝕋 : Monad)
-        (R : Type)
-        (𝓐 : Algebra 𝕋 R)
+        (A : Type)
+        (𝓐 : Algebra 𝕋 A)
        where
 
  open T-definitions 𝕋
 
- α : T R → R
+ α : T A → A
  α = structure-map 𝓐
 
  α-unitᵀ : α ∘ ηᵀ ∼ id
- α-unitᵀ = unit 𝓐
+ α-unitᵀ = aunit 𝓐
 
  α-assocᵀ : α ∘ extᵀ (ηᵀ ∘ α) ∼ α ∘ extᵀ id
- α-assocᵀ = assoc 𝓐
+ α-assocᵀ = aassoc 𝓐
 
  α-assocᵀ' : α ∘ mapᵀ α ∼ α ∘ μᵀ
  α-assocᵀ' = α-assocᵀ
 
- α-extᵀ : {X : Type} → (X → R) → T X → R
- α-extᵀ f = α ∘ mapᵀ f
+ α-extᵀ : {X : Type} → (X → A) → T X → A
+ α-extᵀ = extension 𝓐
 
  α-extᵀ-unit : {X : Type}
-               (f : X → R)
+               (f : X → A)
              → α-extᵀ f ∘ ηᵀ ∼ f
- α-extᵀ-unit f x =
-  α-extᵀ f (ηᵀ x)          ＝⟨ refl ⟩
-  α (extᵀ (ηᵀ ∘ f) (ηᵀ x)) ＝⟨ ap α (unitᵀ (ηᵀ ∘ f) x) ⟩
-  α (ηᵀ (f x))             ＝⟨ α-unitᵀ (f x) ⟩
-  f x                      ∎
+ α-extᵀ-unit = extension-property 𝓐
+
+ α-extᵀ-assoc : funext₀
+              → {X Y : Type} (g : Y → A) (f : X → T Y)
+              → α-extᵀ (α-extᵀ g ∘ f) ∼ α-extᵀ g ∘ extᵀ f
+ α-extᵀ-assoc = extension-assoc 𝕋 𝓐
 
  α-curryᵀ : {X : Type} {Y : X → Type}
-          → ((Σ x ꞉ X , Y x) → R)
-          → (x : X) → T (Y x) → R
+          → ((Σ x ꞉ X , Y x) → A)
+          → (x : X) → T (Y x) → A
  α-curryᵀ q x = α-extᵀ (curry q x)
 
 \end{code}
