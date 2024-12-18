@@ -56,96 +56,6 @@ open suprema pt sr
 
 \end{code}
 
-##### Things that should be moved somewhere else ######
-
-\begin{code}
-
-surjective-simulation-gives-equality : (α β : Ordinal 𝓤)
-                                     → (f : ⟨ α ⟩ → ⟨ β ⟩)
-                                     → is-simulation α β f
-                                     → is-surjection f
-                                     → α ＝ β
-surjective-simulation-gives-equality α β f sim surj = ⊴-antisym α β (f , sim) (h₀ , h₀-sim)
-  where
-    prp : (b : ⟨ β ⟩) → is-prop (Σ a ꞉ ⟨ α ⟩ , (f a ＝ b))
-    prp b (a , p) (a' , p') = to-subtype-＝ (λ a → underlying-type-is-set fe β)
-                                           (simulations-are-lc α β f sim (p ∙ p' ⁻¹))
-
-    h : (b : ⟨ β ⟩) → Σ a ꞉ ⟨ α ⟩ , (f a ＝ b)
-    h b = ∥∥-rec (prp b) id (surj b)
-
-    h₀ : ⟨ β ⟩ → ⟨ α ⟩
-    h₀ b = pr₁ (h b)
-
-    h₀-retract-of-f : (b : ⟨ β ⟩) → f (h₀ b) ＝ b
-    h₀-retract-of-f b = pr₂ (h b)
-
-    h₀-is-initial-segment : is-initial-segment β α h₀
-    h₀-is-initial-segment b a p = f a , p'' , q
-      where
-       p' : f a ≺⟨ β ⟩ (f (h₀ b))
-       p' = simulations-are-order-preserving α β f sim a (h₀ b) p
-
-       p'' : f a ≺⟨ β ⟩ b
-       p'' = transport (λ - → f a ≺⟨ β ⟩ -) (h₀-retract-of-f b) p'
-
-       q : h₀ (f a) ＝ a
-       q = simulations-are-lc α β f sim (h₀-retract-of-f (f a))
-
-    h₀-is-order-preserving : is-order-preserving β α h₀
-    h₀-is-order-preserving b b' p = p''
-      where
-        p' : f (h₀ b) ≺⟨ β ⟩ f (h₀ b')
-        p' = transport₂⁻¹ (underlying-order β) (h₀-retract-of-f b) (h₀-retract-of-f b') p
-
-        p'' : h₀ b  ≺⟨ α ⟩ (h₀ b')
-        p'' = simulations-are-order-reflecting α β f sim (h₀ b) (h₀ b') p'
-
-    h₀-sim : is-simulation β α h₀
-    h₀-sim = h₀-is-initial-segment , h₀-is-order-preserving
-
-
-order-reflecting-and-partial-inverse-is-initial-segment : (α β : Ordinal 𝓤)
-                                                       (f : ⟨ α ⟩ → ⟨ β ⟩)
-                                                     → is-order-reflecting α β f
-                                                     → ((a : ⟨ α ⟩)(b : ⟨ β ⟩) → b ≺⟨ β ⟩ f a → Σ a' ꞉ ⟨ α ⟩ , f a' ＝ b)
-                                                     → is-initial-segment α β f
-order-reflecting-and-partial-inverse-is-initial-segment α β f p i a b m = a' , p' , q'
-  where
-    q : Σ a' ꞉ ⟨ α ⟩ , f a' ＝ b
-    q = i a b m
-    a' : ⟨ α ⟩
-    a' = pr₁ q
-    q' : f a' ＝ b
-    q' = pr₂ q
-
-    m' : f a' ≺⟨ β ⟩ f a
-    m' = transport⁻¹ (λ - → - ≺⟨ β ⟩ f a) q' m
-    p' : a' ≺⟨ α ⟩ a
-    p' = p a' a m'
-
-\end{code}
-
-\begin{code}
-
-sup-preserves-prop : {I : 𝓤 ̇ } → (γ : I → 𝓤 ̇ ) → (γ-is-prop : (i : I) → is-prop (γ i))
-                   → sup (λ i → prop-ordinal (γ i) (γ-is-prop i)) ＝ prop-ordinal (∃ i ꞉ I , γ i) ∥∥-is-prop
-sup-preserves-prop {𝓤} {I = I} γ γ-is-prop = surjective-simulation-gives-equality (sup β) α
-                                               (pr₁ (sup-is-lower-bound-of-upper-bounds β α f))
-                                               (pr₂ (sup-is-lower-bound-of-upper-bounds β α f))
-                                               (surjectivity-lemma β α f f-surjective)
- where
-   α : Ordinal 𝓤
-   α = prop-ordinal (∃ i ꞉ I , γ i) ∥∥-is-prop
-   β : I → Ordinal 𝓤
-   β i = prop-ordinal (γ i) (γ-is-prop i)
-   f : (i : I) → β i ⊴ α
-   f i = (λ b → ∣ i , b ∣) , (λ x y e → 𝟘-elim e) , (λ x y e → 𝟘-elim e)
-   f-surjective : (y : ⟨ α ⟩) → ∃ i ꞉ I , Σ b ꞉ ⟨ β i ⟩ , pr₁ (f i) b ＝ y
-   f-surjective = ∥∥-induction (λ x → ∥∥-is-prop) λ (i , b) → ∣ i , b , refl ∣
-
-\end{code}
-
 We now prove that expᴸ α β satisfies the specification for
 exponentiation (𝟙 + α) ^ β.
 
@@ -583,7 +493,7 @@ module _ {I : 𝓤 ̇  }
        , to-expᴸ-＝ α (sup β) (ap ((a , ι β b) ∷_) (ap pr₁ (pr₂ IH)))
 
    f-is-initial-segment : (i : I) → is-initial-segment (γ i) (expᴸ[𝟙+ α ] (sup β)) (f i)
-   f-is-initial-segment i = order-reflecting-and-partial-inverse-is-initial-segment (γ i) (expᴸ[𝟙+ α ] (sup β)) (f i) (f-is-order-reflecting i) g
+   f-is-initial-segment i = order-reflecting-partial-surjections-are-initial-segments (γ i) (expᴸ[𝟙+ α ] (sup β)) (f i) (f-is-order-reflecting i) g
      where
        g : (xs : ⟨ γ i ⟩) → (ys : ⟨ expᴸ[𝟙+ α ] (sup β) ⟩) → ys ≺⟨ expᴸ[𝟙+ α ] (sup β) ⟩ f i xs → Σ xs' ꞉ ⟨ γ i ⟩ , f i xs' ＝ ys
        g (xs , δ) (ys , ε) = f-is-partially-invertible i xs δ ys ε
@@ -598,7 +508,7 @@ module _ {I : 𝓤 ̇  }
   exp-sup-simulation-surjective = surjectivity-lemma γ (expᴸ[𝟙+ α ] (sup β)) exp-sup-is-upper-bound f-surj
 
   sup-spec : sup (λ i → (expᴸ[𝟙+ α ] (β i))) ＝ (expᴸ[𝟙+ α ] (sup β))
-  sup-spec = surjective-simulation-gives-equality
+  sup-spec = surjective-simulation-gives-＝ pt fe' (ua _)
                (sup (λ i → (expᴸ[𝟙+ α ] (β i))))
                (expᴸ[𝟙+ α ] (sup β))
                (pr₁ exp-sup-simulation)

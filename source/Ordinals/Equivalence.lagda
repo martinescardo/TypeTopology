@@ -19,6 +19,7 @@ open import UF.EquivalenceExamples
 open import UF.FunExt
 open import UF.PreSIP-Examples
 open import UF.PreUnivalence
+open import UF.PropTrunc
 open import UF.Sets
 open import UF.Size
 open import UF.Subsingletons
@@ -495,6 +496,47 @@ Idtofunₒ-eqtoidₒ {𝓤} ua fe {α} {β} e = order-equiv-induction ua fe α P
       ≃ₒ-to-fun α α (≃ₒ-refl α)                ∎
    where
     I = ap Idtofunₒ (eqtoidₒ-idtoeqₒ ua fe α α refl)
+
+\end{code}
+
+Originally formalized by Fredrik Nordvall Forsberg. Moved here and refactored
+with a shorter proof by Tom de Jong on 18 December 2024.
+
+Surjective simulations are equivalences of ordinals.
+
+\begin{code}
+
+module _
+        (pt : propositional-truncations-exist)
+       where
+
+ open import UF.ImageAndSurjection pt
+
+ surjective-simulations-are-order-equivs : FunExt
+                                         → (α : Ordinal 𝓤) (β : Ordinal 𝓥)
+                                         → (f : ⟨ α ⟩ → ⟨ β ⟩)
+                                         → is-simulation α β f
+                                         → is-surjection f
+                                         → is-order-equiv α β f
+ surjective-simulations-are-order-equivs fe α β f f-sim f-surj =
+  order-preserving-reflecting-equivs-are-order-equivs α β f
+   (surjective-embeddings-are-equivs f
+     (simulations-are-embeddings fe α β f f-sim)
+     f-surj)
+   (simulations-are-order-preserving α β f f-sim)
+   (simulations-are-order-reflecting α β f f-sim)
+
+ surjective-simulation-gives-＝ : Fun-Ext
+                                → is-univalent 𝓤
+                                → (α β : Ordinal 𝓤)
+                                → (f : ⟨ α ⟩ → ⟨ β ⟩)
+                                → is-simulation α β f
+                                → is-surjection f
+                                → α ＝ β
+ surjective-simulation-gives-＝ fe ua α β f f-sim f-surj =
+  eqtoidₒ ua fe α β
+   (f ,
+    surjective-simulations-are-order-equivs (λ _ _ → fe) α β f f-sim f-surj)
 
 \end{code}
 

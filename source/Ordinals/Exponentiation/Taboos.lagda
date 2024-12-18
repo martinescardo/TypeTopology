@@ -32,13 +32,11 @@ private
  pe = Univalence-gives-Prop-Ext ua
 
 open import MLTT.Spartan
-
 open import MLTT.Plus-Properties
+
 open import Ordinals.AdditionProperties ua
 open import Ordinals.Arithmetic fe
 open import Ordinals.Equivalence
-open import Ordinals.Exponentiation.Specification ua pt sr
-open import Ordinals.Exponentiation.Supremum ua pt sr
 open import Ordinals.Maps
 open import Ordinals.Notions
 open import Ordinals.MultiplicationProperties ua
@@ -47,12 +45,19 @@ open import Ordinals.OrdinalOfOrdinalsSuprema ua
 open import Ordinals.Propositions ua
 open import Ordinals.Type
 open import Ordinals.Underlying
+
+open import Ordinals.Exponentiation.DecreasingList ua
+open import Ordinals.Exponentiation.PropertiesViaEquivalence ua pt sr
+open import Ordinals.Exponentiation.Specification ua pt sr
+open import Ordinals.Exponentiation.Supremum ua pt sr
+open import Ordinals.Exponentiation.TrichotomousLeastElement ua
+
 open import UF.Base
 open import UF.ClassicalLogic
 open import UF.Equiv
-open import UF.Subsingletons
 open import UF.SubtypeClassifier
 
+open PropositionalTruncation pt
 open suprema pt sr
 
 \end{code}
@@ -316,279 +321,152 @@ module _ (exp : Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) where
 
 \end{code}
 
-The following is not used at the moment, but may come in useful in the future
-when aiming to derive a constructive taboo.
+And conversely, as is well known, excluded middle gives an exponentiation
+function that is defined everywhere.
+
+Below, we use excluded middle to decide if an ordinal α is zero or not, and if
+not, to construct α' such that α = 𝟙ₒ +ₒ α'. From there, we can use our concrete
+construction from Ordinals.Exponentiation.DecreasingList, but other choices are
+also possible, including, for example, using the abstract construction from
+Ordinals.Exponentiation.Supremum.
 
 \begin{code}
 
-^ₒ-𝟚ₒ-by-prop : (P : 𝓤 ̇  ) (i : is-prop P)
-              → 𝟚ₒ {𝓤} ^ₒ (prop-ordinal P i) ＝ 𝟙ₒ +ₒ prop-ordinal P i
-^ₒ-𝟚ₒ-by-prop {𝓤} P i = I ∙ ⊴-antisym (sup F) (𝟙ₒ +ₒ Pₒ) III V
- where
-  F : 𝟙 {𝓤} + P → Ordinal 𝓤
-  F (inl _) = 𝟙ₒ
-  F (inr _) = 𝟚ₒ
-
-  Pₒ = prop-ordinal P i
-
-  I : 𝟚ₒ ^ₒ Pₒ ＝ sup F
-  I = transport⁻¹ (_＝ sup F) (^ₒ-behaviour 𝟚ₒ Pₒ) (ap sup (dfunext fe' e))
-   where
-    e : ^ₒ-family 𝟚ₒ Pₒ ∼ F
-    e (inl ⋆) = refl
-    e (inr p) = 𝟚ₒ ^ₒ (Pₒ ↓ p) ×ₒ 𝟚ₒ ＝⟨ e₁ ⟩
-                𝟚ₒ ^ₒ 𝟘ₒ ×ₒ 𝟚ₒ       ＝⟨ e₂ ⟩
-                𝟙ₒ ×ₒ 𝟚ₒ             ＝⟨ 𝟙ₒ-left-neutral-×ₒ 𝟚ₒ ⟩
-                𝟚ₒ                   ∎
-     where
-      e₁ = ap (λ - → 𝟚ₒ ^ₒ - ×ₒ 𝟚ₒ) (prop-ordinal-↓ i p)
-      e₂ = ap (_×ₒ 𝟚ₒ) (^ₒ-satisfies-zero-specification 𝟚ₒ)
-
-  II : (p : P) → 𝟙ₒ +ₒ Pₒ ＝ 𝟚ₒ
-  II p = ap (𝟙ₒ +ₒ_) (holds-gives-equal-𝟙ₒ i p)
-
-  III : sup F ⊴ 𝟙ₒ +ₒ Pₒ
-  III = sup-is-lower-bound-of-upper-bounds F (𝟙ₒ +ₒ Pₒ) III'
-   where
-    III' : (x : 𝟙 + P) → F x ⊴ 𝟙ₒ +ₒ Pₒ
-    III' (inl _) = +ₒ-left-⊴ 𝟙ₒ Pₒ
-    III' (inr p) = ＝-to-⊴ 𝟚ₒ (𝟙ₒ +ₒ Pₒ) (II p ⁻¹)
-
-  IV : (x : 𝟙 + P ) → 𝟙ₒ +ₒ Pₒ ↓ x ⊲ sup F
-  IV (inl ⋆) =
-   ([ 𝟙ₒ , sup F ]⟨ f₁ ⟩ ⋆) ,
-    (𝟙ₒ +ₒ Pₒ ↓ inl ⋆               ＝⟨ (+ₒ-↓-left ⋆) ⁻¹ ⟩
-     𝟙ₒ ↓ ⋆                         ＝⟨ simulations-preserve-↓ 𝟙ₒ _ f₁ ⋆ ⟩
-     sup F ↓ [ 𝟙ₒ , sup F ]⟨ f₁ ⟩ ⋆ ∎)
-   where
-    f₁ : 𝟙ₒ ⊴ sup F
-    f₁ = sup-is-upper-bound F (inl ⋆)
-  IV (inr p) =
-   ([ 𝟚ₒ , sup F ]⟨ f₂ ⟩ (inr ⋆)) ,
-    (𝟙ₒ +ₒ Pₒ ↓ inr p                     ＝⟨ (+ₒ-↓-right p) ⁻¹ ⟩
-     𝟙ₒ +ₒ (Pₒ ↓ p)                       ＝⟨ ap (𝟙ₒ +ₒ_) (prop-ordinal-↓ i p) ⟩
-     𝟙ₒ +ₒ 𝟘ₒ                             ＝⟨ ap (𝟙ₒ +ₒ_) (𝟙ₒ-↓ ⁻¹) ⟩
-     𝟙ₒ +ₒ (𝟙ₒ ↓ ⋆)                       ＝⟨ +ₒ-↓-right ⋆ ⟩
-     𝟚ₒ ↓ inr ⋆                           ＝⟨ simulations-preserve-↓ 𝟚ₒ (sup F)
-                                               f₂ (inr ⋆) ⟩
-     sup F ↓ [ 𝟚ₒ , sup F ]⟨ f₂ ⟩ (inr ⋆) ∎)
-   where
-    f₂ : 𝟚ₒ ⊴ sup F
-    f₂ = sup-is-upper-bound F (inr p)
-
-  V : 𝟙ₒ +ₒ Pₒ ⊴ sup F
-  V = to-⊴ (𝟙ₒ +ₒ Pₒ) (sup F) IV
-
-\end{code}
-
-TODO: REFACTOR
-And conversely... (EM gives full exponentiation)
-
-\begin{code}
-
-{-
 𝟘^_ : Ordinal 𝓤 → Ordinal 𝓤
 𝟘^_ {𝓤} β = prop-ordinal (β ≃ₒ 𝟘ₒ{𝓤}) (≃ₒ-is-prop-valued fe' β 𝟘ₒ)
 
 𝟘^-zero-spec : 𝟘^ 𝟘ₒ {𝓤} ＝ 𝟙ₒ
 𝟘^-zero-spec {𝓤} = prop-ordinal-＝
-                           (≃ₒ-is-prop-valued fe' 𝟘ₒ 𝟘ₒ) 𝟙-is-prop
-                           (λ _ → ⋆) (λ _ → (≃ₒ-refl 𝟘ₒ))
+                    (≃ₒ-is-prop-valued fe' 𝟘ₒ 𝟘ₒ) 𝟙-is-prop
+                    (λ _ → ⋆) (λ _ → (≃ₒ-refl 𝟘ₒ))
 
 𝟘^-succ-spec : (β : Ordinal 𝓤) → 𝟘^ (β +ₒ 𝟙ₒ) ＝ (𝟘^ β) ×ₒ 𝟘ₒ {𝓤}
 𝟘^-succ-spec {𝓤} β = eq ∙ ×ₒ-𝟘ₒ-right (𝟘^ β) ⁻¹
-    where
-       f : (β +ₒ 𝟙ₒ) ≃ₒ 𝟘ₒ → 𝟘
-       f e = ≃ₒ-to-fun (β +ₒ 𝟙ₒ) 𝟘ₒ e (inr ⋆)
+ where
+  f : (β +ₒ 𝟙ₒ) ≃ₒ 𝟘ₒ → 𝟘
+  f e = ≃ₒ-to-fun (β +ₒ 𝟙ₒ) 𝟘ₒ e (inr ⋆)
 
-       eq :  𝟘^ (β +ₒ 𝟙ₒ) ＝ 𝟘ₒ
-       eq = prop-ordinal-＝
-                    (≃ₒ-is-prop-valued fe' (β +ₒ 𝟙ₒ) 𝟘ₒ) 𝟘-is-prop
-                    f 𝟘-elim
+  eq :  𝟘^ (β +ₒ 𝟙ₒ) ＝ 𝟘ₒ
+  eq = prop-ordinal-＝
+        (≃ₒ-is-prop-valued fe' (β +ₒ 𝟙ₒ) 𝟘ₒ) 𝟘-is-prop
+        f 𝟘-elim
 
 𝟘^-sup-spec : (β : Ordinal 𝓤) → ¬ (β ＝ 𝟘ₒ) → (𝟘^ β) ＝ 𝟘ₒ
-𝟘^-sup-spec β β-not-zero =
-   prop-ordinal-＝
-           (≃ₒ-is-prop-valued fe' β 𝟘ₒ) 𝟘-is-prop
-           (λ e → 𝟘-elim (β-not-zero (eqtoidₒ (ua _) fe' _ _ e))) 𝟘-elim
+𝟘^-sup-spec β β-ne = prop-ordinal-＝
+                      (≃ₒ-is-prop-valued fe' β 𝟘ₒ) 𝟘-is-prop
+                      (λ e → 𝟘-elim (β-ne (eqtoidₒ (ua _) fe' _ _ e)))
+                      𝟘-elim
 
 private
-  case : (α : Ordinal 𝓤) → 𝓤 ⁺ ̇
-  case {𝓤} α = (Σ α' ꞉ Ordinal 𝓤 , α ＝ 𝟙ₒ +ₒ α')
+ has-trichotomous-least-element-or-is-zero : Ordinal 𝓤 → 𝓤 ⁺ ̇
+ has-trichotomous-least-element-or-is-zero α =
+  has-trichotomous-least-element α + (α ＝ 𝟘ₒ)
 
-  has-least-or-is-zero : (α : Ordinal 𝓤) → 𝓤 ⁺ ̇
-  has-least-or-is-zero α = case α + (α ＝ 𝟘ₒ)
+ Has-trichotomous-least-element-or-is-zero : 𝓤 ⁺ ̇
+ Has-trichotomous-least-element-or-is-zero {𝓤} =
+  (α : Ordinal 𝓤) → has-trichotomous-least-element-or-is-zero α
 
-  Has-least-or-is-zero : 𝓤 ⁺ ̇
-  Has-least-or-is-zero {𝓤} = (α : Ordinal 𝓤) → has-least-or-is-zero α
-
-  open ClassicalWellOrder fe' pe pt
-
-  EM-gives-Has-least-or-is-zero : EM 𝓤 → Has-least-or-is-zero {𝓤}
-  EM-gives-Has-least-or-is-zero em α = +functor α-inhabited-gives-least underlying-zero-unique α-inhabited-or-zero
+ EM-gives-Has-trichotomous-least-element-or-is-zero
+  : EM 𝓤
+  → Has-trichotomous-least-element-or-is-zero {𝓤}
+ EM-gives-Has-trichotomous-least-element-or-is-zero em α =
+  II (em ∥ ⟨ α ⟩ ∥ ∥∥-is-prop)
    where
-    α-inhabited-or-not : ∥ ⟨ α ⟩ ∥ + ¬ ∥ ⟨ α ⟩ ∥
-    α-inhabited-or-not = em ∥ ⟨ α ⟩ ∥ ∥∥-is-prop
+    open import Ordinals.WellOrderingTaboo fe' pe
+    open ClassicalWellOrder pt
 
-    α-inhabited-or-zero : ∥ ⟨ α ⟩ ∥ + (⟨ α ⟩ ＝ 𝟘)
-    α-inhabited-or-zero = +functor id (λ ni → empty-types-are-＝-𝟘 fe' pe (uninhabited-is-empty ni) ) α-inhabited-or-not
+    has-minimal = Σ x₀ ꞉ ⟨ α ⟩ , ((x : ⟨ α ⟩) → ¬ (x ≺⟨ α ⟩ x₀))
 
-    underlying-zero-unique : (⟨ α ⟩ ＝ 𝟘) → α ＝ 𝟘ₒ
-    underlying-zero-unique refl = ⊴-antisym α 𝟘ₒ sim sim'
+    I : ∥ ⟨ α ⟩ ∥ → has-minimal
+    I i = pr₁ I' , (λ x → pr₂ (pr₂ I') x ⋆)
      where
-      sim : (𝟘 , _) ⊴ 𝟘ₒ
-      sim = (𝟘-elim , (λ x → 𝟘-elim x) , λ x → 𝟘-elim x)
-      sim' : 𝟘ₒ ⊴ (𝟘 , _)
-      sim' = (𝟘-elim , (λ x → 𝟘-elim x) , λ x → 𝟘-elim x)
+      I' : Σ x₀ ꞉ ⟨ α ⟩ , 𝟙 × ((x : ⟨ α ⟩) → 𝟙 → ¬ (x ≺⟨ α ⟩ x₀))
+      I' = well-order-gives-minimal (underlying-order α) em (is-well-ordered α)
+            (λ _ → 𝟙) (λ _ → 𝟙-is-prop) (∥∥-functor (λ x → x , ⋆) i)
 
-    α-inhabited-gives-least : ∥ ⟨ α ⟩ ∥ → case α
-    α-inhabited-gives-least inh = α' , eq
+    II : is-decidable ∥ ⟨ α ⟩ ∥ → has-trichotomous-least-element-or-is-zero α
+    II (inl  i) = inl (x₀ ,
+                       τ (classical-well-orders-are-uniquely-trichotomous
+                           (underlying-order α)
+                           (inductive-well-order-is-classical
+                             (underlying-order α) em (is-well-ordered α))))
      where
-       least-element' : Σ a ꞉ ⟨ α ⟩ , 𝟙 × ((y : ⟨ α ⟩) → 𝟙 → ¬ (y ≺⟨ α ⟩ a))
-       least-element' = well-order-gives-minimal (underlying-order α) em (is-well-ordered α) (λ _ → 𝟙) (λ _ → 𝟙-is-prop) (∥∥-functor (λ a → (a , ⋆)) inh)
+      x₀ = pr₁ (I i)
+      x₀-is-minimal = pr₂ (I i)
 
-       a₀ : ⟨ α ⟩
-       a₀ = pr₁ least-element'
+      τ : ((x y : ⟨ α ⟩) → is-singleton ((x ≺⟨ α ⟩ y) + (x ＝ y) + (y ≺⟨ α ⟩ x)))
+        → is-trichotomous-least α x₀
+      τ σ x = κ (center (σ x₀ x))
+       where
+        κ : (x₀ ≺⟨ α ⟩ x) + (x₀ ＝ x) + (x ≺⟨ α ⟩ x₀)
+          → (x₀ ＝ x) + (x₀ ≺⟨ α ⟩ x)
+        κ (inl u)       = inr u
+        κ (inr (inl e)) = inl e
+        κ (inr (inr v)) = 𝟘-elim (x₀-is-minimal x v)
+    II (inr ni) = inr (⊴-antisym α 𝟘ₒ
+                        (to-⊴ α 𝟘ₒ λ x → 𝟘-elim (ni ∣ x ∣))
+                        (≼-gives-⊴ 𝟘ₒ α (𝟘ₒ-least α)))
 
-       a₀-least : ((y : ⟨ α ⟩) → ¬ (y ≺⟨ α ⟩ a₀))
-       a₀-least y = pr₂ (pr₂ least-element') y ⋆
+\end{code}
 
-       ⟨α'⟩ = Σ x ꞉ ⟨ α ⟩ , a₀ ≺⟨ α ⟩ x
+We now explicitly include a zero case in the supremum specification:
 
-       _<'_ : ⟨α'⟩ → ⟨α'⟩ → _
-       _<'_ = subtype-order α (λ - → a₀ ≺⟨ α ⟩ -)
+\begin{code}
 
-       <'-propvalued : is-prop-valued _<'_
-       <'-propvalued = subtype-order-is-prop-valued α (λ - → a₀ ≺⟨ α ⟩ -)
+exp-specification-sup-revised : Ordinal 𝓤 → (Ordinal 𝓤 → Ordinal 𝓤) → 𝓤 ⁺ ̇
+exp-specification-sup-revised {𝓤} α exp =
+   exp-specification-sup α exp
+ × (α ＝ 𝟘ₒ → (β : Ordinal 𝓤) → β ≠ 𝟘ₒ → exp β ＝ 𝟘ₒ)
 
-       <'-wellfounded : is-well-founded _<'_
-       <'-wellfounded = subtype-order-wellfounded α (λ - → a₀ ≺⟨ α ⟩ -)
+exp-full-specification : (Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) → 𝓤 ⁺ ̇
+exp-full-specification {𝓤} exp =
+   ((α : Ordinal 𝓤) → exp-specification-zero α (exp α))
+ × ((α : Ordinal 𝓤) → exp-specification-succ α (exp α))
+ × ((α : Ordinal 𝓤) → exp-specification-sup-revised α (exp α))
 
-       <-trichotomy  : is-trichotomous-order (underlying-order α)
-       <-trichotomy = trichotomy (underlying-order α) fe' em (is-well-ordered α)
-
-       <'-extensional : is-extensional _<'_
-       <'-extensional (x , p) (y , q) f g = to-subtype-＝ (λ x → Prop-valuedness α a₀ x)
-                                                         (Extensionality α x y
-                                                           (λ u p → f' u (<-trichotomy u a₀) p)
-                                                           λ u p → g' u (<-trichotomy u a₀) p)
-        where
-         f' : (u : ⟨ α ⟩) → in-trichotomy (underlying-order α) u a₀ → u ≺⟨ α ⟩ x → u ≺⟨ α ⟩ y
-         f' u (inl q) r = 𝟘-elim (a₀-least u q)
-         f' u (inr (inl refl)) r = q
-         f' u (inr (inr q)) r = f (u , q) r
-
-         g' : (u : ⟨ α ⟩) → in-trichotomy (underlying-order α) u a₀ → u ≺⟨ α ⟩ y → u ≺⟨ α ⟩ x
-         g' u (inl q) r = 𝟘-elim (a₀-least u q)
-         g' u (inr (inl refl)) r = p
-         g' u (inr (inr q)) r = g (u , q) r
-
-
-       <'-transitive : is-transitive _<'_
-       <'-transitive = subtype-order-transitive α (λ - → a₀ ≺⟨ α ⟩ -)
-
-       α' : Ordinal _
-       α' = ⟨α'⟩ , _<'_ , <'-propvalued , <'-wellfounded , <'-extensional , <'-transitive
-
-       f' : (x : ⟨ α ⟩) → in-trichotomy (underlying-order α) x a₀ → 𝟙 + ⟨ α' ⟩
-       f' x (inl q) = 𝟘-elim (a₀-least x q)
-       f' x (inr (inl r)) = inl ⋆
-       f' x (inr (inr q)) = inr (x , q)
-
-       f : ⟨ α ⟩ → 𝟙 + ⟨ α' ⟩
-       f x = f' x (<-trichotomy x a₀)
-
-       g : 𝟙 + ⟨ α' ⟩ → ⟨ α ⟩
-       g (inl ⋆) = a₀
-       g (inr (x , q)) = x
-
-       f-equiv : is-order-equiv α (𝟙ₒ +ₒ α') f
-       f-equiv = f-order-preserving , (qinvs-are-equivs f (g , η , ϵ)) , g-order-preserving
-        where
-         f'-order-preserving : (x y : ⟨ α ⟩)
-                             → (tx : in-trichotomy (underlying-order α) x a₀)
-                             → (ty : in-trichotomy (underlying-order α) y a₀)
-                             → x ≺⟨ α ⟩ y → f' x tx ≺⟨ 𝟙ₒ +ₒ α' ⟩ f' y ty
-         f'-order-preserving x y (inl q) ty p = 𝟘-elim (a₀-least x q)
-         f'-order-preserving x y (inr (inl r)) (inl q) p = 𝟘-elim (a₀-least y q)
-         f'-order-preserving .a₀ .a₀ (inr (inl refl)) (inr (inl refl)) p = 𝟘-elim (irrefl α a₀ p)
-         f'-order-preserving .a₀ y (inr (inl refl)) (inr (inr q)) p = ⋆
-         f'-order-preserving x y (inr (inr q)) (inl q') p = 𝟘-elim (a₀-least y q')
-         f'-order-preserving x .a₀ (inr (inr q)) (inr (inl refl)) p = 𝟘-elim (a₀-least x p)
-         f'-order-preserving x y (inr (inr q)) (inr (inr q')) p = p
-
-         f-order-preserving : is-order-preserving α (𝟙ₒ +ₒ α') f
-         f-order-preserving x y p = f'-order-preserving x y (<-trichotomy x a₀) (<-trichotomy y a₀) p
-
-         g-order-preserving : is-order-preserving (𝟙ₒ +ₒ α') α g
-         g-order-preserving (inl ⋆) (inr (x , q)) p = q
-         g-order-preserving (inr (x , q)) (inr (y , q')) p = p
-
-         η' : (x : ⟨ α ⟩) → (t : in-trichotomy (underlying-order α) x a₀) → g (f' x t) ＝ x
-         η' x (inl q) = 𝟘-elim (a₀-least x q)
-         η' x (inr (inl refl)) = refl
-         η' x (inr (inr q)) = refl
-
-         η : (x : ⟨ α ⟩) → g (f x) ＝ x
-         η x = η' x (<-trichotomy x a₀)
-
-         ϵ' : (y : 𝟙 + ⟨ α' ⟩) → (t : in-trichotomy (underlying-order α) (g y) a₀) → f' (g y) t ＝ y
-         ϵ' (inl ⋆) (inl q) = 𝟘-elim (a₀-least a₀ q)
-         ϵ' (inl ⋆) (inr (inl r)) = refl
-         ϵ' (inl ⋆) (inr (inr q)) = 𝟘-elim (irrefl α a₀ q)
-         ϵ' (inr (x , p)) (inl q) = 𝟘-elim (a₀-least x q)
-         ϵ' (inr (.a₀ , p)) (inr (inl refl)) = 𝟘-elim (irrefl α a₀ p)
-         ϵ' (inr (x , p)) (inr (inr q)) = ap inr (to-subtype-＝  ((λ x → Prop-valuedness α a₀ x)) refl)
-
-         ϵ : (y : 𝟙 + ⟨ α' ⟩) → f (g y) ＝ y
-         ϵ y = ϵ' y (<-trichotomy (g y) a₀)
-
-       eq : α ＝ 𝟙ₒ +ₒ α'
-       eq = eqtoidₒ (ua _) fe' α (𝟙ₒ +ₒ α') (f , f-equiv)
-
-Has-least-or-is-zero-gives-full-spec : Has-least-or-is-zero → Σ exp ꞉ (Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) , exponentiation-specification exp
-Has-least-or-is-zero-gives-full-spec {𝓤} cs = exp , exp-spec'
+Has-trichotomous-least-element-or-is-zero-gives-full-exponentiation
+ : Has-trichotomous-least-element-or-is-zero
+ → Σ exp ꞉ (Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) , exp-full-specification exp
+Has-trichotomous-least-element-or-is-zero-gives-full-exponentiation {𝓤} κ =
+ exp , exp-spec
   where
    exp-aux : (α : Ordinal 𝓤)
-           → has-least-or-is-zero α
+           → has-trichotomous-least-element-or-is-zero α
            → Ordinal 𝓤 → Ordinal 𝓤
-   exp-aux α (inl (α' , _)) β = [𝟙+ α' ]^ β
+   exp-aux α (inl h) β = exponentiationᴸ α h β
    exp-aux α (inr _) β = 𝟘^ β
    exp : Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤
-   exp α = exp-aux α (cs α)
+   exp α = exp-aux α (κ α)
 
-   spec₀-aux : (α : Ordinal 𝓤) → (cs : has-least-or-is-zero α) → exp-aux α cs 𝟘ₒ ＝ 𝟙ₒ
-   spec₀-aux α (inl (α' , refl)) = exp-0-spec α'
-   spec₀-aux α (inr refl) = 𝟘^-zero-spec
+   spec₀ : (α : Ordinal 𝓤) (κ : has-trichotomous-least-element-or-is-zero α)
+         → exp-specification-zero α (exp-aux α κ)
+   spec₀ α (inl h)    = exponentiationᴸ-satisfies-zero-specification α h
+   spec₀ α (inr refl) = 𝟘^-zero-spec
 
-   specₛ-aux : (α : Ordinal 𝓤) → (cs : has-least-or-is-zero α) → (β : Ordinal 𝓤)
-             → exp-aux α cs (β +ₒ 𝟙ₒ) ＝ (exp-aux α cs β ×ₒ α)
-   specₛ-aux α (inl (α' , refl)) = exp-succ-spec α'
-   specₛ-aux α (inr refl) = 𝟘^-succ-spec
+   spec₊ : (α : Ordinal 𝓤) (κ : has-trichotomous-least-element-or-is-zero α)
+         → exp-specification-succ α (exp-aux α κ)
+   spec₊ α (inl h)    = exponentiationᴸ-satisfies-succ-specification α h
+   spec₊ α (inr refl) = 𝟘^-succ-spec
 
-   specₗ-aux-nonzero : (α : Ordinal 𝓤) → (cs : has-least-or-is-zero α) → ¬ (α ＝ 𝟘ₒ) → {I : 𝓤 ̇ } → ∥ I ∥ → (γ : I → Ordinal 𝓤)
-                     →  exp-aux α cs (sup γ) ＝ sup (λ i → exp-aux α cs (γ i))
-   specₗ-aux-nonzero α (inl (α' , refl)) α-not-zero i γ = exp-sup-spec α' i γ
-   specₗ-aux-nonzero α (inr r) α-not-zero = 𝟘-elim (α-not-zero r)
+   specₛ : (α : Ordinal 𝓤) (κ : has-trichotomous-least-element-or-is-zero α)
+         → exp-specification-sup-revised α (exp-aux α κ)
+   specₛ α (inl h@(x₀ , _)) = exponentiationᴸ-satisfies-sup-specification α h ,
+                              (λ α-is-zero → 𝟘-elim (Idtofunₒ α-is-zero x₀))
+   specₛ α (inr r) = (λ α-is-nonzero → 𝟘-elim (α-is-nonzero r)) ,
+                     (λ _ → 𝟘^-sup-spec)
 
-   specₗ-aux-zero : (α : Ordinal 𝓤) → (cs : has-least-or-is-zero α) → α ＝ 𝟘ₒ → (β : Ordinal 𝓤) → ¬ (β ＝ 𝟘ₒ)
-                  → exp-aux α cs β ＝ 𝟘ₒ
-   specₗ-aux-zero α (inl (α' , r)) α-zero β β-not-zero = 𝟘-elim (zero-no-element (α-zero ⁻¹ ∙ r) )
-     where
-       zero-no-element : (𝟘ₒ ＝ (𝟙ₒ +ₒ α')) → 𝟘
-       zero-no-element p = Idtofun ((ap ⟨_⟩ p) ⁻¹) (inl ⋆)
-   specₗ-aux-zero α (inr refl) _ = 𝟘^-sup-spec
+   exp-spec : exp-full-specification exp
+   exp-spec =
+    (λ α → spec₀ α (κ α)) ,
+    (λ α → spec₊ α (κ α)) ,
+    (λ α → specₛ α (κ α))
 
-   exp-spec' : exponentiation-specification exp
-   exp-spec' = (λ α → spec₀-aux α (cs α)) , (λ α → specₛ-aux α (cs α)) , (λ α → specₗ-aux-nonzero α (cs α) , specₗ-aux-zero α (cs α))
-
-EM-gives-full-spec : EM 𝓤 → Σ exp ꞉ (Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) , exponentiation-specification exp
-EM-gives-full-spec em = Has-least-or-is-zero-gives-full-spec (EM-gives-Has-least-or-is-zero em)
-
--- full-spec-gives-Has-least-or-is-zero : Σ exp ꞉ (Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) , exponentiation-specification exp → Has-least-or-is-zero {𝓤}
--- full-spec-gives-Has-least-or-is-zero {𝓤} (exp , exp-spec) = EM-gives-Has-least-or-is-zero (exp-full-spec-gives-EM exp exp-spec)
-
--}
+EM-gives-full-exponentiation
+ : EM 𝓤
+ → Σ exp ꞉ (Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) , exp-full-specification exp
+EM-gives-full-exponentiation em =
+ Has-trichotomous-least-element-or-is-zero-gives-full-exponentiation
+  (EM-gives-Has-trichotomous-least-element-or-is-zero em)
 
 \end{code}
 
@@ -665,5 +543,70 @@ subtype-of-positive-elements-an-ordinal-implies-EM {𝓤} hyp = III
          (equiv-to-discrete
            (idtoeq (𝟙 + 𝟙) (Ω 𝓤) (II ⁻¹))
            (+-is-discrete 𝟙-is-discrete 𝟙-is-discrete))
+
+\end{code}
+
+The following is not used at the moment, but may come in useful in the future
+when aiming to derive a constructive taboo.
+
+\begin{code}
+
+^ₒ-𝟚ₒ-by-prop : (P : 𝓤 ̇  ) (i : is-prop P)
+              → 𝟚ₒ {𝓤} ^ₒ (prop-ordinal P i) ＝ 𝟙ₒ +ₒ prop-ordinal P i
+^ₒ-𝟚ₒ-by-prop {𝓤} P i = I ∙ ⊴-antisym (sup F) (𝟙ₒ +ₒ Pₒ) III V
+ where
+  F : 𝟙 {𝓤} + P → Ordinal 𝓤
+  F (inl _) = 𝟙ₒ
+  F (inr _) = 𝟚ₒ
+
+  Pₒ = prop-ordinal P i
+
+  I : 𝟚ₒ ^ₒ Pₒ ＝ sup F
+  I = transport⁻¹ (_＝ sup F) (^ₒ-behaviour 𝟚ₒ Pₒ) (ap sup (dfunext fe' e))
+   where
+    e : ^ₒ-family 𝟚ₒ Pₒ ∼ F
+    e (inl ⋆) = refl
+    e (inr p) = 𝟚ₒ ^ₒ (Pₒ ↓ p) ×ₒ 𝟚ₒ ＝⟨ e₁ ⟩
+                𝟚ₒ ^ₒ 𝟘ₒ ×ₒ 𝟚ₒ       ＝⟨ e₂ ⟩
+                𝟙ₒ ×ₒ 𝟚ₒ             ＝⟨ 𝟙ₒ-left-neutral-×ₒ 𝟚ₒ ⟩
+                𝟚ₒ                   ∎
+     where
+      e₁ = ap (λ - → 𝟚ₒ ^ₒ - ×ₒ 𝟚ₒ) (prop-ordinal-↓ i p)
+      e₂ = ap (_×ₒ 𝟚ₒ) (^ₒ-satisfies-zero-specification 𝟚ₒ)
+
+  II : (p : P) → 𝟙ₒ +ₒ Pₒ ＝ 𝟚ₒ
+  II p = ap (𝟙ₒ +ₒ_) (holds-gives-equal-𝟙ₒ i p)
+
+  III : sup F ⊴ 𝟙ₒ +ₒ Pₒ
+  III = sup-is-lower-bound-of-upper-bounds F (𝟙ₒ +ₒ Pₒ) III'
+   where
+    III' : (x : 𝟙 + P) → F x ⊴ 𝟙ₒ +ₒ Pₒ
+    III' (inl _) = +ₒ-left-⊴ 𝟙ₒ Pₒ
+    III' (inr p) = ＝-to-⊴ 𝟚ₒ (𝟙ₒ +ₒ Pₒ) (II p ⁻¹)
+
+  IV : (x : 𝟙 + P ) → 𝟙ₒ +ₒ Pₒ ↓ x ⊲ sup F
+  IV (inl ⋆) =
+   ([ 𝟙ₒ , sup F ]⟨ f₁ ⟩ ⋆) ,
+    (𝟙ₒ +ₒ Pₒ ↓ inl ⋆               ＝⟨ (+ₒ-↓-left ⋆) ⁻¹ ⟩
+     𝟙ₒ ↓ ⋆                         ＝⟨ simulations-preserve-↓ 𝟙ₒ _ f₁ ⋆ ⟩
+     sup F ↓ [ 𝟙ₒ , sup F ]⟨ f₁ ⟩ ⋆ ∎)
+   where
+    f₁ : 𝟙ₒ ⊴ sup F
+    f₁ = sup-is-upper-bound F (inl ⋆)
+  IV (inr p) =
+   ([ 𝟚ₒ , sup F ]⟨ f₂ ⟩ (inr ⋆)) ,
+    (𝟙ₒ +ₒ Pₒ ↓ inr p                     ＝⟨ (+ₒ-↓-right p) ⁻¹ ⟩
+     𝟙ₒ +ₒ (Pₒ ↓ p)                       ＝⟨ ap (𝟙ₒ +ₒ_) (prop-ordinal-↓ i p) ⟩
+     𝟙ₒ +ₒ 𝟘ₒ                             ＝⟨ ap (𝟙ₒ +ₒ_) (𝟙ₒ-↓ ⁻¹) ⟩
+     𝟙ₒ +ₒ (𝟙ₒ ↓ ⋆)                       ＝⟨ +ₒ-↓-right ⋆ ⟩
+     𝟚ₒ ↓ inr ⋆                           ＝⟨ simulations-preserve-↓ 𝟚ₒ (sup F)
+                                               f₂ (inr ⋆) ⟩
+     sup F ↓ [ 𝟚ₒ , sup F ]⟨ f₂ ⟩ (inr ⋆) ∎)
+   where
+    f₂ : 𝟚ₒ ⊴ sup F
+    f₂ = sup-is-upper-bound F (inr p)
+
+  V : 𝟙ₒ +ₒ Pₒ ⊴ sup F
+  V = to-⊴ (𝟙ₒ +ₒ Pₒ) (sup F) IV
 
 \end{code}

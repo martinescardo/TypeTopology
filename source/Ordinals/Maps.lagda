@@ -520,6 +520,21 @@ Added 11 December 2024 by Tom de Jong.
 
 \begin{code}
 
+order-reflecting-partial-surjections-are-initial-segments
+ : (α : Ordinal 𝓤) (β : Ordinal 𝓥) (f : ⟨ α ⟩ → ⟨ β ⟩)
+ → is-order-reflecting α β f
+ → ((a : ⟨ α ⟩) (b : ⟨ β ⟩) → b ≺⟨ β ⟩ f a → Σ a' ꞉ ⟨ α ⟩ , f a' ＝ b)
+ → is-initial-segment α β f
+order-reflecting-partial-surjections-are-initial-segments
+ α β f f-order-reflec σ a b l = pr₁ (σ a b l) , k , pr₂ (σ a b l)
+ where
+  a' : ⟨ α ⟩
+  a' = pr₁ (σ a b l)
+  e : f a' ＝ b
+  e = pr₂ (σ a b l)
+  k : a' ≺⟨ α ⟩ a
+  k = f-order-reflec a' a (transport⁻¹ (λ - → - ≺⟨ β ⟩ f a) e l)
+
 order-preserving-and-reflecting-partial-surjections-are-simulations :
    (α : Ordinal 𝓤) (β : Ordinal 𝓥) (f : ⟨ α ⟩ → ⟨ β ⟩)
  → is-order-preserving α β f
@@ -527,16 +542,8 @@ order-preserving-and-reflecting-partial-surjections-are-simulations :
  → ((a : ⟨ α ⟩) (b : ⟨ β ⟩) → b ≺⟨ β ⟩ f a → Σ a' ꞉ ⟨ α ⟩ , f a' ＝ b)
  → is-simulation α β f
 order-preserving-and-reflecting-partial-surjections-are-simulations
- α β f f-order-pres f-order-reflec σ = I , f-order-pres
-  where
-   I : is-initial-segment α β f
-   I a b l = pr₁ (σ a b l) , II , pr₂ (σ a b l)
-    where
-     a' : ⟨ α ⟩
-     a' = pr₁ (σ a b l)
-     e : f a' ＝ b
-     e = pr₂ (σ a b l)
-     II : a' ≺⟨ α ⟩ a
-     II = f-order-reflec a' a (transport⁻¹ (λ - → - ≺⟨ β ⟩ f a) e l)
+ α β f f-op f-or σ =
+  order-reflecting-partial-surjections-are-initial-segments α β f f-or σ ,
+  f-op
 
 \end{code}

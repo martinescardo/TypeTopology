@@ -59,8 +59,8 @@ module _
 
  exp-specification-sup-generalized : (𝓤 ⊔ 𝓥) ⁺ ̇
  exp-specification-sup-generalized =
-  (α ≠ 𝟘ₒ) → {I : 𝓥 ̇  } → ∥ I ∥ → (β : I → Ordinal 𝓥)
-           → F (sup β) ＝ sup (λ (i : Lift 𝓤 I) → F (β (lower i)))
+  α ≠ 𝟘ₒ → {I : 𝓥 ̇  } → ∥ I ∥ → (β : I → Ordinal 𝓥)
+         → F (sup β) ＝ sup (λ (i : Lift 𝓤 I) → F (β (lower i)))
 
 module _
         (α : Ordinal 𝓤)
@@ -69,8 +69,8 @@ module _
 
  exp-specification-sup : 𝓤 ⁺ ̇
  exp-specification-sup =
-  (α ≠ 𝟘ₒ)  → {I : 𝓤 ̇  } → ∥ I ∥ → (β : I → Ordinal 𝓤)
-            → F (sup β) ＝ sup (F ∘ β)
+  α ≠ 𝟘ₒ → {I : 𝓤 ̇  } → ∥ I ∥ → (β : I → Ordinal 𝓤)
+         → F (sup β) ＝ sup (F ∘ β)
 
  exp-specification-sup-from-generalized : exp-specification-sup-generalized α F
                                         → exp-specification-sup
