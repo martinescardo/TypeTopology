@@ -371,11 +371,11 @@ record Algebra (𝕋 : Monad) (A : Type) : Type₁ where
   (α ∘ mapᵀ (extension f)) tt     ∎
 
  at-most-one-extension : funext₀
-                      → {X : Type} (g h : T X → A)
-                      → g ∘ ηᵀ ∼ h ∘ ηᵀ
-                      → is-hom-from-free g
-                      → is-hom-from-free h
-                      → g ∼ h
+                       → {X : Type} (g h : T X → A)
+                       → g ∘ ηᵀ ∼ h ∘ ηᵀ
+                       → is-hom-from-free g
+                       → is-hom-from-free h
+                       → g ∼ h
  at-most-one-extension fe g h g-h-agreement g-is-hom h-is-hom tt =
   g tt                      ＝⟨ refl ⟩
   (g ∘ id) tt               ＝⟨ by-unit₁ ⁻¹ ⟩
