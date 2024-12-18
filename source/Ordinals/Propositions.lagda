@@ -70,6 +70,17 @@ prop-ordinal-↓ i p =
 only-one-𝟙ₒ-⊴ : 𝟙ₒ {𝓤} ⊴ 𝟙ₒ {𝓥}
 only-one-𝟙ₒ-⊴ = prop-ordinal-⊴ 𝟙-is-prop 𝟙-is-prop (λ _ → ⋆)
 
+only-one-𝟙ₒ : 𝟙ₒ {𝓤} ≃ₒ 𝟙ₒ {𝓥}
+only-one-𝟙ₒ =
+ bisimilarity-gives-ordinal-equiv 𝟙ₒ 𝟙ₒ only-one-𝟙ₒ-⊴ only-one-𝟙ₒ-⊴
+
+only-one-𝟘ₒ-⊴ : 𝟘ₒ {𝓤} ⊴ 𝟘ₒ {𝓥}
+only-one-𝟘ₒ-⊴ = prop-ordinal-⊴ 𝟘-is-prop 𝟘-is-prop 𝟘-elim
+
+only-one-𝟘ₒ : 𝟘ₒ {𝓤} ≃ₒ 𝟘ₒ {𝓥}
+only-one-𝟘ₒ =
+ bisimilarity-gives-ordinal-equiv 𝟘ₒ 𝟘ₒ only-one-𝟘ₒ-⊴ only-one-𝟘ₒ-⊴
+
 𝟙ₒ-⊴-shift : (α : Ordinal 𝓦) → 𝟙ₒ {𝓤} ⊴ α → 𝟙ₒ {𝓥} ⊴ α
 𝟙ₒ-⊴-shift α = ⊴-trans 𝟙ₒ 𝟙ₒ α only-one-𝟙ₒ-⊴
 
