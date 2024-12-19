@@ -186,6 +186,23 @@ curry-uncurry {𝓤} {𝓥} {𝓦} fe = curry-uncurry' (fe 𝓤 (𝓥 ⊔ 𝓦))
   ε (inl _ , _) = refl
   ε (inr _ , _) = refl
 
+Π-flip : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : X → Y → 𝓦 ̇ }
+       → ((x : X) (y : Y) → A x y) ≃ ((y : Y) (x : X) → A x y)
+Π-flip {_} {_} {_} {X} {Y} {A} = qinveq f (g , H , G)
+ where
+  f : ((x : X) (y : Y) → A x y) → ((y : Y) (x : X) → A x y)
+  f h y x = h x y
+  g : ((y : Y) (x : X) → A x y) → ((x : X) (y : Y) → A x y)
+  g h x y = h y x
+  H : (h : ((x : X) (y : Y) → A x y)) → g (f h) ＝ h
+  H h = refl
+  G : (h : ((y : Y) (x : X) → A x y)) → f (g h) ＝ h
+  G h = refl
+
+Π-flip' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : X → Y → 𝓦 ̇ }
+        → ((y : Y) (x : X) → A x y) ≃ ((x : X) (y : Y) → A x y)
+Π-flip' = ≃-sym Π-flip
+
 Π-cong : funext 𝓤 𝓥
        → funext 𝓤 𝓦
        → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {Y' : X → 𝓦 ̇ }
