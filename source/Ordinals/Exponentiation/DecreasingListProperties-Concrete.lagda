@@ -182,129 +182,127 @@ module _
 \end{code}
 
 Proving that forward-right-lits preserves the decreasing-pr₂ property requires
-the following lemma:
-
-TODO: CONTINUE HERE
+the following lemma which says that a decreasing-pr₂ list with a "left-entry"
+(a , inl b) continues to have only left-entries and can't be followed by an
+element (a' , inr c) (because that would not be decreasing in the second
+component).
 
 \begin{code}
 
---   no-swapping-lemma : (l : List ⟨ α ×ₒ (β +ₒ γ) ⟩)
---                       (a : ⟨ α ⟩) → (b : ⟨ β ⟩)
---                       (δ : is-decreasing-pr₂ α (β +ₒ γ) ((a , inl b) ∷ l))
---                     → forward-right-lits ((a , inl b) ∷ l) ＝ []
---   no-swapping-lemma [] a b δ = refl
---   no-swapping-lemma ((a' , inl b') ∷ xs) a b (many-decr p δ) = no-swapping-lemma xs a b' δ
---   no-swapping-lemma ((a' , inr c) ∷ xs) a b (many-decr p δ) = 𝟘-elim p
+  stay-left-list : (l : List ⟨ α ×ₒ (β +ₒ γ) ⟩)
+                   (a : ⟨ α ⟩) (b : ⟨ β ⟩)
+                   (δ : is-decreasing-pr₂ α (β +ₒ γ) ((a , inl b) ∷ l))
+                 → forward-right-list ((a , inl b) ∷ l) ＝ []
+  stay-left-list [] a b δ = refl
+  stay-left-list ((a' , inl b') ∷ l) a b (many-decr p δ) = stay-left-list l a b' δ
+  stay-left-list ((a' , inr c)  ∷ l) a b (many-decr p δ) = 𝟘-elim p
+
+  forward-right-list-preserves-decreasing-pr₂
+   : (l : List ⟨ α ×ₒ (β +ₒ γ) ⟩)
+   → is-decreasing-pr₂ α (β +ₒ γ) l
+   → is-decreasing-pr₂ α γ (forward-right-list l)
+  forward-right-list-preserves-decreasing-pr₂ [] δ = []-decr
+  forward-right-list-preserves-decreasing-pr₂ ((a , inl b) ∷ l) δ =
+   forward-right-list-preserves-decreasing-pr₂ l
+    (tail-is-decreasing-pr₂ α (β +ₒ γ) (a , inl b) δ)
+  forward-right-list-preserves-decreasing-pr₂ ((a , inr c) ∷ []) δ = sing-decr
+  forward-right-list-preserves-decreasing-pr₂
+   ((a , inr c) ∷ (a' , inr c') ∷ l) (many-decr p δ) =
+    many-decr p
+     (forward-right-list-preserves-decreasing-pr₂ ((a' , inr c') ∷ l) δ)
+  forward-right-list-preserves-decreasing-pr₂
+   ((a , inr c) ∷ (a' , inl b) ∷ l) (many-decr p δ) =
+    transport⁻¹
+     (is-decreasing-pr₂ α γ)
+     (ap ((a , c) ∷_) (stay-left-list l a' b δ))
+     sing-decr
+
+  forward-right : ⟨ expᴸ[𝟙+ α ] (β +ₒ γ) ⟩ → ⟨ expᴸ[𝟙+ α ] γ ⟩
+  forward-right (l , δ) = forward-right-list l ,
+                          forward-right-list-preserves-decreasing-pr₂ l δ
+
+  stay-left : (l : List ⟨ α ×ₒ (β +ₒ γ) ⟩) (a : ⟨ α ⟩) (b : ⟨ β ⟩)
+              (δ : is-decreasing-pr₂ α (β +ₒ γ) ((a , inl b) ∷ l))
+            → forward-right (((a , inl b) ∷ l) , δ) ＝ [] , []-decr
+  stay-left l a b δ = to-expᴸ-＝ α γ (stay-left-list l a b δ)
+
+  forward-right-constant-on-inl
+   : (l₁ l₂ : List ⟨ α ×ₒ (β +ₒ γ) ⟩)
+     (a₁ a₂ : ⟨ α ⟩) (b₁ b₂ : ⟨ β ⟩)
+     (δ₁ : is-decreasing-pr₂ α (β +ₒ γ) ((a₁ , inl b₁) ∷ l₁))
+     (δ₂ : is-decreasing-pr₂ α (β +ₒ γ) ((a₂ , inl b₂) ∷ l₂))
+   → forward-right (((a₁ , inl b₁) ∷ l₁) , δ₁)
+     ＝ forward-right (((a₂ , inl b₂) ∷ l₂) , δ₂)
+  forward-right-constant-on-inl l₁ l₂ a₁ a₂ b₁ b₂ δ₁ δ₂ =
+   stay-left l₁ a₁ b₁ δ₁ ∙ (stay-left l₂ a₂ b₂ δ₂) ⁻¹
+
+\end{code}
+
+\begin{code}
+
+  forward : ⟨ expᴸ[𝟙+ α ] (β +ₒ γ) ⟩ → ⟨ expᴸ[𝟙+ α ] β ×ₒ expᴸ[𝟙+ α ] γ ⟩
+  forward l = forward-left l , forward-right l
+
+  forward-is-order-preserving : is-order-preserving
+                                 (expᴸ[𝟙+ α ] (β +ₒ γ))
+                                 (expᴸ[𝟙+ α ] β ×ₒ expᴸ[𝟙+ α ] γ)
+                                 forward
+  forward-is-order-preserving ([] , δ₁) (((a , inl b) ∷ l₂) , δ₂) []-lex =
+   inr ((stay-left l₂ a b δ₂ ⁻¹) , []-lex)
+  forward-is-order-preserving ([] , δ₁) (((a , inr c) ∷ l₂) , δ₂) []-lex =
+   inl []-lex
+  forward-is-order-preserving (((a , inl b) ∷ l₁) , δ₁) (((a' , inl b') ∷ l₂) , δ₂)
+   (head-lex (inr (refl , p))) =
+    inr (forward-right-constant-on-inl l₁ l₂ a a' b b' δ₁ δ₂ ,
+         head-lex (inr (refl , p)))
+  forward-is-order-preserving (((a , inl b) ∷ l₁) , δ₁) (((a' , inr c)  ∷ l₂) , δ₂)
+   (head-lex (inr (e , p))) = 𝟘-elim (+disjoint e)
+  forward-is-order-preserving (((a , inr c) ∷ l₁) , δ₁) (((a' , inl b)  ∷ l₂) , δ₂)
+   (head-lex (inr (e , p))) = 𝟘-elim (+disjoint' e)
+  forward-is-order-preserving (((a , inr c) ∷ l₁) , δ₁) (((a' , inr c') ∷ l₂) , δ₂)
+   (head-lex (inr (refl , p))) = inl (head-lex (inr (refl , p)))
+  forward-is-order-preserving (((a , inl b) ∷ l₁) , δ₁) (((a' , inl b') ∷ l₂) , δ₂)
+   (head-lex (inl p)) =
+    inr (forward-right-constant-on-inl l₁ l₂ a a' b b' δ₁ δ₂ ,
+         head-lex (inl p))
+  forward-is-order-preserving (((a , inl b) ∷ l₁) , δ₁) (((a' , inr c)  ∷ l₂) , δ₂)
+   (head-lex (inl p)) =
+    inl (transport⁻¹
+          (λ - → - ≺⟨ expᴸ[𝟙+ α ] γ ⟩ forward-right (((a' , inr c) ∷ l₂) , δ₂))
+          (stay-left l₁ a b δ₁)
+          []-lex)
+  forward-is-order-preserving (((a , inr c) ∷ l₁) , δ₁) (((a' , inl b)  ∷ l₂) , δ₂)
+   (head-lex (inl p)) = 𝟘-elim p
+  forward-is-order-preserving (((a , inr c) ∷ l₁) , δ₁) (((a' , inr c') ∷ l₂) , δ₂)
+   (head-lex (inl p)) = inl (head-lex (inl p))
+  forward-is-order-preserving (((a , inl b) ∷ l₁) , δ₁) (((a , inl b) ∷ l₂) , δ₂)
+   (tail-lex refl p) = h (forward-is-order-preserving (l₁ , ε₁) (l₂ , ε₂) p)
+    where
+     ε₁ = tail-is-decreasing-pr₂ α (β +ₒ γ) (a , inl b) δ₁
+     ε₂ = tail-is-decreasing-pr₂ α (β +ₒ γ) (a , inl b) δ₂
+     h : forward (l₁ , ε₁) ≺⟨ (expᴸ[𝟙+ α ] β ×ₒ expᴸ[𝟙+ α ] γ) ⟩ forward (l₂ , ε₂)
+       → forward (((a , inl b) ∷ l₁) , δ₁)
+         ≺⟨ (expᴸ[𝟙+ α ] β ×ₒ expᴸ[𝟙+ α ] γ) ⟩ forward (((a , inl b) ∷ l₂) , δ₂)
+     h (inl q) = inl q
+     h (inr (e , q)) = inr (forward-right-constant-on-inl l₁ l₂ a a b b δ₁ δ₂ ,
+                            tail-lex refl q)
+  forward-is-order-preserving (((a , inr c) ∷ l₁) , δ₁) (((a , inr c) ∷ l₂) , δ₂)
+   (tail-lex refl p) = h (forward-is-order-preserving (l₁ , ε₁) (l₂ , ε₂) p)
+    where
+     ε₁ = tail-is-decreasing-pr₂ α (β +ₒ γ) (a , inr c) δ₁
+     ε₂ = tail-is-decreasing-pr₂ α (β +ₒ γ) (a , inr c) δ₂
+     h : forward (l₁ , ε₁) ≺⟨ (expᴸ[𝟙+ α ] β ×ₒ expᴸ[𝟙+ α ] γ) ⟩ forward (l₂ , ε₂)
+       → forward (((a , inr c) ∷ l₁) , δ₁)
+         ≺⟨ (expᴸ[𝟙+ α ] β ×ₒ expᴸ[𝟙+ α ] γ) ⟩ forward (((a , inr c) ∷ l₂) , δ₂)
+     h (inl q) = inl (tail-lex refl q)
+     h (inr (e , q)) = inr (to-expᴸ-＝ α γ (ap ((a , c) ∷_) (ap pr₁ e)) , q)
 
 
---   forward-right-list-preserves-decreasing-pr₂
---    : (l : List ⟨ α ×ₒ (β +ₒ γ) ⟩)
---    → is-decreasing-pr₂ α (β +ₒ γ) l
---    → is-decreasing-pr₂ α γ (forward-right-list l)
---   forward-right-list-preserves-decreasing-pr₂ [] δ = []-decr
---   forward-right-list-preserves-decreasing-pr₂ ((a , inl b) ∷ l) δ =
---    forward-right-list-preserves-decreasing-pr₂ l
---     (tail-is-decreasing-pr₂ α (β +ₒ γ) (a , inl b) δ)
---   forward-right-list-preserves-decreasing-pr₂ ((a , inr c) ∷ []) δ = sing-decr
---   forward-right-list-preserves-decreasing-pr₂
---    ((a , inr c) ∷ (a' , inr c') ∷ l) (many-decr p δ) =
---     many-decr p
---      (forward-right-list-preserves-decreasing-pr₂ ((a' , inr c') ∷ l) δ)
---   forward-right-list-preserves-decreasing-pr₂
---    ((a , inr c) ∷ (a' , inl b) ∷ l) (many-decr p δ) =
---     forward-right-list-preserves-decreasing-pr₂ {!!} {!δ!}
-
---   forward-right : ⟨ expᴸ[𝟙+ α ] (β +ₒ γ) ⟩ → ⟨ expᴸ[𝟙+ α ] γ ⟩
---   forward-right (l , δ) = forward-right-list l ,
---                           forward-right-list-preserves-decreasing-pr₂ l δ
 
 -- -- exp-+-distributes' : (α : Ordinal 𝓤) (β γ : Ordinal 𝓥)
 -- --                    → (expᴸ[𝟙+ α ] (β +ₒ γ)) ≃ₒ ((expᴸ[𝟙+ α ] β) ×ₒ (expᴸ[𝟙+ α ] γ))
 -- -- exp-+-distributes' α β γ = f , f-order-preserving , qinvs-are-equivs f f-qinv , g-order-preserving
 -- --  where
-
--- --   f₀₀ : (xs : List ⟨ α ×ₒ (β +ₒ γ) ⟩) → List ⟨ α ×ₒ β ⟩
--- --   f₀₀ [] = []
--- --   f₀₀ ((a , inl b) ∷ xs) = (a , b) ∷ f₀₀ xs
--- --   f₀₀ ((a , inr c) ∷ xs) = f₀₀ xs
-
--- --   f₁₀ : (xs : List ⟨ α ×ₒ (β +ₒ γ) ⟩) → List ⟨ α ×ₒ γ ⟩
--- --   f₁₀ [] = []
--- --   f₁₀ ((a , inl b) ∷ xs) = f₁₀ xs
--- --   f₁₀ ((a , inr c) ∷ xs) = (a , c) ∷ f₁₀ xs
-
--- --   f₀₁ : (xs : List ⟨ α ×ₒ (β +ₒ γ) ⟩) → (δ : is-decreasing-pr₂ α (β +ₒ γ) xs) → is-decreasing-pr₂ α β (f₀₀ xs)
--- --   f₀₁ [] δ = []-decr
--- --   f₀₁ ((a , inl b) ∷ []) δ = sing-decr
--- --   f₀₁ ((a , inl b) ∷ (a' , inl b') ∷ xs) (many-decr p δ) = many-decr p (f₀₁ ((a' , inl b') ∷ xs) δ)
--- --   f₀₁ ((a , inl b) ∷ (a' , inr c) ∷ xs) (many-decr p δ) = 𝟘-elim p
--- --   f₀₁ ((a , inr c) ∷ []) δ = []-decr
--- --   f₀₁ ((a , inr c) ∷ (a' , inl b') ∷ xs) (many-decr ⋆ δ) = f₀₁ ((a' , inl b') ∷ xs) δ
--- --   f₀₁ ((a , inr c) ∷ (a' , inr c') ∷ xs) (many-decr p δ) = f₀₁ xs (tail-is-decreasing (underlying-order (β +ₒ γ)) δ)
-
--- --   no-swapping-lemma : (xs : List ⟨ α ×ₒ (β +ₒ γ) ⟩) → (a : ⟨ α ⟩) → (b : ⟨ β ⟩)
--- --                     → (δ : is-decreasing-pr₂ α (β +ₒ γ) ((a , inl b) ∷ xs))
--- --                     → f₁₀ ((a , inl b) ∷ xs) ＝ []
--- --   no-swapping-lemma [] a b δ = refl
--- --   no-swapping-lemma ((a' , inl b') ∷ xs) a b (many-decr p δ) = no-swapping-lemma xs a b' δ
--- --   no-swapping-lemma ((a' , inr c) ∷ xs) a b (many-decr p δ) = 𝟘-elim p
-
--- --   f₁₁ : (xs : List ⟨ α ×ₒ (β +ₒ γ) ⟩) → (δ : is-decreasing-pr₂ α (β +ₒ γ) xs) → is-decreasing-pr₂ α γ (f₁₀ xs)
--- --   f₁₁ [] δ = []-decr
--- --   f₁₁ ((a , inl b) ∷ []) δ = []-decr
--- --   f₁₁ ((a , inl b) ∷ (a' , inl b') ∷ xs) (many-decr p δ) = f₁₁ xs (tail-is-decreasing (underlying-order (β +ₒ γ)) δ)
--- --   f₁₁ ((a , inl b) ∷ (a' , inr c) ∷ xs) (many-decr p δ) = 𝟘-elim p
--- --   f₁₁ ((a , inr c) ∷ []) δ = sing-decr
--- --   f₁₁ ((a , inr c) ∷ (a' , inl b) ∷ xs) (many-decr ⋆ δ) =
--- --    transport⁻¹ (λ z → is-decreasing-pr₂ α γ ((a , c) ∷ z)) (no-swapping-lemma xs a b δ) sing-decr
--- --   f₁₁ ((a , inr c) ∷ (a' , inr c') ∷ xs) (many-decr p δ) = many-decr p (f₁₁ ((a' , inr c') ∷ xs) δ)
-
--- --   f₀ : ⟨ expᴸ[𝟙+ α ] (β +ₒ γ) ⟩ → ⟨ expᴸ[𝟙+ α ] β ⟩
--- --   f₀ (xs , δ) = (f₀₀ xs) , (f₀₁ xs δ)
-
--- --   f₁ : ⟨ expᴸ[𝟙+ α ] (β +ₒ γ) ⟩ → ⟨ expᴸ[𝟙+ α ] γ ⟩
--- --   f₁ (xs , δ) = (f₁₀ xs) , (f₁₁ xs δ)
-
--- --   f : ⟨ expᴸ[𝟙+ α ] (β +ₒ γ) ⟩ → ⟨ (expᴸ[𝟙+ α ] β) ×ₒ (expᴸ[𝟙+ α ] γ) ⟩
--- --   f (xs , δ) = (f₀ (xs , δ) , f₁ (xs , δ))
-
-
--- --   f-order-preserving : is-order-preserving (expᴸ[𝟙+ α ] (β +ₒ γ)) ((expᴸ[𝟙+ α ] β) ×ₒ (expᴸ[𝟙+ α ] γ)) f
--- --   f-order-preserving ([] , δ) (((a , inl b) ∷ ys) , ε) []-lex = inr (to-expᴸ-＝ α γ (no-swapping-lemma ys a b ε ⁻¹) , []-lex)
--- --   f-order-preserving ([] , δ) (((a , inr c) ∷ ys) , ε) []-lex = inl []-lex
--- --   f-order-preserving (((a , inl b) ∷ xs) , δ) (((a' , inl b') ∷ ys) , ε) (head-lex (inl p)) =
--- --    inr (to-expᴸ-＝ α γ (no-swapping-lemma xs a b δ ∙ no-swapping-lemma ys a' b' ε ⁻¹) , head-lex (inl p))
--- --   f-order-preserving (((a , inl b) ∷ xs) , δ) (((a' , inl b') ∷ ys) , ε) (head-lex (inr (refl , p))) =
--- --    inr (to-expᴸ-＝ α γ (no-swapping-lemma xs a b δ ∙ no-swapping-lemma ys a' b ε ⁻¹) , (head-lex (inr (refl , p))))
--- --   f-order-preserving (((a , inl b) ∷ xs) , δ) (((a , inl b) ∷ ys) , ε) (tail-lex refl ps) =
--- --     h (f-order-preserving (xs , tail-is-decreasing (underlying-order (β +ₒ γ)) δ) (ys , tail-is-decreasing (underlying-order (β +ₒ γ)) ε) ps)
--- --    where
--- --     h : underlying-order ((expᴸ[𝟙+ α ] β) ×ₒ (expᴸ[𝟙+ α ] γ)) (f (xs , tail-is-decreasing _ δ)) (f (ys , tail-is-decreasing _ ε))
--- --       → underlying-order ((expᴸ[𝟙+ α ] β) ×ₒ (expᴸ[𝟙+ α ] γ)) (f (((a , inl b) ∷ xs) , δ)) (f (((a , inl b) ∷ ys) , ε))
--- --     h (inl p) = 𝟘-elim (irrefl (expᴸ[𝟙+ α ] γ)
--- --                                ([] , []-decr)
--- --                                (transport₂ (expᴸ-order α γ)
--- --                                            {x = f₁₀ xs , f₁₁ xs (tail-is-decreasing (underlying-order (β +ₒ γ)) δ)}
--- --                                            {x' = [] , []-decr}
--- --                                            {y = f₁₀ ys , f₁₁ ys (tail-is-decreasing (underlying-order (β +ₒ γ)) ε)}
--- --                                            {y' = [] , []-decr}
--- --                                            (to-expᴸ-＝ α γ (no-swapping-lemma xs a b δ))
--- --                                            (to-expᴸ-＝ α γ (no-swapping-lemma ys a b ε)) p))
--- --     h (inr (r , p)) = inr ((to-expᴸ-＝ α γ (ap pr₁ r)) , tail-lex refl p)
--- --   f-order-preserving (((a , inr c) ∷ xs) , δ) (((a' , inr c') ∷ ys) , ε) (head-lex (inl p)) = inl (head-lex (inl p))
--- --   f-order-preserving (((a , inr c) ∷ xs) , δ) (((a' , inr c) ∷ ys) , ε) (head-lex (inr (refl , p))) = inl (head-lex (inr (refl , p)))
--- --   f-order-preserving (((a , inr c) ∷ xs) , δ) (((a , inr c) ∷ ys) , ε) (tail-lex refl ps) =
--- --    h (f-order-preserving (xs , tail-is-decreasing (underlying-order (β +ₒ γ)) δ) (ys , tail-is-decreasing (underlying-order (β +ₒ γ)) ε) ps)
--- --    where
--- --     h : underlying-order ((expᴸ[𝟙+ α ] β) ×ₒ (expᴸ[𝟙+ α ] γ)) (f (xs , tail-is-decreasing _ δ)) (f (ys , tail-is-decreasing _ ε))
--- --       → underlying-order ((expᴸ[𝟙+ α ] β) ×ₒ (expᴸ[𝟙+ α ] γ)) (f (((a , inr c) ∷ xs) , δ)) (f (((a , inr c) ∷ ys) , ε))
--- --     h (inl p) = inl (tail-lex refl p)
--- --     h (inr (r , p)) = inr (to-expᴸ-＝ α γ (ap ((a , c) ∷_) (ap pr₁ r)) , p)
--- --   f-order-preserving (((a , inl b) ∷ xs) , δ) (((a' , inr c') ∷ ys) , ε) (head-lex (inl ⋆)) =
--- --    inl (transport⁻¹ (λ z → lex (underlying-order (α ×ₒ γ)) z ((a' , c') ∷ _)) (no-swapping-lemma xs a b δ) []-lex)
--- --   f-order-preserving (((a , inl b) ∷ xs) , δ) (((a' , inr c') ∷ ys) , ε) (tail-lex p ps) = 𝟘-elim (+disjoint (ap pr₂ p))
--- --   f-order-preserving (((a , inr c) ∷ xs) , δ) (((a' , inl b') ∷ ys) , ε) (head-lex (inr (r , p))) = 𝟘-elim (+disjoint (r ⁻¹))
--- --   f-order-preserving (((a , inr c) ∷ xs) , δ) (((a' , inl b') ∷ ys) , ε) (tail-lex p ps) = 𝟘-elim (+disjoint (ap pr₂ p ⁻¹))
 
 -- --   g₀ : (bs : List ⟨ α ×ₒ β ⟩) → (cs : List ⟨ α ×ₒ γ ⟩) → List ⟨ α ×ₒ (β +ₒ γ) ⟩
 -- --   g₀ bs ((a , c) ∷ cs) = (a , inr c) ∷ g₀ bs cs
