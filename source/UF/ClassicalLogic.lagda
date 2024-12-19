@@ -179,7 +179,8 @@ EM-gives-untruncated-De-Morgan em A B i j =
 
 But already weak excluded middle gives De Morgan.
 
-Added by Martin Escardo and Tom de Jong 29th August 2024. A typal version of De Morgan.
+Added by Martin Escardo and Tom de Jong 29th August 2024. A typal
+version of De Morgan.
 
 \begin{code}
 
@@ -194,7 +195,8 @@ untruncated-typal-De-Morgan-gives-untruncated-De-Morgan
  → untruncated-De-Morgan 𝓤
 untruncated-typal-De-Morgan-gives-untruncated-De-Morgan d' P Q i j = d' P Q
 
-typal-WEM-gives-untruncated-typal-De-Morgan : typal-WEM 𝓤 → untruncated-typal-De-Morgan 𝓤
+typal-WEM-gives-untruncated-typal-De-Morgan : typal-WEM 𝓤
+                                            → untruncated-typal-De-Morgan 𝓤
 typal-WEM-gives-untruncated-typal-De-Morgan wem A B =
  λ (ν : ¬ (A × B)) →
       Cases (wem A)
@@ -210,7 +212,9 @@ typal-WEM-gives-untruncated-De-Morgan =
  untruncated-typal-De-Morgan-gives-untruncated-De-Morgan
  ∘ typal-WEM-gives-untruncated-typal-De-Morgan
 
-untruncated-De-Morgan-gives-typal-WEM : funext 𝓤 𝓤₀ → untruncated-De-Morgan 𝓤 → typal-WEM 𝓤
+untruncated-De-Morgan-gives-typal-WEM : funext 𝓤 𝓤₀
+                                      → untruncated-De-Morgan 𝓤
+                                      → typal-WEM 𝓤
 untruncated-De-Morgan-gives-typal-WEM fe d =
  WEM-gives-typal-WEM fe
   (λ P i → d P (¬ P) i (negations-are-props fe) non-contradiction)
@@ -244,10 +248,104 @@ untruncated-De-Morgan-is-prop
  → is-prop (untruncated-De-Morgan 𝓤)
 untruncated-De-Morgan-is-prop ν δ = 𝟘-elim (ν δ)
 
-untruncated-De-Morgan-is-not-prop⁺
+untruncated-typal-De-Morgan-has-two-witnesses-if-it-has-one
  : funext 𝓤 𝓤₀
- → (δ : untruncated-De-Morgan 𝓤) → Σ δ' ꞉ untruncated-De-Morgan 𝓤 , δ' ≠ δ
-untruncated-De-Morgan-is-not-prop⁺ {𝓤} fe δ = (δ' , III)
+ → (δ : untruncated-typal-De-Morgan 𝓤)
+ → Σ δ' ꞉ untruncated-typal-De-Morgan 𝓤 , δ' ≠ δ
+untruncated-typal-De-Morgan-has-two-witnesses-if-it-has-one {𝓤} fe δ
+ = (δ' , III)
+ where
+  open import MLTT.Plus-Properties
+
+  wem : typal-WEM 𝓤
+  wem = untruncated-De-Morgan-gives-typal-WEM fe
+         (untruncated-typal-De-Morgan-gives-untruncated-De-Morgan δ)
+
+  g : (P Q : 𝓤 ̇ )
+      (ν : ¬ (P × Q))
+      (a : ¬ P + ¬¬ P)
+      (b : ¬ Q + ¬¬ Q)
+      (c : ¬ P + ¬ Q)
+    → ¬ P + ¬ Q
+  g P Q ν (inl _) (inl v) (inl _) = inr v
+  g P Q ν (inl u) (inl _) (inr _) = inl u
+  g P Q ν (inl _) (inr _) _       = δ P Q ν
+  g P Q ν (inr _) _       _       = δ P Q ν
+
+  δ' : untruncated-typal-De-Morgan 𝓤
+  δ' P Q ν = g P Q ν (wem P) (wem Q) (δ P Q ν)
+
+  I : (h : ¬ 𝟘) → wem 𝟘 ＝ inl h
+  I h = I₀ (wem 𝟘) refl
+   where
+    I₀ : (a : ¬ 𝟘 + ¬¬ 𝟘) → wem 𝟘 ＝ a → wem 𝟘 ＝ inl h
+    I₀ (inl u) = transport
+                  (λ - → wem 𝟘 ＝ inl -)
+                  (negations-are-props fe u h)
+    I₀ (inr ϕ) p = 𝟘-elim (ϕ h)
+
+  ν : ¬ (𝟘 × 𝟘)
+  ν (p , q) = 𝟘-elim p
+
+  II : δ' 𝟘 𝟘 ν ≠ δ 𝟘 𝟘 ν
+  II = II₃
+   where
+    m n : ¬ 𝟘 + ¬ 𝟘
+    m = δ 𝟘 𝟘 ν
+    n = g 𝟘 𝟘 ν (inl 𝟘-elim) (inl 𝟘-elim) m
+
+    II₁ : δ' 𝟘 𝟘 ν ＝ n
+    II₁ = ap₂ (λ -₁ -₂ → g 𝟘 𝟘 ν -₁ -₂ m)
+              (I 𝟘-elim)
+              (I 𝟘-elim)
+
+    II₂ : (m' : ¬ 𝟘 + ¬ 𝟘)
+        → m ＝ m'
+        → g 𝟘 𝟘 ν (inl 𝟘-elim) (inl 𝟘-elim) m' ≠ m
+    II₂ (inl x) p q = +disjoint
+                       (inl x      ＝⟨ p ⁻¹ ⟩
+                        m          ＝⟨ q ⁻¹ ⟩
+                        inr 𝟘-elim ∎)
+    II₂ (inr x) p q = +disjoint
+                       (inl 𝟘-elim ＝⟨ q ⟩
+                        m          ＝⟨ p ⟩
+                        inr x      ∎)
+
+    II₃ : δ' 𝟘 𝟘 ν ≠ m
+    II₃ = transport (_≠ m) (II₁ ⁻¹) (II₂ m refl)
+
+  III : δ' ≠ δ
+  III e = II III₀
+   where
+    III₀ : δ' 𝟘 𝟘 ν ＝ δ 𝟘 𝟘 ν
+    III₀ = ap (λ - → - 𝟘 𝟘 ν) e
+
+untruncated-typal-De-Morgan-is-not-prop
+ : funext 𝓤 𝓤₀
+ → untruncated-typal-De-Morgan 𝓤
+ → ¬ is-prop (untruncated-typal-De-Morgan 𝓤)
+untruncated-typal-De-Morgan-is-not-prop {𝓤} fe δ
+ = IV (untruncated-typal-De-Morgan-has-two-witnesses-if-it-has-one fe δ)
+ where
+  IV : (Σ δ' ꞉ untruncated-typal-De-Morgan 𝓤 , δ' ≠ δ)
+    → ¬ is-prop (untruncated-typal-De-Morgan 𝓤)
+  IV (δ' , III) i = III (i δ' δ)
+
+\end{code}
+
+We repeat the above proof adding more information.
+
+TODO. Is it possible to prove the following from the above, or
+vice-versa, to avoid the repetition?
+
+\begin{code}
+
+untruncated-De-Morgan-has-at-least-two-witnesses-if-it-has-one
+ : funext 𝓤 𝓤₀
+ → (δ : untruncated-De-Morgan 𝓤)
+ → Σ δ' ꞉ untruncated-De-Morgan 𝓤 , δ' ≠ δ
+untruncated-De-Morgan-has-at-least-two-witnesses-if-it-has-one {𝓤} fe δ
+ = (δ' , III)
  where
   open import MLTT.Plus-Properties
 
@@ -319,7 +417,7 @@ untruncated-De-Morgan-is-not-prop
  → untruncated-De-Morgan 𝓤
  → ¬ is-prop (untruncated-De-Morgan 𝓤)
 untruncated-De-Morgan-is-not-prop {𝓤} fe δ
- = IV (untruncated-De-Morgan-is-not-prop⁺ fe δ)
+ = IV (untruncated-De-Morgan-has-at-least-two-witnesses-if-it-has-one fe δ)
  where
   IV : (Σ δ' ꞉ untruncated-De-Morgan 𝓤 , δ' ≠ δ)
     → ¬ is-prop (untruncated-De-Morgan 𝓤)
@@ -336,8 +434,8 @@ module _ (pt : propositional-truncations-exist) where
 
  open PropositionalTruncation pt
 
- truncated-typal-De-Morgan : ∀ 𝓤 → 𝓤 ⁺ ̇
- truncated-typal-De-Morgan 𝓤 = (P Q : 𝓤 ̇ ) → ¬ (P × Q) → ¬ P ∨ ¬ Q
+ typal-De-Morgan : ∀ 𝓤 → 𝓤 ⁺ ̇
+ typal-De-Morgan 𝓤 = (P Q : 𝓤 ̇ ) → ¬ (P × Q) → ¬ P ∨ ¬ Q
 
  De-Morgan : ∀ 𝓤 → 𝓤 ⁺ ̇
  De-Morgan 𝓤 = (P Q : 𝓤 ̇ )
@@ -345,9 +443,9 @@ module _ (pt : propositional-truncations-exist) where
              → is-prop Q
              → ¬ (P × Q) → ¬ P ∨ ¬ Q
 
- truncated-typal-De-Morgan-is-prop : FunExt
-                                   → is-prop (truncated-typal-De-Morgan 𝓤)
- truncated-typal-De-Morgan-is-prop fe = Π₃-is-prop (λ {𝓤} {𝓥} → fe 𝓤 𝓥)
+ typal-De-Morgan-is-prop : FunExt
+                         → is-prop (typal-De-Morgan 𝓤)
+ typal-De-Morgan-is-prop fe = Π₃-is-prop (λ {𝓤} {𝓥} → fe 𝓤 𝓥)
                                          (λ P Q ν → ∨-is-prop)
 
  De-Morgan-is-prop : FunExt → is-prop (De-Morgan 𝓤)
@@ -360,18 +458,17 @@ module _ (pt : propositional-truncations-exist) where
 
  De-Morgan-gives-WEM : funext 𝓤 𝓤₀
                      → De-Morgan 𝓤 → WEM 𝓤
- De-Morgan-gives-WEM {𝓤} fe t P i = III
+ De-Morgan-gives-WEM {𝓤} fe dm P i = III
   where
    I : ¬ (P × ¬ P) → ¬ P ∨ ¬¬ P
-   I = t P (¬ P) i (negations-are-props fe)
+   I = dm P (¬ P) i (negations-are-props fe)
 
    II : ¬ P ∨ ¬¬ P
    II = I non-contradiction
 
    III : ¬ P + ¬¬ P
    III = exit-∥∥
-          (decidability-of-prop-is-prop fe
-          (negations-are-props fe))
+          (decidability-of-prop-is-prop fe (negations-are-props fe))
           II
 
  De-Morgan-gives-typal-WEM : funext 𝓤 𝓤₀ → De-Morgan 𝓤 → typal-WEM 𝓤
@@ -386,17 +483,16 @@ module _ (pt : propositional-truncations-exist) where
    (De-Morgan-gives-typal-WEM fe t)
    P Q i j ν
 
- truncated-typal-De-Morgan-gives-De-Morgan : truncated-typal-De-Morgan 𝓤
-                                           → De-Morgan 𝓤
- truncated-typal-De-Morgan-gives-De-Morgan d P Q i j = d P Q
+ typal-De-Morgan-gives-De-Morgan : typal-De-Morgan 𝓤 → De-Morgan 𝓤
+ typal-De-Morgan-gives-De-Morgan d P Q i j = d P Q
 
- De-Morgan-gives-truncated-typal-De-Morgan : funext 𝓤 𝓤₀
-                                           → De-Morgan 𝓤
-                                           → truncated-typal-De-Morgan 𝓤
- De-Morgan-gives-truncated-typal-De-Morgan {𝓤} fe d P Q ν =
+ De-Morgan-gives-typal-De-Morgan : funext 𝓤 𝓤₀
+                                 → De-Morgan 𝓤
+                                 → typal-De-Morgan 𝓤
+ De-Morgan-gives-typal-De-Morgan {𝓤} fe d P Q ν =
   ∣ typal-WEM-gives-untruncated-typal-De-Morgan
-    (De-Morgan-gives-typal-WEM fe d)
-    P Q ν ∣
+     (De-Morgan-gives-typal-WEM fe d)
+     P Q ν ∣
 
 \end{code}
 
