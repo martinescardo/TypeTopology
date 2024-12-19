@@ -885,11 +885,14 @@ which can be shown to be a simulation by proving related properties of f̃.
     e : f̅ ((β ↓ y) , t) ＝ y
     e = pr₂ (pr₂ proof-of-claim)
 
-  -- TODO: Clean up
-  blah : (i : I) (x : ⟨ α i ⟩) → f̅ (pr₁ (α⁺-is-upper-bound i) x) ＝ pr₁ (β-is-upper-bound i) x
-  blah i x = f̅ (pr₁ (α⁺-is-upper-bound i) x) ＝⟨ (f̅-key-property (α i ↓ x) (i , (x , refl)) ∣ i , x , refl ∣) ⁻¹ ⟩
-             f̃ (α i ↓ x) _ ＝⟨ refl ⟩
-             f i x ∎
+  f̅-behaviour : (i : I) (x : ⟨ α i ⟩)
+              → f̅ ([ α i , α⁺-Ord ]⟨ α⁺-is-upper-bound i ⟩ x) ＝ f i x
+  f̅-behaviour i x =
+   f̅ ([ α i , α⁺-Ord ]⟨ α⁺-is-upper-bound i ⟩ x) ＝⟨ e ⟩
+   f̃ (α i ↓ x) (i , x , refl)                    ＝⟨ refl ⟩
+   f i x                                         ∎
+    where
+     e = (f̅-key-property (α i ↓ x) (i , (x , refl)) ∣ i , x , refl ∣) ⁻¹
 
  α⁺-is-lower-bound-of-upper-bounds : (β : Ordinal 𝓤)
                                    → ((i : I) → α i ⊴ β)
@@ -899,12 +902,13 @@ which can be shown to be a simulation by proving related properties of f̃.
   where
    open lower-bound-of-upper-bounds-proof β β-is-ub
 
- -- TODO: Clean up
- α⁺-is-lower-bound-of-upper-bounds-behaviour :
-    (β : Ordinal 𝓤) (f : (i : I) → α i ⊴ β)
-    (i : I) (x : ⟨ α i ⟩)
-  → pr₁ (α⁺-is-lower-bound-of-upper-bounds β f) (pr₁ (α⁺-is-upper-bound i) x) ＝ pr₁ (f i) x
- α⁺-is-lower-bound-of-upper-bounds-behaviour β f i x = lower-bound-of-upper-bounds-proof.blah β f i x
+ α⁺-is-lower-bound-of-upper-bounds-behaviour
+  : (β : Ordinal 𝓤) (f : (i : I) → α i ⊴ β) (i : I)
+  → [ α⁺-Ord , β ]⟨ α⁺-is-lower-bound-of-upper-bounds β f ⟩
+      ∘ [ α i , α⁺-Ord ]⟨ α⁺-is-upper-bound i ⟩
+    ∼ [ α i , β ]⟨ f i ⟩
+ α⁺-is-lower-bound-of-upper-bounds-behaviour β f i x =
+  lower-bound-of-upper-bounds-proof.f̅-behaviour β f i x
 
 \end{code}
 
@@ -1000,25 +1004,29 @@ the supremum of α are given by initial segments of some αᵢ.
    ⊴-trans α⁻-Ord α⁺-Ord β (≃ₒ-to-⊴ α⁻-Ord α⁺-Ord α⁻-≃ₒ-α⁺)
                            (α⁺-is-lower-bound-of-upper-bounds β β-is-ub)
 
-  -- TODO: Clean up
-  α⁻-is-lower-bound-of-upper-bounds-behaviour :
-     (β : Ordinal 𝓤) (f : (i : I) → α i ⊴ β)
-     (i : I) (x : ⟨ α i ⟩)
-   → pr₁ (α⁻-is-lower-bound-of-upper-bounds β f) (pr₁ (α⁻-is-upper-bound i) x) ＝ pr₁ (f i) x
+  α⁻-is-lower-bound-of-upper-bounds-behaviour
+   : (β : Ordinal 𝓤) (f : (i : I) → α i ⊴ β) (i : I)
+   → [ α⁻-Ord , β ]⟨ α⁻-is-lower-bound-of-upper-bounds β f ⟩
+       ∘ [ α i , α⁻-Ord ]⟨ α⁻-is-upper-bound i ⟩
+     ∼ [ α i , β ]⟨ f i ⟩
   α⁻-is-lower-bound-of-upper-bounds-behaviour β f i x =
-   pr₁ (α⁻-is-lower-bound-of-upper-bounds β f)
-    (pr₁ (α⁻-is-upper-bound i) x) ＝⟨ refl ⟩
-   pr₁ (α⁺-is-lower-bound-of-upper-bounds β f) (ϕ (pr₁ (α⁻-is-upper-bound i) x)) ＝⟨ refl ⟩
-   pr₁ (α⁺-is-lower-bound-of-upper-bounds β f) (ϕ (ψ (pr₁ (α⁺-is-upper-bound i) x))) ＝⟨ e ⟩
-   pr₁ (α⁺-is-lower-bound-of-upper-bounds β f)
-    (pr₁ (α⁺-is-upper-bound i) x) ＝⟨ α⁺-is-lower-bound-of-upper-bounds-behaviour β f i x ⟩
-   pr₁ (f i) x ∎
+   (h ∘ g) x            ＝⟨ refl ⟩
+   (h⁺ ∘ ϕ ∘ g) x       ＝⟨ refl ⟩
+   (h⁺ ∘ ϕ ∘ ψ ∘ g⁺) x  ＝⟨ e₁ ⟩
+   (h⁺ ∘ g⁺) x          ＝⟨ e₂ ⟩
+   [ α i , β ]⟨ f i ⟩ x ∎
     where
+     h = [ α⁻-Ord , β ]⟨ α⁻-is-lower-bound-of-upper-bounds β f ⟩
+     h⁺ = [ α⁺-Ord , β ]⟨ α⁺-is-lower-bound-of-upper-bounds β f ⟩
+     g = [ α i , α⁻-Ord ]⟨ α⁻-is-upper-bound i ⟩
+     g⁺ = [ α i , α⁺-Ord ]⟨ α⁺-is-upper-bound i ⟩
      ϕ = ≃ₒ-to-fun _ _ α⁻-≃ₒ-α⁺
      ψ = ≃ₒ-to-fun _ _ α⁺-≃ₒ-α⁻
-     e = ap (pr₁ (α⁺-is-lower-bound-of-upper-bounds β f))
-            (inverses-are-sections (≃ₒ-to-fun _ _ α⁻-≃ₒ-α⁺) (≃ₒ-to-fun-is-equiv _ _ α⁻-≃ₒ-α⁺)
-              (pr₁ (α⁺-is-upper-bound i) x))
+     e₁ = ap h⁺
+          (inverses-are-sections ϕ
+            (≃ₒ-to-fun-is-equiv _ _ α⁻-≃ₒ-α⁺)
+            ([ α i , α⁺-Ord ]⟨ α⁺-is-upper-bound i ⟩ x))
+     e₂ = α⁺-is-lower-bound-of-upper-bounds-behaviour β f i x
 
 \end{code}
 
@@ -1106,30 +1114,23 @@ module suprema
                                       → sup ⊴ β
    sup-is-lower-bound-of-upper-bounds = pr₂ (sup-is-least-upper-bound)
 
-   sup-is-lower-bound-of-upper-bounds-lemma :
-    (β : Ordinal 𝓤) (f : (i : I) → α i ⊴ β)
-    (i : I) (x : ⟨ α i ⟩)
+   sup-is-lower-bound-of-upper-bounds-behaviour
+    : (β : Ordinal 𝓤) (f : (i : I) → α i ⊴ β)
+      (i : I) (x : ⟨ α i ⟩)
     → [ sup , β ]⟨ sup-is-lower-bound-of-upper-bounds β f ⟩ (q i x)
       ＝ [ α i , β ]⟨ f i ⟩ x
-   sup-is-lower-bound-of-upper-bounds-lemma =
+   sup-is-lower-bound-of-upper-bounds-behaviour =
     α⁻-is-lower-bound-of-upper-bounds-behaviour sr
 
-\end{code}
-
-TODO: Clean up
-
-\begin{code}
-
-   surjectivity-lemma :
+   induced-simulation-from-sup-is-surjection :
       (β : Ordinal 𝓤) (f : (i : I) → α i ⊴ β)
     → ((y : ⟨ β ⟩) → ∃ i ꞉ I , Σ x ꞉ ⟨ α i ⟩ , [ α i , β ]⟨ f i ⟩ x ＝ y)
     → is-surjection ([ sup , β ]⟨ sup-is-lower-bound-of-upper-bounds β f ⟩)
-   surjectivity-lemma β f s y =
-    ∥∥-functor (λ (i , x , p) → (q i x) , (sup-is-lower-bound-of-upper-bounds-lemma β f i x ∙ p)) (s y)
-
-\end{code}
-
-\begin{code}
+   induced-simulation-from-sup-is-surjection β f s y =
+    ∥∥-functor
+     (λ (i , x , p) → q i x ,
+                      (sup-is-lower-bound-of-upper-bounds-behaviour β f i x ∙ p))
+     (s y)
 
    sup-is-image-of-sum-to-ordinals : ⟨ sup ⟩ ≃ image sum-to-ordinals
    sup-is-image-of-sum-to-ordinals =
@@ -1172,55 +1173,6 @@ TODO: Clean up
          where
           y' : ⟨ sup ⟩
           y' = [ α i , sup ]⟨ sup-is-upper-bound i ⟩ x
-
-\end{code}
-
-TODO: Clean up & rename
-
-\begin{code}
-
-   factor-through-sup : {Y : 𝓥 ̇  }
-                      → is-set Y
-                      → (f : (Σ i ꞉ I , ⟨ α i ⟩) → Y)
-                      → ((i : I) (x : ⟨ α i ⟩) (j : I) (y : ⟨ α j ⟩)
-                              → (α i ↓ x) ＝ (α j ↓ y)
-                              → f (i , x) ＝ f (j , y))
-                      → Σ g ꞉ (⟨ sup ⟩ → Y) , g ∘ sum-to-sup ∼ f
-   factor-through-sup i f h =
-    factor-through-surjection sum-to-sup sum-to-sup-is-surjection i f
-     foo
-      where
-       foo : (s t : Σ i ꞉ I , ⟨ α i ⟩)
-           → sum-to-sup s ＝ sum-to-sup t
-           → f s ＝ f t
-       foo (i , x) (j , y) e = h i x j y (ap (restriction σ) e')
-        where
-         e' : corestriction σ (i , x) ＝ corestriction σ (j , y)
-         e' = (inverses-are-sections' sup-is-image-of-sum-to-ordinals (corestriction σ (i , x))) ⁻¹
-              ∙ (ap ⌜ sup-is-image-of-sum-to-ordinals ⌝ e)
-              ∙ inverses-are-sections' sup-is-image-of-sum-to-ordinals (corestriction σ (j , y))
-
-   induced-map-from-sup : {Y : 𝓥 ̇  }
-                        → is-set Y
-                        → (f : (Σ i ꞉ I , ⟨ α i ⟩) → Y)
-                        → ((i : I) (x : ⟨ α i ⟩) (j : I) (y : ⟨ α j ⟩)
-                                → (α i ↓ x) ＝ (α j ↓ y)
-                                → f (i , x) ＝ f (j , y))
-                        → ⟨ sup ⟩ → Y
-   induced-map-from-sup i f h = pr₁ (factor-through-sup i f h)
-
-   induced-map-from-sup-behaviour : {Y : 𝓥 ̇  }
-                                    (i : is-set Y)
-                                    (f : (Σ i ꞉ I , ⟨ α i ⟩) → Y)
-                                    (h : ((i : I) (x : ⟨ α i ⟩) (j : I) (y : ⟨ α j ⟩)
-                                               → (α i ↓ x) ＝ (α j ↓ y)
-                                               → f (i , x) ＝ f (j , y)))
-                                  → (induced-map-from-sup i f h) ∘ sum-to-sup ∼ f
-   induced-map-from-sup-behaviour i f h = pr₂ (factor-through-sup i f h)
-
-\end{code}
-
-\begin{code}
 
  sup-composition-⊴ : {I J : 𝓤 ̇  } (ρ : I → J) (α : J → Ordinal 𝓤)
                    → sup (α ∘ ρ) ⊴ sup α
