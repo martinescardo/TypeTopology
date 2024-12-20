@@ -175,7 +175,7 @@ module _
 
 \end{code}
 
-Proving that forward-right-lits preserves the decreasing-pr₂ property requires
+Proving that forward-right-on-lists preserves the decreasing-pr₂ property requires
 the following lemma which says that a decreasing-pr₂ list with a "left-entry"
 (a , inl b) continues to have only left-entries and can't be followed by an
 element (a' , inr c) (because that would not be decreasing in the second
