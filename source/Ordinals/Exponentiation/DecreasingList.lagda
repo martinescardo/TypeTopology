@@ -528,6 +528,215 @@ exponentiationᴸ-has-trichotomous-least-element α h β =
 
 \end{code}
 
+An order preserving map f : β → γ induces a map expᴸ[𝟙+ α ] β → expᴸ[𝟙+ α ] γ by
+mapping f on the second components.
+
+Moreover, the induced map is order reflecting if f is order reflecting and
+left-cancellable.
+
+\begin{code}
+
+module _
+        (α : Ordinal 𝓤)
+        (β : Ordinal 𝓥)
+        (γ : Ordinal 𝓦)
+        (f : ⟨ β ⟩ → ⟨ γ ⟩)
+        (f-is-order-preserving : is-order-preserving β γ f)
+       where
+
+ expᴸ-map-on-lists : List ⟨ α ×ₒ β ⟩ → List ⟨ α ×ₒ γ ⟩
+ expᴸ-map-on-lists = map (λ (a  , b) → (a , f b))
+
+ expᴸ-map-on-lists-preserves-decreasing-pr₂
+  : (l : List ⟨ α ×ₒ β ⟩)
+  → is-decreasing-pr₂ α β l
+  → is-decreasing-pr₂ α γ (expᴸ-map-on-lists l)
+ expᴸ-map-on-lists-preserves-decreasing-pr₂ [] δ = []-decr
+ expᴸ-map-on-lists-preserves-decreasing-pr₂ ((a , b) ∷ []) δ = sing-decr
+ expᴸ-map-on-lists-preserves-decreasing-pr₂ ((a , b) ∷ (a' , b') ∷ l)
+  (many-decr p δ) = many-decr (f-is-order-preserving b' b p)
+                              (expᴸ-map-on-lists-preserves-decreasing-pr₂
+                                ((a' , b') ∷ l)
+                                δ)
+
+ expᴸ-map : ⟨ expᴸ[𝟙+ α ] β ⟩ → ⟨ expᴸ[𝟙+ α ] γ ⟩
+ expᴸ-map (l , δ) = expᴸ-map-on-lists l ,
+                    expᴸ-map-on-lists-preserves-decreasing-pr₂ l δ
+
+ expᴸ-map-is-order-preserving
+  : is-order-preserving (expᴸ[𝟙+ α ] β) (expᴸ[𝟙+ α ] γ) expᴸ-map
+ expᴸ-map-is-order-preserving ([] , δ) (l' , δ') []-lex = []-lex
+ expᴸ-map-is-order-preserving (((a , b) ∷ l), δ) (((a' , b') ∷ l') , δ')
+  (head-lex (inl u)) = head-lex (inl (f-is-order-preserving b b' u))
+ expᴸ-map-is-order-preserving (((a , b) ∷ l), δ) (((a' , b') ∷ l') , δ')
+  (head-lex (inr (refl , u))) = head-lex (inr (refl , u))
+ expᴸ-map-is-order-preserving (((a , b) ∷ l), δ) (((a' , b') ∷ l') , δ')
+  (tail-lex refl u) =
+   tail-lex refl
+    (expᴸ-map-is-order-preserving
+     (l  , tail-is-decreasing-pr₂ α β (a  , b)  δ)
+     (l' , tail-is-decreasing-pr₂ α β (a' , b') δ')
+     u)
+
+ expᴸ-map-is-order-reflecting
+  : is-order-reflecting β γ f
+  → left-cancellable f
+  → is-order-reflecting (expᴸ[𝟙+ α ] β) (expᴸ[𝟙+ α ] γ) expᴸ-map
+ expᴸ-map-is-order-reflecting ρ κ ([] , δ) ((_ ∷ l') , δ') u = []-lex
+ expᴸ-map-is-order-reflecting ρ κ (((a , b) ∷ l) , δ) (((a' , b') ∷ l') , δ')
+  (head-lex (inl v)) = head-lex (inl (ρ b b' v))
+ expᴸ-map-is-order-reflecting ρ κ (((a , b) ∷ l) , δ) (((a' , b') ∷ l') , δ')
+  (head-lex (inr (e , v))) = head-lex (inr (κ e , v))
+ expᴸ-map-is-order-reflecting ρ κ (((a , b) ∷ l) , δ) (((a' , b') ∷ l') , δ')
+  (tail-lex e v) =
+   tail-lex
+    (to-×-＝ (pr₁ (from-×-＝' e)) (κ (pr₂ (from-×-＝' e))))
+    (expᴸ-map-is-order-reflecting ρ κ
+      (l  , tail-is-decreasing-pr₂ α β (a  , b)  δ)
+      (l' , tail-is-decreasing-pr₂ α β (a' , b') δ')
+      v)
+
+ expᴸ-map-is-decreasing-pr₂-lc
+  : is-order-reflecting β γ f
+  → (l : List (⟨ α ×ₒ β ⟩))
+  → is-decreasing-pr₂ α γ (expᴸ-map-on-lists l)
+  → is-decreasing-pr₂ α β l
+ expᴸ-map-is-decreasing-pr₂-lc ρ [] δ = []-decr
+ expᴸ-map-is-decreasing-pr₂-lc ρ ((a , b) ∷ []) δ = sing-decr
+ expᴸ-map-is-decreasing-pr₂-lc ρ ((a , b) ∷ (a' , b') ∷ l) (many-decr u δ) =
+  many-decr (ρ b' b u) (expᴸ-map-is-decreasing-pr₂-lc ρ ((a' , b') ∷ l) δ)
+
+\end{code}
+
+The following technical lemma is used to show that if f is simulation, then so
+is the induced map on epxᴸ.
+
+\begin{code}
+
+ expᴸ-map-is-partially-surjective
+  : is-order-reflecting β γ f
+  → ((b : ⟨ β ⟩) (c : ⟨ γ ⟩) → c ≺⟨ γ ⟩ f b → Σ b' ꞉ ⟨ β ⟩ , f b' ＝ c)
+  → (l₁ : List ⟨ α ×ₒ β ⟩) (l : List ⟨ α ×ₒ γ ⟩)
+    (δ₁ : is-decreasing-pr₂ α β l₁) (δ : is-decreasing-pr₂ α γ l)
+  → (l , δ) ≺⟨ expᴸ[𝟙+ α ] γ ⟩ expᴸ-map (l₁ , δ₁)
+  → Σ l₂ ꞉ ⟨ expᴸ[𝟙+ α ] β ⟩ , expᴸ-map l₂ ＝ (l , δ)
+ expᴸ-map-is-partially-surjective ρ h ((a₁ , b) ∷ l₁) [] δ₁ []-decr v =
+  ([] , []-decr) , refl
+ expᴸ-map-is-partially-surjective ρ h ((a₁ , b) ∷ l₁) ((a , c) ∷ []) δ₁ δ
+  (head-lex (inl v)) = (((a , b') ∷ []) , sing-decr) ,
+                       to-expᴸ-＝ α γ (ap (λ - → (a , -) ∷ []) e)
+   where
+    b' = pr₁ (h b c v)
+    e  = pr₂ (h b c v)
+ expᴸ-map-is-partially-surjective ρ h ((a₁ , b) ∷ l₁) ((a , c) ∷ []) δ₁ δ
+  (head-lex (inr (refl , v))) = ((a , b ∷ []) , sing-decr) ,
+                                to-expᴸ-＝ α γ refl
+ expᴸ-map-is-partially-surjective ρ h ((a₁ , b) ∷ l₁) ((a , c) ∷ []) δ₁ δ
+  (tail-lex refl v) = ((a , b ∷ []) , sing-decr) , (to-expᴸ-＝ α γ refl)
+ expᴸ-map-is-partially-surjective ρ h ((a₁ , b₁) ∷ l₁) ((a , c) ∷ (a' , c') ∷ l)
+  δ₁ (many-decr u δ) (head-lex (inl v)) =
+   (((a , b') ∷ l₂) , ε) , to-expᴸ-＝ α γ e₃
+    where
+     IH : Σ l₂ ꞉ ⟨ expᴸ[𝟙+ α ] β ⟩ , expᴸ-map l₂ ＝ ((a' , c' ∷ l) , δ)
+     IH = expᴸ-map-is-partially-surjective ρ h
+           ((a₁ , b₁) ∷ l₁)
+           ((a' , c') ∷ l)
+           δ₁
+           δ
+           (head-lex (inl (Transitivity γ c' c (f b₁) u v)))
+     l₂ = pr₁ (pr₁ IH)
+     δ₂ = pr₂ (pr₁ IH)
+     e₂ = pr₂ IH
+     b' = pr₁ (h b₁ c v)
+     e₁ = pr₂ (h b₁ c v)
+     ε : is-decreasing-pr₂ α β (a , b' ∷ l₂)
+     ε = expᴸ-map-is-decreasing-pr₂-lc ρ ((a , b') ∷ l₂)
+          (transport₂
+            (λ -₁ -₂ → is-decreasing-pr₂ α γ (a , -₁ ∷ -₂))
+            (e₁ ⁻¹)
+            ((ap (expᴸ-list α γ) e₂) ⁻¹)
+            (many-decr u δ))
+     e₃ : (a , f b' ∷ expᴸ-map-on-lists l₂) ＝ (a , c ∷ a' , c' ∷ l)
+     e₃ = ap₂ (λ x y → a , x ∷ y) e₁ (ap (expᴸ-list α γ) e₂)
+ expᴸ-map-is-partially-surjective ρ h ((a₁ , b₁) ∷ l₁) ((a , c) ∷ (a' , c') ∷ l)
+  δ₁ (many-decr u δ) (head-lex (inr (refl , v))) =
+   (((a , b₁) ∷ l₂) , ε) , (to-expᴸ-＝ α γ e₃)
+    where
+     IH : Σ l₂ ꞉ ⟨ expᴸ[𝟙+ α ] β ⟩ , expᴸ-map l₂ ＝ ((a' , c' ∷ l) , δ)
+     IH = expᴸ-map-is-partially-surjective ρ h
+           ((a₁ , b₁) ∷ l₁)
+           ((a' , c') ∷ l)
+           δ₁
+           δ
+           (head-lex (inl u))
+     l₂ = pr₁ (pr₁ IH)
+     δ₂ = pr₂ (pr₁ IH)
+     e₂ = pr₂ IH
+     ε : is-decreasing-pr₂ α β (a , b₁ ∷ l₂)
+     ε = expᴸ-map-is-decreasing-pr₂-lc ρ ((a , b₁) ∷ l₂)
+          (transport⁻¹
+            (λ - → is-decreasing-pr₂ α γ (a , f b₁ ∷ -))
+            (ap (expᴸ-list α γ) e₂)
+            (many-decr u δ))
+     e₃ : ((a , f b₁) ∷ expᴸ-map-on-lists l₂) ＝ ((a , f b₁) ∷ (a' , c') ∷ l)
+     e₃ = ap ((a ,  f b₁) ∷_) (ap (expᴸ-list α γ) e₂)
+ expᴸ-map-is-partially-surjective ρ h ((a₁ , b₁) ∷ l₁) ((a , c) ∷ (a' , c') ∷ l)
+  δ₁ 𝕕@(many-decr u δ) (tail-lex refl v) =
+   (((a₁ , b₁) ∷ l₂) , ε) ,
+   to-expᴸ-＝ α γ (ap (a₁ , f b₁ ∷_) (ap (expᴸ-list α γ) e₂))
+    where
+     IH : Σ l₂ ꞉ ⟨ expᴸ[𝟙+ α ] β ⟩ , expᴸ-map l₂ ＝ ((a' , c' ∷ l) , δ)
+     IH = expᴸ-map-is-partially-surjective ρ h l₁ ((a' , c') ∷ l)
+           (tail-is-decreasing-pr₂ α β (a₁ , b₁) δ₁)
+           δ
+           v
+     l₂ = pr₁ (pr₁ IH)
+     δ₂ = pr₂ (pr₁ IH)
+     e₂ = pr₂ IH
+     ε : is-decreasing-pr₂ α β (a₁ , b₁ ∷ l₂)
+     ε = expᴸ-map-is-decreasing-pr₂-lc ρ (a₁ , b₁ ∷ l₂)
+          (transport⁻¹
+            (λ - → is-decreasing-pr₂ α γ ((a₁ , f b₁) ∷ -))
+            (ap (expᴸ-list α γ) e₂)
+            𝕕)
+
+ expᴸ-map-is-simulation : is-initial-segment β γ f
+                        → is-simulation (expᴸ[𝟙+ α ] β) (expᴸ[𝟙+ α ] γ) expᴸ-map
+ expᴸ-map-is-simulation f-init-seg =
+  order-preserving-and-reflecting-partial-surjections-are-simulations
+    (expᴸ[𝟙+ α ] β) (expᴸ[𝟙+ α ] γ) expᴸ-map
+    expᴸ-map-is-order-preserving
+    (expᴸ-map-is-order-reflecting
+      (simulations-are-order-reflecting β γ f f-sim)
+      (simulations-are-lc β γ f f-sim))
+    (λ (l₁ , δ₁) (l , δ) →
+      expᴸ-map-is-partially-surjective
+       (simulations-are-order-reflecting β γ f f-sim)
+        (λ b c v → (pr₁ (f-init-seg b c v)) , pr₂ (pr₂ (f-init-seg b c v)))
+        l₁ l δ₁ δ)
+     where
+      f-sim : is-simulation β γ f
+      f-sim = (f-init-seg , f-is-order-preserving)
+
+\end{code}
+
+The above can be restated as: the operation expᴸ[𝟙+ α] is monotone.
+
+\begin{code}
+
+expᴸ-is-monotone-in-exponent : (α : Ordinal 𝓤) (β : Ordinal 𝓥) (γ : Ordinal 𝓦)
+                             → β ⊴ γ
+                             → expᴸ[𝟙+ α ] β ⊴ expᴸ[𝟙+ α ] γ
+expᴸ-is-monotone-in-exponent α β γ (f , f-sim) =
+ expᴸ-map α β γ f (simulations-are-order-preserving β γ f f-sim) ,
+ expᴸ-map-is-simulation α β γ f
+  (simulations-are-order-preserving β γ f f-sim)
+  (simulations-are-initial-segments β γ f f-sim)
+
+\end{code}
+
+\end{code}
+
 Characterizing initial segments of expᴸ α β
 
 \begin{code}
@@ -538,21 +747,24 @@ module _
         (b₀ : ⟨ β ⟩)
        where
 
+ expᴸ-segment-inclusion : ⟨ expᴸ[𝟙+ α ] (β ↓ b₀) ⟩ → ⟨ expᴸ[𝟙+ α ] β ⟩
+ expᴸ-segment-inclusion =
+  expᴸ-map α (β ↓ b₀) β
+   (segment-inclusion β b₀)
+   (simulations-are-order-preserving
+     (β ↓ b₀) β
+     (segment-inclusion β b₀)
+     (segment-inclusion-is-simulation β b₀))
+
  expᴸ-segment-inclusion-list : List ⟨ α ×ₒ (β ↓ b₀) ⟩ → List ⟨ α ×ₒ β ⟩
- expᴸ-segment-inclusion-list = map (λ (a , (b , u)) → (a , b))
+ expᴸ-segment-inclusion-list = map (λ (a , b) → (a , segment-inclusion β b₀ b))
 
  expᴸ-segment-inclusion-list-preserves-decreasing-pr₂ :
     (l : List ⟨ α ×ₒ (β ↓ b₀) ⟩)
   → is-decreasing-pr₂ α (β ↓ b₀) l
   → is-decreasing-pr₂ α β (expᴸ-segment-inclusion-list l)
- expᴸ-segment-inclusion-list-preserves-decreasing-pr₂ [] _ = []-decr
- expᴸ-segment-inclusion-list-preserves-decreasing-pr₂
-  ((a , b) ∷ []) _ = sing-decr
- expᴸ-segment-inclusion-list-preserves-decreasing-pr₂
-  ((a , b) ∷ (a' , b') ∷ l) (many-decr u δ) =
-   many-decr
-    u
-    (expᴸ-segment-inclusion-list-preserves-decreasing-pr₂ ((a , b') ∷ l) δ)
+ expᴸ-segment-inclusion-list-preserves-decreasing-pr₂ l δ =
+  expᴸ-list-is-decreasing-pr₂ α β (expᴸ-segment-inclusion (l , δ))
 
  extended-expᴸ-segment-inclusion-is-decreasing-pr₂ :
     (l : List ⟨ α ×ₒ (β ↓ b₀) ⟩) (a₀ : ⟨ α ⟩)
@@ -584,68 +796,57 @@ module _
  expᴸ-segment-inclusion-list-lex {[]} = []-lex
  expᴸ-segment-inclusion-list-lex {((a' , (b' , u)) ∷ l₁)} = head-lex (inl u)
 
- expᴸ-segment-inclusion : ⟨ expᴸ[𝟙+ α ] (β ↓ b₀) ⟩ → ⟨ expᴸ[𝟙+ α ] β ⟩
- expᴸ-segment-inclusion (l , δ) =
-  expᴸ-segment-inclusion-list l ,
-  expᴸ-segment-inclusion-list-preserves-decreasing-pr₂ l δ
-
  extended-expᴸ-segment-inclusion : (l : ⟨ expᴸ[𝟙+ α ] (β ↓ b₀) ⟩) (a₀ : ⟨ α ⟩)
                                  → ⟨ expᴸ[𝟙+ α ] β ⟩
  extended-expᴸ-segment-inclusion (l , δ) a₀ =
   ((a₀ , b₀) ∷ expᴸ-segment-inclusion-list l) ,
   extended-expᴸ-segment-inclusion-is-decreasing-pr₂ l a₀ δ
 
-\end{code}
-
-\begin{code}
-
- expᴸ-segment-inclusion-list-is-order-preserving :
-    (l l' : List ⟨ α ×ₒ (β ↓ b₀) ⟩)
-  → l ≺⟨List (α ×ₒ (β ↓ b₀)) ⟩ l'
-  → expᴸ-segment-inclusion-list l
-    ≺⟨List (α ×ₒ β) ⟩ expᴸ-segment-inclusion-list l'
- expᴸ-segment-inclusion-list-is-order-preserving [] (_ ∷ _) _ = []-lex
- expᴸ-segment-inclusion-list-is-order-preserving
-  (a , b ∷ l) (a' , b' ∷ l') (head-lex (inl u)) = head-lex (inl u)
- expᴸ-segment-inclusion-list-is-order-preserving
-  (a , b ∷ l) (a' , b' ∷ l') (head-lex (inr (refl , u))) =
-   head-lex (inr (refl , u))
- expᴸ-segment-inclusion-list-is-order-preserving
-  (a , b ∷ l) (a' , b' ∷ l') (tail-lex refl u) =
-   tail-lex refl (expᴸ-segment-inclusion-list-is-order-preserving l l' u)
-
- expᴸ-segment-inclusion-list-is-order-reflecting :
-    (l l' : List ⟨ α ×ₒ (β ↓ b₀) ⟩)
-  → expᴸ-segment-inclusion-list l
-    ≺⟨List (α ×ₒ β) ⟩ expᴸ-segment-inclusion-list l'
-  → l ≺⟨List (α ×ₒ (β ↓ b₀)) ⟩ l'
- expᴸ-segment-inclusion-list-is-order-reflecting [] (_ ∷ _) _ = []-lex
- expᴸ-segment-inclusion-list-is-order-reflecting
-  (a , b ∷ l) (a' , b' ∷ l') (head-lex (inl u)) = head-lex (inl u)
- expᴸ-segment-inclusion-list-is-order-reflecting
-  (a , b ∷ l) (a' , b' ∷ l') (head-lex (inr (refl , u))) =
-   head-lex (inr ((segment-inclusion-lc β refl) , u))
- expᴸ-segment-inclusion-list-is-order-reflecting
-  (a , b ∷ l) (a' , b' ∷ l') (tail-lex refl u) =
-   tail-lex
-    (ap (a ,_) (segment-inclusion-lc β refl))
-    (expᴸ-segment-inclusion-list-is-order-reflecting l l' u)
-
  expᴸ-segment-inclusion-is-order-preserving :
   is-order-preserving
    (expᴸ[𝟙+ α ] (β ↓ b₀))
    (expᴸ[𝟙+ α ] β)
    expᴸ-segment-inclusion
- expᴸ-segment-inclusion-is-order-preserving (l , δ) (l' , δ') =
-  expᴸ-segment-inclusion-list-is-order-preserving l l'
+ expᴸ-segment-inclusion-is-order-preserving =
+  expᴸ-map-is-order-preserving α (β ↓ b₀) β (segment-inclusion β b₀)
+   (simulations-are-order-preserving (β ↓ b₀) β
+     (segment-inclusion β b₀)
+     (segment-inclusion-is-simulation β b₀))
 
  expᴸ-segment-inclusion-is-order-reflecting :
   is-order-reflecting
    (expᴸ[𝟙+ α ] (β ↓ b₀))
    (expᴸ[𝟙+ α ] β)
    expᴸ-segment-inclusion
- expᴸ-segment-inclusion-is-order-reflecting (l , δ) (l' , δ') =
-  expᴸ-segment-inclusion-list-is-order-reflecting l l'
+ expᴸ-segment-inclusion-is-order-reflecting =
+  expᴸ-map-is-order-reflecting α (β ↓ b₀) β (segment-inclusion β b₀)
+   (simulations-are-order-preserving (β ↓ b₀) β
+     (segment-inclusion β b₀)
+     (segment-inclusion-is-simulation β b₀))
+   (simulations-are-order-reflecting (β ↓ b₀) β
+     (segment-inclusion β b₀)
+     (segment-inclusion-is-simulation β b₀))
+   (simulations-are-lc (β ↓ b₀) β
+     (segment-inclusion β b₀)
+     (segment-inclusion-is-simulation β b₀))
+
+expᴸ-segment-inclusion-is-simulation :
+   (α : Ordinal 𝓤) (β : Ordinal 𝓥) (b₀ : ⟨ β ⟩)
+ → is-simulation (expᴸ[𝟙+ α ] (β ↓ b₀)) (expᴸ[𝟙+ α ] β)
+    (expᴸ-segment-inclusion α β b₀)
+expᴸ-segment-inclusion-is-simulation α β b₀ =
+ expᴸ-map-is-simulation α (β ↓ b₀) β
+  (segment-inclusion β b₀)
+  (simulations-are-order-preserving (β ↓ b₀) β
+    (segment-inclusion β b₀) (segment-inclusion-is-simulation β b₀))
+  (simulations-are-initial-segments (β ↓ b₀) β
+    (segment-inclusion β b₀)
+    (segment-inclusion-is-simulation β b₀))
+
+expᴸ-segment-inclusion-⊴ : (α : Ordinal 𝓤) (β : Ordinal 𝓥) (b₀ : ⟨ β ⟩)
+                         → expᴸ[𝟙+ α ] (β ↓ b₀) ⊴ expᴸ[𝟙+ α ] β
+expᴸ-segment-inclusion-⊴ α β b₀ = expᴸ-segment-inclusion α β b₀ ,
+                                  expᴸ-segment-inclusion-is-simulation α β b₀
 
 \end{code}
 
@@ -748,39 +949,6 @@ module _
   → expᴸ-tail (expᴸ-segment-inclusion-list α β b₀ l) ε ＝ l , δ
  expᴸ-segment-inclusion-section-of-expᴸ-tail l δ =
   to-expᴸ-＝ α (β ↓ b₀) (expᴸ-segment-inclusion-section-of-expᴸ-tail' l δ)
-
-\end{code}
-
-\begin{code}
-
-expᴸ-segment-inclusion-is-simulation :
-   (α : Ordinal 𝓤) (β : Ordinal 𝓥) (b₀ : ⟨ β ⟩)
- → is-simulation (expᴸ[𝟙+ α ] (β ↓ b₀)) (expᴸ[𝟙+ α ] β)
-    (expᴸ-segment-inclusion α β b₀)
-expᴸ-segment-inclusion-is-simulation α β b₀ =
- order-preserving-and-reflecting-partial-surjections-are-simulations
-  (expᴸ[𝟙+ α ] (β ↓ b₀))
-  (expᴸ[𝟙+ α ] β)
-  (expᴸ-segment-inclusion α β b₀)
-  (expᴸ-segment-inclusion-is-order-preserving α β b₀)
-  (expᴸ-segment-inclusion-is-order-reflecting α β b₀)
-  I
-  where
-   I : (x : ⟨ expᴸ[𝟙+ α ] (β ↓ b₀) ⟩) (y : ⟨ expᴸ[𝟙+ α ] β ⟩)
-     → y ≺⟨ expᴸ[𝟙+ α ] β ⟩ expᴸ-segment-inclusion α β b₀ x
-     → Σ x' ꞉ ⟨ expᴸ[𝟙+ α ] (β ↓ b₀) ⟩ , expᴸ-segment-inclusion α β b₀ x' ＝ y
-   I _ ([] , []-decr) _ = ([] , []-decr) , refl
-   I _ (((a , b) ∷ l) , δ) u =
-    expᴸ-tail α β a b₀ (a , b ∷ l) ε ,
-    expᴸ-tail-section-of-expᴸ-segment-inclusion α β a b₀ (a , b ∷ l)
-     where
-      ε : is-decreasing-pr₂ α β (a , b₀ ∷ a , b ∷ l)
-      ε = many-decr (predecessor-of-expᴸ-segment-inclusion-lemma α β b₀ a u) δ
-
-expᴸ-segment-inclusion-⊴ : (α : Ordinal 𝓤) (β : Ordinal 𝓥) (b₀ : ⟨ β ⟩)
-                         → expᴸ[𝟙+ α ] (β ↓ b₀) ⊴ expᴸ[𝟙+ α ] β
-expᴸ-segment-inclusion-⊴ α β b₀ = expᴸ-segment-inclusion α β b₀ ,
-                                  expᴸ-segment-inclusion-is-simulation α β b₀
 
 \end{code}
 
