@@ -11,7 +11,7 @@ open import UF.Univalence
 open import UF.PropTrunc
 open import UF.Size
 
-module Ordinals.Exponentiation.PropertiesViaEquivalence
+module Ordinals.Exponentiation.PropertiesViaTransport
        (ua : Univalence)
        (pt : propositional-truncations-exist)
        (sr : Set-Replacement pt)
@@ -40,7 +40,7 @@ open import Ordinals.Type
 open import Ordinals.Underlying
 
 open import Ordinals.Exponentiation.DecreasingList ua
-open import Ordinals.Exponentiation.Equivalence ua pt sr
+open import Ordinals.Exponentiation.RelatingConstructions ua pt sr
 open import Ordinals.Exponentiation.Specification ua pt sr
 open import Ordinals.Exponentiation.Supremum ua pt sr
 open import Ordinals.Exponentiation.TrichotomousLeastElement ua

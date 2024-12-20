@@ -3,7 +3,6 @@ Started November 2023. Refactored December 2024.
 
 TODO: Comments between code blocks
 
-
 \begin{code}
 
 {-# OPTIONS --safe --without-K --exact-split #-}

@@ -47,7 +47,7 @@ open import Ordinals.Type
 open import Ordinals.Underlying
 
 open import Ordinals.Exponentiation.DecreasingList ua
-open import Ordinals.Exponentiation.PropertiesViaEquivalence ua pt sr
+open import Ordinals.Exponentiation.PropertiesViaTransport ua pt sr
 open import Ordinals.Exponentiation.Specification ua pt sr
 open import Ordinals.Exponentiation.Supremum ua pt sr
 open import Ordinals.Exponentiation.TrichotomousLeastElement ua

@@ -11,7 +11,7 @@ open import UF.Univalence
 open import UF.PropTrunc
 open import UF.Size
 
-module Ordinals.Exponentiation.Equivalence
+module Ordinals.Exponentiation.RelatingConstructions
        (ua : Univalence)
        (pt : propositional-truncations-exist)
        (sr : Set-Replacement pt)
