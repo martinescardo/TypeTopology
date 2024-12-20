@@ -564,7 +564,6 @@ Agda:
 
 \end{code}
 
-
 That weak excluded middle and De Morgan are equivalent is long known
 and now part of the folklore. We don't know who proved this first,
 but, for example, it is in Johnstone's papers on topos theory and his
