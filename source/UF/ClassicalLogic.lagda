@@ -79,11 +79,11 @@ WEM : ∀ 𝓤 → 𝓤 ⁺ ̇
 WEM 𝓤 = (P : 𝓤 ̇ ) → is-prop P → ¬ P + ¬¬ P
 
 typal-WEM : ∀ 𝓤 → 𝓤 ⁺ ̇
-typal-WEM 𝓤 = (P : 𝓤 ̇ ) → ¬ P + ¬¬ P
+typal-WEM 𝓤 = (A : 𝓤 ̇ ) → ¬ A + ¬¬ A
 
 WEM-gives-typal-WEM : funext 𝓤 𝓤₀ → WEM 𝓤 → typal-WEM 𝓤
-WEM-gives-typal-WEM fe wem' P =
- Cases (wem' (¬ P) (negations-are-props fe))
+WEM-gives-typal-WEM fe wem' A =
+ Cases (wem' (¬ A) (negations-are-props fe))
   inr
   (inl ∘ three-negations-imply-one)
 
@@ -212,12 +212,17 @@ typal-WEM-gives-untruncated-De-Morgan =
  untruncated-typal-De-Morgan-gives-untruncated-De-Morgan
  ∘ typal-WEM-gives-untruncated-typal-De-Morgan
 
+untruncated-De-Morgan-gives-WEM : funext 𝓤 𝓤₀
+                                → untruncated-De-Morgan 𝓤
+                                → WEM 𝓤
+untruncated-De-Morgan-gives-WEM fe d P i =
+ d P (¬ P) i (negations-are-props fe) non-contradiction
+
 untruncated-De-Morgan-gives-typal-WEM : funext 𝓤 𝓤₀
                                       → untruncated-De-Morgan 𝓤
                                       → typal-WEM 𝓤
-untruncated-De-Morgan-gives-typal-WEM fe d =
- WEM-gives-typal-WEM fe
-  (λ P i → d P (¬ P) i (negations-are-props fe) non-contradiction)
+untruncated-De-Morgan-gives-typal-WEM fe =
+ WEM-gives-typal-WEM fe ∘ untruncated-De-Morgan-gives-WEM fe
 
 untruncated-De-Morgan-gives-untruncated-typal-De-Morgan
  : funext 𝓤 𝓤₀
@@ -457,7 +462,8 @@ module _ (pt : propositional-truncations-exist) where
  untruncated-De-Morgan-gives-De-Morgan d P Q i j ν = ∣ d P Q i j ν ∣
 
  De-Morgan-gives-WEM : funext 𝓤 𝓤₀
-                     → De-Morgan 𝓤 → WEM 𝓤
+                     → De-Morgan 𝓤
+                     → WEM 𝓤
  De-Morgan-gives-WEM {𝓤} fe dm P i = III
   where
    I : ¬ (P × ¬ P) → ¬ P ∨ ¬¬ P
@@ -486,19 +492,78 @@ module _ (pt : propositional-truncations-exist) where
  typal-De-Morgan-gives-De-Morgan : typal-De-Morgan 𝓤 → De-Morgan 𝓤
  typal-De-Morgan-gives-De-Morgan d P Q i j = d P Q
 
+ untruncated-typal-De-Morgan-gives-typal-De-Morgan
+  : untruncated-typal-De-Morgan 𝓤
+  → typal-De-Morgan 𝓤
+ untruncated-typal-De-Morgan-gives-typal-De-Morgan d P Q ν =
+  ∣ d P Q ν ∣
+
  De-Morgan-gives-typal-De-Morgan : funext 𝓤 𝓤₀
                                  → De-Morgan 𝓤
                                  → typal-De-Morgan 𝓤
- De-Morgan-gives-typal-De-Morgan {𝓤} fe d P Q ν =
+ De-Morgan-gives-typal-De-Morgan {𝓤} fe d A B ν =
   ∣ typal-WEM-gives-untruncated-typal-De-Morgan
      (De-Morgan-gives-typal-WEM fe d)
-     P Q ν ∣
+     A B ν ∣
 
 \end{code}
 
 The above shows that weak excluded middle, De Morgan and truncated De
 Morgan are logically equivalent, all in their two (proposional and
 typal) versions, so in a total of six logically equivalent statements.
+
+Here is a diagram with the main implications, summarized below in
+Agda:
+
+     1 ----> 2
+     ^        \
+     |         \
+     |          \
+     |           \
+     |            \
+     |             \
+     |              v
+     3 <-- 5 <----- 6
+      ^            /
+       \          /
+        \        /
+         \      /
+          \    /
+           \  v
+             4
+
+\begin{code}
+
+ module _ (𝓤 : Universe) where
+
+  private
+   ⦅1⦆ = WEM 𝓤
+   ⦅2⦆ = typal-WEM 𝓤
+   ⦅3⦆ = De-Morgan 𝓤
+   ⦅4⦆ = typal-De-Morgan 𝓤
+   ⦅5⦆ = untruncated-De-Morgan 𝓤
+   ⦅6⦆ = untruncated-typal-De-Morgan 𝓤
+
+  De-Morgan-WEM-diagram
+   : funext 𝓤 𝓤₀
+   → (⦅1⦆ → ⦅2⦆)
+   × (⦅2⦆ → ⦅6⦆)
+   × (⦅3⦆ → ⦅1⦆)
+   × (⦅4⦆ → ⦅3⦆)
+   × (⦅5⦆ → ⦅3⦆)
+   × (⦅6⦆ → ⦅4⦆)
+   × (⦅6⦆ → ⦅5⦆)
+  De-Morgan-WEM-diagram fe =
+   WEM-gives-typal-WEM fe ,
+   typal-WEM-gives-untruncated-typal-De-Morgan ,
+   De-Morgan-gives-WEM fe ,
+   typal-De-Morgan-gives-De-Morgan ,
+   untruncated-De-Morgan-gives-De-Morgan ,
+   untruncated-typal-De-Morgan-gives-typal-De-Morgan ,
+   untruncated-typal-De-Morgan-gives-untruncated-De-Morgan
+
+\end{code}
+
 
 That weak excluded middle and De Morgan are equivalent is long known
 and now part of the folklore. We don't know who proved this first,
@@ -513,7 +578,7 @@ as an answer [2], which Mike Shulman added to the nLab [3].
     https://groups.google.com/g/homotopytypetheory/c/Azq6GVU98II/m/qEp8TeInYgAJ
     1st September 2014.
 
-[3] Martin Escardo. de Morgan's Law.
+[2] Martin Escardo. de Morgan's Law.
     https://groups.google.com/g/homotopytypetheory/c/Azq6GVU98II/m/bXMixO9s1boJ
     2nd September 2014
 
