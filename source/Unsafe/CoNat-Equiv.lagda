@@ -1,12 +1,12 @@
 Alice Laroche, 4th of December 2024
 
-We show that the type of conaturals defined by coinduction is equivalent to the
-type of conaturals defined as generic convergent sequences when assuming funext
-and that bisimilarity is equality.
+We show that the type of conaturals defined by coinduction is
+equivalent to the type of conaturals defined as generic convergent
+sequences when assuming funext and that bisimilarity is equality.
 
 \begin{code}
 
-{-# OPTIONS --guardedness #-} 
+{-# OPTIONS --guardedness #-}
 
 module Unsafe.CoNat-Equiv where
 
@@ -21,7 +21,8 @@ open import TypeTopology.Cantor
 
 \end{code}
 
-This implementation of CoNat comes from the Cubical Agda Library,
+This implementation of CoNat comes from the Cubical Agda Library.
+
 \begin{code}
 
 CoNat' : 𝓤₀ ̇
@@ -38,13 +39,16 @@ open CoNat public
 
 pattern cozero = inl ⋆
 pattern cosuc n = inr n
+
 \end{code}
 
-Because we can't reason about coinductive type equality in classical Agda,
-we define an binary relation which is equivalent to equality.
+Because we can't reason about coinductive type equality in classical
+Agda, we define an binary relation which is equivalent to equality.
 The correctness of it is proven in the Cubical Agda Library.
 
-Three types are needed in order to convince the termination checker some functions terminates.
+Three types are needed in order to convince the termination checker
+some functions terminates.
+
 \begin{code}
 record _＝C_ (x y : CoNat) : Set
 data _＝C'_ (x y : CoNat') : Set
@@ -57,17 +61,19 @@ cosuc x ＝C'' cosuc y = x ＝C y
 
 data _＝C'_  x y where
     con : x ＝C'' y → x ＝C' y
-    
+
 record _＝C_ x y where
  coinductive
  field
   prove : force x ＝C' force y
 open _＝C_
+
 \end{code}
 
 We can at least show that the relation is an equivalence relation.
 
 \begin{code}
+
 ＝C-refl : ∀ {x y} → x ＝ y → x ＝C y
 ＝C'-refl : ∀ {x y} → x ＝ y → x ＝C' y
 
@@ -91,10 +97,11 @@ We can at least show that the relation is an equivalence relation.
 
 \end{code}
 
-We give a mapping from CoNat' to ℕ → 2 and use it to define a criterion for the
-relationship defined above.
+We give a mapping from CoNat' to ℕ → 2 and use it to define a
+criterion for the relationship defined above.
 
 \begin{code}
+
 CoNat'-to-ℕ→𝟚 : CoNat' → (ℕ → 𝟚)
 CoNat'-to-ℕ→𝟚 cozero  zero = ₀
 CoNat'-to-ℕ→𝟚 cozero (succ n) = ₀
@@ -110,7 +117,7 @@ CoNat-equality-criterion : (x y : CoNat)
 CoNat-equality-criterion' : (x y : CoNat')
                           → ((n : ℕ) → CoNat'-to-ℕ→𝟚 x n ＝ CoNat'-to-ℕ→𝟚 y n)
                           → x ＝C' y
-                          
+
 CoNat-equality-criterion x y f .prove =
  CoNat-equality-criterion' (x .force) (y .force) f
 
@@ -125,11 +132,13 @@ CoNat-equality-criterion' (cosuc x) (cosuc y) f =
 
 \end{code}
 
-Finally we write functions ℕ∞ → CoNat and Conat → ℕ∞ and show that they give an equivalence
-between ℕ∞ and CoNat, assuming function extensionality and
-that our equivalence relation is a bisimilarity relation.
+Finally we write functions ℕ∞ → CoNat and Conat → ℕ∞ and show that
+they give an equivalence between ℕ∞ and CoNat, assuming function
+extensionality and that our equivalence relation is a bisimilarity
+relation.
 
 \begin{code}
+
 f : ℕ∞ → CoNat
 f' : 𝟚 → ℕ∞ → CoNat'
 
@@ -144,7 +153,7 @@ is-decreasing-CoNat'-to-ℕ→𝟚 (cosuc x)  zero    = ₁-top
 is-decreasing-CoNat'-to-ℕ→𝟚 (cosuc x) (succ n) = is-decreasing-CoNat'-to-ℕ→𝟚 (x .force) n
 
 is-decreasing-CoNat-to-ℕ→𝟚 : ∀ x → is-decreasing (CoNat-to-ℕ→𝟚 x)
-is-decreasing-CoNat-to-ℕ→𝟚 x n = is-decreasing-CoNat'-to-ℕ→𝟚 (x .force) n 
+is-decreasing-CoNat-to-ℕ→𝟚 x n = is-decreasing-CoNat'-to-ℕ→𝟚 (x .force) n
 
 g : CoNat → ℕ∞
 g x = CoNat-to-ℕ→𝟚 x , is-decreasing-CoNat-to-ℕ→𝟚 x
@@ -179,4 +188,5 @@ CoNat≈ℕ∞ fe bisim = f , (g , λ - → bisim _ _ (f∘g∼id -)) , (g , g�
     I (cosuc α) zero = refl
     I (cozero ) (succ n) = refl
     I (cosuc α) (succ n) = I (α .force) n
+
 \end{code}
