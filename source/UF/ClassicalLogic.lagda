@@ -179,7 +179,7 @@ EM-gives-untruncated-De-Morgan em A B i j =
 
 But already weak excluded middle gives De Morgan.
 
-Added by Martin Escardo and Tom de Jong 29th August 2024. A typal
+Added/modified by Martin Escardo and Tom de Jong 29th August 2024. A typal
 version of De Morgan.
 
 \begin{code}
@@ -194,6 +194,12 @@ untruncated-typal-De-Morgan-gives-untruncated-De-Morgan
  : untruncated-typal-De-Morgan 𝓤
  → untruncated-De-Morgan 𝓤
 untruncated-typal-De-Morgan-gives-untruncated-De-Morgan d' P Q i j = d' P Q
+
+\end{code}
+
+Originally the following was proved with WEM.
+
+\begin{code}
 
 typal-WEM-gives-untruncated-typal-De-Morgan : typal-WEM 𝓤
                                             → untruncated-typal-De-Morgan 𝓤
@@ -234,7 +240,7 @@ untruncated-De-Morgan-gives-untruncated-typal-De-Morgan fe =
 
 \end{code}
 
-End of addition.
+End of addition/modification.
 
 Is the above untruncated De Morgan Law a proposition? Not in
 general. If it doesn't hold, it is vacuously a proposition. But if it
