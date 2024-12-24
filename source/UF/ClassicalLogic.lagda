@@ -575,8 +575,8 @@ and now part of the folklore. We don't know who proved this first,
 but, for example, it is in Johnstone's papers on topos theory and his
 Elephant two-volume book.
 
-Mike Shulman asked in the HoTT mailing list [1] whether untruncated De
-Morgan implies truncated De Morgan, and Martin Escardo offered a proof
+Mike Shulman asked in the HoTT mailing list [1] whether truncated De
+Morgan implies untruncated De Morgan, and Martin Escardo offered a proof
 as an answer [2], which Mike Shulman added to the nLab [3].
 
 [1] Mike Shulman. de Morgan's Law.
