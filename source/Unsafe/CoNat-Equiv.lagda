@@ -50,6 +50,7 @@ Three types are needed in order to convince the termination checker
 some functions terminates.
 
 \begin{code}
+
 record _＝C_ (x y : CoNat) : Set
 data _＝C'_ (x y : CoNat') : Set
 _＝C''_ : CoNat' → CoNat' → Set
@@ -150,7 +151,9 @@ is-decreasing-CoNat'-to-ℕ→𝟚 : ∀ x → is-decreasing (CoNat'-to-ℕ→�
 is-decreasing-CoNat'-to-ℕ→𝟚 (cozero)   zero    = ⋆
 is-decreasing-CoNat'-to-ℕ→𝟚 (cozero)  (succ n) = ⋆
 is-decreasing-CoNat'-to-ℕ→𝟚 (cosuc x)  zero    = ₁-top
-is-decreasing-CoNat'-to-ℕ→𝟚 (cosuc x) (succ n) = is-decreasing-CoNat'-to-ℕ→𝟚 (x .force) n
+is-decreasing-CoNat'-to-ℕ→𝟚 (cosuc x) (succ n) = is-decreasing-CoNat'-to-ℕ→𝟚
+                                                  (x .force)
+                                                  n
 
 is-decreasing-CoNat-to-ℕ→𝟚 : ∀ x → is-decreasing (CoNat-to-ℕ→𝟚 x)
 is-decreasing-CoNat-to-ℕ→𝟚 x n = is-decreasing-CoNat'-to-ℕ→𝟚 (x .force) n
