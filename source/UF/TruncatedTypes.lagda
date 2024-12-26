@@ -24,7 +24,6 @@ module UF.TruncatedTypes
 
 open import MLTT.Spartan hiding (_+_)
 
-open import Naturals.Order
 open import Notation.Order
 open import UF.Embeddings
 open import UF.Equiv

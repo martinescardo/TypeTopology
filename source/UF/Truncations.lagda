@@ -273,13 +273,13 @@ We demonstrate the equivalence of -1-truncation and propositional truncation:
                                              −1-trunc-to-prop-trunc
                                              prop-trunc-to-−1-trunc
 
-  is-trunc-from-is-prop : {X : 𝓤 ̇} {n : ℕ₋₂}
+  props-are-truncated : {X : 𝓤 ̇} {n : ℕ₋₂}
                         → is-prop X 
                         → X is (n + 1) truncated
-  is-trunc-from-is-prop {_} {_} {−2} = is-prop-implies-is-prop'
-  is-trunc-from-is-prop {_} {_} {succ n} X-is-prop =
+  props-are-truncated {_} {_} {−2} = is-prop-implies-is-prop'
+  props-are-truncated {_} {_} {succ n} X-is-prop =
    truncation-levels-are-upper-closed
-    (λ x x' → is-trunc-from-is-prop X-is-prop x x')
+    (λ x x' → props-are-truncated X-is-prop x x')
 
 \end{code}
 
@@ -295,29 +295,6 @@ We define the canonical predecessor map and give a computation rule.
                          → canonical-pred-map (∣ x ∣[ n + 1 ]) ＝ (∣ x ∣[ n ])
  canonical-pred-map-comp {𝓤} {X} {n} =
   ∥∥ₙ-rec-comp (truncation-levels-are-upper-closed ∥∥ₙ-is-truncated) ∣_∣[ n ]
-
-\end{code}
-
-We will show that any type X is equivalent to the sigma over a path space
-with one truncated endpoint and one free endpoint.
-
-\begin{code}
-
- equiv-trunc-path-space : {X : 𝓤 ̇} {n : ℕ₋₂}
-                        → X ≃ (Σ y ꞉ ∥ X ∥[ n ] , Σ x ꞉ X , ∣ x ∣[ n ] ＝ y)
- equiv-trunc-path-space {_} {X} {n} = equiv-chain
-  where
-   is-singleton-type : (x : X)
-                     → is-singleton (Σ y ꞉ ∥ X ∥[ n ] , ∣ x ∣[ n ] ＝ y)
-   is-singleton-type x = singleton-types-are-singletons ∣ x ∣[ n ]
-   equiv-chain : X ≃ (Σ y ꞉ ∥ X ∥[ n ] , Σ x ꞉ X , ∣ x ∣[ n ] ＝ y)
-   equiv-chain = X                                              ≃⟨ p ⟩
-                 (Σ x ꞉ X , Σ y ꞉ ∥ X ∥[ n ] , ∣ x ∣[ n ] ＝ y) ≃⟨ Σ-flip ⟩
-                 (Σ y ꞉ ∥ X ∥[ n ] , Σ x ꞉ X , ∣ x ∣[ n ] ＝ y) ■
-    where
-     p = ≃-sym (pr₁-≃ X
-               (λ - → Σ y ꞉ ∥ X ∥[ n ] , ∣ - ∣[ n ] ＝ y)
-               is-singleton-type)
 
 \end{code}
 
@@ -379,10 +356,10 @@ can be refactored to use closure under retracts.
        II = ∥∥ₙ-rec-comp ∥∥ₙ-is-truncated (λ x → ∣ ⌜ e ⌝ x ∣[ n ]) (⌜ e ⌝⁻¹ y)
        III = ap ∣_∣[ n ] (inverses-are-sections' e y)
 
- size-closed-under-truncation : {X : 𝓤 ̇} {n : ℕ₋₂}
-                              → X is 𝓥 small
-                              → ∥ X ∥[ n ] is 𝓥 small
- size-closed-under-truncation {𝓤} {𝓥} {X} {n} (Y , e) =
+ truncations-of-small-types-are-small : {X : 𝓤 ̇} {n : ℕ₋₂}
+                                      → X is 𝓥 small
+                                      → ∥ X ∥[ n ] is 𝓥 small
+ truncations-of-small-types-are-small {_} {_} {_} {n} (Y , e) =
   (∥ Y ∥[ n ] , truncation-closed-under-equiv e)
 
  successive-truncations-equiv : {X : 𝓤 ̇} {n : ℕ₋₂}
@@ -424,9 +401,9 @@ can be refactored to use closure under retracts.
        I = ap b (∥∥ₙ-rec-comp ∥∥ₙ-is-truncated (λ _ → ∣ ∣ _ ∣[ n + 1 ] ∣[ n ]) x)
        II = ∥∥ₙ-rec-comp ∥∥ₙ-is-truncated canonical-pred-map (∣ x ∣[ n + 1 ])
 
- truncated-sigma-equiv : {X : 𝓤 ̇} {P : X → 𝓦 ̇} {n : ℕ₋₂}
-                       → ∥ Σ x ꞉ X , ∥ P x ∥[ n ] ∥[ n ] ≃ ∥ Σ x ꞉ X , P x ∥[ n ]
- truncated-sigma-equiv {_} {_} {X} {P} {n} = (f , (b , G) , (b , H))
+ truncated-Σ-≃ : {X : 𝓤 ̇} {P : X → 𝓦 ̇} {n : ℕ₋₂}
+               → ∥ Σ x ꞉ X , ∥ P x ∥[ n ] ∥[ n ] ≃ ∥ Σ x ꞉ X , P x ∥[ n ]
+ truncated-Σ-≃ {_} {_} {X} {P} {n} = (f , (b , G) , (b , H))
   where
    f : ∥ Σ x ꞉ X , ∥ P x ∥[ n ] ∥[ n ] → ∥ Σ x ꞉ X , P x ∥[ n ]
    f = ∥∥ₙ-rec ∥∥ₙ-is-truncated

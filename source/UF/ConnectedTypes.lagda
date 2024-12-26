@@ -256,7 +256,7 @@ the identity type at one level below. We will assume univalence only when necess
 \end{code}
 
 We directly prove a characterization of connectedness from the HoTT book
-(see Corollary 7.5.9.).
+(see Corallary 7.5.9.).
 
 NOTE: We will NOT state the corallary as an iff statement due to a large
 quantification issue.
@@ -264,9 +264,9 @@ quantification issue.
 \begin{code}
 
  private
-  consts : {X : 𝓤 ̇} {Y : 𝓥 ̇}
+  consts : (X : 𝓤 ̇) (Y : 𝓥 ̇)
          → Y → (X → Y)
-  consts y x = y
+  consts X Y y x = y
 
  maps-from-connected-type-to-truncated-type-const : {X : 𝓤 ̇} {Y : 𝓥 ̇} {n : ℕ₋₂}
                                                   → X is n connected
@@ -283,33 +283,35 @@ quantification issue.
     where
      I : 𝟙 {𝓤} ≃ ∥ X ∥[ n ]
      I = singleton-≃-𝟙' X-conn
-   observation : consts ＝ ⌜ e ⌝
+   observation : consts X Y ＝ ⌜ e ⌝
    observation = refl
 
- Cor-7-5-9i : {X : 𝓤 ̇} {n : ℕ₋₂}
-            → X is n connected
-            → (Y : 𝓥 ̇)
-            → Y is n truncated
-            → is-equiv consts
- Cor-7-5-9i X-conn Y Y-trunc =
+ constants-map-from-truncated-type-is-equiv : {X : 𝓤 ̇} {n : ℕ₋₂}
+                                            → (Y : 𝓥 ̇)
+                                            → X is n connected
+                                            → Y is n truncated
+                                            → is-equiv (consts X Y)
+ constants-map-from-truncated-type-is-equiv Y X-conn Y-trunc =
   ⌜⌝-is-equiv (maps-from-connected-type-to-truncated-type-const X-conn Y-trunc)
 
- Cor-7-5-9ii : {X : 𝓤 ̇} {n : ℕ₋₂}
-             → ({𝓥 : Universe} (Y : 𝓥 ̇)
-               → Y is n truncated
-               → is-equiv {𝓥} {𝓤 ⊔ 𝓥} {Y} {X → Y} consts)
-             → X is n connected
- Cor-7-5-9ii {𝓤} {X} {n} is-equiv-from-trunc = (c , G)
+ connected-if-consts-is-equiv : {X : 𝓤 ̇} {n : ℕ₋₂}
+                              → ({𝓥 : Universe} (Y : 𝓥 ̇)
+                               → Y is n truncated
+                               → is-equiv (consts X Y))
+                              → X is n connected
+ connected-if-consts-is-equiv {_} {X} {n} is-equiv-from-trunc = (c , G)
   where
    s : (X → ∥ X ∥[ n ]) → ∥ X ∥[ n ]
-   s = section-of consts (equivs-have-sections consts
+   s = section-of (consts X ∥ X ∥[ n ])
+        (equivs-have-sections (consts X ∥ X ∥[ n ])
         (is-equiv-from-trunc ∥ X ∥[ n ] ∥∥ₙ-is-truncated))
-   H : consts ∘ s ∼ id
-   H = section-equation consts (equivs-have-sections consts
-        (is-equiv-from-trunc ∥ X ∥[ n ] ∥∥ₙ-is-truncated))
+   H : (consts X ∥ X ∥[ n ]) ∘ s ∼ id
+   H = section-equation (consts X ∥ X ∥[ n ])
+        (equivs-have-sections (consts X ∥ X ∥[ n ])
+         (is-equiv-from-trunc ∥ X ∥[ n ] ∥∥ₙ-is-truncated))
    c : ∥ X ∥[ n ]
    c = s ∣_∣[ n ]
-   H' : consts c ＝ ∣_∣[ n ]
+   H' : (consts X ∥ X ∥[ n ]) c ＝ ∣_∣[ n ]
    H' = H ∣_∣[ n ]
    G : (v : ∥ X ∥[ n ]) → c ＝ v
    G = ∥∥ₙ-ind (λ - → truncation-levels-are-upper-closed ∥∥ₙ-is-truncated c -)
@@ -317,19 +319,19 @@ quantification issue.
 
 \end{code}
 
-We will now prove a general result from the HoTT book the characterizes when
+We will now prove a general result from the HoTT book that characterizes when
 a map is connected (see Lemma 7.5.7.)
 
 \begin{code}
 
- dependent-equiv-from-truncated-fam-connected-map : {X : 𝓤 ̇} {Y : 𝓥 ̇} {f : X → Y}
-                                                    {P : Y → 𝓦 ̇} {n : ℕ₋₂} 
-                                                  → ((y : Y)
-                                                   → (P y) is n truncated)
-                                                  → f is n connected-map
-                                                  → ((y : Y) → P y)
-                                                   ≃ ((x : X) → P (f x))
- dependent-equiv-from-truncated-fam-connected-map {_} {_} {𝓦} {X} {Y} {f} {P} {n}
+ dependent-equiv-from-truncated-fam-connected-map
+  : {X : 𝓤 ̇} {Y : 𝓥 ̇} {f : X → Y}
+    {P : Y → 𝓦 ̇} {n : ℕ₋₂} 
+  → ((y : Y) → (P y) is n truncated)
+  → f is n connected-map
+  → ((y : Y) → P y) ≃ ((x : X) → P (f x))
+ dependent-equiv-from-truncated-fam-connected-map
+  {_} {_} {_} {X} {Y} {f} {P} {n}
   P-trunc f-conn = e
   where
    e : ((y : Y) → P y) ≃ ((x : X) → P (f x))
@@ -346,25 +348,28 @@ a map is connected (see Lemma 7.5.7.)
    observation : ⌜ e ⌝ ＝ dprecomp P f
    observation = refl
 
- Lemma7-5-7-i : {X : 𝓤 ̇} {Y : 𝓥 ̇} {f : X → Y} {P : Y → 𝓦 ̇} {n : ℕ₋₂} 
-              → ((y : Y) → (P y) is n truncated)
-              → f is n connected-map
-              → is-equiv (dprecomp P f)
- Lemma7-5-7-i {_} {_} {_} {X} {Y} {f} {P} {n} P-trunc f-conn =
+ dep-precomp-from-truncated-family-is-equiv
+  : {X : 𝓤 ̇} {Y : 𝓥 ̇} {f : X → Y} {P : Y → 𝓦 ̇} {n : ℕ₋₂} 
+  → ((y : Y) → (P y) is n truncated)
+  → f is n connected-map
+  → is-equiv (dprecomp P f)
+ dep-precomp-from-truncated-family-is-equiv P-trunc f-conn =
   ⌜⌝-is-equiv (dependent-equiv-from-truncated-fam-connected-map P-trunc f-conn)
 
- Lemma7-5-7-ii : {X : 𝓤 ̇} {Y : 𝓥 ̇} {f : X → Y} {P : Y → 𝓦 ̇} 
-               → is-equiv (dprecomp P f)
-               → has-section (dprecomp P f)
- Lemma7-5-7-ii {_} {_} {_} {_} {_} {f} {P} =
+ dep-precomp-has-section-if-is-equiv
+  : {X : 𝓤 ̇} {Y : 𝓥 ̇} {f : X → Y} {P : Y → 𝓦 ̇} 
+  → is-equiv (dprecomp P f)
+  → has-section (dprecomp P f)
+ dep-precomp-has-section-if-is-equiv {_} {_} {_} {_} {_} {f} {P} =
   equivs-have-sections (dprecomp P f)
 
- Lemma7-5-7-iii : {X : 𝓤 ̇} {Y : 𝓥 ̇} {f : X → Y} {n : ℕ₋₂} 
-                → ({𝓦 : Universe} {P : Y → 𝓦 ̇}
-                  → ((y : Y) → (P y) is n truncated)
-                  → has-section (dprecomp P f))
-                → f is n connected-map
- Lemma7-5-7-iii {𝓤} {𝓥} {X} {Y} {f} {n} sec-from-trunc y = (c y , C)
+ map-is-connected-if-dep-precomp-from-truncated-family-has-section
+  : {X : 𝓤 ̇} {Y : 𝓥 ̇} {f : X → Y} {n : ℕ₋₂} 
+  → ({𝓦 : Universe} {P : Y → 𝓦 ̇} → ((y : Y) → (P y) is n truncated)
+                                 → has-section (dprecomp P f))
+  → f is n connected-map
+ map-is-connected-if-dep-precomp-from-truncated-family-has-section
+  {𝓤} {𝓥} {X} {Y} {f} {n} sec-from-trunc y = (c y , C)
   where
    Q : Y → 𝓤 ⊔ 𝓥 ̇
    Q y = ∥ fiber f y ∥[ n ]
@@ -389,13 +394,14 @@ a map is connected (see Lemma 7.5.7.)
 
 \end{code}
 
-We show that the canonical n-truncation map is n-connected.
+We show that the n-truncation map is n-connected.
 
 \begin{code}
 
- canonical-trunc-map-is-connected : {X : 𝓤 ̇} {n : ℕ₋₂}
-                                  → ∣_∣[ n ] is n connected-map
- canonical-trunc-map-is-connected {_} {X} {n} = Lemma7-5-7-iii has-sec
+ trunc-map-is-connected : {X : 𝓤 ̇} {n : ℕ₋₂}
+                        → ∣_∣[ n ] is n connected-map
+ trunc-map-is-connected {_} {X} {n} =
+  map-is-connected-if-dep-precomp-from-truncated-family-has-section has-sec
   where
    has-sec : {𝓦 : Universe} {P : ∥ X ∥[ n ] → 𝓦 ̇}
            → ((v : ∥ X ∥[ n ]) → P v is n truncated)
