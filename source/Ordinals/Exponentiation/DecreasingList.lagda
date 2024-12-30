@@ -220,7 +220,7 @@ DecreasingList is still wellfounded.
 
 \end{code}
 
-We construct an ordinal, which we denote by expᴸ α β, that implements
+We construct an ordinal, which we denote by DecrList₂ α β, that implements
 exponentiation of (𝟙ₒ +ₒ α) by β.
 
 The reason that it implements exponentiation with base (𝟙ₒ +ₒ α) rather than α,
@@ -255,17 +255,17 @@ module _ (α : Ordinal 𝓤) (β : Ordinal 𝓥) where
  DecrList₂ : 𝓤 ⊔ 𝓥 ̇
  DecrList₂ = Σ l ꞉ List ⟨ α ×ₒ β ⟩ , is-decreasing-pr₂ l
 
- expᴸ-list : DecrList₂ → List ⟨ α ×ₒ β ⟩
- expᴸ-list = pr₁
+ DecrList₂-list : DecrList₂ → List ⟨ α ×ₒ β ⟩
+ DecrList₂-list = pr₁
 
- to-expᴸ-＝ : {l l' : DecrList₂} → expᴸ-list l ＝ expᴸ-list l' → l ＝ l'
- to-expᴸ-＝ = to-subtype-＝ (λ l → is-decreasing-is-prop
+ to-DecrList₂-＝ : {l l' : DecrList₂} → DecrList₂-list l ＝ DecrList₂-list l' → l ＝ l'
+ to-DecrList₂-＝ = to-subtype-＝ (λ l → is-decreasing-is-prop
                                     (underlying-order β)
                                     (Prop-valuedness β)
                                     (map pr₂ l))
 
- expᴸ-list-is-decreasing-pr₂ : (l : DecrList₂) → is-decreasing-pr₂ (expᴸ-list l)
- expᴸ-list-is-decreasing-pr₂ = pr₂
+ DecrList₂-list-is-decreasing-pr₂ : (l : DecrList₂) → is-decreasing-pr₂ (DecrList₂-list l)
+ DecrList₂-list-is-decreasing-pr₂ = pr₂
 
  is-decreasing-if-decreasing-pr₂ : (l : List ⟨ α ×ₒ β ⟩)
                                  → is-decreasing-pr₂ l
@@ -275,16 +275,16 @@ module _ (α : Ordinal 𝓤) (β : Ordinal 𝓥) where
  is-decreasing-if-decreasing-pr₂ (x ∷ x' ∷ l) (many-decr p δ)
   = many-decr (inl p) (is-decreasing-if-decreasing-pr₂ (x' ∷ l) δ)
 
- expᴸ-list-is-decreasing
+ DecrList₂-list-is-decreasing
   : (l : DecrList₂)
-  → is-decreasing (underlying-order (α ×ₒ β)) (expᴸ-list l)
- expᴸ-list-is-decreasing (l , δ) = is-decreasing-if-decreasing-pr₂ l δ
+  → is-decreasing (underlying-order (α ×ₒ β)) (DecrList₂-list l)
+ DecrList₂-list-is-decreasing (l , δ) = is-decreasing-if-decreasing-pr₂ l δ
 
- expᴸ-order : DecrList₂ → DecrList₂ → 𝓤 ⊔ 𝓥 ̇
- expᴸ-order (l , _) (l' , _) = l ≺⟨List (α ×ₒ β) ⟩ l'
+ DecrList₂-order : DecrList₂ → DecrList₂ → 𝓤 ⊔ 𝓥 ̇
+ DecrList₂-order (l , _) (l' , _) = l ≺⟨List (α ×ₒ β) ⟩ l'
 
- expᴸ-order-is-prop-valued : is-prop-valued expᴸ-order
- expᴸ-order-is-prop-valued (l , _) (l' , _) =
+ DecrList₂-order-is-prop-valued : is-prop-valued DecrList₂-order
+ DecrList₂-order-is-prop-valued (l , _) (l' , _) =
   lex-prop-valued
    (underlying-order (α ×ₒ β))
    (underlying-type-is-set fe (α ×ₒ β))
@@ -295,37 +295,41 @@ module _ (α : Ordinal 𝓤) (β : Ordinal 𝓥) where
 
 \end{code}
 
+The order on DecrList₂ α β is transitive and wellfounded.
+
 \begin{code}
 
- expᴸ-order-is-transitive : is-transitive expᴸ-order
- expᴸ-order-is-transitive (l , _) (l' , _) (l'' , _) p q =
+ DecrList₂-order-is-transitive : is-transitive DecrList₂-order
+ DecrList₂-order-is-transitive (l , _) (l' , _) (l'' , _) p q =
   lex-transitive (underlying-order (α ×ₒ β)) (Transitivity (α ×ₒ β)) l l' l'' p q
 
- expᴸ-order-is-wellfounded : is-well-founded expᴸ-order
- expᴸ-order-is-wellfounded (l , δ) =
+ DecrList₂-order-is-wellfounded : is-well-founded DecrList₂-order
+ DecrList₂-order-is-wellfounded (l , δ) =
   acc-lex-decr-to-acc-exponential l δ
    (lex-wellfounded (underlying-order (α ×ₒ β))
                     (Transitivity (α ×ₒ β))
                     (Well-foundedness (α ×ₒ β))
-                    (expᴸ-list (l , δ) , expᴸ-list-is-decreasing (l , δ)))
+                    (DecrList₂-list (l , δ) , DecrList₂-list-is-decreasing (l , δ)))
   where
    acc-lex-decr-to-acc-exponential
     : (l : List ⟨ α ×ₒ β ⟩)
     → (δ : is-decreasing-pr₂ l)
     → is-accessible (lex-decr (underlying-order (α ×ₒ β)))
-                    ((l , expᴸ-list-is-decreasing (l , δ)))
-    → is-accessible expᴸ-order (l , δ)
+                    ((l , DecrList₂-list-is-decreasing (l , δ)))
+    → is-accessible DecrList₂-order (l , δ)
    acc-lex-decr-to-acc-exponential l δ (acc h) =
     acc (λ (l' , ε) u → acc-lex-decr-to-acc-exponential l' ε
-                         (h (l' ,  expᴸ-list-is-decreasing (l' , ε)) u))
+                         (h (l' ,  DecrList₂-list-is-decreasing (l' , ε)) u))
 
 \end{code}
+
+The order on DecrList₂ α β is extensional.
 
 \begin{code}
 
  private
   R = underlying-order (α ×ₒ β)
-  _≼_ = extensional-po expᴸ-order
+  _≼_ = extensional-po DecrList₂-order
 
  is-decreasing-pr₂-swap-tails
   : (l l' : List ⟨ α ×ₒ β ⟩) (x : ⟨ α ×ₒ β ⟩)
@@ -366,18 +370,18 @@ module _ (α : Ordinal 𝓤) (β : Ordinal 𝓥) where
     g (head-lex   r) = 𝟘-elim (Irreflexivity (α ×ₒ β) x r)
     g (tail-lex _ k) = k
 
- expᴸ-order-is-extensional' : (l₁ l₂ : List ⟨ α ×ₒ β ⟩)
+ DecrList₂-order-is-extensional' : (l₁ l₂ : List ⟨ α ×ₒ β ⟩)
                               (δ₁ : is-decreasing-pr₂ l₁)
                               (δ₂ : is-decreasing-pr₂ l₂)
                             → (l₁ , δ₁) ≼ (l₂ , δ₂)
                             → (l₂ , δ₂) ≼ (l₁ , δ₁)
                             → l₁ ＝ l₂
- expᴸ-order-is-extensional' [] [] δ₁ δ₂ u v = refl
- expᴸ-order-is-extensional' [] (y ∷ l₂) δ₁ δ₂ u h₂ =
+ DecrList₂-order-is-extensional' [] [] δ₁ δ₂ u v = refl
+ DecrList₂-order-is-extensional' [] (y ∷ l₂) δ₁ δ₂ u h₂ =
   𝟘-elim (no-≼-[] y l₂ δ₂ h₂)
- expᴸ-order-is-extensional' (x ∷ l₁) [] δ₁ δ₂ h₁ h₂ =
+ DecrList₂-order-is-extensional' (x ∷ l₁) [] δ₁ δ₂ h₁ h₂ =
   𝟘-elim (no-≼-[] x l₁ δ₁ h₁)
- expᴸ-order-is-extensional' (x ∷ []) (y ∷ []) δ₁ δ₂ h₁ h₂ =
+ DecrList₂-order-is-extensional' (x ∷ []) (y ∷ []) δ₁ δ₂ h₁ h₂ =
   ap [_] (Extensionality (α ×ₒ β) x y I₁ I₂)
    where
     I₁ : x ≼⟨ α ×ₒ β ⟩ y
@@ -394,7 +398,7 @@ module _ (α : Ordinal 𝓤) (β : Ordinal 𝓥) where
       c = h₂ ([ z ] , sing-decr) (head-lex u)
       κ : [ z ] ≺⟨List (α ×ₒ β) ⟩ [ x ] → z ≺⟨ α ×ₒ β ⟩ x
       κ (head-lex v) = v
- expᴸ-order-is-extensional' (x ∷ []) (y ∷ y' ∷ l₂) δ₁ δ₂ h₁ h₂ =
+ DecrList₂-order-is-extensional' (x ∷ []) (y ∷ y' ∷ l₂) δ₁ δ₂ h₁ h₂ =
   𝟘-elim (lex-irreflexive R (Irreflexivity (α ×ₒ β)) (y ∷ y' ∷ l₂) III)
    where
     I : y ≺⟨ α ×ₒ β ⟩ x
@@ -406,7 +410,7 @@ module _ (α : Ordinal 𝓤) (β : Ordinal 𝓥) where
     II = head-lex I
     III : (y ∷ y' ∷ l₂) ≺⟨List (α ×ₒ β) ⟩ (y ∷ y' ∷ l₂)
     III = h₁ ((y ∷ y' ∷ l₂) , δ₂) II
- expᴸ-order-is-extensional' (x ∷ x' ∷ l₁) (y ∷ []) δ₁ δ₂ h₁ h₂ =
+ DecrList₂-order-is-extensional' (x ∷ x' ∷ l₁) (y ∷ []) δ₁ δ₂ h₁ h₂ =
   𝟘-elim (lex-irreflexive R (Irreflexivity (α ×ₒ β)) (x ∷ x' ∷ l₁) III)
    where
     I : x ≺⟨ α ×ₒ β ⟩ y
@@ -418,9 +422,9 @@ module _ (α : Ordinal 𝓤) (β : Ordinal 𝓥) where
     II = head-lex I
     III : (x ∷ x' ∷ l₁) ≺⟨List (α ×ₒ β) ⟩ (x ∷ x' ∷ l₁)
     III = h₂ ((x ∷ x' ∷ l₁) , δ₁) II
- expᴸ-order-is-extensional' (x ∷ x' ∷ l₁) (y ∷ y' ∷ l₂) δ₁ δ₂ h₁ h₂ =
+ DecrList₂-order-is-extensional' (x ∷ x' ∷ l₁) (y ∷ y' ∷ l₂) δ₁ δ₂ h₁ h₂ =
   ap₂ _∷_ I
-   (expᴸ-order-is-extensional'
+   (DecrList₂-order-is-extensional'
      (x' ∷ l₁) (y' ∷ l₂)
      (tail-is-decreasing-pr₂ x {x' ∷ l₁} δ₁)
      (tail-is-decreasing-pr₂ y {y' ∷ l₂} δ₂)
@@ -448,21 +452,24 @@ module _ (α : Ordinal 𝓤) (β : Ordinal 𝓥) where
        ≼ ((x' ∷ l₁) , tail-is-decreasing-pr₂ x {x' ∷ l₁} δ₁)
    k₂ refl = tails-≼ (y' ∷ l₂) (x' ∷ l₁) x δ₂ δ₁ h₂
 
- expᴸ-order-is-extensional : is-extensional expᴸ-order
- expᴸ-order-is-extensional (l₁ , δ₁) (l₂ , δ₂) u v =
-  to-expᴸ-＝ (expᴸ-order-is-extensional' l₁ l₂ δ₁ δ₂ u v)
+ DecrList₂-order-is-extensional : is-extensional DecrList₂-order
+ DecrList₂-order-is-extensional (l₁ , δ₁) (l₂ , δ₂) u v =
+  to-DecrList₂-＝ (DecrList₂-order-is-extensional' l₁ l₂ δ₁ δ₂ u v)
 
 \end{code}
+
+Therefore, DecrList₂ α β is an ordinal. As will become evident, it implements
+the exponentiation of 𝟙 + α to β.
 
 \begin{code}
 
 expᴸ[𝟙+_] : Ordinal 𝓤 → Ordinal 𝓥 → Ordinal (𝓤 ⊔ 𝓥)
 expᴸ[𝟙+_] α β = DecrList₂ α β
-                , expᴸ-order α β
-                , expᴸ-order-is-prop-valued α β
-                , expᴸ-order-is-wellfounded α β
-                , expᴸ-order-is-extensional α β
-                , expᴸ-order-is-transitive α β
+                , DecrList₂-order α β
+                , DecrList₂-order-is-prop-valued α β
+                , DecrList₂-order-is-wellfounded α β
+                , DecrList₂-order-is-extensional α β
+                , DecrList₂-order-is-transitive α β
 
 exponentiationᴸ : (α : Ordinal 𝓤)
                 → has-trichotomous-least-element α
@@ -471,6 +478,8 @@ exponentiationᴸ : (α : Ordinal 𝓤)
 exponentiationᴸ α h = expᴸ[𝟙+ α ⁺[ h ] ]
 
 \end{code}
+
+Some properties of the empty list.
 
 \begin{code}
 
@@ -497,7 +506,7 @@ module _
  expᴸ-↓-⊥' : {δ : is-decreasing-pr₂ α β []}
            → expᴸ[𝟙+ α ] β ↓ ([] , δ) ＝ 𝟘ₒ
  expᴸ-↓-⊥' {δ} = expᴸ[𝟙+ α ] β ↓ ([] , δ) ＝⟨ ap (expᴸ[𝟙+ α ] β ↓_)
-                                                 (to-expᴸ-＝ α β refl) ⟩
+                                                 (to-DecrList₂-＝ α β refl) ⟩
                  expᴸ[𝟙+ α ] β ↓ expᴸ-⊥   ＝⟨ expᴸ-↓-⊥ ⟩
                  𝟘ₒ                       ∎
 
@@ -509,6 +518,8 @@ module _
   to-⊴ 𝟙ₒ (expᴸ[𝟙+ α ] β) (λ ⋆ → transport⁻¹ (_⊲ expᴸ[𝟙+ α ] β) 𝟙ₒ-↓ expᴸ-is-positive)
 
 \end{code}
+
+The empty list is the trichotomous least element of expᴸ[𝟙+ α ] β.
 
 \begin{code}
 
@@ -624,18 +635,18 @@ is the induced map on epxᴸ.
   ([] , []-decr) , refl
  expᴸ-map-is-partially-surjective ρ h ((a₁ , b) ∷ l₁) ((a , c) ∷ []) δ₁ δ
   (head-lex (inl v)) = (((a , b') ∷ []) , sing-decr) ,
-                       to-expᴸ-＝ α γ (ap (λ - → (a , -) ∷ []) e)
+                       to-DecrList₂-＝ α γ (ap (λ - → (a , -) ∷ []) e)
    where
     b' = pr₁ (h b c v)
     e  = pr₂ (h b c v)
  expᴸ-map-is-partially-surjective ρ h ((a₁ , b) ∷ l₁) ((a , c) ∷ []) δ₁ δ
   (head-lex (inr (refl , v))) = ((a , b ∷ []) , sing-decr) ,
-                                to-expᴸ-＝ α γ refl
+                                to-DecrList₂-＝ α γ refl
  expᴸ-map-is-partially-surjective ρ h ((a₁ , b) ∷ l₁) ((a , c) ∷ []) δ₁ δ
-  (tail-lex refl v) = ((a , b ∷ []) , sing-decr) , (to-expᴸ-＝ α γ refl)
+  (tail-lex refl v) = ((a , b ∷ []) , sing-decr) , (to-DecrList₂-＝ α γ refl)
  expᴸ-map-is-partially-surjective ρ h ((a₁ , b₁) ∷ l₁) ((a , c) ∷ (a' , c') ∷ l)
   δ₁ (many-decr u δ) (head-lex (inl v)) =
-   (((a , b') ∷ l₂) , ε) , to-expᴸ-＝ α γ e₃
+   (((a , b') ∷ l₂) , ε) , to-DecrList₂-＝ α γ e₃
     where
      IH : Σ l₂ ꞉ ⟨ expᴸ[𝟙+ α ] β ⟩ , expᴸ-map l₂ ＝ ((a' , c' ∷ l) , δ)
      IH = expᴸ-map-is-partially-surjective ρ h
@@ -654,13 +665,13 @@ is the induced map on epxᴸ.
           (transport₂
             (λ -₁ -₂ → is-decreasing-pr₂ α γ (a , -₁ ∷ -₂))
             (e₁ ⁻¹)
-            ((ap (expᴸ-list α γ) e₂) ⁻¹)
+            ((ap (DecrList₂-list α γ) e₂) ⁻¹)
             (many-decr u δ))
      e₃ : (a , f b' ∷ expᴸ-map-on-lists l₂) ＝ (a , c ∷ a' , c' ∷ l)
-     e₃ = ap₂ (λ x y → a , x ∷ y) e₁ (ap (expᴸ-list α γ) e₂)
+     e₃ = ap₂ (λ x y → a , x ∷ y) e₁ (ap (DecrList₂-list α γ) e₂)
  expᴸ-map-is-partially-surjective ρ h ((a₁ , b₁) ∷ l₁) ((a , c) ∷ (a' , c') ∷ l)
   δ₁ (many-decr u δ) (head-lex (inr (refl , v))) =
-   (((a , b₁) ∷ l₂) , ε) , (to-expᴸ-＝ α γ e₃)
+   (((a , b₁) ∷ l₂) , ε) , (to-DecrList₂-＝ α γ e₃)
     where
      IH : Σ l₂ ꞉ ⟨ expᴸ[𝟙+ α ] β ⟩ , expᴸ-map l₂ ＝ ((a' , c' ∷ l) , δ)
      IH = expᴸ-map-is-partially-surjective ρ h
@@ -676,14 +687,14 @@ is the induced map on epxᴸ.
      ε = expᴸ-map-is-decreasing-pr₂-lc ρ ((a , b₁) ∷ l₂)
           (transport⁻¹
             (λ - → is-decreasing-pr₂ α γ (a , f b₁ ∷ -))
-            (ap (expᴸ-list α γ) e₂)
+            (ap (DecrList₂-list α γ) e₂)
             (many-decr u δ))
      e₃ : ((a , f b₁) ∷ expᴸ-map-on-lists l₂) ＝ ((a , f b₁) ∷ (a' , c') ∷ l)
-     e₃ = ap ((a ,  f b₁) ∷_) (ap (expᴸ-list α γ) e₂)
+     e₃ = ap ((a ,  f b₁) ∷_) (ap (DecrList₂-list α γ) e₂)
  expᴸ-map-is-partially-surjective ρ h ((a₁ , b₁) ∷ l₁) ((a , c) ∷ (a' , c') ∷ l)
   δ₁ 𝕕@(many-decr u δ) (tail-lex refl v) =
    (((a₁ , b₁) ∷ l₂) , ε) ,
-   to-expᴸ-＝ α γ (ap (a₁ , f b₁ ∷_) (ap (expᴸ-list α γ) e₂))
+   to-DecrList₂-＝ α γ (ap (a₁ , f b₁ ∷_) (ap (DecrList₂-list α γ) e₂))
     where
      IH : Σ l₂ ꞉ ⟨ expᴸ[𝟙+ α ] β ⟩ , expᴸ-map l₂ ＝ ((a' , c' ∷ l) , δ)
      IH = expᴸ-map-is-partially-surjective ρ h l₁ ((a' , c') ∷ l)
@@ -697,7 +708,7 @@ is the induced map on epxᴸ.
      ε = expᴸ-map-is-decreasing-pr₂-lc ρ (a₁ , b₁ ∷ l₂)
           (transport⁻¹
             (λ - → is-decreasing-pr₂ α γ ((a₁ , f b₁) ∷ -))
-            (ap (expᴸ-list α γ) e₂)
+            (ap (DecrList₂-list α γ) e₂)
             𝕕)
 
  expᴸ-map-is-simulation : is-initial-segment β γ f
@@ -764,7 +775,7 @@ module _
   → is-decreasing-pr₂ α (β ↓ b₀) l
   → is-decreasing-pr₂ α β (expᴸ-segment-inclusion-list l)
  expᴸ-segment-inclusion-list-preserves-decreasing-pr₂ l δ =
-  expᴸ-list-is-decreasing-pr₂ α β (expᴸ-segment-inclusion (l , δ))
+  DecrList₂-list-is-decreasing-pr₂ α β (expᴸ-segment-inclusion (l , δ))
 
  extended-expᴸ-segment-inclusion-is-decreasing-pr₂ :
     (l : List ⟨ α ×ₒ (β ↓ b₀) ⟩) (a₀ : ⟨ α ⟩)
@@ -913,7 +924,7 @@ module _
 
  expᴸ-tail-section-of-expᴸ-segment-inclusion' :
     (l : List ⟨ α ×ₒ β ⟩) (δ : is-decreasing-pr₂ α β ((a₀ , b₀) ∷ l))
-  → expᴸ-list α β (expᴸ-segment-inclusion α β b₀ (expᴸ-tail l δ)) ＝ l
+  → DecrList₂-list α β (expᴸ-segment-inclusion α β b₀ (expᴸ-tail l δ)) ＝ l
  expᴸ-tail-section-of-expᴸ-segment-inclusion' [] _ = refl
  expᴸ-tail-section-of-expᴸ-segment-inclusion' ((a , b) ∷ l) δ =
   ap ((a , b) ∷_)
@@ -926,13 +937,13 @@ module _
     {ε : is-decreasing-pr₂ α β l}
   → expᴸ-segment-inclusion α β b₀ (expᴸ-tail l δ) ＝ (l , ε)
  expᴸ-tail-section-of-expᴸ-segment-inclusion l {δ} =
-  to-expᴸ-＝ α β (expᴸ-tail-section-of-expᴸ-segment-inclusion' l δ)
+  to-DecrList₂-＝ α β (expᴸ-tail-section-of-expᴸ-segment-inclusion' l δ)
 
  expᴸ-segment-inclusion-section-of-expᴸ-tail' :
     (l : List ⟨ α ×ₒ (β ↓ b₀) ⟩)
     (δ : is-decreasing-pr₂ α (β ↓ b₀) l)
     {ε : is-decreasing-pr₂ α β (a₀ , b₀ ∷ expᴸ-segment-inclusion-list α β b₀ l)}
-  → expᴸ-list α (β ↓ b₀) (expᴸ-tail (expᴸ-segment-inclusion-list α β b₀ l) ε)
+  → DecrList₂-list α (β ↓ b₀) (expᴸ-tail (expᴸ-segment-inclusion-list α β b₀ l) ε)
     ＝ l
  expᴸ-segment-inclusion-section-of-expᴸ-tail' [] _ = refl
  expᴸ-segment-inclusion-section-of-expᴸ-tail' ((a , (b , u)) ∷ l) δ =
@@ -948,7 +959,7 @@ module _
     {ε : is-decreasing-pr₂ α β (a₀ , b₀ ∷ expᴸ-segment-inclusion-list α β b₀ l)}
   → expᴸ-tail (expᴸ-segment-inclusion-list α β b₀ l) ε ＝ l , δ
  expᴸ-segment-inclusion-section-of-expᴸ-tail l δ =
-  to-expᴸ-＝ α (β ↓ b₀) (expᴸ-segment-inclusion-section-of-expᴸ-tail' l δ)
+  to-DecrList₂-＝ α (β ↓ b₀) (expᴸ-segment-inclusion-section-of-expᴸ-tail' l δ)
 
 \end{code}
 
@@ -990,7 +1001,7 @@ expᴸ-↓-cons-≃ₒ {𝓤} {𝓥} α β a b l δ =
                      tail-lex refl w'
    where
     ℓ : List ⟨ α ×ₒ (β ↓ b) ⟩
-    ℓ = expᴸ-list α (β ↓ b) l₁
+    ℓ = DecrList₂-list α (β ↓ b) l₁
     w' : expᴸ-segment-inclusion-list α β b ℓ ≺⟨List (α ×ₒ β) ⟩ l
     w' = transport
           (λ - → expᴸ-segment-inclusion-list α β b ℓ ≺⟨List (α ×ₒ β) ⟩ -)
@@ -1004,7 +1015,7 @@ expᴸ-↓-cons-≃ₒ {𝓤} {𝓥} α β a b l δ =
   fg-is-id (inl (([] , []-decr) , inl ⋆)) = refl
   fg-is-id (inl ((((a' , b') ∷ l') , ε) , inl ⋆)) =
    ap (λ - → (inl (- , inl ⋆)))
-      (to-expᴸ-＝ α (β ↓ b)
+      (to-DecrList₂-＝ α (β ↓ b)
         (ap ((a' , b') ∷_)
             (expᴸ-segment-inclusion-section-of-expᴸ-tail' α β a b l'
               (tail-is-decreasing-pr₂ α (β ↓ b) (a , b') ε))))
@@ -1029,14 +1040,14 @@ expᴸ-↓-cons-≃ₒ {𝓤} {𝓥} α β a b l δ =
    segment-inclusion-lc
     (expᴸ[𝟙+ α ] β)
     {(a , b ∷ l) , δ}
-    (to-expᴸ-＝ α β
+    (to-DecrList₂-＝ α β
       (ap ((a' , b) ∷_)
           (expᴸ-tail-section-of-expᴸ-segment-inclusion' α β a b l' ε)))
   gf-is-id ((((a , b) ∷ l') , ε) , tail-lex refl u) =
    segment-inclusion-lc
     (expᴸ[𝟙+ α ] β)
     {(a , b ∷ l) , δ}
-    (to-expᴸ-＝ α β
+    (to-DecrList₂-＝ α β
       (ap ((a , b) ∷_)
           (expᴸ-tail-section-of-expᴸ-segment-inclusion' α β a b l' ε)))
 
