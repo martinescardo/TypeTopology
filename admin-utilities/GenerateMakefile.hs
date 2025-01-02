@@ -89,7 +89,8 @@ generateMakefileTarget :: [(Int, String)] -> [Declaration] -> Int -> String
 generateMakefileTarget fs decls n = unwords [l1, l2, l3]
   where
     is = dependencies n decls
-    l1 = agdaiFile fs n ++ ": " ++ unwords (lagdaFile fs n : (agdaiFile fs <$> is)) ++ "\n"
+    l1 = agdaiFile fs n
+         ++ ": " ++ unwords (lagdaFile fs n : (agdaiFile fs <$> is)) ++ "\n"
     l2 = "\tagda --safe " ++ lagdaFile fs n ++ "\n"
     l3 = "\ttouch $@" ++ "\n"
 
@@ -115,12 +116,13 @@ main :: IO ()
 main = do
   handle       <- openFile "admin-utilities/dependency_graph.dot" ReadMode
   content      <- hGetContents handle
+
   let
-    declarations = parse <$> (tail . init $ lines content) :: [Declaration]
+    declarations = parse <$> (tail . init . lines $ content)
     fnames       = fileNames declarations
     fileIds      = fst <$> fnames
-    deps         = allDependencies fnames declarations fileIds
     primId       = head [ n | (n, s) <- fnames, s == "Agda.Primitive" ]
+
   emitLineForTargetAll
   emitTargetForPrimitive
   mapM_ putStrLn $ generateMakefile fnames declarations (filter (/= primId) fileIds)
