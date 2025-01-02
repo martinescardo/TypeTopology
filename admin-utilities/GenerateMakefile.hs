@@ -11,7 +11,7 @@ import Data.Char (isSpace)
 import System.IO (IOMode(ReadMode), openFile, hGetContents, hClose)
 
 agdaVersion :: String
-agdaVersion = "2.6.4.3"
+agdaVersion = "2.7.0.1"
 
 type ModuleID = Int
 
