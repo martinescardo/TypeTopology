@@ -97,9 +97,7 @@ generateMakefileTarget fs decls n = concat [l1, l2, l3]
 -- | Goes through all of the declarations and generates the corresponding list of
 -- Makefile targets
 generateMakefile :: [(Int, String)] -> [Declaration] -> [Int] -> [String]
-generateMakefile fs decls []     = []
-generateMakefile fs decls (n:ns) =
-  generateMakefileTarget fs decls n : generateMakefile fs decls ns
+generateMakefile fs decls = map $ generateMakefileTarget fs decls
 
 -- | Emit target for "Primitive.agdai".
 emitTargetForPrimitive :: IO ()
