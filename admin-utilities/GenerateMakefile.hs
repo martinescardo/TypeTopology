@@ -13,11 +13,11 @@ import System.IO (IOMode(ReadMode), openFile, hGetContents, hClose)
 agdaVersion :: String
 agdaVersion = "2.6.4.3"
 
-data Declaration = Variable Int String
-                 | Dependency Int Int
-                 deriving (Eq, Show)
-
 type ModuleID = Int
+
+data Declaration = Variable ModuleID String
+                 | Dependency ModuleID ModuleID
+                 deriving (Eq, Show)
 
 -- | Remove all spaces in a string.
 trim :: String -> String
@@ -45,7 +45,7 @@ parse s
   | otherwise             = error "cannot parse line"
 
 -- | Extract mappings of variables to file names from a list of declarations.
-fileNames :: [Declaration] -> [(Int, String)]
+fileNames :: [Declaration] -> [(ModuleID, String)]
 fileNames []                  = []
 fileNames (Variable n s:ds)   = (n, s) : fileNames ds
 fileNames (Dependency _ _:ds) = fileNames ds
@@ -58,7 +58,7 @@ dependencies n (Dependency n' m:ds) | n == n' = m : dependencies n ds
 dependencies n (Dependency n' m:ds)           = dependencies n ds
 
 -- | Collect together the list of dependencies for every module.
-allDependencies :: [(Int, String)] -> [Declaration] -> [Int] -> [(Int, [Int])]
+allDependencies :: [(ModuleID, String)] -> [Declaration] -> [ModuleID] -> [(ModuleID, [ModuleID])]
 allDependencies fs decls is = [ (i, dependencies i decls) | i <- is ]
 
 -- | Replace '.' with '/' in the given string.
@@ -70,7 +70,7 @@ substDotForSlash s = f <$> s
 
 -- | Given a module ID 'n', returns the path of the .agdai file corresponding
 -- to that module.
-agdaiFile :: [(Int, String)] -> ModuleID -> String
+agdaiFile :: [(ModuleID, String)] -> ModuleID -> String
 agdaiFile fs n =
   case n `lookup` fs of
     Just fname -> "_build/" ++ agdaVersion ++ "/agda/source/"
@@ -78,14 +78,14 @@ agdaiFile fs n =
     Nothing    -> error "file name not found"
 
 -- | Given a module ID 'n', returns the path of the source file for module 'n'.
-lagdaFile :: [(Int, String)] -> Int -> String
+lagdaFile :: [(ModuleID, String)] -> ModuleID -> String
 lagdaFile fs n =
   case n `lookup` fs of
     Just fname -> "source/" ++ substDotForSlash fname ++ ".lagda"
     Nothing    -> error "file name not found"
 
 -- | Generates the target for a given module ID 'n'.
-generateMakefileTarget :: [(Int, String)] -> [Declaration] -> Int -> String
+generateMakefileTarget :: [(ModuleID, String)] -> [Declaration] -> ModuleID -> String
 generateMakefileTarget fs decls n = concat [l1, l2, l3]
   where
     is = dependencies n decls
@@ -96,7 +96,7 @@ generateMakefileTarget fs decls n = concat [l1, l2, l3]
 
 -- | Goes through all of the declarations and generates the corresponding list of
 -- Makefile targets
-generateMakefile :: [(Int, String)] -> [Declaration] -> [Int] -> [String]
+generateMakefile :: [(ModuleID, String)] -> [Declaration] -> [ModuleID] -> [String]
 generateMakefile fs decls = map $ generateMakefileTarget fs decls
 
 -- | Emit target for "Primitive.agdai".
