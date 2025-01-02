@@ -86,7 +86,7 @@ lagdaFile fs n =
 
 -- | Generates the target for a given module ID 'n'.
 generateMakefileTarget :: [(Int, String)] -> [Declaration] -> Int -> String
-generateMakefileTarget fs decls n = unwords [l1, l2, l3]
+generateMakefileTarget fs decls n = concat [l1, l2, l3]
   where
     is = dependencies n decls
     l1 = agdaiFile fs n
