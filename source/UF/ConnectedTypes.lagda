@@ -1,6 +1,8 @@
 Ian Ray, 23rd July 2024
 
-Modifications made by Ian Ray on 26th September 2024
+Modifications made by Ian Ray on 26th September 2024.
+
+Modifications made by Ian Ray on 17th December 2024.
 
 We define connected types and maps. We then explore relationships, closure
 properties and characterizations of interest pertaining to the concept of
@@ -18,15 +20,18 @@ module UF.ConnectedTypes
                           
 open import MLTT.Spartan hiding (_+_)
 open import Notation.Order
+open import UF.Base
 open import UF.Equiv
 open import UF.EquivalenceExamples
-open import UF.PropTrunc 
+open import UF.PropTrunc
+open import UF.Retracts
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
+open import UF.TruncatedTypes fe
 open import UF.Truncations fe
 open import UF.TruncationLevels
-open import UF.TruncatedTypes fe
 open import UF.Univalence
+open import UF.Yoneda
 
 \end{code}
 
@@ -35,7 +40,11 @@ to truncation levels.
 
 \begin{code}
 
-module _ (te : general-truncations-exist) where
+private
+ fe' : FunExt
+ fe' 𝓤 𝓥 = fe {𝓤} {𝓥}
+
+module connectedness-results (te : general-truncations-exist) where
 
  private 
   pt : propositional-truncations-exist
@@ -50,6 +59,26 @@ module _ (te : general-truncations-exist) where
 
  _is_connected-map : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (f : X → Y) → ℕ₋₂ → 𝓤 ⊔ 𝓥 ̇
  f is k connected-map = each-fiber-of f (λ - → - is k connected)
+
+ being-connected-is-prop : {k : ℕ₋₂} {X : 𝓤 ̇} 
+                         → is-prop (X is k connected) 
+ being-connected-is-prop = being-truncated-is-prop
+
+ being-connected-map-is-prop : {k : ℕ₋₂} {X : 𝓤 ̇} {Y : 𝓥 ̇} {f : X → Y}
+                             → is-prop (f is k connected-map)
+ being-connected-map-is-prop = Π-is-prop fe (λ y → being-connected-is-prop)
+
+ connected-if-contr : {X : 𝓤 ̇} {k : ℕ₋₂}
+                    → is-contr X
+                    → X is k connected
+ connected-if-contr {_} {X} {−2} X-is-contr = −2-trunc-is-contr
+ connected-if-contr {_} {X} {succ k} (c , C) = (∣ c ∣[ k + 1 ] , C')
+  where
+   C'' : (x : X) → ∣ c ∣[ k + 1 ] ＝ ∣ x ∣[ k + 1 ]
+   C'' x = canonical-identity-trunc-map ∣ C x ∣[ k ]
+   C' : is-central ∥ X ∥[ k + 1 ] ∣ c ∣[ k + 1 ]
+   C' = ∥∥ₙ-ind (λ v → λ p q → truncation-levels-closed-under-Id
+                 (∥∥ₙ-is-truncated ∣ c ∣[ succ k ] v) p q) C''
 
 \end{code}
 
@@ -82,7 +111,8 @@ surjections.
 
  map-is-−1-connected-if-surj : {X : 𝓤 ̇} {Y : 𝓥 ̇} {f : X → Y}
                              → is-surjection f → f is −1 connected-map
- map-is-−1-connected-if-surj f-is-surj y = −1-connected-if-inhabited (f-is-surj y)
+ map-is-−1-connected-if-surj f-is-surj y =
+  −1-connected-if-inhabited (f-is-surj y)
 
  map-is-−1-connected-iff-surj : {X : 𝓤 ̇} {Y : 𝓥 ̇} {f : X → Y}
                               → f is −1 connected-map ↔ is-surjection f
@@ -92,12 +122,19 @@ surjections.
 \end{code}
 
 We develop some closure conditions pertaining to connectedness. Connectedness
-is closed under equivalence as expected, but more importantly connectedness
-extends below: more precisely if a type is k connected then it is l connected
-for all l ≤ k. We provide a few incarnations of this fact below which may prove
-useful. 
+is closed under retracts and equivalence as expected, but more importantly
+connectedness extends below:
+more precisely if a type is k connected then it is l connected for all l ≤ k.
+We provide a few incarnations of this fact below which may prove useful. 
 
 \begin{code}
+
+ connectedness-is-closed-under-retract : {X : 𝓤 ̇} {Y : 𝓥 ̇} {k : ℕ₋₂}
+                                       → retract Y of X
+                                       → X is k connected
+                                       → Y is k connected
+ connectedness-is-closed-under-retract R X-conn =
+  retract-of-singleton (truncation-closed-under-retract R) X-conn
 
  connectedness-closed-under-equiv : {X : 𝓤 ̇} {Y : 𝓥 ̇} {k : ℕ₋₂}
                                   → X ≃ Y
@@ -140,6 +177,13 @@ useful.
    m = subtraction-ℕ₋₂-term l k o
    p = k       ＝⟨ subtraction-ℕ₋₂-identification l k o ⁻¹ ⟩
        l + m   ∎
+
+ map-connectedness-is-lower-closed : {X : 𝓤 ̇} {Y : 𝓥 ̇} {f : X → Y} {k l : ℕ₋₂}
+                                   → (l ≤ k)
+                                   → f is k connected-map
+                                   → f is l connected-map
+ map-connectedness-is-lower-closed o f-k-con y =
+  connectedness-is-lower-closed' o (f-k-con y)
 
 \end{code}
 
@@ -208,5 +252,184 @@ the identity type at one level below. We will assume univalence only when necess
   equiv-to-singleton (truncation-closed-under-equiv (fiber-of-ap-≃ f p))
    (connected-types-are-locally-connected ua (f-conn (f x'))
     (x , p) (x' , refl))
+
+\end{code}
+
+We directly prove a characterization of connectedness from the HoTT book
+(see Corallary 7.5.9.).
+
+NOTE: We will NOT state the corallary as an iff statement due to a large
+quantification issue.
+
+\begin{code}
+
+ private
+  consts : (X : 𝓤 ̇) (Y : 𝓥 ̇)
+         → Y → (X → Y)
+  consts X Y y x = y
+
+ maps-from-connected-type-to-truncated-type-const : {X : 𝓤 ̇} {Y : 𝓥 ̇} {n : ℕ₋₂}
+                                                  → X is n connected
+                                                  → Y is n truncated
+                                                  → Y ≃ (X → Y)
+ maps-from-connected-type-to-truncated-type-const {𝓤} {_} {X} {Y} {n}
+  X-conn Y-trunc = e
+  where
+   e : Y ≃ (X → Y)
+   e = Y                ≃⟨ 𝟙→ fe ⟩
+       (𝟙 {𝓤} → Y)      ≃⟨ →cong'' fe fe I ⟩
+       (∥ X ∥[ n ] → Y) ≃⟨ ∥∥ₙ-universal-property Y-trunc ⟩
+       (X → Y)          ■
+    where
+     I : 𝟙 {𝓤} ≃ ∥ X ∥[ n ]
+     I = singleton-≃-𝟙' X-conn
+   observation : consts X Y ＝ ⌜ e ⌝
+   observation = refl
+
+ constants-map-from-truncated-type-is-equiv : {X : 𝓤 ̇} {n : ℕ₋₂}
+                                            → (Y : 𝓥 ̇)
+                                            → X is n connected
+                                            → Y is n truncated
+                                            → is-equiv (consts X Y)
+ constants-map-from-truncated-type-is-equiv Y X-conn Y-trunc =
+  ⌜⌝-is-equiv (maps-from-connected-type-to-truncated-type-const X-conn Y-trunc)
+
+ connected-if-consts-is-equiv : {X : 𝓤 ̇} {n : ℕ₋₂}
+                              → ({𝓥 : Universe} (Y : 𝓥 ̇)
+                               → Y is n truncated
+                               → is-equiv (consts X Y))
+                              → X is n connected
+ connected-if-consts-is-equiv {_} {X} {n} is-equiv-from-trunc = (c , G)
+  where
+   s : (X → ∥ X ∥[ n ]) → ∥ X ∥[ n ]
+   s = section-of (consts X ∥ X ∥[ n ])
+        (equivs-have-sections (consts X ∥ X ∥[ n ])
+        (is-equiv-from-trunc ∥ X ∥[ n ] ∥∥ₙ-is-truncated))
+   H : (consts X ∥ X ∥[ n ]) ∘ s ∼ id
+   H = section-equation (consts X ∥ X ∥[ n ])
+        (equivs-have-sections (consts X ∥ X ∥[ n ])
+         (is-equiv-from-trunc ∥ X ∥[ n ] ∥∥ₙ-is-truncated))
+   c : ∥ X ∥[ n ]
+   c = s ∣_∣[ n ]
+   H' : (consts X ∥ X ∥[ n ]) c ＝ ∣_∣[ n ]
+   H' = H ∣_∣[ n ]
+   G : (v : ∥ X ∥[ n ]) → c ＝ v
+   G = ∥∥ₙ-ind (λ - → truncation-levels-are-upper-closed ∥∥ₙ-is-truncated c -)
+               (λ x → happly H' x)
+
+\end{code}
+
+We will now prove a general result from the HoTT book that characterizes when
+a map is connected (see Lemma 7.5.7.)
+
+\begin{code}
+
+ dependent-equiv-from-truncated-fam-connected-map
+  : {X : 𝓤 ̇} {Y : 𝓥 ̇} {f : X → Y}
+    {P : Y → 𝓦 ̇} {n : ℕ₋₂} 
+  → ((y : Y) → (P y) is n truncated)
+  → f is n connected-map
+  → ((y : Y) → P y) ≃ ((x : X) → P (f x))
+ dependent-equiv-from-truncated-fam-connected-map
+  {_} {_} {_} {X} {Y} {f} {P} {n}
+  P-trunc f-conn = e
+  where
+   e : ((y : Y) → P y) ≃ ((x : X) → P (f x))
+   e = ((y : Y) → P y)                                         ≃⟨ I ⟩
+       ((y : Y) → (fiber f y → P y))                           ≃⟨ II ⟩
+       ((y : Y) → (x : X) → (p : f x ＝ y) → P y)              ≃⟨ Π-flip' ⟩
+       ((x : X) → (y : Y) → (p : f x ＝ y) → P y)              ≃⟨ III ⟩
+       ((x : X) → P (f x))                                     ■
+    where
+     I = Π-cong fe fe (λ - → maps-from-connected-type-to-truncated-type-const
+                       (f-conn -) (P-trunc -))
+     II = Π-cong fe fe (λ - → curry-uncurry' fe fe)
+     III = Π-cong fe fe (λ - → ≃-sym (Yoneda-equivalence fe' (f -) P))
+   observation : ⌜ e ⌝ ＝ dprecomp P f
+   observation = refl
+
+ dep-precomp-from-truncated-family-is-equiv
+  : {X : 𝓤 ̇} {Y : 𝓥 ̇} {f : X → Y} {P : Y → 𝓦 ̇} {n : ℕ₋₂} 
+  → ((y : Y) → (P y) is n truncated)
+  → f is n connected-map
+  → is-equiv (dprecomp P f)
+ dep-precomp-from-truncated-family-is-equiv P-trunc f-conn =
+  ⌜⌝-is-equiv (dependent-equiv-from-truncated-fam-connected-map P-trunc f-conn)
+
+ dep-precomp-has-section-if-is-equiv
+  : {X : 𝓤 ̇} {Y : 𝓥 ̇} {f : X → Y} {P : Y → 𝓦 ̇} 
+  → is-equiv (dprecomp P f)
+  → has-section (dprecomp P f)
+ dep-precomp-has-section-if-is-equiv {_} {_} {_} {_} {_} {f} {P} =
+  equivs-have-sections (dprecomp P f)
+
+ map-is-connected-if-dep-precomp-from-truncated-family-has-section
+  : {X : 𝓤 ̇} {Y : 𝓥 ̇} {f : X → Y} {n : ℕ₋₂} 
+  → ({𝓦 : Universe} {P : Y → 𝓦 ̇} → ((y : Y) → (P y) is n truncated)
+                                 → has-section (dprecomp P f))
+  → f is n connected-map
+ map-is-connected-if-dep-precomp-from-truncated-family-has-section
+  {𝓤} {𝓥} {X} {Y} {f} {n} sec-from-trunc y = (c y , C)
+  where
+   Q : Y → 𝓤 ⊔ 𝓥 ̇
+   Q y = ∥ fiber f y ∥[ n ]
+   c' : ((x : X) → ∥ fiber f (f x) ∥[ n ])
+      → ((y : Y) → ∥ fiber f y ∥[ n ])
+   c' = section-of (dprecomp Q f) (sec-from-trunc (λ - → ∥∥ₙ-is-truncated))
+   c : (y : Y) → ∥ fiber f y ∥[ n ]
+   c = c' (λ - → ∣ (- , refl) ∣[ n ])
+   H' : (dprecomp Q f) ∘ c' ∼ id
+   H' = section-equation (dprecomp Q f)
+                         (sec-from-trunc (λ - → ∥∥ₙ-is-truncated))
+   H : (x : X) → c (f x) ＝ ∣ (x , refl) ∣[ n ]
+   H = happly' ((dprecomp Q f ∘ c') (λ - → ∣ (- , refl) ∣[ n ]))
+               (λ - → ∣ (- , refl) ∣[ n ]) (H' (λ - → ∣ (- , refl) ∣[ n ]))
+   C : (w : ∥ fiber f y ∥[ n ]) → c y ＝ w
+   C = ∥∥ₙ-ind (λ - → truncation-levels-are-upper-closed ∥∥ₙ-is-truncated
+                (c y) -)
+               C'
+    where
+     C' : ((x , p) : fiber f y) → c y ＝ ∣ (x , p) ∣[ n ]
+     C' (x , refl) = H x
+
+\end{code}
+
+We show that the n-truncation map is n-connected.
+
+\begin{code}
+
+ trunc-map-is-connected : {X : 𝓤 ̇} {n : ℕ₋₂}
+                        → ∣_∣[ n ] is n connected-map
+ trunc-map-is-connected {_} {X} {n} =
+  map-is-connected-if-dep-precomp-from-truncated-family-has-section has-sec
+  where
+   has-sec : {𝓦 : Universe} {P : ∥ X ∥[ n ] → 𝓦 ̇}
+           → ((v : ∥ X ∥[ n ]) → P v is n truncated)
+           → has-section (dprecomp P ∣_∣[ n ])
+   has-sec {_} {P} P-trunc = (∥∥ₙ-ind P-trunc , comp-rule)
+    where
+     comp-rule : dprecomp P ∣_∣[ n ] ∘ ∥∥ₙ-ind P-trunc ∼ id
+     comp-rule h = (dprecomp P ∣_∣[ n ]) (∥∥ₙ-ind P-trunc h) ＝⟨ refl ⟩
+                   (∥∥ₙ-ind P-trunc h) ∘ ∣_∣[ n ]            ＝⟨ I ⟩
+                   h                                         ∎
+      where
+       I = dfunext fe (∥∥ₙ-ind-comp P-trunc h)
+
+\end{code}
+
+We provide a useful result about maps from the constant type to a connected
+type (see Lemma 7.5.11 of the HoTT book for the full statement). Observe we
+do assume univalence locally here (the HoTT book assumes it implicitly).
+
+\begin{code}
+
+ basepoint-map-is-less-connected : {X : 𝓤 ̇} {n : ℕ₋₂}
+                                 → is-univalent 𝓤
+                                 → (x₀ : 𝟙 {𝓤} → X)
+                                 → X is (n + 1) connected
+                                 → x₀ is n connected-map
+ basepoint-map-is-less-connected {_} {X} {n} ua x₀ X-con x =
+  connectedness-closed-under-equiv 𝟙-lneutral
+   (connected-types-are-locally-connected ua X-con (x₀ ⋆) x)
 
 \end{code}

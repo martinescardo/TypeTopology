@@ -4,6 +4,8 @@ Minor modifications by Tom de Jong on 4 September 2024
 
 Modifications made by Ian Ray on 26th September 2024.
 
+Modifications made by Ian Ray on 17th December 2024.
+
 Using records we define the general truncation of a type; this will include
 a constructor, an induction principle and a computation rule
 (up to identification). We then proceed to develop some machinery derived from
@@ -26,9 +28,11 @@ open import MLTT.Spartan hiding (_+_)
 
 open import UF.Base
 open import UF.Equiv
+open import UF.EquivalenceExamples
 open import UF.PropTrunc
 open import UF.Retracts
 open import UF.Sets
+open import UF.Size
 open import UF.Subsingletons
 open import UF.TruncationLevels
 open import UF.TruncatedTypes fe
@@ -80,6 +84,27 @@ computation rules.
  ∥∥ₙ-uniqueness m f g =
   ∥∥ₙ-ind (λ s → truncation-levels-closed-under-Id m (f s) (g s))
 
+ ∥∥ₙ-universal-property : {X : 𝓤 ̇} {Y : 𝓥 ̇} {n : ℕ₋₂}
+                        → Y is n truncated
+                        → (∥ X ∥[ n ] → Y) ≃ (X → Y)
+ ∥∥ₙ-universal-property {_} {_} {X} {Y} {n} Y-trunc =
+  (foreward , qinvs-are-equivs foreward (backward , H , G))
+  where
+   foreward : (∥ X ∥[ n ] → Y) → (X → Y)
+   foreward g = g ∘ ∣_∣[ n ]
+   backward : (X → Y) → (∥ X ∥[ n ] → Y)
+   backward = ∥∥ₙ-rec Y-trunc
+   H : backward ∘ foreward ∼ id
+   H g = dfunext fe (∥∥ₙ-ind (λ - → truncation-levels-are-upper-closed Y-trunc
+                              ((backward ∘ foreward) g -) (g -))
+                             H')
+    where
+     H' : (x : X)
+        → backward (foreward (g)) ∣ x ∣[ n ]  ＝ g ∣ x ∣[ n ]
+     H' = ∥∥ₙ-ind-comp (λ - → Y-trunc) (g ∘ ∣_∣[ n ])
+   G : foreward ∘ backward ∼ id
+   G f = dfunext fe (∥∥ₙ-ind-comp (λ - → Y-trunc) f)
+
  to-∼-of-maps-between-truncated-types : {X : 𝓤 ̇} {Y : 𝓥 ̇} {n : ℕ₋₂}
                                       → (f g : ∥ X ∥[ n ] → ∥ Y ∥[ n ])
                                       → ((x : X)
@@ -95,12 +120,12 @@ computation rules.
  ∥∥ₙ-rec-comp m = ∥∥ₙ-ind-comp (λ - → m)
 
  ∣_∣ₙ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {n : ℕ₋₂}
-      → (f : X → Y)
+      → (X → Y)
       → X → ∥ Y ∥[ n ]
  ∣_∣ₙ {_} {_} {_} {_} {n} f = ∣_∣[ n ] ∘ f
 
  ∥_∥ₙ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {n : ℕ₋₂}
-      → (f : X → Y)
+      → (X → Y)
       → ∥ X ∥[ n ] → ∥ Y ∥[ n ]
  ∥ f ∥ₙ = ∥∥ₙ-rec ∥∥ₙ-is-truncated (∣ f ∣ₙ)
 
@@ -248,6 +273,14 @@ We demonstrate the equivalence of -1-truncation and propositional truncation:
                                              −1-trunc-to-prop-trunc
                                              prop-trunc-to-−1-trunc
 
+  props-are-truncated : {X : 𝓤 ̇} {n : ℕ₋₂}
+                        → is-prop X 
+                        → X is (n + 1) truncated
+  props-are-truncated {_} {_} {−2} = is-prop-implies-is-prop'
+  props-are-truncated {_} {_} {succ n} X-is-prop =
+   truncation-levels-are-upper-closed
+    (λ x x' → props-are-truncated X-is-prop x x')
+
 \end{code}
 
 We define the canonical predecessor map and give a computation rule.
@@ -323,6 +356,12 @@ can be refactored to use closure under retracts.
        II = ∥∥ₙ-rec-comp ∥∥ₙ-is-truncated (λ x → ∣ ⌜ e ⌝ x ∣[ n ]) (⌜ e ⌝⁻¹ y)
        III = ap ∣_∣[ n ] (inverses-are-sections' e y)
 
+ truncations-of-small-types-are-small : {X : 𝓤 ̇} {n : ℕ₋₂}
+                                      → X is 𝓥 small
+                                      → ∥ X ∥[ n ] is 𝓥 small
+ truncations-of-small-types-are-small {_} {_} {_} {n} (Y , e) =
+  (∥ Y ∥[ n ] , truncation-closed-under-equiv e)
+
  successive-truncations-equiv : {X : 𝓤 ̇} {n : ℕ₋₂}
                               → (∥ X ∥[ n ]) ≃ (∥ (∥ X ∥[ n + 1 ]) ∥[ n ])
  successive-truncations-equiv {𝓤} {X} {n} = (f , (b , G) , (b , H))
@@ -361,6 +400,57 @@ can be refactored to use closure under retracts.
       where
        I = ap b (∥∥ₙ-rec-comp ∥∥ₙ-is-truncated (λ _ → ∣ ∣ _ ∣[ n + 1 ] ∣[ n ]) x)
        II = ∥∥ₙ-rec-comp ∥∥ₙ-is-truncated canonical-pred-map (∣ x ∣[ n + 1 ])
+
+ truncated-Σ-≃ : {X : 𝓤 ̇} {P : X → 𝓦 ̇} {n : ℕ₋₂}
+               → ∥ Σ x ꞉ X , ∥ P x ∥[ n ] ∥[ n ] ≃ ∥ Σ x ꞉ X , P x ∥[ n ]
+ truncated-Σ-≃ {_} {_} {X} {P} {n} = (f , (b , G) , (b , H))
+  where
+   f : ∥ Σ x ꞉ X , ∥ P x ∥[ n ] ∥[ n ] → ∥ Σ x ꞉ X , P x ∥[ n ]
+   f = ∥∥ₙ-rec ∥∥ₙ-is-truncated
+               (uncurry (λ x → ∥∥ₙ-rec ∥∥ₙ-is-truncated (λ p → ∣ (x , p) ∣[ n ])))
+   b : ∥ Σ x ꞉ X , P x ∥[ n ] → ∥ Σ x ꞉ X , ∥ P x ∥[ n ] ∥[ n ]
+   b = ∥∥ₙ-rec ∥∥ₙ-is-truncated (λ (x , p) → ∣ (x , ∣ p ∣[ n ] ) ∣[ n ])
+   G : f ∘ b ∼ id
+   G = ∥∥ₙ-uniqueness ∥∥ₙ-is-truncated (f ∘ b) id G'
+    where
+     G' : (z : Σ x ꞉ X , P x) → f (b ∣ z ∣[ n ]) ＝ ∣ z ∣[ n ]
+     G' (x , p) = f (b ∣ (x , p) ∣[ n ])       ＝⟨ I ⟩
+                  f ∣ (x , ∣ p ∣[ n ] ) ∣[ n ] ＝⟨ II ⟩
+                  f' (x , ∣ p ∣[ n ])          ＝⟨ III ⟩
+                  ∣ (x , p) ∣[ n ]             ∎
+      where
+       I = ap f (∥∥ₙ-rec-comp ∥∥ₙ-is-truncated
+                              (λ (x , p) → ∣ (x , ∣ p ∣[ n ] ) ∣[ n ])
+                              (x , p))
+       f' = uncurry (λ x → ∥∥ₙ-rec ∥∥ₙ-is-truncated (λ p → ∣ x , p ∣[ n ]))
+       II = ∥∥ₙ-rec-comp ∥∥ₙ-is-truncated f' (x , ∣ p ∣[ n ])
+       III = ∥∥ₙ-rec-comp ∥∥ₙ-is-truncated (λ p → ∣ (x , p) ∣[ n ]) p
+
+   H : b ∘ f ∼ id
+   H = ∥∥ₙ-uniqueness ∥∥ₙ-is-truncated (b ∘ f) id H'
+    where
+     H'' : (x : X)
+         → (p : P x)
+         → b (f ∣ (x , ∣ p ∣[ n ]) ∣[ n ]) ＝ ∣ (x , ∣ p ∣[ n ]) ∣[ n ]
+     H'' x p = b (f ∣ (x , ∣ p ∣[ n ]) ∣[ n ]) ＝⟨ I ⟩
+               b (f' (x , ∣ p ∣[ n ]))         ＝⟨ II ⟩
+               b ∣ (x , p) ∣[ n ]              ＝⟨ III ⟩
+               ∣ (x , ∣ p ∣[ n ]) ∣[ n ]       ∎
+      where
+       f' = uncurry (λ x → ∥∥ₙ-rec ∥∥ₙ-is-truncated (λ p → ∣ x , p ∣[ n ]))
+       I = ap b (∥∥ₙ-rec-comp ∥∥ₙ-is-truncated f' (x , ∣ p ∣[ n ]))
+       II = ap b (∥∥ₙ-rec-comp ∥∥ₙ-is-truncated (λ p → ∣ x , p ∣[ n ]) p)
+       III = ∥∥ₙ-rec-comp ∥∥ₙ-is-truncated
+                          (λ (x , p) → ∣ (x , ∣ p ∣[ n ] ) ∣[ n ])
+                          (x , p)
+     H''' : (x : X)
+          → (p : ∥ P x ∥[ n ])
+          → b (f ∣ (x , p) ∣[ n ]) ＝ ∣ (x , p) ∣[ n ]
+     H''' x = ∥∥ₙ-ind (λ p → truncation-levels-closed-under-Id ∥∥ₙ-is-truncated
+                              (b (f ∣ (x , p) ∣[ n ])) ∣ (x , p) ∣[ n ])
+                      (H'' x)
+     H' : (z : Σ x ꞉ X , ∥ P x ∥[ n ]) → b (f ∣ z ∣[ n ]) ＝ ∣ z ∣[ n ]
+     H' (x , p) = H''' x p
 
 \end{code}
 
