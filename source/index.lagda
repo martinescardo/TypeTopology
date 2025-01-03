@@ -4,7 +4,7 @@
    -------------------------------------------------------------
 
    Martin Escardo and collaborators,
-   2010--2024--∞, continuously evolving.
+   2010--2025--∞, continuously evolving.
    https://www.cs.bham.ac.uk/~mhe/
    https://github.com/martinescardo/TypeTopology
 
@@ -55,7 +55,7 @@
 
      (https://www.cs.bham.ac.uk/~mhe/TypeTopology/AllModulesIndex.html)
 
-   * In our last count, on 2024.12.18, this development has 796 Agda
+   * In our last count, on 2024.12.18, this development has 797 Agda
      files with 229K lines of code, including comments and blank
      lines.
 
