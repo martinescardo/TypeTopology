@@ -1,6 +1,9 @@
 Tom de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg, Chuangjie Xu.
 Started November 2023. Refactored December 2024.
 
+We give a concrete construction of ordinal exponentiation using decreasing
+lists.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K --exact-split #-}

@@ -1,7 +1,7 @@
 Tom de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg, Chuangjie Xu,
 23 May 2024 with additions and refactorings in December 2024.
 
-TODO: COMMENT
+We relate the abstract and concrete constructions of ordinal exponentiation.
 
 \begin{code}
 
@@ -50,6 +50,13 @@ open import Ordinals.Exponentiation.TrichotomousLeastElement ua
 open PropositionalTruncation pt
 open suprema pt sr
 
+\end{code}
+
+Our first main result is that the abstract and concrete constructions coincide
+for base ordinals with a trichotomous least element.
+
+\begin{code}
+
 exponentiation-constructions-agree' : (α β : Ordinal 𝓤)
                                     → expᴸ[𝟙+ α ] β ＝ (𝟙ₒ +ₒ α) ^ₒ β
 exponentiation-constructions-agree' {𝓤} α =
@@ -70,21 +77,22 @@ exponentiation-constructions-agree' {𝓤} α =
        𝟘ₒ                       ＝⟨ (^ₒ-↓-⊥ α' β) ⁻¹ ⟩
        α' ^ₒ β ↓ ^ₒ-⊥ α' β      ∎)
      II (((a , b) ∷ l) , δ) = e' ,
-      (expᴸ[𝟙+ α ] β ↓ ((a , b ∷ l) , δ)                                    ＝⟨ II₁ ⟩
-       expᴸ[𝟙+ α ] (β ↓ b) ×ₒ (𝟙ₒ +ₒ (α ↓ a)) +ₒ (expᴸ[𝟙+ α ] (β ↓ b) ↓ l') ＝⟨ II₂ ⟩
-       α' ^ₒ (β ↓ b) ×ₒ (𝟙ₒ +ₒ (α ↓ a)) +ₒ (expᴸ[𝟙+ α ] (β ↓ b) ↓ l')       ＝⟨ II₃ ⟩
-       α' ^ₒ (β ↓ b) ×ₒ (𝟙ₒ +ₒ (α ↓ a)) +ₒ (α' ^ₒ (β ↓ b) ↓ e)              ＝⟨ II₄ ⟩
-       α' ^ₒ (β ↓ b) ×ₒ (α' ↓ (inr a)) +ₒ (α' ^ₒ (β ↓ b) ↓ e)               ＝⟨ II₅ ⟩
-       α' ^ₒ β ↓ e'                                                         ∎)
+      (expᴸ[𝟙+ α ] β ↓ ((a , b ∷ l) , δ)                       ＝⟨ II₁ ⟩
+       expᴸ[𝟙+ α ] (β ↓ b) ×ₒ αₐ +ₒ (expᴸ[𝟙+ α ] (β ↓ b) ↓ l') ＝⟨ II₂ ⟩
+       α' ^ₒ (β ↓ b) ×ₒ αₐ +ₒ (expᴸ[𝟙+ α ] (β ↓ b) ↓ l')       ＝⟨ II₃ ⟩
+       α' ^ₒ (β ↓ b) ×ₒ αₐ +ₒ (α' ^ₒ (β ↓ b) ↓ e)              ＝⟨ II₄ ⟩
+       α' ^ₒ (β ↓ b) ×ₒ (α' ↓ (inr a)) +ₒ (α' ^ₒ (β ↓ b) ↓ e)  ＝⟨ II₅ ⟩
+       α' ^ₒ β ↓ e'                                            ∎)
         where
+         αₐ = 𝟙ₒ +ₒ (α ↓ a)
          l' = expᴸ-tail α β a b l δ
          e  = Idtofunₒ (IH b) l'
          e' = ×ₒ-to-^ₒ α' β (e , inr a)
 
          II₁ = expᴸ-↓-cons α β a b l δ
-         II₂ = ap (λ - → - ×ₒ (𝟙ₒ +ₒ (α ↓ a)) +ₒ (expᴸ[𝟙+ α ] (β ↓ b) ↓ l'))
+         II₂ = ap (λ - → - ×ₒ αₐ +ₒ (expᴸ[𝟙+ α ] (β ↓ b) ↓ l'))
                   (IH b)
-         II₃ = ap (α' ^ₒ (β ↓ b) ×ₒ (𝟙ₒ +ₒ (α ↓ a)) +ₒ_)
+         II₃ = ap (α' ^ₒ (β ↓ b) ×ₒ αₐ +ₒ_)
                   (Idtofunₒ-↓-lemma (IH b))
          II₄ = ap (λ - → α' ^ₒ (β ↓ b) ×ₒ - +ₒ (α' ^ₒ (β ↓ b) ↓ e))
                   (+ₒ-↓-right a)
@@ -127,21 +135,22 @@ exponentiation-constructions-agree' {𝓤} α =
          IV₅ = Idtofunₒ-↓-lemma (IH b ⁻¹)
          IV₆ = simulations-preserve-↓ (expᴸ[𝟙+ α ] (β ↓ b)) (expᴸ[𝟙+ α ] β) σ l₁
        IV (inr (b , e , inr a , p)) = l₂ ,
-        (α' ^ₒ β ↓ y                                                          ＝⟨ p   ⟩
-         α' ^ₒ (β ↓ b) ×ₒ (α' ↓ inr a) +ₒ (α' ^ₒ (β ↓ b) ↓ e)                 ＝⟨ IV₁ ⟩
-         α' ^ₒ (β ↓ b) ×ₒ (𝟙ₒ +ₒ (α ↓ a)) +ₒ (α' ^ₒ (β ↓ b) ↓ e)              ＝⟨ IV₂ ⟩
-         α' ^ₒ (β ↓ b) ×ₒ (𝟙ₒ +ₒ (α ↓ a)) +ₒ (expᴸ[𝟙+ α ] (β ↓ b) ↓ l₁)       ＝⟨ IV₃ ⟩
-         expᴸ[𝟙+ α ] (β ↓ b) ×ₒ (𝟙ₒ +ₒ (α ↓ a)) +ₒ (expᴸ[𝟙+ α ] (β ↓ b) ↓ l₁) ＝⟨ IV₄ ⟩
-         expᴸ[𝟙+ α ] β ↓ l₂                                                   ∎)
+        (α' ^ₒ β ↓ y                                             ＝⟨ p   ⟩
+         α' ^ₒ (β ↓ b) ×ₒ (α' ↓ inr a) +ₒ (α' ^ₒ (β ↓ b) ↓ e)    ＝⟨ IV₁ ⟩
+         α' ^ₒ (β ↓ b) ×ₒ αₐ +ₒ (α' ^ₒ (β ↓ b) ↓ e)              ＝⟨ IV₂ ⟩
+         α' ^ₒ (β ↓ b) ×ₒ αₐ +ₒ (expᴸ[𝟙+ α ] (β ↓ b) ↓ l₁)       ＝⟨ IV₃ ⟩
+         expᴸ[𝟙+ α ] (β ↓ b) ×ₒ αₐ +ₒ (expᴸ[𝟙+ α ] (β ↓ b) ↓ l₁) ＝⟨ IV₄ ⟩
+         expᴸ[𝟙+ α ] β ↓ l₂                                      ∎)
         where
+         αₐ = 𝟙ₒ +ₒ (α ↓ a)
          l₁ = Idtofunₒ (IH b ⁻¹) e
          l₂ = extended-expᴸ-segment-inclusion α β b l₁ a
 
          IV₁ = ap (λ - → α' ^ₒ (β ↓ b) ×ₒ - +ₒ (α' ^ₒ (β ↓ b) ↓ e))
                   ((+ₒ-↓-right a) ⁻¹)
-         IV₂ = ap (α' ^ₒ (β ↓ b) ×ₒ (𝟙ₒ +ₒ (α ↓ a)) +ₒ_)
+         IV₂ = ap (α' ^ₒ (β ↓ b) ×ₒ αₐ +ₒ_)
                   (Idtofunₒ-↓-lemma (IH b ⁻¹))
-         IV₃ = ap (λ - → - ×ₒ (𝟙ₒ +ₒ (α ↓ a)) +ₒ (expᴸ[𝟙+ α ] (β ↓ b) ↓ l₁)) (IH b ⁻¹)
+         IV₃ = ap (λ - → - ×ₒ αₐ +ₒ (expᴸ[𝟙+ α ] (β ↓ b) ↓ l₁)) (IH b ⁻¹)
          IV₄ = expᴸ-↓-cons' α β a b l₁ ⁻¹
 
 exponentiation-constructions-agree
@@ -173,6 +182,11 @@ second component.
 We show that this map is a surjection, which motivates and allows us to think of
 lists in DecrList₂ α β as concrete representations of (abstract) elements of
 α ^ₒ β. Put differently, such a list denotes the abstract element.
+
+We furthermore state and prove precisely how this canonical function f_β relates
+to the simulation induced by the identification
+  exponentiationᴸ α h β ＝ α ^ₒ β
+obtained above.
 
 \begin{code}
 
@@ -281,12 +295,14 @@ module _
                     → ((b : ⟨ β ⟩) → DecrList₂ α (β ↓ b) → ⟨ α' ^ₒ (β ↓ b) ⟩)
                     → DecrList₂ α β → ⟨ α' ^ₒ β ⟩
    denotation-body' β r ([] , δ) = ^ₒ-⊥ α' β
-   denotation-body' β r (((a , b) ∷ l) , δ) = ×ₒ-to-^ₒ α' β
-                                               (r b (expᴸ-tail α β a b l δ) , inr a)
+   denotation-body' β r (((a , b) ∷ l) , δ) =
+    ×ₒ-to-^ₒ α' β (r b (expᴸ-tail α β a b l δ) , inr a)
 
   denotation' : (β : Ordinal 𝓥) → DecrList₂ α β → ⟨ α' ^ₒ β ⟩
   denotation' =
-   transfinite-induction-on-OO (λ β → DecrList₂ α β → ⟨ α' ^ₒ β ⟩) denotation-body'
+   transfinite-induction-on-OO
+    (λ β → DecrList₂ α β → ⟨ α' ^ₒ β ⟩)
+    denotation-body'
 
   syntax denotation' β l = ⟦ l ⟧'⟨ β ⟩
 
@@ -376,24 +392,25 @@ element of α (see the end of this file).
      ↓-lc (α' ^ₒ β) (f β ((a , b ∷ l) , δ)) (⟦ (a , b ∷ l) , δ ⟧'⟨ β ⟩) II
       where
        II =
-        α' ^ₒ β ↓ f β (((a , b) ∷ l) , δ)                                   ＝⟨ e₁ ⟩
-        expᴸ[𝟙+ α ] β ↓ (((a , b) ∷ l) , δ)                                 ＝⟨ e₂ ⟩
-        expᴸ[𝟙+ α ] (β ↓ b) ×ₒ (𝟙ₒ +ₒ (α ↓ a)) +ₒ (expᴸ[𝟙+ α ] (β ↓ b) ↓ ℓ) ＝⟨ e₃ ⟩
-        α' ^ₒ (β ↓ b) ×ₒ (𝟙ₒ +ₒ (α ↓ a)) +ₒ (expᴸ[𝟙+ α ] (β ↓ b) ↓ ℓ)       ＝⟨ e₄ ⟩
-        α' ^ₒ (β ↓ b) ×ₒ (𝟙ₒ +ₒ (α ↓ a)) +ₒ (α' ^ₒ (β ↓ b) ↓ f (β ↓ b) ℓ)   ＝⟨ e₅ ⟩
-        α' ^ₒ (β ↓ b) ×ₒ (α' ↓ inr a) +ₒ (α' ^ₒ (β ↓ b) ↓ f (β ↓ b) ℓ)      ＝⟨ e₆ ⟩
-        α' ^ₒ β ↓ ×ₒ-to-^ₒ α' β (f (β ↓ b) ℓ , inr a)                       ＝⟨ e₇ ⟩
-        α' ^ₒ β ↓ ×ₒ-to-^ₒ α' β (⟦ ℓ ⟧'⟨ β ↓ b ⟩ , inr a)                   ＝⟨ e₈ ⟩
-        α' ^ₒ β ↓ ⟦ ((a , b) ∷ l) , δ ⟧'⟨ β ⟩                               ∎
+        α' ^ₒ β ↓ f β (((a , b) ∷ l) , δ)                              ＝⟨ e₁ ⟩
+        expᴸ[𝟙+ α ] β ↓ (((a , b) ∷ l) , δ)                            ＝⟨ e₂ ⟩
+        expᴸ[𝟙+ α ] (β ↓ b) ×ₒ αₐ +ₒ (expᴸ[𝟙+ α ] (β ↓ b) ↓ ℓ)         ＝⟨ e₃ ⟩
+        α' ^ₒ (β ↓ b) ×ₒ αₐ +ₒ (expᴸ[𝟙+ α ] (β ↓ b) ↓ ℓ)               ＝⟨ e₄ ⟩
+        α' ^ₒ (β ↓ b) ×ₒ αₐ +ₒ (α' ^ₒ (β ↓ b) ↓ f (β ↓ b) ℓ)           ＝⟨ e₅ ⟩
+        α' ^ₒ (β ↓ b) ×ₒ (α' ↓ inr a) +ₒ (α' ^ₒ (β ↓ b) ↓ f (β ↓ b) ℓ) ＝⟨ e₆ ⟩
+        α' ^ₒ β ↓ ×ₒ-to-^ₒ α' β (f (β ↓ b) ℓ , inr a)                  ＝⟨ e₇ ⟩
+        α' ^ₒ β ↓ ×ₒ-to-^ₒ α' β (⟦ ℓ ⟧'⟨ β ↓ b ⟩ , inr a)              ＝⟨ e₈ ⟩
+        α' ^ₒ β ↓ ⟦ ((a , b) ∷ l) , δ ⟧'⟨ β ⟩                          ∎
          where
+          αₐ = 𝟙ₒ +ₒ (α ↓ a)
           ℓ = expᴸ-tail α β a b l δ
           e₁ = (simulations-preserve-↓ (expᴸ[𝟙+ α ] β) (α' ^ₒ β)
                  (induced-simulation β)
                  (((a , b) ∷ l) , δ)) ⁻¹
           e₂ = expᴸ-↓-cons α β a b l δ
-          e₃ = ap (λ - → - ×ₒ (𝟙ₒ +ₒ (α ↓ a)) +ₒ (expᴸ[𝟙+ α ] (β ↓ b) ↓ ℓ))
+          e₃ = ap (λ - → - ×ₒ αₐ +ₒ (expᴸ[𝟙+ α ] (β ↓ b) ↓ ℓ))
                   (exponentiation-constructions-agree' α (β ↓ b))
-          e₄ = ap (α' ^ₒ (β ↓ b) ×ₒ (𝟙ₒ +ₒ (α ↓ a)) +ₒ_)
+          e₄ = ap (α' ^ₒ (β ↓ b) ×ₒ αₐ +ₒ_)
                   (simulations-preserve-↓ (expᴸ[𝟙+ α ] (β ↓ b)) (α' ^ₒ (β ↓ b))
                     (induced-simulation (β ↓ b))
                     ℓ)
@@ -474,9 +491,10 @@ module _
 
 Below, we need the following technical lemmas which say that normalization
 commutes with the expᴸ-tail and expᴸ-segment-inclusion functions.
+
 For expᴸ-tail, this means that the normalization of the decreasing list
-(inl ⋆ , b) ∷ l in DecrList₂ α β then it coincides with the normalization of l
-in DecrList₂ α (β ↓ b) after embedding it back into DecrList₂ α β.
+(inl ⋆ , b) ∷ l in DecrList₂ α β coincides with the normalization of l in
+DecrList₂ α (β ↓ b) after embedding it back into DecrList₂ α β.
 
 \begin{code}
 
@@ -584,12 +602,13 @@ denotations-are-related-via-normalization {𝓤} α =
                      (denotation'-⊴ α β))
                    (normalize α (β ↓ b) ℓ)
     ind β IH ((inr a , b) ∷ l) δ =
-     denotation α' β (((inr a , b) ∷ l) , δ)                               ＝⟨ I   ⟩
-     ×ₒ-to-^ₒ α' β (denotation α' (β ↓ b) ℓ , inr a)                       ＝⟨ II  ⟩
-     ×ₒ-to-^ₒ α' β (denotation' α (β ↓ b) (normalize α (β ↓ b) ℓ) , inr a) ＝⟨ III ⟩
-     ×ₒ-to-^ₒ α' β (denotation' α (β ↓ b) ℓ' , inr a)                      ＝⟨ IV  ⟩
-     denotation' α β (normalize α β ((inr a , b ∷ l) , δ))                 ∎
+     denotation α' β (((inr a , b) ∷ l) , δ)                        ＝⟨ I   ⟩
+     ϕ α' β (denotation α' (β ↓ b) ℓ , inr a)                       ＝⟨ II  ⟩
+     ϕ α' β (denotation' α (β ↓ b) (normalize α (β ↓ b) ℓ) , inr a) ＝⟨ III ⟩
+     ϕ α' β (denotation' α (β ↓ b) ℓ' , inr a)                      ＝⟨ IV  ⟩
+     denotation' α β (normalize α β ((inr a , b ∷ l) , δ))          ∎
       where
+       ϕ = ×ₒ-to-^ₒ
        ε = normalize-list-preserves-decreasing-pr₂ α β (inr a , b ∷ l) δ
        ℓ  = expᴸ-tail α' β (inr a) b l δ
        ℓ' = expᴸ-tail α β a b (normalize-list α β l) ε

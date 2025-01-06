@@ -1,7 +1,8 @@
 Tom de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg, Chuangjie Xu,
-April 2024.
+April 2024. Major additions and refactorings in September—December 2024.
 
-With major additions and refactorings in September—December 2024.
+We give an abstract construction of ordinal exponentiation using suprema of
+ordinals.
 
 \begin{code}
 
