@@ -488,7 +488,7 @@ normalize-expᴸ-tail
    ＝ expᴸ-tail α β a b
        (normalize-list α β l)
        (normalize-list-preserves-decreasing-pr₂ α β (inr a , b ∷ l) δ)
-normalize-expᴸ-tail α β {a} {b} {l} = to-expᴸ-＝ α (β ↓ b) (lemma l)
+normalize-expᴸ-tail α β {a} {b} {l} = to-DecrList₂-＝ α (β ↓ b) (lemma l)
   where
    α' = 𝟙ₒ +ₒ α
 
@@ -511,7 +511,7 @@ normalize-expᴸ-segment-inclusion
    ＝ expᴸ-segment-inclusion α β b
        (normalize α (β ↓ b)
        (expᴸ-tail (𝟙ₒ +ₒ α) β (inl ⋆) b l δ))
-normalize-expᴸ-segment-inclusion α β {b} {l} = to-expᴸ-＝ α β (lemma l)
+normalize-expᴸ-segment-inclusion α β {b} {l} = to-DecrList₂-＝ α β (lemma l)
  where
    α' = 𝟙ₒ +ₒ α
 

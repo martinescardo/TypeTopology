@@ -70,8 +70,8 @@ expᴸ-preserves-discreteness α β α-is-disc β-is-disc l@(xs , _) l'@(ys , _)
    II = List-is-discrete ⦃ discrete-gives-discrete' I ⦄ xs ys
 
    III : is-decidable (xs ＝ ys) → is-decidable (l ＝ l')
-   III (inl  eq) = inl (to-expᴸ-＝ α β eq)
-   III (inr neq) = inr (λ p → neq (ap (expᴸ-list α β) p))
+   III (inl  eq) = inl (to-DecrList₂-＝ α β eq)
+   III (inr neq) = inr (λ p → neq (ap (DecrList₂-list α β) p))
 
 exponentiationᴸ-preserves-discreteness : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
                                          (h : has-trichotomous-least-element α)
@@ -126,7 +126,7 @@ expᴸ-preserves-trichotomy α β tri-α tri-β l@(xs , _) l'@(ys , _) =
   κ : (xs ≺⟨List (α ×ₒ β) ⟩ ys) + (xs ＝ ys) + (ys ≺⟨List (α ×ₒ β) ⟩ xs)
     → (l ≺⟨ expᴸ[𝟙+ α ] β ⟩ l') + (l ＝ l') + (l' ≺⟨ expᴸ[𝟙+ α ] β ⟩ l)
   κ (inl p) = inl p
-  κ (inr (inl e)) = inr (inl (to-expᴸ-＝ α β e))
+  κ (inr (inl e)) = inr (inl (to-DecrList₂-＝ α β e))
   κ (inr (inr q)) = inr (inr q)
 
 private

@@ -120,7 +120,7 @@ expᴸ-zero-specification {𝓤} {𝓥} α =
    where
     p : g ∘ f ∼ id
     p ([] , []-decr) = refl
-    p (((a , ⋆) ∷ []) , δ) = to-expᴸ-＝ α 𝟙ₒ refl
+    p (((a , ⋆) ∷ []) , δ) = to-DecrList₂-＝ α 𝟙ₒ refl
     p (((a , ⋆) ∷ (a' , ⋆) ∷ l) , many-decr p δ) = 𝟘-elim (irrefl 𝟙ₒ ⋆ p)
     q : f ∘ g ∼ id
     q (inl ⋆) = refl
@@ -218,7 +218,7 @@ component).
   stay-left : (l : List ⟨ α ×ₒ (β +ₒ γ) ⟩) (a : ⟨ α ⟩) (b : ⟨ β ⟩)
               (δ : is-decreasing-pr₂ α (β +ₒ γ) ((a , inl b) ∷ l))
             → forward-right (((a , inl b) ∷ l) , δ) ＝ [] , []-decr
-  stay-left l a b δ = to-expᴸ-＝ α γ (stay-left-list l a b δ)
+  stay-left l a b δ = to-DecrList₂-＝ α γ (stay-left-list l a b δ)
 
   forward-right-constant-on-inl
    : (l₁ l₂ : List ⟨ α ×ₒ (β +ₒ γ) ⟩)
@@ -289,7 +289,7 @@ component).
        → forward (((a , inr c) ∷ l₁) , δ₁)
          ≺⟨ (expᴸ[𝟙+ α ] β ×ₒ expᴸ[𝟙+ α ] γ) ⟩ forward (((a , inr c) ∷ l₂) , δ₂)
      h (inl q) = inl (tail-lex refl q)
-     h (inr (e , q)) = inr (to-expᴸ-＝ α γ (ap ((a , c) ∷_) (ap pr₁ e)) , q)
+     h (inr (e , q)) = inr (to-DecrList₂-＝ α γ (ap ((a , c) ∷_) (ap pr₁ e)) , q)
 
 \end{code}
 
@@ -448,7 +448,7 @@ We now construct an order preserving map in the other direction.
 \begin{code}
 
   backward-forward-is-id : backward ∘ forward ∼ id
-  backward-forward-is-id (l , δ) = to-expᴸ-＝ α (β +ₒ γ) (I l δ)
+  backward-forward-is-id (l , δ) = to-DecrList₂-＝ α (β +ₒ γ) (I l δ)
    where
     I : (l : List ⟨ α ×ₒ (β +ₒ γ) ⟩)
       → is-decreasing-pr₂ α (β +ₒ γ) l
@@ -480,7 +480,7 @@ We now construct an order preserving map in the other direction.
   forward-backward-is-id ((l₁ , δ₁) , (l₂ , δ₂)) = to-×-＝ I II
    where
     I : forward-left (backward ((l₁ , δ₁) , l₂ , δ₂)) ＝ l₁ , δ₁
-    I = to-expᴸ-＝ α β (I' l₁ l₂ δ₁ δ₂)
+    I = to-DecrList₂-＝ α β (I' l₁ l₂ δ₁ δ₂)
      where
       I' : (l₁ : List ⟨ α ×ₒ β ⟩) (l₂ : List ⟨ α ×ₒ γ ⟩)
          → is-decreasing-pr₂ α β l₁
@@ -492,7 +492,7 @@ We now construct an order preserving map in the other direction.
        ap (x ∷_) (I' l₁ [] (tail-is-decreasing-pr₂ α β x δ₁) []-decr)
 
     II : forward-right (backward ((l₁ , δ₁) , l₂ , δ₂)) ＝ l₂ , δ₂
-    II = to-expᴸ-＝ α γ (I' l₁ l₂ δ₁ δ₂)
+    II = to-DecrList₂-＝ α γ (I' l₁ l₂ δ₁ δ₂)
      where
       I' : (l₁ : List ⟨ α ×ₒ β ⟩) (l₂ : List ⟨ α ×ₒ γ ⟩)
          → is-decreasing-pr₂ α β l₁
@@ -595,7 +595,7 @@ that is surjective and hence we get an equality of ordinals.
   to-expᴸ-sup {i} = expᴸ-map α (β i) (sup β) ι ι-is-order-preserving
 
   to-expᴸ-sup-list : {i : I} → ⟨ expᴸ[𝟙+ α ] (β i) ⟩ → List ⟨ α ×ₒ (sup β) ⟩
-  to-expᴸ-sup-list = expᴸ-list α (sup β) ∘ to-expᴸ-sup
+  to-expᴸ-sup-list = DecrList₂-list α (sup β) ∘ to-expᴸ-sup
 
   to-expᴸ-sup-is-order-preserving
    : {i : I}
@@ -693,7 +693,7 @@ that is surjective and hence we get an equality of ordinals.
           → ∃ i ꞉ I , Σ b ꞉ ⟨ expᴸ[𝟙+ α ] (β i) ⟩ ,
              to-expᴸ-sup b ＝ (((a , s) ∷ l) , δ)
         h (i , b , refl) =
-         ∣ i , (((a , b) ∷ l') , δ') , to-expᴸ-＝ α (sup β) (e ⁻¹) ∣
+         ∣ i , (((a , b) ∷ l') , δ') , to-DecrList₂-＝ α (sup β) (e ⁻¹) ∣
          where
           lemma : Σ l' ꞉ List ⟨ α ×ₒ β i ⟩ ,
                    Σ δ' ꞉ is-decreasing-pr₂ α (β i) ((a , b) ∷ l') ,
