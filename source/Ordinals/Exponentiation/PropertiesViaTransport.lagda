@@ -1,7 +1,9 @@
 Tom de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg, Chuangjie Xu,
 December 2024
 
-TODO: COMMENT
+We record various properties of the abstract and concrete constructions of
+ordinal exponentiation using transport and the equivalence proved in
+Ordinals.Exponentiation.RelatingConstructions.
 
 \begin{code}
 
@@ -86,12 +88,13 @@ exponentiationᴸ-preserves-discreteness α β h@(⊥ , _) α-is-discrete β-is-
                      (Prop-valuedness α ⊥)
                      α-is-discrete
 
-^ₒ-preserves-discreteness-for-basis-with-trichotomous-least-element
- : (α β : Ordinal 𝓤) (h : has-trichotomous-least-element α)
+^ₒ-preserves-discreteness-for-base-with-trichotomous-least-element
+ : (α β : Ordinal 𝓤)
+ → has-trichotomous-least-element α
  → is-discrete ⟨ α ⟩
  → is-discrete ⟨ β ⟩
  → is-discrete ⟨ α ^ₒ β ⟩
-^ₒ-preserves-discreteness-for-basis-with-trichotomous-least-element
+^ₒ-preserves-discreteness-for-base-with-trichotomous-least-element
  α β h α-disc β-disc =
   transport (λ - → is-discrete ⟨ - ⟩)
             (exponentiation-constructions-agree α β h)
@@ -113,8 +116,8 @@ expᴸ-preserves-trichotomy α β tri-α tri-β l@(xs , _) l'@(ys , _) =
    ϕ (×ₒ-is-trichotomous α β tri-α tri-β (a , b) (a' , b')) (tri xs ys)
    where
     ϕ : in-trichotomy (underlying-order (α ×ₒ β)) (a , b) (a' , b')
-      → in-trichotomy (λ l l' → l ≺⟨List (α ×ₒ β) ⟩ l') xs ys
-      → in-trichotomy (λ l l' → l ≺⟨List (α ×ₒ β) ⟩ l')
+      → in-trichotomy (lex-for-ordinal (α ×ₒ β)) xs ys
+      → in-trichotomy (lex-for-ordinal (α ×ₒ β))
                       ((a , b) ∷ xs)
                       ((a' , b') ∷ ys)
     ϕ (inl p)       _              = inl (head-lex p)
@@ -135,7 +138,8 @@ private
            → is-trichotomous α
            → has-trichotomous-least-element α
  tri-least α (⊥ , ⊥-is-least) t =
-  ⊥ , is-trichotomous-and-least-implies-is-trichotomous-least α ⊥ (t ⊥) ⊥-is-least
+  ⊥ ,
+  is-trichotomous-and-least-implies-is-trichotomous-least α ⊥ (t ⊥) ⊥-is-least
 
 exponentiationᴸ-preserves-trichotomy
  : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
@@ -157,13 +161,13 @@ exponentiationᴸ-preserves-trichotomy α β h tri-α tri-β =
      κ (inr (inl e)) = inr (inl (to-⁺-＝ α h' e))
      κ (inr (inr k)) = inr (inr k)
 
-^ₒ-preserves-trichotomy-for-basis-with-trichotomous-least-element
+^ₒ-preserves-trichotomy-for-base-with-trichotomous-least-element
  : (α β : Ordinal 𝓤)
  → has-trichotomous-least-element α
  → is-trichotomous α
  → is-trichotomous β
  → is-trichotomous (α ^ₒ β)
-^ₒ-preserves-trichotomy-for-basis-with-trichotomous-least-element
+^ₒ-preserves-trichotomy-for-base-with-trichotomous-least-element
  α β h@(⊥ , p) tri-α tri-β =
   transport is-trichotomous
    (exponentiation-constructions-agree α β h)
@@ -173,6 +177,9 @@ exponentiationᴸ-preserves-trichotomy α β h tri-α tri-β =
      tri-β)
 
 \end{code}
+
+Since the abstract construction satisfies the ordinal specifications, so does
+the concrete construction.
 
 \begin{code}
 
@@ -204,6 +211,9 @@ module _
               (^ₒ-satisfies-sup-specification α)
 
 \end{code}
+
+Further properties whose direct proofs would require combinatorics of decreasing
+lists can also be derived via transport.
 
 \begin{code}
 
