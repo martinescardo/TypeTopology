@@ -1,7 +1,13 @@
 Tom de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg, Chuangjie Xu,
 Started November 2023. Refactored December 2024.
 
-TODO: Comments between code blocks
+In Ordinals.Exponentiation.PropertiesViaTransport we derive various properties
+of our concrete ordinal exponentiation (using decreasing lists) via transport
+and the equivalence with the abstract construction (using suprema) in
+Ordinals.Exponentiation.RelatingConstructions.
+
+For comparison, and with an eye on to their combinatorial meaning, we offer
+direct proofs of some of these properties here.
 
 \begin{code}
 
@@ -50,6 +56,9 @@ open PropositionalTruncation pt
 open suprema pt sr
 
 \end{code}
+
+The fact that the concrete exponentiation satisfies the zero specification is
+easily shown, as is the fact that exponentiating by 𝟙ₒ is the identity.
 
 \begin{code}
 
@@ -188,7 +197,8 @@ component).
                    (δ : is-decreasing-pr₂ α (β +ₒ γ) ((a , inl b) ∷ l))
                  → forward-right-on-lists ((a , inl b) ∷ l) ＝ []
   stay-left-list [] a b δ = refl
-  stay-left-list ((a' , inl b') ∷ l) a b (many-decr p δ) = stay-left-list l a b' δ
+  stay-left-list ((a' , inl b') ∷ l) a b (many-decr p δ) =
+   stay-left-list l a b' δ
   stay-left-list ((a' , inr c)  ∷ l) a b (many-decr p δ) = 𝟘-elim p
 
   forward-right-on-lists-preserves-decreasing-pr₂
@@ -199,7 +209,8 @@ component).
   forward-right-on-lists-preserves-decreasing-pr₂ ((a , inl b) ∷ l) δ =
    forward-right-on-lists-preserves-decreasing-pr₂ l
     (tail-is-decreasing-pr₂ α (β +ₒ γ) (a , inl b) δ)
-  forward-right-on-lists-preserves-decreasing-pr₂ ((a , inr c) ∷ []) δ = sing-decr
+  forward-right-on-lists-preserves-decreasing-pr₂ ((a , inr c) ∷ []) δ =
+   sing-decr
   forward-right-on-lists-preserves-decreasing-pr₂
    ((a , inr c) ∷ (a' , inr c') ∷ l) (many-decr p δ) =
     many-decr p
@@ -232,6 +243,9 @@ component).
 
 \end{code}
 
+The maps forward-left and forward-right are now combined into a single order
+preserving forward map.
+
 \begin{code}
 
   forward : ⟨ expᴸ[𝟙+ α ] (β +ₒ γ) ⟩ → ⟨ expᴸ[𝟙+ α ] β ×ₒ expᴸ[𝟙+ α ] γ ⟩
@@ -245,47 +259,62 @@ component).
    inr ((stay-left l₂ a b δ₂ ⁻¹) , []-lex)
   forward-is-order-preserving ([] , δ₁) (((a , inr c) ∷ l₂) , δ₂) []-lex =
    inl []-lex
-  forward-is-order-preserving (((a , inl b) ∷ l₁) , δ₁) (((a' , inl b') ∷ l₂) , δ₂)
-   (head-lex (inr (refl , p))) =
-    inr (forward-right-constant-on-inl l₁ l₂ a a' b b' δ₁ δ₂ ,
-         head-lex (inr (refl , p)))
-  forward-is-order-preserving (((a , inl b) ∷ l₁) , δ₁) (((a' , inr c)  ∷ l₂) , δ₂)
-   (head-lex (inr (e , p))) = 𝟘-elim (+disjoint e)
-  forward-is-order-preserving (((a , inr c) ∷ l₁) , δ₁) (((a' , inl b)  ∷ l₂) , δ₂)
-   (head-lex (inr (e , p))) = 𝟘-elim (+disjoint' e)
-  forward-is-order-preserving (((a , inr c) ∷ l₁) , δ₁) (((a' , inr c') ∷ l₂) , δ₂)
-   (head-lex (inr (refl , p))) = inl (head-lex (inr (refl , p)))
-  forward-is-order-preserving (((a , inl b) ∷ l₁) , δ₁) (((a' , inl b') ∷ l₂) , δ₂)
-   (head-lex (inl p)) =
-    inr (forward-right-constant-on-inl l₁ l₂ a a' b b' δ₁ δ₂ ,
-         head-lex (inl p))
-  forward-is-order-preserving (((a , inl b) ∷ l₁) , δ₁) (((a' , inr c)  ∷ l₂) , δ₂)
-   (head-lex (inl p)) =
-    inl (transport⁻¹
-          (λ - → - ≺⟨ expᴸ[𝟙+ α ] γ ⟩ forward-right (((a' , inr c) ∷ l₂) , δ₂))
-          (stay-left l₁ a b δ₁)
-          []-lex)
-  forward-is-order-preserving (((a , inr c) ∷ l₁) , δ₁) (((a' , inl b)  ∷ l₂) , δ₂)
-   (head-lex (inl p)) = 𝟘-elim p
-  forward-is-order-preserving (((a , inr c) ∷ l₁) , δ₁) (((a' , inr c') ∷ l₂) , δ₂)
-   (head-lex (inl p)) = inl (head-lex (inl p))
-  forward-is-order-preserving (((a , inl b) ∷ l₁) , δ₁) (((a , inl b) ∷ l₂) , δ₂)
-   (tail-lex refl p) = h (forward-is-order-preserving (l₁ , ε₁) (l₂ , ε₂) p)
+  forward-is-order-preserving (((a , inl b) ∷ l₁) , δ₁)
+                              (((a' , inl b') ∷ l₂) , δ₂)
+                              (head-lex (inr (refl , p))) =
+   inr (forward-right-constant-on-inl l₁ l₂ a a' b b' δ₁ δ₂ ,
+        head-lex (inr (refl , p)))
+  forward-is-order-preserving (((a , inl b) ∷ l₁) , δ₁)
+                              (((a' , inr c)  ∷ l₂) , δ₂)
+                              (head-lex (inr (e , p))) = 𝟘-elim (+disjoint e)
+  forward-is-order-preserving (((a , inr c) ∷ l₁) , δ₁)
+                              (((a' , inl b)  ∷ l₂) , δ₂)
+                              (head-lex (inr (e , p))) = 𝟘-elim (+disjoint' e)
+  forward-is-order-preserving (((a , inr c) ∷ l₁) , δ₁)
+                              (((a' , inr c') ∷ l₂) , δ₂)
+                              (head-lex (inr (refl , p))) =
+   inl (head-lex (inr (refl , p)))
+  forward-is-order-preserving (((a , inl b) ∷ l₁) , δ₁)
+                              (((a' , inl b') ∷ l₂) , δ₂)
+                              (head-lex (inl p)) =
+   inr (forward-right-constant-on-inl l₁ l₂ a a' b b' δ₁ δ₂ ,
+        head-lex (inl p))
+  forward-is-order-preserving (((a , inl b) ∷ l₁) , δ₁)
+                              (((a' , inr c)  ∷ l₂) , δ₂)
+                              (head-lex (inl p)) =
+   inl (transport⁻¹
+         (λ - → - ≺⟨ expᴸ[𝟙+ α ] γ ⟩ forward-right (((a' , inr c) ∷ l₂) , δ₂))
+         (stay-left l₁ a b δ₁)
+         []-lex)
+  forward-is-order-preserving (((a , inr c) ∷ l₁) , δ₁)
+                              (((a' , inl b)  ∷ l₂) , δ₂)
+                              (head-lex (inl p)) = 𝟘-elim p
+  forward-is-order-preserving (((a , inr c) ∷ l₁) , δ₁)
+                              (((a' , inr c') ∷ l₂) , δ₂)
+                              (head-lex (inl p)) = inl (head-lex (inl p))
+  forward-is-order-preserving (((a , inl b) ∷ l₁) , δ₁)
+                              (((a , inl b) ∷ l₂) , δ₂)
+                              (tail-lex refl p) =
+   h (forward-is-order-preserving (l₁ , ε₁) (l₂ , ε₂) p)
     where
      ε₁ = tail-is-decreasing-pr₂ α (β +ₒ γ) (a , inl b) δ₁
      ε₂ = tail-is-decreasing-pr₂ α (β +ₒ γ) (a , inl b) δ₂
-     h : forward (l₁ , ε₁) ≺⟨ (expᴸ[𝟙+ α ] β ×ₒ expᴸ[𝟙+ α ] γ) ⟩ forward (l₂ , ε₂)
+     h : forward (l₁ , ε₁)
+         ≺⟨ (expᴸ[𝟙+ α ] β ×ₒ expᴸ[𝟙+ α ] γ) ⟩ forward (l₂ , ε₂)
        → forward (((a , inl b) ∷ l₁) , δ₁)
          ≺⟨ (expᴸ[𝟙+ α ] β ×ₒ expᴸ[𝟙+ α ] γ) ⟩ forward (((a , inl b) ∷ l₂) , δ₂)
      h (inl q) = inl q
      h (inr (e , q)) = inr (forward-right-constant-on-inl l₁ l₂ a a b b δ₁ δ₂ ,
                             tail-lex refl q)
-  forward-is-order-preserving (((a , inr c) ∷ l₁) , δ₁) (((a , inr c) ∷ l₂) , δ₂)
-   (tail-lex refl p) = h (forward-is-order-preserving (l₁ , ε₁) (l₂ , ε₂) p)
+  forward-is-order-preserving (((a , inr c) ∷ l₁) , δ₁)
+                              (((a , inr c) ∷ l₂) , δ₂)
+                              (tail-lex refl p) =
+   h (forward-is-order-preserving (l₁ , ε₁) (l₂ , ε₂) p)
     where
      ε₁ = tail-is-decreasing-pr₂ α (β +ₒ γ) (a , inr c) δ₁
      ε₂ = tail-is-decreasing-pr₂ α (β +ₒ γ) (a , inr c) δ₂
-     h : forward (l₁ , ε₁) ≺⟨ (expᴸ[𝟙+ α ] β ×ₒ expᴸ[𝟙+ α ] γ) ⟩ forward (l₂ , ε₂)
+     h : forward (l₁ , ε₁)
+         ≺⟨ (expᴸ[𝟙+ α ] β ×ₒ expᴸ[𝟙+ α ] γ) ⟩ forward (l₂ , ε₂)
        → forward (((a , inr c) ∷ l₁) , δ₁)
          ≺⟨ (expᴸ[𝟙+ α ] β ×ₒ expᴸ[𝟙+ α ] γ) ⟩ forward (((a , inr c) ∷ l₂) , δ₂)
      h (inl q) = inl (tail-lex refl q)
@@ -445,6 +474,8 @@ We now construct an order preserving map in the other direction.
 
 \end{code}
 
+The two maps are inverse to each other.
+
 \begin{code}
 
   backward-forward-is-id : backward ∘ forward ∼ id
@@ -523,7 +554,7 @@ Finally, we put the piece togethere to obtain the desired equivalence.
 
 \end{code}
 
-As a corollary, we can now derive that expᴸ satisfies the successor specification:
+As a corollary, we can now derive that expᴸ satisfies the successor specification.
 
 \begin{code}
 
