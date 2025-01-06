@@ -1,6 +1,10 @@
 Tom de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg, Chuangjie Xu
 6 November 2024
 
+We define types expressing what ordinal exponentiation should be for zero,
+successor and supremum exponents, and we record a few properties that follow
+immediately follow from those specifications.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K --exact-split #-}
@@ -83,7 +87,7 @@ module _
 
 \end{code}
 
-The following special cases follow directly from the specification
+The following special cases follow directly from the specification.
 
 \begin{code}
 
@@ -110,7 +114,7 @@ module _
 
 \end{code}
 
-The specification for suprema implies monotonicity:
+The specification for suprema implies monotonicity.
 
 \begin{code}
 
