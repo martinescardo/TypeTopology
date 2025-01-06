@@ -91,33 +91,35 @@ surjections.
 
 \begin{code}
 
- inhabited-if-−1-connected : {X : 𝓤 ̇}
-                           → X is −1 connected → ∥ X ∥
- inhabited-if-−1-connected X-1-conn = −1-trunc-to-prop-trunc pt (center X-1-conn)
+ −1-connected-types-are-inhabited : {X : 𝓤 ̇}
+                                  → X is −1 connected → ∥ X ∥
+ −1-connected-types-are-inhabited X-1-conn =
+  −1-trunc-to-prop-trunc pt (center X-1-conn)
 
- −1-connected-if-inhabited : {X : 𝓤 ̇}
-                           → ∥ X ∥ → X is −1 connected
- −1-connected-if-inhabited x-anon =
-  pointed-props-are-singletons (prop-trunc-to-−1-trunc pt x-anon) −1-trunc-is-prop
+ inhabited-types-are-−1-connected : {X : 𝓤 ̇}
+                                  → ∥ X ∥ → X is −1 connected
+ inhabited-types-are-−1-connected x-anon =
+  pointed-props-are-singletons (prop-trunc-to-−1-trunc pt x-anon)
+                               −1-trunc-is-prop
 
  −1-connected-iff-inhabited : {X : 𝓤 ̇}
                             → X is −1 connected ↔ ∥ X ∥
  −1-connected-iff-inhabited =
-  (inhabited-if-−1-connected , −1-connected-if-inhabited)
+  (−1-connected-types-are-inhabited , inhabited-types-are-−1-connected)
 
- map-is-surj-if-−1-connected : {X : 𝓤 ̇} {Y : 𝓥 ̇} {f : X → Y}
-                             → f is −1 connected-map → is-surjection f
- map-is-surj-if-−1-connected m y = inhabited-if-−1-connected (m y)
+ −1-connected-maps-are-surjections : {X : 𝓤 ̇} {Y : 𝓥 ̇} {f : X → Y}
+                                   → f is −1 connected-map → is-surjection f
+ −1-connected-maps-are-surjections m y = −1-connected-types-are-inhabited (m y)
 
- map-is-−1-connected-if-surj : {X : 𝓤 ̇} {Y : 𝓥 ̇} {f : X → Y}
-                             → is-surjection f → f is −1 connected-map
- map-is-−1-connected-if-surj f-is-surj y =
-  −1-connected-if-inhabited (f-is-surj y)
+ surjections-are-−1-connected : {X : 𝓤 ̇} {Y : 𝓥 ̇} {f : X → Y}
+                              → is-surjection f → f is −1 connected-map
+ surjections-are-−1-connected f-is-surj y =
+  inhabited-types-are-−1-connected (f-is-surj y)
 
- map-is-−1-connected-iff-surj : {X : 𝓤 ̇} {Y : 𝓥 ̇} {f : X → Y}
-                              → f is −1 connected-map ↔ is-surjection f
- map-is-−1-connected-iff-surj =
-  (map-is-surj-if-−1-connected , map-is-−1-connected-if-surj)
+ −1-connected-map-iff-surjection : {X : 𝓤 ̇} {Y : 𝓥 ̇} {f : X → Y}
+                                 → f is −1 connected-map ↔ is-surjection f
+ −1-connected-map-iff-surjection =
+  (−1-connected-maps-are-surjections , surjections-are-−1-connected)
 
 \end{code}
 
@@ -129,11 +131,11 @@ We provide a few incarnations of this fact below which may prove useful.
 
 \begin{code}
 
- connectedness-is-closed-under-retract : {X : 𝓤 ̇} {Y : 𝓥 ̇} {k : ℕ₋₂}
-                                       → retract Y of X
-                                       → X is k connected
-                                       → Y is k connected
- connectedness-is-closed-under-retract R X-conn =
+ retract-is-connected : {X : 𝓤 ̇} {Y : 𝓥 ̇} {k : ℕ₋₂}
+                      → retract Y of X
+                      → X is k connected
+                      → Y is k connected
+ retract-is-connected R X-conn =
   retract-of-singleton (truncation-closed-under-retract R) X-conn
 
  connectedness-closed-under-equiv : {X : 𝓤 ̇} {Y : 𝓥 ̇} {k : ℕ₋₂}
@@ -192,10 +194,10 @@ the identity type at one level below. We will assume univalence only when necess
 
 \begin{code}
 
- inhabited-if-connected : {X : 𝓤 ̇} {k : ℕ₋₂}
-                        → X is (k + 1) connected → ∥ X ∥
- inhabited-if-connected {_} {_} {k} X-conn =
-  inhabited-if-−1-connected (connectedness-is-lower-closed' ⋆ X-conn)
+ connected-types-are-inhabited : {X : 𝓤 ̇} {k : ℕ₋₂}
+                               → X is (k + 1) connected → ∥ X ∥
+ connected-types-are-inhabited {_} {_} {k} X-conn =
+  −1-connected-types-are-inhabited (connectedness-is-lower-closed' ⋆ X-conn)
 
  _is-locally_connected : (X : 𝓤 ̇) (k : ℕ₋₂) → 𝓤  ̇
  X is-locally k connected = (x y : X) → (x ＝ y) is k connected
@@ -215,7 +217,7 @@ the identity type at one level below. We will assume univalence only when necess
                                                      → ∥ X ∥
                                                      × X is-locally k connected
  connected-types-are-inhabited-and-locally-connected ua X-conn =
-  (inhabited-if-connected X-conn , connected-types-are-locally-connected ua X-conn)
+  (connected-types-are-inhabited X-conn , connected-types-are-locally-connected ua X-conn)
 
  inhabited-and-locally-connected-types-are-connected : {X : 𝓤 ̇} {k : ℕ₋₂}
                                                      → is-univalent 𝓤
@@ -255,10 +257,12 @@ the identity type at one level below. We will assume univalence only when necess
 
 \end{code}
 
-We directly prove a characterization of connectedness from the HoTT book
-(see Corallary 7.5.9.).
+We prove a characterization of connectedness from the HoTT book
+(see Corollary 7.5.9.). Notice we choose to directly prove this result
+rather than instantiate it as a special case of a more general result
+(Lemma 7.5.7.) which is stated below.
 
-NOTE: We will NOT state the corallary as an iff statement due to a large
+NOTE: We will NOT state the corollary as an iff statement due to a large
 quantification issue.
 
 \begin{code}
@@ -268,11 +272,11 @@ quantification issue.
          → Y → (X → Y)
   consts X Y y x = y
 
- maps-from-connected-type-to-truncated-type-const : {X : 𝓤 ̇} {Y : 𝓥 ̇} {n : ℕ₋₂}
-                                                  → X is n connected
-                                                  → Y is n truncated
-                                                  → Y ≃ (X → Y)
- maps-from-connected-type-to-truncated-type-const {𝓤} {_} {X} {Y} {n}
+ maps-with-connected-dom-truncated-cod-are-constant : {X : 𝓤 ̇} {Y : 𝓥 ̇} {n : ℕ₋₂}
+                                                    → X is n connected
+                                                    → Y is n truncated
+                                                    → Y ≃ (X → Y)
+ maps-with-connected-dom-truncated-cod-are-constant {𝓤} {_} {X} {Y} {n}
   X-conn Y-trunc = e
   where
    e : Y ≃ (X → Y)
@@ -292,14 +296,14 @@ quantification issue.
                                             → Y is n truncated
                                             → is-equiv (consts X Y)
  constants-map-from-truncated-type-is-equiv Y X-conn Y-trunc =
-  ⌜⌝-is-equiv (maps-from-connected-type-to-truncated-type-const X-conn Y-trunc)
+  ⌜⌝-is-equiv (maps-with-connected-dom-truncated-cod-are-constant X-conn Y-trunc)
 
- connected-if-consts-is-equiv : {X : 𝓤 ̇} {n : ℕ₋₂}
+ connected-when-consts-is-equiv : {X : 𝓤 ̇} {n : ℕ₋₂}
                               → ({𝓥 : Universe} (Y : 𝓥 ̇)
                                → Y is n truncated
                                → is-equiv (consts X Y))
                               → X is n connected
- connected-if-consts-is-equiv {_} {X} {n} is-equiv-from-trunc = (c , G)
+ connected-when-consts-is-equiv {_} {X} {n} is-equiv-from-trunc = (c , G)
   where
    s : (X → ∥ X ∥[ n ]) → ∥ X ∥[ n ]
    s = section-of (consts X ∥ X ∥[ n ])
@@ -325,13 +329,14 @@ a map is connected (see Lemma 7.5.7.)
 \begin{code}
 
  dependent-equiv-from-truncated-fam-connected-map
-  : {X : 𝓤 ̇} {Y : 𝓥 ̇} {f : X → Y}
-    {P : Y → 𝓦 ̇} {n : ℕ₋₂} 
+  : {X : 𝓤 ̇} {Y : 𝓥 ̇} {n : ℕ₋₂}
+  → (f : X → Y)
+  → (P : Y → 𝓦 ̇) 
   → ((y : Y) → (P y) is n truncated)
   → f is n connected-map
   → ((y : Y) → P y) ≃ ((x : X) → P (f x))
  dependent-equiv-from-truncated-fam-connected-map
-  {_} {_} {_} {X} {Y} {f} {P} {n}
+  {_} {_} {_} {X} {Y} {n} f P
   P-trunc f-conn = e
   where
    e : ((y : Y) → P y) ≃ ((x : X) → P (f x))
@@ -341,7 +346,7 @@ a map is connected (see Lemma 7.5.7.)
        ((x : X) → (y : Y) → (p : f x ＝ y) → P y)              ≃⟨ III ⟩
        ((x : X) → P (f x))                                     ■
     where
-     I = Π-cong fe fe (λ - → maps-from-connected-type-to-truncated-type-const
+     I = Π-cong fe fe (λ - → maps-with-connected-dom-truncated-cod-are-constant
                        (f-conn -) (P-trunc -))
      II = Π-cong fe fe (λ - → curry-uncurry' fe fe)
      III = Π-cong fe fe (λ - → ≃-sym (Yoneda-equivalence fe' (f -) P))
@@ -349,38 +354,42 @@ a map is connected (see Lemma 7.5.7.)
    observation = refl
 
  dep-precomp-from-truncated-family-is-equiv
-  : {X : 𝓤 ̇} {Y : 𝓥 ̇} {f : X → Y} {P : Y → 𝓦 ̇} {n : ℕ₋₂} 
+  : {X : 𝓤 ̇} {Y : 𝓥 ̇} {n : ℕ₋₂}
+  → (f : X → Y)
+  → (P : Y → 𝓦 ̇)
   → ((y : Y) → (P y) is n truncated)
   → f is n connected-map
   → is-equiv (dprecomp P f)
- dep-precomp-from-truncated-family-is-equiv P-trunc f-conn =
-  ⌜⌝-is-equiv (dependent-equiv-from-truncated-fam-connected-map P-trunc f-conn)
+ dep-precomp-from-truncated-family-is-equiv f P P-trunc f-conn =
+  ⌜⌝-is-equiv (dependent-equiv-from-truncated-fam-connected-map f P P-trunc f-conn)
 
  dep-precomp-has-section-if-is-equiv
-  : {X : 𝓤 ̇} {Y : 𝓥 ̇} {f : X → Y} {P : Y → 𝓦 ̇} 
+  : {X : 𝓤 ̇} {Y : 𝓥 ̇}
+  → (f : X → Y)
+  → (P : Y → 𝓦 ̇)
   → is-equiv (dprecomp P f)
   → has-section (dprecomp P f)
- dep-precomp-has-section-if-is-equiv {_} {_} {_} {_} {_} {f} {P} =
-  equivs-have-sections (dprecomp P f)
+ dep-precomp-has-section-if-is-equiv f P = equivs-have-sections (dprecomp P f)
 
  map-is-connected-if-dep-precomp-from-truncated-family-has-section
-  : {X : 𝓤 ̇} {Y : 𝓥 ̇} {f : X → Y} {n : ℕ₋₂} 
-  → ({𝓦 : Universe} {P : Y → 𝓦 ̇} → ((y : Y) → (P y) is n truncated)
+  : {X : 𝓤 ̇} {Y : 𝓥 ̇} {n : ℕ₋₂}
+  → (f : X → Y)
+  → ({𝓦 : Universe} (P : Y → 𝓦 ̇) → ((y : Y) → (P y) is n truncated)
                                  → has-section (dprecomp P f))
   → f is n connected-map
  map-is-connected-if-dep-precomp-from-truncated-family-has-section
-  {𝓤} {𝓥} {X} {Y} {f} {n} sec-from-trunc y = (c y , C)
+  {𝓤} {𝓥} {X} {Y} {n} f sec-from-trunc y = (c y , C)
   where
    Q : Y → 𝓤 ⊔ 𝓥 ̇
    Q y = ∥ fiber f y ∥[ n ]
    c' : ((x : X) → ∥ fiber f (f x) ∥[ n ])
       → ((y : Y) → ∥ fiber f y ∥[ n ])
-   c' = section-of (dprecomp Q f) (sec-from-trunc (λ - → ∥∥ₙ-is-truncated))
+   c' = section-of (dprecomp Q f) (sec-from-trunc Q (λ - → ∥∥ₙ-is-truncated))
    c : (y : Y) → ∥ fiber f y ∥[ n ]
    c = c' (λ - → ∣ (- , refl) ∣[ n ])
    H' : (dprecomp Q f) ∘ c' ∼ id
    H' = section-equation (dprecomp Q f)
-                         (sec-from-trunc (λ - → ∥∥ₙ-is-truncated))
+                         (sec-from-trunc Q (λ - → ∥∥ₙ-is-truncated))
    H : (x : X) → c (f x) ＝ ∣ (x , refl) ∣[ n ]
    H = happly' ((dprecomp Q f ∘ c') (λ - → ∣ (- , refl) ∣[ n ]))
                (λ - → ∣ (- , refl) ∣[ n ]) (H' (λ - → ∣ (- , refl) ∣[ n ]))
@@ -401,12 +410,14 @@ We show that the n-truncation map is n-connected.
  trunc-map-is-connected : {X : 𝓤 ̇} {n : ℕ₋₂}
                         → ∣_∣[ n ] is n connected-map
  trunc-map-is-connected {_} {X} {n} =
-  map-is-connected-if-dep-precomp-from-truncated-family-has-section has-sec
+  map-is-connected-if-dep-precomp-from-truncated-family-has-section
+   ∣_∣[ n ] has-sec
   where
-   has-sec : {𝓦 : Universe} {P : ∥ X ∥[ n ] → 𝓦 ̇}
+   has-sec : {𝓦 : Universe}
+           → (P : ∥ X ∥[ n ] → 𝓦 ̇)
            → ((v : ∥ X ∥[ n ]) → P v is n truncated)
            → has-section (dprecomp P ∣_∣[ n ])
-   has-sec {_} {P} P-trunc = (∥∥ₙ-ind P-trunc , comp-rule)
+   has-sec {_} P P-trunc = (∥∥ₙ-ind P-trunc , comp-rule)
     where
      comp-rule : dprecomp P ∣_∣[ n ] ∘ ∥∥ₙ-ind P-trunc ∼ id
      comp-rule h = (dprecomp P ∣_∣[ n ]) (∥∥ₙ-ind P-trunc h) ＝⟨ refl ⟩

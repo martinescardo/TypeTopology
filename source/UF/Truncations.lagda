@@ -274,8 +274,8 @@ We demonstrate the equivalence of -1-truncation and propositional truncation:
                                              prop-trunc-to-−1-trunc
 
   props-are-truncated : {X : 𝓤 ̇} {n : ℕ₋₂}
-                        → is-prop X 
-                        → X is (n + 1) truncated
+                      → is-prop X 
+                      → X is (n + 1) truncated
   props-are-truncated {_} {_} {−2} = is-prop-implies-is-prop'
   props-are-truncated {_} {_} {succ n} X-is-prop =
    truncation-levels-are-upper-closed
