@@ -1,4 +1,4 @@
-Tom de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg, Chuangjie Xu,
+Tom de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg, Chuangjie Xu.
 Started November 2023. Refactored December 2024.
 
 TODO: Comment in between the code blocks
@@ -153,7 +153,7 @@ We now consider the subtype of decreasing lists.
 \end{code}
 
 Next we show that the lexicographic order on lists when restricted to
-DecreasingList is still wellfounded.
+DecreasingList is wellfounded, provided the original order is.
 
 \begin{code}
 
@@ -258,13 +258,15 @@ module _ (α : Ordinal 𝓤) (β : Ordinal 𝓥) where
  DecrList₂-list : DecrList₂ → List ⟨ α ×ₒ β ⟩
  DecrList₂-list = pr₁
 
- to-DecrList₂-＝ : {l l' : DecrList₂} → DecrList₂-list l ＝ DecrList₂-list l' → l ＝ l'
+ to-DecrList₂-＝ : {l l' : DecrList₂}
+                → DecrList₂-list l ＝ DecrList₂-list l' → l ＝ l'
  to-DecrList₂-＝ = to-subtype-＝ (λ l → is-decreasing-is-prop
-                                    (underlying-order β)
-                                    (Prop-valuedness β)
-                                    (map pr₂ l))
+                                         (underlying-order β)
+                                         (Prop-valuedness β)
+                                         (map pr₂ l))
 
- DecrList₂-list-is-decreasing-pr₂ : (l : DecrList₂) → is-decreasing-pr₂ (DecrList₂-list l)
+ DecrList₂-list-is-decreasing-pr₂ : (l : DecrList₂)
+                                  → is-decreasing-pr₂ (DecrList₂-list l)
  DecrList₂-list-is-decreasing-pr₂ = pr₂
 
  is-decreasing-if-decreasing-pr₂ : (l : List ⟨ α ×ₒ β ⟩)
@@ -309,7 +311,8 @@ The order on DecrList₂ α β is transitive and wellfounded.
    (lex-wellfounded (underlying-order (α ×ₒ β))
                     (Transitivity (α ×ₒ β))
                     (Well-foundedness (α ×ₒ β))
-                    (DecrList₂-list (l , δ) , DecrList₂-list-is-decreasing (l , δ)))
+                    (DecrList₂-list (l , δ) ,
+                     DecrList₂-list-is-decreasing (l , δ)))
   where
    acc-lex-decr-to-acc-exponential
     : (l : List ⟨ α ×ₒ β ⟩)
@@ -371,11 +374,11 @@ The order on DecrList₂ α β is extensional.
     g (tail-lex _ k) = k
 
  DecrList₂-order-is-extensional' : (l₁ l₂ : List ⟨ α ×ₒ β ⟩)
-                              (δ₁ : is-decreasing-pr₂ l₁)
-                              (δ₂ : is-decreasing-pr₂ l₂)
-                            → (l₁ , δ₁) ≼ (l₂ , δ₂)
-                            → (l₂ , δ₂) ≼ (l₁ , δ₁)
-                            → l₁ ＝ l₂
+                                   (δ₁ : is-decreasing-pr₂ l₁)
+                                   (δ₂ : is-decreasing-pr₂ l₂)
+                                 → (l₁ , δ₁) ≼ (l₂ , δ₂)
+                                 → (l₂ , δ₂) ≼ (l₁ , δ₁)
+                                 → l₁ ＝ l₂
  DecrList₂-order-is-extensional' [] [] δ₁ δ₂ u v = refl
  DecrList₂-order-is-extensional' [] (y ∷ l₂) δ₁ δ₂ u h₂ =
   𝟘-elim (no-≼-[] y l₂ δ₂ h₂)
@@ -458,8 +461,10 @@ The order on DecrList₂ α β is extensional.
 
 \end{code}
 
-Therefore, DecrList₂ α β is an ordinal. As will become evident, it implements
-the exponentiation of 𝟙 + α to β.
+Therefore, DecrList₂ α β is an ordinal. As shown, via different techniques, in
+Ordinals.Exponentiation.DecreasingListProperties-Concrete and
+Ordinals.Exponentiation.PropertiesViaTransport, this ordinal implements the
+exponentiation of 𝟙 + α to β.
 
 \begin{code}
 
@@ -479,7 +484,7 @@ exponentiationᴸ α h = expᴸ[𝟙+ α ⁺[ h ] ]
 
 \end{code}
 
-Some properties of the empty list.
+Some properties of the empty list as an element of expᴸ[𝟙+ α ] β.
 
 \begin{code}
 
@@ -505,17 +510,18 @@ module _
 
  expᴸ-↓-⊥' : {δ : is-decreasing-pr₂ α β []}
            → expᴸ[𝟙+ α ] β ↓ ([] , δ) ＝ 𝟘ₒ
- expᴸ-↓-⊥' {δ} = expᴸ[𝟙+ α ] β ↓ ([] , δ) ＝⟨ ap (expᴸ[𝟙+ α ] β ↓_)
-                                                 (to-DecrList₂-＝ α β refl) ⟩
-                 expᴸ[𝟙+ α ] β ↓ expᴸ-⊥   ＝⟨ expᴸ-↓-⊥ ⟩
-                 𝟘ₒ                       ∎
+ expᴸ-↓-⊥' {δ} =
+  expᴸ[𝟙+ α ] β ↓ ([] , δ) ＝⟨ ap (expᴸ[𝟙+ α ] β ↓_) (to-DecrList₂-＝ α β refl) ⟩
+  expᴸ[𝟙+ α ] β ↓ expᴸ-⊥   ＝⟨ expᴸ-↓-⊥ ⟩
+  𝟘ₒ                       ∎
 
  expᴸ-is-positive : 𝟘ₒ ⊲ expᴸ[𝟙+ α ] β
  expᴸ-is-positive = expᴸ-⊥ , (expᴸ-↓-⊥ ⁻¹)
 
  expᴸ-has-least : 𝟙ₒ ⊴ expᴸ[𝟙+ α ] β
  expᴸ-has-least =
-  to-⊴ 𝟙ₒ (expᴸ[𝟙+ α ] β) (λ ⋆ → transport⁻¹ (_⊲ expᴸ[𝟙+ α ] β) 𝟙ₒ-↓ expᴸ-is-positive)
+  to-⊴ 𝟙ₒ (expᴸ[𝟙+ α ] β)
+          (λ ⋆ → transport⁻¹ (_⊲ expᴸ[𝟙+ α ] β) 𝟙ₒ-↓ expᴸ-is-positive)
 
 \end{code}
 
@@ -540,7 +546,7 @@ exponentiationᴸ-has-trichotomous-least-element α h β =
 \end{code}
 
 An order preserving map f : β → γ induces a map expᴸ[𝟙+ α ] β → expᴸ[𝟙+ α ] γ by
-mapping f on the second components.
+applying f on the second components.
 
 Moreover, the induced map is order reflecting if f is order reflecting and
 left-cancellable.
@@ -743,8 +749,6 @@ expᴸ-is-monotone-in-exponent α β γ (f , f-sim) =
  expᴸ-map-is-simulation α β γ f
   (simulations-are-order-preserving β γ f f-sim)
   (simulations-are-initial-segments β γ f f-sim)
-
-\end{code}
 
 \end{code}
 
