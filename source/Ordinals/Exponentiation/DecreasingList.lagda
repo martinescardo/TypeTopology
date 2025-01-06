@@ -1,8 +1,6 @@
 Tom de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg, Chuangjie Xu.
 Started November 2023. Refactored December 2024.
 
-TODO: Comment in between the code blocks
-
 \begin{code}
 
 {-# OPTIONS --safe --without-K --exact-split #-}
@@ -626,7 +624,7 @@ module _
 \end{code}
 
 The following technical lemma is used to show that if f is simulation, then so
-is the induced map on epxᴸ.
+is the induced map on expᴸ.
 
 \begin{code}
 
@@ -752,7 +750,13 @@ expᴸ-is-monotone-in-exponent α β γ (f , f-sim) =
 
 \end{code}
 
-Characterizing initial segments of expᴸ α β
+We work towards characterizing initial segments of expᴸ α β.
+
+A first basic but fundamental ingredient is the following map:
+Given an element l : expᴸ[𝟙+ α ] (β ↓ b₀), we can forget all the inequality
+proofs in the second components to obtain an element of expᴸ[𝟙+ α ] β.
+This assignment is called expᴸ-segment-inclusion below and is shown to be a
+simulation.
 
 \begin{code}
 
@@ -865,6 +869,11 @@ expᴸ-segment-inclusion-⊴ α β b₀ = expᴸ-segment-inclusion α β b₀ ,
 
 \end{code}
 
+The following construction goes in the other direction. More precisely, given a
+list l with entries in α ×ₒ β such that (a₀ , b₀) ∷ l is decreasing in the
+second component, we obtain an element of expᴸ[𝟙+ α ] (β ↓ b₀) by inserting the
+required inequality proofs in the second components.
+
 \begin{code}
 
 module _
@@ -926,6 +935,12 @@ module _
                          (is-decreasing-pr₂-skip α β (a₀ , b₀) (a , b) δ₂)
                          u)
 
+\end{code}
+
+The assignments expᴸ-tail and expᴸ-segment-inclusion are inverses to each other.
+
+\begin{code}
+
  expᴸ-tail-section-of-expᴸ-segment-inclusion' :
     (l : List ⟨ α ×ₒ β ⟩) (δ : is-decreasing-pr₂ α β ((a₀ , b₀) ∷ l))
   → DecrList₂-list α β (expᴸ-segment-inclusion α β b₀ (expᴸ-tail l δ)) ＝ l
@@ -966,6 +981,11 @@ module _
   to-DecrList₂-＝ α (β ↓ b₀) (expᴸ-segment-inclusion-section-of-expᴸ-tail' l δ)
 
 \end{code}
+
+We are now ready to characterize the initial segment
+  expᴸ[𝟙+ α ] β ↓ ((a , b) ∷ l)
+as the ordinal
+  expᴸ[𝟙+ α ] (β ↓ b) ×ₒ (𝟙ₒ +ₒ (α ↓ a)) +ₒ (expᴸ[𝟙+ α ] (β ↓ b) ↓ expᴸ-tail l).
 
 \begin{code}
 
@@ -1098,7 +1118,8 @@ expᴸ-↓-cons-≃ₒ {𝓤} {𝓥} α β a b l δ =
                 (expᴸ-tail-is-order-preserving α β a b _ _ w))
 
   f-is-order-preserving (((a₁ , b₁ ∷ l₁) , δ₁) , head-lex (inl u))
-                        (((a₂ , b₂ ∷ l₂) , δ₂) , head-lex (inr (refl , v))) w = inl ⋆
+                        (((a₂ , b₂ ∷ l₂) , δ₂) , head-lex (inr (refl , v))) w =
+   inl ⋆
   f-is-order-preserving (((a₁ , b₁ ∷ l₁) , δ₁) , head-lex (inl u))
                         (((a₂ , b₂ ∷ l₂) , δ₂) , tail-lex refl v) w = ⋆
 
@@ -1158,10 +1179,14 @@ expᴸ-↓-cons-≃ₒ {𝓤} {𝓥} α β a b l δ =
                         (((a₂ , b₂ ∷ l₂) , δ₂) , tail-lex refl v)
                         (head-lex (inr (e , w))) = 𝟘-elim (irrefl α a₁ w)
   f-is-order-preserving (((a₁ , b₁ ∷ l₁) , δ₁) , tail-lex refl u)
-                        (((a₂ , b₂ ∷ l₂) , δ₂) , tail-lex refl v) (tail-lex e w) =
+                        (((a₂ , b₂ ∷ l₂) , δ₂) , tail-lex refl v)
+                        (tail-lex e w) =
    expᴸ-tail-is-order-preserving α β a₁ b₁ δ₁ δ₂ w
 
 \end{code}
+
+The below is a variation of, and follows from, the above where we start with an
+element of expᴸ[𝟙+ α ] (β ↓ b) rather than expᴸ[𝟙+ α ] β.
 
 \begin{code}
 
@@ -1191,6 +1216,8 @@ expᴸ-↓-cons-≃ₒ' α β a b (l , δ) =
     II = expᴸ-↓-cons-≃ₒ α β a b (expᴸ-segment-inclusion-list α β b l) ε
 
 \end{code}
+
+Finally, using univalence, we promote the above equivalences to identifications.
 
 \begin{code}
 
