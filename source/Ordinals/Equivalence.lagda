@@ -481,9 +481,8 @@ Idtofunₒ-is-order-equiv {α = α} refl =
    id-order-preserving : is-order-preserving α α id
    id-order-preserving x y l = l
 
-Idtofunₒ-eqtoidₒ : (ua : is-univalent 𝓤)
-                 → (fe : Fun-Ext)
-                 → {α β : Ordinal 𝓤} (e : α ≃ₒ β)
+Idtofunₒ-eqtoidₒ : (ua : is-univalent 𝓤) (fe : Fun-Ext)
+                   {α β : Ordinal 𝓤} (e : α ≃ₒ β)
                  → Idtofunₒ (eqtoidₒ ua fe α β e) ＝ ≃ₒ-to-fun α β e
 Idtofunₒ-eqtoidₒ {𝓤} ua fe {α} {β} e = order-equiv-induction ua fe α P m β e
  where
