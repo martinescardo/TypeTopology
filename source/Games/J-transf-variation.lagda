@@ -105,4 +105,76 @@ module JT-definitions
        → JT (Σ x ꞉ X , Y x)
  _⊗ᴶᵀ_ = _⊗_ 𝕁𝕋
 
+
+ open α-definitions 𝓣 R 𝓐
+
+ module _ {X : Type}
+          {Y : X → Type}
+          (ε : JT X)
+          (δ : (x : X) → JT (Y x))
+          (q : (Σ x ꞉ X , Y x) → R)
+       where
+
+  private
+   f : (x : X) → T (Y x)
+   f x = δ x (λ y → α (extᵀ (ηᵀ ∘ q) (ηᵀ (x , y))))
+
+   g : (x : X) → T (Σ x ꞉ X , Y x)
+   g x = extᵀ (λ y → ηᵀ (x , y)) (f x)
+
+   h : T X
+   h = ε (λ x → α (extᵀ (ηᵀ ∘ q) (g x)))
+
+  ⊗ᴶᵀ-explicitly : (ε ⊗ᴶᵀ δ) q ＝ extᵀ g h
+  ⊗ᴶᵀ-explicitly = refl
+
+  private
+   ν : (x : X) → T (Y x)
+   ν x = δ x (λ y → q (x , y))
+
+   τ : T X
+   τ = ε (λ x → α-extᵀ (λ y → q (x , y)) (ν x))
+
+   lemma-f : funext₀ → f ∼ ν
+   lemma-f fe x =
+    δ x (λ y → α (extᵀ (ηᵀ ∘ q) (ηᵀ (x , y)))) ＝⟨ I ⟩
+    δ x (λ y → α (ηᵀ (q (x , y))))             ＝⟨ II ⟩
+    δ x (λ y → q (x , y))                      ∎
+     where
+      I = ap (λ - → δ x (λ y → α (- y))) (dfunext fe (λ y → unitᵀ (ηᵀ ∘ q) (x , y)))
+      II = ap (δ x) (dfunext fe (λ y → α-unitᵀ (q (x , y))))
+
+   lemma-g : funext₀ → g ∼ (λ x → extᵀ (λ y → ηᵀ (x , y)) (ν x))
+   lemma-g fe x = ap (extᵀ (λ y → ηᵀ (x , y))) (lemma-f fe x)
+
+   lemma-h : funext₀ → h ＝ τ
+   lemma-h fe =
+    h                                                             ＝⟨ refl ⟩
+    ε (λ x → α (extᵀ (ηᵀ ∘ q) (g x)))                             ＝⟨ I ⟩
+    ε (λ x → α (extᵀ (ηᵀ ∘ q) (extᵀ (λ y → ηᵀ (x , y)) (ν x))))   ＝⟨ II ⟩
+    ε (λ x → α (extᵀ (extᵀ (ηᵀ ∘ q) ∘ (λ y → ηᵀ (x , y))) (ν x))) ＝⟨ refl ⟩
+    ε (λ x → α (extᵀ (λ y → extᵀ (ηᵀ ∘ q) (ηᵀ (x , y))) (ν x)))   ＝⟨ III ⟩
+    ε (λ x → α (extᵀ (λ y → ηᵀ (q (x , y))) (ν x)))               ＝⟨ refl ⟩
+    ε (λ x → α-extᵀ (λ y → q (x , y)) (ν x))                      ＝⟨ refl ⟩
+    τ ∎
+     where
+      I   = ap (λ - → ε (λ x → α (extᵀ (ηᵀ ∘ q) (- x))))
+               (dfunext fe (lemma-g fe))
+      II  = ap (λ - → ε (λ x → α (- x)))
+               (dfunext fe (λ x → (assocᵀ (ηᵀ ∘ q) (λ y → ηᵀ (x , y)) (ν x))⁻¹))
+      III = ap (λ - → ε (λ x → α (extᵀ (λ y → - (x , y)) (ν x))))
+               (dfunext fe (unitᵀ (ηᵀ ∘ q)))
+
+
+  ⊗ᴶᵀ-in-terms-of-⊗ᵀ : funext₀ → (ε ⊗ᴶᵀ δ) q ＝ τ ⊗ᵀ ν
+  ⊗ᴶᵀ-in-terms-of-⊗ᵀ fe =
+   (ε ⊗ᴶᵀ δ) q                                  ＝⟨ ⊗ᴶᵀ-explicitly ⟩
+   extᵀ g h                                     ＝⟨ I ⟩
+   extᵀ g τ                                     ＝⟨ II ⟩
+   extᵀ (λ x → extᵀ (λ y → ηᵀ (x , y)) (ν x)) τ ＝⟨ refl ⟩
+   τ ⊗ᵀ ν                                       ∎
+    where
+     I  = ap (extᵀ g) (lemma-h fe)
+     II = ap (λ - → extᵀ - τ) (dfunext fe (lemma-g fe))
+
 \end{code}
