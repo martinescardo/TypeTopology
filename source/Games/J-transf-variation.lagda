@@ -135,6 +135,9 @@ module JT-definitions
    τ : T X
    τ = ε (λ x → α-extᵀ (λ y → q (x , y)) (ν x))
 
+  module _ (fe : funext₀) where
+
+  private
    lemma-f : funext₀ → f ∼ ν
    lemma-f fe x =
     δ x (λ y → α (extᵀ (ηᵀ ∘ q) (ηᵀ (x , y)))) ＝⟨ I ⟩
@@ -164,7 +167,6 @@ module JT-definitions
                (dfunext fe (λ x → (assocᵀ (ηᵀ ∘ q) (λ y → ηᵀ (x , y)) (ν x))⁻¹))
       III = ap (λ - → ε (λ x → α (extᵀ (λ y → - (x , y)) (ν x))))
                (dfunext fe (unitᵀ (ηᵀ ∘ q)))
-
 
   ⊗ᴶᵀ-in-terms-of-⊗ᵀ : funext₀ → (ε ⊗ᴶᵀ δ) q ＝ τ ⊗ᵀ ν
   ⊗ᴶᵀ-in-terms-of-⊗ᵀ fe =
