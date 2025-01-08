@@ -22,7 +22,6 @@ module UF.SizeTruncationandConnectedness
 
 open import MLTT.Spartan hiding (_+_)
 open import Notation.CanonicalMap
-open import Notation.Order
 open import UF.ConnectedTypes fe
 open import UF.Embeddings
 open import UF.Equiv
@@ -151,7 +150,7 @@ TODO: Implement the join construction.
 \end{code}
 
 We will now begin proving some of the results of the paper. We will attempt to
-avoid any unnecesay use of propositional resizing. Theorem numbers will be
+avoid any unnecessary use of propositional resizing. Theorem numbers will be
 provided for easy reference.
 
 Prop 2.2.
