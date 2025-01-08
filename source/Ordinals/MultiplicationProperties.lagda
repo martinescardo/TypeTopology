@@ -446,6 +446,11 @@ equivalent to Excluded Middle.
 ×ₒ-minimal α β a₀ b₀ a₀-least b₀-least (a , b) (inr (refl , l))
  = irrefl α a (a₀-least a a l)
 
+×ₒ-least : (α : Ordinal 𝓤) (β : Ordinal 𝓥) (a₀ : ⟨ α ⟩) (b₀ : ⟨ β ⟩)
+            → is-least α a₀ → is-least β b₀ → is-least (α ×ₒ β) (a₀ , b₀)
+×ₒ-least α β  a₀ b₀ a₀-least b₀-least =
+ minimal-is-least (α ×ₒ β) (a₀ , b₀) (×ₒ-minimal α β a₀ b₀ a₀-least b₀-least)
+
 ×ₒ-left-monotonicity-implies-EM
   : ((α β : Ordinal 𝓤) (γ : Ordinal 𝓥) → α ⊴ β → α ×ₒ γ ⊴ β ×ₒ γ)
   → EM 𝓤
@@ -473,15 +478,13 @@ equivalent to Excluded Middle.
                         (⋆ , inl ⋆)
                         (inl ⋆ , inl ⋆)
                         f f-initial-segment
-                        (minimal-is-least _ _
-                          (×ₒ-minimal α γ ⋆ (inl ⋆)
-                            ⋆-least
-                            (left-preserves-least 𝟙ₒ 𝟙ₒ ⋆ ⋆-least)))
-                        (minimal-is-least _ _
-                          (×ₒ-minimal β γ (inl ⋆) (inl ⋆)
-                            (left-preserves-least 𝟙ₒ (prop-ordinal P isprop-P)
-                                                  ⋆ ⋆-least)
-                            (left-preserves-least 𝟙ₒ 𝟙ₒ ⋆ ⋆-least)))
+                        (×ₒ-least α γ ⋆ (inl ⋆)
+                          ⋆-least
+                          (left-preserves-least 𝟙ₒ 𝟙ₒ ⋆ ⋆-least))
+                         (×ₒ-least β γ (inl ⋆) (inl ⋆)
+                          (left-preserves-least 𝟙ₒ (prop-ordinal P isprop-P)
+                                                ⋆ ⋆-least)
+                          (left-preserves-least 𝟙ₒ 𝟙ₒ ⋆ ⋆-least))
    where
     ⋆-least : is-least (𝟙ₒ {𝓤}) ⋆
     ⋆-least ⋆ ⋆ = 𝟘-elim

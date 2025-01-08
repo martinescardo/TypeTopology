@@ -546,8 +546,10 @@ subtype-of-positive-elements-an-ordinal-implies-EM {𝓤} hyp = III
 
 \end{code}
 
-The following is not used at the moment, but may come in useful in the future
-when aiming to derive a constructive taboo.
+The following is an example of an equation that does not follow from
+the specification of exponentiation, since we cannot determine if a
+given proposition is zero, a successor, or a supremum. Nevertheless,
+it is true, and it can be used to derive a taboo below.
 
 \begin{code}
 
@@ -610,3 +612,125 @@ when aiming to derive a constructive taboo.
   V = to-⊴ (𝟙ₒ +ₒ Pₒ) (sup F) IV
 
 \end{code}
+
+Classically, whenever the base α is greater than 𝟙₀, α ^ₒ β is at
+least as large as the exponent β. However, this is a constructive
+taboo.
+
+\begin{code}
+
+^ₒ-as-large-as-exponent-implies-EM
+ : ((α β : Ordinal 𝓤) → 𝟙ₒ{𝓤} ⊲ α → β ⊴ α ^ₒ β)
+ → EM 𝓤
+^ₒ-as-large-as-exponent-implies-EM hyp P P-is-prop = V (f (inr ⋆)) refl
+ where
+  α = 𝟚ₒ
+  Pₒ = prop-ordinal P P-is-prop
+  β = Pₒ +ₒ 𝟙ₒ
+
+  γ = (𝟙ₒ +ₒ Pₒ) ×ₒ 𝟚ₒ
+
+  I : 𝟙ₒ ⊲ α
+  I = (inr ⋆ , (successor-lemma-right 𝟙ₒ ⁻¹))
+
+  II : α ^ₒ β ＝ γ
+  II = 𝟚ₒ ^ₒ (Pₒ +ₒ 𝟙ₒ) ＝⟨ II₀ ⟩
+       𝟚ₒ ^ₒ Pₒ   ×ₒ 𝟚ₒ ＝⟨ ap (_×ₒ 𝟚ₒ) (^ₒ-𝟚ₒ-by-prop P P-is-prop) ⟩
+       (𝟙ₒ +ₒ Pₒ) ×ₒ 𝟚ₒ ∎
+   where
+    II₀ = ^ₒ-satisfies-succ-specification 𝟚ₒ (⊲-gives-⊴ 𝟙ₒ 𝟚ₒ I) Pₒ
+
+  IV : β ⊴ γ
+  IV = transport (β ⊴_) II (hyp α β I)
+
+  f = [ β , γ ]⟨ IV ⟩
+
+  V : (x : ⟨ γ ⟩) → f (inr ⋆) ＝ x → P + ¬ P
+  V (inl ⋆ , inl ⋆) r = inr VI
+   where
+    VI : (p : P) → 𝟘
+    VI p = +disjoint VI₂
+     where
+      VI₀ = f (inl p)       ＝⟨ VI₁ ⟩
+            (inl ⋆ , inl ⋆) ＝⟨ r ⁻¹ ⟩
+            f (inr ⋆)       ∎
+       where
+        VI₁ = simulations-preserve-least
+               β
+               γ
+               (inl p)
+               (inl ⋆ , inl ⋆)
+               f
+               [ β , γ ]⟨ IV ⟩-is-simulation
+               (left-preserves-least Pₒ 𝟙ₒ p (prop-ordinal-least P-is-prop p))
+               (×ₒ-least (𝟙ₒ +ₒ Pₒ)
+                         𝟚ₒ
+                         (inl ⋆)
+                         (inl ⋆)
+                         (left-preserves-least 𝟙ₒ Pₒ ⋆ ⋆-least)
+                         (left-preserves-least 𝟙ₒ 𝟙ₒ ⋆ ⋆-least))
+         where
+          ⋆-least : is-least 𝟙ₒ ⋆
+          ⋆-least = prop-ordinal-least 𝟙-is-prop ⋆
+
+      VI₂ : inl p ＝ inr ⋆
+      VI₂ = simulations-are-lc β γ f [ β , γ ]⟨ IV ⟩-is-simulation VI₀
+  V (inl ⋆ , inr ⋆) r = inl (VI VIII)
+   where
+    VI : Σ y ꞉ ⟨ β ⟩ , (y ≺⟨ β ⟩ inr ⋆) × (f y ＝ (inl ⋆ , inl ⋆)) → P
+    VI (inl p , _ , _) = p
+
+    VII : (inl ⋆ , inl ⋆) ≺⟨ γ ⟩ f (inr ⋆)
+    VII = transport⁻¹ (underlying-order γ (inl ⋆ , inl ⋆)) r (inl ⋆)
+
+    VIII : Σ y ꞉ ⟨ β ⟩ , (y ≺⟨ β ⟩ inr ⋆) × (f y ＝ (inl ⋆ , inl ⋆))
+    VIII = simulations-are-initial-segments
+            β
+            γ
+            f
+            [ β , γ ]⟨ IV ⟩-is-simulation
+            (inr ⋆)
+            (inl ⋆ , inl ⋆)
+            VII
+  V (inr p , _) r = inl p
+
+\end{code}
+
+We record that, in fact, β ⊴ α ^ₒ β iff exluded middle holds.
+
+\begin{code}
+
+EM-implies-^ₒ-as-large-as-exponent
+ : EM 𝓤
+ → (α β : Ordinal 𝓤) → 𝟙ₒ{𝓤} ⊲ α → β ⊴ α ^ₒ β
+EM-implies-^ₒ-as-large-as-exponent em α β (a₁ , p) =
+ ≼-gives-⊴ β (α ^ₒ β)
+           (EM-implies-order-preserving-gives-≼ em β (α ^ₒ β) (f , I))
+  where
+   f : ⟨ β ⟩ → ⟨ α ^ₒ β ⟩
+   f b = ×ₒ-to-^ₒ α β {b} (^ₒ-⊥ α (β ↓ b) , a₁)
+
+   I : is-order-preserving β (α ^ₒ β) f
+   I b b' l = ↓-reflects-order (α ^ₒ β) (f b) (f b') III'
+    where
+     II : (b : ⟨ β ⟩) → α ^ₒ β ↓ f b ＝ α ^ₒ (β ↓ b)
+     II b =
+      α ^ₒ β ↓ f b                                                ＝⟨ II₀ ⟩
+      α ^ₒ (β ↓ b) ×ₒ (α ↓ a₁) +ₒ (α ^ₒ (β ↓ b) ↓ ^ₒ-⊥ α (β ↓ b)) ＝⟨ II₁ ⟩
+      α ^ₒ (β ↓ b) ×ₒ 𝟙ₒ +ₒ 𝟘ₒ                                    ＝⟨ II₂ ⟩
+      α ^ₒ (β ↓ b) ×ₒ 𝟙ₒ                                          ＝⟨ II₃ ⟩
+      α ^ₒ (β ↓ b) ∎
+       where
+        II₀ = ^ₒ-↓-×ₒ-to-^ₒ α β {b} {^ₒ-⊥ α (β ↓ b)} {a₁}
+        II₁ = ap₂ (λ x y → α ^ₒ (β ↓ b) ×ₒ x +ₒ y) (p ⁻¹) (^ₒ-↓-⊥ α (β ↓ b))
+        II₂ = 𝟘ₒ-right-neutral (α ^ₒ (β ↓ b) ×ₒ 𝟙ₒ)
+        II₃ = 𝟙ₒ-right-neutral-×ₒ (α ^ₒ (β ↓ b))
+
+     III : α ^ₒ (β ↓ b) ⊲ α ^ₒ (β ↓ b')
+     III = ^ₒ-order-preserving-in-exponent α (β ↓ b) (β ↓ b')
+                                           (a₁ , p)
+                                           (↓-preserves-order β b b' l)
+
+     III' : α ^ₒ β ↓ f b ⊲ α ^ₒ β ↓ f b'
+     III' = transport₂⁻¹ _⊲_ (II b) (II b') III
+

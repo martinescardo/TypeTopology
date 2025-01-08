@@ -61,6 +61,10 @@ prop-ordinal-↓ : {P : 𝓤 ̇  } (i : is-prop P) (p : P)
 prop-ordinal-↓ i p =
  eqtoidₒ (ua _) fe' (prop-ordinal _ i ↓ p) 𝟘ₒ (prop-ordinal-↓-≃ₒ i p)
 
+prop-ordinal-least : {P : 𝓤 ̇  } (i : is-prop P) (p : P)
+                   → is-least (prop-ordinal P i) p
+prop-ordinal-least i p p' p'' l = 𝟘-elim l
+
 𝟙ₒ-↓ : {x : 𝟙 {𝓤}} → 𝟙ₒ ↓ x ＝ 𝟘ₒ
 𝟙ₒ-↓ {𝓤} {x} = prop-ordinal-↓ 𝟙-is-prop x
 
