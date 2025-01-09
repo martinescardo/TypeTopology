@@ -440,14 +440,14 @@ equivalent to Excluded Middle.
 \begin{code}
 
 ×ₒ-minimal : (α : Ordinal 𝓤) (β : Ordinal 𝓥) (a₀ : ⟨ α ⟩) (b₀ : ⟨ β ⟩)
-            → is-least α a₀ → is-least β b₀ → is-minimal (α ×ₒ β) (a₀ , b₀)
+           → is-least α a₀ → is-least β b₀ → is-minimal (α ×ₒ β) (a₀ , b₀)
 ×ₒ-minimal α β a₀ b₀ a₀-least b₀-least (a , b) (inl l)
  = irrefl β b (b₀-least b b l)
 ×ₒ-minimal α β a₀ b₀ a₀-least b₀-least (a , b) (inr (refl , l))
  = irrefl α a (a₀-least a a l)
 
 ×ₒ-least : (α : Ordinal 𝓤) (β : Ordinal 𝓥) (a₀ : ⟨ α ⟩) (b₀ : ⟨ β ⟩)
-            → is-least α a₀ → is-least β b₀ → is-least (α ×ₒ β) (a₀ , b₀)
+         → is-least α a₀ → is-least β b₀ → is-least (α ×ₒ β) (a₀ , b₀)
 ×ₒ-least α β  a₀ b₀ a₀-least b₀-least =
  minimal-is-least (α ×ₒ β) (a₀ , b₀) (×ₒ-minimal α β a₀ b₀ a₀-least b₀-least)
 
@@ -457,34 +457,35 @@ equivalent to Excluded Middle.
 ×ₒ-left-monotonicity-implies-EM hyp P isprop-P = III (f (⋆ , inr ⋆)) refl
  where
   α = 𝟙ₒ
-  β = 𝟙ₒ +ₒ prop-ordinal P isprop-P
+  Pₒ = prop-ordinal P isprop-P
+  β = 𝟙ₒ +ₒ Pₒ
   γ = 𝟚ₒ
 
   I : α ⊴ β
-  I = ≼-gives-⊴ α β (transport (_≼ β)
-                               (𝟘ₒ-right-neutral 𝟙ₒ)
-                               (+ₒ-right-monotone 𝟙ₒ 𝟘ₒ (prop-ordinal P isprop-P)
-                                 (𝟘ₒ-least _)))
+  I = ≼-gives-⊴ α β
+       (transport
+         (_≼ β)
+         (𝟘ₒ-right-neutral 𝟙ₒ)
+         (+ₒ-right-monotone 𝟙ₒ 𝟘ₒ Pₒ
+         (𝟘ₒ-least Pₒ)))
 
   II : (α ×ₒ γ) ⊴ (β ×ₒ γ)
   II = hyp α β γ I
 
   f = pr₁ II
   f-sim = pr₂ II
-  f-initial-segment = pr₁ f-sim
 
   f-preserves-least : f (⋆ , inl ⋆) ＝ (inl ⋆ , inl ⋆)
-  f-preserves-least = initial-segments-preserve-least (α ×ₒ γ) (β ×ₒ γ)
+  f-preserves-least = simulations-preserve-least (α ×ₒ γ) (β ×ₒ γ)
                         (⋆ , inl ⋆)
                         (inl ⋆ , inl ⋆)
-                        f f-initial-segment
+                        f f-sim
                         (×ₒ-least α γ ⋆ (inl ⋆)
                           ⋆-least
                           (left-preserves-least 𝟙ₒ 𝟙ₒ ⋆ ⋆-least))
-                         (×ₒ-least β γ (inl ⋆) (inl ⋆)
-                          (left-preserves-least 𝟙ₒ (prop-ordinal P isprop-P)
-                                                ⋆ ⋆-least)
-                          (left-preserves-least 𝟙ₒ 𝟙ₒ ⋆ ⋆-least))
+                        (×ₒ-least β γ (inl ⋆) (inl ⋆)
+                         (left-preserves-least 𝟙ₒ Pₒ ⋆ ⋆-least)
+                         (left-preserves-least 𝟙ₒ 𝟙ₒ ⋆ ⋆-least))
    where
     ⋆-least : is-least (𝟙ₒ {𝓤}) ⋆
     ⋆-least ⋆ ⋆ = 𝟘-elim
@@ -503,7 +504,7 @@ equivalent to Excluded Middle.
     III₃ : (p : P)
          → Σ x ꞉ ⟨ 𝟙ₒ ×ₒ 𝟚ₒ ⟩ ,
              (x ≺⟨ 𝟙ₒ ×ₒ 𝟚ₒ ⟩ (⋆ , inr ⋆)) × (f x ＝ (inr p , inl ⋆))
-    III₃ p = f-initial-segment
+    III₃ p = simulations-are-initial-segments (α ×ₒ γ) (β ×ₒ γ) f f-sim
                (⋆ , inr ⋆) (inr p , inl ⋆)
                (transport⁻¹ (λ - → (inr p , inl ⋆) ≺⟨ β ×ₒ γ ⟩ - ) r (inl ⋆))
     III₄ : (p : P)
@@ -560,6 +561,8 @@ which only deals with simulations f : α ×ₒ β ⊴ α ×ₒ γ (ie, with α �
 the context of the current lemma). However the more general statement seems to
 be necessary for proving left cancellability with respect to ⊴, rather than
 just with respect to ＝.
+
+TODO. Give better names and respect the 80 char. limit in the proof below.
 
 \begin{code}
 
