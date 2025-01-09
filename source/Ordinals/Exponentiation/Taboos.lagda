@@ -1,5 +1,6 @@
 Tom de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg, Chuangjie Xu
 December 2024 (with results potentially going back to November 2023)
+With additions from 8 January 2025.
 
 Taboos involving ordinal exponentiation.
 
@@ -613,6 +614,8 @@ it is true, and it can be used to derive a taboo below.
 
 \end{code}
 
+Added 8 January 2025.
+
 Classically, whenever the base α is greater than 𝟙₀, α ^ₒ β is at
 least as large as the exponent β. However, this is a constructive
 taboo.
@@ -640,41 +643,38 @@ taboo.
    where
     II₀ = ^ₒ-satisfies-succ-specification 𝟚ₒ (⊲-gives-⊴ 𝟙ₒ 𝟚ₒ I) Pₒ
 
-  IV : β ⊴ γ
-  IV = transport (β ⊴_) II (hyp α β I)
+  III : β ⊴ γ
+  III = transport (β ⊴_) II (hyp α β I)
 
-  f = [ β , γ ]⟨ IV ⟩
+  f : ⟨ β ⟩ → ⟨ γ ⟩
+  f = [ β , γ ]⟨ III ⟩
+  f-sim : is-simulation β γ f
+  f-sim = [ β , γ ]⟨ III ⟩-is-simulation
 
   V : (x : ⟨ γ ⟩) → f (inr ⋆) ＝ x → P + ¬ P
+  V (inr p , _) r = inl p
   V (inl ⋆ , inl ⋆) r = inr VI
    where
-    VI : (p : P) → 𝟘
-    VI p = +disjoint VI₂
+    VI : ¬ P
+    VI p = +disjoint (simulations-are-lc β γ f f-sim VI₁)
      where
-      VI₀ = f (inl p)       ＝⟨ VI₁ ⟩
+      VI₁ = f (inl p)       ＝⟨ VI₂ ⟩
             (inl ⋆ , inl ⋆) ＝⟨ r ⁻¹ ⟩
             f (inr ⋆)       ∎
        where
-        VI₁ = simulations-preserve-least
-               β
-               γ
+        VI₂ = simulations-preserve-least β γ
                (inl p)
                (inl ⋆ , inl ⋆)
-               f
-               [ β , γ ]⟨ IV ⟩-is-simulation
+               f f-sim
                (left-preserves-least Pₒ 𝟙ₒ p (prop-ordinal-least P-is-prop p))
-               (×ₒ-least (𝟙ₒ +ₒ Pₒ)
-                         𝟚ₒ
-                         (inl ⋆)
-                         (inl ⋆)
-                         (left-preserves-least 𝟙ₒ Pₒ ⋆ ⋆-least)
-                         (left-preserves-least 𝟙ₒ 𝟙ₒ ⋆ ⋆-least))
+               (×ₒ-least (𝟙ₒ +ₒ Pₒ) 𝟚ₒ
+                (inl ⋆)
+                (inl ⋆)
+                (left-preserves-least 𝟙ₒ Pₒ ⋆ ⋆-least)
+                (left-preserves-least 𝟙ₒ 𝟙ₒ ⋆ ⋆-least))
          where
           ⋆-least : is-least 𝟙ₒ ⋆
           ⋆-least = prop-ordinal-least 𝟙-is-prop ⋆
-
-      VI₂ : inl p ＝ inr ⋆
-      VI₂ = simulations-are-lc β γ f [ β , γ ]⟨ IV ⟩-is-simulation VI₀
   V (inl ⋆ , inr ⋆) r = inl (VI VIII)
    where
     VI : Σ y ꞉ ⟨ β ⟩ , (y ≺⟨ β ⟩ inr ⋆) × (f y ＝ (inl ⋆ , inl ⋆)) → P
@@ -684,15 +684,8 @@ taboo.
     VII = transport⁻¹ (underlying-order γ (inl ⋆ , inl ⋆)) r (inl ⋆)
 
     VIII : Σ y ꞉ ⟨ β ⟩ , (y ≺⟨ β ⟩ inr ⋆) × (f y ＝ (inl ⋆ , inl ⋆))
-    VIII = simulations-are-initial-segments
-            β
-            γ
-            f
-            [ β , γ ]⟨ IV ⟩-is-simulation
-            (inr ⋆)
-            (inl ⋆ , inl ⋆)
-            VII
-  V (inr p , _) r = inl p
+    VIII = simulations-are-initial-segments β γ f f-sim
+                                            (inr ⋆) (inl ⋆ , inl ⋆) VII
 
 \end{code}
 
@@ -719,10 +712,10 @@ EM-implies-^ₒ-as-large-as-exponent em α β (a₁ , p) =
       α ^ₒ (β ↓ b) ×ₒ (α ↓ a₁) +ₒ (α ^ₒ (β ↓ b) ↓ ^ₒ-⊥ α (β ↓ b)) ＝⟨ II₁ ⟩
       α ^ₒ (β ↓ b) ×ₒ 𝟙ₒ +ₒ 𝟘ₒ                                    ＝⟨ II₂ ⟩
       α ^ₒ (β ↓ b) ×ₒ 𝟙ₒ                                          ＝⟨ II₃ ⟩
-      α ^ₒ (β ↓ b) ∎
+      α ^ₒ (β ↓ b)                                                ∎
        where
         II₀ = ^ₒ-↓-×ₒ-to-^ₒ α β {b} {^ₒ-⊥ α (β ↓ b)} {a₁}
-        II₁ = ap₂ (λ x y → α ^ₒ (β ↓ b) ×ₒ x +ₒ y) (p ⁻¹) (^ₒ-↓-⊥ α (β ↓ b))
+        II₁ = ap₂ (λ -₁ -₂ → α ^ₒ (β ↓ b) ×ₒ -₁ +ₒ -₂) (p ⁻¹) (^ₒ-↓-⊥ α (β ↓ b))
         II₂ = 𝟘ₒ-right-neutral (α ^ₒ (β ↓ b) ×ₒ 𝟙ₒ)
         II₃ = 𝟙ₒ-right-neutral-×ₒ (α ^ₒ (β ↓ b))
 
@@ -734,3 +727,4 @@ EM-implies-^ₒ-as-large-as-exponent em α β (a₁ , p) =
      III' : α ^ₒ β ↓ f b ⊲ α ^ₒ β ↓ f b'
      III' = transport₂⁻¹ _⊲_ (II b) (II b') III
 
+\end{code}
