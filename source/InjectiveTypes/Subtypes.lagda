@@ -148,5 +148,5 @@ module _ (D : 𝓤 ⁺ ̇ )
 
 \end{code}
 
-TODO. Can the above logical equivalences be made into a type
+TODO. Can the above logical equivalences be made into type
 equivalences?
