@@ -156,3 +156,43 @@ Proposition-4 =
  , EM-gives-full-exponentiation
 
 \end{code}
+
+Section IV. Abstract Algebraic Exponentiation
+
+\begin{code}
+
+Lemma-5 : (β : Ordinal 𝓤) → β ＝ sup (λ b → (β ↓ b) +ₒ 𝟙ₒ)
+Lemma-5 = supremum-of-successors-of-initial-segments pt sr
+
+Definition-6 : Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤
+Definition-6 α β = α ^ₒ β
+
+Proposition-7 : (α β : Ordinal 𝓤)
+                (a : ⟨ α ⟩) (b : ⟨ β ⟩) (e : ⟨ α ^ₒ (β ↓ b) ⟩)
+              → α ^ₒ β ↓ ×ₒ-to-^ₒ α β {b} (e , a)
+                ＝ α ^ₒ (β ↓ b) ×ₒ (α ↓ a) +ₒ (α ^ₒ (β ↓ b) ↓ e)
+Proposition-7 α β a b e = ^ₒ-↓-×ₒ-to-^ₒ α β
+
+Proposition-8 : (α β γ : Ordinal 𝓤)
+              → (β ⊴ γ → α ^ₒ β ⊴ α ^ₒ γ)
+              × (𝟙ₒ ⊲ α → β ⊲ γ → α ^ₒ β ⊲ α ^ₒ γ)
+Proposition-8 α β γ =   ^ₒ-monotone-in-exponent α β γ
+                      , ^ₒ-order-preserving-in-exponent α β γ
+
+Theorem-9 : (α : Ordinal 𝓤) → 𝟙ₒ ⊴ α
+          → exp-specification-zero α (α ^ₒ_)
+          × exp-specification-succ α (α ^ₒ_)
+          × exp-specification-sup α (α ^ₒ_)
+Theorem-9 {𝓤} α α-pos =   ^ₒ-satisfies-zero-specification {𝓤} {𝓤} α
+                          , ^ₒ-satisfies-succ-specification {𝓤} {𝓤} α α-pos
+                          , ^ₒ-satisfies-sup-specification α
+
+Proposition-10 : (α : Ordinal 𝓤) (β γ : Ordinal 𝓥)
+               → α ^ₒ (β +ₒ γ) ＝ (α ^ₒ β) ×ₒ (α ^ₒ γ)
+Proposition-10 = ^ₒ-by-+ₒ
+
+Proposition-11 : (α : Ordinal 𝓤) (β γ : Ordinal 𝓥)
+               → α ^ₒ (β ×ₒ γ) ＝ (α ^ₒ β) ^ₒ γ
+Proposition-11 = ^ₒ-by-×ₒ
+
+\end{code}
