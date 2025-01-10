@@ -167,7 +167,7 @@ trichotomy-to-decomposed-at {𝓤} α x tri = β , γ , p , p-spec
     <'-propvalued : is-prop-valued _<'_
     <'-propvalued = subtype-order-is-prop-valued α (_< x)
     <'-wellfounded : is-well-founded _<'_
-    <'-wellfounded = subtype-order-is-wellfounded α (_< x)
+    <'-wellfounded = subtype-order-is-well-founded α (_< x)
     <'-transitive : is-transitive _<'_
     <'-transitive = subtype-order-is-transitive α (_< x)
     <'-extensional : is-extensional _<'_
@@ -190,7 +190,7 @@ trichotomy-to-decomposed-at {𝓤} α x tri = β , γ , p , p-spec
     <″-propvalued : is-prop-valued _<″_
     <″-propvalued = subtype-order-is-prop-valued α (λ - → x < -)
     <″-wellfounded : is-well-founded _<″_
-    <″-wellfounded = subtype-order-is-wellfounded α (λ - → x < -)
+    <″-wellfounded = subtype-order-is-well-founded α (λ - → x < -)
     <″-transitive : is-transitive _<″_
     <″-transitive = subtype-order-is-transitive α (λ - → x < -)
     <″-extensional : is-extensional _<″_

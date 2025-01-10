@@ -229,8 +229,8 @@ module _
  subtype-order-is-prop-valued : is-prop-valued subtype-order
  subtype-order-is-prop-valued (x , _) (y , _) = Prop-valuedness α x y
 
- subtype-order-is-wellfounded : is-well-founded subtype-order
- subtype-order-is-wellfounded (a , p) =
+ subtype-order-is-well-founded : is-well-founded subtype-order
+ subtype-order-is-well-founded (a , p) =
   subtype-order-accessible (a , p) (Well-foundedness α a)
    where
     subtype-order-accessible
