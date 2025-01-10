@@ -37,9 +37,8 @@ open import UF.TruncationLevels
 open import UF.TruncatedTypes fe
 open import UF.Univalence
 
-module _
+module SizeTruncationandConnectedness
         (te : general-truncations-exist)
-        (ua : Univalence)
         (𝓥 : Universe)
        where
 
@@ -51,8 +50,9 @@ module _
 
 \end{code}
 
-We begin by giving some definitions from [1]. We will use the universe parameter
-𝓥 as our point of reference for 'smallness'.
+We begin by giving some definitions from [1]. We have fixed the universe parameter
+𝓥 and use it as our point of reference for 'smallness'. Also, note that we only
+use Univalence locally as some critical results hold in its absence.
 
 \begin{code}
 
@@ -61,10 +61,11 @@ We begin by giving some definitions from [1]. We will use the universe parameter
  X is (succ n) locally-small = (x x' : X) → (x ＝ x') is n locally-small
 
  being-locally-small-is-prop : {X : 𝓤 ̇} {n : ℕ}
+                             → Univalence
                              → is-prop (X is n locally-small)
- being-locally-small-is-prop {_} {X} {zero} = being-small-is-prop ua X 𝓥
- being-locally-small-is-prop {_} {X} {succ n} =
-  Π₂-is-prop fe (λ x y → being-locally-small-is-prop)
+ being-locally-small-is-prop {_} {X} {zero} ua = being-small-is-prop ua X 𝓥
+ being-locally-small-is-prop {_} {X} {succ n} ua =
+  Π₂-is-prop fe (λ x y → being-locally-small-is-prop ua)
 
  being-locally-small-is-upper-closed : {X : 𝓤 ̇} {n : ℕ}
                                → X is n locally-small
@@ -78,8 +79,6 @@ We begin by giving some definitions from [1]. We will use the universe parameter
 
 Local smallness is closed under equivalence, sigma types and truncation for each
 n : ℕ.
-
-TODO: Add other closure properties and maybe move this to size file(?).
 
 \begin{code}
 
@@ -117,17 +116,18 @@ TODO: Add other closure properties and maybe move this to size file(?).
  open general-truncations-exist te
 
  local-smallness-is-closed-under-truncation : {X : 𝓤 ̇} {n : ℕ₋₂}
+                                            → Univalence
                                             → X is ι (n + 2) locally-small
                                             → ∥ X ∥[ n ] is ι (n + 2) locally-small
- local-smallness-is-closed-under-truncation {_} {X} {−2} =
+ local-smallness-is-closed-under-truncation {_} {X} {−2} ua =
   truncations-of-small-types-are-small
- local-smallness-is-closed-under-truncation {_} {X} {succ n} X-loc-small =
+ local-smallness-is-closed-under-truncation {_} {X} {succ n} ua X-loc-small =
   ∥∥ₙ-ind₂ (λ u v → (u ＝ v) is ι (n + 2) locally-small)
            (λ u v → truncation-levels-are-upper-closed' ⋆
-                     (is-prop-implies-is-prop' being-locally-small-is-prop))
+                     (is-prop-implies-is-prop' (being-locally-small-is-prop ua)))
            (λ x y → local-smallness-is-closed-under-≃
                      (eliminated-trunc-identity-char (ua _))
-                    (local-smallness-is-closed-under-truncation (X-loc-small x y)))
+                    (local-smallness-is-closed-under-truncation ua (X-loc-small x y)))
 
 \end{code}
 
@@ -162,38 +162,34 @@ Prop 2.2. of [1]
 
  Prop-2-2[locally-small-type-with-connected-map-from-small-type-is-small]
   : {𝓤 𝓦 : Universe} {A : 𝓤 ̇} {X : 𝓦 ̇} {f : A → X} {n : ℕ₋₂}
+  → Univalence
   → Join-Construction-Result {𝓤} {𝓦}
   → f is n connected-map
   → A is 𝓥 small
   → X is ι (n + 2) locally-small
   → X is 𝓥 small
  Prop-2-2[locally-small-type-with-connected-map-from-small-type-is-small]
-  {_} {_} {_} {_} {_} {−2} j f-con A-small X-small = X-small
+  {_} {_} {_} {_} {_} {−2} ua j f-con A-small X-small = X-small
  Prop-2-2[locally-small-type-with-connected-map-from-small-type-is-small]
-  {𝓤} {𝓦} {A} {X} {f} {succ n} j f-con A-small X-is-loc-small =
-  j A-small
-    (locally-small-from-surjection (−1-connected-maps-are-surjections f-−1-con))
-    f-−1-con
+  {𝓤} {𝓦} {A} {X} {f} {succ n} ua j f-con A-small X-is-loc-small =
+  j A-small (III (−1-connected-maps-are-surjections I)) I
   where
-   f-−1-con : f is −1 connected-map
-   f-−1-con = map-connectedness-is-lower-closed ⋆ f-con
-   helper : (x x' : X)
-          → Σ a ꞉ A , f a ＝ x
-          → Σ a ꞉ A , f a ＝ x'
-          → (x ＝ x') is 𝓥 small
-   helper .(f a) .(f a') (a , refl) (a' , refl) =
+   I : f is −1 connected-map
+   I = map-connectedness-is-lower-closed ⋆ f-con
+   II : (x x' : X)
+      → Σ a ꞉ A , f a ＝ x
+      → Σ a ꞉ A , f a ＝ x'
+      → (x ＝ x') is 𝓥 small
+   II .(f a) .(f a') (a , refl) (a' , refl) =
     Prop-2-2[locally-small-type-with-connected-map-from-small-type-is-small]
-     j (ap-is-less-connected (ua (𝓤 ⊔ 𝓦)) f f-con)
+     ua j (ap-is-less-connected (ua (𝓤 ⊔ 𝓦)) f f-con)
        (small-implies-locally-small A 𝓥 A-small a a')
        (X-is-loc-small (f a) (f a')) 
-   locally-small-from-surjection : is-surjection f
-                                 → (x x' : X)
-                                 → (x ＝ x') is 𝓥 small
-   locally-small-from-surjection f-is-surj x x' =
-    ∥∥-rec₂ (being-small-is-prop ua (x ＝ x') 𝓥)
-            (helper x x')
-            (f-is-surj x)
-            (f-is-surj x')
+   III : is-surjection f
+       → (x x' : X)
+       → (x ＝ x') is 𝓥 small
+   III f-is-surj x x' = ∥∥-rec₂ (being-small-is-prop ua (x ＝ x') 𝓥)
+                         (II x x') (f-is-surj x) (f-is-surj x')
 
  locally-small-type-with-connected-map-from-small-type-is-small =
   Prop-2-2[locally-small-type-with-connected-map-from-small-type-is-small]
@@ -218,8 +214,8 @@ Lemma 2.3. of [1]
 
 \end{code}
 
-We note that Lemma-2-3 provides is one side of a bimplication involving
-propositional resizing.We will now record the other direction.
+We note that Lemma-2-3 provides one side of a bimplication involving
+propositional resizing. We will now record the other direction.
 
 \begin{code}
 
@@ -259,6 +255,7 @@ Lemma 2.5. of [1]
 
  Lemma-2-5[connected-type-with-truncated-map-to-locally-small-type-is-small]
   : {X : 𝓤 ̇} {Y : 𝓦 ̇} {f : X → Y} {n : ℕ₋₂}
+  → Univalence
   → Join-Construction-Result {𝓤} {𝓤}
   → Propositional-Resizing
   → f is (n + 1) truncated-map
@@ -266,26 +263,23 @@ Lemma 2.5. of [1]
   → X is (n + 1) connected
   → X is 𝓥 small
  Lemma-2-5[connected-type-with-truncated-map-to-locally-small-type-is-small]
-  {𝓤} {_} {X} {_} {_} {n} j pr f-trunc Y-loc-small X-conn =
-  ∥∥-rec (being-small-is-prop ua X 𝓥)
-   X-inhabited-implies-small (center X-−1-conn)
+  {𝓤} {_} {X} {_} {_} {n} ua j pr f-trunc Y-loc-small X-conn =
+  ∥∥-rec (being-small-is-prop ua X 𝓥) VI (center II)
   where
-   X-loc-small : X is ι (n + 2) locally-small
-   X-loc-small =
-    Lemma-2-4[type-with-truncated-map-to-locally-small-type-is-locally-small]
-     pr f-trunc Y-loc-small
-   X-−1-conn : X is −1 connected
-   X-−1-conn = connectedness-is-lower-closed' ⋆ X-conn
-   X-point : X → 𝟙 {𝓤} → X
-   X-point x ⋆ = x
-   X-point-n-conn : (x : X) → (X-point x) is n connected-map
-   X-point-n-conn x = basepoint-map-is-less-connected (ua 𝓤) (X-point x) X-conn
-   𝟙-is-small : 𝟙 {𝓤} is 𝓥 small
-   𝟙-is-small = pr 𝟙 𝟙-is-prop
-   X-inhabited-implies-small : X → X is 𝓥 small
-   X-inhabited-implies-small x =
-    Prop-2-2[locally-small-type-with-connected-map-from-small-type-is-small]
-     j (X-point-n-conn x) 𝟙-is-small X-loc-small
+   I : X is ι (n + 2) locally-small
+   I = Lemma-2-4[type-with-truncated-map-to-locally-small-type-is-locally-small]
+        pr f-trunc Y-loc-small
+   II : X is −1 connected
+   II = connectedness-is-lower-closed' ⋆ X-conn
+   III : X → 𝟙 {𝓤} → X
+   III x ⋆ = x
+   IV : (x : X) → (III x) is n connected-map
+   IV x = basepoint-map-is-less-connected (ua _) (III x) X-conn
+   V : 𝟙 {𝓤} is 𝓥 small
+   V = pr 𝟙 𝟙-is-prop
+   VI : X → X is 𝓥 small
+   VI x = Prop-2-2[locally-small-type-with-connected-map-from-small-type-is-small]
+           ua j (IV x) V I
 
  connected-type-with-truncated-map-to-locally-small-type-is-small =
   Lemma-2-5[connected-type-with-truncated-map-to-locally-small-type-is-small]
@@ -298,61 +292,56 @@ resizing we will simply record the second proof. But first we need a few lemmas.
 
 \begin{code}
 
- small-path-space-lemma : {X : 𝓤 ̇} {n : ℕ₋₂}
-                        → Join-Construction-Result {𝓤} {𝓤}
-                        → X is ι (n + 2) locally-small
-                         × ∥ X ∥[ n + 1 ] is 𝓥 small
-                        → (Σ y ꞉ ∥ X ∥[ n + 1 ] , Σ x ꞉ X , ∣ x ∣[ n + 1 ] ＝ y)
-                         is 𝓥 small
- small-path-space-lemma {_} {X} {n} j (X-loc-small , trunc-X-small) =
-  Σ-is-small trunc-X-small fiber-path-space-small
+ small-path-space-from-locally-small-type-and-small-truncation
+  : {X : 𝓤 ̇} {n : ℕ₋₂}
+  → Univalence
+  → Join-Construction-Result {𝓤} {𝓤}
+  → X is ι (n + 2) locally-small
+   × ∥ X ∥[ n + 1 ] is 𝓥 small
+  → (Σ y ꞉ ∥ X ∥[ n + 1 ] , Σ x ꞉ X , ∣ x ∣[ n + 1 ] ＝ y) is 𝓥 small
+ small-path-space-from-locally-small-type-and-small-truncation
+  {_} {X} {n} ua j (X-loc-small , trunc-X-small) = Σ-is-small trunc-X-small IX
   where
-   trunc-ind-helper : (x' : X)
-                    → (Σ x ꞉ X , ∣ x ∣[ n + 1 ] ＝ ∣ x' ∣[ n + 1 ]) is 𝓥 small
-   trunc-ind-helper x' =
-    Prop-2-2[locally-small-type-with-connected-map-from-small-type-is-small]
-     j f-con 𝟙-is-small cod-locally-small
+   I : (x' : X) → (Σ x ꞉ X , ∣ x ∣[ n + 1 ] ＝ ∣ x' ∣[ n + 1 ]) is 𝓥 small
+   I x' = Prop-2-2[locally-small-type-with-connected-map-from-small-type-is-small]
+           ua j IV V VI
     where
-     f : 𝟙 {𝓤} → Σ x ꞉ X , ∣ x ∣[ n + 1 ] ＝ ∣ x' ∣[ n + 1 ]
-     f ⋆ = (x' , refl)
-     cod-con : (Σ x ꞉ X , ∣ x ∣[ n + 1 ] ＝ ∣ x' ∣[ n + 1 ])
-                is (n + 1) connected
-     cod-con = trunc-map-is-connected ∣ x' ∣[ n + 1 ]
-     f-con : f is n connected-map
-     f-con = basepoint-map-is-less-connected (ua _) f cod-con
-     𝟙-is-small : 𝟙 {𝓤} is 𝓥 small
-     𝟙-is-small = (𝟙 {𝓥} , one-𝟙-only)
-     cod-locally-small : (Σ x ꞉ X , ∣ x ∣[ n + 1 ] ＝ ∣ x' ∣[ n + 1 ])
+     II : 𝟙 {𝓤} → Σ x ꞉ X , ∣ x ∣[ n + 1 ] ＝ ∣ x' ∣[ n + 1 ]
+     II ⋆ = (x' , refl)
+     III : (Σ x ꞉ X , ∣ x ∣[ n + 1 ] ＝ ∣ x' ∣[ n + 1 ]) is (n + 1) connected
+     III = trunc-map-is-connected ∣ x' ∣[ n + 1 ]
+     IV : II is n connected-map
+     IV = basepoint-map-is-less-connected (ua _) II III
+     V : 𝟙 {𝓤} is 𝓥 small
+     V = (𝟙 {𝓥} , one-𝟙-only)
+     VI : (Σ x ꞉ X , ∣ x ∣[ n + 1 ] ＝ ∣ x' ∣[ n + 1 ])
                           is ι (n + 2) locally-small
-     cod-locally-small = local-smallness-is-closed-under-Σ X-loc-small
-                          path-locally-small
+     VI = local-smallness-is-closed-under-Σ X-loc-small VII
       where
-       path-locally-small : (x : X)
-                          → (∣ x ∣[ succ n ] ＝ ∣ x' ∣[ succ n ])
-                             is ι (n + 2) locally-small
-       path-locally-small x =
+       VII : (x : X)
+           → (∣ x ∣[ succ n ] ＝ ∣ x' ∣[ succ n ]) is ι (n + 2) locally-small
+       VII x =
         local-smallness-is-closed-under-≃ (eliminated-trunc-identity-char (ua _))
-                                     path-char-locally-small
+         VIII
          where
-          path-char-locally-small : ∥ x ＝ x' ∥[ n ] is ι (n + 2) locally-small
-          path-char-locally-small =
-           local-smallness-is-closed-under-truncation
-            (being-locally-small-is-upper-closed X-loc-small x x')
-   fiber-path-space-small : (y : ∥ X ∥[ n + 1 ])
-                          → (Σ x ꞉ X , ∣ x ∣[ n + 1 ] ＝ y) is 𝓥 small
-   fiber-path-space-small =
-    ∥∥ₙ-ind (λ - → props-are-truncated pt
-                    (being-small-is-prop ua (Σ x ꞉ X , ∣ x ∣[ n + 1 ] ＝ -) 𝓥))
-            trunc-ind-helper
+          VIII : ∥ x ＝ x' ∥[ n ] is ι (n + 2) locally-small
+          VIII = local-smallness-is-closed-under-truncation
+                  ua (being-locally-small-is-upper-closed X-loc-small x x')
+   IX : (y : ∥ X ∥[ n + 1 ]) → (Σ x ꞉ X , ∣ x ∣[ n + 1 ] ＝ y) is 𝓥 small
+   IX = ∥∥ₙ-ind (λ - → props-are-truncated pt
+         (being-small-is-prop ua (Σ x ꞉ X , ∣ x ∣[ n + 1 ] ＝ -) 𝓥)) I
 
- small-from-locally-and-small-truncation : {X : 𝓤 ̇} {n : ℕ₋₂}
-                                         → Join-Construction-Result {𝓤} {𝓤}
-                                         → X is ι (n + 2) locally-small
-                                          × ∥ X ∥[ n + 1 ] is 𝓥 small
-                                         → X is 𝓥 small
- small-from-locally-and-small-truncation {_} {X} {n} j small-hyp =
-  smallness-closed-under-≃' (small-path-space-lemma j small-hyp)
-                            (domain-is-total-fiber ∣_∣[ succ n ])
+ locally-small-type-with-small-truncation-is-small
+  : {X : 𝓤 ̇} {n : ℕ₋₂}
+  → Univalence
+  → Join-Construction-Result {𝓤} {𝓤}
+  → X is ι (n + 2) locally-small
+   × ∥ X ∥[ n + 1 ] is 𝓥 small
+  → X is 𝓥 small
+ locally-small-type-with-small-truncation-is-small {_} {X} {n} ua j small-hyp =
+  smallness-closed-under-≃'
+   (small-path-space-from-locally-small-type-and-small-truncation ua j small-hyp)
+    (domain-is-total-fiber ∣_∣[ succ n ])
 
 \end{code}
 
@@ -362,18 +351,18 @@ Theorem 2.6. of [1]
 
  Theorem-2-6[type-is-small-iff-type-is-locally-small-and-has-small-truncation]
   : {X : 𝓤 ̇} {n : ℕ₋₂}
+  → Univalence
   → Join-Construction-Result {𝓤} {𝓤}
   → X is 𝓥 small
   ↔ X is ι (n + 2) locally-small × ∥ X ∥[ n + 1 ] is 𝓥 small 
  Theorem-2-6[type-is-small-iff-type-is-locally-small-and-has-small-truncation]
-  {_} {X} {n} j =
-  (foreward , small-from-locally-and-small-truncation j)
+  {_} {X} {n} ua j =
+  (I , locally-small-type-with-small-truncation-is-small ua j)
   where
-   foreward : X is 𝓥 small
-            → X is ι (n + 2) locally-small × ∥ X ∥[ n + 1 ] is 𝓥 small
-   foreward X-small =
-    (small-gives-locally-small X-small ,
-     truncations-of-small-types-are-small X-small)
+   I : X is 𝓥 small
+     → X is ι (n + 2) locally-small × ∥ X ∥[ n + 1 ] is 𝓥 small
+   I X-small = (small-gives-locally-small X-small ,
+                truncations-of-small-types-are-small X-small)
 
  type-is-small-iff-type-is-locally-small-and-has-small-truncation =
   Theorem-2-6[type-is-small-iff-type-is-locally-small-and-has-small-truncation]
@@ -385,15 +374,15 @@ We will record the following corolloary of Theorem 2.6. of [1]:
 
 \begin{code}
 
- set-truncation-of-universe-is-large : Join-Construction-Result 
+ set-truncation-of-universe-is-large : Univalence
+                                     → Join-Construction-Result 
                                      → is-large ∥ 𝓥 ̇ ∥[ 0 ]
- set-truncation-of-universe-is-large j =
-  contrapositive small-from-small-set-trunc universes-are-large
+ set-truncation-of-universe-is-large ua j =
+  contrapositive I universes-are-large
   where
-   small-from-small-set-trunc : is-small ∥ 𝓥 ̇ ∥[ succ −1 ] → is-small (𝓥 ̇)
-   small-from-small-set-trunc small-trunc =
-    small-from-locally-and-small-truncation j
-     (universes-are-locally-small (ua 𝓥) , small-trunc)
+   I : is-small ∥ 𝓥 ̇ ∥[ 0 ] → is-small (𝓥 ̇)
+   I small-trunc = locally-small-type-with-small-truncation-is-small ua j
+                    (universes-are-locally-small (ua 𝓥) , small-trunc)
    
 \end{code}
 
@@ -403,6 +392,7 @@ Corollary 2.7. of [1]
 
  Corollary-2-7[type-with-small-truncation-and-truncated-map-to-locally-small-type-is-small]
   : {X : 𝓤 ̇} {Y : 𝓦 ̇} {f : X → Y} {n : ℕ₋₂}
+  → Univalence
   → Join-Construction-Result {𝓤} {𝓤}
   → Propositional-Resizing
   → f is (n + 1) truncated-map
@@ -410,8 +400,8 @@ Corollary 2.7. of [1]
   → ∥ X ∥[ n + 1 ] is 𝓥 small
   → X is 𝓥 small
  Corollary-2-7[type-with-small-truncation-and-truncated-map-to-locally-small-type-is-small]
-  j pr f-trunc Y-loc-small trunc-X-small =
-  small-from-locally-and-small-truncation j
+  ua j pr f-trunc Y-loc-small trunc-X-small =
+  locally-small-type-with-small-truncation-is-small ua j
    (Lemma-2-4[type-with-truncated-map-to-locally-small-type-is-locally-small]
     pr f-trunc Y-loc-small , trunc-X-small)
 
