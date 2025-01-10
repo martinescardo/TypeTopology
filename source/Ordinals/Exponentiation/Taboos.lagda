@@ -547,6 +547,26 @@ subtype-of-positive-elements-an-ordinal-implies-EM {𝓤} hyp = III
 
 \end{code}
 
+The converse holds too of course.
+
+\begin{code}
+
+EM-implies-subtype-of-positive-elements-an-ordinal
+ : EM 𝓤
+ → ((α : Ordinal 𝓤) (x : ⟨ α ⟩)
+    → is-least α x
+    → is-well-order (subtype-order α (λ - → x ≺⟨ α ⟩ -)))
+EM-implies-subtype-of-positive-elements-an-ordinal {𝓤} em α x x-least =
+   subtype-order-is-prop-valued α P
+ , subtype-order-is-well-founded α P
+ , EM-implies-subtype-order-is-extensional α P em (Prop-valuedness α x)
+ , subtype-order-is-transitive α P
+  where
+   P : ⟨ α ⟩ → 𝓤 ̇
+   P y = x ≺⟨ α ⟩ y
+
+\end{code}
+
 The following is an example of an equation that does not follow from
 the specification of exponentiation, since we cannot determine if a
 given proposition is zero, a successor, or a supremum. Nevertheless,
