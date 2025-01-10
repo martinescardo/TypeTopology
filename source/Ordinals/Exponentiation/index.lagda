@@ -37,3 +37,12 @@ import Ordinals.Exponentiation.TrichotomousLeastElement          -- (7)
 import Ordinals.Exponentiation.Taboos                            -- (8)
 
 \end{code}
+
+The following file acts as an index for the paper "Ordinal Exponentiation in
+Homotopy Type Theory".
+
+\begin{code}
+
+import Ordinals.Exponentiation.Paper
+
+\end{code}
