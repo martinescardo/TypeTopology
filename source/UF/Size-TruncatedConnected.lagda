@@ -369,7 +369,7 @@ Theorem 2.6. of [1]
 
 \end{code}
 
-We will record the following corolloary of Theorem 2.6. of [1]:
+We will record the following corolloary of Theorem 2.6. from [1]:
  The set truncation of a universe is large (i.e. not small).
 
 \begin{code}
