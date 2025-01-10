@@ -52,6 +52,7 @@ open import Ordinals.Arithmetic fe
 open import Ordinals.Equivalence
 open import Ordinals.Maps
 open import Ordinals.MultiplicationProperties ua
+open import Ordinals.Notions
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.OrdinalOfOrdinalsSuprema ua
 open suprema pt sr
@@ -184,8 +185,8 @@ Theorem-9 : (α : Ordinal 𝓤) → 𝟙ₒ ⊴ α
           × exp-specification-succ α (α ^ₒ_)
           × exp-specification-sup α (α ^ₒ_)
 Theorem-9 {𝓤} α α-pos =   ^ₒ-satisfies-zero-specification {𝓤} {𝓤} α
-                          , ^ₒ-satisfies-succ-specification {𝓤} {𝓤} α α-pos
-                          , ^ₒ-satisfies-sup-specification α
+                        , ^ₒ-satisfies-succ-specification {𝓤} {𝓤} α α-pos
+                        , ^ₒ-satisfies-sup-specification α
 
 Proposition-10 : (α : Ordinal 𝓤) (β γ : Ordinal 𝓥)
                → α ^ₒ (β +ₒ γ) ＝ (α ^ₒ β) ×ₒ (α ^ₒ γ)
@@ -194,5 +195,55 @@ Proposition-10 = ^ₒ-by-+ₒ
 Proposition-11 : (α : Ordinal 𝓤) (β γ : Ordinal 𝓥)
                → α ^ₒ (β ×ₒ γ) ＝ (α ^ₒ β) ^ₒ γ
 Proposition-11 = ^ₒ-by-×ₒ
+
+\end{code}
+
+Section V. Decreasing Lists: A Constructive Formulation
+           of Sierpiński's Definition
+
+\begin{code}
+
+Definition-12 : (α : Ordinal 𝓤) (β : Ordinal 𝓥) → 𝓤 ⊔ 𝓥 ̇
+Definition-12 α β = DecrList₂ α β
+
+Remark-13 : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
+            ((l , p) (l' , q) : DecrList₂ α β)
+          → l ＝ l'
+          → (l , p) ＝ (l' , q)
+Remark-13 α β _ _ = to-DecrList₂-＝ α β
+
+Proposition-14₁
+ : EM 𝓤
+ → ((α : Ordinal 𝓤) (x : ⟨ α ⟩) → is-least α x
+    → is-well-order (subtype-order α (λ - → x ≺⟨ α ⟩ -)))
+Proposition-14₁ = EM-implies-subtype-of-positive-elements-an-ordinal
+
+Proposition-14₂
+ : ((α : Ordinal (𝓤 ⁺⁺)) (x : ⟨ α ⟩) → is-least α x
+    → is-well-order (subtype-order α (λ - → x ≺⟨ α ⟩ -)))
+ → EM 𝓤
+Proposition-14₂ = subtype-of-positive-elements-an-ordinal-implies-EM
+
+Lemma-15 : (α : Ordinal 𝓤)
+         → (has-trichotomous-least-element α ↔ is-decomposable-into-one-plus α)
+         × (((a₀ , a₀-tri) : has-trichotomous-least-element α)
+            → (α ＝ 𝟙ₒ +ₒ α ⁺[ a₀ , a₀-tri ])
+            × (⟨ α ⁺[ a₀ , a₀-tri ] ⟩ ＝ (Σ a ꞉ ⟨ α ⟩ , a₀ ≺⟨ α ⟩ a)))
+Lemma-15 α =   ( trichotomous-least-to-decomposable α
+               , decomposable-to-trichotomous-least α)
+             , (λ h →   α ⁺[ h ]-part-of-decomposition
+                      , ⁺-is-subtype-of-positive-elements α h)
+
+Definition-16 : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
+              → has-trichotomous-least-element α
+              → Ordinal (𝓤 ⊔ 𝓥)
+Definition-16 α β h = exponentiationᴸ α h β
+
+Proposition-17 : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
+                 (h : has-trichotomous-least-element α)
+               → has-trichotomous-least-element (exponentiationᴸ α h β)
+Proposition-17 α β h = exponentiationᴸ-has-trichotomous-least-element α h β
+
+
 
 \end{code}
