@@ -62,11 +62,11 @@ easily shown, as is the fact that exponentiating by 𝟙ₒ is the identity.
 
 \begin{code}
 
-expᴸ-zero-specification-≃ₒ : (α : Ordinal 𝓤)
-                           → expᴸ[𝟙+ α ] (𝟘ₒ {𝓥}) ≃ₒ 𝟙ₒ {𝓤 ⊔ 𝓥}
-expᴸ-zero-specification-≃ₒ α = f , f-order-preserving ,
-                               qinvs-are-equivs f f-qinv ,
-                               g-order-preserving
+expᴸ-satisfies-zero-specification-≃ₒ : (α : Ordinal 𝓤)
+                                     → expᴸ[𝟙+ α ] (𝟘ₒ {𝓥}) ≃ₒ 𝟙ₒ {𝓤 ⊔ 𝓥}
+expᴸ-satisfies-zero-specification-≃ₒ α = f , f-order-preserving ,
+                                         qinvs-are-equivs f f-qinv ,
+                                         g-order-preserving
  where
   f : ⟨ expᴸ[𝟙+ α ] 𝟘ₒ ⟩ → 𝟙
   f _ = ⋆
@@ -88,10 +88,12 @@ expᴸ-zero-specification-≃ₒ α = f , f-order-preserving ,
     q : f ∘ g ∼ id
     q ⋆ = refl
 
-expᴸ-zero-specification : (α : Ordinal 𝓤)
-                        → exp-specification-zero {𝓤} {𝓥} (𝟙ₒ +ₒ α) (expᴸ[𝟙+ α ])
-expᴸ-zero-specification {𝓤} {𝓥} α =
- eqtoidₒ (ua (𝓤 ⊔ 𝓥)) fe' (expᴸ[𝟙+ α ] 𝟘ₒ) 𝟙ₒ (expᴸ-zero-specification-≃ₒ α)
+expᴸ-satisfies-zero-specification
+ : (α : Ordinal 𝓤)
+ → exp-specification-zero {𝓤} {𝓥} (𝟙ₒ +ₒ α) (expᴸ[𝟙+ α ])
+expᴸ-satisfies-zero-specification {𝓤} {𝓥} α =
+ eqtoidₒ (ua (𝓤 ⊔ 𝓥)) fe' (expᴸ[𝟙+ α ] 𝟘ₒ) 𝟙ₒ
+         (expᴸ-satisfies-zero-specification-≃ₒ α)
 
 𝟙ₒ-neutral-expᴸ-≃ₒ : (α : Ordinal 𝓤) → expᴸ[𝟙+ α ] (𝟙ₒ {𝓥}) ≃ₒ 𝟙ₒ +ₒ α
 𝟙ₒ-neutral-expᴸ-≃ₒ α = f , f-order-preserving ,
