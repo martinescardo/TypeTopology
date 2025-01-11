@@ -473,7 +473,7 @@ dependency on that proof, we reprove it from scratch here.
  α ^ₒ β ×ₒ α       ∎
   where
    𝟙ₒ-neutral-^ₒ' : (α : Ordinal 𝓤) → 𝟙ₒ {𝓤} ⊴ α → α ^ₒ 𝟙ₒ ＝ α
-   𝟙ₒ-neutral-^ₒ' α l = ⊴-antisym _ _ II III
+   𝟙ₒ-neutral-^ₒ' α l = ⊴-antisym (α ^ₒ 𝟙ₒ) α II III
     where
      I = α ^ₒ (𝟙ₒ ↓ ⋆) ×ₒ α ＝⟨ ap (λ - → α ^ₒ - ×ₒ α) 𝟙ₒ-↓ ⟩
          α ^ₒ 𝟘ₒ ×ₒ α       ＝⟨ ap (_×ₒ α) (^ₒ-satisfies-zero-specification α) ⟩
@@ -481,16 +481,13 @@ dependency on that proof, we reprove it from scratch here.
          α                  ∎
 
      II : α ^ₒ 𝟙ₒ ⊴ α
-     II = ^ₒ-is-lower-bound-of-upper-bounds α 𝟙ₒ α l (λ _ → II₁)
+     II = ^ₒ-is-lower-bound-of-upper-bounds α 𝟙ₒ α l (λ _ → II')
       where
-       II₁ : α ^ₒ (𝟙ₒ ↓ ⋆) ×ₒ α ⊴ α
-       II₁ = transport⁻¹ (_⊴ α) I (⊴-refl α)
+       II' : α ^ₒ (𝟙ₒ ↓ ⋆) ×ₒ α ⊴ α
+       II' = transport⁻¹ (_⊴ α) I (⊴-refl α)
 
      III : α ⊴ α ^ₒ 𝟙ₒ
-     III = transport (_⊴ α ^ₒ 𝟙ₒ) I III₁
-      where
-       III₁ : α ^ₒ (𝟙ₒ ↓ ⋆) ×ₒ α ⊴ α ^ₒ 𝟙ₒ
-       III₁ = ^ₒ-is-upper-bound₂ α 𝟙ₒ
+     III = transport (_⊴ α ^ₒ 𝟙ₒ) I (^ₒ-is-upper-bound₂ α 𝟙ₒ)
 
 \end{code}
 
