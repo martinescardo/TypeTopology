@@ -367,3 +367,41 @@ Proposition-23
 Proposition-23 = exponentiationᴸ-preserves-trichotomy
 
 \end{code}
+
+Section VI. Abstract and Concrete Exponentiation
+
+\begin{code}
+
+Theorem-24 : (α β : Ordinal 𝓤) (h : has-trichotomous-least-element α)
+           → α ^ₒ β ＝ exponentiationᴸ α h β
+Theorem-24 α β h = (exponentiation-constructions-agree α β h) ⁻¹
+
+Corollary-25₁ : (α β : Ordinal 𝓤)
+              → has-trichotomous-least-element α
+              → is-discrete ⟨ α ⟩
+              → is-discrete ⟨ β ⟩
+              → is-discrete ⟨ α ^ₒ β ⟩
+Corollary-25₁ =
+ ^ₒ-preserves-discreteness-for-base-with-trichotomous-least-element
+
+Corollary-25₂ : (α β : Ordinal 𝓤)
+              → has-least α
+              → is-trichotomous α
+              → is-trichotomous β
+              → is-trichotomous (α ^ₒ β)
+Corollary-25₂ = ^ₒ-preserves-trichotomy
+
+module _
+        (α β γ : Ordinal 𝓤)
+        (h : has-trichotomous-least-element α)
+       where
+
+ private
+  h' : has-trichotomous-least-element (exponentiationᴸ α h β)
+  h' = exponentiationᴸ-has-trichotomous-least-element α h β
+
+ Corollary-26
+  : exponentiationᴸ α h (β ×ₒ γ) ＝ exponentiationᴸ (exponentiationᴸ α h β) h' γ
+ Corollary-26 = exponentiationᴸ-by-×ₒ α h β γ
+
+\end{code}
