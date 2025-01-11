@@ -161,20 +161,20 @@ exponentiationᴸ-preserves-trichotomy α β h tri-α tri-β =
      κ (inr (inl e)) = inr (inl (to-⁺-＝ α h' e))
      κ (inr (inr k)) = inr (inr k)
 
-^ₒ-preserves-trichotomy-for-base-with-trichotomous-least-element
- : (α β : Ordinal 𝓤)
- → has-trichotomous-least-element α
- → is-trichotomous α
- → is-trichotomous β
- → is-trichotomous (α ^ₒ β)
-^ₒ-preserves-trichotomy-for-base-with-trichotomous-least-element
- α β h@(⊥ , p) tri-α tri-β =
+^ₒ-preserves-trichotomy : (α β : Ordinal 𝓤)
+                        → has-least α
+                        → is-trichotomous α
+                        → is-trichotomous β
+                        → is-trichotomous (α ^ₒ β)
+^ₒ-preserves-trichotomy
+ α β (⊥ , p) tri-α tri-β =
   transport is-trichotomous
    (exponentiation-constructions-agree α β h)
-   (exponentiationᴸ-preserves-trichotomy α β
-     (⊥ , is-trichotomous-least-implies-is-least α ⊥ p)
-     tri-α
-     tri-β)
+   (exponentiationᴸ-preserves-trichotomy α β (⊥ , p) tri-α tri-β)
+   where
+    h : has-trichotomous-least-element α
+    h = ⊥ ,
+        is-trichotomous-and-least-implies-is-trichotomous-least α ⊥ (tri-α ⊥) p
 
 \end{code}
 
