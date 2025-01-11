@@ -45,6 +45,7 @@ private
 
 open import MLTT.List
 open import UF.ClassicalLogic
+open import UF.DiscreteAndSeparated
 open import UF.ImageAndSurjection pt
 open PropositionalTruncation pt
 
@@ -242,83 +243,127 @@ Definition-16 α β h = exponentiationᴸ α h β
 
 module _
         (α : Ordinal 𝓤)
-        (β : Ordinal 𝓥)
         (h : has-trichotomous-least-element α)
        where
 
  private
   α⁺ = α ⁺[ h ]
+
+  NB[α⁺-eq] : α ＝ 𝟙ₒ +ₒ α⁺
+  NB[α⁺-eq] = α ⁺[ h ]-part-of-decomposition
+
   exp[α,_] : Ordinal 𝓦 → Ordinal (𝓤 ⊔ 𝓦)
   exp[α, γ ] = exponentiationᴸ α h γ
 
- Proposition-17 : has-trichotomous-least-element exp[α, β ]
- Proposition-17 = exponentiationᴸ-has-trichotomous-least-element α h β
+ Proposition-17 : (β : Ordinal 𝓥) → has-trichotomous-least-element exp[α, β ]
+ Proposition-17 β = exponentiationᴸ-has-trichotomous-least-element α h β
 
- Lemma-18₁ : (γ : Ordinal 𝓦)
+ Lemma-18₁ : (β : Ordinal 𝓥) (γ : Ordinal 𝓦)
              (f : ⟨ β ⟩ → ⟨ γ ⟩)
            → is-order-preserving β γ f
            → ⟨ exp[α, β ] ⟩ → ⟨ exp[α, γ ] ⟩
- Lemma-18₁ γ = expᴸ-map α⁺ β γ
+ Lemma-18₁ β γ = expᴸ-map α⁺ β γ
 
- Lemma-18₂ : (γ : Ordinal 𝓦)
+ Lemma-18₂ : (β : Ordinal 𝓥) (γ : Ordinal 𝓦)
            → β ⊴ γ → exp[α, β ] ⊴ exp[α, γ ]
- Lemma-18₂ γ (f , (f-init-seg , f-order-pres)) =
+ Lemma-18₂ β γ (f , (f-init-seg , f-order-pres)) =
     expᴸ-map α⁺ β γ f f-order-pres
   , expᴸ-map-is-simulation α⁺ β γ f f-order-pres f-init-seg
 
- Eq-6 : (b : ⟨ β ⟩) → exp[α, β ↓ b ] ⊴ exp[α, β ]
- Eq-6 = expᴸ-segment-inclusion-⊴ α⁺ β
+ module _
+         (β : Ordinal 𝓥)
+        where
 
- ι = expᴸ-segment-inclusion α⁺ β
- ι-list = expᴸ-segment-inclusion-list α⁺ β
+  Eq-6 : (b : ⟨ β ⟩) → exp[α, β ↓ b ] ⊴ exp[α, β ]
+  Eq-6 = expᴸ-segment-inclusion-⊴ α⁺ β
 
- Eq-7 : (a : ⟨ α ⁺[ h ] ⟩) (b : ⟨ β ⟩)
-      → (l : ⟨ exp[α, β ] ⟩)
-      → is-decreasing-pr₂ α⁺ β ((a , b) ∷ pr₁ l)
-      → ⟨ exponentiationᴸ α h (β ↓ b) ⟩
- Eq-7 a b l δ = expᴸ-tail α⁺ β a b (pr₁ l) δ
+  ι = expᴸ-segment-inclusion α⁺ β
+  ι-list = expᴸ-segment-inclusion-list α⁺ β
 
- τ = expᴸ-tail α⁺ β
+  Eq-7 : (a : ⟨ α ⁺[ h ] ⟩) (b : ⟨ β ⟩)
+       → (l : ⟨ exp[α, β ] ⟩)
+       → is-decreasing-pr₂ α⁺ β ((a , b) ∷ pr₁ l)
+       → ⟨ exponentiationᴸ α h (β ↓ b) ⟩
+  Eq-7 a b l δ = expᴸ-tail α⁺ β a b (pr₁ l) δ
 
- Eq-7-addendum₁
-  : (a : ⟨ α⁺ ⟩) (b : ⟨ β ⟩)
-    (l₁ l₂ : List ⟨ α⁺ ×ₒ β ⟩)
-    (δ₁ : is-decreasing-pr₂ α⁺ β ((a , b) ∷ l₁))
-    (δ₂ : is-decreasing-pr₂ α⁺ β ((a , b) ∷ l₂))
-  → l₁ ≺⟨List (α⁺ ×ₒ β) ⟩ l₂
-  → τ a b l₁ δ₁ ≺⟨ exp[α, β ↓ b ] ⟩ τ a b l₂ δ₂
- Eq-7-addendum₁ a b l₁ l₂ δ₁ δ₂ = expᴸ-tail-is-order-preserving α⁺ β a b δ₁ δ₂
+  τ = expᴸ-tail α⁺ β
 
- Eq-7-addendum₂ : (a : ⟨ α⁺ ⟩) (b : ⟨ β ⟩)
-                  (l : List ⟨ α⁺ ×ₒ β ⟩)
-                  {δ : is-decreasing-pr₂ α⁺ β ((a , b) ∷ l)}
-                  {ε : is-decreasing-pr₂ α⁺ β l}
-                → ι b (τ a b l δ) ＝ (l , ε)
- Eq-7-addendum₂ a b = expᴸ-tail-section-of-expᴸ-segment-inclusion α⁺ β a b
+  Eq-7-addendum₁
+   : (a : ⟨ α⁺ ⟩) (b : ⟨ β ⟩)
+     (l₁ l₂ : List ⟨ α⁺ ×ₒ β ⟩)
+     (δ₁ : is-decreasing-pr₂ α⁺ β ((a , b) ∷ l₁))
+     (δ₂ : is-decreasing-pr₂ α⁺ β ((a , b) ∷ l₂))
+   → l₁ ≺⟨List (α⁺ ×ₒ β) ⟩ l₂
+   → τ a b l₁ δ₁ ≺⟨ exp[α, β ↓ b ] ⟩ τ a b l₂ δ₂
+  Eq-7-addendum₁ a b l₁ l₂ δ₁ δ₂ = expᴸ-tail-is-order-preserving α⁺ β a b δ₁ δ₂
 
- Eq-7-addendum₃ : (a : ⟨ α⁺ ⟩) (b : ⟨ β ⟩)
-                  (l : List ⟨ α⁺ ×ₒ (β ↓ b) ⟩)
-                  {δ : is-decreasing-pr₂ α⁺ (β ↓ b) l}
-                  {ε : is-decreasing-pr₂ α⁺ β ((a , b) ∷ ι-list b l)}
-                → τ a b (ι-list b l) ε ＝ (l , δ)
- Eq-7-addendum₃ a b l {δ} =
-  expᴸ-segment-inclusion-section-of-expᴸ-tail α⁺ β a b l δ
+  Eq-7-addendum₂ : (a : ⟨ α⁺ ⟩) (b : ⟨ β ⟩)
+                   (l : List ⟨ α⁺ ×ₒ β ⟩)
+                   {δ : is-decreasing-pr₂ α⁺ β ((a , b) ∷ l)}
+                   {ε : is-decreasing-pr₂ α⁺ β l}
+                 → ι b (τ a b l δ) ＝ (l , ε)
+  Eq-7-addendum₂ a b = expᴸ-tail-section-of-expᴸ-segment-inclusion α⁺ β a b
 
- private
-  NB₁ : α ＝ 𝟙ₒ +ₒ α⁺
-  NB₁ = α ⁺[ h ]-part-of-decomposition
+  Eq-7-addendum₃ : (a : ⟨ α⁺ ⟩) (b : ⟨ β ⟩)
+                   (l : List ⟨ α⁺ ×ₒ (β ↓ b) ⟩)
+                   {δ : is-decreasing-pr₂ α⁺ (β ↓ b) l}
+                   {ε : is-decreasing-pr₂ α⁺ β ((a , b) ∷ ι-list b l)}
+                 → τ a b (ι-list b l) ε ＝ (l , δ)
+  Eq-7-addendum₃ a b l {δ} =
+   expᴸ-segment-inclusion-section-of-expᴸ-tail α⁺ β a b l δ
 
- Proposition-19₁
-  : (a : ⟨ α⁺ ⟩) (b : ⟨ β ⟩) (l : List ⟨ α⁺ ×ₒ β ⟩)
-    (δ : is-decreasing-pr₂ α⁺ β ((a , b) ∷ l))
-  → exp[α, β ] ↓ ((a , b ∷ l) , δ)
-    ＝ exp[α, β ↓ b ] ×ₒ (𝟙ₒ +ₒ (α⁺ ↓ a)) +ₒ (exp[α, β ↓ b ] ↓ τ a b l δ)
- Proposition-19₁ = expᴸ-↓-cons α⁺ β
+  Proposition-19₁
+   : (a : ⟨ α⁺ ⟩) (b : ⟨ β ⟩) (l : List ⟨ α⁺ ×ₒ β ⟩)
+     (δ : is-decreasing-pr₂ α⁺ β ((a , b) ∷ l))
+   → exp[α, β ] ↓ ((a , b ∷ l) , δ)
+     ＝ exp[α, β ↓ b ] ×ₒ (𝟙ₒ +ₒ (α⁺ ↓ a)) +ₒ (exp[α, β ↓ b ] ↓ τ a b l δ)
+  Proposition-19₁ = expᴸ-↓-cons α⁺ β
 
- Proposition-19₂
-  : (a : ⟨ α⁺ ⟩) (b : ⟨ β ⟩) (l : ⟨ exp[α, β ↓ b ] ⟩)
-  → exp[α, β ] ↓ extended-expᴸ-segment-inclusion α⁺ β b l a
-    ＝ exp[α, β ↓ b ] ×ₒ (𝟙ₒ +ₒ (α⁺ ↓ a)) +ₒ (exp[α, β ↓ b ] ↓ l)
- Proposition-19₂ = expᴸ-↓-cons' α⁺ β
+  Proposition-19₂
+   : (a : ⟨ α⁺ ⟩) (b : ⟨ β ⟩) (l : ⟨ exp[α, β ↓ b ] ⟩)
+   → exp[α, β ] ↓ extended-expᴸ-segment-inclusion α⁺ β b l a
+     ＝ exp[α, β ↓ b ] ×ₒ (𝟙ₒ +ₒ (α⁺ ↓ a)) +ₒ (exp[α, β ↓ b ] ↓ l)
+  Proposition-19₂ = expᴸ-↓-cons' α⁺ β
+
+ Theorem-20 : exp-specification-zero α (λ - → exp[α, - ])
+            × exp-specification-succ α (λ - → exp[α, - ])
+            × exp-specification-sup α (λ - → exp[α, - ])
+ Theorem-20 =   expᴸ-satisfies-zero-specification {𝓤} {𝓤} α⁺
+              , transport⁻¹
+                 (λ - → exp-specification-succ - (λ - → exp[α, - ]))
+                 NB[α⁺-eq]
+                 (expᴸ-satisfies-succ-specification {𝓤} α⁺)
+              , transport⁻¹
+                 (λ - → exp-specification-sup - (λ - → exp[α, - ]))
+                 NB[α⁺-eq]
+                 (expᴸ-satisfies-sup-specification {𝓤} α⁺)
+
+ Proposition-21 : (β γ : Ordinal 𝓥)
+                → exp[α, β +ₒ γ ] ＝ exp[α, β ] ×ₒ exp[α, γ ]
+ Proposition-21 = expᴸ-by-+ₒ α⁺
+
+ has-decidable-equality = is-discrete
+
+ Proposition-22 : (β : Ordinal 𝓥)
+                → has-decidable-equality ⟨ α ⟩
+                → has-decidable-equality ⟨ β ⟩
+                → has-decidable-equality ⟨ exp[α, β ] ⟩
+ Proposition-22 β = exponentiationᴸ-preserves-discreteness α β h
+
+private
+ tri-least : (α : Ordinal 𝓤)
+           → has-least α
+           → is-trichotomous α
+           → has-trichotomous-least-element α
+ tri-least α (⊥ , ⊥-is-least) t =
+  ⊥ ,
+  is-trichotomous-and-least-implies-is-trichotomous-least α ⊥ (t ⊥) ⊥-is-least
+
+Proposition-23
+ : (α : Ordinal 𝓤) (β : Ordinal 𝓥) (h : has-least α)
+ → (t : is-trichotomous α)
+ → is-trichotomous β
+ → is-trichotomous (exponentiationᴸ α (tri-least α h t) β)
+Proposition-23 = exponentiationᴸ-preserves-trichotomy
 
 \end{code}
