@@ -458,15 +458,39 @@ as a special case, but deriving it like this forces the universe parameters to
 be less general compared to the direct proof given above in
 ^ₒ-satisifies-succ-specification.
 
+The proof above of 𝟙ₒ-neutral-^ₒ goes via
+^ₒ-satisifies-succ-specification, so in order to avoid an implicit
+dependency on that proof, we reprove it from scratch here.
+
 \begin{code}
 
-^ₒ-satisifies-succ-specification' : (α : Ordinal 𝓤)
-                                  → 𝟙ₒ ⊴ α
-                                  → exp-specification-succ {𝓤} {𝓤} α (α ^ₒ_)
-^ₒ-satisifies-succ-specification' α l β =
+^ₒ-satisfies-succ-specification' : (α : Ordinal 𝓤)
+                                 → 𝟙ₒ ⊴ α
+                                 → exp-specification-succ {𝓤} {𝓤} α (α ^ₒ_)
+^ₒ-satisfies-succ-specification' {𝓤} α l β =
  α ^ₒ (β +ₒ 𝟙ₒ)    ＝⟨ ^ₒ-by-+ₒ α β 𝟙ₒ ⟩
- α ^ₒ β ×ₒ α ^ₒ 𝟙ₒ ＝⟨ ap (α ^ₒ β ×ₒ_) (𝟙ₒ-neutral-^ₒ α l) ⟩
+ α ^ₒ β ×ₒ α ^ₒ 𝟙ₒ ＝⟨ ap (α ^ₒ β ×ₒ_) (𝟙ₒ-neutral-^ₒ' α l) ⟩
  α ^ₒ β ×ₒ α       ∎
+  where
+   𝟙ₒ-neutral-^ₒ' : (α : Ordinal 𝓤) → 𝟙ₒ {𝓤} ⊴ α → α ^ₒ 𝟙ₒ ＝ α
+   𝟙ₒ-neutral-^ₒ' α l = ⊴-antisym _ _ II III
+    where
+     I = α ^ₒ (𝟙ₒ ↓ ⋆) ×ₒ α ＝⟨ ap (λ - → α ^ₒ - ×ₒ α) 𝟙ₒ-↓ ⟩
+         α ^ₒ 𝟘ₒ ×ₒ α       ＝⟨ ap (_×ₒ α) (^ₒ-satisfies-zero-specification α) ⟩
+         𝟙ₒ ×ₒ α            ＝⟨ 𝟙ₒ-left-neutral-×ₒ α ⟩
+         α                  ∎
+
+     II : α ^ₒ 𝟙ₒ ⊴ α
+     II = ^ₒ-is-lower-bound-of-upper-bounds α 𝟙ₒ α l (λ _ → II₁)
+      where
+       II₁ : α ^ₒ (𝟙ₒ ↓ ⋆) ×ₒ α ⊴ α
+       II₁ = transport⁻¹ (_⊴ α) I (⊴-refl α)
+
+     III : α ⊴ α ^ₒ 𝟙ₒ
+     III = transport (_⊴ α ^ₒ 𝟙ₒ) I III₁
+      where
+       III₁ : α ^ₒ (𝟙ₒ ↓ ⋆) ×ₒ α ⊴ α ^ₒ 𝟙ₒ
+       III₁ = ^ₒ-is-upper-bound₂ α 𝟙ₒ
 
 \end{code}
 
