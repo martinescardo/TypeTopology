@@ -71,6 +71,13 @@ being-locally-small-is-upper-closed {_} {X} {zero} = small-implies-locally-small
 being-locally-small-is-upper-closed {_} {X} {succ n} X-loc-small x x' =
  being-locally-small-is-upper-closed (X-loc-small x x')
 
+locally-small-types-are-small : {X : 𝓤 ̇} {n : ℕ}
+                              → X is 𝓥 small
+                              → X is n locally-small
+locally-small-types-are-small {_} {_} {zero} X-small = X-small
+locally-small-types-are-small {_} {X} {succ n} X-small x x' =
+ locally-small-types-are-small (small-implies-locally-small X 𝓥 X-small x x')
+
 \end{code}
 
 Local smallness is closed under equivalence, sigma types and truncation for each
@@ -101,13 +108,6 @@ local-smallness-is-closed-under-Σ {_} {_} {_} {Y} {succ n}
  local-smallness-is-closed-under-≃ (≃-sym Σ-＝-≃)
   (local-smallness-is-closed-under-Σ (X-loc-small x x')
    (λ - → Y-loc-small x' (transport Y - y) y'))
-
-locally-small-types-are-small : {X : 𝓤 ̇} {n : ℕ}
-                              → X is 𝓥 small
-                              → X is n locally-small
-locally-small-types-are-small {_} {_} {zero} X-small = X-small
-locally-small-types-are-small {_} {X} {succ n} X-small x x' =
- locally-small-types-are-small (small-implies-locally-small X 𝓥 X-small x x')
 
 open general-truncations-exist te
 
