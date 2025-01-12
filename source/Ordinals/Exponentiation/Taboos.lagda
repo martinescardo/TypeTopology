@@ -215,7 +215,7 @@ exponentiation-weakly-monotone-in-base-implies-EM {𝓤} exp exp-zero exp-succ h
        l' = ⊴-trans 𝟙ₒ α β l (⊲-gives-⊴ α β s)
 
 ^ₒ-weakly-monotone-in-base-implies-EM :
-   ((α β γ : Ordinal 𝓤) → 𝟙ₒ {𝓤} ⊴ α → α ⊲ β → (α ^ₒ γ ⊴ β ^ₒ γ))
+   ((α β γ : Ordinal 𝓤) → 𝟙ₒ {𝓤} ⊴ α → α ⊲ β → α ^ₒ γ ⊴ β ^ₒ γ)
  → EM 𝓤
 ^ₒ-weakly-monotone-in-base-implies-EM {𝓤} =
  exponentiation-weakly-monotone-in-base-implies-EM _^ₒ_
@@ -223,7 +223,7 @@ exponentiation-weakly-monotone-in-base-implies-EM {𝓤} exp exp-zero exp-succ h
   (λ α l → ^ₒ-satisfies-succ-specification α l)
 
 ^ₒ-monotone-in-base-implies-EM :
-   ((α β γ : Ordinal 𝓤) → 𝟙ₒ{𝓤} ⊴ α → α ⊴ β → (α ^ₒ γ ⊴ β ^ₒ γ))
+   ((α β γ : Ordinal 𝓤) → 𝟙ₒ{𝓤} ⊴ α → α ⊴ β → α ^ₒ γ ⊴ β ^ₒ γ)
  → EM 𝓤
 ^ₒ-monotone-in-base-implies-EM m =
  ^ₒ-weakly-monotone-in-base-implies-EM
@@ -235,8 +235,9 @@ Classically, exponentiation is of course monotone in the base.
 
 \begin{code}
 
-EM-implies-exp-monotone-in-base : EM 𝓤
- → (α β γ : Ordinal 𝓤) → α ⊴ β → (α ^ₒ γ ⊴ β ^ₒ γ)
+EM-implies-exp-monotone-in-base
+ : EM 𝓤
+ → (α β γ : Ordinal 𝓤) → α ⊴ β → α ^ₒ γ ⊴ β ^ₒ γ
 EM-implies-exp-monotone-in-base {𝓤} em α β γ l =
  transfinite-induction-on-OO _ I γ
  where

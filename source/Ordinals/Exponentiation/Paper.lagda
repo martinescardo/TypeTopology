@@ -47,6 +47,7 @@ open import MLTT.List
 open import UF.ClassicalLogic
 open import UF.DiscreteAndSeparated
 open import UF.ImageAndSurjection pt
+open import UF.Subsingletons
 open PropositionalTruncation pt
 
 open import Ordinals.AdditionProperties ua
@@ -443,8 +444,33 @@ module _
  Theorem-30 l = (Lemma-32 l) ∙ (Lemma-31 (normalize α⁺ β l) ⁻¹)
 
  Lemma-31 = induced-map-is-denotation' α⁺ β
+
  Lemma-32 = denotations-are-related-via-normalization α⁺ β
 
  -- Remark-33: No formalizable content
+
+\end{code}
+
+Section VII. Constructive Taboos
+
+\begin{code}
+
+Proposition-34
+ : (((α β γ : Ordinal 𝓤) → 𝟙ₒ{𝓤} ⊴ α → α ⊴ β → α ^ₒ γ ⊴ β ^ₒ γ) ↔ EM 𝓤)
+ × (((α β γ : Ordinal 𝓤) → 𝟙ₒ {𝓤} ⊴ α → α ⊲ β → α ^ₒ γ ⊴ β ^ₒ γ) → EM 𝓤)
+ × (((α β : Ordinal 𝓤) → 𝟙ₒ {𝓤} ⊴ α → α ⊲ β → α ×ₒ α ⊴ β ×ₒ β) → EM 𝓤)
+Proposition-34 =   (  ^ₒ-monotone-in-base-implies-EM
+                   , (λ em α β γ _ → EM-implies-exp-monotone-in-base em α β γ))
+                 , ^ₒ-weakly-monotone-in-base-implies-EM
+                 , ×ₒ-weakly-monotone-in-both-arguments-implies-EM
+
+Lemma-35 : (P : 𝓤 ̇  ) (i : is-prop P)
+         → let Pₒ = prop-ordinal P i in
+           𝟚ₒ {𝓤} ^ₒ Pₒ ＝ 𝟙ₒ +ₒ Pₒ
+Lemma-35 = ^ₒ-𝟚ₒ-by-prop
+
+Proposition-36 : ((α β : Ordinal 𝓤) → 𝟙ₒ{𝓤} ⊲ α → β ⊴ α ^ₒ β) ↔ EM 𝓤
+Proposition-36 =   ^ₒ-as-large-as-exponent-implies-EM
+                 , EM-implies-^ₒ-as-large-as-exponent
 
 \end{code}
