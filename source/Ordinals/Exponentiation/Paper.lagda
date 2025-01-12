@@ -404,4 +404,47 @@ module _
   : exponentiationᴸ α h (β ×ₒ γ) ＝ exponentiationᴸ (exponentiationᴸ α h β) h' γ
  Corollary-26 = exponentiationᴸ-by-×ₒ α h β γ
 
+module _
+        (α : Ordinal 𝓤)
+       where
+
+ open denotations α
+
+ Definition-27 : (β : Ordinal 𝓥) → DecrList₂ α β → ⟨ α ^ₒ β ⟩
+ Definition-27 β l = ⟦ l ⟧⟨ β ⟩
+
+ -- Remark-28: By inspection of the definition of denotation.
+
+ Proposition-29 : (β : Ordinal 𝓥) → is-surjection (λ l → ⟦ l ⟧⟨ β ⟩)
+ Proposition-29 = ⟦⟧-is-surjection
+
+module _
+        (α : Ordinal 𝓤)
+        (h : has-trichotomous-least-element α)
+        (β : Ordinal 𝓤)
+       where
+
+ open denotations
+
+ private
+  α⁺ = α ⁺[ h ]
+
+  NB : α ＝ 𝟙ₒ +ₒ α⁺
+  NB = α ⁺[ h ]-part-of-decomposition
+
+ con-to-abs : ⟨ expᴸ[𝟙+ α⁺ ] β ⟩ → ⟨ (𝟙ₒ +ₒ α⁺) ^ₒ β ⟩
+ con-to-abs = induced-map α⁺ β
+
+ Lemma-31 : con-to-abs ∼ denotation' α⁺ β
+
+ Lemma-32 : denotation (𝟙ₒ +ₒ α⁺) β ∼ denotation' α⁺ β ∘ normalize α⁺ β
+
+ Theorem-30 : denotation (𝟙ₒ +ₒ α⁺) β ∼ con-to-abs ∘ (normalize α⁺ β)
+ Theorem-30 l = (Lemma-32 l) ∙ (Lemma-31 (normalize α⁺ β l) ⁻¹)
+
+ Lemma-31 = induced-map-is-denotation' α⁺ β
+ Lemma-32 = denotations-are-related-via-normalization α⁺ β
+
+ -- Remark-33: No formalizable content
+
 \end{code}

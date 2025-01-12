@@ -190,7 +190,7 @@ obtained above.
 
 \begin{code}
 
-module _
+module denotations
         (α : Ordinal 𝓤)
        where
 
@@ -280,10 +280,6 @@ function, although this requires a new denotation function which has codomain
 α' ^ₒ β.
 
 \begin{code}
-
-module _
-        (α : Ordinal 𝓤)
-       where
 
  private
   α' : Ordinal 𝓤
@@ -548,6 +544,8 @@ We are now ready to prove that the denotation functions are related via
 normalization.
 
 \begin{code}
+
+open denotations
 
 denotations-are-related-via-normalization
  : (α β : Ordinal 𝓤)
