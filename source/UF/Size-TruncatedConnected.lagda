@@ -143,12 +143,12 @@ remove it as an explicit assumption in what follows.
 open connectedness-results te
 open PropositionalTruncation pt
 
-Axiom-of-replacement' : {𝓤 𝓦 : Universe} → (𝓥 ⁺) ⊔ (𝓤 ⁺) ⊔ (𝓦 ⁺) ̇
-Axiom-of-replacement' {𝓤} {𝓦} = {A : 𝓤 ̇} {X : 𝓦 ̇} {f : A → X}
-                              → A is 𝓥 small
-                              → X is 1 locally-small
-                              → f is −1 connected-map
-                              → X is 𝓥 small
+Replacement' : {𝓤 𝓦 : Universe} → (𝓥 ⁺) ⊔ (𝓤 ⁺) ⊔ (𝓦 ⁺) ̇
+Replacement' {𝓤} {𝓦} = {A : 𝓤 ̇} {X : 𝓦 ̇} {f : A → X}
+                     → A is 𝓥 small
+                     → X is 1 locally-small
+                     → f is −1 connected-map
+                     → X is 𝓥 small
 
 \end{code}
 
@@ -163,7 +163,7 @@ Prop 2.2. of [1]
 Prop-2-2[locally-small-type-with-connected-map-from-small-type-is-small]
  : {𝓤 𝓦 : Universe} {A : 𝓤 ̇} {X : 𝓦 ̇} {f : A → X} {n : ℕ₋₂}
  → Univalence
- → Axiom-of-replacement' {𝓤} {𝓦}
+ → Replacement' {𝓤} {𝓦}
  → f is n connected-map
  → A is 𝓥 small
  → X is ι (n + 2) locally-small
@@ -255,7 +255,7 @@ Lemma 2.5. of [1]
 Lemma-2-5[connected-type-with-truncated-map-to-locally-small-type-is-small]
  : {X : 𝓤 ̇} {Y : 𝓦 ̇} {f : X → Y} {n : ℕ₋₂}
  → Univalence
- → Axiom-of-replacement' {𝓤} {𝓤}
+ → Replacement' {𝓤} {𝓤}
  → Propositional-Resizing
  → f is (n + 1) truncated-map
  → Y is ι (n + 2) locally-small
@@ -296,7 +296,7 @@ prove a few lemmas.
 small-path-space-from-locally-small-type-and-small-truncation
  : {X : 𝓤 ̇} {n : ℕ₋₂}
  → Univalence
- → Axiom-of-replacement' {𝓤} {𝓤}
+ → Replacement' {𝓤} {𝓤}
  → X is ι (n + 2) locally-small
   × ∥ X ∥[ n + 1 ] is 𝓥 small
  → (Σ y ꞉ ∥ X ∥[ n + 1 ] , Σ x ꞉ X , ∣ x ∣[ n + 1 ] ＝ y) is 𝓥 small
@@ -333,7 +333,7 @@ small-path-space-from-locally-small-type-and-small-truncation
 locally-small-type-with-small-truncation-is-small
  : {X : 𝓤 ̇} {n : ℕ₋₂}
  → Univalence
- → Axiom-of-replacement' {𝓤} {𝓤}
+ → Replacement' {𝓤} {𝓤}
  → X is ι (n + 2) locally-small
   × ∥ X ∥[ n + 1 ] is 𝓥 small
  → X is 𝓥 small
@@ -351,7 +351,7 @@ Theorem 2.6. of [1]
 Theorem-2-6[type-is-small-iff-type-is-locally-small-and-has-small-truncation]
  : {X : 𝓤 ̇} {n : ℕ₋₂}
  → Univalence
- → Axiom-of-replacement' {𝓤} {𝓤}
+ → Replacement' {𝓤} {𝓤}
  → X is 𝓥 small
  ↔ X is ι (n + 2) locally-small × ∥ X ∥[ n + 1 ] is 𝓥 small 
 Theorem-2-6[type-is-small-iff-type-is-locally-small-and-has-small-truncation]
@@ -374,7 +374,7 @@ We will record the following corolloary of Theorem 2.6. from [1]:
 \begin{code}
 
 set-truncation-of-universe-is-large : Univalence
-                                    → Axiom-of-replacement' 
+                                    → Replacement' 
                                     → is-large ∥ 𝓥 ̇ ∥[ 0 ]
 set-truncation-of-universe-is-large ua j =
  contrapositive I universes-are-large
@@ -392,7 +392,7 @@ Corollary 2.7. of [1]
 Corollary-2-7[type-with-small-truncation-and-truncated-map-to-locally-small-type-is-small]
  : {X : 𝓤 ̇} {Y : 𝓦 ̇} {f : X → Y} {n : ℕ₋₂}
  → Univalence
- → Axiom-of-replacement' {𝓤} {𝓤}
+ → Replacement' {𝓤} {𝓤}
  → Propositional-Resizing
  → f is (n + 1) truncated-map
  → Y is ι (n + 2) locally-small
