@@ -47,9 +47,10 @@ open import UF.ImageAndSurjection pt
 
 \end{code}
 
-We begin by giving some definitions from [1]. We have fixed the universe parameter
-𝓥 and use it as our point of reference for 'smallness'. Also, note that we only
-use Univalence locally as some critical results hold in its absence.
+We begin by giving some definitions from [1] and prove important properties from
+them. We have fixed the universe parameter 𝓥 and use it as our point of reference
+for 'smallness'. Also, note that in what follows we only use univalence locally
+as some critical results hold in its absence.
 
 \begin{code}
 
@@ -133,10 +134,11 @@ and a function f : A → X the image of f is small. In the paper 'the join
 construction' by Egbert Rijke, the axiom of replacement is shown to follow from
 the join construction. Currently, the join construction and the derivation of the
 axiom of replacement are not implemented in the TypeTopology library. We will
-state a form of the axiom of replacement and explicilty assume it in later proofs.
+state a more convenient but equivalent form of the axiom of replacement and
+explicilty assume it in later proofs.
 
 TODO. Implement the join construction and derive the axiom of replacement and
-remove it as an explicit assumption in what follows.
+remove it as an explicit assumption the following.
 
 \begin{code}
 
@@ -156,7 +158,7 @@ We will now begin proving some of the results from [1]. We will attempt to
 avoid any unnecessary use of propositional resizing. Theorem numbers will be
 provided for easy reference.
 
-Prop 2.2. of [1]
+Prop 2.2 of [1]
 
 \begin{code}
 
@@ -196,7 +198,7 @@ locally-small-type-with-connected-map-from-small-type-is-small =
 
 \end{code}
 
-Lemma 2.3. of [1]
+Lemma 2.3 of [1]
 
 \begin{code}
 
@@ -213,7 +215,7 @@ truncated-types-are-locally-small = Lemma-2-3[truncated-types-are-locally-small]
 
 \end{code}
 
-We note that Lemma-2-3 provides one side of a bimplication involving
+We note that Lemma 2.3 provides one side of a bimplication involving
 propositional resizing. We will now record the other direction.
 
 \begin{code}
@@ -227,7 +229,7 @@ truncated-types-are-locally-small-gives-propositional-resizing
 
 \end{code}
 
-Lemma 2.4. of [1]
+Lemma 2.4 of [1]
 
 \begin{code}
 
@@ -248,7 +250,7 @@ type-with-truncated-map-to-locally-small-type-is-locally-small =
 
 \end{code}
 
-Lemma 2.5. of [1]
+Lemma 2.5 of [1]
 
 \begin{code}
 
@@ -285,10 +287,10 @@ connected-type-with-truncated-map-to-locally-small-type-is-small =
 
 \end{code}
 
-In [1] Christensen proves Theorem 2.6. with propositional resizing and without.
-In the presence of resizing Theorem 2.6. follows from previous results, but as
+In [1] Christensen proves Theorem 2.6 with propositional resizing and without.
+In the presence of resizing Theorem 2.6 follows from previous results, but as
 we are interested in avoiding unneccesary use of propositional resizing we choose
-to record the latter proof. It is a bit more involved so we first will need to
+to record the latter proof. It is a bit more involved so we will first need to
 prove a few lemmas.
 
 \begin{code}
@@ -344,7 +346,7 @@ locally-small-type-with-small-truncation-is-small {_} {X} {n} ua j small-hyp =
 
 \end{code}
 
-Theorem 2.6. of [1]
+Theorem 2.6 of [1]
 
 \begin{code}
 
@@ -368,7 +370,7 @@ type-is-small-iff-type-is-locally-small-and-has-small-truncation =
 
 \end{code}
 
-We will record the following corolloary of Theorem 2.6. from [1]:
+We will record the following corolloary of Theorem 2.6 from [1]:
  The set truncation of a universe is large (i.e. not small).
 
 \begin{code}
@@ -385,7 +387,7 @@ set-truncation-of-universe-is-large ua j =
    
 \end{code}
 
-Corollary 2.7. of [1]
+Corollary 2.7 of [1]
 
 \begin{code}
 
@@ -409,4 +411,4 @@ type-with-small-truncation-and-truncated-map-to-locally-small-type-is-small =
 
 \end{code}
 
-TODO. Proposition 2.8. requires the concept of Homotopy Groups.
+TODO. Proposition 2.8 requires the concept of Homotopy Groups.
