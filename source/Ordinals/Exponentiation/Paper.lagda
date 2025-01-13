@@ -215,17 +215,17 @@ Remark-13 : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
           → (l , p) ＝ (l' , q)
 Remark-13 α β _ _ = to-DecrList₂-＝ α β
 
-Proposition-14₁
+Proposition-14-i
  : EM 𝓤
  → ((α : Ordinal 𝓤) (x : ⟨ α ⟩) → is-least α x
     → is-well-order (subtype-order α (λ - → x ≺⟨ α ⟩ -)))
-Proposition-14₁ = EM-implies-subtype-of-positive-elements-an-ordinal
+Proposition-14-i = EM-implies-subtype-of-positive-elements-an-ordinal
 
-Proposition-14₂
+Proposition-14-ii
  : ((α : Ordinal (𝓤 ⁺⁺)) (x : ⟨ α ⟩) → is-least α x
     → is-well-order (subtype-order α (λ - → x ≺⟨ α ⟩ -)))
  → EM 𝓤
-Proposition-14₂ = subtype-of-positive-elements-an-ordinal-implies-EM
+Proposition-14-ii = subtype-of-positive-elements-an-ordinal-implies-EM
 
 Lemma-15 : (α : Ordinal 𝓤)
          → (has-trichotomous-least-element α ↔ is-decomposable-into-one-plus α)
@@ -259,15 +259,15 @@ module fixed-assumptions-1
  Proposition-17 : (β : Ordinal 𝓥) → has-trichotomous-least-element exp[α, β ]
  Proposition-17 β = exponentiationᴸ-has-trichotomous-least-element α h β
 
- Lemma-18₁ : (β : Ordinal 𝓥) (γ : Ordinal 𝓦)
-             (f : ⟨ β ⟩ → ⟨ γ ⟩)
-           → is-order-preserving β γ f
-           → ⟨ exp[α, β ] ⟩ → ⟨ exp[α, γ ] ⟩
- Lemma-18₁ β γ = expᴸ-map α⁺ β γ
+ Lemma-18-i : (β : Ordinal 𝓥) (γ : Ordinal 𝓦)
+              (f : ⟨ β ⟩ → ⟨ γ ⟩)
+            → is-order-preserving β γ f
+            → ⟨ exp[α, β ] ⟩ → ⟨ exp[α, γ ] ⟩
+ Lemma-18-i β γ = expᴸ-map α⁺ β γ
 
- Lemma-18₂ : (β : Ordinal 𝓥) (γ : Ordinal 𝓦)
-           → β ⊴ γ → exp[α, β ] ⊴ exp[α, γ ]
- Lemma-18₂ β γ (f , (f-init-seg , f-order-pres)) =
+ Lemma-18-ii : (β : Ordinal 𝓥) (γ : Ordinal 𝓦)
+             → β ⊴ γ → exp[α, β ] ⊴ exp[α, γ ]
+ Lemma-18-ii β γ (f , (f-init-seg , f-order-pres)) =
     expᴸ-map α⁺ β γ f f-order-pres
   , expᴸ-map-is-simulation α⁺ β γ f f-order-pres f-init-seg
 
@@ -289,42 +289,42 @@ module fixed-assumptions-1
 
   τ = expᴸ-tail α⁺ β
 
-  Eq-7-addendum₁
+  Eq-7-addendum-i
    : (a : ⟨ α⁺ ⟩) (b : ⟨ β ⟩)
      (l₁ l₂ : List ⟨ α⁺ ×ₒ β ⟩)
      (δ₁ : is-decreasing-pr₂ α⁺ β ((a , b) ∷ l₁))
      (δ₂ : is-decreasing-pr₂ α⁺ β ((a , b) ∷ l₂))
    → l₁ ≺⟨List (α⁺ ×ₒ β) ⟩ l₂
    → τ a b l₁ δ₁ ≺⟨ exp[α, β ↓ b ] ⟩ τ a b l₂ δ₂
-  Eq-7-addendum₁ a b l₁ l₂ δ₁ δ₂ = expᴸ-tail-is-order-preserving α⁺ β a b δ₁ δ₂
+  Eq-7-addendum-i a b l₁ l₂ δ₁ δ₂ = expᴸ-tail-is-order-preserving α⁺ β a b δ₁ δ₂
 
-  Eq-7-addendum₂ : (a : ⟨ α⁺ ⟩) (b : ⟨ β ⟩)
-                   (l : List ⟨ α⁺ ×ₒ β ⟩)
-                   {δ : is-decreasing-pr₂ α⁺ β ((a , b) ∷ l)}
-                   {ε : is-decreasing-pr₂ α⁺ β l}
-                 → ι b (τ a b l δ) ＝ (l , ε)
-  Eq-7-addendum₂ a b = expᴸ-tail-section-of-expᴸ-segment-inclusion α⁺ β a b
+  Eq-7-addendum-ii : (a : ⟨ α⁺ ⟩) (b : ⟨ β ⟩)
+                     (l : List ⟨ α⁺ ×ₒ β ⟩)
+                     {δ : is-decreasing-pr₂ α⁺ β ((a , b) ∷ l)}
+                     {ε : is-decreasing-pr₂ α⁺ β l}
+                   → ι b (τ a b l δ) ＝ (l , ε)
+  Eq-7-addendum-ii a b = expᴸ-tail-section-of-expᴸ-segment-inclusion α⁺ β a b
 
-  Eq-7-addendum₃ : (a : ⟨ α⁺ ⟩) (b : ⟨ β ⟩)
-                   (l : List ⟨ α⁺ ×ₒ (β ↓ b) ⟩)
-                   {δ : is-decreasing-pr₂ α⁺ (β ↓ b) l}
-                   {ε : is-decreasing-pr₂ α⁺ β ((a , b) ∷ ι-list b l)}
-                 → τ a b (ι-list b l) ε ＝ (l , δ)
-  Eq-7-addendum₃ a b l {δ} =
+  Eq-7-addendum-iii : (a : ⟨ α⁺ ⟩) (b : ⟨ β ⟩)
+                      (l : List ⟨ α⁺ ×ₒ (β ↓ b) ⟩)
+                      {δ : is-decreasing-pr₂ α⁺ (β ↓ b) l}
+                      {ε : is-decreasing-pr₂ α⁺ β ((a , b) ∷ ι-list b l)}
+                    → τ a b (ι-list b l) ε ＝ (l , δ)
+  Eq-7-addendum-iii a b l {δ} =
    expᴸ-segment-inclusion-section-of-expᴸ-tail α⁺ β a b l δ
 
-  Proposition-19₁
+  Proposition-19-i
    : (a : ⟨ α⁺ ⟩) (b : ⟨ β ⟩) (l : List ⟨ α⁺ ×ₒ β ⟩)
      (δ : is-decreasing-pr₂ α⁺ β ((a , b) ∷ l))
    → exp[α, β ] ↓ ((a , b ∷ l) , δ)
      ＝ exp[α, β ↓ b ] ×ₒ (𝟙ₒ +ₒ (α⁺ ↓ a)) +ₒ (exp[α, β ↓ b ] ↓ τ a b l δ)
-  Proposition-19₁ = expᴸ-↓-cons α⁺ β
+  Proposition-19-i = expᴸ-↓-cons α⁺ β
 
-  Proposition-19₂
+  Proposition-19-ii
    : (a : ⟨ α⁺ ⟩) (b : ⟨ β ⟩) (l : ⟨ exp[α, β ↓ b ] ⟩)
    → exp[α, β ] ↓ extended-expᴸ-segment-inclusion α⁺ β b l a
      ＝ exp[α, β ↓ b ] ×ₒ (𝟙ₒ +ₒ (α⁺ ↓ a)) +ₒ (exp[α, β ↓ b ] ↓ l)
-  Proposition-19₂ = expᴸ-↓-cons' α⁺ β
+  Proposition-19-ii = expᴸ-↓-cons' α⁺ β
 
  Theorem-20 : exp-specification-zero α (λ - → exp[α, - ])
             × exp-specification-succ α (λ - → exp[α, - ])
@@ -377,20 +377,20 @@ Theorem-24 : (α β : Ordinal 𝓤) (h : has-trichotomous-least-element α)
            → α ^ₒ β ＝ exponentiationᴸ α h β
 Theorem-24 α β h = (exponentiation-constructions-agree α β h) ⁻¹
 
-Corollary-25₁ : (α β : Ordinal 𝓤)
-              → has-trichotomous-least-element α
-              → is-discrete ⟨ α ⟩
-              → is-discrete ⟨ β ⟩
-              → is-discrete ⟨ α ^ₒ β ⟩
-Corollary-25₁ =
+Corollary-25-i : (α β : Ordinal 𝓤)
+               → has-trichotomous-least-element α
+               → is-discrete ⟨ α ⟩
+               → is-discrete ⟨ β ⟩
+               → is-discrete ⟨ α ^ₒ β ⟩
+Corollary-25-i =
  ^ₒ-preserves-discreteness-for-base-with-trichotomous-least-element
 
-Corollary-25₂ : (α β : Ordinal 𝓤)
-              → has-least α
-              → is-trichotomous α
-              → is-trichotomous β
-              → is-trichotomous (α ^ₒ β)
-Corollary-25₂ = ^ₒ-preserves-trichotomy
+Corollary-25-ii : (α β : Ordinal 𝓤)
+                → has-least α
+                → is-trichotomous α
+                → is-trichotomous β
+                → is-trichotomous (α ^ₒ β)
+Corollary-25-ii = ^ₒ-preserves-trichotomy
 
 module  fixed-assumptions-3
         (α β γ : Ordinal 𝓤)
