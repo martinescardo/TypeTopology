@@ -247,14 +247,13 @@ module fixed-assumptions-1
         (h : has-trichotomous-least-element α)
        where
 
- private
-  α⁺ = α ⁺[ h ]
+ α⁺ = α ⁺[ h ]
 
-  NB[α⁺-eq] : α ＝ 𝟙ₒ +ₒ α⁺
-  NB[α⁺-eq] = α ⁺[ h ]-part-of-decomposition
+ NB[α⁺-eq] : α ＝ 𝟙ₒ +ₒ α⁺
+ NB[α⁺-eq] = α ⁺[ h ]-part-of-decomposition
 
-  exp[α,_] : Ordinal 𝓦 → Ordinal (𝓤 ⊔ 𝓦)
-  exp[α, γ ] = exponentiationᴸ α h γ
+ exp[α,_] : Ordinal 𝓦 → Ordinal (𝓤 ⊔ 𝓦)
+ exp[α, γ ] = exponentiationᴸ α h γ
 
  Proposition-17 : (β : Ordinal 𝓥) → has-trichotomous-least-element exp[α, β ]
  Proposition-17 β = exponentiationᴸ-has-trichotomous-least-element α h β
@@ -271,60 +270,64 @@ module fixed-assumptions-1
     expᴸ-map α⁺ β γ f f-order-pres
   , expᴸ-map-is-simulation α⁺ β γ f f-order-pres f-init-seg
 
- module  fixed-assumptions-2
-         (β : Ordinal 𝓥)
-        where
+module fixed-assumptions-2
+        (α : Ordinal 𝓤)
+        (h : has-trichotomous-least-element α)
+        (β : Ordinal 𝓥)
+       where
 
-  Eq-6 : (b : ⟨ β ⟩) → exp[α, β ↓ b ] ⊴ exp[α, β ]
-  Eq-6 = expᴸ-segment-inclusion-⊴ α⁺ β
+ open fixed-assumptions-1 α h
 
-  ι = expᴸ-segment-inclusion α⁺ β
-  ι-list = expᴸ-segment-inclusion-list α⁺ β
+ Eq-6 : (b : ⟨ β ⟩) → exp[α, β ↓ b ] ⊴ exp[α, β ]
+ Eq-6 = expᴸ-segment-inclusion-⊴ α⁺ β
 
-  Eq-7 : (a : ⟨ α ⁺[ h ] ⟩) (b : ⟨ β ⟩)
-       → (l : ⟨ exp[α, β ] ⟩)
-       → is-decreasing-pr₂ α⁺ β ((a , b) ∷ pr₁ l)
-       → ⟨ exponentiationᴸ α h (β ↓ b) ⟩
-  Eq-7 a b l δ = expᴸ-tail α⁺ β a b (pr₁ l) δ
+ ι = expᴸ-segment-inclusion α⁺ β
+ ι-list = expᴸ-segment-inclusion-list α⁺ β
 
-  τ = expᴸ-tail α⁺ β
+ Eq-7 : (a : ⟨ α ⁺[ h ] ⟩) (b : ⟨ β ⟩)
+      → (l : ⟨ exp[α, β ] ⟩)
+      → is-decreasing-pr₂ α⁺ β ((a , b) ∷ pr₁ l)
+      → ⟨ exponentiationᴸ α h (β ↓ b) ⟩
+ Eq-7 a b l δ = expᴸ-tail α⁺ β a b (pr₁ l) δ
 
-  Eq-7-addendum-i
-   : (a : ⟨ α⁺ ⟩) (b : ⟨ β ⟩)
-     (l₁ l₂ : List ⟨ α⁺ ×ₒ β ⟩)
-     (δ₁ : is-decreasing-pr₂ α⁺ β ((a , b) ∷ l₁))
-     (δ₂ : is-decreasing-pr₂ α⁺ β ((a , b) ∷ l₂))
-   → l₁ ≺⟨List (α⁺ ×ₒ β) ⟩ l₂
-   → τ a b l₁ δ₁ ≺⟨ exp[α, β ↓ b ] ⟩ τ a b l₂ δ₂
-  Eq-7-addendum-i a b l₁ l₂ δ₁ δ₂ = expᴸ-tail-is-order-preserving α⁺ β a b δ₁ δ₂
+ τ = expᴸ-tail α⁺ β
 
-  Eq-7-addendum-ii : (a : ⟨ α⁺ ⟩) (b : ⟨ β ⟩)
-                     (l : List ⟨ α⁺ ×ₒ β ⟩)
-                     {δ : is-decreasing-pr₂ α⁺ β ((a , b) ∷ l)}
-                     {ε : is-decreasing-pr₂ α⁺ β l}
-                   → ι b (τ a b l δ) ＝ (l , ε)
-  Eq-7-addendum-ii a b = expᴸ-tail-section-of-expᴸ-segment-inclusion α⁺ β a b
+ Eq-7-addendum-i
+  : (a : ⟨ α⁺ ⟩) (b : ⟨ β ⟩)
+    (l₁ l₂ : List ⟨ α⁺ ×ₒ β ⟩)
+    (δ₁ : is-decreasing-pr₂ α⁺ β ((a , b) ∷ l₁))
+    (δ₂ : is-decreasing-pr₂ α⁺ β ((a , b) ∷ l₂))
+  → l₁ ≺⟨List (α⁺ ×ₒ β) ⟩ l₂
+  → τ a b l₁ δ₁ ≺⟨ exp[α, β ↓ b ] ⟩ τ a b l₂ δ₂
+ Eq-7-addendum-i a b l₁ l₂ δ₁ δ₂ = expᴸ-tail-is-order-preserving α⁺ β a b δ₁ δ₂
 
-  Eq-7-addendum-iii : (a : ⟨ α⁺ ⟩) (b : ⟨ β ⟩)
-                      (l : List ⟨ α⁺ ×ₒ (β ↓ b) ⟩)
-                      {δ : is-decreasing-pr₂ α⁺ (β ↓ b) l}
-                      {ε : is-decreasing-pr₂ α⁺ β ((a , b) ∷ ι-list b l)}
-                    → τ a b (ι-list b l) ε ＝ (l , δ)
-  Eq-7-addendum-iii a b l {δ} =
-   expᴸ-segment-inclusion-section-of-expᴸ-tail α⁺ β a b l δ
+ Eq-7-addendum-ii : (a : ⟨ α⁺ ⟩) (b : ⟨ β ⟩)
+                    (l : List ⟨ α⁺ ×ₒ β ⟩)
+                    {δ : is-decreasing-pr₂ α⁺ β ((a , b) ∷ l)}
+                    {ε : is-decreasing-pr₂ α⁺ β l}
+                  → ι b (τ a b l δ) ＝ (l , ε)
+ Eq-7-addendum-ii a b = expᴸ-tail-section-of-expᴸ-segment-inclusion α⁺ β a b
 
-  Proposition-19-i
-   : (a : ⟨ α⁺ ⟩) (b : ⟨ β ⟩) (l : List ⟨ α⁺ ×ₒ β ⟩)
-     (δ : is-decreasing-pr₂ α⁺ β ((a , b) ∷ l))
-   → exp[α, β ] ↓ ((a , b ∷ l) , δ)
-     ＝ exp[α, β ↓ b ] ×ₒ (𝟙ₒ +ₒ (α⁺ ↓ a)) +ₒ (exp[α, β ↓ b ] ↓ τ a b l δ)
-  Proposition-19-i = expᴸ-↓-cons α⁺ β
+ Eq-7-addendum-iii : (a : ⟨ α⁺ ⟩) (b : ⟨ β ⟩)
+                     (l : List ⟨ α⁺ ×ₒ (β ↓ b) ⟩)
+                     {δ : is-decreasing-pr₂ α⁺ (β ↓ b) l}
+                     {ε : is-decreasing-pr₂ α⁺ β ((a , b) ∷ ι-list b l)}
+                   → τ a b (ι-list b l) ε ＝ (l , δ)
+ Eq-7-addendum-iii a b l {δ} =
+  expᴸ-segment-inclusion-section-of-expᴸ-tail α⁺ β a b l δ
 
-  Proposition-19-ii
-   : (a : ⟨ α⁺ ⟩) (b : ⟨ β ⟩) (l : ⟨ exp[α, β ↓ b ] ⟩)
-   → exp[α, β ] ↓ extended-expᴸ-segment-inclusion α⁺ β b l a
-     ＝ exp[α, β ↓ b ] ×ₒ (𝟙ₒ +ₒ (α⁺ ↓ a)) +ₒ (exp[α, β ↓ b ] ↓ l)
-  Proposition-19-ii = expᴸ-↓-cons' α⁺ β
+ Proposition-19-i
+  : (a : ⟨ α⁺ ⟩) (b : ⟨ β ⟩) (l : List ⟨ α⁺ ×ₒ β ⟩)
+    (δ : is-decreasing-pr₂ α⁺ β ((a , b) ∷ l))
+  → exp[α, β ] ↓ ((a , b ∷ l) , δ)
+    ＝ exp[α, β ↓ b ] ×ₒ (𝟙ₒ +ₒ (α⁺ ↓ a)) +ₒ (exp[α, β ↓ b ] ↓ τ a b l δ)
+ Proposition-19-i = expᴸ-↓-cons α⁺ β
+
+ Proposition-19-ii
+  : (a : ⟨ α⁺ ⟩) (b : ⟨ β ⟩) (l : ⟨ exp[α, β ↓ b ] ⟩)
+  → exp[α, β ] ↓ extended-expᴸ-segment-inclusion α⁺ β b l a
+    ＝ exp[α, β ↓ b ] ×ₒ (𝟙ₒ +ₒ (α⁺ ↓ a)) +ₒ (exp[α, β ↓ b ] ↓ l)
+ Proposition-19-ii = expᴸ-↓-cons' α⁺ β
 
  Theorem-20 : exp-specification-zero α (λ - → exp[α, - ])
             × exp-specification-succ α (λ - → exp[α, - ])
