@@ -73,6 +73,15 @@ open import Ordinals.Exponentiation.TrichotomousLeastElement ua
 
 \end{code}
 
+To match the terminology of the paper, we put
+
+\begin{code}
+
+has-decidable-equality = is-discrete
+is-ordinal-equiv       = is-order-equiv
+
+\end{code}
+
 Section III. Ordinals in Homotopy Type Theory
 
 \begin{code}
@@ -80,7 +89,7 @@ Section III. Ordinals in Homotopy Type Theory
 Lemma-1 : (α β : Ordinal 𝓤) (f : ⟨ α ⟩ → ⟨ β ⟩)
         → (is-simulation α β f → (a : ⟨ α ⟩) → α ↓ a ＝ β ↓ f a)
         × (is-simulation α β f → left-cancellable f × is-order-reflecting α β f)
-        × (is-simulation α β f × is-surjection f ↔ is-order-equiv α β f)
+        × (is-simulation α β f × is-surjection f ↔ is-ordinal-equiv α β f)
 Lemma-1 α β f = [1] , [2] , [3]
  where
   [1] : is-simulation α β f → (a : ⟨ α ⟩) → α ↓ a ＝ β ↓ f a
@@ -90,7 +99,7 @@ Lemma-1 α β f = [1] , [2] , [3]
   [2] f-sim =   simulations-are-lc α β f f-sim
               , simulations-are-order-reflecting α β f f-sim
 
-  [3] : is-simulation α β f × is-surjection f ↔ is-order-equiv α β f
+  [3] : is-simulation α β f × is-surjection f ↔ is-ordinal-equiv α β f
   [3] =   (λ (f-sim , f-surj) →
             order-preserving-reflecting-equivs-are-order-equivs α β f
              (surjective-embeddings-are-equivs f
@@ -354,8 +363,6 @@ module fixed-assumptions-3
                 → exp[α, β +ₒ γ ] ＝ exp[α, β ] ×ₒ exp[α, γ ]
  Proposition-21 = expᴸ-by-+ₒ α⁺
 
- has-decidable-equality = is-discrete
-
  Proposition-22 : (β : Ordinal 𝓥)
                 → has-decidable-equality ⟨ α ⟩
                 → has-decidable-equality ⟨ β ⟩
@@ -390,9 +397,9 @@ Theorem-24 α β h = (exponentiation-constructions-agree α β h) ⁻¹
 
 Corollary-25-i : (α β : Ordinal 𝓤)
                → has-trichotomous-least-element α
-               → is-discrete ⟨ α ⟩
-               → is-discrete ⟨ β ⟩
-               → is-discrete ⟨ α ^ₒ β ⟩
+               → has-decidable-equality ⟨ α ⟩
+               → has-decidable-equality ⟨ β ⟩
+               → has-decidable-equality ⟨ α ^ₒ β ⟩
 Corollary-25-i =
  ^ₒ-preserves-discreteness-for-base-with-trichotomous-least-element
 
