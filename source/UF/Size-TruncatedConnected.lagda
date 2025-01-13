@@ -138,7 +138,7 @@ state a more convenient but equivalent form of the axiom of replacement and
 explicilty assume it in later proofs.
 
 TODO. Implement the join construction and derive the axiom of replacement and
-remove it as an explicit assumption the following.
+remove it as an explicit assumption.
 
 \begin{code}
 
