@@ -242,7 +242,7 @@ Definition-16 : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
               → Ordinal (𝓤 ⊔ 𝓥)
 Definition-16 α β h = exponentiationᴸ α h β
 
-module _
+module fixed-assumptions-1
         (α : Ordinal 𝓤)
         (h : has-trichotomous-least-element α)
        where
@@ -271,7 +271,7 @@ module _
     expᴸ-map α⁺ β γ f f-order-pres
   , expᴸ-map-is-simulation α⁺ β γ f f-order-pres f-init-seg
 
- module _
+ module  fixed-assumptions-2
          (β : Ordinal 𝓥)
         where
 
@@ -392,7 +392,7 @@ Corollary-25₂ : (α β : Ordinal 𝓤)
               → is-trichotomous (α ^ₒ β)
 Corollary-25₂ = ^ₒ-preserves-trichotomy
 
-module _
+module  fixed-assumptions-3
         (α β γ : Ordinal 𝓤)
         (h : has-trichotomous-least-element α)
        where
@@ -405,7 +405,7 @@ module _
   : exponentiationᴸ α h (β ×ₒ γ) ＝ exponentiationᴸ (exponentiationᴸ α h β) h' γ
  Corollary-26 = exponentiationᴸ-by-×ₒ α h β γ
 
-module _
+module fixed-assumptions-4
         (α : Ordinal 𝓤)
        where
 
@@ -419,7 +419,7 @@ module _
  Proposition-29 : (β : Ordinal 𝓥) → is-surjection (λ l → ⟦ l ⟧⟨ β ⟩)
  Proposition-29 = ⟦⟧-is-surjection
 
-module _
+module fixed-assumptions-5
         (α : Ordinal 𝓤)
         (h : has-trichotomous-least-element α)
         (β : Ordinal 𝓤)
