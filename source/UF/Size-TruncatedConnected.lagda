@@ -134,14 +134,7 @@ X and a function f : A → X the image of f is small. In the paper 'the join
 construction' by Egbert Rijke, the axiom of replacement is shown to follow from
 the join construction. Currently, the join construction and the derivation of the
 axiom of replacement are not implemented in the TypeTopology library. We will
-state a more convenient but equivalent form of replacement, called
-Replacement': under the assumption that f : A → X is surjective (i.e. −1 connected)
-the image of f is equivalent to X. We will explicitly assume Replacement' when
-necessary. 
-
-TODO. Implement the join construction and derive Replacement (with small image as
-its conclusion) and Replacement' (with -1 connected assumption and small codomain
-as its conclusion). Then remove Replacement' as an explicit assumption below.
+state a more convenient but equivalent form of replacement.
 
 \begin{code}
 
@@ -156,6 +149,14 @@ Replacement' {𝓤} {𝓦} = {A : 𝓤 ̇} {X : 𝓦 ̇} {f : A → X}
                      → X is 𝓥 small
 
 \end{code}
+
+Notice that under the assumption that f : A → X is −1 connected (i.e. surjective)
+the image of f is equivalent to X. We will explicitly assume Replacement' when
+necessary. 
+
+TODO. Implement the join construction and derive Replacement (with small image as
+its conclusion) and Replacement' (with -1 connected assumption and small codomain
+as its conclusion). Then remove Replacement' as an explicit assumption below.
 
 We will now begin proving some of the results from [1]. We will attempt to
 avoid any unnecessary use of propositional resizing. Theorem numbers will be
