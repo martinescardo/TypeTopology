@@ -141,8 +141,8 @@ Lemma-2 : (α : Ordinal 𝓤)
         × ({I : 𝓤 ̇  } (F : I → Ordinal 𝓤) → α ×ₒ sup F ＝ sup (λ i → α ×ₒ F i))
 Lemma-2 α = ×ₒ-right-monotone-⊴ α , ×ₒ-preserves-suprema pt sr α
 
-Eq-4 : (Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) → 𝓤 ⁺ ̇
-Eq-4 = exp-full-specification
+Eq-double-dagger : (Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) → 𝓤 ⁺ ̇
+Eq-double-dagger = exp-full-specification
 
 Lemma-3 : (α : Ordinal 𝓤) (exp-α : Ordinal 𝓤 → Ordinal 𝓤)
         → exp-specification-zero α exp-α
