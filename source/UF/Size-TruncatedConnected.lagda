@@ -293,8 +293,8 @@ connected-type-with-truncated-map-to-locally-small-type-is-small =
 
 In [1] Christensen proves Theorem 2.6 with propositional resizing and without.
 In the presence of resizing Theorem 2.6 follows from previous results, but as
-we are interested in avoiding unnecesary use of propositional resizing, we choose
-to record the latter proof. It is a bit more involved so we will first need to
+we are interested in avoiding unnecessary use of propositional resizing, we choose
+to record the latter proof. It is a bit more involved, so we will first need to
 prove a few lemmas.
 
 \begin{code}
