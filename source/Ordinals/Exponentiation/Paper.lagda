@@ -329,6 +329,14 @@ module fixed-assumptions-2
     ＝ exp[α, β ↓ b ] ×ₒ (𝟙ₒ +ₒ (α⁺ ↓ a)) +ₒ (exp[α, β ↓ b ] ↓ l)
  Proposition-19-ii = expᴸ-↓-cons' α⁺ β
 
+module fixed-assumptions-3
+        (α : Ordinal 𝓤)
+        (h : has-trichotomous-least-element α)
+        (β : Ordinal 𝓥)
+       where
+
+ open fixed-assumptions-1 α h
+
  Theorem-20 : exp-specification-zero α (λ - → exp[α, - ])
             × exp-specification-succ α (λ - → exp[α, - ])
             × exp-specification-sup α (λ - → exp[α, - ])
@@ -395,7 +403,7 @@ Corollary-25-ii : (α β : Ordinal 𝓤)
                 → is-trichotomous (α ^ₒ β)
 Corollary-25-ii = ^ₒ-preserves-trichotomy
 
-module fixed-assumptions-3
+module fixed-assumptions-4
         (α β γ : Ordinal 𝓤)
         (h : has-trichotomous-least-element α)
        where
@@ -408,7 +416,7 @@ module fixed-assumptions-3
   : exponentiationᴸ α h (β ×ₒ γ) ＝ exponentiationᴸ (exponentiationᴸ α h β) h' γ
  Corollary-26 = exponentiationᴸ-by-×ₒ α h β γ
 
-module fixed-assumptions-4
+module fixed-assumptions-5
         (α : Ordinal 𝓤)
        where
 
@@ -422,7 +430,7 @@ module fixed-assumptions-4
  Proposition-29 : (β : Ordinal 𝓥) → is-surjection (λ l → ⟦ l ⟧⟨ β ⟩)
  Proposition-29 = ⟦⟧-is-surjection
 
-module fixed-assumptions-5
+module fixed-assumptions-6
         (α : Ordinal 𝓤)
         (h : has-trichotomous-least-element α)
         (β : Ordinal 𝓤)
