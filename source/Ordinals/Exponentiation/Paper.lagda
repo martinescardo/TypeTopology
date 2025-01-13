@@ -278,42 +278,42 @@ module fixed-assumptions-2
 
  open fixed-assumptions-1 α h
 
- Eq-6 : (b : ⟨ β ⟩) → exp[α, β ↓ b ] ⊴ exp[α, β ]
- Eq-6 = expᴸ-segment-inclusion-⊴ α⁺ β
+ Eq-5 : (b : ⟨ β ⟩) → exp[α, β ↓ b ] ⊴ exp[α, β ]
+ Eq-5 = expᴸ-segment-inclusion-⊴ α⁺ β
 
  ι = expᴸ-segment-inclusion α⁺ β
  ι-list = expᴸ-segment-inclusion-list α⁺ β
 
- Eq-7 : (a : ⟨ α ⁺[ h ] ⟩) (b : ⟨ β ⟩)
+ Eq-6 : (a : ⟨ α ⁺[ h ] ⟩) (b : ⟨ β ⟩)
       → (l : ⟨ exp[α, β ] ⟩)
       → is-decreasing-pr₂ α⁺ β ((a , b) ∷ pr₁ l)
       → ⟨ exponentiationᴸ α h (β ↓ b) ⟩
- Eq-7 a b l δ = expᴸ-tail α⁺ β a b (pr₁ l) δ
+ Eq-6 a b l δ = expᴸ-tail α⁺ β a b (pr₁ l) δ
 
  τ = expᴸ-tail α⁺ β
 
- Eq-7-addendum-i
+ Eq-6-addendum-i
   : (a : ⟨ α⁺ ⟩) (b : ⟨ β ⟩)
     (l₁ l₂ : List ⟨ α⁺ ×ₒ β ⟩)
     (δ₁ : is-decreasing-pr₂ α⁺ β ((a , b) ∷ l₁))
     (δ₂ : is-decreasing-pr₂ α⁺ β ((a , b) ∷ l₂))
   → l₁ ≺⟨List (α⁺ ×ₒ β) ⟩ l₂
   → τ a b l₁ δ₁ ≺⟨ exp[α, β ↓ b ] ⟩ τ a b l₂ δ₂
- Eq-7-addendum-i a b l₁ l₂ δ₁ δ₂ = expᴸ-tail-is-order-preserving α⁺ β a b δ₁ δ₂
+ Eq-6-addendum-i a b l₁ l₂ δ₁ δ₂ = expᴸ-tail-is-order-preserving α⁺ β a b δ₁ δ₂
 
- Eq-7-addendum-ii : (a : ⟨ α⁺ ⟩) (b : ⟨ β ⟩)
+ Eq-6-addendum-ii : (a : ⟨ α⁺ ⟩) (b : ⟨ β ⟩)
                     (l : List ⟨ α⁺ ×ₒ β ⟩)
                     {δ : is-decreasing-pr₂ α⁺ β ((a , b) ∷ l)}
                     {ε : is-decreasing-pr₂ α⁺ β l}
                   → ι b (τ a b l δ) ＝ (l , ε)
- Eq-7-addendum-ii a b = expᴸ-tail-section-of-expᴸ-segment-inclusion α⁺ β a b
+ Eq-6-addendum-ii a b = expᴸ-tail-section-of-expᴸ-segment-inclusion α⁺ β a b
 
- Eq-7-addendum-iii : (a : ⟨ α⁺ ⟩) (b : ⟨ β ⟩)
+ Eq-6-addendum-iii : (a : ⟨ α⁺ ⟩) (b : ⟨ β ⟩)
                      (l : List ⟨ α⁺ ×ₒ (β ↓ b) ⟩)
                      {δ : is-decreasing-pr₂ α⁺ (β ↓ b) l}
                      {ε : is-decreasing-pr₂ α⁺ β ((a , b) ∷ ι-list b l)}
                    → τ a b (ι-list b l) ε ＝ (l , δ)
- Eq-7-addendum-iii a b l {δ} =
+ Eq-6-addendum-iii a b l {δ} =
   expᴸ-segment-inclusion-section-of-expᴸ-tail α⁺ β a b l δ
 
  Proposition-19-i
