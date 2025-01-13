@@ -395,7 +395,7 @@ Corollary-25-ii : (α β : Ordinal 𝓤)
                 → is-trichotomous (α ^ₒ β)
 Corollary-25-ii = ^ₒ-preserves-trichotomy
 
-module  fixed-assumptions-3
+module fixed-assumptions-3
         (α β γ : Ordinal 𝓤)
         (h : has-trichotomous-least-element α)
        where
