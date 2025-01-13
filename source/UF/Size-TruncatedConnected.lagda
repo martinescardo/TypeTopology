@@ -47,7 +47,8 @@ open import UF.ImageAndSurjection pt
 
 \end{code}
 
-We begin by giving some definitions from [1] and proving important properties about them. We have fixed the universe parameter 𝓥 and use it as our point of reference
+We begin by giving some definitions from [1] and proving important properties about
+them. We have fixed the universe parameter 𝓥 and use it as our point of reference
 for 'smallness'. Also, note that in what follows we only use univalence locally
 as some critical results hold in its absence.
 
@@ -128,13 +129,14 @@ local-smallness-is-closed-under-truncation {_} {X} {succ n} ua X-loc-small =
 \end{code}
 
 Many of the results in [1] follow from a fact that some call the type theoretic
-axiom of replacement. Which states that given a small type A, a locally small type
+axiom of replacement. It states that given a small type A, a locally small type
 X and a function f : A → X the image of f is small. In the paper 'the join
 construction' by Egbert Rijke, the axiom of replacement is shown to follow from
 the join construction. Currently, the join construction and the derivation of the
 axiom of replacement are not implemented in the TypeTopology library. We will
 state a more convenient but equivalent form of replacement, called
-Replacement': under the assumption that f : A → X is surjective (i.e. −1 connected) the image of f is equivalent to X. We will explicitly assume Replacement' when
+Replacement': under the assumption that f : A → X is surjective (i.e. −1 connected)
+the image of f is equivalent to X. We will explicitly assume Replacement' when
 necessary. 
 
 TODO. Implement the join construction and derive Replacement (with small image as
