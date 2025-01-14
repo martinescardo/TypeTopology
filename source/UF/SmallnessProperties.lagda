@@ -200,3 +200,28 @@ module _ (pt : propositional-truncations-exist) where
                          (λ _ → ∥∥-is-prop _ _))
 
 \end{code}
+
+Added by Martin Escardo and Tom de Jong 14th November 2024.
+
+\begin{code}
+
+open import UF.UA-FunExt
+open import UF.Univalence
+
+Id-is-small : is-univalent 𝓤
+            → funext 𝓤 (𝓤 ⁺)
+            → (X : 𝓤 ̇ )
+            → (Id {𝓤} {X}) is 𝓤 small-map
+Id-is-small {𝓤} ua fe⁺ X A =
+ (Σ x ꞉ X , (Π y ꞉ X , (x ＝ y) ≃ A y)) ,
+ ((Σ x ꞉ X , (Π y ꞉ X , (x ＝ y) ≃ A y))  ≃⟨ I ⟩
+  (Σ x ꞉ X , (Π y ꞉ X , (x ＝ y) ＝ A y)) ≃⟨ II ⟩
+  fiber Id A                              ■)
+   where
+    fe : funext 𝓤 𝓤
+    fe = univalence-gives-funext ua
+
+    I  = Σ-cong (λ x → Π-cong fe fe⁺ (λ y → ≃-sym (univalence-≃ ua _ _)))
+    II = Σ-cong (λ x → ≃-sym (≃-funext fe⁺ _ _))
+
+\end{code}

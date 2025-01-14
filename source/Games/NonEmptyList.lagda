@@ -11,79 +11,76 @@ open import MLTT.Spartan hiding (J)
 module Games.NonEmptyList where
 
 open import Games.Monad
+open import MLTT.List hiding (map)
+open import Notation.CanonicalMap
+open import UF.Subsingletons
 
-data neList (X : Type) : Type where
- [_]  : X → neList X
- _::_ : X → neList X → neList X
+being-non-empty-is-prop : {X : 𝓤 ̇ } (xs : List X) → is-prop (is-non-empty xs)
+being-non-empty-is-prop []       = 𝟘-is-prop
+being-non-empty-is-prop (x ∷ xs) = 𝟙-is-prop
 
-infixr 3 _::_
-infixr 2 _++_
+List⁺ : Type → Type
+List⁺ X = Σ xs ꞉ List X , is-non-empty xs
 
-_++_ : {X : Type} → neList X → neList X → neList X
-[ x ] ++ ys     = x :: ys
-(x :: xs) ++ ys = x :: (xs ++ ys)
+module _ {X : Type} where
 
-assoc-++ : {X : Type} (xs ys zs : neList X) → (xs ++ ys) ++ zs ＝ xs ++ (ys ++ zs)
-assoc-++ [ x ]     ys zs = refl
-assoc-++ (x :: xs) ys zs = ap (x ::_) (assoc-++ xs ys zs)
+ head⁺ : List⁺ X → X
+ head⁺ ((x ∷ xs) , cons-is-non-empty) = x
+
+ tail⁺ : List⁺ X → List X
+ tail⁺ ((x ∷ xs) , cons-is-non-empty) = xs
+
+ cons⁺ : X → List X → List⁺ X
+ cons⁺ x xs = (x ∷ xs) , cons-is-non-empty
+
+ underlying-list⁺ : List⁺ X → List X
+ underlying-list⁺ = pr₁
+
+ underlying-list⁺-is-non-empty : (xs : List⁺ X)
+                               → is-non-empty (underlying-list⁺ xs)
+ underlying-list⁺-is-non-empty = pr₂
+
+ instance
+  canonical-map-List⁺-to-List : Canonical-Map (List⁺ X) (List X)
+  ι {{canonical-map-List⁺-to-List}} = underlying-list⁺
+
+ to-List⁺-＝ : {xs ys : List⁺ X} → ι xs ＝ ι ys → xs ＝ ys
+ to-List⁺-＝ = to-subtype-＝ being-non-empty-is-prop
+
+List-ext-lemma⁻ : {X Y : Type} (f : X → List⁺ Y) (xs : List X)
+                → is-non-empty xs
+                → is-non-empty (List-ext (ι ∘ f) xs)
+List-ext-lemma⁻ f (x ∷ xs) cons-is-non-empty =
+ is-non-empty-++ (ι (f x)) _ (underlying-list⁺-is-non-empty (f x))
 
 𝕃⁺ : Monad
 𝕃⁺ = record {
- functor = neList ;
- η       = [_] ;
- ext     = ext' ;
- ext-η   = ext'-η ;
- unit    = λ f x → refl ;
- assoc   = assoc'
+ functor = List⁺ ;
+ η       = λ x → (x ∷ []) , cons-is-non-empty ;
+ ext     = λ {X} {Y} (f : X → List⁺ Y) (xs : List⁺ X)
+            → List-ext (ι ∘ f) (ι xs) ,
+              List-ext-lemma⁻ f (ι xs) (underlying-list⁺-is-non-empty xs) ;
+ ext-η   = λ {X} (xs : List⁺ X)
+            → to-List⁺-＝ (concat-singletons (ι xs)) ;
+ unit    = λ {X} {Y} (f : X → List⁺ Y) (x : X)
+            → to-List⁺-＝ (List-ext-unit (ι ∘ f) x) ;
+ assoc   = λ {X} {Y} {Z} (g : Y → List⁺ Z) (f : X → List⁺ Y) (xs : List⁺ X)
+            → to-List⁺-＝ (List-ext-assoc (ι ∘ g) (ι ∘ f) (ι xs))
  }
- where
-  ext' : {X Y : Type} → (X → neList Y) → neList X → neList Y
-  ext' f [ x ]     = f x
-  ext' f (x :: xs) = f x ++ ext' f xs
 
-  ext'-++ : {Y Z : Type}
-            (g : Y → neList Z)
-            (xs ys : neList Y)
-          → ext' g xs ++ ext' g ys ＝ ext' g (xs ++ ys)
-  ext'-++ g [ x ]     ys = refl
-  ext'-++ g (x :: xs) ys =
-   ext' g (x :: xs) ++ ext' g ys   ＝⟨ refl ⟩
-   (g x ++ ext' g xs) ++ ext' g ys ＝⟨ assoc-++ (g x) (ext' g xs) (ext' g ys) ⟩
-   g x ++ (ext' g xs ++ ext' g ys) ＝⟨ ap (g x ++_) (ext'-++ g xs ys) ⟩
-   g x ++ ext' g (xs ++ ys)        ＝⟨ refl ⟩
-   ext' g (x :: xs ++ ys)          ∎
-
-  ext'-η : {X : Type} → ext' [_] ∼ 𝑖𝑑 (neList X)
-  ext'-η [ x ]     = refl
-  ext'-η (x :: xs) = ap (x ::_) (ext'-η xs)
-
-  assoc' : {X Y Z : Type}
-           (g : Y → neList Z) (f : X → neList Y)
-           (xs : neList X)
-         → ext' (λ - → ext' g (f -)) xs ＝ ext' g (ext' f xs)
-  assoc' g f [ x ]     = refl
-  assoc' g f (x :: xs) =
-   ext' (λ - → ext' g (f -)) (x :: xs)           ＝⟨ refl ⟩
-   ext' g (f x) ++ ext' (λ - → ext' g (f -)) xs  ＝⟨ ap (ext' g (f x) ++_) (assoc' g f xs) ⟩
-   ext' g (f x) ++ ext' g (ext' f xs)            ＝⟨ ext'-++ g (f x) (ext' f xs) ⟩
-   ext' g (f x ++ ext' f xs)                     ＝⟨ refl ⟩
-   ext' g (ext' f (x :: xs))                     ∎
-
-module neList-definitions where
+module List⁺-definitions where
 
  _⊗ᴸ⁺_ : {X : Type} {Y : X → Type}
-      → neList X
-      → ((x : X) → neList (Y x))
-      → neList (Σ x ꞉ X , Y x)
+      → List⁺ X
+      → ((x : X) → List⁺ (Y x))
+      → List⁺ (Σ x ꞉ X , Y x)
  _⊗ᴸ⁺_ = _⊗_ 𝕃⁺
 
- ηᴸ⁺ : {X : Type} → X → neList X
+ ηᴸ⁺ : {X : Type} → X → List⁺ X
  ηᴸ⁺ = η 𝕃⁺
 
- extᴸ⁺ : {X Y : Type} → (X → neList Y) → neList X → neList Y
+ extᴸ⁺ : {X Y : Type} → (X → List⁺ Y) → List⁺ X → List⁺ Y
  extᴸ⁺ = ext 𝕃⁺
 
- mapᴸ⁺ : {X Y : Type} → (X → Y) → neList X → neList Y
+ mapᴸ⁺ : {X Y : Type} → (X → Y) → List⁺ X → List⁺ Y
  mapᴸ⁺ = map 𝕃⁺
-
-\end{code}

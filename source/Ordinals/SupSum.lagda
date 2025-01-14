@@ -138,7 +138,7 @@ module _ {𝓤 : Universe}
  sup-bounded-by-sum-gives-WEM
   : ({𝓤 : Universe} (τ : Ordinalᵀ 𝓤) (υ : ⟨ τ ⟩ → Ordinalᵀ 𝓤)
          → sup (λ x → [ υ x ]) ⊴ [ ∑ τ υ ])
-  → {𝓤 : Universe} → WEM 𝓤
+  → {𝓤 : Universe} → typal-WEM 𝓤
  sup-bounded-by-sum-gives-WEM ϕ {𝓤} = γ
   where
    open import Ordinals.OrdinalOfTruthValues fe 𝓤 (pe 𝓤)
@@ -165,7 +165,7 @@ module _ {𝓤 : Universe}
    q : Ωₒ ⊴ (𝟙ₒ +ₒ Ωₒ)
    q = transport (Ωₒ ⊴_) p o
 
-   γ : WEM 𝓤
+   γ : typal-WEM 𝓤
    γ = ⊴-add-taboo q
 
 \end{code}

@@ -1,4 +1,4 @@
-_Martin Escardo, Paulo Oliva, 2022, version of October 2023.
+Martin Escardo, Paulo Oliva, 2022, version of October 2023.
 
 Warning. This module is a mess. We plan to clean it up soon. At the
 moment the proofs are in "blackboard" style (improvised proofs that
@@ -32,7 +32,7 @@ pruning in the file Games.alpha-beta).
 
 open import Games.TypeTrees
 open import Games.Monad
-open import Games.J
+open import Games.J-transf
 open import Games.K
 open import MLTT.Spartan hiding (J)
 open import UF.FunExt

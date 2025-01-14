@@ -206,8 +206,8 @@ We now show that the two element poset is δ complete only if WEM holds.
 
 2-is-δ-complete-gives-WEM : {𝓥 : Universe}
                           → δ-complete-poset.is-δ-complete {𝓤₀} {𝓤₀} 𝓥 2-Poset
-                          → WEM 𝓥
-2-is-δ-complete-gives-WEM {𝓥} i = WEM'-gives-WEM fe wem'
+                          → typal-WEM 𝓥
+2-is-δ-complete-gives-WEM {𝓥} i = WEM-gives-typal-WEM fe wem'
  where
   open Joins (rel-syntax 2-Poset)
   open δ-complete-poset 𝓥 2-Poset

@@ -1103,7 +1103,7 @@ Added by Martin Escardo and Tom de Jong 29th August 2024.
 
 WEM-gives-that-negated-types-are-small
  : funext 𝓤 𝓤₀
- → WEM 𝓤
+ → typal-WEM 𝓤
  → (X : 𝓤 ̇ ) → (¬ X) is 𝓥 small
 WEM-gives-that-negated-types-are-small {𝓤} {𝓥} fe wem X =
  Cases (wem (¬ X)) f g

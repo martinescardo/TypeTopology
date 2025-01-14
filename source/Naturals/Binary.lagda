@@ -228,7 +228,7 @@ height-examples = refl , refl , refl , refl , refl , refl , refl , refl , refl ,
                   refl , refl , refl , refl , refl , refl , refl , refl , refl
 \end{code}
 
-The above diagrams give the following equations for the functino height.
+The above diagrams give the following equations for the function height.
 
 \begin{code}
 
@@ -358,7 +358,7 @@ unary-induction-on-𝔹 {𝓤} {B} b f = h
 
 \end{code}
 
-The following is the counter-part of the above, but with a more
+The following is the counterpart of the above, but with a more
 informative conclusion. Not only the hypotheses
 
      a : A 0

@@ -519,10 +519,10 @@ hg-path (Xt , d) = γ Xt d
      have-e = e
 
      I : is-empty X ≃ 𝟙
-     I = prop-indexed-product-one fe (λ x → e ∣ x ∣)
+     I = empty-indexed-product-is-𝟙 fe (λ x → e ∣ x ∣)
 
      II : (Σ x ꞉ X , 𝔸-Path (Xf x)) ≃ 𝟘
-     II = prop-indexed-sum-zero (λ x → e ∣ x ∣)
+     II = empty-indexed-sum-is-𝟘 (λ x → e ∣ x ∣)
 
      III = +-cong I II
 

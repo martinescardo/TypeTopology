@@ -20,8 +20,9 @@ m
 c
 b
 e
+eq
+equiv
 html/*
 source/html/*
 *.DS_Store
 #*
-

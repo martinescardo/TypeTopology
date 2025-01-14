@@ -644,7 +644,7 @@ module _ {𝓤 : Universe} where
 
  open import UF.DiscreteAndSeparated
 
- ⊴-add-taboo : Ωₒ ⊴ (𝟙ₒ +ₒ Ωₒ) → WEM 𝓤
+ ⊴-add-taboo : Ωₒ ⊴ (𝟙ₒ +ₒ Ωₒ) → typal-WEM 𝓤
  ⊴-add-taboo (f , s) = VI
   where
    I : is-least (𝟙ₒ +ₒ Ωₒ) (inl ⋆)
@@ -674,7 +674,7 @@ module _ {𝓤 : Universe} where
                                    (empty-types-are-＝-𝟘 fe' (pe 𝓤) u)⁻¹) ν))
 
    VI : ∀ P → ¬ P + ¬¬ P
-   VI = WEM'-gives-WEM fe' V
+   VI = WEM-gives-typal-WEM fe' V
 
 \end{code}
 
@@ -754,7 +754,7 @@ However, the successor function does not preserve _⊴_ in general:
 succ-not-necessarily-monotone : ((α β : Ordinal 𝓤)
                                       → α ⊴ β
                                       → (α +ₒ 𝟙ₒ) ⊴ (β +ₒ 𝟙ₒ))
-                              → WEM 𝓤
+                              → typal-WEM 𝓤
 succ-not-necessarily-monotone {𝓤} ϕ = XII
  where
   module _ (P : 𝓤 ̇) (isp : is-prop P) where
@@ -805,8 +805,8 @@ succ-not-necessarily-monotone {𝓤} ϕ = XII
          XI : 𝟘
          XI = X (pr₁ VIII) (pr₁ (pr₂ VIII))
 
-  XII : WEM 𝓤
-  XII = WEM'-gives-WEM fe' (λ P isp → II P isp (I P isp))
+  XII : typal-WEM 𝓤
+  XII = WEM-gives-typal-WEM fe' (λ P isp → II P isp (I P isp))
 
 \end{code}
 

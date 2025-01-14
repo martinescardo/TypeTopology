@@ -360,7 +360,7 @@ excluded middle holds, which also seems to be a new result.
 
 \begin{code}
 
-decomposition-of-𝕄-gives-WEM : decomposition 𝕄 → WEM 𝓤
+decomposition-of-𝕄-gives-WEM : decomposition 𝕄 → typal-WEM 𝓤
 decomposition-of-𝕄-gives-WEM =
  decomposition-of-ainjective-type-gives-WEM
   (univalence-gives-propext (ua 𝓤))

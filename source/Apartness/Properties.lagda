@@ -46,7 +46,7 @@ WEM-gives-that-type-with-two-distinct-points-has-nontrivial-apartness
  : funext 𝓤 𝓤₀
  → {X : 𝓤 ̇ }
  → has-two-distinct-points X
- → WEM 𝓤
+ → typal-WEM 𝓤
  → Nontrivial-Apartness X 𝓤
 WEM-gives-that-type-with-two-distinct-points-has-nontrivial-apartness
  {𝓤} fe {X} htdp wem = γ
@@ -72,7 +72,7 @@ WEM-gives-that-type-with-two-distinct-points-has-nontrivial-apartness⁺
  → {X : 𝓤 ⁺ ̇ }
  → is-locally-small X
  → has-two-distinct-points X
- → WEM 𝓤
+ → typal-WEM 𝓤
  → Nontrivial-Apartness X 𝓤
 WEM-gives-that-type-with-two-distinct-points-has-nontrivial-apartness⁺
  {𝓤} fe {X} ls ((x₀ , x₁) , d) wem = γ
@@ -110,7 +110,7 @@ any universe.
 
 WEM-gives-non-trivial-apartness-on-universe
  : funext (𝓤 ⁺) 𝓤₀
- → WEM (𝓤 ⁺)
+ → typal-WEM (𝓤 ⁺)
  → Nontrivial-Apartness (𝓤 ̇ ) (𝓤 ⁺)
 WEM-gives-non-trivial-apartness-on-universe fe =
  WEM-gives-that-type-with-two-distinct-points-has-nontrivial-apartness
