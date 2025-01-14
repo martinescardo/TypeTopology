@@ -487,8 +487,18 @@ Lemma-35 : (P : 𝓤 ̇  ) (i : is-prop P)
            𝟚ₒ {𝓤} ^ₒ Pₒ ＝ 𝟙ₒ +ₒ Pₒ
 Lemma-35 = ^ₒ-𝟚ₒ-by-prop
 
-Proposition-36 : ((α β : Ordinal 𝓤) → 𝟙ₒ{𝓤} ⊲ α → β ⊴ α ^ₒ β) ↔ EM 𝓤
-Proposition-36 =   ^ₒ-as-large-as-exponent-implies-EM
+Lemma-36
+ : ((α β : Ordinal 𝓤) → Σ f ꞉ (⟨ α ⟩ → ⟨ β ⟩) , is-order-preserving α β f → α ⊴ β)
+ ↔ EM 𝓤
+Lemma-36 =   order-preserving-gives-≼-implies-EM ∘ H₁
+           , H₂ ∘ EM-implies-order-preserving-gives-≼
+ where
+  H₁ = λ h α β f → ⊴-gives-≼ α β (h α β f)
+  H₂ = λ h α β f → ≼-gives-⊴ α β (h α β f)
+
+Proposition-37 : ((α β : Ordinal 𝓤) → 𝟙ₒ ⊲ α → β ⊴ α ^ₒ β) ↔ EM 𝓤
+Proposition-37 =   ^ₒ-as-large-as-exponent-implies-EM
                  , EM-implies-^ₒ-as-large-as-exponent
 
 \end{code}
+
