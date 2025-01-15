@@ -128,12 +128,11 @@ module JT-definitions
   ⊗ᴶᵀ-explicitly : (ε ⊗ᴶᵀ δ) q ＝ extᵀ g h
   ⊗ᴶᵀ-explicitly = refl
 
-  private
-   ν : (x : X) → T (Y x)
-   ν x = δ x (λ y → q (x , y))
+  ν : (x : X) → T (Y x)
+  ν x = δ x (λ y → q (x , y))
 
-   τ : T X
-   τ = ε (λ x → α-extᵀ (λ y → q (x , y)) (ν x))
+  τ : T X
+  τ = ε (λ x → α-extᵀ (λ y → q (x , y)) (ν x))
 
   module _ (fe : funext₀) where
 
