@@ -87,6 +87,27 @@ to-span {𝓤} {𝓥} {𝓦} {𝓤'} {A} {B} {C} f g X =
        → (Σ j ꞉ (X → A × B) , f ∘ pr₁ ∘ j ∼ g ∘ pr₂ ∘ j)
      ψ (k , l , H) = ((λ x → (k x , l x)) , H)
 
+\end{code}
+
+We include an alternate proof that does not use function extensionality.
+
+\begin{code}
+
+→-pullback-≃' : {A : 𝓤 ̇ } {B : 𝓥 ̇ } {C : 𝓦 ̇ }
+                (f : A → C) (g : B → C)
+                (X : 𝓤' ̇ )
+              → (X → pullback f g) ≃ to-span f g X
+→-pullback-≃' {𝓤} {𝓥} {𝓦} {𝓤̇ } {A} {B} {C} f g X = qinveq ϕ (ψ , ψ-ϕ , ϕ-ψ)
+ where
+  ϕ : (X → pullback f g) → to-span f g X
+  ϕ u = ppr₁ ∘ u , ppr₂ ∘ u , ppr₃ ∘ u
+  ψ : to-span f g X → (X → pullback f g)
+  ψ (h , k , H) x = h x , k x , H x
+  ϕ-ψ : ϕ ∘ ψ ∼ id
+  ϕ-ψ (h , k , H) = refl
+  ψ-ϕ : ψ ∘ ϕ ∼ id
+  ψ-ϕ u = refl
+
 pbf : {X : 𝓣 ̇ } {Y : 𝓣 ̇ } → (X → Y) → (𝓕 Y → 𝓕 X)
 pbf f (Y , γ) = pullback f γ , ppr₁
 
