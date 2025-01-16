@@ -4,16 +4,11 @@ January 2025
 This file follows the definitions, equations, lemmas, propositions, theorems and
 remarks of the paper "Ordinal Exponentiation in Homotopy Type Theory".
 
-See also Ordinals.Exponentiation.index.lagda for an overview of the relevant
-files.
+See also Ordinals.Exponentiation.index for an overview of the relevant files.
 
 \begin{code}
 
 {-# OPTIONS --safe --without-K --exact-split #-}
-
-open import UF.Univalence
-open import UF.PropTrunc
-open import UF.Size
 
 \end{code}
 
@@ -23,6 +18,10 @@ truncations and set replacement (equivalently, small set quotients).
 Function extensionality can be derived from univalence.
 
 \begin{code}
+
+open import UF.Univalence
+open import UF.PropTrunc
+open import UF.Size
 
 module Ordinals.Exponentiation.Paper
        (ua : Univalence)
