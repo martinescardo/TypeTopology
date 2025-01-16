@@ -497,7 +497,7 @@ open import UF.PropIndexedPiSigma
 Σ-construction : (n : ℕ) (a : Fin n → ℕ)
                → Σ k ꞉ ℕ , Fin k ≃ (Σ i ꞉ Fin n , Fin (a i))
 Σ-construction 0 a = 0 , (Fin 0                    ≃⟨ ≃-refl _ ⟩
-                         𝟘                        ≃⟨ ≃-sym (prop-indexed-sum-zero id) ⟩
+                         𝟘                        ≃⟨ ≃-sym (empty-indexed-sum-is-𝟘 id) ⟩
                          (Σ i ꞉ 𝟘 , Fin (a i)) ■)
 Σ-construction (succ n) a = g
  where
@@ -565,7 +565,7 @@ module _ (fe : funext 𝓤₀ 𝓤₀) where
   where
    i   = ≃-refl _
    ii  = 𝟘-lneutral
-   iii = ≃-sym (prop-indexed-product-one fe id)
+   iii = ≃-sym (empty-indexed-product-is-𝟙 fe id)
    iv  = ≃-refl _
 
  Π-construction (succ n) a = g

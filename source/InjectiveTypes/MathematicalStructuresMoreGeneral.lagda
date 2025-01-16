@@ -10,7 +10,7 @@ such as pointed types, ∞-magmas, monoids, groups, etc. to be
 algebraically injective. We use algebraic flabbiness as our main tool.
 
 There is already enough discussion in the files
-InjectiveTypes.MathematicalStructure and InjectiveTypes.Sigma, which
+InjectiveTypes.MathematicalStructures and InjectiveTypes.Sigma, which
 we will not repeat here. But we still add some remarks.
 
 \begin{code}
@@ -57,7 +57,7 @@ universes-are-aflabby-Π {𝓤} P P-is-prop A = Π A , I
   X = Π A
 
   I : (p : P) → Π A ＝ A p
-  I = λ p → eqtoid (ua 𝓤) (Π A) (A p) (prop-indexed-product fe' P-is-prop p)
+  I p = eqtoid (ua 𝓤) (Π A) (A p) (prop-indexed-product fe' P-is-prop p)
 
 universes-are-injective-Π : ainjective-type (𝓤 ̇ ) 𝓤 𝓤
 universes-are-injective-Π {𝓤} = aflabby-types-are-ainjective (𝓤 ̇ )
@@ -70,7 +70,7 @@ universes-are-aflabby-Σ {𝓤} P P-is-prop A = Σ A , I
   X = Σ A
 
   I : (p : P) → Σ A ＝ A p
-  I = λ p → eqtoid (ua 𝓤) (Σ A) (A p) (prop-indexed-sum P-is-prop p)
+  I p = eqtoid (ua 𝓤) (Σ A) (A p) (prop-indexed-sum P-is-prop p)
 
 module _ (S : 𝓤 ̇ → 𝓥 ̇ ) where
 

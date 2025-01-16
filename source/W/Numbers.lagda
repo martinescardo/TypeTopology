@@ -266,7 +266,7 @@ by 𝓕𝓲𝓷 : 𝓝 → 𝓥.
  Fin-factor : (n : ℕ) → 𝓕𝓲𝓷 (ℕ-to-𝓝 n) ≃ Fin n
  Fin-factor zero =
   𝟘 + (Σ h ꞉ 𝟘 , 𝓕𝓲𝓷 (𝟘-elim h)) ≃⟨ 𝟘-lneutral ⟩
-  (Σ h ꞉ 𝟘 , 𝓕𝓲𝓷 (𝟘-elim h))     ≃⟨ prop-indexed-sum-zero id ⟩
+  (Σ h ꞉ 𝟘 , 𝓕𝓲𝓷 (𝟘-elim h))     ≃⟨ empty-indexed-sum-is-𝟘 id ⟩
   𝟘                              ■
 
  Fin-factor (succ n) = I

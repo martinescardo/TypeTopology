@@ -303,14 +303,14 @@ module _ {X : 𝓤 ̇ }
   Π-extension-out-of-range : {𝓦 : Universe} (y : Y)
                            → ((x : X) → j x ≠ y) → f/j (y) ≃ 𝟙 {𝓦}
   Π-extension-out-of-range y φ =
-   prop-indexed-product-one (fe (𝓤 ⊔ 𝓥) 𝓦) (uncurry φ)
+   empty-indexed-product-is-𝟙 (fe (𝓤 ⊔ 𝓥) 𝓦) (uncurry φ)
 
   Σ-extension-property : is-embedding j → (x : X) → f∖j (j x) ≃ f x
   Σ-extension-property e x = prop-indexed-sum (e (j x)) (x , refl)
 
   Σ-extension-out-of-range : {𝓦 : Universe} (y : Y)
                            → ((x : X) → j x ≠ y) → f∖j (y) ≃ 𝟘 {𝓦}
-  Σ-extension-out-of-range y φ = prop-indexed-sum-zero (uncurry φ)
+  Σ-extension-out-of-range y φ = empty-indexed-sum-is-𝟘 (uncurry φ)
 
 \end{code}
 

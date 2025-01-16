@@ -50,11 +50,11 @@ prop-indexed-product : funext 𝓤 𝓥
                      → (a : X) → Π Y ≃ Y a
 prop-indexed-product fe i a = Π-proj a , Π-proj-is-equiv fe i a
 
-prop-indexed-product-one : funext 𝓤 𝓥
-                         → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
-                         → (X → 𝟘 {𝓦})
-                         → Π Y ≃ 𝟙 {𝓣}
-prop-indexed-product-one {𝓤} {𝓥} {𝓦} {𝓣} fe {X} {Y} v = γ
+empty-indexed-product-is-𝟙 : funext 𝓤 𝓥
+                           → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
+                           → (X → 𝟘 {𝓦})
+                           → Π Y ≃ 𝟙 {𝓣}
+empty-indexed-product-is-𝟙 {𝓤} {𝓥} {𝓦} {𝓣} fe {X} {Y} v = γ
  where
   g : 𝟙 → Π Y
   g ⋆ x = unique-from-𝟘 {𝓥} {𝓦} (v x)
@@ -100,10 +100,10 @@ prop-indexed-sum {𝓤} {𝓥} {X} {Y} i a = qinveq f (g , ε , η)
   ε : (σ : Σ Y) → g (f σ) ＝ σ
   ε (x , y) = to-Σ-＝ (i a x , c x y (i x a))
 
-prop-indexed-sum-zero : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
+empty-indexed-sum-is-𝟘 : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
                       → (X → 𝟘 {𝓦})
                       → Σ Y ≃ (𝟘 {𝓣})
-prop-indexed-sum-zero {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} φ = qinveq f (g , ε , η)
+empty-indexed-sum-is-𝟘 {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} φ = qinveq f (g , ε , η)
  where
   f : Σ Y → 𝟘
   f (x , y) = 𝟘-elim (φ x)
