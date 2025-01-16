@@ -89,7 +89,10 @@ to-span {𝓤} {𝓥} {𝓦} {𝓤'} {A} {B} {C} f g X =
 
 \end{code}
 
-We include an alternate proof that does not use function extensionality.
+Added by Ian Ray 15th Jan 2025.
+
+We include an alternate proof of the universal property of the pullback that
+does not use function extensionality.
 
 \begin{code}
 
@@ -97,16 +100,22 @@ We include an alternate proof that does not use function extensionality.
                 (f : A → C) (g : B → C)
                 (X : 𝓤' ̇ )
               → (X → pullback f g) ≃ to-span f g X
-→-pullback-≃' {𝓤} {𝓥} {𝓦} {𝓤̇ } {A} {B} {C} f g X = qinveq ϕ (ψ , ψ-ϕ , ϕ-ψ)
+→-pullback-≃' f g X = qinveq ϕ (ψ , ψ-ϕ , ϕ-ψ)
  where
   ϕ : (X → pullback f g) → to-span f g X
   ϕ u = ppr₁ ∘ u , ppr₂ ∘ u , ppr₃ ∘ u
   ψ : to-span f g X → (X → pullback f g)
   ψ (h , k , H) x = h x , k x , H x
   ϕ-ψ : ϕ ∘ ψ ∼ id
-  ϕ-ψ (h , k , H) = refl
+  ϕ-ψ p = refl
   ψ-ϕ : ψ ∘ ϕ ∼ id
   ψ-ϕ u = refl
+
+\end{code}
+
+End of addition.
+
+\begin{code}
 
 pbf : {X : 𝓣 ̇ } {Y : 𝓣 ̇ } → (X → Y) → (𝓕 Y → 𝓕 X)
 pbf f (Y , γ) = pullback f γ , ppr₁
@@ -115,6 +124,8 @@ pbf f (Y , γ) = pullback f γ , ppr₁
 ∑ f (A , φ) = A , f ∘ φ
 
 \end{code}
+
+End of addition.
 
 Using Proposition 2.3 of
 https://ncatlab.org/nlab/show/locally+cartesian+closed+category
