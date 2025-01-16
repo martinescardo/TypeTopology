@@ -54,7 +54,7 @@ universes-are-aflabby-Π {𝓤} P P-is-prop A = Π A , I
   X = Π A
 
   I : (p : P) → Π A ＝ A p
-  I = λ p → eqtoid (ua 𝓤) (Π A) (A p) (prop-indexed-product fe' P-is-prop p)
+  I p = eqtoid (ua 𝓤) (Π A) (A p) (prop-indexed-product fe' P-is-prop p)
 
 universes-are-injective-Π : ainjective-type (𝓤 ̇ ) 𝓤 𝓤
 universes-are-injective-Π {𝓤} = aflabby-types-are-ainjective (𝓤 ̇ )
@@ -67,7 +67,7 @@ universes-are-aflabby-Σ {𝓤} P P-is-prop A = Σ A , I
   X = Σ A
 
   I : (p : P) → Σ A ＝ A p
-  I = λ p → eqtoid (ua 𝓤) (Σ A) (A p) (prop-indexed-sum P-is-prop p)
+  I p = eqtoid (ua 𝓤) (Σ A) (A p) (prop-indexed-sum P-is-prop p)
 
 \end{code}
 
@@ -75,7 +75,11 @@ We now want to show that several types of mathematical structures are
 (algebraically) injective, or, equivalently, (algebraically) flabby.
 
 We work with an arbitrary S : 𝓤 ̇ → 𝓥 ̇ and want to show that Σ S is
-flabby. E.g. for ∞-magmas, we will have S X = X → X → X.
+flabby. E.g. for ∞-magmas in a universe 𝓤, we will have 𝓥 the same as 𝓤
+and S X = X → X → X, specifying that we have a binary operation on the
+type X, subject to no axioms, and the type of ∞-magmas will be Σ S.
+Similarly, the type of groups will again be of the form Σ S for a
+different choice of S.
 
 Let f : P → Σ S be a "partial element" where P is a proposition. Then
 f is of the form
@@ -87,9 +91,10 @@ with A : P → 𝓤 ̇ and B : (h : P) → S (A h).
 We need to construct a (total) element (X , s) of Σ S, with s : S X ,
 such that for all h : P we have that (X , s) = (A h , B h).
 
-This forces X = A h for any h : P. We have a fiberwise equivalence
+This forces X = A h for any h : P. Because P is a proposition, we have
+a fiberwise equivalence
 
- π : (h : P) → Π A ≃ A h
+ π : (h : P) → Π A ≃ A h.
 
 By univalence, π induces a fiberwise identification
 

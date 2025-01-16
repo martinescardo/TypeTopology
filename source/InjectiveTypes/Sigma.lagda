@@ -21,20 +21,6 @@ We have rewritten [1] as [2] to exploit this.
 [1] InjectiveTypes.MathematicalStructures.
 [2] InjectiveTypes.MathematicalStructuresMoreGeneral.
 
-(*) Which should not be confused with requiring that it merely has a
-section. In any case, in TypeTopology we never say "merely" to
-indicate propositional truncation. The sentence (*) uses "merely" in
-its correct colloquial and official sense.
-
-    merely (mîr′lē)
-    adverb
-     1. And nothing else or more; only.
-     2. Purely; unmixedly; absolutely.
-     3. Not otherwise than; simply; barely; only.
-
-Given this meaning, I don't recommend using "merely" to indicate
-propositional truncation. End of terminological digression (*).
-
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}
@@ -146,7 +132,8 @@ property. TODO. Should we call it compatibility data?
 That this compatibility condition is sufficient but not necessary is
 illustrated in the file InjectiveTypes.InhabitednessTaboo, with the
 type of pointed types (which is injective) shown to be equivalent to a
-subtype of the type of inhabited types (which is "not" injective).
+subtype of the type of inhabited types (which is not injective in
+general).
 
 One of the main results of this file is that if A satisfies the
 compatibility condition, then Σ x ꞉ X , A x is aflabby and hence
