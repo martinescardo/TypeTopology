@@ -168,6 +168,9 @@ is-minimal α x = (y : ⟨ α ⟩) → ¬ (y ≺⟨ α ⟩ x)
 minimal-is-least : (α : Ordinal 𝓤) → (x : ⟨ α ⟩) → is-minimal α x → is-least α x
 minimal-is-least α x minimal y u l = 𝟘-elim (minimal u l)
 
+least-is-minimal : (α : Ordinal 𝓤) → (x : ⟨ α ⟩) → is-least α x → is-minimal α x
+least-is-minimal α x least y l = Irreflexivity α y (least y y l)
+
 is-largest : (α : Ordinal 𝓤) → ⟨ α ⟩ → 𝓤 ̇
 is-largest α x = (y : ⟨ α ⟩) → y ≼⟨ α ⟩ x
 
