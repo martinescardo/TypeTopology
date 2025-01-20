@@ -502,3 +502,61 @@ ap-refl : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) {x : X}
         → ap f (𝓻𝓮𝒻𝓵 x) ＝ 𝓻𝓮𝒻𝓵 (f x)
 ap-refl f = refl
 \end{code}
+
+Added by Ian Ray 18th Jan 2025
+
+\begin{code}
+
+apd-to-ap : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) {x x' : X} (p : x ＝ x')
+          → apd f p ＝ transport-const p ∙ ap f p
+apd-to-ap f refl = refl
+
+apd-from-ap : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) {x x' : X} (p : x ＝ x')
+            → ap f p ＝ transport-const p ⁻¹ ∙ apd f p
+apd-from-ap f refl = refl
+
+\end{code}
+
+We will also add some helpful path lemmas paths. Note that pattern matching
+is not helpful here since association l ∙ q ∙ s is by definition (l ∙ q) ∙ s.
+
+\begin{code}
+
+ap-on-left-is-assoc : {X : 𝓤 ̇ } {x y z z' : X} (l : x ＝ y)
+                      {p q : y ＝ z} {r s : z ＝ z'}
+                    → p ∙ r ＝ q ∙ s
+                    → (l ∙ p) ∙ r ＝ (l ∙ q) ∙ s
+ap-on-left-is-assoc l {p} {q} {r} {s} α = l ∙ p ∙ r   ＝⟨ ∙assoc l p r ⟩
+                                          l ∙ (p ∙ r) ＝⟨ ap (l ∙_) α ⟩
+                                          l ∙ (q ∙ s) ＝⟨ ∙assoc l q s ⁻¹ ⟩
+                                          l ∙ q ∙ s   ∎
+
+ap-on-left-is-assoc' : {X : 𝓤 ̇ } {x y z z' : X} (l : x ＝ y)
+                       (p : y ＝ z') (q : y ＝ z) (s : z ＝ z')
+                     → p ＝ q ∙ s
+                     → l ∙ p ＝ (l ∙ q) ∙ s
+ap-on-left-is-assoc' l p q s α = l ∙ p        ＝⟨ ap (l ∙_) α ⟩
+                                 l ∙ (q ∙ s)  ＝⟨ ∙assoc l q s ⁻¹ ⟩
+                                 l ∙ q ∙ s    ∎
+
+ap-left-inverse : {X : 𝓤 ̇ } {x y z : X} (l : x ＝ y)
+                  {p : x ＝ z} {q : y ＝ z}
+                → p ＝ l ∙ q
+                → l ⁻¹ ∙ p ＝ q
+ap-left-inverse l {p} {q} α =
+ l ⁻¹ ∙ p     ＝⟨ ap-on-left-is-assoc' (l ⁻¹) p l q α ⟩
+ l ⁻¹ ∙ l ∙ q ＝⟨ ap (_∙ q) (left-inverse l) ⟩
+ refl ∙ q     ＝⟨ refl-left-neutral ⟩
+ q            ∎
+
+ap-right-inverse : {X : 𝓤 ̇ } {x y z : X} (r : y ＝ z)
+                   {p : x ＝ z} {q : x ＝ y}
+                 → p ＝ q ∙ r
+                 → p ∙ r ⁻¹ ＝ q
+ap-right-inverse r {p} {q} α =
+ p ∙ r ⁻¹       ＝⟨ ap (_∙ r ⁻¹) α ⟩
+ q ∙ r ∙ r ⁻¹   ＝⟨ ∙assoc q r (r ⁻¹) ⟩
+ q ∙ (r ∙ r ⁻¹) ＝⟨ ap (q ∙_) (sym-is-inverse' r ⁻¹) ⟩
+ q              ∎  
+
+\end{code}

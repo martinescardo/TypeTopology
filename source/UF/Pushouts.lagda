@@ -58,6 +58,18 @@ record pushouts-exist {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇} (f : C → A)
    → (c : C)
    → apd (pushout-induction l r G) (glue c) ∙ pushout-ind-comp-r l r G (g c)
    ＝ ap (transport P (glue c)) (pushout-ind-comp-l l r G (f c)) ∙ G c
+
+\end{code}
+
+We will now observe that the pushout is a cocone and begin deriving some key
+results from the induction principle:
+recursion (along with corresponding computation rules), universal properties
+and uniqueness.
+
+\begin{code}
+
+ pushout-cocone : cocone f g pushout
+ pushout-cocone = (inll , inrr , glue)
    
  pushout-recursion : {D : 𝓣  ̇}
                    → (l : A → D)
@@ -93,11 +105,52 @@ record pushouts-exist {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇} (f : C → A)
   → (c : C)
   → ap (pushout-recursion l r G) (glue c) ∙ pushout-rec-comp-r l r G (g c) 
   ＝ pushout-rec-comp-l l r G (f c) ∙ G c
- pushout-rec-comp-G {𝓣} {D} l r G c = {!!}
-
- pushout-cocone : cocone f g pushout
- pushout-cocone = (inll , inrr , glue)
-
+ pushout-rec-comp-G {𝓣} {D} l r G c =
+  ap (pushout-recursion l r G) (glue c) ∙ pushout-rec-comp-r l r G (g c)                                                                    ＝⟨ III ⟩
+  transport-const (glue c) ⁻¹ ∙ apd (pushout-recursion l r G) (glue c)
+   ∙ pushout-rec-comp-r l r G (g c)                         ＝⟨ V ⟩
+  transport-const (glue c) ⁻¹
+    ∙ ap (transport (λ - → D) (glue c)) (pushout-rec-comp-l l r G (f c))
+    ∙ (transport-const (glue c) ∙ G c)                      ＝⟨ VI ⟩
+  transport-const (glue c) ⁻¹
+    ∙ ap (transport (λ - → D) (glue c)) (pushout-rec-comp-l l r G (f c))
+    ∙ transport-const (glue c) ∙ G c                        ＝⟨ IX ⟩
+  pushout-rec-comp-l l r G (f c) ∙ G c                      ∎
+  where
+   II : ap (pushout-recursion l r G) (glue c)
+      ＝ transport-const (glue c) ⁻¹
+         ∙ apd (pushout-induction l r (λ - → (transport-const (glue -) ∙ G -)))
+               (glue c)
+   II = apd-from-ap (pushout-recursion l r G) (glue c)
+   III = ap (_∙ pushout-rec-comp-r l r G (g c)) II 
+   IV : apd (pushout-recursion l r G) (glue c) ∙ pushout-rec-comp-r l r G (g c)
+      ＝ ap (transport (λ - → D) (glue c)) (pushout-rec-comp-l l r G (f c))
+       ∙ (transport-const (glue c) ∙ G c)
+   IV = pushout-ind-comp-G l r (λ - → (transport-const (glue -) ∙ G -)) c
+   V : transport-const (glue c) ⁻¹ ∙ apd (pushout-recursion l r G) (glue c)
+        ∙ pushout-rec-comp-r l r G (g c)
+     ＝ transport-const (glue c) ⁻¹
+        ∙ ap (transport (λ - → D) (glue c)) (pushout-rec-comp-l l r G (f c))
+        ∙ (transport-const (glue c) ∙ G c)
+   V = ap-on-left-is-assoc (transport-const (glue c) ⁻¹) IV
+   VI = ∙assoc (transport-const (glue c) ⁻¹ ∙ ap (transport (λ - → D) (glue c))
+               (pushout-rec-comp-l l r G (f c))) (transport-const (glue c))
+               (G c) ⁻¹
+   VII : ap (transport (λ - → D) (glue c)) (pushout-rec-comp-l l r G (f c))
+         ∙ transport-const (glue c)
+       ＝ transport-const (glue c) ∙ pushout-rec-comp-l l r G (f c)
+   VII = homotopies-are-natural (transport (λ - → D) (glue c)) id
+          (λ - → transport-const (glue c)) ⁻¹
+   VIII : transport-const (glue c) ⁻¹
+        ∙ ap (transport (λ - → D) (glue c)) (pushout-rec-comp-l l r G (f c))
+        ∙ transport-const (glue c)
+     ＝ pushout-rec-comp-l l r G (f c)
+   VIII = ∙assoc (transport-const (glue c) ⁻¹)
+                 (ap (transport (λ - → D) (glue c))
+                 (pushout-rec-comp-l l r G (f c))) (transport-const (glue c))
+          ∙ ap-left-inverse (transport-const (glue c)) VII 
+   IX = ap (_∙ G c) VIII 
+   
  pushout-universal-property : (X : 𝓣 ̇)
                             → (pushout → X) ≃ cocone f g X
  pushout-universal-property X = qinveq ϕ (ψ , ψ-ϕ , ϕ-ψ)
@@ -122,12 +175,16 @@ record pushouts-exist {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇} (f : C → A)
                                (∼-ap-∘ (ψ (l , r , G)) glue c)
                    ＝ G c
      III = {!!}
-      where
-       
-
 
 \end{code}
 
-I : apd (pushout-induction l r ?) (glue c)
-     ＝ ap (pushout-recursion l r G) (glue c)
-   I = ? 
+I ⁻¹ ∙ apd (pushout-recursion l r G) (glue c)
+            ∙ pushout-rec-comp-r l r G (g c)           ＝⟨ VI ⟩
+       I ⁻¹ ∙ (apd (pushout-recursion l r G) (glue c)
+            ∙ pushout-rec-comp-r l r G (g c))          ＝⟨ VII ⟩
+       I ⁻¹ ∙ (ap (transport (λ - → D) (glue c))
+              (pushout-rec-comp-l l r G (f c))
+            ∙ (transport-const (glue c) ∙ G c))        ＝⟨ VIII ⟩
+       I ⁻¹ ∙ ap (transport (λ - → D) (glue c))
+                 (pushout-rec-comp-l l r G (f c))
+            ∙ (transport-const (glue c) ∙ G c)         ∎
