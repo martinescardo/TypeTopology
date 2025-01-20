@@ -164,27 +164,29 @@ and uniqueness.
     dfunext fe (pushout-induction
      (pushout-rec-comp-l (u ∘ inll) (u ∘ inrr) (∼-ap-∘ u glue))
      (pushout-rec-comp-r (u ∘ inll) (u ∘ inrr) (∼-ap-∘ u glue))
-     {!!})
+     I)
+    where
+     I : (c : C)
+       → transport (λ z → (ψ ∘ ϕ) u z ＝ u z) (glue c)
+          (pushout-rec-comp-l (u ∘ inll) (u ∘ inrr) (∼-ap-∘ u glue) (f c))
+       ＝ pushout-rec-comp-r (u ∘ inll) (u ∘ inrr) (∼-ap-∘ u glue) (g c)
+     I c = transport (λ z → (ψ ∘ ϕ) u z ＝ u z) (glue c)
+            (pushout-rec-comp-l (u ∘ inll) (u ∘ inrr)
+             (∼-ap-∘ u glue) (f c))                      ＝⟨ {!!} ⟩
+           pushout-rec-comp-r (u ∘ inll) (u ∘ inrr)
+            (∼-ap-∘ u glue) (g c)                        ＝⟨ {!!} ⟩
+           {!!}
    ϕ-ψ : ϕ ∘ ψ ∼ id
    ϕ-ψ (l , r , G) =
-    ap ⌜ Σ-assoc ⌝ (to-Σ-＝ (to-×-＝ I II , dfunext fe {!!}))
+    ap ⌜ Σ-assoc ⌝ (to-Σ-＝ (to-×-＝ I II , dfunext fe III))
     where
      I = dfunext fe (pushout-rec-comp-l l r G)
      II = dfunext fe (pushout-rec-comp-r l r G)
-     III : (c : C) → transport {!!} (to-×-＝ I II)
-                               (∼-ap-∘ (ψ (l , r , G)) glue c)
-                   ＝ G c
-     III = {!!}
+     III : (c : C)
+         → transport (λ z → (λ x → pr₁ z (f x)) ∼ (λ x → pr₂ z (g x)))
+                     (to-×-＝ I II)
+                     (∼-ap-∘ (ψ (l , r , G)) glue) c
+         ＝ G c
+     III c = {!!}
 
 \end{code}
-
-I ⁻¹ ∙ apd (pushout-recursion l r G) (glue c)
-            ∙ pushout-rec-comp-r l r G (g c)           ＝⟨ VI ⟩
-       I ⁻¹ ∙ (apd (pushout-recursion l r G) (glue c)
-            ∙ pushout-rec-comp-r l r G (g c))          ＝⟨ VII ⟩
-       I ⁻¹ ∙ (ap (transport (λ - → D) (glue c))
-              (pushout-rec-comp-l l r G (f c))
-            ∙ (transport-const (glue c) ∙ G c))        ＝⟨ VIII ⟩
-       I ⁻¹ ∙ ap (transport (λ - → D) (glue c))
-                 (pushout-rec-comp-l l r G (f c))
-            ∙ (transport-const (glue c) ∙ G c)         ∎

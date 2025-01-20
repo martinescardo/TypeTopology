@@ -517,8 +517,10 @@ apd-from-ap f refl = refl
 
 \end{code}
 
-We will also add some helpful path lemmas paths. Note that pattern matching
-is not helpful here since association l ∙ q ∙ s is by definition (l ∙ q) ∙ s.
+We will also add some helpful path algebra lemmas. Note that pattern matching
+is not helpful here since the path concatenation by definition associates to
+the left: l ∙ q ∙ s ≡ (l ∙ q) ∙ s (where ≡ is definitional). So, as you will
+see below, we have to reassociate before applying on the left.
 
 \begin{code}
 
