@@ -99,12 +99,8 @@ Lemma-1 α β f = [1] , [2] , [3]
               , simulations-are-order-reflecting α β f f-sim
 
   [3] : is-simulation α β f × is-surjection f ↔ is-ordinal-equiv α β f
-  [3] =   (λ (f-sim , f-surj) →
-            order-preserving-reflecting-equivs-are-order-equivs α β f
-             (surjective-embeddings-are-equivs f
-               (simulations-are-embeddings fe α β f f-sim) f-surj)
-             (simulations-are-order-preserving α β f f-sim)
-             (simulations-are-order-reflecting α β f f-sim))
+  [3] =   (λ (f-sim , f-surj) → surjective-simulations-are-order-equivs
+                                 pt fe α β f f-sim f-surj)
         , (λ f-equiv →   order-equivs-are-simulations α β f f-equiv
                        , equivs-are-surjections
                           (order-equivs-are-equivs α β f-equiv))
