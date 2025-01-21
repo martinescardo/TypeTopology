@@ -73,9 +73,9 @@ i.e. the weaker statement
   α ⊲ β → α ^ₒ γ ⊴ α ^ₒ γ (for all ordinals α, β and γ)
 already implies excluded middle.
 
-Since our exponentiation is only well defined for base α ⊵ 𝟙ₒ (see also
-exponentiation-defined-everywhere-implies-EM), we further add this assumption to
-the statement (and still derive excluded middle from it).
+Since our concrete exponentiation is only well defined for bases α with a
+trichotomous least element, we further add this assumption to the statement (and
+still derive excluded middle from it).
 
 Furthermore, we can actually fix γ := 𝟚ₒ in the statement.
 Since α ^ₒ 𝟚ₒ ＝ α ×ₒ α for any (reasonable) notion of ordinal exponentiation, we
@@ -87,8 +87,10 @@ about multiplication:
 
 \begin{code}
 
-×ₒ-weakly-monotone-in-both-arguments-implies-EM :
-   ((α β : Ordinal 𝓤) → 𝟙ₒ {𝓤} ⊴ α → α ⊲ β → α ×ₒ α ⊴ β ×ₒ β)
+×ₒ-weakly-monotone-in-both-arguments-implies-EM
+ : ((α β : Ordinal 𝓤) → has-trichotomous-least-element α
+                      → has-trichotomous-least-element β
+                      → α ⊲ β → α ×ₒ α ⊴ β ×ₒ β)
  → EM 𝓤
 ×ₒ-weakly-monotone-in-both-arguments-implies-EM {𝓤} assumption P P-is-prop =
  IV (f x) refl
@@ -98,14 +100,32 @@ about multiplication:
    Pₒ = prop-ordinal P P-is-prop
    β = [ 3 ]ₒ +ₒ Pₒ
 
+   pattern ⊥β = inl (inl (inl ⋆))
+
    I : α ⊲ β
    I = inl (inr ⋆) , ((successor-lemma-right α) ⁻¹ ∙ +ₒ-↓-left (inr ⋆))
 
-   α-ineq : 𝟙ₒ ⊴ α
-   α-ineq = ⊲-gives-⊴ 𝟙ₒ α (successor-increasing 𝟙ₒ)
+   α-has-trichotomous-least-element : has-trichotomous-least-element α
+   α-has-trichotomous-least-element = inl ⋆ , h
+    where
+     h : (x : ⟨ α ⟩) → (inl ⋆ ＝ x) + (inl ⋆ ≺⟨ α ⟩ x)
+     h (inl ⋆) = inl refl
+     h (inr ⋆) = inr ⋆
+
+   β-has-trichotomous-least-element : has-trichotomous-least-element β
+   β-has-trichotomous-least-element = ⊥β , h
+    where
+     h : (y : ⟨ β ⟩) → (⊥β ＝ y) + (⊥β ≺⟨ β ⟩ y)
+     h ⊥β                  = inl refl
+     h (inl (inl (inr ⋆))) = inr ⋆
+     h (inl (inr ⋆))       = inr ⋆
+     h (inr p)             = inr ⋆
 
    II : α ×ₒ α ⊴ β ×ₒ β
-   II = assumption α β α-ineq I
+   II = assumption α β
+         α-has-trichotomous-least-element
+         β-has-trichotomous-least-element
+         I
 
    x : ⟨ α ×ₒ α ⟩
    x = (inr ⋆ , inr ⋆)
@@ -113,7 +133,6 @@ about multiplication:
    f : ⟨ α ×ₒ α ⟩ → ⟨ β ×ₒ β ⟩
    f = [ α ×ₒ α , β ×ₒ β ]⟨ II ⟩
 
-   pattern ⊥β = inl (inl (inl ⋆))
    pattern ₀α = (inl ⋆ , inl ⋆)
    pattern ₁α = (inr ⋆ , inl ⋆)
    pattern ₂α = (inl ⋆ , inr ⋆)
@@ -194,40 +213,46 @@ in the base.
 
 \begin{code}
 
-exponentiation-weakly-monotone-in-base-implies-EM :
-   (exp : Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤)
- → ((α : Ordinal 𝓤) → 𝟙ₒ {𝓤} ⊴ α → exp-specification-zero α (exp α))
- → ((α : Ordinal 𝓤) → 𝟙ₒ {𝓤} ⊴ α → exp-specification-succ α (exp α))
- → ((α β γ : Ordinal 𝓤) → 𝟙ₒ {𝓤} ⊴ α → α ⊲ β → (exp α γ ⊴ exp β γ))
+exponentiation-weakly-monotone-in-base-implies-EM
+ : (exp : Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤)
+ → ((α : Ordinal 𝓤) → has-trichotomous-least-element α
+                    → exp-specification-zero α (exp α))
+ → ((α : Ordinal 𝓤) → has-trichotomous-least-element α
+                    → exp-specification-succ α (exp α))
+ → ((α β γ : Ordinal 𝓤) → has-trichotomous-least-element α
+                        → α ⊲ β → (exp α γ ⊴ exp β γ))
  → EM 𝓤
-exponentiation-weakly-monotone-in-base-implies-EM {𝓤} exp exp-zero exp-succ h =
+exponentiation-weakly-monotone-in-base-implies-EM {𝓤} exp exp-zero exp-succ H =
  ×ₒ-weakly-monotone-in-both-arguments-implies-EM I
   where
-   I : (α β : Ordinal 𝓤) → 𝟙ₒ ⊴ α → α ⊲ β → α ×ₒ α ⊴ β ×ₒ β
-   I α β l s = transport₂ _⊴_ II III (h α β 𝟚ₒ l s)
+   I : (α β : Ordinal 𝓤)
+     → has-trichotomous-least-element α
+     → has-trichotomous-least-element β
+     → α ⊲ β → α ×ₒ α ⊴ β ×ₒ β
+   I α β h h' s = transport₂ _⊴_ II III (H α β 𝟚ₒ h s)
     where
      II : exp α 𝟚ₒ ＝ α ×ₒ α
-     II = exp-𝟚ₒ-is-×ₒ α (exp α) (exp-zero α l) (exp-succ α l)
+     II = exp-𝟚ₒ-is-×ₒ α (exp α) (exp-zero α h) (exp-succ α h)
      III : exp β 𝟚ₒ ＝ β ×ₒ β
-     III = exp-𝟚ₒ-is-×ₒ β (exp β) (exp-zero β l') (exp-succ β l')
-      where
-       l' : 𝟙ₒ ⊴ β
-       l' = ⊴-trans 𝟙ₒ α β l (⊲-gives-⊴ α β s)
+     III = exp-𝟚ₒ-is-×ₒ β (exp β) (exp-zero β h') (exp-succ β h')
 
-^ₒ-weakly-monotone-in-base-implies-EM :
-   ((α β γ : Ordinal 𝓤) → 𝟙ₒ {𝓤} ⊴ α → α ⊲ β → α ^ₒ γ ⊴ β ^ₒ γ)
+^ₒ-weakly-monotone-in-base-implies-EM
+ : ((α β γ : Ordinal 𝓤) → has-trichotomous-least-element α
+                        → α ⊲ β → α ^ₒ γ ⊴ β ^ₒ γ)
  → EM 𝓤
 ^ₒ-weakly-monotone-in-base-implies-EM {𝓤} =
  exponentiation-weakly-monotone-in-base-implies-EM _^ₒ_
-  (λ α l → ^ₒ-satisfies-zero-specification α)
-  (λ α l → ^ₒ-satisfies-succ-specification α l)
+  (λ α h → ^ₒ-satisfies-zero-specification α)
+  (λ α h → ^ₒ-satisfies-succ-specification α
+            (trichotomous-least-element-gives-𝟙ₒ-⊴ α h))
 
-^ₒ-monotone-in-base-implies-EM :
-   ((α β γ : Ordinal 𝓤) → 𝟙ₒ{𝓤} ⊴ α → α ⊴ β → α ^ₒ γ ⊴ β ^ₒ γ)
+^ₒ-monotone-in-base-implies-EM
+ : ((α β γ : Ordinal 𝓤) → has-trichotomous-least-element α
+                        → α ⊴ β → α ^ₒ γ ⊴ β ^ₒ γ)
  → EM 𝓤
 ^ₒ-monotone-in-base-implies-EM m =
  ^ₒ-weakly-monotone-in-base-implies-EM
-  (λ α β γ l i → m α β γ l (⊲-gives-⊴ α β i))
+  (λ α β γ h i → m α β γ h (⊲-gives-⊴ α β i))
 
 \end{code}
 
@@ -271,8 +296,8 @@ behaved for all bases α ⊵ 𝟙₀ and all exponents β.
 
 module _ (exp : Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) where
 
- exponentiation-defined-everywhere-implies-EM' :
-    ((α : Ordinal 𝓤) → exp-specification-zero α (exp α))
+ exponentiation-defined-everywhere-implies-EM'
+  : ((α : Ordinal 𝓤) → exp-specification-zero α (exp α))
   → ((α : Ordinal 𝓤) → exp-specification-succ α (exp α))
   → ((α : Ordinal 𝓤) → α ≠ 𝟘ₒ → is-monotone (OO 𝓤) (OO 𝓤) (exp α))
   → EM 𝓤
@@ -310,8 +335,8 @@ module _ (exp : Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) where
              (inl p)
              (transport⁻¹ (λ - → inl p ≺⟨ α ⟩ -) r ⋆)
 
- exponentiation-defined-everywhere-implies-EM :
-    ((α : Ordinal 𝓤) → exp-specification-zero α (exp α))
+ exponentiation-defined-everywhere-implies-EM
+  : ((α : Ordinal 𝓤) → exp-specification-zero α (exp α))
   → ((α : Ordinal 𝓤) → exp-specification-succ α (exp α))
   → ((α : Ordinal 𝓤) → exp-specification-sup α (exp α))
   → EM 𝓤
