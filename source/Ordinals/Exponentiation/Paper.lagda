@@ -470,9 +470,11 @@ Section VII. Constructive Taboos
 
 Proposition-34
  : (((α β γ : Ordinal 𝓤) → has-trichotomous-least-element α
+                         → has-trichotomous-least-element β
                          → α ⊴ β → α ^ₒ γ ⊴ β ^ₒ γ)
    ↔ EM 𝓤)
  × (((α β γ : Ordinal 𝓤) → has-trichotomous-least-element α
+                         → has-trichotomous-least-element β
                          → α ⊲ β → α ^ₒ γ ⊴ β ^ₒ γ)
    → EM 𝓤)
  × (((α β : Ordinal 𝓤) → has-trichotomous-least-element α
@@ -480,7 +482,7 @@ Proposition-34
                        → α ⊲ β → α ×ₒ α ⊴ β ×ₒ β)
    → EM 𝓤)
 Proposition-34 =   (  ^ₒ-monotone-in-base-implies-EM
-                   , (λ em α β γ _ → EM-implies-exp-monotone-in-base em α β γ))
+                   , (λ em α β γ _ _ → EM-implies-exp-monotone-in-base em α β γ))
                  , ^ₒ-weakly-monotone-in-base-implies-EM
                  , ×ₒ-weakly-monotone-in-both-arguments-implies-EM
 

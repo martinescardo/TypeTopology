@@ -220,6 +220,7 @@ exponentiation-weakly-monotone-in-base-implies-EM
  → ((α : Ordinal 𝓤) → has-trichotomous-least-element α
                     → exp-specification-succ α (exp α))
  → ((α β γ : Ordinal 𝓤) → has-trichotomous-least-element α
+                        → has-trichotomous-least-element β
                         → α ⊲ β → (exp α γ ⊴ exp β γ))
  → EM 𝓤
 exponentiation-weakly-monotone-in-base-implies-EM {𝓤} exp exp-zero exp-succ H =
@@ -229,7 +230,7 @@ exponentiation-weakly-monotone-in-base-implies-EM {𝓤} exp exp-zero exp-succ H
      → has-trichotomous-least-element α
      → has-trichotomous-least-element β
      → α ⊲ β → α ×ₒ α ⊴ β ×ₒ β
-   I α β h h' s = transport₂ _⊴_ II III (H α β 𝟚ₒ h s)
+   I α β h h' s = transport₂ _⊴_ II III (H α β 𝟚ₒ h h' s)
     where
      II : exp α 𝟚ₒ ＝ α ×ₒ α
      II = exp-𝟚ₒ-is-×ₒ α (exp α) (exp-zero α h) (exp-succ α h)
@@ -238,21 +239,23 @@ exponentiation-weakly-monotone-in-base-implies-EM {𝓤} exp exp-zero exp-succ H
 
 ^ₒ-weakly-monotone-in-base-implies-EM
  : ((α β γ : Ordinal 𝓤) → has-trichotomous-least-element α
+                        → has-trichotomous-least-element β
                         → α ⊲ β → α ^ₒ γ ⊴ β ^ₒ γ)
  → EM 𝓤
 ^ₒ-weakly-monotone-in-base-implies-EM {𝓤} =
  exponentiation-weakly-monotone-in-base-implies-EM _^ₒ_
   (λ α h → ^ₒ-satisfies-zero-specification α)
   (λ α h → ^ₒ-satisfies-succ-specification α
-            (trichotomous-least-element-gives-𝟙ₒ-⊴ α h))
+             (trichotomous-least-element-gives-𝟙ₒ-⊴ α h))
 
 ^ₒ-monotone-in-base-implies-EM
  : ((α β γ : Ordinal 𝓤) → has-trichotomous-least-element α
+                        → has-trichotomous-least-element β
                         → α ⊴ β → α ^ₒ γ ⊴ β ^ₒ γ)
  → EM 𝓤
 ^ₒ-monotone-in-base-implies-EM m =
  ^ₒ-weakly-monotone-in-base-implies-EM
-  (λ α β γ h i → m α β γ h (⊲-gives-⊴ α β i))
+  (λ α β γ h h' i → m α β γ h h' (⊲-gives-⊴ α β i))
 
 \end{code}
 
