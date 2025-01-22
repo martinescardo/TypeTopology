@@ -231,15 +231,23 @@ Proposition-14-ii
  → EM 𝓤
 Proposition-14-ii = subtype-of-positive-elements-an-ordinal-implies-EM
 
-Lemma-15 : (α : Ordinal 𝓤)
-         → (has-trichotomous-least-element α ↔ is-decomposable-into-one-plus α)
-         × (((a₀ , a₀-tri) : has-trichotomous-least-element α)
-            → (α ＝ 𝟙ₒ +ₒ α ⁺[ a₀ , a₀-tri ])
-            × (⟨ α ⁺[ a₀ , a₀-tri ] ⟩ ＝ (Σ a ꞉ ⟨ α ⟩ , a₀ ≺⟨ α ⟩ a)))
-Lemma-15 α =   ( trichotomous-least-to-decomposable α
-               , decomposable-to-trichotomous-least α)
-             , (λ h →   α ⁺[ h ]-part-of-decomposition
-                      , ⁺-is-subtype-of-positive-elements α h)
+Lemma-15-i : (α : Ordinal 𝓤)
+           → has-trichotomous-least-element α ↔ is-decomposable-into-one-plus α
+Lemma-15-i α =   trichotomous-least-to-decomposable α
+               , decomposable-to-trichotomous-least α
+
+Lemma-15-ii : (α : Ordinal 𝓤)
+              ((a₀ , a₀-tri) : has-trichotomous-least-element α)
+              (β : Ordinal 𝓤)
+            → α ＝ 𝟙ₒ +ₒ β
+            → (β ＝ α ⁺[ a₀ , a₀-tri ])
+            × (⟨ α ⁺[ a₀ , a₀-tri ] ⟩ ＝ (Σ a ꞉ ⟨ α ⟩ , a₀ ≺⟨ α ⟩ a))
+Lemma-15-ii α (a₀ , a₀-tri) β p =
+   +ₒ-left-cancellable 𝟙ₒ β (α ⁺[ a₀ , a₀-tri ]) (p ⁻¹ ∙ q)
+ , ⁺-is-subtype-of-positive-elements α (a₀ , a₀-tri)
+  where
+   q : α ＝ 𝟙ₒ +ₒ α ⁺[ a₀ , a₀-tri ]
+   q = α ⁺[ a₀ , a₀-tri ]-part-of-decomposition
 
 Definition-16 : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
               → has-trichotomous-least-element α
