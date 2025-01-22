@@ -535,7 +535,7 @@ module _
 
 \end{code}
 
-Finally, we record that any ordinal wiht a trichotomous least element is at
+Finally, we record that any ordinal with a trichotomous least element is at
 least as big as 𝟙ₒ.
 
 \begin{code}
