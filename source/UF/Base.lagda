@@ -541,6 +541,13 @@ ap-on-left-is-assoc' l p q s α = l ∙ p        ＝⟨ ap (l ∙_) α ⟩
                                  l ∙ (q ∙ s)  ＝⟨ ∙assoc l q s ⁻¹ ⟩
                                  l ∙ q ∙ s    ∎
 
+ap-on-left-is-assoc'' : {X : 𝓤 ̇ } {x y z z' : X} (l : x ＝ y)
+                        (p : y ＝ z) (q : y ＝ z') (s : z ＝ z')
+                      → p ∙ s ＝ q
+                      → (l ∙ p) ∙ s ＝ l ∙ q
+ap-on-left-is-assoc'' l p q s α =
+ ap-on-left-is-assoc' l q p s (α ⁻¹) ⁻¹
+
 ap-left-inverse : {X : 𝓤 ̇ } {x y z : X} (l : x ＝ y)
                   {p : x ＝ z} {q : y ＝ z}
                 → p ＝ l ∙ q
@@ -551,14 +558,55 @@ ap-left-inverse l {p} {q} α =
  refl ∙ q     ＝⟨ refl-left-neutral ⟩
  q            ∎
 
+ap-left-inverse' : {X : 𝓤 ̇ } {x y z : X} (l : x ＝ y)
+                   {p : x ＝ z} {q : y ＝ z}
+                 → l ⁻¹ ∙ p ＝ q
+                 → p ＝ l ∙ q
+ap-left-inverse' l {p} {q} α =
+ p            ＝⟨ refl-left-neutral ⁻¹ ⟩
+ refl ∙ p     ＝⟨ ap (_∙ p) (sym-is-inverse' l) ⟩
+ l ∙ l ⁻¹ ∙ p ＝⟨ ap-on-left-is-assoc'' l (l ⁻¹) q p α ⟩
+ l ∙ q        ∎ 
+
 ap-right-inverse : {X : 𝓤 ̇ } {x y z : X} (r : y ＝ z)
                    {p : x ＝ z} {q : x ＝ y}
                  → p ＝ q ∙ r
                  → p ∙ r ⁻¹ ＝ q
-ap-right-inverse r {p} {q} α =
- p ∙ r ⁻¹       ＝⟨ ap (_∙ r ⁻¹) α ⟩
- q ∙ r ∙ r ⁻¹   ＝⟨ ∙assoc q r (r ⁻¹) ⟩
- q ∙ (r ∙ r ⁻¹) ＝⟨ ap (q ∙_) (sym-is-inverse' r ⁻¹) ⟩
- q              ∎  
+ap-right-inverse refl α = α
+
+ap-right-inverse' : {X : 𝓤 ̇ } {x y z : X} (r : y ＝ z)
+                    {p : x ＝ z} {q : x ＝ y}
+                  → p ∙ r ⁻¹ ＝ q
+                  → p ＝ q ∙ r
+ap-right-inverse' refl α = α
+
+\end{code}
+
+We will also add another transport lemma (this may already exist!)
+
+\begin{code}
+
+transport-lemma
+ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {x x' : X}
+ → (p : x ＝ x')
+ → (s s' : X → Y)
+ → (q : s x ＝ s' x)
+ → ap s p ∙ transport (λ - → s - ＝ s' -) p q ＝ q ∙ ap s' p
+transport-lemma refl s s' q =
+ ap s refl ∙ q  ＝⟨ ap (_∙ q) (ap-refl s) ⟩
+ refl ∙ q       ＝⟨ refl-left-neutral ⟩
+ q ∙ refl       ＝⟨ ap (q ∙_) (ap-refl s') ⟩
+ q ∙ ap s' refl ∎ 
+
+transport-lemma'
+ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {x x' : X}
+ → (p : x ＝ x')
+ → (s s' : X → Y)
+ → (q : s x ＝ s' x)
+ → transport (λ - → s - ＝ s' -) p q ＝ ap s p ⁻¹ ∙ q ∙ ap s' p
+transport-lemma' refl s s' q =
+ q                             ＝⟨ refl-left-neutral ⁻¹ ⟩
+ refl ∙ q                      ＝⟨ refl ⟩
+ ap s refl ⁻¹ ∙ q ∙ ap s' refl ∎ 
 
 \end{code}

@@ -16,13 +16,33 @@ open import MLTT.Spartan
 open import UF.Base
 open import UF.Equiv
 open import UF.EquivalenceExamples
+open import UF.Subsingletons
+
+\end{code}
+
+We start by defining cocones and characerizing the identity type.
+
+\begin{code}
 
 cocone : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇}
-         (f : C → A) (g : C → B)
-         (X : 𝓣  ̇)
+         (f : C → A) (g : C → B) (X : 𝓣  ̇)
        → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣  ̇
 cocone {𝓤} {𝓥} {𝓦} {𝓣} {A} {B} {C} f g X =
  Σ k ꞉ (A → X) , Σ l ꞉ (B → X) , (k ∘ f ∼ l ∘ g)
+
+cocone-family : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇}
+                (f : C → A) (g : C → B) (X : 𝓣  ̇)
+              → cocone f g X → cocone f g X → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣  ̇
+cocone-family f g X (i , j , H) (i' , j' , H') =
+ Σ K ꞉ i ∼ i' , Σ L ꞉ j ∼ j' ,
+  ∼-trans (K ∘ f) H' ∼ ∼-trans H (L ∘ g)
+
+cocone-family-is-contractible
+ : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇}
+   (f : C → A) (g : C → B) (X : 𝓣  ̇)
+ → (x : cocone f g X)
+ → is-contr (Σ y ꞉ cocone f g X , cocone-family f g X x y)
+cocone-family-is-contractible f g X (i , j , H) = {!!}
 
 record pushouts-exist {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇} (f : C → A) (g : C → B) : 𝓤ω
  where
@@ -149,7 +169,35 @@ and uniqueness.
                  (ap (transport (λ - → D) (glue c))
                  (pushout-rec-comp-l l r G (f c))) (transport-const (glue c))
           ∙ ap-left-inverse (transport-const (glue c)) VII 
-   IX = ap (_∙ G c) VIII 
+   IX = ap (_∙ G c) VIII
+
+ pushout-uniqueness : (X : 𝓣 ̇)
+                    → (s s' : pushout → X)
+                    → (H : (a : A) → s (inll a) ＝ s' (inll a))
+                    → (H' : (b : B) → s (inrr b) ＝ s' (inrr b))
+                    → (G : (c : C)
+                         → ap s (glue c) ∙ H' (g c) ＝ H (f c) ∙ ap s' (glue c))
+                    → (x : pushout) → s x ＝ s' x
+ pushout-uniqueness X s s' H H' G =
+  pushout-induction H H' I
+  where
+   I : (c : C)
+     → transport (λ - → s - ＝ s' -) (glue c) (H (f c)) ＝ H' (g c)
+   I c = transport (λ - → s - ＝ s' -) (glue c) (H (f c)) ＝⟨ II ⟩
+         ap s (glue c) ⁻¹ ∙ H (f c) ∙ ap s' (glue c)      ＝⟨ III ⟩
+         H' (g c)                                         ∎
+    where
+     II : transport (λ - → s - ＝ s' -) (glue c) (H (f c))
+        ＝ ap s (glue c) ⁻¹ ∙ H (f c) ∙ ap s' (glue c)
+     II = transport-lemma' (glue c) s s' (H (f c))
+     III : ap s (glue c) ⁻¹ ∙ H (f c) ∙ ap s' (glue c) ＝ H' (g c)
+     III =
+      ap s (glue c) ⁻¹ ∙ H (f c) ∙ ap s' (glue c)   ＝⟨ IV ⟩
+      ap s (glue c) ⁻¹ ∙ (H (f c) ∙ ap s' (glue c)) ＝⟨ V ⟩
+      H' (g c)                                       ∎
+      where
+       IV = ∙assoc (ap s (glue c) ⁻¹) (H (f c)) (ap s' (glue c))
+       V = ap-left-inverse (ap s (glue c)) (G c ⁻¹)
    
  pushout-universal-property : (X : 𝓣 ̇)
                             → (pushout → X) ≃ cocone f g X
@@ -160,22 +208,10 @@ and uniqueness.
    ψ : cocone f g X → (pushout → X)
    ψ (l , r , G) = pushout-recursion l r G
    ψ-ϕ : ψ ∘ ϕ ∼ id
-   ψ-ϕ u =
-    dfunext fe (pushout-induction
-     (pushout-rec-comp-l (u ∘ inll) (u ∘ inrr) (∼-ap-∘ u glue))
-     (pushout-rec-comp-r (u ∘ inll) (u ∘ inrr) (∼-ap-∘ u glue))
-     I)
-    where
-     I : (c : C)
-       → transport (λ z → (ψ ∘ ϕ) u z ＝ u z) (glue c)
-          (pushout-rec-comp-l (u ∘ inll) (u ∘ inrr) (∼-ap-∘ u glue) (f c))
-       ＝ pushout-rec-comp-r (u ∘ inll) (u ∘ inrr) (∼-ap-∘ u glue) (g c)
-     I c = transport (λ z → (ψ ∘ ϕ) u z ＝ u z) (glue c)
-            (pushout-rec-comp-l (u ∘ inll) (u ∘ inrr)
-             (∼-ap-∘ u glue) (f c))                      ＝⟨ {!!} ⟩
-           pushout-rec-comp-r (u ∘ inll) (u ∘ inrr)
-            (∼-ap-∘ u glue) (g c)                        ＝⟨ {!!} ⟩
-           {!!}
+   ψ-ϕ u = dfunext fe (pushout-uniqueness X ((ψ ∘ ϕ) u) u
+                   (pushout-rec-comp-l (u ∘ inll) (u ∘ inrr) (∼-ap-∘ u glue))
+                   (pushout-rec-comp-r (u ∘ inll) (u ∘ inrr) (∼-ap-∘ u glue))
+                   (pushout-rec-comp-G (u ∘ inll) (u ∘ inrr) (∼-ap-∘ u glue)))
    ϕ-ψ : ϕ ∘ ψ ∼ id
    ϕ-ψ (l , r , G) =
     ap ⌜ Σ-assoc ⌝ (to-Σ-＝ (to-×-＝ I II , dfunext fe III))
@@ -183,10 +219,43 @@ and uniqueness.
      I = dfunext fe (pushout-rec-comp-l l r G)
      II = dfunext fe (pushout-rec-comp-r l r G)
      III : (c : C)
-         → transport (λ z → (λ x → pr₁ z (f x)) ∼ (λ x → pr₂ z (g x)))
-                     (to-×-＝ I II)
+         → transport (λ (l' , r') → l' ∘ f ∼ r' ∘ g) (to-×-＝ I II)
                      (∼-ap-∘ (ψ (l , r , G)) glue) c
          ＝ G c
-     III c = {!!}
+     III c = transport (λ (l' , r') → l' ∘ f ∼ r' ∘ g) (to-×-＝ I II)
+                       (∼-ap-∘ (ψ (l , r , G)) glue) c            ＝⟨ V ⟩
+             pushout-rec-comp-l l r G (f c) ⁻¹
+              ∙ ap (pushout-recursion l r G) (glue c)
+               ∙ pushout-rec-comp-r l r G (g c)                   ＝⟨ VI ⟩
+             pushout-rec-comp-l l r G (f c) ⁻¹
+              ∙ (ap (pushout-recursion l r G) (glue c)
+               ∙ pushout-rec-comp-r l r G (g c))                  ＝⟨ VII ⟩
+             G c                                                  ∎ 
+      where
+       IV : ap (pushout-recursion l r G) (glue c)
+              ∙ pushout-rec-comp-r l r G (g c)
+          ＝ pushout-rec-comp-l l r G (f c)
+              ∙ transport (λ (l' , r') → l' ∘ f ∼ r' ∘ g) (to-×-＝ I II)
+                          (∼-ap-∘ (ψ (l , r , G)) glue) c
+       IV = {!!} ⁻¹
+       V : transport (λ (l' , r') → l' ∘ f ∼ r' ∘ g) (to-×-＝ I II)
+                     (∼-ap-∘ (ψ (l , r , G)) glue) c
+         ＝ pushout-rec-comp-l l r G (f c) ⁻¹
+             ∙ ap (pushout-recursion l r G) (glue c)
+              ∙ pushout-rec-comp-r l r G (g c)
+       V = ap-left-inverse (pushout-rec-comp-l l r G (f c)) IV ⁻¹
+            ∙ (∙assoc (pushout-rec-comp-l l r G (f c) ⁻¹)
+                      (ap (pushout-recursion l r G) (glue c))
+                      (pushout-rec-comp-r l r G (g c))) ⁻¹
+       VI = ∙assoc (pushout-rec-comp-l l r G (f c) ⁻¹)
+                   (ap (pushout-recursion l r G) (glue c))
+                   (pushout-rec-comp-r l r G (g c))
+       VII = ap-left-inverse (pushout-rec-comp-l l r G (f c))
+                             (pushout-rec-comp-G l r G c)
 
 \end{code}
+
+    dfunext fe (pushout-induction
+     (pushout-rec-comp-l (u ∘ inll) (u ∘ inrr) (∼-ap-∘ u glue))
+     (pushout-rec-comp-r (u ∘ inll) (u ∘ inrr) (∼-ap-∘ u glue))
+     I)
