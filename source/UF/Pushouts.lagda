@@ -16,7 +16,9 @@ open import MLTT.Spartan
 open import UF.Base
 open import UF.Equiv
 open import UF.EquivalenceExamples
+open import UF.PropIndexedPiSigma
 open import UF.Subsingletons
+open import UF.Yoneda
 
 \end{code}
 
@@ -28,7 +30,7 @@ cocone : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇}
          (f : C → A) (g : C → B) (X : 𝓣  ̇)
        → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣  ̇
 cocone {𝓤} {𝓥} {𝓦} {𝓣} {A} {B} {C} f g X =
- Σ k ꞉ (A → X) , Σ l ꞉ (B → X) , (k ∘ f ∼ l ∘ g)
+ Σ i ꞉ (A → X) , Σ j ꞉ (B → X) , (i ∘ f ∼ j ∘ g)
 
 cocone-family : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇}
                 (f : C → A) (g : C → B) (X : 𝓣  ̇)
@@ -37,12 +39,98 @@ cocone-family f g X (i , j , H) (i' , j' , H') =
  Σ K ꞉ i ∼ i' , Σ L ꞉ j ∼ j' ,
   ∼-trans (K ∘ f) H' ∼ ∼-trans H (L ∘ g)
 
-cocone-family-is-contractible
+cocone-map : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇}
+             (f : C → A) (g : C → B) (X : 𝓣  ̇)
+           → (u u' : cocone f g X)
+           → u ＝ u'
+           → cocone-family f g X u u'
+cocone-map f g X (i , j , H) .(i , j , H) refl =
+ (∼-refl , ∼-refl , λ - → refl-left-neutral)
+
+cocone-family-is-identity-system
  : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇}
    (f : C → A) (g : C → B) (X : 𝓣  ̇)
  → (x : cocone f g X)
  → is-contr (Σ y ꞉ cocone f g X , cocone-family f g X x y)
-cocone-family-is-contractible f g X (i , j , H) = {!!}
+cocone-family-is-identity-system {_} {_} {_} {𝓣} {A} {B} {C} f g X (i , j , H) =
+ equiv-to-singleton e 𝟙-is-singleton
+ where
+  e : (Σ y ꞉ cocone f g X , cocone-family f g X (i , j , H) y) ≃ 𝟙 { 𝓣 }
+  e = (Σ y ꞉ cocone f g X , cocone-family f g X (i , j , H) y) ≃⟨ I ⟩
+      (Σ i' ꞉ (A → X) , Σ j' ꞉ (B → X) ,
+        Σ H' ꞉ (i' ∘ f ∼ j' ∘ g) ,
+         Σ K ꞉ i ∼ i' , Σ L ꞉ j ∼ j' ,
+          ∼-trans (K ∘ f) H' ∼ ∼-trans H (L ∘ g))              ≃⟨ II ⟩
+      (Σ i' ꞉ (A → X) , Σ K ꞉ i ∼ i' ,
+        Σ j' ꞉ (B → X) , Σ L ꞉ j ∼ j' ,
+         Σ H' ꞉ (i' ∘ f ∼ j' ∘ g) ,
+          ∼-trans (K ∘ f) H' ∼ ∼-trans H (L ∘ g))              ≃⟨ VII ⟩
+      (Σ H' ꞉ (i ∘ f ∼ j ∘ g) , H' ∼ H)                        ≃⟨ IXV ⟩
+      𝟙                                                        ■
+   where
+    I = ≃-comp Σ-assoc (Σ-cong (λ i' → Σ-assoc))
+    II = Σ-cong (λ _ → ≃-comp (Σ-cong
+          (λ _ → ≃-comp Σ-flip (Σ-cong (λ K → Σ-flip)))) Σ-flip)
+    III = (Σ i' ꞉ (A → X) , i ∼ i')  ≃⟨ IV ⟩
+          (Σ i' ꞉ (A → X) , i ＝ i') ≃⟨ V ⟩
+          𝟙                          ■
+     where
+      IV = Σ-cong (λ - → ≃-sym (≃-funext fe i -))
+      V = singleton-≃-𝟙 (singleton-types-are-singletons i)
+    VI = ≃-comp (Σ-cong (λ - → ≃-sym (≃-funext fe j -)))
+                (singleton-≃-𝟙 (singleton-types-are-singletons j))
+    VII = (Σ i' ꞉ (A → X) , Σ K ꞉ i ∼ i' ,
+            Σ j' ꞉ (B → X) , Σ L ꞉ j ∼ j' ,
+             Σ H' ꞉ (i' ∘ f ∼ j' ∘ g) ,
+              ∼-trans (K ∘ f) H' ∼ ∼-trans H (L ∘ g))           ≃⟨ IIIV ⟩
+          (Σ (i' , K) ꞉ (Σ i' ꞉ (A → X) , i ∼ i') ,
+            Σ j' ꞉ (B → X) , Σ L ꞉ j ∼ j' ,
+             Σ H' ꞉ (i' ∘ f ∼ j' ∘ g) ,
+              ∼-trans (K ∘ f) H' ∼ ∼-trans H (L ∘ g))           ≃⟨ IX ⟩
+           (Σ j' ꞉ (B → X) , Σ L ꞉ j ∼ j' ,
+             Σ H' ꞉ (i ∘ f ∼ j' ∘ g) ,
+              ∼-trans (∼-refl ∘ f) H' ∼ ∼-trans H (L ∘ g))      ≃⟨ XI ⟩
+           (Σ (j' , L) ꞉ (Σ j' ꞉ (B → X) , j ∼ j') ,
+             Σ H' ꞉ (i ∘ f ∼ j' ∘ g) ,
+              ∼-trans (∼-refl ∘ f) H' ∼ ∼-trans H (L ∘ g))      ≃⟨ XII ⟩
+           (Σ H' ꞉ (i ∘ f ∼ j ∘ g) ,
+             ∼-trans (∼-refl ∘ f) H' ∼ ∼-trans H (∼-refl ∘ g))  ≃⟨ XIII ⟩
+           (Σ H' ꞉ (i ∘ f ∼ j ∘ g) , H' ∼ H)                    ■
+     where
+      IIIV = ≃-sym Σ-assoc
+      IX = prop-indexed-sum (equiv-to-prop III 𝟙-is-prop) (i , ∼-refl)
+      XI = ≃-sym Σ-assoc
+      XII = prop-indexed-sum (equiv-to-prop VI 𝟙-is-prop) (j , ∼-refl)
+      XIII = Σ-cong (λ H' → Π-cong fe fe (λ c → ＝-cong (refl ∙ H' c)
+                    (∼-trans H (λ _ → refl) c) refl-left-neutral
+                      (refl-right-neutral (H c) ⁻¹)))
+    IXV = ≃-comp (Σ-cong (λ - → ≃-sym (≃-funext fe - H)))
+                 (singleton-≃-𝟙 (equiv-to-singleton (Σ-cong (λ - → ＝-flip))
+                 (singleton-types-are-singletons H)))
+
+cocone-identity-characterization : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇}
+                                   (f : C → A) (g : C → B) (X : 𝓣  ̇)
+                                 → (u u' : cocone f g X)
+                                 → (u ＝ u') ≃ (cocone-family f g X u u')
+cocone-identity-characterization f g X u u' =
+ (cocone-map f g X u u' ,
+   Yoneda-Theorem-forth u (cocone-map f g X u)
+                        (cocone-family-is-identity-system f g X u) u')
+
+inverse-cocone-map : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇}
+                     (f : C → A) (g : C → B) (X : 𝓣  ̇)
+                   → (u u' : cocone f g X)
+                   → cocone-family f g X u u'
+                   → u ＝ u'
+inverse-cocone-map f g X u u' =
+ ⌜ (cocone-identity-characterization f g X u u') ⌝⁻¹
+
+\end{code}
+
+Now we will use a record type to give the pushout, point and path constructors,
+and the induction principle along with propositional computation rules.
+
+\begin{code}
 
 record pushouts-exist {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇} (f : C → A) (g : C → B) : 𝓤ω
  where
@@ -83,8 +171,8 @@ record pushouts-exist {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇} (f : C → A)
 
 We will now observe that the pushout is a cocone and begin deriving some key
 results from the induction principle:
-recursion (along with corresponding computation rules), universal properties
-and uniqueness.
+recursion (along with corresponding computation rules), uniqueness and the
+universal property.
 
 \begin{code}
 
@@ -187,10 +275,7 @@ and uniqueness.
          ap s (glue c) ⁻¹ ∙ H (f c) ∙ ap s' (glue c)      ＝⟨ III ⟩
          H' (g c)                                         ∎
     where
-     II : transport (λ - → s - ＝ s' -) (glue c) (H (f c))
-        ＝ ap s (glue c) ⁻¹ ∙ H (f c) ∙ ap s' (glue c)
-     II = transport-lemma' (glue c) s s' (H (f c))
-     III : ap s (glue c) ⁻¹ ∙ H (f c) ∙ ap s' (glue c) ＝ H' (g c)
+     II = transport-after-ap' (glue c) s s' (H (f c))
      III =
       ap s (glue c) ⁻¹ ∙ H (f c) ∙ ap s' (glue c)   ＝⟨ IV ⟩
       ap s (glue c) ⁻¹ ∙ (H (f c) ∙ ap s' (glue c)) ＝⟨ V ⟩
@@ -214,48 +299,8 @@ and uniqueness.
                    (pushout-rec-comp-G (u ∘ inll) (u ∘ inrr) (∼-ap-∘ u glue)))
    ϕ-ψ : ϕ ∘ ψ ∼ id
    ϕ-ψ (l , r , G) =
-    ap ⌜ Σ-assoc ⌝ (to-Σ-＝ (to-×-＝ I II , dfunext fe III))
-    where
-     I = dfunext fe (pushout-rec-comp-l l r G)
-     II = dfunext fe (pushout-rec-comp-r l r G)
-     III : (c : C)
-         → transport (λ (l' , r') → l' ∘ f ∼ r' ∘ g) (to-×-＝ I II)
-                     (∼-ap-∘ (ψ (l , r , G)) glue) c
-         ＝ G c
-     III c = transport (λ (l' , r') → l' ∘ f ∼ r' ∘ g) (to-×-＝ I II)
-                       (∼-ap-∘ (ψ (l , r , G)) glue) c            ＝⟨ V ⟩
-             pushout-rec-comp-l l r G (f c) ⁻¹
-              ∙ ap (pushout-recursion l r G) (glue c)
-               ∙ pushout-rec-comp-r l r G (g c)                   ＝⟨ VI ⟩
-             pushout-rec-comp-l l r G (f c) ⁻¹
-              ∙ (ap (pushout-recursion l r G) (glue c)
-               ∙ pushout-rec-comp-r l r G (g c))                  ＝⟨ VII ⟩
-             G c                                                  ∎ 
-      where
-       IV : ap (pushout-recursion l r G) (glue c)
-              ∙ pushout-rec-comp-r l r G (g c)
-          ＝ pushout-rec-comp-l l r G (f c)
-              ∙ transport (λ (l' , r') → l' ∘ f ∼ r' ∘ g) (to-×-＝ I II)
-                          (∼-ap-∘ (ψ (l , r , G)) glue) c
-       IV = {!!} ⁻¹
-       V : transport (λ (l' , r') → l' ∘ f ∼ r' ∘ g) (to-×-＝ I II)
-                     (∼-ap-∘ (ψ (l , r , G)) glue) c
-         ＝ pushout-rec-comp-l l r G (f c) ⁻¹
-             ∙ ap (pushout-recursion l r G) (glue c)
-              ∙ pushout-rec-comp-r l r G (g c)
-       V = ap-left-inverse (pushout-rec-comp-l l r G (f c)) IV ⁻¹
-            ∙ (∙assoc (pushout-rec-comp-l l r G (f c) ⁻¹)
-                      (ap (pushout-recursion l r G) (glue c))
-                      (pushout-rec-comp-r l r G (g c))) ⁻¹
-       VI = ∙assoc (pushout-rec-comp-l l r G (f c) ⁻¹)
-                   (ap (pushout-recursion l r G) (glue c))
-                   (pushout-rec-comp-r l r G (g c))
-       VII = ap-left-inverse (pushout-rec-comp-l l r G (f c))
-                             (pushout-rec-comp-G l r G c)
-
+    inverse-cocone-map f g X ((ϕ ∘ ψ) (l , r , G)) (l , r , G)
+     (pushout-rec-comp-l l r G , pushout-rec-comp-r l r G ,
+      ∼-sym (pushout-rec-comp-G l r G))
+   
 \end{code}
-
-    dfunext fe (pushout-induction
-     (pushout-rec-comp-l (u ∘ inll) (u ∘ inrr) (∼-ap-∘ u glue))
-     (pushout-rec-comp-r (u ∘ inll) (u ∘ inrr) (∼-ap-∘ u glue))
-     I)

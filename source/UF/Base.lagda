@@ -582,29 +582,34 @@ ap-right-inverse' refl α = α
 
 \end{code}
 
-We will also add another transport lemma (this may already exist!)
+We will also add a result that says:
+given two maps, a path in the domain and a path in the codomain between the
+maps at the left endpoint then applying one map to the domain path and
+transporting along that path at the codomain path is the same as following the
+codomain path and applying the other map to the domain path.
+(this may already exist!)
 
 \begin{code}
 
-transport-lemma
+transport-after-ap
  : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {x x' : X}
  → (p : x ＝ x')
  → (s s' : X → Y)
  → (q : s x ＝ s' x)
  → ap s p ∙ transport (λ - → s - ＝ s' -) p q ＝ q ∙ ap s' p
-transport-lemma refl s s' q =
+transport-after-ap refl s s' q =
  ap s refl ∙ q  ＝⟨ ap (_∙ q) (ap-refl s) ⟩
  refl ∙ q       ＝⟨ refl-left-neutral ⟩
  q ∙ refl       ＝⟨ ap (q ∙_) (ap-refl s') ⟩
  q ∙ ap s' refl ∎ 
 
-transport-lemma'
+transport-after-ap'
  : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {x x' : X}
  → (p : x ＝ x')
  → (s s' : X → Y)
  → (q : s x ＝ s' x)
  → transport (λ - → s - ＝ s' -) p q ＝ ap s p ⁻¹ ∙ q ∙ ap s' p
-transport-lemma' refl s s' q =
+transport-after-ap' refl s s' q =
  q                             ＝⟨ refl-left-neutral ⁻¹ ⟩
  refl ∙ q                      ＝⟨ refl ⟩
  ap s refl ⁻¹ ∙ q ∙ ap s' refl ∎ 
