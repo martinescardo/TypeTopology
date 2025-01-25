@@ -1,8 +1,8 @@
 Ian Ray, 15th January 2025
 
-Pushouts defined as higher inductive type (in the form of records).
+Pushouts are defined as higher inductive type (in the form of a record type).
 We postulate point and path constructors, an induction principle and
-computation rules for each constructor.
+propositional computation rules for each constructor.
 
 \begin{code}
 
@@ -115,7 +115,7 @@ cocone-identity-characterization : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇}
 cocone-identity-characterization f g X u u' =
  (cocone-map f g X u u' ,
    Yoneda-Theorem-forth u (cocone-map f g X u)
-                        (cocone-family-is-identity-system f g X u) u')
+    (cocone-family-is-identity-system f g X u) u')
 
 inverse-cocone-map : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇}
                      (f : C → A) (g : C → B) (X : 𝓣  ̇)
