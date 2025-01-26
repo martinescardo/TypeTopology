@@ -501,4 +501,5 @@ September 19, 2022:
 ap-refl : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) {x : X}
         → ap f (𝓻𝓮𝒻𝓵 x) ＝ 𝓻𝓮𝒻𝓵 (f x)
 ap-refl f = refl
+
 \end{code}

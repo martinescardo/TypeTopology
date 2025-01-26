@@ -211,6 +211,7 @@ section following automatically.
    where
     I : ((h : p holds) → A (f h)) → A (extension ϕ p f)
     I = c p f
+
     II : ρ p f ∘ c p f ∼ id
     II g = dfunext fe'
                    (λ h → A-is-prop-valued (f h) ((ρ p f ∘ c p f) g h) (g h))
@@ -220,7 +221,9 @@ section following automatically.
                     → aflabby (Σ A) 𝓦
  subtype-is-aflabby A-is-prop-valued c =
   Σ-is-aflabby
-   (simplified-compatibility-condition-gives-compatibility-condition A-is-prop-valued c)
+   (simplified-compatibility-condition-gives-compatibility-condition
+     A-is-prop-valued
+     c)
 
 \end{code}
 

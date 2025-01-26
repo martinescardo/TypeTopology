@@ -165,7 +165,7 @@ We introduce names for the canonical maps induced by Π- and
 
 \end{code}
 
-In our applications, we will apply Π-flabbiness structure, and it will
+In our applications, we will use Π-flabbiness structure, and it will
 be easier to check compatibility-condition-Π than
 (compatibility-condition S universes-are-aflabby-Π).
 

@@ -393,13 +393,15 @@ Added by Ayberk Tosun on 2023-10-16.
 \begin{code}
 
 right-concatenation-preserves-membership : {X : 𝓤 ̇ } (x : X) (xs ys : List X)
-                                         → member x xs → member x (xs ++ ys)
+                                         → member x xs
+                                         → member x (xs ++ ys)
 right-concatenation-preserves-membership x xs@(x′ ∷ _)   ys in-head = in-head
 right-concatenation-preserves-membership x xs@(x′ ∷ xs′) ys (in-tail p) =
  in-tail (right-concatenation-preserves-membership x xs′ ys p)
 
 left-concatenation-preserves-membership : {X : 𝓤 ̇ } (x : X) (xs ys : List X)
-                                      → member x xs → member x (ys ++ xs)
+                                      → member x xs
+                                      → member x (ys ++ xs)
 left-concatenation-preserves-membership x xs []       p = p
 left-concatenation-preserves-membership x xs (y ∷ ys) p = †
  where
@@ -407,7 +409,8 @@ left-concatenation-preserves-membership x xs (y ∷ ys) p = †
   † = in-tail (left-concatenation-preserves-membership x xs ys p)
 
 ++-membership₁ : {X : 𝓤 ̇ } (x : X) (xs ys : List X)
-               → member x (xs ++ ys) → member x xs + member x ys
+               → member x (xs ++ ys)
+               → member x xs + member x ys
 ++-membership₁ x []       zs p           = inr p
 ++-membership₁ x (x ∷ ys) zs in-head     = inl in-head
 ++-membership₁ x (y ∷ ys) zs (in-tail p) = cases † ‡ (++-membership₁ x ys zs p)
