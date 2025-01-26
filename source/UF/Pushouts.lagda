@@ -127,6 +127,79 @@ inverse-cocone-map f g X u u' =
 
 \end{code}
 
+Now we will define the universal property, induction principle and propositional
+computation rules for pushouts and show they are inter-derivable.
+
+\begin{code}
+
+Pushout-Universal-Property
+ : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇} (S : 𝓤'  ̇) (X : 𝓣  ̇)
+   (f : C → A) (g : C → B) (i : A → S) (j : B → S) (G : i ∘ f ∼ j ∘ g) 
+ → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓤' ⊔ 𝓣  ̇
+Pushout-Universal-Property S X f g i j G 
+ = (S → X) ≃ cocone f g X
+
+Pushout-Induction-Principle
+ : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇} (S : 𝓤'  ̇) (P : S → 𝓣  ̇)
+   (f : C → A) (g : C → B) (i : A → S) (j : B → S) (G : i ∘ f ∼ j ∘ g)
+ → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓤' ⊔ 𝓣  ̇
+Pushout-Induction-Principle {_} {_} {_} {_} {_} {A} {B} {C} S P f g i j G 
+ = (l : (a : A) → P (i a))
+ → (r : (b : B) → P (j b))
+ → ((c : C) → transport P (G c) (l (f c)) ＝ r (g c))
+ → (x : S) → P x
+
+Pushout-Propositional-Computation-Rule₁
+ : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇} (S : 𝓤'  ̇) (P : S → 𝓣  ̇)
+   (f : C → A) (g : C → B) (i : A → S) (j : B → S) (G : i ∘ f ∼ j ∘ g)
+   (S-ind : Pushout-Induction-Principle S P f g i j G)
+ → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣  ̇
+Pushout-Propositional-Computation-Rule₁
+ {_} {_} {_} {_} {_} {A} {B} {C} S P f g i j G S-ind
+ = (l : (a : A) → P (i a))
+ → (r : (b : B) → P (j b))
+ → (H : (c : C) → transport P (G c) (l (f c)) ＝ r (g c))
+ → (a : A)
+ → S-ind l r H (i a) ＝ l a
+
+Pushout-Propositional-Computation-Rule₂
+ : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇} (S : 𝓤'  ̇) (P : S → 𝓣  ̇)
+   (f : C → A) (g : C → B) (i : A → S) (j : B → S) (G : i ∘ f ∼ j ∘ g)
+   (S-ind : Pushout-Induction-Principle S P f g i j G)
+ → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣  ̇
+Pushout-Propositional-Computation-Rule₂
+ {_} {_} {_} {_} {_} {A} {B} {C} S P f g i j G S-ind
+ = (l : (a : A) → P (i a))
+ → (r : (b : B) → P (j b))
+ → (H : (c : C) → transport P (G c) (l (f c)) ＝ r (g c))
+ → (b : B)
+ → S-ind l r H (j b) ＝ r b
+
+Pushout-Propositional-Computation-Rule₃
+ : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇} (S : 𝓤'  ̇) (P : S → 𝓣  ̇)
+   (f : C → A) (g : C → B) (i : A → S) (j : B → S) (G : i ∘ f ∼ j ∘ g)
+   (S-ind : Pushout-Induction-Principle S P f g i j G)
+   (S-comp₁ : Pushout-Propositional-Computation-Rule₁ S P f g i j G S-ind)
+   (S-comp₂ : Pushout-Propositional-Computation-Rule₂ S P f g i j G S-ind)
+ → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣  ̇
+Pushout-Propositional-Computation-Rule₃
+ {_} {_} {_} {_} {_}{A} {B} {C} S P f g i j G S-ind S-comp₁ S-comp₂
+ = (l : (a : A) → P (i a))
+ → (r : (b : B) → P (j b))
+ → (H : (c : C) → transport P (G c) (l (f c)) ＝ r (g c))
+ → (c : C)
+ → apd (S-ind l r H) (G c) ∙ S-comp₂ l r H (g c)
+ ＝ ap (transport P (G c)) (S-comp₁ l r H (f c)) ∙ H c
+
+Pushout-Universal-Property-implies-Induction
+ : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇} (S : 𝓤'  ̇) (X : 𝓣  ̇) (P : S → 𝓣  ̇)
+   (f : C → A) (g : C → B) (i : A → S) (j : B → S) (G : i ∘ f ∼ j ∘ g)
+ → Pushout-Universal-Property S X f g i j G
+ → Pushout-Induction-Principle S P f g i j G
+Pushout-Universal-Property-implies-Induction = ?
+
+\end{code}
+
 Now we will use a record type to give the pushout, point and path constructors,
 and the induction principle along with propositional computation rules.
 
