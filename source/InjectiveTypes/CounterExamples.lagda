@@ -445,3 +445,59 @@ standard apartness), ℕ∞ (again because it is totally
 separated).
 
 TODO. Maybe we can list a few more interesting examples?
+
+\end{code}
+
+Added 27 January 2025 by Tom de Jong.
+
+We try to generalize non-trivial-totally-separated-ainjective-type-gives-¬¬-WEM
+from Taboos.Decomposability to derive ¬¬ WEM from the assumption of a
+non-trivial injective type with a tight apartness.
+
+However, the result is not a true generalization as the universe parameters are
+more restricted than in the original
+non-trivial-totally-separated-ainjective-type-gives-¬¬-WEM.
+
+\begin{code}
+
+non-trivial-ainjective-type-with-tight-apartness-gives-¬¬-WEM
+ : (Σ X ꞉ 𝓤 ̇ , ((¬ is-prop X)
+             × ainjective-type X 𝓤 𝓥
+             × (Σ _♯_ ꞉ (X → X → 𝓣 ̇  ) , (is-apartness _♯_ × is-tight _♯_))))
+ → ¬¬ typal-WEM 𝓤
+non-trivial-ainjective-type-with-tight-apartness-gives-¬¬-WEM
+ {𝓤} {𝓥} {𝓣} (X , X-not-prop , X-inj , (_♯_ , ♯-is-apartness , ♯-is-tight)) =
+  ¬¬-functor (decomposition-of-ainjective-type-gives-WEM pe' X X-inj) IV
+   where
+    I : (x y : X) → (x ♯ y) → typal-WEM 𝓤
+    I x y a = ainjective-type-with-non-trivial-apartness-gives-WEM
+               X-inj
+               ((_♯_ , ♯-is-apartness) , ((x , y) , a))
+
+    II : (x y : X) → (x ♯ y) → decomposition X
+    II x y a = WEM-gives-decomposition-of-two-pointed-types
+                 (I x y a)
+                 X
+                 ((x , y) , not-equal-if-apart _♯_ ♯-is-apartness a)
+
+    III : ¬ decomposition X → is-prop X
+    III ν x y = ♯-is-tight x y (λ (a : x ♯ y) → ν (II x y a))
+
+    IV : ¬¬ decomposition X
+    IV = contrapositive III X-not-prop
+
+open import TypeTopology.TotallySeparated
+
+non-trivial-totally-separated-ainjective-type-gives-¬¬-WEM'
+ : (Σ X ꞉ 𝓤 ̇ , ((¬ is-prop X) × is-totally-separated X × ainjective-type X 𝓤 𝓥))
+ → ¬¬ typal-WEM 𝓤
+non-trivial-totally-separated-ainjective-type-gives-¬¬-WEM'
+ (X , X-not-prop , X-tot-sep , X-inj) =
+  non-trivial-ainjective-type-with-tight-apartness-gives-¬¬-WEM
+   (  X , X-not-prop , X-inj
+    , _♯₂_ , ♯₂-is-apartness
+    , totally-separated-gives-totally-separated₃ X-tot-sep)
+    where
+     open total-separatedness-via-apartness pt
+
+\end{code}
