@@ -121,6 +121,11 @@ module Apartness (pt : propositional-truncations-exist) where
                            → is-cotransitive _♯_
  apartness-is-cotransitive _♯_ (p , i , s , c) = c
 
+ not-equal-if-apart : {X : 𝓤 ̇ } (_♯_ : X → X → 𝓥 ̇ )
+                    → is-apartness _♯_
+                    → {x y : X} → x ♯ y → x ≠ y
+ not-equal-if-apart _♯_ a {x} {y} h refl = apartness-is-irreflexive _♯_ a x h
+
  not-not-equal-not-apart : {X : 𝓤 ̇ } (x y : X) (_♯_ : X → X → 𝓥 ̇ )
                          → is-apartness _♯_
                          → ¬¬ (x ＝ y)
