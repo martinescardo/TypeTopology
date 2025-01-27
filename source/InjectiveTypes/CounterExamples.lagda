@@ -451,8 +451,8 @@ TODO. Maybe we can list a few more interesting examples?
 Added 27 January 2025 by Tom de Jong.
 
 We try to generalize non-trivial-totally-separated-ainjective-type-gives-¬¬-WEM
-from Taboos.Decompsability to derive ¬¬ WEM from the assumption of a non-trivial
-injective type with a tight apartness.
+from Taboos.Decomposability to derive ¬¬ WEM from the assumption of a
+non-trivial injective type with a tight apartness.
 
 However, the result is not a true generalization as the universe parameters are
 more restricted than in the original
