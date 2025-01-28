@@ -17,6 +17,7 @@ open import UF.Base
 open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.PropIndexedPiSigma
+open import UF.Retracts
 open import UF.Subsingletons
 open import UF.Yoneda
 
@@ -181,6 +182,9 @@ We will not show
 (3) Is shown in the Agda Unimath library (*link*). It involves something called
 the pullback property of pushouts which we wish to avoid exploring for now.*
 
+In general, we know that the universal property of (higher) inductive types is
+equivalent to the induction principle with propositional computation rules.
+
 \begin{code}
 
 canonical-map-to-cocone
@@ -191,17 +195,17 @@ canonical-map-to-cocone S f g (i , j , G) X u =
  (u ∘ i , u ∘ j , ∼-ap-∘ u G)
 
 Pushout-Universal-Property
- : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇} (S : 𝓤'  ̇) (X : 𝓣  ̇)
-   (f : C → A) (g : C → B) (s : cocone f g S) 
+ : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇} (S : 𝓤'  ̇) 
+   (f : C → A) (g : C → B) (s : cocone f g S) (X : 𝓣  ̇)
  → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓤' ⊔ 𝓣  ̇
-Pushout-Universal-Property S X f g s 
+Pushout-Universal-Property S f g s X
  = is-equiv (canonical-map-to-cocone S f g s X)
 
-dependent-canonical-map-to-cocone
+canonical-map-to-dependent-cocone
  : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇} (S : 𝓤'  ̇)
    (f : C → A) (g : C → B) (s : cocone f g S) (P : S →  𝓣  ̇)
  → ((x : S) → P x) → dependent-cocone f g S s P
-dependent-canonical-map-to-cocone S f g (i , j , G) P d =
+canonical-map-to-dependent-cocone S f g (i , j , G) P d =
  (d ∘ i , d ∘ j , λ c → apd d (G c))
 
 Pushout-Dependent-Universal-Property
@@ -209,7 +213,7 @@ Pushout-Dependent-Universal-Property
    (f : C → A) (g : C → B) (s : cocone f g S) (P : S →  𝓣  ̇)
  → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓤' ⊔ 𝓣  ̇
 Pushout-Dependent-Universal-Property S f g s P =
- is-equiv (dependent-canonical-map-to-cocone S f g s P)
+ is-equiv (canonical-map-to-dependent-cocone S f g s P)
 
 Pushout-Induction-Principle
  : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇} (S : 𝓤'  ̇)
@@ -268,7 +272,45 @@ Pushout-Dependent-Universal-Property-implies-Induction
    (f : C → A) (g : C → B) (s : cocone f g S)
  → ((P : S → 𝓣  ̇) → Pushout-Dependent-Universal-Property S f g s P)
  → ((P : S → 𝓣  ̇) → Pushout-Induction-Principle S f g s P)
-Pushout-Dependent-Universal-Property-implies-Induction = {!!}
+Pushout-Dependent-Universal-Property-implies-Induction
+ S f g s dep-UP P l r G = inv (l , r , G)
+ where
+  inv : dependent-cocone f g S s P
+      → ((x : S) → P x)
+  inv = ⌜ (canonical-map-to-dependent-cocone S f g s P , dep-UP P) ⌝⁻¹
+
+Pushout-Dependent-Universal-Property-implies-Computation-Rule₁
+ : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇} (S : 𝓤'  ̇) 
+   (f : C → A) (g : C → B) (s : cocone f g S)
+ → (S-UP : (P : S → 𝓣  ̇) → Pushout-Dependent-Universal-Property S f g s P)
+ → (P : S → 𝓣  ̇) → Pushout-Computation-Rule₁ S f g s P
+    (Pushout-Dependent-Universal-Property-implies-Induction S f g s S-UP P)
+Pushout-Dependent-Universal-Property-implies-Computation-Rule₁
+ S f g (i , j , G) S-UP P l r H a = {!!}
+ where
+  H' : is-equiv (canonical-map-to-dependent-cocone S f g (i , j , G) P)
+     → is-section (canonical-map-to-dependent-cocone S f g (i , j , G) P)
+  H' =
+   equivs-are-sections (canonical-map-to-dependent-cocone S f g (i , j , G) P)
+  H'-eq : retraction-of
+           (canonical-map-to-dependent-cocone S f g (i , j , G) P)
+            (pr₂ (S-UP P))
+             ∘ canonical-map-to-dependent-cocone S f g (i , j , G) P
+        ∼ id
+  H'-eq =
+   retraction-equation (canonical-map-to-dependent-cocone S f g (i , j , G) P)
+                       (H' (S-UP P))
+  H'' : is-equiv (canonical-map-to-dependent-cocone S f g (i , j , G) P)
+      → has-section (canonical-map-to-dependent-cocone S f g (i , j , G) P)
+  H'' =
+   equivs-have-sections (canonical-map-to-dependent-cocone S f g (i , j , G) P)
+  H''-eq : canonical-map-to-dependent-cocone S f g (i , j , G) P ∘
+            section-of (canonical-map-to-dependent-cocone S f g (i , j , G) P)
+             (pr₁ (S-UP (λ v → P v)))
+         ∼ id
+  H''-eq =
+   section-equation (canonical-map-to-dependent-cocone S f g (i , j , G) P)
+                    (H'' (S-UP P))
 
 Pushout-Induction-and-Computation-implies-Universal-Property
  : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇} (S : 𝓤'  ̇)
@@ -278,40 +320,13 @@ Pushout-Induction-and-Computation-implies-Universal-Property
    (S-comp₂ : (P : S → 𝓣  ̇) → Pushout-Computation-Rule₂ S f g s P (S-ind P))
  → ((P : S → 𝓣  ̇)
   → Pushout-Computation-Rule₃ S f g s P (S-ind P) (S-comp₁ P) (S-comp₂ P))
- → ((X : 𝓣  ̇) → Pushout-Universal-Property S X f g s)
+ → ((X : 𝓣  ̇) → Pushout-Universal-Property S f g s X)
 Pushout-Induction-and-Computation-implies-Universal-Property = {!!}
 
 \end{code}
 
 Now we will use a record type to give the pushout, point and path constructors,
 and the induction principle along with propositional computation rules.
-
-Commenting out the fleshed out induction principle to test the named version
-given above
-
-   → (l : (a : A) → P (inll a))
-   → (r : (b : B) → P (inrr b))
-   → ((c : C) → transport P (glue c) (l (f c)) ＝ r (g c))
-   → (x : pushout) → P x
-
-   → (l : (a : A) → P (inll a))
-   → (r : (b : B) → P (inrr b))
-   → (G : (c : C) → transport P (glue c) (l (f c)) ＝ r (g c))
-   → (a : A)
-   → pushout-induction l r G (inll a) ＝ l a 
-
-   → (l : (a : A) → P (inll a))
-   → (r : (b : B) → P (inrr b))
-   → (G : (c : C) → transport P (glue c) (l (f c)) ＝ r (g c))
-   → (b : B)
-   → pushout-induction l r G (inrr b) ＝ r b
-
-   → (l : (a : A) → P (inll a))
-   → (r : (b : B) → P (inrr b))
-   → (G : (c : C) → transport P (glue c) (l (f c)) ＝ r (g c))
-   → (c : C)
-   → apd (pushout-induction l r G) (glue c) ∙ pushout-ind-comp-r l r G (g c)
-   ＝ ap (transport P (glue c)) (pushout-ind-comp-l l r G (f c)) ∙ G c
 
 \begin{code}
 
@@ -435,7 +450,7 @@ universal property.
                     → (H : (a : A) → s (inll a) ＝ s' (inll a))
                     → (H' : (b : B) → s (inrr b) ＝ s' (inrr b))
                     → (G : (c : C)
-                         → ap s (glue c) ∙ H' (g c) ＝ H (f c) ∙ ap s' (glue c))
+                      → ap s (glue c) ∙ H' (g c) ＝ H (f c) ∙ ap s' (glue c))
                     → (x : pushout) → s x ＝ s' x
  pushout-uniqueness X s s' H H' G =
   pushout-induction H H' I
@@ -455,12 +470,13 @@ universal property.
        IV = ∙assoc (ap s (glue c) ⁻¹) (H (f c)) (ap s' (glue c))
        V = ap-left-inverse (ap s (glue c)) (G c ⁻¹)
    
- pushout-universal-property : (X : 𝓣 ̇)
-                            → (pushout → X) ≃ cocone f g X
- pushout-universal-property X = qinveq ϕ (ψ , ψ-ϕ , ϕ-ψ)
+ pushout-universal-property
+  : (X : 𝓣 ̇)
+  → Pushout-Universal-Property pushout f g (inll , inrr , glue) X
+ pushout-universal-property X = ((ψ , ϕ-ψ) , (ψ , ψ-ϕ))
   where
    ϕ : (pushout → X) → cocone f g X
-   ϕ u = (u ∘ inll , u ∘ inrr , ∼-ap-∘ u glue)
+   ϕ u = canonical-map-to-cocone pushout f g (inll , inrr , glue) X u
    ψ : cocone f g X → (pushout → X)
    ψ (l , r , G) = pushout-recursion l r G
    ψ-ϕ : ψ ∘ ϕ ∼ id
