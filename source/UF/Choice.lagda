@@ -31,6 +31,9 @@ univalent axiom, and, moreover, gives that
 (one can secretly reveal secrets always), which is equivalent to
 choice where X is a proposition (see https://arxiv.org/abs/1610.03346).
 
+And there are also a number of other equivalent formulations of the
+axiom of choice.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}
@@ -593,7 +596,6 @@ module choice-functions
       → X
       → (Σ ε ꞉ (𝓟 X → X) , ((A : 𝓟 X) → is-inhabited A → ε A ∈ A))
    II (ε⁺ , f) x = ε , ε-behaviour
-
     where
      ε' : (A : 𝓟 X) → is-decidable (is-inhabited A) → X
      ε' A (inl i) = ε⁺ (A , i)
