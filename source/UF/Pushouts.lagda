@@ -267,66 +267,10 @@ Pushout-Computation-Rule₃
  → apd (S-ind l r H) (G c) ∙ S-comp₂ l r H (g c)
  ＝ ap (transport P (G c)) (S-comp₁ l r H (f c)) ∙ H c
 
-Pushout-Dependent-Universal-Property-implies-Induction
- : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇} (S : 𝓤'  ̇) 
-   (f : C → A) (g : C → B) (s : cocone f g S)
- → ((P : S → 𝓣  ̇) → Pushout-Dependent-Universal-Property S f g s P)
- → ((P : S → 𝓣  ̇) → Pushout-Induction-Principle S f g s P)
-Pushout-Dependent-Universal-Property-implies-Induction
- S f g s dep-UP P l r G = inv (l , r , G)
- where
-  inv : dependent-cocone f g S s P
-      → ((x : S) → P x)
-  inv = ⌜ (canonical-map-to-dependent-cocone S f g s P , dep-UP P) ⌝⁻¹
-
-Pushout-Dependent-Universal-Property-implies-Computation-Rule₁
- : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇} (S : 𝓤'  ̇) 
-   (f : C → A) (g : C → B) (s : cocone f g S)
- → (S-UP : (P : S → 𝓣  ̇) → Pushout-Dependent-Universal-Property S f g s P)
- → (P : S → 𝓣  ̇) → Pushout-Computation-Rule₁ S f g s P
-    (Pushout-Dependent-Universal-Property-implies-Induction S f g s S-UP P)
-Pushout-Dependent-Universal-Property-implies-Computation-Rule₁
- S f g (i , j , G) S-UP P l r H a = {!!}
- where
-  H' : is-equiv (canonical-map-to-dependent-cocone S f g (i , j , G) P)
-     → is-section (canonical-map-to-dependent-cocone S f g (i , j , G) P)
-  H' =
-   equivs-are-sections (canonical-map-to-dependent-cocone S f g (i , j , G) P)
-  H'-eq : retraction-of
-           (canonical-map-to-dependent-cocone S f g (i , j , G) P)
-            (pr₂ (S-UP P))
-             ∘ canonical-map-to-dependent-cocone S f g (i , j , G) P
-        ∼ id
-  H'-eq =
-   retraction-equation (canonical-map-to-dependent-cocone S f g (i , j , G) P)
-                       (H' (S-UP P))
-  H'' : is-equiv (canonical-map-to-dependent-cocone S f g (i , j , G) P)
-      → has-section (canonical-map-to-dependent-cocone S f g (i , j , G) P)
-  H'' =
-   equivs-have-sections (canonical-map-to-dependent-cocone S f g (i , j , G) P)
-  H''-eq : canonical-map-to-dependent-cocone S f g (i , j , G) P ∘
-            section-of (canonical-map-to-dependent-cocone S f g (i , j , G) P)
-             (pr₁ (S-UP (λ v → P v)))
-         ∼ id
-  H''-eq =
-   section-equation (canonical-map-to-dependent-cocone S f g (i , j , G) P)
-                    (H'' (S-UP P))
-
-Pushout-Induction-and-Computation-implies-Universal-Property
- : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇} (S : 𝓤'  ̇)
-   (f : C → A) (g : C → B) (s : cocone f g S)
-   (S-ind : (P : S → 𝓣  ̇) → Pushout-Induction-Principle S f g s P)
-   (S-comp₁ : (P : S → 𝓣  ̇) → Pushout-Computation-Rule₁ S f g s P (S-ind P))
-   (S-comp₂ : (P : S → 𝓣  ̇) → Pushout-Computation-Rule₂ S f g s P (S-ind P))
- → ((P : S → 𝓣  ̇)
-  → Pushout-Computation-Rule₃ S f g s P (S-ind P) (S-comp₁ P) (S-comp₂ P))
- → ((X : 𝓣  ̇) → Pushout-Universal-Property S f g s X)
-Pushout-Induction-and-Computation-implies-Universal-Property = {!!}
-
 \end{code}
 
 Now we will use a record type to give the pushout, point and path constructors,
-and the induction principle along with propositional computation rules.
+and the dependent universal property.
 
 \begin{code}
 
@@ -337,33 +281,76 @@ record pushouts-exist {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇} (f : C → A)
   inll : A → pushout 
   inrr : B → pushout 
   glue : (c : C) → inll (f c) ＝ inrr (g c)
-  pushout-induction
+  pushout-dependent-universal-property
    : {P : pushout → 𝓣  ̇}
-   → Pushout-Induction-Principle pushout f g (inll , inrr , glue) P
-  pushout-ind-comp-l
-   : {P : pushout → 𝓣  ̇}
-   → Pushout-Computation-Rule₁ pushout f g (inll , inrr , glue) P
-      pushout-induction
-  pushout-ind-comp-r
-   : {P : pushout → 𝓣  ̇}
-   → Pushout-Computation-Rule₂ pushout f g (inll , inrr , glue) P
-      pushout-induction
-  pushout-ind-comp-G
-   : {P : pushout → 𝓣  ̇}
-   → Pushout-Computation-Rule₃ pushout f g (inll , inrr , glue) P
-      pushout-induction pushout-ind-comp-l pushout-ind-comp-r
+   → Pushout-Dependent-Universal-Property pushout f g (inll , inrr , glue) P
 
 \end{code}
 
-We will now observe that the pushout is a cocone and begin deriving some key
-results from the induction principle:
-recursion (along with corresponding computation rules), uniqueness and the
-universal property.
+We will observe that the pushout is a cocone and begin deriving some key
+results from the dependent universal property:
+induction and recursion principles (along with corresponding computation rules), the uniqueness principle and the non-dependent universal property.
+
+TODO. Show that the non-dependent universal property implies the dependent
+universal property. This will establish the logical equivalence between
+
+1) The dependent universal property
+2) The induction principle with propositional computation rules
+3) The recursion principle with propositional computation rules and the
+   uniqueness principle
+4) The non-dependent universal property.
 
 \begin{code}
 
  pushout-cocone : cocone f g pushout
  pushout-cocone = (inll , inrr , glue)
+
+ pushout-dep-UP-inverse : {P : pushout → 𝓣  ̇}
+                        → dependent-cocone f g pushout (inll , inrr , glue) P
+                        → ((x : pushout) → P x)
+ pushout-dep-UP-inverse {_} {P}
+  = inverse (canonical-map-to-dependent-cocone pushout f g (inll , inrr , glue) P)
+     pushout-dependent-universal-property
+
+ pushout-dep-UP-section
+  : {P : pushout → 𝓣  ̇}
+  → pushout-dep-UP-inverse
+   ∘ canonical-map-to-dependent-cocone pushout f g (inll , inrr , glue) P
+  ∼ id
+ pushout-dep-UP-section {_} {P}
+  = {!!}
+
+ pushout-dep-UP-retraction
+  : {P : pushout → 𝓣  ̇}
+  → canonical-map-to-dependent-cocone pushout f g (inll , inrr , glue) P
+     ∘ pushout-dep-UP-inverse
+  ∼ id
+ pushout-dep-UP-retraction {_} {P}
+  = retraction-equation pushout-dep-UP-inverse
+     (equivs-are-sections pushout-dep-UP-inverse {!!})
+
+ pushout-induction
+  : {P : pushout → 𝓣  ̇}
+  → Pushout-Induction-Principle pushout f g (inll , inrr , glue) P
+ pushout-induction {_} {P} l r G = pushout-dep-UP-inverse (l , r , G)
+
+ pushout-ind-comp-inll
+  : {P : pushout → 𝓣  ̇}
+  → Pushout-Computation-Rule₁ pushout f g (inll , inrr , glue) P
+     pushout-induction
+ pushout-ind-comp-inll l r H a = {!!}
+  
+ pushout-ind-comp-inrr
+  : {P : pushout → 𝓣  ̇}
+  → Pushout-Computation-Rule₂ pushout f g (inll , inrr , glue) P
+     pushout-induction
+ pushout-ind-comp-inrr l r H b = {!!}
+  
+ pushout-ind-comp-glue
+  : {P : pushout → 𝓣  ̇}
+  → Pushout-Computation-Rule₃ pushout f g (inll , inrr , glue) P
+     pushout-induction pushout-ind-comp-inll pushout-ind-comp-inrr
+ pushout-ind-comp-glue l r H c = {!!}
    
  pushout-recursion : {D : 𝓣  ̇}
                    → (l : A → D)
@@ -373,75 +360,76 @@ universal property.
  pushout-recursion l r G =
   pushout-induction l r (λ c → (transport-const (glue c) ∙ G c))
 
- pushout-rec-comp-l : {D : 𝓣  ̇}
-                    → (l : A → D)
-                    → (r : B → D)
-                    → (G : (c : C) → l (f c) ＝ r (g c))
-                    → (a : A)
-                    → pushout-recursion l r G (inll a) ＝ l a
- pushout-rec-comp-l l r G =
-  pushout-ind-comp-l l r (λ c → (transport-const (glue c) ∙ G c))
+ pushout-rec-comp-inll : {D : 𝓣  ̇}
+                       → (l : A → D)
+                       → (r : B → D)
+                       → (G : (c : C) → l (f c) ＝ r (g c))
+                       → (a : A)
+                       → pushout-recursion l r G (inll a) ＝ l a
+ pushout-rec-comp-inll l r G =
+  pushout-ind-comp-inll l r (λ c → (transport-const (glue c) ∙ G c))
 
- pushout-rec-comp-r : {D : 𝓣  ̇}
-                    → (l : A → D)
-                    → (r : B → D)
-                    → (G : (c : C) → l (f c) ＝ r (g c))
-                    → (b : B)
-                    → pushout-recursion l r G (inrr b) ＝ r b
- pushout-rec-comp-r l r G =
-  pushout-ind-comp-r l r (λ c → (transport-const (glue c) ∙ G c))
+ pushout-rec-comp-inrr : {D : 𝓣  ̇}
+                       → (l : A → D)
+                       → (r : B → D)
+                       → (G : (c : C) → l (f c) ＝ r (g c))
+                       → (b : B)
+                       → pushout-recursion l r G (inrr b) ＝ r b
+ pushout-rec-comp-inrr l r G =
+  pushout-ind-comp-inrr l r (λ c → (transport-const (glue c) ∙ G c))
 
- pushout-rec-comp-G
+ pushout-rec-comp-glue
   : {D : 𝓣  ̇}
   → (l : A → D)
   → (r : B → D)
   → (G : (c : C) → l (f c) ＝ r (g c))
   → (c : C)
-  → ap (pushout-recursion l r G) (glue c) ∙ pushout-rec-comp-r l r G (g c) 
-  ＝ pushout-rec-comp-l l r G (f c) ∙ G c
- pushout-rec-comp-G {𝓣} {D} l r G c =
-  ap (pushout-recursion l r G) (glue c) ∙ pushout-rec-comp-r l r G (g c)                                                                    ＝⟨ III ⟩
+  → ap (pushout-recursion l r G) (glue c) ∙ pushout-rec-comp-inrr l r G (g c) 
+  ＝ pushout-rec-comp-inll l r G (f c) ∙ G c
+ pushout-rec-comp-glue {𝓣} {D} l r G c =
+  ap (pushout-recursion l r G) (glue c) ∙ pushout-rec-comp-inrr l r G (g c)                                                                 ＝⟨ III ⟩
   transport-const (glue c) ⁻¹ ∙ apd (pushout-recursion l r G) (glue c)
-   ∙ pushout-rec-comp-r l r G (g c)                         ＝⟨ V ⟩
+   ∙ pushout-rec-comp-inrr l r G (g c)                      ＝⟨ V ⟩
   transport-const (glue c) ⁻¹
-    ∙ ap (transport (λ - → D) (glue c)) (pushout-rec-comp-l l r G (f c))
+    ∙ ap (transport (λ - → D) (glue c)) (pushout-rec-comp-inll l r G (f c))
     ∙ (transport-const (glue c) ∙ G c)                      ＝⟨ VI ⟩
   transport-const (glue c) ⁻¹
-    ∙ ap (transport (λ - → D) (glue c)) (pushout-rec-comp-l l r G (f c))
+    ∙ ap (transport (λ - → D) (glue c)) (pushout-rec-comp-inll l r G (f c))
     ∙ transport-const (glue c) ∙ G c                        ＝⟨ IX ⟩
-  pushout-rec-comp-l l r G (f c) ∙ G c                      ∎
+  pushout-rec-comp-inll l r G (f c) ∙ G c                      ∎
   where
    II : ap (pushout-recursion l r G) (glue c)
       ＝ transport-const (glue c) ⁻¹
          ∙ apd (pushout-induction l r (λ - → (transport-const (glue -) ∙ G -)))
                (glue c)
    II = apd-from-ap (pushout-recursion l r G) (glue c)
-   III = ap (_∙ pushout-rec-comp-r l r G (g c)) II 
-   IV : apd (pushout-recursion l r G) (glue c) ∙ pushout-rec-comp-r l r G (g c)
-      ＝ ap (transport (λ - → D) (glue c)) (pushout-rec-comp-l l r G (f c))
+   III = ap (_∙ pushout-rec-comp-inrr l r G (g c)) II 
+   IV : apd (pushout-recursion l r G) (glue c)
+       ∙ pushout-rec-comp-inrr l r G (g c)
+      ＝ ap (transport (λ - → D) (glue c)) (pushout-rec-comp-inll l r G (f c))
        ∙ (transport-const (glue c) ∙ G c)
-   IV = pushout-ind-comp-G l r (λ - → (transport-const (glue -) ∙ G -)) c
+   IV = pushout-ind-comp-glue l r (λ - → (transport-const (glue -) ∙ G -)) c
    V : transport-const (glue c) ⁻¹ ∙ apd (pushout-recursion l r G) (glue c)
-        ∙ pushout-rec-comp-r l r G (g c)
+        ∙ pushout-rec-comp-inrr l r G (g c)
      ＝ transport-const (glue c) ⁻¹
-        ∙ ap (transport (λ - → D) (glue c)) (pushout-rec-comp-l l r G (f c))
+        ∙ ap (transport (λ - → D) (glue c)) (pushout-rec-comp-inll l r G (f c))
         ∙ (transport-const (glue c) ∙ G c)
    V = ap-on-left-is-assoc (transport-const (glue c) ⁻¹) IV
    VI = ∙assoc (transport-const (glue c) ⁻¹ ∙ ap (transport (λ - → D) (glue c))
-               (pushout-rec-comp-l l r G (f c))) (transport-const (glue c))
+               (pushout-rec-comp-inll l r G (f c))) (transport-const (glue c))
                (G c) ⁻¹
-   VII : ap (transport (λ - → D) (glue c)) (pushout-rec-comp-l l r G (f c))
+   VII : ap (transport (λ - → D) (glue c)) (pushout-rec-comp-inll l r G (f c))
          ∙ transport-const (glue c)
-       ＝ transport-const (glue c) ∙ pushout-rec-comp-l l r G (f c)
+       ＝ transport-const (glue c) ∙ pushout-rec-comp-inll l r G (f c)
    VII = homotopies-are-natural (transport (λ - → D) (glue c)) id
           (λ - → transport-const (glue c)) ⁻¹
    VIII : transport-const (glue c) ⁻¹
-        ∙ ap (transport (λ - → D) (glue c)) (pushout-rec-comp-l l r G (f c))
+        ∙ ap (transport (λ - → D) (glue c)) (pushout-rec-comp-inll l r G (f c))
         ∙ transport-const (glue c)
-     ＝ pushout-rec-comp-l l r G (f c)
+     ＝ pushout-rec-comp-inll l r G (f c)
    VIII = ∙assoc (transport-const (glue c) ⁻¹)
                  (ap (transport (λ - → D) (glue c))
-                 (pushout-rec-comp-l l r G (f c))) (transport-const (glue c))
+                 (pushout-rec-comp-inll l r G (f c))) (transport-const (glue c))
           ∙ ap-left-inverse (transport-const (glue c)) VII 
    IX = ap (_∙ G c) VIII
 
@@ -462,10 +450,9 @@ universal property.
          H' (g c)                                         ∎
     where
      II = transport-after-ap' (glue c) s s' (H (f c))
-     III =
-      ap s (glue c) ⁻¹ ∙ H (f c) ∙ ap s' (glue c)   ＝⟨ IV ⟩
-      ap s (glue c) ⁻¹ ∙ (H (f c) ∙ ap s' (glue c)) ＝⟨ V ⟩
-      H' (g c)                                       ∎
+     III = ap s (glue c) ⁻¹ ∙ H (f c) ∙ ap s' (glue c)   ＝⟨ IV ⟩
+           ap s (glue c) ⁻¹ ∙ (H (f c) ∙ ap s' (glue c)) ＝⟨ V ⟩
+           H' (g c)                                       ∎
       where
        IV = ∙assoc (ap s (glue c) ⁻¹) (H (f c)) (ap s' (glue c))
        V = ap-left-inverse (ap s (glue c)) (G c ⁻¹)
@@ -481,13 +468,13 @@ universal property.
    ψ (l , r , G) = pushout-recursion l r G
    ψ-ϕ : ψ ∘ ϕ ∼ id
    ψ-ϕ u = dfunext fe (pushout-uniqueness X ((ψ ∘ ϕ) u) u
-                   (pushout-rec-comp-l (u ∘ inll) (u ∘ inrr) (∼-ap-∘ u glue))
-                   (pushout-rec-comp-r (u ∘ inll) (u ∘ inrr) (∼-ap-∘ u glue))
-                   (pushout-rec-comp-G (u ∘ inll) (u ∘ inrr) (∼-ap-∘ u glue)))
+                   (pushout-rec-comp-inll (u ∘ inll) (u ∘ inrr) (∼-ap-∘ u glue))
+                   (pushout-rec-comp-inrr (u ∘ inll) (u ∘ inrr) (∼-ap-∘ u glue))
+                   (pushout-rec-comp-glue (u ∘ inll) (u ∘ inrr) (∼-ap-∘ u glue)))
    ϕ-ψ : ϕ ∘ ψ ∼ id
    ϕ-ψ (l , r , G) =
     inverse-cocone-map f g X ((ϕ ∘ ψ) (l , r , G)) (l , r , G)
-     (pushout-rec-comp-l l r G , pushout-rec-comp-r l r G ,
-      ∼-sym (pushout-rec-comp-G l r G))
+     (pushout-rec-comp-inll l r G , pushout-rec-comp-inrr l r G ,
+      ∼-sym (pushout-rec-comp-glue l r G))
    
 \end{code}
