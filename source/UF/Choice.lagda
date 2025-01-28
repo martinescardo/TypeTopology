@@ -32,16 +32,32 @@ univalent axiom, and, moreover, gives that
 choice where X is a proposition (see https://arxiv.org/abs/1610.03346).
 
 And there are also a number of other equivalent formulations of the
-axiom of choice.
+axiom of choice, of which the following seems to be new:
+
+  Under the presence of propositional extensionality, the axiom of
+  choice is equivalent to the conjunction of the principle of excluded
+  middle and the double negation shift (DNS).
+
+Here DNS is
+
+    (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ )
+  → is-set X
+  → ((x : X) → is-set (A x))
+  → (Π x ꞉ X , ¬¬ A x)
+  → ¬¬ (Π x ꞉ X , A x)
+
+All implications and logical equivalences here are proved in a spartan
+(intensional) MLTT extended with the existence propositional
+truncations (formulated in the language of MLTT).
 
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}
 
 open import MLTT.Spartan
-open import UF.DiscreteAndSeparated
 open import UF.Base
 open import UF.ClassicalLogic
+open import UF.DiscreteAndSeparated
 open import UF.FunExt
 open import UF.LeftCancellable
 open import UF.Powerset
