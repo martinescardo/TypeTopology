@@ -22,7 +22,7 @@ open import UF.Yoneda
 
 \end{code}
 
-We start by defining cocones and characerizing the identity type.
+We start by defining cocones and characerizing their identity type.
 
 \begin{code}
 
@@ -32,6 +32,24 @@ cocone : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇}
 cocone {𝓤} {𝓥} {𝓦} {𝓣} {A} {B} {C} f g X =
  Σ i ꞉ (A → X) , Σ j ꞉ (B → X) , (i ∘ f ∼ j ∘ g)
 
+cocone-vertical-map : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇}
+                      (f : C → A) (g : C → B) (X : 𝓣  ̇)
+                    → cocone f g X
+                    → (A → X)
+cocone-vertical-map f g X (i , j , K) = i
+
+cocone-horizontal-map : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇}
+                        (f : C → A) (g : C → B) (X : 𝓣  ̇)
+                      → cocone f g X
+                      → (B → X)
+cocone-horizontal-map f g X (i , j , K) = j
+
+cocone-commuting-square : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇}
+                          (f : C → A) (g : C → B) (X : 𝓣  ̇)
+                        → ((i , j , K) : cocone f g X)
+                        → i ∘ f ∼ j ∘ g
+cocone-commuting-square f g X (i , j , K) = K
+
 cocone-family : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇}
                 (f : C → A) (g : C → B) (X : 𝓣  ̇)
               → cocone f g X → cocone f g X → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣  ̇
@@ -39,12 +57,14 @@ cocone-family f g X (i , j , H) (i' , j' , H') =
  Σ K ꞉ i ∼ i' , Σ L ꞉ j ∼ j' ,
   ∼-trans (K ∘ f) H' ∼ ∼-trans H (L ∘ g)
 
-cocone-map : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇}
-             (f : C → A) (g : C → B) (X : 𝓣  ̇)
-           → (u u' : cocone f g X)
-           → u ＝ u'
-           → cocone-family f g X u u'
-cocone-map f g X (i , j , H) .(i , j , H) refl =
+canonical-map-from-identity-to-cocone-family
+ : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇}
+   (f : C → A) (g : C → B) (X : 𝓣  ̇)
+ → (u u' : cocone f g X)
+ → u ＝ u'
+ → cocone-family f g X u u'
+canonical-map-from-identity-to-cocone-family
+ f g X (i , j , H) .(i , j , H) refl =
  (∼-refl , ∼-refl , λ - → refl-left-neutral)
 
 cocone-family-is-identity-system
@@ -113,8 +133,8 @@ cocone-identity-characterization : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇}
                                  → (u u' : cocone f g X)
                                  → (u ＝ u') ≃ (cocone-family f g X u u')
 cocone-identity-characterization f g X u u' =
- (cocone-map f g X u u' ,
-   Yoneda-Theorem-forth u (cocone-map f g X u)
+ (canonical-map-from-identity-to-cocone-family f g X u u' ,
+   Yoneda-Theorem-forth u (canonical-map-from-identity-to-cocone-family f g X u)
     (cocone-family-is-identity-system f g X u) u')
 
 inverse-cocone-map : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇}
@@ -127,63 +147,115 @@ inverse-cocone-map f g X u u' =
 
 \end{code}
 
-Now we will define the universal property, induction principle and propositional
-computation rules for pushouts and show they are inter-derivable.
+We also introduce the notion of a dependent cocone.
 
 \begin{code}
 
+dependent-cocone : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇}
+                   (f : C → A) (g : C → B) (X : 𝓣  ̇)
+                   (t : cocone f g X) (P : X → 𝓣'  ̇)
+                 → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣'  ̇
+dependent-cocone {_} {_} {_} {_} {_} {A} {B} {C} f g X (i , j , H) P =
+ Σ i' ꞉ ((a : A) → P (i a)) , Σ j' ꞉ ((b : B) → P (j b)) ,
+  ((c : C) → transport P (H c) (i' (f c)) ＝ j' (g c))
+
+\end{code}
+
+Now we will define the (dependent) universal property, induction principle and
+propositional computation rules for pushouts and show they are inter-derivable*.
+
+*In fact we will only show:
+(1)
+  The dependent universal propery implies the induction principle and
+  propositional computation rules.
+
+(2)
+  The induction principle and propositional computationrules implies the
+  (non-dependeny) universal property.
+
+We will not show
+(3)
+  The (non-dependent) universal property implies the dependent universal
+  property.
+
+(3) Is shown in the Agda Unimath library (*link*). It involves something called
+the pullback property of pushouts which we wish to avoid exploring for now.*
+
+\begin{code}
+
+canonical-map-to-cocone
+ : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇} (S : 𝓤'  ̇) (X : 𝓣  ̇)
+   (f : C → A) (g : C → B) (s : cocone f g S)
+ → (S → X) → cocone f g X
+canonical-map-to-cocone S X f g (i , j , G) u =
+ (u ∘ i , u ∘ j , ∼-ap-∘ u G)
+
 Pushout-Universal-Property
  : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇} (S : 𝓤'  ̇) (X : 𝓣  ̇)
-   (f : C → A) (g : C → B) (i : A → S) (j : B → S) (G : i ∘ f ∼ j ∘ g) 
+   (f : C → A) (g : C → B) (s : cocone f g S) 
  → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓤' ⊔ 𝓣  ̇
-Pushout-Universal-Property S X f g i j G 
- = (S → X) ≃ cocone f g X
+Pushout-Universal-Property S X f g s 
+ = is-equiv (canonical-map-to-cocone S X f g s)
+
+dependent-canonical-map-to-cocone
+ : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇} (S : 𝓤'  ̇) (P : S →  𝓣  ̇)
+   (f : C → A) (g : C → B) (s : cocone f g S)
+ → ((x : S) → P x) → dependent-cocone f g S s P
+dependent-canonical-map-to-cocone S P f g (i , j , G) d =
+ (d ∘ i , d ∘ j , λ c → apd d (G c))
+
+Pushout-Dependent-Universal-Property
+ : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇} (S : 𝓤'  ̇) (P : S →  𝓣  ̇)
+   (f : C → A) (g : C → B) (s : cocone f g S)
+ → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓤' ⊔ 𝓣  ̇
+Pushout-Dependent-Universal-Property S P f g s =
+ is-equiv (dependent-canonical-map-to-cocone S P f g s)
 
 Pushout-Induction-Principle
  : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇} (S : 𝓤'  ̇) (P : S → 𝓣  ̇)
-   (f : C → A) (g : C → B) (i : A → S) (j : B → S) (G : i ∘ f ∼ j ∘ g)
+   (f : C → A) (g : C → B) (s : cocone f g S)
  → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓤' ⊔ 𝓣  ̇
-Pushout-Induction-Principle {_} {_} {_} {_} {_} {A} {B} {C} S P f g i j G 
+Pushout-Induction-Principle {_} {_} {_} {_} {_} {A} {B} {C} S P f g (i , j , G) 
  = (l : (a : A) → P (i a))
  → (r : (b : B) → P (j b))
  → ((c : C) → transport P (G c) (l (f c)) ＝ r (g c))
  → (x : S) → P x
 
-Pushout-Propositional-Computation-Rule₁
+Pushout-Computation-Rule₁
  : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇} (S : 𝓤'  ̇) (P : S → 𝓣  ̇)
-   (f : C → A) (g : C → B) (i : A → S) (j : B → S) (G : i ∘ f ∼ j ∘ g)
-   (S-ind : Pushout-Induction-Principle S P f g i j G)
+   (f : C → A) (g : C → B) (s : cocone f g S)
+ → Pushout-Induction-Principle S P f g s
  → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣  ̇
-Pushout-Propositional-Computation-Rule₁
- {_} {_} {_} {_} {_} {A} {B} {C} S P f g i j G S-ind
+Pushout-Computation-Rule₁
+ {_} {_} {_} {_} {_} {A} {B} {C} S P f g (i , j , G) S-ind
  = (l : (a : A) → P (i a))
  → (r : (b : B) → P (j b))
  → (H : (c : C) → transport P (G c) (l (f c)) ＝ r (g c))
  → (a : A)
  → S-ind l r H (i a) ＝ l a
 
-Pushout-Propositional-Computation-Rule₂
+Pushout-Computation-Rule₂
  : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇} (S : 𝓤'  ̇) (P : S → 𝓣  ̇)
-   (f : C → A) (g : C → B) (i : A → S) (j : B → S) (G : i ∘ f ∼ j ∘ g)
-   (S-ind : Pushout-Induction-Principle S P f g i j G)
+   (f : C → A) (g : C → B) (s : cocone f g S)
+ → Pushout-Induction-Principle S P f g s
  → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣  ̇
-Pushout-Propositional-Computation-Rule₂
- {_} {_} {_} {_} {_} {A} {B} {C} S P f g i j G S-ind
+Pushout-Computation-Rule₂
+ {_} {_} {_} {_} {_} {A} {B} {C} S P f g (i , j , G) S-ind
  = (l : (a : A) → P (i a))
  → (r : (b : B) → P (j b))
  → (H : (c : C) → transport P (G c) (l (f c)) ＝ r (g c))
  → (b : B)
  → S-ind l r H (j b) ＝ r b
 
-Pushout-Propositional-Computation-Rule₃
+Pushout-Computation-Rule₃
  : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇} (S : 𝓤'  ̇) (P : S → 𝓣  ̇)
-   (f : C → A) (g : C → B) (i : A → S) (j : B → S) (G : i ∘ f ∼ j ∘ g)
-   (S-ind : Pushout-Induction-Principle S P f g i j G)
-   (S-comp₁ : Pushout-Propositional-Computation-Rule₁ S P f g i j G S-ind)
-   (S-comp₂ : Pushout-Propositional-Computation-Rule₂ S P f g i j G S-ind)
+   (f : C → A) (g : C → B) (s : cocone f g S)
+   (S-ind : Pushout-Induction-Principle S P f g s)
+ → Pushout-Computation-Rule₁ S P f g s S-ind
+ → Pushout-Computation-Rule₂ S P f g s S-ind
  → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣  ̇
-Pushout-Propositional-Computation-Rule₃
- {_} {_} {_} {_} {_}{A} {B} {C} S P f g i j G S-ind S-comp₁ S-comp₂
+Pushout-Computation-Rule₃
+ {_} {_} {_} {_} {_}{A} {B} {C} S P f g (i , j , G) S-ind S-comp₁ S-comp₂
  = (l : (a : A) → P (i a))
  → (r : (b : B) → P (j b))
  → (H : (c : C) → transport P (G c) (l (f c)) ＝ r (g c))
@@ -191,17 +263,35 @@ Pushout-Propositional-Computation-Rule₃
  → apd (S-ind l r H) (G c) ∙ S-comp₂ l r H (g c)
  ＝ ap (transport P (G c)) (S-comp₁ l r H (f c)) ∙ H c
 
-Pushout-Universal-Property-implies-Induction
+Pushout-Dependent-Universal-Property-implies-Induction
+ : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇} (S : 𝓤'  ̇) (P : S → 𝓣  ̇)
+   (f : C → A) (g : C → B) (s : cocone f g S)
+ → Pushout-Dependent-Universal-Property S P f g s
+ → Pushout-Induction-Principle S P f g s
+Pushout-Dependent-Universal-Property-implies-Induction = {!!}
+
+Pushout-Induction-and-Computation-implies-Universal-Property
  : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇} (S : 𝓤'  ̇) (X : 𝓣  ̇) (P : S → 𝓣  ̇)
-   (f : C → A) (g : C → B) (i : A → S) (j : B → S) (G : i ∘ f ∼ j ∘ g)
- → Pushout-Universal-Property S X f g i j G
- → Pushout-Induction-Principle S P f g i j G
-Pushout-Universal-Property-implies-Induction = ?
+   (f : C → A) (g : C → B) (s : cocone f g S)
+   (S-ind : Pushout-Induction-Principle S P f g s)
+   (S-comp₁ : Pushout-Computation-Rule₁ S P f g s S-ind)
+   (S-comp₂ : Pushout-Computation-Rule₂ S P f g s S-ind)
+ → Pushout-Computation-Rule₃ S P f g s S-ind S-comp₁ S-comp₂
+ → Pushout-Universal-Property S X f g s
+Pushout-Induction-and-Computation-implies-Universal-Property = {!!}
 
 \end{code}
 
 Now we will use a record type to give the pushout, point and path constructors,
 and the induction principle along with propositional computation rules.
+
+Commenting out the fleshed out induction principle to test the named version
+given above
+
+(l : (a : A) → P (inll a))
+                    → (r : (b : B) → P (inrr b))
+                    → ((c : C) → transport P (glue c) (l (f c)) ＝ r (g c))
+                    → (x : pushout) → P x
 
 \begin{code}
 
@@ -212,11 +302,9 @@ record pushouts-exist {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇} (f : C → A)
   inll : A → pushout 
   inrr : B → pushout 
   glue : (c : C) → inll (f c) ＝ inrr (g c)
-  pushout-induction : {P : pushout → 𝓣  ̇}
-                    → (l : (a : A) → P (inll a))
-                    → (r : (b : B) → P (inrr b))
-                    → ((c : C) → transport P (glue c) (l (f c)) ＝ r (g c))
-                    → (x : pushout) → P x
+  pushout-induction
+   : {P : pushout → 𝓣  ̇}
+   → Pushout-Induction-Principle pushout P f g (inll , inrr , glue)
   pushout-ind-comp-l
    : {P : pushout → 𝓣  ̇}
    → (l : (a : A) → P (inll a))
