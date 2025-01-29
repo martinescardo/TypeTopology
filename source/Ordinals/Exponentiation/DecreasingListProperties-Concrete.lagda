@@ -758,7 +758,12 @@ expᴸ-satisfies-sup-specification α α-nonzero I-inh β = (expᴸ-sup-＝ β �
 
 \end{code}
 
-We now show that expᴸ also satisfies the strong sup specification.
+Added 29 January 2025 by Tom de Jong.
+
+We now show that expᴸ also satisfies the stronger sup specification, i.e. that
+  expᴸ[𝟙+ α ] (sup β) ＝ 𝟙ₒ ∨ expᴸ[𝟙+ α ] (sup β)
+for all families β : I → Ordinal 𝓤 (regardless of whether I is inhabited).
+
 The proof strategy is captured by the following diagram where f, g and h are all
 simulations so that the diagram necessarily commutes.
 Moreover, h = expᴸ-sup-map α β which is a surjection as soon as I is inhabited.
@@ -874,5 +879,9 @@ module _ {I : 𝓤 ̇  }
      g
      [ sup γ , expᴸ[𝟙+ α ] (sup β) ]⟨ g-⊴ ⟩-is-simulation
      g-is-surjection) ⁻¹
+
+expᴸ-satisfies-strong-sup-specification :
+ (α : Ordinal 𝓤) → exp-specification-sup-strong (𝟙ₒ +ₒ α) (expᴸ[𝟙+ α ])
+expᴸ-satisfies-strong-sup-specification α α-nonzero β = (expᴸ-sup⁺-＝ β α)
 
 \end{code}

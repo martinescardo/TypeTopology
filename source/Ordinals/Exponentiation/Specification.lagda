@@ -21,12 +21,17 @@ module Ordinals.Exponentiation.Specification
 
 open import MLTT.Spartan
 open import UF.FunExt
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
 open import UF.UA-FunExt
 open import UF.UniverseEmbedding
 
 private
  fe : FunExt
  fe = Univalence-gives-FunExt ua
+
+ fe' : Fun-Ext
+ fe' = Univalence-gives-Fun-Ext ua
 
 open import Ordinals.AdditionProperties ua
 open import Ordinals.Arithmetic fe
@@ -35,6 +40,7 @@ open import Ordinals.MultiplicationProperties ua
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.OrdinalOfOrdinalsSuprema ua
 open import Ordinals.Type
+open import Ordinals.Underlying
 
 open PropositionalTruncation pt
 open suprema pt sr
@@ -84,6 +90,94 @@ module _
    e = ⊴-antisym _ _
         (sup-composition-⊴ lower (F ∘ β))
         (sup-composition-⊴ (lift 𝓤) (F ∘ β ∘ lower))
+
+\end{code}
+
+Added 29 January 2025 by Tom de Jong.
+
+\begin{code}
+
+ exp-specification-sup-strong : 𝓤 ⁺ ̇
+ exp-specification-sup-strong =
+  α ≠ 𝟘ₒ → (I : 𝓤 ̇  ) → (β : I → Ordinal 𝓤)
+         → F (sup β) ＝ sup (cases {X = 𝟙{𝓤}} (λ _ → 𝟙ₒ) (F ∘ β))
+
+ exp-specification-sup-from-strong : exp-specification-sup-strong
+                                   → exp-specification-zero α F
+                                   → is-monotone (OO 𝓤) (OO 𝓤) F
+                                   → exp-specification-sup
+ exp-specification-sup-from-strong specₛ spec₀ F-monotone α-nonzero {I} I-inh β =
+  F (sup β)                      ＝⟨ specₛ α-nonzero I β ⟩
+  sup (cases (λ _ → 𝟙ₒ) (F ∘ β)) ＝⟨ e ⟩
+  sup (F ∘ β)                    ∎
+   where
+    e = ⊴-antisym _ _
+         (sup-is-lower-bound-of-upper-bounds (cases (λ _ → 𝟙ₒ) (F ∘ β)) (sup (F ∘ β)) ub)
+         (sup-composition-⊴ inr (cases (λ _ → 𝟙ₒ) (λ x → F (β x))))
+     where
+      ub : (x : 𝟙 + I) → cases (λ _ → 𝟙ₒ) (F ∘ β) x ⊴ sup (F ∘ β)
+      ub (inr i) = sup-is-upper-bound (F ∘ β) i
+      ub (inl ⋆) = ∥∥-rec (⊴-is-prop-valued 𝟙ₒ (sup (F ∘ β))) ub' I-inh
+       where
+        ub' : I → 𝟙ₒ ⊴ sup (F ∘ β)
+        ub' i = ⊴-trans 𝟙ₒ (F (β i)) (sup (F ∘ β))
+                 (≼-gives-⊴ 𝟙ₒ (F (β i))
+                   (transport (_≼ F (β i))
+                              spec₀
+                              (F-monotone 𝟘ₒ (β i) (𝟘ₒ-least (β i)))))
+                 (sup-is-upper-bound (F ∘ β) i)
+
+exp-strong-specification-uniquely-specifies-exp'
+ : (α : Ordinal 𝓤)
+ → α ≠ 𝟘ₒ
+ → (F G : Ordinal 𝓤 → Ordinal 𝓤)
+ → exp-specification-sup-strong α F
+ → exp-specification-succ α F
+ → exp-specification-sup-strong α G
+ → exp-specification-succ α G
+ → F ∼ G
+exp-strong-specification-uniquely-specifies-exp'
+ {𝓤} α α-nonzero F G F-eq₁ F-eq₂ G-eq₁ G-eq₂ =
+  transfinite-induction-on-OO _ e
+   where
+    e : (β : Ordinal 𝓤)
+      → ((b : ⟨ β ⟩) → F (β ↓ b) ＝ G (β ↓ b))
+      → F β ＝ G β
+    e β IH =
+      F β                                              ＝⟨ I   ⟩
+      F (sup λ b → (β ↓ b) +ₒ 𝟙ₒ)                      ＝⟨ II  ⟩
+      sup (cases (λ _ → 𝟙ₒ) (λ b → F ((β ↓ b) +ₒ 𝟙ₒ))) ＝⟨ III ⟩
+      sup (cases (λ _ → 𝟙ₒ) (λ b → F (β ↓ b) ×ₒ α))    ＝⟨ IV  ⟩
+      sup (cases (λ _ → 𝟙ₒ) (λ b → G (β ↓ b) ×ₒ α))    ＝⟨ V   ⟩
+      sup (cases (λ _ → 𝟙ₒ) (λ b → G ((β ↓ b) +ₒ 𝟙ₒ))) ＝⟨ VI  ⟩
+      G (sup (λ b → (β ↓ b) +ₒ 𝟙ₒ))                    ＝⟨ VII ⟩
+      G β                                              ∎
+       where
+        I   = ap F (supremum-of-successors-of-initial-segments pt sr β)
+        II  = F-eq₁ α-nonzero ⟨ β ⟩ (λ b → (β ↓ b) +ₒ 𝟙ₒ)
+        III = ap (λ - → sup (cases (λ (_ : 𝟙{𝓤}) → 𝟙ₒ) -))
+                 (dfunext fe' (λ b → F-eq₂ (β ↓ b)))
+        IV  = ap (λ - → sup (cases (λ (_ : 𝟙{𝓤}) → 𝟙ₒ) -))
+                 (dfunext fe' (λ b → ap (_×ₒ α) (IH b)))
+        V   = ap (λ - → sup (cases (λ (_ : 𝟙{𝓤}) → 𝟙ₒ) -))
+                 (dfunext fe' (λ b → (G-eq₂ (β ↓ b)) ⁻¹))
+        VI  = (G-eq₁ α-nonzero ⟨ β ⟩ (λ b → (β ↓ b) +ₒ 𝟙ₒ)) ⁻¹
+        VII = ap G ((supremum-of-successors-of-initial-segments pt sr β) ⁻¹)
+
+exp-strong-specification-uniquely-specifies-exp
+ : (α : Ordinal 𝓤)
+ → α ≠ 𝟘ₒ
+ → is-prop (Σ F ꞉ (Ordinal 𝓤 → Ordinal 𝓤) , exp-specification-sup-strong α F
+                                          × exp-specification-succ α F)
+exp-strong-specification-uniquely-specifies-exp {𝓤} α α-nonzero =
+ (λ (F , F-eq₁ , F-eq₂) (G , G-eq₁ , G-eq₂)
+   → to-subtype-＝
+      (λ H → ×-is-prop
+              (Π₃-is-prop fe' (λ _ _ _ → underlying-type-is-set fe (OO 𝓤)))
+              (Π-is-prop fe' (λ _ → underlying-type-is-set fe (OO 𝓤))))
+              (dfunext fe'
+                (exp-strong-specification-uniquely-specifies-exp' α α-nonzero
+                  F G F-eq₁ F-eq₂ G-eq₁ G-eq₂)))
 
 \end{code}
 
