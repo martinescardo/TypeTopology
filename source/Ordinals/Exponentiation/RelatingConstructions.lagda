@@ -44,6 +44,8 @@ open import Ordinals.Type
 open import Ordinals.Underlying
 
 open import Ordinals.Exponentiation.DecreasingList ua
+open import Ordinals.Exponentiation.DecreasingListProperties-Concrete ua pt sr
+open import Ordinals.Exponentiation.Specification ua pt sr
 open import Ordinals.Exponentiation.Supremum ua pt sr
 open import Ordinals.Exponentiation.TrichotomousLeastElement ua
 
@@ -164,6 +166,42 @@ exponentiation-constructions-agree α β h =
   where
    α⁺ = α ⁺[ h ]
    I = exponentiation-constructions-agree' α⁺ β
+   II = ap (_^ₒ β) ((α ⁺[ h ]-part-of-decomposition) ⁻¹)
+
+\end{code}
+
+An alternative proof added on 29 January 2025 by Tom de Jong.
+
+\begin{code}
+
+exponentiation-constructions-agree'-bis
+ : (α β : Ordinal 𝓤) → expᴸ[𝟙+ α ] β ＝ (𝟙ₒ +ₒ α) ^ₒ β
+exponentiation-constructions-agree'-bis α β =
+ exp-strong-specification-uniquely-specifies-exp'
+  (𝟙ₒ +ₒ α)
+  nonzero
+  (expᴸ[𝟙+ α ])
+  ((𝟙ₒ +ₒ α) ^ₒ_)
+  (expᴸ-satisfies-strong-sup-specification α)
+  (expᴸ-satisfies-succ-specification α)
+  (^ₒ-satisfies-strong-sup-specification (𝟙ₒ +ₒ α))
+  (^ₒ-satisfies-succ-specification (𝟙ₒ +ₒ α) (+ₒ-left-⊴ 𝟙ₒ α))
+  β
+   where
+    nonzero : 𝟙ₒ +ₒ α ≠ 𝟘ₒ
+    nonzero e = 𝟘-elim (Idtofunₒ e (inl ⋆))
+
+exponentiation-constructions-agree-bis
+ : (α β : Ordinal 𝓤) (h : has-trichotomous-least-element α)
+ → exponentiationᴸ α h β ＝ α ^ₒ β
+exponentiation-constructions-agree-bis α β h =
+ exponentiationᴸ α h β ＝⟨ refl ⟩
+ expᴸ[𝟙+ α⁺ ] β        ＝⟨ I ⟩
+ (𝟙ₒ +ₒ α⁺) ^ₒ β       ＝⟨ II ⟩
+ α ^ₒ β                ∎
+  where
+   α⁺ = α ⁺[ h ]
+   I = exponentiation-constructions-agree'-bis α⁺ β
    II = ap (_^ₒ β) ((α ⁺[ h ]-part-of-decomposition) ⁻¹)
 
 \end{code}
