@@ -36,7 +36,8 @@ axiom of choice, of which the following seems to be new:
 
   Under the presence of propositional extensionality, the axiom of
   choice is equivalent to the conjunction of the principle of excluded
-  middle and the double negation shift (DNS).
+  middle and the double negation shift (DNS) for *sets* rather than
+  propositions.
 
 Here DNS is
 
@@ -49,6 +50,10 @@ Here DNS is
 All implications and logical equivalences here are proved in a spartan
 (intensional) MLTT extended with the existence propositional
 truncations (formulated in the language of MLTT).
+
+Notice that we cannot apply excluded middle to A x, because, by
+assumption, it is a set, and excluded middle applies to propositions
+(types with at most one element).
 
 \begin{code}
 
