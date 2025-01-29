@@ -150,6 +150,8 @@ inverse-cocone-map f g X u u' =
 
 We also introduce the notion of a dependent cocone.
 
+TODO. Characterize the identity type of dependent cocones.
+
 \begin{code}
 
 dependent-cocone : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇}
@@ -171,19 +173,22 @@ propositional computation rules for pushouts and show they are inter-derivable*.
   propositional computation rules.
 
 (2)
-  The induction principle and propositional computationrules implies the
-  (non-dependeny) universal property.
+  The induction principle and propositional computation rules implies the
+  the recursion principle with corresponding computation rules and the uniqueness
+  principle.
 
-We will not show
 (3)
+  The recursion principle with corresponding computation rules and the uniqueness
+  principle implies the non-dependent universal property.
+
+(4)
   The (non-dependent) universal property implies the dependent universal
   property.
 
-(3) Is shown in the Agda Unimath library (*link*). It involves something called
-the pullback property of pushouts which we wish to avoid exploring for now.*
-
-In general, we know that the universal property of (higher) inductive types is
-equivalent to the induction principle with propositional computation rules.
+(4) Is shown in the Agda Unimath library (*link*). It involves something called
+the pullback property of pushouts which we wish to avoid exploring for now.
+Alternativly, we can show the converse of (3), (2) and (1) which would provide a
+proof of (4).*
 
 \begin{code}
 
@@ -318,7 +323,9 @@ universal property. This will establish the logical equivalence between
    ∘ canonical-map-to-dependent-cocone pushout f g (inll , inrr , glue) P
   ∼ id
  pushout-dep-UP-section {_} {P}
-  = {!!}
+  = inverses-are-retractions
+     (canonical-map-to-dependent-cocone pushout f g (inll , inrr , glue) P)
+      pushout-dependent-universal-property
 
  pushout-dep-UP-retraction
   : {P : pushout → 𝓣  ̇}
@@ -326,24 +333,23 @@ universal property. This will establish the logical equivalence between
      ∘ pushout-dep-UP-inverse
   ∼ id
  pushout-dep-UP-retraction {_} {P}
-  = retraction-equation pushout-dep-UP-inverse
-     (equivs-are-sections pushout-dep-UP-inverse {!!})
+  = inverses-are-sections
+     (canonical-map-to-dependent-cocone pushout f g (inll , inrr , glue) P)
+      pushout-dependent-universal-property
 
  pushout-induction
   : {P : pushout → 𝓣  ̇}
   → Pushout-Induction-Principle pushout f g (inll , inrr , glue) P
- pushout-induction {_} {P} l r G = pushout-dep-UP-inverse (l , r , G)
+ pushout-induction {_} {P} l r H = pushout-dep-UP-inverse (l , r , H)
 
  pushout-ind-comp-inll
   : {P : pushout → 𝓣  ̇}
-  → Pushout-Computation-Rule₁ pushout f g (inll , inrr , glue) P
-     pushout-induction
- pushout-ind-comp-inll l r H a = {!!}
+  → Pushout-Computation-Rule₁ pushout f g (inll , inrr , glue) P pushout-induction
+ pushout-ind-comp-inll {_} {P} l r H a = {!!}
   
  pushout-ind-comp-inrr
   : {P : pushout → 𝓣  ̇}
-  → Pushout-Computation-Rule₂ pushout f g (inll , inrr , glue) P
-     pushout-induction
+  → Pushout-Computation-Rule₂ pushout f g (inll , inrr , glue) P pushout-induction
  pushout-ind-comp-inrr l r H b = {!!}
   
  pushout-ind-comp-glue
