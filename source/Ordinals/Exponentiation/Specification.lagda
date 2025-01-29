@@ -20,6 +20,7 @@ module Ordinals.Exponentiation.Specification
        where
 
 open import MLTT.Spartan
+open import UF.ClassicalLogic
 open import UF.FunExt
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
@@ -102,17 +103,41 @@ Added 29 January 2025 by Tom de Jong.
   α ≠ 𝟘ₒ → (I : 𝓤 ̇  ) → (β : I → Ordinal 𝓤)
          → F (sup β) ＝ sup (cases {X = 𝟙{𝓤}} (λ _ → 𝟙ₒ) (F ∘ β))
 
+ exp-specification-sup-strong-implies-monotonicity
+  : exp-specification-sup-strong
+  → α ≠ 𝟘ₒ
+  → is-monotone (OO 𝓤) (OO 𝓤) F
+ exp-specification-sup-strong-implies-monotonicity σ α-nonzero β γ l =
+  transport (F β ≼_) (ap F (e ⁻¹)) k
+   where
+    Δ : 𝟙{𝓤} + 𝟙{𝓤} → Ordinal 𝓤
+    Δ = cases (λ _ → β) (λ _ → γ)
+    e : γ ＝ sup Δ
+    e = ⊴-antisym γ (sup Δ)
+         (sup-is-upper-bound Δ (inr ⋆))
+         (sup-is-lower-bound-of-upper-bounds Δ γ
+           (dep-cases (λ _ → ≼-gives-⊴ β γ l) (λ _ → ⊴-refl γ)))
+    k : F β ≼ F (sup Δ)
+    k = transport⁻¹ (F β ≼_)
+                    (σ α-nonzero (𝟙 + 𝟙) Δ)
+                    (⊴-gives-≼ (F β)
+                      (sup (cases (λ _ → 𝟙ₒ) (F ∘ Δ)))
+                      (sup-is-upper-bound _ (inr (inl ⋆))))
+
  exp-specification-sup-from-strong : exp-specification-sup-strong
                                    → exp-specification-zero α F
-                                   → is-monotone (OO 𝓤) (OO 𝓤) F
                                    → exp-specification-sup
- exp-specification-sup-from-strong specₛ spec₀ F-monotone α-nonzero {I} I-inh β =
+ exp-specification-sup-from-strong specₛ spec₀ α-nonzero {I} I-inh β =
   F (sup β)                      ＝⟨ specₛ α-nonzero I β ⟩
   sup (cases (λ _ → 𝟙ₒ) (F ∘ β)) ＝⟨ e ⟩
   sup (F ∘ β)                    ∎
    where
+    F-monotone : is-monotone (OO 𝓤) (OO 𝓤) F
+    F-monotone = exp-specification-sup-strong-implies-monotonicity specₛ α-nonzero
     e = ⊴-antisym _ _
-         (sup-is-lower-bound-of-upper-bounds (cases (λ _ → 𝟙ₒ) (F ∘ β)) (sup (F ∘ β)) ub)
+         (sup-is-lower-bound-of-upper-bounds
+           (cases (λ _ → 𝟙ₒ) (F ∘ β))
+           (sup (F ∘ β)) ub)
          (sup-composition-⊴ inr (cases (λ _ → 𝟙ₒ) (λ x → F (β x))))
      where
       ub : (x : 𝟙 + I) → cases (λ _ → 𝟙ₒ) (F ∘ β) x ⊴ sup (F ∘ β)
@@ -126,6 +151,66 @@ Added 29 January 2025 by Tom de Jong.
                               spec₀
                               (F-monotone 𝟘ₒ (β i) (𝟘ₒ-least (β i)))))
                  (sup-is-upper-bound (F ∘ β) i)
+
+ exp-specification-sup-strong-if-EM : EM 𝓤
+                                    → exp-specification-zero α F
+                                    → exp-specification-sup
+                                    → exp-specification-sup-strong
+ exp-specification-sup-strong-if-EM em spec₀ specₛ α-nonzero I β =
+  κ (em ∥ I ∥ ∥∥-is-prop)
+  where
+    G : 𝟙 + I → Ordinal 𝓤
+    G = cases (λ _ → 𝟙ₒ) (F ∘ β)
+    κ : is-decidable ∥ I ∥ → F (sup β) ＝ sup G
+    κ (inl I-inh) = ∥∥-rec (underlying-type-is-set fe (OO 𝓤)) h I-inh
+     where
+      h : I → F (sup β) ＝ sup G
+      h i = F (sup β) ＝⟨ specₛ α-nonzero I-inh β ⟩
+            sup (F ∘ β) ＝⟨ ⊴-antisym (sup (F ∘ β)) (sup G) h₁ h₂ ⟩
+            sup G ∎
+       where
+        h₁ : sup (F ∘ β) ⊴ sup G
+        h₁ = sup-composition-⊴ inr G
+        h₂ : sup G ⊴ sup (F ∘ β)
+        h₂ = sup-is-lower-bound-of-upper-bounds G (sup (F ∘ β)) h₃
+         where
+          h₃ : (x : 𝟙 + I) → G x ⊴ sup (F ∘ β)
+          h₃ (inr i) = sup-is-upper-bound (F ∘ β) i
+          h₃ (inl ⋆) =
+           ⊴-trans 𝟙ₒ (F (β i)) (sup (F ∘ β))
+            (≼-gives-⊴ 𝟙ₒ (F (β i))
+              (transport (_≼ F (β i))
+                         spec₀
+                         (is-monotone-if-continuous F
+                           (specₛ α-nonzero)
+                           𝟘ₒ
+                           (β i)
+                           (𝟘ₒ-least (β i)))))
+            (sup-is-upper-bound (F ∘ β) i)
+    κ (inr I-empty) =
+     F (sup β) ＝⟨ ap F e₁ ⟩
+     F 𝟘ₒ      ＝⟨ spec₀ ⟩
+     𝟙ₒ        ＝⟨ e₂ ⁻¹ ⟩
+     sup G     ∎
+      where
+       e₁ : sup β ＝ 𝟘ₒ
+       e₁ = ⊴-antisym (sup β) 𝟘ₒ
+             (sup-is-lower-bound-of-upper-bounds β 𝟘ₒ
+               (λ i → 𝟘-elim (I-empty ∣ i ∣)))
+             (𝟘ₒ-least-⊴ (sup β))
+       e₂ : sup G ＝ 𝟙ₒ
+       e₂ = ⊴-antisym (sup G) 𝟙ₒ
+             (sup-is-lower-bound-of-upper-bounds G 𝟙ₒ
+               (dep-cases (λ _ → ⊴-refl 𝟙ₒ) (λ i → 𝟘-elim (I-empty ∣ i ∣))))
+             (sup-is-upper-bound G (inl ⋆))
+
+\end{code}
+
+The appealing thing about the strong supremum specification is that, together
+with the successor specification, it uniquely specifies exponentiation with a
+nonzero base.
+
+\begin{code}
 
 exp-strong-specification-uniquely-specifies-exp'
  : (α : Ordinal 𝓤)
