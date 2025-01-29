@@ -38,6 +38,7 @@ open import UF.UniverseEmbedding
 open import Ordinals.AdditionProperties ua
 open import Ordinals.Arithmetic fe
 open import Ordinals.Exponentiation.Specification ua pt sr
+open import Ordinals.Maps
 open import Ordinals.MultiplicationProperties ua
 open import Ordinals.OrdinalOfOrdinals ua
 open import Ordinals.OrdinalOfOrdinalsSuprema ua
@@ -292,6 +293,11 @@ The proof relies on the following monotonicity property of the exponentiation.
      II (inl ⋆) = refl
      II (inr b) = ap (λ - → α ^ₒ - ×ₒ α) (initial-segments-agree b ⁻¹)
 
+^ₒ-monotone-in-exponent' : (α : Ordinal 𝓤)
+                         → is-monotone (OO 𝓥) (OO (𝓤 ⊔ 𝓥)) (α ^ₒ_)
+^ₒ-monotone-in-exponent' {𝓤} {𝓥} α β γ l =
+ ⊴-gives-≼ (α ^ₒ β) (α ^ₒ γ) (^ₒ-monotone-in-exponent α β γ (≼-gives-⊴ β γ l))
+
 ^ₒ-satisfies-sup-specification-generalized :
    {𝓤 𝓥 : Universe} (α : Ordinal 𝓤)
  → exp-specification-sup-generalized {𝓤} {𝓥} α (α ^ₒ_)
@@ -350,6 +356,61 @@ The proof relies on the following monotonicity property of the exponentiation.
 ^ₒ-satisfies-sup-specification α =
  exp-specification-sup-from-generalized
   α (α ^ₒ_) (^ₒ-satisfies-sup-specification-generalized α)
+
+\end{code}
+
+Added 29 January 2025 by Tom de Jong.
+
+^ₒ also satisifes the strong supremum specification, yielding yet another proof
+that it satisfies the (ordinary) supremum specification.
+
+\begin{code}
+
+^ₒ-satisfies-strong-sup-specification : (α : Ordinal 𝓤)
+                                      → exp-specification-sup-strong α (α ^ₒ_)
+^ₒ-satisfies-strong-sup-specification {𝓤} α _ S F =
+ ⊴-antisym (α ^ₒ sup F) (sup (cases (λ _ → 𝟙ₒ) (λ s → α ^ₒ F s))) I II
+  where
+   G : 𝟙{𝓤} + S → Ordinal 𝓤
+   G = cases (λ _ → 𝟙ₒ) (λ s → α ^ₒ F s)
+   I : α ^ₒ sup F ⊴ sup G
+   I = ^ₒ-is-lower-bound-of-upper-bounds α (sup F) (sup G) I₁ I₂
+    where
+     I₁ : 𝟙ₒ ⊴ sup G
+     I₁ = sup-is-upper-bound G (inl ⋆)
+     I₂ : (y : ⟨ sup F ⟩) → α ^ₒ (sup F ↓ y) ×ₒ α ⊴ sup G
+     I₂ y = ∥∥-rec
+             (⊴-is-prop-valued (α ^ₒ (sup F ↓ y) ×ₒ α) (sup G))
+             I₃
+             (sup-is-upper-bound-jointly-surjective F y)
+      where
+       ι : {s : S} → ⟨ F s ⟩ → ⟨ sup F ⟩
+       ι {s} = [ F s , sup F ]⟨ sup-is-upper-bound F s ⟩
+       I₃ : (Σ s ꞉ S , Σ x ꞉ ⟨ F s ⟩ , ι x ＝ y)
+          → α ^ₒ (sup F ↓ y) ×ₒ α ⊴ sup G
+       I₃ (s , x , refl) = transport⁻¹ (_⊴ sup G) e l
+        where
+         e : α ^ₒ (sup F ↓ y) ×ₒ α ＝ α ^ₒ (F s ↓ x) ×ₒ α
+         e = ap (λ - → α ^ₒ - ×ₒ α) (initial-segment-of-sup-at-component F s x)
+         l : α ^ₒ (F s ↓ x) ×ₒ α ⊴ sup G
+         l = ⊴-trans (α ^ₒ (F s ↓ x) ×ₒ α) (α ^ₒ F s) (sup G)
+              (^ₒ-is-upper-bound₂ α (F s))
+              (sup-is-upper-bound G (inr s))
+   II : sup G ⊴ α ^ₒ sup F
+   II = sup-is-lower-bound-of-upper-bounds G (α ^ₒ sup F) II'
+    where
+     II' : (x : 𝟙 + S) → G x ⊴ α ^ₒ sup F
+     II' (inl ⋆) = ^ₒ-has-least-element α (sup F)
+     II' (inr s) = ^ₒ-monotone-in-exponent α (F s) (sup F)
+                    (sup-is-upper-bound F s)
+
+^ₒ-satisfies-sup-specification' : (α : Ordinal 𝓤)
+                                → exp-specification-sup α (α ^ₒ_)
+^ₒ-satisfies-sup-specification' α =
+ exp-specification-sup-from-strong α (α ^ₒ_)
+  (^ₒ-satisfies-strong-sup-specification α)
+  (^ₒ-satisfies-zero-specification α)
+  (^ₒ-monotone-in-exponent' α)
 
 \end{code}
 
