@@ -44,9 +44,10 @@ open import Ordinals.Arithmetic fe
 open import Ordinals.Equivalence
 open import Ordinals.Maps
 open import Ordinals.OrdinalOfOrdinals ua
+open import Ordinals.OrdinalOfOrdinalsSuprema ua
+open import Ordinals.Propositions ua
 open import Ordinals.Type
 open import Ordinals.Underlying
-open import Ordinals.OrdinalOfOrdinalsSuprema ua
 
 open import Ordinals.Exponentiation.DecreasingList ua
 open import Ordinals.Exponentiation.Specification ua pt sr
@@ -708,8 +709,7 @@ that is surjective and hence we get an equality of ordinals.
      ⦅5⦆ = pr₂ (pr₂ IH)
 
   expᴸ-sup-map-is-surjection
-   : ∥ I ∥
-   → is-surjection expᴸ-sup-map
+   : ∥ I ∥ → is-surjection expᴸ-sup-map
   expᴸ-sup-map-is-surjection I-inh =
    induced-simulation-from-sup-is-surjection
     (expᴸ[𝟙+ α ] ∘ β)
@@ -755,5 +755,124 @@ Finally, we obtain the desired result.
 expᴸ-satisfies-sup-specification :
  (α : Ordinal 𝓤) → exp-specification-sup (𝟙ₒ +ₒ α) (expᴸ[𝟙+ α ])
 expᴸ-satisfies-sup-specification α α-nonzero I-inh β = (expᴸ-sup-＝ β α I-inh) ⁻¹
+
+\end{code}
+
+We now show that expᴸ also satisfies the strong sup specification.
+The proof strategy is captured by the following diagram where f, g and h are all
+simulations so that the diagram necessarily commutes.
+Moreover, h = expᴸ-sup-map α β which is a surjection as soon as I is inhabited.
+To see that g is a surjection, we note that the empty list is taken care of by
+the left component (𝟙ₒ) of γ and that for a nonempty list (a , y) ∷ l with
+y : sup β there exists i : I and x : β i such that y ＝ [i , x], so that in
+particular, I is inhabited. Hence, in this case h is surjective giving us an
+element s in the domain f with g (f s) ＝ h s ＝ (a , y) ∷ l.
+
+                                  f
+  sup (λ i → expᴸ[𝟙+ α ] (β i)) ----> 𝟙ₒ ∨ sup (λ i → expᴸ[𝟙+ α ] (β i)) = sup γ
+                        \                           |
+                         \                          |
+                       h  \                         | g
+                           \                        |
+                            \                       v
+                             ------------> expᴸ[𝟙+ α ] (sup β)
+
+\begin{code}
+
+module _ {I : 𝓤 ̇  }
+         (β : I → Ordinal 𝓤)
+         (α : Ordinal 𝓤)
+ where
+
+  private
+   γ : 𝟙{𝓤} + I → Ordinal 𝓤
+   γ = cases (λ _ → 𝟙ₒ) (λ i → expᴸ[𝟙+ α ] (β i))
+
+   γ-incl : (x : 𝟙 + I) → ⟨ γ x ⟩ → ⟨ sup γ ⟩
+   γ-incl x = [ γ x , sup γ ]⟨ sup-is-upper-bound γ x ⟩
+
+   β-incl : (i : I) → ⟨ β i ⟩ → ⟨ sup β ⟩
+   β-incl i = [ β i , sup β ]⟨ sup-is-upper-bound β i ⟩
+
+   g-⊴ : sup γ ⊴ expᴸ[𝟙+ α ] (sup β)
+   g-⊴ = sup-is-lower-bound-of-upper-bounds γ (expᴸ[𝟙+ α ] (sup β)) ub
+    where
+     ub : (x : 𝟙 + I) → γ x ⊴ expᴸ[𝟙+ α ] (sup β)
+     ub (inl ⋆) = expᴸ-has-least α (sup β)
+     ub (inr i) = expᴸ-sup-is-upper-bound β α i
+
+   g : ⟨ sup γ ⟩ → ⟨ expᴸ[𝟙+ α ] (sup β) ⟩
+   g = [ sup γ , expᴸ[𝟙+ α ] (sup β) ]⟨ g-⊴ ⟩
+
+   f-⊴ : sup (expᴸ[𝟙+ α ] ∘ β) ⊴ sup γ
+   f-⊴ = sup-is-lower-bound-of-upper-bounds (expᴸ[𝟙+ α ] ∘ β) (sup γ) ub
+    where
+     ub : (i : I) → expᴸ[𝟙+ α ] (β i) ⊴ sup γ
+     ub i = sup-is-upper-bound γ (inr i)
+
+   f : ⟨ sup (expᴸ[𝟙+ α ] ∘ β) ⟩ → ⟨ sup γ ⟩
+   f = [ sup (expᴸ[𝟙+ α ] ∘ β) , sup γ ]⟨ f-⊴ ⟩
+
+   h-⊴ : sup (expᴸ[𝟙+ α ] ∘ β) ⊴ expᴸ[𝟙+ α ] (sup β)
+   h-⊴ = expᴸ-sup-⊴ β α
+
+   h : ⟨ sup (expᴸ[𝟙+ α ] ∘ β) ⟩ → ⟨ expᴸ[𝟙+ α ] (sup β) ⟩
+   h = expᴸ-sup-map β α
+
+   g-after-f-is-h : g ∘ f ∼ h
+   g-after-f-is-h =
+    at-most-one-simulation
+     (sup (expᴸ[𝟙+ α ] ∘ β))
+     (expᴸ[𝟙+ α ] (sup β))
+     (g ∘ f)
+     h
+     [ sup (expᴸ[𝟙+ α ] ∘ β) , expᴸ[𝟙+ α ] (sup β) ]⟨ σ ⟩-is-simulation
+     [ sup (expᴸ[𝟙+ α ] ∘ β) , expᴸ[𝟙+ α ] (sup β) ]⟨ h-⊴ ⟩-is-simulation
+      where
+       σ : sup (expᴸ[𝟙+ α ] ∘ β) ⊴ expᴸ[𝟙+ α ] (sup β)
+       σ = ⊴-trans (sup (expᴸ[𝟙+ α ] ∘ β)) (sup γ) (expᴸ[𝟙+ α ] (sup β)) f-⊴ g-⊴
+
+   g-is-surjection : is-surjection g
+   g-is-surjection ([] , []-decr) = ∣ x , e₂ ∣
+    where
+     x : ⟨ sup γ ⟩
+     x = γ-incl (inl ⋆) ⋆
+     e₁ = expᴸ[𝟙+ α ] (sup β) ↓ ([] , []-decr) ＝⟨ expᴸ-↓-⊥ α (sup β) ⟩
+          𝟘ₒ                                   ＝⟨ 𝟙ₒ-↓ ⁻¹ ⟩
+          𝟙ₒ ↓ ⋆                               ＝⟨ eq₁ ⟩
+          sup γ ↓ γ-incl (inl ⋆) ⋆             ＝⟨ eq₂ ⟩
+          expᴸ[𝟙+ α ] (sup β) ↓ g x            ∎
+      where
+       eq₁ = (initial-segment-of-sup-at-component γ (inl ⋆) ⋆) ⁻¹
+       eq₂ = simulations-preserve-↓ (sup γ) (expᴸ[𝟙+ α ] (sup β)) g-⊴ x
+     e₂ : g x ＝ ([] , []-decr)
+     e₂ = ↓-lc (expᴸ[𝟙+ α ] (sup β)) (g x) ([] , []-decr) (e₁ ⁻¹)
+   g-is-surjection (((a , y) ∷ l) , δ) =
+    ∥∥-rec
+     (being-in-the-image-is-prop ((a , y ∷ l) , δ) g)
+     σ
+     (sup-is-upper-bound-jointly-surjective β y)
+      where
+       σ : (Σ i ꞉ I , Σ x ꞉ ⟨ β i ⟩ , β-incl i x ＝ y)
+         → ((a , y ∷ l) , δ) ∈image g
+       σ (i , x , refl) =
+        ∥∥-functor τ
+         (expᴸ-sup-map-is-surjection β α ∣ i ∣ (((a , β-incl i x) ∷ l) , δ))
+        where
+         τ : (Σ s ꞉ ⟨ sup (expᴸ[𝟙+ α ] ∘ β) ⟩ ,
+               h s ＝ (((a , β-incl i x) ∷ l) , δ))
+           → Σ t ꞉ ⟨ sup γ ⟩ , g t ＝ (((a , β-incl i x) ∷ l) , δ)
+         τ (s , p) = f s , (g-after-f-is-h s ∙ p)
+
+  expᴸ-sup⁺-＝
+   : expᴸ[𝟙+ α ] (sup β)
+     ＝ sup (cases (λ _ → 𝟙ₒ) (expᴸ[𝟙+ α ] ∘ β))
+  expᴸ-sup⁺-＝ =
+   (surjective-simulation-gives-＝ pt fe' (ua 𝓤)
+     (sup γ)
+     (expᴸ[𝟙+ α ] (sup β))
+     g
+     [ sup γ , expᴸ[𝟙+ α ] (sup β) ]⟨ g-⊴ ⟩-is-simulation
+     g-is-surjection) ⁻¹
 
 \end{code}
