@@ -373,11 +373,13 @@ families of sets.
 
 If we assume choice for 𝓤₁ we get excluded middle at 𝓤₀. This is
 because the quotient 𝟚/P, for a proposition P in 𝓤₀, exists in 𝓤₁. In
-fact, it is the image of the map 𝟚→Prop that sends ₀ to 𝟙 and ₁ to P,
+fact, it is the image of the map 𝟚 → Ω that sends ₀ to 𝟙 and ₁ to P,
 because (𝟙＝P)＝P.
 
-Now, assuming excluded middle, choice is equivalent to the double
-negation shift.
+Now, choice is equivalent to the conjunction of the principle of
+excluded middle and the double negation shift for families of sets
+with arbitrary index set, written DNS₀, which amounts to saying that
+products of non-empty sets are non-empty.
 
 \begin{code}
 
@@ -390,15 +392,15 @@ module DNS
  open Univalent-Choice fe pt
  open ExcludedMiddle pt fe
 
- DNS : {𝓤 𝓥 : Universe} → (𝓤 ⊔ 𝓥)⁺ ̇
- DNS {𝓤} {𝓥} = (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ )
-              → is-set X
-              → ((x : X) → is-set (A x))
-              → (Π x ꞉ X , ¬¬ A x)
-              → ¬¬ (Π x ꞉ X , A x)
+ DNS₀ : {𝓤 𝓥 : Universe} → (𝓤 ⊔ 𝓥)⁺ ̇
+ DNS₀ {𝓤} {𝓥} = (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ )
+               → is-set X
+               → ((x : X) → is-set (A x))
+               → (Π x ꞉ X , ¬¬ A x)
+               → ¬¬ (Π x ꞉ X , A x)
 
- Double-Negation-Shift : 𝓤ω
- Double-Negation-Shift = {𝓤 𝓥 : Universe} → DNS {𝓤} {𝓥}
+ Double-Negation-Shift₀ : 𝓤ω
+ Double-Negation-Shift₀ = {𝓤 𝓥 : Universe} → DNS₀ {𝓤} {𝓥}
 
  private
   α : {X : 𝓤 ̇ } → ∥ X ∥ → ¬¬ X
@@ -413,31 +415,32 @@ module DNS
   δ : {𝓤 𝓥 : Universe} → {X : 𝓤 ̇ } {A : 𝓥 ̇ } → is-set A → is-set (X → A)
   δ {𝓤} {𝓥} A-is-set = Π-is-set (fe _ _) (λ _ → A-is-set)
 
- EM-and-AC₁-give-DNS : EM 𝓥 → AC₁ {𝓤} {𝓥} → DNS {𝓤} {𝓥}
- EM-and-AC₁-give-DNS em ac X A i j f = α (ac X A i j (λ x → β em (f x)))
+ EM-and-AC₁-give-DNS₀ : EM 𝓥 → AC₁ {𝓤} {𝓥} → DNS₀ {𝓤} {𝓥}
+ EM-and-AC₁-give-DNS₀ em ac X A i j f = α (ac X A i j (λ x → β em (f x)))
 
- EM-and-DNS-give-AC₁ : EM (𝓤 ⊔ 𝓥) → DNS {𝓤} {𝓥} → AC₁ {𝓤} {𝓥}
- EM-and-DNS-give-AC₁ em dns X A i j g = β em (dns X A i j (λ x → α (g x)))
+ EM-and-DNS₀-give-AC₁ : EM (𝓤 ⊔ 𝓥) → DNS₀ {𝓤} {𝓥} → AC₁ {𝓤} {𝓥}
+ EM-and-DNS₀-give-AC₁ em dns X A i j g = β em (dns X A i j (λ x → α (g x)))
 
 \end{code}
 
-DNS for prop-valued A, written DNS' below, is equivalent to the double
-negation of the (universally quantified) principle of excluded middle.
+DNS for prop-valued families, written DNS₋₁ below, is implies by DNS₀
+and is equivalent to the double negation of the (universally
+quantified) principle of excluded middle.
 
 \begin{code}
 
- DNS' : {𝓤 𝓥 : Universe} → (𝓤 ⊔ 𝓥)⁺ ̇
- DNS' {𝓤} {𝓥} = (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ )
+ DNS₋₁ : {𝓤 𝓥 : Universe} → (𝓤 ⊔ 𝓥)⁺ ̇
+ DNS₋₁ {𝓤} {𝓥} = (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ )
                → is-set X
                → ((x : X) → is-prop (A x))
                → (Π x ꞉ X , ¬¬ A x)
                → ¬¬ (Π x ꞉ X , A x)
 
- DNS-gives-DNS' : DNS {𝓤} {𝓥} → DNS' {𝓤} {𝓥}
- DNS-gives-DNS' dns X A i j = dns X A i (λ x → props-are-sets (j x))
+ DNS₀-gives-DNS₋₁ : DNS₀ {𝓤} {𝓥} → DNS₋₁ {𝓤} {𝓥}
+ DNS₀-gives-DNS₋₁ dns X A i j = dns X A i (λ x → props-are-sets (j x))
 
- DNS'-gives-¬¬EM : propext 𝓤 → DNS' {𝓤 ⁺} {𝓤} → ¬¬ EM 𝓤
- DNS'-gives-¬¬EM {𝓤} pe dns' = ¬¬-functor (λ f P i → f (P , i)) I
+ DNS₋₁-gives-¬¬EM : propext 𝓤 → DNS₋₁ {𝓤 ⁺} {𝓤} → ¬¬ EM 𝓤
+ DNS₋₁-gives-¬¬EM {𝓤} pe dns' = ¬¬-functor (λ f P i → f (P , i)) I
   where
    A : Ω 𝓤 → 𝓤 ̇
    A (P , i) = P + ¬ P
@@ -453,8 +456,8 @@ negation of the (universally quantified) principle of excluded middle.
         (λ (P , i) → decidability-of-prop-is-prop (fe _ _) i)
         (λ _ → fake-¬¬-EM)
 
- ¬¬EM-gives-DNS' : ¬¬ EM 𝓤 → DNS' {𝓤} {𝓤}
- ¬¬EM-gives-DNS' {𝓤} nnem X A X-is-set A-is-prop-valued f = ¬¬-functor g nnem
+ ¬¬EM-gives-DNS₋₁ : ¬¬ EM 𝓤 → DNS₋₁ {𝓤} {𝓤}
+ ¬¬EM-gives-DNS₋₁ {𝓤} nnem X A X-is-set A-is-prop-valued f = ¬¬-functor g nnem
   where
    g : EM 𝓤 → (x : X) → A x
    g em x = EM-gives-DNE em (A x) (A-is-prop-valued x) (f x)
@@ -470,25 +473,25 @@ predicates, which seems to be a new result:
 
  Choice-gives-Double-Negation-Shift : PropExt
                                     → Axiom-of-Choice₁
-                                    → Double-Negation-Shift
+                                    → Double-Negation-Shift₀
  Choice-gives-Double-Negation-Shift pe ac {𝓤} {𝓥} = III
   where
    em : Excluded-Middle
    em = AC-gives-EM pe (AC₁-gives-AC ac)
 
 
-   III : DNS {𝓤} {𝓥}
-   III = EM-and-AC₁-give-DNS em ac
+   III : DNS₀ {𝓤} {𝓥}
+   III = EM-and-AC₁-give-DNS₀ em ac
 
  Double-Negation-Shift-gives-Choice : Excluded-Middle
-                                    → Double-Negation-Shift
+                                    → Double-Negation-Shift₀
                                     → Axiom-of-Choice₁
  Double-Negation-Shift-gives-Choice em dns {𝓤} {𝓥} =
-  EM-and-DNS-give-AC₁ em (dns {𝓤} {𝓥})
+  EM-and-DNS₀-give-AC₁ em (dns {𝓤} {𝓥})
 
 \end{code}
 
-And here is an equivalent variant of DNS:
+And here is an equivalent variant of DNS₀:
 
 \begin{code}
 
@@ -500,11 +503,11 @@ And here is an equivalent variant of DNS:
 
  open TChoice
 
- DNS-gives-DNA : DNS {𝓤} {𝓤} → DNA {𝓤} {𝓥}
- DNS-gives-DNA = TAC-gives-TAC' ¬¬_ ¬¬-functor is-set δ γ
+ DNS₀-gives-DNA : DNS₀ {𝓤} {𝓤} → DNA {𝓤} {𝓥}
+ DNS₀-gives-DNA = TAC-gives-TAC' ¬¬_ ¬¬-functor is-set δ γ
 
- DNA-gives-DNS : DNA {𝓤} {𝓥} → DNS {𝓤} {𝓤}
- DNA-gives-DNS = TAC'-gives-TAC ¬¬_ ¬¬-functor is-set δ γ
+ DNA-gives-DNS₀ : DNA {𝓤} {𝓥} → DNS₀ {𝓤} {𝓤}
+ DNA-gives-DNS₀ = TAC'-gives-TAC ¬¬_ ¬¬-functor is-set δ γ
 
 \end{code}
 
@@ -717,7 +720,7 @@ module Propositional-Choice
 
  PAC : {𝓤 𝓥 : Universe} → (𝓤 ⊔ 𝓥)⁺ ̇
  PAC {𝓤} {𝓥} = (P : 𝓤 ̇ ) (Y : P → 𝓥 ̇ )
-              → is-set P
+              → is-prop P
               → (Π p ꞉ P , ∥ Y p ∥)
               → ∥(Π p ꞉ P , Y p)∥
 
