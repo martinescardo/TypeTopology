@@ -124,16 +124,42 @@ Added 29 January 2025 by Tom de Jong.
                       (sup (cases (λ _ → 𝟙ₒ) (F ∘ Δ)))
                       (sup-is-upper-bound _ (inr (inl ⋆))))
 
+ exp-specification-zero-from-strong-sup-specification
+  : exp-specification-sup-strong
+  → α ≠ 𝟘ₒ
+  → exp-specification-zero α F
+ exp-specification-zero-from-strong-sup-specification σ α-nonzero =
+  F 𝟘ₒ      ＝⟨ ap F I ⟩
+  F (sup ε) ＝⟨ σ α-nonzero 𝟘 ε ⟩
+  sup ε'    ＝⟨ II ⟩
+  𝟙ₒ        ∎
+   where
+    ε : 𝟘 → Ordinal 𝓤
+    ε = 𝟘-elim
+    ε' : 𝟙 + 𝟘 → Ordinal 𝓤
+    ε' = cases (λ _ → 𝟙ₒ) (F ∘ ε)
+    I : 𝟘ₒ ＝ sup ε
+    I = ⊴-antisym 𝟘ₒ (sup ε)
+         (𝟘ₒ-least-⊴ (sup ε))
+         (sup-is-lower-bound-of-upper-bounds ε 𝟘ₒ 𝟘-induction)
+    II : sup ε' ＝ 𝟙ₒ
+    II = ⊴-antisym (sup ε') 𝟙ₒ
+          (sup-is-lower-bound-of-upper-bounds ε' 𝟙ₒ
+            (dep-cases (λ _ → ⊴-refl 𝟙ₒ) 𝟘-induction))
+          (sup-is-upper-bound ε' (inl ⋆))
+
  exp-specification-sup-from-strong : exp-specification-sup-strong
-                                   → exp-specification-zero α F
                                    → exp-specification-sup
- exp-specification-sup-from-strong specₛ spec₀ α-nonzero {I} I-inh β =
+ exp-specification-sup-from-strong specₛ α-nonzero {I} I-inh β =
   F (sup β)                      ＝⟨ specₛ α-nonzero I β ⟩
   sup (cases (λ _ → 𝟙ₒ) (F ∘ β)) ＝⟨ e ⟩
   sup (F ∘ β)                    ∎
    where
+    spec₀ : exp-specification-zero α F
+    spec₀ = exp-specification-zero-from-strong-sup-specification specₛ α-nonzero
     F-monotone : is-monotone (OO 𝓤) (OO 𝓤) F
-    F-monotone = exp-specification-sup-strong-implies-monotonicity specₛ α-nonzero
+    F-monotone = exp-specification-sup-strong-implies-monotonicity
+                  specₛ α-nonzero
     e = ⊴-antisym _ _
          (sup-is-lower-bound-of-upper-bounds
            (cases (λ _ → 𝟙ₒ) (F ∘ β))
