@@ -780,11 +780,15 @@ decidable-order-iff-trichotomy (_ , w , e , t) =
 
 \end{code}
 
-Paul also remarks that the result can be strengthened as follows: A
-transitive well-founded relation is trichotomous iff it is both
+Paul Levy also remarks that the result can be strengthened as follows:
+A transitive well-founded relation is trichotomous iff it is both
 extensional and decidable. TODO. Write this down in Agda.
 
 End of 16th November 2022 addition.
+
+Remark (added 30th January 2025). Paul Levy found that this was already
+known by Robin Grayson in his 1978 PhD thesis, page 93.
+https://ora.ox.ac.uk/objects/uuid:3a88ef78-7a3e-4b98-83ac-467a00cf3311
 
 \begin{code}
 not-<-gives-≼ : funext (𝓤 ⊔ 𝓥) 𝓤₀
