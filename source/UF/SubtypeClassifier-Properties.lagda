@@ -56,23 +56,38 @@ open import UF.SubtypeClassifier
   pc : {p q : Ω 𝓤} → Σ f ꞉ (p ＝ q → p ＝ q) , wconstant f
   pc {p} {q} = (f p q , wconstant-f p q)
 
+Ω-extensionality-≃ : propext 𝓤
+                   → funext 𝓤 𝓤
+                   → {p q : Ω 𝓤}
+                   → ((p holds) ↔ (q holds)) ≃ (p ＝ q)
+Ω-extensionality-≃ pe fe {p} {q} =
+ logically-equivalent-props-are-equivalent
+  (×-is-prop
+    (Π-is-prop fe (λ _ → holds-is-prop q))
+    (Π-is-prop fe (λ _ → holds-is-prop p)))
+  (Ω-is-set fe pe)
+  (λ (f , g) → to-Ω-＝ fe (pe (holds-is-prop p) (holds-is-prop q) f g))
+  (λ {refl → id , id})
+
 equal-⊤-≃ : propext 𝓤
           → funext 𝓤 𝓤
           → (p : Ω 𝓤) → (p ＝ ⊤) ≃ (p holds)
-equal-⊤-≃ {𝓤} pe fe p = logically-equivalent-props-are-equivalent
-                         (Ω-is-set fe pe)
-                         (holds-is-prop p)
-                         (equal-⊤-gives-holds p)
-                         (holds-gives-equal-⊤ pe fe p)
+equal-⊤-≃ {𝓤} pe fe p =
+ logically-equivalent-props-are-equivalent
+  (Ω-is-set fe pe)
+  (holds-is-prop p)
+  (equal-⊤-gives-holds p)
+  (holds-gives-equal-⊤ pe fe p)
 
 equal-⊥-≃ : propext 𝓤
           → funext 𝓤 𝓤
           → (p : Ω 𝓤) → (p ＝ ⊥) ≃ ¬ (p holds)
-equal-⊥-≃ {𝓤} pe fe p = logically-equivalent-props-are-equivalent
-                         (Ω-is-set fe pe)
-                         (negations-are-props (lower-funext 𝓤 𝓤 fe))
-                         (equal-⊥-gives-fails p)
-                         (fails-gives-equal-⊥ pe fe p)
+equal-⊥-≃ {𝓤} pe fe p =
+ logically-equivalent-props-are-equivalent
+ (Ω-is-set fe pe)
+ (negations-are-props (lower-funext 𝓤 𝓤 fe))
+ (equal-⊥-gives-fails p)
+ (fails-gives-equal-⊥ pe fe p)
 
 𝟚-to-Ω : 𝟚 → Ω 𝓤
 𝟚-to-Ω ₀ = ⊥

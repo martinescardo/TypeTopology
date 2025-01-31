@@ -910,8 +910,12 @@ For example, by univalence, universes are locally small, and so is the
 
 \begin{code}
 
-universes-are-locally-small : is-univalent 𝓤 → is-locally-small (𝓤 ̇ )
+universes-are-locally-small : is-univalent 𝓤 → is-locally-small (𝓤 ̇)
 universes-are-locally-small ua X Y = (X ≃ Y) , ≃-sym (univalence-≃ ua X Y)
+
+Ω-is-locally-small : propext 𝓤 → funext 𝓤 𝓤 → is-locally-small (Ω 𝓤)
+Ω-is-locally-small pe fe p q = ((p holds) ↔ (q holds)) ,
+                               Ω-extensionality-≃ pe fe
 
 \end{code}
 
@@ -1080,7 +1084,7 @@ module _ (pt : propositional-truncations-exist) where
                  → image f is (𝓤 ⊔ 𝓥) small
 \end{code}
 
-Added by Ian Ray 11th September 2024
+Added by Ian Ray 11th September 2024.
 
 If X is 𝓥-small then it is locally 𝓥-small.
 
@@ -1096,6 +1100,8 @@ small-implies-locally-small X 𝓥 (Y , e) x x' =
   path-resized = ≃-sym (ap ⌜ e ⌝⁻¹ , ap-is-equiv ⌜ e ⌝⁻¹ (⌜⌝⁻¹-is-equiv e))
 
 \end{code}
+
+End of addition.
 
 Added by Martin Escardo and Tom de Jong 29th August 2024.
 

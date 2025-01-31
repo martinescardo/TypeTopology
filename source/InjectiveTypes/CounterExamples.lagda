@@ -411,11 +411,11 @@ In particular, we have the following.
 \begin{code}
 
 non-trivial-apartness-on-universe-gives-WEM
- : is-univalent (𝓤 ⊔ 𝓥)
- → Nontrivial-Apartness (𝓤 ⊔ 𝓥 ̇ ) 𝓥
+ : is-univalent 𝓤
+ → Nontrivial-Apartness (𝓤 ̇) 𝓥
  → typal-WEM 𝓤
-non-trivial-apartness-on-universe-gives-WEM ua =
- ainjective-type-with-non-trivial-apartness-gives-WEM
+non-trivial-apartness-on-universe-gives-WEM {𝓤} {𝓥} ua =
+ ainjective-type-with-non-trivial-apartness-gives-WEM {𝓤 ⁺} {𝓤} {𝓤}
   (universes-are-ainjective ua)
 
 non-trivial-apartness-on-universe-iff-WEM
@@ -431,6 +431,29 @@ non-trivial-apartness-on-universe-iff-WEM {𝓤} ua = f , g
        fe'
        (universes-are-locally-small ua)
        universe-has-two-distinct-points
+
+non-trivial-apartness-on-Ω-gives-WEM
+ : propext 𝓤
+ → Nontrivial-Apartness (Ω 𝓤) 𝓥
+ → typal-WEM 𝓤
+non-trivial-apartness-on-Ω-gives-WEM {𝓤} {𝓥} pe =
+ ainjective-type-with-non-trivial-apartness-gives-WEM {𝓤 ⁺} {𝓤} {𝓤}
+  (Ω-ainjective pe)
+
+non-trivial-apartness-on-Ω-iff-WEM
+ : propext 𝓤
+ → funext 𝓤 𝓤
+ → Nontrivial-Apartness (Ω 𝓤) 𝓤 ↔ typal-WEM 𝓤
+non-trivial-apartness-on-Ω-iff-WEM {𝓤} pe fe = f , g
+ where
+  f : Nontrivial-Apartness (Ω 𝓤) 𝓤 → typal-WEM 𝓤
+  f = non-trivial-apartness-on-Ω-gives-WEM pe
+
+  g : typal-WEM 𝓤 → Nontrivial-Apartness (Ω 𝓤) 𝓤
+  g = WEM-gives-that-type-with-two-distinct-points-has-nontrivial-apartness⁺
+       fe'
+       (Ω-is-locally-small pe fe)
+       ((⊥ , ⊤) , ⊥-is-not-⊤)
 
 \end{code}
 
