@@ -457,14 +457,14 @@ The Cantor type ℕ → 𝟚 is totally separated:
 Π-is-totally-separated : funext 𝓤 𝓥
                        → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
                        → ((x : X) → is-totally-separated (Y x))
-                       → is-totally-separated(Π Y)
+                       → is-totally-separated (Π Y)
 Π-is-totally-separated fe {X} {Y} t {f} {g} e = dfunext fe h
  where
-   P : (x : X) (p : Y x → 𝟚) → Π Y → 𝟚
-   P x p f = p (f x)
+  P : (x : X) (p : Y x → 𝟚) → Π Y → 𝟚
+  P x p f = p (f x)
 
-   h : (x : X) → f x ＝ g x
-   h x = t x (λ p → e(P x p))
+  h : (x : X) → f x ＝ g x
+  h x = t x (λ p → e (P x p))
 
 Cantor-is-totally-separated : funext 𝓤₀ 𝓤₀ → is-totally-separated (ℕ → 𝟚)
 Cantor-is-totally-separated fe =

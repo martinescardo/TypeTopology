@@ -101,6 +101,9 @@ module Apartness (pt : propositional-truncations-exist) where
  Apartness : 𝓤 ̇ → (𝓥 : Universe) → 𝓥 ⁺ ⊔ 𝓤 ̇
  Apartness X 𝓥 = Σ _♯_ ꞉ (X → X → 𝓥 ̇) , is-apartness _♯_
 
+ Tight-Apartness : 𝓤 ̇  → (𝓥 : Universe) → 𝓥 ⁺ ⊔ 𝓤 ̇
+ Tight-Apartness X 𝓥 = Σ _♯_ ꞉ (X → X → 𝓥 ̇) , is-apartness _♯_ × is-tight _♯_
+
  apartness-is-prop-valued : {X : 𝓤 ̇ } (_♯_ : X → X → 𝓥 ̇ )
                           → is-apartness _♯_
                           → is-prop-valued _♯_

@@ -122,3 +122,24 @@ WEM-gives-non-trivial-apartness-on-universe fe =
 Further properties of apartness relations can be found in the following file
 InjectiveTypes.CounterExamples. In particular, it is shown that the universe
 can't have any nontrivial apartness unless weak excluded middle holds.
+
+Added 31 January 2025 by Tom de Jong and Martin Escardo.
+
+\begin{code}
+
+EM-gives-tight-apartness-is-≠ : DNE 𝓥
+                              → (X : 𝓤 ̇  )
+                              → ((_♯_ , _ , _) : Tight-Apartness X 𝓥)
+                              → ((x y : X) → x ♯ y ↔ x ≠ y)
+EM-gives-tight-apartness-is-≠ dne X (_♯_ , ♯-is-apartness , ♯-is-tight) x y = III
+ where
+  I : x ♯ y → x ≠ y
+  I = not-equal-if-apart _♯_ ♯-is-apartness
+  II : x ≠ y → x ♯ y
+  II ν = dne (x ♯ y)
+             (apartness-is-prop-valued _♯_ ♯-is-apartness x y)
+             (contrapositive (♯-is-tight x y) ν)
+  III : x ♯ y ↔ x ≠ y
+  III = I , II
+
+\end{code}

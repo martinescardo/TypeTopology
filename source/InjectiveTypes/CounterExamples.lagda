@@ -150,9 +150,6 @@ simple-type₂-injective-gives-WEM-examples =
 
 \end{code}
 
-TODO. More generally, if a non-trivial totally separated type is
-injective, then WEM holds.
-
 TODO. We can also close under _×_ and _+_ to get the same result. We
 can also close under Π, but maybe not under Σ.
 
@@ -461,9 +458,7 @@ non-trivial-totally-separated-ainjective-type-gives-¬¬-WEM.
 \begin{code}
 
 non-trivial-ainjective-type-with-tight-apartness-gives-¬¬-WEM
- : (Σ X ꞉ 𝓤 ̇ , ((¬ is-prop X)
-             × ainjective-type X 𝓤 𝓥
-             × (Σ _♯_ ꞉ (X → X → 𝓣 ̇  ) , (is-apartness _♯_ × is-tight _♯_))))
+ : (Σ X ꞉ 𝓤 ̇ , ((¬ is-prop X) × ainjective-type X 𝓤 𝓥 × Tight-Apartness X 𝓣))
  → ¬¬ typal-WEM 𝓤
 non-trivial-ainjective-type-with-tight-apartness-gives-¬¬-WEM
  {𝓤} {𝓥} {𝓣} (X , X-not-prop , X-inj , (_♯_ , ♯-is-apartness , ♯-is-tight)) =
@@ -486,6 +481,35 @@ non-trivial-ainjective-type-with-tight-apartness-gives-¬¬-WEM
     IV : ¬¬ decomposition X
     IV = contrapositive III X-not-prop
 
+non-trivial-ainjective-type-with-tight-apartness-gives-¬¬-WEM⁺
+ : (Σ X ꞉ 𝓤 ⁺ ̇  , ((¬ is-prop X)
+                × is-locally-small X
+                × ainjective-type X 𝓤 𝓥
+                × Tight-Apartness X 𝓣))
+ → ¬¬ typal-WEM 𝓤
+non-trivial-ainjective-type-with-tight-apartness-gives-¬¬-WEM⁺
+ {𝓤} {𝓥} {𝓣} (X , X-not-prop , X-loc-small , X-inj ,
+              (_♯_ , ♯-is-apartness , ♯-is-tight)) =
+  ¬¬-functor (decomposition-of-ainjective-type-gives-WEM pe' X X-inj) IV
+   where
+    I : (x y : X) → (x ♯ y) → typal-WEM 𝓤
+    I x y a = ainjective-type-with-non-trivial-apartness-gives-WEM
+               X-inj
+               ((_♯_ , ♯-is-apartness) , ((x , y) , a))
+
+    II : (x y : X) → (x ♯ y) → decomposition X
+    II x y a = WEM-gives-decomposition-of-two-pointed-types⁺
+                 (I x y a)
+                 X
+                 X-loc-small
+                 ((x , y) , not-equal-if-apart _♯_ ♯-is-apartness a)
+
+    III : ¬ decomposition X → is-prop X
+    III ν x y = ♯-is-tight x y (λ (a : x ♯ y) → ν (II x y a))
+
+    IV : ¬¬ decomposition X
+    IV = contrapositive III X-not-prop
+
 open import TypeTopology.TotallySeparated
 
 non-trivial-totally-separated-ainjective-type-gives-¬¬-WEM'
@@ -500,4 +524,25 @@ non-trivial-totally-separated-ainjective-type-gives-¬¬-WEM'
     where
      open total-separatedness-via-apartness pt
 
+non-trivial-totally-separated-ainjective-type-gives-¬¬-WEM⁺'
+ : (Σ X ꞉ 𝓤 ⁺ ̇  , ((¬ is-prop X)
+                × is-locally-small X
+                × is-totally-separated X
+                × ainjective-type X 𝓤 𝓥))
+ → ¬¬ typal-WEM 𝓤
+non-trivial-totally-separated-ainjective-type-gives-¬¬-WEM⁺'
+ (X , X-not-prop , X-loc-small , X-tot-sep , X-inj) =
+  non-trivial-ainjective-type-with-tight-apartness-gives-¬¬-WEM⁺
+   (  X , X-not-prop , X-loc-small , X-inj
+    , _♯₂_ , ♯₂-is-apartness
+    , totally-separated-gives-totally-separated₃ X-tot-sep)
+    where
+     open total-separatedness-via-apartness pt
+
 \end{code}
+
+A more general version (in terms of universe levels) of the above results on
+totally separated types is given by
+non-trivial-totally-separated-ainjective-type-gives-¬¬-WEM
+in Taboos.Decomposability, where the notion of total separatedness is exploited
+directly.
