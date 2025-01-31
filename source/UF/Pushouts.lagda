@@ -164,31 +164,18 @@ dependent-cocone {_} {_} {_} {_} {_} {A} {B} {C} f g X (i , j , H) P =
 
 \end{code}
 
-Now we will define the (dependent) universal property, induction principle and
-propositional computation rules for pushouts and show they are inter-derivable*.
+Now we will define the universal property, induction principle and propositional
+computation rules for pushouts and show they are inter-derivable.
 
-*In fact we will only show:
-(1)
-  The dependent universal propery implies the induction principle and
-  propositional computation rules.
-
-(2)
-  The induction principle and propositional computation rules implies the
+In fact we will only show:
+(1) The induction principle and propositional computation rules implies the
   the recursion principle with corresponding computation rules and the uniqueness
   principle.
 
-(3)
-  The recursion principle with corresponding computation rules and the uniqueness
-  principle implies the non-dependent universal property.
+(2) The recursion principle with corresponding computation rules and the
+  uniqueness principle implies the non-dependent universal property.
 
-(4)
-  The (non-dependent) universal property implies the dependent universal
-  property.
-
-(4) Is shown in the Agda Unimath library (*link*). It involves something called
-the pullback property of pushouts which we wish to avoid exploring for now.
-Alternativly, we can show the converse of (3), (2) and (1) which would provide a
-proof of (4).*
+(3) The universal property implies the induction principle.
 
 \begin{code}
 
@@ -286,77 +273,40 @@ record pushouts-exist {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇} (f : C → A)
   inll : A → pushout 
   inrr : B → pushout 
   glue : (c : C) → inll (f c) ＝ inrr (g c)
-  pushout-dependent-universal-property
+  pushout-induction
    : {P : pushout → 𝓣  ̇}
-   → Pushout-Dependent-Universal-Property pushout f g (inll , inrr , glue) P
+   → Pushout-Induction-Principle pushout f g (inll , inrr , glue) P
+  pushout-ind-comp-inll
+   : {P : pushout → 𝓣  ̇}
+   → Pushout-Computation-Rule₁ pushout f g (inll , inrr , glue) P
+      pushout-induction
+  pushout-ind-comp-inrr
+   : {P : pushout → 𝓣  ̇}
+   → Pushout-Computation-Rule₂ pushout f g (inll , inrr , glue) P
+      pushout-induction
+  pushout-ind-comp-glue
+   : {P : pushout → 𝓣  ̇}
+   → Pushout-Computation-Rule₃ pushout f g (inll , inrr , glue) P
+      pushout-induction pushout-ind-comp-inll pushout-ind-comp-inrr
 
 \end{code}
 
 We will observe that the pushout is a cocone and begin deriving some key
-results from the dependent universal property:
-induction and recursion principles (along with corresponding computation rules), the uniqueness principle and the non-dependent universal property.
+results from the induction principles:
+recursion principle (along with corresponding computation rules), the uniqueness
+principle and the universal property.
 
-TODO. Show that the non-dependent universal property implies the dependent
-universal property. This will establish the logical equivalence between
+The following are logically equivalent
 
-1) The dependent universal property
-2) The induction principle with propositional computation rules
-3) The recursion principle with propositional computation rules and the
+1) The induction principle with propositional computation rules
+2) The recursion principle with propositional computation rules and the
    uniqueness principle
-4) The non-dependent universal property.
+3) The universal property.
 
 \begin{code}
 
  pushout-cocone : cocone f g pushout
  pushout-cocone = (inll , inrr , glue)
-
- pushout-dep-UP-inverse : {P : pushout → 𝓣  ̇}
-                        → dependent-cocone f g pushout (inll , inrr , glue) P
-                        → ((x : pushout) → P x)
- pushout-dep-UP-inverse {_} {P}
-  = inverse (canonical-map-to-dependent-cocone pushout f g (inll , inrr , glue) P)
-     pushout-dependent-universal-property
-
- pushout-dep-UP-section
-  : {P : pushout → 𝓣  ̇}
-  → pushout-dep-UP-inverse
-   ∘ canonical-map-to-dependent-cocone pushout f g (inll , inrr , glue) P
-  ∼ id
- pushout-dep-UP-section {_} {P}
-  = inverses-are-retractions
-     (canonical-map-to-dependent-cocone pushout f g (inll , inrr , glue) P)
-      pushout-dependent-universal-property
-
- pushout-dep-UP-retraction
-  : {P : pushout → 𝓣  ̇}
-  → canonical-map-to-dependent-cocone pushout f g (inll , inrr , glue) P
-     ∘ pushout-dep-UP-inverse
-  ∼ id
- pushout-dep-UP-retraction {_} {P}
-  = inverses-are-sections
-     (canonical-map-to-dependent-cocone pushout f g (inll , inrr , glue) P)
-      pushout-dependent-universal-property
-
- pushout-induction
-  : {P : pushout → 𝓣  ̇}
-  → Pushout-Induction-Principle pushout f g (inll , inrr , glue) P
- pushout-induction {_} {P} l r H = pushout-dep-UP-inverse (l , r , H)
-
- pushout-ind-comp-inll
-  : {P : pushout → 𝓣  ̇}
-  → Pushout-Computation-Rule₁ pushout f g (inll , inrr , glue) P pushout-induction
- pushout-ind-comp-inll {_} {P} l r H a = {!!}
-  
- pushout-ind-comp-inrr
-  : {P : pushout → 𝓣  ̇}
-  → Pushout-Computation-Rule₂ pushout f g (inll , inrr , glue) P pushout-induction
- pushout-ind-comp-inrr l r H b = {!!}
-  
- pushout-ind-comp-glue
-  : {P : pushout → 𝓣  ̇}
-  → Pushout-Computation-Rule₃ pushout f g (inll , inrr , glue) P
-     pushout-induction pushout-ind-comp-inll pushout-ind-comp-inrr
- pushout-ind-comp-glue l r H c = {!!}
    
  pushout-recursion : {D : 𝓣  ̇}
                    → (l : A → D)
@@ -483,4 +433,165 @@ universal property. This will establish the logical equivalence between
      (pushout-rec-comp-inll l r G , pushout-rec-comp-inrr l r G ,
       ∼-sym (pushout-rec-comp-glue l r G))
    
+\end{code}
+
+We investigate only postulating the (non-dependent) universal property.
+
+\begin{code}
+
+record pushouts-exist' {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇} (f : C → A) (g : C → B) : 𝓤ω
+ where
+ field
+  pushout : 𝓤 ⊔ 𝓥 ⊔ 𝓦  ̇
+  inll : A → pushout 
+  inrr : B → pushout 
+  glue : (c : C) → inll (f c) ＝ inrr (g c)
+  pushout-universal-property
+   : {X : 𝓣  ̇}
+   → Pushout-Universal-Property pushout f g (inll , inrr , glue) X
+
+ pushout-cocone : cocone f g pushout
+ pushout-cocone = (inll , inrr , glue)
+
+\end{code}
+
+We will unpack the equivalence established by the universal property.
+
+\begin{code}
+
+ pushout-fiber-is-singleton
+  : {X : 𝓣  ̇}
+  → (s : cocone f g X)
+  → is-contr (fiber (canonical-map-to-cocone pushout f g pushout-cocone X) s)
+ pushout-fiber-is-singleton {_} {X} s
+  = equivs-are-vv-equivs (canonical-map-to-cocone pushout f g pushout-cocone X)
+     pushout-universal-property s
+
+ pushout-fiber-is-singleton'
+  : {X : 𝓣  ̇}
+  → (s : cocone f g X)
+  → is-contr (Σ u ꞉ (pushout → X) ,
+               cocone-family f g X (u ∘ inll , u ∘ inrr , ∼-ap-∘ u glue) s)
+ pushout-fiber-is-singleton' {_} {X} s 
+  = equiv-to-singleton' (Σ-cong (λ - → cocone-identity-characterization f g X
+                         (- ∘ inll , - ∘ inrr , ∼-ap-∘ - glue) s))
+                        (pushout-fiber-is-singleton s)
+
+ pushout-fiber-center
+  : {X : 𝓣  ̇}
+  → (s : cocone f g X)
+  → Σ u ꞉ (pushout → X) ,
+     cocone-family f g X (u ∘ inll , u ∘ inrr , ∼-ap-∘ u glue) s
+ pushout-fiber-center s = center (pushout-fiber-is-singleton' s)
+
+ pushout-fiber-centrality
+  : {X : 𝓣  ̇}
+  → (s : cocone f g X)
+  → is-central (Σ u ꞉ (pushout → X) ,
+                cocone-family f g X (u ∘ inll , u ∘ inrr , ∼-ap-∘ u glue) s)
+               (pushout-fiber-center s)
+ pushout-fiber-centrality s = centrality (pushout-fiber-is-singleton' s)
+
+ pushout-unique-map : {X : 𝓣  ̇}
+                    → (s : cocone f g X)
+                    → Σ u ꞉ (pushout → X) ,
+                       cocone-family f g X (u ∘ inll , u ∘ inrr , ∼-ap-∘ u glue) s
+                    → pushout → X
+ pushout-unique-map s (u , _) = u
+
+ pushout-inll-homotopy
+  : {X : 𝓣  ̇}
+  → (s : cocone f g X)
+  → (z : Σ u ꞉ (pushout → X) ,
+          cocone-family f g X (u ∘ inll , u ∘ inrr , ∼-ap-∘ u glue) s)
+  → (pushout-unique-map s z) ∘ inll ∼ cocone-vertical-map f g X s
+ pushout-inll-homotopy s (u , K , L , M) = K
+
+ pushout-inrr-homotopy
+  : {X : 𝓣  ̇}
+  → (s : cocone f g X)
+  → (z : Σ u ꞉ (pushout → X) ,
+          cocone-family f g X (u ∘ inll , u ∘ inrr , ∼-ap-∘ u glue) s)
+  → (pushout-unique-map s z) ∘ inrr ∼ cocone-horizontal-map f g X s
+ pushout-inrr-homotopy s (u , K , L , M) = L
+
+ pushout-glue-homotopy
+  : {X : 𝓣  ̇}
+  → (s : cocone f g X)
+  → (z : Σ u ꞉ (pushout → X) ,
+          cocone-family f g X (u ∘ inll , u ∘ inrr , ∼-ap-∘ u glue) s)
+  → ∼-trans ((pushout-inll-homotopy s z) ∘ f) (cocone-commuting-square f g X s)
+  ∼ ∼-trans (∼-ap-∘ (pushout-unique-map s z) glue)
+            ((pushout-inrr-homotopy s z) ∘ g)
+ pushout-glue-homotopy s (u , K , L , M) = M
+
+\end{code}
+
+Now we can derive the recursion principle, the corresponding propositional
+computation rules and the uniqueness principles.
+
+\begin{code}
+
+ pushout-recursion : {D : 𝓣  ̇}
+                   → (l : A → D)
+                   → (r : B → D)
+                   → ((c : C) → l (f c) ＝ r (g c))
+                   → pushout → D
+ pushout-recursion l r G
+  = pushout-unique-map (l , r , G) (pushout-fiber-center (l , r , G))
+
+ pushout-rec-comp-inll : {D : 𝓣  ̇}
+                       → (l : A → D)
+                       → (r : B → D)
+                       → (G : (c : C) → l (f c) ＝ r (g c))
+                       → (a : A)
+                       → pushout-recursion l r G (inll a) ＝ l a
+ pushout-rec-comp-inll l r G 
+  = pushout-inll-homotopy (l , r , G) (pushout-fiber-center (l , r , G)) 
+
+ pushout-rec-comp-inrr : {D : 𝓣  ̇}
+                       → (l : A → D)
+                       → (r : B → D)
+                       → (G : (c : C) → l (f c) ＝ r (g c))
+                       → (b : B)
+                       → pushout-recursion l r G (inrr b) ＝ r b
+ pushout-rec-comp-inrr l r G
+  = pushout-inrr-homotopy (l , r , G) (pushout-fiber-center (l , r , G))
+ 
+ pushout-rec-comp-glue
+  : {D : 𝓣  ̇}
+  → (l : A → D)
+  → (r : B → D)
+  → (G : (c : C) → l (f c) ＝ r (g c))
+  → (c : C)
+  → ap (pushout-recursion l r G) (glue c) ∙ pushout-rec-comp-inrr l r G (g c) 
+  ＝ pushout-rec-comp-inll l r G (f c) ∙ G c
+ pushout-rec-comp-glue l r G c
+  = pushout-glue-homotopy (l , r , G) (pushout-fiber-center (l , r , G)) c ⁻¹
+
+ pushout-uniqueness : (X : 𝓣 ̇)
+                    → (u u' : pushout → X)
+                    → (H : (a : A) → u (inll a) ＝ u' (inll a))
+                    → (H' : (b : B) → u (inrr b) ＝ u' (inrr b))
+                    → (M : (c : C)
+                      → ap u (glue c) ∙ H' (g c) ＝ H (f c) ∙ ap u' (glue c))
+                    → (x : pushout) → u x ＝ u' x
+ pushout-uniqueness X u u' H H' M
+  = happly (pr₁ (from-Σ-＝ (singletons-are-props
+    (pushout-fiber-is-singleton' (u' ∘ inll , u' ∘ inrr , ∼-ap-∘ u' glue))
+     (u , H , H' , λ c → M c ⁻¹)
+      (u' , ∼-refl , ∼-refl , λ c → refl-left-neutral))))
+
+\end{code}
+
+Finally, we can derive the induction principle and the corresponding propositional
+computation rules(?).
+
+\begin{code}
+
+ pushout-induction
+  : {P : pushout → 𝓣  ̇}
+  → Pushout-Induction-Principle pushout f g (inll , inrr , glue) P
+ pushout-induction = {!!}
+
 \end{code}
