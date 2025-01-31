@@ -18,7 +18,7 @@ module Apartness.TightReflection
 
 open import Apartness.Definition
 open import Apartness.Morphisms
-open import Apartness.NegationOfApartness pt
+open import Apartness.Negation pt
 open import MLTT.Spartan
 open import UF.Base
 open import UF.Embeddings
