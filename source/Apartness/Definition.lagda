@@ -101,6 +101,17 @@ module Apartness (pt : propositional-truncations-exist) where
  Apartness : 𝓤 ̇ → (𝓥 : Universe) → 𝓥 ⁺ ⊔ 𝓤 ̇
  Apartness X 𝓥 = Σ _♯_ ꞉ (X → X → 𝓥 ̇) , is-apartness _♯_
 
+ cotransitive-if-strongly-cotransitive : {X : 𝓤 ̇ } (_♯_ : X → X → 𝓥 ̇ )
+                                       → is-strongly-cotransitive _♯_
+                                       → is-cotransitive _♯_
+ cotransitive-if-strongly-cotransitive _♯_ sc x y z a = ∣ sc x y z a ∣
+
+ strong-apartness-is-apartness : {X : 𝓤 ̇ } (_♯_ : X → X → 𝓥 ̇ )
+                               → is-strong-apartness _♯_
+                               → is-apartness _♯_
+ strong-apartness-is-apartness _♯_ (p , i , s , c) =
+  p , i , s , cotransitive-if-strongly-cotransitive _♯_ c
+
  Tight-Apartness : 𝓤 ̇  → (𝓥 : Universe) → 𝓥 ⁺ ⊔ 𝓤 ̇
  Tight-Apartness X 𝓥 = Σ _♯_ ꞉ (X → X → 𝓥 ̇) , is-apartness _♯_ × is-tight _♯_
 

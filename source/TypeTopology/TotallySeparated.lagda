@@ -813,4 +813,6 @@ module total-separatedness-via-apartness
    α : (p : X → 𝟚) → p x ＝ p y
    α p = 𝟚-is-¬¬-separated (p x) (p y) (λ u → h (p , u))
 
+ ♯₂-is-tight = totally-separated-gives-totally-separated₃
+
 \end{code}
