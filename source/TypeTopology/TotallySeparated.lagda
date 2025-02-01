@@ -817,7 +817,7 @@ module total-separatedness-via-apartness
 
  tight-apartness-weaker-than-♯₂-gives-total-separatedness
    : {X : 𝓤 ̇ }
-   → ((_♯_ , (p , i , s , c) , t) : Tight-Apartness X 𝓥)
+   → ((_♯_ , _) : Tight-Apartness X 𝓥)
    → ((x y : X) → x ♯ y → x ♯₂ y)
    → is-totally-separated X
  tight-apartness-weaker-than-♯₂-gives-total-separatedness
