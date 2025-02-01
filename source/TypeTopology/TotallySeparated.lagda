@@ -815,12 +815,12 @@ module total-separatedness-via-apartness
 
  ♯₂-is-tight = totally-separated-gives-totally-separated₃
 
- tight-apartness-weaker-than-♯₂-gives-total-separatedness
+ tight-apartness-contained-in-♯₂-gives-total-separatedness
   : {X : 𝓤 ̇ }
   → ((_♯_ , _) : Tight-Apartness X 𝓥)
   → ((x y : X) → x ♯ y → x ♯₂ y)
   → is-totally-separated X
- tight-apartness-weaker-than-♯₂-gives-total-separatedness
+ tight-apartness-contained-in-♯₂-gives-total-separatedness
    {𝓤} {𝓥} {X} (_♯_ , (p , i , s , c) , t) ϕ {x} {y} = III
    where
     I : (x y : X) → ¬ (x ♯₂ y) → ¬ (x ♯ y)
