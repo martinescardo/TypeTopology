@@ -264,7 +264,7 @@ Pushout-Computation-Rule₃
 Now we will use a record type to give the pushout, point and path constructors,
 and the dependent universal property.
 
-\begin{code}
+begin{code}
 
 record pushouts-exist {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇} (f : C → A) (g : C → B) : 𝓤ω
  where
@@ -289,7 +289,7 @@ record pushouts-exist {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇} (f : C → A)
    → Pushout-Computation-Rule₃ pushout f g (inll , inrr , glue) P
       pushout-induction pushout-ind-comp-inll pushout-ind-comp-inrr
 
-\end{code}
+end{code}
 
 We will observe that the pushout is a cocone and begin deriving some key
 results from the induction principles:
@@ -303,7 +303,7 @@ The following are logically equivalent
    uniqueness principle
 3) The universal property.
 
-\begin{code}
+begin{code}
 
  pushout-cocone : cocone f g pushout
  pushout-cocone = (inll , inrr , glue)
@@ -433,7 +433,7 @@ The following are logically equivalent
      (pushout-rec-comp-inll l r G , pushout-rec-comp-inrr l r G ,
       ∼-sym (pushout-rec-comp-glue l r G))
    
-\end{code}
+end{code}
 
 We investigate only postulating the (non-dependent) universal property.
 
@@ -569,14 +569,14 @@ computation rules and the uniqueness principles.
  pushout-rec-comp-glue l r G c
   = pushout-glue-homotopy (l , r , G) (pushout-fiber-center (l , r , G)) c ⁻¹
 
- pushout-uniqueness : (X : 𝓣 ̇)
+ pushout-uniqueness : {X : 𝓣 ̇}
                     → (u u' : pushout → X)
                     → (H : (a : A) → u (inll a) ＝ u' (inll a))
                     → (H' : (b : B) → u (inrr b) ＝ u' (inrr b))
                     → (M : (c : C)
                       → ap u (glue c) ∙ H' (g c) ＝ H (f c) ∙ ap u' (glue c))
                     → (x : pushout) → u x ＝ u' x
- pushout-uniqueness X u u' H H' M
+ pushout-uniqueness {_} {X} u u' H H' M
   = happly (pr₁ (from-Σ-＝ (singletons-are-props
     (pushout-fiber-is-singleton' (u' ∘ inll , u' ∘ inrr , ∼-ap-∘ u' glue))
      (u , H , H' , λ c → M c ⁻¹)
@@ -585,13 +585,135 @@ computation rules and the uniqueness principles.
 \end{code}
 
 Finally, we can derive the induction principle and the corresponding propositional
-computation rules(?).
+computation rules(?). First we will introduce an auxillary type which I am going
+to call pre-induction. 
 
 \begin{code}
+
+ pre-induction
+  : {P : pushout → 𝓣  ̇}
+  → (l : (a : A) → P (inll a))
+  → (r : (b : B) → P (inrr b))
+  → ((c : C) → transport P (glue c) (l (f c)) ＝ r (g c))
+  → pushout → Σ x ꞉ pushout , P x
+ pre-induction {_} {P} l r G = pushout-recursion l' r' G'
+  where
+   l' : A → Σ x ꞉ pushout , P x
+   l' a = (inll a , l a)
+   r' : B → Σ x ꞉ pushout , P x
+   r' b = (inrr b , r b)
+   G' : (c : C) → l' (f c) ＝ r' (g c)
+   G' c = to-Σ-＝ (glue c , G c)
+
+ pre-induction-comp-inll
+  : {P : pushout → 𝓣  ̇}
+  → (l : (a : A) → P (inll a))
+  → (r : (b : B) → P (inrr b))
+  → (G : (c : C) → transport P (glue c) (l (f c)) ＝ r (g c))
+  → (a : A)
+  → pre-induction l r G (inll a) ＝ (inll a , l a)
+ pre-induction-comp-inll {_} {P} l r G = pushout-rec-comp-inll l' r' G'
+  where
+   l' : A → Σ x ꞉ pushout , P x
+   l' a = (inll a , l a)
+   r' : B → Σ x ꞉ pushout , P x
+   r' b = (inrr b , r b)
+   G' : (c : C) → l' (f c) ＝ r' (g c)
+   G' c = to-Σ-＝ (glue c , G c)
+
+ pre-induction-comp-inrr
+  : {P : pushout → 𝓣  ̇}
+  → (l : (a : A) → P (inll a))
+  → (r : (b : B) → P (inrr b))
+  → (G : (c : C) → transport P (glue c) (l (f c)) ＝ r (g c))
+  → (b : B)
+  → pre-induction l r G (inrr b) ＝ (inrr b , r b)
+ pre-induction-comp-inrr {_} {P} l r G = pushout-rec-comp-inrr l' r' G'
+  where
+   l' : A → Σ x ꞉ pushout , P x
+   l' a = (inll a , l a)
+   r' : B → Σ x ꞉ pushout , P x
+   r' b = (inrr b , r b)
+   G' : (c : C) → l' (f c) ＝ r' (g c)
+   G' c = to-Σ-＝ (glue c , G c)
+
+ pre-induction-comp-glue
+  : {P : pushout → 𝓣  ̇}
+  → (l : (a : A) → P (inll a))
+  → (r : (b : B) → P (inrr b))
+  → (G : (c : C) → transport P (glue c) (l (f c)) ＝ r (g c))
+  → (c : C)
+  → ap (pre-induction l r G) (glue c) ∙ pre-induction-comp-inrr l r G (g c) 
+  ＝ pre-induction-comp-inll l r G (f c) ∙ to-Σ-＝ (glue c , G c)
+ pre-induction-comp-glue {_} {P} l r G = pushout-rec-comp-glue l' r' G'
+  where
+   l' : A → Σ x ꞉ pushout , P x
+   l' a = (inll a , l a)
+   r' : B → Σ x ꞉ pushout , P x
+   r' b = (inrr b , r b)
+   G' : (c : C) → l' (f c) ＝ r' (g c)
+   G' c = to-Σ-＝ (glue c , G c)
+
+ pre-induction-id
+  : {P : pushout → 𝓣  ̇}
+  → (l : (a : A) → P (inll a))
+  → (r : (b : B) → P (inrr b))
+  → ((c : C) → transport P (glue c) (l (f c)) ＝ r (g c))
+  → pushout → pushout
+ pre-induction-id l r G = pr₁ ∘ pre-induction l r G
+
+ pre-induction-id-is-id
+  : {P : pushout → 𝓣  ̇}
+  → (l : (a : A) → P (inll a))
+  → (r : (b : B) → P (inrr b))
+  → (G : (c : C) → transport P (glue c) (l (f c)) ＝ r (g c))
+  → (x : pushout) → pre-induction-id l r G x ＝ x
+ pre-induction-id-is-id {_} {P} l r G
+  = pushout-uniqueness (pre-induction-id l r G) id
+     (λ a → ap pr₁ (pre-induction-comp-inll l r G a))
+     (λ b → ap pr₁ (pre-induction-comp-inrr l r G b))
+     I
+  where
+   I : (c : C)
+     → ap (pre-induction-id l r G) (glue c)
+       ∙ ap pr₁ (pre-induction-comp-inrr l r G (g c))
+     ＝ ap pr₁ (pre-induction-comp-inll l r G (f c)) ∙ ap id (glue c)
+   I c = ap (pre-induction-id l r G) (glue c)
+         ∙ ap pr₁ (pre-induction-comp-inrr l r G (g c))            ＝⟨ II ⟩
+         ap pr₁ (ap (pre-induction l r G) (glue c))
+         ∙ ap pr₁ (pre-induction-comp-inrr l r G (g c))            ＝⟨ III ⟩
+         ap pr₁ (ap (pre-induction l r G) (glue c)
+         ∙ pre-induction-comp-inrr l r G (g c))                    ＝⟨ IV ⟩
+         ap pr₁ (pre-induction-comp-inll l r G (f c)
+         ∙ to-Σ-＝ (glue c , G c))                                 ＝⟨ V ⟩
+         ap pr₁ (pre-induction-comp-inll l r G (f c))
+         ∙ ap pr₁ (to-Σ-＝ (glue c , G c))                         ＝⟨ VII ⟩
+         ap pr₁ (pre-induction-comp-inll l r G (f c))
+         ∙ ap id (glue c)                                          ∎
+    where
+     II = ap (_∙ ap pr₁ (pre-induction-comp-inrr l r G (g c)))
+             (ap-ap (pre-induction l r G) pr₁ (glue c) ⁻¹)
+     III = ap-∙ pr₁ (ap (pre-induction l r G) (glue c))
+                (pre-induction-comp-inrr l r G (g c)) ⁻¹
+     IV = ap (ap pr₁) (pre-induction-comp-glue l r G c)
+     V = ap-∙ pr₁ (pre-induction-comp-inll l r G (f c)) (to-Σ-＝ (glue c , G c))
+     VI = ap pr₁ (to-Σ-＝ (glue c , G c)) ＝⟨ ap-pr₁-to-Σ-＝ (glue c , G c) ⟩
+          glue c                          ＝⟨ ap-id-is-id' (glue c) ⟩
+          ap id (glue c)                  ∎ 
+     VII = ap (ap pr₁ (pre-induction-comp-inll l r G (f c)) ∙_) VI 
+
+ pre-induction-family
+  : {P : pushout → 𝓣  ̇}
+  → (l : (a : A) → P (inll a))
+  → (r : (b : B) → P (inrr b))
+  → (G : (c : C) → transport P (glue c) (l (f c)) ＝ r (g c))
+  → (x : pushout) → P (pre-induction-id l r G x)
+ pre-induction-family l r G = pr₂ ∘ pre-induction l r G
 
  pushout-induction
   : {P : pushout → 𝓣  ̇}
   → Pushout-Induction-Principle pushout f g (inll , inrr , glue) P
- pushout-induction = {!!}
+ pushout-induction {_} {P} l r G x
+  = transport P (pre-induction-id-is-id l r G x) (pre-induction-family l r G x)
 
 \end{code}
