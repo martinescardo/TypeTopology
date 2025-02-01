@@ -157,13 +157,13 @@ a binary sequence is decidable.
 
 \begin{code}
 
-WLPO-variation : 𝓤₀ ̇
-WLPO-variation = (α : ℕ → 𝟚) → is-decidable ((n : ℕ) → α n ＝ α 0)
+WLPO-variation₁ : 𝓤₀ ̇
+WLPO-variation₁ = (α : ℕ → 𝟚) → is-decidable ((n : ℕ) → α n ＝ α 0)
 
-WLPO-variation-gives-WLPO-traditional
- : WLPO-variation
+WLPO-variation₁-gives-WLPO-traditional
+ : WLPO-variation₁
  → WLPO-traditional
-WLPO-variation-gives-WLPO-traditional wlpov α
+WLPO-variation₁-gives-WLPO-traditional wlpov α
  = 𝟚-equality-cases I II
  where
   I : α 0 ＝ ₀ → ((n : ℕ) → α n ＝ ₁) + ¬ ((n : ℕ) → α n ＝ ₁)
@@ -188,3 +188,42 @@ WLPO-variation-gives-WLPO-traditional wlpov α
 \end{code}
 
 TODO. The converse.
+
+Added 1 February 2025 by Tom de Jong.
+
+\begin{code}
+
+WLPO-variation₂ : 𝓤₀ ̇
+WLPO-variation₂ = (α : ℕ → 𝟚) → is-decidable (¬ (Σ n ꞉ ℕ , α n ＝ ₀))
+
+WLPO-traditional-gives-WLPO-variation₂ : WLPO-traditional → WLPO-variation₂
+WLPO-traditional-gives-WLPO-variation₂ wlpo α = κ (wlpo α)
+ where
+  κ : is-decidable (Π n ꞉ ℕ , α n ＝ ₁) → is-decidable (¬ (Σ n ꞉ ℕ , α n ＝ ₀))
+  κ (inl p) = inl (Π-not-implies-not-Σ I)
+   where
+    I : (n : ℕ) → α n ≠ ₀
+    I n e = zero-is-not-one (e ⁻¹ ∙ p n)
+  κ (inr q) = inr (¬¬-functor I (not-Π-implies-not-not-Σ II q))
+   where
+    I : (Σ n ꞉ ℕ , α n ≠ ₁) → (Σ n ꞉ ℕ , α n ＝ ₀)
+    I (n , ν) = n , 𝟚-equality-cases id (λ (e : α n ＝ ₁) → 𝟘-elim (ν e))
+    II : (n : ℕ) → ¬¬-stable (α n ＝ ₁)
+    II n = 𝟚-is-¬¬-separated (α n) ₁
+
+WLPO-variation₂-gives-traditional-WLPO : WLPO-variation₂ → WLPO-traditional
+WLPO-variation₂-gives-traditional-WLPO wlpovar α = κ (wlpovar α)
+ where
+  κ : is-decidable (¬ (Σ n ꞉ ℕ , α n ＝ ₀)) → is-decidable (Π n ꞉ ℕ , α n ＝ ₁)
+  κ (inl p) = inl (λ n → I n (II n))
+   where
+    I : (n : ℕ) → ¬ (α n ＝ ₀) → (α n ＝ ₁)
+    I n ν = 𝟚-equality-cases (λ (e : α n ＝ ₀) → 𝟘-elim (ν e)) id
+    II : (n : ℕ) → ¬ (α n ＝ ₀)
+    II = not-Σ-implies-Π-not p
+  κ (inr q) = inr (contrapositive I q)
+   where
+    I : (Π n ꞉ ℕ , α n ＝ ₁) → ¬ (Σ n ꞉ ℕ , α n ＝ ₀)
+    I h (n , e) = zero-is-not-one (e ⁻¹ ∙ h n)
+
+\end{code}

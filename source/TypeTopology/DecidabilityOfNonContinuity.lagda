@@ -1368,9 +1368,9 @@ being-modulus-of-constancy-is-decidable-for-all-functions-gives-WLPO
        → is-decidable (m is-modulus-of-constancy-of g))
  → WLPO
 being-modulus-of-constancy-is-decidable-for-all-functions-gives-WLPO ϕ
- = WLPO-traditional-gives-WLPO fe (WLPO-variation-gives-WLPO-traditional I)
+ = WLPO-traditional-gives-WLPO fe (WLPO-variation₁-gives-WLPO-traditional I)
  where
-  I : WLPO-variation
+  I : WLPO-variation₁
   I α = I₂
    where
     g : ℕ → ℕ

@@ -276,3 +276,37 @@ LPO-gives-WLPO fe lpo u =
 ¬WLPO-gives-¬LPO fe = contrapositive (LPO-gives-WLPO fe)
 
 \end{code}
+
+Added 1 February 2025 by Tom de Jong.
+The following type is logically equivalent to LPO but it should be noted that it
+is not a proposition.
+
+\begin{code}
+
+LPO-variation : 𝓤₀ ̇
+LPO-variation = (α : ℕ → 𝟚) → is-decidable (Σ n ꞉ ℕ , α n ＝ ₀)
+
+LPO-variation-implies-LPO : funext₀ → LPO-variation → LPO
+LPO-variation-implies-LPO fe lpovar = compact-ℕ-gives-LPO fe I
+ where
+  I : is-compact ℕ
+  I α = κ (lpovar α)
+   where
+    κ : is-decidable (Σ n ꞉ ℕ , α n ＝ ₀)
+      → (Σ n ꞉ ℕ , α n ＝ ₀) + (Π n ꞉ ℕ , α n ＝ ₁)
+    κ (inl r) = inl r
+    κ (inr ν) = inr (λ n → 𝟚-equality-cases
+                            (λ (e : α n ＝ ₀) → 𝟘-elim (ν (n , e)))
+                            id)
+
+LPO-implies-LPO-variation : funext₀ → LPO → LPO-variation
+LPO-implies-LPO-variation fe lpo α = I (LPO-gives-compact-ℕ fe lpo α)
+ where
+  I : (Σ n ꞉ ℕ , α n ＝ ₀) + (Π n ꞉ ℕ , α n ＝ ₁)
+    → is-decidable (Σ n ꞉ ℕ , α n ＝ ₀)
+  I (inl r) = inl r
+  I (inr ν) = inr (Π-not-implies-not-Σ
+                    (λ n (e : α n ＝ ₀) → 𝟘-elim
+                                           (zero-is-not-one (e ⁻¹ ∙ (ν n)))))
+
+\end{code}

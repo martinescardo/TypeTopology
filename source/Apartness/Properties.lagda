@@ -14,6 +14,7 @@ module Apartness.Properties
 
 open import MLTT.Spartan
 open import Apartness.Definition
+open import UF.Base
 open import UF.ClassicalLogic
 open import UF.FunExt
 open import UF.Size
@@ -141,5 +142,124 @@ EM-gives-tight-apartness-is-≠ dne X (_♯_ , ♯-is-apartness , ♯-is-tight) 
              (contrapositive (♯-is-tight x y) ν)
   III : x ♯ y ↔ x ≠ y
   III = I , II
+
+\end{code}
+
+Added 1 February 2025 by Tom de Jong.
+
+TODO: COMMENT AND POINTER TO TypeTopology.SimpleTypes.
+
+\begin{code}
+
+open import Taboos.WLPO
+open import Taboos.LPO
+open import NotionsOfDecidability.Decidable
+open import NotionsOfDecidability.DecidableClassifier
+open import MLTT.Two-Properties
+
+open import TypeTopology.TotallySeparated
+open import TypeTopology.Cantor
+
+At-Most-One-Tight-Apartness : (X : 𝓤 ̇  ) (𝓥 : Universe) → (𝓥 ⁺ ⊔ 𝓤) ̇
+At-Most-One-Tight-Apartness X 𝓥 = is-prop (Tight-Apartness X 𝓥)
+
+foo : Fun-Ext
+    → At-Most-One-Tight-Apartness (ℕ → 𝟚) 𝓤₀
+    → WLPO-variation₂ → LPO-variation
+foo fe hyp wlpo = VI
+ where
+  open total-separatedness-via-apartness pt
+
+  X : 𝓤₀ ̇
+  X = ℕ → 𝟚
+
+  has-root : X → 𝓤₀ ̇
+  has-root α = Σ n ꞉ ℕ , α n ＝ ₀
+
+  P⁺ : (α : X) → Σ b ꞉ 𝟚 , (b ＝ ₀ ↔ ¬¬ (has-root α))
+                         × (b ＝ ₁ ↔ ¬ (has-root α))
+  P⁺ α = boolean-value' (wlpo α)
+
+  P : X → 𝟚
+  P α = pr₁ (P⁺ α)
+
+  P-specification₀ : (α : X) → P α ＝ ₀ ↔ ¬¬ (has-root α)
+  P-specification₀ α = pr₁ (pr₂ (P⁺ α))
+
+  P-specification₁ : (α : X) → P α ＝ ₁ ↔ ¬ (has-root α)
+  P-specification₁ α = pr₂ (pr₂ (P⁺ α))
+
+  g : X
+  g n = ₁
+
+  P-of-g-is-₁ : P g ＝ ₁
+  P-of-g-is-₁ = rl-implication (P-specification₁ g) I
+   where
+    I : ¬ has-root (λ n → ₁)
+    I (n , p) = one-is-not-zero p
+
+  P-differentiates-at-g-specification : (f : X) → P f ≠ P g ↔ ¬¬ (has-root f)
+  P-differentiates-at-g-specification f = I , II
+   where
+    I : P f ≠ P g → ¬¬ has-root f
+    I ν = lr-implication (P-specification₀ f) I₂
+     where
+      I₁ : P f ＝ ₁ → P f ＝ ₀
+      I₁ e = 𝟘-elim (ν
+                      (P f ＝⟨ e ⟩
+                       ₁   ＝⟨ P-of-g-is-₁ ⁻¹ ⟩
+                       P g ∎))
+      I₂ : P f ＝ ₀
+      I₂ = 𝟚-equality-cases id I₁
+    II : ¬¬ has-root f → P f ≠ P g
+    II ν e = ν (lr-implication (P-specification₁ f) (e ∙ P-of-g-is-₁))
+
+  I : (f : X) → ¬¬ (has-root f) → f ♯₂ g
+  I f ν = ∣ P , rl-implication (P-differentiates-at-g-specification f) ν ∣
+
+  II : (f : X) → f ♯ g ↔ has-root f
+  II f = II₁ , II₂
+   where
+    II₁ : f ♯ g → has-root f
+    II₁ a = pr₁ has-root' , 𝟚-equality-cases id (λ p → 𝟘-elim (pr₂ has-root' p))
+     where
+      has-root' : Σ n ꞉ ℕ , f n ≠ ₁
+      has-root' = apartness-criterion-converse f g a
+    II₂ : has-root f → f ♯ g
+    II₂ (n , p) = apartness-criterion f g
+                   (n , (λ (q : f n ＝ ₁) → zero-is-not-one (p ⁻¹ ∙ q)))
+
+  III : (f : X) → f ♯₂ g → f ♯ g
+  III f = Idtofun (eq f g)
+   where
+    eq : (f₁ f₂ : X) → f₁ ♯₂ f₂ ＝ f₁ ♯ f₂
+    eq f₁ f₂ =
+     happly
+      (happly
+       (ap pr₁
+           (hyp (_♯₂_ ,
+                 ♯₂-is-apartness ,
+                 ♯₂-is-tight (Cantor-is-totally-separated fe))
+                (_♯_ ,
+                 ♯-is-apartness fe pt ,
+                 ♯-is-tight fe)))
+       f₁)
+      f₂
+
+  IV : (f : X) → ¬¬-stable (has-root f)
+  IV f ν = lr-implication (II f) (III f (I f ν))
+
+  recall₁ : (f : X) → type-of (wlpo f) ＝ is-decidable (¬ (has-root f))
+  recall₁ f = refl
+
+  V : (f : X) → is-decidable (has-root f)
+  V f = κ (wlpo f)
+   where
+    κ : is-decidable (¬ (has-root f)) → is-decidable (has-root f)
+    κ (inl p) = inr p
+    κ (inr q) = inl (IV f q)
+
+  VI : LPO-variation
+  VI = V
 
 \end{code}

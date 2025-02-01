@@ -269,6 +269,18 @@ The apartness axioms are satisfied, and, moreover, the apartness is tight.
   III : (α ♯ γ) + (β ♯ γ)
   III = II I
 
+♯-is-strong-apartness : Fun-Ext → is-strong-apartness _♯_
+♯-is-strong-apartness fe = ♯-is-prop-valued fe ,
+                           ♯-is-irreflexive ,
+                           ♯-is-symmetric ,
+                           ♯-strongly-cotransitive
+
+♯-is-apartness : (fe : Fun-Ext)
+               → (pt : propositional-truncations-exist)
+               → is-apartness pt _♯_
+♯-is-apartness fe pt =
+ strong-apartness-is-apartness pt _♯_ (♯-is-strong-apartness fe)
+
 ♯-is-tight : Fun-Ext → is-tight _♯_
 ♯-is-tight fe α β ν = dfunext fe I
  where
