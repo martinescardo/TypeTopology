@@ -12,8 +12,14 @@ module Apartness.Properties
         (pt : propositional-truncations-exist)
        where
 
-open import MLTT.Spartan
 open import Apartness.Definition
+open import MLTT.Spartan
+open import MLTT.Two-Properties
+open import NotionsOfDecidability.DecidableClassifier
+open import Taboos.LPO
+open import Taboos.WLPO
+open import TypeTopology.Cantor renaming (_♯_ to _♯[Cantor]_) hiding (_＝⟦_⟧_)
+open import TypeTopology.TotallySeparated
 open import UF.Base
 open import UF.ClassicalLogic
 open import UF.FunExt
@@ -23,6 +29,7 @@ open import UF.Subsingletons-FunExt
 
 open Apartness pt
 open PropositionalTruncation pt
+open total-separatedness-via-apartness pt
 
 \end{code}
 
@@ -147,93 +154,86 @@ EM-gives-tight-apartness-is-≠ dne X (_♯_ , ♯-is-apartness , ♯-is-tight) 
 
 Added 1 February 2025 by Tom de Jong.
 
-TODO: COMMENT AND POINTER TO TypeTopology.SimpleTypes.
+The above shows that classically any type can have at most one tight apartness
+(the one given by negation of equality). We show that the Cantor type (ℕ → 𝟚)
+cannot be shown to have at most one tight apartness relation in constructive
+mathematics: the statement that the Cantor type has at most one tight apartness
+relation implies (WLPO ⇒ LPO) which is a constructive taboo as there are
+(topological) models of intuitionistic set theory that validate WLPO but not
+LPO, see the fifth page and Theorem 5.1 of the paper below.
+
+Matt Hendtlass and Robert Lubarsky. 'Separating Fragments of WLEM, LPO, and MP'
+The Journal of Symbolic Logic. Vol. 81, No. 4, 2016, pp. 1315-1343.
+DOI: 10.1017/jsl.2016.38
+URL: https://www.math.fau.edu/people/faculty/lubarsky/separating-llpo.pdf
 
 \begin{code}
-
-open import Taboos.WLPO
-open import Taboos.LPO
-open import NotionsOfDecidability.Decidable
-open import NotionsOfDecidability.DecidableClassifier
-open import MLTT.Two-Properties
-
-open import TypeTopology.TotallySeparated
-open import TypeTopology.Cantor
 
 At-Most-One-Tight-Apartness : (X : 𝓤 ̇  ) (𝓥 : Universe) → (𝓥 ⁺ ⊔ 𝓤) ̇
 At-Most-One-Tight-Apartness X 𝓥 = is-prop (Tight-Apartness X 𝓥)
 
-foo : Fun-Ext
-    → At-Most-One-Tight-Apartness (ℕ → 𝟚) 𝓤₀
-    → WLPO-variation₂ → LPO-variation
-foo fe hyp wlpo = VI
+At-Most-One-Tight-Apartness-on-Cantor-gives-WLPO-implies-LPO
+ : Fun-Ext
+ → At-Most-One-Tight-Apartness Cantor 𝓤₀
+ → WLPO-variation₂ → LPO-variation
+At-Most-One-Tight-Apartness-on-Cantor-gives-WLPO-implies-LPO  fe hyp wlpo = VI
  where
-  open total-separatedness-via-apartness pt
+  _♯_ = _♯[Cantor]_
 
-  X : 𝓤₀ ̇
-  X = ℕ → 𝟚
-
-  has-root : X → 𝓤₀ ̇
+  has-root : Cantor → 𝓤₀ ̇
   has-root α = Σ n ꞉ ℕ , α n ＝ ₀
 
-  P⁺ : (α : X) → Σ b ꞉ 𝟚 , (b ＝ ₀ ↔ ¬¬ (has-root α))
-                         × (b ＝ ₁ ↔ ¬ (has-root α))
+  P⁺ : (α : Cantor) → Σ b ꞉ 𝟚 , (b ＝ ₀ ↔ ¬¬ (has-root α))
+                              × (b ＝ ₁ ↔ ¬ (has-root α))
   P⁺ α = boolean-value' (wlpo α)
 
-  P : X → 𝟚
+  P : Cantor → 𝟚
   P α = pr₁ (P⁺ α)
-
-  P-specification₀ : (α : X) → P α ＝ ₀ ↔ ¬¬ (has-root α)
+  P-specification₀ : (α : Cantor) → P α ＝ ₀ ↔ ¬¬ (has-root α)
   P-specification₀ α = pr₁ (pr₂ (P⁺ α))
-
-  P-specification₁ : (α : X) → P α ＝ ₁ ↔ ¬ (has-root α)
+  P-specification₁ : (α : Cantor) → P α ＝ ₁ ↔ ¬ (has-root α)
   P-specification₁ α = pr₂ (pr₂ (P⁺ α))
 
-  g : X
-  g n = ₁
-
-  P-of-g-is-₁ : P g ＝ ₁
-  P-of-g-is-₁ = rl-implication (P-specification₁ g) I
+  P-of-𝟏-is-₁ : P 𝟏 ＝ ₁
+  P-of-𝟏-is-₁ = rl-implication (P-specification₁ 𝟏) I
    where
     I : ¬ has-root (λ n → ₁)
     I (n , p) = one-is-not-zero p
 
-  P-differentiates-at-g-specification : (f : X) → P f ≠ P g ↔ ¬¬ (has-root f)
-  P-differentiates-at-g-specification f = I , II
+  P-differentiates-at-𝟏-specification : (α : Cantor)
+                                      → P α ≠ P 𝟏 ↔ ¬¬ (has-root α)
+  P-differentiates-at-𝟏-specification α = I , II
    where
-    I : P f ≠ P g → ¬¬ has-root f
-    I ν = lr-implication (P-specification₀ f) I₂
+    I : P α ≠ P 𝟏 → ¬¬ has-root α
+    I ν = lr-implication (P-specification₀ α) I₂
      where
-      I₁ : P f ＝ ₁ → P f ＝ ₀
-      I₁ e = 𝟘-elim (ν
-                      (P f ＝⟨ e ⟩
-                       ₁   ＝⟨ P-of-g-is-₁ ⁻¹ ⟩
-                       P g ∎))
-      I₂ : P f ＝ ₀
+      I₁ : P α ＝ ₁ → P α ＝ ₀
+      I₁ e = 𝟘-elim (ν (e ∙ P-of-𝟏-is-₁ ⁻¹))
+      I₂ : P α ＝ ₀
       I₂ = 𝟚-equality-cases id I₁
-    II : ¬¬ has-root f → P f ≠ P g
-    II ν e = ν (lr-implication (P-specification₁ f) (e ∙ P-of-g-is-₁))
+    II : ¬¬ has-root α → P α ≠ P 𝟏
+    II ν e = ν (lr-implication (P-specification₁ α) (e ∙ P-of-𝟏-is-₁))
 
-  I : (f : X) → ¬¬ (has-root f) → f ♯₂ g
-  I f ν = ∣ P , rl-implication (P-differentiates-at-g-specification f) ν ∣
+  I : (α : Cantor) → ¬¬ (has-root α) → α ♯₂ 𝟏
+  I α ν = ∣ P , rl-implication (P-differentiates-at-𝟏-specification α) ν ∣
 
-  II : (f : X) → f ♯ g ↔ has-root f
-  II f = II₁ , II₂
+  II : (α : Cantor) → α ♯ 𝟏 ↔ has-root α
+  II α = II₁ , II₂
    where
-    II₁ : f ♯ g → has-root f
+    II₁ : α ♯ 𝟏 → has-root α
     II₁ a = pr₁ has-root' , 𝟚-equality-cases id (λ p → 𝟘-elim (pr₂ has-root' p))
      where
-      has-root' : Σ n ꞉ ℕ , f n ≠ ₁
-      has-root' = apartness-criterion-converse f g a
-    II₂ : has-root f → f ♯ g
-    II₂ (n , p) = apartness-criterion f g
-                   (n , (λ (q : f n ＝ ₁) → zero-is-not-one (p ⁻¹ ∙ q)))
+      has-root' : Σ n ꞉ ℕ , α n ≠ ₁
+      has-root' = apartness-criterion-converse α 𝟏 a
+    II₂ : has-root α → α ♯ 𝟏
+    II₂ (n , p) = apartness-criterion α 𝟏
+                   (n , λ (q : α n ＝ ₁) → zero-is-not-one (p ⁻¹ ∙ q))
 
-  III : (f : X) → f ♯₂ g → f ♯ g
-  III f = Idtofun (eq f g)
+  III : (α : Cantor) → α ♯₂ 𝟏 → α ♯ 𝟏
+  III α = Idtofun (eq α 𝟏)
    where
-    eq : (f₁ f₂ : X) → f₁ ♯₂ f₂ ＝ f₁ ♯ f₂
-    eq f₁ f₂ =
+    eq : (α β : Cantor) → α ♯₂ β ＝ α ♯ β
+    eq α β =
      happly
       (happly
        (ap pr₁
@@ -243,21 +243,21 @@ foo fe hyp wlpo = VI
                 (_♯_ ,
                  ♯-is-apartness fe pt ,
                  ♯-is-tight fe)))
-       f₁)
-      f₂
+       α)
+      β
 
-  IV : (f : X) → ¬¬-stable (has-root f)
-  IV f ν = lr-implication (II f) (III f (I f ν))
+  IV : (α : Cantor) → ¬¬-stable (has-root α)
+  IV α ν = lr-implication (II α) (III α (I α ν))
 
-  recall₁ : (f : X) → type-of (wlpo f) ＝ is-decidable (¬ (has-root f))
-  recall₁ f = refl
+  recall : (α : Cantor) → type-of (wlpo α) ＝ is-decidable (¬ (has-root α))
+  recall α = refl
 
-  V : (f : X) → is-decidable (has-root f)
-  V f = κ (wlpo f)
+  V : (α : Cantor) → is-decidable (has-root α)
+  V α = κ (wlpo α)
    where
-    κ : is-decidable (¬ (has-root f)) → is-decidable (has-root f)
+    κ : is-decidable (¬ (has-root α)) → is-decidable (has-root α)
     κ (inl p) = inr p
-    κ (inr q) = inl (IV f q)
+    κ (inr q) = inl (IV α q)
 
   VI : LPO-variation
   VI = V
