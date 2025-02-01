@@ -813,6 +813,21 @@ module total-separatedness-via-apartness
    α : (p : X → 𝟚) → p x ＝ p y
    α p = 𝟚-is-¬¬-separated (p x) (p y) (λ u → h (p , u))
 
- ♯₂-is-tight = totally-separated-gives-totally-separated₃
+ tight-apartness-weaker-than-♯₂-gives-total-separatedness
+  : {X : 𝓤 ̇ }
+  → ((_♯_ , (p , i , s , c) , t) : Tight-Apartness X 𝓥)
+  → ((x y : X) → x ♯ y → x ♯₂ y)
+  → is-totally-separated X
+ tight-apartness-weaker-than-♯₂-gives-total-separatedness
+  {𝓤} {𝓥} {X} (_♯_ , (p , i , s , c) , t) ϕ {x} {y} = III
+  where
+   I : (x y : X) → ¬ (x ♯₂ y) → ¬ (x ♯ y)
+   I x y = contrapositive (ϕ x y)
+
+   II : (x y : X) → ¬ (x ♯₂ y) → x ＝ y
+   II x y = t x y ∘ I x y
+
+   III : is-totally-separated X
+   III = totally-separated₃-gives-totally-separated II
 
 \end{code}
