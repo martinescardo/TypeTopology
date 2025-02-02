@@ -471,7 +471,7 @@ We will unpack the equivalence established by the universal property.
   : {X : 𝓣  ̇}
   → (s : cocone f g X)
   → is-contr (Σ u ꞉ (pushout → X) ,
-               cocone-family f g X (u ∘ inll , u ∘ inrr , ∼-ap-∘ u glue) s)
+                cocone-family f g X (u ∘ inll , u ∘ inrr , ∼-ap-∘ u glue) s)
  pushout-fiber-is-singleton' {_} {X} s 
   = equiv-to-singleton' (Σ-cong (λ - → cocone-identity-characterization f g X
                          (- ∘ inll , - ∘ inrr , ∼-ap-∘ - glue) s))
@@ -481,21 +481,21 @@ We will unpack the equivalence established by the universal property.
   : {X : 𝓣  ̇}
   → (s : cocone f g X)
   → Σ u ꞉ (pushout → X) ,
-     cocone-family f g X (u ∘ inll , u ∘ inrr , ∼-ap-∘ u glue) s
+      cocone-family f g X (u ∘ inll , u ∘ inrr , ∼-ap-∘ u glue) s
  pushout-fiber-center s = center (pushout-fiber-is-singleton' s)
 
  pushout-fiber-centrality
   : {X : 𝓣  ̇}
   → (s : cocone f g X)
   → is-central (Σ u ꞉ (pushout → X) ,
-                cocone-family f g X (u ∘ inll , u ∘ inrr , ∼-ap-∘ u glue) s)
+                  cocone-family f g X (u ∘ inll , u ∘ inrr , ∼-ap-∘ u glue) s)
                (pushout-fiber-center s)
  pushout-fiber-centrality s = centrality (pushout-fiber-is-singleton' s)
 
  pushout-unique-map : {X : 𝓣  ̇}
                     → (s : cocone f g X)
                     → Σ u ꞉ (pushout → X) ,
-                       cocone-family f g X (u ∘ inll , u ∘ inrr , ∼-ap-∘ u glue) s
+                      cocone-family f g X (u ∘ inll , u ∘ inrr , ∼-ap-∘ u glue) s
                     → pushout → X
  pushout-unique-map s (u , _) = u
 
@@ -503,7 +503,7 @@ We will unpack the equivalence established by the universal property.
   : {X : 𝓣  ̇}
   → (s : cocone f g X)
   → (z : Σ u ꞉ (pushout → X) ,
-          cocone-family f g X (u ∘ inll , u ∘ inrr , ∼-ap-∘ u glue) s)
+           cocone-family f g X (u ∘ inll , u ∘ inrr , ∼-ap-∘ u glue) s)
   → (pushout-unique-map s z) ∘ inll ∼ cocone-vertical-map f g X s
  pushout-inll-homotopy s (u , K , L , M) = K
 
@@ -511,7 +511,7 @@ We will unpack the equivalence established by the universal property.
   : {X : 𝓣  ̇}
   → (s : cocone f g X)
   → (z : Σ u ꞉ (pushout → X) ,
-          cocone-family f g X (u ∘ inll , u ∘ inrr , ∼-ap-∘ u glue) s)
+           cocone-family f g X (u ∘ inll , u ∘ inrr , ∼-ap-∘ u glue) s)
   → (pushout-unique-map s z) ∘ inrr ∼ cocone-horizontal-map f g X s
  pushout-inrr-homotopy s (u , K , L , M) = L
 
@@ -519,7 +519,7 @@ We will unpack the equivalence established by the universal property.
   : {X : 𝓣  ̇}
   → (s : cocone f g X)
   → (z : Σ u ꞉ (pushout → X) ,
-          cocone-family f g X (u ∘ inll , u ∘ inrr , ∼-ap-∘ u glue) s)
+           cocone-family f g X (u ∘ inll , u ∘ inrr , ∼-ap-∘ u glue) s)
   → ∼-trans ((pushout-inll-homotopy s z) ∘ f) (cocone-commuting-square f g X s)
   ∼ ∼-trans (∼-ap-∘ (pushout-unique-map s z) glue)
             ((pushout-inrr-homotopy s z) ∘ g)
@@ -574,7 +574,7 @@ computation rules and the uniqueness principles.
                     → (H : (a : A) → u (inll a) ＝ u' (inll a))
                     → (H' : (b : B) → u (inrr b) ＝ u' (inrr b))
                     → (M : (c : C)
-                      → ap u (glue c) ∙ H' (g c) ＝ H (f c) ∙ ap u' (glue c))
+                     → ap u (glue c) ∙ H' (g c) ＝ H (f c) ∙ ap u' (glue c))
                     → (x : pushout) → u x ＝ u' x
  pushout-uniqueness {_} {X} u u' H H' M
   = happly (pr₁ (from-Σ-＝ (singletons-are-props
@@ -585,8 +585,8 @@ computation rules and the uniqueness principles.
 \end{code}
 
 Finally, we can derive the induction principle and the corresponding propositional
-computation rules(?). First we will introduce an auxillary type which I am going
-to call pre-induction. 
+computation rules(?). First we will introduce an auxillary type which we will
+call pre-induction. 
 
 \begin{code}
 
@@ -671,8 +671,8 @@ to call pre-induction.
  pre-induction-id-is-id {_} {P} l r G
   = pushout-uniqueness (pre-induction-id l r G) id
      (λ a → ap pr₁ (pre-induction-comp-inll l r G a))
-     (λ b → ap pr₁ (pre-induction-comp-inrr l r G b))
-     I
+      (λ b → ap pr₁ (pre-induction-comp-inrr l r G b))
+       I
   where
    I : (c : C)
      → ap (pre-induction-id l r G) (glue c)
@@ -710,10 +710,33 @@ to call pre-induction.
   → (x : pushout) → P (pre-induction-id l r G x)
  pre-induction-family l r G = pr₂ ∘ pre-induction l r G
 
+\end{code}
+
+Now we can define the induction principle and computation rules.
+
+\begin{code}
+
  pushout-induction
   : {P : pushout → 𝓣  ̇}
   → Pushout-Induction-Principle pushout f g (inll , inrr , glue) P
  pushout-induction {_} {P} l r G x
   = transport P (pre-induction-id-is-id l r G x) (pre-induction-family l r G x)
+
+ pushout-induction-comp-inll
+  : {P : pushout → 𝓣  ̇}
+  → Pushout-Computation-Rule₁ pushout f g (inll , inrr , glue) P pushout-induction 
+ pushout-induction-comp-inll l r H a
+  = {!pushout-induction l r H (inll a) ＝⟨ ? ⟩ ?!}
+
+ pushout-induction-comp-inrr
+  : {P : pushout → 𝓣  ̇}
+  → Pushout-Computation-Rule₂ pushout f g (inll , inrr , glue) P pushout-induction 
+ pushout-induction-comp-inrr l r H b = {!!}
+
+ pushout-induction-comp-glue
+  : {P : pushout → 𝓣  ̇}
+  → Pushout-Computation-Rule₃ pushout f g (inll , inrr , glue) P pushout-induction
+     pushout-induction-comp-inll pushout-induction-comp-inrr
+ pushout-induction-comp-glue = {!!}
 
 \end{code}
