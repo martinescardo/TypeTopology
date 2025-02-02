@@ -815,21 +815,22 @@ module total-separatedness-via-apartness
 
  ♯₂-is-tight = totally-separated-gives-totally-separated₃
 
+ tight-relation-contained-in-♯₂-gives-total-separatedness
+  : {X : 𝓤 ̇ }
+  → (_♯_ : X → X → 𝓥 ̇)
+  → ((x y : X) → x ♯ y → x ♯₂ y)
+  → is-tight _♯_
+  → is-totally-separated X
+ tight-relation-contained-in-♯₂-gives-total-separatedness _♯_ ϕ t =
+  totally-separated₃-gives-totally-separated
+   (finner-than-tight-is-tight _♯_ _♯₂_ ϕ t)
+
  tight-apartness-contained-in-♯₂-gives-total-separatedness
   : {X : 𝓤 ̇ }
   → ((_♯_ , _) : Tight-Apartness X 𝓥)
   → ((x y : X) → x ♯ y → x ♯₂ y)
   → is-totally-separated X
- tight-apartness-contained-in-♯₂-gives-total-separatedness
-   {𝓤} {𝓥} {X} (_♯_ , (p , i , s , c) , t) ϕ {x} {y} = III
-   where
-    I : (x y : X) → ¬ (x ♯₂ y) → ¬ (x ♯ y)
-    I x y = contrapositive (ϕ x y)
-
-    II : (x y : X) → ¬ (x ♯₂ y) → x ＝ y
-    II x y = t x y ∘ I x y
-
-    III : is-totally-separated X
-    III = totally-separated₃-gives-totally-separated II
+ tight-apartness-contained-in-♯₂-gives-total-separatedness (_♯_ , _ , t) ϕ
+  = tight-relation-contained-in-♯₂-gives-total-separatedness _♯_ ϕ t
 
 \end{code}

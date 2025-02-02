@@ -161,6 +161,21 @@ module Apartness (pt : propositional-truncations-exist) where
                       → is-set X
  tight-types-are-sets _♯_ fe (_ , i , _ , _) = tight-types-are-sets' _♯_ fe i
 
+ finner-than-tight-is-tight
+  : {X : 𝓤 ̇ }
+  → (_♯_  : X → X → 𝓥 ̇)
+  → (_♯'_ : X → X → 𝓥' ̇)
+  → ((x y : X) → x ♯ y → x ♯' y)
+  → is-tight _♯_
+  → is-tight _♯'_
+ finner-than-tight-is-tight _♯_ _♯'_ ϕ t = II
+  where
+   I : ∀ x y → ¬ (x ♯' y) → ¬ (x ♯ y)
+   I x y = contrapositive (ϕ x y)
+
+   II : ∀ x y → ¬ (x ♯' y) → x ＝ y
+   II x y = t x y ∘ I x y
+
 \end{code}
 
 The above use apartness data, but its existence is enough, because
