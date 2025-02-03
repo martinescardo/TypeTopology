@@ -113,7 +113,7 @@ failure p = disagreement-taboo p₀ p₁ lemma
     claim : (r : ι n ＝ ∞) → (λ r → ₀) r ＝ (λ r → ₁) r
     claim s = 𝟘-elim (∞-is-not-finite n (s ⁻¹))
 
-open import UF.DiscreteAndSeparated
+open import UF.DiscreteAndSeparated hiding (_♯_)
 
 𝟚-indistinguishability : ¬ WLPO → (p : ℕ∞₂ → 𝟚) → p ∞₀ ＝ p ∞₁
 𝟚-indistinguishability nwlpo p = 𝟚-is-¬¬-separated (p ∞₀) (p ∞₁)
