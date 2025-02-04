@@ -431,7 +431,7 @@ u ≠ v is equivalent to
 If x and y are of the forms (α , _) and (β , _), this can be
 strengthened to
 
-  (α ♯ β) + (Σ p ꞉ x ＝ ∞ , Σ q ꞉ y ＝ ∞ , f p ≠ g q),
+  (α ♯ β) + (Σ p ꞉ x ＝ ∞ , Σ q ꞉ y ＝ ∞ , f p ≠ g q).
 
 where _♯_ is the standard apartness relation on the Cantor type,
 
