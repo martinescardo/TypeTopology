@@ -376,3 +376,46 @@ every-point-of-the-Cantor-type-is-a-limit-point⁺ =
  weakly-isolated-point-of-Cantor-gives-WLPO
 
 \end{code}
+
+Added 4th Feb 2025. A characterization of equality in ℕ∞₂.
+
+\begin{code}
+
+open import UF.SigmaIdentity
+open import UF.EquivalenceExamples
+
+ℕ∞₂-equality : funext 𝓤₀ 𝓤₀
+             → (u@(x , f) v@(y , g) : ℕ∞₂)
+             → (u ＝ v) ≃ (Σ p ꞉ x ＝ y , f ∘ (p ∙_) ∼ g)
+ℕ∞₂-equality fe u@(x , f) v@(y , g) = IV
+ where
+  i : ((x , f) (y , g) : ℕ∞₂) → x ＝ y → 𝓤₀ ̇
+  i (x , f) (y , g) p = f ∘ (p ∙'_) ∼ g
+
+  ρ : (u : ℕ∞₂) → i u u refl
+  ρ u p = refl
+
+  open Σ-identity renaming (canonical-map to κ)
+
+  c : {x : ℕ∞} (s t : x ＝ ∞ → 𝟚) → s ＝ t → s ∼ t
+  c = κ i ρ
+
+  I : {x : ℕ∞} (s t : x ＝ ∞ → 𝟚) → c s t ∼ happly' s t
+  I s t refl = refl
+
+  θ : {x : ℕ∞} (s t : x ＝ ∞ → 𝟚) → is-equiv (c s t)
+  θ s t = equiv-closed-under-∼ (happly' s t) (c s t) (fe s t) (I s t)
+
+  II : (u ＝ v) ≃ (Σ p ꞉ x ＝ y , f ∘ (p ∙'_) ∼ g)
+  II = characterization-of-＝ (i , ρ , θ) (x , f) (y , g)
+
+  III : (p : x ＝ y) → (f ∘ (p ∙'_) ∼ g) ≃ (f ∘ (p ∙_) ∼ g)
+  III p = transport-≃
+           (λ - → (f ∘ (- ∘ _) ∼ g))
+           (dfunext fe (∙-agrees-with-∙' p))
+
+  IV = (u ＝ v)                         ≃⟨ II ⟩
+       (Σ p ꞉ x ＝ y , f ∘ (p ∙'_) ∼ g) ≃⟨ Σ-cong III ⟩
+       (Σ p ꞉ x ＝ y , f ∘ (p ∙_) ∼ g)  ■
+
+\end{code}

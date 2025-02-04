@@ -180,6 +180,12 @@ VI sc = LPO-criterion fe VI₆
 
 \end{code}
 
+TODO. Notice that if ℕ∞₂ has any strong apartness _♯_ with ∞₀ ♯ ∞₁
+then WLPO holds. Just apply the results of the file
+FailureOfTotalSeparatedness to the map f : ℕ∞ → 𝟚 such that
+f x = n if ∞ₙ ♯ x. So we are looking for a (weak) tight apartness,
+if any exists.
+
 Would the following weakening work? I don't think do. Tightness would
 be problematic.
 
