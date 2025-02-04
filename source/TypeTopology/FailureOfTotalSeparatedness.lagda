@@ -98,8 +98,8 @@ because we know that WLPO is not provable:
 
 \begin{code}
 
-failure : (p : ℕ∞₂ → 𝟚) → p ∞₀ ≠ p ∞₁ → WLPO
-failure p = disagreement-taboo p₀ p₁ lemma
+failure-of-decomposability-at-∞₀-and-∞₁ : (p : ℕ∞₂ → 𝟚) → p ∞₀ ≠ p ∞₁ → WLPO
+failure-of-decomposability-at-∞₀-and-∞₁ p = disagreement-taboo p₀ p₁ lemma
  where
   p₀ : ℕ∞ → 𝟚
   p₀ u = p (u , λ r → ₀)
@@ -115,13 +115,15 @@ failure p = disagreement-taboo p₀ p₁ lemma
 
 open import UF.DiscreteAndSeparated hiding (_♯_)
 
-𝟚-indistinguishability : ¬ WLPO → (p : ℕ∞₂ → 𝟚) → p ∞₀ ＝ p ∞₁
-𝟚-indistinguishability nwlpo p = 𝟚-is-¬¬-separated (p ∞₀) (p ∞₁)
-                                  (not-Σ-implies-Π-not
-                                    (contrapositive
-                                      (λ (p , ν) → failure p ν)
-                                      nwlpo)
-                                    p)
+𝟚-indistinguishability-of-∞₀-and-∞₁ : ¬ WLPO → (p : ℕ∞₂ → 𝟚) → p ∞₀ ＝ p ∞₁
+𝟚-indistinguishability-of-∞₀-and-∞₁ nwlpo p =
+ 𝟚-is-¬¬-separated (p ∞₀) (p ∞₁)
+  (not-Σ-implies-Π-not
+    (contrapositive
+      (λ (p , ν) → failure-of-decomposability-at-∞₀-and-∞₁ p ν)
+      nwlpo)
+    p)
+
 \end{code}
 
 Precisely because one cannot construct maps from ℕ∞₂ into 𝟚 that
@@ -167,7 +169,7 @@ open import TypeTopology.TotallySeparated
   g = contrapositive ts ∞₀-and-∞₁-different
 
   c : 𝟘
-  c = g (𝟚-indistinguishability nwlpo)
+  c = g (𝟚-indistinguishability-of-∞₀-and-∞₁ nwlpo)
 
 \end{code}
 
