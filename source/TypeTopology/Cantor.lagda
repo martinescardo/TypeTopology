@@ -17,12 +17,17 @@ open import UF.DiscreteAndSeparated hiding (_♯_)
 open import UF.Equiv
 open import UF.FunExt
 open import UF.PropTrunc
+open import UF.Sets
+open import UF.Sets-Properties
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
 module TypeTopology.Cantor where
 
 Cantor = ℕ → 𝟚
+
+Cantor-is-set : funext₀ → is-set Cantor
+Cantor-is-set fe = Π-is-set fe (λ _ → 𝟚-is-set)
 
 \end{code}
 

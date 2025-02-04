@@ -126,7 +126,62 @@ V sc = LPO-criterion fe V₄
 
 \end{code}
 
-Would the following weakening work?
+We can do better:
+
+\begin{code}
+
+VI : is-cotransitive _#_ → LPO
+VI sc = LPO-criterion fe VI₆
+ where
+  module _ (x : ℕ∞) where
+
+   α : Cantor
+   α = ι x
+
+   u : ℕ∞₂
+   u = (x , λ _ → ₀)
+
+   a : ∞₀ # ∞₁
+   a = inr (refl , refl , zero-is-not-one)
+
+   VI₀ : (∞₀ # u) ∨ (∞₁ # u)
+   VI₀ = sc ∞₀ ∞₁ u a
+
+   VI₁ : ((𝟏 ♯ α) + (Σ p ꞉ ∞ ＝ ∞ , Σ q ꞉ x ＝ ∞ , ₀ ≠ ₀))
+       ∨ ((𝟏 ♯ α) + (Σ p ꞉ ∞ ＝ ∞ , Σ q ꞉ x ＝ ∞ , ₁ ≠ ₀))
+   VI₁ = VI₀
+
+   VI₂ : ((𝟏 ♯ α) + (Σ p ꞉ ∞ ＝ ∞ , Σ q ꞉ x ＝ ∞ , ₀ ≠ ₀))
+       + ((𝟏 ♯ α) + (Σ p ꞉ ∞ ＝ ∞ , Σ q ꞉ x ＝ ∞ , ₁ ≠ ₀))
+       → (𝟏 ♯ α) + (α ＝ 𝟏)
+   VI₂ (inl (inl a)) = inl a
+   VI₂ (inl (inr (p , q , d))) = 𝟘-elim (d refl)
+   VI₂ (inr (inl a)) = inl a
+   VI₂ (inr (inr (p , q , d))) = inr (ap ι q)
+
+   VI₃ : is-prop ((𝟏 ♯ α) + (α ＝ 𝟏))
+   VI₃ = sum-of-contradictory-props
+          (♯-is-prop-valued fe 𝟏 α)
+          (Cantor-is-set fe)
+          VI₃-₀
+    where
+     VI₃-₀ : (𝟏 ♯ α) → (α ＝ 𝟏) → 𝟘 {𝓤₀}
+     VI₃-₀ (n , d , _) refl = d refl
+
+   VI₄ : (𝟏 ♯ α) + (α ＝ 𝟏)
+   VI₄ = ∥∥-rec VI₃ VI₂ VI₁
+
+   VI₅ : type-of VI₄ → is-decidable (Σ n ꞉ ℕ , α n ＝ ₀)
+   VI₅ (inl (n , d , _)) = inl (n , different-from-₁-equal-₀ (≠-sym d))
+   VI₅ (inr p) = inr (λ (n , q) → equal-₁-different-from-₀ (happly p n) q)
+
+   VI₆ : is-decidable (Σ n ꞉ ℕ , x ⊑ n)
+   VI₆ = VI₅ VI₄
+
+\end{code}
+
+Would the following weakening work? I don't think do. Tightness would
+be problematic.
 
 \begin{code}
 
