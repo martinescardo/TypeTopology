@@ -379,7 +379,8 @@ every-point-of-the-Cantor-type-is-a-limit-point⁺ =
 
 \end{code}
 
-Added 4th Feb 2025. A characterization of equality in ℕ∞₂.
+Added 4th Feb 2025. A characterization of equality in ℕ∞₂ and
+discussion about the possibility of a tight apartness relation on ℕ∞₂.
 
 \begin{code}
 
@@ -421,3 +422,57 @@ open import UF.EquivalenceExamples
        (Σ p ꞉ x ＝ y , f ∘ (p ∙_) ∼ g)  ■
 
 \end{code}
+
+It follows that for u = (x , f) and v = (y , g) in ℕ∞₂, we have that
+u ≠ v is equivalent to
+
+  (p : x ＝ y) → ¬ (f ∘ (p ∙_) ∼ g).
+
+If x and y are of the forms (α , _) and (β , _), this can be
+strengthened to
+
+  (α ♯ β) + (Σ p ꞉ x ＝ ∞ , Σ q ꞉ y ＝ ∞ , f p ≠ g q),
+
+where _♯_ is the standard apartness relation on the Cantor type,
+
+Let u # v be defined by this expression. Then the negation of u # v
+implies u ＝ v, which means that the relation _#_ is tight. It is also
+proposition valued, irreflexive and symmetric, but if it is
+cotransitive, then LPO holds. This is shown in the module
+gist.not-an-apartness.
+
+Moreover, we have that if ℕ∞₂ has any strong apartness _♯_ with ∞₀ ♯ ∞₁
+then WLPO holds. So we are looking for a (weak) tight apartness, if
+any exists.
+
+\begin{code}
+
+open import Taboos.WLPO
+open import Apartness.Definition
+
+strong-apartness-separating-∞₀-and-∞₁-gives-WLPO
+ : (_♯_  : ℕ∞₂ → ℕ∞₂ → 𝓤₀ ̇)
+ → ∞₀ ♯ ∞₁
+ → is-irreflexive _♯_
+ → is-strongly-cotransitive _♯_
+ → WLPO
+strong-apartness-separating-∞₀-and-∞₁-gives-WLPO _♯_ a ir sc =
+ failure-of-decomposability-at-∞₀-and-∞₁
+  (λ x → f x (sc ∞₀ ∞₁ x a))
+  (I (sc ∞₀ ∞₁ ∞₀ a) (sc ∞₀ ∞₁ ∞₁ a))
+ where
+  f : (x : ℕ∞₂) (i : (∞₀ ♯ x) + (∞₁ ♯ x)) → 𝟚
+  f x (inl _) = ₀
+  f x (inr _) = ₁
+
+  I : (i : (∞₀ ♯ ∞₀) + (∞₁ ♯ ∞₀))
+      (j : (∞₀ ♯ ∞₁) + (∞₁ ♯ ∞₁))
+    → f ∞₀ i ≠ f ∞₁ j
+  I (inl b) _       = 𝟘-elim (ir ∞₀ b)
+  I (inr _) (inl _) = one-is-not-zero
+  I (inr _) (inr c) = 𝟘-elim (ir ∞₁ c)
+
+\end{code}
+
+Question. Does ℕ∞₂ admit a tight apartness relation? I am inclined to
+conjecture that it doesn't.
