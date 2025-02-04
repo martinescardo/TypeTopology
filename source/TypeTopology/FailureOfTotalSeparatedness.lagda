@@ -413,7 +413,7 @@ open import UF.EquivalenceExamples
 
   III : (p : x ＝ y) → (f ∘ (p ∙'_) ∼ g) ≃ (f ∘ (p ∙_) ∼ g)
   III p = transport-≃
-           (λ - → (f ∘ (- ∘ _) ∼ g))
+           (λ - → (f ∘ - ∼ g))
            (dfunext fe (∙-agrees-with-∙' p))
 
   IV = (u ＝ v)                         ≃⟨ II ⟩
