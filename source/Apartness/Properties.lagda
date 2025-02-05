@@ -15,6 +15,7 @@ module Apartness.Properties
 open import Apartness.Definition
 open import MLTT.Spartan
 open import MLTT.Two-Properties
+open import Naturals.Properties
 open import NotionsOfDecidability.DecidableClassifier
 open import Taboos.LPO
 open import Taboos.WLPO
@@ -22,6 +23,7 @@ open import TypeTopology.Cantor renaming (_♯_ to _♯[Cantor]_) hiding (_＝�
 open import TypeTopology.TotallySeparated
 open import UF.Base
 open import UF.ClassicalLogic
+open import UF.DiscreteAndSeparated renaming (_♯_ to ♯[Π])
 open import UF.FunExt
 open import UF.Size
 open import UF.Subsingletons
@@ -261,5 +263,95 @@ At-Most-One-Tight-Apartness-on-Cantor-gives-WLPO-implies-LPO  fe hyp wlpo = VI
 
   VI : LPO-variation
   VI = V
+
+\end{code}
+
+Added 5 February 2025 by Tom de Jong.
+
+A more general and simpler theorem with a much stronger conclusion is possible,
+following a generalization of an idea of Andrew Swan.
+
+We record some basic general results first.
+
+\begin{code}
+
+≠-is-apartness-on-discrete-type : funext 𝓤 𝓤₀
+                                → {X : 𝓤 ̇  }
+                                → is-discrete X
+                                → is-apartness _≠_
+≠-is-apartness-on-discrete-type fe {X} X-discrete =
+   (λ x y → negations-are-props fe)
+ , ≠-is-irrefl
+ , (λ x y → ≠-sym)
+ , (λ x y z a → I x y z a (X-discrete x z))
+  where
+   I : (x y z : X) → x ≠ y
+     → (x ＝ z) + ¬ (x ＝ z)
+     → (x ≠ z) ∨ (y ≠ z)
+   I x y z a (inl refl) = ∣ inr (≠-sym a) ∣
+   I x y z a (inr ν)    = ∣ inl ν ∣
+
+≠-is-tight-on-discrete-type : {X : 𝓤 ̇  }
+                            → is-discrete X
+                            → is-tight _≠_
+≠-is-tight-on-discrete-type = discrete-is-¬¬-separated
+
+At-Most-One-Tight-Apartness-on-discrete-type-with-two-distinct-points-gives-DNE
+ : funext 𝓤 𝓤₀
+ → (X : 𝓤 ̇  )
+ → has-two-distinct-points X
+ → is-discrete X
+ → At-Most-One-Tight-Apartness X 𝓤
+ → DNE 𝓤
+At-Most-One-Tight-Apartness-on-discrete-type-with-two-distinct-points-gives-DNE
+ {𝓤} fe X ((x₀ , x₁) , x₀-is-not-x₁) X-discrete hyp P P-is-prop = II
+  where
+   _♯_ : X → X → 𝓤 ̇
+   x ♯ y = P × (x ≠ y)
+
+   pv : is-prop-valued _♯_
+   pv x y = ×-is-prop P-is-prop (negations-are-props fe)
+   ir : is-irreflexive _♯_
+   ir x (p , ν) = ≠-is-irrefl x ν
+   sy : is-symmetric _♯_
+   sy x y (p , ν) = (p , ≠-sym ν)
+
+   ct : is-cotransitive _♯_
+   ct x y z (p , ν) = κ (X-discrete x z)
+    where
+     κ : (x ＝ z) + (x ≠ z) → (x ♯ z) ∨ (y ♯ z)
+     κ (inl refl) = ∣ inr (p , ≠-sym ν) ∣
+     κ (inr   ν') = ∣ inl (p , ν') ∣
+
+   tg : ¬¬ P → is-tight _♯_
+   tg dnp x y na = discrete-is-¬¬-separated X-discrete x y I
+    where
+     I : ¬ (x ≠ y)
+     I ν = dnp (λ (p : P) → na (p , ν))
+
+   I : ¬¬ P → x₀ ♯ x₁
+   I dnp = Idtofun ((eq x₀ x₁) ⁻¹) x₀-is-not-x₁
+    where
+     eq : (x y : X) → (x ♯ y) ＝ (x ≠ y)
+     eq x y =
+       happly
+       (happly
+         (ap pr₁
+             (hyp (_♯_ , (pv , ir , sy , ct) ,  tg dnp)
+                  (_≠_ , ≠-is-apartness-on-discrete-type fe X-discrete ,
+                         ≠-is-tight-on-discrete-type X-discrete)))
+         x)
+       y
+
+   II : ¬¬ P → P
+   II dnp = pr₁ (I dnp)
+
+At-Most-One-Tight-Apartness-on-ℕ-gives-DNE
+ : funext 𝓤₀ 𝓤₀
+ → At-Most-One-Tight-Apartness ℕ 𝓤₀
+ → DNE 𝓤₀
+At-Most-One-Tight-Apartness-on-ℕ-gives-DNE fe =
+ At-Most-One-Tight-Apartness-on-discrete-type-with-two-distinct-points-gives-DNE
+   fe ℕ ((0 , 1) , zero-not-positive 0) ℕ-is-discrete
 
 \end{code}
