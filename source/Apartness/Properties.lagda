@@ -268,8 +268,8 @@ At-Most-One-Tight-Apartness-on-Cantor-gives-WLPO-implies-LPO  fe hyp wlpo = VI
 
 Added 5 February 2025 by Tom de Jong.
 
-A more general and simpler theorem with a much stronger conclusion is possible,
-following a generalization of an idea of Andrew Swan.
+A simpler theorem with a much stronger conclusion is possible, following a
+generalization of an idea of Andrew Swan.
 
 We record some basic general results first.
 
