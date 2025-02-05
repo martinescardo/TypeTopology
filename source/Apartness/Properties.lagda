@@ -373,7 +373,7 @@ Exactly-One-Tight-Apartness-on-type-with-two-points-apart-gives-DNE
  {𝓤} {X}
  (_♯_ , a@(♯-pv , ♯-irrefl , ♯-sym , ♯-cot) , ♯-tight)
  ((x₀ , x₁) , x₀-apart-from-x₁)
- α P P-is-prop = III
+ α P P-is-prop = VI
   where
    _♯ᴾ_ : X → X → 𝓤 ̇
    x ♯ᴾ y = P × (x ♯ y)
@@ -404,18 +404,20 @@ Exactly-One-Tight-Apartness-on-type-with-two-points-apart-gives-DNE
    aᴾ = (♯ᴾ-pv , ♯ᴾ-irrefl , ♯ᴾ-sym , ♯ᴾ-cot)
 
    II : ¬¬ P → x₀ ♯ᴾ x₁
-   II dnp = Idtofun (e ⁻¹) x₀-apart-from-x₁
+   II dnp = Idtofun (V ⁻¹) x₀-apart-from-x₁
     where
-     e : {x y : X} → x ♯ᴾ y ＝ x ♯ y
-     e {x} {y} = happly
-                  (happly
-                    (ap pr₁ (α (_♯ᴾ_ , aᴾ , ♯ᴾ-tight dnp)
-                               (_♯_  , a  , ♯-tight)))
-                    x)
-                  y
+     III : _♯ᴾ_  ＝ _♯_
+     III = ap pr₁ (α (_♯ᴾ_ , aᴾ , ♯ᴾ-tight dnp)
+                     (_♯_  , a  , ♯-tight))
 
-   III : ¬¬ P → P
-   III = pr₁ ∘ II
+     IV : {x : X} → x ♯ᴾ_ ＝ x ♯_
+     IV {x} =  happly III x
+
+     V : {x y : X} → x ♯ᴾ y ＝ x ♯ y
+     V {x} {y} = happly IV y
+
+   VI : ¬¬ P → P
+   VI = pr₁ ∘ II
 
 \end{code}
 
