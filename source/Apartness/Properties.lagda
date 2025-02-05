@@ -355,3 +355,88 @@ At-Most-One-Tight-Apartness-on-ℕ-gives-DNE fe =
    fe ℕ ((0 , 1) , zero-not-positive 0) ℕ-is-discrete
 
 \end{code}
+
+Added 5th February 2025 by Martin Escardo. We improve the above result
+by Tom de Jong and Andrew Swan. If a type has a tight apartness with
+two points apart, then double negation elimination, and hence excluded
+middle, hold. This holds, in particular, for discrete types with two
+distinct points. We also remove funext from the hypothesis, although
+it is needed for the particular case.
+
+\begin{code}
+
+Exactly-One-Tight-Apartness-on-type-with-two-points-apart-gives-DNE
+ : {X : 𝓤 ̇}
+   ((_♯_ , a , _) : Tight-Apartness X 𝓤)
+ → has-two-points-apart (_♯_ , a)
+ → At-Most-One-Tight-Apartness X 𝓤
+ → DNE 𝓤
+Exactly-One-Tight-Apartness-on-type-with-two-points-apart-gives-DNE
+ {𝓤} {X}
+ (_♯_ , a@(♯-pv , ♯-irrefl , ♯-sym , ♯-cot) , ♯-tight)
+ ((x₀ , x₁) , x₀-apart-from-x₁)
+ α P P-is-prop = III
+  where
+   _♯₁_ : X → X → 𝓤 ̇
+   x ♯₁ y = P × (x ♯ y)
+
+   ♯₁-pv : is-prop-valued _♯₁_
+   ♯₁-pv x y = ×-is-prop P-is-prop (♯-pv x y)
+
+   ♯₁-irrefl : is-irreflexive _♯₁_
+   ♯₁-irrefl x (p , ν) = ♯-irrefl x ν
+
+   ♯₁-sym : symmetric _♯₁_
+   ♯₁-sym x y (p , ν) = (p , ♯-sym x y ν)
+
+   ♯₁-cot : is-cotransitive _♯₁_
+   ♯₁-cot x y z (p , ν) = g (♯-cot x y z ν)
+    where
+     f : (x ♯ z) + (y ♯ z) → (x ♯₁ z) + (y ♯₁ z)
+     f (inl l) = inl (p , l)
+     f (inr r) = inr (p , r)
+
+     g : (x ♯ z) ∨ (y ♯ z) → (x ♯₁ z) ∨ (y ♯₁ z)
+     g = ∥∥-functor f
+
+   ♯₁-tight : ¬¬ P → is-tight _♯₁_
+   ♯₁-tight dnp x y na = ♯-tight x y I
+    where
+     I : ¬ (x ♯ y)
+     I ν = dnp (λ (p : P) → na (p , ν))
+
+   II : ¬¬ P → x₀ ♯₁ x₁
+   II dnp = Idtofun ((eq x₀ x₁) ⁻¹) x₀-apart-from-x₁
+    where
+     eq : (x y : X) → (x ♯₁ y) ＝ (x ♯ y)
+     eq x y =
+      happly
+      (happly
+        (ap pr₁
+            (α (_♯₁_ , (♯₁-pv , ♯₁-irrefl , ♯₁-sym , ♯₁-cot) , ♯₁-tight dnp)
+               (_♯_ , a , ♯-tight)))
+        x)
+      y
+
+   III : ¬¬ P → P
+   III dnp = pr₁ (II dnp)
+
+\end{code}
+
+The previous result is a corollary:
+
+\begin{code}
+
+At-Most-One-Tight-Apartness-on-discrete-type-with-two-distinct-points-gives-DNE'
+ : funext 𝓤 𝓤₀
+ → {X : 𝓤 ̇}
+ → is-discrete X
+ → has-two-distinct-points X
+ → At-Most-One-Tight-Apartness X 𝓤
+ → DNE 𝓤
+At-Most-One-Tight-Apartness-on-discrete-type-with-two-distinct-points-gives-DNE'
+ fe δ
+ = Exactly-One-Tight-Apartness-on-type-with-two-points-apart-gives-DNE
+    (_≠_ , ≠-is-apartness-on-discrete-type fe δ , ≠-is-tight-on-discrete-type δ)
+
+\end{code}

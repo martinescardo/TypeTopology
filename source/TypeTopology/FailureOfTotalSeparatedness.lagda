@@ -39,9 +39,8 @@ open import UF.FunExt
 
 module TypeTopology.FailureOfTotalSeparatedness (fe₀ : funext₀) where
 
-open import MLTT.Spartan
-
 open import CoNaturals.Type
+open import MLTT.Spartan
 open import MLTT.Two-Properties
 open import Notation.CanonicalMap
 open import Taboos.BasicDiscontinuity fe₀
@@ -476,3 +475,29 @@ strong-apartness-separating-∞₀-and-∞₁-gives-WLPO _♯_ a ir sc =
 
 Question. Does ℕ∞₂ admit a tight apartness relation? I am inclined to
 conjecture that it doesn't.
+
+\begin{code}
+
+module isolated-elements-of-ℕ∞₂ where
+
+ e : 𝟚 → ℕ∞ → ℕ∞₂
+ e n x = x , (λ _ → n)
+
+ e-fact : funext₀ → (n : ℕ) → e ₀ (ι n) ＝ e ₁ (ι n)
+ e-fact fe n = ⌜ ℕ∞₂-equality fe _ _ ⌝⁻¹
+                 (refl , (λ p → 𝟘-elim (≠-sym (∞-is-not-finite n) p)))
+
+ ee : ℕ → ℕ∞₂
+ ee n = e ₀ (ι n)
+
+ ee-is-isolated : funext₀ → (n : ℕ) → is-isolated (ee n)
+ ee-is-isolated fe n (x , f) =
+  Cases (finite-isolated fe n x)
+   (λ (p : ι n ＝ x)
+         → inl (⌜ ℕ∞₂-equality fe _ _ ⌝⁻¹
+                  (p ,
+                   (λ (q : x ＝ ∞) → 𝟘-elim (∞-is-not-finite n (q ⁻¹ ∙ p ⁻¹))))))
+   (λ (ν : ι n ≠ x)
+         → inr (λ (q : ee n ＝ (x , f)) → ν (ap pr₁ q)))
+
+\end{code}
