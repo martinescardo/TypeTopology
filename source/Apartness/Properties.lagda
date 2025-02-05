@@ -411,7 +411,7 @@ Exactly-One-Tight-Apartness-on-type-with-two-points-apart-gives-DNE
                      (_♯_  , a  , ♯-tight))
 
      IV : {x : X} → x ♯ᴾ_ ＝ x ♯_
-     IV {x} =  happly III x
+     IV {x} = happly III x
 
      V : {x y : X} → x ♯ᴾ y ＝ x ♯ y
      V {x} {y} = happly IV y
