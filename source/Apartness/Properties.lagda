@@ -375,53 +375,51 @@ Exactly-One-Tight-Apartness-on-type-with-two-points-apart-gives-DNE
  ((x₀ , x₁) , x₀-apart-from-x₁)
  α P P-is-prop = III
   where
-   _♯₁_ : X → X → 𝓤 ̇
-   x ♯₁ y = P × (x ♯ y)
+   _♯ᴾ_ : X → X → 𝓤 ̇
+   x ♯ᴾ y = P × (x ♯ y)
 
-   ♯₁-pv : is-prop-valued _♯₁_
-   ♯₁-pv x y = ×-is-prop P-is-prop (♯-pv x y)
+   ♯ᴾ-pv : is-prop-valued _♯ᴾ_
+   ♯ᴾ-pv x y = ×-is-prop P-is-prop (♯-pv x y)
 
-   ♯₁-irrefl : is-irreflexive _♯₁_
-   ♯₁-irrefl x (p , ν) = ♯-irrefl x ν
+   ♯ᴾ-irrefl : is-irreflexive _♯ᴾ_
+   ♯ᴾ-irrefl x (p , ν) = ♯-irrefl x ν
 
-   ♯₁-sym : symmetric _♯₁_
-   ♯₁-sym x y (p , ν) = (p , ♯-sym x y ν)
+   ♯ᴾ-sym : symmetric _♯ᴾ_
+   ♯ᴾ-sym x y (p , ν) = (p , ♯-sym x y ν)
 
-   ♯₁-cot : is-cotransitive _♯₁_
-   ♯₁-cot x y z (p , ν) = g (♯-cot x y z ν)
+   ♯ᴾ-cot : is-cotransitive _♯ᴾ_
+   ♯ᴾ-cot x y z (p , ν) = ∥∥-functor f (♯-cot x y z ν)
     where
-     f : (x ♯ z) + (y ♯ z) → (x ♯₁ z) + (y ♯₁ z)
+     f : (x ♯ z) + (y ♯ z) → (x ♯ᴾ z) + (y ♯ᴾ z)
      f (inl l) = inl (p , l)
      f (inr r) = inr (p , r)
 
-     g : (x ♯ z) ∨ (y ♯ z) → (x ♯₁ z) ∨ (y ♯₁ z)
-     g = ∥∥-functor f
-
-   ♯₁-tight : ¬¬ P → is-tight _♯₁_
-   ♯₁-tight dnp x y na = ♯-tight x y I
+   ♯ᴾ-tight : ¬¬ P → is-tight _♯ᴾ_
+   ♯ᴾ-tight dnp x y na = ♯-tight x y I
     where
      I : ¬ (x ♯ y)
      I ν = dnp (λ (p : P) → na (p , ν))
 
-   II : ¬¬ P → x₀ ♯₁ x₁
-   II dnp = Idtofun ((eq x₀ x₁) ⁻¹) x₀-apart-from-x₁
+   aᴾ : is-apartness _♯ᴾ_
+   aᴾ = (♯ᴾ-pv , ♯ᴾ-irrefl , ♯ᴾ-sym , ♯ᴾ-cot)
+
+   II : ¬¬ P → x₀ ♯ᴾ x₁
+   II dnp = Idtofun (e ⁻¹) x₀-apart-from-x₁
     where
-     eq : (x y : X) → (x ♯₁ y) ＝ (x ♯ y)
-     eq x y =
-      happly
-      (happly
-        (ap pr₁
-            (α (_♯₁_ , (♯₁-pv , ♯₁-irrefl , ♯₁-sym , ♯₁-cot) , ♯₁-tight dnp)
-               (_♯_ , a , ♯-tight)))
-        x)
-      y
+     e : {x y : X} → x ♯ᴾ y ＝ x ♯ y
+     e {x} {y} = happly
+                  (happly
+                    (ap pr₁ (α (_♯ᴾ_ , aᴾ , ♯ᴾ-tight dnp)
+                               (_♯_  , a  , ♯-tight)))
+                    x)
+                  y
 
    III : ¬¬ P → P
-   III dnp = pr₁ (II dnp)
+   III = pr₁ ∘ II
 
 \end{code}
 
-The previous result is a particular case:
+The previous result is a particular case, of course:
 
 \begin{code}
 
