@@ -357,11 +357,9 @@ At-Most-One-Tight-Apartness-on-ℕ-gives-DNE fe =
 \end{code}
 
 Added 5th February 2025 by Martin Escardo. We improve the above result
-by Tom de Jong and Andrew Swan. If a type has a tight apartness with
-two points apart, then double negation elimination, and hence excluded
-middle, hold. This holds, in particular, for discrete types with two
-distinct points. We also remove funext from the hypothesis, although
-it is needed for the particular case.
+by Tom de Jong and Andrew Swan. If a type has exactly one tight
+apartness with two points apart, then double negation elimination, and
+hence excluded middle, hold.
 
 \begin{code}
 
@@ -423,7 +421,7 @@ Exactly-One-Tight-Apartness-on-type-with-two-points-apart-gives-DNE
 
 \end{code}
 
-The previous result is a corollary:
+The previous result is a particular case:
 
 \begin{code}
 
