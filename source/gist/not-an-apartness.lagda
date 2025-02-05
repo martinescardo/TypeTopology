@@ -4,8 +4,8 @@ Does the type ℕ∞₂ have a tight apartness? I don't think so. Here is an
 illustrative failed attempt, which satisfies all conditions except
 cotransitivity.
 
-We use the apartness relation _♯_ on the Cantor type ℕ → 𝟚 to define
-our attempted apartness relation _#_ on ℕ∞₂.
+We use the standard apartness relation _♯_ on the Cantor type ℕ → 𝟚 to
+define our attempted apartness relation _#_ on ℕ∞₂.
 
 \begin{code}
 
@@ -19,10 +19,9 @@ module gist.not-an-apartness
         (pt : propositional-truncations-exist)
        where
 
-open import MLTT.Spartan
-
 open import Apartness.Definition
 open import CoNaturals.Type
+open import MLTT.Spartan
 open import MLTT.Two-Properties
 open import Notation.CanonicalMap
 open import Notation.Order
