@@ -456,13 +456,14 @@ strong-apartness-separating-∞₀-and-∞₁-gives-WLPO
  → is-strongly-cotransitive _♯_
  → WLPO
 strong-apartness-separating-∞₀-and-∞₁-gives-WLPO _♯_ a ir sc =
- failure-of-decomposability-at-∞₀-and-∞₁
-  (λ x → f x (sc ∞₀ ∞₁ x a))
-  (I (sc ∞₀ ∞₁ ∞₀ a) (sc ∞₀ ∞₁ ∞₁ a))
+ failure-of-decomposability-at-∞₀-and-∞₁ g II
  where
-  f : (x : ℕ∞₂) (i : (∞₀ ♯ x) + (∞₁ ♯ x)) → 𝟚
+  f : (x : ℕ∞₂) → (∞₀ ♯ x) + (∞₁ ♯ x) → 𝟚
   f x (inl _) = ₀
   f x (inr _) = ₁
+
+  g : ℕ∞₂ → 𝟚
+  g x = f x (sc ∞₀ ∞₁ x a)
 
   I : (i : (∞₀ ♯ ∞₀) + (∞₁ ♯ ∞₀))
       (j : (∞₀ ♯ ∞₁) + (∞₁ ♯ ∞₁))
@@ -470,6 +471,9 @@ strong-apartness-separating-∞₀-and-∞₁-gives-WLPO _♯_ a ir sc =
   I (inl b) _       = 𝟘-elim (ir ∞₀ b)
   I (inr _) (inl _) = one-is-not-zero
   I (inr _) (inr c) = 𝟘-elim (ir ∞₁ c)
+
+  II : g ∞₀ ≠ g ∞₁
+  II = I (sc ∞₀ ∞₁ ∞₀ a) (sc ∞₀ ∞₁ ∞₁ a)
 
 \end{code}
 

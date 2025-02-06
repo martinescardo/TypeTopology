@@ -140,3 +140,37 @@ module failed-attempt where
     V₆ = V₅ V₄
 
 \end{code}
+
+open import UF.PropTrunc
+
+module _ (pt : propositional-truncations-exist) where
+
+ open Apartness pt
+ open PropositionalTruncation pt
+
+ apartness-separating-∞₀-and-∞₁-gives-WLPO
+  : (_♯_  : ℕ∞₂ → ℕ∞₂ → 𝓤₀ ̇)
+  → ∞₀ ♯ ∞₁
+  → is-irreflexive _♯_
+  → is-cotransitive _♯_
+  → WLPO
+ apartness-separating-∞₀-and-∞₁-gives-WLPO _♯_ a ir sc =
+  failure-of-decomposability-at-∞₀-and-∞₁
+   g
+   ? -- (I (sc ∞₀ ∞₁ ∞₀ a) (sc ∞₀ ∞₁ ∞₁ a))
+  where
+   f : (x : ℕ∞₂) (i : (∞₀ ♯ x) ∨ (∞₁ ♯ x)) → 𝟚
+   f x (inl _) = ₀
+   f x (inr _) = ₁
+
+   g : ℕ∞₂ → 𝟚
+   g x = f x (sc ∞₀ ∞₁ x a)
+ {-
+   I : (i : (∞₀ ♯ ∞₀) ∨ (∞₁ ♯ ∞₀))
+       (j : (∞₀ ♯ ∞₁) ∨ (∞₁ ♯ ∞₁))
+     → f ∞₀ i ≠ f ∞₁ j
+   I (inl b) _       = 𝟘-elim (ir ∞₀ b)
+   I (inr _) (inl _) = one-is-not-zero
+   I (inr _) (inr c) = 𝟘-elim (ir ∞₁ c)
+ -}
+\end{code}
