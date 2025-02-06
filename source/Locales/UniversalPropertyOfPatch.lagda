@@ -773,7 +773,7 @@ The function `f⁻⁺` preserves binary meets.
       ※ : ∃ o ꞉ Bₐ , βₐ o ＝ βₐ m ∨[ 𝒪 A ] βₐ n
       ※ = ∥∥-rec
            ∃-is-prop
-           (λ { (o , p′) → ∣ o , p′ ∣ })
+           (λ { (o , p′) → ∣ o , p′ ∣})
            (compact-opens-are-basic A A-directed-basisᴰ (βₐ m ∨[ 𝒪 A ] βₐ n) ξ)
 
     Ⅳ = bicofinal-implies-same-join (𝒪 X) lhs₁ rhs₁ † ‡
@@ -1319,7 +1319,7 @@ proof.
          (𝒻⁻-γ ⁅ 𝔠 k ∧[ 𝒪 Patchₛ-A ] 𝔬 l ∣ ((k , l) , _) ∶ basic-below 𝒿 ⁆)
     Ⅲ = ap
          (λ - → ⋁[ 𝒪 X ] (basic-below 𝒿 , -))
-         (dfunext fe (λ { ((k , l) , p) → 𝒻⁻-β (𝔠 k) (𝔬 l) }))
+         (dfunext fe (λ { ((k , l) , p) → 𝒻⁻-β (𝔠 k) (𝔬 l)}))
 
     ctx = λ - → ⋁[ 𝒪 X ] (basic-below 𝒿 , -)
 
@@ -1328,7 +1328,7 @@ proof.
          (dfunext fe (λ { ((k , l) , p) →
            ap
             (λ - → (f⁻⁺ (𝔠 k)) ∧[ 𝒪 X ] -)
-            (commutes-with-open-nucleus 𝒻⁻⁺ ※ l ⁻¹) }))
+            (commutes-with-open-nucleus 𝒻⁻⁺ ※ l ⁻¹)}))
              where
               ※ = 𝒻⁻-makes-the-diagram-commute ∘ βₐ
     Ⅴ = ap
@@ -1336,19 +1336,19 @@ proof.
          ((dfunext fe (λ { ((k , l) , p) →
             ap
              (λ - → - ∧[ 𝒪 X ] ¬𝒻⋆ (βₐ l))
-             (𝒻⁻-makes-the-diagram-commute (βₐ k) ⁻¹) })))
+             (𝒻⁻-makes-the-diagram-commute (βₐ k) ⁻¹)})))
     Ⅵ = ap
          ctx
          (dfunext fe λ { ((k , l) , p) →
            ap
             (λ - → 𝒻 ⋆∙ (βₐ k) ∧[ 𝒪 X ] -)
-            (commutes-with-open-nucleus 𝒻⁻₀ (ϑ ∘ βₐ) l) })
+            (commutes-with-open-nucleus 𝒻⁻₀ (ϑ ∘ βₐ) l)})
     Ⅶ = ap
          ctx
          (dfunext fe λ { ((k , l) , p) →
            ap
             (λ - → - ∧[ 𝒪 X ] f⁻₀ (𝔬 l))
-            (ϑ (βₐ k)) })
+            (ϑ (βₐ k))})
     Ⅷ = ap
          ctx
          (dfunext fe λ { ((k , l) , p) →
@@ -1357,7 +1357,7 @@ proof.
            (𝒪 X)
            𝒻⁻₀
            (𝔠 k)
-           (𝔬 l) ⁻¹ } )
+           (𝔬 l) ⁻¹} )
     Ⅸ = frame-homomorphisms-preserve-all-joins′
          (𝒪 Patchₛ-A)
          (𝒪 X)

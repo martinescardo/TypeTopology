@@ -164,7 +164,7 @@ and the Action-structure is a set.
 
 \begin{code}
   action-axioms-is-prop : funext 𝓤 𝓤
-                        → (X : 𝓤 ̇)
+                        → (X : 𝓤 ̇ )
                         → (_·_ : action-structure X)
                         → is-prop (action-axioms X _·_)
   action-axioms-is-prop fe X _·_ s = γ s
@@ -182,7 +182,7 @@ and the Action-structure is a set.
 
 
   Action-structure-is-set : funext 𝓤 𝓤
-                          → (X : 𝓤 ̇)
+                          → (X : 𝓤 ̇ )
                           → is-set (Action-structure X)
   Action-structure-is-set fe X {s} = γ {s}
     where

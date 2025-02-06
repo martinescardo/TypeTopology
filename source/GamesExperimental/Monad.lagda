@@ -67,7 +67,7 @@ syntax tensor 𝕋 t f = t ⊗[ 𝕋 ] f
       ext-η   = λ x → refl ;
       unit    = λ f x → refl ;
       assoc   = λ g f x → refl
-     }
+    }
 
 𝕀𝕕⊗ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
       (x : X)
@@ -98,7 +98,7 @@ module T-definitions (𝕋 : Monad) where
  unitᵀ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → T Y) → extᵀ f ∘ ηᵀ ∼ f
  unitᵀ = unit 𝕋
 
- assocᵀ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇}
+ assocᵀ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
           (g : Y → T Z) (f : X → T Y)
         → extᵀ (extᵀ g ∘ f) ∼ extᵀ g ∘ extᵀ f
  assocᵀ = assoc 𝕋

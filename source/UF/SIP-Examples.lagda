@@ -115,7 +115,7 @@ module magma {𝓤 : Universe} where
                             × ((λ x x' → f (x · x')) ＝ (λ x x' → f x * f x'))
 
  characterization-of-Magma-＝ : is-univalent 𝓤
-                             → (A B : Magma )
+                             → (A B : Magma)
                              → (A ＝ B) ≃ (A ≅ B)
  characterization-of-Magma-＝ ua =
    characterization-of-＝-with-axioms ua
@@ -264,7 +264,7 @@ module associative-∞-magma
    fα x y z = (l x y z)⁻¹ ∙ ap f (α x y z) ∙ r x y z
    βf x y z = β (f x) (f y) (f z)
 
- remark : {X : 𝓤 ̇ } (_·_ : X → X → X) (α β : associative _·_ )
+ remark : {X : 𝓤 ̇ } (_·_ : X → X → X) (α β : associative _·_)
         → respect-assoc _·_ _·_ α β id (𝓻𝓮𝒻𝓵 _·_)
         ＝ ((λ x y z → 𝓻𝓮𝒻𝓵 ((x · y) · z) ∙ ap id (α x y z)) ＝ β)
  remark _·_ α β = refl
@@ -1236,7 +1236,7 @@ module universe-a-la-tarski
  TarskiUniverse 𝓤 𝓥 = Σ X ꞉ 𝓤 ̇ , (X → 𝓥 ̇ )
 
  _≅_  : TarskiUniverse 𝓤 𝓥 → TarskiUniverse 𝓤 𝓥 → 𝓤 ⊔ (𝓥 ⁺) ̇
- (X , T) ≅ (X' , T') = Σ f ꞉ (X → X'), is-equiv f × ((x : X) → T x ＝ T' (f x) )
+ (X , T) ≅ (X' , T') = Σ f ꞉ (X → X'), is-equiv f × ((x : X) → T x ＝ T' (f x))
 
  characterization-of-Tarski-＝ : (A B : TarskiUniverse 𝓤 𝓥)
                               → (A ＝ B) ≃ (A ≅ B)
@@ -1519,7 +1519,7 @@ module type-valued-preorder
  Type-valued-preorder = Σ S
 
  Ob : Σ S → 𝓤 ̇
- Ob (X , homX , idX , compX ) = X
+ Ob (X , homX , idX , compX) = X
 
  hom : (𝓧 : Σ S) → Ob 𝓧 → Ob 𝓧 → 𝓥 ̇
  hom (X , homX , idX , compX) = homX
@@ -1598,7 +1598,7 @@ module type-valued-preorder
        (Σ 𝓕 ꞉ ((x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
             , (∀ x y → is-equiv (𝓕 x y)))                             ■
     where
-     i   = ≃-funext₂ fe fe (hom 𝓧 )  λ x y → hom 𝓐 (F x) (F y)
+     i   = ≃-funext₂ fe fe (hom 𝓧)  λ x y → hom 𝓐 (F x) (F y)
      ii  = Π-cong fe fe
             (λ x → Π-cong fe fe
                     (λ y → univalence-≃ (ua 𝓥) (hom 𝓧 x y) (hom 𝓐 (F x) (F y))))
@@ -1780,8 +1780,8 @@ module category
                      × is-functorial 𝓧 𝓐 F 𝓕)
 
  idtoeqCat : (𝓧 𝓐 : Cat) → 𝓧 ＝ 𝓐 → 𝓧 ⋍ 𝓐
- idtoeqCat 𝓧 𝓧 (refl {𝓧}) = -id (Ob 𝓧 ) ,
-                              id-is-equiv (Ob 𝓧 ) ,
+ idtoeqCat 𝓧 𝓧 (refl {𝓧}) = -id (Ob 𝓧) ,
+                              id-is-equiv (Ob 𝓧) ,
                               (λ x y → -id (hom 𝓧 x y)) ,
                               (λ x y → id-is-equiv (hom 𝓧 x y)) ,
                               𝓻𝓮𝒻𝓵 (𝒾𝒹 𝓧) ,

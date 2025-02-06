@@ -113,7 +113,7 @@ record Pointᵣ (X : Locale (𝓤 ⁺) 𝓤 𝓤) : 𝓤 ⁺  ̇ where
 open DefnOfCPF
 
 to-pointᵣ : (X : Locale (𝓤 ⁺) 𝓤 𝓤) → Point X → Pointᵣ X
-to-pointᵣ X (ϕ , cpf) = record { point = ϕ ; point-is-cpf = cpf }
+to-pointᵣ X (ϕ , cpf) = record { point = ϕ ; point-is-cpf = cpf}
 
 to-point : (X : Locale (𝓤 ⁺) 𝓤 𝓤) → Pointᵣ X → Point X
 to-point X x = point x , point-is-filter x , point-is-completely-prime x
@@ -163,13 +163,13 @@ to-point′ᵣ X 𝓍 =
   ; point-contains-top        = Pointᵣ.point-contains-top 𝓍
   ; point-is-closed-under-∧   = Pointᵣ.point-is-closed-under-∧ 𝓍
   ; point-is-completely-prime = Pointᵣ.point-is-completely-prime 𝓍
-  }
+ }
 
 point′ᵣ-to-pointᵣ : (X : Locale (𝓤 ⁺) 𝓤 𝓤) → Point′ᵣ X → Pointᵣ X
 point′ᵣ-to-pointᵣ X 𝓍 =
  record
   { point        = Point′ᵣ.point 𝓍
   ; point-is-cpf = Point′ᵣ.point-is-cpf 𝓍
-  }
+ }
 
 \end{code}

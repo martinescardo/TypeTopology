@@ -40,7 +40,7 @@ We work with a fixed set `X` in this module.
 
 \begin{code}
 
-module DefnOfDiscreteLocale (X : 𝓤  ̇) (σ : is-set X) where
+module DefnOfDiscreteLocale (X : 𝓤  ̇ ) (σ : is-set X) where
 
 \end{code}
 
@@ -110,7 +110,7 @@ Small joins are given by set union, defined as:
 
  ⋁ₚ-gives-lub : (S : Fam 𝓤 (𝓟 X)) → ((⋁ₚ S) is-lub-of S) holds
  ⋁ₚ-gives-lub S = ⋁ₚ-gives-an-upper-bound S
-                , λ { (U , υ) → ⋁ₚ-is-least S U υ }
+                , λ { (U , υ) → ⋁ₚ-is-least S U υ}
 
 \end{code}
 
@@ -123,7 +123,7 @@ Finally, the distributivity law.
  distributivityₚ P S = subset-extensionality pe fe † ‡
   where
    † : (P ∩ ⋁ₚ S) ⊆ᵖ ⋁ₚ ⁅ P ∩ Q ∣ Q ε S ⁆ holds
-   † x (p , e) = ∥∥-rec ∥∥-is-prop (λ { (i , q) → ∣ i , (p , q) ∣ }) e
+   † x (p , e) = ∥∥-rec ∥∥-is-prop (λ { (i , q) → ∣ i , (p , q) ∣}) e
 
    ‡ : ⋁ₚ ⁅ P ∩ Q ∣ Q ε S ⁆ ⊆ᵖ (P ∩ ⋁ₚ S) holds
    ‡ x = ∥∥-rec (holds-is-prop (x ∈ₚ (P ∩ ⋁ₚ S))) γ
@@ -155,11 +155,11 @@ The discrete locale on set `X` is the locale given by the frame of subsets of
 
 \begin{code}
 
-discrete-locale : (X : 𝓤  ̇) → is-set X → Locale (𝓤 ⁺) 𝓤 𝓤
+discrete-locale : (X : 𝓤  ̇ ) → is-set X → Locale (𝓤 ⁺) 𝓤 𝓤
 discrete-locale X σ =
  record
   { ⟨_⟩ₗ         = 𝓟 X
   ; frame-str-of = DefnOfDiscreteLocale.frame-of-subsets-structure X σ
-  }
+ }
 
 \end{code}

@@ -43,7 +43,7 @@ reflection-candidate P A =
 
 is-reflection
  : (P : subuniverse 𝓤 𝓥)
- → (A : 𝓤 ̇)
+ → (A : 𝓤 ̇ )
  → reflection-candidate P A
  → 𝓤 ⁺ ⊔ 𝓥  ̇
 is-reflection P A (A' , η) =

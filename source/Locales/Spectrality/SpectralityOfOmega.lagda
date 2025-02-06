@@ -46,7 +46,7 @@ bottom-of-𝟎Frm-is-⊥ = only-𝟎-is-below-𝟎 (𝟎-𝔽𝕣𝕞 pe) ⊥ (�
 Ω-frm = 𝟎-𝔽𝕣𝕞 pe
 
 𝟏-loc : Locale (𝓤 ⁺) 𝓤 𝓤
-𝟏-loc = record { ⟨_⟩ₗ = ⟨ Ω-frm ⟩ ; frame-str-of = pr₂ Ω-frm }
+𝟏-loc = record { ⟨_⟩ₗ = ⟨ Ω-frm ⟩ ; frame-str-of = pr₂ Ω-frm}
 
 𝟎Frm-is-compact : is-compact 𝟏-loc holds
 𝟎Frm-is-compact S (∣i∣ , u) p = ∥∥-rec ∃-is-prop † (p ⋆)
@@ -77,12 +77,12 @@ bottom-of-𝟎Frm-is-⊥ = only-𝟎-is-below-𝟎 (𝟎-𝔽𝕣𝕞 pe) ⊥ (�
 and₂-lemma₁ : (x y : 𝟚 𝓤) → (ℬ𝟎 [ and₂ x y ] ≤[ poset-of (𝟎-𝔽𝕣𝕞 pe) ] ℬ𝟎 [ x ]) holds
 and₂-lemma₁ (inl ⋆) y       = λ ()
 and₂-lemma₁ (inr ⋆) (inl ⋆) = λ ()
-and₂-lemma₁ (inr ⋆) (inr ⋆) = λ { ⋆ → ⋆ }
+and₂-lemma₁ (inr ⋆) (inr ⋆) = λ { ⋆ → ⋆}
 
 and₂-lemma₂ : (x y : 𝟚 𝓤) → (ℬ𝟎 [ and₂ x y ] ≤[ poset-of (𝟎-𝔽𝕣𝕞 pe) ] ℬ𝟎 [ y ]) holds
 and₂-lemma₂ (inl ⋆) y       = λ ()
 and₂-lemma₂ (inr ⋆) (inl ⋆) = λ ()
-and₂-lemma₂ (inr ⋆) (inr ⋆) = λ { ⋆ → ⋆ }
+and₂-lemma₂ (inr ⋆) (inr ⋆) = λ { ⋆ → ⋆}
 
 open Meets (λ x y → x ≤[ poset-of (𝟎-𝔽𝕣𝕞 pe) ] y) hiding (is-top)
 

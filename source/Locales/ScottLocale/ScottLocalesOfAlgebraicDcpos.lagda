@@ -249,6 +249,6 @@ We finally define the locally small Scott locale of algebraic dcpo `𝓓`:
 \begin{code}
 
  ScottLocale : Locale (𝓤 ⁺) 𝓤 𝓤
- ScottLocale = record { ⟨_⟩ₗ = 𝒪ₛ ; frame-str-of = 𝒪ₛ-frame-structure }
+ ScottLocale = record { ⟨_⟩ₗ = 𝒪ₛ ; frame-str-of = 𝒪ₛ-frame-structure}
 
 \end{code}

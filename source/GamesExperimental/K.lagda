@@ -23,7 +23,7 @@ private
        ext-η   = λ x → refl ;
        unit    = λ f x → refl ;
        assoc   = λ g f x → refl
-      }
+     }
 
 module K-definitions (R : 𝓦₀ ̇ ) where
 

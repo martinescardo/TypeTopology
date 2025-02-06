@@ -300,7 +300,7 @@ The initial frame is the terminal locale
 \begin{code}
 
 𝟏Loc : {𝓤 : Universe} (pe : propext 𝓤) → Locale (𝓤 ⁺) 𝓤 𝓤
-𝟏Loc {𝓤} pe = record { ⟨_⟩ₗ = Ω 𝓤 ; frame-str-of = pr₂ (𝟎-𝔽𝕣𝕞 pe) }
+𝟏Loc {𝓤} pe = record { ⟨_⟩ₗ = Ω 𝓤 ; frame-str-of = pr₂ (𝟎-𝔽𝕣𝕞 pe)}
 
 \end{code}
 

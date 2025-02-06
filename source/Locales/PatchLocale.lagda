@@ -351,7 +351,7 @@ Nuclei are ordered pointwise.
 \section{Construction of the join}
 
 The construction of the join is the nontrivial component of this development.
-Given a family `S ∶＝ { fᵢ : A → A | i ∶ I }` of endofunctions on some type `A`,
+Given a family `S ∶＝ { fᵢ : A → A | i ∶ I}` of endofunctions on some type `A`,
 and a list `i₀, …, iₙ` of indices (of type `I`), the function `sequence gives
 the composition of all `fᵢₙ ∘ ⋯ ∘ fᵢ₀`:
 
@@ -376,7 +376,7 @@ a given family:
 The first lemma we prove about `𝔡𝔦𝔯` is the fact that, given a family
 
 ```
-S ∶＝ { jᵢ : 𝒪 X → 𝒪 X ∣ i ∶ I }
+S ∶＝ { jᵢ : 𝒪 X → 𝒪 X ∣ i ∶ I}
 ```
 
 of prenuclei, `sequence S is` is a prenuclei for any given list `is : List I` of
@@ -889,8 +889,8 @@ when proving distributivity.
                                , 𝟏ₚ-is-top
                                , ⋏-is-meet
                                , ⋁ₙ-is-join
-                               , λ { (𝒿 , 𝒦) → distributivityₚ 𝒿 𝒦 }
-                }
+                               , λ { (𝒿 , 𝒦) → distributivityₚ 𝒿 𝒦}
+               }
 
 \end{code}
 
@@ -1043,10 +1043,10 @@ module SmallPatchConstruction (X : Locale 𝓤 𝓥 𝓦) (σᴰ : spectralᴰ X
                      ; frame-str-of = (_≼ᵏ_ , 𝟏ₚ , _⋏_ , ⋁ₙ)
                      , (≼ᵏ-is-preorder , ≼ᵏ-is-antisymmetric)
                      , 𝟏ₚ-is-topₖ
-                     , (λ { (𝒿 , 𝓀) → ⋏-is-meetₖ 𝒿 𝓀 })
+                     , (λ { (𝒿 , 𝓀) → ⋏-is-meetₖ 𝒿 𝓀})
                      , ⋁ₙ-is-joinₖ
-                     , λ { (𝒿 , 𝒦) → distributivityₚ 𝒿 𝒦 }
-                     }
+                     , λ { (𝒿 , 𝒦) → distributivityₚ 𝒿 𝒦}
+                    }
 
 
  𝟎-is-id : 𝟎[ 𝒪 SmallPatch ] $_ ∼ id

@@ -147,7 +147,7 @@ proposition p and family A indexed by p.
 
  module canonical-map
          (p : Ω 𝓤)
-         (A : p holds → 𝓤 ̇)
+         (A : p holds → 𝓤 ̇ )
          where
 
   hp : is-prop (p holds)
@@ -186,7 +186,7 @@ is an equivalence for every p and A.
 
  closed-under-prop-Π : 𝓤 ⁺ ⊔ 𝓥 ̇
  closed-under-prop-Π = (p : Ω 𝓤)
-                       (A : p holds → 𝓤 ̇)
+                       (A : p holds → 𝓤 ̇ )
                      → is-equiv (ρ p A)
   where
    open canonical-map
@@ -277,7 +277,7 @@ easier to check closure under products using T rather than transport
                    → T 𝕗 ∼ treq 𝕗
   transport-eqtoid {X} {Y} 𝕗 s = JEq (ua 𝓤) X A I Y 𝕗
    where
-    A : (Y : 𝓤 ̇) (𝕗 : X ≃ Y) → 𝓥 ̇
+    A : (Y : 𝓤 ̇ ) (𝕗 : X ≃ Y) → 𝓥 ̇
     A Y 𝕗 = T 𝕗 s ＝ treq 𝕗 s
 
     I : A X (≃-refl X)
@@ -298,7 +298,7 @@ equivalently formulated with T:
 
   module canonical-map'
           (p : Ω 𝓤)
-          (A : p holds → 𝓤 ̇)
+          (A : p holds → 𝓤 ̇ )
           where
 
    open canonical-map p A public
@@ -317,7 +317,7 @@ equivalently formulated with T:
 
   closed-under-prop-Π' : 𝓤 ⁺ ⊔ 𝓥 ̇
   closed-under-prop-Π' = (p : Ω 𝓤)
-                         (A : p holds → 𝓤 ̇)
+                         (A : p holds → 𝓤 ̇ )
                        → is-equiv (τ p A)
    where
     open canonical-map'
@@ -393,7 +393,7 @@ guess what T should be.
   T-refl _·_ = dfunext fe' (λ x → dfunext fe' (λ x' → refl))
 
   module _ (p : Ω 𝓤)
-           (A : p holds → 𝓤 ̇)
+           (A : p holds → 𝓤 ̇ )
          where
 
    open canonical-map' S T T-refl p A
@@ -478,7 +478,7 @@ closure-under-prop-Π-× {𝓤} {𝓥₁} {𝓥₂} {S₁} {S₂}
   S X = S₁ X × S₂ X
 
   module _ (p : Ω 𝓤)
-           (A : p holds → 𝓤 ̇)
+           (A : p holds → 𝓤 ̇ )
          where
 
    open canonical-map S  p A using (ρ ; ϕ)
@@ -570,7 +570,7 @@ closure-under-prop-Π-with-axioms
  : (S : 𝓤 ̇ → 𝓥 ̇ )
    (ρ-is-equiv : closed-under-prop-Π S)
    (axioms : (X : 𝓤 ̇ ) → S X → 𝓦 ̇ )
-   (axioms-are-prop-valued : (X : 𝓤 ̇) (s : S X) → is-prop (axioms X s))
+   (axioms-are-prop-valued : (X : 𝓤 ̇ ) (s : S X) → is-prop (axioms X s))
    (axioms-closed-under-prop-Π :
           (p : Ω 𝓤 )
           (A : p holds → 𝓤 ̇ )
@@ -589,7 +589,7 @@ closure-under-prop-Π-with-axioms {𝓤} {𝓥} {𝓦}
     Sₐ X = Σ s ꞉ S X , axioms X s
 
     module _ (p : Ω 𝓤)
-             (A : p holds → 𝓤 ̇)
+             (A : p holds → 𝓤 ̇ )
            where
 
      open canonical-map S  p A using (ρ ; ϕ)
@@ -663,13 +663,13 @@ Monoid-is-closed-under-prop-Π {𝓤} = V
  where
   open canonical-map monoid-structure
 
-  ρ⁻¹ : (p : Ω 𝓤) (A : p holds → 𝓤 ̇)
+  ρ⁻¹ : (p : Ω 𝓤) (A : p holds → 𝓤 ̇ )
       → ((h : p holds) → monoid-structure (A h)) → monoid-structure (Π A)
   ρ⁻¹ p A = inverse (ρ p A) (∞-Magma∙-structure-closed-under-Π p A)
 
   axioms-closed-under-prop-Π
     : (p : Ω 𝓤)
-      (A : p holds → 𝓤 ̇)
+      (A : p holds → 𝓤 ̇ )
       (α : (h : p holds) → monoid-structure (A h))
       (F : (h : p holds) → monoid-axioms (A h) (α h))
     → monoid-axioms (Π A) (ρ⁻¹ p A α)

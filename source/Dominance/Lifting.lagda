@@ -25,7 +25,7 @@ module
  Dominance.Lifting
   {𝓣 𝓚 : Universe}
   (𝓣-ua : is-univalent 𝓣)
-  (d : 𝓣 ̇ → 𝓚 ̇)
+  (d : 𝓣 ̇ → 𝓚 ̇ )
   (isd : is-dominance d)
  where
 
@@ -33,25 +33,25 @@ module
  D = (d , isd)
 
  module _ {𝓥} where
-  L : (X : 𝓥 ̇) → 𝓣 ⁺ ⊔ 𝓚 ⊔ 𝓥 ̇
+  L : (X : 𝓥 ̇ ) → 𝓣 ⁺ ⊔ 𝓚 ⊔ 𝓥 ̇
   L X = Σ P ꞉ 𝓣 ̇ , (P → X) × d P
 
-  is-defined : {X : 𝓥 ̇} → L X → 𝓣 ̇
+  is-defined : {X : 𝓥 ̇ } → L X → 𝓣 ̇
   is-defined (P , (ϕ , dP)) = P
 
   _↓ = is-defined
 
-  ↓-is-dominant : {X : 𝓥 ̇} → (x̃ : L X) → is-dominant D (x̃ ↓)
+  ↓-is-dominant : {X : 𝓥 ̇ } → (x̃ : L X) → is-dominant D (x̃ ↓)
   ↓-is-dominant (P , (ϕ , dP)) = dP
 
-  value : {X : 𝓥 ̇} → (x̃ : L X) → x̃ ↓ → X
+  value : {X : 𝓥 ̇ } → (x̃ : L X) → x̃ ↓ → X
   value (P , (ϕ , dP)) = ϕ
 
 
- module _ {𝓥 : _} {X : 𝓥 ̇} where
+ module _ {𝓥 : _} {X : 𝓥 ̇ } where
   open sip
 
-  fam-str : (P : 𝓣 ̇) → 𝓣 ⊔ 𝓥 ̇
+  fam-str : (P : 𝓣 ̇ ) → 𝓣 ⊔ 𝓥 ̇
   fam-str P = P → X
 
   fam-sns-data : SNS fam-str (𝓣 ⊔ 𝓥)
@@ -63,10 +63,10 @@ module
     ρ : (u : Σ fam-str) → ι u u (≃-refl ⟨ u ⟩)
     ρ _ = refl
 
-    h : {P : 𝓣 ̇} {u v : fam-str P} → canonical-map ι ρ u v ∼ -id (u ＝ v)
+    h : {P : 𝓣 ̇ } {u v : fam-str P} → canonical-map ι ρ u v ∼ -id (u ＝ v)
     h refl = refl
 
-    θ : {P : 𝓣 ̇} (u v : fam-str P) → is-equiv (canonical-map ι ρ u v)
+    θ : {P : 𝓣 ̇ } (u v : fam-str P) → is-equiv (canonical-map ι ρ u v)
     θ u v = equiv-closed-under-∼ _ _ (id-is-equiv (u ＝ v)) h
 
   fam-≅ : (u v : Σ fam-str) → 𝓣 ⊔ 𝓥 ̇
@@ -128,13 +128,13 @@ module
    L-ext : {u v : L X} → u ≅ v → u ＝ v
    L-ext = back-eqtofun (＝-to-≅ _ _)
 
- η : {𝓥 : _} {X : 𝓥 ̇} → X → L X
+ η : {𝓥 : _} {X : 𝓥 ̇ } → X → L X
  η x = 𝟙 , (λ _ → x) , 𝟙-is-dominant D
 
  _⇀_ : {𝓥 𝓦 : _} → 𝓥 ̇ → 𝓦 ̇ → 𝓣 ⁺ ⊔ 𝓚 ⊔ 𝓥 ⊔ 𝓦 ̇
  X ⇀ Y = X → L Y
 
- module _ {𝓥 𝓦 : _} {X : 𝓥 ̇} {Y : 𝓦 ̇} where
+ module _ {𝓥 𝓦 : _} {X : 𝓥 ̇ } {Y : 𝓦 ̇ } where
   extension : (X ⇀ Y) → (L X → L Y)
   extension f (P , (φ , dP)) = (Q , (γ , dQ))
    where
@@ -151,14 +151,14 @@ module
   f ♯ = extension f
 
  _<<<_
-  : {𝓥 𝓦 𝓣 : _} {X : 𝓥 ̇} {Y : 𝓦 ̇} {Z : 𝓣 ̇}
+  : {𝓥 𝓦 𝓣 : _} {X : 𝓥 ̇ } {Y : 𝓦 ̇ } {Z : 𝓣 ̇ }
   → (Y ⇀ Z) → (X ⇀ Y) → (X ⇀ Z)
  g <<< f = g ♯ ∘ f
 
- μ : {𝓥 : _} {X : 𝓥 ̇} → L (L X) → L X
+ μ : {𝓥 : _} {X : 𝓥 ̇ } → L (L X) → L X
  μ = extension id
 
- module _ {𝓥} {X : 𝓥 ̇} (𝓣𝓥-fe : funext 𝓣 𝓥) where
+ module _ {𝓥} {X : 𝓥 ̇ } (𝓣𝓥-fe : funext 𝓣 𝓥) where
   kleisli-law₀ : extension (η {𝓥} {X}) ∼ id
   kleisli-law₀ u =
    L-ext 𝓣𝓥-fe (α , λ _ → refl)
@@ -166,7 +166,7 @@ module
     α : u ↓ × 𝟙 ↔ u ↓
     α = pr₁ , (_, ⋆)
 
- module _ {𝓥 𝓦} {X : 𝓥 ̇} {Y : 𝓦 ̇} (𝓣𝓦-fe : funext 𝓣 𝓦) where
+ module _ {𝓥 𝓦} {X : 𝓥 ̇ } {Y : 𝓦 ̇ } (𝓣𝓦-fe : funext 𝓣 𝓦) where
   kleisli-law₁ : (f : X ⇀ Y) → extension f ∘ η ∼ f
   kleisli-law₁ f u =
    L-ext 𝓣𝓦-fe (α , λ _ → refl)
@@ -174,7 +174,7 @@ module
     α : 𝟙 × f u ↓ ↔ f u ↓
     α = pr₂ , (⋆ ,_)
 
- module _ {𝓥 𝓦 𝓧} {X : 𝓥 ̇} {Y : 𝓦 ̇} {Z : 𝓧 ̇} (𝓣𝓧-fe : funext 𝓣 𝓧) where
+ module _ {𝓥 𝓦 𝓧} {X : 𝓥 ̇ } {Y : 𝓦 ̇ } {Z : 𝓧 ̇ } (𝓣𝓧-fe : funext 𝓣 𝓧) where
   kleisli-law₂ : (f : X ⇀ Y) (g : Y ⇀ Z) → (g ♯ ∘ f)♯ ∼ g ♯ ∘ f ♯
   kleisli-law₂ f g x =
    L-ext 𝓣𝓧-fe (α , λ _ → refl)

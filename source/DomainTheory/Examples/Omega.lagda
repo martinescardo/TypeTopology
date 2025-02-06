@@ -159,7 +159,7 @@ in-image-of-κ-if-compact P P-cpt = ∥∥-functor goal claim
   ; ⊑ᴮ-is-small      = λ P b → (κ b ⊑ P , ≃-refl (κ b ⊑ P))
   ; ↓ᴮ-is-directed   = κ⁺-is-directed
   ; ↓ᴮ-is-sup        = κ⁺-sup
-  }
+ }
 
 Ω-has-specified-small-compact-basis : has-specified-small-compact-basis Ω-DCPO
 Ω-has-specified-small-compact-basis = (Bool , κ , κ-is-small-compact-basis)

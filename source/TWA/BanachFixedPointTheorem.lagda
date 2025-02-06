@@ -96,7 +96,7 @@ with the usual convention that 2^{-∞} = 0. The converse is not always
 possible. But, if (X,d) is ultrametric, then we can define a cometric
 c from d by
 
- c(x,y) = sup { n:ℕ∞ | d(x,y)<2^{-n} }.
+ c(x,y) = sup { n:ℕ∞ | d(x,y)<2^{-n}}.
 
 So, to translate the definition of contractibility to metric to
 cometric, we need:

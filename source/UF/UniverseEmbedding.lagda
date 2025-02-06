@@ -289,7 +289,7 @@ is-hSet-embedding {𝓤} {𝓥} f = (𝓧 : hSet 𝓤) → underlying-set (f �
                                              ≃ underlying-set 𝓧
 
 at-most-one-hSet-embedding : Univalence
-                           → (f g : hSet 𝓤 → hSet 𝓥 )
+                           → (f g : hSet 𝓤 → hSet 𝓥)
                            → is-hSet-embedding f
                            → is-hSet-embedding g
                            → f ＝ g
@@ -307,7 +307,7 @@ at-most-one-hSet-embedding {𝓤} {𝓥} ua f g i j = p
   p = dfunext (Univalence-gives-FunExt ua (𝓤 ⁺) (𝓥 ⁺)) H
 
 the-only-hSet-embedding-is-Lift-hSet : Univalence
-                                     → (f : hSet 𝓤 → hSet (𝓤 ⊔ 𝓥 ))
+                                     → (f : hSet 𝓤 → hSet (𝓤 ⊔ 𝓥))
                                      → is-hSet-embedding f
                                      → f ＝ Lift-hSet 𝓥
 the-only-hSet-embedding-is-Lift-hSet {𝓤} {𝓥} ua f i =
@@ -316,7 +316,7 @@ the-only-hSet-embedding-is-Lift-hSet {𝓤} {𝓥} ua f i =
   (λ 𝓧 → Lift-is-universe-embedding 𝓥 (underlying-set 𝓧))
 
 hSet-embeddings-are-embeddings : Univalence
-                               → (f : hSet 𝓤 → hSet (𝓤 ⊔ 𝓥 ))
+                               → (f : hSet 𝓤 → hSet (𝓤 ⊔ 𝓥))
                                → is-hSet-embedding f
                                → is-embedding f
 hSet-embeddings-are-embeddings {𝓤} {𝓥} ua f i =

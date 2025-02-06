@@ -104,7 +104,7 @@ This record-based definition is of course just a more verbose way of writing
    ; point-preserves-binary-meets = β
    ; point-preserves-joins        = γ
    ; point-preserves-compactness  = σ
-   }
+  }
 
 \end{code}
 

@@ -280,7 +280,7 @@ use of function extensionality from it yet.
 
 \begin{code}
 
--- church-encode-to-D-rec : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {A : 𝓣  ̇}
+-- church-encode-to-D-rec : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {A : 𝓣  ̇ }
 --                      → (d : D X Y Z)
 --                      → (η′ : Z → A)
 --                      → (β′ : (Y → A) → X → A)

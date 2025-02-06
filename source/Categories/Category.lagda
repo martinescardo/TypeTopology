@@ -25,7 +25,7 @@ We prefer composition in diagrammatic order.
 
 category-structure : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
 category-structure 𝓤 𝓥 =
- Σ ob ꞉ (𝓤 ̇),
+ Σ ob ꞉ (𝓤 ̇ ),
  Σ hom ꞉ (ob → ob → 𝓥 ̇ ),
  Σ idn ꞉ ((A : ob) → hom A A) ,
  ((A B C : ob) (f : hom A B) (g : hom B C) → hom A C)

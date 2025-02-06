@@ -817,7 +817,7 @@ module total-separatedness-via-apartness
 
  tight-relation-contained-in-♯₂-gives-total-separatedness
   : {X : 𝓤 ̇ }
-  → (_♯_ : X → X → 𝓥 ̇)
+  → (_♯_ : X → X → 𝓥 ̇ )
   → ((x y : X) → x ♯ y → x ♯₂ y)
   → is-tight _♯_
   → is-totally-separated X

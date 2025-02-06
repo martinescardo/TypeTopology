@@ -138,7 +138,7 @@ Added 31 January 2025 by Tom de Jong and Martin Escardo.
 \begin{code}
 
 EM-gives-tight-apartness-is-≠ : DNE 𝓥
-                              → (X : 𝓤 ̇  )
+                              → (X : 𝓤 ̇ )
                               → ((_♯_ , _ , _) : Tight-Apartness X 𝓥)
                               → ((x y : X) → x ♯ y ↔ x ≠ y)
 EM-gives-tight-apartness-is-≠ dne X (_♯_ , ♯-is-apartness , ♯-is-tight) x y = III
@@ -171,7 +171,7 @@ URL: https://www.math.fau.edu/people/faculty/lubarsky/separating-llpo.pdf
 
 \begin{code}
 
-At-Most-One-Tight-Apartness : (X : 𝓤 ̇  ) (𝓥 : Universe) → (𝓥 ⁺ ⊔ 𝓤) ̇
+At-Most-One-Tight-Apartness : (X : 𝓤 ̇ ) (𝓥 : Universe) → (𝓥 ⁺ ⊔ 𝓤) ̇
 At-Most-One-Tight-Apartness X 𝓥 = is-prop (Tight-Apartness X 𝓥)
 
 At-Most-One-Tight-Apartness-on-Cantor-gives-WLPO-implies-LPO
@@ -276,7 +276,7 @@ We record some basic general results first.
 \begin{code}
 
 ≠-is-apartness-on-discrete-type : funext 𝓤 𝓤₀
-                                → {X : 𝓤 ̇  }
+                                → {X : 𝓤 ̇ }
                                 → is-discrete X
                                 → is-apartness _≠_
 ≠-is-apartness-on-discrete-type fe {X} X-discrete =
@@ -291,14 +291,14 @@ We record some basic general results first.
    I x y z a (inl refl) = ∣ inr (≠-sym a) ∣
    I x y z a (inr ν)    = ∣ inl ν ∣
 
-≠-is-tight-on-discrete-type : {X : 𝓤 ̇  }
+≠-is-tight-on-discrete-type : {X : 𝓤 ̇ }
                             → is-discrete X
                             → is-tight _≠_
 ≠-is-tight-on-discrete-type = discrete-is-¬¬-separated
 
 At-Most-One-Tight-Apartness-on-discrete-type-with-two-distinct-points-gives-DNE
  : funext 𝓤 𝓤₀
- → (X : 𝓤 ̇  )
+ → (X : 𝓤 ̇ )
  → has-two-distinct-points X
  → is-discrete X
  → At-Most-One-Tight-Apartness X 𝓤
@@ -364,7 +364,7 @@ hence excluded middle, hold.
 \begin{code}
 
 Exactly-One-Tight-Apartness-on-type-with-two-points-apart-gives-DNE
- : {X : 𝓤 ̇}
+ : {X : 𝓤 ̇ }
    ((_♯_ , a , _) : Tight-Apartness X 𝓤)
  → has-two-points-apart (_♯_ , a)
  → At-Most-One-Tight-Apartness X 𝓤
@@ -427,7 +427,7 @@ The previous result is a particular case, of course:
 
 At-Most-One-Tight-Apartness-on-discrete-type-with-two-distinct-points-gives-DNE'
  : funext 𝓤 𝓤₀
- → {X : 𝓤 ̇}
+ → {X : 𝓤 ̇ }
  → is-discrete X
  → has-two-distinct-points X
  → At-Most-One-Tight-Apartness X 𝓤

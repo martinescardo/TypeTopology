@@ -308,7 +308,7 @@ module _
    ; ⊑ᴮ-is-small      = ⦅2⦆
    ; ↓ᴮ-is-directed   = ⦅3⦆
    ; ↓ᴮ-is-sup        = ⦅4⦆
-   }
+  }
    where
     ⦅1⦆ : (b : B) → is-compact (𝓓 ⟹ᵈᶜᵖᵒ (𝓔 ⁻)) (β b)
     ⦅1⦆ = directify-is-compact single-step-functions
@@ -450,7 +450,7 @@ We now proceed with the proof as outlined above.
     ; s-section-of-r  = s-section-of-r
     ; s-is-continuous = s-is-cts
     ; r-is-continuous = r-is-cts
-    }
+   }
     where
      module _ where
       open _continuous-retract-of_ 𝓓-continuous-retract-of-𝓓'

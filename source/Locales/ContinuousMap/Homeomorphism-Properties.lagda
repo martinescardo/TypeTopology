@@ -84,7 +84,7 @@ Being homeomorphic is a symmetric relation.
 
 ≅c-sym : (X Y : Locale (𝓤 ⁺) 𝓤 𝓤) → X ≅c≅ Y → Y ≅c≅ X
 ≅c-sym X Y 𝒽 =
- record { 𝓈 = 𝓇 ; 𝓇 = 𝓈 ; 𝓇-cancels-𝓈 = 𝓈-cancels-𝓇 ; 𝓈-cancels-𝓇 = 𝓇-cancels-𝓈 }
+ record { 𝓈 = 𝓇 ; 𝓇 = 𝓈 ; 𝓇-cancels-𝓈 = 𝓈-cancels-𝓇 ; 𝓈-cancels-𝓇 = 𝓇-cancels-𝓈}
   where
    open FrameIsomorphisms.Isomorphismᵣ 𝒽
 

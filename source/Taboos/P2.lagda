@@ -328,7 +328,7 @@ either ¬ P or ¬¬ P holds.
 
 \begin{code}
 
-thinly-inhabited-wem-lemma : (X : 𝓤 ̇)
+thinly-inhabited-wem-lemma : (X : 𝓤 ̇ )
                            → is-thinly-inhabited (X + is-empty X)
                            → is-empty X + is-nonempty X
 thinly-inhabited-wem-lemma X ti = II
@@ -407,7 +407,7 @@ is-thinly-inhabited P → P.
 
 \begin{code}
 
-thinly-inhabited-wem-special : (X : 𝓤 ̇)
+thinly-inhabited-wem-special : (X : 𝓤 ̇ )
                              → is-thinly-inhabited (is-empty X + is-nonempty X)
                              → is-empty X + is-nonempty X
 thinly-inhabited-wem-special X h =
@@ -550,7 +550,7 @@ module universe-discussion where
  η : {X : 𝓤 ̇ } → is-prop X → X → is-thinly-inhabited' X
  η {𝓤} {X} i x₀ = qinvs-are-equivs (κ X) (s , sκ , κs)
   where
-   s : (X → 𝓤 ̇) → 𝓤 ̇
+   s : (X → 𝓤 ̇ ) → 𝓤 ̇
    s A = A x₀
 
    sκ : s ∘ κ X ∼ id

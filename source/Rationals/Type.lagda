@@ -349,7 +349,7 @@ instance
  ι {{canonical-map-ℤ-to-ℚ}} = ℤ-to-ℚ
 
 ℕ-to-ℚ : ℕ → ℚ
-ℕ-to-ℚ n = ι {{ canonical-map-ℤ-to-ℚ }} (ι n)
+ℕ-to-ℚ n = ι {{ canonical-map-ℤ-to-ℚ}} (ι n)
 
 instance
  canonical-map-ℕ-to-ℚ : Canonical-Map ℕ ℚ

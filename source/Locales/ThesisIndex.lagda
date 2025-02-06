@@ -40,7 +40,7 @@ open Locale
 definition∶frame : (𝓤 𝓥 𝓦 : Universe) → (𝓤 ⊔ 𝓥 ⊔ 𝓦) ⁺  ̇
 definition∶frame = Frame
 
-lemma∶partial-order-gives-sethood : (X : 𝓤  ̇)
+lemma∶partial-order-gives-sethood : (X : 𝓤  ̇ )
                                   → (_≤_ : X → X → Ω 𝓥)
                                   → is-partial-order X _≤_
                                   → is-set X
@@ -58,7 +58,7 @@ lemma∶partial-order-gives-sethood {𝓤} {𝓥} X _≤_ ϑ =
 
 \begin{code}
 
-sup-complete : (𝓤 𝓣 𝓥 : Universe) {A : 𝓤 ̇}
+sup-complete : (𝓤 𝓣 𝓥 : Universe) {A : 𝓤 ̇ }
              → sup-lattice-data 𝓤 𝓣 𝓥 A → 𝓤 ⊔ 𝓣 ⊔ 𝓥 ⁺ ̇
 sup-complete = is-sup-lattice
 

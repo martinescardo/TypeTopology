@@ -149,7 +149,7 @@ module _ (pt : propositional-truncations-exist) where
  open PropositionalTruncation pt
 
  apartness-separating-∞₀-and-∞₁-gives-WLPO
-  : (_♯_  : ℕ∞₂ → ℕ∞₂ → 𝓤₀ ̇)
+  : (_♯_  : ℕ∞₂ → ℕ∞₂ → 𝓤₀ ̇ )
   → ∞₀ ♯ ∞₁
   → is-irreflexive _♯_
   → is-cotransitive _♯_

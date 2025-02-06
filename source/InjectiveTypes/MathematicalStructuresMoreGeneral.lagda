@@ -50,7 +50,7 @@ We already know the following, but here is a short direct proof.
 
 \begin{code}
 
-universes-are-aflabby-Π : aflabby (𝓤 ̇) 𝓤
+universes-are-aflabby-Π : aflabby (𝓤 ̇ ) 𝓤
 universes-are-aflabby-Π {𝓤} P P-is-prop A = Π A , I
  where
   X : 𝓤  ̇
@@ -59,11 +59,11 @@ universes-are-aflabby-Π {𝓤} P P-is-prop A = Π A , I
   I : (p : P) → Π A ＝ A p
   I p = eqtoid (ua 𝓤) (Π A) (A p) (prop-indexed-product fe' P-is-prop p)
 
-universes-are-injective-Π : ainjective-type (𝓤 ̇) 𝓤 𝓤
-universes-are-injective-Π {𝓤} = aflabby-types-are-ainjective (𝓤 ̇)
+universes-are-injective-Π : ainjective-type (𝓤 ̇ ) 𝓤 𝓤
+universes-are-injective-Π {𝓤} = aflabby-types-are-ainjective (𝓤 ̇ )
                                   universes-are-aflabby-Π
 
-universes-are-aflabby-Σ : aflabby (𝓤 ̇) 𝓤
+universes-are-aflabby-Σ : aflabby (𝓤 ̇ ) 𝓤
 universes-are-aflabby-Σ {𝓤} P P-is-prop A = Σ A , I
  where
   X : 𝓤  ̇
@@ -72,9 +72,9 @@ universes-are-aflabby-Σ {𝓤} P P-is-prop A = Σ A , I
   I : (p : P) → Σ A ＝ A p
   I p = eqtoid (ua 𝓤) (Σ A) (A p) (prop-indexed-sum P-is-prop p)
 
-module _ (S : 𝓤 ̇ → 𝓥 ̇) where
+module _ (S : 𝓤 ̇ → 𝓥 ̇ ) where
 
- treq : {X Y : 𝓤 ̇} → X ≃ Y → S X → S Y
+ treq : {X Y : 𝓤 ̇ } → X ≃ Y → S X → S Y
  treq {X} {Y} 𝕗 = transport S (eqtoid (ua 𝓤) X Y 𝕗)
 
 \end{code}
@@ -84,7 +84,7 @@ mind:
 
 \begin{code}
 
- treq-is-equiv : {X Y : 𝓤 ̇} (𝕗 : X ≃ Y) → is-equiv (treq 𝕗)
+ treq-is-equiv : {X Y : 𝓤 ̇ } (𝕗 : X ≃ Y) → is-equiv (treq 𝕗)
  treq-is-equiv {X} {Y} 𝕗 = transports-are-equivs (eqtoid (ua 𝓤) X Y 𝕗)
 
 \end{code}
@@ -97,8 +97,8 @@ We work with hypothetical T and T-refl with the following types.
 
 \begin{code}
 
- module _ (T      : {X Y : 𝓤 ̇} → X ≃ Y → S X → S Y)
-          (T-refl : {X : 𝓤 ̇} → T (≃-refl X) ∼ id)
+ module _ (T      : {X Y : 𝓤 ̇ } → X ≃ Y → S X → S Y)
+          (T-refl : {X : 𝓤 ̇ } → T (≃-refl X) ∼ id)
         where
 
 \end{code}
@@ -110,11 +110,11 @@ easier to check the compatibility condition using T rather than transport
 
 \begin{code}
 
-  T-is-treq : {X Y : 𝓤 ̇} (𝕗 : X ≃ Y)
+  T-is-treq : {X Y : 𝓤 ̇ } (𝕗 : X ≃ Y)
             → T 𝕗 ∼ treq 𝕗
   T-is-treq {X} {Y} 𝕗 s = JEq (ua 𝓤) X A I Y 𝕗
    where
-    A : (Y : 𝓤 ̇) (𝕗 : X ≃ Y) → 𝓥 ̇
+    A : (Y : 𝓤 ̇ ) (𝕗 : X ≃ Y) → 𝓥 ̇
     A Y 𝕗 = T 𝕗 s ＝ treq 𝕗 s
 
     I : A X (≃-refl X)
@@ -134,12 +134,12 @@ We introduce names for the canonical maps induced by Π- and
 \begin{code}
 
   ρΠ : (p : Ω 𝓤)
-       (A : p holds → 𝓤 ̇)
+       (A : p holds → 𝓤 ̇ )
      → S (Π A) → ((h : p holds) → S (A h))
   ρΠ p A s h = T (prop-indexed-product fe' (holds-is-prop p) h) s
 
   ρΣ : (p : Ω 𝓤)
-       (A : p holds → 𝓤 ̇)
+       (A : p holds → 𝓤 ̇ )
      → S (Σ A) → ((h : p holds) → S (A h))
   ρΣ p A s h = T (prop-indexed-sum (holds-is-prop p) h) s
 
@@ -153,14 +153,14 @@ be easier to check compatibility-condition-Π than
 
   compatibility-condition-Π : 𝓤 ⁺ ⊔ 𝓥 ̇
   compatibility-condition-Π = (p : Ω 𝓤)
-                              (A : p holds → 𝓤 ̇)
+                              (A : p holds → 𝓤 ̇ )
                             → has-section (ρΠ p A)
 
   Π-lemma : compatibility-condition-Π
           → compatibility-condition S universes-are-aflabby-Π
   Π-lemma t p A = II
    where
-    π : (p : Ω 𝓤) (A : p holds → 𝓤 ̇) (h : p holds) → Π A ≃ A h
+    π : (p : Ω 𝓤) (A : p holds → 𝓤 ̇ ) (h : p holds) → Π A ≃ A h
     π p A = prop-indexed-product fe' (holds-is-prop p)
 
     I : ρΠ p A ∼ ρ S universes-are-aflabby-Π p A
@@ -197,7 +197,7 @@ enough" for the purposes of e.g. Monoid-Π-condition.
 
   compatibility-condition-Σ : 𝓤 ⁺ ⊔ 𝓥 ̇
   compatibility-condition-Σ = (p : Ω 𝓤)
-                              (A : p holds → 𝓤 ̇)
+                              (A : p holds → 𝓤 ̇ )
                             → has-section (ρΣ p A)
 
   Σ-lemma : compatibility-condition-Σ
@@ -225,7 +225,7 @@ two ways, assuming the compatibility condition.
 
 \begin{code}
 
- module _ (ϕ : aflabby (𝓤 ̇) 𝓤) where
+ module _ (ϕ : aflabby (𝓤 ̇ ) 𝓤) where
 
   aflabbiness-of-type-of-structured-types : compatibility-condition S ϕ
                                           → aflabby (Σ S) 𝓤
@@ -257,10 +257,10 @@ Pointed-Π-condition : compatibility-condition
                         universes-are-aflabby-Π
 Pointed-Π-condition {𝓤} = Π-lemma Pointed T T-refl c
  where
-  T : {X Y : 𝓤 ̇} → (X ≃ Y) → X → Y
+  T : {X Y : 𝓤 ̇ } → (X ≃ Y) → X → Y
   T = ⌜_⌝
 
-  T-refl : {X : 𝓤 ̇} → T (≃-refl X) ∼ id
+  T-refl : {X : 𝓤 ̇ } → T (≃-refl X) ∼ id
   T-refl x = refl
 
   c : compatibility-condition-Π (λ X → X) T T-refl
@@ -295,14 +295,14 @@ guess what T should be.
  where
   S = ∞-Magma-structure
 
-  T : {X Y : 𝓤 ̇} → (X ≃ Y) → S X → S Y
+  T : {X Y : 𝓤 ̇ } → (X ≃ Y) → S X → S Y
   T 𝕗 _·_ = λ y y' → ⌜ 𝕗 ⌝ (⌜ 𝕗 ⌝⁻¹ y · ⌜ 𝕗 ⌝⁻¹ y')
 
-  T-refl : {X : 𝓤 ̇} → T (≃-refl X) ∼ id
+  T-refl : {X : 𝓤 ̇ } → T (≃-refl X) ∼ id
   T-refl _·_ = dfunext fe' (λ x → dfunext fe' (λ x' → refl))
 
   module _ (p : Ω 𝓤)
-           (A : p holds → 𝓤 ̇)
+           (A : p holds → 𝓤 ̇ )
          where
 
    π : (h : p holds) → Π A ≃ A h
@@ -403,7 +403,7 @@ Monoid-Π-condition {𝓤} =
   (monoid-axioms-is-prop fe')
   axioms-Π-condition
  where
-  σ : (p : Ω 𝓤) (A : p holds → 𝓤 ̇)
+  σ : (p : Ω 𝓤) (A : p holds → 𝓤 ̇ )
     → ((h : p holds) → monoid-structure (A h)) → monoid-structure (Π A)
   σ p A = section-of
            (ρ monoid-structure universes-are-aflabby-Π p A)
@@ -411,7 +411,7 @@ Monoid-Π-condition {𝓤} =
 
   axioms-Π-condition
     : (p : Ω 𝓤)
-      (A : p holds → 𝓤 ̇)
+      (A : p holds → 𝓤 ̇ )
       (α : (h : p holds) → monoid-structure (A h))
       (F : (h : p holds) → monoid-axioms (A h) (α h))
     → monoid-axioms (Π A) (σ p A α)

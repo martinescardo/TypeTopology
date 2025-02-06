@@ -231,7 +231,7 @@ course-of-values-induction : (P : ℕ → 𝓤 ̇ )
 course-of-values-induction = transfinite-induction _<_ <-is-well-founded
 
 course-of-values-induction-on-value-of-function
- : {X : 𝓤 ̇}
+ : {X : 𝓤 ̇ }
    (f : X → ℕ)
    (P : X → 𝓥 ̇ )
  → ((x : X) → ((y : X) → f y < f x → P y) → P x)
@@ -597,7 +597,7 @@ order-split 0        (succ y) = inl (zero-least (succ y))
 order-split (succ x) 0        = inr (zero-least (succ x))
 order-split (succ x) (succ y) = order-split x y
 
-least-element-unique : {A : ℕ → 𝓤 ̇}
+least-element-unique : {A : ℕ → 𝓤 ̇ }
                      → (σ : is-complemented A)
                      → ((α , αₚ) : Σ k ꞉ ℕ , A k × ((z : ℕ) → A z → k ≤ z))
                      → ((β , βₚ) : Σ n ꞉ ℕ , A n × ((z : ℕ) → A z → n ≤ z))
@@ -611,7 +611,7 @@ least-element-unique σ (α , α₀ , α₁) (β , β₀ , β₁) = ≤-anti α 
   II : β ≤ α
   II = β₁ α α₀
 
-least-element-unique' : {A : ℕ → 𝓤 ̇}
+least-element-unique' : {A : ℕ → 𝓤 ̇ }
                       → (σ : is-complemented A)
                       → (x y : ℕ)
                       → (δ : Σ A)
@@ -653,21 +653,21 @@ upper bound k
 
 \begin{code}
 
-maximal-element : (A : ℕ → 𝓤 ̇) → (k : ℕ) → 𝓤 ̇
+maximal-element : (A : ℕ → 𝓤 ̇ ) → (k : ℕ) → 𝓤 ̇
 maximal-element A k
  = Σ m ꞉ ℕ , (m < k × A m × ((n : ℕ) → n < k → A n → n ≤ m))
 
-maximal-element' : (A : ℕ → 𝓤 ̇) → (k : ℕ) → 𝓤 ̇
+maximal-element' : (A : ℕ → 𝓤 ̇ ) → (k : ℕ) → 𝓤 ̇
 maximal-element' A k
  = Σ m ꞉ ℕ , (m ≤ k × A m × ((n : ℕ) → n ≤ k → A n → n ≤ m))
 
-no-maximal-element : (A : ℕ → 𝓤 ̇) → (k : ℕ) → 𝓤 ̇
+no-maximal-element : (A : ℕ → 𝓤 ̇ ) → (k : ℕ) → 𝓤 ̇
 no-maximal-element A k = (n : ℕ) → A n → n ≥ k
 
-no-maximal-element' : (A : ℕ → 𝓤 ̇) → (k : ℕ) → 𝓤 ̇
+no-maximal-element' : (A : ℕ → 𝓤 ̇ ) → (k : ℕ) → 𝓤 ̇
 no-maximal-element' A k = (n : ℕ) → A n → k < n
 
-bounded-maximisation : (A : ℕ → 𝓤 ̇)
+bounded-maximisation : (A : ℕ → 𝓤 ̇ )
                      → is-complemented A
                      → (k : ℕ)
                      → maximal-element A k + no-maximal-element A k
@@ -714,13 +714,13 @@ We can use the above result to prove the same statement for inclusive order.
 
 \begin{code}
 
-bounded-maximisation' : (A : ℕ → 𝓤 ̇)
+bounded-maximisation' : (A : ℕ → 𝓤 ̇ )
                       → is-complemented A
                       → (k : ℕ)
                       → maximal-element' A k + no-maximal-element' A k
 bounded-maximisation' A δ k = bounded-maximisation A δ (succ k)
 
-no-maximal-lemma : (A : ℕ → 𝓤 ̇)
+no-maximal-lemma : (A : ℕ → 𝓤 ̇ )
                  → (k : ℕ)
                  → no-maximal-element A k
                  → ¬ maximal-element A k
@@ -740,7 +740,7 @@ which the property holds. Of course, we must provide an upper bound.
 
 \begin{code}
 
-maximal-from-given : (A : ℕ → 𝓤 ̇)
+maximal-from-given : (A : ℕ → 𝓤 ̇ )
                    → (b : ℕ)
                    → is-complemented A
                    → Σ k ꞉ ℕ , A k × k < b
@@ -759,7 +759,7 @@ maximal-from-given A b δ (k , Ak , l) = Cases (bounded-maximisation A δ b) γ�
     β : b < b
     β = ≤-<-trans b k b α l
 
-maximal-from-given' : (A : ℕ → 𝓤 ̇)
+maximal-from-given' : (A : ℕ → 𝓤 ̇ )
                     → (b : ℕ)
                     → is-complemented A
                     → Σ k ꞉ ℕ , A k × k ≤ b

@@ -328,7 +328,7 @@ the equivalence Kₛ ≃ K, to produce a small compact basis.
     ; ↓ᴮ-is-sup = λ x → reindexed-family-sup 𝓓 (↓-resizing x)
                                                (↓ᴷ-inclusion x) x
                                                (↓ᴷ-is-sup is-alg x)
-    }
+   }
 
 \end{code}
 

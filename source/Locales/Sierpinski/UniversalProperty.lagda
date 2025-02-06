@@ -246,7 +246,7 @@ We now proceed to prove that it preserves the joins.
   open ScottLocaleProperties 𝕊𝓓 𝕊𝓓-has-least hscb pe
 
   ϑ : (𝔖 : Fam 𝓤 ⟨ 𝒪 𝕊 ⟩) → (h (⋁[ 𝒪 𝕊 ] 𝔖) is-lub-of ⁅ h 𝔘 ∣ 𝔘 ε 𝔖 ⁆) holds
-  ϑ 𝔖 = ϑ₁ , λ { (V , υ) → ϑ₂ V υ }
+  ϑ 𝔖 = ϑ₁ , λ { (V , υ) → ϑ₂ V υ}
    where
     ϑ₁ : (h (⋁[ 𝒪 𝕊 ] 𝔖) is-an-upper-bound-of ⁅ h 𝔘 ∣ 𝔘 ε 𝔖 ⁆) holds
     ϑ₁ i = 𝓂 (𝔖 [ i ] , ⋁[ 𝒪 𝕊 ] 𝔖) (⋁[ 𝒪 𝕊 ]-upper 𝔖 i)

@@ -179,7 +179,7 @@ Added 3 July 2024 (but known much earlier of course).
  𝓛-DCPO-is-locally-small : is-locally-small 𝓓 → is-locally-small 𝓛-DCPO
  𝓛-DCPO-is-locally-small ls =
   record { _⊑ₛ_ = _≼_ ;
-           ⊑ₛ-≃-⊑ = Σ-cong (λ f → Π-cong fe fe (λ p → ⊑ₛ-≃-⊑)) }
+           ⊑ₛ-≃-⊑ = Σ-cong (λ f → Π-cong fe fe (λ p → ⊑ₛ-≃-⊑))}
   where
    open is-locally-small ls
    _≼_ : 𝓛D → 𝓛D → 𝓥 ̇

@@ -51,7 +51,7 @@ we call `str₁` and `str₂`.
 \begin{code}
 
 module SIP-For-Distributive-Lattices
-        {A : 𝓤  ̇}
+        {A : 𝓤  ̇ }
         (str₁ str₂ : Distributive-Lattice-Structure A)
        where
 
@@ -288,7 +288,7 @@ distributive-lattice-sns-data {𝓤} = ι , ρ , θ
   ρ : (L : Distributive-Lattice₀ 𝓤) → ι L L (≃-refl sip.⟨ L ⟩)
   ρ L = (λ _ → id) , (λ _ → id)
 
-  θ : {X : 𝓤  ̇}
+  θ : {X : 𝓤  ̇ }
     → (str₁ str₂ : Distributive-Lattice-Structure X)
     → is-equiv (canonical-map ι ρ str₁ str₂)
   θ {X} str₁ str₂ = (homomorphic-equivalence-gives-structural-equality , †)
@@ -380,16 +380,16 @@ characterization-of-distributive-lattice-＝ {𝓤} K L =
   Ⅳ = isomorphismᵈᵣ-is-equivalent-to-isomorphism₀ K L
 
   𝔰 : K ＝ L → K₀ ＝ L₀
-  𝔰 = λ { refl → refl }
+  𝔰 = λ { refl → refl}
 
   𝔯 : K₀ ＝ L₀ → K ＝ L
-  𝔯 = λ { refl → refl }
+  𝔯 = λ { refl → refl}
 
   † : (𝔯 ∘ 𝔰) ∼ id
-  † = (λ { refl → refl })
+  † = (λ { refl → refl})
 
   ‡ : (𝔰 ∘ 𝔯) ∼ id
-  ‡ = (λ { refl → refl })
+  ‡ = (λ { refl → refl})
 
   goal : (K ＝ L) ≃ (K₀ ＝ L₀)
   goal = 𝔰 , qinvs-are-equivs 𝔰 (𝔯 , † , ‡)

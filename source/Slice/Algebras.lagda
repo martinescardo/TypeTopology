@@ -86,7 +86,7 @@ law₁ (∐ , κ , ι) = ι
   s : 𝓕 X → X
   s (I , f) = ∐ f
   assoc : s ∘ μ ∼ s ∘ 𝓕̇ s
-  assoc (I , g) = ι I (pr₁ ∘ g) λ { (i , j) → pr₂ (g i) j }
+  assoc (I , g) = ι I (pr₁ ∘ g) λ { (i , j) → pr₂ (g i) j}
 
 𝓕-alg-charac : {X : 𝓤 ̇ } → 𝓕-algebra X ≃ 𝓕-alg X
 𝓕-alg-charac = qinveq 𝓕-algebra-gives-alg (𝓕-alg-gives-algebra , ((λ _ → refl) , (λ _ → refl)))

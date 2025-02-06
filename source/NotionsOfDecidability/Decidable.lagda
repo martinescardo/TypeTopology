@@ -309,7 +309,7 @@ module _ (pt : propositional-truncations-exist) where
 
  open PropositionalTruncation pt
 
- decidable-inhabited-types-are-pointed : {X : 𝓤 ̇} → ∥ X ∥ → is-decidable X → X
+ decidable-inhabited-types-are-pointed : {X : 𝓤 ̇ } → ∥ X ∥ → is-decidable X → X
  decidable-inhabited-types-are-pointed ∣x∣ (inl x)  = x
  decidable-inhabited-types-are-pointed ∣x∣ (inr ¬x) =
   𝟘-elim (∥∥-rec 𝟘-is-prop ¬x ∣x∣)
@@ -324,7 +324,7 @@ and it has split support.
 
 \begin{code}
 
-∥_∥⟨_⟩ : (X : 𝓤 ̇) → is-decidable X → 𝓤₀ ̇
+∥_∥⟨_⟩ : (X : 𝓤 ̇ ) → is-decidable X → 𝓤₀ ̇
 ∥ X ∥⟨ inl x ⟩ = 𝟙
 ∥ X ∥⟨ inr ν ⟩ = 𝟘
 
@@ -374,10 +374,10 @@ But the induction equation does.
           → (X → A) → ∥ X ∥⟨ δ ⟩ → A
 ∥∥⟨ δ ⟩-rec {A} = ∥∥⟨ δ ⟩-induction (λ _ → A)
 
-∣∣⟨_⟩-exit : {X : 𝓤 ̇} (δ : is-decidable X) → ∥ X ∥⟨ δ ⟩ → X
+∣∣⟨_⟩-exit : {X : 𝓤 ̇ } (δ : is-decidable X) → ∥ X ∥⟨ δ ⟩ → X
 ∣∣⟨ δ ⟩-exit = ∥∥⟨ δ ⟩-rec id
 
-∣∣⟨_⟩-exit-is-section : {X : 𝓤 ̇} (δ : is-decidable X) (s : ∥ X ∥⟨ δ ⟩)
+∣∣⟨_⟩-exit-is-section : {X : 𝓤 ̇ } (δ : is-decidable X) (s : ∥ X ∥⟨ δ ⟩)
                      → ∣ ∣∣⟨ δ ⟩-exit s ∣⟨ δ ⟩ ＝ s
 ∣∣⟨ inl x ⟩-exit-is-section ⋆ = refl
 ∣∣⟨ inr ν ⟩-exit-is-section s = 𝟘-elim s

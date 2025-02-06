@@ -94,7 +94,7 @@ We now construct the distributive lattice of compact opens.
    ; ∨-idempotent    = ι
    ; ∨-absorptive    = μ
    ; distributivityᵈ = ν
-   }
+  }
     where
      open OperationsOnCompactOpens X σ
 

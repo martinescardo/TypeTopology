@@ -124,7 +124,7 @@ conclusion.
 
 \begin{code}
 
-simple-type₂-injective-gives-WEM : (X : 𝓤₀ ̇)
+simple-type₂-injective-gives-WEM : (X : 𝓤₀ ̇ )
                                  → simple-type₂ X
                                  → ainjective-type X 𝓤 𝓤
                                  → typal-WEM 𝓤
@@ -412,7 +412,7 @@ In particular, we have the following.
 
 non-trivial-apartness-on-universe-gives-WEM
  : is-univalent 𝓤
- → Nontrivial-Apartness (𝓤 ̇) 𝓥
+ → Nontrivial-Apartness (𝓤 ̇ ) 𝓥
  → typal-WEM 𝓤
 non-trivial-apartness-on-universe-gives-WEM {𝓤} {𝓥} ua =
  ainjective-type-with-non-trivial-apartness-gives-WEM {𝓤 ⁺} {𝓤} {𝓤}

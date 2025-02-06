@@ -267,7 +267,7 @@ large-set-quotients =
   ; /-universality = λ {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } (≋ : EqRel {𝓤} {𝓥} X)
                        {𝓦 : Universe} {Y : 𝓦 ̇ }
                    → large-quotient.universal-property X ≋ Y
-  }
+ }
 
 large-effective-set-quotients : are-effective large-set-quotients
 large-effective-set-quotients {𝓤} {𝓥} {X} ≋ {x} {y} =

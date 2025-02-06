@@ -14,7 +14,7 @@ open PropositionalTruncation pt
 
 open import MLTT.Spartan
 
-data Vec (X : 𝓤₀ ̇) : ℕ → 𝓤₀ ̇ where
+data Vec (X : 𝓤₀ ̇ ) : ℕ → 𝓤₀ ̇ where
  ⟨⟩  : Vec X zero
  _’_ : {n : ℕ} → Vec X n → X → Vec X (succ n)
 

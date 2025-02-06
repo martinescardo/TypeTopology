@@ -257,7 +257,7 @@ embedding'-gives-embedding {𝓤} {𝓥} {X} {Y} f ise = g
   g y = left-cancellable-reflects-is-prop
          ⌜ fiber-lemma f y ⌝
          (section-lc _
-           (equivs-are-sections _ (⌜⌝-is-equiv (fiber-lemma f y ))))
+           (equivs-are-sections _ (⌜⌝-is-equiv (fiber-lemma f y))))
          (g' y)
 
 pr₁-is-embedding : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
@@ -379,7 +379,7 @@ factor-is-embedding {𝓤} {𝓥} {𝓦} {X} {Y} {Z} f g i j = γ
   γ = embedding-criterion' f c
 
 is-essential : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → (𝓦 : Universe) → 𝓤 ⊔ 𝓥 ⊔ (𝓦 ⁺) ̇
-is-essential f 𝓦 = (Z : 𝓦 ̇) (g : codomain f → Z)
+is-essential f 𝓦 = (Z : 𝓦 ̇ ) (g : codomain f → Z)
                  → is-embedding (g ∘ f)
                  → is-embedding g
 
@@ -484,8 +484,8 @@ maps-of-props-are-embeddings : {P : 𝓤 ̇ } {Q : 𝓥 ̇ } (f : P → Q)
 maps-of-props-are-embeddings f i j =
  maps-of-props-into-sets-are-embeddings f i (props-are-sets j)
 
-×-is-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } {B : 𝓣 ̇ }
-                 (f : X → A ) (g : Y → B)
+×-is-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇} {A : 𝓦 ̇ } {B : 𝓣 ̇ }
+                 (f : X → A) (g : Y → B)
                → is-embedding f
                → is-embedding g
                → is-embedding (λ ((x , y) : X × Y) → (f x , g y))

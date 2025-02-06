@@ -148,7 +148,7 @@ singleton'-center x = (x , refl)
 ×-prop-criterion-necessity : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                            → is-prop (X × Y)
                            → (Y → is-prop X) × (X → is-prop Y)
-×-prop-criterion-necessity i = (λ y x x' → ap pr₁ (i (x , y) (x' , y ))) ,
+×-prop-criterion-necessity i = (λ y x x' → ap pr₁ (i (x , y) (x' , y))) ,
                                (λ x y y' → ap pr₂ (i (x , y) (x  , y')))
 
 ×-prop-criterion : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }

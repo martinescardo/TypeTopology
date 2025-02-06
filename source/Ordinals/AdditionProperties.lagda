@@ -744,7 +744,7 @@ succ-not-necessarily-monotone : ((α β : Ordinal 𝓤)
                               → typal-WEM 𝓤
 succ-not-necessarily-monotone {𝓤} ϕ = XII
  where
-  module _ (P : 𝓤 ̇) (isp : is-prop P) where
+  module _ (P : 𝓤 ̇ ) (isp : is-prop P) where
    α : Ordinal 𝓤
    α = prop-ordinal P isp
 

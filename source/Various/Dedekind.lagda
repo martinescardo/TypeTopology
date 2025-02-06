@@ -1915,7 +1915,7 @@ We also consider the following notion of locator for families:
   where
    γ : (Σ i ꞉ 𝐼 , p < x i) + (Π i ꞉ 𝐼 , x i < q)
    γ = compact-gives-Σ+Π 𝐼
-        (λ i → p < x i ) (λ i → x i < q)
+        (λ i → p < x i) (λ i → x i < q)
         (compact∙-types-are-compact κ)
         (λ i → ℓ i p q l)
 

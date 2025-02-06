@@ -930,7 +930,7 @@ is-zero-dimensional {𝓦 = 𝓦} F = ∥ zero-dimensionalᴰ F ∥Ω
 basis-of-zero-dimensional-frame : (F : Frame 𝓤 𝓥 𝓦)
                                 → (is-zero-dimensional F ⇒ has-basis F) holds
 basis-of-zero-dimensional-frame F =
- ∥∥-rec (holds-is-prop (has-basis F)) λ { (ℬ , (δ , _) , _) → ∣ ℬ , δ ∣ }
+ ∥∥-rec (holds-is-prop (has-basis F)) λ { (ℬ , (δ , _) , _) → ∣ ℬ , δ ∣}
 
 \end{code}
 
@@ -1564,7 +1564,7 @@ stone-locales-are-spectral F σ@(κ , ζ) =
         where
          ρ₁ = ∧[ F ]-lower₁ (ℬ [ i ]) (ℬ [ j ])
          ρ₂ = ∧[ F ]-lower₂ (ℬ [ i ]) (ℬ [ j ])
-         ρ₃ = λ { (z , p , q) → ∧[ F ]-greatest (ℬ [ i ]) (ℬ [ j ]) z p q }
+         ρ₃ = λ { (z , p , q) → ∧[ F ]-greatest (ℬ [ i ]) (ℬ [ j ]) z p q}
 
          ‡₃ : ((ℬ [ k ]) is-glb-of (ℬ [ i ] , ℬ [ j ])) holds
          ‡₃ = transport
@@ -2447,12 +2447,12 @@ module SpectralityOfTheInitialFrame (𝓤 : Universe) (pe : propext 𝓤) where
  and₂-lemma₁ : (x y : 𝟚 𝓤) → (ℬ𝟎 [ and₂ x y ] ≤[ poset-of (𝟎-𝔽𝕣𝕞 pe) ] ℬ𝟎 [ x ]) holds
  and₂-lemma₁ (inl ⋆) y       = λ ()
  and₂-lemma₁ (inr ⋆) (inl ⋆) = λ ()
- and₂-lemma₁ (inr ⋆) (inr ⋆) = λ { ⋆ → ⋆ }
+ and₂-lemma₁ (inr ⋆) (inr ⋆) = λ { ⋆ → ⋆}
 
  and₂-lemma₂ : (x y : 𝟚 𝓤) → (ℬ𝟎 [ and₂ x y ] ≤[ poset-of (𝟎-𝔽𝕣𝕞 pe) ] ℬ𝟎 [ y ]) holds
  and₂-lemma₂ (inl ⋆) y       = λ ()
  and₂-lemma₂ (inr ⋆) (inl ⋆) = λ ()
- and₂-lemma₂ (inr ⋆) (inr ⋆) = λ { ⋆ → ⋆ }
+ and₂-lemma₂ (inr ⋆) (inr ⋆) = λ { ⋆ → ⋆}
 
  open Meets (λ x y → x ≤[ poset-of (𝟎-𝔽𝕣𝕞 pe) ] y) hiding (is-top)
 
