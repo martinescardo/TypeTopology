@@ -449,10 +449,10 @@ open import UF.Sets-Properties
   I refl = refl , I₀
    where
     I₀ : (p q : x ＝ ∞) → f p ＝ f q
-    I₀ refl q = ap f (ℕ∞-is-set fe refl q)
+    I₀ p q = ap f (ℕ∞-is-set fe p q)
 
   II : (x ＝ y) × ((p : x ＝ ∞) (q : y ＝ ∞) → f p ＝ g q) → (x , f) ＝ (y , g)
-  II (refl , ϕ) = ap (x ,_) (dfunext fe (λ p → ϕ p p))
+  II (refl , ϕ) = ap (x ,_) (dfunext fe (λ r → ϕ r r))
 
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
