@@ -37,7 +37,7 @@ n-many ones followed by a zero and then β.
 
 \begin{code}
 
-ϕ : ℕ → Cantor → Cantor
+ϕ : ℕ → 𝟚ᴺ → 𝟚ᴺ
 ϕ 0        β = ₀ ∷ β
 ϕ (succ n) β = ₁ ∷ ϕ n β
 
@@ -47,11 +47,11 @@ We will need the following two properties of the map ϕ.
 
 \begin{code}
 
-ϕ-property-δ : (β : Cantor) (i : ℕ) → ϕ i β i ≠ ₁
+ϕ-property-δ : (β : 𝟚ᴺ) (i : ℕ) → ϕ i β i ≠ ₁
 ϕ-property-δ β 0        = zero-is-not-one
 ϕ-property-δ β (succ i) = ϕ-property-δ β i
 
-ϕ-property-μ : (β : Cantor) (n i : ℕ) → ϕ n β i ≠ ₁ → n ≤ i
+ϕ-property-μ : (β : 𝟚ᴺ) (n i : ℕ) → ϕ n β i ≠ ₁ → n ≤ i
 ϕ-property-μ β 0        i        ν = zero-least i
 ϕ-property-μ β (succ n) 0        ν = ν refl
 ϕ-property-μ β (succ n) (succ i) ν = ϕ-property-μ β n i ν
@@ -63,7 +63,7 @@ beginning of the sequence α.
 
 \begin{code}
 
-ψ : ℕ → Cantor → Cantor
+ψ : ℕ → 𝟚ᴺ → 𝟚ᴺ
 ψ 0        α = tail α
 ψ (succ n) α = ψ n (tail α)
 
@@ -76,7 +76,7 @@ The function ψ n is a left inverse of the function ϕ n.
 ψϕ : (n : ℕ) → ψ n ∘ ϕ n ∼ id
 ψϕ n α = dfunext fe (h n α)
  where
-  h : (n : ℕ) (α : Cantor) → ψ n (ϕ n α) ∼ α
+  h : (n : ℕ) (α : 𝟚ᴺ) → ψ n (ϕ n α) ∼ α
   h 0        = tail-cons' ₀
   h (succ n) = h n
 
@@ -92,12 +92,12 @@ in the module Cantor.
 
 \begin{code}
 
-ϕψ : (α : Cantor)
+ϕψ : (α : 𝟚ᴺ)
      ((n , δ , μ) : α ♯ 𝟏)
    → ϕ n (ψ n α) ＝ α
 ϕψ α (n , δ , μ) = dfunext fe (h n α δ μ)
  where
-  h : (n : ℕ) (α : Cantor)
+  h : (n : ℕ) (α : 𝟚ᴺ)
     → α n ≠ ₁
     → ((i : ℕ) → α i ≠ ₁ → n ≤ i)
     → ϕ n (ψ n α) ∼ α
@@ -118,19 +118,19 @@ in the module Cantor.
 \end{code}
 
 With the above we have all ingredients needed to characterize the
-Cantor type with the point 𝟏 removed as the type ℕ × Cantor.
+Cantor type with the point 𝟏 removed as the type ℕ × 𝟚ᴺ.
 
 \begin{code}
 
-Cantor-minus-𝟏-≃ : (Σ α ꞉ Cantor , α ♯ 𝟏) ≃ (ℕ × Cantor)
+Cantor-minus-𝟏-≃ : (Σ α ꞉ 𝟚ᴺ , α ♯ 𝟏) ≃ (ℕ × 𝟚ᴺ)
 Cantor-minus-𝟏-≃ = qinveq f (g , gf , fg)
  where
-  Cantor⁻ = Σ α ꞉ Cantor , α ♯ 𝟏
+  Cantor⁻ = Σ α ꞉ 𝟚ᴺ , α ♯ 𝟏
 
-  f : Cantor⁻ → ℕ × Cantor
+  f : Cantor⁻ → ℕ × 𝟚ᴺ
   f (α , i , δ , m) = i , ψ i α
 
-  g : (ℕ × Cantor) → Cantor⁻
+  g : (ℕ × 𝟚ᴺ) → Cantor⁻
   g (n , β) = ϕ n β , n , ϕ-property-δ β n , ϕ-property-μ β n
 
   gf : g ∘ f ∼ id
@@ -152,6 +152,6 @@ to β, as proved in the module Cantor.
 
 TODO. Use this to conclude, as a corollary, that
 
- (Σ α ꞉ Cantor , α ♯ γ) ≃ (ℕ × Cantor)
+ (Σ α ꞉ 𝟚ᴺ , α ♯ γ) ≃ (ℕ × 𝟚ᴺ)
 
 for any point γ.

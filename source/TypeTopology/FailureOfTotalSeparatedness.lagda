@@ -310,7 +310,7 @@ open import UF.Equiv
 
 open import TypeTopology.Cantor
 
-weakly-isolated-point-of-Cantor-gives-WLPO : (α : Cantor)
+weakly-isolated-point-of-Cantor-gives-WLPO : (α : 𝟚ᴺ)
                                            → is-weakly-isolated α
                                            → WLPO
 weakly-isolated-point-of-Cantor-gives-WLPO = III
@@ -322,7 +322,7 @@ weakly-isolated-point-of-Cantor-gives-WLPO = III
            (λ (e : ¬ (α ≠ 𝟏))
                  → inl (λ n → happly (Cantor-is-¬¬-separated fe₀ α 𝟏 e) n))
 
-  II : (α : Cantor) → is-weakly-isolated α → WLPO-traditional
+  II : (α : 𝟚ᴺ) → is-weakly-isolated α → WLPO-traditional
   II α i = I b
    where
     a : is-weakly-isolated (⌜ Cantor-swap-≃ fe₀ α 𝟏 ⌝ α)
@@ -331,7 +331,7 @@ weakly-isolated-point-of-Cantor-gives-WLPO = III
     b : is-weakly-isolated 𝟏
     b = transport is-weakly-isolated (Cantor-swap-swaps fe₀ α 𝟏) a
 
-  III : (α : Cantor) → is-weakly-isolated α → WLPO
+  III : (α : 𝟚ᴺ) → is-weakly-isolated α → WLPO
   III α i = WLPO-traditional-gives-WLPO fe₀ (II α i)
 
 module examples-of-non-weakly-isolated-points (nwlpo : ¬ WLPO) where
@@ -346,17 +346,17 @@ module examples-of-non-weakly-isolated-points (nwlpo : ¬ WLPO) where
    (isolated-gives-weakly-isolated ∞)
    ∞-is-not-weakly-isolated
 
- Cantor-has-no-weakly-isolated-points : (α : Cantor) → ¬ is-weakly-isolated α
+ Cantor-has-no-weakly-isolated-points : (α : 𝟚ᴺ) → ¬ is-weakly-isolated α
  Cantor-has-no-weakly-isolated-points α =
   contrapositive (weakly-isolated-point-of-Cantor-gives-WLPO α) nwlpo
 
- Cantor-has-no-isolated-points : (α : Cantor) → ¬ is-isolated α
+ Cantor-has-no-isolated-points : (α : 𝟚ᴺ) → ¬ is-isolated α
  Cantor-has-no-isolated-points α =
   contrapositive
    (isolated-gives-weakly-isolated α)
    (Cantor-has-no-weakly-isolated-points α)
 
- Cantor-is-perfect : is-perfect Cantor
+ Cantor-is-perfect : is-perfect 𝟚ᴺ
  Cantor-is-perfect (α , i) = Cantor-has-no-isolated-points α i
 
 \end{code}
@@ -372,7 +372,7 @@ open import TypeTopology.LimitPoints
 ∞-is-a-limit-point⁺-of-ℕ∞ = ∞-is-weakly-isolated-gives-WLPO
 
 every-point-of-the-Cantor-type-is-a-limit-point⁺
- : (α : Cantor) → is-limit-point⁺ α
+ : (α : 𝟚ᴺ) → is-limit-point⁺ α
 every-point-of-the-Cantor-type-is-a-limit-point⁺ =
  weakly-isolated-point-of-Cantor-gives-WLPO
 
@@ -480,7 +480,7 @@ open import UF.Subsingletons-FunExt
 
 \end{code}
 
-Theorem  ℕ∞₂-equality-non-dependent above suggests to define a tentative
+Theorem ℕ∞₂-equality-non-dependent above suggests to define a tentative
 apartness relation on ℕ∞₂ by
 
  u ♯ v := (α ♯ β) + (Σ p ꞉ x ＝ ∞ , Σ q ꞉ y ＝ ∞ , f p ≠ g q).

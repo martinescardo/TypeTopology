@@ -96,7 +96,7 @@ module failed-attempt where
   where
    module _ (x : ℕ∞) where
 
-    α : Cantor
+    α : 𝟚ᴺ
     α = ι x
 
     u : ℕ∞₂

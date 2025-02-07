@@ -24,9 +24,16 @@ open import UF.Subsingletons-FunExt
 
 module TypeTopology.Cantor where
 
-Cantor = ℕ → 𝟚
+\end{code}
 
-Cantor-is-set : funext₀ → is-set Cantor
+The Cantor type 𝟚ᴺ.
+
+\begin{code}
+
+𝟚ᴺ : 𝓤₀ ̇
+𝟚ᴺ = ℕ → 𝟚
+
+Cantor-is-set : funext₀ → is-set 𝟚ᴺ
 Cantor-is-set fe = Π-is-set fe (λ _ → 𝟚-is-set)
 
 \end{code}
@@ -37,10 +44,10 @@ The constant sequences:
 
 \begin{code}
 
-𝟎 : Cantor
+𝟎 : 𝟚ᴺ
 𝟎 = (i ↦ ₀)
 
-𝟏 : Cantor
+𝟏 : 𝟚ᴺ
 𝟏 = (i ↦ ₁)
 
 \end{code}
@@ -49,36 +56,36 @@ Cons, head and tail.
 
 \begin{code}
 
-head : Cantor → 𝟚
+head : 𝟚ᴺ → 𝟚
 head α = α 0
 
-tail : Cantor → Cantor
+tail : 𝟚ᴺ → 𝟚ᴺ
 tail α = α ∘ succ
 
-cons : 𝟚 → Cantor → Cantor
+cons : 𝟚 → 𝟚ᴺ → 𝟚ᴺ
 cons n α 0        = n
 cons n α (succ i) = α i
 
-_∷_ : 𝟚 → Cantor → Cantor
+_∷_ : 𝟚 → 𝟚ᴺ → 𝟚ᴺ
 _∷_ = cons
 
-cons-∼ : {x : 𝟚} {α β : Cantor} → α ∼ β → x ∷ α ∼ x ∷ β
+cons-∼ : {x : 𝟚} {α β : 𝟚ᴺ} → α ∼ β → x ∷ α ∼ x ∷ β
 cons-∼ h 0        = refl
 cons-∼ h (succ i) = h i
 
-∼-cons : {x y : 𝟚} {α : Cantor} → x ＝ y → x ∷ α ∼ y ∷ α
+∼-cons : {x y : 𝟚} {α : 𝟚ᴺ} → x ＝ y → x ∷ α ∼ y ∷ α
 ∼-cons refl = ∼-refl
 
-head-cons : (n : 𝟚) (α : Cantor) → head (cons n α) ＝ n
+head-cons : (n : 𝟚) (α : 𝟚ᴺ) → head (cons n α) ＝ n
 head-cons n α = refl
 
-tail-cons : (n : 𝟚) (α : Cantor) → tail (cons n α) ＝ α
+tail-cons : (n : 𝟚) (α : 𝟚ᴺ) → tail (cons n α) ＝ α
 tail-cons n α = refl
 
-tail-cons' : (n : 𝟚) (α : Cantor) → tail (cons n α) ∼ α
+tail-cons' : (n : 𝟚) (α : 𝟚ᴺ) → tail (cons n α) ∼ α
 tail-cons' n α i = refl
 
-cons-head-tail : (α : Cantor) → α ∼ cons (head α) (tail α)
+cons-head-tail : (α : 𝟚ᴺ) → α ∼ cons (head α) (tail α)
 cons-head-tail α 0        = refl
 cons-head-tail α (succ i) = refl
 
@@ -89,25 +96,25 @@ written α ＝⟦ n ⟧ β.
 
 \begin{code}
 
-_＝⟦_⟧_ : Cantor → ℕ → Cantor → 𝓤₀ ̇
+_＝⟦_⟧_ : 𝟚ᴺ → ℕ → 𝟚ᴺ → 𝓤₀ ̇
 α ＝⟦ 0      ⟧ β = 𝟙
 α ＝⟦ succ n ⟧ β = (head α ＝ head β) × (tail α ＝⟦ n ⟧ tail β)
 
-＝⟦⟧-refl : (α : Cantor) (k : ℕ) → α ＝⟦ k ⟧ α
+＝⟦⟧-refl : (α : 𝟚ᴺ) (k : ℕ) → α ＝⟦ k ⟧ α
 ＝⟦⟧-refl α 0 = ⋆
 ＝⟦⟧-refl α (succ k) = refl , ＝⟦⟧-refl (tail α) k
 
-＝⟦⟧-trans : (α β γ : Cantor) (k : ℕ) → α ＝⟦ k ⟧ β → β ＝⟦ k ⟧ γ → α ＝⟦ k ⟧ γ
+＝⟦⟧-trans : (α β γ : 𝟚ᴺ) (k : ℕ) → α ＝⟦ k ⟧ β → β ＝⟦ k ⟧ γ → α ＝⟦ k ⟧ γ
 ＝⟦⟧-trans α β γ 0 d e = ⋆
 ＝⟦⟧-trans α β γ (succ k) (h , t) (h' , t') =
  (h ∙ h') ,
  ＝⟦⟧-trans (tail α) (tail β) (tail γ) k t t'
 
-＝⟦⟧-sym : (α β : Cantor) (k : ℕ) → α ＝⟦ k ⟧ β → β ＝⟦ k ⟧ α
+＝⟦⟧-sym : (α β : 𝟚ᴺ) (k : ℕ) → α ＝⟦ k ⟧ β → β ＝⟦ k ⟧ α
 ＝⟦⟧-sym α β 0        ⋆       = ⋆
 ＝⟦⟧-sym α β (succ k) (h , t) = (h ⁻¹) , ＝⟦⟧-sym (tail α) (tail β) k t
 
-＝⟦⟧-is-decidable : (α β : Cantor) (k : ℕ) → is-decidable (α ＝⟦ k ⟧ β)
+＝⟦⟧-is-decidable : (α β : 𝟚ᴺ) (k : ℕ) → is-decidable (α ＝⟦ k ⟧ β)
 ＝⟦⟧-is-decidable α β 0        = inl ⋆
 ＝⟦⟧-is-decidable α β (succ k) =
  Cases (𝟚-is-discrete (head α) (head β))
@@ -124,7 +131,7 @@ We have that (α ＝⟦ n ⟧ β) iff α k ＝ β k for all k < n:
 
 \begin{code}
 
-agreement→ : (α β : Cantor)
+agreement→ : (α β : 𝟚ᴺ)
              (n : ℕ)
            → (α ＝⟦ n ⟧ β)
            → ((k : ℕ) → k < n → α k ＝ β k)
@@ -135,7 +142,7 @@ agreement→ α β (succ n) (p , e) (succ k) l = IH k l
   IH : (k : ℕ) → k < n → α (succ k) ＝ β (succ k)
   IH = agreement→ (tail α) (tail β) n e
 
-agreement← : (α β : Cantor)
+agreement← : (α β : 𝟚ᴺ)
              (n : ℕ)
            → ((k : ℕ) → k < n → α k ＝ β k)
            → (α ＝⟦ n ⟧ β)
@@ -144,15 +151,15 @@ agreement← α β (succ n) ϕ = ϕ 0 ⋆ , agreement← (tail α) (tail β) n (
 
 \end{code}
 
-A function Cantor → 𝟚 is uniformly continuous if it has a modulus
+A function 𝟚ᴺ → 𝟚 is uniformly continuous if it has a modulus
 of continuity:
 
 \begin{code}
 
-_is-a-modulus-of-uniform-continuity-of_ : ℕ → (Cantor → 𝟚) → 𝓤₀ ̇
+_is-a-modulus-of-uniform-continuity-of_ : ℕ → (𝟚ᴺ → 𝟚) → 𝓤₀ ̇
 m is-a-modulus-of-uniform-continuity-of p = ∀ α β → α ＝⟦ m ⟧ β → p α ＝ p β
 
-uniformly-continuous : (Cantor → 𝟚) → 𝓤₀ ̇
+uniformly-continuous : (𝟚ᴺ → 𝟚) → 𝓤₀ ̇
 uniformly-continuous p = Σ m ꞉ ℕ , m is-a-modulus-of-uniform-continuity-of p
 
 uniform-continuity-data = uniformly-continuous
@@ -165,14 +172,14 @@ also a modulus.
 
 TODO. Show that
 
- (Σ p ꞉ (Cantor  → 𝟚) , uniformly-continuous p) ≃ (Σ n ꞉ ℕ , Fin (2 ^ n) → 𝟚)
+ (Σ p ꞉ (𝟚ᴺ  → 𝟚) , uniformly-continuous p) ≃ (Σ n ꞉ ℕ , Fin (2 ^ n) → 𝟚)
 
 If we define uniform continuity with ∃ rather than Σ, this is no
 longer the case.
 
 \begin{code}
 
-continuous : (Cantor → 𝟚) → 𝓤₀ ̇
+continuous : (𝟚ᴺ → 𝟚) → 𝓤₀ ̇
 continuous p = ∀ α → Σ m ꞉ ℕ , (∀ β → α ＝⟦ m ⟧ β → p α ＝ p β)
 
 continuity-data = continuous
@@ -185,16 +192,16 @@ module notions-of-continuity (pt : propositional-truncations-exist) where
 
  open PropositionalTruncation pt
 
- is-uniformly-continuous : (Cantor → 𝟚) → 𝓤₀ ̇
+ is-uniformly-continuous : (𝟚ᴺ → 𝟚) → 𝓤₀ ̇
  is-uniformly-continuous p = ∃ m ꞉ ℕ , m is-a-modulus-of-uniform-continuity-of p
 
- is-continuous : (Cantor → 𝟚) → 𝓤₀ ̇
+ is-continuous : (𝟚ᴺ → 𝟚) → 𝓤₀ ̇
  is-continuous p = ∀ α → ∃ m ꞉ ℕ , (∀ β → α ＝⟦ m ⟧ β → p α ＝ p β)
 
 \end{code}
 
 We now define the canonical apartness relation _♯_ for points of the
-Cantor type. Two sequences are apart if they differ at some index.
+𝟚ᴺ type. Two sequences are apart if they differ at some index.
 
 To make apartness into a proposition, which is crucial for our
 purposes, we consider the minimal index at which they differ. This
@@ -206,7 +213,7 @@ not in the realm of pure Martin-Löf type theory.
 
 open Apartness
 
-_♯_ : Cantor → Cantor → 𝓤₀ ̇
+_♯_ : 𝟚ᴺ → 𝟚ᴺ → 𝓤₀ ̇
 α ♯ β = Σ n ꞉ ℕ , (α n ≠ β n)
                 × ((i : ℕ) → α i ≠ β i → n ≤ i)
 
@@ -219,13 +226,13 @@ We also use the letter "a" to range over the apartness type α ♯ β.
 
 \begin{code}
 
-apartness-criterion : (α β : Cantor) → (Σ n ꞉ ℕ , α n ≠ β n) → α ♯ β
+apartness-criterion : (α β : 𝟚ᴺ) → (Σ n ꞉ ℕ , α n ≠ β n) → α ♯ β
 apartness-criterion α β = minimal-witness
                            (λ n → α n ≠ β n)
                            (λ n → ¬-preserves-decidability
                                    (𝟚-is-discrete (α n) (β n)))
 
-apartness-criterion-converse : (α β : Cantor) → α ♯ β → (Σ n ꞉ ℕ , α n ≠ β n)
+apartness-criterion-converse : (α β : 𝟚ᴺ) → α ♯ β → (Σ n ꞉ ℕ , α n ≠ β n)
 apartness-criterion-converse α β (n , δ , _) = (n , δ)
 
 \end{code}
@@ -299,7 +306,7 @@ If two sequences α and β are apart, they agree before the apartness index n.
 
 \begin{code}
 
-♯-agreement : (α β : Cantor)
+♯-agreement : (α β : 𝟚ᴺ)
               ((n , _) : α ♯ β)
               (i : ℕ)
             → i < n → α i ＝ β i
@@ -323,9 +330,9 @@ The Cantor type is homogeneous.
 
 \begin{code}
 
-module _ (fe : funext₀) (α β : Cantor) where
+module _ (fe : funext₀) (α β : 𝟚ᴺ) where
 
- Cantor-swap : Cantor → Cantor
+ Cantor-swap : 𝟚ᴺ → 𝟚ᴺ
  Cantor-swap γ i = (β i ⊕ α i) ⊕ γ i
 
  Cantor-swap-involutive : Cantor-swap ∘ Cantor-swap ∼ id
@@ -348,13 +355,13 @@ module _ (fe : funext₀) (α β : Cantor) where
                        Cantor-swap-involutive
                        Cantor-swap-swaps
 
- Cantor-swap-≃ : Cantor ≃ Cantor
+ Cantor-swap-≃ : 𝟚ᴺ ≃ 𝟚ᴺ
  Cantor-swap-≃ = Cantor-swap ,
                  involutions-are-equivs Cantor-swap Cantor-swap-involutive
 
 Cantor-homogeneous : funext₀
-                   → (α β : Cantor)
-                   → Σ f ꞉ Cantor ≃ Cantor , (⌜ f ⌝ α ＝ β)
+                   → (α β : 𝟚ᴺ)
+                   → Σ f ꞉ 𝟚ᴺ ≃ 𝟚ᴺ , (⌜ f ⌝ α ＝ β)
 Cantor-homogeneous fe α β = Cantor-swap-≃ fe α β , Cantor-swap-swaps fe α β
 
 \end{code}

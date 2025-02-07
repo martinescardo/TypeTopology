@@ -19,7 +19,7 @@ open import Naturals.Properties
 open import NotionsOfDecidability.DecidableClassifier
 open import Taboos.LPO
 open import Taboos.WLPO
-open import TypeTopology.Cantor renaming (_♯_ to _♯[Cantor]_) hiding (_＝⟦_⟧_)
+open import TypeTopology.Cantor renaming (_♯_ to _♯[𝟚ᴺ]_) hiding (_＝⟦_⟧_)
 open import TypeTopology.TotallySeparated
 open import UF.Base
 open import UF.ClassicalLogic
@@ -156,13 +156,14 @@ EM-gives-tight-apartness-is-≠ dne X (_♯_ , ♯-is-apartness , ♯-is-tight) 
 
 Added 1 February 2025 by Tom de Jong.
 
-The above shows that classically any type can have at most one tight apartness
-(the one given by negation of equality). We show that the Cantor type (ℕ → 𝟚)
-cannot be shown to have at most one tight apartness relation in constructive
-mathematics: the statement that the Cantor type has at most one tight apartness
-relation implies (WLPO ⇒ LPO) which is a constructive taboo as there are
-(topological) models of intuitionistic set theory that validate WLPO but not
-LPO, see the fifth page and Theorem 5.1 of the paper below.
+The above shows that classically any type can have at most one tight
+apartness (the one given by negation of equality). We show that the
+Cantor type 𝟚ᴺ := (ℕ → 𝟚) cannot be shown to have at most one tight
+apartness relation in constructive mathematics: the statement that the
+Cantor type has at most one tight apartness relation implies (WLPO ⇒ LPO)
+which is a constructive taboo as there are (topological) models of
+intuitionistic set theory that validate WLPO but not LPO, see the
+fifth page and Theorem 5.1 of the paper below.
 
 Matt Hendtlass and Robert Lubarsky. 'Separating Fragments of WLEM, LPO, and MP'
 The Journal of Symbolic Logic. Vol. 81, No. 4, 2016, pp. 1315-1343.
@@ -176,24 +177,24 @@ At-Most-One-Tight-Apartness X 𝓥 = is-prop (Tight-Apartness X 𝓥)
 
 At-Most-One-Tight-Apartness-on-Cantor-gives-WLPO-implies-LPO
  : Fun-Ext
- → At-Most-One-Tight-Apartness Cantor 𝓤₀
+ → At-Most-One-Tight-Apartness 𝟚ᴺ 𝓤₀
  → WLPO-variation₂ → LPO-variation
 At-Most-One-Tight-Apartness-on-Cantor-gives-WLPO-implies-LPO  fe hyp wlpo = VI
  where
-  _♯_ = _♯[Cantor]_
+  _♯_ = _♯[𝟚ᴺ]_
 
-  has-root : Cantor → 𝓤₀ ̇
+  has-root : 𝟚ᴺ → 𝓤₀ ̇
   has-root α = Σ n ꞉ ℕ , α n ＝ ₀
 
-  P⁺ : (α : Cantor) → Σ b ꞉ 𝟚 , (b ＝ ₀ ↔ ¬¬ (has-root α))
+  P⁺ : (α : 𝟚ᴺ) → Σ b ꞉ 𝟚 , (b ＝ ₀ ↔ ¬¬ (has-root α))
                               × (b ＝ ₁ ↔ ¬ (has-root α))
   P⁺ α = boolean-value' (wlpo α)
 
-  P : Cantor → 𝟚
+  P : 𝟚ᴺ → 𝟚
   P α = pr₁ (P⁺ α)
-  P-specification₀ : (α : Cantor) → P α ＝ ₀ ↔ ¬¬ (has-root α)
+  P-specification₀ : (α : 𝟚ᴺ) → P α ＝ ₀ ↔ ¬¬ (has-root α)
   P-specification₀ α = pr₁ (pr₂ (P⁺ α))
-  P-specification₁ : (α : Cantor) → P α ＝ ₁ ↔ ¬ (has-root α)
+  P-specification₁ : (α : 𝟚ᴺ) → P α ＝ ₁ ↔ ¬ (has-root α)
   P-specification₁ α = pr₂ (pr₂ (P⁺ α))
 
   P-of-𝟏-is-₁ : P 𝟏 ＝ ₁
@@ -202,7 +203,7 @@ At-Most-One-Tight-Apartness-on-Cantor-gives-WLPO-implies-LPO  fe hyp wlpo = VI
     I : ¬ has-root (λ n → ₁)
     I (n , p) = one-is-not-zero p
 
-  P-differentiates-at-𝟏-specification : (α : Cantor)
+  P-differentiates-at-𝟏-specification : (α : 𝟚ᴺ)
                                       → P α ≠ P 𝟏 ↔ ¬¬ (has-root α)
   P-differentiates-at-𝟏-specification α = I , II
    where
@@ -216,10 +217,10 @@ At-Most-One-Tight-Apartness-on-Cantor-gives-WLPO-implies-LPO  fe hyp wlpo = VI
     II : ¬¬ has-root α → P α ≠ P 𝟏
     II ν e = ν (lr-implication (P-specification₁ α) (e ∙ P-of-𝟏-is-₁))
 
-  I : (α : Cantor) → ¬¬ (has-root α) → α ♯₂ 𝟏
+  I : (α : 𝟚ᴺ) → ¬¬ (has-root α) → α ♯₂ 𝟏
   I α ν = ∣ P , rl-implication (P-differentiates-at-𝟏-specification α) ν ∣
 
-  II : (α : Cantor) → α ♯ 𝟏 ↔ has-root α
+  II : (α : 𝟚ᴺ) → α ♯ 𝟏 ↔ has-root α
   II α = II₁ , II₂
    where
     II₁ : α ♯ 𝟏 → has-root α
@@ -231,10 +232,10 @@ At-Most-One-Tight-Apartness-on-Cantor-gives-WLPO-implies-LPO  fe hyp wlpo = VI
     II₂ (n , p) = apartness-criterion α 𝟏
                    (n , λ (q : α n ＝ ₁) → zero-is-not-one (p ⁻¹ ∙ q))
 
-  III : (α : Cantor) → α ♯₂ 𝟏 → α ♯ 𝟏
+  III : (α : 𝟚ᴺ) → α ♯₂ 𝟏 → α ♯ 𝟏
   III α = Idtofun (eq α 𝟏)
    where
-    eq : (α β : Cantor) → α ♯₂ β ＝ α ♯ β
+    eq : (α β : 𝟚ᴺ) → α ♯₂ β ＝ α ♯ β
     eq α β =
      happly
       (happly
@@ -248,13 +249,13 @@ At-Most-One-Tight-Apartness-on-Cantor-gives-WLPO-implies-LPO  fe hyp wlpo = VI
        α)
       β
 
-  IV : (α : Cantor) → ¬¬-stable (has-root α)
+  IV : (α : 𝟚ᴺ) → ¬¬-stable (has-root α)
   IV α ν = lr-implication (II α) (III α (I α ν))
 
-  recall : (α : Cantor) → type-of (wlpo α) ＝ is-decidable (¬ (has-root α))
+  recall : (α : 𝟚ᴺ) → type-of (wlpo α) ＝ is-decidable (¬ (has-root α))
   recall α = refl
 
-  V : (α : Cantor) → is-decidable (has-root α)
+  V : (α : 𝟚ᴺ) → is-decidable (has-root α)
   V α = κ (wlpo α)
    where
     κ : is-decidable (¬ (has-root α)) → is-decidable (has-root α)
