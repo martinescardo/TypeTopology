@@ -458,7 +458,7 @@ open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
 ℕ∞₂-is-¬¬-separated : Fun-Ext → is-¬¬-separated ℕ∞₂
-ℕ∞₂-is-¬¬-separated fe u@(x , f) v@(y , g) ν = VII
+ℕ∞₂-is-¬¬-separated fe u@(x , f) v@(y , g) ν = VI
  where
   I : ¬¬ ((x ＝ y) × ((p : x ＝ ∞) (q : y ＝ ∞) → f p ＝ g q))
   I = ¬¬-functor (lr-implication (ℕ∞₂-equality-non-dependent fe u v)) ν
@@ -472,14 +472,11 @@ open import UF.Subsingletons-FunExt
   IV : ¬¬ ((p : x ＝ ∞) (q : y ＝ ∞) → f p ＝ g q)
   IV = ¬¬-functor pr₂ I
 
-  V : is-prop ((p : x ＝ ∞) (q : y ＝ ∞) → f p ＝ g q)
-  V = Π₂-is-prop fe (λ _ _ → 𝟚-is-set)
+  V : (p : x ＝ ∞) (q : y ＝ ∞) → f p ＝ g q
+  V refl refl = 𝟚-is-¬¬-separated (f refl) (g refl) (¬¬-functor (λ ϕ → ϕ refl refl) IV)
 
-  VI : ((p : x ＝ ∞) (q : y ＝ ∞) → f p ＝ g q)
-  VI refl refl = 𝟚-is-¬¬-separated (f refl) (g refl) (¬¬-functor (λ ϕ → ϕ refl refl) IV)
-
-  VII :( x , f) ＝ (y , g)
-  VII = rl-implication (ℕ∞₂-equality-non-dependent fe (x , f) (y , g)) (III , VI)
+  VI :( x , f) ＝ (y , g)
+  VI = rl-implication (ℕ∞₂-equality-non-dependent fe (x , f) (y , g)) (III , V)
 
 \end{code}
 
