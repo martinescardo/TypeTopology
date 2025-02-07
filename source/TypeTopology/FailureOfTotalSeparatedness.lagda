@@ -422,23 +422,81 @@ open import UF.EquivalenceExamples
 
 \end{code}
 
-It follows that for u = (x , f) and v = (y , g) in ℕ∞₂, we have that
-u ≠ v is equivalent to
+Added 7th Feb 2025. Another characterization of equality of ℕ∞₂, which
+I knew before, but I should have written earlier. It has the virtue of
+being non-dependent, compared to the above one.
 
-  (p : x ＝ y) → ¬ (f ∘ (p ∙_) ∼ g).
+We also now give only a logical equivalence, rather than a type
+equivalence, because two involved types are propositions, so that we
+automatically get a type equivalence from this (although, for the
+moment, we don't record this in the code).
 
-If x and y are of the forms (α , _) and (β , _), this can be
-strengthened to
+\begin{code}
 
-  (α ♯ β) + (Σ p ꞉ x ＝ ∞ , Σ q ꞉ y ＝ ∞ , f p ≠ g q).
+open import UF.Sets
+open import UF.Sets-Properties
 
-where _♯_ is the standard apartness relation on the Cantor type,
+ℕ∞₂-is-set : funext₀ → is-set ℕ∞₂
+ℕ∞₂-is-set fe = Σ-is-set (ℕ∞-is-set fe) (λ x → Π-is-set fe (λ _ → 𝟚-is-set))
 
-Let u # v be defined by this expression. Then the negation of u # v
-implies u ＝ v, which means that the relation _#_ is tight. It is also
-proposition valued, irreflexive and symmetric, but if it is
-cotransitive, then LPO holds. This is shown in the module
-gist.not-an-apartness.
+ℕ∞₂-equality-non-dependent
+ : funext 𝓤₀ 𝓤₀
+ → (u@(x , f) v@(y , g) : ℕ∞₂)
+ → (u ＝ v) ↔ ((x ＝ y) × ((p : x ＝ ∞) (q : y ＝ ∞) → f p ＝ g q))
+ℕ∞₂-equality-non-dependent fe u@(x , f) v@(y , g) = I , II
+ where
+  I : (x , f ＝ y , g) → (x ＝ y) × ((p : x ＝ ∞) (q : y ＝ ∞) → f p ＝ g q)
+  I refl = refl , I₀
+   where
+    I₀ : (p q : x ＝ ∞) → f p ＝ f q
+    I₀ refl q = ap f (ℕ∞-is-set fe refl q)
+
+  II : (x ＝ y) × ((p : x ＝ ∞) (q : y ＝ ∞) → f p ＝ g q) → (x , f) ＝ (y , g)
+  II (refl , ϕ) = ap (x ,_) (dfunext fe (λ p → ϕ p p))
+
+open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
+
+ℕ∞₂-is-¬¬-separated : Fun-Ext → is-¬¬-separated ℕ∞₂
+ℕ∞₂-is-¬¬-separated fe u@(x , f) v@(y , g) ν = VII
+ where
+  I : ¬¬ ((x ＝ y) × ((p : x ＝ ∞) (q : y ＝ ∞) → f p ＝ g q))
+  I = ¬¬-functor (lr-implication (ℕ∞₂-equality-non-dependent fe u v)) ν
+
+  II : ¬¬ (x ＝ y)
+  II = ¬¬-functor pr₁ I
+
+  III : x ＝ y
+  III = ℕ∞-is-¬¬-separated fe x y II
+
+  IV : ¬¬ ((p : x ＝ ∞) (q : y ＝ ∞) → f p ＝ g q)
+  IV = ¬¬-functor pr₂ I
+
+  V : is-prop ((p : x ＝ ∞) (q : y ＝ ∞) → f p ＝ g q)
+  V = Π₂-is-prop fe (λ _ _ → 𝟚-is-set)
+
+  VI : ((p : x ＝ ∞) (q : y ＝ ∞) → f p ＝ g q)
+  VI refl refl = 𝟚-is-¬¬-separated (f refl) (g refl) (¬¬-functor (λ ϕ → ϕ refl refl) IV)
+
+  VII :( x , f) ＝ (y , g)
+  VII = rl-implication (ℕ∞₂-equality-non-dependent fe (x , f) (y , g)) (III , VI)
+
+\end{code}
+
+Theorem  ℕ∞₂-equality-non-dependent above suggests to define a tentative
+apartness relation on ℕ∞₂ by
+
+ u ♯ v := (α ♯ β) + (Σ p ꞉ x ＝ ∞ , Σ q ꞉ y ＝ ∞ , f p ≠ g q).
+
+where α ♯ β is the standard apartness relation on the Cantor type, and
+u and v are of the forms (x , f) and v = (y , g), with x and y of the
+forms (α , _) and (β , _).
+
+
+Then the negation of u # v implies u ＝ v, which means that the
+relation _#_ is tight. It is also proposition valued, irreflexive and
+symmetric, but if it is cotransitive, then LPO holds. This is shown in
+the module gist.not-an-apartness.
 
 Moreover, we have that if ℕ∞₂ has any strong apartness _♯_ with ∞₀ ♯ ∞₁
 then WLPO holds. So we are looking for a (weak) tight apartness, if

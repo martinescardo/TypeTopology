@@ -422,7 +422,7 @@ well-ordering-gives-choice = restatement
                     (well-ordering-gives-choice-function em X-is-set)
                     (w X-is-set)
 
-    II : AC {𝓤} {𝓥}
-    II = AC₃-gives-AC I
+    II : AC₀ {𝓤} {𝓥}
+    II = AC₃-gives-AC₀ I
 
 \end{code}
