@@ -473,7 +473,7 @@ open import UF.Subsingletons-FunExt
   IV = ¬¬-functor pr₂ I
 
   V : (p : x ＝ ∞) (q : y ＝ ∞) → f p ＝ g q
-  V refl refl = 𝟚-is-¬¬-separated (f refl) (g refl) (¬¬-functor (λ ϕ → ϕ refl refl) IV)
+  V p q = 𝟚-is-¬¬-separated (f p) (g q) (¬¬-functor (λ ϕ → ϕ p q) IV)
 
   VI : (x , f) ＝ (y , g)
   VI = rl-implication (ℕ∞₂-equality-non-dependent fe (x , f) (y , g)) (III , V)
