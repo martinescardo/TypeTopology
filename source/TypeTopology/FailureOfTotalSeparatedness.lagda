@@ -457,7 +457,7 @@ open import UF.Sets-Properties
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
-ℕ∞₂-is-¬¬-separated : Fun-Ext → is-¬¬-separated ℕ∞₂
+ℕ∞₂-is-¬¬-separated : funext₀ → is-¬¬-separated ℕ∞₂
 ℕ∞₂-is-¬¬-separated fe u@(x , f) v@(y , g) ν = VI
  where
   I : ¬¬ ((x ＝ y) × ((p : x ＝ ∞) (q : y ＝ ∞) → f p ＝ g q))
