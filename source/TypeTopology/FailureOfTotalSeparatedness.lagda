@@ -498,6 +498,8 @@ Moreover, we have that if ℕ∞₂ has any strong apartness _♯_ with ∞₀ �
 then WLPO holds. So we are looking for a (weak) tight apartness, if
 any exists.
 
+The following was added 4th Feb 2025.
+
 \begin{code}
 
 open import Taboos.WLPO
