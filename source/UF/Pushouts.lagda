@@ -14,153 +14,13 @@ module UF.Pushouts (fe : Fun-Ext) where
 
 open import MLTT.Spartan
 open import UF.Base
+open import UF.CoconesofSpans fe
 open import UF.Equiv
 open import UF.EquivalenceExamples
 open import UF.PropIndexedPiSigma
 open import UF.Retracts
 open import UF.Subsingletons
 open import UF.Yoneda
-
-\end{code}
-
-We start by defining cocones and characerizing their identity type.
-
-\begin{code}
-
-cocone : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇}
-         (f : C → A) (g : C → B) (X : 𝓣  ̇)
-       → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣  ̇
-cocone {𝓤} {𝓥} {𝓦} {𝓣} {A} {B} {C} f g X =
- Σ i ꞉ (A → X) , Σ j ꞉ (B → X) , (i ∘ f ∼ j ∘ g)
-
-cocone-vertical-map : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇}
-                      (f : C → A) (g : C → B) (X : 𝓣  ̇)
-                    → cocone f g X
-                    → (A → X)
-cocone-vertical-map f g X (i , j , K) = i
-
-cocone-horizontal-map : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇}
-                        (f : C → A) (g : C → B) (X : 𝓣  ̇)
-                      → cocone f g X
-                      → (B → X)
-cocone-horizontal-map f g X (i , j , K) = j
-
-cocone-commuting-square : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇}
-                          (f : C → A) (g : C → B) (X : 𝓣  ̇)
-                        → ((i , j , K) : cocone f g X)
-                        → i ∘ f ∼ j ∘ g
-cocone-commuting-square f g X (i , j , K) = K
-
-cocone-family : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇}
-                (f : C → A) (g : C → B) (X : 𝓣  ̇)
-              → cocone f g X → cocone f g X → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣  ̇
-cocone-family f g X (i , j , H) (i' , j' , H') =
- Σ K ꞉ i ∼ i' , Σ L ꞉ j ∼ j' ,
-  ∼-trans (K ∘ f) H' ∼ ∼-trans H (L ∘ g)
-
-canonical-map-from-identity-to-cocone-family
- : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇}
-   (f : C → A) (g : C → B) (X : 𝓣  ̇)
- → (u u' : cocone f g X)
- → u ＝ u'
- → cocone-family f g X u u'
-canonical-map-from-identity-to-cocone-family
- f g X (i , j , H) .(i , j , H) refl =
- (∼-refl , ∼-refl , λ - → refl-left-neutral)
-
-cocone-family-is-identity-system
- : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇}
-   (f : C → A) (g : C → B) (X : 𝓣  ̇)
- → (x : cocone f g X)
- → is-contr (Σ y ꞉ cocone f g X , cocone-family f g X x y)
-cocone-family-is-identity-system {_} {_} {_} {𝓣} {A} {B} {C} f g X (i , j , H) =
- equiv-to-singleton e 𝟙-is-singleton
- where
-  e : (Σ y ꞉ cocone f g X , cocone-family f g X (i , j , H) y) ≃ 𝟙 { 𝓣 }
-  e = (Σ y ꞉ cocone f g X , cocone-family f g X (i , j , H) y) ≃⟨ I ⟩
-      (Σ i' ꞉ (A → X) , Σ j' ꞉ (B → X) ,
-        Σ H' ꞉ (i' ∘ f ∼ j' ∘ g) ,
-         Σ K ꞉ i ∼ i' , Σ L ꞉ j ∼ j' ,
-          ∼-trans (K ∘ f) H' ∼ ∼-trans H (L ∘ g))              ≃⟨ II ⟩
-      (Σ i' ꞉ (A → X) , Σ K ꞉ i ∼ i' ,
-        Σ j' ꞉ (B → X) , Σ L ꞉ j ∼ j' ,
-         Σ H' ꞉ (i' ∘ f ∼ j' ∘ g) ,
-          ∼-trans (K ∘ f) H' ∼ ∼-trans H (L ∘ g))              ≃⟨ VII ⟩
-      (Σ H' ꞉ (i ∘ f ∼ j ∘ g) , H' ∼ H)                        ≃⟨ IXV ⟩
-      𝟙                                                        ■
-   where
-    I = ≃-comp Σ-assoc (Σ-cong (λ i' → Σ-assoc))
-    II = Σ-cong (λ _ → ≃-comp (Σ-cong
-          (λ _ → ≃-comp Σ-flip (Σ-cong (λ K → Σ-flip)))) Σ-flip)
-    III = (Σ i' ꞉ (A → X) , i ∼ i')  ≃⟨ IV ⟩
-          (Σ i' ꞉ (A → X) , i ＝ i') ≃⟨ V ⟩
-          𝟙                          ■
-     where
-      IV = Σ-cong (λ - → ≃-sym (≃-funext fe i -))
-      V = singleton-≃-𝟙 (singleton-types-are-singletons i)
-    VI = ≃-comp (Σ-cong (λ - → ≃-sym (≃-funext fe j -)))
-                (singleton-≃-𝟙 (singleton-types-are-singletons j))
-    VII = (Σ i' ꞉ (A → X) , Σ K ꞉ i ∼ i' ,
-            Σ j' ꞉ (B → X) , Σ L ꞉ j ∼ j' ,
-             Σ H' ꞉ (i' ∘ f ∼ j' ∘ g) ,
-              ∼-trans (K ∘ f) H' ∼ ∼-trans H (L ∘ g))           ≃⟨ IIIV ⟩
-          (Σ (i' , K) ꞉ (Σ i' ꞉ (A → X) , i ∼ i') ,
-            Σ j' ꞉ (B → X) , Σ L ꞉ j ∼ j' ,
-             Σ H' ꞉ (i' ∘ f ∼ j' ∘ g) ,
-              ∼-trans (K ∘ f) H' ∼ ∼-trans H (L ∘ g))           ≃⟨ IX ⟩
-           (Σ j' ꞉ (B → X) , Σ L ꞉ j ∼ j' ,
-             Σ H' ꞉ (i ∘ f ∼ j' ∘ g) ,
-              ∼-trans (∼-refl ∘ f) H' ∼ ∼-trans H (L ∘ g))      ≃⟨ XI ⟩
-           (Σ (j' , L) ꞉ (Σ j' ꞉ (B → X) , j ∼ j') ,
-             Σ H' ꞉ (i ∘ f ∼ j' ∘ g) ,
-              ∼-trans (∼-refl ∘ f) H' ∼ ∼-trans H (L ∘ g))      ≃⟨ XII ⟩
-           (Σ H' ꞉ (i ∘ f ∼ j ∘ g) ,
-             ∼-trans (∼-refl ∘ f) H' ∼ ∼-trans H (∼-refl ∘ g))  ≃⟨ XIII ⟩
-           (Σ H' ꞉ (i ∘ f ∼ j ∘ g) , H' ∼ H)                    ■
-     where
-      IIIV = ≃-sym Σ-assoc
-      IX = prop-indexed-sum (equiv-to-prop III 𝟙-is-prop) (i , ∼-refl)
-      XI = ≃-sym Σ-assoc
-      XII = prop-indexed-sum (equiv-to-prop VI 𝟙-is-prop) (j , ∼-refl)
-      XIII = Σ-cong (λ H' → Π-cong fe fe (λ c → ＝-cong (refl ∙ H' c)
-                    (∼-trans H (λ _ → refl) c) refl-left-neutral
-                      (refl-right-neutral (H c) ⁻¹)))
-    IXV = ≃-comp (Σ-cong (λ - → ≃-sym (≃-funext fe - H)))
-                 (singleton-≃-𝟙 (equiv-to-singleton (Σ-cong (λ - → ＝-flip))
-                 (singleton-types-are-singletons H)))
-
-cocone-identity-characterization : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇}
-                                   (f : C → A) (g : C → B) (X : 𝓣  ̇)
-                                 → (u u' : cocone f g X)
-                                 → (u ＝ u') ≃ (cocone-family f g X u u')
-cocone-identity-characterization f g X u u' =
- (canonical-map-from-identity-to-cocone-family f g X u u' ,
-   Yoneda-Theorem-forth u (canonical-map-from-identity-to-cocone-family f g X u)
-    (cocone-family-is-identity-system f g X u) u')
-
-inverse-cocone-map : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇}
-                     (f : C → A) (g : C → B) (X : 𝓣  ̇)
-                   → (u u' : cocone f g X)
-                   → cocone-family f g X u u'
-                   → u ＝ u'
-inverse-cocone-map f g X u u' =
- ⌜ (cocone-identity-characterization f g X u u') ⌝⁻¹
-
-\end{code}
-
-We also introduce the notion of a dependent cocone.
-
-TODO. Characterize the identity type of dependent cocones.
-
-\begin{code}
-
-dependent-cocone : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇}
-                   (f : C → A) (g : C → B) (X : 𝓣  ̇)
-                   (t : cocone f g X) (P : X → 𝓣'  ̇)
-                 → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣'  ̇
-dependent-cocone {_} {_} {_} {_} {_} {A} {B} {C} f g X (i , j , H) P =
- Σ i' ꞉ ((a : A) → P (i a)) , Σ j' ꞉ ((b : B) → P (j b)) ,
-  ((c : C) → transport P (H c) (i' (f c)) ＝ j' (g c))
 
 \end{code}
 
@@ -264,7 +124,7 @@ Pushout-Computation-Rule₃
 Now we will use a record type to give the pushout, point and path constructors,
 and the dependent universal property.
 
-begin{code}
+\begin{code}
 
 record pushouts-exist {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇} (f : C → A) (g : C → B) : 𝓤ω
  where
@@ -289,7 +149,7 @@ record pushouts-exist {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇} (f : C → A)
    → Pushout-Computation-Rule₃ pushout f g (inll , inrr , glue) P
       pushout-induction pushout-ind-comp-inll pushout-ind-comp-inrr
 
-end{code}
+\end{code}
 
 We will observe that the pushout is a cocone and begin deriving some key
 results from the induction principles:
@@ -303,7 +163,7 @@ The following are logically equivalent
    uniqueness principle
 3) The universal property.
 
-begin{code}
+\begin{code}
 
  pushout-cocone : cocone f g pushout
  pushout-cocone = (inll , inrr , glue)
@@ -433,7 +293,7 @@ begin{code}
      (pushout-rec-comp-inll l r G , pushout-rec-comp-inrr l r G ,
       ∼-sym (pushout-rec-comp-glue l r G))
    
-end{code}
+\end{code}
 
 We investigate only postulating the (non-dependent) universal property.
 
@@ -583,6 +443,19 @@ computation rules and the uniqueness principles.
      (u , H , H' , λ c → M c ⁻¹)
       (u' , ∼-refl , ∼-refl , λ c → refl-left-neutral))))
 
+ pushout-uniqueness-inll : {X : 𝓣 ̇}
+                         → (u u' : pushout → X)
+                         → (H : (a : A) → u (inll a) ＝ u' (inll a))
+                         → (H' : (b : B) → u (inrr b) ＝ u' (inrr b))
+                         → (M : (c : C)
+                           → ap u (glue c) ∙ H' (g c) ＝ H (f c) ∙ ap u' (glue c))
+                         → (l : A → X)
+                         → (L : (a : A) → u (inll a) ＝ l a)
+                         → (L' : (a : A) → u' (inll a) ＝ l a)
+                         → (a : A)
+                         → pushout-uniqueness u u' H H' M (inll a) ∙ L' a ＝ L a
+ pushout-uniqueness-inll u u' H H' M l L L' a = {!!}
+                    
 \end{code}
 
 Finally, we can derive the induction principle and the corresponding propositional
@@ -742,13 +615,67 @@ call pre-induction.
    → transport P (pre-induction-id-is-id l r G (inll a))
                  (pre-induction-family l r G (inll a))
    ＝ l a
-  pre-induction-family-comp-inll l r G a
-   = {!!}
+  pre-induction-family-comp-inll {_} {P} l r G a
+   = transport (λ - → transport P - (pre-induction-family l r G (inll a)) ＝ l a)
+               (I a ⁻¹) (from-Σ-＝' (pre-induction-comp-inll l r G a))
    where
     I : (a : A)
       → pre-induction-id-is-id l r G (inll a)
       ＝ ap pr₁ (pre-induction-comp-inll l r G a)
-    I a = {!pushout-rec-comp-inll!}
+    I = pushout-uniqueness-inll (pre-induction-id l r G) id
+         (λ a → ap pr₁ (pre-induction-comp-inll l r G a))
+          (λ b → ap pr₁ (pre-induction-comp-inrr l r G b))
+           II inll (λ a → ap pr₁ (pre-induction-comp-inll l r G a)) ∼-refl
+     where
+      II : (c : C)
+         → ap (pre-induction-id l r G) (glue c)
+          ∙ ap pr₁ (pre-induction-comp-inrr l r G (g c))
+         ＝ ap pr₁ (pre-induction-comp-inll l r G (f c)) ∙ ap id (glue c)
+      II c = ap (pre-induction-id l r G) (glue c)
+            ∙ ap pr₁ (pre-induction-comp-inrr l r G (g c))            ＝⟨ III ⟩
+             ap pr₁ (ap (pre-induction l r G) (glue c))
+            ∙ ap pr₁ (pre-induction-comp-inrr l r G (g c))            ＝⟨ IV ⟩
+             ap pr₁ (ap (pre-induction l r G) (glue c)
+            ∙ pre-induction-comp-inrr l r G (g c))                    ＝⟨ V ⟩
+             ap pr₁ (pre-induction-comp-inll l r G (f c)
+            ∙ to-Σ-＝ (glue c , G c))                                 ＝⟨ VI ⟩
+             ap pr₁ (pre-induction-comp-inll l r G (f c))
+            ∙ ap pr₁ (to-Σ-＝ (glue c , G c))                         ＝⟨ VIII ⟩
+             ap pr₁ (pre-induction-comp-inll l r G (f c))
+            ∙ ap id (glue c)                                          ∎
+       where
+        III : ap (pre-induction-id l r G) (glue c)
+             ∙ ap pr₁ (pre-induction-comp-inrr l r G (g c))
+            ＝ ap pr₁ (ap (pre-induction l r G) (glue c))
+             ∙ ap pr₁ (pre-induction-comp-inrr l r G (g c)) 
+        III = ap (_∙ ap pr₁ (pre-induction-comp-inrr l r G (g c)))
+                 (ap-ap (pre-induction l r G) pr₁ (glue c) ⁻¹)
+        IV : ap pr₁ (ap (pre-induction l r G) (glue c))
+             ∙ ap pr₁ (pre-induction-comp-inrr l r G (g c))
+            ＝ ap pr₁ (ap (pre-induction l r G) (glue c)
+             ∙ pre-induction-comp-inrr l r G (g c))
+        IV = ap-∙ pr₁ (ap (pre-induction l r G) (glue c))
+                      (pre-induction-comp-inrr l r G (g c)) ⁻¹
+        V : ap pr₁ (ap (pre-induction l r G) (glue c)
+           ∙ pre-induction-comp-inrr l r G (g c))
+          ＝ ap pr₁ (pre-induction-comp-inll l r G (f c)
+           ∙ to-Σ-＝ (glue c , G c))  
+        V = ap (ap pr₁) (pre-induction-comp-glue l r G c)
+        VI : ap pr₁ (pre-induction-comp-inll l r G (f c)
+            ∙ to-Σ-＝ (glue c , G c))
+           ＝ ap pr₁ (pre-induction-comp-inll l r G (f c))
+            ∙ ap pr₁ (to-Σ-＝ (glue c , G c)) 
+        VI = ap-∙ pr₁ (pre-induction-comp-inll l r G (f c))
+                      (to-Σ-＝ (glue c , G c))
+        VII : ap pr₁ (to-Σ-＝ (glue c , G c)) ＝ ap id (glue c) 
+        VII = ap pr₁ (to-Σ-＝ (glue c , G c)) ＝⟨ ap-pr₁-to-Σ-＝ (glue c , G c) ⟩
+              glue c                          ＝⟨ ap-id-is-id' (glue c) ⟩
+              ap id (glue c)                  ∎
+        VIII : ap pr₁ (pre-induction-comp-inll l r G (f c))
+              ∙ ap pr₁ (to-Σ-＝ (glue c , G c))
+             ＝ ap pr₁ (pre-induction-comp-inll l r G (f c))
+              ∙ ap id (glue c)   
+        VIII = ap (ap pr₁ (pre-induction-comp-inll l r G (f c)) ∙_) VII 
 
 \end{code}
 
