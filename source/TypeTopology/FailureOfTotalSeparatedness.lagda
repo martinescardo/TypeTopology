@@ -489,7 +489,6 @@ where α ♯ β is the standard apartness relation on the Cantor type, and
 u and v are of the forms (x , f) and v = (y , g), with x and y of the
 forms (α , _) and (β , _).
 
-
 Then the negation of u # v implies u ＝ v, which means that the
 relation _#_ is tight. It is also proposition valued, irreflexive and
 symmetric, but if it is cotransitive, then LPO holds. This is shown in
