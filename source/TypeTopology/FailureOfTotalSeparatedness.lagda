@@ -494,11 +494,11 @@ relation _♯_ is tight. It is also proposition valued, irreflexive and
 symmetric, but if it is cotransitive, then LPO holds. This is shown in
 the module gist.not-an-apartness.
 
+The following was added 4th Feb 2025.
+
 Moreover, we have that if ℕ∞₂ has any strong apartness _♯_ with ∞₀ ♯ ∞₁
 then WLPO holds. So we are looking for a (weak) tight apartness, if
 any exists.
-
-The following was added 4th Feb 2025.
 
 \begin{code}
 
