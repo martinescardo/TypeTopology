@@ -427,9 +427,9 @@ I knew before, but I should have written earlier. It has the virtue of
 being non-dependent, compared to the above one.
 
 We also now give only a logical equivalence, rather than a type
-equivalence, because two involved types are propositions, so that we
-automatically get a type equivalence from this (although, for the
-moment, we don't record this in the code).
+equivalence, because the two involved types are propositions, so that
+we automatically get a type equivalence from this (although, for the
+moment, we don't record this in the code as we don't need it).
 
 \begin{code}
 
