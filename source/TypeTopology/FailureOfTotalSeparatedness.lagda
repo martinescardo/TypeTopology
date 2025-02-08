@@ -540,24 +540,33 @@ conjecture that it doesn't.
 
 module isolated-elements-of-ℕ∞₂ where
 
- e : 𝟚 → ℕ∞ → ℕ∞₂
- e n x = x , (λ _ → n)
+ r : ℕ∞₂ → ℕ∞
+ r (x , _) = x
 
- e-fact : funext₀ → (n : ℕ) → e ₀ (ι n) ＝ e ₁ (ι n)
- e-fact fe n = ⌜ ℕ∞₂-equality fe _ _ ⌝⁻¹
-                 (refl , (λ p → 𝟘-elim (≠-sym (∞-is-not-finite n) p)))
+ S : 𝟚 → ℕ∞ → ℕ∞₂
+ S b x = x , (λ _ → b)
 
- ee : ℕ → ℕ∞₂
- ee n = e ₀ (ι n)
+ S-agreement : funext₀ → (n : ℕ) → S ₀ (ι n) ＝ S ₁ (ι n)
+ S-agreement fe n = ⌜ ℕ∞₂-equality fe _ _ ⌝⁻¹
+                      (refl , (λ p → 𝟘-elim (≠-sym (∞-is-not-finite n) p)))
 
- ee-is-isolated : funext₀ → (n : ℕ) → is-isolated (ee n)
- ee-is-isolated fe n (x , f) =
+ s : ℕ∞ → ℕ∞₂
+ s = S ₀
+
+ rs : r ∘ s ∼ id
+ rs x = refl
+
+ e : ℕ → ℕ∞₂
+ e n = s (ι n)
+
+ e-is-isolated : funext₀ → (n : ℕ) → is-isolated (e n)
+ e-is-isolated fe n (x , f) =
   Cases (finite-isolated fe n x)
    (λ (p : ι n ＝ x)
          → inl (⌜ ℕ∞₂-equality fe _ _ ⌝⁻¹
                   (p ,
                    (λ (q : x ＝ ∞) → 𝟘-elim (∞-is-not-finite n (q ⁻¹ ∙ p ⁻¹))))))
    (λ (ν : ι n ≠ x)
-         → inr (λ (q : ee n ＝ (x , f)) → ν (ap pr₁ q)))
+         → inr (λ (q : e n ＝ (x , f)) → ν (ap pr₁ q)))
 
 \end{code}
