@@ -476,7 +476,7 @@ open import UF.Subsingletons-FunExt
   V p q = 𝟚-is-¬¬-separated (f p) (g q) (¬¬-functor (λ ϕ → ϕ p q) IV)
 
   VI : (x , f) ＝ (y , g)
-  VI = rl-implication (ℕ∞₂-equality-non-dependent fe (x , f) (y , g)) (III , V)
+  VI = rl-implication (ℕ∞₂-equality-non-dependent fe u v) (III , V)
 
 \end{code}
 
