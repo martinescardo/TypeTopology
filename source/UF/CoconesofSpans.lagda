@@ -206,37 +206,28 @@ canonical-map-to-cocone-morphism-family
  → cocone-morphism-family f g X P s s' m m'
 canonical-map-to-cocone-morphism-family {_} {_} {_} {_} {_} {A} {B} {C}
  f g X P (i , j , H) (i' , j' , H') (u , K , L , M) .(u , K , L , M) refl
- = (∼-refl , (λ - → refl-left-neutral) , (λ - → refl-left-neutral) , λ c → I c ⁻¹)
+ = (∼-refl , (λ - → refl-left-neutral) , (λ - → refl-left-neutral) , II)
  where
-  I : (c : C)
-    → ap (_∙ H' c) (refl-left-neutral ⁻¹)
-      ∙ ∙assoc (∼-refl (i (f c))) (K (f c)) (H' c)
-      ∙ ap (∼-refl (i (f c)) ∙_) (M c)
-      ∙ ∙assoc (∼-refl (i (f c))) (ap u (H c)) (L (g c)) ⁻¹
-      ∙ ap (_∙ L (g c)) (homotopies-are-natural u u ∼-refl)
-      ∙ ∙assoc (ap u (H c)) (∼-refl (j (g c))) (L (g c))
-      ∙ ap (ap u (H c) ∙_) (refl-left-neutral) ＝ M c
-  I c = ap (_∙ H' c) (refl-left-neutral ⁻¹)
-       ∙ ∙assoc (∼-refl (i (f c))) (K (f c)) (H' c)
-       ∙ ap (∼-refl (i (f c)) ∙_) (M c)
-       ∙ ∙assoc (∼-refl (i (f c))) (ap u (H c)) (L (g c)) ⁻¹
-       ∙ ap (_∙ L (g c)) (homotopies-are-natural u u ∼-refl)
-       ∙ ∙assoc (ap u (H c)) (∼-refl (j (g c))) (L (g c))
-       ∙ ap (ap u (H c) ∙_) (refl-left-neutral)                ＝⟨ ap {!!} II ⟩
-       refl-left-neutral ⁻¹
-       ∙ ap (∼-refl (i (f c)) ∙_) (M c)
-       ∙ ∙assoc (∼-refl (i (f c))) (ap u (H c)) (L (g c)) ⁻¹
-       ∙ ap (_∙ L (g c)) (homotopies-are-natural u u ∼-refl)
-       ∙ ∙assoc (ap u (H c)) (∼-refl (j (g c))) (L (g c))
-       ∙ ap (ap u (H c) ∙_) (refl-left-neutral)                ＝⟨ {!!} ⟩
-       {!!}
-   where
-    II : {Y : 𝓤  ̇} {x y z : Y} {p : x ＝ y} {q : y ＝ z}
-       → ap (_∙ q) (refl-left-neutral ⁻¹) ∙ ∙assoc refl p q ＝ refl-left-neutral ⁻¹
-    II {𝓤} {Y} {x} {y} {z} {refl} {refl} = refl
-    III : {Y : 𝓤  ̇} {x y z : Y} {p : x ＝ y} {q : y ＝ z}
-        → ∙assoc p refl q ∙ ap (p ∙_) (refl-left-neutral) ＝ ap (_∙ q) (refl)
-    III {𝓤} {Y} {x} {y} {z} {refl} {refl} = refl
+  I : {Y : 𝓤  ̇} {Z : 𝓥  ̇} {x y : Y} {z' z : Z} {f' : Y → Z}
+      {p : x ＝ y} {q : f' y ＝ z} {p' : f' x ＝ z'} {q' : z' ＝ z}
+      {α : p' ∙ q' ＝ (ap f' p) ∙ q}
+    → α ＝ ap (_∙ q') (refl-left-neutral ⁻¹)
+          ∙ ∙assoc refl p' q'
+          ∙ ap (refl ∙_) α
+          ∙ ∙assoc refl (ap f' p) q ⁻¹
+          ∙ ap (_∙ q) (homotopies-are-natural f' f' ∼-refl)
+          ∙ ∙assoc (ap f' p) refl q
+          ∙ ap (ap f' p ∙_) (refl-left-neutral) 
+  I {𝓤} {𝓥} {Y} {Z} {x} {y} {z'} {z} {f'} {refl} {refl} {refl} {q'} {α} = refl
+  II : (c : C)
+     →  M c ＝ ap (_∙ H' c) (refl-left-neutral ⁻¹)
+              ∙ ∙assoc (∼-refl (i (f c))) (K (f c)) (H' c)
+              ∙ ap (∼-refl (i (f c)) ∙_) (M c)
+              ∙ ∙assoc (∼-refl (i (f c))) (ap u (H c)) (L (g c)) ⁻¹
+              ∙ ap (_∙ L (g c)) (homotopies-are-natural u u ∼-refl)
+              ∙ ∙assoc (ap u (H c)) (∼-refl (j (g c))) (L (g c))
+              ∙ ap (ap u (H c) ∙_) (refl-left-neutral)
+  II c = I
 
 \end{code}
 
