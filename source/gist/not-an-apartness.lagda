@@ -140,3 +140,115 @@ module failed-attempt where
     V₆ = V₅ V₄
 
 \end{code}
+
+Experiment (9th Feb 2025). Characterization of wconstant endomaps of
+the type P + Q, where P and Q are propositions, and hence of when we
+have a map ∥ P + Q ∥ → P + Q (by generalized Hedberg). This is to be
+moved elsewhere when it is tidied up and completed.
+
+We show that there is a wconstant endomap of P + Q if and only there
+are functions
+
+          g₀ : P → 𝟚
+          g₁ : (p : P) → g₀ p ＝ ₁ → Q
+          h₀ : Q → 𝟚
+          h₁ : (q : Q) → h₀ q ＝ ₀ → P
+          w :  (p : P) (q : Q) → g₀ p ＝ h₀ q
+
+The idea is to get rid of "+", with only the type 𝟚 left as its
+shadow.
+
+\begin{code}
+
+open import UF.Hedberg
+
+module _ (P : 𝓤 ̇ )
+         (Q : 𝓥 ̇ )
+         (P-is-prop : is-prop P)
+         (Q-is-prop : is-prop Q)
+       where
+
+ module _ (g₀ : P → 𝟚)
+          (g₁ : (p : P) → g₀ p ＝ ₁ → Q)
+          (h₀ : Q → 𝟚)
+          (h₁ : (q : Q) → h₀ q ＝ ₀ → P)
+          (w :  (p : P) (q : Q) → g₀ p ＝ h₀ q)
+       where
+
+  private
+   f₀ : (p : P) (m : 𝟚) → g₀ p ＝ m → P + Q
+   f₀ p ₀ r = inl p
+   f₀ p ₁ r = inr (g₁ p r)
+
+   f₁ : (q : Q) (n : 𝟚) → h₀ q ＝ n → P + Q
+   f₁ q ₀ s = inl (h₁ q s)
+   f₁ q ₁ s = inr q
+
+  f : P + Q → P + Q
+  f (inl p) = f₀ p (g₀ p) refl
+  f (inr q) = f₁ q (h₀ q) refl
+
+  private
+   wc : (p : P) (q : Q) (m n : 𝟚) (r : g₀ p ＝ m) (s : h₀ q ＝ n)
+      → f₀ p m r ＝ f₁ q n s
+   wc p q ₀ ₀ r s = ap inl (P-is-prop p (h₁ q s))
+   wc p q ₀ ₁ r s = 𝟘-elim (zero-is-not-one (r ⁻¹ ∙ w p q ∙ s))
+   wc p q ₁ ₀ r s = 𝟘-elim (one-is-not-zero (r ⁻¹ ∙ w p q ∙ s))
+   wc p q ₁ ₁ r s = ap inr (Q-is-prop (g₁ p r) q)
+
+  f-is-wconstant : wconstant f
+  f-is-wconstant (inl p) (inl p') = ap (λ - →  f₀ - (g₀ -) refl) (P-is-prop p p')
+  f-is-wconstant (inl p) (inr q)  = wc p q (g₀ p) (h₀ q) refl refl
+  f-is-wconstant (inr q) (inl p)  = (wc p q (g₀ p) (h₀ q) refl refl)⁻¹
+  f-is-wconstant (inr q) (inr q') = ap (λ - →  f₁ - (h₀ -) refl) (Q-is-prop q q')
+
+ module _ (f : P + Q → P + Q)
+          (f-is-wconstant : wconstant f)
+        where
+
+  private
+   ϕ : P + Q → 𝟚
+   ϕ (inl p) = ₀
+   ϕ (inr q) = ₁
+
+   ϕ₀ : (z t : P + Q) → f z ＝ t → ϕ t ＝ ₁ → Q
+   ϕ₀ (inl p) (inr q)  r s = q
+   ϕ₀ (inr q) (inr q') r s = q'
+
+   ϕ₁ : (z t : P + Q) → f z ＝ t → ϕ t ＝ ₀ → P
+   ϕ₁ (inl p) (inl p') r s = p'
+   ϕ₁ (inr q) (inl p)  r s = p
+
+  g₀ : P → 𝟚
+  g₀ p = ϕ (f (inl p))
+
+  g₁ : (p : P) → g₀ p ＝ ₁ → Q
+  g₁ p = ϕ₀ (inl p) (f (inl p)) refl
+
+  h₀ : Q → 𝟚
+  h₀ q = ϕ (f (inr q))
+
+  h₁ : (q : Q) → h₀ q ＝ ₀ → P
+  h₁ q = ϕ₁ (inr q) (f (inr q)) refl
+
+  private
+   wc :  (p : P) (q : Q) (m n : 𝟚) → g₀ p ＝ m → h₀ q ＝ n → m ＝ n
+   wc p q ₀ ₀ r s = refl
+   wc p q ₀ ₁ r s = r ⁻¹ ∙ ap ϕ (f-is-wconstant (inl p) (inr q)) ∙ s
+   wc p q ₁ ₀ r s = r ⁻¹ ∙ ap ϕ (f-is-wconstant (inl p) (inr q)) ∙ s
+   wc p q ₁ ₁ r s = refl
+
+  w :  (p : P) (q : Q) → g₀ p ＝ h₀ q
+  w p q = wc p q (g₀ p) (h₀ q) refl refl
+
+\end{code}
+
+Notice that the second direction doesn't use the fact that P and Q are
+propositions. But notice also that g₀ and h₀ are wconstant because f
+is. So maybe, using this fact, we can instead add the additional
+requirement that these two functions are wconstant. Of course, if we
+assume that P and Q are propositions, they are wconstant.
+
+In any case, the above two constructions should give a type
+equivalence, rather than merely a logical equivalence, when P and Q
+are propositions.
