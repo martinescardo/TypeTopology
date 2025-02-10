@@ -5,6 +5,8 @@ date-started: 2025-02-03
 
 \begin{code}
 
+{-# OPTIONS --safe #-}
+
 open import UF.FunExt
 
 module EffectfulForcing.Internal.PaperIndex (fe : Fun-Ext) where
