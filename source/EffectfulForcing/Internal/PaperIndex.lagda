@@ -49,6 +49,10 @@ We define some aliases below to ensure consistency with the notation in the
 paper. This also serves as a dictionary for looking up the notation used in the
 formalization.
 
+We define some aliases below to ensure consistency with the notation in the
+paper. This also serves as a dictionary for looking up the notation used in the
+formalization.
+
 \begin{code}
 
 Termᵀ : Cxt → type → 𝓤₀  ̇
