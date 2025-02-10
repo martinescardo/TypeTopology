@@ -47,7 +47,7 @@ Ctxᵀ : 𝓤₀  ̇
 Ctxᵀ = Cxt
 
 Definition-1 : 𝓤₀  ̇
-Definition-1 = Σ Γ ꞉ Cxt , Σ σ ꞉ type , T Γ σ
+Definition-1 = Σ Γ ꞉ Ctxᵀ , Σ σ ꞉ Typeᵀ , Termᵀ Γ σ
 
 Definition-2 : {Γ : Cxt} {σ : type}
              → T Γ σ
