@@ -167,8 +167,9 @@ Theorem-16 α t = dialogue-tree-correct t α
 
 \subsection{(4.1) Church-Encoded Trees in System T}
 
-\begin{code}
+For Section 4.1, we work in a module with a fixed type `A`.
 
+\begin{code}
 
 𝒟ᵀ : Typeᵀ → Typeᵀ → Typeᵀ
 𝒟ᵀ A σ = ⌜D⋆⌝ ι ι σ A
