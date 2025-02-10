@@ -906,3 +906,18 @@ uni-continuity-equivalent-to-uni-continuity f = ⦅⇒⦆ , ⦅⇐⦆
   ⦅⇐⦆ = uni-continuity-implies-uni-continuity₀ f
 
 \end{code}
+
+Added on 2025-02-09.
+
+Slight generalization of the notion of continuity.
+
+\begin{code}
+
+is-continuous₁ : {O : 𝓤  ̇} {X : 𝓥  ̇} → ((ℕ → O) → X) → 𝓤 ⊔ 𝓥  ̇
+is-continuous₁ {_} {_} {O} {X} f =
+ (α : ℕ → O) → Σ n ꞉ ℕ , ((α′ : ℕ → O) → α ＝⦅ n ⦆ α′ → f α ＝ f α′)
+
+_ : is-continuous₀ ＝ is-continuous₁ {O = ℕ}
+_ = refl
+
+\end{code}
