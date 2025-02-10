@@ -913,8 +913,8 @@ Slight generalization of the notions of continuity and uniform continuity.
 
 \begin{code}
 
-is-continuous₁ : {O : 𝓤 ̇ } {X : 𝓥 ̇ } → ((ℕ → O) → X) → 𝓤 ⊔ 𝓥 ̇
-is-continuous₁ {_} {_} {O} f =
+is-continuous₁ : {O : 𝓤  ̇} {X : 𝓥  ̇} → ((ℕ → O) → X) → 𝓤 ⊔ 𝓥  ̇
+is-continuous₁ {_} {_} {O} {X} f =
  (α : ℕ → O) → Σ n ꞉ ℕ , ((α′ : ℕ → O) → α ＝⦅ n ⦆ α′ → f α ＝ f α′)
 
 _ : is-continuous₀ ＝ is-continuous₁ {O = ℕ}
