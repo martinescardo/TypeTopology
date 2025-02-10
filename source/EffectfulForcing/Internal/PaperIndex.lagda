@@ -27,7 +27,23 @@ open import MLTT.Spartan
 
 \section{A System T Primer}
 
+We define some aliases below to ensure consistency with the notation in the
+paper. This also serves as a dictionary for looking up the notation used in the
+formalization.
+
 \begin{code}
+
+Termᵀ : Cxt → type → 𝓤₀  ̇
+Termᵀ Γ σ = T Γ σ
+
+Termᵀ₀ : type → 𝓤₀  ̇
+Termᵀ₀ σ = Termᵀ 〈〉 σ
+
+Typeᵀ : 𝓤₀  ̇
+Typeᵀ = type
+
+Ctxᵀ : 𝓤₀  ̇
+Ctxᵀ = Cxt
 
 Definition-1 : 𝓤₀  ̇
 Definition-1 = Σ Γ ꞉ Cxt , Σ σ ꞉ type , T Γ σ
