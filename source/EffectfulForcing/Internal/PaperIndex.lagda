@@ -20,7 +20,7 @@ open import EffectfulForcing.Internal.InternalModCont
 open import EffectfulForcing.Internal.Subst
 open import EffectfulForcing.Internal.SystemT
 open import EffectfulForcing.MFPSAndVariations.ContinuityProperties fe
-open import EffectfulForcing.MFPSAndVariations.Dialogue
+open import EffectfulForcing.MFPSAndVariations.Dialogue hiding (decode)
 open import EffectfulForcing.MFPSAndVariations.SystemT using (type;〖_〗; ι; _⇒_)
 open import MLTT.Sigma
 open import MLTT.Spartan
@@ -211,10 +211,21 @@ The internal dialogue translation.
 
 \begin{code}
 
- Definition-21 : {!!}
- Definition-21 = {!!}
+ Definition-21a : Typeᵀ → Typeᵀ
+ Definition-21a σ = B-type〖 σ 〗 A
+
+ Definition-21b : Ctxᵀ → Ctxᵀ
+ Definition-21b Γ = B-context【 Γ 】 A
+
+ Definition-21c : (Γ : Ctxᵀ)
+                → (σ : Typeᵀ)
+                → Termᵀ Γ σ
+                → Termᵀ (B-context【 Γ 】 A) (B-type〖 σ 〗 A)
+ Definition-21c Γ σ = ⌜_⌝
 
 \end{code}
+
+\subsection{(4.2) Avoiding Function Extensionality}
 
 Hereditary extensional equality.
 
@@ -224,6 +235,8 @@ Definition-24 : (σ : type) → 〖 σ 〗 → 〖 σ 〗 → 𝓤₀  ̇
 Definition-24 σ = _≡_ {σ}
 
 \end{code}
+
+Some properties of hereditary extensionality equality
 
 \begin{code}
 
@@ -241,6 +254,9 @@ Lemma-26 = ≡-refl₀
 \subsection{(4.3) Correctness of the Syntactic Translation}
 
 \begin{code}
+
+Definition-27 : (A : Typeᵀ) → Dial ℕ ℕ ℕ → 〖 𝒟ᵀ A ι 〗
+Definition-27 = {!encode!}
 
 -- Definition-27 : {σ : type} {A : type} → B ℕ → 〖 𝒟ᵀ A ι 〗
 -- Definition-27 = {!!}
