@@ -15,6 +15,7 @@ open import EffectfulForcing.Internal.Correctness
 open import EffectfulForcing.Internal.ExtensionalEquality
 open import EffectfulForcing.Internal.External
 open import EffectfulForcing.Internal.Internal
+open import EffectfulForcing.Internal.Internal
 open import EffectfulForcing.Internal.InternalModCont
 open import EffectfulForcing.Internal.Subst
 open import EffectfulForcing.Internal.SystemT
@@ -49,6 +50,10 @@ Ctxᵀ = Cxt
 Definition-1 : 𝓤₀  ̇
 Definition-1 = Σ Γ ꞉ Ctxᵀ , Σ σ ꞉ Typeᵀ , Termᵀ Γ σ
 
+\end{code}
+
+\begin{code}
+
 Definition-2 : {Γ : Cxt} {σ : type}
              → T Γ σ
              → (【 Γ 】 → 〖 σ 〗)
@@ -66,23 +71,39 @@ Proposition-4 γ n = ⟦numeral⟧ γ n ⁻¹
 
 \begin{code}
 
+
+Dial : (I : 𝓤  ̇) →  (O : 𝓥  ̇) → (X : 𝓦  ̇) → 𝓤 ⊔ 𝓥 ⊔ 𝓦  ̇
+Dial = D
+
 Definition-5 : (I : 𝓤 ̇ ) →  (O : 𝓥  ̇ ) → (X : 𝓦  ̇) → 𝓤 ⊔ 𝓥 ⊔ 𝓦  ̇
-Definition-5 = D
+Definition-5 = Dial
 
 Definition-6 : {I : 𝓤  ̇} {O : 𝓥  ̇} {X : 𝓦  ̇} → D I O X → (I → O) → X
 Definition-6 = dialogue
 
--- Definition-7a : {I : 𝓤  ̇} {O : 𝓥  ̇} {X : 𝓦  ̇}
---               → ((I → O) → X)
---               → {!!}
--- Definition-7a f = {!!}
+Definition-7a : {I : 𝓤  ̇} {O : 𝓥  ̇} {X : 𝓦  ̇}
+              → ((I → O) → X) → 𝓤 ⊔ 𝓥 ⊔ 𝓦  ̇
+Definition-7a {𝓤} {𝓥} {𝓦} {I} {O} {X} f =
+ Σ d ꞉ Dial I O X , ((α : I → O) → f α ＝ dialogue d α)
+
+Definition-7b : {O : 𝓥  ̇} {X : 𝓦  ̇} → ((ℕ → O) → X) → 𝓥 ⊔ 𝓦  ̇
+Definition-7b = is-continuous₁
 
 \end{code}
 
+TODO: should the definition below be generalized?
+
 \begin{code}
 
-Definition-9 : {X : 𝓤  ̇} {Y : 𝓥  ̇} → (X → B Y) → B X → B Y
+Definition-9 : {I : 𝓤  ̇} {O : 𝓥  ̇} {X Y : 𝓦  ̇}
+             → (X → B Y) → B X → B Y
 Definition-9 = kleisli-extension
+
+\end{code}
+
+TODO: is there an abbrevation for Definition 10 below?
+
+\begin{code}
 
 Definition-10 : {X Y : 𝓤₀  ̇}
               → (X → Y)
@@ -90,8 +111,22 @@ Definition-10 : {X Y : 𝓤₀  ̇}
               → B Y
 Definition-10 f = kleisli-extension (η ∘ f)
 
+-- TODO
 -- Definition-11 : {!!}
 -- Definition-11 = {!!}
+
+\end{code}
+
+Dialogue interpretation of types, contexts, and terms of System T are given in,
+respectively, `Definition-12a`, `Definition-12b`, and `Definition-12c` below.
+
+\begin{code}
+
+Definition-12a : type → 𝓤₀  ̇
+Definition-12a = 〖_〗
+
+Definition-12b : type → 𝓤₀  ̇
+Definition-12b = 〖_〗
 
 Definition-13 : B ℕ → B ℕ
 Definition-13 = generic
@@ -99,38 +134,57 @@ Definition-13 = generic
 Definition-14 : T₀ ((ι ⇒ ι) ⇒ ι) → B ℕ
 Definition-14 = dialogue-tree
 
--- Definition-15 : {!!}
--- Definition-15 = {!!}
+-- Definition-15 : (σ : type) (α : ℕ → ℕ) (x : 〖 σ 〗) → {!!}
+-- Definition-15 σ α x = Rnorm {σ}
+
+Theorem-16 : (α : ℕ → ℕ) (t : Termᵀ₀ ((ι ⇒ ι) ⇒ ι))
+           → ⟦ t ⟧₀ α ＝ dialogue (dialogue-tree t) α
+Theorem-16 α t = dialogue-tree-correct t α
 
 \end{code}
+
+\subsection{(4.1) Church-Encoded Trees in System T}
 
 \section{Dialogue Trees in System T}
 
+For Section 4.1, we work in a module with a fixed type `A`.
+
 \begin{code}
 
-𝒟ᵀ : type → type → type
-𝒟ᵀ A σ = (σ ⇒ A) ⇒ ((ι ⇒ A) ⇒ ι ⇒ A) ⇒ A
+module _ (A : Typeᵀ) where
 
--- ηᵀ : {!!}
--- ηᵀ = {!!}
+ 𝒟ᵀ : Typeᵀ → Typeᵀ
+ 𝒟ᵀ σ =  ⌜D⋆⌝ A ι σ A
 
-Definition-17a : type → type → type
-Definition-17a A σ = 𝒟ᵀ A σ
+ ηᵀ : (σ : Typeᵀ) → Termᵀ₀ (σ ⇒ 𝒟ᵀ σ)
+ ηᵀ σ = ⌜η⌝ {A} {ι} {σ} {A}
 
-Definition-17b : {I : 𝓤  ̇} {O : 𝓥  ̇} {X : 𝓦  ̇} {A : 𝓣  ̇}
-               → (σ : type)
-               → T₀ (σ ⇒ {!B!})
-Definition-17b = {!⌜η⌝!}
+ βᵀ : (σ : Typeᵀ) → Termᵀ₀ ((ι ⇒ 𝒟ᵀ σ) ⇒ A ⇒ 𝒟ᵀ σ)
+ βᵀ σ = ⌜β⌝ {A} {ι} {σ} {A} {〈〉}
 
-Definition-17c : {!!}
-Definition-17c = {!!}
+ Definition-17a : Typeᵀ → Typeᵀ → Typeᵀ
+ Definition-17a _ σ = 𝒟ᵀ σ
+
+ Definition-17b : (σ : type)
+                → Termᵀ₀ (σ ⇒ 𝒟ᵀ σ)
+ Definition-17b = ηᵀ
+
+Definition-17c : (σ : type)
+              → Termᵀ₀ ((ι ⇒ 𝒟ᵀ ι σ) ⇒ ι ⇒ 𝒟ᵀ ι σ)
+Definition-17c = βᵀ ι
+
+Definition-18 : {A : type} → Termᵀ₀ ((ι ⇒ 𝒟ᵀ ι ι) ⇒ 𝒟ᵀ ι ι ⇒ 𝒟ᵀ ι ι)
+Definition-18 = ⌜kleisli-extension⌝
+
+ -- Definition-19 : {!!}
+ -- Definition-19 = {!!}
 
 \end{code}
 
 \begin{code}
 
-Definition-23 : (A : type) → T₀ ((ι ⇒ ι) ⇒ ι) → T₀ (𝒟ᵀ A ι)
-Definition-23 A = ⌜dialogue-tree⌝ {A}
+-- Definition-23 : (A : type) → T₀ ((ι ⇒ ι) ⇒ ι) → T₀ (𝒟ᵀ A ι)
+-- Definition-23 A = ⌜dialogue-tree⌝ {A}
 
 \end{code}
 
@@ -160,15 +214,15 @@ Lemma-26 = ≡-refl₀
 
 \begin{code}
 
-Definition-27 : {σ : type} {A : type} → B ℕ → 〖 𝒟ᵀ A ι 〗
-Definition-27 = {!!}
+-- Definition-27 : {σ : type} {A : type} → B ℕ → 〖 𝒟ᵀ A ι 〗
+-- Definition-27 = {!!}
 
 \end{code}
 
 \begin{code}
 
-Definition-35 : T₀ (𝒟ᵀ ((ι ⇒ ι) ⇒ ι) (ι ⇒ (ι ⇒ ι) ⇒ ι))
-Definition-35 = {!⌜dialogue-tree⌝!}
+-- Definition-35 : T₀ (𝒟ᵀ ((ι ⇒ ι) ⇒ ι) (ι ⇒ (ι ⇒ ι) ⇒ ι))
+-- Definition-35 = {!⌜dialogue-tree⌝!}
 
 \end{code}
 
