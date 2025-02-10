@@ -151,40 +151,68 @@ For Section 4.1, we work in a module with a fixed type `A`.
 
 \begin{code}
 
+
+𝒟ᵀ : Typeᵀ → Typeᵀ → Typeᵀ
+𝒟ᵀ A σ = ⌜D⋆⌝ ι ι σ A
+
 module _ (A : Typeᵀ) where
 
- 𝒟ᵀ : Typeᵀ → Typeᵀ
- 𝒟ᵀ σ =  ⌜D⋆⌝ A ι σ A
+ _ : (A : Typeᵀ) (σ : Typeᵀ) → 𝒟ᵀ A σ ＝ ((σ ⇒ A) ⇒ (((ι ⇒ A) ⇒ ι ⇒ A) ⇒ A))
+ _ = λ A σ → refl {𝓤₀} {Typeᵀ} {((σ ⇒ A) ⇒ (((ι ⇒ A) ⇒ ι ⇒ A) ⇒ A))}
 
- ηᵀ : (σ : Typeᵀ) → Termᵀ₀ (σ ⇒ 𝒟ᵀ σ)
- ηᵀ σ = ⌜η⌝ {A} {ι} {σ} {A}
+ ηᵀ : (σ : Typeᵀ) → Termᵀ₀ (σ ⇒ 𝒟ᵀ A σ)
+ ηᵀ σ = ⌜η⌝ {ι} {ι} {σ} {A}
 
- βᵀ : (σ : Typeᵀ) → Termᵀ₀ ((ι ⇒ 𝒟ᵀ σ) ⇒ A ⇒ 𝒟ᵀ σ)
- βᵀ σ = ⌜β⌝ {A} {ι} {σ} {A} {〈〉}
+ βᵀ : (σ : Typeᵀ) → Termᵀ₀ ((ι ⇒ 𝒟ᵀ A σ) ⇒ ι ⇒ 𝒟ᵀ A σ)
+ βᵀ σ = ⌜β⌝ {ι} {ι} {σ} {A} {〈〉}
 
- Definition-17a : Typeᵀ → Typeᵀ → Typeᵀ
- Definition-17a _ σ = 𝒟ᵀ σ
+ Definition-17a : Typeᵀ → Typeᵀ
+ Definition-17a = 𝒟ᵀ A
 
- Definition-17b : (σ : type)
-                → Termᵀ₀ (σ ⇒ 𝒟ᵀ σ)
+ Definition-17b : (σ : Typeᵀ)
+                → Termᵀ₀ (σ ⇒ 𝒟ᵀ A σ)
  Definition-17b = ηᵀ
 
-Definition-17c : (σ : type)
-              → Termᵀ₀ ((ι ⇒ 𝒟ᵀ ι σ) ⇒ ι ⇒ 𝒟ᵀ ι σ)
-Definition-17c = βᵀ ι
-
-Definition-18 : {A : type} → Termᵀ₀ ((ι ⇒ 𝒟ᵀ ι ι) ⇒ 𝒟ᵀ ι ι ⇒ 𝒟ᵀ ι ι)
-Definition-18 = ⌜kleisli-extension⌝
-
- -- Definition-19 : {!!}
- -- Definition-19 = {!!}
+ Definition-17c : (σ : Typeᵀ)
+                → Termᵀ₀ ((ι ⇒ 𝒟ᵀ A σ) ⇒ ι ⇒ 𝒟ᵀ A σ)
+ Definition-17c σ = βᵀ σ
 
 \end{code}
 
+The internal Kleisli extension.
+
 \begin{code}
 
--- Definition-23 : (A : type) → T₀ ((ι ⇒ ι) ⇒ ι) → T₀ (𝒟ᵀ A ι)
--- Definition-23 A = ⌜dialogue-tree⌝ {A}
+ Definition-18 : Termᵀ₀ ((ι ⇒ 𝒟ᵀ ι ι) ⇒ 𝒟ᵀ ι ι ⇒ 𝒟ᵀ ι ι)
+ Definition-18 = ⌜kleisli-extension⌝
+
+\end{code}
+
+The internal functor action.
+
+\begin{code}
+
+ Definition-19 : Termᵀ₀ ((ι ⇒ ι) ⇒ 𝒟ᵀ A ι ⇒ 𝒟ᵀ A ι)
+ Definition-19 = ⌜B-functor⌝
+
+\end{code}
+
+The generalised internal Kleisli extension.
+
+\begin{code}
+
+ Definition-20 : (σ : Typeᵀ)
+               → Termᵀ₀ ((ι ⇒ B-type〖 σ 〗 A) ⇒ 𝒟ᵀ A ι ⇒ B-type〖 σ 〗 A)
+ Definition-20 σ = ⌜Kleisli-extension⌝
+
+\end{code}
+
+The internal dialogue translation.
+
+\begin{code}
+
+ Definition-21 : {!!}
+ Definition-21 = {!!}
 
 \end{code}
 
