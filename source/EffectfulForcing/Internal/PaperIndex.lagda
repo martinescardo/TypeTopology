@@ -18,6 +18,7 @@ open import EffectfulForcing.Internal.Internal
 open import EffectfulForcing.Internal.InternalModCont
 open import EffectfulForcing.Internal.Subst
 open import EffectfulForcing.Internal.SystemT
+open import EffectfulForcing.MFPSAndVariations.ContinuityProperties fe
 open import EffectfulForcing.MFPSAndVariations.Dialogue
 open import EffectfulForcing.MFPSAndVariations.SystemT using (type;〖_〗; ι; _⇒_)
 open import MLTT.Sigma
