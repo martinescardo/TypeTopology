@@ -72,10 +72,10 @@ cocone-family-is-identity-system
    (f : C → A) (g : C → B) (X : 𝓣  ̇)
  → (x : cocone f g X)
  → is-contr (Σ y ꞉ cocone f g X , cocone-family f g X x y)
-cocone-family-is-identity-system {_} {_} {_} {𝓣} {A} {B} {C} f g X (i , j , H) =
+cocone-family-is-identity-system {𝓤} {𝓥} {𝓦} {𝓣} {A} {B} {C} f g X (i , j , H) =
  equiv-to-singleton e 𝟙-is-singleton
  where
-  e : (Σ y ꞉ cocone f g X , cocone-family f g X (i , j , H) y) ≃ 𝟙 { 𝓣 }
+  e : (Σ y ꞉ cocone f g X , cocone-family f g X (i , j , H) y) ≃ 𝟙 {𝓤 ⊔ 𝓣}
   e = (Σ y ꞉ cocone f g X , cocone-family f g X (i , j , H) y) ≃⟨ I ⟩
       (Σ i' ꞉ (A → X) , Σ j' ꞉ (B → X) ,
         Σ H' ꞉ (i' ∘ f ∼ j' ∘ g) ,
@@ -93,11 +93,13 @@ cocone-family-is-identity-system {_} {_} {_} {𝓣} {A} {B} {C} f g X (i , j , H
           (λ _ → ≃-comp Σ-flip (Σ-cong (λ K → Σ-flip)))) Σ-flip)
     III = (Σ i' ꞉ (A → X) , i ∼ i')  ≃⟨ IV ⟩
           (Σ i' ꞉ (A → X) , i ＝ i') ≃⟨ V ⟩
-          𝟙                          ■
+          𝟙 {𝓤 ⊔ 𝓣}                  ■
      where
       IV = Σ-cong (λ - → ≃-sym (≃-funext fe i -))
-      V = singleton-≃-𝟙 (singleton-types-are-singletons i)
-    VI = ≃-comp (Σ-cong (λ - → ≃-sym (≃-funext fe j -)))
+      V = singleton-≃-𝟙 {_} {𝓤 ⊔ 𝓣} 
+           (singleton-types-are-singletons i)
+    VI = ≃-comp {_} {_} {𝓤 ⊔ 𝓣}
+                (Σ-cong (λ - → ≃-sym (≃-funext fe j -)))
                 (singleton-≃-𝟙 (singleton-types-are-singletons j))
     VII = (Σ i' ꞉ (A → X) , Σ K ꞉ i ∼ i' ,
             Σ j' ꞉ (B → X) , Σ L ꞉ j ∼ j' ,
@@ -109,12 +111,15 @@ cocone-family-is-identity-system {_} {_} {_} {𝓣} {A} {B} {C} f g X (i , j , H
               ∼-trans (K ∘ f) H' ∼ ∼-trans H (L ∘ g))           ≃⟨ IX ⟩
            (Σ j' ꞉ (B → X) , Σ L ꞉ j ∼ j' ,
              Σ H' ꞉ (i ∘ f ∼ j' ∘ g) ,
-              ∼-trans (∼-refl ∘ f) H' ∼ ∼-trans H (L ∘ g))      ≃⟨ XI ⟩
+              ∼-trans (∼-refl {_} {_} {_} {_} {i} ∘ f) H'
+               ∼ ∼-trans H (L ∘ g))                             ≃⟨ XI ⟩
            (Σ (j' , L) ꞉ (Σ j' ꞉ (B → X) , j ∼ j') ,
              Σ H' ꞉ (i ∘ f ∼ j' ∘ g) ,
-              ∼-trans (∼-refl ∘ f) H' ∼ ∼-trans H (L ∘ g))      ≃⟨ XII ⟩
+              ∼-trans (∼-refl {_} {_} {_} {_} {i} ∘ f) H'
+               ∼ ∼-trans H (L ∘ g))                             ≃⟨ XII ⟩
            (Σ H' ꞉ (i ∘ f ∼ j ∘ g) ,
-             ∼-trans (∼-refl ∘ f) H' ∼ ∼-trans H (∼-refl ∘ g))  ≃⟨ XIII ⟩
+             ∼-trans (∼-refl {_} {_} {_} {_} {i} ∘ f) H'
+              ∼ ∼-trans H (∼-refl {_} {_} {_} {_} {j} ∘ g))     ≃⟨ XIII ⟩
            (Σ H' ꞉ (i ∘ f ∼ j ∘ g) , H' ∼ H)                    ■
      where
       IIIV = ≃-sym Σ-assoc
@@ -161,6 +166,46 @@ cocone-morphism : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇}
 cocone-morphism f g X P (i , j , H) s'
  = Σ u ꞉ (P → X) , cocone-family f g X (u ∘ i , u ∘ j , ∼-ap-∘ u H) s'
 
+private
+ Alternative-Path : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇}                   
+                    (f : C → A) (g : C → B) (X : 𝓣  ̇) (P : 𝓣'  ̇)
+                  → (s : cocone f g P)
+                  → (s' : cocone f g X)
+                  → cocone-morphism f g X P s s'
+                  → cocone-morphism f g X P s s'
+                  → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣 ⊔ 𝓣'  ̇
+ Alternative-Path {_} {_} {_} {_} {_} {A} {B} {C} f g X P
+  (i , j , H) (i' , j' , H') (u , K , L , M) (u' , K' , L' , M')
+  = (θ : (x : P) → u x ＝ u' x)
+    (ϕl : (a : A) → θ (i a) ∙ K' a ＝ K a)
+    (ϕr : (b : B) → θ (j b) ∙ L' b ＝ L b)
+    (c : C)
+  → K (f c) ∙ H' c ＝ ap u (H c) ∙ L (g c)
+ Γ : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇}                   
+     (f : C → A) (g : C → B) (X : 𝓣  ̇) (P : 𝓣'  ̇)
+   → (s : cocone f g P)
+   → (s' : cocone f g X)
+   → (m : cocone-morphism f g X P s s')
+   → (m' : cocone-morphism f g X P s s')
+   → Alternative-Path f g X P s s' m m'
+ Γ f g X P (i , j , H) (i' , j' , H') (u , K , L , M) (u' , K' , L' , M')
+  θ ϕl ϕr c = K (f c) ∙ H' c                         ＝⟨ I ⟩
+              (θ (i (f c)) ∙ K' (f c)) ∙ H' c        ＝⟨ II ⟩
+              θ (i (f c)) ∙ (K' (f c) ∙ H' c)        ＝⟨ III ⟩
+              θ (i (f c)) ∙ (ap u' (H c) ∙ L' (g c)) ＝⟨ IV ⟩
+              (θ (i (f c)) ∙ ap u' (H c)) ∙ L' (g c) ＝⟨ V ⟩
+              (ap u (H c) ∙ θ (j (g c))) ∙ L' (g c)  ＝⟨ VI ⟩
+              ap u (H c) ∙ (θ (j (g c)) ∙ L' (g c))  ＝⟨ VII ⟩
+              ap u (H c) ∙ L (g c)                   ∎
+  where
+   I = ap (_∙ H' c) (ϕl (f c) ⁻¹)
+   II = ∙assoc (θ (i (f c))) (K' (f c)) (H' c)
+   III = ap (θ (i (f c)) ∙_) (M' c)
+   IV = ∙assoc (θ (i (f c))) (ap u' (H c)) (L' (g c)) ⁻¹
+   V = ap (_∙ L' (g c)) (homotopies-are-natural u u' θ {_} {_} {H c})
+   VI = ∙assoc (ap u (H c)) (θ (j (g c))) (L' (g c))
+   VII = ap (ap u (H c) ∙_) (ϕr (g c))
+                       
 cocone-morphism-family : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇}                   
                          (f : C → A) (g : C → B) (X : 𝓣  ̇) (P : 𝓣'  ̇)
                        → (s : cocone f g P)
@@ -171,29 +216,9 @@ cocone-morphism-family : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇}
 cocone-morphism-family {_} {_} {_} {_} {_} {A} {B} {C} f g X P
  (i , j , H) (i' , j' , H') (u , K , L , M) (u' , K' , L' , M')
  = Σ θ ꞉ ((x : P) → u x ＝ u' x) , Σ ϕl ꞉ ((a : A) → θ (i a) ∙ K' a ＝ K a) ,
-   Σ ϕr ꞉ ((b : B) → θ (j b) ∙ L' b ＝ L b) , ((c : C) → M c ＝ Γ θ ϕl ϕr c)
- where
-  Γ : (θ : (x : P) → u x ＝ u' x)
-      (ϕl : (a : A) → θ (i a) ∙ K' a ＝ K a)
-      (ϕr : (b : B) → θ (j b) ∙ L' b ＝ L b)
-      (c : C)
-    → K (f c) ∙ H' c ＝ ap u (H c) ∙ L (g c)
-  Γ θ ϕl ϕr c = K (f c) ∙ H' c                         ＝⟨ I ⟩
-                (θ (i (f c)) ∙ K' (f c)) ∙ H' c        ＝⟨ II ⟩
-                θ (i (f c)) ∙ (K' (f c) ∙ H' c)        ＝⟨ III ⟩
-                θ (i (f c)) ∙ (ap u' (H c) ∙ L' (g c)) ＝⟨ IV ⟩
-                (θ (i (f c)) ∙ ap u' (H c)) ∙ L' (g c) ＝⟨ V ⟩
-                (ap u (H c) ∙ θ (j (g c))) ∙ L' (g c)  ＝⟨ VI ⟩
-                ap u (H c) ∙ (θ (j (g c)) ∙ L' (g c))  ＝⟨ VII ⟩
-                ap u (H c) ∙ L (g c)                   ∎
-   where
-    I = ap (_∙ H' c) (ϕl (f c) ⁻¹)
-    II = ∙assoc (θ (i (f c))) (K' (f c)) (H' c)
-    III = ap (θ (i (f c)) ∙_) (M' c)
-    IV = ∙assoc (θ (i (f c))) (ap u' (H c)) (L' (g c)) ⁻¹
-    V = ap (_∙ L' (g c)) (homotopies-are-natural u u' θ)
-    VI = ∙assoc (ap u (H c)) (θ (j (g c))) (L' (g c))
-    VII = ap (ap u (H c) ∙_) (ϕr (g c))
+    Σ ϕr ꞉ ((b : B) → θ (j b) ∙ L' b ＝ L b) ,
+     ((c : C) → M c ＝ Γ f g X P (i , j , H) (i' , j' , H')
+                         (u , K , L , M) (u' , K' , L' , M') θ ϕl ϕr c)
 
 canonical-map-to-cocone-morphism-family
  : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇}                   
@@ -208,28 +233,44 @@ canonical-map-to-cocone-morphism-family {_} {_} {_} {_} {_} {A} {B} {C}
  f g X P (i , j , H) (i' , j' , H') (u , K , L , M) .(u , K , L , M) refl
  = (∼-refl , (λ - → refl-left-neutral) , (λ - → refl-left-neutral) , II)
  where
-  I : {Y : 𝓤  ̇} {Z : 𝓥  ̇} {x y : Y} {z' z : Z} {f' : Y → Z}
-      {p : x ＝ y} {q : f' y ＝ z} {p' : f' x ＝ z'} {q' : z' ＝ z}
-      {α : p' ∙ q' ＝ (ap f' p) ∙ q}
-    → α ＝ ap (_∙ q') (refl-left-neutral ⁻¹)
-          ∙ ∙assoc refl p' q'
-          ∙ ap (refl ∙_) α
-          ∙ ∙assoc refl (ap f' p) q ⁻¹
-          ∙ ap (_∙ q) (homotopies-are-natural f' f' ∼-refl)
-          ∙ ∙assoc (ap f' p) refl q
-          ∙ ap (ap f' p ∙_) (refl-left-neutral) 
-  I {𝓤} {𝓥} {Y} {Z} {x} {y} {z'} {z} {f'} {refl} {refl} {refl} {q'} {α} = refl
+  I : {Y : 𝓤  ̇} {Z : 𝓥  ̇} {x y : Y} {z' z : Z} (f' : Y → Z)
+      (p : x ＝ y) (q : f' y ＝ z) (p' : f' x ＝ z') (q' : z' ＝ z)
+      (α : p' ∙ q' ＝ (ap f' p) ∙ q)
+    → α ＝ ap (_∙ q') (refl-left-neutral {_} {_} {_} {_} {p'} ⁻¹)
+           ∙ ∙assoc refl p' q'
+           ∙ ap (refl ∙_) α
+           ∙ ∙assoc refl (ap f' p) q ⁻¹
+           ∙ ap (_∙ q) (homotopies-are-natural f' f' ∼-refl {_} {_} {p})
+           ∙ ∙assoc (ap f' p) refl q
+           ∙ ap (ap f' p ∙_) (refl-left-neutral {_} {_} {_} {_} {q}) 
+  I f' refl refl p' refl α = III
+   where
+    Notice : p' ＝ refl
+    Notice = α
+    III : α ＝ ap (_∙ refl) (refl-left-neutral ⁻¹)
+               ∙ ∙assoc refl p' refl ∙ ap (refl ∙_) α
+    III = {!!}
+    IV : ap (_∙ refl) (refl-left-neutral ⁻¹)
+         ∙ ∙assoc refl p' refl ∙ ap (refl ∙_) α
+       ＝ transport (p' ＝_)
+                    (transport (λ - → refl ∙ p' ＝ refl ∙ -) α refl)
+                    (ap (_∙ refl) (refl-left-neutral ⁻¹) ∙ ∙assoc refl p' refl)
+    IV = refl
   II : (c : C)
-     →  M c ＝ ap (_∙ H' c) (refl-left-neutral ⁻¹)
-              ∙ ∙assoc (∼-refl (i (f c))) (K (f c)) (H' c)
-              ∙ ap (∼-refl (i (f c)) ∙_) (M c)
-              ∙ ∙assoc (∼-refl (i (f c))) (ap u (H c)) (L (g c)) ⁻¹
-              ∙ ap (_∙ L (g c)) (homotopies-are-natural u u ∼-refl)
-              ∙ ∙assoc (ap u (H c)) (∼-refl (j (g c))) (L (g c))
-              ∙ ap (ap u (H c) ∙_) (refl-left-neutral)
-  II c = I
+     →  M c ＝ Γ f g X P (i , j , H) (i' , j' , H') (u , K , L , M) (u , K , L , M)
+                ∼-refl (λ - → refl-left-neutral) (λ - → refl-left-neutral) c
+  II c = I u (H c) {!L (g c)!} (K (f c)) (H' c) (M c)
 
 \end{code}
+
+    III : refl-left-neutral ＝ refl ⁻¹ ∙ ap (_∙ refl {_} {_} {z}) (refl ⁻¹) ∙ refl
+                               ∙ ap (ap f' {x} {x} refl ∙_) {refl} {refl} refl
+    III = refl {_} {_} {refl}
+    IV' : ap (_∙ q') refl ∙ α ＝ ∙assoc refl refl q' ∙ ap (refl ∙_) α
+    IV' = {!!} ⁻¹
+    IV : α ＝ ap (_∙ q') (refl ⁻¹) ∙ ∙assoc refl refl q'
+              ∙ ap (refl ∙_) α 
+    IV = {!!}
 
 We also introduce the notion of a dependent cocone.
 
