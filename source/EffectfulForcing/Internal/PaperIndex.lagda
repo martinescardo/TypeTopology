@@ -341,7 +341,73 @@ Lemma-43 : (t : Termᵀ₀ ((ι ⇒ ι) ⇒ ι)) (α : ℕ → ℕ)
             α
 Lemma-43 = modulusᵀ-is-a-modulus-operator
 
-Lemma-44 : {!!}
-Lemma-44 = {!!}
+Lemma-44 : (t : Termᵀ₀ ((ι ⇒ ι) ⇒ ι)) (α : ℕ → ℕ)
+         → ⟦ max-qᵀ · ⌜dialogue-tree⌝ t ⟧₀ α  ＝ max-question (dialogue-tree t) α
+Lemma-44 t α = ⟦ max-qᵀ · ⌜dialogue-tree⌝ t ⟧₀ α   ＝⟨ Ⅰ ⟩
+               max-question₀ (dialogue-tree t) α   ＝⟨ Ⅱ ⟩
+               max-question (dialogue-tree t) α    ∎
+                where
+                 Ⅰ = main-lemma t α
+                 Ⅱ = max-question₀-agreement (dialogue-tree t) α ⁻¹
+
+Theorem-45 : (t : Termᵀ₀ ((ι ⇒ ι) ⇒ ι)) (α : ℕ → ℕ)
+           → ⟦ modulusᵀ · (⌜dialogue-tree⌝ t) ⟧₀ α
+              is-a-modulus-of-continuity-for ⟦ t ⟧₀ at α
+Theorem-45 = Lemma-43
+
+\end{code}
+
+\section{(6) Extending it to uniform continuity}
+
+\begin{code}
+
+Definition-46 : Termᵀ₀ (ι ⇒ ι) → 𝓤₀  ̇
+Definition-46 = is-boolean-pointᵀ
+
+Definition-47 : B ℕ → D ℕ 𝟚 ℕ
+Definition-47 = prune
+
+max-q₂  = max-boolean-question
+max-q₂ᵀ = max-boolean-questionᵀ
+
+Definition-48 : Dial ℕ 𝟚 ℕ → ℕ
+Definition-48 = max-boolean-question
+
+Definition-49 : Termᵀ₀ (𝒟ᵀ ι ι ⇒ ι)
+Definition-49 = max-q₂ᵀ
+
+-- TODO: Do we have this exact result?
+-- Lemma-50 : (d : B ℕ)
+--          → max-q₂ (prune d) ＝ ⟦ max-q₂ᵀ ⟧₀ (church-encode d)
+-- Lemma-50 d = max-q₂ (prune d)                        ＝⟨ Ⅰ ⟩
+--              max-boolean-question⋆ (church-encode d) ＝⟨ Ⅱ ⟩
+--              ⟦ max-q₂ᵀ ⟧₀ (church-encode d)          ∎
+--               where
+--                Ⅰ = max-boolean-question⋆-agreement d
+--                Ⅱ = {! max-boolean-questionᵀ-agreement (church-encode d) ⁻¹!}
+
+\end{code}
+
+The external modulus of uniform continuity operator.
+
+\begin{code}
+
+Definition-51a : Dial ℕ 𝟚 ℕ → ℕ
+Definition-51a = modulusᵤ
+
+\end{code}
+
+The internal modulus of uniform continuity operator.
+
+\begin{code}
+
+Definition-51b : Termᵀ₀ ((ι ⇒ ι) ⇒ ι) → Termᵀ₀ ι
+Definition-51b = modulusᵤᵀ {〈〉}
+
+Definition-52 : ℕ → ((ℕ → 𝟚) → ℕ) → 𝓤₀  ̇
+Definition-52 = _is-a-modulus-of-uniform-continuity-for_
+
+Theorem-55 : {!!}
+Theorem-55 = {!!}
 
 \end{code}
