@@ -152,9 +152,9 @@ inverse-cocone-map f g X u u' =
 
 \end{code}
 
-We need to define the type of morphisms between cocones. We should give a
+We need to define the type of morphisms between cocones. We *should* give a
 characterization of the identity type but fortunately we only need a map in the
-trivial direction.
+trivial direction for now.
 
 \begin{code}
 
@@ -259,19 +259,17 @@ canonical-map-to-cocone-morphism-family {_} {_} {_} {_} {_} {A} {B} {C}
   II : (c : C)
      →  M c ＝ Γ f g X P (i , j , H) (i' , j' , H') (u , K , L , M) (u , K , L , M)
                 ∼-refl (λ - → refl-left-neutral) (λ - → refl-left-neutral) c
-  II c = I u (H c) {!L (g c)!} (K (f c)) (H' c) (M c)
+  II c = I u (H c) {!!} (K (f c)) (H' c) (M c)
 
 \end{code}
 
-    III : refl-left-neutral ＝ refl ⁻¹ ∙ ap (_∙ refl {_} {_} {z}) (refl ⁻¹) ∙ refl
-                               ∙ ap (ap f' {x} {x} refl ∙_) {refl} {refl} refl
-    III = refl {_} {_} {refl}
-    IV' : ap (_∙ q') refl ∙ α ＝ ∙assoc refl refl q' ∙ ap (refl ∙_) α
-    IV' = {!!} ⁻¹
-    IV : α ＝ ap (_∙ q') (refl ⁻¹) ∙ ∙assoc refl refl q'
-              ∙ ap (refl ∙_) α 
-    IV = {!!}
-
+!!!!!!!!!!!!!!!!! I need to give an identification between two homotopies. So I
+tried to generalize all the paths in order to take advantage of path induction
+(see I above) then I can use that to define the specific identification I need
+(see II above). The issues is this: I am struggling to prove the generalization
+I and worse it apparently it isn't even the correct generalization (the hole in
+II should be filled by L (g c) but agda doesn't like it.) !!!!!!!!!!!!!!!!!!!!!!
+ 
 We also introduce the notion of a dependent cocone.
 
 TODO. Characterize the identity type of dependent cocones.
