@@ -458,6 +458,14 @@ computation rules and the uniqueness principles.
                     
 \end{code}
 
+^^^^^^^^^^^Regarding above hole^^^^^^^^^^^^^^^^^^^^
+!!!!!!!!!!!!I realized I needed computation rules for uniqueness to define the
+computation rules below. So at this point I seperated the file into Pushouts and
+CoconesofSpans (see new file). The goal is to define a notion of cocone morphism
+and give the trivial direction of identity characterization, which I can use to
+give the uniqueness computation rules.
+(This resulted from discussion with Kristina Sojakova!) !!!!!!!!!!!!!!!!!!
+
 Finally, we can derive the induction principle and the corresponding propositional
 computation rules(?). First we will introduce an auxillary type which we will
 call pre-induction. 
@@ -680,6 +688,9 @@ call pre-induction.
 \end{code}
 
 Now we can define the induction principle and computation rules.
+
+!!!!!!!!!!!!! Induction computation rules depend on preinduction computation rules,
+which in turn depend on uniqueness computation rules (see above) !!!!!!!!!!!!!
 
 \begin{code}
 
