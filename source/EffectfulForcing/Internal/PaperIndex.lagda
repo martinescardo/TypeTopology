@@ -13,9 +13,10 @@ module EffectfulForcing.Internal.PaperIndex (fe : Fun-Ext) where
 
 open import EffectfulForcing.Internal.Correctness
 open import EffectfulForcing.Internal.ExtensionalEquality
-open import EffectfulForcing.Internal.External
+open import EffectfulForcing.Internal.External hiding (main-lemma)
 open import EffectfulForcing.Internal.Internal
-open import EffectfulForcing.Internal.InternalModCont fe
+open import EffectfulForcing.Internal.InternalModCont fe hiding (baire)
+open import EffectfulForcing.Internal.InternalModUniCont fe hiding (main-lemma)
 open import EffectfulForcing.Internal.Subst
 open import EffectfulForcing.Internal.SystemT
 open import EffectfulForcing.MFPSAndVariations.Church
@@ -274,6 +275,11 @@ Corollary-31 = {!!}
 Lemma-34 : {!!}
 Lemma-34 = {!!}
 
+dialogue-treeᵀ : {Γ : Cxt}
+               → T (B-context【 Γ 】 ((ι ⇒ ι) ⇒ ι)) (⌜B⌝ ι ((ι ⇒ ι) ⇒ ι))
+               → T (B-context【 Γ 】 ((ι ⇒ ι) ⇒ ι)) ((ι ⇒ ι) ⇒ ι)
+dialogue-treeᵀ = ⌜dialogue⌝
+
 Definition-35 : Termᵀ₀ ((⌜B⌝ ι ((ι ⇒ ι) ⇒ ι))) → Termᵀ₀ (((ι ⇒ ι) ⇒ ι))
 Definition-35 = ⌜dialogue⌝
 
@@ -296,14 +302,18 @@ Max question along a path.
 
 \begin{code}
 
+max-q = max-question
+
 Definition-38 : B ℕ → (ℕ → ℕ) → ℕ
-Definition-38 = max-question
+Definition-38 = max-q
 
 \end{code}
 
 Internal max question along a path.
 
 \begin{code}
+
+max-qᵀ = max-questionᵀ
 
 Definition-39 : {!!}
 Definition-39 = {!!}
@@ -323,7 +333,7 @@ Definition-41b = modulusᵀ
 Definition-42 : ((ℕ → ℕ) → ℕ) → (ℕ → ℕ) → ℕ → 𝓤₀  ̇
 Definition-42 f α m = m is-a-modulus-of-continuity-for f at α
 
-Lemma-43 : (t : T₀ ((ι ⇒ ι) ⇒ ι)) (α : ℕ → ℕ)
+Lemma-43 : (t : Termᵀ₀ ((ι ⇒ ι) ⇒ ι)) (α : ℕ → ℕ)
          →  ⟦ modulusᵀ · (⌜dialogue-tree⌝ t) ⟧₀ α
            is-a-modulus-of-continuity-for
             ⟦ t ⟧₀
