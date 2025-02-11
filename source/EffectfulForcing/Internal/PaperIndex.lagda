@@ -43,15 +43,7 @@ open import MLTT.Spartan
 
 \end{code}
 
-<<<<<<< HEAD
 \section{(2) A System T Primer}
-
-We define some aliases below to ensure consistency with the notation in the
-paper. This also serves as a dictionary for looking up the notation used in the
-formalization.
-=======
-\section{(1) A System T Primer}
->>>>>>> 85d5446a (Continue to make progress on the index)
 
 We define some aliases below to ensure consistency with the notation in the
 paper. This also serves as a dictionary for looking up the notation used in the
@@ -91,11 +83,7 @@ Proposition-4 γ n = ⟦numeral⟧ γ n ⁻¹
 
 \end{code}
 
-<<<<<<< HEAD
 \section{(3) Oracless Effectful Forcing}
-=======
-\section{(2) Oracless Effectful Forcing}
->>>>>>> 85d5446a (Continue to make progress on the index)
 
 \begin{code}
 
@@ -309,8 +297,6 @@ Definition-27 A = church-encode
 \end{code}
 
 The dialogue correctness logical relation.
-
-\begin{code}
 
 Definition-28 : (σ : Typeᵀ) → 〖 σ 〗𝒟 → ({A : Typeᵀ} → Termᵀ₀ (〖 σ 〗𝒟ᵀ A)) → 𝓤₀ ̇
 Definition-28 σ = Rnorm

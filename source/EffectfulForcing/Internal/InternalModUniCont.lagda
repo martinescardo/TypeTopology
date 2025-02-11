@@ -463,13 +463,3 @@ m is-a-modulus-of-uniform-continuity-for f =
  (α β : ℕ → 𝟚) → α ＝⦅ m ⦆ β → f α ＝ f β
 
 \end{code}
-
-Added on 2025-02-11.
-
-\begin{code}
-
-_is-a-modulus-of-uniform-continuity-for_ : ℕ → ((ℕ → 𝟚) → ℕ) → 𝓤₀  ̇
-m is-a-modulus-of-uniform-continuity-for f =
- (α β : ℕ → 𝟚) → α ＝⦅ m ⦆ β → f α ＝ f β
-
-\end{code}
