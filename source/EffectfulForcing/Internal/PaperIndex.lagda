@@ -15,10 +15,10 @@ open import EffectfulForcing.Internal.Correctness
 open import EffectfulForcing.Internal.ExtensionalEquality
 open import EffectfulForcing.Internal.External
 open import EffectfulForcing.Internal.Internal
-open import EffectfulForcing.Internal.Internal
-open import EffectfulForcing.Internal.InternalModCont
+open import EffectfulForcing.Internal.InternalModCont fe
 open import EffectfulForcing.Internal.Subst
 open import EffectfulForcing.Internal.SystemT
+open import EffectfulForcing.MFPSAndVariations.Church
 open import EffectfulForcing.MFPSAndVariations.ContinuityProperties fe
 open import EffectfulForcing.MFPSAndVariations.Dialogue hiding (decode)
 open import EffectfulForcing.MFPSAndVariations.SystemT using (type;〖_〗; ι; _⇒_)
@@ -27,7 +27,7 @@ open import MLTT.Spartan
 
 \end{code}
 
-\section{A System T Primer}
+\section{(1) A System T Primer}
 
 We define some aliases below to ensure consistency with the notation in the
 paper. This also serves as a dictionary for looking up the notation used in the
@@ -67,7 +67,7 @@ Proposition-4 γ n = ⟦numeral⟧ γ n ⁻¹
 
 \end{code}
 
-\section{Oracless Effectful Forcing}
+\section{(2) Oracless Effectful Forcing}
 
 \begin{code}
 
@@ -255,11 +255,31 @@ Lemma-26 = ≡-refl₀
 
 \begin{code}
 
+-- TODO: I could not find this.
 Definition-27 : (A : Typeᵀ) → Dial ℕ ℕ ℕ → 〖 𝒟ᵀ A ι 〗
-Definition-27 = {!encode!}
+Definition-27 = {!church-encode!}
 
--- Definition-27 : {σ : type} {A : type} → B ℕ → 〖 𝒟ᵀ A ι 〗
--- Definition-27 = {!!}
+Definition-28 : (σ : Typeᵀ) → 〖 σ 〗 → Typeᵀ → Termᵀ₀ σ
+Definition-28 σ t = {!!}
+
+Lemma-29 : {!!}
+Lemma-29 = {!!}
+
+Lemma-30 : {!!}
+Lemma-30 = {!!}
+
+Corollary-31 : {!!}
+Corollary-31 = {!!}
+
+Lemma-34 : {!!}
+Lemma-34 = {!!}
+
+Definition-35 : Termᵀ₀ ((⌜B⌝ ι ((ι ⇒ ι) ⇒ ι))) → Termᵀ₀ (((ι ⇒ ι) ⇒ ι))
+Definition-35 = ⌜dialogue⌝
+
+Lemma-36 : (d : B ℕ) (α : ℕ → ℕ)
+         → dialogue d α ＝ dialogue⋆ (church-encode d) α
+Lemma-36 d α = dialogues-agreement d α
 
 \end{code}
 
@@ -272,9 +292,46 @@ Definition-27 = {!encode!}
 
 \section{(5) Computing moduli of continuity internally}
 
+Max question along a path.
+
 \begin{code}
 
 Definition-38 : B ℕ → (ℕ → ℕ) → ℕ
-Definition-38 = max-question fe
+Definition-38 = max-question
+
+\end{code}
+
+Internal max question along a path.
+
+\begin{code}
+
+Definition-39 : {!!}
+Definition-39 = {!!}
+
+\end{code}
+
+External and internal modulus operators.
+
+\begin{code}
+
+Definition-41a : B ℕ → (ℕ → ℕ) → ℕ
+Definition-41a = modulus
+
+Definition-41b : Termᵀ₀ (⌜B⌝ ι ι ⇒ (ι ⇒ ι) ⇒ ι)
+Definition-41b = modulusᵀ
+
+Definition-42 : ((ℕ → ℕ) → ℕ) → (ℕ → ℕ) → ℕ → 𝓤₀  ̇
+Definition-42 f α m = m is-a-modulus-of-continuity-for f at α
+
+Lemma-43 : (t : T₀ ((ι ⇒ ι) ⇒ ι)) (α : ℕ → ℕ)
+         →  ⟦ modulusᵀ · (⌜dialogue-tree⌝ t) ⟧₀ α
+           is-a-modulus-of-continuity-for
+            ⟦ t ⟧₀
+           at
+            α
+Lemma-43 = modulusᵀ-is-a-modulus-operator
+
+Lemma-44 : {!!}
+Lemma-44 = {!!}
 
 \end{code}
