@@ -492,4 +492,13 @@ List-ext-assoc g f (x ∷ xs) =
    II  = (concat-++ (map g (f x)) (map g (List-ext f xs)))⁻¹
    III = (ap concat (map-++ g (f x) (List-ext f xs)))⁻¹
 
+map' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → List X → List Y
+map' f = List-ext (λ x → [ f x ])
+
+map-agrees-with-map' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                       (f : X → Y)
+                     → map f ∼ map' f
+map-agrees-with-map' f [] = refl
+map-agrees-with-map' f (x ∷ xs) = ap (f x ∷_) (map-agrees-with-map' f xs)
+
 \end{code}
