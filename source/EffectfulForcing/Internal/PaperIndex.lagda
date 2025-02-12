@@ -90,6 +90,8 @@ Definition-7a {𝓤} {𝓥} {𝓦} {I} {O} {X} f =
 Definition-7b : {O : 𝓥  ̇} {X : 𝓦  ̇} → ((ℕ → O) → X) → 𝓥 ⊔ 𝓦  ̇
 Definition-7b = is-continuous₁
 
+-- TODO: uniform continuity missing.
+
 \end{code}
 
 TODO: should the definition below be generalized?
@@ -106,11 +108,13 @@ TODO: is there an abbrevation for Definition 10 below?
 
 \begin{code}
 
+-- TODO: get rid of `B` everywhere.
+
 Definition-10 : {X Y : 𝓤₀  ̇}
               → (X → Y)
               → B X
               → B Y
-Definition-10 f = kleisli-extension (η ∘ f)
+Definition-10 = B-functor
 
 -- TODO
 -- Definition-11 : {!!}
