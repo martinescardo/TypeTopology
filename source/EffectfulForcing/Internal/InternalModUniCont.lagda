@@ -452,81 +452,6 @@ internal-uni-mod-correct t αᵀ βᵀ ψ₁ ψ₂ φ =
   (boolean-valuedᵀ-lemma βᵀ ψ₂)
   φ
 
-internal-uni-mod-correct₀ : (t : 〈〉 ⊢ baire ⇒ ι) (α β : ℕ → ℕ)
-                          → is-boolean-point α
-                          → is-boolean-point β
-                          → α ＝⦅ ⟦ modulusᵤᵀ t ⟧₀ ⦆ β
-                          → ⟦ t ⟧₀ α ＝ ⟦ t ⟧₀ β
-internal-uni-mod-correct₀ t α β ψ₁ ψ₂ φ =
- f α ＝⟨ Ⅰ ⟩ f₀ (to-cantor α₀) ＝⟨ Ⅱ ⟩ f₀ (to-cantor β₀) ＝⟨ Ⅲ ⟩ f β ∎
-  where
-   f : Baire → ℕ
-   f = ⟦ t ⟧₀
-
-   α₀ : Cantor₀
-   α₀ = α , ψ₁
-
-   β₀ : Cantor₀
-   β₀ = β , ψ₂
-
-   f₀ : Cantor → ℕ
-   f₀ = C-restriction f
-
-   ε : eloquent f
-   ε = eloquence-theorem ⟦ t ⟧₀ (t , refl)
-
-   ε₀ : eloquent f₀
-   ε₀ = restriction-is-eloquent f ε
-
-   c : is-uniformly-continuous f₀
-   c = eloquent-functions-are-UC f₀ ε₀
-
-   bt : BT ℕ
-   bt = mod-of (dialogue-tree t)
-
-   c₀ : is-uniformly-continuous₀ f₀
-   c₀ = uni-continuity-implies-uni-continuity₀ f₀ c
-
-   mᵘ₀ : ℕ
-   mᵘ₀ = succ (maximumᵤ bt)
-
-   ξ : ⟦ max-boolean-questionᵀ · ⌜dialogue-tree⌝ t ⟧₀ ＝ maximumᵤ bt
-   ξ = ⟦ max-boolean-questionᵀ · ⌜dialogue-tree⌝ t ⟧₀   ＝⟨ Ⅰ ⟩
-       max-boolean-question (prune (dialogue-tree t))   ＝⟨ Ⅱ ⟩
-       maximumᵤ bt                                      ∎
-        where
-         Ⅰ = main-lemma t
-         Ⅱ = max-boolean-question-is-maximum-mod-of (dialogue-tree t)
-
-   q : ⟦ modulusᵤᵀ t ⟧₀ ＝ succ (maximumᵤ bt)
-   q = ap succ ξ
-
-   ψ : α ＝⦅ succ (maximumᵤ bt) ⦆ β
-   ψ = transport (λ - → α ＝⦅ - ⦆ β) q φ
-
-   ρ : α ＝⦅ succ (maximum (sequentialize bt)) ⦆ β
-   ρ = transport
-        (λ - → α ＝⦅ - ⦆ β)
-        (ap succ (maximumᵤ′-equivalent-to-maximumᵤ bt))
-        ψ
-
-   η : α ＝⟪ sequentialize bt ⟫ β
-   η = ＝⦅⦆-implies-＝⟪⟫ α β (sequentialize bt) ρ
-
-   ζ : α ＝⟪ sequentialize bt ⟫₀ β
-   ζ = ＝⟪⟫-implies-＝⟪⟫₀ α β (sequentialize bt) η
-
-   δ : α ＝⟦ bt ⟧ β
-   δ = ＝⟪⟫₀-implies-＝⟦⟧ α β bt ζ
-
-   γ : to-cantor α₀ ＝⟦ bt ⟧ to-cantor β₀
-   γ = to-cantor-＝⟦⟧ ψ₁ ψ₂ bt δ
-
-   Ⅱ = pr₂ c (to-cantor α₀) (to-cantor β₀) γ
-
-   Ⅰ = agreement-with-restriction f α ψ₁
-   Ⅲ = agreement-with-restriction f β ψ₂ ⁻¹
-
 \end{code}
 
 Added on 2025-02-11.
@@ -538,3 +463,4 @@ m is-a-modulus-of-uniform-continuity-for f =
  (α β : ℕ → 𝟚) → α ＝⦅ m ⦆ β → f α ＝ f β
 
 \end{code}
+
