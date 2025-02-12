@@ -20,6 +20,7 @@ open import EffectfulForcing.Internal.InternalModUniCont fe hiding (main-lemma)
 open import EffectfulForcing.Internal.Subst
 open import EffectfulForcing.Internal.SystemT
 open import EffectfulForcing.MFPSAndVariations.Church
+open import EffectfulForcing.MFPSAndVariations.MFPS-XXIX using (Kleisli-extension)
 open import EffectfulForcing.MFPSAndVariations.ContinuityProperties fe
 open import EffectfulForcing.MFPSAndVariations.Dialogue hiding (decode)
 open import EffectfulForcing.MFPSAndVariations.SystemT using (type;〖_〗; ι; _⇒_)
@@ -55,10 +56,14 @@ Definition-1 = Σ Γ ꞉ Ctxᵀ , Σ σ ꞉ Typeᵀ , Termᵀ Γ σ
 
 \begin{code}
 
-Definition-2 : {Γ : Cxt} {σ : type}
-             → T Γ σ
-             → (【 Γ 】 → 〖 σ 〗)
-Definition-2 = ⟦_⟧
+Definition-2a : type → 𝓤₀  ̇
+Definition-2a = 〖_〗
+
+Definition-2b : (Γ : Cxt) → 𝓤₀  ̇
+Definition-2b = 【_】
+
+Definition-2c : {Γ : Cxt} {σ : type} → T Γ σ → (【 Γ 】 → 〖 σ 〗)
+Definition-2c = ⟦_⟧
 
 Definition-3 : {Γ : Cxt} → ℕ → T Γ ι
 Definition-3 = numeral
