@@ -121,6 +121,8 @@ Definition-9 = kleisli-extension
 𝒟-functor : {X Y : 𝓤₀  ̇} → (X → Y) → 𝒟 X → 𝒟 Y
 𝒟-functor = B-functor
 
+-- TODO: get rid of `B` everywhere.
+
 Definition-10 : {X Y : 𝓤₀  ̇}
               → (X → Y) → 𝒟 X → 𝒟 Y
 Definition-10 = 𝒟-functor
