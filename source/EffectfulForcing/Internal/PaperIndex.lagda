@@ -121,9 +121,8 @@ Definition-10 : {X Y : 𝓤₀  ̇}
               → B Y
 Definition-10 = B-functor
 
--- TODO
--- Definition-11 : {!!}
--- Definition-11 = {!!}
+Definition-11 : {!{X : 𝓤₀ ̇ } {σ : type} → (X → ?) → B X → ?!}
+Definition-11 = Kleisli-extension
 
 \end{code}
 
