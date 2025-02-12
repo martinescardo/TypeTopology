@@ -13,14 +13,15 @@ module EffectfulForcing.Internal.PaperIndex (fe : Fun-Ext) where
 
 open import EffectfulForcing.Internal.Correctness
 open import EffectfulForcing.Internal.ExtensionalEquality
-open import EffectfulForcing.Internal.External hiding (main-lemma)
+open import EffectfulForcing.Internal.External hiding (main-lemma; B⟦_⟧; B【_】)
 open import EffectfulForcing.Internal.Internal
 open import EffectfulForcing.Internal.InternalModCont fe hiding (baire)
 open import EffectfulForcing.Internal.InternalModUniCont fe hiding (main-lemma)
 open import EffectfulForcing.Internal.Subst
 open import EffectfulForcing.Internal.SystemT
 open import EffectfulForcing.MFPSAndVariations.Church
-open import EffectfulForcing.MFPSAndVariations.MFPS-XXIX using (Kleisli-extension)
+open import EffectfulForcing.MFPSAndVariations.LambdaCalculusVersionOfMFPS using (Kleisli-extension; B⟦_⟧; B〖_〗; B【_】)
+-- open import EffectfulForcing.MFPSAndVariations.MFPS-XXIX using (B-Set⟦_⟧)
 open import EffectfulForcing.MFPSAndVariations.ContinuityProperties fe
 open import EffectfulForcing.MFPSAndVariations.Dialogue hiding (decode)
 open import EffectfulForcing.MFPSAndVariations.SystemT using (type;〖_〗; ι; _⇒_)
@@ -131,11 +132,15 @@ respectively, `Definition-12a`, `Definition-12b`, and `Definition-12c` below.
 
 \begin{code}
 
-Definition-12a : type → 𝓤₀  ̇
-Definition-12a = 〖_〗
+-- Definition-12a : type → 𝓤₀  ̇
+-- Definition-12a = B〖_〗
 
-Definition-12b : type → 𝓤₀  ̇
-Definition-12b = 〖_〗
+-- TODO: figure out which context to use.
+-- Definition-12b : {n : ℕ} → Cxt n → Type
+-- Definition-12b = B【_】
+
+-- Definition-12c : {!!}
+-- Definition-12c = B⟦_⟧
 
 Definition-13 : B ℕ → B ℕ
 Definition-13 = generic
@@ -144,7 +149,7 @@ Definition-14 : T₀ ((ι ⇒ ι) ⇒ ι) → B ℕ
 Definition-14 = dialogue-tree
 
 -- Definition-15 : (σ : type) (α : ℕ → ℕ) (x : 〖 σ 〗) → {!!}
--- Definition-15 σ α x = Rnorm {σ}
+-- Definition-15 σ α x = {!!}
 
 Theorem-16 : (α : ℕ → ℕ) (t : Termᵀ₀ ((ι ⇒ ι) ⇒ ι))
            → ⟦ t ⟧₀ α ＝ dialogue (dialogue-tree t) α
