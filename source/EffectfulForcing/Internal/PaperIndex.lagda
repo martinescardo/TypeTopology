@@ -122,8 +122,8 @@ Definition-10 : {X Y : 𝓤₀  ̇}
               → B Y
 Definition-10 = B-functor
 
-Definition-11 : {!{X : 𝓤₀ ̇ } {σ : type} → (X → ?) → B X → ?!}
-Definition-11 = Kleisli-extension
+-- Definition-11 : {!{X : 𝓤₀ ̇ } {σ : type} → (X → ?) → B X → ?!}
+-- Definition-11 = Kleisli-extension
 
 \end{code}
 
@@ -270,23 +270,23 @@ Lemma-26 = ≡-refl₀
 \begin{code}
 
 -- TODO: I could not find this.
-Definition-27 : (A : Typeᵀ) → Dial ℕ ℕ ℕ → 〖 𝒟ᵀ A ι 〗
-Definition-27 = {!church-encode!}
+-- Definition-27 : (A : Typeᵀ) → Dial ℕ ℕ ℕ → 〖 𝒟ᵀ A ι 〗
+-- Definition-27 = {!church-encode!}
 
-Definition-28 : (σ : Typeᵀ) → 〖 σ 〗 → Typeᵀ → Termᵀ₀ σ
-Definition-28 σ t = {!!}
+-- Definition-28 : (σ : Typeᵀ) → 〖 σ 〗 → Typeᵀ → Termᵀ₀ σ
+-- Definition-28 σ t = {!!}
 
-Lemma-29 : {!!}
-Lemma-29 = {!!}
+-- Lemma-29 : {!!}
+-- Lemma-29 = {!!}
 
-Lemma-30 : {!!}
-Lemma-30 = {!!}
+-- Lemma-30 : {!!}
+-- Lemma-30 = {!!}
 
-Corollary-31 : {!!}
-Corollary-31 = {!!}
+-- Corollary-31 : {!!}
+-- Corollary-31 = {!!}
 
-Lemma-34 : {!!}
-Lemma-34 = {!!}
+-- Lemma-34 : {!!}
+-- Lemma-34 = {!!}
 
 dialogue-treeᵀ : {Γ : Cxt}
                → T (B-context【 Γ 】 ((ι ⇒ ι) ⇒ ι)) (⌜B⌝ ι ((ι ⇒ ι) ⇒ ι))
@@ -328,8 +328,8 @@ Internal max question along a path.
 
 max-qᵀ = max-questionᵀ
 
-Definition-39 : {!!}
-Definition-39 = {!!}
+-- Definition-39 : {!!}
+-- Definition-39 = {!!}
 
 \end{code}
 
