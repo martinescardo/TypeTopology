@@ -438,14 +438,28 @@ internal-uni-mod-correct₀ t α β ψ₁ ψ₂ φ =
    Ⅰ = agreement-with-restriction f α ψ₁
    Ⅲ = agreement-with-restriction f β ψ₂ ⁻¹
 
+internal-uni-mod-correct : (t : 〈〉 ⊢ baire ⇒ ι) (αᵀ βᵀ : 〈〉 ⊢ baire)
+                         → is-boolean-pointᵀ αᵀ
+                         → is-boolean-pointᵀ βᵀ
+                         → ⟦ αᵀ ⟧₀ ＝⦅ ⟦ modulusᵤᵀ t ⟧₀ ⦆ ⟦ βᵀ ⟧₀
+                         → ⟦ t · αᵀ ⟧₀ ＝ ⟦ t · βᵀ ⟧₀
+internal-uni-mod-correct t αᵀ βᵀ ψ₁ ψ₂ φ =
+ internal-uni-mod-correct₀
+  t
+  ⟦ αᵀ ⟧₀
+  ⟦ βᵀ ⟧₀
+  (boolean-valuedᵀ-lemma αᵀ ψ₁)
+  (boolean-valuedᵀ-lemma βᵀ ψ₂)
+  φ
+
 \end{code}
 
 Added on 2025-02-11.
 
 \begin{code}
 
-_is-a-modulus-of-uniform-continuity-for_ : ℕ → ((ℕ → 𝟚) → ℕ) → 𝓤₀  ̇
+_is-a-modulus-of-uniform-continuity-for_ : ℕ → ((ℕ → ℕ) → ℕ) → 𝓤₀  ̇
 m is-a-modulus-of-uniform-continuity-for f =
- (α β : ℕ → 𝟚) → α ＝⦅ m ⦆ β → f α ＝ f β
+ (α β : ℕ → ℕ) → α ＝⦅ m ⦆ β → f α ＝ f β
 
 \end{code}
