@@ -5,8 +5,10 @@
 
    Martin Escardo and collaborators,
    2010--2025--∞, continuously evolving.
+
    https://www.cs.bham.ac.uk/~mhe/
    https://www.cs.bham.ac.uk/~mhe/TypeTopology/
+   https://github.com/martinescardo/TypeTopology
 
    Tested with Agda 2.7.0.1. (It may still work with Agda 2.6.4.3.)
 
