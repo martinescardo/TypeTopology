@@ -625,7 +625,7 @@ every-type-can-be-embedded-into-an-ainjective-type
  → (X : 𝓤 ⊔ 𝓥 ̇ )
  → Σ D ꞉ (𝓤 ⊔ 𝓥)⁺ ̇ , Σ e ꞉ X ↪ D , ainjective-type D 𝓤 𝓥
 every-type-can-be-embedded-into-an-ainjective-type {𝓤} {𝓥} ua X
- = (X → 𝓤 ⊔ 𝓥 ̇) ,
+ = (X → 𝓤 ⊔ 𝓥 ̇ ) ,
    (Id , UA-Id-embedding ua fe) ,
    power-of-ainjective (universes-are-ainjective ua)
 

@@ -407,10 +407,9 @@ that it satisfies the (ordinary) supremum specification.
 ^ₒ-satisfies-sup-specification' : (α : Ordinal 𝓤)
                                 → exp-specification-sup α (α ^ₒ_)
 ^ₒ-satisfies-sup-specification' α =
- exp-specification-sup-from-strong α (α ^ₒ_)
+ exp-specification-sup-from-strong α
+  (α ^ₒ_)
   (^ₒ-satisfies-strong-sup-specification α)
-  (^ₒ-satisfies-zero-specification α)
-  (^ₒ-monotone-in-exponent' α)
 
 \end{code}
 

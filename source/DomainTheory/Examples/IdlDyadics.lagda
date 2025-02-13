@@ -41,7 +41,7 @@ open Ideals-of-small-abstract-basis
          ; ≺-trans = λ {x} {y} {z} → ≺-is-transitive x y z
          ; INT₀ = ≺-has-no-left-endpoint
          ; INT₂ = λ {x} {y} {z} → ≺-interpolation₂ x y z
-         })
+        })
 
 Idl-𝔻 : DCPO {𝓤₁} {𝓤₀}
 Idl-𝔻 = Idl-DCPO

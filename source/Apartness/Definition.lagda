@@ -40,7 +40,7 @@ is-strong-apartness      _♯_ = is-prop-valued _♯_
                              × is-strongly-cotransitive _♯_
 
 Strong-Apartness : 𝓤 ̇ → (𝓥 : Universe) → 𝓥 ⁺ ⊔ 𝓤 ̇
-Strong-Apartness X 𝓥 = Σ _♯_ ꞉ (X → X → 𝓥 ̇) , is-strong-apartness _♯_
+Strong-Apartness X 𝓥 = Σ _♯_ ꞉ (X → X → 𝓥 ̇ ) , is-strong-apartness _♯_
 
 \end{code}
 
@@ -99,7 +99,21 @@ module Apartness (pt : propositional-truncations-exist) where
                      × is-cotransitive _♯_
 
  Apartness : 𝓤 ̇ → (𝓥 : Universe) → 𝓥 ⁺ ⊔ 𝓤 ̇
- Apartness X 𝓥 = Σ _♯_ ꞉ (X → X → 𝓥 ̇) , is-apartness _♯_
+ Apartness X 𝓥 = Σ _♯_ ꞉ (X → X → 𝓥 ̇ ) , is-apartness _♯_
+
+ cotransitive-if-strongly-cotransitive : {X : 𝓤 ̇ } (_♯_ : X → X → 𝓥 ̇ )
+                                       → is-strongly-cotransitive _♯_
+                                       → is-cotransitive _♯_
+ cotransitive-if-strongly-cotransitive _♯_ sc x y z a = ∣ sc x y z a ∣
+
+ strong-apartness-is-apartness : {X : 𝓤 ̇ } (_♯_ : X → X → 𝓥 ̇ )
+                               → is-strong-apartness _♯_
+                               → is-apartness _♯_
+ strong-apartness-is-apartness _♯_ (p , i , s , c) =
+  p , i , s , cotransitive-if-strongly-cotransitive _♯_ c
+
+ Tight-Apartness : 𝓤 ̇  → (𝓥 : Universe) → 𝓥 ⁺ ⊔ 𝓤 ̇
+ Tight-Apartness X 𝓥 = Σ _♯_ ꞉ (X → X → 𝓥 ̇ ) , is-apartness _♯_ × is-tight _♯_
 
  apartness-is-prop-valued : {X : 𝓤 ̇ } (_♯_ : X → X → 𝓥 ̇ )
                           → is-apartness _♯_
@@ -111,6 +125,11 @@ module Apartness (pt : propositional-truncations-exist) where
                           → is-irreflexive _♯_
  apartness-is-irreflexive _♯_ (p , i , s , c) = i
 
+ apartness-is-irreflexive' : {X : 𝓤 ̇ } (_♯_ : X → X → 𝓥 ̇ )
+                           → is-apartness _♯_
+                           → (x y : X) → x ♯ y → x ≠ y
+ apartness-is-irreflexive' _♯_ (p , i , s , c) x y a refl = i x a
+
  apartness-is-symmetric : {X : 𝓤 ̇ } (_♯_ : X → X → 𝓥 ̇ )
                         → is-apartness _♯_
                         → is-symmetric _♯_
@@ -120,6 +139,36 @@ module Apartness (pt : propositional-truncations-exist) where
                            → is-apartness _♯_
                            → is-cotransitive _♯_
  apartness-is-cotransitive _♯_ (p , i , s , c) = c
+
+ strong-apartness-is-prop-valued : {X : 𝓤 ̇ } (_♯_ : X → X → 𝓥 ̇ )
+                                 → is-strong-apartness _♯_
+                                 → is-prop-valued _♯_
+ strong-apartness-is-prop-valued _♯_ (p , i , s , c) = p
+
+ strong-apartness-is-irreflexive : {X : 𝓤 ̇ } (_♯_ : X → X → 𝓥 ̇ )
+                                 → is-strong-apartness _♯_
+                                 → is-irreflexive _♯_
+ strong-apartness-is-irreflexive _♯_ (p , i , s , c) = i
+
+ strong-apartness-is-irreflexive' : {X : 𝓤 ̇ } (_♯_ : X → X → 𝓥 ̇ )
+                                  → is-strong-apartness _♯_
+                                  → (x y : X) → x ♯ y → x ≠ y
+ strong-apartness-is-irreflexive' _♯_ (p , i , s , c) x y a refl = i x a
+
+ strong-apartness-is-symmetric : {X : 𝓤 ̇ } (_♯_ : X → X → 𝓥 ̇ )
+                               → is-strong-apartness _♯_
+                               → is-symmetric _♯_
+ strong-apartness-is-symmetric _♯_ (p , i , s , c) = s
+
+ strong-apartness-is-cotransitive : {X : 𝓤 ̇ } (_♯_ : X → X → 𝓥 ̇ )
+                                  → is-strong-apartness _♯_
+                                  → is-strongly-cotransitive _♯_
+ strong-apartness-is-cotransitive _♯_ (p , i , s , c) = c
+
+ not-equal-if-apart : {X : 𝓤 ̇ } (_♯_ : X → X → 𝓥 ̇ )
+                    → is-apartness _♯_
+                    → {x y : X} → x ♯ y → x ≠ y
+ not-equal-if-apart _♯_ a {x} {y} h refl = apartness-is-irreflexive _♯_ a x h
 
  not-not-equal-not-apart : {X : 𝓤 ̇ } (x y : X) (_♯_ : X → X → 𝓥 ̇ )
                          → is-apartness _♯_
@@ -141,6 +190,21 @@ module Apartness (pt : propositional-truncations-exist) where
                       → is-tight _♯_
                       → is-set X
  tight-types-are-sets _♯_ fe (_ , i , _ , _) = tight-types-are-sets' _♯_ fe i
+
+ finner-than-tight-is-tight
+  : {X : 𝓤 ̇ }
+  → (_♯_  : X → X → 𝓥 ̇ )
+  → (_♯'_ : X → X → 𝓥' ̇ )
+  → ((x y : X) → x ♯ y → x ♯' y)
+  → is-tight _♯_
+  → is-tight _♯'_
+ finner-than-tight-is-tight _♯_ _♯'_ ϕ t = II
+  where
+   I : ∀ x y → ¬ (x ♯' y) → ¬ (x ♯ y)
+   I x y = contrapositive (ϕ x y)
+
+   II : ∀ x y → ¬ (x ♯' y) → x ＝ y
+   II x y = t x y ∘ I x y
 
 \end{code}
 

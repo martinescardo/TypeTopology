@@ -19,6 +19,6 @@ Reader {𝓦₀} A = record {
             ext-η   = λ x → refl ;
             unit    = λ f x → refl ;
             assoc   = λ g f x → refl
-           }
+          }
 
 \end{code}

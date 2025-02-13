@@ -337,7 +337,7 @@ spectral-and-small-𝒦-gives-basis {𝓤} {𝓦} X 𝕤 (𝒦₀ , e) = (𝒦�
     † = pr₂
 
     ‡ : ((u , _) : upper-bound ⁅ α j ∣ j ε 𝒥 ⁆) → (U ≤[ poset-of (𝒪 X) ] u) holds
-    ‡ (V , ψ) = spectral-yoneda X 𝕤 U V λ { (K , p) → ♣ K p }
+    ‡ (V , ψ) = spectral-yoneda X 𝕤 U V λ { (K , p) → ♣ K p}
      where
       ♣ : (K : ⟨ 𝒪 X ⟩)
         → (is-compact-open X K ⇒ K ≤[ poset-of (𝒪 X) ] U ⇒ K ≤[ poset-of (𝒪 X) ] V) holds

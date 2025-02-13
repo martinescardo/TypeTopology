@@ -53,7 +53,7 @@ module _
    ; approximating-family-is-directed = family-is-directed
    ; approximating-family-is-way-below = family-is-way-below
    ; approximating-family-∐-＝ = family-∐-＝
-   }
+  }
    where
     _≪ₛ_ : ⟨ 𝓓 ⟩ → ⟨ 𝓓 ⟩ → 𝓥 ̇
     x ≪ₛ y = resized (x ≪⟨ 𝓓 ⟩ y) (≪-is-small-valued pe 𝓓 c ls x y)
@@ -160,7 +160,7 @@ module _
    ; compact-family-is-directed = family-is-directed
    ; compact-family-is-compact = family-is-compact
    ; compact-family-∐-＝ = family-∐-＝
-   }
+  }
    where
     open is-locally-small ls
 

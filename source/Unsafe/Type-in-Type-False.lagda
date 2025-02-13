@@ -382,7 +382,7 @@ module blechschmidt where
 
      γ : (x₀ : X A₀) → (∥(Σ p ꞉ A₀ ＝ A₀ , φ (transport X p x₀) holds)∥ , ∥∥-is-prop) ＝ φ x₀
      γ x₀ = to-Σ-＝ (propext ∥∥-is-prop (holds-is-prop (φ x₀)) (a x₀) (b x₀) ,
-                    being-prop-is-prop (holds-is-prop _) (holds-is-prop (φ x₀)) )
+                    being-prop-is-prop (holds-is-prop _) (holds-is-prop (φ x₀)))
 
  \end{code}
 

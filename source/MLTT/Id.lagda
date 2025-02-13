@@ -54,6 +54,27 @@ ap f p = transport (λ - → f (lhs p) ＝ f -) p refl
 transport⁻¹ : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) {x y : X} → x ＝ y → A y → A x
 transport⁻¹ B p = transport B (p ⁻¹)
 
+\end{code}
+
+Added 4th Feb 2025. For the above definition, we have the definitional
+equality p ∙ refl = p. In order to simplify some computatations, we
+include a version with refl ∙ q = q definitionally.
+
+\begin{code}
+
+_∙'_ : {X : 𝓤 ̇ } {x y z : X} → x ＝ y → y ＝ z → x ＝ z
+refl ∙' q = q
+
+∙-agrees-with-∙' : {X : 𝓤 ̇ } {x y z : X} (p : x ＝ y) (q : y ＝ z)
+                 → p ∙' q ＝ p ∙ q
+∙-agrees-with-∙' refl refl = refl
+
+\end{code}
+
+End of addition.
+
+\begin{code}
+
 module _ {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } where
 
  infix  4 _∼_

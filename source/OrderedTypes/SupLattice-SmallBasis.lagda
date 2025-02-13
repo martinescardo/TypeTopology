@@ -14,7 +14,7 @@ type B : 𝓥 and map β : B → L such that
   β b ≤ x is 𝓥 small
 and
   x = ⋁ ↓ᴮ x
-for all x. 
+for all x.
 
 \begin{code}
 
@@ -48,7 +48,7 @@ open PropositionalTruncation pt
 
 module _
         {𝓤 𝓣 𝓥 : Universe}
-        {B : 𝓥  ̇}
+        {B : 𝓥  ̇ }
         (L : Sup-Lattice 𝓤 𝓣 𝓥)
         (β : B → ⟨ L ⟩)
        where
@@ -109,7 +109,7 @@ boiler plate that will allow us to use a small basis with greater efficiency.
   ≤ᴮ-is-prop-valued : {b : B} {x : ⟨ L ⟩} → is-prop (b ≤ᴮ x)
   ≤ᴮ-is-prop-valued {b} {x} =
    equiv-to-prop ≤ᴮ-≃-≤ (holds-is-prop ((β b) ≤ x))
-   
+
   small-↓ᴮ : ⟨ L ⟩ → 𝓥  ̇
   small-↓ᴮ x = Σ b ꞉ B , b ≤ᴮ x
 
@@ -146,4 +146,3 @@ boiler plate that will allow us to use a small basis with greater efficiency.
                         → (x ≤ u') holds
   is-least-upper-boundᴮ x = pr₂ (is-supᴮ x)
 \end{code}
-

@@ -97,7 +97,7 @@ Fin-searchable (succ (succ n)) _
  = +-searchable (Fin-searchable (succ n) 𝟎) 𝟙-searchable
 
 equivs-preserve-searchability
- : {X : 𝓤  ̇ } {Y : 𝓥  ̇}
+ : {X : 𝓤  ̇ } {Y : 𝓥  ̇ }
  → (f : X → Y)
  → is-equiv f
  → searchable 𝓦 X
@@ -119,14 +119,14 @@ equivs-preserve-searchability {𝓤} {𝓥} {𝓦} {X} {Y}
 ≃-searchable
  : {X : 𝓤  ̇ } {Y : 𝓥 ̇ } → X ≃ Y → searchable 𝓦 X → searchable 𝓦 Y
 ≃-searchable (f , e) = equivs-preserve-searchability f e
-             
+
 finite-searchable : {X : 𝓤 ̇ }
                   → finite-linear-order X
                   → X
                   → searchable 𝓦 X
 finite-searchable (0 , (g , _)) x = 𝟘-elim (g x)
 finite-searchable (succ n , e) x
- = ≃-searchable (≃-sym e) (Fin-searchable (succ n) 𝟎) 
+ = ≃-searchable (≃-sym e) (Fin-searchable (succ n) 𝟎)
 
 ×-searchable : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
              → searchable 𝓦 X
@@ -189,7 +189,7 @@ decidable-to-𝟚 (inl  x)
 decidable-to-𝟚 (inr ¬x)
  = ₀ , ((𝟘-elim ∘ zero-is-not-one) , (λ x → 𝟘-elim (¬x x)))
      , (λ _ → ¬x) , (λ _ → refl)
-     
+
 LPO-implies-ℕ-searchability : LPO → searchable 𝓦 ℕ
 LPO-implies-ℕ-searchability {𝓦} f (p , d)
  = Cases (f (λ i → decidable-𝟚 (d i)))
@@ -251,7 +251,7 @@ csearchable-pointed
  : (𝓦 : Universe)
  → (X : ClosenessSpace 𝓤)
  → csearchable 𝓦 X
- → ⟨ X ⟩ 
+ → ⟨ X ⟩
 csearchable-pointed 𝓦 X Sx
  = pr₁ (Sx (((λ _ → ⊤) , (λ _ → inl ⋆)) , 0 , λ _ _ _ → id))
 

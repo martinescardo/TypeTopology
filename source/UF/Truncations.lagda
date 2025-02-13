@@ -51,7 +51,7 @@ record general-truncations-exist : 𝓤ω where
   ∥_∥[_] : 𝓤 ̇ → ℕ₋₂ → 𝓤 ̇
   ∥∥ₙ-is-truncated : {X : 𝓤 ̇ } {n : ℕ₋₂} → ∥ X ∥[ n ] is n truncated
   ∣_∣[_] :  {X : 𝓤 ̇ } → X → (n : ℕ₋₂) → ∥ X ∥[ n ]
-  ∥∥ₙ-ind : {X : 𝓤 ̇ } {n : ℕ₋₂} {P : ∥ X ∥[ n ] → 𝓥 ̇}
+  ∥∥ₙ-ind : {X : 𝓤 ̇ } {n : ℕ₋₂} {P : ∥ X ∥[ n ] → 𝓥 ̇ }
           → ((s : ∥ X ∥[ n ]) → (P s) is n truncated)
           → ((x : X) → P (∣ x ∣[ n ]))
           → (s : ∥ X ∥[ n ]) → P s
@@ -84,7 +84,7 @@ computation rules.
  ∥∥ₙ-uniqueness m f g =
   ∥∥ₙ-ind (λ s → truncation-levels-closed-under-Id m (f s) (g s))
 
- ∥∥ₙ-universal-property : {X : 𝓤 ̇} {Y : 𝓥 ̇} {n : ℕ₋₂}
+ ∥∥ₙ-universal-property : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {n : ℕ₋₂}
                         → Y is n truncated
                         → (∥ X ∥[ n ] → Y) ≃ (X → Y)
  ∥∥ₙ-universal-property {_} {_} {X} {Y} {n} Y-trunc =
@@ -105,7 +105,7 @@ computation rules.
    G : foreward ∘ backward ∼ id
    G f = dfunext fe (∥∥ₙ-ind-comp (λ - → Y-trunc) f)
 
- to-∼-of-maps-between-truncated-types : {X : 𝓤 ̇} {Y : 𝓥 ̇} {n : ℕ₋₂}
+ to-∼-of-maps-between-truncated-types : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {n : ℕ₋₂}
                                       → (f g : ∥ X ∥[ n ] → ∥ Y ∥[ n ])
                                       → ((x : X)
                                             → f (∣ x ∣[ n ]) ＝ g (∣ x ∣[ n ]))
@@ -154,7 +154,7 @@ computation rules.
      II = ∥∥ₙ-rec-comp ∥∥ₙ-is-truncated ∣ g ∣ₙ (f x) ⁻¹
      III = ap ∥ g ∥ₙ (∥∥ₙ-rec-comp ∥∥ₙ-is-truncated ∣ f ∣ₙ x) ⁻¹
 
- ∥∥ₙ-preserves-homotopy' : {X : 𝓤 ̇} {Y : 𝓥 ̇} {n : ℕ₋₂}
+ ∥∥ₙ-preserves-homotopy' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {n : ℕ₋₂}
                         → (f g : X → Y)
                         → f ∼ g
                         → ∥ f ∥ₙ ∘ ∣_∣[ n ] ∼ ∥ g ∥ₙ ∘ ∣_∣[ n ]
@@ -168,7 +168,7 @@ computation rules.
    II = ap ∣_∣[ n ] (H x)
    III = ∥∥ₙ-rec-comp ∥∥ₙ-is-truncated ∣ g ∣ₙ x ⁻¹
 
- ∥∥ₙ-preserves-homotopy : {X : 𝓤 ̇} {Y : 𝓥 ̇} {n : ℕ₋₂}
+ ∥∥ₙ-preserves-homotopy : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {n : ℕ₋₂}
                         → (f g : X → Y)
                         → f ∼ g
                         → ∥ f ∥ₙ ∼ ∥ g ∥ₙ
@@ -201,7 +201,7 @@ computation rules.
 
  abstract
   ∥∥ₙ-ind₂ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {n : ℕ₋₂}
-           → (P : ∥ X ∥[ n ] → ∥ Y ∥[ n ] → 𝓦 ̇)
+           → (P : ∥ X ∥[ n ] → ∥ Y ∥[ n ] → 𝓦 ̇ )
            → ((u : ∥ X ∥[ n ]) → (v : ∥ Y ∥[ n ]) → (P u v) is n truncated)
            → ((x : X) → (y : Y) → P (∣ x ∣[ n ]) (∣ y ∣[ n ]))
            → (u : ∥ X ∥[ n ]) → (v : ∥ Y ∥[ n ]) → P u v
@@ -210,7 +210,7 @@ computation rules.
            (λ x → ∥∥ₙ-ind (λ v → m ∣ x ∣[ n ] v) (f x))
 
   ∥∥ₙ-ind-comp₂ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {n : ℕ₋₂}
-                → (P : ∥ X ∥[ n ] → ∥ Y ∥[ n ] → 𝓦 ̇)
+                → (P : ∥ X ∥[ n ] → ∥ Y ∥[ n ] → 𝓦 ̇ )
                 → (m : (u : ∥ X ∥[ n ]) → (v : ∥ Y ∥[ n ])
                  → (P u v) is n truncated)
                 → (g : (x : X) → (y : Y) → P (∣ x ∣[ n ]) (∣ y ∣[ n ]))
@@ -260,21 +260,21 @@ We demonstrate the equivalence of -1-truncation and propositional truncation:
 
   open propositional-truncations-exist pt
 
-  −1-trunc-to-prop-trunc : {X : 𝓤 ̇} → ∥ X ∥[ −1 ] → ∥ X ∥
+  −1-trunc-to-prop-trunc : {X : 𝓤 ̇ } → ∥ X ∥[ −1 ] → ∥ X ∥
   −1-trunc-to-prop-trunc = ∥∥ₙ-rec (is-prop-implies-is-prop' ∥∥-is-prop) ∣_∣
 
-  prop-trunc-to-−1-trunc : {X : 𝓤 ̇} → ∥ X ∥ → ∥ X ∥[ −1 ]
+  prop-trunc-to-−1-trunc : {X : 𝓤 ̇ } → ∥ X ∥ → ∥ X ∥[ −1 ]
   prop-trunc-to-−1-trunc = ∥∥-rec −1-trunc-is-prop (∣_∣[ −1 ])
 
-  −1-trunc-≃-prop-trunc : {X : 𝓤 ̇}
+  −1-trunc-≃-prop-trunc : {X : 𝓤 ̇ }
                          → (∥ X ∥[ −1 ]) ≃ ∥ X ∥
   −1-trunc-≃-prop-trunc =
    logically-equivalent-props-are-equivalent −1-trunc-is-prop ∥∥-is-prop
                                              −1-trunc-to-prop-trunc
                                              prop-trunc-to-−1-trunc
 
-  props-are-truncated : {X : 𝓤 ̇} {n : ℕ₋₂}
-                      → is-prop X 
+  props-are-truncated : {X : 𝓤 ̇ } {n : ℕ₋₂}
+                      → is-prop X
                       → X is (n + 1) truncated
   props-are-truncated {_} {_} {−2} = is-prop-implies-is-prop'
   props-are-truncated {_} {_} {succ n} X-is-prop =
@@ -286,12 +286,12 @@ We demonstrate the equivalence of -1-truncation and propositional truncation:
 We define the canonical predecessor map and give a computation rule.
 
 \begin{code}
- canonical-pred-map : {X : 𝓤 ̇} {n : ℕ₋₂}
+ canonical-pred-map : {X : 𝓤 ̇ } {n : ℕ₋₂}
                     → ∥ X ∥[ n + 1 ] → ∥ X ∥[ n ]
  canonical-pred-map {𝓤} {X} {n} =
   ∥∥ₙ-rec (truncation-levels-are-upper-closed ∥∥ₙ-is-truncated) ∣_∣[ n ]
 
- canonical-pred-map-comp : {X : 𝓤 ̇} {n : ℕ₋₂} (x : X)
+ canonical-pred-map-comp : {X : 𝓤 ̇ } {n : ℕ₋₂} (x : X)
                          → canonical-pred-map (∣ x ∣[ n + 1 ]) ＝ (∣ x ∣[ n ])
  canonical-pred-map-comp {𝓤} {X} {n} =
   ∥∥ₙ-rec-comp (truncation-levels-are-upper-closed ∥∥ₙ-is-truncated) ∣_∣[ n ]
@@ -306,7 +306,7 @@ can be refactored to use closure under retracts.
 
 \begin{code}
 
- truncation-closed-under-retract : {X : 𝓤 ̇} {Y : 𝓥 ̇} {n : ℕ₋₂}
+ truncation-closed-under-retract : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {n : ℕ₋₂}
                                  → retract Y of X
                                  → retract ∥ Y ∥[ n ] of ∥ X ∥[ n ]
  truncation-closed-under-retract {_} {_} {X} {Y} {n} (r , s , H) =
@@ -322,7 +322,7 @@ can be refactored to use closure under retracts.
      II = ∥∥ₙ-preserves-homotopy (r ∘ s) id H y
      III = ∥∥ₙ-id-functorial y
 
- truncation-closed-under-equiv : {X : 𝓤 ̇} {Y : 𝓥 ̇} {n : ℕ₋₂}
+ truncation-closed-under-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {n : ℕ₋₂}
                                → X ≃ Y
                                → ∥ X ∥[ n ] ≃ ∥ Y ∥[ n ]
  truncation-closed-under-equiv {𝓤} {𝓥} {X} {Y} {n} e = (f , (b , G) , (b , H))
@@ -356,13 +356,13 @@ can be refactored to use closure under retracts.
        II = ∥∥ₙ-rec-comp ∥∥ₙ-is-truncated (λ x → ∣ ⌜ e ⌝ x ∣[ n ]) (⌜ e ⌝⁻¹ y)
        III = ap ∣_∣[ n ] (inverses-are-sections' e y)
 
- truncations-of-small-types-are-small : {X : 𝓤 ̇} {n : ℕ₋₂}
+ truncations-of-small-types-are-small : {X : 𝓤 ̇ } {n : ℕ₋₂}
                                       → X is 𝓥 small
                                       → ∥ X ∥[ n ] is 𝓥 small
  truncations-of-small-types-are-small {_} {_} {_} {n} (Y , e) =
   (∥ Y ∥[ n ] , truncation-closed-under-equiv e)
 
- successive-truncations-equiv : {X : 𝓤 ̇} {n : ℕ₋₂}
+ successive-truncations-equiv : {X : 𝓤 ̇ } {n : ℕ₋₂}
                               → (∥ X ∥[ n ]) ≃ (∥ (∥ X ∥[ n + 1 ]) ∥[ n ])
  successive-truncations-equiv {𝓤} {X} {n} = (f , (b , G) , (b , H))
   where
@@ -401,7 +401,7 @@ can be refactored to use closure under retracts.
        I = ap b (∥∥ₙ-rec-comp ∥∥ₙ-is-truncated (λ _ → ∣ ∣ _ ∣[ n + 1 ] ∣[ n ]) x)
        II = ∥∥ₙ-rec-comp ∥∥ₙ-is-truncated canonical-pred-map (∣ x ∣[ n + 1 ])
 
- truncated-Σ-≃ : {X : 𝓤 ̇} {P : X → 𝓦 ̇} {n : ℕ₋₂}
+ truncated-Σ-≃ : {X : 𝓤 ̇ } {P : X → 𝓦 ̇ } {n : ℕ₋₂}
                → ∥ Σ x ꞉ X , ∥ P x ∥[ n ] ∥[ n ] ≃ ∥ Σ x ꞉ X , P x ∥[ n ]
  truncated-Σ-≃ {_} {_} {X} {P} {n} = (f , (b , G) , (b , H))
   where
@@ -409,18 +409,18 @@ can be refactored to use closure under retracts.
    f = ∥∥ₙ-rec ∥∥ₙ-is-truncated
                (uncurry (λ x → ∥∥ₙ-rec ∥∥ₙ-is-truncated (λ p → ∣ (x , p) ∣[ n ])))
    b : ∥ Σ x ꞉ X , P x ∥[ n ] → ∥ Σ x ꞉ X , ∥ P x ∥[ n ] ∥[ n ]
-   b = ∥∥ₙ-rec ∥∥ₙ-is-truncated (λ (x , p) → ∣ (x , ∣ p ∣[ n ] ) ∣[ n ])
+   b = ∥∥ₙ-rec ∥∥ₙ-is-truncated (λ (x , p) → ∣ (x , ∣ p ∣[ n ]) ∣[ n ])
    G : f ∘ b ∼ id
    G = ∥∥ₙ-uniqueness ∥∥ₙ-is-truncated (f ∘ b) id G'
     where
      G' : (z : Σ x ꞉ X , P x) → f (b ∣ z ∣[ n ]) ＝ ∣ z ∣[ n ]
      G' (x , p) = f (b ∣ (x , p) ∣[ n ])       ＝⟨ I ⟩
-                  f ∣ (x , ∣ p ∣[ n ] ) ∣[ n ] ＝⟨ II ⟩
+                  f ∣ (x , ∣ p ∣[ n ]) ∣[ n ] ＝⟨ II ⟩
                   f' (x , ∣ p ∣[ n ])          ＝⟨ III ⟩
                   ∣ (x , p) ∣[ n ]             ∎
       where
        I = ap f (∥∥ₙ-rec-comp ∥∥ₙ-is-truncated
-                              (λ (x , p) → ∣ (x , ∣ p ∣[ n ] ) ∣[ n ])
+                              (λ (x , p) → ∣ (x , ∣ p ∣[ n ]) ∣[ n ])
                               (x , p))
        f' = uncurry (λ x → ∥∥ₙ-rec ∥∥ₙ-is-truncated (λ p → ∣ x , p ∣[ n ]))
        II = ∥∥ₙ-rec-comp ∥∥ₙ-is-truncated f' (x , ∣ p ∣[ n ])
@@ -441,7 +441,7 @@ can be refactored to use closure under retracts.
        I = ap b (∥∥ₙ-rec-comp ∥∥ₙ-is-truncated f' (x , ∣ p ∣[ n ]))
        II = ap b (∥∥ₙ-rec-comp ∥∥ₙ-is-truncated (λ p → ∣ x , p ∣[ n ]) p)
        III = ∥∥ₙ-rec-comp ∥∥ₙ-is-truncated
-                          (λ (x , p) → ∣ (x , ∣ p ∣[ n ] ) ∣[ n ])
+                          (λ (x , p) → ∣ (x , ∣ p ∣[ n ]) ∣[ n ])
                           (x , p)
      H''' : (x : X)
           → (p : ∥ P x ∥[ n ])
@@ -461,14 +461,14 @@ for details see: https://unimath.github.io/agda-unimath/foundation.truncations.
 
 \begin{code}
 
- canonical-identity-trunc-map : {X : 𝓤 ̇} {x x' : X} {n : ℕ₋₂}
+ canonical-identity-trunc-map : {X : 𝓤 ̇ } {x x' : X} {n : ℕ₋₂}
                               → ∥ x ＝ x' ∥[ n ]
                               → ∣ x ∣[ n + 1 ] ＝ ∣ x' ∣[ n + 1 ]
  canonical-identity-trunc-map {𝓤} {X} {x} {x'} {n} =
   ∥∥ₙ-rec (∥∥ₙ-is-truncated ∣ x ∣[ n + 1 ] ∣ x' ∣[ n + 1 ])
           (ap ∣_∣[ n + 1 ])
 
- module _ {X : 𝓤 ̇} {n : ℕ₋₂}
+ module _ {X : 𝓤 ̇ } {n : ℕ₋₂}
           (ua : is-univalent 𝓤) (x : X)
            where
 
@@ -568,7 +568,7 @@ for details see: https://unimath.github.io/agda-unimath/foundation.truncations.
                                          (∣ x ∣[ n + 1 ] , refl-trunc-id-family)
     trunc-id-fam-is-central (v , q) = IV v q
 
- trunc-identity-characterization : {X : 𝓤 ̇} {n : ℕ₋₂}
+ trunc-identity-characterization : {X : 𝓤 ̇ } {n : ℕ₋₂}
                                  → (ua : is-univalent 𝓤)
                                  → (x : X) (v : ∥ X ∥[ n + 1 ])
                                  → (∣ x ∣[ n + 1 ] ＝ v)
@@ -579,7 +579,7 @@ for details see: https://unimath.github.io/agda-unimath/foundation.truncations.
     (identity-on-trunc-to-family ua x)
     (trunc-id-family-is-identity-system ua x) v)
 
- eliminated-trunc-identity-char : {X : 𝓤 ̇} {x x' : X} {n : ℕ₋₂}
+ eliminated-trunc-identity-char : {X : 𝓤 ̇ } {x x' : X} {n : ℕ₋₂}
                                 → (ua : is-univalent 𝓤)
                                 → ∥ x ＝ x' ∥[ n ]
                                 ≃ (∣ x ∣[ n + 1 ] ＝ ∣ x' ∣[ n + 1 ])
@@ -589,7 +589,7 @@ for details see: https://unimath.github.io/agda-unimath/foundation.truncations.
                  (trunc-id-family-computes ua x x' ⁻¹))
          (≃-sym (trunc-identity-characterization ua x ∣ x' ∣[ n + 1 ]))
 
- forth-trunc-id-char : {X : 𝓤 ̇} {x x' : X} {n : ℕ₋₂}
+ forth-trunc-id-char : {X : 𝓤 ̇ } {x x' : X} {n : ℕ₋₂}
                      → (ua : is-univalent 𝓤)
                      → ∥ x ＝ x' ∥[ n ]
                      → (∣ x ∣[ n + 1 ] ＝ ∣ x' ∣[ n + 1 ])

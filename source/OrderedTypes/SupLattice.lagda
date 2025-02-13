@@ -43,7 +43,7 @@ module _ (𝓤 𝓣 𝓥 : Universe) where
  sup-lattice-data : 𝓤  ̇ → 𝓤 ⊔ 𝓣 ⁺ ⊔ 𝓥 ⁺  ̇
  sup-lattice-data A = (A → A → Ω 𝓣) × (Fam 𝓥 A → A)
 
- is-sup-lattice : {A : 𝓤  ̇} → sup-lattice-data A → 𝓤 ⊔ 𝓣 ⊔ 𝓥 ⁺  ̇
+ is-sup-lattice : {A : 𝓤  ̇ } → sup-lattice-data A → 𝓤 ⊔ 𝓣 ⊔ 𝓥 ⁺  ̇
  is-sup-lattice {A} (_≤_ , ⋁_) = is-partial-order A _≤_ × suprema
   where
    open Joins _≤_
@@ -146,7 +146,7 @@ spaces are ordered as expected.
 module _
         {𝓤 𝓣 𝓥 : Universe}
         (L : Sup-Lattice 𝓤 𝓣 𝓥)
-        {A : 𝓥  ̇}
+        {A : 𝓥  ̇ }
         (m : A → ⟨ L ⟩)
        where
 
@@ -171,7 +171,7 @@ We now show if a type is small and has a map to the carrier then it has a join.
 module _
         {𝓤 𝓣 𝓥 𝓦 : Universe}
         (L : Sup-Lattice 𝓤 𝓣 𝓥)
-        {T : 𝓦  ̇}
+        {T : 𝓦  ̇ }
         (m : T → ⟨ L ⟩)
         (T-is-small : T is 𝓥 small)
        where
@@ -237,8 +237,8 @@ We now show that reindexing families along a surjection preserves the supremum.
 module _
         {𝓤 𝓣 𝓥 𝓦 𝓦' : Universe}
         (L : Sup-Lattice 𝓤 𝓣 𝓥)
-        {T : 𝓦  ̇}
-        {T' : 𝓦'  ̇}
+        {T : 𝓦  ̇ }
+        {T' : 𝓦'  ̇ }
         (e : T' ↠ T)
         (m : T → ⟨ L ⟩)
        where
@@ -279,8 +279,8 @@ surjection.
 module _
         {𝓤 𝓣 𝓥 𝓦 𝓦' : Universe}
         (L : Sup-Lattice 𝓤 𝓣 𝓥)
-        {T : 𝓦  ̇}
-        {T' : 𝓦'  ̇}
+        {T : 𝓦  ̇ }
+        {T' : 𝓦'  ̇ }
         (e : T' ≃ T)
         (m : T → ⟨ L ⟩)
        where

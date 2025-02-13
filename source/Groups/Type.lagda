@@ -62,7 +62,7 @@ Direct proof that the "group-axioms" is a proposition.
 \begin{code}
 
 group-axioms-is-prop : funext 𝓤 𝓤
-                     → (X : 𝓤 ̇)
+                     → (X : 𝓤 ̇ )
                      → (_·_ : group-structure X)
                      → is-prop (group-axioms X _·_)
 group-axioms-is-prop fe X _·_ s = γ s

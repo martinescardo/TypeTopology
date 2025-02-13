@@ -141,7 +141,7 @@ It is immediate that `Isomorphism` and `Isomorphismᵣ` are equivalent types.
    ; 𝓇           = 𝓇
    ; 𝓇-cancels-𝓈 = ψ
    ; 𝓈-cancels-𝓇 = φ
-   }
+  }
 
  isomorphismᵣ-to-isomorphism : Isomorphismᵣ → Isomorphism
  isomorphismᵣ-to-isomorphism iso =
@@ -211,7 +211,7 @@ These two notions of frame isomorphism are equivalent.
    ; 𝓇           = inverse ⌜ e ⌝ (⌜⌝-is-equiv e) , ψ
    ; 𝓇-cancels-𝓈 = inverses-are-retractions ⌜ e ⌝ (⌜⌝-is-equiv e)
    ; 𝓈-cancels-𝓇 = inverses-are-sections ⌜ e ⌝ (⌜⌝-is-equiv e)
-   }
+  }
 
  isomorphism-to-isomorphism₀ : Isomorphism → Isomorphism₀
  isomorphism-to-isomorphism₀ =

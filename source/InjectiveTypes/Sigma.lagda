@@ -48,11 +48,11 @@ We now introduce some abbreviations.
 
 \begin{code}
 
-extension : {X : 𝓤 ̇}
+extension : {X : 𝓤 ̇ }
           → aflabby X 𝓦 → (p : Ω 𝓦) → (p holds → X) → X
 extension = aflabby-extension
 
-extends : {X : 𝓤 ̇} (ϕ : aflabby X 𝓦) (p : Ω 𝓦)
+extends : {X : 𝓤 ̇ } (ϕ : aflabby X 𝓦) (p : Ω 𝓦)
           (f : p holds → X) (h : p holds)
         → extension ϕ p f ＝ f h
 extends  = aflabby-extension-property
@@ -211,6 +211,7 @@ section following automatically.
    where
     I : ((h : p holds) → A (f h)) → A (extension ϕ p f)
     I = c p f
+
     II : ρ p f ∘ c p f ∼ id
     II g = dfunext fe'
                    (λ h → A-is-prop-valued (f h) ((ρ p f ∘ c p f) g h) (g h))
@@ -220,7 +221,9 @@ section following automatically.
                     → aflabby (Σ A) 𝓦
  subtype-is-aflabby A-is-prop-valued c =
   Σ-is-aflabby
-   (simplified-compatibility-condition-gives-compatibility-condition A-is-prop-valued c)
+   (simplified-compatibility-condition-gives-compatibility-condition
+     A-is-prop-valued
+     c)
 
 \end{code}
 

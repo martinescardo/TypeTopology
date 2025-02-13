@@ -166,11 +166,13 @@ equivalents.
 
 \begin{code}
 
-mapᵀ-path-head-lemma : {X : Type} {Xf : X → 𝑻}
-                       (a : T X) (b : (x : X) → T (Path (Xf x)))
-                     → ext-const 𝕋
-                     → mapᵀ path-head (a ⊗ᵀ b) ＝ a
-mapᵀ-path-head-lemma {X} {Xf} a b ext-const =
+mapᵀ-path-head-lemma' : {X : Type}
+                        {Xf : X → 𝑻}
+                        (a : T X)
+                        (b : (x : X) → T (Path (Xf x)))
+                      → mapᵀ path-head (a ⊗ᵀ b)
+                      ＝ extᵀ (λ x → extᵀ (λ _ → ηᵀ x) (b x)) a
+mapᵀ-path-head-lemma' {X} {Xf} a b =
   mapᵀ path-head (a ⊗ᵀ b)                                  ＝⟨ refl ⟩
   extᵀ (ηᵀ ∘ path-head) (a ⊗ᵀ b)                           ＝⟨ refl ⟩
   extᵀ g (a ⊗ᵀ b)                                          ＝⟨ refl ⟩
@@ -183,9 +185,7 @@ mapᵀ-path-head-lemma {X} {Xf} a b ext-const =
   extᵀ (λ x → extᵀ (extᵀ g ∘ (f x)) (b x)) a               ＝⟨ refl ⟩
   extᵀ (λ x → extᵀ (λ xs → extᵀ g (ηᵀ (x :: xs))) (b x)) a ＝⟨ ⦅3⦆ ⟩
   extᵀ (λ x → extᵀ (λ xs → g (x :: xs)) (b x)) a           ＝⟨ refl ⟩
-  extᵀ (λ x → extᵀ (λ _ → ηᵀ x) (b x)) a                   ＝⟨ ⦅4⦆ ⟩
-  extᵀ ηᵀ a                                                ＝⟨ extᵀ-η a ⟩
-  a                                                        ∎
+  extᵀ (λ x → extᵀ (λ _ → ηᵀ x) (b x)) a                   ∎
  where
   g : Path (X ∷ Xf) → T X
   g = ηᵀ ∘ path-head
@@ -202,7 +202,20 @@ mapᵀ-path-head-lemma {X} {Xf} a b ext-const =
   ⦅1⦆ = (assocᵀ g (λ x → extᵀ (f x) (b x)) a)⁻¹
   ⦅2⦆ = ap (λ - → extᵀ - a) (fext I)
   ⦅3⦆ = ap (λ - →  extᵀ (λ x → extᵀ (- x) (b x)) a) (fext (λ x → fext (II x)))
-  ⦅4⦆ = ap (λ - → extᵀ - a) (fext (λ x → ext-const (ηᵀ x) (b x)))
+
+
+mapᵀ-path-head-lemma : {X : Type} {Xf : X → 𝑻}
+                       (a : T X) (b : (x : X) → T (Path (Xf x)))
+                     → ext-const 𝕋
+                     → mapᵀ path-head (a ⊗ᵀ b) ＝ a
+mapᵀ-path-head-lemma {X} {Xf} a b ext-const =
+  mapᵀ path-head (a ⊗ᵀ b)                                  ＝⟨ ⦅1⦆ ⟩
+  extᵀ (λ x → extᵀ (λ _ → ηᵀ x) (b x)) a                   ＝⟨ ⦅2⦆ ⟩
+  extᵀ ηᵀ a                                                ＝⟨ extᵀ-η a ⟩
+  a                                                        ∎
+ where
+  ⦅1⦆ = mapᵀ-path-head-lemma' a b
+  ⦅2⦆ = ap (λ - → extᵀ - a) (fext (λ x → ext-const (ηᵀ x) (b x)))
 
 \end{code}
 

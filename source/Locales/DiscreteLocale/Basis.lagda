@@ -42,7 +42,7 @@ We work in a module parameterized by a set `X`.
 
 \begin{code}
 
-module basis-for-the-discrete-locale (X : 𝓤  ̇) (σ : is-set X) where
+module basis-for-the-discrete-locale (X : 𝓤  ̇ ) (σ : is-set X) where
 
  open binary-unions-of-subsets pt
  open singleton-subsets σ

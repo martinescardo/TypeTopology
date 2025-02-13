@@ -1,4 +1,4 @@
-Martin Escardo, 25th August 2022,
+`>Martin Escardo, 25th August 2022,
 written down in Agda 27th August 2022 while travelling back from
 Thierry Coquand's 60th birthday celebration.
 
@@ -692,7 +692,8 @@ not all two elements are equal, which means that the type is not a
 proposition.
 
 (Of course, "Σ" in the hypothesis can be replaced by "∃" because the
-type of the conclusion, being a negation, is a proposition.)
+type of the conclusion, being a negation, is a proposition, if we
+assume function extensionality.)
 
 \begin{code}
 

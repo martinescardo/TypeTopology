@@ -622,7 +622,7 @@ above form of induction.
             → (α : 𝕆) → P α
 <-induction P IH = 𝕆-induction P f
  where
-  f : (X : 𝓤 ̇) (ϕ : X → 𝕆) (e : is-embedding ϕ) (l : is-lower-closed ϕ)
+  f : (X : 𝓤 ̇ ) (ϕ : X → 𝕆) (e : is-embedding ϕ) (l : is-lower-closed ϕ)
     → ((x : X) → P (ϕ x))
     → P (𝕆-ssup X ϕ e l)
   f X ϕ e l u = IH α s

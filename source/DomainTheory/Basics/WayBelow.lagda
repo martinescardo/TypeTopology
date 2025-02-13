@@ -282,7 +282,7 @@ module _
            ; s-section-of-r = π-ε-retraction
            ; s-is-continuous = ε-is-continuous
            ; r-is-continuous = π-is-continuous
-           }
+          }
 
  embeddings-reflect-compactness : (x : ⟨ 𝓓 ⟩)
                                 → is-compact 𝓔 (ε x)

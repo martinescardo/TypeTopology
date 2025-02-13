@@ -411,7 +411,7 @@ then εt are selections of ϕt, but we don't need this fact here.
 
 \begin{code}
 
-main-lemma : {Xt : 𝑻 } (εt : 𝓙 Xt) (q : Path Xt → R)
+main-lemma : {Xt : 𝑻} (εt : 𝓙 Xt) (q : Path Xt → R)
            → strategic-path (selection-strategy εt q)
            ＝ sequenceᴶ εt q
 main-lemma {[]}     ⟨⟩           q = refl

@@ -359,7 +359,7 @@ operation even though they are not constructively sufficient to define it.
 
   suprema-equation : (Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) → 𝓤 ⁺ ̇
   suprema-equation {𝓤} _⊗_ =
-   (α : Ordinal 𝓤) (I : 𝓤 ̇  ) (β : I → Ordinal 𝓤)
+   (α : Ordinal 𝓤) (I : 𝓤 ̇ ) (β : I → Ordinal 𝓤)
     → α ⊗ (sup β) ＝ sup (λ i → α ⊗ β i)
 
   recursive-equation : (Ordinal 𝓤 → Ordinal 𝓤 → Ordinal 𝓤) → 𝓤 ⁺ ̇

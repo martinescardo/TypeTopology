@@ -398,7 +398,7 @@ record _continuous-retract-of_
   ; s-section-of-r = s
   ; s-is-continuous = cf
   ; r-is-continuous = cg
-  }
+ }
 
 is-embedding-projection : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
                         → DCPO[ 𝓓 , 𝓔 ]
@@ -436,7 +436,7 @@ record embedding-projection-pair-between
   ; e-p-deflation = λ y → ＝-to-⊑ 𝓔 (r y)
   ; e-is-continuous = cf
   ; p-is-continuous = cg
-  }
+ }
 
 \end{code}
 
@@ -532,7 +532,7 @@ alternative definitions of local smallness and proving their equivalence.
     where
      open is-locally-small ls
    g : is-locally-small-Σ → is-locally-small
-   g ls = record { _⊑ₛ_ = pr₁ ls ; ⊑ₛ-≃-⊑ = (λ {x} {y} → pr₂ ls x y) }
+   g ls = record { _⊑ₛ_ = pr₁ ls ; ⊑ₛ-≃-⊑ = (λ {x} {y} → pr₂ ls x y)}
 
  is-locally-small' : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
  is-locally-small' = (x y : ⟨ 𝓓 ⟩) → is-small (x ⊑⟨ 𝓓 ⟩ y)
@@ -788,7 +788,7 @@ property.
 \begin{code}
 
 is-closed-under-directed-sups : (𝓓 : DCPO {𝓤} {𝓣})
-                              → (⟨ 𝓓 ⟩ → 𝓦 ̇)
+                              → (⟨ 𝓓 ⟩ → 𝓦 ̇ )
                               → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ⊔ 𝓦 ̇
 is-closed-under-directed-sups {𝓤} {𝓣} 𝓓 P =
     {I : 𝓥 ̇ } (α : I → ⟨ 𝓓 ⟩) (δ : is-Directed 𝓓 α)
@@ -799,7 +799,7 @@ open import UF.Sets-Properties
 
 module _
          (𝓓 : DCPO {𝓤} {𝓣})
-         (P : ⟨ 𝓓 ⟩ → 𝓦 ̇)
+         (P : ⟨ 𝓓 ⟩ → 𝓦 ̇ )
          (P-is-prop-valued : (x : ⟨ 𝓓 ⟩) → is-prop (P x))
          (P-is-closed-under-directed-sups : is-closed-under-directed-sups 𝓓 P)
        where

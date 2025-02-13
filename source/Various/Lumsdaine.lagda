@@ -24,7 +24,7 @@ module Various.Lumsdaine
         where
 
 private
-  record Σ {𝓤 𝓥 } {X : 𝓤 ̇ } (Y : X → 𝓥 ̇ ) : 𝓤 ⊔ 𝓥 ̇ where
+  record Σ {𝓤 𝓥} {X : 𝓤 ̇ } (Y : X → 𝓥 ̇ ) : 𝓤 ⊔ 𝓥 ̇ where
    constructor _,_
    field
     pr₁ : X
@@ -59,7 +59,7 @@ module _ {X : 𝓤 ̇ }
       B : (y : X) → Id x y → 𝓤 ̇
       B y q = lc-maps (A t p) (A y q)
       C : (y : X) → Id x y → 𝓤 ̇
-      C y p = lc-maps (A y p ) (A x refl)
+      C y p = lc-maps (A y p) (A x refl)
 
     h : (b : A x refl) {y : X} (p : Id x y)
       → Σ x ꞉ A y p , Id (pr₁ (g p p) x) (pr₁ (g refl p) b)

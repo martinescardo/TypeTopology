@@ -49,7 +49,7 @@ discrete type.
 
 \begin{code}
 
-List⁻-DGM : (X : 𝓤 ̇) {{d : is-discrete' X}} → DGM 𝓤
+List⁻-DGM : (X : 𝓤 ̇ ) {{d : is-discrete' X}} → DGM 𝓤
 List⁻-DGM X =
  List⁻ X  ,
  ([]⁻ , _·_) ,

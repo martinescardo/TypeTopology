@@ -154,7 +154,7 @@ structurally-continuous-if-structurally-algebraic 𝓓 sa =
   ; approximating-family-is-directed  = compact-family-is-directed
   ; approximating-family-is-way-below = γ
   ; approximating-family-∐-＝          = compact-family-∐-＝
-  }
+ }
   where
    open structurally-algebraic sa
    γ : (x : ⟨ 𝓓 ⟩) → is-way-upperbound 𝓓 x (compact-family x)
@@ -512,7 +512,7 @@ module _
    ; approximating-family-is-directed  = lemma₁
    ; approximating-family-is-way-below = lemma₂
    ; approximating-family-∐-＝          = lemma₃
-   }
+  }
    where
     open structurally-continuous C
     α : (y : ⟨ 𝓔 ⟩) → index-of-approximating-family y → ⟨ 𝓔 ⟩
@@ -560,7 +560,7 @@ structurally-continuous-+-construction 𝓓 sc =
   ; approximating-family-is-directed = δ'
   ; approximating-family-is-way-below = wb'
   ; approximating-family-∐-＝ = eq'
-  }
+ }
   where
    open structurally-continuous sc
          renaming (index-of-approximating-family to I ;

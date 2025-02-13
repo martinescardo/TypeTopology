@@ -163,19 +163,19 @@ r (s p) = (s p ＝ s ⊤)
 open import UF.UniverseEmbedding
 
 remark : ainjective-type (𝓤 ̇ ) (𝓤 ⁺) (𝓤 ⁺ ⁺)
-       → retract 𝓤 ̇ of (𝓤 ⁺ ̇)
+       → retract 𝓤 ̇ of (𝓤 ⁺ ̇ )
 remark {𝓤} ainj = ρ σ
  where
   σ : Σ r ꞉ (𝓤 ⁺ ̇ → 𝓤 ̇ ) , r ∘ Lift (𝓤 ⁺) ∼ id
   σ = ainj (Lift (𝓤 ⁺)) (Lift-is-embedding ua) id
 
-  ρ : type-of σ → retract 𝓤 ̇ of (𝓤 ⁺ ̇)
+  ρ : type-of σ → retract 𝓤 ̇ of (𝓤 ⁺ ̇ )
   ρ (r , rs) = r , Lift (𝓤 ⁺) , rs
 
-kramer : retract 𝓤 ̇ of (𝓤 ⁺ ̇)
+kramer : retract 𝓤 ̇ of (𝓤 ⁺ ̇ )
        → ainjective-type (𝓤 ̇ ) (𝓤 ⁺) (𝓤 ⁺)
 kramer {𝓤} ρ =
- retract-of-ainjective (𝓤 ̇) (𝓤 ⁺ ̇) (universes-are-ainjective-Π (ua (𝓤 ⁺))) ρ
+ retract-of-ainjective (𝓤 ̇ ) (𝓤 ⁺ ̇ ) (universes-are-ainjective-Π (ua (𝓤 ⁺))) ρ
 
 \end{code}
 

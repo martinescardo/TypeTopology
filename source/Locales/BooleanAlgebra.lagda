@@ -772,7 +772,7 @@ The map `h⁻` is the _unique_ map making the diagram commute.
 
        Ⅰ = ap
             (λ - → ⋁[ L′ ] (index (↓↓ x) , -))
-            (dfunext fe λ { (b , _) → ψ′′ b })
+            (dfunext fe λ { (b , _) → ψ′′ b})
 
        Ⅱ = ⋁[ L′ ]-unique _ _ (φ′₃ ⁅ η b ∣ (b , _) ∶ Σ b ꞉ ⟪ B ⟫ , η b ≤L x  ⁆) ⁻¹
 
@@ -787,7 +787,7 @@ then `L` itself has a copy in universe `𝓥`
 
 \begin{code}
 
-transport-ba-structure : (X : 𝓤  ̇) (Y : 𝓤'  ̇) (f : X → Y)
+transport-ba-structure : (X : 𝓤  ̇ ) (Y : 𝓤'  ̇ ) (f : X → Y)
                        → is-equiv f
                        → (b : ba-structure 𝓥 X)
                        → Σ b′ ꞉ ba-structure 𝓥 Y ,

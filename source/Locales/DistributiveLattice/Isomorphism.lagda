@@ -98,7 +98,7 @@ Lemma for showing the equality two distributive lattice isomorphisms.
    q = to-homomorphismᵈ-＝ L₂ L₁ (𝓇 𝒾) (𝓇 𝒿) ψ
 
    g : (r 𝒾 ∘ s 𝒾) ∼ id → (s 𝒾 ∘ r 𝒾) ∼ id → Isomorphismᵈᵣ
-   g e₁ e₂ = record { 𝓈 = 𝓈 𝒾 ; 𝓇 = 𝓇 𝒾 ; r-cancels-s = e₁ ; s-cancels-r = e₂ }
+   g e₁ e₂ = record { 𝓈 = 𝓈 𝒾 ; 𝓇 = 𝓇 𝒾 ; r-cancels-s = e₁ ; s-cancels-r = e₂}
 
    f : 𝓈 𝒾 ＝ 𝓈 𝒿 → 𝓇 𝒾 ＝ 𝓇 𝒿 → Isomorphismᵈᵣ
    f refl refl =
@@ -107,7 +107,7 @@ Lemma for showing the equality two distributive lattice isomorphisms.
      ; 𝓇           = 𝓇 𝒾
      ; r-cancels-s = r-cancels-s 𝒾
      ; s-cancels-r = s-cancels-r 𝒾
-     }
+    }
 
    † : 𝓈 𝒾 ＝ 𝓈 𝒿 → 𝓇 𝒾 ＝ 𝓇 𝒿 → 𝒾 ＝ 𝒿
    † refl refl = ap₂ g β γ
@@ -221,7 +221,7 @@ Therefore, they preserve finite meets and finite joins.
    ; 𝓇           = 𝓇
    ; r-cancels-s = inverses-are-retractions' e
    ; s-cancels-r = inverses-are-sections' e
-   }
+  }
     where
      open DistributiveLattice L using () renaming (𝟏 to 𝟏L; 𝟎 to 𝟎L)
      open DistributiveLattice K using () renaming (𝟏 to 𝟏K; 𝟎 to 𝟎K)
@@ -356,13 +356,13 @@ type.
      𝓈 : Homomorphismᵈᵣ K L
      𝓈 = record
           { h                 = s
-          ; h-is-homomorphism = α₁ , β₁ , γ₁ , δ₁ }
+          ; h-is-homomorphism = α₁ , β₁ , γ₁ , δ₁}
 
      𝓇 : Homomorphismᵈᵣ L K
      𝓇 = record
           { h                 = r
           ; h-is-homomorphism = α₂ , β₂ , γ₂ , δ₂
-          }
+         }
 
 \end{code}
 
@@ -449,6 +449,6 @@ homomorphism and denote it `𝔦𝔡`.
 \begin{code}
 
 𝔦𝔡 : (L : DistributiveLattice 𝓤) → L ─d→ L
-𝔦𝔡 L = record { h = id ; h-is-homomorphism = id-is-homomorphism L }
+𝔦𝔡 L = record { h = id ; h-is-homomorphism = id-is-homomorphism L}
 
 \end{code}

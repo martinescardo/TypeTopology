@@ -120,7 +120,7 @@ module _
   Definition-3-7 : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
   Definition-3-7 = is-directed-complete _⊑_
 
-  Definition-3-7-ad : (𝓓 : DCPO {𝓤} {𝓣}) {I : 𝓥 ̇}
+  Definition-3-7-ad : (𝓓 : DCPO {𝓤} {𝓣}) {I : 𝓥 ̇ }
                       {α : I → ⟨ 𝓓 ⟩} → is-Directed 𝓓 α → ⟨ 𝓓 ⟩
   Definition-3-7-ad = ∐
 
@@ -354,10 +354,10 @@ module _ (𝓥 : Universe) where
  Definition-5-6-ad = value
 
  open import UF.ClassicalLogic
- Proposition-5-7 : (X : 𝓤 ̇) → EM 𝓥 → 𝓛 X ≃ 𝟙 + X
+ Proposition-5-7 : (X : 𝓤 ̇ ) → EM 𝓥 → 𝓛 X ≃ 𝟙 + X
  Proposition-5-7 = EM-gives-classical-lifting
 
- Proposition-5-7-ad : ((X : 𝓤 ̇) → 𝓛 X ≃ 𝟙 + X) → EM 𝓥
+ Proposition-5-7-ad : ((X : 𝓤 ̇ ) → 𝓛 X ≃ 𝟙 + X) → EM 𝓥
  Proposition-5-7-ad = classical-lifting-gives-EM
 
  module _ {X : 𝓤 ̇ } where
@@ -430,7 +430,7 @@ module _ (𝓥 : Universe) where
                                 (⊑-prop-valued fe fe s l m)
                                 (⊑'-prop-valued s)
                                 ⊑-to-⊑'
-                                ⊑'-to-⊑ }
+                                ⊑'-to-⊑}
    where
     open import Lifting.UnivalentPrecategory 𝓥 X
 

@@ -26,7 +26,7 @@ being-vv-equiv-is-prop' : funext 𝓥 (𝓤 ⊔ 𝓥)
                         → is-prop (is-vv-equiv f)
 being-vv-equiv-is-prop' {𝓤} {𝓥} fe fe' f = Π-is-prop
                                              fe
-                                             (λ x → being-singleton-is-prop fe' )
+                                             (λ x → being-singleton-is-prop fe')
 
 being-vv-equiv-is-prop : FunExt
                        → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
@@ -223,7 +223,7 @@ being-equiv-is-prop'' fe = being-equiv-is-prop' fe fe fe fe
         → α ● (β ● γ) ＝ (α ● β) ● γ
 ≃-assoc fe = ≃-assoc' (fe _ _) (fe _ _) (fe _ _)
 
-to-≃-＝ : {X : 𝓤 ̇ } {Y : 𝓥 ̇}
+to-≃-＝ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
         → Fun-Ext
         → {f g : X → Y} {i : is-equiv f} {j : is-equiv g}
         → f ∼ g

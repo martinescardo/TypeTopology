@@ -52,7 +52,7 @@ private
  unitᴶᵀ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → JT Y) (x : X) → extᴶᵀ f (ηᴶᵀ x) ＝ f x
  unitᴶᵀ f x = dfunext fe (λ p → unit 𝓣 (λ x → f x p) x)
 
- assocᴶᵀ : {X : 𝓤 ̇} {Y : 𝓥 ̇} {Z : 𝓦 ̇} (g : Y → JT Z) (f : X → JT Y) (t : JT X) →
+ assocᴶᵀ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (g : Y → JT Z) (f : X → JT Y) (t : JT X) →
       extᴶᵀ (λ x → extᴶᵀ g (f x)) t ＝ extᴶᵀ g (extᴶᵀ f t)
  assocᴶᵀ g f ε = dfunext fe γ
   where

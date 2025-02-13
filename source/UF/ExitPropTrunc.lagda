@@ -128,7 +128,7 @@ for the above.
 
 \begin{code}
 
-∥_∥⌜_⌝ : (X : 𝓤 ̇) → collapsible X → 𝓤 ̇
+∥_∥⌜_⌝ : (X : 𝓤 ̇ ) → collapsible X → 𝓤 ̇
 ∥ X ∥⌜ f , w ⌝ = fix f
 
 ∥∥⌜_⌝-is-prop : {X : 𝓤 ̇ } (c : collapsible X) → is-prop ∥ X ∥⌜ c ⌝
@@ -148,7 +148,7 @@ prop-valued, which allows us to exit truncations.
          → (X → A) → ∥ X ∥⌜ c ⌝ → A
 ∥∥⌜ c ⌝-rec {A} g (x , φ) = g x
 
-∣∣⌜_⌝-exit : {X : 𝓤 ̇} (c : collapsible X) → ∥ X ∥⌜ c ⌝ → X
+∣∣⌜_⌝-exit : {X : 𝓤 ̇ } (c : collapsible X) → ∥ X ∥⌜ c ⌝ → X
 ∣∣⌜ c ⌝-exit = ∥∥⌜ c ⌝-rec id
 
 infix 0 ∥_∥⌜_⌝

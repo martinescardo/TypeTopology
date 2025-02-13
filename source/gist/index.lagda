@@ -1,5 +1,3 @@
-Martin Escardo
-
 We use this directory to include small examples for discussion.
 
 \begin{code}
@@ -9,6 +7,7 @@ We use this directory to include small examples for discussion.
 module gist.index where
 
 import gist.multiset-addendum-question
+import gist.not-an-apartness
 import gist.remove-swap
 
 \end{code}

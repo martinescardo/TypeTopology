@@ -75,7 +75,7 @@ lemma7-1-1 {σ ⇒ σ₁} f g x M p = γ
      IH : adequate σ₁ (pr₁ g d) (M · N)
      IH = lemma7-1-1 (pr₁ f d) (pr₁ g d) ii (M · N) i
 
-adequacy-lubs : {σ : type} {I : 𝓤₀ ̇}
+adequacy-lubs : {σ : type} {I : 𝓤₀ ̇ }
               → (u : I → ⟨ ⟦ σ ⟧ ⁻ ⟩)
               → (δ : is-Directed ( ⟦ σ ⟧ ⁻) u)
               → (t : PCF ⟨⟩ σ)

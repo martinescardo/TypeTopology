@@ -1012,7 +1012,7 @@ blemma : (P : 𝓤 ̇ ) {X : 𝓥 ̇ }
        → Σ A ꞉ (X → 𝓤 ⊔ 𝓥 ̇ ) , ((x : X) → is-decidable (A x))
                               × is-prop (Σ A)
                               × (P ↔ Σ A)
-blemma {𝓤} {𝓥 } P {X} j i (f , (s , η) , (r , ε)) = A , d , l , (φ , γ)
+blemma {𝓤} {𝓥} P {X} j i (f , (s , η) , (r , ε)) = A , d , l , (φ , γ)
  where
   A : X → 𝓤 ⊔ 𝓥 ̇
   A x = Σ p ꞉ P , f x ＝ inl p

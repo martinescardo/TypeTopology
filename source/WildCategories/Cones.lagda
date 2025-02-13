@@ -64,7 +64,7 @@ module _ {𝓤 𝓥} (C : WildCategory 𝓤 𝓥) where
     ＝ assoc (cone x) f g ⁻¹ ∙ ap (g <<_) (nat f) ∙ nat g
 
   underlying-incoh-cone : IncohIdnCone
-  underlying-incoh-cone = record { apex = apex ; cone = cone ; nat = nat }
+  underlying-incoh-cone = record { apex = apex ; cone = cone ; nat = nat}
 
   open IncohIdnCone underlying-incoh-cone public hiding (apex; cone; nat)
 
@@ -152,6 +152,6 @@ module _ {𝓤 𝓥} (C : WildCategory 𝓤 𝓥) where
      gen-gen# ∙ P.gen# ∎
 
     H2 : assoc _ _ _ ∙ gen#-gen ∙ P.gen# ＝ gen-gen# ∙ P.gen#
-    H2 = ∙assoc (assoc _ _ _ ) (gen#-gen) P.gen# ∙ H1
+    H2 = ∙assoc (assoc _ _ _) (gen#-gen) P.gen# ∙ H1
 
 \end{code}

@@ -179,7 +179,7 @@ Here are some examples for the sake of illustration:
 private
 
  Path' : 𝑻 → 𝓤  ̇
- Path' = 𝑻-iteration (_ ̇)  𝟙 (λ X F → Σ x ꞉ X , F x)
+ Path' = 𝑻-iteration (_ ̇ )  𝟙 (λ X F → Σ x ꞉ X , F x)
 
  Path'-[] : Path' [] ＝ 𝟙
  Path'-[] = refl
@@ -189,7 +189,7 @@ private
  Path'-∷ X Xf = refl
 
  structure' : (S : 𝓤 ̇ → 𝓥 ̇ ) → 𝑻 → 𝓤 ⊔ 𝓥 ̇
- structure' {𝓥} S = 𝑻-iteration (𝓤 ⊔ 𝓥 ̇) 𝟙 (λ X F → S X × ((x : X) → F x))
+ structure' {𝓥} S = 𝑻-iteration (𝓤 ⊔ 𝓥 ̇ ) 𝟙 (λ X F → S X × ((x : X) → F x))
 
  structure'-[] : (S : 𝓤 ̇ → 𝓥 ̇ )
                → structure' S [] ＝ 𝟙

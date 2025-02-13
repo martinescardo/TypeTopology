@@ -840,7 +840,7 @@ If every dcpo in the diagram is locally small, then so is its bilimit.
 
  𝓓∞-is-locally-small : ((i : I) → is-locally-small (𝓓 i))
                      → is-locally-small 𝓓∞
- 𝓓∞-is-locally-small ls = record { _⊑ₛ_ = _⊑ₛ⟨∞⟩_ ; ⊑ₛ-≃-⊑ = γ }
+ 𝓓∞-is-locally-small ls = record { _⊑ₛ_ = _⊑ₛ⟨∞⟩_ ; ⊑ₛ-≃-⊑ = γ}
   where
    small-order : (i : I) → ⟨ 𝓓 i ⟩ → ⟨ 𝓓 i ⟩ → 𝓥 ̇
    small-order i = _⊑ₛ_ where open is-locally-small (ls i)
@@ -1031,7 +1031,7 @@ because this seems to need instances of the axiom of choice in general.
    ; approximating-family-is-directed  = α∞⁺-is-directed
    ; approximating-family-is-way-below = α∞⁺-is-way-below
    ; approximating-family-∐-＝          = α∞⁺-∐-＝
-   }
+  }
    where
     open structurally-continuous
     J : (i : I) → ⟨ 𝓓 i ⟩ → 𝓥 ̇
@@ -1086,7 +1086,7 @@ Similarly, if each 𝓓ᵢ is structurally algebraic then so is its bilimit 𝓓
    ; compact-family-is-directed = approximating-family-is-directed C∞
    ; compact-family-is-compact  = γ
    ; compact-family-∐-＝         = approximating-family-∐-＝ C∞
-   }
+  }
    where
     open structurally-continuous
     open structurally-algebraic
@@ -1142,7 +1142,7 @@ small (compact) basis, then the bilimit 𝓓∞ does too.
      { ≪ᴮ-is-small    = lemma₁
      ; ↡ᴮ-is-directed = lemma₂
      ; ↡ᴮ-is-sup      = lemma₃
-     }
+    }
      where
       open is-small-basis
 

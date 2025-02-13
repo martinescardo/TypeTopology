@@ -92,7 +92,7 @@ The first is a utility only used in the latter reasoning items.
 
 The following makes definitional equalities visible, for example:
 
- p ◃∙ ap f refl ◃∙ q ◃∎ ＝ₛ⟨id⟩ 
+ p ◃∙ ap f refl ◃∙ q ◃∎ ＝ₛ⟨id⟩
  p ◃∙ refl ◃∙ q ◃∎      ∎ₛ
 
 \begin{code}
@@ -140,7 +140,7 @@ The following makes definitional equalities visible, for example:
 
  p ◃∙ r ⁻¹ ◃∙ q ⁻¹ ◃∙ s ◃∎
 
- and let's say 
+ and let's say
 
  α : (q ∙ r) ⁻¹ ◃∎ ＝ₛ r ⁻¹ ◃∙ q ⁻¹ ◃∎
 
@@ -162,7 +162,7 @@ The following makes definitional equalities visible, for example:
 \end{code}
 
  The following rewrites and entire expression using an equality (the
- usual ＝) 
+ usual ＝)
 
  We write:
 
@@ -172,7 +172,7 @@ The following makes definitional equalities visible, for example:
 \begin{code}
 
  _＝↓⟨_⟩_ : (s : x ≡ y) {u : x ≡ y}
-           {r : x ＝ y }
+           {r : x ＝ y}
          → [ s ↓] ＝ r
          → r ◃∎ ＝ₛ u
          → s ＝ₛ u
@@ -191,9 +191,9 @@ The following makes definitional equalities visible, for example:
 
  p ◃∙ (ap f q ⁻¹) ◃∙ s ◃∎
 
- and let's say 
+ and let's say
 
- α : (ap f q) ⁻¹ ◃∎ ＝ ap f q ⁻¹ 
+ α : (ap f q) ⁻¹ ◃∎ ＝ ap f q ⁻¹
 
  then we write
 
@@ -215,7 +215,7 @@ The following makes definitional equalities visible, for example:
  This closes.
 
 \begin{code}
-  
+
  _∎ₛ : (s : x ≡ y) → s ＝ₛ s
  _∎ₛ _ = ＝ₛ-in refl
 

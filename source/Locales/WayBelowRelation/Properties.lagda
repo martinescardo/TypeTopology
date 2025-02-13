@@ -57,7 +57,7 @@ way-below-implies-below {𝓤} {𝓥} {𝓦} X {U} {V} φ =
  ∥∥-rec (holds-is-prop (U ≤[ Xₚ ] V)) † (φ S δ p)
   where
    S : Fam 𝓦 ⟨ 𝒪 X ⟩
-   S = 𝟙 , λ { ⋆ → V }
+   S = 𝟙 , λ { ⋆ → V}
 
    Xₚ = poset-of (𝒪 X)
 

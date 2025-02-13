@@ -13,7 +13,7 @@ https://nforum.ncatlab.org/discussion/8282/points-of-the-localic-quotient-with-r
 
 open import UF.PropTrunc
 
-module Apartness.NegationOfApartness
+module Apartness.Negation
         (pt : propositional-truncations-exist)
        where
 
