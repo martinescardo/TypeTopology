@@ -417,10 +417,13 @@ The internal modulus of uniform continuity operator.
 Definition-51b : Termᵀ₀ ((ι ⇒ ι) ⇒ ι) → Termᵀ₀ ι
 Definition-51b = modulusᵤᵀ {〈〉}
 
-Definition-52 : ℕ → ((ℕ → 𝟚) → ℕ) → 𝓤₀  ̇
+Definition-52 : ℕ → ((ℕ → ℕ) → ℕ) → 𝓤₀  ̇
 Definition-52 = _is-a-modulus-of-uniform-continuity-for_
 
-Theorem-55 : {!!}
-Theorem-55 = {!!}
+Theorem-55 : (t : Termᵀ₀ (baire ⇒ ι))
+           → ⟦ modulusᵤᵀ t ⟧₀
+              is-a-modulus-of-uniform-continuity-for
+             ⟦ t ⟧₀
+Theorem-55 t α α′ ψ ψ′ = internal-uni-mod-correct₀ t α α′ ψ ψ′
 
 \end{code}
