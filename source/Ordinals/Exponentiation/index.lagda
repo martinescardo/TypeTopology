@@ -1,5 +1,5 @@
 Tom de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg, Chuangjie Xu,
-November 2023 — December 2024
+November 2023 — January 2025
 
 \begin{code}
 

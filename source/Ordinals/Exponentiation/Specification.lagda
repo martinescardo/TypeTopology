@@ -1,5 +1,6 @@
 Tom de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg, Chuangjie Xu
 6 November 2024
+Refactored between November 2024 and January 2025.
 
 We define types expressing what ordinal exponentiation should be for zero,
 successor and supremum exponents, and we record a few properties that follow
