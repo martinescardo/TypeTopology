@@ -975,6 +975,8 @@ In contrast, multiplication behaves differently and is uniquely characterized by
 similar equations since it does preserve all suprema, see
 MultiplicationProperties.
 
+TODO. Mention reformulation and point to Exponentiation.Supremum.
+
 
 Added 24th May 2024 by Tom de Jong.
 Every ordinal is the supremum of the successors of its initial segments.

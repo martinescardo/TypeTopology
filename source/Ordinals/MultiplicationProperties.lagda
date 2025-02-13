@@ -430,6 +430,8 @@ The above should be contrasted to the situation for addition where we do not
 know how to prove such a result since only *inhabited* suprema are preserved by
 addition.
 
+TODO. Mention reformulation and point to Exponentiation.Supremum.
+
 Added 17 September 2024 by Fredrik Nordvall Forsberg:
 
 Multiplication being monotone in the left argument is a constructive taboo.
