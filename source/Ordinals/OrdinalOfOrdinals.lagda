@@ -24,6 +24,7 @@ open import Ordinals.Maps
 open import Ordinals.Notions
 open import Ordinals.Type
 open import Ordinals.Underlying
+open import Ordinals.WellOrderTransport
 open import UF.Base
 open import UF.Embeddings
 open import UF.Equiv
@@ -39,6 +40,8 @@ private
  fe' : Fun-Ext
  fe' {𝓤} {𝓥} = fe 𝓤 𝓥
 
+open import Ordinals.Arithmetic fe
+
 \end{code}
 
 The simulations make the ordinals into a poset:
@@ -50,6 +53,10 @@ _⊴_ : Ordinal 𝓤 → Ordinal 𝓥 → 𝓤 ⊔ 𝓥 ̇
 
 [_,_]⟨_⟩ : (α : Ordinal 𝓤) (β : Ordinal 𝓥) → α ⊴ β → ⟨ α ⟩ → ⟨ β ⟩
 [ α , β ]⟨ f ⟩ = pr₁ f
+
+[_,_]⟨_⟩-is-simulation : (α : Ordinal 𝓤) (β : Ordinal 𝓥) (f : α ⊴ β)
+                       → is-simulation α β [ α , β ]⟨ f ⟩
+[_,_]⟨_⟩-is-simulation α β f = pr₂ f
 
 ⊴-gives-↪ : (α : Ordinal 𝓤)
             (β : Ordinal 𝓥)
@@ -67,6 +74,9 @@ _⊴_ : Ordinal 𝓤 → Ordinal 𝓥 → 𝓤 ⊔ 𝓥 ̇
 ⊴-refl α = id ,
            (λ x z l → z , l , refl) ,
            (λ x y l → l)
+
+＝-to-⊴ : (α β : Ordinal 𝓤) → α ＝ β → α ⊴ β
+＝-to-⊴ α β refl = ⊴-refl α
 
 ⊴-trans : (α : Ordinal 𝓤) (β : Ordinal 𝓥) (γ : Ordinal 𝓦)
         → α ⊴ β → β ⊴ γ → α ⊴ γ
@@ -197,6 +207,13 @@ segment-⊴ : (α : Ordinal 𝓤) (a : ⟨ α ⟩)
           → (α ↓ a) ⊴ α
 segment-⊴ α a = segment-inclusion α a , segment-inclusion-is-simulation α a
 
+segment-inclusion-lc : (α : Ordinal 𝓤) {a : ⟨ α ⟩}
+                     → left-cancellable (segment-inclusion α a)
+segment-inclusion-lc α {a} =
+ simulations-are-lc (α ↓ a) α
+  (segment-inclusion α a)
+  (segment-inclusion-is-simulation α a)
+
 ↓-⊴-lc : (α : Ordinal 𝓤) (a b : ⟨ α ⟩)
        → (α ↓ a) ⊴ (α ↓ b )
        → a ≼⟨ α ⟩ b
@@ -276,7 +293,6 @@ _⊲⁻_ : Ordinal 𝓤 → Ordinal 𝓥 → 𝓤 ⊔ 𝓥 ̇
 
 ⊲-is-equivalent-to-⊲⁻ : (α β : Ordinal 𝓤) → (α ⊲ β) ≃ (α ⊲⁻ β)
 ⊲-is-equivalent-to-⊲⁻ α β = Σ-cong (λ (b : ⟨ β ⟩) → UAₒ-≃ (ua _) fe' α (β ↓ b))
-
 \end{code}
 
 Back to the past.
@@ -827,18 +843,70 @@ order-preserving-gives-not-⊲ {𝓤} α β σ (x₀ , refl) = γ σ
 
 open import UF.ClassicalLogic
 
-order-preserving-gives-≼ : EM (𝓤 ⁺)
+EM-implies-order-preserving-gives-≼ : EM 𝓤
                          → (α β : Ordinal 𝓤)
                          → (Σ f ꞉ (⟨ α ⟩ → ⟨ β ⟩) , is-order-preserving α β f)
                          → α ≼ β
-order-preserving-gives-≼ em α β σ = δ
+EM-implies-order-preserving-gives-≼ em α β σ = δ
  where
-  γ : (α ≼ β) + (β ⊲ α) → α ≼ β
-  γ (inl l) = l
-  γ (inr m) = 𝟘-elim (order-preserving-gives-not-⊲ α β σ m)
+  γ : (∀ u → u ⊲⁻ α → u ⊲⁻ β) + (β ⊲⁻ α) → α ≼ β
+  γ (inl l) γ p = ⌜ ⊲-is-equivalent-to-⊲⁻ γ β ⌝⁻¹ (l γ (⌜ ⊲-is-equivalent-to-⊲⁻ γ α ⌝ p))
+  γ (inr m) = 𝟘-elim (order-preserving-gives-not-⊲ α β σ (⌜ ⊲-is-equivalent-to-⊲⁻ β α ⌝⁻¹ m))
+
+  ⊲⁻-is-well-order : is-well-order {𝓤 ⁺} {𝓤} _⊲⁻_
+  ⊲⁻-is-well-order {𝓤} = order-transfer-lemma₃.well-order→ fe (Ordinal 𝓤) _⊲_ _⊲⁻_
+                                                           ⊲-is-equivalent-to-⊲⁻
+                                                           ⊲-is-well-order
 
   δ : α ≼ β
-  δ = γ (≼-or-> _⊲_ fe' em ⊲-is-well-order α β)
+  δ = γ (≼-or-> _⊲⁻_ fe' em ⊲⁻-is-well-order α β)
+\end{code}
+
+Added 19 November 2024 by Nicolai Kraus, Fredrik Nordvall Forsberg, Chuangjie Xu
+and Tom de Jong.
+
+In fact order preserving maps can be upgraded to inequalities if and
+only if excluded middle holds.
+
+\begin{code}
+
+order-preserving-gives-≼-implies-EM :
+   ((α β : Ordinal 𝓤)
+         → Σ f ꞉ (⟨ α ⟩ → ⟨ β ⟩) , is-order-preserving α β f
+         → α ≼ β)
+ → EM 𝓤
+order-preserving-gives-≼-implies-EM h P P-is-prop = II (g ⋆) refl
+ where
+  open import MLTT.Plus-Properties
+
+  α = 𝟙ₒ
+  Pₒ = prop-ordinal P P-is-prop
+  β = Pₒ +ₒ 𝟙ₒ
+
+  f : ⟨ α ⟩ → ⟨ β ⟩
+  f ⋆ = inr ⋆
+
+  f-is-order-preserving : is-order-preserving α β f
+  f-is-order-preserving ⋆ ⋆ = 𝟘-elim
+
+  𝕘 : α ⊴ β
+  𝕘 = ≼-gives-⊴ α β (h α β (f , f-is-order-preserving))
+  g = [ α , β ]⟨ 𝕘 ⟩
+
+  inl-p-is-least : (p : P) → is-least β (inl p)
+  inl-p-is-least p (inl _) (inl _) l = l
+  inl-p-is-least p (inl _) (inr _) l = l
+  inl-p-is-least p (inr _) (inl _) l = ⋆
+  inl-p-is-least p (inr _) (inr _) l = l
+
+  I : (p : P) → g ⋆ ＝ inl p
+  I p = simulations-preserve-least α β ⋆ (inl p)
+         g ([ α , β ]⟨ 𝕘 ⟩-is-simulation)
+         (λ ⋆ ⋆ → 𝟘-elim) (inl-p-is-least p)
+
+  II : (y : ⟨ β ⟩) → g ⋆ ＝ y → P + ¬ P
+  II (inl p) e = inl p
+  II (inr ⋆) e = inr (λ p → +disjoint ((I p) ⁻¹ ∙ e))
 
 \end{code}
 
@@ -853,6 +921,11 @@ simulations-preserve-↓ : (α β : Ordinal 𝓤) ((f , _) : α ⊴ β)
                        → ((a : ⟨ α ⟩) → α ↓ a ＝ β ↓ f a)
 simulations-preserve-↓ α β 𝕗 a = pr₂ (from-≼ (⊴-gives-≼ α β 𝕗) a)
 
+Idtofunₒ-↓-lemma : {α β : Ordinal 𝓤} {a : ⟨ α ⟩}
+                   (e : α ＝ β)
+                 → α ↓ a ＝ β ↓ Idtofunₒ e a
+Idtofunₒ-↓-lemma refl = refl
+
 \end{code}
 
 Added 31 October 2022 by Tom de Jong.
@@ -862,28 +935,36 @@ for use in other constructions.
 
 \begin{code}
 
-transfinite-induction-on-OO-behaviour :
-   (P : Ordinal 𝓤 → 𝓥 ̇ )
- → (f : (α : Ordinal 𝓤) → ((a : ⟨ α ⟩) → P (α ↓ a)) → P α)
- → (α : Ordinal 𝓤)
- → transfinite-induction-on-OO P f α
-   ＝ f α (λ a → transfinite-induction-on-OO P f (α ↓ a))
-transfinite-induction-on-OO-behaviour {𝓤} {𝓥} P f =
- Transfinite-induction-behaviour fe (OO 𝓤) P f'
-  where
-   f' : (α : Ordinal 𝓤)
-      → ((α' : Ordinal 𝓤) → α' ⊲ α → P α')
-      → P α
-   f' α g = f α (λ a → g (α ↓ a) (a , refl))
+abstract
+ transfinite-induction-on-OO-behaviour :
+    (P : Ordinal 𝓤 → 𝓥 ̇ )
+  → (f : (α : Ordinal 𝓤) → ((a : ⟨ α ⟩) → P (α ↓ a)) → P α)
+  → (α : Ordinal 𝓤)
+  → transfinite-induction-on-OO P f α
+    ＝ f α (λ a → transfinite-induction-on-OO P f (α ↓ a))
+ transfinite-induction-on-OO-behaviour {𝓤} {𝓥} P f =
+  Transfinite-induction-behaviour fe (OO 𝓤) P f'
+   where
+    f' : (α : Ordinal 𝓤)
+       → ((α' : Ordinal 𝓤) → α' ⊲ α → P α')
+       → P α
+    f' α g = f α (λ a → g (α ↓ a) (a , refl))
 
-transfinite-recursion-on-OO-behaviour :
-   (X : 𝓥 ̇ )
- → (f : (α : Ordinal 𝓤) → (⟨ α ⟩ → X) → X)
- → (α : Ordinal 𝓤)
- → transfinite-recursion-on-OO X f α
-   ＝ f α (λ a → transfinite-recursion-on-OO X f (α ↓ a))
-transfinite-recursion-on-OO-behaviour X f =
- transfinite-induction-on-OO-behaviour (λ _ → X) f
+ transfinite-recursion-on-OO-behaviour :
+    (X : 𝓥 ̇ )
+  → (f : (α : Ordinal 𝓤) → (⟨ α ⟩ → X) → X)
+  → (α : Ordinal 𝓤)
+  → transfinite-recursion-on-OO X f α
+    ＝ f α (λ a → transfinite-recursion-on-OO X f (α ↓ a))
+ transfinite-recursion-on-OO-behaviour X f =
+  transfinite-induction-on-OO-behaviour (λ _ → X) f
+
+ transfinite-recursion-on-OO-bundled :
+    (X : 𝓥 ̇ )
+  → (f : (α : Ordinal 𝓤) → (⟨ α ⟩ → X) → X)
+  → Σ r ꞉ (Ordinal 𝓤 → X) , ((α : Ordinal 𝓤) → r α ＝ f α (λ a → r (α ↓ a)))
+ transfinite-recursion-on-OO-bundled X f =
+  transfinite-recursion-on-OO X f , transfinite-recursion-on-OO-behaviour X f
 
 \end{code}
 
@@ -1095,5 +1176,15 @@ simulations-pointwise-equal-gives-isomorphic-initial-segments α β γ f g a b e
    II : (β ↓ b) ⊴ (α ↓ a)
    II = simulations-pointwise-≼-gives-initial-segments-⊴ β α γ g f b a
          (≼-refl-＝ (underlying-order γ) (eq ⁻¹))
+
+\end{code}
+
+Fixities and precedences
+
+\begin{code}
+
+infix 4 _⊲_
+infix 4 _⊴_
+infixl 5 _↓_
 
 \end{code}

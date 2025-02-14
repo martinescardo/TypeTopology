@@ -16,6 +16,7 @@ import Ordinals.ConvergentSequence
 import Ordinals.CumulativeHierarchy           -- by [2]
 import Ordinals.CumulativeHierarchy-Addendum  -- by [2]
 import Ordinals.Equivalence
+import Ordinals.Exponentiation.index          -- by [2]
 import Ordinals.Indecomposable
 import Ordinals.InfProperty
 import Ordinals.Injectivity
@@ -32,6 +33,7 @@ import Ordinals.Notions
 import Ordinals.OrdinalOfOrdinals
 import Ordinals.OrdinalOfOrdinalsSuprema     -- by [3]
 import Ordinals.OrdinalOfTruthValues
+import Ordinals.Propositions
 import Ordinals.ShulmanTaboo
 import Ordinals.SupSum
 import Ordinals.Taboos                       -- by [3]

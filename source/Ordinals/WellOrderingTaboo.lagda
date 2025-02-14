@@ -488,6 +488,10 @@ module ClassicalWellOrder
                           × is-uniquely-trichotomous
                           × inhabited-has-minimal
 
+  classical-well-orders-are-uniquely-trichotomous
+   : is-classical-well-order → is-uniquely-trichotomous
+  classical-well-orders-are-uniquely-trichotomous = pr₁ ∘ pr₂
+
 \end{code}
 
 Assuming excluded middle (for 𝓤 ⊔ 𝓣), we show

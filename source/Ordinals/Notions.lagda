@@ -169,6 +169,9 @@ End of addition.
 is-transitive : 𝓤 ⊔ 𝓥 ̇
 is-transitive = (x y z : X) → x < y → y < z → x < z
 
+is-irreflexive : 𝓤 ⊔ 𝓥 ̇
+is-irreflexive = (x : X) → ¬ (x < x)
+
 private
   _≼_ : X → X → 𝓤 ⊔ 𝓥 ̇
   x ≼ y = ∀ u → u < x → u < y
@@ -803,10 +806,10 @@ not-<-gives-≼ fe em wo@(p , w , e , t) x y = γ (trichotomy fe em wo x y)
   γ (inr (inr m)) ν = <-gives-≼ t m
 
 ≼-or-> : funext (𝓤 ⊔ 𝓥) 𝓤₀
-       → excluded-middle (𝓤 ⊔ 𝓥)
+       → excluded-middle 𝓥
        → is-well-order
        → (x y : X) → (x ≼ y) + y < x
-≼-or-> fe em wo@(p , w , e , t) x y = γ (trichotomy fe em wo x y)
+≼-or-> fe em wo@(p , w , e , t) x y = γ (trichotomy₃ em wo x y)
  where
   γ : (x < y) + (x ＝ y) + (y < x) → (x ≼ y) + (y < x)
   γ (inl l)       = inl (<-gives-≼ t l)

@@ -275,9 +275,9 @@ is if excluded middle holds.
         (ℕ-to-ℕ∞-lc-refl i)
         IH
 
- comparison₃₁ : EM 𝓤₁ → (b : B) → [ ⟦ b ⟧₃ ] ⊴ [ ⟦ b ⟧₁ ]
+ comparison₃₁ : EM 𝓤₀ → (b : B) → [ ⟦ b ⟧₃ ] ⊴ [ ⟦ b ⟧₁ ]
  comparison₃₁ em b = ≼-gives-⊴ _ _
-                      (order-preserving-gives-≼ em _ _
+                      (EM-implies-order-preserving-gives-≼ em _ _
                         (map₃₁ b , map₃₁-is-order-preserving b))
 \end{code}
 

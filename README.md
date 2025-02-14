@@ -248,6 +248,11 @@ Tosun.
 
    https://doi.org/10.48550/arxiv.2407.06956
 
+1. Tom de Jong, Nicolai Kraus, Fredrik Nordvall Forsberg and Chuangjie Xu.
+   *Ordinal Exponentiation in Homotopy Type Theory*. January 2025.
+
+   https://doi.org/10.48550/arxiv.2501.14542
+
 
 [CSL21]:  https://csl2021.fmf.uni-lj.si/
 [FSCD21]: https://fscd2021.dc.uba.ar/
