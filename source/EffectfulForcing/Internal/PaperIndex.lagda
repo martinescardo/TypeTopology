@@ -39,8 +39,6 @@ open import EffectfulForcing.MFPSAndVariations.LambdaCalculusVersionOfMFPS
 open import MLTT.Sigma
 open import MLTT.Spartan
 
--- We set up these aliases to better mirror the paper
-
 \end{code}
 
 \section{(2) A System T Primer}
