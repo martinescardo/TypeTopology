@@ -567,14 +567,14 @@ just with respect to ＝.
 
 \begin{code}
 
-simulation-product-decomposition-generalised
+simulation-product-decomposition-generalized
  : (α : Ordinal 𝓤)
  → 𝟘ₒ ⊲ α
  → (β γ : Ordinal 𝓤)
  → (a₁ : ⟨ α ⟩)
  → ((f , _) : α ×ₒ β ⊴ α ×ₒ γ +ₒ (α ↓ a₁))
  → Σ g ꞉ (⟨ β ⟩ → ⟨ γ ⟩) , ((a : ⟨ α ⟩) (b : ⟨ β ⟩) → f (a , b) ＝ inl (a , g b))
-simulation-product-decomposition-generalised {𝓤} α (a₀ , a₀-least) = II
+simulation-product-decomposition-generalized {𝓤} α (a₀ , a₀-least) = II
  where
   P : Ordinal 𝓤 → 𝓤 ⁺ ̇
   P β =   (γ : Ordinal 𝓤) (a₁ : ⟨ α ⟩)
@@ -738,72 +738,139 @@ simulation-product-decomposition-generalised {𝓤} α (a₀ , a₀-least) = II
   II β γ a₁ 𝕗 = (λ   b → pr₁ (𝕘 β γ a₁ 𝕗 b)) ,
                 (λ a b → pr₂ (𝕘 β γ a₁ 𝕗 b) a)
 
-×ₒ-left-cancellable-⊴-generalised
- : (α β γ : Ordinal 𝓤) (a₁ : ⟨ α ⟩)
- → 𝟘ₒ ⊲ α
- → α ×ₒ β ⊴ (α ×ₒ γ) +ₒ (α ↓ a₁)
- → β ⊴ γ
-×ₒ-left-cancellable-⊴-generalised α β γ a₁ p@(a₀ , a₀-least) 𝕗 =
+×ₒ-left-cancellable-⊴-generalized : (α β γ : Ordinal 𝓤) (a₁ : ⟨ α ⟩)
+                                  → 𝟘ₒ ⊲ α
+                                  → α ×ₒ β ⊴ (α ×ₒ γ) +ₒ (α ↓ a₁)
+                                  → β ⊴ γ
+×ₒ-left-cancellable-⊴-generalized α β γ a₁ p@(a₀ , a₀-least) 𝕗@(f , f-sim) =
  (g , g-is-initial-segment , g-is-order-preserving)
  where
-  f = [ α ×ₒ β , (α ×ₒ γ) +ₒ (α ↓ a₁) ]⟨ 𝕗 ⟩
-  f-sim = [ α ×ₒ β , (α ×ₒ γ) +ₒ (α ↓ a₁) ]⟨ 𝕗 ⟩-is-simulation
-
   g : ⟨ β ⟩ → ⟨ γ ⟩
-  g = pr₁ (simulation-product-decomposition-generalised α p β γ a₁ 𝕗)
+  g = pr₁ (simulation-product-decomposition-generalized α p β γ a₁ 𝕗)
 
-  g-property :  (a : ⟨ α ⟩)(b : ⟨ β ⟩) → f (a , b) ＝ inl (a , g b)
-  g-property = pr₂ (simulation-product-decomposition-generalised α p β γ a₁ 𝕗)
-
-  g-is-initial-segment : is-initial-segment β γ g
-  g-is-initial-segment b c l = b' , k' k , e'
-   where
-    l' : inl (a₀ , c) ≺⟨ ((α ×ₒ γ) +ₒ (α ↓ a₁)) ⟩ inl (a₀ , g b)
-    l' = inl l
-
-    l'' : inl (a₀ , c) ≺⟨ ((α ×ₒ γ) +ₒ (α ↓ a₁)) ⟩ f (a₀ , b)
-    l'' = transport⁻¹ (λ - → inl (a₀ , c) ≺⟨ ((α ×ₒ γ) +ₒ (α ↓ a₁))⟩ -)
-                      (g-property a₀ b)
-                      l'
-
-    x : Σ y ꞉ ⟨ α ×ₒ β ⟩ , (y ≺⟨ α ×ₒ β ⟩ (a₀ , b)) × (f y ＝ (inl (a₀ , c)))
-    x = simulations-are-initial-segments _ _ f f-sim (a₀ , b) (inl (a₀ , c)) l''
-    a' = pr₁ (pr₁ x)
-    b' = pr₂ (pr₁ x)
-    k = pr₁ (pr₂ x)
-    e = pr₂ (pr₂ x)
-
-    k' : (a' , b') ≺⟨ α ×ₒ β ⟩ (a₀ , b) → b' ≺⟨ β ⟩ b
-    k' (inl p) = p
-    k' (inr (r , q)) = 𝟘-elim (transport⁻¹ ⟨_⟩ a₀-least (a' , q))
-
-    e' : g b' ＝ c
-    e' = ap pr₂ (inl-lc (g-property a' b' ⁻¹ ∙ e))
+  g-property : (a : ⟨ α ⟩) (b : ⟨ β ⟩) → f (a , b) ＝ inl (a , g b)
+  g-property = pr₂ (simulation-product-decomposition-generalized α p β γ a₁ 𝕗)
 
   g-is-order-preserving : is-order-preserving β γ g
   g-is-order-preserving b b' l = III II
    where
-    I : f (a₀ , b) ≺⟨ ((α ×ₒ γ) +ₒ (α ↓ a₁)) ⟩ f (a₀ , b')
+    I : f (a₀ , b) ≺⟨ (α ×ₒ γ) +ₒ (α ↓ a₁) ⟩ f (a₀ , b')
     I = simulations-are-order-preserving _ _ f f-sim (a₀ , b) (a₀ , b') (inl l)
 
-    II : inl (a₀ , g b) ≺⟨ ((α ×ₒ γ) +ₒ (α ↓ a₁)) ⟩ inl (a₀ , g b')
+    II : inl (a₀ , g b) ≺⟨ (α ×ₒ γ) +ₒ (α ↓ a₁) ⟩ inl (a₀ , g b')
     II = transport₂ (λ x y → x ≺⟨ ((α ×ₒ γ) +ₒ (α ↓ a₁))⟩ y)
-                     (g-property a₀ b)
-                     (g-property a₀ b')
-                     I
+                    (g-property a₀ b)
+                    (g-property a₀ b')
+                    I
 
     III : (a₀ , g b) ≺⟨ (α ×ₒ γ) ⟩ (a₀ , g b') → g b ≺⟨ γ ⟩ g b'
     III (inl p) = p
     III (inr (r , q)) = 𝟘-elim (irrefl α a₀ q)
+
+  g-is-initial-segment : is-initial-segment β γ g
+  g-is-initial-segment b c l = b' , II k , III
+   where
+    l₁ : inl (a₀ , c) ≺⟨ (α ×ₒ γ) +ₒ (α ↓ a₁) ⟩ inl (a₀ , g b)
+    l₁ = inl l
+
+    l₂ : inl (a₀ , c) ≺⟨ (α ×ₒ γ) +ₒ (α ↓ a₁) ⟩ f (a₀ , b)
+    l₂ = transport⁻¹ (λ - → inl (a₀ , c) ≺⟨ ((α ×ₒ γ) +ₒ (α ↓ a₁))⟩ -)
+                     (g-property a₀ b)
+                     l₁
+
+    σ : Σ y ꞉ ⟨ α ×ₒ β ⟩ , (y ≺⟨ α ×ₒ β ⟩ (a₀ , b)) × (f y ＝ (inl (a₀ , c)))
+    σ = simulations-are-initial-segments _ _ f f-sim (a₀ , b) (inl (a₀ , c)) l₂
+    a' = pr₁ (pr₁ σ)
+    b' = pr₂ (pr₁ σ)
+    k  = pr₁ (pr₂ σ)
+    e  = pr₂ (pr₂ σ)
+
+    II : (a' , b') ≺⟨ α ×ₒ β ⟩ (a₀ , b) → b' ≺⟨ β ⟩ b
+    II (inl p) = p
+    II (inr (r , q)) = 𝟘-elim (Idtofunₒ (a₀-least ⁻¹) (a' , q))
+
+    III : g b' ＝ c
+    III = ap pr₂ (inl-lc (inl (a' , g b') ＝⟨ g-property a' b' ⁻¹ ⟩
+                          f (a' , b')     ＝⟨ e ⟩
+                          inl (a₀ , c)    ∎))
 
 ×ₒ-left-cancellable-⊴ : (α β γ : Ordinal 𝓤)
                       → 𝟘ₒ ⊲ α
                       → (α ×ₒ β) ⊴ (α ×ₒ γ)
                       → β ⊴ γ
 ×ₒ-left-cancellable-⊴ α β γ p@(a₀ , a₀-least) 𝕗 =
-  ×ₒ-left-cancellable-⊴-generalised α β γ a₀ p
-   (transport (λ - → (α ×ₒ β) ⊴ -)
-              (𝟘ₒ-right-neutral (α ×ₒ γ) ⁻¹ ∙ ap ((α ×ₒ γ) +ₒ_) a₀-least) 𝕗)
+ ×ₒ-left-cancellable-⊴-generalized α β γ a₀ p
+  (transport (α ×ₒ β ⊴_)
+             (α ×ₒ γ             ＝⟨ 𝟘ₒ-right-neutral (α ×ₒ γ) ⁻¹ ⟩
+              α ×ₒ γ +ₒ 𝟘ₒ       ＝⟨ ap ((α ×ₒ γ) +ₒ_) a₀-least ⟩
+              α ×ₒ γ +ₒ (α ↓ a₀) ∎)
+             𝕗)
+
+\end{code}
+
+The following result states that multiplication for ordinals can be cancelled on
+the left. Interestingly, Andrew Swan [Swa18] proved that the corresponding
+result for sets is not provable constructively already for α = 𝟚: there are
+toposes where the statement
+
+  𝟚 × X ≃ 𝟚 × Y → X ≃ Y
+
+is not true for certain objects X and Y in the topos.
+
+[Swa18] Andrew Swan. On Dividing by Two in Constructive Mathematics
+        2018. https://arxiv.org/abs/1804.04490
+
+\begin{code}
+
+×ₒ-left-cancellable : (α β γ : Ordinal 𝓤)
+                    → 𝟘ₒ ⊲ α
+                    → (α ×ₒ β) ＝ (α ×ₒ γ)
+                    → β ＝ γ
+×ₒ-left-cancellable {𝓤 = 𝓤} α β γ p e = ⊴-antisym β γ (f β γ e) (f γ β (e ⁻¹))
+ where
+  f : (β γ : Ordinal 𝓤) → (α ×ₒ β) ＝ (α ×ₒ γ) → β ⊴ γ
+  f β γ e = ×ₒ-left-cancellable-⊴ α β γ p (≃ₒ-to-⊴ (α ×ₒ β) (α ×ₒ γ)
+                                                   (idtoeqₒ (α ×ₒ β) (α ×ₒ γ) e))
+
+\end{code}
+
+As mentioned above, the generalized decomposition lemma for simulation from a
+product was inspired by the following less general lemma for which we give both
+an indirect and a direct proof.
+
+\begin{code}
+
+simulation-product-decomposition' : (α β γ : Ordinal 𝓤)
+                                    ((a₀ , a₀-least) : 𝟘ₒ ⊲ α)
+                                    ((f , _) : (α ×ₒ β) ⊴ (α ×ₒ γ))
+                                    (a : ⟨ α ⟩) (b : ⟨ β ⟩)
+                                  → f (a , b) ＝ (a , pr₂ (f (a₀ , b)))
+simulation-product-decomposition' α β γ (a₀ , a₀-least) 𝕗@(f , f-sim) a = III
+  where
+   𝕗' : α ×ₒ β ⊴ α ×ₒ γ +ₒ (α ↓ a)
+   𝕗' = ⊴-trans (α ×ₒ β) (α ×ₒ γ) (α ×ₒ γ +ₒ (α ↓ a))
+                𝕗
+                (+ₒ-left-⊴ (α ×ₒ γ) (α ↓ a))
+   f' = [ α ×ₒ β , α ×ₒ γ +ₒ (α ↓ a) ]⟨ 𝕗' ⟩
+
+   I : Σ g ꞉ (⟨ β ⟩ → ⟨ γ ⟩)
+           , ((a' : ⟨ α ⟩) (b : ⟨ β ⟩) → f' (a' , b) ＝ inl (a' , g b))
+   I = simulation-product-decomposition-generalized α (a₀ , a₀-least) β γ a 𝕗'
+
+   g = pr₁ I
+   g-property = pr₂ I
+
+   II : (b : ⟨ β ⟩) → g b ＝ pr₂ (f (a₀ , b))
+   II b = ap pr₂ (inl-lc (inl (a₀ , g b)   ＝⟨ (g-property a₀ b) ⁻¹ ⟩
+                          f' (a₀ , b)      ＝⟨ refl ⟩
+                          inl (f (a₀ , b)) ∎))
+
+   III : (b : ⟨ β ⟩)
+       → f (a , b) ＝ a , pr₂ (f (a₀ , b))
+   III b =
+    inl-lc (inl (f (a , b))            ＝⟨ g-property a b ⟩
+            inl (a , g b)              ＝⟨ ap (λ - → inl (a , -)) (II b) ⟩
+            inl (a , pr₂ (f (a₀ , b))) ∎)
 
 simulation-product-decomposition
  : (α : Ordinal 𝓤) (β γ : Ordinal 𝓥)
@@ -878,34 +945,6 @@ simulation-product-decomposition {𝓤} {𝓥} α β γ (a₀ , a₀-least)
               (a' , c')               ∎
 \end{code}
 
-The following result states that multiplication for ordinals can be cancelled on
-the left. Interestingly, Andrew Swan [Swa18] proved that the corresponding
-result for sets is not provable constructively already for α = 𝟚: there are
-toposes where the statement
-
-  𝟚 × X ≃ 𝟚 × Y → X ≃ Y
-
-is not true for certain objects X and Y in the topos.
-
-[Swa18] Andrew Swan
-        On Dividing by Two in Constructive Mathematics
-        2018
-        https://arxiv.org/abs/1804.04490
-
-\begin{code}
-
-×ₒ-left-cancellable : (α β γ : Ordinal 𝓤)
-                    → 𝟘ₒ ⊲ α
-                    → (α ×ₒ β) ＝ (α ×ₒ γ)
-                    → β ＝ γ
-×ₒ-left-cancellable {𝓤 = 𝓤} α β γ p e = ⊴-antisym β γ (f β γ e) (f γ β (e ⁻¹))
- where
-  f : (β γ : Ordinal 𝓤) → (α ×ₒ β) ＝ (α ×ₒ γ) → β ⊴ γ
-  f β γ e = ×ₒ-left-cancellable-⊴ α β γ p (≃ₒ-to-⊴ (α ×ₒ β) (α ×ₒ γ)
-                                                   (idtoeqₒ (α ×ₒ β) (α ×ₒ γ) e))
-
-\end{code}
-
 Using similar techniques, we can also prove that multiplication is
 left cancellable with respect to ⊲.
 
@@ -933,7 +972,7 @@ simulation-product-decomposition-leftover-empty α β γ (a₀ , p) a e = eq
     f-decomposition : Σ g ꞉ (⟨ β ⟩ → ⟨ γ ⟩) ,
                         ((a : ⟨ α ⟩) (b : ⟨ β ⟩) → f (a , b) ＝ inl (a , g b) )
     f-decomposition =
-      simulation-product-decomposition-generalised α (a₀ , p) β γ a 𝕗
+      simulation-product-decomposition-generalized α (a₀ , p) β γ a 𝕗
     g = pr₁ f-decomposition
 
     inr-is-inl = (inr (x , l))         ＝⟨ equiv _ _ e (inr (x , l)) ⟩
