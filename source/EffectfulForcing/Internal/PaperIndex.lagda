@@ -312,8 +312,8 @@ Lemma-33 : {Γ : Ctxᵀ} {σ : Typeᵀ}
          → Rnorm (⟦ t ⟧𝒟 γ₁) (close ⌜ t ⌝ γ₂)
 Lemma-33 = Rnorm-lemma
 
-Lemma-34 : {!!}
-Lemma-34 = {!!}
+--Lemma-34 : {!!}
+--Lemma-34 = {!!}
 
 dialogue-treeᵀ : {Γ : Cxt}
                → T (B-context【 Γ 】 ((ι ⇒ ι) ⇒ ι)) (⌜B⌝ ι ((ι ⇒ ι) ⇒ ι))
@@ -323,6 +323,7 @@ dialogue-treeᵀ = ⌜dialogue⌝
 Definition-35 : Termᵀ₀ ((⌜B⌝ ι ((ι ⇒ ι) ⇒ ι))) → Termᵀ₀ (((ι ⇒ ι) ⇒ ι))
 Definition-35 = ⌜dialogue⌝
 
+-- TODO use dialogueᵀ instead
 Lemma-36 : (d : B ℕ) (α : ℕ → ℕ)
          → dialogue d α ＝ dialogue⋆ (church-encode d) α
 Lemma-36 d α = dialogues-agreement d α
