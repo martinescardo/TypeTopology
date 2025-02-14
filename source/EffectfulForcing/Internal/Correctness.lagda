@@ -784,9 +784,8 @@ TODO. Should this be moved.
 \begin{code}
 
 ⌜dialogue⌝ : {Γ : Cxt}
-           → T (B-context【 Γ 】 ((ι ⇒ ι) ⇒ ι)) (⌜B⌝ ι ((ι ⇒ ι) ⇒ ι))
-           → T (B-context【 Γ 】 ((ι ⇒ ι) ⇒ ι)) ((ι ⇒ ι) ⇒ ι)
-⌜dialogue⌝ {Γ} t = t · ƛ (ƛ ν₁) · ƛ (ƛ (ƛ (ν₂ · (ν₀ · ν₁) · ν₀)))
+           → T Γ ((⌜B⌝ ι ((ι ⇒ ι) ⇒ ι)) ⇒ (ι ⇒ ι) ⇒ ι)
+⌜dialogue⌝ = ƛ (ν₀ · ƛ (ƛ ν₁) · ƛ (ƛ (ƛ (ν₂ · (ν₀ · ν₁) · ν₀))))
 
 \end{code}
 
@@ -796,7 +795,7 @@ Same as ⌜dialogue-tree⌝-correct but using an internal dialogue function.
 
 ⌜dialogue-tree⌝-correct' : (t : T₀ ((ι ⇒ ι) ⇒ ι))
                            (α : Baire)
-                         → ⟦ t ⟧₀ α ＝ ⟦ ⌜dialogue⌝ (⌜dialogue-tree⌝ t) ⟧₀ α
+                         → ⟦ t ⟧₀ α ＝ ⟦ ⌜dialogue⌝ · (⌜dialogue-tree⌝ t) ⟧₀ α
 ⌜dialogue-tree⌝-correct' t α = ⌜dialogue-tree⌝-correct t α
 
 \end{code}

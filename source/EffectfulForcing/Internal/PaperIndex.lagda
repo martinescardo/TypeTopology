@@ -12,28 +12,31 @@ open import UF.FunExt
 module EffectfulForcing.Internal.PaperIndex (fe : Fun-Ext) where
 
 open import EffectfulForcing.Internal.Correctness
+  renaming (⌜dialogue⌝ to dialogueᵀ)
 open import EffectfulForcing.Internal.ExtensionalEquality
-open import EffectfulForcing.Internal.External hiding (main-lemma)
+open import EffectfulForcing.Internal.External
+  renaming (B【_】 to 【_】𝒟; B⟦_⟧ to ⟦_⟧𝒟)
+  hiding (main-lemma)
 open import EffectfulForcing.Internal.Internal
+  renaming (B-type〖_〗 to 〖_〗𝒟ᵀ; B-context【_】 to 【_】𝒟ᵀ; ⌜_⌝ to ⟦_⟧𝒟ᵀ;
+    ⌜dialogue-tree⌝ to dialogue-treeᵀ)
 open import EffectfulForcing.Internal.InternalModCont fe hiding (baire)
 open import EffectfulForcing.Internal.InternalModUniCont fe hiding (main-lemma)
 open import EffectfulForcing.Internal.Subst
 open import EffectfulForcing.Internal.SystemT
 open import EffectfulForcing.MFPSAndVariations.Church
 open import EffectfulForcing.MFPSAndVariations.ContinuityProperties fe
-open import EffectfulForcing.MFPSAndVariations.Dialogue renaming (D to Dial) hiding (decode)
+open import EffectfulForcing.MFPSAndVariations.Dialogue
+  renaming (D to Dial)
+  hiding (decode)
 open import EffectfulForcing.MFPSAndVariations.SystemT using (type;〖_〗; ι; _⇒_)
-open import EffectfulForcing.MFPSAndVariations.LambdaCalculusVersionOfMFPS using (Kleisli-extension; B〖_〗)
+open import EffectfulForcing.MFPSAndVariations.LambdaCalculusVersionOfMFPS
+  renaming (B〖_〗 to 〖_〗𝒟)
+  using (Kleisli-extension)
 open import MLTT.Sigma
 open import MLTT.Spartan
 
 -- We set up these aliases to better mirror the paper
-〖_〗𝒟 = B〖_〗
-【_】𝒟 = B【_】
-⟦_⟧𝒟 = B⟦_⟧
-〖_〗𝒟ᵀ = B-type〖_〗
-【_】𝒟ᵀ = B-context【_】
-⟦_⟧𝒟ᵀ = ⌜_⌝
 
 \end{code}
 
@@ -238,7 +241,7 @@ The internal dialogue translation.
  Definition-22 = ⌜generic⌝
 
  Definition-23 : Termᵀ₀ ((ι ⇒ ι) ⇒ ι) → Termᵀ₀ (𝒟ᵀ A ι)
- Definition-23 = ⌜dialogue-tree⌝
+ Definition-23 = dialogue-treeᵀ
 
 \end{code}
 
@@ -283,7 +286,7 @@ Definition-28 σ = Rnorm
 Lemma-29 : (σ : Typeᵀ)
            (t s : {A : Typeᵀ} → Termᵀ₀ (〖 σ 〗𝒟ᵀ A))
            (x : 〖 σ 〗𝒟)
-         → ({A : type} → ⟦ t ⟧₀ ≡[ (B-type〖 σ 〗 A) ] ⟦ s ⟧₀)
+         → ({A : type} → ⟦ t ⟧₀ ≡[ (〖 σ 〗𝒟ᵀ A) ] ⟦ s ⟧₀)
          → Rnorm x t
          → Rnorm x s
 Lemma-29 σ t s x = Rnorm-respects-≡
@@ -309,25 +312,19 @@ Lemma-33 : {Γ : Ctxᵀ} {σ : Typeᵀ}
            (γ₁ : 【 Γ 】𝒟) (γ₂ : {A : Typeᵀ} → Sub₀ (【 Γ 】𝒟ᵀ A))
            (t : Termᵀ Γ σ)
          → Rnorms γ₁ γ₂
-         → Rnorm (⟦ t ⟧𝒟 γ₁) (close ⌜ t ⌝ γ₂)
+         → Rnorm (⟦ t ⟧𝒟 γ₁) (close ⟦ t ⟧𝒟ᵀ γ₂)
 Lemma-33 = Rnorm-lemma
 
 Lemma-34 : (A : Typeᵀ)
            (t : Termᵀ₀ ((ι ⇒ ι) ⇒ ι))
-         → ⟦ ⌜dialogue-tree⌝ t ⟧₀ ≡[ ⌜B⌝ ι A ] church-encode (dialogue-tree t)
+         → ⟦ dialogue-treeᵀ t ⟧₀ ≡[ ⌜B⌝ ι A ] church-encode (dialogue-tree t)
 Lemma-34 A t = dialogue-tree-agreement t {A}
 
-dialogue-treeᵀ : {Γ : Cxt}
-               → T (B-context【 Γ 】 ((ι ⇒ ι) ⇒ ι)) (⌜B⌝ ι ((ι ⇒ ι) ⇒ ι))
-               → T (B-context【 Γ 】 ((ι ⇒ ι) ⇒ ι)) ((ι ⇒ ι) ⇒ ι)
-dialogue-treeᵀ = ⌜dialogue⌝
+Definition-35 : Termᵀ₀ (((ι ⇒ ι) ⇒ ι)) → Termᵀ₀ (𝒟ᵀ ((ι ⇒ ι) ⇒ ι) ι)
+Definition-35 = dialogue-treeᵀ
 
-Definition-35 : Termᵀ₀ ((⌜B⌝ ι ((ι ⇒ ι) ⇒ ι))) → Termᵀ₀ (((ι ⇒ ι) ⇒ ι))
-Definition-35 = ⌜dialogue⌝
-
--- TODO use dialogueᵀ instead
 Lemma-36 : (d : B ℕ) (α : ℕ → ℕ)
-         → dialogue d α ＝ dialogue⋆ (church-encode d) α
+         → dialogue d α ＝ ⟦ dialogueᵀ ⟧₀ (church-encode d) α
 Lemma-36 d α = dialogues-agreement d α
 
 \end{code}
@@ -351,8 +348,8 @@ Internal max question along a path.
 
 max-qᵀ = max-questionᵀ
 
--- Definition-39 : {!!}
--- Definition-39 = {!!}
+Definition-39 : Termᵀ₀ (𝒟ᵀ ι ι ⇒ (ι ⇒ ι) ⇒ ι)
+Definition-39 = max-qᵀ
 
 \end{code}
 
@@ -370,7 +367,7 @@ Definition-42 : ((ℕ → ℕ) → ℕ) → (ℕ → ℕ) → ℕ → 𝓤₀  �
 Definition-42 f α m = m is-a-modulus-of-continuity-for f at α
 
 Lemma-43 : (t : Termᵀ₀ ((ι ⇒ ι) ⇒ ι)) (α : ℕ → ℕ)
-         →  ⟦ modulusᵀ · (⌜dialogue-tree⌝ t) ⟧₀ α
+         →  ⟦ modulusᵀ · (dialogue-treeᵀ t) ⟧₀ α
            is-a-modulus-of-continuity-for
             ⟦ t ⟧₀
            at
@@ -378,8 +375,8 @@ Lemma-43 : (t : Termᵀ₀ ((ι ⇒ ι) ⇒ ι)) (α : ℕ → ℕ)
 Lemma-43 = modulusᵀ-is-a-modulus-operator
 
 Lemma-44 : (t : Termᵀ₀ ((ι ⇒ ι) ⇒ ι)) (α : ℕ → ℕ)
-         → ⟦ max-qᵀ · ⌜dialogue-tree⌝ t ⟧₀ α  ＝ max-question (dialogue-tree t) α
-Lemma-44 t α = ⟦ max-qᵀ · ⌜dialogue-tree⌝ t ⟧₀ α   ＝⟨ Ⅰ ⟩
+         → ⟦ max-qᵀ · dialogue-treeᵀ t ⟧₀ α  ＝ max-question (dialogue-tree t) α
+Lemma-44 t α = ⟦ max-qᵀ · dialogue-treeᵀ t ⟧₀ α   ＝⟨ Ⅰ ⟩
                max-question₀ (dialogue-tree t) α   ＝⟨ Ⅱ ⟩
                max-question (dialogue-tree t) α    ∎
                 where
@@ -387,7 +384,7 @@ Lemma-44 t α = ⟦ max-qᵀ · ⌜dialogue-tree⌝ t ⟧₀ α   ＝⟨ Ⅰ ⟩
                  Ⅱ = max-question₀-agreement (dialogue-tree t) α ⁻¹
 
 Theorem-45 : (t : Termᵀ₀ ((ι ⇒ ι) ⇒ ι)) (α : ℕ → ℕ)
-           → ⟦ modulusᵀ · (⌜dialogue-tree⌝ t) ⟧₀ α
+           → ⟦ modulusᵀ · (dialogue-treeᵀ t) ⟧₀ α
               is-a-modulus-of-continuity-for ⟦ t ⟧₀ at α
 Theorem-45 = Lemma-43
 
