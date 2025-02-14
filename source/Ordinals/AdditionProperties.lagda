@@ -393,6 +393,12 @@ partial ordering:
     o : (β ↓ b) ⊲ γ
     o = +ₒ-left-reflects-⊲ α (β ↓ b) γ n
 
++ₒ-left-reflects-⊴ : (α β γ : Ordinal 𝓤)
+                   → (α +ₒ β) ⊴ (α +ₒ γ)
+                   → β ⊴ γ
++ₒ-left-reflects-⊴ α β γ l =
+ ≼-gives-⊴ β γ (+ₒ-left-reflects-≼ α β γ (⊴-gives-≼ (α +ₒ β) (α +ₒ γ) l))
+
 \end{code}
 
 Added 4th April 2022.
