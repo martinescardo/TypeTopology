@@ -350,6 +350,7 @@ The internal dialogue operator.
 Definition-35 : Termᵀ₀ ((𝒟ᵀ ((ι ⇒ ι) ⇒ ι) ι) ⇒ (ι ⇒ ι) ⇒ ι)
 Definition-35 =  dialogueᵀ
 
+-- TODO use dialogueᵀ instead
 Lemma-36 : (d : B ℕ) (α : ℕ → ℕ)
          → dialogue d α ＝ ⟦ dialogueᵀ ⟧₀ (church-encode d) α
 Lemma-36 d α = dialogues-agreement d α
