@@ -836,7 +836,7 @@ is not true for certain objects X and Y in the topos.
 
 As mentioned above, the generalized decomposition lemma for simulation from a
 product was inspired by the following less general lemma for which we give both
-an indirect and a direct proof.
+an indirect and a direct proof (with more general universe levels).
 
 \begin{code}
 
