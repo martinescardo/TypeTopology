@@ -993,7 +993,8 @@ These reformulated equations have the benefit that they uniquely characterize
 addition via the recursive equation
   α +ₒ β ＝ α +ₒ sup (λ b → (B ↓ b) +ₒ 𝟙ₒ)
          ＝ α ∨ sup (λ b → α +ₒ ((B ↓ b) +ₒ 𝟙ₒ))
-         ＝ α ∨ sup (λ b → (α +ₒ (B ↓ b)) +ₒ 𝟙ₒ).
+         ＝ α ∨ sup (λ b → (α +ₒ (B ↓ b)) +ₒ 𝟙ₒ)
+which also gives a construction of addition via transfinite recursion.
 
 I first realized this in the context of ordinal exponentiation, cf.
 Ordinals.Exponentiation.Specification.

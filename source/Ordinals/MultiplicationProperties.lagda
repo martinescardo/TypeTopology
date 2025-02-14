@@ -429,8 +429,10 @@ operation even though they are not constructively sufficient to define it.
 The above should be contrasted to the situation for addition where we do not
 know how to prove such a result since only *inhabited* suprema are preserved by
 addition.
+However, a classically equivalent, but constructively stronger, reformulation of
+the equations for addition does uniquely specify, and lead to a definition of
+ordinal addition, cf. the comment in Ordinals.AdditionProperties.
 
-TODO. Mention reformulation and point to Exponentiation.Supremum.
 
 Added 17 September 2024 by Fredrik Nordvall Forsberg:
 
