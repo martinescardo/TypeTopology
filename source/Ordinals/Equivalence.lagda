@@ -473,13 +473,26 @@ Added 11 December 2024 by Fredrik Nordvall Forsberg and Tom de Jong.
 Idtofunₒ : {α β : Ordinal 𝓤} → α ＝ β → ⟨ α ⟩ → ⟨ β ⟩
 Idtofunₒ = transport ⟨_⟩
 
+Idtofunₒ-retraction : {α β : Ordinal 𝓤} (e : α ＝ β)
+                    → Idtofunₒ e ∘ Idtofunₒ (e ⁻¹) ∼ id
+Idtofunₒ-retraction refl _ = refl
+
+Idtofunₒ-section : {α β : Ordinal 𝓤} (e : α ＝ β)
+                 → Idtofunₒ (e ⁻¹) ∘ Idtofunₒ e ∼ id
+Idtofunₒ-section refl _ = refl
+
 Idtofunₒ-is-order-equiv : {α β : Ordinal 𝓤} (e : α ＝ β)
                         → is-order-equiv α β (Idtofunₒ e)
-Idtofunₒ-is-order-equiv {α = α} refl =
+Idtofunₒ-is-order-equiv {𝓤} {α} refl =
  id-order-preserving , (id-is-equiv ⟨ α ⟩ , id-order-preserving)
   where
    id-order-preserving : is-order-preserving α α id
    id-order-preserving x y l = l
+
+Idtofunₒ-is-simulation : {α β : Ordinal 𝓤} (e : α ＝ β)
+                       → is-simulation α β (Idtofunₒ e)
+Idtofunₒ-is-simulation {𝓤} {α} {β} e =
+ order-equivs-are-simulations α β (Idtofunₒ e) (Idtofunₒ-is-order-equiv e)
 
 Idtofunₒ-eqtoidₒ : (ua : is-univalent 𝓤) (fe : Fun-Ext)
                    {α β : Ordinal 𝓤} (e : α ≃ₒ β)
