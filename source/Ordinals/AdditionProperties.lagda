@@ -975,7 +975,28 @@ In contrast, multiplication behaves differently and is uniquely characterized by
 similar equations since it does preserve all suprema, see
 MultiplicationProperties.
 
-TODO. Mention reformulation and point to Exponentiation.Supremum.
+Added 14 February 2025 by Tom de Jong.
+
+However, we could reformulate the equations for addition to the classically
+equivalent set of equations:
+
+  α +ₒ (β +ₒ 𝟙ₒ) ＝ (α +ₒ βₒ) +ₒ 𝟙ₒ
+  α +ₒ (sup β)   ＝ α ∨ sup (λ i → α +ₒ β i)
+
+for all families β : I → Ord without any inhabitedness condition on the index
+type I.
+
+Note that the equation α +ₒ 𝟘ₒ = α follows by taking the empty family in the
+supremum equation.
+
+These reformulated equations have the benefit that they uniquely characterize
+addition via the recursive equation
+  α +ₒ β ＝ α +ₒ sup (λ b → (B ↓ b) +ₒ 𝟙ₒ)
+         ＝ α ∨ sup (λ b → α +ₒ ((B ↓ b) +ₒ 𝟙ₒ))
+         ＝ α ∨ sup (λ b → (α +ₒ (B ↓ b)) +ₒ 𝟙ₒ).
+
+I first realized this in the context of ordinal exponentiation, cf.
+Ordinals.Exponentiation.Specification.
 
 
 Added 24th May 2024 by Tom de Jong.
