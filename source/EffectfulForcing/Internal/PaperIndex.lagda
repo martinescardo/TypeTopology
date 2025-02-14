@@ -13,24 +13,31 @@ module EffectfulForcing.Internal.PaperIndex (fe : Fun-Ext) where
 
 open import EffectfulForcing.Internal.Correctness
 open import EffectfulForcing.Internal.ExtensionalEquality
-open import EffectfulForcing.Internal.External hiding (main-lemma; B⟦_⟧; B【_】)
+open import EffectfulForcing.Internal.External hiding (main-lemma)
 open import EffectfulForcing.Internal.Internal
 open import EffectfulForcing.Internal.InternalModCont fe hiding (baire)
 open import EffectfulForcing.Internal.InternalModUniCont fe hiding (main-lemma)
 open import EffectfulForcing.Internal.Subst
 open import EffectfulForcing.Internal.SystemT
 open import EffectfulForcing.MFPSAndVariations.Church
-open import EffectfulForcing.MFPSAndVariations.LambdaCalculusVersionOfMFPS using (Kleisli-extension; B⟦_⟧; B〖_〗; B【_】)
--- open import EffectfulForcing.MFPSAndVariations.MFPS-XXIX using (B-Set⟦_⟧)
 open import EffectfulForcing.MFPSAndVariations.ContinuityProperties fe
-open import EffectfulForcing.MFPSAndVariations.Dialogue hiding (decode)
+open import EffectfulForcing.MFPSAndVariations.Dialogue renaming (D to Dial) hiding (decode)
 open import EffectfulForcing.MFPSAndVariations.SystemT using (type;〖_〗; ι; _⇒_)
+open import EffectfulForcing.MFPSAndVariations.LambdaCalculusVersionOfMFPS using (Kleisli-extension; B〖_〗)
 open import MLTT.Sigma
 open import MLTT.Spartan
 
+-- We set up these aliases to better mirror the paper
+〖_〗𝒟 = B〖_〗
+【_】𝒟 = B【_】
+⟦_⟧𝒟 = B⟦_⟧
+〖_〗𝒟ᵀ = B-type〖_〗
+【_】𝒟ᵀ = B-context【_】
+⟦_⟧𝒟ᵀ = ⌜_⌝
+
 \end{code}
 
-\section{(1) A System T Primer}
+\section{(2) A System T Primer}
 
 We define some aliases below to ensure consistency with the notation in the
 paper. This also serves as a dictionary for looking up the notation used in the
@@ -42,7 +49,7 @@ Termᵀ : Cxt → type → 𝓤₀  ̇
 Termᵀ Γ σ = T Γ σ
 
 Termᵀ₀ : type → 𝓤₀  ̇
-Termᵀ₀ σ = Termᵀ 〈〉 σ
+Termᵀ₀ σ = T₀ σ
 
 Typeᵀ : 𝓤₀  ̇
 Typeᵀ = type
@@ -57,35 +64,34 @@ Definition-1 = Σ Γ ꞉ Ctxᵀ , Σ σ ꞉ Typeᵀ , Termᵀ Γ σ
 
 \begin{code}
 
-Definition-2a : type → 𝓤₀  ̇
+Definition-2a : Typeᵀ → 𝓤₀  ̇
 Definition-2a = 〖_〗
 
-Definition-2b : (Γ : Cxt) → 𝓤₀  ̇
+Definition-2b : Ctxᵀ → 𝓤₀  ̇
 Definition-2b = 【_】
 
-Definition-2c : {Γ : Cxt} {σ : type} → T Γ σ → (【 Γ 】 → 〖 σ 〗)
+Definition-2c : {Γ : Ctxᵀ} {σ : Typeᵀ} → Termᵀ Γ σ → (【 Γ 】 → 〖 σ 〗)
 Definition-2c = ⟦_⟧
 
-Definition-3 : {Γ : Cxt} → ℕ → T Γ ι
+Definition-3 : {Γ : Ctxᵀ} → ℕ → Termᵀ Γ ι
 Definition-3 = numeral
 
-Proposition-4 : {Γ : Cxt} (γ : 【 Γ 】) (n : ℕ) → n ＝ ⟦ numeral n ⟧ γ
+Proposition-4 : {Γ : Ctxᵀ} (γ : 【 Γ 】) (n : ℕ) → n ＝ ⟦ numeral n ⟧ γ
 Proposition-4 γ n = ⟦numeral⟧ γ n ⁻¹
 
 \end{code}
 
-\section{(2) Oracless Effectful Forcing}
+\section{(3) Oracless Effectful Forcing}
 
 \begin{code}
 
-
-Dial : (I : 𝓤  ̇) →  (O : 𝓥  ̇) → (X : 𝓦  ̇) → 𝓤 ⊔ 𝓥 ⊔ 𝓦  ̇
-Dial = D
-
-Definition-5 : (I : 𝓤 ̇ ) →  (O : 𝓥  ̇ ) → (X : 𝓦  ̇) → 𝓤 ⊔ 𝓥 ⊔ 𝓦  ̇
+Definition-5 : (I : 𝓤  ̇) → (O : 𝓥  ̇) → (X : 𝓦  ̇) → 𝓤 ⊔ 𝓥 ⊔ 𝓦  ̇
 Definition-5 = Dial
 
-Definition-6 : {I : 𝓤  ̇} {O : 𝓥  ̇} {X : 𝓦  ̇} → D I O X → (I → O) → X
+𝒟 : 𝓤₀ ̇ → 𝓤₀ ̇
+𝒟 X = Dial ℕ ℕ X
+
+Definition-6 : {I : 𝓤  ̇} {O : 𝓥  ̇} {X : 𝓦  ̇} → Dial I O X → (I → O) → X
 Definition-6 = dialogue
 
 Definition-7a : {I : 𝓤  ̇} {O : 𝓥  ̇} {X : 𝓦  ̇}
@@ -96,34 +102,26 @@ Definition-7a {𝓤} {𝓥} {𝓦} {I} {O} {X} f =
 Definition-7b : {O : 𝓥  ̇} {X : 𝓦  ̇} → ((ℕ → O) → X) → 𝓥 ⊔ 𝓦  ̇
 Definition-7b = is-continuous₁
 
--- TODO: uniform continuity missing.
+Definition-7c : {O : 𝓥  ̇} {X : 𝓦  ̇} → ((ℕ → O) → X) → 𝓥 ⊔ 𝓦  ̇
+Definition-7c = is-uniformly-continuous₁
 
 \end{code}
 
 TODO: should the definition below be generalized?
+- bruno: probably but I don't know if we want to change the original file
 
 \begin{code}
 
-Definition-9 : {I : 𝓤  ̇} {O : 𝓥  ̇} {X Y : 𝓦  ̇}
-             → (X → B Y) → B X → B Y
+Definition-9 : {X Y : 𝓤₀  ̇}
+             → (X → 𝒟 Y) → 𝒟 X → 𝒟 Y
 Definition-9 = kleisli-extension
 
-\end{code}
-
-TODO: is there an abbrevation for Definition 10 below?
-
-\begin{code}
-
--- TODO: get rid of `B` everywhere.
-
 Definition-10 : {X Y : 𝓤₀  ̇}
-              → (X → Y)
-              → B X
-              → B Y
+              → (X → Y) → 𝒟 X → 𝒟 Y
 Definition-10 = B-functor
 
--- Definition-11 : {!{X : 𝓤₀ ̇ } {σ : type} → (X → ?) → B X → ?!}
--- Definition-11 = Kleisli-extension
+Definition-11 : {X : 𝓤₀  ̇} {σ : Typeᵀ} → (X → 〖 σ 〗𝒟) → 𝒟 X → 〖 σ 〗𝒟
+Definition-11 = Kleisli-extension
 
 \end{code}
 
@@ -132,24 +130,23 @@ respectively, `Definition-12a`, `Definition-12b`, and `Definition-12c` below.
 
 \begin{code}
 
--- Definition-12a : type → 𝓤₀  ̇
--- Definition-12a = B〖_〗
+Definition-12a : Typeᵀ → 𝓤₀  ̇
+Definition-12a = 〖_〗𝒟
 
--- TODO: figure out which context to use.
--- Definition-12b : {n : ℕ} → Cxt n → Type
--- Definition-12b = B【_】
+Definition-12b : Ctxᵀ → 𝓤₀  ̇
+Definition-12b = 【_】𝒟
 
--- Definition-12c : {!!}
--- Definition-12c = B⟦_⟧
+Definition-12c : {Γ : Ctxᵀ} {σ : Typeᵀ} → Termᵀ Γ σ → (【 Γ 】𝒟 → 〖 σ 〗𝒟)
+Definition-12c = ⟦_⟧𝒟
 
-Definition-13 : B ℕ → B ℕ
+Definition-13 : 𝒟 ℕ → 𝒟 ℕ
 Definition-13 = generic
 
-Definition-14 : T₀ ((ι ⇒ ι) ⇒ ι) → B ℕ
+Definition-14 : Termᵀ₀ ((ι ⇒ ι) ⇒ ι) → 𝒟 ℕ
 Definition-14 = dialogue-tree
 
--- Definition-15 : (σ : type) (α : ℕ → ℕ) (x : 〖 σ 〗) → {!!}
--- Definition-15 σ α x = {!!}
+Definition-15 : (σ : Typeᵀ) → (ℕ → ℕ) → 〖 σ 〗 → 〖 σ 〗𝒟 → Type
+Definition-15 σ = R {σ}
 
 Theorem-16 : (α : ℕ → ℕ) (t : Termᵀ₀ ((ι ⇒ ι) ⇒ ι))
            → ⟦ t ⟧₀ α ＝ dialogue (dialogue-tree t) α
@@ -157,9 +154,9 @@ Theorem-16 α t = dialogue-tree-correct t α
 
 \end{code}
 
-\subsection{(4.1) Church-Encoded Trees in System T}
+\section{(4) Dialogue Trees in System T}
 
-\section{Dialogue Trees in System T}
+\subsection{(4.1) Church-Encoded Trees in System T}
 
 For Section 4.1, we work in a module with a fixed type `A`.
 
@@ -197,7 +194,7 @@ The internal Kleisli extension.
 
 \begin{code}
 
- Definition-18 : Termᵀ₀ ((ι ⇒ 𝒟ᵀ ι ι) ⇒ 𝒟ᵀ ι ι ⇒ 𝒟ᵀ ι ι)
+ Definition-18 : Termᵀ₀ ((ι ⇒ 𝒟ᵀ A ι) ⇒ 𝒟ᵀ A ι ⇒ 𝒟ᵀ A ι)
  Definition-18 = ⌜kleisli-extension⌝
 
 \end{code}
@@ -216,7 +213,7 @@ The generalised internal Kleisli extension.
 \begin{code}
 
  Definition-20 : (σ : Typeᵀ)
-               → Termᵀ₀ ((ι ⇒ B-type〖 σ 〗 A) ⇒ 𝒟ᵀ A ι ⇒ B-type〖 σ 〗 A)
+               → Termᵀ₀ ((ι ⇒ 〖 σ 〗𝒟ᵀ A) ⇒ 𝒟ᵀ A ι ⇒ 〖 σ 〗𝒟ᵀ A)
  Definition-20 σ = ⌜Kleisli-extension⌝
 
 \end{code}
@@ -226,16 +223,22 @@ The internal dialogue translation.
 \begin{code}
 
  Definition-21a : Typeᵀ → Typeᵀ
- Definition-21a σ = B-type〖 σ 〗 A
+ Definition-21a σ = 〖 σ 〗𝒟ᵀ A
 
  Definition-21b : Ctxᵀ → Ctxᵀ
- Definition-21b Γ = B-context【 Γ 】 A
+ Definition-21b Γ = 【 Γ 】𝒟ᵀ A
 
  Definition-21c : (Γ : Ctxᵀ)
                 → (σ : Typeᵀ)
                 → Termᵀ Γ σ
-                → Termᵀ (B-context【 Γ 】 A) (B-type〖 σ 〗 A)
- Definition-21c Γ σ = ⌜_⌝
+                → Termᵀ (【 Γ 】𝒟ᵀ A) (〖 σ 〗𝒟ᵀ A)
+ Definition-21c Γ σ = ⟦_⟧𝒟ᵀ
+
+ Definition-22 : Termᵀ₀ (𝒟ᵀ A ι ⇒ 𝒟ᵀ A ι)
+ Definition-22 = ⌜generic⌝
+
+ Definition-23 : Termᵀ₀ ((ι ⇒ ι) ⇒ ι) → Termᵀ₀ (𝒟ᵀ A ι)
+ Definition-23 = ⌜dialogue-tree⌝
 
 \end{code}
 
@@ -260,6 +263,8 @@ Lemma-25a = ≡-symm
 Lemma-25b : {σ : type} {a b c : 〖 σ 〗} → a ≡ b → b ≡ c → a ≡ c
 Lemma-25b = ≡-trans
 
+-- TODO Lemma-25c
+
 Lemma-26 : {σ : type} → (t : T₀ σ) → ⟦ t ⟧₀ ≡ ⟦ t ⟧₀
 Lemma-26 = ≡-refl₀
 
@@ -269,24 +274,46 @@ Lemma-26 = ≡-refl₀
 
 \begin{code}
 
--- TODO: I could not find this.
--- Definition-27 : (A : Typeᵀ) → Dial ℕ ℕ ℕ → 〖 𝒟ᵀ A ι 〗
--- Definition-27 = {!church-encode!}
+Definition-27 : (A : Typeᵀ) → 𝒟 ℕ → 〖 𝒟ᵀ A ι 〗
+Definition-27 A = church-encode
 
--- Definition-28 : (σ : Typeᵀ) → 〖 σ 〗 → Typeᵀ → Termᵀ₀ σ
--- Definition-28 σ t = {!!}
+Definition-28 : (σ : Typeᵀ) → 〖 σ 〗𝒟 → ({A : Typeᵀ} → Termᵀ₀ (〖 σ 〗𝒟ᵀ A)) → 𝓤₀ ̇
+Definition-28 σ = Rnorm
 
--- Lemma-29 : {!!}
--- Lemma-29 = {!!}
+Lemma-29 : (σ : Typeᵀ)
+           (t s : {A : Typeᵀ} → Termᵀ₀ (〖 σ 〗𝒟ᵀ A))
+           (x : 〖 σ 〗𝒟)
+         → ({A : type} → ⟦ t ⟧₀ ≡[ (B-type〖 σ 〗 A) ] ⟦ s ⟧₀)
+         → Rnorm x t
+         → Rnorm x s
+Lemma-29 σ t s x = Rnorm-respects-≡
 
+-- TODO next two require changing formalisation slightly
 -- Lemma-30 : {!!}
 -- Lemma-30 = {!!}
 
 -- Corollary-31 : {!!}
 -- Corollary-31 = {!!}
 
--- Lemma-34 : {!!}
--- Lemma-34 = {!!}
+Lemma-32 : {σ : Typeᵀ}
+           (f : ℕ → 〖 σ 〗𝒟)
+           (n : 𝒟 ℕ)
+           (g : {A : Typeᵀ} → Termᵀ₀ (ι ⇒ (〖 σ 〗𝒟ᵀ A)))
+           (m : {A : Typeᵀ} → T₀ (⌜B⌝ ι A))
+         → ((x : ℕ) → Rnorm (f x) (g · numeral x))
+         → Rnorm n m
+         → Rnorm (Kleisli-extension f n) (⌜Kleisli-extension⌝ · g · m)
+Lemma-32 f n g m h i = Rnorm-kleisli-lemma f g h n m i
+
+Lemma-33 : {Γ : Ctxᵀ} {σ : Typeᵀ}
+           (γ₁ : 【 Γ 】𝒟) (γ₂ : {A : Typeᵀ} → Sub₀ (【 Γ 】𝒟ᵀ A))
+           (t : Termᵀ Γ σ)
+         → Rnorms γ₁ γ₂
+         → Rnorm (⟦ t ⟧𝒟 γ₁) (close ⌜ t ⌝ γ₂)
+Lemma-33 = Rnorm-lemma
+
+Lemma-34 : {!!}
+Lemma-34 = {!!}
 
 dialogue-treeᵀ : {Γ : Cxt}
                → T (B-context【 Γ 】 ((ι ⇒ ι) ⇒ ι)) (⌜B⌝ ι ((ι ⇒ ι) ⇒ ι))
@@ -299,13 +326,6 @@ Definition-35 = ⌜dialogue⌝
 Lemma-36 : (d : B ℕ) (α : ℕ → ℕ)
          → dialogue d α ＝ dialogue⋆ (church-encode d) α
 Lemma-36 d α = dialogues-agreement d α
-
-\end{code}
-
-\begin{code}
-
--- Definition-35 : T₀ (𝒟ᵀ ((ι ⇒ ι) ⇒ ι) (ι ⇒ (ι ⇒ ι) ⇒ ι))
--- Definition-35 = {!⌜dialogue-tree⌝!}
 
 \end{code}
 
@@ -377,7 +397,7 @@ Theorem-45 = Lemma-43
 Definition-46 : Termᵀ₀ (ι ⇒ ι) → 𝓤₀  ̇
 Definition-46 = is-boolean-pointᵀ
 
-Definition-47 : B ℕ → D ℕ 𝟚 ℕ
+Definition-47 : B ℕ → Dial ℕ 𝟚 ℕ
 Definition-47 = prune
 
 max-q₂  = max-boolean-question

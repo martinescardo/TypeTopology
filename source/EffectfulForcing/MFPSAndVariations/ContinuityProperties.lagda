@@ -909,7 +909,7 @@ uni-continuity-equivalent-to-uni-continuity f = ⦅⇒⦆ , ⦅⇐⦆
 
 Added on 2025-02-09.
 
-Slight generalization of the notion of continuity.
+Slight generalization of the notions of continuity and uniform continuity.
 
 \begin{code}
 
@@ -919,5 +919,11 @@ is-continuous₁ {_} {_} {O} {X} f =
 
 _ : is-continuous₀ ＝ is-continuous₁ {O = ℕ}
 _ = refl
+
+is-uniformly-continuous₁ : {O : 𝓤  ̇} {X : 𝓥  ̇} → ((ℕ → O) → X) → 𝓤 ⊔ 𝓥  ̇
+is-uniformly-continuous₁ {_} {_} {O} {X} f =
+ Σ n ꞉ ℕ , ((α α′ : ℕ → O) → α ＝⦅ n ⦆ α′ → f α ＝ f α′)
+
+-- TODO prove this is equivalent to is-uniformly-continuous₀
 
 \end{code}
