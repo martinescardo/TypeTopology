@@ -733,8 +733,8 @@ simulation-product-decomposition-generalized {𝓤} α (a₀ , a₀-least) = II
   II : (β γ : Ordinal 𝓤)
      → (a₁ : ⟨ α ⟩)
      → ((f , _) : α ×ₒ β ⊴ α ×ₒ γ +ₒ (α ↓ a₁))
-     → Σ g ꞉ (⟨ β ⟩ → ⟨ γ ⟩)
-           , ((a : ⟨ α ⟩) (b : ⟨ β ⟩) → f (a , b) ＝ inl (a , g b))
+     → Σ g ꞉ (⟨ β ⟩ → ⟨ γ ⟩) ,
+        ((a : ⟨ α ⟩) (b : ⟨ β ⟩) → f (a , b) ＝ inl (a , g b))
   II β γ a₁ 𝕗 = (λ   b → pr₁ (𝕘 β γ a₁ 𝕗 b)) ,
                 (λ a b → pr₂ (𝕘 β γ a₁ 𝕗 b) a)
 
@@ -853,8 +853,8 @@ simulation-product-decomposition' α β γ (a₀ , a₀-least) 𝕗@(f , f-sim) 
                 (+ₒ-left-⊴ (α ×ₒ γ) (α ↓ a))
    f' = [ α ×ₒ β , α ×ₒ γ +ₒ (α ↓ a) ]⟨ 𝕗' ⟩
 
-   I : Σ g ꞉ (⟨ β ⟩ → ⟨ γ ⟩)
-           , ((a' : ⟨ α ⟩) (b : ⟨ β ⟩) → f' (a' , b) ＝ inl (a' , g b))
+   I : Σ g ꞉ (⟨ β ⟩ → ⟨ γ ⟩) ,
+        ((a' : ⟨ α ⟩) (b : ⟨ β ⟩) → f' (a' , b) ＝ inl (a' , g b))
    I = simulation-product-decomposition-generalized α (a₀ , a₀-least) β γ a 𝕗'
 
    g = pr₁ I
@@ -956,43 +956,40 @@ simulation-product-decomposition-leftover-empty
  → (a : ⟨ α ⟩)
  → (α ×ₒ β) ＝ (α ×ₒ γ +ₒ (α ↓ a))
  → (α ×ₒ β) ＝ (α ×ₒ γ)
-simulation-product-decomposition-leftover-empty α β γ (a₀ , p) a e = eq
+simulation-product-decomposition-leftover-empty α β γ (a₀ , p) a e = II
  where
   a-least : (x : ⟨ α ⟩) → ¬ (x ≺⟨ α ⟩ a)
-  a-least x l = +disjoint (inr-is-inl ⁻¹)
+  a-least x l = +disjoint (ν ⁻¹)
    where
     𝕗 : α ×ₒ β ⊴ α ×ₒ γ +ₒ (α ↓ a)
-    𝕗 = ≃ₒ-to-⊴ _ _ (idtoeqₒ _ _ e)
-    f = [ (α ×ₒ β) , ((α ×ₒ γ) +ₒ (α ↓ a)) ]⟨ 𝕗 ⟩
+    f = Idtofunₒ e
+    𝕗 = f , Idtofunₒ-is-simulation e
 
     𝕗⁻¹ : α ×ₒ γ +ₒ (α ↓ a) ⊴ α ×ₒ β
-    𝕗⁻¹ = ≃ₒ-to-⊴ _ _ (idtoeqₒ _ _ (e ⁻¹))
-    f⁻¹ = [ α ×ₒ γ +ₒ (α ↓ a) , α ×ₒ β ]⟨ 𝕗⁻¹ ⟩
+    f⁻¹ = Idtofunₒ (e ⁻¹)
+    𝕗⁻¹ = f⁻¹ , Idtofunₒ-is-simulation (e ⁻¹)
 
-    f-decomposition : Σ g ꞉ (⟨ β ⟩ → ⟨ γ ⟩) ,
-                        ((a : ⟨ α ⟩) (b : ⟨ β ⟩) → f (a , b) ＝ inl (a , g b) )
+    f-decomposition
+     : Σ g ꞉ (⟨ β ⟩ → ⟨ γ ⟩) ,
+        ((a : ⟨ α ⟩) (b : ⟨ β ⟩) → f (a , b) ＝ inl (a , g b) )
     f-decomposition =
       simulation-product-decomposition-generalized α (a₀ , p) β γ a 𝕗
+
     g = pr₁ f-decomposition
 
-    inr-is-inl = (inr (x , l))         ＝⟨ equiv _ _ e (inr (x , l)) ⟩
-                 f (f⁻¹ (inr (x , l))) ＝⟨ pr₂ f-decomposition x' y' ⟩
-                 inl (x' , g y')       ∎
+    ν = (inr (x , l))         ＝⟨ (Idtofunₒ-retraction e (inr (x , l))) ⁻¹ ⟩
+        f (f⁻¹ (inr (x , l))) ＝⟨ pr₂ (f-decomposition) x' y' ⟩
+        inl (x' , g y')       ∎
      where
       x' = pr₁ (f⁻¹ (inr (x , l)))
       y' = pr₂ (f⁻¹ (inr (x , l)))
-      equiv : (α β : Ordinal 𝓤) → (eq : α ＝ β) (x : ⟨ β ⟩)
-            → x ＝ [ α , β ]⟨ ≃ₒ-to-⊴ α β (idtoeqₒ α β eq) ⟩
-                     ([ β , α ]⟨ ≃ₒ-to-⊴ β α (idtoeqₒ β α (eq ⁻¹)) ⟩ x)
-      equiv α β refl x = refl
 
+  I : a ＝ a₀
+  I = Extensionality α a a₀ (λ x l → 𝟘-elim (a-least x l))
+                            (λ x l → 𝟘-elim (Idtofunₒ (p ⁻¹) (x , l)))
 
-  a-is-a₀ : a ＝ a₀
-  a-is-a₀ = Extensionality α a a₀ (λ x l → 𝟘-elim (a-least x l))
-                                  (λ x l → 𝟘-elim (transport⁻¹ ⟨_⟩ p (x , l)))
-
-  eq = α ×ₒ β            ＝⟨ e ⟩
-       α ×ₒ γ +ₒ (α ↓ a) ＝⟨ ap ((α ×ₒ γ) +ₒ_) (ap (α ↓_) a-is-a₀ ∙ p ⁻¹) ⟩
+  II = α ×ₒ β            ＝⟨ e ⟩
+       α ×ₒ γ +ₒ (α ↓ a) ＝⟨ ap ((α ×ₒ γ) +ₒ_) (ap (α ↓_) I ∙ p ⁻¹) ⟩
        α ×ₒ γ +ₒ 𝟘ₒ      ＝⟨ 𝟘ₒ-right-neutral (α ×ₒ γ) ⟩
        α ×ₒ γ            ∎
 
@@ -1008,7 +1005,7 @@ simulation-product-decomposition-leftover-empty α β γ (a₀ , p) a e = eq
   II : α ×ₒ β ＝ α ×ₒ (γ ↓ c)
   II = simulation-product-decomposition-leftover-empty α β (γ ↓ c) α-positive a I
 
-  III : β ＝ (γ ↓ c)
+  III : β ＝ γ ↓ c
   III = ×ₒ-left-cancellable α β (γ ↓ c) α-positive II
 
 \end{code}
