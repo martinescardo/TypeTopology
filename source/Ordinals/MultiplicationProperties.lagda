@@ -502,7 +502,6 @@ equivalent to Excluded Middle.
            f (⋆ , inl ⋆)   ∎
     III₂ : inr ⋆ ＝ inl ⋆
     III₂ = ap pr₂ (simulations-are-lc _ _ f f-sim III₁)
-
   III (inl ⋆ , inr ⋆) r = inr (λ p → 𝟘-elim (+disjoint (III₆ p)))
    where
     III₃ : (p : P)
@@ -566,90 +565,227 @@ the context of the current lemma). However the more general statement seems to
 be necessary for proving left cancellability with respect to ⊴, rather than
 just with respect to ＝.
 
-TODO. Give better names and respect the 80 char. limit in the proof below.
-
 \begin{code}
 
 simulation-product-decomposition-generalised
- : (α β γ : Ordinal 𝓤)
+ : (α : Ordinal 𝓤)
  → 𝟘ₒ ⊲ α
+ → (β γ : Ordinal 𝓤)
  → (a₁ : ⟨ α ⟩)
-   ((f , _) : α ×ₒ β ⊴ α ×ₒ γ +ₒ (α ↓ a₁))
+ → ((f , _) : α ×ₒ β ⊴ α ×ₒ γ +ₒ (α ↓ a₁))
  → Σ g ꞉ (⟨ β ⟩ → ⟨ γ ⟩) , ((a : ⟨ α ⟩) (b : ⟨ β ⟩) → f (a , b) ＝ inl (a , g b))
-simulation-product-decomposition-generalised {𝓤 = 𝓤} α β γ (a₀ , a₀-least) a₁ 𝕗 =
- (g , g-satisfies-equation)
+simulation-product-decomposition-generalised {𝓤} α (a₀ , a₀-least) = II
+ where
+  P : Ordinal 𝓤 → 𝓤 ⁺ ̇
+  P β =   (γ : Ordinal 𝓤) (a₁ : ⟨ α ⟩)
+          ((f , _) : α ×ₒ β ⊴ α ×ₒ γ +ₒ (α ↓ a₁))
+        → (b : ⟨ β ⟩) → Σ c ꞉ ⟨ γ ⟩ , ((a : ⟨ α ⟩) → f (a , b) ＝ inl (a , c))
+
+  P₀ : Ordinal 𝓤 → 𝓤 ⁺ ̇
+  P₀ β =   (a₁ : ⟨ α ⟩) (γ : Ordinal 𝓤)
+           ((f , _) : α ×ₒ β ⊴ α ×ₒ γ +ₒ (α ↓ a₁))
+           (b : ⟨ β ⟩)
+           (x : ⟨ (α ×ₒ γ) +ₒ (α ↓ a₁) ⟩)
+         → f (a₀ , b) ＝ x
+         → Σ c ꞉ ⟨ γ ⟩ , f (a₀ , b) ＝ inl (a₀ , c)
+
+  I : (β γ : Ordinal 𝓤) (a₁ : ⟨ α ⟩)
+      ((f , _) : α ×ₒ β ⊴ (α ×ₒ γ) +ₒ (α ↓ a₁))
+      (b : ⟨ β ⟩)
+    → α ×ₒ (β ↓ b) ＝ α ×ₒ γ +ₒ (α ↓ a₁) ↓ f (a₀ , b)
+  I β γ a₁ 𝕗@(f , f-sim) b =
+   α ×ₒ (β ↓ b)                      ＝⟨ I₁ ⟩
+   α ×ₒ (β ↓ b) +ₒ (α ↓ a₀)          ＝⟨ ×ₒ-↓ α β ⁻¹ ⟩
+   α ×ₒ β ↓ (a₀ , b)                 ＝⟨ I₂ ⟩
+   α ×ₒ γ +ₒ (α ↓ a₁) ↓ f (a₀ , b)   ∎
+    where
+     I₁ = 𝟘ₒ-right-neutral
+             (α ×ₒ (β ↓ b)) ⁻¹ ∙ ap (α ×ₒ (β ↓ b) +ₒ_)
+             a₀-least
+     I₂ = simulations-preserve-↓ _ _ 𝕗 (a₀ , b)
+
+  𝕘₁ : (β : Ordinal 𝓤)
+     → ((b : ⟨ β ⟩) → P (β ↓ b))
+     → P₀ β
+  𝕘₁ β IH a₁ γ 𝕗@(f , _) b (inl (a' , c)) e = c , III
+    where
+     eq = α ×ₒ (β ↓ b)                      ＝⟨ I β γ a₁ 𝕗 b ⟩
+          α ×ₒ γ +ₒ (α ↓ a₁) ↓ f (a₀ , b)   ＝⟨ ap ((α ×ₒ γ +ₒ (α ↓ a₁)) ↓_) e ⟩
+          α ×ₒ γ +ₒ (α ↓ a₁) ↓ inl (a' , c) ＝⟨ +ₒ-↓-left (a' , c) ⁻¹ ⟩
+          α ×ₒ γ ↓ (a' , c)                 ＝⟨ ×ₒ-↓ α γ ⟩
+          α ×ₒ (γ ↓ c) +ₒ (α ↓ a')          ∎
+
+     𝕗' :  α ×ₒ (β ↓ b) ⊴ α ×ₒ (γ ↓ c) +ₒ (α ↓ a')
+     f' = Idtofunₒ eq
+     𝕗' = f' , Idtofunₒ-is-simulation eq
+
+     𝕗'⁻¹ : α ×ₒ (γ ↓ c) +ₒ (α ↓ a') ⊴ α ×ₒ (β ↓ b)
+     f'⁻¹ = Idtofunₒ (eq ⁻¹)
+     𝕗'⁻¹ = f'⁻¹ , Idtofunₒ-is-simulation (eq ⁻¹)
+
+     II : a' ＝ a₀
+     II = Extensionality α a' a₀
+           (λ x l → 𝟘-elim (II₁ x l))
+           (λ x l → 𝟘-elim (transport⁻¹ ⟨_⟩ a₀-least (x , l)))
+      where
+       II₁ : (x : ⟨ α ⟩) → ¬ (x ≺⟨ α ⟩ a')
+       II₁ x l = +disjoint II₂
+        where
+         y : ⟨ α ×ₒ (β ↓ b) ⟩
+         y = f'⁻¹ (inr (x , l))
+         y₁ = pr₁ y
+         y₂ = pr₂ y
+
+         z : ⟨ γ ↓ c ⟩
+         z = pr₁ (IH b (γ ↓ c) a' 𝕗' y₂)
+
+         II₂ = inl (y₁ , z)            ＝⟨ pr₂ (IH b (γ ↓ c) a' 𝕗' y₂) y₁ ⁻¹ ⟩
+               f' (f'⁻¹ (inr (x , l))) ＝⟨ Idtofunₒ-retraction eq (inr (x , l)) ⟩
+               inr (x , l)             ∎
+
+     III = f (a₀ , b)   ＝⟨ e ⟩
+           inl (a' , c) ＝⟨ ap (λ - → inl (- , c)) II ⟩
+           inl (a₀ , c) ∎
+
+  𝕘₁ β _ a₁ γ 𝕗@(f , f-sim) b (inr (x , p)) e = {!!}
+
+  𝕘₂ : (β : Ordinal 𝓤)
+     → ((b : ⟨ β ⟩) → P (β ↓ b))
+     → P β
+  𝕘₂ β IH γ a₁ 𝕗@(f , f-sim) b = c , c-satisfies-equation
+   where
+    c : ⟨ γ ⟩
+    c = pr₁ (𝕘₁ β IH a₁ γ 𝕗 b (f (a₀ , b)) refl)
+
+    c-spec : f (a₀ , b) ＝ inl (a₀ , c)
+    c-spec = pr₂ (𝕘₁ β IH a₁ γ 𝕗 b (f (a₀ , b)) refl)
+
+    c-satisfies-equation : (a : ⟨ α ⟩) → f (a , b) ＝ inl (a , c)
+    c-satisfies-equation a = ↓-lc (α ×ₒ γ +ₒ (α ↓ a₁)) _ _ eq-II
+     where
+      eq-I = α ×ₒ (β ↓ b)                      ＝⟨ I β γ a₁ 𝕗 b ⟩
+             α ×ₒ γ +ₒ (α ↓ a₁) ↓ f (a₀ , b)   ＝⟨ eq-I₁ ⟩
+             α ×ₒ γ +ₒ (α ↓ a₁) ↓ inl (a₀ , c) ＝⟨ +ₒ-↓-left (a₀ , c) ⁻¹ ⟩
+             α ×ₒ γ ↓ (a₀ , c)                 ＝⟨ ×ₒ-↓ α γ ⟩
+             α ×ₒ (γ ↓ c) +ₒ (α ↓ a₀)          ＝⟨ eq-I₂ ⟩
+             α ×ₒ (γ ↓ c)                      ∎
+       where
+        eq-I₁ = ap (((α ×ₒ γ) +ₒ (α ↓ a₁)) ↓_) c-spec
+        eq-I₂ = ap ((α ×ₒ (γ ↓ c)) +ₒ_) a₀-least ⁻¹
+             ∙ 𝟘ₒ-right-neutral (α ×ₒ (γ ↓ c))
+
+      eq-II = α ×ₒ γ +ₒ (α ↓ a₁) ↓ f (a , b)   ＝⟨ eq-II₁ ⟩
+              α ×ₒ β ↓ (a , b)                 ＝⟨ ×ₒ-↓ α β ⟩
+              α ×ₒ (β ↓ b) +ₒ (α ↓ a)          ＝⟨ ap (_+ₒ (α ↓ a)) eq-I ⟩
+              α ×ₒ (γ ↓ c) +ₒ (α ↓ a)          ＝⟨ ×ₒ-↓ α γ ⁻¹ ⟩
+              α ×ₒ γ ↓ (a , c)                 ＝⟨ +ₒ-↓-left (a , c) ⟩
+              α ×ₒ γ +ₒ (α ↓ a₁) ↓ inl (a , c) ∎
+       where
+        eq-II₁ = (simulations-preserve-↓ _ _ 𝕗 (a , b)) ⁻¹
+
+  𝕘 : (β : Ordinal 𝓤) → P β
+  𝕘 = transfinite-induction-on-OO P 𝕘₂
+
+  II : (β γ : Ordinal 𝓤)
+     → (a₁ : ⟨ α ⟩)
+     → ((f , _) : α ×ₒ β ⊴ α ×ₒ γ +ₒ (α ↓ a₁))
+     → Σ g ꞉ (⟨ β ⟩ → ⟨ γ ⟩)
+           , ((a : ⟨ α ⟩) (b : ⟨ β ⟩) → f (a , b) ＝ inl (a , g b))
+  II β γ a₁ 𝕗 = (λ   b → pr₁ (𝕘 β γ a₁ 𝕗 b)) ,
+                (λ a b → pr₂ (𝕘 β γ a₁ 𝕗 b) a)
+{-
+α β γ (a₀ , a₀-least) a₁ =
+ (λ 𝕗 → (g 𝕗 , g-satisfies-equation 𝕗))
   where
-   f = [ α ×ₒ β , α ×ₒ γ +ₒ (α ↓ a₁) ]⟨ 𝕗 ⟩
+   P : Ordinal 𝓤 → 𝓤 ⁺ ̇
+   P β =   (a₁ : ⟨ α ⟩) (γ : Ordinal 𝓤)
+           ((f , _) : α ×ₒ β ⊴ α ×ₒ γ +ₒ (α ↓ a₁))
+         → (b : ⟨ β ⟩) → Σ c ꞉ ⟨ γ ⟩ , ((a : ⟨ α ⟩) → f (a , b) ＝ inl (a , c))
 
-   P : Ordinal 𝓤 →  (𝓤 ⁺) ̇
-   P β = (a₁ : ⟨ α ⟩) (γ : Ordinal 𝓤)
-          ((f , _) : (α ×ₒ β) ⊴ ((α ×ₒ γ) +ₒ (α ↓ a₁)))
-          → (b : ⟨ β ⟩) → Σ c ꞉ ⟨ γ ⟩ , ((a : ⟨ α ⟩) → f (a , b) ＝ inl (a , c))
+   P₀ : Ordinal 𝓤 → 𝓤 ⁺ ̇
+   P₀ β =   (a₁ : ⟨ α ⟩) (γ : Ordinal 𝓤)
+            ((f , _) : α ×ₒ β ⊴ α ×ₒ γ +ₒ (α ↓ a₁))
+            (b : ⟨ β ⟩)
+            (x : ⟨ (α ×ₒ γ) +ₒ (α ↓ a₁) ⟩)
+          → f (a₀ , b) ＝ x
+          → Σ c ꞉ ⟨ γ ⟩ , f (a₀ , b) ＝ inl (a₀ , c)
 
-   P₀ : Ordinal 𝓤 →  (𝓤 ⁺) ̇
-   P₀ β = (a₁ : ⟨ α ⟩) (γ : Ordinal 𝓤)
-           ((f , _) : (α ×ₒ β) ⊴ ((α ×ₒ γ) +ₒ (α ↓ a₁)))
-           (b : ⟨ β ⟩) (x : ⟨ (α ×ₒ γ) +ₒ (α ↓ a₁) ⟩) → f (a₀ , b) ＝ x
-            → Σ c ꞉ ⟨ γ ⟩ , f (a₀ , b) ＝ inl (a₀ , c)
+   foo : ((f , _) : α ×ₒ β ⊴ (α ×ₒ γ) +ₒ (α ↓ a₁))
+         (b : ⟨ β ⟩)
+       → α ×ₒ (β ↓ b) ＝ α ×ₒ γ +ₒ (α ↓ a₁) ↓ f (a₀ , b)
+   foo 𝕗@(f , f-sim) b =
+    α ×ₒ (β ↓ b)                      ＝⟨ foo₁ ⟩
+    α ×ₒ (β ↓ b) +ₒ (α ↓ a₀)          ＝⟨ ×ₒ-↓ α β ⁻¹ ⟩
+    α ×ₒ β ↓ (a₀ , b)                 ＝⟨ foo₂ ⟩
+    α ×ₒ γ +ₒ (α ↓ a₁) ↓ f (a₀ , b)   ∎
+     where
+      foo₁ = 𝟘ₒ-right-neutral
+              (α ×ₒ (β ↓ b)) ⁻¹ ∙ ap (α ×ₒ (β ↓ b) +ₒ_)
+              a₀-least
+      foo₂ = simulations-preserve-↓ _ _ 𝕗 (a₀ , b)
 
-   g' : (β : Ordinal 𝓤) (ih : (b : ⟨ β ⟩) → P (β ↓ b)) → P₀ β
-   g' β ih a₁ γ 𝕗@(f , _) b (inl (a' , c)) e = c , (e ∙ ap (λ - → inl (- , c)) I)
+   g₁ : (β : Ordinal 𝓤)
+      → ((b : ⟨ β ⟩) → P (β ↓ b))
+      → P₀ β
+   g₁ β IH a₁ γ 𝕗@(f , _) b (inl (a' , c)) e = c , II
     where
      I : a' ＝ a₀
-     I = Extensionality α a' a₀ (λ x l → 𝟘-elim (II x l))
-                                (λ x l → 𝟘-elim (transport⁻¹ ⟨_⟩ a₀-least (x , l)))
+     I = Extensionality α a' a₀
+          (λ x l → 𝟘-elim (II x l))
+          (λ x l → 𝟘-elim (transport⁻¹ ⟨_⟩ a₀-least (x , l)))
       where
        II : (x : ⟨ α ⟩) → ¬ (x ≺⟨ α ⟩ a')
        II x l = +disjoint V
         where
-         III = α ×ₒ (β ↓ b)                      ＝⟨ III₁ ⟩
-               α ×ₒ (β ↓ b) +ₒ (α ↓ a₀)          ＝⟨ ×ₒ-↓ α β ⁻¹ ⟩
-               α ×ₒ β ↓ (a₀ , b)                 ＝⟨ III₂ ⟩
+         III = α ×ₒ (β ↓ b)                      ＝⟨ {!foo 𝕗!} ⟩
                α ×ₒ γ +ₒ (α ↓ a₁) ↓ f (a₀ , b)   ＝⟨ III₃  ⟩
                α ×ₒ γ +ₒ (α ↓ a₁) ↓ inl (a' , c) ＝⟨ +ₒ-↓-left (a' , c) ⁻¹ ⟩
                α ×ₒ γ ↓ (a' , c)                 ＝⟨ ×ₒ-↓ α γ ⟩
                α ×ₒ (γ ↓ c) +ₒ (α ↓ a')          ∎
           where
-           III₁ = 𝟘ₒ-right-neutral (α ×ₒ (β ↓ b)) ⁻¹ ∙ ap (α ×ₒ (β ↓ b) +ₒ_) a₀-least
+           III₁ = 𝟘ₒ-right-neutral
+                   (α ×ₒ (β ↓ b)) ⁻¹ ∙ ap (α ×ₒ (β ↓ b) +ₒ_)
+                   a₀-least
            III₂ = simulations-preserve-↓ _ _ 𝕗 (a₀ , b)
-           III₃ = ap (((α ×ₒ γ) +ₒ (α ↓ a₁)) ↓_) e
+           III₃ = ap ((α ×ₒ γ +ₒ (α ↓ a₁)) ↓_) e
 
-         𝕗' : α ×ₒ (β ↓ b) ⊴ α ×ₒ (γ ↓ c) +ₒ (α ↓ a')
-         𝕗' = ≃ₒ-to-⊴ _ _ (idtoeqₒ _ _ III)
-         f' = [ α ×ₒ (β ↓ b) , α ×ₒ (γ ↓ c) +ₒ (α ↓ a') ]⟨ 𝕗' ⟩
+         𝕗' :  α ×ₒ (β ↓ b) ⊴ α ×ₒ (γ ↓ c) +ₒ (α ↓ a')
+         f' = Idtofunₒ III
+         𝕗' = f' , Idtofunₒ-is-simulation III
 
          𝕗'⁻¹ : α ×ₒ (γ ↓ c) +ₒ (α ↓ a') ⊴ α ×ₒ (β ↓ b)
-         𝕗'⁻¹ = ≃ₒ-to-⊴ _ _ (idtoeqₒ _ _ (III ⁻¹))
-         f'⁻¹ = [ α ×ₒ (γ ↓ c) +ₒ (α ↓ a') , α ×ₒ (β ↓ b) ]⟨ 𝕗'⁻¹ ⟩
+         f'⁻¹ = Idtofunₒ (III ⁻¹)
+         𝕗'⁻¹ = f'⁻¹ , Idtofunₒ-is-simulation (III ⁻¹)
 
-         IV : (α β : Ordinal 𝓤) → (eq : α ＝ β) (x : ⟨ β ⟩)
-               → [ α , β ]⟨ ≃ₒ-to-⊴ α β (idtoeqₒ α β eq) ⟩
-                  ([ β , α ]⟨ ≃ₒ-to-⊴ β α (idtoeqₒ β α (eq ⁻¹)) ⟩ x) ＝ x
-         IV α β refl x = refl
+         y : ⟨ α ×ₒ (β ↓ b) ⟩
+         y = f'⁻¹ (inr (x , l))
+         y₁ = pr₁ y
+         y₂ = pr₂ y
 
-         x' : ⟨ α ×ₒ (β ↓ b) ⟩
-         x' = f'⁻¹ (inr (x , l))
+         z : ⟨ γ ↓ c ⟩
+         z = pr₁ (IH b a' (γ ↓ c) 𝕗' y₂)
 
-         xₐ = pr₁ x'
-         x₂ = pr₂ x'
-
-         x'' = pr₁ (ih b a' (γ ↓ c) 𝕗' x₂)
-
-         V = inl (xₐ , x'')          ＝⟨ pr₂ (ih b a' (γ ↓ c) 𝕗' x₂) xₐ ⁻¹ ⟩
-             f' (f'⁻¹ (inr (x , l))) ＝⟨ IV _ _ III (inr (x , l)) ⟩
+         V = inl (y₁ , z)            ＝⟨ pr₂ (IH b a' (γ ↓ c) 𝕗' y₂) y₁ ⁻¹ ⟩
+             f' (f'⁻¹ (inr (x , l))) ＝⟨ Idtofunₒ-retraction III (inr (x , l)) ⟩
              inr (x , l)             ∎
 
-   g' β _ a₁ γ 𝕗@(f , f-sim) b (inr (x , p)) e = 𝟘-elim V
+     II = f (a₀ , b)   ＝⟨ e ⟩
+          inl (a' , c) ＝⟨ ap (λ - → inl (- , c)) I ⟩
+          inl (a₀ , c) ∎
+
+   g₁ β _ a₁ γ 𝕗@(f , f-sim) b (inr (x , p)) e = 𝟘-elim V
     where
      I = α ×ₒ (β ↓ b)                     ＝⟨ I₁ ⟩
          α ×ₒ (β ↓ b) +ₒ (α ↓ a₀)         ＝⟨ ×ₒ-↓ α β ⁻¹ ⟩
          α ×ₒ β ↓ (a₀ , b)                ＝⟨ I₂ ⟩
-         α ×ₒ γ +ₒ (α ↓ a₁) ↓ f (a₀ , b)  ＝⟨ ap (((α ×ₒ γ) +ₒ (α ↓ a₁)) ↓_) e ⟩
+         α ×ₒ γ +ₒ (α ↓ a₁) ↓ f (a₀ , b)  ＝⟨ ap ((α ×ₒ γ +ₒ (α ↓ a₁)) ↓_) e ⟩
          α ×ₒ γ +ₒ (α ↓ a₁) ↓ inr (x , p) ＝⟨ +ₒ-↓-right (x , p) ⁻¹ ⟩
          α ×ₒ γ +ₒ (α ↓ a₁ ↓ (x , p))     ＝⟨ I₃ ⟩
-         α ×ₒ γ  +ₒ (α ↓ x)                 ∎
+         α ×ₒ γ  +ₒ (α ↓ x)               ∎
           where
-           I₁ = 𝟘ₒ-right-neutral (α ×ₒ (β ↓ b)) ⁻¹ ∙ ap (α ×ₒ (β ↓ b) +ₒ_) a₀-least
+           I₁ = 𝟘ₒ-right-neutral
+                 (α ×ₒ (β ↓ b)) ⁻¹ ∙ ap (α ×ₒ (β ↓ b) +ₒ_)
+                 a₀-least
            I₂ = simulations-preserve-↓ _ _ 𝕗 (a₀ , b)
            I₃ = ap ((α ×ₒ γ) +ₒ_) (iterated-↓  α a₁ x p)
 
@@ -686,10 +822,10 @@ simulation-product-decomposition-generalised {𝓤 = 𝓤} α β γ (a₀ , a₀
    g'' : (β : Ordinal 𝓤) (ih : (b : ⟨ β ⟩) → P (β ↓ b)) →  P β
    g'' β ih a₁ γ 𝕗@(f , f-sim) b = c , c-satisfies-equation
     where
-     c = pr₁ (g' β ih a₁ γ 𝕗 b (f (a₀ , b)) refl)
+     c = pr₁ (g₁ β ih a₁ γ 𝕗 b (f (a₀ , b)) refl)
 
      c-spec : f (a₀ , b) ＝ inl (a₀ , c)
-     c-spec = pr₂ (g' β ih a₁ γ 𝕗 b (f (a₀ , b)) refl)
+     c-spec = pr₂ (g₁ β ih a₁ γ 𝕗 b (f (a₀ , b)) refl)
 
      c-satisfies-equation : (a : ⟨ α ⟩) → f (a , b) ＝ inl (a , c)
      c-satisfies-equation a = ↓-lc (α ×ₒ γ +ₒ (α ↓ a₁)) (f (a , b)) (inl (a , c)) II
@@ -717,246 +853,251 @@ simulation-product-decomposition-generalised {𝓤 = 𝓤} α β γ (a₀ , a₀
              where
               II₁ = simulations-preserve-↓ _ _ 𝕗 (a , b) ⁻¹
 
-   g''' : (b : ⟨ β ⟩) → Σ c ꞉ ⟨ γ ⟩ , ((a : ⟨ α ⟩) → f (a , b) ＝ inl (a , c))
-   g''' b = transfinite-induction-on-OO P g'' β a₁ γ 𝕗 b
+   g''' : ((f , _) : α ×ₒ β ⊴ α ×ₒ γ +ₒ (α ↓ a₁))
+        → (b : ⟨ β ⟩) → Σ c ꞉ ⟨ γ ⟩ , ((a : ⟨ α ⟩) → f (a , b) ＝ inl (a , c))
+   g''' = transfinite-induction-on-OO P g'' β a₁ γ
 
-   g : ⟨ β ⟩ → ⟨ γ ⟩
-   g b = pr₁ (g''' b)
-   g-satisfies-equation : (a : ⟨ α ⟩) (b : ⟨ β ⟩) → f (a , b) ＝ inl (a , g b)
-   g-satisfies-equation a b = pr₂ (g''' b) a
+   g : (α ×ₒ β ⊴ α ×ₒ γ +ₒ (α ↓ a₁))
+     → ⟨ β ⟩ → ⟨ γ ⟩
+   g 𝕗 b = pr₁ (g''' 𝕗 b)
+   g-satisfies-equation
+    : (𝕗@(f , _) : α ×ₒ β ⊴ α ×ₒ γ +ₒ (α ↓ a₁))
+    → (a : ⟨ α ⟩) (b : ⟨ β ⟩) → f (a , b) ＝ inl (a , g 𝕗 b)
+   g-satisfies-equation 𝕗 a b = pr₂ (g''' 𝕗 b) a
+-}
 
-×ₒ-left-cancellable-⊴-generalised
- : (α β γ : Ordinal 𝓤) (a₁ : ⟨ α ⟩)
- → 𝟘ₒ ⊲ α
- → α ×ₒ β ⊴ (α ×ₒ γ) +ₒ (α ↓ a₁)
- → β ⊴ γ
-×ₒ-left-cancellable-⊴-generalised α β γ a₁ p@(a₀ , a₀-least) 𝕗 =
- (g , g-is-initial-segment , g-is-order-preserving)
- where
-  f = [ α ×ₒ β , (α ×ₒ γ) +ₒ (α ↓ a₁) ]⟨ 𝕗 ⟩
-  f-sim = [ α ×ₒ β , (α ×ₒ γ) +ₒ (α ↓ a₁) ]⟨ 𝕗 ⟩-is-simulation
+-- ×ₒ-left-cancellable-⊴-generalised
+--  : (α β γ : Ordinal 𝓤) (a₁ : ⟨ α ⟩)
+--  → 𝟘ₒ ⊲ α
+--  → α ×ₒ β ⊴ (α ×ₒ γ) +ₒ (α ↓ a₁)
+--  → β ⊴ γ
+-- ×ₒ-left-cancellable-⊴-generalised α β γ a₁ p@(a₀ , a₀-least) 𝕗 =
+--  (g , g-is-initial-segment , g-is-order-preserving)
+--  where
+--   f = [ α ×ₒ β , (α ×ₒ γ) +ₒ (α ↓ a₁) ]⟨ 𝕗 ⟩
+--   f-sim = [ α ×ₒ β , (α ×ₒ γ) +ₒ (α ↓ a₁) ]⟨ 𝕗 ⟩-is-simulation
 
-  g : ⟨ β ⟩ → ⟨ γ ⟩
-  g = pr₁ (simulation-product-decomposition-generalised α β γ p a₁ 𝕗)
+--   g : ⟨ β ⟩ → ⟨ γ ⟩
+--   g = pr₁ (simulation-product-decomposition-generalised α β γ p a₁ 𝕗)
 
-  g-property :  (a : ⟨ α ⟩)(b : ⟨ β ⟩) → f (a , b) ＝ inl (a , g b)
-  g-property = pr₂ (simulation-product-decomposition-generalised α β γ p a₁ 𝕗)
+--   g-property :  (a : ⟨ α ⟩)(b : ⟨ β ⟩) → f (a , b) ＝ inl (a , g b)
+--   g-property = pr₂ (simulation-product-decomposition-generalised α β γ p a₁ 𝕗)
 
-  g-is-initial-segment : is-initial-segment β γ g
-  g-is-initial-segment b c l = b' , k' k , e'
-   where
-    l' : inl (a₀ , c) ≺⟨ ((α ×ₒ γ) +ₒ (α ↓ a₁)) ⟩ inl (a₀ , g b)
-    l' = inl l
+--   g-is-initial-segment : is-initial-segment β γ g
+--   g-is-initial-segment b c l = b' , k' k , e'
+--    where
+--     l' : inl (a₀ , c) ≺⟨ ((α ×ₒ γ) +ₒ (α ↓ a₁)) ⟩ inl (a₀ , g b)
+--     l' = inl l
 
-    l'' : inl (a₀ , c) ≺⟨ ((α ×ₒ γ) +ₒ (α ↓ a₁)) ⟩ f (a₀ , b)
-    l'' = transport⁻¹ (λ - → inl (a₀ , c) ≺⟨ ((α ×ₒ γ) +ₒ (α ↓ a₁))⟩ -)
-                      (g-property a₀ b)
-                      l'
+--     l'' : inl (a₀ , c) ≺⟨ ((α ×ₒ γ) +ₒ (α ↓ a₁)) ⟩ f (a₀ , b)
+--     l'' = transport⁻¹ (λ - → inl (a₀ , c) ≺⟨ ((α ×ₒ γ) +ₒ (α ↓ a₁))⟩ -)
+--                       (g-property a₀ b)
+--                       l'
 
-    x : Σ y ꞉ ⟨ α ×ₒ β ⟩ , (y ≺⟨ α ×ₒ β ⟩ (a₀ , b)) × (f y ＝ (inl (a₀ , c)))
-    x = simulations-are-initial-segments _ _ f f-sim (a₀ , b) (inl (a₀ , c)) l''
-    a' = pr₁ (pr₁ x)
-    b' = pr₂ (pr₁ x)
-    k = pr₁ (pr₂ x)
-    e = pr₂ (pr₂ x)
+--     x : Σ y ꞉ ⟨ α ×ₒ β ⟩ , (y ≺⟨ α ×ₒ β ⟩ (a₀ , b)) × (f y ＝ (inl (a₀ , c)))
+--     x = simulations-are-initial-segments _ _ f f-sim (a₀ , b) (inl (a₀ , c)) l''
+--     a' = pr₁ (pr₁ x)
+--     b' = pr₂ (pr₁ x)
+--     k = pr₁ (pr₂ x)
+--     e = pr₂ (pr₂ x)
 
-    k' : (a' , b') ≺⟨ α ×ₒ β ⟩ (a₀ , b) → b' ≺⟨ β ⟩ b
-    k' (inl p) = p
-    k' (inr (r , q)) = 𝟘-elim (transport⁻¹ ⟨_⟩ a₀-least (a' , q))
+--     k' : (a' , b') ≺⟨ α ×ₒ β ⟩ (a₀ , b) → b' ≺⟨ β ⟩ b
+--     k' (inl p) = p
+--     k' (inr (r , q)) = 𝟘-elim (transport⁻¹ ⟨_⟩ a₀-least (a' , q))
 
-    e' : g b' ＝ c
-    e' = ap pr₂ (inl-lc (g-property a' b' ⁻¹ ∙ e))
+--     e' : g b' ＝ c
+--     e' = ap pr₂ (inl-lc (g-property a' b' ⁻¹ ∙ e))
 
-  g-is-order-preserving : is-order-preserving β γ g
-  g-is-order-preserving b b' l = III II
-   where
-    I : f (a₀ , b) ≺⟨ ((α ×ₒ γ) +ₒ (α ↓ a₁)) ⟩ f (a₀ , b')
-    I = simulations-are-order-preserving _ _ f f-sim (a₀ , b) (a₀ , b') (inl l)
+--   g-is-order-preserving : is-order-preserving β γ g
+--   g-is-order-preserving b b' l = III II
+--    where
+--     I : f (a₀ , b) ≺⟨ ((α ×ₒ γ) +ₒ (α ↓ a₁)) ⟩ f (a₀ , b')
+--     I = simulations-are-order-preserving _ _ f f-sim (a₀ , b) (a₀ , b') (inl l)
 
-    II : inl (a₀ , g b) ≺⟨ ((α ×ₒ γ) +ₒ (α ↓ a₁)) ⟩ inl (a₀ , g b')
-    II = transport₂ (λ x y → x ≺⟨ ((α ×ₒ γ) +ₒ (α ↓ a₁))⟩ y)
-                     (g-property a₀ b)
-                     (g-property a₀ b')
-                     I
+--     II : inl (a₀ , g b) ≺⟨ ((α ×ₒ γ) +ₒ (α ↓ a₁)) ⟩ inl (a₀ , g b')
+--     II = transport₂ (λ x y → x ≺⟨ ((α ×ₒ γ) +ₒ (α ↓ a₁))⟩ y)
+--                      (g-property a₀ b)
+--                      (g-property a₀ b')
+--                      I
 
-    III : (a₀ , g b) ≺⟨ (α ×ₒ γ) ⟩ (a₀ , g b') → g b ≺⟨ γ ⟩ g b'
-    III (inl p) = p
-    III (inr (r , q)) = 𝟘-elim (irrefl α a₀ q)
+--     III : (a₀ , g b) ≺⟨ (α ×ₒ γ) ⟩ (a₀ , g b') → g b ≺⟨ γ ⟩ g b'
+--     III (inl p) = p
+--     III (inr (r , q)) = 𝟘-elim (irrefl α a₀ q)
 
-×ₒ-left-cancellable-⊴ : (α β γ : Ordinal 𝓤)
-                      → 𝟘ₒ ⊲ α
-                      → (α ×ₒ β) ⊴ (α ×ₒ γ)
-                      → β ⊴ γ
-×ₒ-left-cancellable-⊴ α β γ p@(a₀ , a₀-least) 𝕗 =
-  ×ₒ-left-cancellable-⊴-generalised α β γ a₀ p
-   (transport (λ - → (α ×ₒ β) ⊴ -)
-              (𝟘ₒ-right-neutral (α ×ₒ γ) ⁻¹ ∙ ap ((α ×ₒ γ) +ₒ_) a₀-least) 𝕗)
+-- ×ₒ-left-cancellable-⊴ : (α β γ : Ordinal 𝓤)
+--                       → 𝟘ₒ ⊲ α
+--                       → (α ×ₒ β) ⊴ (α ×ₒ γ)
+--                       → β ⊴ γ
+-- ×ₒ-left-cancellable-⊴ α β γ p@(a₀ , a₀-least) 𝕗 =
+--   ×ₒ-left-cancellable-⊴-generalised α β γ a₀ p
+--    (transport (λ - → (α ×ₒ β) ⊴ -)
+--               (𝟘ₒ-right-neutral (α ×ₒ γ) ⁻¹ ∙ ap ((α ×ₒ γ) +ₒ_) a₀-least) 𝕗)
 
-simulation-product-decomposition
- : (α : Ordinal 𝓤) (β γ : Ordinal 𝓥)
-   ((a₀ , a₀-least) : 𝟘ₒ ⊲ α)
-   ((f , _) : (α ×ₒ β) ⊴ (α ×ₒ γ))
- → (a : ⟨ α ⟩) (b : ⟨ β ⟩) → f (a , b) ＝ (a , pr₂ (f (a₀ , b)))
-simulation-product-decomposition {𝓤} {𝓥} α β γ (a₀ , a₀-least)
-                                 (f , sim@(init-seg , order-pres)) a b = I
- where
-  f' : ⟨ α ×ₒ β ⟩ → ⟨ α ×ₒ γ ⟩
-  f' (a , b) = (a , pr₂ (f (a₀ , b)))
+-- simulation-product-decomposition
+--  : (α : Ordinal 𝓤) (β γ : Ordinal 𝓥)
+--    ((a₀ , a₀-least) : 𝟘ₒ ⊲ α)
+--    ((f , _) : (α ×ₒ β) ⊴ (α ×ₒ γ))
+--  → (a : ⟨ α ⟩) (b : ⟨ β ⟩) → f (a , b) ＝ (a , pr₂ (f (a₀ , b)))
+-- simulation-product-decomposition {𝓤} {𝓥} α β γ (a₀ , a₀-least)
+--                                  (f , sim@(init-seg , order-pres)) a b = I
+--  where
+--   f' : ⟨ α ×ₒ β ⟩ → ⟨ α ×ₒ γ ⟩
+--   f' (a , b) = (a , pr₂ (f (a₀ , b)))
 
-  P : ⟨ α ×ₒ β ⟩ → 𝓤 ⊔ 𝓥 ̇
-  P (a , b) = (f (a , b)) ＝ f' (a , b)
+--   P : ⟨ α ×ₒ β ⟩ → 𝓤 ⊔ 𝓥 ̇
+--   P (a , b) = (f (a , b)) ＝ f' (a , b)
 
-  I : P (a , b)
-  I = Transfinite-induction (α ×ₒ β) P II (a , b)
-   where
-    II : (x : ⟨ α ×ₒ β ⟩)
-       → ((y : ⟨ α ×ₒ β ⟩) → y ≺⟨ α ×ₒ β ⟩ x → P y)
-       → P x
-    II (a , b) IH = Extensionality (α ×ₒ γ) (f (a , b)) (f' (a , b)) III IV
-     where
-      III : (u : ⟨ α ×ₒ γ ⟩) → u ≺⟨ α ×ₒ γ ⟩ f (a , b) → u ≺⟨ α ×ₒ γ ⟩ f' (a , b)
-      III (a' , c') p = transport (λ - → - ≺⟨ α ×ₒ γ ⟩ f' (a , b)) III₂ (III₃ p')
-       where
-        III₁ : Σ (a'' , b') ꞉ ⟨ α ×ₒ β ⟩ , (a'' , b') ≺⟨ α ×ₒ β ⟩ (a , b)
-                                         × (f (a'' , b') ＝ a' , c')
-        III₁ = init-seg (a , b) (a' , c') p
-        a'' = pr₁ (pr₁ III₁)
-        b' = pr₂ (pr₁ III₁)
-        p' = pr₁ (pr₂ III₁)
-        eq : f (a'' , b') ＝ (a' , c')
-        eq = pr₂ (pr₂ III₁)
+--   I : P (a , b)
+--   I = Transfinite-induction (α ×ₒ β) P II (a , b)
+--    where
+--     II : (x : ⟨ α ×ₒ β ⟩)
+--        → ((y : ⟨ α ×ₒ β ⟩) → y ≺⟨ α ×ₒ β ⟩ x → P y)
+--        → P x
+--     II (a , b) IH = Extensionality (α ×ₒ γ) (f (a , b)) (f' (a , b)) III IV
+--      where
+--       III : (u : ⟨ α ×ₒ γ ⟩) → u ≺⟨ α ×ₒ γ ⟩ f (a , b) → u ≺⟨ α ×ₒ γ ⟩ f' (a , b)
+--       III (a' , c') p = transport (λ - → - ≺⟨ α ×ₒ γ ⟩ f' (a , b)) III₂ (III₃ p')
+--        where
+--         III₁ : Σ (a'' , b') ꞉ ⟨ α ×ₒ β ⟩ , (a'' , b') ≺⟨ α ×ₒ β ⟩ (a , b)
+--                                          × (f (a'' , b') ＝ a' , c')
+--         III₁ = init-seg (a , b) (a' , c') p
+--         a'' = pr₁ (pr₁ III₁)
+--         b' = pr₂ (pr₁ III₁)
+--         p' = pr₁ (pr₂ III₁)
+--         eq : f (a'' , b') ＝ (a' , c')
+--         eq = pr₂ (pr₂ III₁)
 
-        III₂ : f' (a'' , b') ＝ (a' , c')
-        III₂ = IH (a'' , b') p' ⁻¹ ∙ eq
+--         III₂ : f' (a'' , b') ＝ (a' , c')
+--         III₂ = IH (a'' , b') p' ⁻¹ ∙ eq
 
-        III₃ : (a'' , b') ≺⟨ α ×ₒ β ⟩ (a , b)
-             → f' (a'' , b') ≺⟨ α ×ₒ γ ⟩ f' (a , b)
-        III₃ (inl q) = h (order-pres (a₀' , b') (a₀ , b) (inl q))
-         where
-          a₀' : ⟨ α ⟩
-          a₀' = pr₁ (f (a₀ , b))
+--         III₃ : (a'' , b') ≺⟨ α ×ₒ β ⟩ (a , b)
+--              → f' (a'' , b') ≺⟨ α ×ₒ γ ⟩ f' (a , b)
+--         III₃ (inl q) = h (order-pres (a₀' , b') (a₀ , b) (inl q))
+--          where
+--           a₀' : ⟨ α ⟩
+--           a₀' = pr₁ (f (a₀ , b))
 
-          ih : (f (a₀' , b')) ＝ f' (a₀' , b')
-          ih = IH (a₀' , b') (inl q)
+--           ih : (f (a₀' , b')) ＝ f' (a₀' , b')
+--           ih = IH (a₀' , b') (inl q)
 
-          h : f  (a₀' , b') ≺⟨ α ×ₒ γ ⟩ f  (a₀ , b)
-            → f' (a'' , b') ≺⟨ α ×ₒ γ ⟩ f' (a , b)
-          h (inl r) = inl (transport (λ - → - ≺⟨ γ ⟩ pr₂ (f (a₀ , b)))
-                                     (ap pr₂ ih) r)
-          h (inr (_ , r)) = 𝟘-elim (irrefl α a₀' (transport (λ - → - ≺⟨ α ⟩ a₀')
-                                                            (ap pr₁ ih) r))
-        III₃ (inr (e , q)) = inr (ap (λ - → pr₂ (f (a₀ , -))) e , q)
+--           h : f  (a₀' , b') ≺⟨ α ×ₒ γ ⟩ f  (a₀ , b)
+--             → f' (a'' , b') ≺⟨ α ×ₒ γ ⟩ f' (a , b)
+--           h (inl r) = inl (transport (λ - → - ≺⟨ γ ⟩ pr₂ (f (a₀ , b)))
+--                                      (ap pr₂ ih) r)
+--           h (inr (_ , r)) = 𝟘-elim (irrefl α a₀' (transport (λ - → - ≺⟨ α ⟩ a₀')
+--                                                             (ap pr₁ ih) r))
+--         III₃ (inr (e , q)) = inr (ap (λ - → pr₂ (f (a₀ , -))) e , q)
 
-      IV : (u : ⟨ α ×ₒ γ ⟩) → u ≺⟨ α ×ₒ γ ⟩ f' (a , b) → u ≺⟨ α ×ₒ γ ⟩ f  (a , b)
-      IV (a' , c') (inl p) = l₂ (a' , c') (inl p)
-       where
-        l₁ : a₀ ≼⟨ α ⟩ a
-        l₁ x p = 𝟘-elim (transport ⟨_⟩ (a₀-least ⁻¹) (x , p))
-        l₂ : f (a₀ , b) ≼⟨ α ×ₒ γ ⟩ f (a , b)
-        l₂ = simulations-are-monotone _ _
-              f sim (a₀ , b) (a , b) (×ₒ-≼-left α β l₁)
-      IV (a' , c') (inr (r , q)) =
-       transport (λ - → - ≺⟨ α ×ₒ γ ⟩ f  (a , b)) eq
-                 (order-pres (a' , b) (a , b) (inr (refl , q)))
-        where
-         eq = f  (a' , b)             ＝⟨ IH (a' , b) (inr (refl , q)) ⟩
-              f' (a' , b)             ＝⟨ refl ⟩
-              (a' , pr₂ (f (a₀ , b))) ＝⟨ ap (a' ,_) (r ⁻¹) ⟩
-              (a' , c')               ∎
-\end{code}
+--       IV : (u : ⟨ α ×ₒ γ ⟩) → u ≺⟨ α ×ₒ γ ⟩ f' (a , b) → u ≺⟨ α ×ₒ γ ⟩ f  (a , b)
+--       IV (a' , c') (inl p) = l₂ (a' , c') (inl p)
+--        where
+--         l₁ : a₀ ≼⟨ α ⟩ a
+--         l₁ x p = 𝟘-elim (transport ⟨_⟩ (a₀-least ⁻¹) (x , p))
+--         l₂ : f (a₀ , b) ≼⟨ α ×ₒ γ ⟩ f (a , b)
+--         l₂ = simulations-are-monotone _ _
+--               f sim (a₀ , b) (a , b) (×ₒ-≼-left α β l₁)
+--       IV (a' , c') (inr (r , q)) =
+--        transport (λ - → - ≺⟨ α ×ₒ γ ⟩ f  (a , b)) eq
+--                  (order-pres (a' , b) (a , b) (inr (refl , q)))
+--         where
+--          eq = f  (a' , b)             ＝⟨ IH (a' , b) (inr (refl , q)) ⟩
+--               f' (a' , b)             ＝⟨ refl ⟩
+--               (a' , pr₂ (f (a₀ , b))) ＝⟨ ap (a' ,_) (r ⁻¹) ⟩
+--               (a' , c')               ∎
+-- \end{code}
 
-The following result states that multiplication for ordinals can be cancelled on
-the left. Interestingly, Andrew Swan [Swa18] proved that the corresponding
-result for sets is not provable constructively already for α = 𝟚: there are
-toposes where the statement
+-- The following result states that multiplication for ordinals can be cancelled on
+-- the left. Interestingly, Andrew Swan [Swa18] proved that the corresponding
+-- result for sets is not provable constructively already for α = 𝟚: there are
+-- toposes where the statement
 
-  𝟚 × X ≃ 𝟚 × Y → X ≃ Y
+--   𝟚 × X ≃ 𝟚 × Y → X ≃ Y
 
-is not true for certain objects X and Y in the topos.
+-- is not true for certain objects X and Y in the topos.
 
-[Swa18] Andrew Swan
-        On Dividing by Two in Constructive Mathematics
-        2018
-        https://arxiv.org/abs/1804.04490
+-- [Swa18] Andrew Swan
+--         On Dividing by Two in Constructive Mathematics
+--         2018
+--         https://arxiv.org/abs/1804.04490
 
-\begin{code}
+-- \begin{code}
 
-×ₒ-left-cancellable : (α β γ : Ordinal 𝓤)
-                    → 𝟘ₒ ⊲ α
-                    → (α ×ₒ β) ＝ (α ×ₒ γ)
-                    → β ＝ γ
-×ₒ-left-cancellable {𝓤 = 𝓤} α β γ p e = ⊴-antisym β γ (f β γ e) (f γ β (e ⁻¹))
- where
-  f : (β γ : Ordinal 𝓤) → (α ×ₒ β) ＝ (α ×ₒ γ) → β ⊴ γ
-  f β γ e = ×ₒ-left-cancellable-⊴ α β γ p (≃ₒ-to-⊴ (α ×ₒ β) (α ×ₒ γ)
-                                                   (idtoeqₒ (α ×ₒ β) (α ×ₒ γ) e))
+-- ×ₒ-left-cancellable : (α β γ : Ordinal 𝓤)
+--                     → 𝟘ₒ ⊲ α
+--                     → (α ×ₒ β) ＝ (α ×ₒ γ)
+--                     → β ＝ γ
+-- ×ₒ-left-cancellable {𝓤 = 𝓤} α β γ p e = ⊴-antisym β γ (f β γ e) (f γ β (e ⁻¹))
+--  where
+--   f : (β γ : Ordinal 𝓤) → (α ×ₒ β) ＝ (α ×ₒ γ) → β ⊴ γ
+--   f β γ e = ×ₒ-left-cancellable-⊴ α β γ p (≃ₒ-to-⊴ (α ×ₒ β) (α ×ₒ γ)
+--                                                    (idtoeqₒ (α ×ₒ β) (α ×ₒ γ) e))
 
-\end{code}
+-- \end{code}
 
-Using similar techniques, we can also prove that multiplication is
-left cancellable with respect to ⊲.
+-- Using similar techniques, we can also prove that multiplication is
+-- left cancellable with respect to ⊲.
 
-\begin{code}
+-- \begin{code}
 
-simulation-product-decomposition-leftover-empty
- : (α β γ : Ordinal 𝓤)
- → 𝟘ₒ ⊲ α
- → (a : ⟨ α ⟩)
- → (α ×ₒ β) ＝ (α ×ₒ γ +ₒ (α ↓ a))
- → (α ×ₒ β) ＝ (α ×ₒ γ)
-simulation-product-decomposition-leftover-empty α β γ (a₀ , p) a e = eq
- where
-  a-least : (x : ⟨ α ⟩) → ¬ (x ≺⟨ α ⟩ a)
-  a-least x l = +disjoint (inr-is-inl ⁻¹)
-   where
-    𝕗 : α ×ₒ β ⊴ α ×ₒ γ +ₒ (α ↓ a)
-    𝕗 = ≃ₒ-to-⊴ _ _ (idtoeqₒ _ _ e)
-    f = [ (α ×ₒ β) , ((α ×ₒ γ) +ₒ (α ↓ a)) ]⟨ 𝕗 ⟩
+-- simulation-product-decomposition-leftover-empty
+--  : (α β γ : Ordinal 𝓤)
+--  → 𝟘ₒ ⊲ α
+--  → (a : ⟨ α ⟩)
+--  → (α ×ₒ β) ＝ (α ×ₒ γ +ₒ (α ↓ a))
+--  → (α ×ₒ β) ＝ (α ×ₒ γ)
+-- simulation-product-decomposition-leftover-empty α β γ (a₀ , p) a e = eq
+--  where
+--   a-least : (x : ⟨ α ⟩) → ¬ (x ≺⟨ α ⟩ a)
+--   a-least x l = +disjoint (inr-is-inl ⁻¹)
+--    where
+--     𝕗 : α ×ₒ β ⊴ α ×ₒ γ +ₒ (α ↓ a)
+--     𝕗 = ≃ₒ-to-⊴ _ _ (idtoeqₒ _ _ e)
+--     f = [ (α ×ₒ β) , ((α ×ₒ γ) +ₒ (α ↓ a)) ]⟨ 𝕗 ⟩
 
-    𝕗⁻¹ : α ×ₒ γ +ₒ (α ↓ a) ⊴ α ×ₒ β
-    𝕗⁻¹ = ≃ₒ-to-⊴ _ _ (idtoeqₒ _ _ (e ⁻¹))
-    f⁻¹ = [ α ×ₒ γ +ₒ (α ↓ a) , α ×ₒ β ]⟨ 𝕗⁻¹ ⟩
+--     𝕗⁻¹ : α ×ₒ γ +ₒ (α ↓ a) ⊴ α ×ₒ β
+--     𝕗⁻¹ = ≃ₒ-to-⊴ _ _ (idtoeqₒ _ _ (e ⁻¹))
+--     f⁻¹ = [ α ×ₒ γ +ₒ (α ↓ a) , α ×ₒ β ]⟨ 𝕗⁻¹ ⟩
 
-    f-decomposition : Σ g ꞉ (⟨ β ⟩ → ⟨ γ ⟩) ,
-                        ((a : ⟨ α ⟩) (b : ⟨ β ⟩) → f (a , b) ＝ inl (a , g b) )
-    f-decomposition =
-      simulation-product-decomposition-generalised α β γ (a₀ , p) a 𝕗
-    g = pr₁ f-decomposition
+--     f-decomposition : Σ g ꞉ (⟨ β ⟩ → ⟨ γ ⟩) ,
+--                         ((a : ⟨ α ⟩) (b : ⟨ β ⟩) → f (a , b) ＝ inl (a , g b) )
+--     f-decomposition =
+--       simulation-product-decomposition-generalised α β γ (a₀ , p) a 𝕗
+--     g = pr₁ f-decomposition
 
-    inr-is-inl = (inr (x , l))         ＝⟨ equiv _ _ e (inr (x , l)) ⟩
-                 f (f⁻¹ (inr (x , l))) ＝⟨ pr₂ f-decomposition x' y' ⟩
-                 inl (x' , g y')       ∎
-     where
-      x' = pr₁ (f⁻¹ (inr (x , l)))
-      y' = pr₂ (f⁻¹ (inr (x , l)))
-      equiv : (α β : Ordinal 𝓤) → (eq : α ＝ β) (x : ⟨ β ⟩)
-            → x ＝ [ α , β ]⟨ ≃ₒ-to-⊴ α β (idtoeqₒ α β eq) ⟩
-                     ([ β , α ]⟨ ≃ₒ-to-⊴ β α (idtoeqₒ β α (eq ⁻¹)) ⟩ x)
-      equiv α β refl x = refl
+--     inr-is-inl = (inr (x , l))         ＝⟨ equiv _ _ e (inr (x , l)) ⟩
+--                  f (f⁻¹ (inr (x , l))) ＝⟨ pr₂ f-decomposition x' y' ⟩
+--                  inl (x' , g y')       ∎
+--      where
+--       x' = pr₁ (f⁻¹ (inr (x , l)))
+--       y' = pr₂ (f⁻¹ (inr (x , l)))
+--       equiv : (α β : Ordinal 𝓤) → (eq : α ＝ β) (x : ⟨ β ⟩)
+--             → x ＝ [ α , β ]⟨ ≃ₒ-to-⊴ α β (idtoeqₒ α β eq) ⟩
+--                      ([ β , α ]⟨ ≃ₒ-to-⊴ β α (idtoeqₒ β α (eq ⁻¹)) ⟩ x)
+--       equiv α β refl x = refl
 
 
-  a-is-a₀ : a ＝ a₀
-  a-is-a₀ = Extensionality α a a₀ (λ x l → 𝟘-elim (a-least x l))
-                                  (λ x l → 𝟘-elim (transport⁻¹ ⟨_⟩ p (x , l)))
+--   a-is-a₀ : a ＝ a₀
+--   a-is-a₀ = Extensionality α a a₀ (λ x l → 𝟘-elim (a-least x l))
+--                                   (λ x l → 𝟘-elim (transport⁻¹ ⟨_⟩ p (x , l)))
 
-  eq = α ×ₒ β            ＝⟨ e ⟩
-       α ×ₒ γ +ₒ (α ↓ a) ＝⟨ ap ((α ×ₒ γ) +ₒ_) (ap (α ↓_) a-is-a₀ ∙ p ⁻¹) ⟩
-       α ×ₒ γ +ₒ 𝟘ₒ      ＝⟨ 𝟘ₒ-right-neutral (α ×ₒ γ) ⟩
-       α ×ₒ γ            ∎
+--   eq = α ×ₒ β            ＝⟨ e ⟩
+--        α ×ₒ γ +ₒ (α ↓ a) ＝⟨ ap ((α ×ₒ γ) +ₒ_) (ap (α ↓_) a-is-a₀ ∙ p ⁻¹) ⟩
+--        α ×ₒ γ +ₒ 𝟘ₒ      ＝⟨ 𝟘ₒ-right-neutral (α ×ₒ γ) ⟩
+--        α ×ₒ γ            ∎
 
-×ₒ-left-cancellable-⊲ : (α β γ : Ordinal 𝓤)
-                      → 𝟘ₒ ⊲ α
-                      → α ×ₒ β ⊲ α ×ₒ γ
-                      → β ⊲ γ
-×ₒ-left-cancellable-⊲ α β γ α-positive ((a , c) , p) = c , III
- where
-  I : α ×ₒ β ＝ α ×ₒ (γ ↓ c) +ₒ (α ↓ a)
-  I = p ∙ ×ₒ-↓ α γ
+-- ×ₒ-left-cancellable-⊲ : (α β γ : Ordinal 𝓤)
+--                       → 𝟘ₒ ⊲ α
+--                       → α ×ₒ β ⊲ α ×ₒ γ
+--                       → β ⊲ γ
+-- ×ₒ-left-cancellable-⊲ α β γ α-positive ((a , c) , p) = c , III
+--  where
+--   I : α ×ₒ β ＝ α ×ₒ (γ ↓ c) +ₒ (α ↓ a)
+--   I = p ∙ ×ₒ-↓ α γ
 
-  II : α ×ₒ β ＝ α ×ₒ (γ ↓ c)
-  II = simulation-product-decomposition-leftover-empty α β (γ ↓ c) α-positive a I
+--   II : α ×ₒ β ＝ α ×ₒ (γ ↓ c)
+--   II = simulation-product-decomposition-leftover-empty α β (γ ↓ c) α-positive a I
 
-  III : β ＝ (γ ↓ c)
-  III = ×ₒ-left-cancellable α β (γ ↓ c) α-positive II
+--   III : β ＝ (γ ↓ c)
+--   III = ×ₒ-left-cancellable α β (γ ↓ c) α-positive II
 
-\end{code}
+-- \end{code}
