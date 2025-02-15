@@ -43,7 +43,7 @@ instance
 
 make-decimal-with-no-constraint
  : {A : 𝓤 ̇ }
- → ((n : ℕ)  {{ _ : No-Constraint }} → A)
+ → ((n : ℕ)  {{_ : No-Constraint}} → A)
  → Decimal A
 make-decimal-with-no-constraint f =
  record {

@@ -161,7 +161,7 @@ and call this `𝒦-map`.
  𝒦-map = record
           { h                 = 𝒦-map₀
           ; h-is-homomorphism = 𝒦-map₀-is-lattice-homomorphism
-          }
+         }
 
 \end{code}
 

@@ -503,7 +503,7 @@ The following result, implementing the above idea, seems to be new.
   III : (A : 𝕍) → h A ＝ f' A (λ x → h (𝕍-forest A x))
   III = pr₂ (𝕍-Induction' P f')
 
-  IV : (X : 𝓤 ̇) (ϕ : X → 𝕍) (e : is-embedding ϕ)
+  IV : (X : 𝓤 ̇ ) (ϕ : X → 𝕍) (e : is-embedding ϕ)
      → h (𝕍-ssup X ϕ e) ＝ f X ϕ e (λ x → h (ϕ x))
   IV X ϕ e =
    h A                                                               ＝⟨ III A ⟩
@@ -587,7 +587,7 @@ the above form of induction. This consequence is already in Gylterud [4].
             → (A : 𝕍) → P A
 ∈-induction P IH = 𝕍-induction P f
  where
-  f : (X : 𝓤 ̇) (ϕ : X → 𝕍) (e : is-embedding ϕ)
+  f : (X : 𝓤 ̇ ) (ϕ : X → 𝕍) (e : is-embedding ϕ)
     → ((x : X) → P (ϕ x))
     → P (𝕍-ssup X ϕ e)
   f X ϕ e IH' = IH A s

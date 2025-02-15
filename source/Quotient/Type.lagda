@@ -313,7 +313,7 @@ binary and ternary versions of quotient induction.
  module _
          (fe : Fun-Ext)
          {X : 𝓤 ̇ }
-         (≋ : EqRel {𝓤 } {𝓥} X)
+         (≋ : EqRel {𝓤} {𝓥} X)
         where
 
   /-induction₂ : ∀ {𝓦} {P : X / ≋ → X / ≋ → 𝓦 ̇ }

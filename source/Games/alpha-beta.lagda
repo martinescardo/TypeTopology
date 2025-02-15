@@ -245,7 +245,7 @@ reader monad, to speed-up the computation of the optimal play.
         structure-map = λ (t : AB → R) → t (-∞ , ∞) ;
         aunit = λ x → refl ;
         aassoc = λ x → refl
-       }
+      }
 
   ρ : T R → R
   ρ = structure-map 𝓡
@@ -563,7 +563,7 @@ wikipedia-optimal-outcome＝⋆ : wikipedia-optimal-outcome⋆ (0 , 10)
                             ＝ (6 , 𝟏 , 𝟎 , 𝟎 , 𝟎 , ⟨⟩)
 wikipedia-optimal-outcome＝⋆ = refl
 
-module _ {X : Type }
+module _ {X : Type}
        where
 
  open list-util

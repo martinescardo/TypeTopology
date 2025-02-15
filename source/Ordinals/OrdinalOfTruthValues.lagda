@@ -17,10 +17,12 @@ module Ordinals.OrdinalOfTruthValues
 
 
 open import Ordinals.Arithmetic fe
+open import Ordinals.Equivalence
 open import Ordinals.Maps
 open import Ordinals.Notions
 open import Ordinals.Type
 open import Ordinals.Underlying
+open import UF.Equiv
 open import UF.SubtypeClassifier
 open import UF.SubtypeClassifier-Properties
 
@@ -74,7 +76,7 @@ module _ (ua : Univalence) where
 
  open import Ordinals.OrdinalOfOrdinals ua
 
- 𝟚ₒ-leq-Ωₒ : 𝟚ₒ {𝓤} ⊴ Ωₒ
+ 𝟚ₒ-leq-Ωₒ : 𝟚ₒ {𝓥} ⊴ Ωₒ
  𝟚ₒ-leq-Ωₒ = f , i , p
   where
    f : 𝟙 + 𝟙 → Ω 𝓤
@@ -95,3 +97,40 @@ module _ (ua : Univalence) where
 Notice also that being a least element is not in general decidable
 because in this example being a least element amounts to being false,
 and deciding falsity is equivalent to weak excluded middle.
+
+Added 12 December 2024 by Fredrik Nordvall Forsberg.
+
+We characterise the initial segments of Ωₒ.
+
+\begin{code}
+
+ Ωₒ↓-is-id : (P : Ω 𝓤) → Ωₒ ↓ P ≃ₒ prop-ordinal (P holds) (holds-is-prop P)
+ Ωₒ↓-is-id P = e ,
+               e-order-preserving ,
+               (qinvs-are-equivs e (e⁻¹ , η , ϵ)) ,
+               e⁻¹-order-preserving
+  where
+   Pₒ = prop-ordinal (P holds) (holds-is-prop P)
+
+   e : ⟨ Ωₒ ↓ P ⟩ → P holds
+   e (_ , _ , ψ) = equal-⊤-gives-holds P ψ
+
+   e-order-preserving : is-order-preserving (Ωₒ ↓ P) Pₒ e
+   e-order-preserving _ (_ , ψ , _) (_ , l) = 𝟘-elim (⊥-is-not-⊤ (ψ ⁻¹ ∙ l))
+
+   e⁻¹ : P holds → ⟨ Ωₒ ↓ P ⟩
+   e⁻¹ p = ⊥ , refl , (holds-gives-equal-⊤ pe (fe 𝓤 𝓤) P p)
+
+   e⁻¹-order-preserving : is-order-preserving Pₒ (Ωₒ ↓ P) e⁻¹
+   e⁻¹-order-preserving p p' = 𝟘-elim
+
+   η : (e⁻¹ ∘ e) ∼ id
+   η (Q , r , _) = to-subtype-＝
+                    (λ R → ×-is-prop (Ω-is-set (fe 𝓤 𝓤) pe)
+                                     (Ω-is-set (fe 𝓤 𝓤) pe))
+                    (r ⁻¹)
+
+   ϵ : (e ∘ e⁻¹) ∼ id
+   ϵ p = holds-is-prop P (e (e⁻¹ p)) p
+
+\end{code}

@@ -45,7 +45,7 @@ Distributive-Lattice-Data A = A           -- bottom element
 open AllCombinators pt fe renaming (_∧_ to _∧ₚ_; _∨_ to _∨ₚ_)
 
 satisfies-distributive-lattice-laws₀
- : {A : 𝓤  ̇}
+ : {A : 𝓤  ̇ }
  → is-set A
  → Distributive-Lattice-Data A
  → Ω 𝓤
@@ -66,7 +66,7 @@ satisfies-distributive-lattice-laws₀ {𝓤} {A} s (𝟎 , 𝟏 , _∧_ , _∨_
   ∧ₚ (Ɐ x y z ꞉ A , x ∧ (y ∨ z) ＝ₚ (x ∧ y) ∨ (x ∧ z))
 
 satisfies-distributive-lattice-laws
- : {A : 𝓤  ̇} → Distributive-Lattice-Data A → 𝓤  ̇
+ : {A : 𝓤  ̇ } → Distributive-Lattice-Data A → 𝓤  ̇
 satisfies-distributive-lattice-laws {𝓤} {A} d =
  Σ s ꞉ is-set A , satisfies-distributive-lattice-laws₀ s d holds
 
@@ -77,7 +77,7 @@ Added on 2024-06-01.
 \begin{code}
 
 satisfying-distributive-lattice-laws-is-prop
- : {A : 𝓤  ̇}
+ : {A : 𝓤  ̇ }
  → (d : Distributive-Lattice-Data A)
  → is-prop (satisfies-distributive-lattice-laws d)
 satisfying-distributive-lattice-laws-is-prop d =
@@ -91,7 +91,7 @@ End of addition.
 
 \begin{code}
 
-Distributive-Lattice-Structure : (A : 𝓤  ̇) → 𝓤  ̇
+Distributive-Lattice-Structure : (A : 𝓤  ̇ ) → 𝓤  ̇
 Distributive-Lattice-Structure A =
  Σ d ꞉ Distributive-Lattice-Data A , satisfies-distributive-lattice-laws d
 
@@ -111,7 +111,7 @@ Notation for the underlying distributive lattice data.
 
 \begin{code}
 
-distributive-lattice-data-of : (A : 𝓤  ̇)
+distributive-lattice-data-of : (A : 𝓤  ̇ )
                              → Distributive-Lattice-Structure A
                              → Distributive-Lattice-Data A
 distributive-lattice-data-of A (str , _) = str
@@ -161,7 +161,7 @@ to-distributive-lattice 𝓤 (X , ((𝟎 , 𝟏 , _∧_ , _∨_) , laws)) =
    ; ∨-idempotent    = ∨-idempotent
    ; ∨-absorptive    = ∨-absorptive
    ; distributivityᵈ = distributivity
-   }
+  }
 
 \end{code}
 
@@ -219,7 +219,7 @@ sets.
 \begin{code}
 
 distributive-lattice-data-is-set
- : (A : 𝓤  ̇)
+ : (A : 𝓤  ̇ )
  → is-set A
  → propext 𝓤
  → is-set (Distributive-Lattice-Data A)
@@ -230,7 +230,7 @@ distributive-lattice-data-is-set A σ pe =
    † = Π-is-set fe λ _ → Π-is-set fe λ _ → σ
 
 distributive-lattice-structure-is-set
- : (A : 𝓤  ̇)
+ : (A : 𝓤  ̇ )
  → propext 𝓤
  → is-set (Distributive-Lattice-Structure A)
 distributive-lattice-structure-is-set A pe {str₁} {str₂} =

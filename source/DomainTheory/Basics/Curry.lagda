@@ -40,7 +40,7 @@ module _ (𝓓 : DCPO {𝓤} {𝓤'})
    f : ⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟹ᵈᶜᵖᵒ 𝓕 ⟩
    f = continuous→continuous-in-pr₂ 𝓓 𝓔 𝓕 (a , a-is-continuous)
 
-   f-is-continuous : (I : 𝓥 ̇) (α : I → ⟨ 𝓓 ⟩) (δ : is-Directed 𝓓 α)
+   f-is-continuous : (I : 𝓥 ̇ ) (α : I → ⟨ 𝓓 ⟩) (δ : is-Directed 𝓓 α)
                    → is-sup
                       (underlying-order (𝓔 ⟹ᵈᶜᵖᵒ 𝓕))
                       (f (∐ 𝓓 δ))

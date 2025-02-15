@@ -555,7 +555,7 @@ close-to-close X Y Z f {succ n} v@(y :: ys) ϕʸ g ε = δ , γ
 Σ-ClosenessSpace {𝓤} {𝓥} X P p
  = Σ P , Σ-clospace P p (pr₂ X)
 
-≃-ClosenessSpace : {X : 𝓤 ̇} (Y : ClosenessSpace 𝓥)
+≃-ClosenessSpace : {X : 𝓤 ̇ } (Y : ClosenessSpace 𝓥)
                  → X ≃ ⟨ Y ⟩
                  → ClosenessSpace 𝓤
 ≃-ClosenessSpace Y e
@@ -575,7 +575,7 @@ close-to-close X Y Z f {succ n} v@(y :: ys) ϕʸ g ε = δ , γ
       (identical-implies-closeness-∞ Y _ _ (η (gₙ (hₙ (f x))) ⁻¹)) ε))
  , fₙ
 
-≃-totally-bounded : {X : 𝓤 ̇}
+≃-totally-bounded : {X : 𝓤 ̇ }
                   → (Y : ClosenessSpace 𝓥)
                   → (e : X ≃ ⟨ Y ⟩)
                   → totally-bounded Y 𝓥'

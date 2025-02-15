@@ -39,17 +39,17 @@ module DcpoProductsGeneral
  open import DomainTheory.Basics.Miscelanea pt fe 𝓥
  open import DomainTheory.Basics.Pointed pt fe 𝓥
 
- module _ {D : 𝓤 ̇} {E : 𝓤' ̇} where
+ module _ {D : 𝓤 ̇ } {E : 𝓤' ̇ } where
 
-   _⊑-×_ : (D → D → 𝓣 ̇)
-         → (E → E → 𝓣' ̇)
-         → (D × E → D × E → 𝓣 ⊔ 𝓣' ̇)
+   _⊑-×_ : (D → D → 𝓣 ̇ )
+         → (E → E → 𝓣' ̇ )
+         → (D × E → D × E → 𝓣 ⊔ 𝓣' ̇ )
    _⊑-×_ _⊑₁_ _⊑₂_ (a , b) (c , d) = (a ⊑₁ c) × (b ⊑₂ d)
 
-   pr₁∘α-is-directed : {I : 𝓥 ̇}
+   pr₁∘α-is-directed : {I : 𝓥 ̇ }
                      → {α : I → D × E}
-                     → (_⊑₁_ : D → D → 𝓣 ̇)
-                     → (_⊑₂_ : E → E → 𝓣' ̇)
+                     → (_⊑₁_ : D → D → 𝓣 ̇ )
+                     → (_⊑₂_ : E → E → 𝓣' ̇ )
                      → is-directed (_⊑₁_ ⊑-× _⊑₂_) α
                      → is-directed _⊑₁_ (pr₁ ∘ α)
    pr₁∘α-is-directed {_} {_} {I} {α} _⊑₁_ _⊑₂_ δ =
@@ -62,10 +62,10 @@ module DcpoProductsGeneral
                (λ (a , (b , _) , c , _) → a , b , c)
                (semidirected-if-directed (_⊑₁_ ⊑-× _⊑₂_) α δ i j)
 
-   pr₂∘α-is-directed : {I : 𝓥 ̇}
+   pr₂∘α-is-directed : {I : 𝓥 ̇ }
                      → {α : I → D × E}
-                     → (_⊑₁_ : D → D → 𝓣 ̇)
-                     → (_⊑₂_ : E → E → 𝓣' ̇)
+                     → (_⊑₁_ : D → D → 𝓣 ̇ )
+                     → (_⊑₂_ : E → E → 𝓣' ̇ )
                      → is-directed (_⊑₁_ ⊑-× _⊑₂_) α
                      → is-directed _⊑₂_ (pr₂ ∘ α)
    pr₂∘α-is-directed {_} {_} {I} {α} _⊑₁_ _⊑₂_ δ =
@@ -164,12 +164,12 @@ Some useful proofs on products.
 
  module _ (𝓓 : DCPO {𝓤} {𝓤'}) where
 
-   constant-function-is-directed : { I : 𝓥 ̇} (h : ∥ I ∥) (d : ⟨ 𝓓 ⟩)
+   constant-function-is-directed : { I : 𝓥 ̇ } (h : ∥ I ∥) (d : ⟨ 𝓓 ⟩)
                                  → is-Directed 𝓓 (λ (i : I) → d)
    constant-function-is-directed h d =
     h , λ i j → ∣ i , (reflexivity 𝓓 d , reflexivity 𝓓 d) ∣
 
-   constant-is-∐-of-constant-function : {I : 𝓥 ̇}
+   constant-is-∐-of-constant-function : {I : 𝓥 ̇ }
                                         {d : ⟨ 𝓓 ⟩}
                                         (δ : is-Directed 𝓓 (λ (i : I) → d))
                                       → d ＝ ∐ 𝓓 δ
@@ -190,20 +190,20 @@ Some useful proofs on products.
           (𝓔 : DCPO {𝓣} {𝓣'})
         where
 
-   pr₁∘α-is-Directed : {I : 𝓥 ̇}
+   pr₁∘α-is-Directed : {I : 𝓥 ̇ }
                        {α : I → ⟨ 𝓓 ×ᵈᶜᵖᵒ 𝓔 ⟩}
                      → is-Directed (𝓓 ×ᵈᶜᵖᵒ 𝓔) α
                      → is-Directed 𝓓 (pr₁ ∘ α)
    pr₁∘α-is-Directed {I} {α} δ =
     pr₁∘α-is-directed (underlying-order 𝓓) (underlying-order 𝓔) δ
 
-   pr₂∘α-is-Directed : {I : 𝓥 ̇}
+   pr₂∘α-is-Directed : {I : 𝓥 ̇ }
                        {α : I → ⟨ 𝓓 ×ᵈᶜᵖᵒ 𝓔 ⟩}
                      → is-Directed (𝓓 ×ᵈᶜᵖᵒ 𝓔) α
                      → is-Directed 𝓔 (pr₂ ∘ α)
    pr₂∘α-is-Directed = pr₂∘α-is-directed (underlying-order 𝓓) (underlying-order 𝓔)
 
-   ⟨pr₁,pr₂⟩-is-directed : {I : 𝓥 ̇}
+   ⟨pr₁,pr₂⟩-is-directed : {I : 𝓥 ̇ }
                          → {α₁ : I → ⟨ 𝓓 ⟩}
                          → {α₂ : I → ⟨ 𝓔 ⟩}
                          → is-Directed 𝓓 α₁
@@ -218,7 +218,7 @@ Some useful proofs on products.
           (λ ((a₁ , b₁ , c₁) , (a₂ , b₂ , c₂)) → (a₁ , a₂) , (b₁ , b₂) , (c₁ , c₂))
           (binary-choice (s₁ i₁ j₁) (s₂ i₂ j₂))
 
-   ∐⟨,⟩＝⟨∐,∐⟩ : {I : 𝓥 ̇} {α : I → ⟨ 𝓓 ×ᵈᶜᵖᵒ 𝓔 ⟩}
+   ∐⟨,⟩＝⟨∐,∐⟩ : {I : 𝓥 ̇ } {α : I → ⟨ 𝓓 ×ᵈᶜᵖᵒ 𝓔 ⟩}
                → (δ : is-Directed (𝓓 ×ᵈᶜᵖᵒ 𝓔) α)
                → ∐ (𝓓 ×ᵈᶜᵖᵒ 𝓔) δ
                ＝ (∐ 𝓓 (pr₁∘α-is-Directed δ) , ∐ 𝓔 (pr₂∘α-is-Directed δ))
@@ -268,7 +268,7 @@ Some useful proofs on products.
                                    → ((pr₂ ∘ α) i) ⊑⟨ 𝓔 ⟩ (pr₂ (∐ (𝓓 ×ᵈᶜᵖᵒ 𝓔) δ))
             pr₂-∐⟨,⟩-is-upperbound i = pr₂ (∐-is-upperbound (𝓓 ×ᵈᶜᵖᵒ 𝓔) δ i)
 
-   ⟨∐,∐⟩＝∐⟨,⟩ : {I : 𝓥 ̇}
+   ⟨∐,∐⟩＝∐⟨,⟩ : {I : 𝓥 ̇ }
                → {α₁ : I → ⟨ 𝓓 ⟩}
                → {α₂ : I → ⟨ 𝓔 ⟩}
                → (δ₁ : is-Directed 𝓓 α₁)

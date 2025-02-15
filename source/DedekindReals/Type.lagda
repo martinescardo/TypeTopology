@@ -266,7 +266,7 @@ instance
 ℤ-to-ℝ z = ι (ι z)
 
 ℕ-to-ℝ : ℕ → ℝ
-ℕ-to-ℝ n = ι (ι {{ canonical-map-ℕ-to-ℚ }} n)
+ℕ-to-ℝ n = ι (ι {{canonical-map-ℕ-to-ℚ}} n)
 
 instance
  canonical-map-ℤ-to-ℝ : Canonical-Map ℤ ℝ

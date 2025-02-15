@@ -24,7 +24,7 @@ x # y  = ¬ (x ＝ y)
 0ℚ#1ℚ : 0ℚ # 1ℚ
 0ℚ#1ℚ = ℚ-zero-not-one
 
-RationalsField : Field-structure ℚ { 𝓤₀ }
+RationalsField : Field-structure ℚ { 𝓤₀}
 RationalsField = (_+_ , _*_ , _#_) , ℚ-is-set
                                    , ℚ+-assoc
                                    , ℚ*-assoc
@@ -37,8 +37,8 @@ RationalsField = (_+_ , _*_ , _#_) , ℚ-is-set
                                                , ℚ-mult-left-id
                                                , ℚ*-inverse
 
-RationalsOrderedField : Ordered-field-structure { 𝓤₀ } { 𝓤₀ } { 𝓤₀ } ℚ RationalsField
+RationalsOrderedField : Ordered-field-structure { 𝓤₀} { 𝓤₀} { 𝓤₀} ℚ RationalsField
 RationalsOrderedField = _<_ , ℚ<-addition-preserves-order , ℚ<-pos-multiplication-preserves-order
 
-RationalsOrderedField' : Ordered-Field 𝓤₀ { 𝓤₀ } { 𝓤₀ }
+RationalsOrderedField' : Ordered-Field 𝓤₀ { 𝓤₀} { 𝓤₀}
 RationalsOrderedField' = (ℚ , RationalsField) , RationalsOrderedField

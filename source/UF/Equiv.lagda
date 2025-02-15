@@ -780,7 +780,7 @@ id-qinv X = id , (λ x → refl) , (λ x → refl)
 ∘-qinv {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {f} {f'} = γ
  where
    γ : qinv f → qinv f' → qinv (f' ∘ f)
-   γ (g , gf , fg) (g' , gf' , fg') = (g ∘ g' , gf'' , fg'' )
+   γ (g , gf , fg) (g' , gf' , fg') = (g ∘ g' , gf'' , fg'')
     where
      fg'' : (z : Z) → f' (f (g (g' z))) ＝ z
      fg'' z =  ap f' (fg (g' z)) ∙ fg' z

@@ -199,7 +199,7 @@ compact-if-Kuratowski-finite-subset A k = lemma (A , k)
   ; ⊑ᴮ-is-small      = λ A l → (κ l ⊆ A , ≃-refl (κ l ⊆ A))
   ; ↓ᴮ-is-directed   = κ⁺-is-directed
   ; ↓ᴮ-is-sup        = κ⁺-sup
-  }
+ }
 
 𝓟-has-specified-small-compact-basis : has-specified-small-compact-basis 𝓟-DCPO
 𝓟-has-specified-small-compact-basis = (List X , κ , κ-is-small-compact-basis)

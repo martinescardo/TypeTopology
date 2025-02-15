@@ -102,7 +102,7 @@ structurally-continuous-from-Σ 𝓓 C' =
   ; approximating-family-is-directed  = λ x → pr₁ (pr₂ (pr₂ (pr₂ (C' x))))
   ; approximating-family-is-way-below = λ x → pr₁ (pr₂ (pr₂ (C' x)))
   ; approximating-family-∐-＝          = λ x → pr₂ (pr₂ (pr₂ (pr₂ (C' x))))
-  }
+ }
 
 structurally-continuous-≃ : (𝓓 : DCPO {𝓤} {𝓣})
                           → structurally-continuous 𝓓
@@ -142,7 +142,7 @@ module _
    ; approximating-family-is-directed  = λ x → pr₂ (pr₂ (L x))
    ; approximating-family-is-way-below = λ x → pr₂ (L-is-approximating x)
    ; approximating-family-∐-＝          = λ x → pr₁ (L-is-approximating x)
-   }
+  }
    where
     L-is-approximating : is-approximating L
     L-is-approximating = ⌜ left-adjoint-to-∐-map-characterization L ⌝⁻¹ L-left-adjoint

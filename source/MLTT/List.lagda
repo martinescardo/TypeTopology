@@ -29,7 +29,7 @@ length []       = 0
 length (x ∷ xs) = succ (length xs)
 
 course-of-values-induction-on-length
- : {X : 𝓤 ̇}
+ : {X : 𝓤 ̇ }
  → (P : List X → 𝓥 ̇ )
  → ((xs : List X) → ((ys : List X) → length ys < length xs → P ys) → P xs)
  → (xs : List X) → P xs
@@ -196,7 +196,7 @@ listed X = Σ xs ꞉ List X , ((x : X) → member x xs)
 listed⁺ : 𝓤 ̇ → 𝓤 ̇
 listed⁺ X = X × listed X
 
-type-from-list : {X : 𝓤  ̇} → List X → 𝓤  ̇
+type-from-list : {X : 𝓤  ̇ } → List X → 𝓤  ̇
 type-from-list {X = X} xs = Σ x ꞉ X , member x xs
 
 type-from-list-is-listed : {X : 𝓤 ̇ } (xs : List X)
@@ -491,5 +491,14 @@ List-ext-assoc g f (x ∷ xs) =
    I   = ap (List-ext g (f x) ++_) (List-ext-assoc g f xs)
    II  = (concat-++ (map g (f x)) (map g (List-ext f xs)))⁻¹
    III = (ap concat (map-++ g (f x) (List-ext f xs)))⁻¹
+
+map' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → List X → List Y
+map' f = List-ext (λ x → [ f x ])
+
+map-agrees-with-map' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                       (f : X → Y)
+                     → map f ∼ map' f
+map-agrees-with-map' f [] = refl
+map-agrees-with-map' f (x ∷ xs) = ap (f x ∷_) (map-agrees-with-map' f xs)
 
 \end{code}

@@ -36,7 +36,7 @@ fiber-identification = pr₂
 
 each-fiber-of : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
               → (X → Y)
-              → (𝓤 ⊔ 𝓥 ̇ → 𝓦 ̇)
+              → (𝓤 ⊔ 𝓥 ̇ → 𝓦 ̇ )
               → 𝓥 ⊔ 𝓦 ̇
 each-fiber-of f P = ∀ y → P (fiber f y)
 

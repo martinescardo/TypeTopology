@@ -42,7 +42,7 @@ Sets are Groupoids.
 
 \begin{code}
 
-sets-are-groupoids : {X : 𝓤 ̇} → is-set X → is-groupoid X
+sets-are-groupoids : {X : 𝓤 ̇ } → is-set X → is-groupoid X
 sets-are-groupoids i = props-are-sets i
 
 \end{code}

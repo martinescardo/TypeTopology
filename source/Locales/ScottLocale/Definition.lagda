@@ -230,7 +230,7 @@ We now have everything we need to write down the Scott locale of `𝓓`.
                     , λ (U , S) → distributivityₛ U S
 
  ScottLocale : Locale (𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ⊔ 𝓦 ⁺) (𝓤 ⊔ 𝓦) 𝓦
- ScottLocale = record { ⟨_⟩ₗ = 𝒪ₛ ; frame-str-of = 𝒪ₛ-frame-structure }
+ ScottLocale = record { ⟨_⟩ₗ = 𝒪ₛ ; frame-str-of = 𝒪ₛ-frame-structure}
 
 \end{code}
 

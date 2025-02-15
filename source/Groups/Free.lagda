@@ -274,7 +274,7 @@ Theorem₂[free-groups-of-large-locally-small-types]
  : propositional-truncations-exist
  → Fun-Ext
  → Prop-Ext
- → (A : 𝓤 ⁺ ̇)
+ → (A : 𝓤 ⁺ ̇ )
  → is-locally-small A
  → good-freely-generated-group-exists A (𝓤 ⁺) 𝓤
 
@@ -1379,7 +1379,7 @@ Lemma[free-groups-from-general-set-quotients] pt fe ℓ sq eff A =
   ; universality   = extension-to-free-group-uniqueness
   ; η-is-embedding = η-free-group-is-embedding
   ; η-is-small     = λ _ → η-free-group-is-small -- (*)
-  }
+ }
  where
   open FreeGroupInterface pt fe ℓ sq eff A
 
@@ -1401,7 +1401,7 @@ module resize-universal-map
         (pe : Prop-Ext)
         (pt : propositional-truncations-exist)
         {𝓤        : Universe}
-        (A        : 𝓤 ⁺ ̇)
+        (A        : 𝓤 ⁺ ̇ )
         (_＝₀_    : A → A → 𝓤 ̇ )
         (refl₀    : (a : A) → a ＝₀ a)
         (from-＝₀ : (a b : A) → a ＝₀ b → a ＝ b)
@@ -1781,7 +1781,7 @@ Theorem₁[large-free-groups-from-set-quotients] {𝓤} fe pe sq A A-ls =
   ; universality = extension-to-free-group-uniqueness
   ; η-is-embedding = η-free-group-is-embedding
   ; η-is-small = ηᴳʳᵖ-is-tiny
-  }
+ }
  where
   pt : propositional-truncations-exist
   pt = propositional-truncations-from-set-quotients sq fe
@@ -1812,7 +1812,7 @@ module resize-free-group
         (pe : Prop-Ext)
         (pt : propositional-truncations-exist)
         {𝓤        : Universe}
-        (A        : 𝓤 ⁺ ̇)
+        (A        : 𝓤 ⁺ ̇ )
         (_＝₀_    : A → A → 𝓤 ̇ )
         (refl₀    : (a : A) → a ＝₀ a)
         (from-＝₀ : (a b : A) → a ＝₀ b → a ＝ b)
@@ -2043,7 +2043,7 @@ Theorem₂[free-groups-of-large-locally-small-types] {𝓤} pt fe pe A A-ls =
   ; universality = universality⁻
   ; η-is-embedding = η⁻-is-embedding
   ; η-is-small = η⁻-is-tiny
-  }
+ }
  where
   open resize-free-group fe pe pt
         A

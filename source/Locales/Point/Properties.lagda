@@ -184,7 +184,7 @@ open DefnOfCPF
        ; point-contains-top        = τ
        ; point-is-closed-under-∧   = μ
        ; point-is-completely-prime = cp
-       }
+      }
 
 \end{code}
 

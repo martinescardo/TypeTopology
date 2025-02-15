@@ -23,7 +23,7 @@ open import TWA.Thesis.Chapter3.ClosenessSpaces fe
 ## Traditional orders
 
 \begin{code}
-is-preorder : {X : 𝓤  ̇ } → (X → X → 𝓦  ̇ ) → 𝓤 ⊔ 𝓦  ̇ 
+is-preorder : {X : 𝓤  ̇ } → (X → X → 𝓦  ̇ ) → 𝓤 ⊔ 𝓦  ̇
 is-preorder _≤_ = reflexive _≤_
                 × transitive _≤_
                 × is-prop-valued _≤_
@@ -44,7 +44,7 @@ is-linear-order {_} {_} {X} _≤_
  = is-partial-order _≤_ × linear _≤_
 
 discrete-reflexive-antisym-linear-order-is-decidable
- : {X : 𝓤  ̇ } 
+ : {X : 𝓤  ̇ }
  → is-discrete X
  → (_≤_ : X → X → 𝓦  ̇ )
  → reflexive _≤_
@@ -70,7 +70,7 @@ is-approx-order X _≤ⁿ_
  = ((ϵ : ℕ) → is-linear-preorder (λ x y → (x ≤ⁿ y) ϵ))
  × ((ϵ : ℕ) (x y : ⟨ X ⟩) → is-decidable ((x ≤ⁿ y) ϵ))
  × ((ϵ : ℕ) (x y : ⟨ X ⟩) →   C X ϵ x y → (x ≤ⁿ y) ϵ)
- 
+
 ≤-refl⟨_⟩
  : {X : 𝓤 ̇ } {_≤_ : X → X → 𝓦 ̇ }
  → is-preorder _≤_
@@ -164,7 +164,7 @@ module ApproxOrder-Relates (pt : propositional-truncations-exist) where
                → (_≤ⁿ_ : X → X → ℕ → 𝓦'  ̇ )
                → (_≤_  : X → X → 𝓦 ̇ )
                → 𝓤 ⊔ 𝓦 ⊔ 𝓦'  ̇
- _≤ⁿx_ relates-to→ _≤x_ 
+ _≤ⁿx_ relates-to→ _≤x_
   = ∀ x y → ((n : ℕ) → (x ≤ⁿx y) n) → x ≤x y
 
  _relates-to←_ : {X : 𝓤 ̇ }
@@ -173,7 +173,7 @@ module ApproxOrder-Relates (pt : propositional-truncations-exist) where
                → 𝓤 ⊔ 𝓦 ⊔ 𝓦'  ̇
  _≤ⁿx_ relates-to← _≤x_
   = ∀ x y → x ≤x y → ∃ n ꞉ ℕ , ((ϵ : ℕ) → n ≤ ϵ → (x ≤ⁿx y) ϵ)
-  
+
  approx-order-relates : (X : ClosenessSpace 𝓤)
                       → (_≤ⁿ_ : ⟨ X ⟩ → ⟨ X ⟩ → ℕ → 𝓦'  ̇ )
                       → is-approx-order X _≤ⁿ_

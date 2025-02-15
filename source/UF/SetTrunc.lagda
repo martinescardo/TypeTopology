@@ -24,13 +24,13 @@ record set-truncations-exist : 𝓤ω where
   set-trunc-in : {𝓤 : Universe} {X : 𝓤 ̇ } → X → (set-trunc X)
   set-trunc-ind
    : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } (Y : set-trunc X → 𝓥 ̇ )
-   → ((x : set-trunc X ) → is-set (Y x))
+   → ((x : set-trunc X) → is-set (Y x))
    → ((x : X) → Y (set-trunc-in x))
    → (x : set-trunc X)
    → Y x
   set-trunc-ind-β
    : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } (Y : set-trunc X → 𝓥 ̇ )
-   → (Y-set : (x : set-trunc X ) → is-set (Y x))
+   → (Y-set : (x : set-trunc X) → is-set (Y x))
    → (h : (x : X) → Y (set-trunc-in x))
    → (x : X)
    → set-trunc-ind Y Y-set h (set-trunc-in x) ＝ h x

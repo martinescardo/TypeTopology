@@ -44,7 +44,7 @@ _is_truncated : 𝓤 ̇ → ℕ₋₂ → 𝓤 ̇
 X is −2 truncated       = is-contr X
 X is (succ n) truncated = (x x' : X) → (x ＝ x') is n truncated
 
-_is_truncated-map : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (f : X → Y) → ℕ₋₂ → 𝓤 ⊔ 𝓥 ̇
+_is_truncated-map : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (f : X → Y) → ℕ₋₂ → 𝓤 ⊔ 𝓥 ̇
 f is n truncated-map = each-fiber-of f (λ - → - is n truncated)
 
 being-truncated-is-prop : {n : ℕ₋₂} {X : 𝓤 ̇ }
@@ -53,7 +53,7 @@ being-truncated-is-prop {_} {−2} = being-singleton-is-prop fe
 being-truncated-is-prop {_} {succ n} =
  Π₂-is-prop fe (λ x x' → being-truncated-is-prop)
 
-being-truncated-map-is-prop : {n : ℕ₋₂} {X : 𝓤 ̇ } {Y : 𝓥 ̇} {f : X → Y}
+being-truncated-map-is-prop : {n : ℕ₋₂} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f : X → Y}
                             → is-prop (f is n truncated-map)
 being-truncated-map-is-prop = Π-is-prop fe (λ y → being-truncated-is-prop)
 
@@ -63,20 +63,20 @@ Being -1-truncated is equivalent to being a proposition.
 
 \begin{code}
 
-is-prop' : (X : 𝓤 ̇) → 𝓤  ̇
+is-prop' : (X : 𝓤 ̇ ) → 𝓤  ̇
 is-prop' X = X is −1 truncated
 
-being-prop'-is-prop : (X : 𝓤 ̇) → is-prop (is-prop' X)
+being-prop'-is-prop : (X : 𝓤 ̇ ) → is-prop (is-prop' X)
 being-prop'-is-prop X = being-truncated-is-prop
 
-is-prop-implies-is-prop' : {X : 𝓤 ̇} → is-prop X → is-prop' X
+is-prop-implies-is-prop' : {X : 𝓤 ̇ } → is-prop X → is-prop' X
 is-prop-implies-is-prop' X-is-prop x x' =
  pointed-props-are-singletons (X-is-prop x x') (props-are-sets X-is-prop)
 
-is-prop'-implies-is-prop : {X : 𝓤 ̇} → is-prop' X → is-prop X
+is-prop'-implies-is-prop : {X : 𝓤 ̇ } → is-prop' X → is-prop X
 is-prop'-implies-is-prop X-is-prop' x x' = center (X-is-prop' x x')
 
-is-prop-equiv-is-prop' : {X : 𝓤 ̇} → is-prop X ≃ is-prop' X
+is-prop-equiv-is-prop' : {X : 𝓤 ̇ } → is-prop X ≃ is-prop' X
 is-prop-equiv-is-prop' {𝓤} {X} =
  logically-equivalent-props-are-equivalent (being-prop-is-prop fe)
                                            (being-prop'-is-prop X)
@@ -89,7 +89,7 @@ Truncation levels are upper closed.
 
 \begin{code}
 
-contractible-types-are-props' : {X : 𝓤 ̇} → is-contr X → is-prop' X
+contractible-types-are-props' : {X : 𝓤 ̇ } → is-contr X → is-prop' X
 contractible-types-are-props' = is-prop-implies-is-prop' ∘ singletons-are-props
 
 truncation-levels-are-upper-closed : {n : ℕ₋₂} {X : 𝓤 ̇ }
@@ -113,12 +113,12 @@ truncation-levels-are-upper-closed' : {n n' : ℕ₋₂} {X : 𝓤 ̇ }
                                     → X is n' truncated
 truncation-levels-are-upper-closed' {_} {n} {n'} {X} o X-n-trunc =
  transport (λ - → X is - truncated) p
-           (truncation-levels-are-upper-closed-+ X-n-trunc) 
+           (truncation-levels-are-upper-closed-+ X-n-trunc)
  where
   m : ℕ
   m = subtraction-ℕ₋₂-term n n' o
   p = n + m   ＝⟨ subtraction-ℕ₋₂-identification n n' o ⟩
-      n'      ∎ 
+      n'      ∎
 
 truncation-levels-closed-under-Id : {n : ℕ₋₂} {X : 𝓤 ̇ }
                                   → X is n truncated

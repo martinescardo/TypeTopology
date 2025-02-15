@@ -40,12 +40,12 @@ open import TWA.Thesis.Chapter4.ApproxOrder fe
 
 \begin{code}
 inclusion-order
- : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (f : X → Y) (_≤_ : Y → Y → 𝓦 ̇) → X → X → 𝓦 ̇
+ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (f : X → Y) (_≤_ : Y → Y → 𝓦 ̇ ) → X → X → 𝓦 ̇
 inclusion-order f _≤_ x₁ x₂ = f x₁ ≤ f x₂
 
 inclusion-order-is-preorder
  : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
- → (_≤_ : Y → Y → 𝓦 ̇)
+ → (_≤_ : Y → Y → 𝓦 ̇ )
  → is-preorder _≤_
  → is-preorder (inclusion-order f _≤_)
 inclusion-order-is-preorder {𝓤} {𝓥} {𝓦} {X} {Y}
@@ -61,7 +61,7 @@ inclusion-order-is-preorder {𝓤} {𝓥} {𝓦} {X} {Y}
 embedding-order-is-partial-order
  : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
  → is-embedding f
- → (_≤_ : Y → Y → 𝓦 ̇)
+ → (_≤_ : Y → Y → 𝓦 ̇ )
  → is-partial-order _≤_
  → is-partial-order (inclusion-order f _≤_)
 embedding-order-is-partial-order {𝓤} {𝓥} {𝓦} {X} {Y}
@@ -73,7 +73,7 @@ embedding-order-is-partial-order {𝓤} {𝓥} {𝓦} {X} {Y}
 
 inclusion-order-is-linear-preorder
  : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
- → (_≤_ : Y → Y → 𝓦 ̇)
+ → (_≤_ : Y → Y → 𝓦 ̇ )
  → is-linear-preorder _≤_
  → is-linear-preorder (inclusion-order f _≤_)
 inclusion-order-is-linear-preorder {𝓤} {𝓥} {𝓦} {X} {Y}
@@ -85,7 +85,7 @@ inclusion-order-is-linear-preorder {𝓤} {𝓥} {𝓦} {X} {Y}
 embedding-order-is-linear-order
  : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
  → is-embedding f
- → (_≤_ : Y → Y → 𝓦 ̇)
+ → (_≤_ : Y → Y → 𝓦 ̇ )
  → is-linear-order _≤_
  → is-linear-order (inclusion-order f _≤_)
 embedding-order-is-linear-order {𝓤} {𝓥} {𝓦} {X} {Y}
@@ -95,11 +95,11 @@ embedding-order-is-linear-order {𝓤} {𝓥} {𝓦} {X} {Y}
 
 inclusion-approx-order
  : {X : 𝓤 ̇ } {Y : ClosenessSpace 𝓥} (f : X → ⟨ Y ⟩)
- → (_≤ⁿ_ : ⟨ Y ⟩ → ⟨ Y ⟩ → ℕ → 𝓦  ̇)
+ → (_≤ⁿ_ : ⟨ Y ⟩ → ⟨ Y ⟩ → ℕ → 𝓦  ̇ )
  → X → X → ℕ → 𝓦  ̇
 inclusion-approx-order f _≤ⁿ_ x y = f x ≤ⁿ f y
 
-Σ-order : {X : 𝓤 ̇ } (P : X → 𝓥 ̇ ) (_≤_ : X → X → 𝓦  ̇)
+Σ-order : {X : 𝓤 ̇ } (P : X → 𝓥 ̇ ) (_≤_ : X → X → 𝓦  ̇ )
         → Σ P → Σ P → 𝓦  ̇
 Σ-order P _≤_ (x , _) (y , _) = x ≤ y
 
@@ -116,7 +116,7 @@ inclusion-approx-order f _≤ⁿ_ x y = f x ≤ⁿ f y
   p : is-prop-valued (Σ-order P _≤_)
   p (x , _) (y , _) = p' x y
 
-Σ-approx-order : {X : 𝓤 ̇ } → (P : X → 𝓥 ̇ ) → (_≤ⁿ_ : X → X → ℕ → 𝓦  ̇)
+Σ-approx-order : {X : 𝓤 ̇ } → (P : X → 𝓥 ̇ ) → (_≤ⁿ_ : X → X → ℕ → 𝓦  ̇ )
                → Σ P → Σ P → ℕ → 𝓦  ̇
 Σ-approx-order P _≤ⁿ_ (x , _) (y , _) = x ≤ⁿ y
 
@@ -124,7 +124,7 @@ inclusion-approx-order f _≤ⁿ_ x y = f x ≤ⁿ f y
  : (X : ClosenessSpace 𝓤)
  → (P : ⟨ X ⟩ → 𝓥 ̇ )
  → (p : (x : ⟨ X ⟩) → is-prop (P x))
- → (_≤ⁿ_ : ⟨ X ⟩ → ⟨ X ⟩ → ℕ → 𝓦'  ̇)
+ → (_≤ⁿ_ : ⟨ X ⟩ → ⟨ X ⟩ → ℕ → 𝓦'  ̇ )
  → is-approx-order X _≤ⁿ_
  → is-approx-order (Σ-ClosenessSpace X P p) (Σ-approx-order P _≤ⁿ_)
 Σ-approx-order-is-approx-order
@@ -154,7 +154,7 @@ module ΣOrder-Relates (pt : propositional-truncations-exist) where
   : (X : ClosenessSpace 𝓤)
   → (P : ⟨ X ⟩ → 𝓥 ̇ )
   → (p : (x : ⟨ X ⟩) → is-prop (P x))
-  → (_≤ⁿ_ : ⟨ X ⟩ → ⟨ X ⟩ → ℕ → 𝓦'  ̇)
+  → (_≤ⁿ_ : ⟨ X ⟩ → ⟨ X ⟩ → ℕ → 𝓦'  ̇ )
   → (a : is-approx-order X _≤ⁿ_)
   → (_≤_  : ⟨ X ⟩ → ⟨ X ⟩ → 𝓦 ̇ )
   → (i : is-preorder _≤_)

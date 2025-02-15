@@ -25,7 +25,7 @@ Vec-to-Seq : (n : ℕ) {X : ℕ → 𝓤 ̇ }
            → Π (X ∘ succ ^ n)
            → vec n (X ∘ ⟦_⟧)
            → Π X
-Vec-to-Seq 0 α ⟨⟩ = α 
+Vec-to-Seq 0 α ⟨⟩ = α
 Vec-to-Seq (succ n) α (x :: xs) 0 = x
 Vec-to-Seq (succ n) α (x :: xs) (succ i) = Vec-to-Seq n α xs i
 

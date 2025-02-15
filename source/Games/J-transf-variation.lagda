@@ -67,7 +67,7 @@ open import Games.Monad
   𝓘 = record {
        structure-map = id ;
        aunit         = λ r → refl ;
-       aassoc        = λ r → refl }
+       aassoc        = λ r → refl}
 
 module JT-definitions
         (𝓣 : Monad)

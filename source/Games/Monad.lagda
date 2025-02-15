@@ -150,7 +150,7 @@ syntax tensor 𝕋 t f = t ⊗[ 𝕋 ] f
       ext-η   = λ x → refl ;
       unit    = λ f x → refl ;
       assoc   = λ g f x → refl
-     }
+    }
 
 𝕀𝕕⊗ : {X : Type} {Y : X → Type}
       (x : X)

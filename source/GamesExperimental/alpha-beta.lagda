@@ -248,7 +248,7 @@ reader monad, to speed-up the computation of the optimal play.
          structure-map = λ (t : AB → R) → t (-∞ , ∞) ;
          unit = λ x → refl ;
          assoc = λ x → refl
-        }
+       }
 
    ρ : T R → R
    ρ = structure-map 𝓡

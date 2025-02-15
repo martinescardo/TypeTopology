@@ -148,7 +148,7 @@ equivalence.
    ; h-preserves-top   = α
    ; h-preserves-meets = β
    ; h-preserves-joins = γ
-   }
+  }
 
  frame-homomorphismᵣ-to-frame-homomorphism : _─f·→_ → _─f→_
  frame-homomorphismᵣ-to-frame-homomorphism 𝒽 =

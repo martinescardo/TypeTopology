@@ -59,6 +59,8 @@ assumption, it is a set, and excluded middle applies to propositions
 
 {-# OPTIONS --safe --without-K #-}
 
+module UF.Choice where
+
 open import MLTT.Spartan
 open import UF.Base
 open import UF.ClassicalLogic
@@ -74,8 +76,6 @@ open import UF.Subsingletons-FunExt
 open import UF.Subsingletons-Properties
 open import UF.SubtypeClassifier
 open import UF.SubtypeClassifier-Properties
-
-module UF.Choice where
 
 module Shift
         (T : {𝓤 : Universe} → 𝓤 ̇ → 𝓤 ̇ )
@@ -190,8 +190,8 @@ module Univalent-Choice
        (λ Y-is-set → Π-is-set (fe _ _) (λ _ → Y-is-set))
        (props-are-sets ∥∥-is-prop)
 
- AC : {𝓤 𝓥 : Universe} → (𝓤 ⊔ 𝓥) ⁺ ̇
- AC {𝓤} {𝓥} = (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) (P : (x : X) → A x → 𝓥 ̇ )
+ AC₀ : {𝓤 𝓥 : Universe} → (𝓤 ⊔ 𝓥) ⁺ ̇
+ AC₀ {𝓤} {𝓥} = (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) (P : (x : X) → A x → 𝓥 ̇ )
              → is-set X
              → ((x : X) → is-set (A x))
              → ((x : X) (a : A x) → is-prop (P x a))
@@ -212,12 +212,12 @@ module Univalent-Choice
               → ∥(Π x ꞉ X , (∥ A x ∥ → A x))∥
 
  Axiom-of-Choice Axiom-of-Choice₁ Axiom-of-Choice₂ : 𝓤ω
- Axiom-of-Choice  = {𝓤 𝓥 : Universe} → AC  {𝓤} {𝓥}
+ Axiom-of-Choice  = {𝓤 𝓥 : Universe} → AC₀  {𝓤} {𝓥}
  Axiom-of-Choice₁ = {𝓤 𝓥 : Universe} → AC₁ {𝓤} {𝓥}
  Axiom-of-Choice₂ = {𝓤 𝓥 : Universe} → AC₂ {𝓤} {𝓥}
 
- AC-gives-AC₁ : AC {𝓤} {𝓥} → AC₁ {𝓤} {𝓥}
- AC-gives-AC₁ ac X A i j f = h
+ AC₀-gives-AC₁ : AC₀ {𝓤} {𝓥} → AC₁ {𝓤} {𝓥}
+ AC₀-gives-AC₁ ac X A i j f = h
   where
    g : ∃ f ꞉ Π A , (X → 𝟙)
    g = ac X A
@@ -231,8 +231,8 @@ module Univalent-Choice
    h : ∥ Π A ∥
    h = ∥∥-functor pr₁ g
 
- AC₁-gives-AC : AC₁ {𝓤} {𝓥} → AC {𝓤} {𝓥}
- AC₁-gives-AC ac₁ X A P s t i f = ∥∥-functor ΠΣ-distr g
+ AC₁-gives-AC₀ : AC₁ {𝓤} {𝓥} → AC₀ {𝓤} {𝓥}
+ AC₁-gives-AC₀ ac₁ X A P s t i f = ∥∥-functor ΠΣ-distr g
   where
    g : ∥(Π x ꞉ X , Σ a ꞉ A x , P x a)∥
    g = ac₁ X (λ x → Σ a ꞉ A x , P x a)
@@ -326,11 +326,11 @@ I originally proved this on 1st April 2013.
  decidability-lemma₂ i a =
   ∥∥-rec (decidability-of-prop-is-prop (fe _ _) i) (decidability-lemma a)
 
- ac-renders-all-sets-discrete' : AC {𝓤} {𝓤}
-                               → (X : 𝓤 ̇ )
-                               → is-set X
-                               → (a : 𝟚 → X) → is-decidable (a ₀ ＝ a ₁)
- ac-renders-all-sets-discrete' {𝓤} ac X i a =
+ AC₀-renders-all-sets-discrete' : AC₀ {𝓤} {𝓤}
+                                → (X : 𝓤 ̇ )
+                                → is-set X
+                                → (a : 𝟚 → X) → is-decidable (a ₀ ＝ a ₁)
+ AC₀-renders-all-sets-discrete' {𝓤} ac X i a =
   decidability-lemma₂ i a (ac₂ X A i j)
   where
    A : X → 𝓤 ̇
@@ -340,25 +340,25 @@ I originally proved this on 1st April 2013.
    j x = subsets-of-sets-are-sets 𝟚 (λ i → a i ＝ x) 𝟚-is-set i
 
    ac₂ : AC₂ {𝓤} {𝓤}
-   ac₂ = AC₁-gives-AC₂ (AC-gives-AC₁ ac)
+   ac₂ = AC₁-gives-AC₂ (AC₀-gives-AC₁ ac)
 
- ac-renders-all-sets-discrete : AC {𝓤} {𝓤}
-                              → (X : 𝓤 ̇ )
-                              → is-set X
-                              → (a₀ a₁ : X) → is-decidable (a₀ ＝ a₁)
- ac-renders-all-sets-discrete {𝓤} ac X isx a₀ a₁ =
-  ac-renders-all-sets-discrete' {𝓤} ac X isx (𝟚-cases a₀ a₁)
+ AC₀-renders-all-sets-discrete : AC₀ {𝓤} {𝓤}
+                               → (X : 𝓤 ̇ )
+                               → is-set X
+                               → (a₀ a₁ : X) → is-decidable (a₀ ＝ a₁)
+ AC₀-renders-all-sets-discrete {𝓤} ac X isx a₀ a₁ =
+  AC₀-renders-all-sets-discrete' {𝓤} ac X isx (𝟚-cases a₀ a₁)
 
- AC-gives-EM : PropExt → AC {𝓤 ⁺} {𝓤 ⁺} → EM 𝓤
- AC-gives-EM {𝓤} pe ac =
+ AC₀-gives-EM : PropExt → AC₀ {𝓤 ⁺} {𝓤 ⁺} → EM 𝓤
+ AC₀-gives-EM {𝓤} pe ac =
   Ω-discrete-gives-EM (fe _ _) (pe _)
-   (ac-renders-all-sets-discrete {𝓤 ⁺} ac (Ω 𝓤)
-                                 (Ω-is-set (fe 𝓤 𝓤) (pe 𝓤)))
+   (AC₀-renders-all-sets-discrete {𝓤 ⁺} ac (Ω 𝓤)
+                                  (Ω-is-set (fe 𝓤 𝓤) (pe 𝓤)))
 
  Choice-gives-Excluded-Middle : PropExt
                               → Axiom-of-Choice
                               → Excluded-Middle
- Choice-gives-Excluded-Middle pe ac {𝓤} = AC-gives-EM {𝓤} pe (ac {𝓤 ⁺})
+ Choice-gives-Excluded-Middle pe ac {𝓤} = AC₀-gives-EM {𝓤} pe (ac {𝓤 ⁺})
 
 \end{code}
 
@@ -477,7 +477,7 @@ predicates, which seems to be a new result:
  Choice-gives-Double-Negation-Shift pe ac {𝓤} {𝓥} = III
   where
    em : Excluded-Middle
-   em = AC-gives-EM pe (AC₁-gives-AC ac)
+   em = AC₀-gives-EM pe (AC₁-gives-AC₀ ac)
 
 
    III : DNS₀ {𝓤} {𝓥}
@@ -532,8 +532,8 @@ module choice-functions
  AC₃ : {𝓤 : Universe} → 𝓤 ⁺ ̇
  AC₃ {𝓤} = (X : 𝓤 ̇ ) → is-set X → Choice-Function X
 
- AC-gives-AC₃ : {𝓤 : Universe} → AC {𝓤 ⁺} {𝓤} → AC₃ {𝓤}
- AC-gives-AC₃ ac X X-is-set =
+ AC₀-gives-AC₃ : {𝓤 : Universe} → AC₀ {𝓤 ⁺} {𝓤} → AC₃ {𝓤}
+ AC₀-gives-AC₃ ac X X-is-set =
   ac (𝓟⁺ X)
      (λ (𝓐 : 𝓟⁺ X) → X)
      (λ ((A , i) : 𝓟⁺ X) (x : X) → x ∈ A)
@@ -584,17 +584,17 @@ module choice-functions
      → ∥(Π x ꞉ X , A x)∥
    V g = ∥∥-functor (II g) I
 
- AC₃-gives-AC : {𝓤 𝓥 : Universe} → AC₃ {𝓤 ⊔ 𝓥} → AC {𝓤} {𝓥}
- AC₃-gives-AC ac₃ = AC₁-gives-AC (AC₃-gives-AC₁ ac₃)
+ AC₃-gives-AC₀ : {𝓤 𝓥 : Universe} → AC₃ {𝓤 ⊔ 𝓥} → AC₀ {𝓤} {𝓥}
+ AC₃-gives-AC₀ ac₃ = AC₁-gives-AC₀ (AC₃-gives-AC₁ ac₃)
 
  Axiom-of-Choice₃ : 𝓤ω
  Axiom-of-Choice₃ = {𝓤 : Universe} → AC₃ {𝓤}
 
  Choice-gives-Choice₃ : Axiom-of-Choice → Axiom-of-Choice₃
- Choice-gives-Choice₃ c {𝓤} = AC-gives-AC₃ {𝓤} (c {𝓤 ⁺} {𝓤})
+ Choice-gives-Choice₃ c {𝓤} = AC₀-gives-AC₃ {𝓤} (c {𝓤 ⁺} {𝓤})
 
  Choice₃-gives-Choice : Axiom-of-Choice₃ → Axiom-of-Choice
- Choice₃-gives-Choice c {𝓤} {𝓥} = AC₃-gives-AC {𝓤} {𝓥} (c {𝓤 ⊔ 𝓥})
+ Choice₃-gives-Choice c {𝓤} {𝓥} = AC₃-gives-AC₀ {𝓤} {𝓥} (c {𝓤 ⊔ 𝓥})
 
  Choice-Function⁻ : 𝓤 ̇ → 𝓤 ⁺ ̇
  Choice-Function⁻ X = ∃ ε ꞉ (𝓟 X → X) , ((A : 𝓟 X) → is-inhabited A → ε A ∈ A)
@@ -646,8 +646,8 @@ module choice-functions
 
  Choice-gives-Choice₄ : Axiom-of-Choice → Axiom-of-Choice₄
  Choice-gives-Choice₄ ac X X-is-set = improve-choice-function
-                                       (AC-gives-EM pe ac)
-                                       (AC-gives-AC₃ ac X X-is-set)
+                                       (AC₀-gives-EM pe ac)
+                                       (AC₀-gives-AC₃ ac X X-is-set)
 \end{code}
 
 End of addition.
@@ -733,4 +733,22 @@ Theorem 7.7 of the above reference.
 TODO. Add these and more facts about this. Some of them can be adapted
 from this Agda file: https://www.cs.bham.ac.uk/~mhe/GeneralizedHedberg/html/GeneralizedHedberg.html
 
-These addition are done in NotionsOfDecidability.SemiDecidable by Tom de Jong.
+These additions are done in NotionsOfDecidability.SemiDecidable by Tom de Jong.
+
+Added 6th Feb 2025 by Martin Escardo.
+
+\begin{code}
+
+module local-shoice
+        (pt : propositional-truncations-exist)
+        where
+
+ open PropositionalTruncation pt
+
+ AC : (𝓦 : Universe) → 𝓤 ̇  → 𝓥 ̇  → 𝓤 ⊔ 𝓥 ⊔ (𝓦 ⁺) ̇
+ AC {𝓤} {𝓥} 𝓦 X Y = (P : X → Y → 𝓦 ̇ )
+                    → ((x : X) (y : Y) → is-prop (P x y))
+                    → ((x : X) → ∃ y ꞉ Y , P x y)
+                    → ∃ f ꞉ (X → Y) , ((x : X) → P x (f x))
+
+\end{code}

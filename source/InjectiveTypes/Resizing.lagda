@@ -282,7 +282,7 @@ module Ω¬¬-resizing-examples
  recall-𝓤-ainjective : ainjective-type (𝓤  ̇ ) 𝓤 𝓤
  recall-𝓤-ainjective = universes-are-ainjective-Π
 
- recall-ainjective-resizing : (D : 𝓦 ̇)
+ recall-ainjective-resizing : (D : 𝓦 ̇ )
                             → ainjective-type D (𝓤 ⊔ 𝓣) 𝓥
                             → ainjective-type D 𝓤 𝓣
  recall-ainjective-resizing = ainjective-resizing₁

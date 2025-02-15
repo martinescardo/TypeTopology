@@ -100,7 +100,7 @@ to-ideal L ℐ@(I , ι , δ , ν) = record
                                 ; I-is-inhabited       = ι
                                 ; I-is-downward-closed = δ
                                 ; I-is-closed-under-∨  = ν
-                                }
+                               }
 
 ideal-equiv-ideal₀ : (L : DistributiveLattice 𝓤) → (Ideal L) ≃ (Ideal₀ L)
 ideal-equiv-ideal₀ L =
@@ -182,7 +182,7 @@ module PrincipalIdeals (L : DistributiveLattice 𝓤) where
     ; I-is-inhabited       = ∣ x , ≤-is-reflexive (poset-ofᵈ L) x ∣
     ; I-is-downward-closed = †
     ; I-is-closed-under-∨  = ‡
-    }
+   }
 
 \end{code}
 

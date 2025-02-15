@@ -63,7 +63,7 @@ a type `A : 𝓥`, and an equivalence `e : ⟨ L ⟩ ≃ A`.
 \begin{code}
 
 module DistributiveLatticeResizing (L  : DistributiveLattice 𝓤)
-                                   (Aᶜ : 𝓥  ̇)
+                                   (Aᶜ : 𝓥  ̇ )
                                    (e  : ∣ L ∣ᵈ ≃ Aᶜ) where
 
  open DistributiveLattice L renaming (𝟏 to 𝟏L; 𝟎 to 𝟎L)
@@ -320,7 +320,7 @@ We package everything up into `copyᵈ` below.
        ; ∨-idempotent    = ∨ᶜ-idempotent
        ; ∨-absorptive    = ∨ᶜ-absorptive
        ; distributivityᵈ = distributivityᶜ
-       }
+      }
 
  ⦅_⦆ᶜ : DistributiveLattice 𝓥
  ⦅_⦆ᶜ = Lᶜ
@@ -343,7 +343,7 @@ We package `s` up with the proof that it is a homomorphism, and call it
   record
    { h                 = s
    ; h-is-homomorphism = α , β , γ , δ
-   }
+  }
     where
      α : preserves-𝟏 L Lᶜ s holds
      α = refl
@@ -368,7 +368,7 @@ Now, we we do the same thing for `r`
   record
    { h                 = r
    ; h-is-homomorphism = α , β , γ , δ
-   }
+  }
     where
      α : preserves-𝟏 Lᶜ L r holds
      α = inverses-are-retractions' e 𝟏L
@@ -405,6 +405,6 @@ the fact that `L` is isomorphic to its 𝓥-small copy.
    ; 𝓇           = rₕ
    ; r-cancels-s = inverses-are-retractions' e
    ; s-cancels-r = inverses-are-sections' e
-   }
+  }
 
 \end{code}

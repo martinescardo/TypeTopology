@@ -95,7 +95,7 @@ module PropositionalTruncation (pt : propositional-truncations-exist) where
 
  remove-truncation-inside-∃ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
                             → (∃ x ꞉ X , ∥ Y x ∥)
-                            → (∃ x ꞉ X , Y x )
+                            → (∃ x ꞉ X , Y x)
  remove-truncation-inside-∃ =
   ∥∥-rec ∃-is-prop
    (λ (x , s) → ∥∥-rec ∃-is-prop
@@ -167,7 +167,7 @@ module PropositionalTruncation (pt : propositional-truncations-exist) where
  prop-is-equivalent-to-its-truncation i =
   logically-equivalent-props-are-equivalent ∥∥-is-prop i (exit-∥∥ i) ∣_∣
 
- equiv-to-own-truncation-implies-prop : {X : 𝓤  ̇} → X ≃ ∥ X ∥  → is-prop X
+ equiv-to-own-truncation-implies-prop : {X : 𝓤  ̇ } → X ≃ ∥ X ∥  → is-prop X
  equiv-to-own-truncation-implies-prop {𝓤} {X} e = equiv-to-prop e ∥∥-is-prop
 
  not-exists₀-implies-forall₁ : {X : 𝓤 ̇ } (p : X → 𝟚)

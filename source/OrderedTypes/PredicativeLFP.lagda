@@ -128,7 +128,7 @@ our least fixed point theorem.
 
 module _
         {𝓤 𝓣 𝓥 : Universe}
-        {B : 𝓥  ̇}
+        {B : 𝓥  ̇ }
         (L : Sup-Lattice 𝓤 𝓣 𝓥)
         (β : B → ⟨ L ⟩)
         (h : is-basis L β)
@@ -238,7 +238,7 @@ inductive definition.
 
 module local-inductive-definitions
         {𝓤 𝓣 𝓥 : Universe}
-        {B : 𝓥  ̇}
+        {B : 𝓥  ̇ }
         (L : Sup-Lattice 𝓤 𝓣 𝓥)
         (β : B → ⟨ L ⟩)
         (h : is-basis L β)
@@ -439,7 +439,7 @@ assumpions.
 
 module _
         {𝓤 𝓣 𝓥 : Universe}
-        {B : 𝓥  ̇}
+        {B : 𝓥  ̇ }
         (L : Sup-Lattice 𝓤 𝓣 𝓥)
         (β : B → ⟨ L ⟩)
         (h : is-basis L β)
@@ -875,7 +875,7 @@ precise below.
 
 module bounded-inductive-definitions
         {𝓤 𝓣 𝓥 : Universe}
-        {B : 𝓥  ̇}
+        {B : 𝓥  ̇ }
         (L : Sup-Lattice 𝓤 𝓣 𝓥)
         (β : B → ⟨ L ⟩)
         (h : is-basis L β)
@@ -889,11 +889,11 @@ module bounded-inductive-definitions
  open local-inductive-definitions L β h
  open is-basis h
 
- _is-a-small-cover-of_ : (X : 𝓥  ̇) → (Y : 𝓦  ̇) → 𝓥 ⊔ 𝓦  ̇
+ _is-a-small-cover-of_ : (X : 𝓥  ̇ ) → (Y : 𝓦  ̇ ) → 𝓥 ⊔ 𝓦  ̇
  X is-a-small-cover-of Y = X ↠ Y
 
  has-a-bound : (ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩)) → 𝓤 ⊔ 𝓣 ⊔ (𝓥 ⁺)  ̇
- has-a-bound ϕ = Σ I ꞉ 𝓥  ̇ , Σ α ꞉ (I → 𝓥  ̇) ,
+ has-a-bound ϕ = Σ I ꞉ 𝓥  ̇ , Σ α ꞉ (I → 𝓥  ̇ ) ,
                  ((a : ⟨ L ⟩)
                → (b : B)
                → (b , a) ∈ ϕ
@@ -904,7 +904,7 @@ module bounded-inductive-definitions
 
  bound-family : {ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩)}
               → (bnd : has-a-bound ϕ)
-              → (bound-index {ϕ} bnd → 𝓥  ̇)
+              → (bound-index {ϕ} bnd → 𝓥  ̇ )
  bound-family (I , α , covering) = α
 
  covering-condition : {ϕ : 𝓟 {𝓤 ⊔ 𝓥} (B × ⟨ L ⟩)}
@@ -1022,7 +1022,7 @@ precise below.
 
 module small-presentation-of-lattice
         {𝓤 𝓣 𝓥 : Universe}
-        {B : 𝓥  ̇}
+        {B : 𝓥  ̇ }
         (L : Sup-Lattice 𝓤 𝓣 𝓥)
         (β : B → ⟨ L ⟩)
         (h : is-basis L β)
@@ -1060,7 +1060,7 @@ large quantification!
 
 module _
         {𝓤 𝓣 𝓥 : Universe}
-        {B : 𝓥  ̇}
+        {B : 𝓥  ̇ }
         (L : Sup-Lattice 𝓤 𝓣 𝓥)
         (β : B → ⟨ L ⟩)
         (h : is-basis L β)
@@ -1227,7 +1227,7 @@ least fixed point theorem.
 
 module _
         {𝓤 𝓣 𝓥 : Universe}
-        {B : 𝓥  ̇}
+        {B : 𝓥  ̇ }
         (L : Sup-Lattice 𝓤 𝓣 𝓥)
         (β : B → ⟨ L ⟩)
         (h : is-basis L β)
@@ -1345,7 +1345,7 @@ endomap f : L → L. If there exists a bounded abstract inductive definition
 
 module _
         {𝓤 𝓣 𝓥 : Universe}
-        {B : 𝓥  ̇}
+        {B : 𝓥  ̇ }
         (L : Sup-Lattice 𝓤 𝓣 𝓥)
         (β : B → ⟨ L ⟩)
         (h : is-basis L β)
@@ -1433,7 +1433,7 @@ A monotone map f, on a 𝓥-generated sup-lattice L, is dense if there is a fami
 
 module _
         {𝓤 𝓣 𝓥 : Universe}
-        {B : 𝓥  ̇}
+        {B : 𝓥  ̇ }
         (L : Sup-Lattice 𝓤 𝓣 𝓥)
         (β : B → ⟨ L ⟩)
         (h : is-basis L β)
@@ -1448,7 +1448,7 @@ module _
  open is-basis h
 
  density-condition : (f : ⟨ L ⟩ → ⟨ L ⟩)
-                   → (I : 𝓥  ̇)
+                   → (I : 𝓥  ̇ )
                    → (γ : I → ⟨ L ⟩)
                    → 𝓤 ⊔ 𝓣 ⊔ 𝓥  ̇
  density-condition f I γ = (b : B)
@@ -1603,7 +1603,7 @@ theorem.
 
 module _
         {𝓤 𝓣 𝓥 : Universe}
-        {B : 𝓥  ̇}
+        {B : 𝓥  ̇ }
         (L : Sup-Lattice 𝓤 𝓣 𝓥)
         (β : B → ⟨ L ⟩)
         (h : is-basis L β)

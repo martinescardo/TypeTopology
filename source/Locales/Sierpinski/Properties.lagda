@@ -142,7 +142,7 @@ principal-filter-on-₁-is-truth = ≤-is-antisymmetric (poset-of (𝒪 𝕊)) �
   † = ⊆ₛ-implies-⊆ₖ ↑ᵏ[ ₁ ] truth †₀
 
   ‡₀ : (truth ⊆ₛ ↑ᵏ[ ₁ ]) holds
-  ‡₀ (P , f , φ) p = (λ x → p) , λ { _ → 𝟙-is-prop ⋆ ⋆ }
+  ‡₀ (P , f , φ) p = (λ x → p) , λ { _ → 𝟙-is-prop ⋆ ⋆}
 
   ‡ : (truth ⊆ₖ ↑ᵏ[ ₁ ]) holds
   ‡ = ⊆ₛ-implies-⊆ₖ truth ↑ᵏ[ ₁ ] ‡₀

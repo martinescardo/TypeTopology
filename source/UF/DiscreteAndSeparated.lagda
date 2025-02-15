@@ -129,6 +129,24 @@ inr-is-isolated {𝓤} {𝓥} {X} {Y} y i = γ
 
 \end{code}
 
+Added by Tom de Jong on 15 December 2024.
+Note that we could also derive this from Σ-is-discrete (see the comment below)
+and props-are-discrete (as above).
+
+\begin{code}
+
+subtype-is-discrete : {X : 𝓤 ̇  } {P : X → 𝓥 ̇  }
+                    → ((x : X) → is-prop (P x))
+                    → is-discrete X
+                    → is-discrete (Σ P)
+subtype-is-discrete pv d (x , p) (y , q) = κ (d x y)
+ where
+  κ : is-decidable (x ＝ y) → is-decidable ((x , p) ＝ (y , q))
+  κ (inl  e) = inl (to-subtype-＝ pv e)
+  κ (inr ne) = inr (λ h → ne (ap pr₁ h))
+
+\end{code}
+
 The closure of discrete types under Σ is proved in the module
 TypeTopology.SigmaDiscreteAndTotallySeparated (as this requires to
 first prove that discrete types are sets).

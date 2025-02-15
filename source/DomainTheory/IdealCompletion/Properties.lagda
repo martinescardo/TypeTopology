@@ -172,7 +172,7 @@ reflexive-abstract-basis-to-abstract-basis rab =
   ; ≺-trans = ≺-trans
   ; INT₀ = INT₀
   ; INT₂ = INT₂
-  }
+ }
   where
    open reflexive-abstract-basis rab
 
@@ -417,7 +417,7 @@ continuous dcpo.
    ≪ᴮ-is-small    = λ I x → (↓ x ≪ₛ I) , e (↓ x) I;
    ↡ᴮ-is-directed = ↓-Idl-inclusion-is-directed;
    ↡ᴮ-is-sup      = ↓-Idl-inclusion-sup
-  }
+   }
    where
     _≪ₛ_ : Idl → Idl → 𝓥 ̇
     I ≪ₛ J = ∃ x ꞉ X , (x ∈ᵢ J) × I ⊑⟨ Idl-DCPO ⟩ ↓ x

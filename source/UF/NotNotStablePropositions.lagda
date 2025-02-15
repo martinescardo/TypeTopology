@@ -65,7 +65,7 @@ A weakening of the notion of Ω-Rezing.
 
 \begin{code}
 
-Ω¬¬-Resizing : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥 )⁺ ̇
+Ω¬¬-Resizing : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
 Ω¬¬-Resizing 𝓤 𝓥 = (Ω¬¬ 𝓤) is 𝓥 small
 
 \end{code}
@@ -142,14 +142,14 @@ from-Ω¬¬-＝ : {p q : Ω 𝓤}
 from-Ω¬¬-＝ = ap Ω¬¬-to-Ω
 
 to-Ω¬¬-＝' : funext 𝓤 𝓤
-           → {P Q : 𝓤 ̇}
+           → {P Q : 𝓤 ̇ }
              {i : is-prop P} {j : is-prop Q}
              {s : ¬¬-stable P} {t : ¬¬-stable Q}
            → P ＝ Q
            → ((P , i) , s) ＝[ Ω¬¬ 𝓤 ] ((Q , j) , t)
 to-Ω¬¬-＝' fe e = to-Ω¬¬-＝ fe (to-Ω-＝ fe e)
 
-from-Ω¬¬-＝' : {P Q : 𝓤 ̇}
+from-Ω¬¬-＝' : {P Q : 𝓤 ̇ }
                {i : is-prop P} {j : is-prop Q}
                {s : ¬¬-stable P} {t : ¬¬-stable Q}
              → ((P , i) , s) ＝[ Ω¬¬ 𝓤 ] ((Q , j) , t)
@@ -214,7 +214,7 @@ module _ (fe : FunExt) (pe : PropExt) where
  𝟚-to-Ω¬¬-fiber : ((p , s) : Ω¬¬ 𝓤) → fiber 𝟚-to-Ω¬¬ (p , s) ≃ (¬ (p holds) + p holds)
  𝟚-to-Ω¬¬-fiber {𝓤} 𝕡@(p , s) =
   fiber (𝟚-to-Ω¬¬ {𝓤}) 𝕡                        ≃⟨ ≃-refl _ ⟩
-  (Σ n ꞉ 𝟚 , 𝟚-to-Ω¬¬ {𝓤} n ＝ 𝕡 )              ≃⟨ alternative-+ ⟩
+  (Σ n ꞉ 𝟚 , 𝟚-to-Ω¬¬ {𝓤} n ＝ 𝕡)              ≃⟨ alternative-+ ⟩
   (𝟚-to-Ω¬¬ ₀ ＝ p , s) + (𝟚-to-Ω¬¬ ₁ ＝ p , s) ≃⟨ I ⟩
   (⊥ ＝ p) + (⊤ ＝ p)                           ≃⟨ II ⟩
   (¬ (p holds) + (p holds))                     ■

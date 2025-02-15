@@ -48,11 +48,11 @@ We now introduce some abbreviations.
 
 \begin{code}
 
-extension : {X : 𝓤 ̇}
+extension : {X : 𝓤 ̇ }
           → aflabby X 𝓦 → (p : Ω 𝓦) → (p holds → X) → X
 extension = aflabby-extension
 
-extends : {X : 𝓤 ̇} (ϕ : aflabby X 𝓦) (p : Ω 𝓦)
+extends : {X : 𝓤 ̇ } (ϕ : aflabby X 𝓦) (p : Ω 𝓦)
           (f : p holds → X) (h : p holds)
         → extension ϕ p f ＝ f h
 extends  = aflabby-extension-property

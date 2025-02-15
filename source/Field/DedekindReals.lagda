@@ -18,13 +18,13 @@ module Field.DedekindReals
 
 
 {-
-DedekindRealsField : Field-structure ℝ { 𝓤₀ }
+DedekindRealsField : Field-structure ℝ { 𝓤₀}
 DedekindRealsField = ({!!} , {!!} , _♯_) , ℝ-is-set , {!!} , {!!} , {!!} , {!!} , {!!} , (0ℝ , 1ℝ) , ℝ-zero-apart-from-one , {!!} , {!!} , {!!} , {!!}
 
-DedekindRealsOrderedField : Ordered-field-structure { 𝓤₁ } { 𝓤₀ } { 𝓤₀ } ℝ DedekindRealsField
+DedekindRealsOrderedField : Ordered-field-structure { 𝓤₁} { 𝓤₀} { 𝓤₀} ℝ DedekindRealsField
 DedekindRealsOrderedField = _<ℝ_ , {!!} , {!!}
 
-DedekindRealsOrderedField' : Ordered-Field 𝓤₁ { 𝓤₀ } { 𝓤₀ }
+DedekindRealsOrderedField' : Ordered-Field 𝓤₁ { 𝓤₀} { 𝓤₀}
 DedekindRealsOrderedField' = (ℝ , DedekindRealsField) , DedekindRealsOrderedField
 
 DedekindRealsArchimedeanOrderedField : ArchimedeanOrderedField 𝓤₁

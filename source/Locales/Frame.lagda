@@ -335,7 +335,7 @@ The proof `satisfying-frame-laws-is-prop` has been added on 2024-04-15.
 
 \begin{code}
 
-satisfying-frame-laws-is-prop : {A : 𝓤  ̇} (d : frame-data 𝓥 𝓦 A)
+satisfying-frame-laws-is-prop : {A : 𝓤  ̇ } (d : frame-data 𝓥 𝓦 A)
                               → is-prop (satisfies-frame-laws d)
 satisfying-frame-laws-is-prop {𝓤} {𝓥} {𝓦} {A} d@(_≤_ , 𝟏 , _⊓_ , ⊔_) =
  Σ-is-prop (being-partial-order-is-prop A _≤_) †
@@ -1223,7 +1223,7 @@ binary-distributivity-op F x y z =
 
 \begin{code}
 
-⋁[_]-iterated-join : (F : Frame 𝓤 𝓥 𝓦) (I : 𝓦 ̇ )(J : I → 𝓦 ̇)
+⋁[_]-iterated-join : (F : Frame 𝓤 𝓥 𝓦) (I : 𝓦 ̇ )(J : I → 𝓦 ̇ )
                 → (f : (i : I) → J i → ⟨ F ⟩)
                 → ⋁[ F ] ((Σ i ꞉ I , J i) , uncurry f)
                 ＝ ⋁[ F ] ⁅ ⋁[ F ] ⁅ f i j ∣ j ∶ J i ⁆ ∣ i ∶ I ⁆
@@ -2012,11 +2012,11 @@ below have been been added on 2024-04-17.
 
 \begin{code}
 
-order-is-set : {𝓥 : Universe} (pe : propext 𝓥) (A : 𝓤  ̇) → is-set (A → A → Ω 𝓥)
+order-is-set : {𝓥 : Universe} (pe : propext 𝓥) (A : 𝓤  ̇ ) → is-set (A → A → Ω 𝓥)
 order-is-set {𝓥} pe A {_≤₁_} {_≤₂_} =
  Π-is-set fe λ x → Π-is-set fe λ y → Ω-is-set fe pe
 
-frame-data-is-set : (A : 𝓤  ̇) (σ : is-set A) (𝓥 𝓦 : Universe) → propext 𝓥 → is-set (frame-data 𝓥 𝓦 A)
+frame-data-is-set : (A : 𝓤  ̇ ) (σ : is-set A) (𝓥 𝓦 : Universe) → propext 𝓥 → is-set (frame-data 𝓥 𝓦 A)
 frame-data-is-set A σ 𝓥 𝓦 pe =
  Σ-is-set (order-is-set pe A) λ _≤_ →
   ×-is-set
@@ -2024,7 +2024,7 @@ frame-data-is-set A σ 𝓥 𝓦 pe =
    (×-is-set (Π-is-set fe λ _ → Π-is-set fe λ _ → σ) (Π-is-set fe λ _ → σ))
 
 frame-structure-is-set : {𝓤 : Universe}
-                       → (A : 𝓤  ̇) (𝓥 𝓦 : Universe)
+                       → (A : 𝓤  ̇ ) (𝓥 𝓦 : Universe)
                        → propext 𝓥
                        → is-set (frame-structure 𝓥 𝓦 A)
 frame-structure-is-set A 𝓥 𝓦 pe {(d₁ , p₁)} {(d₂ , p₂)} =

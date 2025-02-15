@@ -211,7 +211,7 @@ the following alternative proof:
 𝕄-is-large' : is-large 𝕄
 𝕄-is-large' 𝕄-is-small = II
  where
-  I : (𝓤 ̇) is 𝓤 small
+  I : (𝓤 ̇ ) is 𝓤 small
   I = embedded-retract-is-small
        universe-is-retract-of-𝕄
        universe-to-𝕄-is-embedding

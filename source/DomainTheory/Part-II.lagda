@@ -119,7 +119,7 @@ module _ (𝓥 : Universe) where
  Definition-2-8 : (X : 𝓤 ̇ ) → 𝓟-general {𝓣} X → 𝓤 ⊔ 𝓣 ̇
  Definition-2-8 X = 𝕋
 
- Definition-2-9 : {X : 𝓤 ̇} → 𝓟 X → 𝓤 ̇
+ Definition-2-9 : {X : 𝓤 ̇ } → 𝓟 X → 𝓤 ̇
  Definition-2-9 = is-Kuratowski-finite-subset
 
  module _
@@ -140,7 +140,7 @@ module _ (𝓥 : Universe) where
                ❴❵-is-Kuratowski-finite-subset X-set ,
                ∪-is-Kuratowski-finite-subset {𝓤} {X}
 
-  Lemma-2-11 : {𝓣 : Universe} (Q : 𝓚 X → 𝓣 ̇)
+  Lemma-2-11 : {𝓣 : Universe} (Q : 𝓚 X → 𝓣 ̇ )
              → ((A : 𝓚 X) → is-prop (Q A))
              → Q ∅[𝓚]
              → ((x : X) → Q (❴ x ❵[𝓚]))
@@ -510,7 +510,7 @@ Section 5
       ; s-section-of-r = s-section-of-r
       ; s-is-continuous = s-cont
       ; r-is-continuous = r-cont
-      })
+     })
 
   open import DomainTheory.Basics.Exponential pt fe 𝓥
 
@@ -552,13 +552,13 @@ Section 5.1
  Lemma-5-14 𝓓 = structurally-algebraic-if-specified-small-compact-basis 𝓓 ,
                 is-algebraic-dcpo-if-unspecified-small-compact-basis 𝓓
 
- Lemma-5-15 : (𝓓 : DCPO {𝓤} {𝓣}) {B : 𝓥 ̇} (β : B → ⟨ 𝓓 ⟩)
+ Lemma-5-15 : (𝓓 : DCPO {𝓤} {𝓣}) {B : 𝓥 ̇ } (β : B → ⟨ 𝓓 ⟩)
             → is-small-basis 𝓓 β
             → ((b : B) → is-compact 𝓓 (β b))
             → is-small-compact-basis 𝓓 β
  Lemma-5-15 = small-and-compact-basis
 
- Proposition-5-16 : (𝓓 : DCPO {𝓤} {𝓣}) {B : 𝓥 ̇} (β : B → ⟨ 𝓓 ⟩)
+ Proposition-5-16 : (𝓓 : DCPO {𝓤} {𝓣}) {B : 𝓥 ̇ } (β : B → ⟨ 𝓓 ⟩)
                   → is-small-compact-basis 𝓓 β
                   → (x : ⟨ 𝓓 ⟩) → is-compact 𝓓 x → ∃ b ꞉ B , β b ＝ x
  Proposition-5-16 = small-compact-basis-contains-all-compact-elements
@@ -626,7 +626,7 @@ module _
        where
 
  fe' : Fun-Ext
- fe' {𝓤 } {𝓥} = Univalence-gives-FunExt ua 𝓤 𝓥
+ fe' {𝓤} {𝓥} = Univalence-gives-FunExt ua 𝓤 𝓥
 
  open import DomainTheory.Examples.Ordinals pt ua sr 𝓤
  open import DomainTheory.Basics.Dcpo pt fe' 𝓤
@@ -712,7 +712,7 @@ Section 6
             → is-ideal (⋃ (carrier ∘ 𝓘))
   Lemma-6-4 𝓘 δ = ideality (Idl-∐ 𝓘 δ)
 
-  Lemma-6-5 : DCPO {𝓥 ⁺ } {𝓥}
+  Lemma-6-5 : DCPO {𝓥 ⁺} {𝓥}
   Lemma-6-5 = Idl-DCPO
 
   Lemma-6-6 : (I : Idl) {a : B} → (a ∈ᵢ I) → ∃ b ꞉ B , b ∈ᵢ I × a ≺ b
@@ -764,7 +764,7 @@ Section 6.1
    ; ≺-trans = λ {x y z} → t x y z
    ; INT₀ = reflexivity-implies-INT₀ _≺_ (λ {b} → r b)
    ; INT₂ = reflexivity-implies-INT₂ _≺_ (λ {b} → r b)
-   }
+  }
 
  module _
          (abs-basis : abstract-basis)
@@ -849,7 +849,7 @@ module _ where
                      ; ≺-trans = λ {x y z} → ≺-is-transitive x y z
                      ; INT₀ = ≺-has-no-left-endpoint
                      ; INT₂ = λ {x y z} → ≺-interpolation₂ x y z
-                     }
+                    }
 
  Proposition-6-22 : has-specified-small-basis Idl-𝔻
                   × is-continuous-dcpo Idl-𝔻
@@ -909,7 +909,7 @@ module _ (𝓥 : Universe) where
    Lemma-6-24-ad = ∐-↡ᴮ-retract I
 
   module _
-          (_≺_ : B → B → 𝓥 ̇)
+          (_≺_ : B → B → 𝓥 ̇ )
           (x : ⟨ 𝓓 ⟩)
          where
 
@@ -1139,7 +1139,7 @@ Section 7.2
   open sup-complete-dcpo 𝓓 𝓓-is-sup-complete
        renaming (directify to directification)
 
-  Definition-7-10 : {𝓦 : Universe} {I : 𝓦 ̇}
+  Definition-7-10 : {𝓦 : Universe} {I : 𝓦 ̇ }
                   → (α : I → ⟨ 𝓓 ⟩)
                   → List I → ⟨ 𝓓 ⟩
   Definition-7-10 = directification

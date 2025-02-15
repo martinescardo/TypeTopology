@@ -34,7 +34,7 @@ underlying-orderₚ 𝓓 x y = (x ⊑⟨ 𝓓 ⟩ y) , prop-valuedness 𝓓 x y
 
 syntax underlying-orderₚ 𝓓 x y = x ⊑⟨ 𝓓 ⟩ₚ y
 
-_∈imageₚ_ : {X : 𝓤  ̇} {Y : 𝓦  ̇} → Y → (X → Y) → Ω (𝓤 ⊔ 𝓦)
+_∈imageₚ_ : {X : 𝓤  ̇ } {Y : 𝓦  ̇ } → Y → (X → Y) → Ω (𝓤 ⊔ 𝓦)
 y ∈imageₚ f = y ∈image f , ∃-is-prop
 
 \end{code}
@@ -101,7 +101,7 @@ I find it convenient to define the type of directed families.
                        { pred                              = P
                        ; pred-is-upwards-closed            = υ
                        ; pred-is-inaccessible-by-dir-joins = ι
-                       }
+                      }
 
  from-𝒪ₛᴿ : 𝒪ₛᴿ → 𝒪ₛ
  from-𝒪ₛᴿ 𝔘 =
