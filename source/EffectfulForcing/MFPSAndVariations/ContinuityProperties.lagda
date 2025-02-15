@@ -35,13 +35,13 @@ have been adapted from the `CantorSearch` module authored by Martín Escardó
 
 \begin{code}
 
-hd : {X : 𝓤₀ ̇ } → (ℕ → X) → X
+hd : {X : 𝓤 ̇ } → (ℕ → X) → X
 hd α = α 0
 
-tl : {X : 𝓤₀ ̇ } → (ℕ → X) → ℕ → X
+tl : {X : 𝓤 ̇ } → (ℕ → X) → ℕ → X
 tl α = α ∘ succ
 
-_＝⦅_⦆_ : {X : 𝓤₀ ̇ } → (ℕ → X) → ℕ → (ℕ → X) → 𝓤₀  ̇
+_＝⦅_⦆_ : {X : 𝓤 ̇ } → (ℕ → X) → ℕ → (ℕ → X) → 𝓤 ̇
 α ＝⦅ 0      ⦆ β = 𝟙
 α ＝⦅ succ n ⦆ β = (hd α ＝ hd β) × tl α ＝⦅ n ⦆ tl β
 
@@ -51,7 +51,7 @@ A small lemma characterizing this relation.
 
 \begin{code}
 
-agreement→ : {X : 𝓤₀  ̇ } (α α′ : ℕ → X) (n : ℕ)
+agreement→ : {X : 𝓤₀ ̇ } (α α′ : ℕ → X) (n : ℕ)
            → α ＝⦅ n ⦆ α′
            → (i : ℕ) → (i <ℕ n) → α i ＝ α′ i
 agreement→ α α′ zero     p         zero     ()
@@ -913,17 +913,17 @@ Slight generalization of the notions of continuity and uniform continuity.
 
 \begin{code}
 
-is-continuous₁ : {O : 𝓤  ̇} {X : 𝓥  ̇} → ((ℕ → O) → X) → 𝓤 ⊔ 𝓥  ̇
-is-continuous₁ {_} {_} {O} {X} f =
+is-continuous₁ : {O : 𝓤 ̇ } {X : 𝓥 ̇ } → ((ℕ → O) → X) → 𝓤 ⊔ 𝓥 ̇
+is-continuous₁ {_} {_} {O} f =
  (α : ℕ → O) → Σ n ꞉ ℕ , ((α′ : ℕ → O) → α ＝⦅ n ⦆ α′ → f α ＝ f α′)
 
 _ : is-continuous₀ ＝ is-continuous₁ {O = ℕ}
 _ = refl
 
-is-uniformly-continuous₁ : {O : 𝓤  ̇} {X : 𝓥  ̇} → ((ℕ → O) → X) → 𝓤 ⊔ 𝓥  ̇
-is-uniformly-continuous₁ {_} {_} {O} {X} f =
+is-uniformly-continuous₁ : {O : 𝓤 ̇ } {X : 𝓥 ̇ } → ((ℕ → O) → X) → 𝓤 ⊔ 𝓥 ̇
+is-uniformly-continuous₁ {_} {_} {O} f =
  Σ n ꞉ ℕ , ((α α′ : ℕ → O) → α ＝⦅ n ⦆ α′ → f α ＝ f α′)
 
--- TODO prove this is equivalent to is-uniformly-continuous₀
-
 \end{code}
+
+TODO. Prove this is equivalent to is-uniformly-continuous₀.
