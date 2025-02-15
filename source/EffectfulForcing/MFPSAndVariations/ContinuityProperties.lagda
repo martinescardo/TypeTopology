@@ -35,13 +35,13 @@ have been adapted from the `CantorSearch` module authored by Martín Escardó
 
 \begin{code}
 
-hd : {X : 𝓤₀  ̇ } → (ℕ → X) → X
+hd : {X : 𝓤₀ ̇ } → (ℕ → X) → X
 hd α = α 0
 
-tl : {X : 𝓤₀  ̇ } → (ℕ → X) → ℕ → X
+tl : {X : 𝓤₀ ̇ } → (ℕ → X) → ℕ → X
 tl α = α ∘ succ
 
-_＝⦅_⦆_ : {X : 𝓤₀  ̇ } → (ℕ → X) → ℕ → (ℕ → X) → 𝓤₀  ̇
+_＝⦅_⦆_ : {X : 𝓤₀ ̇ } → (ℕ → X) → ℕ → (ℕ → X) → 𝓤₀  ̇
 α ＝⦅ 0      ⦆ β = 𝟙
 α ＝⦅ succ n ⦆ β = (hd α ＝ hd β) × tl α ＝⦅ n ⦆ tl β
 
@@ -904,5 +904,26 @@ uni-continuity-equivalent-to-uni-continuity f = ⦅⇒⦆ , ⦅⇐⦆
  where
   ⦅⇒⦆ = uni-continuity₀-implies-uni-continuity f
   ⦅⇐⦆ = uni-continuity-implies-uni-continuity₀ f
+
+\end{code}
+
+Added on 2025-02-09.
+
+Slight generalization of the notions of continuity and uniform continuity.
+
+\begin{code}
+
+is-continuous₁ : {O : 𝓤  ̇} {X : 𝓥  ̇} → ((ℕ → O) → X) → 𝓤 ⊔ 𝓥  ̇
+is-continuous₁ {_} {_} {O} {X} f =
+ (α : ℕ → O) → Σ n ꞉ ℕ , ((α′ : ℕ → O) → α ＝⦅ n ⦆ α′ → f α ＝ f α′)
+
+_ : is-continuous₀ ＝ is-continuous₁ {O = ℕ}
+_ = refl
+
+is-uniformly-continuous₁ : {O : 𝓤  ̇} {X : 𝓥  ̇} → ((ℕ → O) → X) → 𝓤 ⊔ 𝓥  ̇
+is-uniformly-continuous₁ {_} {_} {O} {X} f =
+ Σ n ꞉ ℕ , ((α α′ : ℕ → O) → α ＝⦅ n ⦆ α′ → f α ＝ f α′)
+
+-- TODO prove this is equivalent to is-uniformly-continuous₀
 
 \end{code}

@@ -353,6 +353,8 @@ agreement-with-restriction f α bv =
 
 \end{code}
 
+Refactored and simplified on 2025-02-12.
+
 Finally, we state and prove our main result:
 
   given any Boolean `t : baire ⇒ ι`, and given any two Boolean points `αᵀ, βᵀ :
@@ -361,28 +363,22 @@ Finally, we state and prove our main result:
 
 \begin{code}
 
-internal-uni-mod-correct : (t : 〈〉 ⊢ baire ⇒ ι) (αᵀ βᵀ : 〈〉 ⊢ baire)
-                         → is-boolean-pointᵀ αᵀ
-                         → is-boolean-pointᵀ βᵀ
-                         → ⟦ αᵀ ⟧₀ ＝⦅ ⟦ modulusᵤᵀ t ⟧₀ ⦆ ⟦ βᵀ ⟧₀
-                         → ⟦ t · αᵀ ⟧₀ ＝ ⟦ t · βᵀ ⟧₀
-internal-uni-mod-correct t αᵀ βᵀ ψ₁ ψ₂ φ =
+internal-uni-mod-correct₀ : (t : 〈〉 ⊢ baire ⇒ ι) (α β : ℕ → ℕ)
+                          → is-boolean-point α
+                          → is-boolean-point β
+                          → α ＝⦅ ⟦ modulusᵤᵀ t ⟧₀ ⦆ β
+                          → ⟦ t ⟧₀ α ＝ ⟦ t ⟧₀ β
+internal-uni-mod-correct₀ t α β ψ₁ ψ₂ φ =
  f α ＝⟨ Ⅰ ⟩ f₀ (to-cantor α₀) ＝⟨ Ⅱ ⟩ f₀ (to-cantor β₀) ＝⟨ Ⅲ ⟩ f β ∎
   where
    f : Baire → ℕ
    f = ⟦ t ⟧₀
 
-   α : Baire
-   α = ⟦ αᵀ ⟧₀
-
-   β : Baire
-   β = ⟦ βᵀ ⟧₀
-
    α₀ : Cantor₀
-   α₀ = α , boolean-valuedᵀ-lemma αᵀ ψ₁
+   α₀ = α , ψ₁
 
    β₀ : Cantor₀
-   β₀ = β , boolean-valuedᵀ-lemma βᵀ ψ₂
+   β₀ = β , ψ₂
 
    f₀ : Cantor → ℕ
    f₀ = C-restriction f
@@ -435,15 +431,35 @@ internal-uni-mod-correct t αᵀ βᵀ ψ₁ ψ₂ φ =
    δ = ＝⟪⟫₀-implies-＝⟦⟧ α β bt ζ
 
    γ : to-cantor α₀ ＝⟦ bt ⟧ to-cantor β₀
-   γ = to-cantor-＝⟦⟧
-        (boolean-valuedᵀ-lemma αᵀ ψ₁)
-        (boolean-valuedᵀ-lemma βᵀ ψ₂)
-        bt
-        δ
+   γ = to-cantor-＝⟦⟧ ψ₁ ψ₂ bt δ
 
    Ⅱ = pr₂ c (to-cantor α₀) (to-cantor β₀) γ
 
-   Ⅰ = agreement-with-restriction f α (boolean-valuedᵀ-lemma αᵀ ψ₁)
-   Ⅲ = agreement-with-restriction f β (boolean-valuedᵀ-lemma βᵀ ψ₂) ⁻¹
+   Ⅰ = agreement-with-restriction f α ψ₁
+   Ⅲ = agreement-with-restriction f β ψ₂ ⁻¹
+
+internal-uni-mod-correct : (t : 〈〉 ⊢ baire ⇒ ι) (αᵀ βᵀ : 〈〉 ⊢ baire)
+                         → is-boolean-pointᵀ αᵀ
+                         → is-boolean-pointᵀ βᵀ
+                         → ⟦ αᵀ ⟧₀ ＝⦅ ⟦ modulusᵤᵀ t ⟧₀ ⦆ ⟦ βᵀ ⟧₀
+                         → ⟦ t · αᵀ ⟧₀ ＝ ⟦ t · βᵀ ⟧₀
+internal-uni-mod-correct t αᵀ βᵀ ψ₁ ψ₂ φ =
+ internal-uni-mod-correct₀
+  t
+  ⟦ αᵀ ⟧₀
+  ⟦ βᵀ ⟧₀
+  (boolean-valuedᵀ-lemma αᵀ ψ₁)
+  (boolean-valuedᵀ-lemma βᵀ ψ₂)
+  φ
+
+\end{code}
+
+Added on 2025-02-11.
+
+\begin{code}
+
+_is-a-modulus-of-uniform-continuity-for_ : ℕ → ((ℕ → ℕ) → ℕ) → 𝓤₀  ̇
+m is-a-modulus-of-uniform-continuity-for f =
+ (α β : ℕ → ℕ) → is-boolean-point α → is-boolean-point β → α ＝⦅ m ⦆ β → f α ＝ f β
 
 \end{code}
