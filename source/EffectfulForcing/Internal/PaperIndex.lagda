@@ -160,35 +160,31 @@ Theorem-16 α t = dialogue-tree-correct t α
 
 \subsection{(4.1) Church-Encoded Trees in System T}
 
-For Section 4.1, we work in a module with a fixed type `A`.
-
 \begin{code}
 
 
 𝒟ᵀ : Typeᵀ → Typeᵀ → Typeᵀ
 𝒟ᵀ A σ = ⌜D⋆⌝ ι ι σ A
 
-module _ (A : Typeᵀ) where
+_ : (A : Typeᵀ) (σ : Typeᵀ) → 𝒟ᵀ A σ ＝ ((σ ⇒ A) ⇒ (((ι ⇒ A) ⇒ ι ⇒ A) ⇒ A))
+_ = λ A σ → refl {𝓤₀} {Typeᵀ} {((σ ⇒ A) ⇒ (((ι ⇒ A) ⇒ ι ⇒ A) ⇒ A))}
 
- _ : (A : Typeᵀ) (σ : Typeᵀ) → 𝒟ᵀ A σ ＝ ((σ ⇒ A) ⇒ (((ι ⇒ A) ⇒ ι ⇒ A) ⇒ A))
- _ = λ A σ → refl {𝓤₀} {Typeᵀ} {((σ ⇒ A) ⇒ (((ι ⇒ A) ⇒ ι ⇒ A) ⇒ A))}
+ηᵀ : (A : Typeᵀ) (σ : Typeᵀ) → Termᵀ₀ (σ ⇒ 𝒟ᵀ A σ)
+ηᵀ A σ = ⌜η⌝ {ι} {ι} {σ} {A}
 
- ηᵀ : (σ : Typeᵀ) → Termᵀ₀ (σ ⇒ 𝒟ᵀ A σ)
- ηᵀ σ = ⌜η⌝ {ι} {ι} {σ} {A}
+βᵀ : (A : Typeᵀ) (σ : Typeᵀ) → Termᵀ₀ ((ι ⇒ 𝒟ᵀ A σ) ⇒ ι ⇒ 𝒟ᵀ A σ)
+βᵀ A σ = ⌜β⌝ {ι} {ι} {σ} {A} {〈〉}
 
- βᵀ : (σ : Typeᵀ) → Termᵀ₀ ((ι ⇒ 𝒟ᵀ A σ) ⇒ ι ⇒ 𝒟ᵀ A σ)
- βᵀ σ = ⌜β⌝ {ι} {ι} {σ} {A} {〈〉}
+Definition-17a : Typeᵀ → Typeᵀ → Typeᵀ
+Definition-17a A = 𝒟ᵀ A
 
- Definition-17a : Typeᵀ → Typeᵀ
- Definition-17a = 𝒟ᵀ A
+Definition-17b : (A : Typeᵀ) (σ : Typeᵀ)
+               → Termᵀ₀ (σ ⇒ 𝒟ᵀ A σ)
+Definition-17b = ηᵀ
 
- Definition-17b : (σ : Typeᵀ)
-                → Termᵀ₀ (σ ⇒ 𝒟ᵀ A σ)
- Definition-17b = ηᵀ
-
- Definition-17c : (σ : Typeᵀ)
-                → Termᵀ₀ ((ι ⇒ 𝒟ᵀ A σ) ⇒ ι ⇒ 𝒟ᵀ A σ)
- Definition-17c σ = βᵀ σ
+Definition-17c : (A : Typeᵀ) (σ : Typeᵀ)
+               → Termᵀ₀ ((ι ⇒ 𝒟ᵀ A σ) ⇒ ι ⇒ 𝒟ᵀ A σ)
+Definition-17c σ = βᵀ σ
 
 \end{code}
 
@@ -196,8 +192,8 @@ The internal Kleisli extension.
 
 \begin{code}
 
- Definition-18 : Termᵀ₀ ((ι ⇒ 𝒟ᵀ A ι) ⇒ 𝒟ᵀ A ι ⇒ 𝒟ᵀ A ι)
- Definition-18 = ⌜kleisli-extension⌝
+Definition-18 : (A : Typeᵀ) → Termᵀ₀ ((ι ⇒ 𝒟ᵀ A ι) ⇒ 𝒟ᵀ A ι ⇒ 𝒟ᵀ A ι)
+Definition-18 A = ⌜kleisli-extension⌝
 
 \end{code}
 
@@ -205,8 +201,8 @@ The internal functor action.
 
 \begin{code}
 
- Definition-19 : Termᵀ₀ ((ι ⇒ ι) ⇒ 𝒟ᵀ A ι ⇒ 𝒟ᵀ A ι)
- Definition-19 = ⌜B-functor⌝
+Definition-19 : (A : Typeᵀ) → Termᵀ₀ ((ι ⇒ ι) ⇒ 𝒟ᵀ A ι ⇒ 𝒟ᵀ A ι)
+Definition-19 A = ⌜B-functor⌝
 
 \end{code}
 
@@ -214,9 +210,9 @@ The generalised internal Kleisli extension.
 
 \begin{code}
 
- Definition-20 : (σ : Typeᵀ)
-               → Termᵀ₀ ((ι ⇒ 〖 σ 〗𝒟ᵀ A) ⇒ 𝒟ᵀ A ι ⇒ 〖 σ 〗𝒟ᵀ A)
- Definition-20 σ = ⌜Kleisli-extension⌝
+Definition-20 : (A : Typeᵀ) (σ : Typeᵀ)
+              → Termᵀ₀ ((ι ⇒ 〖 σ 〗𝒟ᵀ A) ⇒ 𝒟ᵀ A ι ⇒ 〖 σ 〗𝒟ᵀ A)
+Definition-20 σ A = ⌜Kleisli-extension⌝
 
 \end{code}
 
@@ -224,23 +220,24 @@ The internal dialogue translation.
 
 \begin{code}
 
- Definition-21a : Typeᵀ → Typeᵀ
- Definition-21a σ = 〖 σ 〗𝒟ᵀ A
+Definition-21a : Typeᵀ → Typeᵀ → Typeᵀ
+Definition-21a A σ = 〖 σ 〗𝒟ᵀ A
 
- Definition-21b : Ctxᵀ → Ctxᵀ
- Definition-21b Γ = 【 Γ 】𝒟ᵀ A
+Definition-21b : Typeᵀ → Ctxᵀ → Ctxᵀ
+Definition-21b A Γ = 【 Γ 】𝒟ᵀ A
 
- Definition-21c : (Γ : Ctxᵀ)
-                → (σ : Typeᵀ)
-                → Termᵀ Γ σ
-                → Termᵀ (【 Γ 】𝒟ᵀ A) (〖 σ 〗𝒟ᵀ A)
- Definition-21c Γ σ = ⟦_⟧𝒟ᵀ
+Definition-21c : (A : Typeᵀ)
+               → (Γ : Ctxᵀ)
+               → (σ : Typeᵀ)
+               → Termᵀ Γ σ
+               → Termᵀ (【 Γ 】𝒟ᵀ A) (〖 σ 〗𝒟ᵀ A)
+Definition-21c A Γ σ = ⟦_⟧𝒟ᵀ
 
- Definition-22 : Termᵀ₀ (𝒟ᵀ A ι ⇒ 𝒟ᵀ A ι)
- Definition-22 = ⌜generic⌝
+Definition-22 : (A : Typeᵀ) → Termᵀ₀ (𝒟ᵀ A ι ⇒ 𝒟ᵀ A ι)
+Definition-22 A = ⌜generic⌝
 
- Definition-23 : Termᵀ₀ ((ι ⇒ ι) ⇒ ι) → Termᵀ₀ (𝒟ᵀ A ι)
- Definition-23 = dialogue-treeᵀ
+Definition-23 : (A : Typeᵀ) → Termᵀ₀ ((ι ⇒ ι) ⇒ ι) → Termᵀ₀ (𝒟ᵀ A ι)
+Definition-23 A = dialogue-treeᵀ
 
 \end{code}
 
