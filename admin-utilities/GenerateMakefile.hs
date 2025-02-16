@@ -108,7 +108,7 @@ emitTargetForPrimitive = do
 -- | Emit all the targets of the Makefile to be generated.
 emitLineForTargetAll :: IO ()
 emitLineForTargetAll =
-  putStrLn $ "all: _build/" ++ agdaVersion ++ "/agda/source/AllModulesIndex.agdai\n"
+  putStrLn $ "all: _build/" ++ agdaVersion ++ "/agda/source/index.agdai\n"
 
 main :: IO ()
 main = do
