@@ -63,10 +63,6 @@ Ctxᵀ = Cxt
 Definition-1 : 𝓤₀  ̇
 Definition-1 = Σ Γ ꞉ Ctxᵀ , Σ σ ꞉ Typeᵀ , Termᵀ Γ σ
 
-\end{code}
-
-\begin{code}
-
 Definition-2a : Typeᵀ → 𝓤₀  ̇
 Definition-2a = 〖_〗
 
@@ -119,9 +115,12 @@ Definition-9 : {X Y : 𝓤₀  ̇}
              → (X → 𝒟 Y) → 𝒟 X → 𝒟 Y
 Definition-9 = kleisli-extension
 
+𝒟-functor : {X Y : 𝓤₀  ̇} → (X → Y) → 𝒟 X → 𝒟 Y
+𝒟-functor = B-functor
+
 Definition-10 : {X Y : 𝓤₀  ̇}
               → (X → Y) → 𝒟 X → 𝒟 Y
-Definition-10 = B-functor
+Definition-10 = 𝒟-functor
 
 Definition-11 : {X : 𝓤₀  ̇} {σ : Typeᵀ} → (X → 〖 σ 〗𝒟) → 𝒟 X → 〖 σ 〗𝒟
 Definition-11 = Kleisli-extension
