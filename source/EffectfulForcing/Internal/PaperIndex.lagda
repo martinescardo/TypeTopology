@@ -346,7 +346,7 @@ The internal dialogue operator.
 
 \begin{code}
 
-Definition-35 : Termᵀ₀ (⌜D⋆⌝ ι ι ι ((ι ⇒ ι) ⇒ ι) ⇒ (ι ⇒ ι) ⇒ ι)
+Definition-35 : Termᵀ₀ ((𝒟ᵀ ((ι ⇒ ι) ⇒ ι) ι) ⇒ (ι ⇒ ι) ⇒ ι)
 Definition-35 =  dialogueᵀ
 
 Lemma-36 : (d : B ℕ) (α : ℕ → ℕ)
