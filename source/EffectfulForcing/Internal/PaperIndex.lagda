@@ -340,8 +340,14 @@ Lemma-34 : (A : Typeᵀ)
          → ⟦ dialogue-treeᵀ t ⟧₀ ≡[ ⌜B⌝ ι A ] church-encode (dialogue-tree t)
 Lemma-34 A t = dialogue-tree-agreement t {A}
 
-Definition-35 : Termᵀ₀ (((ι ⇒ ι) ⇒ ι)) → Termᵀ₀ (𝒟ᵀ ((ι ⇒ ι) ⇒ ι) ι)
-Definition-35 = dialogue-treeᵀ
+\end{code}
+
+The internal dialogue operator.
+
+\begin{code}
+
+Definition-35 : Termᵀ₀ (⌜D⋆⌝ ι ι ι ((ι ⇒ ι) ⇒ ι) ⇒ (ι ⇒ ι) ⇒ ι)
+Definition-35 =  dialogueᵀ
 
 Lemma-36 : (d : B ℕ) (α : ℕ → ℕ)
          → dialogue d α ＝ ⟦ dialogueᵀ ⟧₀ (church-encode d) α
