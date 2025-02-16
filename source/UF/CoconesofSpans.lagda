@@ -247,9 +247,13 @@ canonical-map-to-cocone-morphism-family {_} {_} {_} {_} {_} {A} {B} {C}
    where
     Notice : p' ＝ refl
     Notice = α
+    Lemma : {Y : 𝓤  ̇} {y : Y} (p : y ＝ y) (α : p ＝ refl)
+          → α ＝ ap (_∙ refl) (refl-left-neutral ⁻¹)
+               ∙ ∙assoc refl p refl ∙ ap (refl ∙_) α
+    Lemma p refl = refl
     III : α ＝ ap (_∙ refl) (refl-left-neutral ⁻¹)
                ∙ ∙assoc refl p' refl ∙ ap (refl ∙_) α
-    III = {!!}
+    III = Lemma p' α
     IV : ap (_∙ refl) (refl-left-neutral ⁻¹)
          ∙ ∙assoc refl p' refl ∙ ap (refl ∙_) α
        ＝ transport (p' ＝_)
@@ -259,7 +263,7 @@ canonical-map-to-cocone-morphism-family {_} {_} {_} {_} {_} {A} {B} {C}
   II : (c : C)
      →  M c ＝ Γ f g X P (i , j , H) (i' , j' , H') (u , K , L , M) (u , K , L , M)
                 ∼-refl (λ - → refl-left-neutral) (λ - → refl-left-neutral) c
-  II c = I u (H c) {!!} (K (f c)) (H' c) (M c)
+  II c = I u (H c) {!L!} (K (f c)) (H' c) (M c)
 
 \end{code}
 
