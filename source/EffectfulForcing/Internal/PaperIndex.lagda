@@ -355,6 +355,16 @@ Lemma-36 d α = dialogues-agreement d α
 
 \end{code}
 
+Correctness of `dialogue-treeᵀ`.
+
+\begin{code}
+
+Theorem-37 : (t : T₀ ((ι ⇒ ι) ⇒ ι)) (α : ℕ → ℕ)
+           → ⟦ t ⟧₀ α ＝ dialogue (dialogue-tree t) α
+Theorem-37 = dialogue-tree-correct
+
+\end{code}
+
 \section{(5) Computing moduli of continuity internally}
 
 Max question along a path.
