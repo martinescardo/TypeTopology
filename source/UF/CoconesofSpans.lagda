@@ -243,36 +243,30 @@ canonical-map-to-cocone-morphism-family {_} {_} {_} {_} {_} {A} {B} {C}
            ∙ ap (_∙ q) (homotopies-are-natural f' f' ∼-refl {_} {_} {p})
            ∙ ∙assoc (ap f' p) refl q
            ∙ ap (ap f' p ∙_) (refl-left-neutral {_} {_} {_} {_} {q}) 
-  I f' refl refl p' refl α = III
+  I f' refl refl p' refl α = IV
    where
     Notice : p' ＝ refl
     Notice = α
-    Lemma : {Y : 𝓤  ̇} {y : Y} (p : y ＝ y) (α : p ＝ refl)
+    III : {Y : 𝓤  ̇} {y : Y} (p : y ＝ y) (α : p ＝ refl)
           → α ＝ ap (_∙ refl) (refl-left-neutral ⁻¹)
                ∙ ∙assoc refl p refl ∙ ap (refl ∙_) α
-    Lemma p refl = refl
-    III : α ＝ ap (_∙ refl) (refl-left-neutral ⁻¹)
+    III p refl = refl
+    IV : α ＝ ap (_∙ refl) (refl-left-neutral ⁻¹)
                ∙ ∙assoc refl p' refl ∙ ap (refl ∙_) α
-    III = Lemma p' α
-    IV : ap (_∙ refl) (refl-left-neutral ⁻¹)
-         ∙ ∙assoc refl p' refl ∙ ap (refl ∙_) α
-       ＝ transport (p' ＝_)
-                    (transport (λ - → refl ∙ p' ＝ refl ∙ -) α refl)
-                    (ap (_∙ refl) (refl-left-neutral ⁻¹) ∙ ∙assoc refl p' refl)
-    IV = refl
+    IV = III p' α
   II : (c : C)
      →  M c ＝ Γ f g X P (i , j , H) (i' , j' , H') (u , K , L , M) (u , K , L , M)
                 ∼-refl (λ - → refl-left-neutral) (λ - → refl-left-neutral) c
-  II c = I u (H c) {!L!} (K (f c)) (H' c) (M c)
+  II c = I u (H c) {!!} (K (f c)) (H' c) (M c)
 
 \end{code}
 
 !!!!!!!!!!!!!!!!! I need to give an identification between two homotopies. So I
 tried to generalize all the paths in order to take advantage of path induction
 (see I above) then I can use that to define the specific identification I need
-(see II above). The issues is this: I am struggling to prove the generalization
-I and worse it apparently it isn't even the correct generalization (the hole in
-II should be filled by L (g c) but agda doesn't like it.) !!!!!!!!!!!!!!!!!!!!!!
+(see II above). The issues is this: I am struggling to find the correct
+generalization (the hole in II should be filled by L (g c) but agda doesn't like
+it.) !!!!!!!!!!!!!!!!!!!!!!
  
 We also introduce the notion of a dependent cocone.
 
