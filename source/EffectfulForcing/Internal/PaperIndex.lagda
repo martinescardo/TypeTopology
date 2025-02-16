@@ -233,8 +233,20 @@ Definition-21c : (A : Typeᵀ)
                → Termᵀ (【 Γ 】𝒟ᵀ A) (〖 σ 〗𝒟ᵀ A)
 Definition-21c A Γ σ = ⟦_⟧𝒟ᵀ
 
+\end{code}
+
+The internal generic sequence.
+
+\begin{code}
+
 Definition-22 : (A : Typeᵀ) → Termᵀ₀ (𝒟ᵀ A ι ⇒ 𝒟ᵀ A ι)
 Definition-22 A = ⌜generic⌝
+
+\end{code}
+
+The internal dialogue tree operator.
+
+\begin{code}
 
 Definition-23 : (A : Typeᵀ) → Termᵀ₀ ((ι ⇒ ι) ⇒ ι) → Termᵀ₀ (𝒟ᵀ A ι)
 Definition-23 A = dialogue-treeᵀ
@@ -271,13 +283,25 @@ Lemma-26 = ≡-refl₀
 
 \subsection{(4.3) Correctness of the Syntactic Translation}
 
+The encode function, which is called `church-encode` here.
+
 \begin{code}
 
 Definition-27 : (A : Typeᵀ) → 𝒟 ℕ → 〖 𝒟ᵀ A ι 〗
 Definition-27 A = church-encode
 
+\end{code}
+
+The dialogue correctness logical relation.
+
+\begin{code}
+
 Definition-28 : (σ : Typeᵀ) → 〖 σ 〗𝒟 → ({A : Typeᵀ} → Termᵀ₀ (〖 σ 〗𝒟ᵀ A)) → 𝓤₀ ̇
 Definition-28 σ = Rnorm
+
+\end{code}
+
+\begin{code}
 
 Lemma-29 : (σ : Typeᵀ)
            (t s : {A : Typeᵀ} → Termᵀ₀ (〖 σ 〗𝒟ᵀ A))
