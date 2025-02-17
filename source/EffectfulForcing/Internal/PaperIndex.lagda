@@ -387,6 +387,10 @@ max-qᵀ = max-questionᵀ
 Definition-39 : Termᵀ₀ (𝒟ᵀ ι ι ⇒ (ι ⇒ ι) ⇒ ι)
 Definition-39 = max-qᵀ
 
+-- TODO: I don't think this is explicitly written down anywhere.
+-- Lemma-40 : {!!}
+-- Lemma-40 = {!!}
+
 \end{code}
 
 External and internal modulus operators.
@@ -457,21 +461,21 @@ Definition-49 = max-q₂ᵀ
 
 \end{code}
 
-The external modulus of uniform continuity operator.
+The external and internal modulus of uniform continuity operators.
 
 \begin{code}
 
 Definition-51a : Dial ℕ 𝟚 ℕ → ℕ
 Definition-51a = modulusᵤ
 
-\end{code}
-
-The internal modulus of uniform continuity operator.
-
-\begin{code}
-
 Definition-51b : Termᵀ₀ ((ι ⇒ ι) ⇒ ι) → Termᵀ₀ ι
 Definition-51b = modulusᵤᵀ {〈〉}
+
+\end{code}
+
+The definition of the notion of modulus of uniform continuity.
+
+\begin{code}
 
 Definition-52 : ℕ → ((ℕ → ℕ) → ℕ) → 𝓤₀  ̇
 Definition-52 = _is-a-modulus-of-uniform-continuity-for_
