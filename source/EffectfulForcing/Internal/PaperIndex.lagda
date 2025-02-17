@@ -479,8 +479,8 @@ The definition of the notion of modulus of uniform continuity.
 
 \begin{code}
 
--- Definition-52 : ℕ → ((ℕ → ℕ) → ℕ) → 𝓤₀  ̇
--- Definition-52 = _is-a-modulus-of-uniform-continuity-for_
+Definition-52 : ℕ → ((ℕ → 𝟚) → ℕ) → 𝓤₀  ̇
+Definition-52 = _is-a-modulus-of-uniform-continuity-for_
 
 \end{code}
 
