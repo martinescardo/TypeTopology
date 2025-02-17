@@ -28,6 +28,7 @@ open import EffectfulForcing.MFPSAndVariations.Church
 open import EffectfulForcing.MFPSAndVariations.ContinuityProperties fe
 open import EffectfulForcing.MFPSAndVariations.Continuity
  using (is-uniformly-continuous; BT; _＝⟪_⟫_; _＝⟦_⟧_; embedding-C-B; embedding-𝟚-ℕ)
+ renaming (is-continuous to is-continuous∙)
 open import EffectfulForcing.MFPSAndVariations.Dialogue
   renaming (D to Dial)
   hiding (decode)
@@ -408,13 +409,19 @@ Definition-41b = modulusᵀ
 Definition-42 : ((ℕ → ℕ) → ℕ) → (ℕ → ℕ) → ℕ → 𝓤₀  ̇
 Definition-42 f α m = m is-a-modulus-of-continuity-for f at α
 
-Lemma-43 : (t : Termᵀ₀ ((ι ⇒ ι) ⇒ ι)) (α : ℕ → ℕ)
-         →  ⟦ modulusᵀ · (dialogue-treeᵀ t) ⟧₀ α
-           is-a-modulus-of-continuity-for
-            ⟦ t ⟧₀
-           at
-            α
-Lemma-43 = modulusᵀ-is-a-modulus-operator
+-- TODO
+-- Lemma-43 : (d : B ℕ) (α : ℕ → ℕ)
+--          → modulus d α is-a-modulus-of-continuity-for dialogue d at α
+-- Lemma-43 d α = {!!}
+--  where
+--   c : is-continuous₀ (dialogue d)
+--   c = continuity-implies-continuity₀ (dialogue d) (dialogue-continuity d)
+
+--   m : ℕ
+--   m = pr₁ (c α)
+
+--   p : modulus d α ＝ m
+--   p = {!!}
 
 Lemma-44 : (t : Termᵀ₀ ((ι ⇒ ι) ⇒ ι)) (α : ℕ → ℕ)
          → ⟦ max-qᵀ · dialogue-treeᵀ t ⟧₀ α  ＝ max-question (dialogue-tree t) α
@@ -428,7 +435,7 @@ Lemma-44 t α = ⟦ max-qᵀ · dialogue-treeᵀ t ⟧₀ α   ＝⟨ Ⅰ ⟩
 Theorem-45 : (t : Termᵀ₀ ((ι ⇒ ι) ⇒ ι)) (α : ℕ → ℕ)
            → ⟦ modulusᵀ · (dialogue-treeᵀ t) ⟧₀ α
               is-a-modulus-of-continuity-for ⟦ t ⟧₀ at α
-Theorem-45 = Lemma-43
+Theorem-45 = internal-mod-cont-correct₀
 
 \end{code}
 
