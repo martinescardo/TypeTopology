@@ -21,7 +21,7 @@ open import EffectfulForcing.Internal.Internal
   renaming (B-type〖_〗 to 〖_〗𝒟ᵀ; B-context【_】 to 【_】𝒟ᵀ; ⌜_⌝ to ⟦_⟧𝒟ᵀ;
     ⌜dialogue-tree⌝ to dialogue-treeᵀ)
 open import EffectfulForcing.Internal.InternalModCont fe hiding (baire)
-open import EffectfulForcing.Internal.InternalModUniCont fe hiding (main-lemma)
+open import EffectfulForcing.Internal.InternalModUniCont fe renaming (main-lemma to main-lemmaᵤ)
 open import EffectfulForcing.Internal.Subst
 open import EffectfulForcing.Internal.SystemT
 open import EffectfulForcing.MFPSAndVariations.Church
@@ -534,6 +534,10 @@ Lemma-53 d =
 
       γ : α ＝⟦ bt ⟧ α′
       γ = ＝⟪⟫₀-implies-＝⟦⟧ α α′ bt ζ
+
+Lemma-54 : (t : Termᵀ₀ ((ι ⇒ ι) ⇒ ι))
+         → ⟦ max-q₂ᵀ · (dialogue-treeᵀ t) ⟧₀ ＝ max-q₂ (prune (dialogue-tree t))
+Lemma-54 t = main-lemmaᵤ t
 
 
 -- Theorem-55 : (t : Termᵀ₀ (baire ⇒ ι))
