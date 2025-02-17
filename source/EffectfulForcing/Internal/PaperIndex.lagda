@@ -19,7 +19,9 @@ open import EffectfulForcing.Internal.External
   hiding (main-lemma)
 open import EffectfulForcing.Internal.Internal
   renaming (B-type〖_〗 to 〖_〗𝒟ᵀ; B-context【_】 to 【_】𝒟ᵀ; ⌜_⌝ to ⟦_⟧𝒟ᵀ;
-    ⌜dialogue-tree⌝ to dialogue-treeᵀ)
+    ⌜dialogue-tree⌝ to dialogue-treeᵀ; ⌜Kleisli-extension⌝ to Kleisli-extensionᵀ;
+    ⌜η⌝ to ηᵀ; ⌜β⌝ to βᵀ; ⌜kleisli-extension⌝ to kleisli-extensionᵀ;
+    ⌜B-functor⌝ to 𝒟-functorᵀ)
 open import EffectfulForcing.Internal.InternalModCont fe hiding (baire)
 open import EffectfulForcing.Internal.InternalModUniCont fe renaming (main-lemma to main-lemmaᵤ)
 open import EffectfulForcing.Internal.Subst
@@ -30,7 +32,7 @@ open import EffectfulForcing.MFPSAndVariations.Continuity
  using (is-uniformly-continuous; BT; _＝⟪_⟫_; _＝⟦_⟧_; embedding-C-B; embedding-𝟚-ℕ)
  renaming (is-continuous to is-continuous∙)
 open import EffectfulForcing.MFPSAndVariations.Dialogue
-  renaming (D to Dial)
+  renaming (D to Dial; B-functor to 𝒟-functor)
   hiding (decode)
 open import EffectfulForcing.MFPSAndVariations.SystemT using (type;〖_〗; ι; _⇒_)
 open import EffectfulForcing.MFPSAndVariations.LambdaCalculusVersionOfMFPS
@@ -116,11 +118,6 @@ Definition-9 : {X Y : 𝓤₀  ̇}
              → (X → 𝒟 Y) → 𝒟 X → 𝒟 Y
 Definition-9 = kleisli-extension
 
-𝒟-functor : {X Y : 𝓤₀  ̇} → (X → Y) → 𝒟 X → 𝒟 Y
-𝒟-functor = B-functor
-
--- TODO: get rid of `B` everywhere.
-
 Definition-10 : {X Y : 𝓤₀  ̇}
               → (X → Y) → 𝒟 X → 𝒟 Y
 Definition-10 = 𝒟-functor
@@ -163,32 +160,24 @@ Theorem-16 α t = dialogue-tree-correct t α
 
 \subsection{(4.1) Church-Encoded Trees in System T}
 
-For Section 4.1, we work in a module with a fixed type `A`.
-
 \begin{code}
 
 𝒟ᵀ : Typeᵀ → Typeᵀ → Typeᵀ
-𝒟ᵀ A σ = ⌜D⋆⌝ ι ι σ A
+𝒟ᵀ A σ = ⌜B⌝ σ A
 
 _ : (A : Typeᵀ) (σ : Typeᵀ) → 𝒟ᵀ A σ ＝ ((σ ⇒ A) ⇒ (((ι ⇒ A) ⇒ ι ⇒ A) ⇒ A))
 _ = λ A σ → refl {𝓤₀} {Typeᵀ} {((σ ⇒ A) ⇒ (((ι ⇒ A) ⇒ ι ⇒ A) ⇒ A))}
-
-ηᵀ : (A : Typeᵀ) (σ : Typeᵀ) → Termᵀ₀ (σ ⇒ 𝒟ᵀ A σ)
-ηᵀ A σ = ⌜η⌝ {ι} {ι} {σ} {A}
-
-βᵀ : (A : Typeᵀ) (σ : Typeᵀ) → Termᵀ₀ ((ι ⇒ 𝒟ᵀ A σ) ⇒ ι ⇒ 𝒟ᵀ A σ)
-βᵀ A σ = ⌜β⌝ {ι} {ι} {σ} {A} {〈〉}
 
 Definition-17a : Typeᵀ → Typeᵀ → Typeᵀ
 Definition-17a A = 𝒟ᵀ A
 
 Definition-17b : (A : Typeᵀ) (σ : Typeᵀ)
                → Termᵀ₀ (σ ⇒ 𝒟ᵀ A σ)
-Definition-17b = ηᵀ
+Definition-17b A σ = ηᵀ
 
 Definition-17c : (A : Typeᵀ) (σ : Typeᵀ)
                → Termᵀ₀ ((ι ⇒ 𝒟ᵀ A σ) ⇒ ι ⇒ 𝒟ᵀ A σ)
-Definition-17c σ = βᵀ σ
+Definition-17c A σ = βᵀ
 
 \end{code}
 
@@ -312,21 +301,27 @@ Lemma-29 : (σ : Typeᵀ)
          → Rnorm x s
 Lemma-29 σ t s x = Rnorm-respects-≡
 
--- TODO next two require changing formalisation slightly
--- Lemma-30 : {!!}
--- Lemma-30 = {!!}
+Lemma-30 : (A : type) (d : 𝒟 ℕ)
+           (f₁ : ℕ → B ℕ) (f₂ : ℕ → 〖 𝒟ᵀ A ι 〗)
+         → ((i : ℕ) → church-encode (f₁ i) ≡[ 𝒟ᵀ A ι ] f₂ i)
+         → church-encode (kleisli-extension f₁ d) ≡[ 𝒟ᵀ A ι ] ⟦ kleisli-extensionᵀ ⟧₀ f₂ (church-encode d)
+Lemma-30 A = church-encode-kleisli-extension
 
--- Corollary-31 : {!!}
--- Corollary-31 = {!!}
+Corollary-31 : (A : type) (d : 𝒟 ℕ)
+               (f₁ f₂ : ℕ → ℕ)
+             → f₁ ≡ f₂
+             → church-encode (𝒟-functor f₁ d) ≡[ 𝒟ᵀ A ι ] ⟦ 𝒟-functorᵀ ⟧₀ f₂ (church-encode d)
+Corollary-31 A d f₁ f₂ h =
+ ≡-symm {𝒟ᵀ A ι} (church-encode-is-natural d (≡-symm {ι ⇒ ι} h))
 
 Lemma-32 : {σ : Typeᵀ}
            (f : ℕ → 〖 σ 〗𝒟)
            (n : 𝒟 ℕ)
            (g : {A : Typeᵀ} → Termᵀ₀ (ι ⇒ (〖 σ 〗𝒟ᵀ A)))
-           (m : {A : Typeᵀ} → T₀ (⌜B⌝ ι A))
+           (m : {A : Typeᵀ} → T₀ (𝒟ᵀ A ι))
          → ((x : ℕ) → Rnorm (f x) (g · numeral x))
          → Rnorm n m
-         → Rnorm (Kleisli-extension f n) (⌜Kleisli-extension⌝ · g · m)
+         → Rnorm (Kleisli-extension f n) (Kleisli-extensionᵀ · g · m)
 Lemma-32 f n g m h i = Rnorm-kleisli-lemma f g h n m i
 
 Lemma-33 : {Γ : Ctxᵀ} {σ : Typeᵀ}
@@ -338,7 +333,7 @@ Lemma-33 = Rnorm-lemma
 
 Lemma-34 : (A : Typeᵀ)
            (t : Termᵀ₀ ((ι ⇒ ι) ⇒ ι))
-         → ⟦ dialogue-treeᵀ t ⟧₀ ≡[ ⌜B⌝ ι A ] church-encode (dialogue-tree t)
+         → ⟦ dialogue-treeᵀ t ⟧₀ ≡[ 𝒟ᵀ A ι ] church-encode (dialogue-tree t)
 Lemma-34 A t = dialogue-tree-agreement t {A}
 
 \end{code}
@@ -401,7 +396,7 @@ External and internal modulus operators.
 Definition-41a : B ℕ → (ℕ → ℕ) → ℕ
 Definition-41a = modulus
 
-Definition-41b : Termᵀ₀ (⌜B⌝ ι ι ⇒ (ι ⇒ ι) ⇒ ι)
+Definition-41b : Termᵀ₀ (𝒟ᵀ ι ι ⇒ (ι ⇒ ι) ⇒ ι)
 Definition-41b = modulusᵀ
 
 Definition-42 : ((ℕ → ℕ) → ℕ) → (ℕ → ℕ) → ℕ → 𝓤₀  ̇

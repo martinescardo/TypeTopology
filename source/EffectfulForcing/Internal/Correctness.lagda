@@ -155,14 +155,11 @@ TODO. Could probably generalise to extensionally equal dialogue trees d.
 \begin{code}
 
 church-encode-kleisli-extension : {A : type} (d : B ℕ)
-                                → (f₁ : ℕ → B ℕ) (f₂ : {A : type} → T₀ (ι ⇒ ⌜B⌝ ι A))
-                                → ((i : ℕ) → Rnorm (f₁ i) (f₂ · numeral i))
+                                → (f₁ : ℕ → B ℕ) (f₂ : ℕ → B⋆ ℕ 〖 A 〗)
+                                → ((i : ℕ) → church-encode (f₁ i) ≡[ ⌜B⌝ ι A ] f₂ i)
                                 → church-encode (kleisli-extension f₁ d)
-                                  ≡[ ⌜B⌝ ι A ] kleisli-extension⋆ ⟦ f₂ ⟧₀ (church-encode d)
-church-encode-kleisli-extension {A} (η n) f₁ f₂ f₁≡f₂ =
- church-encode (f₁ n)                             ≡⟨ ≡-symm {⌜B⌝ ι A} (f₁≡f₂ n) ⟩
- ⟦ f₂ ⟧₀ ⟦ numeral n ⟧₀                           ≡＝⟨ ≡-refl₀ f₂ (⟦numeral⟧₀ n) ⟩
- kleisli-extension⋆ ⟦ f₂ ⟧₀ (church-encode (η n)) ∎
+                                  ≡[ ⌜B⌝ ι A ] kleisli-extension⋆ f₂ (church-encode d)
+church-encode-kleisli-extension {A} (η n) f₁ f₂ f₁≡f₂ = f₁≡f₂ n
 church-encode-kleisli-extension {A} (β ϕ n) f₁ f₂ f₁≡f₂ {η₁} {η₂} η₁≡η₂ {β₁} {β₂} β₁≡β₂ =
  β₁≡β₂ ϕ₁≡ϕ₂ refl
  where
@@ -170,7 +167,7 @@ church-encode-kleisli-extension {A} (β ϕ n) f₁ f₂ f₁≡f₂ {η₁} {η�
   ϕ₁ i = church-encode (kleisli-extension f₁ (ϕ i)) η₁ β₁
 
   ϕ₂ : ℕ → 〖 A 〗
-  ϕ₂ i = kleisli-extension⋆ ⟦ f₂ ⟧₀ (church-encode (ϕ i)) η₂ β₂
+  ϕ₂ i = kleisli-extension⋆ f₂ (church-encode (ϕ i)) η₂ β₂
 
   ϕ₁≡ϕ₂ : ϕ₁ ≡ ϕ₂
   ϕ₁≡ϕ₂ {i} {.i} refl = church-encode-kleisli-extension (ϕ i) f₁ f₂ f₁≡f₂ η₁≡η₂ β₁≡β₂
@@ -202,14 +199,19 @@ Rnorm-kleisli-lemma : {σ : type}
                     → Rnorm (Kleisli-extension f₁ n₁) (⌜Kleisli-extension⌝ · f₂ · n₂)
 Rnorm-kleisli-lemma {ι} f₁ f₂ Rnorm-fs n₁ n₂ Rnorm-ns {A} =
  ⟦ ⌜kleisli-extension⌝ · f₂ · n₂ ⟧₀            ≡⟨ I ⟩
- kleisli-extension⋆ ⟦ f₂ ⟧₀ (church-encode n₁) ≡＝⟨ ≡-symm {⌜B⌝ ι A} II ⟩
+ kleisli-extension⋆ ⟦ f₂ ⟧₀ (church-encode n₁) ≡＝⟨ ≡-symm {⌜B⌝ ι A} III ⟩
  church-encode (kleisli-extension f₁ n₁)       ∎
  where
   I : ⟦ ⌜kleisli-extension⌝ · f₂ · n₂ ⟧₀ ≡ kleisli-extension⋆ ⟦ f₂ ⟧₀ (church-encode n₁)
   I = ≡-refl₀ (⌜kleisli-extension⌝ · f₂) Rnorm-ns
 
-  II : church-encode (kleisli-extension f₁ n₁) ≡ kleisli-extension⋆ ⟦ f₂ ⟧₀ (church-encode n₁)
-  II = church-encode-kleisli-extension n₁ f₁ f₂ Rnorm-fs
+  II : (i : ℕ) → church-encode (f₁ i) ≡[ ⌜B⌝ ι A ] ⟦ f₂ ⟧₀ i
+  II i = church-encode (f₁ i) ≡⟨ ≡-symm {⌜B⌝ ι A} (Rnorm-fs i) ⟩
+         ⟦ f₂ · numeral i ⟧₀  ≡＝⟨ ≡-refl₀ f₂ (⟦numeral⟧₀ i) ⟩
+         ⟦ f₂ ⟧₀ i            ∎
+
+  III : church-encode (kleisli-extension f₁ n₁) ≡ kleisli-extension⋆ ⟦ f₂ ⟧₀ (church-encode n₁)
+  III = church-encode-kleisli-extension n₁ f₁ ⟦ f₂ ⟧₀ II
 
 Rnorm-kleisli-lemma {σ ⇒ τ} f₁ f₂ Rnorm-fs n₁ n₂ Rnorm-ns u₁ u₂ Rnorm-us =
  Rnorm-respects-≡ I IH
@@ -260,30 +262,14 @@ get the inductive hypothesis IH.
   IH = Rnorm-kleisli-lemma f₁' f₂' Rnorm-fs' n₁ n₂ Rnorm-ns
 
 
-\end{code}
-
-TODO. this should be derivable from Rnorm-kleisli-lemma or
-church-encode-kleisli-extension.
-
-\begin{code}
-
 church-encode-is-natural : {g₁ g₂ :  ℕ → ℕ} (d : B ℕ)
                          → g₁ ≡ g₂
                          → {A : type}
                          → B⋆-functor g₁ (church-encode d)
                            ≡[ ⌜B⌝ ι A ] church-encode (B-functor g₂ d)
-church-encode-is-natural (η n) g₁≡g₂ {A} η₁≡η₂ β₁≡β₂ = η₁≡η₂ (g₁≡g₂ refl)
-church-encode-is-natural {g₁} {g₂} (β ϕ n) g₁≡g₂ {A} {η₁} {η₂} η₁≡η₂ {β₁} {β₂} β₁≡β₂ =
- β₁≡β₂ ϕ₁≡ϕ₂ refl
- where
-  ϕ₁ : ℕ → 〖 A 〗
-  ϕ₁ i = B⋆-functor g₁ (church-encode (ϕ i)) η₁ β₁
-
-  ϕ₂ : ℕ → 〖 A 〗
-  ϕ₂ i = church-encode (B-functor g₂ (ϕ i)) η₂ β₂
-
-  ϕ₁≡ϕ₂ : ϕ₁ ≡ ϕ₂
-  ϕ₁≡ϕ₂ {i} {.i} refl = church-encode-is-natural (ϕ i) g₁≡g₂ η₁≡η₂ β₁≡β₂
+church-encode-is-natural {g₁} {g₂} d h {A} =
+ ≡-symm {⌜B⌝ ι A} (church-encode-kleisli-extension d (η ∘ g₂) (η⋆ ∘ g₁)
+  λ i η₁≡η₂ β₁≡β₂ → η₁≡η₂ ((h refl) ⁻¹))
 
 \end{code}
 
@@ -784,8 +770,8 @@ TODO. Should this be moved.
 \begin{code}
 
 ⌜dialogue⌝ : {Γ : Cxt}
-           → T Γ ((⌜B⌝ ι ((ι ⇒ ι) ⇒ ι)) ⇒ (ι ⇒ ι) ⇒ ι)
-⌜dialogue⌝ = ƛ (ν₀ · ƛ (ƛ ν₁) · ƛ (ƛ (ƛ (ν₂ · (ν₀ · ν₁) · ν₀))))
+           → T Γ (⌜B⌝ ι ((ι ⇒ ι) ⇒ ι) ⇒ (ι ⇒ ι) ⇒ ι)
+⌜dialogue⌝ {Γ} = ƛ (ν₀ · ƛ (ƛ ν₁) · ƛ (ƛ (ƛ (ν₂ · (ν₀ · ν₁) · ν₀))))
 
 \end{code}
 
