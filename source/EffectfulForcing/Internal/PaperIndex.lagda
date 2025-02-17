@@ -492,7 +492,7 @@ the organization of the paper.
 
 \begin{code}
 
-Lemma-53 : (d : B ℕ)
+Lemma-53 : (d : Dial ℕ ℕ ℕ)
          → (modulusᵤ (prune d)) is-a-modulus-of-uniform-continuity-for (dialogue (prune d))
 Lemma-53 d =
  transport
