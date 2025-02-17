@@ -257,16 +257,17 @@ canonical-map-to-cocone-morphism-family {_} {_} {_} {_} {_} {A} {B} {C}
   II : (c : C)
      →  M c ＝ Γ f g X P (i , j , H) (i' , j' , H') (u , K , L , M) (u , K , L , M)
                 ∼-refl (λ - → refl-left-neutral) (λ - → refl-left-neutral) c
-  II c = I u (H c) {!!} (K (f c)) (H' c) (M c)
+  II c = I {_} {_} {_} {_} {i (f c)} {j (g c)} {i' (f c)} {j' (g c)}
+           u (H c) {!!} (K (f c)) (H' c) (M c)
 
 \end{code}
 
 !!!!!!!!!!!!!!!!! I need to give an identification between two homotopies. So I
 tried to generalize all the paths in order to take advantage of path induction
 (see I above) then I can use that to define the specific identification I need
-(see II above). The issues is this: I am struggling to find the correct
-generalization (the hole in II should be filled by L (g c) but agda doesn't like
-it.) !!!!!!!!!!!!!!!!!!!!!!
+(see II above). The issues is the generalization I am using doesn't specify
+correctly... I must be doing something silly but I can't see it (the hole in II
+should be filled by L (g c) but agda doesn't like it.) !!!!!!!!!!!!!!!!!!!!!!
  
 We also introduce the notion of a dependent cocone.
 
