@@ -927,3 +927,21 @@ is-uniformly-continuous₁ {_} {_} {O} f =
 \end{code}
 
 TODO. Prove this is equivalent to is-uniformly-continuous₀.
+
+Added on 2025-02-17.
+
+\begin{code}
+
+＝⦅⦆-ap : {X : 𝓤  ̇} {Y : 𝓥  ̇}
+        → (n : ℕ)
+        → (f : X → Y)
+        → (α β : ℕ → X)
+        → α ＝⦅ n ⦆ β
+        → (f ∘ α) ＝⦅ n ⦆ (f ∘ β)
+＝⦅⦆-ap zero     f α β ⋆        = ⋆
+＝⦅⦆-ap (succ n) f α β (p , ps) = ap f p , IH
+ where
+  IH : (f ∘ α ∘ succ) ＝⦅ n ⦆ (f ∘ β ∘ succ)
+  IH = ＝⦅⦆-ap n f (α ∘ succ) (β ∘ succ) ps
+
+\end{code}

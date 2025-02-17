@@ -27,7 +27,7 @@ open import EffectfulForcing.Internal.SystemT
 open import EffectfulForcing.MFPSAndVariations.Church
 open import EffectfulForcing.MFPSAndVariations.ContinuityProperties fe
 open import EffectfulForcing.MFPSAndVariations.Continuity
- using (is-uniformly-continuous; BT; _＝⟪_⟫_; _＝⟦_⟧_)
+ using (is-uniformly-continuous; BT; _＝⟪_⟫_; _＝⟦_⟧_; embedding-C-B; embedding-𝟚-ℕ)
 open import EffectfulForcing.MFPSAndVariations.Dialogue
   renaming (D to Dial)
   hiding (decode)
@@ -540,10 +540,20 @@ Lemma-54 : (t : Termᵀ₀ ((ι ⇒ ι) ⇒ ι))
 Lemma-54 t = main-lemmaᵤ t
 
 
--- Theorem-55 : (t : Termᵀ₀ (baire ⇒ ι))
---            → ⟦ modulusᵤᵀ t ⟧₀
---               is-a-modulus-of-uniform-continuity-for
---              ⟦ t ⟧₀
--- Theorem-55 t α α′ ψ ψ′ = internal-uni-mod-correct₀ t α α′ ψ ψ′
+Theorem-55 : (t : Termᵀ₀ (baire ⇒ ι))
+           → ⟦ modulusᵤᵀ t ⟧₀
+              is-a-modulus-of-uniform-continuity-for
+               (⟦ t ⟧₀ ∘ embedding-C-B)
+Theorem-55 t α α′ p =
+ internal-uni-mod-correct₀ t (embedding-C-B α) (embedding-C-B α′) q r †
+  where
+   q : is-boolean-point (embedding-C-B α)
+   q = to-baire-gives-boolean-point α
+
+   r : is-boolean-point (embedding-C-B α′)
+   r = to-baire-gives-boolean-point α′
+
+   † : embedding-C-B α ＝⦅ ⟦ modulusᵤᵀ t ⟧₀ ⦆ embedding-C-B α′
+   † = ＝⦅⦆-ap ⟦ modulusᵤᵀ t ⟧₀ embedding-𝟚-ℕ α α′ p
 
 \end{code}
