@@ -26,6 +26,8 @@ open import EffectfulForcing.Internal.Subst
 open import EffectfulForcing.Internal.SystemT
 open import EffectfulForcing.MFPSAndVariations.Church
 open import EffectfulForcing.MFPSAndVariations.ContinuityProperties fe
+open import EffectfulForcing.MFPSAndVariations.Continuity
+ using (is-uniformly-continuous; BT; _＝⟪_⟫_; _＝⟦_⟧_)
 open import EffectfulForcing.MFPSAndVariations.Dialogue
   renaming (D to Dial)
   hiding (decode)
@@ -477,13 +479,65 @@ The definition of the notion of modulus of uniform continuity.
 
 \begin{code}
 
-Definition-52 : ℕ → ((ℕ → ℕ) → ℕ) → 𝓤₀  ̇
-Definition-52 = _is-a-modulus-of-uniform-continuity-for_
+-- Definition-52 : ℕ → ((ℕ → ℕ) → ℕ) → 𝓤₀  ̇
+-- Definition-52 = _is-a-modulus-of-uniform-continuity-for_
 
-Theorem-55 : (t : Termᵀ₀ (baire ⇒ ι))
-           → ⟦ modulusᵤᵀ t ⟧₀
-              is-a-modulus-of-uniform-continuity-for
-             ⟦ t ⟧₀
-Theorem-55 t α α′ ψ ψ′ = internal-uni-mod-correct₀ t α α′ ψ ψ′
+\end{code}
+
+It is easy to prove Lemma 53 from the paper in Agda. However, we are not
+deriving Theorem 55 from it in the formalization.
+
+TODO: It is probably a good idea to make sure that the Agda proof follows
+the organization of the paper.
+
+\begin{code}
+
+Lemma-53 : (d : B ℕ)
+         → (modulusᵤ (prune d)) is-a-modulus-of-uniform-continuity-for (dialogue (prune d))
+Lemma-53 d =
+ transport
+  (λ - → - is-a-modulus-of-uniform-continuity-for dialogue (prune d))
+  (p ⁻¹)
+  φ
+   where
+    c : is-uniformly-continuous (dialogue (prune d))
+    c = eloquent-functions-are-UC (dialogue (prune d)) ((prune d) , λ _ → refl)
+
+    bt : BT ℕ
+    bt = pr₁ c
+
+    m : ℕ
+    m = succ (maximumᵤ bt)
+
+    p : modulusᵤ (prune d) ＝ m
+    p = succ (max-boolean-question (prune d))  ＝⟨ I ⟩
+        succ (maximumᵤ bt)                     ∎
+         where
+          I = ap succ (max-boolean-question-is-maximum-mod-of d)
+
+    φ : m is-a-modulus-of-uniform-continuity-for dialogue (prune d)
+    φ α α′ r = pr₂ c α α′ γ
+     where
+      ρ : α ＝⦅ succ (maximum (sequentialize bt)) ⦆ α′
+      ρ = transport
+           (λ - → α ＝⦅ - ⦆ α′)
+           (ap succ (maximumᵤ′-equivalent-to-maximumᵤ bt))
+           r
+
+      ξ : α ＝⟪ sequentialize bt ⟫ α′
+      ξ = ＝⦅⦆-implies-＝⟪⟫ α α′ (sequentialize bt) ρ
+
+      ζ : α ＝⟪ sequentialize bt ⟫₀ α′
+      ζ = ＝⟪⟫-implies-＝⟪⟫₀ α α′ (sequentialize bt) ξ
+
+      γ : α ＝⟦ bt ⟧ α′
+      γ = ＝⟪⟫₀-implies-＝⟦⟧ α α′ bt ζ
+
+
+-- Theorem-55 : (t : Termᵀ₀ (baire ⇒ ι))
+--            → ⟦ modulusᵤᵀ t ⟧₀
+--               is-a-modulus-of-uniform-continuity-for
+--              ⟦ t ⟧₀
+-- Theorem-55 t α α′ ψ ψ′ = internal-uni-mod-correct₀ t α α′ ψ ψ′
 
 \end{code}

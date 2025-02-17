@@ -458,8 +458,8 @@ Added on 2025-02-11.
 
 \begin{code}
 
-_is-a-modulus-of-uniform-continuity-for_ : ℕ → ((ℕ → ℕ) → ℕ) → 𝓤₀  ̇
+_is-a-modulus-of-uniform-continuity-for_ : ℕ → ((ℕ → 𝟚) → ℕ) → 𝓤₀  ̇
 m is-a-modulus-of-uniform-continuity-for f =
- (α β : ℕ → ℕ) → is-boolean-point α → is-boolean-point β → α ＝⦅ m ⦆ β → f α ＝ f β
+ (α β : ℕ → 𝟚) → α ＝⦅ m ⦆ β → f α ＝ f β
 
 \end{code}
