@@ -233,32 +233,31 @@ canonical-map-to-cocone-morphism-family {_} {_} {_} {_} {_} {A} {B} {C}
  f g X P (i , j , H) (i' , j' , H') (u , K , L , M) .(u , K , L , M) refl
  = (∼-refl , (λ - → refl-left-neutral) , (λ - → refl-left-neutral) , II)
  where
-  I : {Y : 𝓤  ̇} {Z : 𝓥  ̇} {x y : Y} {z' z : Z} (f' : Y → Z)
+  I : {Y : 𝓤'  ̇} {Z : 𝓥'  ̇} {x y : Y} {z' z : Z} (f' : Y → Z)
       (p : x ＝ y) (q : f' y ＝ z) (p' : f' x ＝ z') (q' : z' ＝ z)
       (α : p' ∙ q' ＝ (ap f' p) ∙ q)
     → α ＝ ap (_∙ q') (refl-left-neutral {_} {_} {_} {_} {p'} ⁻¹)
-           ∙ ∙assoc refl p' q'
-           ∙ ap (refl ∙_) α
-           ∙ ∙assoc refl (ap f' p) q ⁻¹
-           ∙ ap (_∙ q) (homotopies-are-natural f' f' ∼-refl {_} {_} {p})
-           ∙ ∙assoc (ap f' p) refl q
-           ∙ ap (ap f' p ∙_) (refl-left-neutral {_} {_} {_} {_} {q}) 
+           ∙ (∙assoc refl p' q'
+           ∙ (ap (refl ∙_) α
+           ∙ (∙assoc refl (ap f' p) q ⁻¹
+           ∙ (ap (_∙ q) (homotopies-are-natural f' f' ∼-refl {_} {_} {p})
+           ∙ (∙assoc (ap f' p) (refl {_} {_} {f' y}) q
+           ∙ ap (ap f' p ∙_) (refl-left-neutral {_} {_} {_} {_} {q}))))))
   I f' refl refl p' refl α = IV
    where
     Notice : p' ＝ refl
     Notice = α
     III : {Y : 𝓤  ̇} {y : Y} (p : y ＝ y) (α : p ＝ refl)
-          → α ＝ ap (_∙ refl) (refl-left-neutral ⁻¹)
-               ∙ ∙assoc refl p refl ∙ ap (refl ∙_) α
+        → α ＝ ap (_∙ refl) (refl-left-neutral ⁻¹)
+               ∙ (∙assoc refl p refl ∙ ap (refl ∙_) α)
     III p refl = refl
     IV : α ＝ ap (_∙ refl) (refl-left-neutral ⁻¹)
-               ∙ ∙assoc refl p' refl ∙ ap (refl ∙_) α
+               ∙ (∙assoc refl p' refl ∙ ap (refl ∙_) α)
     IV = III p' α
   II : (c : C)
      →  M c ＝ Γ f g X P (i , j , H) (i' , j' , H') (u , K , L , M) (u , K , L , M)
                 ∼-refl (λ - → refl-left-neutral) (λ - → refl-left-neutral) c
-  II c = I {_} {_} {_} {_} {i (f c)} {j (g c)} {i' (f c)} {j' (g c)}
-           u (H c) {!!} (K (f c)) (H' c) (M c)
+  II c = I u (H c) (L (g c)) (K (f c)) (H' c) (M c)
 
 \end{code}
 
