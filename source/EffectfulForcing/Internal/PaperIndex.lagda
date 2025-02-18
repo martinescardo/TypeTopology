@@ -186,7 +186,7 @@ The internal Kleisli extension.
 \begin{code}
 
 Definition-18 : (A : Typeᵀ) → Termᵀ₀ ((ι ⇒ 𝒟ᵀ A ι) ⇒ 𝒟ᵀ A ι ⇒ 𝒟ᵀ A ι)
-Definition-18 A = ⌜kleisli-extension⌝
+Definition-18 A = kleisli-extensionᵀ
 
 \end{code}
 
@@ -195,7 +195,7 @@ The internal functor action.
 \begin{code}
 
 Definition-19 : (A : Typeᵀ) → Termᵀ₀ ((ι ⇒ ι) ⇒ 𝒟ᵀ A ι ⇒ 𝒟ᵀ A ι)
-Definition-19 A = ⌜B-functor⌝
+Definition-19 A = 𝒟-functorᵀ
 
 \end{code}
 
@@ -205,7 +205,7 @@ The generalised internal Kleisli extension.
 
 Definition-20 : (A : Typeᵀ) (σ : Typeᵀ)
               → Termᵀ₀ ((ι ⇒ 〖 σ 〗𝒟ᵀ A) ⇒ 𝒟ᵀ A ι ⇒ 〖 σ 〗𝒟ᵀ A)
-Definition-20 σ A = ⌜Kleisli-extension⌝
+Definition-20 σ A = Kleisli-extensionᵀ
 
 \end{code}
 
