@@ -267,7 +267,14 @@ Lemma-25a = ≡-symm
 Lemma-25b : {σ : Typeᵀ} {a b c : 〖 σ 〗} → a ≡ b → b ≡ c → a ≡ c
 Lemma-25b = ≡-trans
 
--- TODO Lemma-25c
+data is-type-one : Typeᵀ → 𝓤₀ ̇ where
+ ι-is-type-one : is-type-one ι
+ ⇒-is-type-one : {σ : Typeᵀ} → is-type-one σ → is-type-one (ι ⇒ σ)
+
+Lemma-25c : {σ : Typeᵀ} → is-type-one σ → (a : 〖 σ 〗) → a ≡ a
+Lemma-25c ι-is-type-one n = refl
+Lemma-25c (⇒-is-type-one h) f {x} {y} e =
+ transport (λ z → f x ≡ z) (ap f e) (Lemma-25c h (f x))
 
 Lemma-26 : {σ : Typeᵀ} → (t : T₀ σ) → ⟦ t ⟧₀ ≡ ⟦ t ⟧₀
 Lemma-26 = ≡-refl₀
