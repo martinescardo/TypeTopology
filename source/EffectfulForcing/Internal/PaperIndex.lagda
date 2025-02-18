@@ -21,7 +21,7 @@ open import EffectfulForcing.Internal.Internal
   renaming (B-type〖_〗 to 〖_〗𝒟ᵀ; B-context【_】 to 【_】𝒟ᵀ; ⌜_⌝ to ⟦_⟧𝒟ᵀ;
     ⌜dialogue-tree⌝ to dialogue-treeᵀ; ⌜Kleisli-extension⌝ to Kleisli-extensionᵀ;
     ⌜η⌝ to ηᵀ; ⌜β⌝ to βᵀ; ⌜kleisli-extension⌝ to kleisli-extensionᵀ;
-    ⌜B-functor⌝ to 𝒟-functorᵀ)
+    ⌜B-functor⌝ to 𝒟-functorᵀ; ⌜generic⌝ to genericᵀ)
 open import EffectfulForcing.Internal.InternalModCont fe hiding (baire)
 open import EffectfulForcing.Internal.InternalModUniCont fe renaming (main-lemma to main-lemmaᵤ)
 open import EffectfulForcing.Internal.Subst
@@ -233,7 +233,7 @@ The internal generic sequence.
 \begin{code}
 
 Definition-22 : (A : Typeᵀ) → Termᵀ₀ (𝒟ᵀ A ι ⇒ 𝒟ᵀ A ι)
-Definition-22 A = ⌜generic⌝
+Definition-22 A = genericᵀ
 
 \end{code}
 
@@ -252,7 +252,7 @@ Hereditary extensional equality.
 
 \begin{code}
 
-Definition-24 : (σ : type) → 〖 σ 〗 → 〖 σ 〗 → 𝓤₀  ̇
+Definition-24 : (σ : Typeᵀ) → 〖 σ 〗 → 〖 σ 〗 → 𝓤₀  ̇
 Definition-24 σ = _≡_ {σ}
 
 \end{code}
@@ -261,15 +261,15 @@ Some properties of hereditary extensionality equality
 
 \begin{code}
 
-Lemma-25a : {σ : type} {a b c : 〖 σ 〗} → a ≡ b → b ≡ a
+Lemma-25a : {σ : Typeᵀ} {a b c : 〖 σ 〗} → a ≡ b → b ≡ a
 Lemma-25a = ≡-symm
 
-Lemma-25b : {σ : type} {a b c : 〖 σ 〗} → a ≡ b → b ≡ c → a ≡ c
+Lemma-25b : {σ : Typeᵀ} {a b c : 〖 σ 〗} → a ≡ b → b ≡ c → a ≡ c
 Lemma-25b = ≡-trans
 
 -- TODO Lemma-25c
 
-Lemma-26 : {σ : type} → (t : T₀ σ) → ⟦ t ⟧₀ ≡ ⟦ t ⟧₀
+Lemma-26 : {σ : Typeᵀ} → (t : T₀ σ) → ⟦ t ⟧₀ ≡ ⟦ t ⟧₀
 Lemma-26 = ≡-refl₀
 
 \end{code}
@@ -296,18 +296,18 @@ Definition-28 σ = Rnorm
 Lemma-29 : (σ : Typeᵀ)
            (t s : {A : Typeᵀ} → Termᵀ₀ (〖 σ 〗𝒟ᵀ A))
            (x : 〖 σ 〗𝒟)
-         → ({A : type} → ⟦ t ⟧₀ ≡[ (〖 σ 〗𝒟ᵀ A) ] ⟦ s ⟧₀)
+         → ({A : Typeᵀ} → ⟦ t ⟧₀ ≡[ (〖 σ 〗𝒟ᵀ A) ] ⟦ s ⟧₀)
          → Rnorm x t
          → Rnorm x s
 Lemma-29 σ t s x = Rnorm-respects-≡
 
-Lemma-30 : (A : type) (d : 𝒟 ℕ)
-           (f₁ : ℕ → B ℕ) (f₂ : ℕ → 〖 𝒟ᵀ A ι 〗)
+Lemma-30 : (A : Typeᵀ) (d : 𝒟 ℕ)
+           (f₁ : ℕ → 𝒟 ℕ) (f₂ : ℕ → 〖 𝒟ᵀ A ι 〗)
          → ((i : ℕ) → church-encode (f₁ i) ≡[ 𝒟ᵀ A ι ] f₂ i)
          → church-encode (kleisli-extension f₁ d) ≡[ 𝒟ᵀ A ι ] ⟦ kleisli-extensionᵀ ⟧₀ f₂ (church-encode d)
 Lemma-30 A = church-encode-kleisli-extension
 
-Corollary-31 : (A : type) (d : 𝒟 ℕ)
+Corollary-31 : (A : Typeᵀ) (d : 𝒟 ℕ)
                (f₁ f₂ : ℕ → ℕ)
              → f₁ ≡ f₂
              → church-encode (𝒟-functor f₁ d) ≡[ 𝒟ᵀ A ι ] ⟦ 𝒟-functorᵀ ⟧₀ f₂ (church-encode d)
@@ -345,7 +345,7 @@ The internal dialogue operator.
 Definition-35 : Termᵀ₀ ((𝒟ᵀ ((ι ⇒ ι) ⇒ ι) ι) ⇒ (ι ⇒ ι) ⇒ ι)
 Definition-35 = dialogueᵀ
 
-Lemma-36 : (d : B ℕ) (α : ℕ → ℕ)
+Lemma-36 : (d : 𝒟 ℕ) (α : ℕ → ℕ)
          → dialogue d α ＝ ⟦ dialogueᵀ ⟧₀ (church-encode d) α
 Lemma-36 d α = dialogues-agreement d α
 
@@ -369,7 +369,7 @@ Max question along a path.
 
 max-q = max-question
 
-Definition-38 : B ℕ → (ℕ → ℕ) → ℕ
+Definition-38 : 𝒟 ℕ → (ℕ → ℕ) → ℕ
 Definition-38 = max-q
 
 \end{code}
@@ -393,7 +393,7 @@ External and internal modulus operators.
 
 \begin{code}
 
-Definition-41a : B ℕ → (ℕ → ℕ) → ℕ
+Definition-41a : 𝒟 ℕ → (ℕ → ℕ) → ℕ
 Definition-41a = modulus
 
 Definition-41b : Termᵀ₀ (𝒟ᵀ ι ι ⇒ (ι ⇒ ι) ⇒ ι)
@@ -403,7 +403,7 @@ Definition-42 : ((ℕ → ℕ) → ℕ) → (ℕ → ℕ) → ℕ → 𝓤₀  �
 Definition-42 f α m = m is-a-modulus-of-continuity-for f at α
 
 -- TODO
--- Lemma-43 : (d : B ℕ) (α : ℕ → ℕ)
+-- Lemma-43 : (d : 𝒟 ℕ) (α : ℕ → ℕ)
 --          → modulus d α is-a-modulus-of-continuity-for dialogue d at α
 -- Lemma-43 d α = {!!}
 --  where
@@ -439,7 +439,7 @@ Theorem-45 = internal-mod-cont-correct₀
 Definition-46 : Termᵀ₀ (ι ⇒ ι) → 𝓤₀  ̇
 Definition-46 = is-boolean-pointᵀ
 
-Definition-47 : B ℕ → Dial ℕ 𝟚 ℕ
+Definition-47 : 𝒟 ℕ → Dial ℕ 𝟚 ℕ
 Definition-47 = prune
 
 max-q₂  = max-boolean-question
@@ -452,7 +452,7 @@ Definition-49 : Termᵀ₀ (𝒟ᵀ ι ι ⇒ ι)
 Definition-49 = max-q₂ᵀ
 
 -- TODO: Do we have this exact result?
--- Lemma-50 : (d : B ℕ)
+-- Lemma-50 : (d : 𝒟 ℕ)
 --          → max-q₂ (prune d) ＝ ⟦ max-q₂ᵀ ⟧₀ (church-encode d)
 -- Lemma-50 d = max-q₂ (prune d)                        ＝⟨ Ⅰ ⟩
 --              max-boolean-question⋆ (church-encode d) ＝⟨ Ⅱ ⟩
