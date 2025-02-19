@@ -14,5 +14,6 @@ import gist.multiset-addendum-question
 import gist.not-an-apartness
 import gist.remove-swap
 import gist.InjectivesVersusAlgebras
+import gist.DependentlyTypedTensors
 
 \end{code}
