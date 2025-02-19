@@ -88,7 +88,6 @@ Vectors are just rank-1 tensors.
              ‡ : ϑ (λ _ → i 𝟎) ＝ ϑ i
              ‡ = ap ϑ (dfunext fe λ { 𝟎 → refl })
 
-
 \end{code}
 
 Matrices are rank-2 tensors.
