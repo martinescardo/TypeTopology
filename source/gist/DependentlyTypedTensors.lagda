@@ -9,6 +9,8 @@ dependently typed tensors.
 
 \begin{code}
 
+{-# OPTIONS --safe --without-K #-}
+
 open import UF.FunExt
 
 module gist.DependentlyTypedTensors (fe : Fun-Ext) where
