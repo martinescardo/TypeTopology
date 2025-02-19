@@ -95,22 +95,22 @@ Matrices are rank-2 tensors.
 
 \begin{code}
 
- doubleton : {X : 𝓥  ̇} → X → X → Fin 2 → X
- doubleton x y 𝟎 = x
- doubleton x y 𝟏 = y
+ _by_ : {X : 𝓥  ̇} → X → X → Fin 2 → X
+ _by_ x y 𝟎 = x
+ _by_ x y 𝟏 = y
 
  matrix-is-rank-2-tensor : (m n : ℕ)
-                         → Matrix m n ≃ Rank-[ 2 ]-Tensor (doubleton m n)
+                         → Matrix m n ≃ Rank-[ 2 ]-Tensor (m by n)
  matrix-is-rank-2-tensor m n = s , qinvs-are-equivs s (r , sec , ret)
   where
-   s : Matrix m n → Rank-[ 2 ]-Tensor (doubleton m n)
+   s : Matrix m n → Rank-[ 2 ]-Tensor (m by n)
    s φ ν = φ (ν 𝟎 , ν 𝟏)
 
-   doubleton′ : Fin m → Fin n → (k : Fin 2) → Fin (doubleton m n k)
+   doubleton′ : Fin m → Fin n → (k : Fin 2) → Fin ((m by n) k)
    doubleton′ i j 𝟎 = i
    doubleton′ i j 𝟏 = j
 
-   r : Rank-[ 2 ]-Tensor (doubleton m n) → Matrix m n
+   r : Rank-[ 2 ]-Tensor (m by n) → Matrix m n
    r ϑ (i , j) = ϑ (doubleton′ i j)
 
    sec : r ∘ s ∼ id
