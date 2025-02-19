@@ -239,11 +239,16 @@ module _ (𝓤 : Universe)
  Extensions-are-Pointwise = {X : 𝓤 ̇} {Y : 𝓤 ̇ } (f : X → D) (j : X ↪ Y)
                           → f / j ∼ f /̇ j
 
-
-{- Is this the case? Or does it need to be an assumption?
+{-
  extensions-are-pointwise : Extensions-are-Pointwise
  extensions-are-pointwise = {!!}
 -}
+
+\end{code}
+
+Is the above the case? Or does it need to be an assumption?
+
+\begin{code}
 
  ⨆-assoc' : Extensions-are-Pointwise
            → is-univalent 𝓤
@@ -302,5 +307,50 @@ module _ (𝓤 : Universe)
 
        III : (v ∘↪ u) ＝ w
        III = to-subtype-＝ (being-embedding-is-prop fe') refl
+
+\end{code}
+
+Added 16th Feb 2025.
+
+\begin{code}
+
+{-
+module _ (𝓤 𝓥 : Universe)
+         (D : 𝓤 ⊔ 𝓥 ̇ )
+         (⨆ : {P : 𝓤 ̇} → is-prop P → (P → D) → D)
+         (⨆-property : (P : 𝓤 ̇)
+                        (i : is-prop P)
+                        (f : P → D)
+                        (p : P)
+                      → ⨆ i f ＝ f p)
+         (P : 𝓤 ̇ )
+         (P-is-prop : is-prop P)
+         (Q : 𝓤 ̇ )
+         (Q-is-prop : is-prop Q)
+         (j : P → Q)
+         (f : P → D)
+      where
+
+ j-is-embedding : is-embedding j
+ j-is-embedding = maps-of-props-are-embeddings j P-is-prop Q-is-prop
+
+ g h : Q → D
+ g q = ⨆ P-is-prop f
+ h q = ⨆ (j-is-embedding q) (λ ((p , _) : fiber j q) → f p)
+
+ try : g ∼ h
+ try q =
+  g q ＝⟨ refl ⟩
+  ⨆ P-is-prop f ＝⟨ {!!} ⟩
+  {!!} ＝⟨ {!!} ⟩
+  {!!} ＝⟨ {!!} ⟩
+  {!!} ＝⟨ {!!} ⟩
+  {!!} ＝⟨ {!!} ⟩
+  {!!} ＝⟨ {!!} ⟩
+  {!!} ＝⟨ {!!} ⟩
+  {!!} ＝⟨ {!!} ⟩
+  ⨆ (j-is-embedding q) (λ ((p , _) : fiber j q) → f p) ＝⟨ refl ⟩
+  h q ∎
+-}
 
 \end{code}

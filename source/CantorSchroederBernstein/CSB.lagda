@@ -377,7 +377,7 @@ it:
 
   recall-the-notion-of-decidability : {𝓦 : Universe}
                                       {A : 𝓦 ̇ }
-                                      → is-decidable A ＝ (A + ¬ A)
+                                    → is-decidable A ＝ (A + ¬ A)
   recall-the-notion-of-decidability = by-definition
 
   δ : (x : X) → is-decidable (is-g-point x)

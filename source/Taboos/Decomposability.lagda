@@ -1,4 +1,4 @@
-`>Martin Escardo, 25th August 2022,
+Martin Escardo, 25th August 2022,
 written down in Agda 27th August 2022 while travelling back from
 Thierry Coquand's 60th birthday celebration.
 
