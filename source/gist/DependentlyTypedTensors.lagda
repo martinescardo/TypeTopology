@@ -149,7 +149,7 @@ special case.
 \begin{code}
 
  finite-shape : (r : ℕ) (d : Fin r → ℕ)
-              → Rank-[ r ]-Tensor d ＝ Shape-[_]-Tensor {Fin r} (Fin ∘ d)
+              → Rank-[ r ]-Tensor d ＝ Shape-[_]-Tensor (Fin ∘ d)
  finite-shape _ _ = refl
 
 \end{code}
