@@ -23,8 +23,7 @@ open import UF.Equiv
 \end{code}
 
 We work in a module parameterized by a type `R`. This can be thought of as the
-carrier type of the underlying ring of a module, but we are not interested in
-the ring structure for the purposes of this gist.
+carrier of a ring, but we are not interested in the ring structure in this gist.
 
 \begin{code}
 
