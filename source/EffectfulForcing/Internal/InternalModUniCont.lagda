@@ -18,12 +18,15 @@ module EffectfulForcing.Internal.InternalModUniCont (fe : Fun-Ext) where
 
 open import EffectfulForcing.Internal.Correctness
  using (Rnorm; Rnorm-generic; Rnorm-lemma₀; is-dialogue-for)
+open import EffectfulForcing.Internal.ExtensionalEquality
 open import EffectfulForcing.Internal.External
  using (B⟦_⟧; B⟦_⟧₀; dialogue-tree; eloquence-theorem; ⟪⟫)
 open import EffectfulForcing.Internal.Internal
 open import EffectfulForcing.Internal.InternalModCont fe
- using (maxᵀ; maxᵀ-correct)
+ using (maxᵀ; maxᵀ-correct; ⟦maxᵀ⟧≡max)
 open import EffectfulForcing.Internal.SystemT
+open import EffectfulForcing.Internal.Subst
+ using (≡-refl₀)
 open import EffectfulForcing.MFPSAndVariations.Church
 open import EffectfulForcing.MFPSAndVariations.Continuity
  using (is-continuous; _＝⟪_⟫_; C-restriction; Cantor; Baire;
@@ -209,26 +212,19 @@ max-boolean-question⋆-agreement (D.β φ n) = †
    max n (max n₀⋆ n₁⋆)                                                ＝⟨ refl ⟩
    max-boolean-question⋆ (encode (D.β φ n))                           ∎
 
-max-boolean-questionᵀ-agreement : (d : 〈〉 ⊢ ⌜D⋆⌝ ι ι ι ι)
-                                → ⟦ max-boolean-questionᵀ · d ⟧₀
-                                  ＝ max-boolean-question⋆ ⟦ d ⟧₀
-max-boolean-questionᵀ-agreement d =
- ⟦ max-boolean-questionᵀ · d ⟧₀                                  ＝⟨ refl  ⟩
- ⟦ d ⟧₀ (λ _ → 0) (λ g x → ⟦ maxᵀ ⟧₀ x (⟦ maxᵀ ⟧₀ (g 0) (g 1)))  ＝⟨ Ⅰ     ⟩
- ⟦ d ⟧₀ (λ _ → 0) (λ g x → max x (⟦ maxᵀ ⟧₀ (g 0) (g 1)))        ＝⟨ Ⅱ     ⟩
- ⟦ d ⟧₀ (λ _ → 0) (λ g x → max x (max (g 0) (g 1)))              ＝⟨ refl  ⟩
- max-boolean-question⋆ ⟦ d ⟧₀                                    ∎
+max-boolean-questionᵀ-agreement : ⟦ max-boolean-questionᵀ ⟧₀
+                                   ≡ max-boolean-question⋆
+max-boolean-questionᵀ-agreement {d₁} {d₂} d≡ =
+ d≡ (λ _ → refl) f≡
   where
-   † : (g : ℕ → ℕ) (n : ℕ)
-     → ⟦ maxᵀ ⟧₀ n (⟦ maxᵀ ⟧₀ (g 0) (g 1)) ＝ max n (⟦ maxᵀ ⟧₀ (g 0) (g 1))
-   † g n = maxᵀ-correct n (⟦ maxᵀ ⟧₀ (g 0) (g 1))
+   f₁ : (ℕ → ℕ) → ℕ → ℕ
+   f₁ g n = ⟦ maxᵀ ⟧₀ n (⟦ maxᵀ ⟧₀ (g 0) (g 1))
 
-   ‡ : (g : ℕ → ℕ) (n : ℕ)
-     → max n (⟦ maxᵀ ⟧₀ (g 0) (g 1)) ＝ max n (max (g 0) (g 1))
-   ‡ g n = ap (max n) (maxᵀ-correct (g 0) (g 1))
+   f₂ : (ℕ → ℕ) → ℕ → ℕ
+   f₂ g n = max n (max (g 0) (g 1))
 
-   Ⅰ = ap (⟦ d ⟧₀ (λ _ → 0)) (dfunext fe λ g → dfunext fe λ n → † g n)
-   Ⅱ = ap (⟦ d ⟧₀ (λ _ → 0)) (dfunext fe λ g → dfunext fe λ n → ‡ g n)
+   f≡ : f₁ ≡ f₂
+   f≡ g≡ n≡ = ⟦maxᵀ⟧≡max n≡ (⟦maxᵀ⟧≡max (g≡ refl) (g≡ refl))
 
 \end{code}
 
@@ -261,7 +257,7 @@ main-lemma t =
                            Ⅱ = ap (λ - → max n (max - (f 1))) (φ refl)
                            Ⅲ = ap (λ - → max n (max (g 0) -)) (φ refl)
 
-   Ⅰ = max-boolean-questionᵀ-agreement (⌜dialogue-tree⌝ t)
+   Ⅰ = max-boolean-questionᵀ-agreement (≡-refl₀ (⌜dialogue-tree⌝ t))
    Ⅱ = † (λ _ → refl) (λ {f} {g} → γ f g)
    Ⅲ = max-boolean-question⋆-agreement (dialogue-tree t) ⁻¹
 

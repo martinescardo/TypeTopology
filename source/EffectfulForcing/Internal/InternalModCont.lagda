@@ -126,6 +126,9 @@ maxᵀ-correct (succ m) (succ n) =
    Ⅰ = ifzᵀ-correct (succ n) (succ m) (succ (⟦ maxᵀ ⟧₀ m (⟦ predᵀ ⟧₀ (succ n))))
    Ⅱ = ap succ (maxᵀ-correct m n)
 
+⟦maxᵀ⟧≡max : ⟦ maxᵀ ⟧₀ ≡ max
+⟦maxᵀ⟧≡max {n} refl {m} refl = maxᵀ-correct n m
+
 \end{code}
 
 We will use the `maxᵀ` operator to define the internal modulus of continuity

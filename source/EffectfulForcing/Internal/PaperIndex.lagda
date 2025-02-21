@@ -395,6 +395,22 @@ External and internal modulus operators.
 
 \begin{code}
 
+church-encode-≡ : {A : Typeᵀ} (d : 𝒟 ℕ)
+                → church-encode d ≡[ 𝒟ᵀ A ι ] church-encode d
+church-encode-≡ {A} (η n) η≡ β≡   = η≡ refl
+church-encode-≡ {A} (β ϕ i) {η₁} {η₂} η≡ {β₁} {β₂} β≡ = β≡ aux refl
+ where
+  aux : {i j : ℕ} → i ＝ j
+      → church-encode (ϕ i) η₁ β₁ ≡[ A ] church-encode (ϕ j) η₂ β₂
+  aux {i} {i} refl = church-encode-≡ (ϕ i) η≡ β≡
+
+Lemma-40 : (d : 𝒟 ℕ) (α : ℕ → ℕ)
+         → max-q d α ＝ ⟦ max-qᵀ ⟧₀ (church-encode d) α
+Lemma-40 d α = max-question⋆-agreement d α
+               ∙ (max-questionᵀ-agreement-with-max-question⋆
+                   (church-encode-≡ d)
+                   (Lemma-25c (⇒-is-type-one ι-is-type-one) α)) ⁻¹
+
 Definition-41a : 𝒟 ℕ → (ℕ → ℕ) → ℕ
 Definition-41a = modulus
 
@@ -407,8 +423,8 @@ Definition-42 f α m = m is-a-modulus-of-continuity-for f at α
 Lemma-44 : (t : Termᵀ₀ ((ι ⇒ ι) ⇒ ι)) (α : ℕ → ℕ)
          → ⟦ max-qᵀ · dialogue-treeᵀ t ⟧₀ α  ＝ max-question (dialogue-tree t) α
 Lemma-44 t α = ⟦ max-qᵀ · dialogue-treeᵀ t ⟧₀ α   ＝⟨ Ⅰ ⟩
-               max-question₀ (dialogue-tree t) α   ＝⟨ Ⅱ ⟩
-               max-question (dialogue-tree t) α    ∎
+               max-question₀ (dialogue-tree t) α  ＝⟨ Ⅱ ⟩
+               max-question (dialogue-tree t) α   ∎
                 where
                  Ⅰ = main-lemma t α
                  Ⅱ = max-question₀-agreement (dialogue-tree t) α ⁻¹
@@ -439,6 +455,9 @@ Definition-48 = max-boolean-question
 Definition-49 : Termᵀ₀ (𝒟ᵀ ι ι ⇒ ι)
 Definition-49 = max-q₂ᵀ
 
+Lemma-50 : (d : 𝒟 ℕ) → max-q₂ (prune d) ＝ ⟦ max-q₂ᵀ ⟧₀ (church-encode d)
+Lemma-50 d = max-boolean-question⋆-agreement d
+              ∙ (max-boolean-questionᵀ-agreement (church-encode-≡ d)) ⁻¹
 \end{code}
 
 The external and internal modulus of uniform continuity operators.
