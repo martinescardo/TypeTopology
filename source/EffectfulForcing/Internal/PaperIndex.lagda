@@ -1,5 +1,7 @@
 ---
-author: Ayberk Tosun
+author:
+  - Bruno Paiva
+  - Ayberk Tosun
 date-started: 2025-02-03
 ---
 
@@ -108,9 +110,6 @@ Definition-7c : {O : 𝓥  ̇} {X : 𝓦  ̇} → ((ℕ → O) → X) → 𝓥 �
 Definition-7c = is-uniformly-continuous₁
 
 \end{code}
-
-TODO: should the definition below be generalized?
-- bruno: probably but I don't know if we want to change the original file
 
 \begin{code}
 
@@ -294,11 +293,11 @@ Definition-27 A = church-encode
 
 The dialogue correctness logical relation.
 
-Definition-28 : (σ : Typeᵀ) → 〖 σ 〗𝒟 → ({A : Typeᵀ} → Termᵀ₀ (〖 σ 〗𝒟ᵀ A)) → 𝓤₀ ̇
-Definition-28 σ = Rnorm
-\end{code}
 
 \begin{code}
+
+Definition-28 : (σ : Typeᵀ) → 〖 σ 〗𝒟 → ({A : Typeᵀ} → Termᵀ₀ (〖 σ 〗𝒟ᵀ A)) → 𝓤₀ ̇
+Definition-28 σ = Rnorm
 
 Lemma-29 : (σ : Typeᵀ)
            (t s : {A : Typeᵀ} → Termᵀ₀ (〖 σ 〗𝒟ᵀ A))
@@ -390,10 +389,6 @@ max-qᵀ = max-questionᵀ
 Definition-39 : Termᵀ₀ (𝒟ᵀ ι ι ⇒ (ι ⇒ ι) ⇒ ι)
 Definition-39 = max-qᵀ
 
--- TODO: I don't think this is explicitly written down anywhere.
--- Lemma-40 : {!!}
--- Lemma-40 = {!!}
-
 \end{code}
 
 External and internal modulus operators.
@@ -408,20 +403,6 @@ Definition-41b = modulusᵀ
 
 Definition-42 : ((ℕ → ℕ) → ℕ) → (ℕ → ℕ) → ℕ → 𝓤₀  ̇
 Definition-42 f α m = m is-a-modulus-of-continuity-for f at α
-
--- TODO
--- Lemma-43 : (d : 𝒟 ℕ) (α : ℕ → ℕ)
---          → modulus d α is-a-modulus-of-continuity-for dialogue d at α
--- Lemma-43 d α = {!!}
---  where
---   c : is-continuous₀ (dialogue d)
---   c = continuity-implies-continuity₀ (dialogue d) (dialogue-continuity d)
-
---   m : ℕ
---   m = pr₁ (c α)
-
---   p : modulus d α ＝ m
---   p = {!!}
 
 Lemma-44 : (t : Termᵀ₀ ((ι ⇒ ι) ⇒ ι)) (α : ℕ → ℕ)
          → ⟦ max-qᵀ · dialogue-treeᵀ t ⟧₀ α  ＝ max-question (dialogue-tree t) α
@@ -458,16 +439,6 @@ Definition-48 = max-boolean-question
 Definition-49 : Termᵀ₀ (𝒟ᵀ ι ι ⇒ ι)
 Definition-49 = max-q₂ᵀ
 
--- TODO: Do we have this exact result?
--- Lemma-50 : (d : 𝒟 ℕ)
---          → max-q₂ (prune d) ＝ ⟦ max-q₂ᵀ ⟧₀ (church-encode d)
--- Lemma-50 d = max-q₂ (prune d)                        ＝⟨ Ⅰ ⟩
---              max-boolean-question⋆ (church-encode d) ＝⟨ Ⅱ ⟩
---              ⟦ max-q₂ᵀ ⟧₀ (church-encode d)          ∎
---               where
---                Ⅰ = max-boolean-question⋆-agreement d
---                Ⅱ = {! max-boolean-questionᵀ-agreement (church-encode d) ⁻¹!}
-
 \end{code}
 
 The external and internal modulus of uniform continuity operators.
@@ -493,9 +464,6 @@ Definition-52 = _is-a-modulus-of-uniform-continuity-for_
 
 It is easy to prove Lemma 53 from the paper in Agda. However, we are not
 deriving Theorem 55 from it in the formalization.
-
-TODO: It is probably a good idea to make sure that the Agda proof follows
-the organization of the paper.
 
 \begin{code}
 
