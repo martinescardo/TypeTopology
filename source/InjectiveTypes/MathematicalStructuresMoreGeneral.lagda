@@ -136,7 +136,10 @@ We introduce names for the canonical maps induced by Π- and
   ρΠ : (p : Ω 𝓤)
        (A : p holds → 𝓤 ̇ )
      → S (Π A) → ((h : p holds) → S (A h))
-  ρΠ p A s h = T (prop-indexed-product fe' (holds-is-prop p) h) s
+  ρΠ p A s h = T I s
+   where
+    I : Π A ≃ A h
+    I = prop-indexed-product fe' (holds-is-prop p) h
 
   ρΣ : (p : Ω 𝓤)
        (A : p holds → 𝓤 ̇ )
