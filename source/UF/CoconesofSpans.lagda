@@ -166,6 +166,41 @@ cocone-morphism : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇}
 cocone-morphism f g X P (i , j , H) s'
  = Σ u ꞉ (P → X) , cocone-family f g X (u ∘ i , u ∘ j , ∼-ap-∘ u H) s'
 
+cocone-morphism-map : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇}                   
+                      (f : C → A) (g : C → B) (X : 𝓣  ̇) (P : 𝓣'  ̇)
+                    → (s : cocone f g P)
+                    → (s' : cocone f g X)
+                    → cocone-morphism f g X P s s'
+                    → P → X
+cocone-morphism-map f g X P s s' (u , _) = u
+
+cocone-morphism-left-coherence
+ : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇}                   
+   (f : C → A) (g : C → B) (X : 𝓣  ̇) (P : 𝓣'  ̇)
+ → ((i , j , H) : cocone f g P)
+ → ((i' , j' , H') : cocone f g X)
+ → ((u , K , L , M) : cocone-morphism f g X P (i , j , H) (i' , j' , H'))
+ → u ∘ i ∼ i'
+cocone-morphism-left-coherence f g X P s s' (_ , K , _) = K
+
+cocone-morphism-right-coherence
+ : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇}                   
+   (f : C → A) (g : C → B) (X : 𝓣  ̇) (P : 𝓣'  ̇)
+ → ((i , j , H) : cocone f g P)
+ → ((i' , j' , H') : cocone f g X)
+ → ((u , K , L , M) : cocone-morphism f g X P (i , j , H) (i' , j' , H'))
+ → u ∘ j ∼ j'
+cocone-morphism-right-coherence f g X P s s' (_ , _ , L , _) = L
+
+cocone-morphism-homotopy-coherence
+ : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇}                   
+   (f : C → A) (g : C → B) (X : 𝓣  ̇) (P : 𝓣'  ̇)
+ → ((i , j , H) : cocone f g P)
+ → ((i' , j' , H') : cocone f g X)
+ → ((u , K , L , M) : cocone-morphism f g X P (i , j , H) (i' , j' , H'))
+ → ∼-trans (K ∘ f) H' ∼ ∼-trans (∼-ap-∘ u H) (L ∘ g)
+cocone-morphism-homotopy-coherence f g X P s s' (_ , _ , _ , M) = M
+
 private
  Alternative-Path : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇}                   
                     (f : C → A) (g : C → B) (X : 𝓣  ̇) (P : 𝓣'  ̇)
@@ -219,6 +254,53 @@ cocone-morphism-family {_} {_} {_} {_} {_} {A} {B} {C} f g X P
     Σ ϕr ꞉ ((b : B) → θ (j b) ∙ L' b ＝ L b) ,
      ((c : C) → M c ＝ Γ f g X P (i , j , H) (i' , j' , H')
                          (u , K , L , M) (u' , K' , L' , M') θ ϕl ϕr c)
+
+cocone-morphism-family-homotopy
+ : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇}                                                      (f : C → A) (g : C → B) (X : 𝓣  ̇) (P : 𝓣'  ̇)
+ → (s : cocone f g P)
+ → (s' : cocone f g X)
+ → ((u , K , L , M) : cocone-morphism f g X P s s')
+ → ((u' , K' , L' , M') : cocone-morphism f g X P s s')
+ → cocone-morphism-family f g X P s s' (u , K , L , M) (u' , K' , L' , M')
+ → u ∼ u'
+cocone-morphism-family-homotopy f g X P s s' m m' (θ , _) = θ
+
+cocone-morphism-family-left-coherence
+ : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇}                                                      (f : C → A) (g : C → B) (X : 𝓣  ̇) (P : 𝓣'  ̇)
+ → ((i , j , H) : cocone f g P)
+ → ((i' , j' , H') : cocone f g X)
+ → ((u , K , L , M) : cocone-morphism f g X P (i , j , H) (i' , j' , H'))
+ → ((u' , K' , L' , M') : cocone-morphism f g X P (i , j , H) (i' , j' , H'))
+ → ((θ , ϕl , ϕr , γ) : cocone-morphism-family f g X P (i , j , H) (i' , j' , H')
+                         (u , K , L , M) (u' , K' , L' , M'))
+ → (a : A)
+ → θ (i a) ∙ K' a ＝ K a
+cocone-morphism-family-left-coherence f g X P s s' m m' (_ , ϕl , _) = ϕl
+
+cocone-morphism-family-right-coherence
+ : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇}                                                      (f : C → A) (g : C → B) (X : 𝓣  ̇) (P : 𝓣'  ̇)
+ → ((i , j , H) : cocone f g P)
+ → ((i' , j' , H') : cocone f g X)
+ → ((u , K , L , M) : cocone-morphism f g X P (i , j , H) (i' , j' , H'))
+ → ((u' , K' , L' , M') : cocone-morphism f g X P (i , j , H) (i' , j' , H'))
+ → ((θ , ϕl , ϕr , γ) : cocone-morphism-family f g X P (i , j , H) (i' , j' , H')
+                         (u , K , L , M) (u' , K' , L' , M'))
+ → (b : B)
+ → θ (j b) ∙ L' b ＝ L b
+cocone-morphism-family-right-coherence f g X P s s' m m' (_ , _ , ϕr , _) = ϕr
+
+cocone-morphism-family-homotopy-coherence
+ : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇}                                                      (f : C → A) (g : C → B) (X : 𝓣  ̇) (P : 𝓣'  ̇)
+ → ((i , j , H) : cocone f g P)
+ → ((i' , j' , H') : cocone f g X)
+ → ((u , K , L , M) : cocone-morphism f g X P (i , j , H) (i' , j' , H'))
+ → ((u' , K' , L' , M') : cocone-morphism f g X P (i , j , H) (i' , j' , H'))
+ → ((θ , ϕl , ϕr , γ) : cocone-morphism-family f g X P (i , j , H) (i' , j' , H')
+                         (u , K , L , M) (u' , K' , L' , M'))
+ → (c : C)
+ → M c ＝ Γ f g X P (i , j , H) (i' , j' , H') (u , K , L , M) (u' , K' , L' , M')
+           θ ϕl ϕr c
+cocone-morphism-family-homotopy-coherence f g X P s s' m m' (_ , _ , _ , γ) = γ
 
 canonical-map-to-cocone-morphism-family
  : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇}                   
