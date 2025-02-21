@@ -456,8 +456,12 @@ Definition-49 : Termᵀ₀ (𝒟ᵀ ι ι ⇒ ι)
 Definition-49 = max-q₂ᵀ
 
 Lemma-50 : (d : 𝒟 ℕ) → max-q₂ (prune d) ＝ ⟦ max-q₂ᵀ ⟧₀ (church-encode d)
-Lemma-50 d = max-boolean-question⋆-agreement d
-              ∙ (max-boolean-questionᵀ-agreement (church-encode-≡ d)) ⁻¹
+Lemma-50 d = max-q₂ (prune d)                         ＝⟨ Ⅰ ⟩
+             max-boolean-question⋆ (church-encode d)  ＝⟨ Ⅱ ⟩
+             ⟦ max-q₂ᵀ ⟧₀ (church-encode d)           ∎
+              where
+               Ⅰ = max-boolean-question⋆-agreement d
+               Ⅱ = max-boolean-questionᵀ-agreement (church-encode-≡ d) ⁻¹
 \end{code}
 
 The external and internal modulus of uniform continuity operators.
