@@ -77,6 +77,7 @@ import UF.Univalence
 import UF.UniverseEmbedding
 import UF.Universes
 import UF.Yoneda
+import UF.SystemFNotionOfResizing
 
 \end{code}
 
