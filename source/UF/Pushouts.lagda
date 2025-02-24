@@ -496,8 +496,37 @@ computation rules and the uniqueness principles.
                          → (H' : (b : B) → u (inrr b) ＝ u' (inrr b))
                          → (M : (c : C)
                            → ap u (glue c) ∙ H' (g c) ＝ H (f c) ∙ ap u' (glue c))
-                         → {!!}
- pushout-uniqueness-glue = {!!}
+                         → (c : C)
+                         → M c ⁻¹
+                         ＝ alt-path f g X pushout pushout-cocone
+                            (u' ∘ inll , u' ∘ inrr , ∼-ap-∘ u' glue)
+                            (u , H , H' , λ c → M c ⁻¹)
+                            (u' , ∼-refl , ∼-refl , λ c → refl-left-neutral)
+                            (pushout-uniqueness u u' H H' M)
+                            (pushout-uniqueness-inll u u' H H' M)
+                            (pushout-uniqueness-inrr u u' H H' M) c
+ pushout-uniqueness-glue {_} {X} u u' H H' M 
+  = cocone-morphism-family-homotopy-coherence f g X pushout pushout-cocone
+     (u' ∘ inll , u' ∘ inrr , ∼-ap-∘ u' glue) (u , H , H' , λ c → M c ⁻¹)
+     (u' , ∼-refl , ∼-refl , λ c → refl-left-neutral)
+     (canonical-map-to-cocone-morphism-family f g X pushout pushout-cocone
+     (u' ∘ inll , u' ∘ inrr , ∼-ap-∘ u' glue) (u , H , H' , λ c → M c ⁻¹)
+     (u' , ∼-refl , ∼-refl , λ c → refl-left-neutral)
+      (singletons-are-props (pushout-fiber-is-singleton'
+       (u' ∘ inll , u' ∘ inrr , ∼-ap-∘ u' glue))
+      (u , H , H' , λ c → M c ⁻¹)
+      (u' , ∼-refl , ∼-refl , λ c → refl-left-neutral)))
+  where
+   Notice : (c : C)
+          → alt-path f g X pushout pushout-cocone
+             (u' ∘ inll , u' ∘ inrr , ∼-ap-∘ u' glue)
+             (u , H , H' , λ c → M c ⁻¹)
+             (u' , ∼-refl , ∼-refl , λ c → refl-left-neutral)
+             (pushout-uniqueness u u' H H' M)
+             (pushout-uniqueness-inll u u' H H' M)
+             (pushout-uniqueness-inrr u u' H H' M) c
+          ＝ {!!}
+   Notice = {!!}
                     
 \end{code}
 
