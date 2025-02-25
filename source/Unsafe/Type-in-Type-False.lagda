@@ -32,6 +32,7 @@ module coquand where
   where
    data 𝕎 : Set where
     sup : (T : Set) → (T → 𝕎) → 𝕎
+
    e : 𝕎 → 𝕎 → Set
    e (sup T φ) w = Σ t ꞉ T , φ t ＝ w
 
