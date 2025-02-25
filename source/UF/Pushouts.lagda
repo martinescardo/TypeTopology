@@ -525,14 +525,19 @@ computation rules and the uniqueness principles.
              (pushout-uniqueness u u' H H' M)
              (pushout-uniqueness-inll u u' H H' M)
              (pushout-uniqueness-inrr u u' H H' M) c
-          ＝ {!!}
-   Notice = {!!}
+          ＝ ap (_∙ ap u' (glue c))
+                (pushout-uniqueness-inll u u' H H' M (f c) ⁻¹)
+            ∙ (homotopies-are-natural u u' (pushout-uniqueness u u' H H' M)
+               {_} {_} {glue c} 
+            ∙ ap (ap u (glue c) ∙_)
+                 (pushout-uniqueness-inrr u u' H H' M (g c)))
+   Notice c = {!!}
                     
 \end{code}
 
-Finally, we can derive the induction principle and the corresponding propositional
-computation rules. First we will introduce an auxillary type which we will
-call pre-induction and record its associated computation rules. 
+Before deriving the induction principle and the corresponding propositional
+computation rules we will introduce an auxillary type which we shall call
+pre-induction and record its associated computation rules. 
 
 \begin{code}
 
