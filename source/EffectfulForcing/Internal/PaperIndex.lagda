@@ -31,7 +31,8 @@ open import EffectfulForcing.Internal.SystemT
 open import EffectfulForcing.MFPSAndVariations.Church
 open import EffectfulForcing.MFPSAndVariations.ContinuityProperties fe
 open import EffectfulForcing.MFPSAndVariations.Continuity
- using (is-uniformly-continuous; BT; _＝⟪_⟫_; _＝⟦_⟧_; embedding-C-B; embedding-𝟚-ℕ)
+ using (is-uniformly-continuous; BT; _＝⟪_⟫_; _＝⟦_⟧_; embedding-C-B;
+        embedding-𝟚-ℕ; Cantor; Baire)
  renaming (is-continuous to is-continuous∙)
 open import EffectfulForcing.MFPSAndVariations.Dialogue
   renaming (D to Dial; B-functor to 𝒟-functor)
@@ -440,8 +441,8 @@ Theorem-45 = internal-mod-cont-correct₀
 
 \begin{code}
 
-Definition-46 : Termᵀ₀ (ι ⇒ ι) → 𝓤₀  ̇
-Definition-46 = is-boolean-pointᵀ
+Definition-46 : Cantor → Baire
+Definition-46 = embedding-C-B
 
 Definition-47 : 𝒟 ℕ → Dial ℕ 𝟚 ℕ
 Definition-47 = prune
