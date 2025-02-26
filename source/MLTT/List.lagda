@@ -435,14 +435,26 @@ map-++ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
 map-++ f [] ys       = refl
 map-++ f (x ∷ xs) ys = ap (f x ∷_) (map-++ f xs ys)
 
+map-id : {X : 𝓤 ̇ }
+         (xs : List X)
+       → map id xs ＝ xs
+map-id [] = refl
+map-id (x ∷ xs) = ap (x ∷_) (map-id xs)
+
 concat : {X : 𝓤 ̇ } → List (List X) → List X
 concat []         = []
 concat (xs ∷ xss) = xs ++ concat xss
 
+concat-singletons' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                     (g : X → Y)
+                     (xs : List X)
+                   → concat (map (λ x → [ g x ]) xs) ＝ map g xs
+concat-singletons' g []       = refl
+concat-singletons' g (x ∷ xs) = ap (g x ∷_) (concat-singletons' g xs)
+
 concat-singletons : {X : 𝓤 ̇ }
                     (xs : List X) → concat (map [_] xs) ＝ xs
-concat-singletons []       = refl
-concat-singletons (x ∷ xs) = ap (x ∷_) (concat-singletons xs)
+concat-singletons xs = concat-singletons' id xs ∙ map-id xs
 
 concat-++ : {X : 𝓤 ̇ }
             (xss yss : List (List X))
