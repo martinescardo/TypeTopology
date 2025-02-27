@@ -297,8 +297,8 @@ cocone-morphism-family-homotopy-coherence
  → ((θ , ϕl , ϕr , γ) : cocone-morphism-family f g X P (i , j , H) (i' , j' , H')
                          (u , K , L , M) (u' , K' , L' , M'))
  → (c : C)
- → M c ＝ alt-path f g X P (i , j , H) (i' , j' , H') (u , K , L , M)
-           (u' , K' , L' , M') θ ϕl ϕr c
+ → M c ＝ alt-path f g X P (i , j , H) (i' , j' , H')
+           (u , K , L , M) (u' , K' , L' , M') θ ϕl ϕr c
 cocone-morphism-family-homotopy-coherence f g X P s s' m m' (_ , _ , _ , γ) = γ
 
 canonical-map-to-cocone-morphism-family

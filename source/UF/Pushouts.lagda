@@ -24,18 +24,17 @@ open import UF.Yoneda
 
 \end{code}
 
-Now we will define the universal property, induction principle and propositional
-computation rules for pushouts and show they are inter-derivable.
+Now we will define the (dependent) universal property, induction and recursion
+principles and propositional computation rules for pushouts and show they are
+inter-derivable.
 
 In fact we will only show:
-(1) The induction principle and propositional computation rules implies the
-  the recursion principle with corresponding computation rules and the uniqueness
-  principle.
-
-(2) The recursion principle with corresponding computation rules and the
-  uniqueness principle implies the non-dependent universal property.
-
-(3) The universal property implies the induction principle.
+(1) That the non-dependent universal property implies the recursion principle,
+  computation rules and uniqueness principle with associated computation rules.
+(2) That the recursion principle and uniqueness principles (with computation
+  rules) implies the induction principle and associated computations rules.
+(3) That the induction principle and computation rules implies the dependent
+  universal property.
 
 \begin{code}
 
@@ -517,6 +516,36 @@ computation rules and the uniqueness principles.
       (u , H , H' , λ c → M c ⁻¹)
       (u' , ∼-refl , ∼-refl , λ c → refl-left-neutral)))
   where
+   I : (c : C) → H (f c) ∙ ap u' (glue c) ＝ ap u (glue c) ∙ H' (g c)   
+   I c = H (f c) ∙ ap u' (glue c)
+       ＝⟨ II ⟩
+         (pushout-uniqueness u u' H H' M (inll (f c)) ∙ refl) ∙ ap u' (glue c)
+       ＝⟨ III ⟩
+         pushout-uniqueness u u' H H' M (inll (f c)) ∙ (refl ∙ ap u' (glue c))
+       ＝⟨ IV ⟩
+         pushout-uniqueness u u' H H' M (inll (f c)) ∙ (ap u' (glue c) ∙ refl)
+       ＝⟨ V ⟩
+         (pushout-uniqueness u u' H H' M (inll (f c)) ∙ ap u' (glue c)) ∙ refl
+       ＝⟨ VI ⟩
+         (ap u (glue c) ∙ pushout-uniqueness u u' H H' M (inrr (g c))) ∙ refl
+       ＝⟨ VII ⟩
+         ap u (glue c) ∙ (pushout-uniqueness u u' H H' M (inrr (g c)) ∙ refl)
+       ＝⟨ VIII ⟩
+         ap u (glue c) ∙ H' (g c)                                     ∎
+    where
+     II = ap (_∙ ap u' (glue c)) (pushout-uniqueness-inll u u' H H' M (f c) ⁻¹)
+     III = ∙assoc (pushout-uniqueness u u' H H' M (inll (f c)))
+            refl (ap u' (glue c))
+     IV = ap (pushout-uniqueness u u' H H' M (inll (f c)) ∙_) {_} {ap u' (glue c)}
+             (refl-left-neutral)
+     V = ∙assoc (pushout-uniqueness u u' H H' M (inll (f c))) 
+          (ap u' (glue c)) refl ⁻¹
+     VI = ap (_∙ refl)
+           (homotopies-are-natural u u' (pushout-uniqueness u u' H H' M)
+           {_} {_} {glue c})
+     VII = ∙assoc (ap u (glue c))
+            (pushout-uniqueness u u' H H' M (inrr (g c))) refl
+     VIII = ap (ap u (glue c) ∙_) (pushout-uniqueness-inrr u u' H H' M (g c))
    Notice : (c : C)
           → alt-path f g X pushout pushout-cocone
              (u' ∘ inll , u' ∘ inrr , ∼-ap-∘ u' glue)
@@ -525,15 +554,34 @@ computation rules and the uniqueness principles.
              (pushout-uniqueness u u' H H' M)
              (pushout-uniqueness-inll u u' H H' M)
              (pushout-uniqueness-inrr u u' H H' M) c
-          ＝ ap (_∙ ap u' (glue c))
-                (pushout-uniqueness-inll u u' H H' M (f c) ⁻¹)
-            ∙ (homotopies-are-natural u u' (pushout-uniqueness u u' H H' M)
-               {_} {_} {glue c} 
-            ∙ ap (ap u (glue c) ∙_)
-                 (pushout-uniqueness-inrr u u' H H' M (g c)))
-   Notice c = {!!}
+          ＝ I c
+   Notice c = refl
+   Notice' : (c : C)
+           → alt-path f g X pushout pushout-cocone
+             (u' ∘ inll , u' ∘ inrr , ∼-ap-∘ u' glue)
+             (u , H , H' , λ c → M c ⁻¹)
+             (u' , ∼-refl , ∼-refl , λ c → refl-left-neutral)
+             (pushout-uniqueness u u' H H' M)
+             (pushout-uniqueness-inll u u' H H' M)
+             (pushout-uniqueness-inrr u u' H H' M) c
+           ＝ ap (_∙ ap u' (glue c)) (pushout-uniqueness-inll u u' H H' M (f c) ⁻¹)
+             ∙ homotopies-are-natural u u' (pushout-uniqueness u u' H H' M)
+                {_} {_} {glue c}
+             ∙ ap (ap u (glue c) ∙_) (pushout-uniqueness-inrr u u' H H' M (g c))
+   Notice' = {!!}
+    where
+     II : ?
+     II = ?
                     
 \end{code}
+
+  I = ap (_∙ H' c) (ϕl (f c) ⁻¹)
+  II = ∙assoc (θ (i (f c))) (K' (f c)) (H' c)
+  III = ap (θ (i (f c)) ∙_) (M' c)
+  IV = ∙assoc (θ (i (f c))) (ap u' (H c)) (L' (g c)) ⁻¹
+  V = ap (_∙ L' (g c)) (homotopies-are-natural u u' θ {_} {_} {H c})
+  VI = ∙assoc (ap u (H c)) (θ (j (g c))) (L' (g c))
+  VII = ap (ap u (H c) ∙_) (ϕr (g c))
 
 Before deriving the induction principle and the corresponding propositional
 computation rules we will introduce an auxillary type which we shall call
@@ -737,7 +785,8 @@ pre-induction and record its associated computation rules.
   → (G : (c : C) → transport P (glue c) (l (f c)) ＝ r (g c))
   → (c : C)
   → apd (λ - → transport P (pre-induction-id-is-id l r G -)
-     (pre-induction-family l r G -)) (glue c)
+        (pre-induction-family l r G -))
+        (glue c)
     ∙ pre-induction-family-comp-inrr l r G (g c)
   ＝ ap (transport P (glue c)) (pre-induction-family-comp-inll l r G (f c)) ∙ G c
  pre-induction-family-comp-glue l r G c = {!!}
