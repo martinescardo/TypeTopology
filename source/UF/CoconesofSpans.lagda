@@ -342,13 +342,6 @@ canonical-map-to-cocone-morphism-family {_} {_} {_} {_} {_} {A} {B} {C}
   II c = I u (H c) (L (g c)) (K (f c)) (H' c) (M c)
 
 \end{code}
-
-!!!!!!!!!!!!!!!!! I need to give an identification between two homotopies. So I
-tried to generalize all the paths in order to take advantage of path induction
-(see I above) then I can use that to define the specific identification I need
-(see II above). The issues is the generalization I am using doesn't specify
-correctly... I must be doing something silly but I can't see it (the hole in II
-should be filled by L (g c) but agda doesn't like it.) !!!!!!!!!!!!!!!!!!!!!!
  
 We also introduce the notion of a dependent cocone.
 

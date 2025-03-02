@@ -434,19 +434,19 @@ computation rules and the uniqueness principles.
                     → (H : (a : A) → u (inll a) ＝ u' (inll a))
                     → (H' : (b : B) → u (inrr b) ＝ u' (inrr b))
                     → (M : (c : C)
-                     → ap u (glue c) ∙ H' (g c) ＝ H (f c) ∙ ap u' (glue c))
+                     → H (f c) ∙ ap u' (glue c) ＝ ap u (glue c) ∙ H' (g c))
                     → (x : pushout) → u x ＝ u' x
  pushout-uniqueness {_} {X} u u' H H' M
   = cocone-morphism-family-homotopy f g X pushout pushout-cocone
      (u' ∘ inll , u' ∘ inrr , ∼-ap-∘ u' glue)
-     (u , H , H' , λ c → M c ⁻¹)
+     (u , H , H' , M)
      (u' , ∼-refl , ∼-refl , λ c → refl-left-neutral)
      (canonical-map-to-cocone-morphism-family f g X pushout pushout-cocone
-      (u' ∘ inll , u' ∘ inrr , ∼-ap-∘ u' glue) (u , H , H' , λ c → M c ⁻¹)
+      (u' ∘ inll , u' ∘ inrr , ∼-ap-∘ u' glue) (u , H , H' , M)
       (u' , ∼-refl , ∼-refl , λ c → refl-left-neutral)
       (singletons-are-props (pushout-fiber-is-singleton'
        (u' ∘ inll , u' ∘ inrr , ∼-ap-∘ u' glue))
-       (u , H , H' , λ c → M c ⁻¹)
+       (u , H , H' , M)
        (u' , ∼-refl , ∼-refl , λ c → refl-left-neutral)))
 
  pushout-uniqueness-inll : {X : 𝓣 ̇}
@@ -454,19 +454,19 @@ computation rules and the uniqueness principles.
                          → (H : (a : A) → u (inll a) ＝ u' (inll a))
                          → (H' : (b : B) → u (inrr b) ＝ u' (inrr b))
                          → (M : (c : C)
-                           → ap u (glue c) ∙ H' (g c) ＝ H (f c) ∙ ap u' (glue c))
+                           → H (f c) ∙ ap u' (glue c) ＝ ap u (glue c) ∙ H' (g c))
                          → (a : A)
                          → pushout-uniqueness u u' H H' M (inll a) ＝ H a
  pushout-uniqueness-inll {_} {X} u u' H H' M
   = cocone-morphism-family-left-coherence f g X pushout pushout-cocone
-     (u' ∘ inll , u' ∘ inrr , ∼-ap-∘ u' glue) (u , H , H' , λ c → M c ⁻¹)
+     (u' ∘ inll , u' ∘ inrr , ∼-ap-∘ u' glue) (u , H , H' , M)
      (u' , ∼-refl , ∼-refl , λ c → refl-left-neutral)
      (canonical-map-to-cocone-morphism-family f g X pushout pushout-cocone
-      (u' ∘ inll , u' ∘ inrr , ∼-ap-∘ u' glue) (u , H , H' , λ c → M c ⁻¹)
+      (u' ∘ inll , u' ∘ inrr , ∼-ap-∘ u' glue) (u , H , H' , M)
       (u' , ∼-refl , ∼-refl , λ c → refl-left-neutral)
       (singletons-are-props (pushout-fiber-is-singleton'
        (u' ∘ inll , u' ∘ inrr , ∼-ap-∘ u' glue))
-       (u , H , H' , λ c → M c ⁻¹)
+       (u , H , H' , M)
        (u' , ∼-refl , ∼-refl , λ c → refl-left-neutral)))
 
  pushout-uniqueness-inrr : {X : 𝓣 ̇}
@@ -474,47 +474,45 @@ computation rules and the uniqueness principles.
                          → (H : (a : A) → u (inll a) ＝ u' (inll a))
                          → (H' : (b : B) → u (inrr b) ＝ u' (inrr b))
                          → (M : (c : C)
-                           → ap u (glue c) ∙ H' (g c) ＝ H (f c) ∙ ap u' (glue c))
+                           → H (f c) ∙ ap u' (glue c) ＝ ap u (glue c) ∙ H' (g c))
                          → (b : B)
                          → pushout-uniqueness u u' H H' M (inrr b) ＝ H' b
  pushout-uniqueness-inrr {_} {X} u u' H H' M
   = cocone-morphism-family-right-coherence f g X pushout pushout-cocone
-     (u' ∘ inll , u' ∘ inrr , ∼-ap-∘ u' glue) (u , H , H' , λ c → M c ⁻¹)
+     (u' ∘ inll , u' ∘ inrr , ∼-ap-∘ u' glue) (u , H , H' , M)
      (u' , ∼-refl , ∼-refl , λ c → refl-left-neutral)
      (canonical-map-to-cocone-morphism-family f g X pushout pushout-cocone
-      (u' ∘ inll , u' ∘ inrr , ∼-ap-∘ u' glue) (u , H , H' , λ c → M c ⁻¹)
+      (u' ∘ inll , u' ∘ inrr , ∼-ap-∘ u' glue) (u , H , H' , M)
       (u' , ∼-refl , ∼-refl , λ c → refl-left-neutral)
       (singletons-are-props (pushout-fiber-is-singleton'
        (u' ∘ inll , u' ∘ inrr , ∼-ap-∘ u' glue))
-       (u , H , H' , λ c → M c ⁻¹)
+       (u , H , H' , M)
        (u' , ∼-refl , ∼-refl , λ c → refl-left-neutral)))
 
- pushout-uniqueness-glue : {X : 𝓣 ̇}
-                         → (u u' : pushout → X)
-                         → (H : (a : A) → u (inll a) ＝ u' (inll a))
-                         → (H' : (b : B) → u (inrr b) ＝ u' (inrr b))
-                         → (M : (c : C)
-                           → ap u (glue c) ∙ H' (g c) ＝ H (f c) ∙ ap u' (glue c))
-                         → (c : C)
-                         → M c ⁻¹
-                         ＝ alt-path f g X pushout pushout-cocone
-                            (u' ∘ inll , u' ∘ inrr , ∼-ap-∘ u' glue)
-                            (u , H , H' , λ c → M c ⁻¹)
-                            (u' , ∼-refl , ∼-refl , λ c → refl-left-neutral)
-                            (pushout-uniqueness u u' H H' M)
-                            (pushout-uniqueness-inll u u' H H' M)
-                            (pushout-uniqueness-inrr u u' H H' M) c
- pushout-uniqueness-glue {_} {X} u u' H H' M 
+ pushout-uniqueness-glue
+  : {X : 𝓣 ̇}
+  → (u u' : pushout → X)
+  → (H : (a : A) → u (inll a) ＝ u' (inll a))
+  → (H' : (b : B) → u (inrr b) ＝ u' (inrr b))
+  → (M : (c : C) → H (f c) ∙ ap u' (glue c) ＝ ap u (glue c) ∙ H' (g c))
+  → (c : C)
+  → M c ＝ ap (_∙ ap u' (glue c))
+              (pushout-uniqueness-inll u u' H H' M (f c) ⁻¹)
+           ∙ (homotopies-are-natural u u' (pushout-uniqueness u u' H H' M)
+              {_} {_} {glue c}
+           ∙ ap (ap u (glue c) ∙_) (pushout-uniqueness-inrr u u' H H' M (g c))) 
+ pushout-uniqueness-glue {_} {X} u u' H H' M c
   = cocone-morphism-family-homotopy-coherence f g X pushout pushout-cocone
-     (u' ∘ inll , u' ∘ inrr , ∼-ap-∘ u' glue) (u , H , H' , λ c → M c ⁻¹)
+     (u' ∘ inll , u' ∘ inrr , ∼-ap-∘ u' glue) (u , H , H' , M)
      (u' , ∼-refl , ∼-refl , λ c → refl-left-neutral)
      (canonical-map-to-cocone-morphism-family f g X pushout pushout-cocone
-     (u' ∘ inll , u' ∘ inrr , ∼-ap-∘ u' glue) (u , H , H' , λ c → M c ⁻¹)
+     (u' ∘ inll , u' ∘ inrr , ∼-ap-∘ u' glue) (u , H , H' , M)
      (u' , ∼-refl , ∼-refl , λ c → refl-left-neutral)
       (singletons-are-props (pushout-fiber-is-singleton'
        (u' ∘ inll , u' ∘ inrr , ∼-ap-∘ u' glue))
-      (u , H , H' , λ c → M c ⁻¹)
-      (u' , ∼-refl , ∼-refl , λ c → refl-left-neutral)))
+      (u , H , H' , M)
+      (u' , ∼-refl , ∼-refl , λ c → refl-left-neutral))) c
+   ∙ Notice' c
   where
    I : (c : C) → H (f c) ∙ ap u' (glue c) ＝ ap u (glue c) ∙ H' (g c)   
    I c = H (f c) ∙ ap u' (glue c)
@@ -549,7 +547,7 @@ computation rules and the uniqueness principles.
    Notice : (c : C)
           → alt-path f g X pushout pushout-cocone
              (u' ∘ inll , u' ∘ inrr , ∼-ap-∘ u' glue)
-             (u , H , H' , λ c → M c ⁻¹)
+             (u , H , H' , M)
              (u' , ∼-refl , ∼-refl , λ c → refl-left-neutral)
              (pushout-uniqueness u u' H H' M)
              (pushout-uniqueness-inll u u' H H' M)
@@ -559,33 +557,54 @@ computation rules and the uniqueness principles.
    Notice' : (c : C)
            → alt-path f g X pushout pushout-cocone
              (u' ∘ inll , u' ∘ inrr , ∼-ap-∘ u' glue)
-             (u , H , H' , λ c → M c ⁻¹)
+             (u , H , H' , M)
              (u' , ∼-refl , ∼-refl , λ c → refl-left-neutral)
              (pushout-uniqueness u u' H H' M)
              (pushout-uniqueness-inll u u' H H' M)
              (pushout-uniqueness-inrr u u' H H' M) c
            ＝ ap (_∙ ap u' (glue c)) (pushout-uniqueness-inll u u' H H' M (f c) ⁻¹)
-             ∙ homotopies-are-natural u u' (pushout-uniqueness u u' H H' M)
+             ∙ (homotopies-are-natural u u' (pushout-uniqueness u u' H H' M)
                 {_} {_} {glue c}
-             ∙ ap (ap u (glue c) ∙_) (pushout-uniqueness-inrr u u' H H' M (g c))
-   Notice' = {!!}
+             ∙ ap (ap u (glue c) ∙_) (pushout-uniqueness-inrr u u' H H' M (g c)))
+   Notice' c
+    = ap (ap (_∙ ap u' (glue c)) (pushout-uniqueness-inll u u' H H' M (f c) ⁻¹) ∙_)
+         (II (pushout-uniqueness u u' H H' M (inll (f c))) (ap u (glue c))
+             (ap u' (glue c)) (pushout-uniqueness u u' H H' M (inrr (g c)))
+             (homotopies-are-natural u u' (pushout-uniqueness u u' H H' M)
+               {_} {_} {glue c})
+             (ap u (glue c) ∙ H' (g c))
+             (ap (ap u (glue c) ∙_) (pushout-uniqueness-inrr u u' H H' M (g c))))
     where
-     II : ?
-     II = ?
+     II : {𝓣 : Universe} {X : 𝓣  ̇} {x y y' z : X}
+          (p : x ＝ y) (p' : x ＝ y') (q : y ＝ z) (q' : y' ＝ z)
+          (α : p ∙ q ＝ p' ∙ q')
+          (r : x ＝ z)
+          (β : p' ∙ q' ＝ r)
+        → ∙assoc p refl q
+          ∙ (ap (p ∙_) (refl-left-neutral {_} {_} {_} {_} {q})
+          ∙ (∙assoc p q refl ⁻¹
+          ∙ (ap (_∙ refl) α
+          ∙ (∙assoc p' q' refl ∙ β))))
+        ＝ α ∙ β
+     II p refl refl refl α r β
+      = III p α r β
+      where
+       III : {𝓣 : Universe} {X : 𝓣  ̇} {x : X}
+             (p : x ＝ x) (α : p ＝ refl)
+             (r : x ＝ x) (β : refl ＝ r)
+           → ∙assoc p refl refl
+             ∙ (ap (_∙_ p) refl
+             ∙ (∙assoc p refl refl ⁻¹
+             ∙ (ap (_∙ refl) α
+             ∙ (refl ∙ β))))
+           ＝ α ∙ β
+       III p refl r refl = refl
                     
 \end{code}
 
-  I = ap (_∙ H' c) (ϕl (f c) ⁻¹)
-  II = ∙assoc (θ (i (f c))) (K' (f c)) (H' c)
-  III = ap (θ (i (f c)) ∙_) (M' c)
-  IV = ∙assoc (θ (i (f c))) (ap u' (H c)) (L' (g c)) ⁻¹
-  V = ap (_∙ L' (g c)) (homotopies-are-natural u u' θ {_} {_} {H c})
-  VI = ∙assoc (ap u (H c)) (θ (j (g c))) (L' (g c))
-  VII = ap (ap u (H c) ∙_) (ϕr (g c))
-
 Before deriving the induction principle and the corresponding propositional
 computation rules we will introduce an auxillary type which we shall call
-pre-induction and record its associated computation rules. 
+pre-induction and record its associated computation rules.
 
 \begin{code}
 
@@ -726,7 +745,7 @@ pre-induction and record its associated computation rules.
   = pushout-uniqueness (pre-induction-id l r G) id
      (λ a → ap pr₁ (pre-induction-comp-inll l r G a))
       (λ b → ap pr₁ (pre-induction-comp-inrr l r G b))
-       (pre-induction-compatibility l r G)
+       (λ c → pre-induction-compatibility l r G c ⁻¹)
 
  pre-induction-family
   : {P : pushout → 𝓣  ̇}
@@ -755,7 +774,7 @@ pre-induction and record its associated computation rules.
     I = pushout-uniqueness-inll (pre-induction-id l r G) id
          (λ a → ap pr₁ (pre-induction-comp-inll l r G a))
          (λ b → ap pr₁ (pre-induction-comp-inrr l r G b))
-         (pre-induction-compatibility l r G)
+         (λ c → pre-induction-compatibility l r G c ⁻¹)
 
  pre-induction-family-comp-inrr
   : {P : pushout → 𝓣  ̇}
@@ -776,7 +795,7 @@ pre-induction and record its associated computation rules.
     I = pushout-uniqueness-inrr (pre-induction-id l r G) id
          (λ a → ap pr₁ (pre-induction-comp-inll l r G a))
          (λ b → ap pr₁ (pre-induction-comp-inrr l r G b))
-         (pre-induction-compatibility l r G)
+         (λ c → pre-induction-compatibility l r G c ⁻¹)
 
  pre-induction-family-comp-glue
   : {P : pushout → 𝓣  ̇}
