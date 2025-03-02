@@ -809,6 +809,30 @@ pre-induction and record its associated computation rules.
     ∙ pre-induction-family-comp-inrr l r G (g c)
   ＝ ap (transport P (glue c)) (pre-induction-family-comp-inll l r G (f c)) ∙ G c
  pre-induction-family-comp-glue l r G c = {!!}
+  where
+   I : (c : C)
+     → pre-induction-compatibility l r G c ⁻¹ ＝
+       ap (_∙ ap id (glue c))
+          (pushout-uniqueness-inll (pre-induction-id l r G) id
+           (λ a → ap pr₁ (pre-induction-comp-inll l r G a))
+           (λ b → ap pr₁ (pre-induction-comp-inrr l r G b))
+           (λ - → pre-induction-compatibility l r G - ⁻¹) (f c) ⁻¹)
+       ∙
+       (homotopies-are-natural (pre-induction-id l r G) id
+         (pushout-uniqueness (pre-induction-id l r G) id
+          (λ a → ap pr₁ (pre-induction-comp-inll l r G a))
+          (λ b → ap pr₁ (pre-induction-comp-inrr l r G b))
+          (λ - → pre-induction-compatibility l r G - ⁻¹))
+       ∙
+       ap (ap (pre-induction-id l r G) (glue c) ∙_)
+          (pushout-uniqueness-inrr (pre-induction-id l r G) id
+           (λ a → ap pr₁ (pre-induction-comp-inll l r G a))
+           (λ b → ap pr₁ (pre-induction-comp-inrr l r G b))
+           (λ - → pre-induction-compatibility l r G - ⁻¹) (g c)))
+   I = pushout-uniqueness-glue (pre-induction-id l r G) id
+        (λ a → ap pr₁ (pre-induction-comp-inll l r G a))
+        (λ b → ap pr₁ (pre-induction-comp-inrr l r G b))
+        (λ c → pre-induction-compatibility l r G c ⁻¹)
 
 \end{code}
 
