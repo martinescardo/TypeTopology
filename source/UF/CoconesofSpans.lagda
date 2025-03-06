@@ -152,6 +152,35 @@ inverse-cocone-map f g X u u' =
 
 \end{code}
 
+We also introduce the notion of a dependent cocone.
+
+TODO. Characterize the identity type of dependent cocones.
+
+\begin{code}
+
+dependent-cocone : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇}
+                   (f : C → A) (g : C → B) (X : 𝓣  ̇)
+                   (t : cocone f g X) (P : X → 𝓣'  ̇)
+                 → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣'  ̇
+dependent-cocone {_} {_} {_} {_} {_} {A} {B} {C} f g X (l , r , G) P =
+ Σ i ꞉ ((a : A) → P (l a)) , Σ j ꞉ ((b : B) → P (r b)) ,
+  ((c : C) → transport P (G c) (i (f c)) ＝ j (g c))
+
+dependent-cocone-family : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇}
+                          (f : C → A) (g : C → B) (X : 𝓣  ̇)
+                          (t : cocone f g X) (P : X → 𝓣'  ̇)
+                        → dependent-cocone f g X t P → dependent-cocone f g X t P
+                        → {!!}  ̇
+dependent-cocone-family {_} {_} {_} {_} {_} {_} {_} {C} f g X (l , r , G) P
+ (i , j , H) (i' , j' , H')
+ = Σ K ꞉ i ∼ i' , Σ L ꞉ j ∼ j' ,
+    ((c : C) → {!!} ∙ H' c ＝ H c ∙ L (g c))
+
+\end{code}
+
+ Σ K ꞉ i ∼ i' , Σ L ꞉ j ∼ j' ,
+  ∼-trans (K ∘ f) H' ∼ ∼-trans H (L ∘ g)
+
 We need to define the type of morphisms between cocones. We *should* give a
 characterization of the identity type but fortunately we only need a map in the
 trivial direction for now.
@@ -340,21 +369,5 @@ canonical-map-to-cocone-morphism-family {_} {_} {_} {_} {_} {A} {B} {C}
                 (u , K , L , M) ∼-refl (λ - → refl-left-neutral)
                 (λ - → refl-left-neutral) c
   II c = I u (H c) (L (g c)) (K (f c)) (H' c) (M c)
-
-\end{code}
- 
-We also introduce the notion of a dependent cocone.
-
-TODO. Characterize the identity type of dependent cocones.
-
-\begin{code}
-
-dependent-cocone : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇}
-                   (f : C → A) (g : C → B) (X : 𝓣  ̇)
-                   (t : cocone f g X) (P : X → 𝓣'  ̇)
-                 → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣'  ̇
-dependent-cocone {_} {_} {_} {_} {_} {A} {B} {C} f g X (i , j , H) P =
- Σ i' ꞉ ((a : A) → P (i a)) , Σ j' ꞉ ((b : B) → P (j b)) ,
-  ((c : C) → transport P (H c) (i' (f c)) ＝ j' (g c))
 
 \end{code}

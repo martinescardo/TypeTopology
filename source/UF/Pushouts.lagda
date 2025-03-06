@@ -132,40 +132,49 @@ record pushouts-exist {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇} (f : C → A)
   inll : A → pushout 
   inrr : B → pushout 
   glue : (c : C) → inll (f c) ＝ inrr (g c)
-  pushout-induction
+  pushout-dependent-universal-property
    : {P : pushout → 𝓣  ̇}
-   → Pushout-Induction-Principle pushout f g (inll , inrr , glue) P
-  pushout-ind-comp-inll
-   : {P : pushout → 𝓣  ̇}
-   → Pushout-Computation-Rule₁ pushout f g (inll , inrr , glue) P
-      pushout-induction
-  pushout-ind-comp-inrr
-   : {P : pushout → 𝓣  ̇}
-   → Pushout-Computation-Rule₂ pushout f g (inll , inrr , glue) P
-      pushout-induction
-  pushout-ind-comp-glue
-   : {P : pushout → 𝓣  ̇}
-   → Pushout-Computation-Rule₃ pushout f g (inll , inrr , glue) P
-      pushout-induction pushout-ind-comp-inll pushout-ind-comp-inrr
+   → Pushout-Dependent-Universal-Property pushout f g (inll , inrr , glue) P
 
 \end{code}
 
-We will observe that the pushout is a cocone and begin deriving some key
-results from the induction principles:
-recursion principle (along with corresponding computation rules), the uniqueness
-principle and the universal property.
+The following are logically equivalent:
 
-The following are logically equivalent
-
-1) The induction principle with propositional computation rules
-2) The recursion principle with propositional computation rules and the
+1) The dependent universal property
+2) The induction principle with propositional computation rules
+3) The recursion principle with propositional computation rules and the
    uniqueness principle
-3) The universal property.
+4) The universal property.
+
+Below we will derive 2), 3) and 4) from the seemingly strongest assumption 1).
+Later we will attempty to derive 1), 2) and 3) from 4) (this is a work in progress;
+we are stuck on the third induction computation principle.) 
 
 \begin{code}
 
  pushout-cocone : cocone f g pushout
  pushout-cocone = (inll , inrr , glue)
+
+ pushout-induction
+  : {P : pushout → 𝓣  ̇}
+  → Pushout-Induction-Principle pushout f g (inll , inrr , glue) P
+ pushout-induction = {!!}
+
+ pushout-ind-comp-inll
+  : {P : pushout → 𝓣  ̇}
+  → Pushout-Computation-Rule₁ pushout f g (inll , inrr , glue) P pushout-induction
+ pushout-ind-comp-inll = {!!}
+
+ pushout-ind-comp-inrr
+  : {P : pushout → 𝓣  ̇}
+  → Pushout-Computation-Rule₂ pushout f g (inll , inrr , glue) P pushout-induction
+ pushout-ind-comp-inrr = {!!}
+
+ pushout-ind-comp-glue
+  : {P : pushout → 𝓣  ̇}
+  → Pushout-Computation-Rule₃ pushout f g (inll , inrr , glue) P
+     pushout-induction pushout-ind-comp-inll pushout-ind-comp-inrr
+ pushout-ind-comp-glue = {!!}
    
  pushout-recursion : {D : 𝓣  ̇}
                    → (l : A → D)
@@ -822,9 +831,14 @@ pre-induction and record its associated computation rules.
          (pushout-uniqueness (pre-induction-id l r G) id
           (λ a → ap pr₁ (pre-induction-comp-inll l r G a))
           (λ b → ap pr₁ (pre-induction-comp-inrr l r G b))
-          (λ - → pre-induction-compatibility l r G - ⁻¹))
+          (λ - → pre-induction-compatibility l r G - ⁻¹)) {_} {_} {glue c}
        ∙
        ap (ap (pre-induction-id l r G) (glue c) ∙_)
+          {pushout-uniqueness (pre-induction-id l r G) id
+            (λ - → ap pr₁ (pre-induction-comp-inll l r G -))
+            (λ - → ap pr₁ (pre-induction-comp-inrr l r G -))
+            (λ - → pre-induction-compatibility l r G - ⁻¹)
+            (inrr (g c))} {ap pr₁ (pre-induction-comp-inrr l r G (g c))}
           (pushout-uniqueness-inrr (pre-induction-id l r G) id
            (λ a → ap pr₁ (pre-induction-comp-inll l r G a))
            (λ b → ap pr₁ (pre-induction-comp-inrr l r G b))
