@@ -130,7 +130,8 @@ use in other constructions.
 
 \begin{code}
 
-transfinite-induction-behaviour : FunExt → (w : is-well-founded)
+transfinite-induction-behaviour : FunExt
+                                → (w : is-well-founded)
                                   {𝓦 : Universe} (P : X → 𝓦 ̇ )
                                   (f : (x : X) → ((y : X) → y < x → P y) → P x)
                                   (x : X)
