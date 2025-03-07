@@ -111,20 +111,17 @@ local-hedberg' {𝓤} {X} x pc y p q =
 
 \end{code}
 
-Here is an example (added some time after the pandemic, not sure
-when). Any type that admits a prop-valued, reflexive and antisymmetric
-relation is a set.
 
 \begin{code}
 
-type-with-prop-valued-refl-antisym-rel-is-set
+type-with-prop-valued-refl-antisym-rel-is-set'
  : {X : 𝓤 ̇ }
  → (_≤_ : X → X → 𝓥 ̇ )
  → ((x y : X) → is-prop (x ≤ y))
  → ((x : X) → x ≤ x)
  → ((x y : X) → x ≤ y → y ≤ x → x ＝ y)
  → is-set X
-type-with-prop-valued-refl-antisym-rel-is-set
+type-with-prop-valued-refl-antisym-rel-is-set'
  {𝓤} {𝓥} {X} _≤_ ≤-prop-valued ≤-refl ≤-anti = γ
  where
   α : ∀ {x y} (l l' : x ≤ y) (m m' : y ≤ x) → ≤-anti x y l m ＝ ≤-anti x y l' m'
@@ -146,5 +143,48 @@ type-with-prop-valued-refl-antisym-rel-is-set
 
   γ : is-set X
   γ = Id-collapsibles-are-sets (f , κ)
+
+\end{code}
+
+Added before 2018 and moved here 7th March 2025 from another file
+where it was in less general form.
+
+\begin{code}
+
+reflexive-prop-valued-relation-that-implies-equality-gives-set
+ : {X : 𝓤 ̇ }
+ → (_R_ : X → X → 𝓥 ̇ )
+ → ((x y : X) → is-prop (x R y))
+ → ((x : X) → x R x)
+ → ((x y : X) → x R y → x ＝ y)
+ → is-set X
+reflexive-prop-valued-relation-that-implies-equality-gives-set
+ {𝓤} {𝓥} {X} _R_ p r e = γ
+ where
+  f : {x y :  X} → x ＝ y → x ＝ y
+  f {x} {y} p = e x y (transport (x R_) p (r x))
+
+  ec : {x y : X} {l l' : x R y} → e x y l ＝ e x y l'
+  ec {x} {y} {l} {l'} = ap (e x y) (p x y l l')
+
+  κ : {x y : X} → wconstant (f {x} {y})
+  κ p q = ec
+
+  γ : is-set X
+  γ = Id-collapsibles-are-sets (f , κ)
+
+type-with-prop-valued-refl-antisym-rel-is-set
+ : {X : 𝓤 ̇ }
+ → (_≤_ : X → X → 𝓥 ̇ )
+ → ((x y : X) → is-prop (x ≤ y))
+ → ((x : X) → x ≤ x)
+ → ((x y : X) → x ≤ y → y ≤ x → x ＝ y)
+ → is-set X
+type-with-prop-valued-refl-antisym-rel-is-set _≤_ ≤-prop-valued ≤-refl ≤-anti
+ = reflexive-prop-valued-relation-that-implies-equality-gives-set
+    (λ x y → (x ≤ y) × (y ≤ x))
+    (λ x y → ×-is-prop (≤-prop-valued x y) (≤-prop-valued y x))
+    (λ x → ≤-refl x , ≤-refl x)
+    (λ x y (l , m) → ≤-anti x y l m)
 
 \end{code}

@@ -183,7 +183,7 @@ extensional-po-is-prop-valued : FunExt
                               → is-prop-valued
                               → (x y : X) → is-prop (x ≼ y)
 extensional-po-is-prop-valued fe isp x y =
-  Π₂-is-prop (λ {𝓤} {𝓥} → fe 𝓤 𝓥) (λ u l → isp u y)
+ Π₂-is-prop (λ {𝓤} {𝓥} → fe 𝓤 𝓥) (λ u l → isp u y)
 
 ≼-refl : {x : X} → x ≼ x
 ≼-refl u l = l
@@ -242,22 +242,9 @@ extensionally-ordered-types-are-sets : FunExt
                                      → is-prop-valued
                                      → is-extensional
                                      → is-set X
-extensionally-ordered-types-are-sets fe isp e = γ
- where
-  f : {x y :  X} → x ＝ y → x ＝ y
-  f {x} {y} p = e x y (transport (x ≼_) p (≼-refl {x}))
-                      (transport (_≼ x) p (≼-refl {x}))
-
-  ec : {x y : X} {l l' : x ≼ y} {m m' : y ≼ x} → e x y l m ＝ e x y l' m'
-  ec {x} {y} {l} {l'} {m} {m'} = ap₂ (e x y)
-                                     (extensional-po-is-prop-valued fe isp x y l l')
-                                     (extensional-po-is-prop-valued fe isp y x m m')
-
-  κ : {x y : X} → wconstant (f {x} {y})
-  κ p q = ec
-
-  γ : is-set X
-  γ = Id-collapsibles-are-sets (f , κ)
+extensionally-ordered-types-are-sets fe isp =
+ type-with-prop-valued-refl-antisym-rel-is-set
+  _≼_ (extensional-po-is-prop-valued fe isp) (λ x → ≼-refl {x})
 
 well-ordered-types-are-sets : FunExt → is-well-order → is-set X
 well-ordered-types-are-sets fe (p , w , e , t) =
@@ -280,7 +267,7 @@ being-well-order-is-prop : FunExt → is-prop is-well-order
 being-well-order-is-prop fe = prop-criterion γ
  where
   γ : is-well-order → is-prop is-well-order
-  γ o = ×₄-is-prop (Π₂-is-prop ((λ {𝓤} {𝓥} → fe 𝓤 𝓥))
+  γ o = ×₄-is-prop (Π₂-is-prop (λ {𝓤} {𝓥} → fe 𝓤 𝓥)
                       (λ x y → being-prop-is-prop (fe 𝓥 𝓥)))
                    (well-foundedness-is-prop fe)
                    (extensionality-is-prop fe (prop-valuedness o))
@@ -295,7 +282,7 @@ private
 
 <-gives-≾  : (x : X)
            → is-accessible x
-           → (y : X) → y < x → y ≾ x
+          → (y : X) → y < x → y ≾ x
 <-gives-≾ = transfinite-induction'
                      (λ x → (y : X) → y < x → y ≾ x)
                      (λ x f y l m → f y l x m l)

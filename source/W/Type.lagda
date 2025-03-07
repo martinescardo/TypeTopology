@@ -29,7 +29,7 @@ module _ {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } where
  W-ssup-root x φ = refl
 
  W-ssup-forest : (x : X) (φ : A x → 𝕎)
-             → W-forest (ssup x φ) ＝ φ
+               → W-forest (ssup x φ) ＝ φ
  W-ssup-forest x φ = refl
 
  W-η : (w : 𝕎) → ssup (W-root w) (W-forest w) ＝ w

@@ -43,7 +43,7 @@ module _ {𝓥} where
  ↓-is-dominant (P , ϕ , dP) = dP
 
  value : {X : 𝓥 ̇ } → (x̃ : L X) → x̃ ↓ → X
- value (P , (ϕ , dP)) = ϕ
+ value (P , ϕ , dP) = ϕ
 
 
 module _ {𝓥 : _} {X : 𝓥 ̇ } where
