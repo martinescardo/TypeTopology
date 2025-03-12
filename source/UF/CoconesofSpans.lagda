@@ -96,15 +96,14 @@ cocone-family-is-identity-system {𝓤} {𝓥} {𝓦} {𝓣} {A} {B} {C} f g X (
           𝟙 {𝓤 ⊔ 𝓣}                  ■
      where
       IV = Σ-cong (λ - → ≃-sym (≃-funext fe i -))
-      V = singleton-≃-𝟙 {_} {𝓤 ⊔ 𝓣} 
-           (singleton-types-are-singletons i)
+      V = singleton-≃-𝟙 {_} {𝓤 ⊔ 𝓣} (singleton-types-are-singletons i)
     VI = ≃-comp {_} {_} {𝓤 ⊔ 𝓣}
                 (Σ-cong (λ - → ≃-sym (≃-funext fe j -)))
                 (singleton-≃-𝟙 (singleton-types-are-singletons j))
     VII = (Σ i' ꞉ (A → X) , Σ K ꞉ i ∼ i' ,
             Σ j' ꞉ (B → X) , Σ L ꞉ j ∼ j' ,
              Σ H' ꞉ (i' ∘ f ∼ j' ∘ g) ,
-              ∼-trans (K ∘ f) H' ∼ ∼-trans H (L ∘ g))           ≃⟨ IIIV ⟩
+              ∼-trans (K ∘ f) H' ∼ ∼-trans H (L ∘ g))           ≃⟨ VIII ⟩
           (Σ (i' , K) ꞉ (Σ i' ꞉ (A → X) , i ∼ i') ,
             Σ j' ꞉ (B → X) , Σ L ꞉ j ∼ j' ,
              Σ H' ꞉ (i' ∘ f ∼ j' ∘ g) ,
@@ -122,7 +121,7 @@ cocone-family-is-identity-system {𝓤} {𝓥} {𝓦} {𝓣} {A} {B} {C} f g X (
               ∼ ∼-trans H (∼-refl {_} {_} {_} {_} {j} ∘ g))     ≃⟨ XIII ⟩
            (Σ H' ꞉ (i ∘ f ∼ j ∘ g) , H' ∼ H)                    ■
      where
-      IIIV = ≃-sym Σ-assoc
+      VIII = ≃-sym Σ-assoc
       IX = prop-indexed-sum (equiv-to-prop III 𝟙-is-prop) (i , ∼-refl)
       XI = ≃-sym Σ-assoc
       XII = prop-indexed-sum (equiv-to-prop VI 𝟙-is-prop) (j , ∼-refl)
@@ -164,26 +163,131 @@ dependent-cocone : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇}
                  → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣'  ̇
 dependent-cocone {_} {_} {_} {_} {_} {A} {B} {C} f g X (l , r , G) P =
  Σ i ꞉ ((a : A) → P (l a)) , Σ j ꞉ ((b : B) → P (r b)) ,
-  ((c : C) → transport P (G c) (i (f c)) ＝ j (g c))
+  ((λ - → transport P (G -) ((i ∘ f) -)) ∼ j ∘ g)
 
 dependent-cocone-family : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇}
                           (f : C → A) (g : C → B) (X : 𝓣  ̇)
                           (t : cocone f g X) (P : X → 𝓣'  ̇)
                         → dependent-cocone f g X t P → dependent-cocone f g X t P
-                        → {!!}  ̇
+                        → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣'  ̇
 dependent-cocone-family {_} {_} {_} {_} {_} {_} {_} {C} f g X (l , r , G) P
  (i , j , H) (i' , j' , H')
  = Σ K ꞉ i ∼ i' , Σ L ꞉ j ∼ j' ,
-    ((c : C) → {!!} ∙ H' c ＝ H c ∙ L (g c))
+    ∼-trans (λ - → ap (transport P (G -)) ((K ∘ f) -)) H' ∼ ∼-trans H (L ∘ g)
 
+canonical-map-from-identity-to-dependent-cocone-family
+ : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇}
+   (f : C → A) (g : C → B) (X : 𝓣  ̇)
+   (t : cocone f g X) (P : X → 𝓣'  ̇)
+ → (u u' : dependent-cocone f g X t P)
+ → u ＝ u'
+ → dependent-cocone-family f g X t P u u'
+canonical-map-from-identity-to-dependent-cocone-family f g X (l , r , G) P
+ (i , j , H) .(i , j , H) refl
+ = (∼-refl , ∼-refl , λ c → refl-left-neutral {_} {_} {_} {_} {H c})
+
+dependent-cocone-family-is-identity-system
+ : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇}
+   (f : C → A) (g : C → B) (X : 𝓣  ̇)
+   (t : cocone f g X) (P : X → 𝓣'  ̇)
+ → (x : dependent-cocone f g X t P)
+ → is-contr (Σ y ꞉ dependent-cocone f g X t P ,
+             dependent-cocone-family f g X t P x y)
+dependent-cocone-family-is-identity-system {𝓤} {_} {_} {_} {𝓣'} {A} {B} {C} f g X
+ (l , r , G) P (i , j , H)
+ = equiv-to-singleton e 𝟙-is-singleton
+ where
+  e : (Σ y ꞉ dependent-cocone f g X (l , r , G) P ,
+       dependent-cocone-family f g X (l , r , G) P (i , j , H) y)
+    ≃ 𝟙 {𝓤 ⊔ 𝓣'}
+  e = (Σ y ꞉ dependent-cocone f g X (l , r , G) P ,
+       dependent-cocone-family f g X (l , r , G) P (i , j , H) y) ≃⟨ I ⟩
+      (Σ i' ꞉ ((a : A) → P (l a)) , Σ j' ꞉ ((b : B) → P (r b)) ,
+        Σ H' ꞉ ((λ - → transport P (G -) ((i' ∘ f) -)) ∼ j' ∘ g) ,
+         Σ K ꞉ i ∼ i' , Σ L ꞉ j ∼ j' ,
+          ∼-trans (λ - → ap (transport P (G -)) ((K ∘ f) -)) H'
+           ∼ ∼-trans H (L ∘ g))                                   ≃⟨ II ⟩
+       (Σ i' ꞉ ((a : A) → P (l a)) , Σ K ꞉ i ∼ i' ,
+          Σ j' ꞉ ((b : B) → P (r b)) , Σ L ꞉ j ∼ j' ,
+           Σ H' ꞉ ((λ - → transport P (G -) ((i' ∘ f) -)) ∼ j' ∘ g) ,
+            ∼-trans (λ - → ap (transport P (G -)) ((K ∘ f) -)) H'
+             ∼ ∼-trans H (L ∘ g))                                 ≃⟨ VII ⟩
+       (Σ H' ꞉ ((λ - → transport P (G -) ((i ∘ f) -)) ∼ j ∘ g) , H' ∼ H)                                                                             ≃⟨ IXV ⟩
+       𝟙                                                          ■
+   where
+    I = ≃-comp Σ-assoc (Σ-cong (λ i' → Σ-assoc))
+    II = Σ-cong (λ _ → ≃-comp (Σ-cong
+          (λ _ → ≃-comp Σ-flip (Σ-cong (λ K → Σ-flip)))) Σ-flip)
+    III = (Σ i' ꞉ ((a : A) → P (l a)) , i ∼ i')  ≃⟨ IV ⟩
+          (Σ i' ꞉ ((a : A) → P (l a)) , i ＝ i') ≃⟨ V ⟩
+          𝟙 {𝓤 ⊔ 𝓣'}                             ■
+     where
+      IV = Σ-cong (λ - → ≃-sym (≃-funext fe i -))
+      V = singleton-≃-𝟙 {_} {𝓤 ⊔ 𝓣'} (singleton-types-are-singletons i)
+    VI = ≃-comp {_} {_} {𝓤 ⊔ 𝓣'}
+                (Σ-cong (λ - → ≃-sym (≃-funext fe j -)))
+                (singleton-≃-𝟙 (singleton-types-are-singletons j))
+    VII = (Σ i' ꞉ ((a : A) → P (l a)) , Σ K ꞉ i ∼ i' ,
+            Σ j' ꞉ ((b : B) → P (r b)) , Σ L ꞉ j ∼ j' ,
+             Σ H' ꞉ ((λ - → transport P (G -) ((i' ∘ f) -)) ∼ j' ∘ g) ,
+              ∼-trans (λ - → ap (transport P (G -)) ((K ∘ f) -)) H'
+               ∼ ∼-trans H (L ∘ g))                             ≃⟨ VIII ⟩
+          (Σ (i' , K) ꞉ (Σ i' ꞉ ((a : A) → P (l a)) , i ∼ i') ,
+            Σ j' ꞉ ((b : B) → P (r b)) , Σ L ꞉ j ∼ j' ,
+             Σ H' ꞉ ((λ - → transport P (G -) ((i' ∘ f) -)) ∼ j' ∘ g) ,
+              ∼-trans (λ - → ap (transport P (G -)) ((K ∘ f) -)) H'
+               ∼ ∼-trans H (L ∘ g))                             ≃⟨ IX ⟩
+           (Σ j' ꞉ ((b : B) → P (r b)) , Σ L ꞉ j ∼ j' ,
+             Σ H' ꞉ ((λ - → transport P (G -) ((i ∘ f) -)) ∼ j' ∘ g) ,
+              ∼-trans (λ - → ap (transport P (G -)) refl) H'
+               ∼ ∼-trans H (L ∘ g))                             ≃⟨ XI ⟩
+           (Σ (j' , L) ꞉ (Σ j' ꞉ ((b : B) → P (r b)) , j ∼ j') ,
+             Σ H' ꞉ ((λ - → transport P (G -) ((i ∘ f) -)) ∼ j' ∘ g) ,
+              ∼-trans (λ - → ap (transport P (G -)) refl) H'
+               ∼ ∼-trans H (L ∘ g))                             ≃⟨ XII ⟩
+           (Σ H' ꞉ ((λ - → transport P (G -) ((i ∘ f) -)) ∼ j ∘ g) ,
+             ∼-trans (λ - → ap (transport P (G -)) refl) H'
+              ∼ ∼-trans H (∼-refl {_} {_} {_} {_} {j} ∘ g))     ≃⟨ XIII ⟩
+           (Σ H' ꞉ ((λ - → transport P (G -) ((i ∘ f) -)) ∼ j ∘ g) , H' ∼ H)
+                                                                ■
+     where
+      VIII = ≃-sym Σ-assoc
+      IX = prop-indexed-sum (equiv-to-prop III 𝟙-is-prop) (i , ∼-refl)
+      XI = ≃-sym Σ-assoc
+      XII = prop-indexed-sum (equiv-to-prop VI 𝟙-is-prop) (j , ∼-refl)
+      XIII = Σ-cong (λ H' → Π-cong fe fe (λ c → ＝-cong (refl ∙ H' c)
+                    (∼-trans H (λ _ → refl) c) refl-left-neutral
+                      (refl-right-neutral (H c) ⁻¹))) 
+    IXV = ≃-comp (Σ-cong (λ - → ≃-sym (≃-funext fe - H)))
+                 (singleton-≃-𝟙 (equiv-to-singleton (Σ-cong (λ - → ＝-flip))
+                 (singleton-types-are-singletons H)))
+
+dependent-cocone-identity-characterization
+ : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇}
+   (f : C → A) (g : C → B) (X : 𝓣  ̇)
+   (t : cocone f g X) (P : X → 𝓣'  ̇)
+ → (u u' : dependent-cocone f g X t P)
+ → (u ＝ u') ≃ (dependent-cocone-family f g X t P u u')
+dependent-cocone-identity-characterization f g X t P u u' =
+ (canonical-map-from-identity-to-dependent-cocone-family f g X t P u u' ,
+   Yoneda-Theorem-forth u
+    (canonical-map-from-identity-to-dependent-cocone-family f g X t P u)
+     (dependent-cocone-family-is-identity-system f g X t P u) u')
+
+inverse-dependent-cocone-map : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇}
+                               (f : C → A) (g : C → B) (X : 𝓣  ̇)
+                               (t : cocone f g X) (P : X → 𝓣'  ̇)
+                             → (u u' : dependent-cocone f g X t P)
+                             → dependent-cocone-family f g X t P u u'
+                             → u ＝ u'
+inverse-dependent-cocone-map f g X t P u u' =
+ ⌜ (dependent-cocone-identity-characterization f g X t P u u') ⌝⁻¹
+                 
 \end{code}
 
- Σ K ꞉ i ∼ i' , Σ L ꞉ j ∼ j' ,
-  ∼-trans (K ∘ f) H' ∼ ∼-trans H (L ∘ g)
-
-We need to define the type of morphisms between cocones. We *should* give a
-characterization of the identity type but fortunately we only need a map in the
-trivial direction for now.
+We need to define the type of morphisms between (non-dependent) cocones.
+We *should* give a characterization of the identity type but fortunately we only
+need a map in the trivial direction for now.
 
 \begin{code}
 

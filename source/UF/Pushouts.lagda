@@ -120,8 +120,23 @@ Pushout-Computation-Rule₃
 
 \end{code}
 
+The following are logically equivalent:
+
+1) The dependent universal property
+2) The induction principle with propositional computation rules
+3) The recursion principle with propositional computation rules and the
+   uniqueness principle
+4) The universal property.
+
+Below we will derive 2), 3) and 4) from the seemingly strongest assumption 1).
+Later we will attempty to derive 1), 2) and 3) from 4) (this is a work in progress;
+we are stuck on the third induction computation principle.)
+
 Now we will use a record type to give the pushout, point and path constructors,
-and the dependent universal property.
+and use the dependent universal property to derive 2), 3) and 4).
+
+Later we will attempty to derive 1), 2) and 3) from 4) (this is a work in progress;
+we are stuck on the third induction computation principle.)
 
 \begin{code}
 
@@ -138,22 +153,46 @@ record pushouts-exist {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇} (f : C → A)
 
 \end{code}
 
-The following are logically equivalent:
-
-1) The dependent universal property
-2) The induction principle with propositional computation rules
-3) The recursion principle with propositional computation rules and the
-   uniqueness principle
-4) The universal property.
-
-Below we will derive 2), 3) and 4) from the seemingly strongest assumption 1).
-Later we will attempty to derive 1), 2) and 3) from 4) (this is a work in progress;
-we are stuck on the third induction computation principle.) 
+We need to unpack all the information from the dependent universal property.
 
 \begin{code}
 
  pushout-cocone : cocone f g pushout
  pushout-cocone = (inll , inrr , glue)
+
+ pushout-fiber-is-singleton
+  : {P : pushout →  𝓣'  ̇}
+  → (t : dependent-cocone f g pushout pushout-cocone P)
+  → is-contr
+     (fiber (canonical-map-to-dependent-cocone pushout f g pushout-cocone P) t)
+ pushout-fiber-is-singleton {_} {P} t
+  = equivs-are-vv-equivs
+     (canonical-map-to-dependent-cocone pushout f g pushout-cocone P)
+       pushout-dependent-universal-property t
+
+ pushout-fiber-is-singleton'
+  : {P : pushout →  𝓣'  ̇}
+  → (t : dependent-cocone f g pushout pushout-cocone P)
+  → is-contr
+     (Σ d ꞉ ((x : pushout) → P x) ,
+      dependent-cocone-family f g pushout pushout-cocone P
+       (d ∘ inll , d ∘ inrr ,  λ c → apd d (glue c)) t)
+ pushout-fiber-is-singleton' {_} {P} t
+  = equiv-to-singleton'
+     (Σ-cong (λ - → dependent-cocone-identity-characterization f g pushout
+              pushout-cocone P (- ∘ inll , - ∘ inrr ,  λ c → apd - (glue c)) t))
+     (pushout-fiber-is-singleton t)
+
+\end{code}
+
+equiv-to-singleton'
+     (Σ-cong (λ - → dependent-cocone-identity-characterization f g pushout t P
+              (- ∘ inll , - ∘ inrr , ∼-ap-∘ - glue) t))
+     (pushout-fiber-is-singleton t)
+
+Now we can derive the induction principle.
+
+\begin{code}
 
  pushout-induction
   : {P : pushout → 𝓣  ̇}
