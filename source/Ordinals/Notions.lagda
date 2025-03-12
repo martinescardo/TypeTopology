@@ -782,6 +782,7 @@ known by Robin Grayson in his 1978 PhD thesis, page 93.
 https://ora.ox.ac.uk/objects/uuid:3a88ef78-7a3e-4b98-83ac-467a00cf3311
 
 \begin{code}
+
 not-<-gives-≼ : funext (𝓤 ⊔ 𝓥) 𝓤₀
               → excluded-middle (𝓤 ⊔ 𝓥)
               → is-well-order

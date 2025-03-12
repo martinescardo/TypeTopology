@@ -245,7 +245,7 @@ segment-inclusion-lc α {a} =
      → a ＝ b
 ↓-lc α a b p =
  Extensionality α a b
-  (↓-⊴-lc α a b (transport      (λ - → (α ↓ a) ⊴ -) p (⊴-refl (α ↓ a))))
+  (↓-⊴-lc α a b (transport   (λ - → (α ↓ a) ⊴ -) p (⊴-refl (α ↓ a))))
   (↓-⊴-lc α b a (transport⁻¹ (λ - → (α ↓ b) ⊴ -) p (⊴-refl (α ↓ b))))
 
 ↓-is-embedding : (α : Ordinal 𝓤) → is-embedding (α ↓_)
@@ -732,6 +732,8 @@ Added 9 September 2024 by Tom de Jong and Fredrik Nordvall Forsberg.
 ⊲-⊴-gives-⊲ α β γ l k = ≼-trans _⊲_ (⊴-gives-≼ β γ k) (≼-refl _⊲_) α l
 
 \end{code}
+
+End of addition.
 
 Transfinite induction on the ordinal of ordinals:
 

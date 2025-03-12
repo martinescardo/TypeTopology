@@ -514,3 +514,39 @@ map-agrees-with-map' f [] = refl
 map-agrees-with-map' f (x ∷ xs) = ap (f x ∷_) (map-agrees-with-map' f xs)
 
 \end{code}
+
+Added by Martin Escardo and Paulo Oliva 12th March 2025.
+
+\begin{code}
+
+member-of-concat : {X : 𝓤 ̇ } (x : X) (yss : List (List X))
+                 → member x (concat yss)
+                 → Σ ys ꞉ List X , member ys yss × member x ys
+member-of-concat {𝓤} {X} x (ys ∷ yss) m = II I
+ where
+  I : member x ys + member x (concat yss)
+  I = ++-membership₁ x ys (concat yss) m
+
+  II : type-of I → Σ ys' ꞉ List X , member ys' (ys ∷ yss) × member x ys'
+  II (inl l) = ys , in-head , l
+  II (inr r) = III IH
+   where
+    IH : Σ ys' ꞉ List X , member ys' yss × member x ys'
+    IH = member-of-concat x yss r
+
+    III : type-of IH → Σ ys' ꞉ List X , member ys' (ys ∷ yss) × member x ys'
+    III (ys' , r₁ , r₂) = ys' , in-tail r₁ , r₂
+
+member-of-map : {X Y : 𝓤 ̇ } (f : X → Y) (y : Y) (xs : List X)
+              → member y (map f xs)
+              → Σ x ꞉ X , member x xs × (f x ＝ y)
+member-of-map f y (x ∷ xs) in-head = x , in-head , refl
+member-of-map {𝓤} {X} f y (x ∷ xs) (in-tail m) = I IH
+ where
+  IH : Σ x ꞉ X , member x xs × (f x ＝ y)
+  IH = member-of-map f y xs m
+
+  I : type-of IH → Σ x' ꞉ X , member x' (x ∷ xs) × (f x' ＝ y)
+  I (x , m , e) = x , in-tail m , e
+
+\end{code}
