@@ -1,8 +1,22 @@
 Ian Ray, 15th January 2025
 
 Pushouts are defined as higher inductive type (in the form of a record type).
-We postulate point and path constructors, an induction principle and
-propositional computation rules for each constructor.
+We postulate point and path constructors and the (possibly dependent) universal
+property leaving other important results like induction principle, recursion
+principle and the corresponding propositional computation rules as derived notions.
+Of course, it is well known due to Kristina Sojakova's dissertation (see paper of
+same topic doi: https://doi.org/10.1145/2775051.2676983) that for higher
+inductive types with propositional computation rules the following are equivalent:
+
+1) dependent homotopy initiality
+2) induction principle with propositional computation rules
+3) recursion principle with propositional computation rules and uniqueness
+   principle
+4) non-dependent homotopy initiality
+
+Sojakova uses the term homotopy initiality for a sort of universality of algebra
+morphisms. Here we choose to phrase things in terms of the underlying maps and
+universal properties of those maps. 
 
 \begin{code}
 
@@ -24,17 +38,9 @@ open import UF.Yoneda
 
 \end{code}
 
-Now we will define the (dependent) universal property, induction and recursion
-principles and propositional computation rules for pushouts and show they are
-inter-derivable.
-
-In fact we will only show:
-(1) That the non-dependent universal property implies the recursion principle,
-  computation rules and uniqueness principle with associated computation rules.
-(2) That the recursion principle and uniqueness principles (with computation
-  rules) implies the induction principle and associated computations rules.
-(3) That the induction principle and computation rules implies the dependent
-  universal property.
+We will now define the (dependent and non-dependent) universal properties,
+induction principle and the corresponding propositional computation rules for
+pushouts.
 
 \begin{code}
 
@@ -120,7 +126,7 @@ Pushout-Computation-Rule₃
 
 \end{code}
 
-The following are logically equivalent:
+The following are logically equivalent (analgously to Sojakova's result):
 
 1) The dependent universal property
 2) The induction principle with propositional computation rules
@@ -129,12 +135,6 @@ The following are logically equivalent:
 4) The universal property.
 
 Below we will derive 2), 3) and 4) from the seemingly strongest assumption 1).
-Later we will attempty to derive 1), 2) and 3) from 4) (this is a work in progress;
-we are stuck on the third induction computation principle.)
-
-Now we will use a record type to give the pushout, point and path constructors,
-and use the dependent universal property to derive 2), 3) and 4).
-
 Later we will attempty to derive 1), 2) and 3) from 4) (this is a work in progress;
 we are stuck on the third induction computation principle.)
 
@@ -399,7 +399,7 @@ Now we can derive the induction principle.
    
 \end{code}
 
-We investigate only postulating the (non-dependent) universal property.
+We investigate only postulating the non-dependent universal property.
 
 \begin{code}
 
@@ -974,3 +974,13 @@ Now we can define the induction principle and computation rules.
 
 \end{code}
 
+Now we will show the dependent universal property.
+
+\begin{code}
+
+ pushout-dependent-universal-property
+  : {P : pushout → 𝓣  ̇}
+  → Pushout-Dependent-Universal-Property pushout f g (inll , inrr , glue) P
+ pushout-dependent-universal-property = {!!}
+
+\end{code}
