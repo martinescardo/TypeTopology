@@ -85,18 +85,19 @@ funext-and-preunivalence-give-strong-preunivalence
  retract-of-prop
   (to-Σ-＝ , from-Σ-＝ , tofrom-Σ-＝)
    (equiv-to-prop
-    (Σ-cong λ p → (_ , ∙-is-equiv-left (expand-transport p)) ● shift-equiv α (idtoeq _ _ p) α')
-     (preua _ _ (≃-sym α ● α')))
+    (Σ-cong λ p →
+     (_ , ∙-is-equiv-left (transport-eq p)) ● shift-equiv α (idtoeq _ _ p) α')
+    (preua _ _ (≃-sym α ● α')))
  where
-  expand-transport : (p : Y ＝ Y') → α ● idtoeq Y Y' p ＝ transport (X ≃_) p α
-  expand-transport refl = ≃-refl-right' fevu fevv feuu α
+  transport-eq : (p : Y ＝ Y') → α ● idtoeq Y Y' p ＝ transport (X ≃_) p α
+  transport-eq refl = ≃-refl-right' fevu fevv feuu α
 
   shift-equiv : {A : 𝓤 ̇ } {B : 𝓥 ̇ } {C : 𝓥 ̇ }
               → (e : A ≃ B) (e' : B ≃ C) (e'' : A ≃ C)
               → (e ● e' ＝ e'') ≃ (e' ＝ ≃-sym e ● e'')
   shift-equiv e e' e'' =
    (e ● e' ＝ e'')
-    ≃⟨ _ , ap-is-equiv (≃-sym e ●_) (pr₂ (≃-cong-left' fevu fevv feuu fevv fevv e)) ⟩
+    ≃⟨ _ , ap-is-equiv (≃-sym e ●_) (pr₂ q) ⟩
    (≃-sym e ● (e ● e') ＝ ≃-sym e ● e'')
     ≃⟨ ＝-cong-l _ _ (≃-assoc' fevv fevv fevv (≃-sym e) e e') ⟩
    ((≃-sym e ● e) ● e' ＝ ≃-sym e ● e'')
@@ -104,5 +105,7 @@ funext-and-preunivalence-give-strong-preunivalence
    (≃-refl _ ● e' ＝ ≃-sym e ● e'')
     ≃⟨ ＝-cong-l _ _ (≃-refl-left' fevv fevv fevv e') ⟩
    (e' ＝ ≃-sym e ● e'') ■
+   where
+    q = ≃-cong-left' fevu fevv feuu fevv fevv e
 
 \end{code}
