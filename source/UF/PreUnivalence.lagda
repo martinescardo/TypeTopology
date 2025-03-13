@@ -1,5 +1,4 @@
 Martin Escardo 23 February 2023
-Evan Cavallo 13 March 2025
 
 The pre-univalence axiom, first suggested by Evan Cavallo in November
 2017 [1] and then again by Peter Lumsdaine in August 2022
@@ -59,7 +58,7 @@ K-gives-Preunivalence k 𝓤 = K-gives-preunivalence (k 𝓤) (k (𝓤 ⁺))
 
 \end{code}
 
-Added 13th March 2025 by Evan Cavallo. The strong preunivalence axiom and the
+Added by Evan Cavallo on 13th March 2025. The strong preunivalence axiom and the
 fact that it implies the preunivalence axiom are due to Fredrik Bakke.
 
 \begin{code}
@@ -70,11 +69,11 @@ is-strong-preunivalent 𝓤 𝓥 = (X : 𝓤 ̇ ) → is-set (Σ Y ꞉ 𝓥 ̇  
 strong-preunivalence-gives-preunivalence : is-strong-preunivalent 𝓤 𝓤
                                          → is-preunivalent 𝓤
 strong-preunivalence-gives-preunivalence spua X =
-  NatΣ-is-embedding-converse (X ＝_) (X ≃_) (idtoeq X)
-    (maps-of-props-into-sets-are-embeddings
-      (NatΣ (idtoeq X))
-      (singleton-types-are-props X)
-      (spua X))
+ NatΣ-is-embedding-converse (X ＝_) (X ≃_) (idtoeq X)
+  (maps-of-props-into-sets-are-embeddings
+   (NatΣ (idtoeq X))
+    (singleton-types-are-props X)
+     (spua X))
 
 funext-and-preunivalence-give-strong-preunivalence : funext 𝓤 𝓤
                                                    → funext 𝓥 𝓤
@@ -82,13 +81,13 @@ funext-and-preunivalence-give-strong-preunivalence : funext 𝓤 𝓤
                                                    → is-preunivalent 𝓥
                                                    → is-strong-preunivalent 𝓤 𝓥
 funext-and-preunivalence-give-strong-preunivalence
-  {𝓤} {𝓥} feuu fevu fevv preua X {Y , α} {Y' , α'} =
-  retract-of-prop
-    (to-Σ-＝ , from-Σ-＝ , tofrom-Σ-＝)
-    (equiv-to-prop
-      (Σ-cong λ p → (_ , ∙-is-equiv-left (expand-transport p)) ● shift-equiv α (idtoeq _ _ p) α')
-      (preua _ _ (≃-sym α ● α')))
-  where
+ {𝓤} {𝓥} feuu fevu fevv preua X {Y , α} {Y' , α'} =
+ retract-of-prop
+  (to-Σ-＝ , from-Σ-＝ , tofrom-Σ-＝)
+   (equiv-to-prop
+    (Σ-cong λ p → (_ , ∙-is-equiv-left (expand-transport p)) ● shift-equiv α (idtoeq _ _ p) α')
+     (preua _ _ (≃-sym α ● α')))
+ where
   expand-transport : (p : Y ＝ Y') → α ● idtoeq Y Y' p ＝ transport (X ≃_) p α
   expand-transport refl = ≃-refl-right' fevu fevv feuu α
 
@@ -96,14 +95,14 @@ funext-and-preunivalence-give-strong-preunivalence
               → (e : A ≃ B) (e' : B ≃ C) (e'' : A ≃ C)
               → (e ● e' ＝ e'') ≃ (e' ＝ ≃-sym e ● e'')
   shift-equiv e e' e'' =
-    (e ● e' ＝ e'')
-      ≃⟨ _ , ap-is-equiv (≃-sym e ●_) (pr₂ (≃-cong-left' fevu fevv feuu fevv fevv e)) ⟩
-    (≃-sym e ● (e ● e') ＝ ≃-sym e ● e'')
-      ≃⟨ ＝-cong-l _ _ (≃-assoc' fevv fevv fevv (≃-sym e) e e') ⟩
-    ((≃-sym e ● e) ● e' ＝ ≃-sym e ● e'')
-      ≃⟨ ＝-cong-l _ _ (ap (_● e') (≃-sym-left-inverse' fevv e)) ⟩
-    (≃-refl _ ● e' ＝ ≃-sym e ● e'')
-      ≃⟨ ＝-cong-l _ _ (≃-refl-left' fevv fevv fevv e') ⟩
-    (e' ＝ ≃-sym e ● e'') ■
+   (e ● e' ＝ e'')
+    ≃⟨ _ , ap-is-equiv (≃-sym e ●_) (pr₂ (≃-cong-left' fevu fevv feuu fevv fevv e)) ⟩
+   (≃-sym e ● (e ● e') ＝ ≃-sym e ● e'')
+    ≃⟨ ＝-cong-l _ _ (≃-assoc' fevv fevv fevv (≃-sym e) e e') ⟩
+   ((≃-sym e ● e) ● e' ＝ ≃-sym e ● e'')
+    ≃⟨ ＝-cong-l _ _ (ap (_● e') (≃-sym-left-inverse' fevv e)) ⟩
+   (≃-refl _ ● e' ＝ ≃-sym e ● e'')
+    ≃⟨ ＝-cong-l _ _ (≃-refl-left' fevv fevv fevv e') ⟩
+   (e' ＝ ≃-sym e ● e'') ■
 
 \end{code}

@@ -47,6 +47,7 @@ Please add yourself the first time you contribute.
 * Chuangjie Xu
 * Cory Knapp
 * Ettore Aldrovandi
+* Evan Cavallo
 * Fredrik Nordvall Forsberg
 * Ian Ray
 * Igor Arrieta (ii)
@@ -66,7 +67,6 @@ Please add yourself the first time you contribute.
 * Todd Waugh Ambridge
 * Tom de Jong
 * Vincent Rahli
-* Evan Cavallo
 
 (i) These authors didn't write any single line of Agda code here, but
 they contributed to constructions, theorems and proofs via the hands
