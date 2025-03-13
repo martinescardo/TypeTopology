@@ -50,6 +50,9 @@ K-gives-preunivalence {𝓤} k k' X Y e (p , _) (p' , _) =
 K-gives-Preunivalence : K-Axiom → Preunivalence
 K-gives-Preunivalence k 𝓤 = K-gives-preunivalence (k 𝓤) (k (𝓤 ⁺))
 
+-- Fredrik Bakke's strong pre-univalence axiom (restricted to one universe):
+-- https://unimath.github.io/agda-unimath/foundation.strong-preunivalence.html
+-- https://mathstodon.xyz/@FredrikBakke/113980401059186473
 is-strong-preunivalent : ∀ 𝓤 → 𝓤 ⁺ ̇
 is-strong-preunivalent 𝓤 = (X : 𝓤 ̇ ) → is-set (Σ Y ꞉ 𝓤 ̇  , X ≃ Y)
 
