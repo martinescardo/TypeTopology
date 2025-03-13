@@ -35,19 +35,19 @@ cocone-vertical-map : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇}
                       (f : C → A) (g : C → B) (X : 𝓣  ̇)
                     → cocone f g X
                     → (A → X)
-cocone-vertical-map f g X (i , j , K) = i
+cocone-vertical-map f g X (i , j , H) = i
 
 cocone-horizontal-map : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇}
                         (f : C → A) (g : C → B) (X : 𝓣  ̇)
                       → cocone f g X
                       → (B → X)
-cocone-horizontal-map f g X (i , j , K) = j
+cocone-horizontal-map f g X (i , j , H) = j
 
 cocone-commuting-square : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇}
                           (f : C → A) (g : C → B) (X : 𝓣  ̇)
-                        → ((i , j , K) : cocone f g X)
+                        → ((i , j , H) : cocone f g X)
                         → i ∘ f ∼ j ∘ g
-cocone-commuting-square f g X (i , j , K) = K
+cocone-commuting-square f g X (i , j , H) = H
 
 cocone-family : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇}
                 (f : C → A) (g : C → B) (X : 𝓣  ̇)
@@ -164,6 +164,28 @@ dependent-cocone : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇}
 dependent-cocone {_} {_} {_} {_} {_} {A} {B} {C} f g X (l , r , G) P =
  Σ i ꞉ ((a : A) → P (l a)) , Σ j ꞉ ((b : B) → P (r b)) ,
   ((λ - → transport P (G -) ((i ∘ f) -)) ∼ j ∘ g)
+
+dependent-cocone-vertical-map : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇}
+                                (f : C → A) (g : C → B) (X : 𝓣  ̇)
+                                (t : cocone f g X) (P : X → 𝓣'  ̇)
+                              → dependent-cocone f g X t P
+                              → (a : A) → P (cocone-vertical-map f g X t a)
+dependent-cocone-vertical-map f g X t P (i , j , H) = i
+
+dependent-cocone-horizontal-map : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇}
+                                  (f : C → A) (g : C → B) (X : 𝓣  ̇)
+                                  (t : cocone f g X) (P : X → 𝓣'  ̇)
+                                → dependent-cocone f g X t P
+                                → (b : B) → P (cocone-horizontal-map f g X t b)
+dependent-cocone-horizontal-map f g X t P (i , j , H) = j
+
+dependent-cocone-commuting-square
+ : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇}
+   (f : C → A) (g : C → B) (X : 𝓣  ̇)
+   (t : cocone f g X) (P : X → 𝓣'  ̇)
+ → ((i , j , H) : dependent-cocone f g X t P)
+ → ((λ - → transport P (cocone-commuting-square f g X t -) ((i ∘ f) -))) ∼ j ∘ g
+dependent-cocone-commuting-square f g X t P (i , j , H) = H
 
 dependent-cocone-family : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇}
                           (f : C → A) (g : C → B) (X : 𝓣  ̇)

@@ -175,20 +175,73 @@ We need to unpack all the information from the dependent universal property.
   → (t : dependent-cocone f g pushout pushout-cocone P)
   → is-contr
      (Σ d ꞉ ((x : pushout) → P x) ,
-      dependent-cocone-family f g pushout pushout-cocone P
-       (d ∘ inll , d ∘ inrr ,  λ c → apd d (glue c)) t)
+       dependent-cocone-family f g pushout pushout-cocone P
+        (d ∘ inll , d ∘ inrr ,  λ c → apd d (glue c)) t)
  pushout-fiber-is-singleton' {_} {P} t
   = equiv-to-singleton'
      (Σ-cong (λ - → dependent-cocone-identity-characterization f g pushout
               pushout-cocone P (- ∘ inll , - ∘ inrr ,  λ c → apd - (glue c)) t))
      (pushout-fiber-is-singleton t)
 
-\end{code}
+ pushout-fiber-center
+  : {P : pushout →  𝓣'  ̇}
+  → (t : dependent-cocone f g pushout pushout-cocone P)
+  → Σ d ꞉ ((x : pushout) → P x) ,
+      dependent-cocone-family f g pushout pushout-cocone P
+       (d ∘ inll , d ∘ inrr ,  λ c → apd d (glue c)) t
+ pushout-fiber-center t = center (pushout-fiber-is-singleton' t)
 
-equiv-to-singleton'
-     (Σ-cong (λ - → dependent-cocone-identity-characterization f g pushout t P
-              (- ∘ inll , - ∘ inrr , ∼-ap-∘ - glue) t))
-     (pushout-fiber-is-singleton t)
+ pushout-fiber-centrality
+  : {P : pushout →  𝓣'  ̇}
+  → (t : dependent-cocone f g pushout pushout-cocone P)
+  → is-central (Σ d ꞉ ((x : pushout) → P x) ,
+                 dependent-cocone-family f g pushout pushout-cocone P
+                  (d ∘ inll , d ∘ inrr ,  λ c → apd d (glue c)) t)
+               (pushout-fiber-center t)
+ pushout-fiber-centrality t = centrality (pushout-fiber-is-singleton' t)
+
+ pushout-unique-map
+  : {P : pushout →  𝓣'  ̇}
+  → (t : dependent-cocone f g pushout pushout-cocone P)
+  → Σ d ꞉ ((x : pushout) → P x) ,
+     dependent-cocone-family f g pushout pushout-cocone P
+      (d ∘ inll , d ∘ inrr ,  λ c → apd d (glue c)) t
+  → (x : pushout) → P x
+ pushout-unique-map t (d , _) = d
+
+ pushout-inll-homotopy
+  : {P : pushout →  𝓣'  ̇}
+  → (t : dependent-cocone f g pushout pushout-cocone P)
+  → (z : Σ d ꞉ ((x : pushout) → P x) ,
+          dependent-cocone-family f g pushout pushout-cocone P
+           (d ∘ inll , d ∘ inrr ,  λ c → apd d (glue c)) t)
+  → (pushout-unique-map t z) ∘ inll
+  ∼ dependent-cocone-vertical-map f g pushout pushout-cocone P t
+ pushout-inll-homotopy s (u , K , L , M) = K
+
+ pushout-inrr-homotopy
+  : {P : pushout →  𝓣'  ̇}
+  → (t : dependent-cocone f g pushout pushout-cocone P)
+  → (z : Σ d ꞉ ((x : pushout) → P x) ,
+          dependent-cocone-family f g pushout pushout-cocone P
+           (d ∘ inll , d ∘ inrr ,  λ c → apd d (glue c)) t)
+  → (pushout-unique-map t z) ∘ inrr
+  ∼ dependent-cocone-horizontal-map f g pushout pushout-cocone P t
+ pushout-inrr-homotopy s (u , K , L , M) = L
+
+ pushout-glue-homotopy
+  : {P : pushout →  𝓣'  ̇}
+  → (t : dependent-cocone f g pushout pushout-cocone P)
+  → (z : Σ d ꞉ ((x : pushout) → P x) ,
+          dependent-cocone-family f g pushout pushout-cocone P
+           (d ∘ inll , d ∘ inrr ,  λ c → apd d (glue c)) t)
+  → ∼-trans (λ - → ap (transport P (glue -)) ((pushout-inll-homotopy t z ∘ f) -))
+            (dependent-cocone-commuting-square f g pushout pushout-cocone P t)
+  ∼ ∼-trans (λ - → apd (pushout-unique-map t z) (glue -))
+            ((pushout-inrr-homotopy t z) ∘ g)
+ pushout-glue-homotopy t (u , K , L , M) = M
+
+\end{code}
 
 Now we can derive the induction principle.
 
@@ -197,23 +250,27 @@ Now we can derive the induction principle.
  pushout-induction
   : {P : pushout → 𝓣  ̇}
   → Pushout-Induction-Principle pushout f g (inll , inrr , glue) P
- pushout-induction = {!!}
+ pushout-induction l r G
+  = pushout-unique-map (l , r , G) (pushout-fiber-center (l , r , G))
 
  pushout-ind-comp-inll
   : {P : pushout → 𝓣  ̇}
   → Pushout-Computation-Rule₁ pushout f g (inll , inrr , glue) P pushout-induction
- pushout-ind-comp-inll = {!!}
+ pushout-ind-comp-inll l r G
+  = pushout-inll-homotopy (l , r , G) (pushout-fiber-center (l , r , G))
 
  pushout-ind-comp-inrr
   : {P : pushout → 𝓣  ̇}
   → Pushout-Computation-Rule₂ pushout f g (inll , inrr , glue) P pushout-induction
- pushout-ind-comp-inrr = {!!}
+ pushout-ind-comp-inrr l r G
+  = pushout-inrr-homotopy (l , r , G) (pushout-fiber-center (l , r , G))
 
  pushout-ind-comp-glue
   : {P : pushout → 𝓣  ̇}
   → Pushout-Computation-Rule₃ pushout f g (inll , inrr , glue) P
      pushout-induction pushout-ind-comp-inll pushout-ind-comp-inrr
- pushout-ind-comp-glue = {!!}
+ pushout-ind-comp-glue l r G c
+  = pushout-glue-homotopy (l , r , G) (pushout-fiber-center (l , r , G)) c ⁻¹
    
  pushout-recursion : {D : 𝓣  ̇}
                    → (l : A → D)
