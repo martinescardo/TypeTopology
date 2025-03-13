@@ -1,4 +1,5 @@
 Martin Escardo, 19th May 2018.
+Evan Cavallo, 13th March 2025.
 
 Properties of function extensionality.
 
@@ -72,9 +73,18 @@ naive-funext-gives-funext fe = naive-funext-gives-funext' fe fe
 naive-funext-gives-funext₀ : naive-funext 𝓤 𝓤 → funext 𝓤 𝓤₀
 naive-funext-gives-funext₀ fe = naive-funext-gives-funext' fe fe
 
+\end{code}
+
+The equivalence extensionality axiom is the restriction of function
+extensionality to equivalences. By an argument similar to the proof of function
+extensionality from univalence, it implies full function extensionality.
+
+\begin{code}
+
 equivext : ∀ 𝓤 𝓥 → 𝓤 ⁺ ⊔ 𝓥 ⁺ ̇
 equivext 𝓤 𝓥 =
-  {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (α β : X ≃ Y) → is-equiv (λ (p : α ＝ β) → happly (ap ⌜_⌝ p))
+  {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (α β : X ≃ Y)
+  → is-equiv (λ (p : α ＝ β) → happly (ap ⌜_⌝ p))
 
 equivext-gives-funext : equivext 𝓤 𝓤 → funext 𝓤 𝓤
 equivext-gives-funext {𝓤} ee =
@@ -85,18 +95,25 @@ equivext-gives-funext {𝓤} ee =
     qinveq
       (_● α)
       ( (_● ≃-sym α)
-      , (λ β → inverse _ (ee _ _) λ a → inverses-are-retractions _ (pr₂ α) (⌜ β ⌝ a))
-      , (λ γ → inverse _ (ee _ _) λ a → inverses-are-sections _ (pr₂ α) (⌜ γ ⌝ a)))
+      , (λ β → inverse _ (ee _ _) (inverses-are-retractions _ (pr₂ α) ∘ ⌜ β ⌝))
+      , (λ γ → inverse _ (ee _ _) (inverses-are-sections _ (pr₂ α) ∘ ⌜ γ ⌝)))
 
   module _ (X : 𝓤 ̇ ) (Y : X → 𝓤 ̇ ) (cY : (x : X) → is-singleton (Y x)) where
     π : (Σ Y) ≃ X
-    π = qinveq pr₁ ((λ x → x , pr₁ (cY x)) , (λ (x , y) → to-Σ-＝ (refl , pr₂ (cY x) y)) , ∼-refl)
+    π =
+      qinveq
+        pr₁
+        ( (λ x → x , pr₁ (cY x))
+        , (λ (x , y) → to-Σ-＝ (refl , pr₂ (cY x) y))
+        , ∼-refl)
 
     sec : Π Y → fiber ⌜ promote X π ⌝ 𝕚𝕕
     sec f =
       ( qinveq
           (λ x → x , f x)
-          (pr₁ , ∼-refl , (λ (x , y) → to-Σ-＝ (refl , singletons-are-props (cY x) _ _)))
+          ( pr₁
+          , ∼-refl
+          , (λ (x , y) → to-Σ-＝ (refl , singletons-are-props (cY x) _ _)))
       , inverse _ (ee _ _) ∼-refl)
 
     ret : fiber ⌜ promote X π ⌝ 𝕚𝕕 → Π Y
