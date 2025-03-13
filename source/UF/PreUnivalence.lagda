@@ -1,4 +1,5 @@
 Martin Escardo 23 February 2023
+Evan Cavallo 13 March 2025
 
 The pre-univalence axiom, first suggested by Evan Cavallo in November
 2017 [1] and then again by Peter Lumsdaine in August 2022
@@ -9,6 +10,11 @@ verbally to me.
 The preunivalence axiom is a common generalization of the univalence
 axiom and the K axiom.
 
+The strong preunivalence axiom is a variant that was stated by Fredrik Bakke
+in the agda-unimath in February 2025 [2].
+
+[2] https://unimath.github.io/agda-unimath/foundation.strong-preunivalence.html
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}
@@ -16,6 +22,7 @@ axiom and the K axiom.
 module UF.PreUnivalence where
 
 open import MLTT.Spartan
+open import UF.Base
 open import UF.Embeddings
 open import UF.Equiv
 open import UF.Equiv-FunExt
@@ -50,15 +57,32 @@ K-gives-preunivalence {𝓤} k k' X Y e (p , _) (p' , _) =
 K-gives-Preunivalence : K-Axiom → Preunivalence
 K-gives-Preunivalence k 𝓤 = K-gives-preunivalence (k 𝓤) (k (𝓤 ⁺))
 
--- Fredrik Bakke's strong pre-univalence axiom (restricted to one universe):
--- https://unimath.github.io/agda-unimath/foundation.strong-preunivalence.html
--- https://mathstodon.xyz/@FredrikBakke/113980401059186473
-is-strong-preunivalent : ∀ 𝓤 → 𝓤 ⁺ ̇
-is-strong-preunivalent 𝓤 = (X : 𝓤 ̇ ) → is-set (Σ Y ꞉ 𝓤 ̇  , X ≃ Y)
+\end{code}
 
-funext-and-preunivalence-give-strong-preunivalence : ∀ {𝓤}
-  → funext 𝓤 𝓤 → is-preunivalent 𝓤 → is-strong-preunivalent 𝓤
-funext-and-preunivalence-give-strong-preunivalence {𝓤} fe preua X {Y , α} {Y' , α'} =
+Added 13th March 2025 by Evan Cavallo. The strong preunivalence axiom and the
+fact that it implies the preunivalence axiom are due to Fredrik Bakke.
+
+\begin{code}
+
+is-strong-preunivalent : ∀ 𝓤 𝓥 → Set (𝓤 ⁺ ⊔ 𝓥 ⁺)
+is-strong-preunivalent 𝓤 𝓥 = (X : 𝓤 ̇ ) → is-set (Σ Y ꞉ 𝓥 ̇  , X ≃ Y)
+
+strong-preunivalence-gives-preunivalence : is-strong-preunivalent 𝓤 𝓤
+                                         → is-preunivalent 𝓤
+strong-preunivalence-gives-preunivalence spua X =
+  NatΣ-is-embedding-converse (X ＝_) (X ≃_) (idtoeq X)
+    (maps-of-props-into-sets-are-embeddings
+      (NatΣ (idtoeq X))
+      (singleton-types-are-props X)
+      (spua X))
+
+funext-and-preunivalence-give-strong-preunivalence : funext 𝓤 𝓤
+                                                   → funext 𝓥 𝓤
+                                                   → funext 𝓥 𝓥
+                                                   → is-preunivalent 𝓥
+                                                   → is-strong-preunivalent 𝓤 𝓥
+funext-and-preunivalence-give-strong-preunivalence
+  {𝓤} {𝓥} feuu fevu fevv preua X {Y , α} {Y' , α'} =
   retract-of-prop
     (to-Σ-＝ , from-Σ-＝ , tofrom-Σ-＝)
     (equiv-to-prop
@@ -66,16 +90,20 @@ funext-and-preunivalence-give-strong-preunivalence {𝓤} fe preua X {Y , α} {Y
       (preua _ _ (≃-sym α ● α')))
   where
   expand-transport : (p : Y ＝ Y') → α ● idtoeq Y Y' p ＝ transport (X ≃_) p α
-  expand-transport refl = ≃-refl-right' fe fe fe α
+  expand-transport refl = ≃-refl-right' fevu fevv feuu α
 
-  shift-equiv : {A B C : 𝓤 ̇ }
-    (e : A ≃ B) (e' : B ≃ C) (e'' : A ≃ C)
-    → (e ● e' ＝ e'') ≃ (e' ＝ ≃-sym e ● e'')
+  shift-equiv : {A : 𝓤 ̇ } {B : 𝓥 ̇ } {C : 𝓥 ̇ }
+              → (e : A ≃ B) (e' : B ≃ C) (e'' : A ≃ C)
+              → (e ● e' ＝ e'') ≃ (e' ＝ ≃-sym e ● e'')
   shift-equiv e e' e'' =
-    (e ● e' ＝ e'')                       ≃⟨ _ , ap-is-equiv (≃-sym e ●_) (pr₂ (≃-cong-left'' fe e)) ⟩
-    (≃-sym e ● (e ● e') ＝ ≃-sym e ● e'') ≃⟨ ＝-cong-l _ _ (≃-assoc' fe fe fe (≃-sym e) e e') ⟩
-    ((≃-sym e ● e) ● e' ＝ ≃-sym e ● e'') ≃⟨ ＝-cong-l _ _ (ap (_● e') (≃-sym-left-inverse' fe e)) ⟩
-    (≃-refl _ ● e' ＝ ≃-sym e ● e'')      ≃⟨ ＝-cong-l _ _ (≃-refl-left' fe fe fe e') ⟩
+    (e ● e' ＝ e'')
+      ≃⟨ _ , ap-is-equiv (≃-sym e ●_) (pr₂ (≃-cong-left' fevu fevv feuu fevv fevv e)) ⟩
+    (≃-sym e ● (e ● e') ＝ ≃-sym e ● e'')
+      ≃⟨ ＝-cong-l _ _ (≃-assoc' fevv fevv fevv (≃-sym e) e e') ⟩
+    ((≃-sym e ● e) ● e' ＝ ≃-sym e ● e'')
+      ≃⟨ ＝-cong-l _ _ (ap (_● e') (≃-sym-left-inverse' fevv e)) ⟩
+    (≃-refl _ ● e' ＝ ≃-sym e ● e'')
+      ≃⟨ ＝-cong-l _ _ (≃-refl-left' fevv fevv fevv e') ⟩
     (e' ＝ ≃-sym e ● e'') ■
 
 \end{code}
