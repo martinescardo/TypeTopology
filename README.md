@@ -47,6 +47,7 @@ Please add yourself the first time you contribute.
 * Chuangjie Xu
 * Cory Knapp
 * Ettore Aldrovandi
+* Evan Cavallo
 * Fredrik Nordvall Forsberg
 * Ian Ray
 * Igor Arrieta (ii)
