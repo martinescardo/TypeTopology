@@ -127,7 +127,7 @@ Pushout-Computation-Rule₃
 
 \end{code}
 
-The following are logically equivalent (analgously to Sojakova's result):
+The following are logically equivalent (which is an instance of Sojakova's result):
 
 1) The dependent universal property
 2) The induction principle with propositional computation rules
@@ -136,7 +136,7 @@ The following are logically equivalent (analgously to Sojakova's result):
 4) The universal property.
 
 Below we will derive 2), 3) and 4) from the seemingly strongest assumption 1).
-In another file we will attempty to derive 1), 2) and 3) from the seemingly weakest
+In a later file we will attempty to derive 1), 2) and 3) from the seemingly weakest
 assumption 4) (this is a work in progress.)
 
 \begin{code}
