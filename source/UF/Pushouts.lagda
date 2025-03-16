@@ -1,10 +1,10 @@
 Ian Ray, 15th January 2025
 
-Editted by Ian Ray on 16th March 2025.
+Edited by Ian Ray on 16th March 2025.
 
-Pushouts are defined as higher inductive type (in the form of a record type). We
-postulate point and path constructors as well as the (dependent) universal property.
-We will derive other important results like induction and recursion principles along with the corresponding propositional computation rules. Of course, due to Kristina
+Pushouts are defined as a higher inductive type (in the form of a record type). We
+postulate point and path constructors and the (dependent) universal property.
+We will derive other important results like induction and recursion principles along and the corresponding propositional computation rules. Of course, due to Kristina
 Sojakova's dissertation (and the following paper on the same topic doi:
 https://doi.org/10.1145/2775051.2676983) it is well known that for higher inductive
 types with propositional computation rules the following are equivalent:
@@ -15,9 +15,9 @@ types with propositional computation rules the following are equivalent:
    principle
 4) non-dependent homotopy initiality
 
-Sojakova uses the term homotopy initiality for a sort of universality of algebra
-morphisms. Here we choose a weaker phrasing of things in terms of the underlying
-maps and universal properties of those maps. 
+Sojakova uses the term 'homotopy initiality' for the universality of 'algebra
+morphisms' (see the paper above). Here we choose a weaker phrasing in terms of the
+underlying maps and universal properties of those maps. 
 
 \begin{code}
 
@@ -136,7 +136,7 @@ The following are logically equivalent (which is an instance of Sojakova's resul
 4) The universal property.
 
 Below we will derive 2), 3) and 4) from the seemingly strongest assumption 1).
-In a later file we will attempty to derive 1), 2) and 3) from the seemingly weakest
+In a later file we will attempt to derive 1), 2) and 3) from the seemingly weakest
 assumption 4) (this is a work in progress.)
 
 \begin{code}
@@ -245,9 +245,9 @@ we extract the fact that the fiber of the canonical map is contractible).
 
 \end{code}
 
-Now we can derive the induction and recursion principle along with the corresponding
-computation rules, the uniqueness of maps out of the pushout and finally the (non-
-dependent) universal property.
+Now we can derive the induction and recursion principles along with the corresponding
+computation rules, the uniqueness of maps out of the pushout and the (non-dependent)
+universal property.
 
 \begin{code}
 
