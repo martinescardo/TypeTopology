@@ -4,7 +4,8 @@ Edited by Ian Ray on 16th March 2025.
 
 Pushouts are defined as a higher inductive type (in the form of a record type). We
 postulate point and path constructors and the (dependent) universal property.
-We will derive other important results like induction and recursion principles along and the corresponding propositional computation rules. Of course, due to Kristina
+We will derive other important results like induction and recursion principles along
+and the corresponding propositional computation rules. Of course, due to Kristina
 Sojakova's dissertation (and the following paper on the same topic doi:
 https://doi.org/10.1145/2775051.2676983) it is well known that for higher inductive
 types with propositional computation rules the following are equivalent:
