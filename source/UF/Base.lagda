@@ -524,8 +524,8 @@ see below, we have to reassociate before applying on the left.
 
 \begin{code}
 
-ap-on-left-is-assoc : {X : 𝓤 ̇ } {x y z z' : X} (l : x ＝ y)
-                      {p q : y ＝ z} {r s : z ＝ z'}
+ap-on-left-is-assoc : {X : 𝓤 ̇ } {x y z z' w : X} (l : x ＝ y)
+                      {p : y ＝ z} {q : y ＝ z'} {r : z ＝ w} {s : z' ＝ w}
                     → p ∙ r ＝ q ∙ s
                     → (l ∙ p) ∙ r ＝ (l ∙ q) ∙ s
 ap-on-left-is-assoc l {p} {q} {r} {s} α = l ∙ p ∙ r   ＝⟨ ∙assoc l p r ⟩

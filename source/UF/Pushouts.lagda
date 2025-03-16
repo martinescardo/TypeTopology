@@ -1,12 +1,13 @@
 Ian Ray, 15th January 2025
 
-Pushouts are defined as higher inductive type (in the form of a record type).
-We postulate point and path constructors and the (possibly dependent) universal
-property leaving other important results like induction principle, recursion
-principle and the corresponding propositional computation rules as derived notions.
-Of course, it is well known due to Kristina Sojakova's dissertation (see paper of
-same topic doi: https://doi.org/10.1145/2775051.2676983) that for higher
-inductive types with propositional computation rules the following are equivalent:
+Editted by Ian Ray on 16th March 2025.
+
+Pushouts are defined as higher inductive type (in the form of a record type). We
+postulate point and path constructors as well as the (dependent) universal property.
+We will derive other important results like induction and recursion principles along with the corresponding propositional computation rules. Of course, due to Kristina
+Sojakova's dissertation (and the following paper on the same topic doi:
+https://doi.org/10.1145/2775051.2676983) it is well known that for higher inductive
+types with propositional computation rules the following are equivalent:
 
 1) dependent homotopy initiality
 2) induction principle with propositional computation rules
@@ -15,8 +16,8 @@ inductive types with propositional computation rules the following are equivalen
 4) non-dependent homotopy initiality
 
 Sojakova uses the term homotopy initiality for a sort of universality of algebra
-morphisms. Here we choose to phrase things in terms of the underlying maps and
-universal properties of those maps. 
+morphisms. Here we choose a weaker phrasing of things in terms of the underlying
+maps and universal properties of those maps. 
 
 \begin{code}
 
@@ -135,8 +136,8 @@ The following are logically equivalent (analgously to Sojakova's result):
 4) The universal property.
 
 Below we will derive 2), 3) and 4) from the seemingly strongest assumption 1).
-Later we will attempty to derive 1), 2) and 3) from 4) (this is a work in progress;
-we are stuck on the third induction computation principle.)
+In another file we will attempty to derive 1), 2) and 3) from the seemingly weakest
+assumption 4) (this is a work in progress.)
 
 \begin{code}
 
@@ -153,7 +154,8 @@ record pushouts-exist {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓦  ̇} (f : C → A)
 
 \end{code}
 
-We need to unpack all the information from the dependent universal property.
+We need to unpack all the information from the dependent universal property (i.e.
+we extract the fact that the fiber of the canonical map is contractible).
 
 \begin{code}
 
@@ -243,7 +245,9 @@ We need to unpack all the information from the dependent universal property.
 
 \end{code}
 
-Now we can derive the induction principle.
+Now we can derive the induction and recursion principle along with the corresponding
+computation rules, the uniqueness of maps out of the pushout and finally the (non-
+dependent) universal property.
 
 \begin{code}
 
@@ -334,15 +338,28 @@ Now we can derive the induction principle.
      ＝ transport-const (glue c) ⁻¹
         ∙ ap (transport (λ - → D) (glue c)) (pushout-rec-comp-inll l r G (f c))
         ∙ (transport-const (glue c) ∙ G c)
-   V = ap-on-left-is-assoc (transport-const (glue c) ⁻¹) IV
+   V = ap-on-left-is-assoc {_} {_} {_} {_} {_} {_} {_} (transport-const (glue c) ⁻¹)
+        {apd (pushout-recursion l r G) (glue c)}
+        {ap (transport (λ - → D) (glue c)) (pushout-rec-comp-inll l r G (f c))}
+        {pushout-rec-comp-inrr l r G (g c)}
+        {(transport-const (glue c) ∙ G c)} IV
    VI = ∙assoc (transport-const (glue c) ⁻¹ ∙ ap (transport (λ - → D) (glue c))
                (pushout-rec-comp-inll l r G (f c))) (transport-const (glue c))
                (G c) ⁻¹
+   VII' : transport-const (glue c) ∙ ap id (pushout-rec-comp-inll l r G (f c))
+        ＝ ap (transport (λ - → D) (glue c)) (pushout-rec-comp-inll l r G (f c))
+          ∙ transport-const (glue c)
+   VII' = homotopies-are-natural (transport (λ - → D) (glue c)) id
+           (λ - → transport-const (glue c)) {_} {_}
+           {pushout-rec-comp-inll l r G (f c)}
    VII : ap (transport (λ - → D) (glue c)) (pushout-rec-comp-inll l r G (f c))
          ∙ transport-const (glue c)
        ＝ transport-const (glue c) ∙ pushout-rec-comp-inll l r G (f c)
-   VII = homotopies-are-natural (transport (λ - → D) (glue c)) id
-          (λ - → transport-const (glue c)) ⁻¹
+   VII = transport (λ - → transport-const (glue c) ∙ - 
+                         ＝ ap (transport (λ - → D) (glue c))
+                               (pushout-rec-comp-inll l r G (f c))
+                          ∙ transport-const (glue c))
+                   (ap-id-is-id (pushout-rec-comp-inll l r G (f c))) VII' ⁻¹
    VIII : transport-const (glue c) ⁻¹
         ∙ ap (transport (λ - → D) (glue c)) (pushout-rec-comp-inll l r G (f c))
         ∙ transport-const (glue c)
