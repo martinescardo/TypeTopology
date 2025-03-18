@@ -181,7 +181,7 @@ We now formulate and prove the no-go theorem. Because it holds in the
 absence of cumulativity, it also holds in its presence.
 
 The following type is a distilled version of the type of the function
-`transferfer-structure`, but without the `resizable-order` assumption.
+`transfer-structure`, but without the `resizable-order` assumption.
 
 \begin{code}
 
