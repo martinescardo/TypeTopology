@@ -63,11 +63,12 @@ Reflexive-Graph 𝓦 𝓣 = Σ V ꞉ 𝓣 ̇ , reflexive-structure 𝓦 V
 
 \end{code}
 
-The notion of reflexive graph equivalence, for the above notion of
-reflexive graph. Using SIP, and assuming univalence, we can show that
-for graphs in the same universes, identity is canonical equivalent to
-this notion of reflexive graph equivalence. But we won't bother for
-the moment.
+We now formulate the notion of reflexive graph equivalence, for the
+above notion of reflexive graph. Using SIP, and assuming univalence,
+we can show that for graphs in the same universes, identity is
+canonically equivalent to this notion of reflexive graph
+equivalence. But we won't bother to prove this, at least not for the
+moment.
 
 \begin{code}
 
@@ -257,3 +258,8 @@ In other words, there are propositional resizing *axioms* (which are
 known to be consistent, and in the above no-go theorem we have a
 propositional resizing axiom) and there are propositional resizing
 *rules* for the type theory (which are not known to be consistent).
+
+If we hadn't assumed that the edge relation of a reflexive graph is a
+proposition, we would instead be able to show that every type in any
+universe is equivalent to any type in any universe we wish, which is
+of course false, as "there are more types in larger universes".
