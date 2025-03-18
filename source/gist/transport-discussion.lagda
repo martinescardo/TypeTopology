@@ -74,7 +74,7 @@ moment.
 
 _≃ʳᵍ_ : {𝓦 𝓣 𝓦' 𝓣' : Universe}
       → Reflexive-Graph 𝓦 𝓣 → Reflexive-Graph 𝓦' 𝓣' → 𝓦 ⊔ 𝓣 ⊔ 𝓦' ⊔ 𝓣' ̇
-(V , _⇒_ , r) ≃ʳᵍ (V' , _⇒'_ , r')
+(V , _⇒_ , _) ≃ʳᵍ (V' , _⇒'_ , _)
  = Σ f ꞉ (V ≃ V'), ((v₀ v₁ : V') → (⌜ f ⌝⁻¹ v₀ ⇒ ⌜ f ⌝⁻¹ v₁) ≃ (v₀ ⇒' v₁))
 
 \end{code}
@@ -87,7 +87,7 @@ module discussion
         (𝓤 𝓥 : Universe)
         (𝓐@(A , _⇒_ , ⇒-refl , ⇒-is-prop-valued) : Reflexive-Graph 𝓥 𝓥)
         (_⇒'_ : A → A → 𝓤 ̇ )
-        (⇒-is-equiv-to-⇒' : (a b : A) → (a ⇒ b) ≃ (a ⇒' b))
+        (resizing-assumption : (a b : A) → (a ⇒ b) ≃ (a ⇒' b))
         (X : 𝓤 ̇ )
         (f : X ≃ A)
         (ua : is-univalent (𝓤 ⊔ 𝓥))
@@ -143,11 +143,11 @@ where X⁺ and A⁺ are simply X and A, so that we have false apologies.
 But there is limit to the number of false apologies one can make.
 
 The following needs more than cumulativity. And this is why we have
-the above assumptions _⇒'_ and ⇒-is-equiv-to-⇒' (which correspond to
-the `resizable-order` condition in `transfer-structure`). Without
-them, we get a no-go theorem (see `resizing-taboo` below).
+the above assumptions `_⇒'_` and `resizing-assumption` (which
+correspond to the `resizable-order` condition in `transfer-structure`).
+Without them, we get a no-go theorem (see `resizing-taboo` below).
 
-So the following are genuine apologies. They can't just hold on the
+So the following are genuine apologies: They can't just hold on the
 nose by cumulativity.
 
 \begin{code}
