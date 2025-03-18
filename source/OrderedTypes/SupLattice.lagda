@@ -11,7 +11,7 @@ order values and 𝓥 for the families which have suprema.
 open import MLTT.Spartan
 open import UF.Equiv
 open import UF.FunExt
-open import UF.Hedberg
+open import UF.HedbergApplications
 open import UF.Logic
 open import UF.Powerset-MultiUniverse
 open import UF.PropTrunc

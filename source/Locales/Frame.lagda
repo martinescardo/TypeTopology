@@ -22,7 +22,7 @@ module Locales.Frame
        where
 
 open import Slice.Family
-open import UF.Hedberg
+open import UF.HedbergApplications
 open import UF.Logic
 open import UF.Sets
 open import UF.Sets-Properties

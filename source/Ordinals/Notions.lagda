@@ -14,7 +14,7 @@ open import UF.Base
 open import UF.DiscreteAndSeparated
 open import UF.ClassicalLogic
 open import UF.FunExt
-open import UF.Hedberg
+open import UF.HedbergApplications
 open import UF.PropTrunc
 open import UF.Sets
 open import UF.Subsingletons
