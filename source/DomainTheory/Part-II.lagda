@@ -8,6 +8,8 @@ This file corresponds to the paper
    2024
    https://doi.org/10.48550/arxiv.2407.06956
 
+NB: The names in this file should not be unchanged to ensure they correspond
+correctly to the above paper.
 
 See DomainTheory.index.lagda for an overview of all domain theory in
 TypeTopology.
