@@ -189,6 +189,7 @@ import DomainTheory.Topology.ScottTopologyProperties -- (1)
 
 {- Index files for papers -}
 
+import DomainTheory.Continuous-and-algebraic-domains
 import DomainTheory.Part-I
 import DomainTheory.Part-II
 
