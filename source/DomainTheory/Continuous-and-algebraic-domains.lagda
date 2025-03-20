@@ -1096,7 +1096,7 @@ module _
 
 \end{code}
 
-Section 7.3. The basis of compact elements
+Section 7.3. The canonical basis of compact elements
 
 \begin{code}
 
@@ -1254,7 +1254,7 @@ Section 8.1. The round ideal completion of a reflexive abstract basis
 
 \end{code}
 
-Section 8.2. Example: the ideal completion of dyadics
+Section 8.2. Example: the ideal completion of the dyadics rationals
 
 \begin{code}
 
