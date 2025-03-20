@@ -60,7 +60,7 @@ open binary-unions-of-subsets pt
 
 \end{code}
 
-Section 2
+Section 2. The way-below relation and compactness
 
 \begin{code}
 
@@ -212,7 +212,7 @@ universe as the index types for directed completeness.
 
 \end{code}
 
-Section 3
+Section 3. The ind-completion
 
 \begin{code}
 
@@ -272,7 +272,7 @@ Section 3
 
 \end{code}
 
-Section 4.1
+Section 4.1. Continuous dcpos
 
 \begin{code}
 
@@ -361,7 +361,7 @@ Section 4.1
 
 \end{code}
 
-Section 4.2
+Section 4.2. Pseudocontinuity
 
 \begin{code}
 
@@ -395,7 +395,7 @@ Section 4.2
 
 \end{code}
 
-Section 4.3
+Section 4.3. Algebraic dcpos
 
 \begin{code}
 
@@ -410,7 +410,7 @@ Section 4.3
 
 \end{code}
 
-Section 5
+Section 5. Small bases
 
 \begin{code}
 
@@ -523,7 +523,7 @@ Section 5
 
 \end{code}
 
-Section 5.1
+Section 5.1. Small compact bases
 
 \begin{code}
 
@@ -567,7 +567,7 @@ Section 5.1
 
 \end{code}
 
-Section 5.2
+Section 5.2. Examples of dcpos with small compact bases
 
 \begin{code}
 
@@ -647,7 +647,7 @@ module _
 
 \end{code}
 
-Section 5.3
+Section 5.3. The basis of compact elements
 
 \begin{code}
 
@@ -686,7 +686,7 @@ module _
 
 \end{code}
 
-Section 6
+Section 6. The rounded ideal completion
 
 \begin{code}
 
@@ -749,7 +749,7 @@ Section 6
 
 \end{code}
 
-Section 6.1
+Section 6.1. The rounded ideal completion of a reflexive abstract basis
 
 \begin{code}
 
@@ -805,7 +805,7 @@ Section 6.1
 
 \end{code}
 
-Section 6.2
+Section 6.2. Example: the ideal completion of dyadics
 
 \begin{code}
 
@@ -864,7 +864,7 @@ module _ where
 
 \end{code}
 
-Section 6.3
+Section 6.3. Ideal completions of small bases
 
 \begin{code}
 
@@ -1001,7 +1001,7 @@ module _ (𝓥 : Universe) where
 
 \end{code}
 
-Section 7.1
+Section 7.1. Structurally continuous and algebraic bilimits
 
 \begin{code}
 
@@ -1080,7 +1080,7 @@ Section 7.1
 
 \end{code}
 
-Section 7.2
+Section 7.2. Exponentials with small (compact) bases
 
 \begin{code}
 

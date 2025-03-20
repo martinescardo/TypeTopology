@@ -57,7 +57,7 @@ open import OrderedTypes.Poset fe
 
 \end{code}
 
-Section 2
+Section 2. Foundations
 
 \begin{code}
 
@@ -77,7 +77,7 @@ Definition-2-4 𝓥 X = _∈_ , _⊆_
 
 \end{code}
 
-Section 3
+Section 3. Directed complete posets
 
 \begin{code}
 
@@ -185,7 +185,7 @@ module _ (𝓥 : Universe) where
 
 \end{code}
 
-Section 4
+Section 4. Scott continuous maps
 
 \begin{code}
 
@@ -317,7 +317,7 @@ Section 4
 
 \end{code}
 
-Section 5
+Section 5. Lifting
 
 \begin{code}
 
@@ -494,7 +494,7 @@ module _ (𝓥 : Universe) where
 
 \end{code}
 
-Section 6
+Section 6. Products and exponentials
 
 \begin{code}
 
@@ -609,7 +609,7 @@ module _ (𝓥 : Universe) where
 
 \end{code}
 
-Section 7
+Section 7. Bilimits
 
 \begin{code}
 
@@ -755,7 +755,7 @@ module _ (𝓥 : Universe) where
 
 \end{code}
 
-Section 8
+Section 8. Scott's D∞ model of the untyped λ-calculus
 
 \begin{code}
 

@@ -60,7 +60,7 @@ open binary-unions-of-subsets pt
 
 \end{code}
 
-Section 2
+Section 2. Foundations
 
 \begin{code}
 
@@ -87,7 +87,7 @@ Definition-2-5 𝓥 X = _∈_ , _⊆_
 
 \end{code}
 
-Section 3.2
+Section 3.2. Directed complete posets indexed by universe parameters
 
 \begin{code}
 
@@ -178,7 +178,7 @@ module _ (𝓥 : Universe) where
 
 \end{code}
 
-Section 3.3
+Section 3.3. Scott continuous maps
 
 \begin{code}
 
@@ -251,7 +251,7 @@ Section 3.3
 
 \end{code}
 
-Section 3.4
+Section 3.4. Lifting
 
 \begin{code}
 
@@ -304,7 +304,7 @@ Section 3.4
 
 \end{code}
 
-Section 3.5
+Section 3.5. Exponentials
 
 \begin{code}
 
@@ -356,7 +356,7 @@ module _ (𝓥 : Universe) where
 
 \end{code}
 
-Section 3.6
+Section 3.6. Bilimits
 
 \begin{code}
 
@@ -480,7 +480,7 @@ module _ (𝓥 : Universe) where
 
 \end{code}
 
-Section 3.7
+Section 3.7. Scott's D∞ model of the untyped λ-calculus
 
 \begin{code}
 
@@ -509,7 +509,7 @@ module _ where
 
 \end{code}
 
-Section 4
+Section 4. The way-below relation and compactness
 
 \begin{code}
 
@@ -661,7 +661,7 @@ universe as the index types for directed completeness.
 
 \end{code}
 
-Section 5
+Section 5. The ind-completion
 
 \begin{code}
 
@@ -721,7 +721,7 @@ Section 5
 
 \end{code}
 
-Section 6.1
+Section 6.1. Continuous dcpos
 
 \begin{code}
 
@@ -810,7 +810,7 @@ Section 6.1
 
 \end{code}
 
-Section 6.2
+Section 6.2. Pseudocontinuity
 
 \begin{code}
 
@@ -844,7 +844,7 @@ Section 6.2
 
 \end{code}
 
-Section 6.3
+Section 6.3. Algebraic dcpos
 
 \begin{code}
 
@@ -859,7 +859,7 @@ Section 6.3
 
 \end{code}
 
-Section 7
+Section 7. Small bases
 
 \begin{code}
 
@@ -972,7 +972,7 @@ Section 7
 
 \end{code}
 
-Section 7.1
+Section 7.1. Small compact bases
 
 \begin{code}
 
@@ -1016,7 +1016,7 @@ Section 7.1
 
 \end{code}
 
-Section 7.2
+Section 7.2. Examples of dcpos with small compact bases
 
 \begin{code}
 
@@ -1096,7 +1096,7 @@ module _
 
 \end{code}
 
-Section 7.3
+Section 7.3. The basis of compact elements
 
 \begin{code}
 
@@ -1135,7 +1135,7 @@ module _
 
 \end{code}
 
-Section 8
+Section 8. The round ideal completion
 
 \begin{code}
 
@@ -1198,7 +1198,7 @@ Section 8
 
 \end{code}
 
-Section 8.1
+Section 8.1. The round ideal completion of a reflexive abstract basis
 
 \begin{code}
 
@@ -1254,7 +1254,7 @@ Section 8.1
 
 \end{code}
 
-Section 8.2
+Section 8.2. Example: the ideal completion of dyadics
 
 \begin{code}
 
@@ -1313,7 +1313,7 @@ module _ where
 
 \end{code}
 
-Section 8.3
+Section 8.3. Ideal completions of small bases
 
 \begin{code}
 
@@ -1450,7 +1450,7 @@ module _ (𝓥 : Universe) where
 
 \end{code}
 
-Section 9.1
+Section 9.1. Structurally continuous and algebraic bilimits
 
 \begin{code}
 
@@ -1529,7 +1529,7 @@ Section 9.1
 
 \end{code}
 
-Section 9.2
+Section 9.2. Exponentials with small (compact) bases
 
 \begin{code}
 
