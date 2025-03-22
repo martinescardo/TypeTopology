@@ -2362,21 +2362,21 @@ theorem₁ {𝓣} {𝓤} q = free-σ-SupLat-on-one-generator QD ⊤ QD-is-free-�
  where
   open quasidecidable-propositions-exist q
   open hypothetical-quasidecidability {𝓣} {𝓤}
-         (quasidecidable-propositions
-            is-quasidecidable
-            being-quasidecidable-is-prop
-            𝟘-is-quasidecidable
-            𝟙-is-quasidecidable
-            quasidecidable-closed-under-ω-joins
-            quasidecidable-induction)
+        (quasidecidable-propositions
+          is-quasidecidable
+          being-quasidecidable-is-prop
+          𝟘-is-quasidecidable
+          𝟙-is-quasidecidable
+          quasidecidable-closed-under-ω-joins
+          quasidecidable-induction)
 
 theorem₂ {𝓣} {𝓤} f = quasidecidable-propositions
-                        is-quasidecidable₀
-                        being-quasidecidable₀-is-prop
-                        𝟘-is-quasidecidable₀
-                        𝟙-is-quasidecidable₀
-                        quasidecidable₀-closed-under-ω-joins
-                        quasidecidable₀-induction
+                       is-quasidecidable₀
+                       being-quasidecidable₀-is-prop
+                       𝟘-is-quasidecidable₀
+                       𝟙-is-quasidecidable₀
+                       quasidecidable₀-closed-under-ω-joins
+                       quasidecidable₀-induction
  where
   open free-σ-SupLat-on-one-generator-exists f
   open hypothetical-free-σ-SupLat-on-one-generator
@@ -2389,12 +2389,12 @@ theorem₃ {𝓣} {𝓚} f = initial-σ-frame 𝓐-qua-σ-frame 𝓐-qua-σ-fram
   open assumption {𝓣} {𝓚} 𝓐 ⊤ 𝓐-free
 
 theorem₄ {𝓣} {𝓚} ρ = quasidecidable-propositions
-                        is-quasidecidable
-                        being-quasidecidable-is-prop
-                        𝟘-is-quasidecidable
-                        𝟙-is-quasidecidable
-                        quasidecidable-closed-under-ω-joins
-                        quasidecidable-induction
+                       is-quasidecidable
+                       being-quasidecidable-is-prop
+                       𝟘-is-quasidecidable
+                       𝟙-is-quasidecidable
+                       quasidecidable-closed-under-ω-joins
+                       quasidecidable-induction
  where
   open quasidecidability-construction-from-resizing 𝓣 𝓚 ρ
 
