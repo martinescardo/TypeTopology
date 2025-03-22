@@ -231,7 +231,6 @@ open import UF.Base
 open import UF.Subsingletons-FunExt
 open import UF.Equiv
 open import UF.Equiv-FunExt
-open import UF.Univalence
 open import UF.UA-FunExt
 open import UF.EquivalenceExamples
 open import UF.Yoneda
@@ -279,21 +278,31 @@ The following shows that we need to truncate, because the Cantor type
 semidecidability-data : 𝓤 ̇ → 𝓤 ̇
 semidecidability-data X = Σ α ꞉ (ℕ → 𝟚), X ≃ (∃ n ꞉ ℕ , α n ＝ ₁)
 
-totality-of-semidecidability-data
- : is-univalent 𝓤₀
- → (Σ X ꞉ 𝓤₀ ̇ , semidecidability-data X) ≃ (ℕ → 𝟚)
-totality-of-semidecidability-data ua =
+module only-use-of-univalence-in-this-file where
 
-  (Σ X ꞉ 𝓤₀ ̇ , Σ α ꞉ (ℕ → 𝟚), X ≃ (∃ n ꞉ ℕ , α n ＝ ₁)) ≃⟨ i ⟩
-  (Σ α ꞉ (ℕ → 𝟚), Σ X ꞉ 𝓤₀ ̇ , X ≃ (∃ n ꞉ ℕ , α n ＝ ₁)) ≃⟨ ii ⟩
-  (Σ α ꞉ (ℕ → 𝟚), Σ X ꞉ 𝓤₀ ̇ , (∃ n ꞉ ℕ , α n ＝ ₁) ≃ X) ≃⟨ iii ⟩
-  (ℕ → 𝟚) × 𝟙 {𝓤₀}                                      ≃⟨ iv ⟩
-  (ℕ → 𝟚)                                               ■
- where
-  i   = Σ-flip
-  ii  = Σ-cong (λ α → Σ-cong (λ X → ≃-Sym'' (univalence-gives-funext ua)))
-  iii = Σ-cong (λ α → singleton-≃-𝟙 (univalence-via-singletons→ ua (∃ n ꞉ ℕ , α n ＝ ₁)))
-  iv  = 𝟙-rneutral
+ open import UF.Univalence
+
+ totality-of-semidecidability-data
+  : is-univalent 𝓤₀
+  → (Σ X ꞉ 𝓤₀ ̇ , semidecidability-data X) ≃ (ℕ → 𝟚)
+ totality-of-semidecidability-data ua =
+
+   (Σ X ꞉ 𝓤₀ ̇ , Σ α ꞉ (ℕ → 𝟚), X ≃ (∃ n ꞉ ℕ , α n ＝ ₁)) ≃⟨ i ⟩
+   (Σ α ꞉ (ℕ → 𝟚), Σ X ꞉ 𝓤₀ ̇ , X ≃ (∃ n ꞉ ℕ , α n ＝ ₁)) ≃⟨ ii ⟩
+   (Σ α ꞉ (ℕ → 𝟚), Σ X ꞉ 𝓤₀ ̇ , (∃ n ꞉ ℕ , α n ＝ ₁) ≃ X) ≃⟨ iii ⟩
+   (ℕ → 𝟚) × 𝟙 {𝓤₀}                                      ≃⟨ iv ⟩
+   (ℕ → 𝟚)                                               ■
+  where
+   i   = Σ-flip
+   ii  = Σ-cong (λ α → Σ-cong (λ X → ≃-Sym'' (univalence-gives-funext ua)))
+   iii = Σ-cong (λ α → singleton-≃-𝟙 (univalence-via-singletons→ ua (∃ n ꞉ ℕ , α n ＝ ₁)))
+   iv  = 𝟙-rneutral
+
+\end{code}
+
+End of module only-use-of-univalence-in-this-file.
+
+\begin{code}
 
 𝓢 : 𝓤₁ ̇
 𝓢 = Σ X ꞉ 𝓤₀ ̇ , is-semidecidable X
