@@ -38,7 +38,9 @@ private
 
 open PropositionalTruncation pt
 
+open import UF.Base
 open import UF.Equiv
+open import UF.Equiv-FunExt
 open import UF.EquivalenceExamples
 open import UF.Size hiding (is-small ; is-locally-small)
 open import UF.Subsingletons
@@ -353,6 +355,201 @@ _≃ᵈᶜᵖᵒ_ : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'}) �
           → 𝓓 ≃ᵈᶜᵖᵒ 𝓔
           → 𝓔 ≃ᵈᶜᵖᵒ 𝓓
 ≃ᵈᶜᵖᵒ-inv 𝓓 𝓔 (f , g , s , r , cf , cg) = (g , f , r , s , cg , cf)
+
+\end{code}
+
+Added 20-25 March 2025 by Tom de Jong, following a discussion with Martin Escardo.
+
+For use with the structure identity principle (SIP) it's convenient to know that
+the type of dcpo isomorphisms is equivalent to the type order-equivs of order
+preserving and reflecting equivalences.
+
+\begin{code}
+
+is-order-reflecting : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
+                    → (⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩)
+                    → 𝓤 ⊔ 𝓣 ⊔ 𝓣' ̇
+is-order-reflecting 𝓓 𝓔 f = (x x' : ⟨ 𝓓 ⟩) → f x ⊑⟨ 𝓔 ⟩ f x' → x ⊑⟨ 𝓓 ⟩ x'
+
+is-order-equiv : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
+               → (⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩)
+               → 𝓤 ⊔ 𝓤' ⊔ 𝓣 ⊔ 𝓣' ̇
+is-order-equiv 𝓓 𝓔 f = is-equiv f × is-monotone 𝓓 𝓔 f × is-order-reflecting 𝓓 𝓔 f
+
+being-order-equiv-is-prop : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
+                            (f : ⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩)
+                          → is-prop (is-order-equiv 𝓓 𝓔 f)
+being-order-equiv-is-prop 𝓓 𝓔 f =
+ ×₃-is-prop (being-equiv-is-prop fe' f)
+            (Π₃-is-prop fe λ x x' _ → prop-valuedness 𝓔 (f x) (f x'))
+            (Π₃-is-prop fe λ x x' _ → prop-valuedness 𝓓 x x')
+
+order-equivs : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'}) → 𝓤 ⊔ 𝓣 ⊔ 𝓤' ⊔ 𝓣' ̇
+order-equivs 𝓓 𝓔 = Σ f ꞉ (⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩) , is-order-equiv 𝓓 𝓔 f
+
+\end{code}
+
+To relate order equivalences to isomorphisms of dcpos we will need the following
+three basic observations.
+
+\begin{code}
+
+inverse-of-order-equiv-is-order-equiv : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
+                                      → (f : ⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩)
+                                      → (𝕖@(e , _) : is-order-equiv 𝓓 𝓔 f)
+                                      → is-order-equiv 𝓔 𝓓 (inverse f e)
+inverse-of-order-equiv-is-order-equiv 𝓓 𝓔 f
+ (f-equiv , f-monotone , f-order-reflecting) = I , II , III
+ where
+  g : ⟨ 𝓔 ⟩ → ⟨ 𝓓 ⟩
+  g = inverse f f-equiv
+  I : is-equiv g
+  I = inverses-are-equivs f f-equiv
+  II : is-monotone 𝓔 𝓓 g
+  II y y' l =
+   f-order-reflecting (g y) (g y')
+                      (transport₂ (underlying-order 𝓔)
+                                  ((inverses-are-sections f f-equiv y) ⁻¹)
+                                  ((inverses-are-sections f f-equiv y') ⁻¹)
+                                  l)
+  III : is-order-reflecting 𝓔 𝓓 g
+  III y y' l =
+   transport₂ (underlying-order 𝓔)
+              (inverses-are-sections f f-equiv y)
+              (inverses-are-sections f f-equiv y')
+              (f-monotone (g y) (g y') l)
+
+monotone-map-with-monotone-inverse-is-order-reflecting
+ : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
+   (f : ⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩) (e : is-equiv f)
+ → is-monotone 𝓓 𝓔 f
+ → is-monotone 𝓔 𝓓 (inverse f e)
+ → is-order-reflecting 𝓓 𝓔 f
+monotone-map-with-monotone-inverse-is-order-reflecting
+ 𝓓 𝓔 f e f-monotone f-inv-monotone x x' l =
+  transport₂ (underlying-order 𝓓)
+             (inverses-are-retractions f e x)
+             (inverses-are-retractions f e x')
+             (f-inv-monotone (f x) (f x') l)
+
+order-equivs-are-continuous : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
+                            → (f : ⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩)
+                            → is-order-equiv 𝓓 𝓔 f
+                            → is-continuous 𝓓 𝓔 f
+order-equivs-are-continuous 𝓓 𝓔 f 𝕖@(f-equiv , f-monotone , f-order-reflecting) =
+ continuity-criterion 𝓓 𝓔 f f-monotone cont-condition
+  where
+   g : ⟨ 𝓔 ⟩ → ⟨ 𝓓 ⟩
+   g = inverse f f-equiv
+
+   g-order-reflecting : is-order-reflecting 𝓔 𝓓 g
+   g-order-reflecting = pr₂ (pr₂ (inverse-of-order-equiv-is-order-equiv 𝓓 𝓔 f 𝕖))
+
+   cont-condition : (I : 𝓥 ̇) (α : I → ⟨ 𝓓 ⟩) (δ : is-Directed 𝓓 α)
+                  → f (∐ 𝓓 δ) ⊑⟨ 𝓔 ⟩ ∐ 𝓔 (image-is-directed 𝓓 𝓔 f-monotone δ)
+   cont-condition I α δ =
+    g-order-reflecting (f (∐ 𝓓 δ))
+                       (∐ 𝓔 ε)
+                       (transport⁻¹ (λ - → - ⊑⟨ 𝓓 ⟩ g (∐ 𝓔 ε))
+                                    (inverses-are-retractions f f-equiv (∐ 𝓓 δ))
+                                    ineq)
+    where
+     ε : is-Directed 𝓔 (f ∘ α)
+     ε = image-is-directed 𝓓 𝓔 f-monotone δ
+     ineq : ∐ 𝓓 δ ⊑⟨ 𝓓 ⟩ g (∐ 𝓔 ε)
+     ineq = ∐-is-lowerbound-of-upperbounds 𝓓 δ (g (∐ 𝓔 ε)) ub
+      where
+       ub : (i : I) → α i ⊑⟨ 𝓓 ⟩ g (∐ 𝓔 ε)
+       ub i = f-order-reflecting (α i) (g (∐ 𝓔 ε))
+               (transport⁻¹ (λ - → f (α i) ⊑⟨ 𝓔 ⟩ -)
+                            (inverses-are-sections f f-equiv (∐ 𝓔 ε))
+                            (∐-is-upperbound 𝓔 ε i))
+\end{code}
+
+We are now ready to show that the identity type between two dcpos 𝓓 and 𝓔 is
+equivalent to type of isomorphisms between 𝓓 and 𝓔.
+
+\begin{code}
+
+open import UF.Univalence
+
+characterization-of-DCPO-＝ : Univalence
+                            → (𝓓 𝓔 : DCPO {𝓤} {𝓣}) → (𝓓 ＝ 𝓔) ≃ 𝓓 ≃ᵈᶜᵖᵒ 𝓔
+characterization-of-DCPO-＝ {𝓤} {𝓣} ua 𝓓 𝓔 =
+ (𝓓 ＝ 𝓔)                                                            ≃⟨ I ⟩
+ (Σ f ꞉ (⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩)
+   , is-equiv f × ((x x' : ⟨ 𝓓 ⟩) → x ⊑⟨ 𝓓 ⟩ x' ＝ f x ⊑⟨ 𝓔 ⟩ f x')) ≃⟨ II ⟩
+ (Σ f ꞉ (⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩) , is-order-equiv 𝓓 𝓔 f)                      ≃⟨ III ⟩
+ (Σ f ꞉ (⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩) , Σ e ꞉ is-equiv f
+                        , is-continuous 𝓓 𝓔 f
+                        × is-continuous 𝓔 𝓓 (inverse f e))           ≃⟨ IV ⟩
+ 𝓓 ≃ᵈᶜᵖᵒ 𝓔                                                           ■
+  where
+   I = characterization-of-M-＝' ua 𝓓 𝓔
+    where
+     open import UF.SIP-Examples
+     open generalized-metric-space
+           (𝓣 ̇  )
+           (λ (D : 𝓤 ̇  ) (_⊑_ : D → D → 𝓣 ̇  ) → dcpo-axioms _⊑_)
+           (λ D → dcpo-axioms-is-prop)
+   II =
+    Σ-cong
+     (λ f → logically-equivalent-props-are-equivalent
+             (×-is-prop (being-equiv-is-prop fe' f)
+                        (Π₂-is-prop fe
+                          (λ x x' → identifications-with-props-are-props
+                                     (univalence-gives-propext (ua 𝓣))
+                                     fe
+                                     (f x ⊑⟨ 𝓔 ⟩ f x')
+                                     (prop-valuedness 𝓔 (f x) (f x'))
+                                     (x ⊑⟨ 𝓓 ⟩ x'))))
+             (being-order-equiv-is-prop 𝓓 𝓔 f)
+             (λ (e , p) → e ,
+                          (λ x x' → Idtofun (p x x')) ,
+                          (λ x x' → Idtofun⁻¹ (p x x')))
+             (λ (e , m , r) → e ,
+                              (λ x x' → univalence-gives-propext
+                                         (ua 𝓣)
+                                         (prop-valuedness 𝓓 x x')
+                                         (prop-valuedness 𝓔 (f x) (f x'))
+                                         (m x x')
+                                         (r x x'))))
+   III =
+    Σ-cong
+     (λ f → logically-equivalent-props-are-equivalent
+             (being-order-equiv-is-prop 𝓓 𝓔 f)
+             (Σ-is-prop
+               (being-equiv-is-prop fe' f)
+               (λ e → ×-is-prop
+                       (being-continuous-is-prop 𝓓 𝓔 f)
+                       (being-continuous-is-prop 𝓔 𝓓 (inverse f e))))
+             (λ (e , m , r) → e ,
+                              order-equivs-are-continuous 𝓓 𝓔 f (e , m , r) ,
+                              order-equivs-are-continuous 𝓔 𝓓
+                               (inverse f e)
+                               (inverse-of-order-equiv-is-order-equiv 𝓓 𝓔 f
+                                 (e , m , r)))
+             (λ (e , f-cont , f-inv-cont) →
+               e ,
+               monotone-if-continuous 𝓓 𝓔 (f , f-cont) ,
+               monotone-map-with-monotone-inverse-is-order-reflecting 𝓓 𝓔 f e
+                (monotone-if-continuous 𝓓 𝓔 (f , f-cont))
+                (monotone-if-continuous 𝓔 𝓓 (inverse f e , f-inv-cont))))
+   IV = Σ-cong (λ f → Σ-change-of-variable _ ⌜ ϕ f ⌝ (⌜⌝-is-equiv (ϕ f))
+                      ● Σ-change-of-variable _ ⌜ Σ-assoc ⌝⁻¹ (⌜⌝⁻¹-is-equiv Σ-assoc)
+                      ● Σ-assoc
+                      ● Σ-assoc)
+    where
+     ϕ : (f : ⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩) → is-equiv f ≃ qinv f
+     ϕ f = is-equiv-≃-qinv fe f (sethood 𝓓)
+
+\end{code}
+
+End of addition.
+
+We now define embedding-projection pairs.
+
+\begin{code}
 
 is-deflation : (𝓓 : DCPO {𝓤} {𝓣}) → DCPO[ 𝓓 , 𝓓 ] → 𝓤 ⊔ 𝓣 ̇
 is-deflation 𝓓 f = (x : ⟨ 𝓓 ⟩) → [ 𝓓 , 𝓓 ]⟨ f ⟩ x ⊑⟨ 𝓓 ⟩ x

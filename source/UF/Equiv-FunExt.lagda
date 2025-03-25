@@ -517,3 +517,75 @@ open import UF.Sets-Properties
   (λ _ → props-are-sets (being-equiv-is-prop (λ _ _ → fe) _))
 
 \end{code}
+
+Added 25 March 2025 by Tom de Jong.
+
+If the domain or codomain of f is a set, then being invertible is a property of
+the map f.
+
+In particular in such cases the type expressing that f is an equivalence is
+equivalent to the type expressing that f is invertible.
+
+\begin{code}
+
+being-qinv-is-prop : Fun-Ext
+                   → {X : 𝓤 ̇  } {Y : 𝓥 ̇  }
+                   → (f : X → Y)
+                   → is-set X
+                   → is-prop (qinv f)
+being-qinv-is-prop fe {X} {Y} f X-is-set = prop-criterion II
+ where
+  module _ (q : qinv f)
+   where
+    I : Y ≃ X
+    I = ≃-sym (f , qinvs-are-equivs f q)
+
+    II : is-prop (qinv f)
+    II (g , g-ret , g-sec) (h , h-ret , h-sec) =
+     to-subtype-＝ (λ k → ×-is-prop
+                           (Π-is-prop fe (λ x → X-is-set))
+                           (Π-is-prop fe (λ y → equiv-to-set I X-is-set)))
+                   (dfunext fe (λ y → g y         ＝⟨ ap g ((h-sec y) ⁻¹) ⟩
+                                      g (f (h y)) ＝⟨ g-ret (h y) ⟩
+                                      h y         ∎))
+
+being-qinv-is-prop' : Fun-Ext
+                    → {X Y : 𝓤 ̇  }
+                    → (f : X → Y)
+                    → is-set Y
+                    → is-prop (qinv f)
+being-qinv-is-prop' fe {X} {Y} f Y-is-set = prop-criterion II
+ where
+  module _ (q : qinv f)
+   where
+    I : X ≃ Y
+    I = f , qinvs-are-equivs f q
+
+    II : is-prop (qinv f)
+    II = being-qinv-is-prop fe f (equiv-to-set I Y-is-set)
+
+is-equiv-≃-qinv : Fun-Ext
+                → {X Y : 𝓤 ̇  }
+                → (f : X → Y)
+                → is-set X
+                → is-equiv f ≃ qinv f
+is-equiv-≃-qinv fe f X-is-set =
+ logically-equivalent-props-are-equivalent
+  (being-equiv-is-prop (λ _ _ → fe) f)
+  (being-qinv-is-prop fe f X-is-set)
+  (equivs-are-qinvs f)
+  (qinvs-are-equivs f)
+
+is-equiv-≃-qinv' : Fun-Ext
+                 → {X Y : 𝓤 ̇  }
+                 → (f : X → Y)
+                 → is-set Y
+                 → is-equiv f ≃ qinv f
+is-equiv-≃-qinv' fe f Y-is-set =
+ logically-equivalent-props-are-equivalent
+  (being-equiv-is-prop (λ _ _ → fe) f)
+  (being-qinv-is-prop' fe f Y-is-set)
+  (equivs-are-qinvs f)
+  (qinvs-are-equivs f)
+
+\end{code}
