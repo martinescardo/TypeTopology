@@ -101,6 +101,31 @@ being-continuous-dcpo-is-prop 𝓓 = ∥∥-is-prop
 
 \end{code}
 
+Added 25 March 2025 by Tom de Jong following a discussion with Martin Escardo.
+
+In particular, two continuous dcpos are equal precisely when they are
+isomorphic.
+
+\begin{code}
+
+open import UF.Univalence
+
+characterization-of-continuous-DCPO-＝ : Univalence
+                                       → (𝓓 𝓔 : DCPO {𝓤} {𝓣})
+                                       → (c₁ : is-continuous-dcpo 𝓓)
+                                       → (c₂ : is-continuous-dcpo 𝓔)
+                                       → ((𝓓 , c₁) ＝ (𝓔 , c₂)) ≃ (𝓓 ≃ᵈᶜᵖᵒ 𝓔)
+characterization-of-continuous-DCPO-＝ ua 𝓓 𝓔 c₁ c₂ =
+ ((𝓓 , c₁) ＝ (𝓔 , c₂)) ≃⟨ I ⟩
+ (𝓓 ＝ 𝓔)               ≃⟨ II ⟩
+ (𝓓 ≃ᵈᶜᵖᵒ 𝓔)            ■
+  where
+   open import UF.Embeddings using (to-subtype-＝-≃)
+   I  = ≃-sym (to-subtype-＝-≃ being-continuous-dcpo-is-prop)
+   II = characterization-of-DCPO-＝ ua 𝓓 𝓔
+
+\end{code}
+
 Similarly, we define when a dcpo has algebraicity data where the
 approximating family is required to consist of compact elements.
 
