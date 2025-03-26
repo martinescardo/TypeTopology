@@ -845,9 +845,9 @@ Compact-closed-under-≃ e = Compact-closed-under-retracts (≃-gives-▷ e)
 
 \end{code}
 
-The following was added 26 March 2025 by Fredrik Bakke, giving a generalization
-of the fact that compact types are closed under covers, avoiding function
-extensionality and propositional truncations.
+The following was added 26 March 2025 by Fredrik Bakke. It gives a
+generalization of the fact that compact types are closed under covers that also
+avoids function extensionality and propositional truncations.
 
 \begin{code}
 
