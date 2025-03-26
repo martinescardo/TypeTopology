@@ -83,6 +83,7 @@ open import MLTT.Spartan
 open import MLTT.Two-Properties
 open import NotionsOfDecidability.Complemented
 open import NotionsOfDecidability.Decidable
+open import TypeTopology.Density
 open import UF.Base
 open import UF.DiscreteAndSeparated
 open import UF.Equiv
@@ -842,43 +843,66 @@ Compact-closed-under-≃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                        → is-Compact Y {𝓦}
 Compact-closed-under-≃ e = Compact-closed-under-retracts (≃-gives-▷ e)
 
+\end{code}
+
+The following was added 26 March 2025 by Fredrik Bakke, giving a generalization
+of the fact that compact types are closed under covers, avoiding function
+extensionality and propositional truncations.
+
+\begin{code}
+
+dense-map-Compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                  → is-dense f
+                  → is-Compact X {𝓥}
+                  → is-Compact Y {𝓥}
+dense-map-Compact {𝓤} {𝓥} {X} {Y} f i c A δ =
+  cases-map
+    ( λ z → f (z .pr₁) , z .pr₂)
+    ( λ nxpf yp →
+      i (yp .pr₁ , λ xr → nxpf (xr .pr₁ , transport A ((xr .pr₂)⁻¹) (yp .pr₂))))
+    ( c (A ∘ f) (δ ∘ f))
+
+dense-map-Π-Compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                  → is-dense f
+                  → is-Π-Compact X {𝓥}
+                  → is-Π-Compact Y {𝓥}
+dense-map-Π-Compact {𝓤} {𝓥} {X} {Y} f i c A δ =
+  cases-map
+    ( λ p y → Cases (δ y) id (λ np → unique-from-𝟘 (i (y , λ xp → np (transport A (xp .pr₂) (p (xp .pr₁)))))))
+    ( λ nph p → nph (p ∘ f))
+    ( c (A ∘ f) (δ ∘ f))
+
+\end{code}
+
+\begin{code}
+
 module CompactTypesPT (pt : propositional-truncations-exist) where
 
  open import UF.ImageAndSurjection pt
 
  surjection-Compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                    → funext 𝓥 𝓤₀
                     → is-surjection f
                     → is-Compact X {𝓥}
                     → is-Compact Y {𝓥}
- surjection-Compact {𝓤} {𝓥} {X} {Y} f fe i c A δ = γ (c B ε)
-  where
-   B : X → 𝓥 ̇
-   B = A ∘ f
+ surjection-Compact {𝓤} {𝓥} {X} {Y} f i = dense-map-Compact f (surjections-are-dense f i)
 
-   ε : is-complemented B
-   ε = δ ∘ f
-
-   γ : is-decidable (Σ B) → is-decidable (Σ A)
-   γ (inl (x , a)) = inl (f x , a)
-   γ (inr u)       = inr v
-    where
-     u' : (x : X) → ¬ A (f x)
-     u' x a = u (x , a)
-
-     v' : (y : Y) → ¬ A y
-     v' = surjection-induction f i (λ y → ¬ A y) (λ y → negations-are-props fe) u'
-
-     v : ¬ Σ A
-     v (y , a) = v' y a
-
- image-Compact : funext (𝓤 ⊔ 𝓥) 𝓤₀
-               → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+ image-Compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                → is-Compact X {𝓤 ⊔ 𝓥}
                → is-Compact (image f) {𝓤 ⊔ 𝓥}
- image-Compact fe f c = surjection-Compact (corestriction f) fe
-                         (corestrictions-are-surjections f) c
+ image-Compact f c = surjection-Compact (corestriction f)
+                      (corestrictions-are-surjections f) c
 
+ surjection-Π-Compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                      → is-surjection f
+                      → is-Π-Compact X {𝓥}
+                      → is-Π-Compact Y {𝓥}
+ surjection-Π-Compact {𝓤} {𝓥} {X} {Y} f i = dense-map-Π-Compact f (surjections-are-dense f i)
+
+ image-Π-Compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                 → is-Π-Compact X {𝓤 ⊔ 𝓥}
+                 → is-Π-Compact (image f) {𝓤 ⊔ 𝓥}
+ image-Π-Compact f c = surjection-Π-Compact (corestriction f)
+                        (corestrictions-are-surjections f) c
 
  open PropositionalTruncation pt
 
