@@ -184,18 +184,34 @@ left cancellability that a map is an embedding.
                                                → left-cancellable f
                                                → is-¬¬-stable-map f
                                                → is-embedding f
-¬¬-stable-left-cancellable-maps-are-embeddings negations-are-props f lc s =
- ∘-is-embedding
-  (equivs-are-embeddings
+¬¬-stable-left-cancellable-maps-are-embeddings negations-are-props f lc s = f-is-embedding
+ where
+
+
+ ¬¬-corestriction-f-is-split-surjective : (u : ¬¬-image f)
+                                        → fiber (¬¬-corestriction f) u
+ ¬¬-corestriction-f-is-split-surjective u =
+  let
+   su = s (u .pr₁) (u .pr₂)
+  in
+  su .pr₁ , ¬¬-restrictions-are-left-cancellable negations-are-props f (su .pr₂)
+
+ ¬¬-corestriction-f-is-equiv : is-equiv (¬¬-corestriction f)
+ ¬¬-corestriction-f-is-equiv =
+  lc-split-surjections-are-equivs
    (¬¬-corestriction f)
-   (lc-split-surjections-are-equivs
-    (¬¬-corestriction f)
-    (left-cancellable-factor (¬¬-corestriction f) (¬¬-restriction f) lc)
-    (λ y →
-     s (y .pr₁) (y .pr₂) .pr₁ ,
-     ¬¬-restrictions-are-left-cancellable negations-are-props f
-      (s (y .pr₁) (y .pr₂) .pr₂))))
-  ( ¬¬-restrictions-are-embeddings negations-are-props f)
+   (left-cancellable-factor (¬¬-corestriction f) (¬¬-restriction f) lc)
+   (¬¬-corestriction-f-is-split-surjective)
+
+ ¬¬-corestriction-f-is-embedding : is-embedding (¬¬-corestriction f)
+ ¬¬-corestriction-f-is-embedding =
+  equivs-are-embeddings (¬¬-corestriction f) (¬¬-corestriction-f-is-equiv)
+
+ f-is-embedding : is-embedding f
+ f-is-embedding =
+  ∘-is-embedding
+   (¬¬-corestriction-f-is-embedding)
+   (¬¬-restrictions-are-embeddings negations-are-props f)
 
 decidable-maps-are-¬¬-stable : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                              → (f : X → Y)

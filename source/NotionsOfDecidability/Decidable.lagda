@@ -417,14 +417,16 @@ is-decidable-map f = each-fiber-of f is-decidable
                 → is-decidable-map g
                 → is-decidable-map f
                 → is-decidable-map (g ∘ f)
-∘-decidable-map f g H G F x =
- cases
-  (λ u →
+∘-decidable-map f g H G F x = cases positive-case negative-case (G x)
+ where
+  positive-case : (u : fiber g x) → is-decidable (fiber (g ∘ f) x)
+  positive-case u =
    decidable-↔
     ((λ v → (v .pr₁) , (ap g (v .pr₂) ∙ u .pr₂)) ,
-     (λ w → w .pr₁ , H (w .pr₂ ∙ (u .pr₂)⁻¹)))
-    (F (u .pr₁)))
-  (λ α → inr (λ t → α (f (t .pr₁) , t .pr₂)))
-  (G x)
+     (λ w → (w .pr₁) , H (w .pr₂ ∙ (u .pr₂)⁻¹)))
+    (F (u .pr₁))
+
+  negative-case : (nu : ¬ (fiber g x)) → is-decidable (fiber (g ∘ f) x)
+  negative-case α = inr (λ t → α (f (t .pr₁) , t .pr₂))
 
 \end{code}
