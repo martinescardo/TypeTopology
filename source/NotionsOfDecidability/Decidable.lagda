@@ -296,8 +296,7 @@ all-types-are-¬¬-decidable X h = claim₂ claim₁
   claim₂ nx = h (inr nx)
 
 ¬¬-stable-if-decidable : (X : 𝓤 ̇ ) → is-decidable X → ¬¬-stable X
-¬¬-stable-if-decidable X (inl  x) = λ _ → x
-¬¬-stable-if-decidable X (inr nx) = λ h → 𝟘-elim (h nx)
+¬¬-stable-if-decidable X = ¬¬-elim
 
 \end{code}
 
@@ -401,5 +400,31 @@ module propositional-truncation-of-decidable-type
 
   decidable-types-have-split-support : ∥ X ∥ → X
   decidable-types-have-split-support s = ∣∣⟨ δ ⟩-exit (∥∥-to-∥∥⟨_⟩ s)
+
+\end{code}
+
+Added by Fredrik Bakke on 26 March 2025.
+
+We define the concept of decidable maps as maps where each fiber is decidable.
+
+\begin{code}
+
+is-decidable-map : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
+is-decidable-map f = each-fiber-of f is-decidable
+
+∘-decidable-map : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y) (g : Y → Z)
+                → left-cancellable g
+                → is-decidable-map g
+                → is-decidable-map f
+                → is-decidable-map (g ∘ f)
+∘-decidable-map f g H G F x =
+ cases
+  (λ u →
+   decidable-↔
+    ((λ v → (v .pr₁) , (ap g (v .pr₂) ∙ u .pr₂)) ,
+     (λ w → w .pr₁ , H (w .pr₂ ∙ (u .pr₂)⁻¹)))
+    (F (u .pr₁)))
+  (λ α → inr (λ t → α (f (t .pr₁) , t .pr₂)))
+  (G x)
 
 \end{code}
