@@ -472,6 +472,6 @@ Added 26 March 2025 by Fredrik Bakke.
 surjections-are-dense : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                       → is-surjection f
                       → is-dense f
-surjections-are-dense {𝓤} {𝓥} {X} {Y} f s (y , q) = ∥∥-rec 𝟘-is-prop q (s y)
+surjections-are-dense f s (y , q) = ∥∥-rec 𝟘-is-prop q (s y)
 
 \end{code}

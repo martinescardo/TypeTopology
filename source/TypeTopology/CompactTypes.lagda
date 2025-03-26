@@ -855,24 +855,29 @@ dense-map-Compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                   → is-dense f
                   → is-Compact X {𝓥}
                   → is-Compact Y {𝓥}
-dense-map-Compact {𝓤} {𝓥} {X} {Y} f i c A δ =
- cases-map
-  (λ z → f (z .pr₁) , z .pr₂)
-  (λ nxpf yp →
-   i (yp .pr₁ , λ xr → nxpf (xr .pr₁ , transport A ((xr .pr₂)⁻¹) (yp .pr₂))))
-  (c (A ∘ f) (δ ∘ f))
+dense-map-Compact f i c A δ =
+ let
+  positive-case = λ xp → f (xp .pr₁) , xp .pr₂
+  negative-case = λ nxpf yp →
+   i (yp .pr₁ , λ xr → nxpf (xr .pr₁ , transport A ((xr .pr₂)⁻¹) (yp .pr₂)))
+ in
+ cases-map positive-case negative-case (c (A ∘ f) (δ ∘ f))
 
 dense-map-Π-Compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                     → is-dense f
                     → is-Π-Compact X {𝓥}
                     → is-Π-Compact Y {𝓥}
-dense-map-Π-Compact {𝓤} {𝓥} {X} {Y} f i c A δ =
- cases-map
-  (λ p y →
-   Cases (δ y) id
-    (λ np → 𝟘-elim (i (y , λ xp → np (transport A (xp .pr₂) (p (xp .pr₁)))))))
-  (λ nph p → nph (p ∘ f))
-  (c (A ∘ f) (δ ∘ f))
+dense-map-Π-Compact f i c A δ =
+ let
+  positive-case = λ p y →
+   let
+    negative-positive-case = λ np →
+     𝟘-elim (i (y , λ xp → np (transport A (xp .pr₂) (p (xp .pr₁)))))
+   in
+    Cases (δ y) id negative-positive-case
+  negative-case = λ nph p → nph (p ∘ f)
+ in
+ cases-map positive-case negative-case (c (A ∘ f) (δ ∘ f))
 
 \end{code}
 
