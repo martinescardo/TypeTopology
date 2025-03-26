@@ -503,3 +503,116 @@ ap-refl : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) {x : X}
 ap-refl f = refl
 
 \end{code}
+
+Added by Ian Ray 18th Jan 2025
+
+\begin{code}
+
+apd-to-ap : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) {x x' : X} (p : x ＝ x')
+          → apd f p ＝ transport-const p ∙ ap f p
+apd-to-ap f refl = refl
+
+apd-from-ap : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) {x x' : X} (p : x ＝ x')
+            → ap f p ＝ transport-const p ⁻¹ ∙ apd f p
+apd-from-ap f refl = refl
+
+\end{code}
+
+We will also add some helpful path algebra lemmas. Note that pattern matching
+is not helpful here since the path concatenation by definition associates to
+the left: l ∙ q ∙ s ≡ (l ∙ q) ∙ s (where ≡ is definitional). So, as you will
+see below, we have to reassociate before applying on the left.
+
+\begin{code}
+
+ap-on-left-is-assoc : {X : 𝓤 ̇ } {x y z z' w : X} (l : x ＝ y)
+                      {p : y ＝ z} {q : y ＝ z'} {r : z ＝ w} {s : z' ＝ w}
+                    → p ∙ r ＝ q ∙ s
+                    → (l ∙ p) ∙ r ＝ (l ∙ q) ∙ s
+ap-on-left-is-assoc l {p} {q} {r} {s} α = l ∙ p ∙ r   ＝⟨ ∙assoc l p r ⟩
+                                          l ∙ (p ∙ r) ＝⟨ ap (l ∙_) α ⟩
+                                          l ∙ (q ∙ s) ＝⟨ ∙assoc l q s ⁻¹ ⟩
+                                          l ∙ q ∙ s   ∎
+
+ap-on-left-is-assoc' : {X : 𝓤 ̇ } {x y z z' : X} (l : x ＝ y)
+                       (p : y ＝ z') (q : y ＝ z) (s : z ＝ z')
+                     → p ＝ q ∙ s
+                     → l ∙ p ＝ (l ∙ q) ∙ s
+ap-on-left-is-assoc' l p q s α = l ∙ p        ＝⟨ ap (l ∙_) α ⟩
+                                 l ∙ (q ∙ s)  ＝⟨ ∙assoc l q s ⁻¹ ⟩
+                                 l ∙ q ∙ s    ∎
+
+ap-on-left-is-assoc'' : {X : 𝓤 ̇ } {x y z z' : X} (l : x ＝ y)
+                        (p : y ＝ z) (q : y ＝ z') (s : z ＝ z')
+                      → p ∙ s ＝ q
+                      → (l ∙ p) ∙ s ＝ l ∙ q
+ap-on-left-is-assoc'' l p q s α =
+ ap-on-left-is-assoc' l q p s (α ⁻¹) ⁻¹
+
+ap-left-inverse : {X : 𝓤 ̇ } {x y z : X} (l : x ＝ y)
+                  {p : x ＝ z} {q : y ＝ z}
+                → p ＝ l ∙ q
+                → l ⁻¹ ∙ p ＝ q
+ap-left-inverse l {p} {q} α =
+ l ⁻¹ ∙ p     ＝⟨ ap-on-left-is-assoc' (l ⁻¹) p l q α ⟩
+ l ⁻¹ ∙ l ∙ q ＝⟨ ap (_∙ q) (left-inverse l) ⟩
+ refl ∙ q     ＝⟨ refl-left-neutral ⟩
+ q            ∎
+
+ap-left-inverse' : {X : 𝓤 ̇ } {x y z : X} (l : x ＝ y)
+                   {p : x ＝ z} {q : y ＝ z}
+                 → l ⁻¹ ∙ p ＝ q
+                 → p ＝ l ∙ q
+ap-left-inverse' l {p} {q} α =
+ p            ＝⟨ refl-left-neutral ⁻¹ ⟩
+ refl ∙ p     ＝⟨ ap (_∙ p) (sym-is-inverse' l) ⟩
+ l ∙ l ⁻¹ ∙ p ＝⟨ ap-on-left-is-assoc'' l (l ⁻¹) q p α ⟩
+ l ∙ q        ∎ 
+
+ap-right-inverse : {X : 𝓤 ̇ } {x y z : X} (r : y ＝ z)
+                   {p : x ＝ z} {q : x ＝ y}
+                 → p ＝ q ∙ r
+                 → p ∙ r ⁻¹ ＝ q
+ap-right-inverse refl α = α
+
+ap-right-inverse' : {X : 𝓤 ̇ } {x y z : X} (r : y ＝ z)
+                    {p : x ＝ z} {q : x ＝ y}
+                  → p ∙ r ⁻¹ ＝ q
+                  → p ＝ q ∙ r
+ap-right-inverse' refl α = α
+
+\end{code}
+
+We will also add a result that says:
+given two maps, a path in the domain and a path in the codomain between the
+maps at the left endpoint then applying one map to the domain path and
+transporting along that path at the codomain path is the same as following the
+codomain path and applying the other map to the domain path.
+(this may already exist!)
+
+\begin{code}
+
+transport-after-ap
+ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {x x' : X}
+ → (p : x ＝ x')
+ → (s s' : X → Y)
+ → (q : s x ＝ s' x)
+ → ap s p ∙ transport (λ - → s - ＝ s' -) p q ＝ q ∙ ap s' p
+transport-after-ap refl s s' q =
+ ap s refl ∙ q  ＝⟨ ap (_∙ q) (ap-refl s) ⟩
+ refl ∙ q       ＝⟨ refl-left-neutral ⟩
+ q ∙ refl       ＝⟨ ap (q ∙_) (ap-refl s') ⟩
+ q ∙ ap s' refl ∎ 
+
+transport-after-ap'
+ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {x x' : X}
+ → (p : x ＝ x')
+ → (s s' : X → Y)
+ → (q : s x ＝ s' x)
+ → transport (λ - → s - ＝ s' -) p q ＝ ap s p ⁻¹ ∙ q ∙ ap s' p
+transport-after-ap' refl s s' q =
+ q                             ＝⟨ refl-left-neutral ⁻¹ ⟩
+ refl ∙ q                      ＝⟨ refl ⟩
+ ap s refl ⁻¹ ∙ q ∙ ap s' refl ∎ 
+
+\end{code}
