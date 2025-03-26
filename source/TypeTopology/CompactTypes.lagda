@@ -856,21 +856,23 @@ dense-map-Compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                   → is-Compact X {𝓥}
                   → is-Compact Y {𝓥}
 dense-map-Compact {𝓤} {𝓥} {X} {Y} f i c A δ =
-  cases-map
-    ( λ z → f (z .pr₁) , z .pr₂)
-    ( λ nxpf yp →
-      i (yp .pr₁ , λ xr → nxpf (xr .pr₁ , transport A ((xr .pr₂)⁻¹) (yp .pr₂))))
-    ( c (A ∘ f) (δ ∘ f))
+ cases-map
+  (λ z → f (z .pr₁) , z .pr₂)
+  (λ nxpf yp →
+   i (yp .pr₁ , λ xr → nxpf (xr .pr₁ , transport A ((xr .pr₂)⁻¹) (yp .pr₂))))
+  (c (A ∘ f) (δ ∘ f))
 
 dense-map-Π-Compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                  → is-dense f
-                  → is-Π-Compact X {𝓥}
-                  → is-Π-Compact Y {𝓥}
+                    → is-dense f
+                    → is-Π-Compact X {𝓥}
+                    → is-Π-Compact Y {𝓥}
 dense-map-Π-Compact {𝓤} {𝓥} {X} {Y} f i c A δ =
-  cases-map
-    ( λ p y → Cases (δ y) id (λ np → unique-from-𝟘 (i (y , λ xp → np (transport A (xp .pr₂) (p (xp .pr₁)))))))
-    ( λ nph p → nph (p ∘ f))
-    ( c (A ∘ f) (δ ∘ f))
+ cases-map
+  (λ p y →
+   Cases (δ y) id
+    (λ np → 𝟘-elim (i (y , λ xp → np (transport A (xp .pr₂) (p (xp .pr₁)))))))
+  (λ nph p → nph (p ∘ f))
+  (c (A ∘ f) (δ ∘ f))
 
 \end{code}
 
@@ -884,7 +886,8 @@ module CompactTypesPT (pt : propositional-truncations-exist) where
                     → is-surjection f
                     → is-Compact X {𝓥}
                     → is-Compact Y {𝓥}
- surjection-Compact {𝓤} {𝓥} {X} {Y} f i = dense-map-Compact f (surjections-are-dense f i)
+ surjection-Compact {𝓤} {𝓥} {X} {Y} f i =
+  dense-map-Compact f (surjections-are-dense f i)
 
  image-Compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                → is-Compact X {𝓤 ⊔ 𝓥}
@@ -896,7 +899,8 @@ module CompactTypesPT (pt : propositional-truncations-exist) where
                       → is-surjection f
                       → is-Π-Compact X {𝓥}
                       → is-Π-Compact Y {𝓥}
- surjection-Π-Compact {𝓤} {𝓥} {X} {Y} f i = dense-map-Π-Compact f (surjections-are-dense f i)
+ surjection-Π-Compact {𝓤} {𝓥} {X} {Y} f i =
+  dense-map-Π-Compact f (surjections-are-dense f i)
 
  image-Π-Compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                  → is-Π-Compact X {𝓤 ⊔ 𝓥}
