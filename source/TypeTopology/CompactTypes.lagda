@@ -861,23 +861,30 @@ dense-map-Compact f i c A δ =
   negative-case = λ nxpf yp →
    i (yp .pr₁ , λ xr → nxpf (xr .pr₁ , transport A ((xr .pr₂)⁻¹) (yp .pr₂)))
  in
- cases-map positive-case negative-case (c (A ∘ f) (δ ∘ f))
+ map-+ positive-case negative-case (c (A ∘ f) (δ ∘ f))
 
 dense-map-Π-Compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                     → is-dense f
                     → is-Π-Compact X {𝓦}
                     → is-Π-Compact Y {𝓦}
-dense-map-Π-Compact f i c A δ =
- let
-  positive-case = λ p y →
-   let
-    negative-positive-case = λ np →
-     𝟘-elim (i (y , λ xp → np (transport A (xp .pr₂) (p (xp .pr₁)))))
-   in
-    Cases (δ y) id negative-positive-case
-  negative-case = λ nph p → nph (p ∘ f)
- in
- cases-map positive-case negative-case (c (A ∘ f) (δ ∘ f))
+dense-map-Π-Compact {𝓤} {𝓥} {𝓦} {X} {Y} f i c A δ = tada
+ where
+ positive-case : Π (A ∘ f) → (y : Y) → A y
+ positive-case p y =
+  let
+   negative-positive-case = λ np →
+    𝟘-elim (i (y , λ xp → np (transport A (xp .pr₂) (p (xp .pr₁)))))
+  in
+  Cases (δ y) id negative-positive-case
+
+ negative-case : ¬ Π (A ∘ f) → ¬ Π A
+ negative-case nph p = nph (p ∘ f)
+
+ dΠAf : is-decidable (Π (A ∘ f))
+ dΠAf = c (A ∘ f) (δ ∘ f)
+
+ tada : is-decidable (Π A)
+ tada = map-+ positive-case negative-case dΠAf
 
 \end{code}
 

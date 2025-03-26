@@ -59,9 +59,9 @@ Added 26 March 2025 by Fredrik Bakke.
 
 \begin{code}
 
-cases-map : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } {B : 𝓣 ̇ }
-          → (X → A) → (Y → B) → X + Y → A + B
-cases-map f g (inl x) = inl (f x)
-cases-map f g (inr y) = inr (g y)
+map-+ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } {B : 𝓣 ̇ }
+      → (X → A) → (Y → B) → X + Y → A + B
+map-+ f g (inl x) = inl (f x)
+map-+ f g (inr y) = inr (g y)
 
 \end{code}
