@@ -853,8 +853,8 @@ extensionality and propositional truncations.
 
 dense-map-Compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                   → is-dense f
-                  → is-Compact X {𝓥}
-                  → is-Compact Y {𝓥}
+                  → is-Compact X {𝓦}
+                  → is-Compact Y {𝓦}
 dense-map-Compact f i c A δ =
  let
   positive-case = λ xp → f (xp .pr₁) , xp .pr₂
@@ -865,8 +865,8 @@ dense-map-Compact f i c A δ =
 
 dense-map-Π-Compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                     → is-dense f
-                    → is-Π-Compact X {𝓥}
-                    → is-Π-Compact Y {𝓥}
+                    → is-Π-Compact X {𝓦}
+                    → is-Π-Compact Y {𝓦}
 dense-map-Π-Compact f i c A δ =
  let
   positive-case = λ p y →
@@ -889,27 +889,26 @@ module CompactTypesPT (pt : propositional-truncations-exist) where
 
  surjection-Compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                     → is-surjection f
-                    → is-Compact X {𝓥}
-                    → is-Compact Y {𝓥}
- surjection-Compact {𝓤} {𝓥} {X} {Y} f i =
-  dense-map-Compact f (surjections-are-dense f i)
+                    → is-Compact X {𝓦}
+                    → is-Compact Y {𝓦}
+ surjection-Compact f i = dense-map-Compact f (surjections-are-dense f i)
 
  image-Compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-               → is-Compact X {𝓤 ⊔ 𝓥}
-               → is-Compact (image f) {𝓤 ⊔ 𝓥}
+               → is-Compact X {𝓦}
+               → is-Compact (image f) {𝓦}
  image-Compact f c = surjection-Compact (corestriction f)
                       (corestrictions-are-surjections f) c
 
  surjection-Π-Compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                       → is-surjection f
-                      → is-Π-Compact X {𝓥}
-                      → is-Π-Compact Y {𝓥}
- surjection-Π-Compact {𝓤} {𝓥} {X} {Y} f i =
+                      → is-Π-Compact X {𝓦}
+                      → is-Π-Compact Y {𝓦}
+ surjection-Π-Compact f i =
   dense-map-Π-Compact f (surjections-are-dense f i)
 
  image-Π-Compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                 → is-Π-Compact X {𝓤 ⊔ 𝓥}
-                 → is-Π-Compact (image f) {𝓤 ⊔ 𝓥}
+                 → is-Π-Compact X {𝓦}
+                 → is-Π-Compact (image f) {𝓦}
  image-Π-Compact f c = surjection-Π-Compact (corestriction f)
                         (corestrictions-are-surjections f) c
 
