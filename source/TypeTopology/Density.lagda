@@ -15,7 +15,6 @@ open import UF.Base
 open import UF.DiscreteAndSeparated
 open import UF.Embeddings
 open import UF.Equiv
-open import UF.FunExt
 open import UF.LeftCancellable
 open import UF.Retracts
 open import UF.Subsingletons
