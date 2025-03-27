@@ -1233,5 +1233,22 @@ Compact-gives-Compact' C A _ = C A
 
 \end{code}
 
+Added 27th March 2025 by Fredrik Bakke. A decidable type with double negation
+dense equality is compact, In particular, connected types are compact.
+
+\begin{code}
+
+decidable-types-with-double-negation-dense-equality-are-Compact : {X : 𝓤 ̇ }
+                                                                → is-decidable X
+                                                                → ((a b : X)
+                                                                 → ¬¬ (a ＝ b))
+                                                                → is-Compact X {𝓥}
+decidable-types-with-double-negation-dense-equality-are-Compact {𝓤} {𝓥} {X} dX H = tada
+ where
+ tada : is-Compact X
+ tada A dA = complemented-families-over-decidable-bases-with-double-negation-dense-equality-give-decidable-Σ H dX dA
+
+\end{code}
+
 TODO. (1) is-Compact' X ≃ is-compact X.
       (2) is-Compact' X is a retract of is-Compact X.
