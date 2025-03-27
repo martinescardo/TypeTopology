@@ -178,7 +178,8 @@ At-Most-One-Tight-Apartness X 𝓥 = is-prop (Tight-Apartness X 𝓥)
 At-Most-One-Tight-Apartness-on-Cantor-gives-WLPO-implies-LPO
  : Fun-Ext
  → At-Most-One-Tight-Apartness 𝟚ᴺ 𝓤₀
- → WLPO-variation₂ → LPO-variation
+ → WLPO-variation₂
+ → LPO-variation
 At-Most-One-Tight-Apartness-on-Cantor-gives-WLPO-implies-LPO  fe hyp wlpo = VI
  where
   _♯_ = _♯[𝟚ᴺ]_
