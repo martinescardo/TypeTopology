@@ -1234,7 +1234,7 @@ Compact-gives-Compact' C A _ = C A
 \end{code}
 
 Added 27th March 2025 by Fredrik Bakke. A decidable type with double negation
-dense equality is compact, In particular, connected types are compact.
+dense equality is compact. In particular, connected types are compact.
 
 \begin{code}
 
