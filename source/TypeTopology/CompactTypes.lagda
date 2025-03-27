@@ -1246,7 +1246,7 @@ decidable-types-with-double-negation-dense-equality-are-Compact : {X : 𝓤 ̇ }
 decidable-types-with-double-negation-dense-equality-are-Compact {𝓤} {𝓥} {X} dX H = tada
  where
  tada : is-Compact X
- tada A dA = complemented-families-over-decidable-bases-with-double-negation-dense-equality-give-decidable-Σ H dX dA
+ tada A = complemented-families-over-decidable-bases-with-double-negation-dense-equality-give-decidable-Σ H dX
 
 \end{code}
 
