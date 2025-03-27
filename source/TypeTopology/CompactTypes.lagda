@@ -869,7 +869,7 @@ dense-map-Π-Compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                     → is-Π-Compact Y {𝓦}
 dense-map-Π-Compact {𝓤} {𝓥} {𝓦} {X} {Y} f i c A δ = tada
  where
- positive-case : Π (A ∘ f) → (y : Y) → A y
+ positive-case : Π (A ∘ f) → Π A
  positive-case p y =
   let
    negative-positive-case = λ np →
@@ -880,11 +880,11 @@ dense-map-Π-Compact {𝓤} {𝓥} {𝓦} {X} {Y} f i c A δ = tada
  negative-case : ¬ Π (A ∘ f) → ¬ Π A
  negative-case nph p = nph (p ∘ f)
 
- dΠAf : is-decidable (Π (A ∘ f))
- dΠAf = c (A ∘ f) (δ ∘ f)
+ dΠA∘f : is-decidable (Π (A ∘ f))
+ dΠA∘f = c (A ∘ f) (δ ∘ f)
 
  tada : is-decidable (Π A)
- tada = map-+ positive-case negative-case dΠAf
+ tada = map-+ positive-case negative-case dΠA∘f
 
 \end{code}
 
