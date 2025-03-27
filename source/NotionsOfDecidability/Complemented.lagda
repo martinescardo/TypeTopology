@@ -78,7 +78,7 @@ complemented-families-over-bases-with-double-negation-dense-equality-are-uniform
 
 \end{code}
 
-Dependent sums of uniformly decidable type families.
+Dependent sums of uniformly complemented type families.
 
 \begin{code}
 
@@ -118,7 +118,7 @@ complemented-families-over-decidable-bases-with-double-negation-dense-equality-g
 
 \end{code}
 
-Dependent products of uniformly decidable type families.
+Dependent products of uniformly complemented type families.
 
 \begin{code}
 
