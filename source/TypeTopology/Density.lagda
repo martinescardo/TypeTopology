@@ -159,15 +159,20 @@ being-in-the-¬¬-image-is-prop negations-are-props y f = negations-are-props
 ¬¬-restrictions-are-¬¬-stable : ({A : 𝓤 ⊔ 𝓥 ̇ } → is-prop (¬ A))
                               → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                               → is-¬¬-stable-map (¬¬-restriction f)
-¬¬-restrictions-are-¬¬-stable negations-are-props f y nnip =
- ((y ,
-   λ np →
-   nnip
-    (λ ip →
-     ¬¬-corestrictions-are-dense negations-are-props f
-      ((ip .pr₁) ,
-       λ ηq → np (ηq .pr₁ , (ap (¬¬-restriction f) (ηq .pr₂) ∙ ip .pr₂))))) ,
-  (refl))
+¬¬-restrictions-are-¬¬-stable negations-are-props f y nnip = ((y , a) , refl)
+ where
+ a : y ∈¬¬-image f
+ a np = nnip b
+  where
+  b : ¬ Σ (λ v → ¬¬-restriction f v ＝ y)
+  b ip = ¬¬-corestrictions-are-dense negations-are-props f c
+   where
+    c : Σ (λ y → ¬ (fiber (¬¬-corestriction f) y))
+    c = (ip .pr₁ , d)
+     where
+     d : ¬ (fiber (¬¬-corestriction f) (ip .pr₁))
+     d ηq = np (ηq .pr₁ , (ap (¬¬-restriction f) (ηq .pr₂) ∙ ip .pr₂))
+
 
 \end{code}
 
@@ -203,8 +208,8 @@ left cancellability that a map is an embedding.
    (¬¬-corestriction-f-is-split-surjective)
 
  ¬¬-corestriction-f-is-embedding : is-embedding (¬¬-corestriction f)
- ¬¬-corestriction-f-is-embedding =
-  equivs-are-embeddings (¬¬-corestriction f) (¬¬-corestriction-f-is-equiv)
+ ¬¬-corestriction-f-is-embedding = equivs-are-embeddings (¬¬-corestriction f)
+                                    (¬¬-corestriction-f-is-equiv)
 
  f-is-embedding : is-embedding f
  f-is-embedding =
