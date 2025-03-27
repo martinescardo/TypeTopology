@@ -843,81 +843,43 @@ Compact-closed-under-≃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                        → is-Compact Y {𝓦}
 Compact-closed-under-≃ e = Compact-closed-under-retracts (≃-gives-▷ e)
 
-\end{code}
-
-The following was added on 26 March 2025 by Fredrik Bakke. It gives a
-generalization of the fact that compact types are closed under covers that also
-avoids function extensionality and propositional truncations.
-
-\begin{code}
-
-dense-map-Compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                  → is-dense f
-                  → is-Compact X {𝓦}
-                  → is-Compact Y {𝓦}
-dense-map-Compact f i c A δ =
- let
-  positive-case = λ xp → f (xp .pr₁) , xp .pr₂
-  negative-case = λ nxpf yp →
-   i (yp .pr₁ , λ xr → nxpf (xr .pr₁ , transport A ((xr .pr₂)⁻¹) (yp .pr₂)))
- in
- map-+ positive-case negative-case (c (A ∘ f) (δ ∘ f))
-
-dense-map-Π-Compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                    → is-dense f
-                    → is-Π-Compact X {𝓦}
-                    → is-Π-Compact Y {𝓦}
-dense-map-Π-Compact {𝓤} {𝓥} {𝓦} {X} {Y} f i c A δ = tada
- where
- positive-case : Π (A ∘ f) → Π A
- positive-case p y =
-  let
-   negative-positive-case = λ np →
-    𝟘-elim (i (y , λ xp → np (transport A (xp .pr₂) (p (xp .pr₁)))))
-  in
-  Cases (δ y) id negative-positive-case
-
- negative-case : ¬ Π (A ∘ f) → ¬ Π A
- negative-case nph p = nph (p ∘ f)
-
- dΠA∘f : is-decidable (Π (A ∘ f))
- dΠA∘f = c (A ∘ f) (δ ∘ f)
-
- tada : is-decidable (Π A)
- tada = map-+ positive-case negative-case dΠA∘f
-
-\end{code}
-
-\begin{code}
 
 module CompactTypesPT (pt : propositional-truncations-exist) where
 
  open import UF.ImageAndSurjection pt
 
  surjection-Compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                    → funext 𝓥 𝓤₀
                     → is-surjection f
-                    → is-Compact X {𝓦}
-                    → is-Compact Y {𝓦}
- surjection-Compact f i = dense-map-Compact f (surjections-are-dense f i)
+                    → is-Compact X {𝓥}
+                    → is-Compact Y {𝓥}
+ surjection-Compact {𝓤} {𝓥} {X} {Y} f fe i c A δ = γ (c B ε)
+  where
+   B : X → 𝓥 ̇
+   B = A ∘ f
 
- image-Compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-               → is-Compact X {𝓦}
-               → is-Compact (image f) {𝓦}
- image-Compact f c = surjection-Compact (corestriction f)
-                      (corestrictions-are-surjections f) c
+   ε : is-complemented B
+   ε = δ ∘ f
 
- surjection-Π-Compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                      → is-surjection f
-                      → is-Π-Compact X {𝓦}
-                      → is-Π-Compact Y {𝓦}
- surjection-Π-Compact f i =
-  dense-map-Π-Compact f (surjections-are-dense f i)
+   γ : is-decidable (Σ B) → is-decidable (Σ A)
+   γ (inl (x , a)) = inl (f x , a)
+   γ (inr u)       = inr v
+    where
+     u' : (x : X) → ¬ A (f x)
+     u' x a = u (x , a)
 
- image-Π-Compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                 → is-Π-Compact X {𝓦}
-                 → is-Π-Compact (image f) {𝓦}
- image-Π-Compact f c = surjection-Π-Compact (corestriction f)
-                        (corestrictions-are-surjections f) c
+     v' : (y : Y) → ¬ A y
+     v' = surjection-induction f i (λ y → ¬ A y) (λ y → negations-are-props fe) u'
+
+     v : ¬ Σ A
+     v (y , a) = v' y a
+
+ image-Compact : funext (𝓤 ⊔ 𝓥) 𝓤₀
+               → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+               → is-Compact X {𝓤 ⊔ 𝓥}
+               → is-Compact (image f) {𝓤 ⊔ 𝓥}
+ image-Compact fe f c = surjection-Compact (corestriction f) fe
+                         (corestrictions-are-surjections f) c
 
  open PropositionalTruncation pt
 
@@ -1271,6 +1233,82 @@ Compact-gives-Compact' : {X : 𝓤 ̇ } → is-Compact X {𝓥} → Compact' X {
 Compact-gives-Compact' C A _ = C A
 
 \end{code}
+
+The following was added by Fredrik Bakke on the 26th of March 2025.
+
+We give a generalization of the fact that compact types are closed under covers
+that also avoids function extensionality and propositional truncations.
+
+\begin{code}
+
+dense-map-Compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                  → is-dense f
+                  → is-Compact X {𝓦}
+                  → is-Compact Y {𝓦}
+dense-map-Compact f i c A δ = +functor positive-case negative-case d
+ where
+  positive-case : Σ (A ∘ f) → Σ A
+  positive-case (x , p) = (f x , p)
+
+  negative-case : ¬  Σ (A ∘ f) → ¬ Σ A
+  negative-case nf (y , p) = i (y , λ (x , r) → nf (x , transport A (r ⁻¹) p))
+
+  d : is-decidable (Σ (A ∘ f))
+  d = c (A ∘ f) (δ ∘ f)
+
+dense-map-Π-Compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                    → is-dense f
+                    → is-Π-Compact X {𝓦}
+                    → is-Π-Compact Y {𝓦}
+dense-map-Π-Compact {𝓤} {𝓥} {𝓦} {X} {Y} f i c A δ = claim
+ where
+  positive-case : Π (A ∘ f) → Π A
+  positive-case g y = Cases (δ y) id negative-positive-case
+   where
+    negative-positive-case : ¬ A y → A y
+    negative-positive-case np =
+     𝟘-elim (i (y , λ (x , r) → np (transport A r (g x))))
+
+  negative-case : ¬ Π (A ∘ f) → ¬ Π A
+  negative-case nph p = nph (p ∘ f)
+
+ claim : is-decidable (Π A)
+ claim = +functor positive-case negative-case (c (A ∘ f) (δ ∘ f))
+
+\end{code}
+
+\begin{code}
+
+module _ (pt : propositional-truncations-exist) where
+
+ open import UF.ImageAndSurjection pt
+
+ surjection-Compact' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                     → is-surjection f
+                     → is-Compact X {𝓦}
+                     → is-Compact Y {𝓦}
+ surjection-Compact' f i = dense-map-Compact f (surjections-are-dense f i)
+
+ image-Compact' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                → is-Compact X {𝓦}
+                → is-Compact (image f) {𝓦}
+ image-Compact' f = surjection-Compact' (corestriction f)
+                     (corestrictions-are-surjections f)
+
+ surjection-Π-Compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                      → is-surjection f
+                      → is-Π-Compact X {𝓦}
+                      → is-Π-Compact Y {𝓦}
+ surjection-Π-Compact f i = dense-map-Π-Compact f (surjections-are-dense f i)
+
+ image-Π-Compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                 → is-Π-Compact X {𝓦}
+                 → is-Π-Compact (image f) {𝓦}
+ image-Π-Compact f c = surjection-Π-Compact (corestriction f)
+                        (corestrictions-are-surjections f) c
+
+\end{code}
+
 
 TODO. (1) is-Compact' X ≃ is-compact X.
       (2) is-Compact' X is a retract of is-Compact X.
