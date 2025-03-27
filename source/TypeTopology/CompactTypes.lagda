@@ -83,6 +83,7 @@ open import MLTT.Spartan
 open import MLTT.Two-Properties
 open import NotionsOfDecidability.Complemented
 open import NotionsOfDecidability.Decidable
+open import TypeTopology.Density
 open import UF.Base
 open import UF.DiscreteAndSeparated
 open import UF.Equiv
@@ -1230,6 +1231,81 @@ Compact'-types-are-Compact C = compact-types-are-Compact
 
 Compact-gives-Compact' : {X : 𝓤 ̇ } → is-Compact X {𝓥} → Compact' X {𝓥}
 Compact-gives-Compact' C A _ = C A
+
+\end{code}
+
+Added by Fredrik Bakke on the 26th of March 2025.
+
+We give a generalization of the fact that compact types are closed under covers
+that also avoids function extensionality and propositional truncations.
+
+\begin{code}
+
+dense-map-Compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                  → is-dense f
+                  → is-Compact X {𝓦}
+                  → is-Compact Y {𝓦}
+dense-map-Compact f i c A δ = +functor positive-case negative-case d
+ where
+  positive-case : Σ (A ∘ f) → Σ A
+  positive-case (x , p) = (f x , p)
+
+  negative-case : ¬  Σ (A ∘ f) → ¬ Σ A
+  negative-case nf (y , p) = i (y , λ (x , r) → nf (x , transport A (r ⁻¹) p))
+
+  d : is-decidable (Σ (A ∘ f))
+  d = c (A ∘ f) (δ ∘ f)
+
+dense-map-Π-Compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                    → is-dense f
+                    → is-Π-Compact X {𝓦}
+                    → is-Π-Compact Y {𝓦}
+dense-map-Π-Compact {𝓤} {𝓥} {𝓦} {X} {Y} f i c A δ = claim
+ where
+  positive-case : Π (A ∘ f) → Π A
+  positive-case g y = Cases (δ y) id negative-positive-case
+   where
+    negative-positive-case : ¬ A y → A y
+    negative-positive-case np =
+     𝟘-elim (i (y , λ (x , r) → np (transport A r (g x))))
+
+  negative-case : ¬ Π (A ∘ f) → ¬ Π A
+  negative-case nph p = nph (p ∘ f)
+
+ claim : is-decidable (Π A)
+ claim = +functor positive-case negative-case (c (A ∘ f) (δ ∘ f))
+
+\end{code}
+
+\begin{code}
+
+module _ (pt : propositional-truncations-exist) where
+
+ open import UF.ImageAndSurjection pt
+
+ surjection-Compact' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                     → is-surjection f
+                     → is-Compact X {𝓦}
+                     → is-Compact Y {𝓦}
+ surjection-Compact' f i = dense-map-Compact f (surjections-are-dense f i)
+
+ image-Compact' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                → is-Compact X {𝓦}
+                → is-Compact (image f) {𝓦}
+ image-Compact' f = surjection-Compact' (corestriction f)
+                     (corestrictions-are-surjections f)
+
+ surjection-Π-Compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                      → is-surjection f
+                      → is-Π-Compact X {𝓦}
+                      → is-Π-Compact Y {𝓦}
+ surjection-Π-Compact f i = dense-map-Π-Compact f (surjections-are-dense f i)
+
+ image-Π-Compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                 → is-Π-Compact X {𝓦}
+                 → is-Π-Compact (image f) {𝓦}
+ image-Π-Compact f c = surjection-Π-Compact (corestriction f)
+                        (corestrictions-are-surjections f) c
 
 \end{code}
 
