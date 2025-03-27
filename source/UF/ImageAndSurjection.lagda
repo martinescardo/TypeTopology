@@ -465,7 +465,7 @@ equivs-are-surjections ((ρ , η) , (σ , ε)) y = ∣ ρ y , η y ∣
 
 \end{code}
 
-Added 26 March 2025 by Fredrik Bakke.
+Added by Fredrik Bakke on the 26th of March 2025.
 
 \begin{code}
 

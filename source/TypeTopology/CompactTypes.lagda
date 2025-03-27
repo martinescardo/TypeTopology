@@ -843,7 +843,6 @@ Compact-closed-under-≃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                        → is-Compact Y {𝓦}
 Compact-closed-under-≃ e = Compact-closed-under-retracts (≃-gives-▷ e)
 
-
 module CompactTypesPT (pt : propositional-truncations-exist) where
 
  open import UF.ImageAndSurjection pt
@@ -880,6 +879,7 @@ module CompactTypesPT (pt : propositional-truncations-exist) where
                → is-Compact (image f) {𝓤 ⊔ 𝓥}
  image-Compact fe f c = surjection-Compact (corestriction f) fe
                          (corestrictions-are-surjections f) c
+
 
  open PropositionalTruncation pt
 
@@ -1234,7 +1234,7 @@ Compact-gives-Compact' C A _ = C A
 
 \end{code}
 
-The following was added by Fredrik Bakke on the 26th of March 2025.
+Added by Fredrik Bakke on the 26th of March 2025.
 
 We give a generalization of the fact that compact types are closed under covers
 that also avoids function extensionality and propositional truncations.
@@ -1308,7 +1308,6 @@ module _ (pt : propositional-truncations-exist) where
                         (corestrictions-are-surjections f) c
 
 \end{code}
-
 
 TODO. (1) is-Compact' X ≃ is-compact X.
       (2) is-Compact' X is a retract of is-Compact X.
