@@ -36,7 +36,6 @@ co-characteristic-function d = indicator(λ x → +-commutative(d x))
 
 \end{code}
 
-
 Added by Fredrik Bakke on the 27th of March 2025.
 
 A type family Y is "uniformly complemented" if either every fiber has an element
@@ -57,8 +56,7 @@ complemented-families-over-bases-with-double-negation-dense-equality-are-uniform
                                                                                                  → (b : X)
                                                                                                  → ¬¬ (a ＝ b))
                                                                                                 → is-decidable X
-                                                                                                → ((x : X)
-                                                                                                 → is-decidable (Y x))
+                                                                                                → is-complemented Y
                                                                                                 → is-uniformly-complemented Y
 complemented-families-over-bases-with-double-negation-dense-equality-are-uniformly-complemented {𝓤} {𝓥} {X} {Y} H dX dY = tada
  where
@@ -79,7 +77,6 @@ complemented-families-over-bases-with-double-negation-dense-equality-are-uniform
    negative-case nx = inr (λ x _ → nx x)
 
 \end{code}
-
 
 Dependent sums of uniformly decidable type families.
 
@@ -109,8 +106,7 @@ complemented-families-over-decidable-bases-with-double-negation-dense-equality-g
                                                                                                  → (b : X)
                                                                                                  → ¬¬ (a ＝ b))
                                                                                                 → is-decidable X
-                                                                                                → ((x : X)
-                                                                                                 → is-decidable (Y x))
+                                                                                                → is-complemented Y
                                                                                                 → is-decidable (Σ Y)
 complemented-families-over-decidable-bases-with-double-negation-dense-equality-give-decidable-Σ {𝓤} {𝓥} {X} {Y} H dX dY = tada
  where
@@ -147,8 +143,7 @@ complemented-families-over-decidable-bases-with-double-negation-dense-equality-g
                                                                                                  → (b : X)
                                                                                                  → ¬¬ (a ＝ b))
                                                                                                 → is-decidable X
-                                                                                                → ((x : X)
-                                                                                                 → is-decidable (Y x))
+                                                                                                → is-complemented Y
                                                                                                 → is-decidable (Π Y)
 complemented-families-over-decidable-bases-with-double-negation-dense-equality-give-decidable-Π {𝓤} {𝓥} {X} {Y} H dX dY = tada
  where
