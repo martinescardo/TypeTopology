@@ -18,6 +18,7 @@ open import UF.Equiv
 open import UF.LeftCancellable
 open import UF.Retracts
 open import UF.Subsingletons
+open import UF.Subsingletons-FunExt
 
 is-dense : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 is-dense {𝓤} {𝓥} {X} {Y} f = ¬ (Σ y ꞉ Y , ¬ (Σ x ꞉ X , f x ＝ y))
@@ -116,7 +117,7 @@ is-¬¬-stable-map {𝓤} {𝓥} {X} {Y} f = each-fiber-of f ¬¬-stable
 _∈¬¬-image_ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → Y → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 y ∈¬¬-image f = ¬¬ (fiber f y)
 
-being-in-the-¬¬-image-is-prop : ({A : 𝓤 ⊔ 𝓥 ̇ } → is-prop (¬ A))
+being-in-the-¬¬-image-is-prop : negations-are-props-statement (𝓤 ⊔ 𝓥)
                               → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (y : Y) (f : X → Y)
                               → is-prop (y ∈¬¬-image f)
 being-in-the-¬¬-image-is-prop negations-are-props y f = negations-are-props
@@ -136,27 +137,27 @@ being-in-the-¬¬-image-is-prop negations-are-props y f = negations-are-props
                        → f ∼ ¬¬-restriction f ∘ ¬¬-corestriction f
 ¬¬-image-factorization f x = refl
 
-¬¬-corestrictions-are-dense : ({A : 𝓤 ⊔ 𝓥 ̇ } → is-prop (¬ A))
+¬¬-corestrictions-are-dense : negations-are-props-statement (𝓤 ⊔ 𝓥)
                             → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                             → is-dense (¬¬-corestriction f)
 ¬¬-corestrictions-are-dense negations-are-props f ((y , nnp) , nq) =
   nnp (λ (x , p) → nq (x , to-Σ-＝ (p , negations-are-props _ nnp)))
 
-¬¬-restrictions-are-embeddings : ({A : 𝓤 ⊔ 𝓥 ̇ } → is-prop (¬ A))
+¬¬-restrictions-are-embeddings : negations-are-props-statement (𝓤 ⊔ 𝓥)
                                → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                                → is-embedding (¬¬-restriction f)
 ¬¬-restrictions-are-embeddings negations-are-props f = pr₁-is-embedding
                                                         (λ y →
                                                          negations-are-props)
 
-¬¬-restrictions-are-left-cancellable : ({A : 𝓤 ⊔ 𝓥 ̇ } → is-prop (¬ A))
+¬¬-restrictions-are-left-cancellable : negations-are-props-statement (𝓤 ⊔ 𝓥)
                                      → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                                      → left-cancellable (¬¬-restriction f)
 ¬¬-restrictions-are-left-cancellable negations-are-props f =
  embeddings-are-lc (¬¬-restriction f)
   (¬¬-restrictions-are-embeddings negations-are-props f)
 
-¬¬-restrictions-are-¬¬-stable : ({A : 𝓤 ⊔ 𝓥 ̇ } → is-prop (¬ A))
+¬¬-restrictions-are-¬¬-stable : negations-are-props-statement (𝓤 ⊔ 𝓥)
                               → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                               → is-¬¬-stable-map (¬¬-restriction f)
 ¬¬-restrictions-are-¬¬-stable negations-are-props f y nnip = ((y , a) , refl)
@@ -164,7 +165,7 @@ being-in-the-¬¬-image-is-prop negations-are-props y f = negations-are-props
   a : y ∈¬¬-image f
   a np = nnip b
    where
-    b : ¬ (Σ v ꞉ ¬¬-image f , ¬¬-restriction f v ＝ y)
+    b : ¬ (fiber (¬¬-restriction f) y)
     b (v , p) = ¬¬-corestrictions-are-dense negations-are-props f c
      where
       c : Σ v ꞉ ¬¬-image f , ¬ (fiber (¬¬-corestriction f) v)
@@ -182,7 +183,7 @@ left cancellability that a map is an embedding.
 \begin{code}
 
 ¬¬-stable-left-cancellable-maps-are-embeddings
- : ({A : 𝓤 ⊔ 𝓥 ̇ } → is-prop (¬ A))
+ : negations-are-props-statement (𝓤 ⊔ 𝓥)
  → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
  → (f : X → Y)
  → left-cancellable f
@@ -222,7 +223,7 @@ decidable-maps-are-¬¬-stable : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
 decidable-maps-are-¬¬-stable f d x = ¬¬-stable-if-decidable (fiber f x) (d x)
 
 decidable-left-cancellable-maps-are-embeddings
- : ({A : 𝓤 ⊔ 𝓥 ̇ } → is-prop (¬ A))
+ : negations-are-props-statement (𝓤 ⊔ 𝓥)
  → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
  → (f : X → Y)
  → left-cancellable f
