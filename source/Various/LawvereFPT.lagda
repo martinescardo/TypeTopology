@@ -902,60 +902,62 @@ theorem, but with double negations substituted in.
 
 \begin{code}
 
-¬¬-fixed-point-property : 𝓤 ̇ → 𝓤 ̇
-¬¬-fixed-point-property X = (f : X → X) → ¬¬ (Σ x ꞉ X , x ＝ f x)
+module density-version where
 
-LFPT¬¬ : {A : 𝓤 ̇ } {X : 𝓥 ̇ } (φ : A → (A → X))
-       → is-dense φ
-       → ¬¬-fixed-point-property X
-LFPT¬¬ {𝓤} {𝓥} {A} {X} φ s f = ¬¬-functor γ e
- where
-  g : A → X
-  g a = f (φ a a)
+ ¬¬-fixed-point-property : 𝓤 ̇ → 𝓤 ̇
+ ¬¬-fixed-point-property X = (f : X → X) → ¬¬ (Σ x ꞉ X , x ＝ f x)
 
-  e : ¬¬ (Σ a ꞉ A , φ a ＝ g)
-  e np = s (g , np)
+ LFPT¬¬ : {A : 𝓤 ̇ } {X : 𝓥 ̇ } (φ : A → (A → X))
+        → is-dense φ
+        → ¬¬-fixed-point-property X
+ LFPT¬¬ {𝓤} {𝓥} {A} {X} φ s f = ¬¬-functor γ e
+  where
+   g : A → X
+   g a = f (φ a a)
 
-  γ : (Σ a ꞉ A , φ a ＝ g) → Σ x ꞉ X , x ＝ f x
-  γ (a , q) = x , p
-   where
-    x : X
-    x = φ a a
+   e : ¬¬ (Σ a ꞉ A , φ a ＝ g)
+   e np = s (g , np)
 
-    p : x ＝ f x
-    p = x         ＝⟨ refl ⟩
-        φ a a     ＝⟨ ap (λ - → - a) q ⟩
-        g a       ＝⟨ refl ⟩
-        f x       ∎
+   γ : (Σ a ꞉ A , φ a ＝ g) → Σ x ꞉ X , x ＝ f x
+   γ (a , q) = x , p
+    where
+     x : X
+     x = φ a a
+
+     p : x ＝ f x
+     p = x         ＝⟨ refl ⟩
+         φ a a     ＝⟨ ap (λ - → - a) q ⟩
+         g a       ＝⟨ refl ⟩
+         f x       ∎
 
 \end{code}
 
 
 \begin{code}
 
-not-no-fp' : (ne : {A : 𝓤 ̇ } → is-prop (¬ A)) → ¬ (Σ P ꞉ Ω 𝓤 , P ＝ not' ne P)
-not-no-fp' {𝓤} ne (P , p) = retract-version.¬-no-fp (P holds , ap _holds p)
+ not-no-fp' : (ne : {A : 𝓤 ̇ } → is-prop (¬ A)) → ¬ (Σ P ꞉ Ω 𝓤 , P ＝ not' ne P)
+ not-no-fp' {𝓤} ne (P , p) = retract-version.¬-no-fp (P holds , ap _holds p)
 
-cantor-¬¬-theorem-for-universes : (A : 𝓥 ̇ )
-                                → (φ : A → (A → 𝓤 ̇ ))
-                                → is-dense φ
-                                → (X : 𝓤 ̇ ) → ¬¬-fixed-point-property X
-cantor-¬¬-theorem-for-universes {𝓥} {𝓤} A φ s X f =
- ¬¬-functor g (LFPT¬¬ φ s (λ B → B → X))
- where
-  g : (Σ B ꞉ 𝓤 ̇ , B ＝ (B → X)) → Σ x ꞉ X , x ＝ f x
-  g (B , p) = retract-version.LFPT-＝ {𝓤} {𝓤} p f
+ cantor-¬¬-theorem-for-universes : (A : 𝓥 ̇ )
+                                 → (φ : A → (A → 𝓤 ̇ ))
+                                 → is-dense φ
+                                 → (X : 𝓤 ̇ ) → ¬¬-fixed-point-property X
+ cantor-¬¬-theorem-for-universes {𝓥} {𝓤} A φ s X f =
+  ¬¬-functor g (LFPT¬¬ φ s (λ B → B → X))
+  where
+   g : (Σ B ꞉ 𝓤 ̇ , B ＝ (B → X)) → Σ x ꞉ X , x ＝ f x
+   g (B , p) = retract-version.LFPT-＝ {𝓤} {𝓤} p f
 
-Cantor-¬¬-theorem-for-universes : (A : 𝓥 ̇ )
-                                → (φ : A → (A → 𝓤 ̇ ))
-                                → ¬ is-dense φ
-Cantor-¬¬-theorem-for-universes A r h =
- cantor-¬¬-theorem-for-universes A r h 𝟘 id (λ ())
+ Cantor-¬¬-theorem-for-universes : (A : 𝓥 ̇ )
+                                 → (φ : A → (A → 𝓤 ̇ ))
+                                 → ¬ is-dense φ
+ Cantor-¬¬-theorem-for-universes A r h =
+  cantor-¬¬-theorem-for-universes A r h 𝟘 id (λ ())
 
-cantor-¬¬-theorem : (ne : {A : 𝓤 ̇ } → is-prop (¬ A))
-                  → (A : 𝓥 ̇ )
-                  → (φ : A → (A → Ω 𝓤))
-                  → ¬ is-dense φ
-cantor-¬¬-theorem {𝓤} {𝓥} ne A φ s = LFPT¬¬ φ s (not' ne) (not-no-fp' ne)
+ cantor-¬¬-theorem : (ne : {A : 𝓤 ̇ } → is-prop (¬ A))
+                   → (A : 𝓥 ̇ )
+                   → (φ : A → (A → Ω 𝓤))
+                   → ¬ is-dense φ
+ cantor-¬¬-theorem {𝓤} {𝓥} ne A φ s = LFPT¬¬ φ s (not' ne) (not-no-fp' ne)
 
  \end{code}
