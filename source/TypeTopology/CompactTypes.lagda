@@ -1272,8 +1272,8 @@ dense-map-Π-Compact {𝓤} {𝓥} {𝓦} {X} {Y} f i c A δ = claim
   negative-case : ¬ Π (A ∘ f) → ¬ Π A
   negative-case nph p = nph (p ∘ f)
 
- claim : is-decidable (Π A)
- claim = +functor positive-case negative-case (c (A ∘ f) (δ ∘ f))
+  claim : is-decidable (Π A)
+  claim = +functor positive-case negative-case (c (A ∘ f) (δ ∘ f))
 
 \end{code}
 
