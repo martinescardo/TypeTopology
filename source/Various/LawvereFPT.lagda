@@ -27,6 +27,7 @@ open import MLTT.Spartan
 
 open import MLTT.Two-Properties
 open import Naturals.Properties
+open import TypeTopology.Density
 
 open import UF.Base
 open import UF.Equiv
@@ -888,3 +889,89 @@ sillier-theorem {𝓤} fe (A , A-is-prop , e) =
   ((A , A-is-prop) , e)
 
 \end{code}
+
+Added by Fredrik Bakke on the 28th of March 2025.
+
+We give an alternative formulation of Lawvere's fixed point theorem using double
+negations. This formulations leads to a slight strengthening of Cantor's
+theorem. The strengthening assumes only a relaxation of function extensionality:
+that negations are propositions.
+
+The formalization is in essense a repeat of the proofs for the classical
+theorem, but with double negations substituted in.
+
+\begin{code}
+
+¬¬-fixed-point-property : 𝓤 ̇ → 𝓤 ̇
+¬¬-fixed-point-property X = (f : X → X) → ¬¬ (Σ x ꞉ X , x ＝ f x)
+
+LFPT¬¬ : {A : 𝓤 ̇ } {X : 𝓥 ̇ } (φ : A → (A → X))
+       → is-dense φ
+       → ¬¬-fixed-point-property X
+LFPT¬¬ {𝓤} {𝓥} {A} {X} φ s f = ¬¬-functor γ e
+ where
+  g : A → X
+  g a = f (φ a a)
+
+  e : ¬¬ (Σ a ꞉ A , φ a ＝ g)
+  e np = s (g , np)
+
+  γ : (Σ a ꞉ A , φ a ＝ g) → Σ x ꞉ X , x ＝ f x
+  γ (a , q) = x , p
+   where
+    x : X
+    x = φ a a
+
+    p : x ＝ f x
+    p = x         ＝⟨ refl ⟩
+        φ a a     ＝⟨ ap (λ - → - a) q ⟩
+        g a       ＝⟨ refl ⟩
+        f x       ∎
+
+\end{code}
+
+
+\begin{code}
+
+not-no-fp' : (ne : {A : 𝓤 ̇ } → is-prop (¬ A)) → ¬ (Σ P ꞉ Ω 𝓤 , P ＝ not' ne P)
+not-no-fp' {𝓤} ne (P , p) = retract-version.¬-no-fp (P holds , q)
+ where
+  q : P holds ＝ ¬ (P holds)
+  q = ap _holds p
+
+cantor-¬¬-theorem-for-universes : (A : 𝓥 ̇ )
+                                → (φ : A → (A → 𝓤 ̇ ))
+                                → is-dense φ
+                                → (X : 𝓤 ̇ ) → ¬¬-fixed-point-property X
+cantor-¬¬-theorem-for-universes {𝓥} {𝓤} A φ s X f = ¬¬-functor g t
+ where
+  t : ¬¬ (Σ B ꞉ 𝓤 ̇ , B ＝ (B → X))
+  t = LFPT¬¬ φ s (λ B → B → X)
+
+  g : (Σ B ꞉ 𝓤 ̇ , B ＝ (B → X)) → Σ x ꞉ X , x ＝ f x
+  g (B , p) = retract-version.LFPT-＝ {𝓤} {𝓤} p f
+
+Cantor-¬¬-theorem-for-universes : (A : 𝓥 ̇ )
+                                → (φ : A → (A → 𝓤 ̇ ))
+                                → ¬ is-dense φ
+Cantor-¬¬-theorem-for-universes A r h = γ
+ where
+  c : ¬¬ (Σ x ꞉ 𝟘 , x ＝ x)
+  c = cantor-¬¬-theorem-for-universes A r h 𝟘 id
+
+  γ : 𝟘
+  γ = c (λ ())
+
+cantor-¬¬-theorem : (ne : {A : 𝓤 ̇ } → is-prop (¬ A))
+                  → (A : 𝓥 ̇ )
+                  → (φ : A → (A → Ω 𝓤))
+                  → ¬ is-dense φ
+cantor-¬¬-theorem {𝓤} {𝓥} ne A φ s = γ
+ where
+  t : ¬¬ (Σ B ꞉ Ω 𝓤 , B ＝ not' ne B)
+  t = LFPT¬¬ φ s (not' ne)
+
+  γ : 𝟘
+  γ = t (not-no-fp' ne)
+
+ \end{code}
