@@ -202,7 +202,7 @@ left cancellability that a map is an embedding.
   ¬¬-corestriction-f-is-equiv =
    lc-split-surjections-are-equivs
     (¬¬-corestriction f)
-    (left-cancellable-factor (¬¬-corestriction f) (¬¬-restriction f) lc)
+    (factor-is-lc (¬¬-corestriction f) (¬¬-restriction f) lc)
     (¬¬-corestriction-f-is-split-surjective)
 
   ¬¬-corestriction-f-is-embedding : is-embedding (¬¬-corestriction f)

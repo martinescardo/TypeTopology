@@ -37,12 +37,6 @@ left-cancellable-closed-under-∘ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
                                 → left-cancellable (g ∘ f)
 left-cancellable-closed-under-∘ f g lcf lcg = lcf ∘ lcg
 
-left-cancellable-factor : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
-                        → (f : X → Y) (g : Y → Z)
-                        → left-cancellable (g ∘ f)
-                        → left-cancellable f
-left-cancellable-factor f g lcgf = lcgf ∘ ap g
-
 NatΣ-lc : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X → 𝓦 ̇ } (f : Nat A B)
         → ((x : X) → left-cancellable(f x))
         → left-cancellable (NatΣ f)
