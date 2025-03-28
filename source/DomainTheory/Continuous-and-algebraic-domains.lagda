@@ -85,6 +85,9 @@ Definition-2-5 : (𝓥 : Universe) (X : 𝓤 ̇ )
                × (𝓟-general {𝓥} X → 𝓟-general {𝓥} X → 𝓥 ⊔ 𝓤 ̇ )
 Definition-2-5 𝓥 X = _∈_ , _⊆_
 
+Definition-2-6 : (X : 𝓤 ̇ ) → 𝓟-general {𝓣} X → 𝓤 ⊔ 𝓣 ̇
+Definition-2-6 X = 𝕋
+
 \end{code}
 
 Section 3.2. Directed complete posets indexed by universe parameters
@@ -566,12 +569,8 @@ module _ (𝓥 : Universe) where
            → is-compact 𝓓 x → is-compact 𝓓 y → is-compact 𝓓 z
  Lemma-4-7 = binary-join-is-compact
 
-
- Definition-4-8 : (X : 𝓤 ̇ ) → 𝓟-general {𝓣} X → 𝓤 ⊔ 𝓣 ̇
- Definition-4-8 X = 𝕋
-
- Definition-4-9 : {X : 𝓤 ̇ } → 𝓟 X → 𝓤 ̇
- Definition-4-9 = is-Kuratowski-finite-subset
+ Definition-4-7 : {X : 𝓤 ̇ } → 𝓟 X → 𝓤 ̇
+ Definition-4-7 = is-Kuratowski-finite-subset
 
  module _
          {X : 𝓤 ̇ }
@@ -581,33 +580,33 @@ module _ (𝓥 : Universe) where
   open singleton-subsets X-set
   open singleton-Kuratowski-finite-subsets X-set
 
-  Lemma-4-10 : is-Kuratowski-finite-subset {𝓤} {X} ∅
-             × ({x : X} → is-Kuratowski-finite-subset ❴ x ❵)
-             × ((A B : 𝓟 X)
-                     → is-Kuratowski-finite-subset A
-                     → is-Kuratowski-finite-subset B
-                     → is-Kuratowski-finite-subset (A ∪ B))
-  Lemma-4-10 = ∅-is-Kuratowski-finite-subset ,
-               ❴❵-is-Kuratowski-finite-subset X-set ,
-               ∪-is-Kuratowski-finite-subset {𝓤} {X}
+  Lemma-4-9 : is-Kuratowski-finite-subset {𝓤} {X} ∅
+            × ({x : X} → is-Kuratowski-finite-subset ❴ x ❵)
+            × ((A B : 𝓟 X)
+                    → is-Kuratowski-finite-subset A
+                    → is-Kuratowski-finite-subset B
+                    → is-Kuratowski-finite-subset (A ∪ B))
+  Lemma-4-9 = ∅-is-Kuratowski-finite-subset ,
+              ❴❵-is-Kuratowski-finite-subset X-set ,
+              ∪-is-Kuratowski-finite-subset {𝓤} {X}
 
-  Lemma-4-11 : {𝓣 : Universe} (Q : 𝓚 X → 𝓣 ̇ )
+  Lemma-4-10 : {𝓣 : Universe} (Q : 𝓚 X → 𝓣 ̇ )
              → ((A : 𝓚 X) → is-prop (Q A))
              → Q ∅[𝓚]
              → ((x : X) → Q (❴ x ❵[𝓚]))
              → ((A B : 𝓚 X) → Q A → Q B → Q (A ∪[𝓚] B))
              → (A : 𝓚 X) → Q A
-  Lemma-4-11 = Kuratowski-finite-subset-induction pe fe X X-set
+  Lemma-4-10 = Kuratowski-finite-subset-induction pe fe X X-set
 
   open canonical-map-from-lists-to-subsets X-set renaming (κ to β)
 
-  Definition-4-12 : List X → 𝓟 X
-  Definition-4-12 = β
+  Definition-4-11 : List X → 𝓟 X
+  Definition-4-11 = β
 
-  Lemma-4-13 : (A : 𝓟 X)
+  Lemma-4-12 : (A : 𝓟 X)
              → (A ∈image β → is-Kuratowski-finite-subset A)
              × (is-Kuratowski-finite-subset A → A ∈image β)
-  Lemma-4-13 A = Kuratowski-finite-subset-if-in-image-of-κ A ,
+  Lemma-4-12 A = Kuratowski-finite-subset-if-in-image-of-κ A ,
                  in-image-of-κ-if-Kuratowski-finite-subset pe fe A
 
 \end{code}
@@ -623,9 +622,9 @@ universe as the index types for directed completeness.
         where
 
   open import DomainTheory.Examples.Powerset pt fe pe X-set
-  Example-4-14 : (A : 𝓟 X)
+  Example-4-13 : (A : 𝓟 X)
                → is-compact 𝓟-DCPO A ↔ is-Kuratowski-finite-subset A
-  Example-4-14 A = Kuratowski-finite-subset-if-compact A ,
+  Example-4-13 A = Kuratowski-finite-subset-if-compact A ,
                    compact-if-Kuratowski-finite-subset A
 
  open import DomainTheory.Basics.Miscelanea pt fe 𝓥
@@ -637,10 +636,10 @@ universe as the index types for directed completeness.
 
   open _continuous-retract-of_ ρ
 
-  Lemma-4-15 : (y : ⟨ 𝓔 ⟩) (x : ⟨ 𝓓 ⟩)
+  Lemma-4-14 : (y : ⟨ 𝓔 ⟩) (x : ⟨ 𝓓 ⟩)
              → y ≪⟨ 𝓔 ⟩ s x
              → r y ≪⟨ 𝓓 ⟩ x
-  Lemma-4-15 = continuous-retraction-≪-criterion 𝓓 𝓔 ρ
+  Lemma-4-14 = continuous-retraction-≪-criterion 𝓓 𝓔 ρ
 
  module _
          (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
@@ -650,12 +649,12 @@ universe as the index types for directed completeness.
          ((sec , defl) : is-embedding-projection-pair 𝓓 𝓔 (ε , ε-cont) (π , π-cont))
         where
 
-  Lemma-4-16 : (x y : ⟨ 𝓓 ⟩) → x ≪⟨ 𝓓 ⟩ y ↔ ε x ≪⟨ 𝓔 ⟩ ε y
-  Lemma-4-16 x y = embeddings-preserve-≪ 𝓓 𝓔 ε ε-cont π π-cont sec defl x y ,
+  Lemma-4-15 : (x y : ⟨ 𝓓 ⟩) → x ≪⟨ 𝓓 ⟩ y ↔ ε x ≪⟨ 𝓔 ⟩ ε y
+  Lemma-4-15 x y = embeddings-preserve-≪ 𝓓 𝓔 ε ε-cont π π-cont sec defl x y ,
                    embeddings-reflect-≪ 𝓓 𝓔 ε ε-cont π π-cont sec defl x y
 
-  Lemma-4-16-ad : (x : ⟨ 𝓓 ⟩) → is-compact 𝓓 x ↔ is-compact 𝓔 (ε x)
-  Lemma-4-16-ad x =
+  Lemma-4-15-ad : (x : ⟨ 𝓓 ⟩) → is-compact 𝓓 x ↔ is-compact 𝓔 (ε x)
+  Lemma-4-15-ad x =
    embeddings-preserve-compactness 𝓓 𝓔 ε ε-cont π π-cont sec defl x ,
    embeddings-reflect-compactness 𝓓 𝓔 ε ε-cont π π-cont sec defl x
 
@@ -685,39 +684,39 @@ Section 5. The ind-completion
               ≲-is-reflexive ,
               ≲-is-transitive
 
-  Lemma-5-3 : is-directed-complete _≲_
-  Lemma-5-3 I α δ = Ind-∐ α δ ,
-                    Ind-∐-is-upperbound α δ ,
-                    Ind-∐-is-lowerbound-of-upperbounds α δ
+  Lemma-5-2-ad : is-directed-complete _≲_
+  Lemma-5-2-ad I α δ = Ind-∐ α δ ,
+                       Ind-∐-is-upperbound α δ ,
+                       Ind-∐-is-lowerbound-of-upperbounds α δ
 
-  Lemma-5-4 : Ind → ⟨ 𝓓 ⟩
-  Lemma-5-4 = ∐-map
+  Lemma-5-3 : Ind → ⟨ 𝓓 ⟩
+  Lemma-5-3 = ∐-map
 
-  Lemma-5-4-ad : (α β : Ind) → α ≲ β → ∐-map α ⊑⟨ 𝓓 ⟩ ∐-map β
-  Lemma-5-4-ad = ∐-map-is-monotone
+  Lemma-5-3-ad : (α β : Ind) → α ≲ β → ∐-map α ⊑⟨ 𝓓 ⟩ ∐-map β
+  Lemma-5-3-ad = ∐-map-is-monotone
 
-  Definition-5-5 : (x : ⟨ 𝓓 ⟩) (α : Ind) → (𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇ ) × (𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇ )
-  Definition-5-5 x α = α approximates x , α is-left-adjunct-to x
+  Definition-5-4 : (x : ⟨ 𝓓 ⟩) (α : Ind) → (𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇ ) × (𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇ )
+  Definition-5-4 x α = α approximates x , α is-left-adjunct-to x
 
-  Remark-5-6 : (L : ⟨ 𝓓 ⟩ → Ind)
+  Remark-5-5 : (L : ⟨ 𝓓 ⟩ → Ind)
              → (  ((x y : ⟨ 𝓓 ⟩) → underlying-order 𝓓 x y → L x ≲ L y)
                 × ((x : ⟨ 𝓓 ⟩) (β : Ind) → (L x ≲ β) ↔ (x ⊑⟨ 𝓓 ⟩ ∐-map β)))
              ↔ ((x : ⟨ 𝓓 ⟩) → (L x) is-left-adjunct-to x)
-  Remark-5-6 L = pr₂ ,
+  Remark-5-5 L = pr₂ ,
                  (λ adj → left-adjoint-to-∐-map-is-monotone L adj , adj)
 
-  Lemma-5-7 : (L : ⟨ 𝓓 ⟩ → Ind)
+  Lemma-5-6 : (L : ⟨ 𝓓 ⟩ → Ind)
             → ((x : ⟨ 𝓓 ⟩) → (L x) is-left-adjunct-to x)
             → (x y : ⟨ 𝓓 ⟩) → underlying-order 𝓓 x y → L x ≲ L y
-  Lemma-5-7 = left-adjoint-to-∐-map-is-monotone
+  Lemma-5-6 = left-adjoint-to-∐-map-is-monotone
 
-  Lemma-5-8 : (α : Ind) (x : ⟨ 𝓓 ⟩) → α approximates x ↔ α is-left-adjunct-to x
-  Lemma-5-8 α x = left-adjunct-to-if-approximates α x ,
+  Lemma-5-7 : (α : Ind) (x : ⟨ 𝓓 ⟩) → α approximates x ↔ α is-left-adjunct-to x
+  Lemma-5-7 α x = left-adjunct-to-if-approximates α x ,
                   approximates-if-left-adjunct-to α x
 
-  Proposition-5-9 : (L : ⟨ 𝓓 ⟩ → Ind)
+  Proposition-5-8 : (L : ⟨ 𝓓 ⟩ → Ind)
                   → is-approximating L ≃ left-adjoint-to-∐-map L
-  Proposition-5-9 = left-adjoint-to-∐-map-characterization
+  Proposition-5-8 = left-adjoint-to-∐-map-characterization
 
 \end{code}
 
@@ -757,8 +756,15 @@ Section 6.1. Continuous dcpos
   Definition-6-4 : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
   Definition-6-4 = is-continuous-dcpo 𝓓
 
-  Proposition-6-5 : ∐-map-has-unspecified-left-adjoint 𝓓 ≃ is-continuous-dcpo 𝓓
-  Proposition-6-5 = is-continuous-dcpo-iff-∐-map-has-unspecified-left-adjoint 𝓓
+  Proposition-6-5 : Univalence
+                  → (𝓔 : DCPO {𝓤} {𝓣})
+                    (c₁ : is-continuous-dcpo 𝓓)
+                    (c₂ : is-continuous-dcpo 𝓔)
+                  → ((𝓓 , c₁) ＝ (𝓔 , c₂)) ≃ (𝓓 ≃ᵈᶜᵖᵒ 𝓔)
+  Proposition-6-5 ua = characterization-of-continuous-DCPO-＝ ua 𝓓
+
+  Proposition-6-6 : ∐-map-has-unspecified-left-adjoint 𝓓 ≃ is-continuous-dcpo 𝓓
+  Proposition-6-6 = is-continuous-dcpo-iff-∐-map-has-unspecified-left-adjoint 𝓓
 
   module _
           (c : continuity-data 𝓓)
@@ -767,45 +773,45 @@ Section 6.1. Continuous dcpos
    open continuity-data c renaming (index-of-approximating-family to I ;
                                     approximating-family to α)
 
-   Lemma-6-6 : (x y : ⟨ 𝓓 ⟩)
+   Lemma-6-7 : (x y : ⟨ 𝓓 ⟩)
              → (x ⊑⟨ 𝓓 ⟩ y ↔ ((i : I x) → α x i ⊑⟨ 𝓓 ⟩ y))
              × (x ⊑⟨ 𝓓 ⟩ y ↔ ((i : I x) → α x i ≪⟨ 𝓓 ⟩ y))
-   Lemma-6-6 x y = (structurally-continuous-⊑-criterion-converse 𝓓 c ,
+   Lemma-6-7 x y = (structurally-continuous-⊑-criterion-converse 𝓓 c ,
                     structurally-continuous-⊑-criterion 𝓓 c) ,
                    (structurally-continuous-⊑-criterion'-converse 𝓓 c ,
                     structurally-continuous-⊑-criterion' 𝓓 c)
 
-   Lemma-6-7 : (x y : ⟨ 𝓓 ⟩) → x ≪⟨ 𝓓 ⟩ y ↔ (∃ i ꞉ I y , x ⊑⟨ 𝓓 ⟩ α y i)
-   Lemma-6-7 x y = structurally-continuous-≪-criterion-converse 𝓓 c ,
+   Lemma-6-8 : (x y : ⟨ 𝓓 ⟩) → x ≪⟨ 𝓓 ⟩ y ↔ (∃ i ꞉ I y , x ⊑⟨ 𝓓 ⟩ α y i)
+   Lemma-6-8 x y = structurally-continuous-≪-criterion-converse 𝓓 c ,
                    structurally-continuous-≪-criterion 𝓓 c
 
-  Lemma-6-8 : is-continuous-dcpo 𝓓
-            → (x : ⟨ 𝓓 ⟩) → ∃ y ꞉ ⟨ 𝓓 ⟩ , y ≪⟨ 𝓓 ⟩ x
-  Lemma-6-8 = ≪-nullary-interpolation 𝓓
-
   Lemma-6-9 : is-continuous-dcpo 𝓓
-            → {x y : ⟨ 𝓓 ⟩} → x ≪⟨ 𝓓 ⟩ y
-            → ∃ d ꞉ ⟨ 𝓓 ⟩ , (x ≪⟨ 𝓓 ⟩ d) × (d ≪⟨ 𝓓 ⟩ y)
-  Lemma-6-9 = ≪-unary-interpolation 𝓓
+            → (x : ⟨ 𝓓 ⟩) → ∃ y ꞉ ⟨ 𝓓 ⟩ , y ≪⟨ 𝓓 ⟩ x
+  Lemma-6-9 = ≪-nullary-interpolation 𝓓
 
   Lemma-6-10 : is-continuous-dcpo 𝓓
+             → {x y : ⟨ 𝓓 ⟩} → x ≪⟨ 𝓓 ⟩ y
+             → ∃ d ꞉ ⟨ 𝓓 ⟩ , (x ≪⟨ 𝓓 ⟩ d) × (d ≪⟨ 𝓓 ⟩ y)
+  Lemma-6-10 = ≪-unary-interpolation 𝓓
+
+  Lemma-6-11 : is-continuous-dcpo 𝓓
              → {x y z : ⟨ 𝓓 ⟩} → x ≪⟨ 𝓓 ⟩ z → y ≪⟨ 𝓓 ⟩ z
              → ∃ d ꞉ ⟨ 𝓓 ⟩ , (x ≪⟨ 𝓓 ⟩ d) × (y ≪⟨ 𝓓 ⟩ d) × (d ≪⟨ 𝓓 ⟩ z)
-  Lemma-6-10 = ≪-binary-interpolation 𝓓
+  Lemma-6-11 = ≪-binary-interpolation 𝓓
 
- Theorem-6-11 : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
+ Theorem-6-12 : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
               → 𝓓 continuous-retract-of 𝓔
               → (continuity-data 𝓔 → continuity-data 𝓓)
               × (is-continuous-dcpo 𝓔 → is-continuous-dcpo 𝓓)
- Theorem-6-11 𝓓 𝓔 ρ =
+ Theorem-6-12 𝓓 𝓔 ρ =
   structural-continuity-of-dcpo-preserved-by-continuous-retract 𝓓 𝓔 ρ ,
   continuity-of-dcpo-preserved-by-continuous-retract 𝓓 𝓔 ρ
 
- Proposition-6-12 : (𝓓 : DCPO {𝓤} {𝓣})
+ Proposition-6-13 : (𝓓 : DCPO {𝓤} {𝓣})
                   → is-continuous-dcpo 𝓓
                   → (is-locally-small 𝓓
                   ↔ ((x y : ⟨ 𝓓 ⟩) → is-small (x ≪⟨ 𝓓 ⟩ y)))
- Proposition-6-12 𝓓 c = ≪-is-small-valued pe 𝓓 c ,
+ Proposition-6-13 𝓓 c = ≪-is-small-valued pe 𝓓 c ,
                         ≪-is-small-valued-converse pe 𝓓 c
 
 \end{code}
@@ -820,12 +826,12 @@ Section 6.2. Pseudocontinuity
 
   open Ind-completion-poset-reflection pe 𝓓
 
-  Definition-6-13 : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
-  Definition-6-13 = is-pseudocontinuous-dcpo 𝓓
+  Definition-6-14 : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
+  Definition-6-14 = is-pseudocontinuous-dcpo 𝓓
 
-  Proposition-6-14 : ∐-map/-has-specified-left-adjoint
+  Proposition-6-15 : ∐-map/-has-specified-left-adjoint
                    ≃ is-pseudocontinuous-dcpo 𝓓
-  Proposition-6-14 = specified-left-adjoint-pseudo-continuous-≃ pe 𝓓
+  Proposition-6-15 = specified-left-adjoint-pseudo-continuous-≃ pe 𝓓
 
   Table-1 : (continuity-data 𝓓 ≃ ∐-map-has-specified-left-adjoint 𝓓)
           × (Σ 𝓔 ꞉ DCPO {𝓥 ⁺} {𝓥} , ¬ is-prop (continuity-data 𝓔))
@@ -840,7 +846,7 @@ Section 6.2. Pseudocontinuity
             ≃-sym (specified-left-adjoint-pseudo-continuous-≃ pe 𝓓) ,
             being-pseudocontinuous-dcpo-is-prop 𝓓
 
-  -- Remark-6-15: No formalisable content  (as it's a meta-mathematical remark)
+  -- Remark-6-16: No formalisable content  (as it's a meta-mathematical remark)
 
 \end{code}
 
@@ -848,14 +854,14 @@ Section 6.3. Algebraic dcpos
 
 \begin{code}
 
-  Definition-6-16 : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
-  Definition-6-16 = algebraicity-data 𝓓
-
   Definition-6-17 : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
-  Definition-6-17 = is-algebraic-dcpo 𝓓
+  Definition-6-17 = algebraicity-data 𝓓
 
-  Lemma-6-18 : is-algebraic-dcpo 𝓓 → is-continuous-dcpo 𝓓
-  Lemma-6-18 = is-continuous-dcpo-if-algebraic-dcpo 𝓓
+  Definition-6-18 : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
+  Definition-6-18 = is-algebraic-dcpo 𝓓
+
+  Lemma-6-19 : is-algebraic-dcpo 𝓓 → is-continuous-dcpo 𝓓
+  Lemma-6-19 = is-continuous-dcpo-if-algebraic-dcpo 𝓓
 
 \end{code}
 
@@ -920,27 +926,27 @@ Section 7. Small bases
          (β-is-small-basis : is-small-basis 𝓓 β)
         where
 
-  Lemma-7-6 : (x : ⟨ 𝓓 ⟩) → ∃ b ꞉ B , β b ≪⟨ 𝓓 ⟩ x
-  Lemma-7-6 = ≪-nullary-interpolation-basis 𝓓 β β-is-small-basis
+  Lemma-7-6-i : (x : ⟨ 𝓓 ⟩) → ∃ b ꞉ B , β b ≪⟨ 𝓓 ⟩ x
+  Lemma-7-6-i = ≪-nullary-interpolation-basis 𝓓 β β-is-small-basis
 
-  Lemma-7-7 : {x y : ⟨ 𝓓 ⟩} → x ≪⟨ 𝓓 ⟩ y
-            → ∃ b ꞉ B , (x ≪⟨ 𝓓 ⟩ β b) × (β b ≪⟨ 𝓓 ⟩ y)
-  Lemma-7-7 = ≪-unary-interpolation-basis 𝓓 β β-is-small-basis
+  Lemma-7-6-ii : {x y : ⟨ 𝓓 ⟩} → x ≪⟨ 𝓓 ⟩ y
+               → ∃ b ꞉ B , (x ≪⟨ 𝓓 ⟩ β b) × (β b ≪⟨ 𝓓 ⟩ y)
+  Lemma-7-6-ii = ≪-unary-interpolation-basis 𝓓 β β-is-small-basis
 
-  Lemma-7-8 : {x y z : ⟨ 𝓓 ⟩} → x ≪⟨ 𝓓 ⟩ z → y ≪⟨ 𝓓 ⟩ z
-            → ∃ b ꞉ B , (x   ≪⟨ 𝓓 ⟩ β b)
-                      × (y   ≪⟨ 𝓓 ⟩ β b)
-                      × (β b ≪⟨ 𝓓 ⟩ z  )
-  Lemma-7-8 = ≪-binary-interpolation-basis 𝓓 β β-is-small-basis
+  Lemma-7-6-iii : {x y z : ⟨ 𝓓 ⟩} → x ≪⟨ 𝓓 ⟩ z → y ≪⟨ 𝓓 ⟩ z
+                → ∃ b ꞉ B , (x   ≪⟨ 𝓓 ⟩ β b)
+                          × (y   ≪⟨ 𝓓 ⟩ β b)
+                          × (β b ≪⟨ 𝓓 ⟩ z  )
+  Lemma-7-6-iii = ≪-binary-interpolation-basis 𝓓 β β-is-small-basis
 
- Lemma-7-9 : (𝓓 : DCPO {𝓤} {𝓣}) {B : 𝓥 ̇ } (β : B → ⟨ 𝓓 ⟩)
+ Lemma-7-7 : (𝓓 : DCPO {𝓤} {𝓣}) {B : 𝓥 ̇ } (β : B → ⟨ 𝓓 ⟩)
              (x : ⟨ 𝓓 ⟩) {I : 𝓥 ̇ } (σ : I → ↡ᴮ 𝓓 β x)
            → (is-sup (underlying-order 𝓓) x (↡-inclusion 𝓓 β x ∘ σ)
              → is-sup (underlying-order 𝓓) x (↡-inclusion 𝓓 β x))
            × ((δ : is-Directed 𝓓 (↡-inclusion 𝓓 β x ∘ σ))
              → x ⊑⟨ 𝓓 ⟩ ∐ 𝓓 δ
              → is-Directed 𝓓 (↡-inclusion 𝓓 β x))
- Lemma-7-9 𝓓 β x σ = ↡ᴮ-sup-criterion 𝓓 β x σ ,
+ Lemma-7-7 𝓓 β x σ = ↡ᴮ-sup-criterion 𝓓 β x σ ,
                      ↡ᴮ-directedness-criterion 𝓓 β x σ
 
  module _
@@ -948,12 +954,12 @@ Section 7. Small bases
          (𝓔 : DCPO {𝓤'} {𝓣'})
         where
 
-  Theorem-7-10 : (s : DCPO[ 𝓓 , 𝓔 ]) (r : DCPO[ 𝓔 , 𝓓 ])
-               → is-continuous-retract 𝓓 𝓔 s r
-               → {B : 𝓥 ̇ } (β : B → ⟨ 𝓔 ⟩)
-               → is-small-basis 𝓔 β
-               → is-small-basis 𝓓 ([ 𝓔 , 𝓓 ]⟨ r ⟩ ∘ β)
-  Theorem-7-10 (s , s-cont) (r , r-cont) s-section-of-r =
+  Theorem-7-8 : (s : DCPO[ 𝓓 , 𝓔 ]) (r : DCPO[ 𝓔 , 𝓓 ])
+              → is-continuous-retract 𝓓 𝓔 s r
+              → {B : 𝓥 ̇ } (β : B → ⟨ 𝓔 ⟩)
+              → is-small-basis 𝓔 β
+              → is-small-basis 𝓓 ([ 𝓔 , 𝓓 ]⟨ r ⟩ ∘ β)
+  Theorem-7-8 (s , s-cont) (r , r-cont) s-section-of-r =
    small-basis-from-continuous-retract pe 𝓓 𝓔
     (record
       { s = s
@@ -965,10 +971,10 @@ Section 7. Small bases
 
   open import DomainTheory.Basics.Exponential pt fe 𝓥
 
-  Proposition-7-11 : has-unspecified-small-basis 𝓓
-                   → is-locally-small 𝓔
-                   → is-locally-small (𝓓 ⟹ᵈᶜᵖᵒ 𝓔)
-  Proposition-7-11 = locally-small-exponential-criterion pe 𝓓 𝓔
+  Proposition-7-9 : has-unspecified-small-basis 𝓓
+                  → is-locally-small 𝓔
+                  → is-locally-small (𝓓 ⟹ᵈᶜᵖᵒ 𝓔)
+  Proposition-7-9 = locally-small-exponential-criterion pe 𝓓 𝓔
 
 \end{code}
 
@@ -976,9 +982,9 @@ Section 7.1. Small compact bases
 
 \begin{code}
 
- Definition-7-12 : (𝓓 : DCPO {𝓤} {𝓣}) {B : 𝓥 ̇ } (β : B → ⟨ 𝓓 ⟩)
+ Definition-7-10 : (𝓓 : DCPO {𝓤} {𝓣}) {B : 𝓥 ̇ } (β : B → ⟨ 𝓓 ⟩)
                  → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
- Definition-7-12 = is-small-compact-basis
+ Definition-7-10 = is-small-compact-basis
 
  module _
          (𝓓 : DCPO {𝓤} {𝓣})
@@ -989,30 +995,30 @@ Section 7.1. Small compact bases
 
   open is-small-compact-basis β-is-small-compact-basis
 
-  Remark-7-13 : (x : ⟨ 𝓓 ⟩)
+  Remark-7-11 : (x : ⟨ 𝓓 ⟩)
               → (↓ᴮ 𝓓 β x ≃ ↓ᴮₛ x)
               × is-Directed 𝓓 (↓-inclusionₛ x)
               × (∐ 𝓓 (↓ᴮₛ-is-directed x) ＝ x)
-  Remark-7-13 x = Σ-cong (λ b → ≃-sym ⊑ᴮₛ-≃-⊑ᴮ) ,
+  Remark-7-11 x = Σ-cong (λ b → ≃-sym ⊑ᴮₛ-≃-⊑ᴮ) ,
                   ↓ᴮₛ-is-directed x ,
                   ↓ᴮₛ-∐-＝ x
 
- Lemma-7-14 : (𝓓 : DCPO {𝓤} {𝓣})
+ Lemma-7-12 : (𝓓 : DCPO {𝓤} {𝓣})
             → (has-specified-small-compact-basis 𝓓 → algebraicity-data 𝓓)
             × (has-unspecified-small-compact-basis 𝓓 → is-algebraic-dcpo 𝓓)
- Lemma-7-14 𝓓 = structurally-algebraic-if-specified-small-compact-basis 𝓓 ,
+ Lemma-7-12 𝓓 = structurally-algebraic-if-specified-small-compact-basis 𝓓 ,
                 is-algebraic-dcpo-if-unspecified-small-compact-basis 𝓓
 
- Lemma-7-15 : (𝓓 : DCPO {𝓤} {𝓣}) {B : 𝓥 ̇ } (β : B → ⟨ 𝓓 ⟩)
+ Lemma-7-13 : (𝓓 : DCPO {𝓤} {𝓣}) {B : 𝓥 ̇ } (β : B → ⟨ 𝓓 ⟩)
             → is-small-basis 𝓓 β
             → ((b : B) → is-compact 𝓓 (β b))
             → is-small-compact-basis 𝓓 β
- Lemma-7-15 = small-and-compact-basis
+ Lemma-7-13 = small-and-compact-basis
 
- Proposition-7-16 : (𝓓 : DCPO {𝓤} {𝓣}) {B : 𝓥 ̇ } (β : B → ⟨ 𝓓 ⟩)
+ Proposition-7-14 : (𝓓 : DCPO {𝓤} {𝓣}) {B : 𝓥 ̇ } (β : B → ⟨ 𝓓 ⟩)
                   → is-small-compact-basis 𝓓 β
                   → (x : ⟨ 𝓓 ⟩) → is-compact 𝓓 x → ∃ b ꞉ B , β b ＝ x
- Proposition-7-16 = small-compact-basis-contains-all-compact-elements
+ Proposition-7-14 = small-compact-basis-contains-all-compact-elements
 
 \end{code}
 
@@ -1024,19 +1030,19 @@ Section 7.2. Examples of dcpos with small compact bases
 
   open import DomainTheory.Examples.Omega pt fe pe 𝓥
 
-  Example-7-17 : is-small-compact-basis Ω-DCPO κ
+  Example-7-15 : is-small-compact-basis Ω-DCPO κ
                × is-algebraic-dcpo Ω-DCPO
-  Example-7-17 = κ-is-small-compact-basis , Ω-is-algebraic-dcpo
+  Example-7-15 = κ-is-small-compact-basis , Ω-is-algebraic-dcpo
 
  module _ where
 
   open import DomainTheory.Lifting.LiftingSet pt fe 𝓥 pe
   open import DomainTheory.Lifting.LiftingSetAlgebraic pt pe fe 𝓥
 
-  Example-7-18 : {X : 𝓥 ̇ } (X-set : is-set X)
+  Example-7-16 : {X : 𝓥 ̇ } (X-set : is-set X)
                → is-small-compact-basis (𝓛-DCPO X-set) (κ X-set)
                × is-algebraic-dcpo (𝓛-DCPO X-set)
-  Example-7-18 X-set = κ-is-small-compact-basis X-set ,
+  Example-7-16 X-set = κ-is-small-compact-basis X-set ,
                        𝓛-is-algebraic-dcpo X-set
 
  module _
@@ -1047,9 +1053,9 @@ Section 7.2. Examples of dcpos with small compact bases
   open import DomainTheory.Examples.Powerset pt fe pe X-set
   open canonical-map-from-lists-to-subsets X-set renaming (κ to β)
 
-  Example-7-19 : is-small-compact-basis 𝓟-DCPO (canonical-map-from-lists-to-subsets.κ X-set)
+  Example-7-17 : is-small-compact-basis 𝓟-DCPO β
                × is-algebraic-dcpo 𝓟-DCPO
-  Example-7-19 = κ-is-small-compact-basis , 𝓟-is-algebraic-dcpo
+  Example-7-17 = κ-is-small-compact-basis , 𝓟-is-algebraic-dcpo
 
  module _
          (P : 𝓤 ̇ )
@@ -1057,15 +1063,15 @@ Section 7.2. Examples of dcpos with small compact bases
         where
 
   open import DomainTheory.Examples.LiftingLargeProposition pt fe pe 𝓥 𝓤 P P-is-prop
-  Example-7-20 : is-algebraic-dcpo (𝓛P ⁻)
+  Example-7-18 : is-algebraic-dcpo (𝓛P ⁻)
                × (has-unspecified-small-compact-basis (𝓛P ⁻) ↔ P is 𝓥 small)
-  Example-7-20 = 𝓛P-is-algebraic ,
+  Example-7-18 = 𝓛P-is-algebraic ,
                  (𝓛P-has-unspecified-small-compact-basis-resizes ,
                   ∣_∣ ∘ resizing-gives-small-compact-basis)
 
 \end{code}
 
-Example 7.21 and Section 7.3 are the only places where we use univalence and set
+Example 7.19 and Section 7.3 are the only places where we use univalence and set
 replacement (or equivalently, small set quotients).
 
 \begin{code}
@@ -1085,11 +1091,11 @@ module _
  open import DomainTheory.BasesAndContinuity.Continuity pt fe' 𝓤
  open import DomainTheory.BasesAndContinuity.Bases pt fe' 𝓤
 
- Example-7-21 : DCPO {𝓤 ⁺} {𝓤}
+ Example-7-19 : DCPO {𝓤 ⁺} {𝓤}
               × is-sup-complete Ordinals-DCPO
               × is-algebraic-dcpo Ordinals-DCPO
               × ¬ (has-unspecified-small-basis Ordinals-DCPO)
- Example-7-21 = Ordinals-DCPO ,
+ Example-7-19 = Ordinals-DCPO ,
                 Ordinals-DCPO-is-sup-complete ,
                 Ordinals-DCPO-is-algebraic ,
                 Ordinals-DCPO-has-no-small-basis
@@ -1115,23 +1121,23 @@ module _
          (𝓓 : DCPO {𝓤} {𝓣})
         where
 
-  Lemma-7-22 : is-algebraic-dcpo 𝓓
+  Lemma-7-20 : is-algebraic-dcpo 𝓓
              → (x : ⟨ 𝓓 ⟩) → is-sup (underlying-order 𝓓) x (↓ᴷ-inclusion 𝓓 x)
-  Lemma-7-22 = ↓ᴷ-is-sup 𝓓
+  Lemma-7-20 = ↓ᴷ-is-sup 𝓓
 
-  Lemma-7-23 : Set-Replacement pt
+  Lemma-7-21 : Set-Replacement pt
              → has-specified-small-compact-basis 𝓓 → is-small (K 𝓓)
-  Lemma-7-23 = K-is-small' 𝓓
+  Lemma-7-21 = K-is-small' 𝓓
 
-  Lemma-7-23-ad : Univalence
+  Lemma-7-21-ad : Univalence
                 → Set-Replacement pt
                 → has-unspecified-small-compact-basis 𝓓 → is-small (K 𝓓)
-  Lemma-7-23-ad = K-is-small 𝓓
+  Lemma-7-21-ad = K-is-small 𝓓
 
-  Proposition-7-24 : Univalence → Set-Replacement pt
+  Proposition-7-22 : Univalence → Set-Replacement pt
                    → has-specified-small-compact-basis 𝓓
                    ↔ has-unspecified-small-compact-basis 𝓓
-  Proposition-7-24 ua sr = specified-unspecified-equivalence ua sr 𝓓
+  Proposition-7-22 ua sr = specified-unspecified-equivalence ua sr 𝓓
 
 \end{code}
 
@@ -1158,43 +1164,43 @@ Section 8. The round ideal completion
   Definition-8-3 : {S : 𝓥 ̇ } → (S → 𝓟 B) → 𝓟 B
   Definition-8-3 = ⋃
 
-  Lemma-8-4 : {S : 𝓥 ̇ } (𝓘 : S → Idl)
-            → is-directed _⊑_ 𝓘
-            → is-ideal (⋃ (carrier ∘ 𝓘))
-  Lemma-8-4 𝓘 δ = ideality (Idl-∐ 𝓘 δ)
+  Lemma-8-4-i : {S : 𝓥 ̇ } (𝓘 : S → Idl)
+              → is-directed _⊑_ 𝓘
+              → is-ideal (⋃ (carrier ∘ 𝓘))
+  Lemma-8-4-i 𝓘 δ = ideality (Idl-∐ 𝓘 δ)
 
-  Lemma-8-5 : DCPO {𝓥 ⁺} {𝓥}
-  Lemma-8-5 = Idl-DCPO
+  Lemma-8-4-ii : DCPO {𝓥 ⁺} {𝓥}
+  Lemma-8-4-ii = Idl-DCPO
 
-  Lemma-8-6 : (I : Idl) {a : B} → (a ∈ᵢ I) → ∃ b ꞉ B , b ∈ᵢ I × a ≺ b
-  Lemma-8-6 = roundedness
+  Lemma-8-4-iii : (I : Idl) {a : B} → (a ∈ᵢ I) → ∃ b ꞉ B , b ∈ᵢ I × a ≺ b
+  Lemma-8-4-iii = roundedness
 
-  Definition-8-7 : B → Idl
-  Definition-8-7 = ↓_
+  Definition-8-5 : B → Idl
+  Definition-8-5 = ↓_
 
-  Lemma-8-8 : {a b : B} → a ≺ b → ↓ a ⊑ ↓ b
-  Lemma-8-8 = ↓-is-monotone
+  Lemma-8-6 : {a b : B} → a ≺ b → ↓ a ⊑ ↓ b
+  Lemma-8-6 = ↓-is-monotone
 
-  Lemma-8-9 : (I : Idl) → I ＝ ∐ Idl-DCPO (↓-of-ideal-is-directed I)
-  Lemma-8-9 = Idl-∐-＝
+  Lemma-8-7 : (I : Idl) → I ＝ ∐ Idl-DCPO (↓-of-ideal-is-directed I)
+  Lemma-8-7 = Idl-∐-＝
 
-  Lemma-8-10 : (I J : Idl)
-             → (I ≪⟨ Idl-DCPO ⟩ J ↔ (∃ b ꞉ B , b ∈ᵢ J × I ⊑ ↓ b))
-             × (I ≪⟨ Idl-DCPO ⟩ J ↔ (∃ a ꞉ B , Σ b ꞉ B , a ≺ b
-                                         × I ⊑⟨ Idl-DCPO ⟩ ↓ a
-                                         × ↓ a ⊑⟨ Idl-DCPO ⟩ ↓ b
-                                         × ↓ b ⊑⟨ Idl-DCPO ⟩ J))
-  Lemma-8-10 I J = (Idl-≪-in-terms-of-⊑ I J ,
-                    Idl-≪-in-terms-of-⊑-converse I J) ,
-                   (Idl-≪-in-terms-of-⊑₂ I J ,
-                    Idl-≪-in-terms-of-⊑₂-converse I J)
+  Lemma-8-8 : (I J : Idl)
+            → (I ≪⟨ Idl-DCPO ⟩ J ↔ (∃ b ꞉ B , b ∈ᵢ J × I ⊑ ↓ b))
+            × (I ≪⟨ Idl-DCPO ⟩ J ↔ (∃ a ꞉ B , Σ b ꞉ B , a ≺ b
+                                        × I ⊑⟨ Idl-DCPO ⟩ ↓ a
+                                        × ↓ a ⊑⟨ Idl-DCPO ⟩ ↓ b
+                                        × ↓ b ⊑⟨ Idl-DCPO ⟩ J))
+  Lemma-8-8 I J = (Idl-≪-in-terms-of-⊑ I J ,
+                   Idl-≪-in-terms-of-⊑-converse I J) ,
+                  (Idl-≪-in-terms-of-⊑₂ I J ,
+                   Idl-≪-in-terms-of-⊑₂-converse I J)
 
-  Lemma-8-10-ad : (I : Idl) (b : B) → b ∈ᵢ I → ↓ b ≪⟨ Idl-DCPO ⟩ I
-  Lemma-8-10-ad = ↓≪-criterion
+  Lemma-8-8-ad : (I : Idl) (b : B) → b ∈ᵢ I → ↓ b ≪⟨ Idl-DCPO ⟩ I
+  Lemma-8-8-ad = ↓≪-criterion
 
-  Theorem-8-11 : is-small-basis Idl-DCPO ↓_
-               × is-continuous-dcpo Idl-DCPO
-  Theorem-8-11 = ↓-is-small-basis , Idl-is-continuous-dcpo
+  Theorem-8-9 : is-small-basis Idl-DCPO ↓_
+              × is-continuous-dcpo Idl-DCPO
+  Theorem-8-9 = ↓-is-small-basis , Idl-is-continuous-dcpo
 
 \end{code}
 
@@ -1202,12 +1208,12 @@ Section 8.1. The round ideal completion of a reflexive abstract basis
 
 \begin{code}
 
- Lemma-8-12 : (B : 𝓥 ̇ ) (_≺_ : B → B → 𝓥 ̇ )
+ Lemma-8-10 : (B : 𝓥 ̇ ) (_≺_ : B → B → 𝓥 ̇ )
             → is-prop-valued _≺_
             → is-transitive _≺_
             → is-reflexive _≺_
             → abstract-basis
- Lemma-8-12 B _≺_ p t r =
+ Lemma-8-10 B _≺_ p t r =
   record
    { basis-carrier = B
    ; _≺_ = _≺_
@@ -1224,18 +1230,18 @@ Section 8.1. The round ideal completion of a reflexive abstract basis
   open abstract-basis abs-basis renaming (basis-carrier to B)
   open Ideals-of-small-abstract-basis abs-basis
 
-  Lemma-8-13 : (I : Idl) (b : B)
+  Lemma-8-11 : (I : Idl) (b : B)
              → (b ∈ᵢ I → (↓ b) ⊑ I)
              × (b ≺ b → (↓ b) ⊑ I → b ∈ᵢ I)
-  Lemma-8-13 I b = ↓⊑-criterion I b , ↓⊑-criterion-converse I b
+  Lemma-8-11 I b = ↓⊑-criterion I b , ↓⊑-criterion-converse I b
 
-  Lemma-8-14 : (b : B) → b ≺ b → is-compact Idl-DCPO (↓ b)
-  Lemma-8-14 = ↓-is-compact
+  Lemma-8-12 : (b : B) → b ≺ b → is-compact Idl-DCPO (↓ b)
+  Lemma-8-12 = ↓-is-compact
 
-  Theorem-8-15 : is-reflexive _≺_
+  Theorem-8-13 : is-reflexive _≺_
                → is-small-compact-basis Idl-DCPO ↓_
                × is-algebraic-dcpo Idl-DCPO
-  Theorem-8-15 r = ↓-is-small-compact-basis r , Idl-is-algebraic-dcpo r
+  Theorem-8-13 r = ↓-is-small-compact-basis r , Idl-is-algebraic-dcpo r
 
   module _
           (𝓓 : DCPO {𝓤} {𝓣})
@@ -1245,11 +1251,11 @@ Section 8.1. The round ideal completion of a reflexive abstract basis
 
    open Idl-mediating 𝓓 f f-is-monotone
 
-   Theorem-8-16 : is-continuous Idl-DCPO 𝓓 Idl-mediating-map
+   Theorem-8-14 : is-continuous Idl-DCPO 𝓓 Idl-mediating-map
                 × (reflexive _≺_
                     → ∃! f̅ ꞉ DCPO[ Idl-DCPO , 𝓓 ] ,
                          [ Idl-DCPO , 𝓓 ]⟨ f̅ ⟩ ∘ ↓_ ∼ f)
-   Theorem-8-16 = Idl-mediating-map-is-continuous ,
+   Theorem-8-14 = Idl-mediating-map-is-continuous ,
                   Idl-mediating-map-is-unique
 
 \end{code}
@@ -1271,29 +1277,29 @@ module _ where
  open import DomainTheory.Examples.IdlDyadics pt fe pe
  open import DomainTheory.IdealCompletion.Properties pt fe pe 𝓤₀
 
- Definition-8-17 : (𝓤₀ ̇ ) × (𝔻 → 𝔻 → 𝓤₀ ̇ )
- Definition-8-17 = 𝔻 , _≺_
+ Definition-8-15 : (𝓤₀ ̇ ) × (𝔻 → 𝔻 → 𝓤₀ ̇ )
+ Definition-8-15 = 𝔻 , _≺_
 
- Lemma-8-18 : is-discrete 𝔻 × is-set 𝔻
- Lemma-8-18 = 𝔻-is-discrete , 𝔻-is-set
+ Lemma-8-16 : is-discrete 𝔻 × is-set 𝔻
+ Lemma-8-16 = 𝔻-is-discrete , 𝔻-is-set
 
- -- Definition-8-19: Inlined into Lemma 8.20
+ -- Definition-8-17: Inlined into Lemma 8.18
 
- Lemma-8-20 : is-prop-valued _≺_
+ Lemma-8-18 : is-prop-valued _≺_
             × is-transitive _≺_
             × ({x : 𝔻} → ¬ (x ≺ x))
             × ({x y z : 𝔻} → is-singleton ((x ≺ y) + (x ＝ y) + (y ≺ x)))
             × ({x y : 𝔻} → x ≺ y → ∃ z ꞉ 𝔻 , (x ≺ z) × (z ≺ y))
             × ((x : 𝔻) → (∃ y ꞉ 𝔻 , y ≺ x) × (∃ z ꞉ 𝔻 , x ≺ z))
- Lemma-8-20 = ≺-is-prop-valued ,
+ Lemma-8-18 = ≺-is-prop-valued ,
               ≺-is-transitive ,
               ＝-to-¬≺ refl ,
               trichotomy-is-a-singleton ,
               ≺-is-dense ,
               (λ x → (≺-has-no-left-endpoint x) , (≺-has-no-right-endpoint x))
 
- Proposition-8-21 : abstract-basis
- Proposition-8-21 = record
+ Proposition-8-19 : abstract-basis
+ Proposition-8-19 = record
                      { basis-carrier = 𝔻
                      ; _≺_ = _≺_
                      ; ≺-prop-valued = λ {x y} → ≺-is-prop-valued x y
@@ -1302,11 +1308,11 @@ module _ where
                      ; INT₂ = λ {x y z} → ≺-interpolation₂ x y z
                     }
 
- Proposition-8-22 : has-specified-small-basis Idl-𝔻
+ Proposition-8-20 : has-specified-small-basis Idl-𝔻
                   × is-continuous-dcpo Idl-𝔻
                   × ((I : ⟨ Idl-𝔻 ⟩) → ¬ (is-compact Idl-𝔻 I))
                   × ¬ (is-algebraic-dcpo Idl-𝔻)
- Proposition-8-22 = Idl-𝔻-has-small-basis ,
+ Proposition-8-20 = Idl-𝔻-has-small-basis ,
                     Idl-𝔻-is-continuous ,
                     Idl-𝔻-has-no-compact-elements ,
                     Idl-𝔻-is-not-algebraic
@@ -1337,72 +1343,72 @@ module _ (𝓥 : Universe) where
   open is-small-basis β-is-small-basis
   open Idl-retract-common 𝓓 β β-is-small-basis
 
-  Lemma-8-23 : {I : 𝓥 ̇ } {α : I → ⟨ 𝓓 ⟩} (δ : is-Directed 𝓓 α)
+  Lemma-8-21 : {I : 𝓥 ̇ } {α : I → ⟨ 𝓓 ⟩} (δ : is-Directed 𝓓 α)
              → is-sup _⊆_ (↡ᴮ-subset (∐ 𝓓 δ)) (↡ᴮ-subset ∘ α)
-  Lemma-8-23 = ↡ᴮ-is-continuous
+  Lemma-8-21 = ↡ᴮ-is-continuous
 
   module _
           (I : 𝓟 B)
           {δ : is-Directed 𝓓 (β ∘ 𝕋-to-carrier I)}
          where
 
-   Lemma-8-24-i : ((b c : B) → β b ⊑⟨ 𝓓 ⟩ β c → c ∈ I → b ∈ I)
+   Lemma-8-22-i : ((b c : B) → β b ⊑⟨ 𝓓 ⟩ β c → c ∈ I → b ∈ I)
                 → ↡ᴮ-subset (∐-of-directed-subset I δ) ⊆ I
-   Lemma-8-24-i = ↡ᴮ-∐-deflation I
+   Lemma-8-22-i = ↡ᴮ-∐-deflation I
 
-   Lemma-8-24-ii : ((b : B) → b ∈ I → ∃ c ꞉ B , c ∈ I × β b ≪⟨ 𝓓 ⟩ β c)
+   Lemma-8-22-ii : ((b : B) → b ∈ I → ∃ c ꞉ B , c ∈ I × β b ≪⟨ 𝓓 ⟩ β c)
                  → I ⊆ ↡ᴮ-subset (∐-of-directed-subset I δ)
-   Lemma-8-24-ii = ↡ᴮ-∐-inflation I
+   Lemma-8-22-ii = ↡ᴮ-∐-inflation I
 
-   Lemma-8-24-ad : ((b c : B) → β b ⊑⟨ 𝓓 ⟩ β c → c ∈ I → b ∈ I)
+   Lemma-8-22-ad : ((b c : B) → β b ⊑⟨ 𝓓 ⟩ β c → c ∈ I → b ∈ I)
                  → ((b : B) → b ∈ I → ∃ c ꞉ B , c ∈ I × β b ≪⟨ 𝓓 ⟩ β c)
                  → ↡ᴮ-subset (∐-of-directed-subset I δ) ＝ I
-   Lemma-8-24-ad = ∐-↡ᴮ-retract I
+   Lemma-8-22-ad = ∐-↡ᴮ-retract I
 
   module _
           (_≺_ : B → B → 𝓥 ̇ )
           (x : ⟨ 𝓓 ⟩)
          where
 
-   Lemma-8-25-i : ((b c : B) → b ≺ c → β b ⊑⟨ 𝓓 ⟩ β c)
+   Lemma-8-23-i : ((b c : B) → b ≺ c → β b ⊑⟨ 𝓓 ⟩ β c)
                 → (b c : B) → b ≺ c → c ∈ ↡ᴮ-subset x → b ∈ ↡ᴮ-subset x
-   Lemma-8-25-i = ↡ᴮ-lowerset-criterion _≺_ x
+   Lemma-8-23-i = ↡ᴮ-lowerset-criterion _≺_ x
 
-   Lemma-8-25-ii : ((b c : B) → β b ≪⟨ 𝓓 ⟩ β c → b ≺ c)
+   Lemma-8-23-ii : ((b c : B) → β b ≪⟨ 𝓓 ⟩ β c → b ≺ c)
                  → (a b : B) → a ∈ ↡ᴮ-subset x → b ∈ ↡ᴮ-subset x
                  → ∃ c ꞉ B , c ∈ ↡ᴮ-subset x × (a ≺ c) × (b ≺ c)
-   Lemma-8-25-ii = ↡ᴮ-semidirected-set-criterion _≺_ x
+   Lemma-8-23-ii = ↡ᴮ-semidirected-set-criterion _≺_ x
 
   module _ where
    open Idl-continuous 𝓓 β β-is-small-basis
 
-   Lemma-8-26 : abstract-basis
-   Lemma-8-26 = ≪-abstract-basis
+   Lemma-8-24 : abstract-basis
+   Lemma-8-24 = ≪-abstract-basis
 
-   Remark-8-27 : {b b' : B} → (b ≺ b') ≃ (β b ≪⟨ 𝓓 ⟩ β b')
-   Remark-8-27 = ≺-≃-≪
+   Remark-8-25 : {b b' : B} → (b ≺ b') ≃ (β b ≪⟨ 𝓓 ⟩ β b')
+   Remark-8-25 = ≺-≃-≪
 
-   open Ideals-of-small-abstract-basis Lemma-8-26
+   open Ideals-of-small-abstract-basis Lemma-8-24
 
-   Theorem-8-28 : 𝓓 ≃ᵈᶜᵖᵒ Idl-DCPO
-   Theorem-8-28 = Idl-≃
+   Theorem-8-26 : 𝓓 ≃ᵈᶜᵖᵒ Idl-DCPO
+   Theorem-8-26 = Idl-≃
 
   module _ where
 
    open Idl-continuous-retract-of-algebraic 𝓓 β β-is-small-basis
 
-   Lemma-8-29 : reflexive-abstract-basis
+   Lemma-8-27 : reflexive-abstract-basis
               × abstract-basis
-   Lemma-8-29 = ⊑ᴮ-reflexive-abstract-basis , ⊑ᴮ-abstract-basis
+   Lemma-8-27 = ⊑ᴮ-reflexive-abstract-basis , ⊑ᴮ-abstract-basis
 
-   Remark-8-30 : {b b' : B} → (b ⊑ᴮ b') ≃ (β b ⊑⟨ 𝓓 ⟩ β b')
-   Remark-8-30 =  ⊑ᴮ-≃-⊑
+   Remark-8-28 : {b b' : B} → (b ⊑ᴮ b') ≃ (β b ⊑⟨ 𝓓 ⟩ β b')
+   Remark-8-28 =  ⊑ᴮ-≃-⊑
 
-   Theorem-8-31 : embedding-projection-pair-between 𝓓 Idl-DCPO
+   Theorem-8-29 : embedding-projection-pair-between 𝓓 Idl-DCPO
                 × 𝓓 continuous-retract-of Idl-DCPO
                 × is-algebraic-dcpo Idl-DCPO
                 × has-specified-small-compact-basis Idl-DCPO
-   Theorem-8-31 = Idl-embedding-projection-pair ,
+   Theorem-8-29 = Idl-embedding-projection-pair ,
                   Idl-continuous-retract ,
                   Idl-is-algebraic ,
                   Idl-has-specified-small-compact-basis (λ b → ⊑ᴮ-is-reflexive)
@@ -1412,41 +1418,41 @@ module _ (𝓥 : Universe) where
    open Idl-continuous-retract-of-algebraic
    open Idl-algebraic
 
-   Theorem-8-31-ad : (scb : is-small-compact-basis 𝓓 β)
+   Theorem-8-29-ad : (scb : is-small-compact-basis 𝓓 β)
                    → 𝓓 ≃ᵈᶜᵖᵒ Idl-DCPO 𝓓 β (compact-basis-is-basis 𝓓 β scb)
-   Theorem-8-31-ad = Idl-≃ 𝓓 β
+   Theorem-8-29-ad = Idl-≃ 𝓓 β
 
  module _ where
 
   open Ideals-of-small-abstract-basis
 
-  Corollary-8-32-i : (𝓓 : DCPO {𝓤} {𝓣})
+  Corollary-8-30-i : (𝓓 : DCPO {𝓤} {𝓣})
                     → has-specified-small-basis 𝓓
                     ↔ (Σ ab ꞉ abstract-basis , (𝓓 ≃ᵈᶜᵖᵒ Idl-DCPO ab))
-  Corollary-8-32-i = has-specified-small-basis-iff-to-ideal-completion
+  Corollary-8-30-i = has-specified-small-basis-iff-to-ideal-completion
 
   private
    ρ : reflexive-abstract-basis → abstract-basis
    ρ = reflexive-abstract-basis-to-abstract-basis
 
-  Corollary-8-32-ii : (𝓓 : DCPO {𝓤} {𝓣})
+  Corollary-8-30-ii : (𝓓 : DCPO {𝓤} {𝓣})
                      → has-specified-small-compact-basis 𝓓
                      ↔ (Σ rab ꞉ reflexive-abstract-basis ,
                               (𝓓 ≃ᵈᶜᵖᵒ Idl-DCPO (ρ rab)))
-  Corollary-8-32-ii =
+  Corollary-8-30-ii =
    has-specified-small-compact-basis-reflexive-ideal-completion
 
-  Corollary-8-32-iii : (𝓓 : DCPO {𝓤} {𝓣})
+  Corollary-8-30-iii : (𝓓 : DCPO {𝓤} {𝓣})
                       → has-specified-small-basis 𝓓
                       ↔ (Σ 𝓔 ꞉ DCPO {𝓥 ⁺} {𝓥} ,
                                has-specified-small-compact-basis 𝓔
                              × 𝓓 continuous-retract-of 𝓔)
-  Corollary-8-32-iii =
+  Corollary-8-30-iii =
    has-specified-small-basis-iff-retract-of-dcpo-with-small-compact-basis
 
-  Corollary-8-32-ad : (ab : abstract-basis)
+  Corollary-8-30-ad : (ab : abstract-basis)
                     → type-of (Idl-DCPO ab) ＝ DCPO {𝓥 ⁺} {𝓥}
-  Corollary-8-32-ad _ = refl
+  Corollary-8-30-ad _ = refl
 
 \end{code}
 
@@ -1498,11 +1504,11 @@ Section 9.1. Structurally continuous and algebraic bilimits
    open 𝓓∞-family J α
    open Ind-completion
 
-   Lemma-7-1 : (δ : (i : I) → is-Directed (𝓓 i) (α i))
+   Lemma-9-1 : (δ : (i : I) → is-Directed (𝓓 i) (α i))
                (σ : ⟨ 𝓓∞ ⟩)
              → ((i : I) → _approximates_ (𝓓 i) (J i , α i , δ i) (⦅ σ ⦆ i))
              → Σ δ∞ ꞉ is-Directed 𝓓∞ α∞ , _approximates_ 𝓓∞ (J∞ , α∞ , δ∞) σ
-   Lemma-7-1 δ σ αs-approx = δ∞ , eq , wb
+   Lemma-9-1 δ σ αs-approx = δ∞ , eq , wb
     where
      δ∞ = α∞-is-directed-lemma σ δ
            (λ i → approximates-to-∐-＝ (𝓓 i) (αs-approx i))
@@ -1511,20 +1517,20 @@ Section 9.1. Structurally continuous and algebraic bilimits
            (λ i → approximates-to-∐-＝ (𝓓 i) (αs-approx i)) δ∞
      wb = α∞-is-way-below σ (λ i → approximates-to-≪ (𝓓 i) (αs-approx i))
 
-   Lemma-7-2 : ((i : I) (j : J i) → is-compact (𝓓 i) (α i j))
+   Lemma-9-2 : ((i : I) (j : J i) → is-compact (𝓓 i) (α i j))
              → (j : J∞) → is-compact 𝓓∞ (α∞ j)
-   Lemma-7-2 = α∞-is-compact
+   Lemma-9-2 = α∞-is-compact
 
-   Theorem-7-3 : (((i : I) → continuity-data (𝓓 i)) → continuity-data 𝓓∞)
+   Theorem-9-3 : (((i : I) → continuity-data (𝓓 i)) → continuity-data 𝓓∞)
                × (((i : I) → algebraicity-data (𝓓 i)) → algebraicity-data 𝓓∞)
-   Theorem-7-3 = 𝓓∞-structurally-continuous ,
+   Theorem-9-3 = 𝓓∞-structurally-continuous ,
                  𝓓∞-structurally-algebraic
 
-   Theorem-7-4 : (((i : I) → has-specified-small-basis (𝓓 i))
+   Theorem-9-4 : (((i : I) → has-specified-small-basis (𝓓 i))
                       → has-specified-small-basis 𝓓∞)
                × (((i : I) → has-specified-small-compact-basis (𝓓 i))
                       → has-specified-small-compact-basis 𝓓∞)
-   Theorem-7-4 = 𝓓∞-has-small-basis ,
+   Theorem-9-4 = 𝓓∞-has-small-basis ,
                  𝓓∞-has-small-compact-basis
 
 \end{code}
