@@ -1234,6 +1234,9 @@ Compact-gives-Compact' C A _ = C A
 
 \end{code}
 
+TODO. (1) is-Compact' X ≃ is-compact X.
+      (2) is-Compact' X is a retract of is-Compact X.
+
 Added by Fredrik Bakke on the 26th of March 2025.
 
 We give a generalization of the fact that compact types are closed under covers
@@ -1308,6 +1311,3 @@ module _ (pt : propositional-truncations-exist) where
                         (corestrictions-are-surjections f) c
 
 \end{code}
-
-TODO. (1) is-Compact' X ≃ is-compact X.
-      (2) is-Compact' X is a retract of is-Compact X.
