@@ -103,9 +103,9 @@ module _ {𝓤 𝓥} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } where
 
 Added on 26 March 2025 by Fredrik Bakke.
 
-Every function can be factored into a dense map followed by a double negation
-stable embedding through its "double negation image". We appeal to a
-relaxation of the function extensionality axiom: that negations are
+Every function can be factored essentially uniquely into a dense map followed by
+a double negation stable embedding through its "double negation image". We
+appeal to a relaxation of the function extensionality axiom: that negations are
 propositions.
 
 \begin{code}
@@ -139,8 +139,8 @@ being-in-the-¬¬-image-is-prop negations-are-props y f = negations-are-props
 ¬¬-corestrictions-are-dense : ({A : 𝓤 ⊔ 𝓥 ̇ } → is-prop (¬ A))
                             → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                             → is-dense (¬¬-corestriction f)
-¬¬-corestrictions-are-dense negations-are-props f ((y , nnq) , np) =
-  nnq λ p → np (p .pr₁ , to-Σ-＝ (p .pr₂ , negations-are-props _ nnq))
+¬¬-corestrictions-are-dense negations-are-props f ((y , nnp) , nq) =
+  nnp (λ (x , p) → nq (x , to-Σ-＝ (p , negations-are-props _ nnp)))
 
 ¬¬-restrictions-are-embeddings : ({A : 𝓤 ⊔ 𝓥 ̇ } → is-prop (¬ A))
                                → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
@@ -161,61 +161,59 @@ being-in-the-¬¬-image-is-prop negations-are-props y f = negations-are-props
                               → is-¬¬-stable-map (¬¬-restriction f)
 ¬¬-restrictions-are-¬¬-stable negations-are-props f y nnip = ((y , a) , refl)
  where
- a : y ∈¬¬-image f
- a np = nnip b
-  where
-  b : ¬ Σ (λ v → ¬¬-restriction f v ＝ y)
-  b ip = ¬¬-corestrictions-are-dense negations-are-props f c
+  a : y ∈¬¬-image f
+  a np = nnip b
    where
-    c : Σ (λ y → ¬ (fiber (¬¬-corestriction f) y))
-    c = (ip .pr₁ , d)
+    b : ¬ (Σ v ꞉ ¬¬-image f , ¬¬-restriction f v ＝ y)
+    b (v , p) = ¬¬-corestrictions-are-dense negations-are-props f c
      where
-     d : ¬ (fiber (¬¬-corestriction f) (ip .pr₁))
-     d ηq = np (ηq .pr₁ , (ap (¬¬-restriction f) (ηq .pr₂) ∙ ip .pr₂))
+      c : Σ v ꞉ ¬¬-image f , ¬ (fiber (¬¬-corestriction f) v)
+      c = (v , d)
+       where
+        d : ¬ (fiber (¬¬-corestriction f) v)
+        d (x , q) = np (x , (ap (¬¬-restriction f) q ∙ p))
 
 
 \end{code}
 
-Double negation stability is a form of split support, and lets us conclude from
+Double negation stability is a form of split support and lets us conclude from
 left cancellability that a map is an embedding.
 
 \begin{code}
 
-¬¬-stable-left-cancellable-maps-are-embeddings : ({A : 𝓤 ⊔ 𝓥 ̇ }
-                                                → is-prop (¬ A))
-                                               → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-                                               → (f : X → Y)
-                                               → left-cancellable f
-                                               → is-¬¬-stable-map f
-                                               → is-embedding f
+¬¬-stable-left-cancellable-maps-are-embeddings
+ : ({A : 𝓤 ⊔ 𝓥 ̇ } → is-prop (¬ A))
+ → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+ → (f : X → Y)
+ → left-cancellable f
+ → is-¬¬-stable-map f
+ → is-embedding f
 ¬¬-stable-left-cancellable-maps-are-embeddings negations-are-props f lc s = f-is-embedding
  where
+  ¬¬-corestriction-f-is-split-surjective : (u : ¬¬-image f)
+                                         → fiber (¬¬-corestriction f) u
+  ¬¬-corestriction-f-is-split-surjective (y , nnp) =
+   let
+    (x , p) = s y nnp
+   in
+   ( x , ¬¬-restrictions-are-left-cancellable negations-are-props f p)
 
+  ¬¬-corestriction-f-is-equiv : is-equiv (¬¬-corestriction f)
+  ¬¬-corestriction-f-is-equiv =
+   lc-split-surjections-are-equivs
+    (¬¬-corestriction f)
+    (left-cancellable-factor (¬¬-corestriction f) (¬¬-restriction f) lc)
+    (¬¬-corestriction-f-is-split-surjective)
 
- ¬¬-corestriction-f-is-split-surjective : (u : ¬¬-image f)
-                                        → fiber (¬¬-corestriction f) u
- ¬¬-corestriction-f-is-split-surjective u =
-  let
-   su = s (u .pr₁) (u .pr₂)
-  in
-  su .pr₁ , ¬¬-restrictions-are-left-cancellable negations-are-props f (su .pr₂)
+  ¬¬-corestriction-f-is-embedding : is-embedding (¬¬-corestriction f)
+  ¬¬-corestriction-f-is-embedding = equivs-are-embeddings
+                                     (¬¬-corestriction f)
+                                     (¬¬-corestriction-f-is-equiv)
 
- ¬¬-corestriction-f-is-equiv : is-equiv (¬¬-corestriction f)
- ¬¬-corestriction-f-is-equiv =
-  lc-split-surjections-are-equivs
-   (¬¬-corestriction f)
-   (left-cancellable-factor (¬¬-corestriction f) (¬¬-restriction f) lc)
-   (¬¬-corestriction-f-is-split-surjective)
-
- ¬¬-corestriction-f-is-embedding : is-embedding (¬¬-corestriction f)
- ¬¬-corestriction-f-is-embedding = equivs-are-embeddings (¬¬-corestriction f)
-                                    (¬¬-corestriction-f-is-equiv)
-
- f-is-embedding : is-embedding f
- f-is-embedding =
-  ∘-is-embedding
-   (¬¬-corestriction-f-is-embedding)
-   (¬¬-restrictions-are-embeddings negations-are-props f)
+  f-is-embedding : is-embedding f
+  f-is-embedding = ∘-is-embedding
+                    (¬¬-corestriction-f-is-embedding)
+                    (¬¬-restrictions-are-embeddings negations-are-props f)
 
 decidable-maps-are-¬¬-stable : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                              → (f : X → Y)
@@ -223,13 +221,13 @@ decidable-maps-are-¬¬-stable : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                              → is-¬¬-stable-map f
 decidable-maps-are-¬¬-stable f d x = ¬¬-stable-if-decidable (fiber f x) (d x)
 
-decidable-left-cancellable-maps-are-embeddings : ({A : 𝓤 ⊔ 𝓥 ̇ }
-                                                → is-prop (¬ A))
-                                               → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-                                               → (f : X → Y)
-                                               → left-cancellable f
-                                               → is-decidable-map f
-                                               → is-embedding f
+decidable-left-cancellable-maps-are-embeddings
+ : ({A : 𝓤 ⊔ 𝓥 ̇ } → is-prop (¬ A))
+ → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+ → (f : X → Y)
+ → left-cancellable f
+ → is-decidable-map f
+ → is-embedding f
 decidable-left-cancellable-maps-are-embeddings negations-are-props f lc d =
  ¬¬-stable-left-cancellable-maps-are-embeddings negations-are-props f lc
   (decidable-maps-are-¬¬-stable f d)

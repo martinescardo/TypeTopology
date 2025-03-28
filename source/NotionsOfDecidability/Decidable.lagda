@@ -403,9 +403,9 @@ module propositional-truncation-of-decidable-type
 
 \end{code}
 
-Added by Fredrik Bakke on 26 March 2025.
+Added by Fredrik Bakke on the 26th of March 2025.
 
-We define the concept of decidable maps as maps where each fiber is decidable.
+We define a decidable map f to be a map such that each fiber is decidable.
 
 \begin{code}
 
@@ -419,14 +419,13 @@ is-decidable-map f = each-fiber-of f is-decidable
                 → is-decidable-map (g ∘ f)
 ∘-decidable-map f g H G F x = cases positive-case negative-case (G x)
  where
-  positive-case : (u : fiber g x) → is-decidable (fiber (g ∘ f) x)
-  positive-case u =
+  positive-case : fiber g x → is-decidable (fiber (g ∘ f) x)
+  positive-case (y , q) =
    decidable-↔
-    ((λ v → (v .pr₁) , (ap g (v .pr₂) ∙ u .pr₂)) ,
-     (λ w → (w .pr₁) , H (w .pr₂ ∙ (u .pr₂)⁻¹)))
-    (F (u .pr₁))
+    ((λ (x , p) → x , (ap g p ∙ q)) , (λ (x , r) → x , H (r ∙ q ⁻¹)))
+    (F y)
 
-  negative-case : (nu : ¬ (fiber g x)) → is-decidable (fiber (g ∘ f) x)
-  negative-case α = inr (λ t → α (f (t .pr₁) , t .pr₂))
+  negative-case : ¬ (fiber g x) → is-decidable (fiber (g ∘ f) x)
+  negative-case nu = inr (λ (x , p) → nu (f x , p))
 
 \end{code}
