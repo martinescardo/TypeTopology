@@ -894,8 +894,8 @@ Added by Fredrik Bakke on the 28th of March 2025.
 
 We give an alternative formulation of Lawvere's fixed point theorem using double
 negations. This formulations leads to a slight strengthening of Cantor's
-theorem. The strengthening assumes only a relaxation of function extensionality:
-that negations are propositions.
+theorem. The strengthening also only assumes a relaxation of function
+extensionality: that negations are propositions.
 
 The formalization is in essense a repeat of the proofs for the classical
 theorem, but with double negations substituted in.
