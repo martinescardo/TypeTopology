@@ -934,44 +934,28 @@ LFPT¬¬ {𝓤} {𝓥} {A} {X} φ s f = ¬¬-functor γ e
 \begin{code}
 
 not-no-fp' : (ne : {A : 𝓤 ̇ } → is-prop (¬ A)) → ¬ (Σ P ꞉ Ω 𝓤 , P ＝ not' ne P)
-not-no-fp' {𝓤} ne (P , p) = retract-version.¬-no-fp (P holds , q)
- where
-  q : P holds ＝ ¬ (P holds)
-  q = ap _holds p
+not-no-fp' {𝓤} ne (P , p) = retract-version.¬-no-fp (P holds , ap _holds p)
 
 cantor-¬¬-theorem-for-universes : (A : 𝓥 ̇ )
                                 → (φ : A → (A → 𝓤 ̇ ))
                                 → is-dense φ
                                 → (X : 𝓤 ̇ ) → ¬¬-fixed-point-property X
-cantor-¬¬-theorem-for-universes {𝓥} {𝓤} A φ s X f = ¬¬-functor g t
+cantor-¬¬-theorem-for-universes {𝓥} {𝓤} A φ s X f =
+ ¬¬-functor g (LFPT¬¬ φ s (λ B → B → X))
  where
-  t : ¬¬ (Σ B ꞉ 𝓤 ̇ , B ＝ (B → X))
-  t = LFPT¬¬ φ s (λ B → B → X)
-
   g : (Σ B ꞉ 𝓤 ̇ , B ＝ (B → X)) → Σ x ꞉ X , x ＝ f x
   g (B , p) = retract-version.LFPT-＝ {𝓤} {𝓤} p f
 
 Cantor-¬¬-theorem-for-universes : (A : 𝓥 ̇ )
                                 → (φ : A → (A → 𝓤 ̇ ))
                                 → ¬ is-dense φ
-Cantor-¬¬-theorem-for-universes A r h = γ
- where
-  c : ¬¬ (Σ x ꞉ 𝟘 , x ＝ x)
-  c = cantor-¬¬-theorem-for-universes A r h 𝟘 id
-
-  γ : 𝟘
-  γ = c (λ ())
+Cantor-¬¬-theorem-for-universes A r h =
+ cantor-¬¬-theorem-for-universes A r h 𝟘 id (λ ())
 
 cantor-¬¬-theorem : (ne : {A : 𝓤 ̇ } → is-prop (¬ A))
                   → (A : 𝓥 ̇ )
                   → (φ : A → (A → Ω 𝓤))
                   → ¬ is-dense φ
-cantor-¬¬-theorem {𝓤} {𝓥} ne A φ s = γ
- where
-  t : ¬¬ (Σ B ꞉ Ω 𝓤 , B ＝ not' ne B)
-  t = LFPT¬¬ φ s (not' ne)
-
-  γ : 𝟘
-  γ = t (not-no-fp' ne)
+cantor-¬¬-theorem {𝓤} {𝓥} ne A φ s = LFPT¬¬ φ s (not' ne) (not-no-fp' ne)
 
  \end{code}
