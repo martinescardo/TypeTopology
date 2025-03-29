@@ -143,7 +143,7 @@ not-equal-⊤-gives-equal-⊥ fe pe p r = γ
   f = Idtofun (ap _holds r ⁻¹) ⋆
 
   t : p holds ＝ 𝟘
-  t = empty-types-are-＝-𝟘 fe pe f
+  t = empty-types-are-＝-𝟘 pe f
 
   γ : p ＝ ⊥
   γ = to-subtype-＝ (λ _ → being-prop-is-prop fe) t
