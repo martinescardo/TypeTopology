@@ -598,7 +598,7 @@ Section 5.2. Examples of dcpos with small compact bases
   open import DomainTheory.Examples.Powerset pt fe pe X-set
   open canonical-map-from-lists-to-subsets X-set renaming (κ to β)
 
-  Example-5-19 : is-small-compact-basis 𝓟-DCPO (canonical-map-from-lists-to-subsets.κ X-set)
+  Example-5-19 : is-small-compact-basis 𝓟-DCPO β
                × is-algebraic-dcpo 𝓟-DCPO
   Example-5-19 = κ-is-small-compact-basis , 𝓟-is-algebraic-dcpo
 
