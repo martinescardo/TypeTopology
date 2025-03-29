@@ -13,6 +13,7 @@ module TypeTopology.DenseMapsProperties where
 
 open import MLTT.Spartan
 open import MLTT.Plus-Properties
+open import NotionsOfDecidability.Complemented
 open import NotionsOfDecidability.Decidable
 open import TypeTopology.CompactTypes
 open import TypeTopology.Density
@@ -142,22 +143,22 @@ left cancellability that a map is an embedding.
                     (¬¬-corestriction-f-is-embedding)
                     (¬¬-restrictions-are-embeddings negations-are-props f)
 
-decidable-maps-are-¬¬-stable : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+complemented-maps-are-¬¬-stable : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                              → (f : X → Y)
-                             → is-decidable-map f
+                             → is-complemented-map f
                              → is-¬¬-stable-map f
-decidable-maps-are-¬¬-stable f d x = ¬¬-stable-if-decidable (fiber f x) (d x)
+complemented-maps-are-¬¬-stable f d x = ¬¬-stable-if-decidable (fiber f x) (d x)
 
-decidable-left-cancellable-maps-are-embeddings
+complemented-left-cancellable-maps-are-embeddings
  : negations-are-props-statement (𝓤 ⊔ 𝓥)
  → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
  → (f : X → Y)
  → left-cancellable f
- → is-decidable-map f
+ → is-complemented-map f
  → is-embedding f
-decidable-left-cancellable-maps-are-embeddings negations-are-props f lc d =
+complemented-left-cancellable-maps-are-embeddings negations-are-props f lc d =
  ¬¬-stable-left-cancellable-maps-are-embeddings negations-are-props f lc
-  (decidable-maps-are-¬¬-stable f d)
+  (complemented-maps-are-¬¬-stable f d)
 
 \end{code}
 
