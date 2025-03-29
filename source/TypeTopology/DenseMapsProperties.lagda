@@ -4,27 +4,31 @@ We formalize a series of properties of dense maps.
 
 - We construct the unique dense image factorization.
 - We show compact types are closed under dense covers.
-- We give a negative formulation of Lawvere's fixed point theorem leading to a
-  Cantor's theorem for dense maps.
-.
+
 \begin{code}
 
 {-# OPTIONS --safe --without-K #-}
 
-module TypeTopology.Density where
+module TypeTopology.DenseMapsProperties where
 
 open import MLTT.Spartan
+open import MLTT.Plus-Properties
 open import NotionsOfDecidability.Decidable
+open import TypeTopology.CompactTypes
+open import TypeTopology.Density
 open import UF.Base
 open import UF.DiscreteAndSeparated
 open import UF.Embeddings
 open import UF.Equiv
 open import UF.LeftCancellable
+open import UF.PropTrunc
 open import UF.Retracts
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
 \end{code}
+
+Dense image factorization.
 
 Every function can be factored essentially uniquely into a dense map followed by
 a double negation stable embedding through its "double negation image". We
@@ -35,8 +39,6 @@ propositions.
 
 is-¬¬-stable-map : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 is-¬¬-stable-map {𝓤} {𝓥} {X} {Y} f = each-fiber-of f ¬¬-stable
-
-\begin{code}
 
 _∈¬¬-image_ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → Y → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 y ∈¬¬-image f = ¬¬ (fiber f y)
@@ -156,5 +158,84 @@ decidable-left-cancellable-maps-are-embeddings
 decidable-left-cancellable-maps-are-embeddings negations-are-props f lc d =
  ¬¬-stable-left-cancellable-maps-are-embeddings negations-are-props f lc
   (decidable-maps-are-¬¬-stable f d)
+
+\end{code}
+
+Compact types are closed under dense covers.
+
+We give a generalization of the fact that compact types are closed under covers
+that also avoids function extensionality and propositional truncations.
+
+\begin{code}
+
+dense-map-Compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                  → is-dense f
+                  → is-Compact X {𝓦}
+                  → is-Compact Y {𝓦}
+dense-map-Compact f i c A δ = +functor positive-case negative-case d
+ where
+  positive-case : Σ (A ∘ f) → Σ A
+  positive-case (x , p) = (f x , p)
+
+  negative-case : ¬  Σ (A ∘ f) → ¬ Σ A
+  negative-case nf (y , p) = i (y , λ (x , r) → nf (x , transport A (r ⁻¹) p))
+
+  d : is-decidable (Σ (A ∘ f))
+  d = c (A ∘ f) (δ ∘ f)
+
+dense-map-Π-Compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                    → is-dense f
+                    → is-Π-Compact X {𝓦}
+                    → is-Π-Compact Y {𝓦}
+dense-map-Π-Compact {𝓤} {𝓥} {𝓦} {X} {Y} f i c A δ = claim
+ where
+  positive-case : Π (A ∘ f) → Π A
+  positive-case g y = Cases (δ y) id negative-positive-case
+   where
+    negative-positive-case : ¬ A y → A y
+    negative-positive-case np =
+     𝟘-elim (i (y , λ (x , r) → np (transport A r (g x))))
+
+  negative-case : ¬ Π (A ∘ f) → ¬ Π A
+  negative-case nph p = nph (p ∘ f)
+
+  claim : is-decidable (Π A)
+  claim = +functor positive-case negative-case (c (A ∘ f) (δ ∘ f))
+
+\end{code}
+
+As a corollary compact types are closed under covers. This proof improves on
+the previous by avoiding function extensionality and being fully universe
+polymorphic.
+
+\begin{code}
+
+module _ (pt : propositional-truncations-exist) where
+
+ open import UF.ImageAndSurjection pt
+
+ surjection-Compact' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                     → is-surjection f
+                     → is-Compact X {𝓦}
+                     → is-Compact Y {𝓦}
+ surjection-Compact' f i = dense-map-Compact f (surjections-are-dense f i)
+
+ image-Compact' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                → is-Compact X {𝓦}
+                → is-Compact (image f) {𝓦}
+ image-Compact' f = surjection-Compact' (corestriction f)
+                     (corestrictions-are-surjections f)
+
+ surjection-Π-Compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                      → is-surjection f
+                      → is-Π-Compact X {𝓦}
+                      → is-Π-Compact Y {𝓦}
+ surjection-Π-Compact f i = dense-map-Π-Compact f (surjections-are-dense f i)
+
+ image-Π-Compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                 → is-Π-Compact X {𝓦}
+                 → is-Π-Compact (image f) {𝓦}
+ image-Π-Compact f c = surjection-Π-Compact (corestriction f)
+                        (corestrictions-are-surjections f) c
 
 \end{code}
