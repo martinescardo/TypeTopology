@@ -402,30 +402,3 @@ module propositional-truncation-of-decidable-type
   decidable-types-have-split-support s = ∣∣⟨ δ ⟩-exit (∥∥-to-∥∥⟨_⟩ s)
 
 \end{code}
-
-Added by Fredrik Bakke on the 26th of March 2025.
-
-We define a decidable map f to be a map such that each fiber is decidable.
-
-\begin{code}
-
-is-decidable-map : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
-is-decidable-map f = each-fiber-of f is-decidable
-
-∘-decidable-map : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y) (g : Y → Z)
-                → left-cancellable g
-                → is-decidable-map g
-                → is-decidable-map f
-                → is-decidable-map (g ∘ f)
-∘-decidable-map f g H G F x = cases positive-case negative-case (G x)
- where
-  positive-case : fiber g x → is-decidable (fiber (g ∘ f) x)
-  positive-case (y , q) =
-   decidable-↔
-    ((λ (x , p) → x , (ap g p ∙ q)) , (λ (x , r) → x , H (r ∙ q ⁻¹)))
-    (F y)
-
-  negative-case : ¬ (fiber g x) → is-decidable (fiber (g ∘ f) x)
-  negative-case nu = inr (λ (x , p) → nu (f x , p))
-
-\end{code}
