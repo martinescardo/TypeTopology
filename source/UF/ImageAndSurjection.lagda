@@ -9,7 +9,6 @@ open import UF.PropTrunc
 module UF.ImageAndSurjection (pt : propositional-truncations-exist) where
 
 open import MLTT.Spartan
-open import TypeTopology.Density
 open import UF.Base
 open import UF.Embeddings
 open import UF.Equiv
@@ -462,16 +461,5 @@ equivs-are-surjections : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f : X → Y}
                        → is-equiv f
                        → is-surjection f
 equivs-are-surjections ((ρ , η) , (σ , ε)) y = ∣ ρ y , η y ∣
-
-\end{code}
-
-Added by Fredrik Bakke on the 26th of March 2025.
-
-\begin{code}
-
-surjections-are-dense : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                      → is-surjection f
-                      → is-dense f
-surjections-are-dense f s (y , q) = ∥∥-rec 𝟘-is-prop q (s y)
 
 \end{code}

@@ -212,7 +212,13 @@ polymorphic.
 
 module _ (pt : propositional-truncations-exist) where
 
+ open propositional-truncations-exist pt
  open import UF.ImageAndSurjection pt
+
+ surjections-are-dense : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                       → is-surjection f
+                       → is-dense f
+ surjections-are-dense f s (y , q) = ∥∥-rec 𝟘-is-prop q (s y)
 
  surjection-Compact' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                      → is-surjection f
