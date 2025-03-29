@@ -2,7 +2,7 @@ Fredrik Bakke 26–27 March 2025
 
 We formalize a series of properties of dense maps.
 
-- We construct the unique dense image factorization.
+- We construct the unique double negation image factorization.
 - We show compact types are closed under dense covers.
 
 \begin{code}
@@ -28,7 +28,7 @@ open import UF.Subsingletons-FunExt
 
 \end{code}
 
-Dense image factorization.
+Double negation image factorization.
 
 Every function can be factored essentially uniquely into a dense map followed by
 a double negation stable embedding through its "double negation image". We

@@ -36,7 +36,6 @@ co-characteristic-function d = indicator(λ x → +-commutative(d x))
 
 \end{code}
 
-
 Added by Fredrik Bakke on the 26th of March 2025.
 
 We define a complemented map f to be a map such that each fiber is decidable.
