@@ -205,8 +205,7 @@ dense-map-Π-Compact {𝓤} {𝓥} {𝓦} {X} {Y} f i c A δ = claim
 \end{code}
 
 As a corollary compact types are closed under covers. This proof improves on
-the previous by avoiding function extensionality and being fully universe
-polymorphic.
+the previous by avoiding function extensionality.
 
 \begin{code}
 
