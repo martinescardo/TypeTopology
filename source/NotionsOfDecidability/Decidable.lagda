@@ -296,8 +296,7 @@ all-types-are-¬¬-decidable X h = claim₂ claim₁
   claim₂ nx = h (inr nx)
 
 ¬¬-stable-if-decidable : (X : 𝓤 ̇ ) → is-decidable X → ¬¬-stable X
-¬¬-stable-if-decidable X (inl  x) = λ _ → x
-¬¬-stable-if-decidable X (inr nx) = λ h → 𝟘-elim (h nx)
+¬¬-stable-if-decidable X = ¬¬-elim
 
 \end{code}
 

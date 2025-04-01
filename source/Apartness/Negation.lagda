@@ -31,7 +31,7 @@ apart, gives another way to see that it is an equivalence relation.
 As far as we know, this positive characterization of the negation of
 apartness is a new observation.
 
-Notice the irreflexivity is not use in the following, but
+Notice that irreflexivity is not used in the following, but
 irreflexivity is the only assumption about _♯_ used in the converse.
 
 \begin{code}

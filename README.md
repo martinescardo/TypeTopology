@@ -48,6 +48,7 @@ Please add yourself the first time you contribute.
 * Cory Knapp
 * Ettore Aldrovandi
 * Evan Cavallo
+* Fredrik Bakke
 * Fredrik Nordvall Forsberg
 * Ian Ray
 * Igor Arrieta (ii)

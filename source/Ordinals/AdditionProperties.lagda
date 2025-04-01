@@ -677,7 +677,7 @@ module _ {𝓤 : Universe} where
                   → inr (contrapositive
                           (λ (u : ¬ P)
                                 → to-subtype-＝ (λ _ → being-prop-is-prop fe')
-                                   (empty-types-are-＝-𝟘 fe' (pe 𝓤) u)⁻¹) ν))
+                                   (empty-types-are-＝-𝟘 (pe 𝓤) u)⁻¹) ν))
 
    VI : ∀ P → ¬ P + ¬¬ P
    VI = WEM-gives-typal-WEM fe' V
