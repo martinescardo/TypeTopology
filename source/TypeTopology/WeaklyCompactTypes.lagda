@@ -584,10 +584,9 @@ decidable-propositions-are-∃-compact X isp d p = g d
   g (inr u) = inr (∥∥-rec 𝟘-is-prop (λ σ → u (pr₁ σ)))
 
 negations-of-Π-compact-propositions-are-decidable : (X : 𝓤 ̇ )
-                                                  → is-prop X
                                                   → is-Π-compact X
                                                   → is-decidable (¬ X)
-negations-of-Π-compact-propositions-are-decidable X isp c = f a
+negations-of-Π-compact-propositions-are-decidable X c = f a
  where
   a : is-decidable (X → ₀ ＝ ₁)
   a = c (λ x → ₀)
@@ -599,11 +598,10 @@ negations-of-Π-compact-propositions-are-decidable X isp c = f a
 negations-of-propositions-whose-decidability-is-Π-compact-are-decidable :
 
     (X : 𝓤 ̇ )
-  → is-prop X
   → is-Π-compact (is-decidable X)
   → is-decidable (¬ X)
 
-negations-of-propositions-whose-decidability-is-Π-compact-are-decidable X isp c = Cases a l m
+negations-of-propositions-whose-decidability-is-Π-compact-are-decidable X c = Cases a l m
  where
   p : X + ¬ X → 𝟚
   p (inl x) = ₀
