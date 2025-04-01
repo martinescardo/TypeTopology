@@ -32,7 +32,7 @@ open import UF.Subsingletons-FunExt
 Double negation image factorization.
 
 Every function can be factored essentially uniquely into a dense map followed by
-a double negation stable embedding through its "double negation image". We
+a double negation stable embedding through its "double negation image". We only
 appeal to a relaxation of the function extensionality axiom: that negations are
 propositions.
 
@@ -100,7 +100,6 @@ being-in-the-¬¬-image-is-prop negations-are-props y f = negations-are-props
        where
         d : ¬ (fiber (¬¬-corestriction f) v)
         d (x , q) = np (x , (ap (¬¬-restriction f) q ∙ p))
-
 
 \end{code}
 
