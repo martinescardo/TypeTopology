@@ -252,12 +252,12 @@ module _ (pt : propositional-truncations-exist) where
 Fixed point theorems for dense maps.
 
 We give an alternative formulation of Lawvere's fixed point theorem using double
-negations. This formulations leads to a slight strengthening of Cantor's
-theorem. The strengthening again only assumes a relaxation of function
-extensionality: that negations are propositions.
+negations. This formulations also leads to a variant of Cantor's theorem. The
+strengthening again only assumes a relaxation of function extensionality: that
+negations are propositions.
 
-The formalization is a repeat of the proofs for the classical theorems, but with
-double negations substituted in.
+The formalization is a repeat of the proofs for the traditional theorems, but
+with double negations substituted in.
 
 \begin{code}
 
@@ -294,13 +294,15 @@ Cantor's theorem for dense maps.
 
 \begin{code}
 
-not-no-fp' : (ne : {A : 𝓤 ̇ } → is-prop (¬ A)) → ¬ (Σ P ꞉ Ω 𝓤 , P ＝ not' ne P)
+not-no-fp' : (ne : negations-are-props-statement 𝓤)
+           → ¬ (Σ P ꞉ Ω 𝓤 , P ＝ not' ne P)
 not-no-fp' _ (P , p) = retract-version.¬-no-fp (P holds , ap _holds p)
 
 cantor-¬¬-theorem-for-universes : (A : 𝓥 ̇ )
                                 → (φ : A → (A → 𝓤 ̇ ))
                                 → is-dense φ
-                                → (X : 𝓤 ̇ ) → ¬¬-fixed-point-property X
+                                → (X : 𝓤 ̇ )
+                                → ¬¬-fixed-point-property X
 cantor-¬¬-theorem-for-universes {𝓥} {𝓤} A φ s X f =
  ¬¬-functor g (LFPT¬¬ φ s (λ B → B → X))
   where
@@ -313,7 +315,7 @@ Cantor-¬¬-theorem-for-universes : (A : 𝓥 ̇ )
 Cantor-¬¬-theorem-for-universes A r h =
  cantor-¬¬-theorem-for-universes A r h 𝟘 id (λ ())
 
-cantor-¬¬-theorem : (ne : {A : 𝓤 ̇ } → is-prop (¬ A))
+cantor-¬¬-theorem : negations-are-props-statement 𝓤
                   → (A : 𝓥 ̇ )
                   → (φ : A → (A → Ω 𝓤))
                   → ¬ is-dense φ
