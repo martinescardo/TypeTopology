@@ -4,7 +4,7 @@ We formalize a series of properties of dense maps.
 
 - We construct the unique double negation image factorization
 - We show compact types are closed under dense covers
-- We give variants of Lavwere's and Cantor's fixed point theorems for dense maps
+- We give variants of Lawvere's and Cantor's fixed point theorems for dense maps
 
 \begin{code}
 
