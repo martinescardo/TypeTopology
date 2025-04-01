@@ -1,9 +1,10 @@
-Fredrik Bakke 26–27 March 2025
+Fredrik Bakke 26–28 March 2025
 
 We formalize a series of properties of dense maps.
 
-- We construct the unique double negation image factorization.
-- We show compact types are closed under dense covers.
+- We construct the unique double negation image factorization
+- We show compact types are closed under dense covers
+- We give variants of Lawvere's and Cantor's fixed point theorems for dense maps
 
 \begin{code}
 
@@ -26,6 +27,8 @@ open import UF.PropTrunc
 open import UF.Retracts
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
+open import UF.SubtypeClassifier
+open import Various.LawvereFPT
 
 \end{code}
 
@@ -204,8 +207,9 @@ dense-map-Π-Compact {𝓤} {𝓥} {𝓦} {X} {Y} f i c A δ = claim
 
 \end{code}
 
-As a corollary compact types are closed under covers. This proof improves on
-the previous by avoiding function extensionality.
+As a corollary compact types are closed under covers. This proof improves on a
+previously established result in the library by avoiding function
+extensionality.
 
 \begin{code}
 
@@ -242,5 +246,79 @@ module _ (pt : propositional-truncations-exist) where
                  → is-Π-Compact (image f) {𝓦}
  image-Π-Compact f c = surjection-Π-Compact (corestriction f)
                         (corestrictions-are-surjections f) c
+
+\end{code}
+
+Fixed point theorems for dense maps.
+
+We give an alternative formulation of Lawvere's fixed point theorem using double
+negations. This formulations also leads to a variant of Cantor's theorem. The
+strengthening again only assumes a relaxation of function extensionality: that
+negations are propositions.
+
+The formalization is a repeat of the proofs for the traditional theorems, but
+with double negations substituted in.
+
+\begin{code}
+
+¬¬-fixed-point-property : 𝓤 ̇ → 𝓤 ̇
+¬¬-fixed-point-property X = (f : X → X) → ¬¬ (Σ x ꞉ X , x ＝ f x)
+
+LFPT¬¬ : {A : 𝓤 ̇ } {X : 𝓥 ̇ } (φ : A → (A → X))
+       → is-dense φ
+       → ¬¬-fixed-point-property X
+LFPT¬¬ {𝓤} {𝓥} {A} {X} φ s f = ¬¬-functor γ e
+ where
+  g : A → X
+  g a = f (φ a a)
+
+  e : ¬¬ (Σ a ꞉ A , φ a ＝ g)
+  e np = s (g , np)
+
+  γ : (Σ a ꞉ A , φ a ＝ g) → Σ x ꞉ X , x ＝ f x
+  γ (a , q) = x , p
+   where
+    x : X
+    x = φ a a
+
+    p : x ＝ f x
+    p = x         ＝⟨ refl ⟩
+        φ a a     ＝⟨ ap (λ - → - a) q ⟩
+        g a       ＝⟨ refl ⟩
+        f x       ∎
+
+\end{code}
+
+We apply this version of Lawvere's fixed point theorem to also get a variant of
+Cantor's theorem for dense maps.
+
+\begin{code}
+
+not-no-fp' : (ne : negations-are-props-statement 𝓤)
+           → ¬ (Σ P ꞉ Ω 𝓤 , P ＝ not' ne P)
+not-no-fp' _ (P , p) = retract-version.¬-no-fp (P holds , ap _holds p)
+
+cantor-¬¬-theorem-for-universes : (A : 𝓥 ̇ )
+                                → (φ : A → (A → 𝓤 ̇ ))
+                                → is-dense φ
+                                → (X : 𝓤 ̇ )
+                                → ¬¬-fixed-point-property X
+cantor-¬¬-theorem-for-universes {𝓥} {𝓤} A φ s X f =
+ ¬¬-functor g (LFPT¬¬ φ s (λ B → B → X))
+  where
+   g : (Σ B ꞉ 𝓤 ̇ , B ＝ (B → X)) → Σ x ꞉ X , x ＝ f x
+   g (B , p) = retract-version.LFPT-＝ {𝓤} {𝓤} p f
+
+Cantor-¬¬-theorem-for-universes : (A : 𝓥 ̇ )
+                                → (φ : A → (A → 𝓤 ̇ ))
+                                → ¬ is-dense φ
+Cantor-¬¬-theorem-for-universes A r h =
+ cantor-¬¬-theorem-for-universes A r h 𝟘 id (λ ())
+
+cantor-¬¬-theorem : negations-are-props-statement 𝓤
+                  → (A : 𝓥 ̇ )
+                  → (φ : A → (A → Ω 𝓤))
+                  → ¬ is-dense φ
+cantor-¬¬-theorem ne A φ s = LFPT¬¬ φ s (not' ne) (not-no-fp' ne)
 
 \end{code}
