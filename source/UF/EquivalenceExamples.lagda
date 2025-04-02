@@ -243,17 +243,17 @@ An application of Π-cong is the following:
 𝟙-lneutral : {Y : 𝓤 ̇ } → 𝟙 {𝓥} × Y ≃ Y
 𝟙-lneutral {𝓤} {𝓥} {Y} = qinveq f (g , ε , η)
  where
-   f : 𝟙 × Y → Y
-   f (o , y) = y
+  f : 𝟙 × Y → Y
+  f (o , y) = y
 
-   g : Y → 𝟙 × Y
-   g y = (⋆ , y)
+  g : Y → 𝟙 × Y
+  g y = (⋆ , y)
 
-   η : ∀ x → f (g x) ＝ x
-   η y = refl
+  η : ∀ x → f (g x) ＝ x
+  η y = refl
 
-   ε : ∀ z → g (f z) ＝ z
-   ε (o , y) = ap (_, y) (𝟙-is-prop ⋆ o)
+  ε : ∀ z → g (f z) ＝ z
+  ε (o , y) = ap (_, y) (𝟙-is-prop ⋆ o)
 
 ×-comm : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X × Y ≃ Y × X
 ×-comm {𝓤} {𝓥} {X} {Y} = qinveq f (g , ε , η)
@@ -278,21 +278,21 @@ An application of Π-cong is the following:
 +comm : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X + Y ≃ Y + X
 +comm {𝓤} {𝓥} {X} {Y} = qinveq f (g , η , ε)
  where
-   f : X + Y → Y + X
-   f (inl x) = inr x
-   f (inr y) = inl y
+  f : X + Y → Y + X
+  f (inl x) = inr x
+  f (inr y) = inl y
 
-   g : Y + X → X + Y
-   g (inl y) = inr y
-   g (inr x) = inl x
+  g : Y + X → X + Y
+  g (inl y) = inr y
+  g (inr x) = inl x
 
-   ε : (t : Y + X) → (f ∘ g) t ＝ t
-   ε (inl y) = refl
-   ε (inr x) = refl
+  ε : (t : Y + X) → (f ∘ g) t ＝ t
+  ε (inl y) = refl
+  ε (inr x) = refl
 
-   η : (u : X + Y) → (g ∘ f) u ＝ u
-   η (inl x) = refl
-   η (inr y) = refl
+  η : (u : X + Y) → (g ∘ f) u ＝ u
+  η (inl x) = refl
+  η (inr y) = refl
 
 one-𝟘-only : 𝟘 {𝓤} ≃ 𝟘 {𝓥}
 one-𝟘-only = qinveq 𝟘-elim (𝟘-elim , 𝟘-induction , 𝟘-induction)
@@ -303,19 +303,19 @@ one-𝟙-only = qinveq unique-to-𝟙 (unique-to-𝟙 , (λ ⋆ → refl) , (λ 
 𝟘-rneutral : {X : 𝓤 ̇ } → X ≃ X + 𝟘 {𝓥}
 𝟘-rneutral {𝓤} {𝓥} {X} = qinveq f (g , η , ε)
  where
-   f : X → X + 𝟘
-   f = inl
+  f : X → X + 𝟘
+  f = inl
 
-   g : X + 𝟘 → X
-   g (inl x) = x
-   g (inr y) = 𝟘-elim y
+  g : X + 𝟘 → X
+  g (inl x) = x
+  g (inr y) = 𝟘-elim y
 
-   ε : (y : X + 𝟘) → (f ∘ g) y ＝ y
-   ε (inl x) = refl
-   ε (inr y) = 𝟘-elim y
+  ε : (y : X + 𝟘) → (f ∘ g) y ＝ y
+  ε (inl x) = refl
+  ε (inr y) = 𝟘-elim y
 
-   η : (x : X) → (g ∘ f) x ＝ x
-   η x = refl
+  η : (x : X) → (g ∘ f) x ＝ x
+  η x = refl
 
 𝟘-rneutral' : {X : 𝓤 ̇ } → X + 𝟘 {𝓥} ≃ X
 𝟘-rneutral' = ≃-sym 𝟘-rneutral
@@ -338,25 +338,25 @@ one-𝟙-only = qinveq unique-to-𝟙 (unique-to-𝟙 , (λ ⋆ → refl) , (λ 
        → (X + Y) + Z ≃ X + (Y + Z)
 +assoc {𝓤} {𝓥} {𝓦} {X} {Y} {Z} = qinveq f (g , η , ε)
  where
-   f : (X + Y) + Z → X + (Y + Z)
-   f (inl (inl x)) = inl x
-   f (inl (inr y)) = inr (inl y)
-   f (inr z)       = inr (inr z)
+  f : (X + Y) + Z → X + (Y + Z)
+  f (inl (inl x)) = inl x
+  f (inl (inr y)) = inr (inl y)
+  f (inr z)       = inr (inr z)
 
-   g : X + (Y + Z) → (X + Y) + Z
-   g (inl x)       = inl (inl x)
-   g (inr (inl y)) = inl (inr y)
-   g (inr (inr z)) = inr z
+  g : X + (Y + Z) → (X + Y) + Z
+  g (inl x)       = inl (inl x)
+  g (inr (inl y)) = inl (inr y)
+  g (inr (inr z)) = inr z
 
-   ε : (t : X + (Y + Z)) → (f ∘ g) t ＝ t
-   ε (inl x)       = refl
-   ε (inr (inl y)) = refl
-   ε (inr (inr z)) = refl
+  ε : (t : X + (Y + Z)) → (f ∘ g) t ＝ t
+  ε (inl x)       = refl
+  ε (inr (inl y)) = refl
+  ε (inr (inr z)) = refl
 
-   η : (u : (X + Y) + Z) → (g ∘ f) u ＝ u
-   η (inl (inl x)) = refl
-   η (inl (inr x)) = refl
-   η (inr x)       = refl
+  η : (u : (X + Y) + Z) → (g ∘ f) u ＝ u
+  η (inl (inl x)) = refl
+  η (inl (inr x)) = refl
+  η (inr x)       = refl
 
 +-cong : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } {B : 𝓣 ̇ }
        → X ≃ A → Y ≃ B → X + Y ≃ A + B
@@ -416,7 +416,7 @@ Ap+ {𝓤} {𝓥} {𝓦} {X} {Y} Z f =
                           (λ _ → refl))
 
 ×-cong : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } {B : 𝓣 ̇ }
-      → X ≃ A → Y ≃ B → X × Y ≃ A × B
+       → X ≃ A → Y ≃ B → X × Y ≃ A × B
 ×-cong f g = qinveq (×functor ⌜ f ⌝ ⌜ g ⌝) (×functor ⌜ f ⌝⁻¹ ⌜ g ⌝⁻¹ , ε , η)
  where
   ε : ×functor ⌜ f ⌝⁻¹ ⌜ g ⌝⁻¹ ∘ ×functor ⌜ f ⌝ ⌜ g ⌝ ∼ id
@@ -630,8 +630,8 @@ NatΣ-equiv-gives-fiberwise-equiv = NatΣ-equiv-converse _ _
                 NatΣ-is-equiv A B (λ x → ⌜ f x ⌝) (λ x → ⌜ f x ⌝-is-equiv)
 
 Σ-change-of-variable' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : X → 𝓦 ̇ ) (g : Y → X)
-                       → is-hae g
-                       → Σ γ ꞉ ((Σ y ꞉ Y , A (g y)) → Σ A) , qinv γ
+                      → is-hae g
+                      → Σ γ ꞉ ((Σ y ꞉ Y , A (g y)) → Σ A) , qinv γ
 Σ-change-of-variable' {𝓤} {𝓥} {𝓦} {X} {Y} A g (f , η , ε , α) = γ , φ , φγ , γφ
  where
   γ : (Σ y ꞉ Y , A (g y)) → Σ A
@@ -917,11 +917,13 @@ alternative-+ {𝓤} {A} = qinveq ϕ (ψ , η , ε)
 domain-is-total-fiber : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) → X ≃ Σ (fiber f)
 domain-is-total-fiber {𝓤} {𝓥} {X} {Y} f =
  X                             ≃⟨ ≃-sym (𝟙-rneutral {𝓤} {𝓤}) ⟩
- X × 𝟙                         ≃⟨ Σ-cong
-                                   (λ x → singleton-≃ 𝟙-is-singleton
-                                   (singleton-types-are-singletons (f x))) ⟩
+ X × 𝟙                         ≃⟨ I ⟩
  (Σ x ꞉ X , Σ y ꞉ Y , f x ＝ y) ≃⟨ Σ-flip ⟩
  (Σ y ꞉ Y , Σ x ꞉ X , f x ＝ y) ■
+  where
+   I =  Σ-cong
+         (λ x → singleton-≃ 𝟙-is-singleton
+                 (singleton-types-are-singletons (f x)))
 
 total-fiber-is-domain : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                       → (Σ y ꞉ Y , Σ x ꞉ X , f x ＝ y) ≃ X
