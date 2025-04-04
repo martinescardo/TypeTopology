@@ -10,5 +10,6 @@ module CantorSchroederBernstein.index where
 
 import CantorSchroederBernstein.CSB
 import CantorSchroederBernstein.CSB-TheoryLabLunch
+import CantorSchroederBernstein.CSB-WLPO
 
 \end{code}

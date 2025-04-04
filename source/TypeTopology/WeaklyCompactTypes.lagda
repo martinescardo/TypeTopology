@@ -470,7 +470,7 @@ tscd₁ {𝓤} {𝓥} {X} {Y} r c = f
 \end{code}
 
 In topological models, Π-compactness is the same as topological
-compactess in the presence of total separatedness, at least for some
+compactness in the presence of total separatedness, at least for some
 spaces, including the Kleene-Kreisel spaces, which model the simple
 types (see the module SimpleTypes). Hence, for example, the
 topological space (ℕ∞→𝟚) is not Π-compact because it is countably
@@ -483,7 +483,7 @@ type (ℕ∞→𝟚) is "not" Π-compact, internally and constructively.
 
 [ℕ∞→𝟚]-compact-implies-WLPO : is-Π-compact (ℕ∞ → 𝟚) → WLPO
 [ℕ∞→𝟚]-compact-implies-WLPO c = ℕ∞-discrete-gives-WLPO
-                                  (tscd (ℕ∞-is-totally-separated fe') c)
+                                 (tscd (ℕ∞-is-totally-separated fe') c)
 
 \end{code}
 

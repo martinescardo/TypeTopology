@@ -244,3 +244,37 @@ module _ (pt : propositional-truncations-exist) where
                         (corestrictions-are-surjections f) c
 
 \end{code}
+
+We also record that compact types are closed under retracts and equivalences.
+
+\begin{code}
+
+retraction-Compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f : X → Y}
+                   → has-section f → is-Compact X {𝓦} → is-Compact Y {𝓦}
+retraction-Compact {𝓤} {𝓥} {𝓦} {X} {Y} {f} s =
+ dense-map-Compact f (retraction-is-dense f s)
+
+equiv-Compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f : X → Y}
+              → is-equiv f → is-Compact X {𝓦} → is-Compact Y {𝓦}
+equiv-Compact {𝓤} {𝓥} {𝓦} {X} {Y} {f} e =
+ dense-map-Compact f (equivs-are-dense f e)
+
+equiv-Compact' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+               → (X ≃ Y) → is-Compact X {𝓦} → is-Compact Y {𝓦}
+equiv-Compact' (f , e) = equiv-Compact e
+
+retraction-Π-Compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f : X → Y}
+                     → has-section f → is-Π-Compact X {𝓦} → is-Π-Compact Y {𝓦}
+retraction-Π-Compact {𝓤} {𝓥} {𝓦} {X} {Y}  {f} s =
+ dense-map-Π-Compact f (retraction-is-dense f s)
+
+equiv-Π-Compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f : X → Y}
+                → is-equiv f → is-Π-Compact X {𝓦} → is-Π-Compact Y {𝓦}
+equiv-Π-Compact {𝓤} {𝓥} {𝓦} {X} {Y} {f} e =
+ dense-map-Π-Compact f (equivs-are-dense f e)
+
+equiv-Π-Compact' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                 → (X ≃ Y) → is-Π-Compact X {𝓦} → is-Π-Compact Y {𝓦}
+equiv-Π-Compact' (f , e) = equiv-Π-Compact e
+
+\end{code}

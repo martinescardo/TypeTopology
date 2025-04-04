@@ -45,6 +45,9 @@ being-¬¬-stable-is-prop fe i = Π-is-prop fe (λ _ → i)
 Ω¬¬ : (𝓤 : Universe)  → 𝓤 ⁺ ̇
 Ω¬¬ 𝓤 = Σ p ꞉ Ω 𝓤 , ¬¬-stable (p holds)
 
+_holds¬¬ : Ω¬¬ 𝓤 → 𝓤 ̇
+(P , i) holds¬¬ = P holds
+
 Ω¬¬-is-¬¬-separated : funext 𝓤 𝓤
                     → propext 𝓤
                     → is-¬¬-separated (Ω¬¬ 𝓤)
@@ -87,7 +90,7 @@ decidable-types-are-¬¬-stable (inr u) φ = unique-from-𝟘(φ u)
   f x = s(λ u → u x)
 
   claim₀ : (x y : X) → (u : is-empty X) → u x ＝ u y
-  claim₀ x y u = unique-from-𝟘(u x)
+  claim₀ x y u = unique-from-𝟘 (u x)
 
   claim₁ : (x y : X) → (λ u → u x) ＝ (λ u → u y)
   claim₁ x y = dfunext fe (claim₀ x y)
@@ -255,5 +258,18 @@ two-Ω¬¬-props-distinct-from-a-third-are-equal fe pe 𝕡₀ 𝕡₁ 𝕢 ν�
 
   III : 𝕡₀ ＝ 𝕡₁
   III = Ω¬¬-is-¬¬-separated fe pe 𝕡₀ 𝕡₁ II
+
+\end{code}
+
+Added 3rd April 2025 by Fredrik Bakke
+
+\begin{code}
+
+¬¬-stable-De-Morgan-types-are-decidable : {X : 𝓤 ̇ }
+                                        → is-decidable (¬ X)
+                                        → ¬¬-stable X
+                                        → is-decidable X
+¬¬-stable-De-Morgan-types-are-decidable (inl nx) ¬¬-elim-X = inr nx
+¬¬-stable-De-Morgan-types-are-decidable (inr x) ¬¬-elim-X = inl (¬¬-elim-X x)
 
 \end{code}
