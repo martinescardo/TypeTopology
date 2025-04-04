@@ -3,6 +3,9 @@
 # Finds any definition that contains the word specified in the parameter.
 # Call from TypeTopology/source.
 
+# Example:
+# $ ../approximatefinddef is-prop
+
 set -Eeo pipefail
 
 param="$1"

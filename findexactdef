@@ -3,6 +3,9 @@
 # Finds any definition of the word specified in the parameter.
 # Call from TypeTopology/source.
 
+# Example:
+# $ ../findexactdef is-prop
+
 set -Eeo pipefail
 
 param="$1"
