@@ -7,7 +7,12 @@ set -Eeo pipefail
 
 param="$1"
 
-regex="^[[:space:]]*[^(){}]${param}.* :"
+regex="^[[:space:]]*[^(){}]*${param}.* :"
+
+# This means "newline followed by zero or more spaces, then zero or
+# more characters that are not brackets, followed by the specified
+# word, following by zero or more occurences of anything,
+# followed by " :".
 
 echo $regex
 
