@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+# Finds any definition that contains the word specified in the parameter.
+# Call from TypeTopology/source.
+
+set -Eeo pipefail
+
+param="$1"
+
+regex="^[[:space:]]*[^(){}]${param}.* :"
+
+echo $regex
+
+git ls-files . | grep agda | xargs grep -E "$regex"

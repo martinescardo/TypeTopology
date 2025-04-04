@@ -104,9 +104,9 @@ We work with hypothetical T and T-refl with the following types.
 \end{code}
 
 The point is that any such T can be equivalently expressed as a
-transport and hence we may apply the above theorem, but it may be
-easier to check the compatibility condition using T rather than transport
-(see examples below).
+transport and hence we may apply the theorems of the import file
+InjectiveTypes.Sigma, but it may be easier to check the compatibility
+condition using T rather than transport (see examples below).
 
 \begin{code}
 
@@ -129,7 +129,7 @@ easier to check the compatibility condition using T rather than transport
 \end{code}
 
 We introduce names for the canonical maps induced by Π- and
-Σ-flabbiness structure on 𝓤.
+Σ-flabbiness structures on 𝓤.
 
 \begin{code}
 
@@ -144,7 +144,10 @@ We introduce names for the canonical maps induced by Π- and
   ρΣ : (p : Ω 𝓤)
        (A : p holds → 𝓤 ̇ )
      → S (Σ A) → ((h : p holds) → S (A h))
-  ρΣ p A s h = T (prop-indexed-sum (holds-is-prop p) h) s
+  ρΣ p A s h = T I s
+   where
+    I : Σ A ≃ A h
+    I = prop-indexed-sum (holds-is-prop p) h
 
 \end{code}
 
