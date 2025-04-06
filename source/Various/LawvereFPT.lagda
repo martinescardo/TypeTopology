@@ -38,10 +38,16 @@ open import UF.SubtypeClassifier
 open import UF.Subsingletons
 open import UF.Subsingletons-FunExt
 
-designated-fixed-point-property : 𝓤 ̇ → 𝓤 ̇
-designated-fixed-point-property X = (f : X → X) → Σ x ꞉ X , x ＝ f x
+\end{code}
 
-module retract-version where
+We will use the decoration "·" for pointwise versions of notions and
+constructions (for example, we can read "has-section· r" defined below
+as saying that r has a pointwise section).
+
+\begin{code}
+
+_is-section·-of_ : {A : 𝓤 ̇ } {X : 𝓥 ̇ } → ((A → X) → A) → (A → (A → X)) → 𝓤 ⊔ 𝓥 ̇
+s is-section·-of r  = ∀ g a → r (s g) a ＝ g a
 
 \end{code}
 
@@ -49,36 +55,84 @@ The following pointwise weakening of split surjection is sufficient to
 prove LFPT and allows us to avoid function extensionality in its
 applications:
 
-We will use the decoration "·" for pointwise versions of notions and
-constructions (for example, we can read "has-section· r" as saying
-that r has a pointwise section).
+\begin{code}
+
+has-section· : {A : 𝓤 ̇ } {X : 𝓥 ̇ } → (A → (A → X)) → 𝓤 ⊔ 𝓥 ̇
+has-section· r = Σ s ꞉ (codomain r → domain r) , s is-section·-of r
+
+section-gives-section· : {A : 𝓤 ̇ }
+                         {X : 𝓥 ̇ }
+                         (r : A → (A → X))
+                       → has-section r
+                       → has-section· r
+section-gives-section· r (s , rs) = s , λ g a → ap (λ - → - a) (rs g)
+
+section·-gives-section : funext 𝓤 𝓥
+                       → {A : 𝓤 ̇ }
+                         {X : 𝓥 ̇ }
+                         (r : A → (A → X))
+                       → has-section· r
+                       → has-section r
+section·-gives-section fe r (s , rs·) = s , λ g → dfunext fe (rs· g)
+
+\end{code}
+
+Lawvere's fixed-point combinator for a type X can be defined if we
+have maps r : A → (A → X) and s : (A → X) → A subject to no
+assumptions, but, no show that it produces a fixed point combinator,
+we will assume that s is pointwise section of r.
 
 \begin{code}
 
- has-section· : {A : 𝓤 ̇ } {X : 𝓥 ̇ } → (A → (A → X)) → 𝓤 ⊔ 𝓥 ̇
- has-section· r = Σ s ꞉ (codomain r → domain r) , ∀ g a → r (s g) a ＝ g a
+lfix : {A : 𝓤 ̇ }
+       {X : 𝓥 ̇ }
+     → (A → (A → X))
+     → ((A → X) → A)
+     → (X → X) → X
+lfix r s f = r (s (λ a → f (r a a))) (s (λ a → f (r a a)))
 
- section-gives-section· : {A : 𝓤 ̇ }
-                          {X : 𝓥 ̇ }
-                          (r : A → (A → X))
-                        → has-section r
-                        → has-section· r
- section-gives-section· r (s , rs) = s , λ g a → ap (λ - → - a) (rs g)
+\end{code}
 
- section·-gives-section : funext 𝓤 𝓥
-                        → {A : 𝓤 ̇ }
-                          {X : 𝓥 ̇ }
-                          (r : A → (A → X))
-                        → has-section· r
-                        → has-section r
- section·-gives-section fe r (s , rs·) = s , λ g → dfunext fe (rs· g)
+Notice the similarity with the usual fixed-point combinator Y of the
+untyped λ-calculus.
 
- LFPT· : {A : 𝓤 ̇ }
-         {X : 𝓥 ̇ }
-         (r : A → (A → X))
-       → has-section· r
-       → designated-fixed-point-property X
- LFPT· {𝓤} {𝓥} {A} {X} r (s , rs) f = x , p
+The intuitionistic proof of ¬ (A ↔ ¬ A) is the particular case of lfix
+with X = 𝟘 and f = id.
+
+\begin{code}
+
+not-equivalent-to-own-negation'' : {A : 𝓤 ̇ } → ¬ (A ↔ ¬ A)
+not-equivalent-to-own-negation'' (r , s) = lfix r s id
+
+_ : {A : 𝓤 ̇ } → not-equivalent-to-own-negation'' {𝓤} {A}
+              ＝ not-equivalent-to-own-negation   {𝓤} {A}
+_ = by-definition
+
+\end{code}
+
+We now consider the retract version of LFP.
+
+\begin{code}
+
+designated-fixed-point-property : 𝓤 ̇ → 𝓤 ̇
+designated-fixed-point-property X = (f : X → X) → Σ x ꞉ X , x ＝ f x
+
+module retract-version where
+
+\end{code}
+
+If r and s form a pointwise section-retraction pair, then lfix r s f
+is a fixed point of f.
+
+\begin{code}
+
+ lfix-is-fixed-point : {A : 𝓤 ̇ }
+                       {X : 𝓥 ̇ }
+                       (r : A → (A → X))
+                     → (s : (A → X) → A)
+                     → s is-section·-of r
+                     → (f : X → X) → lfix r s f ＝ f (lfix r s f)
+ lfix-is-fixed-point {𝓤} {𝓥} {A} {X} r s rs f = p
   where
    g : A → X
    g a = f (r a a)
@@ -89,11 +143,21 @@ that r has a pointwise section).
    x : X
    x = r a a
 
+   _ : x ＝ lfix r s f
+   _ = by-definition
+
    p : x ＝ f x
-   p = x         ＝⟨ refl ⟩
+   p = x         ＝⟨ by-definition ⟩
        r (s g) a ＝⟨ rs g a ⟩
-       g a       ＝⟨ refl ⟩
+       g a       ＝⟨ by-definition ⟩
        f x       ∎
+
+ LFPT· : {A : 𝓤 ̇ }
+         {X : 𝓥 ̇ }
+         (r : A → (A → X))
+       → has-section· r
+       → designated-fixed-point-property X
+ LFPT· {𝓤} {𝓥} {A} {X} r (s , rs) f = lfix r s f , lfix-is-fixed-point r s rs f
 
  LFPT : {A : 𝓤 ̇ }
         {X : 𝓥 ̇ }
@@ -232,9 +296,9 @@ module surjection-version (pt : propositional-truncations-exist) where
      x = φ a a
 
      p : x ＝ f x
-     p = x         ＝⟨ refl ⟩
+     p = x         ＝⟨ by-definition ⟩
          φ a a     ＝⟨ ap (λ - → - a) q ⟩
-         g a       ＝⟨ refl ⟩
+         g a       ＝⟨ by-definition ⟩
          f x       ∎
 
 \end{code}
@@ -428,7 +492,7 @@ module Blechschmidt' (pt : propositional-truncations-exist) where
                             (a₀ : A)
                           → is-h-isolated a₀
                           → has-section (λ (f : (a : A) → X a → Ω (𝓤 ⊔ 𝓦)) → f a₀)
- Π-projection-has-section {𝓥} {𝓤} {𝓦} fe fe' pe {A} {X} a₀ ish = s , rs
+ Π-projection-has-section {𝓥} {𝓤} {𝓦} fe fe' pe {A} {X} a₀ ishi = s , rs
   where
    s : (X a₀ → Ω (𝓤 ⊔ 𝓦)) → ((a : A) → X a → Ω (𝓤 ⊔ 𝓦))
    s φ a x = (∃ p ꞉ a ＝ a₀ , φ (transport X p x) holds) , ∥∥-is-prop
@@ -443,7 +507,7 @@ module Blechschmidt' (pt : propositional-truncations-exist) where
        f (p , h) = transport _holds t h
         where
          r : p ＝ refl
-         r = ish p refl
+         r = ishi p refl
 
          t : φ (transport X p x₀) ＝ φ x₀
          t = ap (λ - → φ (transport X - x₀)) r
