@@ -80,7 +80,7 @@ section·-gives-section fe r (s , rs·) = s , λ g → dfunext fe (rs· g)
 Lawvere's fixed-point combinator for a type X can be defined if we
 have maps r : A → (A → X) and s : (A → X) → A subject to no
 assumptions, but, no show that it produces a fixed point combinator,
-we will assume that s is pointwise section of r.
+we will assume that s is a pointwise section of r.
 
 \begin{code}
 
