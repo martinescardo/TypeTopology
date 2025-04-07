@@ -405,9 +405,9 @@ We collect the quasidecidable propositions in the type 𝓠:
 
  ⋁ : (ℕ → 𝓠) → 𝓠
  ⋁ 𝕡 = (∃ n ꞉ ℕ , 𝕡 n is-true) ,
-        quasidecidable-closed-under-ω-joins
-          (λ n → 𝕡 n is-true)
-          (λ n → being-true-is-quasidecidable (𝕡 n))
+       quasidecidable-closed-under-ω-joins
+         (λ n → 𝕡 n is-true)
+         (λ n → being-true-is-quasidecidable (𝕡 n))
 
 \end{code}
 
@@ -422,7 +422,6 @@ ways.
              → G ⊤
              → ((𝕡 : ℕ → 𝓠) → ((n : ℕ) → G (𝕡 n)) → G (⋁ 𝕡))
              → (𝕡 : 𝓠) → G 𝕡
-
  𝓠-induction {𝓤} G G-is-prop-valued g₀ g₁ gω (P , i) = γ
   where
    F :  𝓣 ̇ → 𝓚 ⊔ 𝓤 ̇
@@ -464,7 +463,6 @@ ways.
               → ⊤ ∈ 𝓖
               → ((𝕡 : ℕ → 𝓠) → ((n : ℕ) → 𝕡 n ∈ 𝓖) → ⋁ 𝕡 ∈ 𝓖)
               → (𝕡 : 𝓠) → 𝕡 ∈ 𝓖
-
  𝓠-induction' {𝓤} 𝓖 = 𝓠-induction (λ 𝕡 → pr₁ (𝓖 𝕡)) (λ 𝕡 → pr₂ (𝓖 𝕡))
 
 \end{code}
@@ -537,7 +535,8 @@ closure under binary products (that is, conjunctions, or meets):
      r = pe ∃-is-prop
             (×-prop-criterion ((λ _ → ∃-is-prop) ,
                                (λ e → quasidecidable-types-are-props Q (φ e))))
-            c d
+            c
+            d
 
      γ : is-quasidecidable ((∃ n ꞉ ℕ , P n) × Q)
      γ = transport is-quasidecidable r b
