@@ -1078,7 +1078,7 @@ To think about. Can we construct the collection of quasidecidable
 propositions without resizing and without higher-inductive types other
 than propositional truncation?
 
-We now explore the consequences of the hypothetical existence of an
+We now explore the consequences of the hypothetical existence of a
 free σ-sup-lattice on one generator ⊤.
 
 \begin{code}
