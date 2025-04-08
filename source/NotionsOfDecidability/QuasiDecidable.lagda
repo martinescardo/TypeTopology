@@ -11,9 +11,10 @@ We look at
 Their definitions are given below verbally and in Agda.
 
 We work in a spartan univalent type theory with Π, Σ, +, Id, 𝟘, 𝟙, ℕ,
-perhaps W-types, propositional-truncation, univalence, universes. Most
-of the time full univalence is not needed - propositional and
-functional extenstionality suffice. Sometimes we also consider
+perhaps W-types, universes, propositional-truncation, propositional
+extensionality and function extensionality - univalence is not
+needed. Most of the time full univalence is not needed - propositional
+and functional extenstionality suffice. Sometimes we also consider
 propositional resizing, as an explicit assumption each time it is
 used.
 
