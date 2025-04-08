@@ -1052,8 +1052,8 @@ This concludes the module quasidecidability-construction-from-resizing.
 The initial σ-frame can also be constructed as a higher-inductive
 type, as is well known.
 
-The initial σ-sup-lattice is automatically the initial σ-frame. This
-is shown below.
+The σ-sup-lattice on one generator is automatically the initial
+σ-frame. This is shown below.
 
 TODO. Write in Agda some of the proofs of the above reference with
 Cory Knapp, particularly regarding choice. E.g. the semidecidable
@@ -1314,7 +1314,6 @@ least upper bound of the weakly constant family λ (_ : a ＝ ⊤) → t:
                  (h ∘ c)
                  u
                  (λ n → ψ n u (λ (p : c n ＝ ⊤) → φ (⋁-⊤ c n p)))
-
 
   σ-rec-is-ub : (𝓑 : σ-SupLat 𝓥 𝓦) (t : ⟨ 𝓑 ⟩) (a : A)
               → a ＝ ⊤ → t ≤⟨ 𝓑 ⟩ σ-rec 𝓑 t a
