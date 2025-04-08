@@ -1117,7 +1117,7 @@ the absence of countable choice.
 
 Next, we consider a particular instance of countable choice that we dub
 Countable Semidecidable Choice (CSC) here and prove that it suffices to show
-that the semidecidable propositions are closed under countable choice.
+that the semidecidable propositions are closed under countable joins.
 
 \begin{code}
 
