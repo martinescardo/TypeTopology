@@ -890,8 +890,6 @@ We start by formulating:
 
 and prove their equivalence following [End of Section 2.5, EKC2017].
 
-\end{code}
-
 \begin{code}
 
 Semidecidable-Closed-Under-Σ : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥) ⁺ ̇
