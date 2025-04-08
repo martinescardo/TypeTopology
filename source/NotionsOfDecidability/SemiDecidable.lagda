@@ -20,7 +20,7 @@ called Escardo-Knapp Choice here, holds.
 
 The table of contents is as follows:
 
-∗ Part I   Basic definitions and properties of semidecidablity (structure)
+∗ Part I   Basic definitions and properties of semidecidability (structure)
 
 ∗ Part II  Formulating LPO, MP and BKS⁺ in terms of the type of semidecidability
            propositions having/being a particular subtype.
