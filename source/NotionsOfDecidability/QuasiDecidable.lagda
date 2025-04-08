@@ -1362,8 +1362,8 @@ In particular, σ-rec preserves σ-rec:
                                    (σ-rec 𝓑 t) (σ-rec-is-hom 𝓑 t) a b
 \end{code}
 
-We now derive the existence of binary meets in the initial
-σ-sup-lattice 𝓐 from the above kind of joins.
+We now derive the existence of binary meets in σ-sup-lattice 𝓐 on one
+generatot ⊤ from the above kind of joins.
 
 \begin{code}
 
@@ -1727,8 +1727,8 @@ top elements.
 
 \begin{code}
 
-  𝓐-is-σ-super-compact : (a : ℕ → A) → ⋁ a ＝ ⊤ → ∃ n ꞉ ℕ , a n ＝ ⊤
-  𝓐-is-σ-super-compact a p = vi
+  𝓐-is-σ-supercompact : (a : ℕ → A) → ⋁ a ＝ ⊤ → ∃ n ꞉ ℕ , a n ＝ ⊤
+  𝓐-is-σ-supercompact a p = vi
    where
     i = ⋁' (τ ∘ a) ＝⟨ (σ-suplat-hom-⋁ 𝓐 Ω-qua-σ-SupLat τ τ-is-hom a)⁻¹ ⟩
         τ (⋁ a)    ＝⟨ ap τ p ⟩
@@ -1942,6 +1942,28 @@ Then we get quasidecidable induction by σ-induction:
    → (P : 𝓣 ̇ ) → is-quasidecidable P → F P
   quasidecidable-induction {𝓥} F i F₀ F₁ Fω P (a , r) = γ a P r
    where
+    γ⊤ : (P : 𝓣 ̇ ) → τ ⊤ holds ＝ P → F P
+    γ⊤ P s = transport F (t ⁻¹ ∙ s) F₁
+     where
+      t : τ ⊤ holds ＝ 𝟙
+      t = ap _holds (σ-rec-⊤ Ω-qua-σ-SupLat ⊤')
+
+    γ⊥ : (P : 𝓣 ̇ ) → τ ⊥ holds ＝ P → F P
+    γ⊥ P s = transport F (t ⁻¹ ∙ s) F₀
+     where
+      t : τ ⊥ holds ＝ 𝟘
+      t = ap _holds (σ-suplat-hom-⊥ 𝓐 Ω-qua-σ-SupLat τ τ-is-hom) ∙ ⊥-holds-is-𝟘
+
+    γ⋁ : (a : ℕ → A)
+       → ((n : ℕ) (P : 𝓣 ̇ ) → (τ (a n) holds) ＝ P → F P)
+       → (P : 𝓣 ̇ ) → (τ (⋁ a) holds) ＝ P → F P
+    γ⋁ a φ P s = transport F (t ⁻¹ ∙ s) (Fω (λ n → τ (a n) holds) ψ)
+     where
+      t : τ (⋁ a) holds ＝ (∃ n ꞉ ℕ , τ (a n) holds)
+      t = ap _holds (σ-suplat-hom-⋁ 𝓐 Ω-qua-σ-SupLat τ τ-is-hom a)
+      ψ : (n : ℕ) → F (τ (a n) holds)
+      ψ n = φ n (τ (a n) holds) refl
+
     γ : (a : A) (P : 𝓣 ̇ ) → τ a holds ＝ P → F P
     γ = σ-induction
          (λ a → (P : 𝓣 ̇ ) → τ a holds ＝ P → F P)
@@ -1949,28 +1971,6 @@ Then we get quasidecidable induction by σ-induction:
          γ⊤
          γ⊥
          γ⋁
-     where
-      γ⊤ : (P : 𝓣 ̇ ) → τ ⊤ holds ＝ P → F P
-      γ⊤ P s = transport F (t ⁻¹ ∙ s) F₁
-       where
-        t : τ ⊤ holds ＝ 𝟙
-        t = ap _holds (σ-rec-⊤ Ω-qua-σ-SupLat ⊤')
-
-      γ⊥ : (P : 𝓣 ̇ ) → τ ⊥ holds ＝ P → F P
-      γ⊥ P s = transport F (t ⁻¹ ∙ s) F₀
-       where
-        t : τ ⊥ holds ＝ 𝟘
-        t = ap _holds (σ-suplat-hom-⊥ 𝓐 Ω-qua-σ-SupLat τ τ-is-hom) ∙ ⊥-holds-is-𝟘
-
-      γ⋁ : (a : ℕ → A)
-         → ((n : ℕ) (P : 𝓣 ̇ ) → (τ (a n) holds) ＝ P → F P)
-         → (P : 𝓣 ̇ ) → (τ (⋁ a) holds) ＝ P → F P
-      γ⋁ a φ P s = transport F (t ⁻¹ ∙ s) (Fω (λ n → τ (a n) holds) ψ)
-       where
-        t : τ (⋁ a) holds ＝ (∃ n ꞉ ℕ , τ (a n) holds)
-        t = ap _holds (σ-suplat-hom-⋁ 𝓐 Ω-qua-σ-SupLat τ τ-is-hom a)
-        ψ : (n : ℕ) → F (τ (a n) holds)
-        ψ n = φ n (τ (a n) holds) refl
 
 \end{code}
 
@@ -2004,7 +2004,7 @@ of this.
 
   dependent-binary-meet
    : (a : A) (b : τ a holds → A)
-   → Σ c ꞉ A , (τ c holds) ＝ (Σ h ꞉ τ a holds , τ (b h) holds)
+   → Σ c ꞉ A , (τ c holds ＝ (Σ h ꞉ τ a holds , τ (b h) holds))
   dependent-binary-meet a b = quasidecidable-closed-under-Σ
                                (τ a holds)
                                (λ h → τ (b h) holds)
