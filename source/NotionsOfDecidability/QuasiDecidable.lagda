@@ -533,8 +533,9 @@ closure under binary products (that is, conjunctions, or meets):
 
      r : (∃ n ꞉ ℕ , P n × Q) ＝ ((∃ n ꞉ ℕ , P n) × Q)
      r = pe ∃-is-prop
-            (×-prop-criterion ((λ _ → ∃-is-prop) ,
-                               (λ e → quasidecidable-types-are-props Q (φ e))))
+            (×-prop-criterion
+              ((λ _ → ∃-is-prop) ,
+              (λ e → quasidecidable-types-are-props Q (φ e))))
             c
             d
 
@@ -571,7 +572,6 @@ propositions, and propositions are closed under Σ:
     → is-quasidecidable P
     → ((p : P) → is-quasidecidable (Q p))
     → Σ Q ≃ ∃ Q
-
  NB P Q i j = logically-equivalent-props-are-equivalent
                k
                ∃-is-prop
@@ -731,7 +731,6 @@ prop-valued predicates only.
   freeness-lemma : (P : 𝓣 ̇ )
                  → is-quasidecidable P
                  → Σ a ꞉ A , (P → t ≤' a) × ((u : A) → (P → t ≤' u) → a ≤' u)
-
   freeness-lemma = quasidecidable-induction F F-is-prop-valued F₀ F₁ Fω
    where
     F : 𝓣 ̇ → 𝓣 ⊔ 𝓤 ⊔ 𝓥 ̇
@@ -876,7 +875,6 @@ propositional resizing is available:
 
 \begin{code}
 
-
 module quasidecidability-construction-from-resizing
         (𝓣 𝓚 : Universe)
         (ρ : Propositional-Resizing)
@@ -927,7 +925,6 @@ closure condition:
  quasidecidable-closed-under-ω-joins : (P : ℕ → 𝓣 ̇ )
                                      → ((n : ℕ) → is-quasidecidable (P n))
                                      → is-quasidecidable (∃ n ꞉ ℕ , P n)
-
  quasidecidable-closed-under-ω-joins P φ = to-⋂ QD-closed-types (∃ P) vi
   where
    i : (n : ℕ) → P n ∈ ⋂ QD-closed-types
@@ -960,7 +957,6 @@ case to this particular case.
    → F 𝟙
    → ((P : ℕ → 𝓣 ̇ ) → ((n : ℕ) → F (P n)) → F (∃ n ꞉ ℕ , P n))
    → (P : 𝓣 ̇ ) →  is-quasidecidable P → F P
-
  quasidecidable-induction₀ F F-is-prop-valued F₀ F₁ Fω P P-is-quasidecidable = γ
   where
    A : (P : 𝓣 ̇ ) → Ω 𝓚
@@ -1105,7 +1101,7 @@ We first introduce some abbreviations:
   _≤_ : A → A → 𝓚 ̇
   a ≤ b = a ≤⟨ 𝓐 ⟩ b
 
-  σ-rec : (𝓑 : σ-SupLat 𝓥 𝓦) (t : ⟨ 𝓑 ⟩) → ⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩
+  σ-rec : (𝓑 : σ-SupLat 𝓥 𝓦) → ⟨ 𝓑 ⟩ → ⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩
   σ-rec 𝓑 t = pr₁ (center (𝓐-free 𝓑 t))
 
   σ-rec-is-hom : (𝓑 : σ-SupLat 𝓥 𝓦) (t : ⟨ 𝓑 ⟩)
